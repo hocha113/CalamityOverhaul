@@ -5,19 +5,17 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.Narrative.Data
 {
     /// <summary>
-    /// 旧存档迁移垫片：重构前 ADV 数据保存在名为 <c>ADVSavePlayer</c> 的 ModPlayer 下（键 <c>ADVSave</c>）。<br/>
-    /// 本类沿用同一类名，从而被 tModLoader 按 <c>(mod, name)</c> 匹配到旧存档条目，
-    /// 读取后转交给 <see cref="StoryPlayer"/>，再由 <see cref="LegacyStorySaveImporter"/> 写入新的数据模块。<br/>
-    /// <b>本类只读不写</b>：不重写 <see cref="ModPlayer.SaveData"/>，因此再次存档时不会写出 <c>ADVSavePlayer</c> 条目，
-    /// 旧条目随之自然消失，迁移即一次性完成；新存档不含本条目时本钩子不会被调用，故对新档零影响
+    /// 旧档迁移垫片。类名/键 <c>ADVSave</c> 对齐重构前 ModPlayer，读档后交给
+    /// <see cref="StoryPlayer"/> + <see cref="LegacyStorySaveImporter"/>。<br/>
+    /// 只读不写（不重写 SaveData），再存档后旧条目自然消失
     /// </summary>
     internal sealed class ADVSavePlayer : ModPlayer
     {
         public override void LoadData(TagCompound tag) {
-            //迁移失败不得向上抛出，否则 PlayerIO 会包装成 CustomModDataException 影响整个玩家读档
+            //失败勿上抛，否则 PlayerIO 整档 CustomModDataException
             try {
                 StoryPlayer storyPlayer = Player.GetModPlayer<StoryPlayer>();
-                //正常情况下新旧条目互斥；若存档异常地同时含两者，新格式更权威，跳过迁移以免回退数据
+                //新旧并存时新格式优先
                 if (storyPlayer.HasNewFormatData) {
                     return;
                 }

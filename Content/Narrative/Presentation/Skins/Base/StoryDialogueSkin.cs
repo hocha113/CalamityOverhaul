@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Base
 {
     internal class StoryDialogueSkin : DialogueSkin
     {
-        /// <summary>与 ADV 底栏一致：略压入 shader 内缘，消除视觉底边空隙。</summary>
+        /// <summary>与 ADV 底栏一致,略压入 shader 内缘</summary>
         public override float HintBottomMargin => -8f;
 
         public override float PortraitSize => 100;

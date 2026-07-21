@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>探针镭射阵：咆哮释探针→阵列就位→PrimeCannonOnSpan 齐射→恢复</summary>
+    /// <summary>探针阵，释探针→就位→齐射→恢复</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.ProbeMatrix, typeof(DestroyerStateContext))]
     internal class DestroyerProbeMatrixState : DestroyerStateBase
     {
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             if (context.IsDeathMode) probeCount += 4;
 
             probeIndices = new int[probeCount];
-            //客户端不执行SpawnProbes，必须以-1初始化避免误驱动 Main.npc[0]
+            //客户端探针索引初值-1，防驱动npc[0]
             Array.Fill(probeIndices, -1);
             //阵型类型由服务端决定并通过ai[3]同步
             if (!VaultUtils.isClient) {
@@ -60,19 +60,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             Timer++;
 
-            //阶段1：咆哮+释放探针
+            //阶段1 释探针
             if (Timer <= RoarPhase) {
                 ExecuteRoarPhase(context);
             }
-            //阶段2：探针飞向阵列位置
+            //阶段2 飞阵列
             else if (Timer <= FormationPhase) {
                 ExecuteFormationPhase(context);
             }
-            //阶段3：探针发射镭射
+            //阶段3 齐射
             else if (Timer <= FirePhase) {
                 ExecuteFirePhase(context);
             }
-            //阶段4：恢复
+            //阶段4 恢复
             else if (Timer <= RecoveryPhase) {
                 ExecuteRecoveryPhase(context);
             }
@@ -174,7 +174,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             Player player = context.Target;
             context.SetChargeState(4, 0.7f + (Timer - FormationPhase) / (float)(FirePhase - FormationPhase) * 0.3f);
 
-            //锁定瞬间：相邻探针间拉起电弧连线，勾勒出阵型轮廓（纯演出）
+            //锁定拉电弧勾阵型
             if (Timer == FormationPhase + 2 && !VaultUtils.isClient) {
                 int arcType = ModContent.ProjectileType<DestroyerArc>();
                 for (int i = 0; i < probeCount; i++) {
@@ -228,7 +228,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         private void ExecuteRecoveryPhase(DestroyerStateContext context) {
             context.ResetChargeState();
 
-            //攻击完成后快速消灭探针，避免滞留造成混乱（仅服务端执行）
+            //打完清探针(服务端)
             if (!VaultUtils.isClient) {
                 KillAllProbes();
             }

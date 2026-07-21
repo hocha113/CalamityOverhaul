@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>战术指令执行窗口：广播四臂指令后衔接下一头部招式</summary>
+    /// <summary>指令执行窗口</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.CommandExecute, typeof(PrimeStateContext))]
     internal class PrimeCommandExecuteState : PrimeStateBase
     {
@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         public override PrimeStateIndex StateIndex => PrimeStateIndex.CommandExecute;
 
         private readonly PrimeCommandKind command;
-        /// <summary>窗口到时锁存的指令（指令槽随即清零，等待期间据此衔接下一手）</summary>
+        /// <summary>到时锁存指令</summary>
         private PrimeCommandKind resolvedCommand;
 
         public PrimeCommandExecuteState() : this(PrimeCommandKind.None) { }
@@ -46,15 +46,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
             Timer++;
             if (Timer >= duration && !VaultUtils.isClient) {
-                //到时先锁存并撤销指令：四臂停止起手新的蓄力招（迫击炮等），等待因此有上界
+                //到时锁存并撤指令
                 if (resolvedCommand == PrimeCommandKind.None) {
                     resolvedCommand = (PrimeCommandKind)(int)npc.ai[PrimeAiSlots.HeadCommandSlot];
                     npc.ai[PrimeAiSlots.HeadCommandSlot] = 0f;
                     npc.netUpdate = true;
                 }
 
-                //下一手是冲撞/火力阵（会接管四臂编队）且仍有臂在收尾蓄力：
-                //头部老老实实悬停，等预警兑现完再动身
+                //下一手接管编队且臂在收尾蓄力
+                //悬停等预警兑现
                 bool nextHijacksArms = resolvedCommand is PrimeCommandKind.PhysicalAssault
                     or PrimeCommandKind.FireSuppression;
                 if (nextHijacksArms && PrimeFacts.AnyArmCommitted()) {

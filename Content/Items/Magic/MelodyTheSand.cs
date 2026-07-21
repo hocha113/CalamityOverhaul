@@ -9,9 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic
 {
-    /// <summary>
-    /// 沙中曲：发射小型沙龙卷，沙龙卷落地后会在地面来回巡游
-    /// </summary>
+    /// <summary>沙中曲，小沙龙卷落地巡游</summary>
     internal class MelodyTheSand : ModItem
     {
         public override string Texture => CWRConstant.Item_Magic + "MelodyTheSand";
@@ -47,7 +45,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     {
         public override string Texture => CWRConstant.Item_Magic + "MelodyTheSand";
         public override int TargetID => ModContent.ItemType<MelodyTheSand>();
-        /// <summary>开火余韵进度，法器出手后胀大发光</summary>
+        /// <summary>开火余韵 0~1</summary>
         private int glowPulse;
         public override void SetGunProperty() {
             Projectile.DamageType = DamageClass.Magic;
@@ -92,7 +90,6 @@ namespace CalamityOverhaul.Content.Items.Magic
                     , WeaponDamage, WeaponKnockback, Owner.whoAmI);
             }
 
-            //枪口卷起的细沙与金光
             for (int i = 0; i < 10; i++) {
                 Vector2 dustVel = vel.UnitVector().RotatedByRandom(0.55f) * Main.rand.NextFloat(2f, 6f);
                 int dustId = Main.rand.NextBool(3) ? DustID.Gold : DustID.Sand;
@@ -113,9 +110,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
     }
 
-    /// <summary>
-    /// 小型沙龙卷：飞行阶段受重力影响，触地后沿地面来回巡游，遇墙或断崖即转向
-    /// </summary>
+    /// <summary>小沙龙卷，落地巡游遇墙/断崖掉头</summary>
     internal class SandSmallTornado : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -129,7 +124,6 @@ namespace CalamityOverhaul.Content.Items.Magic
         private ref float Phase => ref Projectile.ai[0];
         //触地后水平巡游方向（±1）
         private ref float GroundDir => ref Projectile.ai[1];
-        //旋转/视觉相位
         private ref float SwirlTime => ref Projectile.localAI[0];
 
         public override void SetDefaults() {
@@ -150,7 +144,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             SwirlTime += 0.2f;
 
             if (Phase == 0f) {
-                //飞行阶段，受重力影响形成抛物线
+                //飞行抛物
                 Projectile.velocity.Y += Gravity;
                 if (Projectile.velocity.Y > MaxFallSpeed) {
                     Projectile.velocity.Y = MaxFallSpeed;
@@ -158,7 +152,7 @@ namespace CalamityOverhaul.Content.Items.Magic
                 Projectile.rotation = Projectile.velocity.X * 0.04f;
             }
             else {
-                //触地后保持向地面贴合的轻微下压速度，便于 tile collide 持续生效
+                //贴地微下压保 tile collide
                 if (GroundDir == 0f) {
                     int sign = Math.Sign(Projectile.velocity.X);
                     GroundDir = sign != 0 ? sign : 1;
@@ -167,11 +161,11 @@ namespace CalamityOverhaul.Content.Items.Magic
                 Projectile.velocity.X = GroundDir * MaxGroundSpeed;
                 Projectile.velocity.Y = 4f;
 
-                //断崖检测：若前进方向脚下没有实心方块则掉头
                 Vector2 ledgeProbe = Projectile.Bottom + new Vector2(GroundDir * (Projectile.width / 2f + 4f), 6f);
                 Point tilePos = ledgeProbe.ToTileCoordinates();
                 if (WorldGen.InWorld(tilePos.X, tilePos.Y)) {
                     Tile tile = Main.tile[tilePos.X, tilePos.Y];
+                    //断崖掉头
                     bool solidBelow = tile.HasUnactuatedTile && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType];
                     if (!solidBelow) {
                         GroundDir = -GroundDir;
@@ -187,7 +181,6 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
 
         private void SpawnVisualDust() {
-            //沿龙卷高度采样若干次，制造卷扬的沙尘
             int spawnCount = Phase == 1f ? 13 : 12;
             for (int i = 0; i < spawnCount; i++) {
                 if (!Main.rand.NextBool(2)) {
@@ -207,7 +200,7 @@ namespace CalamityOverhaul.Content.Items.Magic
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
             if (Phase == 0f) {
-                //首次触地：转入巡游阶段
+                //首次触地→巡游
                 if (oldVelocity.Y > 0f) {
                     Phase = 1f;
                     GroundDir = oldVelocity.X >= 0f ? 1f : -1f;
@@ -217,7 +210,6 @@ namespace CalamityOverhaul.Content.Items.Magic
                     Projectile.velocity.Y = 0f;
                     Projectile.velocity.X = GroundDir * MaxGroundSpeed;
                     SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.45f, Pitch = 0.45f }, Projectile.Center);
-                    //着陆扬尘
                     for (int i = 0; i < 14; i++) {
                         Vector2 vel = new Vector2(Main.rand.NextFloat(-4f, 4f), Main.rand.NextFloat(-3.5f, -0.5f));
                         int d = Dust.NewDust(Projectile.Bottom, 1, 1, DustID.Sand, vel.X, vel.Y, 100, default, 1.2f);
@@ -225,14 +217,14 @@ namespace CalamityOverhaul.Content.Items.Magic
                     }
                     return false;
                 }
-                //空中蹭到墙壁：反弹水平方向
+                //空中蹭墙水平反弹
                 if (oldVelocity.X != Projectile.velocity.X) {
                     Projectile.velocity.X = -oldVelocity.X * 0.55f;
                 }
                 return false;
             }
 
-            //巡游阶段：撞墙时反向
+            //巡游撞墙反向
             if (oldVelocity.X != Projectile.velocity.X) {
                 GroundDir = -GroundDir;
                 Projectile.velocity.X = GroundDir * MaxGroundSpeed;
@@ -244,7 +236,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            //把敌人略微往前推拽，使其更容易被卷入
+            //略推敌人便于卷入
             if (Phase == 1f) {
                 modifiers.HitDirectionOverride = (int)GroundDir;
             }
@@ -268,7 +260,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Color sandWarm = new Color(225, 185, 95);
             Color sandLight = new Color(255, 235, 170);
 
-            //从上往下绘制 4 层旋涡切片，构成沙龙卷主体
+            //4 层旋涡切片
             Texture2D cyclone = CWRAsset.Cyclone?.Value;
             if (cyclone != null) {
                 Vector2 origin = cyclone.Size() / 2f;
@@ -276,7 +268,7 @@ namespace CalamityOverhaul.Content.Items.Magic
                 for (int i = 0; i < slices; i++) {
                     float t01 = i / (float)(slices - 1);                  //0 顶端，1 底端
                     float yOff = MathHelper.Lerp(-Projectile.height * 0.55f, Projectile.height * 0.35f, t01);
-                    //顶端略宽（云冠），底端收紧成接地点
+                    //顶宽底收
                     float scaleX = MathHelper.Lerp(0.55f, 0.32f, t01);
                     float scaleY = MathHelper.Lerp(0.42f, 0.26f, t01) / 2;
                     float rot = t * (1.5f - i * 0.15f);

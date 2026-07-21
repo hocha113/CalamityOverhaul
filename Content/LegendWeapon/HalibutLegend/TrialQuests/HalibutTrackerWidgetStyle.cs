@@ -6,7 +6,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
 {
-    /// <summary>试炼追踪窗口样式：菱形头、标题下划线、细进度线；无面板/气泡背景</summary>
+    /// <summary>试炼追踪样式、菱形头+下划线+细进度，无面板背景</summary>
     internal class HalibutTrackerWidgetStyle : IEntrustTrackerWidgetStyle
     {
         #region 色板
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
             //头部菱形记号 + 外晕
             DrawPearlSigil(sb, px, uv, headerRect.X + 9, headerRect.Y + headerRect.Height / 2, alpha);
 
-            //标题：散射投影 + 冰青主体
+            //标题、散射投影+冰青
             const float titleScale = 0.95f;
             int textX = headerRect.X + 20;
             //大字号下需略微下移基线，让顶部不贴顶
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
                 ShadowInk * (alpha * 0.55f), titleScale);
             Utils.DrawBorderString(sb, title, titlePos, TitleIce * alpha, titleScale);
 
-            //下划线：实线 + 三段起伏点
+            //下划线、实线+三段起伏点
             int titlePixelW = (int)(font.MeasureString(title).X * titleScale);
             int underY = headerRect.Bottom + 1;
             int solidLen = Math.Clamp(titlePixelW + 4, 18, headerRect.Width - 40);
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
             }
         }
 
-        //菱形珠粒：旋转45°的小方块 + 内核 + halo光晕
+        //菱形珠、45°方块+核+halo
         private void DrawPearlSigil(SpriteBatch sb, Texture2D px, Rectangle uv, int cx, int cy, float alpha) {
             float p = MathF.Sin(pulse * 2f) * 0.25f + 0.75f;
             //外halo

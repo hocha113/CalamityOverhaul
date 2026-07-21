@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>虚空机匣：光束轨迹每 20 帧留微型爆炸残影</summary>
+    /// <summary>虚空机匣，轨迹每 20 帧留微型爆炸残影</summary>
     internal sealed class NullspaceFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 ModContent.ProjectileType<CyberDetonationProj>(),
                 dmg, 0f, source.Projectile.owner, ai0: 0.15f);
             if (idx >= 0 && idx < Main.maxProjectiles) {
-                //强制使用极小爆炸半径（60px）
+                //爆炸半径 60px
                 Main.projectile[idx].localAI[2] = 60f;
             }
         }

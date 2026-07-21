@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         //快速验证剩余帧数, 减少完整扫描频率
         private int validationFramesRemaining;
         private const int FullScanInterval = 8;
-        //侧位之间稍微错峰, 避免所有管道在同一帧执行 FullScan
+        //侧位错峰，防同帧 FullScan
         private static int s_phaseAccumulator;
 
         public ItemPipelineSideState(Point16 offset, int directionIndex) {
@@ -166,9 +166,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             return null;
         }
 
-        /// <summary>
-        /// 绘制连接臂
-        /// </summary>
+        /// <summary>画连接臂</summary>
         public void Draw(SpriteBatch spriteBatch) {
             if (CoreTP == null) {
                 return;

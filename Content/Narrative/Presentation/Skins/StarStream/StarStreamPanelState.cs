@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.StarStream
 {
     internal sealed class StarStreamPanelState
     {
-        /// <summary>对齐 ADV DialogueBoxBase 正文折行留白（PanelWidth - Padding×2 - 24）。</summary>
+        /// <summary>正文折行留白,同 ADV DialogueBoxBase</summary>
         public const int TextWrapInset = 24;
 
         private const float SideMargin = 30f;

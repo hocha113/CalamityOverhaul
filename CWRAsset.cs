@@ -32,17 +32,17 @@ namespace CalamityOverhaul
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> StarTexture = null;//326×326黑底4芒星，Additive重击/爆炸高光
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> SoftGlow = null;//64*64的圆点灰度图（径向衰减），Additive叠加绘制圆形光晕/光源，染色时颜色A值通常设为0以避免遮挡
+        public static Asset<Texture2D> SoftGlow = null;//64 圆点灰度，Additive 光晕，染色常 A=0
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> Fire = null;//512*512的火焰帧动画序列（多帧白色火苗黑底），Additive叠加作为火焰粒子、燃烧飘动的逐帧贴图
+        public static Asset<Texture2D> Fire = null;//512 火焰帧序列，Additive 粒子
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> Fog = null;//256*256的柔性团状烟雾灰度蒙版，中心密集四周逐渐透明，适合叠加做烟尘、雾气、魔法蒸汽
+        public static Asset<Texture2D> Fog = null;//256 团状烟雾灰度
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> PerlinNoise = null;//512×512 Perlin灰度，Shader扭曲/溶解
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> Cyclone = null;//128×128同心旋涡，气旋/冲击波径向采样
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> DiffusionCircle = null;//360*360的柔和圆环扩散蒙版，中心透明外围模糊光环，Additive叠加用作冲击波光圈、脉冲扩散特效
+        public static Asset<Texture2D> DiffusionCircle = null;//360 扩散环，Additive 冲击波
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> ThunderTrail = null;//256×128闪电拖尾，Trail Shader(珊瑚石致谢)
         [VaultLoaden(CWRConstant.Masking)]
@@ -63,7 +63,7 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> NormalMatrix = null;
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> Line = null;
-        //---- 刀光/月牙（亮度型：黑底白形，直接加色或作mask）----
+        //---- 刀光/月牙(亮度型，黑底白形) ----
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> SlashBrush01 = null;//直线笔刷拉丝，弧向平铺用（RGB+Alpha双通道渐变）
         [VaultLoaden(CWRConstant.Masking)]
@@ -72,7 +72,7 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> SlashJagged01 = null;//锯齿撕裂月牙笔刷（亮度型）
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> SlashStreak01 = null;//横向拉丝条纹（亮度型）
-        //---- 冲击爆点（亮度型）----
+        //---- 冲击爆点(亮度型) ----
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> RayBurst01 = null;//放射状爆点尖刺
         [VaultLoaden(CWRConstant.Masking)]
@@ -94,7 +94,7 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> TearSpread01 = null;//冲击扩散尖刺形（Alpha型）
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> Ring01 = null;//扩散环（白RGB+Alpha形状）
-        //---- 烟雾（白RGB+Alpha形状，AlphaBlend染色用）----
+        //---- 烟雾(白RGB+Alpha，AlphaBlend) ----
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> SmokeSheet01 = null;//烟团序列帧 2×2（帧边长 = Width/2）
         [VaultLoaden(CWRConstant.Masking)]

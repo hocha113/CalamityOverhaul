@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 {
     internal class SHPCItem : ModItem
     {
-        //以SHPCOverride修改，这里写上属性是为了兼容性
+        //由SHPCOverride改，此处属性保兼容
         public override void SetDefaults() {
             Item.width = 152;
             Item.height = 70;

@@ -13,40 +13,22 @@ using OFR = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs.
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 {
-    /// <summary>
-    /// 肢解居合主控：把"持刀人挥出这一刀"补进肢解链路的演出编排层，与连段普攻完全区分——
-    /// 普攻是滚动的舞，这里是一次拔刀。<br/>
-    /// 时间轴（60fps，约 0.8s）：蓄(0~6) 刀收鞘位反向压一分蓄势 → 闪(6~8) 一两帧拔刀，
-    /// 快到只剩残影 → 落刀帧(8) 目标当帧入冻并亮起伤口线（<see cref="OniDismember"/>，
-    /// 滞拍传 <see cref="OniFinaleCut.HoldFrames"/> 与终斩对齐），同帧终斩刀线锚在目标身上 →
-    /// 残心(8~26) 持刀屏息，斩击已经完成、世界还没反应过来 → 纳刀(26) 一挑入鞘，
-    /// 与刀线引爆、碎片分离、伤害结算压在同一声鞘响上 → 反噬帧(32) 肢解的代价：
-    /// 刀已入鞘，同等的肢解连同必定伤害落回持刀人自己（<see cref="OniPlayerDismember"/>）→ 收势淡出。<br/>
-    /// 两种模式：<b>直接</b>（ai[0]=目标 NPC 索引）斩真身，落刀帧当场入冻；
-    /// <b>点锚</b>（ai[0]=-2，<see cref="FireAtPoint"/>）斩媒介，落刀帧 owner 端经
-    /// <see cref="OniOmokage.SeverAt"/> 解析纸面，刀线/裂纸/脉冲由面影链路自驱。
-    /// 媒介只替真身受刀，不替持刀人挡代价：两种模式落刀成功均反噬。<br/>
-    /// 蓄+闪期间硬占刀权（连段冻结让位），残心起转软姿态：玩家重新挥刀立刻放手，操控零阻塞。<br/>
-    /// 冻结与切口由本弹幕时间轴在所有端（含服务器）确定性触发，肢解由此获得权威同步入口；
-    /// 伤害由 <see cref="OniFinaleCut"/> 在引爆窗结算（巨物减伤同款）。<br/>
-    /// ai[0]=目标 NPC 索引 / -2=点锚 ai[1]=切线角(弧度) ai[2]=尺寸倍率
-    /// </summary>
+    /// <summary>肢解结算斩. 直斩/锚模式</summary>
     internal class OniSeverStrike : ModProjectile, IOverlayDrawable, IOniBladeOccupant
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        //==== 时间轴常量 ====
-        /// <summary>蓄势帧数：刀在鞘位反向压势</summary>
+        /// <summary>蓄势帧数、刀在鞘位反向压势</summary>
         public const int WindupFrames = 6;
-        /// <summary>拔刀闪帧数：快到只剩残影</summary>
+        /// <summary>拔刀闪帧数、快到只剩残影</summary>
         public const int DrawFlashFrames = 2;
-        /// <summary>落刀帧：目标入冻 + 终斩刀线生成</summary>
+        /// <summary>落刀帧、目标入冻 + 终斩刀线生成</summary>
         public const int StrikeFrame = WindupFrames + DrawFlashFrames;
         /// <summary>纳刀帧 = 刀线引爆帧 = 碎片分离帧</summary>
         public const int SheatheFrame = StrikeFrame + OniFinaleCut.HoldFrames;
         /// <summary>纳刀一挑时长</summary>
         private const int NotoFlickFrames = 6;
-        /// <summary>反噬帧：刀入鞘的下一瞬，同等的肢解落回自己（两种模式，落刀成功即必反噬）</summary>
+        /// <summary>反噬帧、刀入鞘的下一瞬，同等的肢解落回自己（两种模式，落刀成功即必反噬）</summary>
         public const int SelfCutFrame = SheatheFrame + NotoFlickFrames;
         /// <summary>纳刀后持刀淡出</summary>
         private const int NotoFadeFrames = 12;
@@ -62,30 +44,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         private int targetType = -1;
         /// <summary>落刀已执行（冻结+刀线已触发）</summary>
         private bool struck;
-        /// <summary>落刀帧目标已失效：转空挥收势</summary>
+        /// <summary>落刀帧目标已失效、转空挥收势</summary>
         private bool whiffed;
         /// <summary>反噬已落下（防帧等值判断被计时抖动漏过）</summary>
         private bool selfCutDone;
-        /// <summary>起手继承的连段刀角：从普攻移交时蓄势段顺势收拢入鞘，刀不跳变</summary>
+        /// <summary>起手继承的连段刀角、从普攻移交时蓄势段顺势收拢入鞘，刀不跳变</summary>
         private float inheritRot;
         private bool inheritPose;
         private readonly OniBladePose bladePose = new();
 
         private int TargetIndex => (int)Projectile.ai[0];
-        /// <summary>点锚模式：斩媒介（纸面），锚点=生成位置</summary>
+        /// <summary>点锚模式、斩媒介（纸面），锚点=生成位置</summary>
         private bool PointMode => (int)Projectile.ai[0] == PointModeMarker;
         private float CutAngle => Projectile.ai[1];
         private float SizeMul => Projectile.ai[2] > 0.05f ? Projectile.ai[2] : 1f;
         private Player Owner => Main.player[Projectile.owner];
 
-        /// <summary>蓄+闪硬占刀权：人已进入拔刀的呼吸；残心起软姿态，玩家输入随时接管</summary>
+        /// <summary>蓄+闪硬占刀权、人已进入拔刀的呼吸；残心起软姿态，玩家输入随时接管</summary>
         bool IOniBladeOccupant.HardOccupiesBlade => timer <= StrikeFrame + 2 && !whiffed;
 
-        /// <summary>
-        /// 触发接口（直接模式）：在持有者客户端调用（<c>player.whoAmI == Main.myPlayer</c> 时），
-        /// tML 自动完成多人同步；整场演出由主控自驱，调用方无需后续干预。
-        /// 落刀成功则纳刀后反噬上身（<see cref="OniPlayerDismember"/>）
-        /// </summary>
+        /// <summary>触发接口（直接模式）</summary>
         /// <param name="player">攻击发起者</param>
         /// <param name="target">肢解目标（落刀帧仍需存活，否则空挥收势）</param>
         /// <param name="cutAngle">切线角度（世界空间弧度，同时决定拔刀挥向）</param>
@@ -101,13 +79,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 , ai0: target?.whoAmI ?? -1, ai1: MathHelper.WrapAngle(cutAngle), ai2: scale);
         }
 
-        /// <summary>
-        /// 触发接口（点锚模式）：斩向一个世界坐标上的媒介（面影纸面）。
-        /// 挥舞与残心纳刀照常演出；落刀帧由 owner 端按位置解析纸面
-        /// （<see cref="OniOmokage.SeverAt"/>，8 帧延迟内纸可能烧散故不存引用），
-        /// 纸上刀线/裂纸/脉冲/真身立裂全部由面影链路自驱。
-        /// 媒介只替真身受刀：落刀成功同样纳刀后反噬上身
-        /// </summary>
+        /// <summary>触发接口（点锚模式）</summary>
         /// <param name="player">攻击发起者</param>
         /// <param name="point">落刀点（世界坐标，应落在纸面内）</param>
         /// <param name="cutAngle">切线角度（弧度）</param>
@@ -132,6 +104,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             Projectile.height = 2;
             Projectile.aiStyle = -1;
             Projectile.friendly = false;   //主控无判定，伤害全在终斩刀线
+
             Projectile.penetrate = -1;
             Projectile.timeLeft = TotalDuration + 2;
             Projectile.tileCollide = false;
@@ -156,41 +129,50 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                     NPC first = TargetIndex >= 0 && TargetIndex < Main.maxNPCs ? Main.npc[TargetIndex] : null;
                     targetType = first?.active == true ? first.type : -1;
                 }
-                //从连段移交时继承实体刀当前角度：蓄势段从这里顺势收拢入鞘，普攻→居合读作一整段动作；
+                //从连段移交时继承实体刀当前角度
+
                 //连段不在场则回退交接黑板（疾走纳刀后立刻点纸等场景，刀角同样连续）
+
                 CrimsonRendSlash combo = CrimsonRendSlash.FindController(Owner);
                 inheritPose = combo != null && combo.TryGetBladePose(out inheritRot, out _)
                     || OniBladeHandoff.TryPeek(Owner, out inheritRot, out _);
-                //起手屏息的低鸣：拔刀的呼吸从这里开始
+                //起手屏息的低鸣、拔刀的呼吸从这里开始
+
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.60f, Volume = 0.40f }, Owner.Center);
             }
             timer++;
 
-            //直接模式落刀前锚点跟随目标（此后目标被冻结钉死，锚点自然不动）；点锚模式钉在纸面落刀点
+            //直接模式落刀前锚点跟随目标
+
             NPC target = PointMode ? null : ValidTarget();
             if (!struck && target != null) {
                 Projectile.Center = target.Center;
             }
 
             if (timer == WindupFrames + 1) {
-                //拔刀风声：斩击本身近乎无声（居合语法），只留出手的气流
+                //拔刀风声、斩击本身近乎无声（居合语法），只留出手的气流
+
                 SoundEngine.PlaySound(CWRSound.KatanaSwing with { Pitch = 0.70f, Volume = 0.42f }, Owner.Center);
             }
 
             if (timer == StrikeFrame) {
                 if (PointMode) {
-                    //斩媒介：owner 端按位置解析纸面（纸/脉冲为客户端本地，远端只演姿态+同步的刀线）
+                    //斩媒介、owner 端按位置解析纸面
+
                     struck = true;
                     if (Projectile.owner == Main.myPlayer
                         && !OniOmokage.SeverAt(Owner, Projectile.Center, CutAngle
                             , Projectile.damage, Projectile.knockBack)) {
-                        BeginWhiff();   //纸已烧散：空挥（仅 owner 端可知，远端照常收势）
+                        BeginWhiff();   //纸已烧散、空挥（仅 owner 端可知，远端照常收势）
+
                     }
                 }
                 else if (target != null) {
                     struck = true;
                     //冻结+伤口亮线在所有端确定性触发；滞拍对齐终斩纳刀帧，碎片分离与引爆压同一拍；
+
                     //多实体 Boss（蠕虫/魔像/月总）整组定格，伤口波沿身体铺开后齐崩
+
                     OniDismember.TriggerGroup(target, target.Center, CutAngle
                         , holdFrames: OniFinaleCut.HoldFrames);
                     if (Projectile.owner == Main.myPlayer) {
@@ -203,9 +185,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 }
             }
 
-            //纳刀反噬：肢解的代价，刀入鞘的下一瞬，同等的肢解与伤害落回持刀人自己；
+            //纳刀反噬、肢解的代价，刀入鞘的下一瞬，同等的肢解与伤害落回持刀人自己；
+
             //媒介只替真身受刀不替人挡代价，两种模式落刀成功均反噬
-            //（点锚空挥仅 owner 端可知，远端极端情况下多演一场反噬视觉，伤害仍只在 owner 端结算）
+
+            //
+
             if (!selfCutDone && timer >= SelfCutFrame && struck && !whiffed) {
                 selfCutDone = true;
                 OniPlayerDismember.Trigger(Owner, CutAngle);
@@ -214,7 +199,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             UpdatePose();
         }
 
-        /// <summary>落刀落空：转空挥快速收鞘退场</summary>
+        /// <summary>落刀落空、转空挥快速收鞘退场</summary>
         private void BeginWhiff() {
             struck = false;
             whiffed = true;
@@ -222,13 +207,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             SoundEngine.PlaySound(SoundID.Unlock with { Pitch = 0.30f, Volume = 0.35f }, Owner.Center);
         }
 
-        //==================== 持刀姿态时间轴 ====================
-
-        /// <summary>
-        /// 居合四段（纯视觉，不锁操控）：蓄=鞘位反压、闪=两帧甩出只剩残影、
-        /// 残心=过冲回稳后屏息微晃、纳刀=与引爆同帧一挑入鞘。<br/>
-        /// 残心起软占刀权：连段重启或其它硬占者接手时立刻放手
-        /// </summary>
+        /// <summary>居合四段（纯视觉，不锁操控）、蓄=鞘位反压、闪=两帧甩出只剩残影、 残心=过冲回稳后屏息微晃</summary>
         private void UpdatePose() {
             bladePose.Update();
             if (!Owner.active || Owner.dead) {
@@ -236,12 +215,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
 
             //反噬落下后本体交给玩家肢解管线（刀已入鞘，随身体一并定格）
+
             if (struck && timer > SelfCutFrame) {
                 bladePose.Opacity = 0f;
                 return;
             }
 
             //残心起让位给玩家输入；演出播完亦收
+
             if (timer > StrikeFrame + 2
                 && (OniBladeOccupancy.ComboClaims(Owner) || OniBladeOccupancy.AnyHardOccupant(Owner, Projectile))
                 || timer > SheatheFrame + NotoFlickFrames + NotoFadeFrames) {
@@ -250,12 +231,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
 
             //面向落刀锚点；水平几乎重合时退回切线方向
+
             int facing = MathF.Cos(CutAngle) >= 0f ? 1 : -1;
             float toAnchorX = Projectile.Center.X - Owner.Center.X;
             if (MathF.Abs(toAnchorX) > 8f) {
                 facing = toAnchorX > 0f ? 1 : -1;
             }
             //拔刀完成位顺切线，按朝向取不背手的那一端
+
             Vector2 cutDir = CutAngle.ToRotationVector2();
             float strikeRot = cutDir.X * facing >= 0f ? CutAngle : MathHelper.WrapAngle(CutAngle + MathHelper.Pi);
             float sheathRot = strikeRot - facing * 1.05f;
@@ -267,8 +250,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
 
             if (timer <= WindupFrames) {
-                //蓄：鞘位再反向压一分——出刀前的那口气；
+                //蓄、鞘位再反向压一分、出刀前的那口气；
+
                 //继承连段刀角时从当前角度顺势收拢（刀已在手，不淡入，划弧带轻残影）
+
                 float wind = OFR.EaseOutCubic(timer / (float)WindupFrames);
                 if (inheritPose) {
                     bladePose.Rotation = OniBladePose.LerpAngle(inheritRot, sheathRot - facing * 0.30f, wind);
@@ -282,7 +267,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 stretch = Player.CompositeArmStretchAmount.Quarter;
             }
             else if (timer <= StrikeFrame) {
-                //闪：两帧从鞘底甩到切线带过冲，逐帧压残影
+                //闪、两帧从鞘底甩到切线带过冲，逐帧压残影
+
                 float t = (timer - WindupFrames) / (float)DrawFlashFrames;
                 float ease = 1f - (1f - t) * (1f - t) * (1f - t);
                 bladePose.Rotation = OniBladePose.LerpAngle(sheathRot - facing * 0.30f
@@ -291,14 +277,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 bladePose.PushSmear(1f);
             }
             else if (timer <= SheatheFrame) {
-                //残心：过冲回稳后屏息，微晃是唯一的动静
+                //残心、过冲回稳后屏息，微晃是唯一的动静
+
                 float settle = MathHelper.Clamp((timer - StrikeFrame) / 6f, 0f, 1f);
                 bladePose.Rotation = OniBladePose.LerpAngle(strikeRot + facing * 0.16f, strikeRot, settle)
                     + MathF.Sin(timer * 0.045f) * 0.03f * settle;
                 bladePose.Opacity = 1f;
             }
             else if (timer <= SheatheFrame + NotoFlickFrames) {
-                //纳刀：与引爆同帧起手，一挑入鞘——刀入鞘，目标才裂
+                //纳刀、与引爆同帧起手，一挑入鞘、刀入鞘，目标才裂
+
                 float t = (timer - SheatheFrame) / (float)NotoFlickFrames;
                 float ease = 1f - (1f - t) * (1f - t) * (1f - t);
                 bladePose.Rotation = OniBladePose.LerpAngle(strikeRot, sheathRot, ease);
@@ -309,7 +297,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 stretch = Player.CompositeArmStretchAmount.ThreeQuarters;
             }
             else {
-                //收：持刀淡出
+                //收、持刀淡出
+
                 bladePose.Rotation = sheathRot;
                 bladePose.Opacity = 1f - (timer - SheatheFrame - NotoFlickFrames) / (float)NotoFadeFrames;
                 stretch = Player.CompositeArmStretchAmount.ThreeQuarters;
@@ -318,7 +307,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             bladePose.ApplyPose(Owner, Projectile, stretch);
         }
 
-        /// <summary>空挥收势：没有残心可言，顺势快速收鞘淡出</summary>
+        /// <summary>空挥收势、没有残心可言，顺势快速收鞘淡出</summary>
         private void UpdateWhiffPose(int facing, float strikeRot, float sheathRot) {
             int wt = timer - StrikeFrame;
             if (wt <= WhiffSheatheFrames) {
@@ -333,7 +322,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             bladePose.ApplyPose(Owner, Projectile);
         }
 
-        /// <summary>遮挡层：居合持刀的实体刀与拔刀残影</summary>
+        /// <summary>遮挡层、居合持刀的实体刀与拔刀残影</summary>
         void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
             if (Main.dedServ) {
                 return;

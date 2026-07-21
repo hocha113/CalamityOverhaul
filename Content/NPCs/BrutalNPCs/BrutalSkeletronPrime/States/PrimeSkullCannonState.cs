@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>颅骨主炮：90帧蓄力(72%静默) → 锁定 → PrimeSkullBeamProj 大半圈扫射</summary>
+    /// <summary>颅骨主炮，90帧蓄力后大半圈扫射</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.SkullCannon, typeof(PrimeStateContext))]
     internal class PrimeSkullCannonState : PrimeStateBase
     {
@@ -15,12 +15,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         public override PrimeStateIndex StateIndex => PrimeStateIndex.SkullCannon;
 
         internal static int ChargeFrames => 90;
-        /// <summary>蓄力末段锁定瞄准帧数（锁定后走位不再跟踪，公平阀）</summary>
+        /// <summary>蓄力末锁定帧</summary>
         internal static int LockLead => 24;
         internal static int SilenceFrames => 6;
-        /// <summary>扫射半弧（大师模式）：全弧 ≈ 252°，转一个大半圈</summary>
+        /// <summary>扫射半弧大师</summary>
         internal static float ArcHalfMaster => 2.2f;
-        /// <summary>扫射半弧（普通/专家）：全弧 ≈ 218°</summary>
+        /// <summary>扫射半弧普/专</summary>
         internal static float ArcHalfNormal => 1.9f;
 
         private int TotalFrames => ChargeFrames + SilenceFrames + PrimeSkullBeamProj.TotalLife + 8;
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 UpdateCharge(context);
             }
             else if (Timer < ChargeFrames + SilenceFrames) {
-                //静默拍：充能视觉骤停，下一刻巨炮
+                //静默拍
                 context.ResetChargeState();
                 npc.velocity *= 0.85f;
             }
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 FireBeam(context);
             }
             else {
-                //扫射期：机体沿光束当前角度反向缓慢后坐，随扫射转动（mass is reaction）
+                //扫射后坐
                 float sweepSpeed = arcHalf * 2f / PrimeSkullBeamProj.SweepFrames;
                 float sweepT = MathHelper.Clamp(
                     Timer - (ChargeFrames + SilenceFrames) - PrimeSkullBeamProj.ExpandTime,
@@ -76,15 +76,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             float progress = Timer / (float)ChargeFrames;
             context.SetChargeState(3, progress);
 
-            //锁定前持续跟踪玩家；锁定后瞄准冻结并打出扇形预告
+            //锁定前跟踪
             if (Timer < ChargeFrames - LockLead) {
                 aimAngle = DirectionToTarget(context).ToRotation();
             }
             else if (Timer == ChargeFrames - LockLead) {
                 arcHalf = context.MasterMode ? ArcHalfMaster : ArcHalfNormal;
                 if (!VaultUtils.isClient) {
-                    //大半圈的弧无法用单个扇形如实预告：改为"起点射线 + 起始扇区"，
-                    //告知光束出生位置与旋转方向，后续走位靠光束本身的慢角速度阅读
+                    //预告用起点射线+起始扇区
                     float startAngle = aimAngle - arcHalf;
                     PrimeTelegraphLine.SpawnLine(npc, npc.Center, startAngle, LockLead + SilenceFrames);
                     PrimeTelegraphLine.SpawnFan(npc, npc.Center, startAngle + 0.5f,
@@ -100,7 +99,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 return;
             }
 
-            //汇聚流光：spawn ∝ √progress，72% 处静默（"吸气"拍）
+            //汇聚流光，72%静默
             if (progress < 0.72f && Timer % 3 == 0) {
                 int sparkCount = (int)(System.Math.Sqrt(progress) * 3f) + 1;
                 for (int i = 0; i < sparkCount; i++) {

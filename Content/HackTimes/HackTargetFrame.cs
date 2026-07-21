@@ -5,7 +5,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>中央目标锁定框：稀疏刻度 + 头顶铭牌，锁定感交给目标本体高亮</summary>
+    /// <summary>中央锁定框，稀疏刻度 + 头顶铭牌</summary>
     internal static class HackTargetFrame
     {
         public static void Draw(SpriteBatch sb, float timer) {
@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
             Vector2 half = target.LockFrameHalfSize;
             float ease = HackTheme.EaseOutCubic(camProg);
-            //锁定收拢过冲：从外围快速收进并轻微回弹
+            //收拢过冲
             float snap = HackTheme.EaseOutBack(Math.Clamp(camProg * 1.25f, 0f, 1f));
             float expand = 1f + (1f - snap) * 1.1f;
             float halfW = (half.X * 1.08f + 6f) * expand;
@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 }
             }
 
-            //侧边扫描仪微标记：左侧变焦，右侧距离
+            //侧边变焦/距离
             if (ease > 0.55f) {
                 float sideAlpha = (ease - 0.55f) / 0.45f * alpha;
                 float zoom = 1f + HackTime.GetZoomBoost();
@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        //头顶铭牌：阵营菱形 + 名称 + 状态读数 + 敌对告警
+        //头顶铭牌
         private static void DrawNameplate(SpriteBatch sb, float timer, IHackTarget target,
             Vector2 center, float halfW, float halfH, float alpha) {
             string name = target.LockFrameTitle;

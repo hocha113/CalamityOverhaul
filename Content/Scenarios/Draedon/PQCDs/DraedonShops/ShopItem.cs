@@ -2,7 +2,6 @@
 
 namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
 {
-    /// <summary>商店物品数据</summary>
     public class ShopItem
     {
         public int itemType;

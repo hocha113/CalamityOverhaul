@@ -29,14 +29,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
     }
 
     /// <summary>
-    /// 义体技能雷达+触发状态机（双键 v2）
-    /// <list type="bullet">
-    ///   <item><b>雷达键</b> <see cref="CWRKeySystem.CyberwareRadial_Key"/>：按住开雷达+子弹时间，左键选技能，右键/松开关盘</item>
-    ///   <item><b>触发键</b> <see cref="CWRKeySystem.CyberwareSkill_Key"/>：直接触发当前技能，瞄点=按下时 MouseWorld</item>
-    ///   <item>Charge 由触发键承接：按下蓄力，松开结算</item>
-    ///   <item><see cref="CurrentSkillId"/> 存档；未装备则 fallback 首个可用义体</item>
-    ///   <item>骇客时间激活时拒绝开盘</item>
-    /// </list>
+    /// 雷达+触发状态机
+    /// <br/><see cref="CWRKeySystem.CyberwareRadial_Key"/> 按住开盘；<see cref="CWRKeySystem.CyberwareSkill_Key"/> 触发当前技
+    /// <br/><see cref="CurrentSkillId"/> 存档，未装则 fallback 首个；HackTime 激活拒开盘
     /// </summary>
     internal class CyberwareSkillRadialController : ModPlayer
     {
@@ -117,7 +112,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
 
             ResolveCurrentSkill();
 
-            //雷达 / 蓄力都需要"有任何主动义体"作为前置条件
+            //需有主动义体
             if (!CanRadialBeShown()) {
                 CancelChargeIfAny();
                 if (IsOpen || OpenProgress > 0.01f) {
@@ -146,7 +141,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         }
 
         public override void SaveData(TagCompound tag) {
-            //仅保存手动选中的 skill id
+            //只存手动选中 id
             if (!string.IsNullOrEmpty(CurrentSkillId)) {
                 tag["CWR_Cyberware_CurrentSkillId"] = CurrentSkillId;
             }
@@ -196,7 +191,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             return resolvedCurrentSkill != null;
         }
 
-        /// <summary>雷达键：按下开盘+时停，松开关盘</summary>
+        /// <summary>雷达键，按下开盘+时停，松开关</summary>
         private void HandleRadialKey() {
             ModKeybind key = CWRKeySystem.CyberwareRadial_Key;
             if (key == null) {
@@ -218,7 +213,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             }
         }
 
-        /// <summary>触发键：触发当前技能；开盘期间不响应</summary>
+        /// <summary>触发键，开盘期间不响应</summary>
         private void HandleSkillKey() {
             ModKeybind key = CWRKeySystem.CyberwareSkill_Key;
             if (key == null) {
@@ -289,7 +284,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             }
         }
 
-        /// <summary>雷达内鼠标：悬停+左键选中+右键关盘</summary>
+        /// <summary>雷达鼠标，悬停/左选/右关</summary>
         private void HandleRadialMouse() {
             if (!IsOpen) {
                 return;
@@ -395,7 +390,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             if (!IsCharging) {
                 return;
             }
-            //尽量调用一次取消回调，让技能侧清理粒子等资源
+            //取消回调清粒子
             resolvedCurrentSkill?.OnChargeCancel(Player);
             if (resolvedCurrentSkill != null) {
                 resolvedCurrentSkill.RadialChargeRatio = 0f;

@@ -8,9 +8,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaidersUIs
 {
-    /// <summary>
-    /// 海洋吞噬者UI渲染器 - 硫磺海主题
-    /// </summary>
+    /// <summary>海洋吞噬者UI渲染</summary>
     internal class OceanRaidersRenderer : BaseChestRenderer
     {
         private readonly OceanRaidersAnimation themeAnimation;
@@ -56,7 +54,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaiders
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //阴影
             Rectangle shadow = panelRect;
             shadow.Offset(6, 8);
             spriteBatch.Draw(pixel, shadow, new Rectangle(0, 0, 1, 1), Color.Black * (animation.UIAlpha * 0.60f));
@@ -103,7 +100,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaiders
 
         protected override void DrawStorageSlot(SpriteBatch spriteBatch, Vector2 position, int index,
             bool isHovered, float hoverProgress, DynamicSpriteFont font) {
-            //调用基类的通用槽位绘制
             base.DrawStorageSlot(spriteBatch, position, index, isHovered, hoverProgress, font);
 
             //额外的悬停tooltip

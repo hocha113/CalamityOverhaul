@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
         }
         private int stateTimer = 0;
 
-        //搜索冷却(避免频繁搜索)
+        //搜索冷却
         private int searchCooldown = 0;
 
         //砍伐计时器
@@ -102,9 +102,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             initialized = true;
         }
 
-        /// <summary>
-        /// 搜索最近的树木底部位置
-        /// </summary>
         private Point16 FindNearestTree() {
             if (VaultUtils.isClient) return Point16.NegativeOne;
 
@@ -121,14 +118,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                     Tile tile = Main.tile[x, y];
                     if (!tile.HasTile) continue;
 
-                    //检查是否是树木类型
+                    //树木类型
                     if (!IsTreeTile(tile.TileType)) continue;
 
                     //找到树木底部
                     Point16 treeBase = FindTreeBase(x, y, tile.TileType);
                     if (treeBase == Point16.NegativeOne) continue;
 
-                    //检查是否被其他锯臂锁定
+                    //已被其他锯锁
                     if (IsTreeTargeted(treeBase)) continue;
 
                     float distSQ = Vector2.DistanceSquared(
@@ -146,9 +143,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             return bestTree;
         }
 
-        /// <summary>
-        /// 检查是否是树木类型的物块
-        /// </summary>
         private static bool IsTreeTile(int tileType) {
             return tileType == TileID.Trees ||
                    tileType == TileID.PalmTree ||
@@ -157,9 +151,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                    tileType == TileID.TreeAsh;
         }
 
-        /// <summary>
-        /// 找到树木的底部位置
-        /// </summary>
         private static Point16 FindTreeBase(int startX, int startY, int tileType) {
             int y = startY;
             //向下搜索直到找到树木底部
@@ -177,9 +168,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             return Point16.NegativeOne;
         }
 
-        /// <summary>
-        /// 检查树木是否已被其他锯臂锁定
-        /// </summary>
         private bool IsTreeTargeted(Point16 treePos) {
             foreach (var actor in ActorLoader.GetActiveActors<LumberjackSaw>()) {
                 if (actor != this && actor.targetTreePos == treePos) {
@@ -189,13 +177,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             return false;
         }
 
-        /// <summary>
-        /// 机械式运动，模拟液压臂的硬朗感
-        /// </summary>
         private void MechanicalMove(Vector2 target, float speedFactor = 1f) {
             hydraulicCycleTimer++;
 
-            //液压延迟：目标位置变化时有短暂响应延迟
+            //液压延迟
             if (Vector2.Distance(hydraulicTargetPos, target) > 5f) {
                 hydraulicDelay = 8f;
                 hydraulicTargetPos = target;
@@ -220,7 +205,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
 
             Vector2 direction = toTarget / distance;
 
-            //机械式加速：快速达到目标速度
+            //机械加速
             float targetSpeed = Math.Min(distance * 0.15f, MechanicalMaxSpeed * speedFactor);
 
             //根据距离调整速度曲线，近距离时快速减速
@@ -241,7 +226,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             velocity = direction * currentSpeed;
             Position += velocity;
 
-            //机械式旋转：步进式而非平滑
+            //步进旋转
             UpdateMechanicalRotation(direction);
 
             //运动时产生机械抖动
@@ -261,16 +246,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             }
         }
 
-        /// <summary>
-        /// 机械式旋转，模拟步进电机的顿挫感
-        /// </summary>
         private void UpdateMechanicalRotation(Vector2 direction) {
             if (direction.LengthSquared() < 0.01f) return;
 
             float newTargetRotation = direction.ToRotation();
             float rotationDiff = MathHelper.WrapAngle(newTargetRotation - rotation);
 
-            //步进式旋转：每次只转动固定角度
+            //步进转固定角
             float stepAngle = MathHelper.ToRadians(8f);
 
             if (Math.Abs(rotationDiff) > RotationSnapThreshold) {
@@ -292,13 +274,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             targetRotation = newTargetRotation;
         }
 
-        /// <summary>
-        /// 待机时的机械式微动，模拟液压系统的维持抖动
-        /// </summary>
         private void MechanicalIdleMove(Vector2 basePos) {
             hydraulicCycleTimer++;
 
-            //机械式周期运动：分段式而非正弦波
+            //分段周期微动
             int cyclePhase = (hydraulicCycleTimer / 30) % 4;
             Vector2 idleOffset = cyclePhase switch {
                 0 => new Vector2(0, -50f),
@@ -465,7 +444,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             //保持在树木位置，使用较弱的力度
             targetPosition = targetTreePos.ToWorldCoordinates();
 
-            //锯木时的机械振动：快速小幅度抖动
+            //锯木抖动
             Vector2 cuttingOffset = Vector2.Zero;
             if (stateTimer % 2 == 0) {
                 cuttingOffset = new Vector2(
@@ -541,9 +520,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             targetTreePos = Point16.NegativeOne;
         }
 
-        /// <summary>
-        /// 找到树木下方的地面位置
-        /// </summary>
         private static int FindGroundBelowTree(int x, int startY, int treeType) {
             int y = startY;
             //向下搜索直到找到非树木物块(即地面)
@@ -569,9 +545,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             return -1;
         }
 
-        /// <summary>
-        /// 生成树木重生动画(橡子下落)；落点/树种/蓝图种子在此一次性锁定，动画与种植保证同点同形
-        /// </summary>
+        /// <summary>生成重生演出；落点/树种/种子一次锁定</summary>
         private static void SpawnTreeRegrowthAnimation(int tileX, int groundY, int treeType) {
             //按当前地面复核树种(地形可能被转换)，并滚出一个空间校验通过的蓝图种子
             int resolvedType = TreeBlueprint.ResolveTreeType(tileX, groundY, treeType);
@@ -708,7 +682,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             Vector2 start = startPos;
             Vector2 end = Center;
 
-            //机械抖动效果：更生硬的方向性抖动
+            //方向性抖动
             if (mechanicalJitter > 0.1f) {
                 float jitterAngle = (jitterTimer * 0.5f) % MathHelper.TwoPi;
                 Vector2 jitterOffset = new Vector2(
@@ -726,7 +700,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                 );
             }
 
-            //机械臂曲线：更硬朗的折线感
+            //折线臂
             float dist = Vector2.Distance(start, end);
             float bendHeight = MathHelper.Clamp(dist * 0.35f, 30f, 150f);
 

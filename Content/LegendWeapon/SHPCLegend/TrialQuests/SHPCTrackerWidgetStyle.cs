@@ -6,7 +6,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
 {
-    /// <summary>SHPC 追踪 HUD：无底板，霓虹雪佛龙+下划线+扁进度条</summary>
+    /// <summary>SHPC追踪HUD，霓虹雪佛龙+下划线+扁进度条</summary>
     internal class SHPCTrackerWidgetStyle : IEntrustTrackerWidgetStyle
     {
         #region 色板
@@ -32,10 +32,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
 
         public void Reset() { pulse = 0f; blink = 0f; }
 
-        //极简：不绘制背景
+        //无背景
         public void DrawWidgetBackground(SpriteBatch sb, Rectangle rect, float alpha) { }
 
-        //极简：不绘制外框
+        //无外框
         public void DrawWidgetFrame(SpriteBatch sb, Rectangle rect, float alpha) { }
 
         public void DrawWidgetHeader(SpriteBatch sb, Rectangle headerRect, string title, float alpha) {
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
             int symY = headerRect.Y + headerRect.Height / 2;
             DrawChevron(sb, px, uv, symX, symY, alpha);
 
-            //标题：投影+高光蓝
+            //标题投影+高光蓝
             const float titleScale = 0.95f;
             int textX = headerRect.X + 20;
             //大字号下需略微下移基线，让顶部不贴顶
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
             Utils.DrawBorderString(sb, title, titlePos + new Vector2(0, 1), ShadowInk * (alpha * 0.55f), titleScale);
             Utils.DrawBorderString(sb, title, titlePos, TitleSky * alpha, titleScale);
 
-            //下划线：紧贴文字宽度的实线 + 向右延伸的点阵（下移避开放大后的标题底部）
+            //下划线，实线+点阵，下移避标题
             int titlePixelW = (int)(font.MeasureString(title).X * titleScale);
             int underY = headerRect.Bottom + 1;
             int solidLen = Math.Clamp(titlePixelW + 4, 18, headerRect.Width - 28);
@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
             }
         }
 
-        //极简：不绘制覆盖特效
+        //无覆盖特效
         public void DrawWidgetOverlay(SpriteBatch sb, Rectangle rect, float alpha) { }
 
         public Color GetWidgetTitleColor(float alpha) => TitleSky * alpha;

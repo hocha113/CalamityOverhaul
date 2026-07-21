@@ -9,11 +9,8 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     /// <summary>
-    /// 气力墨脉：封印札 HUD 簇内的气力计,札旁横书一笔"一"字墨痕。<br/>
-    /// 墨长=气力;消耗时墨锋利落回切、留绯红残痕蒸散,恢复时沿纸纤维缓缓洇进;
-    /// 低于约四分之一笔锋干裂、朱印呼吸开裂;回满时白热收笔扫光。<br/>
-    /// 由 <see cref="OniTalismanHud"/> 驱动,共用其锚点,不单独加入左下角 HUD 队列;
-    /// 数据经 <see cref="OniVigor.Get"/> 取原始快照,动画状态全部在本类推导
+    /// 气力墨脉计,<see cref="OniTalismanHud"/> 驱动;
+    /// 读 <see cref="OniVigor.Get"/>,动画在本类推导
     /// </summary>
     internal sealed class OniVigorStroke
     {
@@ -106,7 +103,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         /// <summary>
-        /// 绘制墨丝/朱印/墨痕/悬浮读数。stripAttach 为纸札边缘的墨丝挂点(随札摆动),
+        /// 绘墨丝/朱印/墨痕/悬浮读数,stripAttach=札缘挂点,
         /// suppressTag 为真时不出悬浮读数(让位给札体说明)
         /// </summary>
         public void Draw(SpriteBatch sb, float alpha, Vector2 stripAttach, float time, bool suppressTag) {
@@ -114,7 +111,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return;
             }
 
-            //墨丝:自摆动的札边垂到定住的朱印,把两件东西缝进同一具身体
+            //墨丝,札边垂至朱印
             Vector2 seal = SealCenter;
             OniBrush.DrawGradientLine(sb, stripAttach, seal,
                 OnikiriUITheme.Deep * (alpha * 0.28f), OnikiriUITheme.Deep * (alpha * 0.70f), 1.1f);

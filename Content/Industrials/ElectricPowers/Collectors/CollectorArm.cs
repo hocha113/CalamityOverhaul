@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         private float shakeIntensity = 0f;
         private int particleTimer = 0;
         private float rotationVelocity = 0f;
-        //客户端上一次观察到的同步状态，用于检测服务器状态切换
+        //客户端上次同步状态(检测切换)
         private byte lastClientState;
 
         //状态机
@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 return null;
             }
 
-            //先确认存在可用存储，避免对每个物品做昂贵的存储查询
+            //先查有无存储，再扫物品
             var storageCandidates = collectorTP.GetStorageCandidates();
             if (storageCandidates.Count == 0) {
                 collectorTP.PromptNoStorage();
@@ -191,18 +191,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             return true;
         }
 
-        /// <summary>
-        /// 锁定物品并刷新锁时长，追踪期间需要每帧调用防止锁超时过期
-        /// </summary>
+        /// <summary>锁物品并刷新时长(追踪每帧)</summary>
         private void LockItem(Item item) {
             var cwr = item.CWR();
             cwr.TargetByCollector = WhoAmI;
             cwr.CollectorLockTime = LockDuration;
         }
 
-        /// <summary>
-        /// 为磁吸中的钱币续锁
-        /// </summary>
         private void RefreshCoinLocks() {
             foreach (int coinWhoAmI in magnetizedCoins) {
                 if (coinWhoAmI < 0 || coinWhoAmI >= Main.maxItems) {
@@ -215,9 +210,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             }
         }
 
-        /// <summary>
-        /// 解除本臂对目标物品与磁吸钱币的锁定
-        /// </summary>
         private void UnlockTrackedItems() {
             if (targetItemWhoAmI >= 0 && targetItemWhoAmI < Main.maxItems) {
                 Item item = Main.item[targetItemWhoAmI];
@@ -236,9 +228,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             }
         }
 
-        /// <summary>
-        /// 把夹爪上的物品(含钱币找零)吐回世界，用于中断与销毁路径，防止物品凭空消失
-        /// </summary>
+        /// <summary>夹爪物品吐回世界(中断/销毁)</summary>
         private void DropCarriedItems() {
             if (VaultUtils.isClient) {
                 return;
@@ -279,7 +269,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                     continue;
                 }
 
-                //检查是否已被其他收集器锁定
+                //已被其他臂锁
                 int targetCollector = coin.CWR().TargetByCollector;
                 if (targetCollector >= 0 && targetCollector != WhoAmI) {
                     continue;
@@ -352,9 +342,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             (ItemID.CopperCoin, 1)
         ];
 
-        /// <summary>
-        /// 把价值完整分解为一组钱币物品，不会丢失任何余数
-        /// </summary>
+        /// <summary>价值拆成钱币(无余数丢失)</summary>
         private static List<Item> ConvertValueToCoins(long value) {
             List<Item> result = [];
             foreach ((int type, long unit) in CoinDenominations) {
@@ -397,9 +385,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
         #region 存储解析
 
-        /// <summary>
-        /// 获取缓存的存储提供者，缓存失效则按坐标经存储工厂体系重新解析(天然兼容箱子与Magic Storage)
-        /// </summary>
+        /// <summary>目标存储(缓存失效则按坐标重解析)</summary>
         private IStorageProvider GetTargetStorage() {
             if (targetStoragePos == Point16.NegativeOne) {
                 return null;
@@ -470,9 +456,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             };
         }
 
-        /// <summary>
-        /// 状态入场表现，单人由<see cref="TransitionToState"/>触发，多人客户端由观察到的同步状态变化触发
-        /// </summary>
+        /// <summary>状态入场表现(SP走Transition；MP客户端跟同步状态)</summary>
         private void OnStateEnteredEffects(ArmState newState) {
             if (VaultUtils.isServer) {
                 return;
@@ -533,7 +517,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 targetItemWhoAmI = foundItem.whoAmI;
                 LockItem(foundItem);
 
-                //检查是否为钱币,如果是则标记为钱币收集模式并立即吸附周围钱币
+                //钱币则进磁吸并吸周围
                 isCollectingCoins = foundItem.IsACoin;
                 if (isCollectingCoins) {
                     MagnetizeNearbyCoins(foundItem.Center);
@@ -565,7 +549,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                     return;
                 }
 
-                //持续续锁，防止长途追踪时锁超时
+                //续锁
                 LockItem(targetItem);
                 RefreshCoinLocks();
 
@@ -576,14 +560,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 }
             }
             else if (targetItemWhoAmI >= 0 && targetItemWhoAmI < Main.maxItems) {
-                //客户端仅做表现：跟踪已同步的目标物品
+                //客户端仅表现，跟同步目标
                 Item targetItem = Main.item[targetItemWhoAmI];
                 if (targetItem.active && !targetItem.IsAir) {
                     targetPosition = targetItem.Center;
                 }
             }
 
-            //根据距离调整速度倍率,距离越近速度越慢,防止越过
+            //近距减速，防越过
             float distanceToTarget = Vector2.Distance(Center, targetPosition);
             float speedMultiplier = MathHelper.Clamp(distanceToTarget / ArrivalThreshold, 0.3f, 1.2f);
 
@@ -684,7 +668,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
             SpawnMechanicalParticles(intensive: true);
 
-            //只在服务器端处理物品存储，且只执行一次
+            //仅服务器存一次
             if (!VaultUtils.isClient && stateTimer == 11) {
                 var storage = GetTargetStorage();
                 if (storage != null && storage.IsValid && storage.DepositItem(graspItem)) {
@@ -721,9 +705,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             }
         }
 
-        /// <summary>
-        /// 状态转换，仅服务器端调用；客户端由同步的<see cref="stateValue"/>驱动
-        /// </summary>
+        /// <summary>状态转换(仅服务器；客户端跟stateValue)</summary>
         private void TransitionToState(ArmState newState) {
             if (VaultUtils.isClient) {
                 return;
@@ -769,7 +751,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
             if (!TileProcessorLoader.AutoPositionGetTP(collectorPos, out collectorTP)) {
                 if (!VaultUtils.isClient) {
-                    //收集器已消失：先吐出夹着的物品再自毁，防止物品凭空消失
+                    //收集器没了，先吐物再自毁
                     DropCarriedItems();
                     UnlockTrackedItems();
                     ActorLoader.KillActor(WhoAmI);
@@ -857,7 +839,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             float segmentLength = tex.Height / 2;
             int segmentCount = Math.Max(2, (int)(curveLength / segmentLength));
             if (segmentCount > short.MaxValue) {
-                return false;//避免过多段数导致性能问题
+                return false;//段数上限
             }
 
             Vector2[] points = new Vector2[segmentCount + 1];

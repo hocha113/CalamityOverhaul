@@ -6,25 +6,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
     /// <summary>头部状态索引，写入 npc.ai[2] 网络同步</summary>
     internal enum PrimeStateIndex : int
     {
-        /// <summary>登场演出：自深渊升起、注能回血、再生四肢</summary>
+        /// <summary>登场</summary>
         Intro = 0,
-        /// <summary>指挥序列：武装阶段 hub，短悬停后按固定表分发指令/招式</summary>
+        /// <summary>指挥序列 hub</summary>
         CommandSequence = 1,
-        /// <summary>旋转冲撞：武装阶段连段突进</summary>
+        /// <summary>旋转冲撞</summary>
         SpinDash = 2,
-        /// <summary>火力阵：四臂收拢波浪齐射</summary>
+        /// <summary>火力阵</summary>
         BarrageCommand = 3,
-        /// <summary>电弧链锁：四臂飞散十字旋转收紧</summary>
+        /// <summary>电弧链锁</summary>
         TetherSpin = 4,
-        /// <summary>转阶段：四肢依次殉爆、机体过载重启</summary>
+        /// <summary>转阶段</summary>
         PhaseTransition = 5,
-        /// <summary>狂暴 connector：换弹/排气段落标点</summary>
+        /// <summary>狂暴 connector</summary>
         RageConnector = 6,
-        /// <summary>狂暴冲撞：闪现贯穿三连</summary>
+        /// <summary>狂暴冲撞</summary>
         RageDash = 7,
-        /// <summary>离子过载：充能后三波带缺口全向弹环</summary>
+        /// <summary>离子过载</summary>
         IonOverload = 8,
-        /// <summary>火箭帷幕：两侧火箭墙向中线折叠</summary>
+        /// <summary>火箭帷幕</summary>
         RocketCurtain = 9,
         /// <summary>白昼狂暴</summary>
         DayEnrage = 10,
@@ -34,13 +34,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         Despawn = 12,
         /// <summary>死亡演出</summary>
         Death = 13,
-        /// <summary>断头台旋杀：大半径圆周锯刃收紧</summary>
+        /// <summary>断头台旋杀</summary>
         GuillotineSpin = 14,
-        /// <summary>颅骨主炮：二阶段固定杀招，巨型光束横扫大半圈</summary>
+        /// <summary>颅骨主炮</summary>
         SkullCannon = 15,
-        /// <summary>十字绞杀：四臂合体对角封位</summary>
+        /// <summary>十字绞杀</summary>
         CrossExecute = 16,
-        /// <summary>战术指令执行窗口（广播四臂后衔接下一招）</summary>
+        /// <summary>指令执行窗口</summary>
         CommandExecute = 17,
     }
 
@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 
         #region 工具方法
 
-        /// <summary>分轴悬停，垂直 vOffset~vThreshold，水平 ±100</summary>
+        /// <summary>分轴悬停</summary>
         protected static void HoverMovement(PrimeStateContext ctx, float vAccel, float vMax,
             float hAccel, float hMax, float decel, int vOffset, int vThreshold) {
             NPC npc = ctx.Npc;
@@ -130,18 +130,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
             }
         }
 
-        /// <summary>随水平速度轻微倾头（悬停常态姿势）</summary>
+        /// <summary>悬停倾头</summary>
         protected static void LeanByVelocity(NPC npc) {
             npc.rotation = npc.rotation.AngleLerp(npc.velocity.X / 15f * 0.5f, 0.75f);
         }
 
-        /// <summary>朝向目标方向倾头（登场/转阶段定点姿势）</summary>
+        /// <summary>定点倾头</summary>
         protected static void LeanTowards(NPC npc, Vector2 targetCenter) {
             Vector2 toTarget = npc.Center.To(targetCenter);
             npc.rotation = npc.rotation.AngleLerp(toTarget.X / 115f * 0.5f, 0.75f);
         }
 
-        /// <summary>冲撞期的持续旋转</summary>
+        /// <summary>冲撞旋转</summary>
         protected static void SpinRotation(NPC npc, float speed = 0.3f) {
             npc.rotation += npc.direction * speed;
         }
@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
             return (ctx.Target.Center - ctx.Npc.Center).SafeNormalize(Vector2.UnitY);
         }
 
-        /// <summary>套用全局难度伤害修正</summary>
+        /// <summary>难度伤害修正</summary>
         protected static int ScaleDamage(int damage) => HeadPrimeAI.SetMultiplier(damage);
 
         #endregion

@@ -13,10 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 珠宝鱼技能：六色宝石按序轮换发射，每色一套音高与体色。<br/>
-    /// 材质语言：切割宝石（折射体非光源），棱面镜面闪为离散事件，命中碎成同色碎晶
-    /// </summary>
+    /// <summary>珠宝鱼技能，六色宝石按序轮换发射，每色一套音高与体色</summary>
     internal class FishJewel : FishSkill
     {
         public override int UnlockFishID => ItemID.Jewelfish;
@@ -44,7 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 int currentGemType = gemCycle % GemTypes;
                 gemCycle++;
 
-                //重音拍：与音效重音同拍，主宝石带入更重的命中演出
+                //重音拍
                 bool accentBeat = gemCycle % 4 == 0;
 
                 //生成主宝石弹幕
@@ -146,7 +143,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>出膛 VFX：定向压扁环 + 同色碎晶前抛 + 星闪，重音拍加强，六色循环完成时六色星闪扇</summary>
+        /// <summary>出膛 VFX</summary>
         private void SpawnRhythmicEffect(Vector2 position, Vector2 velocity, int gemType) {
             if (Main.dedServ) {
                 return;
@@ -154,7 +151,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             bool accentBeat = gemCycle % 4 == 0;
             FishJewelVFX.LaunchBurst(position, velocity, gemType, accentBeat);
 
-            //每完成一个循环（6种宝石）：序列收束的可视化
+            //每完成一个循环（6种宝石）
             if (gemCycle % GemTypes == 0) {
                 FishJewelVFX.SequenceFan(position, velocity);
             }
@@ -189,11 +186,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 主宝石弹幕：宝石物品贴图为实体本体（暗体色压底），自旋渐加速，
-    /// 棱面随相位打出离散镜面闪；拖尾为同色窄条带。<br/>
-    /// ai[0]=宝石类型 ai[1]=计时 ai[2]=重音拍（1 命中附顿帧与小震）
-    /// </summary>
+    /// <summary>主宝石弹幕</summary>
     internal class JewelGemProjectile : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -228,7 +221,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void AI() {
             Time++;
 
-            //自旋加速后饱和：棱面闪点节奏随之变密（飞行期演化量）
+            //自旋加速后饱和
             rotationSpeed = Math.Min(rotationSpeed + 0.0035f, 0.22f);
             Projectile.rotation += rotationSpeed;
 
@@ -237,14 +230,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 perpendicular = Projectile.velocity.SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2);
             Projectile.velocity += perpendicular * spiralWave;
 
-            //棱面 spec flash：facetCount 个棱面随自旋对准光源，尖锐余弦脉冲 ≤2 帧
+            //棱面 spec flash
             int facetCount = 3 + (int)GemType % 3;
             float facetPhase = facetCount * Projectile.rotation + Projectile.whoAmI * 0.61f;
             float glint = MathF.Pow(MathF.Max(0f, MathF.Cos(facetPhase)), 32f);
             bool glintRise = glint > 0.5f && facetGlint <= 0.5f;
             facetGlint = glint;
 
-            //折射体照明：低幅常亮，闪点瞬间提亮
+            //折射体照明
             FishJewelVFX.JewelPalette pal = FishJewelVFX.Palette((int)GemType);
             Lighting.AddLight(Projectile.Center, pal.Bright.ToVector3() * (0.42f + facetGlint * 0.5f));
 
@@ -252,13 +245,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 glintDropCooldown--;
             }
             if (glintRise && glintDropCooldown <= 0 && !Main.dedServ) {
-                //闪点落屑：一枚悬滞光痕挂在闪点处，短暂活过弹体经过
+                //闪点落屑
                 glintDropCooldown = 10;
                 PRTLoader.NewParticle<PRT_FishJewelGlint>(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f)
                     , Vector2.Zero, default, 0.55f)?.Configure((int)GemType, 12, Projectile.rotation + 0.6f, 10f);
             }
 
-            //掉屑频率∝速度：随速度衰减而稀疏
+            //掉屑频率∝速度
             if (!Main.dedServ && Main.rand.NextFloat() < Projectile.velocity.Length() * 0.022f) {
                 Dust trailDust = Dust.NewDustPerfect(
                     Projectile.Center - Projectile.velocity * 1.5f,
@@ -287,10 +280,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, Projectile.Center);
 
             bool accent = Accent >= 1f;
-            //同色碎晶飞溅：顺入射方向迸溅的实体晶片
+            //同色碎晶飞溅
             FishJewelVFX.ImpactBurst(Projectile.Center, Projectile.velocity, (int)GemType, accent);
 
-            //重音拍命中：短顿帧 + 小幅定向震（手感层，不动数值）
+            //重音拍命中
             if (accent) {
                 target.CWR().TimeFrozenTick = 2;
                 FishJewelVFX.Punch(Projectile.Center, Projectile.velocity, 2.2f, 9f, 6);
@@ -301,7 +294,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Main.dedServ) {
                 return;
             }
-            //宝石破碎：碎晶四溅活过弹体；条带改铺分段驻留光痕，尾部先蚀
+            //宝石破碎
             FishJewelVFX.ShatterBurst(Projectile.Center, Projectile.velocity, (int)GemType, 8);
             FishJewelVFX.RibbonResidue(Projectile, (int)GemType);
         }
@@ -328,14 +321,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float fade = Projectile.Opacity;
             float glint = facetGlint;
 
-            //底层内火：小径向底光只作垫层
+            //底层内火，小径向底光只作垫层
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow != null) {
                 Main.EntitySpriteDraw(glow, drawPos, null, (pal.Bright with { A = 0 }) * ((0.3f + glint * 0.25f) * fade)
                     , 0f, glow.Size() / 2f, Projectile.scale * (0.4f + glint * 0.08f), SpriteEffects.None, 0);
             }
 
-            //旋转拖影 + 速度残影：残影同时回退自旋相位与位置，编码自旋与运动方向
+            //旋转拖影 + 速度残影
             Color smear = pal.Bright with { A = 0 };
             for (int i = 2; i >= 1; i--) {
                 Main.EntitySpriteDraw(gemTex, drawPos - Projectile.velocity * (i * 0.9f), null
@@ -343,12 +336,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , Projectile.scale * (1f - i * 0.07f), SpriteEffects.None, 0);
             }
 
-            //本体：暗宝石体色实体（AlphaBlend），闪点帧整体提亮，平时压暗
+            //本体
             Color bodyCol = Color.Lerp(pal.Deep, pal.Bright, 0.4f + glint * 0.45f);
             Main.EntitySpriteDraw(gemTex, drawPos, null, bodyCol * fade, Projectile.rotation, origin
                 , Projectile.scale, SpriteEffects.None, 0);
 
-            //棱面反光：随宝石姿态的窄反光线 + 四向星芒，离散事件仅峰值帧可见
+            //棱面反光
             if (glint > 0.03f) {
                 Color gcol = (pal.Glint with { A = 0 }) * (glint * fade);
                 Texture2D streak = CWRAsset.Extra_98?.Value;
@@ -367,10 +360,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 宝石碎片弹幕：小晶体单棱翻滚，每转对准一次打出反光；拖尾为更窄的同色条带。<br/>
-    /// ai[0]=宝石类型 ai[1]=生成序号 localAI[0]=计时
-    /// </summary>
+    /// <summary>宝石碎片弹幕</summary>
     internal class JewelFragmentProjectile : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -426,10 +416,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //单棱翻滚反光：每转对准一次，尖锐脉冲
+            //单棱翻滚反光
             facetGlint = MathF.Pow(MathF.Max(0f, MathF.Cos(Projectile.rotation + rhythmPhase)), 32f);
 
-            //折射体照明：低幅，闪点提亮
+            //折射体照明，低幅，闪点提亮
             FishJewelVFX.JewelPalette pal = FishJewelVFX.Palette((int)GemType);
             Lighting.AddLight(Projectile.Center, pal.Bright.ToVector3() * (0.28f + facetGlint * 0.35f));
 
@@ -457,7 +447,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Main.dedServ) {
                 return;
             }
-            //小晶破碎：命中与撞墙同走此处，碎晶与残痕活过弹体
+            //小晶破碎
             FishJewelVFX.ShatterBurst(Projectile.Center, Projectile.velocity, (int)GemType, 4);
             FishJewelVFX.RibbonResidue(Projectile, (int)GemType);
         }
@@ -485,17 +475,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float glint = facetGlint;
             float baseScale = Projectile.scale * 0.75f;
 
-            //旋转拖影：单枚残影回退自旋相位与位置
+            //旋转拖影
             Color smear = pal.Bright with { A = 0 };
             Main.EntitySpriteDraw(gemTex, drawPos - Projectile.velocity * 0.9f, null, smear * (0.28f * fade)
                 , Projectile.rotation - rotationSpeed * 3.2f, origin, baseScale * 0.92f, SpriteEffects.None, 0);
 
-            //本体：暗体色小晶
+            //本体，暗体色小晶
             Color bodyCol = Color.Lerp(pal.Deep, pal.Bright, 0.4f + glint * 0.45f);
             Main.EntitySpriteDraw(gemTex, drawPos, null, bodyCol * fade, Projectile.rotation, origin
                 , baseScale, SpriteEffects.None, 0);
 
-            //翻滚反光：仅峰值帧的星点
+            //翻滚反光，仅峰值帧的星点
             if (glint > 0.05f) {
                 Texture2D cross = FishJewelAssets.RayCross?.Value;
                 if (cross != null) {

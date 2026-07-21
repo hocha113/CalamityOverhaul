@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Tzeentch
 
         private const float SideMargin = 30f;
 
-        /// <summary>0~1 变数脉动，驱动着色器魔潮与命运金线</summary>
+        /// <summary>0~1 变数脉动</summary>
         public float Warp01 => (float)System.Math.Sin(WarpTimer * 1.1f) * 0.5f + 0.5f;
 
         public void Update(Rectangle panelRect, bool active, bool includeRunes = true) {

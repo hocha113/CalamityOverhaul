@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             ActiveBones.RemoveAll(id => id < 0 || id >= Main.maxProjectiles || !Main.projectile[id].active);
         }
 
-        /// <summary>召唤演出：骨从钙尘里成形，哑光骨屑上抛 + 一口粉尘，零发光</summary>
+        /// <summary>召唤演出</summary>
         private static void SpawnSummonEffect(Vector2 position) {
             if (Main.dedServ) {
                 return;
@@ -83,14 +83,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //受伤判定：借免疫帧窗口
+        //受伤判定，借免疫帧窗口
         public static bool IsPlayerHurt(Player player) => player.immuneTime > 0;
     }
 
-    /// <summary>
-    /// 回旋骨弹幕：聚集入场 → 环绕加速（待机浮动相位差）→ 蓄力收束 → 回旋镖式飞出折返 → 受伤当场碎裂。<br/>
-    /// 材质：干枯骨钙，全哑光零发光；自旋 = 旋转拖影，位移 = 哑光残影链铺弧线
-    /// </summary>
     internal class BonefishOrbit : BaseHeldProj
     {
         public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.Bone;
@@ -98,13 +94,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //状态机
         private enum BoneState
         {
-            Gathering,    //聚集阶段：骨头飞向玩家
-            Orbiting,     //环绕阶段：环绕玩家加速旋转
-            Charging,     //蓄力阶段：继续加速，准备发射
-            Launching,    //发射阶段：回旋镖外程，加速弯弧
-            Scattering,   //碎裂阶段：玩家受伤，裂开定帧后崩解
-            Returning,    //折返阶段：顶点悬滞后被拽回环绕位
-            Dissolving    //消散阶段：技能切换的退场收尾
+            Gathering,    //聚集阶段，骨头飞向玩家
+            Orbiting,     //环绕阶段，环绕玩家加速旋转
+            Charging,     //蓄力阶段，继续加速，准备发射
+            Launching,    //发射阶段，回旋镖外程，加速弯弧
+            Scattering,   //碎裂阶段
+            Returning,    //折返阶段
+            Dissolving    //消散阶段，技能切换的退场收尾
         }
 
         private BoneState State {
@@ -127,7 +123,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private static int ChargeDuration => 40 - HalibutData.GetDomainLayer() * 2;      //蓄力时间
         private const float LaunchSpeed = 28f;      //发射速度
 
-        //外程运动学：出手压速，复合加速过冲后硬刹（投掷类动力学，全程速度都在演化）
+        //外程运动学
         private const float LaunchMul = 0.6f;           //出手初速占比，余量给外程挤压
         private const float FlightAccelMul = 1.045f;    //外程每帧复合加速，16帧约把初速翻倍
         private const float FlightBrakeMul = 0.78f;     //加速窗关闭后每帧硬刹
@@ -229,7 +225,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     break;
             }
 
-            //自旋角速度随运动能量：飞行/折返转得最疯，旋转拖影按此回溯
+            //自旋角速度随运动能量
             float targetSpin = State switch {
                 BoneState.Launching => 0.85f,
                 BoneState.Returning => 0.95f,
@@ -244,13 +240,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             catchPulse *= 0.88f;
         }
 
-        /// <summary>待机沉浮：每骨按黄金角错开相位的轻微上下浮动</summary>
+        /// <summary>待机沉浮</summary>
         private Vector2 BobOffset() {
             float phase = BoneIndex * 2.399f;
             return new Vector2(0f, MathF.Sin(Main.GlobalTimeWrappedHourly * 2.6f + phase) * 5f);
         }
 
-        /// <summary>聚集阶段：飞向玩家附近</summary>
+        /// <summary>聚集阶段</summary>
         private void GatheringPhaseAI(Player owner) {
             float progress = StateTimer / GatherDuration;
 
@@ -285,7 +281,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>环绕阶段：加速绕玩家旋转，叠待机浮动</summary>
+        /// <summary>环绕阶段</summary>
         private void OrbitingPhaseAI(Player owner) {
             float progress = StateTimer / OrbitDuration;
 
@@ -300,7 +296,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //更新环绕角度
             orbitAngle += orbitSpeed;
 
-            //计算环绕位置：叠上错相位浮动
+            //计算环绕位置，叠上错相位浮动
             Vector2 orbitOffset = orbitAngle.ToRotationVector2() * currentRadius;
             Vector2 targetPos = owner.Center + orbitOffset + BobOffset();
 
@@ -309,7 +305,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             trailIntensity = progress;
 
-            //低频钙屑剥落：环绕摩擦掉的粉末，受重力自然坠
+            //低频钙屑剥落
             if (!Main.dedServ && Main.rand.NextBool(14)) {
                 Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f), DustID.Bone
                     , Main.rand.NextVector2Circular(0.6f, 0.4f), 130, default, Main.rand.NextFloat(0.6f, 0.9f));
@@ -336,7 +332,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>蓄力阶段：最高速旋转，半径收束预告发射</summary>
+        /// <summary>蓄力阶段</summary>
         private void ChargingPhaseAI(Player owner) {
             float progress = StateTimer / ChargeDuration;
 
@@ -347,7 +343,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float radiusOscillation = MathF.Sin(StateTimer * 0.5f) * 15f * progress;
             float currentRadius = orbitRadius - 20f * progress + radiusOscillation;
 
-            //更新环绕：浮动随收束渐止（屏息）
+            //更新环绕
             orbitAngle += orbitSpeed;
             Vector2 orbitOffset = orbitAngle.ToRotationVector2() * currentRadius;
             Vector2 targetPos = owner.Center + orbitOffset + BobOffset() * (1f - progress);
@@ -383,7 +379,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>向锁定目标发射：初速刻意压低，动能在外程持续挤出来</summary>
+        /// <summary>向锁定目标发射</summary>
         private void LaunchToTarget() {
             //速度上限叠当前角速度，出手只给六成
             float momentumBonus = orbitSpeed / MaxOrbitSpeed;
@@ -394,7 +390,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.tileCollide = true;
             }
 
-            //出手崩屑：向后锥形甩几片哑光碎骨 + 一小口钙尘
+            //出手崩屑
             if (!Main.dedServ) {
                 Vector2 back = -Projectile.velocity.SafeNormalize(Vector2.UnitX);
                 for (int i = 0; i < 5; i++) {
@@ -406,7 +402,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , FishBonePalette.Chalk, Main.rand.NextFloat(0.16f, 0.22f))?.Configure(26);
             }
 
-            //轻骨破空双层：锐利挥掷 + 骨面磕响，弃用爆炸声（骨是轻器不是军火）
+            //轻骨破空双层
             SoundEngine.PlaySound(SoundID.Item1 with {
                 Volume = 0.75f,
                 Pitch = 0.45f
@@ -417,7 +413,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, Projectile.Center);
         }
 
-        /// <summary>外程阶段：出手后仍在挤压提速（复合加速过冲到约1.2倍），窗口一关硬刹进顶点，全程弯弧</summary>
+        /// <summary>外程阶段</summary>
         private void LaunchingPhaseAI() {
             bool accelWindow = StateTimer <= OutboundAccelFrames;
             Projectile.velocity *= accelWindow ? FlightAccelMul : FlightBrakeMul;
@@ -429,7 +425,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             trailIntensity = 1f;
             FlightShedAndWhoosh();
 
-            //刹到残速或超时：顶点半拍，残速砍到几乎悬停，甩一口钙尘标记折返点
+            //刹到残速或超时
             if ((!accelWindow && Projectile.velocity.Length() < 7f) || StateTimer > MaxOutboundFrames) {
                 State = BoneState.Returning;
                 StateTimer = 0;
@@ -449,12 +445,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>折返阶段：顶点悬滞几帧后复利加速拽回，贴近环绕半径无缝接回相位</summary>
+        /// <summary>折返阶段，顶点悬滞几帧后复利加速拽回，贴近环绕半径无缝接回相位</summary>
         private void ReturningPhaseAI(Player owner) {
             Vector2 toOwner = owner.Center - Projectile.Center;
 
             if (StateTimer <= ApexFrames) {
-                //悬帧：残速继续泄掉
+                //悬帧，残速继续泄掉
                 Projectile.velocity *= 0.9f;
             }
             else {
@@ -466,14 +462,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             trailIntensity = 1f;
             FlightShedAndWhoosh();
 
-            //回到环绕半径：以当前方位角接回环绕，保留部分角动量，接骨带一次顿挫
+            //回到环绕半径
             if (toOwner.Length() < orbitRadius + 30f && StateTimer > ApexFrames) {
                 State = BoneState.Orbiting;
                 StateTimer = 0;
                 orbitAngle = (Projectile.Center - owner.Center).ToRotation();
                 orbitSpeed = MaxOrbitSpeed * 0.35f;
                 catchPulse = 1f;
-                //清掉线速度残留：环绕期只写位置，残速会污染残影强度与碎裂动量
+                //清掉线速度残留
                 Projectile.velocity = Vector2.Zero;
 
                 //归位轻响 + 两粒接骨尘
@@ -490,7 +486,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>飞行途中的剥落与呼啸：甩屑率与音高都随速度爬升</summary>
+        /// <summary>飞行途中的剥落与呼啸</summary>
         private void FlightShedAndWhoosh() {
             float speed = Projectile.velocity.Length();
 
@@ -514,7 +510,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>碎裂阶段：先裂开定帧（两半撑缝悬滞），第4帧崩成骨屑与钙尘</summary>
+        /// <summary>碎裂阶段，先裂开定帧（两半撑缝悬滞），第4帧崩成骨屑与钙尘</summary>
         private void ScatteringPhaseAI() {
             Projectile.velocity *= 0.82f;
             shatterGap += 1.6f;
@@ -531,7 +527,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>切入碎裂：受伤瞬间进入裂开定帧，多骨齐碎按数量压音量</summary>
+        /// <summary>切入碎裂，受伤瞬间进入裂开定帧，多骨齐碎按数量压音量</summary>
         private void EnterScatterState() {
             State = BoneState.Scattering;
             StateTimer = 0;
@@ -540,7 +536,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.friendly = false;
             Projectile.velocity *= 0.25f;
 
-            //骨裂双层：脆断 + 闷崩
+            //骨裂双层，脆断 + 闷崩
             int count = Math.Max(1, Owner.ownedProjectileCounts[Projectile.type]);
             float volumeScale = 1f / MathF.Sqrt(count);
             SoundEngine.PlaySound(SoundID.NPCHit2 with {
@@ -553,7 +549,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, Projectile.Center);
         }
 
-        /// <summary>切入消散：技能切换或收起法杖时的退场</summary>
+        /// <summary>切入消散</summary>
         private void EnterDissolveState() {
             State = BoneState.Dissolving;
             StateTimer = 0;
@@ -562,7 +558,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.velocity = Vector2.Zero;
         }
 
-        /// <summary>消散阶段：快缩快透掉两粒尘，禁 pop-out</summary>
+        /// <summary>消散阶段</summary>
         private void DissolvingPhaseAI() {
             Projectile.scale *= 0.9f;
             Projectile.alpha = Math.Min(255, Projectile.alpha + 42);
@@ -578,7 +574,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>碎裂英雄时刻：锐利骨屑抛物 + 钙粉尘雾，继承弹体动量向外崩；多骨齐碎时单骨份额收敛</summary>
+        /// <summary>碎裂英雄时刻</summary>
         private void SpawnShatterBurst() {
             if (Main.dedServ) {
                 return;
@@ -621,7 +617,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Pitch = 0.4f
             }, Projectile.Center);
 
-            //撞墙崩屑：沿反弹方向啃下几片
+            //撞墙崩屑，沿反弹方向啃下几片
             if (!Main.dedServ) {
                 Vector2 outDir = Projectile.velocity.SafeNormalize(-Vector2.UnitY);
                 for (int i = 0; i < 3; i++) {
@@ -639,7 +635,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //命中崩屑：顺行进方向的锐屑锥 + 一小口钙尘
+            //命中崩屑
             if (!Main.dedServ) {
                 Vector2 dir = Projectile.velocity.SafeNormalize(Main.rand.NextVector2Unit());
                 for (int i = 0; i < 3; i++) {
@@ -674,10 +670,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return false;
             }
 
-            //哑光基色：只吃环境光，微偏陈骨黄，无任何加色层
+            //哑光基色
             Color baseColor = Color.Lerp(lightColor, lightColor.MultiplyRGB(FishBonePalette.Aged), 0.35f) * alpha;
 
-            //碎裂定帧：本体换成撑缝的两半
+            //碎裂定帧，本体换成撑缝的两半
             if (State == BoneState.Scattering) {
                 DrawShatterHalves(sb, boneTex, drawPos, baseColor);
                 return false;
@@ -701,7 +697,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>碎裂定帧：骨身沿长轴劈成两半，缝隙渐开并各自微偏转</summary>
+        /// <summary>碎裂定帧，骨身沿长轴劈成两半，缝隙渐开并各自微偏转</summary>
         private void DrawShatterHalves(SpriteBatch sb, Texture2D tex, Vector2 drawPos, Color baseColor) {
             int w = tex.Width, h = tex.Height;
             Rectangle topRect = new(0, 0, w, h / 2);
@@ -719,7 +715,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 , bottomOrigin, Projectile.scale, SpriteEffects.None, 0);
         }
 
-        /// <summary>位移残影链：沿旧位置铺出弧线轨迹，带旋转历史，哑光减淡不加色</summary>
+        /// <summary>位移残影链</summary>
         private void DrawMotionGhosts(SpriteBatch sb, Texture2D tex, Rectangle frame, Vector2 origin, Color baseColor) {
             float speedT = MathHelper.Clamp(Projectile.velocity.Length() / 24f, 0f, 1f);
             //环绕时速度场为零，用轨迹强度顶上（线速度由角速度产生）
@@ -741,7 +737,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>旋转拖影：同位置回溯旋转角，把自旋糊成扇面（位置残影表达不了自旋）</summary>
+        /// <summary>旋转拖影</summary>
         private void DrawSpinSmear(SpriteBatch sb, Texture2D tex, Rectangle frame, Vector2 origin, Color baseColor) {
             float spinT = MathHelper.Clamp(spinRate / 0.9f, 0f, 1f);
             if (spinT <= 0.12f) {

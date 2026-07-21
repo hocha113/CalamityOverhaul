@@ -120,32 +120,29 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
 
         public override bool IsLoadingEnabled(Mod mod) => CWRServerConfig.Instance.QuestLog;
 
-        /// <summary>任务完成回调，避免在此改<see cref="IsCompleted"/></summary>
+        /// <summary>完成回调，勿在此改<see cref="IsCompleted"/></summary>
         protected virtual void OnCompletion() {
-            //播放完成通知
             if (Main.LocalPlayer.active) {
                 QuestNotificationSystem.AddNotification(this);
             }
 
-            //尝试解锁子任务
+            //解锁子任务
             foreach (var quest in AllQuests) {
-                //子任务或以本任务为前置的任务
+                //子任务/挂本节点为前置
                 if (ChildIDs.Contains(quest.ID) || quest.ParentIDs.Contains(ID)) {
                     quest.CheckUnlock();
                 }
             }
         }
 
-        /// <summary>任务解锁回调，避免在此改<see cref="IsUnlocked"/></summary>
+        /// <summary>解锁回调，勿在此改<see cref="IsUnlocked"/></summary>
         protected virtual void OnUnlock() {
 
         }
 
-        /// <summary>检查解锁条件</summary>
         public void CheckUnlock() {
             if (IsUnlocked) return;
 
-            //检查前置任务是否全部完成
             bool allParentsCompleted = true;
             foreach (var parentID in ParentIDs) {
                 var parent = GetQuest(parentID);
@@ -160,7 +157,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             }
         }
 
-        /// <summary>获取任务图标纹理</summary>
         public Texture2D GetIconTexture() {
             switch (IconType) {
                 case QuestIconType.Item:
@@ -190,7 +186,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             return VaultAsset.placeholder3.Value;
         }
 
-        /// <summary>图标源矩形，动画帧用</summary>
+        /// <summary>图标源矩形，动画帧</summary>
         public Rectangle? GetIconSourceRect(Texture2D texture) {
             if (texture == null) return null;
 
@@ -203,7 +199,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
 
                 case QuestIconType.NPC:
                     if (IconNPCType > 0) {
-                        //NPC使用第一帧
+                        //NPC取首帧
                         return texture.Frame(1, Main.npcFrameCount[IconNPCType], 0, 0);
                     }
                     return texture.Frame();
@@ -215,30 +211,25 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             return texture.Frame();
         }
 
-        /// <summary>设置物品图标</summary>
         public void SetItemIcon(int itemType) {
             IconType = QuestIconType.Item;
             IconItemType = itemType;
         }
 
-        /// <summary>设置 NPC 图标</summary>
         public void SetNPCIcon(int npcType) {
             IconType = QuestIconType.NPC;
             IconNPCType = npcType;
         }
 
-        /// <summary>设置纹理图标</summary>
         public void SetTextureIcon(string texturePath) {
             IconType = QuestIconType.Texture;
             IconTexturePath = texturePath;
         }
 
-        /// <summary>添加前置任务</summary>
         protected void AddParent<T>() where T : QuestNode {
             ParentIDs.Add(typeof(T).Name);
         }
 
-        /// <summary>添加子任务</summary>
         protected void AddChild<T>() where T : QuestNode {
             ChildIDs.Add(typeof(T).Name);
         }
@@ -283,14 +274,12 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             PostSetup();
         }
 
-        /// <summary>初始化奖励数据</summary>
         public void InitializeRewards() {
             for (int i = 0; i < Rewards.Count; i++) {
                 Rewards[i].Initialize(this, i);
             }
         }
 
-        /// <summary>添加奖励</summary>
         public void AddReward(int itemType, int amount = 1, LocalizedText text = null) {
             if (itemType <= ItemID.None || amount <= 0) {
                 return;
@@ -306,7 +295,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             InitializeRewards();
         }
 
-        /// <summary>添加击败 NPC 目标（未指定 npcType 时在初始化阶段从 <see cref="IconNPCType"/> 补全）</summary>
+        /// <summary>击败NPC目标，npcType=0时初始化从<see cref="IconNPCType"/>补全</summary>
         public void AddDefeatObjective(int npcType = 0) {
             Objectives.Add(new QuestObjective {
                 DescriptionStyle = QuestObjectiveDescriptionStyle.DefeatNpc,
@@ -315,7 +304,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             });
         }
 
-        /// <summary>添加获得物品目标（未指定 itemType 时在初始化阶段从 <see cref="IconItemType"/> 补全）</summary>
+        /// <summary>获得物品目标，itemType=0时初始化从<see cref="IconItemType"/>补全</summary>
         public void AddObtainObjective(int itemType = 0) {
             Objectives.Add(new QuestObjective {
                 DescriptionStyle = QuestObjectiveDescriptionStyle.ObtainItem,
@@ -324,7 +313,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             });
         }
 
-        /// <summary>添加收集物品目标</summary>
         public void AddCollectObjective(int amount, int itemType = 0) {
             if (amount <= 0) {
                 return;
@@ -337,27 +325,21 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             });
         }
 
-        /// <summary>SetStaticDefaults 后调用，依赖其它任务的初始化</summary>
+        /// <summary>SetStaticDefaults后，可依赖其它任务初始化</summary>
         public virtual void PostSetup() {
 
         }
 
-        /// <summary>每帧更新，检查完成条件</summary>
         public virtual void UpdateByPlayer() { }
 
-        /// <summary>玩家合成物品时调用</summary>
         public virtual void CraftedItem(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) { }
 
-        /// <summary>NPC 死亡时调用</summary>
         public virtual void OnKillByNPC(NPC npc) { }
 
-        /// <summary>玩家进入世界时调用</summary>
         public virtual void OnWorldEnter() { }
 
-        /// <summary>节点图标前绘制</summary>
         public virtual bool PreDraw(SpriteBatch spriteBatch, Vector2 drawPos, float scale, bool isHovered, float alpha) { return true; }
 
-        /// <summary>节点图标后绘制</summary>
         public virtual void PostDraw(SpriteBatch spriteBatch, Vector2 drawPos, float scale, bool isHovered, float alpha) { }
     }
 
@@ -379,7 +361,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         public int ItemType;
         /// <summary>奖励数量</summary>
         public int Amount;
-        /// <summary>自定义奖励描述（UI 默认只显示 x数量，一般无需设置）</summary>
+        /// <summary>自定义奖励描述，UI默认只显x数量</summary>
         public LocalizedText Description;
 
         private QuestNode _node;
@@ -410,7 +392,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
     /// <summary>任务目标</summary>
     public class QuestObjective
     {
-        /// <summary>自定义目标描述；<see cref="DescriptionStyle"/> 非 Custom 时一般无需设置</summary>
+        /// <summary>自定义描述，非Custom样式时通常不用</summary>
         public LocalizedText Description;
         /// <summary>自动描述模板样式</summary>
         public QuestObjectiveDescriptionStyle DescriptionStyle = QuestObjectiveDescriptionStyle.Custom;
@@ -429,7 +411,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             _index = index;
         }
 
-        /// <summary>展示用目标描述</summary>
         public string GetDisplayText() => QuestObjectiveTemplates.Format(this);
 
         /// <summary>当前进度</summary>

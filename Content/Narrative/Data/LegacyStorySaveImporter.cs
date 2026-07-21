@@ -6,35 +6,27 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.Narrative.Data
 {
     /// <summary>
-    /// 旧 ADV 存档 → 新 <see cref="DataModuleStore"/> 的迁移层。兼容三种历史格式：<br/>
-    /// v2：<c>ADVSave</c> 内按旧 SaveKey（旧类型名）分模块子标签；<br/>
-    /// v1：<c>ADVSave</c> 扁平字段（无 <c>__version</c>，字段直接位于标签内）；<br/>
-    /// v0：<c>HalibutSave</c> 内嵌的 <c>ADCSave</c> 扁平字段（由 <c>HalibutSave</c> 解包后传入）。<br/>
-    /// 字段改名（如 <c>FristExoMechdusaSum</c>、<c>OldDukeInteraction</c>）由新模块上的
-    /// <see cref="DataModuleNameAttribute"/> 别名自动兼容，无需在此特殊处理
+    /// 旧 ADV 存档 → 新 <see cref="DataModuleStore"/>。三档历史格式<br/>
+    /// v2 <c>ADVSave</c> 按旧 SaveKey 分模块子标签；v1 扁平字段无 <c>__version</c>；
+    /// v0 <c>HalibutSave</c> 内嵌 <c>ADCSave</c> 扁平。<br/>
+    /// 字段改名靠 <see cref="DataModuleNameAttribute"/> 别名
     /// </summary>
     internal static class LegacyStorySaveImporter
     {
-        /// <summary>一条"旧模块 → 新模块"的迁移映射</summary>
+        /// <summary>旧模块 → 新模块</summary>
         private sealed class LegacyModuleMap(string legacyKey, string flatProbeKey, Action<TagCompound, DataModuleStore> load)
         {
-            /// <summary>v2 分模块格式下该模块的子标签键（即旧 <c>ADVDataModule.SaveKey</c> = 旧类型名）</summary>
+            /// <summary>v2 子标签键，旧 <c>ADVDataModule.SaveKey</c></summary>
             public string LegacyKey { get; } = legacyKey;
-            /// <summary>
-            /// 扁平格式（v0/v1）下用于判定该模块数据是否存在的探针字段名；<br/>
-            /// 旧版会写出模块的全部字段，故任取一个该模块独有的字段即可。<br/>
-            /// 为 <see langword="null"/> 表示该模块不参与扁平迁移（字段名与其它模块冲突、无法区分时）
-            /// </summary>
+            /// <summary>v0/v1 探针字段；null 表示只走分模块（字段与他模块冲突）</summary>
             public string FlatProbeKey { get; } = flatProbeKey;
-            /// <summary>把给定模块标签加载进 store 中对应的新模块</summary>
             public Action<TagCompound, DataModuleStore> Load { get; } = load;
         }
 
         private static LegacyModuleMap Map<T>(string legacyKey, string flatProbeKey) where T : DataModule, new()
             => new(legacyKey, flatProbeKey, (tag, store) => store.Get<T>().LoadData(tag, loadedVersion: 0));
 
-        //旧 ADVSave 自动发现全部 ADVDataModule 子类，子标签键即旧类型名。顺序无关紧要，仅 ShepelGiftData
-        //与 BossGiftADVData 存在大量同名礼物字段，扁平格式下无法区分归属，故其 flatProbeKey 置空只走分模块迁移
+        //ShepelGiftData / BossGiftADVData 同名礼物字段多，flatProbeKey 置空只走分模块
         private static readonly LegacyModuleMap[] ModuleMaps = [
             Map<HalibutStoryData>("HalibutADVData", "HasCaughtHalibut"),
             Map<SupCalStoryData>("SupCalADVData", "FirstMetSupCal"),
@@ -46,12 +38,8 @@ namespace CalamityOverhaul.Content.Narrative.Data
             Map<EntrustGuideData>("EntrustGuideModule", "GuideSeen"),
         ];
 
-        /// <summary>
-        /// 尝试从旧存档标签迁移到 <paramref name="store"/>。<paramref name="tag"/> 可以是：<br/>
-        /// 旧 ADVSavePlayer 的数据标签（外层含 <c>ADVSave</c> 子标签）、<br/>
-        /// 旧 HalibutSave 内嵌的 <c>ADCSave</c> 标签，或已解包的模块根标签
-        /// </summary>
-        /// <returns>是否检测到并迁移了旧数据</returns>
+        /// <summary>从旧 ADVSave / ADCSave / 已解包根标签迁入 store</summary>
+        /// <returns>是否迁到了旧数据</returns>
         public static bool TryImport(TagCompound tag, DataModuleStore store) {
             if (tag == null || store == null) {
                 return false;
@@ -61,7 +49,7 @@ namespace CalamityOverhaul.Content.Narrative.Data
             return root != null && ImportRoot(root, store);
         }
 
-        /// <summary>解包到真正承载模块数据的根标签（外层包装则取出，否则视 <paramref name="tag"/> 自身为根）</summary>
+        /// <summary>解包到模块根；无外层包装则原样返回</summary>
         private static TagCompound ResolveRoot(TagCompound tag) {
             if (tag.TryGet<TagCompound>("ADVSave", out TagCompound advTag)) {
                 return advTag;
@@ -69,7 +57,7 @@ namespace CalamityOverhaul.Content.Narrative.Data
             if (tag.TryGet<TagCompound>("ADCSave", out TagCompound adcTag)) {
                 return adcTag;
             }
-            //已是模块根：v0 内嵌 ADCSave 经 HalibutSave 解包后直接传入，或 v1 扁平根
+            //已是模块根（v0 解包后或 v1 扁平）
             return tag;
         }
 
@@ -78,7 +66,7 @@ namespace CalamityOverhaul.Content.Narrative.Data
             bool imported = false;
 
             foreach (LegacyModuleMap map in ModuleMaps) {
-                //v2：各模块从自己的子标签读取（无字段名冲突）；v0/v1：字段全局唯一，按探针存在性从扁平根读取
+                //v2 读子标签；v0/v1 按探针从扁平根取
                 TagCompound moduleTag;
                 if (sectioned) {
                     if (!root.TryGet(map.LegacyKey, out moduleTag)) {
@@ -92,7 +80,7 @@ namespace CalamityOverhaul.Content.Narrative.Data
                     continue;
                 }
 
-                //逐模块隔离异常：单个模块字段异常（如历史类型不匹配）不应中断其余模块的迁移，更不应抛回读档流程
+                //单模块异常不中断其余、不抛回读档
                 try {
                     map.Load(moduleTag, store);
                     imported = true;
@@ -104,7 +92,7 @@ namespace CalamityOverhaul.Content.Narrative.Data
             return imported;
         }
 
-        /// <summary>是否为 v2 分模块格式（存在任一旧 SaveKey 对应的子标签）</summary>
+        /// <summary>v2，存在任一旧 SaveKey 子标签</summary>
         private static bool IsSectionedFormat(TagCompound root) {
             foreach (LegacyModuleMap map in ModuleMaps) {
                 if (root.TryGet<TagCompound>(map.LegacyKey, out _)) {

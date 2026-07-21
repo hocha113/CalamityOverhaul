@@ -15,7 +15,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>热带梭鱼技能，边缘鱼群横穿屏幕：涌动预告 → 高速呼啸横穿 → 水雾气泡余波</summary>
+    /// <summary>热带梭鱼技能，边缘鱼群横穿屏幕，涌动预告 → 高速呼啸横穿 → 水雾气泡余波</summary>
     internal class FishTropicalBarracuda : FishSkill
     {
         public override int UnlockFishID => ItemID.TropicalBarracuda;
@@ -52,7 +52,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 travelDir = (targetSide - spawnSide).SafeNormalize(Vector2.UnitX);
 
             for (int i = 0; i < schoolSize; i++) {
-                //计算生成位置（沿边缘散布）
                 Vector2 spawnPos = GetScatteredPosition(spawnSide, edge, i, schoolSize);
                 Vector2 targetPos = GetScatteredPosition(targetSide, edge, i, schoolSize);
 
@@ -78,12 +77,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //入场侧屏缘涌动预告：水波线渐强 + 内漂气泡，给玩家约 0.37s 预期
+            //入场侧屏缘涌动预告
             Vector2 lineCenter = GetVisibleEdgeCenter(edge);
             Vector2 tangent = edge <= 1 ? Vector2.UnitY : Vector2.UnitX;
             FishBarracudaVFX.EdgeTelegraph(lineCenter, tangent, travelDir, 560f, TropicalBarracudaProjectile.TelegraphTicks);
 
-            //低沉水涌：预告拍唯一的声音，大动静留给破水帧
+            //低沉水涌
             SoundEngine.PlaySound(SoundID.Splash with {
                 Volume = 0.55f,
                 Pitch = -0.5f
@@ -143,9 +142,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 热带梭鱼弹幕：三拍屏幕级横穿。<br/>
+    /// 热带梭鱼弹幕，三拍屏幕级横穿<br/>
     /// 预告段屏外慢漂（无伤害）→ 出闸帧单帧满速、鱼群错拍破水 → 呼啸段条纹残影链 +
-    /// 白沫射流尾迹 + 沿途水雾气泡（余波活得比鱼群久）→ 屏内死亡化水收场。<br/>
+    /// 白沫射流尾迹 + 沿途水雾气泡（余波活得比鱼群久）→ 屏内死亡化水收场<br/>
     /// ai[0]=条纹身份/错拍种子 ai[1]=计时（每 update 递增） ai[2]=冲刺速度
     /// </summary>
     internal class TropicalBarracudaProjectile : ModProjectile, IPrimitiveDrawable
@@ -170,7 +169,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const float MaxSpeed = 30f;
         private const float Acceleration = 0.5f;
 
-        /// <summary>ai0 派生的伪序号：条纹轮换与错拍出闸种子</summary>
+        /// <summary>ai0 派生的伪序号，条纹轮换与错拍出闸种子</summary>
         private int PseudoIndex => (int)(ColorOffset * 16f);
         private int ReleaseUpdate => TelegraphUpdates + PseudoIndex * StaggerUpdates;
         private bool Rushing => Timer >= ReleaseUpdate;
@@ -197,13 +196,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.localNPCHitCooldown = -1;
         }
 
-        //预告段不参与伤害：鱼还没进场
+        //预告段不参与伤害，鱼还没进场
         public override bool? CanDamage() => Rushing ? null : false;
 
         public override void AI() {
             Timer++;
 
-            //预告段：屏外顺出生速度慢漂压进，等待出闸
+            //预告段
             if (Timer < ReleaseUpdate) {
                 return;
             }
@@ -243,10 +242,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //条纹色光照：亮度随速度门控
+            //条纹色光照，亮度随速度门控
             Lighting.AddLight(Projectile.Center, StripeColor.ToVector3() * (0.3f + 0.5f * SpeedT));
 
-            //呼啸甩尾：水珠受重力坠落、气泡与悬雾缓落，余波活得比鱼群久
+            //呼啸甩尾
             //extraUpdates=2 三倍抽签，几率按 update 折算防全群刷屏
             if (!Main.dedServ) {
                 if (Main.rand.NextBool(9)) {
@@ -277,19 +276,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>出闸帧：单帧拉满冲刺速度；头鱼补齐屏幕级三层破水声与一次顺向克制震屏</summary>
+        /// <summary>出闸帧，单帧拉满冲刺速度；头鱼补齐屏幕级三层破水声与一次顺向克制震屏</summary>
         private void ReleaseRush() {
             float speed = MathHelper.Clamp(RushSpeed, 12f, 34f);
             Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             Projectile.velocity = dir * speed;
             Projectile.rotation = Projectile.velocity.ToRotation();
 
-            //冲刷拖尾缓存：预告漂移的旧位置不参与射流条带
+            //冲刷拖尾缓存
             for (int i = 0; i < Projectile.oldPos.Length; i++) {
                 Projectile.oldPos[i] = Projectile.position;
             }
 
-            //每条鱼自己的破水：小水花 + 身后短沫痕 + 压低的破空
+            //每条鱼自己的破水，小水花
             SoundEngine.PlaySound(SoundID.Item71 with {
                 Volume = 0.22f,
                 Pitch = 0.5f,
@@ -304,7 +303,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (PseudoIndex != 0) {
                 return;
             }
-            //头鱼代表整群：三层破水声对齐出闸帧
+            //头鱼代表整群，三层破水声对齐出闸帧
             SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.75f, Pitch = 0.1f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.8f, Pitch = 0.4f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.6f, Pitch = -0.25f }, Projectile.Center);
@@ -367,7 +366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, Projectile.Center);
         }
 
-        //==== 绘制：白沫射流条带（primitive）+ 条纹残影链 + 速度涂抹 + 僚机剪影 + 本体 ====
+        //==== 绘制，白沫射流条带（primitive）+ 条纹残影链 + 速度涂抹 + 僚机剪影 + 本体 ====
 
         public float GetJetWidth(float completionRatio) =>
             (1f - completionRatio) * 19f * (0.15f + 0.85f * SpeedT) * Projectile.scale;
@@ -404,11 +403,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 dirN = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             Vector2 perp = dirN.RotatedBy(MathHelper.PiOver2);
 
-            //游动脉动：尾拍相位按鱼错开
+            //游动脉动，尾拍相位按鱼错开
             float pulse = 1f + 0.05f * MathF.Sin(swimWave * 2f + Projectile.identity * 0.9f);
             float bodyScale = Projectile.scale * pulse;
 
-            //速度涂抹（最底层）：深礁青拉线糊住帧间空档
+            //速度涂抹（最底层）
             Texture2D streak = CWRAsset.Extra_98?.Value;
             if (streak != null && speed > 8f) {
                 float smearLen = MathHelper.Clamp(speed * 4.2f, 50f, 190f);
@@ -418,7 +417,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , new Vector2(12f / streak.Width, smearLen / streak.Height), SpriteEffects.None, 0f);
             }
 
-            //僚机剪影（压在主体之下）：两条小梭鱼错位随行，规模感不添实体
+            //僚机剪影（压在主体之下）
             Color escortCol = Color.Lerp(lightColor, FishBarracudaVFX.SeaDeep, 0.4f);
             for (int k = 0; k < 2; k++) {
                 float side = k == 0 ? 1f : -1f;
@@ -428,7 +427,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , bodyScale * (0.62f - k * 0.1f), flip, 0f);
             }
 
-            //热带条纹残影链：旧位置残像逐节换色，青绿→珊瑚→柠檬拖成色带流
+            //热带条纹残影链，旧位置残像逐节换色
             if (speedT > 0.05f) {
                 for (int g = 0; g < 3; g++) {
                     int i = 2 + g * 3;
@@ -443,18 +442,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //本体近位残像：轮廓沿速度方向拉长成一道鱼形水光
+            //本体近位残像
             Color bodyGhost = FishBarracudaVFX.Turquoise with { A = 0 };
             sb.Draw(fishTex, drawPos - Projectile.velocity * 0.5f, null, bodyGhost * (0.4f * speedT)
                 , drawRot, origin, bodyScale, flip, 0f);
             sb.Draw(fishTex, drawPos - Projectile.velocity * 1.1f, null, bodyGhost * (0.18f * speedT)
                 , drawRot, origin, bodyScale * 0.94f, flip, 0f);
 
-            //主体：轻微向绿松石压色，保留贴图自己的热带纹样
+            //主体，轻微向绿松石压色
             Color mainColor = Color.Lerp(lightColor, FishBarracudaVFX.Turquoise, 0.2f);
             sb.Draw(fishTex, drawPos, null, mainColor, drawRot, origin, bodyScale, flip, 0f);
 
-            //破水帧头部暖闪：出闸后 ~5tick 内衰减的珊瑚星点，此后无常驻高光
+            //破水帧头部暖闪
             float burstT = 1f - MathHelper.Clamp((Timer - ReleaseUpdate) / 15f, 0f, 1f);
             Texture2D glint = CWRAsset.StarGlow01?.Value;
             if (glint != null && burstT > 0.02f) {

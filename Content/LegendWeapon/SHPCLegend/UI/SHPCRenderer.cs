@@ -35,9 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 
         #region 线段与圆弧
 
-        /// <summary>
-        /// 基础直线段，以start为锚点旋转拉伸1像素纹理
-        /// </summary>
+        /// <summary>直线段，start锚点旋转拉伸1px纹理</summary>
         public static void DrawLine(SpriteBatch sb, Texture2D px, Vector2 start, Vector2 end, float thickness, Color color) {
             Vector2 diff = end - start;
             float length = diff.Length();
@@ -48,9 +46,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 Vector2.Zero, new Vector2(length, thickness), SpriteEffects.None, 0f);
         }
 
-        /// <summary>
-        /// 用密集径向线段绘制填充弧形，自适应分段保证无缝拼接
-        /// </summary>
+        /// <summary>径向线段填弧，自适应分段</summary>
         public static void DrawArc(SpriteBatch sb, Texture2D px, Vector2 center,
             float rIn, float rOut, float aStart, float aEnd, Color color) {
             if (aEnd <= aStart) {
@@ -91,10 +87,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 aStart, aEnd, color);
         }
 
-        /// <summary>
-        /// 程序化软边圆盘，从中心向外多层alpha渐变
-        /// 给定radius为不透明核心半径，softPad为半透明过渡宽度
-        /// </summary>
+        /// <summary>软边圆盘，radius核心，softPad过渡</summary>
         public static void DrawDisc(SpriteBatch sb, Texture2D px, Vector2 center,
             float radius, float softPad, Color color) {
             if (radius <= 0f) {
@@ -108,9 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             DrawArc(sb, px, center, 0f, radius, 0f, MathHelper.TwoPi, color);
         }
 
-        /// <summary>
-        /// 圆环描边，三层叠加保证软边
-        /// </summary>
+        /// <summary>圆环描边，三层软边</summary>
         public static void DrawRing(SpriteBatch sb, Texture2D px, Vector2 center,
             float radius, float thickness, Color color) {
             DrawArcStroke(sb, px, center, radius, 0f, MathHelper.TwoPi, thickness, color);
@@ -120,11 +111,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 
         #region 核心绘制
 
-        /// <summary>
-        /// 绘制左下能量核心
-        /// 状态包括：常驻轻微呼吸、悬停高亮、展开时外环旋转刻度、点击瞬时闪烁
-        /// 优先使用SHPCCoreOrb着色器渲染，降级时回退到纯CPU绘制
-        /// </summary>
+        /// <summary>左下能量核心，优先SHPCCoreOrb，降级CPU</summary>
         public static void DrawCore(SpriteBatch sb, Texture2D px, Vector2 center,
             float expandProgress, float coreHover, float corePulse, float clickFlash, float time, float globalAlpha) {
             Effect effect = EffectLoader.SHPCCoreOrb?.Value;
@@ -141,7 +128,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         private static void DrawCore_Shader(SpriteBatch sb, Texture2D px, Vector2 center,
             float expandProgress, float coreHover, float corePulse, float clickFlash,
             float time, float globalAlpha, Effect effect) {
-            //包围盒：覆盖外环、旋转刻度、点击冲击波最大半径与悬停辉光
+            //包围盒，外环/刻度/冲击波/辉光
             const float pad = 18f;
             float boxR = SHPCTheme.CoreRingR + 30f + pad;
             float qLeft = MathF.Max(0f, center.X - boxR);
@@ -211,7 +198,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 SHPCTheme.CoreRadius * breath * 0.5f, 4f,
                 SHPCTheme.CyanHi * (0.85f * globalAlpha));
 
-            //点击瞬闪：从核心向外扩散一道快速衰减的环
+            //点击瞬闪扩散环
             if (clickFlash > 0.01f) {
                 float flashR = SHPCTheme.CoreRingR + (1f - clickFlash) * 30f;
                 DrawArcStroke(sb, px, center, flashR, 0f, MathHelper.TwoPi,
@@ -229,10 +216,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 
         #region 扇形按钮
 
-        /// <summary>
-        /// 绘制单个扇形按钮，包含底板、状态填充、描边、悬停高亮、图标
-        /// expandProgress 按钮入场/透明度
-        /// </summary>
+        /// <summary>扇形按钮，expandProgress入场/透明度</summary>
         public static void DrawSector(SpriteBatch sb, Texture2D px, Vector2 center,
             float aStart, float aEnd, float expandProgress,
             float hoverAmt, float selectAmt, bool enabled, float statusValue,
@@ -241,7 +225,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 return;
             }
 
-            //入场偏移：未完全展开时按钮从核心方向滑出，半径线性插值
+            //入场从核心滑出
             float ease = EaseOutBack(MathHelper.Clamp(expandProgress, 0f, 1f));
             float rIn = MathHelper.Lerp(SHPCTheme.CoreRingR + 4f, SHPCTheme.ButtonInnerR, ease);
             float rOut = MathHelper.Lerp(SHPCTheme.CoreRingR + 8f, SHPCTheme.ButtonOuterR, ease);
@@ -312,7 +296,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 Utils.DrawBorderString(sb, glyph, iconPos - size * 0.5f, iconCol * a, 0.85f);
             }
 
-            //扫光带：在按钮内沿弧线方向缓慢扫过
+            //扫光带
             if (enabled && (hoverAmt > 0.01f || selectAmt > 0.01f)) {
                 float scanT = (time * 0.6f) % 1f;
                 float scanA = MathHelper.Lerp(aStart, aEnd, scanT);
@@ -324,9 +308,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             }
         }
 
-        /// <summary>
-        /// 核心到按钮内弧的连接装饰线，仅在展开时绘制，按扇区中线辐射
-        /// </summary>
+        /// <summary>核心到按钮连接线，展开时按扇区中线</summary>
         public static void DrawConnector(SpriteBatch sb, Texture2D px, Vector2 center,
             float midAngle, float expandProgress, float hoverAmt, float globalAlpha) {
             if (expandProgress < 0.05f) {
@@ -348,11 +330,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 
         #region 二级信息面板
 
-        /// <summary>
-        /// 绘制二级信息面板，作为tooltip依附于光标位置
-        /// <br/>cursor为当前鼠标位置，面板会自动避免越过屏幕边缘
-        /// <br/>description过长时自动换行，面板高度随行数动态增长
-        /// </summary>
+        /// <summary>二级信息面板，tooltip跟光标，贴边翻转，描述换行</summary>
         public static void DrawInfoPanel(SpriteBatch sb, Texture2D px,
             Vector2 cursor, float panelAlpha, float globalAlpha,
             string title, string subtitle, string description, string statusText) {
@@ -387,16 +365,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 
             //入场偏移，沿光标右下方向滑入
             float slide = (1f - panelAlpha) * 8f;
-            //tooltip式定位：默认在光标右下偏移
+            //默认光标右下
             Vector2 panelPos = cursor + new Vector2(18f + slide, 14f);
-            //屏幕边缘自适应：右越界翻转到光标左侧，下越界翻转到光标上方
+            //贴边翻转
             if (panelPos.X + panelW > Main.screenWidth - 8f) {
                 panelPos.X = cursor.X - panelW - 18f - slide;
             }
             if (panelPos.Y + panelH > Main.screenHeight - 8f) {
                 panelPos.Y = cursor.Y - panelH - 14f;
             }
-            //硬限位防止极端情况越界
+            //硬限位
             panelPos.X = MathHelper.Clamp(panelPos.X, 4f, Main.screenWidth - panelW - 4f);
             panelPos.Y = MathHelper.Clamp(panelPos.Y, 4f, Main.screenHeight - panelH - 4f);
             Rectangle rect = new((int)panelPos.X, (int)panelPos.Y, (int)panelW, (int)panelH);
@@ -459,7 +437,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         }
 
         public static void DrawRectStroke(SpriteBatch sb, Texture2D px, Rectangle rect, float thickness, Color color) {
-            //四条边分别用线段绘制，避免重复像素叠色
+            //四边线段，防叠色
             Vector2 tl = new(rect.X, rect.Y);
             Vector2 tr = new(rect.Right, rect.Y);
             Vector2 bl = new(rect.X, rect.Bottom);
@@ -490,7 +468,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         #region RAM弧形条
 
         //弧形几何常量，与SHPC核心环尺寸匹配
-        //中线方向：保持原有弧带的中心角(=旧 RamArcStart/RamArcEnd 的均值)
+        //中线=旧Ram弧中心角
         private const float RamMidAngle = 3.575f;
         private const float RamInnerR = 28f;
         private const float RamOuterR = 50f;
@@ -498,19 +476,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         //装饰环稍微超出弧带边缘
         private const float RamDecoOuterR = RamOuterR + 5f;
         private const float RamDecoInnerR = RamInnerR - 4f;
-        //单格基准角度：让 8 格 + 7 个间隙正好等于旧 (4.65-2.5)=2.15 rad 的视觉跨度
+        //单格角，8格+7隙=旧2.15rad
         //BaseCellAngle = (2.15 - 7*0.04) / 8 ≈ 0.234 rad
         private const float RamBaseCellAngle = 0.234f;
-        //格子模式的最大视觉跨度；再往上切换为连续百分比模式，避免格子过密
+        //格子模式最大跨度，再上切百分比
         private const float RamGridModeMaxSweep = 0.85f * MathHelper.TwoPi;
-        //跨度软上限：完整圆环。达到永久 RAM 上限时闭合，超过后保持满圆避免自交重叠
+        //跨度软上限满圆，超永久上限保持满圆
         private const float RamMaxTotalSweep = MathHelper.TwoPi;
 
-        /// <summary>
-        /// 给定 MaxRam 计算实际使用的单格角度与弧起止角度
-        /// <br/>常规情况下保持单格视觉宽度恒定(=BaseCellAngle)，让总弧长随 MaxRam 线性增长
-        /// <br/>当 maxRam 较高时切换为连续百分比弧，并让弧段随容量成长逐步闭合为完整圆
-        /// </summary>
+        /// <summary>由MaxRam算单格角与弧起止，高容量切百分比并渐闭合</summary>
         private static void ComputeRamArcParams(int maxRam,
             out float aStart, out float aEnd, out float cellAngle, out float totalSweep, out bool percentageMode) {
             float targetSweep = RamBaseCellAngle * maxRam + (maxRam - 1) * RamCellGap;
@@ -537,11 +511,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             aEnd = aStart + totalSweep;
         }
 
-        /// <summary>
-        /// 绘制环绕核心左侧的RAM弧形资源条
-        /// <br/>优先使用HackRamArc.fx着色器渲染，降级时回退到CPU绘制
-        /// <br/>弧条围绕水平中线 <see cref="RamMidAngle"/> 对称展开，跨度随 maxRam 线性拉伸
-        /// </summary>
+        /// <summary>左侧RAM弧，优先HackRamArc.fx，绕 <see cref="RamMidAngle"/> 对称</summary>
         public static void DrawRAMBar(SpriteBatch sb, Texture2D px, Vector2 center,
             float currentRam, int maxRam, float time, float globalAlpha) {
             if (maxRam <= 0 || globalAlpha < 0.01f) {
@@ -588,7 +558,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         private static void DrawRAMBar_Shader(SpriteBatch sb, Texture2D px, Vector2 center,
             float currentRam, int maxRam, float aStart, float cellAngle, float totalSweep,
             float lowRam, float lockFill, float recoveryFill, float time, float globalAlpha, bool percentageMode, Effect effect) {
-            //包围盒：以核心为圆心，覆盖整个弧圈（含装饰环+余量）
+            //包围盒盖满弧圈
             const float pad = 14f;
             float boxR = RamDecoOuterR + pad;
             float qLeft = MathF.Max(0f, center.X - boxR);
@@ -611,7 +581,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             effect.Parameters["uOuterR"]?.SetValue(RamOuterR);
             effect.Parameters["uAStart"]?.SetValue(aStart);
             if (percentageMode) {
-                //百分比模式：整段弧视作单格，填充量为比例
+                //百分比模式整段填充
                 float ratio = maxRam > 0 ? MathHelper.Clamp(currentRam / maxRam, 0f, 1f) : 0f;
                 effect.Parameters["uCellAngle"]?.SetValue(totalSweep);
                 effect.Parameters["uCellGap"]?.SetValue(0f);
@@ -650,7 +620,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             float lockPulse = MathF.Sin(time * 8f) * 0.5f + 0.5f;
             Color lockCol = Color.Lerp(new Color(220, 45, 45), new Color(255, 95, 35), lockPulse * 0.35f);
             if (percentageMode) {
-                //百分比模式：不绘制格子分隔线，以整段弧按比例填充
+                //百分比模式无分隔线
                 float ratio = maxRam > 0 ? MathHelper.Clamp(currentRam / maxRam, 0f, 1f) : 0f;
                 DrawArc(sb, px, center, RamInnerR + 1f, RamOuterR - 1f, aStart, aEnd, SHPCTheme.SlotBg * (0.92f * a));
                 DrawArc(sb, px, center, RamInnerR + 1f, RamInnerR + 3f, aStart, aEnd, SHPCTheme.ShadowDark * (0.5f * a));

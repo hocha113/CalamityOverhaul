@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         }
 
         public override void UpdateElement() {
-            //首次使用时确保位置在屏幕内（防止LoadUIData在屏幕初始化前执行导致坐标为0）
+            //首帧夹到屏内(LoadUIData 可能早于屏初始化)
             if (!positionInitialized && Main.screenWidth > 0) {
                 positionInitialized = true;
                 if (DrawPosition.X < PanelWidth / 2 + 10 && DrawPosition.Y < PanelHeight / 2 + 10) {
@@ -97,12 +97,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 }
             }
 
-            //限制面板位置在屏幕内
-            DrawPosition.X = MathHelper.Clamp(DrawPosition.X, PanelWidth / 2 + 10, Main.screenWidth - PanelWidth / 2 - 10);
+                DrawPosition.X = MathHelper.Clamp(DrawPosition.X, PanelWidth / 2 + 10, Main.screenWidth - PanelWidth / 2 - 10);
             DrawPosition.Y = MathHelper.Clamp(DrawPosition.Y, PanelHeight / 2 + 10, Main.screenHeight - PanelHeight / 2 - 10);
 
-            //更新动画计时器
-            shaderTime += 0.016f;
+                shaderTime += 0.016f;
             heatPulse += 0.018f;
             powerFlowTimer += 0.06f;
             sparkTimer += 0.095f;
@@ -111,25 +109,21 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             if (powerFlowTimer > MathHelper.TwoPi) powerFlowTimer -= MathHelper.TwoPi;
             if (sparkTimer > MathHelper.TwoPi) sparkTimer -= MathHelper.TwoPi;
 
-            //更新UI透明度
-            targetAlpha = IsActive ? 1f : 0f;
+                targetAlpha = IsActive ? 1f : 0f;
             uiFadeAlpha = MathHelper.Lerp(uiFadeAlpha, targetAlpha, 0.15f);
 
             if (uiFadeAlpha < 0.01f && !IsActive) {
                 return;
             }
 
-            //计算面板区域
-            Vector2 topLeft = DrawPosition - new Vector2(PanelWidth / 2, PanelHeight / 2);
+                Vector2 topLeft = DrawPosition - new Vector2(PanelWidth / 2, PanelHeight / 2);
             panelRect = new Rectangle((int)topLeft.X, (int)topLeft.Y, (int)PanelWidth, (int)PanelHeight);
 
-            //计算子区域
-            fuelSlotRect = new Rectangle((int)(topLeft.X + 45), (int)(topLeft.Y + 90), 90, 90);
+                fuelSlotRect = new Rectangle((int)(topLeft.X + 45), (int)(topLeft.Y + 90), 90, 90);
             temperatureBarRect = new Rectangle((int)(topLeft.X + 180), (int)(topLeft.Y + 70), 45, 190);
             powerBarRect = new Rectangle((int)(topLeft.X + 355), (int)(topLeft.Y + 70), 45, 190);
 
-            //鼠标交互检测
-            hoveringFuelSlot = fuelSlotRect.Contains(MouseHitBox);
+                hoveringFuelSlot = fuelSlotRect.Contains(MouseHitBox);
             hoveringTempBar = temperatureBarRect.Contains(MouseHitBox);
             hoveringPowerBar = powerBarRect.Contains(MouseHitBox);
             hoverInMainPage = panelRect.Contains(MouseHitBox);
@@ -137,7 +131,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 player.mouseInterface = true;
             }
 
-            //左键拖拽（仅在面板背景区域生效，不与燃料槽等交互区域冲突）
+            //背景区拖拽，避燃料槽
             if (keyLeftPressState == KeyPressState.Pressed && hoverInMainPage
                 && !hoveringFuelSlot && !hoveringTempBar && !hoveringPowerBar && !isDragging) {
                 isDragging = true;
@@ -150,8 +144,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 }
             }
 
-            //燃料槽交互
-            if (hoveringFuelSlot && !isDragging && ThermalData != null) {
+                if (hoveringFuelSlot && !isDragging && ThermalData != null) {
                 if (!ThermalData.FuelItem.IsAir) {
                     Main.HoverItem = ThermalData.FuelItem.Clone();
                     Main.hoverItemName = ThermalData.FuelItem.Name;
@@ -164,8 +157,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 }
             }
 
-            //更新粒子
-            UpdateParticles();
+                UpdateParticles();
         }
 
         private void UpdateParticles() {
@@ -173,7 +165,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 
             Vector2 panelCenter = DrawPosition;
 
-            //余烬粒子
+            //余烬
             emberSpawnTimer++;
             if (emberSpawnTimer >= 4 && embers.Count < 40) {
                 emberSpawnTimer = 0;
@@ -187,7 +179,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 }
             }
 
-            //灰烬粒子
+            //灰烬
             ashSpawnTimer++;
             if (ashSpawnTimer >= 8 && ashes.Count < 30) {
                 ashSpawnTimer = 0;
@@ -201,7 +193,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 }
             }
 
-            //数据流粒子，这个...应该算废土风格的杂乱数据？
+            //数据流粒子
             dataParticleTimer++;
             if (dataParticleTimer >= 18 && dataParticles.Count < 15) {
                 dataParticleTimer = 0;
@@ -215,7 +207,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 }
             }
 
-            //如果发电机正在燃烧，在燃料槽生成更多火花
+            //燃烧时槽内多火花
             if (ThermalData != null && ThermalData.IsBurning) {
                 if (Main.rand.NextBool(2)) {
                     float xPos = fuelSlotRect.Center.X + Main.rand.NextFloat(-30f, 30f);
@@ -270,10 +262,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             if (uiFadeAlpha < 0.01f) return;
             if (ThermalData == null) return;
 
-            //绘制主面板
+            //主面板
             DrawMainPanel(spriteBatch);
 
-            //绘制粒子，灰烬在最底层
+            //粒子，灰烬底层
             foreach (var ash in ashes) {
                 ash.Draw(spriteBatch, uiFadeAlpha * 0.6f);
             }
@@ -284,13 +276,12 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 ember.Draw(spriteBatch, uiFadeAlpha * 0.95f);
             }
 
-            //绘制UI元素
             DrawFuelSlot(spriteBatch);
             DrawTemperatureBar(spriteBatch);
             DrawPowerBar(spriteBatch);
             DrawStatusText(spriteBatch);
 
-            //提示框最后绘制，确保在最上层
+            //提示框置顶
             if (hoveringTempBar) {
                 DrawBarTooltip(spriteBatch, $"{(int)ThermalData.Temperature}/{(int)ThermalData.MaxTemperature}{TemperatureUnit.Value}");
             }
@@ -343,7 +334,6 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         private void DrawFallbackMainPanel(SpriteBatch sb, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            //简化的渐变背景
             int segments = 20;
             float tempRatio = ThermalData != null ? MathHelper.Clamp(ThermalData.Temperature / ThermalData.MaxTemperature, 0f, 1f) : 0f;
 
@@ -361,7 +351,6 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 sb.Draw(px, r, new Rectangle(0, 0, 1, 1), c);
             }
 
-            //边框
             float pulse = (float)Math.Sin(heatPulse * 1.1f) * 0.5f + 0.5f;
             Color rustEdge = Color.Lerp(new Color(140, 70, 40), new Color(200, 110, 60), pulse) * (alpha * 0.75f);
             sb.Draw(px, new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, 4), new Rectangle(0, 0, 1, 1), rustEdge);
@@ -369,7 +358,6 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             sb.Draw(px, new Rectangle(panelRect.X, panelRect.Y, 4, panelRect.Height), new Rectangle(0, 0, 1, 1), rustEdge * 0.85f);
             sb.Draw(px, new Rectangle(panelRect.Right - 4, panelRect.Y, 4, panelRect.Height), new Rectangle(0, 0, 1, 1), rustEdge * 0.85f);
 
-            //暗角
             for (int v = 0; v < 25; v += 3) {
                 float fade = 1f - v / 25f;
                 fade *= fade;
@@ -398,18 +386,15 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             float alpha = uiFadeAlpha;
             float hoverGlow = hoveringFuelSlot ? 0.4f : 0f;
 
-            //背景，深色金属质感
             Color slotBg = new Color(18, 12, 10) * (alpha * 0.9f);
             sb.Draw(px, fuelSlotRect, new Rectangle(0, 0, 1, 1), slotBg);
 
-            //边框，锈蚀金属
             Color edgeColor = Color.Lerp(new Color(120, 70, 40), new Color(180, 110, 60), (float)Math.Sin(heatPulse * 1.3f) * 0.5f + 0.5f) * (alpha * (0.75f + hoverGlow));
             sb.Draw(px, new Rectangle(fuelSlotRect.X, fuelSlotRect.Y, fuelSlotRect.Width, 4), new Rectangle(0, 0, 1, 1), edgeColor);
             sb.Draw(px, new Rectangle(fuelSlotRect.X, fuelSlotRect.Bottom - 4, fuelSlotRect.Width, 4), new Rectangle(0, 0, 1, 1), edgeColor);
             sb.Draw(px, new Rectangle(fuelSlotRect.X, fuelSlotRect.Y, 4, fuelSlotRect.Height), new Rectangle(0, 0, 1, 1), edgeColor);
             sb.Draw(px, new Rectangle(fuelSlotRect.Right - 4, fuelSlotRect.Y, 4, fuelSlotRect.Height), new Rectangle(0, 0, 1, 1), edgeColor);
 
-            //标签
             string label = FuelLabel.Value;
             Vector2 labelSize = FontAssets.MouseText.Value.MeasureString(label) * 0.75f;
             Vector2 labelPos = new Vector2(fuelSlotRect.Center.X - labelSize.X / 2, fuelSlotRect.Y - 26);
@@ -418,7 +403,6 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             Utils.DrawBorderString(sb, label, labelPos + new Vector2(1.5f, 1.5f), labelGlow, 0.75f);
             Utils.DrawBorderString(sb, label, labelPos, new Color(240, 200, 160) * alpha, 0.75f);
 
-            //绘制燃料物品
             if (ThermalData.FuelItem != null && ThermalData.FuelItem.type != ItemID.None) {
                 Main.instance.LoadItem(ThermalData.FuelItem.type);
                 VaultUtils.SimpleDrawItem(sb, ThermalData.FuelItem.type, fuelSlotRect.Center.ToVector2(), 55, 1f, 0, Color.White * alpha);
@@ -432,12 +416,11 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 }
             }
 
-            //燃烧指示器，火焰效果
+            //燃烧指示
             if (ThermalData.IsBurning) {
                 float burnIntensity = 1f - ThermalData.BurnProgress * 0.3f;
                 Color fireGlow = Color.Lerp(new Color(255, 100, 30), new Color(255, 180, 80), (float)Math.Sin(powerFlowTimer * 2.5f) * 0.5f + 0.5f);
 
-                //多层火焰光晕
                 for (int i = 0; i < 4; i++) {
                     float glowSize = 0.08f + i * 0.02f;
                     float layerAlpha = alpha * 0.2f * burnIntensity / (i + 1);
@@ -446,13 +429,12 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                         0f, CWRAsset.SoftGlow.Size() / 2, new Vector2(fuelSlotRect.Width * glowSize, fuelSlotRect.Height * glowSize), SpriteEffects.None, 0f);
                 }
 
-                //边缘火花
                 float sparkIntensity = (float)Math.Sin(sparkTimer * 3f) * 0.5f + 0.5f;
                 Color sparkColor = new Color(255, 200, 100) * (alpha * burnIntensity * sparkIntensity * 0.3f);
                 sb.Draw(px, new Rectangle(fuelSlotRect.X - 2, fuelSlotRect.Y - 2, fuelSlotRect.Width + 4, fuelSlotRect.Height + 4),
                     new Rectangle(0, 0, 1, 1), sparkColor);
 
-                //燃烧进度条（槽底部）
+                //槽底燃烧条
                 int progressWidth = (int)(fuelSlotRect.Width * (1f - ThermalData.BurnProgress));
                 if (progressWidth > 0) {
                     Color progressColor = Color.Lerp(new Color(255, 160, 60), new Color(180, 80, 30), ThermalData.BurnProgress) * (alpha * 0.7f);
@@ -473,7 +455,6 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 DrawFallbackBar(sb, temperatureBarRect, tempRatio, false, alpha);
             }
 
-            //标签
             string label = TemperatureLabel.Value;
             Vector2 labelSize = FontAssets.MouseText.Value.MeasureString(label) * 0.65f;
             Vector2 labelPos = new Vector2(temperatureBarRect.Center.X - labelSize.X / 2, temperatureBarRect.Y - 26);
@@ -495,7 +476,6 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 DrawFallbackBar(sb, powerBarRect, powerRatio, true, alpha);
             }
 
-            //标签
             string label = PowerLabel.Value;
             Vector2 labelSize = FontAssets.MouseText.Value.MeasureString(label) * 0.75f;
             Vector2 labelPos = new Vector2(powerBarRect.Center.X - labelSize.X / 2, powerBarRect.Y - 26);
@@ -535,10 +515,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         private void DrawFallbackBar(SpriteBatch sb, Rectangle barRect, float fillRatio, bool isPower, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            //背景
             sb.Draw(px, barRect, new Rectangle(0, 0, 1, 1), new Color(18, 12, 10) * (alpha * 0.9f));
 
-            //填充
             int maxFillHeight = barRect.Height - 14;
             int fillHeight = Math.Clamp((int)(maxFillHeight * fillRatio), 0, maxFillHeight);
 
@@ -562,7 +540,6 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 }
             }
 
-            //边框
             float hoverGlow = 0f;
             Color edgeColor = new Color(140, 80, 45) * (alpha * (0.75f + hoverGlow));
             sb.Draw(px, new Rectangle(barRect.X, barRect.Y, barRect.Width, 3), new Rectangle(0, 0, 1, 1), edgeColor);
@@ -579,7 +556,6 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             int bw = (int)textSize.X + padH * 2;
             int bh = (int)textSize.Y + padV * 2;
 
-            //确保不超出屏幕
             int tx = Main.mouseX + 20;
             int ty = Main.mouseY - bh - 8;
             if (tx + bw > Main.screenWidth - 4) tx = Main.screenWidth - bw - 4;
@@ -588,7 +564,6 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             Rectangle box = new Rectangle(tx, ty, bw, bh);
             float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3.5f) * 0.5f + 0.5f;
 
-            //多层渐变背景，模拟金属深度
             for (int i = 0; i < 8; i++) {
                 float t = i / 7f;
                 Rectangle layer = box;
@@ -598,7 +573,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 sb.Draw(px, layer, new Rectangle(0, 0, 1, 1), bg * 0.95f);
             }
 
-            //内侧暗角（上下渐暗）
+            //内侧暗角
             for (int v = 0; v < 12; v++) {
                 float fade = 1f - v / 12f;
                 fade *= fade * fade;
@@ -609,24 +584,19 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 sb.Draw(px, inner, new Rectangle(0, 0, 1, 1), vc);
             }
 
-            //四面边框，锈蚀金属质感
             Color edgeBase = Color.Lerp(new Color(140, 75, 38), new Color(190, 110, 55), pulse * 0.3f);
             Color edgeDark = edgeBase * 0.6f;
-            //顶边（亮）
             sb.Draw(px, new Rectangle(box.X + 1, box.Y, box.Width - 2, 2), new Rectangle(0, 0, 1, 1), edgeBase * 0.85f);
-            //底边（暗）
             sb.Draw(px, new Rectangle(box.X + 1, box.Bottom - 2, box.Width - 2, 2), new Rectangle(0, 0, 1, 1), edgeDark * 0.7f);
-            //左边
             sb.Draw(px, new Rectangle(box.X, box.Y + 1, 2, box.Height - 2), new Rectangle(0, 0, 1, 1), edgeBase * 0.75f);
-            //右边
             sb.Draw(px, new Rectangle(box.Right - 2, box.Y + 1, 2, box.Height - 2), new Rectangle(0, 0, 1, 1), edgeDark * 0.65f);
 
-            //内侧高光线（顶部和左侧各一条细线，模拟金属反光）
+            //顶/左高光线
             Color innerHighlight = new Color(200, 140, 80) * 0.15f;
             sb.Draw(px, new Rectangle(box.X + 3, box.Y + 3, box.Width - 6, 1), new Rectangle(0, 0, 1, 1), innerHighlight);
             sb.Draw(px, new Rectangle(box.X + 3, box.Y + 4, 1, box.Height - 8), new Rectangle(0, 0, 1, 1), innerHighlight * 0.7f);
 
-            //四角铆钉装饰
+            //四角铆钉
             Color rivetColor = Color.Lerp(new Color(160, 100, 55), new Color(200, 130, 70), pulse * 0.4f) * 0.9f;
             int rs = 3;
             sb.Draw(px, new Rectangle(box.X + 3, box.Y + 3, rs, rs), new Rectangle(0, 0, 1, 1), rivetColor);
@@ -634,7 +604,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             sb.Draw(px, new Rectangle(box.X + 3, box.Bottom - 3 - rs, rs, rs), new Rectangle(0, 0, 1, 1), rivetColor * 0.7f);
             sb.Draw(px, new Rectangle(box.Right - 3 - rs, box.Bottom - 3 - rs, rs, rs), new Rectangle(0, 0, 1, 1), rivetColor * 0.7f);
 
-            //文字绘制：发光层 + 主体
+            //字，发光+主体
             Vector2 textPos = new Vector2(box.X + padH, box.Y + padV);
             Color textGlow = new Color(255, 160, 80) * 0.35f;
             for (int i = 0; i < 4; i++) {
@@ -648,10 +618,9 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         private void DrawStatusText(SpriteBatch sb) {
             float alpha = uiFadeAlpha;
 
-            //中央信息面板
+            //信息面板
             Vector2 infoCenter = new Vector2(panelRect.Center.X, panelRect.Y + 175);
 
-            //运行状态
             string statusLabel = StatusLabel.Value;
             Vector2 statusLabelPos = new Vector2(infoCenter.X - 95, infoCenter.Y);
 
@@ -677,7 +646,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 
             Utils.DrawBorderString(sb, statusText, statusTextPos, statusColor * alpha, 0.75f);
 
-            //效率指示（使用新的效率曲线）
+            //效率
             if (ThermalData.Temperature > 0) {
                 float efficiency = ThermalData.CurrentEfficiency;
                 string effText = string.Format(EfficiencyText.Value, (int)(efficiency * 100));
@@ -691,7 +660,6 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 Utils.DrawBorderString(sb, effText, effPos - effSize / 2, effColor * alpha, 0.7f);
             }
 
-            //操作提示
             if (hoveringFuelSlot) {
                 string hint = InsertFuelHint.Value;
                 Vector2 hintPos = new Vector2(panelRect.Center.X, panelRect.Bottom - 25);

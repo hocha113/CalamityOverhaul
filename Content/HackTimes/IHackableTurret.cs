@@ -3,10 +3,9 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>可骇入炮台 Actor 契约</summary>
+    /// <summary>可骇入炮台 Actor</summary>
     internal interface IHackableTurret : IHackTarget
     {
-        /// <summary>Actor 本体，悬停与生命周期</summary>
         Actor AsActor { get; }
 
         /// <summary>电路过载失效中</summary>

@@ -3,7 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>吸收握把：命中按伤害比例回蓝</summary>
+    /// <summary>吸收握把，命中按伤回蓝</summary>
     internal sealed class AbsorberGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;
@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         public override Color TintColor => new(80, 140, 220);
 
         public override void Apply(ref ShootContext ctx) {
-            //抬高蓝量消耗：本身回蓝是补偿
+            //回蓝补偿，蓝耗抬高
             ctx.ManaCostMul += 0.48f;
             ctx.DamageMul += -0.12f;
         }
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         }
 
         public override void OnLaserHitNPC(CyberPrismLaserProj laser, NPC target, NPC.HitInfo hit, int damageDone) {
-            //激光每次命中给少一点
+            //激光回蓝更少
             Refund(laser.Projectile.owner, damageDone, 20, 2, 1);
         }
 
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
             p.statMana = System.Math.Min(p.statMana + refund, p.statManaMax2);
             int actual = p.statMana - before;
             if (actual <= 0) return;
-            //仅本机弹出文字提示
+            //仅myPlayer飘字
             if (owner == Main.myPlayer) {
                 CombatText.NewText(p.getRect(), new Color(120, 180, 255), actual, dramatic: false, dot: false);
             }

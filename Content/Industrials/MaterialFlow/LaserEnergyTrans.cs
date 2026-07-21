@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
         public override int TargetItem => ModContent.ItemType<LaserEnergyTrans>();
         public override bool ReceivedEnergy => true;
         public override float MaxUEValue => 100;
-        //跨岛远程传能：读写最远 ~1200px 外目标机器的 UE，几乎总落在不同的并行岛屿，强制串行更新以消除数据竞争
+        //跨岛远程传能，强制串行消竞态
         public override ParallelExecutionKind ParallelKind => ParallelExecutionKind.Serial;
         internal Vector2 TrueCenter => CenterInWorld - new Vector2(0, 12);
         internal Player fromePlayer;
@@ -244,7 +244,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
                 return;
             }
             if (tp.Position == Position) {
-                return;//防止链接自己
+                return;//不链自己
             }
             if (tp is not MachineTP machine) {
                 return;
@@ -270,19 +270,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
                 return;
             }
 
-            //计算目标与当前的向量差
             toMouse = TrueCenter.To(targetMachine.CenterInWorld);
 
-            //计算距离（像素）
             float distance = toMouse.Length();
-
-            //计算能量衰减比例：MaxTransDistance 像素时为 0，越近越高，最远为 MaxTransDistance
+            //距 MaxTransDistance 时衰减为 0
             float efficiencyScale = 1f - MathHelper.Clamp(distance / MaxTransDistance, 0f, 1f);
 
-            //计算实际可传输的能量值
             float baseTransfer = Math.Min(Efficiency, Math.Min(MachineData.UEvalue, targetMachine.MaxUEValue - targetMachine.MachineData.UEvalue));
-
-            //加入距离衰减影响
             float transferAmount = baseTransfer * efficiencyScale;
 
             if (transferAmount > 0f) {
@@ -312,9 +306,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
         public override void BackDraw(SpriteBatch spriteBatch) {
             if (fromePlayer.Alives() || targetMachine != null) {
                 Texture2D value = MaskLaserLine.Value;
-                //计算距离（像素）
                 float distance = toMouse.Length();
-                //计算能量衰减比例：MaxTransDistance 像素时为 0，越近越高，最远为 MaxTransDistance
                 float efficiencyScale = 1f - MathHelper.Clamp(distance / MaxTransDistance, 0f, 1f);
                 Color drawColor = Color.White;
                 drawColor.A = 0;

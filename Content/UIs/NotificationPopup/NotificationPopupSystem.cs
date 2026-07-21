@@ -7,10 +7,7 @@ using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.UIs.NotificationPopup
 {
-    /// <summary>
-    /// 通用弹窗通知系统，屏幕右侧滑入式弹窗管理器，
-    /// 各模块通过 <see cref="Add"/> 注册自定义 <see cref="NotificationEntry"/> 即可显示弹窗
-    /// </summary>
+    /// <summary>右侧滑入弹窗；经 <see cref="Add"/> 注册 <see cref="NotificationEntry"/></summary>
     internal class NotificationPopupSystem : UIHandle
     {
         private class ActiveEntry
@@ -18,7 +15,7 @@ namespace CalamityOverhaul.Content.UIs.NotificationPopup
             public NotificationEntry Entry;
             public int Timer;
             public float CurrentY;
-            public float ScaleAnim; //加入缩放动画状态
+            public float ScaleAnim;//缩放动画
 
             public int TotalLifetime => Entry.SlideTime * 2 + Entry.DisplayTime;
         }
@@ -31,19 +28,17 @@ namespace CalamityOverhaul.Content.UIs.NotificationPopup
         private static readonly Queue<NotificationEntry> _pending = new();
         private static readonly List<ActiveEntry> _active = new();
 
-        /// <summary>同时在屏幕上显示的最大弹窗数</summary>
+        /// <summary>同屏最大弹窗数</summary>
         private const int MaxActive = 6;
 
-        /// <summary>弹窗堆叠起始位置（屏幕高度比例）</summary>
+        /// <summary>堆叠起始Y，屏高比例</summary>
         private const float StartYRatio = 0.22f;
 
-        /// <summary>添加一条弹窗通知到队列</summary>
         public static void Add(NotificationEntry entry) {
             _pending.Enqueue(entry);
         }
 
         public override void LogicUpdate() {
-            //从队列中取出新弹窗
             if (_active.Count < MaxActive && _pending.Count > 0) {
                 var entry = _pending.Dequeue();
                 float targetY = GetTargetY(_active.Count);
@@ -58,21 +53,18 @@ namespace CalamityOverhaul.Content.UIs.NotificationPopup
                 SoundEngine.PlaySound(sound);
             }
 
-            //更新现有弹窗
             for (int i = _active.Count - 1; i >= 0; i--) {
                 var note = _active[i];
                 note.Timer++;
                 note.Entry.LifeTimer = note.Timer;
 
-                //Y轴平滑堆叠（加速跟踪）
+                //Y平滑堆叠
                 float targetY = GetTargetY(i);
                 note.CurrentY = MathHelper.Lerp(note.CurrentY, targetY, 0.14f);
 
-                //缩放平滑
                 float targetScale = (note.Timer < note.Entry.SlideTime + note.Entry.DisplayTime) ? 1f : 0f;
                 note.ScaleAnim = MathHelper.Lerp(note.ScaleAnim, targetScale, 0.12f);
 
-                //生命周期结束
                 if (note.Timer >= note.TotalLifetime) {
                     _active.RemoveAt(i);
                 }
@@ -102,7 +94,7 @@ namespace CalamityOverhaul.Content.UIs.NotificationPopup
                     if (keyLeftPressState == KeyPressState.Pressed) {
                         Main.mouseLeftRelease = false;
                         if (note.Entry.OnClick()) {
-                            //提前进入滑出阶段
+                            //提前滑出
                             int slideOutStart = note.Entry.SlideTime + note.Entry.DisplayTime;
                             if (note.Timer < slideOutStart)
                                 note.Timer = slideOutStart;
@@ -125,7 +117,6 @@ namespace CalamityOverhaul.Content.UIs.NotificationPopup
                 float x = Main.screenWidth - w * progress;
                 float yCenter = note.CurrentY + h / 2f;
 
-                //按中心点计算缩放后的绘制矩形
                 float scaledW = w * scale;
                 float scaledH = h * scale;
                 Rectangle panelRect = new(
@@ -134,13 +125,12 @@ namespace CalamityOverhaul.Content.UIs.NotificationPopup
                     (int)scaledW,
                     (int)scaledH);
 
-                //alpha跟随滑入滑出衰减
                 float alpha = MathHelper.Clamp(progress, 0f, 1f) * scale;
                 note.Entry.DrawContent(spriteBatch, panelRect, alpha);
             }
         }
 
-        /// <summary>计算第 index 条弹窗的目标 Y（考虑不同弹窗高度）</summary>
+        /// <summary>第 index 条目标Y</summary>
         private static float GetTargetY(int index) {
             float y = Main.screenHeight * StartYRatio;
             for (int i = 0; i < index && i < _active.Count; i++) {
@@ -149,34 +139,33 @@ namespace CalamityOverhaul.Content.UIs.NotificationPopup
             return y;
         }
 
-        /// <summary>根据计时器计算滑入/滑出进度（0~1），使用弹性缓动</summary>
+        /// <summary>滑入/滑出进度0-1，弹性</summary>
         private static float GetProgress(ActiveEntry note) {
             int timer = note.Timer;
             int slide = note.Entry.SlideTime;
             int display = note.Entry.DisplayTime;
 
             if (timer < slide) {
-                //滑入阶段，弹性ease-out带轻微过冲
+                //滑入，ease-out微过冲
                 float p = timer / (float)slide;
                 return EaseOutBack(p);
             }
             else if (timer > slide + display) {
-                //滑出阶段，加速淡出
+                //滑出
                 float p = 1f - (timer - slide - display) / (float)slide;
                 return EaseInCubic(p);
             }
             return 1f;
         }
 
-        /// <summary>带回弹的ease-out（轻微过冲）</summary>
+        /// <summary>ease-out带回弹</summary>
         private static float EaseOutBack(float t) {
-            const float c1 = 1.3f; //过冲系数，较温和
+            const float c1 = 1.3f;//过冲
             const float c3 = c1 + 1f;
             float t1 = t - 1f;
             return 1f + c3 * t1 * t1 * t1 + c1 * t1 * t1;
         }
 
-        /// <summary>三次方ease-in</summary>
         private static float EaseInCubic(float t) {
             return t * t * t;
         }

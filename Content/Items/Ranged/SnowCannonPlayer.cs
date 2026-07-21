@@ -2,7 +2,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    /// <summary>雪炮跨Use状态，ModItem克隆重置会抹掉，改存ModPlayer不入档</summary>
+    /// <summary>雪炮跨Use状态，ModPlayer不入档</summary>
     internal class SnowCannonPlayer : ModPlayer
     {
         //冰河时代 CrystalDimming

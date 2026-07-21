@@ -9,9 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    /// <summary>
-    /// 万魔殿
-    /// </summary>
+    /// <summary>万魔殿</summary>
     internal class Pandemonium : ModItem
     {
         public override string Texture => CWRConstant.Item_Magic + "Pandemonium";
@@ -85,7 +83,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
         public override bool CanUseItem(Player player) {
             if (player.altFunctionUse == 2) {
-                //右键：鼠标法阵
                 Item.mana = 40;
                 Item.useTime = Item.useAnimation = 35;
                 Item.channel = false;
@@ -93,7 +90,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 return player.ownedProjectileCounts[ModContent.ProjectileType<PandemoniumCircle>()] < 13; //最多13个法阵
             }
             else {
-                //左键：原本的引导法阵
                 Item.mana = 25;
                 Item.useTime = Item.useAnimation = 20;
                 Item.channel = true;
@@ -104,7 +100,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
-                //在鼠标位置生成法阵
+                
                 Vector2 targetPos = Main.MouseWorld;
                 Projectile.NewProjectile(
                     source,

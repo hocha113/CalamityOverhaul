@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
 using InnoVault.GameContent.BaseEntity;
@@ -112,9 +112,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
     }
 
-    /// <summary>
-    /// 箴言硫磺火法阵，玩家背后的视觉效果
-    /// </summary>
+    /// <summary>箴言硫磺火法阵</summary>
     internal class ProverbsCircle : BaseHeldProj
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -174,7 +172,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 }
             }
 
-            //双重增幅时法阵更大
+            //双重增幅加大
             bool dualMode = proverbsPlayer.HasProverbs && proverbsPlayer.IsEbn;
 
             float maxR = dualMode ? 620f : 220f;
@@ -184,10 +182,9 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
             circleRadius = MathHelper.Lerp(circleRadius, maxR, 0.1f);
 
-            //跟随玩家
             Projectile.Center = Owner.GetPlayerStabilityCenter();
 
-            //生成硫磺火粒子
+            //硫磺火粒
             if (Main.rand.NextBool(3) && circleAlpha > 0.3f && !VaultUtils.isServer) {
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 float distance = Main.rand.NextFloat(circleRadius * 0.7f, circleRadius);
@@ -205,7 +202,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 }
             }
 
-            //照明
             float lightIntensity = circleAlpha * 1.2f;
             Lighting.AddLight(Projectile.Center, 1.2f * lightIntensity, 0.4f * lightIntensity, 0.2f * lightIntensity);
 
@@ -244,7 +240,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             shader.Parameters["pulsePhase"]?.SetValue(Time * 0.012f);
             shader.Parameters["dualMode"]?.SetValue(isDual ? 1f : 0f);
 
-            //鬼域色调：核心暖橙、中层血红、边缘暗紫红、虚空黑
+            //鬼域调，暖橙/血红/暗紫红/虚空黑
             shader.Parameters["coreColor"]?.SetValue(new Vector3(1f, 0.65f, 0.25f));
             shader.Parameters["midColor"]?.SetValue(new Vector3(0.85f, 0.22f, 0.12f));
             shader.Parameters["edgeColor"]?.SetValue(new Vector3(0.5f, 0.1f, 0.15f));

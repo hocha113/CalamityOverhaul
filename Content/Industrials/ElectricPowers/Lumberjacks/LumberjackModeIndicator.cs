@@ -8,9 +8,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
 {
-    /// <summary>
-    /// 伐木者模式指示器Actor，显示当前工作模式的图标动画
-    /// </summary>
+    /// <summary>伐木模式指示Actor</summary>
     internal class LumberjackModeIndicator : Actor
     {
         //模式类型(0=循环模式显示橡子 1=清理模式显示斧头)
@@ -138,14 +136,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             if (lifeTime % 5 != 0) return;
 
             if (modeType == 1) {
-                //斧头模式：金属火花粒子
+                //斧头，金属火花
                 Vector2 dustVel = new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-2f, 0f));
                 Dust dust = Dust.NewDustDirect(Center - Vector2.One * 8, 16, 16, DustID.Iron, dustVel.X, dustVel.Y, 100, default, 0.8f);
                 dust.noGravity = true;
                 dust.fadeIn = 0.8f;
             }
             else {
-                //橡子模式：绿色自然粒子
+                //橡子，绿色粒子
                 Vector2 dustVel = new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(-1f, 0.5f));
                 Dust dust = Dust.NewDustDirect(Center - Vector2.One * 8, 16, 16, DustID.Grass, dustVel.X, dustVel.Y, 100, default, 0.9f);
                 dust.noGravity = true;

@@ -14,40 +14,37 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Wraiths.GhostHands
 {
-    /// <summary>焦黑枯手的规则相位（据点遭遇 + 反噬缠附两套循环共用一部相位机）</summary>
+    /// <summary>规则相位，据点与反噬共用</summary>
     internal enum GhostHandPhase : byte
     {
-        /// <summary>潜壁（Materializing 0~179t）：不可见，挠壁音景渐强</summary>
+        /// <summary>潜壁 0~179t</summary>
         InWall,
-        /// <summary>破壁（Materializing 180~254t）：手体沿破口伸出，长命锁随石屑翻出</summary>
+        /// <summary>破壁 180~254t</summary>
         Emerge,
-        /// <summary>爬行：看着它，它不动；移开视线，它在爬</summary>
+        /// <summary>爬行</summary>
         Stalk,
-        /// <summary>攥住拖拽：钳附受害者躯干，拖向裂隙</summary>
+        /// <summary>攥住拖拽</summary>
         Grip,
-        /// <summary>烫退：火的裁定，40t 硬刹僵直</summary>
+        /// <summary>烫退 40t</summary>
         Scorch,
-        /// <summary>扑物：弃你扑锁，无视凝视，全状态机最快的一段</summary>
+        /// <summary>扑锁</summary>
         Covet,
-        /// <summary>攥紧蜷缩：五指裹锁收拢 45t，尽头即死机</summary>
+        /// <summary>蜷缩 45t→死机</summary>
         Clutch,
-        /// <summary>（反噬）蛰伏：幽影贴随原主</summary>
+        /// <summary>反噬蛰伏</summary>
         Burrowed,
-        /// <summary>（反噬）裂纹预告：固定 45t 危险层级常数，凝视可冻结</summary>
+        /// <summary>反噬裂纹预告 45t</summary>
         CrackTelegraph,
-        /// <summary>（反噬）破土扑攥：8t 触及判定窗</summary>
+        /// <summary>反噬破土 8t</summary>
         Erupt,
-        /// <summary>（反噬）攥主拖拽：拖向就近壁点</summary>
+        /// <summary>反噬攥主拖拽</summary>
         EruptGrip,
-        /// <summary>（反噬）扑空暴露：30t 可喂锁窗口</summary>
+        /// <summary>反噬扑空暴露 30t</summary>
         Exposed,
     }
 
     /// <summary>
-    /// 焦黑枯手显形实体：tick 级规则状态机（WRAITHS-GHOSTHAND-PLAN.md §2）。
-    /// 权威归属：相位推进/目标选择/位置判死/锁消耗=服务器；被攥玩家的操控压制与速度改写=
-    /// 受害者本端（<see cref="GhostHandVictim"/> 读同步状态）；音景/粒子/贴饰=各端本地。
-    /// 不挂行为积木，全部逻辑自持于 <see cref="OnAuthorityUpdate"/> 与 <see cref="UpdateEscaped"/>
+    /// 焦黑枯手实体。相位/目标/判死/锁=服；操控压制=受害者本端；音景本地
     /// </summary>
     internal sealed class GhostHandActor : WraithActor, HackTimes.Targets.IWraithHoverConcealed
     {
@@ -107,10 +104,10 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
         private Vector2 dragIntent;
         [SyncVar]
         private Vector2 crackPoint;
-        //预告倒计时正被凝视冻结:裂纹贴饰随之停长,凝视者读得到"起效了"
+        //预告被凝视冻结
         [SyncVar]
         private bool telegraphHeld;
-        //预告世代:每次(重)选爆点自增,客户端据此重置裂纹动画——盯穿回退原点时也保证"消失重长"可见
+        //预告世代，重选爆点自增
         [SyncVar]
         private byte telegraphRepick;
 
@@ -144,22 +141,22 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
         /// <summary>当前规则相位</summary>
         public GhostHandPhase Phase => (GhostHandPhase)phaseRaw;
 
-        /// <summary>被攥玩家 whoAmI，-1=无（<see cref="GhostHandVictim"/> 读它锁操控）</summary>
+        /// <summary>被攥玩家 whoAmI，-1=无</summary>
         public int VictimWho => victimWho;
 
-        /// <summary>本帧拖拽意图（受害者本端每帧写入自身速度；队友凝视钉住时为零）</summary>
+        /// <summary>本帧拖拽意图</summary>
         public Vector2 DragIntent => dragIntent;
 
-        /// <summary>扑物目标为持锁玩家时的 whoAmI（持有者本端扣锁的消耗信号），-1=无</summary>
+        /// <summary>持锁玩家 whoAmI，-1=无</summary>
         public int CovetHolderWho => covetHolderWho;
 
-        /// <summary>正处攥握相位（据点拖拽或反噬扑攥）</summary>
+        /// <summary>正处攥握相位</summary>
         public bool IsGripping => Phase is GhostHandPhase.Grip or GhostHandPhase.EruptGrip;
 
-        /// <summary>本端相位内计时（相位翻转清零），贴饰/火光缓入层读它</summary>
+        /// <summary>本端相位内计时</summary>
         public int LocalPhaseTimer => localPhaseTimer;
 
-        /// <summary>潜壁未破壁=主题隐身：扫描器不受理悬停锁定，音景先兆不许被 UI 剧透</summary>
+        /// <summary>潜壁隐身，扫描器不受理</summary>
         public bool HoverConcealed => Phase == GhostHandPhase.InWall;
 
         public override void OnSpawn(params object[] args) {
@@ -194,7 +191,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             base.ReceiveExtraData(reader);
             phaseTimer = reader.ReadInt32();
             crawlBonus = reader.ReadSingle();
-            //晚加入端把演出计时对齐到权威相位计时,蜷缩/破壁进度不从零重播
+            //晚加入对齐相位计时
             lastSeenPhase = Phase;
             localPhaseTimer = phaseTimer;
         }
@@ -668,7 +665,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
         private const float CrackNearTieSlack = 40f;
 
         /// <summary>
-        /// 原主 120px 内的固体面选点：先排除 exclude 近旁（换点惩罚），
+        /// 原主 120px 内固体面选点，排除 exclude 近旁，
         /// 距离并列集内随机取一（重选不总回同一面）；排除后无候选再放开原点
         /// </summary>
         private static bool TryPickCrackPoint(Player owner, Vector2 exclude, out Vector2 point) {
@@ -800,7 +797,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             return false;
         }
 
-        /// <summary>对世界坐标点的凝视判定：同 IsGazedBy 参数（限距+面朝+近身盲区+LOS）</summary>
+        /// <summary>对世界点凝视判定，同 IsGazedBy</summary>
         private bool AnyAliveGazeAtPoint(Vector2 point) {
             float range = Definition.GazeRange;
             foreach (Player player in Main.ActivePlayers) {
@@ -862,7 +859,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
         }
 
         /// <summary>
-        /// 锁消耗（服务器权威）：世界物品就地移除并同步；持有者手中的锁由持有者本端
+        /// 锁消耗，服权威；持有者手中的锁由持有者本端
         /// 观测到 Clutch 相位后自行扣减（<see cref="GhostHandVictim"/>，玩家背包客户端权威）
         /// </summary>
         private void ConsumeLock() {
@@ -912,7 +909,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             return SpawnAnchor;
         }
 
-        //====预警拍镜像（D6：纯演出，落刀是位置判定，两者不绑死）====
+        //====预警拍镜像====
 
         private void StartOmenMirrorFor(Player victim, int ticks) {
             if (VaultUtils.isServer) {
@@ -999,7 +996,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             }
         }
 
-        /// <summary>潜壁音景：挠壁三记渐强（t=0/60/130）+ t=150 闷响震屏（预备拍：力量长在收势里）</summary>
+        /// <summary>潜壁音景</summary>
         private void UpdateInWallCue() {
             if (localPhaseTimer == 1 || localPhaseTimer == 60 || localPhaseTimer == 130) {
                 float vol = 0.25f + localPhaseTimer / 130f * 0.25f;
@@ -1017,7 +1014,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             }
         }
 
-        /// <summary>攥拖音景：拖擦地声每 40t；烫退已花时的贴火提示每 90t（阀门已花，公平可读）</summary>
+        /// <summary>攥拖音景</summary>
         private void UpdateGripCue() {
             if (dragIntent.LengthSquared() > 0.01f && ++dragSoundTimer >= 40) {
                 dragSoundTimer = 0;
@@ -1046,7 +1043,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             }
         }
 
-        /// <summary>反噬预告音景：裂纹处尘雾汇聚 + 两记升调挠声（固定 45t 危险层级常数）</summary>
+        /// <summary>反噬预告音景</summary>
         private void UpdateTelegraphCue() {
             if (localPhaseTimer == 2 || localPhaseTimer == 24) {
                 SoundEngine.PlaySound(SoundID.Dig with { Pitch = localPhaseTimer < 10 ? -0.2f : 0.2f, Volume = 0.5f, MaxInstances = 2 }, crackPoint);
@@ -1059,7 +1056,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             }
         }
 
-        /// <summary>相位翻转拍：破壁/烫退/触锁/破土等一次性演出（各端本地，翻转检测驱动）</summary>
+        /// <summary>相位翻转拍</summary>
         private void PlayPhaseFlipCue(GhostHandPhase from, GhostHandPhase to) {
             switch (to) {
                 case GhostHandPhase.Emerge: {
@@ -1134,7 +1131,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
 
         //====绘制====
 
-        /// <summary>破口法线（±1，指向气窝侧）：两侧固体密度采样，一次缓存；投锁与破壁绘制共用</summary>
+        /// <summary>破口法线 ±1</summary>
         internal int ResolveEmergeDir() {
             if (emergeDir != 0) {
                 return emergeDir;
@@ -1257,7 +1254,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             }
         }
 
-        /// <summary>爆点裂纹贴饰：种子折线裂缝随预告进度伸展，余烬内芯渐亮</summary>
+        /// <summary>爆点裂纹贴饰</summary>
         private void DrawCrackTelegraph(SpriteBatch spriteBatch) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle src = new(0, 0, 1, 1);

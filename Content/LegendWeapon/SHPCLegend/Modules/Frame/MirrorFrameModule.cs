@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>镜像机匣：新光束派生 180° 对称镜像，HashSet 防重复</summary>
+    /// <summary>镜像机匣，新束派生 180° 对称镜像，HashSet 防重复</summary>
     internal sealed class MirrorFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;

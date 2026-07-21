@@ -71,13 +71,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return null;
         }
 
-        //喷射口演出：定向焰舌炬闪 + 火星锥 + 诅咒尘填充 + 墨绿烟压底 + 小定向震
+        //喷射口演出
         private static void SpawnMuzzleFlare(Vector2 position, Vector2 direction) {
             FishCursedVFX.Punch(position, direction, 3f, 9f, 8, 600f);
             if (Main.dedServ) {
                 return;
             }
-            //炬闪：两条高速焰舌沿射向甩出，几帧即被浮力掰弯上飘
+            //炬闪
             for (int i = 0; i < 2; i++) {
                 Vector2 vel = direction.RotatedByRandom(0.16f) * Main.rand.NextFloat(5.5f, 8f);
                 Color col = Color.Lerp(FishCursedVFX.GreenCore, FishCursedVFX.GreenMid, Main.rand.NextFloat(0.5f));
@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //诅咒感染：一舌绿火舔上体表 + 几粒上浮余烬（每次命中都触发，量收紧）
+        //诅咒感染
         private static void SpawnCursedInfectionEffect(NPC target) {
             if (Main.dedServ) {
                 return;
@@ -143,12 +143,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 诅咒火焰流弹幕：反重力三段轨迹。
-    /// 射出强阻尼减速 → 悬停颤动（点燃拍）→ 复利加速上浮左右摇曳；
-    /// 撞击/命中留下余燃残迹，空中燃尽则整束焰舌脱体上飘。<br/>
-    /// ai[0]=状态；ai[1]=状态内计时；localAI[0]=视觉种子
-    /// </summary>
+    /// <summary>诅咒火焰流弹幕</summary>
     internal class CursedFlameStream : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -168,7 +163,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private ref float StateTime => ref Projectile.ai[1];
-        //视觉种子：首帧从 identity 派种，只喂演出量
+        //视觉种子
         private ref float VisualSeed => ref Projectile.localAI[0];
 
         private float visualRot;    //平滑体朝向，低速时立正向上
@@ -177,7 +172,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private bool impacted;      //已撞击/末次咬肉，燃尽演出不再重复
         private int age;            //总帧龄，燃烧噼啪循环用
 
-        //==== 三段轨迹参数：飞行期每帧都有量在演化 ====
         private const float LaunchDrag = 0.965f;        //射出段阻尼/帧（16~22 初速约 45~52 帧滑到悬停，前程约 450px）
         private const float LaunchEndSpeed = 3.2f;      //滑到该速度进入悬停
         private const int LaunchMaxFrames = 52;
@@ -227,7 +221,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     break;
             }
 
-            //可视朝向：高速沿速度立焰尖，低速立正向上
+            //可视朝向
             float speed = Projectile.velocity.Length();
             float targetRot = speed > 1.6f ? Projectile.velocity.ToRotation() + MathHelper.PiOver2 : 0f;
             visualRot = Utils.AngleLerp(visualRot, targetRot, 0.16f);
@@ -242,12 +236,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.24f, Pitch = -0.5f, MaxInstances = 4 }, Projectile.Center);
             }
 
-            //暗绿照明：随消散衰减
+            //暗绿照明，随消散衰减
             float env = 1f - Projectile.alpha / 255f;
             Lighting.AddLight(Projectile.Center, 0.10f * env, 0.32f * env, 0.12f * env);
         }
 
-        //射出减速：强阻尼 + 微湍流，速度肉眼可见地一路衰减
+        //射出减速
         private void LaunchAI() {
             Projectile.velocity *= LaunchDrag;
             Projectile.velocity += new Vector2(
@@ -259,12 +253,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 StateTime = 0;
                 //残余前向动量在此定格，供上浮期斜飘
                 driftX = MathHelper.Clamp(Projectile.velocity.X, -3.2f, 3.2f);
-                //点燃拍：原版诅咒火语系的一声轻鸣
+                //点燃拍
                 SoundEngine.PlaySound(SoundID.Item20 with { Volume = 0.3f, Pitch = 0.25f, MaxInstances = 3 }, Projectile.Center);
             }
         }
 
-        //悬停颤动：速度归零，布朗式微抖 + 竖向呼吸，焰体胀缩在绘制侧
+        //悬停颤动
         private void HoverAI() {
             Projectile.velocity *= 0.8f;
             Projectile.velocity += new Vector2(
@@ -275,16 +269,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 State = FlameState.Rise;
                 StateTime = 0;
                 riseAccel = RiseAccelBase;
-                //吐息：上浮启动的软噗
+                //吐息，上浮启动的软噗
                 SoundEngine.PlaySound(SoundID.DD2_FlameburstTowerShot with { Volume = 0.24f, Pitch = 0.45f, MaxInstances = 2 }, Projectile.Center);
             }
         }
 
-        //复利上浮：加速度自身滚增，横向保留残余动量 + 摇曳正弦，越飘越快
+        //复利上浮
         private void RiseAI() {
             riseAccel = MathF.Min(riseAccel * RiseAccelGrowth, RiseAccelMax);
             Projectile.velocity.Y = MathF.Max(Projectile.velocity.Y - riseAccel, -RiseMaxSpeed);
-            //残余前向动量缓慢衰减，摇曳叠加其上：上浮读作斜飘而非原地直升
+            //残余前向动量缓慢衰减，摇曳叠加其上
             driftX *= 0.988f;
             Projectile.velocity.X = MathHelper.Lerp(Projectile.velocity.X
                 , driftX + MathF.Sin(StateTime * 0.11f + VisualSeed * 5.3f) * 1.4f, 0.06f);
@@ -316,7 +310,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //空中燃尽：整束焰舌脱体上飘 + 余烬续飘，aftermath 活得比弹体久
+        //空中燃尽
         private void GutterOut() {
             if (Main.dedServ) {
                 return;
@@ -334,7 +328,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //焰体剥落：焰舌/余烬/暗烟/诅咒尘按节律错峰生成（whoAmI 错相防同帧齐射尖峰）
+        //焰体剥落
         private void ShedParticles(float speed) {
             int phase = (int)StateTime + Projectile.whoAmI * 3;
 
@@ -356,13 +350,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , Color.Lerp(FishCursedVFX.GreenMid, FishCursedVFX.GreenDeep, Main.rand.NextFloat())
                     , Main.rand.NextFloat(0.36f, 0.55f))?.Configure(Main.rand.Next(22, 34));
             }
-            //暗烟压底：悬停与上浮期（AlphaBlend 真遮挡）
+            //暗烟压底
             if ((State == FlameState.Hover || State == FlameState.Rise) && phase % 9 == 0) {
                 PRTLoader.NewParticle<PRT_FishCursedSmog>(Projectile.Center + Main.rand.NextVector2Circular(6f, 6f)
                     , new Vector2(0f, -Main.rand.NextFloat(0.5f, 1.2f)), FishCursedVFX.SmokeDark, 0.2f)
                     ?.Configure(26, 0.34f, 0.012f);
             }
-            //原版诅咒尘：低频粒状填充
+            //原版诅咒尘，低频粒状填充
             if (phase % 6 == 0) {
                 Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(10f, 10f)
                     , DustID.CursedTorch, -Projectile.velocity * 0.1f + new Vector2(0f, -0.6f), 130, default, Main.rand.NextFloat(0.9f, 1.4f));
@@ -370,7 +364,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //碰撞地形：撞击爆发 + 落点余燃，弹体转入消散让尾迹优雅收束
+        //碰撞地形
         public override bool OnTileCollide(Vector2 oldVelocity) {
             if (State == FlameState.Fading) {
                 return false;
@@ -385,7 +379,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        //击中NPC：附加诅咒火 + 贴体余燃，贯穿继续飞
+        //击中NPC
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             //附加诅咒火焰效果
             target.AddBuff(BuffID.CursedInferno, 300 + HalibutData.GetDomainLayer() * 40);
@@ -409,7 +403,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             GutterOut();
         }
 
-        //==== 绘制：Fire 帧动画三层体 + 速度残影 + 条带尾迹 ====
 
         private float BodyScale => State switch {
             FlameState.Hover => 0.68f,
@@ -417,7 +410,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             _ => 0.58f,
         };
 
-        /// <summary>焰尾条带：沿 oldPos 轨迹的 TriangleStrip，宽度∝速度，头段快速铺满再向尾收成尖</summary>
+        /// <summary>焰尾条带</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
             if (Main.dedServ || !Projectile.active) {
                 return;
@@ -432,7 +425,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //采样点：当前中心打头，oldPos 依次向尾（去掉未写入的零槽与过近点）
+            //采样点
             Vector2 half = Projectile.Size / 2f;
             Span<Vector2> pts = stackalloc Vector2[1 + Projectile.oldPos.Length];
             int count = 0;
@@ -451,7 +444,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return; //悬停期尾迹自然收没
             }
 
-            //头宽∝速度：滑行细带、上浮宽焰
+            //头宽∝速度，滑行细带、上浮宽焰
             float maxWidth = MathHelper.Clamp(6f + Projectile.velocity.Length() * 1.05f, 7f, 19f);
             var verts = new VertexPositionColorTexture[count * 2];
             for (int i = 0; i < count; i++) {
@@ -501,7 +494,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
             float speed = Projectile.velocity.Length();
-            //速度拉伸：沿焰轴伸长、横向收窄
+            //速度拉伸，沿焰轴伸长、横向收窄
             float stretchAmt = MathHelper.Clamp(speed * 0.05f, 0f, 0.85f);
             //悬停呼吸胀缩
             float breath = State == FlameState.Hover
@@ -510,14 +503,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float body = BodyScale * breath;
             Vector2 scale = new(body * (1f - stretchAmt * 0.28f), body * (1f + stretchAmt));
 
-            //墨绿雾底：AlphaBlend 真遮挡层，压住其上所有加色亮部
+            //墨绿雾底
             Texture2D fog = CWRAsset.Fog?.Value;
             if (fog != null) {
                 Main.EntitySpriteDraw(fog, drawPos, null, FishCursedVFX.SmokeDark * (0.42f * fade)
                     , visualRot * 0.3f, fog.Size() * 0.5f, 0.36f * body, SpriteEffects.None, 0);
             }
 
-            //速度残影：旧位置两枚暗绿鬼影，快时才可见
+            //速度残影
             if (speed > 4f) {
                 for (int i = 3; i <= 6; i += 3) {
                     if (i >= Projectile.oldPos.Length || Projectile.oldPos[i] == Vector2.Zero) {
@@ -537,7 +530,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Main.EntitySpriteDraw(fire, drawPos, frameAlt, FishCursedVFX.GreenMid with { A = 0 } * (0.8f * fade)
                 , visualRot, origin, scale, SpriteEffects.None, 0);
 
-            //黄绿焰心：LightShot 顺焰轴拉伸的细热芯
+            //黄绿焰心
             Texture2D shot = CWRAsset.LightShot?.Value;
             if (shot != null) {
                 Vector2 coreScale = new Vector2(0.13f + 0.10f * stretchAmt, 0.052f) * (body / 0.6f);

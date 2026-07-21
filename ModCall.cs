@@ -24,7 +24,7 @@ namespace CalamityOverhaul
             }
 
             CallType callType = default;
-            //如果第一个类型选择参数都不对，那么直接返回
+            //首参非 CallType 则退
             if (Enum.IsDefined(typeof(CallType), args[0])) {
                 callType = (CallType)args[0];
             }
@@ -33,7 +33,7 @@ namespace CalamityOverhaul
                 return null;
             }
 
-            //超级工作台系统已移除，这些call保留枚举值仅为兼容旧模组调用，均为无操作
+            //超工台已删，枚举留作兼容，no-op
             if (callType is CallType.SupertableRecipeDate
                 or CallType.SupertableSetItem
                 or CallType.SupertableRecipeDate_ZenithWorld
@@ -45,11 +45,11 @@ namespace CalamityOverhaul
                 }
                 return null;
             }
-            //获取设置内容，是否开启强制内容替换
+            //强制内容替换开关
             else if (callType == CallType.Config_ForceReplaceResetContent) {
                 return true;
             }
-            //已弃用，将始终返回true，因为已经有一些模组在使用这个call，为了保证适配性暂时不要删除它
+            //弃用仍回 true，旧模组兼容
             else if (callType == CallType.Config_AddExtrasContent) {
                 return true;
             }

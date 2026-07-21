@@ -6,15 +6,12 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>物块扫描高亮渲染</summary>
+    /// <summary>物块扫描高亮</summary>
     internal static class HackTimeTileDraw
     {
-        //选中动画计时器
         private static float selectedTimer;
-        //悬停动画计时器
         private static float hoverTimer;
-        //选中高亮淡入进度(0~1)
-        private static float selectedFadeIn;
+        private static float selectedFadeIn;//0~1
 
         public static void Update() {
             selectedTimer += 0.016f;
@@ -25,19 +22,16 @@ namespace CalamityOverhaul.Content.HackTimes
                 hasSelected ? 1f : 0f, hasSelected ? 0.08f : 0.12f);
         }
 
-        /// <summary>Additive 物块扫描辉光</summary>
+        /// <summary>Additive 扫描辉光</summary>
         public static void DrawAdditive(SpriteBatch sb) {
             float effectStr = HackTime.Intensity;
             if (effectStr < 0.01f) return;
 
-            //绘制悬停物块的预选辉光
             DrawHoveredTileGlow(sb, effectStr);
-
-            //绘制选中物块的扫描辉光
             DrawSelectedTileGlow(sb, effectStr);
         }
 
-        /// <summary>AlphaBlend 物块边框与标签</summary>
+        /// <summary>AlphaBlend 边框与标签</summary>
         public static void DrawAlphaBlend(SpriteBatch sb) {
             float effectStr = HackTime.Intensity;
             if (effectStr < 0.01f) return;

@@ -9,9 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
 {
-    /// <summary>
-    /// 十字架环绕玩家弹幕
-    /// </summary>
+    /// <summary>环绕十字架</summary>
     internal class JusticeUnveiledCross : ModProjectile
     {
         public override string Texture => CWRConstant.Item_Accessorie + "JusticeUnveiled";
@@ -19,9 +17,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
         private static Asset<Texture2D> CrossTex = null;
         private int crossIndex;
         private float rotation;
-        private float spawnProgress = 0f; //出现进度
-        private float pulsePhase = 0f; //脉动相位
-        private int particleTimer = 0; //粒子生成计时器
+        private float spawnProgress = 0f;
+        private float pulsePhase = 0f;
+        private int particleTimer = 0;
 
         public override void SetStaticDefaults() {
             Main.projFrames[Type] = 1;
@@ -40,7 +38,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
         public override void AI() {
             Player player = Main.player[Projectile.owner];
             if (!player.active || player.dead || !player.CWR().IsJusticeUnveiled) {
-                //添加消失特效
                 SpawnDespawnEffect();
                 Projectile.Kill();
                 return;
@@ -48,12 +45,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
 
             crossIndex = (int)Projectile.ai[0];
 
-            //出现动画（前30帧）
+            //出场前30帧
             if (spawnProgress < 1f) {
-                spawnProgress += 0.033f; //30帧完成
+                spawnProgress += 0.033f;//≈30帧
                 if (spawnProgress > 1f) spawnProgress = 1f;
 
-                //播放出现音效
                 if (spawnProgress >= 0.98f && Projectile.owner == Main.myPlayer) {
                     SoundEngine.PlaySound(SoundID.Item29 with {
                         Volume = 0.4f,
@@ -62,14 +58,11 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 }
             }
 
-            //EaseOutBack 出场
             float appearEase = VaultUtils.EaseOutBack(spawnProgress);
 
-            //旋转效果 - 根据索引添加相位差
             rotation += 0.06f + crossIndex * 0.01f;
             pulsePhase += 0.12f;
 
-            //计算环绕位置 - 添加轻微的波动效果
             float baseDistance = 60f;
             float distanceWave = (float)Math.Sin(Main.GameUpdateCount * 0.03f + crossIndex * MathHelper.PiOver2) * 5f;
             float distance = (baseDistance + distanceWave) * appearEase;
@@ -77,26 +70,21 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             float baseAngle = MathHelper.TwoPi / 5f * crossIndex;
             float angle = baseAngle + Main.GameUpdateCount * 0.02f;
 
-            //添加轻微的上下浮动
             float verticalOffset = (float)Math.Sin(Main.GameUpdateCount * 0.04f + crossIndex * MathHelper.Pi) * 3f * appearEase;
             Vector2 targetPos = player.Center + angle.ToRotationVector2() * distance;
             targetPos.Y += verticalOffset;
 
-            //平滑移动到目标位置
             Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.2f);
 
-            //生成环绕粒子效果
             particleTimer++;
             if (spawnProgress >= 1f && particleTimer % 8 == 0) {
                 SpawnTrailParticles(player);
             }
 
-            //定期生成光环粒子
             if (Main.rand.NextBool(15) && spawnProgress >= 1f) {
                 SpawnAuraParticle();
             }
 
-            //检测玩家按下Up键
             if (Projectile.IsOwnedByLocalPlayer() && CWRKeySystem.Accessory_Skills.JustPressed && player.CWR().JusticeUnveiledCooldown <= 0) {
                 if (player.CWR().JusticeUnveiledCharges > 0 && crossIndex == player.CWR().JusticeUnveiledCharges) {
                     NPC target = player.Center.FindClosestNPC(1200, false);
@@ -107,7 +95,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                         }
                         player.CWR().JusticeUnveiledCooldown = 2;
 
-                        //发射前的特效
                         SpawnLaunchEffect(target.Center);
 
                         Projectile.Kill();
@@ -120,7 +107,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 }
             }
 
-            //增强发光效果
             float lightPulse = (float)Math.Sin(pulsePhase) * 0.4f + 0.6f;
             float lightIntensity = lightPulse * appearEase;
             Lighting.AddLight(Projectile.Center,
@@ -129,9 +115,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 0.3f * lightIntensity);
         }
 
-        /// <summary>
-        /// 生成轨迹粒子
-        /// </summary>
         private void SpawnTrailParticles(Player player) {
             Vector2 toPlayer = Projectile.Center.To(player.Center);
             float angle = toPlayer.ToRotation();
@@ -151,9 +134,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             }
         }
 
-        /// <summary>
-        /// 生成光环粒子
-        /// </summary>
         private void SpawnAuraParticle() {
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
             Vector2 offset = angle.ToRotationVector2() * Main.rand.NextFloat(15f, 25f);
@@ -171,11 +151,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             aura.fadeIn = 0.8f;
         }
 
-        /// <summary>
-        /// 生成发射特效
-        /// </summary>
         private void SpawnLaunchEffect(Vector2 targetPos) {
-            //爆发粒子
             for (int i = 0; i < 20; i++) {
                 Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
                 Dust launch = Dust.NewDustPerfect(
@@ -189,7 +165,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 launch.noGravity = true;
             }
 
-            //指向目标的粒子束
             Vector2 toTarget = Projectile.Center.To(targetPos);
             float distance = toTarget.Length();
             int particleCount = (int)(distance / 30f);
@@ -211,9 +186,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             }
         }
 
-        /// <summary>
-        /// 生成消失特效
-        /// </summary>
         private void SpawnDespawnEffect() {
             if (VaultUtils.isServer) return;
 
@@ -238,19 +210,14 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             Texture2D texture = CrossTex.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
-            //脉动缩放效果
             float pulseScale = 1f + (float)Math.Sin(pulsePhase) * 0.15f;
             float baseScale = 0.5f * spawnProgress;
             float scale = baseScale * pulseScale;
-
-            //计算透明度
             float alpha = spawnProgress * 0.9f;
 
-            //绘制多层发光效果
             Color glowColor = Color.Gold * 0.6f * alpha;
             glowColor.A = 0;
 
-            //外层光晕（最亮）
             for (int i = 0; i < 3; i++) {
                 float offset = i * 0.15f;
                 float glowScale = scale * (1f + offset);
@@ -269,7 +236,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 );
             }
 
-            //中层脉动光环
             float ringScale = scale * (1f + (float)Math.Sin(pulsePhase * 1.5f) * 0.2f);
             Color ringColor = Color.Lerp(Color.Gold, Color.Yellow, 0.5f) * alpha;
             ringColor.A = 0;
@@ -286,7 +252,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 0
             );
 
-            //主体十字架
             Main.spriteBatch.Draw(
                 texture,
                 drawPos,
@@ -299,7 +264,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 0
             );
 
-            //内核高亮
             Color coreColor = Color.White with { A = 0 };
             float coreScale = scale * 0.3f * (1f + (float)Math.Sin(pulsePhase * 2f) * 0.3f);
             Main.spriteBatch.Draw(

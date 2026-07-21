@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
-    /// R技能伽马射线暴：蓄力吸光→白闪→扇形逐道点射(每3帧一道,共9道)
+    /// R 伽马暴，吸光→白闪→扇形点射(每3帧一道×9)
     internal class AriaRSkill : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -17,7 +17,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private const int ChargeTime = 60;
         private const int BeamCount = 9;
         private const int BeamInterval = 3;
-        //发完最后一道后留足其生命周期
         private const int FireWindow = BeamCount * BeamInterval + GammaRayBeam.TotalLife;
         private const float SpreadDeg = 44f;
 
@@ -64,7 +63,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 0.9f, Pitch = 0.1f }, Projectile.Center);
             }
 
-            //周围光被吸进玩家：紫白引力尘向心塌入
             if (!VaultUtils.isServer && currentTime % 2 == 0) {
                 int count = (int)(2 + chargeProgress * 4);
                 for (int i = 0; i < count; i++) {
@@ -94,7 +92,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private void FirePhase(Player player) {
             int fireTime = FireWindow - Projectile.timeLeft;
 
-            //首发瞬间：白闪 + 重震 + 相机缓动
             if (fireTime == 0) {
                 SoundEngine.PlaySound(SoundID.Item109 with { Volume = 1.1f, Pitch = 0.4f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 1f, Pitch = 0.2f }, Projectile.Center);
@@ -104,7 +101,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 }
 
                 if (!VaultUtils.isServer) {
-                    //爆发闪光粒子
                     for (int i = 0; i < 40; i++) {
                         PRTLoader.NewParticle<PRT_Light>(player.Center, Main.rand.NextVector2Circular(22f, 22f),
                             Color.Lerp(GammaRayBeam.ColCore, GammaRayBeam.ColViolet, Main.rand.NextFloat()),
@@ -114,7 +110,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 }
             }
 
-            //扇形逐道点射：左→右横扫,瞄准跟手
             if (fireTime % BeamInterval == 0 && beamsFired < BeamCount && Projectile.IsOwnedByLocalPlayer()) {
                 Vector2 mouseDir = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX);
                 float sweep01 = beamsFired / (float)(BeamCount - 1);
@@ -139,7 +134,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             }
             SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.6f, Pitch = 0.5f }, Projectile.Center);
 
-            //余韵：残留电离弧散开
+            //余韵电离弧
             for (int i = 0; i < 16; i++) {
                 float ang = MathHelper.TwoPi * i / 16f;
                 PRTLoader.NewParticle<PRT_GammaIonize>(Projectile.Center, ang.ToRotationVector2() * Main.rand.NextFloat(3f, 8f),

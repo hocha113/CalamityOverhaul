@@ -6,7 +6,7 @@ using Terraria.Graphics;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
 {
-    /// <summary>樱流化身期间移除对应玩家本体绘制；状态来自已同步的飞行控制弹幕。</summary>
+    /// <summary>樱流隐藏本地玩家绘制</summary>
     internal sealed class OniSakuraFlightHideOverride : PlayerOverride
     {
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {

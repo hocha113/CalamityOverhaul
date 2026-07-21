@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projectiles
 {
-    /// <summary>火力阵微型寻热导弹：上抛滞空→错相点火俯冲→微追踪蛇行追踪力随时间衰减、近身熄锁，横移可甩脱(公平阀)ai[0]=目标玩家索引；ai[1]=每发种子（点火错相/散布/蛇行相位）</summary>
+    /// <summary>寻热导弹；ai[0]玩家，ai[1]种子；近身熄锁</summary>
     internal class PrimeSeekerMissile : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "DestroyerGrenade";
@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
         private ref float Seed => ref Projectile.ai[1];
         private ref float Tick => ref Projectile.localAI[0];
 
-        /// <summary>点火前滞空 tick 数，按种子在 20~36 间错相，让弹群依次俯冲</summary>
+        /// <summary>滞空tick，种子错相20~36</summary>
         private int IgniteTick => 20 + (int)(Hash01(Seed) * 16f);
         private const int DiveTicks = 26;
         private const int HuntTicks = 96;
@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             }
         }
 
-        /// <summary>黄金比散列：种子 → [0,1) 确定性伪随机，各端一致</summary>
+        /// <summary>黄金比散列种子</summary>
         private static float Hash01(float seed) => seed * 0.6180339887f % 1f;
 
         public override void AI() {
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             }
 
             if (Tick < ignite) {
-                //滞空段：上抛减速，只冒薄烟
+                //滞空
                 Projectile.velocity *= 0.965f;
                 SpawnExhaust(0.4f, smokeOnly: true);
             }
@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
                 if (Tick == ignite && !Main.dedServ) {
                     SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.35f, Pitch = 0.5f }, Projectile.Center);
                 }
-                //点火俯冲：朝玩家周围的散布点强转向调头，爆发加速
+                //点火俯冲
                 if (target.Alives()) {
                     Vector2 aim = target.Center + new Vector2((hash - 0.5f) * 360f, 0f);
                     Projectile.SmoothHomingBehavior(aim, 1f, 0.065f);
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
                 SpawnExhaust(1f);
             }
             else if (Tick < ignite + DiveTicks + HuntTicks) {
-                //微追踪段：转向力线性衰减，近身熄锁，叠加蛇行
+                //微追踪
                 float huntT = (Tick - ignite - DiveTicks) / HuntTicks;
                 if (target.Alives() && Projectile.Distance(target.Center) > 90f) {
                     float turn = MathHelper.Lerp(0.032f, 0.005f, huntT);
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
                 SpawnExhaust(0.85f);
             }
             else {
-                //熄火段：失去制导直线掠过，残余蛇行
+                //熄火
                 Projectile.velocity = Projectile.velocity.RotatedBy(MathF.Sin(Tick * 0.07f + weavePhase) * 0.006f);
                 SpawnExhaust(0.3f, smokeOnly: true);
             }
@@ -166,7 +166,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             Rectangle frame = tex.GetRectangle();
             Vector2 origin = frame.Size() / 2f;
 
-            //热焰残影拖尾：越新越亮越大
+            //热焰拖尾
             for (int k = Projectile.oldPos.Length - 1; k > 0; k--) {
                 if (Projectile.oldPos[k] == Vector2.Zero) {
                     continue;

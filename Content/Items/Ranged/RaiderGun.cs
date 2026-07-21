@@ -37,10 +37,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.CWR().DeathModeItem = true;
         }
 
-        //右键：冲刺
+        //右键冲刺
         public override bool AltFunctionUse(Player player) => true;
 
-        //物品使用本身不消耗子弹，由手持弹幕在实际开火时自行拾取
+        //耗弹由Held开火时PickAmmo
         public override bool CanConsumeAmmo(Item ammo, Player player) => BaseHeldGun.AmmoConsumeContext;
 
         public override bool CanUseItem(Player player)
@@ -99,10 +99,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.CWR().DeathModeItem = true;
         }
 
-        //右键：冲刺
+        //右键冲刺
         public override bool AltFunctionUse(Player player) => true;
 
-        //物品使用本身不消耗子弹，由手持弹幕在实际开火时自行拾取
+        //耗弹由Held开火时PickAmmo
         public override bool CanConsumeAmmo(Item ammo, Player player) => BaseHeldGun.AmmoConsumeContext;
 
         public override bool CanUseItem(Player player)
@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             CreateFireLight();
             CWRPlayer modPlayer = Owner.CWR();
 
-            //冲刺结束后的强化射击：发射一枚追踪榴弹
+            //冲刺后强化，追踪榴弹
             if (modPlayer.RaiderGunDashReady) {
                 SoundEngine.PlaySound("CalamityMod/Sounds/Item/ScorchedEarthShot3".GetSound(), Projectile.Center);
                 RecoilPitch += 0.2f;
@@ -254,7 +254,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         /// <summary>
-        /// 常规射击时限制毁灭者榴弹的数量，防止过多堆积
+        /// 常规射击限榴弹数
         /// </summary>
         private bool CanFireNormally() {
             int grenadeCount = 0;
@@ -271,7 +271,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             CreateFireLight();
             CWRPlayer modPlayer = Owner.CWR();
 
-            //冲刺后的强化射击：一次性发射5枚毁灭者榴弹
+            //冲刺后5枚榴弹
             if (modPlayer.RaiderGunDashReady) {
                 SoundEngine.PlaySound("CalamityMod/Sounds/Item/ScorchedEarthShot3".GetSound(), Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.8f }, Owner.Center);

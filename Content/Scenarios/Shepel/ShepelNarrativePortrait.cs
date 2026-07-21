@@ -3,7 +3,7 @@ using System;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel
 {
-    /// <summary>Shepel Narrative 全身立绘辅助，对齐 ADV <c>ShowPortraitWithFace</c> / <c>SetPortraitFace</c>。</summary>
+    /// <summary>对齐ADV ShowPortraitWithFace / SetPortraitFace</summary>
     internal static class ShepelNarrativePortrait
     {
         public static void Show(ShepelFullBodyPortrait.Face face = ShepelFullBodyPortrait.Face.None, bool skipFadeIn = true) {

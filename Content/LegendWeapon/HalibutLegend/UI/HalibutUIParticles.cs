@@ -295,7 +295,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 float alpha = (t < 0.85f ? 1f : 1f - (t - 0.85f) / 0.15f) * globalAlpha;
 
                 if (icon == null) {
-                    //无图标：发光光粒 + 短拖尾
+                    //无图标、光粒+短拖尾
                     HalibutRenderer.DrawSoftGlow(sb, Position, 9f * scale, HalibutTheme.Glow * (alpha * 0.7f));
                     HalibutRenderer.DrawDisc(sb, Position, 2.2f * scale, 2f, HalibutTheme.Caustic * alpha);
                     return;

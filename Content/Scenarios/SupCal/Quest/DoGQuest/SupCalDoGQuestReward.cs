@@ -69,9 +69,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.DoGQuest
         }
     }
 
-    /// <summary>
-    /// 追踪玩家使用刻心者击杀神明吞噬者
-    /// </summary>
+    /// <summary>刻心者击杀神明吞噬者追踪</summary>
     internal class DoGQuestTracker : BaseDamageTracker
     {
         internal const float REQUIRED_CONTRIBUTION = 0.8f;

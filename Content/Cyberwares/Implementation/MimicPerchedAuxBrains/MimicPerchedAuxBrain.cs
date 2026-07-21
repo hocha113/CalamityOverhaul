@@ -4,8 +4,8 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrains
 {
     /// <summary>
-    /// 拟态栖置副脑，额叶槽位
-    /// <br/>四幻象环绕，致命攻击借幻象 FreeDodge，幻象冲撞自爆，伤害=袭击者攻击力×DamageScaling
+    /// 拟态栖置副脑，额叶槽
+    /// <br/>四幻象环绕，致命攻击借幻象 FreeDodge，冲撞自爆=袭击者攻击×DamageScaling
     /// </summary>
     internal class MimicPerchedAuxBrain : BaseCyberware
     {

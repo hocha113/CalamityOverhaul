@@ -2,7 +2,7 @@
 
 namespace CalamityOverhaul.Content.HackTimes.Targets
 {
-    /// <summary>液体目标工厂，无实体块时兜底</summary>
+    /// <summary>液体目标，无实体块时兜底</summary>
     internal class WaterTargetType : HackTargetType
     {
         public override HackTargetKind Kind => HackTargetKind.Water;

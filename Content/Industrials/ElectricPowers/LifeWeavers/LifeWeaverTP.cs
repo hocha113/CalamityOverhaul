@@ -56,9 +56,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             BatteryPrompt = reader.ReadBoolean();
         }
 
-        /// <summary>
-        /// 搜索有效的种植位置
-        /// </summary>
         private void SearchValidPositions() {
             validPositions.Clear();
 
@@ -71,13 +68,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
                 for (int y = machineY - searchTiles; y <= machineY + searchTiles; y++) {
                     if (!WorldGen.InWorld(x, y, 10)) continue;
 
-                    //检查是否是有效的种植地面
+                    //有效种植面
                     if (!IsValidPlantGround(x, y, out int groundType)) continue;
 
                     //检查上方是否有足够空间
                     if (!HasEnoughSpace(x, y)) continue;
 
-                    //检查是否已有树木
+                    //已有树
                     if (HasTreeAbove(x, y)) continue;
 
                     //检查距离(使用抛物线可达范围)
@@ -96,9 +93,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             }
         }
 
-        /// <summary>
-        /// 检查是否是有效的种植地面
-        /// </summary>
         private static bool IsValidPlantGround(int x, int y, out int groundType) {
             groundType = -1;
             Tile tile = Main.tile[x, y];
@@ -119,9 +113,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
                    groundType == TileID.Ash;
         }
 
-        /// <summary>
-        /// 检查上方是否有足够空间
-        /// </summary>
         private static bool HasEnoughSpace(int x, int y) {
             //至少需要12格空间
             for (int checkY = y - 1; checkY >= y - 12; checkY--) {
@@ -143,9 +134,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             return true;
         }
 
-        /// <summary>
-        /// 检查上方是否已有树木
-        /// </summary>
         private static bool HasTreeAbove(int x, int y) {
             for (int checkY = y - 1; checkY >= y - 5; checkY--) {
                 if (!WorldGen.InWorld(x, checkY)) continue;
@@ -157,9 +145,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             return false;
         }
 
-        /// <summary>
-        /// 检查是否是树木类型
-        /// </summary>
         private static bool IsTreeTile(int tileType) {
             return tileType == TileID.Trees ||
                    tileType == TileID.PalmTree ||
@@ -168,9 +153,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
                    tileType == TileID.TreeAsh;
         }
 
-        /// <summary>
-        /// 获取最佳种植位置(验证抛物线可达)
-        /// </summary>
+        /// <summary>最佳种植点(抛物线可达)</summary>
         private PlantPosition? GetBestPlantPosition(out Vector2 launchVelocity, out float flightTime) {
             launchVelocity = Vector2.Zero;
             flightTime = 0f;
@@ -207,16 +190,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             return null;
         }
 
-        /// <summary>
-        /// 获取发射位置(机器上方)
-        /// </summary>
         private Vector2 GetLaunchPosition() {
             return CenterInWorld + new Vector2(0, -20);
         }
 
-        /// <summary>
-        /// 尝试计算抛物线轨迹
-        /// </summary>
         private static bool TryCalculateTrajectory(Vector2 start, Vector2 target, out Vector2 velocity, out float time) {
             velocity = Vector2.Zero;
             time = 0f;
@@ -255,9 +232,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             return false;
         }
 
-        /// <summary>
-        /// 验证抛物线路径上没有障碍物
-        /// </summary>
         private static bool ValidateTrajectoryPath(Vector2 start, Vector2 velocity, float totalTime) {
             float gravity = LifeWeaverAcorn.Gravity;
             int checkCount = (int)(totalTime / 5f);
@@ -293,9 +267,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             return true;
         }
 
-        /// <summary>
-        /// 发射橡子
-        /// </summary>
         private void LaunchAcorn() {
             if (VaultUtils.isClient) return;
 

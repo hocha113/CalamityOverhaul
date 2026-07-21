@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 player.whoAmI
             );
 
-            //出手硝烟与点火火星：顺投掷方向的小锥形，PRT在服务端自动no-op
+            //出手硝烟与点火火星
             for (int i = 0; i < 5; i++) {
                 Vector2 sv = direction.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(3f, 7f);
                 FishDynamiteVFX.FuseSpark(spawnPos, sv);
@@ -79,10 +79,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private bool hasDetonated = false;
         private int warningPulseTimer = 0;
         private float spinRate = 0f;        //当前翻滚角速度，引信火星的甩出切速用
-        private float armedIntensity = 1f;  //引信输出强度：敌情与剩余引信时间共同增压
+        private float armedIntensity = 1f;  //引信输出强度
         private float blinkIntensity = 0f;  //警灯爆闪当前亮度
 
-        //引信端点：贴图上端，随翻滚甩动
+        //引信端点，贴图上端，随翻滚甩动
         private Vector2 FusePos => Projectile.Center + (Projectile.rotation - MathHelper.PiOver2).ToRotationVector2() * 15f;
         private int Age => MaxLifeTime - Projectile.timeLeft;
 
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void AI() {
             Player owner = Main.player[Projectile.owner];
 
-            //状态机：飞行 -> 着陆 -> 待命 -> 引爆
+            //状态机
             if (State == 0) {
                 FlightPhaseAI();
             }
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             EmitFuse();
 
-            //照明：待命期为警灯红爆闪，飞行期为引信暖光
+            //照明
             if (State == 1 && DetonationTimer >= LandingTime) {
                 Lighting.AddLight(Projectile.Center, 1.1f * blinkIntensity, 0.24f * blinkIntensity, 0.12f * blinkIntensity);
             }
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //空气阻力
             Projectile.velocity.X *= 0.99f;
 
-            //翻滚：出手转速最高，气阻下逐渐衰减，飞行期动力学持续演化
+            //翻滚
             float spinDir = Projectile.velocity.X >= 0f ? 1f : -1f;
             spinRate = MathHelper.Lerp(0.46f, 0.2f, Math.Min(Age / 50f, 1f)) * spinDir;
             Projectile.rotation += spinRate;
@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.velocity = Vector2.Zero;
             SettleRotation();
 
-            //接近检测：寻找附近的敌人
+            //接近检测，寻找附近的敌人
             bool enemyNearby = false;
             float nearestDistance = ProximityDetectionRange;
 
@@ -178,12 +178,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //引信增压：剩余引信时间与敌情共同抬升火星密度和警灯频率
+            //引信增压
             float armedFrac = Utils.GetLerpValue(300f, 60f, Projectile.timeLeft, true);
             float proxFrac = enemyNearby ? 1f - nearestDistance / ProximityDetectionRange : 0f;
             armedIntensity = 1f + armedFrac * 1.1f + proxFrac * 1.4f;
 
-            //警灯爆闪：短促亮起指数衰减，节拍随威胁升压
+            //警灯爆闪
             int blinkPeriod = Math.Max(6, (int)(36f / armedIntensity));
             float blinkPhase = warningPulseTimer % blinkPeriod / (float)blinkPeriod;
             blinkIntensity = MathF.Pow(1f - blinkPhase, 4f);
@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //躺平：转角收敛到最近的四向水平位，翻滚角速度同步耗散
+        //躺平
         private void SettleRotation() {
             spinRate *= 0.8f;
             float target = MathF.Round(Projectile.rotation / MathHelper.PiOver2) * MathHelper.PiOver2;
@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.rotation += delta * 0.22f + spinRate;
         }
 
-        //引信持续输出：火星甩出、白热爆点、细烟线、灰烬，强度随状态演化
+        //引信持续输出
         private void EmitFuse() {
             if (VaultUtils.isServer || hasDetonated) {
                 return;
@@ -224,7 +224,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 fusePos = FusePos;
             Vector2 fuseDir = (Projectile.rotation - MathHelper.PiOver2).ToRotationVector2();
 
-            //火星：翻滚的切向线速度把火星甩出去
+            //火星
             int sparkEvery = Math.Max(1, (int)(3f / intensity));
             if (Age % sparkEvery == 0) {
                 Vector2 tangent = new Vector2(-fuseDir.Y, fuseDir.X) * spinRate * 15f;
@@ -236,13 +236,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 FishDynamiteVFX.FuseSpark(fusePos, vel);
             }
 
-            //白热爆点：噼啪的心跳
+            //白热爆点，噼啪的心跳
             int popEvery = Math.Max(3, (int)(9f / intensity));
             if (Age % popEvery == 0) {
                 FishDynamiteVFX.FusePop(fusePos, Main.rand.NextFloat(0.34f, 0.5f));
             }
 
-            //细烟线：飞行期挂在弧线后方，落地后垂直上升
+            //细烟线
             if (Age % 4 == 0) {
                 Vector2 vel = State == 0
                     ? -Projectile.velocity * 0.08f + new Vector2(0f, -0.5f) + Main.rand.NextVector2Circular(0.3f, 0.3f)
@@ -258,7 +258,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnLandingEffect() {
-            //砸地扬尘：沿地面向两侧的低矮尘浪，而非全向圆环
+            //砸地扬尘
             for (int i = 0; i < 10; i++) {
                 float side = i % 2 == 0 ? 1f : -1f;
                 Vector2 vel = new Vector2(side * Main.rand.NextFloat(1.2f, 3.6f), -Main.rand.NextFloat(0.4f, 1.4f));
@@ -284,7 +284,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnWarningPulse() {
-            //引信增压一拍：白热爆点+一撮火星，与哔声对齐
+            //引信增压一拍
             FishDynamiteVFX.FusePop(FusePos, Main.rand.NextFloat(0.5f, 0.7f));
             for (int i = 0; i < 3; i++) {
                 FishDynamiteVFX.FuseSpark(FusePos, new Vector2(Main.rand.NextFloat(-2f, 2f), -Main.rand.NextFloat(1f, 3f)));
@@ -303,7 +303,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
 
-            //爆炸展示层弹幕：闪光/冲击环/尘墙/烟柱/焦痕的时序驱动器，纯视觉零伤害
+            //爆炸展示层弹幕
             //仅弹幕主人生成并经网络同步，避免各端本地重复生成导致远端叠亮
             if (Projectile.owner == Main.myPlayer) {
                 Projectile.NewProjectile(
@@ -328,7 +328,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.damage = (int)(Main.player[Projectile.owner].GetShootState().WeaponDamage * (10f + HalibutData.GetDomainLayer() * 6f));//实际爆炸伤害
             Projectile.Explode(350, default, false);
 
-            //爆炸三层：中频炸响+火药爆压+低频闷底
+            //爆炸三层
             SoundEngine.PlaySound(SoundID.Item14 with { Volume = 1.3f, Pitch = -0.4f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 1.0f, Pitch = -0.2f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.7f, Pitch = -0.9f }, Projectile.Center);
@@ -352,7 +352,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             Vector2 c = Projectile.Center;
 
-            //弹片流光：拖暗橙短尾的高速碎片，爆炸的英雄粒子
+            //弹片流光
             const int shrapnelCount = 13;
             for (int i = 0; i < shrapnelCount; i++) {
                 float ang = MathHelper.TwoPi * i / shrapnelCount + Main.rand.NextFloat(-0.18f, 0.18f);
@@ -362,7 +362,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     ?.Configure(Main.rand.Next(20, 32));
             }
 
-            //火球：橙火即褪成烟的翻滚团，军火的火转烟签名
+            //火球
             for (int i = 0; i < 7; i++) {
                 Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(4f, 10f);
                 FishDynamiteVFX.Smoke(c + vel * 1.5f, vel, Main.rand.NextFloat(0.5f, 0.85f)
@@ -429,7 +429,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             SpriteEffects effects = Projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            //飞行期翻滚拖影：位置残影+旋转残影双编码，读得出自旋而非贴图平移
+            //飞行期翻滚拖影
             if (State == 0) {
                 for (int i = 6; i >= 2; i -= 2) {
                     if (Projectile.oldPos[i] == Vector2.Zero) continue;
@@ -440,7 +440,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         , Projectile.oldRot[i], origin, Projectile.scale * (1f - i * 0.02f), effects, 0);
                 }
 
-                //旋转拖影：当前位置按角速度回溯转角的残像，自旋读作糊开的扇面
+                //旋转拖影
                 float spinT = MathHelper.Clamp(MathF.Abs(spinRate) / 0.46f, 0f, 1f);
                 Color smear = FishDynamiteVFX.SparkDeep with { A = 0 };
                 for (int i = 1; i <= 3; i++) {
@@ -451,13 +451,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //主体：待命期叠警灯红爆闪
+            //主体，待命期叠警灯红爆闪
             Color mainColor = lightColor;
             if (blinkIntensity > 0.02f) {
                 mainColor = Color.Lerp(lightColor, FishDynamiteVFX.WarnRed, blinkIntensity * 0.45f);
             }
 
-            //着陆余摆：一次不服气的鱼式扑腾，只动绘制比例不动判定
+            //着陆余摆
             Vector2 drawScale = new Vector2(Projectile.scale);
             if (State == 1) {
                 float ft = (DetonationTimer - 6f) / 14f;
@@ -470,7 +470,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Main.EntitySpriteDraw(fishTex, drawPos, sourceRect, mainColor
                 , Projectile.rotation, origin, drawScale, effects, 0);
 
-            //引信端常燃小火点：极小热芯，金橙非白
+            //引信端常燃小火点
             if (CWRAsset.SoftGlow?.Value is Texture2D glow) {
                 Vector2 fpos = FusePos - Main.screenPosition;
                 float flick = 0.75f + 0.25f * MathF.Sin(Age * 0.7f + Projectile.whoAmI);
@@ -479,7 +479,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Main.EntitySpriteDraw(glow, fpos, null, FishDynamiteVFX.SparkGold with { A = 0 } * (0.9f * flick)
                     , 0f, glow.Size() / 2f, 0.12f, SpriteEffects.None, 0);
 
-                //警灯红点：待命期贴在弹体上与照明同拍爆闪
+                //警灯红点
                 if (blinkIntensity > 0.02f) {
                     Vector2 lampPos = drawPos - (Projectile.rotation - MathHelper.PiOver2).ToRotationVector2() * 8f;
                     Main.EntitySpriteDraw(glow, lampPos, null, FishDynamiteVFX.WarnRed with { A = 0 } * (0.85f * blinkIntensity)
@@ -491,8 +491,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>雷管鱼爆炸展示层：白热过冲两帧、放射爆点与冲击环即刻打出，
-    /// 随后驱动贴地尘墙波前、蘑菇烟柱与焦痕余韵，全程纯视觉</summary>
+    /// <summary>雷管鱼爆炸展示层</summary>
     internal class DynamiteExplosionEffect : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -519,7 +518,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            //按标志初始化：MP下远端收到同步弹幕时timeLeft可能已走过0帧
+            //按标志初始化
             if (!initialized) {
                 initialized = true;
                 DetectGround();
@@ -529,7 +528,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             SpawnTimedSmoke();
 
-            //照明：前几帧强橙白，快速回落到余烬微光
+            //照明
             float lightT = 1f - Math.Min(Age / 30f, 1f);
             if (lightT > 0f) {
                 float k = MathF.Pow(lightT, 2.2f);
@@ -537,7 +536,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //向下探测地表：贴地爆炸时尘墙沿地面推进、焦痕贴地
+        //向下探测地表
         private void DetectGround() {
             Point tp = Projectile.Center.ToTileCoordinates();
             for (int i = 0; i < 9; i++) {
@@ -556,7 +555,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             Vector2 c = Projectile.Center;
 
-            //尘墙波前：沿地表向两侧逐帧推进，悬空则退化为径向扩散
+            //尘墙波前
             if (Age >= 1 && Age <= 9) {
                 float front = 26f + Age * 30f;
                 if (grounded) {
@@ -578,7 +577,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //烟柱：升腾的杆，前期带火色后期转灰
+            //烟柱
             if (Age >= 2 && Age <= 48 && Age % 3 == 0) {
                 float t = Age / 48f;
                 Vector2 pos = c + new Vector2(Main.rand.NextFloat(-10f, 10f), Main.rand.NextFloat(-6f, 6f));
@@ -588,7 +587,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , hot, FishDynamiteVFX.SmokeCold, 0.018f);
             }
 
-            //蘑菇帽：柱顶横向摊开
+            //蘑菇帽，柱顶横向摊开
             if (Age >= 26 && Age <= 52 && Age % 4 == 0) {
                 Vector2 pos = c + new Vector2(Main.rand.NextFloat(-34f, 34f), -80f - Main.rand.NextFloat(0f, 70f));
                 Vector2 vel = new Vector2(Main.rand.NextFloat(-1.1f, 1.1f), -Main.rand.NextFloat(0.4f, 0.8f));
@@ -596,7 +595,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , FishDynamiteVFX.SmokeHot, FishDynamiteVFX.SmokeCold, 0.014f);
             }
 
-            //余韵：焦痕上的细烟与飘灰，活得比爆炸本体久
+            //余韵
             if (Age >= 30 && Age <= 126) {
                 if (Age % 9 == 0) {
                     Vector2 pos = (grounded ? new Vector2(c.X, groundY) : c) + new Vector2(Main.rand.NextFloat(-16f, 16f), -4f);
@@ -617,7 +616,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int age = Age;
             float life = age / (float)EffectDuration;
 
-            //焦痕：深色尘渍随闪光褪去显形，贴地压扁，余韵期缓慢淡出
+            //焦痕
             if (grounded && CWRAsset.TearSpread01?.Value is Texture2D scorch && age >= 3) {
                 float reveal = Math.Min((age - 3) / 8f, 1f);
                 float fade = 1f - Utils.GetLerpValue(0.6f, 1f, life, true);
@@ -627,7 +626,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 sb.Draw(scorch, spos, null, scol * 0.7f, -scorchRot * 1.4f, scorch.Size() / 2f, new Vector2(1.7f, 0.6f), SpriteEffects.None, 0f);
             }
 
-            //冲击环：单次干净的气浪，贴地时压成扁椭圆
+            //冲击环
             if (CWRAsset.Ring01?.Value is Texture2D ring && age <= 16) {
                 float rt = age / 16f;
                 float ease = 1f - MathF.Pow(1f - rt, 3f);
@@ -640,7 +639,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 sb.Draw(ring, center, null, rcol * alpha, 0f, ring.Size() / 2f, rsc, SpriteEffects.None, 0f);
             }
 
-            //核心：暗烟底先垫住，再放小而热的芯，闪光期后芯先熄
+            //核心
             if (age <= 10) {
                 float ct = age / 10f;
                 if (CWRAsset.SmokeSheet01?.Value is Texture2D cloud) {
@@ -661,7 +660,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //放射爆点：白热两帧过冲，随即落到琥珀熄灭
+            //放射爆点
             if (CWRAsset.RayBurst01?.Value is Texture2D rays && age <= 12) {
                 float rt = age / 12f;
                 float alpha = MathF.Pow(1f - rt, 2.1f);

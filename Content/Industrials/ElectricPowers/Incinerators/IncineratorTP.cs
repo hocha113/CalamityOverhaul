@@ -9,9 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
 {
-    /// <summary>
-    /// 焚烧炉TP实体
-    /// </summary>
+    /// <summary>焚烧炉TP</summary>
     internal class IncineratorTP : BaseBattery
     {
         public override int TargetTileID => ModContent.TileType<IncineratorTile>();
@@ -49,7 +47,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                 return;
             }
 
-            //检查是否可以开始焚烧
+            //可否开烧
             if (IncData.SmeltingProgress == 0 && CanStartSmelting()) {
                 StartSmelting();
             }
@@ -63,9 +61,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             }
         }
 
-        /// <summary>
-        /// 检查是否可以开始焚烧
-        /// </summary>
         private bool CanStartSmelting() {
             if (IncData.InputItem == null || IncData.InputItem.IsAir) {
                 return false;
@@ -95,9 +90,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             return true;
         }
 
-        /// <summary>
-        /// 开始焚烧
-        /// </summary>
         private void StartSmelting() {
             IncData.SmeltingProgress = 1;
             if (!VaultUtils.isServer) {
@@ -106,9 +98,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             }
         }
 
-        /// <summary>
-        /// 焚烧过程
-        /// </summary>
         private void ProcessSmelting() {
             //消耗电量
             IncData.UEvalue -= IncData.UEPerTick;
@@ -135,9 +124,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             }
         }
 
-        /// <summary>
-        /// 完成焚烧
-        /// </summary>
         private void CompleteSmelting() {
             if (!IncineratorRecipes.TryGetRecipe(IncData.InputItem.type, out var recipe)) {
                 IncData.SmeltingProgress = 0;
@@ -160,7 +146,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             }
             else {
                 IncData.OutputItem.stack += outputAmount;
-                //确保不超过最大堆叠
+                //不超过maxStack
                 if (IncData.OutputItem.stack > IncData.OutputItem.maxStack) {
                     IncData.OutputItem.stack = IncData.OutputItem.maxStack;
                 }
@@ -172,17 +158,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             SendData();
         }
 
-        /// <summary>
-        /// 更新空闲动画
-        /// </summary>
         private void UpdateIdleAnimation() {
             frame = 3;//熄灭帧
             frameTimer = 0;
         }
 
-        /// <summary>
-        /// 生成工作时的粒子效果
-        /// </summary>
         private void SpawnWorkingParticles() {
             if (++particleTimer < 4) {
                 return;
@@ -201,9 +181,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             }
         }
 
-        /// <summary>
-        /// 物品交互
-        /// </summary>
         internal void HandleInputItem() {
             Item mouseItem = Main.mouseItem;
 
@@ -242,9 +219,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             }
         }
 
-        /// <summary>
-        /// 输出物品交互
-        /// </summary>
         internal void HandleOutputItem() {
             Item mouseItem = Main.mouseItem;
 
@@ -271,9 +245,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             }
         }
 
-        /// <summary>
-        /// 右键点击物块时的
-        /// </summary>
         public void RightClickByTile(bool newTP) {
             Item item = Main.LocalPlayer.GetItem();
 

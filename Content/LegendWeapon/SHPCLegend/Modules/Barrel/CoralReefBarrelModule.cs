@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>珊瑚枪管：命中长锚连成礁线，右键爆炸同步浪涌</summary>
+    /// <summary>珊瑚枪管，命中长锚连礁线，右键浪涌</summary>
     internal sealed class CoralReefBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -26,9 +26,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             ctx.ManaCostMul += 0.36f;
         }
 
-        //同主同时存在的珊瑚锚点上限：超出后命中不再生成新锚点
+        //同主锚点上限
         private const int MaxConcurrentAnchors = 8;
-        //同点 90px 内已有锚点则跳过本次生成（避免在同一目标身上堆叠）
+        //同点90px内已有则跳过
         private const float MinSpacing = 90f;
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>珊瑚锚：枝程序绘+礁线 Trail</summary>
+    /// <summary>珊瑚锚，枝程序绘+礁线 Trail</summary>
     internal sealed class SHPCCoralAnchorProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         private static readonly Vector3 TealVec = new Color(80, 220, 190).ToVector3();
 
         private float seedAngle;
-        //缓存当前帧搜集到的兄弟锚点中心；DrawPrimitives 复用
+        //兄弟锚点缓存，DrawPrimitives 复用
         private readonly List<Vector2> linkedAnchors = new();
         private readonly List<Trail> reefTrails = new();
         private readonly List<Vector2[]> reefSegments = new();
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override bool ShouldUpdatePosition() => false;
 
-        //链接计算节流：每 4 帧才扫一次全弹幕表，错峰避免同帧多锚点同时全表扫
+        //链接扫描，每4帧错峰
         private const int LinkScanInterval = 4;
 
         public override void AI() {
@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (frame % LinkScanInterval == 0) {
                 CollectLinks();
             }
-            //偶发珊瑚孢子粒子（节流到 24 帧）
+            //孢子，24帧节流
             if (Main.netMode != NetmodeID.Server && Main.GameUpdateCount % 24 == 0) {
                 PRTLoader.NewParticle<PRT_Sparkle>(Projectile.Center + Main.rand.NextVector2Circular(14f, 14f), new Vector2(0f, Main.rand.NextFloat(-0.6f, 0.2f)), new Color(255, 130, 170), Main.rand.NextFloat(0.35f, 0.7f)).Configure(new Color(120, 220, 200), Main.rand.Next(20, 40), Main.rand.NextFloat(-0.15f, 0.15f), 0.7f);
             }
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 if (!other.active || other.owner != Projectile.owner || other.whoAmI == Projectile.whoAmI) continue;
                 if (other.type != Projectile.type) continue;
                 if (Vector2.DistanceSquared(other.Center, Projectile.Center) > 360f * 360f) continue;
-                //仅 whoAmI 较小的一边记录链接，避免每对礁线被两端各画一次
+                //whoAmI 较小端记链，防双画
                 if (other.whoAmI > Projectile.whoAmI) continue;
                 linkedAnchors.Add(other.Center);
             }
@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         private float ReefWidth(float progress) {
-            //远端礁线变细
+            //远端变细
             float taper = MathF.Sin(MathHelper.Clamp(progress * MathHelper.Pi, 0f, MathHelper.Pi));
             return 4f + taper * 7f;
         }
@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Texture2D noise = CWRAsset.ThunderTrail?.Value ?? CWRAsset.Extra_193?.Value;
             if (noise == null) return;
 
-            //构造 / 复用 reef 顶点：每条链接 8 段平滑曲线（带轻微正弦摇摆）
+            //礁线8段曲线+正弦摆
             while (reefSegments.Count < linkedAnchors.Count) {
                 reefSegments.Add(new Vector2[8]);
                 reefTrails.Add(new Trail(reefSegments[reefSegments.Count - 1], ReefWidth, ReefColor));
@@ -200,7 +200,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //程序化绘制 4 段珊瑚枝
+            //4 段珊瑚枝
             Texture2D shot = CWRAsset.LightShot?.Value;
             if (shot == null) return false;
             Vector2 baseScreen = Projectile.Center - Main.screenPosition;

@@ -13,9 +13,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
     /// <summary>
-    /// 模组致谢 ED：编排式片尾——入场标题揭示 → 分节滚动名单 → 谢幕定格卡。
-    /// 全屏背景与谢幕辉光走着色器（AckBackdrop / AckFinale），缺失时 CPU 回退；
-    /// 版式参考明日方舟片尾：近黑底、单一暖琥珀强调、克制留白与缓动
+    /// 致谢 ED，Title→Roll→Finale；背景 AckBackdrop/AckFinale，缺则 CPU 回退
     /// </summary>
     internal class AcknowledgmentUI : UIHandle<AcknowledgmentUI>, IUpdateAudio, ILocalizedModType
     {
@@ -51,7 +49,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private const float TitleExitTime = 1.3f;   //标题退场淡出时长
         private const float FinaleRiseTime = 2.4f;  //谢幕辉光涨起时长
         private const float RollPxPerFrame = 0.85f; //名单每帧滚动像素
-        /// <summary>OpenProgress Lerp 系数；约 0.14 时墙钟节奏接近原线性 +0.035/帧 的淡入</summary>
+        /// <summary>OpenProgress Lerp，≈原 +0.035/帧</summary>
         private const float OpenFadeSpeed = 0.14f;
 
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
@@ -168,7 +166,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 return;
             }
 
-            //淡入到一定程度后才推进编排，避免黑屏瞬间就开始滚动
+            //淡入够了再推进，避免黑屏就滚
             if (OpenProgress.Current > 0.25f) {
                 phaseTime += 1f / 60f;
                 AdvancePhase();
@@ -201,7 +199,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
 
         private void HandleInput() {
-            //长按任意键（含鼠标）读条退出，松开即回落，避免误触瞬退
+            //长按任意键读条退出，松则回落
             if (OpenProgress.Current < 0.85f) {
                 holdProgress = MathF.Max(0f, holdProgress - 0.05f);
                 return;
@@ -232,7 +230,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private static bool IsGridSection(in CreditSection sec)
             => sec.Role == CreditRole.Donor || sec.Names.Length > AckCredits.MultiColumnThreshold;
 
-        /// <summary>名单从底部入场滚到完全离顶所需的滚动距离</summary>
+        /// <summary>名单滚完离顶所需距离</summary>
         private static float MeasureRollDistance(float screenW, float screenH) {
             float contentWidth = screenW * (1f - AckTheme.SideMarginRatio * 2f);
             int cols = DonorColumns(contentWidth);
@@ -255,7 +253,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             if (!OnActive()) {
                 return;
             }
-            //资源在卸载模组时可能已被释放，绘制前确认占位纹理仍可用
+            //卸载时占位纹理可能已释放
             if (VaultAsset.placeholder2 == null || VaultAsset.placeholder2.IsDisposed) {
                 Close();
                 return;
@@ -265,7 +263,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             float screenW = AckTheme.UIScreenW;
             float screenH = AckTheme.UIScreenH;
 
-            //背景情绪随阶段过渡：入场偏冷暗 → 名单中段 → 谢幕暖亮
+            //背景情绪，入场偏冷→名单中段→谢幕暖
             float progress = phase switch {
                 Phase.Finale => 1f,
                 Phase.Roll => 0.5f,
@@ -302,7 +300,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             float riseOut = -38f * exit;
             float cx = screenW * 0.5f;
 
-            //标志：缓出回弹浮入（回弹会越过 1，位移用其过冲，透明度须钳制避免 Color*scale 溢出回绕）
+            //标志，EaseOutBack 过冲时 alpha 须钳
             float logoAppear = AckTheme.EaseOutBack((t - 0.5f) / 1.7f);
             Vector2 logoCenter = new(cx, screenH * 0.40f + (1f - logoAppear) * 26f + riseOut);
             AckRenderer.DrawLogo(sb, Logo?.Value, logoCenter, 0.92f, block * AckTheme.Saturate(logoAppear), AckTheme.Accent);
@@ -315,7 +313,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             AckRenderer.DrawDisplayText(sb, TitleText.Value, titleCenter,
                 AckTheme.Text * (block * titleAppear), AckTheme.Accent, titleScale, block * titleAppear * 0.4f);
 
-            //标题两侧取景括号
+            //两侧取景括号
             float bracketGap = titleSize.X * 0.5f + 30f;
             float bh = titleSize.Y * 0.40f;
             Color brc = AckTheme.Accent * (block * titleAppear * 0.85f);
@@ -324,7 +322,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             AckRenderer.DrawBracket(sb, new Vector2(titleCenter.X + bracketGap, titleCenter.Y - bh), 13f, 2f, -1, 1, brc);
             AckRenderer.DrawBracket(sb, new Vector2(titleCenter.X + bracketGap, titleCenter.Y + bh), 13f, 2f, -1, -1, brc);
 
-            //标题下的对称生长强调线 + 中点菱形
+            //标题下对称强调线+菱形
             float ulHalf = (titleSize.X * 0.5f + 12f) * AckTheme.EaseOutQuint(titleAppear);
             float ulY = titleCenter.Y + titleSize.Y * 0.5f + 9f;
             AckRenderer.DrawGradientLine(sb, new Vector2(cx, ulY), new Vector2(cx - ulHalf, ulY),
@@ -333,7 +331,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 AckTheme.Accent * (block * 0.7f), AckTheme.Accent * 0.02f, 1.6f);
             AckRenderer.DrawDiamond(sb, new Vector2(cx, ulY), 4f, AckTheme.AccentHi * (block * titleAppear));
 
-            //副标题：字距拉开，居中
+            //副标题，字距拉开
             float subAppear = AckTheme.EaseOutCubic((t - 2.7f) / 1.3f);
             string sub = SubtitleText.Value;
             float subScale = 0.78f;
@@ -404,7 +402,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
         }
 
-        /// <summary>名字进出视野时上下渐隐，乘以主透明度</summary>
+        /// <summary>出入视野上下渐隐</summary>
         private float RowAlpha(float screenY, float screenH) {
             float band = AckTheme.FadeBand;
             float topFactor = AckTheme.Saturate(screenY / band);
@@ -451,7 +449,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             float cx = screenW * 0.5f;
             float y = screenH - 48f;
 
-            //提示文字：按住时由暗转亮
+            //提示，按住由暗转亮
             string hint = ExitHintText.Value;
             const float hintScale = 0.66f;
             const float hintTrack = 1.8f;
@@ -460,7 +458,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             AckRenderer.DrawTrackedText(sb, hint, new Vector2(cx - hintW * 0.5f, y - 22f),
                 hintCol * (baseA * (0.45f + holdProgress * 0.5f)), hintScale, hintTrack);
 
-            //读条：细轨 + 生长辉光填充 + 端点菱形
+            //读条+端点菱形
             const float barW = 210f;
             float left = cx - barW * 0.5f;
             AckRenderer.DrawLine(sb, new Vector2(left, y), new Vector2(left + barW, y), 2f,

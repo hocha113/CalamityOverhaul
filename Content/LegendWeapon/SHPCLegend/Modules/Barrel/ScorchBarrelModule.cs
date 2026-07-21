@@ -2,11 +2,11 @@
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>灼烧激光枪管：激光命中上灼烧 debuff，靠 DoT 补输出</summary>
+    /// <summary>灼烧激光枪管，命中灼烧 DoT</summary>
     internal sealed class ScorchBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
-        //灼焰橙红
+        //橙红
         public override Color TintColor => new(255, 80, 20);
 
         public override void Apply(ref ShootContext ctx) {
@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         public override void OnLaserAI(CyberPrismLaserProj laser) {
-            //将光束颜色主题替换为灼烧橙红配色
+            //主题换灼烧橙红
             laser.ThemeCore = new Color(255, 160, 30);
             laser.ThemeGlow = new Color(220, 80, 5);
             laser.ThemeAura = new Color(140, 30, 0);

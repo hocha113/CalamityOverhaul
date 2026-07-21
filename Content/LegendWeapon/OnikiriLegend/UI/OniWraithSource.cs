@@ -6,12 +6,9 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     /// <summary>
-    /// 点鬼簿数据源适配器 + 厉鬼框架的鬼切侧接线。<br/>
-    /// 簿面：读取本地玩家手中鬼切的 <see cref="OnikiriData"/> 绑定进度映射为条目，
-    /// 名录与文案自 <see cref="WraithRegistry"/> 取，绑定数据自刀上的 <see cref="WraithProgressStore"/> 取，
-    /// 以 (数据引用, 版本号) 做脏检查，进度变更当帧生效且无逐帧重建开销。<br/>
-    /// 接线：向 <see cref="WraithVessels"/> 注册载体解析（框架不认识鬼切类型，全靠这里），
-    /// 向 <see cref="WraithRites"/> 挂铭刻仪式演出与演出忙判定
+    /// 点鬼簿适配器+厉鬼接线.
+    /// 簿面映 <see cref="OnikiriData"/>;(引用,版本)脏检;
+    /// 注册 <see cref="WraithVessels"/> / <see cref="WraithRites"/> 演出
     /// </summary>
     internal sealed class OniWraithSource : IOniGhostSource, ICWRLoader
     {
@@ -35,7 +32,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             OniRegistry.SetSource(this);
             //载体解析缝:手持=仪式与借力门控,随身=反噬判定(刀在身上,鬼就在身边)
             WraithVessels.Register(ResolveHeldVessel, ResolveCarriedVessel);
-            //仪式演出:数据已由 WraithRites 先行落簿,这里只负责铭刻弹窗;演出播放中不受理新的借力键
+            //数据已由 WraithRites 落簿,这里弹铭刻窗;演出中不受理借力
             WraithRites.RitePresenter = PresentRite;
             WraithRites.PresentationBusy = static ()
                 => (OniEngraveRiteUI.Instance?.Active ?? false) || (OniRegisterUI.Instance?.IsOpen ?? false);
@@ -53,14 +50,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         //====载体解析与仪式演出====
 
-        /// <summary>手持解析：HeldItem 对本地玩家含鼠标项、对远端玩家取所选格，两端语义都对</summary>
+        /// <summary>手持解析,本地含鼠标项</summary>
         private static WraithVesselHandle ResolveHeldVessel(Player player) {
             Item item = player.HeldItem;
             OnikiriData data = OnikiriData.TryGet(item);
             return data == null ? default : new WraithVesselHandle(item, data.Wraiths);
         }
 
-        /// <summary>随身解析：手中优先，背包（含钱币/弹药格）兜底</summary>
+        /// <summary>随身解析,手中优先背包兜底</summary>
         private static WraithVesselHandle ResolveCarriedVessel(Player player) {
             WraithVesselHandle held = ResolveHeldVessel(player);
             if (held.IsValid) {
@@ -75,7 +72,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             return default;
         }
 
-        /// <summary>仪式演出：读回刚落簿的记录组一份簿面条目，连同语义交给铭刻仪式弹窗补演</summary>
+        /// <summary>读刚落簿记录交铭刻弹窗</summary>
         private static void PresentRite(WraithDefinition definition, WraithRiteKind kind) {
             WraithVesselHandle vessel = WraithVessels.ResolveHeld(Main.LocalPlayer);
             if (!vessel.IsValid) {
@@ -87,7 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             OniEngraveRiteUI.Play(BuildEntry(definition, record), kind);
         }
 
-        /// <summary>本地玩家当前手持鬼切的数据，服务器/菜单/未持刀为 null</summary>
+        /// <summary>本地持刀数据,服务器/菜单/未持 null</summary>
         private static OnikiriData ResolveLocalData() {
             if (Main.dedServ || Main.gameMenu) {
                 return null;
@@ -143,8 +140,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     //躁动由驾驭度推导,不做独立存储;阈值与反噬判定同源
                     entry.State = record.Mastery < WraithDefinition.RestlessThreshold ? OniGhostState.Restless : OniGhostState.Engraved;
                     entry.Mastery = record.Mastery;
-                    //簿面按演示期原貌呈现:Bound 即见来历与赋力。
-                    //残页门控(认主叙事)已按用户钦定撤下——PactRenewed 仍随仪式落档,但不再影响簿面
+                    //Bound 即见来历赋力;PactRenewed 仍落档但不挡簿面
                     entry.Origin = () => definition.Origin.Value;
                     entry.Power = () => definition.Power.Value;
                     break;

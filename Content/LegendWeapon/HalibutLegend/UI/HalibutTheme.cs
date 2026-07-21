@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
     {
         #region UI空间坐标（与调用语境无关）
         //UIHandle 的 Update/Draw 运行在 InterfaceScaleType.UI 层内，此时 Main.screenWidth 已被
-        //除以 UIScale；但 ModPlayer.PostUpdate 等逻辑帧里它是原始后台缓冲尺寸。
+        //除以UIScale；逻辑帧里是原始后台缓冲尺寸
         //任何跨语境的布局计算都必须使用下面这组换算，禁止直接读 Main.screenWidth/Height
         /// <summary>
         /// UI空间下的屏幕宽度（任何调用语境下取值一致）
@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public const float HudCoreR = 27f;
         //HUD主环描边半径
         public const float HudCoreRingR = 33f;
-        //HUD锚点：距屏幕左下角的偏移
+        //HUD锚点、距左下偏移
         public static readonly Vector2 HudAnchorOffset = new(86f, -78f);
         //复苏深度计尺寸
         public const float HudGaugeHeight = 64f;
@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         #endregion
 
         #region 图鉴几何
-        //图鉴四个深度带的名称索引：0浅滩 1远洋 2深海 3深渊
+        //深度带名索引、0浅滩1远洋2深海3深渊
         public const int AtlasTierCount = 4;
         //每个深度带的像素高度
         public const float AtlasTierHeight = 360f;

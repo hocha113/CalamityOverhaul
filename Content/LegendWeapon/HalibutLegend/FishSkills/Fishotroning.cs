@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 dust.noGravity = false;
             }
 
-            //诅咒魔力点燃：极少量幽绿逸散（骷髅王语系点缀，量与亮度都收着）
+            //诅咒魔力点燃
             for (int i = 0; i < 2; i++) {
                 PRTLoader.NewParticle<PRT_Spark>(position + Main.rand.NextVector2Circular(10f, 10f)
                     , -Vector2.UnitY * Main.rand.NextFloat(1f, 2.2f)
@@ -199,7 +199,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const int MaxTrailLength = 20;
         private float handScale = 1f;
 
-        //化形入场：从玩家中心长成，禁 pop-in
+        //化形入场
         private const int MaterializeDuration = 14;
         private int materializeTimer = MaterializeDuration;
 
@@ -230,7 +230,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
 
-            //初始化IK手臂段
             for (int i = 0; i < ArmSegmentCount; i++) {
                 armSegments.Add(Vector2.Zero);
             }
@@ -251,7 +250,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Projectile.timeLeft = 60;
 
-            //化形入场期：长成动画接管，状态机搁置
+            //化形入场期，长成动画接管，状态机搁置
             if (materializeTimer > 0) {
                 MaterializeBehavior();
                 return;
@@ -261,7 +260,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             UpdateIdleOffset();
             UpdateShoulderPosition(Owner);
 
-            //状态机
             switch (State) {
                 case HandState.Idle:
                     IdleBehavior(Owner);
@@ -314,7 +312,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             UpdateRotation();
         }
 
-        /// <summary>化形入场：easeOutBack 过冲长成 + 上浮至首个待机位 + 钙尘剥落</summary>
+        /// <summary>化形入场，easeOutBack 过冲长成 + 上浮至首个待机位 + 钙尘剥落</summary>
         private void MaterializeBehavior() {
             materializeTimer--;
             ownerDirection = Owner.direction;
@@ -335,7 +333,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.Center = Vector2.Lerp(Owner.Center, target, VaultUtils.EaseOutCubic(t));
             Projectile.velocity = Vector2.Zero;
 
-            //长成中骨屑坠落：骨骸在凝聚而非凭空出现
+            //长成中骨屑坠落
             if (!VaultUtils.isServer && materializeTimer % 2 == 0) {
                 PRTLoader.NewParticle<PRT_FishOtronShard>(
                     Projectile.Center + Main.rand.NextVector2Circular(24f, 24f) * handScale
@@ -553,8 +551,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             armTension = 1f;
 
             //快速挥击弧线-增大范围，考虑玩家朝向
-            //朝右时：从右上挥到左下
-            //朝左时：从左上挥到右下
+            //朝右时，从右上挥到左下
+            //朝左时，从左上挥到右下
             float startAngle = MathHelper.PiOver2 * 1.2f;
             float endAngle = -MathHelper.PiOver4 * 1.5f;
 
@@ -592,7 +590,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             glowIntensity = 1f;
             armTension = 1f;
 
-            //指数加速下砸：pow(4) 前段悬滞后段暴坠，重量走时间曲线
+            //指数加速下砸
             Vector2 slamStart = attackTargetPos + new Vector2(0, -250f);
             Vector2 slamEnd = attackTargetPos + new Vector2(0, 50f);
 
@@ -608,7 +606,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //下砸时手部逐渐握紧效果
             handScale = 1f + (1f - progress) * 0.5f;
 
-            //中段破空声：坠速陡增的听觉对位
+            //中段破空声，坠速陡增的听觉对位
             if (StateTimer == (int)(SlamDuration * 0.55f)) {
                 SoundEngine.PlaySound(SoundID.Item1 with {
                     Volume = 0.55f,
@@ -616,7 +614,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }, Projectile.Center);
             }
 
-            //下砸轨迹特效：坠速起来后才开始剥落
+            //下砸轨迹特效，坠速起来后才开始剥落
             if (progress > 0.35f) {
                 SpawnSlamTrail();
             }
@@ -624,7 +622,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (StateTimer >= SlamDuration) {
                 State = HandState.Recovering;
                 StateTimer = 0;
-                //落点定帧：砸击后冻结数帧再回收
+                //落点定帧，砸击后冻结数帧再回收
                 impactHoldFrames = 4;
                 impactHoldPos = slamEnd;
                 CreateSlamImpact(slamEnd);
@@ -752,7 +750,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
             }
 
-            //出手强调：沿投掷方向的定向骨尘喷流（方向性优先于数量）
+            //出手强调
             for (int i = 0; i < 10; i++) {
                 Dust dust = Dust.NewDustPerfect(
                     throwOrigin,
@@ -765,7 +763,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 dust.noGravity = false;
             }
 
-            //出手骨屑：受重力续落成余迹
+            //出手骨屑，受重力续落成余迹
             for (int i = 0; i < 4; i++) {
                 PRTLoader.NewParticle<PRT_FishOtronShard>(throwOrigin
                     , toTarget.RotatedByRandom(0.35f) * Main.rand.NextFloat(4f, 9f)
@@ -792,7 +790,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void RecoveringBehavior(Player owner) {
-            //落点定帧：冻结在冲击位，重量的余韵
+            //落点定帧，冻结在冲击位，重量的余韵
             if (impactHoldFrames > 0) {
                 impactHoldFrames--;
                 Projectile.Center = impactHoldPos;
@@ -853,7 +851,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 direction = (armSegments[i - 1] - (i == ArmSegmentCount - 1 ? shoulderPos : armSegments[i])).SafeNormalize(Vector2.Zero);
 
                 //根据张力调整关节位置,增加自然弯曲
-                //关键修复：根据玩家朝向调整弯曲方向
+                //关键修复，根据玩家朝向调整弯曲方向
                 float bendFactor = (float)Math.Sin((i / (float)ArmSegmentCount) * MathHelper.Pi) * armTension;
                 Vector2 perpendicular = new Vector2(-direction.Y, direction.X) * bendFactor * 15f * ownerDirection;
 
@@ -877,7 +875,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void UpdateTrail() {
-            //位置＋旋转角双历史：拖影才能编码弧线挥动的自旋分量
+            //位置＋旋转角双历史
             trailPoints.Insert(0, (Projectile.Center, Projectile.rotation));
             if (trailPoints.Count > MaxTrailLength) {
                 trailPoints.RemoveAt(trailPoints.Count - 1);
@@ -902,7 +900,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //特效方法
         private void SpawnIdleDust() {
-            //待机时偶落的钙化碎屑：老骨头一直在掉渣
+            //待机时偶落的钙化碎屑
             Dust dust = Dust.NewDustDirect(
                 Projectile.position,
                 Projectile.width,
@@ -915,7 +913,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnWindUpDust() {
-            //蓄力剥落：钙化碎屑受重力抖落（漂浮光点换成落地实物）
+            //蓄力剥落
             Dust dust = Dust.NewDustPerfect(
                 Projectile.Center + Main.rand.NextVector2Circular(34f, 34f) * handScale,
                 DustID.Bone,
@@ -934,7 +932,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     ?.Configure(Main.rand.Next(18, 28));
             }
 
-            //腕部幽绿魔力细丝（极克制：小、暗、稀，绿火主场让给冥焰技能）
+            //腕部幽绿魔力细丝（极克制
             if (Main.rand.NextBool(8) && armSegments.Count > 1) {
                 PRTLoader.NewParticle<PRT_Spark>(armSegments[1]
                     , -Vector2.UnitY * Main.rand.NextFloat(0.8f, 1.6f)
@@ -959,7 +957,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnSlamTrail() {
-            //坠落中甩脱的骨屑：反向剥离后受重力续落
+            //坠落中甩脱的骨屑
             for (int i = 0; i < 2; i++) {
                 Dust dust = Dust.NewDustDirect(
                     Projectile.position,
@@ -1022,7 +1020,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void CreateImpactEffect(Vector2 position) {
             impactShake = 9f;
 
-            //冲击骨尘沿挥击切向喷出：全向圆环换成有方向的力
+            //冲击骨尘沿挥击切向喷出
             Vector2 tangent = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             for (int i = 0; i < 14; i++) {
                 Dust dust = Dust.NewDustPerfect(
@@ -1049,7 +1047,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 smoke.noGravity = true;
             }
 
-            //骨屑抛物余迹：活得比这一击久
+            //骨屑抛物余迹，活得比这一击久
             for (int i = 0; i < 3; i++) {
                 PRTLoader.NewParticle<PRT_FishOtronShard>(position
                     , tangent.RotatedByRandom(0.5f) * Main.rand.NextFloat(3f, 7f) - Vector2.UnitY * 2f
@@ -1071,13 +1069,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void CreateSlamImpact(Vector2 position) {
             impactShake = 13f;
 
-            //克制震屏：重击落点专用，幅度收着（镜像 OniFinaleCut 的 Punch 用法）
+            //克制震屏，重击落点专用
             if (!VaultUtils.isServer && CWRServerConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(position
                     , Vector2.UnitY, 4.5f, 7f, 9, 800f, FullName));
             }
 
-            //尘墙：贴地向两侧奔涌的横向烟尘
+            //尘墙，贴地向两侧奔涌的横向烟尘
             for (int i = 0; i < 12; i++) {
                 int dir = i % 2 == 0 ? 1 : -1;
                 Dust wall = Dust.NewDustPerfect(
@@ -1118,7 +1116,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 debris.noGravity = false;
             }
 
-            //碎石抛物：受重力翻滚的骨屑与大块骨骸（英雄时刻由 PRT 承担）
+            //碎石抛物
             for (int i = 0; i < 7; i++) {
                 PRTLoader.NewParticle<PRT_FishOtronShard>(
                     position + Main.rand.NextVector2Circular(16f, 6f)
@@ -1133,12 +1131,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     ?.Configure(Main.rand.Next(30, 46), bigChunk: true);
             }
 
-            //低伏尘环：暗色扁环压底，不做亮盘
+            //低伏尘环，暗色扁环压底，不做亮盘
             PRT_DWave wave = PRTLoader.NewParticle<PRT_DWave>(position, Vector2.Zero
                 , new Color(150, 138, 114) * 0.42f, 0.4f);
             wave?.Configure(new Vector2(1f, 0.32f), 0f, 1.7f, 16);
 
-            //烟尘残留：活得比砸击动作久的余韵
+            //烟尘残留，活得比砸击动作久的余韵
             for (int i = 0; i < 3; i++) {
                 PRTLoader.NewParticle<PRT_Smoke>(
                     position + new Vector2(Main.rand.NextFloat(-30f, 30f), Main.rand.NextFloat(-8f, 2f))
@@ -1191,7 +1189,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnKill(int timeLeft) {
-            //英雄时刻：巨骨崩碎成大块骨骸＋细骨屑＋钙尘云
+            //英雄时刻
             for (int i = 0; i < 7; i++) {
                 PRTLoader.NewParticle<PRT_FishOtronShard>(
                     Projectile.Center + Main.rand.NextVector2Circular(20f, 20f)
@@ -1232,7 +1230,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     ?.Configure(false, Main.rand.Next(16, 24));
             }
 
-            //碎骨双层：低沉断裂＋高频崩裂
+            //碎骨双层，低沉断裂＋高频崩裂
             SoundEngine.PlaySound(SoundID.NPCDeath2 with {
                 Volume = 0.5f,
                 Pitch = -0.3f
@@ -1270,7 +1268,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 drawPos = Projectile.Center - Main.screenPosition + shakeOffset;
             float bodyRot = Projectile.rotation + MathHelper.Pi;
 
-            //下砸速度拉伸残影：纵向压窄拉长，编码坠落各向异性
+            //下砸速度拉伸残影
             if (State == HandState.Slamming && Projectile.velocity.Y > 6f) {
                 for (int i = 3; i >= 1; i--) {
                     float fade = 1f - i / 4f;
@@ -1288,7 +1286,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //暗影底衬：夹在骨臂链之上、手掌之下的质量剪影
+            //暗影底衬
             sb.Draw(
                 handTexture,
                 drawPos + new Vector2(0f, 5f),
@@ -1301,7 +1299,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0
             );
 
-            //攻击期单层骨白压边（同贴图加色堆叠禁令：只此一层、低透明度）
+            //攻击期单层骨白压边（同贴图加色堆叠禁令
             if (glowIntensity > 0.85f) {
                 sb.Draw(
                     handTexture,
@@ -1361,7 +1359,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 //计算需要多少骨头来填充这段
                 int boneCount = Math.Max(1, (int)(length / 20f));
 
-                //近肩端偏暗：骨臂链的纵深明暗
+                //近肩端偏暗，骨臂链的纵深明暗
                 float depthShade = MathHelper.Lerp(0.92f, 0.7f, (i + 1) / (float)armSegments.Count);
 
                 for (int j = 0; j < boneCount; j++) {
@@ -1387,7 +1385,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void DrawAttackTrail(SpriteBatch sb, Texture2D texture, Vector2 origin) {
-            //历史位置＋历史旋转角的哑光旋转拖影：弧线挥动读作扫掠而非贴图平移
+            //历史位置＋历史旋转角的哑光旋转拖影
             for (int i = 2; i < trailPoints.Count; i += 2) {
                 float fade = 1f - i / (float)trailPoints.Count;
                 Color trailColor = new Color(196, 188, 170) * (fade * 0.34f);

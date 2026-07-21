@@ -6,9 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>
-    /// 腐蚀波纹粒子，毒液扩散和腐蚀效果
-    /// </summary>
+    /// <summary>腐蚀波纹</summary>
     internal class PRT_CorrosionWave : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle4";
@@ -51,11 +49,10 @@ namespace CalamityOverhaul.Content.PRTTypes
         }
 
         public override void AI() {
-            //波纹扩散
             float expandProgress = (float)Math.Sin(LifetimeCompletion * MathHelper.PiOver2);
             Scale = MathHelper.Lerp(originalScale, maxScale, expandProgress);
 
-            //透明度：先快速出现，然后缓慢消失
+            //快现缓灭
             if (LifetimeCompletion < 0.2f) {
                 Opacity = LifetimeCompletion / 0.2f;
             }
@@ -63,15 +60,12 @@ namespace CalamityOverhaul.Content.PRTTypes
                 Opacity = (float)Math.Sin((1f - LifetimeCompletion) * MathHelper.PiOver2);
             }
 
-            //脉冲效果
             pulsePhase += 0.08f;
             float pulseFactor = MathF.Sin(pulsePhase) * 0.15f + 1f;
             Scale *= pulseFactor;
 
-            //缓慢旋转
             Rotation += 0.005f;
 
-            //颜色变化（模拟腐蚀过程）
             Color = Color.Lerp(waveColor, new Color(60, 120, 70), LifetimeCompletion);
         }
 
@@ -86,7 +80,6 @@ namespace CalamityOverhaul.Content.PRTTypes
             Vector2 drawPos = Position - Main.screenPosition;
             Vector2 origin = waveTexture.Size() / 2f;
 
-            //绘制底层光晕
             float bloomScale = Scale * 1.5f;
             spriteBatch.Draw(
                 bloomTexture,
@@ -100,7 +93,6 @@ namespace CalamityOverhaul.Content.PRTTypes
                 0f
             );
 
-            //绘制主波纹
             spriteBatch.Draw(
                 waveTexture,
                 drawPos,
@@ -113,7 +105,6 @@ namespace CalamityOverhaul.Content.PRTTypes
                 0f
             );
 
-            //绘制内圈高光
             float innerScale = Scale * 0.85f;
             spriteBatch.Draw(
                 waveTexture,

@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         public override void AI() {
-            //跟随主人玩家的领域中心(支持瞬移期间领域缓动)，避免冲击波在玩家瞬间位移时跳到新位置
+            //跟主人领域中心
             CyberspacePlayer cp = Cyberspace.For(Projectile.owner);
             if (cp != null) {
                 Projectile.Center = cp.DomainCenter;
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 }
             }
             else if (Projectile.localAI[0] == 0f) {
-                //极端兜底：拿不到主人时退到 BaseRadius，至少保证视觉不闪
+                //无主人则 BaseRadius
                 InitRadii(Cyberspace.BaseRadius);
                 Projectile.localAI[0] = 1f;
             }
@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 fadeAlpha = MathHelper.SmoothStep(1f, 0f, (t - 0.55f) / 0.45f);
             fadeAlpha = MathHelper.Clamp(fadeAlpha, 0f, 1f);
 
-            //设置着色器参数：用主人玩家的领域时间，避免远端客户端拿成本地时间
+            //uTime 取主人领域时间
             CyberspacePlayer cp = Cyberspace.For(Projectile.owner);
             float effectTime = cp?.EffectTime ?? Cyberspace.EffectTime;
             shader.Parameters["uTime"]?.SetValue(effectTime);

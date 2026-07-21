@@ -11,7 +11,7 @@ namespace CalamityOverhaul
     public class CWRMod : Mod
     {
         #region Data
-        //饿汉式单例：跨 Mod/外部可能在 Load 前访问 Instance，惰性会 NRE
+        //饿汉单例，跨 Mod 可能在 Load 前取 Instance
         private static CWRMod instance;
         internal static CWRMod Instance {
             get {
@@ -52,11 +52,11 @@ namespace CalamityOverhaul
 
         #endregion
 
-        /// <summary>跨 Mod ModCall 入口</summary>
+        /// <summary>Mod.Call 入口</summary>
         public override object Call(params object[] args) => ModCall.Hander(args);
 
         public override void PostSetupContent() {
-            //内容注册完毕后再建 ID 查找表
+            //注册完再建 ID 表
             CWRLoad.Setup();
             CWRID.PreloadAll();
             foreach (var load in ILoaders) {
@@ -74,7 +74,7 @@ namespace CalamityOverhaul
         public override void Load() {
             FindMod();
 
-            //跨 Mod Hook 不依赖灾厄，灾厄专属在 LoadComders 内守卫
+            //跨 Mod Hook；灾厄专属在 LoadComders
             ModGanged.Load();
 
             CWRRef.Load();
@@ -89,7 +89,7 @@ namespace CalamityOverhaul
         }
 
         public override void Unload() {
-            //逆序卸载 ICWRLoader → 清空联动 Mod 引用 → 释放静态查找表
+            //ICWRLoader → 清联动引用 → 静态表
             foreach (var load in ILoaders) {
                 try {
                     load.UnLoadData();
@@ -106,7 +106,7 @@ namespace CalamityOverhaul
             instance = null;
         }
 
-        /// <summary>网络包分发至 CWRNetWork</summary>
+        /// <summary>转发 CWRNetWork</summary>
         public override void HandlePacket(BinaryReader reader, int whoAmI) => CWRNetWork.HandlePacket(this, reader, whoAmI);
 
         private void EmptyMod() {
@@ -138,7 +138,7 @@ namespace CalamityOverhaul
             fargowiltas = null;
         }
 
-        /// <summary>缓存可选联动 Mod 引用，Load/Unload 前调用</summary>
+        /// <summary>缓存可选联动 Mod，Load/Unload 前</summary>
         public void FindMod() {
             EmptyMod();
             ModLoader.TryGetMod("CalamityMod", out calamity);

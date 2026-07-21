@@ -8,9 +8,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
 {
-    /// <summary>
-    /// 橡子下落动画Actor，落点在生成时即锁定，落地后交棒给 <see cref="TreeRegrowth"/>
-    /// </summary>
+    /// <summary>橡子下落Actor；落点生成时锁定，落地交 <see cref="TreeRegrowth"/></summary>
     internal class FallingAcorn : Actor
     {
         //落点/树种/蓝图种子，权威端Setup后经SyncVar同步
@@ -28,9 +26,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
         private bool landed;
         private int landedTimer;
 
-        /// <summary>
-        /// 权威端生成后立即调用，锁定落点与这棵树的蓝图种子
-        /// </summary>
+        /// <summary>权威端初始化，锁落点与蓝图种子</summary>
         public void Setup(int tileX, int groundY, int treeType, int seed) {
             targetTileX = tileX;
             targetTileY = groundY;

@@ -23,7 +23,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool? CanUseItem(Item item, Player player) {
             if (player.altFunctionUse == 2) {
-                //检查冷却
                 if (Cooldown > 0) {
                     return false;
                 }
@@ -36,7 +35,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void Use(Item item, Player player) {
-            //设置冷却
             SetCooldown();
 
             //计算水平冲刺方向（只考虑X轴方向）
@@ -45,7 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             ShootState shootState = player.GetShootState();
 
-            //生成独角兽鱼冲刺弹幕：初速为零，蓄势-爆发-硬刹曲线由弹幕自己执行
+            //生成独角兽鱼冲刺弹幕，初速为零
             Projectile.NewProjectile(
                 player.GetSource_ItemUse(item),
                 player.Center,
@@ -64,10 +62,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 独角兽鱼冲刺弹幕：蓄势-爆发-硬刹三段水平突刺，全程无敌穿墙。<br/>
-    /// 彩虹由玩家残影序列编码：每个残影单色，色相沿队列逐个偏移，串起来才是彩虹；<br/>
-    /// 配角尖双螺旋细光轨与受重力缓落的星屑余韵。<br/>
-    /// ai[0]=时间轴  ai[1]=水平方向 ±1
+    /// 独角兽鱼冲刺弹幕，蓄势-爆发-硬刹三段水平突刺，全程无敌穿墙<br/>
+    /// 彩虹由玩家残影序列编码，每个残影单色，色相沿队列逐个偏移，串起来才是彩虹；<br/>
+    /// 配角尖双螺旋细光轨与受重力缓落的星屑余韵<br/>
+    /// ai[0]=时间轴 ai[1]=水平方向 ±1
     /// </summary>
     internal class UnicornFishDashProj : ModProjectile
     {
@@ -83,7 +81,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const int BurstFrames = 24;
         private const int BrakeFrames = 6;
         private const int ActionEnd = WindupFrames + BurstFrames + BrakeFrames;
-        /// <summary>余辉期：控制权已交还，弹幕滞留陪残影链与星屑走完</summary>
+        /// <summary>余辉期，控制权已交还，弹幕滞留陪残影链与星屑走完</summary>
         private const int AfterglowFrames = 34;
         /// <summary>一帧点满的爆发速度，总位移与旧曲线持平（约 2700px）</summary>
         private const float BurstSpeed = 104f;
@@ -167,7 +165,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float dir = DashDirection >= 0 ? 1f : -1f;
 
             if (DashTimer <= WindupFrames) {
-                //蓄势：末端 pow 迟滞的小幅反拉（深呼吸），身体钉在原地
+                //蓄势
                 float t = DashTimer / (float)WindupFrames;
                 float pull = MathF.Pow(t, 7f) * PullbackMax;
                 Projectile.Center = castCenter - new Vector2(dir * pull, 0f);
@@ -226,7 +224,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>蓄势期：星屑沿收紧的双臂螺旋吸向角尖，72% 后静默（爆发前的屏息）</summary>
+        /// <summary>蓄势期，星屑沿收紧的双臂螺旋吸向角尖，72% 后静默（爆发前的屏息）</summary>
         private void WindupTelegraph(float dir, float t) {
             if (t >= 0.72f) {
                 return;
@@ -242,14 +240,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>爆发期视觉：残影快照 + 角尖双螺旋光轨 + 稀疏星屑蜕落</summary>
+        /// <summary>爆发期视觉，残影快照 + 角尖双螺旋光轨 + 稀疏星屑蜕落</summary>
         private void FlightVisuals(float dir) {
-            //残影链：每 2 帧一帧快照，色相沿队列逐个偏移
+            //残影链，每 2 帧一帧快照
             if ((int)DashTimer % 2 == 0) {
                 RecordGhost();
             }
 
-            //双螺旋细光轨：相位随水平位移推进，子采样填补高速帧空隙
+            //双螺旋细光轨，相位随水平位移推进
             Vector2 horn = HornTip(dir);
             float advance = MathF.Abs(Projectile.velocity.X);
             float segLen = MathHelper.Clamp(advance * 0.45f, 26f, 62f);
@@ -270,7 +268,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             helixPhase += advance * HelixFreq;
 
-            //稀疏星屑：从队尾蜕落，缓落成路径余韵
+            //稀疏星屑，从队尾蜕落，缓落成路径余韵
             if ((int)DashTimer % 3 == 0) {
                 Vector2 tail = Projectile.Center - new Vector2(dir * Main.rand.NextFloat(30f, 90f), Main.rand.NextFloat(-26f, 26f));
                 PRTLoader.NewParticle<PRT_FishUnicornStardust>(tail
@@ -280,7 +278,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>硬刹拍：星屑扇 + 横压冲击环 + 水晶脆响 + 克制的水平震</summary>
+        /// <summary>硬刹拍，星屑扇 + 横压冲击环 + 水晶脆响 + 克制的水平震</summary>
         private void BrakeImpact(float dir) {
             SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact with { Volume = 0.65f, Pitch = 0.25f }, Projectile.Center);
 
@@ -326,7 +324,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>星屑配色：低饱和高亮度的粉彩，装饰不抢残影的戏</summary>
+        /// <summary>星屑配色，低饱和高亮度的粉彩，装饰不抢残影的戏</summary>
         private static Color StardustColor(float hue)
             => Main.hslToRgb((hue + Main.rand.NextFloat(-0.05f, 0.05f) + 1f) % 1f, 0.42f, 0.74f);
 
@@ -340,7 +338,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 1f, Pitch = 0.2f }, target.Center);
             SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact with { Volume = 0.35f, Pitch = 0.5f }, target.Center);
 
-            //穿刺点：小簇星屑 + 竖压穿刺环（克制，主角仍是残影链）
+            //穿刺点
             float dir = DashDirection >= 0 ? 1f : -1f;
             for (int i = 0; i < 5; i++) {
                 Vector2 vel = new Vector2(dir, 0f).RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(2f, 7f);
@@ -384,7 +382,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SpriteEffects effects = dir > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
             if (DashTimer <= WindupFrames && streak != null) {
-                //蓄势光锥：两道细光从后方收向角尖，扭角随蓄势收拢（螺旋暗示）
+                //蓄势光锥，两道细光从后方收向角尖
                 float t = DashTimer / (float)WindupFrames;
                 Vector2 tip = castCenter + new Vector2(dir * 58f, -4f) - Main.screenPosition;
                 float len = MathHelper.Lerp(18f, 66f, VaultUtils.EaseOutCubic(t));
@@ -417,7 +415,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         , 0f, glow.Size() / 2f, 0.5f, SpriteEffects.None, 0);
                 }
 
-                //速度回声：紧贴身后两帧，色相续接残影队列，速度归零时自动收拢
+                //速度回声，紧贴身后两帧
                 if (DashTimer > WindupFrames && speedFactor > 0.05f) {
                     for (int i = 1; i <= 2; i++) {
                         float echoAlpha = (i == 1 ? 0.34f : 0.16f) * fishAlpha;
@@ -427,7 +425,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     }
                 }
 
-                //角尖光矛：白金细条沿运动轴拖出，长度随速度
+                //角尖光矛
                 if (streak != null && DashTimer > WindupFrames && speedFactor > 0.05f) {
                     float lanceLen = MathHelper.Lerp(36f, 110f, speedFactor);
                     float worldAng = dir > 0 ? 0f : MathHelper.Pi;
@@ -455,7 +453,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
-        /// 残影链绘制：切换到玩家渲染批次，逐个以单色实体绘出快照。<br/>
+        /// 残影链绘制，切换到玩家渲染批次，逐个以单色实体绘出快照<br/>
         /// 弹幕层先于玩家层，残影天然垫在本体之下（夹心）
         /// </summary>
         private void DrawGhostChain() {
@@ -479,7 +477,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (alpha <= 0.02f) {
                     continue;
                 }
-                //每个残影单色：饱和中亮度色相，A 通道随寿命淡出
+                //每个残影单色
                 Color tint = Main.hslToRgb(ghost.Hue, 0.88f, 0.60f);
                 tint.A = (byte)(235 * alpha);
                 PlayerCloneRenderer.DrawPrepared(ghost.Position, tint, ghost.Direction

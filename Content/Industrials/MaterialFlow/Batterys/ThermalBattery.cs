@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
             Color drawColor = Lighting.GetColor(i, j);
-            //仅绘制金属外壳；熔核由 ThermalBatteryCoreDraw 合批绘制在物块层下，透过透明窗口透出
+            //只画外壳；熔核合批在物块层下透出
             if (!t.IsHalfBlock && t.Slope == 0) {
                 spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, thermal.fullLoad ? t.TileFrameY : frameYPos, 16, 16)
                     , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
@@ -140,12 +140,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         internal const float _maxUEValue = 8000;
         public override float MaxUEValue => _maxUEValue;
         internal bool fullLoad;
-        //熔核着色器用：平滑后的电量比例与初始化标记
+        //熔核显示比例与初始化标记
         internal float displayRatio;
         private bool ratioInited;
-        //熔核着色器逻辑分辨率(电池像素尺寸 3x4 格)，与熔腔标定基准一致，整批共享
+        //熔核逻辑分辨率 3x4 格，整批共享
         internal static readonly Vector2 CoreResolution = new(ThermalBatteryTile.Width * 16, ThermalBatteryTile.Height * 16);
-        //熔腔在电池本地坐标(0~1)中的范围，依据美术开窗测得，可微调
+        //熔腔本地 UV 范围，可微调
         internal static readonly Vector2 ChamberMin = new(0.21f, 0.20f);
         internal static readonly Vector2 ChamberMax = new(0.71f, 0.82f);
         public override void UpdateMachine() {
@@ -168,10 +168,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             }
         }
 
-        /// <summary>
-        /// 熔核单实例绘制：由 <see cref="ThermalBatteryCoreDraw"/> 合批调用（墙后物块前，金属外壳透明窗口透出）。
-        /// 共享着色器参数由合批器统一设置；逐电池数据走顶点色：r=电量比例, g=充能活跃度
-        /// </summary>
+        /// <summary>熔核单例绘制，合批调用；顶点色 r=电量 g=活跃度</summary>
         internal void DrawCore(SpriteBatch spriteBatch) {
             float ratio = MathHelper.Clamp(displayRatio, 0f, 1f);
             float activity = MathHelper.Clamp(activeTime / 60f, 0f, 1f);
@@ -187,9 +184,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         }
     }
 
-    /// <summary>
-    /// 热能电池熔核合批绘制：屏内所有热能电池共用一次着色器批次（墙后物块前），消除逐电池切批次开销
-    /// </summary>
+    /// <summary>热能电池熔核合批，墙后物块前单次着色器</summary>
     internal class ThermalBatteryCoreDraw : GlobalTileProcessor
     {
         public override bool PreTileDrawEverything(SpriteBatch spriteBatch) {

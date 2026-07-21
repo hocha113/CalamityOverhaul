@@ -9,9 +9,7 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables
 {
-    /// <summary>
-    /// 模具加工台物块：4 宽 3 高。右键打开 <see cref="MoldProcessingUI"/>，无自身持久化状态
-    /// </summary>
+    /// <summary>模具加工台物块 4×3，右键开 <see cref="MoldProcessingUI"/></summary>
     internal class MoldProcessingTableTile : ModTile
     {
         public const int Width = 4;

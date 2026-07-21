@@ -14,38 +14,25 @@ using OFR = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs.
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 {
-    /// <summary>
-    /// 终之太刀·纳刀断世：居合语法的终斩。<br/>
-    /// 出鞘瞬间只留一条无声细线（斩击已经完成，世界还没反应过来）→ 滞拍 →
-    /// 纳刀脆响的刹那：刀尖辉点沿线掠过，细线在它身后撕成伤口——两张白热断面
-    /// （<see cref="EffectLoader.OniFinaleWound"/>，梭形、入刀侧收净/出刀侧撕裂）之间，
-    /// 世界被裂屏滑移推成两半，露出后处理的虚空带；悬停数拍后两半合拢、创面从针尖
-    /// 向中心捏合、余痕熄灭 —— 伤害在撕开窗一次性结算，最大的一刀的重量全压在那声刀鞘响上。<br/>
-    /// 断面 quad 长在世界上，被 <see cref="OniFinalePost"/> 的裂屏连同两半世界一起劈开：
-    /// 伤口内外的对位是物理性的，无需任何手工同步。<br/>
-    /// 判定为沿刀线中心向两端各延伸 2400px 的线（参照村正处刑斩），蠕虫/阿瑞斯节段减伤。<br/>
-    /// ai[0]=刀线角(弧度) ai[1]=尺寸倍率
-    /// </summary>
+    /// <summary>终之太刀·纳刀断世. ai[0]=刀线角(弧度) ai[1]=尺寸倍率</summary>
     internal class OniFinaleCut : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        /// <summary>细线滞拍帧数：出现→纳刀引爆的间隔，主控用它对齐解冻时刻</summary>
+        /// <summary>细线滞拍帧数、出现→纳刀引爆的间隔，主控用它对齐解冻时刻</summary>
         public const int HoldFrames = 18;
         private const int DamageEnd = HoldFrames + 8;
         private const int Lifetime = HoldFrames + 58;
 
-        //==== 引爆后时间轴（dt = timer - HoldFrames）====
-        /// <summary>刀尖辉点跨屏行程：伤口揭开前沿追着它走。
-        /// 必须在 <see cref="SplitStart"/> 前跑完——辉点骑在刀线上，裂屏一开就会被劈成两半</summary>
+        /// <summary>刀尖辉点跨屏行程、伤口揭开前沿追着它走。 必须在 <see</summary>
         private const int GlintFrames = 2;
         /// <summary>创面撕开（厚度弹开）时长，滞后辉点 1 帧</summary>
         private const int TearFrames = 3;
-        /// <summary>裂屏推开起点：伤口先鼓起，世界随后才被推成两半</summary>
+        /// <summary>裂屏推开起点、伤口先鼓起，世界随后才被推成两半</summary>
         private const int SplitStart = 2;
-        /// <summary>悬停终点：世界保持裂开、伤口呼吸到此，随后开始合拢</summary>
+        /// <summary>悬停终点、世界保持裂开、伤口呼吸到此，随后开始合拢</summary>
         private const int HoldOpenEnd = 14;
-        /// <summary>愈合终点：两半合拢、创面捏合完成</summary>
+        /// <summary>愈合终点、两半合拢、创面捏合完成</summary>
         private const int HealEnd = 32;
         /// <summary>余痕熄灭（光照/裂缝辉光走完）</summary>
         private const int AfterglowEnd = 42;
@@ -53,8 +40,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         private const int HairFrames = 6;
 
         private OFR.BladeDef lineDef;   //滞拍细线（斩痕本体，引爆后作残影随两半世界分开）
+
         private float woundHalfX;       //伤口断面 quad 半长
+
         private float woundHalfY;       //伤口断面 quad 半厚
+
         private bool initialized;
         private bool detonatedFx;
         private int timer;
@@ -64,21 +54,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         /// <summary>裂屏滑移峰值（像素，两半各滑此值，视觉总豁口为其两倍）</summary>
         private float PeakSplitPx => 46f * SizeMul;
 
-        /// <summary>伤口单帧动态量：由引爆后时间轴合成，直接映射 OniFinaleWound 的 uniform</summary>
+        /// <summary>伤口单帧动态量、由引爆后时间轴合成，直接映射 OniFinaleWound 的 uniform</summary>
         private struct WoundState
         {
             public float Open;      //创面厚度进度（含过冲/呼吸/愈合变薄）
+
             public float Heal;      //针尖向中心捏合进度
+
             public float Ember;     //断面降温 白热→余烬红
+
             public float Flash;     //全形白闪
+
             public float SweepEdge; //沿线揭开前沿（跟随刀尖辉点）
+
             public float Opacity;
         }
 
-        /// <summary>
-        /// 触发接口：在持有者客户端调用，世界锚定于 center；
-        /// 生成后 <see cref="HoldFrames"/> 帧滞拍，随后纳刀引爆并结算伤害
-        /// </summary>
+        /// <summary>触发接口、在持有者客户端调用</summary>
         /// <param name="player">攻击发起者</param>
         /// <param name="center">刀线中心（世界坐标）</param>
         /// <param name="cutAngle">刀线角度（弧度）</param>
@@ -111,6 +103,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             Projectile.netImportant = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 60;   //引爆窗单次结算
+
         }
 
         public override bool ShouldUpdatePosition() => false;
@@ -130,31 +123,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 RazorTailWiden = 0f,
                 Palette = OFR.BladePalette.Escalate(0.55f),
             };
-            //断面 quad：长度对齐判定线（针尖恰在 2400px 判定端点附近收没），
+            //断面 quad、长度对齐判定线（针尖恰在 2400px 判定端点附近收没），
+
             //厚度给创面外溢与撕裂参差留余量（shader 内最多用到 ~0.8）
+
             woundHalfX = 2550f * s;
             woundHalfY = 150f * s;
         }
 
-        //==================== 时间轴 ====================
-
         public override void AI() {
             if (!initialized) {
                 Initialize();
-                //出鞘的"斩击"本身近乎无声——世界还没意识到已经被斩开
+                //出鞘的"斩击"本身近乎无声、世界还没意识到已经被斩开
+
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 1f, Volume = 0.28f }, Projectile.Center);
             }
             timer++;
 
             if (timer < HoldFrames) {
-                //滞拍：细线在后效层保有一条微弱裂缝辉光，随呼吸渐强
+                //滞拍、细线在后效层保有一条微弱裂缝辉光，随呼吸渐强
+
                 float breath = 0.18f + 0.16f * (timer / (float)HoldFrames)
                     + 0.05f * MathF.Sin(timer * 0.55f);
                 OniFinaleFX.PushSplit(Projectile.Center, CutAngle, 0f, breath);
             }
 
             if (timer == HoldFrames - 1) {
-                //引爆前 1 帧负片闪：刹那反白
+                //引爆前 1 帧负片闪、刹那反白
+
                 OniFinaleFX.PushNegative(Projectile.Center, 0.85f);
             }
 
@@ -169,11 +165,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             }
         }
 
-        /// <summary>
-        /// 裂屏包络：撕开（滞后伤口鼓起 <see cref="SplitStart"/> 帧，EaseOutBack 过冲顶开）→
-        /// 悬停（两半世界保持分离，缓慢下沉）→ 愈合（合拢，与创面捏合同步）。
-        /// "顶满悬停再合拢"读作质量，旧版的指数速回只读作屏震
-        /// </summary>
+        /// <summary>裂屏包络、撕开</summary>
         private void DriveWorldSplit(int dt) {
             float offset;
             if (dt < SplitStart) {
@@ -194,7 +186,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 offset = 0f;
             }
 
-            //裂缝辉光：撕开期最亮，悬停微降，合拢完成的一瞬回光一跳，随后余痕熄灭
+            //裂缝辉光、撕开期最亮，悬停微降，合拢完成的一瞬回光一跳，随后余痕熄灭
+
             float seam;
             if (dt <= HoldOpenEnd) {
                 seam = MathHelper.Lerp(1f, 0.68f, dt / (float)HoldOpenEnd);
@@ -207,10 +200,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 seam = 0.5f * MathF.Exp(-(dt - HealEnd) * 0.20f);
             }
 
-            //按渲染端衰减预除，本帧渲染位移精确等于包络值——断面 quad 与虚空带物理对位
+            //按渲染端衰减预除，本帧渲染位移精确等于包络值、断面 quad 与虚空带物理对位
+
             OniFinaleFX.PushSplit(Projectile.Center, CutAngle, offset / OniFinaleFX.SplitDecay, seam);
 
-            //引爆两帧压场至最黑：画面上只剩伤口在发光（与主控暗场取最大值，安全叠加）
+            //引爆两帧压场至最黑、画面上只剩伤口在发光（与主控暗场取最大值，安全叠加）
+
             if (dt <= 2) {
                 OniFinaleFX.PushDim(Projectile.Center, 0.94f);
             }
@@ -220,11 +215,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             Lighting.AddLight(Projectile.Center, new Vector3(1.35f, 0.55f, 0.32f) * (0.3f + 1.2f * heat));
         }
 
-        /// <summary>纳刀引爆帧：声画重拍（碎晶帘延后到世界被推开的那一拍，见 <see cref="SpawnDetonationParticles"/>）</summary>
+        /// <summary>纳刀引爆帧、声画重拍</summary>
         private void DetonateFx() {
             detonatedFx = true;
 
             //纳刀脆响先行半拍打头，爆响垫底
+
             SoundEngine.PlaySound(SoundID.Unlock with { Pitch = -0.15f, Volume = 0.95f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -0.35f, Volume = 1f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item122 with { Pitch = -0.50f, Volume = 0.80f }, Projectile.Center);
@@ -244,7 +240,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 , new Color(255, 236, 216), 1.6f * SizeMul);
         }
 
-        /// <summary>引爆后粒子排拍：碎晶帘压在世界被推开的一拍，悬停期断面持续渗余烬</summary>
+        /// <summary>引爆后粒子排拍、碎晶帘压在世界被推开的一拍，悬停期断面持续渗余烬</summary>
         private void SpawnDetonationParticles(int dt) {
             if (Main.dedServ) {
                 return;
@@ -253,7 +249,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             Vector2 perp = (CutAngle + MathHelper.PiOver2).ToRotationVector2();
 
             if (dt == SplitStart + 1) {
-                //沿刀线迸出的碎晶帘：压在裂屏位移可见的第一帧——鞘响在先、世界碎在后，撕裂有先后
+                //沿刀线迸出的碎晶帘、压在裂屏位移可见的第一帧、鞘响在先、世界碎在后，撕裂有先后
+
                 for (int i = 0; i < 30; i++) {
                     float along = Main.rand.NextFloat(-1f, 1f);
                     Vector2 pos = Projectile.Center + dir * along * 1300f * SizeMul;
@@ -273,7 +270,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 }
             }
 
-            //悬停期：余烬从两张断面之间渗出，顺各自半边世界缓慢漂离
+            //悬停期、余烬从两张断面之间渗出，顺各自半边世界缓慢漂离
+
             if (dt > TearFrames && dt <= HoldOpenEnd && timer % 2 == 0) {
                 for (int i = 0; i < 2; i++) {
                     float along = Main.rand.NextFloat(-0.85f, 0.85f);
@@ -289,17 +287,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             }
         }
 
-        //==================== 判定 ====================
-
         public override bool? CanHitNPC(NPC target) {
             //零伤害生成 = 纯演出敷层（面影斩纸等），不参与判定
+
             if (Projectile.damage <= 0 || timer < HoldFrames || timer > DamageEnd) {
                 return false;
             }
             return base.CanHitNPC(target);
         }
 
-        /// <summary>巨物减伤（参照村正处刑斩）：蠕虫节体 0.2，阿瑞斯节段 0.4</summary>
+        /// <summary>巨物减伤（参照村正处刑斩）、蠕虫节体 0.2，阿瑞斯节段 0.4</summary>
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             if (CWRLoad.WormBodys.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.2f;
@@ -320,6 +317,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             //世界刚解冻就吃下终斩的顿帧，命中重量最大化
+
             target.CWR().TimeFrozenTick = 10;
             SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.45f, Volume = 0.9f }, target.Center);
 
@@ -337,9 +335,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             }
         }
 
-        //==================== 状态合成与绘制 ====================
-
-        /// <summary>滞拍细线：呼吸脉动，引爆后作残影被两半世界带着分开、快速淡出</summary>
+        /// <summary>滞拍细线、呼吸脉动，引爆后作残影被两半世界带着分开、快速淡出</summary>
         private OFR.BladeState ComposeLineState() {
             OFR.BladeState s = new() {
                 Sweep = OFR.EaseOutCubic(timer / 2f),
@@ -351,14 +347,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             s.Flash = spawnFlash > 0.02f ? spawnFlash : 0f;
 
             if (timer < HoldFrames) {
-                //滞拍呼吸：亮度与厚度轻微起伏，攒住"将断未断"的势
+                //滞拍呼吸、亮度与厚度轻微起伏，攒住"将断未断"的势
+
                 float breath = 0.5f + 0.5f * MathF.Sin(timer * 0.55f - MathHelper.PiOver2);
                 s.Opacity = lineDef.Opacity * (0.72f + 0.22f * breath);
                 s.ThickMul = 0.9f + 0.18f * breath;
                 s.ColorShift = 0.15f;
             }
             else {
-                //残影让位给伤口断面：比旧版更快退场
+                //残影让位给伤口断面、比旧版更快退场
+
                 int dt = timer - HoldFrames;
                 float fade = MathHelper.Clamp(dt / 7f, 0f, 1f);
                 s.Flash = MathF.Max(s.Flash, MathF.Pow(0.6f, dt));
@@ -369,20 +367,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             return s;
         }
 
-        /// <summary>刀尖辉点行进（0..1，近匀速跨屏——刻意不用重缓动，快到底才像刀）</summary>
+        /// <summary>刀尖辉点行进（0..1，近匀速跨屏、刻意不用重缓动，快到底才像刀）</summary>
         private static float GlintTravel(int dt)
             => MathHelper.Clamp((dt + 0.5f) / (GlintFrames + 0.5f), 0f, 1f);
 
-        /// <summary>伤口时间轴合成：揭开前沿追着刀尖辉点，撕开带过冲，悬停呼吸，愈合捏薄降温</summary>
+        /// <summary>伤口时间轴合成、揭开前沿追着刀尖辉点，撕开带过冲，悬停呼吸，愈合捏薄降温</summary>
         private WoundState ComposeWoundState(int dt) {
-            //dt0 只有辉点与细线白闪（1 帧纯线），dt1 起创面带过冲撕开——先于裂屏推开一拍
+            //dt0 只有辉点与细线白闪（1 帧纯线），dt1 起创面带过冲撕开
+
             float openT = MathHelper.Clamp(dt / (TearFrames + 1f), 0f, 1f);
             float open = OFR.EaseOutBack(openT);
 
             float healT = OFR.SmoothStep01((dt - HoldOpenEnd) / (float)(HealEnd - HoldOpenEnd));
 
             if (dt > TearFrames + 1 && dt <= HoldOpenEnd) {
-                //悬停呼吸：防定格贴纸感
+                //悬停呼吸、防定格贴纸感
+
                 open *= 1f + 0.04f * MathF.Sin(dt * 0.42f + lineDef.Seed * 9f);
             }
             open *= 1f - 0.38f * healT;   //愈合期创面变薄
@@ -396,6 +396,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 Flash = flash < 0.02f ? 0f : flash,
                 SweepEdge = GlintTravel(dt) * 1.28f,
                 //几何在 Heal→1 时自行收敛为零，无需透明度淡出
+
                 Opacity = 1f,
             };
         }
@@ -443,10 +444,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             fx.Parameters["uColDark"]?.SetValue(pal.Dark);
 
             //伤口本体
+
             DrawWoundQuad(device, fx, Projectile.Center, CutAngle
                 , woundHalfX, woundHalfY, in w, lineDef.Flip, lineDef.Seed);
 
-            //飞白：主创口两侧几条散开的细创痕，几帧就死——快到只留下毛边的速记
+            //飞白、主创口两侧几条散开的细创痕，几帧就死、快到只留下毛边的速记
+
             if (dt <= HairFrames) {
                 Vector2 dir = CutAngle.ToRotationVector2();
                 Vector2 perp = (CutAngle + MathHelper.PiOver2).ToRotationVector2();
@@ -462,7 +465,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                     hw.Flash = w.Flash * 0.7f;
                     hw.Opacity = (1f - dt / (float)HairFrames) * 0.8f;
                     hw.SweepEdge = w.SweepEdge * (0.9f + 0.12f * hs);
-                    //微小角度偏差：飞白不与主线严格平行，像被同一刀带出的岔毫
+                    //微小角度偏差、飞白不与主线严格平行，像被同一刀带出的岔毫
+
                     DrawWoundQuad(device, fx, Projectile.Center + off, CutAngle + (hs - 0.5f) * 0.014f
                         , woundHalfX * (0.5f + 0.3f * hs), woundHalfY * 0.34f, in hw
                         , -side, lineDef.Seed + 0.53f + i * 0.29f);
@@ -495,7 +499,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             }
         }
 
-        /// <summary>引爆加色敷层：刀尖辉点跨屏 + 中心爆点 + 弱化扩散环 + 沿刀线速度线</summary>
+        /// <summary>引爆加色敷层、刀尖辉点跨屏 + 中心爆点 + 弱化扩散环 + 沿刀线速度线</summary>
         private void DrawDetonateDressing() {
             int dt = timer - HoldFrames;
             const int dressLife = 20;
@@ -513,7 +517,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
             if (CWRAsset.StarFlare02?.Value is Texture2D flare) {
-                //刀尖辉点：近匀速掠过全线，身后拖残影——伤口是它犁开的，因果先行
+                //刀尖辉点、近匀速掠过全线，身后拖残影、伤口是它犁开的，因果先行
+
                 if (dt <= GlintFrames + 2) {
                     float travel = GlintTravel(dt);
                     float exitFade = dt <= GlintFrames ? 1f : MathF.Pow(0.45f, dt - GlintFrames);
@@ -530,14 +535,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                     }
                 }
 
-                //中心爆点：存在但收敛——主角是伤口与被推开的世界
+                //中心爆点、存在但收敛、主角是伤口与被推开的世界
+
                 float coreA = MathF.Pow(inv, 2.2f) * 0.7f;
                 float coreS = (1.0f + easeOut * 0.9f) * SizeMul;
                 sb.Draw(flare, screenPos, null, new Color(255, 244, 230) * coreA, Projectile.whoAmI * 1.37f
                     , flare.Size() * 0.5f, coreS, SpriteEffects.None, 0);
             }
 
-            //扩散环弱化为空气被排开的一圈涟漪：环读作爆炸，斩击不需要大环
+            //扩散环弱化为空气被排开的一圈涟漪、环读作爆炸，斩击不需要大环
+
             if (CWRAsset.Ring01?.Value is Texture2D ring) {
                 float ringS = (0.5f + easeOut * 2.8f) * SizeMul;
                 float ringA = MathF.Pow(inv, 2.6f) * 0.38f;

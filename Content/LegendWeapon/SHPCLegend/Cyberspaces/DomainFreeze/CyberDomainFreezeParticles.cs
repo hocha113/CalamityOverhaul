@@ -13,15 +13,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             float halfW = npc.width * 0.5f;
             float halfH = npc.height * 0.5f;
 
-            //粒子密度：冻结期间稳定低密度，解冻前增多
+            //解冻前加密
             int count;
             if (progress < 0.85f) {
-                //持续冻结期间：稀疏六角碎片缓慢飘散
+                //冻结稀疏
                 if (Main.rand.NextBool(3)) return;
                 count = Main.rand.Next(1, 3);
             }
             else {
-                //解冻阶段：密度急增
+                //解冻急增
                 count = Main.rand.Next(3, 7);
             }
 
@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     Main.rand.NextFloat(-halfH * 1.2f, halfH * 1.2f)
                 );
 
-                //速度：缓慢向外飘散，解冻前加速
+                //外飘，解冻前加速
                 float speed = MathHelper.Lerp(0.8f, 3.5f, progress * progress);
                 Vector2 vel = (spawnPos - center).SafeNormalize(Vector2.UnitY)
                     * Main.rand.NextFloat(speed * 0.3f, speed);
@@ -41,7 +41,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 float scale = Main.rand.NextFloat(0.4f, 1.2f);
                 int lifeTime = Main.rand.Next(25, 50);
 
-                //使用暗红晶系的赛博方块粒子
                 Color core = new Color(0.85f, 0.06f, 0.2f);
                 Color edge = new Color(1.0f, 0.35f, 0.4f);
                 PRTLoader.NewParticle<PRT_CyberSquare>(spawnPos, vel, core, scale).Configure(edge, lifeTime);

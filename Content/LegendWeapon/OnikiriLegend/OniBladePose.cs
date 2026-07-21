@@ -8,26 +8,20 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 {
     /// <summary>
-    /// 刀权占用者契约：实现本接口的技能弹幕在 <see cref="HardOccupiesBlade"/> 期间硬占刀权——
-    /// 连段(<see cref="CrimsonRendSlash"/>)让位：就地冻结在场刀光、速褪、停排且不受理重启。<br/>
-    /// <see cref="ReservesBlade"/> 为签名拍的软保留：连段不得重启夺刀但输入不丢
-    /// (按住由排拍自动续接)，保留只挡连段，永不挡位移/疾走/技能。<br/>
-    /// 占用相位由各弹幕自己的 timer 推导,技能弹幕本身经 tML 同步,
-    /// 每个客户端各自推导结果一致,零网络开销
+    /// 刀权占用.<see cref="HardOccupiesBlade"/> 硬占→连段冻结让位;
+    /// <see cref="ReservesBlade"/> 软保留挡连段重启不挡位移/技能;
+    /// 相位本地 timer 推导,零额外网络
     /// </summary>
     internal interface IOniBladeOccupant
     {
         /// <summary>本帧是否硬占刀权</summary>
         bool HardOccupiesBlade { get; }
 
-        /// <summary>
-        /// 本帧是否软保留刀权（签名拍：纳刀一挑等最小演出窗，商业动作游戏的
-        /// "不可取消的短收势"）。默认不保留
-        /// </summary>
+        /// <summary>软保留刀权(签名拍短窗),默认否</summary>
         bool ReservesBlade => false;
     }
 
-    /// <summary>刀权查询：世界里只有一把鬼切,谁在持刀全部从弹幕在场状态本地推导</summary>
+    /// <summary>刀权查询,本地从在场弹幕推导</summary>
     internal static class OniBladeOccupancy
     {
         /// <summary>该玩家是否有硬占刀权的技能弹幕在场(except 排除查询者自身)</summary>
@@ -43,10 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return false;
         }
 
-        /// <summary>
-        /// 该玩家是否有软保留刀权的技能弹幕在场：签名拍演出中，连段重启需等窗口结束
-        /// （输入缓冲不丢失），已在滚动的连段不受影响
-        /// </summary>
+        /// <summary>是否有软保留在场,连段重启需等窗</summary>
         public static bool BladeReserved(Player player) {
             foreach (Projectile proj in Main.ActiveProjectiles) {
                 if (proj.owner != player.whoAmI) {
@@ -59,20 +50,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return false;
         }
 
-        /// <summary>连段是否持有刀权(排拍中/子刀光未散/实体刀未收完)——技能的软姿态让位给它,玩家输入永远优先</summary>
+        /// <summary>连段是否持刀权</summary>
         public static bool ComboClaims(Player player)
             => CrimsonRendSlash.FindController(player)?.ClaimsBlade ?? false;
     }
 
     /// <summary>
-    /// 刀角交接黑板：任何持刀演出在实体刀可见期间逐帧发布当前角度
-    /// （<see cref="OniBladePose.ApplyPose"/> 自动发布），接刀方（连段重启）在新鲜期内读取，
-    /// 起手从交接角度划出——模组切换时刀永远走连续弧线，不瞬移。<br/>
-    /// 每玩家一槽，纯客户端视觉数据，不进网络
+    /// 刀角交接黑板,<see cref="OniBladePose.ApplyPose"/> 发布;
+    /// 接刀方新鲜期内读取,每玩家一槽,不进网络
     /// </summary>
     internal static class OniBladeHandoff
     {
-        /// <summary>交接新鲜期（帧）：超过视为无交接，接刀方按默认起手当帧出刀</summary>
+        /// <summary>交接新鲜期(帧)</summary>
         public const int FreshFrames = 10;
 
         private struct Slot
@@ -83,7 +72,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
         private static readonly Slot[] slots = new Slot[Main.maxPlayers + 1];
 
-        /// <summary>发布当前刀角（持刀演出可见帧调用）</summary>
+        /// <summary>发布当前刀角</summary>
         public static void Publish(Player owner, float rotation, int facing) {
             if (owner == null) {
                 return;
@@ -95,7 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             };
         }
 
-        /// <summary>读取新鲜的交接刀角；无交接或已过期返回 false</summary>
+        /// <summary>读新鲜交接刀角,过期 false</summary>
         public static bool TryPeek(Player owner, out float rotation, out int facing) {
             rotation = 0f;
             facing = 1;
@@ -113,11 +102,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
     }
 
     /// <summary>
-    /// 轻量实体刀姿态渲染器：护手钉在复合手臂手心、刀尖指向 <see cref="Rotation"/> 的
-    /// 单帧刀身精灵 + 短命角度残影。疾走收尾的残心/纳刀、灭世一闪的大挥、
-    /// 终结乱舞的残心静立共用,补全"招式与持刀人相连"的身体动画;<br/>
-    /// 连段(<see cref="CrimsonRendSlash"/>)保留自己的富姿态系统(深度/翻面/停驻回坐),不走本类。<br/>
-    /// 只摆姿态不碰 itemTime,不锁操控;绘制走 <see cref="Common.IOverlayDrawable"/> 遮挡层批次
+    /// 轻量实体刀姿态,护手钉手心、尖指 <see cref="Rotation"/>;
+    /// 连段走自有富姿态,本类不碰 itemTime;
+    /// 绘于 <see cref="Common.IOverlayDrawable"/>
     /// </summary>
     internal sealed class OniBladePose
     {
@@ -147,7 +134,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// <summary>绘制缩放(与连段实体刀同档)</summary>
         public float Scale = 0.9f;
 
-        /// <summary>推进一帧:衰减残影。宿主 AI 每帧调用一次</summary>
+        /// <summary>推进一帧,衰减残影</summary>
         public void Update() {
             for (int i = 0; i < smears.Length; i++) {
                 if (smears[i].Life > 0) {
@@ -168,9 +155,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         /// <summary>
-        /// 摆姿态:heldProj + 朝向 + 复合手臂,并解算真实手心作为刀身绘制锚点。
-        /// 不触碰 itemTime/itemAnimation——姿态是非阻塞的,玩家输入随时覆盖。<br/>
-        /// 可见帧自动向 <see cref="OniBladeHandoff"/> 发布当前刀角，接刀方起手不跳变
+        /// 摆姿态,手心锚点,不碰 itemTime;
+        /// 可见帧发布 <see cref="OniBladeHandoff"/>
         /// </summary>
         public void ApplyPose(Player owner, Projectile host,
             Player.CompositeArmStretchAmount stretch = Player.CompositeArmStretchAmount.ThreeQuarters) {

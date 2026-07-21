@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    /// R技能万魔终焉 巨型硫磺火法阵+闪电火球全屏轰炸
+    /// R 万魔终焉，巨型法阵+闪电火球
     internal class PandemoniumRSkill : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -18,12 +18,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private ref float Phase => ref Projectile.ai[0];
         private ref float Timer => ref Projectile.ai[1];
 
-        //技能参数
         private const int Duration = 300; //5秒
         private const float MaxCircleRadius = 1200f;
         private float currentRadius = 0f;
 
-        //视觉效果
         private List<RuneLayerData> runeLayers = new();
         private List<LightningStrikeData> lightningStrikes = new();
         private List<FireOrbData> fireOrbs = new();
@@ -77,13 +75,11 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         public override void AI() {
             Timer++;
 
-            //初始化
             if (Timer == 1) {
                 centerPos = Owner.Center;
                 Projectile.Center = centerPos;
                 InitializeSkill();
 
-                //终极必杀启动音效组合
                 SoundEngine.PlaySound(SoundID.DD2_BetsyScream with {
                     Volume = 2f,
                     Pitch = -0.8f
@@ -100,42 +96,35 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 }, centerPos);
             }
 
-            //跟随玩家
             centerPos = Owner.Center;
             Projectile.Center = centerPos;
 
-            //阶段控制
             if (Phase == 0) {
-                //启动阶段 (0-60帧)
+                //启动 0-60
                 StartupPhase();
                 if (Timer >= 60) Phase = 1;
             }
             else if (Phase == 1) {
-                //主攻击阶段 (60-240帧)
+                //主攻 60-240
                 MainAttackPhase();
                 if (Timer >= 240) Phase = 2;
             }
             else {
-                //结束阶段 (240-300帧)
                 EndPhase();
             }
 
-            //更新所有效果
             UpdateRuneLayers();
             UpdateLightningStrikes();
             UpdateFireOrbs();
 
-            //生成攻击
             if (Phase == 1) {
                 SpawnAttacks();
             }
 
-            //超强照明
             float lightPulse = (float)Math.Sin(Timer * 0.1f) * 0.3f + 0.7f;
             float lightIntensity = intensity * 5f * lightPulse;
             Lighting.AddLight(centerPos, 3f * lightIntensity, 1f * lightIntensity, 0.5f * lightIntensity);
 
-            //屏幕震动
             if (Phase == 1) {
                 Owner.GetModPlayer<CWRPlayer>().ScreenShakeValue = Math.Max(
                     Owner.GetModPlayer<CWRPlayer>().ScreenShakeValue,
@@ -145,7 +134,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         private void InitializeSkill() {
-            //初始化5层符文环
+            //5层符文环
             for (int i = 0; i < 5; i++) {
                 runeLayers.Add(new RuneLayerData {
                     Radius = 300f + i * 200f,
@@ -164,17 +153,14 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             intensity = VaultUtils.EaseOutCubic(progress);
             currentRadius = MaxCircleRadius * intensity;
 
-            //符文环淡入
             foreach (var layer in runeLayers) {
                 layer.Alpha = intensity;
             }
 
-            //启动粒子
             if (Main.rand.NextBool(2)) {
                 SpawnStartupParticles();
             }
 
-            //启动音效
             if (Timer % 15 == 0) {
                 SoundEngine.PlaySound(SoundID.Item74 with {
                     Volume = 0.5f + intensity * 0.5f,
@@ -187,7 +173,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             intensity = 1f;
             currentRadius = MaxCircleRadius;
 
-            //主阶段持续音效
             if (Timer % 30 == 0) {
                 SoundEngine.PlaySound(SoundID.DD2_BetsyFireballImpact with {
                     Volume = 0.8f,
@@ -201,7 +186,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             intensity = 1f - VaultUtils.EaseInCubic(progress);
             currentRadius = MaxCircleRadius * intensity;
 
-            //符文环淡出
             foreach (var layer in runeLayers) {
                 layer.Alpha = intensity;
             }
@@ -211,7 +195,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             foreach (var layer in runeLayers) {
                 layer.Rotation += layer.RotationSpeed * intensity;
 
-                //火焰帧更新
                 layer.FireFrameCounter += 0.5f + intensity * 0.3f;
                 if (layer.FireFrameCounter >= 1f) {
                     layer.FireFrameCounter = 0;
@@ -237,7 +220,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 orb.Life++;
                 orb.Position += orb.Velocity;
 
-                //寻找敌人
                 NPC closestNPC = null;
                 float closestDist = 400f;
 
@@ -264,9 +246,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private void SpawnAttacks() {
             if (Main.myPlayer != Projectile.owner) return;
 
-            //每2帧生成一次攻击
             if (Timer % 2 == 0) {
-                //寻找目标
                 List<NPC> validTargets = new();
                 foreach (NPC npc in Main.npc) {
                     if (npc.active && npc.CanBeChasedBy() && npc.Distance(centerPos) < MaxCircleRadius) {
@@ -277,17 +257,16 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 if (validTargets.Count > 0) {
                     NPC target = validTargets[Main.rand.Next(validTargets.Count)];
 
-                    //随机选择攻击方式
                     int attackType = Main.rand.Next(3);
 
                     switch (attackType) {
-                        case 0: //闪电打击
+                        case 0://闪电
                             SpawnLightningStrike(target);
                             break;
-                        case 1: //火球轰炸
+                        case 1://火球
                             SpawnFireballBarrage(target);
                             break;
-                        case 2: //组合攻击
+                        case 2://组合
                             SpawnLightningStrike(target);
                             SpawnFireOrb(target.Center);
                             break;
@@ -295,14 +274,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 }
             }
 
-            //环境火球
             if (Timer % 5 == 0) {
                 SpawnAmbientFireOrbs();
             }
         }
 
         private void SpawnLightningStrike(NPC target) {
-            //生成闪电弹幕
             Vector2 strikePos = target.Center + new Vector2(Main.rand.NextFloat(-50f, 50f), -800f);
 
             Projectile.NewProjectile(
@@ -317,7 +294,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 target.whoAmI
             );
 
-            //视觉闪电
             List<Vector2> lightningPath = GenerateLightningPath(strikePos, target.Center, 8);
             lightningStrikes.Add(new LightningStrikeData {
                 TargetPos = target.Center,
@@ -327,7 +303,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 LightningColor = new Color(255, 140, 80)
             });
 
-            //闪电音效
             if (Main.rand.NextBool(3)) {
                 SoundEngine.PlaySound(SoundID.Item122 with {
                     Volume = 0.7f,
@@ -337,7 +312,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         private void SpawnFireballBarrage(NPC target) {
-            //发射3个火球
             for (int i = 0; i < 3; i++) {
                 Vector2 spawnOffset = new Vector2(Main.rand.NextFloat(-200f, 200f), -Main.rand.NextFloat(400f, 600f));
                 Vector2 spawnPos = target.Center + spawnOffset;
@@ -427,7 +401,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         public override void OnKill(int timeLeft) {
-            //终结大爆发
             for (int i = 0; i < 200; i++) {
                 float angle = MathHelper.TwoPi * i / 200f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(15f, 30f);
@@ -443,7 +416,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 brimstone.noGravity = true;
             }
 
-            //终结音效
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with {
                 Volume = 2f,
                 Pitch = -0.7f
@@ -454,13 +426,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             SpriteBatch sb = Main.spriteBatch;
             Vector2 screenCenter = centerPos - Main.screenPosition;
 
-            //绘制着色器领域
             DrawBrimstoneDomainShader(sb, screenCenter);
 
-            //绘制闪电
             DrawLightningStrikes(sb);
 
-            //绘制火球
             DrawFireOrbs(sb);
 
             return false;
@@ -474,18 +443,18 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Texture2D noise = CWRAsset.Extra_193.Value;
             if (canvas == null || noise == null) return;
 
-            //R技能领域更大，使用1.2倍扩展
+            
             float drawRadius = currentRadius * 1.2f;
             float drawDiameter = drawRadius * 2f;
 
-            //设置着色器参数（R技能使用更高的tier值3来展示完整法阵）
+            
             shader.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.016f);
             shader.Parameters["fadeAlpha"]?.SetValue(intensity);
             shader.Parameters["tierLevel"]?.SetValue(3f); //R技能始终满级法阵
             shader.Parameters["expandProgress"]?.SetValue(MathHelper.Clamp(intensity, 0f, 1f));
             shader.Parameters["pulseIntensity"]?.SetValue(0.7f + (float)Math.Sin(Timer * 0.1f) * 0.3f);
 
-            //R技能使用更强烈的色彩
+            
             shader.Parameters["coreColor"]?.SetValue(new Vector3(1f, 0.35f, 0.18f));
             shader.Parameters["midColor"]?.SetValue(new Vector3(0.85f, 0.22f, 0.13f));
             shader.Parameters["edgeColor"]?.SetValue(new Vector3(0.55f, 0.14f, 0.09f));

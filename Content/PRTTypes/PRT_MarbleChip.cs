@@ -4,10 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>
-    /// 白金石屑：小而锐利的大理石碎屑，受重力翻滚，带短淡残影尾迹；
-    /// 大理石系命中/碎裂通用（配 <see cref="PRT_Smoke"/> 石尘使用）
-    /// </summary>
+    /// <summary>白金石屑，配 <see cref="PRT_Smoke"/> 石尘</summary>
     internal class PRT_MarbleChip : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -60,13 +57,13 @@ namespace CalamityOverhaul.Content.PRTTypes
             Vector2 scale = new Vector2(0.24f, 0.66f) * Scale;
             Color gold = Color; gold.A = 0;
 
-            //短淡尾迹：沿速度反向的三重残影
+            //速反向三重残影
             for (int i = 3; i >= 1; i--) {
                 float k = i / 3f;
                 spriteBatch.Draw(tex, pos - Velocity * (i * 0.85f), null, gold * ((1f - k) * 0.28f + 0.08f) * Opacity
                     , Rotation - spin * i * 2f, origin, scale * (1f - k * 0.3f), SpriteEffects.None, 0f);
             }
-            //本体：金边 + 白芯
+            //金边+白芯
             spriteBatch.Draw(tex, pos, null, gold * 0.9f * Opacity, Rotation, origin, scale, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, pos, null, Color.White * 0.8f * Opacity, Rotation, origin
                 , scale * new Vector2(0.5f, 0.78f), SpriteEffects.None, 0f);

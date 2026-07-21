@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     {
         //牵引半径（像素）
         private const float PullRadius = 400f;
-        //牵引持续时间（帧，5秒）
+        //持续（帧，5秒）
         private const int PullDuration = 60 * 5;
 
         public override void SetDefaults() {
@@ -31,7 +31,6 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             int tileY = s.TileCoordY;
             Vector2 center = new(tileX * 16f + 8f, tileY * 16f + 8f);
 
-            //启动粒子
             for (int i = 0; i < 10; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(4f, 4f);
                 PRTLoader.NewParticle<PRT_Spark>(center, vel, new Color(120, 80, 255), 1.0f).Configure(false, 25);
@@ -52,25 +51,22 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             Player player = Main.LocalPlayer;
             Vector2 pullTarget = player.Center;
 
-            //吸引周围掉落物向玩家
             for (int i = 0; i < Main.maxItems; i++) {
                 Item item = Main.item[i];
                 if (!item.active || item.noGrabDelay > 0) continue;
                 float dist = Vector2.Distance(item.Center, tileCenter);
                 if (dist > PullRadius) continue;
 
-                //越近牵引力越强
+                //越近越强
                 float strength = 1f - dist / PullRadius;
                 Vector2 dir = (pullTarget - item.Center).SafeNormalize(Vector2.Zero);
                 item.velocity += dir * strength * 0.8f;
 
-                //限速
                 if (item.velocity.Length() > 12f) {
                     item.velocity = Vector2.Normalize(item.velocity) * 12f;
                 }
             }
 
-            //脉冲粒子
             if (elapsed % 15 == 0) {
                 float angle = elapsed * 0.1f;
                 Vector2 offset = new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * 20f;

@@ -2,7 +2,7 @@
 
 namespace CalamityOverhaul.Content.HackTimes.Targets
 {
-    /// <summary>物块目标工厂，兜底最低优先级</summary>
+    /// <summary>物块目标，兜底最低优先</summary>
     internal class TileTargetType : HackTargetType
     {
         public override HackTargetKind Kind => HackTargetKind.Tile;

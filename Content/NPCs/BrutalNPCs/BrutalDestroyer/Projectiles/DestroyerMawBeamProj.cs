@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
 {
-    /// <summary>毁灭者「炽核熔射」口吐光柱：锚定头部口器，固定角速度慢扫；ai[0]=头部NPC的whoAmI；ai[1]=起始角（弧度）；ai[2]=每帧扫射角速度（含方向）复用DestroyerBeam.fx白热主轴+缠绕电弧+推进脉冲，红视觉区别于机械骷髅王橙炮；外覆熔焰浊浪宽晕、沿束熔滴飞溅、口器多层聚能光球展开期无伤害(公平窗口)，扫射角速压低防远端切向无解</summary>
+    /// <summary>口吐光柱慢扫；ai[0]头whoAmI ai[1]起始角 ai[2]角速度；展开期无伤</summary>
     internal class DestroyerMawBeamProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;
@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
         internal static int CollapseTime => 16;
         internal static int TotalLife => ExpandTime + SweepFrames + CollapseTime;
 
-        /// <summary>光柱起点相对头部中心的前伸量（落在口器处）</summary>
+        /// <summary>口器前伸量</summary>
         internal const float MuzzleOffset = 64f;
         private static float MaxBeamLength => 4500f;
         private static float MaxWidth => 126f;
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
             CooldownSlot = ImmunityCooldownID.Bosses;
         }
 
-        /// <summary>头部仍存活且处于激光弹幕状态机阶段（否则快速收束）</summary>
+        /// <summary>宿主仍在激光弹幕态，否快进收束</summary>
         private bool HostValid {
             get {
                 NPC head = Head;
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
             }
         }
 
-        /// <summary>激怒/狂暴宿主：beam 走更宽更炽白的 EX 表现</summary>
+        /// <summary>激怒宿主，EX 更宽更白</summary>
         private bool IsEnragedHost {
             get {
                 NPC head = Head;
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
             }
         }
 
-        /// <summary>供状态机定位本头部正在发射的光柱：多端一致地让口器朝向权威光束角</summary>
+        /// <summary>按头whoAmI找本束，口器跟权威角</summary>
         internal static Projectile FindFor(int headWhoAmI) {
             int type = ModContent.ProjectileType<DestroyerMawBeamProj>();
             for (int i = 0; i < Main.maxProjectiles; i++) {
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
         public override void AI() {
             NPC head = Head;
 
-            //头部失效或已离开激光弹幕状态：快进到收束段
+            //宿主失效快进收束
             if (!HostValid && Timer < TotalLife - CollapseTime) {
                 Timer = TotalLife - CollapseTime;
             }
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
                 SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 1f, Pitch = -0.5f, MaxInstances = 3 }, Projectile.Center);
             }
 
-            //扫射角：展开期定格起始角 → 匀速横扫 → 收束期定格末角
+            //展开定格→横扫→收束定格
             float sweepT = MathHelper.Clamp(Timer - ExpandTime, 0f, SweepFrames);
             float beamAngle = Projectile.ai[1] + Projectile.ai[2] * sweepT;
             Projectile.rotation = beamAngle;
@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
                 Projectile.Center = head.Center + beamAngle.ToRotationVector2() * MuzzleOffset;
             }
 
-            //宽度/长度展开与收束缓动
+            //宽长缓动
             float collapseStart = TotalLife - CollapseTime;
             if (Timer < ExpandTime) {
                 float t = Timer / ExpandTime;
@@ -123,7 +123,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
                 return;
             }
 
-            //沿束光照
             Vector2 beamDir = Projectile.rotation.ToRotationVector2();
             for (int i = 0; i < 7; i++) {
                 Lighting.AddLight(Projectile.Center + beamDir * (beamLength / 7f * i), ThemeBlood.ToVector3() * 0.85f);
@@ -133,12 +132,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
                 return;
             }
 
-            //全功率期间的低频持续震屏（同 id 刷新，不堆叠）
+            //低频震屏，同id刷新
             if ((int)Timer % 6 == 0) {
                 DestroyerMotionFX.CameraPunch(Projectile.Center, 2.4f, 8, "DestroyerMawBeamRumble", beamDir);
             }
 
-            //沿束熔滴飞溅：带重力余烬，"炽核熔射"的滚烫质感
+            //沿束熔滴+余烬
             if (Main.rand.NextBool(2)) {
                 float along = Main.rand.NextFloat();
                 Vector2 sparkPos = Projectile.Center + beamDir * beamLength * along
@@ -156,7 +155,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
                     Color.White, Main.rand.NextFloat(0.8f, 1.4f))?.SetLifetime(20, 40);
             }
 
-            //口器聚能（向心汇聚）
+            //口器向心聚能
             if (Main.rand.NextBool(2)) {
                 Vector2 gatherPos = Projectile.Center + Main.rand.NextVector2CircularEdge(80f, 80f);
                 PRTLoader.NewParticle<PRT_Spark>(gatherPos,
@@ -165,12 +164,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
             }
         }
 
-        //未完全展开时不造成伤害，给玩家反应窗口
+        //展开完才可伤
         public override bool? CanDamage() => Timer > ExpandTime ? null : false;
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             float p = 0f;
-            //碰撞宽度小于视觉宽度，宽容判定
+            //碰撞比视觉窄
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
                 Projectile.Center, Projectile.Center + Projectile.rotation.ToRotationVector2() * beamLength,
                 beamWidth * 0.6f, ref p);
@@ -182,7 +181,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
 
         public override bool PreDraw(ref Color lightColor) => false;
 
-        /// <summary>光柱几何向后延伸进头部内的距离，把四边形硬切边藏进头雕下面</summary>
+        /// <summary>近端 bleed，藏硬切边进头雕</summary>
         private float MuzzleBackBleed => beamWidth * 0.38f + 58f;
 
         void IPrimitiveDrawable.DrawPrimitives() {
@@ -204,20 +203,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
             DrawAdditiveDressing(MathHelper.Clamp(beamWidth / MaxWidth, 0f, 1f), IsEnragedHost);
         }
 
-        /// <summary>主光柱：DestroyerBeam.fx 在四边形 UV 内生成白热主轴 + 缠绕电弧 + 推进脉冲 + 头部光球</summary>
+        /// <summary>DestroyerBeam.fx 主轴+电弧+脉冲</summary>
         private void DrawShaderBeam(Effect effect, Texture2D noise, float opacity, bool ex) {
             Vector2 mouth = Projectile.Center;
             Vector2 dir = Projectile.rotation.ToRotationVector2();
             Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
             Vector2 tip = mouth + dir * beamLength;
-            //近端向后 bleed 进头部，避免口器处出现垂直于光束的硬切边
+            //近端 bleed 进头
             float backBleed = MuzzleBackBleed;
             Vector2 origin = mouth - dir * backBleed;
-            //视觉宽度大于碰撞宽度：着色器电弧撕裂 + 外覆 halo 宽晕都需要横向余量
+            //视觉半宽含电弧/halo 余量
             float halfW = beamWidth * (ex ? 3.4f : 3.0f);
 
-            //uv.x: 1=口器(漏斗喷口+光球) → 0=末端(淡出)；uv.y: 0~1 横截面
-            //origin(uv.x=1) 落在头雕后方 backBleed 处，口器端由着色器 muzzleTaper 收成喷口、headFlare 补满光球
+            //uv.x 1口器→0末端；uv.y 横截面；origin 在头后 backBleed
             VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
             verts[0] = new VertexPositionColorTexture((origin + perp * halfW).ToVector3(), Color.White, new Vector2(1f, 0f));
             verts[1] = new VertexPositionColorTexture((origin - perp * halfW).ToVector3(), Color.White, new Vector2(1f, 1f));
@@ -245,7 +243,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
             device.RasterizerState = origRaster;
         }
 
-        /// <summary>推进光球脉冲 + 口器多层聚能光球 / 十字星闪 / 头部桥接辉光（圆形点状,无矩形切口）</summary>
+        /// <summary>口器光球/星闪/头桥接，圆点无硬切</summary>
         private void DrawAdditiveDressing(float opacity, bool ex) {
             Texture2D glow = CWRAsset.DiffusionCircle.Value;
             Texture2D star = CWRAsset.StarTexture.Value;
@@ -257,8 +255,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
             Color amber = ThemeGlow;
             Color core = Color.White;
 
-            //外覆宽晕已并入着色器 halo(随光柱收束的圆滑渐隐,无矩形切口)；此处只补圆形点状辉光
-            //推进能量脉冲：数颗光球自口器奔向末端
+            //宽晕已在着色器 halo，这里只补圆点
+            //口器→末端推进光球
             Vector2 screenMouth = Projectile.Center - Main.screenPosition;
             const int pulses = 4;
             for (int i = 0; i < pulses; i++) {
@@ -269,7 +267,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
                     pScale * (ex ? 1.5f : 1.1f) * 0.3f, SpriteEffects.None, 0);
             }
 
-            //口器辉光：多层呼吸光球 + 十字星闪（覆盖接缝）
+            //口器呼吸球+星闪
             float muzzleScale = beamWidth / MaxWidth;
             Main.EntitySpriteDraw(glow, screenMouth, null, blood * (0.95f * opacity), 0f, glow.Size() / 2f,
                 muzzleScale * (ex ? 3f : 2.4f) * flicker, SpriteEffects.None, 0);
@@ -280,7 +278,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
             Main.EntitySpriteDraw(star, screenMouth, null, amber * (0.9f * opacity), Main.GlobalTimeWrappedHourly * 3.2f,
                 star.Size() / 2f, muzzleScale * 0.8f * flicker, SpriteEffects.None, 0);
 
-            //头部中心桥接辉光：把 bleed 段与头雕熔成一体，彻底吃掉近端硬边
+            //头心桥接，吃近端硬边
             NPC head = Head;
             if (head.Alives()) {
                 Vector2 headPos = head.Center - Main.screenPosition;

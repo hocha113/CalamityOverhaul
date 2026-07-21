@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>全息瞄具：交战中周期投放光栅，消解敌对弹幕最多 12，友方穿栅 +25% homing</summary>
+    /// <summary>全息瞄具，交战中周期投光栅，消解敌弹≤12，友方穿栅 +25% homing</summary>
     internal sealed class HoloOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             TickDown(ref cooldownTimer, ref cooldownCarry);
             if (player.whoAmI != Main.myPlayer) return;
             if (player.HeldItem == null || player.HeldItem.type != SHPCOverride.ID) return;
-            //仅在交战中（武器动画激活）才消耗冷却投放光栅
+            //仅交战中投放
             if (cooldownTimer > 0 || !player.ItemAnimationActive) return;
 
             cooldownTimer = DeployCooldown;
@@ -59,14 +59,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         private static readonly Color LatticeMain = new(80, 215, 235);
         private static readonly Color LatticeAccent = new(200, 255, 250);
 
-        /// <summary>已校准过的光束，避免一束光反复增伤</summary>
+        /// <summary>已校准光束，防一束反复增伤</summary>
         private readonly HashSet<int> calibratedBeams = [];
         private int absorbCount;
         private float glitchAmount;
         private float fadeAlpha;
         private float deployProgress;
 
-        /// <summary>弹道方向（光栅法线）</summary>
+        /// <summary>弹道方向，光栅法线</summary>
         private float AimRotation => Projectile.ai[0];
         /// <summary>栅板长边方向</summary>
         private Vector2 PanelDir => (AimRotation + MathHelper.PiOver2).ToRotationVector2();
@@ -100,9 +100,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             CalibrateBeams();
         }
 
-        /// <summary>敌方弹幕触栅消解：上限 MaxAbsorb 发，耗尽后光栅提前退役</summary>
+        /// <summary>敌弹触栅消解，上限 MaxAbsorb，耗尽提前退役</summary>
         private void DissolveHostiles() {
-            //消解判定只在拥有者端执行，Kill 会自动同步
+            //仅拥有者端，Kill 自同步
             if (Projectile.owner != Main.myPlayer) return;
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile hostile = Main.projectile[i];
@@ -122,14 +122,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                     }
                 }
                 if (absorbCount >= MaxAbsorb) {
-                    //过载退役：保留淡出时间
+                    //过载退役留淡出
                     Projectile.timeLeft = Math.Min(Projectile.timeLeft, 25);
                     return;
                 }
             }
         }
 
-        /// <summary>己方光束穿栅校准：增伤 25% 并直指最近敌人</summary>
+        /// <summary>己方穿栅校准，+25% 伤并指向最近敌</summary>
         private void CalibrateBeams() {
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile proj = Main.projectile[i];
@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             }
         }
 
-        /// <summary>点是否处于栅板薄片范围内（局部坐标判定）</summary>
+        /// <summary>点是否在栅板薄片内，局部坐标</summary>
         private bool InsideSlab(Vector2 point) {
             Vector2 rel = point - Projectile.Center;
             float along = Vector2.Dot(rel, PanelDir);
@@ -191,7 +191,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
             shader.CurrentTechnique.Passes[0].Apply();
 
-            //长边沿 PanelDir，短边（厚度方向）为视觉高度 56px
+            //长边 PanelDir，短边视觉高 56px
             Main.spriteBatch.Draw(canvas, drawPos, null, Color.White,
                 AimRotation + MathHelper.PiOver2, canvas.Size() * 0.5f,
                 new Vector2(HalfLength * 2f, 56f), SpriteEffects.None, 0f);

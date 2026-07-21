@@ -6,7 +6,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
     /// <summary>
-    /// 麻布焚灰片：哑光小灰屑，浮力上升 + 侧向摆动翻飞；
+    /// 麻布焚灰片，哑光小灰屑，浮力上升 + 侧向摆动翻飞；
     /// 出生带余温暖色，数帧内冷却为烟灰冷灰（AlphaBlend 实体屑，非光效）
     /// </summary>
     internal class PRT_FishVoodooAsh : BasePRT
@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 麻线断纤：细短的干麻纤维束，受重力下坠带空气阻尼，
+    /// 麻线断纤，细短的干麻纤维束，受重力下坠带空气阻尼
     /// 摆动式飘落 + 自旋（哑光麻色/暗红，针刺点与娃娃散架时用）
     /// </summary>
     internal class PRT_FishVoodooFiber : BasePRT

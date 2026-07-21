@@ -8,36 +8,47 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         Closed,
         /// <summary>一刀开域，墨水浸染</summary>
         Opening,
-        /// <summary>表世界：泛黄和纸</summary>
+        /// <summary>表世界、泛黄和纸</summary>
         Omote,
-        /// <summary>表里翻转：死寂→负片→纸层剥落</summary>
+        /// <summary>表里翻转、死寂→负片→纸层剥落</summary>
         Flipping,
-        /// <summary>里世界：水墨阴间</summary>
+        /// <summary>里世界、水墨阴间</summary>
         Ura,
-        /// <summary>收域：墨水退回裂口</summary>
+        /// <summary>收域、墨水退回裂口</summary>
         Closing
     }
 
-    /// <summary>
-    /// 鬼域对外接口与时序常量，触发交给武器/测试物品调用
-    /// <br/>领域无边界，全屏视觉只响应本地玩家自身的域
-    /// </summary>
+    /// <summary>鬼切领域弹幕</summary>
     public static class OniDomain
     {
-        //Opening 时序：鬼眼浮现→睁眼→勾玉狂旋→爆域
+        //Opening 时序、鬼眼浮现→睁眼→勾玉狂旋→爆域
+
         public const int EyeEmergeFrames = 26;      //闭眼轮廓浮现，灵体汇聚
+
         public const int EyeOpenFrames = 12;        //眼睑猛然撑开
+
         public const int EyeBurstFrames = 10;       //勾玉加速至虹膜闪白
+
         public const int OpenSpreadFrames = 46;     //墨浪爆扩全屏（缓出）
+
         //Flipping 时序
+
         public const int PreSilenceToUra = 55;      //入里前死寂
+
         public const int PreSilenceToOmote = 20;    //回表前停顿
+
         public const int FlashFrames = 7;           //负片闪
+
         public const int PeelFrames = 60;           //纸层剥落
+
         public const int SettleFrames = 18;         //落定
-        //Closing 时序：眼睛重现→墨水吸回→阖眼
+
+        //Closing 时序、眼睛重现→墨水吸回→阖眼
+
         public const int CloseEyeFrames = 16;       //眼睛重现
+
         public const int CloseRetractFrames = 56;   //墨水吸回眼中（缓入）
+
         public const int CloseBlinkFrames = 14;     //阖眼收尾
 
         /// <summary>本地玩家域状态，服务器与主菜单返回 null</summary>
@@ -74,12 +85,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
         public static OniDomainPhase GetPhase(Player player) => player.GetModPlayer<OniDomainPlayer>().Phase;
 
-        //====== 带拒绝分类的命令入口：快捷键与 HUD 鬼眼共用 ======
-
-        /// <summary>
-        /// 开阖命令。返回是否受理；<paramref name="busy"/> 为真表示"仪式进行中被拒"，
-        /// 值得给一次拒绝反馈(重复收阖之类的冗余按键则静默)
-        /// </summary>
+        /// <summary>开阖命令。返回是否受理；<paramref name="busy"/></summary>
         internal static bool TryToggle(Player player, out bool busy) {
             busy = false;
             OniDomainPlayer odp = player.GetModPlayer<OniDomainPlayer>();
@@ -88,21 +94,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                     return odp.OpenDomain();
                 case OniDomainPhase.Flipping:
                     //翻转仪式不可打断
+
                     busy = true;
                     return false;
                 case OniDomainPhase.Closing:
                     //已在收,冗余按键静默
+
                     return false;
                 default:
                     //Opening/Omote/Ura 均可收
+
                     return odp.CloseDomain();
             }
         }
 
-        /// <summary>
-        /// 表里翻转命令。阖着时先展开到表世界(保证一键到位的手感)；
-        /// <paramref name="busy"/> 语义同 <see cref="TryToggle"/>
-        /// </summary>
+        /// <summary>表里翻转命令。阖着时先展开到表世界(保证一键到位的手感)； <paramref</summary>
         internal static bool TryFlip(Player player, out bool busy) {
             busy = false;
             OniDomainPlayer odp = player.GetModPlayer<OniDomainPlayer>();
@@ -114,9 +120,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                     return odp.FlipDomain();
                 case OniDomainPhase.Flipping:
                     //已在翻,静默
+
                     return false;
                 default:
                     //开域/收域仪式中,翻不动
+
                     busy = true;
                     return false;
             }

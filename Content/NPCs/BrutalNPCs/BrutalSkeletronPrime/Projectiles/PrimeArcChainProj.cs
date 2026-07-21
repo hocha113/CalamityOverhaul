@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projectiles
 {
-    /// <summary>机械骷髅王电弧链锁：头臂间带伤害的高压电弧束带(TetherSpin扇叶)；ai[0]=机械臂NPC的whoAmI；ai[1]=头部NPC的whoAmI；ai[2]=总持续时间（帧）；前<see cref="WarmupTime"/>帧预警细弱无伤害；头/臂失效或头部脱离TetherSpin时快速消散</summary>
+    /// <summary>电弧链锁(TetherSpin)；ai[0]臂，ai[1]头，ai[2]时长；Warmup无伤</summary>
     internal class PrimeArcChainProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
         [VaultLoaden(CWRConstant.Masking + "ThunderTrail")]
         private static Asset<Texture2D> ThunderTex = null;
 
-        /// <summary>预警帧数：链先以细弱形态拉起，给玩家定位扇区的时间</summary>
+        /// <summary>预警帧</summary>
         internal static int WarmupTime => 30;
         /// <summary>消散帧数</summary>
         internal static int FadeTime => 12;
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
         private ThunderTrail coreTrail;
         private float power; //0~1 当前功率（展开/收束曲线）
 
-        /// <summary>特斯拉橙金，区别于双子青蓝电弧</summary>
+        /// <summary>特斯拉橙金</summary>
         internal static Color ArcColor => new(255, 168, 64);
 
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 3200;
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             NPC arm = Arm;
             NPC head = Head;
 
-            //链锁有效性：头臂都活着且头部仍处于 TetherSpin
+            //链锁有效性
             bool hostValid = head.Alives() && head.type == NPCID.SkeletronPrime && arm.Alives()
                 && (int)head.ai[PrimeAiSlots.HeadStateSlot] == (int)PrimeStateIndex.TetherSpin;
             if (!hostValid) {
@@ -76,12 +76,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
                 SoundEngine.PlaySound(SoundID.Item93 with { Volume = 0.85f, Pitch = -0.1f }, Projectile.Center);
             }
 
-            //锚定在头臂中点
+            //锚头臂中点
             if (head.Alives() && arm.Alives()) {
                 Projectile.Center = (head.Center + arm.Center) / 2f;
             }
 
-            //功率曲线：预警期细弱 → 快速展开 → 收尾消散
+            //功率曲线
             if (Timer < WarmupTime) {
                 power = Timer / WarmupTime * 0.25f;
             }
@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
                 power = MathHelper.Lerp(0.25f, 1f, VaultUtils.EaseOutCubic(t));
             }
 
-            //全功率瞬间的爆鸣
+            //全功率爆鸣
             if ((int)Timer == WarmupTime && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1f, Pitch = -0.15f }, Projectile.Center);
             }
@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
 
             BuildArcPath(head.Center, arm.Center);
 
-            //沿线光照与飞溅火花
+            //沿线火花
             for (int i = 0; i < 5; i++) {
                 Lighting.AddLight(Vector2.Lerp(head.Center, arm.Center, i / 4f), ArcColor.ToVector3() * 0.55f * power);
             }
@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             }
         }
 
-        /// <summary>在头臂之间采样并扰动电弧路径（两端固定，中段正弦摆动）</summary>
+        /// <summary>电弧路径采样扰动</summary>
         private void BuildArcPath(Vector2 start, Vector2 end) {
             Vector2[] points = new Vector2[ArcPointCount];
             Vector2 dir = end - start;
@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
         private Color GetCoreColor(float factor) => Color.White;
         private float GetArcAlpha(float factor) => power;
 
-        //预警期无伤害
+        //预警无伤
         public override bool? CanDamage() => power >= 0.5f ? null : false;
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
@@ -194,7 +194,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             NPC arm = Arm;
             bool anchored = head.Alives() && arm.Alives();
 
-            //底层能量束带（着色器缺失时仅剩 ThunderTrail，仍可读）
+            //底层束带
             if (anchored && EffectLoader.PrimeArcChain?.Value != null) {
                 DrawShaderRibbon(head.Center, arm.Center);
             }
@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             mainTrail?.DrawThunder(Main.instance.GraphicsDevice);
             coreTrail?.DrawThunder(Main.instance.GraphicsDevice);
 
-            //两端连接点辉光
+            //端点辉光
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Color glowColor = ArcColor with { A = 0 };
             float pulse = 1f + 0.15f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 24f);
@@ -218,7 +218,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             return false;
         }
 
-        /// <summary>电弧底层的体积束带：噪声游走亮带 + 行进光珠，由 PrimeArcChain 着色器绘制</summary>
+        /// <summary>体积束带，PrimeArcChain着色器</summary>
         private void DrawShaderRibbon(Vector2 start, Vector2 end) {
             SpriteBatch sb = Main.spriteBatch;
             sb.End();

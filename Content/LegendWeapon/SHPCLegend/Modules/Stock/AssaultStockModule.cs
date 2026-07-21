@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>突击枪托：双肩悬浮炮臂，主武器射击时交替协战镖弹 50%</summary>
+    /// <summary>突击枪托，双肩炮臂交替协战镖弹 50%</summary>
     internal sealed class AssaultStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             if (player.HeldItem == null || player.HeldItem.type != SHPCOverride.ID) return;
             int armType = ModContent.ProjectileType<SHPCAssaultArmProj>();
             if (player.ownedProjectileCounts[armType] >= 2) return;
-            //左右双臂：ai0 记录侧别
+            //左右臂，ai0=侧别
             for (int side = -1; side <= 1; side += 2) {
                 Projectile.NewProjectile(player.GetSource_FromThis(),
                     player.Center, Vector2.Zero, armType, 0, 0f, player.whoAmI,
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
     }
 
-    /// <summary>悬浮炮臂：肩侧微缩 SHPC，击发瞬间交替协战；改件卸下自毁</summary>
+    /// <summary>悬浮炮臂，肩侧微缩 SHPC，交替协战，卸改件自毁</summary>
     internal sealed class SHPCAssaultArmProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -45,14 +45,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         private static readonly Color ArmMain = new(255, 160, 80);
         private static readonly Color ArmEdge = new(180, 70, 20);
         private static readonly Color ArmCore = new(255, 235, 200);
-        //本体贴图缩放：SHPC 原图 152x70，缩小为肩侧炮荚尺寸
+        //本体缩尺，SHPC 152x70→肩侧
         private const float BodyScale = 0.42f;
 
         private int Side => (int)Projectile.ai[0];
         private float aimRotation;
         private float recoil;
         private int prevItemAnimation;
-        /// <summary>本臂观测到的击发事件计数：双臂各自计数同一串事件，按奇偶分工交替开火</summary>
+        /// <summary>击发计数，双臂按奇偶交替</summary>
         private int observedShots;
 
         public override void SetDefaults() {
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             }
             Projectile.timeLeft = 30;
 
-            //肩侧悬停：上下轻微浮动 + 平滑跟随
+            //肩侧悬停+浮动
             float bob = MathF.Sin((float)Main.timeForVisualEffects * 0.07f + Side * 1.9f) * 4f;
             Vector2 anchor = owner.Center + new Vector2(-owner.direction * 26f * Side, -38f + bob);
             Projectile.Center = Vector2.Lerp(Projectile.Center, anchor, 0.25f);
@@ -85,13 +85,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             aimRotation = aimRotation.AngleLerp(toMouse.ToRotation(), 0.3f);
             recoil = MathF.Max(recoil - 0.12f, 0f);
 
-            //击发侦测：主武器动画从满值跳变的那一帧即为开火帧（仅左键攻击）
+            //itemAnimation 回跳=开火帧（仅左键）
             if (Projectile.owner == Main.myPlayer
                 && owner.ItemAnimationActive
                 && owner.altFunctionUse != 2
                 && owner.itemAnimation > prevItemAnimation) {
                 observedShots++;
-                //左右臂按奇偶交替开火
+                //奇偶交替开火
                 if ((observedShots & 1) == (Side > 0 ? 0 : 1)) {
                     FireBolt(owner);
                 }
@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
         public override void OnKill(int timeLeft) {
             if (Main.netMode == NetmodeID.Server) return;
-            //回收时的解体闪光，避免凭空消失
+            //回收解体闪光
             for (int i = 0; i < 8; i++) {
                 PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
                     Main.rand.NextVector2Circular(3f, 3f),
@@ -129,11 +129,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //本体直接复用 SHPC 武器贴图的微缩版，避免像素拼合的潦草感
+            //复用 SHPC 贴图微缩
             Texture2D body = TextureAssets.Item[SHPCOverride.ID].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition
                 + aimRotation.ToRotationVector2() * -recoil * 5f;
-            //武器贴图默认朝右，瞄向左侧时垂直翻转避免倒持
+            //朝左时 FlipVertically
             SpriteEffects flip = MathF.Cos(aimRotation) < 0f
                 ? SpriteEffects.FlipVertically : SpriteEffects.None;
             Color bodyColor = Color.Lerp(lightColor, Color.White, 0.45f);
@@ -153,7 +153,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 spriteBatch.Draw(glow, drawPos, null, ArmEdge * 0.45f, 0f,
                     glow.Size() * 0.5f, 0.8f, SpriteEffects.None, 0f);
             }
-            //炮口充能指示：随相位闪烁的小型十字耀斑
+            //炮口十字耀斑
             float blink = 0.55f + 0.45f * MathF.Sin((float)Main.timeForVisualEffects * 0.2f + Side * 2.6f);
             Vector2 muzzlePos = drawPos + aimRotation.ToRotationVector2() * (76f * BodyScale);
             if (star != null) {
@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             if (glow != null) {
                 spriteBatch.Draw(glow, muzzlePos, null, ArmMain * blink, 0f,
                     glow.Size() * 0.5f, 0.3f + recoil * 0.25f, SpriteEffects.None, 0f);
-                //尾部悬浮推进器光点
+                //尾推进器光点
                 Vector2 thrusterPos = drawPos - aimRotation.ToRotationVector2() * (70f * BodyScale);
                 spriteBatch.Draw(glow, thrusterPos, null, ArmEdge * (0.5f + 0.2f * blink), 0f,
                     glow.Size() * 0.5f, 0.35f, SpriteEffects.None, 0f);
@@ -171,9 +171,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
     }
 
-    /// <summary>
-    /// 协战光弹：炮臂射出的高速光弹，彗尾光锥 + 残影拖尾，带微量追踪
-    /// </summary>
+    /// <summary>协战光弹，彗尾+残影，轻追</summary>
     internal sealed class SHPCArmBoltProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -200,7 +198,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
 
         public override void AI() {
-            //微量追踪：让镖弹更可靠地参与协战
+            //轻追
             NPC target = Projectile.Center.FindClosestNPC(360f, false, true);
             if (target != null) {
                 Vector2 desired = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * 17f;
@@ -228,7 +226,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             Texture2D star = CWRAsset.StarTexture_White?.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
-            //残影链：沿历史位置布置渐隐光点，形成连续能量尾
+            //残影链
             if (glow != null) {
                 for (int i = 1; i < Projectile.oldPos.Length; i++) {
                     if (Projectile.oldPos[i] == Vector2.Zero) break;
@@ -239,7 +237,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                         glow.Size() * 0.5f, 0.22f * fade + 0.05f, SpriteEffects.None, 0f);
                 }
             }
-            //彗尾光锥：箭头端锚定在弹头，尾迹向后发散
+            //彗尾光锥
             if (shot != null) {
                 Vector2 tipOrigin = new(shot.Width, shot.Height * 0.5f);
                 spriteBatch.Draw(shot, drawPos, null, BoltMain * 0.9f,
@@ -247,7 +245,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 spriteBatch.Draw(shot, drawPos, null, Color.White * 0.75f,
                     Projectile.rotation, tipOrigin, new Vector2(0.26f, 0.07f), SpriteEffects.None, 0f);
             }
-            //弹头：光晕 + 十字星芒高光
+            //弹头光晕+星芒
             if (glow != null) {
                 spriteBatch.Draw(glow, drawPos, null, BoltMain * 0.85f, 0f,
                     glow.Size() * 0.5f, 0.32f, SpriteEffects.None, 0f);

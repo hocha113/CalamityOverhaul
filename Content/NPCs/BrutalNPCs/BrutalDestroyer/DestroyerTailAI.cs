@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             Vector2 origin = rectangle.Size() / 2;
             float seed = (npc.whoAmI % 64) / 64f;
 
-            //读头部(realLife)共享视觉+尾端充能波
+            //头视觉+尾充能波
             int controllerId = (int)npc.realLife;
             var (visMode, visIntensity, visProgress) = ReadSegmentVisual(controllerId, out float wave);
             MechBossThermalRenderer.DrawOutlineHalo(spriteBatch, value, drawPos, rectangle,
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             spriteBatch.Draw(value2, drawPos, rectangle, Color.White,
                 npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0);
 
-            //充能波白热叠加
+            //充能波叠加
             if (wave > 0.05f) {
                 Color hot = new Color(255, 165, 75, 0) * wave;
                 spriteBatch.Draw(value2, drawPos, rectangle, hot,

@@ -13,10 +13,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
 {
-    /// <summary>
-    /// 投掷者机器TP
-    /// 存物品并按参数投掷
-    /// </summary>
+    /// <summary>投掷者TP，存物并按参数投掷</summary>
     internal class ThrowerTP : BaseBattery
     {
         public override int TargetTileID => ModContent.TileType<ThrowerTile>();
@@ -178,9 +175,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             ThrowerUI.Instance?.Initialize(this);
         }
 
-        /// <summary>
-        /// 尝试添加物品到存储
-        /// </summary>
         public bool TryAddItem(Item item) {
             if (item == null || item.IsAir) {
                 return false;
@@ -209,9 +203,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             return false;
         }
 
-        /// <summary>
-        /// 获取下一个要投掷的物品(不移除)
-        /// </summary>
+        /// <summary>下一投掷物(不移除)</summary>
         private Item GetNextThrowItem() {
             for (int i = 0; i < StoredItems.Count; i++) {
                 if (StoredItems[i] != null && !StoredItems[i].IsAir) {
@@ -221,9 +213,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             return null;
         }
 
-        /// <summary>
-        /// 消耗一个物品投掷
-        /// </summary>
         private Item ConsumeOneItem() {
             for (int i = 0; i < StoredItems.Count; i++) {
                 if (StoredItems[i] != null && !StoredItems[i].IsAir) {
@@ -268,7 +257,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
                 return;
             }
 
-            //检查是否有物品可投掷
+            //有无可投
             Item nextItem = GetNextThrowItem();
             if (nextItem == null) {
                 IsWorking = false;
@@ -280,7 +269,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
                 return;
             }
 
-            //检查是否开启投掷
+            //是否开启投掷
             if (!IsThrowing) {
                 IsWorking = false;
                 return;
@@ -295,9 +284,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             }
         }
 
-        /// <summary>
-        /// 执行投掷
-        /// </summary>
         private void PerformThrow() {
             if (VaultUtils.isClient) {
                 return;
@@ -319,7 +305,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             //添加随机散布
             velocity = velocity.RotatedByRandom(MathHelper.ToRadians(ThrowAngle));
 
-            //检查是否是弹药并且开启了弹药发射模式
+            //弹药+弹药发射模式
             if (AmmoShootMode && IsAmmoItem(throwItem, out int projectileType)) {
                 //发射弹幕而不是投掷物品
                 ShootProjectile(projectileType, velocity);
@@ -338,9 +324,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             SendData();
         }
 
-        /// <summary>
-        /// 检查物品是否是弹药并获取对应的弹幕类型
-        /// </summary>
         private static bool IsAmmoItem(Item item, out int projectileType) {
             projectileType = 0;
             if (item == null || item.IsAir) {
@@ -356,9 +339,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             return false;
         }
 
-        /// <summary>
-        /// 发射弹幕
-        /// </summary>
         private void ShootProjectile(int projectileType, Vector2 velocity) {
             //使用投掷力度作为伤害
             int damage = (int)ThrowSpeed;
@@ -377,9 +357,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
                 });
         }
 
-        /// <summary>
-        /// 投掷物品实体
-        /// </summary>
         private void ThrowItemEntity(Item throwItem, Vector2 velocity) {
             //throwItem 已是 stack=1 的克隆(见 ConsumeOneItem)，直接交由线程安全生成入口在主线程生成
             Rectangle spawnArea = new Rectangle((int)LaunchPosition.X, (int)LaunchPosition.Y, 0, 0);
@@ -395,9 +372,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             });
         }
 
-        /// <summary>
-        /// 生成投掷粒子效果
-        /// </summary>
         private void SpawnThrowParticles(Vector2 velocity) {
             if (VaultUtils.isServer) {
                 return;
@@ -452,9 +426,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             }
         }
 
-        /// <summary>
-        /// 绘制方向指示器
-        /// </summary>
         private void DrawDirectionIndicator(SpriteBatch spriteBatch) {
             if (Thrower.InputArrow == null) {
                 return;

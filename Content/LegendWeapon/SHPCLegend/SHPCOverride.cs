@@ -110,11 +110,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         /// <summary>允许右键蓄力</summary>
         public override bool? On_AltFunctionUse(Item item, Player player) => true;
 
-        /// <summary>CanUseItem：无灵魂弹；右键禁重复蓄力球</summary>
+        /// <summary>CanUseItem，无灵魂弹，右键禁重复蓄力球</summary>
         public override bool? On_CanUseItem(Item item, Player player) {
             ShootContext ctx = SHPCModificationSystem.Resolve(player);
             if (player.altFunctionUse == 2) {
-                //右键蓄力模式：channel + noUseGraphic，且场上没有同类蓄力弹幕
+                //右键蓄力，channel+noUseGraphic，场上无同类球
                 item.channel = true;
                 item.noUseGraphic = true;
                 item.UseSound = null;
@@ -125,12 +125,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 item.noUseGraphic = false;
                 item.UseSound = null;
                 if (ctx.LaserMode) {
-                    //激光模式：通道按住持续照射，每 useTime 帧消耗一次法力模拟持续消耗
+                    //激光通道，每useTime耗蓝
                     item.channel = true;
                     item.useAnimation = item.useTime = 8;
                     return player.statMana > 0;
                 }
-                //左键射击模式，按改件攻速倍率缩放 useTime
+                //左键，攻速缩放useTime
                 item.channel = false;
                 int scaled = (int)(LeftClickUseTime / MathF.Max(ctx.AttackSpeedMul, 0.1f));
                 if (scaled < 1) scaled = 1;
@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             }
         }
 
-        /// <summary>UseItem：阻止灵魂消耗</summary>
+        /// <summary>UseItem，阻止灵魂消耗</summary>
         public override bool? On_UseItem(Item item, Player player) => true;
 
         /// <summary>右键耗蓝由蓄力弹幕管理</summary>
@@ -151,35 +151,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             }
             ShootContext ctx = SHPCModificationSystem.Resolve(player);
             mult *= ctx.ManaCostMul;
-            //强制免蓝标志（速射喷射期）：不被其他改件的 ManaCostMul 加算抵消
+            //ManaFree强制免蓝，不被ManaCostMul加算抵消
             if (ctx.ManaFree) {
                 mult = 0f;
                 reduce = 0f;
             }
         }
 
-        /// <summary>On_Shoot：左键光束/激光，右键蓄力球</summary>
+        /// <summary>On_Shoot，左键光束/激光，右键蓄力球</summary>
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             ShootContext ctx = SHPCModificationSystem.Resolve(player);
             if (player.altFunctionUse == 2) {
-                //右键：先生成手持弹幕（绘制武器 + 控制手臂动画）
+                //右键先生成手持弹幕
                 int heldIdx = Projectile.NewProjectile(source, player.Center, Vector2.Zero,
                     ModContent.ProjectileType<SHPCChargeHeldProj>(),
                     0, 0f, player.whoAmI);
 
-                //再生成蓄力能量球，ai[1] 传递手持弹幕索引以定位枪口
+                //再生成蓄力球，ai1=手持索引
                 Vector2 spawnPos = player.Center + velocity.SafeNormalize(Vector2.UnitX) * 70f;
                 int orbDamage = (int)(damage * 2);
                 int orbIdx = Projectile.NewProjectile(source, spawnPos, Vector2.Zero,
                     ModContent.ProjectileType<CyberChargeOrbProj>(),
                     orbDamage, knockback, player.whoAmI,
                     ai1: heldIdx);
-                //通过 localAI 传递蓄力时间与飞行速度倍率，能量球首帧读取
+                //localAI传蓄力时间与球速倍率
                 if (orbIdx >= 0 && orbIdx < Main.maxProjectiles) {
                     Main.projectile[orbIdx].localAI[1] = ctx.ChargeTimeMul;
                     Main.projectile[orbIdx].localAI[2] = ctx.OrbSpeedMul;
-                    //行为字段直接写入到 ModProjectile 实例
+                    //行为字段写入ModProjectile
                     if (Main.projectile[orbIdx].ModProjectile is CyberChargeOrbProj orb) {
                         orb.DrainAura = ctx.OrbDrainAura;
                         orb.ExplosionRadiusMul = ctx.OrbExplosionRadiusMul;
@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             }
             else {
                 if (ctx.LaserMode) {
-                    //激光模式：仅在没有活跃激光时生成一束，后续由弹幕自管理生命周期
+                    //激光，无活跃束时生成一发自管生命周期
                     if (player.ownedProjectileCounts[ModContent.ProjectileType<CyberPrismLaserProj>()] <= 0) {
                         SoundEngine.PlaySound(SoundID.Item92, player.Center);
                         Vector2 laserDir = velocity.SafeNormalize(Vector2.UnitX);
@@ -213,7 +213,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                     }
                     return false;
                 }
-                //左键：根据改件决定单发或散射
+                //左键单发或散射
                 SoundEngine.PlaySound(SoundID.Item92, player.Center);
                 Vector2 baseVel = velocity.SafeNormalize(Vector2.UnitX) * 14f;
                 Vector2 dir = velocity.UnitVector();
@@ -233,10 +233,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                         ModContent.ProjectileType<CyberTraceBeamProj>(),
                         finalDamage, knockback, player.whoAmI,
                         ai0: Main.rand.Next(3));
-                    //ai[1] 传递追踪倍率，>0 时弹幕首帧应用
+                    //ai1传追踪倍率
                     if (beamIdx >= 0 && beamIdx < Main.maxProjectiles) {
                         Main.projectile[beamIdx].ai[1] = ctx.HomingMul;
-                        //行为字段直接写入到 ModProjectile 实例（首帧读取）
+                        //行为字段写入ModProjectile
                         if (Main.projectile[beamIdx].ModProjectile is CyberTraceBeamProj beam) {
                             beam.ExtraPierce = ctx.BeamExtraPierce;
                             beam.LifeMul = ctx.BeamLifeMul;
@@ -246,7 +246,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                             beam.ChainCount = ctx.BeamChainCount;
                             beam.ChainRange = ctx.BeamChainRange;
                             beam.SplitOnDeath = ctx.BeamSplitOnDeath;
-                            //新星枪管特判：第i发弹幕的爆炸伤害按索引递减
+                            //新星枪管，爆炸伤按索引递减
                             if (ctx.BeamExplodeDecayPerBeam > 0f) {
                                 beam.ExplodeDamageMul = MathF.Max(1f - ctx.BeamExplodeDecayPerBeam * i, 0.1f);
                             }
@@ -255,7 +255,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 }
             }
 
-            return false; //阻止原版射击行为
+            return false; //拦原版射击
         }
 
         public static void SetDefaultsFunc(Item Item) {

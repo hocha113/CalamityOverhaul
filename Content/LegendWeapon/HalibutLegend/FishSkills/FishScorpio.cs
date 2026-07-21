@@ -38,12 +38,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnScorpionSentry(Player player, EntitySource_ItemUse_WithAmmo source, int damage, float knockback) {
-            //寻找附近敌人作为参考方向
             NPC target = player.Center.FindClosestNPC(1200f);
 
             Vector2 spawnPos = FindValidGroundPosition(player, target);
             if (spawnPos == Vector2.Zero) {
-                //如果找不到合适位置，在玩家脚下生成
                 spawnPos = player.Bottom + new Vector2(0, -8);
             }
 
@@ -60,7 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
             }
 
-            //召唤特效：地面沙沸腾，先于蝎子出土
+            //召唤特效，地面沙沸腾，先于蝎子出土
             SpawnSummonEffect(spawnPos);
             FishScorpioVFX.BurrowSound(spawnPos);
         }
@@ -82,7 +80,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 testDir = dirToTarget.RotatedBy(angleOffset);
                 Vector2 testPos = player.Center + testDir * distance;
 
-                //向下搜索地面
                 for (int y = 0; y < 40; y++) {
                     Vector2 checkPos = testPos + new Vector2(0, y * 16);
                     Point tilePos = checkPos.ToTileCoordinates();
@@ -101,7 +98,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private static void SpawnSummonEffect(Vector2 position) {
             Vector2 ground = position + new Vector2(0f, 12f);
-            //土浪 + 沙粒喷泉 + 隆起的沙丘：蝎子将从这里顶出来
+            //土浪 + 沙粒喷泉 + 隆起的沙丘
             FishScorpioVFX.GroundPlume(ground, 14, 1.1f);
             FishScorpioVFX.Mound(ground, 60f, 40);
         }
@@ -136,7 +133,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private static int LifeTime => 60 * (5 + HalibutData.GetDomainLayer() / 2); //5-10秒存在时间
         private static int AttackInterval => 120 - HalibutData.GetDomainLayer() * 6; //攻击间隔（随层数减少）
 
-        /// <summary>蝎尾聚旋点：尾刺卷在背后上方</summary>
+        /// <summary>蝎尾聚旋点，尾刺卷在背后上方</summary>
         private Vector2 TailPoint => Projectile.Center + new Vector2(-direction * 14f, -16f);
 
         public override void SetStaticDefaults() {
@@ -182,7 +179,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             int layer = HalibutData.GetDomainLayer(Owner);
 
-            //爬出地面动画：源矩形裁剪从地面顶出，不用alpha淡入
+            //爬出地面动画，源矩形裁剪从地面顶出
             if (isEmerging) {
                 emergeProgress += 0.04f;
                 if (emergeProgress >= 1f) {
@@ -190,7 +187,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     isEmerging = false;
                 }
                 if (!Main.dedServ) {
-                    //沙帘：出土时细沙从背甲上滑落
+                    //沙帘，出土时细沙从背甲上滑落
                     if (Main.rand.NextBool(2)) {
                         Vector2 pos = Projectile.Bottom + new Vector2(Main.rand.NextFloat(-16f, 16f), -Projectile.height * emergeProgress);
                         PRTLoader.NewParticle<PRT_FishScorpioSand>(pos, new Vector2(Main.rand.NextFloat(-0.6f, 0.6f), 0.4f)
@@ -202,7 +199,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //寻找目标
             if (TargetIndex >= 0 && TargetIndex < Main.maxNPCs && Main.npc[(int)TargetIndex].active && Main.npc[(int)TargetIndex].CanBeChasedBy()) {
                 target = Main.npc[(int)TargetIndex];
             }
@@ -211,13 +207,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (target != null) TargetIndex = target.whoAmI;
             }
 
-            //面向目标
             if (target != null) {
                 direction = target.Center.X > Projectile.Center.X ? 1 : -1;
             }
 
             if (recoilTimer > 0) {
-                //发射后坐：先退半步再回到步速
+                //发射后坐，先退半步再回到步速
                 recoilTimer--;
                 Projectile.velocity.X = direction * (3f - 6f * recoilTimer / 8f);
             }
@@ -232,12 +227,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.velocity.Y += 2;
             }
 
-            //攻击逻辑
             AttackTimer++;
             int adjustedInterval = Math.Clamp(AttackInterval - layer * 8, 35, AttackInterval);
             int telegraphLen = Math.Min(TelegraphFrames, adjustedInterval - 6);
 
-            //预告拍：尾部沙粒向心聚旋
+            //预告拍，尾部沙粒向心聚旋
             bool telegraphActive = !isEmerging && target != null && AttackTimer >= adjustedInterval - telegraphLen;
             if (telegraphActive) {
                 telegraphT = MathHelper.Clamp((AttackTimer - (adjustedInterval - telegraphLen)) / (float)telegraphLen, 0f, 1f);
@@ -246,7 +240,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.25f, Pitch = -0.1f, MaxInstances = 3 }, TailPoint);
                 }
                 if (!Main.dedServ) {
-                    //向心沙粒：从环带向尾点螺旋收拢
+                    //向心沙粒，从环带向尾点螺旋收拢
                     float ang = Main.rand.NextFloat(MathHelper.TwoPi);
                     float radius = Main.rand.NextFloat(24f, 38f);
                     Vector2 spawn = TailPoint + ang.ToRotationVector2() * radius;
@@ -270,7 +264,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //身体倾角：后仰蓄力 → 过冲前倾 → 行走前倾，围绕足底旋转
+            //身体倾角
             float leanTarget = direction * Math.Min(Math.Abs(Projectile.velocity.X), 3f) * 0.02f;
             leanTarget += -direction * 0.11f * telegraphT;
             if (recoilTimer > 0) {
@@ -278,7 +272,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             leanAngle = MathHelper.Lerp(leanAngle, leanTarget, 0.2f);
 
-            //帧动画：行走快踏、驻足慢摆
+            //帧，行走快/驻足慢
             int frameRate = Math.Abs(Projectile.velocity.X) > 0.5f ? 7 : 13;
             if (++Projectile.frameCounter >= frameRate) {
                 Projectile.frameCounter = 0;
@@ -286,7 +280,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (Projectile.frame >= 4) Projectile.frame = 0;
             }
 
-            //犁痕：行走在地面上犁开细沙
+            //犁痕，行走在地面上犁开细沙
             if (!Main.dedServ && !isEmerging && OnGround() && Math.Abs(Projectile.velocity.X) > 1f) {
                 if (Projectile.timeLeft % 3 == 0) {
                     Vector2 pos = Projectile.Bottom + new Vector2(-direction * Main.rand.NextFloat(8f, 18f), -2f);
@@ -300,7 +294,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //退场：沉回沙里，扬起土浪
+            //退场，沉回沙里，扬起土浪
             if (Projectile.timeLeft < SinkFrames) {
                 if (!sinkSoundPlayed) {
                     sinkSoundPlayed = true;
@@ -327,7 +321,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 predictedPos = target.Center + target.velocity * (distance / 15f);
             Vector2 shootDir = (predictedPos - Projectile.Center).SafeNormalize(Vector2.Zero);
 
-            //发射沙龙卷：从尾点聚旋处出手，出膛带过冲初速
+            //发射沙龙卷
             float speed = 12f + layer * 0.6f;
             int numShots = 1 + layer / 5; //高层数多发
 
@@ -345,11 +339,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     ai0: speed);
             }
 
-            //攻击音效：出手拍 + 风啸
+            //攻击音效，出手拍 + 风啸
             SoundEngine.PlaySound(SoundID.Item17 with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item34 with { Volume = 0.35f, Pitch = 0.55f, MaxInstances = 3 }, Projectile.Center);
 
-            //释放拍：聚好的沙顺出手方向甩出
+            //释放拍，聚好的沙顺出手方向甩出
             FishScorpioVFX.GrainBurst(TailPoint, shootDir, 8, 3f, 6.5f, 0.6f, 0.45f);
             FishScorpioVFX.Puff(TailPoint, shootDir * 1.5f, 0.2f, 0.24f);
         }
@@ -371,7 +365,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             int frameHeight = texture.Height / 4;
 
-            //出土/入土用源矩形裁剪：只画地面以上的身体，禁alpha幽灵
+            //出土/入土用源矩形裁剪
             float coverage = 1f;
             if (isEmerging) {
                 coverage = 1f - MathF.Pow(1f - emergeProgress, 2.4f); //easeOut顶出
@@ -383,14 +377,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int visibleH = Math.Max((int)(frameHeight * coverage), 2);
             Rectangle source = new Rectangle(0, Projectile.frame * frameHeight, texture.Width, visibleH);
 
-            //足底锚点：裁剪后的可视切片贴着地面线
+            //足底锚点，裁剪后的可视切片贴着地面线
             Vector2 origin = new Vector2(texture.Width / 2f, visibleH);
             Vector2 drawPos = Projectile.Bottom - Main.screenPosition;
 
             //蝎子正面朝左，根据方向翻转
             SpriteEffects effects = direction > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            //预告拍：尾点后方聚旋的小沙涡，画在身体之下让尾刺压住涡根
+            //预告拍，尾点后方聚旋的小沙涡
             if (telegraphT > 0.05f) {
                 float tp = telegraphT * coverage;
                 FishScorpioVFX.DrawNado(Main.spriteBatch, TailPoint - new Vector2(0f, 6f * tp)

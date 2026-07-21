@@ -6,17 +6,14 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
 {
-    /// <summary>
-    /// 鬼切对话框:墨染和纸面板 + 顶沿注连墨绸/纸垂/绯月(shader 边沿带) + 朱印名牌 +
-    /// 刀痕分隔线 + 墨迹未干打字机。装饰全部住在边框带,正文区保持墨黑静场
-    /// </summary>
+    /// <summary>装饰住边框带,正文墨黑静场</summary>
     internal sealed class OnikiriDialogueSkin : StoryDialogueSkin
     {
         private readonly OnikiriPanelState _state = new();
 
         public override float PortraitSize => 100;
         public override float Padding => 10;
-        /// <summary>墨缘侵蚀 ±4px + 边缘吃墨晕染,正文再收一档</summary>
+        /// <summary>墨缘侵蚀,正文再收</summary>
         public override float TextWrapInset => 12f;
 
         public override Color TextColor => OnikiriPanelState.Paper;
@@ -35,7 +32,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
             => OnikiriPanelDraw.DrawShaderBackground(spriteBatch, context.PanelRect, context.Alpha, _state);
 
         public override void DrawBackgroundDecorations(SpriteBatch spriteBatch, DialogueLayoutContext context) {
-            //纸垂等面板基本展开(Alpha 后段)再浮现,避免拔刀揭示期悬空
+            //Alpha 后段再浮现纸垂
             float decoAlpha = MathHelper.Clamp((context.Alpha - 0.55f) / 0.45f, 0f, 1f);
             if (decoAlpha > 0.01f) {
                 OnikiriPanelDraw.DrawShide(spriteBatch, context.PanelRect, decoAlpha, _state.SwayTimer);
@@ -49,14 +46,14 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
             Rectangle frame = context.PortraitRect;
             float alpha = context.Alpha;
 
-            //挂轴式装裱:墨底 + 深红框线 + 上下轴杆
+            //挂轴装裱
             spriteBatch.Draw(pixel, frame, src, new Color(12, 5, 8) * (alpha * 0.92f), 0f, Vector2.Zero, SpriteEffects.None, 0f);
             Common.SkinDrawUtil.DrawRectBorder(spriteBatch, frame, OnikiriPanelState.Deep * (alpha * 0.75f), 2);
 
             Color rail = new Color(58, 10, 14) * alpha;
             spriteBatch.Draw(pixel, new Rectangle(frame.X - 4, frame.Y - 3, frame.Width + 8, 3), src, rail, 0f, Vector2.Zero, SpriteEffects.None, 0f);
             spriteBatch.Draw(pixel, new Rectangle(frame.X - 4, frame.Bottom, frame.Width + 8, 3), src, rail * 0.85f, 0f, Vector2.Zero, SpriteEffects.None, 0f);
-            //下轴中央一缕小流苏
+            //下轴小流苏
             spriteBatch.Draw(pixel, new Rectangle(frame.Center.X - 1, frame.Bottom + 3, 2, 5), src, OnikiriPanelState.Bright * (alpha * 0.55f), 0f, Vector2.Zero, SpriteEffects.None, 0f);
         }
 
@@ -69,13 +66,13 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
             float nameAlpha = context.ContentAlpha * ease;
             Vector2 basePos = context.SpeakerRect.Location.ToVector2();
 
-            //朱印盖章:缩放砸落 + 回正的余旋
+            //朱印砸落
             Vector2 sealCenter = basePos + new Vector2(8f, context.SpeakerRect.Height * 0.5f - 4f);
             float stampScale = 1f + (1f - ease) * 0.55f;
             float stampRot = (1f - ease) * 0.20f;
             OnikiriPanelDraw.DrawSealGlyph(spriteBatch, sealCenter, 15f * stampScale, context.ContentAlpha * ease, stampRot);
 
-            //名字带极淡绯红辉环
+            //绯红辉环
             Vector2 namePos = basePos + new Vector2(21f, 0f);
             namePos.Y -= (1f - ease) * 6f;
             Color glow = OnikiriPanelState.Bright * (nameAlpha * 0.34f);
@@ -105,7 +102,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
                     Vector2 pos = new(context.TextRect.X, context.TextRect.Y + i * context.LineHeight);
                     Utils.DrawBorderString(spriteBatch, draw, pos, TextColor * context.ContentAlpha, TextScale);
 
-                    //墨迹未干:最新 1~2 个字符叠一层随时间褪去的绯红
+                    //墨迹未干,尾 1~2 字
                     if (isRevealLine && inkStrength > 0.02f) {
                         int tail = Math.Min(2, draw.Length);
                         string prefix = draw[..^tail];

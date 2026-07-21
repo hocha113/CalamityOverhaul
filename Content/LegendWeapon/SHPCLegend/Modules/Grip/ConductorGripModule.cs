@@ -6,7 +6,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>导体握把：+链跳次数/范围，命中电弧粒子 VFX</summary>
+    /// <summary>导体握把，+链跳/范围，命中电弧VFX</summary>
     internal sealed class ConductorGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;

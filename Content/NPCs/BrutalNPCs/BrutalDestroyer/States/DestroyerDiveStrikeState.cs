@@ -10,13 +10,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>俯冲贯穿(普攻)：短整备→2/3趟交叉预警俯冲→阶梯刹车回场，约5秒</summary>
+    /// <summary>俯冲贯穿普攻，短整备→交叉俯冲→阶梯刹车</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.DiveStrike, typeof(DestroyerStateContext))]
     internal class DestroyerDiveStrikeState : DestroyerStateBase
     {
         public override string StateName => "DiveStrike";
         public override DestroyerStateIndex StateIndex => DestroyerStateIndex.DiveStrike;
-        /// <summary>俯冲自带高空瞬移走位，回归瞬移阀不介入</summary>
+        /// <summary>自带高空走位，关远距瞬移阀</summary>
         public override bool AllowFarSnap => false;
 
         #region 节奏常量
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             Timer++;
 
-            //短整备：快速爬升到高位，无静默幕
+            //短整备爬高
             if (Timer <= RepositionTime) {
                 context.SkipDefaultMovement = false;
                 context.OrbitalVisual = 1;
@@ -72,13 +72,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 return null;
             }
 
-            //交叉俯冲趟次
+            //交叉俯冲
             if (Timer <= divesEnd) {
                 UpdatePass(context, Timer - RepositionTime - 1);
                 return null;
             }
 
-            //阶梯刹车收尾
+            //阶梯刹车
             if (Timer <= divesEnd + BrakeTime) {
                 context.SkipDefaultMovement = true;
                 context.OrbitalVisual = 0;
@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             int passIndex = Math.Min(diveTimer / PassLength, PassCount(context) - 1);
             int t = diveTimer - passIndex * PassLength;
 
-            //新一趟：方位由同步的 ai[3] 确定性推导，左右交替成X
+            //新趟，ai[3]左右交替成X
             if (passIndex != currentPass) {
                 currentPass = passIndex;
                 passBoomFired = false;
@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 SoundEngine.PlaySound(SoundID.Item15 with { Pitch = -0.2f, Volume = 0.85f }, player.Center);
             }
 
-            //预警期：高位待命，末12帧下颚猛然咬合（释放前的"吸气"）
+            //预警高位，末12f咬合
             if (t < TelegraphTime) {
                 context.SkipDefaultMovement = false;
                 context.OrbitalVisual = 1;
@@ -133,16 +133,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 return;
             }
 
-            //俯冲释放帧
+            //释放帧
             if (t == TelegraphTime) {
                 npc.Center = lineCenter - diveDir * 2500f;
                 npc.velocity = diveDir * DiveSpeed(context);
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
-                //ForceRoar：Roar 上限1实例且 IgnoreNew，趟次间隔(~1.7s)短于采样时长(~2s)，
-                //普通 Roar 会被上一声未播完的咆哮（含远处近乎无声的进场吼）整声吞掉
+                //ForceRoar，间隔短于采样会被IgnoreNew吞
                 SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.35f, Volume = 1f }, player.Center);
-                //俯冲瞬间天空如闪雷亮起，电弧落点对准贯穿线中心
+                //闪雷+电弧对贯穿线
                 MachineEffect.TriggerSkyFlash(lineCenter, 1f);
                 if (!VaultUtils.isClient) {
                     DestroyerHeatWakeProj.EnsureForHead(npc);
@@ -166,7 +165,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                     DestroyerMotionFX.CameraPunch(lineCenter, 7f, 16, "DestroyerDivePass", diveDir);
                 }
 
-                //越过战场足够远立即进入间隙（no dead waiting）
+                //越场够远进间隙
                 int gapStartTimer = RepositionTime + 1 + passIndex * PassLength + TelegraphTime + DiveTime;
                 if (passBoomFired && Vector2.Dot(npc.Center - lineCenter, diveDir) > 1100f && Timer < gapStartTimer) {
                     Timer = gapStartTimer;
@@ -174,7 +173,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 return;
             }
 
-            //间隙：冲出屏幕后微减速准备下一趟
+            //间隙微减速
             context.SkipDefaultMovement = true;
             context.OrbitalVisual = 1;
             npc.damage = 0;

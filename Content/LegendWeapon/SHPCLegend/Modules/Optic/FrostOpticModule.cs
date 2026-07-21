@@ -4,7 +4,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>冰霜瞄具：光束命中上冰霜减速 debuff</summary>
+    /// <summary>冰霜瞄具，命中上 Frostburn</summary>
     internal sealed class FrostOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;

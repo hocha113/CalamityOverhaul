@@ -13,19 +13,18 @@ using Terraria.UI;
 namespace CalamityOverhaul.Content.Cyberwares.Victors
 {
     /// <summary>
-    /// 义体手术流程：诊所关→过场→眼睑渐黑→帧 86 换装→手术灯→重开诊所
-    /// <br/>兼 ModSystem，驱动眼睑全屏覆盖与每帧推进
+    /// 手术流程 诊所关→过场→眼睑→帧86换装→重开诊所；兼眼睑全屏
     /// </summary>
     internal class VictorSurgery : ModSystem
     {
         /// <summary>过场进行中</summary>
         public static bool Active { get; private set; }
 
-        /// <summary>眼睑闭合 0睁→1黑，Lerp 逼近 EyelidTarget</summary>
+        /// <summary>眼睑 0睁→1黑，Lerp→EyelidTarget</summary>
         public static float EyelidValue;
-        /// <summary>眼睑闭合目标值</summary>
+        /// <summary>眼睑目标</summary>
         public static float EyelidTarget;
-        /// <summary>睁眼眩光 0~1，逐帧衰减</summary>
+        /// <summary>睁眼眩光 0~1</summary>
         public static float GlowValue;
 
         private const int KindNone = 0;
@@ -40,7 +39,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
 
         #region 对外触发
 
-        /// <summary>安装/更换：背包 invIndex → slot</summary>
+        /// <summary>安装/更换，invIndex→slot</summary>
         public static void BeginInstall(int invIndex, int slot) {
             if (Active) {
                 return;
@@ -221,7 +220,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                 sb.Draw(px, new Rectangle(0, 0, w, h), Color.White);
             }
             else {
-                //着色器缺失：上下黑幕
+                //无着色器上下黑幕
                 int lid = (int)(close * (h * 0.5f + 2f));
                 sb.Draw(px, new Rectangle(0, 0, w, lid), Color.Black);
                 sb.Draw(px, new Rectangle(0, h - lid, w, lid), Color.Black);

@@ -119,10 +119,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (!DownRight) {
                 TriggerRecoil();
             }
-            //由CyberChargeOrbProj统一管理生命周期，这里只保持存活
+            //生命周期由蓄力球托管
             Projectile.timeLeft = 60;
 
-            //瞄准方向
             Vector2 aimDir = UnitToMouseV;
             UpdateGunState(aimDir, 0f);
         }
@@ -130,16 +129,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         private void AI_Recoil() {
             recoilTimer++;
 
-            //后坐力曲线：快速后退 → 缓慢回弹
+            //后坐，快退慢回
             int kickFrames = (int)(RecoilDuration * RecoilKickRatio);
             if (recoilTimer <= kickFrames) {
-                //后退阶段：使用缓出插值快速到达最大偏移
+                //后退缓出
                 float t = (float)recoilTimer / kickFrames;
                 float ease = 1f - (1f - t) * (1f - t); //easeOutQuad
                 recoilOffset = RecoilMaxOffset * ease;
             }
             else {
-                //回弹阶段：缓慢回到原位
+                //回弹
                 float t = (float)(recoilTimer - kickFrames) / (RecoilDuration - kickFrames);
                 float ease = t * t; //easeInQuad
                 recoilOffset = RecoilMaxOffset * (1f - ease);
@@ -163,7 +162,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Owner.ChangeDir(Math.Sign(aimDir.X));
 
             //手臂指向瞄准方向，并取得对应的前手世界坐标作为握把锚点，
-            //这样武器握把会始终跟随实际手部位置，避免旋转时脱手
+            //握把跟手
             float armRotation = (-aimDir).ToRotation() * Owner.gravDir + MathHelper.PiOver2;
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
             handWorld = Owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, armRotation);

@@ -25,10 +25,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             Player player = Main.LocalPlayer;
             int currentOre = player.InquireItem(CWRID.Item_Terminus);
 
-            //更新进度
             Objectives[0].CurrentProgress = currentOre;
 
-            //检查完成
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
             }
@@ -64,10 +62,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
             int currentOre = player.InquireItem(CWRID.Item_Rock);
-            //更新进度
             Objectives[0].CurrentProgress = currentOre;
 
-            //检查完成
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
             }

@@ -3,7 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>标记瞄具：命中上 MarkedforDeath</summary>
+    /// <summary>标记瞄具，命中上 MarkedforDeath</summary>
     internal sealed class PingOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;

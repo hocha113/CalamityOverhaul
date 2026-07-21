@@ -7,9 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
 {
-    /// <summary>
-    /// 命中敌人的十字标记弹幕
-    /// </summary>
+    /// <summary>命中十字标记</summary>
     internal class JusticeCrossMark : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -20,8 +18,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
         private float pulsePhase = 0f;
         private float fadeProgress = 0f;
 
-        private const int MarkDuration = 90;//标记持续时间（帧）
-        private const float CrossSize = 50f;//十字大小
+        private const int MarkDuration = 90;//帧
+        private const float CrossSize = 50f;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 60;
@@ -51,29 +49,25 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             pulsePhase += 0.15f;
             rotation += 0.08f;
 
-            //跟随敌人位置
             Projectile.Center = npc.Center;
 
-            //淡出动画
+            //末30帧淡出
             if (Timer > MarkDuration - 30) {
                 fadeProgress = (Timer - (MarkDuration - 30)) / 30f;
             }
 
-            //环境光照
             float lightIntensity = (float)Math.Sin(pulsePhase) * 0.5f + 0.5f;
             Lighting.AddLight(Projectile.Center,
                 1.2f * lightIntensity * (1f - fadeProgress),
                 0.9f * lightIntensity * (1f - fadeProgress),
                 0.3f * lightIntensity * (1f - fadeProgress));
 
-            //粒子效果
             if (Main.rand.NextBool(8) && fadeProgress < 0.7f) {
                 SpawnMarkParticle();
             }
         }
 
         private void SpawnMarkParticle() {
-            //从十字中心向外发射金色粒子
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
             Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 5f);
 
@@ -97,10 +91,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float alpha = 1f - fadeProgress;
 
-            //脉动效果
             float pulse = (float)Math.Sin(pulsePhase * 1.5f) * 0.2f + 0.8f;
 
-            //绘制外层旋转光环
             for (int i = 0; i < 3; i++) {
                 float ringScale = (1.8f + i * 0.4f) * pulse;
                 float ringAlpha = (1f - i * 0.3f) * alpha * 0.4f;
@@ -119,10 +111,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 );
             }
 
-            //绘制十字标记主体
             DrawCross(sb, drawPos, alpha, pulse);
 
-            //绘制中心发光核心
             Color coreColor = Color.White with { A = 0 };
             sb.Draw(
                 glowTex,
@@ -139,18 +129,13 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             return false;
         }
 
-        /// <summary>
-        /// 绘制十字标记
-        /// </summary>
         private static void DrawCross(SpriteBatch sb, Vector2 drawPos, float alpha, float pulse) {
             Texture2D pixelTex = VaultAsset.placeholder2.Value;
 
-            //十字的四个方向
             for (int i = 0; i < 4; i++) {
                 float angle = i * MathHelper.PiOver2;
                 Vector2 direction = angle.ToRotationVector2();
 
-                //主十字线
                 Color mainColor = Color.Lerp(Color.Gold, Color.Yellow, 0.3f) with { A = 0 };
                 Vector2 lineScale = new Vector2(CrossSize * pulse, 4f);
 
@@ -166,7 +151,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                     0f
                 );
 
-                //发光层
                 Color glowColor = Color.White with { A = 0 };
                 Vector2 glowScale = new Vector2(CrossSize * pulse * 0.8f, 6f);
 
@@ -183,7 +167,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 );
             }
 
-            //绘制对角线辅助十字（更细）
+            //对角辅助十字
             for (int i = 0; i < 4; i++) {
                 float angle = i * MathHelper.PiOver2 + MathHelper.PiOver4;
                 Vector2 direction = angle.ToRotationVector2();
@@ -206,7 +190,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
         }
 
         public override void OnKill(int timeLeft) {
-            //消散特效（减少粒子）
             for (int i = 0; i < 12; i++) {
                 float angle = MathHelper.TwoPi * i / 12f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 6f);
@@ -223,7 +206,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 fade.fadeIn = 0.8f;
             }
 
-            //闪光粒子
             for (int i = 0; i < 8; i++) {
                 Dust flash = Dust.NewDustPerfect(
                     Projectile.Center,

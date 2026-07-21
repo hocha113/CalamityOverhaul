@@ -5,9 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>
-    /// 伽马射线冲击粒子
-    /// </summary>
+    /// <summary>伽马冲击</summary>
     internal class PRT_GammaImpact : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Flashimpact";
@@ -18,7 +16,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         private bool affectedByGravity;
         public int inOwner = -1;
 
-        //动画参数
         private const int FrameColumns = 4;
         private const int FrameRows = 2;
         private const int TotalFrames = 8;
@@ -76,33 +73,26 @@ namespace CalamityOverhaul.Content.PRTTypes
         }
 
         public override void AI() {
-            //更新动画帧
             ai[0] += animationSpeed;
             if (ai[0] >= TotalFrames) {
                 ai[0] = 0;
             }
 
-            //旋转
             Rotation = Velocity.ToRotation();
 
-            //速度衰减
             Velocity *= 0.95f;
 
-            //重力影响
             if (affectedByGravity && Velocity.Length() < 12f) {
                 Velocity.X *= 0.94f;
                 Velocity.Y += 0.25f;
             }
 
-            //缩放变化
             float lifeProgress = LifetimeCompletion;
             Scale = initialScale * (float)Math.Sin(lifeProgress * MathHelper.Pi);
 
-            //颜色渐变：向深靛蓝消散
             float fadeProgress = (float)Math.Pow(lifeProgress, 2);
             Color = Color.Lerp(initialColor, new Color(50, 30, 120, 0), fadeProgress);
 
-            //添加亮度脉冲
             float pulse = (float)Math.Sin(Time * 0.3f) * 0.3f + 0.7f;
             Opacity = (1f - fadeProgress) * pulse;
 
@@ -114,12 +104,10 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D texture = PRTLoader.PRT_IDToTexture[ID];
 
-            //计算当前帧
             int currentFrame = (int)ai[0];
             int frameX = currentFrame % FrameColumns;
             int frameY = currentFrame / FrameColumns;
 
-            //计算帧的源矩形
             int frameWidth = texture.Width / FrameColumns;
             int frameHeight = texture.Height / FrameRows;
             Rectangle sourceRect = new Rectangle(
@@ -132,7 +120,6 @@ namespace CalamityOverhaul.Content.PRTTypes
             Vector2 origin = new Vector2(frameWidth, frameHeight) * 0.5f;
             Vector2 drawPosition = Position - Main.screenPosition;
 
-            //绘制发光层
             spriteBatch.Draw(
                 texture,
                 drawPosition,
@@ -145,7 +132,6 @@ namespace CalamityOverhaul.Content.PRTTypes
                 0f
             );
 
-            //绘制主体
             spriteBatch.Draw(
                 texture,
                 drawPosition,

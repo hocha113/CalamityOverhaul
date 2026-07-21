@@ -56,15 +56,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 岩鱼锤弹幕：整块花岗岩的重量感呈现。<br/>
+    /// 岩鱼锤弹幕，整块花岗岩的重量感呈现<br/>
     /// 悬停蓄力 = 石屑反重力上浮 + 锤体微震颤 + 缓慢上抬；下砸 = 加速度曲线 + 速度拉伸；
-    /// 砸点 = 定帧 + 尘环波前 + 瓦砾抛物 + 嵌地裂纹 decal + 克制震屏。哑光零发光
+    /// 砸点 = 定帧 + 尘环波前 + 瓦砾抛物 + 嵌地裂纹 decal + 克制震屏，哑光零发光
     /// </summary>
     internal class RockHammerFish : BaseHeldProj, IPrimitiveDrawable
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.Rockfish;
 
-        //状态机
         private enum HammerState
         {
             Appearing,    //出现阶段
@@ -187,7 +186,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //更新目标预判
             UpdateTargetPrediction();
 
-            //状态机
             switch (State) {
                 case HammerState.Appearing:
                     AppearingPhaseAI();
@@ -223,7 +221,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 decalTimer++;
             }
 
-            //帧位移缓存：速度拉伸与剥落尾迹的量源
+            //帧位移缓存，速度拉伸与剥落尾迹的量源
             moveDelta = lastCenter == Vector2.Zero ? Vector2.Zero : Projectile.Center - lastCenter;
             lastCenter = Projectile.Center;
         }
@@ -234,7 +232,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             NPC target = Main.npc[(int)TargetNPCID];
 
-            //计算目标速度
             if (lastTargetPos != Vector2.Zero) {
                 targetVelocity = target.Center - lastTargetPos;
             }
@@ -245,7 +242,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             predictedPos = target.Center + targetVelocity * predictionTime * 60f;
         }
 
-        //出现阶段：石尘凝聚成锤，禁 pop-in
+        //出现阶段
         private void AppearingPhaseAI() {
             float progress = StateTimer / AppearDuration;
             float easeProgress = CWRUtils.EaseOutElastic(progress);
@@ -256,7 +253,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             Projectile.Center = startPos + new Vector2(0, -30 * easeProgress);
-            //一整圈定向落定：石锤沉重，不做多圈轻旋
+            //一整圈定向落定
             targetRotation = MathHelper.TwoPi * VaultUtils.EaseOutCubic(progress);
             scaleMultiplier = easeProgress;
 
@@ -279,7 +276,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>出现帧的凝聚演出：向心收拢尘团 + 石尘底噪 + 召唤音（各端 AI 自播）</summary>
+        /// <summary>出现帧的凝聚演出，向心收拢尘团 + 石尘底噪 + 召唤音（各端 AI 自播）</summary>
         private void SpawnCondenseBurst() {
             if (VaultUtils.isServer) {
                 return;
@@ -303,7 +300,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //初始化飞行路径
         private void InitializeFlight() {
             if (!IsTargetValid()) {
                 State = HammerState.Returning;
@@ -328,7 +324,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             bezierP2 = bezierP3 + new Vector2(arcDirection * distance * 0.2f, -distance * 0.15f);
         }
 
-        //飞行阶段：定向巡航 + 摆尾相位，剥落细屑
+        //飞行阶段
         private void FlyingPhaseAI() {
             float progress = StateTimer / FlyDuration;
             float easeProgress = VaultUtils.EaseInOutCubic(progress);
@@ -346,7 +342,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             scaleMultiplier = 1f;
 
             if (!VaultUtils.isServer) {
-                //掠行剥落：尾部石尘 + 偶发受重力细屑
+                //掠行剥落
                 if (Main.rand.NextBool(2)) {
                     PRTLoader.NewParticle<PRT_FishRockDust>(Projectile.Center - velocity * 1.5f + Main.rand.NextVector2Circular(8f, 8f)
                         , -velocity * 0.08f, default, Main.rand.NextFloat(0.35f, 0.55f))
@@ -373,7 +369,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //准备敲击阶段：缓慢上抬悬停 + 微震颤 + 石屑反重力上浮
+        //准备敲击阶段，缓慢上抬悬停
         private void PreparingPhaseAI() {
             if (!IsTargetValid()) {
                 State = HammerState.Returning;
@@ -388,17 +384,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //使用预测位置
             Vector2 targetPoint = predictedPos != Vector2.Zero ? predictedPos : target.Center;
 
-            //单调上抬：easeOut 减速趋停，末端悬住蓄满
+            //单调上抬，easeOut 减速趋停
             float lift = VaultUtils.EaseOutCubic(progress) * 58f;
             Projectile.Center = strikeStartPos + new Vector2(0f, -lift);
 
             //锤头缓缓压向目标方向（下砸预指向）
             targetRotation = (targetPoint - Projectile.Center).ToRotation() + MathHelper.PiOver2;
             scaleMultiplier = 1f;
-            //震颤幅度随蓄力加深（仅作用于绘制，不动判定）
+            //震颤幅度随蓄力加深（仅作绘制，不动判定）
             trembleAmp = progress;
 
-            //反重力预告：锤下方石屑上浮，暗示蓄力场
+            //反重力预告
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < 2; i++) {
                     PRTLoader.NewParticle<PRT_FishRockMote>(
@@ -435,12 +431,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //敲击阶段：加速度曲线下砸，命中即定帧
+        //敲击阶段，加速度曲线下砸，命中即定帧
         private void StrikingPhaseAI() {
             float progress = StateTimer / StrikeDuration;
 
             if (impactHoldFrames > 0) {
-                //定帧：锤钉在命中点，挤压回弹交给绘制
+                //定帧，锤钉在命中点，挤压回弹交给绘制
                 impactHoldFrames--;
                 Projectile.Center = impactHoldPos;
             }
@@ -452,7 +448,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             scaleMultiplier = 1f;
 
-            //下砸剥落：尾部拖出石尘
+            //下砸剥落，尾部拖出石尘
             if (!VaultUtils.isServer && !impactTriggered && moveDelta.LengthSquared() > 4f) {
                 PRTLoader.NewParticle<PRT_FishRockDust>(Projectile.Center - moveDelta * 1.2f + Main.rand.NextVector2Circular(6f, 6f)
                     , -moveDelta * 0.06f, default, Main.rand.NextFloat(0.4f, 0.6f))
@@ -477,7 +473,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             if (StateTimer >= StrikeDuration) {
-                //落空轻反馈：无重音无震屏，只有扑空的散尘
+                //落空轻反馈
                 if (!impactTriggered) {
                     SpawnMissPuff();
                 }
@@ -488,7 +484,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
-        /// 砸击结算演出（幂等，命中路径与碰撞路径共用）：
+        /// 砸击结算演出（幂等，命中路径与碰撞路径共用）
         /// 定帧 + 克制震屏 + 三层音 + 瓦砾抛物 + 尘环波前 + 嵌地裂纹锚定
         /// </summary>
         private void TriggerImpact(Vector2 hitPos) {
@@ -508,7 +504,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 decalSeed = Projectile.whoAmI * 0.61f % 1f;
             }
 
-            //克制的定向震屏：沿下砸方向一记短震
+            //克制的定向震屏，沿下砸方向一记短震
             if (CWRServerConfig.Instance.ScreenVibration && !Main.dedServ) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(hitPos, Vector2.UnitY
                     , 6f, 5f, 10, 900f, FullName));
@@ -532,7 +528,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Pitch = -0.3f
             }, hitPos);
 
-            //瓦砾抛物：大小混合的硬边角砾从砸点迸出，受重力弹跳
+            //瓦砾抛物
             for (int i = 0; i < 12; i++) {
                 float size = i < 3 ? Main.rand.NextFloat(1.1f, 1.6f)
                     : i < 8 ? Main.rand.NextFloat(0.6f, 1f)
@@ -542,7 +538,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , vel, default, size)?.Configure(Main.rand.Next(34, 55));
             }
 
-            //尘环冲击波：沿地面向两侧横扫的尘土波前
+            //尘环冲击波
             if (ground.HasValue) {
                 for (int dir = -1; dir <= 1; dir += 2) {
                     for (int i = 0; i < 5; i++) {
@@ -572,7 +568,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>落空反馈：几缕散尘泄掉下砸动能</summary>
+        /// <summary>落空反馈，几缕散尘泄掉下砸动能</summary>
         private void SpawnMissPuff() {
             if (VaultUtils.isServer) {
                 return;
@@ -626,7 +622,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //消失阶段：崩解回石尘
+        //消失阶段，崩解回石尘
         private void DisappearingPhaseAI() {
             float progress = StateTimer / DisappearDuration;
             float easeProgress = VaultUtils.EaseInCubic(progress);
@@ -635,7 +631,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.alpha = (int)(255 * easeProgress);
             scaleMultiplier = 1f - easeProgress * 0.5f;
 
-            //剥蚀：锤体化回下坠石尘
+            //剥蚀，锤体化回下坠石尘
             if (!VaultUtils.isServer && Main.rand.NextBool(2) && progress < 0.95f) {
                 PRTLoader.NewParticle<PRT_FishRockDust>(Projectile.Center + Main.rand.NextVector2Circular(16f, 16f)
                     , new Vector2(Main.rand.NextFloat(-0.6f, 0.6f), Main.rand.NextFloat(0.2f, 0.9f))
@@ -654,7 +650,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //检查目标有效性
         private bool IsTargetValid() {
             int id = (int)TargetNPCID;
             if (id < 0 || id >= Main.maxNPCs) return false;
@@ -662,7 +657,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return target.active && target.CanBeChasedBy();
         }
 
-        /// <summary>终帧崩解：尘团散开 + 小屑坠落</summary>
+        /// <summary>终帧崩解，尘团散开 + 小屑坠落</summary>
         private void SpawnFinalEffect() {
             if (VaultUtils.isServer) {
                 return;
@@ -686,7 +681,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //隐形滞留期：锤体已崩解，只剩地面裂纹残迹
+            //隐形滞留期
             if (Projectile.alpha >= 250) {
                 return false;
             }
@@ -699,14 +694,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 origin = sourceRect.Size() / 2f;
             float alpha = (255f - Projectile.alpha) / 255f;
 
-            //蓄力微震颤：高频小位移只作用在绘制上
+            //蓄力微震颤，高频小位移只作用在绘制上
             if (State == HammerState.Preparing && trembleAmp > 0f) {
                 float t = StateTimer * 2.9f;
                 drawPos += new Vector2(MathF.Sin(t) * 1.7f, MathF.Cos(t * 1.31f) * 1.2f) * trembleAmp
                     + Main.rand.NextVector2Circular(0.7f, 0.7f) * trembleAmp;
             }
 
-            //挤压拉伸：下砸沿运动轴拉长，定帧砸扁回弹
+            //挤压拉伸
             Vector2 stretch = Vector2.One;
             if (State == HammerState.Striking) {
                 if (impactHoldFrames > 0) {
@@ -719,7 +714,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //拖影：全哑光暗剪影，飞行读旋转拖影、下砸读速度拉伸链，无加色
+            //拖影，全哑光暗剪影
             if (State == HammerState.Flying || State == HammerState.Striking) {
                 bool striking = State == HammerState.Striking;
                 int ghostCount = striking ? 5 : 3;
@@ -738,7 +733,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //主体：哑光受环境光，零发光层
+            //主体，哑光受环境光，零发光层
             sb.Draw(hammerTex, drawPos, sourceRect, lightColor * alpha, hammerRotation, origin
                 , Projectile.scale * scaleMultiplier * stretch, SpriteEffects.None, 0);
 

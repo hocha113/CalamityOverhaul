@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Brimstone
 
         public override float PortraitSize => 100;
         public override float Padding => 10;
-        /// <summary>对齐 Brimstone shader 内缘留白。</summary>
+        /// <summary>对齐 Brimstone shader 内缘</summary>
         public override float TextWrapInset => BrimstonePanelState.ShaderEdgePad;
 
         public override Color TextColor => new(255, 225, 210);

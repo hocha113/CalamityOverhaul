@@ -6,29 +6,21 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 {
-    //超梦教程关卡的入口控制
-    //通过调用CybCourseWorld.Enter()进入，CybCourseWorld.Exit()退出
-    //RETRY软重启时调用CybCourse.Restart()，不需要重新加载子世界
+    //Enter/Exit/Restart入口
     internal class CybCourse : ModSystem
     {
-        //接受教程后进入子世界前置为true，退出时发放超梦接入凭证
-        //用静态字段而非存档标记，避免子世界存档与主世界存档不同步导致标记丢失
+        //接受教程后回主世界发凭证；静态，子世界存档不同步
         private static bool _grantMewtwoOnExit;
 
         public static bool IsActive => CybCourseWorld.Active;
 
         public static void Enter() {
-            //切换子世界前先清掉跨世界引用（详见 ClearCrossWorldRefs 注释）
             ClearCrossWorldRefs(Main.LocalPlayer);
-            //进入子世界前拍主世界快照，回主世界时补 Boss 进度与城镇 NPC
             CybCourseWorldGuard.Snapshot();
             CybCourseWorld.Enter();
         }
 
-        //清理玩家身上的"跨世界引用"：chest/sign/聊天NPC/TileEntity 锚点都是按"当前世界"的索引，
-        //一旦带着它们切换世界，RecipeBrowser/MagicStorage/Fargo 等 Mod 会在 OnEnterWorld 里调 FindRecipes，
-        //Recipe.CollectItemsToCraftWithFrom 拿旧世界的索引去访问新世界的 Main.chest[] / TileEntity.ByID（已被换空），
-        //从而抛 NullReferenceException 闪退。进、出子世界两个方向都必须做此清理，否则只堵住了单边。
+        //跨世界chest/sign/TileEntity索引→FindRecipes NRE(进出都清)
         private static void ClearCrossWorldRefs(Player p) {
             if (p == null || !p.active) {
                 return;
@@ -40,46 +32,35 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             Main.npcChatText = string.Empty;
         }
 
-        //由FirstMetShepel_CybCourseAccept在进入子世界前调用，标记回到主世界后需发放凭证
+        //FirstMetShepel_CybCourseAccept进子世界前调用
         internal static void ScheduleMewtwoGrant() => _grantMewtwoOnExit = true;
 
-        //回到主世界时由CybCoursePlayer.OnEnterWorld调用，返回true表示需要发放
+        //CybCoursePlayer.OnEnterWorld消费
         internal static bool TryConsumeGrantMewtwo() {
             if (!_grantMewtwoOnExit) return false;
             _grantMewtwoOnExit = false;
             return true;
         }
 
-        /// <summary>
-        /// 退出教程子世界，清理 InfiniteHack/Outro/完成面板
-        /// </summary>
+        /// <summary>退出子世界，清InfiniteHack/Outro/完成面板</summary>
         public static void Exit() {
             CybCourseCompletePanel.Hide();
             CybCourseKeyBindReminderPanel.Hide();
             NarrativeRunner.Reset();
             HackTime.InfiniteHack = false;
-            //与 Enter 对称：回主世界前清掉子世界里残留的 chest/sign/TileEntity 锚点，避免被主世界误读为本地索引而闪退
             ClearCrossWorldRefs(Main.LocalPlayer);
             CybCourseWorld.Exit();
         }
 
-        /// <summary>
-        /// RETRY 软重启：不 reload 子世界，重置教程状态并重生测试 NPC
-        /// </summary>
+        /// <summary>RETRY软重启，不reload子世界</summary>
         public static void Restart() {
-            //1. 关闭面板
             CybCourseCompletePanel.Hide();
 
-            //2. 重置教程 ModSystem 内部状态（包括清理 SantaNK1）
             CybTutorialLead.ResetForRetry();
             HackTimeTutorialLead.ResetForRetry();
 
-            //3. 回滚物块到生成时的快照（包括墙体/帧数据/液体/坡度），并重新挂载MK2 的 TP 实体
             CybCourseGen.RestoreSnapshot();
 
-            //4. 教程对话由 ResetForRetry 清零 _introAttempted，可再次自动开场
-
-            //5. 重置玩家位置 / RAM / 骇客时间
             HackTime.Reset();
             RamSystem.Refill();
             Player p = Main.LocalPlayer;
@@ -90,8 +71,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 p.velocity = Vector2.Zero;
                 p.statLife = p.statLifeMax2;
             }
-
-            //6. 触发开场；_introAttempted 已在 ResetForRetry 清零
         }
 
         public override void PostUpdateEverything() {

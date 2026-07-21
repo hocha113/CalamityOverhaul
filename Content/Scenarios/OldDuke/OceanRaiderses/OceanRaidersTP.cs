@@ -25,12 +25,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
         public override bool ReceivedEnergy => true;
         public override float MaxUEValue => 1200;
 
-        //机器常量
         internal const int consumeUE = 8;
         internal const int fishingTime = 12;
         internal const int maxStorageSlots = 340;
 
-        //机器状态
         internal int frame;
         internal int fishingTimer;
         internal int particleTimer;
@@ -40,16 +38,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
         internal float glowIntensity;
         internal Vector2 intakeCenter;
 
-        //存储物品列表
         internal List<Item> storedItems = new();
 
-        //吸入效果粒子
         internal List<FishingParticle> fishingParticles = new();
 
-        //视觉效果管理器
         private OceanRaidersVortexEffect vortexEffect;
 
-        //音效系统
         private SlotId vortexSoundSlot;
         private SoundStyle vortexSoundStyle = new SoundStyle(CWRConstant.Asset + "Sounds/RollingMERoer") {
             IsLooped = true,
@@ -57,7 +51,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
             Volume = 0.6f
         };
 
-        /// <summary>过滤名单。历史语义为黑名单(名单内的渔获被排除)，迁移旧存档时保持该模式</summary>
+        /// <summary>过滤名单；历史=黑名单，旧档迁移保持</summary>
         internal ItemFilterSet Filter = new();
         internal float hoverSengs;
 
@@ -88,7 +82,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
             data.Write(fishingTimer);
             Filter.Write(data);
 
-            //发送存储物品数据
             data.Write(storedItems.Count);
             foreach (var item in storedItems) {
                 if (item == null) {
@@ -107,7 +100,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
             fishingTimer = reader.ReadInt32();
             Filter.Read(reader);
 
-            //接收存储物品数据
             int count = reader.ReadInt32();
             storedItems.Clear();
             for (int i = 0; i < count; i++) {
@@ -121,7 +113,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
             try {
                 Filter.Save(tag, "_Filter");
 
-                //保存存储的物品
                 List<TagCompound> itemTags = new();
                 foreach (var item in storedItems) {
                     if (item == null) {
@@ -140,7 +131,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
             try {
-                //新格式优先；旧存档存的是整只过滤卡，历史行为是"名单内不捕获"，故迁移为黑名单模式
+                //旧档过滤卡→黑名单
                 if (!Filter.TryLoad(tag, "_Filter")) {
                     Item legacyCard = CWRSaveData.LoadItemFromTag(tag, "_ItemFilter", nameof(OceanRaidersTP));
                     if (legacyCard.ModItem is ItemFilter card) {
@@ -148,7 +139,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                     }
                 }
 
-                //加载存储的物品
                 if (!tag.TryGet("itemTags", out List<TagCompound> itemTags)) {
                     return;
                 }
@@ -163,7 +153,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
         }
 
         private bool CheckWaterBelow() {
-            //检查机器下方是否有水
             int checkDistance = 32;
             Point startPoint = (Position + new Point16(3, 6)).ToPoint();
 
@@ -181,34 +170,31 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
         private bool IsItemFiltered(int itemType) => !Filter.Matches(itemType);
 
         private void PerformFishing() {
-            //模拟钓鱼，生成物品
             if (VaultUtils.isClient) return;
 
-            //计算钓鱼力，基于能量充盈度和随机波动
+            //渔力=能量+波动
             int power = 50 + Main.rand.Next(30);
             if (MachineData.UEvalue > MaxUEValue * 0.8f) {
                 power += 20;
             }
 
-            //获取钓鱼掉落
             int caughtItem = GetFishingLoot(power);
             if (caughtItem <= ItemID.None) return;
 
-            //检查过滤器，如果物品在过滤列表中则不进行捕获
+            //过滤器命中则丢
             if (IsItemFiltered(caughtItem)) return;
 
             int stack;
 
-            //箱子类物品只给1个
+            //箱子只给1
             if (ItemID.Sets.IsFishingCrate[caughtItem]) {
                 stack = 1;
             }
-            //鱼类物品给1-3个
+            //鱼1-3
             else {
                 stack = Main.rand.Next(1, 4);
             }
 
-            //防止出现不合理的物品数量
             if (ContentSamples.ItemsByType.TryGetValue(caughtItem, out var item)) {
                 stack = (int)MathHelper.Clamp(stack, 1, item.maxStack);
             }
@@ -217,17 +203,16 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
         }
 
         private static int GetFishingLoot(int fishingPower) {
-            //判定是否钓到箱子，基础概率10%，高渔力加成
+            //箱子 基础10%+渔力
             int crateChance = 10;
             if (fishingPower > 100) crateChance += 10;
             if (Main.rand.Next(100) < crateChance) {
-                //根据渔力决定箱子品质
                 if (fishingPower > 90 && Main.rand.NextBool(5)) return ItemID.GoldenCrate;
                 if (fishingPower > 50 && Main.rand.NextBool(3)) return ItemID.IronCrate;
                 return ItemID.WoodenCrate;
             }
 
-            //判定稀有掉落(渔力 > 80)
+            //稀有 渔力>80
             if (fishingPower > 80 && Main.rand.NextBool(25)) {
                 int[] rares = {
                     ItemID.Swordfish,
@@ -240,12 +225,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                 return rares[Main.rand.Next(rares.Length)];
             }
 
-            //判定特殊掉落
             if (Main.rand.NextBool(12)) {
                 return ModContent.ItemType<Oceanfragments>();
             }
 
-            //判定普通掉落
             List<int> commons = new() {
                 ItemID.Bass,
                 ItemID.Trout,
@@ -256,7 +239,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                 ItemID.Flounder
             };
 
-            //高渔力解锁更多鱼类
             if (fishingPower > 30) {
                 commons.Add(ItemID.NeonTetra);
                 commons.Add(ItemID.ArmoredCavefish);
@@ -265,7 +247,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                 commons.Add(ItemID.FrostMinnow);
             }
 
-            //极低概率钓到垃圾(渔力越低概率越高)
+            //垃圾 渔力越低越高
             if (fishingPower < 50 && Main.rand.NextBool(10)) {
                 int[] junk = { ItemID.OldShoe, ItemID.TinCan, ItemID.FishingSeaweed };
                 return junk[Main.rand.Next(junk.Length)];
@@ -275,7 +257,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
         }
 
         private void AddItemToStorage(int itemType, int stack) {
-            //尝试堆叠到现有物品
             foreach (var item in storedItems) {
                 if (item.type == itemType && item.stack < item.maxStack) {
                     int addAmount = Math.Min(stack, item.maxStack - item.stack);
@@ -288,7 +269,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                 }
             }
 
-            //添加新物品（检查是否超过最大格数）
             if (storedItems.Count < maxStorageSlots && stack > 0) {
                 Item newItem = new Item();
                 newItem.SetDefaults(itemType);
@@ -303,7 +283,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
 
             Chest chest = Position.FindClosestChest(800, false);
             if (chest != null) {
-                //获取箱子的世界坐标
                 Vector2 chestPos = new Vector2(chest.x * 16 + 16, chest.y * 16 + 16);
 
                 for (int i = storedItems.Count - 1; i >= 0; i--) {
@@ -312,9 +291,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                         continue;
                     }
 
-                    //生成飞向箱子的物品粒子
                     if (!VaultUtils.isClient) {
-                        //生成一个临时的视觉物品弹幕飞向箱子
                         Projectile.NewProjectile(
                             this.FromObjectGetParent(),
                             intakeCenter,
@@ -340,7 +317,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
         private void UpdateParticles() {
             if (VaultUtils.isServer) return;
 
-            //更新现有粒子
             for (int i = fishingParticles.Count - 1; i >= 0; i--) {
                 fishingParticles[i].Update(intakeCenter);
                 if (fishingParticles[i].ShouldRemove()) {
@@ -348,24 +324,21 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                 }
             }
 
-            //生成新粒子（增加生成频率）
             if (isWorking && particleTimer++ % 8 == 0 && fishingParticles.Count < 20) {
                 SpawnFishingParticle();
             }
         }
 
         private void SpawnFishingParticle() {
-            //从水下随机位置生成粒子
             Vector2 waterSurfacePos = FindWaterSurface();
             if (waterSurfacePos == Vector2.Zero) return;
 
-            //在水域深处随机位置生成
             Vector2 spawnPos = waterSurfacePos + new Vector2(
                 Main.rand.NextFloat(-70f, 70f),
                 Main.rand.NextFloat(40f, 120f)
             );
 
-            //确保生成位置在水中
+            //须在水中
             Tile tile = Framing.GetTileSafely(spawnPos);
             if (tile.LiquidAmount > 0 && tile.LiquidType == LiquidID.Water) {
                 FishingParticle particle = new FishingParticle {
@@ -380,7 +353,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
             }
         }
 
-        //查找水面位置
         private Vector2 FindWaterSurface() {
             Point startPoint = (Position + new Point16(3, 6)).ToPoint();
 
@@ -399,9 +371,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
             return Vector2.Zero;
         }
 
-        //循环音效更新回调
         private bool LoopingSoundUpdate(ActiveSound soundInstance) {
-            //根据工作强度调整音调和音量
             float workIntensity = isWorking ? glowIntensity : 0f;
             soundInstance.Pitch = (-0.3f + workIntensity * 0.6f) * 1.8f;
             soundInstance.Position = intakeCenter;
@@ -409,12 +379,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
             return Active && hasWater;
         }
 
-        //更新音效系统
         private void UpdateSoundEffects() {
             if (VaultUtils.isServer) return;
 
             if (isWorking && hasWater) {
-                //播放循环的水龙卷音效
                 if (!SoundEngine.TryGetActiveSound(vortexSoundSlot, out var activeSound)) {
                     vortexSoundSlot = SoundEngine.PlaySound(vortexSoundStyle, intakeCenter, LoopingSoundUpdate);
                 }
@@ -422,19 +390,15 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
         }
 
         public override void UpdateMachine() {
-            //更新吸入口位置
             intakeCenter = CenterInWorld + new Vector2(0, 32);
 
             hoverSengs = HoverTP
                 ? Math.Min(hoverSengs + 0.1f, 1f)
                 : Math.Max(hoverSengs - 0.1f, 0f);
 
-            //更新动画
             frame = 0;
-            //检查水源
             hasWater = CheckWaterBelow();
 
-            //检查能量和水源
             if (MachineData.UEvalue < consumeUE || !hasWater) {
                 isWorking = false;
                 glowIntensity = Math.Max(0, glowIntensity - 0.05f);
@@ -451,11 +415,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                 return;
             }
 
-            //机器正常工作
             isWorking = true;
             glowIntensity = Math.Min(1f, glowIntensity + 0.05f);
 
-            //钓鱼计时
             if (++fishingTimer >= fishingTime) {
                 fishingTimer = 0;
                 MachineData.UEvalue -= consumeUE;
@@ -463,13 +425,11 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                 PerformFishing();
 
                 if (!VaultUtils.isServer && Main.rand.NextBool(4)) {
-                    //播放钓到鱼的音效
                     SoundEngine.PlaySound(SoundID.Splash with {
                         Pitch = -0.2f,
                         Volume = 0.5f
                     }, intakeCenter);
 
-                    //随机播放水泡音效
                     if (Main.rand.NextBool(3)) {
                         SoundEngine.PlaySound(SoundID.Item21 with {
                             Pitch = Main.rand.NextFloat(-0.3f, 0.1f),
@@ -479,28 +439,22 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                 }
             }
 
-            //自动转移物品到箱子
             if (storedItems.Count > 0 && Main.GameUpdateCount % 120 == 0) {
                 TransferItemsToChest();
             }
 
-            //更新粒子效果
             UpdateParticles();
 
-            //更新水龙卷效果
             vortexEffect?.Update();
 
-            //更新音效系统
-            UpdateSoundEffects();
+                UpdateSoundEffects();
         }
 
         public override void PreTileDraw(SpriteBatch spriteBatch) {
-            //绘制水龙卷效果
             vortexEffect?.DrawVortex(spriteBatch);
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            //绘制粒子
             if (VaultUtils.isServer) return;
 
             foreach (var particle in fishingParticles) {
@@ -518,7 +472,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                 float angleIncrement = MathHelper.TwoPi / filterItems.Count;
 
                 Vector2 drawCenter = CenterInWorld - Main.screenPosition + new Vector2(0, 32);
-                //黑名单(排除渔获)以警示红着色区分
+                //黑名单警示红
                 Color modeTint = Filter.Mode == ItemFilterMode.Whitelist
                     ? Color.White
                     : ItemFilterTheme.AccentBlacklist;
@@ -546,7 +500,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
         public override bool? RightClick(int i, int j, Tile tile, Player player) {
             Item item = player.GetItem();
 
-            //手持过滤卡：把卡上名单安装到本机器
+            //手持过滤卡→装名单
             if (item.ModItem is ItemFilter card) {
                 Filter.CopyFrom(card.Filter);
 
@@ -558,7 +512,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                 return true;
             }
 
-            //右键打开专属箱子UI
             if (player.whoAmI == Main.myPlayer) {
                 OceanRaidersUI.Instance.Interactive(this);
             }
@@ -577,7 +530,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.timeLeft = 120;
-            Projectile.alpha = 255; //初始透明
+            Projectile.alpha = 255;
         }
 
         public override void AI() {
@@ -586,11 +539,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
             if (Projectile.localAI[0] == 0) {
                 Projectile.localAI[0] = 1;
                 Projectile.alpha = 0;
-                //初抛向上
                 Projectile.velocity = new Vector2(Main.rand.NextFloat(-2f, 2f), -4f);
             }
 
-            //飞向目标
             Vector2 toTarget = targetPos - Projectile.Center;
             float dist = toTarget.Length();
 
@@ -599,11 +550,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                 return;
             }
 
-            //加速趋近目标
             float speed = Math.Min(dist / 5f, 20f);
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget.SafeNormalize(Vector2.Zero) * speed, 0.1f);
 
-            //自旋
             Projectile.rotation += 0.2f;
         }
 

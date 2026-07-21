@@ -2,16 +2,16 @@
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 {
-    /// <summary>机械骷髅王宏观阶段标记，写入npc.ai[0]（原版自动同步），供外部系统读取：<see cref="PrimeFacts.IsDeathPerformance"/>等</summary>
+    /// <summary>宏观阶段，npc.ai[0]，见 <see cref="PrimeFacts.IsDeathPerformance"/></summary>
     internal static class PrimePhase
     {
         /// <summary>刚生成，尚未初始化</summary>
         public const int Uninit = 0;
         /// <summary>登场演出</summary>
         public const int Intro = 1;
-        /// <summary>武装阶段：四肢健在，头部担任指挥</summary>
+        /// <summary>武装，四肢健在</summary>
         public const int Armed = 2;
-        /// <summary>狂暴阶段：四肢殉爆，头部亲自下场</summary>
+        /// <summary>狂暴，四肢已殉</summary>
         public const int Rage = 3;
         /// <summary>死亡演出</summary>
         public const int DeathShow = 4;
@@ -79,14 +79,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
             );
         }
 
-        /// <summary>收尾蓄力已可见，预警须兑现；PrimeArm 延后编队，头部推迟冲撞类招式</summary>
+        /// <summary>收尾蓄力须兑现，延后编队/冲撞</summary>
         public static bool IsCommittedArmState(int armStateIndex) {
             return armStateIndex == (int)PrimeArmStateIndex.CannonMortar
                 || armStateIndex == (int)PrimeArmStateIndex.LaserSweep
                 || armStateIndex == (int)PrimeArmStateIndex.LaserChargedShot;
         }
 
-        /// <summary>是否仍有存活机械臂处于收尾蓄力攻击中（基于同步槽判定，两端一致）</summary>
+        /// <summary>存活臂仍在收尾蓄力</summary>
         public static bool AnyArmCommitted() {
             int[] arms = [CWRWorld.primeCannon, CWRWorld.primeVice, CWRWorld.primeSaw, CWRWorld.primeLaser];
             foreach (int index in arms) {

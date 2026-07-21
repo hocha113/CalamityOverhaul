@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
 {
-    /// <summary>毁灭者体节等离子弹：辉光核心+加法拖尾+微加速，替代原版<see cref="ProjectileID.DeathLaser"/>；ai[0]:色相变体0=红橙(齐射)1=猩红(合围)；ai[1]:1=启用微加速（约60帧内提速至1.6倍）</summary>
+    /// <summary>体节等离子弹，替DeathLaser；ai[0]0红橙1猩红 ai[1]1=微加速</summary>
     internal class DestroyerBolt : ModProjectile
     {
         public override string Texture => CWRConstant.Masking + "SoftGlow";
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
         }
 
         public override void AI() {
-            //首帧各端本地播放出膛声（多人下服务端生成的弹幕在客户端首次AI时触发）
+            //首帧本端出膛声(服务端弹在客户首次AI播)
             if (Projectile.localAI[1] == 0f) {
                 Projectile.localAI[1] = 1f;
                 if (!VaultUtils.isServer) {
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
                 }
             }
 
-            //淡入，避免出膛瞬间生硬
+            //淡入
             if (Projectile.alpha > 0) {
                 Projectile.alpha -= 28;
                 if (Projectile.alpha < 0) {
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
                 }
             }
 
-            //微加速：记录初速并缓慢提速，营造"能量弹推进"质感
+            //微加速
             if (Projectile.ai[1] == 1f) {
                 if (Projectile.localAI[0] == 0f) {
                     Projectile.localAI[0] = Projectile.velocity.Length();
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
             float fade = 1f - Projectile.alpha / 255f;
             Color core = BaseColor with { A = 0 };
 
-            //拖尾：由旧位置串成的收缩光珠链
+            //拖尾光珠
             for (int i = Projectile.oldPos.Length - 1; i >= 0; i--) {
                 if (Projectile.oldPos[i] == Vector2.Zero) {
                     continue;
@@ -100,13 +100,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
             }
 
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            //外圈光晕
             Main.EntitySpriteDraw(glow, drawPos, null, core * (0.55f * fade), Projectile.rotation,
                 origin, new Vector2(1.7f, 1.0f), SpriteEffects.None, 0);
-            //拉长的能量核
             Main.EntitySpriteDraw(glow, drawPos, null, core * (0.95f * fade), Projectile.rotation,
                 origin, new Vector2(1.25f, 0.55f), SpriteEffects.None, 0);
-            //白热中心
             Main.EntitySpriteDraw(glow, drawPos, null, new Color(255, 235, 200, 0) * (0.9f * fade), Projectile.rotation,
                 origin, new Vector2(0.7f, 0.32f), SpriteEffects.None, 0);
 

@@ -15,8 +15,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Defeats
         public override StyleId DefaultStyle => "Draedon";
 
         public override void SetStaticDefaults() {
-
-            //艰难战败对话：表现出对接近极限的认可
             HardDefeatLine1 = this.GetLocalization(nameof(HardDefeatLine1), () => "极限状态下的决策，这才是我想看到的数据");
             HardDefeatLine2 = this.GetLocalization(nameof(HardDefeatLine2), () => "在压力之下你仍能保持理性，令人满意");
         }

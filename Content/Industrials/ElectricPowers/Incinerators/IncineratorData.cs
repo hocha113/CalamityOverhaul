@@ -6,46 +6,25 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
 {
-    /// <summary>
-    /// 焚烧炉数据，管理输入物和焚烧后的输出物
-    /// </summary>
+    /// <summary>焚烧炉槽位与进度</summary>
     internal class IncineratorData : MachineData
     {
-        /// <summary>
-        /// 待焚烧的输入物品
-        /// </summary>
+        /// <summary>材料槽</summary>
         internal Item InputItem = new Item();
-        /// <summary>
-        /// 焚烧后的输出物品
-        /// </summary>
+        /// <summary>成品槽</summary>
         internal Item OutputItem = new Item();
-        /// <summary>
-        /// 当前焚烧进度(0到MaxSmeltingProgress)
-        /// </summary>
+        /// <summary>进度0..Max</summary>
         internal int SmeltingProgress;
-        /// <summary>
-        /// 完成焚烧所需的最大进度
-        /// </summary>
+        /// <summary>完成所需进度</summary>
         internal int MaxSmeltingProgress = 120;
-        /// <summary>
-        /// 每次焚烧消耗的电量
-        /// </summary>
+        /// <summary>单次耗电</summary>
         internal float UEPerTick = 0.5f;
-        /// <summary>
-        /// 最大电量存储
-        /// </summary>
+        /// <summary>电量上限</summary>
         internal float MaxUE = 500;
-        /// <summary>
-        /// 当前温度(视觉效果)
-        /// </summary>
+        /// <summary>温度(视觉)</summary>
         internal float Temperature;
-        /// <summary>
-        /// 最大温度
-        /// </summary>
+        /// <summary>温度上限</summary>
         internal float MaxTemperature = 100;
-        /// <summary>
-        /// 是否正在工作
-        /// </summary>
         internal bool IsWorking => SmeltingProgress > 0 && UEvalue >= UEPerTick;
 
         public override void SendData(ModPacket data) {

@@ -18,7 +18,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             float progress = CyberDomainFreeze.GetProjectileFreezeProgress(proj.whoAmI);
             if (progress < 0f) return true;
 
-            //获取种子
             float seed = 0f;
             for (int i = 0; i < CyberDomainFreeze.FrozenProjectiles.Count; i++) {
                 if (CyberDomainFreeze.FrozenProjectiles[i].EntityIndex == proj.whoAmI) {
@@ -27,7 +26,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 }
             }
 
-            //弹幕纹理的texelSize
+            //texelSize
             Texture2D tex = Terraria.GameContent.TextureAssets.Projectile[proj.type].Value;
 
             shader.Parameters["texelSize"]?.SetValue(new Vector2(1f / tex.Width, 1f / tex.Height));
@@ -57,7 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     null, Main.GameViewMatrix.TransformationMatrix);
             }
 
-            //绘制六角能量罩覆盖层
+            //六角能量罩
             if (wasFrozen) {
                 float progress = CyberDomainFreeze.GetProjectileFreezeProgress(proj.whoAmI);
                 float seed = 0f;
@@ -75,7 +74,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         public override bool PreAI(Projectile proj) {
             if (!CyberDomainFreeze.IsProjectileFrozen(proj.whoAmI)) return true;
 
-            //获取冻结位置快照
+            //冻结位快照
             for (int i = 0; i < CyberDomainFreeze.FrozenProjectiles.Count; i++) {
                 if (CyberDomainFreeze.FrozenProjectiles[i].EntityIndex == proj.whoAmI) {
                     proj.Center = CyberDomainFreeze.FrozenProjectiles[i].FreezePosition;
@@ -83,7 +82,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 }
             }
 
-            //冻结弹幕的AI
+            //冻结钉位
             proj.velocity = Vector2.Zero;
             proj.timeLeft++;
             return false;

@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>储能阵列：蓄力逐格点亮身侧电容排，球发射后电容架驻留原地逐格放电，向飞行中的球射供能电弧泵伤害与爆炸半径</summary>
+    /// <summary>储能阵列，蓄力点亮身侧电容排，发射后驻留逐格放电泵伤与爆径</summary>
     internal sealed class CapacitorBankModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;
@@ -31,11 +31,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         }
 
         public override void OnOrbCharging(CyberChargeOrbProj orb, Player owner) {
-            //生成结算只在拥有者端做，NewProjectile 自行同步到其他端
+            //仅 owner 端生成，NewProjectile 自同步
             if (orb.Projectile.owner != Main.myPlayer) return;
             int bankType = ModContent.ProjectileType<SHPCCapacitorBankProj>();
 
-            //已有正在服务本球的电容架：O(1) 快路径
+            //已有服务架，O(1)
             if (bankIndex >= 0 && bankIndex < Main.maxProjectiles) {
                 Projectile p = Main.projectile[bankIndex];
                 if (p.active && p.type == bankType && p.owner == orb.Projectile.owner
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                     return;
                 }
             }
-            //兜底扫描：模块实例重建后与在场电容架重新挂钩，避免重复生成
+            //兜底重挂，防重复生成
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile p = Main.projectile[i];
                 if (p.active && p.type == bankType && p.owner == orb.Projectile.owner
@@ -58,11 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         }
     }
 
-    /// <summary>
-    /// 电容架弹幕：蓄力期跟随玩家头顶逐格灌注点亮；球发射后驻留原地进入放电序列，
-    /// 按固定间隔逐格打出供能电弧，电弧包头送达球体时追加伤害与爆炸半径；
-    /// 球消亡后余格泄压散场。SHPCModCapacitorBank.fx（CapacitorCell + FeedArc 双 technique）
-    /// </summary>
+    /// <summary>电容架，蓄力跟头顶灌注，发射后驻留逐格供能电弧；SHPCModCapacitorBank.fx</summary>
     internal sealed class SHPCCapacitorBankProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -77,7 +73,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         private const int PulseTravelFrames = 8;
         /// <summary>电弧送达后残辉帧数</summary>
         private const int ArcFadeFrames = 10;
-        /// <summary>每次送达为球追加的伤害倍率（基于发射瞬间基准伤害加算）</summary>
+        /// <summary>每次送达伤害倍率，按发射基准加算</summary>
         private const float DamagePerPulse = 0.12f;
         /// <summary>每次送达追加的爆炸半径倍率</summary>
         private const float RadiusPerPulse = 0.06f;
@@ -104,9 +100,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 
         private enum BankState
         {
-            Charging = 0,   //跟随玩家，随球蓄力灌注
-            Discharging = 1,//球已发射，驻留原地逐格放电
-            Venting = 2,    //球已消亡/放电完毕，余格泄压并淡出
+            Charging = 0,   //跟玩家灌注
+            Discharging = 1,//驻留逐格放电
+            Venting = 2,    //余格泄压淡出
         }
 
         private BankState state;
@@ -114,7 +110,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         private readonly float[] cellFill = new float[MaxCells];
         /// <summary>各格闪光量，每帧衰减</summary>
         private readonly float[] cellFlash = new float[MaxCells];
-        /// <summary>已完整点亮格数（灌注视觉的整数化）</summary>
+        /// <summary>已点亮格数</summary>
         private int litCount;
         /// <summary>发射瞬间捕获的可放电格数</summary>
         private int litAtLaunch;
@@ -130,31 +126,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         private float baseRadiusMul;
         /// <summary>整架淡入淡出</summary>
         private float bankFade;
-        /// <summary>阵列锚点（蓄力期平滑跟随，发射后凍结驻留）</summary>
+        /// <summary>阵列锚点，蓄力跟随，发射后冻结</summary>
         private Vector2 anchor;
         private bool anchorInit;
         /// <summary>满架就绪提示音是否已播放</summary>
         private bool readyPinged;
-        /// <summary>蓄力期连续找不到球的帧数，吸收远端弹幕包乱序的空窗</summary>
+        /// <summary>蓄力丢球帧数，吸收远端乱序空窗</summary>
         private int orbMissFrames;
 
         /// <summary>在途/残辉电弧</summary>
         private readonly List<FeedArc> arcs = new();
-        /// <summary>电弧条带网格，逐条复用（顶点数固定）</summary>
+        /// <summary>电弧 Trail，顶点数固定复用</summary>
         private Trail arcTrail;
 
-        /// <summary>链接的充能球 whoAmI（生成端索引，远端经 ResolveOrb 校验兜底）</summary>
+        /// <summary>链接球 whoAmI，远端 ResolveOrb 兜底</summary>
         private int OrbIndex => (int)Projectile.ai[0];
 
-        /// <summary>
-        /// 是否可承接蓄力球：处于蓄力态即可——同一玩家同时只有一颗蓄力球，
-        /// 蓄力态的架体会在 ResolveOrb 中自动重挂新球；放电/泄压中的旧架不抢占配对。
-        /// 不比对 OrbIndex：球快速取消重蓄可能换槽位，架体重挂发生在其 AI 帧，
-        /// 若模块侧比对索引会在这一帧空窗内误开第二座架
-        /// </summary>
+        /// <summary>蓄力态可承接，不比对 OrbIndex，否则空窗会误开第二座架</summary>
         public bool IsServing(CyberChargeOrbProj orb) => state == BankState.Charging;
 
-        /// <summary>供能电弧：start 固定于放电格，end 逐帧追踪球体；折跳偏移与直线基线分离，基线每帧重算保证弧头贴球</summary>
+        /// <summary>供能电弧，start 钉格，end 追球，折跳与基线分离</summary>
         private sealed class FeedArc
         {
             public Vector2 Start;
@@ -169,14 +160,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 ? 1f
                 : 1f - (Age - PulseTravelFrames) / (float)ArcFadeFrames;
 
-            /// <summary>重掷法向折跳偏移（阶跃式抖动节拍调用）</summary>
+            /// <summary>重掷法向折跳偏移</summary>
             public void RerollOffsets() {
                 for (int i = 0; i < ArcPointCount; i++) {
                     offsets[i] = Main.rand.NextFloat(-1f, 1f);
                 }
             }
 
-            /// <summary>按当前端点重建路径：两端钉死中段摆动</summary>
+            /// <summary>按端点重建，两端钉死中段摆</summary>
             public void RecomputePoints() {
                 Vector2 dir = (End - Start).SafeNormalize(Vector2.UnitX);
                 Vector2 normal = dir.RotatedBy(MathHelper.PiOver2);
@@ -193,7 +184,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         #endregion
 
         public override void SetStaticDefaults() {
-            //与充能球同样豁免时停：球在时缓中继续飞行，供能节奏必须跟上
+            //同球豁免时停，供能跟上时缓球
             CWRLoad.ProjValue.ImmuneFrozen[Type] = true;
         }
 
@@ -220,14 +211,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 return;
             }
 
-            //锚点先于任何状态分支初始化，保证首帧即泄压时架体也在玩家头顶
+            //锚点先于状态分支，首帧泄压也在头顶
             if (!anchorInit) {
                 anchor = owner.Top + new Vector2(0f, -44f);
                 anchorInit = true;
             }
 
-            //持久衍生弹幕每帧自检（裁决）：蓄力中途卸改件/换预设即泄压散场，不再驻留泵伤；
-            //模块数据不联机同步，远端无从判断，只在拥有者端裁决
+            //owner 端裁决，卸改件/换预设即泄压（模块数据不同步）
             if (Projectile.owner == Main.myPlayer && state != BankState.Venting
                 && !SHPCModificationSystem.HasModule<CapacitorBankModule>(owner)) {
                 BeginVenting();
@@ -247,11 +237,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                     break;
             }
 
-            //泄压态强制断链：防止球槽位被下一颗球复用后，残留在途电弧把旧基准伤害错误送达新球
+            //泄压断链，防槽复用把旧基准泵进新球
             UpdateArcs(state == BankState.Venting ? null : orb);
             DecayFlash();
 
-            //泄压完毕且电弧散尽才允许消亡
+            //泄压完且电弧散尽才消亡
             if (state != BankState.Venting) {
                 Projectile.timeLeft = 600;
             }
@@ -261,19 +251,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             }
         }
 
-        /// <summary>
-        /// 解析链接的充能球：先走生成端索引；仅蓄力阶段允许按 owner+type 扫描兜底并纠正 ai[0]
-        /// （远端弹幕槽位可能错位），且只接受仍在蓄力的球——放电/泄压阶段严禁改挂新球，
-        /// 否则泄压中的旧架会抢占新球的配对，导致模块不再为新球生成电容架
-        /// </summary>
+        /// <summary>解析链接球，蓄力期可 owner+type 兜底；放电/泄压禁改挂</summary>
         private CyberChargeOrbProj ResolveOrb(Player owner) {
             int idx = OrbIndex;
             if (idx >= 0 && idx < Main.maxProjectiles) {
                 Projectile p = Main.projectile[idx];
                 if (p.active && p.owner == Projectile.owner
                     && p.ModProjectile is CyberChargeOrbProj direct) {
-                    //放电期链接的球必须仍在飞行：槽位被下一颗蓄力球复用时视为失联，
-                    //避免把旧基准伤害泵进新球
+                    //放电期球须仍在飞，槽复用视为失联
                     if (state == BankState.Discharging && direct.IsCharging) {
                         return null;
                     }
@@ -302,7 +287,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 
         private void AI_Charging(Player owner, CyberChargeOrbProj orb) {
             if (orb == null) {
-                //球被取消（蓄力不足释放等）：短暂宽限后泄压散场，吸收远端单帧空窗
+                //球取消，宽限后泄压，吸远端空窗
                 if (++orbMissFrames > 6) {
                     BeginVenting();
                 }
@@ -310,19 +295,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             }
             orbMissFrames = 0;
 
-            //锚点平滑跟随玩家头顶
+            //锚点跟头顶
             Vector2 target = owner.Top + new Vector2(0f, -44f);
             anchor = Vector2.Lerp(anchor, target, 0.25f);
             Projectile.Center = anchor;
             bankFade = MathHelper.Clamp(bankFade + 0.08f, 0f, 1f);
 
-            //渐进灌注：前一格满后才灌下一格，ratio*MaxCells 的小数部分即当前格液面
+            //渐进灌注，前格满才灌下一格
             float ratio = orb.ChargeRatio;
             int prevLit = litCount;
             litCount = 0;
             for (int i = 0; i < MaxCells; i++) {
                 float fillTarget = MathHelper.Clamp(ratio * MaxCells - i, 0f, 1f);
-                //液面追赶目标，点亮瞬间干脆利落
+                //液面追目标
                 cellFill[i] = MathHelper.Lerp(cellFill[i], fillTarget, 0.3f);
                 if (fillTarget >= 1f) {
                     cellFill[i] = 1f;
@@ -332,7 +317,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 }
             }
 
-            //新格点亮：闪光 + 上行电子音 + 顶端火花
+            //新格点亮，闪光+音+火花
             if (litCount > prevLit && Main.netMode != NetmodeID.Server) {
                 int newIdx = litCount - 1;
                 cellFlash[newIdx] = 1f;
@@ -346,7 +331,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 }
             }
 
-            //满架就绪：一次性提示 + 顶端持续电光由着色器承担
+            //满架就绪提示
             if (litCount >= MaxCells && !readyPinged) {
                 readyPinged = true;
                 if (Main.netMode != NetmodeID.Server) {
@@ -354,7 +339,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 }
             }
 
-            //球转入飞行：捕获放电基准，架体驻留原地
+            //球起飞，捕获基准并驻留
             if (!orb.IsCharging) {
                 litAtLaunch = litCount;
                 dischargeCursor = 0;
@@ -362,7 +347,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 dischargeTimer = 0;
                 baseOrbDamage = orb.Projectile.damage;
                 baseRadiusMul = orb.ExplosionRadiusMul;
-                //未灌满的尾格直接失效，泄压阶段一起排掉
+                //未满尾格失效，泄压时排掉
                 state = litAtLaunch > 0 ? BankState.Discharging : BankState.Venting;
             }
         }
@@ -372,13 +357,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         #region 放电阶段
 
         private void AI_Discharging(CyberChargeOrbProj orb) {
-            //球提前消亡（撞墙/命中/超时）：停止放电，余格泄压
+            //球提前消亡，停放电转泄压
             if (orb == null || orb.IsCharging) {
                 BeginVenting();
                 return;
             }
 
-            //驻留原地：锚点不再跟随玩家，悬浮感由 CellPosition 的逐格 bob 承担
+            //驻留，bob 由 CellPosition
             Projectile.Center = anchor;
 
             dischargeTimer++;
@@ -388,13 +373,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 dischargeCursor++;
             }
 
-            //全部放完且电弧散尽：进入收尾
+            //放完且电弧散尽，收尾
             if (dischargeCursor >= litAtLaunch && arcs.Count == 0) {
                 BeginVenting();
             }
         }
 
-        /// <summary>从指定格向球射出供能电弧，格位随之熄灭</summary>
+        /// <summary>从指定格射供能电弧并熄格</summary>
         private void FireFeedArc(int cellIdx, CyberChargeOrbProj orb) {
             cellFill[cellIdx] = 0f;
             cellFlash[cellIdx] = 1f;
@@ -419,23 +404,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             }
         }
 
-        /// <summary>电弧推进与送达结算：包头抵达时为球泵能（owner 端），并在球处过载闪光</summary>
+        /// <summary>电弧推进，包头抵达 owner 端泵能+闪光</summary>
         private void UpdateArcs(CyberChargeOrbProj orb) {
             bool orbFlying = orb != null && !orb.IsCharging;
             for (int i = arcs.Count - 1; i >= 0; i--) {
                 FeedArc arc = arcs[i];
                 arc.Age++;
-                //端点持续追踪飞行中的球，球没了则凍结在最后位置淡出
+                //端点追球，球没则冻结淡出
                 if (orbFlying) {
                     arc.End = orb.Projectile.Center;
                 }
-                //折跳形态按节拍重掷，基线每帧跟随端点重算
+                //折跳节拍重掷，基线跟端点
                 if (arc.Age % 3 == 0) {
                     arc.RerollOffsets();
                 }
                 arc.RecomputePoints();
 
-                //送达瞬间
+                //送达
                 if (!arc.Delivered && arc.Age >= PulseTravelFrames) {
                     arc.Delivered = true;
                     if (orbFlying) {
@@ -451,7 +436,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 
         private void DeliverPulse(CyberChargeOrbProj orb) {
             delivered++;
-            //伤害与半径都基于发射瞬间基准值加算，避免乘算滚雪球
+            //按发射基准加算，不乘算滚雪球
             if (Projectile.owner == Main.myPlayer) {
                 orb.Projectile.damage = (int)(baseOrbDamage * (1f + delivered * DamagePerPulse));
                 orb.ExplosionRadiusMul = baseRadiusMul + delivered * RadiusPerPulse;
@@ -462,7 +447,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 SoundEngine.PlaySound(SoundID.Item93 with {
                     Volume = 0.38f, Pitch = 0.25f + delivered * 0.08f
                 }, pos);
-                //球体过载闪光：脉冲环 + 火花爆跳
+                //球过载闪光
                 PRTLoader.NewParticle<PRT_StarPulseRing>(pos, Vector2.Zero,
                     BankGlow with { A = 0 }, 0.05f).Configure(0.05f, 0.30f + delivered * 0.04f, 14);
                 for (int k = 0; k < 7; k++) {
@@ -470,7 +455,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                         BankCore, Main.rand.NextFloat(0.5f, 1.0f)).Configure(true, Main.rand.Next(8, 16));
                 }
             }
-            //个人节奏反馈，只震拥有者自己的屏幕
+            //只震 owner 屏
             if (Projectile.owner == Main.myPlayer) {
                 SHPCNaturalFx.Shake(1.1f);
             }
@@ -489,7 +474,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         private void AI_Venting() {
             Projectile.Center = anchor;
 
-            //按节拍逐格泄掉残余电量：无伤害的安全排气
+            //节拍泄余电
             ventTimer++;
             if (ventTimer >= VentInterval) {
                 ventTimer = 0;
@@ -512,7 +497,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 }
             }
 
-            //所有格排空且电弧散尽后整架淡出
+            //排空且电弧散尽后淡出
             bool cellsEmpty = true;
             for (int i = 0; i < MaxCells; i++) {
                 if (cellFill[i] > 0.05f) { cellsEmpty = false; break; }
@@ -534,7 +519,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             }
         }
 
-        /// <summary>第 i 格世界坐标：以锚点为中心水平排开，逐格相位错开的轻微浮动</summary>
+        /// <summary>第 i 格世界坐标，锚点水平排开+相位 bob</summary>
         private Vector2 CellPosition(int i) {
             float x = (i - (MaxCells - 1) * 0.5f) * CellSpacing;
             float bob = MathF.Sin((float)Main.timeForVisualEffects * 0.08f + i * 0.7f) * 2f;
@@ -606,7 +591,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 shader.Parameters["arcSeed"]?.SetValue(arc.Seed);
                 shader.Parameters["pulseT"]?.SetValue(arc.Age / (float)PulseTravelFrames);
 
-                //所有电弧共用一个 Trail：顶点数固定，逐条换 positions 重建网格
+                //共用 Trail，换 positions 重建
                 arcTrail ??= new Trail(arc.Points, ArcWidth, ArcColor);
                 arcTrail.TrailPositions = arc.Points;
                 arcTrail.DrawTrail(shader);
@@ -625,7 +610,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 
         public override void OnKill(int timeLeft) {
             if (Main.netMode == NetmodeID.Server) return;
-            //残余火花轻收尾
+            //残余火花收尾
             for (int i = 0; i < 6; i++) {
                 PRTLoader.NewParticle<PRT_Spark>(anchor + Main.rand.NextVector2Circular(40f, 8f),
                     Main.rand.NextVector2Circular(2f, 1f), BankGlow,

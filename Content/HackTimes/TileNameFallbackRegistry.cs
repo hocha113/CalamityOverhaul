@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.HackTimes
         }
 
         private static void RegisterInitialData() {
-            //基础数据来自 terraria.wiki.gg/zh/wiki/图格_ID，后续测试员可按异常样本继续追加
+            //来自 wiki 图格 ID 表，异常样本可继续追加
             Register(TileID.Dirt, "Dirt");
             Register(TileID.Stone, "Stone");
             Register(TileID.Grass, "Grass");

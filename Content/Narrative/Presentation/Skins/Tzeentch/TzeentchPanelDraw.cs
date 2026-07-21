@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Tzeentch
 {
     internal static class TzeentchPanelDraw
     {
-        /// <summary>奸奇面板背景：优先 TzeentchPanel 着色器，缺失时回退到 CPU 色带绘制</summary>
+        /// <summary>面板背景,TzeentchPanel 优先否则 CPU</summary>
         public static void DrawShaderBackground(SpriteBatch spriteBatch, Rectangle rect, float alpha, TzeentchPanelState state, float hoverGlow = 0f) {
             SkinDrawUtil.DrawPanelShadow(spriteBatch, rect, Color.Black * (alpha * 0.60f), 6, 8);
 
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Tzeentch
             }
         }
 
-        /// <summary>面板描边与四角符印：着色器内边之上的清晰前景细节</summary>
+        /// <summary>描边与四角符印</summary>
         public static void DrawFrame(SpriteBatch spriteBatch, Rectangle rect, float alpha, float pulse) {
             Color edge = Color.Lerp(TzeentchPalette.Violet, TzeentchPalette.Gold, pulse) * (alpha * 0.85f);
             SkinDrawUtil.DrawRectBorder(spriteBatch, rect, edge, 2);
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Tzeentch
             DrawCornerSigils(spriteBatch, rect, alpha);
         }
 
-        /// <summary>仅绘制四角符印：对话/选项皮肤在着色器内边之上的轻量签名细节</summary>
+        /// <summary>仅四角符印</summary>
         public static void DrawCornerSigils(SpriteBatch spriteBatch, Rectangle rect, float alpha) {
             DrawSigil(spriteBatch, new Vector2(rect.X + 11, rect.Y + 11), alpha * 0.95f);
             DrawSigil(spriteBatch, new Vector2(rect.Right - 11, rect.Y + 11), alpha * 0.95f);
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Tzeentch
             DrawSigil(spriteBatch, new Vector2(rect.Right - 11, rect.Bottom - 11), alpha * 0.65f);
         }
 
-        //八芒金色符印:正交十字 + 较短的斜十字 + 中心点
+        //八芒符印,正交+斜十字
         private static void DrawSigil(SpriteBatch spriteBatch, Vector2 pos, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
             Color c = TzeentchPalette.Gold * alpha;

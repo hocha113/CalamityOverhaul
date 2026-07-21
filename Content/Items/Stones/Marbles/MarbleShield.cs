@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
-    /// <summary>大理石战盾，石卫护盾+技能举盾完美格挡反制</summary>
+    /// <summary>大理石战盾，石卫护盾+举盾完美格挡反制</summary>
     internal class MarbleShield : ModItem
     {
         public override void SetDefaults() {
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         public int RechargeTimer;
         public int BlockTimer;
         public int BlockCooldown;
-        //以下为纯视觉状态（本地各自演算，不参与同步）
+        //纯视觉，本地演算不同步
         public float OrbitAngle;
         public float BlockLerp;
 
@@ -65,13 +65,13 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
 
         public bool BarrierReady => RechargeTimer <= 0;
         public bool Blocking => BlockTimer > 0;
-        /// <summary>护盾充能进度 0~1，1=就绪</summary>
+        /// <summary>充能 0~1，1=就绪</summary>
         public float ChargeProgress => 1f - RechargeTimer / (float)RechargeTime;
 
         public override void ResetEffects() {
             if (RechargeTimer > 0) {
                 RechargeTimer--;
-                //充能完成的瞬间：清脆就绪音+第三块碎片归位闪光（边沿触发，只响一次）
+                //充能就绪边沿音+闪光
                 if (RechargeTimer == 0 && Equipped && Player.whoAmI == Main.myPlayer && !VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = 0.35f, Volume = 0.9f }, Player.Center);
                     Vector2 pos = ShardWorldPosition(ShardCount - 1);
@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             if (CWRKeySystem.Accessory_Skills.JustPressed && BlockCooldown <= 0) {
                 BlockTimer = BlockWindow;
                 BlockCooldown = BlockCooldownTime;
-                //举盾反馈：金属顿响+清亮石音两层，金环闪光由脉冲环与绘制层共同呈现
+                //举盾双层音
                 SoundEngine.PlaySound(SoundID.Item37 with { Pitch = 0.3f, Volume = 0.9f }, Player.Center);
                 SoundEngine.PlaySound(SoundID.Item29 with { Pitch = 0.55f, Volume = 0.4f }, Player.Center);
                 PRTLoader.NewParticle<PRT_StarPulseRing>(Player.Center, Vector2.Zero
@@ -115,9 +115,9 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 return;
             }
 
-            //举盾时碎片快速收拢成盾面，松开后缓慢散回环绕轨道
+            //举盾收拢，松开散回
             BlockLerp = MathHelper.Lerp(BlockLerp, Blocking ? 1f : 0f, Blocking ? 0.3f : 0.12f);
-            //就绪时环绕稍快，充能中滞缓；举盾时停转保持盾面稳定
+            //就绪稍快，充能滞缓，举盾停转
             OrbitAngle += (BarrierReady ? 0.05f : 0.032f) * (1f - BlockLerp);
             if (OrbitAngle > MathHelper.TwoPi) {
                 OrbitAngle -= MathHelper.TwoPi;
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             if (!VaultUtils.isServer && !HideVisual) {
                 Lighting.AddLight(Player.MountedCenter
                     , GraniteMarbleVFX.MarbleGold.ToVector3() * (BarrierReady ? 0.45f : 0.22f));
-                //充能中的第三块碎片：石尘凝聚，暗示重组进行中
+                //第三块石尘凝聚
                 if (!BarrierReady && Main.rand.NextBool(9)) {
                     PRTLoader.NewParticle<PRT_Smoke>(ShardWorldPosition(ShardCount - 1)
                         , Main.rand.NextVector2Circular(0.6f, 0.6f)
@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             }
         }
 
-        /// <summary>slot∈[0,3)：环绕椭圆轨道与举盾盾面之间按 <see cref="BlockLerp"/> 插值后的世界坐标</summary>
+        /// <summary>slot∈[0,3) 环绕↔盾面按 BlockLerp 插值</summary>
         public Vector2 ShardWorldPosition(int slot) {
             float angle = OrbitAngle + MathHelper.TwoPi / ShardCount * slot;
             Vector2 orbit = new Vector2(MathF.Cos(angle) * OrbitRadius, MathF.Sin(angle) * OrbitRadius * 0.34f - 4f);
@@ -147,14 +147,14 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             return Player.MountedCenter + Vector2.Lerp(orbit, wall, BlockLerp);
         }
 
-        /// <summary>slot 碎片的纵深系数 0~1（椭圆下缘视为近侧），举盾时收敛为 1</summary>
+        /// <summary>纵深 0~1，举盾收敛为 1</summary>
         public float ShardDepth(int slot) {
             float angle = OrbitAngle + MathHelper.TwoPi / ShardCount * slot;
             float depth = (MathF.Sin(angle) + 1f) * 0.5f;
             return MathHelper.Lerp(depth, 1f, BlockLerp);
         }
 
-        //完美格挡窗口：免伤，并获得短暂的近战强化
+        //完美格挡窗，免伤+近战强化
         public override bool FreeDodge(Player.HurtInfo info) {
             if (Equipped && Blocking) {
                 BurstGuard(40, true);
@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             return false;
         }
 
-        //石卫护盾：就绪时吸收一次伤害，第三块碎片可见地碎掉并进入充能
+        //石卫，就绪吸一次伤，第三块碎掉进充能
         public override bool ConsumableDodge(Player.HurtInfo info) {
             if (Equipped && BarrierReady) {
                 RechargeTimer = RechargeTime;
@@ -176,13 +176,13 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
 
         private void BurstGuard(int damage, bool strong) {
             if (!VaultUtils.isServer) {
-                //完美格挡=沉浑铿锵，吸收=偏脆的碎石声，各配一层土石闷响
+                //格挡/吸收分层音
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = strong ? -0.1f : 0.2f, Volume = 1.1f }, Player.Center);
                 SoundEngine.PlaySound(SoundID.Dig with { Pitch = strong ? 0.1f : -0.2f, Volume = 0.8f }, Player.Center);
                 PRTLoader.NewParticle<PRT_StarPulseRing>(Player.Center, Vector2.Zero
                     , GraniteMarbleVFX.MarbleGold, 0).Configure(0.15f, strong ? 1.4f : 0.9f, 24);
 
-                //碎裂主体：吸收=第三块碎片在原位炸开留下空缺；完美格挡=三块碎片齐振溅金屑
+                //吸收炸第三块，格挡三块齐振
                 if (strong) {
                     for (int slot = 0; slot < ShardCount; slot++) {
                         Vector2 pos = ShardWorldPosition(slot);
@@ -228,8 +228,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             }
         }
 
-        //盾反：只在拥有者本地客户端结算——击碎格挡窗内近旁的敌对弹幕，沿其反向掷回石刃。
-        //不改写敌对弹幕的阵营与 owner（跨端改写必然脱同步），改为本地 Kill + 生成自有反击弹
+        //盾反仅 owner 本地，Kill 近旁敌弹+生成反击石刃，不改敌弹阵营/owner
         private void ShatterNearbyProjectiles() {
             if (Player.whoAmI != Main.myPlayer) {
                 return;
@@ -244,7 +243,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                     continue;
                 }
 
-                //反击伤害取被反弹幕的1.5倍并封顶60：Orange级饰品不随后期敌弹数值无限增长
+                //反击伤=敌弹×1.5封顶60
                 int counterDamage = Math.Clamp((int)(proj.damage * 1.5f), 15, 60);
                 Vector2 dir = proj.velocity.LengthSquared() > 0.01f
                     ? -proj.velocity.SafeNormalize(Vector2.UnitX)
@@ -273,10 +272,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         }
     }
 
-    /// <summary>
-    /// 大理石战盾的玩家绘制层：三块实体大理石碎片环绕玩家。
-    /// 状态可视化——就绪=三块全亮环绕；充能中=第三块按进度从石尘中重组；举盾=收拢到面向侧组成盾面+金环闪光
-    /// </summary>
+    /// <summary>三块石片环绕层，就绪全亮、充能重组第三块、举盾收拢+金环</summary>
     internal class MarbleShieldLayer : PlayerDrawLayer
     {
         public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.FrontAccFront);
@@ -302,12 +298,12 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             Texture2D ring = CWRAsset.DiffusionCircle.Value;
 
             float time = (float)Main.timeForVisualEffects * 0.05f;
-            //A=0 的染色在 AlphaBlend 下呈加算发光，实体底色保留正常透明度
+            //A=0 加算发光
             Color gold = GraniteMarbleVFX.MarbleGold with { A = 0 };
             Color core = GraniteMarbleVFX.MarbleCore with { A = 0 };
             Color dust = GraniteMarbleVFX.MarbleDust;
 
-            //举盾窗口：面向侧金环闪光，随窗口剩余时间衰减
+            //举盾金环随窗衰减
             if (mp.Blocking && mp.BlockLerp > 0.05f) {
                 float window = mp.BlockTimer / (float)MarbleShieldPlayer.BlockWindow;
                 Vector2 ringPos = player.MountedCenter + new Vector2(player.direction * 26f, player.gfxOffY) - Main.screenPosition;
@@ -321,7 +317,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             float pulse = 0.85f + MathF.Sin(time * 2.2f) * 0.15f;
 
             for (int slot = 0; slot < MarbleShieldPlayer.ShardCount; slot++) {
-                //充能中：第三块碎片按进度重组（缩放与透明度渐起），刚碎掉时留出空位
+                //第三块按进度重组
                 float rebuild = 1f;
                 if (!mp.BarrierReady && slot == MarbleShieldPlayer.ShardCount - 1) {
                     rebuild = mp.ChargeProgress;
@@ -334,16 +330,14 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 float depth = mp.ShardDepth(slot);
                 float scale = (0.72f + depth * 0.42f) * (0.45f + rebuild * 0.55f);
                 float alpha = (0.55f + depth * 0.45f) * (0.3f + rebuild * 0.7f);
-                //就绪/举盾=全亮，充能中转暗
+                //就绪/举盾全亮，充能转暗
                 float lit = mp.BarrierReady || mp.Blocking ? 1f : 0.6f;
-                //碎片朝向：环绕时缓慢翻滚，举盾时立正对齐成盾面
+                //环绕翻滚，举盾立正
                 float tumble = MathHelper.WrapAngle(time * 1.4f + slot * 2.4f);
                 float rotation = MathHelper.Lerp(tumble, 0f, mp.BlockLerp);
 
-                //金晕托底
                 drawInfo.DrawDataCache.Add(new DrawData(glow, pos, null, gold * (0.5f * alpha * lit * pulse)
                     , 0f, glow.Size() / 2f, new Vector2(0.5f * scale), SpriteEffects.None));
-                //石片形体：石粉色实体底 + 金边斜层 + 白芯，非光斑
                 drawInfo.DrawDataCache.Add(new DrawData(sliver, pos, null, dust * (0.85f * alpha)
                     , rotation, sliver.Size() / 2f, new Vector2(0.4f, 0.82f) * scale, SpriteEffects.None));
                 drawInfo.DrawDataCache.Add(new DrawData(sliver, pos, null, gold * (0.9f * alpha * lit)
@@ -354,12 +348,12 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         }
     }
 
-    /// <summary>完美格挡奖励：短暂的近战伤害强化</summary>
+    /// <summary>完美格挡近战强化</summary>
     internal class MarbleRiposteBuff : ModBuff
     {
-        /// <summary>持续时间(帧)：5秒</summary>
+        /// <summary>持续帧，5秒</summary>
         public const int Duration = 300;
-        /// <summary>近战伤害加成</summary>
+        /// <summary>近战伤加成</summary>
         public const float MeleeBonus = 0.1f;
 
         public override string Texture => GraniteMarbleVFX.MarbleTex + "MarbleShield";

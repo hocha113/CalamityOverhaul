@@ -491,11 +491,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             //=== 旗帜 (20-35) ===
             { ItemID.WorldBanner, 25 },
         };
-        /// <summary>
-        /// 燃料被消耗时会运行
-        /// </summary>
-        /// <param name="itemType"></param>
-        /// <param name="generator"></param>
+        /// <summary>消耗时回调</summary>
         public static void OnAfterFlaming(int itemType, BaseGeneratorTP generator) {
             if (itemType == ItemID.LavaBucket || itemType == ItemID.BottomlessLavaBucket) {
                 if (!VaultUtils.isClient) {
@@ -504,18 +500,13 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             }
         }
 
-        /// <summary>
-        /// 根据燃烧热值计算燃烧持续时间(tick)
-        /// 使用 sqrt 缩放：高热值燃料燃烧更久，但每tick产热也更高
-        /// </summary>
+        /// <summary>热值→燃烧时长(tick)，sqrt 缩放</summary>
         public static int GetBurnDuration(int combustionHeat) {
             if (combustionHeat <= 0) return 0;
             return (int)(System.Math.Sqrt(combustionHeat) * 12f) + 60;
         }
 
-        /// <summary>
-        /// 获取燃料每tick释放的热量 = 总热值 / 燃烧持续时间
-        /// </summary>
+        /// <summary>每tick热量 = 热值 / 时长</summary>
         public static float GetHeatPerTick(int combustionHeat) {
             int duration = GetBurnDuration(combustionHeat);
             if (duration <= 0) return 0f;

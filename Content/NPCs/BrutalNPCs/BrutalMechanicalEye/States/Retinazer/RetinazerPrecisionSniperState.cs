@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
-    /// <summary>精准狙击：蓄力后扇形激光齐射</summary>
+    /// <summary>精准狙击，蓄力后扇形激光齐射</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerPrecisionSniper, typeof(TwinsStateContext))]
     internal class RetinazerPrecisionSniperState : TwinsStateBase
     {
@@ -49,12 +49,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             npc.velocity *= 0.9f;
             npc.EntityToRot((player.Center - npc.Center).ToRotation() - MathHelper.PiOver2, 0.16f);
 
-            //设置蓄力状态
             context.SetChargeState(2, Math.Min(Timer / (float)ChargeTime, 1f));
 
             Timer++;
 
-            //蓄力阶段
             if (Timer < ChargeTime) {
                 float progress = Timer / (float)ChargeTime;
 
@@ -97,14 +95,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                             0f,
                             Main.myPlayer,
                             0f,
-                            1f//强化弹标记
+                            1f  //强化弹标记
                         );
                     }
                 }
 
                 SoundEngine.PlaySound(SoundID.Item33, npc.Center);
 
-                //强力后坐:机体猛地向后弹开+音爆余波
+                //强后坐+音爆
                 Vector2 muzzleDir = (npc.rotation + MathHelper.PiOver2).ToRotationVector2();
                 npc.velocity = -muzzleDir * 14f;
                 Context.PushDashVisuals(0.7f, 0.8f);
@@ -119,7 +117,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             if (Timer >= RecoveryTime) {
                 sniperCount++;
 
-                //独眼模式下切换到狂暴状态
                 if (context.IsSoloRageMode) {
                     return new RetinazerSoloRageState();
                 }

@@ -56,7 +56,6 @@ namespace CalamityOverhaul.Content.UIs.UIEffect
             float t = Life / MaxLife;
             float fade = (float)Math.Sin(t * Math.PI) * (1f - t * 0.4f);
 
-            //灰烬颜色：深灰到黑
             Color ashColor = Color.Lerp(new Color(60, 50, 45), new Color(30, 20, 15), t) * (alpha * 0.65f * fade);
             sb.Draw(px, Pos, new Rectangle(0, 0, 1, 1), ashColor, Rotation, new Vector2(0.5f, 0.5f), Size, SpriteEffects.None, 0f);
         }

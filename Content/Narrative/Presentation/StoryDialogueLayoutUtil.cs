@@ -5,7 +5,7 @@ using System;
 
 namespace CalamityOverhaul.Content.Narrative.Presentation
 {
-    /// <summary>修正 Narrative 对话折行：TextRect 已是屏幕像素宽，WrapText 内部再除 TextScale。</summary>
+    /// <summary>TextRect 已是屏像素宽,WrapText 内部再除 TextScale</summary>
     internal static class StoryDialogueLayoutUtil
     {
         internal static void RefreshWrappedLines(DialogueLayoutContext layout, LinePresentation line) {

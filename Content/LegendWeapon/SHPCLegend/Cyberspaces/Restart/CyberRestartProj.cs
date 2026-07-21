@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             }
 
             int t = CyberRestart.TotalFrames - Math.Max(0, Projectile.timeLeft - 4) + 1;
-            //演出已结束的尾帧不再绘制，避免多余闪烁
+            //尾帧不画
             if (t > CyberRestart.TotalFrames + 1) {
                 return false;
             }
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
 
             Main.spriteBatch.End();
 
-            //领域级演出着色器：撕裂/收缩/奇点/炸裂四阶段一并渲染（自身 Immediate begin/end，结束后无 batch 打开）
+            //领域着色器四阶段，自管 Immediate
             DrawFieldShader(drawPos, t);
 
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive,
@@ -137,8 +137,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             return false;
         }
 
-        //领域级演出着色器：以领域中心为锚点绘制 2*领域半径方形 quad，加法混合
-        //四阶段权重通过帧时间转换为 0..1 浮点，分别驱动撕裂/收缩/奇点/炸裂分支
+        //领域中心锚点，2R 方 quad 加法
+        //四阶段权重 0..1
         private void DrawFieldShader(Vector2 drawPos, int t) {
             Effect shader = EffectLoader.CyberRestartField?.Value;
             if (shader == null) {
@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
                     (float)(CyberRestart.PhaseBurstEnd - CyberRestart.PhaseSingularityEnd), 0f, 1f);
             }
 
-            //整体淡入淡出：开场前 4 帧、结束前 6 帧分别做软入软出
+            //前4软入，末6软出
             float globalAlpha = 1f;
             if (t < 4) {
                 globalAlpha = t / 4f;
@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             shader.Parameters["crackSeed"]?.SetValue(coreSeed);
             shader.Parameters["globalAlpha"]?.SetValue(globalAlpha);
 
-            //演出基准半径：取主人玩家领域峰值半径 * 1.15，避免被 RestartCollapse 拽小
+            //基准半径=主人峰值，避 RestartCollapse
             float ownerRadius = ownerCp?.Radius ?? Cyberspace.BaseRadius;
             float baseRadius = MathF.Max(ownerRadius, Cyberspace.BaseRadius);
             float drawDiameter = baseRadius * 2.3f;
@@ -222,16 +222,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             Main.spriteBatch.End();
         }
 
-        //黑墙裂缝：撕裂段从中心向外扩散的折线状能量裂痕，整段演出全程可见但收缩段被"吸回"
+        //黑墙裂缝，撕裂外扩收缩吸回
         private void DrawCracks(Texture2D pixel, Vector2 drawPos, int t) {
             if (t > CyberRestart.PhaseSingularityEnd) return;
 
             Vector2 origin = pixel.Size() * 0.5f;
-            //可视外径基于主人 EffectiveOuterRadius
+            //外径取主人 EffectiveOuterRadius
             CyberspacePlayer ownerCp = OwnerCp();
             float ownerEffR = ownerCp?.EffectiveOuterRadius ?? Cyberspace.BaseRadius;
             float baseLen = MathHelper.Clamp(ownerEffR * 0.85f, 240f, 720f);
-            //演出未触发收缩前用领域原半径，避免被 RestartCollapse 拽小
+            //收缩前用原半径
             if (t <= CyberRestart.PhaseTearEnd) {
                 float rawR = ownerCp?.Radius ?? Cyberspace.BaseRadius;
                 if (rawR > baseLen) baseLen = rawR * 0.85f;
@@ -241,12 +241,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
                 int local = t - crackDelays[i];
                 if (local <= 0) continue;
 
-                //生长进度：从 0 起步，撕裂段末已达全长
+                //生长，撕裂末满长
                 float growSpan = MathF.Max(1f, CyberRestart.PhaseTearEnd - crackDelays[i]);
                 float grow = MathHelper.Clamp(local / growSpan, 0f, 1f);
                 grow = 1f - MathF.Pow(1f - grow, 2.6f);
 
-                //收缩段被拉回核心
+                //收缩吸回
                 float retract = 1f;
                 if (t > CyberRestart.PhaseTearEnd) {
                     float k = MathHelper.Clamp(
@@ -262,7 +262,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
                 float ang = crackAngles[i];
                 float seed = crackSeeds[i];
 
-                //裂缝由若干段折线组成，每段轻微偏离主轴，模拟黑墙故障撕裂
+                //折线裂痕
                 const int Segs = 9;
                 Vector2 dir = ang.ToRotationVector2();
                 Vector2 perp = new(-dir.Y, dir.X);
@@ -272,7 +272,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
                     float k1 = (s + 1) / (float)Segs;
                     float r0 = length * k0;
                     float r1 = length * k1;
-                    //折线偏移：端点压平，中段最大
+                    //折线中段最大
                     float band0 = MathF.Sin(k0 * MathF.PI) * 12f;
                     float band1 = MathF.Sin(k1 * MathF.PI) * 12f;
                     float jitter0 = MathF.Sin((seed * 31f + k0 * 17f + t * 0.18f)) * band0;
@@ -286,20 +286,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
                     if (segLen < 0.5f) continue;
                     float rot = MathF.Atan2(d.Y, d.X);
 
-                    //核心暗红，外焰深红黑；与 shader 端裂缝互为细节，整体保持纤细
+                    //暗红芯+深边
                     float fade = retract * (0.55f + 0.45f * grow);
                     Color core = new Color(0.85f, 0.10f, 0.12f) * fade * 0.7f;
                     Color edge = new Color(0.18f, 0.02f, 0.04f) * fade * 0.85f;
 
-                    //黑色外框：仅作"剃刀边"使用，不再营造扇形带感
+                    //黑剃刀边
                     Main.spriteBatch.Draw(pixel, mid, null, edge, rot, origin,
                         new Vector2(segLen + 1.5f, 3.6f), SpriteEffects.None, 0f);
-                    //红色内焰
                     Main.spriteBatch.Draw(pixel, mid, null, core, rot, origin,
                         new Vector2(segLen + 1f, 1.6f), SpriteEffects.None, 0f);
                 }
 
-                //裂缝末端的故障亮点
+                //末端亮点
                 Vector2 tip = drawPos + dir * length;
                 float tipPulse = 0.5f + 0.5f * MathF.Sin(t * 0.6f + seed * 19f);
                 Color tipCol = new Color(1f, 0.55f, 0.4f) * retract * (0.45f + 0.55f * tipPulse);
@@ -308,15 +307,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             }
         }
 
-        //收缩粒带：从领域边缘向心收束的细长光带，给出"领域被吸入"的直观运动
+        //收缩粒带，向心收束
         private void DrawCollapseStreams(Texture2D pixel, Vector2 drawPos, int t) {
             if (t <= CyberRestart.PhaseTearEnd || t > CyberRestart.PhaseSingularityEnd) return;
 
-            //当前阶段进度 (0..1)
             float k = (float)(t - CyberRestart.PhaseTearEnd)
                 / MathF.Max(1f, CyberRestart.PhaseSingularityEnd - CyberRestart.PhaseTearEnd);
 
-            //初始外径：取"主人玩家"领域峰值半径，避免被 RestartCollapse 拉小
+            //初始外径=主人峰值
             CyberspacePlayer ownerCp = OwnerCp();
             float ownerRadius = ownerCp?.Radius ?? Cyberspace.BaseRadius;
             float startR = MathHelper.Clamp(ownerRadius, 320f, 760f);
@@ -349,12 +347,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
                     new Vector2(length, width), SpriteEffects.None, 0f);
             }
 
-            //外环收缩：粗描边沿径向缩进，给"领域圈被合拢"的整体动作
+            //外环径向缩
             float ringR = MathHelper.Lerp(startR, 0f, MathF.Pow(k, 1.6f));
             DrawHollowRing(pixel, drawPos, ringR, k, origin);
         }
 
-        //空心圆环：用很多细线段拼出，做收缩段的"领域包围圈"
+        //空心环，细线段拼
         private void DrawHollowRing(Texture2D pixel, Vector2 drawPos, float r, float k, Vector2 origin) {
             if (r < 6f) return;
             const int Segs = 36;
@@ -375,13 +373,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             }
         }
 
-        //奇点核心：玩家压缩为红黑维度核心裂缝
-        //结构：外层暗红光晕 → 黑椭圆基底 → 放射状辐条 → 水平吸积带 → 红芯竖缝 → 中心暖白
-        //总尺寸约为旧版两倍，发光层全部使用暖红/橙红，避开纯白以防晃眼
+        //奇点红黑核心
+        //光晕→黑底→辐条→吸积带→竖缝→暖芯
+        //约两倍旧尺，暖红避纯白
         private void DrawSingularityCore(Texture2D pixel, Texture2D glow, Vector2 drawPos, int t) {
             if (t < CyberRestart.PhaseCollapseEnd - 6 || t > CyberRestart.PhaseBurstEnd) return;
 
-            //单独的强度曲线：在收缩末段开始浮现，奇点段全亮，炸裂段瞬间断开
+            //强度，收缩末浮现，炸裂断
             float fade;
             if (t < CyberRestart.PhaseCollapseEnd) {
                 fade = (t - (CyberRestart.PhaseCollapseEnd - 6)) / 6f;
@@ -390,7 +388,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
                 fade = 1f;
             }
             else {
-                //炸裂前 6 帧迅速消散
+                //炸裂前6帧消
                 float k = (t - CyberRestart.PhaseSingularityEnd) / 6f;
                 fade = MathHelper.Clamp(1f - k, 0f, 1f);
             }
@@ -399,12 +397,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
 
             Vector2 origin = pixel.Size() * 0.5f;
             Vector2 glowOrigin = glow.Size() * 0.5f;
-            //高频脉动 + 低频呼吸，避免视觉静止
+            //脉动+呼吸
             float pulse = 0.75f + 0.25f * MathF.Sin(t * 0.9f + coreSeed * 13f);
             float breath = 0.92f + 0.08f * MathF.Sin(t * 0.22f + coreSeed * 5f);
             float scale = pulse * breath;
 
-            //外层红黑光晕：再放大一倍体积，颜色压暖避免刺眼
+            //外层红黑光晕
             Color outerHaloDeep = new Color(0.55f, 0.06f, 0.08f) * fade * 0.6f;
             Main.spriteBatch.Draw(glow, drawPos, null, outerHaloDeep, 0f, glowOrigin,
                 new Vector2(7.2f * scale), SpriteEffects.None, 0f);
@@ -412,19 +410,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             Main.spriteBatch.Draw(glow, drawPos, null, outerHaloWarm, 0f, glowOrigin,
                 new Vector2(4.8f * scale), SpriteEffects.None, 0f);
 
-            //黑椭圆基底：再放大一倍
+            //黑椭圆底
             Color baseBlack = new Color(0.03f, 0.0f, 0.0f) * fade * 0.95f;
             Main.spriteBatch.Draw(pixel, drawPos, null, baseBlack, 0f, origin,
                 new Vector2(144f * scale, 420f * scale), SpriteEffects.None, 0f);
 
-            //放射状辐条：12+8 双层细线，模拟核心向外放出的光辐
-            //主层 12 条均匀分布，时间相位让它们慢慢转动
-            //辅层 8 条偏移半角度+不同长度，错落感
+            //辐条 12+8
             int spokeMain = 12;
             float spokeSpin = t * 0.020f + coreSeed * 0.7f;
             for (int i = 0; i < spokeMain; i++) {
                 float ang = MathHelper.TwoPi * i / spokeMain + spokeSpin;
-                //每条辐条独立微相位，长度抖动
                 float seed = MathF.Sin(i * 12.9898f + coreSeed * 78.233f);
                 seed = seed - MathF.Floor(seed);
                 float jitter = 0.65f + 0.35f * MathF.Sin(t * 0.7f + i * 1.3f + coreSeed * 4f);
@@ -451,23 +446,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
                     new Vector2(spokeLen, 2.0f), SpriteEffects.None, 0f);
             }
 
-            //水平吸积带：仿黑洞吸积盘，比辐条更长更亮，常驻 + 节奏脉动
+            //水平吸积带
             float diskPulse = 0.7f + 0.3f * MathF.Sin(t * 0.5f + coreSeed * 9f);
             float diskLen = 640f * scale * diskPulse;
             Color diskGlow = new Color(0.55f, 0.10f, 0.10f) * fade * 0.8f;
             Color diskCore = new Color(1f, 0.45f, 0.25f) * fade * 0.9f;
             Color diskHot = new Color(1f, 0.75f, 0.45f) * fade * diskPulse;
-            //柔光底
             Main.spriteBatch.Draw(glow, drawPos, null, diskGlow, 0f, glowOrigin,
                 new Vector2(diskLen / glow.Width * 1.4f, 1.7f * scale), SpriteEffects.None, 0f);
-            //中段红
             Main.spriteBatch.Draw(pixel, drawPos, null, diskCore, 0f, origin,
                 new Vector2(diskLen, 8.4f * scale), SpriteEffects.None, 0f);
-            //芯亮线
             Main.spriteBatch.Draw(pixel, drawPos, null, diskHot, 0f, origin,
                 new Vector2(diskLen * 0.85f, 2.8f * scale), SpriteEffects.None, 0f);
 
-            //红色核心竖缝：再放大一倍，并叠一层更细更亮的内芯
+            //红芯竖缝+内芯
             Color slitDeep = new Color(0.95f, 0.10f, 0.18f) * fade * 0.9f;
             Color slitHot = new Color(1f, 0.55f, 0.45f) * fade * pulse;
             Color slitInner = new Color(1f, 0.85f, 0.65f) * fade * pulse * 0.85f;
@@ -478,7 +470,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             Main.spriteBatch.Draw(pixel, drawPos, null, slitInner, 0f, origin,
                 new Vector2(3.6f, 300f * scale), SpriteEffects.None, 0f);
 
-            //横向抽搐短闪
+            //横向短闪
             float jitter2 = MathF.Sin(t * 1.7f + coreSeed * 23f);
             if (jitter2 > 0.5f) {
                 float intensity = jitter2 - 0.4f;
@@ -487,13 +479,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
                     new Vector2(240f * scale, 4.0f), SpriteEffects.None, 0f);
             }
 
-            //中心暖白聚光：作为最高光，但用偏暖的 (1, .82, .55) 避开纯白
+            //中心暖高光
             Color centerHot = new Color(1f, 0.82f, 0.55f) * fade * pulse * 0.85f;
             Main.spriteBatch.Draw(glow, drawPos, null, centerHot, 0f, glowOrigin,
                 new Vector2(1.7f * scale), SpriteEffects.None, 0f);
         }
 
-        //炸裂闪带：奇点尾段一拍达峰的横+竖大十字白热闪
+        //炸裂十字闪
         private void DrawBurstFlash(Texture2D pixel, Texture2D glow, Vector2 drawPos, int t) {
             int burstStart = CyberRestart.PhaseSingularityEnd;
             int burstWindowEnd = burstStart + 18;
@@ -513,12 +505,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             Vector2 origin = pixel.Size() * 0.5f;
             Vector2 glowOrigin = glow.Size() * 0.5f;
 
-            //白热中心
             Color halo = new Color(1f, 0.7f, 0.5f) * pulse * 0.85f;
             Main.spriteBatch.Draw(glow, drawPos, null, halo, 0f, glowOrigin,
                 new Vector2(MathHelper.Lerp(0.6f, 3.2f, pulse)), SpriteEffects.None, 0f);
 
-            //横竖闪带
             float length = MathHelper.Lerp(160f, 460f, pulse);
             float wMain = MathHelper.Lerp(2f, 22f, pulse);
             float wThin = MathHelper.Lerp(1f, 7f, pulse);
@@ -536,7 +526,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
                 new Vector2(length * 0.85f, wThin * 0.85f), SpriteEffects.None, 0f);
         }
 
-        //炸裂尘埃：奇点末→演出尾，向外扩散的红黑残片，作为"领域复原"的细节装饰
+        //炸裂红黑残片
         private void DrawBurstDebris(Texture2D pixel, Vector2 drawPos, int t) {
             int start = CyberRestart.PhaseSingularityEnd;
             if (t < start || t > CyberRestart.PhaseBurstEnd) return;
@@ -575,7 +565,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
 
         public override bool ShouldUpdatePosition() => false;
 
-        //屏幕扭曲：奇点段强烈向心引力透镜、炸裂段外放冲击波，配合主着色器形成完整空间挤压感
+        //屏幕扭曲，奇点向心/炸裂外放
         public void Warp() {
             if (crackAngles == null) return;//Init 尚未触发
             int t = CyberRestart.TotalFrames - Math.Max(0, Projectile.timeLeft - 4) + 1;
@@ -585,12 +575,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             if (warpTex == null) return;
 
             Vector2 origin = warpTex.Size() * 0.5f;
-            //取"主人玩家"领域中心；远端客户端必须避免读 Local，否则扭曲透镜会跑到本地玩家身上
+            //扭曲锚主人中心，勿读 Local
             CyberspacePlayer ownerCp = OwnerCp();
             Vector2 ownerCenter = ownerCp?.DomainCenter ?? Projectile.Center;
             Vector2 drawPos = ownerCenter - Main.screenPosition;
 
-            //奇点向心扭曲：强度从收缩末段缓升、奇点段持续高位、炸裂瞬间归零
+            //奇点向心扭曲
             float singWarp;
             if (t < CyberRestart.PhaseCollapseEnd - 6) {
                 singWarp = 0f;
@@ -598,7 +588,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             else if (t <= CyberRestart.PhaseSingularityEnd) {
                 singWarp = MathHelper.Clamp((t - (CyberRestart.PhaseCollapseEnd - 6)) /
                     (float)(CyberRestart.PhaseSingularityEnd - (CyberRestart.PhaseCollapseEnd - 6)), 0f, 1f);
-                //奇点段后半段加重
                 singWarp = MathF.Pow(singWarp, 0.7f);
             }
             else {
@@ -606,7 +595,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             }
 
             if (singWarp > 0f) {
-                //深紫蓝偏向心：UV 通过 DiffusionCircle 整体收缩
+                //DiffusionCircle 向心
                 Color warpColor = new Color(40, 12, 60) * singWarp;
                 float scale = MathHelper.Lerp(1.4f, 0.55f, singWarp);
                 float ownerWarpTime = ownerCp?.EffectTime ?? Cyberspace.EffectTime;
@@ -617,7 +606,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
                 }
             }
 
-            //炸裂冲击波：强度峰值在炸裂前 1/3，随后快速衰减
+            //炸裂冲击波，前1/3峰
             float burstK;
             if (t < CyberRestart.PhaseSingularityEnd) {
                 burstK = 0f;
@@ -636,7 +625,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
                 }
                 burstAmp = MathHelper.Clamp(burstAmp, 0f, 1f);
                 if (burstAmp > 0.01f) {
-                    //外扩冲击波：透镜随阶段进度变大、染色色偏暖红
+                    //外扩透镜暖红
                     Color shockColor = new Color(80, 20, 30) * burstAmp;
                     float scale = MathHelper.Lerp(0.6f, 2.6f, burstK);
                     float ownerBurstTime = ownerCp?.EffectTime ?? Cyberspace.EffectTime;

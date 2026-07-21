@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.UIs.UIEffect
 {
-    /// <summary>霓虹女仆粒子：发光菱形碎片，缓慢上升旋转，霓虹蓝紫辉光<br/>SHPC赛博女仆对话框氛围装饰</summary>
+    /// <summary>霓虹菱形碎片</summary>
     public class NeonMaidPRT(Vector2 p)
     {
         public Vector2 Pos = p;
@@ -14,14 +14,12 @@ namespace CalamityOverhaul.Content.UIs.UIEffect
         public float MaxLife = Main.rand.NextFloat(90f, 160f);
         public float Seed = Main.rand.NextFloat(10f);
         public Vector2 Velocity = new(Main.rand.NextFloat(-0.25f, 0.25f), Main.rand.NextFloat(-0.45f, -0.12f));
-        //在霓虹蓝和浅紫之间随机偏移
-        public float ColorLerp = Main.rand.NextFloat(1f);
+        public float ColorLerp = Main.rand.NextFloat(1f);//蓝↔紫
 
         public bool Update(Vector2 panelPos, Vector2 panelSize) {
             Life++;
             Rot += 0.018f;
             Pos += Velocity;
-            //轻微漂移感
             Velocity.X += MathF.Sin(Life * 0.04f + Seed) * 0.003f;
 
             if (Life >= MaxLife) return true;
@@ -38,17 +36,15 @@ namespace CalamityOverhaul.Content.UIs.UIEffect
             float fade = MathF.Sin(t * MathHelper.Pi) * alpha;
             float scale = Size * (0.75f + MathF.Sin((Life + Seed * 30f) * 0.07f) * 0.25f);
 
-            //霓虹蓝到浅紫渐变
             Color neonBlue = new Color(60, 140, 255);
             Color neonViolet = new Color(150, 100, 240);
             Color c = Color.Lerp(neonBlue, neonViolet, ColorLerp) * (0.7f * fade);
 
-            //菱形由两个十字线叠加表现
+            //菱形=十字叠
             sb.Draw(px, Pos, null, c, Rot, new Vector2(0.5f),
                 new Vector2(scale * 1.8f, scale * 0.25f), SpriteEffects.None, 0f);
             sb.Draw(px, Pos, null, c * 0.85f, Rot + MathHelper.PiOver2, new Vector2(0.5f),
                 new Vector2(scale * 1.8f, scale * 0.25f), SpriteEffects.None, 0f);
-            //中心亮点
             sb.Draw(px, Pos, null, c * 0.5f, 0f, new Vector2(0.5f),
                 new Vector2(scale * 0.35f), SpriteEffects.None, 0f);
         }

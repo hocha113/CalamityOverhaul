@@ -154,11 +154,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
             Vector2 drawPosition = CenterInWorld - Main.screenPosition;
             Color baseColor = Lighting.GetColor(PosInWorld.ToTileCoordinates());
 
-            //机械感扫描：使用锯齿波代替正弦，制造扫描上下走动感
+            //锯齿波扫描
             float saw = time * 2f % 2f; //范围0~2
             float animOffsetY = (saw < 1f ? saw : 2f - saw) * 6f - 3f; //上下往返，范围-3~3
 
-            //脉冲缩放：机械感更生硬，使用abs(sin)制造周期性收缩
+            //abs(sin)脉冲缩放
             float scale = 1f + MathF.Abs(MathF.Sin(time * 5f)) * 0.07f;
 
             float rotation = 0;

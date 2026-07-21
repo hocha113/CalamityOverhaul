@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>砂暴枪管：光束卷起砂幕，磨蚀敌人并削弱敌对弹幕</summary>
+    /// <summary>砂暴枪管，光束卷砂幕，磨蚀敌与削弱敌弹</summary>
     internal sealed class SandstormBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -24,11 +24,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             ctx.ManaCostMul += 0.48f;
         }
 
-        //同主同时存在的砂幕上限（curtain 寿命 90，所以这个上限会让画面上至多同时悬浮 3 个）
+        //同主砂幕上限(寿命90≈最多3个)
         private const int MaxConcurrentCurtains = 3;
-        //同点 160px 内已有砂幕则跳过本次生成（避免聚簇）
+        //同点160px内已有则跳过
         private const float MinSpacing = 160f;
-        //单条光束的生成节奏（间隔帧数）
+        //单束生成间隔帧
         private const int SpawnInterval = 42;
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>砂幕弹幕：旋涡+流场+Fog，磨蚀标记</summary>
+    /// <summary>砂幕，旋涡+流场+Fog，磨蚀</summary>
     internal sealed class SHPCSandCurtainProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Projectile.DamageType = DamageClass.Magic;
         }
 
-        //命中扫描节流：NPC/敌方弹幕扫描每 3 帧一次（错峰避免同帧多砂幕一起扫）
+        //命中扫描，每3帧错峰
         private const int ScanInterval = 3;
 
         public override void AI() {
@@ -90,14 +90,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     }
                 }
             }
-            //玩家身处砂幕：每 3 帧才施加一次低强度震动，避免画面持续抖
+            //身在砂幕，每3帧轻震
             if (frame % 3 == 0) {
                 Player local = Main.LocalPlayer;
                 if (local != null && local.active && Vector2.DistanceSquared(local.Center, Projectile.Center) < radius * radius) {
                     SHPCNaturalFx.Shake(0.4f);
                 }
             }
-            //粒子发射：砂色 PRT_Smoke + 偶发火星（节流到 6 / 12 帧）
+            //砂烟+火星，6/12帧节流
             if (Main.netMode == NetmodeID.Server) return;
             if (Main.GameUpdateCount % 6 == 0) {
                 PRTLoader.NewParticle<PRT_Smoke>(Projectile.Center + Main.rand.NextVector2Circular(radius * 0.8f, radius * 0.6f), Main.rand.NextVector2Circular(2.5f, 1.2f), new Color(225, 190, 110), Main.rand.NextFloat(0.5f, 0.95f)).Configure(Main.rand.Next(28, 50), 0.7f, Main.rand.NextFloat(-0.05f, 0.05f));
@@ -109,14 +109,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //Cyclone 与 Airflow 旋转飘移堆叠成砂幕主体（AlphaBlend pass，颜色低饱和暖沙）
+            //Cyclone+Airflow 暖沙主体
             Vector2 baseScreen = Projectile.Center - Main.screenPosition;
             float life = MathHelper.Clamp(Projectile.timeLeft / 90f, 0f, 1f);
             float fadeIn = MathHelper.Clamp((90 - Projectile.timeLeft) / 12f, 0f, 1f);
             float alpha = MathHelper.Clamp(fadeIn * life, 0f, 1f);
             float t = (float)Main.timeForVisualEffects * 0.04f;
 
-            //Cyclone：底部大旋涡
+            //底部大旋涡
             Texture2D cyclone = CWRAsset.Cyclone?.Value;
             if (cyclone != null) {
                 Vector2 origin = cyclone.Size() * 0.5f;
@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 Main.spriteBatch.Draw(cyclone, baseScreen, null, c, t * 1.4f, origin, radius / cyclone.Width * 2.4f, SpriteEffects.None, 0f);
                 Main.spriteBatch.Draw(cyclone, baseScreen, null, c * 0.6f, -t * 0.7f, origin, radius / cyclone.Width * 1.7f, SpriteEffects.None, 0f);
             }
-            //4 张 Airflow 旋转飘移（原 6 张，视觉差异极小）
+            //4 张 Airflow
             Texture2D airflow = CWRAsset.Airflow?.Value;
             if (airflow != null) {
                 Vector2 origin = airflow.Size() * 0.5f;
@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                         a + t * 0.6f, origin, radius / airflow.Width * 1.5f, SpriteEffects.None, 0f);
                 }
             }
-            //6 张 Fog 体积（原 12 张）；同一种子保证帧间稳定
+            //6 张 Fog，同种子稳帧
             Texture2D fog = CWRAsset.Fog?.Value;
             if (fog != null) {
                 Vector2 origin = fog.Size() * 0.5f;
@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
-            //Additive：暖色发光中心，强化"沙磨阳光"质感
+            //暖色发光中心
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null) return;
             Vector2 baseScreen = Projectile.Center - Main.screenPosition;

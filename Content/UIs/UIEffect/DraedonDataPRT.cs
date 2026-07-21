@@ -38,7 +38,6 @@ namespace CalamityOverhaul.Content.UIs.UIEffect
                 return true;
             }
 
-            //边界检查
             if (Pos.X < basePos.X - 150f || Pos.X > basePos.X + 150f ||
                 Pos.Y < basePos.Y - 100f || Pos.Y > basePos.Y + 100f) {
                 return true;

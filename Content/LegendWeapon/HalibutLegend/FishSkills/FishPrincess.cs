@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             });
         }
 
-        /// <summary>召唤落点演出：圆点环 + 星尘 + 三色闪光 + 薰衣草扩散环，粉彩绘本开场</summary>
+        /// <summary>召唤落点演出，圆点环 + 星尘 + 三色闪光 + 薰衣草扩散环，粉彩绘本开场</summary>
         private static void SpawnSummonEffect(Vector2 position) {
             if (Main.dedServ) {
                 return;
@@ -95,8 +95,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 公主鱼召唤物弹幕。<br/>
-    /// 演出：粉彩身份色（按索引取三色之一）+ 双缎带随游动 DNA 式旋绕（一条画在鱼身下，三明治）
+    /// 公主鱼召唤物弹幕<br/>
+    /// 演出，粉彩身份色（按索引取三色之一）+ 双缎带随游动 DNA 式旋绕（一条画在鱼身下，三明治）
     /// + 速度拉伸残影链 + 星尘低频掉落；施法有预告拍（嘴前符印展开 + 星尘向心 + 轻音提示）
     /// </summary>
     internal class PrincessFishMinion : ModProjectile, IPrimitiveDrawable
@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const float SearchRange = 1400f;
         private const int AttackInterval = 90;
         private const int SpawningDuration = 20;
-        /// <summary>施法仪式帧窗：0..RitualFire 预告，RitualFire 帧释放</summary>
+        /// <summary>施法仪式帧窗，0..RitualFire 预告，RitualFire 帧释放</summary>
         private const int RitualFire = 14;
 
         private Color PastelIdentity => FishPrincessVFX.Pastel((int)FishIndex);
@@ -180,7 +180,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.timeLeft = 60;
             StateTimer++;
 
-            //状态机
             switch (State) {
                 case FishState.Spawning:
                     SpawningAI();
@@ -199,7 +198,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //更新拖尾
             UpdateTrail();
 
-            //缎带松紧：施法预告时收紧
+            //缎带松紧，施法预告时收紧
             float relaxTarget = State == FishState.Attacking && StateTimer < RitualFire + 4 ? 0.45f : 1f;
             ribbonRelax = MathHelper.Lerp(ribbonRelax, relaxTarget, 0.18f);
 
@@ -229,7 +228,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             glowIntensity = progress;
 
-            //入场两拍：起手星尘、落定闪光
+            //入场两拍，起手星尘、落定闪光
             if ((int)StateTimer == 2) {
                 FishPrincessVFX.Stardust(Projectile.Center, Vector2.Zero, 4, 1.4f);
             }
@@ -333,7 +332,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.velocity *= 0.9f;
             glowIntensity = 1f;
 
-            //施法仪式预告拍：轻音提示 + 上浮摇摆 + 星尘向心
+            //施法仪式预告拍
             if ((int)StateTimer == 1) {
                 SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.25f, Pitch = 0.75f }, Projectile.Center);
             }
@@ -353,7 +352,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //释放拍：发射 + 后坐 + 枪口圆点
+            //释放拍，发射 + 后坐 + 枪口圆点
             if ((int)StateTimer == RitualFire) {
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     LaunchMagicAttack(target);
@@ -443,7 +442,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private Vector2 SigilPos() => Projectile.Center + Projectile.rotation.ToRotationVector2() * 26f;
 
-        /// <summary>沿拖尾点链生成缎带路径：正弦横摆，根部收拢锚定鱼体</summary>
+        /// <summary>沿拖尾点链生成缎带路径，正弦横摆，根部收拢锚定鱼体</summary>
         private int BuildRibbonPts(Span<Vector2> dst, float phase, float amp) {
             int n = Math.Min(trailPositions.Count, dst.Length);
             if (n < 3) {
@@ -473,7 +472,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 PRTLoader.NewParticle<PRT_DWave>(Projectile.Center, Vector2.Zero, FishPrincessVFX.Blush, 0.08f)
                     ?.Configure(Vector2.One, Main.rand.NextFloat(MathHelper.TwoPi), 0.36f, 12);
 
-                //缎带脱落：双带化作残迹飘散，活得比鱼久
+                //缎带脱落
                 Span<Vector2> pts = stackalloc Vector2[MaxTrailLength];
                 int n = BuildRibbonPts(pts, 0f, 7f);
                 if (n >= 3) {
@@ -504,20 +503,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float sheenPhase = Main.GlobalTimeWrappedHourly * 0.6f + Projectile.whoAmI * 0.37f;
             float ribbonAlpha = (0.4f + glowIntensity * 0.2f) * alpha;
 
-            //缎带 A：画在鱼身下（三明治底层）
+            //缎带 A，画在鱼身下（三明治底层）
             Span<Vector2> ribbonPts = stackalloc Vector2[MaxTrailLength];
             int n = BuildRibbonPts(ribbonPts, 0f, 7f);
             FishPrincessVFX.DrawRibbonSegments(sb, ribbonPts, n, 4.5f
                 , FishPrincessVFX.Lavender, FishPrincessVFX.DeepLilac, ribbonAlpha, sheenPhase);
 
-            //入场底光：仅生成阶段，薰衣草软光，克制
+            //入场底光
             if (State == FishState.Spawning) {
                 Texture2D glow = CWRAsset.SoftGlow.Value;
                 sb.Draw(glow, drawPos, null, (FishPrincessVFX.Lavender with { A = 0 }) * (0.28f * glowIntensity * alpha)
                     , 0f, glow.Size() / 2f, 0.6f * Projectile.scale, SpriteEffects.None, 0);
             }
 
-            //速度拉伸残影链：近影清晰远影淡
+            //速度拉伸残影链，近影清晰远影淡
             float spd = Projectile.velocity.Length();
             float stretch = MathF.Min(spd * 0.014f, 0.16f);
             Vector2 bodyScale = new Vector2(1f + stretch, 1f - stretch * 0.6f) * Projectile.scale;
@@ -533,12 +532,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , bodyScale * (0.96f - g * 0.06f), SpriteEffects.None, 0);
             }
 
-            //主体：哑光，受光照，粉彩身份色轻染
+            //主体，哑光，受光照，粉彩身份色轻染
             Color mainColor = Color.Lerp(lightColor, pastel, 0.30f);
             sb.Draw(fishTex, drawPos, null, mainColor * alpha
                 , Projectile.rotation + MathHelper.PiOver4, origin, bodyScale, SpriteEffects.None, 0);
 
-            //缎带 B：画在鱼身上（三明治顶层）
+            //缎带 B，画在鱼身上（三明治顶层）
             n = BuildRibbonPts(ribbonPts, MathHelper.Pi, 6.5f);
             FishPrincessVFX.DrawRibbonSegments(sb, ribbonPts, n, 4f
                 , FishPrincessVFX.Blush, FishPrincessVFX.Lavender, ribbonAlpha * 0.9f, sheenPhase + 0.4f);
@@ -546,7 +545,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>施法符印：预告拍在嘴前展开描边心/星，释放拍过冲后消失</summary>
+        /// <summary>施法符印，预告拍在嘴前展开描边心/星，释放拍过冲后消失</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
             if (Main.dedServ || State != FishState.Attacking || StateTimer > RitualFire + 2) {
                 return;
@@ -555,7 +554,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float half = 13f * FishPrincessVFX.EaseOutBack(MathHelper.Clamp(t / 10f, 0f, 1f)) * Projectile.scale;
             float fade = 0.85f;
             if (t > RitualFire) {
-                //释放过冲：2 帧放大提亮后熄灭
+                //释放过冲，2 帧放大提亮后熄灭
                 half *= 1.35f;
                 fade = 1.2f - (t - RitualFire) * 0.45f;
             }
@@ -566,10 +565,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 公主鱼的符号魔法弹。<br/>
-    /// 弹体即符号：心/星 SDF shader 四边形（平涂+描边+高光点），非贴纸非光球；
+    /// 公主鱼的符号魔法弹<br/>
+    /// 弹体即符号，心/星 SDF shader 四边形（平涂+描边+高光点），非贴纸非光球；
     /// 心直立微摆带位置残影，星自旋带旋转拖影；窄缎带拖尾 + 星尘掉落；
-    /// 死亡时缎带交给独立残迹粒子尾部先蚀。ai0=符号索引（心/星交替、三色循环）
+    /// 死亡时缎带交给独立残迹粒子尾部先蚀，ai0=符号索引（心/星交替、三色循环）
     /// </summary>
     internal class PrincessMagicOrb : ModProjectile, IPrimitiveDrawable
     {
@@ -622,7 +621,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //符号姿态：心直立微摆随速度倾身，星自旋随速度加转
+            //符号姿态，心直立微摆随速度倾身
             if (Shape == 0) {
                 Projectile.rotation = MathHelper.Clamp(Projectile.velocity.X * 0.02f, -0.35f, 0.35f)
                     + (float)Math.Sin(pulsePhase * 0.5f) * 0.10f;
@@ -635,14 +634,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //粉彩照明，亮度克制
             Lighting.AddLight(Projectile.Center, PastelFill.ToVector3() * 0.5f);
 
-            //星尘掉落：轻微向后脱离
+            //星尘掉落，轻微向后脱离
             if (Main.rand.NextBool(9)) {
                 FishPrincessVFX.Stardust(Projectile.Center, -Projectile.velocity * 0.06f, 1, 0.5f);
             }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //绘本印章式命中：定向椭圆环 + 圆点 + 闪光
+            //绘本印章式命中
             if (!Main.dedServ) {
                 FishPrincessVFX.DotBurst(Projectile.Center, 6, 4f, (int)SymbolIndex);
                 FishPrincessVFX.Glint(Projectile.Center, -Projectile.velocity * 0.1f, FishPrincessVFX.Cream, 1f);
@@ -683,7 +682,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>轨迹点链：当前中心打头，oldPos 依次向尾（去掉未写入的零槽与过近点）</summary>
+        /// <summary>轨迹点链，当前中心打头，oldPos 依次向尾（去掉未写入的零槽与过近点）</summary>
         private int BuildTrailPts(Span<Vector2> pts) {
             Vector2 half = Projectile.Size / 2f;
             int count = 0;
@@ -703,7 +702,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void OnKill(int timeLeft) {
             if (!Main.dedServ) {
-                //缎带交棒给残迹粒子：活得比弹体久，尾部先蚀 + 上飘
+                //缎带交棒给残迹粒子
                 Span<Vector2> pts = stackalloc Vector2[PRT_FishPrincessRibbonFade.MaxPts];
                 int count = BuildTrailPts(pts);
                 if (count >= 3) {
@@ -723,7 +722,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //shader 缺失兜底：粉彩软块 + 十字星，保证弹体可见
+            //shader 缺失兜底
             if (FishPrincessAssets.FishPrincessSymbol == null) {
                 Texture2D blob = CWRAsset.Extra_98?.Value;
                 Texture2D star = PRT_FishPrincessMote.StarTex?.Value;
@@ -745,11 +744,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //出生弹入：过冲缩放 + 淡入
+            //出生弹入，过冲缩放 + 淡入
             float spawnPop = FishPrincessVFX.EaseOutBack(MathHelper.Clamp(Timer / 12f, 0f, 1f));
             float fade = MathHelper.Clamp(Timer / 8f, 0f, 1f);
 
-            //缎带拖尾：宽度随速度，头淡入尾收梢
+            //缎带拖尾，宽度随速度，头淡入尾收梢
             Span<Vector2> pts = stackalloc Vector2[21];
             int count = BuildTrailPts(pts);
             if (count >= 3) {
@@ -764,14 +763,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Color fill = PastelFill;
 
             if (Shape == 1) {
-                //星形自旋：旋转拖影双 ghost（同位滞后角）
+                //星形自旋
                 FishPrincessVFX.DrawSymbolQuad(Projectile.Center, Projectile.rotation - 0.48f, half * 1.02f
                     , 1, fill, 0f, fade * 0.12f);
                 FishPrincessVFX.DrawSymbolQuad(Projectile.Center, Projectile.rotation - 0.24f, half * 1.01f
                     , 1, fill, 0f, fade * 0.28f);
             }
             else if (Projectile.oldPos.Length > 3 && Projectile.oldPos[3] != Vector2.Zero) {
-                //心形位置残影：速度回声
+                //心形位置残影，速度回声
                 FishPrincessVFX.DrawSymbolQuad(Projectile.oldPos[3] + Projectile.Size / 2f
                     , Projectile.rotation, half * 0.92f, 0, fill, 0f, fade * 0.22f);
             }

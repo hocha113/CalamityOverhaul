@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>风暴枪托：持续开火积聚周身风暴场，气流吹偏敌弹，计量充满天降落雷</summary>
+    /// <summary>风暴枪托，开火积风暴场，吹偏敌弹，满计量落雷</summary>
     internal sealed class StormStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;
@@ -35,11 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
     }
 
-    /// <summary>
-    /// 风暴场领域：跟随玩家的环形气旋，开火充能、停火消散
-    /// 场内敌弹被气流持续吹偏（只转向不删弹），落雷计量充满时召唤 <see cref="SHPCStormBoltProj"/>
-    /// SHPCModStormField.fx
-    /// </summary>
+    /// <summary>风暴场，跟玩家气旋，吹偏敌弹，满计量召唤 <see cref="SHPCStormBoltProj"/>；SHPCModStormField.fx</summary>
     internal sealed class SHPCStormFieldProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -63,9 +59,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         private const float GaugeFillFrames = 140f;
         /// <summary>低于此强度落雷计量不推进</summary>
         private const float GaugeMinIntensity = 0.25f;
-        /// <summary>计量充满但无可视目标时保留的计量比例，待机重试而非整管作废</summary>
+        /// <summary>无目标时保留计量比例，待机重试</summary>
         private const float GaugeKeepOnNoTarget = 0.8f;
-        /// <summary>吹偏风纹粒子每帧全局配额，防弹幕地狱下刷屏</summary>
+        /// <summary>吹偏风纹粒子每帧全局配额</summary>
         private const int MaxWindTrailsPerFrame = 3;
         /// <summary>落雷伤害 = 武器伤害 × 此倍率</summary>
         private const float BoltDamageMul = 2.2f;
@@ -75,12 +71,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
         #endregion
 
-        //风暴配色：暗雨蓝底、风暴主蓝、电光青白
+        //风暴配色，暗雨蓝/主蓝/电青白
         private static readonly Color StormDeep = new(24, 44, 82);
         private static readonly Color StormMain = new(70, 150, 220);
         private static readonly Color StormArc = new(170, 230, 255);
 
-        /// <summary>风暴强度 0~1，各端按同步的开火状态独立推进</summary>
+        /// <summary>风暴强度 0~1，各端按同步开火独立推进</summary>
         private float intensity;
         /// <summary>落雷计量 0~1，充满即劈雷</summary>
         private float boltGauge;
@@ -116,8 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
             float timeScale = TimeGear.TimeScale;
 
-            //充能：任意开火行为（左键光束/激光/右键蓄力）都在喂养风暴
-            //itemAnimation 状态跨端同步，各端强度推进输入一致
+            //任意开火喂养；itemAnimation 跨端同步
             if (owner.ItemAnimationActive) {
                 intensity = MathF.Min(intensity + timeScale / FillFrames, 1f);
                 graceTimer = GraceFrames;
@@ -129,7 +124,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 intensity = MathF.Max(intensity - timeScale / DrainFrames, 0f);
             }
 
-            //升档播报：跨过阈值瞬间给出音效与扩散环，降档静默
+            //升档播报，降档静默
             int newTier = 0;
             for (int i = 0; i < TierThresholds.Length; i++) {
                 if (intensity >= TierThresholds[i]) newTier = i + 1;
@@ -139,7 +134,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             }
             tier = newTier;
 
-            //气旋转速随强度提升
+            //气旋转速随强度
             visualTime += (0.010f + intensity * 0.014f) * timeScale;
 
             if (intensity < 0.02f) {
@@ -149,12 +144,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
             DeflectHostiles(timeScale);
 
-            //落雷计量：强度是唯一燃料，强度越高雷越频繁
+            //落雷计量靠强度
             if (intensity >= GaugeMinIntensity) {
                 boltGauge += intensity * timeScale / GaugeFillFrames;
                 if (boltGauge >= 1f) {
-                    //可视目标检查是确定性的（NPC 位置+tile 输入），各端跑出一致的计量结果；
-                    //随机落点参数只在所有者端 roll，弹幕生成自动同步
+                    //可视目标判定确定性，随机落点仅 owner roll
                     NPC target = FindStrikeTarget(owner);
                     if (target != null) {
                         boltGauge = 0f;
@@ -163,7 +157,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                         }
                     }
                     else {
-                        //场内没有劈得到的敌人：保留大部分计量待机重试，不整管作废
+                        //无目标，保留计量待机
                         boltGauge = GaugeKeepOnNoTarget;
                     }
                 }
@@ -176,7 +170,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
             if (Main.netMode != NetmodeID.Server) {
                 SpawnFieldParticles();
-                //计量临界预兆：边缘电光噼啪，提示落雷将至
+                //计量临界预兆
                 if (boltGauge > 0.85f && Main.rand.NextBool(9)) {
                     SoundEngine.PlaySound(SoundID.Item93 with { Volume = 0.18f, Pitch = 0.7f }, Projectile.Center);
                     Vector2 edgePos = Projectile.Center
@@ -187,14 +181,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             }
         }
 
-        /// <summary>
-        /// 场内敌弹吹偏：只旋转速度方向不改模长，附加轻微径向外推
-        /// 无随机、输入各端一致，所有端（含服务器）同跑保证弹道一致
-        /// </summary>
+        /// <summary>场内敌弹吹偏，只转向不改模长，全端同跑</summary>
         private void DeflectHostiles(float timeScale) {
             float radius = CurrentRadius;
             float radiusSq = radius * radius;
-            //风纹粒子全帧配额：弹幕地狱同屏大量敌弹时不至于刷屏
+            //风纹粒子全帧配额
             int windTrailBudget = MaxWindTrailsPerFrame;
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile hostile = Main.projectile[i];
@@ -205,16 +196,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 if (hostile.velocity.LengthSquared() < 0.01f) continue;
 
                 float dist = MathF.Sqrt(distSq);
-                //场心气流最强、边缘渐弱
+                //场心强边缘弱
                 float falloff = 0.35f + 0.65f * (1f - dist / radius);
                 float turn = MaxTurnRad * intensity * falloff * timeScale;
-                //统一顺时针卷入气旋（与着色器旋转方向一致），速度方向融合径向外推后回归原模长
+                //顺时针卷入+径向外推，回归原模长
                 float speed = hostile.velocity.Length();
                 Vector2 newDir = (hostile.velocity.RotatedBy(turn)
                     + rel / dist * RadialPush * intensity).SafeNormalize(Vector2.UnitX);
                 hostile.velocity = newDir * speed;
 
-                //低频风纹标记：让"弹被吹弯了"肉眼可读
+                //低频风纹标记
                 if (windTrailBudget > 0 && Main.netMode != NetmodeID.Server && Main.rand.NextBool(7)) {
                     windTrailBudget--;
                     PRTLoader.NewParticle<PRT_Spark>(hostile.Center,
@@ -224,14 +215,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             }
         }
 
-        /// <summary>
-        /// 落雷目标：场内最近且与玩家有视线连通的敌人（不隔墙劈、无超界宽容，与文案一致）
-        /// FindClosestNPC 的 ignoreTiles=false 分支即 Collision.CanHit 过滤
-        /// </summary>
+        /// <summary>落雷目标，场内最近+视线连通（ignoreTiles=false）</summary>
         private NPC FindStrikeTarget(Player owner)
             => owner.Center.FindClosestNPC(CurrentRadius, ignoreTiles: false);
 
-        /// <summary>落雷召唤：劈向指定目标，随机视觉参数经 ai 槽同步</summary>
+        /// <summary>落雷召唤，视觉参经 ai 同步</summary>
         private void SummonBolt(Player owner, NPC target) {
             Item held = owner.HeldItem;
             int weaponDmg = held != null && held.type == SHPCOverride.ID
@@ -253,29 +241,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             for (int i = 0; i < 12; i++) {
                 float ang = MathHelper.TwoPi * i / 12f;
                 Vector2 pos = Projectile.Center + ang.ToRotationVector2() * CurrentRadius * 0.6f;
-                //切向速度顺气旋方向
+                //切向顺气旋
                 Vector2 vel = (ang + MathHelper.PiOver2).ToRotationVector2() * Main.rand.NextFloat(3f, 6f);
                 PRTLoader.NewParticle<PRT_Spark>(pos, vel, StormArc,
                     Main.rand.NextFloat(0.6f, 1.1f)).Configure(false, Main.rand.Next(12, 22));
             }
         }
 
-        /// <summary>环流风丝与斜雨：数量随强度增长，速度沿气旋切向</summary>
+        /// <summary>环流风丝与斜雨</summary>
         private void SpawnFieldParticles() {
             if (intensity < 0.15f) return;
             float radius = CurrentRadius;
-            //风丝：环带内切向奔流
+            //风丝切向奔流
             if (Main.rand.NextBool(2)) {
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
                 float r = radius * Main.rand.NextFloat(0.35f, 1f);
                 Vector2 pos = Projectile.Center + ang.ToRotationVector2() * r;
-                //顺时针切向（与吹偏、着色器同向）
+                //顺时针切向
                 Vector2 vel = (ang + MathHelper.PiOver2).ToRotationVector2() * (2f + intensity * 4f + Main.rand.NextFloat(2f));
                 PRTLoader.NewParticle<PRT_Spark>(pos, vel,
                     Color.Lerp(StormMain, StormArc, Main.rand.NextFloat()) * (0.4f + intensity * 0.5f),
                     Main.rand.NextFloat(0.4f, 0.9f)).Configure(false, Main.rand.Next(14, 26));
             }
-            //斜雨：高强度时上半场落下被风吹斜的雨丝
+            //斜雨
             if (intensity > 0.5f && Main.rand.NextBool(3)) {
                 float x = Main.rand.NextFloat(-0.8f, 0.8f);
                 Vector2 pos = Projectile.Center + new Vector2(x * radius, -radius * Main.rand.NextFloat(0.4f, 0.9f));
@@ -287,7 +275,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
         public override void OnKill(int timeLeft) {
             if (Main.netMode == NetmodeID.Server || intensity < 0.2f) return;
-            //风暴散逸：一圈切向风丝飘散，避免领域凭空消失
+            //风暴散逸风丝
             for (int i = 0; i < 14; i++) {
                 float ang = MathHelper.TwoPi * i / 14f;
                 Vector2 pos = Projectile.Center + ang.ToRotationVector2() * CurrentRadius * Main.rand.NextFloat(0.4f, 0.9f);
@@ -304,7 +292,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (shader == null || canvas == null || noise == null) return false;
 
-            //着色器内 dist=0.86 为边界环，世界半径向外留出辉光带
+            //fx dist=0.86 边界环，世界半径外留辉光
             float drawRadius = CurrentRadius / 0.86f;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
@@ -338,7 +326,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             if (intensity < 0.05f) return;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null) return;
-            //风眼微光：随强度呼吸的中心气压核
+            //风眼微光
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float breathe = 0.85f + 0.15f * MathF.Sin(visualTime * 4f);
             spriteBatch.Draw(glow, drawPos, null, StormMain * (0.25f * intensity * breathe), 0f,
@@ -348,10 +336,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
     }
 
-    /// <summary>
-    /// 界内落雷：从领域上空劈向落点的折跳闪电，短暂全屏微亮+雷鸣
-    /// ai0 视觉种子、ai1 天空端水平偏移；SHPCModStormBolt.fx
-    /// </summary>
+    /// <summary>界内落雷，ai0种子 ai1天空偏移；SHPCModStormBolt.fx</summary>
     internal sealed class SHPCStormBoltProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -363,7 +348,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         private const float SkyHeight = 430f;
         private const float HitWidth = 30f;
         private const int PointCount = 16;
-        /// <summary>逐目标递减伤害表，表长即单雷命中数上限；防蠕虫多节段吃满面板堆叠</summary>
+        /// <summary>逐目标递减伤表，防蠕虫吃满</summary>
         private static readonly float[] HitFalloff = [1f, 0.7f, 0.5f, 0.35f, 0.25f];
 
         private static readonly Color BoltCore = new(235, 245, 255);
@@ -375,11 +360,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         private float fadeAlpha;
         /// <summary>全屏微亮强度，首帧置 1 后指数衰减</summary>
         private float skyFlash;
-        /// <summary>实际天空端高度，首帧向上探测顶壁得出；tile 输入各端一致故判定一致</summary>
+        /// <summary>天空端高度，首帧探顶壁，tile 各端一致</summary>
         private float skyLen = SkyHeight;
 
         private float VisualSeed => Projectile.ai[0];
-        /// <summary>天空端水平偏移按高度等比收缩，低洞顶时雷更接近垂直</summary>
+        /// <summary>天空端水平偏移随高度收缩</summary>
         private Vector2 SkyAnchor => Projectile.Center + new Vector2(Projectile.ai[1] * (skyLen / SkyHeight), -skyLen);
         private Vector2 GroundPoint => Projectile.Center;
         private int Age => Lifetime - Projectile.timeLeft;
@@ -409,7 +394,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                     SoundEngine.PlaySound(SoundID.Thunder with { Volume = 0.75f, Pitch = 0.1f }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.5f, Pitch = -0.2f }, Projectile.Center);
                     SpawnImpactFx();
-                    //屏震随本地玩家与落点的距离衰减，远处的雷不撼动全屏
+                    //屏震随距落点衰减
                     float distToLocal = Vector2.Distance(Main.LocalPlayer.Center, Projectile.Center);
                     float shakeFade = MathHelper.Clamp(1f - distToLocal / 1200f, 0f, 1f);
                     if (shakeFade > 0.05f) {
@@ -419,7 +404,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 RebuildBolt();
             }
 
-            //放电期折点高频重掷，残辉期定格
+            //放电折点重掷，残辉定格
             if (Age <= DamageWindow && Age % 3 == 0) {
                 RebuildBolt();
             }
@@ -435,7 +420,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 Lighting.AddLight(lightPos, BoltGlow.ToVector3() * 0.9f * fadeAlpha);
             }
 
-            //放电期沿雷径蹦电火花
+            //放电期沿雷径火花
             if (Age <= DamageWindow && Main.netMode != NetmodeID.Server) {
                 for (int i = 0; i < 2; i++) {
                     Vector2 pos = Vector2.Lerp(SkyAnchor, GroundPoint, Main.rand.NextFloat())
@@ -446,10 +431,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             }
         }
 
-        /// <summary>
-        /// 从落点向上探测顶壁：洞穴内雷从洞顶劈下而非穿透岩层
-        /// 纯 tile 输入无随机，各端结果一致，雷径判定随之一致
-        /// </summary>
+        /// <summary>向上探顶壁，洞穴内从洞顶劈下，tile 各端一致</summary>
         private static float ProbeSkyLength(Vector2 ground) {
             const float MinLen = 64f;
             for (float len = MinLen; len < SkyHeight; len += 16f) {
@@ -465,7 +447,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             return SkyHeight;
         }
 
-        /// <summary>重建折跳雷径：两端锚定、中段法线摆动，落点前小段收束</summary>
+        /// <summary>重建折跳雷径，两端钉死中段摆</summary>
         private void RebuildBolt() {
             boltPoints ??= new Vector2[PointCount];
             Vector2 sky = SkyAnchor;
@@ -475,7 +457,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             float length = Vector2.Distance(sky, ground);
             for (int i = 0; i < PointCount; i++) {
                 float t = i / (float)(PointCount - 1);
-                //sin 包络让两端钉死，落点端 pow 提前收窄形成"劈入地面"的收束感
+                //sin 包络钉两端，落点端 pow 收窄
                 float swing = MathF.Sin(t * MathHelper.Pi) * (1f - MathF.Pow(t, 3f) * 0.5f);
                 float offset = Main.rand.NextFloat(-1f, 1f) * 34f * swing;
                 boltPoints[i] = sky + dir * (length * t) + normal * offset;
@@ -483,7 +465,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
 
         private void SpawnImpactFx() {
-            //落点冲击：扩散环+爆散电火花+方形碎片
+            //落点冲击
             PRTLoader.NewParticle<PRT_StarPulseRing>(GroundPoint, Vector2.Zero,
                 BoltGlow with { A = 0 }, 0.05f).Configure(0.05f, 0.5f, 18);
             PRTLoader.NewParticle<PRT_StarPulseRing>(GroundPoint, Vector2.Zero,
@@ -499,25 +481,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                     Main.rand.NextVector2CircularEdge(4.5f, 4.5f),
                     BoltCore, Main.rand.NextFloat(0.7f, 1.5f)).Configure(BoltGlow, Main.rand.Next(14, 26));
             }
-            //天空端云间闪光
+            //天空端闪光
             PRTLoader.NewParticle<PRT_StarPulseRing>(SkyAnchor, Vector2.Zero,
                 BoltGlow with { A = 0 }, 0.05f).Configure(0.05f, 0.35f, 12);
         }
 
         public override bool? CanDamage() => Age <= DamageWindow;
 
-        /// <summary>单雷命中数封顶，超出递减表长度的目标不再结算</summary>
+        /// <summary>单雷命中数封顶</summary>
         public override bool? CanHitNPC(NPC target) => Projectile.numHits >= HitFalloff.Length ? false : null;
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            //第 N 个目标按递减表折损，蠕虫横穿雷线时总伤封顶约 2.8 倍单发
+            //递减表折损，蠕虫总伤约封 2.8×
             int idx = Math.Min(Projectile.numHits, HitFalloff.Length - 1);
             modifiers.FinalDamage *= HitFalloff[idx];
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             float _ = 0f;
-            //雷径线段判定，落点向下多延 30px 覆盖贴地目标
+            //雷径线段判定，落点下延 30px
             return Collision.CheckAABBvLineCollision(
                 new Vector2(targetHitbox.X, targetHitbox.Y),
                 new Vector2(targetHitbox.Width, targetHitbox.Height),
@@ -535,7 +517,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
 
         private float WidthFunction(float progress) {
-            //主干上细下粗，落点端收尖
+            //主干上细下粗
             float taper = MathF.Sin(MathHelper.Clamp(progress * MathHelper.Pi, 0f, MathHelper.Pi));
             return (12f + taper * 16f) * MathHelper.Clamp(fadeAlpha + 0.15f, 0f, 1f);
         }
@@ -552,7 +534,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             trail ??= new Trail(boltPoints, WidthFunction, ColorFunction);
             trail.TrailPositions = boltPoints;
 
-            //下劈波前：前 4 帧从天空冲到地面；×1.1 让波前冲过落点，尾段完全点亮
+            //下劈波前 4 帧，×1.1 冲过落点
             float strikeProgress = MathHelper.Clamp((Age + 1) / 4f, 0f, 1f) * 1.1f;
 
             shader.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
@@ -576,15 +558,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             Texture2D white = VaultAsset.placeholder2?.Value;
 
-            //短暂全屏微亮：以落点为中心的超大低透明白幕，模拟雷光照亮天地
-            //12000px 保证 4K 屏最远缩放下仍满幅覆盖
+            //全屏微亮白幕，12000px 盖 4K 远缩
             if (white != null && skyFlash > 0.02f) {
                 Vector2 flashPos = GroundPoint - Main.screenPosition;
                 spriteBatch.Draw(white, flashPos, null, BoltCore * (skyFlash * 0.07f), 0f,
                     white.Size() * 0.5f, new Vector2(12000f, 12000f), SpriteEffects.None, 0f);
             }
             if (glow == null) return;
-            //落点电极光球与天空端辉光
+            //落点/天空端电极辉光
             Vector2 groundScreen = GroundPoint - Main.screenPosition;
             Vector2 skyScreen = SkyAnchor - Main.screenPosition;
             Vector2 origin = glow.Size() * 0.5f;

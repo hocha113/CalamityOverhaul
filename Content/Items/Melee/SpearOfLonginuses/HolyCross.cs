@@ -114,11 +114,11 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
                     , glowTex.Size() / 2f, glowScale, SpriteEffects.None, 0);
             }
 
-            //十字架外框+内填：先空色，再按 fill 自下而上盖热色
+            //十字架外框+内填
             DrawCross(pixel, drawPos, dir, appear * pulse, emptyFillColor, frameColor, fillRatio: 0f, hotFillColor);
             DrawCross(pixel, drawPos, dir, appear * pulse, hotFillColor, frameColor, fillRatio: fill, hotFillColor);
 
-            //顶部冠状光点：每一层立场显示一个光珠环绕十字架顶端
+            //顶部冠状光点
             DrawChargeOrbs(pixel, drawPos, dir, appear, longinus.ChargeGrade);
 
             return false;
@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             int hLen = (int)Math.Round(HorizontalLength * scale);
             int hThk = (int)Math.Max(2, Math.Round(HorizontalThickness * scale));
 
-            //十字架的整体几何：竖条以(0,0)为中心，横条偏上 1/4 处
+            //十字架几何
             int vTopY = -vLen / 2;
             int hY = -vLen / 6 - hThk / 2;//横条略偏上
 

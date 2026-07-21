@@ -29,23 +29,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         public int AttackPhaseIndex { get; set; }
         /// <summary>狂暴阶段固定出招序列索引</summary>
         public int RageAttackIndex { get; set; }
-        /// <summary>死亡演出已完；HeadPrimeAI.CheckDead 据此放行真死，此前锁血</summary>
+        /// <summary>死亡演出已完，CheckDead据此放行</summary>
         public bool DeathPerformanceFinished { get; set; }
-        /// <summary>由金币枪狂怒进入脱战时为 true，离场时播放嘲讽台词</summary>
+        /// <summary>金币枪狂怒后脱战</summary>
         public bool DespawnFromCoinFury { get; set; }
         #endregion
 
         #region 蓄力特效数据
         public float ChargeProgress { get; set; }
         public bool IsCharging { get; set; }
-        /// <summary>蓄力类型: 0=无 1=冲撞蓄力 2=过载转阶段 3=环形爆发充能</summary>
+        /// <summary>蓄力类型 0无/1冲撞/2过载/3环形</summary>
         public int ChargeType { get; set; }
         /// <summary>冲撞方向，供预警与视觉</summary>
         public Vector2 DashDirection { get; set; }
         #endregion
 
         #region 动画数据
-        /// <summary>帧组: 0=常态(0-3) 1=冲撞(4-7) 2=狂暴(8-11)</summary>
+        /// <summary>帧组 0常态/1冲撞/2狂暴</summary>
         public int FrameMode { get; set; }
         #endregion
 
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         public PrimeDeathPhase DeathPhase { get; set; }
         #endregion
 
-        /// <summary>编队旋转时钟（头部每帧自增，供机械臂环绕编队取角）</summary>
+        /// <summary>编队旋转时钟</summary>
         public ref float OrbitClock => ref Owner.ai[PrimeAiSlots.OverrideOrbitClock];
 
         public void ResetChargeState() {

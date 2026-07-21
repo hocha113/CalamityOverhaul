@@ -6,9 +6,10 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.Arms
 {
-    //电锯手设计准则：
-    //1. 机体不整体自旋——旋转仅属锯片（ctx.SpinSpeed 驱动帧间隔+音效）    //2. 转向走 ServoRotate 最短弧步进    //3. 出招节拍：追踪 → 锁定拍 → 刚性突进
-    /// <summary>电锯待机：炮塔缓跟踪，充能后连冲→环绕→钻击轮换</summary>
+    //电锯准则
+    //旋转仅锯片；ServoRotate最短弧
+    //追踪→锁定→突进
+    /// <summary>电锯待机</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.SawIdle, typeof(PrimeArmStateContext))]
     internal class SawIdleState : PrimeArmStateBase
     {
@@ -23,10 +24,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             Vector2 idleAnchor = ctx.Head.Center + new Vector2(-125f * ctx.Side, 290f);
             SpringMove(ctx, idleAnchor, 0.65f, stiffness: 0.16f, damping: 0.84f, maxSpeed: 30f);
 
-            //炮塔缓速锁敌，锯头咬向玩家
+            //缓速锁敌
             ServoAimAt(npc, ctx.Target.Center, 0.035f);
 
-            //充能（失去同伴后加速）
+            //充能
             float chargeRate = ctx.MasterMode ? 2f : 1f;
             if (ctx.Death) {
                 chargeRate *= PrimeDirector.DeathChargeMultiplier;
@@ -57,14 +58,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>电锯狂转蓄势：侧翼逼近，尾段锁定拍后突进</summary>
+    /// <summary>电锯蓄势</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.SawSpinUp, typeof(PrimeArmStateContext))]
     internal class SawSpinUpState : PrimeArmStateBase
     {
         public override string StateName => "SawSpinUp";
         public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.SawSpinUp;
 
-        /// <summary>突进前的锁定定格帧数</summary>
+        /// <summary>锁定定格帧</summary>
         internal static int LockFrames => 8;
 
         private bool playedSpinSound;
@@ -85,13 +86,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             bool locking = Timer >= duration - LockFrames;
 
             if (!locking) {
-                //逼近至玩家近侧，锯头伺服追踪
+                //逼近近侧
                 Vector2 dirToPlayer = npc.Center.DirectionTo(ctx.Target.Center);
                 SpringMove(ctx, ctx.Target.Center - dirToPlayer * 200f, 1.1f, stiffness: 0.16f, damping: 0.84f, maxSpeed: 30f);
                 ServoAimAt(npc, ctx.Target.Center, 0.09f);
             }
             else {
-                //锁定拍：急停+朝向冻结，读招窗口
+                //锁定拍
                 Vector2 vel = ctx.SpringVelocity * 0.78f;
                 ctx.SpringVelocity = vel;
                 npc.velocity = vel;
@@ -118,14 +119,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>电锯冲刺连段：硬咬合突进全程锁朝向，同伴越少段数越多</summary>
+    /// <summary>电锯冲刺连段</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.SawDash, typeof(PrimeArmStateContext))]
     internal class SawDashState : PrimeArmStateBase
     {
         public override string StateName => "SawDash";
         public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.SawDash;
 
-        //0=突进 1=回正再瞄
+        //0突进 1回正
         private int subPhase;
         private int phaseTimer;
 
@@ -172,7 +173,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             Vector2 velocity = npc.Center.DirectionTo(ctx.Target.Center) * dashSpeed;
             ctx.SpringVelocity = velocity;
             npc.velocity = velocity;
-            //突进瞬间硬咬合运动方向
+            //硬咬合方向
             npc.rotation = velocity.ToRotation() - MathHelper.PiOver2;
             if (!VaultUtils.isClient) {
                 npc.netUpdate = true;
@@ -187,7 +188,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             npc.damage = npc.defDamage;
             ctx.TargetSpinSpeed = 1.4f;
             npc.velocity = ctx.SpringVelocity;
-            //突进全程朝向锁死：刚性直线锯切，绝不空中转体
+            //朝向锁死
 
             //锯切尾迹
             if (!VaultUtils.isServer && phaseTimer % 2 == 0) {
@@ -211,7 +212,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             npc.damage = 0;
             ctx.TargetSpinSpeed = 1.0f;
 
-            //短促回正：急刹 + 伺服再锁定
+            //回正再瞄
             Vector2 vel = ctx.SpringVelocity * 0.85f;
             ctx.SpringVelocity = vel;
             npc.velocity = vel;
@@ -228,7 +229,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>电锯环绕：绕玩家轴心收紧，锯头伺服咬圆心</summary>
+    /// <summary>电锯环绕</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.SawOrbit, typeof(PrimeArmStateContext))]
     internal class SawOrbitState : PrimeArmStateBase
     {
@@ -255,7 +256,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             Vector2 orbitTarget = ctx.Target.Center + orbitAngle.ToRotationVector2() * orbitRadius;
             SpringMove(ctx, orbitTarget, 1.4f, stiffness: 0.16f, damping: 0.84f, maxSpeed: 30f);
 
-            //环绕时锯头始终咬住圆心的玩家
+            //咬圆心
             ServoAimAt(npc, ctx.Target.Center, 0.18f);
 
             if (!VaultUtils.isServer) {
@@ -279,7 +280,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>电锯钻击：预判追击落点，受击提前收势</summary>
+    /// <summary>电锯钻击</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.SawDrill, typeof(PrimeArmStateContext))]
     internal class SawDrillState : PrimeArmStateBase
     {
@@ -310,7 +311,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             ctx.SpringVelocity = velocity;
             npc.velocity = velocity;
 
-            //锯头伺服对齐前进方向
+            //对齐前进向
             if (velocity.LengthSquared() > 1f) {
                 ServoRotate(npc, velocity.ToRotation() - MathHelper.PiOver2, 0.25f);
             }
@@ -325,7 +326,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 }
             }
 
-            //受击加速收势，玩家可打断
+            //受击收势
             drillTimer += npc.justHit ? 4f : 1f;
             Timer++;
 
@@ -336,7 +337,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>电锯收势归位：锯片降速回头部附近</summary>
+    /// <summary>电锯收势</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.SawRecovery, typeof(PrimeArmStateContext))]
     internal class SawRecoveryState : PrimeArmStateBase
     {
@@ -351,7 +352,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             AnchoredFollow(ctx, 20f, -20f, -20f, 20f);
             ctx.SpringVelocity = npc.velocity;
 
-            //伺服回正到自然垂悬
+            //伺服回正
             ServoRotate(npc, 0f, 0.06f);
 
             Timer++;
@@ -362,7 +363,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>回旋掷锯：锯片飞出-折返</summary>
+    /// <summary>回旋掷锯</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.SawBoomerang, typeof(PrimeArmStateContext))]
     internal class SawBoomerangState : PrimeArmStateBase
     {
@@ -402,7 +403,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>贴地锯切冲锋：地面火花线 telegraph</summary>
+    /// <summary>贴地锯切</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.SawGroundCut, typeof(PrimeArmStateContext))]
     internal class SawGroundCutState : PrimeArmStateBase
     {

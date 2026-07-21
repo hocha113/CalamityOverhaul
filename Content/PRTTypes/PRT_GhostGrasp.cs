@@ -10,9 +10,8 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.PRTTypes
 {
     /// <summary>
-    /// 赋力「攥」的幽手（GHOSTHAND-PLAN §5 表 #2，唯一新建 PRT）：
-    /// 30t 生命=18t 汇聚淡入（预备拍）+ 6t 急合攥握（打击拍，落 Grab 音与余烬迸散）+ 6t 消散。
-    /// 绘制复用 <see cref="GhostHandDrawHelper"/> 的指节矩形装配，零新纹理
+    /// 赋力「攥」幽手，30t=18汇聚+6攥握+6消散
+    /// 复用 <see cref="GhostHandDrawHelper"/>
     /// </summary>
     internal class PRT_GhostGrasp : BasePRT
     {
@@ -49,7 +48,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         }
 
         public override void AI() {
-            //汇聚期贴住目标身后(目标可能仍在动),攥握帧起冻结在攥点
+            //汇聚期跟目标身后，攥握后冻点
             if (Time < ConvergeTicks && targetWho >= 0 && targetWho < Main.maxNPCs) {
                 NPC target = Main.npc[targetWho];
                 if (target.active) {
@@ -59,7 +58,6 @@ namespace CalamityOverhaul.Content.PRTTypes
             if (!snapped && Time >= ConvergeTicks) {
                 snapped = true;
                 SoundEngine.PlaySound(SoundID.Grab with { Pitch = -0.4f, Volume = 0.8f, MaxInstances = 3 }, Position);
-                //目标位余烬迸散
                 Vector2 burst = targetWho >= 0 && targetWho < Main.maxNPCs && Main.npc[targetWho].active
                     ? Main.npc[targetWho].Center : Position;
                 for (int i = 0; i < 4; i++) {

@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.TrialQuests
 {
-    /// <summary>鬼切试炼线：22 段试炼注册 QuestManagerUI；文案为真夜对持刀者的口吻</summary>
+    /// <summary>鬼切试炼线,22 段注册 QuestManagerUI</summary>
     internal class OnikiriTrialQuestLine : LegendTrialQuestLineBase, ILocalizedModType
     {
         public string LocalizationCategory => "Legend";
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.TrialQuests
             EventActiveFormat = this.GetLocalization(nameof(EventActiveFormat), () => "{0}: 进行中");
 
             TrialTitles = new LocalizedText[TRIAL_COUNT];
-            //标题偏真夜随口起的外号；摘要是她对持刀者说的话
+            //标题外号,摘要对持刀者口吻
             string[] defaultTitles = [
                 "不闭眼的",       //0 克苏鲁之眼
                 "腐土里的两样",   //1 世界吞噬者/克苏鲁之脑

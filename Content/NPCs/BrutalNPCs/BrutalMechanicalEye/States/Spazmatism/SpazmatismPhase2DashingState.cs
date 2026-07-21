@@ -6,7 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>二阶段 dash 中：更快弧线追踪+更猛甩头</summary>
+    /// <summary>二阶段 dash 中，更快弧线追踪+更猛甩头</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismPhase2Dashing, typeof(TwinsStateContext))]
     internal class SpazmatismPhase2DashingState : TwinsStateBase
     {
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             Timer++;
 
             if (Timer <= FullSpeedTime) {
-                //全速段:微弧追踪
+                //全速微弧
                 float speed = npc.velocity.Length();
                 TwinsMotion.CurveChase(npc, player.Center, speed, 0.016f);
                 FaceVelocity(npc);
@@ -75,7 +75,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 currentDashCount++;
 
                 if (currentDashCount >= maxDashCount) {
-                    //独眼模式下切换到狂暴状态
                     if (context.IsSoloRageMode) {
                         return new SpazmatismSoloRageState();
                     }

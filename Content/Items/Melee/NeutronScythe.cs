@@ -17,9 +17,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee
 {
     /// <summary>
-    /// 黑洞使者 — 战士向的中子飞镰
-    /// 左键：抛出一柄高速自旋的飞镰，沿途留下翘曲点并向敌人射出伽马射线
-    /// 右键：黑洞爆发，向四周同时投掷十三柄飞镰
+    /// 黑洞使者，战士向中子飞镰<br/>
+    /// 左键抛飞镰+翘曲点+伽马射线；右键黑洞爆发十三柄
     /// </summary>
     internal class NeutronScythe : ModItem
     {
@@ -83,7 +82,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return false;
             }
 
-            //右键 — 黑洞爆发：替换原潜伏攻击，向四周丢出一整圈飞镰
+            //右键黑洞爆发，整圈飞镰
             SoundEngine.PlaySound(CWRSound.BlackHole with { Pitch = -0.1f, Volume = 0.9f }, player.Center);
             if (CWRServerConfig.Instance.ScreenVibration) {
                 Vector2 shakeDir = velocity.SafeNormalize(Vector2.UnitX);
@@ -104,15 +103,14 @@ namespace CalamityOverhaul.Content.Items.Melee
     }
 
     /// <summary>
-    /// 中子镰飞行体 — 旋飞回旋型近战弹幕，替换原 <see cref="BaseThrowable"/> 设计
-    /// 阶段：飞出 → 末端制动追踪 → 高速回收
+    /// 中子镰飞行体，旋飞回旋；阶段飞出→末端追踪→高速回收
     /// </summary>
     internal class NeutronScytheHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item + "Melee/NeutronScythe";
         public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<NeutronScythe>()).DisplayName;
 
-        //ai[2] 由 Item.Shoot 写入：0 = 普通飞镰，1 = 黑洞爆发飞镰
+        //ai[2] 由 Shoot 写入，0普通 / 1黑洞爆发
         private bool IsBurst => Projectile.ai[2] > 0.5f;
 
         private const int OutboundTime = 80;
@@ -166,7 +164,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            //高速自旋 — 镰刀本体随飞行速度滚转，方向跟随抛出方向
+            //高速自旋，方向随抛出
             float spinSign = Projectile.velocity.X >= 0 ? 1f : -1f;
             Projectile.rotation += Projectile.velocity.Length() * 0.035f * spinSign;
             VaultUtils.ClockFrame(ref Projectile.frame, 3, 12);
@@ -174,7 +172,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             float distToOwner = Projectile.Distance(Owner.Center);
 
             if (!returning) {
-                //阶段 1：抛出 — 缓慢减速，末段做轻微追踪
+                //阶段1 抛出，缓减速末段轻追踪
                 Projectile.ai[0]++;
                 Projectile.velocity *= 0.985f;
 
@@ -190,7 +188,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
             else {
-                //阶段 2：高速回收 — 加快反馈，让玩家立即能再次抛出
+                //阶段2 高速回收
                 if (!playedReturnSound) {
                     SoundEngine.PlaySound(SoundID.Item7 with {
                         Pitch = IsBurst ? -0.3f : 0.15f,
@@ -277,7 +275,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             SpriteEffects effects = Projectile.velocity.X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
             float drawRot = Projectile.rotation + (MathHelper.PiOver4 + 0.35f) * (Projectile.velocity.X > 0 ? 1 : -1);
 
-            //余像拖尾 — 强调高速旋飞
+            //余像拖尾
             for (int k = 0; k < Projectile.oldPos.Length; k++) {
                 if (Projectile.oldPos[k] == Vector2.Zero) {
                     continue;
@@ -298,7 +296,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     }
 
     /// <summary>
-    /// 中子镰的翘曲爆破点 — 替代原 <c>NeutronExplosionRogue</c>
+    /// 中子镰翘曲爆破点，替代原 <c>NeutronExplosionRogue</c>
     /// </summary>
     internal class NeutronScytheExplosion : ModProjectile, IWarpDrawable
     {

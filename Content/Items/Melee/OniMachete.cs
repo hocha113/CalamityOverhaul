@@ -17,30 +17,28 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    /// <summary>鬼砍刀专属 shader 资源（域内加载器，不动 EffectLoader）</summary>
+    /// <summary>鬼砍刀 shader（域内加载，不动 EffectLoader）</summary>
     internal class OniMacheteAssets
     {
         /// <summary>挥砍刀光弧带</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect OniMacheteSlash { get; private set; }
-        /// <summary>鬼手硫火火鞘（缠臂燃烧的附着式火焰）</summary>
+        /// <summary>鬼手硫火火鞘</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect OniMacheteFlame { get; private set; }
         /// <summary>熔金裂纹（地面 decal / NPC 覆盖双 technique）</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect OniMacheteCrack { get; private set; }
-        /// <summary>鬼手之火彗尾条带</summary>
+        /// <summary>鬼手之火彗尾</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect OniMacheteComet { get; private set; }
-        /// <summary>鬼手扼颈全屏暗角</summary>
+        /// <summary>扼颈全屏暗角</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect OniMacheteGrip { get; private set; }
     }
 
     /// <summary>
-    /// 鬼砍刀：刀里掺金、外缠硫火，锁着六只不安分的鬼手。<br/>
-    /// 挥砍与命中积累"硫火压制"；鬼手的每次出击消耗压制。压制耗尽时鬼手躁动——
-    /// 攻击更凶，但会周期性回头掐向持刀者的脖子；重新挥刀命中即可再度压服它们
+    /// 鬼砍刀。挥砍/命中积硫火压制，鬼手出击消耗；耗尽躁动（更凶、会扼颈），再挥命中压服
     /// </summary>
     [VaultLoaden(CWRConstant.Item_Melee)]
     internal class OniMachete : ModItem
@@ -62,7 +60,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.width = Item.height = 45;
             Item.damage = 2666;
             Item.DamageType = DamageClass.Generic;
-            Item.useTime = Item.useAnimation = 20; //真实节奏由 BladeActive 把关（普通刀 22 帧/重斩 30 帧）
+            Item.useTime = Item.useAnimation = 20;//真实节奏由 BladeActive 把关（普通 22/重斩 30 帧）
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
             Item.noUseGraphic = true;
@@ -97,7 +95,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool CanUseItem(Player player) {
-            //收势结束进入余光期（只画刀光残体、不控角色）的旧挥砍不阻挡下一刀
+            //余光期旧挥不挡下一刀（只画刀光、不控角色）
             int type = ModContent.ProjectileType<OniMacheteHeld>();
             foreach (Projectile proj in Main.ActiveProjectiles) {
                 if (proj.owner == player.whoAmI && proj.type == type
@@ -118,7 +116,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             return false;
         }
 
-        /// <summary>削甲：掺金的刀身连防御一起熔开（原机制保留，挪到弹幕管线统一调用）</summary>
+        /// <summary>削甲（弹幕管线统一调用）</summary>
         internal static void ApplyGoldRend(NPC target, ref NPC.HitModifiers modifiers) {
             target.defense = Math.Max(0, target.defense - 10);
             if (modifiers.SuperArmor || target.defense > 999) {
@@ -131,7 +129,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             => ApplyGoldRend(target, ref modifiers);
 
         public override void HoldItem(Player player) {
-            //owner 端生成守卫：只有持有者本人的客户端补手，杜绝服务器与旁观端重复生成
+            //只在owner端补手
             if (player.whoAmI != Main.myPlayer || player.dead) {
                 return;
             }
@@ -141,7 +139,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            //按缺失的编队位补手，每帧至多一只（六手错帧苏醒，读作逐一挣脱封印）
+            //按缺失编队位补，每帧至多一只
             Span<bool> taken = stackalloc bool[OniHandMinion.HandCount];
             foreach (Projectile proj in Main.ActiveProjectiles) {
                 if (proj.owner == player.whoAmI && proj.type == handType) {
@@ -163,27 +161,24 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 鬼砍刀专属玩家状态：硫火压制值 / 躁动态 / 连击计数 / 扼颈暗角包络。<br/>
-    /// 全部实例数据在 ModPlayer 上（每玩家一份），不落 static
-    /// </summary>
+    /// <summary>鬼砍刀玩家态，硫火压制 / 躁动 / 连击 / 扼颈暗角（实例数据，不落 static）</summary>
     internal class OniMachetePlayer : ModPlayer
     {
         public const float SuppressionMax = 100f;
-        /// <summary>躁动 → 忠仆的回归阈值（迟滞，防临界抖动）</summary>
+        /// <summary>躁动→忠仆回归阈值（迟滞）</summary>
         public const float RecoverThreshold = 25f;
-        /// <summary>压制不足警告线（臂上火鞘开始变薄断续）</summary>
+        /// <summary>压制不足警告线（火鞘变薄断续）</summary>
         public const float LowLine = 30f;
-        //鬼手在场时的被动流失（约 3.6/秒），逼玩家保持挥砍节奏
+        //鬼手在场被动流失约 3.6/秒
         private const float PassiveDrain = 0.06f;
 
-        /// <summary>硫火压制值 0..100，挥砍/命中积累，鬼手出击消耗</summary>
+        /// <summary>硫火压制 0..100，挥砍/命中积、出击耗</summary>
         public float Suppression = SuppressionMax;
-        /// <summary>压制耗尽后的躁动态：手更凶且会回头掐人</summary>
+        /// <summary>压制耗尽后的躁动</summary>
         public bool Restless;
-        /// <summary>扼颈攻击冷却（帧），躁动期由发起的手抢占重置</summary>
+        /// <summary>扼颈冷却（帧）</summary>
         public int GripCooldown;
-        /// <summary>扼颈暗角包络 0..1（本地视觉，掐颈的手逐帧推高）</summary>
+        /// <summary>扼颈暗角包络 0..1（本地视觉）</summary>
         public float GripVignette;
 
         private int comboIndex;
@@ -209,7 +204,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public void AddSuppression(float amount)
             => Suppression = MathHelper.Clamp(Suppression + amount, 0f, SuppressionMax);
 
-        /// <summary>鬼手出击消耗；躁动期它们不再听候硫火，白吃不误</summary>
+        /// <summary>鬼手出击消耗（躁动期不扣）</summary>
         public void ConsumeSuppression(float amount) {
             if (!Restless) {
                 Suppression = Math.Max(0f, Suppression - amount);
@@ -245,7 +240,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 if (!Restless && Suppression < LowLine && !lowWarned) {
                     lowWarned = true;
                     if (Player.whoAmI == Main.myPlayer) {
-                        //硫火转弱的噼啪衰声：躁动前的可读预警
+                        //压制走低预警音
                         SoundEngine.PlaySound(SoundID.LiquidsWaterLava with { Volume = 0.8f, Pitch = -0.4f }, Player.Center);
                     }
                 }
@@ -254,7 +249,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
             else {
-                //收刀或手散尽：硫磺火自然复燃
+                //收刀或手散尽，压制回升
                 Suppression = Math.Min(SuppressionMax, Suppression + 0.5f);
                 if (Restless && Suppression >= RecoverThreshold) {
                     Restless = false;
@@ -264,7 +259,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         private void EnterRestless() {
             Restless = true;
-            //首次躁动给一段缓冲，掐颈不会即刻扑脸
+            //首次躁动缓冲，扼颈不即刻扑脸
             GripCooldown = Math.Max(GripCooldown, 150);
             if (Player.whoAmI == Main.myPlayer) {
                 SoundEngine.PlaySound(SoundID.NPCDeath52 with { Volume = 0.7f, Pitch = -0.45f }, Player.Center);
@@ -274,7 +269,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>鬼手扼颈：被掐住脖子时行动迟滞（可读、可规避，不掉伤害不禁跳）</summary>
+    /// <summary>扼颈，移速迟滞，不掉伤不禁跳</summary>
     internal class OniNeckGripDebuff : ModBuff
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;
@@ -289,9 +284,9 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetStaticDefaults() {
             Main.debuff[Type] = true;
             Main.buffNoSave[Type] = true;
-            //扼颈期间逐帧刷新短时长，不显示倒计时防图标闪烁
+            //逐帧刷新短时长，不显示倒计时
             Main.buffNoTimeDisplay[Type] = true;
-            //加载期主动触碰，抢在 tML 惰性注册之前把中文默认值落进键
+            //加载期触碰，抢在 tML 惰性注册前落默认值
             _ = DisplayName;
             _ = Description;
         }
@@ -302,13 +297,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 鬼砍刀刀光条带：数据驱动的确定性时间轴（定义/几何动画/双层 quad 提交），
-    /// 架构镜像鬼切传奇 CrimsonSlashRenderer 的思想，调色换硫磺橙红+熔金，shader 独立
-    /// </summary>
+    /// <summary>刀光条带时间轴（Def / 几何 / 双层 quad），调色硫磺橙红+熔金</summary>
     internal static class OniSlashStrip
     {
-        /// <summary>子刀光定义（出生时冻结，确定性数据）</summary>
+        /// <summary>子刀光定义（出生冻结）</summary>
         public struct Def
         {
             public int Life;          //总寿命（帧）
@@ -318,13 +310,13 @@ namespace CalamityOverhaul.Content.Items.Melee
             public float Span;        //弧跨度（弧度，<2π）
             public float Thick;       //shader 厚度
             public float HalfX;       //quad 半尺寸
-            public float HalfY;       //<HalfX 即伪3D透视压扁
+            public float HalfY;       //<HalfX 伪3D压扁
             public float Flip;        //±1 挥动镜像
             public float Opacity;
             public float FrontGlow;
             public float OffsetAlongAim;
             public float Seed;
-            public float TailErode;   //起笔端定向蒸发上限
+            public float TailErode;   //起笔端蒸发上限
             public float FlashPower;  //全形白闪强度
             public float GoldVein;    //熔金脉络权重（重斩加强）
         }
@@ -348,21 +340,21 @@ namespace CalamityOverhaul.Content.Items.Melee
         public static float Opacity(in Def d, int lt)
             => d.Opacity * (1f - MathHelper.Clamp((lt - (d.Life - 6)) / 6f, 0f, 1f));
 
-        /// <summary>出生爆发缩放：62% 起步 easeOutBack 过冲回落，随后缓慢外扩</summary>
+        /// <summary>出生爆发缩放，62% 起步 easeOutBack 过冲后外扩</summary>
         public static float BirthScale(in Def d, int lt, int sweepFrames) {
             float burstT = MathHelper.Clamp(lt / (sweepFrames + 2f), 0f, 1f);
             float lifeT = MathHelper.Clamp(lt / (float)d.Life, 0f, 1f);
             return MathHelper.Lerp(0.62f, 1f, EaseOutBack(burstT)) + 0.06f * lifeT;
         }
 
-        /// <summary>全形白闪：完全张开瞬间过曝 1~2 帧速落</summary>
+        /// <summary>全形白闪，张开瞬间过曝 1~2 帧速落</summary>
         public static float Flash(in Def d, int lt, int sweepFrames) {
             float ft = lt - sweepFrames;
             float flash = ft < 0f ? 0f : ft <= 1f ? 1f : MathF.Pow(0.52f, ft - 1f);
             return flash < 0.02f ? 0f : flash * d.FlashPower;
         }
 
-        /// <summary>刀光带中线上一点（静态几何，供判定与粒子发射）：uc=0..1 沿刃</summary>
+        /// <summary>刀光中线上一点，uc=0..1 沿刃</summary>
         public static Vector2 PointAt(in Def d, Vector2 center, float uc) {
             Vector2 ax = d.Rot.ToRotationVector2();
             Vector2 ay = ax.RotatedBy(MathHelper.PiOver2);
@@ -373,7 +365,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             return center + ax * MathF.Cos(phi) * rFrac * d.HalfX + ay * MathF.Sin(phi) * rFrac * d.HalfY;
         }
 
-        /// <summary>设备状态 + 帧级公共 uniform；返回 false 表示资产未就绪</summary>
+        /// <summary>设备态 + 帧级公共 uniform，false=资产未就绪</summary>
         public static bool BeginDraw(GraphicsDevice device, out Effect fx
             , out BlendState prevBlend, out RasterizerState prevRaster, out DepthStencilState prevDepth) {
             fx = OniMacheteAssets.OniMacheteSlash;
@@ -402,7 +394,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             device.DepthStencilState = prevDepth;
         }
 
-        /// <summary>双层异步：主体色带 → 白金核心薄条（贴锋利侧、无脉络）</summary>
+        /// <summary>双层，主体色带→白金核心薄条</summary>
         public static void DrawTwoLayers(GraphicsDevice device, Effect fx, in Def d
             , Vector2 center, int lt, int sweepFrames, float sweep) {
             DrawLayer(device, fx, in d, center, lt, sweepFrames, sweep
@@ -423,10 +415,10 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             float scale = BirthScale(in d, lt, sweepFrames);
-            //惯性收势：扫掠结束后沿挥动方向继续减速旋转
+            //惯性收势
             float followT = MathHelper.Clamp((lt - sweepFrames) / 13f, 0f, 1f);
             float rotOff = d.Flip * 0.12f * (1f - (1f - followT) * (1f - followT));
-            //厚度呼吸：薄入 → 冲击帧最厚 → 消散期变薄
+            //厚度呼吸，薄入→冲击最厚→消散变薄
             float lifeT = MathHelper.Clamp(lt / (float)d.Life, 0f, 1f);
             float thickIn = VaultUtils.EaseOutCubic(MathHelper.Clamp(lt / (sweepFrames + 2f), 0f, 1f));
             float thickBreath = MathHelper.Lerp(0.70f, 1.10f, thickIn)
@@ -465,11 +457,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     }
 
     /// <summary>
-    /// 鬼砍刀手持挥砍（每挥一刀一发，连段编排镜像 WeaverGrievancesHeld）：<br/>
-    /// 三段连击 = 纵劈 → 反撩 → 金崩重斩；前摇 ≥40% 反拉蓄势（末端 pow 迟滞后吸），
-    /// 打击段 poly(9/12) 陡峭 ease-out 一拍完成，收势平滑过冲回稳。<br/>
-    /// 刀光为数据驱动 shader 弧带，扫掠进度与刀身挥动逐帧锁死；挥砍与命中喂养硫火压制。<br/>
-    /// ai[0]=拍位 0..2  ai[1]=挥动方向 ±1
+    /// 鬼砍刀手持（每挥一发）。三段=纵劈→反撩→重斩；前摇≥40% 反拉+pow 迟滞后吸，打击 poly(9/12) ease-out。<br/>
+    /// 刀光扫掠锁刀身；挥砍/命中喂压制。ai[0]=拍位 0..2，ai[1]=挥向 ±1
     /// </summary>
     internal class OniMacheteHeld : BaseHeldProj, IPrimitiveDrawable
     {
@@ -485,16 +474,16 @@ namespace CalamityOverhaul.Content.Items.Melee
         private int Beat => (int)BeatAi;
         private bool IsFinisher => Beat >= BeatCount - 1;
 
-        //==== 节拍时长（逻辑帧，受攻速缩放；前摇仍占 ~40% 保可读，但整体压紧求快）====
+        //==== 节拍时长（逻辑帧，受攻速缩放；前摇仍占 ~40%）====
         private float WindupTime => IsFinisher ? 12f : 9f;
-        /// <summary>重斩独有：蓄势顶点的滞帧（爆发前的静止）</summary>
+        /// <summary>重斩蓄势顶点滞帧</summary>
         private float HoldTime => IsFinisher ? 3f : 0f;
         private float StrikeTime => 5f;
         private float RecoverTime => IsFinisher ? 10f : 8f;
         private float TotalTime => WindupTime + HoldTime + StrikeTime + RecoverTime;
         private float SwingArc => IsFinisher ? 4.6f : 3.4f;
         private float BladeReach => (IsFinisher ? 196f : 175f) * Projectile.scale;
-        /// <summary>蓄势收束硬切点：之后停喷收束粒子（爆发前的静默）</summary>
+        /// <summary>蓄势收束硬切点，之后停喷粒子</summary>
         private const float ChargeSilenceAt = 0.72f;
 
         private float elapsed;
@@ -505,16 +494,16 @@ namespace CalamityOverhaul.Content.Items.Melee
         private float endAngle;
         private float currentRotation;
         private float lastRotation;
-        private float strikeEased;      //本帧打击段 ease 进度（同时驱动刀身与刀光扫掠）
+        private float strikeEased;      //本帧打击段 ease（刀身+刀光扫掠）
         private bool strikeStarted;
         private bool windupSoundPlayed;
         private bool slashBorn;
-        private int slashBirth = -1;    //刀光出生帧（elapsed 时基取整）
+        private int slashBirth = -1;    //刀光出生帧（elapsed 取整）
         private OniSlashStrip.Def slashDef;
         private int impactHoldFrames;
         private float recoilPulse;
 
-        /// <summary>刀身仍在挥（未进入余光期）：期间物品不可再次使用</summary>
+        /// <summary>刀身仍在挥（未入余光），物品不可再挥</summary>
         internal bool BladeActive => elapsed < TotalTime;
 
         public override void SetDefaults() {
@@ -544,7 +533,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             Owner.direction = lockedDirection;
 
-            //重斩恒走过顶下劈的沉重轨道（随朝向取向）
+            //重斩恒走过顶下劈
             if (IsFinisher) {
                 swingSign = lockedDirection;
             }
@@ -567,7 +556,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
 
-            //起手即喂一点压制：挥刀本身就是仪式
+            //起手喂一点压制
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Owner.GetModPlayer<OniMachetePlayer>().AddSuppression(3f);
             }
@@ -575,7 +564,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             BuildSlashDef(baseAngle);
         }
 
-        /// <summary>三拍变奏的确定性刀光参数：纵劈竖长椭圆 / 反撩更立 / 重斩巨扁弧含熔金脉络</summary>
+        /// <summary>三拍刀光参数，纵劈竖长 / 反撩更立 / 重斩扁弧+熔金</summary>
         private void BuildSlashDef(float aim) {
             float s = Projectile.scale;
             slashDef = Beat switch {
@@ -619,7 +608,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (CanDamage() != true) {
                 return false;
             }
-            //三层贪婪判定：刀身线段 + 刀光弧折线 + 内侧辐条（月牙内不是空洞）
+            //三层判定，刀身线段+刀光弧折线+内侧辐条
             Rectangle greedy = targetHitbox;
             greedy.Inflate(10, 10);
             Vector2 hand = Owner.GetPlayerStabilityCenter();
@@ -669,7 +658,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
             if (!BladeActive) {
-                //余光期：交还角色控制，只等刀光走完侵蚀（期间物品已可挥下一刀）
+                //余光期，交还控制，等刀光侵蚀完
                 if (!slashBorn || (int)elapsed - slashBirth >= slashDef.Life) {
                     Projectile.Kill();
                     return;
@@ -687,7 +676,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 WindupMotion();
             }
             else if (elapsed < holdEnd) {
-                //滞帧：完全静止的一拍（爆发前的静默），刀停在最深蓄势位
+                //滞帧，刀停在最深蓄势位
                 strikeEased = 0f;
             }
             else if (elapsed < strikeEnd) {
@@ -697,7 +686,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 RecoverMotion(strikeEnd);
             }
 
-            //命中视觉停驻：冻结一帧刀角
+            //命中视觉停驻
             if (impactHoldFrames > 0) {
                 impactHoldFrames--;
                 currentRotation = lastRotation;
@@ -713,14 +702,14 @@ namespace CalamityOverhaul.Content.Items.Melee
             elapsed += speedMul;
         }
 
-        /// <summary>前摇：反向蓄势，主体 easeOut 拉开 + 末端 pow(6) 迟滞后吸（突然的深呼吸）</summary>
+        /// <summary>前摇，easeOut 拉开 + 末端 pow(6) 迟滞后吸</summary>
         private void WindupMotion() {
             float t = elapsed / WindupTime;
             float pull = 0.40f * VaultUtils.EaseOutCubic(t) + 0.22f * MathF.Pow(t, 6f);
             currentRotation = startAngle - swingSign * pull;
             strikeEased = 0f;
 
-            //收束熔金屑：向刀尖汇聚，72% 处硬切（最后一程静默）
+            //收束熔金屑，72% 硬切
             if (!VaultUtils.isServer && t < ChargeSilenceAt && Main.rand.NextBool(IsFinisher ? 1 : 2)) {
                 Vector2 tip = Owner.GetPlayerStabilityCenter()
                     + currentRotation.ToRotationVector2() * BladeReach * 0.85f;
@@ -729,14 +718,14 @@ namespace CalamityOverhaul.Content.Items.Melee
                     , default, Main.rand.NextFloat(0.30f, 0.55f))
                     ?.Configure(Main.rand.Next(10, 16), gravity: false, cooling: 1.4f);
             }
-            //重斩蓄势的低鸣升调
+            //重斩蓄势低鸣
             if (IsFinisher && !VaultUtils.isServer && !windupSoundPlayed && t >= 0.5f) {
                 windupSoundPlayed = true;
                 SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.45f, Pitch = -0.5f }, Owner.Center);
             }
         }
 
-        /// <summary>打击段：poly(9/12) 陡峭 ease-out，一帧启动全程锁给刀光扫掠</summary>
+        /// <summary>打击段，poly(9/12) ease-out，刀光扫掠锁刀身</summary>
         private void StrikeMotion(float strikeStart) {
             float t = (elapsed - strikeStart) / StrikeTime;
             strikeEased = 1f - MathF.Pow(1f - MathHelper.Clamp(t, 0f, 1f), IsFinisher ? 12f : 9f);
@@ -747,7 +736,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 slashBorn = true;
                 slashBirth = (int)elapsed;
                 if (!VaultUtils.isServer) {
-                    //分层音效：重挥底鸣 + 硫火撕风
+                    //分层音，重挥底鸣+硫火撕风
                     SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.75f, Pitch = IsFinisher ? -0.55f : -0.25f + Beat * 0.12f }, Owner.Center);
                     SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.55f, Pitch = 0.15f }, Owner.Center);
                     if (IsFinisher) {
@@ -756,7 +745,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
 
-            //刀光前缘迸屑：喷量∝本帧扫掠增量（爆发帧集中迸发）
+            //刀光前缘迸屑，喷量∝扫掠增量
             if (!VaultUtils.isServer) {
                 Vector2 center = SlashCenter;
                 float edgeU = MathHelper.Clamp(strikeEased * 1.02f, 0.06f, 0.94f);
@@ -773,7 +762,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        /// <summary>收势：短过冲泄力后回稳（follow-through），刀光余体自行侵蚀</summary>
+        /// <summary>收势，短过冲回稳</summary>
         private void RecoverMotion(float strikeEnd) {
             float t = MathHelper.Clamp((elapsed - strikeEnd) / RecoverTime, 0f, 1f);
             float overshoot = MathF.Sin(MathHelper.Clamp(t / 0.42f, 0f, 1f) * MathF.PI) * 0.13f;
@@ -798,15 +787,15 @@ namespace CalamityOverhaul.Content.Items.Melee
             => OniMachete.ApplyGoldRend(target, ref modifiers);
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //命中喂养硫火压制（owner 端自治）
+            //命中喂压制（owner 端）
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Owner.GetModPlayer<OniMachetePlayer>().AddSuppression(IsFinisher ? 12f : 8f);
             }
 
-            //熔金裂纹挂到受创目标（削甲可见化）
+            //熔金裂纹挂目标
             target.GetGlobalNPC<OniMacheteGlobalNPC>().AddCrack(IsFinisher ? 0.85f : 0.55f);
 
-            //施力者反馈：1 帧停驻 + 刀身回坐脉冲
+            //施力者 1 帧停驻 + 回坐脉冲
             impactHoldFrames = 1;
             recoilPulse = 1f;
 
@@ -822,7 +811,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 0.8f, Pitch = -0.35f }, target.Center);
             SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.55f, Pitch = 0.35f }, target.Center);
 
-            //粒子量∝拍位动能
+            //粒子量∝拍位
             Vector2 aimDir = currentRotation.ToRotationVector2();
             int golds = IsFinisher ? 14 : 7;
             for (int i = 0; i < golds; i++) {
@@ -846,7 +835,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //余光期不画刀身（角色已回普通姿态，刀由下一次挥砍接管）
+            //余光期不画刀身
             if (!BladeActive) {
                 return false;
             }
@@ -857,10 +846,10 @@ namespace CalamityOverhaul.Content.Items.Melee
             float drawScale = Projectile.scale * 1.52f * (1f + recoilPulse * 0.04f);
 
             SpriteEffects effect = lockedDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
-            //贴图刀尖指向右上(-PiOver4)，垂直翻转后指向右下(+PiOver4)
+            //贴图刀尖右上(-PiOver4)，翻转后右下(+PiOver4)
             float rotOffset = lockedDirection == -1 ? -MathHelper.PiOver4 : MathHelper.PiOver4;
 
-            //打击段刀身残影
+            //打击段残影
             float strikeStart = WindupTime + HoldTime;
             if (elapsed >= strikeStart && elapsed <= strikeStart + StrikeTime + 1f) {
                 for (int i = 1; i <= 2; i++) {
@@ -872,7 +861,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
 
-            //蓄势末段的熔金压边辉光（滞帧期最亮——静默里只剩刀在发烫）
+            //蓄势末段熔金压边辉光（滞帧最亮）
             float windT = MathHelper.Clamp(elapsed / WindupTime, 0f, 1f);
             if (elapsed < strikeStart && windT > 0.55f) {
                 float heat = (windT - 0.55f) / 0.45f;

@@ -7,7 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>钳爪 NPCOverride；行为见 ViceIdleState 等 Vice 状态</summary>
+    /// <summary>钳爪，行为见 Vice*State</summary>
     internal class PrimeViceAI : PrimeArm
     {
         public override int TargetID => NPCID.PrimeVice;
@@ -18,10 +18,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         protected override int FormationIndex => 3;
 
         protected override void ArmPreUpdate() {
-            //冲击反馈衰减
+            //冲击衰减
             armContext.ImpactIntensity *= 0.88f;
 
-            //距离安全网：飞太远全速归队
+            //过远归队
             if (!VaultUtils.isClient && armStateMachine.CurrentState is not ViceReturnState) {
                 Vector2 anchor = head.Center + new Vector2(-200f * armContext.Side, 230f - head.height * 0.5f);
                 if (npc.Distance(anchor) > 800f) {
@@ -32,8 +32,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         protected override void ArmPostUpdate() {
-            //钳口开合由状态驱动（蓄力/突刺张开，命中/待机闭合），不再无意义地循环播帧
-            //帧约定与死亡演出钳子 Actor 一致：0=张开 1=闭合
+            //钳口由状态驱动
+            //帧0开1合
             frame = armContext.ClawOpen ? 0 : 1;
         }
 
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Texture2D mainValue = HeadPrimeAI.BSPPliers.Value;
             Texture2D glowValue = HeadPrimeAI.BSPPliersGlow.Value;
 
-            //命中冲击抖动
+            //命中抖动
             float impact = armContext?.ImpactIntensity ?? 0f;
             Vector2 drawOffset = Vector2.Zero;
             if (impact > 0.5f) {
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Rectangle viceRect = mainValue.GetRectangle(frame, 2);
             Vector2 viceOrigin = VaultUtils.GetOrig(mainValue, 2);
 
-            //机械热感滤镜，与头部共用 head.whoAmI
+            //热感滤镜共用头whoAmI
             int controllerId = (int)npc.ai[PrimeAiSlots.ArmHeadIndex];
             MechBossThermalRenderer.DrawOutlineHaloByController(spriteBatch, mainValue, viceDrawPos, viceRect,
                 npc.rotation, viceOrigin, npc.scale, SpriteEffects.None, controllerId);

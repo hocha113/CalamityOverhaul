@@ -6,9 +6,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 {
-    /// <summary>
-    /// 硫磺海风格的滚动条
-    /// </summary>
+    /// <summary>硫磺海滚动条</summary>
     internal class OldDukeScrollBar
     {
         public bool IsHovered { get; private set; }
@@ -17,9 +15,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
         private const int offsetY = 140;
 
         public bool IsDragging { get; private set; }
-        /// <summary>
-        /// 更新滚动条状态
-        /// </summary>
         public void Update(Vector2 panelPosition, int barHeight, int scrollOffset, int maxScroll,
             int totalItems, int visibleItems, Point mousePosition, bool mouseLeftDown,
             bool mouseLeftRelease, out int newScrollOffset) {
@@ -86,7 +81,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 
             Rectangle barBg = new Rectangle(barX, barY, 12, barHeight);
 
-            //绘制滚动条背景
             DrawScrollBarBackground(spriteBatch, barBg, pixel, uiAlpha, sulfurPulseTimer, IsHovered || IsDragging);
 
             //滑块高度
@@ -99,10 +93,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 
             Rectangle indicatorRect = new Rectangle(barX, indicatorY, 12, indicatorHeight);
 
-            //绘制滑块
             DrawScrollIndicator(spriteBatch, indicatorRect, pixel, uiAlpha, sulfurPulseTimer);
 
-            //绘制毒液流动效果
             DrawToxicFlow(spriteBatch, indicatorRect, pixel, uiAlpha);
         }
 
@@ -111,7 +103,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
             Color bgColor = new Color(20, 30, 12) * (uiAlpha * (highlighted ? 0.72f : 0.6f));
             spriteBatch.Draw(pixel, barBg, new Rectangle(0, 0, 1, 1), bgColor);
 
-            //边框
             Color borderColor = new Color(70, 100, 35) * (uiAlpha * 0.7f);
             spriteBatch.Draw(pixel, new Rectangle(barBg.X, barBg.Y, barBg.Width, 1),
                 new Rectangle(0, 0, 1, 1), borderColor);
@@ -175,11 +166,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
             }
         }
 
-        /// <summary>
-
-        /// 重置滚动条状态
-
-        /// </summary>
         public void Reset() {
             IsDragging = false;
             IsHovered = false;

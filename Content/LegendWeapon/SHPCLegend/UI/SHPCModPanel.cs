@@ -38,25 +38,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             new(0f, 76f * Scale),                //FRAME   机匣  正下
         };
 
-        //枪体纹理显示缩放
+        //枪体显示缩放
         private static float GunScale => 1f;
 
-        //数据线在枪体纹理上的接出点，坐标单位为屏幕像素（相对枪体绘制中心）
-        //以枪口朝右为基准，对应SHPC贴图各功能区域的边缘位置，按 GunScale 同步缩放
-        //如果实际贴图尺寸与预估不符可按照以下规律等比调整：
-        //X轴：负值朝左（枪托侧），正值朝右（枪口侧），最大约±82*GunScale/2
-        //Y轴：负值朝上（瞄具/枪管顶），正值朝下（握把/弹匣底），最大约±26*GunScale/2
+        //数据线接出点，相对枪体中心，枪口朝右，随GunScale
+        //槽位偏移，X负左正右约±82*GunScale/2，Y负上正下约±26*GunScale/2
         private const float ConnectFactor = 1.4f / 1.2f;
         private static readonly Vector2[] ConnectPoints = {
-            new(62f * ConnectFactor, -20f * ConnectFactor),  //BARREL  右上引出  枪口侧上方
-            new(5f * ConnectFactor, -24f * ConnectFactor),   //OPTIC   向上引出  枪管顶部镜座
-            new(62f * ConnectFactor, 18f * ConnectFactor),   //POWER   右下引出  枪口侧下方
-            new(-62f * ConnectFactor, -18f * ConnectFactor), //STOCK   左上引出  枪托侧上方
-            new(-15f * ConnectFactor, 26f * ConnectFactor),  //GRIP    左下引出  握把底部
-            new(-55f * ConnectFactor, 26f * ConnectFactor),  //FRAME   向下引出  机匣底部
+            new(62f * ConnectFactor, -20f * ConnectFactor),  //BARREL 右上
+            new(5f * ConnectFactor, -24f * ConnectFactor),   //OPTIC 上
+            new(62f * ConnectFactor, 18f * ConnectFactor),   //POWER 右下
+            new(-62f * ConnectFactor, -18f * ConnectFactor), //STOCK 左上
+            new(-15f * ConnectFactor, 26f * ConnectFactor),  //GRIP 下
+            new(-55f * ConnectFactor, 26f * ConnectFactor),  //FRAME 左下
         };
 
-        //槽位显示标签通过本地化系统获取，避免硬编码英文
+        //槽位标签走本地化
         private static string GetSlotLabel(int i) => i switch {
             0 => SHPCUI.Modify_Slot_Barrel.Value,
             1 => SHPCUI.Modify_Slot_Optic.Value,
@@ -143,7 +140,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 int presetIdx = hit - HitKind.Preset0;
                 SHPCPlayer sp = SHPCPlayer.Get(owner);
                 sp.SwitchPreset(presetIdx);
-                //切换预设时关闭模块选择面板避免错位显示
+                //切预设关模块选择面板
                 SHPCUI.Instance?.CloseModuleSelect();
             }
         }
@@ -267,7 +264,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                     ? SHPCTheme.CyanHi * (0.85f * a)
                     : SHPCTheme.Border * (0.55f * a);
 
-                //折线：上下槽先横后竖，左右槽先竖后横
+                //折线，上下先横后竖，左右先竖后横
                 Vector2 mid = (i == 0 || i == 3)
                     ? new Vector2(slotCenter.X, start.Y)
                     : new Vector2(start.X, slotCenter.Y);
@@ -333,7 +330,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 new Vector2(r.X + 7f * Scale, r.Y + (r.Height - labelSz.Y) * 0.5f),
                 (isHover ? SHPCTheme.Text : SHPCTheme.TextDim) * a, labelScale);
 
-            //右侧：已装配时绘制该模块图标，否则绘制空槽标记
+            //右侧模块图标或空槽
             if (equipped != null && !equipped.IsAir) {
                 Main.instance.LoadItem(equipped.type);
                 Texture2D iconTex = TextureAssets.Item[equipped.type]?.Value;
@@ -429,7 +426,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 new Color(0, 0, 0) * (0.55f * a));
             //背景
             SHPCRenderer.DrawFilledRect(sb, px, box, new Color(4, 14, 22) * (0.96f * a));
-            //顶部色带：按模块识别色高亮
+            //顶色带按模块色
             Color topBar = item.ModItem is SHPCModuleItem m ? m.TintColor : SHPCTheme.Cyan;
             SHPCRenderer.DrawFilledRect(sb, px,
                 new Rectangle(box.X, box.Y, box.Width, (int)(3f * Scale)), topBar * (0.85f * a));

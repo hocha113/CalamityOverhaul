@@ -5,7 +5,7 @@ using System;
 
 namespace CalamityOverhaul.Content.Narrative.Presentation.Views
 {
-    /// <summary>Narrative 对话面板——承载 ADV 全身立绘生命周期</summary>
+    /// <summary>对话面板，挂 ADV 全身立绘生命周期</summary>
     internal sealed class DialoguePanelView : NarrativeDialogueViewBase<DialoguePanelView>, INarrativePanelAnchor
     {
         private static readonly System.Collections.Generic.Dictionary<Type, FullBodyPortraitBase> TypeToPortraits = new();
@@ -20,7 +20,6 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Views
 
         public static T GetPortraits<T>() where T : FullBodyPortraitBase => TypeToPortraits[typeof(T)] as T;
 
-        /// <summary>显示全身立绘</summary>
         public bool ShowFullBodyPortrait<T>() where T : FullBodyPortraitBase => ShowFullBodyPortrait(typeof(T));
 
         public bool ShowFullBodyPortrait(Type type) {

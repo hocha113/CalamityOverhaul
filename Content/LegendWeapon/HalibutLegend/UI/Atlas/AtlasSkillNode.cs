@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         public readonly FishSkill Skill;
         public readonly int Tier;
         /// <summary>
-        /// 在海域布局空间中的基准位置：
+        /// 海域布局基准位置
         /// X 为相对屏幕中线的偏移（实时换算，UI缩放/分辨率变化时无需重建），Y 为绝对深度
         /// </summary>
         public Vector2 LayoutPos;
@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 }
             }
             else {
-                //未解锁：剪影 + 暗环 + 问号
+                //未解锁、剪影+暗环+问号
                 HalibutRenderer.DrawRing(sb, pos, 20f + Hover * 3f, 1f,
                     HalibutTheme.Disabled * ((0.35f + Hover * 0.3f) * alpha));
                 sb.Draw(icon, pos, null, HalibutTheme.Void * (0.92f * alpha), 0f,
@@ -101,12 +101,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                     HalibutTheme.Deep * (0.5f * alpha), 0.8f);
             }
 
-            //装备标记：节点下方的小光点
+            //装备标记、节点下小光点
             if (equipped) {
                 HalibutRenderer.DrawDisc(sb, pos + new Vector2(0f, 24f), 2.2f, 1.6f,
                     HalibutTheme.GlowHi * (0.9f * alpha));
             }
-            //当前选用：暖金描环
+            //当前选用、暖金描环
             if (selected) {
                 float pulse = HalibutTheme.Breath(time, DriftSeed, 3f);
                 HalibutRenderer.DrawRing(sb, pos, 25f + pulse * 2f, 1.4f,

@@ -10,14 +10,14 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest
     {
         #region 色板
 
-        //深海到浅海的渐变色阶
+        //深→浅色阶
         private static readonly Color DeepAbyss = new(2, 10, 22);
         private static readonly Color MidOcean = new(6, 26, 50);
         private static readonly Color ShallowSea = new(14, 48, 78);
         private static readonly Color HoverTint = new(12, 40, 68);
         private static readonly Color SelectedTint = new(20, 55, 85);
 
-        //焦散/水面光效
+        //焦散/水面
         private static readonly Color CausticBright = new(55, 195, 240);
         private static readonly Color CausticDim = new(28, 110, 160);
         private static readonly Color FoamWhite = new(175, 225, 245);
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest
         private float waveTime;
         private float causticTime;
         private float bubbleTime;
-        //着色器专用单调递增时间
+        //着色器单调时基
         private float shaderTime;
         private const int ShaderEdgePad = 5;
 
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest
                 DrawFallbackBackground(sb, entryRect, isSelected, isHovered, alpha);
             }
 
-            //水面波光碎片（顶部边缘间断的白色亮点）
+            //顶部波光
             int step = 3;
             for (int x = 0; x < entryRect.Width; x += step) {
                 float shimmer = MathF.Sin(waveTime * 3f + x * 0.08f)
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest
                 }
             }
 
-            //左侧生物发光带（4px宽主色带 + 光晕 + 高亮芯线）
+            //左侧状态色带
             Color statusC = GetAccentColor(entry.Status, 1f);
             float glowPulse = MathF.Sin(waveTime * 2f) * 0.3f + 0.7f;
             sb.Draw(px, new Rectangle(entryRect.X, entryRect.Y + 1, 4, entryRect.Height - 2),
@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest
             sb.Draw(px, new Rectangle(entryRect.X + 1, entryRect.Y + 2, 1, entryRect.Height - 4),
                 uv, FoamWhite * (alpha * glowPulse * 0.3f));
 
-            //波浪形上下边框（每3px一段，亮度随正弦变化）
+            //波浪上下边框
             for (int x = 0; x < entryRect.Width; x += step) {
                 float topB = MathF.Sin(waveTime * 1.5f + x * 0.06f) * 0.5f + 0.5f;
                 float botB = MathF.Sin(waveTime * 1.2f + x * 0.05f + 2f) * 0.5f + 0.5f;
@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest
             var px = VaultAsset.placeholder2.Value;
             var uv = new Rectangle(0, 0, 1, 1);
 
-            //多段海水渐变，叠加双层波浪色相偏移
+            //海水渐变
             int segs = 16;
             for (int i = 0; i < segs; i++) {
                 float t = i / (float)segs;
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest
                 float w2 = MathF.Sin(waveTime * 0.9f + t * 3f + 1.5f) * 0.5f + 0.5f;
                 Color waveTint = Color.Lerp(baseC, ShallowSea, w1 * 0.25f + w2 * 0.15f);
 
-                //焦散亮带：两个正弦相乘后取正值再平方，产生随机感的亮条
+                //焦散亮带
                 float caustic = MathF.Sin(causticTime * 2.2f + t * 8f)
                               * MathF.Sin(causticTime * 1.3f + t * 4f);
                 caustic = MathF.Max(0f, caustic);
@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest
                 sb.Draw(px, new Rectangle(entryRect.X, y1, entryRect.Width, y2 - y1), uv, c);
             }
 
-            //焦散光斑：3个椭圆形亮区在背景上缓慢漂移
+            //焦散光斑
             for (int p = 0; p < 3; p++) {
                 float fx = MathF.Sin(causticTime * (0.7f + p * 0.3f) + p * 2.1f) * 0.5f + 0.5f;
                 float fy = MathF.Sin(causticTime * (0.5f + p * 0.2f) + p * 1.4f) * 0.5f + 0.5f;
@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest
                 int rw = (int)(entryRect.Width * (0.12f + p * 0.04f));
                 int rh = rw / 3;
 
-                //由外到内3层递增亮度模拟径向衰减
+                //径向3层
                 for (int layer = 2; layer >= 0; layer--) {
                     float lt = (2 - layer) / 2f;
                     int lw = rw - layer * (rw / 3);
@@ -181,14 +181,14 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest
             float cy = titlePos.Y + 9f;
             float pulse = MathF.Sin(waveTime * 1.5f + 1f) * 0.3f + 0.7f;
 
-            //扩散涟漪环（周期性扩大并淡出）
+            //涟漪环
             float ripplePhase = waveTime * 0.8f % MathHelper.TwoPi;
             float rippleScale = 4f + ripplePhase / MathHelper.TwoPi * 8f;
             float rippleAlpha = 1f - ripplePhase / MathHelper.TwoPi;
             sb.Draw(px, new Vector2(cx, cy), null, CausticBright * (alpha * rippleAlpha * 0.2f),
                 MathHelper.PiOver4, new Vector2(0.5f), new Vector2(rippleScale), SpriteEffects.None, 0f);
 
-            //水滴菱形主体
+            //菱形主体
             sb.Draw(px, new Vector2(cx, cy), null, CoralAccent * (alpha * pulse),
                 MathHelper.PiOver4, new Vector2(0.5f), new Vector2(5.5f), SpriteEffects.None, 0f);
 
@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest
             sb.Draw(px, new Vector2(cx, cy), null, FoamWhite * (alpha * pulse * 0.45f),
                 MathHelper.PiOver4, new Vector2(0.5f), new Vector2(2.5f), SpriteEffects.None, 0f);
 
-            //生物发光光晕
+            //生物发光晕
             sb.Draw(px, new Vector2(cx, cy), null, BioGlow * (alpha * pulse * 0.12f),
                 MathHelper.PiOver4, new Vector2(0.5f), new Vector2(11f), SpriteEffects.None, 0f);
 
@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest
         public void DrawEntryOverlay(SpriteBatch sb, Rectangle entryRect, EntrustEntryData entry, float alpha) {
             var px = VaultAsset.placeholder2.Value;
 
-            //上浮气泡（5个，确定性种子驱动位置，随时间循环上升）
+            //上浮气泡
             for (int b = 0; b < 5; b++) {
                 float seed = b * 37.7f;
                 float bx = entryRect.X + (int)(seed * 73.1f % entryRect.Width);
@@ -221,12 +221,12 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest
 
                 sb.Draw(px, new Vector2(bx, by), null, WaveCrest * (alpha * bAlpha),
                     0f, new Vector2(0.5f), new Vector2(size), SpriteEffects.None, 0f);
-                //气泡高光点
+                //气泡高光
                 sb.Draw(px, new Vector2(bx - 0.5f, by - 0.5f), null, FoamWhite * (alpha * bAlpha * 0.4f),
                     0f, new Vector2(0.5f), new Vector2(size * 0.35f), SpriteEffects.None, 0f);
             }
 
-            //右下角深海微光
+            //右下深海微光
             float deepGlow = MathF.Sin(waveTime * 0.8f) * 0.5f + 0.5f;
             int gs = 28;
             Rectangle glowRect = Rectangle.Intersect(

@@ -6,27 +6,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     /// <summary>铭刻条目状态</summary>
     internal enum OniGhostState : byte
     {
-        /// <summary>已铭刻且驾驭稳固：字迹干透，朱印完整</summary>
+        /// <summary>稳固,干墨完章</summary>
         Engraved,
-        /// <summary>躁动：驾驭度低，笔画向下洇血，朱印开裂</summary>
+        /// <summary>躁动,洇血裂章</summary>
         Restless,
-        /// <summary>封印中：名讳被封印札糊住</summary>
+        /// <summary>封印,札糊名讳</summary>
         Sealed,
-        /// <summary>未知：铭位空悬，一段墨涂</summary>
+        /// <summary>未知,墨涂空栏</summary>
         Unknown,
     }
 
-    /// <summary>
-    /// 点鬼簿单条铭刻。文本走 <see cref="Func{String}"/> 惰性取值，
-    /// 保证本地化在语言切换后仍取到当前语言
-    /// </summary>
+    /// <summary>簿条目,文本 <see cref="Func{String}"/> 惰性取当前语言</summary>
     internal sealed class OniGhostEntry
     {
-        /// <summary>稳定键（存档/玩法挂接用）</summary>
+        /// <summary>稳定键(存档/挂接)</summary>
         public string Key;
         /// <summary>鬼名</summary>
         public Func<string> Name;
-        /// <summary>来历残句（规则怪谈短文案）</summary>
+        /// <summary>来历残句</summary>
         public Func<string> Origin;
         /// <summary>赋予的力</summary>
         public Func<string> Power;
@@ -35,32 +32,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         /// <summary>条目状态</summary>
         public OniGhostState State;
 
-        /// <summary>有可显示的名讳（封印中的鬼有名但被糊住，未知铭位无名）</summary>
+        /// <summary>有可显示名讳(封印有名糊住,未知无名)</summary>
         public bool HasName => State != OniGhostState.Unknown && Name != null;
-        /// <summary>影绘细节板是否点出鬼火之眼（封印/未知不点眼）</summary>
+        /// <summary>细节板是否点眼(封印/未知否)</summary>
         public bool HasEyes => State == OniGhostState.Engraved || State == OniGhostState.Restless;
     }
 
-    /// <summary>簿面数据源。常规实现为 <see cref="OniWraithSource"/>（厉鬼框架适配器），经 <see cref="OniRegistry.SetSource"/> 挂接</summary>
+    /// <summary>簿面源,常为 <see cref="OniWraithSource"/>,经 <see cref="OniRegistry.SetSource"/> 挂</summary>
     internal interface IOniGhostSource
     {
         IReadOnlyList<OniGhostEntry> Entries { get; }
     }
 
-    /// <summary>
-    /// 点鬼簿数据入口，只读聚合。数据自 <see cref="IOniGhostSource"/> 来，
-    /// 未挂接时为空簿；三屏 UI 只读本类
-    /// </summary>
+    /// <summary>点鬼簿入口,只读聚合,未挂接为空簿</summary>
     internal static class OniRegistry
     {
         private static IOniGhostSource source;
 
-        /// <summary>挂接数据源；传 null 回落空簿</summary>
+        /// <summary>挂源,null 空簿</summary>
         public static void SetSource(IOniGhostSource s) => source = s;
 
         public static IReadOnlyList<OniGhostEntry> Entries => source?.Entries ?? Array.Empty<OniGhostEntry>();
 
-        /// <summary>总驾驭度：已铭刻(含躁动)条目的驾驭均值，HUD 墨批与危态判定用。空簿返回 0</summary>
+        /// <summary>总驾驭度,已铭刻均值,空簿 0</summary>
         public static float TotalMastery {
             get {
                 float sum = 0f;
@@ -75,7 +69,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>危态：存在躁动之鬼，或总驾驭度过低——封印札焦边、绯月竖瞳都吃这个判定</summary>
+        /// <summary>危态,有躁动或总驾驭过低</summary>
         public static bool InDanger {
             get {
                 foreach (OniGhostEntry e in Entries) {

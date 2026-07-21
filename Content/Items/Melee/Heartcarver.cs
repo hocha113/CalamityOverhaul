@@ -19,10 +19,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee
 {
     /// <summary>
-    /// 刻心者短剑：这把刀很钝，不是用来割肉的。<br/>
-    /// 手持时以 ~72bpm 心跳节拍运转（<see cref="HeartcarverPlayer"/>），
-    /// 攻击落在两次心跳之间的间隙窗口构成「剜心击」；
-    /// 终结斩以剜心击命中会把目标的心脏整个剜出来（<see cref="HeartcarverExcisedHeart"/>）
+    /// 刻心者。手持 ~72bpm 心跳（<see cref="HeartcarverPlayer"/>）；间隙窗口内攻击=剜心击；终结斩剜心击剜出心脏（<see cref="HeartcarverExcisedHeart"/>）
     /// </summary>
     internal class Heartcarver : ModItem
     {
@@ -124,7 +121,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     }
 
     /// <summary>
-    /// 刻心者手持弹幕：三连刺+终结斩。<br/>
+    /// 刻心者手持，三连刺+终结斩。<br/>
     /// 刺击开始的一帧对照心跳窗口判定剜心击（ai[1]，拥有者判定后同步）；
     /// 剜心击强制暴击并附加伤害，终结斩剜心击直接剜出心脏
     /// </summary>
@@ -135,7 +132,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         /// 连击索引 0~2刺 3终结斩
         private ref float ComboIndex => ref Projectile.ai[0];
-        /// 剜心击标记：拥有者在刺出瞬间判定，>0.5 为剜心击
+        /// 剜心击标记，拥有者刺出瞬间判定，>0.5=剜心击
         private ref float CarveFlag => ref Projectile.ai[1];
 
         private bool IsFinisher => ComboIndex >= 3f;
@@ -157,9 +154,9 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// 当前持出距离
         private float holdout;
         private bool strikeStarted;
-        /// 剜心击命中顿帧：冻结 elapsed 数帧，把力钉在目标里
+        /// 剜心击命中顿帧，冻结 elapsed
         private int hitstopFrames;
-        //刺线快照：刺出瞬间世界锚定，不随收刀回缩
+        //刺线快照，刺出瞬间世界锚定
         private Vector2 lanceOrigin;
         private Vector2 lanceDir;
         private readonly HashSet<int> hitNPCs = [];
@@ -216,7 +213,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            //剜心击顿帧：整套动作冻结，只维持姿态
+            //剜心击顿帧，只维持姿态
             if (hitstopFrames > 0) {
                 hitstopFrames--;
                 SetDirection();
@@ -229,7 +226,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            //右键冲刺，避免被左键硬控
+            //右键冲刺，不被左键硬控
             if (DownRight && Owner.CountProjectilesOfID<HeartcarverDash>() == 0
                 && Owner.GetModPlayer<HeartcarverPlayer>().DashCooldown <= 0 && Projectile.IsOwnedByLocalPlayer()) {
                 ShootState shootState = Owner.GetShootState();
@@ -243,13 +240,13 @@ namespace CalamityOverhaul.Content.Items.Melee
             float stabEnd = WindupTime + StabTime;
 
             if (elapsed < WindupTime) {
-                //回拉蓄力：终结斩用高次幂后拉，绷到最后一刻
+                //回拉蓄力，终结斩高次幂后拉
                 float t = elapsed / WindupTime;
                 holdout = IsFinisher
                     ? MathHelper.Lerp(10f, -16f, MathF.Pow(t, 3f))
                     : MathHelper.Lerp(10f, -8f, MathF.Sin(t * MathHelper.PiOver2));
 
-                //终结斩蓄力：血珠被拽向持握点，高速拉丝成血线（液体，不是能量线）；72% 处硬切静默
+                //终结斩蓄力血线拉丝，72% 硬切
                 if (IsFinisher && !VaultUtils.isServer && elapsed < WindupTime * 0.72f && elapsed % 2f < speedMul) {
                     float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                     float dist = Main.rand.NextFloat(70f, 130f);
@@ -261,7 +258,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
             else if (elapsed < stabEnd) {
-                //迅捷突刺：高次幂 ease-out，头几帧吃掉几乎全部行程
+                //迅捷突刺，高次幂 ease-out
                 float t = (elapsed - WindupTime) / StabTime;
                 float eased = 1f - MathF.Pow(1f - t, IsFinisher ? 8f : 4.5f);
                 holdout = MathHelper.Lerp(IsFinisher ? -16f : -8f, StabReach, eased);
@@ -282,14 +279,14 @@ namespace CalamityOverhaul.Content.Items.Melee
             elapsed += speedMul;
         }
 
-        /// <summary>刺出的一帧：对照心跳窗口判定剜心击，掷出追猎血匕，锚定刺线快照，铺刺击音</summary>
+        /// <summary>刺出帧，判剜心击、掷血匕、锚定刺线、铺音</summary>
         private void OnStrikeStart() {
             if (Projectile.IsOwnedByLocalPlayer() && Owner.GetModPlayer<HeartcarverPlayer>().JudgeCarve()) {
                 CarveFlag = 1f;
                 Projectile.netUpdate = true;
             }
 
-            //随刺掷出旋转追踪的血匕（远程延伸）；终结斩不掷——它的手要留着剜心
+            //随刺掷血匕；终结斩不掷
             if (Projectile.IsOwnedByLocalPlayer() && !IsFinisher
                 && Owner.ownedProjectileCounts[ModContent.ProjectileType<HeartcarverThrownDagger>()] < 4) {
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(),
@@ -329,7 +326,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (target.IsWormBody()) {
                 modifiers.FinalDamage *= 0.425f;
             }
-            //剜心击：落在心跳间隙的刀必定命中要害
+            //剜心击命中要害
             if (IsCarve) {
                 modifiers.SetCrit();
                 modifiers.FinalDamage *= 1.25f;
@@ -356,13 +353,13 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        /// <summary>剜心击命中：顿帧+后座+定向震屏+动脉放射；终结斩则把心脏剜出来</summary>
+        /// <summary>剜心击命中，顿帧+后座+震屏+动脉放射；终结斩剜心</summary>
         private void OnCarveHit(NPC target) {
             hitstopFrames = IsFinisher ? 4 : 2;
 
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Owner.GetModPlayer<HeartcarverPlayer>().NotifyCarveStrike(target.whoAmI);
-                //施力者后座：力作用是相互的
+                //施力者后座
                 Owner.velocity -= stabUnit * (IsFinisher ? 3f : 1.2f);
             }
 
@@ -372,7 +369,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            //剜心击命中音：湿的、卡进拍子里的
+            //剜心击命中音
             SoundEngine.PlaySound(SoundID.NPCHit18 with { Volume = 0.9f, Pitch = -0.25f }, target.Center);
             SoundEngine.PlaySound(SoundID.DrumTamaSnare with { Volume = 0.5f, Pitch = -0.5f }, target.Center);
 
@@ -382,7 +379,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Main.instance.CameraModifiers.Add(modifier);
             }
 
-            //动脉喷溅：伤口放射状喷出高速血珠，出膛拉丝成线、随重力坠成弧——液体的血，不是能量线
+            //动脉喷溅血珠
             int spurtCount = extracted ? 16 : 10;
             for (int i = 0; i < spurtCount; i++) {
                 float ang = MathHelper.TwoPi * i / spurtCount + Main.rand.NextFloat(-0.25f, 0.25f);
@@ -391,7 +388,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     Main.rand.NextBool(3) ? HeartcarverPalette.Arterial : HeartcarverPalette.Blood(Main.rand.NextFloat(0.6f)),
                     Main.rand.NextFloat(1f, 1.5f))?.Configure(Main.rand.Next(22, 34), 0.3f);
             }
-            //几滴沉重的慢血：喷溅的余韵
+            //慢血余韵
             for (int i = 0; i < (extracted ? 5 : 3); i++) {
                 PRTLoader.NewParticle<PRT_HeartcarverDroplet>(target.Center,
                     Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 3.5f),
@@ -403,7 +400,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 HeartcarverPalette.Arterial, 1f)?.Configure(0.08f, extracted ? 0.9f : 0.5f, 16);
         }
 
-        /// <summary>终结斩剜心击：从目标身上剜出心脏实体；剜出的一帧配红黑 impact frame</summary>
+        /// <summary>终结斩剜心，剜出心脏+impact frame</summary>
         private bool TryExtractHeart(NPC target) {
             if (!IsFinisher || target.friendly || target.dontTakeDamage) {
                 return false;
@@ -421,7 +418,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             if (!VaultUtils.isServer) {
-                //剜出的一帧：嘴的第一声尖叫 + 红黑高对比 impact frame（限频）
+                //剜出帧，尖叫+impact frame（限频）
                 SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.75f, Volume = 0.55f }, target.Center);
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.5f, Volume = 0.8f }, target.Center);
                 if (Owner.whoAmI == Main.myPlayer) {
@@ -458,20 +455,20 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 drawPos = hand + stabUnit * holdout - Main.screenPosition;
             Main.EntitySpriteDraw(tex, drawPos, null, lightColor, rot, origin, Projectile.scale, effect, 0);
 
-            //心跳脉动辉光：刀身随 lub-dub 呼吸的动脉红（武器本地的节拍广播，替代屏幕红晕）
+            //心跳脉动辉光
             HeartcarverPlayer hcPlayer = Owner.GetModPlayer<HeartcarverPlayer>();
             float beatGlow = hcPlayer.BeatEnvelope * 0.38f + (hcPlayer.FrenzyTimer > 0 ? 0.10f : 0f);
             if (beatGlow > 0.03f) {
                 Color pulse = HeartcarverPalette.Arterial with { A = 0 } * beatGlow;
                 Main.EntitySpriteDraw(tex, drawPos, null, pulse, rot, origin, Projectile.scale * 1.07f, effect, 0);
             }
-            //间隙窗口开启：刀刃泛白热一瞬（瞬时小面积粉白）
+            //间隙窗口白热闪
             if (hcPlayer.WindowFlash > 0.05f) {
                 Color windowHot = HeartcarverPalette.Myocard with { A = 0 } * (hcPlayer.WindowFlash * 0.4f);
                 Main.EntitySpriteDraw(tex, drawPos, null, windowHot, rot, origin, Projectile.scale * 1.02f, effect, 0);
             }
 
-            //剜心击/终结斩的辉光层：动脉红打底，剜心击再覆一层心肌粉白
+            //剜心击/终结斩辉光层
             if (IsFinisher || IsCarve) {
                 Color glow = HeartcarverPalette.Arterial with { A = 0 } * 0.5f;
                 Main.EntitySpriteDraw(tex, drawPos, null, glow, rot, origin, Projectile.scale * 1.08f, effect, 0);
@@ -483,7 +480,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             return false;
         }
 
-        /// <summary>针状白热刺线：刺出瞬间世界锚定的静态 quad 光束，替代 sprite 残影</summary>
+        /// <summary>白热刺线，世界锚定静态 quad</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
             if (!strikeStarted || elapsed < WindupTime) {
                 return;
@@ -531,14 +528,14 @@ namespace CalamityOverhaul.Content.Items.Melee
     }
 
     /// <summary>
-    /// 刻心者冲刺突击：counter-motion 反向后拉 → 一帧满速贝塞尔弧线前冲 → 回刺 → 收势。<br/>
+    /// 刻心者冲刺，后拉→满速贝塞尔前冲→回刺→收势。<br/>
     /// 拖尾为 shader 条带图元；每次命中独立对照心跳窗口判定剜心击
     /// </summary>
     internal class HeartcarverDash : BaseHeldProj, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Item_Melee + "Heartcarver";
 
-        //冲刺：反向后拉+前冲+回刺+收势
+        //冲刺阶段，后拉+前冲+回刺+收势
         private const int PreludeDuration = 4;
         private const int ForwardDuration = 16;
         private const int ReturnDuration = 10;
@@ -560,7 +557,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private bool actionEnded;
         private bool lastHitWasCarve;
 
-        //条带拖尾缓存：0 = 最新
+        //条带拖尾缓存，0=最新
         private const int TrailMax = 34;
         private readonly Vector2[] trailPos = new Vector2[TrailMax];
         private readonly Vector2[] trailPerp = new Vector2[TrailMax];
@@ -626,7 +623,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Owner.GivePlayerImmuneState(36);
             }
             else if (!actionEnded) {
-                //回刺落点：动作结束，收势期玩家恢复行动，条带自然渐隐
+                //回刺落点，收势交还控制
                 EndDashAction();
             }
 
@@ -655,18 +652,18 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (VaultUtils.isServer) {
                 return;
             }
-            //吸气：后拉阶段的短促蓄势音
+            //吸气蓄势音
             SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.4f, Pitch = -0.8f }, Owner.Center);
         }
 
-        /// <summary>counter-motion：pow(t,8) 后拉——静止…静止…猛地向后一吸</summary>
+        /// <summary>counter-motion，pow(t,8) 后拉</summary>
         private void UpdatePreludeMotion() {
             float t = (dashTimer + 1) / (float)PreludeDuration;
             float reel = MathF.Pow(t, 8f) * ReelBack;
             Owner.velocity = Vector2.Zero;
             Owner.Center = dashStartPos - dashDirection * reel;
 
-            //收束血流：血珠被拽向持刀者，高速拉丝（液体收束，不是能量线）
+            //收束血流拉丝
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < 2; i++) {
                     float ang = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -679,7 +676,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        /// <summary>发射帧：速度一帧设满、震屏、爆发粒子全部压在同一帧</summary>
+        /// <summary>发射帧，满速+震屏+爆发粒子同帧</summary>
         private void LaunchDash() {
             dashStartPos = Owner.Center;
 
@@ -698,10 +695,10 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         private void UpdateForwardMovement() {
             float t = (dashTimer - PreludeDuration + 1) / (float)ForwardDuration;
-            //一帧满速：高次幂 ease-out，首帧即吃掉大半行程
+            //一帧满速 ease-out
             float easedT = 1f - MathF.Pow(1f - t, 4.2f);
 
-            //贝塞尔控制点：起点 → 弧形偏移控制点 → 终点
+            //贝塞尔控制点
             Vector2 endPos = dashStartPos + dashDirection * DashSpeed * ForwardDuration * 0.6f;
             Vector2 controlPoint = dashStartPos + dashDirection * DashSpeed * ForwardDuration * 0.3f
                 + dashPerpendicularDir * 80f * arcIntensity;
@@ -790,7 +787,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Lighting.AddLight(Owner.Center, HeartcarverPalette.Arterial.ToVector3() * 1.2f);
         }
 
-        /// <summary>发射帧爆发：定向血珠锥 + 脉冲环 + 反向气流线</summary>
+        /// <summary>发射帧爆发，血珠锥+脉冲环+气流</summary>
         private void SpawnDashBurst() {
             for (int i = 0; i < 16; i++) {
                 float spread = Main.rand.NextFloat(-0.7f, 0.7f);
@@ -799,7 +796,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     HeartcarverPalette.Blood(Main.rand.NextFloat()), Main.rand.NextFloat(1.3f, 2.2f))
                     ?.Configure(Main.rand.Next(18, 30));
             }
-            //起步尾流：血珠向身后甩出，坠成血弧
+            //起步尾流血弧
             for (int i = 0; i < 8; i++) {
                 float spread = Main.rand.NextFloat(-0.5f, 0.5f);
                 PRTLoader.NewParticle<PRT_HeartcarverDroplet>(Owner.Center,
@@ -865,7 +862,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        /// <summary>动作收尾：速度阻尼、冷却记账（专属 ModPlayer，替代旧的隐形冷却弹幕）、收束粒子</summary>
+        /// <summary>收尾，阻尼+冷却记账+收束粒子</summary>
         private void EndDashAction() {
             actionEnded = true;
             Owner.velocity *= 0.3f;
@@ -903,7 +900,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 origin = sourceRect.Size() / 2f;
             SpriteEffects spriteEffects = Projectile.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            //后拉阶段：刀随身体后收，压低姿态
+            //后拉阶段姿态
             Vector2 bladeOffset = InPrelude
                 ? -dashDirection * 6f
                 : Vector2.Zero;
@@ -914,7 +911,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Projectile.rotation, origin, Projectile.scale, spriteEffects, 0
             );
 
-            //动脉红辉光：随速度增强，静止时收敛
+            //动脉红辉光随速
             float speedGate = MathHelper.Clamp(Projectile.velocity.Length() / 30f, 0f, 1f);
             if (speedGate > 0.05f) {
                 Color glowColor = HeartcarverPalette.Arterial with { A = 0 } * (0.55f * speedGate);
@@ -927,7 +924,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             return false;
         }
 
-        /// <summary>血刃条带拖尾：宽度沿尾递减的 TriangleStrip，替代 sprite 残影</summary>
+        /// <summary>血刃条带拖尾 TriangleStrip</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
             if (trailCount < 3) {
                 return;
@@ -978,9 +975,9 @@ namespace CalamityOverhaul.Content.Items.Melee
     }
 
     /// <summary>
-    /// 旋转追猎的血匕：每段刺击出手时随刺掷出的远程延伸（同屏上限 4 柄）。<br/>
+    /// 追猎血匕，刺击随掷（同屏上限 4）。<br/>
     /// 直飞十余帧后咬住最近的猎物强追踪；在心跳间隙掷出的血匕继承剜心击（必定暴击、周身更亮）。<br/>
-    /// 液血视觉：旋转拖影糊成轮刃 + 位移残像 + 血珠甩尾，命中喷溅动脉血弧
+    /// 旋转拖影+残像+甩尾，命中喷溅
     /// </summary>
     internal class HeartcarverThrownDagger : ModProjectile
     {
@@ -1016,10 +1013,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void AI() {
             Timer++;
 
-            //自旋：转出去的刀，转速微随速度
+            //自旋，转速随速
             Projectile.rotation += (0.38f + Projectile.velocity.Length() * 0.012f) * Projectile.direction;
 
-            //直飞一小段再咬定目标：先看到"掷出"，再看到"追猎"
+            //直飞一小段再追猎
             if (Timer > StraightUpdates) {
                 NPC target = Projectile.Center.FindClosestNPC(900f);
                 if (target != null) {
@@ -1032,7 +1029,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitX) * FlySpeed * 0.8f;
             }
 
-            //血珠甩尾：旋转的刀把血往外抡
+            //血珠甩尾
             if (!VaultUtils.isServer && Timer % 5 == 0) {
                 Vector2 fling = Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(1.5f, 3f)
                     - Projectile.velocity * 0.1f;
@@ -1061,7 +1058,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
             SoundEngine.PlaySound(SoundID.NPCHit18 with { Volume = 0.55f, Pitch = 0.15f }, target.Center);
-            //命中喷溅：入射向血弧
+            //命中喷溅
             Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             for (int i = 0; i < 6; i++) {
                 PRTLoader.NewParticle<PRT_HeartcarverDroplet>(target.Center,
@@ -1091,7 +1088,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             float drawRot = Projectile.rotation + MathHelper.PiOver4;
             Color ghostBlood = HeartcarverPalette.ArterialDeep with { A = 0 };
 
-            //位移残像：旧位置的暗血残影
+            //位移残像
             for (int i = 2; i <= 6; i += 2) {
                 if (i >= Projectile.oldPos.Length || Projectile.oldPos[i] == Vector2.Zero) {
                     continue;
@@ -1103,14 +1100,14 @@ namespace CalamityOverhaul.Content.Items.Melee
                     , Projectile.scale * 0.92f, SpriteEffects.None, 0);
             }
 
-            //旋转拖影：回溯旋转角糊成轮刃
+            //旋转拖影
             for (int i = 1; i <= 3; i++) {
                 float fade = 0.26f - i * 0.07f;
                 Main.EntitySpriteDraw(tex, drawPos, null, ghostBlood * fade,
                     drawRot - 0.42f * i * Projectile.direction, origin, Projectile.scale, SpriteEffects.None, 0);
             }
 
-            //底光：剜心匕更亮，泛心肌粉白
+            //底光，剜心匕更亮
             Texture2D soft = CWRAsset.SoftGlow.Value;
             Color glow = (IsCarve ? HeartcarverPalette.Myocard : HeartcarverPalette.Arterial) with { A = 0 };
             Main.EntitySpriteDraw(soft, drawPos, null, glow * (IsCarve ? 0.5f : 0.3f), 0f
@@ -1122,7 +1119,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     }
 
     /// <summary>
-    /// 环绕血刃：由吸收的心脏凝成（因果链：剜出→吸收→成刃）。<br/>
+    /// 环绕血刃，吸收心脏凝成。<br/>
     /// 平时贴着拥有者心跳同步搏动环绕；拥有者打出剜心击时，全部血刃循声扑向伤口
     /// </summary>
     internal class HeartcarverDagger : BaseHeldProj
@@ -1155,7 +1152,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private float orbitAngle;
         private float orbitSpeed;
         private float orbitTilt;
-        /// <summary>心跳踢速：lub 拍瞬间加速，随后衰减</summary>
+        /// <summary>心跳踢速，lub 拍加速后衰减</summary>
         private float beatKick;
 
         private const int CoalesceDuration = 14;
@@ -1164,9 +1161,9 @@ namespace CalamityOverhaul.Content.Items.Melee
         private float glowIntensity;
         private float daggerScale = 1f;
         private float dissolveFade = 1f;
-        /// <summary>拥有者端：已消费的剜心击信号戳</summary>
+        /// <summary>拥有者端已消费信号戳</summary>
         private int seenSignalStamp = -1;
-        /// <summary>拥有者端：齐射错拍倒计时</summary>
+        /// <summary>拥有者端齐射错拍倒计时</summary>
         private int strikeArmCountdown = -1;
         private int targetWho = -1;
 
@@ -1208,7 +1205,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             HeartcarverPlayer hcPlayer = Owner.GetModPlayer<HeartcarverPlayer>();
 
-            //收刀不持械：血刃失去心跳，化血消散
+            //收刀不持械则消散
             if (State != DaggerState.Dissolve && State != DaggerState.Strike && !hcPlayer.HoldingHeartcarver) {
                 EnterDissolve();
             }
@@ -1248,7 +1245,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             return MathHelper.Lerp(0.7f, 1.3f, (depth + 1f) * 0.5f);
         }
 
-        /// <summary>凝成：从吸收点弹性飞入轨道槽位</summary>
+        /// <summary>凝成，弹性飞入轨道槽</summary>
         private void CoalescePhase() {
             float progress = MathHelper.Clamp(StateTimer / CoalesceDuration, 0f, 1f);
             float ease = 1f - MathF.Pow(1f - progress, 3f);
@@ -1277,11 +1274,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        /// <summary>环绕：轨道速度与辉光同步拥有者的心跳；监听剜心击信号错拍齐射</summary>
+        /// <summary>环绕，同步心跳；听剜心信号错拍齐射</summary>
         private void OrbitPhase(HeartcarverPlayer hcPlayer) {
             Projectile.timeLeft = 600;
 
-            //心跳踢速：lub 拍瞬间提速，随后指数回落——血刃与心同频
+            //心跳踢速，lub 提速后回落
             if (hcPlayer.BeatPhase == HeartcarverPlayer.LubPhase) {
                 beatKick = 1f;
             }
@@ -1309,7 +1306,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     ?.Configure(Main.rand.Next(12, 20));
             }
 
-            //拥有者端：感知新的剜心击信号，按刃序错拍出击
+            //拥有者端感知剜心信号错拍出击
             if (Projectile.IsOwnedByLocalPlayer()) {
                 if (seenSignalStamp != hcPlayer.CarveSignalStamp) {
                     seenSignalStamp = hcPlayer.CarveSignalStamp;
@@ -1322,7 +1319,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        /// <summary>循声出击：预判目标落点，一帧满速射出（拥有者端触发后同步）</summary>
+        /// <summary>出击，预判落点一帧满速（拥有者端）</summary>
         private void LaunchStrike() {
             Vector2 launchDir;
             if (targetWho >= 0 && targetWho < Main.maxNPCs && Main.npc[targetWho].active) {
@@ -1341,7 +1338,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.7f, Pitch = 0.4f }, Projectile.Center);
-                //出击血浪：血珠沿扑击方向甩出拉丝
+                //出击血浪
                 for (int i = 0; i < 5; i++) {
                     PRTLoader.NewParticle<PRT_HeartcarverDroplet>(Projectile.Center,
                         launchDir.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(5f, 10f),
@@ -1390,7 +1387,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             StateTimer = 0;
         }
 
-        /// <summary>失去心跳支撑：凝血重新化开</summary>
+        /// <summary>失去心跳，凝血化开</summary>
         private void DissolvePhase() {
             dissolveFade = 1f - MathHelper.Clamp(StateTimer / 18f, 0f, 1f);
             Projectile.velocity *= 0.9f;

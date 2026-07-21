@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             );
 
             if (swarmCore >= 0) {
-                //召唤音效：蜂鸣 + 粘液闷响
+                //召唤音效，蜂鸣 + 粘液闷响
                 SoundEngine.PlaySound(SoundID.Item97 with {
                     Volume = 0.85f,
                     Pitch = -0.2f
@@ -64,9 +64,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private static void SpawnSummonEffect(Vector2 position) {
             Vector2 blobPos = position + new Vector2(0f, -54f);
-            //慢蜜滴环形迸出：粘稠上抛后垂坠，落地成斑
+            //慢蜜滴环形迸出
             FishHoneyVFX.DropletBurst(blobPos, Vector2.Zero, 14, 3.2f);
-            //深琥珀微冲击环：暗元素压底，非亮闪
+            //深琥珀微冲击环
             PRTLoader.NewParticle<PRT_DWave>(blobPos, Vector2.Zero, FishHoneyVFX.HoneyDeep, 0.06f)
                 ?.Configure(Vector2.One, 0f, 0.28f, 11);
             //金尘底噪填充
@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private int nextDripInterval = 50;
         private float spawnBeat;
 
-        /// <summary>蜜团视觉中心：悬浮于核心上方并缓慢起伏，产蜂/垂滴/蜜丝皆锚定于此</summary>
+        /// <summary>蜜团视觉中心</summary>
         internal Vector2 BlobCenter => Projectile.Center
             + new Vector2(0f, -54f + MathF.Sin(Main.GlobalTimeWrappedHourly * 1.35f + Projectile.identity * 0.7f) * 5f);
 
@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //产蜂挤压脉冲衰减
             spawnBeat *= 0.86f;
 
-            //蜜滴垂落：粘稠慢滴自蜜团底部坠下成斑
+            //蜜滴垂落
             if (!Main.dedServ && ++dripTimer >= nextDripInterval) {
                 dripTimer = 0;
                 nextDripInterval = Main.rand.Next(42, 66);
@@ -158,7 +158,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 d.noGravity = true;
             }
 
-            //蜜非光源：只留极弱暖光保证夜间可读
+            //蜜非光源
             Lighting.AddLight(BlobCenter, 0.26f, 0.17f, 0.04f);
         }
 
@@ -186,7 +186,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 activeBees.Add(bee);
                 beesSpawned++;
 
-                //产蜂拍：蜜团挤压 + 两粒小蜜滴
+                //产蜂拍
                 spawnBeat = 1f;
                 FishHoneyVFX.DropletBurst(spawnPos, initialVel.SafeNormalize(Vector2.UnitY), 2, 1.5f, 0.5f, false);
 
@@ -217,7 +217,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //蜜团失稳：碎成慢滴垂坠成斑 + 深琥珀微环
+            //蜜团失稳
             FishHoneyVFX.DropletBurst(BlobCenter, Vector2.Zero, 8, 3f);
             PRTLoader.NewParticle<PRT_DWave>(BlobCenter, Vector2.Zero, FishHoneyVFX.HoneyDeep, 0.08f)
                 ?.Configure(Vector2.One, 0f, 0.3f, 12);
@@ -238,7 +238,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 center = BlobCenter;
 
             if (fx == null || CWRAsset.PerlinNoise?.Value == null) {
-                //shader 未就绪降级：暗琥珀软团 + 小高光点
+                //shader 未就绪降级
                 Texture2D soft = CWRAsset.SoftGlow?.Value;
                 if (soft != null) {
                     float a = reveal * (1f - dissolve);
@@ -296,9 +296,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     #endregion
 
     #region 蜜蜂仆从
-    /// <summary>
-    /// 蜂蜜鱼召唤的蜜蜂仆从
-    /// </summary>
+    /// <summary>蜂蜜鱼召唤的蜜蜂仆从</summary>
     internal class HoneyBeeMinion : ModProjectile
     {
         public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.Bee;
@@ -338,7 +336,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private int spawnAge;
         private bool facingRight;
         private float dashBoost = 1f;
-        //蜜丝：strandLiveAnchor=锚定蜜团（出生脐带丝），否则锚定固定出发点（出击拖丝）
+        //蜜丝
         private bool strandActive;
         private bool strandLiveAnchor;
         private Vector2 strandAnchorPos;
@@ -386,7 +384,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             StateTimer++;
 
-            //出生化形：自蜜团生出，蜜釉渐褪、体量缓起（禁 pop-in）
+            //出生化形
             if (spawnAge == 0) {
                 strandActive = true;
                 strandLiveAnchor = true;
@@ -397,7 +395,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             spawnAge++;
             Projectile.scale = spawnAge < 10 ? MathHelper.Lerp(0.45f, 1f, 1f - MathF.Pow(1f - spawnAge / 10f, 3f)) : 1f;
 
-            //动画帧：快扇翅
+            //动画帧，快扇翅
             Projectile.frameCounter++;
             if (Projectile.frameCounter >= 3) {
                 Projectile.frameCounter = 0;
@@ -459,7 +457,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return lastStrandAnchor;
         }
 
-        /// <summary>断丝：颈点迸微滴，残端进入回缩</summary>
+        /// <summary>断丝</summary>
         private void SnapStrand(Vector2 anchor, float dist) {
             strandActive = false;
             stubTimer = 1f;
@@ -487,13 +485,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             float spd = Projectile.velocity.Length();
             if (State == BeeState.Seeking && StateTimer > WindupFrames && spd > 7f) {
-                //突进：机身对齐速度方向
+                //突进，机身对齐速度方向
                 Projectile.rotation = facingRight
                     ? Projectile.velocity.ToRotation()
                     : Projectile.velocity.ToRotation() + MathHelper.Pi;
             }
             else {
-                //悬停：轻微俯仰
+                //悬停，轻微俯仰
                 Projectile.rotation = MathHelper.Clamp(Projectile.velocity.Y * 0.05f, -0.35f, 0.35f) * (facingRight ? 1f : -1f);
             }
         }
@@ -505,7 +503,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //环绕核心运动：个体半径呼吸差异让蜂群更有机
+            //环绕核心运动
             float angle = Main.GlobalTimeWrappedHourly * 2f + BeeIndex * MathHelper.TwoPi / 12f;
             float radius = OrbitRadius + MathF.Sin(Main.GlobalTimeWrappedHourly * 0.9f + BeeIndex * 2.1f) * 10f;
             Vector2 targetPos = coreProj.Center + angle.ToRotationVector2() * radius;
@@ -540,7 +538,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             NPC target = Main.npc[targetNPCID];
 
-            //攻击拍：预告（后拉蓄势、躁动）→ 过冲释放（一帧满速）→ 追击
+            //攻击拍
             if (StateTimer <= WindupFrames) {
                 Vector2 away = (Projectile.Center - target.Center).SafeNormalize(Vector2.UnitY);
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, away * 3.2f, 0.25f);
@@ -548,7 +546,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Vector2 dir = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitX);
                     Projectile.velocity = dir * MaxSpeed * 1.35f;
                     dashBoost = 1.35f;
-                    //出击拖蜜丝：锚定出发点
+                    //出击拖蜜丝，锚定出发点
                     strandActive = true;
                     strandLiveAnchor = false;
                     strandAnchorPos = Projectile.Center;
@@ -564,7 +562,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //追踪目标
             MoveTowards(target.Center, 1.2f * dashBoost);
 
-            //急飞甩蜜：偶发小滴向后甩落
+            //急飞甩蜜，偶发小滴向后甩落
             if (!Main.dedServ && Projectile.velocity.Length() > 9f && Main.rand.NextBool(6)) {
                 PRTLoader.NewParticle<PRT_FishHoneyDrop>(Projectile.Center, -Projectile.velocity * 0.12f
                     , FishHoneyVFX.HoneyAmber, Main.rand.NextFloat(0.3f, 0.5f))?.Configure(Main.rand.Next(26, 40), 0.15f, true);
@@ -606,7 +604,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 State = BeeState.Orbiting;
                 StateTimer = 0;
 
-                //脱离：拽断的蜜挂丝化两粒小滴
+                //脱离，拽断的蜜挂丝化两粒小滴
                 Vector2 outward = latchOffset.SafeNormalize(-Vector2.UnitY);
                 FishHoneyVFX.DropletBurst(Projectile.Center, outward, 2, 1.6f, 0.5f, false);
                 stubTimer = 1f;
@@ -714,7 +712,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //真实命中拍：小蜜溅 + 双层轻响
+            //真实命中拍
             Vector2 outward = latchOffset == Vector2.Zero ? -Vector2.UnitY : latchOffset.SafeNormalize(-Vector2.UnitY);
             FishHoneyVFX.StingSplash(Projectile.Center, outward);
             SoundEngine.PlaySound(SoundID.NPCHit1 with { Volume = 0.22f, Pitch = 0.5f, MaxInstances = 3 }, Projectile.Center);
@@ -722,7 +720,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnKill(int timeLeft) {
-            //融滴退场：蜂体化为几粒慢蜜滴（禁 pop-out）
+            //融滴退场
             FishHoneyVFX.DropletBurst(Projectile.Center, Vector2.Zero, Main.rand.Next(3, 5), 2.2f, 0.7f);
             FishHoneyVFX.GlugSound(Projectile.Center, 0.15f, 0.22f);
         }
@@ -736,7 +734,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float speed = Projectile.velocity.Length();
             bool dashing = State == BeeState.Seeking && StateTimer > WindupFrames && speed > 7f;
 
-            //嗡嗡感：高频双正弦微抖动叠加在轨道运动上，预告期躁动倍增、附着期收敛
+            //嗡嗡感
             float tt = Main.GameUpdateCount;
             float agit = 1f;
             if (State == BeeState.Seeking && StateTimer <= WindupFrames) {
@@ -750,7 +748,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 MathF.Cos(tt * 0.67f + Projectile.whoAmI * 2.3f) + 0.5f * MathF.Sin(tt * 0.53f + Projectile.whoAmI * 0.9f)
             ) * (1.25f * agit);
 
-            //附着啄刺节律：蓄-刺-回
+            //附着啄刺节律，蓄-刺-回
             Vector2 jab = Vector2.Zero;
             float stabSquash = 0f;
             if (State == BeeState.Attacking && IsTargetValid()) {
@@ -780,11 +778,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             SpriteEffects effects = facingRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            //出生蜜釉：刚生出的蜂裹着蜜色，渐褪
+            //出生蜜釉
             float glaze = 1f - MathHelper.Clamp(spawnAge / 14f, 0f, 1f);
             Color bodyCol = Color.Lerp(lightColor, FishHoneyVFX.HoneyAmber, 0.3f + glaze * 0.45f);
 
-            //突进残影链：速度方向的旋转拖影
+            //突进残影链，速度方向的旋转拖影
             if (dashing) {
                 for (int k = 3; k >= 1; k--) {
                     if (Projectile.oldPos[k] == Vector2.Zero) {
@@ -809,7 +807,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0
             );
 
-            //翅面微闪：交替帧上一粒极小暖白点（扇翅频率可视化）
+            //翅面微闪
             if (Projectile.frame == 1 || Projectile.frame == 3) {
                 Texture2D glow = CWRAsset.SoftGlow?.Value;
                 if (glow != null) {
@@ -827,7 +825,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 FishHoneyVFX.DrawStrand(Main.spriteBatch, lastStrandAnchor, drawCenter, stretch, 0.9f);
             }
             else if (stubTimer > 0.05f) {
-                //断丝回缩：残端拖在蜂后收拢
+                //断丝回缩，残端拖在蜂后收拢
                 Vector2 tail = drawCenter - Projectile.velocity.SafeNormalize(Vector2.UnitY) * (26f * stubTimer);
                 FishHoneyVFX.DrawStrand(Main.spriteBatch, tail, drawCenter, 0.4f, 0.7f * stubTimer);
             }

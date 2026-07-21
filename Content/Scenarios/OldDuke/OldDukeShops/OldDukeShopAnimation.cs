@@ -2,7 +2,7 @@
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 {
-    /// <summary>老公爵商店动画状态管理器</summary>
+    /// <summary>商店动画</summary>
     internal class OldDukeShopAnimation
     {
         public float UIAlpha { get; set; }

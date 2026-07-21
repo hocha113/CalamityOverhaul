@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests.OldDuchestUIs
 {
-    /// <summary>老箱子UI - 基于通用箱子框架</summary>
+    /// <summary>老箱子UI</summary>
     internal class OldDuchestUI : BaseChestUI
     {
         public static OldDuchestUI Instance => UIHandleLoader.GetUIHandleOfType<OldDuchestUI>();
@@ -19,20 +19,16 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests.OldDuchestUIs
         public static LocalizedText TitleText;
         public static LocalizedText StorageText;
 
-        //尺寸配置
         public override int PanelWidth => 760;
         public override int PanelHeight => 560;
         public override int SlotsPerRow => 20;
         public override int SlotRows => 12;
 
-        //当前绑定的箱子
         public OldDuchestTP CurrentChest { get; private set; }
         private Point16 chestPosition;
 
-        //本地物品存储
         private readonly List<Item> items = new();
 
-        //组件
         private readonly OldDuchestAnimation _animation = new();
         private readonly OldDuchestEffects _effects = new();
         private OldDuchestRenderer _renderer;
@@ -50,7 +46,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests.OldDuchestUIs
             }
         }
 
-        //--- IChestStorage 实现 ---
 
         public override int UsedSlotCount {
             get {
@@ -72,16 +67,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests.OldDuchestUIs
             items[slot] = item?.Clone() ?? new Item();
         }
 
-        //--- 箱子行为 ---
 
-        /// <summary>
-
-        /// 打开UI并绑定箱子
-
-        /// </summary>
         public void Interactive(OldDuchestTP chest) {
             if (CurrentChest != chest) {
-                //切换箱子前，先保存并关闭旧箱子
+                //换箱先关旧
                 CurrentChest?.CloseUI(player);
 
                 CurrentChest = chest;
@@ -125,7 +114,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests.OldDuchestUIs
             return result;
         }
 
-        //--- BaseChestUI 抽象方法实现 ---
 
         protected override bool ValidateSource() {
             if (CurrentChest == null) return false;

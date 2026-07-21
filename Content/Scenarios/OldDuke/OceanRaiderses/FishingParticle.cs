@@ -94,7 +94,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
             float targetRadius = MathHelper.Lerp(spiralRadius, 15f, heightProgress);
             spiralRadius = MathHelper.Lerp(spiralRadius, targetRadius, 0.1f);
 
-            //计算螺旋位置
             Vector2 offset = spiralAngle.ToRotationVector2() * spiralRadius;
 
             //添加上下波动
@@ -143,11 +142,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
 
             Vector2 drawPos = Position - Main.screenPosition;
 
-            //绘制主体
             spriteBatch.Draw(texture, drawPos, null, drawColor, Rotation,
                 texture.Size() / 2, Scale * 0.5f, SpriteEffects.None, 0);
 
-            //在水龙卷中绘制光晕
             if (inVortex && alpha > 0.3f) {
                 Color glowColor = new Color(100, 200, 255, 0) * (alpha * 0.4f);
                 spriteBatch.Draw(texture, drawPos, null, glowColor, Rotation,

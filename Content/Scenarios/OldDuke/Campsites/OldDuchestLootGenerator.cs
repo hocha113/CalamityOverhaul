@@ -8,44 +8,28 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
     /// <summary>老箱子战利品生成器</summary>
     internal static class OldDuchestLootGenerator
     {
-        /// <summary>
-
-        /// 6分钟 = 360秒 = 21600帧
-
-        /// </summary>
+        /// <summary>刷新周期 6min=21600帧</summary>
         internal const int RefreshInterval = 21600;
 
-        /// <summary>
-
-        /// 生成每日刷新的箱子内容
-
-        /// </summary>
         public static List<Item> GenerateDailyLoot() {
 
             List<Item> loot = [];
             UnifiedRandom rand = Main.rand;
 
-            //钱币奖励
             AddCoinReward(loot, rand);
 
-            //根据进度添加老公爵掉落物
             if (InWorldBossPhase.Downed23.Invoke() || InWorldBossPhase.Downed26.Invoke()) {
-                //老公爵相关掉落物
                 AddOldDukeDrops(loot, rand);
             }
 
-            //海洋主题物品
             AddOceanThemeItems(loot, rand);
 
-            //随机药水和消耗品
             AddPotionsAndConsumables(loot, rand);
 
-            //稀有材料
             if (rand.NextDouble() < 0.3) {
                 AddRareMaterials(loot, rand);
             }
 
-            //特殊武器装备
             if (rand.NextDouble() < 0.2) {
                 AddSpecialWeapons(loot, rand);
             }
@@ -85,7 +69,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             HashSet<int> oldDukeDrops = VaultUtils.GetNPCDrops(CWRID.NPC_OldDuke, true);
             List<int> qualityDrops = [];
 
-            //筛选高价值物品
             foreach (int drop in oldDukeDrops) {
                 Item item = new Item(drop);
                 if (item.value > 6000 * 30) {
@@ -97,7 +80,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 return;
             }
 
-            //随机选择3到6个物品
             int itemCount = random.Next(3, 7);
             for (int i = 0; i < itemCount && loot.Count < 240; i++) {
                 if (qualityDrops.Count == 0) {
@@ -112,11 +94,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 item.SetDefaults(itemType);
                 item.stack = 1;
 
-                //如果是武器类添加随机词缀
                 if (IsWeapon(item)) {
                     item.Prefix(-1);
                 }
-                //如果是装备类添加随机词缀
                 else if (IsEquipment(item)) {
                     item.Prefix(-1);
                 }
@@ -173,7 +153,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 loot.Add(potion);
             }
 
-            //钓鱼饵料
             if (random.NextDouble() < 0.6) {
                 int[] baitItems = [
                     ItemID.MasterBait,
@@ -236,7 +215,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             Item weapon = new Item();
             weapon.SetDefaults(weaponType);
 
-            //为武器添加随机词缀
             if (IsWeapon(weapon)) {
                 weapon.Prefix(-1);
             }
@@ -252,11 +230,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             return item.accessory || item.defense > 0;
         }
 
-        /// <summary>
-
-        /// 根据游戏时间生成种子 每6分钟(21600游戏帧)刷新一次
-
-        /// </summary>
+        /// <summary>按游戏时间种子，每6min一轮</summary>
         public static int GetGameTimeSeed() {
             uint currentGameTime = Main.GameUpdateCount;
             int refreshCycle = (int)(currentGameTime / RefreshInterval);
@@ -266,7 +240,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
         public static int GetTimeUntilNextRefresh() {
             uint currentGameTime = Main.GameUpdateCount;
             int remainingFrames = (int)(RefreshInterval - currentGameTime % RefreshInterval);
-            return remainingFrames / 60; //转换为秒
+            return remainingFrames / 60;//秒
         }
     }
 }

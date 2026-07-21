@@ -1,6 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
-    /// <summary>菌生蟹常量</summary>
+    /// <summary>常量</summary>
     internal static class CrabulonConstants
     {
         //生命

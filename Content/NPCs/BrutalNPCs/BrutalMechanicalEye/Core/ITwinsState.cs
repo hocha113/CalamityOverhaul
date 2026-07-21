@@ -3,61 +3,56 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
 {
-    /// <summary>双子魔眼状态索引，网络同步用；魔焰/激光眼共用</summary>
+    /// <summary>状态索引，网络同步，双眼共用</summary>
     internal enum TwinsStateIndex : int
     {
-        //魔焰眼一阶段
+        //魔焰一阶段
         SpazmatismHoverShoot = 0,
         SpazmatismDashPrepare = 1,
         SpazmatismDashing = 2,
         SpazmatismFireVortex = 3,
-        //魔焰眼二阶段
+        //魔焰二阶段
         SpazmatismFlameChase = 4,
         SpazmatismPhase2DashPrepare = 5,
         SpazmatismPhase2Dashing = 6,
         SpazmatismShadowDash = 7,
         SpazmatismFlameStorm = 8,
         SpazmatismSoloRage = 9,
-        //激光眼一阶段
+        //激光一阶段
         RetinazerHoverShoot = 10,
         RetinazerRepositionState = 11,
         RetinazerFocusedBeam = 12,
-        //激光眼二阶段
+        //激光二阶段
         RetinazerVerticalBarrage = 13,
         RetinazerHorizontalBarrage = 14,
         RetinazerLaserSweep = 15,
         RetinazerLaserMatrix = 16,
         RetinazerPrecisionSniper = 17,
         RetinazerSoloRage = 18,
-        //公共状态
+        //公共
         TwinsPhaseTransition = 19,
         TwinsCombinedAttack = 20,
-        //死亡演出（每只眼睛独立播放）
+        //死亡演出，每眼独立
         TwinsDeath = 21,
-        //合击体系
+        //合击
         TwinsCrossDash = 22,
         TwinsTetherSweep = 23,
         TwinsScissorRay = 24,
     }
 
-    /// <summary>双子魔眼状态接口</summary>
     internal interface ITwinsState : IVaultState<TwinsStateContext>
     {
-        /// <summary>状态索引，网络同步</summary>
+        /// <summary>状态索引，同步</summary>
         TwinsStateIndex StateIndex { get; }
 
-        /// <summary>进入状态时调用</summary>
         void OnEnter(TwinsStateContext context);
 
-        /// <summary>状态更新，每帧调用</summary>
-        /// <returns>返回下一个状态，返回null表示保持当前状态</returns>
+        /// <returns>下一态，null=保持</returns>
         ITwinsState OnUpdate(TwinsStateContext context);
 
-        /// <summary>离开状态时调用</summary>
         void OnExit(TwinsStateContext context);
     }
 
-    /// <summary>双子魔眼状态基类</summary>
     internal abstract class TwinsStateBase : VaultState<TwinsStateContext>, ITwinsState
     {
         public override int StateId => (int)StateIndex;
@@ -89,7 +84,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
 
         #region 工具方法
 
-        /// <summary>平滑移动到目标点</summary>
         protected void MoveTo(NPC npc, Vector2 target, float speed, float inertia) {
             Vector2 direction = target - npc.Center;
             if (direction.Length() > 0.01f) {
@@ -99,29 +93,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
             npc.velocity = (npc.velocity * (1f - inertia)) + (desiredVelocity * inertia);
         }
 
-        /// <summary>朝向目标旋转</summary>
         protected void FaceTarget(NPC npc, Vector2 targetCenter) {
             npc.rotation = (targetCenter - npc.Center).ToRotation() - MathHelper.PiOver2;
         }
 
-        /// <summary>朝向速度方向旋转</summary>
         protected void FaceVelocity(NPC npc) {
             if (npc.velocity.Length() > 0.1f) {
                 npc.rotation = npc.velocity.ToRotation() - MathHelper.PiOver2;
             }
         }
 
-        /// <summary>获取到玩家的方向向量</summary>
         protected Vector2 GetDirectionToTarget(TwinsStateContext context) {
             return (context.Target.Center - context.Npc.Center).SafeNormalize(Vector2.UnitY);
         }
 
-        /// <summary>启用接触伤害(冲刺等体术)</summary>
+        /// <summary>开接触伤</summary>
         protected void EnableContactDamage(NPC npc) {
             npc.damage = npc.defDamage;
         }
 
-        /// <summary>禁用接触伤害</summary>
+        /// <summary>关接触伤</summary>
         protected void DisableContactDamage(NPC npc) {
             npc.damage = 0;
         }

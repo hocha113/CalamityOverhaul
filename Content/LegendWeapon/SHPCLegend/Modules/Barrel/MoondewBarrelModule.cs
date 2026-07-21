@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>月露枪管：光束凝露珠棱镜，后续束折射为短程派生束</summary>
+    /// <summary>月露枪管，凝露珠棱镜，后续束折射短程派生</summary>
     internal sealed class MoondewBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -26,14 +26,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             ctx.ManaCostMul += 0.36f;
         }
 
-        //同主同时存在的月露棱镜上限
+        //同主棱镜上限
         private const int MaxConcurrentPrisms = 4;
-        //同点 80px 内已有棱镜则跳过本次生成
+        //同点80px内已有则跳过
         private const float MinSpacing = 80f;
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
             if (beam.IsDerived || beam.Projectile.owner != Main.myPlayer) return;
-            //夜晚 + 上半月相加快节奏，普通时段更稀疏
+            //夜+上半月加快节奏
             int interval = !Main.dayTime && Main.moonPhase <= 2 ? 36 : 60;
             if ((Main.GameUpdateCount + (uint)beam.Projectile.whoAmI) % (uint)interval != 0) return;
             int prismType = ModContent.ProjectileType<SHPCMoondewPrismProj>();
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>月露棱镜弹幕</summary>
+    /// <summary>月露棱镜</summary>
     internal sealed class SHPCMoondewPrismProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override bool ShouldUpdatePosition() => false;
 
-        //折射扫描节流：每 4 帧才扫一次全弹幕表
+        //折射扫描，每4帧
         private const int RefractScanInterval = 4;
 
         public override void AI() {
@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 && Projectile.localAI[0] < MaxRefractions()) {
                 TryRefractBeam();
             }
-            //偶发月华火星（节流到 12 帧）
+            //月华火星，12帧节流
             if (Main.netMode == NetmodeID.Server || Main.GameUpdateCount % 12 != 0) return;
             PRTLoader.NewParticle<PRT_Sparkle>(Projectile.Center + Main.rand.NextVector2Circular(20f, 20f), Main.rand.NextVector2Circular(0.5f, 0.5f), new Color(220, 240, 255), Main.rand.NextFloat(0.3f, 0.65f)).Configure(new Color(120, 170, 230), Main.rand.Next(16, 28), Main.rand.NextFloat(-0.15f, 0.15f), 0.7f);
         }
@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     beam.IsDerived = true;
                     beam.LifeMul = 0.32f;
                 }
-                //追加一发短 Trail 闪光，纯视觉，3 帧寿命
+                //短 Trail 闪光，纯视觉
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, dir,
                     ModContent.ProjectileType<SHPCMoondewRefractFlashProj>(), 0, 0f, Projectile.owner);
                 Projectile.localAI[0]++;
@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 Main.spriteBatch.Draw(star, baseScreen, null,
                     new Color(220, 240, 255, 0) * pulse, Projectile.rotation, starOrigin, 0.18f, SpriteEffects.None, 0f);
             }
-            //满折射夜晚：淡黄月相光环
+            //满折射夜，月相光环
             if (MaxRefractions() == 3) {
                 Texture2D cyclone = CWRAsset.Cyclone?.Value;
                 if (cyclone != null) {
@@ -139,23 +139,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null) return;
             Vector2 baseScreen = Projectile.Center - Main.screenPosition;
-            //RGB 三色微偏（仿色散）
+            //RGB 微偏色散
             Color rCol = new Color(255, 80, 80, 0) * 0.5f;
             Color gCol = new Color(80, 255, 140, 0) * 0.5f;
             Color bCol = new Color(140, 180, 255, 0) * 0.5f;
             SHPCNaturalFx.GlowLayered(spriteBatch, glow, baseScreen + new Vector2(-2f, 0f), rCol, rCol * 0.4f, 0.6f, 0f, 2);
             SHPCNaturalFx.GlowLayered(spriteBatch, glow, baseScreen + new Vector2(2f, 0f), gCol, gCol * 0.4f, 0.6f, 0f, 2);
             SHPCNaturalFx.GlowLayered(spriteBatch, glow, baseScreen + new Vector2(0f, 2f), bCol, bCol * 0.4f, 0.6f, 0f, 2);
-            //叠 1 层白色核心
+            //白核心
             SHPCNaturalFx.GlowLayered(spriteBatch, glow, baseScreen,
                 new Color(220, 240, 255, 0) * 0.7f,
                 new Color(120, 160, 220, 0) * 0.4f, 0.5f, 0f, 2);
         }
     }
 
-    /// <summary>
-    /// 月露折射闪光：3 段折线 Trail（CyberDataArc shader），3 帧寿命，纯视觉装饰
-    /// </summary>
+    /// <summary>月露折射闪光，折线 Trail，纯视觉</summary>
     internal sealed class SHPCMoondewRefractFlashProj : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -183,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override void AI() {
             if (points != null) return;
-            //3 段折线，沿 velocity 方向延伸 60px，附加垂直噪声
+            //折线沿速度延60px+垂噪
             Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
             points = new Vector2[5];

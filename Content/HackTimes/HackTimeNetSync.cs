@@ -9,19 +9,16 @@ namespace CalamityOverhaul.Content.HackTimes
     /// <summary>骇客协议多人同步，远端仅复刻视觉</summary>
     internal static class HackTimeNetSync
     {
-        /// <summary>当前是否处于远端复刻，OnApply 据此跳过权威写入</summary>
+        /// <summary>当前远端复刻中，OnApply 据此跳过权威写入</summary>
         public static bool IsRemoteApply { get; private set; }
 
-        /// <summary>本端施加成功后广播给其它客户端</summary>
-        /// <param name="hack">已上传完成的协议</param>
-        /// <param name="target">协议作用目标</param>
-        /// <param name="casterPlayerIndex">施法者<see cref="Player.whoAmI"/></param>
+        /// <summary>本端施加成功后广播</summary>
         public static void SendApplyPacket(QuickHackDef hack, IHackTarget target, int casterPlayerIndex) {
             if (Main.netMode == NetmodeID.SinglePlayer) return;
             if (hack == null || target == null) return;
 
             HackTargetKind kind = target.TargetType?.Kind ?? HackTargetKind.None;
-            //仅同步 NPC 与物块，索引/坐标跨端稳定
+            //仅 NPC/物块，索引跨端稳定
             if (kind != HackTargetKind.Npc && kind != HackTargetKind.Tile) return;
 
             int npcIndex = -1;
@@ -124,11 +121,11 @@ namespace CalamityOverhaul.Content.HackTimes
             }
             if (target == null || !target.IsValid) return;
 
-            //施法者断线时回退 LocalPlayer，远端复刻仅播视觉
+            //施法者断线回退 LocalPlayer，远端仅视觉
             Player caster = casterPlayerIndex < Main.maxPlayers ? Main.player[casterPlayerIndex] : null;
             if (caster == null || !caster.active) caster = Main.LocalPlayer;
 
-            //IsRemoteApply 下 OnApply 仅播视觉，跳过伤害/状态/入队
+            //IsRemoteApply 下跳过伤害/状态/入队
             bool prev = IsRemoteApply;
             IsRemoteApply = true;
             try {

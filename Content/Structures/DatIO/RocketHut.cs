@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Structures.DatIO
         private static void SetChestItem(RegionSaveData regionSaveData, Point16 orig) {
             foreach (var chestTag in regionSaveData.Chests) {
                 ChestSaveData chestSaveData = ChestSaveData.FromTag(chestTag);
-                //需要注意这里chestSaveData拿到的坐标只是相对坐标，所以需要加上orig
+                //chestSaveData 相对坐标，需加 orig
                 int chestIndex = Chest.FindChest(orig.X + chestSaveData.X, orig.Y + chestSaveData.Y);
                 if (chestIndex < 0) {
                     continue;

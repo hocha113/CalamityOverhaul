@@ -3,7 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>超杀机匣：击杀叠层最多 15，每层 +2% 伤；衰减由 SHPCPlayer 托管</summary>
+    /// <summary>超杀机匣，击杀叠层≤15 每层 +2% 伤，衰减交 SHPCPlayer</summary>
     internal sealed class OverkillFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;

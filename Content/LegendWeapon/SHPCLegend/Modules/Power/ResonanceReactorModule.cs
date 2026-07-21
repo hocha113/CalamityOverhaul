@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>共振反应堆：蓄力周期共振环，引爆时脚下额外冲击</summary>
+    /// <summary>共振反应堆，蓄力共振环，引爆时脚下冲击</summary>
     internal sealed class ResonanceReactorModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;
@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         }
 
         public override void OnOrbDetonation(CyberChargeOrbProj orb) {
-            //引爆点已有主爆，玩家脚下追加一个共振冲击：覆盖近战补足
+            //脚下共振冲击，补近战空档
             if (orb.Projectile.owner != Main.myPlayer) return;
             Player owner = Main.player[orb.Projectile.owner];
             if (owner == null || !owner.active) return;

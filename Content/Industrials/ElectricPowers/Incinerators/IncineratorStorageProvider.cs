@@ -7,9 +7,7 @@ using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
 {
-    /// <summary>
-    /// 电炉存储提供者工厂
-    /// </summary>
+    /// <summary>电炉存储工厂</summary>
     internal class IncineratorStorageProviderFactory : IStorageProviderFactory
     {
         public string Identifier => "CWR.Incinerator";
@@ -28,11 +26,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         }
     }
 
-    /// <summary>
-    /// 电炉的统一存储提供者
-    /// 存入物品时：检查材料槽（InputItem），只接受可熔炼的物品
-    /// 取出物品时：从成品槽（OutputItem）取出
-    /// </summary>
+    /// <summary>电炉存储；存入看InputItem，取出看OutputItem</summary>
     internal class IncineratorStorageProvider : IStorageProvider
     {
         private readonly IncineratorTP _incineratorTP;
@@ -62,9 +56,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             }
         }
 
-        /// <summary>
-        /// 检查材料槽是否有空间（存入判断）
-        /// </summary>
+        /// <summary>材料槽有空位</summary>
         public bool HasSpace {
             get {
                 if (!IsValid) {
@@ -76,19 +68,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                     return false;
                 }
 
-                //材料槽为空
-                if (incData.InputItem == null || incData.InputItem.IsAir) {
+                    if (incData.InputItem == null || incData.InputItem.IsAir) {
                     return true;
                 }
 
-                //检查是否有堆叠空间
+                //堆叠空间
                 return incData.InputItem.stack < incData.InputItem.maxStack;
             }
         }
 
-        /// <summary>
-        /// 检查成品槽是否有物品可取
-        /// </summary>
+        /// <summary>成品槽有货</summary>
         public bool HasOutput {
             get {
                 if (!IsValid) {
@@ -112,11 +101,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             return new IncineratorStorageProvider(tp);
         }
 
-        /// <summary>
-        /// 在指定范围内查找电炉
-        /// 如果item有效，查找可以接受该物品的电炉（材料槽）
-        /// 如果item无效/空，查找有成品可取的电炉（成品槽）
-        /// </summary>
+        /// <summary>范围内找电炉；item有效查可存，空item查可取</summary>
         public static IncineratorStorageProvider FindNearPosition(Point16 position, int range, Item item) {
             float rangeSQ = range * range;
             IncineratorTP nearestTP = null;
@@ -141,13 +126,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                 var provider = new IncineratorStorageProvider(tp);
 
                 if (isDepositQuery) {
-                    //存入查询：检查材料槽是否可以接受物品
+                    //存入，材料槽可接
                     if (!provider.CanAcceptItem(item)) {
                         continue;
                     }
                 }
                 else {
-                    //取出查询：检查成品槽是否有物品
+                    //取出，成品槽有货
                     if (!provider.HasOutput) {
                         continue;
                     }
@@ -169,16 +154,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             return new IncineratorStorageProvider(tp);
         }
 
-        /// <summary>
-        /// 检查是否可以接受物品（存入材料槽）
-        /// 只接受可熔炼的物品
-        /// </summary>
+        /// <summary>材料槽可否接(仅可熔炼)</summary>
         public bool CanAcceptItem(Item item) {
             if (!IsValid || item == null || item.IsAir) {
                 return false;
             }
 
-            //检查是否是可熔炼的物品
             if (!IncineratorRecipes.CanSmelt(item)) {
                 return false;
             }
@@ -188,12 +169,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                 return false;
             }
 
-            //材料槽为空
-            if (incData.InputItem == null || incData.InputItem.IsAir) {
+                if (incData.InputItem == null || incData.InputItem.IsAir) {
                 return true;
             }
 
-            //相同类型且可堆叠
             if (incData.InputItem.type == item.type && incData.InputItem.stack < incData.InputItem.maxStack) {
                 return true;
             }

@@ -14,32 +14,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         /// <summary>最大层数</summary>
         public const int MaxLayerCount = 3;
 
-        /// <summary>
-        /// 激活/升层最低应能维持的秒数
-        /// </summary>
+        /// <summary>激活/升层最低维持秒数</summary>
         public const float MinSustainSeconds = 1f;
 
-        /// <summary>
-        /// RAM 崩溃后强制锁定的剩余帧数
-        /// </summary>
+        /// <summary>RAM 崩溃锁定帧</summary>
         internal const int CrashLockoutFrames = 90;
 
-        /// <summary>
-        /// 领域中心缓动总帧数
-        /// </summary>
+        /// <summary>领域中心缓动总帧</summary>
         internal const int DomainEaseTotal = 28;
 
-        /// <summary>
-        /// 玩家速度换算 MotionFade 的满速度阈值
-        /// </summary>
+        /// <summary>MotionFade 满速度阈值</summary>
         internal const float MotionFadeFullSpeed = 5.5f;
 
         //每层半径相对于基础半径的倍率
         private static readonly float[] LayerRadiusScale = { 1.0f, 1.7f, 2.6f };
 
-        /// <summary>
-        /// 各层维持领域时每秒消耗的 RAM 量
-        /// </summary>
+        /// <summary>各层每秒 RAM 消耗</summary>
         public static readonly float[] LayerRamDrainPerSecond = { 0.4f, 1.6f, 6f };
 
         //爆发阶段每层持续帧数
@@ -51,26 +41,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         //收缩 lerp 速率，高层更缓
         internal static readonly float[] ContractLerps = { 0.050f, 0.030f, 0.020f };
 
-        /// <summary>
-        /// 基础半径，跨玩家共享的视觉配置
-        /// </summary>
+        /// <summary>基础半径，跨玩家共享</summary>
         public static float BaseRadius = 600f;
 
-        /// <summary>
-        /// 方形栅格单元边长
-        /// </summary>
+        /// <summary>栅格单元边长</summary>
         public static float GridSize = 24f;
 
-        /// <summary>
-        /// 场景压暗强度
-        /// </summary>
+        /// <summary>场景压暗强度</summary>
         public static float DimStrength = 0.85f;
 
         //====== 玩家访问器 ======
 
-        /// <summary>
-        /// 取指定玩家的领域状态实例；玩家未就绪时返回 null
-        /// </summary>
+        /// <summary>指定玩家领域状态，未就绪 null</summary>
         internal static CyberspacePlayer For(Player p) {
             if (p == null || !p.active) {
                 return null;
@@ -78,9 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             return p.GetModPlayer<CyberspacePlayer>();
         }
 
-        /// <summary>
-        /// 取指定玩家索引的领域状态实例；越界或玩家未就绪时返回 null
-        /// </summary>
+        /// <summary>按索引取领域状态，越界/未就绪 null</summary>
         internal static CyberspacePlayer For(int whoAmI) {
             if (whoAmI < 0 || whoAmI >= Main.maxPlayers) {
                 return null;
@@ -88,9 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             return For(Main.player[whoAmI]);
         }
 
-        /// <summary>
-        /// 本地玩家的领域状态实例；玩家未就绪时返回 null
-        /// </summary>
+        /// <summary>本地玩家领域状态，未就绪 null</summary>
         internal static CyberspacePlayer Local => For(Main.LocalPlayer);
 
         /// <summary>枚举视觉仍活跃的玩家领域</summary>
@@ -99,13 +77,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 Player p = Main.player[i];
                 if (p == null || !p.active) continue;
                 CyberspacePlayer cp = p.GetModPlayer<CyberspacePlayer>();
-                //仅按视觉强度判定，覆盖关闭后还未收缩完毕的尾段
+                //按视觉强度，含关闭收缩尾
                 if (cp.Intensity < 0.001f) continue;
                 yield return cp;
             }
         }
 
-        //====== 转发到本地玩家的属性（仅供 UI / 按键 / HUD 等明确为本地语义的调用点） ======
+        //====== 转发本地玩家属性（UI/按键/HUD） ======
 
         public static bool Active => Local?.Active ?? false;
 
@@ -145,9 +123,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             return BaseRadius * LayerRadiusScale[layerIndex];
         }
 
-        /// <summary>
-        /// 指定层(1..MaxLayerCount)的 RAM 每秒消耗量
-        /// </summary>
+        /// <summary>指定层(1..Max)每秒 RAM</summary>
         public static float GetLayerDrainRate(int layer) {
             if (layer < 1 || layer > MaxLayerCount) {
                 return 0f;
@@ -155,9 +131,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             return LayerRamDrainPerSecond[layer - 1];
         }
 
-        /// <summary>
-        /// 本地玩家当前层的 RAM 每秒消耗量
-        /// </summary>
+        /// <summary>本地当前层每秒 RAM</summary>
         public static float GetCurrentDrainRate() {
             int layer = CurrentLayer;
             if (!Active || layer < 1 || layer > MaxLayerCount) {
@@ -225,9 +199,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>
-        /// 重置所有在线玩家的领域状态
-        /// </summary>
+        /// <summary>重置在线玩家领域状态</summary>
         public static void Reset() {
             for (int i = 0; i < Main.maxPlayers; i++) {
                 Player p = Main.player[i];

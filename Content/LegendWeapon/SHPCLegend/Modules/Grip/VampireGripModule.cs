@@ -3,7 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>虬血握把：光束/激光命中按比例吸血</summary>
+    /// <summary>虬血握把，光束/激光按比例吸血</summary>
     internal sealed class VampireGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;

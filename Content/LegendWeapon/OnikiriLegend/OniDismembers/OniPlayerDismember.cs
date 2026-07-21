@@ -35,35 +35,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         public int SnapHeight;
         public bool Captured;
         public float DriftMax;
-        //捕获帧的姿态参数：快照定格在反噬落下的那一瞬
+        //捕获帧的姿态参数、快照定格在反噬落下的那一瞬
+
         public int Direction;
         public float GravDir;
         public Rectangle BodyFrame;
         public Rectangle LegFrame;
         //单刀两片（退化时整身单片不滑）
+
         public readonly List<Vector2[]> Pieces = [];
         public readonly List<sbyte> PieceSides = [];
         public readonly List<float> PieceSpins = [];
         public readonly List<float> PieceJitters = [];
     }
 
-    /// <summary>
-    /// 反噬肢解管理器：肢解敌人时，同等的肢解落回持刀人自己——刀无善恶，斩人亦斩己。<br/>
-    /// 代价两层：必定伤害（最大生命 <see cref="SelfHurtFraction"/>，无视防御/闪避，无敌帧亦不挡）
-    /// 加全程约一秒的完全暴露僵直（不免伤、不可操作）；反噬足以夺命，残血强行肢解即自尽。<br/>
-    /// 与敌方肢解（<see cref="OniDismember"/>）镜像但不相同：敌人的碎片滑开后尸身淡出，
-    /// 玩家的两半滑开悬停后<b>回拢弥合</b>。<br/>
-    /// 时间轴：伤口亮起呼吸(<see cref="HoldFrames"/>) → 裂开滑移(<see cref="DriftFrames"/>) →
-    /// 悬停(<see cref="RestFrames"/>) → 回拢(<see cref="KnitFrames"/>) → 弥合闪光(<see cref="SealFrames"/>) → 解锁。<br/>
-    /// 视觉复用肢解管线：<see cref="PlayerCloneRenderer"/> 傀儡快照进专属 RT（本色、无手持物）、
-    /// <see cref="OniDismember.ClipHalfPlane"/> 裁片、<c>OniDismember.fx</c> 断面辉光；
-    /// 本体经 <see cref="OniPlayerDismemberHideOverride"/> 隐藏。<br/>
-    /// 由 <see cref="OniSeverStrike"/> 的同步时间轴在各端确定性触发（服务器无条目，玩家位置本就客户端权威），
-    /// 伤害仅 owner 端结算后由原版受伤包同步；操控锁只在本人客户端生效（<see cref="OniPlayerDismemberLock"/>）
-    /// </summary>
+    /// <summary>玩家肢解. 自伤+镜头</summary>
     internal class OniPlayerDismember : ICWRLoader
     {
-        /// <summary>反噬必定伤害：最大生命比例，无视防御与闪避</summary>
+        /// <summary>反噬必定伤害、最大生命比例，无视防御与闪避</summary>
         public const float SelfHurtFraction = 0.25f;
         /// <summary>伤口亮起 → 裂开的滞拍帧数</summary>
         public const int HoldFrames = 8;
@@ -77,7 +66,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         public const int SealFrames = 6;
         /// <summary>总时长 = 锁定时长</summary>
         public const int TotalFrames = HoldFrames + DriftFrames + RestFrames + KnitFrames + SealFrames;
-        //快照 RT 边长：兜住身体+翅膀/披风等装备层
+        //快照 RT 边长、兜住身体+翅膀/披风等装备层
+
         private const int SnapSize = 176;
 
         /// <summary>所有活跃反噬状态</summary>
@@ -90,24 +80,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             Main.QueueMainThreadAction(DisposeAllSnapshots);
         }
 
-        //==================== 公开接口 ====================
-
         /// <summary>该玩家是否处于反噬僵直（锁操控、隐本体、禁再肢解）</summary>
         public static bool IsLocked(Player player)
             => player != null && GetEntry(player.whoAmI) != null;
 
-        /// <summary>
-        /// 落下反噬：必定伤害先落（owner 端结算，原版受伤包同步），玩家当帧定格，
-        /// 同角度的切线裂开身体，回拢弥合后解锁；反噬致死则不再有回拢。
-        /// 由 <see cref="OniSeverStrike"/> 在所有端调用（服务器静默跳过）
-        /// </summary>
+        /// <summary>落下反噬、必定伤害先落（owner 端结算，原版受伤包同步），玩家当帧定格</summary>
         public static void Trigger(Player player, float cutAngle) {
             if (Main.dedServ || player == null || !player.active || player.dead) {
                 return;
             }
 
-            //必定伤害：无视防御（穿透系数 1）、不可闪避，清无敌帧保证这一刀永远落下；
+            //必定伤害、无视防御（穿透系数 1）、不可闪避，清无敌帧保证这一刀永远落下；
+
             //刀无善恶，残血强行肢解即自尽
+
             if (player.whoAmI == Main.myPlayer) {
                 int selfDamage = Math.Max((int)(player.statLifeMax2 * SelfHurtFraction), 1);
                 player.immune = false;
@@ -117,6 +103,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                     , selfDamage, 0, dodgeable: false, scalingArmorPenetration: 1f, knockback: 0f);
                 if (player.dead) {
                     return; //死亡流程接管，僵直与弥合都不再有意义
+
                 }
             }
 
@@ -128,6 +115,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 AnchorCenter = player.Center,
                 CutAngle = cutAngle,
                 //落刀点带一点身位内的随机偏移，避免每次都从正中剖开
+
                 CutPointLocal = new Vector2(Main.rand.NextFloat(-8f, 8f), Main.rand.NextFloat(-12f, 12f)),
                 CutNormal = new Vector2(-dir.Y, dir.X),
                 SnapWidth = SnapSize,
@@ -141,7 +129,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             BuildPieces(entry);
             Entries.Add(entry);
 
-            //位移类挂点立即斩断：反噬期间人钉在原地
+            //位移类挂点立即斩断、反噬期间人钉在原地
+
             if (player.whoAmI == Main.myPlayer) {
                 if (player.mount?.Active == true) {
                     player.mount.Dismount(player);
@@ -150,7 +139,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
             player.velocity = Vector2.Zero;
 
-            //伤口亮起：与肢解切口同语汇的嘶声
+            //伤口亮起、与肢解切口同语汇的嘶声
+
             SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.55f, Volume = 0.45f }, player.Center);
         }
 
@@ -162,8 +152,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
             return null;
         }
-
-        //==================== 几何与运动 ====================
 
         /// <summary>整身 quad 沿切线裁成两片；贴角掠过等退化情况保留整身单片不滑</summary>
         private static void BuildPieces(PlayerDismemberEntry entry) {
@@ -205,7 +193,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 return 1f;
             }
             t -= RestFrames;
-            //回拢：缓入缓出，落回时不撞
+            //回拢、缓入缓出，落回时不撞
+
             return 1f - MathHelper.SmoothStep(0f, 1f, MathHelper.Clamp(t / (float)KnitFrames, 0f, 1f));
         }
 
@@ -223,9 +212,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
         }
 
-        //==================== 逐帧维护 ====================
-
-        /// <summary>由 <see cref="OniPlayerDismemberSystem.PostUpdatePlayers"/> 驱动：钉死锚点/时序事件/到期解锁</summary>
+        /// <summary>逐帧、挂 PostUpdatePlayers</summary>
         internal static void UpdateAll() {
             for (int i = Entries.Count - 1; i >= 0; i--) {
                 PlayerDismemberEntry entry = Entries[i];
@@ -242,7 +229,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                     continue;
                 }
 
-                //钉死：反噬期间击退/重力全部无效，人立在原地承受
+                //钉死、反噬期间击退/重力全部无效，人立在原地承受
+
                 player.Center = entry.AnchorCenter;
                 player.velocity = Vector2.Zero;
 
@@ -255,7 +243,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
         }
 
-        /// <summary>裂开瞬间：沿切线迸出碎晶 + 闷响（比敌方断口收敛，这是自己的身体）</summary>
+        /// <summary>裂开瞬间、沿切线迸出碎晶 + 闷响（比敌方断口收敛，这是自己的身体）</summary>
         private static void SplitBurst(PlayerDismemberEntry entry) {
             SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.3f, Volume = 0.5f }, entry.AnchorCenter);
             SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.6f, Volume = 0.45f }, entry.AnchorCenter);
@@ -273,14 +261,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
         }
 
-        /// <summary>弥合瞬间：伤口收拢的轻响 + 内吸碎晶，人回来了</summary>
+        /// <summary>弥合瞬间、伤口收拢的轻响 + 内吸碎晶，人回来了</summary>
         private static void SealBurst(PlayerDismemberEntry entry) {
             SoundEngine.PlaySound(SoundID.Unlock with { Pitch = 0.15f, Volume = 0.5f }, entry.AnchorCenter);
             SoundEngine.PlaySound(SoundID.Item35 with { Pitch = 0.5f, Volume = 0.3f, MaxInstances = 2 }, entry.AnchorCenter);
 
             Vector2 tangent = new(-entry.CutNormal.Y, entry.CutNormal.X);
             for (int k = 0; k < 6; k++) {
-                //从两侧向切线内吸：裂开的反演
+                //从两侧向切线内吸、裂开的反演
+
                 float side = Main.rand.NextBool() ? 1f : -1f;
                 Vector2 pos = entry.AnchorCenter + entry.CutPointLocal
                     + tangent * Main.rand.NextFloat(-1f, 1f) * 22f
@@ -292,8 +281,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                         , Main.rand.NextFloat(1f, 1.6f), affectedByGravity: false);
             }
         }
-
-        //==================== 资源 ====================
 
         /// <summary>取或建玩家专属快照 RT（仅绘制线程调用）</summary>
         internal static RenderTarget2D EnsureSnapshotRT(GraphicsDevice gd, PlayerDismemberEntry entry) {
@@ -343,7 +330,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         public override void OnWorldUnload() => OniPlayerDismember.Entries.Clear();
     }
 
-    /// <summary>反噬僵直的操控锁：只清输入不碰位置（钉死在管理器里做），本人客户端生效</summary>
+    /// <summary>反噬僵直的操控锁、只清输入不碰位置（钉死在管理器里做），本人客户端生效</summary>
     internal class OniPlayerDismemberLock : ModPlayer
     {
         public override void SetControls() {
@@ -356,7 +343,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             Player.controlUseItem = Player.controlUseTile = false;
             Player.controlHook = Player.controlMount = false;
             Player.controlThrow = false;
-            //反噬期间禁持物：裂成两半的人挥不了刀
+            //反噬期间禁持物、裂成两半的人挥不了刀
+
             Player.noItems = true;
         }
     }
@@ -375,15 +363,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         }
     }
 
-    /// <summary>
-    /// 反噬肢解渲染：快照捕获 + 碎片绘制。<br/>
-    /// 捕获（<see cref="DrawNPCsOverTiles"/>，镜像 <see cref="OniDismemberRender"/> 的保屏安全门）：
-    /// <see cref="PlayerCloneRenderer"/> 傀儡拷贝外观（本色、无手持物），伪造
-    /// <see cref="Main.screenPosition"/> 让锚点落在 RT 中央，Immediate 批 + 单位矩阵下经
-    /// <see cref="Main.PlayerRenderer"/> 直绘——玩家绘制的顶点缓冲走当前批的顶点变换，恰好落进 RT 像素系。<br/>
-    /// 绘制（<see cref="EndEntityDraw"/>）：两片快照顶点三角扇 + <c>OniDismember.fx</c> 断面辉光，
-    /// 辉光随回拢升温、弥合时过曝熄灭
-    /// </summary>
+    /// <summary>反噬肢解渲染、快照捕获 + 碎片绘制。 捕获</summary>
     internal sealed class OniPlayerDismemberRender : RenderHandle
     {
         private static readonly List<VertexPositionColorTexture> vertexScratch = [];
@@ -412,7 +392,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             if (!AnyPendingCapture()) {
                 return;
             }
-            //低质量光照/RT 异常时放弃捕获：仅锁定无碎片视觉，本体照常绘制
+            //低质量光照/RT 异常时放弃捕获、仅锁定无碎片视觉，本体照常绘制
+
             if (RenderQualitySafety.NeedsScreenTargetFallback()) {
                 return;
             }
@@ -424,7 +405,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
             RenderTargetBinding[] previousTargets = graphicsDevice.GetRenderTargets();
 
-            //先保屏：screenTarget 一旦重绑定内容即被丢弃
+            //先保屏、screenTarget 一旦重绑定内容即被丢弃
+
             graphicsDevice.SetRenderTarget(screenSwap);
             graphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
@@ -443,6 +425,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
 
             //还屏
+
             graphicsDevice.SetRenderTarget(Main.screenTarget);
             graphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
@@ -459,7 +442,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         private static void CaptureSnapshot(SpriteBatch sb, GraphicsDevice gd, PlayerDismemberEntry entry, Player player) {
             RenderTarget2D rt = OniPlayerDismember.EnsureSnapshotRT(gd, entry);
             if (rt == null) {
-                entry.SnapWidth = 0;    //显存异常：降级为仅锁定
+                entry.SnapWidth = 0;    //显存异常、降级为仅锁定
+
                 return;
             }
 
@@ -467,10 +451,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             gd.Clear(Color.Transparent);
 
             Vector2 realScreenPos = Main.screenPosition;
-            //伪造屏幕原点：玩家绘制层全部以 world - screenPosition 求屏坐标
+            //伪造屏幕原点、玩家绘制层全部以 world -
+
             Main.screenPosition = entry.AnchorCenter - new Vector2(rt.Width, rt.Height) * 0.5f;
 
-            //Immediate 批立刻装载单位矩阵顶点变换，DrawPlayer 的原生顶点缓冲直绘沿用它
+            //Immediate 批立刻装载单位矩阵顶点变换
+
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState,
                 DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
             try {
@@ -480,6 +466,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
             catch {
                 //玩家绘制层钩子异常不拖垮捕获管线
+
             }
             finally {
                 Main.screenPosition = realScreenPos;
@@ -517,8 +504,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 OniPlayerDismember.SnapRTs.Remove(index);
             }
         }
-
-        //==================== 碎片绘制 ====================
 
         public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {
             if (Main.gameMenu || OniPlayerDismember.Entries.Count == 0) {
@@ -585,7 +570,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             fx.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
             fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             fx.Parameters["uSnapSize"]?.SetValue(new Vector2(entry.SnapWidth, entry.SnapHeight));
-            //反噬的冷灰比敌方浅：人还活着，只是被斩开了一瞬
+            //反噬的冷灰比敌方浅、人还活着，只是被斩开了一瞬
+
             fx.Parameters["uDesat"]?.SetValue(0.22f * curve);
             fx.Parameters["uDim"]?.SetValue(1f - 0.10f * curve);
             fx.Parameters["uColHot"]?.SetValue(new Vector3(1.85f, 1.62f, 1.30f));
@@ -601,7 +587,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             fx.Parameters["uDrawBase"]?.SetValue(1f);
         }
 
-        /// <summary>伤口辉光：亮起闪 → 滞拍呼吸 → 裂开灼热 → 回拢升温 → 弥合过曝熄灭</summary>
+        /// <summary>伤口辉光、亮起闪 → 滞拍呼吸 → 裂开灼热 → 回拢升温 → 弥合过曝熄灭</summary>
         private static float GlowStrength(PlayerDismemberEntry entry) {
             int t = entry.Timer;
             if (t <= 2) {
@@ -613,13 +599,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
             int sealStart = OniPlayerDismember.TotalFrames - OniPlayerDismember.SealFrames;
             if (t >= sealStart) {
-                //弥合：过曝一闪后熄灭
+                //弥合、过曝一闪后熄灭
+
                 float f = (t - sealStart) / (float)OniPlayerDismember.SealFrames;
                 return MathHelper.Lerp(1.4f, 0f, f);
             }
-            //裂开与回拢期：稳定灼热，回拢后段升温预示弥合
+            //裂开与回拢期、稳定灼热，回拢后段升温预示弥合
+
             float curve = OniPlayerDismember.DriftCurve(t);
             float knitHeat = 1f - curve;    //越合越烫
+
             return 0.85f + 0.35f * knitHeat + 0.05f * MathF.Sin(Main.GlobalTimeWrappedHourly * 5.3f);
         }
 
@@ -641,6 +630,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 OniPlayerDismember.GetPieceMotion(entry, i, out Vector2 offset, out float rotation);
 
                 //绕片质心旋转
+
                 Vector2 centroid = Vector2.Zero;
                 foreach (Vector2 v in piece) {
                     centroid += v;

@@ -7,7 +7,6 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 {
-    //场景效果注册，当玩家处于CybCourse子世界时激活天空
     internal class CybCourseSkyData : ModSceneEffect
     {
         public override int Music => -1;
@@ -17,7 +16,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             player.ManageSpecialBiomeVisuals(CybCourseSky.Name, isActive);
     }
 
-    //超梦沉浸空间天空，使用着色器绘制程序化深空背景
+    //CybCourse子世界天空着色器
     internal class CybCourseSky : CustomSky, ICWRLoader
     {
         internal static string Name => "CWRMod:CybCourseSky";
@@ -30,7 +29,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 return;
             }
             SkyManager.Instance[Name] = this;
-            //深蓝暗色滤镜，配合着色器让世界整体偏冷暗
+            //深蓝滤镜+着色器
             Filters.Scene[Name] = new Filter(new ScreenShaderData("FilterMiniTower")
                 .UseColor(0.02f, 0.04f, 0.10f)
                 .UseOpacity(0.20f), EffectPriority.High);
@@ -49,7 +48,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             if (!CybCourse.IsActive) {
                 return;
             }
-            //只绘制一次，图层最底层（minDepth<0且maxDepth>=0覆盖所有背景层）
+            //minDepth<0单层背景
             if (maxDepth < 0f || minDepth >= 0f) {
                 return;
             }

@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 {
-    /// 风暴女神之矛手持：三段连击突刺/横扫/上挑，电弧刀光 StormSlashTrail.fx
+    /// 风暴女神之矛手持，三段突刺/横扫/上挑，StormSlashTrail.fx
     internal class StormGoddessSpearHeld : BaseHeldProj, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Projectile_Melee + "StormGoddessSpearProj";
@@ -201,7 +201,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 TryFireLightning(t, 0.4f);
             }
             else {
-                //收势：矛停住，电弧收缩渐隐
+                //收势
                 float t = (elapsed - activeEnd) / RecoverTime;
                 currentRotation = endAngle;
                 trailFade = 1f - t;
@@ -251,7 +251,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
             //根据不同连击发射不同效果的闪电
             if (ComboCounter == 0) {
-                //第一击：单个精准闪电（细长型）
+                //第一击精准闪电
                 SpawnPlayerLightning(
                     aim,
                     1f,

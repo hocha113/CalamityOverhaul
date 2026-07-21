@@ -3,7 +3,7 @@
     internal sealed class FocusBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
-        //聚束高能调用电蓝
+        //电蓝
         public override Color TintColor => new(60, 130, 255);
 
         public override void Apply(ref ShootContext ctx) {

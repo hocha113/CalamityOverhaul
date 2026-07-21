@@ -253,7 +253,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 }
             }
 
-            //左分枝：frameX=22 && fy 在 0..132 范围内（非树顶标记）
+            //左分枝 frameX=22，fy 0..132（非树顶）
             if (fx == 22 && fy < 198 && fy % 22 == 0) {
                 Texture2D branchTex = SafeGetTexture(TextureAssets.TreeBranch, type);
                 if (branchTex != null) {
@@ -263,7 +263,7 @@ namespace CalamityOverhaul.Content.HackTimes
                     sb.Draw(branchTex, branchDst, branchSrc, color);
                 }
             }
-            //右分枝：frameX=44
+            //右分枝 frameX=44
             else if (fx == 44 && fy < 198 && fy % 22 == 0) {
                 Texture2D branchTex = SafeGetTexture(TextureAssets.TreeBranch, type);
                 if (branchTex != null) {

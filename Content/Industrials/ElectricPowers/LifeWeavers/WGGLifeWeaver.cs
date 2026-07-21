@@ -168,16 +168,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             BatteryPrompt = reader.ReadBoolean();
         }
 
-        /// <summary>
-        /// 获取发射位置
-        /// </summary>
         private Vector2 GetLaunchPosition() {
             return CenterInWorld + new Vector2(0, -16);
         }
 
-        /// <summary>
-        /// 计算向玩家发射的抛物线轨迹
-        /// </summary>
+        /// <summary>向玩家抛物线轨迹</summary>
         private bool TryCalculateTrajectoryToPlayer(Player target, out Vector2 velocity, out float flightTime) {
             velocity = Vector2.Zero;
             flightTime = 0f;
@@ -194,7 +189,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             float horizontalDist = Math.Abs(diff.X);
             float gravity = WGGLifeWeaverAcorn.Gravity;
 
-            //根据水平距离计算基础飞行时间，确保足够的抛物线高度
+            //按水平距估飞行时间
             //距离越近飞行时间越长，产生更高的弧线
             float minFlightTime = 70f + (400f - Math.Min(horizontalDist, 400f)) * 0.15f;
             float maxFlightTime = 140f;
@@ -210,7 +205,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
                 //计算垂直初速度
                 float vy = (diff.Y - 0.5f * gravity * testTime * testTime) / testTime;
 
-                //确保有足够的向上初速度产生明显弧线
+                //向上初速下限
                 //即使目标在同一水平线，也要有向上抛射的感觉
                 float minUpwardVelocity = -4f;//至少要有向上的初速度
                 if (vy > minUpwardVelocity) {
@@ -221,12 +216,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
                 //限制最大向上速度
                 if (vy < -14f) continue;
 
-                //计算抛物线最高点，确保有足够的弧度
+                //抛物线最高点
                 float peakTime = -vy / gravity;
                 float peakHeight = start.Y + vy * peakTime + 0.5f * gravity * peakTime * peakTime;
                 float arcHeight = start.Y - peakHeight;
 
-                //确保弧线高度至少有80像素，增加可见性和躲避时间
+                //弧高至少80px
                 if (arcHeight < 80f && horizontalDist < 300f) {
                     continue;
                 }
@@ -239,13 +234,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
                 }
             }
 
-            //如果常规方法失败，使用高弧线备选方案
+            //高弧线备选
             return TryHighArcFallback(start, targetPos, gravity, out velocity, out flightTime);
         }
 
-        /// <summary>
-        /// 高弧线备选，近距/复杂地形
-        /// </summary>
+        /// <summary>高弧线备选(近距/复杂地形)</summary>
         private bool TryHighArcFallback(Vector2 start, Vector2 targetPos, float gravity, out Vector2 velocity, out float flightTime) {
             velocity = Vector2.Zero;
             flightTime = 0f;
@@ -253,11 +246,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             Vector2 diff = targetPos - start;
             float horizontalDist = Math.Abs(diff.X);
 
-            //使用固定的高弧线
             flightTime = 100f + horizontalDist * 0.1f;
             float vx = diff.X / flightTime;
 
-            //限制水平速度
             if (Math.Abs(vx) > 5f) {
                 vx = Math.Sign(vx) * 5f;
                 flightTime = diff.X / vx;
@@ -265,7 +256,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
 
             float vy = (diff.Y - 0.5f * gravity * flightTime * flightTime) / flightTime;
 
-            //确保向上发射
+            //向上发射
             vy = Math.Min(vy, -6f);
 
             if (ValidateTrajectoryPath(start, new Vector2(vx, vy), flightTime)) {
@@ -276,9 +267,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             return false;
         }
 
-        /// <summary>
-        /// 验证轨迹路径
-        /// </summary>
         private static bool ValidateTrajectoryPath(Vector2 start, Vector2 velocity, float totalTime) {
             float gravity = WGGLifeWeaverAcorn.Gravity;
             int checkCount = Math.Max((int)(totalTime / 8f), 6);
@@ -303,9 +291,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             return true;
         }
 
-        /// <summary>
-        /// 发射攻击橡子
-        /// </summary>
         private void LaunchAttackAcorn(Player target) {
             if (VaultUtils.isClient) return;
 
@@ -395,9 +380,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
         }
     }
 
-    /// <summary>
-    /// 荒野植树者发射的敌对橡子弹幕
-    /// </summary>
+    /// <summary>荒野植树者敌对橡子</summary>
     internal class WGGLifeWeaverAcorn : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -470,9 +453,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             }
         }
 
-        /// <summary>
-        /// 发射时的视觉效果
-        /// </summary>
         private void SpawnLaunchEffect() {
             if (Main.netMode == NetmodeID.Server) return;
 

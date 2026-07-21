@@ -57,7 +57,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 .Register();
         }
 
-        //右键：蓄力压扁吸积盘
         public override bool AltFunctionUse(Player player) => true;
 
         //蓄力武器魔力在释放与技能时手动扣除

@@ -7,23 +7,17 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables
 {
-    /// <summary>
-    /// 模具加工台的纯逻辑层：分解 / 随机重铸 / 固定重铸 / 类别枚举
-    /// 所有经济参数集中在此，方便后期调平衡
-    /// </summary>
+    /// <summary>模具加工台逻辑，分解/重铸/类别枚举，经济参数集中</summary>
     internal static class MoldRecipeSystem
     {
         /// <summary>分解 1 个模块获得的碎片数</summary>
         public const int DecomposeGain = 3;
         /// <summary>随机重铸消耗的碎片数</summary>
         public const int RandomCost = 4;
-        /// <summary>固定重铸（按图鉴钉选）消耗的碎片数，比随机贵 50%</summary>
+        /// <summary>固定重铸碎片消耗，比随机贵50%</summary>
         public const int PinnedCost = 6;
 
-        /// <summary>
-        /// 枚举某类别的所有模块物品 type
-        /// </summary>
-        /// <param name="labPoolOnly">true 时仅 <see cref="SHPCModuleItem.CanGenerateInLabChest"/> 模块(随机池)</param>
+        /// <param name="labPoolOnly">true=仅实验室随机池</param>
         public static IEnumerable<int> EnumerateCategory(SHPCSlotCategory cat, bool labPoolOnly) {
             return ModContent.GetContent<SHPCModuleItem>()
                 .Where(m => m.SlotCategory == cat && (!labPoolOnly || m.CanGenerateInLabChest))
@@ -31,18 +25,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables
                 .OrderBy(t => t);
         }
 
-        /// <summary>
-        /// 某类别完整池(含隐藏)，图鉴展示
-        /// </summary>
+        /// <summary>完整池含隐藏，图鉴用</summary>
         public static IEnumerable<int> EnumerateCategoryAll(SHPCSlotCategory cat)
             => EnumerateCategory(cat, labPoolOnly: false);
 
-        /// <summary>
-        /// 把玩家背包指定槽位上的模块分解掉。会在 inventory 中递减 1 stack
-        /// </summary>
-        /// <param name="player">操作的玩家</param>
-        /// <param name="inventorySlot">inventory 数组下标</param>
-        /// <param name="gained">本次产出的碎片数量</param>
+        /// <summary>分解背包槽位模块，stack-1</summary>
+        /// <param name="gained">产出碎片数</param>
         public static bool TryDecompose(Player player, int inventorySlot, out int gained) {
             gained = 0;
             if (player == null) {
@@ -62,7 +50,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables
             sp.MoldShards[(int)mod.SlotCategory] += DecomposeGain;
             gained = DecomposeGain;
 
-            //分解视为"摸过"，登记图鉴
+            //登记图鉴
             sp.RegisterDiscovered(it.type);
 
             it.stack--;
@@ -72,9 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables
             return true;
         }
 
-        /// <summary>
-        /// 随机重铸：未发现优先，否则在完整 lab 池中均匀抽取
-        /// </summary>
+        /// <summary>随机重铸，未发现优先</summary>
         public static bool TryReforgeRandom(Player player, SHPCSlotCategory cat, out int producedType) {
             producedType = 0;
             if (player == null) {
@@ -106,9 +92,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables
             return true;
         }
 
-        /// <summary>
-        /// 固定重铸：按 <see cref="SHPCPlayer.PinnedReforgeTarget"/> 指向的 ItemType 产出
-        /// </summary>
+        /// <summary>固定重铸，按钉选 ItemType 产出</summary>
         public static bool TryReforgePinned(Player player, SHPCSlotCategory cat, out int producedType) {
             producedType = 0;
             if (player == null) {
@@ -126,11 +110,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables
             if (target <= 0) {
                 return false;
             }
-            //再次校验目标合法性（防止 mod 卸载后残留 type）
+            //校验目标，防卸载残留type
             if (!ContentSamples.ItemsByType.TryGetValue(target, out Item sample)
                 || sample.ModItem is not SHPCModuleItem mod
                 || mod.SlotCategory != cat) {
-                //目标失效，回退到随机模式
+                //目标失效回退随机
                 sp.PinnedReforgeTarget[idx] = -1;
                 return false;
             }
@@ -144,14 +128,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables
             return true;
         }
 
-        /// <summary>
-        /// 统一的"产出物品"：把模块塞进玩家背包，同步图鉴
-        /// </summary>
+        /// <summary>产出模块入背包并登记图鉴</summary>
         private static void GrantModule(Player player, int type) {
             if (player == null || type <= 0) {
                 return;
             }
-            //再校验一次类型合法，防止 race / mod 卸载场景
+            //再校验type合法
             if (!ContentSamples.ItemsByType.ContainsKey(type)) {
                 return;
             }
@@ -159,7 +141,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables
             Item newItem = new();
             newItem.SetDefaults(type);
             newItem.stack = 1;
-            //模具均为 maxStack=1，QuickSpawnItem 已含"先尝试入背包，满则掉落"的逻辑
+            //maxStack=1，QuickSpawnItem入包或掉落
             player.QuickSpawnItem(player.GetSource_Misc("SHPCModuleReforge"), newItem, 1);
         }
     }

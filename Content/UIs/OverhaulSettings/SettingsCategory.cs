@@ -9,62 +9,50 @@ using SettingToggle = CalamityOverhaul.Content.UIs.OverhaulSettings.OverhaulSett
 
 namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 {
-    /// <summary>
-    /// 设置面板中的一个可折叠分类区域，管理自身的展开/折叠、滚动、悬停和开关项
-    /// </summary>
+    /// <summary>设置可折叠分类，展开/滚动/开关</summary>
     internal abstract class SettingsCategory
     {
-        //布局常量（与主UI共享）
         protected const float CategoryHeight = 40f;
         protected const float ToggleRowHeight = 34f;
         protected const float ToggleBoxSize = 22f;
 
-        //分类标题
         public abstract string Title { get; }
 
-        //展开/折叠状态
         public bool Expanded;
         public float ExpandAnim;
 
-        //悬停
         public float CategoryHoverAnim;
         public Rectangle CategoryHitBox;
         public bool HoveringCategory;
 
-        //设置项
         public readonly List<SettingToggle> Toggles = [];
         protected bool Initialized;
 
-        //滚动
         public float ScrollOffset;
         public float ScrollTarget;
         public float MaxScroll;
         private int oldScrollWheelValue;
 
-        //滚动条拖动
         public bool IsDraggingScrollbar;
         public float DragStartY;
         public float DragStartScrollTarget;
         public Rectangle ScrollbarTrackRect;
         public Rectangle ScrollbarThumbRect;
 
-        //悬浮提示(由主UI读取)
+        //悬浮提示，主UI读
         public string HoverTooltip;
         public Vector2 HoverTooltipPos;
 
-        //展开区域的实际裁剪矩形(由主UI在绘制时设置)
+        //展开裁剪矩形，主UI绘制时设
         public Rectangle ExpandClipRect;
 
-        //底部额外提示
         public string FooterHint;
         public bool ShowFooter;
 
-        //操作按钮(如"全部启用"/"全部禁用")
+        //操作按钮
         public readonly List<ActionButton> ActionButtons = [];
 
-        /// <summary>
-        /// 操作按钮数据
-        /// </summary>
+
         public class ActionButton
         {
             public Func<string> Label;
@@ -74,35 +62,23 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             public bool Hovering;
         }
 
-        /// <summary>
-        /// 子类：初始化开关项列表
-        /// </summary>
+        /// <summary>子类 Init 开关列表</summary>
         public abstract void Initialize();
 
-        /// <summary>
-        /// 子类：当某个开关被切换时的回调
-        /// </summary>
+        /// <summary>子类开关切换回调</summary>
         public abstract void OnToggleChanged(SettingToggle toggle, bool newValue);
 
-        /// <summary>
-        /// 子类可覆写：获取开关项的显示标签
-        /// </summary>
+        /// <summary>开关显示标签</summary>
         public virtual string GetLabel(SettingToggle toggle) => toggle.ConfigPropertyName;
 
-        /// <summary>
-        /// 子类可覆写：获取开关项的悬浮提示
-        /// </summary>
+        /// <summary>开关悬浮提示</summary>
         public virtual string GetTooltip(SettingToggle toggle) => "";
 
-        /// <summary>
-        /// 子类可覆写：在开关行左侧额外绘制内容(例如物品图标)
-        /// </summary>
+        /// <summary>行左额外绘制(如物品图标)</summary>
         public virtual void DrawRowExtra(SpriteBatch spriteBatch, SettingToggle toggle,
             Rectangle rect, float alpha, float scale) { }
 
-        /// <summary>
-        /// 子类可覆写：行内标签的起始X偏移(给DrawRowExtra留出空间)
-        /// </summary>
+        /// <summary>标签起始X，给DrawRowExtra留空</summary>
         public virtual float GetLabelOffsetX(float scale) => 0f;
 
         public void EnsureInitialized() {
@@ -124,12 +100,10 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             });
         }
 
-        /// <summary>
-        /// 更新展开动画、开关动画、悬停检测、滚动
-        /// </summary>
+
         public void Update(float contentFade, bool hoverInMainPage, Rectangle mouseHitBox,
             Vector2 mousePosition, Rectangle scrollAreaRect) {
-            //展开动画：使用更平滑的缓动曲线
+            //展开缓动
             float expandTarget = Expanded ? 1f : 0f;
             float expandSpeed = Expanded ? 0.14f : 0.18f;
             ExpandAnim += (expandTarget - ExpandAnim) * expandSpeed;
@@ -137,21 +111,18 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 ExpandAnim = expandTarget;
             }
 
-            //分类按钮悬停
             float hoverSpeed = 0.15f;
             CategoryHoverAnim += ((HoveringCategory ? 1f : 0f) - CategoryHoverAnim) * hoverSpeed;
 
-            //更新开关动画
             foreach (var toggle in Toggles) {
                 float target = toggle.Getter() ? 1f : 0f;
                 toggle.ToggleAnim += (target - toggle.ToggleAnim) * 0.15f;
                 toggle.HoverAnim += ((toggle.Hovering ? 1f : 0f) - toggle.HoverAnim) * hoverSpeed;
             }
 
-            //悬浮提示清除
             HoverTooltip = null;
 
-            //更新开关项悬停：使用实际裁剪区域判定，排除滚动条区域
+            //开关悬停，裁剪区且排除滚动条
             if (ExpandAnim > 0.5f && ExpandClipRect.Width > 0 && ExpandClipRect.Height > 0) {
                 bool mouseInScrollbar = ScrollbarTrackRect.Width > 0 && ScrollbarTrackRect.Contains(mouseHitBox);
                 foreach (var toggle in Toggles) {
@@ -169,7 +140,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 }
             }
 
-            //滚动条拖动处理
             if (IsDraggingScrollbar) {
                 MouseState ms = Mouse.GetState();
                 if (ms.LeftButton == ButtonState.Pressed) {
@@ -187,7 +157,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 }
             }
 
-            //滚动处理
             if (hoverInMainPage && Expanded && !IsDraggingScrollbar) {
                 MouseState currentMouseState = Mouse.GetState();
                 int scrollDelta = currentMouseState.ScrollWheelValue - oldScrollWheelValue;
@@ -202,15 +171,12 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             }
             ScrollOffset += (ScrollTarget - ScrollOffset) * 0.2f;
 
-            //更新操作按钮悬停动画
             foreach (var btn in ActionButtons) {
                 btn.HoverAnim += ((btn.Hovering ? 1f : 0f) - btn.HoverAnim) * hoverSpeed;
             }
         }
 
-        /// <summary>
-        /// 点击事件，返回true表示消耗了点击
-        /// </summary>
+        /// <summary>点击，true=已消耗</summary>
         public virtual bool HandleClick(Rectangle mouseHitBox) {
             if (HoveringCategory) {
                 SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.5f, Pitch = 0.3f });
@@ -221,7 +187,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 return true;
             }
 
-            //滚动条拖动检测
             if (ExpandAnim > 0.5f && MaxScroll > 0f) {
                 if (ScrollbarThumbRect.Width > 0 && ScrollbarThumbRect.Contains(mouseHitBox)) {
                     IsDraggingScrollbar = true;
@@ -229,7 +194,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     DragStartScrollTarget = ScrollTarget;
                     return true;
                 }
-                //点击轨道跳转
                 if (ScrollbarTrackRect.Width > 0 && ScrollbarTrackRect.Contains(mouseHitBox)) {
                     float clickY = Mouse.GetState().Y;
                     float trackHeight = ScrollbarTrackRect.Height;
@@ -244,7 +208,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             }
 
             if (ExpandAnim > 0.5f) {
-                //操作按钮点击
                 foreach (var btn in ActionButtons) {
                     if (btn.Hovering) {
                         btn.OnClick?.Invoke();
@@ -267,24 +230,18 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             return false;
         }
 
-        /// <summary>
-        /// 获取当前可见的开关列表
-        /// </summary>
+
         public List<SettingToggle> GetVisibleToggles() => Toggles;
 
-        /// <summary>
-        /// 计算展开后占用的总高度(不含分类按钮本身)
-        /// 高度会被限制在可用面板空间内，超出部分通过滚动访问
-        /// </summary>
+        /// <summary>展开占用高(不含分类钮)，限面板内，超出滚动</summary>
         public float GetExpandedHeight(float scale) {
             if (ExpandAnim <= 0.01f) return 0f;
             float totalContentH = GetVisibleToggles().Count * ToggleRowHeight * scale;
             if (ShowFooter) totalContentH += 30f * scale;
             if (ActionButtons.Count > 0) totalContentH += 36f * scale;
-            //限制最大展开高度，避免大量项目撑破面板
+            //限最大展开高
             float maxVisualH = Main.screenHeight * 0.8f * 0.55f;
             float clampedH = Math.Min(totalContentH + 6f * scale, maxVisualH);
-            //使用缓动曲线让高度变化更自然
             float easedExpand = 1f - (1f - ExpandAnim) * (1f - ExpandAnim);
             return clampedH * easedExpand;
         }

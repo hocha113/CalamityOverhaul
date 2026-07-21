@@ -13,9 +13,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
 {
-    /// <summary>
-    /// 焚烧炉交互UI
-    /// </summary>
+    /// <summary>焚烧炉UI</summary>
     internal class IncineratorUI : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "UI.Incinerator";
@@ -95,9 +93,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             PowerUnit = this.GetLocalization(nameof(PowerUnit), () => "UE");
         }
 
-        /// <summary>
-        /// 与焚烧炉交互
-        /// </summary>
         public void Interactive(IncineratorTP tp, bool newTP) {
             if (tp == null) {
                 return;
@@ -115,7 +110,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         }
 
         public override void Update() {
-            //处理拖拽
+            //拖拽
             HandleDragging();
 
             //限制面板位置在屏幕内
@@ -327,7 +322,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                 int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
                 Rectangle r = new(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
 
-                //焚化炉色调：深灰、暗橙、锈红
+                //深灰/暗橙/锈红
                 Color darkBase = new Color(15, 10, 8);
                 Color rustMid = new Color(30, 18, 12);
                 Color heatGlow_color = new Color(50, 28, 18);

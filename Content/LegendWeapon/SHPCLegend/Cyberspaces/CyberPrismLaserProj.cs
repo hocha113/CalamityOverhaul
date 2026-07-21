@@ -23,12 +23,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         private const float MaxRange = 1600f;
         private const float BeamHitWidth = 18f;
 
-        //激光专属配色：与主光束等离子家族的"幻紫"主题精确对齐
+        //幻紫等离子配色
         private static readonly Vector3 LaserCoreVec = new Color(190, 150, 255).ToVector3();
         private static readonly Vector3 LaserGlowVec = new Color(125, 65, 235).ToVector3();
         private static readonly Vector3 LaserAuraVec = new Color(55, 20, 115).ToVector3();
 
-        //超驱配色（与 CyberTraceBeamProj 保持一致，高温红炽）
+        //超驱红炽，同 TraceBeam
         private static readonly Vector3 OdCoreVec = new Color(255, 255, 220).ToVector3();
         private static readonly Vector3 OdGlowVec = new Color(255, 40, 15).ToVector3();
         private static readonly Vector3 OdAuraVec = new Color(200, 10, 0).ToVector3();
@@ -46,8 +46,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         private int particleTimer;
         private float overdriveAmount;
 
-        //═════════════ 改件行为注入字段 ═════════════
-        //由 SHPCOverride.On_Shoot 在 NewProjectile 之后直接写入
+        //改件注入
+        //SHPCOverride.On_Shoot 写入
 
         /// <summary>脑冲爆炸帧间隔（0=关闭）</summary>
         public int PulseInterval;
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         private int pulseTimer;
 
-        //每帧由改件 OnLaserAI 写入，绘制时消费；每帧 AI 开始时重置为默认紫罗兰配色
+        //OnLaserAI 写色，AI 始重置默认紫
         public Color ThemeCore = new(220, 160, 255);
         public Color ThemeGlow = new(140, 60, 220);
         public Color ThemeAura = new(60, 20, 120);
@@ -108,39 +108,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
             Projectile.timeLeft = 10;
 
-            //跟随枪口，沿瞄准方向偏移到枪口前端
+            //贴枪口
             Vector2 aimDir = UnitToMouseV.SafeNormalize(Vector2.UnitX);
             Projectile.Center = Owner.GetPlayerStabilityCenter() + aimDir * 50f + aimDir.GetNormalVector() * 12 * Math.Sign(aimDir.X);
             Projectile.rotation = aimDir.ToRotation();
             Projectile.velocity = Vector2.Zero;
 
-            //光束终点：鼠标位置，最大射程限制
+            //终点=光标，限射程
             beamEnd = Projectile.Center + aimDir * MaxRange;
 
-            //均匀填充顶点数组（Trail 沿直线渲染光柱）
+            //直线 Trail 顶点
             laserPoints ??= new Vector2[PointCount];
             for (int i = 0; i < PointCount; i++) {
                 float t = (float)i / (PointCount - 1);
                 laserPoints[i] = Vector2.Lerp(Projectile.Center, beamEnd, t);
             }
 
-            //渐入
             age++;
             fadeAlpha = MathHelper.Clamp(age / 8f, 0f, 1f);
 
-            //超驱检测：仅看"主人玩家自己的领域"，避免你的激光在别人领域里也触发超驱
+            //超驱仅主人自域
             bool inDomain = Cyberspace.IsInsideDomainOf(Projectile.owner, Projectile.Center);
             overdriveAmount = MathHelper.Lerp(overdriveAmount, inDomain ? 1f : 0f, 0.06f);
             if (overdriveAmount < 0.005f) overdriveAmount = 0f;
 
-            //每帧重置颜色主题，允许 OnLaserAI 钩子按需覆写
+            //每帧重置色题
             ThemeCore = new Color(190, 150, 255);
             ThemeGlow = new Color(125, 65, 235);
             ThemeAura = new Color(55, 20, 115);
             ThemeParticleMain = new Color(170, 130, 255);
             ThemeParticleEdge = new Color(110, 55, 205);
 
-            //动态光照
             float intensity = fadeAlpha * (0.7f + overdriveAmount * 0.6f);
             Color lightCol = Color.Lerp(new Color(180, 100, 255), new Color(255, 180, 100), overdriveAmount);
             Lighting.AddLight(Projectile.Center, lightCol.ToVector3() * intensity);
@@ -155,7 +153,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 }
             }
 
-            //脑冲定时器：每隔 PulseInterval 帧在终点引爆一次小爆炸
+            //脑冲定时，PulseInterval
             if (PulseInterval > 0 && beamEnd != Vector2.Zero) {
                 pulseTimer++;
                 if (pulseTimer >= PulseInterval) {
@@ -187,7 +185,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Color mainCol = Color.Lerp(ThemeParticleMain, OdParticleMain, od);
             Color edgeCol = Color.Lerp(ThemeParticleEdge, OdParticleEdge, od);
 
-            //沿光束随机位置散出少量粒子
+            //沿束散粒子
             for (int i = 0; i < 2; i++) {
                 float t = Main.rand.NextFloat();
                 Vector2 pos = Vector2.Lerp(Projectile.Center, beamEnd, t);
@@ -197,7 +195,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 PRTLoader.NewParticle<PRT_CyberSquare>(pos, vel, mainCol, Main.rand.NextFloat(0.4f, 1.1f)).Configure(edgeCol, Main.rand.Next(8, 22));
             }
 
-            //终点冲击光晕粒子
+            //终点光晕粒子
             if (Main.rand.NextBool(3)) {
                 Vector2 endVel = Main.rand.NextVector2Circular(3.5f, 3.5f);
                 PRTLoader.NewParticle<PRT_CyberSquare>(beamEnd + Main.rand.NextVector2Circular(6f, 6f), endVel, mainCol, Main.rand.NextFloat(0.7f, 1.6f)).Configure(edgeCol, Main.rand.Next(6, 16));
@@ -205,7 +203,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         private float WidthFunction(float progress) {
-            //两端微收（progress=0 为枪口，progress=1 为光束终端），中段保持均匀宽度形成光柱感
+            //两端微收中段匀宽
             float taper = MathF.Sin(MathHelper.Clamp(progress * MathHelper.Pi, 0f, MathHelper.Pi));
             taper = 0.5f + 0.4f * taper;
             float pulse = 1f + 0.07f * MathF.Sin((float)Main.timeForVisualEffects * 0.22f + progress * 5f);
@@ -264,14 +262,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Color auraCol = Color.Lerp(ThemeAura, new Color(200, 10, 0), od);
             Color coreCol = Color.Lerp(ThemeCore, new Color(255, 255, 200), od);
 
-            //终端聚焦光晕（两层：外层柔和光晕+内层核心亮点）
+            //终端双层光晕
             Vector2 endScreen = beamEnd - Main.screenPosition;
             spriteBatch.Draw(glow, endScreen, null, auraCol * alpha * 0.4f, 0f,
                 glowOrigin, 3.2f + od * 2.5f, SpriteEffects.None, 0f);
             spriteBatch.Draw(glow, endScreen, null, coreCol * alpha * 0.75f, 0f,
                 glowOrigin, 1.4f + od * 0.8f, SpriteEffects.None, 0f);
 
-            //枪口起点光晕
+            //枪口光晕
             Vector2 startScreen = Projectile.Center - Main.screenPosition;
             spriteBatch.Draw(glow, startScreen, null, auraCol * alpha * 0.28f, 0f,
                 glowOrigin, 1.6f, SpriteEffects.None, 0f);

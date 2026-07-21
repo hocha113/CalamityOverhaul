@@ -51,13 +51,12 @@ namespace CalamityOverhaul.Common
             Halibut_Superposition = KeybindLoader.RegisterKeybind(mod, nameof(Halibut_Superposition), "F");
             Halibut_SkillWheel = KeybindLoader.RegisterKeybind(mod, nameof(Halibut_SkillWheel), "Tab");
             Onikiri_Execute = KeybindLoader.RegisterKeybind(mod, nameof(Onikiri_Execute), "R");
-            //鬼域表里翻转，默认鼠标中键（与原版 MouseMiddle 触发器同一键名体系，可在控制设置里重绑）
+            //鬼域翻转，默认 Mouse3
             Onikiri_DomainFlip = KeybindLoader.RegisterKeybind(mod, nameof(Onikiri_DomainFlip), "Mouse3");
             WeponSkill_Q = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_Q), "Q");
             WeponSkill_R = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_R), "R");
             Accessory_Skills = KeybindLoader.RegisterKeybind(mod, nameof(Accessory_Skills), "V");
-            //厉鬼借力/仪式:死机窗口内对鬼行仪式,平时施放共鸣之力。
-            //系统未开放(上线闸关)时不注册——控制设置里不给玩家看见这条键位,消费端全部空安全
+            //厉鬼借力/仪式；LiveContent 关则不注册
             if (Content.Wraiths.Runtime.WraithDirector.LiveContentEnabled) {
                 Wraith_Power = KeybindLoader.RegisterKeybind(mod, nameof(Wraith_Power), "P");
             }

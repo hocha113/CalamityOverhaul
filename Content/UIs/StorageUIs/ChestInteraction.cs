@@ -7,10 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.StorageUIs
 {
-    /// <summary>
-    /// 通用箱子UI交互逻辑，所有槽位的鼠标交互
-    /// 通过 <see cref="IChestStorage"/> 接口统一不同存储模式
-    /// </summary>
+    /// <summary>箱子槽位交互，经 <see cref="IChestStorage"/></summary>
     internal class ChestInteraction
     {
         private readonly Player player;
@@ -19,19 +16,16 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
         private const int SlotSize = 32;
         private const int SlotPadding = 4;
 
-        //交互状态
         public int HoveredSlot { get; private set; } = -1;
 
-        //关闭按钮
         public bool IsCloseButtonHovered { get; private set; } = false;
         public const int CloseButtonSize = 32;
 
-        //音效冷却
         private int soundCooldown = 0;
         private const int SoundCooldownMax = 15;
         private int lastQuickTransferSlot = -1;
 
-        //右键拖动状态 — 记录当前拖动操作中已分配过的槽位，避免重复
+        //右键拖动已访问槽，防重复
         private bool isRightDragging;
         private readonly HashSet<int> rightDragVisitedSlots = new();
 
@@ -40,9 +34,7 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
             this.storage = storage;
         }
 
-        /// <summary>
-        /// 更新关闭按钮悬停
-        /// </summary>
+
         public bool UpdateCloseButton(Point mousePoint, Vector2 panelPosition, int panelWidth, bool mouseLeftRelease) {
             Rectangle buttonRect = new Rectangle(
                 (int)(panelPosition.X + panelWidth - CloseButtonSize - 10),
@@ -55,9 +47,7 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
             return IsCloseButtonHovered && mouseLeftRelease;
         }
 
-        /// <summary>
-        /// 更新槽位交互
-        /// </summary>
+
         public void UpdateSlotInteraction(Point mousePoint, Vector2 storageStartPos,
             bool leftPressed, bool leftHeld, bool rightPressed, bool rightHeld) {
             if (soundCooldown > 0) {
@@ -110,15 +100,14 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
                 lastQuickTransferSlot = -1;
             }
 
-            //左键单击
             if (leftPressed) {
                 HandleLeftClick(slotItem);
             }
 
-            //右键交互 — pressed 和 held 互斥处理，避免首帧双重触发
+            //右键，pressed/held 互斥避首帧双触
             if (rightPressed) {
                 HandleRightClick(slotItem);
-                //标记拖动开始，记录首个槽位
+                //拖动开始
                 if (Main.mouseItem.type != ItemID.None) {
                     isRightDragging = true;
                     rightDragVisitedSlots.Clear();
@@ -126,11 +115,11 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
                 }
             }
             else if (rightHeld && isRightDragging) {
-                //拖动中 — 仅对新槽位放入1个
+                //拖动中仅新槽放1
                 HandleRightDrag(HoveredSlot);
             }
 
-            //松开右键时结束拖动
+            //松右键结束拖动
             if (!rightHeld && !rightPressed) {
                 if (isRightDragging) {
                     isRightDragging = false;
@@ -145,7 +134,6 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
 
         private void HandleLeftClick(Item slotItem) {
             if (Main.mouseItem.type == ItemID.None) {
-                //拿起整组
                 if (slotItem != null && slotItem.type > ItemID.None) {
                     Main.mouseItem = slotItem.Clone();
                     storage.SetItem(HoveredSlot, new Item());
@@ -154,13 +142,11 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
             }
             else {
                 if (slotItem == null || slotItem.type == ItemID.None) {
-                    //放入空槽
                     storage.SetItem(HoveredSlot, Main.mouseItem.Clone());
                     Main.mouseItem.TurnToAir();
                     PlaySound(SoundID.Grab);
                 }
                 else if (slotItem.type == Main.mouseItem.type && slotItem.stack < slotItem.maxStack) {
-                    //同类堆叠
                     int spaceLeft = slotItem.maxStack - slotItem.stack;
                     int amountToAdd = Math.Min(spaceLeft, Main.mouseItem.stack);
 
@@ -176,7 +162,6 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
                     PlaySound(SoundID.Grab);
                 }
                 else {
-                    //异类交换
                     Item temp = slotItem.Clone();
                     storage.SetItem(HoveredSlot, Main.mouseItem.Clone());
                     Main.mouseItem = temp;
@@ -185,12 +170,10 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
             }
         }
 
-        /// <summary>
-        /// 右键单击：空手拿半组，持物放1个
-        /// </summary>
+        /// <summary>右键单击，空手拿半组，持物放1</summary>
         private void HandleRightClick(Item slotItem) {
             if (Main.mouseItem.type == ItemID.None) {
-                //空手 → 拿起一半
+                //空手拿半
                 if (slotItem != null && slotItem.type > ItemID.None && slotItem.stack > 0) {
                     int halfStack = (slotItem.stack + 1) / 2;
                     Main.mouseItem = slotItem.Clone();
@@ -210,14 +193,12 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
                 }
             }
             else {
-                //持物 → 放入1个
+                //持物放1
                 PlaceOneItem(HoveredSlot);
             }
         }
 
-        /// <summary>
-        /// 右键拖动：对每个新经过的槽位放入1个物品
-        /// </summary>
+        /// <summary>右键拖动，新槽各放1</summary>
         private void HandleRightDrag(int slot) {
             if (Main.mouseItem.type == ItemID.None || Main.mouseItem.stack <= 0) {
                 isRightDragging = false;
@@ -225,7 +206,6 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
                 return;
             }
 
-            //已经访问过的槽位不再重复放入
             if (rightDragVisitedSlots.Contains(slot)) return;
 
             if (PlaceOneItem(slot)) {
@@ -233,16 +213,13 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
             }
         }
 
-        /// <summary>
-        /// 向指定槽位放入1个光标物品，返回是否成功
-        /// </summary>
+        /// <summary>向槽放入1个光标物</summary>
         private bool PlaceOneItem(int slot) {
             if (Main.mouseItem.type == ItemID.None || Main.mouseItem.stack <= 0) return false;
 
             Item slotItem = storage.GetItem(slot);
 
             if (slotItem == null || slotItem.type == ItemID.None || slotItem.IsAir) {
-                //空槽 → 放入1个
                 Item newItem = Main.mouseItem.Clone();
                 newItem.stack = 1;
                 storage.SetItem(slot, newItem);
@@ -254,7 +231,6 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
                 return true;
             }
             else if (slotItem.type == Main.mouseItem.type && slotItem.stack < slotItem.maxStack) {
-                //同类 → 堆叠1个
                 Item updated = slotItem.Clone();
                 updated.stack++;
                 storage.SetItem(slot, updated);
@@ -354,9 +330,7 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
 
         private bool CanPlaySound() => soundCooldown <= 0;
 
-        /// <summary>
-        /// 重置交互状态
-        /// </summary>
+
         public void Reset() {
             HoveredSlot = -1;
             IsCloseButtonHovered = false;

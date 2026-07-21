@@ -6,9 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests.OldDuchestUIs
 {
-    /// <summary>
-    /// 老箱子UI视觉特效 - 木质灰尘与暖光
-    /// </summary>
+    /// <summary>老箱子UI特效</summary>
     internal class OldDuchestEffects : IChestEffects
     {
         private readonly List<DustParticle> dustParticles = new();

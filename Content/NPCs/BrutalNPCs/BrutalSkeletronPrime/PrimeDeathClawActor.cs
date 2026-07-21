@@ -10,7 +10,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>死亡演出钳子 Actor，与原生 PrimeVice 解耦</summary>
+    /// <summary>死亡钳Actor，解耦PrimeVice</summary>
     internal class PrimeDeathClawActor : Actor
     {
         private int headWhoAmI = -1;
@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private float alpha = 1f;
         private bool finaleBurst;
 
-        /// <summary>由头部演出在本地生成钳子后立即调用，绑定头部与左右侧</summary>
+        /// <summary>本地生成后绑定头与侧</summary>
         internal void Setup(int head, int sideSign) {
             headWhoAmI = head;
             side = sideSign;
@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     break;
                 }
                 case PrimeDeathPhase.Lunge: {
-                    //迅猛扑出：EaseOut 让钳子瞬间窜向玩家，临近再急停咬合
+                    //迅猛扑出
                     float p = EaseOut((t - PrimeDeathState.PhaseSummonEnd) / (float)(PrimeDeathState.PhaseLungeEnd - PrimeDeathState.PhaseSummonEnd));
                     clawPos = Vector2.Lerp(standby, grabPoint, p);
                     aimTarget = targetCenter;
@@ -149,7 +149,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             DrawNativeStyleArm(spriteBatch, head, armColor);
 
-            //钳子本体（2 帧：张开/闭合）
+            //钳2帧开合
             Texture2D pliers = HeadPrimeAI.BSPPliers.Value;
             Texture2D pliersGlow = HeadPrimeAI.BSPPliersGlow.Value;
             Rectangle rect = pliers.GetRectangle(clawFrame, 2);
@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return false;
         }
 
-        /// <summary>复刻原生两段关节绘制，固定缩放，禁止纵向拉伸</summary>
+        /// <summary>两段关节绘制，禁纵向拉伸</summary>
         private void DrawNativeStyleArm(SpriteBatch spriteBatch, NPC head, Color armColor) {
             Vector2 joint = new Vector2(Position.X + Width * 0.5f - 5f * side, Position.Y + 20f);
             Vector2 drawOrigin = new Vector2(TextureAssets.BoneArm.Width() * 0.5f, TextureAssets.BoneArm.Height() * 0.5f);

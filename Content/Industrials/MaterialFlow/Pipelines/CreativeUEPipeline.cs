@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             if (!CWRID.AllValid(CWRID.Item_MiracleMatter, CWRID.Item_ShadowspecBar)) {
                 return;
             }
-            //原配方吃无尽锭，移除后改用奇迹物质+暗影耀斑锭作为终局无限能源的代价
+            //原吃无尽锭，现奇迹物质+暗影耀斑锭
             CreateRecipe()
                 .AddIngredient<UEPipeline>()
                 .AddIngredient(CWRID.Item_MiracleMatter)
@@ -63,17 +63,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
     }
 
-    /// <summary>
-    /// 创造管道 TP，恒满电。完全复用基础管道的几何/外壳/能量遮罩与统一合批管线，
-    /// 能量层经 <see cref="CreativeUEPipelineEnergyDraw"/> 走 CreativePipelineFlow 着色器（紫色宇宙能量）。
-    /// 不再使用旧的 RT + 星空着色器方案，避免光照耦合与多余开销
-    /// </summary>
+    /// <summary>创造管道 TP，恒满电；能量层走 CreativePipelineFlow，复用基础管几何/合批</summary>
     internal class CreativeUEPipelineTP : UEPipelineTP
     {
         public override int TargetTileID => ModContent.TileType<CreativeUEPipelineTile>();
         public override int TargetItem => ModContent.ItemType<CreativeUEPipeline>();
         public override Color BaseColor => Color.MediumPurple;
-        /// <summary>恒满电，等同能量源</summary>
+        /// <summary>恒满电</summary>
         public override void UpdateMachine() {
             base.UpdateMachine();
             IsNetworkPowered = true;
@@ -83,10 +79,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         }
     }
 
-    /// <summary>
-    /// 创造管道能量层合批绘制：屏内所有创造管道共用一次 CreativePipelineFlow 着色器批次
-    /// （墙后物块前），金属外壳由各 TP 在其上叠加。与基础管道 <see cref="UEPipelineEnergyDraw"/> 同套管线
-    /// </summary>
+    /// <summary>创造管道能量合批，CreativePipelineFlow，同 <see cref="UEPipelineEnergyDraw"/></summary>
     internal class CreativeUEPipelineEnergyDraw : GlobalTileProcessor
     {
         public override bool PreTileDrawEverything(SpriteBatch spriteBatch) {

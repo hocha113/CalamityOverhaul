@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>合围电牢：加速旋转+半径收缩，收缩后期体节间拉起横贯圆环的高温电弧（纯演出），体节朝内发射等离子弹；收口停顿时全环白热闪烁后接冲刺</summary>
+    /// <summary>合围电牢，旋缩+体节电弧/内射，收口白闪接冲刺</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Encircle, typeof(DestroyerStateContext))]
     internal class DestroyerEncircleState : DestroyerStateBase
     {
@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             Timer++;
 
-            //收缩到最紧后短暂停顿：全环白热闪烁，宣告即将贯穿
+            //最紧停顿白闪
             if (tightenPause) {
                 npc.velocity *= 0.96f;
                 Counter++;
@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             float easeOut = 1f - (1f - shrinkProgress) * (1f - shrinkProgress);
             float targetRadius = MathHelper.Lerp(MaxRadius, MinRadius, easeOut);
 
-            //以NPC当前相对玩家的实际角度为基础递增，轨道锚定玩家实时位置
+            //相对角递增，锚玩家
             float currentAngle = (npc.Center - player.Center).ToRotation();
             float angularSpeed = MathHelper.Lerp(0.03f,
                 context.IsEnraged ? 0.08f : 0.06f, Math.Min(Timer / 300f, 1f));
@@ -83,12 +83,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             SetMovement(context, orbitTarget, speed, turnSpeed);
             context.SetChargeState(3, shrinkProgress);
 
-            //收缩后期拉起电弧牢笼（纯演出威慑，伤害仍来自可见弹幕）
+            //收缩后期电弧牢笼(纯演)
             if (!VaultUtils.isClient && shrinkProgress > 0.45f && Timer % 9 == 0) {
                 SpawnCageArc(context);
             }
 
-            //体节弹幕，降低密度避免无法躲避
+            //体节弹降密度
             int baseFireChance = CWRWorld.Death ? 130 : 180;
             int fireChance = (int)(baseFireChance * (1f - easeOut * 0.5f));
             fireChance = Math.Max(fireChance, 40);

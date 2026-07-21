@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Ranged.NeutronBows;
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
     }
 
-    /// 奇点视界微型黑洞，命中吸附绞杀
+    /// 微型黑洞，命中吸附
     public class SingularityBlackHole : ModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle";
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
             Projectile.ai[1] = Math.Clamp(Projectile.ai[1], 0f, 1f);
 
-            //吸附周围敌人
+            //吸敌人
             float pullRadius = 400f;
             float pullStrength = 6f;
             foreach (var npc in Main.ActiveNPCs) {
@@ -134,7 +134,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 }
             }
 
-            //吸附敌方弹幕
+            //吸敌弹
             foreach (var proj in Main.ActiveProjectiles) {
                 if (!proj.hostile || proj.damage <= 0) {
                     continue;
@@ -168,7 +168,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public void DrawCustom(SpriteBatch spriteBatch) { }
     }
 
-    /// 伽马射线暴，事件视界射击追加追踪弹
+    /// 伽马射线暴，事件视界追击弹
     public class GammaRayBurst : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -222,7 +222,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override bool PreDraw(ref Color lightColor) => false;
     }
 
-    /// 超新星爆发，致死范围伤害
+    /// 超新星致死爆发
     public class SupernovaExplosion : ModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle";
@@ -251,7 +251,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 }
             }
 
-            //膨胀效果
+            //膨胀
             if (Time < 20) {
                 Projectile.localAI[0] += 0.08f;
                 Projectile.ai[1] += 0.06f;
@@ -264,7 +264,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Projectile.ai[1] = Math.Clamp(Projectile.ai[1], 0f, 1f);
             Projectile.localAI[1] += 0.05f;
 
-            //大量粒子特效
             if (Time % 3 == 0) {
                 for (int i = 0; i < 8; i++) {
                     float rot = MathHelper.TwoPi / 8f * i + Time * 0.05f;
@@ -276,7 +275,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 }
             }
 
-            //放射状NeutronLaser
+            //放射NeutronLaser
             if (Time == 5 && Projectile.IsOwnedByLocalPlayer()) {
                 for (int i = 0; i < 16; i++) {
                     float rot = MathHelper.TwoPi / 16f * i;
@@ -321,7 +320,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
     }
 
-    /// 量子迁跃，瞬移至光标并清沿途敌弹
+    /// 量子迁跃，瞬移并清沿途敌弹
     public class QuantumLeapProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -347,13 +346,13 @@ namespace CalamityOverhaul.Content.Items.Accessories
             float distance = direction.Length();
             direction = direction.SafeNormalize(Vector2.Zero);
 
-            //消除沿途敌方弹幕
+            //清沿途敌弹
             float clearRadius = 80f;
             foreach (var proj in Main.ActiveProjectiles) {
                 if (!proj.hostile || proj.damage <= 0) {
                     continue;
                 }
-                //检查弹幕是否在起点到终点的线段附近
+                //线段邻域判定
                 Vector2 ap = proj.Center - startPos;
                 Vector2 ab = targetPos - startPos;
                 float t = Math.Clamp(Vector2.Dot(ap, ab) / Vector2.Dot(ab, ab), 0f, 1f);
@@ -364,26 +363,25 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 }
             }
 
-            //传送玩家
             Owner.Teleport(targetPos, -1);
             Owner.velocity = Vector2.Zero;
 
             SoundEngine.PlaySound(CWRSound.Pecharge with { Pitch = 0.5f }, targetPos);
 
-            //起点特效
+            //起点
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < 30; i++) {
                     float rot = MathHelper.TwoPi / 30f * i;
                     Vector2 vr = rot.ToRotationVector2();
                     PRTLoader.NewParticle<PRT_HeavenfallStar>(startPos, vr * Main.rand.NextFloat(1f, 3f), Color.DeepSkyBlue, Main.rand.NextFloat(0.5f, 1f)).Configure(false, 25);
                 }
-                //终点特效
+                //终点
                 for (int i = 0; i < 30; i++) {
                     float rot = MathHelper.TwoPi / 30f * i;
                     Vector2 vr = rot.ToRotationVector2();
                     PRTLoader.NewParticle<PRT_HeavenfallStar>(targetPos, vr * Main.rand.NextFloat(1f, 3f), Color.MediumPurple, Main.rand.NextFloat(0.5f, 1f)).Configure(false, 25);
                 }
-                //沿途粒子连线
+                //沿途连线
                 int steps = (int)(distance / 16f);
                 for (int i = 0; i < steps; i++) {
                     Vector2 pos = Vector2.Lerp(startPos, targetPos, i / (float)steps);
@@ -403,29 +401,29 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override bool PreDraw(ref Color lightColor) => false;
     }
 
-    /// 奇点视界玩家机制
+    /// 奇点视界玩家
     internal class EyeOfSingularityPlayer : ModPlayer
     {
         public bool Alive;
-        /// 事件视界(静止隐身)
+        /// 事件视界，静止隐身
         public bool EventHorizonActive;
-        /// 事件视界透明度(平滑过渡)
+        /// 事件视界透明度
         private float eventHorizonOpacity;
-        /// 坍缩协议激活
+        /// 坍缩协议中
         public bool CollapseProtocolActive;
-        /// 坍缩协议剩余(帧)
+        /// 坍缩剩余帧
         public int CollapseProtocolTimer;
-        /// 坍缩协议冷却(帧)
+        /// 坍缩冷却帧
         public int CollapseProtocolCooldown;
-        /// 量子迁跃冷却
+        /// 迁跃冷却
         public int QuantumLeapCooldown;
-        /// 超新星复活冷却
+        /// 超新星冷却
         public int SupernovaCooldown;
-        /// 静止计时
+        /// 静止帧
         private int stationaryTimer;
-        /// 上帧位置
+        /// 上帧位
         private Vector2 lastPosition;
-        /// 伽马射线暴冷却(帧)
+        /// 伽马冷却帧
         public int GammaRayBurstCooldown;
 
         public override void Initialize() {
@@ -461,7 +459,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override void PostUpdateMiscEffects() {
             if (!Alive) {
                 EventHorizonActive = false;
-                //饰品卸下时平滑恢复透明度
+                //卸下透明度恢复
                 if (eventHorizonOpacity < 1f) {
                     eventHorizonOpacity = MathHelper.Lerp(eventHorizonOpacity, 1f, 0.15f);
                     if (eventHorizonOpacity > 0.98f) {
@@ -473,7 +471,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            //事件视界：静止检测
+            //事件视界静止检测
             float moveDist = Vector2.Distance(Player.Center, lastPosition);
             if (moveDist < 1f) {
                 stationaryTimer++;
@@ -485,23 +483,23 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 }
             }
 
-            //60帧静止进事件视界
+            //静止60帧进视界
             if (stationaryTimer > 60 && !EventHorizonActive) {
                 EventHorizonActive = true;
-                //微弱音效提示
+                //提示音
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item29 with { Pitch = -0.8f, Volume = 0.4f }, Player.Center);
                 }
             }
 
-            //透明度平滑过渡
+            //透明度过渡
             if (EventHorizonActive) {
                 eventHorizonOpacity = MathHelper.Lerp(eventHorizonOpacity, 0.15f, 0.08f);
                 Player.npcTypeNoAggro[0] = true;
                 Player.aggro -= 9999;
             }
             else {
-                //恢复移动淡入
+                //移动淡入
                 eventHorizonOpacity = MathHelper.Lerp(eventHorizonOpacity, 1f, 0.15f);
                 if (eventHorizonOpacity > 0.98f) {
                     eventHorizonOpacity = 1f;
@@ -513,13 +511,13 @@ namespace CalamityOverhaul.Content.Items.Accessories
             lastPosition = Player.Center;
         }
 
-        /// 远程命中产黑洞(仅玩家直射弹，排除衍生)
+        /// 直射命中产黑洞，排除衍生
         public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone) {
             if (!Alive) {
                 return;
             }
 
-            //排除衍生弹防级联
+            //排除衍生弹
             int gammaType = ModContent.ProjectileType<GammaRayBurst>();
             int blackHoleType = ModContent.ProjectileType<SingularityBlackHole>();
             int supernovaType = ModContent.ProjectileType<SupernovaExplosion>();
@@ -532,19 +530,19 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (hit.DamageType.CountsAsClass<RangedDamageClass>()) {
                 target.AddBuff(ModContent.BuffType<VoidErosion>(), 600);
 
-                //坍缩协议无视无敌
+                //坍缩无视无敌
                 if (CollapseProtocolActive) {
                     target.immune[Player.whoAmI] = 0;
                 }
 
-                //命中概率产黑洞(限同屏数)
+                //概率黑洞，限同屏
                 if (Main.rand.NextBool(5) && Player.whoAmI == Main.myPlayer
                     && Player.ownedProjectileCounts[blackHoleType] < 3) {
                     Projectile.NewProjectile(Player.FromObjectGetParent(), target.Center, Vector2.Zero
                         , blackHoleType, hit.SourceDamage * 2, 0, Player.whoAmI);
                 }
 
-                //事件视界射击追加伽马射线(带冷却)
+                //视界追加伽马
                 if (EventHorizonActive && GammaRayBurstCooldown <= 0
                     && Player.ownedProjectileCounts[gammaType] < 6
                     && Player.whoAmI == Main.myPlayer) {
@@ -563,12 +561,12 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            //远程暴击伤害倍率提升至500%（默认200%加上额外300%）
+            //远程暴击→500%
             if (modifiers.DamageType.CountsAsClass<RangedDamageClass>()) {
                 modifiers.CritDamage += 3f;
             }
 
-            //坍缩协议激活时强制暴击
+            //坍缩强制暴击
             if (CollapseProtocolActive && modifiers.DamageType.CountsAsClass<RangedDamageClass>()) {
                 modifiers.SetCrit();
             }
@@ -579,7 +577,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            //坍缩协议激活时无视无敌帧
+            //坍缩无视无敌帧
             if (CollapseProtocolActive && hit.DamageType.CountsAsClass<RangedDamageClass>()) {
                 target.immune[Player.whoAmI] = 0;
             }
@@ -597,7 +595,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            //事件视界激活时免疫接触伤害
+            //视界免疫接触伤
             if (EventHorizonActive) {
                 modifiers.FinalDamage *= 0f;
             }
@@ -608,7 +606,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            //量子迁跃，按下专属按键瞬移至光标位置
+            //迁跃键瞬移光标
             if (CWRKeySystem.Accessory_Skills.JustPressed && QuantumLeapCooldown <= 0 && Player.whoAmI == Main.myPlayer) {
                 Player.dashType = 0;
                 Player.SetPlayerDashID(string.Empty);
@@ -616,17 +614,17 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     , ModContent.ProjectileType<QuantumLeapProj>(), 0, 0, Player.whoAmI);
                 QuantumLeapCooldown = 40;
                 Player.GivePlayerImmuneState(15);
-                //传送后重置事件视界，因为位置发生了突变
+                //传送后重置视界
                 stationaryTimer = 0;
                 EventHorizonActive = false;
             }
 
-            //坍缩协议，手持远程武器时右键激活
+            //远程右键坍缩
             if (Player.controlUseTile && Player.releaseUseItem
                 && !CollapseProtocolActive && CollapseProtocolCooldown <= 0
                 && Player.statMana > 0 && Player.whoAmI == Main.myPlayer
                 && Player.HeldItem.DamageType.CountsAsClass<RangedDamageClass>()) {
-                //消耗所有魔力
+                //耗光魔力
                 Player.statMana = 0;
                 Player.manaRegenDelay = 120;
 
@@ -651,19 +649,19 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (Alive && SupernovaCooldown <= 0) {
                 SupernovaCooldown = 3600;
 
-                //超新星爆发
+                //超新星
                 if (Player.whoAmI == Main.myPlayer) {
                     Projectile.NewProjectile(Player.FromObjectGetParent(), Player.Center, Vector2.Zero
                         , ModContent.ProjectileType<SupernovaExplosion>(), 99999, 0, Player.whoAmI);
                 }
 
-                //给予无敌帧并满血恢复
+                //无敌+满血
                 Player.GivePlayerImmuneState(180);
                 Player.Heal(Player.statLifeMax2);
 
                 SoundEngine.PlaySound(SoundID.DD2_BetsySummon with { Pitch = -0.3f, Volume = 2.5f }, Player.Center);
 
-                //传送到安全位置
+                //传安全位
                 Vector2 safePos = Player.Center + new Vector2(0, -300);
                 Player.Teleport(safePos, -1);
 
@@ -675,7 +673,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource) {
-            //玩家真正死亡时重置所有冷却和状态
+            //真死重置
             CollapseProtocolActive = false;
             CollapseProtocolTimer = 0;
             CollapseProtocolCooldown = 0;

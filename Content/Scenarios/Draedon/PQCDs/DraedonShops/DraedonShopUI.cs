@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
 {
-    /// <summary>嘉登交换终端：右侧滑入的终端面板，配色与嘉登对话皮肤同源</summary>
+    /// <summary>右侧滑入交换终端</summary>
     internal class DraedonShopUI : UIHandle, ILocalizedModType
     {
         public static DraedonShopUI Instance => UIHandleLoader.GetUIHandleOfType<DraedonShopUI>();
@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
         public override bool CloseOnEscape => true;
         public override SoundStyle? OpenSound => CWRSound.ButtonZero with { Pitch = 0.25f };
         public override SoundStyle? CloseSound => CWRSound.ButtonZero with { Pitch = -0.1f };
-        //在 Main.MouseScreen 之外统一走 UI 空间，使命中判定与绘制布局一致
+        //命中判定走UI空间
         public override Vector2 MousePosition => DraedonShopTheme.UIMouse;
 
         #region 本地化
@@ -106,7 +106,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
             InitializeShop();
             state.Update(panelRect, IsOpen);
 
-            //平滑滚动
             scrollTarget = MathHelper.Clamp(scrollTarget, 0f, MaxScroll());
             scrollPx = MathHelper.Lerp(scrollPx, scrollTarget, 0.25f);
 
@@ -119,7 +118,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
                 scrollDragging = false;
             }
 
-            //悬停动画：切换条目时重置淡入
+            //换行重置hoverAnim
             if (hoveredIndex != lastHoveredIndex) {
                 hoverAnim = 0f;
                 lastHoveredIndex = hoveredIndex;
@@ -139,7 +138,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
                 UIInputGuard.SuppressWeaponSwitch();
             }
             else if (pressed && !DraedonCallUI.Instance.hoverInMainPage && !player.mouseInterface) {
-                //点击面板之外（且不在呼叫面板上）关闭
+                //点外部关闭
                 Close();
                 return;
             }
@@ -236,7 +235,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
             }
 
             if (Main.mouseLeftRelease) {
-                //首次点击：选中并购买一次
                 selectedIndex = index;
                 holdIndex = index;
                 holdTimer = 0;
@@ -280,7 +278,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
         }
 
         private void UpdateHold() {
-            //松开鼠标即清空蓄力
             if (!Main.mouseLeft && holdIndex != -1) {
                 ResetHold();
             }
@@ -388,7 +385,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
                 DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
         }
 
-        /// <summary>悬停时把货品交给原版提示系统绘制（与 ChargingStationUI 同法，在绘制阶段赋值）</summary>
+        /// <summary>悬停tooltip,同ChargingStationUI</summary>
         private void ShowHoveredTooltip() {
             if (hoveredIndex < 0 || hoveredIndex >= shopItems.Count) {
                 return;
@@ -412,7 +409,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
             return $"{first:00}-{last:00} / {shopItems.Count:00}";
         }
 
-        /// <summary>初始化商店物品列表（仅一次）</summary>
+        /// <summary>懒加载货品,仅一次</summary>
         public void InitializeShop() {
             if (shopItems.Count > 0) {
                 return;

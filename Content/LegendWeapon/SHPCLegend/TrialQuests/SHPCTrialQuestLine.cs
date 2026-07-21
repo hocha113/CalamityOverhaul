@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
                 WaitingHint = TrackerWaiting,
                 FightingFormat = TrackerFighting,
                 BriefFormat = TrackerBrief,
-                //左侧追踪窗口仅在玩家手持SHPC时显示，避免常驻打扰
+                //追踪窗仅手持SHPC时显示
                 TrackerVisibilityCheck = CreateTrackerVisibilityCheck(),
             };
             return entry;

@@ -14,8 +14,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
     /// <summary>
-    /// 热成像瞄具：命中累积热痕（<see cref="SHPCThermalHeatNPC"/>），热度驱动热成像着色渐变；
-    /// 满格白热锁定：光束持续强追踪 + 暴击加成 + 周期灼伤，SHPCModThermal.fx
+    /// 热成像瞄具，命中累积热痕（<see cref="SHPCThermalHeatNPC"/>）驱动着色；
+    /// 满格白热，强追踪+暴击+周期灼伤，SHPCModThermal.fx
     /// </summary>
     internal sealed class ThermalOpticModule : SHPCModuleItem
     {
@@ -27,16 +27,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         private const float HeatPerBeamHit = 17f;
         /// <summary>激光单 tick 热痕（高频低量，约 2 秒满格）</summary>
         private const float HeatPerLaserHit = 4.2f;
-        /// <summary>白热锁定转向速率（弧度/次 AI 调用，extraUpdates=2 即每帧 3 次）</summary>
+        /// <summary>白热转向速率，弧度/次 AI，extraUpdates=2 即每帧 3 次</summary>
         private const float LockTurnRate = 0.085f;
-        /// <summary>白热目标搜索半径（像素）</summary>
+        /// <summary>白热搜索半径 px</summary>
         private const float LockSeekRange = 1050f;
-        /// <summary>锁定准星锥半角（度），准星偏离超过此角即自然脱锁</summary>
+        /// <summary>准星锥半角°，越界自然脱锁</summary>
         private const float LockConeHalfDeg = 60f;
-        /// <summary>共血体节热痕折减（多节齐中的补偿，防蠕虫锁定过快）</summary>
+        /// <summary>共血体节热痕折减，防蠕虫锁过快</summary>
         private const float WormSegmentHeatMul = 0.6f;
 
-        /// <summary>白热目标每帧缓存（whoAmI），-1 无目标；仅 myPlayer 端读写</summary>
+        /// <summary>白热目标 whoAmI 缓存，-1 无，仅 myPlayer</summary>
         private int lockTargetCache = -1;
         private uint lockCacheFrame = uint.MaxValue;
 
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             ApplyHeat(laser.Projectile, target, HeatPerLaserHit, damageDone);
         }
 
-        /// <summary>白热强锁：光束每次 AI 都朝白热目标强力转向，越过背后（&gt;120°）放弃回折</summary>
+        /// <summary>白热强锁，每 AI 朝目标转向，背后&gt;120° 放弃回折</summary>
         public override void OnBeamAI(CyberTraceBeamProj beam) {
             if (beam.IsDerived || beam.Projectile.owner != Main.myPlayer) return;
             NPC target = FindWhiteHotTarget(Main.player[beam.Projectile.owner].Center);
@@ -67,8 +67,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         }
 
         /// <summary>
-        /// 本帧准星锥内的己方白热目标，按"到瞄准射线的垂距"取最近；
-        /// 准星移出 ±<see cref="LockConeHalfDeg"/>° 锥即自然脱锁，玩家可随时转火
+        /// 准星锥内己方白热，按到瞄准射线垂距取最近；
+        /// 出 ±<see cref="LockConeHalfDeg"/>° 锥即脱锁
         /// </summary>
         private NPC FindWhiteHotTarget(Vector2 from) {
             if (lockCacheFrame != Main.GameUpdateCount) {
@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                     Vector2 toNpc = npc.Center - from;
                     float dist = toNpc.Length();
                     if (dist > LockSeekRange) continue;
-                    //准星锥约束：偏离瞄准方向超过锥半角的白热体不参与锁定
+                    //准星锥外不参与
                     if (dist > 1f && Vector2.Dot(toNpc / dist, aimDir) < cosCone) continue;
                     float rayDist = MathF.Abs(Vector2.Dot(toNpc, aimDir.GetNormalVector()));
                     if (rayDist < best) {
@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 }
             }
             if (lockTargetCache < 0) return null;
-            //取用时复验：防同帧死亡、槽位复用、他人白热或白热恰好结束
+            //取用复验，防槽位复用/白热结束
             NPC cached = Main.npc[lockTargetCache];
             if (!cached.active || !cached.TryGetGlobalNPC(out SHPCThermalHeatNPC h)
                 || !h.IsWhiteHot || h.HeatOwner != Main.myPlayer) {
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 
         private static void ApplyHeat(Projectile source, NPC target, float amount, int damageDone) {
             if (source.owner != Main.myPlayer) return;
-            //蠕虫体节折算到 realLife 头部：全虫一条热痕，白热演出只挂头部
+            //体节折到 realLife 头，全虫一条热痕
             NPC carrier = SHPCThermalHeatNPC.ResolveHeatCarrier(target);
             if (carrier.whoAmI != target.whoAmI) {
                 amount *= WormSegmentHeatMul;
@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             if (!carrier.TryGetGlobalNPC(out SHPCThermalHeatNPC heat)) return;
             bool wasWhiteHot = heat.IsWhiteHot;
             heat.AddHeat(carrier, amount, source.owner, damageDone);
-            //白热目标被咬中：白炽星火强化"火力锁死"的反馈
+            //白热命中星火反馈
             if (wasWhiteHot && Main.netMode != NetmodeID.Server) {
                 for (int i = 0; i < 3; i++) {
                     PRTLoader.NewParticle<PRT_Spark>(target.Center + Main.rand.NextVector2Circular(10f, 10f),
@@ -128,8 +128,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
     }
 
     /// <summary>
-    /// 热痕状态机（InstancePerEntity）：分级热度随时间冷却，满格进入白热锁定；
-    /// 全部读写发生在施加者客户端（myPlayer 门），灼伤经 SimpleStrikeNPC 同步
+    /// 热痕状态机 InstancePerEntity，冷却后满格白热；
+    /// 读写仅施加者 myPlayer，灼伤经 SimpleStrikeNPC 同步
     /// </summary>
     internal sealed class SHPCThermalHeatNPC : GlobalNPC
     {
@@ -139,24 +139,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         internal const float MaxHeat = 100f;
         /// <summary>受击后冷却延迟帧</summary>
         private const int CoolDelayFrames = 45;
-        /// <summary>冷却速率（热痕/帧，约 3 秒满格降空）</summary>
+        /// <summary>冷却速率，热痕/帧，约 3 秒满格降空</summary>
         private const float CoolPerFrame = 0.55f;
-        /// <summary>白热锁定持续帧（4.5 秒）</summary>
+        /// <summary>白热持续帧，4.5 秒</summary>
         private const int WhiteHotDuration = 270;
-        /// <summary>白热结束余温，鼓励继续咬同一目标</summary>
+        /// <summary>白热结束余温</summary>
         private const float RelockHeat = 30f;
-        /// <summary>白热期间光束/激光命中的额外暴击率</summary>
+        /// <summary>白热命中额外暴击率</summary>
         private const float WhiteHotCritChance = 0.25f;
         /// <summary>灼伤 tick 间隔帧</summary>
         private const int BurnInterval = 30;
-        /// <summary>灼伤 tick 伤害 = 记录单发伤害基准 × 此比率</summary>
+        /// <summary>灼伤 tick = 单发基准 × 此比率</summary>
         private const float BurnTickRatio = 0.4f;
-        /// <summary>临界预警阈值（占满值比例）</summary>
+        /// <summary>临界预警阈值，占满值比例</summary>
         private const float CriticalRatio = 0.75f;
 
         /// <summary>当前热痕 0~MaxHeat</summary>
         public float Heat;
-        /// <summary>施加者玩家索引，完全冷却时重置 -1</summary>
+        /// <summary>施加者索引，冷却尽重置 -1</summary>
         public int HeatOwner = -1;
         /// <summary>白热剩余帧</summary>
         public int WhiteHotTime;
@@ -167,10 +167,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         private int burnTimer;
         private int burnTickDmg;
 
-        //PreDraw 设置、PostDraw 消费的批次切换标志，绘制单线程顺序执行
+        //PreDraw 置位、PostDraw 消费，单线程批次切换
         private static bool _thermalShaderActive;
 
-        //白热入场/泄压演出同帧节流与余烬全局帧配额，纯客户端视觉状态
+        //入场/泄压同帧节流 + 余烬帧配额，纯客户端
         private static uint _fxThrottleFrame;
         private static int _fxThrottleCount;
         private const int EntranceFxPerFrame = 2;
@@ -180,7 +180,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 
         public bool IsWhiteHot => WhiteHotTime > 0;
 
-        /// <summary>热痕宿主：realLife 共血体节折算到头部，全虫一条热痕</summary>
+        /// <summary>热痕宿主，realLife 共血折到头部</summary>
         internal static NPC ResolveHeatCarrier(NPC npc) {
             if (npc.realLife >= 0 && npc.realLife < Main.maxNPCs && npc.realLife != npc.whoAmI) {
                 NPC head = Main.npc[npc.realLife];
@@ -189,7 +189,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             return npc;
         }
 
-        /// <summary>同帧白热入场/泄压演出配额，混战大量目标同帧触发时最多演 <see cref="EntranceFxPerFrame"/> 组</summary>
+        /// <summary>同帧入场/泄压演出配额，最多 <see cref="EntranceFxPerFrame"/> 组</summary>
         private static bool TryConsumeEntranceFxBudget() {
             if (_fxThrottleFrame != Main.GameUpdateCount) {
                 _fxThrottleFrame = Main.GameUpdateCount;
@@ -198,7 +198,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             return ++_fxThrottleCount <= EntranceFxPerFrame;
         }
 
-        /// <summary>体表余烬全局帧配额，防群体/蠕虫场景粒子刷屏</summary>
+        /// <summary>体表余烬帧配额，防刷屏</summary>
         private static bool TryConsumeEmberBudget() {
             if (_emberBudgetFrame != Main.GameUpdateCount) {
                 _emberBudgetFrame = Main.GameUpdateCount;
@@ -207,7 +207,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             return ++_emberBudgetUsed <= EmberBudgetPerFrame;
         }
 
-        /// <summary>累积热痕并刷新冷却延迟；跨临界播预警，满格触发白热</summary>
+        /// <summary>累积热痕刷新冷却，跨临界预警，满格白热</summary>
         public void AddHeat(NPC npc, float amount, int owner, int damageDone) {
             if (npc.friendly || npc.dontTakeDamage) return;
             if (IsWhiteHot) return;
@@ -220,7 +220,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 
             if (old < MaxHeat * CriticalRatio && Heat >= MaxHeat * CriticalRatio
                 && Main.netMode != NetmodeID.Server) {
-                //临界预警：升调滴答
+                //临界升调滴答
                 SoundEngine.PlaySound(SoundID.Item114 with { Volume = 0.28f, Pitch = 0.85f }, npc.Center);
             }
             if (Heat >= MaxHeat) {
@@ -276,7 +276,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 burnTimer++;
                 if (burnTimer >= BurnInterval) {
                     burnTimer = 0;
-                    //灼伤只由施加者客户端结算，StrikeNPC 自带同步；服务器/旁观端 HeatOwner 恒非 myPlayer
+                    //灼伤仅施加者端，StrikeNPC 自同步
                     if (burnTickDmg > 0 && HeatOwner == Main.myPlayer) {
                         npc.SimpleStrikeNPC(burnTickDmg, 0, false, 0f, null, false, 0f, true);
                     }
@@ -301,7 +301,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 else {
                     Heat = MathF.Max(Heat - CoolPerFrame, 0f);
                     if (Heat <= 0f) {
-                        //完全冷却：施主与灼伤基准一并归零
+                        //完全冷却归零
                         HeatOwner = -1;
                         burnTickDmg = 0;
                     }
@@ -311,7 +311,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             if (Heat > 0.5f) {
                 float hr = Heat / MaxHeat;
                 Lighting.AddLight(npc.Center, new Vector3(1f, 0.5f, 0.18f) * (0.12f + hr * 0.3f + WhiteHotFade * 0.45f));
-                //体表蒸腾余烬，密度随热度攀升，全局帧配额封顶
+                //体表余烬，密度随热度，帧配额封顶
                 if (Main.netMode != NetmodeID.Server) {
                     int chance = IsWhiteHot ? 3 : (int)MathHelper.Lerp(16f, 6f, hr);
                     if (Main.rand.NextBool(Math.Max(chance, 1)) && TryConsumeEmberBudget()) {
@@ -327,7 +327,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             return true;
         }
 
-        /// <summary>白热期间被施加者的光束/激光命中，追加暴击 roll（在命中结算端执行，随 StrikeNPC 同步）；蠕虫任意体节读头部状态</summary>
+        /// <summary>白热命中追加暴击 roll，结算端执行；蠕虫体节读头部</summary>
         public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers) {
             SHPCThermalHeatNPC state = this;
             NPC carrier = ResolveHeatCarrier(npc);
@@ -345,7 +345,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             float drawHeat = Heat;
             float drawFade = WhiteHotFade;
             if (drawHeat < 0.5f && drawFade < 0.01f) {
-                //蠕虫体节借用头部热痕做体表着色，全虫一体受热；锁定十字标仍只挂头部
+                //体节借头部热痕着色，十字标只挂头
                 NPC carrier = ResolveHeatCarrier(npc);
                 if (carrier.whoAmI == npc.whoAmI
                     || !carrier.TryGetGlobalNPC(out SHPCThermalHeatNPC cs)) {
@@ -388,7 +388,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             }
         }
 
-        /// <summary>头顶 FLIR 十字标：四角旋转括弧 + 中心十字 + 右侧温度刻度，A=0 颜色实现加法发光</summary>
+        /// <summary>头顶 FLIR 十字标，四角括弧+中心十字+右侧刻度，A=0 加法发光</summary>
         private void DrawThermalReticle(NPC npc, SpriteBatch spriteBatch) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 anchor = npc.Top + new Vector2(0f, -30f) - Main.screenPosition;
@@ -425,7 +425,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             spriteBatch.Draw(pixel, anchor, px, hotWhite, MathHelper.PiOver2, lineOrigin,
                 new Vector2(14f, 1.4f), SpriteEffects.None, 0f);
 
-            //右侧温度刻度：满温读数装饰
+            //右侧温度刻度
             for (int i = 0; i < 3; i++) {
                 Vector2 tick = anchor + new Vector2(20f, 6f - i * 6f);
                 spriteBatch.Draw(pixel, tick, px, hotOrange * (0.5f + i * 0.2f), 0f,

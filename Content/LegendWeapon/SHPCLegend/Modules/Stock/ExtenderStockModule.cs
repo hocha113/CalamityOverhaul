@@ -13,20 +13,17 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>
-    /// 延伸枪托：延长线切割——光束飞满里程后就地横向展开垂直光刃旋掠处决（不等消亡）；
-    /// 提前耗尽穿透而死的光束按已飞距离在死点折算缩水刀，贴脸消亡不触发
-    /// </summary>
+    /// <summary>延伸枪托，飞满里程就地横切光刃；穿透早死折算缩水刀，贴脸不触发</summary>
     internal sealed class ExtenderStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;
         //延伸冷银青
         public override Color TintColor => new(185, 215, 235);
 
-        //═════ 可调参数（平衡位） ═════
-        /// <summary>触发终端切割的最小飞行距离（像素），低于此贴脸消亡不触发</summary>
+        //═════ 可调参数 ═════
+        /// <summary>最小切割距离 px，低于此贴脸不触发</summary>
         internal const float MinTriggerDistance = 380f;
-        /// <summary>满规格光刃的就地收刀距离（像素）：飞到即触发，不等消亡，单体Boss战也能兑现</summary>
+        /// <summary>满规格就地收刀距离 px，飞到即触发</summary>
         internal const float FullTriggerDistance = 950f;
         /// <summary>缩水档光刃伤害倍率（×光束面值）</summary>
         internal const float CleaveDamageMulMin = 0.5f;
@@ -36,12 +33,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         internal const int LaserMinHoldTicks = 30;
         /// <summary>激光收束刀伤害倍率（×激光单跳面值）</summary>
         internal const float LaserCleaveDamageMul = 1.25f;
-        /// <summary>镜像 CyberPrismLaserProj.MaxRange（私有常量且共享文件禁改，只能镜像取值）</summary>
+        /// <summary>镜像 CyberPrismLaserProj.MaxRange（共享文件禁改）</summary>
         private const float LaserRangeMirror = 1600f;
         /// <summary>追踪字典的周期清扫间隔（帧）</summary>
         private const int PurgeInterval = 90;
 
-        //与 CyberTraceBeamProj.Themes 对齐的三阶主题色（等离子青/电蓝/幻紫）
+        //主题色对齐 CyberTraceBeamProj.Themes
         internal static readonly Color[] ThemeCore = {
             new(110, 255, 235), new(120, 190, 255), new(190, 150, 255),
         };
@@ -49,18 +46,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             new(25, 200, 185), new(40, 115, 235), new(125, 65, 235),
         };
 
-        /// <summary>单束飞行档案：累计路程与切割资格；per-玩家模块实例持有，仅拥有者客户端填充</summary>
+        /// <summary>单束飞行档案，仅 owner 客户端</summary>
         private sealed class BeamTrack
         {
-            /// <summary>累计飞行路程（像素），按逐帧位移求和，时缓/追踪转向天然计入</summary>
+            /// <summary>累计飞行路程 px</summary>
             public float Distance;
             public Vector2 LastPos;
-            /// <summary>已达档位：0 未成型 / 1 缩水档已成型（380px 起）</summary>
+            /// <summary>档位 0未成型 / 1缩水档（380px起）</summary>
             public int Tier;
             public int SideSparkTimer;
-            /// <summary>满档就地收刀已完成，该束切割资格耗尽，消亡时不再落刀</summary>
+            /// <summary>满档已收刀，消亡不再落刀</summary>
             public bool Consumed;
-            /// <summary>弹幕 identity，防 whoAmI 槽位复用串档</summary>
+            /// <summary>弹幕 identity，防 whoAmI 复用串档</summary>
             public int Identity;
         }
 
@@ -68,19 +65,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         private List<int> staleKeys;
         private int purgeTimer;
 
-        //激光持续照射状态：仅拥有者客户端计数，identity 换束即清零
+        //激光照射计数，仅 owner，换束清零
         private int laserHoldTicks;
         private int laserIdentity = -1;
 
         public override void Apply(ref ShootContext ctx) {
-            //"延长射程"的老底子保留但削弱，让位给终端切割机制
+            //射程加成削弱，让位终端切割
             ctx.BeamLifeMul += 0.5f;
             ctx.BeamSpeedMul += 0.2f;
             ctx.DamageMul += -0.08f;
             ctx.ManaCostMul += 0.15f;
         }
 
-        //═════════════ 光束模式：飞行里程追踪 → 消亡结算 ═════════════
+        //═════════════ 光束里程追踪 ═════════════
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
             Projectile p = beam.Projectile;
@@ -95,9 +92,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
             if (track.Consumed) return;
 
-            //满档就地收刀：飞满里程立刻在当前位置转化为光刃，不等消亡——
-            //光束穿墙且寿命预算极长，单体Boss战里穿透耗不尽、等消亡刀只会落在十几屏外；
-            //收刀后该束切割资格耗尽，本体继续飞行（射程加成仍然生效）
+            //满档就地收刀，不等消亡；收刀后资格耗尽，本体继续飞
             if (track.Distance >= FullTriggerDistance) {
                 track.Consumed = true;
                 int dmg = Math.Max((int)(p.damage * CleaveDamageMulMax), 1);
@@ -107,16 +102,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
             if (track.Distance < MinTriggerDistance) return;
 
-            //缩水档成型播报（一次性）
+            //缩水档成型播报
             if (track.Tier < 1) {
                 track.Tier = 1;
                 ArmCue(p.Center, BeamThemeIndex(p), 1);
             }
 
-            //蓄势侧向火花：能量沿垂直方向渗出，预告"会横着展开"；只在可见时生成
+            //蓄势侧向火花，可见时
             if (Main.netMode != NetmodeID.Server) {
                 track.SideSparkTimer++;
-                //OnBeamAI 每刻走 3~4 次，此处以 AI 调用数计间隔
+                //按 AI 调用数计间隔（每刻 3~4 次）
                 if (track.SideSparkTimer >= 9
                     && VaultUtils.IsPointOnScreen(p.Center - Main.screenPosition, 100)) {
                     track.SideSparkTimer = 0;
@@ -132,10 +127,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
         public override void OnBeamKill(CyberTraceBeamProj beam, int timeLeft) {
             Projectile p = beam.Projectile;
-            //无论何种死法都先摘档案，防泄漏（非拥有者端字典本就无该项）
+            //死前先摘档案
             if (!beamTracks.Remove(p.whoAmI, out BeamTrack track)) return;
             if (beam.IsDerived || p.owner != Main.myPlayer) return;
-            //Consumed=已就地收刀；余下是"提前耗尽穿透死在 380~950px 间"的缩水刀路径
+            //Consumed=已收刀；否则 380~950px 缩水刀
             if (track.Consumed || track.Identity != p.identity || track.Distance < MinTriggerDistance) return;
 
             float charge = MathHelper.Clamp(
@@ -145,7 +140,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             SpawnCleave(p, p.Center, beam.FlightDirection, charge, BeamThemeIndex(p), dmg, p.knockBack);
         }
 
-        //═════════════ 激光模式：持续照射 → 收束横断 ═════════════
+        //═════════════ 激光收束横断 ═════════════
 
         public override void OnLaserAI(CyberPrismLaserProj laser) {
             if (laser.Projectile.owner != Main.myPlayer) return;
@@ -155,10 +150,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             }
             laserHoldTicks++;
             if (laserHoldTicks == LaserMinHoldTicks) {
-                //达标一声上膛提示，打在落刀点
+                //达标上膛提示
                 ArmCue(LaserCleavePoint(laser.Projectile), 2, 2);
             }
-            //达标后落刀点标记持续跟随光标投影：沿未来刀轴的两枚短促光屑，标出"松手会在这里横断"
+            //落刀点跟光标投影
             if (laserHoldTicks >= LaserMinHoldTicks && Main.netMode != NetmodeID.Server
                 && laserHoldTicks % 3 == 0) {
                 Vector2 point = LaserCleavePoint(laser.Projectile);
@@ -180,15 +175,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             laserIdentity = -1;
             if (!fire) return;
 
-            //激光恒为满功率照射，收束刀固定满规格；主题取激光的幻紫(2)
+            //激光收束刀满规格，主题幻紫(2)
             int dmg = Math.Max((int)(p.damage * LaserCleaveDamageMul), 1);
             SpawnCleave(p, LaserCleavePoint(p), p.rotation.ToRotationVector2(), 1f, 2, dmg, p.knockBack);
         }
 
-        /// <summary>
-        /// 激光收束刀的落点：光标在光柱上的投影（钳制在最小触发距离与满射程之间）；
-        /// 光柱几何终点恒在 1600px 外基本不可见，玩家指哪里、刀落哪里才可读
-        /// </summary>
+        /// <summary>激光收束刀落点，光标在光柱上的投影</summary>
         private static Vector2 LaserCleavePoint(Projectile laser) {
             Vector2 dir = laser.rotation.ToRotationVector2();
             float t = Vector2.Dot(Main.MouseWorld - laser.Center, dir);
@@ -198,7 +190,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
         //═════════════ 公共结算与反馈 ═════════════
 
-        /// <summary>在终点生成垂直弹道的切割光刃；仅拥有者客户端调用，扫向 roll 经 ai2 下发保证各端一致</summary>
+        /// <summary>终点生成切割光刃，仅 owner，扫向 ai2 同步</summary>
         private static void SpawnCleave(Projectile source, Vector2 pos, Vector2 flightDir,
             float charge, int theme, int damage, float knockback) {
             float baseAxis = flightDir.ToRotation() + MathHelper.PiOver2;
@@ -210,7 +202,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 ai0: baseAxis, ai1: charge, ai2: sweepDir * (theme + 1));
         }
 
-        /// <summary>档位上膛提示：满档带一声轻脆提示音，缩水档只有粒子；屏幕外不播报</summary>
+        /// <summary>档位上膛提示，屏外不播</summary>
         private static void ArmCue(Vector2 pos, int theme, int tier) {
             if (Main.netMode == NetmodeID.Server) return;
             if (!VaultUtils.IsPointOnScreen(pos - Main.screenPosition, 150)) return;
@@ -229,7 +221,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             }
         }
 
-        /// <summary>周期清扫：模块卸下再装回等边缘情况下的档案残留兜底</summary>
+        /// <summary>周期清扫档案残留</summary>
         public override void OnPlayerUpdate(Player player) {
             if (player == null || player.whoAmI != Main.myPlayer || beamTracks.Count == 0) return;
             if (++purgeTimer < PurgeInterval) return;
@@ -255,10 +247,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         private static int BeamThemeIndex(Projectile beam) => Math.Clamp((int)beam.ai[0] % 3, 0, 2);
     }
 
-    /// <summary>
-    /// 终端切割光刃：钉在光束终点、垂直弹道展开的宽刃光刃，快速旋掠扇形区域一次；
-    /// 范围内每个敌人只吃一记终结伤害；SHPCModExtenderCleave.fx
-    /// </summary>
+    /// <summary>终端切割光刃，旋掠一次一刀；SHPCModExtenderCleave.fx</summary>
     internal sealed class SHPCExtenderCleaveProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -266,7 +255,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         private const int SweepFrames = 13;
         private const int TailFrames = 17;
         private const int Lifetime = SweepFrames + TailFrames;
-        /// <summary>扫掠半幅（±40°，总扫幅 80°，小于 π 保证着色器楔区判据成立）</summary>
+        /// <summary>扫掠半幅 ±40°</summary>
         private const float SweepHalfArc = MathHelper.Pi * 40f / 180f;
         private const float HalfLenMin = 120f;
         private const float HalfLenMax = 215f;
@@ -279,7 +268,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
         private float HalfLen => MathHelper.Lerp(HalfLenMin, HalfLenMax, Charge);
         private int Age => Lifetime - Projectile.timeLeft;
-        /// <summary>缓出的扫掠进度：起手迅猛、收尾减速的"快速旋掠"</summary>
+        /// <summary>扫掠进度缓出</summary>
         private float SweepT {
             get {
                 float x = MathHelper.Clamp(Age / (float)SweepFrames, 0f, 1f);
@@ -301,14 +290,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             Projectile.penetrate = -1;
             Projectile.timeLeft = Lifetime;
             Projectile.usesLocalNPCImmunity = true;
-            //一次旋掠对每个敌人只结算一刀
+            //每敌只结算一刀
             Projectile.localNPCHitCooldown = -1;
             Projectile.DamageType = DamageClass.Magic;
         }
 
         public override bool ShouldUpdatePosition() => false;
 
-        /// <summary>伤害窗口只在扫掠期，尾段是纯残光演出</summary>
+        /// <summary>伤害只在扫掠期</summary>
         public override bool? CanDamage() => Projectile.timeLeft > TailFrames ? null : false;
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
@@ -322,11 +311,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            //横扫对蠕虫一刀可扫 5~10 节，体节折减对齐仓库先例（Heartcarver 0.425 / Halibut 0.65）
+            //蠕虫体节折减（Heartcarver 0.425 / Halibut 0.65）
             if (target.IsWormBody()) {
                 modifiers.FinalDamage *= 0.45f;
             }
-            //击退沿扫掠切线：被刀"扫飞"而不是被弹道推走
+            //击退沿扫掠切线
             Vector2 tangent = BladeDir.RotatedBy(MathHelper.PiOver2 * SweepSign);
             if (MathF.Abs(tangent.X) > 0.25f) {
                 modifiers.HitDirectionOverride = tangent.X >= 0f ? 1 : -1;
@@ -347,13 +336,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             Lighting.AddLight(Projectile.Center + dir * HalfLen * 0.85f, core.ToVector3() * 0.4f * fade);
             Lighting.AddLight(Projectile.Center - dir * HalfLen * 0.85f, core.ToVector3() * 0.4f * fade);
 
-            //扫掠期间沿刃身甩出切割碎光
+            //扫掠碎光
             if (Main.netMode != NetmodeID.Server && Age <= SweepFrames) {
                 SpawnSweepShreds(dir);
             }
         }
 
-        /// <summary>落刀瞬间的定场演出：相位刃声、中心环闪、满档轻震屏</summary>
+        /// <summary>落刀定场演出</summary>
         private void SpawnFlashFX() {
             if (Main.netMode == NetmodeID.Server) return;
             Color core = ExtenderStockModule.ThemeCore[ThemeIndex];
@@ -379,7 +368,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             }
         }
 
-        /// <summary>切割碎光：沿扫掠切线方向甩出，越靠刃尖线速度越大</summary>
+        /// <summary>切割碎光，沿切线甩出</summary>
         private void SpawnSweepShreds(Vector2 dir) {
             Color core = ExtenderStockModule.ThemeCore[ThemeIndex];
             Color glow = ExtenderStockModule.ThemeGlow[ThemeIndex];
@@ -417,7 +406,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
             Color core = ExtenderStockModule.ThemeCore[ThemeIndex];
             Color glow = ExtenderStockModule.ThemeGlow[ThemeIndex];
-            //quad 局部空间的起始/当前刀轴（+X=基准刀轴）
+            //quad 局部刀轴，+X=基准
             float delta0 = -SweepSign * SweepHalfArc;
             float deltaCur = CurrentDelta;
             float drawSize = HalfLen * 2.7f;
@@ -474,7 +463,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                     glow * (0.5f * fade), 0f, glowTex.Size() * 0.5f,
                     0.7f + Charge * 0.4f, SpriteEffects.None, 0f);
             }
-            //两端刃尖光斑：星芒+光晕，把扫掠运动的两端点亮
+            //两端刃尖光斑
             for (int s = -1; s <= 1; s += 2) {
                 Vector2 tipPos = Projectile.Center + dir * (HalfLen * s) - Main.screenPosition;
                 if (glowTex != null) {

@@ -4,7 +4,6 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.UIs.UIEffect
 {
-    /// <summary>科技粒子类</summary>
     public class TechPRT
     {
         public Vector2 Position;

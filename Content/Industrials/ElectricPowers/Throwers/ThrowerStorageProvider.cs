@@ -7,9 +7,7 @@ using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
 {
-    /// <summary>
-    /// 投掷者存储提供者工厂
-    /// </summary>
+    /// <summary>投掷者存储工厂</summary>
     internal class ThrowerStorageProviderFactory : IStorageProviderFactory
     {
         public string Identifier => "CWR.Thrower";
@@ -28,9 +26,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
         }
     }
 
-    /// <summary>
-    /// 投掷者的存储提供者
-    /// </summary>
+    /// <summary>投掷者存储</summary>
     internal class ThrowerStorageProvider : IStorageProvider
     {
         private readonly ThrowerTP _throwerTP;
@@ -66,11 +62,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
                 if (!IsValid) {
                     return false;
                 }
-                //检查是否有空槽位
+                //空槽
                 if (_throwerTP.StoredItems.Count < ThrowerTP.MaxSlots) {
                     return true;
                 }
-                //检查是否有可堆叠空间
+                //可堆叠
                 foreach (var item in _throwerTP.StoredItems) {
                     if (item == null || item.IsAir) {
                         return true;
@@ -88,9 +84,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             _position = throwerTP?.Position ?? Point16.NegativeOne;
         }
 
-        /// <summary>
-        /// 从位置查找ThrowerTP并创建存储提供者
-        /// </summary>
         public static ThrowerStorageProvider FromPosition(Point16 position) {
             if (!TileProcessorLoader.AutoPositionGetTP(position, out ThrowerTP tp)) {
                 return null;
@@ -98,9 +91,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             return new ThrowerStorageProvider(tp);
         }
 
-        /// <summary>
-        /// 在指定范围内查找最近的ThrowerTP
-        /// </summary>
+        /// <summary>范围内最近ThrowerTP</summary>
         public static ThrowerStorageProvider FindNearPosition(Point16 position, int range, Item item) {
             float rangeSQ = range * range;
             ThrowerTP nearestTP = null;
@@ -134,9 +125,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             return nearestTP != null ? new ThrowerStorageProvider(nearestTP) : null;
         }
 
-        /// <summary>
-        /// 获取指定位置的ThrowerTP存储提供者
-        /// </summary>
         public static ThrowerStorageProvider GetAtPosition(Point16 position, Item item) {
             if (!TileProcessorLoader.AutoPositionGetTP(position, out ThrowerTP tp)) {
                 return null;

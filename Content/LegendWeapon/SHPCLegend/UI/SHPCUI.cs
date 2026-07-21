@@ -201,16 +201,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         #endregion
 
         #region 左下角 HUD 队列接入
-        //SHPC 是主武器 HUD，作为左下角队列底部成员；手持 SHPC 时本就独占左下角，避让量恒为 0
+        //主武器HUD，独占左下，避让量0
         bool IBottomLeftHud.HudStackActive => Active;
         int IBottomLeftHud.HudStackOrder => 0;
         Vector2 IBottomLeftHud.HudStackAnchor => NaturalCorePosition;
-        //自核心向上覆盖扇形按钮与固定面板，向下覆盖 RAM 弧条
+        //上盖扇形按钮与固定面板，下盖RAM弧
         float IBottomLeftHud.HudStackTopExtent => 60f;
         float IBottomLeftHud.HudStackBottomExtent => 60f;
         #endregion
 
-        //供 SHPCModPanel 调用：打开三级模块选择面板
+        //供SHPCModPanel打开三级模块面板
         public void OpenModuleSelect(int slotIdx) {
             if (slotIdx < 0 || slotIdx >= 6) {
                 pinnedModuleSlot = -1;
@@ -407,16 +407,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 
         #region 工具
 
-        //自然核心位置（未经队列避让的原始位置）
+        //自然核心位置
         private static Vector2 NaturalCorePosition => new(96f, Main.screenHeight - 96f);
 
-        //取得核心位置（经左下角 HUD 队列避让；SHPC 始终独占，避让量恒为 0，等价于自然位置）
+        //经左下HUD队列避让，SHPC独占故恒为自然位
         private static Vector2 GetCorePosition() {
             SHPCUI inst = Instance;
             return inst == null ? NaturalCorePosition : BottomLeftHudStack.ResolveAnchor(inst);
         }
 
-        //单按钮的角度区间
+        //单按钮角度区间
         private static void GetSectorAngles(int idx, int count, out float aStart, out float aEnd) {
             float total = SHPCTheme.FanEnd - SHPCTheme.FanStart;
             float gap = SHPCTheme.ButtonGap;
@@ -425,13 +425,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             aEnd = aStart + perAngle;
         }
 
-        //极坐标命中检测，给定鼠标到核心的偏移
-        //返回-1表示未命中扇区，0..count-1表示命中索引
-        //isCore通过out返回是否命中核心
+        //极坐标命中，-1未中，0..count-1命中，isCore=核心
         private int HitTest(Vector2 mouseOffset, out bool isCore) {
             isCore = false;
             float dist = mouseOffset.Length();
-            //核心点击容差略大于实际外环
+            //核心容差略大于外环
             if (dist <= SHPCTheme.CoreRingR + 6f) {
                 isCore = true;
                 return -1;
@@ -444,7 +442,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 return -1;
             }
             float ang = MathF.Atan2(mouseOffset.Y, mouseOffset.X);
-            //角度容差，避免缝隙难点
+            //角度容差，防缝隙难点
             const float edgeTol = 0.025f;
             int count = buttons.Count;
             for (int i = 0; i < count; i++) {
@@ -457,7 +455,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         }
 
         //计算指定按钮固定二级面板的锚点与中线方向
-        //为了避免面板从不同角度的按钮顶出时遮挡其他UI，这里采用与按钮位置无关的固定锚点
+        //二级面板用固定锚点，防挡其他UI
         //（在扇形右侧、底边对齐核心高度），连续处于同一位置不随点击跳变
         private void GetFixedPanelAnchor(int idx, out Vector2 anchor, out float midA) {
             //中线使用水平向右，面板只会沿水平方向滑入
@@ -522,7 +520,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             if (pinnedSector < 0 && pinnedPanelProgress < 0.02f) {
                 pinnedPanelProgress = 0f;
             }
-            //三级模块面板进度：仅在二级面板为 Modify 且已选中插槽时打开
+            //三级面板，仅Modify且已选槽
             float moduleTarget = (pinnedSector == ModifySectorIndex && pinnedModuleSlot >= 0
                 && pinnedPanelProgress > 0.6f) ? 1f : 0f;
             modulePanelProgress = MathHelper.Lerp(modulePanelProgress, moduleTarget, 0.22f);
@@ -552,7 +550,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                     modHover = SHPCModPanel.HitTest(modLayout, MousePosition);
                     cyberPanelHit = modLayout.Panel.Contains((int)MousePosition.X, (int)MousePosition.Y);
 
-                    //三级模块选择面板：叠在 mod 面板右侧（复用 outDir偏移）
+                    //三级面板叠mod右侧
                     if (pinnedModuleSlot >= 0 && modulePanelProgress > 0.4f) {
                         Vector2 outDir = SHPCRenderer.AngleDir(panelMidA);
                         Vector2 modAnchor = panelAnchor + outDir * (SHPCModPanel.PanelW + 12f);
@@ -566,14 +564,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                                 SHPCModuleSelectPanel.HandleScroll();
                             }
                         }
-                        //三级面板存在时屏蔽二级插槽点击，仅保留 hover 插槽索引同步提示（可点击同一插槽关闭）
+                        //三级开时屏蔽二级插槽点击，仅同步hover提示
                     }
                 }
             }
-            //每帧推进赛博面板段位悬停延展进度，面板不可见时强制衰减
+            //赛博段悬停延展，不可见时强制衰减
             SHPCCyberPanel.UpdateHover(cyberHover, cyberPanelVisible);
 
-            //信息面板逻辑：仅在光标悬停按钮时显示（tooltip语义），锁定面板期间隐藏以免重叠
+            //信息面板仅悬停显示，锁定时隐藏
             float targetInfoAlpha = 0f;
             if (hoveredSector >= 0 && expandProgress > 0.7f && pinnedSector < 0) {
                 targetInfoAlpha = 1f;
@@ -584,13 +582,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 infoButtonIdx = -1;
             }
 
-            //领域快捷键：在手持SHPC且HUD可见时热键切换领域开关
-            //骇客时间激活期间禁止切换领域状态
+            //领域热键，手持SHPC且HUD可见
+            //HackTime激活时禁切领域
             if (!HackTime.Active && CWRKeySystem.Legend_Domain != null && CWRKeySystem.Legend_Domain.JustPressed) {
                 Cyberspace.Toggle(player);
             }
 
-            //鼠标交互占用
+            //鼠标占用
             bool inHotArea = isCore || hit >= 0 ||
                 (offset.Length() < SHPCTheme.ButtonOuterR + 8f && expandProgress > 0.4f) ||
                 cyberPanelHit;
@@ -599,10 +597,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 UIInputGuard.SuppressWeaponSwitch();
             }
 
-            //左键处理
+            //左键
             if (keyLeftPressState == KeyPressState.Pressed) {
                 if (cyberHover != SHPCCyberPanel.HitKind.None) {
-                    //三级悬停区只挡收起
+                    //三级悬停只挡收起
                     bool isSkillHover = cyberHover == SHPCCyberPanel.HitKind.Skill1
                         || cyberHover == SHPCCyberPanel.HitKind.Skill2
                         || cyberHover == SHPCCyberPanel.HitKind.Skill3;
@@ -634,12 +632,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                     if (enabled) {
                         selectedSector = hit;
                         if (def.UsesFixedPanel) {
-                            //切换锁定状态：同一按钮再点击则收起
+                            //同按钮再点收起
                             bool wasOpen = pinnedSector == hit;
                             pinnedSector = wasOpen ? -1 : hit;
-                            //开启固定面板时联动关闭义体UI
+                            //开固定面板时关义体UI
                             if (!wasOpen && CyberwareUI.Instance?.Active == true) {
-                                CyberwareUI.Instance.Toggle();//考虑到这个义体界面可能在其他地方也有所使用，这里的关联关闭可能不妥，后续如果有需要再调整为更合理的交互方式
+                                CyberwareUI.Instance.Toggle();//义体UI别处也可能开，关联关后续再调
                             }
                         }
                         else if (pinnedSector >= 0 && pinnedSector != hit) {

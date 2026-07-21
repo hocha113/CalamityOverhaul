@@ -386,7 +386,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
         private void BehaviorSearch() {
             Projectile.damage = 0;
-            //机械式扫描：移动到一个点，停顿，再移动
+            //扫描，移到点→停→再移
             idleWiggleTime++;
             if (idleWiggleTime % 120 == 0) {
                 //随机选择一个新的扫描点
@@ -520,7 +520,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 Vector2 vector = end - start;
                 float dist = vector.Length();
 
-                //计算需要绘制的数量，确保填满间隙
+                //段数填满间隙
                 int numDraws = (int)Math.Ceiling(dist / step);
                 if (numDraws <= 0) numDraws = 1;
 

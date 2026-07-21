@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>一阶段 dash 中：微弧追踪→末段急停甩头</summary>
+    /// <summary>一阶段 dash 中，微弧追踪→末段急停甩头</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismDashing, typeof(TwinsStateContext))]
     internal class SpazmatismDashingState : TwinsStateBase
     {
@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             Timer++;
 
             if (Timer <= FullSpeedTime) {
-                //全速段:保持速度大小，带极小转向率的微弧追踪(擦身而过的压迫感)
+                //全速微弧
                 float speed = npc.velocity.Length();
                 TwinsMotion.CurveChase(npc, player.Center, speed, 0.012f);
                 FaceVelocity(npc);
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 }
             }
             else {
-                //刹车段:急停甩头回正面向玩家，关闭碰撞伤害避免赖皮贴脸
+                //急停甩头，关碰撞伤
                 DisableContactDamage(npc);
                 TwinsMotion.BrakeAndWhip(npc, player.Center, 0.8f, 0.3f);
                 context.PushDashVisuals(0.3f, 0.6f);

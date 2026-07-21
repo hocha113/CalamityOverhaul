@@ -15,9 +15,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke
 {
-    /// <summary>
-    /// 硫磺海场景效果
-    /// </summary>
+    /// <summary>硫磺海 SceneEffect</summary>
     internal class OldDukeSceneEffect : ModSceneEffect
     {
         public override int Music => -1;
@@ -26,19 +24,16 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
         public override void SpecialVisuals(Player player, bool isActive) => player.ManageSpecialBiomeVisuals(SulfurSeaSky.Name, isActive);
     }
 
-    /// <summary>
-    /// 硫磺海天空效果，使用 <c>SulfurSeaSky.fx</c> 程序化着色器绘制毒雾/酸雨/气泡/腐蚀/爆发，
-    /// 取代旧的逐像素复合绘制（上千次 SpriteBatch.Draw），由 GPU 一次性完成
-    /// </summary>
+    /// <summary>硫磺海天空，走 <c>SulfurSeaSky.fx</c></summary>
     internal class SulfurSeaSky : CustomSky, ICWRLoader
     {
         internal static string Name => "CWRMod:SulfurSeaSky";
         private bool active;
         private float intensity;
 
-        //硫酸爆发闪光通道（目标由 OldDukeEffect 触发，着色器内渲染）
-        private float burst;          //爆发强度，触发后指数衰减
-        private float burstX = 0.5f;  //爆发屏幕x位置
+        //爆发闪光，OldDukeEffect触发
+        private float burst;//强度，指数衰减
+        private float burstX = 0.5f;//屏x
 
         void ICWRLoader.LoadData() {
             if (VaultUtils.isServer) {
@@ -46,9 +41,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
             }
             SkyManager.Instance[Name] = this;
 
-            //创建硫磺海毒绿色滤镜
             Filters.Scene[Name] = new Filter(new ScreenShaderData("FilterMiniTower")
-                .UseColor(0.15f, 0.25f, 0.15f)//毒绿色调
+                .UseColor(0.15f, 0.25f, 0.15f)
                 .UseOpacity(0.6f), EffectPriority.High);
         }
 
@@ -66,14 +60,14 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
             if (intensity <= 0.01f || VaultAsset.placeholder2 == null || VaultAsset.placeholder2.IsDisposed) {
                 return;
             }
-            //仅在最底层背景绘制一次
+            //最底层画一次
             if (maxDepth < 0 || minDepth >= 0) {
                 return;
             }
 
             Effect shader = EffectLoader.SulfurSeaSky?.Value;
             if (shader == null) {
-                //着色器缺失时回退为纯色叠加，氛围不至于完全丢失
+                //缺着色器则纯色兜底
                 spriteBatch.Draw(
                     VaultAsset.placeholder2.Value,
                     new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
@@ -113,7 +107,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
         }
 
         public override void Update(GameTime gameTime) {
-            //强度变化
             if (OldDukeEffect.IsActive) {
                 if (intensity < 1f) {
                     intensity += 0.025f;
@@ -126,7 +119,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
                 }
             }
 
-            //爆发闪光：瞬时脉冲 + 指数衰减，由 OldDukeEffect 触发
+            //爆发闪光脉冲
             if (OldDukeEffect.ConsumeSkyBurst(out float newBurstX, out float newStrength)) {
                 burst = Math.Max(burst, newStrength);
                 burstX = newBurstX;
@@ -138,7 +131,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
         }
 
         public override Color OnTileColor(Color inColor) {
-            //应用毒绿色调
             if (intensity > 0.1f) {
                 float toxicR = 0.85f;
                 float toxicG = 1.0f;
@@ -157,9 +149,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
         }
     }
 
-    /// <summary>
-    /// 硫磺海场景效果，IsActive 由 ComputeShouldBeActive 声明式推导
-    /// </summary>
+    /// <summary>硫磺海效果，IsActive声明式</summary>
     internal class OldDukeEffect : ModSystem
     {
         public static bool IsActive;
@@ -167,17 +157,14 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
 
         private int poisonWaveTimer = 0;
 
-        //天空爆发闪光（客户端视觉，OldDukeEffect 触发 → SulfurSeaSky 消费）
+        //天空爆发，本端触发→Sky消费
         private static bool skyBurstPending;
         private static float skyBurstX = 0.5f;
         private static float skyBurstStrength = 1f;
 
-        /// <summary>
-        /// 声明式 IsActive，唯一开关入口
-        /// </summary>
         private static bool ComputeShouldBeActive() => OldDukeStorySync.IsAnyScenarioActive();
 
-        /// <summary>触发一次天空硫酸爆发闪光；仅客户端，由着色器渲染（同帧多次取最强）</summary>
+        /// <summary>客户端天空爆发，同帧取最强</summary>
         private static void TriggerSkyBurst(Vector2 worldPosition, float strength = 1f) {
             if (VaultUtils.isServer || !IsActive) {
                 return;
@@ -192,7 +179,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
                 (worldPosition.X - Main.screenPosition.X) / Main.screenWidth, 0.1f, 0.9f);
         }
 
-        /// <summary>消费一次天空爆发闪光（SulfurSeaSky.Update 调用）</summary>
+        /// <summary>Sky消费爆发闪光</summary>
         public static bool ConsumeSkyBurst(out float screenX, out float strength) {
             screenX = skyBurstX;
             strength = skyBurstStrength;
@@ -242,11 +229,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
         }
 
         public override void PostUpdateEverything() {
-            //声明式计算：每帧从当前游戏状态推导IsActive，而非依赖手动开关
-            //这样即使某处代码遗漏了关闭调用，效果也会在条件不满足时自动消失
+            //声明式推IsActive
             bool shouldBeActive = ComputeShouldBeActive();
 
-            //仅在状态发生变化时触发网络同步，避免每帧发包
+            //变状态才发包
             if (IsActive != shouldBeActive) {
                 IsActive = shouldBeActive;
                 Send();
@@ -256,20 +242,15 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
                 ActiveTimer++;
                 poisonWaveTimer++;
 
-                //毒雾、酸雨、上浮气泡、腐蚀斑等持续氛围已全部由 SulfurSeaSky.fx 着色器渲染，
-                //此处不再逐帧生成大量环境粒子；仅保留少量与玩法事件挂钩的局部爆点
-
-                //偶尔生成扩散的毒液波纹（局部点缀）
+                //氛围交着色器；这里只留玩法爆点
                 if (poisonWaveTimer % 90 == 0) {
                     SpawnPoisonWave();
                 }
 
-                //偶尔生成硫酸爆发效果（含玩法投射物 + 天空闪光）
                 if (ActiveTimer % 150 == 0) {
                     SpawnSulfuricBurst();
                 }
 
-                //播放硫磺海音乐
                 if (!CWRRef.GetBossRushActive()) {
                     int index = NPC.FindFirstNPC(CWRID.NPC_OldDuke);
                     if (index.TryGetNPC(out var npc) && npc.friendly) {
@@ -283,16 +264,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
             }
         }
 
-        /// <summary>
-        /// 生成扩散的毒液波纹（局部点缀，配合天空着色器的弱闪光）
-        /// </summary>
         private static void SpawnPoisonWave() {
             Vector2 waveCenter = new Vector2(
                 Main.screenPosition.X + Main.screenWidth * Main.rand.NextFloat(0.25f, 0.75f),
                 Main.screenPosition.Y + Main.screenHeight * Main.rand.NextFloat(0.25f, 0.75f)
             );
 
-            //环形酸液飞溅
             int waveCount = 6;
             for (int i = 0; i < waveCount; i++) {
                 float angle = MathHelper.TwoPi * i / waveCount;
@@ -301,13 +278,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
                 PRTLoader.NewParticle<PRT_AcidSplash>(waveCenter, velocity, Color.White, Main.rand.NextFloat(1f, 2f)).Configure(Main.rand.Next(70, 120));
             }
 
-            //中心发光核心
             PRTLoader.NewParticle<PRT_SulfuricCore>(waveCenter, Vector2.Zero, Color.White, Main.rand.NextFloat(0.15f, 0.5f)).Configure(60);
 
-            //天空弱闪光呼应
             TriggerSkyBurst(waveCenter, 0.5f);
 
-            //播放水泡音效
             if (Main.rand.NextBool(4)) {
                 SoundEngine.PlaySound(SoundID.Item21 with {
                     Volume = 0.3f,
@@ -317,19 +291,14 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
             }
         }
 
-        /// <summary>
-        /// 生成硫酸爆发效果：保留玩法投射物与音效，氛围闪光交由天空着色器，大幅削减粒子数量
-        /// </summary>
         private static void SpawnSulfuricBurst() {
             Vector2 burstCenter = new Vector2(
                 Main.screenPosition.X + Main.screenWidth * Main.rand.NextFloat(0.2f, 0.8f),
                 Main.screenPosition.Y + Main.screenHeight * Main.rand.NextFloat(0.2f, 0.8f)
             );
 
-            //爆发核心
             PRTLoader.NewParticle<PRT_SulfuricCore>(burstCenter, Vector2.Zero, Color.White, Main.rand.NextFloat(0.2f, 0.5f)).Configure(90);
 
-            //少量内圈酸雾扩散
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f + Main.rand.NextFloat(-0.3f, 0.3f);
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(1f, 3f);
@@ -337,24 +306,20 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
                 PRTLoader.NewParticle<PRT_ToxicMist>(burstCenter + Main.rand.NextVector2Circular(15f, 15f), velocity, Color.White, Main.rand.NextFloat(2f, 4f)).Configure(Main.rand.Next(10, 16), Main.rand.NextFloat(0.6f, 1f));
             }
 
-            //少量腐蚀碎片
             for (int i = 0; i < 8; i++) {
                 Vector2 fragmentVelocity = Main.rand.NextVector2Circular(6f, 6f);
 
                 PRTLoader.NewParticle<PRT_AcidSplash>(burstCenter + Main.rand.NextVector2Circular(20f, 20f), fragmentVelocity, Color.White, Main.rand.NextFloat(0.5f, 1f)).Configure(Main.rand.Next(50, 100));
             }
 
-            //天空强闪光呼应
             TriggerSkyBurst(burstCenter, 1f);
 
-            //音效：硫酸沸腾声
             SoundEngine.PlaySound(SoundID.Item95 with {
                 Volume = 0.5f,
                 Pitch = -0.3f,
                 MaxInstances = 2
             }, burstCenter);
 
-            //额外的爆炸音效
             SoundEngine.PlaySound(SoundID.Item14 with {
                 Volume = 0.4f,
                 Pitch = -0.6f,

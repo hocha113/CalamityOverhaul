@@ -15,10 +15,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     /// <summary>
-    /// 封印札 HUD：手持鬼切时左下角悬一张随风摆的纸札,整簇挂在鬼域之眼下。<br/>
-    /// 札上墨批长度 = 总驾驭度；有鬼躁动时下缘焦边燃起鬼火青。点击札开阖点鬼簿;<br/>
-    /// 眼反映领域状态(阖/表/里/离巢),左键开阖领域、右键翻转表里(见 <see cref="OniDomainEye"/>);
-    /// 领域开着时整簇不随收刀撤走,控制面不弃守
+    /// 封印札 HUD,左下角,挂在鬼域之眼下.
+    /// 墨批=总驾驭,躁动焦边;点札开簿;眼控领域见 <see cref="OniDomainEye"/>;
+    /// 域开时不随收刀撤走
     /// </summary>
     internal sealed class OniTalismanHud : UIHandle, ILocalizedModType, IBottomLeftHud
     {
@@ -162,7 +161,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             //挂绳推进:危态风更烈;悬停视为被手捏住,风息、阻尼加重,偶发拽动也止住
             //风幅与阻尼取"檐下无风时微微息动"的档位,大幅甩摆只留给悬停初捏与危态拽动
-            //绳结跟随眼的呼吸微移——札确实挂在那只活物身上
+            //绳结随眼呼吸微移
             float windAmp = danger ? 0.11f : 0.05f;
             if (hover) {
                 windAmp *= 0.2f;
@@ -285,7 +284,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             float W = OnikiriUITheme.HudTalismanW;
             float H = OnikiriUITheme.HudTalismanH;
 
-            //挂绳:整簇挂在鬼域之眼下——系带自眼底垂到绳结,结点一枚朱菱,绳体为 Verlet 折线
+            //挂绳 Verlet,眼底垂至绳结
             Vector2 knotDraw = knot + domainEye.HangSway;
             OniBrush.DrawGradientLine(sb, domainEye.TieTop, knotDraw, OnikiriUITheme.Deep * (a * 0.30f), OnikiriUITheme.Deep * (a * 0.85f), 1.2f);
             rope.Draw(sb, OnikiriUITheme.Deep * 0.88f, OnikiriUITheme.Deep * 0.62f, 1.3f, a);
@@ -300,8 +299,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             bool danger = OniRegistry.InDanger;
             bool paperByShader = danger && OniPaperBurnDraw.Available;
             if (paperByShader) {
-                //焚烧量吃"距离失控有多近":总驾驭越低烧得越高。
-                //只许舔掉下缘一小截——札是警示牌,不能被火吃掉存在感
+                //焚烧量随总驾驭降低升高,只舔下缘
                 float burn = MathHelper.Clamp(0.09f + (1f - mastery) * 0.17f, 0f, 0.30f);
                 OniPaperBurnDraw.Draw(sb, stripTop, rot, new Vector2(W, H), a * (hover ? 1.05f : 0.96f), burn, GlobalTimer);
             }

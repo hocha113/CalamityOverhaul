@@ -6,8 +6,8 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
     /// <summary>
-    /// 岩鱼锤石尘团：SmokeSheet01 染哑光暖灰的实体尘（AlphaBlend 非光效）。<br/>
-    /// front 模式作砸点尘环波前：贴地压扁、强水平初速快速衰减、拖两级残影
+    /// 岩鱼锤石尘团，SmokeSheet01 染哑光暖灰的实体尘（AlphaBlend 非光效）<br/>
+    /// front 模式作砸点尘环波前，贴地压扁、强水平初速快速衰减、拖两级残影
     /// </summary>
     internal class PRT_FishRockDust : BasePRT
     {
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void AI() {
             if (groundFront) {
-                //波前：强水平速度指数衰减，微升腾
+                //波前，强水平速度指数衰减，微升腾
                 Velocity.X *= 0.90f;
                 Velocity.Y = Velocity.Y * 0.9f - 0.03f;
             }
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 squish = groundFront ? new Vector2(1.35f, 0.58f) : Vector2.One;
 
             if (groundFront) {
-                //横扫残影：沿来路两级衰减，读出波前行进方向
+                //横扫残影
                 for (int i = 2; i >= 1; i--) {
                     spriteBatch.Draw(tex, pos - Velocity * (i * 2.2f), frame, body * (Opacity * (0.34f - i * 0.11f))
                         , Rotation, origin, Scale * squish * (1f - i * 0.08f), SpriteEffects.None, 0f);
@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 岩鱼锤瓦砾：白像素三矩形拼出的硬边角砾，哑光乘环境光零发光；<br/>
+    /// 岩鱼锤瓦砾，白像素三矩形拼出的硬边角砾，哑光乘环境光零发光；<br/>
     /// 受重力抛物翻滚、落地弹跳一次、二次触地落定并快速收尾
     /// </summary>
     internal class PRT_FishRockRubble : BasePRT
@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Velocity.Y += gravity;
             }
             Velocity.X *= 0.99f;
-            //翻滚速率挂水平速度：滚得快转得快
+            //翻滚速率挂水平速度，滚得快转得快
             Rotation += spin * (0.55f + Math.Abs(Velocity.X) * 0.07f);
 
             if (Velocity.Y > 0f && Collision.SolidCollision(Position - new Vector2(4f), 8, 8)) {
@@ -158,7 +158,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     spin *= 1.5f;
                 }
                 else {
-                    //二次触地落定：停转停移，提前进入收尾
+                    //二次触地落定，停转停移，提前进入收尾
                     Velocity *= 0.2f;
                     spin *= 0.5f;
                     if (Lifetime - Time > 8) {
@@ -189,13 +189,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float h = 7f * Scale;
             Vector2 rotDown = (Rotation + MathHelper.PiOver2).ToRotationVector2();
 
-            //暗底面错位在下：给块体厚度
+            //暗底面错位在下，给块体厚度
             spriteBatch.Draw(pixel, pos + rotDown * (h * 0.22f), src, under * Opacity, Rotation
                 , origin, new Vector2(w, h), SpriteEffects.None, 0f);
             //主面
             spriteBatch.Draw(pixel, pos, src, face * Opacity, Rotation
                 , origin, new Vector2(w * 0.94f, h * 0.86f), SpriteEffects.None, 0f);
-            //受光小棱面：偏转错位打破矩形轮廓
+            //受光小棱面，偏转错位打破矩形轮廓
             spriteBatch.Draw(pixel, pos - rotDown * (h * 0.24f), src, edge * (Opacity * 0.9f), Rotation + 0.5f
                 , origin, new Vector2(w * 0.42f, h * 0.4f), SpriteEffects.None, 0f);
             return false;
@@ -203,7 +203,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 反重力石屑：蓄力预告用的小哑光碎屑，向上渐加速漂浮，微水平游移，顶端淡出
+    /// 反重力石屑，蓄力预告用的小哑光碎屑，向上渐加速漂浮，微水平游移，顶端淡出
     /// </summary>
     internal class PRT_FishRockMote : BasePRT
     {
@@ -235,7 +235,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            //反重力：上浮渐加速，读作被蓄力场吸起
+            //反重力
             if (Velocity.Y > -3.4f) {
                 Velocity.Y -= 0.1f;
             }

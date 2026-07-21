@@ -23,16 +23,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public float Time;
     }
 
-    /// <summary>
-    /// 气力墨脉 shader 绘制(OniVigorInk.fx)：宣纸底痕/湿墨主体/飞白/墨锋前沿/
-    /// 消耗残痕/回满收笔扫光全部在 shader 内完成。<br/>
-    /// 失败时由调用方退回 <c>OniBrush</c> 简笔
-    /// </summary>
+    /// <summary>气力墨脉(OniVigorInk.fx),失败退回 <c>OniBrush</c> 简笔</summary>
     internal static class OniVigorInkDraw
     {
         public static bool Available => EffectLoader.OniVigorInk?.Value != null;
 
-        /// <summary>绘制气力墨脉 quad。调用方保证当前批为 Deferred+UIScaleMatrix</summary>
+        /// <summary>墨脉 quad,批须 Deferred+UIScaleMatrix</summary>
         public static void Draw(SpriteBatch sb, Rectangle dest, in OniVigorInkParams p) {
             Effect effect = EffectLoader.OniVigorInk?.Value;
             if (effect == null) {

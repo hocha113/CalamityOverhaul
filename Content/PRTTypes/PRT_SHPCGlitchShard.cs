@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>故障数据条微粒：横向矩形碎片，间歇瞬移+主/强调双色跳变+随机闪断，不稳定机匣专属</summary>
+    /// <summary>故障数据条，不稳定机匣，跳位+闪断+RGB残影</summary>
     internal class PRT_SHPCGlitchShard : BasePRT
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             this.accentColor = accentColor;
             Lifetime = lifeTime;
             initialScale = Scale;
-            Rotation = Main.rand.NextBool(4) ? MathHelper.PiOver2 : 0f; //多数横条，少数竖条
+            Rotation = Main.rand.NextBool(4) ? MathHelper.PiOver2 : 0f; //多横少竖
             jumpCountdown = Main.rand.Next(3, 7);
             flickerPhase = Main.rand.NextFloat(MathHelper.TwoPi);
         }
@@ -41,16 +41,15 @@ namespace CalamityOverhaul.Content.PRTTypes
 
         public override void AI() {
             Velocity *= 0.90f;
-            //间歇瞬移：不平滑漂移而是离散跳位，配合换色制造数字故障感
+            //离散跳位+换色
             if (--jumpCountdown <= 0) {
                 jumpCountdown = Main.rand.Next(3, 7);
                 Position += Main.rand.NextVector2Circular(6f, 4f);
                 if (Main.rand.NextBool(3)) swapped = !swapped;
             }
             float life = LifetimeCompletion;
-            //末段收缩为细线
             Scale = life > 0.72f ? initialScale * (1f - (life - 0.72f) / 0.28f) : initialScale;
-            //随机闪断：偶发一帧近乎熄灭
+            //偶发一帧近熄
             float blink = Main.rand.NextBool(11) ? 0.15f : 1f;
             float flicker = 0.78f + 0.22f * MathF.Sin(Time * 1.1f + flickerPhase);
             Opacity = blink * flicker * (1f - MathF.Pow(life, 3f));
@@ -64,13 +63,12 @@ namespace CalamityOverhaul.Content.PRTTypes
             Color main = swapped ? accentColor : Color;
             Color edge = swapped ? Color : accentColor;
 
-            //数据条本体：横长矩形
             Vector2 size = new(11f * Scale, 2.6f * Scale);
             spriteBatch.Draw(pixel, drawPos, new Rectangle(0, 0, 1, 1), edge * (Opacity * 0.45f), Rotation,
                 new Vector2(0.5f, 0.5f), size * 1.5f, SpriteEffects.None, 0f);
             spriteBatch.Draw(pixel, drawPos, new Rectangle(0, 0, 1, 1), main * Opacity, Rotation,
                 new Vector2(0.5f, 0.5f), size, SpriteEffects.None, 0f);
-            //RGB 分离残影：主体左右各一条极淡的偏色副本
+            //RGB分离残影
             Vector2 chromOff = new(3f * Scale, 0f);
             spriteBatch.Draw(pixel, drawPos - chromOff, new Rectangle(0, 0, 1, 1),
                 (main with { G = 30, B = 30 }) * (Opacity * 0.30f), Rotation,

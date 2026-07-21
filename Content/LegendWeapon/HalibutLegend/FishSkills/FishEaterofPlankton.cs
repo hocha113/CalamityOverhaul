@@ -14,9 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int UnlockFishID => ItemID.EaterofPlankton;
         public override int DefaultCooldown => 60;
         public override int ResearchDuration => 60 * 22;
-        /// <summary>
-        /// 每次射击生成的噬魂虫数量
-        /// </summary>
+        /// <summary>每次射击生成的噬魂虫数量</summary>
         private const int BitesPerShot = 1;
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -51,11 +49,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 噬魂虫弹幕：腐肉环节虫，中脊线 TriangleStrip 蛇形连续体，
-    /// 蠕动 = 正弦相位沿体节向尾传递的推进波（头稳尾摆），
-    /// 撕咬 = 3 帧定帧 + 双颚咬合 + 肉屑滴液飞溅，死亡 = 尾向头噪声腐解
-    /// </summary>
+    /// <summary>噬魂虫弹幕</summary>
     internal class SoulEaterBite : ModProjectile, IPrimitiveDrawable, IOverlayDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -223,7 +217,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SeekingAI() {
-            //寻找目标阶段：寻找最近的敌人
+            //寻找目标阶段，寻找最近的敌人
             targetNPC = -1;
             var npc = Projectile.Center.FindClosestNPC(800f);
             if (npc != null) {
@@ -282,7 +276,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void BitingAI() {
-            //咬击阶段：短暂的爆发加速
+            //咬击阶段，短暂的爆发加速
             if (AITimer < 10) {
                 Projectile.velocity *= 1.1f;
                 wriggleAmplitude = 15f; //咬击时蠕动幅度加大
@@ -311,7 +305,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.velocity += perpendicular * wriggleOffset;
         }
 
-        /// <summary>身体段 tick：跟随约束链 + 推进波横向偏移</summary>
+        /// <summary>身体段 tick</summary>
         private void UpdateSpine() {
             //头部位置
             spine[0] = Projectile.Center;
@@ -338,7 +332,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //击中效果：咬击音效分层(肉击+湿咬)
+            //击中效果
             SoundEngine.PlaySound(SoundID.NPCHit18 with { Pitch = -0.2f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.NPCHit13 with { Volume = 0.35f, Pitch = -0.4f }, Projectile.Center);
 
@@ -379,7 +373,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //本体全部由条带与颚层承担, 实体pass不画
         public override bool PreDraw(ref Color lightColor) => false;
 
-        /// <summary>虫体条带：沿中脊线的 TriangleStrip，纺锤形体宽，顶点色乘环境光</summary>
+        /// <summary>虫体条带</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
             if (Main.dedServ || !spineInit || materialize <= 0.02f) {
                 return;
@@ -431,7 +425,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             device.RasterizerState = prevRaster;
         }
 
-        /// <summary>头端细节：双颚开合 + 头壳拱片 + 极小湿光点，全部乘环境光</summary>
+        /// <summary>头端细节</summary>
         void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
             if (Main.dedServ || !spineInit || materialize <= 0.05f || dissolve > 0.9f) {
                 return;

@@ -8,10 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 飞天鱼羽的羽毛质感词汇库：绒羽小簇、空气涟漪线、集结气环、死后落羽。<br/>
-    /// 羽毛不发光：主体一律 AlphaBlend 奶白并采样环境光，加色只留给空气线与小金闪点缀
-    /// </summary>
+    /// <summary>飞天鱼羽的羽毛质感词汇库</summary>
     internal static class FishHarpyVFX
     {
         //羽色三件套: 奶白羽面、淡金点缀、冷淡蓝空气
@@ -19,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         internal static readonly Color Gold = new(230, 196, 122);
         internal static readonly Color AirCool = new(178, 196, 220);
 
-        /// <summary>剥落绒羽簇：dir 为受力方向（可不归一），锥形散出后被空气拖停缓降</summary>
+        /// <summary>剥落绒羽簇</summary>
         internal static void DownBurst(Vector2 pos, Vector2 dir, int count, float speed) {
             if (Main.dedServ) {
                 return;
@@ -33,7 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>破空涟漪细弧：orient 定朝向，scale 控制弧长，驻留在轨迹上消散</summary>
+        /// <summary>破空涟漪细弧</summary>
         internal static void AirRipple(Vector2 pos, Vector2 orient, float scale) {
             if (Main.dedServ) {
                 return;
@@ -42,7 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 , AirCool, scale * 0.3f).ConfigureStreak(Main.rand.Next(10, 15), 0.16f);
         }
 
-        /// <summary>集结/蓄力提示：成对镜像气环扩到羽环半径 + 绒羽散开 + 两点金闪</summary>
+        /// <summary>集结/蓄力提示</summary>
         internal static void ChargeCue(Vector2 center, float radius) {
             if (Main.dedServ) {
                 return;
@@ -69,7 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>死后残迹：一根独立落羽摆锤式缓降 + 触地停摆，活得比弹体久</summary>
+        /// <summary>死后残迹</summary>
         internal static void FeatherRemnant(Vector2 pos, Vector2 inheritVel) {
             if (Main.dedServ) {
                 return;
@@ -79,10 +76,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 绒羽小簇：极轻的哑光绒毛，强空气阻尼 + 横向摆动 + 缓慢沉降。<br/>
-    /// AlphaBlend 直绘（Extra_98 带真 alpha）并采样环境光，读作羽屑而非光点
-    /// </summary>
+    /// <summary>绒羽小簇</summary>
     internal class PRT_FishHarpyDown : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -162,10 +156,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 空气涟漪线：羽毛切开空气留下的细弧（ArcWave 黑底, 只能加色）。<br/>
-    /// streak 模式贴着轨迹驻留消散, ring 模式成对镜像扩张读作气环
-    /// </summary>
+    /// <summary>空气涟漪线</summary>
     internal class PRT_FishHarpyAirLine : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "ArcWave";
@@ -232,10 +223,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 死后落羽：弹体死亡时留下的独立残迹，摆锤式左右摇摆缓降，
-    /// 摆动端点悬滞、中段下滑，触地停摆加速消散；贴图直接取轨道羽毛的鸟妖羽毛
-    /// </summary>
+    /// <summary>死后落羽</summary>
     internal class PRT_FishHarpyFall : BasePRT
     {
         public override string Texture => CWRConstant.VaultPlaceholder;

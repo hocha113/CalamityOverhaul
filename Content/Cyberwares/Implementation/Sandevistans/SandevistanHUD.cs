@@ -29,12 +29,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         }
 
         #region 左下角 HUD 队列接入
-        //主动技能冷却环，置于武器 HUD（次序 0）与义眼被动读数（次序 10）之间：
-        //持比目鱼/SHPC 时被顶到其上方，义眼再叠于本环之上
+        //主动冷却环，order 5，夹在武器 HUD(0)与义眼(10)之间
         bool IBottomLeftHud.HudStackActive => Active;
         int IBottomLeftHud.HudStackOrder => 5;
         Vector2 IBottomLeftHud.HudStackAnchor => NaturalAnchor;
-        //自环心向上/向下覆盖刻度环、扫描头辉光与故障碎片的散布范围
+        //上下覆盖刻度/扫描头/故障碎片
         float IBottomLeftHud.HudStackTopExtent => 65f;
         float IBottomLeftHud.HudStackBottomExtent => 65f;
         #endregion
@@ -122,7 +121,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             }
             if (scanAngle > MathHelper.TwoPi) scanAngle -= MathHelper.TwoPi;
 
-            //启停边沿闪光+故障
+            //启停边沿闪光
             if (active && !wasActive) {
                 transitionFlash = 1f;
                 neuralBurst = 1f;
@@ -142,10 +141,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             if (neuralBurst < 0.01f) neuralBurst = 0;
             capFlutter += 0.25f;
 
-            //故障碎片更新和随机生成
+            //故障碎片
             UpdateGlitches(active);
 
-            //粒子初始化和更新
             if (!dotsInited) {
                 InitDots();
                 dotsInited = true;
@@ -180,7 +178,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 if (g.Life <= 0) { glitches.RemoveAt(i); continue; }
                 glitches[i] = g;
             }
-            //持续的随机故障（激活时更频繁）
+            //随机故障，激活更频
             glitchCD--;
             if (glitchCD <= 0) {
                 glitchCD = active ? 8 + Main.rand.Next(12) : 30 + Main.rand.Next(40);
@@ -216,10 +214,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 
         #region 绘制
 
-        //自然锚点（环心，未经队列避让）：UI 空间坐标，与义眼 HUD 同一停靠位，避免高 UIScale 下漂移
+        //自然锚点，同义眼停靠，UI 空间防高 UIScale 漂移
         private static Vector2 NaturalAnchor => new(96f, BottomLeftHudStack.UIScreenH - 96f);
 
-        /// <summary>环心位置，经左下角 HUD 队列避让：与武器 HUD 同屏时自动上移悬浮</summary>
+        /// <summary>环心，左下 HUD 队列避让</summary>
         private static Vector2 GetCenter() {
             SandevistanHUD inst = Instance;
             return inst == null ? NaturalAnchor : BottomLeftHudStack.ResolveAnchor(inst);
@@ -245,18 +243,16 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             DrawTransitionFlash(sb, px, center);
         }
 
-        //暗色背景全环（四段），双层增加厚度感
+        //暗色背景全环，双层
         private void DrawBackgroundRing(SpriteBatch sb, Texture2D px, Vector2 c) {
             for (int s = 0; s < SegCount; s++) {
                 float start = ArcOrigin + s * (SegAngle + GapRad);
-                //宽辉光底层
                 DrawArc(sb, px, c, R_Main, start, SegAngle, T_Glow * 0.6f, CyanDim * 0.08f, 20);
-                //主体
                 DrawArc(sb, px, c, R_Main, start, SegAngle, T_Main, CyanDim * 0.35f, 20);
             }
         }
 
-        //多层填充弧：外辉光 → 色差偏移 → 主弧 → 内核心亮线 → SoftGlow光晕
+        //多层填充弧
         private void DrawFilledArc(SpriteBatch sb, Texture2D px, Vector2 c, float ratio, bool active) {
             if (ratio <= 0.001f) return;
             Color arcColor = GetArcColor(ratio);
@@ -271,22 +267,16 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 float sweep = MathF.Min(remaining, SegAngle);
                 int segs = Math.Max(6, (int)(sweep / MathHelper.TwoPi * 70));
 
-                //外辉光层
                 DrawArc(sb, px, c, R_Main, segStart, sweep, T_Glow, arcColor * (0.12f * pulse), segs);
 
-                //色差偏移：红通道偏左，蓝通道偏右
+                //色差，红左蓝右
                 DrawArc(sb, px, c, R_Main, segStart, sweep, T_Glow * 0.7f,
                     new Color(255, 30, 30) * (0.06f * pulse), segs, new Vector2(-1.5f, 0));
                 DrawArc(sb, px, c, R_Main, segStart, sweep, T_Glow * 0.7f,
                     new Color(30, 60, 255) * (0.06f * pulse), segs, new Vector2(1.5f, 0));
 
-                //主弧
                 DrawArc(sb, px, c, R_Main, segStart, sweep, T_Main, arcColor * pulse, segs);
-
-                //内核心高亮
                 DrawArc(sb, px, c, R_Main, segStart, sweep, T_Core, Color.White * (0.6f * pulse), segs);
-
-                //沿弧SoftGlow光晕，让弧线有真实的光溢出感
                 DrawArcGlowDots(sb, c, segStart, sweep, arcColor * (0.08f * pulse), 5);
             }
 
@@ -306,7 +296,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             }
         }
 
-        //弧末端光标：用SoftGlow贴图绘制真实柔和圆形辉光
+        //弧末端光标
         private void DrawArcCap(SpriteBatch sb, Texture2D px, Vector2 c, float ratio, bool active) {
             if (ratio <= 0.001f || ratio >= 0.999f) return;
             float fillAngle = GetFillAngle(ratio);
@@ -314,13 +304,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             Color arcCol = GetArcColor(ratio);
             float flutter = 0.7f + MathF.Sin(capFlutter) * 0.3f;
 
-            //SoftGlow多层辉光
             DrawGlow(sb, capPos, active ? 0.5f : 0.35f, arcCol * (0.1f * flutter));
             DrawGlow(sb, capPos, active ? 0.22f : 0.14f, arcCol * (0.35f * flutter));
             DrawGlow(sb, capPos, active ? 0.08f : 0.05f, Color.White * (0.8f * flutter));
         }
 
-        //32个刻度标记
+        //32 刻度
         private void DrawTickMarks(SpriteBatch sb, Texture2D px, Vector2 c, float ratio, bool active) {
             float fillAngle = GetFillAngle(ratio);
             for (int i = 0; i < TickCount; i++) {
@@ -330,7 +319,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 bool isMajor = i % 8 == 0;
                 float thick = isMajor ? 1.8f : 0.8f;
 
-                //判断刻度是否在填充范围内
                 float normalAngle = NormalizeAngle(angle - ArcOrigin);
                 float normalFill = NormalizeAngle(fillAngle - ArcOrigin);
                 bool inFill = normalAngle <= normalFill + 0.01f;
@@ -350,7 +338,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             }
         }
 
-        //旋转扫描线（带拖尾渐隐），双层辉光+实线，头部用SoftGlow
+        //旋转扫描线，拖尾渐隐
         private void DrawScanSweep(SpriteBatch sb, Texture2D px, Vector2 c, bool active) {
             float alpha = active ? 0.5f : 0.12f;
             int tailCount = active ? 8 : 3;
@@ -361,18 +349,15 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 Vector2 outer = c + dir * (R_TickOut + 3);
                 float fade = 1f - (float)t / (tailCount + 1);
                 float fadeSq = fade * fade;
-                //宽辉光
                 DrawLine(sb, px, inner, outer, 3.5f, CyanHi * (alpha * fadeSq * 0.15f));
-                //实线
                 DrawLine(sb, px, inner, outer, 1.2f, CyanHi * (alpha * fadeSq));
             }
-            //扫描头亮点：SoftGlow柔光
             Vector2 headDir = new(MathF.Cos(scanAngle), MathF.Sin(scanAngle));
             Vector2 headPos = c + headDir * (R_TickOut + 3);
             DrawGlow(sb, headPos, active ? 0.18f : 0.08f, CyanHi * (alpha * 0.6f));
         }
 
-        //神经脉冲：激活/停用瞬间从中心放射的线条，多层叠加 + SoftGlow末端亮点
+        //启停瞬间放射线
         private void DrawNeuralPulse(SpriteBatch sb, Texture2D px, Vector2 c) {
             if (neuralBurst < 0.02f) return;
             int rays = 12;
@@ -383,49 +368,39 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 Vector2 start = c + dir * 12f;
                 Vector2 end = c + dir * (12f + maxLen);
                 float alpha = neuralBurst * (0.4f + MathF.Sin(i * 1.7f) * 0.2f);
-                //宽辉光层
                 DrawLine(sb, px, start, end, 4f, CyanHi * (alpha * 0.12f));
-                //主体
                 DrawLine(sb, px, start, end, 2f, CyanHi * (alpha * 0.5f));
-                //核心亮线
                 DrawLine(sb, px, start, end, 0.8f, Color.White * (alpha * 0.6f));
-                //射线末端SoftGlow亮点
                 DrawGlow(sb, end, 0.1f * neuralBurst, CyanHi * (alpha * 0.5f));
             }
-            //中心SoftGlow爆发
             DrawGlow(sb, c, 0.35f * neuralBurst, CyanHi * (neuralBurst * 0.15f));
         }
 
-        //故障碎片绘制
         private void DrawGlitchFragments(SpriteBatch sb, Texture2D px, Vector2 c) {
             foreach (var g in glitches) {
                 float a = g.Life / g.MaxLife;
                 Vector2 pos = c + g.Pos;
-                //整数化位置模拟像素感
+                //整数化模拟像素感
                 Rectangle rect = new((int)pos.X, (int)pos.Y, (int)g.W, (int)g.H);
                 sb.Draw(px, rect, g.Tint * (a * 0.5f));
             }
         }
 
-        //轨道数据粒子，带SoftGlow辉光和拖尾
+        //轨道粒子+拖尾
         private void DrawDataParticles(SpriteBatch sb, Texture2D px, Vector2 c) {
             foreach (var d in dots) {
                 Vector2 pos = c + new Vector2(MathF.Cos(d.Angle), MathF.Sin(d.Angle)) * d.Radius;
-                //拖尾：向运动反方向绘制2像素渐隐的短线
                 float tailAngle = d.Angle - d.Speed * 6f;
                 Vector2 tailPos = c + new Vector2(MathF.Cos(tailAngle), MathF.Sin(tailAngle)) * d.Radius;
                 DrawLine(sb, px, tailPos, pos, 1f, CyanHi * (d.Alpha * 0.3f));
-                //SoftGlow辉光
                 DrawGlow(sb, pos, (d.Size + 3f) / 32f, CyanHi * (d.Alpha * 0.12f));
-                //像素核心（保持锐利感）
                 int sz = Math.Max(1, (int)d.Size);
                 sb.Draw(px, new Rectangle((int)(pos.X - sz * 0.5f), (int)(pos.Y - sz * 0.5f), sz, sz), CyanHi * d.Alpha);
             }
         }
 
-        //中心文本：百分比 + 状态
+        //中心百分比+状态
         private void DrawCenterContent(SpriteBatch sb, DynamicSpriteFont font, Vector2 c, float ratio, bool active) {
-            //百分比数字
             int pct = (int)(ratio * 100);
             string pctStr = pct.ToString();
             float pctScale = 0.8f;
@@ -434,7 +409,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 
             Color pctColor = active ? Color.Lerp(GetArcColor(ratio), Color.White, 0.3f) : GetArcColor(ratio);
 
-            //色差偏移文字
             if (active || transitionFlash > 0.05f) {
                 float shift = active ? 1.2f : transitionFlash * 2f;
                 Utils.DrawBorderString(sb, pctStr, pctPos + new Vector2(-shift, 0), new Color(255, 30, 30) * 0.3f, pctScale);
@@ -442,12 +416,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             }
             Utils.DrawBorderString(sb, pctStr, pctPos, pctColor, pctScale);
 
-            //百分号（略小，偏右）
             float symScale = 0.45f;
             Vector2 symPos = pctPos + new Vector2(pctSize.X + 2, pctSize.Y * 0.2f);
             Utils.DrawBorderString(sb, "%", symPos, pctColor * 0.7f, symScale);
 
-            //状态行
             string statusStr;
             Color statusCol;
             if (active) {
@@ -469,7 +441,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             Utils.DrawBorderString(sb, statusStr, stPos, statusCol, stScale);
         }
 
-        //电路走线装饰，双层绘制（宽辉光+细实线）+ 柔和焊点
+        //电路走线装饰
         private void DrawCircuitTraces(SpriteBatch sb, Texture2D px, Vector2 c, bool active) {
             Color traceCol = active ? CyanHi * 0.22f : CyanDim * 0.35f;
             Color glowCol = active ? CyanHi * 0.06f : CyanDim * 0.08f;
@@ -492,34 +464,28 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             Vector2 a = c + offA;
             Vector2 b = a + offB;
             Vector2 d = b + offC;
-            //宽辉光底层
+            //宽辉光
             DrawLine(sb, px, a, b, 4f, glowCol);
             DrawLine(sb, px, b, d, 4f, glowCol);
-            //细实线
             DrawLine(sb, px, a, b, 1.5f, traceCol);
             DrawLine(sb, px, b, d, 1.5f, traceCol);
-            //拐角SoftGlow亮点
             DrawGlow(sb, b, 0.08f, traceCol * 0.5f);
-            //末端焊点
             DrawGlow(sb, d, 0.12f, traceCol * 0.3f);
             DrawGlow(sb, d, 0.05f, traceCol * 1.2f);
         }
 
-        //激活/停用闪光：用DiffusionCircle做径向扩散环 + SoftGlow做中心柔光
+        //启停闪光
         private void DrawTransitionFlash(SpriteBatch sb, Texture2D px, Vector2 c) {
             if (transitionFlash < 0.01f) return;
             Color flashCol = Color.Lerp(CyanHi, Color.White, 0.4f);
 
-            //DiffusionCircle扩散环
             Texture2D diffTex = CWRAsset.DiffusionCircle?.Value;
             if (diffTex != null) {
-                //外层扩散环：较大、较淡
                 float outerScale = (1.2f + (1f - transitionFlash) * 0.8f) * (R_TickOut + 8f) / (diffTex.Width * 0.5f);
                 Color outerCol = flashCol * (transitionFlash * 0.2f);
                 outerCol.A = 0;
                 sb.Draw(diffTex, c, null, outerCol, timer * 2f,
                     diffTex.Size() / 2f, outerScale, SpriteEffects.None, 0f);
-                //内层扩散环：较小、较亮
                 float innerScale = outerScale * 0.5f;
                 Color innerCol = flashCol * (transitionFlash * 0.35f);
                 innerCol.A = 0;
@@ -527,7 +493,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                     diffTex.Size() / 2f, innerScale, SpriteEffects.None, 0f);
             }
 
-            //SoftGlow中心柔光
             DrawGlow(sb, c, 0.4f * transitionFlash, Color.White * (transitionFlash * 0.25f));
             DrawGlow(sb, c, 0.15f * transitionFlash, Color.White * (transitionFlash * 0.5f));
         }
@@ -559,7 +524,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0f);
         }
 
-        //SoftGlow 柔光，scale 相对 64×64 原图
+        //SoftGlow，scale 相对 64×64
         private static void DrawGlow(SpriteBatch sb, Vector2 pos, float scale, Color color) {
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null || scale < 0.01f) return;
@@ -568,7 +533,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             sb.Draw(glow, pos, null, c, 0f, glow.Size() / 2f, scale, SpriteEffects.None, 0f);
         }
 
-        //沿弧线等距离放置SoftGlow光晕，创造真实的Bloom溢出感
+        //沿弧等距 SoftGlow
         private static void DrawArcGlowDots(SpriteBatch sb, Vector2 center,
             float startAngle, float sweepAngle, Color color, int count) {
             Texture2D glow = CWRAsset.SoftGlow?.Value;
@@ -583,7 +548,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             }
         }
 
-        //根据充能比例返回弧线颜色
         private static Color GetArcColor(float ratio) {
             if (ratio > 0.5f) return CyanHi;
             if (ratio > 0.25f) {
@@ -594,7 +558,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             return Color.Lerp(RedHi, YellowMid, t2);
         }
 
-        //获取当前填充比例对应的绝对角度
         private static float GetFillAngle(float ratio) {
             float totalFill = ratio * SegAngle * SegCount;
             float angle = ArcOrigin;
@@ -608,7 +571,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             return angle;
         }
 
-        //角度归一化到 [0, TwoPi)
+        //[0, TwoPi)
         private static float NormalizeAngle(float a) {
             a %= MathHelper.TwoPi;
             if (a < 0) a += MathHelper.TwoPi;

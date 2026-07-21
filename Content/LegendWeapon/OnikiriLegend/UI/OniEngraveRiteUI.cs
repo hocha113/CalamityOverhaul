@@ -14,12 +14,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     /// <summary>
-    /// 铭刻仪式弹窗：落簿的一次性演出。三种仪式语义（<see cref="WraithRiteKind"/>）各有整套编舞,
-    /// 全部为 <see cref="timer"/> 的纯函数,点击可跳拍（<see cref="SkipToStill"/>）：<br/>
-    /// 铭刻：青烟鬼影显形 → 凝滞预备拍 → 白热刀痕划过 → 烟凝成湿墨名讳 → 朱印旋压砸下 → 静场落瓣<br/>
-    /// 续契：旧字干墨先现 → 鬼影俯首靠近 → 湿墨一字一拍重润 → 朱印覆押旧印 → 静场余温落瓣<br/>
-    /// 收伏：挣脱体狂乱挣扎,墨字被拖拽 → 按压两拍渐强 → 强朱印钉死 + 墨爆 → 静场余悸残烟,无落瓣<br/>
-    /// 无 shader 的 CPU 降级分支同样消费三语义（运动 / 色 / 构图三轴）
+    /// 铭刻仪式弹窗,<see cref="WraithRiteKind"/> 三语义编舞;
+    /// 纯函数于 <see cref="timer"/>,可 <see cref="SkipToStill"/>
     /// </summary>
     internal sealed class OniEngraveRiteUI : UIHandle, ILocalizedModType
     {
@@ -79,10 +75,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private readonly OniUIParticlePool particles = new(160);
         private int stillFxTimer;
 
-        /// <summary>
-        /// 播放一场落簿仪式（客户端演出；数据已由 <c>WraithRites</c> 事务先行写入）。
-        /// kind 决定整套编舞。无名之鬼没有可凝的字,不受理
-        /// </summary>
+        /// <summary>播放落簿仪式,数据已由 <c>WraithRites</c> 写入;无名不受理</summary>
         public static void Play(OniGhostEntry ghost, WraithRiteKind kind = WraithRiteKind.FirstBind) {
             OniEngraveRiteUI inst = Instance;
             if (inst == null || ghost == null || !ghost.HasName || Main.dedServ) {
@@ -102,7 +95,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             _ => RiteTitle,
         };
 
-        /// <summary>构图背光：首铭深红、重续鬼火青（它认得这只手了）、收伏血色</summary>
+        /// <summary>背光,铭深红/续鬼火青/收血色</summary>
         private Color KindBacklight => riteKind switch {
             WraithRiteKind.RenewPact => OnikiriUITheme.GhostDim,
             WraithRiteKind.Resubdue => OnikiriUITheme.Bright,
@@ -135,7 +128,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private float NameDoneAt => TCondense + NameText.Length * CharInterval + 8f;
         private float StampHitAt => NameDoneAt + StampDelay + StampDrop;
 
-        /// <summary>续契重润步长:每字一拍比首铭的凝字慢(旧字重温),长名(拉丁)加速保总时长同量级</summary>
+        /// <summary>续契重润步长,长名加速保总时长</summary>
         private float RewetStep => MathHelper.Clamp(60f / Math.Max(1, NameText.Length), 4f, 10f);
         private float RewetDoneAt => TRewet + NameText.Length * RewetStep + 6f;
         private float PressStartAt => RewetDoneAt + PressLead;
@@ -182,7 +175,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             ? 1f - 0.9f * MathHelper.Clamp((timer - TFreeze) / 6f, 0f, 1f)
             : 1f;
 
-        /// <summary>续契俯首进度(0~1 缓入缓出):认主的姿态</summary>
+        /// <summary>续契俯首进度(0~1)</summary>
         private float BowEase {
             get {
                 if (riteKind != WraithRiteKind.RenewPact) {
@@ -619,10 +612,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 ring.Size() * 0.5f, diameter / ring.Width, SpriteEffects.None, 0f);
         }
 
-        /// <summary>
-        /// 鬼影:shader 可用时走域扭曲 fbm 幽影(扭动/碎裂/眼在 shader 内参数化);
-        /// 否则降级三层烟团 + CPU 像素眼。两分支同吃三语义:运动(扭动幅/俯首/按压下沉)、色(墨/青纱/血墨)、构图(收拢/散架)
-        /// </summary>
+        /// <summary>鬼影,shader 或 CPU 烟团,同吃运动/色/构图三轴</summary>
         private void DrawSilhouette(SpriteBatch sb, float a, Vector2 parallax) {
             //收伏的挣脱体破门而入,不给它慢慢显形
             float grow = riteKind == WraithRiteKind.Resubdue
@@ -792,7 +782,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>收伏名讳:墨字自始在簿却被拖拽错位,外侧渗血墨残影;按压逐拍按回,钉死归位并闪定</summary>
+        /// <summary>收伏名讳,拖拽错位,按压归位</summary>
         private void DrawNameResubdue(SpriteBatch sb, DynamicSpriteFont font, float a) {
             string name = NameText;
             if (name.Length == 0) {

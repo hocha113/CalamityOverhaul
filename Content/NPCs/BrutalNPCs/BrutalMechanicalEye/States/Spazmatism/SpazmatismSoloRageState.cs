@@ -10,23 +10,18 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>魔焰眼独眼狂暴：激光眼死后切入，四模式快切循环</summary>
+    /// <summary>魔焰眼独眼狂暴，激光眼死后切入，四模式快切循环</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismSoloRage, typeof(TwinsStateContext))]
     internal class SpazmatismSoloRageState : TwinsStateBase
     {
         public override string StateName => "SpazmatismSoloRage";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismSoloRage;
 
-        /// <summary>狂暴攻击模式</summary>
         private enum RageAttackMode
         {
-            /// <summary>疯狂冲刺</summary>
             FrenziedDash,
-            /// <summary>火焰漩涡</summary>
             FlameVortex,
-            /// <summary>爆发射击</summary>
             BurstFire,
-            /// <summary>追踪冲刺</summary>
             HomingDash
         }
 
@@ -39,7 +34,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         private float vortexAngle;
         private bool hasPlayedModeSound;
 
-        //难度调整参数
         private float DashSpeed => Context.IsDeathMode ? 36f : 33f;
         private int MaxDashCount => Context.IsDeathMode ? 5 : 4;
         private int DashPrepareTime => Context.IsDeathMode ? 22 : 26;
@@ -61,10 +55,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             vortexAngle = 0f;
             hasPlayedModeSound = false;
 
-            //清除狂暴触发标记
             context.SoloRageJustTriggered = false;
 
-            //狂暴觉醒演出:火焰能量自四周向眼体倒灌
+            //狂暴觉醒倒灌
             if (!VaultUtils.isServer) {
                 NPC npc = context.Npc;
                 for (int i = 0; i < 26; i++) {
@@ -85,7 +78,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             Timer++;
             modeTimer++;
 
-            //根据当前模式执行不同的攻击
             switch (currentMode) {
                 case RageAttackMode.FrenziedDash:
                     ExecuteFrenziedDash(npc, player);
@@ -101,7 +93,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                     break;
             }
 
-            //持续产生狂暴粒子效果:暴怒余温火星
+            //狂暴余温火星
             if (!VaultUtils.isServer && Timer % 3 == 0) {
                 PRTLoader.NewParticle<PRT_TwinsSpark>(
                     npc.Center + Main.rand.NextVector2Circular(30, 30),
@@ -109,11 +101,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                     Color.White, Main.rand.NextFloat(0.8f, 1.3f))?.Configure(16, 1);
             }
 
-            //独眼狂暴模式不会自动切换出去，除非死亡
             return null;
         }
 
-        /// <summary>狂暴循环：连冲→爆发→追踪→漩涡</summary>
+        /// <summary>狂暴循环，连冲→爆发→追踪→漩涡</summary>
         private static readonly RageAttackMode[] RageComboSequence =
         [
             RageAttackMode.FrenziedDash,
@@ -122,37 +113,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             RageAttackMode.FlameVortex
         ];
 
-        /// <summary>切下一攻击模式</summary>
         private void SwitchToNextMode() {
             totalAttacks++;
             modeTimer = 0;
             attackCount = 0;
             hasPlayedModeSound = false;
-            //切换模式时默认禁用碰撞伤害
             DisableContactDamage(Context.Npc);
 
-            //按固定套路循环切换模式
             currentMode = RageComboSequence[totalAttacks % RageComboSequence.Length];
         }
 
-        /// <summary>疯狂冲刺：高速多段 dash</summary>
+        /// <summary>疯狂冲刺，高速多段 dash</summary>
         private void ExecuteFrenziedDash(NPC npc, Player player) {
             int prepareTime = DashPrepareTime;
             int dashTime = DashDuration;
             int cycleTime = prepareTime + dashTime;
             int phaseInCycle = modeTimer % cycleTime;
 
-            //准备阶段
             if (phaseInCycle < prepareTime) {
-                //减速并面向玩家
                 npc.velocity *= 0.9f;
                 FaceTarget(npc, player.Center);
 
-                //蓄力特效
                 float progress = phaseInCycle / (float)prepareTime;
                 Context.SetChargeState(1, progress);
 
-                //蓄力粒子
                 if (!VaultUtils.isServer && phaseInCycle % 2 == 0) {
                     float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                     float dist = 60f - progress * 40f;
@@ -162,7 +146,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                     dust.velocity = (npc.Center - dustPos).SafeNormalize(Vector2.Zero) * 5f;
                 }
 
-                //即将冲刺时锁定方向(带预判)
+                //冲刺前锁向+预判
                 if (phaseInCycle == prepareTime - 1) {
                     Vector2 predicted = TwinsMotion.PredictTarget(player, npc.Center, DashSpeed, 0.55f);
                     dashDirection = (predicted - npc.Center).SafeNormalize(Vector2.UnitY);
@@ -170,34 +154,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                     Context.ResetChargeState();
                 }
             }
-            //冲刺阶段
             else {
-                //冲刺时启用碰撞伤害
                 EnableContactDamage(npc);
 
-                //起步瞬间爆发+音爆
+                //起步爆发+音爆
                 if (phaseInCycle == prepareTime) {
                     TwinsMotion.DashLaunch(npc, dashDirection, DashSpeed, spazTheme: true, boomStrength: 1.2f);
                 }
                 else {
-                    //全速段微弧追踪
+                    //全速微弧
                     TwinsMotion.CurveChase(npc, player.Center, DashSpeed, 0.014f);
                 }
                 FaceVelocity(npc);
                 Context.PushDashVisuals(1f, 1f);
 
-                //冲刺轨迹粒子
                 if (!VaultUtils.isServer && phaseInCycle % 2 == 0) {
                     PRTLoader.NewParticle<PRT_TwinsSpark>(
                         npc.Center - npc.velocity.SafeNormalize(Vector2.Zero) * 30f + Main.rand.NextVector2Circular(14, 14),
                         -npc.velocity * 0.15f, Color.White, Main.rand.NextFloat(1.1f, 1.7f))?.Configure(15, 1);
                 }
 
-                //冲刺结束:急停甩头
+                //急停甩头
                 if (phaseInCycle == cycleTime - 1) {
                     TwinsMotion.BrakeAndWhip(npc, player.Center, 0.4f, 0.5f);
                     attackCount++;
-                    //冲刺结束禁用碰撞伤害
                     DisableContactDamage(npc);
 
                     if (attackCount >= MaxDashCount) {
@@ -207,9 +187,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
         }
 
-        /// <summary>火焰漩涡：绕玩家旋转喷火</summary>
+        /// <summary>火焰漩涡，绕玩家旋转喷火</summary>
         private void ExecuteFlameVortex(NPC npc, Player player) {
-            //缩短漩涡持续时间，避免动作过于凝滞
+            //缩短漩涡时长
             int vortexDuration = Context.IsDeathMode ? 110 : 95;
 
             if (!hasPlayedModeSound) {
@@ -217,18 +197,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 SoundEngine.PlaySound(SoundID.Item74 with { Pitch = -0.2f, Volume = 1.2f }, npc.Center);
             }
 
-            //围绕玩家旋转
             vortexAngle += VortexSpeed;
-            float radius = 680f + (float)Math.Sin(modeTimer * 0.05f) * 120f; //半径会波动
+            float radius = 680f + (float)Math.Sin(modeTimer * 0.05f) * 120f;  //半径会波动
             Vector2 targetPos = player.Center + vortexAngle.ToRotationVector2() * radius;
 
-            //快速移动到目标位置
             npc.Center = Vector2.Lerp(npc.Center, targetPos, 0.15f);
 
-            //面向玩家
             FaceTarget(npc, player.Center);
 
-            //持续喷火
             //操你妈躲都躲不开，注释了
             //int fireRate = Context.IsDeathMode ? 5 : 6;
             //if (modeTimer % fireRate == 0 && !VaultUtils.isClient) {
@@ -236,12 +212,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             //    Projectile.NewProjectile(
             //        npc.GetSource_FromAI(),
             //        npc.Center,
-            //        fireDir * 14f,
+            //fireDir * 14f,
             //        ProjectileID.EyeFire,
-            //        35,
-            //        0f,
+            //35,
+            //0f,
             //        Main.myPlayer
-            //    );
+            //);
             //}
 
             //间歇性发射火球
@@ -271,7 +247,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
         }
 
-        /// <summary>爆发射击：快射大量火球</summary>
+        /// <summary>爆发射击，快射大量火球</summary>
         private void ExecuteBurstFire(NPC npc, Player player) {
             if (!hasPlayedModeSound) {
                 hasPlayedModeSound = true;
@@ -283,11 +259,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             MoveTo(npc, hoverPos, 12f, 0.08f);
             FaceTarget(npc, player.Center);
 
-            //蓄力特效
             if (modeTimer < 30) {
                 Context.SetChargeState(3, modeTimer / 30f);
 
-                //能量聚集粒子
                 if (!VaultUtils.isServer && modeTimer % 2 == 0) {
                     float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                     float dist = 80f - (modeTimer / 30f) * 50f;
@@ -341,7 +315,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
         }
 
-        /// <summary>追踪冲刺：持续追玩家 dash</summary>
+        /// <summary>追踪冲刺，持续追玩家 dash</summary>
         private void ExecuteHomingDash(NPC npc, Player player) {
             int homingDuration = Context.IsDeathMode ? 120 : 100;
 
@@ -352,7 +326,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 EnableContactDamage(npc);
             }
 
-            //弧线穷追:速度恒定+限转速，缠斗压制
+            //弧线穷追
             float chaseSpeed = Context.IsDeathMode ? 9.5f : 7.5f;
             float maxTurn = Context.IsDeathMode ? 0.055f : 0.045f;
             TwinsMotion.CurveChase(npc, player.Center, chaseSpeed, maxTurn);

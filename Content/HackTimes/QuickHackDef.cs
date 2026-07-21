@@ -9,17 +9,17 @@ namespace CalamityOverhaul.Content.HackTimes
     /// <summary>骇入协议类别</summary>
     internal enum QuickHackCategory
     {
-        /// <summary>致命型，即时伤害</summary>
+        /// <summary>致命，即时伤害</summary>
         Lethal,
-        /// <summary>控制型，限制行动</summary>
+        /// <summary>控制，限制行动</summary>
         Control,
-        /// <summary>隐匿型，干扰感知</summary>
+        /// <summary>隐匿，干扰感知</summary>
         Covert,
-        /// <summary>传播型，扩散至附近</summary>
+        /// <summary>传播，扩散附近</summary>
         Contagion,
-        /// <summary>物块操控型</summary>
+        /// <summary>物块操控</summary>
         TileManip,
-        /// <summary>灵异型，非实体目标</summary>
+        /// <summary>灵异，非实体</summary>
         Paranormal,
     }
 
@@ -53,9 +53,7 @@ namespace CalamityOverhaul.Content.HackTimes
         #region 本地化
 
         public string LocalizationCategory => "QuickHack";
-        /// <summary>协议显示名称（本地化）</summary>
         public LocalizedText DisplayName => this.GetLocalization(nameof(DisplayName), PrettyPrintName);
-        /// <summary>协议效果描述（本地化）</summary>
         public LocalizedText Description => this.GetLocalization(nameof(Description), () => "");
 
         #endregion
@@ -64,13 +62,12 @@ namespace CalamityOverhaul.Content.HackTimes
 
         /// <summary>注册序号</summary>
         public int SlotIndex { get; private set; } = -1;
-        /// <summary>上传时间（帧，60 帧/秒）</summary>
+        /// <summary>上传时间（帧）</summary>
         public int UploadTime { get; set; } = 60;
         /// <summary>RAM 消耗</summary>
         public int RamCost { get; set; } = 2;
-        /// <summary>协议类别</summary>
         public QuickHackCategory Category { get; set; } = QuickHackCategory.Lethal;
-        /// <summary>支持的目标类型，可按位或合并</summary>
+        /// <summary>支持目标类型，可按位或</summary>
         public HackTargetKind SupportedTargets { get; set; } = HackTargetKind.Npc;
 
         #endregion
@@ -100,13 +97,12 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 子类重写接口（统一目标抽象）
 
-        /// <summary>设置协议默认属性</summary>
         public virtual void SetDefaults() { }
 
         /// <summary>上传完成时施加效果</summary>
         public virtual bool OnApply(IHackTarget target, Player caster) => false;
 
-        /// <summary>持续帧 Tick，由追踪器调用</summary>
+        /// <summary>持续帧 Tick，追踪器调用</summary>
         public virtual bool OnTick(IHackTarget target, int elapsed) => true;
 
         /// <summary>效果移除或到期时清理</summary>
@@ -115,14 +111,14 @@ namespace CalamityOverhaul.Content.HackTimes
         /// <summary>是否可对目标使用</summary>
         public virtual bool CanApplyTo(IHackTarget target) => target != null && target.IsValid;
 
-        /// <summary>效果持续帧数，0 为即时</summary>
+        /// <summary>持续帧数，0 为即时</summary>
         public virtual int GetDuration() => 0;
 
         #endregion
 
         #region 工具方法
 
-        /// <summary>获取匹配目标种类的协议索引</summary>
+        /// <summary>匹配目标种类的协议索引</summary>
         public static void GetFilteredIndices(HackTargetKind kind, List<int> result) {
             result.Clear();
             for (int i = 0; i < Instances.Count; i++) {

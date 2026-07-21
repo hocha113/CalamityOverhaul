@@ -8,9 +8,7 @@ namespace CalamityOverhaul.Common
 {
     internal static class RenderQualitySafety
     {
-        /// <summary>
-        /// <see cref="Main.screenTarget"/> 是否为当前活动 RT
-        /// </summary>
+        /// <summary><see cref="Main.screenTarget"/> 是否为当前活动 RT</summary>
         public static bool IsScreenTargetActive(GraphicsDevice graphicsDevice) {
             if (graphicsDevice == null) return false;
             if (Main.screenTarget == null || Main.screenTarget.IsDisposed) return false;
@@ -20,7 +18,7 @@ namespace CalamityOverhaul.Common
             return bindings[0].RenderTarget == Main.screenTarget;
         }
 
-        //tModLoader/Terraria 版本间设置名可能不同，反射读取
+        //水质设置名跨版本漂移，反射试读
         private static readonly string[] WaterQualityMemberNames = [
             "WaveQuality", "waveQuality", "WaterQuality", "waterQuality",
             "LiquidQuality", "liquidQuality"

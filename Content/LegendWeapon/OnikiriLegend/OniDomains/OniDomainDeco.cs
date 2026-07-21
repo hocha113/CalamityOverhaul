@@ -6,10 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 {
-    /// <summary>
-    /// 鬼域装饰粒子：樱瓣（表）、纸灯笼（里）、纸灰（翻转），全客户端本地，手撸轻量实体
-    /// <br/>形体由 OniDomainDeco.fx 的 SDF 绘出，无贴图依赖
-    /// </summary>
+    /// <summary>领域装饰</summary>
     internal static class OniDomainDeco
     {
         private enum PetalState : byte { Falling, Frozen, Burning }
@@ -87,8 +84,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             wisps.Clear();
         }
 
-        //====== 灵体：向鬼眼汇聚 / 自鬼眼逸散 ======
-
         public static void SpawnEyeConverge(Vector2 eyeWorld, int count) {
             for (int i = 0; i < count && wisps.Count < WispCap; i++) {
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -128,6 +123,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 w.Life++;
                 if (w.Homing) {
                     //加速扑向眼睛，近了就没入
+
                     Vector2 toT = w.Target - w.Pos;
                     float d = toT.Length();
                     if (d < 16f || w.Life >= w.MaxLife) {
@@ -149,7 +145,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
         }
 
-        /// <summary>死寂：花瓣全部空中冻结</summary>
+        /// <summary>死寂、花瓣全部空中冻结</summary>
         public static void NotifyFreeze() {
             foreach (Petal p in petals) {
                 if (p.State == PetalState.Falling) {
@@ -158,7 +154,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
         }
 
-        /// <summary>剥落开始：入里则冻瓣点燃，回表则灯笼熄灭</summary>
+        /// <summary>剥落开始、入里则冻瓣点燃，回表则灯笼熄灭</summary>
         public static void NotifyPeelStart(bool toUra) {
             if (toUra) {
                 int i = 0;
@@ -174,7 +170,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             StaggerLanternExtinguish();
         }
 
-        /// <summary>收域：灯逐盏熄灭</summary>
+        /// <summary>收域、灯逐盏熄灭</summary>
         public static void NotifyClosing() => StaggerLanternExtinguish();
 
         private static void StaggerLanternExtinguish() {
@@ -200,8 +196,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             UpdateAshes(odp);
             UpdateWisps();
         }
-
-        //====== 樱瓣 ======
 
         private static void UpdatePetals(OniDomainPlayer odp) {
             bool omoteLive = !odp.WorldIsUra
@@ -230,7 +224,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                     case PetalState.Falling:
                         p.SwayPhase += 0.030f + p.Scale * 0.008f;
                         if (p.UraKind) {
-                            //阴间瓣：逆重力缓升
+                            //阴间瓣、逆重力缓升
+
                             p.Vel = new Vector2(MathF.Sin(p.SwayPhase) * 0.45f, -0.35f - p.Scale * 0.2f);
                         }
                         else {
@@ -239,7 +234,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                         p.Pos += p.Vel;
                         p.Rot += p.RotSpeed + MathF.Sin(p.SwayPhase * 0.7f) * 0.012f;
 
-                        //异常一瞬：极低概率黑掉两帧
+                        //异常一瞬、极低概率黑掉两帧
+
                         if (p.BlinkTimer > 0) {
                             p.BlinkTimer--;
                         }
@@ -250,6 +246,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
                     case PetalState.Frozen:
                         //完全静止
+
                         break;
 
                     case PetalState.Burning:
@@ -275,6 +272,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 }
 
                 //离场回收，非稳态时旧瓣自然飘出屏幕
+
                 bool offscreen = p.UraKind ? p.Pos.Y < screenTop - 80f : p.Pos.Y > screenBottom + 60f;
                 if (offscreen) {
                     petals.RemoveAt(i);
@@ -303,8 +301,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 UraKind = uraKind
             });
         }
-
-        //====== 灯笼 ======
 
         private static void UpdateLanterns(OniDomainPlayer odp) {
             bool uraLive = odp.WorldIsUra
@@ -346,11 +342,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 }
 
                 //红灯点光
+
                 float flicker = 0.82f + 0.18f * MathF.Sin(l.BobPhase * 4.7f + l.DriftPhase * 31f);
                 float glow = l.Alpha * flicker * MathF.Max(ura, 0.25f);
                 Lighting.AddLight(l.Pos, 0.92f * glow, 0.30f * glow, 0.09f * glow);
 
                 //飘出视野回收
+
                 Vector2 cam = Main.screenPosition;
                 if (l.Pos.Y < cam.Y - 220f || MathF.Abs(l.Pos.X - (cam.X + Main.screenWidth * 0.5f)) > Main.screenWidth) {
                     lanterns.RemoveAt(i);
@@ -369,8 +367,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 Alpha = 0f
             });
         }
-
-        //====== 纸灰 ======
 
         internal static void SpawnPeelAshLine(float slashAngle, int count) {
             Vector2 camCenter = Main.screenPosition + new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;
@@ -398,6 +394,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
         private static void UpdateAshes(OniDomainPlayer odp) {
             //剥落期间沿刀痕持续冒灰
+
             if (odp.Phase == OniDomainPhase.Flipping && odp.FlipStage == OniFlipStage.Peel
                 && odp.PeelProgress < 0.85f) {
                 SpawnPeelAshLine(odp.FlipSlashAngle, 3);
@@ -417,8 +414,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
         }
 
-        //====== 绘制，由 OniDomainRender.EndEntityDraw 调用 ======
-
         public static void Draw(SpriteBatch spriteBatch) {
             if (petals.Count == 0 && lanterns.Count == 0 && ashes.Count == 0 && wisps.Count == 0) {
                 return;
@@ -432,7 +427,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             Effect deco = EffectLoader.OniDomainDeco?.Value;
             float time = (float)Main.timeForVisualEffects * 0.05f;
 
-            //SDF 件：花瓣 + 灯笼，Immediate 单批内切换 technique
+            //SDF 件、花瓣 + 灯笼，Immediate 单批内切换 technique
+
             if (deco != null && (petals.Count > 0 || lanterns.Count > 0)) {
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
                     SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone,
@@ -447,7 +443,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                     foreach (Petal p in petals) {
                         float burnDim = p.State == PetalState.Burning && p.BurnDelay <= 0 ? p.BurnT : 0f;
                         Color c = p.Tint;
-                        //点燃：粉→焰红→焦黑
+                        //点燃、粉→焰红→焦黑
+
                         if (burnDim > 0f) {
                             c = burnDim < 0.5f
                                 ? Color.Lerp(p.Tint, new Color(235, 62, 30), burnDim * 2f)
@@ -459,9 +456,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                         c *= p.Alpha;
 
                         //32px 基准 quad
+
                         float pxSize = 30f * p.Scale;
                         Vector2 scale = new(pxSize / white.Width, pxSize * 1.15f / white.Height);
                         //冻结瓣拉直不再摇摆
+
                         float rot = p.Rot;
                         spriteBatch.Draw(white, p.Pos - Main.screenPosition, null, c,
                             rot, origin, scale, SpriteEffects.None, 0f);
@@ -487,6 +486,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
 
             //灯笼光晕 + 燃瓣余烬 + 灵体，Additive
+
             Texture2D glowTex = CWRAsset.SoftGlow?.Value;
             if (glowTex != null && (lanterns.Count > 0 || petals.Count > 0 || wisps.Count > 0)) {
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive,
@@ -513,7 +513,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                         0f, gOrigin, s, SpriteEffects.None, 0f);
                 }
 
-                //灵体：红色小光点拖尾
+                //灵体、红色小光点拖尾
+
                 foreach (Wisp w in wisps) {
                     float lifeF = w.Life / (float)w.MaxLife;
                     float a = MathF.Sin(MathHelper.Clamp(lifeF, 0f, 1f) * MathHelper.Pi) * 0.65f;
@@ -522,6 +523,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                     spriteBatch.Draw(glowTex, w.Pos - Main.screenPosition, null, c,
                         0f, gOrigin, s, SpriteEffects.None, 0f);
                     //速度方向小拖尾
+
                     spriteBatch.Draw(glowTex, w.Pos - w.Vel * 1.6f - Main.screenPosition, null, c * 0.45f,
                         0f, gOrigin, s * 0.7f, SpriteEffects.None, 0f);
                 }
@@ -529,7 +531,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 spriteBatch.End();
             }
 
-            //纸灰：素色小片，无着色器
+            //纸灰、素色小片，无着色器
+
             if (ashes.Count > 0) {
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                     SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone,
@@ -539,6 +542,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 foreach (Ash a in ashes) {
                     float lifeF = a.Life / (float)a.MaxLife;
                     //初生带余烬红，随后转焦黑
+
                     Color c = lifeF < 0.25f
                         ? Color.Lerp(new Color(210, 62, 26), new Color(28, 22, 24), lifeF * 4f)
                         : new Color(28, 22, 24);

@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectiles
 {
-    /// <summary>双子魔眼电弧链锁：两眼间带伤害高压电弧；ai[0]=眼睛A的whoAmI；ai[1]=眼睛B的whoAmI；ai[2]=总持续时间(帧)；前30帧预警细弱无伤害，之后全功率；任一眼失效立即消散</summary>
+    /// <summary>电弧链锁；ai[0]/ai[1]双眼whoAmI；ai[2]持续帧；前30帧无伤预警</summary>
     internal class TwinsTetherArc : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectil
 
         private ThunderTrail mainTrail;
         private ThunderTrail coreTrail;
-        private float power;//0~1 当前功率
+        private float power;  //0~1 当前功率
 
         internal static Color ArcColor => new(140, 215, 255);
 
@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectil
                 Projectile.Center = (eyeA.Center + eyeB.Center) / 2f;
             }
 
-            //功率曲线:预警期细弱→快速展开→收尾消散
+            //功率，预警→展开→消散
             if (Timer < WarmupTime) {
                 power = Timer / WarmupTime * 0.25f;
             }

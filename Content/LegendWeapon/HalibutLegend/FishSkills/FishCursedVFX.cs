@@ -17,11 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public static Effect FishCursedFlame { get; private set; }
     }
 
-    /// <summary>
-    /// 冥焰迸发共享演出。<br/>
-    /// 色彩脚本：墨绿烟压底 / 暗绿外圈 / 饱和中绿主体 / 亮黄绿焰心（极小面积）；
-    /// 禁荧光绿糊屏、禁纯白常驻，诅咒绿火语系为本技能独占
-    /// </summary>
+    /// <summary>冥焰迸发</summary>
     internal static class FishCursedVFX
     {
         /// <summary>墨绿烟（压底）</summary>
@@ -62,7 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>焰舌小簇：root 处向上撕出 count 条上飘焰舌</summary>
+        /// <summary>焰舌小簇</summary>
         public static void TongueBurst(Vector2 pos, int count, float baseScale, float upSpeed) {
             for (int i = 0; i < count; i++) {
                 Vector2 vel = new(Main.rand.NextFloat(-1.2f, 1.2f), -Main.rand.NextFloat(0.5f, 1f) * upSpeed);
@@ -73,24 +69,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 落点/命中爆发：暗烟垫底 + 小冲击环 + 火星锥 + 焰舌上撕 + 诅咒尘填充，
-        /// 并点一处余燃残迹（活得比弹体久）。host 非空时残迹贴体跟随
-        /// </summary>
+        /// <summary>落点/命中爆发</summary>
         public static void ImpactBurst(Vector2 pos, Vector2 incoming, float scale, Entity host = null) {
             if (Main.dedServ) {
                 return;
             }
             Vector2 dir = incoming.SafeNormalize(Vector2.UnitY);
-            //先压暗再放亮：两口墨绿烟垫底（AlphaBlend 真遮挡）
+            //先压暗再放亮
             for (int i = 0; i < 2; i++) {
                 PRTLoader.NewParticle<PRT_FishCursedSmog>(pos, -dir.RotatedByRandom(0.7f) * Main.rand.NextFloat(0.8f, 2f)
                     , SmokeDark, Main.rand.NextFloat(0.26f, 0.34f) * scale)?.Configure(26, 0.42f, 0.015f);
             }
-            //小冲击环：暗绿一闪即散，沿入射轴略压扁贴合撞击面
+            //小冲击环
             PRTLoader.NewParticle<PRT_DWave>(pos, Vector2.Zero, GreenDeep, 0.08f * scale)
                 ?.Configure(new Vector2(1f, 0.72f), dir.ToRotation(), 0.4f * scale, 10);
-            //锐线火星锥：反射向迸出
+            //锐线火星锥，反射向迸出
             int sparkCount = (int)(5 * scale) + 2;
             for (int i = 0; i < sparkCount; i++) {
                 Vector2 vel = (-dir).RotatedByRandom(0.85f) * Main.rand.NextFloat(2.5f, 6.5f) * scale;
@@ -105,7 +98,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , (-dir).RotatedByRandom(1f) * Main.rand.NextFloat(2f, 5f), 100, default, Main.rand.NextFloat(1f, 1.6f));
                 d.noGravity = true;
             }
-            //余燃残迹：短命实体，弹体死后仍烧一阵
+            //余燃残迹
             Vector2 offset = Vector2.Zero;
             if (host != null) {
                 offset = pos - host.Center + Main.rand.NextVector2Circular(host.width * 0.2f, host.height * 0.2f);
@@ -115,10 +108,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 诅咒焰舌：根部锚定生成点、Fire 帧动画撕尖、脱体后被浮力接管上飘颤动。
-    /// 出生色即根部热色，随生命沉入墨绿烟
-    /// </summary>
+    /// <summary>诅咒焰舌</summary>
     internal class PRT_FishCursedTongue : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Fire";
@@ -161,7 +151,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            //脱体上飘：横向被正弦摇曳接管，纵向被浮力接管
+            //脱体上飘
             Velocity.X = MathHelper.Lerp(Velocity.X, MathF.Sin(Time * 0.23f + seed) * swayAmp, 0.1f);
             Velocity.Y = MathHelper.Lerp(Velocity.Y, buoyancy, 0.08f);
 
@@ -174,7 +164,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Color = Color.Lerp(initialColor, FishCursedVFX.SmokeDark, MathF.Pow(lc, 1.5f));
             //先胀后撕尖收缩
             Scale *= lc < 0.28f ? 1.025f : 0.962f;
-            //上飘颤动：明度低频抖
+            //上飘颤动，明度低频抖
             Opacity = (1f - lc * lc) * (0.78f + 0.22f * MathF.Sin(Time * 0.85f + seed));
             //焰尖朝运动方向立起
             Rotation = Utils.AngleLerp(Rotation, Velocity.ToRotation() + MathHelper.PiOver2, 0.2f);
@@ -183,7 +173,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D fire = TexValue;
             Rectangle frame = FishCursedVFX.FireFrame(fire, frameIdx);
-            //根部锚定：origin 压在焰底，焰尖向上撕
+            //根部锚定
             Vector2 origin = new(frame.Width * 0.5f, frame.Height * 0.86f);
             Vector2 pos = Position - Main.screenPosition;
             float stretch = 1f + MathF.Abs(Velocity.Y) * 0.07f;
@@ -194,7 +184,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //主焰帧
             spriteBatch.Draw(fire, pos, frame, Color * Opacity, Rotation
                 , origin, new Vector2(Scale, Scale * stretch), SpriteEffects.None, 0f);
-            //根点热芯：只在前 40% 生命，极小
+            //根点热芯
             float lc = LifetimeCompletion;
             if (lc < 0.4f) {
                 Texture2D glow = CWRAsset.SoftGlow?.Value;
@@ -207,10 +197,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 诅咒余烬：反重力小火星。急减速后被浮力接管缓缓上浮，横向正弦摇曳，
-    /// 顺速度拉丝 + 明灭闪烁；无纯白，双层同色芯
-    /// </summary>
+    /// <summary>诅咒余烬</summary>
     internal class PRT_FishCursedEmber : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -241,7 +228,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void AI() {
             Velocity *= 0.93f;
-            //反重力：缓缓上浮 + 横向摇曳
+            //反重力，缓缓上浮 + 横向摇曳
             Velocity.Y = MathHelper.Lerp(Velocity.Y, buoyancy, 0.05f);
             Velocity.X = MathHelper.Lerp(Velocity.X, MathF.Sin(Time * 0.27f + seed) * 0.45f, 0.08f);
 
@@ -275,10 +262,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 墨绿暗烟：AlphaBlend 真遮挡烟团（SmokeSheet01 真 alpha 帧），
-    /// 缓慢上浮扩张，给加色亮部铺暗底；加色暗烟加不出暗，必须走本类
-    /// </summary>
+    /// <summary>墨绿暗烟</summary>
     internal class PRT_FishCursedSmog : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "SmokeSheet01";
@@ -337,10 +321,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 绿色余燃残迹：落点/命中处的短命火苗实体，活得比弹体久。
-    /// 迸燃 → 稳燃（冒上飘余烬）→ 焰尖先蚀塌缩成根部余火。host 非空时贴体跟随
-    /// </summary>
+    /// <summary>绿色余燃残迹</summary>
     internal class PRT_FishCursedResidue : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Fire";
@@ -398,7 +379,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float gutter = lc > 0.6f ? 0.24f * MathF.Sin(Time * 1.3f + seed) : 0.1f * MathF.Sin(Time * 0.6f + seed);
             float burnout = MathHelper.SmoothStep(0f, 1f, MathF.Max(0f, (lc - 0.55f) / 0.45f));
             Opacity = MathF.Min(lc * 8f, 1f) * (1f - burnout) * (0.85f + gutter);
-            //色温冷却：中绿沉入墨绿
+            //色温冷却，中绿沉入墨绿
             Color = Color.Lerp(FishCursedVFX.GreenMid, FishCursedVFX.SmokeDark
                 , MathHelper.SmoothStep(0f, 1f, MathF.Max(0f, (lc - 0.4f) / 0.6f)));
 
@@ -426,7 +407,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 pos = Position - Main.screenPosition;
 
             float lc = LifetimeCompletion;
-            //焰尖先蚀：后段纵向塌缩，根部余火最后熄
+            //焰尖先蚀
             float tipErode = MathHelper.SmoothStep(0f, 1f, MathF.Max(0f, (lc - 0.55f) / 0.45f));
             float yScale = 1f - 0.62f * tipErode;
             float breath = 1f + 0.08f * MathF.Sin(Time * 0.35f + seed);
@@ -437,7 +418,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //主焰
             spriteBatch.Draw(fire, pos, frame, Color * Opacity, 0f
                 , origin, new Vector2(Scale * breath, Scale * yScale), SpriteEffects.None, 0f);
-            //根部热芯：随蚀减
+            //根部热芯，随蚀减
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow != null) {
                 spriteBatch.Draw(glow, pos - new Vector2(0f, 3f), null

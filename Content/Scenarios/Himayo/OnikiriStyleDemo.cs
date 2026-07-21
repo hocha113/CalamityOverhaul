@@ -9,8 +9,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Scenarios.Himayo
 {
     /// <summary>
-    /// 鬼切叙事皮肤演示场景(调试用):跑一遍对话/换行/换说话人/选择(含禁用项)/奖励弹窗,
-    /// 由 <see cref="OnikiriStyleDemoItem"/> 手动触发,可循环回菜单反复看效果
+    /// 调试用鬼切叙事皮肤演示，<see cref="OnikiriStyleDemoItem"/> 手动触发可循环
     /// </summary>
     internal sealed class OnikiriStyleDemo : NarrativeScenario, ILocalizedModType
     {
@@ -84,7 +83,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
              .End();
         }
 
-        //调试场景:永不自动触发、永不判定为已完成,可反复手动播放
+        //调试，永不自动触发、永不完成
         protected override NarrativePolicy ConfigurePolicy() => new() {
             IsCompleted = _ => false,
             CanTrigger = (_, _) => false,

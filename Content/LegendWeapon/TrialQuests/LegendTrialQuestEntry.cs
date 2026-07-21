@@ -10,9 +10,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
         public LocalizedText WaitingHint { get; init; }
         public LocalizedText FightingFormat { get; init; }
         public LocalizedText BriefFormat { get; init; }
-        /// <summary>下一关因相关内容(如灾厄模组)未加载而暂时无法开始时为 true</summary>
+        /// <summary>内容未加载，关卡暂不可开</summary>
         public bool Blocked { get; set; }
-        /// <summary>受阻时展示的提示文本</summary>
+        /// <summary>受阻提示</summary>
         public LocalizedText BlockedHint { get; set; }
 
         private LegendTrialTargetSnapshot snapshot = LegendTrialTargetSnapshot.Inactive;
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
                 return;
             }
 
-            //受阻关卡：目标内容未加载，不做战斗进度推算，仅保持等待态
+            //受阻，跳过战斗进度
             if (Blocked) {
                 snapshot = LegendTrialTargetSnapshot.Inactive;
                 Progress = 0f;

@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.UIs.UIEffect
 {
-    /// <summary>海洋气泡粒子</summary>
+    /// <summary>海洋气泡</summary>
     public class BubblePRT(Vector2 p)
     {
         public Vector2 Pos = p;

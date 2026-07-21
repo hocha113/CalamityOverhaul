@@ -18,32 +18,23 @@ using OFR = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs.
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
 {
-    /// <summary>
-    /// 残心斩：操控交还帧(疾走刹停/樱流落地)后的追斩窗内，按下沿把普攻转换成的巨型反拔刀弧月。<br/>
-    /// 定位卡在连段单拍与灭世一闪之间的"惊人一刻"：锵前按下由 <see cref="OnikiriPlayer"/> 缓冲到
-    /// 纳刀结算同帧释放，出刀与墨痕齐裂压成一拍；实体刀经 <see cref="OniBladeHandoff"/> 继承
-    /// 纳刀刀角反手甩出，弧刃复用灭世一闪的水墨管线并缩规格。<br/>
-    /// 表世界为樱衣：粉白弧月 + 沿弧一次性绽放的花瓣爆(TechPetal)，命中溅散瓣；其余为墨衣。<br/>
-    /// ai[0]=刀线角(弧度) ai[1]=变体(0墨/1樱) ai[2]=与锵同帧(1=震屏减半)
-    /// </summary>
+    /// <summary>残心斩. 刹车/樱流落地后追斩</summary>
     internal class OniZanshinSlash : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable, IOverlayDrawable, IOniBladeOccupant
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        //==== 时间轴常量 ====
         /// <summary>反拔甩刀帧数(itemTime 锁仅覆盖此窗)</summary>
         private const int PoseFrames = 5;
         /// <summary>踏步前压帧数</summary>
         private const int StepFrames = 3;
         /// <summary>每帧前压距离(px),合计 ~72px</summary>
         private const float StepPerFrame = 24f;
-        /// <summary>伤害窗末帧（略宽于旧值：踏步前压结束后仍留咬合余量）</summary>
+        /// <summary>伤害窗末帧（略宽于旧值、踏步前压结束后仍留咬合余量）</summary>
         private const int DamageEnd = 8;
         /// <summary>演出总时长</summary>
         private const int Lifetime = 36;
         /// <summary>甩刀后的残心余韵帧数</summary>
         private const int ZanshinHoldFrames = 12;
-        //==== 几何常量(层级纪律:明确小于灭世一闪的 760/690/3.60) ====
         private const float ArcHalfX = 520f;
         private const float ArcHalfY = 465f;
         private const float ArcSpan = 2.95f;
@@ -51,15 +42,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
         private const float SwingBack = 2.15f;
         /// <summary>收势过冲相对刀线角(弧度)；与纳刀位(~1.05)叠加后读出完整反拔</summary>
         private const float SwingFront = 1.15f;
-        /// <summary>交接起手最短挥舞弧长：过短则补足，避免纳刀角贴近瞄准时只剩抽搐</summary>
+        /// <summary>交接起手最短挥舞弧长、过短则补足，避免纳刀角贴近瞄准时只剩抽搐</summary>
         private const float MinSwingRad = 2.20f;
-        /// <summary>贴身补判半径(px)：贴脸 + 月牙内侧空洞兜底</summary>
+        /// <summary>贴身补判半径(px)、贴脸 + 月牙内侧空洞兜底</summary>
         private const float NearRadius = 200f;
-        /// <summary>擦边宽恕（px）：目标箱外扩——刀光辉光比核心宽，视觉擦到就算</summary>
+        /// <summary>擦边宽恕（px）、目标箱外扩、刀光辉光比核心宽，视觉擦到就算</summary>
         private const int GrazePad = 16;
         /// <summary>弧带判定相对视觉厚度的贪婪倍率</summary>
         private const float ArcThickMul = 1.12f;
-        /// <summary>辐条判定厚度（px）：月牙内侧"刀身"贪婪带宽</summary>
+        /// <summary>辐条判定厚度（px）、月牙内侧"刀身"贪婪带宽</summary>
         private const float SpokeThickness = 56f;
         /// <summary>樱衣沿弧绽放的花瓣数</summary>
         private const int PetalCount = 36;
@@ -109,10 +100,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
         /// <summary>落定后的签名拍软保留:连段续接时刀从收势位划出</summary>
         bool IOniBladeOccupant.ReservesBlade => timer <= PoseFrames + 6;
 
-        /// <summary>
-        /// 触发接口：在持有者客户端调用（<c>player.whoAmI == Main.myPlayer</c> 时），
-        /// tML 自动完成多人同步；按下即斩，同一玩家已有残心斩进行中时忽略并返回 null
-        /// </summary>
+        /// <summary>触发接口、在持有者客户端调用</summary>
         public static Projectile Fire(Player player, Vector2 aim, int damage, float knockback,
             bool sakura, bool syncedWithJudge, IEntitySource source = null) {
             if (player.ownedProjectileCounts[ModContent.ProjectileType<OniZanshinSlash>()] > 0) {
@@ -142,6 +130,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             Projectile.netImportant = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 60;   //伤害窗单次结算
+
         }
 
         public override bool ShouldUpdatePosition() => false;
@@ -155,7 +144,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             facing = MathF.Abs(cos) < 0.05f ? Owner.direction : MathF.Sign(cos);
             Owner.ChangeDir(facing);
 
-            //ai[2] 已被锵同帧占用：成长尺寸从持有物品读取
+            //ai[2] 已被锵同帧占用、成长尺寸从持有物品读取
+
             Item held = Owner.GetItem();
             bladeScale = held.type == OnikiriOverride.ID
                 ? OnikiriOverride.GetBladeScale(held)
@@ -163,6 +153,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             bladePose.Scale = 0.9f * bladeScale;
 
             //反拔起手:纳刀位有新鲜交接就从那里划出;弧长不足时沿反手侧补足,避免只剩抽搐
+
             float endRot = CutAngle + facing * SwingFront;
             if (OniBladeHandoff.TryPeek(Owner, out drawStartRot, out _)) {
                 float delta = Math.Abs(MathHelper.WrapAngle(endRot - drawStartRot));
@@ -203,6 +194,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             StepIn();
 
             //弧完全揭开的那一帧绽放瓣爆(樱衣,客户端本地)
+
             if (IsSakura && timer == 2 && !Main.dedServ) {
                 BloomPetals();
             }
@@ -234,10 +226,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             Owner.fallStart = (int)(Owner.position.Y / 16f);
         }
 
-        /// <summary>
-        /// 反拔甩刀：实体刀数帧内从纳刀交接/反手预备位甩到收势过冲位(挥动帧甩残影)，
-        /// 随后残心停刀、末段淡出；只摆姿态不锁位移，itemTime 锁仅覆盖甩刀窗
-        /// </summary>
+        /// <summary>反拔甩刀、实体刀数帧内从纳刀交接/反手预备位甩到收势过冲位(挥动帧甩残影)</summary>
         private void ApplyCastPose() {
             float sw = OFR.EaseOutCubic(MathHelper.Clamp(timer / (float)PoseFrames, 0f, 1f));
             float endRot = CutAngle + facing * SwingFront;
@@ -254,6 +243,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             }
             else {
                 //残心:停在收势位,后段淡出;玩家续连段或另起技能时立刻放手
+
                 if (OniBladeOccupancy.ComboClaims(Owner) || OniBladeOccupancy.AnyHardOccupant(Owner, Projectile)) {
                     bladePose.Opacity = 0f;
                     return;
@@ -277,6 +267,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.42f, Volume = 0.55f }, Projectile.Center);
             if (IsSakura) {
                 //樱衣:风铃 + 草叶簌响,花瓣的材质声
+
                 SoundEngine.PlaySound(SoundID.Item35 with { Pitch = 0.30f, Volume = 0.52f, MaxInstances = 2 }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Grass with { Pitch = -0.15f, Volume = 0.60f }, Projectile.Center);
             }
@@ -294,6 +285,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             Vector2 dir = CutAngle.ToRotationVector2();
             if (IsSakura) {
                 //粉雾两缕垫底(花瓣主体在瓣爆里)
+
                 for (int i = 0; i < 5; i++) {
                     Vector2 vel = dir.RotatedByRandom(0.7) * Main.rand.NextFloat(2f, 5f);
                     PRTLoader.NewParticle<PRT_CrimsonSmoke>(Projectile.Center + Main.rand.NextVector2Circular(20f, 20f)
@@ -303,6 +295,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             }
             else {
                 //墨衣:墨滴甩出 + 绯红火花
+
                 for (int i = 0; i < 8; i++) {
                     Vector2 vel = dir.RotatedByRandom(0.85) * Main.rand.NextFloat(4f, 10f);
                     vel.Y -= Main.rand.NextFloat(0f, 1.6f);
@@ -318,8 +311,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
                 }
             }
         }
-
-        //==================== 判定 ====================
 
         public override bool? CanHitNPC(NPC target) {
             if (timer > DamageEnd) {
@@ -338,12 +329,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             }
         }
 
-        /// <summary>
-        /// 贪婪判定（对齐绯红裂空三层）：目标箱外扩擦边 + 弧带折线（厚度对齐视觉辉光）
-        /// + 中心→弧上辐条填月牙内侧空挡 + 贴身圆兜底。<br/>
-        /// 碰撞几何取 ScaleMul 下限，避免出生爆发未涨满时"画到了打不到"；
-        /// localNPCHitCooldown 大于伤害窗，多层命中仍是单次结算
-        /// </summary>
+        /// <summary>贪婪判定（对齐绯红裂空三层）</summary>
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             if (!initialized) {
                 return false;
@@ -362,6 +348,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             const int Segments = 20;
             OFR.BladeState state = OFR.ComputeState(in arcDef, Math.Max(timer, 1));
             //碰撞用尺寸不低于视觉可读刀弧，出生 0.62 起步不缩判定
+
             float hitScale = MathF.Max(state.ScaleMul, 0.92f);
             float thickWorld = MathF.Max(48f, arcDef.Thick * ArcHalfX * hitScale * ArcThickMul);
             float cp = 0f;
@@ -373,7 +360,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
                     , prev, next, thickWorld, ref cp)) {
                     return true;
                 }
-                //每段都测辐条：月牙内侧（人与外弧之间）不再是空洞
+                //每段都测辐条、月牙内侧（人与外弧之间）不再是空洞
+
                 if (Collision.CheckAABBvLineCollision(greedyBox.TopLeft(), greedyBox.Size()
                     , Projectile.Center, (prev + next) * 0.5f, SpokeThickness, ref cp)) {
                     return true;
@@ -383,14 +371,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             return false;
         }
 
-        /// <summary>碰撞/割草用弧上点：强制 hitScale，几何与绘制同源但不吃出生缩小</summary>
+        /// <summary>碰撞/割草用弧上点、强制 hitScale，几何与绘制同源但不吃出生缩小</summary>
         private Vector2 HitPointAt(in OFR.BladeState state, float hitScale, float uc) {
             OFR.BladeState hitState = state;
             hitState.ScaleMul = hitScale;
             return OFR.PointAt(in arcDef, in hitState, Projectile.Center, uc);
         }
 
-        /// <summary>割草断藤：沿弧带 + 辐条扫切草/藤等可切物（伤害窗内全开，对齐绯红裂空）</summary>
+        /// <summary>割草断藤、沿弧带 + 辐条扫切草/藤等可切物（伤害窗内全开，对齐绯红裂空）</summary>
         public override void CutTiles() {
             if (!initialized || timer > DamageEnd) {
                 return;
@@ -420,6 +408,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             SoundEngine.PlaySound(CWRSound.KatanaHit with { Pitch = 0.25f, Volume = 0.85f, MaxInstances = 3 }, target.Center);
             target.CWR().TimeFrozenTick = 3;   //穿身微滞:惊人一刻的咬合感
+
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Owner.GetModPlayer<OnikiriPlayer>().OnZanshinHit(target);
             }
@@ -432,6 +421,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             Vector2 cutDir = CutAngle.ToRotationVector2();
             if (IsSakura) {
                 //命中溅散瓣:花瓣沿刀线掠出
+
                 for (int i = 0; i < 6 && petals.Count < PetalCount + 14; i++) {
                     SpawnPetal(target.Center + Main.rand.NextVector2Circular(12f, 12f)
                         , cutDir.RotatedByRandom(0.55) * Main.rand.NextFloat(3.5f, 8f)
@@ -449,8 +439,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
                 }
             }
         }
-
-        //==================== 樱瓣(客户端本地) ====================
 
         /// <summary>弧完全揭开帧沿弧带一次性绽放花瓣:外法线向散出,随后飘落</summary>
         private void BloomPetals() {
@@ -498,8 +486,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
                 petal.Depth = MathF.Sin(petal.Age * petal.Spin + petal.Seed);
             }
         }
-
-        //==================== 绘制 ====================
 
         public override bool PreDraw(ref Color lightColor) => false;
 

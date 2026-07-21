@@ -2,7 +2,7 @@
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>壁垒枪托：持 SHPC 时少量减伤，PostUpdate 叠 endurance</summary>
+    /// <summary>壁垒枪托，持 SHPC 时减伤，PostUpdate 叠 endurance</summary>
     internal sealed class BulwarkStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;
@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
         public override void OnPlayerUpdate(Player player) {
             if (player == null || !player.active) return;
-            //仅在持有 SHPC 时启用减伤；endurance 由 vanilla 每帧重置，无需手动清理
+            //持 SHPC 才叠 endurance，vanilla 每帧重置
             if (player.HeldItem == null || player.HeldItem.type != SHPCOverride.ID) return;
             player.endurance += EnduranceBoost;
         }

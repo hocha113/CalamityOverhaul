@@ -9,19 +9,13 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 {
-    /// <summary>
-    /// 营地里的锅，自带发光/沸腾/水下判定与蒸汽气泡特效
-    /// </summary>
+    /// <summary>营地锅</summary>
     internal class CampsitePotActor : Actor
     {
-        /// <summary>
-        /// 是否正被老公爵访问，由 <see cref="OldDukeWanderingActor"/> 在服务端/单人下写入，标记同步以便客户端也能表现访问反馈
-        /// </summary>
+        /// <summary>被访问中，权威端写，[SyncVar]</summary>
         [SyncVar]
         public bool IsBeingVisited;
-        /// <summary>
-        /// 交互强度，由 <see cref="OldDukeWanderingActor"/> 在服务端/单人下写入
-        /// </summary>
+        /// <summary>交互强度，权威端写</summary>
         [SyncVar]
         public float InteractionIntensity;
 
@@ -57,7 +51,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
             else {
                 bouncePhase += 0.05f;
-                //无人来访时交互强度自然回落；来访时的拉升由 OldDukeWanderingActor 负责
+                //无人时强度回落
                 InteractionIntensity = MathHelper.Lerp(InteractionIntensity, 0f, 0.05f);
             }
             if (bouncePhase > MathHelper.TwoPi) {
@@ -152,19 +146,16 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             Vector2 screenPos = Position - Main.screenPosition;
             Vector2 origin = potTexture.Size() / 2f;
 
-            //跳动效果偏移
             float bounceOffset = 0f;
             if (IsBeingVisited && InteractionIntensity > 0.3f) {
                 bounceOffset = MathF.Sin(bouncePhase * 2f) * 4f * InteractionIntensity;
             }
             Vector2 bounceVector = new Vector2(0, bounceOffset);
 
-            //基础发光强度
             float baseGlowIntensity = (MathF.Sin(glowTimer * 3f) * 0.5f + 0.5f) * 0.6f;
             float glowIntensity = baseGlowIntensity * (1f + InteractionIntensity * 1.8f);
             Color fireGlow = new Color(255, 120, 60) with { A = 0 };
 
-            //交互时的额外光晕层
             if (IsBeingVisited && InteractionIntensity > 0.2f) {
                 for (int i = 0; i < 2; i++) {
                     float extraGlowScale = 1.4f + i * 0.15f;
@@ -175,7 +166,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 }
             }
 
-            //基础发光层
             for (int i = 0; i < 3; i++) {
                 float glowScale = 1.1f + i * 0.08f;
                 float glowAlpha = glowIntensity * (1f - i * 0.3f);
@@ -185,7 +175,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                     fireGlow * glowAlpha, 0f, origin, glowScale, SpriteEffects.None, 0f);
             }
 
-            //锅主体轻微摇晃效果
             float potRotation = 0f;
             if (IsBeingVisited && InteractionIntensity > 0.4f) {
                 potRotation = MathF.Sin(bouncePhase * 3f) * 0.15f * InteractionIntensity;

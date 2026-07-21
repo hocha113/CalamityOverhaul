@@ -4,7 +4,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HackTimes.Targets
 {
-    /// <summary>掉落物目标工厂</summary>
+    /// <summary>掉落物目标</summary>
     internal class ItemTargetType : HackTargetType
     {
         public override HackTargetKind Kind => HackTargetKind.Item;

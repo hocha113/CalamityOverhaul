@@ -12,9 +12,7 @@ using Terraria.UI;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 {
-    /// <summary>
-    /// 教程末尾未绑定快捷键提醒，EntrustGuideCard 暖琥珀 variant
-    /// </summary>
+    /// <summary>教程末未绑键提醒,EntrustGuideCard暖琥珀</summary>
     internal class CybCourseKeyBindReminderPanel : ModSystem, ILocalizedModType
     {
         private enum Phase { Hidden, FadeIn, Idle, FadeOut }
@@ -42,14 +40,13 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 => "选择任意选项都将断开超梦连接。您可以随时在主世界的设置中调整按键绑定。");
         }
 
-        //面板尺寸
         private const int PanelW = 540;
         private const int PanelMaxH = 560;
         private const int EdgePad = 10;
         private const int RowH = 32;
-        //固定内容区高度（标题+副标题+分隔线+提示语+间距），按 MouseText 典型 fontH≈20 估算
+        //标题区等固定高度,fontH≈20估
         private const int HeaderOverhead = 152;
-        //列表下方到面板底（按钮+脚注+内边距）
+        //列表下按钮脚注区
         private const int FooterOverhead = 100;
 
         public static bool Visible => _phase != Phase.Hidden;
@@ -63,8 +60,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         private static Rectangle _panelRect = Rectangle.Empty;
         private static List<KeyEntry> _entries = new();
 
-        //待提醒的关键快捷键集合，按教程涉及顺序排列
-        //用 Func 包一层是为了在调用时再读取静态属性，避免类型初始化顺序问题
+        //Func延迟读键绑,避初始化顺序
         private static readonly Func<ModKeybind>[] WatchedKeys = new Func<ModKeybind>[] {
             () => CWRKeySystem.HackTime_Toggle,
             () => CWRKeySystem.CyberBanish_Key,
@@ -83,9 +79,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 
         public override void OnWorldUnload() => Hide();
 
-        /// <summary>
-        /// 收集未绑定快捷键；全已绑定则直接 Exit
-        /// </summary>
+        /// <summary>未绑则Show,全绑则Exit</summary>
         public static void ShowOrExit() {
             var unbound = CollectUnbound();
             if (unbound.Count == 0) {
@@ -95,7 +89,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             _entries = unbound;
             _phase = Phase.FadeIn;
             _alpha = 0f;
-            _prevMouseLeft = true;//阻止上一次鼠标点击的余波直接命中本面板按钮
+            _prevMouseLeft = true;//click余波,置true避误触
         }
 
         public static void Hide() {
@@ -110,15 +104,13 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         private static List<KeyEntry> CollectUnbound() {
             var list = new List<KeyEntry>();
             foreach (var getter in WatchedKeys) {
-                //教程被触发时按键系统必然已加载，这里只防御被外部误置 null
                 ModKeybind kb = getter();
                 if (kb == null) continue;
 
-                //显式指定键盘输入模式，避免在手柄模式下错误读取手柄绑定列表
+                //Keyboard模式,避读手柄绑
                 var keys = kb.GetAssignedKeys(InputMode.Keyboard);
                 if (keys != null && keys.Count > 0) continue;
 
-                //ModKeybind 自带 DisplayName 本地化文本，直接复用，无需手拼键名
                 string display = kb.DisplayName?.Value;
                 if (string.IsNullOrWhiteSpace(display)) continue;
                 list.Add(new KeyEntry(display));
@@ -148,7 +140,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 case Phase.FadeOut:
                     _alpha = MathHelper.Lerp(_alpha, 0f, 0.18f);
                     if (_alpha < 0.02f) {
-                        //淡出完成后再触发退出，避免视觉跳变
+                        //淡出完再Exit
                         Hide();
                         CybCourse.Exit();
                     }
@@ -192,11 +184,11 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) return;
 
-            //全屏蒙板，比完成面板再压暗一档以聚焦
+            //蒙板比完成面板更暗
             sb.Draw(px, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
                 new Color(8, 4, 0, (int)(170 * _alpha)));
 
-            //依据实际内容块高度精确计算面板高度，避免列表与底部按钮区互相压缩
+            //按内容算dynH,避挤压
             int dynH = Math.Clamp(HeaderOverhead + _entries.Count * RowH + FooterOverhead, HeaderOverhead + FooterOverhead, PanelMaxH);
             int cx = (Main.screenWidth - PanelW) / 2;
             int cy = (Main.screenHeight - dynH) / 2;
@@ -219,7 +211,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 effect.Parameters["uAlpha"]?.SetValue(_alpha * 0.97f);
                 effect.Parameters["uResolution"]?.SetValue(new Vector2(ext.Width, ext.Height));
                 effect.Parameters["uEdgePad"]?.SetValue((float)EdgePad);
-                //variant=0 暖琥珀，提示性更强
+                //uVariant=0暖琥珀
                 effect.Parameters["uVariant"]?.SetValue(0f);
                 sb.End();
                 sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
@@ -245,30 +237,25 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             const float bodySc = 0.68f;
             const float footerSc = 0.55f;
 
-            //cursor-Y 流式布局，从顶部向下依次排列各区域，杜绝遮挡
             float curY = panel.Y + 22f;
 
-            //顶部呼吸光带
             float breath = 0.55f + 0.45f * MathF.Sin(_shaderTimer * 4f);
             BaseManagerStyle.FillRect(sb,
                 new Rectangle(panel.X + 14, panel.Y + 8, panel.Width - 28, 2),
                 new Color(255, 200, 90, (int)(150 * _alpha * breath)));
 
-            //标题
             float titleH = fontH * titleSc;
             BaseManagerStyle.DrawCenteredText(sb, Title.Value,
                 new Vector2(panel.Center.X, curY + titleH * 0.5f),
                 new Color(255, 215, 130, (int)(255 * _alpha)), titleSc);
             curY += titleH + 8f;
 
-            //副标题
             float subH = fontH * subSc;
             BaseManagerStyle.DrawCenteredText(sb, Subtitle.Value,
                 new Vector2(panel.Center.X, curY + subH * 0.5f),
                 new Color(245, 195, 140, (int)(200 * _alpha)), subSc);
             curY += subH + 14f;
 
-            //装饰分隔线
             int divW = (int)(panel.Width * 0.55f);
             int divX = panel.Center.X - divW / 2;
             BaseManagerStyle.FillRect(sb,
@@ -282,7 +269,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 new Color(255, 220, 140, (int)(220 * _alpha)));
             curY += 14f;
 
-            //提示语
             string[] hintLines = Hint.Value.Split('\n');
             float hintLineH = fontH * bodySc + 4f;
             for (int i = 0; i < hintLines.Length; i++) {
@@ -293,7 +279,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             }
             curY += 14f;
 
-            //列表区
             int listX = panel.X + 40;
             int listRight = panel.Right - 40;
             for (int i = 0; i < _entries.Count; i++) {
@@ -301,10 +286,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 curY += RowH;
             }
 
-            //列表与按钮之间的间距
             curY += 14f;
 
-            //底部按钮区：跟随 curY
             const int btnW = 150;
             const int btnH = 34;
             int gap = 28;
@@ -317,7 +300,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             DrawPanelButton(sb, _laterRect, BtnLater.Value, hot: false);
             curY += btnH + 14f;
 
-            //底部脚注
             BaseManagerStyle.DrawCenteredText(sb, Footer.Value,
                 new Vector2(panel.Center.X, curY + fontH * footerSc * 0.5f),
                 new Color(225, 185, 130, (int)(180 * _alpha)), footerSc);
@@ -326,29 +308,24 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         private static void DrawKeyRow(SpriteBatch sb, ReLogic.Graphics.DynamicSpriteFont font,
             int x, int right, int y, KeyEntry entry, int index) {
             float a = _alpha;
-            //行底色，与暖琥珀主题协调
             var rowRect = new Rectangle(x, y + 2, right - x, RowH - 4);
             Color rowBg = (index & 1) == 0
                 ? new Color(40, 22, 8, (int)(110 * a))
                 : new Color(50, 28, 10, (int)(140 * a));
             BaseManagerStyle.FillRect(sb, rowRect, rowBg);
-            //左侧高亮条
             BaseManagerStyle.FillRect(sb,
                 new Rectangle(x - 4, y + 4, 3, RowH - 8),
                 new Color(255, 180, 80, (int)(220 * a)));
 
-            //项目编号
             string idx = $"{index + 1:D2}.";
             Utils.DrawBorderString(sb, idx,
                 new Vector2(x + 6, y + 7),
                 new Color(255, 200, 110, (int)(220 * a)), 0.62f);
 
-            //功能名
             Utils.DrawBorderString(sb, entry.DisplayName,
                 new Vector2(x + 38, y + 6),
                 new Color(255, 230, 190, (int)(240 * a)), 0.72f);
 
-            //右侧未绑定徽标，统一使用本地化的 UnboundLabel
             string label = UnboundLabel.Value;
             float labelSc = 0.62f;
             Vector2 labelSize = font.MeasureString(label) * labelSc;
@@ -368,7 +345,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 
         private static void DrawPanelButton(SpriteBatch sb, Rectangle rect, string text, bool hot) {
             bool hovered = rect.Contains(Main.mouseX, Main.mouseY);
-            //hot=主选项（我已知晓）
+            //hot=主选项
             Color baseBg = hot ? new Color(110, 70, 18) : new Color(72, 50, 22);
             Color hoverBg = hot ? new Color(200, 140, 40) : new Color(150, 110, 50);
             Color baseBorder = hot ? new Color(240, 190, 90) : new Color(190, 150, 80);
@@ -385,7 +362,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             BaseManagerStyle.StrokeRect(sb, rect, 1, border);
             BaseManagerStyle.DrawCenteredText(sb, text, rect.Center.ToVector2(), textCol, 0.78f);
 
-            //左右端帽
             int capH = 6;
             BaseManagerStyle.FillRect(sb,
                 new Rectangle(rect.X - 2, rect.Y + rect.Height / 2 - capH, 4, capH * 2),

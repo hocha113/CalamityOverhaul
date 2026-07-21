@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>战斗握把：击杀叠战意层，动态注入攻速/伤害，PostUpdate 衰减</summary>
+    /// <summary>战斗握把，击杀叠战意，PostUpdate衰减</summary>
     internal sealed class CombatGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         public override void Apply(ref ShootContext ctx) {
             ctx.SpreadMul += -0.08f;
             ctx.ManaCostMul += 0.2f;
-            //层数动态注入
+            //层数注入
             ctx.AttackSpeedMul += _stacks * AttackSpeedPerStack;
             ctx.DamageMul += _stacks * DamagePerStack;
         }

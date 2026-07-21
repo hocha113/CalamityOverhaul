@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 {
-    /// <summary>
-    /// 老公爵商店渲染器
-    /// </summary>
+    /// <summary>老公爵商店渲染</summary>
     internal class OldDukeShopRenderer
     {
         private readonly Player player;
@@ -28,15 +26,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
             this.interaction = interaction;
         }
 
-        /// <summary>
-
-        /// 计算面板中心位置
-
-        /// </summary>
         public Vector2 CalculatePanelPosition() {
             Vector2 screenCenter = new Vector2(Main.screenWidth, Main.screenHeight) / 2f;
 
-            //使用缓动函数实现滑入动画（从右侧滑入，与Draedon的左侧不同）
+            //右侧滑入，异于Draedon左侧
             float slideOffset = (1f - VaultUtils.EaseOutCubic(animation.PanelSlideProgress)) * 200f;
 
             return new Vector2(
@@ -84,7 +77,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 
             Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * animation.UIAlpha, titleSclse);
 
-            //绘制关闭按钮
             DrawCloseButton(spriteBatch, panelPosition, sulfurPulse);
 
             //分割线
@@ -135,7 +127,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
             spriteBatch.Draw(pixel, new Rectangle(closeButtonRect.Right - 2, closeButtonRect.Y, 2, closeButtonRect.Height),
                 new Rectangle(0, 0, 1, 1), edgeColor);
 
-            //绘制X符号
             Vector2 center = new Vector2(closeButtonRect.X + closeButtonRect.Width / 2f, closeButtonRect.Y + closeButtonRect.Height / 2f);
             float xSize = 12f + hoverProgress * 2f;
             float thickness = 2.5f + hoverProgress * 0.5f;
@@ -225,20 +216,16 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
         private void DrawCurrencyDisplay(SpriteBatch spriteBatch, Vector2 panelPosition) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
-            //获取海洋残片数量
             int oceanFragmentCount = (int)CalculateTotalCurrency();
 
-            //绘制货币图标和数量
             Vector2 currencyPos = panelPosition + new Vector2(40, 100);
 
-            //绘制海洋残片图标
             Item oceanFragmentItem = new Item(ModContent.ItemType<Oceanfragments>());
             Main.instance.LoadItem(oceanFragmentItem.type);
 
             float iconScale = 0.8f + (float)Math.Sin(animation.CurrencyDisplayPulse) * 0.1f;
             VaultUtils.SimpleDrawItem(spriteBatch, oceanFragmentItem.type, currencyPos + new Vector2(16, 16), 10, iconScale * 4f, 0, Color.White * animation.UIAlpha);
 
-            //绘制数量文本
             string countText = oceanFragmentCount.ToString();
             Vector2 textPos = currencyPos + new Vector2(40, 8);
             Utils.DrawBorderString(spriteBatch, countText, textPos, Color.White * animation.UIAlpha, 1f);
@@ -284,29 +271,22 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
                 OldDukeShopInteraction.ItemSlotHeight - 6
             );
 
-            //绘制槽位背景
             DrawSlotBackground(spriteBatch, slotRect, isHovered, isSelected, isHolding, hoverProgress, failFlash, toxicWavePhase);
 
-            //绘制长按进度条
             if (isHolding) {
                 DrawHoldProgressBar(spriteBatch, slotRect);
             }
 
-            //绘制连续购买计数器
             if (interaction.ConsecutivePurchaseCount > 0 && isHolding) {
                 DrawPurchaseCounter(spriteBatch, slotRect);
             }
 
-            //绘制物品图标
             DrawItemIcon(spriteBatch, shopItem, position + new Vector2(10, 10), hoverProgress);
 
-            //绘制物品名称
             DrawItemName(spriteBatch, shopItem, position + new Vector2(70, 15), hoverProgress);
 
-            //绘制价格
             DrawPriceDisplay(spriteBatch, shopItem, position + new Vector2(70, 42), hoverProgress);
 
-            //绘制酸液数据流效果
             if (hoverProgress > 0.3f) {
                 DrawAcidStreamEffect(spriteBatch, position, hoverProgress);
             }
@@ -401,11 +381,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
         }
 
         private void DrawPriceDisplay(SpriteBatch spriteBatch, OldDukeShopItem shopItem, Vector2 position, float hoverProgress) {
-            //检查是否有足够的海洋残片
             int oceanFragmentCount = player.InquireItem(true, ModContent.ItemType<Oceanfragments>());
             bool canAfford = oceanFragmentCount >= shopItem.price;
 
-            //绘制海洋残片图标
             Item oceanFragmentItem = new Item(ModContent.ItemType<Oceanfragments>());
             float iconScale = 0.6f + hoverProgress * 0.1f;
             VaultUtils.SimpleDrawItem(spriteBatch, oceanFragmentItem.type, position + new Vector2(8, 8),

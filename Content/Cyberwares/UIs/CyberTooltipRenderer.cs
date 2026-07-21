@@ -27,13 +27,11 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             scanPhase += (float)Main.gameTimeCache.ElapsedGameTime.TotalSeconds * ScanLineSpeed;
             if (scanPhase > MathHelper.TwoPi) scanPhase -= MathHelper.TwoPi;
 
-            //收集文本行
             string name = item.Name ?? "???";
             string slotName = CyberwareUI.Instance?.GetSlotLabel((int)cyber.SlotCategory) ?? cyber.SlotCategory.ToString();
             string capText = Language.GetTextValue("Mods.CalamityOverhaul.UI.CyberwareUI.TooltipCapacityCost", cyber.CapacityCost);
             string desc = cyber.Tooltip.Value;
 
-            //测量尺寸
             float textScale = 0.76f;
             float smallScale = 0.66f;
             float descScale = 0.64f;
@@ -41,7 +39,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             Vector2 nameSize = VaultUtils.MeasureText(name, textScale);
             Vector2 slotSize = VaultUtils.MeasureText(slotName, smallScale);
 
-            //计算描述文本行，先按换行符分段再调用官方换行接口
+            //描述先按换行分段再 Wrap
             var descLineList = new System.Collections.Generic.List<string>();
             foreach (string para in desc.Split('\n')) {
                 foreach (string wl in VaultUtils.WrapTextArray(para.TrimEnd('\r'), FontAssets.MouseText.Value, (int)(220f / descScale), 99, out _)) {
@@ -57,19 +55,19 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
             contentWidth += Padding * 2;
 
-            float contentHeight = Padding; //顶部
-            contentHeight += 20; //名称行
+            float contentHeight = Padding; //顶
+            contentHeight += 20; //名称
             contentHeight += 4; //间隔
-            contentHeight += 14; //分隔线区域
-            contentHeight += LineSpacing; //槽位行
-            contentHeight += LineSpacing; //容量行
+            contentHeight += 14; //分隔
+            contentHeight += LineSpacing; //槽位
+            contentHeight += LineSpacing; //容量
             if (descLines.Length > 0) {
-                contentHeight += 8; //描述前间距
+                contentHeight += 8; //描述前
                 contentHeight += descLines.Length * (LineSpacing - 2);
             }
-            contentHeight += Padding; //底部
+            contentHeight += Padding; //底
 
-            //面板位置（在鼠标旁边，避免超出屏幕）
+            //鼠标旁，防出屏
             float panelX = mousePos.X + 16;
             float panelY = mousePos.Y + 16;
             if (panelX + contentWidth > Main.screenWidth - 8) {
@@ -83,9 +81,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
             Rectangle panelRect = new((int)panelX, (int)panelY, (int)contentWidth, (int)contentHeight);
 
-            //=== 绘制面板 ===
-
-            //背景
             sb.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), CyberwareTheme.BgPanel * 0.95f);
 
             //暗角
@@ -96,11 +91,11 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 sb.Draw(px, new Rectangle(panelRect.X, panelRect.Bottom - 1 - i, panelRect.Width, 1), new Rectangle(0, 0, 1, 1), vig);
             }
 
-            //顶部红色边框
+            //顶边
             sb.Draw(px, new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, 2), new Rectangle(0, 0, 1, 1), CyberwareTheme.Accent * 0.8f);
-            //底部边框
+            //底边
             sb.Draw(px, new Rectangle(panelRect.X, panelRect.Bottom - 1, panelRect.Width, 1), new Rectangle(0, 0, 1, 1), CyberwareTheme.Border * 0.6f);
-            //左右边框
+            //左右边
             sb.Draw(px, new Rectangle(panelRect.X, panelRect.Y, 1, panelRect.Height), new Rectangle(0, 0, 1, 1), CyberwareTheme.Accent * 0.4f);
             sb.Draw(px, new Rectangle(panelRect.Right - 1, panelRect.Y, 1, panelRect.Height), new Rectangle(0, 0, 1, 1), CyberwareTheme.Accent * 0.4f);
 
@@ -109,16 +104,15 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             sb.Draw(px, new Rectangle(panelRect.X, panelRect.Y, cut, cut), new Rectangle(0, 0, 1, 1), CyberwareTheme.BgDark);
             sb.Draw(px, new Rectangle(panelRect.Right - cut, panelRect.Y, cut, cut), new Rectangle(0, 0, 1, 1), CyberwareTheme.BgDark);
 
-            //微扫描线
+            //扫描线
             float scanY = panelRect.Y + scanPhase / MathHelper.TwoPi % 1f * panelRect.Height;
             sb.Draw(px, new Rectangle(panelRect.X + 1, (int)scanY, panelRect.Width - 2, 1),
                 new Rectangle(0, 0, 1, 1), CyberwareTheme.Accent * 0.06f);
 
-            //=== 绘制内容 ===
             float x = panelRect.X + Padding;
             float y = panelRect.Y + Padding;
 
-            //物品图标
+            //图标
             Texture2D itemTex = TextureAssets.Item[item.type]?.Value;
             if (itemTex != null) {
                 float maxDim = Math.Max(itemTex.Width, itemTex.Height);

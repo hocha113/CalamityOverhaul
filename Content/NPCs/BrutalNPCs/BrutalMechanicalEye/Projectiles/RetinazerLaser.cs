@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectiles
 {
-    /// <summary>激光眼高速激光弹，替代原版<see cref="ProjectileID.DeathLaser"/>青紫渐变拖尾+发光内核+命中迸发<see cref="PRT_TwinsSpark"/>ai[1]=1强化弹(狂暴/大招)，更快更亮</summary>
+    /// <summary>高速激光弹，替 DeathLaser；ai[1]=1 强化</summary>
     internal class RetinazerLaser : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectil
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             Lighting.AddLight(Projectile.Center, CoreColor.ToVector3() * 0.6f);
 
-            //飞行中的能量逸散粒子(低频，避免铺满屏幕)
+            //低频逸散粒子
             if (!VaultUtils.isServer && Main.rand.NextBool(14)) {
                 PRTLoader.NewParticle<PRT_TwinsSpark>(Projectile.Center, Projectile.velocity * 0.1f
                     + Main.rand.NextVector2Circular(0.5f, 0.5f), Color.White, 0.8f)?.Configure(14, 0);
@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectil
         public Color GetColorFunc(Vector2 _) => Color.Lerp(CoreColor, GlowColor, 0.4f) * Projectile.Opacity;
 
         public override bool PreDraw(ref Color lightColor) {
-            //发光弹头:外层紫晕+内核白光(A=0加色观感)
+            //弹头紫晕+白核
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = glow.Size() / 2f;

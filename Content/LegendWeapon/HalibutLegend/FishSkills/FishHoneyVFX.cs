@@ -10,17 +10,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>蜜诏群蜂域内 shader 资源（域内加载器，不经 EffectLoader）</summary>
     internal class FishHoneyAssets
     {
-        /// <summary>蜜团核心：SDF 粘稠液团 + 薄边透光 + 琥珀高光缓扫 + 噪声现形/溶解</summary>
+        /// <summary>蜜团核心</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect FishHoneyCore { get; private set; }
     }
 
-    /// <summary>
-    /// 蜜诏群蜂共享演出。<br/>
-    /// 色彩脚本：暖金/蜜橙/深琥珀，蜜体 AlphaBlend 半透明（液体非光源），
-    /// 高光只用小面积暖白 A=0 点，禁大面积加色光斑。<br/>
-    /// 签名行为：慢滴垂坠成斑、拉丝断丝回缩、蜂群高频微抖动
-    /// </summary>
+    /// <summary>蜜诏群蜂</summary>
     internal static class FishHoneyVFX
     {
         /// <summary>深琥珀（厚蜜、暗外圈）</summary>
@@ -29,15 +24,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public static readonly Color HoneyAmber = new(216, 128, 30);
         /// <summary>暖金（薄蜜、饱和中层）</summary>
         public static readonly Color HoneyGold = new(255, 188, 72);
-        /// <summary>暖白高光（仅小点，禁常驻大面积）</summary>
+        /// <summary>暖白高光（仅小点）</summary>
         public static readonly Color HoneyGlint = new(255, 236, 182);
 
-        /// <summary>粘液闷响：蜜的落定/破裂声底</summary>
+        /// <summary>粘液闷响</summary>
         public static void GlugSound(Vector2 pos, float pitch = -0.5f, float volume = 0.5f) {
             SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = pitch, Volume = volume, MaxInstances = 3 }, pos);
         }
 
-        /// <summary>慢速蜜滴迸发：dir 为主迸方向（Zero 则全向），带上抛弧感</summary>
+        /// <summary>慢速蜜滴迸发</summary>
         public static void DropletBurst(Vector2 pos, Vector2 dir, int count, float speed, float scaleMul = 1f, bool leaveBlot = true) {
             if (Main.dedServ) {
                 return;
@@ -55,7 +50,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>蜇刺小蜜溅：2-3 颗慢滴 + 深琥珀微环，无大闪</summary>
+        /// <summary>蜇刺小蜜溅，2-3 颗慢滴 + 深琥珀微环，无大闪</summary>
         public static void StingSplash(Vector2 pos, Vector2 outward) {
             if (Main.dedServ) {
                 return;
@@ -72,10 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(Vector2.One, outward.ToRotation(), 0.15f, 8);
         }
 
-        /// <summary>
-        /// 粘稠蜜丝：from→to 垂弧贝塞尔条带，stretch 0..1 越大越绷直、中段颈缩越细，
-        /// 高拉伸时中段透出暖金薄蜜、颈点亮一粒将断高光
-        /// </summary>
+        /// <summary>粘稠蜜丝</summary>
         public static void DrawStrand(SpriteBatch sb, Vector2 from, Vector2 to, float stretch, float alpha) {
             Texture2D tex = CWRAsset.Line?.Value;
             if (tex == null || alpha <= 0.02f) {
@@ -87,7 +79,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             stretch = MathHelper.Clamp(stretch, 0f, 1f);
             int segs = Math.Clamp((int)(dist / 9f), 4, 20);
-            //垂弧：越松垂得越深
+            //垂弧，越松垂得越深
             Vector2 mid = (from + to) * 0.5f + new Vector2(0f, dist * 0.26f * (1f - stretch));
             Vector2 prev = from;
             for (int i = 1; i <= segs; i++) {
@@ -96,7 +88,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 b = Vector2.Lerp(mid, to, t);
                 Vector2 p = Vector2.Lerp(a, b, t);
                 Vector2 seg = p - prev;
-                //颈缩：绷紧时中段变细
+                //颈缩，绷紧时中段变细
                 float neck = 1f - MathF.Sin(t * MathHelper.Pi) * (0.15f + 0.55f * stretch);
                 float widthPx = MathHelper.Lerp(3f, 1.2f, stretch) * neck;
                 Color col = Color.Lerp(HoneyDeep, HoneyGold, stretch * MathF.Sin(t * MathHelper.Pi) * 0.8f) * (alpha * 0.9f);
@@ -105,7 +97,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , new Vector2(widthPx / tex.Width, seg.Length() / tex.Height * 1.12f), SpriteEffects.None, 0f);
                 prev = p;
             }
-            //将断瞬间：颈点一粒暖白高光
+            //将断瞬间，颈点一粒暖白高光
             if (stretch > 0.8f) {
                 Texture2D glow = CWRAsset.SoftGlow?.Value;
                 if (glow != null) {
@@ -117,11 +109,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 琥珀蜜滴：低重力高阻力的粘稠液滴，初段悬滞欲坠再垂落，随速度拉伸；
-    /// 落地转蜜斑短命 decal（压扁微摊开 + 一次琥珀 glint 缓扫后消退）。
-    /// AlphaBlend 液体感，高光用 A=0 小点
-    /// </summary>
+    /// <summary>琥珀蜜滴</summary>
     internal class PRT_FishHoneyDrop : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -164,7 +152,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //粘稠：初段悬滞欲坠
+            //粘稠，初段悬滞欲坠
             if (Time < 7) {
                 Velocity *= 0.82f;
             }
@@ -177,7 +165,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Color = Color.Lerp(initialColor, Color.Transparent, MathF.Pow(t, 2.6f));
             Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
 
-            //落地成斑：延长寿命进入 decal 相
+            //落地成斑
             if (leaveBlot && Time > 4 && Velocity.Y > 0.5f && Collision.SolidCollision(Position, 1, 1)) {
                 landed = true;
                 landTime = Time;
@@ -199,13 +187,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return false;
             }
 
-            //随速度纵向拉伸：快成丝、慢成珠
+            //随速度纵向拉伸，快成丝、慢成珠
             float stretch = MathHelper.Clamp(Velocity.Length() * 0.055f, 0f, 0.9f);
             Vector2 scale = new Vector2(0.26f * (1f - stretch * 0.4f), 0.46f * (1f + stretch * 1.9f)) * Scale;
-            //双层窄叠：中心更实，读作液滴而非光斑
+            //双层窄叠
             spriteBatch.Draw(tex, pos, null, Color, Rotation, origin, scale, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, pos, null, Color, Rotation, origin, scale * new Vector2(0.45f, 1f), SpriteEffects.None, 0f);
-            //珠面高光：小、暖、A=0（AlphaBlend 批内即加色）
+            //珠面高光
             if (glow != null && stretch < 0.5f) {
                 float glintA = (1f - LifetimeCompletion) * (1f - stretch * 2f) * 0.5f;
                 spriteBatch.Draw(glow, pos + new Vector2(-1.5f, -2.5f) * Scale, null
@@ -230,7 +218,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 spriteBatch.Draw(glow, pos, null, FishHoneyVFX.HoneyDeep * (alpha * 0.42f), 0f
                     , glow.Size() * 0.5f, new Vector2(0.42f * spread, 0.13f) * Scale, SpriteEffects.None, 0f);
             }
-            //蜜斑主体：竖条横放成扁液斑，两层异宽
+            //蜜斑主体
             spriteBatch.Draw(tex, pos, null, initialColor * (alpha * 0.8f), MathHelper.PiOver2, origin
                 , new Vector2(0.13f, 0.5f * spread) * Scale, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, pos, null, FishHoneyVFX.HoneyGold * (alpha * 0.5f), MathHelper.PiOver2, origin

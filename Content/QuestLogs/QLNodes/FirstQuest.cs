@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void OnWorldEnter() {
             Rewards.Clear();
-            //扫描 StarterBag 奖励
+            //扫StarterBag奖励
             if (CWRID.Item_StarterBag > 0) {
                 var dropInfos = ItemDropScanner.GetItemDropsForPlayer(CWRID.Item_StarterBag, Main.LocalPlayer);
                 foreach (var dropInfo in dropInfos) {
@@ -65,10 +65,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            //更新进度
             Objectives[0].CurrentProgress = 1;
 
-            //检查完成
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
             }

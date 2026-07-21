@@ -18,9 +18,7 @@ using Terraria.UI.Chat;
 
 namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchants
 {
-    /// <summary>
-    /// Ebn 免费武器附魔 UI，炼铸需等待进度
-    /// </summary>
+    /// <summary>Ebn免费武器附魔UI，炼铸等进度</summary>
     [VaultLoaden("@CalamityMod/UI/CalamitasEnchantments")]
     internal class EnchantUI : UIHandle, ILocalizedModType
     {
@@ -39,26 +37,22 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
         private static bool DrogBool = false;
         private static Vector2 DrogOffset;
 
-        //UI布局参数
         public static Vector2 UITopLeft => Instance.DrawPosition;
         public static float UIScale => 0.8f;
 
-        //展开/收起状态
         public static bool IsCollapsed = false;
         public static float CollapseProgress = 0f;//0=展开 1=折叠
         public static float CollapseAnimSpeed = 0.12f;
-        public static float CollapsedWidth = 60f; //折叠后的宽度
-        public static float CollapsedHeight = 80f; //折叠后的高度
+        public static float CollapsedWidth = 60f;//折叠宽
+        public static float CollapsedHeight = 80f;//折叠高
 
         private readonly static EnchantmentHandler EnchantmentHandler = new();
 
-        //按钮点击冷却
         public static float TopButtonClickCountdown = 0f;
         public static float BottomButtonClickCountdown = 0f;
         public static float EnchantButtonClickCountdown = 0f;
         public static float ToggleButtonClickCountdown = 0f;
 
-        //硫磺火视觉效果参数
         private const int ShaderEdgePad = 16;
         private float flameTimer = 0f;
         private float emberGlowTimer = 0f;
@@ -68,7 +62,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
 
         private float lerpProgress;
 
-        //粒子系统
         private readonly List<EmberPRT> embers = new();
         private int emberSpawnTimer = 0;
         private readonly List<AshPRT> ashes = new();
@@ -111,7 +104,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
             CollapseHint = this.GetLocalization(nameof(CollapseHint), () => "收起炼铸界面");
             EnchantTitle = this.GetLocalization(nameof(EnchantTitle), () => "炼铸");
 
-            //炼铸事件
             EnchantmentHandler.OnEnchantStart += OnEnchantStart;
             EnchantmentHandler.OnEnchantComplete += OnEnchantComplete;
         }
@@ -153,10 +145,8 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
         }
 
         public override void LogicUpdate() {
-            //根据折叠状态计算面板大小
             lerpProgress = MathHelper.SmoothStep(0f, 1f, CollapseProgress);
 
-            //递减点击冷却
             if (TopButtonClickCountdown > 0f)
                 TopButtonClickCountdown--;
             if (BottomButtonClickCountdown > 0f)
@@ -166,7 +156,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
             if (ToggleButtonClickCountdown > 0f)
                 ToggleButtonClickCountdown--;
 
-            //更新折叠动画
             float targetProgress = IsCollapsed ? 1f : 0f;
             if (CollapseProgress < targetProgress) {
                 CollapseProgress = Math.Min(1f, CollapseProgress + CollapseAnimSpeed);
@@ -175,7 +164,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
                 CollapseProgress = Math.Max(0f, CollapseProgress - CollapseAnimSpeed);
             }
 
-            //更新火焰动画计时器
             flameTimer += 0.045f;
             emberGlowTimer += 0.038f;
             heatWavePhase += 0.025f;
@@ -191,23 +179,20 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
                 shaderTime -= 10000f;
             }
 
-            //更新炼铸逻辑
             EnchantmentHandler.Update();
             EnchantmentHandler.UpdateSelectedEnchantment();
 
-            //更新粒子
             UpdateParticles();
         }
 
         private void UpdateParticles() {
-            //折叠状态下减少粒子效果
+            //折叠过半不刷粒子
             if (CollapseProgress > 0.5f)
                 return;
 
             Vector2 uiCenter = UITopLeft + new Vector2(200f, 150f) * UIScale;
             Vector2 uiSize = new Vector2(400f, 300f) * UIScale;
 
-            //生成余烬粒子
             emberSpawnTimer++;
             if (emberSpawnTimer >= 8 && embers.Count < 35) {
                 emberSpawnTimer = 0;
@@ -222,7 +207,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
                 }
             }
 
-            //生成灰烬粒子
             ashSpawnTimer++;
             if (ashSpawnTimer >= 12 && ashes.Count < 25) {
                 ashSpawnTimer = 0;
@@ -237,7 +221,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
                 }
             }
 
-            //生成火焰精灵
             wispSpawnTimer++;
             if (wispSpawnTimer >= 45 && flameWisps.Count < 8) {
                 wispSpawnTimer = 0;
@@ -266,27 +249,18 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
                 (int)currentHeight
             );
 
-            //绘制硫磺火风格背景
             DrawBrimstoneBackground(spriteBatch, UIHitBox);
-
-            //禁用鼠标交互
             DisableMouseWhenOverUI(UIHitBox);
-
-            //绘制展开/收起按钮
             DrawToggleButton(spriteBatch, UIHitBox);
 
-            //如果正在折叠或已折叠，只显示简化内容
             if (CollapseProgress > 0.01f) {
                 DrawCollapsedContent(spriteBatch, UIHitBox, lerpProgress);
                 return;
             }
 
-            //获取可用附魔
             IEnumerable<CWRRef.EnchantmentWrapper> possibleEnchantments = EnchantmentHandler.GetAvailableEnchantments();
 
-            //物品槽位置
             Vector2 itemSlotDrawPosition = UITopLeft + new Vector2(36f, 46f) * backgroundScale;
-            //附魔按钮位置
             Vector2 enchantIconDrawPosition = UITopLeft + new Vector2(52f, 126f) * backgroundScale;
 
             DrawItemIcon(spriteBatch, itemSlotDrawPosition, enchantIconDrawPosition, backgroundScale, out bool isHoveringOverItemIcon, out bool isHoveringOverEnchantIcon);
@@ -294,21 +268,16 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
             if (isHoveringOverItemIcon)
                 InteractWithItemSlot();
 
-            //调整按钮位置
             Vector2 topButtonPos = UITopLeft + new Vector2(240f, 42f) * backgroundScale;
             Vector2 bottomButtonPos = UITopLeft + new Vector2(240f, 110f) * backgroundScale;
             DrawAndInteractWithButtons(spriteBatch, possibleEnchantments, topButtonPos, bottomButtonPos, backgroundScale);
 
-            //绘制附魔信息
             if (EnchantmentHandler.SelectedEnchantment.HasValue) {
-                //绘制附魔名称
                 DrawEnchantmentName(spriteBatch, UITopLeft + new Vector2(300f, 70f) * backgroundScale);
 
-                //绘制附魔描述
                 Point descriptionDrawPositionTopLeft = (UITopLeft + new Vector2(40f, 180f) * backgroundScale).ToPoint();
                 DrawEnchantmentDescription(spriteBatch, descriptionDrawPositionTopLeft);
 
-                //绘制附魔图标
                 if (!string.IsNullOrEmpty(EnchantmentHandler.SelectedEnchantment.Value.IconTexturePath)) {
                     Vector2 iconDrawPositionTopLeft = UITopLeft + new Vector2(226f, 56f) * UIScale;
                     Texture2D iconTexture = CWRUtils.GetT2DAsset(EnchantmentHandler.SelectedEnchantment.Value.IconTexturePath).Value;
@@ -316,7 +285,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
                 }
             }
 
-            //附魔按钮
             if (isHoveringOverEnchantIcon && !EnchantmentHandler.IsEnchanting) {
                 if (Main.mouseLeft && Main.mouseLeftRelease) {
                     InteractWithEnchantIcon();
@@ -324,7 +292,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
                 }
             }
 
-            //绘制附魔进度
             if (EnchantmentHandler.IsEnchanting) {
                 DrawEnchantProgress(spriteBatch, UIHitBox);
             }
@@ -333,7 +300,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
         #region 绘制函数
 
         private void DrawToggleButton(SpriteBatch spriteBatch, Rectangle panelRect) {
-            //按钮位置在面板右上角
             int buttonSize = 24;
             Rectangle buttonRect = new Rectangle(
                 panelRect.Right - buttonSize - 8,
@@ -344,7 +310,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
 
             bool isHovering = MouseHitBox.Intersects(buttonRect);
 
-            //绘制按钮背景
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Color buttonBg = isHovering ? new Color(255, 140, 70) * 0.6f : new Color(180, 60, 30) * 0.5f;
 
@@ -354,7 +319,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
 
             spriteBatch.Draw(pixel, buttonRect, buttonBg);
 
-            //绘制按钮边框
             int borderWidth = 2;
             Color borderColor = new Color(255, 200, 120) * 0.8f;
             spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, buttonRect.Width, borderWidth), borderColor);
@@ -362,7 +326,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
             spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, borderWidth, buttonRect.Height), borderColor);
             spriteBatch.Draw(pixel, new Rectangle(buttonRect.Right - borderWidth, buttonRect.Y, borderWidth, buttonRect.Height), borderColor);
 
-            //绘制箭头图标
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             string arrowText = IsCollapsed ? "►" : "◄";
             Vector2 textSize = font.MeasureString(arrowText);
@@ -370,29 +333,24 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
 
             Utils.DrawBorderString(spriteBatch, arrowText, textPos, Color.White, 1f);
 
-            //折叠按钮
             if (isHovering && Main.mouseLeft && Main.mouseLeftRelease && ToggleButtonClickCountdown <= 0f) {
                 IsCollapsed = !IsCollapsed;
                 ToggleButtonClickCountdown = 15f;
                 SoundEngine.PlaySound(SoundID.MenuTick);
             }
 
-            //显示悬停提示
             if (isHovering) {
                 Main.instance.MouseText(IsCollapsed ? ExpandHint.Value : CollapseHint.Value);
             }
         }
 
         private void DrawCollapsedContent(SpriteBatch spriteBatch, Rectangle panelRect, float lerpProgress) {
-            //折叠状态下显示简化的火焰效果和提示文字
             float alpha = 1f - lerpProgress * 0.5f;
 
-            //绘制简化粒子
             foreach (var ember in embers.Take(5)) {
                 ember.Draw(spriteBatch, alpha * 0.5f);
             }
 
-            //显示标题
             if (lerpProgress < 0.8f) {
                 DynamicSpriteFont font = FontAssets.MouseText.Value;
                 string text = EnchantTitle.Value;
@@ -410,7 +368,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
         private void DrawBrimstoneBackground(SpriteBatch spriteBatch, Rectangle panelRect) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //阴影效果
             Rectangle shadow = panelRect;
             shadow.Offset(7, 9);
             spriteBatch.Draw(pixel, shadow, new Rectangle(0, 0, 1, 1), new Color(20, 0, 0) * 0.65f);
@@ -426,7 +383,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
             float glowPulse = (float)Math.Sin(emberGlowTimer * 1.5f) * 0.5f + 0.5f;
             DrawBrimstoneFrame(spriteBatch, panelRect, glowPulse);
 
-            //只在展开状态绘制完整粒子
+            //展开态才画全粒子
             if (CollapseProgress < 0.5f) {
                 foreach (var ash in ashes) {
                     ash.Draw(spriteBatch, 0.7f * (1f - CollapseProgress * 2f));
@@ -494,7 +451,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
         }
 
         private void DrawEnchantProgress(SpriteBatch spriteBatch, Rectangle panelRect) {
-            //绘制进度条
             float progress = EnchantmentHandler.EnchantProgress / EnchantmentHandler.EnchantDuration;
             Rectangle progressBarBg = new Rectangle(
                 panelRect.X + 50,
@@ -503,14 +459,11 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
                 20
             );
 
-            //进度条背景
             spriteBatch.Draw(VaultAsset.placeholder2.Value, progressBarBg, new Color(30, 10, 5) * 0.8f);
 
-            //进度条填充
             Rectangle progressBarFill = progressBarBg;
             progressBarFill.Width = (int)((int)(progressBarFill.Width * progress) * 5.25f);
 
-            //绘制火焰渐变进度条
             int segments = 10;
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
@@ -530,7 +483,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
                 spriteBatch.Draw(VaultAsset.placeholder2.Value, segment, fillColor);
             }
 
-            //绘制进度文本
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             string progressText = $"{(int)(progress * 100)}%";
             Vector2 textSize = font.MeasureString(progressText);
@@ -547,7 +499,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
             Texture2D itemSlotTexture = CalamitasCurseItemSlot.Value;
             Texture2D enchantIconTexture = CalamitasCurseUI_Button.Value;
 
-            //增大物品槽和按钮的缩放
             Vector2 itemSlotScale = scale * 1.5f;
             Vector2 enchantButtonScale = scale * 1.5f;
 
@@ -558,7 +509,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
                 (int)(enchantIconTexture.Height * enchantButtonScale.Y)
             );
 
-            //检测鼠标悬停
             if (MouseHitBox.Intersects(enchantIconArea) && !EnchantmentHandler.IsEnchanting) {
                 enchantIconTexture = CalamitasCurseUI_ButtonHovered.Value;
                 isHoveringOverEnchantIcon = true;
@@ -576,7 +526,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
 
             spriteBatch.Draw(itemSlotTexture, itemSlotDrawPosition, null, Color.White, 0f, Vector2.Zero, itemSlotScale, SpriteEffects.None, 0f);
 
-            //绘制物品
             if (!EnchantmentHandler.CurrentItem.IsAir) {
                 float inventoryScale = Main.inventoryScale;
                 Texture2D itemTexture = TextureAssets.Item[EnchantmentHandler.CurrentItem.type].Value;
@@ -585,7 +534,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
                 if (hasMultipleFrames)
                     itemFrame = Main.itemAnimations[EnchantmentHandler.CurrentItem.type].GetFrame(itemTexture);
 
-                float baseScale = UIScale * 1.5f; //增大物品显示
+                float baseScale = UIScale * 1.5f;
 
                 float itemScale = 1f;
                 if (itemFrame.Width > 36 || itemFrame.Height > 36)
@@ -613,7 +562,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
             if (BottomButtonClickCountdown > 0f)
                 bottomArrowTexture = CalamitasCurseUI_ArrowDownClicked.Value;
 
-            //增大箭头按钮缩放
             Vector2 arrowScale = scale * 1.5f;
 
             Rectangle topButtonArea = new Rectangle((int)topButtonTopLeft.X, (int)topButtonTopLeft.Y, (int)(topArrowTexture.Width * arrowScale.X), (int)(topArrowTexture.Height * arrowScale.Y));
@@ -649,7 +597,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
             if (!EnchantmentHandler.SelectedEnchantment.HasValue)
                 return;
 
-            //增大附魔名称字体
             Vector2 scale = new Vector2(1.0f, 0.95f) * UIScale;
             string enchName = EnchantmentHandler.SelectedEnchantment.Value.Name.ToString();
             float textWidth = FontAssets.MouseText.Value.MeasureString(enchName).X * scale.X;
@@ -663,7 +610,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
                 return;
 
             Vector2 vectorDrawPosition = descriptionDrawPositionTopLeft.ToVector2();
-            //增大描述文字大小
             Vector2 scale = new Vector2(0.95f, 0.95f) * MathHelper.Clamp(UIScale, 0.85f, 1f) * UIScale;
 
             string unifiedDescription = EnchantmentHandler.SelectedEnchantment.Value.Description.ToString().Replace("\n", " ");
@@ -672,13 +618,11 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
                     continue;
 
                 ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, line, vectorDrawPosition, Color.Orange, 0f, Vector2.Zero, scale);
-                //增加行间距
                 vectorDrawPosition.Y += UIScale * 20f;
             }
         }
 
         private static void DrawIcon(SpriteBatch spriteBatch, Vector2 drawPositionTopLeft, Texture2D texture) {
-            //增大图标缩放
             spriteBatch.Draw(texture, drawPositionTopLeft, null, Color.White, 0f, Vector2.Zero, UIScale * 1.3f, SpriteEffects.None, 0f);
         }
 
@@ -712,18 +656,13 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
             if (!EnchantmentHandler.SelectedEnchantment.HasValue)
                 return;
 
-            //开始炼铸
             EnchantmentHandler.StartEnchanting(player);
         }
 
         private static void OnEnchantStart(Item item, CWRRef.EnchantmentWrapper enchantment) {
-            //炼铸开始时的额外逻辑
-            //我暂时想不到有什么需要做的
         }
 
         private static void OnEnchantComplete(Item item, CWRRef.EnchantmentWrapper enchantment) {
-            //炼铸完成时的额外逻辑
-            //我暂时想不到有什么需要做的
         }
 
         #endregion

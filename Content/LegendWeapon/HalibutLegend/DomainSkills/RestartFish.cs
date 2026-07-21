@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             //阶段性运动
             if (LifeProgress < 0.6f) {
-                //阶段1：向玩家中心高速冲刺 + 螺旋
+                //阶段1、冲向玩家中心+螺旋
                 spiralAngle += rotationSpeed;
                 Vector2 spiralOffset = new Vector2(
                     (float)Math.Cos(spiralAngle) * spiralRadius * (1f - LifeProgress),
@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 Velocity = Vector2.Lerp(Velocity, (toTarget * 20f) + spiralOffset * 0.3f, 0.15f);
             }
             else {
-                //阶段2：环绕玩家快速旋转
+                //阶段2、环绕玩家快旋
                 float orbitAngle = LifeProgress * MathHelper.TwoPi * 3f + spiralAngle;
                 float orbitRadius = 50f * (1f - (LifeProgress - 0.6f) / 0.4f);
                 Vector2 orbitPos = playerCenter + orbitAngle.ToRotationVector2() * orbitRadius;

@@ -12,10 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
 {
-    /// <summary>
-    /// 投掷者UI
-    /// 废土科技风格的控制面板
-    /// </summary>
+    /// <summary>投掷者控制面板</summary>
     internal class ThrowerUI : UIHandle, ILocalizedModType
     {
         //面板尺寸
@@ -37,7 +34,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
 
         public static ThrowerUI Instance => UIHandleLoader.GetUIHandleOfType<ThrowerUI>();
 
-        //淡入淡出进度由基类 OpenProgress 驱动，Active 沿用基类默认实现(IsOpen || OpenProgress > 0)
+        //淡入淡出走基类 OpenProgress；Active默认(IsOpen||进度>0)
         private float uiFadeAlpha => OpenProgress.Current;
 
         //拖拽功能
@@ -144,7 +141,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
                 return;
             }
 
-            //处理拖拽
+            //拖拽
             HandleDragging();
 
             //限制面板位置
@@ -233,10 +230,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
                 player.mouseInterface = true;
             }
 
-            //处理按钮点击
+            //按钮点击
             HandleButtonClicks();
 
-            //处理物品槽交互
+            //物品槽交互
             HandleSlotInteraction();
 
             //更新粒子
@@ -951,9 +948,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
 
     #region 粒子类
 
-    /// <summary>
-    /// 投掷器电火花粒子
-    /// </summary>
+    /// <summary>投掷器电火花</summary>
     internal class ThrowerSparkPRT
     {
         public Vector2 Position;
@@ -988,9 +983,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
         }
     }
 
-    /// <summary>
-    /// 投掷器数据流粒子
-    /// </summary>
+    /// <summary>投掷器数据流</summary>
     internal class ThrowerDataPRT
     {
         public Vector2 Position;

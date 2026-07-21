@@ -10,7 +10,7 @@ using Terraria.Localization;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
 {
     /// <summary>
-    /// 领域之眼图鉴视图：九眼轨道 + 中心核，按激活序计层
+    /// 领域之眼图鉴、九眼轨道+中心核，按激活序计层
     /// 第十眼需九眼全开且满足时代唯一条件
     /// 文案沿用旧 DomainUI 本地化键
     /// </summary>
@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 : !wasActive ? HalibutTheme.Glow : HalibutTheme.Disabled;
             particles.SpawnBurst(eyePos, burst, 12, 3.2f);
             if (!wasActive) {
-                //激活：光粒飞向中心 + 抵达脉冲
+                //激活、光粒飞中心+脉冲
                 particles.SpawnFlyingMote(eyePos, center,
                     () => particles.SpawnRingPulse(center, HalibutTheme.Glow, 70f, 3f));
             }
@@ -223,7 +223,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 DrawWavyRing(sb, center, radius, rot, ringCol * (0.34f * alpha), i);
             }
 
-            //连接丝线：中心到每只激活眼
+            //丝线、中心到激活眼
             foreach (SeaEyeState eye in save.activationSequence) {
                 if (!eye.IsActive) {
                     continue;

@@ -6,7 +6,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.Cyberwares.UIs
 {
-    /// <summary>义体面板渲染：着色器底/装饰/标题/故障/关闭钮</summary>
+    /// <summary>面板，着色器底/装饰/标题/故障/关闭钮</summary>
     internal class CyberPanelRenderer
     {
         #region 动画状态
@@ -20,12 +20,10 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         #region 公共方法
 
-        /// <summary>触发故障干扰</summary>
         public void TriggerGlitch(float intensity) {
             glitchIntensity = MathHelper.Clamp(intensity, 0, 1);
         }
 
-        /// <summary>推进扫描线/故障计时</summary>
         public void Update() {
             scanLinePhase += 0.025f;
             if (scanLinePhase > MathHelper.TwoPi) scanLinePhase -= MathHelper.TwoPi;
@@ -79,7 +77,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
         }
 
-        /// <summary>四角括号+顶脉冲条+边线，CPU 锐利装饰</summary>
+        /// <summary>四角括号+顶脉冲+边线</summary>
         public static void DrawFrameDecor(SpriteBatch sb, float alpha, Rectangle panelRect, float globalTimer) {
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) return;

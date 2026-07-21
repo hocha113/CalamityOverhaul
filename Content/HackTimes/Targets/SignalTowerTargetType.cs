@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.HackTimes.Targets
 {
-    /// <summary>信号塔目标工厂，优先级高于炮台</summary>
+    /// <summary>信号塔目标，优先高于炮台</summary>
     internal class SignalTowerTargetType : HackTargetType
     {
         public override HackTargetKind Kind => HackTargetKind.SignalTower;

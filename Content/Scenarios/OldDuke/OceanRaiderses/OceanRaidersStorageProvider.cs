@@ -7,9 +7,7 @@ using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
 {
-    /// <summary>
-    /// 海洋吞噬者存储提供者工厂
-    /// </summary>
+    /// <summary>海洋吞噬者存储工厂</summary>
     internal class OceanRaidersStorageProviderFactory : IStorageProviderFactory
     {
         public string Identifier => "CWR.OceanRaiders";
@@ -28,7 +26,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
         }
     }
 
-    /// <summary>海洋吞噬者的存储提供者</summary>
+    /// <summary>海洋吞噬者存储</summary>
     internal class OceanRaidersStorageProvider : IStorageProvider
     {
         private readonly OceanRaidersTP _machineTP;
@@ -55,7 +53,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                 if (_machineTP == null) {
                     return false;
                 }
-                //通过TileProcessorLoader验证TP是否仍然有效
                 return TileProcessorLoader.AutoPositionGetTP(_position, out OceanRaidersTP tp) && tp == _machineTP;
             }
         }
@@ -65,11 +62,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                 if (!IsValid) {
                     return false;
                 }
-                //检查是否有空槽位
                 if (_machineTP.storedItems.Count < OceanRaidersTP.maxStorageSlots) {
                     return true;
                 }
-                //检查是否有可堆叠的空间
                 foreach (var item in _machineTP.storedItems) {
                     if (item == null || item.IsAir) {
                         return true;
@@ -87,11 +82,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
             _position = machineTP?.Position ?? Point16.NegativeOne;
         }
 
-        /// <summary>
-
-        /// 从位置查找OceanRaidersTP并创建存储提供者
-
-        /// </summary>
         public static OceanRaidersStorageProvider FromPosition(Point16 position) {
             if (!TileProcessorLoader.AutoPositionGetTP(position, out OceanRaidersTP tp)) {
                 return null;
@@ -99,11 +89,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
             return new OceanRaidersStorageProvider(tp);
         }
 
-        /// <summary>
-
-        /// 在指定范围内查找最近的OceanRaidersTP
-
-        /// </summary>
         public static OceanRaidersStorageProvider FindNearPosition(Point16 position, int range, Item item) {
             float rangeSQ = range * range;
             OceanRaidersTP nearestTP = null;
@@ -123,7 +108,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                     continue;
                 }
 
-                //检查是否可以存入物品
                 var provider = new OceanRaidersStorageProvider(tp);
                 if (item.Alives() && !provider.CanAcceptItem(item)) {
                     continue;
@@ -161,7 +145,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
                 return false;
             }
 
-            //尝试堆叠到现有物品
             foreach (var stored in _machineTP.storedItems) {
                 if (stored.type == item.type && stored.stack < stored.maxStack) {
                     int addAmount = Math.Min(item.stack, stored.maxStack - stored.stack);

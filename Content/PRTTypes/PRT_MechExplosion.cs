@@ -4,17 +4,16 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>机械殉爆光团，SoftGlow 多层白热核心+冲击环，纯客户端 Additive</summary>
+    /// <summary>机械殉爆光团，SoftGlow 多层+冲击环，客户端 Additive</summary>
     internal class PRT_MechExplosion : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "SoftGlow";
         public override bool CanPool => true;
         public override int InGame_World_MaxCount => 3000;
 
-        //暖色火球基调（白热衰退后的主色）
         private Color warmColor = new(255, 130, 40);
 
-        /// <summary>配置爆炸光团，规模由 <see cref="BasePRT.Scale"/> 决定</summary>
+        /// <summary>规模看 <see cref="BasePRT.Scale"/></summary>
         public PRT_MechExplosion Configure(int lifetime, Color warm) {
             Lifetime = lifetime;
             warmColor = warm;
@@ -34,7 +33,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         }
 
         public override void AI() {
-            //冲击后迅速失速并轻微自转，营造滞空火球感
             Velocity *= 0.9f;
             Rotation += 0.02f;
         }
@@ -51,31 +49,31 @@ namespace CalamityOverhaul.Content.PRTTypes
             Vector2 starOrigin = star.Size() / 2f;
             Vector2 ringOrigin = ring.Size() / 2f;
 
-            //颜色阶段：起始白热 → 暖橙 → 暗红余烬
+            //白热→暖橙→余烬
             Color whiteHot = Color.Lerp(Color.White, warmColor, Saturate(t / 0.25f));
             Color ember = Color.Lerp(warmColor, new Color(70, 14, 10), Saturate((t - 0.25f) / 0.75f));
 
-            //核心尺寸：前 20% 急速膨胀到峰值，之后缓慢收缩
+            //前20%急胀后缓收
             float expand = t < 0.2f ? t / 0.2f : 1f;
             float shrink = t < 0.2f ? 1f : 1f - (t - 0.2f) / 0.8f * 0.5f;
             float coreSize = Scale * (0.5f + expand * shrink * 1.3f);
 
-            //1) 大范围暖色外晕
+            //外晕
             spriteBatch.Draw(glow, drawPos, null, ember * (0.5f * fade), Rotation, glowOrigin, coreSize * 2.2f, SpriteEffects.None, 0f);
-            //2) 火球中层
+            //中层
             spriteBatch.Draw(glow, drawPos, null, Color.Lerp(whiteHot, ember, 0.4f) * (0.8f * fade), Rotation, glowOrigin, coreSize * 1.25f, SpriteEffects.None, 0f);
-            //3) 白热核心（生命前段最亮）
+            //白热核
             float coreAlpha = Saturate(1f - t / 0.5f);
             spriteBatch.Draw(glow, drawPos, null, whiteHot * (0.95f * coreAlpha), Rotation, glowOrigin, coreSize * 0.65f, SpriteEffects.None, 0f);
 
-            //4) 十字星闪（仅生命前段，快速淡出）
+            //前段星闪
             float flashAlpha = Saturate(1f - t / 0.35f);
             if (flashAlpha > 0.001f) {
                 float starScale = Scale * 0.22f * (0.6f + flashAlpha * 0.6f);
                 spriteBatch.Draw(star, drawPos, null, whiteHot * flashAlpha, Rotation * 0.5f, starOrigin, starScale, SpriteEffects.None, 0f);
             }
 
-            //5) 冲击波环（扩张淡出）
+            //冲击环
             float ringT = Saturate(t / 0.6f);
             if (ringT < 1f) {
                 float ringScale = Scale * (0.2f + ringT * 0.7f);

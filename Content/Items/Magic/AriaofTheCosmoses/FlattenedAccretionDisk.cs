@@ -10,9 +10,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
-    /// 右键·事件视界领域：蓝紫高能态黑洞架成炮台
-    /// 盘面垂直于瞄准方向,喷流轴指向鼠标;蓄满后沿轴持续点射伽马射线
-    /// rotation/ChargeProgress 由手持弹幕每帧喂入
+    /// 右键事件视界领域，蓝紫炮台
+    /// 盘面⊥瞄准，喷流指鼠标；蓄满后沿轴点射伽马
+    /// rotation/ChargeProgress 手持每帧喂入
     internal class FlattenedAccretionDisk : ModProjectile, IPrimitiveDrawable, IWarpDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private float jetPower;
         private int gammaRayTimer;
 
-        /// <summary>绘制quad边长：领域直径的2.4倍留辉光余量</summary>
+        /// <summary>quad 边长=领域直径×2.4</summary>
         private float QuadSide => Projectile.width * Projectile.scale * 2.4f;
         private float Seed => Projectile.whoAmI * 0.137f % 1f;
 
@@ -53,14 +53,13 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             fade = Math.Min(fade + 0.09f, 1f);
             Projectile.scale = MathHelper.Lerp(0.35f, 1f, ChargeProgress);
 
-            //自旋相位积分
             spinPhase += MathHelper.Lerp(1.2f, 3f, ChargeProgress) / 60f;
 
-            //喷流功率：达阈值后爬升,未达缓降
+            //喷流功率阈值爬升/缓降
             float jetTarget = ChargeProgress >= FireThreshold ? 1f : 0f;
             jetPower = MathHelper.Lerp(jetPower, jetTarget, 0.12f);
 
-            //引力拉拽领域内敌人(比左键温和,持续)
+            //领域内温和拉拽
             float pullR = QuadSide * 0.55f;
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (!npc.CanBeChasedBy(Projectile) || npc.boss || npc.knockBackResist <= 0f) {
@@ -74,7 +73,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 }
             }
 
-            //蓄满:沿喷流轴点射伽马射线
+            //蓄满沿轴点射伽马
             if (ChargeProgress >= FireThreshold) {
                 gammaRayTimer++;
                 if (gammaRayTimer >= FireInterval) {
@@ -97,7 +96,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 return;
             }
 
-            //沿盘轴(瞄准方向)发射,微散布
+            //沿盘轴微散布
             Vector2 dir = Projectile.rotation.ToRotationVector2().RotatedByRandom(0.06f);
             int damage = (int)(Projectile.damage * (0.4f + ChargeProgress * 0.35f));
 
@@ -112,7 +111,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 return;
             }
 
-            //蓝紫坠入流:贴视界的切向裂隙
             if (Projectile.timeLeft % 3 == 0 && fade > 0.5f) {
                 float hr = QuadSide * 0.075f;
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -124,7 +122,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     Main.rand.NextFloat(0.3f, 0.6f))?.Configure(Main.rand.Next(12, 22), Main.rand.NextFloat(-0.4f, 0.4f));
             }
 
-            //吸入光点
             if (Projectile.timeLeft % 6 == 0 && ChargeProgress > 0.2f) {
                 PRTLoader.NewParticle<PRT_GravityVortex>(Projectile.Center, Vector2.Zero,
                     Color.Lerp(GammaRayBeam.ColCheren, GammaRayBeam.ColCore, Main.rand.NextFloat()),
@@ -132,7 +129,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     ?.Configure(Main.rand.NextFloat(MathHelper.TwoPi), QuadSide * Main.rand.NextFloat(0.3f, 0.5f), Main.rand.Next(35, 55));
             }
 
-            //喷流工作时:沿轴电离飞沫
             if (jetPower > 0.3f && Main.rand.NextBool(2)) {
                 Vector2 dir = Projectile.rotation.ToRotationVector2();
                 Vector2 pos = Projectile.Center + dir * Main.rand.NextFloat(20f, QuadSide * 0.4f)
@@ -149,7 +145,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             }
             SoundEngine.PlaySound(SoundID.Item92 with { Volume = 0.6f, Pitch = 0.2f }, Projectile.Center);
 
-            //领域坍缩:蓝紫裂隙内爆
             int count = (int)(18 * Projectile.scale) + 8;
             for (int i = 0; i < count; i++) {
                 Vector2 spawn = Projectile.Center + Main.rand.NextVector2Circular(1f, 1f) * QuadSide * 0.35f;
@@ -160,7 +155,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             }
         }
 
-        //=================== 绘制 ===================
 
         public override bool PreDraw(ref Color lightColor) => false;
         public bool CanDrawCustom() => false;
@@ -192,7 +186,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             float side = QuadSide;
             Vector2 texHalf = white.Size() * 0.5f;
             Vector2 quadScale = new(side / white.Width, side / white.Height);
-            //quad 局部-y轴对准瞄准方向:喷流指向鼠标,盘面垂直于瞄准
+            //local-y 对准瞄准
             float quadRot = Projectile.rotation + MathHelper.PiOver2;
 
             Matrix finalMatrix = Main.GameViewMatrix.TransformationMatrix
@@ -227,7 +221,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             effect.Parameters["uPalShift"]?.SetValue(1f);
             effect.Parameters["noiseTexture"]?.SetValue(noise);
 
-            //Pass1:暗背板+视界
+            //Pass1 暗背板+视界
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             effect.CurrentTechnique = effect.Techniques["Backdrop"];
@@ -235,7 +229,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             sb.Draw(white, drawPos, null, Color.White, quadRot, texHalf, quadScale, SpriteEffects.None, 0);
             sb.End();
 
-            //Pass2:发光层
+            //Pass2 发光层
             sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             effect.CurrentTechnique = effect.Techniques["Glow"];

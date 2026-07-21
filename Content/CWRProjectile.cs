@@ -12,25 +12,15 @@ namespace CalamityOverhaul.Content
 {
     public struct HitAttributeStruct
     {
-        /// <summary>
-        /// 设置为<see langword="true"/>必定暴击
-        /// </summary>
+        /// <summary>强制暴击</summary>
         public bool CertainCrit;
-        /// <summary>
-        /// 设置为<see langword="true"/>必定不暴击，如果启用，会覆盖<see cref="CertainCrit"/>的设置
-        /// </summary>
+        /// <summary>强制不暴击，覆盖 <see cref="CertainCrit"/></summary>
         public bool NeverCrit;
-        /// <summary>
-        /// 是否无视护甲
-        /// </summary>
+        /// <summary>无视护甲</summary>
         public bool OnHitBlindArmor;
-        /// <summary>
-        /// 是否是一次超级攻击
-        /// </summary>
+        /// <summary>超级攻击</summary>
         public bool SuperAttack;
-        /// <summary>
-        /// 蠕虫抗性衰减系数，默认为0.0f，即对不启用，如果设置为大于0的数则会换算成百分比进行伤害缩放，比如0.15f，则只造成15%伤害
-        /// </summary>
+        /// <summary>蠕虫伤害系数，0=关，0.15=15%</summary>
         public float WormResistance = 0f;
 
         public HitAttributeStruct() { }
@@ -39,37 +29,21 @@ namespace CalamityOverhaul.Content
     public class CWRProjectile : GlobalProjectile
     {
         public override bool InstancePerEntity => true;
-        /// <summary>
-        /// 是否不受特殊效果影响（如脉冲箭等）
-        /// </summary>
+        /// <summary>免疫脉冲箭等特殊效果</summary>
         public bool NotSubjectToSpecialEffects;
-        /// <summary>
-        /// 是否具有穿甲抗性
-        /// </summary>
+        /// <summary>穿甲抗性</summary>
         public bool PierceResist;
-        /// <summary>
-        /// 弹幕的发射源类型
-        /// </summary>
+        /// <summary>发射源类型</summary>
         public byte SpanTypes;
-        /// <summary>
-        /// 如果大于0，将停止该实体的大部分活动以模拟冻结效果
-        /// </summary>
+        /// <summary>&gt;0 冻结大部分活动</summary>
         public int TimeFrozenTick;
-        /// <summary>
-        /// 如果大于0，该弹幕会在达到这个时间时自杀
-        /// </summary>
+        /// <summary>&gt;0 时 Timer 达到即 Kill</summary>
         public int TimeToDeath;
-        /// <summary>
-        /// 弹幕的计时器
-        /// </summary>
+        /// <summary>计时器</summary>
         public int Timer;
-        /// <summary>
-        /// 弹幕的命中属性
-        /// </summary>
+        /// <summary>命中属性</summary>
         public HitAttributeStruct HitAttribute;
-        /// <summary>
-        /// 弹幕的发射源
-        /// </summary>
+        /// <summary>发射源</summary>
         public IEntitySource Source;
         internal int DyeItemID;
         internal bool SendDyeItemID;
@@ -123,22 +97,22 @@ namespace CalamityOverhaul.Content
 
         public void SendProjectileDyeItemID(Projectile projectile) {
             if (VaultUtils.isSinglePlayer) {
-                return;//单人模式不需要发包
+                return;//单人跳过
             }
             if (DyeItemID <= ItemID.None) {
-                return;//没有染色的也不需要发包
+                return;//无染色跳过
             }
             if (!projectile.IsOwnedByLocalPlayer()) {
-                return;//只让主人端发包
+                return;//仅 owner 端
             }
             if (SendDyeItemID) {
-                return;//已经发过包的不要再发包
+                return;//已发过
             }
 
             SendDyeItemID = true;
             ModPacket modPacket = CWRMod.Instance.GetPacket();
             modPacket.Write((byte)CWRMessageType.ProjectileDyeItemID);
-            //这几个数都不太可能超过60000，所以转化成ushort发送节省性能
+            //identity/type/dye 用 ushort 省带宽
             modPacket.Write((ushort)projectile.identity);
             modPacket.Write((ushort)projectile.type);
             modPacket.Write((ushort)DyeItemID);
@@ -166,10 +140,10 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool PreAI(Projectile projectile) {
-            SendProjectileDyeItemID(projectile);//在AI中发送一次染色数据，在这里identity等数据已经分配好了
+            SendProjectileDyeItemID(projectile);//AI 时 identity 已就绪，发一次染色
 
             if (TimeToDeath > 0 && Timer >= TimeToDeath) {
-                projectile.timeLeft = 0;//标记为自然死亡
+                projectile.timeLeft = 0;//自然死亡
                 projectile.Kill();
                 projectile.netUpdate = true;
             }
@@ -275,7 +249,7 @@ namespace CalamityOverhaul.Content
 
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
             if (!projectile.owner.TryGetPlayer(out var owner)) {
-                return;//不是本地玩家发出的弹幕不处理
+                return;//非本地 owner 跳过
             }
 
             SuperAttackOnHitNPC(projectile, target);

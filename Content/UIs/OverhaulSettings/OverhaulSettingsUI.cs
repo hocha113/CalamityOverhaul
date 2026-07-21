@@ -35,32 +35,26 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public static LocalizedText DensityEverywhereText { get; private set; }
         public static LocalizedText DensityTooltipText { get; private set; }
 
-        //UI控制
         internal bool _active;
         private float _sengs;
         private float contentFade;
         private bool closing;
         private float hideProgress;
 
-        //动画时间轴
         private float globalTime;
         private float panelSlideOffset;
         private float panelScaleAnim;
         private float breatheAnim;
         private float shimmerPhase;
 
-        //关闭按钮动画
         private float closeHoverAnim;
         private float closePressAnim;
 
-        //粒子系统
         private readonly List<SettingsParticle> particles = [];
         private float particleSpawnTimer;
 
-        //面板尺寸
         private static float PanelWidth => Main.screenWidth * 0.6f;
         private static float PanelHeight => Main.screenHeight * 0.8f;
-        //布局常量
         private const float Padding = 24f;
         private const float ButtonHeight = 42f;
         private const float ButtonWidth = 130f;
@@ -70,23 +64,19 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         private const float ToggleRowHeight = 34f;
         private const float ToggleBoxSize = 22f;
 
-        //按钮
         private Rectangle closeButtonRect;
         private bool hoveringClose;
 
-        //分类列表
         private readonly List<SettingsCategory> categories = [];
         private bool categoriesInitialized;
         private Rectangle scrollAreaRect;
 
-        //当前展开的分类索引(-1表示无)
+        //-1=无展开分类
         private int expandedCategoryIndex = -1;
 
-        //悬浮提示
         private string hoverTooltip;
         private Vector2 hoverTooltipPos;
 
-        //粒子结构
         private struct SettingsParticle
         {
             public Vector2 Position;
@@ -99,7 +89,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             public Color BaseColor;
         }
 
-        //设置项开关
         internal class SettingToggle
         {
             public string ConfigPropertyName;
@@ -110,9 +99,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             public float ToggleAnim;
             public Rectangle HitBox;
             public bool Hovering;
-            /// <summary>
-            /// 关联物品ID，绘图标
-            /// </summary>
+            /// <summary>关联物品ID，绘图标</summary>
             public int ItemType = 0;
         }
 
@@ -188,7 +175,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public override void Update() {
             globalTime += 0.016f;
 
-            //淡入淡出
             if (_active && !closing) {
                 if (_sengs < 1f) {
                     _sengs += 0.25f;
@@ -227,15 +213,12 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
             InitializeCategories();
 
-            //面板滑入动画
             float targetSlide = _active && !closing ? 0f : 20f;
             panelSlideOffset += (targetSlide - panelSlideOffset) * 0.35f;
 
-            //面板缩放动画
             float targetScale = _active && !closing ? 1f : 0.92f;
             panelScaleAnim += (targetScale - panelScaleAnim) * 0.3f;
 
-            //内容淡入
             if (_sengs > 0.3f && !closing) {
                 contentFade += (1f - contentFade) * 0.3f;
             }
@@ -244,19 +227,15 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             }
             contentFade = Math.Clamp(contentFade, 0f, 1f);
 
-            //呼吸动画
             breatheAnim = MathF.Sin(globalTime * 1.5f) * 0.5f + 0.5f;
             shimmerPhase = globalTime * 2f;
 
-            //按钮动画
             float hoverSpeed = 0.3f;
             closeHoverAnim += ((hoveringClose ? 1f : 0f) - closeHoverAnim) * hoverSpeed;
             closePressAnim *= 0.7f;
 
-            //更新粒子
             UpdateParticles();
 
-            //生成新粒子
             if (_sengs > 0.3f && !closing) {
                 particleSpawnTimer += 1f;
                 if (particleSpawnTimer > 4f) {
@@ -265,7 +244,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 }
             }
 
-            //计算面板位置(居中)
             float scaledWidth = PanelWidth * panelScaleAnim;
             float scaledHeight = PanelHeight * panelScaleAnim;
             Vector2 panelCenter = new(Main.screenWidth / 2f, Main.screenHeight / 2 + panelSlideOffset);
@@ -274,13 +252,11 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             UIHitBox = new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, (int)scaledWidth, (int)scaledHeight);
             hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
 
-            //悬停检测
             hoveringClose = closeButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
 
-            //清除悬浮提示
             hoverTooltip = null;
 
-            //展开分类内容区命中(遮挡层级)
+            //展开区命中(遮挡层级)
             int expandedContentOwner = -1;
             for (int i = 0; i < categories.Count; i++) {
                 var cat = categories[i];
@@ -291,26 +267,24 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 }
             }
 
-            //更新所有分类
             bool anyExpanded = false;
             for (int i = 0; i < categories.Count; i++) {
                 var cat = categories[i];
-                //分类按钮悬停：如果鼠标被另一个分类的展开内容遮挡，则不判定悬停
+                //被他类展开区遮挡则不悬停
                 bool blocked = expandedContentOwner >= 0 && expandedContentOwner != i;
                 cat.HoveringCategory = !blocked && cat.CategoryHitBox.Contains(MouseHitBox) && contentFade > 0.5f;
                 cat.Update(contentFade, hoverInMainPage, MouseHitBox, MousePosition, scrollAreaRect);
                 if (cat.Expanded) anyExpanded = true;
-                //收集悬浮提示
                 if (cat.HoverTooltip != null && hoverTooltip == null) {
                     hoverTooltip = cat.HoverTooltip;
                     hoverTooltipPos = cat.HoverTooltipPos;
                 }
             }
 
-            //确保同时只有一个分类展开
+            //同时仅一分类展开
             for (int i = 0; i < categories.Count; i++) {
                 if (categories[i].Expanded && i != expandedCategoryIndex) {
-                    //新的分类展开了，折叠旧的
+                    //新展开则折旧
                     if (expandedCategoryIndex >= 0 && expandedCategoryIndex < categories.Count) {
                         categories[expandedCategoryIndex].Expanded = false;
                         categories[expandedCategoryIndex].ScrollTarget = 0f;
@@ -321,7 +295,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             }
             if (!anyExpanded) expandedCategoryIndex = -1;
 
-            //点击处理
             if (keyLeftPressState == KeyPressState.Pressed && contentFade > 0.8f) {
                 if (hoveringClose) {
                     closePressAnim = 1f;
@@ -334,7 +307,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 }
             }
 
-            //ESC关闭
             if (OnActive()) {
                 KeyboardState currentKeyState = Main.keyState;
                 KeyboardState previousKeyState = Main.oldKeyState;
@@ -401,18 +373,14 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
             float alpha = _sengs;
 
-            //绘制粒子(在面板后面)
             DrawParticles(spriteBatch, alpha);
 
-            //绘制主面板
             DrawPanel(spriteBatch, alpha);
 
-            //绘制内容
             if (contentFade > 0.01f) {
                 DrawContent(spriteBatch, alpha * contentFade);
             }
 
-            //绘制悬浮提示(最上层)
             if (hoverTooltip != null && contentFade > 0.5f) {
                 DrawTooltip(spriteBatch, hoverTooltip, hoverTooltipPos, alpha * contentFade);
             }
@@ -439,7 +407,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         private void DrawPanel(SpriteBatch spriteBatch, float alpha) {
             Rectangle panelRect = UIHitBox;
 
-            //多层阴影
             for (int i = 4; i >= 1; i--) {
                 Rectangle shadowRect = panelRect;
                 shadowRect.Offset(i * 2, i * 3);
@@ -447,26 +414,22 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 DrawRoundedRect(spriteBatch, shadowRect, Color.Black * shadowAlpha, CornerRadius + i);
             }
 
-            //背景渐变(深红色严肃质感)
+            //深红背景渐变
             Color bgTop = new Color(30, 12, 12);
             Color bgBottom = new Color(50, 18, 18);
             DrawGradientRoundedRect(spriteBatch, panelRect, bgTop * (alpha * 0.97f), bgBottom * (alpha * 0.97f), CornerRadius);
 
-            //内发光效果
             float innerGlowIntensity = 0.12f + breatheAnim * 0.08f;
             DrawInnerGlow(spriteBatch, panelRect, new Color(160, 50, 50) * (alpha * innerGlowIntensity), CornerRadius, 18);
 
-            //流光边框
             DrawAnimatedBorder(spriteBatch, panelRect, alpha);
 
-            //顶部标题栏分割
             int titleBarBottom = panelRect.Y + (int)(TitleBarHeight * panelScaleAnim);
             float highlightAlpha = 0.5f + breatheAnim * 0.2f;
             Rectangle highlightBar = new(panelRect.X + 15, titleBarBottom, panelRect.Width - 30, 2);
             DrawHorizontalGradient(spriteBatch, highlightBar,
                 Color.Transparent, new Color(200, 60, 60) * (alpha * highlightAlpha), Color.Transparent);
 
-            //角落装饰
             DrawCornerOrnaments(spriteBatch, panelRect, alpha);
         }
 
@@ -545,7 +508,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float scale = panelScaleAnim;
 
-            //标题(居中)
             string title = TitleText.Value;
             Vector2 titleMeasure = FontAssets.MouseText.Value.MeasureString(title) * scale * 1.1f;
             Vector2 titlePos = new Vector2(
@@ -563,7 +525,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             Color titleColor = Color.Lerp(new Color(240, 200, 200), new Color(220, 100, 100), breatheAnim * 0.3f);
             Utils.DrawBorderString(spriteBatch, title, titlePos, titleColor * alpha, scale * 1.1f);
 
-            //内容区域
             float contentTop = DrawPosition.Y + TitleBarHeight * scale + 10f * scale;
             float contentLeft = DrawPosition.X + Padding * scale;
             float contentWidth = Size.X - Padding * scale * 2;
@@ -572,7 +533,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
             scrollAreaRect = new Rectangle((int)contentLeft, (int)contentTop, (int)contentWidth, (int)contentHeight);
 
-            //绘制所有分类
             float catY = contentTop;
             foreach (var cat in categories) {
                 Rectangle catRect = new((int)contentLeft, (int)catY, (int)contentWidth, (int)(CategoryHeight * scale));
@@ -580,24 +540,23 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 DrawCategoryButton(spriteBatch, catRect, cat.Title, cat.Expanded,
                     cat.CategoryHoverAnim, alpha, scale, cat.ExpandAnim);
 
-                //未展开时清除裁剪区域，避免残留的ExpandClipRect影响层级判定
+                //未展开清ExpandClipRect，避层级误判
                 if (cat.ExpandAnim <= 0.01f) {
                     cat.ExpandClipRect = Rectangle.Empty;
                 }
 
-                //展开的设置项列表
                 if (cat.ExpandAnim > 0.01f) {
                     float easedExpand = EaseOutQuad(cat.ExpandAnim);
 
-                    //展开高度由动画驱动，统一控制裁剪和布局
+                    //展开高由动画驱动
                     float expandedH = cat.GetExpandedHeight(scale);
                     float actionBarHeight = cat.ActionButtons.Count > 0 ? 36f * scale : 0f;
 
-                    //整个展开区域的裁剪范围(包含操作按钮和列表)
+                    //展开区裁剪(含操作钮+列表)
                     float expandAreaTop = catY + CategoryHeight * scale + 4f * scale;
                     float expandAreaHeight = Math.Min(expandedH, Math.Max(0f, contentBottom - expandAreaTop));
 
-                    //展开区域的容器背景(在裁剪前绘制，但尺寸受动画控制)
+                    //展开容器底，裁剪前画
                     float containerAlpha = alpha * easedExpand;
                     int containerPad = (int)(4f * scale);
                     Rectangle expandClipRect = new(
@@ -621,14 +580,13 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     DrawInnerGlow(spriteBatch, containerRect,
                         new Color(140, 45, 45) * (containerAlpha * 0.06f), 5f, 4);
 
-                    //使用RasterizerState对整个展开区域进行裁剪
+                    //RasterizerState裁剪展开区
                     spriteBatch.End();
                     Rectangle prevScissor = spriteBatch.GraphicsDevice.ScissorRectangle;
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                         DepthStencilState.None, new RasterizerState { ScissorTestEnable = true }, null, Main.UIScaleMatrix);
                     spriteBatch.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(spriteBatch, expandClipRect);
 
-                    //绘制操作按钮栏(在裁剪区域内)
                     if (cat.ActionButtons.Count > 0) {
                         float barY = expandAreaTop;
                         float barAlpha = alpha * easedExpand;
@@ -648,14 +606,11 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                         }
                     }
 
-                    //列表区域
                     float listTop = expandAreaTop + actionBarHeight + 2f * scale;
                     float listHeight = Math.Max(0f, expandAreaTop + expandAreaHeight - listTop);
 
-                    //获取可见的开关列表
                     var visibleToggles = cat.GetVisibleToggles();
 
-                    //计算总内容高度
                     float totalContentH = visibleToggles.Count * ToggleRowHeight * scale;
                     if (cat.ShowFooter) {
                         totalContentH += 30f * scale;
@@ -663,7 +618,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     cat.MaxScroll = Math.Max(0f, totalContentH - listHeight);
 
                     float itemAlpha = alpha * easedExpand;
-                    //展开/收起时内容向上滑入/滑出
+                    //展开滑入/收起滑出
                     float slideOffset = (1f - easedExpand) * 20f * scale;
                     float yPos = listTop - cat.ScrollOffset + slideOffset;
 
@@ -679,7 +634,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                         }
                     }
 
-                    //底部提示
                     if (cat.ShowFooter && !string.IsNullOrEmpty(cat.FooterHint)) {
                         float hintY = yPos + visibleToggles.Count * ToggleRowHeight * scale + 8f * scale;
                         if (hintY < listTop + listHeight) {
@@ -694,19 +648,17 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                         DepthStencilState.None, new RasterizerState { ScissorTestEnable = false }, null, Main.UIScaleMatrix);
 
-                    //滚动条绘制在裁剪外(始终可见)
+                    //滚动条画在裁剪外
                     Rectangle scrollClipRect = new((int)contentLeft, (int)listTop, (int)contentWidth, (int)listHeight);
                     if (cat.MaxScroll > 0f) {
                         DrawScrollBar(spriteBatch, scrollClipRect, alpha * cat.ExpandAnim, cat);
                     }
                 }
 
-                //下一个分类的Y位置
                 catY += CategoryHeight * scale + 4f * scale;
                 catY += cat.GetExpandedHeight(scale);
             }
 
-            //关闭按钮
             float buttonY = DrawPosition.Y + Size.Y - Padding * scale - ButtonHeight * scale;
             float buttonCenterX = DrawPosition.X + Size.X / 2f;
             float scaledButtonWidth = ButtonWidth * scale;
@@ -726,20 +678,16 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             bool expanded, float hoverAnim, float alpha, float scale, float expandAnim = 0f) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //背景
             Color bgColor = Color.Lerp(new Color(45, 18, 18), new Color(65, 25, 25), hoverAnim);
             DrawRoundedRect(spriteBatch, rect, bgColor * (alpha * 0.9f), 6f);
 
-            //边框
             Color borderColor = Color.Lerp(new Color(120, 50, 50), new Color(180, 70, 70), hoverAnim);
             DrawRoundedRectBorder(spriteBatch, rect, borderColor * (alpha * 0.7f), 6f, 1);
 
-            //展开指示箭头
             float animArrowRot = MathHelper.Lerp(0f, MathHelper.PiOver2, expandAnim);
             Vector2 arrowPos = new(rect.X + 18f * scale, rect.Y + rect.Height / 2f);
             Color arrowColor = Color.Lerp(new Color(180, 120, 120), new Color(240, 160, 160), hoverAnim) * alpha;
 
-            //三角箭头
             float arrowSize = 5f * scale;
             Vector2 p1 = arrowPos + (animArrowRot - MathHelper.PiOver4).ToRotationVector2() * arrowSize;
             Vector2 p2 = arrowPos + (animArrowRot + MathHelper.PiOver4).ToRotationVector2() * arrowSize;
@@ -748,7 +696,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             spriteBatch.Draw(pixel, arrowPos, new Rectangle(0, 0, 1, 1), arrowColor, animArrowRot + MathHelper.PiOver2,
                 new Vector2(0f, 0.5f), new Vector2(arrowSize, 2f), SpriteEffects.None, 0f);
 
-            //文字(居中显示)
             Vector2 textMeasure = FontAssets.MouseText.Value.MeasureString(text) * 0.9f * scale;
             Vector2 textPos = new(
                 rect.X + (rect.Width - textMeasure.X) / 2f,
@@ -756,7 +703,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             Color textColor = Color.Lerp(new Color(220, 180, 180), Color.White, hoverAnim);
             Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.9f * scale);
 
-            //悬停时的内发光
             if (hoverAnim > 0.01f) {
                 DrawInnerGlow(spriteBatch, rect, new Color(180, 60, 60) * (alpha * hoverAnim * 0.1f), 6f, 6);
             }
@@ -766,27 +712,22 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             float alpha, float scale, SettingsCategory category = null) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //行背景(悬停时高亮)
             if (toggle.HoverAnim > 0.01f) {
                 Color rowBg = new Color(60, 25, 25) * (alpha * toggle.HoverAnim * 0.5f);
                 spriteBatch.Draw(pixel, rect, new Rectangle(0, 0, 1, 1), rowBg);
             }
 
-            //开关盒子
             float boxSize = ToggleBoxSize * scale;
             float boxX = rect.X + 12f * scale;
             float boxY = rect.Y + (rect.Height - boxSize) / 2f;
             Rectangle boxRect = new((int)boxX, (int)boxY, (int)boxSize, (int)boxSize);
 
-            //盒子背景
             Color boxBg = Color.Lerp(new Color(35, 14, 14), new Color(50, 20, 20), toggle.HoverAnim);
             spriteBatch.Draw(pixel, boxRect, new Rectangle(0, 0, 1, 1), boxBg * alpha);
 
-            //盒子边框
             Color boxBorder = Color.Lerp(new Color(100, 45, 45), new Color(160, 65, 65), toggle.HoverAnim);
             DrawSimpleBorder(spriteBatch, boxRect, boxBorder * alpha, 1);
 
-            //勾选状态填充
             if (toggle.ToggleAnim > 0.01f) {
                 int inset = (int)(3f * scale);
                 Rectangle fillRect = new(boxRect.X + inset, boxRect.Y + inset,
@@ -795,7 +736,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 Color fillColor = Color.Lerp(new Color(160, 50, 50), new Color(200, 70, 70), toggle.HoverAnim) * (alpha * toggle.ToggleAnim);
                 spriteBatch.Draw(pixel, fillRect, new Rectangle(0, 0, 1, 1), fillColor);
 
-                //对勾
                 if (toggle.ToggleAnim > 0.5f) {
                     float checkAlpha = (toggle.ToggleAnim - 0.5f) * 2f;
                     Color checkColor = new Color(255, 220, 220) * (alpha * checkAlpha);
@@ -810,17 +750,14 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 }
             }
 
-            //子类额外绘制(如物品图标)
             category?.DrawRowExtra(spriteBatch, toggle, rect, alpha, scale);
 
-            //标签文字
             string label = category?.GetLabel(toggle) ?? toggle.ConfigPropertyName;
             float labelOffset = category?.GetLabelOffsetX(scale) ?? 0f;
             Vector2 textPos = new(boxX + boxSize + 10f * scale + labelOffset, rect.Y + rect.Height / 2f - 9f * scale);
             Color textColor = Color.Lerp(new Color(200, 175, 170), new Color(240, 210, 210), toggle.HoverAnim);
             Utils.DrawBorderString(spriteBatch, label, textPos, textColor * alpha, 0.78f * scale);
 
-            //底部分隔线
             Color lineColor = new Color(80, 35, 35) * (alpha * 0.4f);
             spriteBatch.Draw(pixel, new Rectangle(rect.X + (int)(20f * scale), rect.Bottom - 1,
                 rect.Width - (int)(40f * scale), 1), new Rectangle(0, 0, 1, 1), lineColor);
@@ -833,11 +770,9 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             float trackX = clipRect.Right - barWidth - 2f;
             float trackHeight = clipRect.Height;
 
-            //轨道
             Rectangle trackRect = new((int)trackX, clipRect.Y, (int)barWidth, (int)trackHeight);
             spriteBatch.Draw(pixel, trackRect, new Rectangle(0, 0, 1, 1), new Color(40, 18, 18) * (alpha * 0.6f));
 
-            //滑块
             var visibleToggles = category?.GetVisibleToggles();
             int toggleCount = visibleToggles?.Count ?? 0;
             bool hasFooter = category?.ShowFooter ?? false;
@@ -852,7 +787,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
             Rectangle thumbRect = new((int)trackX, (int)thumbY, (int)barWidth, (int)thumbHeight);
 
-            //检测悬停
             bool hoveringThumb = thumbRect.Contains(MouseHitBox);
             bool hoveringTrack = trackRect.Contains(MouseHitBox);
             bool isDragging = category?.IsDraggingScrollbar ?? false;
@@ -872,11 +806,10 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             }
             spriteBatch.Draw(pixel, thumbRect, new Rectangle(0, 0, 1, 1), thumbColor);
 
-            //滑块边框
             Color thumbBorderColor = isDragging ? new Color(255, 100, 100) * (alpha * 0.7f) : new Color(120, 50, 50) * (alpha * 0.5f);
             DrawSimpleBorder(spriteBatch, thumbRect, thumbBorderColor, 1);
 
-            //存储轨道和滑块的矩形供拖动检测使用
+            //缓存轨/滑块矩形供拖动
             if (category != null) {
                 category.ScrollbarTrackRect = trackRect;
                 category.ScrollbarThumbRect = thumbRect;
@@ -886,7 +819,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         private static void DrawTooltip(SpriteBatch spriteBatch, string text, Vector2 mousePos, float alpha) {
             if (string.IsNullOrEmpty(text)) return;
 
-            //去配色标记再测量
+            //去色码再测宽
             string cleanText = text.Replace("\n", "\n");
             string[] lines = cleanText.Split('\n');
 
@@ -896,7 +829,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             var font = FontAssets.MouseText.Value;
 
             foreach (string line in lines) {
-                //去掉颜色标记来估算宽度
                 string measureLine = System.Text.RegularExpressions.Regex.Replace(line, @"\[c/[0-9a-fA-F]+:", "");
                 measureLine = measureLine.Replace("]", "");
                 Vector2 lineSize = font.MeasureString(measureLine) * tipScale;
@@ -909,7 +841,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             float tipX = mousePos.X + 16f;
             float tipY = mousePos.Y + 16f;
 
-            //防止溢出屏幕
+            //防溢出屏
             if (tipX + maxWidth + padX * 2 > Main.screenWidth) {
                 tipX = mousePos.X - maxWidth - padX * 2 - 8f;
             }
@@ -921,12 +853,9 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             Rectangle bgRect = new((int)(tipX - padX), (int)(tipY - padY),
                 (int)(maxWidth + padX * 2), (int)(totalHeight + padY * 2));
 
-            //背景
             spriteBatch.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), new Color(25, 10, 10) * (alpha * 0.95f));
-            //边框
             DrawSimpleBorder(spriteBatch, bgRect, new Color(120, 50, 50) * (alpha * 0.7f), 1);
 
-            //绘制文字
             float lineY = tipY;
             Color textColor = new Color(220, 200, 190) * alpha;
             foreach (string line in lines) {

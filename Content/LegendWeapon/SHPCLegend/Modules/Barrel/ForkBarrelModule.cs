@@ -6,11 +6,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>叉形枪管：追踪束每 50 帧左右分叉，whoAmI→timer+IsDerived</summary>
+    /// <summary>叉形枪管，追踪束每50帧分叉，whoAmI→timer+IsDerived</summary>
     internal sealed class ForkBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
-        //电磁分叉蓝绿
+        //蓝绿
         public override Color TintColor => new(0, 220, 180);
 
         private readonly Dictionary<int, int> _timers = new();

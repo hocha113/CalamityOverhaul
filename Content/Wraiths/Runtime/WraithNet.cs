@@ -8,47 +8,44 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Wraiths.Runtime
 {
-    /// <summary>厉鬼通道子操作（<see cref="CWRMessageType.Wraith"/> 的第二字节）</summary>
+    /// <summary>通道子 op，Wraith 消息第二字节</summary>
     internal enum WraithNetOp : byte
     {
-        /// <summary>客→服：请求把指定实体逼入/解除死机；服务器全查资格（存活/持载体/判距/时长钳制）</summary>
+        /// <summary>客→服，死机开/关</summary>
         HaltRequest,
-        /// <summary>客→服：仪式请求；服务器复核（与 owner 预检同源谓词）并消耗实体后回执确认</summary>
+        /// <summary>客→服，仪式请求</summary>
         RiteRequest,
-        /// <summary>服→发起者：仪式确认（key + 语义），发起者收到才写簿与演出</summary>
+        /// <summary>服→发起者，仪式确认</summary>
         RiteConfirm,
-        /// <summary>客→服：反噬挣脱生成请求；服务器校验 Bound+躁动+同键冷却</summary>
+        /// <summary>客→服，反噬生成</summary>
         BacklashSpawn,
-        /// <summary>客→服：借力世界改动请求；服务器限速+资格校验后执行并向其余客户端转播 AbilityFx</summary>
+        /// <summary>客→服，借力世界改动</summary>
         AbilityCast,
-        /// <summary>服→客：借力世界演出（施放端已本地即时播过，转播时排除它）</summary>
+        /// <summary>服→客，借力演出</summary>
         AbilityFx,
-        /// <summary>服→客：规则死亡转发（含专属死因键），受害者本端执行 KillMe</summary>
+        /// <summary>服→客，规则死亡转发</summary>
         RuleKill,
-        /// <summary>服→受害者：预警拍开始（演出镜像，倒计时权威在服务器）</summary>
+        /// <summary>服→受害者，预警起拍</summary>
         OmenStart,
-        /// <summary>服→受害者：预警拍取消</summary>
+        /// <summary>服→受害者，预警撤拍</summary>
         OmenCancel,
-        /// <summary>服→客：据点锚位镜像（键+锚位+锚定态），客户端贴饰/路标层据此获得据点知识</summary>
+        /// <summary>服→客，据点锚位镜像</summary>
         SiteSync,
     }
 
     /// <summary>
-    /// 厉鬼系统联机通道：挂在 <see cref="CWRNetWork.HandlePacket"/> 链尾。
-    /// 服务器权威：所有客→服 op 在服务器复核资格，不信任客户端自报；
-    /// 定义身份一律走稳定 Key 字符串（存档锚同源，联机不怕注册序漂移）；
-    /// 实体引用带 generation 校验，过期包安全丢弃
+    /// 联机通道，挂 CWRNetWork 链尾。客→服一律服复核；身份走 Key；实体带 generation
     /// </summary>
     internal static class WraithNet
     {
-        /// <summary>死机请求的受理判距（宽于仪式半径：这是"接触规则"级交互，不是贴脸仪式）</summary>
+        /// <summary>死机请求判距，宽于仪式半径</summary>
         private const float HaltRequestRange = WraithRites.RiteRange * 4f;
 
-        //服务器会话态:每 (玩家,键) 的最近受理帧,借力限速与反噬冷却用;世界切换清零
+        //服会话态，借力限速与反噬冷却；换世界清零
         private static readonly Dictionary<(int player, string key), long> abilityLastCast = [];
         private static readonly Dictionary<(int player, string key), long> backlashLastSpawn = [];
 
-        /// <summary>清空服务器会话态（<c>WraithDirector.ClearWorld</c> 调用）</summary>
+        /// <summary>清服会话态</summary>
         internal static void ClearSession() {
             abilityLastCast.Clear();
             backlashLastSpawn.Clear();
@@ -63,7 +60,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         //====发送====
 
-        /// <summary>客→服：死机开/关请求。durationTicks&lt;=0 取定义默认窗口</summary>
+        /// <summary>客→服，死机开/关；duration≤0 取定义默认</summary>
         public static void SendHaltRequest(WraithActor wraith, bool halt, int durationTicks = -1) {
             if (!VaultUtils.isClient || wraith == null) {
                 return;
@@ -76,7 +73,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             packet.Send();
         }
 
-        /// <summary>客→服：仪式请求（发起者即发包人，服务器复核后回执）</summary>
+        /// <summary>客→服，仪式请求</summary>
         public static void SendRiteRequest(WraithActor wraith) {
             if (!VaultUtils.isClient || wraith == null) {
                 return;
@@ -107,7 +104,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             packet.Send();
         }
 
-        /// <summary>服→受害者客户端：规则死亡。reasonKey 为空走定义兜底死因</summary>
+        /// <summary>服→受害者，规则死亡；reasonKey 空走兜底</summary>
         public static void SendRuleKill(int playerWhoAmI, WraithDefinition definition, string reasonKey = null) {
             if (!VaultUtils.isServer || definition == null) {
                 return;
@@ -118,7 +115,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             packet.Send(playerWhoAmI);
         }
 
-        /// <summary>服→受害者客户端：预警拍开始（演出镜像）</summary>
+        /// <summary>服→受害者，预警起拍</summary>
         public static void SendOmenStart(int playerWhoAmI, WraithDefinition definition, int ticks) {
             if (!VaultUtils.isServer || definition == null) {
                 return;
@@ -129,7 +126,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             packet.Send(playerWhoAmI);
         }
 
-        /// <summary>服→受害者客户端：预警拍取消</summary>
+        /// <summary>服→受害者，预警撤拍</summary>
         public static void SendOmenCancel(int playerWhoAmI) {
             if (!VaultUtils.isServer) {
                 return;
@@ -137,7 +134,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             NewPacket(WraithNetOp.OmenCancel).Send(playerWhoAmI);
         }
 
-        /// <summary>服→客：据点锚位镜像；toWho=-1 广播（锚位变更），指定则单发（玩家入世界补发）</summary>
+        /// <summary>服→客，据点锚位；toWho=-1 广播</summary>
         public static void SendSiteSync(string key, Vector2 anchor, bool anchored, int toWho = -1) {
             if (!VaultUtils.isServer || string.IsNullOrEmpty(key)) {
                 return;
@@ -217,7 +214,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                     break;
                 }
                 case WraithNetOp.SiteSync: {
-                    //先读满字段再校验,保持流对齐
+                    //先读满再校验，保流对齐
                     string key = reader.ReadString();
                     Vector2 anchor = reader.ReadVector2();
                     bool anchored = reader.ReadBoolean();
@@ -230,7 +227,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             }
         }
 
-        //====服务器侧受理（全部先读满字段再校验，保持流对齐）====
+        //====服务器受理====
 
         private static void HandleHaltRequest(BinaryReader reader, int whoAmI) {
             int slot = reader.ReadUInt16();
@@ -242,10 +239,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             }
             Player requester = ResolvePlayer(whoAmI);
             WraithActor wraith = ResolveActor(slot, generation);
-            //资格:活人+随身载体+判距;死机是"以鬼制鬼"级交互,无刀者没有这个动词
-            //(随身即可:刀在身上灵异就在场;贴脸持刀是仪式的门槛,不是死机的)。
-            //白名单(鬼律第九条执行点):本通道绕过规则状态机,只有明示允许的定义(调试件)受理,
-            //正典鬼的死机永远由各自规则在权威端直呼 BeginHalt
+            //活人+随身载体+判距；仅 AllowExternalHaltRequest 受理
             if (requester == null || wraith == null || wraith.Definition == null
                 || !wraith.Definition.AllowExternalHaltRequest
                 || !WraithVessels.ResolveCarried(requester).IsValid
@@ -253,7 +247,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 return;
             }
             if (halt) {
-                //时长钳制:非法/超限时长回落定义窗口,上限给 4 倍宽松(长演出的主题鬼用)
+                //时长钳制，非法/超限回落定义窗口
                 int windowLimit = System.Math.Max(wraith.Definition.HaltWindowTicks, 1) * 4;
                 if (duration <= 0 || duration > windowLimit) {
                     duration = -1;
@@ -277,7 +271,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 || !WraithRites.TryServerPerform(requester, target, out WraithRiteKind kind)) {
                 return;
             }
-            //复核通过且实体已消耗:回执发起者落簿
+            //复核通过，回执落簿
             ModPacket packet = NewPacket(WraithNetOp.RiteConfirm);
             packet.Write(target.Definition.Key);
             packet.Write((byte)kind);
@@ -293,20 +287,20 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             if (owner == null) {
                 return;
             }
-            //资格:随身载体上该键 Bound 且躁动(服务器自己的 LegendData 副本,经装备槽同步保持新鲜)
+            //随身 Bound 且躁动
             WraithVesselHandle vessel = WraithVessels.ResolveCarried(owner);
             if (!vessel.IsValid || !vessel.Store.TryGet(key, out WraithProgressRecord record)
                 || record.State != WraithBindState.Bound
                 || record.Mastery >= WraithDefinition.RestlessThreshold) {
                 return;
             }
-            //服务器侧同键冷却,owner 端冷却失守也刷不出挣脱洪水
+            //服侧同键冷却
             long now = (long)Main.GameUpdateCount;
             if (backlashLastSpawn.TryGetValue((whoAmI, key), out long last)
                 && now - last < WraithBacklash.KeyCooldownTicks) {
                 return;
             }
-            //确认制:生成真的落地(没被全局互斥/资格挡下)才记冷却,竞成失败不白烧
+            //生成落地才记冷却
             if (WraithBacklash.SpawnEscaped(whoAmI, definition)) {
                 backlashLastSpawn[(whoAmI, key)] = now;
             }
@@ -320,7 +314,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 || definition.Ability == null) {
                 return;
             }
-            //上线闸:系统未开放期间正典鬼的力在服务器侧一律不受理(调试件豁免)
+            //上线闸
             if (!WraithDirector.ContentActiveFor(definition)) {
                 return;
             }
@@ -328,13 +322,13 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             if (caster == null) {
                 return;
             }
-            //限速:间隔低于半个冷却直接丢弃不回包(owner 冷却正常时永远到不了这条线)
+            //限速，低于半冷却丢弃
             long now = (long)Main.GameUpdateCount;
             if (abilityLastCast.TryGetValue((whoAmI, key), out long last)
                 && now - last < definition.Ability.CooldownTicks / 2) {
                 return;
             }
-            //资格:手持载体+簿上 Bound+非挣脱期(F4:鬼在外面,力借不出来)
+            //手持+Bound+非挣脱期
             WraithVesselHandle vessel = WraithVessels.ResolveHeld(caster);
             if (!vessel.IsValid || !vessel.Store.TryGet(key, out WraithProgressRecord record)
                 || record.State != WraithBindState.Bound
@@ -342,11 +336,11 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 return;
             }
             abilityLastCast[(whoAmI, key)] = now;
-            //效果强度不信客户端自报:钳到服务器副本的驾驭度(微量宽松容忍同步在途)
+            //强度不信客户端，钳到服副本驾驭度
             mastery = MathHelper.Clamp(mastery, 0f, record.Mastery + 0.02f);
 
             definition.Ability.ExecuteWorld(caster, aim, MathHelper.Clamp(mastery, 0f, 1f));
-            //转播演出,排除施放端(它已本地即时播过)
+            //转播演出，排除施放端
             ModPacket packet = NewPacket(WraithNetOp.AbilityFx);
             packet.Write(key);
             packet.Write((byte)whoAmI);
@@ -364,7 +358,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             return player != null && player.active && !player.dead ? player : null;
         }
 
-        /// <summary>槽位+代校验解析厉鬼实体，无效/过期返回 null</summary>
+        /// <summary>槽位+代校验，无效/过期返回 null</summary>
         private static WraithActor ResolveActor(int slot, ushort generation) {
             if (slot < 0 || slot >= ActorLoader.MaxActorCount) {
                 return null;

@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 SoundEngine.PlaySound(SoundID.Item23 with { Volume = 0.4f, Pitch = armContext.SpinSpeed * 0.5f }, npc.Center);
             }
 
-            //距离安全网：飞太远强制归位
+            //过远归位
             if (!VaultUtils.isClient && armStateMachine.CurrentState is not SawRecoveryState) {
                 Vector2 anchor = head.Center + new Vector2(-200f * armContext.Side, 230f - head.height * 0.5f);
                 if (npc.Distance(anchor) > 800f) {
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         protected override void ArmPostUpdate() {
-            //锯片转速：帧动画切帧，机体不再整体自旋
+            //锯片转速
             int interval = (int)MathHelper.Clamp(9f - armContext.SpinSpeed * 7f, 2f, 9f);
             if (Main.GameUpdateCount % interval == 0 && ++frame > 1) {
                 frame = 0;
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Vector2 sawOrigin = VaultUtils.GetOrig(mainValue, 2);
             float spinSpeed = armContext?.SpinSpeed ?? 0f;
 
-            //高速残影（滤镜前）：沿速度反方向位置残像，非旋转鬼影
+            //高速残影（滤镜前）
             if (npc.velocity.LengthSquared() > 36f) {
                 Vector2 velDir = npc.velocity * 0.45f;
                 for (int i = 1; i <= 3; i++) {
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
 
-            //机械热感滤镜，与头部共用 head.whoAmI
+            //热感滤镜共用头whoAmI
             int controllerId = (int)npc.ai[PrimeAiSlots.ArmHeadIndex];
             MechBossThermalRenderer.DrawOutlineHaloByController(spriteBatch, mainValue, sawDrawPos, sawRect,
                 drawRot, sawOrigin, npc.scale, SpriteEffects.None, controllerId);

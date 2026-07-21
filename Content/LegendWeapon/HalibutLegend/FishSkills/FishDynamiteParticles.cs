@@ -7,7 +7,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>闪光鱼雷的军火配色与共用粒子生成：火药灰、引信金、弹片暗橙在此定调</summary>
+    /// <summary>闪光鱼雷的军火配色与共用粒子生成</summary>
     internal static class FishDynamiteVFX
     {
         public static readonly Color HotWhite = new(255, 246, 228);     //白热过冲，只许两帧
@@ -45,8 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>弹片流光：拖暗橙短尾的高速碎片，沉重坠落，
-    /// 冷却色程为热缘两帧即褪、主体停在暗橙余烬直至熄灭，尾先蚀</summary>
+    /// <summary>弹片流光</summary>
     internal class PRT_FishDynamiteShrapnel : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -81,7 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
             Scale = baseScale * (1f - t * 0.35f);
 
-            //冷却：热缘一闪即暗橙，暗橙撑过大半生命再入熄灭
+            //冷却
             Color = t < 0.10f
                 ? Color.Lerp(FishDynamiteVFX.ShrapnelEdge, FishDynamiteVFX.SparkDeep, t / 0.10f)
                 : t < 0.62f
@@ -94,11 +93,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             Vector2 origin = tex.Size() * 0.5f;
             float speed = Velocity.Length();
-            //短尾：拉伸封顶压在2.1，弹片读作沉重碎块而非激光线
+            //短尾
             float stretch = MathHelper.Clamp(speed * 0.11f, 0.8f, 2.1f);
             Vector2 bodyScale = new Vector2(0.34f, stretch) * Scale;
 
-            //暗橙尾：三段残影沿速度反推渐暗渐窄，尾比头先蚀
+            //暗橙尾
             for (int k = 3; k >= 1; k--) {
                 Vector2 gpos = Position - Velocity * (k * 0.6f) - Main.screenPosition;
                 float fade = 0.42f - k * 0.11f;
@@ -114,7 +113,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>引信白热爆点：前两帧纯白过冲，随即落金收缩熄灭，噼啪节拍的视觉锚</summary>
+    /// <summary>引信白热爆点，前两帧纯白过冲，随即落金收缩熄灭，噼啪节拍的视觉锚</summary>
     internal class PRT_FishDynamiteFusePop : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "StarGlow01";
@@ -155,7 +154,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>引信灰烬：暗色小絮片横向飘摆着缓缓坠落，AlphaBlend 非发光</summary>
+    /// <summary>引信灰烬</summary>
     internal class PRT_FishDynamiteAsh : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -183,7 +182,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            //飘摆下坠：受微风横摆而非直线坠落
+            //飘摆下坠
             Velocity.X = Velocity.X * 0.96f + MathF.Sin(Time * 0.20f + sway) * 0.05f;
             Velocity.Y = MathF.Min(Velocity.Y + 0.08f, 2.0f);
             Rotation += sway > MathHelper.Pi ? -0.04f : 0.04f;

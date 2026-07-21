@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
 {
     /// <summary>
-    /// 比目鱼图鉴 UI：技能海域与领域之眼切换
+    /// 比目鱼图鉴UI、海域/领域之眼切换
     /// 背景 HalibutAtlasBg.fx，随下潜深度与复苏躁动变化
     /// </summary>
     internal class HalibutAtlas : UIHandle, ILocalizedModType
@@ -277,7 +277,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 HalibutTheme.Glow, (0.7f + breath * 0.3f) * a);
             HalibutRenderer.DrawGlowText(sb, TitleText.Value, new Vector2(28f, y),
                 HalibutTheme.Text * a, HalibutTheme.Glow * (0.45f * a), 1.12f, 1.6f);
-            //页眉分割线：起点珍珠 + 渐隐主线 + 近端次级hairline
+            //页眉分割线、珍珠+渐隐主线+hairline
             Vector2 lineL = new(16f, y + 40f);
             Vector2 lineR = new(HalibutTheme.UIScreenW - 16f, y + 40f);
             HalibutRenderer.DrawPearl(sb, lineL + new Vector2(1f, 0f), 1.9f, HalibutTheme.Caustic, 0.8f * a);
@@ -286,7 +286,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             HalibutRenderer.DrawGradientLine(sb, lineL + new Vector2(6f, 3f), lineL + new Vector2(220f, 3f),
                 HalibutTheme.Glow * (0.24f * a), HalibutTheme.Glow * (0.01f * a), 1f);
 
-            //右侧状态：解锁计数 / 领域层数 / 复苏
+            //右侧状态、解锁/层数/复苏
             int unlockedCount = save.unlocked.Count;
             int total = FishSkill.Instances?.Count ?? 0;
             string state = string.Format(UnlockCountFormat.Value, unlockedCount, total)
@@ -300,7 +300,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             HalibutRenderer.DrawGlowText(sb, state, new Vector2(HalibutTheme.UIScreenW - w - 64f, y + 8f),
                 stateCol * a, HalibutTheme.Deep * (0.5f * a), 0.8f);
 
-            //操作提示（海域视图）：下潜过程中向上滑出让位
+            //海域操作提示、下潜上滑让位
             if (view == AtlasView.Sea) {
                 float hide = Sea.ChromeHide;
                 float hintA = (0.75f - hide * 0.75f) * a;
@@ -332,7 +332,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 navEyesRect.Contains(mouse.ToPoint()), a, time);
 
             if (view == AtlasView.Sea) {
-                //深度带导航：菱标 + 文本 + 延伸线
+                //深度带导航、菱标+文本+延伸线
                 for (int t = 0; t < HalibutTheme.AtlasTierCount; t++) {
                     Rectangle rect = tierChipRects[t];
                     bool hovered = rect.Contains(mouse.ToPoint());
@@ -369,13 +369,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             }
         }
 
-        /// <summary>导航页签：左缘菱标 + 文本 + 底进度线</summary>
+        /// <summary>导航页签、左缘菱标+文本+底进度线</summary>
         private static void DrawNavTab(SpriteBatch sb, Rectangle rect, string text,
             bool selected, bool hovered, float a, float time) {
             float hi = selected ? 1f : hovered ? 0.5f : 0f;
             Color edge = Color.Lerp(HalibutTheme.Teal, HalibutTheme.GlowHi, hi);
 
-            //左缘标识：双竖线 + 珍珠顶饰
+            //左缘标识、双竖线+珍珠
             Vector2 barTop = new(rect.X + 4f, rect.Y + 3f);
             Vector2 barBot = new(rect.X + 4f, rect.Bottom - 3f);
             HalibutRenderer.DrawLine(sb, barTop, barBot, 2f, edge * ((0.55f + hi * 0.45f) * a));
@@ -396,7 +396,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 Color.Lerp(HalibutTheme.TextDim, HalibutTheme.Text, 0.4f + hi * 0.6f) * a,
                 HalibutTheme.Glow * (hi * 0.35f * a), 0.8f);
 
-            //底部进度线：选中满长，悬停半长；选中时末端游光点
+            //底进度线、选中满长悬停半长，末端游光
             if (hi > 0.05f) {
                 float len = (rect.Width - 18f) * (selected ? 1f : 0.45f);
                 Vector2 lineL = new(rect.X + 15f, rect.Bottom - 1f);

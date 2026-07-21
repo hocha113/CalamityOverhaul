@@ -16,45 +16,38 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
     {
         public string LocalizationCategory => "ADV";
         [VaultLoaden(CWRConstant.ADV + "Draedon/")]
-        public static Texture2D DeploySignaltowerShow = null!;//大小宽512高768，用于ADV任务介绍场景中展示信号塔的图片
+        public static Texture2D DeploySignaltowerShow = null!;//512×768 ADV展示图
 
         public override bool Active => showingImage || imageFadeProgress > 0f;
 
-        public override float RenderPriority => 0.9f;//稳定的在大部分UI之上，但低于模组UI
+        public override float RenderPriority => 0.9f;//高于多数UI低于模组UI
 
-        //图片展示动画状态
         private static bool showingImage = false;
         private static float imageFadeProgress = 0f;
         private static float imageScaleProgress = 0f;
         private static float imageRotation = 0f;
         private static float imageGlowIntensity = 0f;
 
-        //动画参数
         private const float ImageFadeSpeed = 0.06f;
         private const float ImageScaleSpeed = 0.08f;
         private const float ImageBaseScale = 0.6f;
         private const float ImageMaxScale = 0.7f;
 
-        //信息框参数
-        private const float InfoBoxWidth = 320f;//增加宽度以容纳更多数据
-        private const float InfoBoxHeight = 460f;//增加高度
+        private const float InfoBoxWidth = 320f;
+        private const float InfoBoxHeight = 460f;
 
-        //科技光效粒子
         private static readonly List<TechParticle> techParticles = new();
         private static int particleSpawnTimer = 0;
 
-        //全息投影效果
         private static float hologramFlicker = 0f;
         private static float scanLineProgress = 0f;
 
-        //数据流效果
         private static readonly List<DataStream> dataStreams = new();
-        private static readonly List<MatrixRain> matrixRains = new();//矩阵雨效果
+        private static readonly List<MatrixRain> matrixRains = new();
         private static int dataStreamTimer = 0;
         private static float dataUpdateTimer = 0f;
-        private static readonly List<DataLine> currentDataLines = new();//使用结构化数据行
+        private static readonly List<DataLine> currentDataLines = new();
 
-        //科技数据文本
         private static readonly string[] techDataTemplates = [
             "QE_SYNC: {0}%",
             "SIG_PWR: {0} dBm",
@@ -84,15 +77,12 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             "DECO_TIME: {0} μs",
         ];
 
-        //十六进制数据块
         private static readonly List<HexDataBlock> hexBlocks = new();
         private static int hexBlockTimer = 0;
 
-        //数据显示状态
         private const int maxDataLines = 15;
-        private const int maxMatrixColumns = 22;//矩阵雨列数
+        private const int maxMatrixColumns = 22;
 
-        //数据行结构
         private class DataLine
         {
             public string Text;
@@ -110,13 +100,11 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             }
         }
 
-        //图片位置偏移，在屏幕垂直居中
         private static Vector2 GetImageScreenPos() {
             return new Vector2(Main.screenWidth / 2, Main.screenHeight * 0.35f);
         }
 
         private static Vector2 GetInfoBoxScreenPos() {
-            //信息框在图片左侧
             Vector2 imagePos = GetImageScreenPos();
             return new Vector2(imagePos.X - 340f, imagePos.Y);
         }
@@ -126,27 +114,21 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 return;
             }
 
-            //更新图片展示动画
             UpdateImageAnimation();
-
-            //更新科技粒子
             UpdateTechParticles();
 
-            //更新全息效果
             hologramFlicker += 0.08f;
             scanLineProgress += 0.035f;
             if (hologramFlicker > MathHelper.TwoPi) hologramFlicker -= MathHelper.TwoPi;
             if (scanLineProgress > 1f) scanLineProgress -= 1f;
 
-            //更新数据流（多层）
             UpdateDataStreams();
             UpdateMatrixRain();
             UpdateHexBlocks();
 
-            //更新数据文本
             UpdateDataText();
 
-            //检查是否需要结束展示，这个检测是避免对话场景未正常结束时悬浮特效持续存在
+            //对话异常未结束时Cleanup
             if (!DraedonEffect.IsActive) {
                 Cleanup();
             }
@@ -154,21 +136,16 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 
         public override void Draw(SpriteBatch spriteBatch) {
             if (showingImage && imageFadeProgress > 0.01f) {
-                //先绘制信息框
                 DrawInfoBox(spriteBatch);
-
-                //再绘制信号塔图片
                 DrawTowerImage(spriteBatch);
             }
         }
         private static void UpdateDataText() {
-            dataUpdateTimer += 0.08f;//加快更新速度
+            dataUpdateTimer += 0.08f;
 
-            //快速刷新数据行
             if (dataUpdateTimer >= 0.5f) {
                 dataUpdateTimer = 0f;
 
-                //移除旧数据，添加新数据，制造洪流感
                 if (currentDataLines.Count >= maxDataLines) {
                     currentDataLines.RemoveAt(0);
                 }
@@ -176,7 +153,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 currentDataLines.Add(new DataLine(GenerateRandomDataLine()));
             }
 
-            //更新每行的乱码和闪烁效果
             foreach (var line in currentDataLines) {
                 line.UpdateTimer--;
                 if (line.UpdateTimer <= 0) {
@@ -184,7 +160,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                     line.GlitchProgress = Main.rand.NextFloat(0.3f, 0.9f);
                 }
                 else {
-                    line.GlitchProgress *= 0.92f;//乱码逐渐消退
+                    line.GlitchProgress *= 0.92f;//乱码消退
                 }
 
                 line.FlickerPhase += 0.15f;
@@ -250,38 +226,20 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 
             Color techColor = new Color(80, 200, 255);
 
-            //绘制背景矩阵雨
             DrawMatrixRain(sb, boxRect, alpha * 0.4f);
-
-            //绘制十六进制数据块
             DrawHexDataBlocks(sb, boxRect, alpha * 0.5f);
-
-            //绘制背景渐变
             DrawInfoBoxBackground(sb, boxRect, alpha);
-
-            //绘制边框
             DrawInfoBoxBorder(sb, boxRect, alpha, techColor);
-
-            //绘制标题栏
             DrawInfoBoxHeader(sb, boxRect, alpha, techColor);
-
-            //绘制数据流粒子
             DrawInfoBoxDataStreams(sb, boxRect, alpha);
-
-            //绘制数据文本
             DrawInfoBoxDataTextEnhanced(sb, boxRect, alpha, techColor);
-
-            //绘制扫描线
             DrawInfoBoxScanLines(sb, boxRect, alpha);
-
-            //绘制数据波动可视化
             DrawDataWaveform(sb, boxRect, alpha, techColor);
         }
         private static void DrawInfoBoxBackground(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
 
-            //深色半透明背景，不要完全遮挡底层效果
             sb.Draw(pixel, rect, new Rectangle(0, 0, 1, 1), new Color(5, 10, 18) * (alpha * 0.75f));
         }
         private static void DrawInfoBoxBorder(SpriteBatch sb, Rectangle rect, float alpha, Color techColor) {
@@ -290,19 +248,16 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 
             Color borderColor = techColor * (alpha * 0.85f);
 
-            //外边框
             sb.Draw(pixel, new Rectangle(rect.X - 1, rect.Y - 1, rect.Width + 2, 3), borderColor);
             sb.Draw(pixel, new Rectangle(rect.X - 1, rect.Bottom - 2, rect.Width + 2, 3), borderColor * 0.7f);
             sb.Draw(pixel, new Rectangle(rect.X - 1, rect.Y - 1, 3, rect.Height + 2), borderColor * 0.85f);
             sb.Draw(pixel, new Rectangle(rect.Right - 2, rect.Y - 1, 3, rect.Height + 2), borderColor * 0.85f);
 
-            //内发光
             float pulse = (float)Math.Sin(hologramFlicker * 2f) * 0.5f + 0.5f;
             Color glowColor = techColor * (alpha * 0.25f * pulse);
             sb.Draw(pixel, new Rectangle(rect.X + 3, rect.Y + 3, rect.Width - 6, 1), glowColor);
             sb.Draw(pixel, new Rectangle(rect.X + 3, rect.Y + 3, 1, rect.Height - 6), glowColor);
 
-            //角落装饰
             DrawCornerTechEnhanced(sb, new Vector2(rect.X + 10, rect.Y + 10), techColor * (alpha * 0.9f), -MathHelper.PiOver2);
             DrawCornerTechEnhanced(sb, new Vector2(rect.Right - 10, rect.Y + 10), techColor * (alpha * 0.9f), 0f);
             DrawCornerTechEnhanced(sb, new Vector2(rect.X + 10, rect.Bottom - 10), techColor * (alpha * 0.9f), MathHelper.Pi);
@@ -312,14 +267,12 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
 
-            //主线
             float size = 12f;
             sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color, rotation,
                 new Vector2(0.5f), new Vector2(size, size * 0.25f), SpriteEffects.None, 0f);
             sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color * 0.7f, rotation + MathHelper.PiOver2,
                 new Vector2(0.5f), new Vector2(size, size * 0.25f), SpriteEffects.None, 0f);
 
-            //次级装饰线
             sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color * 0.5f, rotation,
                 new Vector2(0.5f), new Vector2(size * 0.6f, size * 0.15f), SpriteEffects.None, 0f);
         }
@@ -327,11 +280,9 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
 
-            //标题栏背景
             Rectangle headerRect = new Rectangle(rect.X + 4, rect.Y + 4, rect.Width - 8, 32);
             sb.Draw(pixel, headerRect, new Rectangle(0, 0, 1, 1), new Color(15, 28, 45) * (alpha * 0.7f));
 
-            //标题文本
             string title = "◢ QUANTUM SIGNAL TOWER ◣";
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             Vector2 titleSize = font.MeasureString(title) * 0.5f;
@@ -340,7 +291,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 headerRect.Y + (headerRect.Height - titleSize.Y) * 0.5f
             );
 
-            //标题发光
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f;
                 Vector2 offset = angle.ToRotationVector2() * 1.2f;
@@ -348,7 +298,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             }
             Utils.DrawBorderString(sb, title, titlePos, Color.White * alpha, 0.5f);
 
-            //标题栏底部分隔线
             sb.Draw(pixel, new Rectangle(headerRect.X, headerRect.Bottom, headerRect.Width, 2),
                 techColor * (alpha * 0.6f));
             sb.Draw(pixel, new Rectangle(headerRect.X, headerRect.Bottom + 3, headerRect.Width, 1),
@@ -373,7 +322,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 var dataLine = currentDataLines[i];
                 string line = dataLine.Text;
 
-                //动态生成乱码
                 if (dataLine.GlitchProgress > 0.01f) {
                     StringBuilder glitched = new StringBuilder();
                     for (int c = 0; c < line.Length; c++) {
@@ -387,19 +335,15 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                     line = glitched.ToString();
                 }
 
-                //计算透明度和颜色
                 float flicker = (float)Math.Sin(dataLine.FlickerPhase) * 0.4f + 0.6f;
                 float lineAlpha = alpha * flicker;
 
-                //渐变消失效果
                 float fadeOut = 1f - i / (float)maxDataLines * 0.6f;
                 lineAlpha *= fadeOut;
 
-                //动态颜色
                 Color lineColor = Color.Lerp(dataLine.BaseColor, Color.White, 0.3f);
 
-                //绘制发光背景
-                if (i == currentDataLines.Count - 1) {//最新的一行高亮
+                if (i == currentDataLines.Count - 1) {//最新行高亮
                     Rectangle highlightRect = new Rectangle(
                         (int)textPos.X - 6,
                         (int)textPos.Y - 2,
@@ -418,7 +362,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
 
-            //主扫描线
             float scanY = rect.Y + 42 + scanLineProgress * (rect.Height - 42);
             for (int layer = 0; layer < 3; layer++) {
                 float offset = layer * 1.5f;
@@ -431,7 +374,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
 
-            //在底部绘制波形
             int barCount = 16;
             float barWidth = (rect.Width - 20) / (float)barCount;
             float baseY = rect.Bottom - 30;
@@ -508,7 +450,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
         }
 
         private static void UpdateMatrixRain() {
-            //生成新的矩阵雨
             if (Main.rand.NextBool(3) && matrixRains.Count < maxMatrixColumns) {
                 Vector2 boxPos = GetInfoBoxScreenPos();
                 Rectangle boxRect = new Rectangle(
@@ -523,7 +464,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 matrixRains.Add(new MatrixRain(x, boxRect.Y, speed));
             }
 
-            //更新矩阵雨
             Vector2 boxPos2 = GetInfoBoxScreenPos();
             Rectangle bounds = new Rectangle(
                 (int)(boxPos2.X - InfoBoxWidth * 0.5f),
@@ -561,7 +501,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 MaxLife = Main.rand.NextFloat(60f, 120f);
                 Alpha = Main.rand.NextFloat(0.3f, 0.7f);
 
-                //生成4x2的十六进制块
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < 8; i++) {
                     sb.Append(Main.rand.Next(256).ToString("X2"));
@@ -620,7 +559,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
         }
         #endregion
         private static void UpdateImageAnimation() {
-            //淡入和缩放
             if (imageFadeProgress < 1f) {
                 imageFadeProgress = Math.Min(imageFadeProgress + ImageFadeSpeed, 1f);
             }
@@ -628,10 +566,8 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 imageScaleProgress = Math.Min(imageScaleProgress + ImageScaleSpeed, 1f);
             }
 
-            //光效脉冲
             imageGlowIntensity = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2.5f) * 0.5f + 0.5f;
 
-            //生成科技粒子
             particleSpawnTimer++;
             if (particleSpawnTimer >= 4) {
                 particleSpawnTimer = 0;
@@ -643,20 +579,16 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 
             Vector2 screenPos = GetImageScreenPos();
 
-            //计算缩放
             float easedScale = VaultUtils.EaseOutBack(imageScaleProgress);
             float scale = MathHelper.Lerp(ImageBaseScale, ImageMaxScale, easedScale);
 
-            //计算透明度
             float alpha = imageFadeProgress * 0.88f;
 
-            //全息闪烁效果
             float flicker = (float)Math.Sin(hologramFlicker * 1f) * 0.1f + 0.9f;
             alpha *= flicker;
 
             Color techColor = new Color(80, 200, 255);
 
-            //绘制外层科技光晕
             for (int i = 0; i < 3; i++) {
                 float glowScale = scale * (1.15f + i * 0.08f);
                 float glowAlpha = alpha * (0.25f - i * 0.06f) * imageGlowIntensity;
@@ -673,13 +605,9 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 );
             }
 
-            //绘制六角网格叠加
             DrawHexagonalGrid(spriteBatch, screenPos, DeploySignaltowerShow.Size() * scale, alpha * 0.3f);
-
-            //绘制扫描线效果
             DrawScanLines(spriteBatch, screenPos, DeploySignaltowerShow.Size() * scale, alpha);
 
-            //绘制主图片，带轻微的科技色调
             Color mainColor = Color.Lerp(Color.White, techColor, 0.15f);
             spriteBatch.Draw(
                 DeploySignaltowerShow,
@@ -693,10 +621,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 0f
             );
 
-            //绘制数据流粒子
             DrawTechParticles(spriteBatch, screenPos);
-
-            //绘制边框投影效果
             DrawHologramBorder(spriteBatch, screenPos, DeploySignaltowerShow.Size() * scale, alpha, techColor);
         }
         private static void DrawHexagonalGrid(SpriteBatch sb, Vector2 center, Vector2 size, float alpha) {
@@ -730,7 +655,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
 
-            //主扫描线
             float scanY = center.Y - size.Y * 0.5f + scanLineProgress * size.Y;
             Color scanColor = new Color(80, 220, 255) * (alpha * 0.6f);
 
@@ -750,7 +674,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 );
             }
 
-            //额外的随机扫描线
             int extraLines = 3;
             for (int i = 0; i < extraLines; i++) {
                 float lineProgress = (scanLineProgress + i * 0.33f) % 1f;
@@ -784,13 +707,11 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             float borderAlpha = alpha * 0.7f;
             Color borderColor = color * borderAlpha;
 
-            //绘制四边
             sb.Draw(pixel, new Rectangle(borderRect.X, borderRect.Y, borderRect.Width, 2), borderColor);
             sb.Draw(pixel, new Rectangle(borderRect.X, borderRect.Bottom - 2, borderRect.Width, 2), borderColor * 0.7f);
             sb.Draw(pixel, new Rectangle(borderRect.X, borderRect.Y, 2, borderRect.Height), borderColor * 0.85f);
             sb.Draw(pixel, new Rectangle(borderRect.Right - 2, borderRect.Y, 2, borderRect.Height), borderColor * 0.85f);
 
-            //绘制四角装饰
             DrawCornerTech(sb, new Vector2(borderRect.X + 8, borderRect.Y + 8), color * borderAlpha, -MathHelper.PiOver2);
             DrawCornerTech(sb, new Vector2(borderRect.Right - 8, borderRect.Y + 8), color * borderAlpha, 0f);
             DrawCornerTech(sb, new Vector2(borderRect.X + 8, borderRect.Bottom - 8), color * borderAlpha, MathHelper.Pi);
@@ -895,7 +816,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 
             Vector2 screenPos = GetImageScreenPos();
 
-            //在图片边缘生成粒子
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
             float distance = Main.rand.NextFloat(30f, 60f);
             Vector2 spawnPos = screenPos + angle.ToRotationVector2() * distance;
@@ -911,7 +831,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 }
             }
 
-            //限制粒子数量
             while (techParticles.Count > 25) {
                 techParticles.RemoveAt(0);
             }
@@ -963,7 +882,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 
         private static void UpdateDataStreams() {
             dataStreamTimer++;
-            if (dataStreamTimer >= 5 && dataStreams.Count < 40) {//增加数量和生成频率
+            if (dataStreamTimer >= 5 && dataStreams.Count < 40) {
                 dataStreamTimer = 0;
 
                 Vector2 boxPos = GetInfoBoxScreenPos();
@@ -991,7 +910,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
         }
         #endregion
         internal static void RegisterShowEffect() {
-            //重置状态
             showingImage = false;
             imageFadeProgress = 0f;
             imageScaleProgress = 0f;
@@ -1014,20 +932,17 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             imageFadeProgress = 0f;
             imageScaleProgress = 0f;
 
-            //初始化数据行
             currentDataLines.Clear();
             for (int i = 0; i < 10; i++) {
                 currentDataLines.Add(new DataLine(GenerateRandomDataLine()));
             }
 
-            //播放全息投影音效
             SoundEngine.PlaySound(SoundID.Item8 with {
                 Volume = 0.6f,
                 Pitch = 0.3f,
                 MaxInstances = 2
             });
 
-            //播放额外的科技感音效
             SoundEngine.PlaySound(SoundID.DD2_EtherianPortalSpawnEnemy with {
                 Volume = 0.4f,
                 Pitch = 0.5f,

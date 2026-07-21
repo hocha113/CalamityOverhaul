@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
         public static Asset<Texture2D> MaskLaserLine = null;
 
         public override void SetDefaults() {
-            Projectile.width = Projectile.height = 1800;//缩小打击范围
+            Projectile.width = Projectile.height = 1800;
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.tileCollide = false;
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                     SoundEngine.PlaySound(SpearOfLonginus.AT, Projectile.Center);
                 }
                 else {
-                    //多重音效叠加（降低音量）
+                    //多重音效
                     SoundEngine.PlaySound(CWRSound.JustStrike with { Volume = 0.8f }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with {
                         Pitch = -0.4f,
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
 
                 if (CWRServerConfig.Instance.ScreenVibration) {
                     PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
-                            Main.rand.NextVector2Unit(), 12f, 6f, 25, 1000f, FullName);//弱化震屏
+                            Main.rand.NextVector2Unit(), 12f, 6f, 25, 1000f, FullName);
                     Main.instance.CameraModifiers.Add(modifier);
                 }
             }
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 return;
             }
 
-            //初始化爆炸特效
+            //初始化特效
             if (time == 6) {
                 InitializeExplosionEffects();
 
@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             if (++Projectile.frameCounter > 3) {
                 frameIndex++;
 
-                //关键帧触发
+                //关键帧
                 if (frameIndex == 4) {
                     TriggerMainImpact();
                 }
@@ -103,9 +103,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 Projectile.frameCounter = 0;
             }
 
-            Projectile.scale += 0.055f;//稍微减缓缩放
+            Projectile.scale += 0.055f;
 
-            if (Projectile.ai[1] < 3 && Projectile.ai[2] == 0) {//减少光柱强度
+            if (Projectile.ai[1] < 3 && Projectile.ai[2] == 0) {
                 Projectile.ai[1]++;
             }
             if (frameIndex > 8) {
@@ -115,10 +115,9 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 Projectile.ai[1]--;
             }
 
-            //更新特效
             UpdateExplosionEffects();
 
-            //强化照明（稍微降低）
+            //照明
             float lightIntensity = (float)Math.Sin(frameIndex / (float)maxFrame * MathHelper.Pi);
             Lighting.AddLight(Projectile.Center,
                 1.5f * lightIntensity,
@@ -127,31 +126,30 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
         }
 
         private void InitializeExplosionEffects() {
-            //生成初始冲击波
+            //初始冲击波
             for (int i = 0; i < 2; i++) {
                 explosionWaves.Add(new ExplosionWave(Projectile.Center, i * 10f));
             }
 
-            //生成火花效果
+            //火花
             for (int i = 0; i < 50; i++) {
                 float angle = MathHelper.TwoPi * i / 50f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(12f, 24f);
                 impactSparks.Add(new ImpactSpark(Projectile.Center, velocity));
             }
 
-            //大量粒子爆发
+            //粒子爆发
             SpawnExplosionParticles(60);
         }
 
         private void TriggerMainImpact() {
-            //主要冲击
+            //主冲击
             if (CWRServerConfig.Instance.ScreenVibration) {
                 PunchCameraModifier modifier = new PunchCameraModifier(Projectile.Center,
                     Main.rand.NextVector2Unit(), 18f, 8f, 30, 1200f, FullName);
                 Main.instance.CameraModifiers.Add(modifier);
             }
 
-            //音效
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with {
                 Volume = 1.0f,
                 Pitch = -0.3f
@@ -186,7 +184,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(8f, 30f);
 
-                //金色火花
+                //金火花
                 PRTLoader.NewParticle<PRT_Light>(
                     Projectile.Center + Main.rand.NextVector2Circular(40f, 40f),
                     velocity,
@@ -197,7 +195,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
         }
 
         private void UpdateExplosionEffects() {
-            //更新冲击波
+
             for (int i = explosionWaves.Count - 1; i >= 0; i--) {
                 explosionWaves[i].Update();
                 if (explosionWaves[i].ShouldRemove()) {
@@ -205,7 +203,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 }
             }
 
-            //更新火花
             for (int i = impactSparks.Count - 1; i >= 0; i--) {
                 impactSparks[i].Update();
                 if (impactSparks[i].ShouldRemove()) {
@@ -226,20 +223,17 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 return false;
             }
 
-            //绘制冲击波
             foreach (var wave in explosionWaves) {
                 wave.Draw(Main.spriteBatch);
             }
 
-            //绘制火花
             foreach (var spark in impactSparks) {
                 spark.Draw(Main.spriteBatch);
             }
 
-            //绘制光柱
             DrawLightBeam();
 
-            //绘制主体
+            //主体
             DrawMainExplosion(lightColor);
 
             return false;
@@ -250,12 +244,12 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 (float)Math.Sin(frameIndex / (float)maxFrame * MathHelper.Pi));
             drawColor.A = 0;
 
-            //主光柱（减弱宽度）
+            //主光柱
             Main.EntitySpriteDraw(MaskLaserLine.Value, Projectile.Bottom - Main.screenPosition, null, drawColor
                 , Projectile.rotation - MathHelper.PiOver2, MaskLaserLine.Value.Size() / 2
                 , new Vector2(4000, Projectile.ai[1] * 0.04f * Projectile.scale), SpriteEffects.None, 0);
 
-            //附加光柱增强效果（稍微弱化）
+            //附加光柱
             Color accentColor = Color.Lerp(Color.Yellow, Color.White,
                 (float)Math.Sin(Main.GlobalTimeWrappedHourly * 10f) * 0.5f + 0.5f);
             accentColor.A = 0;
@@ -276,7 +270,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f) * 0.5f + 0.5f);
             glowColor.A = 0;
 
-            for (int i = 0; i < 2; i++) {//减少绘制层数
+            for (int i = 0; i < 2; i++) {
                 float glowScale = Projectile.scale * (1f + i * 0.08f);
                 float glowAlpha = (1f - i * 0.25f) * 0.4f;
 

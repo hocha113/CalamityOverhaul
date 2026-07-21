@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         public override void AI() {
-            //ai[0] = 主方向角度, ai[1] = 延迟帧数
+            //ai0 角 ai1 延迟
             if (Projectile.ai[1] > 0) {
                 Projectile.ai[1]--;
                 Projectile.timeLeft = MaxLife;
@@ -54,21 +54,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         private void ComputeAnimation(float t) {
             if (t < 0.28f) {
-                //快速延伸（缓出）
+                //延伸缓出
                 float ext = t / 0.28f;
                 visibleEnd = 1f - MathF.Pow(1f - ext, 3.2f);
                 visibleStart = 0f;
                 fadeAlpha = MathHelper.SmoothStep(0.3f, 1f, ext);
             }
             else if (t < 0.40f) {
-                //全亮+闪烁
+                //全亮闪烁
                 visibleEnd = 1f;
                 visibleStart = 0f;
                 float flash = MathF.Sin((t - 0.28f) / 0.12f * MathF.PI);
                 fadeAlpha = 1f + flash * 0.4f;
             }
             else {
-                //从尾部收缩消失
+                //尾缩
                 float retract = (t - 0.40f) / 0.60f;
                 visibleEnd = 1f;
                 visibleStart = retract;
@@ -88,18 +88,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 float distFactor = (float)i / keyCount;
                 float jag = Main.rand.NextFloat(-0.5f, 0.5f) * (0.6f + distFactor * 0.9f);
 
-                //15%概率出现大偏转（数字电路般的急拐）
+                //15%大偏转
                 if (Main.rand.NextFloat() < 0.15f)
                     jag = (Main.rand.NextBool() ? 1f : -1f) * 1.1f;
 
-                //段长度：越远越长（加速扩张感）
+                //段长随距递增
                 float segLen = Main.rand.NextFloat(25f, 55f) * (0.7f + distFactor * 0.6f);
                 Vector2 step = (angle + jag).ToRotationVector2() * segLen;
                 current += step;
                 keys[i] = current;
             }
 
-            //细分：每对关键帧间插入1个带垂直抖动的中间点
+            //关键帧间插抖动点
             pointCount = keyCount * 2 - 1;
             points = new Vector2[pointCount];
             for (int i = 0; i < keyCount - 1; i++) {
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         private float WidthFunction(float progress) {
-            //两端收窄，中间最宽
+            //两端窄中宽
             float taper = MathF.Sin(progress * MathF.PI);
             taper = MathF.Max(taper, 0.06f);
             return 36f * taper;
@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             trail.TrailPositions = points;
 
             shader.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
-            //取主人玩家的领域时间，避免远端客户端读 Local 造成故障雷动画节奏错位
+            //uTime 取主人领域时间
             CyberspacePlayer ownerCp = Cyberspace.For(Projectile.owner);
             float ownerTime = ownerCp?.EffectTime ?? Cyberspace.EffectTime;
             shader.Parameters["uTime"]?.SetValue(ownerTime);

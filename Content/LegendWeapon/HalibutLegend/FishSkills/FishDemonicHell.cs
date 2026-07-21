@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>地狱炎爆共置资源加载器，缺 .fxc 时属性为 null，使用前判空</summary>
     internal class FishDemonicHellAssets
     {
-        /// <summary>恶魔符环：暗红细线几何，内外环反向旋转</summary>
+        /// <summary>恶魔符环</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect FishDemonicHellRing { get; private set; }
         /// <summary>地狱火球彗尾条带（重烟版 OniMacheteComet 范式）</summary>
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int circle = Projectile.NewProjectile(player.GetSource_ItemUse(item), spawnPos, dir,
                 ModContent.ProjectileType<HellRitualCircle>(), 0, 0f, player.whoAmI, ai0: player.direction);
 
-            //符环显现预告：收拢暗环+自外缘扑入的先导余烬（法阵 AI 锚定玩家中心，粒子以玩家为心）
+            //符环显现预告
             SpawnSummonParticles(player.Center, circle);
 
             SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with { Volume = 0.8f, Pitch = -0.7f }, player.Center);
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private static void SpawnSummonParticles(Vector2 position, int circleIndex) {
-            //收拢暗环：由大到小的塌缩预告吸入方向
+            //收拢暗环
             PRTLoader.NewParticle<PRT_DWave>(position, Vector2.Zero, new Color(190, 60, 25), 1.35f)
                 ?.Configure(new Vector2(1f, 1f), 0f, 0.3f, 16);
             for (int i = 0; i < 10; i++) {
@@ -67,13 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 地狱法阵，充能后发射炎爆。<br/>
-    /// 表现层：FishDemonicHellRing.fx 暗红细线符环（外环刻度正转/符文带反转/五芒星缓旋）+
-    /// 余烬向心加速吸入 + 阵心黑烟坐暗。<br/>
-    /// 蓄力四拍（帧）：预告 0-12 噪声侵蚀显现，收束 12-46 吸入，过冲 46-57 聚焦环超压收缩+角加速，
-    /// 57-60 释放（暖金瞬闪+定向后坐），此后 FadeTime 冷却消散
-    /// </summary>
+    /// <summary>地狱法阵，充能后发射炎爆</summary>
     internal class HellRitualCircle : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -110,7 +104,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             ChargeTimer++;
 
-            //自旋积分：收束期缓增，过冲段角加速，释放后泄力
+            //自旋积分
             float spinRate;
             if (ChargeTimer <= OvershootStart) {
                 spinRate = 0.008f + progress * 0.006f;
@@ -131,7 +125,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             if (ChargeTimer == OvershootStart) {
-                //过冲拍入点：收束完成、法阵超压的听觉预告
+                //过冲拍入点
                 SoundEngine.PlaySound(SoundID.DD2_DarkMageAttack with { Volume = 0.5f, Pitch = -0.55f }, Projectile.Center);
             }
 
@@ -139,7 +133,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 FireBlast();
             }
 
-            //照明：随蓄力增强的暖红，释放后随消散回落
+            //照明
             float lightIntensity = ChargeVisual() * 2.5f;
             Lighting.AddLight(Projectile.Center,
                 1.2f * lightIntensity,
@@ -147,7 +141,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0.2f * lightIntensity);
         }
 
-        /// <summary>聚焦环半径系数：收束缓降→过冲加速下探 0.16→释放弹性回弹</summary>
+        /// <summary>聚焦环半径系数，收束缓降→过冲加速下探 0.16→释放弹性回弹</summary>
         private float FocusFactor() {
             float t = ChargeTimer;
             if (t <= RevealEnd) {
@@ -166,7 +160,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return MathHelper.Lerp(0.16f, 0.42f, 1f - (1f - f) * (1f - f));
         }
 
-        /// <summary>符环亮度：蓄力爬升，过冲段超压>1，释放后冷却回落</summary>
+        /// <summary>符环亮度，蓄力爬升，过冲段超压>1，释放后冷却回落</summary>
         private float ChargeVisual() {
             if (ChargeTimer <= OvershootStart) {
                 return progress;
@@ -184,7 +178,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //吸入余烬：预告段零星，收束满速，过冲加倍加速（吸入感由粒子内向心加速度编码）
+            //吸入余烬
             int perFrame = ChargeTimer < RevealEnd
                 ? (Main.rand.NextBool(3) ? 1 : 0)
                 : ChargeTimer < OvershootStart ? 2 : 3;
@@ -195,14 +189,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     ? Main.rand.NextFloat(90f, 150f)
                     : Main.rand.NextFloat(170f, 270f);
                 Vector2 pos = Projectile.Center + ang.ToRotationVector2() * dist;
-                //切向初速：入场即带旋，被向心力扭成螺旋坠入
+                //切向初速
                 Vector2 vel = (ang + MathHelper.PiOver2).ToRotationVector2() * Main.rand.NextFloat(1.5f, 3f);
                 PRTLoader.NewParticle<PRT_FishDemonicHellEmber>(pos, vel,
                     new Color(255, 116, 36), Main.rand.NextFloat(0.55f, 0.95f))
                     ?.ConfigureSuction(Projectile.whoAmI, ChargeTimer >= OvershootStart ? 0.34f : 0.20f);
             }
 
-            //阵心暗核：黑烟聚积，亮部之前先坐暗
+            //阵心暗核
             if (ChargeTimer >= 18 && ChargeTimer % 6 == 0) {
                 PRTLoader.NewParticle<PRT_FishDemonicHellSmoke>(
                     Projectile.Center + Main.rand.NextVector2Circular(14f, 14f),
@@ -232,7 +226,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Projectile.Center, dir, 4f, 5f, 9, 800f, FullName));
             }
 
-            //枪口拍：沿射向压扁的冲击环+锥形余烬喷出+少量火舌
+            //枪口拍
             PRTLoader.NewParticle<PRT_DWave>(Projectile.Center + dir * 24f, Vector2.Zero,
                 new Color(255, 150, 60), 0.42f)
                 ?.Configure(new Vector2(1.55f, 0.5f), dir.ToRotation(), 1.5f, 14);
@@ -263,7 +257,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>符环 quad：立即模式图元先于本批次精灵落盘，天然垫在玩家与其他弹幕之下</summary>
+        /// <summary>符环 quad</summary>
         private void DrawRitualRing() {
             Effect fx = FishDemonicHellAssets.FishDemonicHellRing;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
@@ -309,12 +303,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 地狱炎爆弹幕：剪影核+彗尾条带+烟雾尾。<br/>
-    /// 弹头 = 黑烟剪影团（AlphaBlend 暗体压底）+ 前缘月牙焰 + 极小暖金热芯 + 旋转拖影弧；
-    /// 尾部 = FishDemonicHellComet.fx 图元条带 + 余烬剥落 + 暗烟团；
-    /// 爆炸 = 双冲击环+余烬迸散+黑烟座，余燃 LavaFire 与烟柱存活至弹体死后（aftermath）
-    /// </summary>
+    /// <summary>地狱炎爆弹幕</summary>
     internal class HellFireBlast : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -361,13 +350,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             if (life < FlyTime) {
-                //飞行加速段：速度曲线保持原样，视觉尺寸按真实弹龄爬升（修复原负 scale 起步）
+                //飞行加速段
                 float k = MathHelper.Clamp(age / 54f, 0f, 1f);
                 Projectile.scale = MathHelper.Lerp(0.55f, 1.35f, 1f - (1f - k) * (1f - k));
                 Projectile.velocity *= 1.02f;
             }
             else {
-                //减速并膨胀
                 Projectile.velocity *= 0.96f;
                 if (Projectile.scale < 2f) {
                     Projectile.scale *= 1.01f;
@@ -378,11 +366,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //翻滚的黑核
             Projectile.rotation += 0.15f;
 
             if (explode) {
-                //爆后余寿：条带 6 帧内速灭，光照随倒计时回落（减速仍由上方分支承担）
+                //爆后余寿
                 stripFade *= 0.70f;
                 float dim = Projectile.timeLeft / 10f;
                 Lighting.AddLight(Projectile.Center, 1.6f * dim, 0.6f * dim, 0.2f * dim);
@@ -396,7 +383,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Lighting.AddLight(Projectile.Center, 1.6f, 0.6f, 0.2f);
         }
 
-        /// <summary>出膛拍：小规模定向余烬+第一口黑烟，主枪口演出在法阵侧</summary>
+        /// <summary>出膛拍</summary>
         private void SpawnLaunchBurst() {
             if (VaultUtils.isServer) {
                 return;
@@ -413,11 +400,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(Main.rand.Next(30, 42), Main.rand.NextFloat(-0.02f, 0.02f));
         }
 
-        /// <summary>飞行期持续演出：余烬剥落率随速度、黑烟定拍、临爆前向心倒吸</summary>
+        /// <summary>飞行期持续演出</summary>
         private void SpawnFlightDressing(int age, float life) {
             float speed = Projectile.velocity.Length();
 
-            //余烬剥落：快时每帧，慢时隔帧
+            //余烬剥落，快时每帧，慢时隔帧
             if (Main.rand.NextBool(speed > 11f ? 1 : 2)) {
                 PRTLoader.NewParticle<PRT_FishDemonicHellEmber>(
                     Projectile.Center + Main.rand.NextVector2Circular(10f, 10f) * Projectile.scale,
@@ -426,7 +413,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     ?.ConfigureFree(Main.rand.Next(16, 26), 0.045f);
             }
 
-            //烟雾尾：贴着弹尾定拍吐烟，接管条带尾梢之后的余韵
+            //烟雾尾
             if (age % 5 == 0) {
                 Vector2 back = -Projectile.velocity.SafeNormalize(Vector2.Zero);
                 PRTLoader.NewParticle<PRT_FishDemonicHellSmoke>(
@@ -437,7 +424,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     ?.Configure(Main.rand.Next(34, 50), Main.rand.NextFloat(-0.025f, 0.025f));
             }
 
-            //廉价底噪：火把尘
+            //廉价底噪，火把尘
             if (Main.rand.NextBool(2)) {
                 Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(12f, 12f),
                     DustID.Torch, -Projectile.velocity * 0.1f, 120,
@@ -445,7 +432,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 d.noGravity = true;
             }
 
-            //临爆倒吸：减速段末尾余烬短促向心坠入，呼应蓄力仪式
+            //临爆倒吸
             if (life >= FlyTime && Projectile.timeLeft <= 30 && Main.rand.NextBool(2)) {
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
                 Vector2 pos = Projectile.Center + ang.ToRotationVector2() * Main.rand.NextFloat(34f, 56f) * Projectile.scale;
@@ -471,13 +458,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //双冲击环：亮橙快环压小、暗红慢环铺大
+            //双冲击环
             PRTLoader.NewParticle<PRT_DWave>(Projectile.Center, Vector2.Zero, new Color(255, 185, 85), 0.5f)
                 ?.Configure(new Vector2(1f, 1f), 0f, 2.6f, 14);
             PRTLoader.NewParticle<PRT_DWave>(Projectile.Center, Vector2.Zero, new Color(170, 40, 22), 0.3f)
                 ?.Configure(new Vector2(1f, 1f), 0f, 3.4f, 26);
 
-            //余烬迸散：顺速度拉丝+重力坠落
+            //余烬迸散，顺速度拉丝+重力坠落
             for (int i = 0; i < 12; i++) {
                 PRTLoader.NewParticle<PRT_PallbearerEmber>(Projectile.Center,
                     Main.rand.NextVector2Unit() * Main.rand.NextFloat(5f, 17f),
@@ -485,7 +472,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     ?.Configure(Main.rand.Next(18, 30), 0.06f);
             }
 
-            //火舌层
             for (int i = 0; i < 6; i++) {
                 var prt = PRTLoader.NewParticle<PRT_HellFlame>(Projectile.Center,
                     Main.rand.NextVector2Unit() * Main.rand.NextFloat(4f, 10f),
@@ -498,7 +484,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //黑烟座：暗色烟团先铺底，压住亮部并作为余韵存活
+            //黑烟座
             for (int i = 0; i < 8; i++) {
                 Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f) - Vector2.UnitY * Main.rand.NextFloat(0.5f, 1.2f);
                 PRTLoader.NewParticle<PRT_FishDemonicHellSmoke>(
@@ -507,7 +493,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     ?.Configure(Main.rand.Next(55, 90), Main.rand.NextFloat(-0.03f, 0.03f));
             }
 
-            //余燃 aftermath：焦点处继续燃烧 1-2 秒，活得比弹体久
+            //余燃 aftermath
             for (int i = 0; i < 8; i++) {
                 PRTLoader.NewParticle<PRT_LavaFire>(
                     Projectile.Center + Main.rand.NextVector2Circular(70f, 70f),
@@ -516,7 +502,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     ?.SetLifetime(70, 110);
             }
 
-            //火把尘底噪
             for (int i = 0; i < 18; i++) {
                 Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(4f, 14f);
                 Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Torch, vel, 80,
@@ -559,7 +544,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float velRot = Projectile.velocity.ToRotation();
             float pulse = (float)Math.Sin(time * 9f + Projectile.whoAmI) * 0.5f + 0.5f;
 
-            //第1层：顺速度拉伸的深红底光（唯一径向渐变层，只作底，不作 body）
+            //第1层
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow != null) {
                 float speedStretch = 1.5f + Projectile.velocity.Length() * 0.02f;
@@ -568,7 +553,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     new Vector2(2.2f * speedStretch, 2.0f) * scale, SpriteEffects.None, 0f);
             }
 
-            //第2层：旋转拖影弧（自旋由 smear 表达而非位置残影）
+            //第2层
             Texture2D smear = CWRAsset.SemiCircularSmear?.Value;
             if (smear != null) {
                 float sc = 110f * scale / smear.Width;
@@ -576,7 +561,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Projectile.rotation * 1.6f, smear.Size() / 2f, sc, SpriteEffects.None, 0f);
             }
 
-            //第3层：黑烟剪影核（AlphaBlend 暗体，双帧异向翻滚，effect body 是暗结构而非光球）
+            //第3层
             Texture2D smokeSheet = CWRAsset.SmokeSheet01?.Value;
             if (smokeSheet != null) {
                 int frameSize = smokeSheet.Width / 2;
@@ -594,7 +579,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     origin, 0.17f * scale, SpriteEffects.None, 0f);
             }
 
-            //第4层：前缘月牙焰（方向编码：火焰兜在弹头迎风面）
+            //第4层
             Texture2D crescent = CrescentSoft01?.Value;
             if (crescent != null) {
                 float sc = 105f * scale / crescent.Width * (0.92f + pulse * 0.14f);
@@ -603,7 +588,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     velRot, crescent.Size() / 2f, sc, SpriteEffects.None, 0f);
             }
 
-            //第5层：极小暖金热芯（同色双层叠亮，无纯白常驻）
+            //第5层
             if (glow != null) {
                 sb.Draw(glow, center + velDir * 8f * scale, null,
                     new Color(255, 150, 55, 0) * 0.85f,
@@ -616,7 +601,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>彗尾条带：沿 oldPos 轨迹的 TriangleStrip，宽度衰减，头亮尾灭，爆后 6 帧内速灭</summary>
+        /// <summary>彗尾条带</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
             if (Main.dedServ || stripFade < 0.05f) {
                 return;
@@ -627,7 +612,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //采样点：当前中心打头，oldPos 依次向尾（去掉未写入的零槽与过近点）
+            //采样点
             Vector2 half = Projectile.Size / 2f;
             Span<Vector2> pts = stackalloc Vector2[1 + Projectile.oldPos.Length];
             int count = 0;
@@ -646,7 +631,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //条带顶点：头段先快速铺满宽度再向尾收拢成尖
+            //条带顶点
             float maxWidth = 26f * Projectile.scale;
             var verts = new VertexPositionColorTexture[count * 2];
             for (int i = 0; i < count; i++) {
@@ -685,10 +670,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 地狱余烬：吸入模式朝法阵心加速螺旋坠入（吸入感由向心加速度编码，到心即灭）；
-    /// 自由模式急减速后受重力下坠。顺速度拉丝+同色双层热芯，无纯白
-    /// </summary>
+    /// <summary>地狱余烬</summary>
     internal class PRT_FishDemonicHellEmber : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "SoftGlow";
@@ -750,7 +732,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         return;
                     }
                     Vector2 dir = toC / dist;
-                    //向心加速+随距衰减的切向分量：螺旋收紧坠入
+                    //向心加速+随距衰减的切向分量
                     Velocity += dir * accel * (1f + Time * 0.05f);
                     Vector2 tangent = new(-dir.Y, dir.X);
                     Velocity += tangent * swirlDir * accel * 0.55f * MathHelper.Clamp(dist / 220f, 0.2f, 1f);
@@ -764,7 +746,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //自由余烬：急减速后下坠
+            //自由余烬，急减速后下坠
             Velocity *= 0.92f;
             if (Velocity.Length() < 3f) {
                 Velocity.Y += gravity;
@@ -781,7 +763,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 pos = Position - Main.screenPosition;
             Color col = Color with { A = 0 };
 
-            //顺速度拉丝：速度快时余烬呈线
+            //顺速度拉丝，速度快时余烬呈线
             float speed = Velocity.Length();
             if (streak != null && speed > 1.5f) {
                 float stretch = MathHelper.Clamp(speed * 0.14f, 0.3f, 1.5f);
@@ -791,14 +773,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             Vector2 origin = core.Size() * 0.5f;
-            //同色双层叠亮：小而热的芯，不引入纯白
+            //同色双层叠亮
             spriteBatch.Draw(core, pos, null, col * (0.55f * Opacity), 0f, origin, 0.3f * Scale, SpriteEffects.None, 0f);
             spriteBatch.Draw(core, pos, null, col * (0.95f * Opacity), 0f, origin, 0.13f * Scale, SpriteEffects.None, 0f);
             return false;
         }
     }
 
-    /// <summary>地狱黑烟：AlphaBlend 暗色烟团，缓升缓胀，给亮部坐暗底并作余韵存活</summary>
+    /// <summary>地狱黑烟</summary>
     internal class PRT_FishDemonicHellSmoke : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "SmokeSheet01";

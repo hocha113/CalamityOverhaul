@@ -5,7 +5,6 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.QuestLogs
 {
-    /// <summary>任务完成通知装饰器</summary>
     public class QuestNotificationSystem : ModSystem, ILocalizedModType
     {
         public string LocalizationCategory => "UI";

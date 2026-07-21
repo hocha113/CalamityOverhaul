@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>风暴细胞：蓄力每 25 帧向最近敌人射追踪电击束</summary>
+    /// <summary>风暴细胞，蓄力每 25 帧向最近敌人射追踪电击束</summary>
     internal sealed class StormCellModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;

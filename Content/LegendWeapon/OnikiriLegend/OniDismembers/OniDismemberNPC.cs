@@ -7,21 +7,18 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 {
-    /// <summary>
-    /// 肢解碎片绘制：快照捕获完成后接管目标的 NPC 层绘制。<br/>
-    /// PreDraw 返回 false 隐藏本体，原地把快照 RT 的凸多边形碎片以顶点三角扇提交
-    /// （<c>OniDismember.fx</c>：定格冷灰 + 断面灼热辉光）。在 NPC 自己的绘制槽位内
-    /// End/Begin 完成，与其它 NPC 的遮挡层序保持不变
-    /// </summary>
+    /// <summary>肢解残片绘制</summary>
     internal class OniDismemberNPC : GlobalNPC
     {
         //复用缓冲，避免逐帧分配
+
         private static readonly List<VertexPositionColorTexture> vertexScratch = [];
         private static Vector4[] cutLineParams = [];
         private static Vector4[] cutGlowParams = [];
 
         public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot) {
             //僵直的尸身不再构成接触伤害威胁
+
             return !OniDismember.IsDismembered(npc.whoAmI);
         }
 
@@ -31,6 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 return true;
             }
             //快照未就绪（捕获排队中/低质量降级）时本体照常绘制
+
             if (!entry.Captured || entry.SnapWidth <= 0) {
                 return true;
             }
@@ -44,6 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
 
             //暂停 NPC 层批次，原地插入顶点绘制，层序不变
+
             spriteBatch.End();
             DrawPieces(entry, rt, fx);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
@@ -102,6 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             fx.Parameters["uSnapSize"]?.SetValue(new Vector2(entry.SnapWidth, entry.SnapHeight));
             //定格冷灰随滞拍结束缓入，尸身"冷下来"
+
             float coldIn = OniDismember.SeparationCurve(entry.Timer - entry.Cuts[0].Birth, entry.Cuts[0].Hold);
             fx.Parameters["uDesat"]?.SetValue(0.38f * coldIn);
             fx.Parameters["uDim"]?.SetValue(1f - 0.16f * coldIn);
@@ -121,22 +121,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             fx.Parameters["uCutGlow"]?.SetValue(cutGlowParams);
             fx.Parameters["uCutCount"]?.SetValue(count);
             //首批画身体，后续批次输出 alpha=0 的附加辉光
+
             fx.Parameters["uDrawBase"]?.SetValue(start == 0 ? 1f : 0f);
         }
 
-        /// <summary>切口辉光强度：亮起闪 → 滞拍呼吸 → 分离后稳定灼热，尾段随整体淡出</summary>
+        /// <summary>切口辉光强度、亮起闪 → 滞拍呼吸 → 分离后稳定灼热，尾段随整体淡出</summary>
         private static float GlowStrength(DismemberEntry entry, in DismemberCut cut) {
             int age = entry.Timer - cut.Birth;
             if (age < 0) {
-                return 0f;   //波及调度的未来切口：亮起前不可见
+                return 0f;   //波及调度的未来切口、亮起前不可见
+
             }
             float strength;
             if (age <= 2) {
                 strength = 1.35f;                         //切口亮起的过曝闪
+
             }
             else if (age < cut.Hold) {
                 float breath = 0.5f + 0.5f * MathF.Sin(age * 0.55f - MathHelper.PiOver2);
-                strength = 0.55f + 0.30f * breath;        //滞拍呼吸：将断未断
+                strength = 0.55f + 0.30f * breath;        //滞拍呼吸、将断未断
+
             }
             else {
                 float t = OniDismember.SeparationCurve(age, cut.Hold);
@@ -146,9 +150,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             return strength * entry.FadeAlpha;
         }
 
-        /// <summary>切口辉光半宽：闪帧宽 → 收束成锐利热线</summary>
+        /// <summary>切口辉光半宽、闪帧宽 → 收束成锐利热线</summary>
         private static float GlowHalfWidth(DismemberEntry entry, in DismemberCut cut) {
             int age = Math.Max(entry.Timer - cut.Birth, 0);   //未来切口按亮起帧宽度待命
+
             float snapScale = MathF.Max(MathF.Min(entry.SnapWidth, entry.SnapHeight) / 160f, 0.6f);
             if (age < cut.Hold) {
                 return (7f - 3f * age / cut.Hold) * snapScale;
@@ -156,7 +161,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             return (4f - 1.6f * OniDismember.SeparationCurve(age, cut.Hold)) * snapScale;
         }
 
-        /// <summary>全部碎片 → 三角扇顶点（世界坐标，交给 shader 的 transformMatrix 投屏）</summary>
+        /// <summary>全部碎片 → 三角扇顶点</summary>
         private static void BuildVertices(DismemberEntry entry) {
             vertexScratch.Clear();
             int requiredCapacity = 0;
@@ -175,6 +180,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 Span<Vector2> world = stackalloc Vector2[piece.Verts.Length];
                 for (int i = 0; i < piece.Verts.Length; i++) {
                     //绕碎片质心旋转 → 平移分离位移 → 锚点定位；uv 恒取原始局部坐标
+
                     Vector2 rel = piece.Verts[i] - piece.Centroid;
                     Vector2 rotated = new(rel.X * cos - rel.Y * sin, rel.X * sin + rel.Y * cos);
                     world[i] = entry.AnchorCenter + piece.Centroid + rotated + offset;

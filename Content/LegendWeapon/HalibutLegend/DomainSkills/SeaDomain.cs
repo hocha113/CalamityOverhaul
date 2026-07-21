@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             var hp = player.GetOverride<HalibutPlayer>();
             hp.SeaDomainActive = false;
 
-            //播放领域关闭音效：水流消退
+            //领域关闭音、水流消退
             if (Main.myPlayer != player.whoAmI) {
                 return;
             }
@@ -226,7 +226,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             float speed = Owner.velocity.Length();
             bool moving = speed > MoveThreshold;
             float targetFade = moving ? TargetMoveFade : 1f;
-            //加速淡出/淡入：移动时快 -> 静止时更快恢复
+            //淡出淡入加速，静止更快恢复
             float lerpSpeed = moving ? 0.1f : 0.15f;
             movementFadeFactor = MathHelper.Lerp(movementFadeFactor, targetFade, lerpSpeed);
             float fishTarget = moving ? TargetMoveFishFade : 1f;
@@ -486,7 +486,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 SpawnDomainParticle();
             }
 
-            //鱼发光粒子：保持固定频率
+            //鱼发光粒子、固定频率
             if (particleTimer % 4 == 0 && layers != null) {
                 //随机选择2-3层生成粒子
                 int layerSamples = Math.Min(3, layers.Count);
@@ -502,7 +502,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
 
             bubbleTimer++;
-            //气泡频率：根据层数适当调整但不过度降低
+            //气泡频率随层微调
             int bubbleInterval = Math.Max(10, 25 - layerCount * 2);
             if (bubbleTimer % bubbleInterval == 0 && layers != null) {
                 var randomLayer = layers[Main.rand.Next(layers.Count)];
@@ -759,23 +759,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         public DomainLayer(int layerIndex, int totalLayers) {
             LayerIndex = layerIndex;
 
-            //优化半径计算：前3层密集，后续层逐渐扩大
+            //半径、前3层密后续扩
             float baseRadius = 220f;
             float radiusStep;
             if (layerIndex < 3) {
-                //前3层：紧密布局
+                //前3层紧
                 radiusStep = 130f;
                 TargetRadius = baseRadius + (layerIndex * radiusStep);
             }
             else {
-                //3层之后：渐进扩大
+                //3层后渐扩
                 float base3LayerRadius = baseRadius + (2 * 130f); //第3层的半径
                 radiusStep = 100f + ((layerIndex - 2) * 15f); //逐渐增大间距
                 TargetRadius = base3LayerRadius + radiusStep * (layerIndex - 2);
             }
             Radius = TargetRadius;
 
-            //鱼数量：前5层线性增长，后续层增长放缓
+            //鱼数、前5层线性后续放缓
             if (layerIndex < 5) {
                 FishCount = 20 + (layerIndex * 10);
             }
@@ -783,25 +783,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 FishCount = 60 + ((layerIndex - 4) * 6);
             }
 
-            //颜色渐变：多层时使用更丰富的色谱
+            //多层色谱渐变
             float colorProgress = layerIndex / (float)Math.Max(1, totalLayers - 1);
             if (totalLayers <= 3) {
-                //1-3层：深蓝到浅蓝
+                //1-3层、深蓝→浅蓝
                 BorderColor = Color.Lerp(new Color(60, 160, 255), new Color(120, 220, 255), colorProgress);
             }
             else if (totalLayers <= 7) {
-                //4-7层：深蓝到青绿
+                //4-7层、深蓝→青绿
                 BorderColor = Color.Lerp(new Color(50, 140, 255), new Color(100, 230, 240), colorProgress);
             }
             else {
-                //8-10层：深蓝到亮青
+                //8-10层、深蓝→亮青
                 BorderColor = Color.Lerp(new Color(40, 120, 255), new Color(120, 255, 255), colorProgress);
             }
 
-            //旋转速度：外层更慢
+            //外层更慢旋
             RotationSpeed = MathHelper.Lerp(1f, 0.3f, colorProgress);
 
-            //波动幅度：外层更大
+            //外层波动更大
             WaveAmplitude = MathHelper.Lerp(6f, 14f, colorProgress);
 
             Fish = new List<DomainFishBoid>();

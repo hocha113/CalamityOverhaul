@@ -7,7 +7,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>骇客时间主题：红青双主色体系 + 共享几何绘制辅助</summary>
+    /// <summary>骇客时间主题，红青双主色 + 共享几何</summary>
     internal static class HackTheme
     {
         #region 深色基底（不随敌我切换）
@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         //警告色
         public static readonly Color Danger = new(220, 45, 45);
-        //上传中色
+        //上传中
         public static readonly Color Uploading = new(200, 170, 40);
         //蔓延色
         public static readonly Color Contagion = new(160, 40, 200);
@@ -32,12 +32,12 @@ namespace CalamityOverhaul.Content.HackTimes
         public static readonly Color TextNormal = new(140, 160, 170);
         public static readonly Color TextBright = new(210, 225, 230);
 
-        //进度条（义体侧资源，恒定青）
+        //进度条，义体侧恒定青
         public static readonly Color ProgressBg = new(12, 16, 22);
         public static readonly Color ProgressFill = new(0, 190, 200);
         public static readonly Color ProgressGlow = new(40, 220, 230);
 
-        //义体OS专属青，RAM 弧等玩家侧资源与 HackRamArc.fx 固定调色对齐
+        //义体OS青，与 HackRamArc.fx 固定调色对齐
         public static readonly Color DeckAccent = new(0, 200, 210);
         public static readonly Color DeckBorder = new(35, 50, 60);
         public static readonly Color DeckBorderBright = new(50, 70, 80);
@@ -46,24 +46,24 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 敌我双主色
 
-        /// <summary>敌对混合度 0..1，选中敌对目标时框架色滑向扫描仪红</summary>
+        /// <summary>敌对混合度 0..1，敌对目标时滑向扫描仪红</summary>
         public static float HostileBlend { get; private set; }
 
-        //中立态（义体OS青）
+        //中立态，义体OS青
         private static readonly Color NeutralAccent = new(0, 200, 210);
         private static readonly Color NeutralAccentAlt = new(40, 180, 160);
         private static readonly Color NeutralBorder = new(35, 50, 60);
         private static readonly Color NeutralBorderBright = new(50, 70, 80);
         private static readonly Color NeutralEdgeGlow = new(30, 200, 210);
 
-        //敌对态（扫描仪红）
+        //敌对态，扫描仪红
         private static readonly Color HostileAccentColor = new(230, 56, 68);
         private static readonly Color HostileAccentAltColor = new(255, 122, 92);
         private static readonly Color HostileBorderColor = new(86, 32, 40);
         private static readonly Color HostileBorderBrightColor = new(126, 46, 56);
         private static readonly Color HostileEdgeGlowColor = new(235, 70, 82);
 
-        /// <summary>主强调色，随目标敌我在青红间过渡</summary>
+        /// <summary>主强调色，青红插值</summary>
         public static Color Accent => Color.Lerp(NeutralAccent, HostileAccentColor, HostileBlend);
         /// <summary>副强调色</summary>
         public static Color AccentAlt => Color.Lerp(NeutralAccentAlt, HostileAccentAltColor, HostileBlend);
@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.HackTimes
         /// <summary>边缘辉光</summary>
         public static Color EdgeGlow => Color.Lerp(NeutralEdgeGlow, HostileEdgeGlowColor, HostileBlend);
 
-        /// <summary>每帧推进敌我混合度，由 HackTimeUI.Update 驱动</summary>
+        /// <summary>每帧推进敌我混合度，HackTimeUI.Update 驱动</summary>
         public static void UpdateProfile() {
             float target = EvaluateHostile(HackTime.CurrentScanTarget) ? 1f : 0f;
             HostileBlend = MathHelper.Lerp(HostileBlend, target, 0.09f);
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.HackTimes
             else if (HostileBlend > 0.998f) HostileBlend = 1f;
         }
 
-        /// <summary>目标是否敌对，决定框架色相</summary>
+        /// <summary>目标是否敌对</summary>
         public static bool EvaluateHostile(IScannable target) {
             if (target is NpcScannable n && n.IsValid) {
                 NPC npc = Main.npc[n.NpcIndex];
@@ -131,9 +131,9 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 共享绘制辅助
 
-        /// <summary>1px 白色像素纹理，可能为 null</summary>
+        /// <summary>1px 白像素，可能 null</summary>
         public static Texture2D Pixel => VaultAsset.placeholder2?.Value;
-        /// <summary>Pixel 的 1px 源矩形</summary>
+        /// <summary>Pixel 源矩形</summary>
         public static readonly Rectangle SrcPixel = new(0, 0, 1, 1);
 
         public static void DrawLine(SpriteBatch sb, Vector2 start, Vector2 end, float thickness, Color color) {
@@ -146,7 +146,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 Vector2.Zero, new Vector2(length, thickness), SpriteEffects.None, 0f);
         }
 
-        /// <summary>虚线段，dashLen 实段长 gapLen 空隙长</summary>
+        /// <summary>虚线，dashLen/gapLen 单位 px</summary>
         public static void DrawDashedLine(SpriteBatch sb, Vector2 start, Vector2 end,
             float thickness, Color color, float dashLen = 5f, float gapLen = 4f) {
             Vector2 diff = end - start;
@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>旋转 45° 的实心菱形</summary>
+        /// <summary>实心菱形，旋转 45°</summary>
         public static void DrawDiamond(SpriteBatch sb, Vector2 center, float size, Color color) {
             Texture2D px = Pixel;
             if (px == null) return;
@@ -168,7 +168,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 new Vector2(0.5f), size, SpriteEffects.None, 0f);
         }
 
-        /// <summary>旋转菱形描边（四段线）</summary>
+        /// <summary>菱形描边</summary>
         public static void DrawDiamondOutline(SpriteBatch sb, Vector2 center, float radius, float thickness, Color color) {
             Vector2 t = center + new Vector2(0, -radius);
             Vector2 r = center + new Vector2(radius, 0);
@@ -180,14 +180,13 @@ namespace CalamityOverhaul.Content.HackTimes
             DrawLine(sb, l, t, thickness, color);
         }
 
-        /// <summary>矩形区域内的斜线剖面纹，机械感禁用态覆盖</summary>
+        /// <summary>斜线剖面纹，禁用态覆盖</summary>
         public static void DrawHatch(SpriteBatch sb, Rectangle rect, float step, Color color) {
             for (float d = -rect.Height; d < rect.Width; d += step) {
                 float x0 = rect.X + d;
                 float y0 = (float)rect.Bottom;
                 float x1 = rect.X + d + rect.Height;
                 float y1 = (float)rect.Y;
-                //裁剪到矩形横向范围
                 if (x0 < rect.X) {
                     float cut = rect.X - x0;
                     x0 = rect.X;
@@ -203,13 +202,12 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>燕尾旗填充：矩形主体 + 左/右端斜切（正值为切掉的横向宽度）</summary>
+        /// <summary>燕尾旗填充，taper 为正切掉的横向宽度</summary>
         public static void DrawPennantFill(SpriteBatch sb, Rectangle rect, float taperLeft, float taperRight, Color color) {
             Texture2D px = Pixel;
             if (px == null) return;
             for (int dy = 0; dy < rect.Height; dy++) {
                 float t = (float)dy / rect.Height;
-                //左端上宽下窄、右端上窄下宽的斜切
                 int cutL = (int)(taperLeft * (1f - t));
                 int cutR = (int)(taperRight * t);
                 int x = rect.X + cutL;
@@ -219,17 +217,14 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>
-        /// 无描边文字。深底上的弱化/装饰文本用——<see cref="Utils.DrawBorderString"/> 的黑描边
-        /// 在低亮度填充下会把小字糊成黑块，此路径让文字随透明度干净淡出
-        /// </summary>
+        /// <summary>无描边文字，深底淡字不走 <see cref="Utils.DrawBorderString"/></summary>
         public static void DrawRawText(SpriteBatch sb, string text, Vector2 pos, Color color, float scale) {
             if (string.IsNullOrEmpty(text)) return;
             sb.DrawString(FontAssets.MouseText.Value, text, new Vector2((int)pos.X, (int)pos.Y),
                 color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
 
-        /// <summary>微型状态徽章：细描边小框 + 文字，返回徽章像素宽</summary>
+        /// <summary>微型状态徽章，返回像素宽</summary>
         public static float DrawBadge(SpriteBatch sb, Vector2 pos, string text, Color color, float alpha, float fontScale = 0.58f) {
             Texture2D px = Pixel;
             if (px == null || string.IsNullOrEmpty(text)) return 0f;
@@ -239,7 +234,7 @@ namespace CalamityOverhaul.Content.HackTimes
             int h = (int)size.Y + 2;
             Rectangle box = new((int)pos.X, (int)pos.Y, w, h);
             sb.Draw(px, box, SrcPixel, color * (alpha * 0.12f));
-            //只描上下两条细边，保持开放感
+            //只描上下边
             sb.Draw(px, new Rectangle(box.X, box.Y, w, 1), SrcPixel, color * (alpha * 0.50f));
             sb.Draw(px, new Rectangle(box.X, box.Bottom - 1, w, 1), SrcPixel, color * (alpha * 0.35f));
             Utils.DrawBorderString(sb, text, new Vector2((int)(pos.X + padX), (int)pos.Y), color * alpha, fontScale);

@@ -15,23 +15,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 
         public Item[] Modules;
 
-        //当前激活的预设索引（0/1/2）
+        //当前预设 0/1/2
         public int ActivePreset = 0;
 
-        //三套预设，每套包含 SlotCount 个槽位
+        //三套预设
         public Item[][] Presets;
 
-        //超杀层数（0-10），每次击杀叠加，随时间衰减
+        //超杀层 0-10，击杀叠，随时间衰减
         public int OverkillStacks;
-        //层数衰减计时器（每120帧 -1 层）
+        //超杀衰减计时
         public int OverkillTimer;
         private float overkillTimerCarry;
 
-        //模具加工台：六类碎片数量（按 SHPCSlotCategory 索引）
+        //六类模具碎片
         public int[] MoldShards;
-        //模具加工台：已发现模块的 ItemType 集合（图鉴主数据）
+        //图鉴已发现模块
         public HashSet<int> DiscoveredModules;
-        //模具加工台：六类钉选的"固定重铸目标" ItemType，-1 表示该类别仍为随机模式
+        //钉选固定重铸目标，-1=随机
         public int[] PinnedReforgeTarget;
 
         public static SHPCPlayer Get(Player player) => player.GetModPlayer<SHPCPlayer>();
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             return dst;
         }
 
-        //切换到指定预设，先保存当前槽位到活跃预设，再载入目标预设
+        //切预设，先存当前再载入
         public void SwitchPreset(int newIdx) {
             if (newIdx < 0 || newIdx >= PresetCount || newIdx == ActivePreset) {
                 return;
@@ -167,8 +167,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             UpdateOverkillStacks();
         }
 
-        //超杀层数的衰减与清理放在 ModPlayer 中托管而不是模块钩子里，
-        //否则卸下超杀机匣后钩子停止运行，层数会被永久冻结并持续提供增伤
+        //超杀衰减放ModPlayer，卸机匣后钩子停否则层数冻结
         private void UpdateOverkillStacks() {
             if (OverkillStacks <= 0) {
                 return;
@@ -190,7 +189,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 
         public override void SaveData(TagCompound tag) {
             try {
-                //保存前先将当前槽位同步到活跃预设
+                //保存前同步当前槽到活跃预设
                 Presets ??= CreateEmptyPresets();
                 Presets[ActivePreset] = CloneModules(SafeModules());
 
@@ -205,12 +204,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                     }
                 }
 
-                //模具加工台持久化：碎片数 / 图鉴 / 钉选
+                //模具持久化，碎片/图鉴/钉选
                 MoldShards ??= new int[SHPCData.SlotCount];
                 PinnedReforgeTarget ??= new int[SHPCData.SlotCount];
                 DiscoveredModules ??= new HashSet<int>();
 
-                //写入前重新校验长度 = SlotCount（升版若 SlotCount 改了能自动适配）
+                //长度对齐SlotCount
                 int[] shardsSafe = new int[SHPCData.SlotCount];
                 int[] pinnedSafe = new int[SHPCData.SlotCount];
                 for (int i = 0; i < SHPCData.SlotCount; i++) {
@@ -218,7 +217,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                     pinnedSafe[i] = i < PinnedReforgeTarget.Length ? PinnedReforgeTarget[i] : -1;
                 }
 
-                //DiscoveredModules 排序后写出，避免每次保存产生无意义的 diff
+                //图鉴排序写出，减无意义diff
                 List<int> discoveredSorted = DiscoveredModules.Where(t => t > 0).Distinct().OrderBy(t => t).ToList();
 
                 tag["SHPC_MoldShards"] = shardsSafe.ToList();
@@ -233,12 +232,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             try {
                 Presets ??= CreateEmptyPresets();
 
-                //活跃预设索引，旧档默认 0
+                //活跃预设，旧档默认0
                 ActivePreset = tag.TryGet("SHPC_ActivePreset", out int savedPreset)
                     ? System.Math.Clamp(savedPreset, 0, PresetCount - 1)
                     : 0;
 
-                //以 SHPC_ActivePreset 是否存在作为新格式标记，空存档（全槽位为空）下该 key 同样存在
+                //有SHPC_ActivePreset即新格式
                 bool isNewFormat = tag.ContainsKey("SHPC_ActivePreset");
                 for (int p = 0; p < PresetCount; p++) {
                     for (int s = 0; s < SHPCData.SlotCount; s++) {
@@ -255,7 +254,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                     }
                 }
 
-                //兼容旧存档：旧格式只保存 SHPC_Mod_{i}，迁移到预设0
+                //旧档SHPC_Mod_i迁到预设0
                 if (!isNewFormat) {
                     for (int i = 0; i < SHPCData.SlotCount; i++) {
                         if (tag.TryGet($"SHPC_Mod_{i}", out TagCompound modTag)) {
@@ -268,10 +267,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                     }
                 }
 
-                //将活跃预设的内容加载到 Modules 作为当前使用状态
+                //活跃预设载入Modules
                 Modules = CloneModules(Presets[ActivePreset]);
 
-                //模具加工台持久化读取，旧存档兜底
+                //模具读取，旧档兜底
                 MoldShards = new int[SHPCData.SlotCount];
                 PinnedReforgeTarget = new int[SHPCData.SlotCount];
                 for (int i = 0; i < SHPCData.SlotCount; i++) {
@@ -279,7 +278,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 }
                 DiscoveredModules = new HashSet<int>();
 
-                //碎片：仅复制可用范围；负值与异常大值都做约束（防存档损坏 / 篡改）
+                //碎片钳位防坏档
                 const int ShardHardCap = 9_999_999;
                 if (tag.TryGet("SHPC_MoldShards", out List<int> shardList) && shardList != null) {
                     int copy = System.Math.Min(SHPCData.SlotCount, shardList.Count);
@@ -287,7 +286,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                         MoldShards[i] = System.Math.Clamp(shardList[i], 0, ShardHardCap);
                     }
                 }
-                //图鉴：去重 + 过滤已不存在的 type（mod 卸载 / type 重排时不残留 ghost ID）
+                //图鉴过滤失效type
                 if (tag.TryGet("SHPC_DiscoveredModules", out List<int> discList) && discList != null) {
                     foreach (int t in discList) {
                         if (t > 0 && IsValidShpcModuleType(t)) {
@@ -295,7 +294,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                         }
                     }
                 }
-                //钉选：校验目标类型有效且与索引类别匹配；否则降级为 -1
+                //钉选校验类别，失败降-1
                 if (tag.TryGet("SHPC_PinnedReforgeTarget", out List<int> pinList) && pinList != null) {
                     int copy = System.Math.Min(SHPCData.SlotCount, pinList.Count);
                     for (int i = 0; i < copy; i++) {
@@ -307,7 +306,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                         if (!ContentSamples.ItemsByType.TryGetValue(target, out Item sample)
                             || sample.ModItem is not SHPCModuleItem mod
                             || (int)mod.SlotCategory != i) {
-                            //目标无效或类别不匹配，回退到随机模式而不是抛弃整段存档
+                            //目标无效回退随机
                             PinnedReforgeTarget[i] = -1;
                             continue;
                         }
@@ -315,14 +314,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                     }
                 }
 
-                //老档：扫背包+预设补图鉴
+                //老档补图鉴
                 BackfillDiscoveredFromInventoryAndPresets();
             } catch (System.Exception ex) {
                 CWRMod.Instance.Logger.Error($"SHPCPlayer.LoadData Error: {ex}");
             }
         }
 
-        /// <summary>校验某 ItemType 是否仍为合法的 SHPC 改件（mod 卸载、type 重排时返回 false）</summary>
+        /// <summary>ItemType是否仍为合法改件</summary>
         private static bool IsValidShpcModuleType(int type) {
             return ContentSamples.ItemsByType.TryGetValue(type, out Item sample)
                 && sample.ModItem is SHPCModuleItem;

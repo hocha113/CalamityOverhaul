@@ -10,19 +10,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>双鳕伴飞域内 shader 资源（域内加载器，不经 EffectLoader）</summary>
     internal class FishDoubleCodAssets
     {
-        /// <summary>细水尾流条带：双鱼各拖一条，随螺旋交织成 DNA</summary>
+        /// <summary>细水尾流条带</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect FishDoubleCodWake { get; private set; }
     }
 
-    /// <summary>
-    /// 双鳕伴飞共享演出协作类。<br/>
-    /// 材质：银鳞+水尾流。色彩脚本：深水暗蓝压底 + 水流蓝中层 + 银鳞冷白只作瞬时碎光；
-    /// 禁常驻纯白、禁大面积加色堆叠，小而精的双鱼语系
-    /// </summary>
+    /// <summary>双鳕伴飞</summary>
     internal static class FishDoubleCodVFX
     {
-        //==== 色彩脚本 ====
         /// <summary>深水暗蓝（外圈/尾端压底）</summary>
         public static readonly Color Deep = new(26, 44, 62);
         /// <summary>水流蓝（饱和中层主色）</summary>
@@ -32,7 +27,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// <summary>银鳞碎光（近白冷银，仅限 ≤2 帧瞬闪）</summary>
         public static readonly Color Spec = new(216, 234, 246);
 
-        //==== shader 参数装配 ====
 
         /// <summary>FishDoubleCodWake 标准参数；phase 传弹幕 whoAmI 派生量避免双带同相</summary>
         public static void ApplyWake(Effect fx, float phase) {
@@ -47,10 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             fx.Parameters["uColSpec"]?.SetValue(Spec.ToVector3());
         }
 
-        /// <summary>
-        /// 水尾流拖尾：oldPos 逐点按 oldRot 朝尾侧回退 tailOffset，条带根部锚定鱼尾而非鱼心。
-        /// Additive 绘制后恢复 AlphaBlend；effect 需已 <see cref="ApplyWake"/>
-        /// </summary>
+        /// <summary>水尾流拖尾，oldPos 逐点按 oldRot 朝尾侧回退 tailOffset，条带根部锚定鱼尾而非鱼心。 Additive 绘制后恢复 AlphaBlend；effect 需已 <see cref="ApplyWake"/></summary>
         public static void DrawWakeTrail(Projectile projectile, ref Trail trail
             , TrailThicknessCalculator widthFunc, TrailColorEvaluator colorFunc, Effect effect, float tailOffset) {
             if (effect == null || projectile.oldPos == null || projectile.oldPos.Length == 0) {
@@ -71,9 +62,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
         }
 
-        //==== 粒子族 ====
 
-        /// <summary>水珠扇：沿 dir 锥形甩出的受重力水珠（出生自带 1 帧银闪）</summary>
+        /// <summary>水珠扇，沿 dir 锥形甩出的受重力水珠（出生自带 1 帧银闪）</summary>
         public static void DropletFan(Vector2 pos, Vector2 dir, int count, float speedMin, float speedMax, float spread = 0.5f) {
             if (Main.dedServ) {
                 return;
@@ -87,7 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>水面破开的扁椭圆冲击环：长轴垂直于 rot（水口被顶开的方向），读作水口而非光圈</summary>
+        /// <summary>水面破开的扁椭圆冲击环</summary>
         public static void SplashRing(Vector2 pos, float rot, float startScale, float finalScale, int lifetime) {
             if (Main.dedServ) {
                 return;
@@ -96,7 +86,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(new Vector2(1f, 0.55f), rot + MathHelper.PiOver2, finalScale, lifetime);
         }
 
-        /// <summary>银鳞碎闪：小而短命的星点，克制数量</summary>
+        /// <summary>银鳞碎闪</summary>
         public static void Glints(Vector2 pos, int count, float speed = 2f) {
             if (Main.dedServ) {
                 return;
@@ -109,10 +99,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 双鳕水珠：受重力、随速度拉伸的 AlphaBlend 液滴，出生 2 帧带银鳞小闪（瞬现即灭）。
-    /// 转向甩水、命中溅水、消散水花共用
-    /// </summary>
+    /// <summary>双鳕水珠</summary>
     internal class PRT_FishDoubleCodDroplet : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -157,15 +144,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             Vector2 origin = tex.Size() * 0.5f;
             Vector2 pos = Position - Main.screenPosition;
-            //随速度纵向拉伸：快则成线、慢则成珠
+            //随速度纵向拉伸
             float stretch = MathHelper.Clamp(Velocity.Length() * 0.05f, 0f, 0.9f);
             Vector2 scale = new Vector2(0.3f * (1f - stretch * 0.35f), 0.55f * (1f + stretch * 1.6f)) * Scale;
 
-            //双层同色窄叠：中心更实，读作液滴而非光斑
+            //双层同色窄叠
             spriteBatch.Draw(tex, pos, null, Color, Rotation, origin, scale, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, pos, null, Color, Rotation, origin, scale * new Vector2(0.45f, 1f), SpriteEffects.None, 0f);
 
-            //出生 2 帧银闪：水珠离体瞬间接住光（A=0 加色观感，瞬现即灭）
+            //出生 2 帧银闪
             if (age <= 2) {
                 Texture2D star = CWRAsset.StarGlow01?.Value;
                 if (star != null) {
@@ -178,10 +165,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 双鳕死后水痕：鱼死亡瞬间从 oldPos 截取的一段路径，独立存活 14 帧，
-    /// 尾端先蚀、整体缓缓下沉，水失去了推它的鱼
-    /// </summary>
+    /// <summary>双鳕死后水痕</summary>
     internal class PRT_FishDoubleCodWake : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -235,7 +219,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             for (int i = 0; i < count - 1; i++) {
                 float t = i / (float)(count - 1);   //0=死亡位置侧 1=旧尾
-                //旧尾先蚀：存活窗口随寿命向头端收缩
+                //旧尾先蚀
                 float aliveEdge = 1f - lc * 1.15f;
                 float alive = MathHelper.Clamp((aliveEdge - t) / 0.18f, 0f, 1f);
                 if (alive <= 0.01f) {

@@ -14,16 +14,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int UnlockFishID => ItemID.Batfish;
         public override int DefaultCooldown => 60 * (20 - HalibutData.GetDomainLayer());
         public override int ResearchDuration => 60 * 12;
-        /// <summary>
-        /// 蝙蝠群技能最大持续时间
-        /// </summary>
+        /// <summary>蝙蝠群技能最大持续时间</summary>
         public const int BatSwarmDuration = 1280;
 
         public override bool? CanUseItem(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
 
             if (player.altFunctionUse == 2) {
-                //右键：激活蝙蝠化形
+                //右键，激活蝙蝠化形
                 if (!halibutPlayer.BatSwarmActive && Cooldown <= 0) {
                     item.UseSound = null;
                     Use(item, player);
@@ -31,7 +29,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return false;
             }
             else {
-                //左键：消散蝙蝠群
+                //左键，消散蝙蝠群
                 if (halibutPlayer.BatSwarmActive) {
                     item.UseSound = null;
                     DismissBatSwarm(player, halibutPlayer);
@@ -88,7 +86,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int batCount = Main.rand.Next(30 + 2 * HalibutData.GetDomainLayer(), 50 + 3 * HalibutData.GetDomainLayer());
 
             for (int i = 0; i < batCount; i++) {
-                //自躯体内爆散而非环上凭空出现：撕散的每一片剪影都化作蝙蝠
+                //自躯体内爆散而非环上凭空出现
                 Vector2 spawnPos = player.Center + new Vector2(
                     Main.rand.NextFloat(-14f, 14f),
                     Main.rand.NextFloat(-26f, 24f)
@@ -112,7 +110,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //化形剪影撕散：仅拥有者客户端生成一次，走常规弹幕同步分发
+            //化形剪影撕散
             if (Main.myPlayer == player.whoAmI) {
                 Projectile.NewProjectile(
                     player.GetSource_ItemUse(item),
@@ -140,14 +138,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SpawnTransformEffect(player.Center);
         }
 
-        /// <summary>
-        /// 消散蝙蝠群
-        /// </summary>
+        /// <summary>消散蝙蝠群</summary>
         private static void DismissBatSwarm(Player player, HalibutPlayer halibutPlayer) {
             halibutPlayer.BatSwarmActive = false;
             halibutPlayer.BatSwarmTimer = 0;
 
-            //蝙蝠转入收拢俯冲：扑回玩家折翼没入，禁瞬灭式 pop-out
+            //蝙蝠转入收拢俯冲
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 if (Main.projectile[i].active &&
                     Main.projectile[i].type == ModContent.ProjectileType<BatSwarmMinion>() &&
@@ -168,7 +164,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //收拢重组剪影：仅拥有者客户端生成一次，走常规弹幕同步分发
+            //收拢重组剪影
             if (Main.myPlayer == player.whoAmI) {
                 Projectile.NewProjectile(
                     player.GetSource_Misc("FishBatMorph"),
@@ -182,7 +178,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
             }
 
-            //消散音效：低响+收拢振翅
+            //消散音效，低响+收拢振翅
             SoundEngine.PlaySound(SoundID.NPCDeath4 with {
                 Volume = 0.6f,
                 Pitch = 0.2f
@@ -330,7 +326,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Vector2 targetVelocity = toMouse * flySpeed;
 
-            //平滑插值：撕散后头几帧猛地窜出，随后回落到常规巡航
+            //平滑插值
             Projectile.localAI[0]++;
             float lerpSpeed = 0.22f;
             if (Projectile.localAI[0] < 8f) {
@@ -344,7 +340,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SpawnFlightDress();
         }
 
-        /// <summary>飞行装饰：暗烟拖丝压底、暗影法尘底噪、周期声呐脉冲</summary>
+        /// <summary>飞行装饰</summary>
         private void SpawnFlightDress() {
             if (VaultUtils.isServer) {
                 return;
@@ -368,7 +364,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 flight.alpha = 150;
             }
 
-            //回声定位节拍：细环打在行进方向略前
+            //回声定位节拍
             if (++sonarTimer >= 44) {
                 sonarTimer = 0;
                 PRTLoader.NewParticle<PRT_FishBatSonar>(Owner.Center + Owner.velocity * 1.2f
@@ -390,14 +386,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     {
         public override string Texture => "Terraria/Images/NPC_" + NPCID.CaveBat;
 
-        /// <summary>
-        /// 拥有者玩家
-        /// </summary>
+        /// <summary>拥有者玩家</summary>
         public Player OwnerPlayer { get; set; }
 
-        /// <summary>
-        /// 蝙蝠的个体ID
-        /// </summary>
+        /// <summary>蝙蝠的个体ID</summary>
         private int BatID => (int)Projectile.ai[0];
 
         //群体算法力量
@@ -416,7 +408,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float wingPhaseOffset = 0f;
         private int lifeTimer = 0;
 
-        //收拢俯冲状态：结束时扑回玩家折翼没入，替代瞬灭；存 ai[1] 走弹幕同步给远端
+        //收拢俯冲状态
         private bool Regather => Projectile.ai[1] == 1f;
         private int regatherTimer = 0;
         //扑翼拍向，逐拍交替
@@ -444,7 +436,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.timeLeft = FishBat.BatSwarmDuration + 60;
         }
 
-        /// <summary>转入收拢俯冲：扑回玩家折翼没入，状态经 ai[1] 同步远端</summary>
+        /// <summary>转入收拢俯冲，扑回玩家折翼没入，状态经 ai[1] 同步远端</summary>
         public void StartRegather() {
             if (Regather) {
                 return;
@@ -456,7 +448,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            //找到拥有者：远程客户端上属性未被赋值，回退到 owner 槽位
+            //找到拥有者
             OwnerPlayer ??= Main.player[Projectile.owner];
             if (OwnerPlayer == null || !OwnerPlayer.active) {
                 Projectile.Kill();
@@ -470,7 +462,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 batScale = Main.rand.NextFloat(0.7f, 1.2f);
                 behaviorRandomness = Main.rand.NextFloat(0.9f, 1.2f);
                 wingPhaseOffset = Main.rand.NextFloat(0f, MathHelper.TwoPi);
-                //扑翼动画错帧起步：同拍振翅读作贴图阵列，相位差才是活物
+                //扑翼动画错帧起步
                 frameCounter = Main.rand.Next(FrameSpeed);
                 currentFrame = Main.rand.Next(4);
             }
@@ -489,7 +481,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
             else {
-                //淡入效果
                 if (batAlpha < 1f) {
                     batAlpha += 0.2f;
                     if (batAlpha > 1f) batAlpha = 1f;
@@ -531,7 +522,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>收拢俯冲AI：越到后段咬合越急，贴近后渐隐折翼没入躯体</summary>
+        /// <summary>收拢俯冲AI，越到后段咬合越急，贴近后渐隐折翼没入躯体</summary>
         private void RegatherAI() {
             regatherTimer++;
 
@@ -541,7 +532,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float chase = MathHelper.Clamp(9f + regatherTimer * 1.7f, 9f, 30f);
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, toOwner.SafeNormalize(Vector2.Zero) * chase, 0.24f);
 
-            //临身折翼：一缕暗烟没入剪影（本就不可见的个体静默退场）
+            //临身折翼
             if (dist < 26f || regatherTimer > 30) {
                 if (!VaultUtils.isServer && batAlpha > 0.3f && Main.rand.NextBool(3)) {
                     PRTLoader.NewParticle<PRT_FishBatSmoke>(Projectile.Center, toOwner.SafeNormalize(Vector2.Zero) * 1.5f
@@ -552,7 +543,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //贴近渐隐只降不升：读作没入而非消失，未淡入过的个体不会闪现
+            //贴近渐隐只降不升
             if (dist < 70f) {
                 batAlpha = Math.Min(batAlpha, MathHelper.Clamp(dist / 70f, 0.2f, 1f));
             }
@@ -560,7 +551,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         /// <summary>环绕玩家的 boids AI</summary>
         private void BatSwarmAI() {
-            //出场爆散段：自躯体炸出的初速被阻尼逐帧收编进群
+            //出场爆散段
             if (lifeTimer < 12) {
                 Projectile.velocity *= 0.93f;
             }
@@ -574,10 +565,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 toPlayer = OwnerPlayer.Center - Projectile.Center;
             float distanceToPlayer = toPlayer.Length();
 
-            //目标距离：围绕玩家形成球形分布
+            //目标距离，围绕玩家形成球形分布
             float targetDistance = 80f + (BatID % 10) * 12f; //分层分布
 
-            //murmuration 呼吸：全群同步的松散-收紧包络（约4秒一息），外层摆幅更大
+            //murmuration 呼吸
             float breath = (float)Math.Sin(Main.GameUpdateCount * 0.026f);
             targetDistance *= 1f + breath * (0.16f + (BatID % 10) * 0.014f);
 
@@ -690,9 +681,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 更新动画帧，下拍瞬间甩出新月翼影
-        /// </summary>
+        /// <summary>更新动画帧，下拍瞬间甩出新月翼影</summary>
         private void UpdateAnimation() {
             frameCounter++;
             int speed = Regather ? 3 : FrameSpeed;//收拢时扑翼变急
@@ -710,7 +699,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.frame = currentFrame;
         }
 
-        /// <summary>新月扑翼残影：沿拍翼法向甩出的皮翼暗影，运动各向异性的主载体</summary>
+        /// <summary>新月扑翼残影</summary>
         private void ShedWingCrescent() {
             if (VaultUtils.isServer) {
                 return;
@@ -737,16 +726,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //纹理朝左，按朝向翻转
             SpriteEffects effects = batDirection > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            //速度拉伸：快时顺飞行轴抻长，皮翼读出冲刺感
+            //速度拉伸
             float speed = Projectile.velocity.Length();
             float stretch = 1f + MathHelper.Clamp((speed - 6f) * 0.028f, 0f, 0.4f);
             Vector2 bodyScale = new Vector2(batScale * stretch, batScale * (1f - (stretch - 1f) * 0.45f));
 
-            //暗紫压色：蝙蝠是自蔽的暗影造物，亮处压成剪影、全暗处保底可读
+            //暗紫压色
             float lightT = (lightColor.R + lightColor.G + lightColor.B) / 765f;
             Color bodyColor = Color.Lerp(new Color(48, 40, 78), new Color(126, 110, 172), lightT);
 
-            //紧凑残影链：三枚暗影拉开间距，读作速度而非重影
+            //紧凑残影链
             for (int i = 1; i <= 5; i += 2) {
                 if (Projectile.oldPos[i] == Vector2.Zero) continue;
 
@@ -766,7 +755,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
             }
 
-            //叠底衬影：微偏移的近黑底给剪影厚度
+            //叠底衬影
             Main.EntitySpriteDraw(
                 batTex,
                 drawPosition + new Vector2(2f, 3f),

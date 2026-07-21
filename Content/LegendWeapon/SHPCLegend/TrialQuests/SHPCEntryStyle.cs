@@ -6,7 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
 {
-    /// <summary>SHPC 委托条目：暗紫底、霓虹蓝、CRT 扫描线</summary>
+    /// <summary>SHPC委托条目，暗紫底霓虹蓝CRT扫描线</summary>
     internal class SHPCEntryStyle : IEntrustEntryStyle
     {
         #region 色板
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
             sb.Draw(px, new Rectangle(entryRect.X + 3, entryRect.Y + 3, 1, entryRect.Height - 6),
                 uv, statusC * (alpha * barPulse * 0.35f));
 
-            //上边框：实线左段 + 断口 + 虚线右段（CP2077 HUD风格）
+            //上边框，实线+断口+虚线
             int breakX = entryRect.X + (int)(entryRect.Width * 0.3f);
             Color borderC = NeonBlueDim * (alpha * 0.55f);
             sb.Draw(px, new Rectangle(entryRect.X, entryRect.Y, breakX - entryRect.X, 1), uv, borderC);
@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
             sb.Draw(px, entryRect, new Rectangle(0, 0, 1, 1), tint * (alpha * 0.28f));
         }
 
-        /// <summary>降级背景：保留原 CPU 渐变、扫描线与全息扫掠光</summary>
+        /// <summary>降级背景，CPU渐变+扫描线</summary>
         private void DrawFallbackBackground(SpriteBatch sb, Texture2D px, Rectangle entryRect,
             bool isSelected, bool isHovered, float alpha) {
             var uv = new Rectangle(0, 0, 1, 1);
@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
             dataFlowTimer = 0f;
         }
 
-        /// <summary>绘制六边形轮廓（6段像素线段）</summary>
+        /// <summary>六边形轮廓</summary>
         private static void DrawHexOutline(SpriteBatch sb, Texture2D px, Vector2 center, float r, Color color) {
             for (int i = 0; i < 6; i++) {
                 float a0 = MathHelper.TwoPi * i / 6f + MathHelper.Pi / 6f;

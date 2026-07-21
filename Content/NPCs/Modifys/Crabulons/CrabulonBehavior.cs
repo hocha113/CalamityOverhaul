@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
-    /// <summary>菌生蟹行为 AI</summary>
+    /// <summary>行为AI</summary>
     internal class CrabulonBehavior
     {
         private readonly NPC npc;
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             physics.CheckAndFixStuckPosition();
         }
 
-        //骑乘时跳过
+        //骑乘跳过
         public bool ProcessAI() {
             if (owner.CrabulonPlayer != null) {
                 owner.CrabulonPlayer.CrabulonIndex = npc.whoAmI;
@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
         private void CheckHover() {
             if (Main.dedServ) {
-                return;//悬停仅本地客户端
+                return;//悬停仅本端
             }
             owner.hoverNPC = npc.Hitbox.Intersects(Main.MouseWorld.GetRectangle(1));
             if (owner.hoverNPC) {
@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return false;
         }
 
-        //位置仅权威端改，客户端跟 NPC 同步
+        //位置仅权威端改
         private void PerformTeleport() {
             owner.ai[6] = 0;
             if (VaultUtils.isClient) {

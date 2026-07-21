@@ -140,15 +140,13 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             return data;
         }
 
-        /// <summary>
-        /// UI燃料槽的物品放入/取出/交换/堆叠，含燃料类型验证
-        /// </summary>
+        /// <summary>UI燃料槽放入/取出/交换，含类型校验</summary>
         internal void HandlerItem() {
             Item mouseItem = Main.mouseItem;
             bool mouseHasFuel = !mouseItem.IsAir && FuelItems.FuelItemToCombustion.ContainsKey(mouseItem.type);
 
             if (ThermalData.FuelItem.IsAir) {
-                //槽位空：仅允许放入合法燃料
+                //空槽只收合法燃料
                 if (mouseHasFuel) {
                     ThermalData.FuelItem = mouseItem.Clone();
                     mouseItem.TurnToAir();
@@ -156,13 +154,13 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 }
             }
             else if (mouseItem.IsAir) {
-                //鼠标空：取出燃料
+                //取出
                 Main.mouseItem = ThermalData.FuelItem.Clone();
                 ThermalData.FuelItem.TurnToAir();
                 SoundEngine.PlaySound(SoundID.Grab);
             }
             else if (mouseItem.type == ThermalData.FuelItem.type) {
-                //同类物品：合并堆叠
+                //同种堆叠
                 int canAdd = ThermalData.FuelItem.maxStack - ThermalData.FuelItem.stack;
                 int toAdd = canAdd < mouseItem.stack ? canAdd : mouseItem.stack;
                 if (toAdd > 0) {
@@ -173,7 +171,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 SoundEngine.PlaySound(SoundID.Grab);
             }
             else if (mouseHasFuel) {
-                //不同类燃料：安全交换（先保存旧物品再赋新值）
+                //异种交换
                 Item temp = ThermalData.FuelItem.Clone();
                 ThermalData.FuelItem = mouseItem.Clone();
                 Main.mouseItem = temp;
@@ -183,15 +181,12 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             SendData();
         }
 
-        /// <summary>
-        /// 尝试消耗一个燃料物品，开始新的燃烧周期
-        /// 纯副作用方法，仅在条件满足时执行消耗
-        /// </summary>
+        /// <summary>条件满足时消耗一份燃料开烧</summary>
         private void TryConsumeFuel() {
             if (ThermalData.FuelItem == null || ThermalData.FuelItem.IsAir) return;
             if (!FuelItems.FuelItemToCombustion.TryGetValue(ThermalData.FuelItem.type, out int combustion)) return;
             if (ThermalData.Temperature >= ThermalData.MaxTemperature * 0.95f) return;
-            //电力储满时不再消耗新燃料，避免浪费
+            //电满不烧
             if (ThermalData.UEvalue >= ThermalData.MaxUEValue * 0.99f) return;
 
             int burnDuration = FuelItems.GetBurnDuration(combustion);
@@ -210,21 +205,21 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         }
 
         public sealed override void GeneratorUpdate() {
-            //距离检查：玩家离开范围时关闭UI
+            //超距关 UI
             if (PosInWorld.Distance(Main.LocalPlayer.Center) > MaxFindMode) {
                 if (!VaultUtils.isServer && GeneratorUI?.GeneratorTP == this
                     && UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive) {
                     UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive = false;
-                    //并行阶段音效播放延迟到主线程执行(串行阶段立即执行)
+                    //并行阶段延后到主线程
                     Defer(() => SoundEngine.PlaySound(SoundID.MenuTick));
                 }
             }
             else {
-                //并行阶段对玩家字段的写入延迟到主线程执行(串行阶段立即执行)
+                //并行阶段延后到主线程
                 Defer(() => Main.LocalPlayer.CWR().ThermalGenerationActiveTime = 2);
             }
 
-            //1. 燃料燃烧：持续释放热量（每tick）
+            //燃烧产热
             if (ThermalData.IsBurning) {
                 ThermalData.Temperature += ThermalData.HeatPerTick;
                 ThermalData.BurnTimeRemaining--;
@@ -233,22 +228,18 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 }
             }
 
-            //2. 冷却计时器递增，非燃烧状态下尝试消耗下一份燃料
+            //冷却满且未燃则续烧
             ThermalData.ChargeCool++;
             if (!ThermalData.IsBurning && ThermalData.ChargeCool >= ThermalData.MaxChargeCool) {
                 TryConsumeFuel();
             }
 
-            //3. 热力学更新：发电 + 散热
             UpdateThermal();
         }
 
-        /// <summary>
-        /// 热力学核心：基于温度效率曲线发电，并计算自然散热
-        /// </summary>
+        /// <summary>按效率曲线发电 + 自然散热</summary>
         public virtual void UpdateThermal() {
             if (ThermalData.Temperature > 0) {
-                //基于效率曲线发电
                 float efficiency = ThermalData.CurrentEfficiency;
                 float maxPower = ThermalData.MaxPowerPerTick * efficiency;
 
@@ -259,7 +250,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                     ThermalData.Temperature -= actualPower * ThermalData.HeatCostPerUE;
                 }
 
-                //自然散热：固定值 + 温度比例值
+                //固定 + 比例散热
                 float dissipation = ThermalData.MinDissipation + ThermalData.Temperature * ThermalData.DissipationRate;
                 ThermalData.Temperature -= dissipation;
                 ThermalData.Temperature = MathHelper.Clamp(ThermalData.Temperature, 0, ThermalData.MaxTemperature);
@@ -304,7 +295,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 return;
             }
 
-            //同类物品：合并堆叠
+            //同种堆叠
             if (!ThermalData.FuelItem.IsAir && ThermalData.FuelItem.type == item.type) {
                 int canAdd = ThermalData.FuelItem.maxStack - ThermalData.FuelItem.stack;
                 int toAdd = canAdd < item.stack ? canAdd : item.stack;
@@ -314,13 +305,12 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                     if (item.stack <= 0) item.TurnToAir();
                 }
             }
-            //不同类：先弹出旧燃料，再放入新燃料
+            //异种先吐再放
             else if (!ThermalData.FuelItem.IsAir) {
                 Main.LocalPlayer.QuickSpawnItem(new EntitySource_WorldEvent(), ThermalData.FuelItem, ThermalData.FuelItem.stack);
                 ThermalData.FuelItem = item.Clone();
                 item.TurnToAir();
             }
-            //空槽：直接放入
             else {
                 ThermalData.FuelItem = item.Clone();
                 item.TurnToAir();

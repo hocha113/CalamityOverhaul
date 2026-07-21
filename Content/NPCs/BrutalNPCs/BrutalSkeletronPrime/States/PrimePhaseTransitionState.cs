@@ -8,14 +8,14 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>转阶段演出：四臂殉爆、头部升空注能、切入 PrimePhase.Rage</summary>
+    /// <summary>转阶段演出</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.PhaseTransition, typeof(PrimeStateContext))]
     internal class PrimePhaseTransitionState : PrimeStateBase
     {
         public override string StateName => "PhaseTransition";
         public override PrimeStateIndex StateIndex => PrimeStateIndex.PhaseTransition;
 
-        /// <summary>殉爆窗口长度，机械臂的自毁延迟都安排在该窗口内</summary>
+        /// <summary>殉爆窗口帧</summary>
         internal static int DetonationWindow => 80;
 
         private bool healStarted;
@@ -24,8 +24,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             base.OnEnter(context);
             healStarted = false;
 
-            //进入转阶段立刻挂出狂暴阶段标记：
-            //全局裁决要求 phase==Armed 才能进入转阶段，天然防止重复触发
+            //立刻挂狂暴阶段标记，防重复进转阶段
             context.Npc.ai[PrimeAiSlots.HeadPhase] = PrimePhase.Rage;
 
             if (!VaultUtils.isClient) {
@@ -50,10 +49,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             npc.velocity = Vector2.Zero;
             context.FrameMode = 0;
 
-            //每帧重申阶段标记，杜绝任何外部写入/同步时序把它冲掉
+            //每帧重申阶段标记
             npc.ai[PrimeAiSlots.HeadPhase] = PrimePhase.Rage;
 
-            //两端确定性 Lerp 升至高空定点
+            //Lerp升至高空定点
             Vector2 toPoint = context.Target.Center + new Vector2(0, context.DeathMode ? -400 : -500);
             npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.05f);
             LeanTowards(npc, context.Target.Center);
@@ -70,7 +69,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
             Timer++;
             if (Timer >= totalDuration) {
-                //兜底：无论中途发生什么，离开转阶段时必定满血
+                //兜底
                 npc.life = npc.lifeMax;
 
                 npc.dontTakeDamage = false;
@@ -86,11 +85,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         }
 
         private int HealDuration(PrimeStateContext context) {
-            //Boss急速模式压缩注能时长，其余难度统一完整修复窗口
+            //BossRush压缩注能时长
             return context.BossRush ? 120 : 260;
         }
 
-        /// <summary>殉爆窗口：警报蜂鸣，机械臂逐一爆裂，机体接缝喷溅火花</summary>
+        /// <summary>殉爆窗口</summary>
         private void UpdateDetonationWindow(PrimeStateContext context) {
             NPC npc = context.Npc;
 
@@ -103,7 +102,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 SoundEngine.PlaySound(SoundID.NPCDeath14 with { Pitch = -0.5f, Volume = 0.6f }, npc.Center);
             }
 
-            //与机械臂自毁节拍呼应的震屏
+            //呼应臂自毁的震屏
             if (Timer % 15 == 5) {
                 PrimeDeathPerformancePlayer.RequestShake(5f, 10);
             }
@@ -117,7 +116,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             Lighting.AddLight(npc.Center, new Color(255, 120, 50).ToVector3() * 0.9f);
         }
 
-        /// <summary>过载重启：注能回血，全难度无条件</summary>
+        /// <summary>过载重启</summary>
         private void UpdateOverloadReboot(PrimeStateContext context) {
             NPC npc = context.Npc;
             int healTime = Timer - DetonationWindow;
@@ -130,7 +129,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 }
             }
 
-            //按"剩余缺口/剩余帧数"动态补血，规避整数除法误差，保证窗口结束时恰好满血
+            //按剩余缺口/剩余帧补血，窗末满血
             int remainingFrames = System.Math.Max(healDuration - healTime, 1);
             int missing = npc.lifeMax - npc.life;
             if (missing > 0) {
@@ -142,7 +141,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 }
             }
             else if (!VaultUtils.isServer && healTime % 8 == 0) {
-                //已回满后的排气烟雾收尾
+                //满血后排气烟雾
                 Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.4f, npc.height * 0.4f);
                 PRTLoader.NewParticle<PRT_Smoke>(pos, -Vector2.UnitY * Main.rand.NextFloat(0.8f, 1.6f),
                     Color.Lerp(new Color(60, 56, 54), new Color(24, 22, 22), Main.rand.NextFloat()),

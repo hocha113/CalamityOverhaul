@@ -15,31 +15,25 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Wraiths.Debugs
 {
     /// <summary>
-    /// 无色试件：以零创意成本压测框架全环
-    /// （注册 → 调度(环境/据点双通道) → 显形 → 行为 → 感知事件 → 死机窗口 → 仪式事务 →
-    /// 赋力/戒律 → 反噬挣脱 → 消散 → 进度落档）。
-    /// 主题厉鬼落地后它仍保留，当框架回归试金石
+    /// 无色试件，框架回归试金石
     /// </summary>
     internal sealed class DebugWraith : WraithDefinition
     {
-        /// <summary>
-        /// 调试据点武装闸（会话级，同 DebugHauntEnabled 惯例）：为真时动态锚定与活化条件放行。
-        /// 手工落锚自动武装（老工作流不折腾），Ctrl+左键翻转以回归验证条件闸本身
-        /// </summary>
+        /// <summary>调试据点武装闸，会话级</summary>
         internal static bool DebugSiteArmed;
 
-        /// <summary>调试必死路径的点名死亡讯息（规则专属死因示范，{0}=玩家名）</summary>
+        /// <summary>调试必死死因，{0}=玩家名</summary>
         public LocalizedText OmenDeath { get; private set; }
 
         public override Type ActorType => typeof(DebugWraithActor);
-        //调试件永远沉底;闹鬼闸开着时临时上目录(点鬼簿可见,验证进度读数),关闸恢复隐藏
+        //调试件沉底；闹鬼闸开临时上目录
         public override int SortOrder => int.MaxValue;
         public override bool HiddenFromCatalog => !WraithDirector.DebugHauntEnabled;
         public override int PresentDurationLimit => 60 * 40;
         public override int HaltWindowTicks => 60 * 10;
-        //外部逼死机白名单(鬼律第九条执行点):只有试件吃调试器的死机模式,正典鬼一律走自身规则
+        //外部死机白名单，仅试件
         public override bool AllowExternalHaltRequest => true;
-        //调试件豁免上线闸(WraithDirector.LiveContentEnabled),自持 DebugHauntEnabled/DebugSiteArmed 闸门
+        //豁免上线闸，自持调试闸
         public override bool IsDebugContent => true;
 
         protected override void LoadExtraLocalization() {
@@ -47,8 +41,7 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
         }
 
         public override void BuildBehaviors(List<IWraithBehavior> behaviors) {
-            //三块积木全挂:游荡/保距/凝视僵直都是回归面,试金石不许静止不动。
-            //冻结吃类默认阻尼 0.5:0.78 挡不住游荡+保距同向满推的不动点(≈0.44>0.3 归零线),会假停慢爬
+            //三块积木全挂；冻结阻尼须挡住游荡+保距同向推
             behaviors.Add(new HoverWanderBehavior(240f, 1.2f));
             behaviors.Add(new KeepDistanceBehavior(300f, 90f, 1.6f));
             behaviors.Add(new FreezeWhenGazedBehavior());
@@ -58,14 +51,11 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
             Condition = _ => WraithDirector.DebugHauntEnabled,
             ChancePerCheck = 0.6f,
             CooldownTicks = 60 * 10,
-            //鬼律第七条:同屏一鬼;全局互斥在 Materialize,这里的上限只是同义强调
+            //同屏一鬼，互斥在 Materialize
             MaxAlive = 1,
         };
 
-        /// <summary>
-        /// 调试据点：动态锚定与活化条件都吃 <see cref="DebugSiteArmed"/> 闸——
-        /// 武装后自动在候选玩家周边选点落锚，据点调度/存档/条件谓词全环进入回归覆盖
-        /// </summary>
+        /// <summary>调试据点，锚定与活化吃 DebugSiteArmed 闸</summary>
         protected override WraithSitePlan GetSitePlan() => new() {
             AnchorPicker = PickDebugAnchor,
             ActivationCondition = _ => DebugSiteArmed,
@@ -74,7 +64,7 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
             AnchorRetryTicks = 60 * 5,
         };
 
-        /// <summary>候选玩家周边 260~520px 环带上找一处不嵌物块的锚心，未武装/找不到返回 null</summary>
+        /// <summary>周边 260~520px 环带选锚，未武装返回 null</summary>
         private Vector2? PickDebugAnchor(WraithSiteContext ctx) {
             if (!DebugSiteArmed || ctx.Candidate == null) {
                 return null;
@@ -93,10 +83,7 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
         public override WraithAbility CreateAbility() => new DebugPulseAbility();
     }
 
-    /// <summary>
-    /// 试件实体：事件钩子只做可听见的回执。常规态触碰即消散（验证事件闭环）；
-    /// 挣脱态触碰改为进入死机窗口（压测"反噬 → 重收伏"链）
-    /// </summary>
+    /// <summary>试件实体。触碰即消散；挣脱态触碰进死机</summary>
     internal sealed class DebugWraithActor : WraithActor
     {
         protected override void OnGazeStart(Player player) {
@@ -122,10 +109,7 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
     }
 
     /// <summary>
-    /// 「占位」赋力：以持刀人为心的一记灵压脉冲，迟滞周遭可慑之敌。
-    /// 目标判定与效果范围完全同源（含迟滞免疫筛除，boss 不豁免）——
-    /// Cast 认下的目标 ExecuteWorld 必然作用，杜绝"扣代价无效果"。
-    /// 戒律「不得空唤」：身周无可慑之敌仍强行借力即犯戒——戒律管线的试金石
+    /// 「占位」赋力，身周脉冲迟滞。空唤犯戒；Cast/Execute 目标同源
     /// </summary>
     internal sealed class DebugPulseAbility : WraithAbility
     {
@@ -135,7 +119,7 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
         public override float ErosionCost => 0.10f;
         public override float MasteryWear => 0.015f;
 
-        /// <summary>可慑之敌：可追猎 + 不免疫迟滞 + 在脉冲半径内（Cast 与 ExecuteWorld 唯一同源判定）</summary>
+        /// <summary>可慑之敌，Cast/Execute 同源</summary>
         private static bool IsValidTarget(NPC npc, Vector2 center)
             => npc.CanBeChasedBy() && !npc.buffImmune[BuffID.Slow]
                && Vector2.DistanceSquared(npc.Center, center) < Radius * Radius;
@@ -150,7 +134,7 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
         }
 
         public override void ExecuteWorld(Player caster, Vector2 aim, float mastery) {
-            //迟滞时长吃驾驭度:0.22 出厂位约 2.6s,认主 0.85 位约 4.1s
+            //迟滞时长吃驾驭度
             int slowTicks = (int)(60f * (1.5f + 2.5f * mastery));
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (IsValidTarget(npc, caster.Center)) {
@@ -173,20 +157,18 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
     }
 
     /// <summary>
-    /// 厉鬼框架多模调试器：右键轮换模式，左键执行（部分模式 Shift/Ctrl+左键为变体）。
-    /// 模式：显形 / 死机 / 据点 / 绑定 / 反噬 / 侵蚀 / 必死 / 闹鬼 / 读簿——覆盖框架全环的游戏内验证。
-    /// 多人纪律：走不了权威通道的模式明示"多人下不受理"，绝不假成功（死机/绑定/反噬/侵蚀/读簿多人可用）
+    /// 多模调试器。右键换模式，左键执行；权威通道不可用时明示不受理
     /// </summary>
     internal class WraithDebugTool : ModItem
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.SpectreStaff;
 
-        //上线闸关时不加载:物品不进图鉴/旅程复制,玩家侧不可见(用户钦定,调试期自行改码放开)
+        //上线闸关不加载
         public override bool IsLoadingEnabled(Mod mod) => WraithDirector.LiveContentEnabled;
 
         private enum DebugMode : byte { Materialize, Halt, Site, Bind, Backlash, Erosion, Omen, Haunt, Register }
         private const int ModeCount = 9;
-        //本端调试偏好,非玩法状态(同 DebugHauntEnabled 惯例,单人调试用)
+        //本端调试偏好
         private static int mode;
 
         public static LocalizedText HauntOn { get; private set; }
@@ -280,7 +262,7 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
             => Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl)
             || Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightControl);
 
-        /// <summary>多人下走不了权威通道的模式在此明示不受理，绝不假成功</summary>
+        /// <summary>多人权威不可用则明示不受理</summary>
         private static bool DenyInMultiplayer() {
             if (!VaultUtils.isClient) {
                 return false;
@@ -305,7 +287,7 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
 
             switch ((DebugMode)mode) {
                 case DebugMode.Materialize: {
-                    //权威互斥无法跨 InnoVault 生成请求执行,多人下明示不受理
+                    //多人明示不受理
                     if (DenyInMultiplayer()) {
                         break;
                     }
@@ -326,7 +308,7 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
                     }
                     bool halt = !target.IsHalted;
                     if (VaultUtils.isClient) {
-                        //服务器复核:存活+持载体+判距;隔着半张地图点不动它
+                        //服复核存活/持刀/判距
                         WraithNet.SendHaltRequest(target, halt);
                     }
                     else if (halt) {
@@ -352,8 +334,7 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
                         VaultUtils.Text(SiteCleared.Value, Color.Gray);
                         break;
                     }
-                    //手工落锚自动武装,老工作流(落锚→走近→显形)开箱即用;
-                    //调试落锚显式清冷却(移锚与清冷却是两个语义,这里是刻意都要)
+                    //落锚自动武装并清冷却
                     WraithSiteSystem.Plant(definition.Key, Main.MouseWorld);
                     WraithSiteSystem.ResetCooldown(definition.Key);
                     DebugWraith.DebugSiteArmed = true;
@@ -369,7 +350,7 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
                     WraithProgressRecord record = vessel.Store.GetOrCreate(definition.Key);
                     record.State = WraithBindState.Bound;
                     record.Mastery = ShiftHeld ? 0.9f : 0.2f;
-                    //Shift=续契位:顺带回归残页门控(读簿/点鬼簿应见来历解锁)
+                    //Shift=续契位
                     record.PactRenewed = ShiftHeld;
                     vessel.Store.BumpVersion();
                     WraithVessels.SyncSlot(player, vessel.Item);
@@ -383,7 +364,7 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
                         VaultUtils.Text(BacklashNeedBound.Value, Color.DarkGray);
                         break;
                     }
-                    //服务器只放行躁动之鬼,不躁动就明说,不发必败请求
+                    //不躁动则明说
                     if (record.Mastery >= WraithDefinition.RestlessThreshold) {
                         VaultUtils.Text(BacklashNeedRestless.Value, Color.DarkGray);
                         break;
@@ -407,7 +388,7 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
                     break;
                 }
                 case DebugMode.Omen: {
-                    //预警拍是权威侧状态,客户端起不了拍
+                    //预警仅权威
                     if (DenyInMultiplayer()) {
                         break;
                     }
@@ -417,7 +398,7 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
                     break;
                 }
                 case DebugMode.Haunt: {
-                    //闸门是权威侧调度条件,客户端翻了也不生效,明示不受理
+                    //闸门仅权威
                     if (DenyInMultiplayer()) {
                         break;
                     }
@@ -434,7 +415,7 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
             return true;
         }
 
-        /// <summary>无 UI 校验路径：把随身载体的簿面逐条打进聊天（状态/驾驭度/续签/遭遇数）</summary>
+        /// <summary>把随身簿面打进聊天</summary>
         private static void PrintRegister(Player player) {
             WraithVesselHandle vessel = WraithVessels.ResolveCarried(player);
             if (!vessel.IsValid) {
@@ -450,7 +431,7 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
             }
         }
 
-        /// <summary>光标点选厉鬼：命中箱含光标优先，否则 140px 内最近者</summary>
+        /// <summary>光标点选厉鬼，140px 内最近</summary>
         private static WraithActor PickWraithAtCursor() {
             Vector2 mouse = Main.MouseWorld;
             WraithActor best = null;

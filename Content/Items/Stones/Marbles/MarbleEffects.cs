@@ -11,14 +11,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
     /// <summary>
-    /// 大理石系共享投射物（Wave 0 基建所有，武器代理只生成不修改）
-    /// <br/><b>MarbleShockwave 生成契约</b>：
-    /// <c>Projectile.NewProjectile(source, 落点, Vector2.Zero, ModContent.ProjectileType&lt;MarbleShockwave&gt;(), damage, kb, owner, 0f, 最大半径px)</c>
-    /// —— ai[0]=内部计时（传 0），ai[1]=最大半径px（&lt;=0 时默认 120）；全圆判定命中一次，寿命 24tick；
-    /// 冲击波本体无音效，落地重响由生成方负责播放
-    /// <br/><b>MarbleShard 生成契约</b>：
-    /// <c>Projectile.NewProjectile(source, pos, velocity, ModContent.ProjectileType&lt;MarbleShard&gt;(), damage, kb, owner)</c>
-    /// —— 无 ai 约定；受重力翻滚，落地弹一次后再触地碎裂，穿透 2，寿命 90tick
+    /// 大理石共享投射物。<br/>
+    /// Shockwave ai[0]=计时(传0)，ai[1]=最大半径px(≤0→120)；全圆命中一次，寿命24tick；音效由生成方播<br/>
+    /// Shard 无ai；重力翻滚，落地弹一次再碎，穿透2，寿命90tick
     /// </summary>
     internal class MarbleShockwave : ModProjectile, IAdditiveDrawable, IWarpDrawable
     {
@@ -45,7 +40,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             Projectile.velocity = Vector2.Zero;
             Projectile.ai[0]++;
 
-            //首帧落点反馈：石尘沿地扬起 + 白金石屑迸射（规模随最大半径）
             if (Projectile.ai[0] == 1f && !VaultUtils.isServer) {
                 int n = (int)MathHelper.Clamp(MaxRadius / 16f, 6f, 14f);
                 for (int i = 0; i < n; i++) {
@@ -63,7 +57,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             Lighting.AddLight(Projectile.Center, GraniteMarbleVFX.MarbleGold.ToVector3() * (1f - Progress) * 0.8f);
         }
 
-        //全圆判定：冲击波扫过即命中（localNPCHitCooldown=-1 保证每目标只吃一次），圆心不再有盲区
+        //全圆判定，localNPCHitCooldown=-1 每目标一次
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
             => VaultUtils.CircleIntersectsRectangle(Projectile.Center, Radius, targetHitbox);
 
@@ -71,7 +65,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             if (VaultUtils.isServer) {
                 return;
             }
-            //波前扫过目标：石屑自目标脚下溅起
             for (int i = 0; i < 3; i++) {
                 PRTLoader.NewParticle<PRT_MarbleChip>(target.Center + Main.rand.NextVector2Circular(target.width * 0.3f, target.height * 0.3f)
                     , new Vector2(Main.rand.NextFloat(-2f, 2f), -Main.rand.NextFloat(2f, 5f))
@@ -93,17 +86,15 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             Color gold = GraniteMarbleVFX.MarbleGold; gold.A = 0;
             Color core = GraniteMarbleVFX.MarbleCore; core.A = 0;
 
-            //扩张石环：金边外环 + 白核内环
             spriteBatch.Draw(ring, pos, null, gold * fade * 0.85f, Projectile.rotation, ring.Size() / 2f, scale, SpriteEffects.None, 0f);
             spriteBatch.Draw(ring, pos, null, core * fade * 0.6f, Projectile.rotation, ring.Size() / 2f, scale * 0.8f, SpriteEffects.None, 0f);
 
-            //初始白闪：砸落瞬间的中心亮斑，快速衰减
             float flash = MathF.Max(0f, 1f - Progress * 3.2f);
             if (flash > 0f) {
                 spriteBatch.Draw(glow, pos, null, core * flash * 0.9f, 0f, glow.Size() / 2f, MaxRadius / 90f * (0.6f + Progress * 2f), SpriteEffects.None, 0f);
             }
 
-            //径向裂纹辐条：whoAmI 播种的稳定伪随机取向，随环扩张伸长
+            //径向裂纹，whoAmI 播种
             const int spokes = 7;
             float seed = Projectile.whoAmI * 2.3999f;
             Vector2 spokeOrigin = spoke.Size() / 2f;
@@ -130,9 +121,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         }
     }
 
-    /// <summary>
-    /// 大理石碎片：翻滚迸射的石屑，落地反弹一次后碎裂，扬起尘土
-    /// </summary>
+    /// <summary>石屑，落地弹一次后碎</summary>
     internal class MarbleShard : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -222,7 +211,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         public override bool PreDraw(ref Color lightColor) => false;
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
-            //石片形体：金边晶面 + 白芯，随翻滚旋转；不再是裸光斑
             Texture2D sliver = CWRAsset.Extra_98.Value;
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 pos = Projectile.Center - Main.screenPosition;

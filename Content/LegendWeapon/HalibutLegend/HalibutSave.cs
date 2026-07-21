@@ -12,7 +12,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
-    /// <summary>比目鱼每玩家数据：装备栏、图鉴、领域之眼、祭坛研究；UI 只读写本类</summary>
+    /// <summary>比目鱼每玩家数据、装备栏/图鉴/眼/祭坛；UI只读写本类</summary>
     internal class HalibutSave : ModPlayer
     {
         /// <summary>
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public const int MaxEyes = 9;
 
         /// <summary>
-        /// 装备栏：战斗中可通过轮盘/快捷键选择的技能，有序，容量 <see cref="LoadoutCap"/>
+        /// 装备栏、轮盘/快捷键可选技能，有序，容量 <see cref="LoadoutCap"/>
         /// </summary>
         public readonly List<FishSkill> loadout = [];
         /// <summary>
@@ -412,7 +412,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     }
                 }
                 else {
-                    //旧版迁移：FishSkills=主列表（带数据），SkillLibrary=技能库（仅名字）
+                    //旧版迁移、FishSkills主列表/SkillLibrary仅名
                     if (tag.TryGet<IList<TagCompound>>("FishSkills", out var legacyMain)) {
                         foreach (var skillTag in legacyMain) {
                             if (!skillTag.TryGet<string>("Name", out var name) ||
@@ -456,7 +456,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     if (tag.TryGet<TagCompound>("ResurrectionSystem", out var resurrectionTag)) {
                         halibutPlayer.ResurrectionSystem.LoadData(resurrectionTag);
                     }
-                    //向后兼容：HalibutSave 内嵌 v0 ADCSave 迁移到 StoryPlayer
+                    //兼容、内嵌v0 ADCSave迁到StoryPlayer
                     if (tag.TryGet<TagCompound>("ADCSave", out TagCompound adcTag)) {
                         StoryPlayer storyPlayer = Player.GetModPlayer<StoryPlayer>();
                         LegacyStorySaveImporter.TryImport(adcTag, storyPlayer.StoryData);

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
 {
     internal class CrabulonMountLifeBar : UIHandle
     {
-        //该 HUD 由坐骑状态驱动，不走基类 Open()/Close() 生命周期，故用独立名称避免隐藏基类的 Open()
+        //坐骑驱动HUD，独立名防藏基类Open
         private bool ShouldShow {
             get {
                 if (!player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer)) {

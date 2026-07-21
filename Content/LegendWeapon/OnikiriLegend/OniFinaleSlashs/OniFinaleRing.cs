@@ -13,14 +13,7 @@ using OFR = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs.
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 {
-    /// <summary>
-    /// 终之太刀·立体环斩：乱舞段的主体刀光。<br/>
-    /// 反平面化三件套全开 —— 透视压扁(HalfY&lt;HalfX)、随机滚转(Rot)、远近半侧分层
-    /// （远半侧压暗并经 <see cref="ICrimsonFarDrawable"/> 绘制于玩家身后），
-    /// 读作一道斜插进屏幕深度、把目标罩进挥砍平面的立体刀环。<br/>
-    /// 世界锚定不追踪；压扁率/弧跨度由 identity 确定性派生，各端一致。<br/>
-    /// ai[0]=滚转角(弧度) ai[1]=升调进度(0..1)×扫掠镜像(符号) ai[2]=尺寸倍率
-    /// </summary>
+    /// <summary>终之太刀环形刀光</summary>
     internal class OniFinaleRing : ModProjectile, IPrimitiveDrawable, ICrimsonFarDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -37,9 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         private float FlipSign => Projectile.ai[1] < 0f ? -1f : 1f;
         private float SizeMul => Projectile.ai[2] > 0.05f ? Projectile.ai[2] : 1f;
 
-        /// <summary>
-        /// 触发接口：在持有者客户端调用，世界锚定于 center
-        /// </summary>
+        /// <summary>触发接口、在持有者客户端调用，世界锚定于 center</summary>
         /// <param name="player">攻击发起者</param>
         /// <param name="center">环心（世界坐标，生成后不追踪）</param>
         /// <param name="roll">滚转角（弧度，决定椭圆长轴朝向）</param>
@@ -74,6 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             Projectile.ignoreWater = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 12;   //伤害窗短于冷却，单环对单位只结算一次
+
         }
 
         public override bool ShouldUpdatePosition() => false;
@@ -83,6 +75,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             float t = EscalateT;
             float s = SizeMul;
             //identity 确定性派生（identity 多人同步，各端形态一致）
+
             float seed = Projectile.identity * 0.6180339887f % 1f;
             float squash = 0.30f + 0.26f * (seed * 7.13f % 1f);
             float half = (280f + 330f * t) * s;
@@ -97,6 +90,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 TailErode = 0.45f, FlashPower = 0.55f + 0.28f * t,
                 FarDim = 0.52f, SweepSnap = 0f, RazorTailWiden = 0.45f,
                 //环族升调封顶在白热之下，纯 t=1 留给终斩独占
+
                 Palette = OFR.BladePalette.Escalate(t * 0.80f),
             };
         }
@@ -125,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             Lighting.AddLight(Projectile.Center, light * 0.8f);
         }
 
-        /// <summary>扫掠前缘火花：喷量随本帧扫掠增量走，颜色随升调红→炽橙</summary>
+        /// <summary>扫掠前缘火花、喷量随本帧扫掠增量走，颜色随升调红→炽橙</summary>
         private void SpawnSweepSparks() {
             if (timer > def.SweepFrames + 1) {
                 return;
@@ -178,7 +172,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                     , prev, mid, thickWorld, ref cp)) {
                     return true;
                 }
-                //辐条：立体环内侧不是空洞（罩进挥砍平面的目标）
+                //辐条、立体环内侧不是空洞（罩进挥砍平面的目标）
+
                 if (k % 2 == 0 && Collision.CheckAABBvLineCollision(greedyBox.TopLeft(), greedyBox.Size()
                     , Projectile.Center, mid, spokeW, ref cp)) {
                     return true;
@@ -189,7 +184,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             return false;
         }
 
-        /// <summary>割草断藤：沿揭开中的环弧 + 辐条扫切</summary>
+        /// <summary>割草断藤、沿揭开中的环弧 + 辐条扫切</summary>
         public override void CutTiles() {
             if (!initialized || timer < def.DamageStart || timer > def.DamageEnd) {
                 return;
@@ -233,6 +228,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             }
             float t = EscalateT;
             //每环首次命中给一次轻量爆点确认，重头戏留给终斩
+
             if (!impactDone) {
                 impactDone = true;
                 CrimsonImpactFX.PushImpact(target.Center, 0.015f + 0.02f * t);
@@ -250,10 +246,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
         public override bool PreDraw(ref Color lightColor) => false;
 
-        /// <summary>近半侧：弹幕扩展层（覆盖实体）</summary>
+        /// <summary>近半侧、弹幕扩展层（覆盖实体）</summary>
         void IPrimitiveDrawable.DrawPrimitives() => DrawPass(1f);
 
-        /// <summary>远半侧：玩家绘制前回调（<see cref="CrimsonFarLayerRender"/> 收集），压暗绕到身后</summary>
+        /// <summary>远半侧、玩家绘制前回调</summary>
         void ICrimsonFarDrawable.DrawFarSlashes() => DrawPass(-1f);
 
         private void DrawPass(float farSel) {

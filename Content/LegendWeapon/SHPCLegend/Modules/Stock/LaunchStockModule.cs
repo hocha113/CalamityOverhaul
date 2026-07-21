@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>弹射枪托：球发射瞬间扇形 3 束追踪副光束</summary>
+    /// <summary>弹射枪托，球发射瞬间扇形 3 束追踪副光束</summary>
     internal sealed class LaunchStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;
@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         public override void OnOrbLaunched(CyberChargeOrbProj orb) {
             if (orb.Projectile.owner != Main.myPlayer) return;
             int dmg = Math.Max(orb.Projectile.damage / 3, 1);
-            //以能量球飞行方向为中轴，左偏60°/正向/右偏60°形成Y字
+            //中轴±60° Y字三束
             float baseAngle = orb.Projectile.rotation;
             float[] offsets = { -MathHelper.Pi / 3f, 0f, MathHelper.Pi / 3f };
             for (int i = 0; i < 3; i++) {

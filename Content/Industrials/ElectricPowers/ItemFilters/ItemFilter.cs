@@ -16,9 +16,8 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
 {
     /// <summary>
-    /// 物品过滤板：过滤名单的手持载体，可随身编辑并把名单安装到收集器、物流管道等机器上<br/>
-    /// 名单数据直接存放在 ModItem 实例上(存档/网络走 <see cref="SaveData"/>/<see cref="NetSend"/> 一族钩子)，
-    /// 多人模式下本地编辑通过 <see cref="MessageID.SyncEquipment"/> 同步背包物品
+    /// 过滤名单手持卡；数据在ModItem上(SaveData/NetSend)<br/>
+    /// MP本地编辑走<see cref="MessageID.SyncEquipment"/>
     /// </summary>
     internal class ItemFilter : ModItem, IItemFilterHost
     {
@@ -28,7 +27,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
         public static LocalizedText CopiedFromChest { get; private set; }
         public static LocalizedText CopiedFromCollector { get; private set; }
 
-        /// <summary>过滤名单数据本体</summary>
         internal ItemFilterSet Filter { get; private set; } = new();
 
         #region IItemFilterHost
@@ -37,7 +35,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
 
         public string FilterHostName => Item.Name;
 
-        /// <summary>卡片必须仍在本地玩家的背包(或光标)中，编辑器才允许继续编辑</summary>
+        /// <summary>须仍在本地背包或光标</summary>
         public bool FilterHostAlive {
             get {
                 if (Item == null || Item.IsAir || Item.type != Type) {
@@ -56,10 +54,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
             }
         }
 
-        /// <summary>
-        /// 名单被本地修改后同步背包物品到服务器(服务器会自动转发给其他客户端)，
-        /// 这样机器在服务端安装名单时读到的即是最新数据
-        /// </summary>
+        /// <summary>MP客户端SyncEquipment同步背包物品</summary>
         public void OnFilterChanged() {
             if (Main.netMode != NetmodeID.MultiplayerClient) {
                 return;
@@ -95,10 +90,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
             Item.width = Item.height = 64;
             Item.useTime = Item.useAnimation = 16;
             Item.useStyle = ItemUseStyleID.Swing;
-            Item.maxStack = 1; //防止堆叠导致数据混乱
+            Item.maxStack = 1; //禁堆叠(名单数据)
         }
 
-        //ModItem 默认克隆是浅拷贝，必须深拷贝名单避免引用粘连
+        //浅拷贝会粘名单引用，须深拷
         public override ModItem Clone(Item newEntity) {
             ItemFilter clone = (ItemFilter)base.Clone(newEntity);
             clone.Filter = new ItemFilterSet();
@@ -108,7 +103,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
 
         #region 使用交互
 
-        /// <summary>对准收集器使用：把机器名单复制到卡上</summary>
         private bool TryCopyFromCollector(Player player) {
             Point16 point16 = Main.MouseWorld.ToTileCoordinates16();
             if (!TileProcessorLoader.AutoPositionGetTP<CollectorTP>(point16, out var collectorTP)) {
@@ -122,7 +116,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
             return true;
         }
 
-        /// <summary>对准箱子使用：把箱内物品类型复制为名单内容(保留当前黑白名单模式)</summary>
         private bool TryCopyFromChest(Player player) {
             Point16 point16 = Main.MouseWorld.ToTileCoordinates16();
             if (!VaultUtils.SafeGetTopLeft(point16, out var newPoint)) {
@@ -131,8 +124,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
 
             int chestIndex = Chest.FindChest(newPoint.X, newPoint.Y);
             if (chestIndex == -1) {
-                //此处必须放行:任何实心物块都能取到左上角坐标，
-                //吞掉点击会导致对着地形使用时编辑器永远无法打开(旧版顽疾)
+                //实心块也能取到左上角；吞掉点击会导致对着地形永远打不开编辑器
                 return false;
             }
 
@@ -157,7 +149,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
             }
 
             ItemFilterEditorUI editor = ItemFilterEditorUI.Instance;
-            //点击落在编辑器面板上时不响应挥动
+            //点在编辑器面板上时不响应挥动
             if (editor == null || editor.hoverInMainPage) {
                 return true;
             }
@@ -211,7 +203,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
                 return;
             }
 
-            //右下角计数角标，替代旧版会溢出到相邻物品格的环形展示
+            //右下角计数角标(替代旧版会溢出邻格的环形展示)
             string text = count > 99 ? "99+" : count.ToString();
             Color badgeColor = Filter.Mode == ItemFilterMode.Whitelist
                 ? ItemFilterTheme.AccentWhitelist
@@ -245,9 +237,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
     }
 
     /// <summary>
-    /// 旧存档迁移垫片：历史版本的名单数据由同名 GlobalItem 以 <c>_Items</c> 键保存，
-    /// 类名必须保持 ItemFilterData 才能命中旧存档中的全局数据条目<br/>
-    /// 本类不再保存任何数据(数据已迁入 <see cref="ItemFilter"/> 本体)，旧物品再次存档后即自然退役
+    /// 旧档垫片，类名须保持ItemFilterData以命中_Items键；数据已迁<see cref="ItemFilter"/>
     /// </summary>
     internal class ItemFilterData : GlobalItem
     {
@@ -258,7 +248,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
             if (item.ModItem is not ItemFilter card) {
                 return;
             }
-            //仅在新格式数据缺席时回填，避免覆盖已迁移的名单
+            //仅新格式缺席时回填
             if (card.Filter.IsEmpty && tag.TryGet("_Items", out int[] legacyItems)) {
                 card.Filter.CopyFrom(legacyItems, ItemFilterMode.Whitelist);
             }

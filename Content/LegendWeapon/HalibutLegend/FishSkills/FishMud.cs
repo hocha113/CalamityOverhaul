@@ -85,10 +85,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 泥鱼哨兵：破土而出的湿泥炮台。实体生命周期四相：
-    /// 预告鼓包→破土爆发（英雄时刻）→待机滴淌→塌陷回吸，出入场全程由根部泥堆shader遮蔽，无pop
-    /// </summary>
+    /// <summary>泥鱼哨兵，鼓包→破土→待机→回吸，根部泥堆shader盖出入场</summary>
     internal class MudfishSentry : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.Mudfish;
@@ -283,7 +280,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (StateTimer % 4 == 0) {
                 UpdateAnchorAboveHead();
             }
-            //钻升预告：地表微鼓
+            //钻升预告，地表微鼓
             moundEmerge = MathHelper.Lerp(moundEmerge, 0.4f, 0.08f);
 
             if (anchorSet && StateTimer % 5 == 0 && !VaultUtils.isServer) {
@@ -310,7 +307,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }, Projectile.Center);
             }
 
-            //预告拍：地面先隆起翻涌，鱼未露头
+            //预告拍，地面先隆起翻涌，鱼未露头
             if (StateTimer <= TelegraphFrames) {
                 emergingProgress = 0f;
                 moundEmerge = MathHelper.Lerp(moundEmerge, 1f, 0.34f);
@@ -329,14 +326,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //破土上冒：湿重过冲回落
+            //破土上冒，湿重过冲回落
             float riseT = MathHelper.Clamp((StateTimer - TelegraphFrames) / (float)(EmergeDuration - TelegraphFrames), 0f, 1f);
             emergingProgress = EaseOutBack(riseT);
             //头朝上钻出，出土后回落到待机姿态
             Projectile.rotation = -MathHelper.PiOver2 * (1f - riseT * 0.9f);
             targetRotation = 0f;
 
-            //挂泥滴淌：刚出土的鱼身往下甩泥
+            //挂泥滴淌，刚出土的鱼身往下甩泥
             if (!VaultUtils.isServer && StateTimer % 3 == 0) {
                 PRTLoader.NewParticle<PRT_FishMudDroplet>(
                     Projectile.Center + Main.rand.NextVector2Circular(16f, 14f),
@@ -354,7 +351,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>破土爆发帧：土浪翻涌+泥瓣泥点四溅+定向震屏+三层音效</summary>
+        /// <summary>破土爆发帧，土浪翻涌+泥瓣泥点四溅+定向震屏+三层音效</summary>
         private void BreachBurst() {
             burstEnvelope = 1f;
             wrapMud = 1f;
@@ -373,7 +370,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //泥瓣扇形上抛：英雄时刻的大块湿泥
+            //泥瓣扇形上抛
             for (int i = 0; i < 7; i++) {
                 float ang = -MathHelper.PiOver2 + MathHelper.Lerp(-0.85f, 0.85f, i / 6f) + Main.rand.NextFloat(-0.12f, 0.12f);
                 PRTLoader.NewParticle<PRT_FishMudClod>(
@@ -421,7 +418,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 StateTimer = 0;
             }
 
-            //待机滴淌：湿身析出的泥珠
+            //待机滴淌，湿身析出的泥珠
             if (!VaultUtils.isServer && StateTimer % 15 == 0) {
                 PRTLoader.NewParticle<PRT_FishMudDroplet>(
                     Projectile.Center + new Vector2(Main.rand.NextFloat(-14f, 14f), Main.rand.NextFloat(-4f, 10f)),
@@ -463,7 +460,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.rotation = MathHelper.Lerp(Projectile.rotation, targetRotation, 0.2f);
             moundEmerge = MathHelper.Lerp(moundEmerge, 0.55f, 0.08f);
 
-            //蓄力拍：发射前泥珠向嘴部聚拢
+            //蓄力拍，发射前泥珠向嘴部聚拢
             if (!VaultUtils.isServer && attackCooldown is > 0 and <= 6 && shotsFired < ShotCount && StateTimer % 2 == 0) {
                 Vector2 mouth = Projectile.Center + Projectile.rotation.ToRotationVector2() * 24f;
                 Vector2 from = mouth + Main.rand.NextVector2CircularEdge(20f, 20f);
@@ -532,7 +529,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //回吸期泥堆先涨后由uSink压塌
             moundEmerge = MathHelper.Lerp(moundEmerge, 0.85f, 0.15f);
 
-            //泥浆回吸：泥珠被拽向入点
+            //泥浆回吸，泥珠被拽向入点
             if (!VaultUtils.isServer && StateTimer % 3 == 0) {
                 Vector2 from = moundAnchor + new Vector2(Main.rand.NextFloat(-42f, 42f), Main.rand.NextFloat(-16f, 0f));
                 Vector2 pull = (moundAnchor + new Vector2(0f, 8f) - from) * 0.11f;
@@ -548,7 +545,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>退场残迹：入点留一滩缓慢干涸的泥渍，活得比哨兵久</summary>
+        /// <summary>退场残迹，入点留一滩缓慢干涸的泥渍，活得比哨兵久</summary>
         private void SpawnEndStains() {
             if (VaultUtils.isServer) {
                 return;
@@ -610,7 +607,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Pitch = -0.2f
             }, shootPos);
 
-            //出膛泥浪锥：拉丝泥珠顺射向甩出
+            //出膛泥浪锥，拉丝泥珠顺射向甩出
             for (int i = 0; i < 6; i++) {
                 Vector2 particleVel = velocity.RotatedByRandom(0.45f) * Main.rand.NextFloat(0.35f, 0.7f);
                 PRTLoader.NewParticle<PRT_FishMudDroplet>(shootPos, particleVel,
@@ -654,7 +651,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return target;
         }
 
-        /// <summary>湿重出土曲线：小过冲后沉回，读作重物顶开泥面</summary>
+        /// <summary>湿重出土曲线</summary>
         private static float EaseOutBack(float x) {
             const float c1 = 1.30f;
             const float c3 = c1 + 1f;
@@ -685,14 +682,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (State == SentryState.Submerging) {
                 float t = StateTimer / (float)SubmergeDuration;
                 drawPos = submergeStart - Main.screenPosition + new Vector2(0, 80f * t * t);
-                //末段没入泥中：在泥柱退散前先隐去鱼体
+                //末段没入泥中，在泥柱退散前先隐去鱼体
                 sinkFade = MathHelper.Clamp((1f - t) / 0.3f, 0f, 1f);
             }
             else {
                 drawPos = Projectile.Center - Main.screenPosition + new Vector2(0, buriedOffset);
             }
 
-            //射击后坐：沿嘴向反向缩一口
+            //射击后坐，沿嘴向反向缩一口
             drawPos -= Projectile.rotation.ToRotationVector2() * (recoilKick * 6f);
 
             float wiggleRotation = (float)Math.Sin(bodyWiggle) * 0.1f * emergingProgress;
@@ -706,14 +703,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //攻击蓄势时体色向湿亮泥偏移，不叠加发光层
             mudColor = Color.Lerp(mudColor, FishMudPalette.Wet, mouthOpenness * 0.3f);
 
-            //泥浆包裹层：画在本体之下的深泥剪影，出土后随水分蒸发退去
+            //泥浆包裹层，画在本体之下的深泥剪影
             if (wrapMud > 0.05f) {
                 Color wrapColor = FishMudPalette.Murk * (wrapMud * 0.75f * emergingProgress * sinkFade);
                 sb.Draw(texture, drawPos + new Vector2(0f, 2f), null, wrapColor,
                     totalRotation, fishOrigin, drawScale * 1.16f, SpriteEffects.None, 0);
             }
 
-            //摆尾转影：角度滞后的暗层，编码自旋而非平移
+            //摆尾转影
             for (int i = 0; i < 3; i++) {
                 float lag = (3 - i) * 0.09f;
                 Vector2 shadowPos = drawPos + new Vector2((float)Math.Sin(bodyWiggle + i) * 3f, (3 - i) * 2.4f);
@@ -725,7 +722,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             sb.Draw(texture, drawPos, null, mudColor * sinkFade, totalRotation, fishOrigin, drawScale, SpriteEffects.None, 0);
 
-            //湿面轮廓高光：错位窄高光读作湿皮反光，随挂泥变干而消退
+            //湿面轮廓高光
             float sheenStrength = 0.1f + wrapMud * 0.14f;
             Color sheen = FishMudPalette.Sheen * (sheenStrength * emergingProgress * sinkFade);
             sb.Draw(texture, drawPos + new Vector2(-1.6f, -2.4f), null, sheen,
@@ -734,7 +731,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>根部泥堆quad：画在实体层之后，天然盖住鱼体地下段与地面接缝</summary>
+        /// <summary>根部泥堆quad，画在实体层之后，天然盖住鱼体地下段与地面接缝</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
             if (Main.dedServ || !anchorSet) {
                 return;
@@ -784,7 +781,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             device.BlendState = BlendState.AlphaBlend;
             device.RasterizerState = RasterizerState.CullNone;
 
-            //泥面吃环境光：暗处不自发光，抬一点下限保可读
+            //泥面吃环境光
             Color light = Lighting.GetColor((moundAnchor - new Vector2(0f, 8f)).ToTileCoordinates());
             Vector3 lightVec = Vector3.Max(light.ToVector3(), new Vector3(0.18f));
 
@@ -809,8 +806,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 泥球：受重力的软体液团，形状由速度持续改写，飞行甩泥、落点留渍。
-    /// 四阶段：出膛拉丝→飞行液团演化→命中压扁飞溅→泥渍滴淌残留
+    /// 泥球，受重力的软体液团，形状由速度持续改写，飞行甩泥、落点留渍
+    /// 四阶段，出膛拉丝→飞行液团演化→命中压扁飞溅→泥渍滴淌残留
     /// </summary>
     internal class MudBall : ModProjectile, IPrimitiveDrawable
     {
@@ -850,7 +847,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             wobblePhase += 0.24f + Projectile.velocity.Length() * 0.016f;
             Projectile.rotation = Projectile.velocity.ToRotation();
 
-            //飞行甩泥：液团一路掉小滴
+            //飞行甩泥，液团一路掉小滴
             if (!VaultUtils.isServer && Projectile.timeLeft % 4 == 0) {
                 PRTLoader.NewParticle<PRT_FishMudDroplet>(
                     Projectile.Center + Main.rand.NextVector2Circular(5f, 5f),
@@ -890,7 +887,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Math.Abs(Projectile.velocity.Y - oldVelocity.Y) > 0.1f) {
                 Projectile.velocity.Y = -oldVelocity.Y * 0.3f;
             }
-            //反弹压扁：相位打到谷值，软体横向摊开后回弹
+            //反弹压扁
             wobblePhase = -MathHelper.PiOver2;
             //弹起继续飞行，后续寿终仍要收尾滴
             impactHandled = false;
@@ -911,7 +908,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnKill(int timeLeft) {
-            //空中寿终或穿透耗尽的收尾：只补几滴，不重复大飞溅
+            //空中寿终或穿透耗尽的收尾
             if (impactHandled || VaultUtils.isServer) {
                 return;
             }
@@ -923,7 +920,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>命中飞溅：入射向泥珠扇+泥瓣+滴淌泥渍，渍是活得比弹体久的残迹</summary>
+        /// <summary>命中飞溅，入射向泥珠扇+泥瓣+滴淌泥渍，渍是活得比弹体久的残迹</summary>
         private void SpawnSplat(Vector2 incoming, bool onWall) {
             if (VaultUtils.isServer) {
                 return;
@@ -944,7 +941,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     FishMudPalette.Mud(Main.rand.NextFloat(0.3f, 0.7f)), Main.rand.NextFloat(0.6f, 0.9f))
                     ?.Configure(Main.rand.Next(20, 30));
             }
-            //泥渍：贴地摊平、挂壁竖挂，缓慢滴淌干涸
+            //泥渍
             PRTLoader.NewParticle<PRT_FishMudStain>(Projectile.Center, Vector2.Zero,
                 FishMudPalette.Mud(Main.rand.NextFloat(0.25f, 0.6f)), Main.rand.NextFloat(0.7f, 1f))
                 ?.Configure(Main.rand.Next(55, 85), onWall ? 1.2f : 2.4f, 2);
@@ -981,7 +978,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>液团quad：本体+两枚旧位残影，沿速度轴摆放</summary>
+        /// <summary>液团quad，本体+两枚旧位残影，沿速度轴摆放</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
             if (Main.dedServ) {
                 return;
@@ -1011,7 +1008,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float stretch = MathHelper.Clamp(speed * 0.05f, 0f, 1f);
             float fade = DissolveFade;
 
-            //旧位残影在前：暗小虚，本体最后画在顶上
+            //旧位残影在前
             for (int i = 2; i >= 0; i--) {
                 if (i > 0 && Projectile.oldPos[i] == Vector2.Zero) {
                     continue;

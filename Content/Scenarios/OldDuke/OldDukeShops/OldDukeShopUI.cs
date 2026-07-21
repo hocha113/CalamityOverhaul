@@ -11,14 +11,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 {
-    /// <summary>
-    /// 老公爵商店UI
-    /// </summary>
+    /// <summary>老公爵商店UI</summary>
     internal class OldDukeShopUI : UIHandle, ILocalizedModType
     {
         public static OldDukeShopUI Instance => UIHandleLoader.GetUIHandleOfType<OldDukeShopUI>();
 
-        //UI状态
         private bool _active;
         public override bool Active {
             get => _active || animation.UIAlpha > 0f;
@@ -37,7 +34,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
         //商店数据
         private readonly List<OldDukeShopItem> shopItems = new();
 
-        //组件
         private readonly OldDukeShopAnimation animation = new();
         private readonly SulfseaPanelState sulfseaState = new();
         private OldDukeShopInteraction interaction;
@@ -51,7 +47,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
         }
 
         public override void Update() {
-            //更新动画进度
             animation.UpdateUIAnimation(_active);
 
             if (animation.UIAlpha <= 0f) {
@@ -59,7 +54,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
                 return;
             }
 
-            //初始化组件（延迟初始化，确保shopItems已填充）
+            //延迟初始化，等shopItems
             if (interaction == null) {
                 interaction = new OldDukeShopInteraction(player, shopItems, animation);
                 renderer = new OldDukeShopRenderer(player, shopItems, animation, interaction);
@@ -69,12 +64,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
             Rectangle panelRect = new((int)panelPosition.X, (int)panelPosition.Y, PanelWidth, PanelHeight);
             sulfseaState.Update(panelRect, _active);
 
-            //更新UI交互
             if (_active && animation.PanelSlideProgress > 0.82f) {
                 UpdateInteraction(panelPosition);
             }
 
-            //更新槽位悬停动画
             animation.UpdateSlotHoverAnimations(interaction.HoveredIndex, interaction.ScrollOffset);
         }
 
@@ -99,7 +92,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
                 }
 
                 if (keyLeftPressState != KeyPressState.None) {
-                    //更新滚动条（优先处理）
                     interaction.UpdateScrollBar(panelPosition, MousePosition.ToPoint(),
                         Main.mouseLeft, Main.mouseLeftRelease);
                 }
@@ -142,9 +134,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
             renderer.Draw(spriteBatch, panelPosition, sulfseaState);
         }
 
-        /// <summary>
-        /// 初始化商店物品
-        /// </summary>
         public void InitializeShop() {
             shopItems.Clear();
             OldDukeShopHandle.Handle(shopItems);

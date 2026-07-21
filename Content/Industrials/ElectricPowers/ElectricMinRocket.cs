@@ -321,7 +321,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             InDrop = true;
             if (TrackItem == null) {
                 Tile tile = Framing.GetTileSafely(Position);
-                //为什么是165？因为这是自然生成时会使用的背景墙，用这个小区别来防止玩家放置的火箭被影响
+                //165=自然生成墙，与玩家放置区分
                 if (tile.WallType == WallID.SapphireGemspark) {
                     MachineData.UEvalue = MaxUEValue;
                 }

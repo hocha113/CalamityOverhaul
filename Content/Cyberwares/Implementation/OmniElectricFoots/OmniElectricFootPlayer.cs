@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
         /// <summary>雷达蓄力中，HUD 显隐用</summary>
         public bool IsCharging { get; private set; }
 
-        /// <summary>释放后冷却帧，防连点抖动</summary>
+        /// <summary>释放后冷却帧</summary>
         public int ReleaseCooldown { get; private set; }
         private float releaseCooldownCarry;
 
@@ -30,22 +30,21 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
 
         //上帧 Y 速度，检起跳沿
         private float lastVelocityY;
-        //上一帧是否绑定地面
+        //上帧是否贴地
         private bool wasGroundedLastFrame;
         //上帧蓄力态，外部断键时清姿态
         private bool wasChargingLastFrame;
-        //蓄力姿态的最近一次喷射粒子时间，避免帧率叠加导致粒子爆量
+        //蓄力粒子节流
         private int chargeParticleTick;
 
         public override void ResetEffects() {
-            //冷却递减
             int releaseCd = ReleaseCooldown;
             BaseCyberware.TickFrameDown(ref releaseCd, ref releaseCooldownCarry);
             ReleaseCooldown = releaseCd;
-            //快照上帧蓄力再复位，保证 IsCharging 严格等于本帧雷达是否驱动
+            //快照上帧蓄力再复位
             wasChargingLastFrame = IsCharging;
             IsCharging = false;
-            //无驱动时 ChargeRatio 衰减，HUD 环自然收回
+            //无驱动时衰减，HUD 环收回
             if (!wasChargingLastFrame && ChargeRatio > 0f) {
                 ChargeRatio = MathF.Max(0f, ChargeRatio - 0.04f);
             }
@@ -54,7 +53,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
         public override void PostUpdate() {
             OmniElectricFoot equipped = OmniElectricFoot.GetEquipped(Player);
             if (equipped == null) {
-                //卸下义足后立即清空所有状态
                 ChargeRatio = 0f;
                 IsCharging = false;
                 CanDoubleJump = false;
@@ -66,17 +64,16 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
 
             IsOnGround = DetectOnGround(Player);
 
-            //落地瞬间重置二段跳额度
+            //落地重置二段跳
             if (IsOnGround && !wasGroundedLastFrame) {
                 CanDoubleJump = true;
             }
 
-            //首次起跳的容错：保证起跳后二段跳额度仍然保留到玩家真正消耗
+            //首次起跳沿仍保留额度
             if (lastVelocityY >= 0f && Player.velocity.Y * Player.gravDir < -0.1f && wasGroundedLastFrame) {
                 CanDoubleJump = true;
             }
 
-            //仅本机玩家执行输入相关逻辑
             if (Player.whoAmI == Main.myPlayer) {
                 UpdateDoubleJump(equipped);
             }
@@ -88,7 +85,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
         /// <summary>雷达蓄力每帧回调，同步比例与粒子</summary>
         public void RadialDriveCharge(float ratio) {
             if (ReleaseCooldown > 0) {
-                //冷却中拒绝任何蓄力输入，防止快速点按造成视觉抖动
                 return;
             }
             if (!IsOnGround) {
@@ -96,7 +92,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             }
 
             ratio = MathHelper.Clamp(ratio, 0f, 1f);
-            //首帧蓄力时播一次音效
             if (!wasChargingLastFrame) {
                 SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = 0.4f, Volume = 0.45f }, Player.Center);
                 chargeParticleTick = 0;
@@ -104,13 +99,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             ChargeRatio = ratio;
             IsCharging = true;
 
-            //蓄力姿态：限制水平速度，强化"屈膝蹬地"的视觉
+            //蓄力姿态，限水平速
             Player.velocity.X *= 0.78f;
             if (MathF.Abs(Player.velocity.X) < 0.1f) {
                 Player.velocity.X = 0f;
             }
 
-            //粒子节奏：高蓄力时每帧都喷，低蓄力时每 3 帧一次，避免低进度阶段过载
+            //高蓄力每帧，低蓄力隔帧
             chargeParticleTick++;
             int interval = ratio > 0.6f ? 1 : (ratio > 0.3f ? 2 : 3);
             if (chargeParticleTick >= interval) {
@@ -142,7 +137,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             IsCharging = false;
         }
 
-        /// <summary>蓄力跳：倍率插值 + 水平推力，ReleaseCooldown=12</summary>
+        /// <summary>蓄力跳，倍率插值+水平推力，ReleaseCooldown=12</summary>
         private void ReleaseChargeJump(float ratio) {
             float baseJumpSpeed = Player.jumpSpeed;
             if (baseJumpSpeed < 4f) {
@@ -173,7 +168,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             CanDoubleJump = true;
         }
 
-        /// <summary>二段跳，controlJump+releaseJump 触发，与雷达解耦</summary>
+        /// <summary>二段跳，controlJump+releaseJump，与雷达解耦</summary>
         private void UpdateDoubleJump(OmniElectricFoot equipped) {
             if (IsOnGround) {
                 return;
@@ -185,7 +180,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
                 return;
             }
 
-            //"刚按下跳跃键"：controlJump + releaseJump 的组合
+            //刚按下跳跃键
             if (!Player.controlJump || !Player.releaseJump) {
                 return;
             }

@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Common
         /// <summary>禁用蓝移，默认 false</summary>
         public bool DontUseBlueshiftEffect() => false;
         /// <summary>扭曲管道外的自定义绘制</summary>
-        /// <param name="spriteBatch"></param>
         public void DrawCustom(SpriteBatch spriteBatch);
         /// <summary>扭曲采样源绘制</summary>
         public void Warp();

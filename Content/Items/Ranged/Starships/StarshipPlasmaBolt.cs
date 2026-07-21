@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged.Starships
 {
-    //群星巨舰主弹：高速等离子星弹，命中赋予超位崩解
+    //主弹，命中赋超位崩解
     internal class StarshipPlasmaBolt : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;

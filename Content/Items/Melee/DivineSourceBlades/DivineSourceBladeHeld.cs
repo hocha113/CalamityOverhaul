@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         private int hitstopTimer;
         private bool hitstopApplied;
 
-        /// <summary>连击段位：0 快斩、1 回斩、2 大斩切</summary>
+        /// <summary>连击段位，0快斩/1回斩/2大斩</summary>
         private int ComboStage => (int)Projectile.ai[0];
         private bool IsHeavy => ComboStage >= 2;
 

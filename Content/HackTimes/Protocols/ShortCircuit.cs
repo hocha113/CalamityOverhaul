@@ -20,18 +20,15 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override bool OnApply(IHackTarget target, Player caster) {
             if (target is not NpcScannable s) return false;
             NPC npc = Main.npc[s.NpcIndex];
-            //权威性伤害仅施法端，远端复刻只播视觉
+            //伤害仅施法端，远端只播视觉
             if (!HackTimeNetSync.IsRemoteApply) {
-                //即时重击
                 int dmg = Math.Max(30, (int)(npc.lifeMax * 0.02f));
                 npc.SimpleStrikeNPC(dmg, 0, false, 0f, null, false, 0f, true);
             }
-            //电弧爆发粒子
             for (int i = 0; i < 15; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(6f, 6f);
                 PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(100, 180, 255), 1.5f).Configure(false, 15);
             }
-            //内层白色核心闪光
             for (int i = 0; i < 6; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(2f, 2f);
                 PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, Color.White, 2.0f).Configure(false, 8);

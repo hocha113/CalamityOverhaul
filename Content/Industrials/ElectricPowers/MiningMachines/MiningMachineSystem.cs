@@ -7,9 +7,7 @@ using Terraria.Utilities;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 {
-    /// <summary>
-    /// 采矿机掉落上下文
-    /// </summary>
+    /// <summary>采矿机掉落上下文</summary>
     public struct MiningDropContext
     {
         public int Tier;
@@ -32,9 +30,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         }
     }
 
-    /// <summary>
-    /// 矿物掉落规则
-    /// </summary>
+    /// <summary>矿物掉落规则</summary>
     public class OreDropRule
     {
         public int ItemID { get; set; }

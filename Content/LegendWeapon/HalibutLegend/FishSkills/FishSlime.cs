@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             });
         }
 
-        //凝胶出手效果：反向甩珠 + 少量填底 Dust
+        //凝胶出手效果
         private static void SpawnGelCreateEffect(Vector2 position, Vector2 gelVelocity) {
             if (Main.dedServ) {
                 return;
@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 史莱姆凝胶球弹幕：半透明果冻 blob（shader quad 本体）+ 果冻阻尼震荡形变 +
+    /// 史莱姆凝胶球弹幕，半透明果冻 blob（shader quad 本体）+ 果冻阻尼震荡形变 +
     /// 发射/凝胶间拉丝（拉长-绷断-回缩三拍）+ 附着宿主随动 wobble
     /// </summary>
     internal class SlimeGelOrb : ModProjectile, IPrimitiveDrawable
@@ -166,7 +166,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const float Bounce = 0.6f;
         private const float AirFriction = 0.98f;
 
-        //果冻形变：主轴角 + 沿轴/垂轴反相缩放 + 阻尼震荡
+        //果冻形变，主轴角
         private float deformAngle;
         private float stretchAxis = 1f;
         private float squashAxis = 1f;
@@ -174,15 +174,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float wobblePhase;
         private Vector2 lastVelocity = Vector2.Zero;
         private Vector2 lastTargetVel = Vector2.Zero;
-        //内部高光方向：默认左上光源，追踪时偏向目标（凝胶在"看"猎物）
+        //内部高光方向，默认左上光源
         private Vector2 highlightDir = new(-0.45f, -0.55f);
-        //附着点体表偏移：多球分点粘附
+        //附着点体表偏移，多球分点粘附
         private Vector2 anchorOffset = Vector2.Zero;
 
-        //发射拉丝：玩家→球，拉长到极限绷断
+        //发射拉丝，玩家→球，拉长到极限绷断
         private bool launchStrandAlive = true;
         private const float LaunchStrandSnapLen = 190f;
-        //上帧连接集：检测凝胶间拉丝绷断
+        //上帧连接集，检测凝胶间拉丝绷断
         private readonly HashSet<int> prevConnected = new();
 
         //爆炸参数
@@ -192,7 +192,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //爆前充能 0..1
         private float ChargeT => State == GelState.Exploding
             ? MathHelper.Clamp(1f - Projectile.timeLeft / (float)PreExplosionTime, 0f, 1f) : 0f;
-        //本体半径 px：出生撑起 + 爆前鼓胀
+        //本体半径 px
         private float BlobRadius => 20f * MathHelper.Clamp(GelLife / 6f, 0.25f, 1f) * (1f + ChargeT * 0.32f);
         private float Seed => Projectile.identity * 0.173f;
 
@@ -223,7 +223,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //更新追踪目标
             UpdateTracking();
 
-            //状态机
             switch (State) {
                 case GelState.Floating:
                     FloatingPhaseAI();
@@ -245,7 +244,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //果冻震荡效果
             UpdateJellyPhysics();
 
-            //内部高光：追踪时偏向目标
+            //内部高光，追踪时偏向目标
             UpdateHighlight();
 
             //半透明凝胶的微弱蓝光，不做灯泡
@@ -269,7 +268,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //更新追踪系统
         private void UpdateTracking() {
-            //检查当前追踪目标是否有效
             if (trackingTargetID >= 0 && trackingTargetID < Main.maxNPCs) {
                 NPC target = Main.npc[trackingTargetID];
                 if (!target.active || !target.CanBeChasedBy() || target.friendly) {
@@ -297,7 +295,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (closestNPC != null) {
                 trackingTargetID = closestNPC.whoAmI;
 
-                //锁定反馈：果冻抖一下 + 单滴甩落，方向感交给拉伸与高光
+                //锁定反馈，果冻抖一下 + 单滴甩落
                 ExciteWobble(0.16f, closestNPC.Center - Projectile.Center);
                 if (!Main.dedServ) {
                     FishSlimeVFX.Droplet(Projectile.Center, Main.rand.NextVector2Circular(1.5f, 1f)
@@ -341,7 +339,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         //计算追踪加速度
                         Vector2 trackingAccel = toTarget.SafeNormalize(Vector2.Zero) * trackingStrength;
 
-                        //追踪：加速度叠层，非直接改 velocity
+                        //追踪，加速度叠层
                         Projectile.velocity += trackingAccel;
 
                         //限制最大速度，但允许重力和弹跳的自然速度
@@ -354,7 +352,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //高速甩珠：拖尾语言是被甩落的凝胶滴，不是能量线
+            //高速甩珠
             if (!Main.dedServ && Projectile.velocity.Length() > 8.5f && Main.rand.NextBool(7)) {
                 FishSlimeVFX.Droplet(Projectile.Center + Main.rand.NextVector2Circular(6f, 6f)
                     , -Projectile.velocity * 0.15f + Main.rand.NextVector2Circular(0.8f, 0.8f)
@@ -373,15 +371,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void AttachedPhaseAI() {
             int targetID = (int)AttachedTargetID;
 
-            //检查附着目标是否有效
             if (targetID >= 0 && targetID < Main.maxNPCs) {
                 NPC target = Main.npc[targetID];
                 if (target.active) {
-                    //跟随目标体表锚点：多球分点粘附而非全部叠在中心
+                    //跟随目标体表锚点
                     Projectile.Center = Vector2.Lerp(Projectile.Center, target.Center + anchorOffset, 0.15f);
                     Projectile.velocity = target.velocity * 0.8f;
 
-                    //宿主速度突变激发 wobble：粘着的凝胶随目标运动继续震颤
+                    //宿主速度突变激发 wobble
                     Vector2 hostDv = target.velocity - lastTargetVel;
                     if (hostDv.Length() > 2.2f) {
                         ExciteWobble(Math.Min(hostDv.Length() * 0.06f, 0.4f), hostDv);
@@ -398,7 +395,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     if (GelLife % 30 == 0) {
                         target.SimpleStrikeNPC(Projectile.damage / 4, 0, false, 0f, null, false, 0f, true);
 
-                        //伤害 tick：果冻紧缩一拍 + 少量向外挤出的溅珠
+                        //伤害 tick
                         ExciteWobble(0.2f, anchorOffset);
                         if (!Main.dedServ) {
                             FishSlimeVFX.GelBurst(Projectile.Center, anchorOffset, 2, 2.4f);
@@ -425,11 +422,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //停止移动
             Projectile.velocity *= 0.9f;
 
-            //内压上升：震荡越来越急，形体鼓胀由 BlobRadius/ChargeT 承担
+            //内压上升，震荡越来越急
             wobblePhase += 0.3f * ChargeT;
             wobbleAmp = Math.Max(wobbleAmp, 0.1f + ChargeT * 0.18f);
 
-            //表面渗出小滴：将破未破
+            //表面渗出小滴，将破未破
             if (!Main.dedServ && Main.rand.NextBool(6)) {
                 Vector2 rim = Main.rand.NextVector2Unit() * BlobRadius * 0.8f;
                 FishSlimeVFX.Droplet(Projectile.Center + rim, rim * 0.03f + new Vector2(0f, -0.5f)
@@ -481,7 +478,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             trackingTargetID = -1; //清除追踪
             lastTargetVel = target.velocity;
 
-            //体表锚点：入射方向一侧的种子偏移点
+            //体表锚点，入射方向一侧的种子偏移点
             Vector2 inDir = (Projectile.Center - target.Center).SafeNormalize(Main.rand.NextVector2Unit());
             anchorOffset = inDir.RotatedByRandom(0.7f) * new Vector2(target.width, target.height) * 0.34f;
 
@@ -491,7 +488,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Pitch = 0.4f
             }, Projectile.Center);
 
-            //拍击上靶：压成饼 + 接触点溅珠环
+            //拍击上靶，压成饼 + 接触点溅珠环
             ExciteWobble(0.5f, anchorOffset);
             if (!Main.dedServ) {
                 FishSlimeVFX.GelBurst(target.Center + anchorOffset, anchorOffset, 6, 4f);
@@ -524,7 +521,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //绷断检测：上帧连着、这帧刚超程的丝走绷断三拍（小 id 方负责，避免双份）
+            //绷断检测
             if (!Main.dedServ) {
                 foreach (int id in prevConnected) {
                     if (ConnectedGels.Contains(id) || Projectile.whoAmI > id) continue;
@@ -542,7 +539,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //发射拉丝：拉长到极限或状态切换时绷断
+        //发射拉丝，拉长到极限或状态切换时绷断
         private void UpdateLaunchStrand() {
             if (!launchStrandAlive) {
                 return;
@@ -573,7 +570,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //冲击注入震荡能量：反相阻尼振荡自 cos 峰值起步（先沿冲击法向压扁/拉宽）
+        //冲击注入震荡能量
         private void ExciteWobble(float amp, Vector2 axis) {
             if (amp <= wobbleAmp * 0.6f) {
                 return; //弱冲击不打断强震荡
@@ -581,12 +578,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             wobbleAmp = Math.Min(amp, 0.55f);
             wobblePhase = 0f;
             if (axis.LengthSquared() > 0.01f && State != GelState.Attached) {
-                //形变主轴取冲击方向的垂直：砸地=横宽竖扁，撞墙=竖长横扁
+                //形变主轴取冲击方向的垂直，砸地=横宽竖扁，撞墙=竖长横扁
                 deformAngle = axis.ToRotation() + MathHelper.PiOver2;
             }
         }
 
-        //更新果冻物理：主轴对齐 + 速度拉伸 + 阻尼反相震荡 + 待机呼吸
+        //更新果冻物理，主轴对齐
         private void UpdateJellyPhysics() {
             //速度突变自动激发（追踪急转、连接拉拽）
             Vector2 dv = Projectile.velocity - lastVelocity;
@@ -597,24 +594,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             float speed = Projectile.velocity.Length();
             if (State == GelState.Attached) {
-                //贴附：饼面贴着体表，主轴垂直于接触法线
+                //贴附
                 deformAngle = deformAngle.AngleLerp(anchorOffset.ToRotation() + MathHelper.PiOver2, 0.2f);
             }
             else if (speed > 3f) {
-                //飞行：主轴缓慢回贴速度方向，让落地压扁那拍先读出来
+                //飞行，主轴缓慢回贴速度方向
                 deformAngle = deformAngle.AngleLerp(Projectile.velocity.ToRotation(), 0.14f);
             }
 
-            //基础形变量：速度拉伸 / 附着压饼
+            //基础形变量，速度拉伸 / 附着压饼
             float baseStretch = State == GelState.Floating ? Math.Min(speed * 0.02f, 0.3f) : 0f;
             float attachFlat = State == GelState.Attached ? 0.22f : 0f;
 
-            //阻尼震荡：主轴与垂轴反相
+            //阻尼震荡，主轴与垂轴反相
             wobblePhase += 0.52f;
             wobbleAmp *= 0.915f;
             float w = wobbleAmp * MathF.Cos(wobblePhase);
 
-            //待机呼吸：活物的静默签名
+            //待机呼吸，活物的静默签名
             float breath = MathF.Sin(GelLife * 0.085f + Projectile.identity % 10 * 0.7f) * 0.022f;
 
             stretchAxis = 1f + baseStretch + attachFlat + w + breath;
@@ -622,7 +619,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             lastVelocity = Projectile.velocity;
         }
 
-        //内部高光方向：默认左上光源，锁定目标时偏过去
+        //内部高光方向
         private void UpdateHighlight() {
             Vector2 hlTarget = new(-0.45f, -0.55f);
             if (trackingTargetID >= 0 && trackingTargetID < Main.maxNPCs) {
@@ -670,7 +667,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //落地三拍：压扁（ExciteWobble 冲击法向）+ 回弹震荡 + 接触点溅珠
+            //落地三拍
             float impactSpeed = oldVelocity.Length();
             ExciteWobble(MathHelper.Clamp(impactSpeed * 0.055f, 0.14f, 0.55f), oldVelocity - Projectile.velocity);
             if (!Main.dedServ) {
@@ -746,11 +743,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //爆裂演出：凝胶滴扇 + 大块凝胶 + 深蓝扩散环，落地滴块留溅斑残迹
+            //爆裂演出
             FishSlimeVFX.GelPop(Projectile.Center, 1f + HalibutData.GetDomainLayer() * 0.08f);
         }
 
-        //附着时整体压到宿主身后：夹心底层由 PreDraw 承担，blob 本体走图元层浮在宿主之上
+        //附着时整体压到宿主身后
         public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs
             , List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) {
             if (State == GelState.Attached) {
@@ -762,7 +759,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SpriteBatch sb = Main.spriteBatch;
             float time = Main.GlobalTimeWrappedHourly;
 
-            //发射拉丝：随距离绷紧变细
+            //发射拉丝，随距离绷紧变细
             if (launchStrandAlive) {
                 Player owner = Main.player[Projectile.owner];
                 if (owner.active) {
@@ -772,7 +769,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //凝胶连丝：小 id 方绘制避免双画
+            //凝胶连丝，小 id 方绘制避免双画
             foreach (int gelID in ConnectedGels) {
                 if (gelID >= Main.maxProjectiles || Projectile.whoAmI > gelID) continue;
                 Projectile other = Main.projectile[gelID];
@@ -783,7 +780,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 FishSlimeVFX.DrawStrand(sb, Projectile.Center, other.Center, slack, alpha, time, Seed + gelID * 0.31f);
             }
 
-            //附着夹心底层：宿主身后的凝胶体积暗影（本层已被 DrawBehind 压到 NPC 之后）
+            //附着夹心底层
             //Extra_98 真 alpha 血滴形错相叠两张，读作从宿主背面渗出的凝胶团
             if (State == GelState.Attached) {
                 Texture2D blob = CWRAsset.Extra_98?.Value;
@@ -800,7 +797,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        //blob 本体：实体层图元 quad，shader 画半透明果冻
+        //blob 本体，实体层图元 quad
         void IPrimitiveDrawable.DrawPrimitives() {
             if (!Projectile.active) {
                 return;
@@ -862,7 +859,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             device.DepthStencilState = prevDepth;
         }
 
-        //shader 未就绪的降级：真 alpha 液滴贴图错相叠出暗缘 + 半透明体 + 偏移高光点，同样无加色
+        //shader 未就绪的降级
         private void DrawBlobFallback() {
             Texture2D blob = CWRAsset.Extra_98?.Value;
             if (blob == null) {

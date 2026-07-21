@@ -23,10 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public float Time;
     }
 
-    /// <summary>
-    /// 鬼影 shader 绘制(OniGhostShadow.fx)。失败时由调用方走 CPU 烟团降级。<br/>
-    /// 形体由域扭曲 fbm 每帧生成,眼睛/碎裂/凝视全部参数化,仪式与细节板共用
-    /// </summary>
+    /// <summary>鬼影 shader(OniGhostShadow.fx),失败走 CPU 烟团,仪式与细节板共用</summary>
     internal static class OniGhostShadowDraw
     {
         public static bool Available => EffectLoader.OniGhostShadow?.Value != null;

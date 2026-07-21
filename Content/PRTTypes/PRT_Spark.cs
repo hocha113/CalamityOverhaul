@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         public Color InitialColor;
         public bool AffectedByGravity;
         public Entity entity;
-        public override int InGame_World_MaxCount => 8000;//需求量不少，多一些
+        public override int InGame_World_MaxCount => 8000;//用量大
         public override bool CanPool => true;
         public override string Texture => CWRConstant.Masking + "Extra_98";
         public PRT_Spark Configure(bool affectedByGravity, int lifetime, Entity entity = null) {

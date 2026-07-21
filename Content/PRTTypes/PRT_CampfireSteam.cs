@@ -5,9 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>
-    /// 营地锅上升的蒸汽粒子，强化状态下速度更快范围更广
-    /// </summary>
+    /// <summary>营地蒸汽，强化时更快更广</summary>
     internal class PRT_CampfireSteam : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "SoftGlow";
@@ -50,7 +48,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             Scale += isEnhanced ? 0.012f : 0.008f;
             Rotation += isEnhanced ? 0.025f : 0.015f;
 
-            //淡入淡出：前段快速淡入，随后随生命周期正弦衰减
+            //前段快淡入后正弦衰减
             if (Time < 10) {
                 Opacity = Time / 10f;
             }

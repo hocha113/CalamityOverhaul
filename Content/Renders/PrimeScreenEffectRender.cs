@@ -6,7 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Renders
 {
-    /// <summary>机械骷髅王全屏后效：热浪/冲击环/终爆帧，screenTarget ping-pong 回写</summary>
+    /// <summary>机械骷髅王全屏后效，screenTarget ping-pong</summary>
     internal class PrimeScreenEffectRender : RenderHandle
     {
         /// <summary>权重 1.08，在热浪(1.06)与扭曲(1.2)之间</summary>
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.Renders
             return false;
         }
 
-        /// <summary>拷屏到 screenSwap 再带着 shader 写回 screenTarget</summary>
+        /// <summary>拷屏再 shader 回写</summary>
         private static void PingPong(SpriteBatch sb, GraphicsDevice gd, RenderTarget2D screenSwap, Effect shader) {
             gd.SetRenderTarget(screenSwap);
             gd.Clear(Color.Transparent);
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Renders
             Effect shader = EffectLoader.PrimeHeatWake.Value;
             Vector2 centerUV = WorldToScreenUV(PrimeScreenEffects.HeatWorldCenter);
 
-            //源离屏过远时跳过全屏 pass
+            //离屏过远跳过
             if (centerUV.X < -0.5f || centerUV.X > 1.5f || centerUV.Y < -0.5f || centerUV.Y > 1.5f) {
                 return;
             }
@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.Renders
                 }
 
                 float t = ring.Age / (float)ring.Life;
-                //环半径 easeOut 扩张，强度随寿命衰减
+                //easeOut 扩环，强度衰减
                 float radiusPx = ring.MaxRadiusPx * VaultUtils.EaseOutCubic(t);
                 float strength = ring.Intensity * (1f - t) * (1f - t);
                 Vector2 centerUV = WorldToScreenUV(ring.WorldCenter);
@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.Renders
             PingPong(sb, gd, screenSwap, shader);
         }
 
-        /// <summary>世界坐标 → 归一化 uv（含 GameViewMatrix.Zoom）</summary>
+        /// <summary>世界→归一化 uv(含 Zoom)</summary>
         private static Vector2 WorldToScreenUV(Vector2 worldPos) {
             float screenW = Main.screenWidth;
             float screenH = Main.screenHeight;
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.Renders
             return new Vector2(screenPx.X / screenW, screenPx.Y / screenH);
         }
 
-        /// <summary>像素长度 → 屏幕高度归一化（与着色器距离场量纲一致）</summary>
+        /// <summary>像素→屏高归一化</summary>
         private static float PixelsToHeightNorm(float pixels) {
             float zoomY = Main.GameViewMatrix.Zoom.Y;
             if (zoomY <= 0f) {

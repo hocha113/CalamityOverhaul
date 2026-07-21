@@ -4,19 +4,18 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.UIs.UIEffect
 {
-    /// <summary>硫磺火面板着色器，失败时 CPU 降级</summary>
+    /// <summary>硫火面板着色器,失败则CPU降级</summary>
     internal static class BrimstoneShaderPanel
     {
         public static bool Available => EffectLoader.BrimstoneDialogueBox?.Value != null;
 
-        /// <summary>矩形内绘制 BrimstoneDialogueBox.fx 面板</summary>
-        /// <param name="sb">当前已Begin的SpriteBatch</param>
-        /// <param name="rect">面板包含边缘的矩形</param>
-        /// <param name="alpha">整体透明度</param>
-        /// <param name="pulse01">脉动0~1,用于驱动火焰整体节拍</param>
-        /// <param name="time">单调递增的着色器时间</param>
-        /// <param name="edgePad">面板边缘羽化像素</param>
-        /// <param name="tint">最终颜色叠加,可用于hover/选中差异</param>
+        /// <summary>画BrimstoneDialogueBox.fx</summary>
+        /// <param name="sb">已Begin的SpriteBatch</param>
+        /// <param name="rect">含边缘矩形</param>
+        /// <param name="pulse01">0~1脉动</param>
+        /// <param name="time">着色器时间,单调增</param>
+        /// <param name="edgePad">边缘羽化px</param>
+        /// <param name="tint">色叠加</param>
         public static void Draw(SpriteBatch sb, Rectangle rect, float alpha, float pulse01, float time, int edgePad, Color tint) {
             Effect effect = EffectLoader.BrimstoneDialogueBox?.Value;
             if (effect == null) {

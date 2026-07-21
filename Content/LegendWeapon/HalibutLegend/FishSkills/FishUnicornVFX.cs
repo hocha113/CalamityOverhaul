@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 虹光星屑：十字闪芒小星，甩出急减速后受重力缓落，带闪烁衰减。<br/>
+    /// 虹光星屑，十字闪芒小星，甩出急减速后受重力缓落，带闪烁衰减<br/>
     /// 残影湮灭时蜕落，是整段突刺里活得最久的余韵
     /// </summary>
     internal class PRT_FishUnicornStardust : BasePRT
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 origin = star.Size() * 0.5f;
             Color col = Color with { A = 0 };
 
-            //十字闪芒：竖长横短两道细条 + 极小核，小而锐
+            //十字闪芒
             spriteBatch.Draw(star, pos, null, col * (0.85f * Opacity), 0f, origin
                 , new Vector2(0.10f, 0.62f) * Scale, SpriteEffects.None, 0f);
             spriteBatch.Draw(star, pos, null, col * (0.70f * Opacity), MathHelper.PiOver2, origin
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 角尖螺线光段：出生即定角度与长度的定向短光条，原地快速湮灭。<br/>
+    /// 角尖螺线光段，出生即定角度与长度的定向短光条，原地快速湮灭<br/>
     /// 突刺时按螺旋相位排布成独角螺纹光轨，蓄势时作向心收束光屑
     /// </summary>
     internal class PRT_FishUnicornHelix : BasePRT
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float lenScale = lengthPixels / tex.Height;
             Color col = Color with { A = 0 };
 
-            //宽淡窄亮双层：细线更实，避免糊成光棒
+            //宽淡窄亮双层，细线更实，避免糊成光棒
             spriteBatch.Draw(tex, pos, null, col * (0.5f * Opacity), Rotation + MathHelper.PiOver2, origin
                 , new Vector2(0.30f, lenScale) * Scale, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, pos, null, col * (0.9f * Opacity), Rotation + MathHelper.PiOver2, origin

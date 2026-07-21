@@ -5,11 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 {
-    /// <summary>
-    /// 斩痕碎晶：直痕引爆/终斩裂世时迸出的晶状残片。<br/>
-    /// 与 <see cref="CrimsonRendSlashs.PRT_CrimsonSpark"/> 的速度拉长条不同，
-    /// 碎晶沿自身滚转轴拉长、独立自旋 —— 读作"被斩碎的空间残渣"而非火花
-    /// </summary>
+    /// <summary>斩痕碎晶. 对比 PRT_CrimsonSpark,沿滚转轴拉长</summary>
     internal class PRT_OniShard : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "StarGlow01";
@@ -59,6 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             //沿自身滚转轴拉长的窄条 + 更窄的白热芯，双层叠出晶片的锐利截面
+
             Vector2 scale = new Vector2(0.20f, MathF.Max(stretch, 0.8f)) * Scale;
             spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color, Rotation
                 , tex.Size() * 0.5f, scale, SpriteEffects.None, 0);

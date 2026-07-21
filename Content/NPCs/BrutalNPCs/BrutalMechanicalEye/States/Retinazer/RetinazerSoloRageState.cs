@@ -10,14 +10,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
-    /// <summary>激光眼独眼狂暴：魔焰眼死后切入，四模式快切循环</summary>
+    /// <summary>激光眼独眼狂暴，魔焰眼死后切入，四模式快切循环</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerSoloRage, typeof(TwinsStateContext))]
     internal class RetinazerSoloRageState : TwinsStateBase
     {
         public override string StateName => "RetinazerSoloRage";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerSoloRage;
 
-        /// <summary>狂暴攻击模式</summary>
         private enum RageAttackMode
         {
             /// <summary>激光风暴</summary>
@@ -39,7 +38,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private float sweepAngle;
         private bool hasPlayedModeSound;
 
-        //难度调整参数
         private int LaserStormFireRate => Context.IsDeathMode ? 6 : 8;
         private int LaserStormDuration => Context.IsDeathMode ? 90 : 75;
         private float LaserSpeed => Context.IsDeathMode ? 16f : 14f;
@@ -60,10 +58,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             hasPlayedModeSound = false;
             matrixPoints = new Vector2[MatrixPointCount];
 
-            //清除狂暴触发标记
             context.SoloRageJustTriggered = false;
 
-            //狂暴觉醒演出:能量自四周向眼体倒灌
+            //狂暴觉醒倒灌
             if (!VaultUtils.isServer) {
                 NPC npc = context.Npc;
                 for (int i = 0; i < 26; i++) {
@@ -84,7 +81,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             Timer++;
             modeTimer++;
 
-            //根据当前模式执行不同的攻击
             switch (currentMode) {
                 case RageAttackMode.LaserStorm:
                     ExecuteLaserStorm(npc, player);
@@ -100,7 +96,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                     break;
             }
 
-            //持续产生狂暴粒子效果:暴怒余温电火花
+            //狂暴余温火花
             if (!VaultUtils.isServer && Timer % 3 == 0) {
                 PRTLoader.NewParticle<PRT_TwinsSpark>(
                     npc.Center + Main.rand.NextVector2Circular(30, 30),
@@ -112,7 +108,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             return null;
         }
 
-        /// <summary>狂暴循环：风暴→交叉→追踪→矩阵</summary>
+        /// <summary>狂暴循环，风暴→交叉→追踪→矩阵</summary>
         private static readonly RageAttackMode[] RageComboSequence =
         [
             RageAttackMode.LaserStorm,
@@ -121,7 +117,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             RageAttackMode.LaserMatrix
         ];
 
-        /// <summary>切下一攻击模式</summary>
         private void SwitchToNextMode() {
             totalAttacks++;
             modeTimer = 0;
@@ -129,7 +124,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             hasPlayedModeSound = false;
             sweepAngle = 0f;
 
-            //按固定套路循环切换模式
             currentMode = RageComboSequence[totalAttacks % RageComboSequence.Length];
 
             //重新初始化矩阵点
@@ -138,7 +132,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>激光风暴：快射大量激光</summary>
+        /// <summary>激光风暴，快射大量激光</summary>
         private void ExecuteLaserStorm(NPC npc, Player player) {
             if (!hasPlayedModeSound) {
                 hasPlayedModeSound = true;
@@ -207,7 +201,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>交叉射线：多角度交叉激光</summary>
+        /// <summary>交叉射线，多角度交叉激光</summary>
         private void ExecuteCrossBeams(NPC npc, Player player) {
             int chargeTime = 50;
             int fireTime = 30;
@@ -225,12 +219,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             MoveTo(npc, hoverPos, 10f, 0.08f);
             FaceTarget(npc, player.Center);
 
-            //蓄力阶段
             if (modeTimer < chargeTime) {
                 float progress = modeTimer / (float)chargeTime;
                 Context.SetChargeState(6, progress);
 
-                //蓄力粒子
                 if (!VaultUtils.isServer && modeTimer % 2 == 0) {
                     float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                     float dist = 100f - progress * 60f;
@@ -254,7 +246,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                     }
                 }
             }
-            //发射阶段
             else if (modeTimer == chargeTime) {
                 Context.ResetChargeState();
                 if (!VaultUtils.isServer) {
@@ -307,7 +298,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>追踪激光：持续跟踪射击</summary>
+        /// <summary>追踪激光，持续跟踪射击</summary>
         private void ExecuteHomingLaser(NPC npc, Player player) {
             int homingDuration = Context.IsDeathMode ? 120 : 100;
 
@@ -378,7 +369,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>激光矩阵：环绕布点齐射</summary>
+        /// <summary>激光矩阵，环绕布点齐射</summary>
         private void ExecuteLaserMatrix(NPC npc, Player player) {
             int deployTime = 60;
             int chargeTime = 40;
@@ -397,7 +388,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             MoveTo(npc, hoverPos, 12f, 0.1f);
             FaceTarget(npc, player.Center);
 
-            //部署阶段
             if (modeTimer < deployTime) {
                 float progress = modeTimer / (float)deployTime;
                 float value = Context.IsDeathMode ? 0.8f : 0.65f;
@@ -410,7 +400,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                     }
                 }
 
-                //矩阵点渐显特效
                 if (!VaultUtils.isServer) {
                     int pointsToShow = (int)(progress * MatrixPointCount) + 1;
                     pointsToShow = Math.Min(pointsToShow, MatrixPointCount);
@@ -427,7 +416,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
                 Context.SetChargeState(7, progress * 0.4f);
             }
-            //蓄力阶段
             else if (modeTimer < deployTime + chargeTime) {
                 int phaseTimer = modeTimer - deployTime;
                 float progress = phaseTimer / (float)chargeTime;
@@ -440,7 +428,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                         Vector2 pointPos = matrixPoints[i];
                         Vector2 toCenter = (player.Center - pointPos).SafeNormalize(Vector2.Zero);
 
-                        //能量聚集
                         if (phaseTimer % 2 == 0) {
                             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                             float dist = 40f - progress * 25f;
@@ -450,7 +437,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                             dust.velocity = (pointPos - dustPos).SafeNormalize(Vector2.Zero) * 4f;
                         }
 
-                        //瞄准线
                         if (phaseTimer % 4 == 0 && progress > 0.3f) {
                             float lineDist = 30f + progress * 150f;
                             Vector2 linePos = pointPos + toCenter * lineDist;
@@ -460,7 +446,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                         }
                     }
 
-                    //蓄力完成闪光
                     if (phaseTimer == chargeTime - 3) {
                         for (int i = 0; i < MatrixPointCount; i++) {
                             Vector2 pointPos = matrixPoints[i];
@@ -475,7 +460,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                     }
                 }
             }
-            //发射阶段
             else if (modeTimer == deployTime + chargeTime) {
                 Context.ResetChargeState();
                 if (!VaultUtils.isServer) {

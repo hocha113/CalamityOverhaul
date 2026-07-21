@@ -3,7 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
 {
-    /// <summary>毁灭者状态索引，写入 npc.ai[2] 网络同步</summary>
+    /// <summary>状态索引，写入 npc.ai[2] 同步</summary>
     internal enum DestroyerStateIndex : int
     {
         Intro = 0,
@@ -16,17 +16,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
         ProbeMatrix = 7,
         Despawn = 8,
         Death = 9,
-        /// <summary>低血量大招：轨道绞杀（撤离高空→交叉俯冲→终结贯穿）</summary>
+        /// <summary>低血量大招，轨道绞杀</summary>
         OrbitalStrike = 10,
-        /// <summary>普攻：俯冲贯穿（短整备+2~3趟预警线俯冲，无撤离静默幕）</summary>
+        /// <summary>普攻俯冲贯穿</summary>
         DiveStrike = 11,
-        /// <summary>普攻：钻地伏击（入土潜行→地表尘迹→喷发预警→破土直射）</summary>
+        /// <summary>普攻钻地伏击</summary>
         BurrowAmbush = 12,
-        /// <summary>普攻：回旋绞杀（迟滞后撤→突入→环绕绞索→环心贯穿冲出）</summary>
+        /// <summary>普攻回旋绞杀</summary>
         LoopLash = 13,
     }
 
-    /// <summary>毁灭者状态接口</summary>
+    /// <summary>状态接口</summary>
     internal interface IDestroyerState : IVaultState<DestroyerStateContext>
     {
         DestroyerStateIndex StateIndex { get; }
@@ -35,14 +35,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
         void OnExit(DestroyerStateContext context);
     }
 
-    /// <summary>毁灭者状态基类</summary>
+    /// <summary>状态基类</summary>
     internal abstract class DestroyerStateBase : VaultState<DestroyerStateContext>, IDestroyerState
     {
         public override int StateId => (int)StateIndex;
         public abstract override string StateName { get; }
         public abstract DestroyerStateIndex StateIndex { get; }
 
-        /// <summary>远距回归瞬移阀：头部远离玩家超阈值时瞬移到视野边缘；俯冲/钻地/轨道等状态应关闭</summary>
+        /// <summary>远距回归瞬移阀，俯冲/钻地/轨道应关</summary>
         public virtual bool AllowFarSnap => true;
 
         public virtual void OnEnter(DestroyerStateContext context) {
@@ -70,14 +70,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
 
         #region 工具方法
 
-        /// <summary>蠕虫移动参数，由主控制器 UpdateMovement 消费</summary>
+        /// <summary>移动参数，UpdateMovement 消费</summary>
         protected void SetMovement(DestroyerStateContext context, Vector2 targetPos, float speed, float turnSpeed) {
             context.TargetPosition = targetPos;
             context.MoveSpeed = speed;
             context.TurnSpeed = turnSpeed;
         }
 
-        /// <summary>平滑转向对准目标</summary>
+        /// <summary>平滑转向</summary>
         protected void FaceTarget(NPC npc, Vector2 target, float lerpFactor = 0.15f) {
             float targetAngle = (target - npc.Center).ToRotation() + MathHelper.PiOver2;
             npc.rotation = npc.rotation.AngleLerp(targetAngle, lerpFactor);

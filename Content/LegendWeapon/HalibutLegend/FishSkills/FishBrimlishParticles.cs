@@ -6,10 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 硫火余烬：硫火球与小硫火鱼的迸溅火星，急减速后受微重力坠落，
-    /// 顺速度方向拉丝 + 余烬闪烁，色程 亮橙 → 硫红 → 暗红，无纯白
-    /// </summary>
+    /// <summary>硫火余烬</summary>
     internal class PRT_FishBrimlishEmber : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -67,7 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
 
             float t = LifetimeCompletion;
-            //冷却色程：亮橙 → 硫红 → 暗红
+            //冷却色程
             Color = t < 0.35f
                 ? Color.Lerp(ColHot, ColBrim, t / 0.35f)
                 : Color.Lerp(ColBrim, ColDeep, (t - 0.35f) / 0.65f);
@@ -82,7 +79,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 pos = Position - Main.screenPosition;
             Color col = Color with { A = 0 };
 
-            //顺速度拉丝：速度快时火星呈线
+            //顺速度拉丝，速度快时火星呈线
             float stretch = MathHelper.Clamp(Velocity.Length() * 0.13f, 0.35f, 1.6f);
             spriteBatch.Draw(streak, pos, null, col * (0.8f * Opacity), Rotation
                 , streak.Size() * 0.5f, new Vector2(0.2f, stretch) * Scale, SpriteEffects.None, 0f);
@@ -97,10 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 余燃残焰：硫火球熄灭点/命中点留下的短命附着小焰舌，活得比弹体久；
-    /// Fire 序列帧缓慢上飘，起燃短暂胀大 → 余燃收缩熄灭，亮橙起燃 → 硫红 → 深红
-    /// </summary>
+    /// <summary>余燃残焰</summary>
     internal class PRT_FishBrimlishResidue : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Fire";
@@ -167,12 +161,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int frameH = tex.Height / 4;
             int idx = (int)(Time / 3f + frameOffset) % 16;
             Rectangle frame = new(frameW * (idx % 4), frameH * (idx / 4), frameW, frameH);
-            //原点取焰根：焰舌从锚点向上生长
+            //原点取焰根，焰舌从锚点向上生长
             Vector2 origin = new(frameW * 0.5f, frameH * 0.92f);
             Vector2 pos = Position - Main.screenPosition;
             Color col = Color with { A = 0 };
 
-            //底光：暗红压底
+            //底光，暗红压底
             Texture2D glow = SoftGlow?.Value;
             if (glow != null) {
                 spriteBatch.Draw(glow, pos, null, new Color(120, 30, 14, 0) * (0.4f * Opacity), 0f

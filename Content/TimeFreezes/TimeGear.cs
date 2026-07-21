@@ -11,20 +11,16 @@ namespace CalamityOverhaul.Content.TimeFreezes
         /// <summary>全局时间因子 0~1，多源取最小</summary>
         public static float TimeScale { get; private set; } = 1f;
 
-        /// <summary>TimeScale&lt;1 即有时缓</summary>
         public static bool IsTimeSlowed => TimeScale < 1f;
 
         private static readonly Dictionary<string, float> scaleSources = new();
 
-        /// <summary>注册缩放源，同 key 覆盖</summary>
-        /// <param name="key">源标识</param>
-        /// <param name="scale">0 冻结，1 正常</param>
+        /// <summary>注册缩放源，同 key 覆盖；0冻 1正常</summary>
         public static void Register(string key, float scale) {
             scaleSources[key] = MathHelper.Clamp(scale, 0f, 1f);
             Recalculate();
         }
 
-        /// <summary>移除缩放源</summary>
         public static void Unregister(string key) {
             if (scaleSources.Remove(key)) {
                 Recalculate();
@@ -39,8 +35,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             TimeScale = min;
         }
 
-        /// <summary>排除指定源后的时间因子，供该源自身免疫自己的缩放（如世界 8% 但本人按外部时间结算）</summary>
-        /// <param name="excludeKey">需要忽略的源标识</param>
+        /// <summary>排除指定源后的因子，源自身免疫己缩放</summary>
         public static float TimeScaleExcluding(string excludeKey) {
             float min = 1f;
             foreach (var pair in scaleSources) {
@@ -52,16 +47,12 @@ namespace CalamityOverhaul.Content.TimeFreezes
             return min;
         }
 
-        /// <summary>Unload 清空全部源</summary>
         public static void Reset() {
             scaleSources.Clear();
             TimeScale = 1f;
         }
 
-        /// <summary>按 time scale 从整帧倒计时扣除；scale≤0 时不推进</summary>
-        /// <param name="frames">剩余帧数</param>
-        /// <param name="carry">小数余量，跨帧累积</param>
-        /// <param name="scale">时间因子，&lt;0 时使用 <see cref="TimeScale"/></param>
+        /// <summary>按 scale 扣倒计时；≤0 不推进；scale&lt;0 用 TimeScale</summary>
         public static void ConsumeFrames(ref int frames, ref float carry, float scale = -1f) {
             if (frames <= 0) {
                 return;
@@ -79,9 +70,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             frames = Math.Max(0, frames - tick);
         }
 
-        /// <summary>按 time scale 返回本帧应推进的整帧数（用于 count-up 计时）；scale≤0 时返回 0</summary>
-        /// <param name="carry">小数余量，跨帧累积</param>
-        /// <param name="scale">时间因子，&lt;0 时使用 <see cref="TimeScale"/></param>
+        /// <summary>本帧推进整帧数(count-up)；≤0 返回 0</summary>
         public static int PullFrameAdvance(ref float carry, float scale = -1f) {
             float s = scale >= 0f ? scale : TimeScale;
             if (s <= 0f) {

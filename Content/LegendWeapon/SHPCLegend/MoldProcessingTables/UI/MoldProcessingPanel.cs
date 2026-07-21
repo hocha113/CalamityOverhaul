@@ -12,11 +12,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.UI
 {
-    /// <summary>
-    /// 工作台 Tab：
-    ///   左栏 - 当前类别的可分解模块列表（来自玩家背包，复用 SHPCModuleSelectPanel 行布局）
-    ///   右栏 - 重铸目标预览 + REFORGE / CLEAR PIN 按钮 + 成本与碎片显示
-    /// </summary>
+    /// <summary>工作台Tab，左列表可分解，右侧重铸预览与成本</summary>
     internal static class MoldProcessingPanel
     {
         private const float RowH = 34f;
@@ -167,7 +163,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
         }
 
         private static int MaxVisibleRows() {
-            //缓存 layout 不便，这里用一个固定上限：内容区高度约 360，列表区约 340，34 行 -> 10 行
+            //列表约10行上限
             return 10;
         }
 
@@ -428,7 +424,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
                 }
             }
             else {
-                //随机模式：绘制旋转加载点
+                //随机模式旋转点
                 int dotCount = 8;
                 float radius = 24f;
                 for (int i = 0; i < dotCount; i++) {

@@ -404,7 +404,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                 return;
             }
 
-            //搜索树木，玩家在附近时才会试图寻找树木，这样避免玩家不在的时候把树木砍光
+            //仅玩家附近才搜树(防砍光)
             if (attackTimer % 60 == 1 && player.Alives() && player.Distance(startPos) < 1550) {
                 targetTreePos = FindNearestTree();
                 if (targetTreePos != Point16.NegativeOne) {
@@ -513,7 +513,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
 
             attackTimer++;
 
-            //目标位置：玩家头顶上方150像素
+            //玩家头顶上方150px
             hoverTargetPos = player.Center + new Vector2(0, -150f);
 
             //限制不要超出机械臂的范围
@@ -651,7 +651,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             }
 
             if (attackTimer >= 35) {
-                //检查是否继续攻击玩家
+                //是否续攻玩家
                 if (player != null && player.Alives() && player.Distance(startPos) < 500) {
                     currentState = SawState.Tracking;
                 }
@@ -861,7 +861,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                 end += Main.rand.NextVector2Circular(shakeIntensity, shakeIntensity);
             }
 
-            //贝塞尔曲线：计算弯曲高度
+            //贝塞尔弯曲高度
             float dist = Vector2.Distance(start, end);
             float bendHeight = MathHelper.Clamp(dist * 0.35f, 30f, 150f);
 

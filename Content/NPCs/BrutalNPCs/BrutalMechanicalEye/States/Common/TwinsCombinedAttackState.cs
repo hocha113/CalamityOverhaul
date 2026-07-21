@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common
 {
-    /// <summary>超新星对撞：集合→蓄力→对撞，碰撞点超新星+双色弹幕环</summary>
+    /// <summary>超新星对撞，集合→蓄力→对撞，碰撞点超新星+双色弹幕环</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.TwinsCombinedAttack, typeof(TwinsStateContext))]
     internal class TwinsCombinedAttackState : TwinsStateBase
     {
@@ -68,11 +68,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
 
             Timer++;
 
-            //阶段1: 集合
             if (Timer <= GatherPhase) {
                 ExecuteGatherPhase(npc, player);
 
-                //集合末尾标记就绪，等待双方都集合完成再同拍对撞
+                //集合末就绪，等双方同拍
                 if (Timer == GatherPhase) {
                     TwinsStateContext.MarkComboReady(context.IsSpazmatism);
                     if (!TwinsStateContext.BothComboReady && partnerWait < MaxPartnerWait) {
@@ -81,28 +80,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                     }
                 }
             }
-            //阶段2: 对位
             else if (Timer <= GatherPhase + AlignPhase) {
                 ExecuteAlignPhase(npc, player);
             }
-            //阶段3: 蓄力
             else if (Timer <= GatherPhase + AlignPhase + ChargePhase) {
                 ExecuteChargePhase(npc, player);
             }
-            //阶段4: 碰撞
             else if (Timer <= GatherPhase + AlignPhase + ChargePhase + CollisionPhase) {
                 ExecuteCollisionPhase(npc, player);
             }
-            //阶段5: 爆发
             else if (Timer <= GatherPhase + AlignPhase + ChargePhase + CollisionPhase + BurstPhase) {
                 ExecuteBurstPhase(npc, player);
             }
-            //阶段6: 恢复
             else {
                 ExecuteRecoveryPhase(npc, player);
             }
 
-            //状态结束
             if (Timer >= TotalDuration) {
                 return GetDefaultState();
             }
@@ -120,7 +113,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>集合阶段：弹簧飞抵玩家两侧</summary>
+        /// <summary>集合阶段，弹簧飞抵玩家两侧</summary>
         private void ExecuteGatherPhase(NPC npc, Player player) {
             float progress = Timer / (float)GatherPhase;
 
@@ -133,7 +126,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             TwinsMotion.SpringHover(npc, targetPos, 0.022f, 0.105f);
             FaceTarget(npc, player.Center);
 
-            //设置蓄力状态
             Context.SetChargeState(10, progress * 0.2f);
 
             //集合粒子
@@ -142,7 +134,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>对位阶段：精确对位并相互校准</summary>
+        /// <summary>对位阶段，精确对位并相互校准</summary>
         private void ExecuteAlignPhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase;
             float progress = phaseTimer / (float)AlignPhase;
@@ -159,7 +151,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             //面向碰撞点
             FaceTarget(npc, collisionPoint);
 
-            //设置蓄力状态
             Context.SetChargeState(10, 0.2f + progress * 0.2f);
 
             //双眼之间的电荷预兆
@@ -170,7 +161,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>蓄力阶段：锁定绷紧，能量内聚到极限</summary>
+        /// <summary>蓄力阶段，锁定绷紧，能量内聚到极限</summary>
         private void ExecuteChargePhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase - AlignPhase;
             float progress = phaseTimer / (float)ChargePhase;
@@ -182,7 +173,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
             FaceTarget(npc, collisionPoint);
 
-            //设置蓄力状态
             Context.SetChargeState(10, 0.4f + progress * 0.6f);
 
             if (!VaultUtils.isServer) {
@@ -199,12 +189,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                         toCollision * 3f, Color.White, 1.1f)?.Configure(13, Context.IsSpazmatism ? 1 : 0);
                 }
 
-                //蓄力音效
                 if (phaseTimer == 1) {
                     SoundEngine.PlaySound(SoundID.Item15 with { Pitch = 0f, Volume = 0.9f }, npc.Center);
                 }
 
-                //蓄力完成:闪光环+咆哮
+                //蓄力完闪光+咆哮
                 if (phaseTimer == ChargePhase - 3) {
                     Color themeColor = Context.IsSpazmatism ? TwinsMotion.SpazColor : TwinsMotion.RetinColor;
                     PRTLoader.NewParticle<PRT_DWave>(npc.Center, Vector2.Zero, themeColor, 0.16f)?
@@ -214,9 +203,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>碰撞阶段：音爆起步全速对撞，接近碰撞点保持高速(撞击感)</summary>
+        /// <summary>碰撞阶段，音爆起步全速对撞，接近碰撞点保持高速(撞击感)</summary>
         private void ExecuteCollisionPhase(NPC npc, Player player) {
-            //停止蓄力特效
             Context.ResetChargeState();
 
             //向碰撞点冲刺
@@ -226,7 +214,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 hasCollided = true;
             }
 
-            //每帧启用碰撞伤害(控制器每帧会重置激光眼的伤害)
+            //每帧开碰撞伤，激光会被控重置
             EnableContactDamage(npc);
 
             //朝向速度方向
@@ -248,7 +236,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>爆发：殉爆光团+冲击环+双色弹幕环</summary>
+        /// <summary>爆发，殉爆光团+冲击环+双色弹幕环</summary>
         private void ExecuteBurstPhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase - AlignPhase - ChargePhase - CollisionPhase;
             float progress = phaseTimer / (float)BurstPhase;
@@ -261,20 +249,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 npc.velocity = Vector2.Zero;
                 DisableContactDamage(npc);
 
-                //超新星屏幕扭曲冲击波(由魔焰眼单侧生成，双色混合主题)
+                //超新星扭曲环，魔焰侧生成
                 if (Context.IsSpazmatism && !VaultUtils.isClient) {
                     Projectile.NewProjectile(npc.GetSource_FromAI(), collisionPoint, Vector2.Zero,
                         ModContent.ProjectileType<TwinsSupernovaBlast>(), 0, 0f, Main.myPlayer, 2f, 2f);
                 }
 
-                //各自发射本色弹幕环，相互交错形成双色超新星
+                //本色弹幕环交错
                 if (!VaultUtils.isClient) {
                     int projectileCount = 9;
                     int projType = Context.IsSpazmatism
                         ? ModContent.ProjectileType<Fireball>()
                         : ModContent.ProjectileType<RetinazerLaser>();
                     float baseSpeed = Context.IsSpazmatism ? 7.5f : 9f;
-                    //魔焰眼取偶数相位，激光眼取奇数相位，错开交叠
+                    //魔焰偶相位，激光奇相位
                     float phaseOffset = Context.IsSpazmatism ? 0f : MathHelper.Pi / projectileCount;
 
                     for (int i = 0; i < projectileCount; i++) {
@@ -293,7 +281,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                     }
                 }
 
-                //超新星演出双方各绘一层；音效仅魔焰眼播一次
+                //双方各绘一层，音效魔焰侧
                 if (!VaultUtils.isServer) {
                     Color themeColor = Context.IsSpazmatism ? TwinsMotion.SpazColor : TwinsMotion.RetinColor;
 
@@ -342,13 +330,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>恢复阶段</summary>
         private void ExecuteRecoveryPhase(NPC npc, Player player) {
-            //逐渐恢复
             npc.velocity *= 0.92f;
             FaceTarget(npc, player.Center);
 
-            //残余粒子
             if (!VaultUtils.isServer && Timer % 5 == 0) {
                 PRTLoader.NewParticle<PRT_TwinsSpark>(npc.Center + Main.rand.NextVector2Circular(20, 20),
                     new Vector2(0, -2f), Color.White, 0.85f)?.Configure(14, Context.IsSpazmatism ? 1 : 0);

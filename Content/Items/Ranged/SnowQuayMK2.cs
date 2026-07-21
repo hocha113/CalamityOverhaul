@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         protected override bool PendingWork => burstLeft > 0;
 
         protected override void UpdateGun() {
-            //点射进行中：按节奏吐完剩余冰锥
+            //点射吐完剩余冰锥
             if (burstLeft > 0) {
                 if (--burstGap <= 0) {
                     burstGap = 4;
@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
         }
 
-        /// <summary>右键超压霰射：扇形喷出一片短程冰锥</summary>
+        /// <summary>右键超压扇形短程冰锥</summary>
         private void FireScatter() {
             if (!PickSnowAmmo(out int damage, out float knockback)) {
                 return;

@@ -6,10 +6,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Scenarios.OldDuke
 {
     /// <summary>
-    /// 切磋生成老公爵的弹幕载体
-    /// <para>利用弹幕自带的全端同步机制，在AI中先设置WannaToFight=true，再由服务端/单人生成NPC</para>
-    /// <para>这样保证所有客户端在NPC到达前就已知道这是切磋模式，
-    /// 避免NPC首帧AI因ShouldLeaveAfterCooperation()而消失</para>
+    /// 切磋生成载体；先置WannaToFight再权威端刷NPC，防首帧ShouldLeave
     /// </summary>
     internal class SpawnOldDukeWannaToFight : ModProjectile
     {
@@ -28,10 +25,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
         }
 
         public override void AI() {
-            //所有端先设置切磋标记，保证NPC同步到达时各端已知道是切磋模式
+            //各端先置切磋标记
             OldDukeCampsite.WannaToFight = true;
 
-            //仅在服务端或单人模式下生成NPC，避免重复生成
+            //权威端刷NPC
             if (Projectile.ai[0] == 0 && !VaultUtils.isClient) {
                 if (VaultUtils.isServer) {
                     NetMessage.SendData(MessageID.WorldData);

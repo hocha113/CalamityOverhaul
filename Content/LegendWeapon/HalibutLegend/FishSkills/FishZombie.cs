@@ -26,7 +26,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool? CanUseItem(Item item, Player player) {
             if (player.altFunctionUse == 2) {
-                //检查冷却
                 if (Cooldown > 0) {
                     return false;
                 }
@@ -42,17 +41,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void Use(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
 
-            //设置冷却
             SetCooldown();
 
-            //计算目标方向（朝向光标）
             Vector2 targetDirection = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero);
 
             ShootState shootState = player.GetShootState();
 
-            //在玩家前方生成多个溺尸
             for (int i = 0; i < ZombieCount; i++) {
-                //计算生成位置：在光标方向的扇形区域内
                 float angleSpread = MathHelper.ToRadians(60f); //60度扇形
                 float angle = targetDirection.ToRotation() + Main.rand.NextFloat(-angleSpread, angleSpread);
                 float distance = Main.rand.NextFloat(150f, 300f);
@@ -64,10 +59,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 Vector2 spawnPos = player.Center + spawnOffset;
 
-                //寻找地面位置
                 Vector2 groundPos = FindGroundPosition(spawnPos);
 
-                //生成溺尸弹幕，稍微延迟生成以产生连续出现的效果
+                //延迟入场，每尸+8帧
                 int delay = i * 8; //每个溺尸延迟8帧
 
                 Projectile.NewProjectile(
@@ -82,16 +76,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
             }
 
-            //播放召唤音效
             SoundEngine.PlaySound(SoundID.Zombie1 with { Volume = 0.8f, Pitch = -0.3f }, player.Center);
-            SoundEngine.PlaySound(SoundID.Item8, player.Center); //魔法召唤音效
+            SoundEngine.PlaySound(SoundID.Item8, player.Center);
         }
 
         /// <summary>
         /// 寻找地面位置（向下检测）
         /// </summary>
         private static Vector2 FindGroundPosition(Vector2 startPos) {
-            //向下检测最多500像素
             for (int y = 0; y < 500; y += 16) {
                 Vector2 checkPos = startPos + new Vector2(0, y);
                 Point tilePos = checkPos.ToTileCoordinates();
@@ -105,12 +97,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //如果没找到地面，返回原位置
             return startPos;
         }
     }
 
-    /// <summary>溺尸弹幕：破土爬出 → 蹒跚寻敌 → 锁定倾身 → 前倾狂奔 → 尸胀爆裂</summary>
+    /// <summary>溺尸弹幕，破土爬出 → 蹒跚寻敌 → 锁定倾身 → 前倾狂奔 → 尸胀爆裂</summary>
     internal class WaterZombie : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -121,7 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private ref float DelayTime => ref Projectile.ai[0];
 
         /// <summary>
-        /// 状态机：0=破土爬出，1=蹒跚寻敌，2=锁定+冲刺，3=尸胀爆裂
+        /// 状态机，0=破土爬出，1=蹒跚寻敌，2=锁定+冲刺，3=尸胀爆裂
         /// </summary>
         private int State {
             get => (int)Projectile.localAI[0];
@@ -148,7 +139,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// </summary>
         private const int SeekDuration = 20;
 
-        /// <summary>锁定预告拍：刹停+倾身，扑出前的可读窗口</summary>
+        /// <summary>锁定预告拍，刹停+倾身</summary>
         private const int LockDuration = 10;
 
         /// <summary>
@@ -156,7 +147,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// </summary>
         private const int ChargeDuration = 60;
 
-        /// <summary>尸胀帧数：躯体鼓胀挣动后爆开</summary>
+        /// <summary>尸胀帧数，躯体鼓胀挣动后爆开</summary>
         private const int InflateDuration = 8;
 
         /// <summary>
@@ -203,7 +194,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            //延迟等待阶段
             if (DelayTime > 0) {
                 DelayTime--;
                 Projectile.alpha = 255;
@@ -225,7 +215,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.velocity = Vector2.Zero;
             }
 
-            //状态机
             switch (State) {
                 case 0: //破土爬出
                     EmergeFromGroundAI();
@@ -248,7 +237,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.rotation = bodyRot;//喂给残影缓存
         }
 
-        /// <summary>拔出曲线：缓探头 → 卡住 → 猛拔过冲 → 落定</summary>
+        /// <summary>拔出曲线，缓探头 → 卡住 → 猛拔过冲 → 落定</summary>
         private static float EmergeCurve(float p) {
             if (p < 0.30f) {
                 float t = p / 0.30f;
@@ -304,14 +293,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 DripFromBody(0.4f);
             }
 
-            //猛拔瞬间：甩水一环 + 出土音效
+            //猛拔瞬间，甩水一环 + 出土音效
             if ((int)StateTimer == EmergeDuration / 2) {
                 SoundEngine.PlaySound(SoundID.Zombie2 with { Volume = 0.6f, Pitch = -0.2f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
                 FishZombieVFX.ShakeOff(new Vector2(Projectile.Center.X, groundY - 20f), 7, 3.4f);
             }
 
-            //状态转换
             if (StateTimer >= EmergeDuration) {
                 State = 1;
                 StateTimer = 0;
@@ -321,7 +309,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>蹒跚 tick：不规则步频 + 摇晃 + 滴水，走完预定拍才进锁定</summary>
+        /// <summary>蹒跚 tick，不规则步频 + 摇晃 + 滴水，走完预定拍才进锁定</summary>
         private void ShambleAI() {
             StateTimer++;
 
@@ -336,7 +324,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 targetNPC = -1;
             }
 
-            //步频相位的推进速度自身在波动：一顿一挫的不规则步子
+            //步频相位的推进速度自身在波动
             float phaseSpeed = 0.11f + 0.10f * MathF.Sin(StateTimer * 0.047f + Projectile.whoAmI * 2.7f);
             stepPhase += phaseSpeed;
             float pulse = MathF.Max(0f, MathF.Sin(stepPhase));
@@ -354,7 +342,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.velocity.Y = 0f;
             GroundFollow();
 
-            //蹒跚的身体从不竖直：摇晃 + 步伐挤压
+            //蹒跚的身体从不竖直
             bodyRot = MathF.Sin(stepPhase * 0.5f + Projectile.whoAmI) * 0.075f + facing * 0.04f;
             bodySquash = new Vector2(1f + lurch * 0.03f, 1f - lurch * 0.05f);
             animationFrame = (int)(stepPhase / MathHelper.Pi) % 3;
@@ -367,12 +355,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (StateTimer >= shambleDur) {
                 State = 2;
                 StateTimer = 0;
-                //播放咆哮音效
                 SoundEngine.PlaySound(SoundID.Zombie3 with { Volume = 0.8f, Pitch = -0.4f }, Projectile.Center);
             }
         }
 
-        /// <summary>贴地跟随：脚下小范围找砖顶吸附，悬空缓沉，仅在蹒跚期作视觉修正</summary>
+        /// <summary>贴地跟随，脚下小范围找砖顶吸附，悬空缓沉，仅在蹒跚期作视觉修正</summary>
         private void GroundFollow() {
             int tx = (int)(Projectile.Center.X / 16f);
             int startTy = (int)((FeetY - 22f) / 16f);
@@ -393,18 +380,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             FeetY += 2.2f;//悬空缓沉
         }
 
-        /// <summary>锁定+冲刺 tick：前 LockDuration 帧刹停倾身预告，随后扑出</summary>
+        /// <summary>锁定+冲刺 tick，前 LockDuration 帧刹停倾身预告，随后扑出</summary>
         private void LockChargeAI() {
             StateTimer++;
 
-            //获取目标
             Vector2 targetPosition = Main.MouseWorld;
             if (targetNPC != -1 && Main.npc[targetNPC].active) {
                 targetPosition = Main.npc[targetNPC].Center;
             }
 
             if (StateTimer <= LockDuration) {
-                //锁定拍：刹停 + 朝目标压低倾身
+                //锁定拍，刹停 + 朝目标压低倾身
                 Projectile.velocity *= 0.70f;
                 int dir = Math.Sign(targetPosition.X - Projectile.Center.X);
                 if (dir != 0) {
@@ -416,12 +402,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 animationFrame = 0;
 
                 if ((int)StateTimer == 2) {
-                    //甩水预告：湿身抖出一圈浊水
+                    //甩水预告，湿身抖出一圈浊水
                     FishZombieVFX.ShakeOff(Projectile.Center, 6, 3.8f);
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.55f, Pitch = -0.3f }, Projectile.Center);
                 }
                 if ((int)StateTimer == LockDuration) {
-                    //起跑帧：一帧给足初速
+                    //起跑帧，一帧给足初速
                     Projectile.velocity = (targetPosition - Projectile.Center).SafeNormalize(Vector2.UnitX * facing) * 7.5f;
                 }
                 return;
@@ -430,7 +416,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float ct = StateTimer - LockDuration;
             Vector2 chargeDirection = (targetPosition - Projectile.Center).SafeNormalize(Vector2.Zero);
 
-            //复合加速：前段猛蹬后段续力，追踪窗口与速度上限同旧版
+            //复合加速，前段猛蹬后段续力
             if (ct < 8f) {
                 Projectile.velocity += chargeDirection * 2.2f;
             }
@@ -447,7 +433,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 facing = Math.Sign(Projectile.velocity.X);
             }
 
-            //前倾扑咬角：水平约20度，俯冲更深，上跃微仰
+            //前倾扑咬角
             float speed = Projectile.velocity.Length();
             float pounce = facing == 1
                 ? Projectile.velocity.ToRotation()
@@ -456,7 +442,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             bodyRot = MathHelper.Lerp(bodyRot, facing * leanFull, 0.18f);
             bodySquash = Vector2.Lerp(bodySquash, new Vector2(0.96f, 1.04f), 0.2f);
 
-            //狂奔帧：速度越快循环越快
+            //狂奔帧，速度越快循环越快
             int frameRate = Math.Max(2, 7 - (int)(speed * 0.25f));
             if ((int)StateTimer % frameRate == 0) {
                 animationFrame = (animationFrame + 1) % 3;
@@ -483,7 +469,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>尸胀爆裂 tick：鼓胀挣动 InflateDuration 帧后爆开</summary>
+        /// <summary>尸胀爆裂 tick，鼓胀挣动 InflateDuration 帧后爆开</summary>
         private void BloatExplodeAI() {
             StateTimer++;
             Projectile.velocity *= 0.62f;
@@ -494,7 +480,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             if (StateTimer <= InflateDuration) {
-                //尸胀：越鼓越快，表皮挣动
+                //尸胀，越鼓越快，表皮挣动
                 float sw = StateTimer / (float)InflateDuration;
                 float wobble = MathF.Sin(StateTimer * 1.7f) * 0.05f * sw;
                 bodySquash = new Vector2(1f + sw * sw * 0.24f + wobble, 1f + sw * sw * 0.18f - wobble);
@@ -520,7 +506,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 FishZombieVFX.Punch(Projectile.Center);
                 SpawnGoreChunks();
 
-                //播放爆炸音效
                 SoundEngine.PlaySound(SoundID.NPCDeath1, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Splash with { Volume = 1.2f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 0.6f, Pitch = -0.3f }, Projectile.Center);
@@ -531,7 +516,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>尸块抛物：原版僵尸 Gore，带上抛偏置读出重力弧线</summary>
+        /// <summary>尸块抛物，原版僵尸 Gore，带上抛偏置读出重力弧线</summary>
         private void SpawnGoreChunks() {
             if (VaultUtils.isServer) {
                 return;
@@ -593,7 +578,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (bursted) {
                 return;
             }
-            //未爆而亡的退场保底：一摊浊雾，禁 pop-out
+            //未爆而亡的退场保底
             for (int i = 0; i < 2; i++) {
                 PRTLoader.NewParticle<PRT_FishZombieMurk>(Projectile.Center, new Vector2(0f, -0.3f)
                     , FishZombieVFX.MurkMid, 0.2f)?.Configure(30, FishZombieVFX.MurkMid, FishZombieVFX.MurkDeep, 1.010f, 0.008f);
@@ -612,7 +597,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Rectangle sourceRect = texture.GetRectangle(animationFrame, 3);
             SpriteEffects effects = facing > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            //浸水腐肉调色：环境光乘算压暗后拉一点灰绿保底，哑光不自发光
+            //浸水腐肉调色
             Color env = State == 0
                 ? Lighting.GetColor(new Vector2(Projectile.Center.X, groundY - 20f).ToTileCoordinates())
                 : lightColor;
@@ -629,7 +614,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 feetScreen = new Vector2(Projectile.Center.X, FeetY) - Main.screenPosition;
             Vector2 origin = new(sourceRect.Width / 2f, sourceRect.Height);
 
-            //冲刺残影：暗色剪影链垫在本体之下，编码运动方向
+            //冲刺残影
             if (State == 2 && Projectile.velocity.Length() > 8f) {
                 for (int k = 5; k >= 1; k -= 2) {
                     Vector2 ghostFeet = Projectile.oldPos[k] + new Vector2(Projectile.width / 2f, Projectile.height);
@@ -642,7 +627,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //主体
             Main.EntitySpriteDraw(texture, feetScreen, sourceRect, body, bodyRot, origin, bodySquash, effects, 0);
 
-            //下半身浸水更深：底部四成再压一层暗青
+            //下半身浸水更深，底部四成再压一层暗青
             int soakH = (int)(sourceRect.Height * 0.42f);
             Rectangle soakRect = new(sourceRect.X, sourceRect.Y + sourceRect.Height - soakH, sourceRect.Width, soakH);
             Vector2 soakOrigin = new(sourceRect.Width / 2f, soakH);
@@ -652,11 +637,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>出土期绘制：贴图按地面线裁剪，只画露出部分，禁 pop-in</summary>
+        /// <summary>出土期绘制</summary>
         private void DrawEmerging(Texture2D texture, Rectangle sourceRect, Color body, SpriteEffects effects) {
             float buried = FeetY - groundY;
             if (buried <= 0f) {
-                //过冲小跳帧：已完全离地，整帧正常画
+                //过冲小跳帧，已完全离地，整帧正常画
                 Vector2 fullFeet = new Vector2(Projectile.Center.X, FeetY) - Main.screenPosition;
                 Main.EntitySpriteDraw(texture, fullFeet, sourceRect, body, bodyRot,
                     new Vector2(sourceRect.Width / 2f, sourceRect.Height), Vector2.One, effects, 0);
@@ -674,7 +659,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Main.EntitySpriteDraw(texture, anchor, clipRect, body, bodyRot, clipOrigin, Vector2.One, effects, 0);
         }
 
-        /// <summary>破口暗斑：垫在尸体之下的湿土洞口，出土后渐淡</summary>
+        /// <summary>破口暗斑，垫在尸体之下的湿土洞口，出土后渐淡</summary>
         private void DrawBreachHole() {
             if (holeFade <= 0f) {
                 return;

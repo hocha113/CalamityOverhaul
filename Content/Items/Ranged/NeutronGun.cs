@@ -17,9 +17,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class NeutronGun : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "NeutronGun";
-        /// <summary>右键射击积累的充能，存放在物品实例上以便跨弹幕生命周期保留</summary>
+        /// <summary>右键充能，存物品实例跨弹幕保留</summary>
         public float Charge;
-        /// <summary>充能打满后的过载状态，期间右键伤害大幅提升且充能持续衰减</summary>
+        /// <summary>过载，右键加伤且充能衰减</summary>
         public bool Overcharged;
         [VaultLoaden(CWRConstant.Item_Ranged + "NeutronGun2")]
         internal static Asset<Texture2D> ShootGun = null;
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 .Register();
         }
 
-        //右键：发射蓄能重击
+        //右键蓄能重击
         public override bool AltFunctionUse(Player player) => true;
 
         //物品使用本身不消耗子弹，由手持弹幕在实际开火时自行拾取

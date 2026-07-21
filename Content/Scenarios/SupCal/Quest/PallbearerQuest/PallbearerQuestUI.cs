@@ -7,9 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.PallbearerQuest
 {
-    /// <summary>
-    /// 扶柩者任务UI
-    /// </summary>
+    /// <summary>扶柩者任务UI</summary>
     internal class PallbearerQuestUI : BaseQuestAcceptUI
     {
         public override string LocalizationCategory => "ADV";

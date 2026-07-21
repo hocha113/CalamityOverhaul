@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
-    /// <summary>
-    /// 大理石气球：空中按↓砸向地面，下坠蓄势越久，落地冲击波的威力与范围越大
-    /// </summary>
+    /// <summary>大理石气球，空中↓砸地，蓄势越久冲击越大</summary>
     internal class MarbleBalloon : ModItem
     {
         public override void SetDefaults() {
@@ -53,13 +51,13 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
     internal class MarbleBalloonPlayer : ModPlayer
     {
         public bool Equipped;
-        //云朵气球每帧点亮：二段跳粒子切换为"云雾+石尘"双份形态
+        //云朵气球，二段跳粒子双份
         public bool CloudJumpVariant;
         private bool slamming;
         private int slamTimer;
-        //瓶中大理石起跳后的升力窗口剩余tick：按住跳期间抵消部分重力
+        //升力窗口剩余tick
         private int bottleLiftTimer;
-        //落地尘土波推进状态：>0 时逐tick沿地表双向铺开
+        //尘土波推进，>0 逐tick双向铺开
         private int dustWaveStep;
         private int dustWaveMaxStep;
         private float dustWaveGrowth;
@@ -68,11 +66,11 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         private float dustWaveRightY;
 
         private const float SlamSpeed = 19f;
-        //砸地保险计时：即便迟迟未检测到落地，也强制结束下砸，杜绝"卡在下砸态"
+        //砸地保险，超时强制结束
         private const int MaxSlamTime = 90;
-        //冲击成长封顶的下坠时长：伤害 20→48、半径 135→170
+        //冲击封顶下坠时长，伤20→48、半径135→170
         private const int GrowthCap = 28;
-        //升力窗口长度：按满约多抬升一格出头
+        //升力窗口，约多抬一格
         private const int BottleLiftWindow = 12;
 
         public bool Slamming => slamming;
@@ -82,11 +80,10 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             CloudJumpVariant = false;
         }
 
-        /// <summary>瓶中大理石二段跳起跳时开启升力窗口</summary>
+        /// <summary>二段跳起跳开升力窗</summary>
         public void StartBottleLift() => bottleLiftTimer = BottleLiftWindow;
 
-        //引擎在 PreUpdateMovement 之前就把 controlDown 捕获进 fallThrough，
-        //要让下砸停在平台上（而非穿透坠落），必须在输入钩子里就清掉"按↓"
+        //PreUpdateMovement 前 controlDown 已进 fallThrough，须在 SetControls 清↓才能停平台
         public override void SetControls() {
             if (slamming) {
                 Player.controlDown = false;
@@ -105,14 +102,14 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
 
             bool grounded = GraniteMarbleVFX.IsGrounded(Player);
 
-            //落地判定优先于一切：着地或保险超时即结束下砸并触发落地效果
+            //着地或保险超时→落地
             if (slamming && (grounded || slamTimer > MaxSlamTime)) {
                 OnSlamLand();
                 slamming = false;
                 slamTimer = 0;
             }
 
-            //空中按↓开始砸地，起手一声破风
+            //空中↓开砸
             if (!slamming && !grounded && Player.controlDown && Player.velocity.Y * Player.gravDir > -2f) {
                 slamming = true;
                 slamTimer = 0;
@@ -122,7 +119,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 }
             }
 
-            //砸地中：强制下坠（"按↓"已在 SetControls 阶段清除，下砸会停在平台上）
+            //强制下坠（↓已在 SetControls 清）
             if (slamming) {
                 slamTimer++;
                 Player.velocity.Y = SlamSpeed * Player.gravDir;
@@ -130,7 +127,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             }
         }
 
-        //按住跳且仍在上升：小幅抵消重力；松手或转入下落立即关窗
+        //按住跳上升抵消重力，松手/下落关窗
         private void UpdateBottleLift() {
             if (bottleLiftTimer <= 0) {
                 return;
@@ -144,7 +141,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             }
         }
 
-        //下砸风纹：身体两侧向上拖出的尘纹速度线 + 偶发金屑，读出高速下坠的相对风
+        //下砸风纹
         private void SpawnSlamDescentDust() {
             if (VaultUtils.isServer) {
                 return;
@@ -165,7 +162,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             float up = -Player.gravDir;
 
             if (!VaultUtils.isServer) {
-                //分层重响：低频砸击垫底 + 石屑迸落，蓄势越足越沉
+                //砸击分层音
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
                     Volume = 0.7f + growth * 0.4f, Pitch = -0.35f - growth * 0.3f, MaxInstances = 3
                 }, feet);
@@ -176,7 +173,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                     SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.5f, Pitch = -0.7f, MaxInstances = 2 }, feet);
                 }
 
-                //落点近处反馈：石尘腾起 + 石屑迸射；沿地尘土波由 UpdateGroundDustWave 逐tick铺开
+                //落点石尘+石屑，尘土波另推
                 for (int i = 0; i < 8; i++) {
                     PRTLoader.NewParticle<PRT_Smoke>(feet, new Vector2(Main.rand.NextFloat(-5f, 5f), up * Main.rand.NextFloat(0.6f, 3f))
                         , GraniteMarbleVFX.MarbleDust, Main.rand.NextFloat(0.42f, 0.66f)).Configure(24, 0.7f, 0.05f);
@@ -200,7 +197,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             }
 
             if (Player.whoAmI == Main.myPlayer) {
-                //冲击随下坠时长成长：伤害 20+下坠tick（封顶48），半径 135→170
+                //伤20+下坠tick封顶48，半径135→170
                 int damage = 20 + Math.Min(slamTimer, GrowthCap);
                 float radius = 135f + growth * 35f;
                 Projectile.NewProjectile(Player.FromObjectGetParent(), feet, Vector2.Zero
@@ -208,7 +205,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             }
         }
 
-        //沿地表双向推进的尘土波：每tick每侧一列，跟随±5格内的地形起伏
+        //尘土波双向，每tick每侧一列，±5格贴地
         private void UpdateGroundDustWave() {
             if (dustWaveStep <= 0 || VaultUtils.isServer) {
                 return;
@@ -243,14 +240,14 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             dustWaveStep++;
         }
 
-        //从上一列地表出发定位本列地表：探针格在地里则向表面方向回退，在空中则向地面方向搜索
+        //从上列地表定位本列，地里回退/空中下搜
         private bool TryFindWaveSurface(float x, ref float y) {
             int step = (int)Player.gravDir;
             Point probe = new Vector2(x, y + step * 4f).ToTileCoordinates();
             if (!WorldGen.InWorld(probe.X, probe.Y, 10)) {
                 return false;
             }
-            //反重力时地表是天花板砖的下缘
+            //反重力地表=天花板下缘
             float surfaceEdge = step < 0 ? 16f : 0f;
             if (IsWaveGround(probe.X, probe.Y)) {
                 for (int i = 0; i < 5; i++) {
@@ -270,7 +267,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             return false;
         }
 
-        //尘土波认定的"地面"：实心块或平台（玩家可站立面）
+        //地面=实心或平台
         private static bool IsWaveGround(int x, int y) {
             Tile tile = Framing.GetTileSafely(x, y);
             return tile.HasTile && (Main.tileSolid[tile.TileType] || Main.tileSolidTop[tile.TileType]);

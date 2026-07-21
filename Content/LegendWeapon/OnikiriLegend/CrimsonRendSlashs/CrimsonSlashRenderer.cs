@@ -8,60 +8,59 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 {
     /// <summary>
-    /// 绯红裂空系列共享刀光渲染机制：子刀光定义/几何动画包/三层异步绘制。<br/>
-    /// 供 <see cref="CrimsonRendSlash"/>（连段编排）与 <see cref="CrimsonRendCleave"/>（独立断斩）复用。<br/>
-    /// 反平面化设计：挥砍被视作三维平面上的弧在屏幕上的投影 —— 压扁率(HalfY/HalfX)、
-    /// 滚转角(Rot)、远近半侧明暗与玩家遮挡(FarDim + <see cref="ICrimsonFarDrawable"/>)共同构成立体感
+    /// 绯红裂空共享刀光渲染,子刀光定义/几何动画/三层异步<br/>
+    /// 供 <see cref="CrimsonRendSlash"/> 与 <see cref="CrimsonRendCleave"/> 复用<br/>
+    /// 压扁率 HalfY/HalfX、滚转 Rot、FarDim + <see cref="ICrimsonFarDrawable"/> 做远近半侧
     /// </summary>
     internal static class CrimsonSlashRenderer
     {
-        /// <summary>子刀光定义（确定性数据，各端一致）</summary>
+        /// <summary>子刀光定义(确定性,各端一致)</summary>
         public struct SlashDef
         {
             public int Birth;            //时间轴出生帧
             public int SweepFrames;      //扫开帧数
-            public int Life;             //总寿命（相对出生）
-            public int ErodeStart;       //侵蚀起点（相对出生）
+            public int Life;             //总寿命(相对出生)
+            public int ErodeStart;       //侵蚀起点(相对出生)
             public int ErodeFrames;
             public float ColorShiftDelay;
             public float ColorShiftFrames;
-            public int DamageStart;      //伤害窗口（相对出生）
+            public int DamageStart;      //伤害窗起(相对出生)
             public int DamageEnd;
             public float Mode;           //0=弧形 1=直线
-            public float Rot;            //弧:quad 基准角（含滚转） 直:刃方向角
-            public float Span;           //弧跨度（弧度）
+            public float Rot;            //弧:quad 基准角 直:刃方向角
+            public float Span;           //弧跨度(弧度)
             public float Thick;          //shader 厚度
-            public float HalfX;          //quad 半尺寸（直线=半刃长）
-            public float HalfY;          //quad 半尺寸（<HalfX 即透视压扁；直线=半幅宽）
+            public float HalfX;          //quad 半尺寸(直线=半刃长)
+            public float HalfY;          //quad 半尺寸(<HalfX 即透视压扁;直线=半幅宽)
             public float Flip;
             public float Opacity;
             public float FrontGlow;
-            public float OffsetAlongAim; //中心沿瞄准方向偏移
+            public float OffsetAlongAim; //中心沿瞄准偏移
             public float Seed;
-            public float TailErode;      //彗星尾定向蒸发强度上限（0=不蒸发）
-            public float FlashPower;     //全形白闪帧强度
-            public float FarDim;         //>0 = 启用远近半侧分层：远半侧压暗系数，并绘制于玩家身后
-            public float SweepSnap;      //>0 = 蓄势-爆发扫掠曲线权重（快慢刀：缓推→滞帧→瞬间完成）
-            public float RazorTailWiden; //剃刀线向收笔端展宽强度（外弧白热高光末端加粗）
-            //==== 水墨旋钮（0 = 原光润能量；干湿浓淡按拍位区分：快斩干笔飞白、重斩湿笔洇边）====
-            public float Ink;            //0..1 主权重：墨场纹理/墨分五色/透密呼吸/辉光收敛
-            public float FeiBai;         //0..1 飞白干笔断丝（侵蚀期在 DrawLayer 内加剧）
-            public float Bleed;          //0..1 洇边墨晕上限（生命期内渐渗）
-            public float SplitTail;      //0..1 散锋分叉（彗星尾按锋毫拆带收笔）
+            public float TailErode;      //彗星尾蒸发上限(0=不蒸发)
+            public float FlashPower;     //全形白闪强度
+            public float FarDim;         //>0 远近半侧分层,远半侧压暗并画身后
+            public float SweepSnap;      //>0 蓄势-爆发扫掠权重
+            public float RazorTailWiden; //剃刀线收笔端展宽
+            //==== 水墨旋钮(0=原光润能量) ====
+            public float Ink;            //0..1 墨场主权重
+            public float FeiBai;         //0..1 飞白干笔(侵蚀期加剧)
+            public float Bleed;          //0..1 洇边上限(生命期渐渗)
+            public float SplitTail;      //0..1 散锋分叉
         }
 
-        /// <summary>子刀光单帧动画状态（几何动画包）</summary>
+        /// <summary>子刀光单帧动画状态</summary>
         public struct SlashAnim
         {
-            public float ScaleMul;   //出生爆发+过冲+缓慢外扩
-            public float RotOffset;  //扫掠后惯性收势旋转
-            public float ThickMul;   //薄入→冲击帧最厚→衰减
+            public float ScaleMul;   //出生爆发+过冲+外扩
+            public float RotOffset;  //扫掠后惯性收势
+            public float ThickMul;   //薄入→冲击最厚→衰减
             public float TailErode;  //彗星尾蒸发进度
             public float Flash;      //全形白闪
-            public float FlowPhase;  //能量沿刃奔涌相位
+            public float FlowPhase;  //能量沿刃相位
         }
 
-        //==== 调色（白热核心/亮绯红/深红/暗酒红） ====
+        //==== 调色(白热/亮绯红/深红/暗酒红) ====
         public static readonly Vector3 ColHot = new(1.60f, 1.32f, 1.08f);
         public static readonly Vector3 ColBright = new(1.30f, 0.16f, 0.10f);
         public static readonly Vector3 ColDeep = new(0.62f, 0.05f, 0.07f);
@@ -71,7 +70,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
         public static float EaseOutCubic(float x) => 1f - MathF.Pow(1f - MathHelper.Clamp(x, 0f, 1f), 3f);
 
-        /// <summary>带过冲的缓出（尺寸爆发"弹"出的关键曲线，峰值 ~1.05 后回落 1）</summary>
+        /// <summary>带过冲缓出,峰值 ~1.05 回落 1</summary>
         public static float EaseOutBack(float x) {
             x = MathHelper.Clamp(x, 0f, 1f);
             const float c1 = 1.70158f;
@@ -94,14 +93,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 : EaseOutCubic(t);
         }
 
-        /// <summary>蓄势-爆发扫掠曲线（快慢刀）：前 60% 时间缓推只揭开 30% 弧长，
-        /// 滞一拍（爆发前的静止是"瞬间极快"成立的关键），末 25% 时间瞬间完成。<br/>
-        /// 伤害窗/爆发音效应对齐爆发起点：帧数 ≈ SweepFrames * 0.75</summary>
+        /// <summary>蓄势-爆发扫掠,前 60% 缓推揭开 30%,滞至 0.75 后末段瞬间完成<br/>
+        /// 伤害窗/爆发音对齐爆发起点,帧数 ≈ SweepFrames * 0.75</summary>
         public static float SweepAnticipate(float t) {
             t = MathHelper.Clamp(t, 0f, 1f);
             const float creepEnd = 0.60f;   //蓄势段末
-            const float holdEnd = 0.75f;    //滞帧末 = 爆发起点
-            const float creepAmt = 0.30f;   //蓄势段揭开比例
+            const float holdEnd = 0.75f;    //滞帧末=爆发起点
+            const float creepAmt = 0.30f;   //蓄势揭开比例
             if (t < creepEnd) {
                 return creepAmt * EaseOutCubic(t / creepEnd);
             }
@@ -121,27 +119,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             ? d.FrontGlow
             : d.FrontGlow * MathF.Max(0f, 1f - (lt - d.SweepFrames - 1) / 5f);
 
-        /// <summary>几何动画包：静态贴纸 → 运动实体的核心。所有形变随生命期逐帧演进</summary>
+        /// <summary>几何动画包,形变随生命期演进</summary>
         public static SlashAnim GetAnim(in SlashDef d, int lt) {
             float lifeT = MathHelper.Clamp(lt / (float)d.Life, 0f, 1f);
 
-            //出生爆发：62% 尺寸起步，easeOutBack 过冲到 ~104% 回落，随后全程缓慢外扩（波向外传播）
+            //出生爆发,62%→easeOutBack~104%回落,再缓慢外扩
             float burstT = MathHelper.Clamp(lt / (d.SweepFrames + 2f), 0f, 1f);
             float scale = MathHelper.Lerp(0.62f, 1f, EaseOutBack(burstT)) + 0.07f * lifeT;
 
-            //惯性收势：扫掠结束后沿挥动方向继续减速旋转（follow-through）
+            //惯性收势,扫掠后沿挥动方向减速旋转
             float followT = MathHelper.Clamp((lt - d.SweepFrames) / 14f, 0f, 1f);
             float rotOff = d.Flip * 0.13f * (1f - (1f - followT) * (1f - followT));
 
-            //厚度呼吸：薄入 → 冲击帧最厚 → 消散期变薄
+            //厚度呼吸,薄入→冲击最厚→消散变薄
             float thickIn = EaseOutCubic(lt / (d.SweepFrames + 2f));
             float thickMul = MathHelper.Lerp(0.68f, 1.12f, thickIn)
                 * (1f - 0.42f * SmoothStep01((lifeT - 0.45f) / 0.55f));
 
-            //彗星尾：扫掠完成即从起笔端向前蒸发
+            //彗星尾,扫掠完成起笔端向前蒸发
             float tail = d.TailErode * SmoothStep01((lt - d.SweepFrames) / (d.Life * 0.72f));
 
-            //全形白闪帧：完全张开瞬间过曝 1~2 帧，速落
+            //全形白闪,张开瞬间过曝 1~2 帧速落
             float ft = lt - d.SweepFrames;
             float flash = ft < 0f ? 0f : ft <= 1f ? 1f : MathF.Pow(0.52f, ft - 1f);
             if (flash < 0.02f) {
@@ -149,7 +147,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
             flash *= d.FlashPower;
 
-            //能量沿刃奔涌：前段快速冲出、减速停驻
+            //能量沿刃奔涌
             float flowPhase = 0.62f * EaseOutCubic(lt / 15f);
 
             return new SlashAnim {
@@ -158,8 +156,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             };
         }
 
-        /// <summary>刀光带中线上一点（静态几何）：忽略出生缩放/惯性滚转/厚度呼吸，
-        /// 供实体刀等需要稳定路径方向的调用方使用——刀身不该被能量弧的果冻形变反向牵动</summary>
+        /// <summary>刀光中线静态点,忽略出生缩放/惯性滚转/厚度呼吸(实体刀路径用)</summary>
         public static Vector2 StaticPointAt(in SlashDef d, Vector2 center, float uc) {
             Vector2 ax = d.Rot.ToRotationVector2();
             Vector2 ay = ax.RotatedBy(MathHelper.PiOver2);
@@ -173,7 +170,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return center + ax * MathF.Cos(phi) * rFrac * d.HalfX + ay * MathF.Sin(phi) * rFrac * d.HalfY;
         }
 
-        /// <summary>刀光带中线上一点：uc=0..1 沿刃，center 为已解算的刀光中心，含几何动画</summary>
+        /// <summary>刀光中线点,uc=0..1 沿刃,含几何动画</summary>
         public static Vector2 PointAt(in SlashDef d, Vector2 center, float uc, int lt) {
             SlashAnim anim = GetAnim(in d, lt);
             Vector2 ax = (d.Rot + anim.RotOffset).ToRotationVector2();
@@ -190,7 +187,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return center + ax * MathF.Cos(phi) * rFrac * hx + ay * MathF.Sin(phi) * rFrac * hy;
         }
 
-        /// <summary>设备状态 + 帧级公共 uniform；返回 false 表示资产未就绪</summary>
+        /// <summary>设备状态 + 帧级公共 uniform,false=资产未就绪</summary>
         public static bool BeginDraw(GraphicsDevice device, out Effect fx
             , out BlendState prevBlend, out RasterizerState prevRaster, out DepthStencilState prevDepth) {
             fx = EffectLoader.OniCrimsonSlash?.Value;
@@ -225,8 +222,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             device.DepthStencilState = prevDepth;
         }
 
-        /// <summary>三层异步结构：软辉光垫底(滞后2帧) → 主体 → 白热核心薄条(超前1帧)。
-        /// farSel：0=整体 +1=仅近半侧 -1=仅远半侧（配合玩家遮挡分层）</summary>
+        /// <summary>三层异步,软辉光垫底(滞后2帧)→主体→白热薄条(超前1帧)<br/>
+        /// farSel 0=整体 +1=近半侧 -1=远半侧</summary>
         public static void DrawThreeLayers(GraphicsDevice device, Effect fx, in SlashDef d
             , Vector2 center, int lt, float farSel) {
             //主体色带
@@ -234,13 +231,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 , opacityMul: 1f, thickMul: 1f, scaleMul: 1f
                 , erodeBias: 0f, frontMul: 1f, flashMul: 1f, forceHot: false);
 
-            //白热核心薄条：超前 1 帧领跑，贴锋利侧，不随生命期压暗
+            //白热核心薄条,超前 1 帧,贴锋利侧
             DrawLayer(device, fx, in d, center, Math.Min(lt + 1, d.Life - 1), farSel
                 , opacityMul: 0.92f, thickMul: 0.42f, scaleMul: 1f
                 , erodeBias: 0f, frontMul: 1.25f, flashMul: 1f, forceHot: true);
         }
 
-        /// <summary>单层绘制：以层内时间 lt 采样生命周期与几何动画后提交 quad</summary>
+        /// <summary>单层绘制,按 lt 采样生命周期与几何后提交 quad</summary>
         private static void DrawLayer(GraphicsDevice device, Effect fx, in SlashDef d
             , Vector2 center, int lt, float farSel
             , float opacityMul, float thickMul, float scaleMul, float erodeBias
@@ -260,7 +257,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             float hx = d.HalfX * anim.ScaleMul * scaleMul;
             float hy = d.HalfY * anim.ScaleMul * scaleMul;
 
-            //远近半侧选择方向：世界"屏幕上方"映射到 quad uv 空间（非等比 quad 需按轴分量归一）
+            //远近半侧,世界"屏幕上方"映到 quad uv(非等比需按轴归一)
             Vector2 farDirLocal = Vector2.Zero;
             if (d.FarDim > 0f && farSel != 0f) {
                 Vector2 worldUp = new(0f, -1f);
@@ -288,8 +285,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             fx.Parameters["uFarDim"]?.SetValue(d.FarDim);
             fx.Parameters["uFarDirLocal"]?.SetValue(farDirLocal);
             fx.Parameters["uRazorTailWiden"]?.SetValue(d.RazorTailWiden);
-            //水墨旋钮：白热核心薄条关掉墨相细节只留散锋（与歼灭斩双层结构同语言）；
-            //飞白随侵蚀加剧（干笔越扫越枯），洇边随生命期渐渗（墨慢慢吃进纸里）
+            //水墨,白热薄条关掉墨相只留散锋;飞白随侵蚀加剧,洇边随生命期渐渗
             fx.Parameters["uInk"]?.SetValue(forceHot ? 0f : d.Ink);
             fx.Parameters["uFeiBai"]?.SetValue(forceHot ? 0f
                 : d.FeiBai * (0.60f + 0.40f * Erode(in d, lt)));
@@ -310,14 +306,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         }
     }
 
-    /// <summary>实现者可在玩家绘制之前提交"远半侧"刀光 —— 环形回旋被角色遮挡的空间穿插层</summary>
+    /// <summary>玩家绘制前可提交远半侧刀光</summary>
     internal interface ICrimsonFarDrawable
     {
-        /// <summary>绘制远半侧（玩家身后）刀光，自管设备状态</summary>
+        /// <summary>绘制远半侧刀光,自管设备状态</summary>
         void DrawFarSlashes();
     }
 
-    /// <summary>玩家绘制前回调：收集 <see cref="ICrimsonFarDrawable"/> 弹幕提交远半侧刀光</summary>
+    /// <summary>玩家绘制前收集 <see cref="ICrimsonFarDrawable"/> 提交远半侧</summary>
     internal sealed class CrimsonFarLayerRender : RenderHandle
     {
         public override float Weight => 1.05f;

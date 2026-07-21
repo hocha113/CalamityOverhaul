@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>联机瞄具：命中时在目标与最近另一敌人间生成数据电弧</summary>
+    /// <summary>联机瞄具，命中在目标与最近另一敌间拉数据电弧</summary>
     internal sealed class CrosslinkOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;
@@ -23,7 +23,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
             if (beam.Projectile.owner != Main.myPlayer) return;
-            //找最近的另一只敌人作为电弧另一端
             NPC other = FindClosestOther(target.Center, target.whoAmI, LinkRange);
             if (other == null) return;
             SpawnArc(beam.Projectile, target.Center, other.Center, beam.Projectile.damage);
@@ -31,7 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 
         public override void OnLaserHitNPC(CyberPrismLaserProj laser, NPC target, NPC.HitInfo hit, int damageDone) {
             if (laser.Projectile.owner != Main.myPlayer) return;
-            //激光命中频率更高，节流为 20% 概率触发
+            //激光 20% 节流
             if (Main.rand.NextFloat() > 0.2f) return;
             NPC other = FindClosestOther(target.Center, target.whoAmI, LinkRange);
             if (other == null) return;

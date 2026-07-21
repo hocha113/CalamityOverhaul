@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TimeFreezes
 {
-    /// <summary>NPC AI 冻结链：<see cref="WorldFreezeSystem"/> &gt; <c>CWRWorld.TimeFrozenTick</c> &gt; 专属干预</summary>
+    /// <summary>NPC AI 冻结链 WorldFreezeSystem &gt; TimeFrozenTick &gt; 专属</summary>
     internal class WorldFreezeOverNPC : NPCOverride
     {
         public override int TargetID => -1;

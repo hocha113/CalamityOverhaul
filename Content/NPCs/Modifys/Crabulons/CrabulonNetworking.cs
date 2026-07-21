@@ -8,7 +8,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
-    /// <summary>菌生蟹网络：核心状态走 NPCOverride 通道，此处仅投喂与召回</summary>
+    /// <summary>网络，核心走NPCOverride，此处投喂/召回</summary>
     internal class CrabulonNetworking
     {
         private readonly ModifyCrabulon owner;
@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             this.owner = owner;
         }
 
-        //核心状态读写，各同步通道共用
+        //核心状态读写
         public void WriteData(BinaryWriter netMessage) {
             netMessage.Write(owner.Owner.Alives() ? owner.Owner.whoAmI : -1);
             netMessage.Write(owner.FeedValue);
@@ -44,17 +44,17 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 owner.SaddleItem = new Item();
             }
 
-            //远端下马时清本端骑乘痕迹
+            //远端下马清本端痕迹
             if (owner.Mount && !newMount) {
                 owner.MountSystem?.ForceDismount();
             }
             owner.Mount = newMount;
 
-            //派生字段，保证各端 friendly/boss 一致
+            //派生字段对齐friendly/boss
             owner.ApplyStateFields();
         }
 
-        //投喂包直带参数，不反查弹幕
+        //投喂包直带参
         public void SendFeedPacket(int feederWhoAmI, int dyeItemID) {
             if (!VaultUtils.isClient) {
                 return;
@@ -98,10 +98,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             netMessage.Write(dyeItemID);
             netMessage.Send(-1, whoAmI);
 
-            npc.netUpdate = true;//生命与状态由服务器下发
+            npc.netUpdate = true;//生命/状态服务器下发
         }
 
-        //召回：客户端请求，服务器移 NPC 后广播特效
+        //召回，客户请求服务端移NPC
         public void SendRecallRequest() {
             if (!VaultUtils.isClient) {
                 DoRecall();
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //广播传送特效，AI 传送复用
+        //广播传送特效
         internal void BroadcastTeleportEffect() {
             if (VaultUtils.isServer) {
                 ModPacket netMessage = CWRMod.Instance.GetPacket();
@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //服务器执行召回，客户端播特效
+        //服务端召回，客户播特效
         public static void ReceiveRecall(BinaryReader reader, int whoAmI) {
             int npcIndex = reader.ReadInt16();
 

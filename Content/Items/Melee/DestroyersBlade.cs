@@ -17,7 +17,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    /// 毁灭者之刃：三段连击机械重剑，DestroyerSlash.fx 刀光+光束
+    /// 毁灭者之刃，三段连击，DestroyerSlash.fx
     internal class DestroyersBlade : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item_Melee + "DestroyersBlade";
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// 毁灭者之刃 EX：更快更重，终结五连光束扇
+    /// 毁灭者之刃 EX，终结五连光束扇
     internal class DestroyersBladeEX : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "DestroyersBladeEX";
@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// 毁灭者手持挥砍基类：三段连击+DestroyerSlash.fx+DestroyersBeam
+    /// 毁灭者手持基类，三段+DestroyerSlash+Beam
     internal abstract class DestroyersBladeHeldBase : BaseHeldProj, IPrimitiveDrawable
     {
         /// 对应物品ID
@@ -249,7 +249,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             float slashEnd = WindupTime + SlashTime;
 
             if (elapsed < WindupTime) {
-                //蓄力回拉：机械传动的滞重感
+                //蓄力回拉
                 float t = elapsed / WindupTime;
                 currentRotation = startAngle - swingSign * 0.25f * MathF.Sin(t * MathHelper.PiOver2);
                 trailFade = 0f;
@@ -289,7 +289,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
             else {
-                //收势：刀停住，弧光收缩渐隐
+                //收势
                 float t = (elapsed - slashEnd) / RecoverTime;
                 currentRotation = endAngle;
                 trailFade = 1f - t;
@@ -374,7 +374,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             //贴图刀尖指向右上(-PiOver4)，垂直翻转后指向右下(+PiOver4)
             float rotOffset = lockedDirection == -1 ? -MathHelper.PiOver4 : MathHelper.PiOver4;
 
-            //挥砍残影：高温红的机械重影
+            //挥砍残影
             if (elapsed >= WindupTime && elapsed <= WindupTime + SlashTime + 1f) {
                 for (int i = 1; i <= 3; i++) {
                     float rot = MathHelper.Lerp(currentRotation, lastRotation, i / 4f);
@@ -460,7 +460,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         protected override bool IsEX => true;
     }
 
-    /// 毁灭者光束：白热主轴+电弧，DestroyerBeam.fx
+    /// 毁灭者光束，DestroyerBeam.fx
     /// ai[1] 0普通 1EX
     internal class DestroyersBeam : ModProjectile, IPrimitiveDrawable
     {
@@ -551,7 +551,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            //收集有效轨迹点：oldPos[0] 最新，越靠后越旧
+            //收集轨迹点，oldPos[0]最新
             int valid = 0;
             for (int i = 0; i < Projectile.oldPos.Length; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) {

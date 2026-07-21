@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
             Item.value = Item.buyPrice(1, 80, 0, 0);
         }
 
-        //右键：装填彗星特殊弹
+        //右键装填彗星弹
         public override bool AltFunctionUse(Player player) => true;
 
         //物品使用本身不消耗子弹，由手持弹幕在实际开火与装填时自行拾取

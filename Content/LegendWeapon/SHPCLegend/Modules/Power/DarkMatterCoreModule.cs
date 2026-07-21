@@ -3,7 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>暗物质核心：球飞行阶段吸引附近敌人向球</summary>
+    /// <summary>暗物质核心，球飞行吸引附近敌人</summary>
     internal sealed class DarkMatterCoreModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;

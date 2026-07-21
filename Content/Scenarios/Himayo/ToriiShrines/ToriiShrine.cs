@@ -17,28 +17,20 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 {
     /// <summary>
-    /// 鬼切鸟居：世界出生点附近的地表会立起一座鸟居（3D模型+<see cref="ToriiShrineActor"/>），
-    /// 鸟居下插着鬼切。刀从开荒第一天就在那里，随时可拔。拔刀按玩家独立结算
-    /// （<see cref="Data.Modules.HimayoStoryData.ToriiSwordTaken"/>），拔刀后天色渐入逢魔黄昏
-    /// （<see cref="ToriiDusk"/>），鸟居对该玩家原地化樱消散（<see cref="ToriiShrineActor"/> 的本地演出），
-    /// 拿到刀后 <see cref="FirstMetHimayo"/> 会经由其触发策略在演出收尾后自动接管，黄昏持续到对话落幕
+    /// 世界出生点附近立鸟居(<see cref="ToriiShrineActor"/>)，下插鬼切<br/>
+    /// 拔刀按玩家独立(<see cref="Data.Modules.HimayoStoryData.ToriiSwordTaken"/>)，接 <see cref="ToriiDusk"/> 与本地化樱，收尾后 <see cref="FirstMetHimayo"/> 接管
     /// </summary>
     internal class ToriiShrine : ModSystem, ILocalizedModType, IWorldInfo
     {
-        //鸟居3D模型：客户端在PostSetupContent自动加载，服务端得到Vault3DModel.Empty
-        //模型来源: "Torii" by kazukisakamoto (Sketchfab, CC-BY-4.0)，署名见同目录license.txt
+        //客户端PostSetupContent加载，服务端Empty
+        //来源 "Torii" by kazukisakamoto (Sketchfab CC-BY-4.0)，见同目录license.txt
         [VaultLoaden("Assets/Models/Torii/scene")]
         public static Vault3DModel ToriiModel = null;
         [VaultLoaden("CalamityOverhaul/Content/LegendWeapon/OnikiriLegend/OnikiriItem")]
         public static Asset<Texture2D> OnikiriTexture = null;
 
-        /// <summary>
-        /// 神社是否已生成
-        /// </summary>
         public static bool IsGenerated { get; internal set; }
-        /// <summary>
-        /// 神社地面锚点（鸟居正下方地表中心，像素坐标）
-        /// </summary>
+        /// <summary>地面锚点，鸟居正下地表中心，像素</summary>
         public static Vector2 ShrinePosition { get; private set; }
 
         public string LocalizationCategory => "ADV.ToriiShrine";
@@ -46,15 +38,15 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         public static LocalizedText InteractHint { get; private set; }
         public static LocalizedText InventoryFullHint { get; private set; }
 
-        //交互状态（纯本地）
+        //纯本地交互
         private static bool isPlayerNearby;
         private static float interactPromptAlpha;
         private const float InteractDistance = 190f;
 
-        //生成请求去重，避免联机下条件成立到收到回执之间逐帧刷包
+        //生成请求去重，防回执前刷包
         private static bool pendingGenerationRequest;
 
-        //补种自检的节流计时器
+        //补种自检节流
         private static int ensureCheckTimer;
 
         public override void SetStaticDefaults() {
@@ -83,8 +75,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 ShrinePosition = Vector2.Zero;
             }
 
-            //存档半损防线：位置键缺失/越界时废弃标记，让下一次更新走正常重新选址，
-            //否则鸟居会"生成"在(0,0)之类玩家永远找不到的地方
+            //位置缺失/越界则废弃，防落在(0,0)
             if (IsGenerated && !IsValidShrinePosition(ShrinePosition)) {
                 CWRMod.Instance.Logger.Warn($"[ToriiShrine:LoadWorldData] Discarding invalid shrine position {ShrinePosition}, will regenerate");
                 IsGenerated = false;
@@ -92,7 +83,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             }
         }
 
-        /// <summary>神社锚点是否落在世界有效范围内（含选址器同款的40格边缘余量）</summary>
+        /// <summary>锚点是否在有效范围(含40格边缘余量)</summary>
         private static bool IsValidShrinePosition(Vector2 position) {
             const float Margin = 40f * 16f;
             return position.X >= Margin && position.X <= Main.maxTilesX * 16f - Margin
@@ -142,7 +133,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 return;
             }
 
-            //声明式补种：世界重载后Actor缺失时自动补回
+            //世界重载后Actor缺失则补种
             EnsureShrinePlaced();
 
             if (!Main.dedServ) {
@@ -150,9 +141,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             }
         }
 
-        /// <summary>
-        /// 鸟居从进入世界的第一天起就存在：只要尚未生成且不在子世界，就该立起来
-        /// </summary>
+        /// <summary>尚未生成且非子世界</summary>
         private static bool ShouldGenerateShrine() {
             if (IsGenerated) {
                 return false;
@@ -172,9 +161,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             }
         }
 
-        /// <summary>
-        /// 客户端发送生成请求给服务器，带去重标记避免收到回执前逐帧刷包
-        /// </summary>
+        /// <summary>发生成请求，pending去重</summary>
         private static void SendGenerationRequest() {
             if (pendingGenerationRequest) {
                 return;
@@ -185,15 +172,13 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             packet.Send();
         }
 
-        /// <summary>
-        /// 尝试生成神社（服务器或单人执行）：选址失败时兜底在出生点，并尽量向下吸附到实心地面
-        /// </summary>
+        /// <summary>服务端/单人生成，选址失败则出生点吸附地面</summary>
         public static void TryGenerateShrine() {
             if (VaultUtils.isClient) {
                 return;
             }
             if (IsGenerated) {
-                //联机下多名客户端可能同时请求，已生成时只需补发一次同步
+                //已生成则补发同步
                 if (VaultUtils.isServer) {
                     SyncShrineToClients();
                 }
@@ -202,8 +187,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
             Vector2? position = ToriiShrineLocationFinder.FindBestLocation();
             if (position == null) {
-                //兜底也要落地：出生点向下吸附地面，免得极端地形（空岛/虚空类世界）出现悬空鸟居；
-                //连地面都没有时保留出生点原始坐标，至少保证神社存在且可交互
+                //出生点吸附地面，无地面则保留出生点
                 Vector2 spawnPos = new(Main.spawnTileX * 16f + 8f, Main.spawnTileY * 16f);
                 position = ToriiShrineLocationFinder.TrySnapToGround(spawnPos, out Vector2 snapped)
                     ? snapped : spawnPos;
@@ -225,11 +209,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             packet.Send();
         }
 
-        /// <summary>
-        /// 客户端接收神社同步数据
-        /// </summary>
+        /// <summary>收神社同步</summary>
         internal static void ReceiveShrineSync(BinaryReader reader) {
-            //收到一次回执就说明请求周期已经走完，允许下次再发
+            //回执到，清pending
             pendingGenerationRequest = false;
 
             bool wasGenerated = IsGenerated;
@@ -243,9 +225,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             }
         }
 
-        /// <summary>
-        /// 生成神社：写入位置并放置鸟居Actor（Actor仅服务端/单人放置，客户端经框架同步获得）
-        /// </summary>
+        /// <summary>写入位置并放Actor(仅服务端/单人放，客户端靠框架同步)</summary>
         public static void GenerateShrine(Vector2 groundAnchor) {
             if (IsGenerated) {
                 return;
@@ -258,10 +238,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             OnShrineGenerated();
         }
 
-        /// <summary>
-        /// 神社出现时的客户端听觉反馈：附近玩家能听到一声远处的清响。
-        /// 半径需覆盖选址器的最远落点（160格），保证新世界首次进入必有提示音
-        /// </summary>
+        /// <summary>出现时清响，半径需盖住选址最远160格</summary>
         private static void OnShrineGenerated() {
             if (Main.dedServ) {
                 return;
@@ -271,9 +248,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             //}
         }
 
-        /// <summary>
-        /// 声明式补种检查：已生成但没有存活的鸟居Actor时重新放置一次
-        /// </summary>
+        /// <summary>已生成但无存活Actor则重放</summary>
         private static void EnsureShrinePlaced() {
             if (!VaultUtils.isServer && !VaultUtils.isSinglePlayer) {
                 return;
@@ -299,21 +274,17 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             ActorLoader.NewActor<ToriiShrineActor>(ShrinePosition);
         }
 
-        /// <summary>
-        /// 清除神社的本地/存档状态（不含Actor清理，世界卸载等收尾路径调用）
-        /// </summary>
+        /// <summary>清本地/存档态(不含Actor)，世界卸载等收尾用</summary>
         public static void ClearShrine() {
             IsGenerated = false;
             ShrinePosition = Vector2.Zero;
             ResetLocalState();
-            //退场演出若被世界卸载打断，归还 Models3D 合成权
+            //卸载打断时归还Models3D合成权
             ToriiShrineDissolve.Reset();
         }
 
         #region 交互
-        /// <summary>
-        /// 刀对本地玩家是否仍然在场：拔过、或者背包里已经有鬼切的玩家看不到刀
-        /// </summary>
+        /// <summary>本地玩家是否仍看得到刀(拔过或包里已有则否)</summary>
         public static bool SwordPresentForLocalPlayer() {
             Player player = Main.LocalPlayer;
             if (player == null || !player.active) {
@@ -345,7 +316,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
             isPlayerNearby = swordPresent && player.Center.Distance(swordAnchor) < InteractDistance;
 
-            //交互提示淡入淡出
+            //提示淡入淡出
             if (isPlayerNearby && CanTriggerInteraction()) {
                 if (interactPromptAlpha < 1f) {
                     interactPromptAlpha += 0.05f;
@@ -376,10 +347,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             TryBeginPullRite();
         }
 
-        /// <summary>
-        /// 背包满时拒绝拔刀：鬼切没有兜底获取途径，绝不能让它以掉落物形态
-        /// 落地冒消失风险（拔刀标记一落即不可逆，刀丢了就是永久软锁）
-        /// </summary>
+        /// <summary>背包满拒拔，无兜底，标记不可逆会软锁</summary>
         private static bool CheckInventorySpace(Player player) {
             Item onikiri = new(ModContent.ItemType<OnikiriItem>());
             if (player.ItemSpace(onikiri).CanTakeItemToPersonalInventory) {
@@ -391,9 +359,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         }
 
         /// <summary>
-        /// 拔刀入口（本地玩家）：优先走拔刀仪式（Actor 动画 + <see cref="ToriiPullCutscene"/> 运镜），
-        /// 鬼切在仪式到手帧交付；Actor 缺席等异常情形退化为 <see cref="PullSword"/> 瞬发拔刀，
-        /// 保证刀永远不会因演出系统而拿不到
+        /// 拔刀入口，优先仪式(<see cref="ToriiPullCutscene"/>)，Actor缺席则 <see cref="PullSword"/>
         /// </summary>
         internal static void TryBeginPullRite() {
             Player player = Main.LocalPlayer;
@@ -403,7 +369,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
             foreach (ToriiShrineActor actor in ActorLoader.GetActiveActors<ToriiShrineActor>()) {
                 if (actor.BeginPullRite()) {
-                    //运镜播放失败（更高优先级片段在播）不致命：仪式照演，只是镜头不动
+                    //运镜失败不致命，仪式照演
                     CutsceneDirector.Play<ToriiPullCutscene, int>(actor.WhoAmI, restartSameClip: false);
                     return;
                 }
@@ -412,10 +378,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             PullSword();
         }
 
-        /// <summary>
-        /// 仪式到手帧的交付：落拔刀标记、入包、到手清响；
-        /// 拔离时刻的迸发/震屏/拔刀声由仪式自身在对应节拍播放
-        /// </summary>
+        /// <summary>仪式到手帧交付，迸发/震屏/拔刀声由仪式节拍自播</summary>
         internal static void GrantSwordFromRite(Player player) {
             if (!SwordPresentForLocalPlayer()) {
                 return;
@@ -426,9 +389,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         }
 
         /// <summary>
-        /// 瞬发拔刀（无仪式兜底路径）：交付鬼切、落拔刀标记、震屏与声画演出，
-        /// 鸟居随即开始本地退场（黄昏渐入→原地化樱消散），
-        /// <see cref="FirstMetHimayo"/> 的触发策略在退场收尾后自动开演
+        /// 瞬发拔刀兜底，交付后本地退场，<see cref="FirstMetHimayo"/> 收尾后开演
         /// </summary>
         internal static void PullSword() {
             Player player = Main.LocalPlayer;
@@ -448,9 +409,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         }
         #endregion
 
-        /// <summary>
-        /// 调试入口（单人）：在指定位置附近向下吸附地面并强制重建神社，会清掉旧状态与Actor
-        /// </summary>
+        /// <summary>调试重建(单人)，附近吸附地面并清旧态</summary>
         public static void DebugRebuildAt(Vector2 worldPos) {
             if (!VaultUtils.isSinglePlayer) {
                 return;

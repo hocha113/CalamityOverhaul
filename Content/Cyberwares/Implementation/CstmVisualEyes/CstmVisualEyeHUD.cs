@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.CstmVisualEyes
 {
     /// <summary>
     /// CSTM 视像义眼 HUD，左下 RAM 弧条+义眼核心
-    /// <br/>装备且未持 SHPC 时显示；复用 SHPCRenderer.DrawRAMBar
+    /// <br/>装备且未持 SHPC 时显示，复用 SHPCRenderer.DrawRAMBar
     /// </summary>
     internal class CstmVisualEyeHUD : UIHandle, IBottomLeftHud
     {
@@ -27,16 +27,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.CstmVisualEyes
                 if (p == null || !p.active || p.dead) {
                     return false;
                 }
-                //没装备本义眼直接不显示，自我判定避免外部耦合
                 if (CstmVisualEye.GetEquipped(p) == null) {
                     return false;
                 }
-                //手持 SHPC 时由 SHPCUI 接管左下角，本 HUD 主动让位避免双弧重叠
+                //持 SHPC 时让位 SHPCUI
                 Item held = p.GetItem();
                 if (held != null && !held.IsAir && held.type == SHPCOverride.ID) {
                     return false;
                 }
-                //避让全屏 UI（与 SHPCUI 一致的回避策略）
                 if (QuestLog.Instance?.visible == true) {
                     return false;
                 }
@@ -50,20 +48,20 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.CstmVisualEyes
         #endregion
 
         #region 左下角 HUD 队列接入
-        //义眼 RAM 读数为被动小 HUD，置于队列上层：与比目鱼等主武器 HUD 同屏时自动上移悬浮避让
+        //被动小 HUD，order 10，主武器同屏时上移避让
         bool IBottomLeftHud.HudStackActive => Active;
         int IBottomLeftHud.HudStackOrder => 10;
         Vector2 IBottomLeftHud.HudStackAnchor => NaturalCorePosition;
-        //自核心向上覆盖 RAM 弧条与数值标签，向下覆盖义眼核心与弧条下沿
+        //上下覆盖弧条与核心
         float IBottomLeftHud.HudStackTopExtent => 60f;
         float IBottomLeftHud.HudStackBottomExtent => 60f;
         #endregion
 
         #region 状态
 
-        //全局时间，扫光/呼吸节奏，秒
+        //扫光/呼吸节奏，秒
         private float time;
-        //平滑跟随 RAM 当前值，避免数值跳变带来的刺眼闪烁
+        //平滑 RAM 读数
         private float ramDisplayValue;
 
         #endregion
@@ -73,7 +71,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.CstmVisualEyes
         public override void Update() {
             time += 1f / 60f;
 
-            //RAM 显示值平滑过渡，规则与 SHPCUI 保持一致以方便玩家在两个 HUD 间切换时不感到割裂
+            //同 SHPCUI 平滑规则
             ramDisplayValue = MathHelper.Lerp(ramDisplayValue, RamSystem.CurrentRam, 0.12f);
             if (MathF.Abs(ramDisplayValue - RamSystem.CurrentRam) < 0.01f) {
                 ramDisplayValue = RamSystem.CurrentRam;
@@ -93,64 +91,58 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.CstmVisualEyes
             Vector2 corePos = GetCorePosition();
             const float globalAlpha = 1f;
 
-            //先绘制小型义眼核心，作为 RAM 弧条的来源标识；置于弧条之下避免遮盖
             DrawEyeCore(sb, px, corePos, time, globalAlpha);
 
-            //复用 SHPC HUD 同款 RAM 弧形条
             SHPCRenderer.DrawRAMBar(sb, px, corePos,
                 ramDisplayValue, RamSystem.MaxRam, time, globalAlpha);
         }
 
-        //自然核心位置（与 SHPCUI 一致；改用 UI 空间高度以修正高 UIScale 下的漂移）
+        //同 SHPCUI 锚点，UI 空间高度防高 UIScale 漂移
         private static Vector2 NaturalCorePosition => new(96f, BottomLeftHudStack.UIScreenH - 96f);
 
-        /// <summary>核心位置，经左下角 HUD 队列避让：与比目鱼等底部 HUD 同屏时自动上移悬浮</summary>
+        /// <summary>核心位置，左下 HUD 队列避让</summary>
         private static Vector2 GetCorePosition() {
             CstmVisualEyeHUD inst = Instance;
             return inst == null ? NaturalCorePosition : BottomLeftHudStack.ResolveAnchor(inst);
         }
 
-        /// <summary>程序化义眼核心：外环+巩膜+虹膜+竖瞳+扫描线</summary>
+        /// <summary>程序化义眼，外环+巩膜+虹膜+竖瞳+扫描线</summary>
         private static void DrawEyeCore(SpriteBatch sb, Texture2D px, Vector2 center,
             float time, float globalAlpha) {
-            //核心整体半径较 SHPC 的 CoreRingR 略小，让弧条视觉权重更明显
+            //略小于 SHPC CoreRingR
             const float ringR = 14f;
             const float scleraR = 11f;
             const float irisR = 7f;
             const float pupilR = 2.6f;
 
-            //投影
             SHPCRenderer.DrawDisc(sb, px, center + new Vector2(0f, 2f),
                 ringR + 2f, 5f, SHPCTheme.ShadowDark * (0.45f * globalAlpha));
 
-            //背景巩膜盘（底色，模拟"机械义眼"的金属背板）
             SHPCRenderer.DrawDisc(sb, px, center,
                 scleraR, 2.5f, SHPCTheme.SlotBg * (0.95f * globalAlpha));
 
-            //外环描边，固定权重区别于 SHPC 那种会随展开变亮的环
             float ringPulse = 0.55f + MathF.Sin(time * 1.6f) * 0.1f;
             Color ringCol = Color.Lerp(SHPCTheme.Border, SHPCTheme.BorderHi, ringPulse * 0.5f);
             SHPCRenderer.DrawArcStroke(sb, px, center, ringR, 0f, MathHelper.TwoPi,
                 1.4f, ringCol * (ringPulse * globalAlpha));
 
-            //虹膜：青色环带，叠加微弱呼吸
+            //虹膜呼吸
             float irisGlow = 0.65f + MathF.Sin(time * 2.2f) * 0.15f;
             SHPCRenderer.DrawDisc(sb, px, center,
                 irisR, 2f, SHPCTheme.Cyan * (0.55f * irisGlow * globalAlpha));
             SHPCRenderer.DrawArcStroke(sb, px, center, irisR + 0.5f,
                 0f, MathHelper.TwoPi, 0.9f, SHPCTheme.CyanHi * (0.85f * globalAlpha));
 
-            //垂直瞳孔，是辨识度的关键：用一段竖直暗线模拟猫科义眼
+            //竖瞳
             float pupilHeight = pupilR * 1.8f;
             SHPCRenderer.DrawLine(sb, px,
                 center + new Vector2(0f, -pupilHeight),
                 center + new Vector2(0f, pupilHeight),
                 pupilR * 1.1f, SHPCTheme.ShadowDark * globalAlpha);
-            //瞳孔高光
             SHPCRenderer.DrawDisc(sb, px, center + new Vector2(-0.6f, -pupilHeight * 0.55f),
                 0.9f, 0.8f, SHPCTheme.CyanHi * (0.95f * globalAlpha));
 
-            //缓慢横向扫描线，呼应"网络义眼实时分析"的设定
+            //横向扫描线
             float scanT = (time * 0.45f) % 1f;
             float scanY = MathHelper.Lerp(-scleraR + 1f, scleraR - 1f, scanT);
             float scanWidthHalf = MathF.Sqrt(MathF.Max(0f, scleraR * scleraR - scanY * scanY));

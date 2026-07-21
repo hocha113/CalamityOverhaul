@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
 {
-    /// <summary>机械Boss视觉状态容器(按 whoAmI 索引)</summary>
+    /// <summary>视觉状态，按 whoAmI 索引</summary>
     internal static class MechBossVisualState
     {
         private struct Entry
@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
 
         private static readonly Dictionary<int, Entry> _states = new();
 
-        /// <summary>Push 控制器(通常 Boss 头)视觉状态</summary>
+        /// <summary>Push 控制器视觉</summary>
         public static void Push(int controllerNpcId, MechBossVisualMode mode, float intensity, float progress = 0f) {
             intensity = MathHelper.Clamp(intensity, 0f, 1f);
             progress = MathHelper.Clamp(progress, 0f, 1f);
@@ -27,11 +27,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
                 Progress = progress,
                 Frame = Main.GameUpdateCount,
             };
-            //顺带转发给机械氛围天空做警报/过载聚合，免去天空侧每帧遍历NPC
+            //转发天空警报聚合
             MachineEffect.ReportSkyMood(mode, intensity, progress);
         }
 
-        /// <summary>Read 控制器视觉状态；过期/未推送返回 Idle 零强度</summary>
+        /// <summary>Read，过期回 Idle</summary>
         public static (MechBossVisualMode mode, float intensity, float progress) Read(int controllerNpcId) {
             if (!_states.TryGetValue(controllerNpcId, out var e)) {
                 return (MechBossVisualMode.Idle, 0f, 0f);
@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
             return (e.Mode, e.Intensity, e.Progress);
         }
 
-        /// <summary>Boss 死亡/场景重置时 Clear，防字典膨胀</summary>
+        /// <summary>Clear，防字典膨胀</summary>
         public static void Clear(int controllerNpcId) {
             _states.Remove(controllerNpcId);
         }

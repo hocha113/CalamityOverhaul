@@ -7,8 +7,8 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
     /// <summary>
-    /// 公主鱼星尘 mote：小而慢的粉彩尘埃，微浮力上飘 + 横向摇曳 + 十字星闪烁，
-    /// 绘本里撒的亮粉质感。加色绘制但个体极小、低亮，靠数量克制防糊
+    /// 公主鱼星尘 mote，小而慢的粉彩尘埃，微浮力上飘 + 横向摇曳 + 十字星闪烁
+    /// 绘本里撒的亮粉质感，加色绘制但个体极小、低亮，靠数量克制防糊
     /// </summary>
     internal class PRT_FishPrincessMote : BasePRT
     {
@@ -58,11 +58,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 pos = Position - Main.screenPosition;
             Color col = Color with { A = 0 };
 
-            //底层软点：极小低亮
+            //底层软点，极小低亮
             spriteBatch.Draw(glow, pos, null, col * (0.42f * Opacity), 0f
                 , glow.Size() * 0.5f, 0.13f * Scale, SpriteEffects.None, 0f);
 
-            //十字星闪烁：正弦明灭，闪到低谷时几乎只剩软点
+            //十字星闪烁
             if (star != null) {
                 float tw = 0.5f + 0.5f * MathF.Sin(Time * 0.23f + twinkleSeed);
                 spriteBatch.Draw(star, pos, null, col * (0.75f * Opacity * tw), Rotation
@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 公主鱼绘本圆点：哑光粉彩圆点，弹出带过冲、随后轻飘坠落缩小，
+    /// 公主鱼绘本圆点，哑光粉彩圆点，弹出带过冲、随后轻飘坠落缩小
     /// AlphaBlend 非加色，读作绘本纸屑而非光点
     /// </summary>
     internal class PRT_FishPrincessDot : BasePRT
@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Texture2D tex = TexValue;
             Vector2 pos = Position - Main.screenPosition;
             float px = 9f * Scale * MathHelper.Clamp(Opacity + 0.25f, 0f, 1.1f);
-            //哑光单层：真 alpha 贴图直绘
+            //哑光单层，真 alpha 贴图直绘
             spriteBatch.Draw(tex, pos, null, Color * (0.92f * Opacity), Rotation
                 , tex.Size() * 0.5f, px / tex.Width, SpriteEffects.None, 0f);
             return false;
@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 公主鱼缎带残迹：弹体死亡后接管其轨迹点链，整体轻微上飘 + 摇曳，
+    /// 公主鱼缎带残迹，弹体死亡后接管其轨迹点链，整体轻微上飘 + 摇曳
     /// 尾部先蚀（从尾梢向死亡点收缩），缎带活得比弹体久
     /// </summary>
     internal class PRT_FishPrincessRibbonFade : BasePRT
@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (ptCount < 3) {
                 return false;
             }
-            //尾部先蚀：可见段从尾梢向头收缩
+            //尾部先蚀，可见段从尾梢向头收缩
             int visible = (int)(ptCount * (1f - LifetimeCompletion * 0.85f));
             if (visible < 3) {
                 return false;

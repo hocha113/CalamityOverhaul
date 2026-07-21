@@ -16,8 +16,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Defeats
         public override StyleId DefaultStyle => "Draedon";
 
         public override void SetStaticDefaults() {
-
-            //第二次战败对话：表现出对玩家学习能力的认可
             SecondDefeatLine1 = this.GetLocalization(nameof(SecondDefeatLine1), () => "有趣，你的适应速度超出了我的预期");
             SecondDefeatLine2 = this.GetLocalization(nameof(SecondDefeatLine2), () => "数据显示你在上次战斗后已经进行了针对性的改进");
             SecondDefeatLine3 = this.GetLocalization(nameof(SecondDefeatLine3), () => "看来我需要重新评估你的学习曲线了");
@@ -38,7 +36,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Defeats
         protected override void OnCompleted() {
             DraedonEffect.IsActive = false;
             DraedonEffect.Send();
-            //手动 Begin 的场景策略回调不触发,完成标记须落在本重写
+            //手动Begin不触发策略回调,完成标记写这里
             DraedonStorySync.WriteDraedon(d => d.ExoMechSecondDefeat = true, d => d.ExoMechSecondDefeat = true);
         }
 

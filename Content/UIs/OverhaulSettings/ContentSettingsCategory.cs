@@ -6,9 +6,7 @@ using SettingToggle = CalamityOverhaul.Content.UIs.OverhaulSettings.OverhaulSett
 
 namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 {
-    /// <summary>
-    /// CWRServerConfig 布尔项
-    /// </summary>
+    /// <summary>CWRServerConfig 布尔项</summary>
     internal class ContentSettingsCategory : SettingsCategory
     {
         public override string Title => OverhaulSettingsUI.ContentSettingsText?.Value ?? "内容设置";
@@ -32,11 +30,11 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
             var config = CWRServerConfig.Instance;
 
-            //CWRSystem组(需要重载)
+            //CWRSystem(需重载)
             AddToggle("QuestLog", () => config.QuestLog, v => config.QuestLog = v, true);
             AddToggle("BiologyOverhaul", () => config.BiologyOverhaul, v => config.BiologyOverhaul = v, true);
 
-            //CWRWeapon组
+            //CWRWeapon
             AddToggle(nameof(config.ScreenVibration), () => config.ScreenVibration, v => config.ScreenVibration = v, false);
             AddToggle(nameof(config.DomainConciseDisplay), () => config.DomainConciseDisplay, v => config.DomainConciseDisplay = v, false);
             AddToggle(nameof(config.LensEasing), () => config.LensEasing, v => config.LensEasing = v, false);
@@ -51,11 +49,11 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             var config = CWRServerConfig.Instance;
             if (config == null) return;
 
-            //CWRSystem组
+            //CWRSystem
             config.QuestLog = true;
             config.BiologyOverhaul = true;
 
-            //CWRWeapon组
+            //CWRWeapon
             config.ScreenVibration = true;
             config.DomainConciseDisplay = false;
             config.LensEasing = true;

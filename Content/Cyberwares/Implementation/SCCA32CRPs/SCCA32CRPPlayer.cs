@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SCCA32CRPs
             : 0f;
 
         public override void ResetEffects() {
-            //ResetEffects 统一递减，单源单减
+            //单源单减
             int dodgeTimer = DodgeCooldownTimer;
             BaseCyberware.TickFrameDown(ref dodgeTimer, ref dodgeCooldownCarry);
             DodgeCooldownTimer = dodgeTimer;
@@ -40,15 +40,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SCCA32CRPs
             if (SCCA32CRP.GetEquipped(Player) == null) {
                 return;
             }
-            //常驻基础加成：暴击率作用于通用伤害类，所有派生类都会受益
             Player.GetCritChance(DamageClass.Generic) += SCCA32CRP.CritChanceBonus;
             Player.moveSpeed += SCCA32CRP.MoveSpeedBonus;
 
-            //亢奋状态额外加成
             if (ReflexBoostTimer > 0) {
                 Player.GetCritChance(DamageClass.Generic) += SCCA32CRP.BoostExtraCrit;
                 Player.moveSpeed += SCCA32CRP.BoostExtraMoveSpeed;
-                //亢奋期间每隔几帧泼洒一束反射粒子，强化"亚意识接管"的感觉
                 if (Player.whoAmI == Main.myPlayer && Main.GameUpdateCount % 6 == 0) {
                     SpawnBoostTrail();
                 }
@@ -62,17 +59,17 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SCCA32CRPs
             if (DodgeCooldownTimer > 0) {
                 return false;
             }
-            //仅 SourceDamage>0 才触发，防零伤害事件浪费冷却
+            //SourceDamage≤0 不耗冷却
             if (info.SourceDamage <= 0) {
                 return false;
             }
 
-            //FreeDodge 仅受击玩家本机调用，概率结果无联机同步问题
+            //FreeDodge 仅本机，概率无需同步
             if (Main.rand.NextFloat() > SCCA32CRP.DodgeChance) {
                 return false;
             }
 
-            //成功反射：进入冷却 + 亢奋 + 短暂无敌窗口
+            //冷却+亢奋+短无敌
             DodgeCooldownTimer = SCCA32CRP.DodgeCooldownFrames;
             dodgeCooldownCarry = 0f;
             ReflexBoostTimer = SCCA32CRP.ReflexBoostFrames;
@@ -81,16 +78,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SCCA32CRPs
             Player.immuneTime = Math.Max(Player.immuneTime, SCCA32CRP.DodgeImmunityFrames);
             Player.immuneNoBlink = false;
 
-            //音效与粒子作为强烈的反射反馈
             SoundEngine.PlaySound(SoundID.Item68 with { Pitch = 0.4f, Volume = 0.7f }, Player.Center);
             SpawnDodgeBurst();
 
             return true;
         }
 
-        /// <summary>反射触发爆点粒子</summary>
+        /// <summary>反射爆点粒子</summary>
         private void SpawnDodgeBurst() {
-            //外环
             int count = 22;
             for (int i = 0; i < count; i++) {
                 float angle = MathHelper.TwoPi * i / count;
@@ -98,7 +93,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SCCA32CRPs
                 Dust dust = Dust.NewDustPerfect(Player.Center, DustID.YellowTorch, vel, 100, default, 1.3f);
                 dust.noGravity = true;
             }
-            //中心闪光
             for (int i = 0; i < 8; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(2.5f, 2.5f);
                 Dust dust = Dust.NewDustPerfect(Player.Center, DustID.GoldFlame, vel, 100, default, 1.6f);

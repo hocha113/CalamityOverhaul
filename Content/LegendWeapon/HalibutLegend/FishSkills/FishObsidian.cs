@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (VaultUtils.isServer) {
                 return;
             }
-            //黑曜石"淬凝"：暗紫玻璃屑向内汇聚 + 暗烟
+            //黑曜石"淬凝"
             for (int i = 0; i < 16; i++) {
                 float angle = MathHelper.TwoPi * i / 16f;
                 Vector2 from = position + angle.ToRotationVector2() * Main.rand.NextFloat(40f, 70f);
@@ -108,11 +108,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 黑曜石鱼：环绕玩家的火山玻璃护卫。倾斜椭圆轨道 + 弹簧滞后的次级运动让阵型"有重量"，
-    /// 本体深黑近剪影，窄镜面高光随公转沿轮廓扫动（<see cref="FishObsidianAssets.FishObsidianGloss"/>）。
-    /// 受击碎裂 = 英雄时刻：裂纹冻结数帧（慢放感）后爆成贝壳状断口的锐利玻璃片
-    /// </summary>
+    /// <summary>黑曜石环绕护卫，斜椭圆+弹簧滞后；镜面扫光见 <see cref="FishObsidianAssets.FishObsidianGloss"/>；受击碎裂</summary>
     internal class ObsidianFishOrbit : BaseHeldProj
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.Obsidifish;
@@ -240,7 +236,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //玻璃几乎不发光：微弱紫泽 + 应力时的余温橙
+            //玻璃几乎不发光
             float emberAmt = MathHelper.Clamp(crackPulse + crackHeat + FreezeRamp, 0f, 1f);
             float lit = glow * (0.6f + depth * 0.4f);
             Lighting.AddLight(Projectile.Center, new Vector3(0.10f, 0.06f, 0.16f) * lit
@@ -287,7 +283,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             myAngle = spinAngle;
             Vector2 target = OrbitPoint(owner, myAngle, out depth);
-            //EaseOutBack 过冲：玻璃"咔"地嵌入阵位
+            //EaseOutBack 过冲
             Projectile.Center = Vector2.Lerp(gatherStart, target, VaultUtils.EaseOutBack(p));
 
             Vector2 toCenter = owner.Center - Projectile.Center;
@@ -332,7 +328,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 sway = new Vector2((float)Math.Sin(swimPhase), (float)Math.Cos(swimPhase * 1.3f)) * 6f;
             target += sway;
 
-            //弹簧滞后跟随：本体带惯性追轨道点，停不"死板"
+            //弹簧滞后跟随
             Vector2 toTarget = target - Projectile.Center;
             followVel += toTarget * 0.18f;
             followVel *= 0.74f;
@@ -351,7 +347,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //镜面扫光节拍：脉冲抬高 uSpec，并在迎光轮廓处迸一粒紫白星芒
+            //镜面扫光节拍，脉冲抬高 uSpec
             if (--glintTimer <= 0) {
                 glintTimer = Main.rand.Next(70, 150);
                 specBoost = 1f;
@@ -360,7 +356,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     ?.Configure(SheenPurple, 16, 0.04f, 0.5f);
             }
 
-            //火山余温：极细热雾上浮，近景才冒
+            //火山余温，极细热雾上浮，近景才冒
             if (depth > 0.1f && Main.rand.NextBool(46)) {
                 PRTLoader.NewParticle<PRT_Smoke>(Projectile.Center + Main.rand.NextVector2Circular(10f, 8f)
                     , new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-0.7f, -0.3f))
@@ -378,7 +374,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void ShatteringAI() {
             if (StateTimer <= CrackFreezeFrames) {
-                //裂纹冻结：定住轨道位置细碎抖动，矿脉在 shader 里烧起来，读作时间凝滞
+                //裂纹冻结
                 Projectile.Center += Main.rand.NextVector2Circular(1.4f, 1.4f);
                 if (StateTimer == CrackFreezeFrames - 1) {
                     flash = 1f;
@@ -388,7 +384,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
                 return;
             }
-            //余迹容器：本体已爆掉不再绘制，环与余尘在这里活完
+            //余迹容器，本体已爆掉不再绘制
             glow *= 0.9f;
             if (StateTimer >= CrackFreezeFrames + AftermathFrames) {
                 Projectile.Kill();
@@ -422,7 +418,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private static float DepthScale(float depth) => 0.78f + (depth * 0.5f + 0.5f) * 0.5f;
 
-        /// <summary>世界空间光向角：缓慢漂移的高位光源，配合公转让高光沿轮廓持续移动</summary>
+        /// <summary>世界空间光向角，缓慢漂移的高位光源，配合公转让高光沿轮廓持续移动</summary>
         private float LightWorldAngle()
             => -2.3f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 0.6f + FishIndex) * 0.3f;
 
@@ -435,7 +431,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.friendly = false;
             crackHeat = 1f;
 
-            //应力预告：高音玻璃紧绷声先行，爆点声在 Burst 落地
+            //应力预告，高音玻璃紧绷声先行
             SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.4f, Pitch = 0.55f }, Projectile.Center);
         }
 
@@ -446,7 +442,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.2f, Pitch = 0.3f }, Projectile.Center);
         }
 
-        /// <summary>爆点：镜头冲击 + 双层声 + 贝壳状断口玻璃片四射，余迹交给容器帧</summary>
+        /// <summary>爆点，镜头冲击 + 双层声 + 贝壳状断口玻璃片四射，余迹交给容器帧</summary>
         private void Burst() {
             Punch(Owner, 5f);
             SoundEngine.PlaySound(SoundID.Shatter with { Volume = 0.6f }, Projectile.Center);
@@ -459,7 +455,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             rings.Add(new ShockRing(Projectile.Center, 150f, 12f, RingGlow, 1f, 20, 40));
             rings.Add(new ShockRing(Projectile.Center, 80f, 8f, EmberWarm * 0.5f, 1f, 26, 32));
 
-            //贝壳状断口主碎片：向轨道外侧偏置迸射，慢放帧急停后再受重力
+            //贝壳状断口主碎片，向轨道外侧偏置迸射
             Vector2 outDir = (Projectile.Center - Owner.Center).SafeNormalize(-Vector2.UnitY);
             for (int i = 0; i < 16; i++) {
                 Vector2 vel = outDir.RotatedByRandom(1.1f) * Main.rand.NextFloat(7f, 14f)
@@ -487,7 +483,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , Main.rand.NextVector2Circular(1.4f, 1.4f) - Vector2.UnitY * 0.6f
                     , new Color(52, 34, 40), Main.rand.NextFloat(0.8f, 1.2f))?.Configure(30, 0.5f, 0.04f);
             }
-            //悬浮微尘：碎裂后慢慢飘落的玻璃闪点，比本体活得久
+            //悬浮微尘，碎裂后慢慢飘落的玻璃闪点
             for (int i = 0; i < 5; i++) {
                 PRTLoader.NewParticle<PRT_Sparkle>(Projectile.Center + Main.rand.NextVector2Circular(26f, 20f)
                     , new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(0.2f, 0.6f))
@@ -497,7 +493,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //磕碰应力：矿脉短暂发热
+            //磕碰应力，矿脉短暂发热
             crackHeat = MathHelper.Min(1f, crackHeat + 0.35f);
             if (Main.dedServ) {
                 return;
@@ -541,7 +537,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             bool bodyVisible = State != FishState.Shattering || StateTimer <= CrackFreezeFrames;
 
             if (bodyVisible) {
-                //暗色玻璃拖影：残影链只在真的在动时出现，快则浓
+                //暗色玻璃拖影
                 if (State != FishState.Gathering) {
                     float smear = MathHelper.Clamp(followVel.Length() / 6f, 0f, 1f);
                     for (int i = 1; i < 6 && i < Projectile.oldPos.Length; i++) {
@@ -586,7 +582,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
                 }
                 else {
-                    //CPU 回退：压暗剪影 + 单层紫泽 + 应力余温，缺 .fxc 时不至于黑块或裸贴图
+                    //CPU 回退
                     float emberAmt = MathHelper.Clamp(crackPulse + crackHeat * 0.6f + FreezeRamp, 0f, 1f);
                     Color body = Color.Lerp(lightColor, GlassDeep, 0.72f);
                     body = Color.Lerp(body, Color.Black, (1f - (depth * 0.5f + 0.5f)) * 0.35f);
@@ -632,7 +628,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
-        /// 加色三角带圆环（真正的顶点绘制）。须在外部已 Begin 的 Immediate/Additive 批次中调用，
+        /// 加色三角带圆环（真正的顶点绘制），须在外部已 Begin 的 Immediate/Additive 批次中调用
         /// 由该批次为设备绑定精灵着色器；颜色由内/外环顶点插值，<paramref name="squash"/> 做地面透视压扁
         /// </summary>
         public static void DrawShockRing(Texture2D tex, Vector2 screenCenter, float radius, float thickness
@@ -666,8 +662,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
-        /// 可复用的顶点冲击波环：随生命扩张、变薄、淡出，可压扁成贴地椭圆。
-        /// 由弹幕维护实例列表，AI 内 <see cref="Update"/>，绘制时在 Immediate/Additive 批次内 <see cref="Draw"/>。
+        /// 可复用的顶点冲击波环，随生命扩张、变薄、淡出，可压扁成贴地椭圆
+        /// 由弹幕维护实例列表，AI 内 <see cref="Update"/>，绘制时在 Immediate/Additive 批次内 <see cref="Draw"/>
         /// </summary>
         public sealed class ShockRing
         {

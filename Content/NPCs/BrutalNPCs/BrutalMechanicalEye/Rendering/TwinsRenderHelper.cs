@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
 {
-    /// <summary>双子魔眼绘制辅助：蓄力特效、本体/残影、热感滤镜</summary>
+    /// <summary>绘制辅助，蓄力/本体残影/热感</summary>
     internal static class TwinsRenderHelper
     {
         #region 蓄力特效
@@ -20,15 +20,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
             Texture2D circleTex = CWRAsset.DiffusionCircle.Value;
 
-            //根据蓄力类型选择颜色
             Color chargeColor = GetChargeColor(context.ChargeType);
 
             spriteBatch.End();
 
-            //能量汇聚涡(着色器):所有蓄力的公共基底层，螺旋臂向心卷吸
+            //能量汇聚涡
             DrawChargeVortex(spriteBatch, context, chargeColor);
 
-            //开启叠加混合模式
             spriteBatch.Begin(
                 SpriteSortMode.Deferred,
                 BlendState.Additive,
@@ -39,68 +37,54 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 Main.GameViewMatrix.TransformationMatrix
             );
 
-            //绘制内圈光晕
             DrawGlowEffect(glowTex, drawPos, chargeColor, context.ChargeProgress);
 
-            //绘制扩散圆环
             DrawCircleEffect(circleTex, drawPos, chargeColor, context.ChargeProgress);
 
-            //如果是扇形激光蓄力，绘制攻击方向预警线
             if (context.ChargeType == 2 && context.Target != null && context.ChargeProgress > 0.3f) {
                 DrawAimLine(context, chargeColor);
             }
 
-            //如果是激光扫射蓄力，绘制扫射范围预警
             if (context.ChargeType == 4 && context.Target != null && context.ChargeProgress > 0.4f) {
                 DrawSweepWarning(context, chargeColor);
             }
 
-            //如果是转阶段蓄力，绘制能量聚集特效
             if (context.ChargeType == 5 && context.ChargeProgress > 0.3f) {
                 DrawPhaseTransitionEffect(context, chargeColor);
             }
 
-            //如果是聚焦光束蓄力，绘制锁定指示器
             if (context.ChargeType == 6 && context.Target != null && context.ChargeProgress > 0.2f) {
                 DrawFocusedBeamIndicator(context, chargeColor);
             }
 
-            //如果是激光矩阵蓄力，绘制矩阵网格
             if (context.ChargeType == 7 && context.ChargeProgress > 0.3f) {
                 DrawLaserMatrixGrid(context, chargeColor);
             }
 
-            //如果是影分身蓄力，绘制分身预警
             if (context.ChargeType == 8 && context.ChargeProgress > 0.2f) {
                 DrawShadowDashIndicator(context, chargeColor);
             }
 
-            //如果是火焰风暴蓄力，绘制风暴预警
             if (context.ChargeType == 9 && context.ChargeProgress > 0.3f) {
                 DrawFlameStormIndicator(context, chargeColor);
             }
 
-            //如果是合击蓄力，绘制双眼连接线
             if (context.ChargeType == 10 && context.ChargeProgress > 0.3f) {
                 DrawCombinedAttackIndicator(context, chargeColor);
             }
 
-            //如果是同步转阶段蓄力，绘制双眼同步特效
             if (context.ChargeType == 11 && context.ChargeProgress > 0.1f) {
                 DrawSyncPhaseTransitionEffect(context, chargeColor);
             }
 
-            //如果是磁暴链锁蓄力，绘制双眼链锁预警线
             if (context.ChargeType == 12 && context.ChargeProgress > 0.15f) {
                 DrawTetherSweepWarning(context, chargeColor);
             }
 
-            //如果是剪刀死光蓄力，绘制射线轨迹预警
             if (context.ChargeType == 13 && context.ChargeProgress > 0.15f) {
                 DrawScissorRayWarning(context, chargeColor);
             }
 
-            //恢复正常混合模式
             spriteBatch.End();
             spriteBatch.Begin(
                 SpriteSortMode.Deferred,
@@ -113,7 +97,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             );
         }
 
-        /// <summary>着色器能量汇聚涡：螺旋吸入场，随蓄力收紧增亮；着色器缺失则跳过</summary>
+        /// <summary>蓄力汇聚涡，缺着色器则跳过</summary>
         private static void DrawChargeVortex(SpriteBatch spriteBatch, TwinsStateContext context, Color chargeColor) {
             if (CalamityOverhaul.Common.EffectLoader.TwinsChargeVortex?.Value == null) {
                 return;
@@ -159,7 +143,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             };
         }
 
-        /// <summary>磁暴链锁预警：双眼之间的脉冲虚线，提示链锁危险区</summary>
+        /// <summary>链锁预警虚线</summary>
         private static void DrawTetherSweepWarning(TwinsStateContext context, Color baseColor) {
             NPC partner = TwinsStateContext.GetPartnerNpc(context.Npc.type);
             if (partner == null || !partner.active) {
@@ -187,7 +171,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             }
         }
 
-        /// <summary>剪刀死光预警：沿当前瞄准方向的长虚线射线轨迹</summary>
+        /// <summary>剪刀死光预警虚线</summary>
         private static void DrawScissorRayWarning(TwinsStateContext context, Color baseColor) {
             Texture2D lineTex = CWRAsset.LightShot.Value;
             Vector2 rayDir = (context.Npc.rotation + MathHelper.PiOver2).ToRotationVector2();
@@ -227,7 +211,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             float circleAlpha = (1f - progress) * 0.8f;
             float circleRotation = Main.GlobalTimeWrappedHourly * 2f;
 
-            //第一个圆环
             Main.EntitySpriteDraw(
                 circleTex,
                 drawPos,
@@ -240,7 +223,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 0
             );
 
-            //第二个反方向旋转的圆环
             Main.EntitySpriteDraw(
                 circleTex,
                 drawPos,
@@ -263,13 +245,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             float spreadAngle = MathHelper.ToRadians(50);
             Texture2D lineTex = CWRAsset.LightShot.Value;
 
-            //绘制扇形边界线
             for (int side = -1; side <= 1; side += 2) {
                 Vector2 lineDir = direction.RotatedBy(spreadAngle / 2 * side);
                 float lineLength = 400f * context.ChargeProgress;
                 Vector2 lineEnd = context.Npc.Center + lineDir * lineLength;
 
-                //绘制虚线效果
                 int segments = (int)(lineLength / 20f);
                 for (int i = 0; i < segments; i++) {
                     float t = i / (float)segments;
@@ -292,7 +272,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             }
         }
 
-        /// <summary>绘制扫射预警范围</summary>
         private static void DrawSweepWarning(TwinsStateContext context, Color baseColor) {
             if (context.Target == null) {
                 return;
@@ -303,7 +282,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
             Texture2D lineTex = CWRAsset.LightShot.Value;
 
-            //绘制扫射范围弧线
             int arcSegments = 20;
             float arcRadius = 300f * context.ChargeProgress;
 
@@ -329,7 +307,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 );
             }
 
-            //绘制扫射方向指示线
             for (int side = -1; side <= 1; side += 2) {
                 Vector2 lineDir = direction.RotatedBy(spreadAngle * side);
                 float lineLength = arcRadius;
@@ -355,13 +332,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             }
         }
 
-        /// <summary>绘制转阶段能量聚集特效</summary>
         private static void DrawPhaseTransitionEffect(TwinsStateContext context, Color baseColor) {
             Vector2 drawPos = context.Npc.Center - Main.screenPosition;
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
             Texture2D circleTex = CWRAsset.DiffusionCircle.Value;
 
-            //根据是魔焰眼还是激光眼调整颜色
             Color eyeColor = context.IsSpazmatism ? Color.OrangeRed : Color.BlueViolet;
             Color mixColor = Color.Lerp(baseColor, eyeColor, context.ChargeProgress);
 
@@ -384,7 +359,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 );
             }
 
-            //绘制中心强光
             float coreScale = 0.5f + context.ChargeProgress * 2f;
             float coreAlpha = context.ChargeProgress * 0.8f;
             Main.EntitySpriteDraw(
@@ -399,7 +373,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 0
             );
 
-            //绘制脉冲波纹
             float pulsePhase = (Main.GlobalTimeWrappedHourly * 3f) % 1f;
             float pulseScale = 1f + pulsePhase * 3f;
             float pulseAlpha = (1f - pulsePhase) * context.ChargeProgress * 0.4f;
@@ -416,7 +389,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             );
         }
 
-        /// <summary>绘制聚焦光束锁定指示器</summary>
         private static void DrawFocusedBeamIndicator(TwinsStateContext context, Color baseColor) {
             if (context.Target == null) {
                 return;
@@ -427,7 +399,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
             Texture2D lineTex = CWRAsset.LightShot.Value;
 
-            //绘制锁定圆环
             float ringScale = 1.5f - context.ChargeProgress * 0.8f;
             float ringAlpha = context.ChargeProgress * 0.7f;
             float ringRotation = Main.GlobalTimeWrappedHourly * 4f;
@@ -446,7 +417,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 );
             }
 
-            //绘制瞄准激光线
             float lineLength = 350f * context.ChargeProgress;
             int segments = (int)(lineLength / 15f);
 
@@ -455,7 +425,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 float segDist = t * lineLength;
                 Vector2 segPos = context.Npc.Center + direction * segDist - Main.screenPosition;
 
-                //闪烁效果
                 float flicker = 0.7f + 0.3f * (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 10f + t * 5f);
                 float alpha = context.ChargeProgress * flicker * (1f - t * 0.5f);
                 float scale = 0.4f + (1f - t) * 0.3f;
@@ -473,12 +442,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 );
             }
 
-            //绘制准心
             if (context.ChargeProgress > 0.5f) {
                 float crosshairAlpha = (context.ChargeProgress - 0.5f) * 2f * 0.6f;
                 Vector2 targetPos = context.Npc.Center + direction * lineLength - Main.screenPosition;
 
-                //四个方向的准心线
                 for (int i = 0; i < 4; i++) {
                     float angle = MathHelper.PiOver2 * i;
                     Vector2 offset = angle.ToRotationVector2() * 20f;
@@ -498,13 +465,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             }
         }
 
-        /// <summary>绘制激光矩阵网格</summary>
         private static void DrawLaserMatrixGrid(TwinsStateContext context, Color baseColor) {
             Vector2 drawPos = context.Npc.Center - Main.screenPosition;
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
             Texture2D circleTex = CWRAsset.DiffusionCircle.Value;
 
-            //绘制中心节点
             float coreAlpha = context.ChargeProgress * 0.5f;
             float coreScale = 0.8f + context.ChargeProgress * 0.5f;
             Main.EntitySpriteDraw(
@@ -519,7 +484,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 0
             );
 
-            //绘制网格连接线
             int gridPoints = 4;
             float gridRadius = 150f * context.ChargeProgress;
             float rotation = Main.GlobalTimeWrappedHourly * 0.5f;
@@ -528,7 +492,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 float angle = MathHelper.TwoPi / gridPoints * i + rotation + MathHelper.PiOver4;
                 Vector2 pointPos = drawPos + angle.ToRotationVector2() * gridRadius;
 
-                //绘制节点
                 float nodeAlpha = context.ChargeProgress * 0.6f;
                 float nodeScale = 0.5f + context.ChargeProgress * 0.3f;
                 float nodePulse = 0.8f + 0.2f * (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 5f + i);
@@ -545,7 +508,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                     0
                 );
 
-                //绘制到中心的连接线
                 int lineSegments = 8;
                 for (int j = 1; j < lineSegments; j++) {
                     float t = j / (float)lineSegments;
@@ -565,7 +527,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                     );
                 }
 
-                //绘制相邻节点连接
                 int nextI = (i + 1) % gridPoints;
                 float nextAngle = MathHelper.TwoPi / gridPoints * nextI + rotation + MathHelper.PiOver4;
                 Vector2 nextPointPos = drawPos + nextAngle.ToRotationVector2() * gridRadius;
@@ -590,7 +551,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 }
             }
 
-            //绘制外圈扩散效果
             if (context.ChargeProgress > 0.6f) {
                 float ringProgress = (context.ChargeProgress - 0.6f) / 0.4f;
                 float ringScale = 1f + ringProgress * 1.5f;
@@ -610,7 +570,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             }
         }
 
-        /// <summary>绘制影分身冲刺指示器</summary>
         private static void DrawShadowDashIndicator(TwinsStateContext context, Color baseColor) {
             Vector2 drawPos = context.Npc.Center - Main.screenPosition;
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
@@ -624,7 +583,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 float angle = MathHelper.TwoPi / shadowCount * i + MathHelper.PiOver2;
                 Vector2 shadowPos = drawPos + angle.ToRotationVector2() * radius;
 
-                //分身轮廓
                 float shadowAlpha = context.ChargeProgress * 0.4f;
                 float shadowScale = 0.6f + context.ChargeProgress * 0.4f;
                 float pulse = 0.7f + 0.3f * (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 4f + i * 2f);
@@ -641,7 +599,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                     0
                 );
 
-                //冲刺方向线
                 if (context.Target != null && context.ChargeProgress > 0.5f) {
                     Vector2 targetPos = context.Target.Center - Main.screenPosition;
                     Vector2 toTarget = (targetPos - shadowPos).SafeNormalize(Vector2.Zero);
@@ -668,7 +625,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 }
             }
 
-            //中心聚集效果
             float coreScale = 1f + context.ChargeProgress * 0.5f;
             float coreAlpha = context.ChargeProgress * 0.6f;
             Main.EntitySpriteDraw(
@@ -684,7 +640,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             );
         }
 
-        /// <summary>绘制火焰风暴指示器</summary>
         private static void DrawFlameStormIndicator(TwinsStateContext context, Color baseColor) {
             if (context.Target == null) {
                 return;
@@ -694,7 +649,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
             Texture2D circleTex = CWRAsset.DiffusionCircle.Value;
 
-            //绘制风暴范围圆
             float stormRadius = 350f * context.ChargeProgress;
             float circleAlpha = context.ChargeProgress * 0.3f;
 
@@ -710,7 +664,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 0
             );
 
-            //绘制旋转火焰点
             int flamePoints = 8;
             float rotation = Main.GlobalTimeWrappedHourly * 3f;
 
@@ -735,7 +688,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 );
             }
 
-            //绘制中心标记
             float centerAlpha = context.ChargeProgress * 0.4f;
             Main.EntitySpriteDraw(
                 glowTex,
@@ -750,7 +702,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             );
         }
 
-        /// <summary>绘制合击指示器</summary>
         private static void DrawCombinedAttackIndicator(TwinsStateContext context, Color baseColor) {
             if (context.Target == null) {
                 return;
@@ -761,7 +712,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
             Texture2D circleTex = CWRAsset.DiffusionCircle.Value;
 
-            //绘制到目标的冲刺线
             Vector2 direction = (targetPos - drawPos).SafeNormalize(Vector2.Zero);
             float distance = Vector2.Distance(drawPos, targetPos);
             float lineLength = distance * context.ChargeProgress;
@@ -771,7 +721,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 float t = i / (float)segments;
                 Vector2 segPos = Vector2.Lerp(drawPos, targetPos, t * context.ChargeProgress);
 
-                //交替颜色(火焰和激光)
                 Color segColor = i % 2 == 0 ? Color.OrangeRed : Color.BlueViolet;
                 float segAlpha = (1f - t) * context.ChargeProgress * 0.5f;
                 float pulse = 0.7f + 0.3f * (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 8f + t * 10f);
@@ -789,13 +738,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 );
             }
 
-            //绘制碰撞点
             if (context.ChargeProgress > 0.5f) {
                 float collisionProgress = (context.ChargeProgress - 0.5f) * 2f;
                 float collisionScale = 0.5f + collisionProgress * 1.5f;
                 float collisionAlpha = collisionProgress * 0.6f;
 
-                //双色碰撞圆
                 Main.EntitySpriteDraw(
                     circleTex,
                     targetPos,
@@ -821,7 +768,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 );
             }
 
-            //本体周围的能量环
             float ringAlpha = context.ChargeProgress * 0.5f;
             float ringScale = 0.8f + context.ChargeProgress * 0.4f;
             Main.EntitySpriteDraw(
@@ -837,17 +783,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             );
         }
 
-        /// <summary>绘制同步转阶段特效</summary>
         private static void DrawSyncPhaseTransitionEffect(TwinsStateContext context, Color baseColor) {
             Vector2 drawPos = context.Npc.Center - Main.screenPosition;
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
             Texture2D circleTex = CWRAsset.DiffusionCircle.Value;
 
-            //根据是魔焰眼还是激光眼调整颜色
             Color eyeColor = context.IsSpazmatism ? Color.OrangeRed : Color.BlueViolet;
             Color mixColor = Color.Lerp(baseColor, eyeColor, 0.7f);
 
-            //多层收缩圆环
             for (int i = 0; i < 4; i++) {
                 float layerProgress = (context.ChargeProgress + i * 0.12f) % 1f;
                 float layerScale = 2.5f - layerProgress * 2f;
@@ -866,7 +809,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 );
             }
 
-            //中心强光
             float coreScale = 0.8f + context.ChargeProgress * 1.5f;
             float coreAlpha = context.ChargeProgress * 0.7f;
             Main.EntitySpriteDraw(
@@ -881,7 +823,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 0
             );
 
-            //能量放射线
             if (context.ChargeProgress > 0.3f) {
                 int rayCount = 8;
                 float rayLength = 100f * (context.ChargeProgress - 0.3f) / 0.7f;
@@ -912,25 +853,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 }
             }
 
-            //寻找另一只眼睛并绘制连接线
             NPC partner = TwinsStateContext.GetPartnerNpc(context.Npc.type);
             if (partner != null && partner.active && context.ChargeProgress > 0.2f) {
                 Vector2 partnerPos = partner.Center - Main.screenPosition;
                 Vector2 midPoint = (drawPos + partnerPos) / 2f;
 
-                //双眼连接线
                 int linkSegments = 12;
                 for (int i = 0; i < linkSegments; i++) {
                     float t = i / (float)(linkSegments - 1);
                     Vector2 linkPos = Vector2.Lerp(drawPos, partnerPos, t);
 
-                    //波动效果
                     Vector2 perpendicular = (partnerPos - drawPos).SafeNormalize(Vector2.Zero);
                     perpendicular = new Vector2(-perpendicular.Y, perpendicular.X);
                     float wave = (float)System.Math.Sin(t * MathHelper.TwoPi * 2f + Main.GlobalTimeWrappedHourly * 5f) * 15f * context.ChargeProgress;
                     linkPos += perpendicular * wave;
 
-                    //交替颜色
                     Color linkColor = i % 2 == 0 ? Color.OrangeRed : Color.BlueViolet;
                     float linkAlpha = context.ChargeProgress * 0.6f * (1f - System.Math.Abs(t - 0.5f) * 0.5f);
                     float pulse = 0.8f + 0.2f * (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 6f + t * 8f);
@@ -948,7 +885,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                     );
                 }
 
-                //中点能量聚集
                 if (context.ChargeProgress > 0.5f) {
                     float midProgress = (context.ChargeProgress - 0.5f) * 2f;
                     float midScale = 0.5f + midProgress * 1f;
@@ -973,7 +909,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
 
         #region 本体绘制
 
-        /// <summary>绘制本体+拖尾；叠 MechBossVisualState 热感滤镜与 DashStretch/AfterimageBoost</summary>
+        /// <summary>本体+拖尾，叠热感与 DashStretch/AfterimageBoost</summary>
         public static void DrawNpcBody(
             SpriteBatch spriteBatch,
             NPC npc,
@@ -990,7 +926,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             float dashStretch = context?.DashStretch ?? 0f;
             float afterimageBoost = context?.AfterimageBoost ?? 0f;
 
-            //速度拉伸:沿面朝轴(冲刺时即运动轴)拉长、横向压扁，幅度跟随速度
+            //速度拉伸 squash
             float speedFactor = MathHelper.Clamp(npc.velocity.Length() / 30f, 0f, 1f);
             float stretchAmount = dashStretch * speedFactor;
             Vector2 scaleVec = new Vector2(
@@ -998,8 +934,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 npc.scale * (1f + stretchAmount * 0.34f)
             );
 
-            //绘制拖尾残影（不套滤镜，让残影保持柔和不抢主体）
-            //冲刺时残影更亮更密，并附带主题色泛光
+            //残影不套滤镜
+            //冲刺残影加亮加密
             Color afterimageTint = Color.White;
             if (afterimageBoost > 0.01f && context != null) {
                 Color theme = context.IsSpazmatism ? new Color(255, 110, 35) : new Color(120, 200, 255);
@@ -1024,12 +960,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
 
             Vector2 mainDrawPos = npc.Center - Main.screenPosition;
 
-            //外圈描边光环，蓄力/冲刺时更显眼
+            //外圈描边
             MechBossThermalRenderer.DrawOutlineHaloByController(
                 spriteBatch, texture, mainDrawPos, frame,
                 drawRotation, origin, npc.scale, effects, npc.whoAmI);
 
-            //本体套机械热感着色器
+            //热感着色器
             float seed = (npc.whoAmI % 64) / 64f;
             bool shaderApplied = MechBossThermalRenderer.BeginThermalShaderByController(
                 spriteBatch, texture, frame, npc.whoAmI, seed);

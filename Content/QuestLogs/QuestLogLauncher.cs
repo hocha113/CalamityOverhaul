@@ -8,18 +8,12 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.QuestLogs
 {
-    /// <summary>任务书启动图标</summary>
     public class QuestLogLauncher
     {
-        //图标位置和大小
         public Rectangle IconRect;
-        //是否悬停
         public bool IsHovered;
-        //图标动画计时器
         private float animTimer;
-        //脉冲动画计时器
         private float pulseTimer;
-        //发光强度
         private float glowIntensity;
 
         public QuestLogLauncher() {
@@ -28,16 +22,12 @@ namespace CalamityOverhaul.Content.QuestLogs
             glowIntensity = 0f;
         }
 
-        /// <summary>更新图标状态</summary>
         public void Update(Vector2 position, bool isOpen) {
-            //更新图标矩形
             int iconSize = 48;
             IconRect = new Rectangle((int)position.X, (int)position.Y, iconSize, iconSize);
 
-            //检测鼠标悬停
             IsHovered = IconRect.Contains(Main.MouseScreen.ToPoint());
 
-            //更新动画计时器
             animTimer += 0.05f;
             if (animTimer > MathHelper.TwoPi) {
                 animTimer -= MathHelper.TwoPi;
@@ -48,12 +38,10 @@ namespace CalamityOverhaul.Content.QuestLogs
                 pulseTimer -= MathHelper.TwoPi;
             }
 
-            //更新发光强度
             float targetGlow = (isOpen && IsHovered) ? 1f : 0f;
             glowIntensity = MathHelper.Lerp(glowIntensity, targetGlow, 0.15f);
         }
 
-        /// <summary>绘制图标</summary>
         public void Draw(SpriteBatch spriteBatch, bool isOpen) {
             if (QuestLog.QuestLogStart == null || QuestLog.QuestLogStart.Value == null) {
                 return;
@@ -61,7 +49,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
             Texture2D iconTexture = QuestLog.QuestLogStart.Value;
 
-            //帧 0 关 / 1 开 / 2 开+悬停
+            //帧0关/1开/2开+悬停
             int frameIndex;
             if (!isOpen) {
                 frameIndex = 0;
@@ -73,11 +61,9 @@ namespace CalamityOverhaul.Content.QuestLogs
                 frameIndex = 1;
             }
 
-            //计算单帧高度
             int frameHeight = iconTexture.Height / 3;
             Rectangle sourceRect = new Rectangle(0, frameHeight * frameIndex, iconTexture.Width, frameHeight);
 
-            //绘制阴影
             Vector2 shadowOffset = new Vector2(3, 3);
             Color shadowColor = Color.Black * 0.6f;
             spriteBatch.Draw(iconTexture, new Vector2(IconRect.X, IconRect.Y) + shadowOffset,
@@ -85,17 +71,15 @@ namespace CalamityOverhaul.Content.QuestLogs
                 new Vector2((float)IconRect.Width / iconTexture.Width, (float)IconRect.Height / frameHeight),
                 SpriteEffects.None, 0f);
 
-            //绘制主图标
             float scale = 1f;
             Color drawColor = Color.White;
 
-            //悬停时的微弱呼吸效果
+            //悬停呼吸
             if (IsHovered) {
                 float breathe = (float)Math.Sin(animTimer * 2f) * 0.05f + 1f;
                 scale *= breathe;
             }
 
-            //计算绘制位置(居中缩放)
             Vector2 drawPos = new Vector2(
                 IconRect.X + IconRect.Width / 2f,
                 IconRect.Y + IconRect.Height / 2f
@@ -105,7 +89,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 new Vector2(iconTexture.Width / 2f, frameHeight / 2f),
                 scale, SpriteEffects.None, 0f);
 
-            //绘制额外的发光效果(当打开且悬停时)
+            //开且悬停时外发光
             if (glowIntensity > 0.01f) {
                 DrawGlowEffect(spriteBatch, iconTexture, sourceRect, drawPos, scale);
             }
@@ -114,7 +98,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
 
         private void DrawNotificationBadge(SpriteBatch spriteBatch) {
-            //未领取奖励节点计数
+            //未领奖励计数
             int unclaimedCount = 0;
             foreach (var quest in QuestNode.AllQuests) {
                 if (quest.HasUnclaimedRewards) {
@@ -128,17 +112,15 @@ namespace CalamityOverhaul.Content.QuestLogs
                 float maxDim = Math.Max(textSize.X, textSize.Y);
                 float bgSize = Math.Max(20, maxDim + 8);
 
-                //红点位置在图标右上角
+                //红点右上角
                 Vector2 badgeCenter = new Vector2(IconRect.Right - 4, IconRect.Top + 4);
                 Rectangle badgeRect = new Rectangle(
                     (int)(badgeCenter.X - bgSize / 2),
                     (int)(badgeCenter.Y - bgSize / 2),
                     (int)bgSize, (int)bgSize);
 
-                //使用着色器绘制高质感红点
                 DrawShaderBadge(spriteBatch, badgeCenter, bgSize);
 
-                //绘制数字
                 Vector2 textPos = new Vector2(
                     badgeRect.X + badgeRect.Width / 2 - textSize.X / 2,
                     badgeRect.Y + badgeRect.Height / 2 - textSize.Y / 2);
@@ -173,7 +155,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                     RasterizerState.CullNone, null, Main.UIScaleMatrix);
             }
             else {
-                //着色器不可用时的降级绘制
+                //无着色器降级
                 DrawFallbackBadge(spriteBatch, center, size);
             }
         }
@@ -182,7 +164,6 @@ namespace CalamityOverhaul.Content.QuestLogs
             Texture2D px = VaultAsset.placeholder2.Value;
             float pulse = MathF.Sin(pulseTimer * 2f) * 0.5f + 0.5f;
 
-            //外层辉光
             float glowSize = size * 1.6f;
             Rectangle glowRect = new Rectangle(
                 (int)(center.X - glowSize / 2),
@@ -190,12 +171,11 @@ namespace CalamityOverhaul.Content.QuestLogs
                 (int)glowSize, (int)glowSize);
             spriteBatch.Draw(px, glowRect, new Color(200, 30, 20) * (0.2f + pulse * 0.1f));
 
-            //主体红点
             Rectangle mainRect = new Rectangle(
                 (int)(center.X - size / 2),
                 (int)(center.Y - size / 2),
                 (int)size, (int)size);
-            //渐变分段模拟立体感
+            //分段渐变立体
             int segs = 6;
             for (int i = 0; i < segs; i++) {
                 float t = i / (float)segs;
@@ -210,24 +190,20 @@ namespace CalamityOverhaul.Content.QuestLogs
                 spriteBatch.Draw(px, new Rectangle(mainRect.X, y1, mainRect.Width, Math.Max(1, y2 - y1)), c);
             }
 
-            //顶部高光
             spriteBatch.Draw(px,
                 new Rectangle(mainRect.X + 3, mainRect.Y + 1, mainRect.Width - 6, 2),
                 new Color(255, 180, 160) * 0.5f);
         }
 
         private void DrawGlowEffect(SpriteBatch spriteBatch, Texture2D texture, Rectangle sourceRect, Vector2 position, float baseScale) {
-            //绘制多层外发光
             int glowLayers = 3;
             for (int i = 0; i < glowLayers; i++) {
                 float layerScale = baseScale * (1.2f + i * 0.15f);
                 float layerAlpha = glowIntensity * (0.4f - i * 0.1f);
 
-                //使用脉冲效果
                 float pulse = (float)Math.Sin(pulseTimer + i * 0.5f) * 0.5f + 0.5f;
                 layerAlpha *= pulse;
 
-                //橙色发光
                 Color glowColor = new Color(255, 180, 100) * layerAlpha;
 
                 spriteBatch.Draw(texture, position, sourceRect, glowColor, 0f,
@@ -236,7 +212,6 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
         }
 
-        /// <summary>播放点击音效</summary>
         public void PlayClickSound(bool isOpening) {
             SoundEngine.PlaySound(isOpening ? CWRSound.ButtonZero with { Pitch = 0.1f, Volume = 0.6f } : CWRSound.ButtonZero with { Pitch = -0.1f, Volume = 0.6f });
         }

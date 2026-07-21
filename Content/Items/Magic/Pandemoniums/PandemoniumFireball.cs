@@ -7,15 +7,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    /// <summary>
-    /// 混沌魔能火球
-    /// </summary>
+    /// <summary>混沌火球</summary>
     internal class PandemoniumFireball : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
         private bool exploded = false;
         private ref float DelayTimer => ref Projectile.ai[0];
-        private ref float ClusterMode => ref Projectile.ai[1]; //0=普通 1=集束模式
+        private ref float ClusterMode => ref Projectile.ai[1]; //0=普通 1=集束
         private bool initialized = false;
         private Vector2 targetVelocity;
         private Vector2 targetPosition;
@@ -39,7 +37,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 Projectile.velocity = Vector2.Zero;
                 DelayTimer--;
 
-                //延迟期间的充能效果 - 集束模式更强
                 int chargeFreq = ClusterMode == 1 ? 1 : 2;
                 if (Main.rand.NextBool(chargeFreq)) {
                     Color chargeColor = ClusterMode == 1 ? Color.Gold : Color.OrangeRed;
@@ -48,7 +45,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     d.noGravity = true;
                 }
 
-                //集束模式：充能期间向目标位置移动
                 if (ClusterMode == 1 && DelayTimer < 40) {
                     Vector2 toTarget = (targetPosition - Projectile.Center).SafeNormalize(Vector2.Zero);
                     Projectile.Center += toTarget * 2f;
@@ -61,18 +57,15 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 initialized = true;
                 targetVelocity = Projectile.velocity;
 
-                //集束模式：记录目标位置
                 if (ClusterMode == 1) {
                     targetPosition = Projectile.Center;
                 }
             }
 
-            //加速发射
             float accelSpeed = ClusterMode == 1 ? 18f : 15f;
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, targetVelocity.SafeNormalize(Vector2.Zero) * accelSpeed, 0.1f);
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
-            //增强拖尾效果
             for (int i = 0; i < 3; i++) {
                 Vector2 offset = Projectile.velocity.SafeNormalize(Vector2.Zero) * -i * 8f;
                 Color dustColor = ClusterMode == 1 ?
@@ -84,7 +77,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 d.velocity = Main.rand.NextVector2Circular(1.5f, 1.5f);
             }
 
-            //火焰粒子
             if (Main.rand.NextBool(1)) {
                 Color flameColor = ClusterMode == 1 ? Color.Gold : Color.OrangeRed;
                 Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Torch,
@@ -92,12 +84,11 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 d.noGravity = true;
             }
 
-            //集束模式：到达目标位置后等待一起爆炸
+            //集束到位后齐爆
             if (ClusterMode == 1 && Projectile.Distance(targetPosition) < 50f) {
                 Projectile.velocity *= 0.9f;
                 Projectile.tileCollide = false;
 
-                //等待其他火球到位
                 if (Projectile.timeLeft > 60) {
                     Projectile.timeLeft = 60;
                 }
@@ -126,7 +117,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             if (exploded) return;
             exploded = true;
 
-            //集束模式：更大的爆炸范围
             int explosionSize = ClusterMode == 1 ? 400 : 300;
             Projectile.position = Projectile.Center;
             Projectile.width = Projectile.height = explosionSize;
@@ -136,7 +126,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             SoundEngine.PlaySound(SoundID.Item74 with { Volume = 1.2f, Pitch = -0.5f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 0.8f, Pitch = -0.3f }, Projectile.Center);
 
-            //强化爆炸粒子
             int particleCount = ClusterMode == 1 ? 120 : 80;
             for (int i = 0; i < particleCount; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(15f, 15f);
@@ -156,7 +145,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 d.noGravity = true;
             }
 
-            //火环效果
             int ringCount = ClusterMode == 1 ? 45 : 30;
             for (int i = 0; i < ringCount; i++) {
                 float angle = MathHelper.TwoPi * i / ringCount;
@@ -166,7 +154,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 d.noGravity = true;
             }
 
-            //集束模式：爆炸后产生二次爆炸
             if (ClusterMode == 1 && Projectile.owner == Main.myPlayer) {
                 for (int i = 0; i < 6; i++) {
                     float angle = MathHelper.TwoPi * i / 6f;
@@ -181,8 +168,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                         (int)(Projectile.damage * 0.5f),
                         Projectile.knockBack * 0.5f,
                         Projectile.owner,
-                        0, //无延迟
-                        0  //普通模式
+                        0,//无延迟
+                        0 //普通
                     );
                 }
             }
@@ -197,7 +184,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             float time = Main.GlobalTimeWrappedHourly;
             float pulse = (float)Math.Sin(time * 25f) * 0.5f + 0.5f;
 
-            //集束模式：金色调
             Color c1, c2, c3, c4;
             if (ClusterMode == 1) {
                 c1 = new Color(255, 250, 200, 0);

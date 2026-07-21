@@ -4,9 +4,7 @@ using System;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.Quest
 {
-    /// <summary>
-    /// 硫磺海/老公爵委托在管理器列表中的自定义条目样式： 深绿毒雾背景、酸液脉冲边框、毒绿色标题、 角落气泡装饰
-    /// </summary>
+    /// <summary>硫磺海委托列表样式</summary>
     internal class SulfseaEntryStyle : IEntrustEntryStyle
     {
         #region 色板
@@ -37,7 +35,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Quest
             bool isSelected, bool isHovered, float alpha) {
             var px = VaultAsset.placeholder2.Value;
 
-            //纵向渐变背景
             int segs = 8;
             for (int i = 0; i < segs; i++) {
                 float t = i / (float)segs;
@@ -53,23 +50,19 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Quest
                     new Rectangle(0, 0, 1, 1), c);
             }
 
-            //瘴气脉冲叠加
             float miasma = MathF.Sin(pulseTimer * 1.5f) * 0.5f + 0.5f;
             Color miasmaColor = AccentBubble * (alpha * 0.05f * miasma);
             sb.Draw(px, entryRect, new Rectangle(0, 0, 1, 1), miasmaColor);
 
-            //左侧酸液色带 (3px)
+            //左酸液带3px
             Color statusColor = GetAccentColor(entry.Status, alpha);
             sb.Draw(px, new Rectangle(entryRect.X, entryRect.Y + 2, 3, entryRect.Height - 4),
                 new Rectangle(0, 0, 1, 1), statusColor);
 
-            //边框
             float borderGlow = MathF.Sin(shimmerPhase) * 0.3f + 0.7f;
             Color borderC = Color.Lerp(BorderBase, BorderGlow, borderGlow) * (alpha * 0.5f);
-            //顶部
             sb.Draw(px, new Rectangle(entryRect.X, entryRect.Y, entryRect.Width, 1),
                 new Rectangle(0, 0, 1, 1), borderC);
-            //底部
             sb.Draw(px, new Rectangle(entryRect.X, entryRect.Bottom - 1, entryRect.Width, 1),
                 new Rectangle(0, 0, 1, 1), borderC * 0.5f);
 
@@ -78,7 +71,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Quest
 
         public float DrawEntryIcon(SpriteBatch sb, Vector2 titlePos, EntrustEntryData entry, float alpha) {
             var px = VaultAsset.placeholder2.Value;
-            //菱形图标
             float iconX = titlePos.X + 6f;
             float iconY = titlePos.Y + 8f;
             float iconPulse = MathF.Sin(pulseTimer * 2f + 1f) * 0.3f + 0.7f;
@@ -87,7 +79,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Quest
             sb.Draw(px, new Vector2(iconX, iconY), null, iconColor,
                 MathHelper.PiOver4, new Vector2(0.5f), new Vector2(5f), SpriteEffects.None, 0f);
 
-            //外层光晕
             Color glowC = AccentBubble * (alpha * iconPulse * 0.3f);
             sb.Draw(px, new Vector2(iconX, iconY), null, glowC,
                 MathHelper.PiOver4, new Vector2(0.5f), new Vector2(9f), SpriteEffects.None, 0f);
@@ -98,7 +89,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Quest
         public void DrawEntryOverlay(SpriteBatch sb, Rectangle entryRect, EntrustEntryData entry, float alpha) {
             var px = VaultAsset.placeholder2.Value;
 
-            //角落气泡装饰
             float ornAlpha = alpha * (0.35f + MathF.Sin(pulseTimer * 1.2f) * 0.25f);
             Color ornC = AccentBubble * ornAlpha;
             Vector2[] corners = [

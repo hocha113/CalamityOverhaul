@@ -67,9 +67,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.YharonQuest
         }
     }
 
-    /// <summary>
-    /// 追踪玩家使用鬼面刀击杀焚世龙
-    /// </summary>
+    /// <summary>鬼面刀击杀焚世龙追踪</summary>
     internal class YharonQuestTracker : BaseDamageTracker
     {
         internal const float REQUIRED_CONTRIBUTION = 0.75f;

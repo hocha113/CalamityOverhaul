@@ -16,7 +16,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>机械场景 ModSceneEffect</summary>
+    /// <summary>机械场景Effect</summary>
     internal class MachineSceneEffect : ModSceneEffect
     {
         public override int Music => -1;
@@ -35,14 +35,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
     }
 
-    /// <summary>程序化工业天空着色器，响应 Boss 冲刺/蓄力/死亡演出</summary>
+    /// <summary>工业天空着色器</summary>
     internal class MachineSky : CustomSky, ICWRLoader
     {
         internal static string Name => "CWRMod:MachineSky";
         private bool active;
         private float intensity;
 
-        //Boss行为响应通道（目标值由 MachineEffect 每帧聚合）
+        //Boss行为响应通道
         private float warn;          //蓄力警告 0-1
         private float overload;      //死亡过载 0-1
         private float flash;         //闪电强度，触发后指数衰减
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
             SkyManager.Instance[Name] = this;
 
-            //暗红工业滤镜（保持恒定，行为响应只发生在天空背景着色器内）
+            //暗红工业滤镜
             Filters.Scene[Name] = new Filter(new ScreenShaderData("FilterMiniTower")
                 .UseColor(0.15f, 0.08f, 0.08f)
                 .UseOpacity(0.4f), EffectPriority.High);
@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
 
-            //平滑跟随聚合目标；闪电为瞬时脉冲 + 快速指数衰减
+            //跟随聚合目标
             warn = MathHelper.Lerp(warn, MachineEffect.SkyWarnTarget, 0.10f);
             overload = MathHelper.Lerp(overload, MachineEffect.SkyOverloadTarget, 0.08f);
             if (MachineEffect.ConsumeSkyFlash(out float newFlashX, out float newStrength)) {
@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             Effect shader = EffectLoader.MechSky?.Value;
             if (shader == null) {
-                //着色器缺失时回退为纯色叠加，氛围不至于完全丢失
+                //缺着色器纯色回退
                 spriteBatch.Draw(
                     VaultAsset.placeholder2.Value,
                     new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override Color OnTileColor(Color inColor) {
-            //仅保留恒定的暗红工业调，闪电等行为响应不介入世界照明，避免不自然的全图亮度跳变
+            //世界照明只保留暗红工业调
             if (intensity <= 0.1f) {
                 return inColor;
             }
@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
     }
 
-    /// <summary>机械场景 ModSystem：激活判定、网络同步、音乐与天空行为聚合；闪电经 TriggerSkyFlash；警报/过载经 ReportSkyMood</summary>
+    /// <summary>机械场景System，天空聚合</summary>
     internal class MachineEffect : ModSystem
     {
         public static bool IsActive;
@@ -241,9 +241,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         #region 天空行为响应
-        /// <summary>蓄力警告聚合目标：本帧所有机械Boss中最强的警告强度，驱动天空地平线警报</summary>
+        /// <summary>蓄力警告聚合</summary>
         public static float SkyWarnTarget { get; private set; }
-        /// <summary>死亡过载聚合目标：任一机械Boss进入死亡演出时为1，驱动天空过载电涌</summary>
+        /// <summary>死亡过载聚合</summary>
         public static float SkyOverloadTarget { get; private set; }
         private static float warnAccum;
         private static float overloadAccum;
@@ -251,7 +251,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private static float skyFlashX = 0.5f;
         private static float skyFlashStrength = 1f;
 
-        /// <summary>AI 关键帧呼唤天空闪电；仅客户端</summary>
+        /// <summary>天空闪电，客户端</summary>
         public static void TriggerSkyFlash(Vector2 worldPosition, float strength = 1f) {
             if (VaultUtils.isServer || !IsActive) {
                 return;
@@ -266,7 +266,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 (worldPosition.X - Main.screenPosition.X) / Main.screenWidth, 0.12f, 0.88f);
         }
 
-        /// <summary>消费一次天空闪电（MachineSky.Update 调用）</summary>
+        /// <summary>消费天空闪电</summary>
         public static bool ConsumeSkyFlash(out float screenX, out float strength) {
             screenX = skyFlashX;
             strength = skyFlashStrength;
@@ -277,7 +277,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return true;
         }
 
-        /// <summary>MechBossVisualState.Push 转发聚合；死亡演出 intensity≥0.99</summary>
+        /// <summary>Push转发聚合</summary>
         internal static void ReportSkyMood(MechBossVisualMode mode, float intensity, float progress) {
             if (VaultUtils.isServer || mode != MechBossVisualMode.Warning) {
                 return;
@@ -288,7 +288,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        //每帧末闩锁提交本帧聚合值并清零；Boss死亡或离场停止推送时自然归零
+        //帧末提交聚合并清零
         private static void LatchSkyMood() {
             SkyWarnTarget = warnAccum;
             SkyOverloadTarget = overloadAccum;

@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
 {
-    /// <summary>永恒燃烧的如今，比目鱼缺席的差分版本</summary>
+    /// <summary>永恒燃烧的如今，无比目鱼差分</summary>
     internal sealed class EternalBlazingNowNoHelen : NarrativeScenario, ILocalizedModType
     {
         public string LocalizationCategory => "ADV";

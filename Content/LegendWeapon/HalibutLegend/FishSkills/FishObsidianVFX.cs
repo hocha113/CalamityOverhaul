@@ -8,17 +8,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>黑曜石鱼专属演出资产</summary>
     internal class FishObsidianAssets
     {
-        /// <summary>鱼体火山玻璃单趟着色：剪影压暗 + 轮廓窄镜面随光向扫动 + 紫黑偏光 + 余温矿脉</summary>
+        /// <summary>鱼体火山玻璃单趟着色，剪影压暗 + 轮廓窄镜面随光向扫动 + 紫黑偏光 + 余温矿脉</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect FishObsidianGloss { get; private set; }
     }
 
-    /// <summary>
-    /// 黑曜石玻璃碎片：暗色近剪影的锐利薄片，贝壳状断口迸射后受重力翻滚下坠。<br/>
-    /// 自旋用旋转拖影表达（位置残影表达不了自旋），翻滚中棱面周期性正对视线迸出紫白爆闪。<br/>
-    /// <see cref="Configure"/> 的 slowMoFrames 给爆裂慢放帧：先全速出膛再强阻尼急停，读作碎裂瞬间的时间凝滞。<br/>
-    /// 贴图 Extra_98 带真 alpha，默认 AlphaBlend 直绘安全；爆闪层用 A=0 颜色在同批次内做加色
-    /// </summary>
+    /// <summary>黑曜石玻璃碎片，贝壳断口翻滚；slowMoFrames 慢放；Extra_98 AlphaBlend，爆闪 A=0</summary>
     internal class PRT_FishObsidianShard : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -70,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void AI() {
             if (slowFrames > 0) {
-                //慢放帧：强阻尼把爆速立刻压下来，之后才交还给重力
+                //慢放帧，强阻尼把爆速立刻压下来
                 slowFrames--;
                 Velocity *= 0.82f;
             }

@@ -5,9 +5,6 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
 {
-    /// <summary>
-    /// 闪电效果
-    /// </summary>
     internal class LightningBolt
     {
         public Vector2 StartPos;
@@ -74,16 +71,13 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
         }
     }
 
-    /// <summary>
-    /// 爆炸冲击波
-    /// </summary>
     internal class ExplosionWave
     {
         public Vector2 Center;
         public float Radius;
-        public float MaxRadius = 1000f;//缩小最大半径
+        public float MaxRadius = 1000f;
         public int Life;
-        public int MaxLife = 35;//缩短持续时间
+        public int MaxLife = 35;
         public Color WaveColor;
         public float StartDelay;
 
@@ -113,7 +107,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             if (alpha <= 0.05f) return;
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            int segments = 60;//减少分段数
+            int segments = 60;
             float angleStep = MathHelper.TwoPi / segments;
 
             for (int i = 0; i < segments; i++) {
@@ -145,9 +139,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
         }
     }
 
-    /// <summary>
-    /// 冲击火花
-    /// </summary>
     internal class ImpactSpark
     {
         public Vector2 Position;

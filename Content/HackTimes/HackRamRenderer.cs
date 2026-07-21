@@ -11,39 +11,30 @@ namespace CalamityOverhaul.Content.HackTimes
     internal class HackRamRenderer
     {
         private float timer;
-        //飞入动画进度(0~1)
-        private float flyInProgress;
-        //平滑显示RAM值（视觉过渡用）
-        private float displayRam;
-        /// <summary>悬停协议的预扣RAM，0为无预览，HackTimeUI 每帧写入</summary>
+        private float flyInProgress;//0~1
+        private float displayRam;//视觉平滑
+        /// <summary>悬停协议预扣 RAM，0 无预览，HackTimeUI 写入</summary>
         public int PreviewCost;
 
-        //弧线几何常量
-        //弧线内径
+        //弧线几何
         private const float InnerR = 560f;
-        //弧线厚度
         private const float ArcThick = 24f;
-        //弧线外径
         private const float OuterR = InnerR + ArcThick;
-        //弧顶距屏幕顶部
+        //弧顶距屏顶
         private const float TopY = 76f;
-        //格间间隙弧度
         private const float CellGap = 0.007f;
-        //单格基准角度，8 格对应旧 400px 跨度
+        //单格基准角，8 格≈旧 400px
         //BaseCellAngle ≈ (asin(200/572)*2 - 7*CellGap)/8 ≈ 0.0826 rad
         private const float BaseCellAngle = 0.0826f;
-        //最大总扫掠角，防顶端横向溢出
-        //≈ π/2，ArcSpanPx ≈ 808px，容纳 16 格拉伸
+        //最大扫掠，防顶端溢出；≈π/2，约 16 格
         private const float MaxTotalSweep = MathHelper.PiOver2;
 
-        //外围装饰环
         private const float DecoGap = 6f;
         private const float DecoR = OuterR + DecoGap;
-        //内侧装饰环
         private const float InnerDecoGap = 5f;
         private const float InnerDecoR = InnerR - InnerDecoGap;
 
-        //字体：中文/关键读数不低于 0.55
+        //中文/关键读数不低于 0.55
         private const float FTitle = 0.60f;
         private const float FValue = 0.74f;
         private const float FWarn = 0.58f;
@@ -136,7 +127,7 @@ namespace CalamityOverhaul.Content.HackTimes
             float current = displayRam;
             if (current <= 0.01f) return;
 
-            //从顶部往下扣：闪烁 [spendFrom, current] 区段
+            //自上扣，闪烁 [spendFrom, current]
             float spendFrom = current - PreviewCost;
             bool affordable = RamSystem.CanAfford(PreviewCost);
             if (!affordable) spendFrom = 0f;
@@ -540,7 +531,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 new Vector2((int)(center.X - valSize.X * 0.5f), (int)(baseY + 22)),
                 valColor * alpha, FValue);
 
-            //装饰十六进制：无描边淡字
+            //装饰十六进制，无描边
             string hex = $"0x{(int)(timer * 60) % 0xFFFF:X4}";
             Vector2 hexSize = FontAssets.MouseText.Value.MeasureString(hex) * FHex;
             HackTheme.DrawRawText(sb, hex,

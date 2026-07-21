@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 光学定位闪：鱼位物化耀斑 + 蓄束收束指示，中心模式(-1)为施法涟漪。<br/>
+    /// 光学定位闪，鱼位物化耀斑 + 蓄束收束指示，中心模式(-1)为施法涟漪<br/>
     /// 层次 = SoftGlow 压底 / 沿束拉丝 / 星芒核 / 环几何，弃用裸光球本体
     /// </summary>
     internal class SparklingSpawnEffect : ModProjectile
@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void OnSpawn(IEntitySource source) {
             seed = Main.rand.NextFloat(10000f);
             if (Index < 0) {
-                //施法涟漪：外放火花 + 少量缓浮微尘余韵
+                //施法涟漪
                 for (int i = 0; i < 10; i++) {
                     float rot = MathHelper.TwoPi * i / 10f;
                     Vector2 vel = rot.ToRotationVector2() * Main.rand.NextFloat(3f, 6.5f);
@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 SparklingVFX.SpawnIonBurst(Projectile.Center, -Vector2.UnitY, Hue, 4);
             }
             else {
-                //鱼位物化：光向内凝聚成点
+                //鱼位物化，光向内凝聚成点
                 SparklingVFX.SpawnConvergeSparks(Projectile.Center, Hue, 8, 46f);
             }
         }
@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float t = 1f - Projectile.timeLeft / (float)LifeTime; //0->1
             Projectile.rotation += 0.03f + 0.04f * MathF.Sin(seed + Main.GlobalTimeWrappedHourly * 5f);
 
-            //中心涟漪：零散缓浮微尘，涟漪散去后仍短暂存续
+            //中心涟漪
             if (Index < 0 && Main.rand.NextBool(6)) {
                 Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(40f + t * 60f, 26f);
                 PRTLoader.NewParticle<PRT_FishSparklingIon>(pos, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 0.6f)
@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (fash.ModProjectile is SparklingFishHolder holder) {
                     hueIndex = holder.FishIndex;
                     fishFired = holder.Fired;
-                    //蓄束窗口：击发前 ChargeLeadFrames 帧内收束渐强(确定性计时，各端一致)
+                    //蓄束窗口
                     int untilFire = holder.FireTime - holder.LocalTimer;
                     chargeT = !fishFired && untilFire > 0 && untilFire <= SparklingFishHolder.ChargeLeadFrames
                         ? 1f - untilFire / (float)SparklingFishHolder.ChargeLeadFrames
@@ -180,7 +180,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Color coreA0 = SparklingVFX.CoreOf(Hue) with { A = 0 };
 
             if (Index < 0) {
-                //施法涟漪：扩散细环 + 横向透镜拉丝 + 小星芒
+                //施法涟漪，扩散细环
                 float t = age / (float)LifeTime;
                 float ringR = MathHelper.Lerp(26f, 150f, VaultUtils.EaseOutCubic(t));
                 float ringAlpha = (1f - t) * 0.75f;
@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return false;
             }
 
-            //鱼位耀斑：压底柔光(仅底层) + 沿束拉丝 + 星芒核
+            //鱼位耀斑，压底柔光(仅底层)
             float energy = (0.4f + 0.6f * chargeT) * fade * (1f + burst * 0.8f);
             Main.spriteBatch.Draw(glow, drawPos, null, hueA0 * (0.32f * energy), 0f
                 , glow.Size() * 0.5f, (0.5f + 0.3f * chargeT) * breath, SpriteEffects.None, 0f);
@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 , Projectile.rotation, flare.Size() * 0.5f
                 , (0.2f + 0.14f * chargeT + 0.22f * burst) * breath, SpriteEffects.None, 0f);
 
-            //蓄束收束环：向内坍缩读出"正在聚束"
+            //蓄束收束环，向内坍缩读出"正在聚束"
             if (chargeT > 0f && !fishFired) {
                 float rs = MathHelper.Lerp(56f, 9f, chargeT) * 2f / ring.Width;
                 Main.spriteBatch.Draw(ring, drawPos, null, hueA0 * (0.85f * chargeT * fade), 0f
@@ -340,7 +340,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 aimToward = owner.Center + AimDirection * 1500f;
                 Projectile.rotation = Projectile.To(aimToward).ToRotation();
 
-                //蓄束提示音：确定性时刻，各端一致，音阶随序号上行
+                //蓄束提示音
                 if (!Fired && fishFireTime - LocalTimer == ChargeLeadFrames) {
                     SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.32f, Pitch = -0.05f + FishIndex * 0.04f }, Projectile.Center);
                 }
@@ -349,7 +349,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (!Fired && untilFire > 0 && untilFire <= ChargeLeadFrames && Main.rand.NextBool(2)) {
                     SparklingVFX.SpawnConvergeSparks(MouthPos, SparklingVFX.BeamHue(FishIndex), 1, 30f);
                 }
-                //击发拍：后坐 + 电离迸发 + 轮射音阶(全端同帧，激光实体仍由持有者权威生成)
+                //击发拍
                 if (LocalTimer == fishFireTime) {
                     recoil = 1f;
                     SoundEngine.PlaySound(SoundID.Item33 with {
@@ -456,7 +456,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float pulseScale = 1f + glowPulse * 0.15f;
             float opacity = 1f - fadeOut;
 
-            //入场物化：缩放展开带轻微过冲，禁pop-in
+            //入场物化
             float matT = MathHelper.Clamp(LocalTimer / 10f, 0f, 1f);
             pulseScale *= VaultUtils.EaseOutCubic(matT) * (1f + 0.12f * MathF.Sin(matT * MathHelper.Pi));
 
@@ -470,7 +470,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             offset -= AimDirection * recoil * 14f;
             drawPosition += offset;
 
-            //离场残影链：速度越快拖越长，读出光速离场而非贴图平移
+            //离场残影链，速度越快拖越长
             float ghostSpeed = lastMove.Length();
             if (ghostSpeed > 3f) {
                 Color ghostCol = hue with { A = 0 };
@@ -497,7 +497,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 友方版本的激光：相干激光三拍节奏，蓄束导引线(无伤害)→击发过冲→束径坍缩离场。<br/>
+    /// 友方版本的激光，相干激光三拍节奏，蓄束导引线(无伤害)→击发过冲→束径坍缩离场<br/>
     /// 束体 = FishSparklingBeam.fx 静态quad三层(暗外晕/饱和单色中层/热芯)；判定线与旧版一致(2400×120)
     /// </summary>
     internal class SparklingRay : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
@@ -557,7 +557,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             age = TotalLife - Projectile.timeLeft;
 
-            //束径包络：导引线16% → 击发快照(轻微过冲) → 满宽 → 坍缩收窄(非alpha渐隐)
+            //束径包络
             if (InCharge) {
                 widthMul = 0.16f;
             }
@@ -581,7 +581,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Lighting.AddLight(Projectile.Center + dir * (i * 160f), Hue.ToVector3() * lightGain);
             }
 
-            //电离微尘沿束蜕散：贴中层束带生成，熄束后仍缓浮存续(aftermath)
+            //电离微尘沿束蜕散，贴中层束带生成
             if (!VaultUtils.isServer && !InCharge && Projectile.timeLeft > DecayTime && Main.rand.NextBool(2)) {
                 Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
                 Vector2 pos = Projectile.Center + dir * Main.rand.NextFloat(50f, 900f) + perp * Main.rand.NextFloat(-9f, 9f);
@@ -594,7 +594,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (VaultUtils.isServer) {
                 return;
             }
-            //命中迸发：顺束向火花 + 电离残迹留在目标处
+            //命中迸发
             Vector2 dir = Projectile.rotation.ToRotationVector2();
             for (int i = 0; i < 4; i++) {
                 PRTLoader.NewParticle<PRT_Spark>(target.Center, dir.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(4f, 8f)
@@ -658,7 +658,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             Vector2 muzzleScreen = Projectile.Center - Main.screenPosition;
 
-            //着色器缺失时的CPU兜底束线：暗晕+单色窄带，效果不至于消失
+            //着色器缺失时的CPU兜底束线
             if (FishSparklingAssets.FishSparklingBeam == null && CWRAsset.Extra_98?.Value is Texture2D line) {
                 Vector2 dir = Projectile.rotation.ToRotationVector2();
                 Vector2 mid = muzzleScreen + dir * (BeamLength * 0.5f);
@@ -671,7 +671,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , new Vector2(0.2f * widthMul, len), SpriteEffects.None, 0f);
             }
 
-            //发射端棱镜耀斑：蓄束期微光，击发过冲期白闪+色散微扇
+            //发射端棱镜耀斑
             float energy = InCharge ? 0.35f : MathHelper.Clamp(widthMul, 0f, 1f);
             SparklingVFX.DrawMuzzleFlare(spriteBatch, muzzleScreen, Projectile.rotation, Hue
                 , energy, overshoot, Main.GlobalTimeWrappedHourly + SeedF * 40f);

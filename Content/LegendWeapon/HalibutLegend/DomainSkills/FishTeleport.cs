@@ -497,11 +497,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             float progress = Life / MaxLife;
 
             if (IsGathering) {
-                //聚拢环：从大到小
+                //聚拢环、从大到小
                 Radius = initialRadius * (1f - progress * 0.8f);
             }
             else {
-                //消散环：从小到大
+                //消散环、从小到大
                 Radius = initialRadius + progress * 100f;
             }
 

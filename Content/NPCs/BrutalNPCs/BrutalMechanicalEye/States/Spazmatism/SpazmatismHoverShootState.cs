@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>一阶段悬停射击：弹簧悬停+预判火球+后坐力</summary>
+    /// <summary>一阶段悬停射击，弹簧悬停+预判火球+后坐力</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismHoverShoot, typeof(TwinsStateContext))]
     internal class SpazmatismHoverShootState : TwinsStateBase
     {
@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         private TwinsStateContext Context;
         private int comboStep;
 
-        /// <summary>一阶段套路：悬停→漩涡→悬停→ dash 准备；comboStep%4==3 交叉冲刺合击</summary>
+        /// <summary>一阶段套路；comboStep%4==3 交叉合击</summary>
         public SpazmatismHoverShootState() : this(0) {
         }
 
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             NPC npc = context.Npc;
             Player player = context.Target;
 
-            //锚点状态:响应搭档发出的合击信号
+            //锚点跟合击信号
             ITwinsState comboFollow = TwinsComboCoordinator.TryFollowSignal(context);
             if (comboFollow != null) {
                 return comboFollow;
@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                     );
                 }
 
-                //后坐力位移:开火瞬间被火球推回
+                //开火后坐
                 npc.velocity -= shootDir * 7f;
                 context.PushDashVisuals(0.25f, 0.3f);
 
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 if (comboStep % 4 == 3 && TwinsStateContext.GetPartnerNpc(npc.type).Alives()) {
                     return TwinsComboCoordinator.InitiateCombo(context, TwinsStateIndex.TwinsCrossDash, comboStep + 1);
                 }
-                //固定交替: 火焰漩涡 → 冲刺准备 → 火焰漩涡 → 冲刺准备...
+                //固定交替
                 if (comboStep % 2 == 0) {
                     return new SpazmatismFireVortexState(comboStep + 1);
                 }

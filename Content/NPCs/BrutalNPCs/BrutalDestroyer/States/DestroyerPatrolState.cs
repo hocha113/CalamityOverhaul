@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>巡空状态：椭圆轨迹盘旋，带高度起伏</summary>
+    /// <summary>巡空，椭圆盘旋+高度起伏</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Patrol, typeof(DestroyerStateContext))]
     internal class DestroyerPatrolState : DestroyerStateBase
     {
@@ -33,19 +33,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             Vector2 patrolTarget = player.Center + new Vector2(offsetX, offsetY);
             SetMovement(context, patrolTarget, speed, turnSpeed);
-            //巡航蛇形摆动：机械蠕虫"游动"姿态
+            //巡航蛇形
             context.SlitherStrength = 1f;
 
             Timer++;
 
             int duration = PatrolDuration(context);
-            //就位提前出招(no dead waiting)：喘息过半且回轨道点附近即开打，保证视野内起手
+            //就位提前出招，视野内起手
             bool positioned = Timer > duration * 0.55f
                 && npc.WithinRange(patrolTarget, 240f)
                 && npc.Distance(player.Center) < 1500f;
 
             if (Timer > duration || positioned) {
-                //只在服务端/单人端进行选择，避免多端desync
+                //只服务端/单人选招
                 if (!VaultUtils.isClient) {
                     return ChooseNextAttack(context);
                 }
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         }
 
         private IDestroyerState ChooseNextAttack(DestroyerStateContext context) {
-            //首次跨过50%血量：出招索引归零，保证激怒环第一招必为轨道绞杀（终结版大招开门见山）
+            //过半血归零出招，激怒首招轨道绞杀
             if (context.IsEnraged && !context.EnrageCycleStarted) {
                 context.EnrageCycleStarted = true;
                 context.AttackPhaseIndex = 0;

@@ -7,9 +7,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests.OldDuchestUIs
 {
-    /// <summary>
-    /// 老箱子UI渲染器 - 木质主题
-    /// </summary>
+    /// <summary>老箱子UI渲染</summary>
     internal class OldDuchestRenderer : BaseChestRenderer
     {
         private readonly OldDuchestAnimation themeAnimation;
@@ -39,27 +37,22 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests.OldDuchestUIs
             Rectangle panelRect = new((int)panelPosition.X, (int)panelPosition.Y, PanelWidth, PanelHeight);
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //阴影
             Rectangle shadow = panelRect;
             shadow.Offset(4, 5);
             spriteBatch.Draw(pixel, shadow, new Rectangle(0, 0, 1, 1),
                 Color.Black * (animation.UIAlpha * 0.45f));
 
-            //深色木质底色
             spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1),
                 new Color(20, 15, 10) * (animation.UIAlpha * 0.95f));
 
-            //木纹纹路
             DrawWoodGrainLines(spriteBatch, panelRect, pixel);
 
-            //暖光脉冲
             float glowPulse = (float)Math.Sin(themeAnimation.GlowTimer) * 0.5f + 0.5f;
             Rectangle innerGlow = panelRect;
             innerGlow.Inflate(-8, -8);
             spriteBatch.Draw(pixel, innerGlow, new Rectangle(0, 0, 1, 1),
                 new Color(160, 100, 40) * (animation.UIAlpha * 0.04f * (0.4f + glowPulse * 0.6f)));
 
-            //边框微光
             float borderPulse = (float)Math.Sin(themeAnimation.DustTimer * 0.8f) * 0.5f + 0.5f;
             Color borderColor = Color.Lerp(
                 new Color(100, 62, 30),
@@ -68,7 +61,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests.OldDuchestUIs
             ) * animation.UIAlpha;
             DrawPanelBorder(spriteBatch, panelRect, borderColor, 2);
 
-            //四角微光
             DrawCornerGlow(spriteBatch, panelRect, glowPulse, pixel);
         }
 
@@ -114,7 +106,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests.OldDuchestUIs
             Vector2 titleSize = font.MeasureString(title);
             Vector2 titlePos = panelPosition + new Vector2(PanelWidth / 2 - titleSize.X / 2 * 1.1f, 15);
 
-            //暖色辉光
             float glow = (float)Math.Sin(themeAnimation.GlowTimer * 1.3f) * 0.5f + 0.5f;
             Color titleGlow = new Color(200, 140, 60) * (animation.UIAlpha * 0.5f * (0.5f + glow * 0.5f));
             for (int i = 0; i < 4; i++) {

@@ -5,9 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Tools
 {
-    ///<summary>
-    ///鱼油 - 可饮用消耗品
-    ///</summary>
+    /// <summary>鱼油</summary>
     internal class Fishoil : ModItem
     {
         public override string Texture => CWRConstant.Item + "Tools/Fishoil";
@@ -19,18 +17,17 @@ namespace CalamityOverhaul.Content.Items.Tools
             Item.useTime = 17;
             Item.useStyle = ItemUseStyleID.DrinkLiquid;
             Item.useTurn = true;
-            Item.UseSound = SoundID.Item3; //饮用声音
+            Item.UseSound = SoundID.Item3;
             Item.maxStack = 9999;
             Item.consumable = true;
             Item.rare = ItemRarityID.Blue;
             Item.value = Item.buyPrice(0, 0, 2, 50);
             Item.buffType = ModContent.BuffType<FishoilBuff>();
-            Item.buffTime = 60 * 60 * 3; //3分钟持续时间
+            Item.buffTime = 60 * 60 * 3;//3分钟
         }
 
         public override bool? UseItem(Player player) {
             if (player.whoAmI == Main.myPlayer) {
-                //生成饮用特效弹幕
                 Projectile.NewProjectile(
                     player.GetSource_ItemUse(Item),
                     player.Center,
@@ -41,34 +38,27 @@ namespace CalamityOverhaul.Content.Items.Tools
                     player.whoAmI
                 );
 
-                //播放特殊音效
                 SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.6f, Pitch = -0.3f }, player.Center);
             }
             return true;
         }
     }
 
-    ///<summary>
-    ///鱼油Buff效果
-    ///</summary>
+    /// <summary>鱼油Buff</summary>
     internal class FishoilBuff : ModBuff
     {
         public override string Texture => CWRConstant.Buff + "FishoilBuff";
 
         public override void SetStaticDefaults() {
-            Main.debuff[Type] = false; //这不是Debuff
-            Main.buffNoSave[Type] = false; //可以保存
-            Main.buffNoTimeDisplay[Type] = false; //显示时间
+            Main.debuff[Type] = false;
+            Main.buffNoSave[Type] = false;
+            Main.buffNoTimeDisplay[Type] = false;
         }
 
         public override void Update(Player player, ref int buffIndex) {
-            //提供多种增益效果
-            player.fishingSkill += 10; //渔力+10
-
-            //水下呼吸
+            player.fishingSkill += 10;//渔力+10
             player.gills = true;
 
-            //轻微发光效果
             if (!Main.dedServ && Main.rand.NextBool(10)) {
                 Dust dust = Dust.NewDustDirect(
                     player.position,
@@ -87,14 +77,12 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
     }
 
-    ///<summary>
-    ///鱼油饮用特效弹幕
-    ///</summary>
+    /// <summary>鱼油饮用特效</summary>
     internal class FishoilDrinkEffect : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        private const int EffectDuration = 90; //特效持续时间
+        private const int EffectDuration = 90;//帧
 
         public override void SetDefaults() {
             Projectile.width = 1;
@@ -120,29 +108,26 @@ namespace CalamityOverhaul.Content.Items.Tools
 
             float progress = Projectile.ai[0] / EffectDuration;
 
-            //阶段1：能量汇聚 (0-30帧)
+            //汇聚0-30
             if (Projectile.ai[0] < 30) {
                 SpawnGatherParticles(owner);
             }
-            //阶段2：能量爆发 (30-60帧)
+            //爆发@30
             else if (Projectile.ai[0] == 30) {
                 SpawnBurstEffect(owner);
             }
 
-            //照明效果
             float lightIntensity = (float)System.Math.Sin(progress * System.Math.PI) * 1.5f;
             Lighting.AddLight(owner.Center,
                 0.4f * lightIntensity,
                 0.8f * lightIntensity,
                 1.0f * lightIntensity);
 
-            //音效
             if (Projectile.ai[0] == 30) {
                 SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.5f, Pitch = 0.3f }, owner.Center);
             }
         }
 
-        //汇聚粒子效果
         private void SpawnGatherParticles(Player owner) {
             if (Projectile.ai[0] % 3 != 0) return;
 
@@ -152,25 +137,20 @@ namespace CalamityOverhaul.Content.Items.Tools
                 Vector2 spawnPos = owner.Center + angle.ToRotationVector2() * distance;
                 Vector2 velocity = (owner.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(3f, 6f);
 
-                //水尘埃
                 Dust dust = Dust.NewDustPerfect(spawnPos, DustID.Water, velocity, 100, new Color(100, 200, 255), 1.2f);
                 dust.noGravity = true;
             }
         }
 
-        //爆发效果
         private void SpawnBurstEffect(Player owner) {
-            //生成环形爆发粒子
             for (int i = 0; i < 32; i++) {
                 float angle = MathHelper.TwoPi * i / 32f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
 
-                //水花尘埃
                 Dust dust = Dust.NewDustPerfect(owner.Center, DustID.Water, velocity, 100, new Color(100, 200, 255), 1.5f);
                 dust.noGravity = true;
             }
 
-            //冲击波尘埃环
             for (int i = 0; i < 50; i++) {
                 float angle = MathHelper.TwoPi * i / 50f;
                 Vector2 dustPos = owner.Center + angle.ToRotationVector2() * 30f;
@@ -178,7 +158,6 @@ namespace CalamityOverhaul.Content.Items.Tools
                 dust.noGravity = true;
             }
 
-            //向上飘浮的气泡
             for (int i = 0; i < 20; i++) {
                 Vector2 bubblePos = owner.Center + Main.rand.NextVector2Circular(owner.width * 0.5f, owner.height * 0.5f);
                 Dust bubble = Dust.NewDustPerfect(bubblePos, DustID.SilverCoin, new Vector2(Main.rand.NextFloat(-1f, 1f), -Main.rand.NextFloat(2f, 4f)), 100, new Color(200, 230, 255), Main.rand.NextFloat(0.8f, 1.5f));
@@ -187,8 +166,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //不绘制弹幕本体，只绘制粒子效果
-            return false;
+            return false;//仅粒子
         }
     }
 }

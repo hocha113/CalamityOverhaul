@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    /// <summary>雪球炮HeldProj基类，开火期存活，子类覆写UpdateGun</summary>
+    /// <summary>雪球炮Held基类，子类覆写UpdateGun</summary>
     internal abstract class BaseSnowCannonHeld : BaseHeldProj
     {
         /// 对应武器ID

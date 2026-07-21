@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>积云枪管：光束留可充能云核，满能降雷雨</summary>
+    /// <summary>积云枪管，光束留云核，满能降雷</summary>
     internal sealed class CumulusBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -24,18 +24,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             ctx.ManaCostMul += 0.30f;
         }
 
-        //同主同时存在的云核数量上限，避免连续光束铺满屏幕导致 GC / 渲染雪崩
+        //同主云核上限
         private const int MaxConcurrentClouds = 6;
-        //同点 200px 内已有云核时跳过本次生成，避免聚簇
+        //同点200px内已有则跳过
         private const float MinSpacing = 200f;
-        //单条光束的生成节奏（间隔帧数）
+        //单束生成间隔帧
         private const int SpawnInterval = 60;
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
             if (beam.IsDerived || beam.Projectile.owner != Main.myPlayer) return;
             if ((Main.GameUpdateCount + (uint)beam.Projectile.whoAmI) % SpawnInterval != 0) return;
             int cloudType = ModContent.ProjectileType<SHPCCumulusNodeProj>();
-            //节流：上限 + 聚簇过滤
+            //上限+间距节流
             if (SHPCNaturalFx.CountOwned(beam.Projectile.owner, cloudType) >= MaxConcurrentClouds) return;
             Vector2 spawnPos = beam.Projectile.Center + Main.rand.NextVector2Circular(30f, 18f);
             if (SHPCNaturalFx.HasOwnedNear(beam.Projectile.owner, cloudType, spawnPos, MinSpacing)) return;
@@ -49,22 +49,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>积云核心：Fog 叠云+充能环，满能主闪+3 支线</summary>
+    /// <summary>积云核，Fog+充能环，满能主闪+3支线</summary>
     internal sealed class SHPCCumulusNodeProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        //BlobCount 5 降绘制成本
+        //Fog 团块数
         private const int BlobCount = 5;
-        //PassiveCharge 扫描节流：每 8 帧才扫一次全弹幕表
+        //充能扫描节流，每8帧
         private const int ChargeScanInterval = 8;
 
-        //云块的固定相对位置/旋转/缩放（首帧 seed 后稳定，避免每帧抖动）
+        //云块布局，首帧 seed 后稳定
         private Vector2[] blobOffsets;
         private float[] blobRotations;
         private float[] blobScales;
         private float seedAngle;
-        //缓存的 PassiveCharge 增量；每 ChargeScanInterval 帧重算一次
+        //PassiveCharge 缓存，按节流重算
         private float cachedChargeRate;
 
         public override void SetDefaults() {
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override bool ShouldUpdatePosition() => false;
 
         public override void AI() {
-            //首帧种子化云块布局
+            //首帧 seed 云块
             if (blobOffsets == null) {
                 seedAngle = Main.rand.NextFloat(MathHelper.TwoPi);
                 blobOffsets = new Vector2[BlobCount];
@@ -95,13 +95,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 }
             }
             Projectile.velocity *= 0.94f;
-            //每 ChargeScanInterval 帧才重算一次 PassiveCharge，避免 N×1000 全弹幕扫描
+            //节流重算 PassiveCharge
             int frame = (int)Main.GameUpdateCount + Projectile.whoAmI;
             if (frame % ChargeScanInterval == 0) {
                 cachedChargeRate = PassiveCharge();
             }
             Projectile.localAI[0] = MathF.Min(Projectile.localAI[0] + cachedChargeRate, 100f);
-            //粒子节流：充能 ≥ 80 时每 8 帧一次预放电；其余每 12 帧一次方块粒子
+            //充能≥80预放电，否则方块粒子
             if (Main.netMode != NetmodeID.Server) {
                 if (Projectile.localAI[0] > 80f && Main.GameUpdateCount % 8 == 0) {
                     PRTLoader.NewParticle<PRT_Sparkle>(Projectile.Center + Main.rand.NextVector2Circular(36f, 18f), Main.rand.NextVector2Circular(0.6f, 0.6f), new Color(220, 240, 255), Main.rand.NextFloat(0.3f, 0.6f)).Configure(new Color(120, 130, 200), Main.rand.Next(10, 20), Main.rand.NextFloat(-0.2f, 0.2f), 0.7f);
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         private float PassiveCharge() {
-            //每 ChargeScanInterval 帧才会调用一次，回报值需放大同等倍数以维持总充能速率
+            //节流调用，回报×间隔保总速率
             float charge = 0.08f;
             int beamType = ModContent.ProjectileType<CyberTraceBeamProj>();
             int orbType = ModContent.ProjectileType<CyberChargeOrbProj>();
@@ -134,14 +134,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         private void ReleaseRain() {
-            //先导主闪电：从云核到下方 220px，使用 CyberDataArc shader（自带噪声折线）
+            //主闪 CyberDataArc，下220px
             int arcDmg = Math.Max(Projectile.damage * 2, 1);
             Projectile.NewProjectile(Projectile.GetSource_FromThis(),
                 Projectile.Center, Vector2.Zero,
                 ModContent.ProjectileType<CyberDataArcProj>(),
                 arcDmg, 0f, Projectile.owner,
                 ai0: Main.rand.NextFloat(-30f, 30f), ai1: 220f);
-            //三道支线 CyberTraceBeam
+            //三道支线
             for (int i = -1; i <= 1; i++) {
                 Vector2 spawn = Projectile.Center + new Vector2(i * 36f, -10f);
                 int idx = Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawn, Vector2.UnitY * 12f,
@@ -154,7 +154,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     beam.SpeedMul = 1.25f;
                 }
             }
-            //云核处与地面落点环
+            //云核/落点环
             if (Main.netMode != NetmodeID.Server) {
                 PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero, new Color(220, 240, 255, 0), 0.05f).Configure(0.05f, 0.7f, 24);
                 PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center + Vector2.UnitY * 220f, Vector2.Zero, new Color(180, 210, 255, 0), 0.05f).Configure(0.05f, 0.55f, 22);
@@ -169,11 +169,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (fog == null || blobOffsets == null) return false;
             Vector2 baseScreen = Projectile.Center - Main.screenPosition;
             float charge01 = MathHelper.Clamp(Projectile.localAI[0] / 100f, 0f, 1f);
-            //云体颜色：基础白，按充能向蓝白渐变
+            //云色随充能偏蓝白
             Color cloudCore = Color.Lerp(new Color(245, 248, 255), new Color(200, 220, 255), charge01);
             Color cloudEdge = Color.Lerp(new Color(160, 165, 175), new Color(110, 130, 180), charge01);
             Vector2 fogOrigin = fog.Size() * 0.5f;
-            //9 个 Fog 团块，每帧轻微飘移
+            //Fog 团块微飘
             float drift = (float)Main.timeForVisualEffects * 0.02f;
             for (int i = 0; i < blobOffsets.Length; i++) {
                 Vector2 offset = blobOffsets[i] + new Vector2(MathF.Sin(drift + i) * 1.6f, MathF.Cos(drift + i * 0.7f) * 1.2f);
@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 Main.spriteBatch.Draw(fog, baseScreen + offset, null, c * 0.95f,
                     blobRotations[i] + drift * 0.3f, fogOrigin, blobScales[i], SpriteEffects.None, 0f);
             }
-            //充能进度环：DiffusionCircle 染上代表充能的色
+            //充能进度环
             Texture2D ring = CWRAsset.DiffusionCircle?.Value;
             if (ring != null && charge01 > 0.05f) {
                 Color ringCol = Color.Lerp(new Color(150, 200, 255), new Color(180, 130, 255), charge01) * (charge01 * 0.7f + 0.2f);
@@ -199,12 +199,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null) return;
             Vector2 baseScreen = Projectile.Center - Main.screenPosition;
-            //充能 ≥ 80 显出辉光（蓝白 → 雷紫）
+            //高充能辉光，蓝白→雷紫
             float t = (charge01 - 0.6f) / 0.4f;
             Color inner = Color.Lerp(new Color(200, 220, 255, 0), new Color(160, 130, 255, 0), t) * t;
             Color outer = Color.Lerp(new Color(80, 110, 180, 0), new Color(60, 30, 130, 0), t) * t * 0.6f;
             SHPCNaturalFx.GlowLayered(spriteBatch, glow, baseScreen, inner, outer, 1.4f + t * 0.5f, 0f, 3);
-            //准发亮电闪烁
+            //准发闪烁
             Texture2D star = CWRAsset.StarTexture?.Value;
             if (star != null && t > 0.65f) {
                 float pulse = 0.6f + 0.4f * MathF.Sin((float)Main.timeForVisualEffects * 0.45f);

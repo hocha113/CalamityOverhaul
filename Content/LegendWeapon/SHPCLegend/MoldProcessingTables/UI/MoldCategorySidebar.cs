@@ -10,9 +10,7 @@ using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.UI
 {
-    /// <summary>
-    /// 模具加工台左侧 6 类别按钮：色条 / 名称 / 碎片计数 / 图鉴进度
-    /// </summary>
+    /// <summary>左侧6类别按钮，色条/碎片/图鉴进度</summary>
     internal static class MoldCategorySidebar
     {
         private const int CategoryCount = SHPCData.SlotCount;

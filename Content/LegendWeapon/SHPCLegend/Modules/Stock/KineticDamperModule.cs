@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>动能阻尼托：命中蓄动能，过半免击退，受击释震地反击</summary>
+    /// <summary>动能阻尼托，命中蓄动能，过半免击退，受击震地反击</summary>
     internal sealed class KineticDamperModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;
@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
 
         public override void OnPlayerUpdate(Player player) {
-            //储备过半：液压锁定，免疫击退
+            //储备过半免击退
             if (kineticCharge >= ChargeCap * 0.5f) {
                 player.noKnockback = true;
             }
@@ -49,14 +49,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 return;
             }
 
-            //受击侦测：生命值下降的瞬间释放反震
+            //生命下降瞬间反震
             if (prevLife > 0 && player.statLife < prevLife && !player.dead
                 && kineticCharge >= ReleaseThreshold) {
                 ReleaseCounter(player);
             }
             prevLife = player.statLife;
 
-            //缓慢泄压，迫使玩家保持输出来维持储备
+            //慢泄压
             kineticCharge = Math.Max(kineticCharge - 0.02f, 0f);
         }
 
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             float chargeRatio = kineticCharge / ChargeCap;
             kineticCharge = 0f;
 
-            //反击伤害以持握武器为基准，按储备比例放大
+            //反击伤按持握武器×储备比例
             Item held = player.HeldItem;
             int weaponDmg = held != null && held.type == SHPCOverride.ID
                 ? player.GetWeaponDamage(held) : 30;
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 if (Main.netMode != NetmodeID.Server) {
                     SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.7f, Pitch = -0.5f }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.NPCHit42 with { Volume = 0.6f, Pitch = -0.6f }, Projectile.Center);
-                    //岩屑飞溅 + 双层热浪环
+                    //岩屑+双层热浪环
                     for (int i = 0; i < 16; i++) {
                         Vector2 vel = Main.rand.NextVector2CircularEdge(7f, 7f) - Vector2.UnitY * 2f;
                         PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, vel,
@@ -137,14 +137,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            //环形波前判定：仅命中位于当前扩张半径附近的目标
+            //环形波前判定
             float dist = Vector2.Distance(Projectile.Center, targetHitbox.Center.ToVector2());
             float radius = CurrentRadius;
             return dist >= radius - 48f && dist <= radius + 48f;
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            //击退方向强制为远离玩家
+            //击退远离玩家
             modifiers.HitDirectionOverride = target.Center.X >= Projectile.Center.X ? 1 : -1;
         }
 
@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             float radius = CurrentRadius;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float scale = radius * 2f / ring.Width;
-            //扩张环：外圈岩金、内圈暗褐，随生命衰减
+            //扩张环，外岩金内暗褐
             spriteBatch.Draw(ring, drawPos, null, WaveMain * lifeRatio * 0.85f, 0f,
                 ring.Size() * 0.5f, scale, SpriteEffects.None, 0f);
             spriteBatch.Draw(ring, drawPos, null, WaveEdge * lifeRatio * 0.5f, 0f,

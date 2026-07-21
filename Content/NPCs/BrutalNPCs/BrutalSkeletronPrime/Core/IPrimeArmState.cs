@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 
         #region 工具方法
 
-        /// <summary>弹簧移动，速度存 PrimeArmStateContext.SpringVelocity 跨状态延续</summary>
+        /// <summary>弹簧移动，SpringVelocity跨状态</summary>
         protected static void SpringMove(PrimeArmStateContext ctx, Vector2 target, float speedMult,
             float stiffness = 0.17f, float damping = 0.83f, float maxSpeed = 29f) {
             Vector2 toTarget = target - ctx.Npc.Center;
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
             ctx.Npc.velocity = velocity;
         }
 
-        /// <summary>伺服转角，WrapAngle 最短弧匀速步进</summary>
+        /// <summary>伺服转角最短弧</summary>
         protected static void ServoRotate(NPC npc, float targetRotation, float maxStep) {
             float diff = MathHelper.WrapAngle(targetRotation - npc.rotation);
             npc.rotation += MathHelper.Clamp(diff, -maxStep, maxStep);
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
             ServoRotate(npc, targetRotation, maxStep);
         }
 
-        /// <summary>平滑瞄准玩家，更新 PrimeArmStateContext.AimDirection 与 npc.rotation（伺服步进）</summary>
+        /// <summary>伺服瞄准玩家</summary>
         protected static void SmoothAim(PrimeArmStateContext ctx, float smoothness) {
             NPC npc = ctx.Npc;
             Vector2 toPlayer = ctx.Target.Center - npc.Center;
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
             }
 
             float targetRotation = ctx.AimDirection.ToRotation() - MathHelper.PiOver2;
-            //后坐力抖动：基于 GameUpdateCount 的确定性正弦，保持两端 npc.rotation 一致
+            //后坐抖动，确定性正弦
             if (ctx.RecoilIntensity > 1f) {
                 float jitter = (float)System.Math.Sin(Main.GameUpdateCount * 0.83f + npc.whoAmI) * 0.1f;
                 targetRotation += jitter * (ctx.RecoilIntensity / 10f);
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
             ServoRotate(npc, targetRotation, smoothness * 1.2f);
         }
 
-        /// <summary>分轴跟随头部锚点，火炮/激光悬浮</summary>
+        /// <summary>分轴跟随头锚</summary>
         protected static void AnchoredFollow(PrimeArmStateContext ctx, float anchorYTop, float anchorYBottom,
             float anchorXLeft, float anchorXRight) {
             NPC npc = ctx.Npc;

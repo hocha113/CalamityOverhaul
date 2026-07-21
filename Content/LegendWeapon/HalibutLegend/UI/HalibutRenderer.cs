@@ -8,7 +8,7 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
     /// <summary>
-    /// 比目鱼 UI 矢量绘制层：1 像素白纹理 + 参数化弧线
+    /// 比目鱼UI矢量层、1px白纹+参数弧
     /// 背板走 HalibutPanel.fx / HalibutAtlasBg.fx，本类绘制线、弧、环、辉光与文字
     /// 结构参考 SHPCRenderer，配色用 <see cref="HalibutTheme"/>
     /// </summary>
@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 珍珠饰点：外晕 + 圆盘 + 左上高光
+        /// 珍珠饰点、外晕+圆盘+左上高光
         /// </summary>
         public static void DrawPearl(SpriteBatch sb, Vector2 center, float radius, Color color, float alpha = 1f) {
             DrawSoftGlow(sb, center, radius * 3.2f, color * (0.40f * alpha));
@@ -191,7 +191,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 圆角饰框：四边直段 + 四角弧 + 顶缘珍珠与扫光
+        /// 圆角饰框、四边+四角弧+顶珍珠扫光
         /// </summary>
         /// <param name="sb">画布</param>
         /// <param name="rect">框体区域</param>
@@ -252,7 +252,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 胶囊按钮：双端圆弧 + 上下描边 + 悬停扫光 + 激活端点
+        /// 胶囊按钮、双端弧+描边+扫光+激活端点
         /// </summary>
         public static void DrawCapsuleButton(SpriteBatch sb, Rectangle rect, string text,
             Color accent, bool hovered, bool active, float alpha, float time) {
@@ -275,7 +275,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             DrawArcStroke(sb, lCap, radius, MathHelper.PiOver2, MathHelper.Pi * 1.5f, 1.1f, border * alpha);
             DrawArcStroke(sb, rCap, radius, -MathHelper.PiOver2, MathHelper.PiOver2, 1.1f, border * alpha);
 
-            //悬停扫光：一道斜光带从左往右循环
+            //悬停扫光、左→右斜光带
             if (hi > 0.05f) {
                 float scanT = (time * 0.8f) % 1.3f;
                 float scanX = MathHelper.Lerp(rect.X - 8f, rect.Right + 8f, scanT / 1.3f);
@@ -285,7 +285,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
             }
 
-            //激活态：两端呼吸光点
+            //激活态、两端呼吸光点
             if (active) {
                 float breath = HalibutTheme.Breath(time, rect.X * 0.07f, 3f);
                 DrawDisc(sb, lCap - new Vector2(radius + 4f, 0f), 1.7f + breath * 0.8f, 1.4f,
@@ -335,7 +335,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 冷却扫掠遮罩：在图标区域上从顶部顺时针盖一层暗色扇区，ratio=剩余冷却比例
+        /// 冷却扫掠遮罩、顶顺时针暗扇，ratio=剩余冷却
         /// </summary>
         public static void DrawCooldownSweep(SpriteBatch sb, Vector2 center, float radius, float ratio, float alpha) {
             ratio = MathHelper.Clamp(ratio, 0f, 1f);
@@ -351,7 +351,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 程序化眼睛：上下眼睑弧 + 虹膜 + 瞳孔 + 辉光
+        /// 程序化眼睛、眼睑弧+虹膜+瞳孔+辉光
         /// </summary>
         /// <param name="sb">画布</param>
         /// <param name="center">眼睛中心</param>
@@ -366,7 +366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float h = size * 0.62f * MathF.Max(openAmount, 0.06f);
             Color lidColor = Color.Lerp(HalibutTheme.TextDim, HalibutTheme.GlowHi, openAmount * 0.6f) * alpha;
 
-            //上下眼睑：用两段对称二次贝塞尔折线近似
+            //上下眼睑、对称二次贝塞尔折线
             int segs = 14;
             Vector2 left = center + new Vector2(-size, 0f);
             Vector2 right = center + new Vector2(size, 0f);
@@ -490,7 +490,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
             Effect effect = EffectLoader.HalibutAtlasBg?.Value;
             if (effect == null) {
-                //CPU回退：简单的深度渐变
+                //CPU回退、深度渐变
                 int bands = 24;
                 for (int i = 0; i < bands; i++) {
                     float t = i / (float)bands;
@@ -519,7 +519,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 着色器全参数四边形绘制：切换到Immediate模式应用效果后恢复Deferred
+        /// 着色器全参quad、Immediate后恢复Deferred
         /// </summary>
         private static void ShaderQuad(SpriteBatch sb, Effect effect, Rectangle dest) {
             sb.End();
@@ -534,7 +534,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         #region 光标信息面板
         /// <summary>
-        /// 光标悬浮信息面板：自动换行、屏幕边缘钳制、SeaPanel 背板
+        /// 光标信息面板、换行+边缘钳制+SeaPanel
         /// </summary>
         /// <param name="sb">画布</param>
         /// <param name="cursor">光标位置</param>
@@ -602,7 +602,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float time = Main.GlobalTimeWrappedHourly;
 
             DrawSeaPanel(sb, rect, alpha, 0.6f, 0f, 0.6f);
-            //饰框色：标题色与主题 Glow 混合
+            //饰框色、标题色混主题Glow
             Color frameCol = Color.Lerp(titleColor, HalibutTheme.Glow, 0.45f);
             DrawOrnateFrame(sb, rect, frameCol, alpha * 0.9f, time, 11f);
 
@@ -617,7 +617,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
                 y += titleHeight;
                 if (drawLines > 0) {
-                    //标题分隔：左实右虚的渐隐线 + 起点珍珠饰
+                    //标题分隔、左实右虚渐隐+起点珍珠
                     Vector2 divL = new(rect.X + pad, y);
                     DrawPearl(sb, divL + new Vector2(1.5f, 0f), 1.8f, HalibutTheme.Caustic, 0.85f * alpha);
                     DrawGradientLine(sb, divL + new Vector2(6f, 0f), new Vector2(rect.Right - pad, y),

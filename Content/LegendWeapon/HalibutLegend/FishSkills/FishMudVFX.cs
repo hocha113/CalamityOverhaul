@@ -8,11 +8,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
     internal class FishMudAssets
     {
-        /// <summary>根部泥堆：破土隆起 / 常驻泥丘 / 塌陷回吸三相</summary>
+        /// <summary>根部泥堆，破土隆起 / 常驻泥丘 / 塌陷回吸三相</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect FishMudMound { get; private set; }
 
-        /// <summary>泥球液团：速度拉伸 + 软体蠕动 + 尾侧噪声撕裂</summary>
+        /// <summary>泥球液团，速度拉伸 + 软体蠕动 + 尾侧噪声撕裂</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect FishMudGlob { get; private set; }
 
@@ -21,10 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public static Asset<Texture2D> DropTex { get; private set; }
     }
 
-    /// <summary>
-    /// 湿泥浆调色板：深褐哑光为主，湿面高光极窄且瞬时，全程无加色发光。<br/>
-    /// 与 FishDirt 的干土颗粒、FishScorpio 的风载干沙相区分：这里一切都是湿重下坠的
-    /// </summary>
+    /// <summary>湿泥调色板，深褐哑光，异于 FishDirt 干土 / FishScorpio 风沙</summary>
     internal static class FishMudPalette
     {
         public static readonly Color Murk = new(40, 30, 24);     //最深湿泥，底层剪影与干涸终色
@@ -38,7 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 泥珠：受重力下坠、随速度拉伸的哑光湿泥液滴，触固体即钉住压扁快速干涸。<br/>
+    /// 泥珠，受重力下坠、随速度拉伸的哑光湿泥液滴，触固体即钉住压扁快速干涸<br/>
     /// 贴图用带真 alpha 的 Extra_98，默认 AlphaBlend 直绘，不发光
     /// </summary>
     internal class PRT_FishMudDroplet : BasePRT
@@ -84,7 +81,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (Velocity.Y > 15f) {
                     Velocity.Y = 15f;
                 }
-                //湿泥粘壁不弹跳：触固体即钉住，余寿压短成一记快速干涸的小渍
+                //湿泥粘壁不弹跳，触固体即钉住
                 Tile tile = Framing.GetTileSafely(Position.ToTileCoordinates());
                 if (tile.HasUnactuatedTile && Main.tileSolid[tile.TileType]) {
                     landed = true;
@@ -115,10 +112,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return false;
             }
 
-            //随速度纵向拉伸：快则成条、慢则成珠
+            //随速度纵向拉伸，快则成条、慢则成珠
             float stretch = MathHelper.Clamp(Velocity.Length() * 0.05f, 0f, 1f);
             Vector2 scale = new Vector2(0.4f * (1f - stretch * 0.35f), 0.55f * (1f + stretch * 1.9f)) * Scale;
-            //外圈暗一层、中心实一层：读作浑浊液滴而非光点
+            //外圈暗一层、中心实一层
             spriteBatch.Draw(tex, pos, null, Color.Lerp(Color, FishMudPalette.Murk, 0.45f) * (Opacity * 0.75f)
                 , Rotation, origin, scale * 1.35f, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, pos, null, Color * Opacity, Rotation, origin, scale, SpriteEffects.None, 0f);
@@ -127,7 +124,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 泥瓣：破土与塌陷甩出的大块湿泥，翻滚下坠带转影，触固体即溃碎成滴珠
+    /// 泥瓣，破土与塌陷甩出的大块湿泥，翻滚下坠带转影，触固体即溃碎成滴珠
     /// </summary>
     internal class PRT_FishMudClod : BasePRT
     {
@@ -177,7 +174,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             Rotation += spin;
 
-            //触固体溃碎：留两滴小珠续演落点
+            //触固体溃碎，留两滴小珠续演落点
             Tile tile = Framing.GetTileSafely(Position.ToTileCoordinates());
             if (Time > 4 && tile.HasUnactuatedTile && Main.tileSolid[tile.TileType]) {
                 for (int i = 0; i < 2; i++) {
@@ -201,7 +198,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 lobeA = new Vector2(0.55f, 0.36f) * Scale;
             Vector2 lobeB = new Vector2(0.34f, 0.5f) * Scale;
 
-            //转影：位置残影表达不了自旋，退一帧角度画一层淡的
+            //转影，位置残影表达不了自旋
             Color ghost = Color.Lerp(Color, FishMudPalette.Murk, 0.5f) * (Opacity * 0.3f);
             spriteBatch.Draw(tex, pos - Velocity * 0.9f, null, ghost, Rotation - spin * 2.6f, origin, lobeA, SpriteEffects.None, 0f);
 
@@ -214,7 +211,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 泥斑：命中点 / 落点 / 退场点残留的湿泥渍，出生展开、中期缓慢下渗并析出滴珠、末期干涸变暗。<br/>
+    /// 泥斑，命中点 / 落点 / 退场点残留的湿泥渍
     /// 数瓣错位叠成一滩，钉在世界位置上，是活得比弹体与哨兵都久的残迹层
     /// </summary>
     internal class PRT_FishMudStain : BasePRT
@@ -227,7 +224,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private int dripBudget;
         private float baseScale;
 
-        /// <param name="aspectRatio">横纵比：贴地滩用 2.4 左右，挂壁渍用 1.2</param>
+        /// <param name="aspectRatio">横纵比，贴地滩用 2.4 左右，挂壁渍用 1.2</param>
         public PRT_FishMudStain Configure(int lifetime, float aspectRatio = 2.4f, int drips = 2) {
             Lifetime = lifetime;
             initialColor = Color;
@@ -265,7 +262,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void AI() {
             float t = LifetimeCompletion;
 
-            //出生 12%：湿泥摊开
+            //出生 12%，湿泥摊开
             float spread = t < 0.12f ? 1f - MathF.Pow(1f - t / 0.12f, 3f) : 1f;
             Scale = baseScale * spread * (1f - MathF.Max(t - 0.6f, 0f) * 0.25f);
 
@@ -281,7 +278,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //干涸：变暗收拢
+            //干涸，变暗收拢
             Color = Color.Lerp(initialColor, FishMudPalette.Murk, MathF.Pow(t, 1.6f));
             Opacity = (1f - MathF.Pow(t, 2.6f)) * MathF.Min(Time / 4f, 1f);
         }
@@ -304,7 +301,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , new Vector2(aspect * 0.42f, 0.3f) * (Scale * lobe), SpriteEffects.None, 0f);
             }
 
-            //湿期上缘窄水光：干涸前的唯一亮点，随水分蒸发消失
+            //湿期上缘窄水光
             if (t < 0.4f) {
                 float wet = 1f - t / 0.4f;
                 spriteBatch.Draw(tex, pos + new Vector2(0f, -2.2f * Scale), null

@@ -14,9 +14,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
     internal class CrabulonPlayer : PlayerOverride
     {
-        /// <summary>已驯蟹索引，-1 无</summary>
+        /// <summary>已驯蟹索引，-1无</summary>
         public int CrabulonIndex;
-        /// <summary>骑乘蟹实例，未骑乘为 null</summary>
+        /// <summary>骑乘蟹，未骑null</summary>
         public ModifyCrabulon MountCrabulon;
         private bool oldIsMount;
         public bool IsMount;
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             modPlayer.CustomCooldownCounter = 90;
         }
         public override void PostUpdate() {
-            //骑乘标记兜底，防玩家永久隐藏
+            //骑乘标记兜底
             if (IsMount && (MountCrabulon == null || !MountCrabulon.npc.Alives() || !MountCrabulon.Mount)) {
                 IsMount = false;
             }
@@ -77,19 +77,19 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return crabulonPlayer.IsMount;
         }
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
-            players = players.Where(p => !PlayerIsMount(p));//骑乘玩家改由蟹侧绘制
+            players = players.Where(p => !PlayerIsMount(p));//骑乘玩家蟹侧绘
             return true;
         }
     }
 
-    /// <summary>骑蟹时接管玩家运动，权威在骑手客户端；蟹吸附见CrabulonMountSystem</summary>
+    /// <summary>骑蟹接管运动，骑手权威；吸附见MountSystem</summary>
     internal class CrabulonMountPlayer : ModPlayer
     {
         private float fallDistance;
         private float fallDistancePeak;
         private float oldVelocityY;
 
-        //未骑乘返回 null
+        //未骑乘回null
         private ModifyCrabulon Riding {
             get {
                 if (!Player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer)
@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 return;
             }
 
-            //无摔落伤、禁飞与额外跳
+            //无摔伤禁飞额外跳
             Player.fallStart = Player.fallStart2 = (int)(Player.position.Y / 16f);
             Player.wingTime = 0;
             Player.rocketTime = 0;
@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             Player.runAcceleration = CrabulonConstants.BaseAcceleration + Player.runAcceleration;
             Player.runSlowdown = CrabulonConstants.MountRunSlowdown;
 
-            //巨兽跳：站定起跳，绕过原版跳跃曲线
+            //巨兽跳，绕过原版曲线
             if (Player.controlJump && Player.velocity.Y == 0f) {
                 Player.velocity.Y = MathHelper.Clamp(
                     maxSpeed * CrabulonConstants.MountJumpMultiplier,
@@ -160,12 +160,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
             NPC npc = riding.npc;
 
-            //蟹箱体约束位移，与玩家碰撞取交集
+            //蟹箱约束位移
             Vector2 crabPos = CrabulonMountSystem.GetAttachedBoxPosition(Player, npc);
             bool fallThrough = Player.controlDown;
             Vector2 constrained = Collision.TileCollision(crabPos, Player.velocity, npc.width, npc.height, fallThrough, fallThrough, (int)Player.gravDir);
 
-            //横向受阻时大台阶攀爬
+            //横阻大台阶攀爬
             if (constrained.X != Player.velocity.X && TryClimbStep(npc, ref crabPos)) {
                 constrained = Collision.TileCollision(crabPos, Player.velocity, npc.width, npc.height, fallThrough, fallThrough, (int)Player.gravDir);
             }
@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             oldVelocityY = Player.velocity.Y;
         }
 
-        //大台阶攀爬，蟹随吸附抬升
+        //大台阶攀爬
         private bool TryClimbStep(NPC npc, ref Vector2 crabPos) {
             int direction = Math.Sign(Player.velocity.X);
             if (direction == 0) {
@@ -236,7 +236,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             fallDistancePeak = 0f;
         }
 
-        //特效各端本地，伤害弹幕仅骑手端
+        //特效本端，伤弹仅骑手
         private void CreateImpactEffects(ModifyCrabulon riding, float impactStrength) {
             NPC npc = riding.npc;
 

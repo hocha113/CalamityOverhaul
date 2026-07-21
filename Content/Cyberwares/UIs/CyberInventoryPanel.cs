@@ -66,7 +66,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         #region 公共方法
 
-        /// <summary>绑定槽位并刷新列表</summary>
         public void BindSlot(int slotIndex, CyberwarePlayer cyberPlayer) {
             if (slotIndex == boundSlot) return;
             boundSlot = slotIndex;
@@ -75,13 +74,11 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             RefreshItems(cyberPlayer);
         }
 
-        /// <summary>解绑关闭</summary>
         public void Unbind() {
             boundSlot = -1;
             hasEquippedItem = false;
         }
 
-        /// <summary>刷新可选列表</summary>
         public void RefreshItems(CyberwarePlayer cyberPlayer) {
             compatibleItems.Clear();
             hasEquippedItem = false;
@@ -93,7 +90,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             hasEquippedItem = equipped != null && !equipped.IsAir;
         }
 
-        /// <summary>更新交互</summary>
         public void Update(Rectangle mainPanelRect, int selectedSlot, CyberwarePlayer cyberPlayer) {
             ActionThisFrame = false;
             if (reminderCooldown > 0) {
@@ -148,7 +144,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
         }
 
-        /// <summary>绘制侧栏</summary>
         public void Draw(SpriteBatch sb, float parentAlpha, CyberwarePlayer cyberPlayer) {
             if (openProgress < 0.01f || panelRect.Width < 2) return;
 
@@ -233,7 +228,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 );
                 if (unequipRect.Contains((int)mouse.X, (int)mouse.Y)) {
                     hoveredItemRow = -2;//悬停卸载区
-                    //只读：点击提醒找 Victor
+                    //只读，点提醒找 Victor
                     if (Main.mouseLeft && Main.mouseLeftRelease) {
                         NotifyClinicRequired();
                     }
@@ -272,7 +267,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                         hoveredCyberItem = item;
                     }
 
-                    //只读：点击提醒找 Victor
+                    //只读，点提醒找 Victor
                     if (Main.mouseLeft && Main.mouseLeftRelease) {
                         NotifyClinicRequired();
                     }
@@ -282,8 +277,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         }
 
         /// <summary>
-        /// 只读界面：安装/卸载弹 Victor 提醒
-        /// <br/>真换装走 VictorClinicPanel 手术
+        /// 只读界面装/卸弹 Victor 提醒；真换装走诊所手术
         /// </summary>
         private void NotifyClinicRequired() {
             if (reminderCooldown > 0) {
@@ -400,7 +394,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 new Vector2(eqRect.X + 44, eqRect.Y + 4),
                 CyberwareTheme.TextBright * alpha, 0.52f * CyberwareTheme.FontScale);
 
-            //卸载提示：普通界面只读，引导前往义体医生
+            //只读引导
             string hint = isHoveredUnequip ? "> SEE RIPPERDOC <" : "VISIT VICTOR TO SWAP";
             Color hintColor = isHoveredUnequip ? CyberwareTheme.Accent : CyberwareTheme.TextDim;
             Utils.DrawBorderString(sb, hint,

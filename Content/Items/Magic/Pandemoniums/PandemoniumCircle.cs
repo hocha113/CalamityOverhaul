@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    /// <summary>
-    /// 鼠标位置的硫磺火法阵
-    /// </summary>
+    /// <summary>鼠标处硫磺火法阵</summary>
     internal class PandemoniumCircle : BaseHeldProj
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -20,7 +18,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private ref float ExpandTimer => ref Projectile.ai[0];
         private ref float AttackTimer => ref Projectile.ai[1];
 
-        //法阵视觉数据
         private List<RuneData> runes = new();
         private List<LightningData> lightnings = new();
         private float circleRadius = 0f;
@@ -75,7 +72,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             ExpandTimer++;
             AttackTimer++;
 
-            //初始化
             if (ExpandTimer == 1) {
                 InitializeRunes();
                 SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with {
@@ -84,7 +80,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 }, Projectile.Center);
             }
 
-            //法阵扩展阶段 (0-30帧)
+            //扩展 0-30
             if (ExpandTimer <= 30f) {
                 float progress = ExpandTimer / 30f;
                 circleRadius = VaultUtils.EaseOutCubic(progress) * 200f;
@@ -95,30 +91,23 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 circleAlpha = 1f;
             }
 
-            //法阵旋转
             rotationAngle += 0.02f;
 
-            //更新符文
             UpdateRunes();
 
-            //生成连接闪电
             if (AttackTimer % 8 == 0 && ExpandTimer > 15f) {
                 SpawnPlayerLightning();
             }
 
-            //更新闪电
             UpdateLightnings();
 
-            //持续攻击敌人
             if (AttackTimer % 20 == 0 && ExpandTimer > 30f) {
                 AttackNearbyEnemies();
             }
 
-            //硫磺火照明
             float lightIntensity = circleAlpha * 2f;
             Lighting.AddLight(Projectile.Center, 1.5f * lightIntensity, 0.5f * lightIntensity, 0.2f * lightIntensity);
 
-            //生成硫磺火粒子
             SpawnBrimstoneParticles();
         }
 
@@ -140,17 +129,14 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
         private void UpdateRunes() {
             foreach (var rune in runes) {
-                //淡入
                 rune.Alpha = MathHelper.Lerp(rune.Alpha, circleAlpha, 0.1f);
 
-                //火焰帧更新
                 rune.FireFrameCounter += 0.4f;
                 if (rune.FireFrameCounter >= 1f) {
                     rune.FireFrameCounter = 0;
                     rune.FireFrame = (rune.FireFrame + 1) % 16;
                 }
 
-                //旋转
                 rune.Rotation += 0.03f;
                 rune.PulsePhase += 0.08f;
             }
@@ -159,7 +145,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private void SpawnPlayerLightning() {
             if (!Owner.active || Owner.dead) return;
 
-            //生成从法阵到玩家的闪电
             List<Vector2> points = GenerateLightningPath(Projectile.Center, Owner.Center, 6);
 
             lightnings.Add(new LightningData {
@@ -171,7 +156,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 Intensity = Main.rand.NextFloat(0.8f, 1f)
             });
 
-            //硫磺火闪电音效
             if (Main.rand.NextBool(3)) {
                 SoundEngine.PlaySound(SoundID.Item122 with {
                     Volume = 0.4f,
@@ -185,7 +169,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 var lightning = lightnings[i];
                 lightning.Life++;
 
-                //更新终点位置(跟随玩家)
                 if (Owner.active && !Owner.dead) {
                     lightning.EndPos = Owner.Center;
                     lightning.SegmentPoints = GenerateLightningPath(lightning.StartPos, lightning.EndPos, 6);
@@ -229,7 +212,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
 
             if (closestNPC != null && Main.myPlayer == Projectile.owner) {
-                //发射硫磺火球
                 Vector2 velocity = (closestNPC.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * 12f;
                 Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
@@ -243,7 +225,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     2 //标记为法阵火球
                 );
 
-                //生成攻击闪电视觉效果
                 List<Vector2> lightningPath = GenerateLightningPath(Projectile.Center, closestNPC.Center, 5);
                 lightnings.Add(new LightningData {
                     StartPos = Projectile.Center,
@@ -273,7 +254,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 brimstone.noGravity = true;
             }
 
-            //法阵边缘火焰
             if (Main.rand.NextBool(3)) {
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 Vector2 edgePos = Projectile.Center + angle.ToRotationVector2() * circleRadius;
@@ -291,7 +271,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         public override void OnKill(int timeLeft) {
-            //法阵消散特效
             for (int i = 0; i < 50; i++) {
                 float angle = MathHelper.TwoPi * i / 50f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
@@ -317,10 +296,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             SpriteBatch sb = Main.spriteBatch;
             Vector2 center = Projectile.Center - Main.screenPosition;
 
-            //绘制着色器法阵
             DrawBrimstoneDomainShader(sb, center);
 
-            //绘制闪电
             DrawLightnings(sb);
 
             return false;
@@ -334,7 +311,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Texture2D noise = CWRAsset.Extra_193.Value;
             if (canvas == null || noise == null) return;
 
-            //右键法阵较小，使用适当的绘制区域
+            
             float drawRadius = circleRadius * 1.3f;
             float drawDiameter = drawRadius * 2f;
 
@@ -344,7 +321,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             shader.Parameters["expandProgress"]?.SetValue(MathHelper.Clamp(circleAlpha, 0f, 1f));
             shader.Parameters["pulseIntensity"]?.SetValue(0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.3f);
 
-            //稍微柔和的色彩（区分于主法阵）
             shader.Parameters["coreColor"]?.SetValue(new Vector3(1f, 0.31f, 0.16f));
             shader.Parameters["midColor"]?.SetValue(new Vector3(0.78f, 0.2f, 0.12f));
             shader.Parameters["edgeColor"]?.SetValue(new Vector3(0.47f, 0.12f, 0.08f));

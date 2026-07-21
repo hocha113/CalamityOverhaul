@@ -12,16 +12,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>稳压枪托「稳压放电」：两次射击的间隔期积蓄稳压电荷（电荷环规可视），
-    /// 开火按当前电荷放电强化该轮光束（满档附加穿透与电压纹路）；
-    /// 满档存在稳压窗口，逾期泄压归零——奖励点射节奏，持续压枪则几乎无从蓄能</summary>
+    /// <summary>稳压枪托，射击间歇蓄电荷，开火放电强化；满档有窗口，逾期泄压，奖励点射</summary>
     internal sealed class SteadyStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;
         //稳压电金
         public override Color TintColor => new(255, 214, 90);
 
-        /// <summary>稳压三相：蓄压→满档待发→泄压</summary>
+        /// <summary>稳压三相，蓄压→满档待发→泄压</summary>
         internal enum VoltPhase : byte
         {
             Charging,
@@ -36,18 +34,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         private const int WindowFrames = 100;            //满档稳压窗口时长
         private const int WarnFrames = 40;               //窗口临尽警示起始帧
         private const int LeakFrames = 22;               //泄压相排空帧数
-        private const int IdleCutoffFrames = 180;        //距上次击发超过此帧数视为脱战：停止蓄压并静默放空（停火后至多一轮就绪→泄压反馈，不成循环）
+        private const int IdleCutoffFrames = 180;        //脱战阈值，停蓄压并静默放空
         private const float IdleDrainPerFrame = 0.004f;  //脱战静默放空速率
         private const float EmpowerMaxBonus = 2.5f;      //满档放电伤害加成（1+2.5=3.5×，补偿停火节奏损失）
         private const int FullPierceAdd = 2;             //满档强化束额外穿透
-        private const int LaserEmpowerMaxFrames = 150;   //激光点火倾泻：满档换取的回声窗口帧数
+        private const int LaserEmpowerMaxFrames = 150;   //激光倾泻回声窗口帧数
         private const float LaserEchoRatio = 0.4f;       //激光回声伤害占比
 
         //稳压电金 / 电离青（与 SHPCModSteadyVolt.fx 配色对齐）
         internal static readonly Color VoltGold = new(255, 214, 90);
         internal static readonly Color VoltIon = new(95, 220, 255);
 
-        //═════ 稳压状态（per-玩家：每个玩家槽位持有独立实例，参照守望/速射惯例） ═════
+        //═════ 稳压状态（per-玩家实例）═════
         private VoltPhase phase = VoltPhase.Charging;
         private float charge;
         private int windowTimer;
@@ -65,7 +63,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         private float empowerCharge;
         private bool empowerFull;
 
-        //强化束登记：whoAmI→放电时的电荷（供电压纹路绘制），消亡移除+定期兜底
+        //强化束登记 whoAmI→电荷，消亡移除+兜底
         private readonly Dictionary<int, float> voltBeams = new();
         private readonly List<int> pruneScratch = new();
         private int pruneTimer;
@@ -79,14 +77,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         internal float Charge01 => charge;
         internal float FlashVis => flashVis;
         internal int VoltBeamCount => voltBeams.Count;
-        /// <summary>稳压窗口剩余比：满档时 1→0，其余相恒 1</summary>
+        /// <summary>稳压窗口剩余比，满档 1→0</summary>
         internal float WindowRatio => phase == VoltPhase.Ready
             ? MathHelper.Clamp(windowTimer / (float)WindowFrames, 0f, 1f) : 1f;
 
         /// <summary>强化束电荷快照，未登记返回 -1</summary>
         internal float GetVoltCharge(int whoAmI) => voltBeams.TryGetValue(whoAmI, out float v) ? v : -1f;
 
-        /// <summary>枪口世界坐标与瞄准方向（itemRotation 会被网络同步，远端可用）</summary>
+        /// <summary>枪口位向，itemRotation 跨端可用</summary>
         internal static Vector2 GetMuzzle(Player player, out Vector2 aimDir) {
             float aim = player.direction == 1 ? player.itemRotation : player.itemRotation + MathHelper.Pi;
             aimDir = aim.ToRotationVector2();
@@ -119,7 +117,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             if (player == null || !player.active) {
                 return;
             }
-            //改件曾被卸下/预设切换：全量复位，防拆装保电
+            //卸改件/换预设全量复位
             if (Main.GameUpdateCount - lastTick > 4) {
                 ResetVolt();
             }
@@ -135,7 +133,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             if (flashVis < 0.02f) {
                 flashVis = 0f;
             }
-            //放电登记窗口过期即清除，防陈旧标志强化后续轮次
+            //登记窗口过期清除
             if (empowerMul > 1f && Main.GameUpdateCount - empowerTick > 1) {
                 empowerMul = 0f;
             }
@@ -143,8 +141,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             bool holding = player.HeldItem != null && player.HeldItem.type == SHPCOverride.ID;
             bool laserActive = player.ownedProjectileCounts[ModContent.ProjectileType<CyberPrismLaserProj>()] > 0;
 
-            //击发侦测：动画计数回跳的那一帧即开火帧（右键蓄力与激光持续压枪不算离散击发）
-            //注：点火帧 ownedProjectileCounts 尚未刷新，须再查 LaserMode，防止激光点火被误判为离散击发白耗电荷
+            //itemAnimation 回跳=开火帧；点火帧须再查 LaserMode，防白耗电荷
             if (holding && player.ItemAnimationActive && player.altFunctionUse != 2 && !laserActive
                 && player.itemAnimation > prevItemAnimation
                 && !SHPCModificationSystem.Resolve(player).LaserMode) {
@@ -159,8 +156,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
             switch (phase) {
                 case VoltPhase.Charging:
-                    //只有战斗节奏中的射击间歇（未在挥械动画中）才蓄压——持续压枪几乎无从蓄能；
-                    //脱战（久未击发）停止蓄压并静默放空，防止挂机时就绪/泄压音效无限循环
+                    //非挥械间歇才蓄压；脱战静默放空，防挂机音效循环
                     if (holding && !player.ItemAnimationActive && inCombatRhythm) {
                         charge = MathF.Min(charge + tick / (float)ChargeFrames, 1f);
                         TickBeeps(player);
@@ -177,7 +173,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                     break;
                 case VoltPhase.Ready:
                     windowTimer -= tick;
-                    //窗口临尽：升频警示音，与环规外环收暗同步
+                    //窗口临尽升频警示
                     if (windowTimer <= WarnFrames) {
                         warnSoundTimer -= tick;
                         if (warnSoundTimer <= 0) {
@@ -202,7 +198,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
             PruneVoltBeams(player, tick);
 
-            //环规弹幕保障：有电荷/状态/强化束在场时挂载，仅拥有者端生成
+            //环规弹幕，仅 owner 端
             if (player.whoAmI != Main.myPlayer) {
                 return;
             }
@@ -234,7 +230,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             voltBeams.Clear();
         }
 
-        /// <summary>蓄压阈值提示音：1/3、2/3 各一声升调滴答</summary>
+        /// <summary>蓄压 1/3、2/3 提示音</summary>
         private void TickBeeps(Player player) {
             int tier = charge >= 2f / 3f ? 2 : charge >= 1f / 3f ? 1 : 0;
             if (tier <= beepGate) {
@@ -254,7 +250,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             if (Main.netMode == NetmodeID.Server) {
                 return;
             }
-            //满档就绪：清亮和弦 + 金环脉冲
+            //满档就绪音+金环
             SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.42f, Pitch = 0.9f }, player.Center);
             PRTLoader.NewParticle<PRT_StarPulseRing>(player.Center + new Vector2(0f, -58f),
                 Vector2.Zero, VoltGold with { A = 0 }, 0.05f).Configure(0.05f, 0.3f, 14);
@@ -266,7 +262,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             if (Main.netMode == NetmodeID.Server) {
                 return;
             }
-            //逾期泄压：蒸汽叹息 + 电离散逸
+            //逾期泄压音+散逸
             SoundEngine.PlaySound(SoundID.Item34 with { Volume = 0.3f, Pitch = 0.35f }, player.Center);
             for (int i = 0; i < 7; i++) {
                 PRTLoader.NewParticle<PRT_Spark>(player.Center + Main.rand.NextVector2Circular(14f, 18f),
@@ -281,7 +277,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             float c = charge;
             bool full = phase == VoltPhase.Ready || c >= 0.999f;
 
-            //任何档位的击发都会放电清空；空电荷则为普通射击
+            //击发即放电清空，空电荷=普射
             if (c > 0.02f) {
                 if (player.whoAmI == Main.myPlayer) {
                     empowerTick = Main.GameUpdateCount;
@@ -292,7 +288,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 flashVis = MathF.Max(flashVis, c);
 
                 if (Main.netMode != NetmodeID.Server) {
-                    //放电反馈随电荷缩放：满档裂响+火花瀑，低档轻响
+                    //放电反馈随电荷缩放
                     SoundEngine.PlaySound(SoundID.Item94 with {
                         Volume = 0.18f + c * 0.3f, Pitch = full ? -0.15f : 0.25f
                     }, player.Center);
@@ -317,7 +313,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             beepGate = 0;
         }
 
-        /// <summary>兜底清理强化束登记：改件卸下/漏掉消亡回调时防泄漏</summary>
+        /// <summary>兜底清强化束登记</summary>
         private void PruneVoltBeams(Player player, int tick) {
             pruneTimer += tick;
             if (pruneTimer < 90 || voltBeams.Count == 0) {
@@ -341,13 +337,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
             if (beam.IsDerived) {
-                return;                                 //全局约定：派生束不回喂机制
+                return;                                 //派生束不回喂
             }
             Projectile proj = beam.Projectile;
             if (proj.owner != Main.myPlayer) {
                 return;
             }
-            //放电登记：与击发同 tick（+1 容差）的主光束获得强化
+            //同 tick（+1）主光束强化登记
             if (empowerMul > 1f && Main.GameUpdateCount - empowerTick <= 1
                 && !voltBeams.ContainsKey(proj.whoAmI)) {
                 voltBeams[proj.whoAmI] = empowerCharge;
@@ -357,7 +353,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 }
                 proj.netUpdate = true;
             }
-            //强化束飞行时偶发金色电火花
+            //强化束偶发金火花
             if (Main.netMode != NetmodeID.Server && voltBeams.ContainsKey(proj.whoAmI)
                 && Main.rand.NextBool(6)
                 && VaultUtils.IsPointOnScreen(proj.Center - Main.screenPosition, 150)) {
@@ -383,7 +379,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 || !VaultUtils.IsPointOnScreen(target.Center - Main.screenPosition, 150)) {
                 return;
             }
-            //稳压命中：金/青电火花放射
+            //稳压命中火花
             int count = 3 + (int)(c * 5f);
             for (int i = 0; i < count; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(2.5f + c * 3f, 2.5f + c * 3f);
@@ -400,14 +396,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             voltBeams.Remove(beam.Projectile.whoAmI);
         }
 
-        //═════════════ 激光钩子：点火倾泻 ═════════════
+        //═════════════ 激光点火倾泻 ═════════════
 
         public override void OnLaserAI(CyberPrismLaserProj laser) {
             Projectile proj = laser.Projectile;
             if (proj.owner == Main.myPlayer) {
-                //压枪激光同样算战斗节奏：松开后间隔期正常蓄压，再点火倾泻，形成"点放激光"循环
+                //压枪激光也算战斗节奏，松后蓄压再倾泻
                 sinceShot = 0;
-                //点火瞬间：把当前电荷一次性倾泻为回声窗口
+                //点火倾泻为回声窗口
                 if (!laserWasActive) {
                     laserWasActive = true;
                     if (charge > 0.02f) {
@@ -427,7 +423,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 }
             }
 
-            //回声窗口内：光柱染稳压电金主题
+            //回声窗口染稳压金
             if (laserEmpowerFrames > 0) {
                 float q = MathHelper.Clamp(laserEmpowerFrames / (float)LaserEmpowerMaxFrames + 0.35f, 0f, 1f);
                 laser.ThemeCore = Color.Lerp(laser.ThemeCore, Color.Lerp(VoltGold, Color.White, 0.4f), q);
@@ -442,7 +438,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             if (laser.Projectile.owner != Main.myPlayer || laserEmpowerFrames <= 0) {
                 return;
             }
-            //倾泻窗口：命中追加稳压回声（SimpleStrikeNPC 自带同步）
+            //倾泻窗口命中追加回声
             int echo = Math.Max((int)(damageDone * LaserEchoRatio), 1);
             target.SimpleStrikeNPC(echo, hit.HitDirection, false, 0f, hit.DamageType, false, 0f, true);
             if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(3)
@@ -461,8 +457,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
     }
 
-    /// <summary>稳压电荷环规：悬停于玩家头顶的电压表盘（SHPCModSteadyVolt.fx pass0），
-    /// 并为强化束沿飞行方向叠加电压纹路条带（pass1）；仅拥有者端存活</summary>
+    /// <summary>稳压环规表盘+强化束电压纹路，SHPCModSteadyVolt.fx，仅 owner</summary>
     internal sealed class SHPCSteadyVoltGaugeProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -555,13 +550,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             Main.graphics.GraphicsDevice.Textures[1] = noise;
             Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
 
-            //pass0：电荷环规表盘
+            //pass0 环规表盘
             shader.Parameters["fadeAlpha"]?.SetValue(fade);
             shader.CurrentTechnique.Passes[0].Apply();
             Main.spriteBatch.Draw(canvas, Projectile.Center - Main.screenPosition, null, Color.White,
                 0f, canvas.Size() * 0.5f, new Vector2(RingQuadSize, RingQuadSize), SpriteEffects.None, 0f);
 
-            //pass1：强化束电压纹路（自束头向后铺条带，uv.x=0 为束头）
+            //pass1 强化束电压纹路，uv.x=0 束头
             int beamType = ModContent.ProjectileType<CyberTraceBeamProj>();
             int drawn = 0;
             for (int i = 0; i < Main.maxProjectiles && drawn < MaxVoltQuads; i++) {

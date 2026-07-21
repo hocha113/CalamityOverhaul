@@ -11,23 +11,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
     /// <summary>死亡演出阶段枚举</summary>
     internal enum PrimeDeathPhase
     {
-        /// <summary>假死连环爆炸后沉寂，误导以为已击杀</summary>
+        /// <summary>假死沉寂</summary>
         FakeDeath,
-        /// <summary>再生双钳，低沉嗡鸣</summary>
+        /// <summary>再生双钳</summary>
         Summon,
-        /// <summary>双钳高速扑向目标玩家</summary>
+        /// <summary>扑抓</summary>
         Lunge,
-        /// <summary>拖拽举起至头部正前方</summary>
+        /// <summary>拖拽举起</summary>
         Drag,
-        /// <summary>前倾怒吼，钳子夹紧蓄力</summary>
+        /// <summary>怒吼蓄力</summary>
         Roar,
-        /// <summary>终爆真死，钳子崩碎</summary>
+        /// <summary>终爆真死</summary>
         Finale,
         /// <summary>演出结束</summary>
         Done
     }
 
-    /// <summary>正式战斗生命见底触发的死亡演出状态；同步：主状态 npc.ai[2]+npc.ai[0]==4；钳子 PrimeDeathClawActor 纯函数；被抓玩家本地权威</summary>
+    /// <summary>死亡演出，ai[2]+ai[0]==4，钳Actor纯函数，被抓玩家本地权威</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.Death, typeof(PrimeStateContext))]
     internal class PrimeDeathState : PrimeStateBase
     {
@@ -36,10 +36,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
         #region 时间线常量
 
-        /// <summary>玩家被举起时距头部中心的下方距离（骷髅头面朝下方，正好把玩家按在"脸"前）</summary>
+        /// <summary>举起时距头下方距离</summary>
         internal const float DeathLiftDistance = 210f;
 
-        //演出时间线帧(60fps)，阶段累计截止
+        //时间线帧，阶段截止
         internal const int PhaseFakeDeathEnd = 140; //假死爆炸(0-80) + 死寂(80-140)
         internal const int PhaseSummonEnd = 195;    //嗡鸣再生钳子(55f)
         internal const int PhaseLungeEnd = 240;     //双钳迅猛扑抓(45f，最快)
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         internal const int PhaseRoarEnd = 380;      //怒吼高潮定格(75f，最长)
         internal const int PhaseFinaleEnd = 450;    //终爆 + 余波 + 尘埃落定(70f)
 
-        /// <summary>演出计时推阶段</summary>
+        /// <summary>计时推阶段</summary>
         internal static PrimeDeathPhase GetDeathPhase(int t) {
             if (t < PhaseFakeDeathEnd) {
                 return PrimeDeathPhase.FakeDeath;
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         private float headWobble;      //头部故障摇摆角（叠加在基础朝向之上）
         private float headWobbleVel;   //摇摆角速度
 
-        //殉爆配色（机械骷髅王：橙红 → 暗红，冷酷的金属过载质感）
+        //殉爆配色橙红→暗红
         private static readonly Color DeathWarmA = new Color(255, 130, 60);
         private static readonly Color DeathWarmB = new Color(200, 40, 30);
 
@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             context.DeathPhase = PrimeDeathPhase.FakeDeath;
             HeadPrimeAI.ActivePerformanceHead = npc.whoAmI;
 
-            //锁定被抓目标
+            //锁被抓目标
             if (npc.target >= 0 && npc.target < Main.maxPlayers
                 && Main.player[npc.target].active && !Main.player[npc.target].dead) {
                 context.DeathTargetIndex = npc.target;
@@ -109,13 +109,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 context.DeathTargetIndex = p.whoAmI;
             }
 
-            //清除负面 buff，避免演出期间继续掉血/被控
+            //清debuff
             for (int i = 0; i < npc.buffType.Length; i++) {
                 npc.buffTime[i] = 0;
             }
 
             if (!VaultUtils.isServer) {
-                //过载警报音
+                //过载警报
                 SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -0.8f, Volume = 0.9f }, npc.Center);
                 SoundEngine.PlaySound(SoundID.NPCDeath14 with { Pitch = -0.6f, Volume = 0.7f }, npc.Center);
             }
@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         public override IPrimeState OnUpdate(PrimeStateContext context) {
             NPC npc = context.Npc;
 
-            //全程锁血、停止接触伤害、急停悬停
+            //锁血急停
             npc.dontTakeDamage = true;
             npc.damage = 0;
             if (npc.life < 1) {
@@ -165,13 +165,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
             Timer++;
 
-            //演出落幕
+            //落幕
             if (Timer >= PhaseFinaleEnd) {
                 context.DeathPerformanceFinished = true;
                 if (HeadPrimeAI.ActivePerformanceHead == npc.whoAmI) {
                     HeadPrimeAI.ActivePerformanceHead = -1;
                 }
-                //真正击杀由服务端/单人端放行，触发正常掉落与击杀标记
+                //服务端放行真死
                 if (!VaultUtils.isClient) {
                     npc.dontTakeDamage = false;
                     npc.life = 0;
@@ -190,28 +190,28 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
         }
 
-        /// <summary>头竖立不追，阻尼摇摆故障感</summary>
+        /// <summary>竖立阻尼摇摆</summary>
         private void UpdateHeadRotation(PrimeStateContext context, PrimeDeathPhase phase) {
             NPC npc = context.Npc;
 
-            //假死爆炸期：每次殉爆给一次交替方向的摇摆冲量（按计时判定，确定性，各端一致）
+            //假死爆炸期摇摆冲量
             if (phase == PrimeDeathPhase.FakeDeath && Timer < 80 && Timer % 12 == 0) {
                 headWobbleVel += (Timer % 24 == 0) ? 0.05f : -0.05f;
             }
 
-            //摇摆角阻尼回弹
+            //摇摆阻尼
             headWobble += headWobbleVel;
             headWobbleVel *= 0.9f;
             headWobble *= 0.92f;
 
-            //在剥离摇摆后的基础角上插值回竖立，再叠加摇摆，避免摇摆被插值吃掉
+            //先回竖再叠摇摆
             float current = (npc.rotation - headWobble).AngleLerp(0f, 0.12f);
             npc.rotation = current + headWobble;
         }
 
         #region 各阶段演出
 
-        /// <summary>假死：连环爆后沉寂，误导已击杀</summary>
+        /// <summary>假死</summary>
         private void UpdateFakeDeath(PrimeStateContext context) {
             if (VaultUtils.isServer) {
                 return;
@@ -219,20 +219,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             NPC npc = context.Npc;
 
             if (Timer < 80) {
-                //连环爆炸（密集）
+                //连环爆
                 if (Timer % 11 == 0) {
                     Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.45f, npc.height * 0.45f);
                     SpawnMechBlast(npc, pos, Main.rand.NextFloat(0.9f, 1.5f), false);
                     PrimeDeathPerformancePlayer.RequestShake(5f, 12);
                 }
-                //接缝漏火花
+                //接缝火花
                 if (Timer % 4 == 0) {
                     SpawnSparks(npc, npc.Center, 6, 6f);
                 }
                 Lighting.AddLight(npc.Center, DeathWarmA.ToVector3() * 0.8f);
             }
             else {
-                //死寂：残烟与零星电火花
+                //死寂
                 if (Timer % 10 == 0) {
                     SpawnSparks(npc, npc.Center, 2, 3f);
                 }
@@ -243,7 +243,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                         Main.rand.NextFloat(0.7f, 1.1f)).Configure(Main.rand.Next(50, 80), 0.7f, Main.rand.NextFloat(-0.04f, 0.04f));
                 }
 
-                //死寂尾声惊醒预兆：头部一颤+低沉轰鸣
+                //惊醒预兆
                 if (Timer == PhaseFakeDeathEnd - 14 && !fakeDeathJolted) {
                     fakeDeathJolted = true;
                     headWobbleVel += 0.2f;
@@ -253,11 +253,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
         }
 
-        /// <summary>再生钳：嗡鸣，头侧双钳再生，电弧四溅</summary>
+        /// <summary>再生钳</summary>
         private void UpdateSummon(PrimeStateContext context) {
             NPC npc = context.Npc;
 
-            //各端本地生成一次钳子 Actor（纯视觉，服务端无需）
+            //本地生成钳Actor
             if (!clawsSpawned) {
                 clawsSpawned = true;
                 TrySpawnDeathClaws(npc);
@@ -279,7 +279,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             Lighting.AddLight(npc.Center, DeathWarmA.ToVector3() * (1f + (Timer - PhaseFakeDeathEnd) / 60f));
         }
 
-        /// <summary>扑抓：钳Actor驱动，播音效火花</summary>
+        /// <summary>扑抓</summary>
         private void UpdateLunge(PrimeStateContext context) {
             NPC npc = context.Npc;
 
@@ -296,13 +296,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
         }
 
-        /// <summary>拖拽举起，玩家位移见 PrimeDeathPerformancePlayer</summary>
+        /// <summary>拖拽举起</summary>
         private void UpdateDrag(PrimeStateContext context) {
             NPC npc = context.Npc;
             Player target = GetDeathTarget(context);
 
             if (Timer == PhaseLungeEnd && !VaultUtils.isServer) {
-                //抓住瞬间的金属撞击
+                //抓住撞击
                 Vector2 grabPos = target?.Center ?? npc.Center;
                 SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = -0.4f, Volume = 1.1f }, grabPos);
                 SpawnMechBlast(npc, grabPos, 1.3f, false);
@@ -313,13 +313,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 return;
             }
 
-            //被夹玩家周围迸溅火花
+            //被夹火花
             if (target != null && Timer % 4 == 0) {
                 SpawnSparks(npc, target.Center, 4, 4.5f);
             }
         }
 
-        /// <summary>怒吼蓄力：头前倾咆哮，钳夹抖，红光灌注</summary>
+        /// <summary>怒吼蓄力</summary>
         private void UpdateRoar(PrimeStateContext context) {
             NPC npc = context.Npc;
 
@@ -337,7 +337,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             Lighting.AddLight(npc.Center, new Color(255, 60, 30).ToVector3() * 1.8f);
         }
 
-        /// <summary>终爆：核心炸钳碎，掀飞玩家，真死</summary>
+        /// <summary>终爆</summary>
         private void UpdateFinale(PrimeStateContext context) {
             NPC npc = context.Npc;
 
@@ -351,7 +351,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
             int into = Timer - PhaseRoarEnd; //0 → 70
             if (into < 50) {
-                //终爆余波：连环小爆由密到疏
+                //终爆余波
                 int interval = into < 22 ? 4 : 7;
                 if (into % interval == 0) {
                     Vector2 pos = npc.Center + Main.rand.NextVector2Circular(150f, 150f);
@@ -359,7 +359,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 }
             }
             else {
-                //终爆余波渐疏后，残烟收尾
+                //残烟收尾
                 if (into % 6 == 0) {
                     Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.5f, npc.height * 0.5f);
                     PRTLoader.NewParticle<PRT_Smoke>(pos, -Vector2.UnitY * Main.rand.NextFloat(0.8f, 2f),
@@ -378,7 +378,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             return (index >= 0 && index < Main.maxPlayers) ? Main.player[index] : null;
         }
 
-        /// <summary>本地生成左右死亡钳Actor</summary>
+        /// <summary>生成本地钳Actor</summary>
         private static void TrySpawnDeathClaws(NPC npc) {
             if (VaultUtils.isServer) {
                 return;
@@ -392,7 +392,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
         }
 
-        /// <summary>机械殉爆：光团+火花+余烬+浓烟+光照+音效</summary>
+        /// <summary>机械殉爆VFX</summary>
         private static void SpawnMechBlast(NPC npc, Vector2 pos, float scale, bool isFinale) {
             if (VaultUtils.isServer) {
                 return;
@@ -400,11 +400,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
             Color warm = Color.Lerp(DeathWarmA, DeathWarmB, Main.rand.NextFloat());
 
-            //核心爆炸光团
+            //核心光团
             PRTLoader.NewParticle<PRT_MechExplosion>(pos, Main.rand.NextVector2Circular(1.5f, 1.5f), warm, scale)
                 .Configure(Main.rand.Next(26, 38), warm);
 
-            //火花四溅
+            //火花
             int sparkCount = isFinale ? 52 : Main.rand.Next(4, 8);
             for (int i = 0; i < sparkCount; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(3f, 11f) * (isFinale ? 1.7f : scale);
@@ -413,7 +413,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                     Main.rand.NextFloat(1.0f, 1.8f)).Configure(true, Main.rand.Next(16, 30));
             }
 
-            //岩浆余烬
+            //余烬
             int emberCount = isFinale ? 26 : 2;
             for (int i = 0; i < emberCount; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(3.5f, 3.5f);
@@ -421,7 +421,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                     Color.White, Main.rand.NextFloat(0.8f, 1.3f) * scale).SetLifetime(20, 46);
             }
 
-            //滚滚浓烟
+            //浓烟
             int smokeCount = isFinale ? 18 : 2;
             for (int i = 0; i < smokeCount; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(2f, 2f) - Vector2.UnitY * Main.rand.NextFloat(0.5f, 1.7f);
@@ -433,7 +433,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
             Lighting.AddLight(pos, warm.ToVector3() * (isFinale ? 3f : 1.1f) * scale);
 
-            //密集爆炸时按更低概率播放，避免连锁爆炸阶段出现杂乱爆音
+            //密爆降音概率
             if (isFinale || Main.rand.NextBool(6)) {
                 SoundEngine.PlaySound(SoundID.Item14 with {
                     Pitch = isFinale ? -0.5f : Main.rand.NextFloat(-0.2f, 0.35f),
@@ -442,7 +442,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
         }
 
-        /// <summary>指定点喷电火花，过载接缝</summary>
+        /// <summary>接缝电火花</summary>
         private static void SpawnSparks(NPC npc, Vector2 center, int count, float speed) {
             if (VaultUtils.isServer) {
                 return;
@@ -456,7 +456,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
         }
 
-        /// <summary>核心终极殉爆 + 周身连锁爆裂 + 玩家位置同步炸裂 + 强烈屏幕震动</summary>
+        /// <summary>终爆+连锁+震屏</summary>
         private static void SpawnFinaleBlast(PrimeStateContext context) {
             if (VaultUtils.isServer) {
                 return;
@@ -465,12 +465,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
             SpawnMechBlast(npc, npc.Center, 4.2f, true);
 
-            //头部周身连锁
+            //周身连锁
             for (int i = 0; i < 8; i++) {
                 SpawnMechBlast(npc, npc.Center + Main.rand.NextVector2Circular(140f, 140f), Main.rand.NextFloat(1.4f, 2.4f), false);
             }
 
-            //被举起玩家处的同步炸裂
+            //玩家处同步炸
             Player target = GetDeathTarget(context);
             if (target != null && target.active) {
                 SpawnMechBlast(npc, target.Center, 2.6f, false);

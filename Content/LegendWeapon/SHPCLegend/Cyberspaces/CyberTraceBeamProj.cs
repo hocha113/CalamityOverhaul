@@ -45,8 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             public Vector3 AuraVec => Aura.ToVector3();
         }
 
-        //等离子家族三阶：青→电蓝→幻紫，统一明度与饱和曲线，
-        //同一色系内渐变保证一轮三发颜色相邻而不混杂
+        //等离子三阶 青→电蓝→幻紫
         private static readonly ColorTheme[] Themes = {
             //等离子青
             new() {
@@ -76,15 +75,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         #endregion
 
-        #region 超驱配色（高温红炽：熔岩橙核心 + 深红故障）
+        #region 超驱配色（熔岩橙+深红）
 
-        //核心从近白色改为熔岩橙：保留炽热感但不再纯白
-        //在 Additive Blend 下，纯白核心叠加多层会导致中心区域 RGB 三通道全饱和
-        //熔岩橙让"热"感由色相承载（橙红色调），而不是由"亮度"承载
+        //核心熔岩橙，避 Additive 纯白饱和
         private static readonly ColorTheme OverdriveTheme = new() {
-            Core = new Color(255, 150, 35),      //熔岩橙：高温红炽的视觉核心
-            Glow = new Color(255, 55, 20),       //深红辉光：略提亮以保持与橙核心的层次
-            Aura = new Color(160, 8, 0),         //暗红光晕：更暗的边缘形成黑墙对比
+            Core = new Color(255, 150, 35),      //熔岩橙芯
+            Glow = new Color(255, 55, 20),       //深红辉
+            Aura = new Color(160, 8, 0),         //暗红晕
             ParticleMain = new Color(255, 200, 50),
             ParticleEdge = new Color(255, 30, 5),
         };
@@ -104,55 +101,51 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         private Vector2[] trailHistory;
         private int trailHistoryCount;
 
-        /// <summary>超驱混合量 0-1，在领域内平滑过渡到1</summary>
+        /// <summary>超驱混合 0-1</summary>
         private float overdriveAmount;
-        /// <summary>故障爆发计时器（帧），到0时触发爆发</summary>
+        /// <summary>故障爆发计时</summary>
         private int glitchBurstTimer;
-        /// <summary>当前故障爆发强度 0-1，触发后指数衰减</summary>
+        /// <summary>故障爆发强度 0-1</summary>
         private float glitchBurstIntensity;
 
-        /// <summary>当前帧有效拖尾顶点数，供 WidthFunction 使用</summary>
+        /// <summary>有效拖尾顶点数</summary>
         private int currentValidCount;
 
-        /// <summary>追踪强度倍率，由 ai[1] 注入；默认 1f</summary>
+        /// <summary>追踪倍率，ai[1]，默认1</summary>
         private float homingMul = 1f;
 
-        //═════════════ 改件行为注入字段 ═════════════
-        //由 SHPCOverride.OnShoot 在 Projectile.NewProjectile 之后直接写入
-        //首帧根据这些字段调整属性，命中/消亡时再消费
+        //改件注入
+        //SHPCOverride.OnShoot 写入，首帧/命中/消亡消费
 
         /// <summary>额外穿透次数</summary>
         public int ExtraPierce;
-        /// <summary>生命周期倍率（>1 飞得更远）</summary>
+        /// <summary>寿命倍率</summary>
         public float LifeMul = 1f;
-        /// <summary>飞行速度倍率，由改件注入</summary>
+        /// <summary>飞行速倍率</summary>
         public float SpeedMul = 1f;
-        /// <summary>命中时引爆微型脉冲爆炸</summary>
+        /// <summary>命中微爆</summary>
         public bool ExplodeOnHit;
-        /// <summary>微型爆炸半径（像素）</summary>
+        /// <summary>微爆半径 px</summary>
         public float ExplodeRadius = 80f;
-        /// <summary>剩余链式跳跃次数（每次跳跃 -1）</summary>
+        /// <summary>剩余链跳</summary>
         public int ChainCount;
-        /// <summary>链式跳跃搜索半径</summary>
+        /// <summary>链跳搜索半径</summary>
         public float ChainRange = 240f;
-        /// <summary>消亡时分裂的副光束数量</summary>
+        /// <summary>消亡分裂数</summary>
         public int SplitOnDeath;
-        /// <summary>是否为子代光束（避免分裂/链跳无限递归）</summary>
+        /// <summary>子代，防递归</summary>
         public bool IsDerived;
-        /// <summary>被机制性吸收/合并的光束置位；OnBeamKill 消费方须检查此标志跳过死亡演出与派生行为</summary>
+        /// <summary>吸收/合并置位，OnBeamKill 跳过死亡派生</summary>
         public bool SuppressDeathEffects;
-        /// <summary>爆炸伤害倍率（新星枪管特判注入，默认1f）</summary>
+        /// <summary>爆炸伤倍率，默认1</summary>
         public float ExplodeDamageMul = 1f;
 
-        /// <summary>实际生命预算（按 LifeMul 缩放）</summary>
+        /// <summary>生命预算，LifeMul</summary>
         private float lifeBudget = TotalAICalls;
 
         #endregion
 
-        /// <summary>
-        /// 由改件钩子调用：强制改写光束的飞行方向（同时同步 velocity 朝向），
-        /// flyAngle 是私有自管理字段，外部直接改 velocity 会在下一帧被覆盖
-        /// </summary>
+        /// <summary>改件改方向，须写 flyAngle 非仅 velocity</summary>
         public void SetFlightDirection(Vector2 dir) {
             if (dir == Vector2.Zero) return;
             flyAngle = dir.ToRotation();
@@ -160,7 +153,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Projectile.velocity = flyAngle.ToRotationVector2() * speed;
         }
 
-        /// <summary>当前飞行方向单位向量，供改件钩子读取</summary>
+        /// <summary>飞行方向，改件可读</summary>
         public Vector2 FlightDirection => flyAngle.ToRotationVector2();
 
         public override void SetStaticDefaults() {
@@ -185,15 +178,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         public override void AI() {
-            //初始化（仅第一帧）
+            //首帧初始化
             if (Projectile.localAI[0] == 0f) {
                 themeIndex = (int)Projectile.ai[0] % Themes.Length;
                 if (themeIndex < 0) themeIndex = 0;
                 theme = Themes[themeIndex];
                 flyAngle = Projectile.velocity.ToRotation();
-                //ai[1] 追踪倍率，0→1f，负值压制
+                //ai1 追踪倍率，0→1，负压制
                 homingMul = Projectile.ai[1] != 0f ? Projectile.ai[1] : 1f;
-                //首帧消费改件注入：调整穿透与生命预算
+                //首帧消费改件穿透/寿命
                 if (ExtraPierce > 0) {
                     Projectile.penetrate += ExtraPierce;
                 }
@@ -204,7 +197,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             float timeScale = TimeGear.TimeScale;
             float effectiveSpeed = Speed * MathF.Max(SpeedMul, 0.1f) * timeScale;
 
-            //微追踪：仅在有运动时执行，方向存入flyAngle，冻结时保留原方向
+            //微追踪写 flyAngle，冻结保向
             if (effectiveSpeed > 0.01f) {
                 float searchRange = 120f * MathF.Max(homingMul, 1f);
                 NPC target = Projectile.Center.FindClosestNPC(searchRange, true, true);
@@ -219,7 +212,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Projectile.velocity = flyAngle.ToRotationVector2() * effectiveSpeed;
             Projectile.rotation = flyAngle;
 
-            //自管理生命周期：age按timeScale推进，时缓期间等比延长寿命
+            //age 按 timeScale，时缓延寿
             age += timeScale;
             Projectile.timeLeft = MaxLife;
             if (age >= lifeBudget) {
@@ -227,7 +220,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 return;
             }
 
-            //渐变：基于age比例，不依赖timeLeft
+            //渐变按 age 比
             float lifeRatio = age / lifeBudget;
             if (lifeRatio < 0.08f) {
                 fadeAlpha = lifeRatio / 0.08f;
@@ -239,24 +232,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 fadeAlpha = 1f;
             }
 
-            //自管理拖尾位置：以最小间距记录，避免时缓下拖尾坍缩
+            //拖尾最小间距，防时缓坍缩
             UpdateTrailHistory();
 
-            //---- 超驱检测与过渡
+            //超驱过渡
             bool insideDomain = Cyberspace.IsInsideDomainOf(Projectile.owner, Projectile.Center);
             float targetOD = insideDomain ? 1f : 0f;
             float prevOD = overdriveAmount;
             overdriveAmount = MathHelper.Lerp(overdriveAmount, targetOD, 0.055f); //~0.4s过渡
             if (overdriveAmount < 0.005f) overdriveAmount = 0f;
 
-            //首次进入超驱阈值时，给 burstTimer 一个随机初始值，避免立即触发
+            //进超驱阈值随机 burstTimer
             if (prevOD <= 0.3f && overdriveAmount > 0.3f) {
                 glitchBurstTimer = Main.rand.Next(10, 25);
             }
-            //设置更新频率
             Projectile.extraUpdates = insideDomain ? (ExtraUpdates + 1) : ExtraUpdates;
 
-            //间歇性故障爆发（高频黑墙撕裂）
+            //间歇故障爆发
             if (overdriveAmount > 0.3f) {
                 glitchBurstTimer--;
                 if (glitchBurstTimer <= 0) {
@@ -267,13 +259,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             glitchBurstIntensity *= 0.85f;
             if (glitchBurstIntensity < 0.01f) glitchBurstIntensity = 0f;
 
-            //超驱红炽光，加成压低防环境过曝
+            //超驱红光，压加成
             Color lightCol = overdriveAmount > 0.1f
                 ? Color.Lerp(theme.Core, OverdriveTheme.Core, overdriveAmount)
                 : theme.Core;
             Lighting.AddLight(Projectile.Center, lightCol.ToVector3() * (0.6f + overdriveAmount * 0.35f) * fadeAlpha);
 
-            //方形科幻粒子（冻结时不生成）
+            //方粒子，冻结跳过
             if (timeScale > 0.01f) {
                 int baseInterval = overdriveAmount > 0.3f ? 1 : ParticleInterval;
                 int interval = (int)MathHelper.Max(baseInterval / timeScale, baseInterval);
@@ -307,7 +299,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             float spread = 8f + od * 16f;
             int count = 2;
 
-            //超驱时混合配色（高温红白）
+            //超驱混色
             Color mainCol = Color.Lerp(theme.ParticleMain, OverdriveTheme.ParticleMain, od);
             Color edgeCol = Color.Lerp(theme.ParticleEdge, OverdriveTheme.ParticleEdge, od);
 
@@ -323,7 +315,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 PRTLoader.NewParticle<PRT_CyberSquare>(spawnPos, particleVel, mainCol, scale).Configure(edgeCol, lifeTime);
             }
 
-            //超驱时大量横向散射粒子（高温红炽强调）
+            //超驱横散粒子
             if (od > 0.3f && glitchBurstIntensity > 0.1f) {
                 int burstCount = 1 + (int)(glitchBurstIntensity * 2f);
                 for (int i = 0; i < burstCount; i++) {
@@ -337,8 +329,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         #region Trail绘制
 
         private float WidthFunction(float progress) {
-            //将 tailTaper 的衰减范围压缩至有效顶点区间，
-            //使拖尾在实际末端处自然收为 0，避免刚发射时的断尾切口
+            //tailTaper 压到有效顶点，避断尾
             float validRatio = MathF.Max((float)currentValidCount / TrailCacheLen, 0.05f);
             float tailProgress = MathHelper.Clamp(progress / validRatio, 0f, 1f);
 
@@ -346,7 +337,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             noseRise = MathF.Sin(noseRise * MathHelper.PiOver2);
             float tailTaper = 1f - MathF.Pow(tailProgress, 2.0f);
             float width = noseRise * tailTaper;
-            //超驱时光束更粗壮（30→50像素宽）
+            //超驱加粗 30→50
             return MathF.Max(width, 0f) * (30f + overdriveAmount * 20f);
         }
 
@@ -361,7 +352,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (noise == null) return;
 
-            //构建拖尾位置：头部为当前位置，后续从自管理历史取
+            //拖尾位，头=当前
             trailPositions ??= new Vector2[TrailCacheLen];
             trailPositions[0] = Projectile.Center;
             for (int i = 1; i < TrailCacheLen; i++) {
@@ -377,12 +368,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             trail ??= new Trail(trailPositions, WidthFunction, ColorFunction);
             trail.TrailPositions = trailPositions;
 
-            //InitTheme
             if (Projectile.localAI[0] == 0f) return;
             theme = Themes[themeIndex];
 
             shader.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
-            //取主人玩家的领域时间，避免远端拿成本地节奏
+            //uTime 取主人领域时间
             CyberspacePlayer ownerCp = Cyberspace.For(Projectile.owner);
             float beamTime = ownerCp != null && ownerCp.Active
                 ? ownerCp.EffectTime
@@ -393,7 +383,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             shader.Parameters["glowColor"]?.SetValue(theme.GlowVec);
             shader.Parameters["auraColor"]?.SetValue(theme.AuraVec);
             shader.Parameters["uNoiseTex"]?.SetValue(noise);
-            //超驱参数
             shader.Parameters["overdriveAmount"]?.SetValue(overdriveAmount);
             shader.Parameters["glitchBurst"]?.SetValue(glitchBurstIntensity);
             shader.Parameters["odCoreColor"]?.SetValue(OverdriveTheme.CoreVec);
@@ -416,30 +405,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null) return;
 
-            //InitTheme
             if (Projectile.localAI[0] == 0f) return;
             theme = Themes[themeIndex];
 
-            //超驱混合色
             float od = overdriveAmount;
             Color drawAura = Color.Lerp(theme.Aura, OverdriveTheme.Aura, od);
 
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float pulse = 0.9f + 0.1f * MathF.Sin((float)Main.timeForVisualEffects * 0.15f);
-            //超驱时脉冲震荡（幅度降低，避免视觉抖动太剧烈让玩家眩晕）
+            //超驱微脉冲
             pulse += od * 0.18f * MathF.Sin((float)Main.timeForVisualEffects * 0.5f);
             pulse += od * glitchBurstIntensity * 0.15f * MathF.Sin((float)Main.timeForVisualEffects * 1.2f);
             float alpha = fadeAlpha * pulse;
             Vector2 glowOrigin = glow.Size() * 0.5f;
 
-            //外层柔和bloom光晕：超驱时尺寸增量减半（2.5→1.0），
-            //配合深红 Aura 形成"灼烧外圈"而非"巨型炽热光团"
+            //外 bloom，超驱增量 2.5→1.0
             float outerScale = (2.0f + od * 1.0f) * Projectile.scale;
             Color outerColor = drawAura * alpha * (0.30f + od * 0.30f);
             spriteBatch.Draw(glow, drawPos, null, outerColor, 0f,
                 glowOrigin, outerScale, SpriteEffects.None, 0f);
 
-            //结束当前批次，切换到Immediate模式应用能量球着色器
+            //Immediate 能量球着色器
             spriteBatch.End();
 
             Effect orbShader = EffectLoader.CyberEnergyOrb?.Value;
@@ -452,7 +438,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
                 orbShader.Parameters["uTime"]?.SetValue(timeVal);
                 orbShader.Parameters["fadeAlpha"]?.SetValue(alpha);
-                //传入超驱预混合色（与CyberChargeOrbProj保持一致）
+                //超驱预混色
                 Color orbCore = Color.Lerp(theme.Core, OverdriveTheme.Core, od);
                 Color orbGlow = Color.Lerp(theme.Glow, OverdriveTheme.Glow, od);
                 Color orbAura = Color.Lerp(theme.Aura, OverdriveTheme.Aura, od);
@@ -461,8 +447,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 orbShader.Parameters["auraColor"]?.SetValue(orbAura.ToVector3());
                 orbShader.Parameters["orbScale"]?.SetValue(pulse);
                 orbShader.Parameters["uNoiseTex"]?.SetValue(noise);
-                //超驱参数
-                orbShader.Parameters["overdriveAmount"]?.SetValue(od);
+                    orbShader.Parameters["overdriveAmount"]?.SetValue(od);
                 orbShader.Parameters["glitchBurst"]?.SetValue(glitchBurstIntensity);
                 orbShader.Parameters["odCoreColor"]?.SetValue(OverdriveTheme.CoreVec);
                 orbShader.Parameters["odGlowColor"]?.SetValue(OverdriveTheme.GlowVec);
@@ -473,7 +458,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
                 orbShader.CurrentTechnique.Passes[0].Apply();
 
-                //超驱光球尺寸增量减半（0.8→0.35），核心更紧凑
+                //超驱球增量 0.8→0.35
                 float orbDrawScale = (1.1f + od * 0.35f) * Projectile.scale;
                 spriteBatch.Draw(glow, drawPos, null, Color.White, 0f,
                     glowOrigin, orbDrawScale, SpriteEffects.None, 0f);
@@ -481,7 +466,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 spriteBatch.End();
             }
 
-            //恢复调用者期望的批次状态（Additive + Deferred）
+            //恢复 Additive+Deferred
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointWrap,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
@@ -503,13 +488,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 PRTLoader.NewParticle<PRT_CyberSquare>(target.Center + vel * 2f, vel, mainCol, scale).Configure(edgeCol, Main.rand.Next(20, 40));
             }
 
-            //改件钩子：仅 myPlayer 派生，防重复
+            //改件派生仅 myPlayer
             if (Projectile.owner == Main.myPlayer) {
-                //爆炸只在原始光束触发，避免链跳每节都引爆
+                //爆炸仅原始光束
                 if (!IsDerived && ExplodeOnHit && ExplodeRadius > 1f) {
                     SpawnMicroExplosion(target.Center);
                 }
-                //链跳由ChainCount计数控制递减，IsDerived不拦截，保证多段传递
+                //链跳靠 ChainCount，IsDerived 不拦
                 if (ChainCount > 0 && Projectile.numHits == 0) {
                     SpawnChainBeam(target);
                 }
@@ -522,10 +507,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             modifiers.FinalDamage *= multiplier;
         }
 
-        /// <summary>
-        /// 命中处生成微型爆破，半径由 <see cref="ExplodeRadius"/> 控制
-        /// 复用 <see cref="CyberDetonationProj"/> 并通过 localAI[2] 强制覆盖半径
-        /// </summary>
+        /// <summary>命中微爆，半径 <see cref="ExplodeRadius"/>，localAI[2] 覆写</summary>
         private void SpawnMicroExplosion(Vector2 center) {
             int dmg = Math.Max((int)(Projectile.damage * ExplodeDamageMul), 1);
             int idx = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
@@ -539,14 +521,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>
-        /// 链式跳跃：从命中目标朝最近的另一只敌人弹出一束子光束
-        /// 子光束 IsDerived=true，避免再次链跳与分裂导致雪崩
-        /// </summary>
+        /// <summary>链跳最近敌，子束 IsDerived</summary>
         private void SpawnChainBeam(NPC source) {
             NPC next = source.Center.FindClosestNPC(ChainRange, false, true, new System.Collections.Generic.List<NPC> { source });
             if (next == null) {
-                //没找到就不消耗链跳次数
+                //无目标不耗链跳
                 return;
             }
             Vector2 dir = (next.Center - source.Center).SafeNormalize(Vector2.UnitX);
@@ -563,7 +542,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     child.IsDerived = true;
                     child.ChainCount = ChainCount - 1;
                     child.ChainRange = ChainRange;
-                    //保留爆炸属性以便链上每个节点都能炸
+                    //链节点保留爆炸
                     child.ExplodeOnHit = ExplodeOnHit;
                     child.ExplodeRadius = ExplodeRadius;
                 }
@@ -584,16 +563,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center, vel, mainCol, scale).Configure(edgeCol, Main.rand.Next(25, 50));
             }
 
-            //改件钩子：消亡时分裂出更小的副光束，向四周散射
+            //改件消亡分裂
             if (Projectile.owner == Main.myPlayer && !IsDerived && SplitOnDeath > 0) {
                 SpawnSplitBeams();
             }
             SHPCModificationSystem.ForEachModule(Main.player[Projectile.owner], mod => mod.OnBeamKill(this, timeLeft));
         }
 
-        /// <summary>
-        /// 消亡时朝四周分裂出副光束，伤害与速度均削弱
-        /// </summary>
+        /// <summary>消亡四周分裂副光束</summary>
         private void SpawnSplitBeams() {
             int n = SplitOnDeath;
             int dmg = (int)(Projectile.damage * 0.6f);

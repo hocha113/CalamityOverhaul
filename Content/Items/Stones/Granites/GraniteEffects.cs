@@ -10,10 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Stones.Granites
 {
     /// <summary>
-    /// 花岗系共享投射物（Wave 0 基建所有，武器代理只生成不修改）
-    /// <br/><b>GraniteCrystalShard 生成契约</b>：
-    /// <c>Projectile.NewProjectile(source, pos, velocity, ModContent.ProjectileType&lt;GraniteCrystalShard&gt;(), damage, kb, owner)</c>
-    /// —— 无 ai 约定；轻追踪（380px 内锁定），MaxUpdates=2，寿命 55tick，穿透 1
+    /// 花岗共享晶片。无 ai；轻追踪 380px，MaxUpdates=2，寿命 55tick，穿透 1
     /// </summary>
     internal class GraniteCrystalShard : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
@@ -56,7 +53,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             if (VaultUtils.isServer) {
                 return;
             }
-            //棱角晶片迸散 + 微电弧点缀
             for (int i = 0; i < 3; i++) {
                 PRTLoader.NewParticle<PRT_GraniteShard>(Projectile.Center
                     , Main.rand.NextVector2Circular(2.6f, 2.2f) - Vector2.UnitY * Main.rand.NextFloat(1f, 2.5f)
@@ -73,7 +69,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         }
 
         public float GetWidthFunc(float completionRatio) {
-            //碎片电弧细丝：中段最宽也只有 6.5px 半宽，贴 12px 晶片体
+            //半宽上限 6.5px，贴 12px 体
             float progress = completionRatio > 0.5f ? 1f - completionRatio : completionRatio;
             return progress * 2f * Projectile.scale * 6.5f;
         }
@@ -87,7 +83,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         }
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
-            //晶体形体：主刃细长晶面 + 两片斜切侧棱 + 核心辉光（Line 为竖向贴图，旋转补 PiOver2）
+            //Line 竖向，+PiOver2
             Texture2D sliver = CWRAsset.Line.Value;
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 pos = Projectile.Center - Main.screenPosition;
@@ -100,10 +96,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             Color spark = GraniteMarbleVFX.GraniteSpark; spark.A = 0;
 
             spriteBatch.Draw(glow, pos, null, deep * 0.55f * s, 0f, glow.Size() / 2f, s * 0.5f, SpriteEffects.None, 0f);
-            //侧棱：沿主轴斜切的两片短晶面
             spriteBatch.Draw(sliver, pos, null, core * 0.65f * s, rot + 0.42f, origin, new Vector2(0.07f, 0.10f) * s, SpriteEffects.None, 0f);
             spriteBatch.Draw(sliver, pos, null, core * 0.65f * s, rot - 0.42f, origin, new Vector2(0.07f, 0.10f) * s, SpriteEffects.None, 0f);
-            //主刃：长晶面 + 白蓝亮芯
             spriteBatch.Draw(sliver, pos, null, spark * 0.95f * s, rot, origin, new Vector2(0.10f, 0.17f) * s, SpriteEffects.None, 0f);
             spriteBatch.Draw(sliver, pos, null, Color.White * 0.8f * s, rot, origin, new Vector2(0.045f, 0.13f) * s, SpriteEffects.None, 0f);
         }

@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged.Starships
 {
-    //特殊弹药：彗星束，命中沿途释放若干悬浮光点
+    //彗星束，命中沿途光点
     internal class StarshipComet : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;

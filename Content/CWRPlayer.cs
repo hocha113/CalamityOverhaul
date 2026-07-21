@@ -37,11 +37,11 @@ namespace CalamityOverhaul.Content
         public float ScreenShakeValue;
         /// <summary>火力发电活跃帧数</summary>
         public int ThermalGenerationActiveTime;
-        /// <summary>是否了解风力</summary>
+        /// <summary>了解风力</summary>
         public bool UnderstandWindGriven;
-        /// <summary>是否了解风力 MK2</summary>
+        /// <summary>了解风力 MK2</summary>
         public bool UnderstandWindGrivenMK2;
-        /// <summary>是否使用电动火箭</summary>
+        /// <summary>电动火箭骑乘中</summary>
         public bool RideElectricMinRocket;
         /// <summary>卸乘电动火箭恢复周期(帧)</summary>
         public int RideElectricMinRocketRecoverStateTime;
@@ -51,25 +51,25 @@ namespace CalamityOverhaul.Content
         public Vector2 PlayerPositionChange;
         /// <summary>上一帧玩家位置变化量</summary>
         private Vector2 oldPlayerPositionChange;
-        /// <summary>是否有地狱炎爆 debuff</summary>
+        /// <summary>地狱炎爆</summary>
         public bool HellfireExplosion;
-        /// <summary>是否有灵魂火 debuff</summary>
+        /// <summary>灵魂火</summary>
         public bool SoulfireExplosion;
         /// <summary>毁灭者之主</summary>
         public bool DestroyerOwner;
-        /// <summary>是否穿戴英雄无冕</summary>
+        /// <summary>穿戴英雄无冕</summary>
         public bool IsUnsunghero;
-        /// <summary>是否穿戴正义显现</summary>
+        /// <summary>穿戴正义显现</summary>
         public bool IsJusticeUnveiled;
         /// <summary>正义显现触发机会次数</summary>
         public int JusticeUnveiledCharges;
         /// <summary>正义显现触发冷却(帧)</summary>
         public int JusticeUnveiledCooldown;
-        /// <summary>待下帧应用的冲刺速度，非 null 时生效</summary>
+        /// <summary>待下帧冲刺速度，非 null 生效</summary>
         public Vector2? PendingDashVelocity { get; set; } = null;
         /// <summary>翻滚旋转速度倍率</summary>
         public float PendingDashRotSpeedMode = 0.015f;
-        /// <summary>冲刺中是否旋转</summary>
+        /// <summary>冲刺中旋转</summary>
         public bool IsRotatingDuringDash { get; set; }
         /// <summary>冲刺旋转方向，1 顺时针 -1 逆时针</summary>
         public float RotationDirection { get; set; } = 1f;
@@ -81,9 +81,9 @@ namespace CalamityOverhaul.Content
         private const float RotationResetDuration = 15f;
         /// <summary>自定义冷却剩余帧数</summary>
         public int CustomCooldownCounter;
-        /// <summary>掠袭者：冲刺后强化射击就绪</summary>
+        /// <summary>掠袭者冲刺后强化射击就绪</summary>
         public bool RaiderGunDashReady;
-        /// <summary>掠袭者共享冲刺冷却(帧)，每帧减一</summary>
+        /// <summary>掠袭者共享冲刺冷却(帧)</summary>
         public int RaiderGunDashCooldown;
         #endregion
 
@@ -291,7 +291,7 @@ namespace CalamityOverhaul.Content
                 ScreenShakeValue = MathHelper.Clamp(ScreenShakeValue - 0.185f, 0f, 20f);
             }
         }
-        /// <summary>设置屏幕震动强度</summary>
+        /// <summary>屏幕震动强度</summary>
         public void GetScreenShake(float mode) {
             if (!CWRServerConfig.Instance.ScreenVibration) {
                 return;
@@ -327,7 +327,7 @@ namespace CalamityOverhaul.Content
                 damageSource = PlayerDeathReason.ByCustomReason(networkText);
             }
             if (Player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer)) {
-                //死亡时立即下马，骑手端自动广播
+                //死时下马，骑手端自广播
                 crabulonPlayer.MountCrabulon?.CloseMount();
                 crabulonPlayer.IsMount = false;
                 ModifyCrabulon.mountPlayerHeldProj = -1;
@@ -337,7 +337,7 @@ namespace CalamityOverhaul.Content
             return true;
         }
 
-        /// <summary>取玩家当前隐藏的 held 弹幕实例</summary>
+        /// <summary>隐藏 held 弹幕实例</summary>
         internal bool TryGetHeldProjInds<T>(out T result) where T : class {
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile p = Main.projectile[i];
@@ -355,7 +355,7 @@ namespace CalamityOverhaul.Content
             result = null;
             return false;
         }
-        /// <summary>手持武器弹幕是否处于展示态</summary>
+        /// <summary>手持武器弹幕展示态</summary>
         internal bool HeldWeaponInDisplay() {
             return TryGetHeldProjInds(out BaseHeldGun heldGun) && heldGun.OnHandheldDisplayBool;
         }

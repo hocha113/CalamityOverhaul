@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Cyberwares.Skills;
 using System.Collections.Generic;
 using Terraria;
@@ -9,9 +9,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
 {
     /// <summary>
-    /// 自骇水晶，操作系统槽位
-    /// <br/>常驻 +RamRecoveryBonus/s；技能耗 SkillRamCost RAM 清 debuff + ImmunityFrames 无敌
-    /// <br/>RAM 提供器 OnEnterWorld 挂入，IsActive 自查装备，同 CstmVisualEye 模式
+    /// 自骇水晶，操作系统槽
+    /// <br/>常驻 +RamRecoveryBonus/s，技能耗 SkillRamCost 清 debuff + ImmunityFrames 无敌
+    /// <br/>RAM 提供器 OnEnterWorld 挂入，同 CstmVisualEye
     /// </summary>
     internal class SelfHackCrystal : BaseCyberware
     {
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
             Item.value = Item.sellPrice(0, 9, 0, 0);
         }
 
-        /// <summary>查询玩家是否装备本义体，未装备返回 null</summary>
+        /// <summary>未装备返回 null</summary>
         public static SelfHackCrystal GetEquipped(Player player) {
             if (player == null || !player.active) {
                 return null;

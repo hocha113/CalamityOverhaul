@@ -13,65 +13,65 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>狙击瞄具：停火稳瞄积累锁定，锁满上膛后下一发升格为全穿透贯空射线，射后清零重蓄</summary>
+    /// <summary>狙击瞄具，停火稳瞄蓄锁，锁满下一发贯空射线，射后清零重蓄</summary>
     internal sealed class SniperOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;
         //狙击冷白
         public override Color TintColor => new(220, 240, 255);
 
-        //═════ 可调参数 ═════
-        /// <summary>锁定满所需稳瞄帧数</summary>
+        //可调参数
+        /// <summary>锁满所需稳瞄帧</summary>
         internal const int LockFullFrames = 75;
-        /// <summary>帧间瞄准角变化超过此弧度视为甩枪</summary>
+        /// <summary>帧间瞄准角超此弧度视为甩枪</summary>
         private const float AimStableTolerance = 0.045f;
-        /// <summary>甩枪时每帧锁定流失</summary>
+        /// <summary>甩枪每帧锁定流失</summary>
         private const float SwayDrainPerFrame = 1.6f;
-        /// <summary>开火（任意模式）时每帧锁定流失</summary>
+        /// <summary>开火每帧锁定流失</summary>
         private const float FireDrainPerFrame = 6f;
-        /// <summary>收枪时每帧锁定流失</summary>
+        /// <summary>收枪每帧锁定流失</summary>
         private const float HolsterDrainPerFrame = 2.5f;
-        /// <summary>贯空射线基础倍率，基数为合并前单束面值</summary>
+        /// <summary>贯空基础倍率，基数合并前单束面值</summary>
         internal const float RayBaseMul = 7f;
-        /// <summary>每吸收一束光束的补偿倍率；标准 3 束齐射 = 7+4.5 = 11.5×，
-        /// 使单体锁定循环（75 帧蓄锁 + 28 帧射击）略优于持续开火</summary>
+        /// <summary>每吸收一束补偿倍率；标准 3 束 = 7+4.5 = 11.5×，
+        /// 单体锁循环（75+28 帧）略优于持续开火</summary>
         internal const float RayPerBeamMul = 1.5f;
-        /// <summary>左键基准束数，镜像 SHPCOverride.BeamCount（私有常量无法引用，上游改动需同步）</summary>
+        /// <summary>左键基准束数，镜像 SHPCOverride.BeamCount，上游改动需同步</summary>
         private const int VolleyBeamCount = 3;
 
-        //═════ per-玩家锁定状态（槽内为独立实例，勿放 static） ═════
-        /// <summary>锁定值 0..LockFullFrames，仅所有者客户端演算</summary>
+        //per-玩家锁定状态，槽内独立实例勿放 static
+        /// <summary>锁定值 0..LockFullFrames，仅所有者端演算</summary>
         internal float LockCharge;
-        /// <summary>已上膛：锁满待发，直到下一次主射击被消费</summary>
+        /// <summary>已上膛，锁满待发至下次主射消费</summary>
         internal bool LockReady;
-        /// <summary>瞄准晃动反馈 0~1，导引线绘制读取</summary>
+        /// <summary>瞄准晃动 0~1，导引线读取</summary>
         internal float AimJitter;
 
         private float lockCarry;
         private float lastAimAngle;
         private bool hasAimSample;
-        /// <summary>贯空消费发生的 tick，用于吸收同一次射击的其余光束</summary>
+        /// <summary>贯空消费 tick，吸收同次射击其余束</summary>
         private uint consumeTick;
         private bool absorbing;
-        /// <summary>已做过首帧判定的光束，OnBeamKill 清理</summary>
+        /// <summary>已首帧判定光束，OnBeamKill 清理</summary>
         private readonly HashSet<int> seenBeams = [];
 
         public override void Apply(ref ShootContext ctx) {
-            //一击重狙底子（相对旧版弱化，主要输出由锁定机制承担）
+            //一击重狙底子，主输出靠锁定
             ctx.BeamSpeedMul += 0.6f;
             ctx.BeamLifeMul += 0.4f;
             ctx.DamageMul += 0.15f;
             ctx.AttackSpeedMul += -0.3f;
-            //哨兵陷阱：CyberTraceBeamProj 把 ai[1]==0 视为"未注入"并还原为默认追踪 1f，
-            //恰好 -1f 会让 ctx.HomingMul 归 0 反而满额追踪；-0.99f 贴近归零且绕开哨兵
+            //哨兵陷阱，ai[1]==0 还原默认追踪 1f；
+            //-1f 归零反满额，-0.99f 贴近归零绕开哨兵
             ctx.HomingMul += -0.99f;
             ctx.SpreadMul += -1f;
         }
 
-        /// <summary>锁定进度 0~1，上膛时恒 1</summary>
+        /// <summary>锁定进度 0~1，上膛恒 1</summary>
         internal float ChargeRatio => LockReady ? 1f : MathHelper.Clamp(LockCharge / LockFullFrames, 0f, 1f);
 
-        /// <summary>取该玩家槽上的本模块实例，导引线弹幕读取锁定状态用</summary>
+        /// <summary>取玩家槽本模块实例，导引线读锁定</summary>
         internal static SniperOpticModule FindOn(Player player) {
             if (player == null) {
                 return null;
@@ -87,16 +87,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 
         public override void OnPlayerUpdate(Player player) {
             AimJitter = MathF.Max(AimJitter - 0.06f, 0f);
-            //吸收窗口只覆盖消费发生的那一个 tick
+            //吸收窗口仅消费当 tick
             if (absorbing && Main.GameUpdateCount != consumeTick) {
                 absorbing = false;
             }
-            //异常残留自愈（换世界等跳过 OnKill 的路径），正常量级远低于此
+            //异常残留自愈，换世界跳过 OnKill
             if (seenBeams.Count > 400) {
                 seenBeams.Clear();
             }
 
-            //锁定依赖本地准星，仅所有者客户端演算；射线弹幕经生成后由引擎同步
+            //锁定仅所有者端演算，射线生成后引擎同步
             if (player.whoAmI != Main.myPlayer || !player.active) {
                 return;
             }
@@ -110,21 +110,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 
             bool holding = player.HeldItem != null && player.HeldItem.type == SHPCOverride.ID;
             if (!holding) {
-                //收枪退膛：上膛状态不跨武器保留，锁定值缓慢流失
+                //收枪退膛，上膛不跨武器
                 hasAimSample = false;
                 LockReady = false;
                 LockCharge = MathF.Max(LockCharge - HolsterDrainPerFrame, 0f);
                 return;
             }
 
-            //维持唯一的导引线弹幕（开火/零锁定时它自行淡出，不反复生成销毁）
+            //唯一导引线，开火/零锁自行淡出
             int lineType = ModContent.ProjectileType<SHPCSniperLockLineProj>();
             if (player.ownedProjectileCounts[lineType] <= 0) {
                 Projectile.NewProjectile(player.GetSource_FromThis(),
                     player.Center, Vector2.Zero, lineType, 0, 0f, player.whoAmI);
             }
 
-            //开火中（左键/激光持续/右键蓄力都算）：蓄锁被打断快速流失，已上膛不受影响
+            //开火中蓄锁快流失，已上膛不受影响
             if (player.itemAnimation > 0 || player.channel) {
                 hasAimSample = false;
                 if (!LockReady) {
@@ -134,10 +134,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             }
 
             if (LockReady) {
-                return; //已上膛，保持待发
+                return; //已上膛待发
             }
 
-            //准星方向稳定度：比较帧间角速度，允许移动中蓄锁（不检测玩家位移）
+            //准星角速度稳度，允许移动蓄锁
             float aim = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX).ToRotation();
             if (!hasAimSample) {
                 lastAimAngle = aim;
@@ -148,13 +148,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             lastAimAngle = aim;
 
             if (sway > AimStableTolerance) {
-                //甩枪：流失而非清零，容忍小幅修正瞄准
+                //甩枪流失而非清零
                 LockCharge = MathF.Max(LockCharge - SwayDrainPerFrame, 0f);
                 AimJitter = MathF.Min(AimJitter + 0.35f, 1f);
                 return;
             }
 
-            //稳定瞄准：按 TimeGear 推进，时缓期间等比变慢
+            //稳瞄按 TimeGear 推进
             LockCharge += TickUp(ref lockCarry);
             if (LockCharge >= LockFullFrames) {
                 LockCharge = LockFullFrames;
@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 return; //仅首帧判定
             }
 
-            //同一次射击的其余光束并入射线：先于 LockReady 判定，消费当帧 ready 已置 false
+            //同次射击其余束并入，先于 LockReady，当帧 ready 已 false
             if (absorbing && Main.GameUpdateCount == consumeTick) {
                 AbsorbBeam(beam);
                 return;
@@ -180,7 +180,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 return;
             }
 
-            //锁满后的第一束升格：吸收整轮齐射，沿其飞行方向发射贯空射线
+            //锁满首束升格，吸收齐射发贯空
             LockReady = false;
             LockCharge = 0f;
             absorbing = true;
@@ -190,8 +190,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         }
 
         /// <summary>
-        /// 贯空射线伤害：基数取合并前单束面值（聚束枪管的 MergedDamageBonus 先除掉，防止合并加成
-        /// 与射线倍率双吃），倍率 = 基础 + 每吸收一束补偿，束数按当前射击上下文推算（整轮齐射均被并入）
+        /// 贯空伤，基数合并前单束（先除掉 MergedDamageBonus 防双吃），
+        /// 倍率 = 基础 + 每束补偿，束数按当前射击上下文
         /// </summary>
         private static int ResolveRayDamage(Projectile source) {
             ShootContext ctx = SHPCModificationSystem.Resolve(Main.player[source.owner]);
@@ -205,20 +205,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             seenBeams.Remove(beam.Projectile.whoAmI);
         }
 
-        //激光模式成对处理：上膛后开启光柱的瞬间，沿光柱方向先行释放一道贯空射线
+        //激光成对，上膛开光柱瞬间先发贯空
         public override void OnLaserAI(CyberPrismLaserProj laser) {
             if (!LockReady || laser.Projectile.owner != Main.myPlayer) {
                 return;
             }
             LockReady = false;
             LockCharge = 0f;
-            //光柱不被吸收、持续照射，射线只取基础倍率不吃吸收补偿
+            //光柱不吸收，射线只取基础倍率
             FireSkypierceRay(laser.Projectile, laser.Projectile.rotation.ToRotationVector2(),
                 Math.Max((int)(laser.Projectile.damage * RayBaseMul), 1));
         }
 
-        /// <summary>吸收光束：置 SuppressDeathEffects 并抑制自身派生字段后移除，
-        /// 让第三方 OnBeamKill（如霰射碎裂）与自体分裂/爆炸都不在枪口触发</summary>
+        /// <summary>吸收束，置 SuppressDeathEffects 抑制派生后移除，
+        /// 防第三方 OnBeamKill 与自体分裂在枪口触发</summary>
         private static void AbsorbBeam(CyberTraceBeamProj beam) {
             beam.SuppressDeathEffects = true;
             beam.SplitOnDeath = 0;
@@ -243,7 +243,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         }
     }
 
-    /// <summary>狙击导引线，纯视觉零伤害；随锁定进度自枪口渐亮延伸，锁满定格闪烁并播上膛音；SHPCModSniperLock.fx mode=0</summary>
+    /// <summary>狙击导引线，纯视觉；随锁定渐亮，锁满闪烁上膛音；SHPCModSniperLock.fx mode=0</summary>
     internal sealed class SHPCSniperLockLineProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -263,7 +263,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         private float drawCharge;
         private float drawJitter;
         private int convergeTimer;
-        /// <summary>已播报的最高进度档位，回落一段后才允许重播，防阈值附近抖动刷音</summary>
+        /// <summary>已播最高进度档，回落后才重播，防阈值抖刷音</summary>
         private int tickLevel;
 
         public override void SetDefaults() {
@@ -285,7 +285,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             }
             Projectile.timeLeft = 30;
 
-            //准星与锁定状态只在所有者客户端有意义，远端保持隐形等待同步消亡
+            //准星锁定仅所有者端，远端隐形待同步消亡
             if (Projectile.owner != Main.myPlayer) {
                 return;
             }
@@ -304,12 +304,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             Projectile.rotation = aimDir.ToRotation();
             ResolveLength();
 
-            //开火与零锁定时淡出，蓄锁越满越亮
+            //开火/零锁淡出，蓄满越亮
             bool firing = owner.itemAnimation > 0 || owner.channel;
             float targetAlpha = firing || charge <= 0.01f ? 0f : 0.35f + 0.65f * charge;
             fadeAlpha = MathHelper.Lerp(fadeAlpha, targetAlpha, 0.2f);
 
-            //进度滴答：每 25% 一声渐高电子音，带迟滞防抖
+            //进度滴答，每 25% 一声，迟滞防抖
             int level = (int)(charge / 0.25f);
             if (level > tickLevel && level < 4) {
                 tickLevel = level;
@@ -319,7 +319,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 tickLevel = (int)(charge / 0.25f);
             }
 
-            //锁满瞬间：定格闪烁 + 上膛音 + 枪口星环
+            //锁满，定格闪烁+上膛音+枪口星环
             if (prevCharge < 1f && charge >= 1f) {
                 readyFlash = 1f;
                 SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.65f, Pitch = 0.45f }, Projectile.Center);
@@ -335,7 +335,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             prevCharge = charge;
             readyFlash *= 0.88f;
 
-            //蓄锁期沿线稀疏汇聚微粒，锁越满越密
+            //蓄锁沿线微粒，锁满越密
             if (!module.LockReady && charge > 0.12f && fadeAlpha > 0.1f) {
                 convergeTimer++;
                 int interval = (int)MathHelper.Lerp(14f, 6f, charge);
@@ -358,7 +358,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             }
         }
 
-        /// <summary>沿瞄准方向分段步进探墙，单帧一次全程 march</summary>
+        /// <summary>瞄准方向步进探墙，单帧全程 march</summary>
         private void ResolveLength() {
             float len = ProbeStep;
             Vector2 prev = Projectile.Center;
@@ -417,7 +417,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         }
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
-            //上膛待发时线终点定格一枚冷白十字准星，与自适应瞄具的旋转括弧区分
+            //上膛终点冷白十字，区别自适应括弧
             if (Projectile.owner != Main.myPlayer || drawCharge < 1f || fadeAlpha < 0.05f) {
                 return;
             }
@@ -441,7 +441,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         }
     }
 
-    /// <summary>贯空射线：瞬时命中的全穿透狙击射线，音爆双响+沿线真空带；SHPCModSniperLock.fx mode=1</summary>
+    /// <summary>贯空射线，全穿透，音爆双响+沿线真空带；SHPCModSniperLock.fx mode=1</summary>
     internal sealed class SHPCSkypierceRayProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -450,11 +450,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         private const int DamageWindow = 6;
         private const float MaxLength = 2400f;
         private const float HitWidth = 30f;
-        /// <summary>音爆残响与真空回填的延迟帧</summary>
+        /// <summary>音爆残响与真空回填延迟帧</summary>
         private const int EchoFrame = 10;
-        /// <summary>发射屏震满幅幅度</summary>
+        /// <summary>发射屏震满幅</summary>
         private const float MuzzleShake = 4.5f;
-        /// <summary>屏震衰减距离（像素），本地玩家距枪口超过此距离不再震动</summary>
+        /// <summary>屏震衰减距离 px，超距不震</summary>
         private const float ShakeFalloffDist = 1000f;
 
         private static readonly Color RayCore = new(240, 250, 255);
@@ -474,7 +474,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             Projectile.penetrate = -1;
             Projectile.timeLeft = Lifetime;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = -1; //一线贯穿，每个敌人只结算一次
+            Projectile.localNPCHitCooldown = -1; //一线一结算
             Projectile.DamageType = DamageClass.Magic;
         }
 
@@ -487,11 +487,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 Projectile.velocity = Vector2.Zero;
                 ResolveLength();
                 if (Main.netMode != NetmodeID.Server) {
-                    //音爆第一响：瞬时高频裂响
+                    //音爆第一响
                     SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.9f, Pitch = 0.7f }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.Item33 with { Volume = 0.55f, Pitch = 0.85f }, Projectile.Center);
                     SpawnVacuumImplosion();
-                    //屏震随本地玩家与枪口距离线性衰减，远处旁观者不吃满幅震动
+                    //屏震随距枪口线性衰减
                     float falloff = 1f - MathHelper.Clamp(
                         Main.LocalPlayer.Distance(Projectile.Center) / ShakeFalloffDist, 0f, 1f);
                     SHPCNaturalFx.Shake(MuzzleShake * falloff);
@@ -499,7 +499,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             }
 
             int age = Lifetime - Projectile.timeLeft;
-            //音爆第二响：延迟低哑残响 + 真空回填冲击
+            //音爆第二响，残响+真空回填
             if (age == EchoFrame && Main.netMode != NetmodeID.Server) {
                 SoundEngine.PlaySound(SoundID.Item89 with { Volume = 0.5f, Pitch = -0.55f }, Projectile.Center);
                 SpawnVacuumBackfill();
@@ -512,7 +512,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             }
         }
 
-        /// <summary>沿弹道以 32px 步进探测墙体，确定实际射线长度</summary>
+        /// <summary>32px 步进探墙定长度</summary>
         private void ResolveLength() {
             rayLength = 120f;
             while (rayLength < MaxLength) {
@@ -524,7 +524,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             }
         }
 
-        /// <summary>发射瞬间：沿线两侧微粒被吸向线心（真空带成形），枪口终点耀斑</summary>
+        /// <summary>发射瞬间，两侧微粒吸向线心，枪口终点耀斑</summary>
         private void SpawnVacuumImplosion() {
             Vector2 perp = rayDir.RotatedBy(MathHelper.PiOver2);
             for (float d = 60f; d < rayLength; d += 130f) {
@@ -547,7 +547,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             }
         }
 
-        /// <summary>残响时刻：空气回填，粒子自线心向两侧横向排开</summary>
+        /// <summary>残响时刻，空气回填粒子横向排开</summary>
         private void SpawnVacuumBackfill() {
             Vector2 perp = rayDir.RotatedBy(MathHelper.PiOver2);
             for (float d = 40f; d < rayLength; d += 110f) {
@@ -636,7 +636,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             if (star == null) {
                 return;
             }
-            //枪口冷白十字耀星：一锤定音的高光记忆点
+            //枪口冷白十字耀星
             Vector2 muzzleScreen = Projectile.Center - Main.screenPosition;
             float flash = MathF.Pow(fadeAlpha, 1.5f);
             spriteBatch.Draw(star, muzzleScreen, null, RayCore * flash * 0.9f,

@@ -6,7 +6,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>相位机匣：光束约 30 帧传送到最近敌人附近</summary>
+    /// <summary>相位机匣，约 30 帧传送到最近敌附近</summary>
     internal sealed class PhantomFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;

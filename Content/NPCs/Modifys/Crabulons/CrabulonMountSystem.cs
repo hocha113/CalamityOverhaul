@@ -5,7 +5,7 @@ using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
-    /// <summary>菌生蟹骑乘：骑手客户端为运动权威，蟹每帧吸附；见CrabulonMountPlayer</summary>
+    /// <summary>骑乘，骑手权威，蟹吸附；见MountPlayer</summary>
     internal class CrabulonMountSystem
     {
         private readonly NPC npc;
@@ -21,12 +21,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return npc.Top + new Vector2(0, yOffset);
         }
 
-        /// <summary>蟹箱体左上角，以骑手中心为锚</summary>
+        /// <summary>蟹箱左上，锚骑手中心</summary>
         public static Vector2 GetAttachedBoxPosition(Player rider, NPC npc) {
             return rider.Center - new Vector2(npc.width / 2f, 0f);
         }
 
-        //本端下马，不发包
+        //本端下马不发包
         public void ForceDismount() {
             bool wasMount = owner.Mount || owner.MountACrabulon;
             owner.Mount = false;
@@ -43,13 +43,13 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //骑手端发起并广播
+        //骑手端发起广播
         public void Dismount() {
             bool isRider = owner.Owner.Alives() && owner.Owner.whoAmI == Main.myPlayer;
 
             if (isRider) {
                 owner.Owner.fullRotation = 0;
-                owner.Owner.velocity.Y -= 5;//仅骑手端改自身速度
+                owner.Owner.velocity.Y -= 5;//仅骑手改自身速
             }
 
             ForceDismount();
@@ -77,14 +77,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 owner.CrabulonPlayer.IsMount = false;
             }
 
-            //上马仅骑手端发起
+            //上马仅骑手发起
             if (ShouldStartMount()) {
                 owner.MountACrabulon = true;
                 owner.SendNetWork();
                 PlayMountSound();
             }
 
-            //吸附动画仅骑手端推进，完成后再广播 Mount
+            //吸附动画骑手推进后广播
             if (owner.MountACrabulon && owner.Owner.whoAmI == Main.myPlayer) {
                 ProcessMountAnimation();
             }
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 && owner.SaddleItem.Alives()
                 && owner.DontMount <= 0
                 && !owner.MountACrabulon
-                && !owner.uiCommandOpen//开着指令环时右键用于取消，不上马
+                && !owner.uiCommandOpen//开环右键取消，不上马
                 && owner.hoverNPC
                 && owner.rightPressed;
         }
@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }, owner.Owner.Center);
         }
 
-        //仅骑手端，操作本地玩家
+        //仅骑手端
         private void ProcessMountAnimation() {
             owner.Owner.RemoveAllGrapplingHooks();
             owner.Owner.mount.Dismount(owner.Owner);
@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         }
 
         private bool HandleMountedAttach() {
-            //鞍具移除自动下马
+            //卸鞍自动下马
             if (!owner.SaddleItem.Alives()) {
                 Dismount();
                 return false;
@@ -157,15 +157,15 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 owner.CrabulonPlayer.IsMount = true;
             }
 
-            //蟹无物理，穿墙由 CrabulonMountPlayer 箱体约束
+            //蟹无物理，箱体约束见MountPlayer
             npc.noGravity = true;
             npc.noTileCollide = true;
 
-            //velocity 吸附锚点，兼作本帧位移
+            //velocity吸附锚
             Vector2 targetPos = GetAttachedBoxPosition(owner.Owner, npc);
             npc.velocity = targetPos - npc.position;
 
-            //起身动画残留帧
+            //起身残留帧
             if (owner.ai[9] > 0) {
                 owner.ai[9]--;
             }

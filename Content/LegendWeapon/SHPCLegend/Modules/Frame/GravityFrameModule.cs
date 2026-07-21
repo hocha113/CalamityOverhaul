@@ -1,6 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>机匣：能量球蓄力时持续吸引附近敌人，爆炸范围扩大</summary>
+    /// <summary>引力机匣，蓄力球持续吸敌，爆炸范围放大</summary>
     internal sealed class GravityFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;

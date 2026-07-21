@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using InnoVault.Concurrent;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.Industrials
         public void DropItem(int id) => DropItem(new Item(id));
 
         public void DropItem(Item item) {
-            //并行阶段把物品生成与发包延迟到主线程执行(串行阶段则立即执行)
+            //并行阶段延后到主线程
             DeferSpawnItem(new EntitySource_WorldEvent(), HitBox, item, type => {
                 if (VaultUtils.isServer) {
                     NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
@@ -193,11 +193,8 @@ namespace CalamityOverhaul.Content.Industrials
                 float ratio = MachineData.UEvalue / MaxUEValue;
                 ratio = MathHelper.Clamp(ratio, 0f, 1f);
 
-                //绘制背景边框
                 Main.spriteBatch.Draw(value, drawPos, new Rectangle(0, 0, width + 4, height + 4), Color.Black, 0, new Vector2((width + 4) / 2, (height + 4) / 2), 1f, SpriteEffects.None, 0f);
-                //绘制背景底色
                 Main.spriteBatch.Draw(value, drawPos, new Rectangle(0, 0, width, height), new Color(50, 50, 50), 0, new Vector2(width / 2, height / 2), 1f, SpriteEffects.None, 0f);
-                //绘制能量条
                 Main.spriteBatch.Draw(value, drawPos - new Vector2(width / 2, height / 2), new Rectangle(0, 0, (int)(width * ratio), height), Color.Lerp(Color.Red, Color.Lime, ratio), 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
 

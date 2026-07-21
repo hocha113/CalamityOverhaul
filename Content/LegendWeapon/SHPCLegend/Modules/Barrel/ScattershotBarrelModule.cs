@@ -12,47 +12,45 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>霰射枪管：光束首次命中或走到尽头碎裂为锥形短程碎光弹片，贴脸满中收益最大</summary>
+    /// <summary>霰射枪管，首命中/尽程碎为锥形短程碎光，贴脸收益高</summary>
     internal sealed class ScattershotBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
-        //霰射狂暴的橙色调
+        //霰射橙
         public override Color TintColor => new(255, 130, 30);
 
-        //═════ 平衡参数 ═════
-        //光束碎裂的弹片数
+        //═════平衡参数═════
+        //碎裂弹片数
         private const int ShardsPerBurst = 5;
-        //每片弹片伤害 = 光束伤害 × 此系数
+        //弹片伤=光束×此值
         private const float ShardDamageMul = 0.12f;
-        //碎裂锥形半角（弧度，~22°）
+        //锥半角~22°
         private const float ConeHalfAngle = 0.38f;
-        //弹片初速（extraUpdates=1，实际每帧位移翻倍）
+        //弹片初速(extraUpdates=1翻倍)
         private const float ShardSpeed = 9f;
-        //右键能量球引爆时的大簇弹片数
+        //右键大簇弹片数
         private const int OrbBurstShards = 10;
-        //大簇每片伤害 = 能量球伤害 × 此系数
+        //大簇伤=球×此值
         private const float OrbShardDamageMul = 0.08f;
-        //同主弹片总量上限，冲顶时挤掉最老弹片为新碎裂腾位（帧率与弹幕表保护）
+        //同主弹片上限，冲顶挤最老
         private const int MaxConcurrentShards = 100;
 
         public override void Apply(ref ShootContext ctx) {
-            //霰弹身份：多束、广散布、单发变弱、真短程贴脸定位
+            //多束广散布、单发弱、短程
             ctx.BeamCountAdd += 2;
             ctx.SpreadMul += 0.8f;
             ctx.DamageMul += -0.3f;
-            //光束在 ~3400px（约两屏）内耗尽：射程惩罚可感知，走到尽头的空炸碎光
-            //又能从碎裂点再延伸 300px，保留"中距离对空放霰弹"的玩法
+            //~3400px尽程，碎后再延~300px
             ctx.BeamLifeMul += -0.55f;
             ctx.ManaCostMul += 0.4f;
         }
 
-        //说明：LaserMode 只能由 Barrel 槽模块开启，而本模块同为 Barrel 槽、互斥，
-        //装备本模块时激光弹幕不可能存在，故 OnLaser* 钩子无需实现（同 Hypersonic/CoralReef 惯例）
+        //LaserMode 仅 Barrel 开，同槽互斥，无 OnLaser*
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
-            //链跳模块会在本钩子前 Kill 光束并已在 OnBeamKill 碎裂过，active 拦截防双碎
+            //链跳已 Kill+碎过，active 拦双碎
             if (beam.IsDerived || !beam.Projectile.active) return;
-            //每束只碎一次：numHits 在钩子结束后才递增，==0 即首次命中
+            //numHits 钩后才++，==0 才首次
             if (beam.Projectile.numHits > 0) return;
             Shatter(beam.Projectile, beam.FlightDirection,
                 Math.Max((int)(beam.Projectile.damage * ShardDamageMul), 1), ShardsPerBurst, 1f);
@@ -60,14 +58,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override void OnBeamKill(CyberTraceBeamProj beam, int timeLeft) {
             if (beam.SuppressDeathEffects) return;
-            //只有从未命中的主束在走到尽头时碎裂；命中过的已在 OnBeamHitNPC 碎过
+            //尽程碎；命中过的已在 OnBeamHitNPC 碎过
             if (beam.IsDerived || beam.Projectile.numHits > 0) return;
             Shatter(beam.Projectile, beam.FlightDirection,
                 Math.Max((int)(beam.Projectile.damage * ShardDamageMul), 1), ShardsPerBurst, 1f);
         }
 
         public override void OnOrbDetonation(CyberChargeOrbProj orb) {
-            //右键大招联动：能量球引爆时朝飞行方向轰出一记大号霰射
+            //右键球引爆大号霰射
             if (orb.Projectile.owner != Main.myPlayer) return;
             Vector2 dir = orb.Projectile.velocity.SafeNormalize(Vector2.Zero);
             if (dir == Vector2.Zero) {
@@ -79,29 +77,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             SHPCNaturalFx.Shake(3f);
         }
 
-        /// <summary>
-        /// 在 source 处朝 dir 碎裂：先落一记碎光爆闪（随机种子在所有者端 roll 后经 ai 传递），
-        /// 再在锥形扇面内撒出非追踪短程弹片
-        /// </summary>
+        /// <summary>碎裂，爆闪(ai0角 ai1种子)后锥撒弹片</summary>
         private static void Shatter(Projectile source, Vector2 dir, int shardDamage, int shardCount, float flashScale) {
             if (source.owner != Main.myPlayer) return;
             float baseAngle = dir.ToRotation();
 
-            //碎裂爆闪：ai0=方向角 ai1=随机种子，视觉与音效收敛在闪光弹幕内保证联机各端一致
+            //爆闪，联机收敛在闪光弹幕
             Projectile.NewProjectile(source.GetSource_FromThis(),
                 source.Center, Vector2.Zero,
                 ModContent.ProjectileType<SHPCShardburstFlashProj>(),
                 0, 0f, source.owner,
                 ai0: baseAngle, ai1: Main.rand.NextFloat(), ai2: flashScale);
 
-            //弹片池冲顶时挤掉最老的几片（多半已飞远、衰减到谷底），新碎裂永远足额有效
+            //冲顶挤最老，新碎足额
             int shardType = ModContent.ProjectileType<SHPCShardburstShardProj>();
             int overflow = SHPCNaturalFx.CountOwned(source.owner, shardType) + shardCount - MaxConcurrentShards;
             for (int k = 0; k < overflow; k++) {
                 KillOldestShard(source.owner, shardType);
             }
             for (int i = 0; i < shardCount; i++) {
-                //锥形均匀铺开 + 少量抖动；随机全部在所有者端 roll，结果烧进同步的 velocity
+                //锥铺+抖，owner 端 roll 进 velocity
                 float ang = baseAngle + MathHelper.Lerp(-ConeHalfAngle, ConeHalfAngle, (i + 0.5f) / shardCount)
                     + Main.rand.NextFloat(-0.06f, 0.06f);
                 Vector2 vel = ang.ToRotationVector2() * ShardSpeed * Main.rand.NextFloat(0.82f, 1.18f);
@@ -112,7 +107,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
         }
 
-        /// <summary>Kill 同主 timeLeft 最小的一片弹片；仅在弹片池冲顶帧调用</summary>
+        /// <summary>Kill 同主 timeLeft 最小弹片，冲顶帧用</summary>
         private static void KillOldestShard(int owner, int type) {
             int best = -1;
             int bestTime = int.MaxValue;
@@ -130,19 +125,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>碎光弹片：非追踪锥形短程，飞得越远伤害越低，Trail+方向高光随衰减收窄</summary>
+    /// <summary>碎光弹片，非追踪短程，距衰+Trail收窄</summary>
     internal sealed class SHPCShardburstShardProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        //═════ 平衡参数 ═════
-        //寿命（更新计，extraUpdates=1 时折合 21 帧）
+        //═════平衡参数═════
+        //寿命(extraUpdates=1≈21帧)
         private const int LifeUpdates = 42;
-        //距离衰减基准射程（像素），衰减曲线在此处到达谷底
+        //衰减基准射程px
         private const float MaxTravel = 300f;
-        //贴脸免衰减的射程占比
+        //贴脸免衰占比
         private const float CloseRangeFrac = 0.18f;
-        //远端伤害谷底倍率
+        //远端伤谷底倍率
         private const float FarDamageMul = 0.35f;
 
         private const int TrailLen = 8;
@@ -157,10 +152,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         private Trail trail;
         private float fadeAlpha;
 
-        /// <summary>已飞距离占比 0~1，伤害与视觉共用的衰减因子来源</summary>
+        /// <summary>已飞占比0~1，伤与视觉共用</summary>
         private float TravelFrac => MathHelper.Clamp(Vector2.Distance(spawnPos, Projectile.Center) / MaxTravel, 0f, 1f);
 
-        /// <summary>当前效力 1→0.35：贴脸全额，远端只剩零头</summary>
+        /// <summary>效力1→0.35</summary>
         private float Potency {
             get {
                 float t = MathHelper.Clamp((TravelFrac - CloseRangeFrac) / (1f - CloseRangeFrac), 0f, 1f);
@@ -194,12 +189,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 Projectile.localAI[0] = 1f;
                 spawnPos = Projectile.Center;
             }
-            //玻璃薄片的空气阻尼：远端明显掉速，衰减与视觉一致可读
+            //空气阻尼
             Projectile.velocity *= 0.988f;
             Projectile.rotation = Projectile.velocity.ToRotation();
             fadeAlpha = MathHelper.Clamp(Projectile.timeLeft / 12f, 0f, 1f);
 
-            //稀疏玻璃碎屑尾迹
+            //稀疏玻璃碎屑
             if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(9)) {
                 PRTLoader.NewParticle<PRT_SHPCShardGlass>(Projectile.Center,
                     -Projectile.velocity * 0.1f + Main.rand.NextVector2Circular(0.5f, 0.5f),
@@ -210,7 +205,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            //距离衰减：霰弹身份的核心结算，贴脸打满、远距蹭痒
+            //距衰结算
             modifiers.FinalDamage *= Potency;
         }
 
@@ -230,7 +225,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         private float WidthFunction(float progress) {
-            //远端弹片拖尾整体收窄，把"衰减"直接画在弹片身上
+            //远端拖尾收窄
             return MathHelper.Lerp(5.5f, 0f, progress) * (0.45f + 0.55f * Potency);
         }
 
@@ -286,7 +281,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     new Color(150, 55, 15, 0) * fadeAlpha * 0.25f,
                     0.4f + 0.25f * potency, Projectile.rotation, 3);
             }
-            //方向高光：玻璃棱片的锐利反光
+            //方向高光
             Texture2D shot = CWRAsset.LightShotAlt?.Value;
             if (shot != null) {
                 Vector2 origin = new(shot.Width, shot.Height * 0.5f);
@@ -299,7 +294,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override bool PreDraw(ref Color lightColor) => false;
     }
 
-    /// <summary>碎光爆闪：SHPCModShardburst.fx 玻璃裂纹+色散波前+碎屑喷发，音效与粒子的联机收敛点</summary>
+    /// <summary>碎光爆闪，SHPCModShardburst.fx，联机音画收敛</summary>
     internal sealed class SHPCShardburstFlashProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -332,10 +327,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
                 if (Main.netMode != NetmodeID.Server) {
-                    //玻璃碎裂双层音：低频碎骨架 + 高频晶莹泛音
+                    //双层碎裂音
                     SoundEngine.PlaySound(SoundID.Shatter with { Volume = 0.3f * FlashScale, Pitch = 0.4f, MaxInstances = 3 }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.45f, Pitch = 0.55f, MaxInstances = 3 }, Projectile.Center);
-                    //远处走到尽头的碎裂常在屏幕外，粒子只在可见时喷发
+                    //屏外不喷粒子
                     if (VaultUtils.IsPointOnScreen(Projectile.Center - Main.screenPosition, 200)) {
                         SpawnBurstParticles();
                     }
@@ -348,7 +343,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Vector2 dir = BurstAngle.ToRotationVector2();
             int glassCount = (int)(8 * FlashScale);
             for (int i = 0; i < glassCount; i++) {
-                //锥形喷出翻滚的玻璃碎屑
+                //锥喷玻璃碎屑
                 Vector2 vel = dir.RotatedBy(Main.rand.NextFloat(-0.55f, 0.55f)) * Main.rand.NextFloat(1.5f, 6.5f);
                 PRTLoader.NewParticle<PRT_SHPCShardGlass>(Projectile.Center, vel,
                     FlashCore, Main.rand.NextFloat(0.45f, 0.9f))
@@ -363,7 +358,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //屏幕外的碎裂不值得为它重启 Immediate 批次（quad 最大半径 ~145px，留余量）
+            //屏外不启 Immediate(~145px 余量)
             if (!VaultUtils.IsPointOnScreen(Projectile.Center - Main.screenPosition, 250)) return false;
             Effect shader = EffectLoader.SHPCModShardburst?.Value;
             Texture2D canvas = VaultAsset.placeholder2?.Value;

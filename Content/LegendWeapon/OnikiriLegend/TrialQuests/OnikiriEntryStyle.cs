@@ -7,7 +7,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.TrialQuests
 {
-    /// <summary>鬼切委托条目：墨黑纸底、朱红刀痕、朱印——复用 OniBrush / OniShaderPanel</summary>
+    /// <summary>鬼切委托条目,复用 OniBrush / OniShaderPanel</summary>
     internal class OnikiriEntryStyle : IEntrustEntryStyle
     {
         private float pulseTimer;

@@ -55,7 +55,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
         public override void Use(Item item, Player player) {
             HalibutPlayer halibutPlayer = player.GetOverride<HalibutPlayer>();
-            //检查技能是否在冷却中
             if (Cooldown > 0 || halibutPlayer.FishSwarmActive) {
                 return;
             }
@@ -80,7 +79,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 player.whoAmI
             );
 
-            //鱼群规模：基础 40-55 条，随领域层数增长
+            //鱼群规模
             int fishCount = Main.rand.Next(40 + 5 * HalibutData.GetDomainLayer(), 55 + 5 * HalibutData.GetDomainLayer());
             for (int i = 0; i < fishCount; i++) {
                 //在玩家周围随机位置生成鱼
@@ -110,7 +109,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //播放音效
             SoundEngine.PlaySound(SoundID.Splash, player.Center);
             SoundEngine.PlaySound(CWRSound.Dash, player.Center); //冲刺音效
         }
@@ -142,17 +140,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Main.projectile[i].owner == player.whoAmI) {
                     Main.projectile[i].timeLeft = 30;
                     if (Main.projectile[i].ModProjectile is FishSwarmController ctrl) {
-                        //视觉：登记释放拍与流线束退场
+                        //视觉，登记释放拍与流线束退场
                         ctrl.SurgeCued = true;
                         ctrl.SurgeDir = surgeDirection;
                     }
                 }
             }
 
-            //聚拢预告：收缩环 + 向心碎光
+            //聚拢预告，收缩环 + 向心碎光
             FishSwarmVFX.GatherCue(player);
 
-            //播放突袭音效
             SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown, player.Center); //俯冲音效
 
             //玩家重新显现
@@ -229,7 +226,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             HalibutPlayer halibutPlayer = Owner.GetOverride<HalibutPlayer>();
 
-            //检查技能是否结束
             if (!halibutPlayer.FishSwarmActive) {
                 Projectile.Kill();
                 return;
@@ -246,7 +242,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //冲刺阶段
             if (DashTimer <= DashDuration) {
-                //冲刺阶段：强力加速
+                //冲刺阶段，强力加速
                 float dashProgress = DashTimer / DashDuration;
 
                 //缓动加速加强冲击
@@ -259,7 +255,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 Owner.velocity = adjustedDirection * (currentDashSpeed + NormalSpeed * dashProgress);
 
-                //化形入场英雄时刻：剪影分批溶解成鳞片 + 破水环 + 定向震（仅首帧）
+                //化形入场英雄时刻
                 if (DashTimer == 1) {
                     FishSwarmVFX.DissolveBurst(Owner, DashDirection);
                 }
@@ -275,7 +271,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             //持续移动阶段
             else {
-                //计算目标速度（朝向光标）
                 Vector2 targetDirection = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.Zero);
                 Vector2 targetVelocity = targetDirection * NormalSpeed;
 
@@ -304,12 +299,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //突袭释放拍：聚拢结束、锥形射出的那一帧（timeLeft 由突袭激活时设为 30，聚拢 15 帧）
+            //突袭释放拍
             if (SurgeCued && Projectile.timeLeft == 15) {
                 FishSwarmVFX.ReleaseCue(Owner, SurgeDir);
             }
 
-            //流线束包络：入场渐起，突袭触发后退场
+            //流线束包络，入场渐起，突袭触发后退场
             ribbonEnv = MathHelper.Lerp(ribbonEnv, SurgeCued ? 0f : 1f, 0.1f);
 
             //防止玩家受到其他速度影响
@@ -321,7 +316,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //技能结束时恢复玩家重力
             if (Owner != null && Owner.active) {
                 Owner.gravity = Player.defaultGravity;
-                //化形退场英雄时刻：鳞片收拢重织人形，掩住玩家显形
+                //化形退场英雄时刻
                 FishSwarmVFX.ReformBurst(Owner);
             }
             Owner.GetOverride<HalibutPlayer>().FishSwarmActive = false;
@@ -433,7 +428,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float jumpPhaseOffset = 0f;
 
         /// <summary>
-        /// 转向敏捷度：外层鱼更迟钝，转弯时群体外缘甩尾滞后（惯性差异）
+        /// 转向敏捷度，外层鱼更迟钝，转弯时群体外缘甩尾滞后（惯性差异）
         /// </summary>
         private float turnAgility = 1f;
 
@@ -442,7 +437,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// </summary>
         private Vector2 lastAvgVel = Vector2.Zero;
 
-        //拖影取样帧：快速时更贴近本体，读作速度拉伸而非贴图串
+        //拖影取样帧
         private static readonly int[] GhostIdxFast = [1, 3, 5];
         private static readonly int[] GhostIdxSlow = [2, 4, 6];
 
@@ -526,9 +521,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //检查技能是否结束
             if (!halibutPlayer.FishSwarmActive) {
-                //技能结束：向玩家收拢并入重织的剪影，禁原地淡出 pop
+                //技能结束，向玩家收拢并入重织的剪影
                 Vector2 toHome = OwnerPlayer.Center - Projectile.Center;
                 float homeDist = toHome.Length();
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, toHome.SafeNormalize(Vector2.Zero) * 24f, 0.16f);
@@ -556,12 +550,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //初始化鱼的参数（只在第一帧）
             if (lifeTimer == 0) {
                 fishScale = Main.rand.NextFloat(0.6f, 1.3f);
                 behaviorRandomness = Main.rand.NextFloat(0.8f, 1.3f);
                 jumpPhaseOffset = Main.rand.NextFloat(0f, MathHelper.TwoPi);
-                //按所在螺旋层分配惯性：外层转向滞后
+                //按所在螺旋层分配惯性，外层转向滞后
                 int layer = Math.Min(FishID / 28, 4);
                 turnAgility = MathHelper.Lerp(1.1f, 0.78f, layer / 4f);
             }
@@ -616,16 +609,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //基础参数
             float baseAngle = MathHelper.TwoPi * FishID / 140f; //基础角度分布
 
-            //螺旋层次设计：根据FishID分配到不同的螺旋臂
+            //螺旋层次设计
             int spiralArm = FishID % 5; //5条螺旋臂
             int layerIndex = FishID / 28; //每条螺旋臂约28条鱼，共5层
 
-            //动态螺旋角度：随时间旋转，不同螺旋臂旋转速度不同
+            //动态螺旋角度
             float spiralRotationSpeed = 0.15f + spiralArm * 0.05f; //每条臂旋转速度略有差异
             float spiralAngle = baseAngle + spiralArm * MathHelper.TwoPi / 5f; //5条臂均匀分布
             spiralAngle += lifeTimer * spiralRotationSpeed; //持续旋转
 
-            //螺旋半径：由内向外扩展，形成螺旋线
+            //螺旋半径，由内向外扩展，形成螺旋线
             //冲刺初期半径小且快速收缩，后期稳定在目标半径
             float targetRadius = 30f + layerIndex * 20f; //5层
             float currentRadius = MathHelper.Lerp(
@@ -634,10 +627,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 MathHelper.Clamp(dashProgress * 2f, 0f, 1f) //前半段快速收缩
             );
 
-            //螺旋高度波动：沿螺旋臂方向产生上下波动，增强3D感
+            //螺旋高度波动
             float spiralHeightWave = (float)Math.Sin(spiralAngle * 3f + lifeTimer * 0.2f) * 15f;
 
-            //速度感波动：越靠近玩家运动方向的鱼，半径越小（形成尖端效果）
+            //速度感波动，越靠近玩家运动方向的鱼
             Vector2 playerDir = OwnerPlayer.velocity.SafeNormalize(Vector2.Zero);
             Vector2 fishDir = new Vector2((float)Math.Cos(spiralAngle), (float)Math.Sin(spiralAngle));
             float alignmentFactor = Vector2.Dot(fishDir, playerDir);
@@ -665,14 +658,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Vector2 totalForce = Vector2.Zero;
 
-            //主要吸引力：向目标螺旋位置移动（根据距离动态调整）
+            //主要吸引力
             if (distanceToTarget > 5f) {
                 //距离越远，吸引力越强
                 float urgency = MathHelper.Clamp(distanceToTarget / 80f, 0.8f, 3f);
                 totalForce += toTarget.SafeNormalize(Vector2.Zero) * 10f * urgency;
             }
 
-            //切向速度：让鱼沿着螺旋切线方向移动（产生螺旋流动感）
+            //切向速度
             Vector2 tangentialDirection = new Vector2(
                 -(float)Math.Sin(spiralAngle),
                 (float)Math.Cos(spiralAngle)
@@ -681,12 +674,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float tangentialSpeed = (150f - currentRadius) / 150f * 12f + 5f;
             totalForce += tangentialDirection * tangentialSpeed;
 
-            //速度同步：匹配玩家速度
+            //速度同步，匹配玩家速度
             Vector2 velocityDiff = OwnerPlayer.velocity - Projectile.velocity;
             float syncStrength = MathHelper.Lerp(1.2f, 0.6f, dashProgress); //初期同步更强
             totalForce += velocityDiff * syncStrength;
 
-            //向心力：让鱼持续指向玩家中心（防止螺旋飞散）
+            //向心力
             Vector2 centripetalForce = (OwnerPlayer.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
             float centripetalStrength = MathHelper.Lerp(2f, 4f, dashProgress); //后期向心力增强
             totalForce += centripetalForce * centripetalStrength;
@@ -701,7 +694,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 totalForce += forwardPush * 4f;
             }
 
-            //螺旋脉冲：周期性的径向收缩/扩张，增强动感
+            //螺旋脉冲
             float pulseFactor = (float)Math.Sin(lifeTimer * 0.3f + spiralArm * MathHelper.PiOver2) * 0.5f;
             Vector2 pulseForce = spiralOffset.SafeNormalize(Vector2.Zero) * pulseFactor;
             totalForce += pulseForce;
@@ -709,7 +702,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //应用力和速度限制（外层鱼响应更钝，转向时甩尾滞后）
             Projectile.velocity += totalForce * (0.4f * turnAgility);
 
-            //速度限制：根据在螺旋中的位置动态调整
+            //速度限制，根据在螺旋中的位置动态调整
             float baseMaxSpeed = 40f * behaviorRandomness;
             //内圈鱼速度更快（产生螺旋紧致感）
             float speedMultiplier = MathHelper.Lerp(1.3f, 0.9f, currentRadius / 110f);
@@ -963,7 +956,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 (float)Math.Sin(spiralAngle) * radiusAtPosition
             );
 
-            //目标位置：沿突袭方向前进
+            //目标位置，沿突袭方向前进
             Vector2 tipPosition = OwnerPlayer.Center + surgeDirection * (200f + surgeProgress * 800f); //锥尖不断前进
             Vector2 targetPosition = tipPosition - surgeDirection * distanceFromTip + spiralOffset;
 
@@ -995,7 +988,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //应用力
             Projectile.velocity += totalForce * 0.5f;
 
-            //速度限制：随时间增加
+            //速度限制，随时间增加
             float maxSpeed = 40f + surgeProgress * 40f; //20-60
             float minSpeed = 30f;
 
@@ -1068,12 +1061,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 averageVelocity /= nearbyFishCount;
                 lastAvgVel = averageVelocity;
 
-                //对齐力：向平均速度方向旋转
+                //对齐力，向平均速度方向旋转
                 float alignmentIntensity = 0.1f;
                 Vector2 alignedVelocity = averageVelocity.SafeNormalize(Vector2.Zero) * Projectile.velocity.Length();
                 alignmentForce = (alignedVelocity - Projectile.velocity) * alignmentIntensity;
 
-                //聚合力：向质心移动
+                //聚合力，向质心移动
                 float cohesionIntensity = 0.05f;
                 Vector2 toCenter = (centerOfMass - Projectile.Center).SafeNormalize(Vector2.Zero);
                 cohesionForce = toCenter * cohesionIntensity;
@@ -1081,7 +1074,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //命中演出：水珠扇 + 偶发碎光与轻水声（伤害逻辑不变）
+            //命中演出，水珠扇
             FishSwarmVFX.HitSplash(Projectile.Center, Projectile.velocity);
         }
 
@@ -1093,7 +1086,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
-        /// 群体共享流向：鳞光传染波的传播方向。突袭取突袭方向，
+        /// 群体共享流向，鳞光传染波的传播方向，突袭取突袭方向
         /// 平时取玩家位移方向，兜底用群体平均速度或自身速度
         /// </summary>
         private Vector2 SchoolFlowDir() {
@@ -1127,7 +1120,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             bool isDashing = lifeTimer <= DashPhase;
             bool fast = isDashing || surgeModeActive || speed > 20f;
 
-            //鳞光传染波：波前沿群体流向扫过、朝向又与流向一致的鱼才反光，
+            //鳞光传染波
             //离散小闪点在群里"传染"式波及（纯绘制，无粒子开销）
             Vector2 flow = SchoolFlowDir();
             float align = Vector2.Dot(Projectile.velocity.SafeNormalize(Vector2.Zero), flow);
@@ -1139,7 +1132,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             float glintPulse = align > 0.84f && wave < 0.085f && fishAlpha > 0.6f ? 1f - wave / 0.085f : 0f;
 
-            //运动拖影：少量残影向尾端变暗收小，读作滑动而非贴图串
+            //运动拖影
             int[] ghostIdx = fast ? GhostIdxFast : GhostIdxSlow;
             float ghostBase = fast ? 0.36f : 0.22f;
             for (int k = 0; k < ghostIdx.Length; k++) {
@@ -1169,7 +1162,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //主体：鳞银体色，闪点帧短暂提到近白（禁常驻纯白）
+            //主体，鳞银体色
             Color bodyCol = Color.Lerp(lightColor, FishSwarmVFX.Silver, 0.22f);
             if (glintPulse > 0f) {
                 bodyCol = Color.Lerp(bodyCol, FishSwarmVFX.Spec, glintPulse * 0.55f);

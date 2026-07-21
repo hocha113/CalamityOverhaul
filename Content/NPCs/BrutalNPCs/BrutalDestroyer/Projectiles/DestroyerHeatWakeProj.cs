@@ -7,14 +7,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
 {
-    /// <summary>热浪尾流载体：锚定头部无伤害VFX，速度越快尾流越长越强经<see cref="DestroyerMotionFX.DrawHeatWakeWarp"/>在Warp管线沿轨迹扭曲空气慢速淡出自毁，同头最多一条(<see cref="EnsureForHead"/>去重)；ai[0]:头部NPCwhoAmI</summary>
+    /// <summary>热浪尾流，Warp扭曲；ai[0]头whoAmI；同头至多一条见EnsureForHead</summary>
     internal class DestroyerHeatWakeProj : ModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        /// <summary>尾流出现的最低头部速度</summary>
+        /// <summary>出现最低头速</summary>
         private const float MinSpeed = 20f;
-        /// <summary>低速持续多少帧后自毁</summary>
+        /// <summary>低速自毁帧</summary>
         private const int SlowKillTime = 40;
 
         private float intensity;
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
 
         public override bool ShouldUpdatePosition() => false;
 
-        /// <summary>服务端调用：为指定头部保证存在一条尾流（已有存活实例则跳过）</summary>
+        /// <summary>服务端补头尾流</summary>
         internal static void EnsureForHead(NPC head) {
             if (VaultUtils.isClient || !head.Alives()) {
                 return;
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
             headRotation = head.velocity.SafeNormalize(Vector2.UnitY).ToRotation();
             Projectile.Center = headCenter;
 
-            //强度由头部速度驱动：高速冲刺/俯冲时自然出现，慢速自动消隐
+            //强度跟头速
             float target = MathHelper.Clamp((headSpeed - MinSpeed) / 34f, 0f, 1f);
             intensity = MathHelper.Lerp(intensity, target, 0.2f);
 

@@ -10,7 +10,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common
 {
-    /// <summary>交叉冲刺合击：水平/垂直两侧十字冲，交点冲击环</summary>
+    /// <summary>交叉冲刺合击，水平/垂直两侧十字冲，交点冲击环</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.TwinsCrossDash, typeof(TwinsStateContext))]
     internal class TwinsCrossDashState : TwinsStateBase
     {
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             if (Timer <= GatherPhase) {
                 ExecuteGatherPhase(npc, player);
 
-                //集合末尾标记就绪，等待双方都集合完成再同拍推进
+                //集合末就绪，等双方同拍
                 if (Timer == GatherPhase) {
                     TwinsStateContext.MarkComboReady(context.IsSpazmatism);
                     if (!TwinsStateContext.BothComboReady && partnerWait < MaxPartnerWait) {
@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             return null;
         }
 
-        /// <summary>集合阶段：魔焰眼占水平侧，激光眼占垂直侧，形成十字夹角</summary>
+        /// <summary>集合阶段，魔焰眼占水平侧，激光眼占垂直侧，形成十字夹角</summary>
         private void ExecuteGatherPhase(NPC npc, Player player) {
             float progress = Timer / (float)GatherPhase;
 
@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>蓄力阶段：锁定穿过玩家的冲刺线，末段绷紧颤抖</summary>
+        /// <summary>蓄力阶段，锁定穿过玩家的冲刺线，末段绷紧颤抖</summary>
         private void ExecuteChargePhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase;
             float progress = phaseTimer / (float)ChargePhase;
@@ -141,24 +141,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 TwinsMotion.ChargeGatherFX(npc.Center, Context.IsSpazmatism, progress, 85f);
             }
 
-            //蓄力完成闪光
             if (phaseTimer == ChargePhase - 2 && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.25f }, npc.Center);
             }
         }
 
-        /// <summary>冲刺阶段：双眼同步十字穿越，交点爆出涟漪</summary>
+        /// <summary>冲刺阶段，双眼同步十字穿越，交点爆出涟漪</summary>
         private void ExecuteDashPhase(NPC npc, Player player) {
             Context.ResetChargeState();
 
             if (!hasLaunched) {
                 hasLaunched = true;
                 TwinsMotion.DashLaunch(npc, lockedDirection, DashSpeed, Context.IsSpazmatism, 1.15f);
-                //十字合击同步释放：天空闪雷劈向交点（双眼同帧触发时自动只保留一次）
+                //十字合击同步释放
                 MachineEffect.TriggerSkyFlash(crossPoint, 0.75f);
             }
 
-            //每帧启用碰撞伤害(控制器每帧会重置激光眼的伤害)
+            //每帧开碰撞伤，激光会被控重置
             EnableContactDamage(npc);
             FaceVelocity(npc);
             Context.PushDashVisuals(1f, 1f);
@@ -189,7 +188,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>退出状态：按所处阶段返回各自锚点</summary>
+        /// <summary>退出状态，按所处阶段返回各自锚点</summary>
         private ITwinsState GetExitState() {
             if (Context.IsSpazmatism) {
                 return Context.IsSecondPhase

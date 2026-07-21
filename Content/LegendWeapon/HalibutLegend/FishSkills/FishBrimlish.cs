@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnBrimfishSpitter(Player player, EntitySource_ItemUse_WithAmmo source, int damage, float knockback) {
-            //在玩家后方生成：Shoot 仅在持有玩家的本地客户端调用，
+            //在玩家后方生成
             //Projectile.NewProjectile 会自动通过 NetMessage 同步生成到其它端
             Vector2 behindPlayer = player.Center - new Vector2(player.direction * 120f, 60f);
 
@@ -69,10 +69,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 硫磺火鱼喷射弹幕
-    /// 持有者权威：状态机、锁定、位移在持有者端推进，ai + SendExtraAI 同步其它端
-    /// </summary>
+    /// <summary>硫磺火鱼喷射弹幕 持有者权威</summary>
     internal class BrimfishSpitterProjectile : ModProjectile
     {
         //外观取自灾厄的硫磺鱼贴图，绘制时经GetT2DAsset安全获取，Texture本身只挂占位资源
@@ -101,9 +98,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             set => StateRaw = (float)value;
         }
 
-        /// <summary>
-        /// 当前锁定目标 NPC 索引（-1 表示无），通过 ai[2] 同步
-        /// </summary>
+        /// <summary>当前锁定目标 NPC 索引（-1 表示无），通过 ai[2] 同步</summary>
         private int TargetNPCID {
             get => (int)TargetSlot - 1;
             set => TargetSlot = value + 1;
@@ -163,7 +158,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.rotation = reader.ReadSingle();
         }
 
-        /// <summary>真实瞄准角：存储的 rotation 带 +PiOver4 贴图补正，此处还原</summary>
+        /// <summary>真实瞄准角，存储的 rotation 带 +PiOver4 贴图补正，此处还原</summary>
         private float AimAngle => Projectile.rotation - MathHelper.PiOver4;
 
         private Vector2 MouthPos() => Projectile.Center + AimAngle.ToRotationVector2() * 20f * Projectile.scale;
@@ -202,7 +197,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 lastVisibleState = State;
             }
 
-            //吸气鼓腮包络：蓄力渐鼓，喷吐逐波回瘪
+            //吸气鼓腮包络
             float cheekTarget = State == FishState.Charging ? ChargeProgress
                 : State == FishState.Spitting ? MathHelper.Clamp(1f - wavesDone / (float)SpitWaveCount, 0f, 1f)
                 : 0f;
@@ -210,7 +205,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             spitPulse *= 0.82f;
             spitFlash *= 0.80f;
 
-            //硫磺火环境光照：暗红压底
+            //硫磺火环境光照，暗红压底
             float pulse = (float)Math.Sin(pulsePhase) * 0.3f + 0.7f;
             Lighting.AddLight(Projectile.Center, 0.72f * pulse * glowIntensity, 0.18f * pulse * glowIntensity, 0.06f * pulse * glowIntensity);
 
@@ -222,7 +217,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ember?.Configure(Main.rand.Next(12, 20), 0.015f);
             }
 
-            //朝向目标：所有端都向同步过的目标进行同样的 Lerp 收敛，
+            //朝向目标
             //避免远端在两次 netUpdate 之间出现旋转停滞，并以 SendExtraAI 周期校正漂移
             if ((State == FishState.Charging || State == FishState.Spitting) && IsTargetValid()) {
                 NPC target = Main.npc[TargetNPCID];
@@ -241,11 +236,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void OnStateEntered(FishState newState) {
-            //wavesDone 不在此重置：状态机线性单趟，字段初值 0 已保证首次进入正确，
+            //wavesDone 不在此重置
             //且行为 switch 先于本检测执行，重置会让补发过的波次重复爆发
             switch (newState) {
                 case FishState.Fading:
-                    //化形起烟：一团暗红烟垫在鱼身
+                    //化形起烟，一团暗红烟垫在鱼身
                     if (!VaultUtils.isServer) {
                         PRTLoader.NewParticle<PRT_CrimsonSmoke>(Projectile.Center, new Vector2(0f, -0.3f)
                             , default, Main.rand.NextFloat(0.34f, 0.46f))
@@ -263,7 +258,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             glowIntensity = progress;
             Projectile.scale = progress + 0.08f * (float)Math.Sin(progress * MathHelper.Pi);
 
-            //轻微漂浮：仅持有者修改位置，避免各端独立漂浮造成位置不一致
+            //轻微漂浮
             if (isOwner) {
                 float floatY = (float)Math.Sin(pulsePhase * 0.8f) * 2f;
                 Projectile.Center += new Vector2(0, floatY * 0.1f);
@@ -296,13 +291,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             glowIntensity = 0.6f + progress * 0.4f;
             Projectile.scale = 1f;
 
-            //轻微漂浮：仅持有者修改位置
+            //轻微漂浮，仅持有者修改位置
             if (isOwner) {
                 float floatY = (float)Math.Sin(pulsePhase * 1.2f) * 3f;
                 Projectile.Center += new Vector2(0, floatY * 0.1f);
             }
 
-            //吸气：嘴前余烬与硫尘被吸向嘴部
+            //吸气，嘴前余烬与硫尘被吸向嘴部
             if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
                 SpawnInhaleDust();
             }
@@ -328,13 +323,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //喷射时保持强烈发光
             glowIntensity = 1f - progress * 0.3f;
 
-            //波驱动：视觉爆发所有端按确定性 StateTimer 触发，弹幕仅持有者生成
+            //波驱动
             while (wavesDone < SpitWaveCount && StateTimer >= WaveTimes[wavesDone]) {
                 DoSpitWave(wavesDone, isOwner);
                 wavesDone++;
             }
 
-            //漂浮：仅持有者修改位置
+            //漂浮，仅持有者修改位置
             if (isOwner) {
                 float floatY = (float)Math.Sin(pulsePhase) * 2f;
                 Projectile.Center += new Vector2(0, floatY * 0.05f);
@@ -355,7 +350,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             glowIntensity = 1f - progress;
             Projectile.scale = 1f - progress * 0.5f;
 
-            //化形剥落：鱼身余烬剥离上飘
+            //化形剥落，鱼身余烬剥离上飘
             if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
                 Vector2 off = Main.rand.NextVector2Circular(16f, 10f) * Projectile.scale;
                 var ember = PRTLoader.NewParticle<PRT_FishBrimlishEmber>(Projectile.Center + off,
@@ -364,7 +359,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ember?.Configure(Main.rand.Next(14, 24), 0.03f);
             }
 
-            //缓慢下沉：仅持有者修改速度
+            //缓慢下沉，仅持有者修改速度
             if (isOwner) {
                 Projectile.velocity.Y += 0.2f;
             }
@@ -374,7 +369,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>单波喷吐：视觉在所有端执行，弹幕生成仅持有者</summary>
+        /// <summary>单波喷吐</summary>
         private void DoSpitWave(int waveIndex, bool isOwner) {
             spitPulse = 1f;
             spitFlash = 1f;
@@ -387,7 +382,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 mouthPos = MouthPos();
             Vector2 aimDir = AimAngle.ToRotationVector2();
 
-            //喷口爆发：定向余烬 + 少量硫尘（视觉，所有端）
+            //喷口爆发
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < 6; i++) {
                     var ember = PRTLoader.NewParticle<PRT_FishBrimlishEmber>(mouthPos,
@@ -404,7 +399,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //后坐：仅持有者修改位置
+            //后坐，仅持有者修改位置
             if (isOwner) {
                 Projectile.Center -= aimDir * 3.5f;
             }
@@ -412,7 +407,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SpitWaveProjectiles(waveIndex);
         }
 
-        /// <summary>单波弹幕：总数 FlameCount 均分三波，仅持有者发射并经 NetMessage 同步</summary>
+        /// <summary>单波弹幕</summary>
         private void SpitWaveProjectiles(int waveIndex) {
             if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
@@ -468,7 +463,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return target.active && target.CanBeChasedBy();
         }
 
-        /// <summary>吸气尘流：嘴前硫尘被吸向嘴部</summary>
+        /// <summary>吸气尘流</summary>
         private void SpawnInhaleDust() {
             Vector2 mouth = MouthPos();
             Vector2 spawn = mouth + AimAngle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(28f, 70f);
@@ -479,7 +474,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnKill(int timeLeft) {
-            //熄灭余韵：小把余烬 + 一团暗烟，克制不做二次爆发
+            //熄灭余韵
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < 8; i++) {
                     var ember = PRTLoader.NewParticle<PRT_FishBrimlishEmber>(Projectile.Center,
@@ -517,25 +512,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ? 0.045f * (float)Math.Sin(pulsePhase * 3.4f) : 0f;
             float bodyScale = Projectile.scale * breath * (1f + cheekPuff * 0.13f + tremble - spitPulse * 0.06f);
 
-            //背脊火鞘下层：夹在鱼身之下，根部锚定背脊，焰舌向上（火是世界朝向的）
+            //背脊火鞘下层
             DrawBackSheath(sb, fishTex, drawPos, bodyScale, alpha, under: true);
 
-            //底光：一层暗红光晕压底
+            //底光，一层暗红光晕压底
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow != null && glowIntensity > 0.05f) {
                 sb.Draw(glow, drawPos, null, new Color(150, 40, 16, 0) * (0.4f * glowIntensity * alpha),
                     0f, glow.Size() / 2f, 1.35f * bodyScale, SpriteEffects.None, 0);
             }
 
-            //主体绘制：暗红硫火色调，不再叠同贴图辉光堆
+            //主体绘制
             Color mainColor = Color.Lerp(lightColor, new Color(255, 120, 60), glowIntensity * 0.55f);
             sb.Draw(fishTex, drawPos, null, mainColor * alpha, drawRot, origin,
                 bodyScale, flip, 0);
 
-            //背脊火鞘上层：小簇焰舌覆盖背脊上缘，完成夹心
+            //背脊火鞘上层
             DrawBackSheath(sb, fishTex, drawPos, bodyScale, alpha, under: false);
 
-            //鼓腮热芯：蓄力与喷吐期间腮部一点亮橙，禁纯白
+            //鼓腮热芯
             if (glow != null && cheekPuff > 0.08f) {
                 Vector2 cheekPos = drawPos + aim.ToRotationVector2() * 8f * bodyScale;
                 float cheekGlow = cheekPuff * glowIntensity * alpha;
@@ -543,7 +538,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     0f, glow.Size() / 2f, 0.30f * cheekPuff * bodyScale, SpriteEffects.None, 0);
             }
 
-            //喷口闪：每波喷吐后数帧，沿瞄准方向拉伸的亮橙箭头闪光
+            //喷口闪
             Texture2D shot = CWRAsset.LightShot?.Value;
             if (shot != null && spitFlash > 0.1f) {
                 Vector2 mouthDraw = MouthPos() - Main.screenPosition;
@@ -555,7 +550,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>背脊火鞘：Fire 序列帧，under 层宽暗红 + 窄橙红垫在鱼身下，上层一小簇覆背脊</summary>
+        /// <summary>背脊火鞘</summary>
         private void DrawBackSheath(SpriteBatch sb, Texture2D fishTex, Vector2 drawPos, float bodyScale, float alpha, bool under) {
             Texture2D fire = CWRAsset.Fire?.Value;
             if (fire == null || glowIntensity < 0.1f) {
@@ -581,7 +576,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     0f, rootOrigin, new Vector2(wide * 0.6f, wide * 0.9f * lick), SpriteEffects.None, 0);
             }
             else {
-                //上层小簇：部分覆盖鱼身上缘，完成夹心
+                //上层小簇
                 sb.Draw(fire, anchor + new Vector2(4f * bodyScale, 3f * bodyScale), frame,
                     new Color(232, 110, 40, 0) * (0.38f * env),
                     0.12f, rootOrigin, new Vector2(wide * 0.34f, wide * 0.5f * lick), SpriteEffects.None, 0);
@@ -589,9 +584,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 硫磺火焰弹幕：有形焰核（Fire 序列帧顺速度拉伸）+ 彗尾条带 + 熄灭点余燃残迹
-    /// </summary>
+    /// <summary>硫磺火焰弹幕，有形焰核（Fire 序列帧顺速度拉伸）+ 彗尾条带 + 熄灭点余燃残迹</summary>
     internal class BrimstoneFlameProjectile : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -600,7 +593,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //视觉种子在持有者侧随机决定，通过 ai[1] 同步给其它端，驱动彗尾相位与帧偏移
         private ref float VisualSeed => ref Projectile.ai[1];
 
-        /// <summary>燃尽进度 0..1：后半程焰核收缩、彗尾变短变暗，飞行期始终有量在演化</summary>
+        /// <summary>燃尽进度 0..1，后半程焰核收缩、彗尾变短变暗，飞行期始终有量在演化</summary>
         private float BurnProgress => MathHelper.Clamp((Timer - 55f) / 60f, 0f, 1f);
 
         public override void SetStaticDefaults() {
@@ -637,7 +630,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //减速
             Projectile.velocity *= 0.98f;
 
-            //轻微追踪：仅持有者修改速度，避免不同端追踪不同的最近敌人
+            //轻微追踪
             if (Projectile.IsOwnedByLocalPlayer() && Timer % 15 == 0 && Timer < 60) {
                 NPC target = Projectile.Center.FindClosestNPC(400f);
                 if (target != null) {
@@ -656,7 +649,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             float burn = BurnProgress;
 
-            //硫磺火光照：燃尽走暗
+            //硫磺火光照，燃尽走暗
             float lightMul = 1f - burn * 0.55f;
             Lighting.AddLight(Projectile.Center, 0.66f * lightMul, 0.17f * lightMul, 0.05f * lightMul);
 
@@ -665,7 +658,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>飞行剥落：稀疏硫尘 + 偶发剥离余烬，燃尽越深剥得越多</summary>
+        /// <summary>飞行剥落</summary>
         private void SpawnFlightEffects(float burn) {
             if (Main.rand.NextBool(3)) {
                 Dust brimstone = Dust.NewDustPerfect(
@@ -695,7 +688,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //命中爆发：逆速度方向余烬迸溅 + 挂在命中点的余燃残焰
+            //命中爆发
             Vector2 back = -Projectile.velocity.SafeNormalize(Vector2.Zero);
             for (int i = 0; i < 5; i++) {
                 var ember = PRTLoader.NewParticle<PRT_FishBrimlishEmber>(Projectile.Center,
@@ -726,7 +719,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //熄灭点余燃：残焰活得比弹体久，尾声自行收缩熄灭
+            //熄灭点余燃
             int residues = Main.rand.Next(2, 4);
             for (int i = 0; i < residues; i++) {
                 PRTLoader.NewParticle<PRT_FishBrimlishResidue>(
@@ -743,7 +736,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ember?.Configure(Main.rand.Next(16, 28));
             }
 
-            //彗尾余像：沿旧轨迹布点驻留余烬，尾梢命短先蚀，条带不随弹体一帧消失
+            //彗尾余像
             //低速燃尽死时轨迹缩成一点，余像并入死点余烬，跳过防原地堆料
             if (Projectile.velocity.Length() > 3f) {
                 Vector2 half = Projectile.Size / 2f;
@@ -782,13 +775,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float coreScale = Projectile.scale * (1f - burn * 0.35f);
             float pulse = 0.9f + 0.1f * (float)Math.Sin(Timer * 0.55f + VisualSeed * MathHelper.TwoPi);
 
-            //底光：暗红压底
+            //底光，暗红压底
             if (glow != null) {
                 sb.Draw(glow, drawPos, null, new Color(140, 34, 14, 0) * (0.55f * (1f - burn * 0.5f)),
                     0f, glow.Size() / 2f, 0.42f * coreScale, SpriteEffects.None, 0);
             }
 
-            //焰体剪影：Fire 序列帧顺速度方向 + 速度拉伸，暗红外缘裹橙红焰心
+            //焰体剪影
             if (fire != null) {
                 int frameW = fire.Width / 4;
                 int frameH = fire.Height / 4;
@@ -800,14 +793,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Color outer = Color.Lerp(new Color(190, 50, 18, 0), new Color(96, 22, 12, 0), burn);
                 Color inner = Color.Lerp(new Color(255, 128, 44, 0), new Color(182, 54, 18, 0), burn);
 
-                //强度分配防焰心叠加过曝：外缘承亮、内芯与热芯收敛
+                //强度分配防焰心叠加过曝
                 sb.Draw(fire, drawPos, frame, outer * (0.85f * pulse), faceRot, origin,
                     new Vector2(0.30f, 0.34f * stretch) * coreScale, SpriteEffects.None, 0);
                 sb.Draw(fire, drawPos, frame, inner * (0.62f * pulse), faceRot, origin,
                     new Vector2(0.19f, 0.24f * stretch) * coreScale, SpriteEffects.None, 0);
             }
 
-            //热芯：极小亮橙点，禁纯白
+            //极小亮橙热芯
             if (glow != null) {
                 sb.Draw(glow, drawPos, null, new Color(255, 172, 66, 0) * (0.6f * pulse * (1f - burn * 0.6f)),
                     0f, glow.Size() / 2f, 0.12f * coreScale, SpriteEffects.None, 0);
@@ -816,7 +809,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>彗尾条带：沿 oldPos 轨迹的 TriangleStrip（头亮尾灭，热扰动撕边，嵌余烬火星）</summary>
+        /// <summary>彗尾条带</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
             if (Main.dedServ) {
                 return;
@@ -827,7 +820,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //采样点：当前中心打头，oldPos 依次向尾（去掉未写入的零槽与过近点）
+            //采样点
             Vector2 half = Projectile.Size / 2f;
             Span<Vector2> pts = stackalloc Vector2[1 + Projectile.oldPos.Length];
             int count = 0;

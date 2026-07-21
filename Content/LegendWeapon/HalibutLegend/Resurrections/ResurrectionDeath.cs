@@ -248,7 +248,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         private void UpdateDeathAnimationPhase() {
             float progress = stateTimer / (float)DeathAnimationDuration;
 
-            //第一阶段：拉扯效果（0-0.4）
+            //阶段1、拉扯（0-0.4）
             if (progress < 0.4f) {
                 float pullProgress = progress / 0.4f;
 
@@ -272,7 +272,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 //玩家开始变透明
                 playerAlphaMultiplier = 1f - pullProgress * 0.3f;
             }
-            //第二阶段：扭曲消失（0.4-0.7）
+            //阶段2、扭曲消失（0.4-0.7）
             else if (progress < 0.7f) {
                 float dissolveProgress = (progress - 0.4f) / 0.3f;
 
@@ -307,7 +307,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                     midPhaseSoundPlayed = true; //只记录中段音效播放
                 }
             }
-            //第三阶段：执行死亡（0.7-1.0）
+            //阶段3、执行死亡（0.7-1.0）
             else {
                 float fadeProgress = (progress - 0.7f) / 0.3f;
 

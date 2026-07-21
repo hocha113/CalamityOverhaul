@@ -14,24 +14,22 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Wraiths.GhostHands
 {
     /// <summary>
-    /// 焦黑裂隙的客户端贴饰层（§3.3/§5 表 #3#4）：锚点裂缝 + 手印路标。
-    /// 印记由锚点坐标做种确定性生成，无需存档与同步（各端同种子同结果，
-    /// 客户端锚知识来自 <c>WraithNet.SiteSync</c> 镜像）；认主后保留（反噬取锁的地标）
+    /// 客户端贴饰，锚点裂缝+手印。锚坐标做种，SiteSync 镜像
     /// </summary>
     internal sealed class GhostHandSiteDecor : ModSystem
     {
         private struct HandMark
         {
             public Vector2 Pos;
-            public Vector2 Up;          //指向方位(墙面=竖直向上,地/顶面=朝锚点)
+            public Vector2 Up;          //面法线
             public float Size;
             public float Tilt;
-            public int ScratchCount;    //0=无抓痕
+            public int ScratchCount;    //抓痕数
             public float ScratchLen;
-            public bool NearAnchor;     //≤25 瓦叠余烬微光
+            public bool NearAnchor;     //近锚
         }
 
-        //环带(瓦)与各带印记数,共 24 处:越近越密
+        //环带瓦与印记数
         private static readonly int[] RingRadii = [90, 60, 40, 25, 15, 8];
         private static readonly int[] RingCounts = [1, 2, 3, 4, 6, 8];
 
@@ -48,7 +46,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             if (Main.dedServ || Main.gameMenu) {
                 return;
             }
-            //上线闸:系统未开放期间贴饰不落画——调试期留下的旧锚在正常游玩里也不显形迹
+            //上线闸关不画贴饰
             if (!WraithDirector.CanonContentActive) {
                 return;
             }
@@ -60,7 +58,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             if (local == null || !local.active) {
                 return;
             }
-            //印记依赖已加载的瓦数据:贴近后周期重建,同种子结果收敛一致
+            //贴近后周期重建印记
             float localDistSq = Vector2.DistanceSquared(local.Center, record.Anchor);
             if (localDistSq < 2400f * 2400f && (builtAnchor != record.Anchor || ++rebuildTimer >= 300)) {
                 rebuildTimer = 0;
@@ -94,7 +92,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             Point anchorTile = anchor.ToTileCoordinates();
             for (int ring = 0; ring < RingRadii.Length; ring++) {
                 for (int n = 0; n < RingCounts[ring]; n++) {
-                    //rng 抽取顺序固定,与放置成败无关,各端同序
+                    //rng 序固定
                     float angle = (float)(rng.NextDouble() * MathHelper.TwoPi);
                     bool scratches = rng.NextDouble() < 0.6;
                     int scratchCount = 4 + (rng.Next(2));
@@ -118,7 +116,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             }
         }
 
-        /// <summary>沿方位射线在环带附近找"实体壁面贴邻气窝"的面：优先 ≥4×4 大气窝，退而 ≥2×2</summary>
+        /// <summary>环带找壁面贴邻气窝</summary>
         private static bool TryPlaceMark(Point anchorTile, float angle, int ringRadius, out Vector2 pos, out Vector2 up) {
             Vector2 dir = angle.ToRotationVector2();
             for (int pass = 0; pass < 2; pass++) {
@@ -135,7 +133,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             return false;
         }
 
-        /// <summary>该瓦或近邻是否为贴邻气窝的实体面（印记可被实际路过的隧道遇见）</summary>
+        /// <summary>是否贴邻气窝的实体面</summary>
         private static bool TryFindFace(int x, int y, bool wantBigPocket, out Vector2 pos, out Vector2 up) {
             for (int dx = -1; dx <= 1; dx++) {
                 for (int dy = -1; dy <= 1; dy++) {
@@ -156,14 +154,14 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
                 return false;
             }
             int need = wantBigPocket ? 4 : 2;
-            //四个面逐一试:面外侧 need×need 全空即算气窝
+            //四面试气窝
             Span<Point> normals = [new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1)];
             foreach (Point normal in normals) {
                 if (!PocketClear(x + normal.X, y + normal.Y, normal, need)) {
                     continue;
                 }
                 pos = new Vector2(x * 16f + 8f + normal.X * 8f, y * 16f + 8f + normal.Y * 8f);
-                //墙面印记指尖向上;地面/顶面印记指尖沿面横向
+                //墙面指尖向上
                 up = normal.Y == 0 ? -Vector2.UnitY : Vector2.UnitX;
                 return true;
             }
@@ -171,7 +169,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
         }
 
         private static bool PocketClear(int startX, int startY, Point normal, int size) {
-            //气窝沿法线方向铺开,横向对中
+            //气窝沿法线
             for (int depth = 0; depth < size; depth++) {
                 for (int lateral = -size / 2; lateral < size - size / 2; lateral++) {
                     int x = startX + normal.X * depth + (normal.X == 0 ? lateral : 0);
@@ -190,7 +188,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
 
         //====绘制====
 
-        /// <summary>焦炭手印：软斑叠掌 + 五指痕，60% 带下拖抓痕；近锚叠余烬微光</summary>
+        /// <summary>焦炭手印</summary>
         private static void DrawMark(SpriteBatch sb, HandMark mark) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle src = new(0, 0, 1, 1);
@@ -201,12 +199,12 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             float upAngle = mark.Up.ToRotation();
             float s = mark.Size;
 
-            //掌:三层收窄软斑(以透明度层叠近似软边)
+            //掌软斑
             sb.Draw(pixel, screen, src, sootSoft, mark.Tilt, half, new Vector2(16f, 13f) * s, SpriteEffects.None, 0f);
             sb.Draw(pixel, screen, src, sootSoft, mark.Tilt, half, new Vector2(12.5f, 10f) * s, SpriteEffects.None, 0f);
             sb.Draw(pixel, screen, src, soot, mark.Tilt, half, new Vector2(9f, 7.5f) * s, SpriteEffects.None, 0f);
 
-            //五指痕:掌缘沿 up 展开的竖条
+            //五指痕
             Vector2 side = mark.Up.RotatedBy(MathHelper.PiOver2);
             for (int i = 0; i < 5; i++) {
                 float lateral = (i - 2) * 3.4f * s;
@@ -216,7 +214,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
                     half, new Vector2(2.1f * s, len), SpriteEffects.None, 0f);
             }
 
-            //下拖抓痕:指痕沿 -up 拖出的长线(它抓过又滑脱)
+            //下拖抓痕
             for (int i = 0; i < mark.ScratchCount; i++) {
                 float lateral = (i - mark.ScratchCount * 0.5f) * 3.2f * s;
                 float len = mark.ScratchLen * (0.8f + (i % 3) * 0.15f) * s;
@@ -225,7 +223,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
                     half, new Vector2(1.4f * s, len), SpriteEffects.None, 0f);
             }
 
-            //近锚余烬微光:0.06 alpha 闪烁(SoftGlow 加色不遮挡)
+            //近锚余烬
             if (mark.NearAnchor) {
                 Texture2D glow = CWRAsset.SoftGlow?.Value;
                 if (glow != null) {
@@ -236,7 +234,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             }
         }
 
-        /// <summary>裂隙锚贴饰：种子折线裂缝（焦黑描边+余烬内缝闪烁）+ 缝口烟缕</summary>
+        /// <summary>裂隙锚贴饰</summary>
         private static void DrawFissure(SpriteBatch sb, Vector2 anchor, Rectangle view) {
             if (!view.Contains((int)anchor.X, (int)anchor.Y)) {
                 return;
@@ -249,7 +247,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             int segments = 8 + (seed & 3);
             float flicker = 0.5f + 0.5f * MathF.Sin((float)Main.timeForVisualEffects * 0.06f);
 
-            //两条相背的折线,自锚点向外撕开
+            //相背折线
             for (int branch = -1; branch <= 1; branch += 2) {
                 Vector2 cursor = screen;
                 float angle = branch > 0 ? ((seed >> 3 & 15) / 15f - 0.5f) * 1.4f : MathHelper.Pi + ((seed >> 7 & 15) / 15f - 0.5f) * 1.4f;
@@ -265,7 +263,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
                 }
             }
 
-            //缝口烟缕:限入屏,每 90t 一缕
+            //缝口烟缕
             if (!Main.gamePaused && Main.GameUpdateCount % 90 == 0) {
                 PRTLoader.NewParticle<PRT_Smoke>(anchor + Main.rand.NextVector2Circular(8f, 4f),
                     -Vector2.UnitY * Main.rand.NextFloat(0.25f, 0.6f),
@@ -276,12 +274,11 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
     }
 
     /// <summary>
-    /// 入场压场（§5-A）：焦黑枯手在场（含反噬身）时，400px 内的火把/篝火/蜡烛族瓦光发虚变暗，
-    /// 潜壁期缓入、消散期随显形强度退场。玩家携行光无钩可拦，刻意不做
+    /// 入场压场，400px 内瓦光发虚；潜壁缓入、消散退场
     /// </summary>
     internal sealed class GhostHandLightDread : GlobalTile
     {
-        //每帧一次的实体扫描缓存(客户端视觉,非玩法状态)
+        //实体扫描缓存
         private static uint cacheFrame;
         private static GhostHandActor cachedHand;
 
@@ -309,7 +306,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             if (Vector2.DistanceSquared(tileWorld, hand.Center) > 400f * 400f) {
                 return;
             }
-            //发虚摇曳:0.3±0.15;潜壁期 1→0.3 缓入,消散期随强度还光
+            //发虚摇曳
             float dim = 0.3f + 0.15f * MathF.Sin((float)Main.timeForVisualEffects * 0.11f);
             float weight = 1f;
             if (hand.Phase == GhostHandPhase.InWall) {

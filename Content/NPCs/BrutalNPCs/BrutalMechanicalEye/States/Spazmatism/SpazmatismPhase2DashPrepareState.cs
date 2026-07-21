@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>二阶段 dash 准备：更短蓄力+更猛爆发</summary>
+    /// <summary>二阶段 dash 准备，更短蓄力+更猛爆发</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismPhase2DashPrepare, typeof(TwinsStateContext))]
     internal class SpazmatismPhase2DashPrepareState : TwinsStateBase
     {

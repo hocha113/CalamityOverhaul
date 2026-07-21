@@ -16,17 +16,7 @@ using OFR = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs.
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
 {
-    /// <summary>
-    /// 鬼哭·灭世一闪：按下即斩的瞬间水墨巨弧。<br/>
-    /// 没有蓄力、没有时停、没有闪屏 —— 出生帧一声爆响，以玩家为曲率中心的
-    /// 环绕巨月牙（弓背朝瞄准方向、跨度 ~206° 绕身扫开）两帧内揭开，身后
-    /// 错帧跟两层淡墨残像（复笔读法）；刀身水墨化：墨分五色的密度台阶、
-    /// 干笔飞白、暗侧洇边、起笔端散锋分叉，白热剃刀线仍贴锋利侧。<br/>
-    /// 施展帧玩家身周同时炸开一圈泼墨罡气（黑红墨舌 + 冲击环 + 墨浪烟，
-    /// 画在身后层，人从墨浪里劈出来），伤害沿可见弧带单次巨额结算。<br/>
-    /// 判定为贴刀光的弧形折线带（蠕虫/阿瑞斯节段减伤惯例）。<br/>
-    /// ai[0]=刀线角(弧度) ai[1]=尺寸倍率
-    /// </summary>
+    /// <summary>鬼哭·灭世一闪. ai[0]=刀线角(弧度) ai[1]=尺寸倍率</summary>
     internal class OniAnnihilate : ModProjectile, IPrimitiveDrawable, ICrimsonFarDrawable, IOverlayDrawable, IOniBladeOccupant
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -35,31 +25,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         private const int DamageEnd = 8;
         /// <summary>演出总时长</summary>
         private const int Lifetime = 46;
-        /// <summary>施展摆臂帧数（只摆姿态，不锁位移不锁操控）</summary>
+        /// <summary>摆臂帧</summary>
         private const int PoseFrames = 6;
-        /// <summary>大挥后的残心余韵帧数(持刀停在收势位,末段淡出)</summary>
+        /// <summary>残心余韵帧</summary>
         private const int ZanshinFrames = 12;
-        /// <summary>主弧 quad 半长轴(px)</summary>
+        /// <summary>主弧半长轴(px)</summary>
         private const float ArcHalfX = 760f;
-        /// <summary>主弧 quad 半短轴(px)（略压扁的滚转透视）</summary>
+        /// <summary>主弧半短轴(px)</summary>
         private const float ArcHalfY = 690f;
-        /// <summary>近身罡气判定半径(px):泼墨罡气(墨舌 190~280px)视觉覆盖的贴身圈,略盖过其外缘</summary>
+        /// <summary>近身罡气半径(px)</summary>
         private const float NearBurstRadius = 320f;
-        /// <summary>擦边宽恕（px）：目标箱外扩——刀光辉光比核心宽</summary>
+        /// <summary>擦边外扩(px)</summary>
         private const int GrazePad = 18;
-        /// <summary>弧带判定相对视觉厚度的贪婪倍率</summary>
+        /// <summary>弧带厚度贪婪倍率</summary>
         private const float ArcThickMul = 1.12f;
-        /// <summary>扇形补心辐条宽(px):相邻辐条在弧半径处间距约 105px,须小于此宽以保证扇内无缝</summary>
+        /// <summary>扇形辐条宽(px)</summary>
         private const float SpokeWidth = 180f;
-        /// <summary>罡气舌数量</summary>
+        /// <summary>罡气舌数</summary>
         private const int TongueCount = 10;
 
-        private OFR.BladeDef arcDef;      //主弧：血墨挥毫的本体
+        private OFR.BladeDef arcDef; //主弧
 
         private bool initialized;
         private int timer;
 
-        //罡气舌静态定义（出生帧生成，泼在触发瞬间的位置不追人）
+        //罡气舌,出生帧定死不追人
         private readonly float[] tongueAngle = new float[TongueCount];
         private readonly float[] tongueLen = new float[TongueCount];
         private readonly float[] tongueHalfWidth = new float[TongueCount];
@@ -69,27 +59,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         private float SizeMul => Projectile.ai[1] > 0.05f ? Projectile.ai[1] : 1f;
         private Player Owner => Main.player[Projectile.owner];
 
-        //大挥的实体刀:巨弧是这一挥的结果,不是凭空出现的天象
         private readonly OniBladePose bladePose = new();
 
-        /// <summary>大挥+残心头段硬占刀权:连段就地冻结让位,10 帧后即恢复,"零后摇"身份不破</summary>
+        /// <summary>硬占刀权,Pose+4 帧</summary>
         bool IOniBladeOccupant.HardOccupiesBlade => timer <= PoseFrames + 4;
 
-        /// <summary>大挥落定的签名拍软保留:硬占结束后再留 2 帧收势停顿,连段续接时刀从收势位划出而非撞进来</summary>
+        /// <summary>软保留收势,Pose+6 帧</summary>
         bool IOniBladeOccupant.ReservesBlade => timer <= PoseFrames + 6;
 
-        /// <summary>
-        /// 触发接口：在持有者客户端调用（<c>player.whoAmI == Main.myPlayer</c> 时），
-        /// tML 自动完成多人同步；按下即斩，调用方无需后续干预。
-        /// 同一玩家已有巨斩进行中时忽略并返回 null
-        /// </summary>
-        /// <param name="player">攻击发起者</param>
-        /// <param name="focus">刀线中心（世界坐标，一般传玩家中心）</param>
-        /// <param name="aim">瞄准方向（无需归一化，决定巨斩的刀线角度）</param>
-        /// <param name="damage">伤害（单次巨额结算，倍率由调用方控制）</param>
-        /// <param name="knockback">击退</param>
-        /// <param name="scale">尺寸倍率（巨弧/罡气随之缩放）</param>
-        /// <param name="source">生成源，null 则回退 Misc 源</param>
+        /// <summary>owner 端触发,已有进行中则返 null</summary>
+        /// <param name="focus">刀线中心,一般玩家中心</param>
+        /// <param name="aim">瞄准方向,可未归一化</param>
+        /// <param name="source">null 回退 Misc</param>
         public static Projectile Fire(Player player, Vector2 focus, Vector2 aim, int damage, float knockback,
             float scale = 1f, IEntitySource source = null) {
             if (player.ownedProjectileCounts[ModContent.ProjectileType<OniAnnihilate>()] > 0) {
@@ -118,7 +99,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             Projectile.ignoreWater = true;
             Projectile.netImportant = true;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 60;   //伤害窗单次结算
+            Projectile.localNPCHitCooldown = 60; //伤害窗单次结算
         }
 
         public override bool ShouldUpdatePosition() => false;
@@ -133,8 +114,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             Owner.ChangeDir(facingDir);
             float flip = facingDir;
 
-            //主弧：quad 中心 = 玩家（曲率中心在人身上，读作"从人挥出去"），
-            //Rot = 瞄准角 → 弓背朝瞄准方向鼓出；两帧揭开，真·一闪
+            //主弧中心=玩家,Rot=瞄准角,两帧揭开
             arcDef = new OFR.BladeDef {
                 SweepFrames = 2, Life = Lifetime,
                 ErodeStart = 10, ErodeFrames = 30,
@@ -148,7 +128,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
                 Palette = OFR.BladePalette.Escalate(0.55f),
             };
             
-            //罡气舌：黄金角均布 + 随机抖动，长短宽窄各异 —— 泼出去的墨不整齐
+            //黄金角均布+抖动
             const float GoldenAngle = 2.39996323f;
             for (int i = 0; i < TongueCount; i++) {
                 tongueAngle[i] = MathHelper.WrapAngle(seed * MathHelper.TwoPi + i * GoldenAngle
@@ -175,11 +155,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             Lighting.AddLight(Projectile.Center, new Vector3(1.35f, 0.55f, 0.32f) * seam * 1.5f);
         }
 
-        /// <summary>
-        /// 施展大挥：实体刀 6 帧内自肩后甩到收势位(挥动帧甩出角度残影),
-        /// 随后残心停刀、末段淡出——巨弧读作这一挥的延伸。
-        /// 只摆姿态不锁位移;itemTime 锁仅覆盖原摆臂窗,残心期操控完全自由
-        /// </summary>
+        /// <summary>摆臂姿态,不锁位移,残心期放手</summary>
         private void ApplyCastPose() {
             int dir = MathF.Cos(CutAngle) >= 0f ? 1 : -1;
             float sw = OFR.EaseOutCubic(MathHelper.Clamp(timer / (float)PoseFrames, 0f, 1f));
@@ -195,7 +171,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
                 }
             }
             else {
-                //残心:停在收势位,后段淡出;玩家续连段或另起技能时立刻放手
+                //残心停刀,连段/硬占则放手
                 if (OniBladeOccupancy.ComboClaims(Owner) || OniBladeOccupancy.AnyHardOccupant(Owner, Projectile)) {
                     bladePose.Opacity = 0f;
                     return;
@@ -205,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             bladePose.ApplyPose(Owner, Projectile);
         }
 
-        /// <summary>遮挡层：大挥实体刀与其残影,稳定盖在巨弧与罡气之上</summary>
+        /// <summary>实体刀遮挡层</summary>
         void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
             if (Main.dedServ) {
                 return;
@@ -213,9 +189,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             bladePose.Draw(spriteBatch, Owner);
         }
 
-        /// <summary>出生帧：全部声画一次砸下</summary>
+        /// <summary>出生帧声画</summary>
         private void DetonateFx() {
-            //爆响复合：低爆垫底、布帛撕裂、高频刀鸣、太鼓落点
             SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -0.30f, Volume = 1f }, Projectile.Center);
             //SoundEngine.PlaySound(SoundID.Item122 with { Pitch = -0.50f, Volume = 0.85f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.50f, Volume = 0.90f }, Projectile.Center);
@@ -226,7 +201,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
                 return;
             }
 
-            //Bloom 冲击降档保留（不是闪屏）：轻微拉丝 + 环境辉光
+            //Bloom 降档,非闪屏
             CrimsonImpactFX.PushImpact(Projectile.Center, 0.20f);
             CrimsonImpactFX.PushAmbience(Projectile.Center, 0.35f);
 
@@ -240,12 +215,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             SpawnBurstParticles();
         }
 
-        /// <summary>泼墨罡气的粒子敷层：墨浪烟横推 + 上涌、墨滴飞溅、绯红火花点缀</summary>
+        /// <summary>罡气粒子敷层</summary>
         private void SpawnBurstParticles() {
             float s = SizeMul;
             Vector2 feet = Owner.active ? Owner.Bottom : Projectile.Center;
 
-            //墨浪烟：从脚下向外横推的尘浪
+            //墨浪烟横推
             for (int i = 0; i < 16; i++) {
                 float dir = Main.rand.NextBool() ? 1f : -1f;
                 Vector2 pos = feet + new Vector2(dir * Main.rand.NextFloat(6f, 30f) * s, -Main.rand.NextFloat(0f, 14f));
@@ -254,7 +229,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
                     , Main.rand.NextFloat(0.10f, 0.17f) * s)
                     ?.Configure(Main.rand.Next(26, 40), new Color(70, 18, 26), new Color(18, 8, 14));
             }
-            //少量竖直上涌：罡气立起来的那几缕
+            //竖直上涌
             for (int i = 0; i < 6; i++) {
                 Vector2 pos = Projectile.Center + new Vector2(Main.rand.NextFloat(-26f, 26f) * s, Main.rand.NextFloat(-10f, 16f));
                 Vector2 vel = new(Main.rand.NextFloat(-0.6f, 0.6f), -Main.rand.NextFloat(1.4f, 2.6f));
@@ -262,7 +237,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
                     , Main.rand.NextFloat(0.09f, 0.14f) * s)
                     ?.Configure(Main.rand.Next(30, 44), new Color(60, 16, 24), new Color(16, 8, 14));
             }
-            //墨滴飞溅：AlphaBlend 暗墨圆滴，抛物甩出（加色画不了黑，专用墨滴粒子）
+            //墨滴,AlphaBlend(加色画不了黑)
             for (int i = 0; i < 14; i++) {
                 Vector2 vel = (Main.rand.NextFloat(MathHelper.TwoPi)).ToRotationVector2()
                     * Main.rand.NextFloat(5f, 13f);
@@ -271,7 +246,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
                     , Main.rand.NextFloat(0.30f, 0.55f) * s)
                     ?.Configure(Main.rand.Next(22, 36));
             }
-            //绯红火花点缀：纯黑会闷，留一点能量感
+            //绯红火花点缀
             for (int i = 0; i < 10; i++) {
                 Vector2 vel = (Main.rand.NextFloat(MathHelper.TwoPi)).ToRotationVector2()
                     * Main.rand.NextFloat(4f, 11f);
@@ -281,8 +256,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             }
         }
 
-        //==================== 判定 ====================
-
         public override bool? CanHitNPC(NPC target) {
             if (timer > DamageEnd) {
                 return false;
@@ -290,7 +263,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             return base.CanHitNPC(target);
         }
 
-        /// <summary>巨物减伤（参照村正处刑斩）：蠕虫节体 0.2，阿瑞斯节段 0.4</summary>
+        /// <summary>蠕虫0.2 阿瑞斯节段0.4</summary>
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             if (CWRLoad.WormBodys.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.2f;
@@ -300,12 +273,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             }
         }
 
-        /// <summary>
-        /// 贪婪判定（对齐残心斩/绯红裂空）：目标箱外扩擦边 + 弧带折线（厚度对齐视觉辉光）
-        /// + 中心→弧上辐条填月牙内侧 + 贴身罡气圈。<br/>
-        /// 碰撞 ScaleMul 下限避免出生爆发未涨满时"画到了打不到"；
-        /// localNPCHitCooldown(60) 大于伤害窗,多层命中仍是单次结算
-        /// </summary>
+        /// <summary>擦边外扩+弧折线+辐条+贴身圈,ScaleMul 下限防出生漏打</summary>
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             if (!initialized) {
                 return false;
@@ -325,7 +293,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             const int Segments = 24;
             OFR.BladeState state = OFR.ComputeState(in arcDef, Math.Max(timer, 1));
             float hitScale = MathF.Max(state.ScaleMul, 0.92f);
-            //HalfX 已含 SizeMul；厚度对齐视觉 Thick×HalfX，不再用偏低的硬编码 220
+            //厚度对齐视觉 Thick×HalfX
             float thickWorld = MathF.Max(56f, arcDef.Thick * arcDef.HalfX * hitScale * ArcThickMul);
             float spokeW = SpokeWidth * SizeMul;
             float cp = 0f;
@@ -346,14 +314,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             return false;
         }
 
-        /// <summary>碰撞/割草用弧上点：强制 hitScale，几何与绘制同源但不吃出生缩小</summary>
+        /// <summary>碰撞用弧上点,强制 hitScale</summary>
         private Vector2 HitPointAt(in OFR.BladeState state, float hitScale, float uc) {
             OFR.BladeState hitState = state;
             hitState.ScaleMul = hitScale;
             return OFR.PointAt(in arcDef, in hitState, Projectile.Center, uc);
         }
 
-        /// <summary>割草断藤：沿弧带 + 辐条扫切草/藤等可切物（伤害窗内全开）</summary>
+        /// <summary>弧带+辐条割草</summary>
         public override void CutTiles() {
             if (!initialized || timer > DamageEnd) {
                 return;
@@ -398,9 +366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             }
         }
 
-        //==================== 水墨旋钮时间轴 ====================
-
-        /// <summary>主弧水墨旋钮：墨阶恒强，飞白/洇边随侵蚀期加深，散锋常备</summary>
+        /// <summary>主弧水墨旋钮时间轴</summary>
         private OAR.InkParams ComposeInk() {
             float erodeT = MathHelper.Clamp((timer - 8) / 26f, 0f, 1f);
             return new OAR.InkParams {
@@ -411,9 +377,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             };
         }
 
-        //==================== 绘制 ====================
-
-        /// <summary>主弧 + 残像：实体扩展图元层（EndEntityDraw，盖在实体之上）</summary>
+        /// <summary>主弧,实体扩展图元层</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
             if (Main.dedServ || !initialized) {
                 return;
@@ -431,8 +395,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             OAR.EndDraw(device, pb, pr, pd);
         }
 
-        /// <summary>泼墨罡气：玩家身后层（<see cref="CrimsonFarLayerRender"/> 收集），
-        /// 冲击环垫底、墨舌盖上，人从墨浪里劈出来</summary>
+        /// <summary>身后层罡气,<see cref="CrimsonFarLayerRender"/></summary>
         void ICrimsonFarDrawable.DrawFarSlashes() {
             if (Main.dedServ || !initialized || timer > 20) {
                 return;
@@ -444,7 +407,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             if (!OAR.BeginDraw(device, out Effect fx, out var pb, out var pr, out var pd)) {
                 return;
             }
-            //舌根锚在触发点（泼出去的墨不追人）
+            //舌根锚触发点
             float extend = OFR.EaseOutCubic(MathHelper.Clamp(timer / 7f, 0f, 1f));
             float dissolve = MathHelper.Clamp((timer - 6) / 10f, 0f, 1f);
             float intensity = 1f - 0.30f * dissolve;
@@ -456,7 +419,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             OAR.EndDraw(device, pb, pr, pd);
         }
 
-        /// <summary>冲击环双层：暗墨环（AlphaBlend）+ 绯红缘环（加色、略超前）</summary>
+        /// <summary>冲击环双层,暗墨+绯红缘</summary>
         private void DrawBurstRings() {
             if (CWRAsset.Ring01?.Value is not Texture2D ring) {
                 return;
@@ -464,7 +427,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             Vector2 screenPos = Projectile.Center - Main.screenPosition;
             SpriteBatch sb = Main.spriteBatch;
 
-            //暗墨环：泼出去的那圈墨
+            //暗墨环
             float darkT = MathHelper.Clamp(timer / 12f, 0f, 1f);
             if (darkT < 1f) {
                 float ease = 1f - MathF.Pow(1f - darkT, 3f);
@@ -477,7 +440,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
                 sb.End();
             }
 
-            //绯红缘环：墨圈外沿的一线燃边，略超前
+            //绯红缘环,略超前
             float rimT = MathHelper.Clamp(timer / 10f, 0f, 1f);
             if (rimT < 1f) {
                 float ease = 1f - MathF.Pow(1f - rimT, 3f);

@@ -10,9 +10,6 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
 {
-    /// <summary>
-    /// 物块
-    /// </summary>
     internal class IncineratorTile : ModTile
     {
         public const int TileWidth = 7;

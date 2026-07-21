@@ -6,7 +6,6 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Buffs
 {
-    //时停：被禁忌诅咒命中的目标在时间上被钉死，停止一切行动
     internal class TemporalStasis : ModBuff
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;
@@ -18,7 +17,7 @@ namespace CalamityOverhaul.Content.Buffs
         }
 
         public override void Update(NPC npc, ref int buffIndex) {
-            //持续刷新单体冻结计时，由 WorldFreezeOverNPC 统一拦截AI
+            //WorldFreezeOverNPC 拦截AI
             npc.CWR().TimeFrozenTick = 2;
 
             if (!VaultUtils.isServer && Main.rand.NextBool(4)) {

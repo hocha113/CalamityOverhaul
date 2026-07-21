@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnSummonEffect(Vector2 position) {
-            //新羽自玩家身侧抽出：几瓣绒羽 + 少量气流尘底噪
+            //新羽自玩家身侧抽出
             FishHarpyVFX.DownBurst(position, -Vector2.UnitY, 3, 2.2f);
             for (int i = 0; i < 5; i++) {
                 Dust air = Dust.NewDustPerfect(
@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private ref float StateTimer => ref Projectile.localAI[0];
         private ref float GlobalOrbitAngle => ref Projectile.localAI[1];
-        //飞出目标速度：各端由同一状态机本地算出，出手后加速段的收敛值
+        //飞出目标速度
         private ref float LaunchTargetSpeed => ref Projectile.ai[2];
 
         private const float orbitRadius = 140f;
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private float floatPhase = 0f;
         private const float floatFrequency = 0.08f;
-        //钟摆悬长：荡摆圆弧的半径，端点悬停与中点最低都由它给出
+        //钟摆悬长
         private const float PendulumLength = 34f;
 
         private const int GatherDuration = 25;
@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float spinPhase = 0f;
         private float spinRate = 0f;
         private int launchTicks = 0;
-        //落叶飘行相位：发射时用 identity 播种，多人各端一致
+        //落叶飘行相位
         private float flutterPhase = 0f;
 
         private int launchCountdown = 0;
@@ -189,7 +189,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     LaunchFeather(Owner);
                 }
                 else {
-                    //聚合中被打断：收羽淡出而非瞬灭
+                    //聚合中被打断，收羽淡出而非瞬灭
                     State = FeatherState.Fading;
                     StateTimer = 0;
                 }
@@ -233,7 +233,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     break;
             }
 
-            //暖金弱光：光效克制，羽毛靠形状与运动读
+            //暖金弱光
             float lightIntensity = glowIntensity * 0.3f;
             Lighting.AddLight(Projectile.Center,
                 0.62f * lightIntensity,
@@ -304,7 +304,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             GlobalOrbitAngle = targetAngle;
             glowIntensity = MathHelper.Lerp(0f, 0.4f, progress);
 
-            //materialize：淡入 + 过冲落定，禁 pop-in
+            //materialize
             Projectile.alpha = (int)MathHelper.Max(0, Projectile.alpha - 18);
             Projectile.scale = MathHelper.Lerp(0.55f, 1f, EaseOutBack(progress));
             swayAngle = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + floatPhase) * 0.15f;
@@ -336,12 +336,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float currentRadius = orbitRadius + (float)Math.Sin(StateTimer * 0.05f + floatPhase) * 5f;
             Vector2 orbitPos = owner.Center + GlobalOrbitAngle.ToRotationVector2() * currentRadius;
 
-            //钟摆飘浮：悬点在轨道位上方，羽毛沿圆弧荡摆，端点悬停、过中点最低最快
+            //钟摆飘浮
             pendulumPhase += floatFrequency;
             float theta = (float)Math.Sin(pendulumPhase) * 0.62f;
             Vector2 pivot = orbitPos - new Vector2(0f, PendulumLength);
             Vector2 targetPos = pivot + new Vector2((float)Math.Sin(theta), (float)Math.Cos(theta)) * PendulumLength;
-            //慢沉浮叠加：整体被气流缓缓托起再放下
+            //慢沉浮叠加
             targetPos.Y += (float)Math.Sin(StateTimer * 0.03f + floatPhase) * 4f;
 
             Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.25f);
@@ -380,7 +380,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             GlobalOrbitAngle -= orbitSpeed;
 
-            //转速上来后离心力把摆幅甩平：从钟摆飘浮渐变为绷紧的环带
+            //转速上来后离心力把摆幅甩平
             pendulumPhase += floatFrequency * (1f + speedProgress * 0.8f);
             float swingAmp = MathHelper.Lerp(0.62f, 0.16f, speedProgress);
             float theta = (float)Math.Sin(pendulumPhase) * swingAmp;
@@ -410,7 +410,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             orbitSpeed = MaxOrbitSpeed;
 
-            //盘旋收紧：预告拍，半径向内咬合；末 5 帧摆动压平 + 半径再缩，气动预备
+            //盘旋收紧
             float tighten = MathHelper.Clamp(StateTimer / (float)LaunchDelay, 0f, 1f);
             bool brace = launchCountdown <= 5;
             float radiusMul = MathHelper.Lerp(0.92f, 0.78f, VaultUtils.EaseInOutQuad(tighten));
@@ -419,7 +419,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             GlobalOrbitAngle -= orbitSpeed;
 
-            //羽轴自旋：中段旋起（旋转拖影的能量来源），末 5 帧收旋归位，出手瞬间羽尖已对准切向
+            //羽轴自旋
             spinRate = MathHelper.Lerp(spinRate, brace ? 0.05f : 0.46f, 0.12f);
             spinPhase += spinRate;
             if (brace) {
@@ -436,12 +436,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             glowIntensity = 0.85f + (float)Math.Sin(StateTimer * 1.2f) * 0.1f;
 
-            //向心气流：空气被吸进收紧的羽环
+            //向心气流，空气被吸进收紧的羽环
             if (Main.rand.NextBool()) {
                 SpawnChargeParticle(owner.Center, progress);
             }
 
-            //环带切向涟漪：收紧的可视化预告
+            //环带切向涟漪，收紧的可视化预告
             if (StateTimer % 10 == 0) {
                 Vector2 tangent = (GlobalOrbitAngle - MathHelper.PiOver2).ToRotationVector2();
                 FishHarpyVFX.AirRipple(Projectile.Center - tangent * 8f, tangent, 0.55f);
@@ -482,7 +482,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float speedBonus = orbitSpeed / MaxOrbitSpeed;
             float finalSpeed = LaunchSpeed * (1f + speedBonus * 0.4f);
 
-            //出手只给 55% 初速，Launching 前 8 帧复利加速到全速：被气流抽直的加速拍
             LaunchTargetSpeed = finalSpeed;
             Projectile.velocity = launchDir * finalSpeed * 0.55f;
             Projectile.tileCollide = true;
@@ -512,7 +511,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             float speed = Projectile.velocity.Length();
             if (LaunchTargetSpeed > 0f && speed < LaunchTargetSpeed && launchTicks < 20) {
-                //复利加速段：8 帧内 0.55x 到全速；只在出手窗口内生效，反弹掉速后不再回充
+                //复利加速段
                 speed = MathF.Min(speed * 1.085f, LaunchTargetSpeed);
                 Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitX) * speed;
             }
@@ -520,7 +519,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.velocity *= 0.998f;
             }
 
-            //落叶式飘行：零均值正弦转向叠在直线弹道上，左右摇摆而非纯直线；
+            //落叶式飘行
             //加速段摆幅被抽直压平，全速后展开，随飞行缓慢衰减
             flutterPhase += 0.30f;
             float flutterEnvelope = MathF.Min(launchTicks / 14f, 1f) * MathF.Pow(0.9965f, launchTicks);
@@ -533,7 +532,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             glowIntensity = 0.8f;
 
-            //尾后空气涟漪：切开空气的痕迹，越快越密
+            //尾后空气涟漪
             float speedT = SpeedT;
             int cadence = speedT > 0.8f ? 3 : 5;
             if (launchTicks % cadence == 0) {
@@ -547,7 +546,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void FadingPhaseAI() {
-            //收羽退场：淡出缩小 + 两瓣绒羽脱落，禁 pop-out
+            //收羽退场
             Projectile.velocity *= 0.9f;
             Projectile.alpha = (int)MathHelper.Min(255, Projectile.alpha + 20);
             Projectile.scale *= 0.965f;
@@ -646,7 +645,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnLaunchEffect() {
-            //出手瞬间：被气流剥下的绒羽 + 第一道破空涟漪 + 少量气流尘
+            //出手瞬间
             Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             FishHarpyVFX.DownBurst(Projectile.Center, -Projectile.velocity, 3, 2.6f);
             FishHarpyVFX.AirRipple(Projectile.Center - dir * 6f, Projectile.velocity, 0.9f);
@@ -696,7 +695,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //羽毛炸成绒羽小簇慢落：绒羽寿命长于弹体，即 aftermath
+            //羽毛炸成绒羽小簇慢落
             FishHarpyVFX.DownBurst(Projectile.Center, -Projectile.velocity, 7, 3.4f);
             FishHarpyVFX.AirRipple(Projectile.Center, Projectile.velocity, 0.8f);
 
@@ -722,7 +721,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             //穿透耗尽或超时消散的兜底残迹
             FishHarpyVFX.DownBurst(Projectile.Center, -Projectile.velocity, 3, 2.2f);
-            //飞行中死亡才留落羽：一根独立残迹摆锤缓降，活得比弹体久；收羽淡出不留
+            //飞行中死亡才留落羽
             if (State == FeatherState.Launching) {
                 FishHarpyVFX.FeatherRemnant(Projectile.Center, Projectile.velocity * 0.35f);
             }
@@ -737,7 +736,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             float alpha = (255f - Projectile.alpha) / 255f;
 
-            //羽色：光照叠暖白羽面；充能期向淡金收拢，用饱和度而非亮度承载能量感
+            //羽色
             float goldT = State == FeatherState.Charging
                 ? MathHelper.Clamp(StateTimer / 20f, 0f, 1f) * 0.45f
                 : State == FeatherState.Launching ? 0.28f : 0f;
@@ -748,14 +747,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float speedT = SpeedT;
             if (State == FeatherState.Launching) {
                 drawRotation = Projectile.rotation - MathHelper.PiOver2;
-                //加速拉直：沿飞行方向拉伸、横向收窄；羽面随摇摆相位滚转，侧影厚薄循环
+                //加速拉直
                 float roll = 0.82f + 0.18f * MathF.Cos(flutterPhase);
                 bodyScale = new Vector2((1f - 0.16f * speedT) * roll, 1f + 0.5f * speedT) * Projectile.scale;
             }
             else {
                 drawRotation = GlobalOrbitAngle - MathHelper.PiOver2 + swayAngle
                     + (State == FeatherState.Charging ? spinPhase : 0f);
-                //末 6 帧箭在弦上：羽尖从径向外指预转到切向（即将到来的飞行方向），最后一帧恰好对齐出手姿态
+                //末 6 帧箭在弦上
                 if (State == FeatherState.Charging && launchCountdown <= 6) {
                     float poseBlend = MathHelper.Clamp((6 - launchCountdown) / 5f, 0f, 1f);
                     drawRotation -= MathHelper.PiOver2 * poseBlend;
@@ -773,7 +772,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 DrawOrbitGhosts(sb, featherTex, sourceRect, origin, alpha, drawRotation);
             }
 
-            //充能底光：唯一的柔光用途，极弱淡金压在羽毛下层
+            //充能底光
             if (State == FeatherState.Charging && CWRAsset.SoftGlow?.Value != null) {
                 Texture2D glow = CWRAsset.SoftGlow.Value;
                 float glowA = 0.14f * MathHelper.Clamp(StateTimer / 15f, 0f, 1f) * alpha;
@@ -783,7 +782,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             sb.Draw(featherTex, drawPos, sourceRect, body, drawRotation, origin, bodyScale, SpriteEffects.None, 0);
 
-            //出手过冲：飞出头 2 帧一层暖白加色，瞬时即灭
+            //出手过冲
             if (State == FeatherState.Launching && launchTicks <= 2) {
                 sb.Draw(featherTex, drawPos, sourceRect, FishHarpyVFX.Cream with { A = 0 } * (0.3f * alpha),
                     drawRotation, origin, bodyScale * 1.04f, SpriteEffects.None, 0);
@@ -792,8 +791,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>飞出速度拉伸残影链：旧位置 + 旧姿态 + 递增纵向拉伸 + 快衰，读作一道被抽直的羽光，
-        /// 残影姿态取自真实历史转角，摆动飘行的蛇形轨迹自然显形</summary>
+        /// <summary>飞出速度拉伸残影链</summary>
         private void DrawLaunchSmear(SpriteBatch sb, Texture2D featherTex, Rectangle sourceRect,
             Vector2 origin, float alpha, float speedT) {
             for (int i = 1; i <= 5; i++) {
@@ -811,7 +809,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>充能旋转拖影：同位置转角回溯的残像，羽轴自旋的可视化</summary>
+        /// <summary>充能旋转拖影</summary>
         private void DrawSpinSmear(SpriteBatch sb, Texture2D featherTex, Rectangle sourceRect,
             Vector2 origin, float alpha, float drawRotation) {
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
@@ -825,7 +823,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>环绕位置残影：转速门控的弱哑光残像</summary>
+        /// <summary>环绕位置残影</summary>
         private void DrawOrbitGhosts(SpriteBatch sb, Texture2D featherTex, Rectangle sourceRect,
             Vector2 origin, float alpha, float drawRotation) {
             float spinT = MathHelper.Clamp(orbitSpeed / MaxOrbitSpeed, 0f, 1f);
@@ -840,7 +838,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>带过冲缓出：materialize 的落定曲线</summary>
+        /// <summary>带过冲缓出</summary>
         private static float EaseOutBack(float x) {
             x = MathHelper.Clamp(x, 0f, 1f);
             const float c1 = 1.70158f;

@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return;
             }
 
-            //松开左键：蓄压足够就把压实雪球轰出去
+            //松键，蓄压够则轰雪球
             if (pressure >= MinShellPressure) {
                 FirePackedBall();
             }
@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
         }
 
-        /// <summary>鼓风吹雪：高频低伤的雪流，并积蓄雪压</summary>
+        /// <summary>鼓风吹雪，积雪压</summary>
         private void BlowSnow() {
             VaultUtils.ClockFrame(ref Projectile.frame, 2, 3, 2);
 

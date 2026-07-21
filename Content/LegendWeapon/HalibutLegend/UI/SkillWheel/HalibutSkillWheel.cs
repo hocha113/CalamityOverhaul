@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
 
         private static void DrawSector(SpriteBatch sb, Vector2 center, HalibutWheelSector sec,
             float aStart, float aEnd, float ease, float a, float time) {
-            //入场：半径从内向外滑出
+            //入场、半径内→外滑出
             float rIn = MathHelper.Lerp(HalibutTheme.WheelDeadZoneR, HalibutTheme.WheelInnerR, ease);
             float rOut = MathHelper.Lerp(HalibutTheme.WheelDeadZoneR + 8f, HalibutTheme.WheelOuterR, ease);
             float hover = sec.HoverAmount;
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
             Color bg = Color.Lerp(HalibutTheme.PanelBg, HalibutTheme.Mid, hover * 0.55f);
             HalibutRenderer.DrawArc(sb, center, rIn + 1f, rOut - 1f, aStart, aEnd, bg * (0.9f * a));
 
-            //冷却剩余：从外向内的暗化覆盖 + 前沿亮线
+            //冷却剩余、外→内暗盖+前沿亮线
             float cdRatio = MathHelper.Clamp(sec.Skill.CooldownRatio, 0f, 1f);
             if (cdRatio > 0.01f) {
                 float cdEnd = MathHelper.Lerp(aStart, aEnd, cdRatio);

@@ -5,10 +5,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    //骇客时间 NPC 绘制拦截，PreDraw 套高亮着色器
+    //骇客时间 NPC 高亮着色器
     internal class HackTimeNPCDraw : GlobalNPC
     {
-        //PostDraw 恢复判断
         private static bool _shaderActive;
 
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
@@ -20,16 +19,14 @@ namespace CalamityOverhaul.Content.HackTimes
             bool isSelected = npc.whoAmI == HackTime.SelectedTargetIndex;
             float effectStr = HackTime.Intensity;
 
-            //NPC 纹理算 texelSize
             Texture2D tex = TextureAssets.Npc[npc.type].Value;
 
-            //设置着色器参数
             shader.Parameters["texelSize"]?.SetValue(new Vector2(1f / tex.Width, 1f / tex.Height));
             shader.Parameters["intensity"]?.SetValue(effectStr);
             shader.Parameters["isSelected"]?.SetValue(isSelected ? 1f : 0f);
             shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
 
-            //Immediate 模式激活着色器
+            //Immediate 套着色器
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
                 Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
@@ -37,7 +34,7 @@ namespace CalamityOverhaul.Content.HackTimes
             shader.CurrentTechnique.Passes[0].Apply();
 
             _shaderActive = true;
-            return true; //原版继续绘制
+            return true;
         }
 
         public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {

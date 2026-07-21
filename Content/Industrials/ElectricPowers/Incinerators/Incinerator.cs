@@ -4,9 +4,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
 {
-    /// <summary>
-    /// 热力焚烧炉，煅烧物品
-    /// </summary>
+    /// <summary>热力焚烧炉</summary>
     internal class Incinerator : ModItem
     {
         public override string Texture => CWRConstant.Asset + "ElectricPowers/Incinerator";

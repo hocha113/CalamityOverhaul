@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>狂暴 connector：60~90帧换弹排气标点；第3手固定 SkullCannon，&lt;35% 表尾追加第二发</summary>
+    /// <summary>狂暴connector，第3手SkullCannon</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.RageConnector, typeof(PrimeStateContext))]
     internal class PrimeRageConnectorState : PrimeStateBase
     {

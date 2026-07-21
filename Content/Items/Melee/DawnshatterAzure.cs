@@ -240,7 +240,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             screenShakeIntensity = 15f;
         }
 
-        //突进：先加速后减速
+        //突进，先加后减
         private void UpdateDashing() {
             float dashProgress = phaseTimer / (float)DashDuration;
 

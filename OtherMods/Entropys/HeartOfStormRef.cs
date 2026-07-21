@@ -6,11 +6,7 @@ namespace CalamityOverhaul.OtherMods.Entropys
 {
     internal class HeartOfStormPlayer : ModPlayer
     {
-        /// <summary>
-        /// 玩家是否拥有风暴之心
-        /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
+        /// <summary>是否持有风暴之心</summary>
         public static bool GetHeartOfStorm(Player player) {
             if (CWRMod.Instance.calamityEntropy == null)
                 return false;

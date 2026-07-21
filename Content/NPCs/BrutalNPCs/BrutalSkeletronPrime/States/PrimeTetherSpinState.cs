@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>电弧风车：四臂飞散+ PrimeArcChainProj 链锁旋转收紧；收紧半径广播 npc.ai[1]（PrimeAiSlots.HeadCommandSlot）；退出须清零</summary>
+    /// <summary>电弧风车，收紧半径广播ai[1]，退出须清零</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.TetherSpin, typeof(PrimeStateContext))]
     internal class PrimeTetherSpinState : PrimeStateBase
     {
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         internal static float SpinRateBase => 0.018f;
         /// <summary>随收紧进度追加的角速度</summary>
         internal static float SpinRateGain => 0.012f;
-        /// <summary>头部压向玩家的跟随强度（刻意缓慢：风车中心稳定，玩家绕轴跑）</summary>
+        /// <summary>头压玩家跟随强度</summary>
         internal static float FollowAccel => 0.03f;
 
         private static int Total => TelegraphFrames + SpinDuration + WindDownFrames;
@@ -39,12 +39,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             npc.damage = 0;
             context.FrameMode = 0;
 
-            //风车中心缓慢压向玩家：足够慢，玩家在链间扇区跟着转就能躲
+            //风车中心缓压
             Vector2 anchor = context.Target.Center;
             npc.velocity = Vector2.Lerp(npc.velocity, (anchor - npc.Center) * FollowAccel, 0.1f);
 
             float progress = MathHelper.Clamp((Timer - TelegraphFrames) / (float)SpinDuration, 0f, 1f);
-            //缓慢风车旋转，收紧末期微微加速
+            //风车旋转
             npc.rotation += SpinRateBase + progress * SpinRateGain;
 
             if (Timer < TelegraphFrames) {
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
             else if (Timer < TelegraphFrames + SpinDuration) {
                 context.SetChargeState(1, 0.4f + progress * 0.5f);
-                //向机械臂广播收紧半径
+                //广播收紧半径
                 npc.ai[PrimeAiSlots.HeadCommandSlot] = MathHelper.Lerp(ChainRadiusStart, ChainRadiusEnd, progress);
 
                 if (!VaultUtils.isServer && Timer % 9 == 0) {
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 }
             }
             else if (Timer == TelegraphFrames + SpinDuration) {
-                //终结脉冲：链锁同时熄灭（弹幕侧按 timeLeft 自然到期），中心炸出一圈制导弹
+                //终结脉冲
                 npc.ai[PrimeAiSlots.HeadCommandSlot] = 0f;
                 if (!VaultUtils.isClient) {
                     FirePulseRing(context);
@@ -93,11 +93,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
         public override void OnExit(PrimeStateContext context) {
             base.OnExit(context);
-            //无论以何种路径离开（转阶段/狂怒打断），都不能把收紧半径残留在指令槽里
+            //退出清指令槽半径
             context.Npc.ai[PrimeAiSlots.HeadCommandSlot] = 0f;
         }
 
-        /// <summary>对每条存活机械臂拉起一道电弧链锁（仅服务端）</summary>
+        /// <summary>拉起电弧链锁，服务端</summary>
         private static void SpawnChains(PrimeStateContext context) {
             NPC npc = context.Npc;
             int damage = ScaleDamage(CWRRef.GetProjectileDamage(npc, ProjectileID.DeathLaser));
@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             npc.netUpdate = true;
         }
 
-        /// <summary>终结脉冲：八向制导弹环（带预警线，玩家有反应余量）</summary>
+        /// <summary>终结八向导弹环</summary>
         private static void FirePulseRing(PrimeStateContext context) {
             NPC npc = context.Npc;
             int damage = ScaleDamage(CWRRef.GetProjectileDamage(npc, ProjectileID.RocketSkeleton));

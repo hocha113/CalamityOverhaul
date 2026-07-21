@@ -9,8 +9,7 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.Scenarios.Himayo
 {
     /// <summary>
-    /// 真夜立绘的樱瓣汇聚演出。抵达轮廓的 SDF 花瓣写入局部密度 RT，
-    /// 经可分离模糊后作为立绘显现遮罩；运动花瓣仍在 UI 空间直接绘制。
+    /// 真夜立绘樱瓣汇聚，SDF花瓣入密度RT模糊作遮罩，运动瓣仍直绘UI
     /// </summary>
     internal sealed class HimayoPortraitAssemblyRenderer : INeedRenderTargetContent
     {
@@ -108,7 +107,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
             }
         }
 
-        /// <returns>本帧是否刚刚完成演出。</returns>
+        /// <returns>本帧刚完成</returns>
         internal bool Update(bool canProgress) {
             if (!active) {
                 return false;
@@ -171,7 +170,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
 
             bool callerBatchEnded = false;
             try {
-                //DialoguePanelView 交给立绘的是活动中的 Deferred UI 批次。
+                //调用方是活动中的Deferred UI批次，须先End
                 spriteBatch.End();
                 callerBatchEnded = true;
                 DrawPetalLayer(spriteBatch, portraitPosition, portraitScale, portraitRotation, alpha, false);

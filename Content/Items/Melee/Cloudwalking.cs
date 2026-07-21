@@ -134,7 +134,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            //首帧初始化：锁定方向和起手音效
+            //首帧锁方向+起手音
             if (Projectile.localAI[0] == 0) {
                 Projectile.localAI[0] = 1;
                 lockedDirection = Math.Sign(ToMouse.X);
@@ -301,7 +301,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             Vector2 bladePos = axePivot + currentRotation.ToRotationVector2() * 35f;
 
-            //云雾粒子：密度随充能增加
+            //云雾粒子随充能
             int chance = Math.Max(1, 5 - (int)(ChargeRatio * 4));
             if (Main.rand.NextBool(chance)) {
                 Vector2 jitter = Main.rand.NextVector2Circular(22f, 22f);
@@ -310,7 +310,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 PRTLoader.NewParticle<PRT_Smoke>(bladePos + jitter, vel, smokeColor, Main.rand.NextFloat(0.38f, 0.75f)).Configure(Main.rand.Next(28, 52), 0.7f, Main.rand.NextFloat(-0.03f, 0.03f));
             }
 
-            //汇聚光尘：从四周向斧刃飞来
+            //汇聚光尘
             if (ChargeRatio > 0.3f && Main.rand.NextBool(2)) {
                 float r = Main.rand.NextFloat(MathHelper.TwoPi);
                 float radius = Main.rand.NextFloat(48f, 115f) * (0.5f + ChargeRatio * 0.5f);
@@ -341,7 +341,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             for (int i = 0; i < 2; i++) {
                 float t = Main.rand.NextFloat();
                 Vector2 pos = Vector2.Lerp(bladeRoot, bladeTip, t) + Main.rand.NextVector2Circular(9f, 9f);
-                //速度：略微逆飞行方向，形成自然拖尾
+                //略逆飞行拖尾
                 Vector2 vel = Projectile.velocity * Main.rand.NextFloat(-0.08f, -0.03f)
                     + Main.rand.NextVector2Circular(1.2f, 1.2f);
                 Color smokeColor = Color.Lerp(Color.White, new Color(155, 215, 255), Main.rand.NextFloat());

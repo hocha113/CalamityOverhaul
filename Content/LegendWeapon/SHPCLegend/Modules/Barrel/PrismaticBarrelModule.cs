@@ -6,14 +6,11 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 棱光枪管：光束飞行时持续在两侧生成 RGB 三色色散粒子拖尾
-    /// 命中时溅出彩色光屑，纯视觉强化加少量爆击与额外光束
-    /// </summary>
+    /// <summary>棱光枪管，两侧 RGB 色散尾，命中光屑+少量暴击/额外束</summary>
     internal sealed class PrismaticBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
-        //彩虹流光，整体偏品红
+        //彩虹偏品红
         public override Color TintColor => new(255, 90, 200);
 
         public override void Apply(ref ShootContext ctx) {
@@ -30,7 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override void OnBeamAI(CyberTraceBeamProj beam) {
             if (beam.IsDerived) return;
             if (Main.netMode == NetmodeID.Server) return;
-            //每 3 帧生成 RGB 三道色散尾迹
+            //每3帧 RGB 色散尾
             if (Main.GameUpdateCount % 3 != 0) return;
 
             Vector2 forward = beam.Projectile.velocity.SafeNormalize(Vector2.UnitX);

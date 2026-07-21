@@ -67,9 +67,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.PallbearerQuest
         }
     }
 
-    /// <summary>
-    /// 追踪玩家使用扶柩者击杀亵渎天神
-    /// </summary>
+    /// <summary>扶柩者击杀亵渎天神追踪</summary>
     internal class PallbearerQuestTracker : BaseDamageTracker
     {
         internal const float REQUIRED_CONTRIBUTION = 0.8f;

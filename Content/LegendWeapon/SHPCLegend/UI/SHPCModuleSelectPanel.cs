@@ -373,7 +373,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             Vector2 mouse = Main.MouseScreen;
             Rectangle box = new((int)(mouse.X + 16f), (int)(mouse.Y + 16f),
                 (int)(maxW + padX * 2), (int)(totalH + padY * 2));
-            //避免越界
+            //防越界
             if (box.Right > Main.screenWidth) box.X = Main.screenWidth - box.Width - 4;
             if (box.Bottom > Main.screenHeight) box.Y = Main.screenHeight - box.Height - 4;
 

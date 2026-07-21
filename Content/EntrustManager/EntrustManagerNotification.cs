@@ -4,10 +4,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.EntrustManager
 {
-    /// <summary>委托状态变更通知装饰器</summary>
+    /// <summary>委托状态变更通知</summary>
     internal class EntrustManagerNotification : ModSystem, ILocalizedModType
     {
-        /// <summary>通知类型</summary>
         internal enum NotifyKind
         {
             NewQuest,
@@ -40,7 +39,6 @@ namespace CalamityOverhaul.Content.EntrustManager
 
         #endregion
 
-        /// <summary>添加状态变更通知</summary>
         public static void Notify(string questTitle, NotifyKind kind) {
             var statusKind = (EntrustStatusEntry.StatusKind)(int)kind;
             NotificationPopupSystem.Add(new EntrustStatusEntry(questTitle, statusKind));

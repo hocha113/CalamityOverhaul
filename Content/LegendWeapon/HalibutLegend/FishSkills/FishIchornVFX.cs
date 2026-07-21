@@ -14,20 +14,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>灵流蚀甲域内 shader 资源（域内加载器，不经 EffectLoader）</summary>
     internal class FishIchornAssets
     {
-        /// <summary>金色灵液液柱条带：暗金缘 + 饱和金体 + 湿面高光 + 尾端珠化断裂</summary>
+        /// <summary>金色灵液液柱条带</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect FishIchornJet { get; private set; }
     }
 
-    /// <summary>
-    /// 灵流蚀甲共享演出协作类。<br/>
-    /// 材质：自发微光的金色粘稠灵液，亮度结构 = 暗金基底 / 高饱和金黄 / 极小亮芯，禁大面积白光。<br/>
-    /// 三签名行为：受重力微弯的高压液柱（尾段珠化断裂）、飞行沿途甩滴、命中粘附
-    /// （挂壁滴淌 + 金渍残留 + 目标侵蚀纹脉冲）。与 FishHoney 的蜂蜜区分点是速度与攻击性
-    /// </summary>
+    /// <summary>灵流蚀甲</summary>
     internal static class FishIchornVFX
     {
-        //==== 色彩脚本 ====
         /// <summary>暗金基底（外缘、干涸渍）</summary>
         public static readonly Color IchorDark = new(86, 56, 8);
         /// <summary>深金（过渡、沉液）</summary>
@@ -43,12 +37,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return v - MathF.Floor(v);
         }
 
-        //==== 射流条带 ====
 
-        /// <summary>
-        /// 灵液液柱条带：oldPos→Trail，预乘 alpha 配 AlphaBlend（暗金外缘真正压暗背景，
-        /// 读作有体积的液体而非能量光带）。fade 承载出生淡入与消散包络
-        /// </summary>
+        /// <summary>灵液液柱条带</summary>
         public static void DrawJetTrail(Projectile projectile, ref Trail trail
             , TrailThicknessCalculator widthFunc, TrailColorEvaluator colorFunc, float fade) {
             Effect fx = FishIchornAssets.FishIchornJet;
@@ -81,9 +71,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             trail.DrawTrail(fx);
         }
 
-        //==== 阶段演出 ====
 
-        /// <summary>出膛喷吐：锥形液滴 + 贴口微射线滴 + 定向金波纹，液体的"破口"而非火药闪光</summary>
+        /// <summary>出膛喷吐</summary>
         public static void MuzzleSpray(Vector2 pos, Vector2 dir) {
             if (Main.dedServ) {
                 return;
@@ -95,7 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 PRTLoader.NewParticle<PRT_FishIchornDroplet>(pos + Main.rand.NextVector2Circular(4f, 4f)
                     , vel, col, Main.rand.NextFloat(0.5f, 0.85f))?.Configure(Main.rand.Next(16, 26));
             }
-            //微射线滴：几乎不受重力的快滴，4-9 帧即逝，承担枪口闪的节拍
+            //微射线滴
             for (int i = 0; i < 3; i++) {
                 PRTLoader.NewParticle<PRT_FishIchornDroplet>(pos, dir.RotatedByRandom(0.1f) * Main.rand.NextFloat(16f, 22f)
                     , IchorBright, Main.rand.NextFloat(0.4f, 0.6f))?.Configure(Main.rand.Next(5, 9), 0.1f, 0.88f);
@@ -104,10 +93,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(new Vector2(0.55f, 1f), dir.ToRotation(), 0.26f, 9);
         }
 
-        /// <summary>
-        /// 命中迸溅：沿反弹法线的半球液滴 + 沉重液团 + 定向波纹；
-        /// onTile 时贴壁留金渍 decal（aftermath 主角，活得比弹体久）
-        /// </summary>
+        /// <summary>命中迸溅</summary>
         public static void SplashBurst(Vector2 pos, Vector2 impactVel, bool onTile) {
             if (Main.dedServ) {
                 return;
@@ -117,7 +103,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float ke = MathHelper.Clamp(speed / 24f, 0.3f, 1f);
             float mainAngle = normal.ToRotation();
 
-            //半球迸溅：正对法线的滴快而密，侧向的慢而稀
+            //半球迸溅
             int count = (int)(8 + 6 * ke);
             for (int i = 0; i < count; i++) {
                 float spread = Main.rand.NextFloat(-MathHelper.PiOver2, MathHelper.PiOver2);
@@ -128,7 +114,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 PRTLoader.NewParticle<PRT_FishIchornDroplet>(pos + Main.rand.NextVector2Circular(6f, 6f)
                     , vel, col, Main.rand.NextFloat(0.5f, 0.95f))?.Configure(Main.rand.Next(22, 40));
             }
-            //沉重液团：更大更慢，坠得更急
+            //沉重液团，更大更慢，坠得更急
             for (int i = 0; i < 3; i++) {
                 Vector2 vel = normal.RotatedByRandom(0.7f) * Main.rand.NextFloat(2f, 5f);
                 PRTLoader.NewParticle<PRT_FishIchornDroplet>(pos, vel, IchorDeep
@@ -154,11 +140,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 灵液液滴：受重力、随速度拉伸的金色粘稠液滴，快则成线慢则成珠；
-    /// 暗金压边 + 实体芯，新鲜期带湿面反光，凋亡前转暗（干涸）。<br/>
-    /// 贴图用带真 alpha 的 Extra_98，AlphaBlend 直绘不糊黑底
-    /// </summary>
+    /// <summary>灵液液滴</summary>
     internal class PRT_FishIchornDroplet : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -202,7 +184,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             Vector2 origin = tex.Size() * 0.5f;
             Vector2 pos = Position - Main.screenPosition;
-            //随速度纵向拉伸：快则成线慢则成珠
+            //随速度纵向拉伸
             float stretch = MathHelper.Clamp(Velocity.Length() * 0.05f, 0f, 0.9f);
             Vector2 scale = new Vector2(0.36f * (1f - stretch * 0.4f), 0.6f * (1f + stretch * 1.8f)) * Scale;
 
@@ -213,7 +195,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             spriteBatch.Draw(tex, pos, null, body, Rotation, origin, scale, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, pos, null, body, Rotation, origin, scale * new Vector2(0.45f, 1f), SpriteEffects.None, 0f);
 
-            //新鲜期湿面反光：A=0 加色小亮线，寿命前半即熄
+            //新鲜期湿面反光
             float fresh = 1f - MathHelper.Clamp(LifetimeCompletion * 2.2f, 0f, 1f);
             if (fresh > 0.05f) {
                 Color glint = FishIchornVFX.IchorBright with { A = 0 };
@@ -224,10 +206,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 金渍残留 decal：命中壁面后留下的灵液渍，活得比弹体久。
-    /// 湿渍缓慢向下拉长（挂壁滴淌）、偶尔坠出小滴，随生命干涸转暗淡出
-    /// </summary>
+    /// <summary>金渍残留 decal</summary>
     internal class PRT_FishIchornSmear : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -258,7 +237,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float t = LifetimeCompletion;
             //贴上即定型，尾段缓慢干涸淡出
             Opacity = MathHelper.Clamp(Time / 4f, 0f, 1f) * (1f - MathF.Pow(t, 2.4f));
-            //渍体越新滴得越勤：挂壁滴淌
+            //渍体越新滴得越勤，挂壁滴淌
             if (t < 0.7f && Main.rand.NextBool(26)) {
                 float dx = (FishIchornVFX.Hash(seed, 20) - 0.5f) * 12f;
                 PRTLoader.NewParticle<PRT_FishIchornDroplet>(Position + new Vector2(dx, 6f)
@@ -275,12 +254,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //鲜金 → 干涸暗金的色程；渍面随时间失去光泽
             Color wet = Color.Lerp(initialColor, FishIchornVFX.IchorDark, 0.3f + 0.65f * t);
 
-            //三团渍斑：确定性哈希布局，帧间稳定
+            //三团渍斑
             for (int i = 0; i < 3; i++) {
                 Vector2 off = new((FishIchornVFX.Hash(seed, i) - 0.5f) * 16f, (FishIchornVFX.Hash(seed, i + 3) - 0.5f) * 10f);
                 float rot = (FishIchornVFX.Hash(seed, i + 6) - 0.5f) * 0.9f;
                 float blobScale = (0.42f + FishIchornVFX.Hash(seed, i + 9) * 0.3f) * Scale;
-                //滴淌：渍斑沿重力方向缓慢拉长
+                //滴淌，渍斑沿重力方向缓慢拉长
                 float run = 1f + t * (0.7f + FishIchornVFX.Hash(seed, i + 12) * 0.9f);
                 Vector2 blobSize = new Vector2(blobScale * 0.66f, blobScale * 0.52f * run);
                 //暗金蚀底压一圈
@@ -290,12 +269,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , blobSize, SpriteEffects.None, 0f);
             }
 
-            //中央滴淌线：随生命向下延伸的窄渍
+            //中央滴淌线
             float runnel = 0.35f + t * 1.4f;
             spriteBatch.Draw(tex, basePos + new Vector2(0f, runnel * 9f), null, FishIchornVFX.IchorDeep * (0.7f * Opacity)
                 , 0f, origin, new Vector2(0.1f, runnel) * Scale, SpriteEffects.None, 0f);
 
-            //新鲜期湿面反光：小面积加色，t 过 0.35 即熄
+            //新鲜期湿面反光
             float sheen = MathF.Max(0f, 1f - t * 2.8f);
             if (sheen > 0.05f) {
                 Color glint = FishIchornVFX.IchorBright with { A = 0 };
@@ -306,10 +285,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 蚀甲可视化：被灵流命中的目标身上浮现金色侵蚀纹，随 Ichor 存续脉冲、周期滴金，
-    /// 持续命中让蚀纹生长加深。owner 端视觉，镜像 PallbearerNPC 烙印的本地精度取舍
-    /// </summary>
+    /// <summary>蚀甲可视化</summary>
     internal class FishIchornErosion : GlobalNPC
     {
         public override bool InstancePerEntity => true;
@@ -336,7 +312,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Main.dedServ || !npc.HasBuff(BuffID.Ichor)) {
                 return;
             }
-            //蚀甲滴金：目标像被蚀穿的容器周期坠出灵液
+            //蚀甲滴金
             if (Main.rand.NextBool(22)) {
                 Vector2 pos = npc.Center + new Vector2(Main.rand.NextFloat(-0.4f, 0.4f) * npc.width
                     , Main.rand.NextFloat(-0.2f, 0.45f) * npc.height);
@@ -364,11 +340,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     (FishIchornVFX.Hash(npc.whoAmI, i + 3) - 0.5f) * npc.height * 0.7f) - screenPos;
                 //蚀纹大体顺重力走向，微量偏摆
                 float rot = (FishIchornVFX.Hash(npc.whoAmI, i + 6) - 0.5f) * 0.9f;
-                //相位错开的搏动：灵液在甲缝里脉冲
+                //相位错开的搏动
                 float pulse = 0.72f + 0.28f * MathF.Sin(Main.GlobalTimeWrappedHourly * 4.2f + i * 2.4f + npc.whoAmI);
                 Vector2 veinScale = new Vector2(0.16f, 0.5f + 0.45f * grow) * bodyScale;
 
-                //暗金蚀底：正常混合压暗皮肉，读作被腐蚀的甲面
+                //暗金蚀底
                 spriteBatch.Draw(streak, pos, null, FishIchornVFX.IchorDark * (0.62f * fade), rot, origin
                     , veinScale * new Vector2(2.1f, 1.12f), SpriteEffects.None, 0f);
                 //金色灵液芯（A=0 加色）随搏动明灭

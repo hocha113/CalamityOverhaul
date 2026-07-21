@@ -3,7 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>脱战离场：悬停回能后闪光消失；机械臂同步退场</summary>
+    /// <summary>脱战离场</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.Despawn, typeof(PrimeStateContext))]
     internal class PrimeDespawnState : PrimeStateBase
     {
@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         public override void OnEnter(PrimeStateContext context) {
             base.OnEnter(context);
 
-            //被金币枪羞辱后跑路的不甘嘲讽
+            //金币枪嘲讽
             if (context.DespawnFromCoinFury && !VaultUtils.isServer) {
                 for (int i = 0; i < 5; i++) {
                     VaultUtils.Text(HeadPrimeAI.SkeletronPrime_Text.Value, Color.Red);
@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             npc.velocity = Vector2.Zero;
             context.FrameMode = 0;
 
-            //回能充填，离场前能量回收演出
+            //回能充填
             int addNum = (npc.lifeMax - npc.life) / DespawnTime;
             npc.life = System.Math.Min(npc.life + addNum, npc.lifeMax);
 

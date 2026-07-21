@@ -9,11 +9,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 哈基鱼雷共享演出：油滑鲶鱼+可视化声波。<br/>
-    /// 材质三签名：离水扑腾（空中鱼身正弦挣扎）、油光缓扫（贴图切片高光带）、
-    /// 喵声可视化（嘴部扩散的细线声弧）；爆炸收尾=鱼鳞五彩纸屑+哑光烟团的喜剧拍
-    /// </summary>
+    /// <summary>哈基鱼雷</summary>
     internal static class FishCatVFX
     {
         /// <summary>奶油声波（平时的喵）</summary>
@@ -29,7 +25,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// <summary>爆炸冲击环暖橙</summary>
         public static readonly Color BoomOrange = new(255, 168, 88);
 
-        /// <summary>鳞片五彩纸屑色板：低发光糖果色，AlphaBlend 哑光</summary>
+        /// <summary>鳞片五彩纸屑色板</summary>
         public static readonly Color[] ScaleConfetti = new Color[] {
             new(252, 208, 120), //淡金
             new(244, 158, 168), //腮红粉
@@ -38,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             new(236, 232, 220), //珠白
         };
 
-        /// <summary>嘴部声弧：双波前细线半环，strength 0..1 控制尺寸与寿命</summary>
+        /// <summary>嘴部声弧，双波前细线半环，strength 0..1 控制尺寸与寿命</summary>
         public static void MeowArc(Vector2 mouth, float dirRotation, float strength, Color color) {
             if (Main.dedServ) {
                 return;
@@ -47,7 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(0.10f + 0.06f * strength, 0.40f + 0.34f * strength, (int)(18 + 10 * strength), dirRotation);
         }
 
-        /// <summary>爆点全环：声波大环冲到爆炸半径边缘（Ring01 128px，2.4×≈150px 半径），白起两帧即衰</summary>
+        /// <summary>爆点全环</summary>
         public static void BoomRing(Vector2 center) {
             if (Main.dedServ) {
                 return;
@@ -56,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(0.3f, 2.4f, 12, 0f, true);
         }
 
-        /// <summary>浑浊油滴：油滑鱼身甩落的粘液，复用刻心者液滴（受重力+速度拉伸）</summary>
+        /// <summary>浑浊油滴</summary>
         public static void OilDrip(Vector2 pos, Vector2 baseVel, int count) {
             if (Main.dedServ) {
                 return;
@@ -68,7 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>抛掷出手：定向尘+奶油星火+扁平定向波+一记出手喵弧</summary>
+        /// <summary>抛掷出手</summary>
         public static void ThrowBurst(Vector2 pos, Vector2 direction) {
             if (Main.dedServ) {
                 return;
@@ -90,7 +86,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             OilDrip(pos, -dir * 1.5f, 2);
         }
 
-        /// <summary>起跳踢尘：反向的干土碎块+低伏烟，power 0..1；bigWave 时附一记贴地扁波</summary>
+        /// <summary>起跳踢尘</summary>
         public static void JumpDust(Vector2 feet, int dirX, float power, bool bigWave) {
             if (Main.dedServ) {
                 return;
@@ -116,7 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>落地扬尘：两侧横溅的土屑，hard 时附小烟团与贴地扁波</summary>
+        /// <summary>落地扬尘</summary>
         public static void LandDust(Vector2 feet, Vector2 oldVelocity, bool hard) {
             if (Main.dedServ) {
                 return;
@@ -138,10 +134,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 爆炸合成：白爆点全环（≤2帧过冲）→暖橙冲击环→三道大声弧扇（最后的喵）
-        /// →鱼鳞五彩纸屑+哑光烟团+油滴余韵，全部活得比弹体久
-        /// </summary>
+        /// <summary>爆炸合成</summary>
         public static void Explode(Vector2 center, int layer, int facing) {
             if (Main.dedServ) {
                 return;
@@ -187,10 +180,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 喵声可视化：嘴部扩散的细线声弧（半环双波前，AlphaBlend 线感非光球），
-    /// 扩散快出缓收、带轻微颤音 squish；fullRing 模式作爆点全环
-    /// </summary>
+    /// <summary>喵声可视化</summary>
     internal class PRT_FishCatMeowRing : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Ring01";
@@ -264,10 +254,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 鱼鳞五彩纸屑：受重力、左右摆振飘落的哑光小鳞片，翻面瞬间给单帧高光，
-    /// 爆炸喜剧收尾的余韵主体，寿命长于弹体
-    /// </summary>
+    /// <summary>鱼鳞五彩纸屑，受重力</summary>
     internal class PRT_FishCatScale : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -326,10 +313,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 哑光烟团：SmokeSheet01 序列帧 AlphaBlend 染色，爆炸与重着地的喜剧烟，
-    /// 快胀缓散、微上飘，压住爆炸亮部的暗底
-    /// </summary>
     internal class PRT_FishCatPuff : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "SmokeSheet01";

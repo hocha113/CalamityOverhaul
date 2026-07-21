@@ -16,16 +16,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
 {
-    /// <summary>呼叫框禁用状态接口</summary>
+    /// <summary>呼叫框禁用接口</summary>
     public interface IDraedonCallDisabledProvider
     {
-        /// <summary>是否禁用呼叫功能</summary>
         bool IsCallDisabled { get; }
-        /// <summary>禁用原因文本</summary>
         string DisabledReason { get; }
     }
 
-    /// <summary>嘉登呼叫禁用状态提供者：世界中已存在嘉登时禁止再次呼叫</summary>
+    /// <summary>嘉登已在场则禁用</summary>
     internal class DraedonCallDisabledProvider : IDraedonCallDisabledProvider
     {
         public bool IsCallDisabled {
@@ -43,13 +41,12 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
         public string DisabledReason => DraedonCallUI.DisabledReasonText?.Value ?? "UNAVAILABLE";
     }
 
-    /// <summary>嘉登呼叫终端：贴靠在交换终端左侧的小型通讯面板，与对话皮肤同源的青色终端风格</summary>
+    /// <summary>商店左侧呼叫面板</summary>
     internal class DraedonCallUI : UIHandle, ILocalizedModType
     {
         public static DraedonCallUI Instance => UIHandleLoader.GetUIHandleOfType<DraedonCallUI>();
         public static IDraedonCallDisabledProvider DisabledProvider = new DraedonCallDisabledProvider();
 
-        //跟随交换终端的活跃状态一起出现 / 消失
         public override bool Active => DraedonShopUI.Instance.Active;
         public override float RenderPriority => 0.9f;
         public override Vector2 MousePosition => DraedonShopTheme.UIMouse;
@@ -107,7 +104,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
 
         public override void Update() {
             bool shopOpen = DraedonShopUI.Instance.IsOpen;
-            //重新开启时清掉上一次遗留的呼叫进度
+            //重开清呼叫进度
             if (shopOpen && !wasOpen) {
                 isCalling = false;
                 callProgress = 0f;
@@ -123,7 +120,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
             }
             eased = VaultUtils.EaseOutCubic(MathHelper.Clamp(alpha, 0f, 1f));
 
-            //禁用状态切换
             bool nowDisabled = DisabledProvider?.IsCallDisabled ?? false;
             if (nowDisabled != isDisabled) {
                 isDisabled = nowDisabled;
@@ -138,7 +134,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
             }
             disabledTransition = MathHelper.Lerp(disabledTransition, isDisabled ? 1f : 0f, 0.1f);
 
-            //贴靠交换终端左侧、垂直居中
+            //贴靠商店左侧
             Rectangle shop = DraedonShopUI.Instance.PanelRect;
             int x = shop.X - DraedonShopTheme.PanelGap - DraedonShopTheme.CallPanelWidth - (int)((1f - eased) * 32f);
             int y = shop.Y + (shop.Height - DraedonShopTheme.CallPanelHeight) / 2;
@@ -258,7 +254,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
                 return;
             }
 
-            //呼叫中柔光脉冲
             if (isCalling && !isDisabled) {
                 Texture2D glow = CWRAsset.SoftGlow.Value;
                 float pulse = MathF.Sin(state.CircuitPulseTimer * 4f) * 0.5f + 0.5f;
@@ -284,13 +279,12 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
                 : Color.Lerp(DraedonShopTheme.Edge, DraedonShopTheme.EdgeBright, 0.3f + 0.5f * buttonHover);
             accent = Color.Lerp(accent, DraedonShopTheme.Danger, disabledTransition);
 
-            //暗底
             sb.Draw(px, buttonRect, new Rectangle(0, 0, 1, 1), DraedonShopTheme.Void * (eased * 0.85f));
             if (buttonHover > 0.01f && !isDisabled) {
                 sb.Draw(px, buttonRect, new Rectangle(0, 0, 1, 1), accent * (eased * 0.16f * buttonHover));
             }
 
-            //非对称外框：上沿粗亮、左侧半亮、其余细暗
+            //非对称框,上粗左半亮
             sb.Draw(px, new Rectangle(buttonRect.X, buttonRect.Y, buttonRect.Width, 2), new Rectangle(0, 0, 1, 1), accent * (eased * 0.95f));
             sb.Draw(px, new Rectangle(buttonRect.X, buttonRect.Y, 3, buttonRect.Height), new Rectangle(0, 0, 1, 1), accent * (eased * 0.7f));
             sb.Draw(px, new Rectangle(buttonRect.X, buttonRect.Bottom - 1, buttonRect.Width, 1), new Rectangle(0, 0, 1, 1), accent * (eased * 0.35f));
@@ -300,7 +294,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
                 DraedonPanelDraw.DrawChoiceDashIndicator(sb, buttonRect, accent, buttonHover, eased, state.DataStreamTimer);
             }
 
-            //呼叫进度
             if (isCalling && !isDisabled) {
                 int pw = (int)((buttonRect.Width - 6) * callProgress);
                 sb.Draw(px, new Rectangle(buttonRect.X + 3, buttonRect.Bottom - 4, pw, 2), new Rectangle(0, 0, 1, 1),
@@ -342,18 +335,15 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
             Texture2D px = VaultAsset.placeholder2.Value;
             float t = disabledTransition * eased;
 
-            //红色警示扫描线
             float warn = MathF.Sin(state.GlitchTimer * 2f) * 0.5f + 0.5f;
             sb.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), DraedonShopTheme.Danger * (t * 0.08f * warn));
 
-            //头像上的禁止叉
             Vector2 c = portraitRect.Center.ToVector2();
             float half = portraitRect.Width * 0.34f;
             Color ban = DraedonShopTheme.Danger * (t * 0.9f);
             DrawLine(sb, c + new Vector2(-half, -half), c + new Vector2(half, half), ban, 3f);
             DrawLine(sb, c + new Vector2(half, -half), c + new Vector2(-half, half), ban, 3f);
 
-            //偶发故障条
             if (MathF.Sin(state.GlitchTimer * 3f) > 0.7f && Main.rand.NextBool(3)) {
                 int count = Main.rand.Next(2, 4);
                 for (int i = 0; i < count; i++) {

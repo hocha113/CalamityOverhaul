@@ -71,7 +71,7 @@ namespace CalamityOverhaul.OtherMods.ImproveGame
             try {
                 LuiAFKConfig_ConfigInstance ??= CWRMod.Instance.luiafk.Find<ModConfig>("LuiAFKConfig");//懒加载一下
                 int rangerAmmo = (int)LuiAFKConfig_RangerAmmoInfo.GetValue(LuiAFKConfig_ConfigInstance);
-                //懒人的设定是为0就不启用，所以这里判断一下期望的无限弹药阈值是否大于0
+                //=0 不启用，阈值>0 才判无限弹药
                 if (rangerAmmo > 0 && ammoItem.stack >= rangerAmmo) {
                     return true;
                 }

@@ -15,16 +15,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public static Effect FishPlanktonWorm { get; private set; }
     }
 
-    /// <summary>
-    /// 腐虫漫迹共享演出协作类。<br/>
-    /// 材质：腐肉环节虫（腐化之地语系小型蛆虫），暗腐绿哑光本体、乘环境光零自发光；<br/>
-    /// 三签名行为：蠕动推进波（正弦相位沿体节后传）、腐绿粘液滴受重力坠落、
-    /// 撕咬定帧+肉屑碎块飞溅。<br/>
-    /// 与近邻区分：FishHunger 是大块猩红血肉捕食者（WoF 语系），这里是小型腐绿虫群
-    /// </summary>
+    /// <summary>腐虫漫迹</summary>
     internal static class FishEaterofPlanktonVFX
     {
-        //==== 色彩脚本（暗腐绿+肉粉族，恶心感优先）====
         /// <summary>暗腐绿黑（外缘/剪影底/腐解余渣）</summary>
         public static readonly Color RotDark = new(26, 30, 14);
         /// <summary>腐绿褐（虫体主色）</summary>
@@ -39,7 +32,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// <summary>腐绿粘液族随机取色（滴液用）</summary>
         public static Color Slime(float t) => Color.Lerp(RotDark, RotSlime, t);
 
-        /// <summary>出生甩出：粘液拉断的前甩滴液锥 + 腐肉屑底噪，读作从枪口被甩出的活物</summary>
+        /// <summary>出生甩出</summary>
         public static void SpawnLurch(Vector2 pos, Vector2 dir) {
             if (Main.dedServ) {
                 return;
@@ -58,7 +51,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>体节渗液：单颗粘液滴自节间坠落（调用端控频率）</summary>
+        /// <summary>体节渗液</summary>
         public static void SegmentOoze(Vector2 pos, Vector2 bodyVel) {
             PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos + Main.rand.NextVector2Circular(2f, 2f)
                 , bodyVel * 0.25f + new Vector2(0f, Main.rand.NextFloat(0.2f, 0.7f))
@@ -66,7 +59,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(Main.rand.Next(16, 26), 0.24f, 0.99f);
         }
 
-        /// <summary>撕咬爆发：咬向锥形滴液喷 + 肉屑块 + 腐肉 Dust 底噪，ke 0..1 动能</summary>
+        /// <summary>撕咬爆发，咬向锥形滴液喷 + 肉屑块 + 腐肉 Dust 底噪，ke 0..1 动能</summary>
         public static void BiteBurst(Vector2 pos, Vector2 dir, float ke) {
             if (Main.dedServ) {
                 return;
@@ -92,7 +85,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>腐解剥落：蚀散前沿掉下的单撮碎屑+滴液（aftermath 主体，活得比虫体久）</summary>
+        /// <summary>腐解剥落</summary>
         public static void DecaySlough(Vector2 pos, Vector2 drift) {
             PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, drift * 0.4f + new Vector2(0f, 0.4f)
                 , Slime(Main.rand.NextFloat(0.3f, 0.8f)), Main.rand.NextFloat(0.35f, 0.55f))
@@ -104,10 +97,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 腐虫肉屑块：白像素三层矩形拼装的哑光碎屑（暗腐绿底/腐绿面/肉粉截面棱），乘环境光零发光；<br/>
-    /// 受重力翻滚坠落，触地弹跳一次后落定收尾
-    /// </summary>
+    /// <summary>腐虫肉屑块</summary>
     internal class PRT_FishPlanktonScrap : BasePRT
     {
         public override string Texture => CWRConstant.VaultPlaceholder;

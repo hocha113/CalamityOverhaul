@@ -17,10 +17,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         /// <summary>comboStep 固定偏移角表，确定性走位</summary>
         private static readonly float[] PositionAngles =
         [
-            MathHelper.PiOver4,                  //右上45°
+            MathHelper.PiOver4,  //右上45°
             MathHelper.Pi - MathHelper.PiOver4,  //左上135°
-            -MathHelper.PiOver4,                 //右下-45°
-            MathHelper.Pi + MathHelper.PiOver4    //左下225°
+            -MathHelper.PiOver4,  //右下-45°
+            MathHelper.Pi + MathHelper.PiOver4  //左下225°
         ];
 
         private TwinsStateContext Context;

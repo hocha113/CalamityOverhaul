@@ -7,7 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>冲刺中：冲量峰值后指数衰减回巡航速，受限转向大弧追踪</summary>
+    /// <summary>冲刺中，峰值后指数回落，受限大弧追踪</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Dashing, typeof(DestroyerStateContext))]
     internal class DestroyerDashingState : DestroyerStateBase
     {
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         public override void OnEnter(DestroyerStateContext context) {
             base.OnEnter(context);
             context.SkipDefaultMovement = true;
-            //冲刺启动帧天空闪雷（连冲每段各闪一次，亮度低于俯冲）
+            //启动帧闪雷，弱于俯冲
             MachineEffect.TriggerSkyFlash(context.Npc.Center, 0.7f);
         }
 
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             NPC npc = context.Npc;
             Player player = context.Target;
 
-            //释放初段复利加速（×1.02/f，冲刺持续升级感），随后指数回落到巡航冲刺速度
+            //初段×1.02，后指数回巡航
             float cruiseSpeed = DestroyerDashPrepareState.DashSpeed(context);
             float speed = npc.velocity.Length();
             if (Timer < 8) {
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 speed = MathHelper.Lerp(speed, cruiseSpeed, 0.045f);
             }
 
-            //受限转向率追踪：高速大弧线，无法原地急转，公平且有力量感
+            //受限转向，高速大弧
             float maxTurn = (context.IsEnraged ? 0.011f : 0.007f) + (context.IsDeathMode ? 0.003f : 0f);
             float heading = npc.velocity.ToRotation();
             float desired = (player.Center - npc.Center).ToRotation();
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             npc.velocity = heading.ToRotationVector2() * speed;
             npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
 
-            //冲刺尾流：头部下方扬尘（仅客户端）
+            //头下扬尘(客户端)
             if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
                 Dust dust = Dust.NewDustDirect(npc.position, npc.width, npc.height,
                     DustID.Smoke, 0, 0, 130, default, Main.rand.NextFloat(1.2f, 2f));
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             Timer++;
 
-            //冲过目标后提前收尾：与玩家距离拉开且正在远离，避免无意义的直线滞空
+            //冲过目标且远离则收尾
             bool passedTarget = Timer > 24
                 && npc.Distance(player.Center) > 860f
                 && Vector2.Dot(npc.velocity.SafeNormalize(Vector2.Zero),
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             if (Timer >= DashDuration || passedTarget) {
                 currentDashCount++;
                 npc.netUpdate = true;
-                //进入刹车漂移冷却
+                //进刹车漂移
                 return new DestroyerDashCooldownState(currentDashCount, maxDashCount);
             }
 
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         }
     }
 
-    /// <summary>冲刺冷却：硬刹车漂移弧+应力火花，回玩家上方后连突或巡空</summary>
+    /// <summary>冲刺冷却，硬刹漂移→回位连突或巡空</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.DashCooldown, typeof(DestroyerStateContext))]
     internal class DestroyerDashCooldownState : DestroyerStateBase
     {
@@ -122,14 +122,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             NPC npc = context.Npc;
             Player player = context.Target;
 
-            //漂移方向：朝玩家所在的一侧回卷
+            //漂移朝玩家侧回卷
             if (driftSign == 0) {
                 float cross = Vector2.Dot(npc.velocity.RotatedBy(MathHelper.PiOver2), player.Center - npc.Center);
                 driftSign = cross >= 0f ? 1 : -1;
             }
 
             if (Timer < DriftTime) {
-                //硬刹车漂移弧：三层阶梯刹车 + 速度向量旋转，重型机体的长弧甩尾停驻
+                //硬刹三阶+向量旋转甩尾
                 float spd = npc.velocity.Length();
                 float brake = spd > 40f ? 0.92f : spd > 25f ? 0.94f : 0.96f;
                 npc.velocity = npc.velocity.RotatedBy(driftSign * 0.05f) * brake;
@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 }
             }
             else {
-                //漂移结束，交回常规转向模型，回到玩家上方整备
+                //漂移结束回玩家上方
                 context.SkipDefaultMovement = false;
                 FaceTarget(npc, player.Center, 0.05f);
                 SetMovement(context, player.Center + new Vector2(0, -500), 9f, 0.4f);

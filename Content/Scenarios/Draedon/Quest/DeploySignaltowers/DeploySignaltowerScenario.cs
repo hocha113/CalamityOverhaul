@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 {
     internal sealed class DeploySignaltowerScenario : NarrativeScenario, ILocalizedModType
     {
-        //本地客户端登门倒计时状态,世界加载时由 ScenarioTicker 重置
+        //登门倒计时,ScenarioTicker世界加载重置
         private static int delayTimer;
         private static bool offeredThisSession;
 
@@ -78,13 +78,13 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 return;
             }
 
-            //Boss战/子世界/其他对话进行时挂起倒计时,条件恢复后从原值继续
+            //Boss战/子世界/对话中挂起倒计时
             if (IsEnvironmentBlocked()) {
                 return;
             }
 
             if (delayTimer <= 0) {
-                delayTimer = Main.rand.Next(60 * 32, 60 * 40);//击败星流巨械后约32-40秒登门
+                delayTimer = Main.rand.Next(60 * 32, 60 * 40);//星流巨械后32-40秒
                 return;
             }
 
@@ -98,17 +98,17 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             }
         }
 
-        /// <summary>仅凭持久剧情标记与本世界目标点状态判定是否应主动登门</summary>
+        /// <summary>持久标记+本世界目标点判定登门</summary>
         private static bool ShouldOffer() {
             if (offeredThisSession) {
                 return false;
             }
-            //本世界已在部署(目标点已生成)或委托已彻底完成时不再登门
+            //已部署或委托完成不再登门
             if (SignalTowerTargetManager.IsGenerated
                 || DraedonStorySync.ReadDraedon(d => d.DeploySignaltowerQuestCompleted, d => d.DeploySignaltowerQuestCompleted)) {
                 return false;
             }
-            //前置只认本世界星流巨械已败;与结束对话的先后由 IsBusy 和嘉登在场两道环境闸维持
+            //前置仅本世界星流巨械已败
             return InWorldBossPhase.Downed29.Invoke();
         }
 
@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 
         protected override NarrativePolicy ConfigurePolicy() => new() {
             IsCompleted = _ => DraedonStorySync.ReadDraedon(d => d.DeploySignaltowerQuestCompleted, d => d.DeploySignaltowerQuestCompleted),
-            CanTrigger = (_, _) => false,//不参与自动调度,仅由本类倒计时手动启动
+            CanTrigger = (_, _) => false,//仅倒计时手动启动
         };
 
         private static void GiveBlueprint() {
@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 
         private static void AcceptQuest() {
             SignalTowerTargetManager.GenerateTargetPoints();
-            //接取即清除拒绝标记,委托面板据 Accepted && !Declined 判定登记
+            //接取清拒绝标记
             DraedonStorySync.WriteDraedon(
                 d => {
                     d.DeploySignaltowerQuestAccepted = true;

@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>火箭帷幕：两侧火箭墙向中线折叠，缺口滚动</summary>
+    /// <summary>火箭帷幕</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.RocketCurtain, typeof(PrimeStateContext))]
     internal class PrimeRocketCurtainState : PrimeStateBase
     {
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
             if (Timer < Telegraph) {
                 context.SetChargeState(3, Timer / (float)Telegraph);
-                //两面火箭墙的起飞走廊预警（自下方两翼向中线折叠）
+                //起飞走廊预警
                 if (!VaultUtils.isClient && Timer == 1) {
                     Vector2 velL = new(4.5f, -5.5f);
                     Vector2 velR = new(-4.5f, -5.5f);

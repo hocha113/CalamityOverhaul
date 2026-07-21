@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private const float AerialPhaseResetThreshold = AerialPhaseThreshold * 2f;
         protected float bodyCount;
         private bool IsBodyAlt => bodyCount % 2 == 0;
-        /// <summary>本节在蠕虫上的位置比例(0头→1尾)，供充能波读取</summary>
+        /// <summary>体节比例0头→1尾，供充能波</summary>
         protected virtual float BodyFraction => MathHelper.Clamp(bodyCount / DestroyerHeadAI.BodyCount, 0f, 1f);
         private float LifeRatio => npc.life / (float)npc.lifeMax;
         private bool StartFlightPhase => LifeRatio < 0.5f;
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private int mechdusaCurvedSpineSegments;
         private int time;
         protected int frame;
-        //死亡演出：冻结相对前一节的姿态，避免身体停摆时被通用算法迅速捋直
+        //死亡演出冻相对前节姿态
         private bool deathFreezeCaptured;
         private Vector2 deathFrozenOffset;
         private float deathFrozenRotation;
@@ -89,15 +89,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             int saveRealLifeIndex = -1;
             foreach (var body in Main.ActiveNPCs) {
                 if (body.type != NPCID.TheDestroyerBody) {
-                    continue;//只寻找身体
+                    continue;//只要身体
                 }
                 if (saveRealLifeIndex >= 0 && saveRealLifeIndex != body.realLife) {
-                    continue;//根据缓存的头部索引对比判断这些身体是否来自同一个头部，否则跳过
+                    continue;//非同头跳过
                 }
                 saveRealLifeIndex = body.realLife;
                 bodyCount++;
                 if (body == npc) {
-                    break;//指针到自身后停搜
+                    break;//到自身停搜
                 }
             }
         }
@@ -108,8 +108,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 return false;
             }
 
-            //头部进入死亡演出：保活 + 冻结姿态，跳过常规跟随算法
-            //（否则身体会被通用算法迅速捋直，且体节可能因前节暂时性问题被链式清理，只剩头部演出）
+            //死亡演出保活+冻姿态，跳跟随
             if (HeadInDeathPerformance()) {
                 HandleDeathPerformanceSegment();
                 return false;
@@ -141,7 +140,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             skeletronAlive = CheckSkeletronAlive();
 
-            npc.timeLeft = 1800;//愚蠢的自然脱战
+            npc.timeLeft = 1800;//防自然脱战
 
             if (npc.localAI[3] == 0f) {
                 AddBodyCount();
@@ -180,13 +179,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 npc.localAI[1] = 1f;
             }
 
-            //调用消失行为逻辑
+            //消失行为
             HandleDespawnBehavior(ref shouldFly, ref segmentVelocity);
 
-            //冲刺！冲刺！冲刺！冲！冲！冲！
+            //冲刺帧
             Move(segmentVelocity);
 
-            //高速运动时沿途甩出火花 + 充能波动态光照（纯客户端视觉，屏幕外自动剔除）
+            //高速火花+充能光照(客户端)
             if (!VaultUtils.isServer) {
                 float segSpeed = (npc.position - npc.oldPosition).Length();
                 if (segSpeed > 26f && Main.rand.NextBool(9)) {
@@ -203,7 +202,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             return false;
         }
 
-        /// <summary>读头共享视觉+本节充能波，返滤镜参数</summary>
+        /// <summary>读头视觉+本节充能波</summary>
         protected (MechBossVisualMode mode, float intensity, float progress) ReadSegmentVisual(int controllerId, out float wave) {
             var (mode, intensity, progress) = MechBossVisualState.Read(controllerId);
             wave = DestroyerChargeWave.Read(controllerId, BodyFraction);
@@ -217,7 +216,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             return (mode, intensity, progress);
         }
 
-        //提取方法，避免重复遍历
+        //提取，免重复遍历
         public static int FindHeadIndex(int possibleIndex) {
             if (possibleIndex >= 0f && possibleIndex < Main.maxNPCs) {
                 if (Main.npc[possibleIndex].active && Main.npc[possibleIndex].type == NPCID.TheDestroyer) {
@@ -231,10 +230,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 }
             }
 
-            return -1; //找不到有效头部
+            return -1;//无有效头
         }
 
-        /// <summary>头部是否正处于死亡演出阶段（读取头部经网络同步的状态索引 npc.ai[2]）</summary>
+        /// <summary>头是否死亡演出(读ai[2])</summary>
         private bool HeadInDeathPerformance() {
             int headIndex = (int)npc.realLife;
             if (headIndex < 0 || headIndex >= Main.maxNPCs || Main.npc[headIndex].type != NPCID.TheDestroyer) {
@@ -248,7 +247,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 && (int)head.ai[2] == (int)DestroyerStateIndex.Death;
         }
 
-        /// <summary>死亡演出体节：保活无害，冻相对前节姿态</summary>
+        /// <summary>死亡体节保活，冻相对前节</summary>
         private void HandleDeathPerformanceSegment() {
             npc.aiStyle = -1;
 
@@ -257,7 +256,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 npc.realLife = headIndex;
             }
 
-            //保活：锁血、无敌、不造成接触伤害，防止被链式清理或撞死玩家
+            //锁血无敌无接触伤
             npc.dontTakeDamage = true;
             npc.damage = 0;
             if (npc.life < 1) {
@@ -267,7 +266,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
             VaultUtils.ClockFrame(ref frame, 5, 3);
 
-            //冻结相对前一节的偏移：逐节传导后整条蠕虫保持原弯曲形态，随头部平移/静止
+            //冻相对前节偏移，保弯曲
             NPC seg = SegmentNPC;
             if (seg.Alives()) {
                 if (!deathFreezeCaptured) {
@@ -280,7 +279,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 npc.rotation = deathFrozenRotation;
             }
             else {
-                //前一节暂时不可用时原地保持，避免位置突变
+                //前节不可用则原地
                 npc.velocity = Vector2.Zero;
             }
 
@@ -504,12 +503,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 dampingInertia += 0.1f;
             }
 
-            //计算段比例缩放
+            //段比例缩放
             int mechdusaSegmentScale = (int)(baseLengBySegment * npc.scale);
 
             Vector2 segmentTarget = SegmentNPC.Center - npc.Center;
 
-            //如果当前为曲线段，调整目标点的Y坐标
+            //曲线段调目标Y
             if (mechdusaCurvedSpineSegmentIndex > 0) {
                 float absoluteTileOffset = mechdusaSegmentScale - mechdusaSegmentScale * ((mechdusaCurvedSpineSegmentIndex - 1f) * 0.1f);
                 absoluteTileOffset = MathHelper.Clamp(absoluteTileOffset, 0f, mechdusaSegmentScale);
@@ -526,12 +525,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             npc.rotation = segmentTarget.ToRotation() + MathHelper.PiOver2;
             npc.Center = SegmentNPC.Center - segmentTarget.SafeNormalize(Vector2.Zero) * mechdusaSegmentScale;
 
-            //计算最小接触速度和伤害速度
+            //接触/伤害速度
             float minimalContactDamageVelocity = segmentVelocity * 0.25f;
             float minimalDamageVelocity = segmentVelocity * 0.5f;
             float bodyAndTailVelocity = (npc.position - npc.oldPosition).Length();
 
-            //根据速度设置伤害
+            //按速设伤
             if (bodyAndTailVelocity <= minimalContactDamageVelocity) {
                 npc.damage = 0;
             }
@@ -543,10 +542,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         public override bool? On_ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers) {
             if (modifiers.DamageType == EndlessDamageClass.Instance) {
-                //我们希望无尽伤害类型不会受到其他代码的减伤影响，所以，如果是无尽伤害，那么就阻止后面所有代码的执行
+                //无尽伤害跳过后续减伤
                 return false;
             }
-            //出场减伤已随龙车开场移除：体节从破土帧起完全可击杀，无敌期由开场位移演出取代
+            //出场减伤已移除，破土即可杀
             modifiers.FinalDamage /= 2f;
             return false;
         }
@@ -562,22 +561,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 rectangle = value.GetRectangle();
             }
 
-            //每节体节用一个稳定但不同的种子（whoAmI），让脉冲扫描带相位错开
+            //whoAmI种子错开脉冲相位
             float seed = (npc.whoAmI % 64) / 64f;
 
             Vector2 drawPos = npc.Center - Main.screenPosition;
             Vector2 origin = rectangle.Size() / 2;
 
-            //读头部共享视觉+本节充能波
+            //头视觉+本节充能波
             int controllerId = (int)npc.realLife;
             var (visMode, visIntensity, visProgress) = ReadSegmentVisual(controllerId, out float wave);
 
-            //外圈描边光环，夜间可读蠕虫走向
+            //外圈描边
             MechBossThermalRenderer.DrawOutlineHalo(spriteBatch, value, drawPos, rectangle,
                 npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None,
                 visMode, visIntensity, visProgress);
 
-            //本体套机械热感着色器（传入当前帧UV范围，避免4帧贴图邻域采样跨帧）
+            //热感着色器，传帧UV防跨帧
             bool shaderApplied = MechBossThermalRenderer.BeginThermalShader(spriteBatch, value, rectangle,
                 visMode, visIntensity, visProgress, seed);
             spriteBatch.Draw(value, drawPos, rectangle, drawColor,
@@ -586,11 +585,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 MechBossThermalRenderer.EndThermalShader(spriteBatch);
             }
 
-            //发光层独立绘制以保留原始自发光
+            //发光层独立
             spriteBatch.Draw(value2, drawPos, rectangle, Color.White,
                 npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0);
 
-            //充能波白热叠加：波峰处体节亮起（A=0 即加法叠色）
+            //充能波白热叠加
             if (wave > 0.05f) {
                 Color hot = new Color(255, 165, 75, 0) * wave;
                 spriteBatch.Draw(value2, drawPos, rectangle, hot,

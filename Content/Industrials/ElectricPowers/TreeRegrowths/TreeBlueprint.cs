@@ -7,14 +7,12 @@ using Terraria.Utilities;
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
 {
     /// <summary>
-    /// 一棵树的完整结构蓝图，按原版 <see cref="WorldGen.GrowTree"/> 系列的帧表规则以种子随机预生成
-    /// <br>生长动画绘制与最终落地写块共用同一份数据，所见即所得</br>
+    /// 树结构蓝图，按原版 <see cref="WorldGen.GrowTree"/> 帧表以种子预生成
+    /// <br>动画与落地写块共用同一份数据</br>
     /// </summary>
     internal class TreeBlueprint
     {
-        /// <summary>
-        /// 单个树块，帧值与原版树 tile 完全一致
-        /// </summary>
+        /// <summary>单块，帧同原版树tile</summary>
         internal struct Piece
         {
             /// <summary>相对主干列的横向偏移(-1/0/+1)</summary>
@@ -44,9 +42,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
         public bool IsPalm => TreeTileType == TileID.PalmTree;
 
         #region 树种解析
-        /// <summary>
-        /// 由地面类型决定可种的树种；preferredType 仅在草地上用于保留樱花/柳树，失败返回0
-        /// </summary>
+        /// <summary>地面→树种；preferredType仅草地保樱花/柳树，失败0</summary>
         public static int ResolveTreeType(int x, int groundY, int preferredType) {
             if (!WorldGen.InWorld(x, groundY, 30)) {
                 return 0;
@@ -89,9 +85,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
         #endregion
 
         #region 生成
-        /// <summary>
-        /// 以种子随机生成树结构，地面与树种不匹配时返回false
-        /// </summary>
+        /// <summary>按种子生成；地面与树种不匹配返回false</summary>
         public static bool TryGenerate(int x, int groundY, int treeTileType, int seed, out TreeBlueprint blueprint) {
             blueprint = null;
             if (!WorldGen.InWorld(x, groundY, 30)) {
@@ -160,9 +154,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
                 && WorldGen.IsTileTypeFitForTree(tile.TileType);
         }
 
-        /// <summary>
-        /// 普通树(tile 5)，镜像 <see cref="WorldGen.GrowTree"/> 的帧表与随机流
-        /// </summary>
+        /// <summary>普通树(tile5)，镜像 GrowTree 帧表</summary>
         private static TreeBlueprint GenerateCommon(int i, int j, UnifiedRandom rand) {
             TreeBlueprint bp = new TreeBlueprint {
                 TreeTileType = TileID.Trees,
@@ -220,7 +212,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
                 }
             }
 
-            //根部：num6 语义 0=双根 1=右根 2=左根 3=无(调整流程照抄原版)
+            //根部num6 0双1右2左3无(照抄原版)
             int rootCase = rand.Next(3);
             bool leftFit = RootGroundFit(i - 1, j);
             bool rightFit = RootGroundFit(i + 1, j);
@@ -263,7 +255,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
                 bp.Pieces[bottomIdx] = bottom;
             }
 
-            //顶帽：1/13概率秃顶(frameX 0)
+            //顶帽1/13秃顶(frameX0)
             if (topIdx >= 0) {
                 bool leafyTop = rand.Next(13) != 0 && !noFoliage;
                 int topRow = rand.Next(3);
@@ -275,9 +267,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
             return bp;
         }
 
-        /// <summary>
-        /// 樱花/柳树/灰烬树，镜像 <see cref="WorldGen.GrowTreeWithSettings"/> (高度7-12，根部独立判定)
-        /// </summary>
+        /// <summary>樱花/柳/灰烬，镜像 GrowTreeWithSettings(高7-12)</summary>
         private static TreeBlueprint GenerateWithSettings(int i, int j, int treeTileType, UnifiedRandom rand) {
             TreeBlueprint bp = new TreeBlueprint {
                 TreeTileType = treeTileType,
@@ -368,9 +358,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
             return bp;
         }
 
-        /// <summary>
-        /// 棕榈树，镜像 <see cref="WorldGen.GrowPalmTree"/>；frameY 存主干横向倾斜像素
-        /// </summary>
+        /// <summary>棕榈，镜像 GrowPalmTree；frameY=横倾像素</summary>
         private static TreeBlueprint GeneratePalm(int i, int groundY, UnifiedRandom rand) {
             TreeBlueprint bp = new TreeBlueprint {
                 TreeTileType = TileID.PalmTree,
@@ -410,9 +398,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
         #endregion
 
         #region 落地校验与写入
-        /// <summary>
-        /// 权威端为一次种植滚一个可用种子：生成蓝图并整体校验通过才算数(高度随机可能撞上空间上限)
-        /// </summary>
+        /// <summary>权威端滚可用种子，蓝图整体校验过才算(高度可能撞上限)</summary>
         public static bool TryRollSeed(int x, int groundY, int treeTileType, out int seed) {
             //随机高度可能撞上头顶空间上限，多滚几次提高出苗率
             for (int attempt = 0; attempt < 8; attempt++) {
@@ -425,9 +411,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
             return false;
         }
 
-        /// <summary>
-        /// 镜像对应原版种树函数的前置校验，落地前世界可能已变化，写块前必须复检
-        /// </summary>
+        /// <summary>写块前复检(镜像原版前置；落地前世界可能变)</summary>
         public bool CanPlace() {
             if (!WorldGen.InWorld(TrunkX, GroundY, 32)) {
                 return false;
@@ -510,8 +494,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
         }
 
         /// <summary>
-        /// 把蓝图写入世界并同步，帧数据即动画所绘的那棵树；权威端调用
-        /// <br>树块直接覆写脚下的草花装饰，与原版 GrowTree 行为一致(EmptyTileCheck 本就无视它们)</br>
+        /// 写蓝图入世界并同步(权威端)；帧即动画所见
+        /// <br>覆写草花，同原版 GrowTree(EmptyTileCheck无视)</br>
         /// </summary>
         public void Place() {
             Tile ground = Main.tile[TrunkX, GroundY];

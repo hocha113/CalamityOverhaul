@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    /// 冰河时代：左键冰晶炮+晶柱，右键冰河推进波
+    /// 左键冰晶炮+晶柱，右键推进波
     internal class CrystalDimming : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "CrystalDimming";
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// 冰河时代手持：帧0-3开火 帧4待机
+    /// 帧0-3开火 帧4待机
     internal class CrystalDimmingHeld : BaseSnowCannonHeld
     {
         public override string Texture => CWRConstant.Item_Ranged + "CrystalDimmingHeld";
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         /// 开火余辉计时
         private int fireAnimTime;
 
-        //开火动画播完之前不销毁，避免炮口余辉被掐断
+        //开火动画未完不销毁
         protected override bool PendingWork => fireAnimTime > 0;
 
         protected override void UpdateGun() {
@@ -213,7 +213,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
             //在命中点下方寻找地面拔起晶柱，悬空则改为冰晶迸射
             if (GlacierSpikeProj.TryFindGround(Projectile.Center, 30, out Vector2 ground)) {
-                //邻近晶簇共鸣：附近已有晶柱越多，新柱拔得越高
+                //邻近晶柱越多新柱越高
                 int nearby = GlacierSpikeProj.CountNearbySpikes(ground, 220f, Projectile.owner);
                 float resonance = Math.Min(nearby * 0.16f, 0.5f);
                 for (int i = 0; i < 2; i++) {
@@ -245,7 +245,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// 冰川晶柱：GlacierSpike.fx 程序化，ai0种子 ai1缩放
+    /// GlacierSpike.fx，ai0种子 ai1缩放
     internal class GlacierSpikeProj : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -311,7 +311,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override void AI() {
             if (Projectile.timeLeft == LifeTime) {
-                //破土瞬间：基座迸土与冰屑
+                //破土迸屑
                 SoundEngine.PlaySound(SoundID.Item49 with { Volume = 0.7f, Pitch = -0.3f, MaxInstances = 5 }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.6f, Pitch = -0.5f, MaxInstances = 5 }, Projectile.Center);
                 for (int i = 0; i < 18; i++) {
@@ -357,7 +357,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void OnKill(int timeLeft) {
-            //崩解：沿柱身炸开冰屑
+            //崩解冰屑
             SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.8f, Pitch = -0.1f, MaxInstances = 5 }, Projectile.Center);
             for (int i = 0; i < 20; i++) {
                 Dust d = Dust.NewDustPerfect(Projectile.Center - new Vector2(Main.rand.NextFloat(-0.35f, 0.35f) * PillarWidth
@@ -419,7 +419,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// 冰河推进波：沿地表拔起渐高晶柱
+    /// 沿地表拔起渐高晶柱
     internal class GlacierWave : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -441,7 +441,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override bool? CanDamage() => false;
 
         public override void AI() {
-            //贴地行进：每帧把自己吸附到地表
+            //贴地吸附
             if (GlacierSpikeProj.TryFindGround(Projectile.Center - new Vector2(0, 64), 12, out Vector2 ground)) {
                 Projectile.Center = new Vector2(Projectile.Center.X, ground.Y - 8);
 
@@ -463,7 +463,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 }
             }
             else {
-                //波前冲出了悬崖：向下找不到地面就坠落寻找
+                //悬崖下落寻地
                 Projectile.velocity.Y += 1.6f;
                 if (Projectile.velocity.Y > 12f) {
                     Projectile.velocity.Y = 12f;

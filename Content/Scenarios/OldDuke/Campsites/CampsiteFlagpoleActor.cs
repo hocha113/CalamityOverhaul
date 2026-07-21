@@ -5,9 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 {
-    /// <summary>
-    /// 营地里随风摇摆的旗杆
-    /// </summary>
+    /// <summary>营地旗杆</summary>
     internal class CampsiteFlagpoleActor : Actor
     {
         private float swayTimer;
@@ -36,13 +34,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             Vector2 screenPos = Position - Main.screenPosition;
             Vector2 origin = new Vector2(flagTexture.Width / 2f, flagTexture.Height);
 
-            //风吹摇摆效果
             float swayAmount = MathF.Sin(swayTimer * 2f) * 0.08f;
             Color lc = Lighting.GetColor((Position / 16).ToPoint());
 
             spriteBatch.Draw(flagTexture, screenPos, null, lc, swayAmount, origin, 1f, SpriteEffects.None, 0f);
 
-            //旗帜飘动感：稍微透明的重影
+            //飘动重影
             for (int i = 1; i <= 2; i++) {
                 float offsetAmount = i * 3f;
                 float alpha = 0.3f / i;

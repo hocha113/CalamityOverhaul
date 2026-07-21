@@ -1,8 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
-    /// <summary>
-    /// 致谢名单中的贡献类别，决定分节标题与强调色
-    /// </summary>
+    /// <summary>致谢贡献类别，定分节标题与强调色</summary>
     internal enum CreditRole
     {
         Artist,
@@ -12,25 +10,17 @@
         Donor,
     }
 
-    /// <summary>
-    /// 一个致谢分节：一种角色 + 该角色下的所有名字
-    /// </summary>
+    /// <summary>致谢分节，角色+名字列表</summary>
     internal readonly record struct CreditSection(CreditRole Role, string[] Names);
 
     /// <summary>
-    /// ED 致谢名单的静态内容。只构建一次，替代旧实现里每帧重建的 <c>names[]</c>。
-    /// 名字为专有名词不做本地化；分节标题走 <see cref="AcknowledgmentUI"/> 的本地化字段
+    /// 致谢名单静态表，只建一次；名字不本地化，分节标题走 <see cref="AcknowledgmentUI"/>
     /// </summary>
     internal static class AckCredits
     {
-        /// <summary>
-        /// 捐赠者人数超过该值时，渲染层改用多列网格排布，避免冗长的单列滚动
-        /// </summary>
+        /// <summary>捐赠者超此数改多列网格</summary>
         public const int MultiColumnThreshold = 12;
 
-        /// <summary>
-        /// 按出场顺序排列的致谢分节
-        /// </summary>
         public static readonly CreditSection[] Sections =
         [
             new(CreditRole.Artist, ["雾梯"]),

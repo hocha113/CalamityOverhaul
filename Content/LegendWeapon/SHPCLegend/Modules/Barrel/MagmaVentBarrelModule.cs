@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>岩浆枪管：命中/消亡留熔岩喷口，周期喷发封锁</summary>
+    /// <summary>岩浆枪管，命中/消亡留喷口，周期喷发</summary>
     internal sealed class MagmaVentBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>熔岩喷口 VFX+周期喷发</summary>
+    /// <summary>熔岩喷口，VFX+周期喷发</summary>
     internal sealed class SHPCMagmaVentProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (Main.rand.NextBool(interval) && age > 0) {
                 EruptionPulse(nearLava);
             }
-            //岩浆环境下持续吐烟与火星，强化"喷口活着"的视觉
+            //熔岩区持续吐烟火星
             if (nearLava && Main.netMode != NetmodeID.Server && Main.GameUpdateCount % 6 == 0) {
                 PRTLoader.NewParticle<PRT_LavaFire>(
                     Projectile.Center + new Vector2(Main.rand.NextFloat(-22f, 22f), Main.rand.NextFloat(-4f, 6f)),
@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         private void EruptionPulse(bool nearLava) {
             Projectile.localAI[0] = 9f;
             if (Main.netMode == NetmodeID.Server) return;
-            //熔岩 / 地狱火粒子混合
+            //熔岩/地狱火混合
             for (int i = 0; i < 6; i++) {
                 PRTLoader.NewParticle<PRT_LavaFire>(
                     Projectile.Center + new Vector2(Main.rand.NextFloat(-26f, 26f), Main.rand.NextFloat(-2f, 8f)),
@@ -120,9 +120,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 };
                 PRTLoader.AddParticle(hf);
             }
-            //地面冲击环：用 PRT_StarPulseRing 横向压扁形成热浪环
+            //地面热浪环
             PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center + Vector2.UnitY * 4f, Vector2.Zero, new Color(255, 140, 50, 0), 0.05f).Configure(0.05f, 0.55f, 22);
-            //方块碎屑火星
+            //碎屑火星
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = new(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-9f, -2f));
                 PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + new Vector2(Main.rand.NextFloat(-22f, 22f), 0f), vel, Color.Lerp(new Color(255, 220, 130), new Color(255, 90, 25), Main.rand.NextFloat()), Main.rand.NextFloat(0.5f, 1.2f)).Configure(true, Main.rand.Next(20, 38));
@@ -131,7 +131,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (nearLava) {
                 SoundEngine.PlaySound(SoundID.LiquidsWaterLava with { Volume = 0.4f, Pitch = -0.4f }, Projectile.Center);
             }
-            //SHPCNaturalFx.Shake(3.5f);
         }
 
         public override bool? CanDamage() => Projectile.localAI[0] > 0f;
@@ -147,7 +146,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Texture2D ring = CWRAsset.SoftGlow?.Value;
             if (ring == null) return false;
             float pulse = MathHelper.Clamp(Projectile.localAI[0] / 9f, 0f, 1f);
-            //地面口部脉冲圆环
+            //口部脉冲环
             Vector2 baseScreen = Projectile.Center - Main.screenPosition;
             float ringScale = 1.32f + pulse * 0.45f;
             Color ringInner = new Color(255, 150, 60, 0) * (0.55f + pulse * 0.45f);
@@ -164,10 +163,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             float intensity = 0.4f + pulse * 0.6f;
             Vector2 baseScreen = Projectile.Center - Main.screenPosition;
 
-            //火柱本体：Fire 拉伸 + Fog 拖尾
+            //火柱 Fire+Fog
             Texture2D fire = CWRAsset.Fire?.Value;
             if (fire != null) {
-                //Fire 是序列帧 4x4，取一格
+                //Fire 4x4 取一格
                 int frameW = fire.Width / 4;
                 int frameH = fire.Height / 4;
                 int idx = (int)(Main.GameUpdateCount / 4) % 16;
@@ -193,7 +192,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 }
             }
 
-            //底部多层 SoftGlow，颜色 (255,115,25)→(130,30,10)
+            //底部 SoftGlow
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow != null) {
                 Color inner = new Color(255, 200, 110, 0) * intensity * life;

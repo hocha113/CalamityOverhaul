@@ -13,8 +13,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 {
     /// <summary>
-    /// 老公爵营地里游荡的观赏性实体：位置/移动由服务端(或单人)权威决策，
-    /// 客户端仅做视觉预测与外观绘制，避免多人下各端各走各的
+    /// 营地游荡体；权威端决移动，客户端只吃位置同步+外观
     /// </summary>
     internal class OldDukeWanderingActor : Actor, ILocalizedModType
     {
@@ -29,17 +28,15 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
         public string LocalizationCategory => "ADV.OldDukeCampsite";
         public static LocalizedText InteractHint;
 
-        //朝向与动画相位，纯视觉，两端各自计算即可
+        //朝向/相位，纯视觉两端自算
         public bool FacingLeft;
         public float SwimPhase;
-        /// <summary>
-        /// 切磋开始时的淡出透明度，由 <see cref="OldDukeCampsite.WannaToFight"/>(已联机同步)驱动，两端各自计算保持一致
-        /// </summary>
+        /// <summary>切磋淡出，跟 <see cref="OldDukeCampsite.WannaToFight"/> 两端自算</summary>
         public float Sengs = 1f;
 
         private float glowTimer;
 
-        //以下字段只在服务端/单人下由权威行为逻辑读写，客户端不参与决策，只依赖Actor自带的位置同步+插值
+        //权威端行为字段；客户端只吃位置同步
         private Vector2 campsiteCenter;
         private Vector2 currentTarget;
         private int targetTimer;
@@ -74,7 +71,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             DrawExtendMode = 400;
             DrawLayer = ActorDrawLayer.Default;
 
-            //生成点即营地中心，两端都能从已同步的Position直接推出，不需要额外联机字段
+            //生成点=营地中心，无需额外同步字段
             campsiteCenter = Position;
             currentTarget = Position;
             FacingLeft = Main.rand.NextBool();
@@ -97,21 +94,18 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 glowTimer -= MathHelper.TwoPi;
             }
 
-            //Sengs的渐隐渐显由已联机同步的WannaToFight驱动，两端跑同一份确定性逻辑即可保持画面一致
             UpdateWannaToFight();
 
-            //真正"决定去哪/做什么"的逻辑只由权威端跑，客户端只吃Actor自带的Position/Velocity同步+插值
+            //权威端跑行为
             if (VaultUtils.isServer || VaultUtils.isSinglePlayer) {
                 RunAuthorityBehavior();
             }
 
-            //朝向只是对当前速度的派生展示，两端各自算一份即可，不需要额外联机字段
             UpdateFacing();
         }
 
         private void RunAuthorityBehavior() {
-            //等价于原先"先用速度推进位置、再对速度做阻尼"的顺序：Actor框架会在AI()返回后统一做Position += Velocity，
-            //这里提前对上一tick末的速度做阻尼，效果与原实现逐帧对齐
+            //框架后移Position，这里先阻尼
             Velocity *= 0.96f;
 
             if (OldDukeEffect.IsActive) {
@@ -149,7 +143,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
         private void UpdateDialogueBehavior() {
             currentState = BehaviorState.Dialogue;
 
-            //营地对话没有固定的"服务端视角"，取离营地最近的玩家作为面向目标，两端读到的都是已同步的玩家位置
+            //对话面向最近玩家
             Player target = Position.FindClosestPlayer();
             currentTarget = target is not null ? target.Center + new Vector2(0, -200f) : Position;
 
@@ -530,9 +524,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             currentTarget = selected.Position + new Vector2(0, -60f + Main.rand.NextFloat(-20f, 20f));
         }
 
-        /// <summary>
-        /// 更新附近锅的"被访问"表现状态；这两个字段标了[SyncVar]，只要权威端写入就会自动广播给客户端
-        /// </summary>
+        /// <summary>锅访问表现，[SyncVar]权威端写</summary>
         private void UpdateNearbyPots() {
             bool isVisiting = currentState == BehaviorState.VisitPot;
             List<CampsitePotActor> pots = ActorLoader.GetActiveActors<CampsitePotActor>();
@@ -599,7 +591,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             float swimTilt = GetSwimTilt();
             SpriteEffects flip = FacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            //硫磺海风格底层发光
             float glowIntensity = (MathF.Sin(glowTimer * 2f) * 0.5f + 0.5f) * 0.4f;
             Color glowColor = new Color(100, 200, 120) with { A = 0 };
 
@@ -620,9 +611,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             DrawInteractPrompt(spriteBatch);
         }
 
-        /// <summary>
-        /// 交互提示：用柔光衬底+描边文字取代实心方框，呼应项目"拒绝方框UI"的规范
-        /// </summary>
         private void DrawInteractPrompt(SpriteBatch sb) {
             float alpha = OldDukeCampsite.GetInteractPromptAlpha();
             if (alpha <= 0.01f) {
@@ -639,22 +627,18 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             Texture2D glow = CWRAsset.SoftGlow.Value;
             float pulse = MathF.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f;
 
-            //柔光椭圆衬底，取代实心矩形背景
             Vector2 backingScale = new Vector2((textSize.X + 50f) / glow.Width, (textSize.Y + 30f) / glow.Height);
             Color backingColor = new Color(90, 180, 130) with { A = 0 } * (alpha * (0.3f + pulse * 0.12f));
             sb.Draw(glow, textPos, null, backingColor, 0f, glow.Size() / 2f, backingScale, SpriteEffects.None, 0f);
 
-            //文字
             Color textColor = new Color(200, 240, 220) * alpha;
             Utils.DrawBorderString(sb, hintText, textPos - textSize / 2, textColor, 0.9f);
 
-            //脉动光带取代硬边框分隔线
             float lineWidth = textSize.X * (0.7f + pulse * 0.25f);
             Vector2 linePos = textPos + new Vector2(0, textSize.Y / 2f + 6f);
             Color lineColor = new Color(140, 220, 160) with { A = 0 } * (alpha * 0.6f);
             sb.Draw(glow, linePos, null, lineColor, 0f, glow.Size() / 2f, new Vector2(lineWidth / glow.Width, 4f / glow.Height), SpriteEffects.None, 0f);
 
-            //脉动箭头图标
             string iconText = "▼";
             Vector2 iconSize = font.MeasureString(iconText) * 0.7f;
             Vector2 iconPos = textPos + new Vector2(0, textSize.Y / 2 + 16);

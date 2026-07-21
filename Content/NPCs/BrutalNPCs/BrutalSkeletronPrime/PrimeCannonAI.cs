@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>火箭炮 NPCOverride；行为见 CannonBombardState / CannonSpreadState</summary>
+    /// <summary>火箭炮，行为见 Cannon*State</summary>
     internal class PrimeCannonAI : PrimeArm
     {
         public override int TargetID => NPCID.PrimeCannon;
@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         protected override int FormationIndex => 1;
 
         protected override void ArmPreUpdate() {
-            //跟随自己打出的制导炮弹旋转，呈现"目送弹药"的细节
+            //目送制导炮弹
             if (FindPrimeCannonOnSpan(out Projectile primeCannonOnSpan)) {
                 npc.rotation = primeCannonOnSpan.rotation - MathHelper.PiOver2;
             }
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             float recoil = armContext?.RecoilIntensity ?? 0f;
             Vector2 aimDirection = armContext?.AimDirection ?? Vector2.UnitX;
 
-            //后坐力抖动偏移
+            //后坐抖动
             Vector2 recoilOffset = Vector2.Zero;
             if (recoil > 1f) {
                 recoilOffset = -aimDirection * (recoil * 2f);
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             Vector2 drawPos = npc.Center - Main.screenPosition + recoilOffset;
 
-            //机械热感滤镜，与头部共用 head.whoAmI
+            //热感滤镜共用头whoAmI
             int controllerId = (int)npc.ai[PrimeAiSlots.ArmHeadIndex];
             Rectangle cannonRect = mainValue.Bounds;
             Vector2 cannonOrigin = mainValue.Size() / 2;
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 MechBossThermalRenderer.EndThermalShader(spriteBatch);
             }
 
-            //发光层（开火时炽热增强）
+            //发光层
             bool isFiring = recoil > 0.5f;
             float glowIntensity = isFiring ? MathHelper.Clamp(1.0f + recoil * 0.1f, 1.0f, 1.5f) : 1.0f;
             Color glowColor = Color.White * glowIntensity;

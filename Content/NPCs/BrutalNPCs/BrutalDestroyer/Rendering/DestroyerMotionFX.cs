@@ -11,7 +11,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 {
-    /// <summary>毁灭者运动演出：光带拖尾、冲刺爆发、刹车火花、冲击与震屏</summary>
+    /// <summary>运动演出，光带/爆发/火花/冲击/震屏</summary>
     internal static class DestroyerMotionFX
     {
         //固定点数的缓存Trail（Trail的点数与宽度/颜色委托在构造时绑定，且持有GPU缓冲，须复用）
@@ -27,14 +27,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 
         #region 高速光带拖尾
 
-        /// <summary>头部 Draw：oldPos 加法混合光带，替代贴图残影；强度&gt;阈值才绘制</summary>
+        /// <summary>头oldPos加法光带，强度过阈才绘</summary>
         public static void DrawHeadTrail(NPC npc, float intensity) {
             if (intensity <= 0.05f || EffectLoader.GradientTrail?.Value == null) {
                 return;
             }
 
-            //收集有效轨迹点：Trail约定 [^1]=起点（头部当前位置）、[0]=尾端，
-            //所以从最旧位置向最新位置正序填充，不足的点用最旧有效点填充（塌缩为零长段，无视觉影响）
+            //轨迹点，[^1]头现位 [0]尾；不足用最旧点垫
             Span<Vector2> gathered = stackalloc Vector2[TrailPointCount];
             int count = 0;
             gathered[count++] = npc.Center;
@@ -43,7 +42,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
                     break;
                 }
                 Vector2 pos = npc.oldPos[i] + npc.Size / 2f;
-                //过滤瞬移产生的超长段，避免横跨屏幕的错误光带
+                //滤瞬移超长段
                 if (Vector2.DistanceSquared(pos, gathered[count - 1]) > 400f * 400f) {
                     break;
                 }
@@ -53,7 +52,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
                 return;
             }
 
-            //gathered: [0]=最新 → 倒序写入trailPositions末端，前部用最旧点填充
+            //[0]最新，倒序写入trail末
             Vector2 oldest = gathered[count - 1];
             int pad = TrailPointCount - count;
             for (int i = 0; i < pad; i++) {
@@ -98,7 +97,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 
         #region 热浪尾流扭曲
 
-        /// <summary>在Warp采集批次内绘制一条沿运动方向的热浪尾流位移quad（由<see cref="Projectiles.Boss.Destroyer.DestroyerHeatWakeProj"/>的Warp调用）</summary>
+        /// <summary>Warp热浪尾流quad，HeatWakeProj.Warp调</summary>
         public static void DrawHeatWakeWarp(Vector2 worldCenter, float lengthPx, float widthPx,
             float rotation, float intensity, float progress) {
             if (EffectLoader.DestroyerHeatWake?.Value == null) {
@@ -117,14 +116,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
                 DepthStencilState.None, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
             effect.CurrentTechnique.Passes[0].Apply();
 
-            //白色占位图整图拉伸为旋转quad，uv全幅展开供着色器生成图案
+            //占位拉伸为旋转quad
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 scale = new Vector2(lengthPx / pixel.Width, widthPx / pixel.Height);
             sb.Draw(pixel, worldCenter - Main.screenPosition, null, Color.White,
                 rotation, pixel.Size() / 2f, scale, SpriteEffects.None, 0f);
 
             sb.End();
-            //还原为 WarpEffectRender 采集批次的原始状态
+            //还原Warp采集批
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
@@ -133,7 +132,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 
         #region 冲刺与刹车
 
-        /// <summary>冲刺释放爆发：光核+锥形火花+扩散环；音爆扭曲见 DestroyerShockwave</summary>
+        /// <summary>冲刺爆发，音爆见Shockwave</summary>
         public static void SpawnDashBurst(Vector2 pos, Vector2 dir) {
             if (VaultUtils.isServer) {
                 return;
@@ -154,7 +153,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             Lighting.AddLight(pos, HotOrange.ToVector3() * 2.4f);
         }
 
-        /// <summary>硬刹车应力火花：逆速度方向喷出的金属火花与小段烟</summary>
+        /// <summary>硬刹逆速火花+烟</summary>
         public static void SpawnBrakeSparks(NPC npc) {
             if (VaultUtils.isServer || npc.velocity.Length() < 4f) {
                 return;
@@ -192,7 +191,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 
         #region 冲击与震动
 
-        /// <summary>大地冲击演出：机械殉爆光团 + 碎屑喷泉 + 浓烟 + 音效（终结贯穿落点等）</summary>
+        /// <summary>大地冲击，光+碎屑+烟+音</summary>
         public static void SpawnImpactBlast(Vector2 pos, float power) {
             if (VaultUtils.isServer) {
                 return;
@@ -202,7 +201,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             PRTLoader.NewParticle<PRT_MechExplosion>(pos, Vector2.Zero, warm, 2.2f * power)
                 .Configure(34, warm);
 
-            //碎屑喷泉：向上扇形喷射的火花余烬
+            //碎屑喷泉
             int sparkCount = (int)(26 * power);
             for (int i = 0; i < sparkCount; i++) {
                 Vector2 vel = (-Vector2.UnitY).RotatedBy(Main.rand.NextFloat(-1.1f, 1.1f))
@@ -233,7 +232,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.9f, Pitch = -0.5f }, pos);
         }
 
-        /// <summary>相机冲击震动(受屏幕震动设置控制，服务端跳过)；direction 指定主轴，缺省随机</summary>
+        /// <summary>相机冲击，受震动设置，服务端跳过</summary>
         public static void CameraPunch(Vector2 pos, float strength, int frames,
             string uniqueId = "DestroyerMotion", Vector2? direction = null) {
             if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
@@ -247,7 +246,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             Main.instance.CameraModifiers.Add(modifier);
         }
 
-        /// <summary>自给定位置向下寻找首个实体地表，找不到时回退到下方400像素（钻地/贯穿落点共用）</summary>
+        /// <summary>下探实体地表，找不到回退下方400px</summary>
         public static Vector2 FindGroundBelow(Vector2 from) {
             int tileX = (int)(from.X / 16f);
             int tileY = Math.Max((int)(from.Y / 16f), 10);
@@ -264,7 +263,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             return from + new Vector2(0, 400f);
         }
 
-        /// <summary>世界坐标是否在屏幕可见范围(含外扩边距)，屏外跳过粒子</summary>
+        /// <summary>是否屏内(含边距)</summary>
         public static bool OnScreen(Vector2 worldPos, float margin = 280f) {
             return worldPos.X > Main.screenPosition.X - margin
                 && worldPos.X < Main.screenPosition.X + Main.screenWidth + margin

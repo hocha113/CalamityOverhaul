@@ -12,42 +12,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>凝霜宣言域内 shader 资源（域内加载器，不动 EffectLoader）</summary>
     internal class FishFrostMinnowAssets
     {
-        /// <summary>命中点冰凌花纹 decal：Voronoi 晶脉沿表面结晶爬开的短命残迹</summary>
+        /// <summary>命中点冰凌花纹 decal</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect FishFrostMinnowFern { get; private set; }
     }
 
-    /// <summary>
-    /// 凝霜宣言共享演出协作类。<br/>
-    /// 色彩脚本：冰白-淡青-深蓝的冷蓝语系，压明度不压饱和；禁彩虹、禁亮蓝糊屏；
-    /// 纯白只允许 ≤2 帧镜面瞬闪（棱面对上光轴），常驻亮部全部走淡青。<br/>
-    /// 材质三签名：六角冰晶几何（自旋=旋转拖影）、低温霜雾下沉（AlphaBlend 雾体向下淌）、
-    /// 结晶生长（命中冰凌蕨花爬开、碎散成有棱角的冰屑）
-    /// </summary>
+    /// <summary>凝霜宣言</summary>
     internal static class FrostMinnowVFX
     {
-        //==== 色彩脚本 ====
-        /// <summary>冰白：仅镜面瞬闪与生长前沿</summary>
+        /// <summary>冰白</summary>
         public static readonly Color IceWhite = new(226, 243, 255);
-        /// <summary>淡青：常驻亮部主色</summary>
+        /// <summary>淡青</summary>
         public static readonly Color PaleCyan = new(150, 214, 236);
-        /// <summary>深蓝：中层与拖影</summary>
+        /// <summary>深蓝</summary>
         public static readonly Color DeepBlue = new(56, 96, 156);
-        /// <summary>暗蓝：压底外圈</summary>
+        /// <summary>暗蓝</summary>
         public static readonly Color AbyssBlue = new(22, 38, 68);
-        /// <summary>霜雾灰蓝：AlphaBlend 雾体</summary>
+        /// <summary>霜雾灰蓝</summary>
         public static readonly Color MistBlue = new(176, 200, 218);
 
-        //==== 音效分层 ====
 
-        /// <summary>冰晶脆响：结晶锁定 / 冰凌生长 / 碎裂共用的玻璃质点睛音</summary>
+        /// <summary>冰晶脆响</summary>
         public static void CrystalTink(Vector2 pos, float pitch, float volume) {
             SoundEngine.PlaySound(SoundID.Item27 with { Pitch = pitch, Volume = volume, MaxInstances = 5 }, pos);
         }
 
-        //==== 粒子族 ====
 
-        /// <summary>有棱角的冰晶碎屑：复用玻璃薄片（翻滚坠落+随机反光爆闪），冷蓝配色</summary>
+        /// <summary>有棱角的冰晶碎屑</summary>
         public static void ChipBurst(Vector2 pos, Vector2 dir, int count, float speed) {
             if (Main.dedServ) {
                 return;
@@ -62,25 +53,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>低温霜雾：AlphaBlend 冷灰蓝雾团，冷空气比重大而向下淌</summary>
+        /// <summary>低温霜雾</summary>
         public static void Mist(Vector2 pos, Vector2 vel, float scale, int life, float opacity) {
             PRTLoader.NewParticle<PRT_FishFrostMinnowMist>(pos, vel, MistBlue, scale)
                 ?.Configure(life, opacity);
         }
 
-        /// <summary>冰晶单帧镜面闪：小而锐的冷白星闪，短命不驻留</summary>
+        /// <summary>冰晶单帧镜面闪，小而锐的冷白星闪，短命不驻留</summary>
         public static void Glint(Vector2 pos, float scale, int life = 10) {
             PRTLoader.NewParticle<PRT_Sparkle>(pos, Vector2.Zero, IceWhite, scale)
                 ?.Configure(PaleCyan, life, Main.rand.NextFloat(-0.1f, 0.1f), 0.5f);
         }
 
-        /// <summary>淡青冲击环：命中/喷吐节点的小口径扩散环</summary>
+        /// <summary>淡青冲击环</summary>
         public static void ImpactRing(Vector2 pos, float rot, float startScale, float finalScale, int life) {
             PRTLoader.NewParticle<PRT_DWave>(pos, Vector2.Zero, PaleCyan * 0.75f, startScale)
                 ?.Configure(new Vector2(1f, 0.8f), rot, finalScale, life);
         }
 
-        /// <summary>冰晶碎裂复合拍：冰屑迸散+霜雾+暗雾尘压底+沿表面扁冲击环。ke 0..1 动能系数</summary>
+        /// <summary>冰晶碎裂复合拍，冰屑迸散+霜雾+暗雾尘压底+沿表面扁冲击环。ke 0..1 动能系数</summary>
         public static void CrystalShatter(Vector2 pos, Vector2 dir, float ke, float ringRotation) {
             if (Main.dedServ) {
                 return;
@@ -101,10 +92,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(new Vector2(1f, 0.62f), ringRotation, 0.3f + 0.18f * ke, 11);
         }
 
-        //同一目标冰凌花限频：客户端视觉去重，非玩法状态不参与同步
+        //同一目标冰凌花限频
         private static readonly Dictionary<int, uint> fernClaim = new();
 
-        /// <summary>命中冰凌蕨花：沿目标表面爬开的结晶 decal，跟随宿主、活得比弹体久。同目标 36 帧限频</summary>
+        /// <summary>命中冰凌蕨花</summary>
         public static void FernOnNPC(NPC target, Vector2 hitPos, Vector2 impactVel) {
             if (Main.dedServ || target == null) {
                 return;
@@ -122,7 +113,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (offset.Length() > maxR) {
                 offset = offset.SafeNormalize(Main.rand.NextVector2Unit()) * maxR * 0.6f;
             }
-            //长轴沿表面切向：垂直于入射方向
+            //长轴沿表面切向，垂直于入射方向
             float tangent = impactVel.ToRotation() + MathHelper.PiOver2 + Main.rand.NextFloat(-0.22f, 0.22f);
             float len = MathHelper.Clamp(MathF.Max(target.width, target.height) * 0.55f, 30f, 64f)
                 * Main.rand.NextFloat(0.85f, 1.15f);
@@ -130,7 +121,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(target.whoAmI, offset, tangent, len, len * 0.62f, 52);
         }
 
-        /// <summary>地面/墙面霜花印：无宿主的静止小片冰凌，触地霜球的残迹</summary>
+        /// <summary>地面/墙面霜花印</summary>
         public static void FernPrint(Vector2 pos, float tangentRot, float len, int life = 42) {
             if (Main.dedServ) {
                 return;
@@ -139,12 +130,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(-1, Vector2.Zero, tangentRot, len, len * 0.5f, life);
         }
 
-        //==== 六角冰晶绘制 ====
 
-        /// <summary>
-        /// 六角冰晶：3片错开60°的细长晶刃（Extra_98 真 alpha）拼成六芒晶体。
-        /// 层序=暗底描边、淡青中层、错30°冰白内层小晶面、极小冰芯，radiusPx 为晶体半径像素
-        /// </summary>
+        /// <summary>六角冰晶</summary>
         public static void DrawHexCrystal(SpriteBatch sb, Vector2 drawPos, float rotation, float radiusPx, float alpha, float coreAlpha = 0.45f) {
             Texture2D tex = CWRAsset.Extra_98?.Value;
             if (tex == null || alpha <= 0.01f) {
@@ -194,7 +181,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //==== 缓动 ====
 
         /// <summary>带过冲缓出（凝晶入场的落定曲线）</summary>
         public static float EaseOutBack(float x) {
@@ -208,10 +194,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public static float EaseOutCubic(float x) => 1f - MathF.Pow(1f - MathHelper.Clamp(x, 0f, 1f), 3f);
     }
 
-    /// <summary>
-    /// 低温霜雾粒子：SmokeSheet01 帧图 AlphaBlend 染冷灰蓝。
-    /// 签名行为是下沉：横向阻尼、纵向持续加速到小终速，读作比空气重的冷雾贴地淌
-    /// </summary>
     internal class PRT_FishFrostMinnowMist : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "SmokeSheet01";
@@ -254,7 +236,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            //冷雾下沉：横向耗散，纵向缓加速到 1.1 终速
+            //冷雾下沉
             Velocity.X *= 0.94f;
             Velocity.Y = MathF.Min(Velocity.Y + sinkAccel, 1.1f);
             Scale += 0.0045f;
@@ -276,12 +258,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 冰凌蕨花 decal 粒子：命中点结晶花纹沿表面爬开的短命残迹（英雄时刻）。<br/>
-    /// 本体走 <see cref="FishFrostMinnowAssets.FishFrostMinnowFern"/> shader quad：
-    /// Voronoi 晶脉错相生长 + 前沿亮带 + 外梢先融；跟随宿主 NPC，宿主消失立即进入融解。<br/>
-    /// shader 缺失时降级为三条交叉淡青冰纹条
-    /// </summary>
+    /// <summary>冰凌蕨花 decal 粒子，命中点结晶花纹沿表面爬开的短命残迹（英雄时刻）。 本体走 <see cref="FishFrostMinnowAssets.FishFrostMinnowFern"/> shader quad， Voronoi 晶脉错相生长 + 前沿亮带 + 外梢先融；跟随宿主 NPC，宿主消失立即进入融解。 shader 缺失时降级为三条交叉淡青冰纹条</summary>
     internal class PRT_FishFrostMinnowFern : BasePRT
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -329,7 +306,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (npcIdx >= 0) {
                 NPC npc = npcIdx < Main.maxNPCs ? Main.npc[npcIdx] : null;
                 if (npc == null || !npc.active) {
-                    //宿主没了：原地立即转入融解
+                    //宿主没了，原地立即转入融解
                     npcIdx = -1;
                     if (Time < HoldEnd) {
                         Time = HoldEnd;
@@ -396,7 +373,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>shader 未就绪的降级：三条交叉淡青冰纹条，A=0 在预乘批中读作加色</summary>
+        /// <summary>shader 未就绪的降级，三条交叉淡青冰纹条，A=0 在预乘批中读作加色</summary>
         private void DrawFallback(SpriteBatch spriteBatch, float grow, float fade) {
             Texture2D streak = CWRAsset.Extra_98?.Value;
             if (streak == null) {

@@ -20,7 +20,6 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override bool OnApply(IHackTarget target, Player caster) {
             if (target is not NpcScannable s) return false;
             NPC npc = Main.npc[s.NpcIndex];
-            //初始神经脉冲爆发
             for (int i = 0; i < 8; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(4f, 4f);
                 PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(255, 120, 20), 1.2f).Configure(false, 25);
@@ -31,12 +30,11 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override bool OnTick(IHackTarget target, int elapsed) {
             if (target is not NpcScannable s) return true;
             NPC npc = Main.npc[s.NpcIndex];
-            //每 15 帧伤害，5 秒共 20 次
+            //每 15 帧一伤
             if (elapsed % 15 == 0) {
                 int dmg = Math.Max(10, (int)(npc.lifeMax * 0.002f));
                 npc.SimpleStrikeNPC(dmg, 0, false, 0f, null, false, 0f, true);
             }
-            //持续焚烧粒子
             if (elapsed % 3 == 0) {
                 Vector2 pos = npc.Center + Main.rand.NextVector2Circular(
                     npc.width * 0.3f, npc.height * 0.3f);

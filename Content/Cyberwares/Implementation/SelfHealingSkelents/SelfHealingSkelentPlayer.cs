@@ -17,19 +17,19 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHealingSkelents
         public bool IsRegenerating { get; private set; }
 
         public override void OnEnterWorld() {
-            //初始为脱战状态，避免开荒第一秒错过加成
+            //开局当脱战
             FramesSinceLastHurt = SelfHealingSkelent.OutOfCombatThreshold;
             IsRegenerating = false;
         }
 
         public override void OnHurt(Player.HurtInfo info) {
-            //无论装备与否都重置脱战计时，便于动态装备/卸装时维持正确的状态
+            //装备与否都重置，动态装卸可对上
             FramesSinceLastHurt = 0;
             IsRegenerating = false;
         }
 
         public override void PostUpdate() {
-            //计时器持续递增；上限留少许 headroom，避免 int 溢出（实际 32 位远超不会溢出，仅卫语句习惯）
+            //上限 headroom，防溢出习惯
             if (FramesSinceLastHurt < int.MaxValue / 2) {
                 FramesSinceLastHurt++;
             }
@@ -41,17 +41,15 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHealingSkelents
                 return;
             }
 
-            //常驻回复始终生效
             Player.lifeRegen += SelfHealingSkelent.LifeRegenBonus;
 
-            //脱战纳米修复：追加回复并强制 lifeRegenTime≥60，抵消受击负延迟
+            //脱战纳米修复，lifeRegenTime≥60 抵受击负延迟
             if (FramesSinceLastHurt >= SelfHealingSkelent.OutOfCombatThreshold) {
                 IsRegenerating = true;
                 Player.lifeRegen += SelfHealingSkelent.OutOfCombatRegenBonus;
                 if (Player.lifeRegenTime < 60) {
                     Player.lifeRegenTime = 60;
                 }
-                //每隔半秒撒一些金属修复粒子，给玩家明确的视觉信号
                 if (Main.GameUpdateCount % 30 == 0 && Player.whoAmI == Main.myPlayer) {
                     SpawnRegenParticles();
                 }

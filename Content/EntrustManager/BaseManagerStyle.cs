@@ -5,7 +5,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.EntrustManager
 {
-    /// <summary>管理器样式基类，通用绘制工具</summary>
+    /// <summary>样式基类，通用绘制</summary>
     internal abstract class BaseManagerStyle : IEntrustManagerStyle
     {
         protected float pulseTimer;
@@ -53,32 +53,26 @@ namespace CalamityOverhaul.Content.EntrustManager
 
         protected static Texture2D Px => VaultAsset.placeholder2.Value;
 
-        /// <summary>像素水平线</summary>
         protected static void HLine(SpriteBatch sb, int x, int y, int w, Color c) {
             sb.Draw(Px, new Rectangle(x, y, w, 1), new Rectangle(0, 0, 1, 1), c);
         }
 
-        /// <summary>像素水平线（带高度）</summary>
         protected static void HLine(SpriteBatch sb, int x, int y, int w, int h, Color c) {
             sb.Draw(Px, new Rectangle(x, y, w, h), new Rectangle(0, 0, 1, 1), c);
         }
 
-        /// <summary>像素竖直线</summary>
         protected static void VLine(SpriteBatch sb, int x, int y, int h, Color c) {
             sb.Draw(Px, new Rectangle(x, y, 1, h), new Rectangle(0, 0, 1, 1), c);
         }
 
-        /// <summary>像素竖直线（带宽度）</summary>
         protected static void VLine(SpriteBatch sb, int x, int y, int h, int w, Color c) {
             sb.Draw(Px, new Rectangle(x, y, w, h), new Rectangle(0, 0, 1, 1), c);
         }
 
-        /// <summary>填充矩形</summary>
         internal static void FillRect(SpriteBatch sb, Rectangle rect, Color c) {
             sb.Draw(Px, rect, new Rectangle(0, 0, 1, 1), c);
         }
 
-        /// <summary>矩形线框</summary>
         internal static void StrokeRect(SpriteBatch sb, Rectangle rect, int bw, Color c) {
             sb.Draw(Px, new Rectangle(rect.X, rect.Y, rect.Width, bw), new Rectangle(0, 0, 1, 1), c);
             sb.Draw(Px, new Rectangle(rect.X, rect.Bottom - bw, rect.Width, bw), new Rectangle(0, 0, 1, 1), c);
@@ -86,7 +80,6 @@ namespace CalamityOverhaul.Content.EntrustManager
             sb.Draw(Px, new Rectangle(rect.Right - bw, rect.Y, bw, rect.Height), new Rectangle(0, 0, 1, 1), c);
         }
 
-        /// <summary>扩散阴影</summary>
         protected static void DrawShadowLayers(SpriteBatch sb, Rectangle rect, float alpha, int layers, int offX, int offY) {
             for (int d = layers; d >= 1; d--) {
                 Rectangle s = rect;
@@ -96,14 +89,13 @@ namespace CalamityOverhaul.Content.EntrustManager
             }
         }
 
-        /// <summary>带居中对齐的文字绘制</summary>
         internal static void DrawCenteredText(SpriteBatch sb, string text, Vector2 center, Color color, float scale) {
             var font = FontAssets.MouseText.Value;
             Vector2 size = font.MeasureString(text) * scale;
             Utils.DrawBorderString(sb, text, center - size / 2f, color, scale);
         }
 
-        /// <summary>条目状态的明文标签，避免只靠符号区分关注、挂起等状态</summary>
+        /// <summary>明文状态标签，防只靠符号</summary>
         protected static string GetEntryStatusText(QuestEntryStatus status) {
             return status switch {
                 QuestEntryStatus.Active => QuestManagerUI.EntryStatusActive?.Value ?? "进行中",
@@ -120,7 +112,6 @@ namespace CalamityOverhaul.Content.EntrustManager
             return (int)(FontAssets.MouseText.Value.MeasureString(statusText).X * scale) + 14;
         }
 
-        /// <summary>渐变水平线段</summary>
         protected static void DrawGradientHLine(SpriteBatch sb, int x, int y, int w,
             Color startColor, Color endColor, int segments = 16) {
             for (int i = 0; i < segments; i++) {
@@ -133,7 +124,6 @@ namespace CalamityOverhaul.Content.EntrustManager
             }
         }
 
-        /// <summary>渐变进度条</summary>
         protected static void DrawProgressBar(SpriteBatch sb, Rectangle barRect, float progress,
             Color bgColor, Color fillStart, Color fillEnd, Color borderColor, float pulsePhase) {
             FillRect(sb, barRect, bgColor);

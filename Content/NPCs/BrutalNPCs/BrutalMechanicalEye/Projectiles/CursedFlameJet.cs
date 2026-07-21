@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectiles
 {
-    /// <summary>魔焰眼火舌，替代原版<see cref="ProjectileID.EyeFire"/>短寿命喷吐，随飞行膨胀，纯PRT火焰流，近距压制，可被物块挡</summary>
+    /// <summary>火舌，替 EyeFire；短寿命可挡；ai 无额外槽</summary>
     internal class CursedFlameJet : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;
@@ -27,10 +27,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectil
             Projectile.ai[0]++;
             float progress = Projectile.ai[0] / 96f;
 
-            //火舌随飞行扩散减速
+            //扩散减速
             Projectile.velocity *= 0.985f;
 
-            //碰撞箱随火焰扩散增大
+            //碰撞箱膨胀
             if (Projectile.ai[0] == 30 || Projectile.ai[0] == 60) {
                 Projectile.Resize(Projectile.width + 12, Projectile.height + 12);
             }
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectil
                     Color.White, Main.rand.NextFloat(0.5f, 0.8f) + progress * 0.6f);
             }
 
-            //岩浆余烬
+            //余烬
             if (Main.rand.NextBool(3)) {
                 PRTLoader.NewParticle<PRT_LavaFire>(
                     Projectile.Center + VaultUtils.RandVr(6f + progress * 10f),

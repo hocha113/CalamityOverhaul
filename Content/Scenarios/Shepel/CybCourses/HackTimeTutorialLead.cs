@@ -18,28 +18,25 @@ using Terraria.UI;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 {
-    //骇客时间教学引导层
-    //管理5步骤教学：激活骇客模式→锁定测试目标→协议面板介绍→上传协议→完成
-    //包含SantaNK1测试目标的生成与位置钉固
+    //骇客时间教程，SHPC下游
+    //12步，SantaNK1+发电机MK2
     internal class HackTimeTutorialLead : ModSystem, ILocalizedModType
     {
         private enum Phase { Inactive, Running, FadeOut, Done }
 
         public string LocalizationCategory => "ADV.Shepel";
 
-        //步骤元数据：是否自动推进
-        //0 进入骇客 1 锁定NPC 2 协议面板介绍 3 加入队列
-        //4 退出执行 5 观察上传 6 进入骇客扫描物块 7 锁定物块
-        //8 加入物块协议 9 退出执行 10 观察上传 11 训练完成
+        //0进骇客 1锁NPC 2协议 3入队 4退出 5观察
+        //6再进 7锁物块 8入队 9退出 10观察 11完成
         private static readonly bool[] StepIsAuto = {
             false, true, false, true,
             false, true, false, true,
             true, false, true, true,
         };
 
-        //需要骇客时间处于激活状态才能推进的手动步骤（按NEXT会强制激活）
+        //需激活的手动步
         private static readonly HashSet<int> StepWantsActive = new() { 0, 6 };
-        //需要骇客时间退出才能推进的手动步骤（按NEXT会强制退出）
+        //需退出的手动步
         private static readonly HashSet<int> StepWantsInactive = new() { 4, 9 };
 
         private static LocalizedText[] _stepTitles;
@@ -50,7 +47,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         private static LocalizedText _textNextBtn;
         private static LocalizedText _textKeyUnbound;
         private static LocalizedText _textKeyHintUnbound;
-        //文本中的快捷键占位符，渲染时实时替换为当前绑定的按键名
         private const string HackKeyToken = "{0}";
 
         public override void SetStaticDefaults() {
@@ -104,7 +100,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 () => "提示：未绑定骇客时间快捷键时，本教程内可用 [N] 临时开关；建议在 设置 > 控制 中绑定。");
         }
 
-        //返回当前骇客时间快捷键的显示字符串，未绑定时返回带括号的提示文本
         public static string GetHackToggleKeyDisplay() {
             ModKeybind kb = CWRKeySystem.HackTime_Toggle;
             if (kb != null) {
@@ -115,7 +110,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             return $"[{(_textKeyUnbound != null ? _textKeyUnbound.Value : "未绑定·N")}]";
         }
 
-        //快捷键是否已经绑定到至少一个按键
         public static bool IsHackToggleBound() {
             ModKeybind kb = CWRKeySystem.HackTime_Toggle;
             if (kb == null) return false;
@@ -123,20 +117,15 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             return keys != null && keys.Count > 0;
         }
 
-        //将含有 {HackKeyToken} 的本地化文本替换为当前快捷键名
         public static string ResolveKeyTokens(string raw)
             => string.IsNullOrEmpty(raw) ? raw : raw.Replace(HackKeyToken, GetHackToggleKeyDisplay());
 
         private const int CardW = 310;
         private const int CardH = 118;
         private const int EdgePad = 8;
-        //自动步骤统一倒计时（缩短至1.6s）
         private const float AutoStepDuration = 1.6f;
-        //手动步骤无操作多少秒后给红色提示
         private const float StuckHintAfter = 12f;
-        //SHPC教学结束 → 骇客对话之间的衔接缓冲
         private const float HackIntroLeadDelay = 0.15f;
-        //结束对话启动前，等待骇客时间视觉层淡出到不会与对话重叠
         private const float OutroHackTimeFadeThreshold = 0.02f;
 
         private static Phase _phase = Phase.Inactive;
@@ -146,24 +135,22 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         private static float _highlightPulse = 0f;
         private static float _stepTimer = 0f;
         private static float _stuckTimer = 0f;
-        //SHPC教学进入FadeOut/Done后的衔接计时
+        //SHPC衔接计时
         private static float _hackIntroLeadTimer = 0f;
         private static bool _hackIntroAttempted = false;
         private static bool _outroStarted = false;
         private static bool _prevMouseLeft = false;
-        //快捷键未绑定时的兜底N键边沿检测
+        //N键兜底边沿
         private static bool _prevFallbackKeyDown = false;
         private static Rectangle _nextBtnRect = Rectangle.Empty;
         private static Rectangle _cardRect = Rectangle.Empty;
         private static LocalizedText _textHintStuck;
 
-        //被固定在原地的SantaNK1的NPC索引和世界坐标
         private static int _npcIndex = -1;
         private static Vector2 _npcSpawnPos;
 
         public override void OnWorldUnload() => ResetForRetry();
 
-        //完整重置教程状态，可被OnWorldUnload与RETRY软重启复用
         public static void ResetForRetry() {
             CleanupTank();
             _phase = Phase.Inactive;
@@ -183,7 +170,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             _prevFallbackKeyDown = false;
         }
 
-        //由CybCourseHackIntroDialogue.OnScenarioComplete在对话结束后调用
         public static void BeginHackTimeTutorial() {
             _phase = Phase.Running;
             _currentStep = 0;
@@ -193,8 +179,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             SpawnOrFindTank();
         }
 
-        //生成或复用已存在的SantaNK1，并记录其固定位置
-        //支持失败重试（向左退一步），避免因右侧实体阻挡导致索引溢出
+        //左退重试防阻挡
         private static void SpawnOrFindTank() {
             if (Main.dedServ) return;
             for (int i = 0; i < Main.maxNPCs; i++) {
@@ -204,7 +189,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                     return;
                 }
             }
-            //走廊前段生成，Y 取通道中线，再修正至地板上方
+            //走廊前段，Y取通道中线
             int baseX = (int)Main.LocalPlayer.Center.X + 350;
             int spawnY = (CybCourseGen.FloorY - 8) * 16;
             for (int retry = 0; retry < 3; retry++) {
@@ -221,7 +206,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             }
         }
 
-        //每帧将测试目标钉固在原地，防止AI移动或重力下落
         public override void PostUpdateNPCs() {
             if (!CybCourseWorld.Active) return;
             if (_npcIndex < 0 || _npcIndex >= Main.maxNPCs) return;
@@ -234,10 +218,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             }
             npc.velocity = Vector2.Zero;
             npc.position = _npcSpawnPos;
-            //观察上传阶段(step 5)允许NPC受击，让玩家直观看到协议效果与浮动伤害数
-            //其他阶段保持无敌避免误伤导致流程中断
+            //step5观察期允许受击
             npc.dontTakeDamage = !(_phase == Phase.Running && _currentStep == 5);
-            //观察阶段把NPC血量保持在足够值，防止累积伤害让其阵亡而提前结束watch
+            //step5血量保底
             if (_phase == Phase.Running && _currentStep == 5) {
                 if (npc.life < npc.lifeMax / 2)
                     npc.life = npc.lifeMax / 2;
@@ -267,18 +250,16 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                     _cardAnim = MathHelper.Lerp(_cardAnim, 1f, 0.16f);
                     _stepTimer += dt;
 
-                    //step 6 前复活圣诞坦克
+                    //step1~5保活坦克
                     if (_currentStep >= 1 && _currentStep <= 5) {
                         EnsureTankAlive();
                     }
 
-                    //玩家未绑定骇客时间快捷键时，教程内持续提供 N 键临时开关，
-                    //避免按 N 进入后因教程推进而失去关闭入口
+                    //未绑定时N键兜底
                     HandleHackToggleKeyFallback();
 
                     bool isAuto = StepIsAuto[_currentStep];
                     if (isAuto) {
-                        //自动步骤同样允许左键跳过等待
                         if (CheckAutoAdvance() || mouseClicked) {
                             AdvanceStep();
                         }
@@ -288,7 +269,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                         int s = _currentStep;
                         bool wantsActive = StepWantsActive.Contains(s);
                         bool wantsInactive = StepWantsInactive.Contains(s);
-                        //自动推进：玩家自行进入或退出骇客时间
+                        //自动进/退骇客
                         if (wantsActive && HackTime.Active) {
                             AdvanceStep();
                             break;
@@ -297,7 +278,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                             AdvanceStep();
                             break;
                         }
-                        //NEXT按钮：强制达到所需的骇客时间状态后推进
+                        //NEXT兜底
                         if (mouseClicked && _nextBtnRect != Rectangle.Empty
                                 && _nextBtnRect.Contains(Main.mouseX, Main.mouseY)) {
                             Main.mouseLeft = false;
@@ -308,7 +289,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                             AdvanceStep();
                             break;
                         }
-                        //无操作时累计卡死计时
                         _stuckTimer += dt;
                     }
                     break;
@@ -324,15 +304,12 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                     break;
 
                 case Phase.Done:
-                    //Done 阶段重试拉起 Outro（FadeOut 时可能被占用）
                     TryStartOutro();
                     break;
             }
         }
 
-        //在玩家未绑定HackTime_Toggle快捷键时，使用默认的 N 键作为教程内兜底交互
-        //整个教程运行期间保持可用，保证未绑定玩家既能进入也能退出骇客时间
-        //当玩家已绑定该快捷键时不接管，防止与HackTimeTargeting.ProcessTriggers的JustPressed重复触发
+        //未绑定HackTime时用N键兜底，已绑定不接管
         private static void HandleHackToggleKeyFallback() {
             if (_phase != Phase.Running) {
                 _prevFallbackKeyDown = false;
@@ -342,7 +319,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 _prevFallbackKeyDown = false;
                 return;
             }
-            //避免在打字/编辑界面中误触发
+            //编辑界面不触发
             if (Main.editSign || Main.editChest || Main.drawingPlayerChat) {
                 _prevFallbackKeyDown = false;
                 return;
@@ -355,13 +332,10 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             _prevFallbackKeyDown = nowDown;
         }
 
-        //SHPC教学进入FadeOut或Done阶段后即可启动骇客对话，无需等待FadeOut走完
-        //保留小段缓冲避免对话与卡片淡出重叠
         private static void AutoTriggerHackIntro(float dt) {
             if (_hackIntroAttempted) return;
             if (_phase != Phase.Inactive) return;
             if (!CybTutorialLead.IsTailing) return;
-            //允许的衔接缓冲，避免对话与SHPC卡片淡出动画抢镜
             _hackIntroLeadTimer += dt;
             if (_hackIntroLeadTimer < HackIntroLeadDelay) return;
             if (NarrativeRunner.IsBusy) return;
@@ -369,7 +343,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             _hackIntroAttempted = true;
         }
 
-        //Phase.Done时尝试启动通关祝贺对话（只触发一次，对话完成由其OnScenarioComplete拉起完成面板）
         private static void TryStartOutro() {
             if (_outroStarted) return;
             if (HackTime.Active || HackTime.Intensity > OutroHackTimeFadeThreshold) return;
@@ -379,42 +352,38 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             NarrativeRouter.Begin<CybCourseOutroDialogue>();
         }
 
-        //各自动推进步骤的完成判定
         private static bool CheckAutoAdvance() {
             int step = _currentStep;
             var queue = HackTimeUI.Instance?.Queue;
-            //step 1：玩家点击锁定SantaNK1
+            //step1锁SantaNK1
             if (step == 1) {
                 int ti = HackTime.SelectedTargetIndex;
-                //上界兜底，与 HackTimeRender 等处保持一致，杜绝异常索引越界访问 Main.npc
+                //SelectedTargetIndex上界
                 if (ti < 0 || ti >= Main.npc.Length) return false;
                 NPC target = Main.npc[ti];
                 return target.active && target.type == NPCID.SantaNK1;
             }
-            //step 3：玩家把至少一个NPC协议加入队列
+            //step3队列入队
             if (step == 3)
                 return (queue?.Entries.Count ?? 0) > 0;
-            //step 5：观察NPC协议上传
-            //条件：必须不在骇客时间（避免误以为冻结的队列推进）
-            //且队列已清空（说明上传完成、效果已施加）+ 缓冲时间让玩家看清效果
+            //step5须退出骇客且队列空
             if (step == 5)
                 return _stepTimer >= 1.5f && !HackTime.Active && (queue?.IsEmpty ?? true);
-            //step 7：玩家锁定物块（发电机MK2）
+            //step7锁物块
             if (step == 7)
                 return HackTime.Active && HackTime.CurrentScanTarget is TileScannable;
-            //step 8：玩家把至少一个物块协议加入队列
+            //step8物块入队
             if (step == 8)
                 return (queue?.Entries.Count ?? 0) > 0;
-            //step 10：观察物块协议上传
+            //step10观察物块
             if (step == 10)
                 return _stepTimer >= 1.5f && !HackTime.Active && (queue?.IsEmpty ?? true);
-            //step 11：训练完成，短暂展示后淡出
+            //step11完成
             if (step == StepIsAuto.Length - 1)
                 return _stepTimer >= AutoStepDuration;
             return false;
         }
 
-        //当前NPC失效时，若仍处于需要它的步骤，则尝试重新生成
         private static void EnsureTankAlive() {
             if (_npcIndex >= 0 && _npcIndex < Main.maxNPCs) {
                 NPC npc = Main.npc[_npcIndex];
@@ -424,7 +393,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             SpawnOrFindTank();
         }
 
-        //将测试目标NPC从世界中移除
         private static void CleanupTank() {
             if (_npcIndex >= 0 && _npcIndex < Main.maxNPCs) {
                 NPC npc = Main.npc[_npcIndex];
@@ -439,7 +407,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             _stepTimer = 0f;
             _stuckTimer = 0f;
             _cardAnim = 0f;
-            //进入物块阶段（step 6开始）时清理掉NPC，避免遮挡发电机
+            //step6清NPC
             if (_currentStep == 6)
                 CleanupTank();
             if (_currentStep >= StepIsAuto.Length) {
@@ -470,23 +438,22 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 
             float alpha = MathHelper.Clamp(_cardAnim, 0f, 1f);
 
-            //卡片位置依骇客状态自适应，避开快捷栏与协议面板
             int cx, cy;
             float slideX = 0f, slideY = 0f;
             if (HackTime.Active && HackTime.SelectedTargetIndex < 0
                 && !(HackTime.CurrentScanTarget is TileScannable)) {
-                //骇客模式下未锁定目标：卡片放屏幕右上，避免压住底部 N 键提示与协议预览
+                //未锁目标放右上
                 cx = Main.screenWidth - CardW - 24;
                 cy = 96;
                 slideX = (1f - alpha) * 24f;
             }
             else {
-                //正常情况：卡片放快捷栏下方左侧（位于第一行 buff 与第二行物品栏之间的空区）
+                //快捷栏下方左侧
                 cx = 24;
                 cy = 92;
                 slideY = (1f - alpha) * 20f;
             }
-            //屏幕边界 clamp，防止低分辨率被推出屏幕
+            //屏幕clamp
             int finalX = (int)MathHelper.Clamp(cx + (int)slideX, 8, Math.Max(8, Main.screenWidth - CardW - 8));
             int finalY = (int)MathHelper.Clamp(cy + (int)slideY, 8, Math.Max(8, Main.screenHeight - CardH - 8));
             var card = new Rectangle(finalX, finalY, CardW, CardH);
@@ -533,34 +500,28 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 
             int stepIdx = (int)MathHelper.Clamp(_currentStep, 0, StepIsAuto.Length - 1);
             string title = _stepTitles[stepIdx].Value;
-            //把正文中的快捷键占位符替换成当前绑定的按键名（含未绑定提示）
             string body = ResolveKeyTokens(_stepBodies[stepIdx].Value);
             bool isAuto = StepIsAuto[stepIdx];
             bool stuck = !isAuto && _stuckTimer >= StuckHintAfter;
-            //仅在需要按键的步骤（进入/退出骇客时间）且玩家未绑定快捷键时，提示去控制设置中绑定
             bool keyHint = (stepIdx == 0 || stepIdx == 4 || stepIdx == 6 || stepIdx == 9) && !IsHackToggleBound();
             float px2 = card.X + 14f;
             float py = card.Y + 12f;
 
-            //步骤计数
             string counter = $"{stepIdx + 1:D2} / {StepIsAuto.Length:D2}";
             float counterW = font.MeasureString(counter).X * subSc;
             Utils.DrawBorderString(sb, counter,
                 new Vector2(card.Right - 14f - counterW, py),
                 new Color(70, 155, 175, (int)(150 * alpha)), subSc);
 
-            //标题（青色）
             Utils.DrawBorderString(sb, title, new Vector2(px2, py),
                 new Color(80, 220, 245, (int)(255 * alpha)), titleSc);
             py += lineT + 2f;
 
-            //分割线
             BaseManagerStyle.FillRect(sb,
                 new Rectangle((int)px2, (int)py, CardW - 28, 1),
                 new Color(45, 130, 155, (int)(90 * alpha)));
             py += 6f;
 
-            //正文（支持换行）
             int bodyWrapW = (int)((CardW - 28) / bodySc);
             foreach (string line in body.Split('\n')) {
                 string[] wrapped = VaultUtils.WrapTextArray(line, font, bodyWrapW, 99, out _);
@@ -572,8 +533,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 }
             }
 
-            //快捷键未绑定提示：仅在按键交互步骤(0/5)且玩家未绑定时显示
-            //闪烁的琥珀色文本，引导玩家去控制设置绑定，并告知N键临时可用
+            //未绑定快捷键提示
             if (keyHint && _textKeyHintUnbound != null) {
                 float pulseKey = 0.75f + 0.25f * MathF.Sin(_shaderTimer * 10f);
                 int wrapW = (int)((CardW - 28) / subSc);
@@ -586,7 +546,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 }
             }
 
-            //卡死提示：玩家长时间未操作时附加红色提示
             if (stuck && _textHintStuck != null) {
                 float pulseHint = 0.7f + 0.3f * MathF.Sin(_shaderTimer * 14f);
                 Utils.DrawBorderString(sb, _textHintStuck.Value,
@@ -594,7 +553,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                     new Color(255, 110, 90, (int)(220 * alpha * pulseHint)), subSc);
             }
 
-            //底部：自动步骤显示状态文字，手动步骤显示NEXT按钮
             if (isAuto) {
                 float blink = 0.72f + 0.28f * MathF.Sin(_shaderTimer * 22f);
                 bool isObservingStep = stepIdx == 5 || stepIdx == 10;
@@ -638,12 +596,12 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 
         private static void DrawHighlightForStep(SpriteBatch sb, Texture2D px, float alpha) {
             int stepIdx = (int)MathHelper.Clamp(_currentStep, 0, StepIsAuto.Length - 1);
-            //step 7：玩家需要锁定发电机MK2，对其打高亮框
+            //step7发电机
             if (stepIdx == 7) {
                 DrawGeneratorHighlight(sb, px, alpha);
                 return;
             }
-            //step 1：玩家需要锁定圣诞坦克，对其打高亮框
+            //step1坦克
             if (stepIdx != 1) return;
             if (_npcIndex < 0 || _npcIndex >= Main.maxNPCs) return;
 
@@ -656,7 +614,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 (int)(70 * pulse), (int)(215 * pulse), (int)(245 * pulse),
                 (int)(120 * pulse * alpha));
 
-            //切换到游戏视图矩阵，使世界坐标直接可用
+            //GameView矩阵
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.AnisotropicClamp, DepthStencilState.None,
@@ -668,14 +626,13 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             sb.Draw(px, npcRect, outlineColor);
             DrawLBrackets(sb, px, npcRect, bracketColor);
 
-            //切回UI矩阵
+            //回UI矩阵
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.AnisotropicClamp, DepthStencilState.None,
                 RasterizerState.CullNone, null, Main.UIScaleMatrix);
         }
 
-        //绘制走廊内热能发电机MK2的高亮标注框（step 6等待玩家选中时）
         private static void DrawGeneratorHighlight(SpriteBatch sb, Texture2D px, float alpha) {
             float pulse = 0.6f + 0.4f * MathF.Sin(_highlightPulse * 3.2f);
             Color bracketColor = new Color(80, 220, 245, (int)(200 * alpha));
@@ -683,7 +640,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 (int)(70 * pulse), (int)(215 * pulse), (int)(245 * pulse),
                 (int)(120 * pulse * alpha));
 
-            //切换到游戏视图矩阵，直接使用世界坐标
+            //GameView矩阵
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.AnisotropicClamp, DepthStencilState.None,
@@ -697,7 +654,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             sb.Draw(px, rect, outlineColor);
             DrawLBrackets(sb, px, rect, bracketColor);
 
-            //切回UI矩阵
+            //回UI矩阵
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.AnisotropicClamp, DepthStencilState.None,

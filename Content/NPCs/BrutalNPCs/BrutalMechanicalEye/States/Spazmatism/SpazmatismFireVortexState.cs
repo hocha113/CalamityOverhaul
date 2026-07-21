@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>一阶段火焰漩涡：上方悬停+环形火弹</summary>
+    /// <summary>一阶段火焰漩涡，上方悬停+环形火弹</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismFireVortex, typeof(TwinsStateContext))]
     internal class SpazmatismFireVortexState : TwinsStateBase
     {
@@ -48,10 +48,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             TwinsMotion.SpringHover(npc, hoverPos, 0.016f, 0.085f);
             FaceTarget(npc, player.Center);
 
-            //设置蓄力状态
             context.SetChargeState(3, Math.Min(Timer / (float)ChargeTime, 1f));
 
-            //蓄力阶段
             if (Timer < ChargeTime) {
                 float progress = Timer / (float)ChargeTime;
                 //能量内聚粒子
@@ -77,7 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                     TwinsMotion.Shake(npc.Center, 4f, 9);
                 }
                 if (!VaultUtils.isClient) {
-                    //外环:标准速度
+                    //外环
                     for (int i = 0; i < BulletCount; i++) {
                         float bulletAngle = MathHelper.TwoPi / BulletCount * i;
                         Vector2 vel = bulletAngle.ToRotationVector2() * BulletSpeed;
@@ -91,7 +89,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                             Main.myPlayer
                         );
                     }
-                    //内环:半速错位，形成双层波纹
+                    //内环半速错位
                     int innerCount = BulletCount / 2;
                     for (int i = 0; i < innerCount; i++) {
                         float bulletAngle = MathHelper.TwoPi / innerCount * i + MathHelper.Pi / BulletCount;
@@ -107,7 +105,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                         );
                     }
                 }
-                //释放后坐:整体下沉缓冲
+                //释放后坐下沉
                 npc.velocity += Main.rand.NextVector2Unit() * 3f;
                 context.ResetChargeState();
             }

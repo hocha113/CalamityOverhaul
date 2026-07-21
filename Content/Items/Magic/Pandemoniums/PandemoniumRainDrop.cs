@@ -7,9 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    /// <summary>
-    /// 硫磺血雨
-    /// </summary>
+    /// <summary>硫磺血雨</summary>
     internal class PandemoniumRainDrop : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -33,13 +31,11 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         public override void AI() {
             Timer++;
 
-            //淡入
             if (Projectile.alpha > 0) {
                 Projectile.alpha -= 10;
                 if (Projectile.alpha < 0) Projectile.alpha = 0;
             }
 
-            //重力加速
             Projectile.velocity.Y += 0.3f;
             if (Projectile.velocity.Y > 20f) {
                 Projectile.velocity.Y = 20f;
@@ -47,7 +43,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
-            //硫磺火拖尾
             if (Main.rand.NextBool(2)) {
                 Dust d = Dust.NewDustPerfect(
                     Projectile.Center + Projectile.velocity * -0.3f,
@@ -61,7 +56,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 d.fadeIn = 1.2f;
             }
 
-            //火焰粒子
             if (Main.rand.NextBool(3)) {
                 Dust fire = Dust.NewDustPerfect(
                     Projectile.Center,
@@ -74,7 +68,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 fire.noGravity = true;
             }
 
-            //硫磺火光芒
             float lightIntensity = (255 - Projectile.alpha) / 255f;
             Lighting.AddLight(Projectile.Center, 1.5f * lightIntensity, 0.6f * lightIntensity, 0.3f * lightIntensity);
         }
@@ -99,10 +92,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             if (hasHit) return;
             hasHit = true;
 
-            //冲击音效
             SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.5f, Pitch = 0.2f }, Projectile.Center);
 
-            //硫磺火爆发
             for (int i = 0; i < 20; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(6f, 6f);
                 Dust d = Dust.NewDustPerfect(
@@ -116,7 +107,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 d.noGravity = true;
             }
 
-            //火焰环
             for (int i = 0; i < 12; i++) {
                 float angle = MathHelper.TwoPi * i / 12f;
                 Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
@@ -124,7 +114,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 d.noGravity = true;
             }
 
-            //地面燃烧效果 - 生成小型火焰柱
+            //1/3 概率落地留小火柱
             if (Projectile.owner == Main.myPlayer && Main.rand.NextBool(3)) {
                 Vector2 spawnPos = Projectile.Center;
                 int flameProj = Projectile.NewProjectile(
@@ -155,7 +145,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float alpha = (255 - Projectile.alpha) / 255f;
 
-            //拉长的雨滴形状
             Vector2 scale = new Vector2(0.6f, 1.2f + Projectile.velocity.Y * 0.02f);
 
             Main.spriteBatch.Draw(glow, drawPos, null, c3 * 0.6f * alpha, Projectile.rotation, glow.Size() / 2, scale * Projectile.scale * 1.5f * pulse, 0, 0);
@@ -166,9 +155,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
     }
 
-    /// <summary>
-    /// 地面火焰
-    /// </summary>
+    /// <summary>地面火焰</summary>
     internal class PandemoniumGroundFlame : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -194,7 +181,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         public override void AI() {
             Timer++;
 
-            //火焰粒子
             if (Main.rand.NextBool(2)) {
                 Vector2 spawnPos = Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height));
                 Vector2 vel = new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-3f, -1f));
@@ -203,14 +189,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 d.noGravity = true;
             }
 
-            //硫磺火粒子
             if (Main.rand.NextBool(3)) {
                 Vector2 spawnPos = Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height));
                 Dust d = Dust.NewDustPerfect(spawnPos, CWRID.Dust_Brimstone, Vector2.UnitY * -2f, 100, default, 1.2f);
                 d.noGravity = true;
             }
 
-            //逐渐消散
             float fadeProgress = Timer / MaxLifetime;
             Projectile.alpha = (int)(fadeProgress * 255);
 
@@ -222,7 +206,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            return false; //完全由粒子表现
+            return false;//纯粒子
         }
     }
 }

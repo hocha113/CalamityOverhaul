@@ -7,9 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.DoGQuest
 {
-    /// <summary>
-    /// 神明吞噬者任务UI
-    /// </summary>
+    /// <summary>神明吞噬者任务UI</summary>
     internal class DoGQuestUI : BaseQuestAcceptUI
     {
         public override string LocalizationCategory => "ADV";

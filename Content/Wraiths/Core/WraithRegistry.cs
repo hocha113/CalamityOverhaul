@@ -4,17 +4,14 @@ using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.Wraiths.Core
 {
-    /// <summary>
-    /// 厉鬼定义目录。Mod.Load 期反射扫描全部 <see cref="WraithDefinition"/> 子类自动注册，
-    /// 不存在手工名单；键冲突与实体类复用在注册期直接报错暴露
-    /// </summary>
+    /// <summary>定义目录，Mod.Load 反射注册；键冲突与实体类复用在注册期报错</summary>
     internal sealed class WraithRegistry : ICWRLoader
     {
         private static readonly List<WraithDefinition> all = [];
         private static readonly Dictionary<string, WraithDefinition> byKey = [];
         private static readonly Dictionary<Type, WraithDefinition> byActorType = [];
 
-        /// <summary>全部定义，按 SortOrder 再按 Key 排序</summary>
+        /// <summary>全部定义，SortOrder 再 Key</summary>
         public static IReadOnlyList<WraithDefinition> All => all;
 
         public static int Count => all.Count;
@@ -22,7 +19,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         public static bool TryGet(string key, out WraithDefinition definition)
             => byKey.TryGetValue(key, out definition);
 
-        /// <summary>实体类型反查定义，WraithActor 借此确定自己的身份</summary>
+        /// <summary>实体类型反查定义</summary>
         public static WraithDefinition FindByActorType(Type actorType)
             => byActorType.TryGetValue(actorType, out WraithDefinition definition) ? definition : null;
 

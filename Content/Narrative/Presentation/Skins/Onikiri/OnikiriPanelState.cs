@@ -14,16 +14,13 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
         Popup,
     }
 
-    /// <summary>
-    /// 鬼切叙事皮肤共享状态:计时器、两翼落花、选项 hover 缓动、墨迹未干打字机。<br/>
-    /// 落花只在面板左右外沿飘落,永不穿过正文区(阅读保护纪律)
-    /// </summary>
+    /// <summary>落花只在左右外沿,不进正文</summary>
     internal sealed class OnikiriPanelState
     {
-        /// <summary>shader 画布外扩:注连墨绸/绯月/纸垂住在这一圈</summary>
+        /// <summary>shader 画布外扩</summary>
         public const int ShaderEdgePad = 18;
 
-        //==== 调色板(单一来源在 OnikiriUITheme,此处保留别名维持皮肤侧引用) ====
+        //==== 调色板别名(源 OnikiriUITheme) ====
         public static readonly Color Paper = OnikiriUITheme.Paper;
         public static readonly Color HotWhite = OnikiriUITheme.HotWhite;
         public static readonly Color Bright = OnikiriUITheme.Bright;
@@ -36,11 +33,11 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
         public float PulseTimer;
         public float ShaderTime;
 
-        //==== 墨迹未干:最新字符的绯红罩色随时间褪去 ====
+        //==== 墨迹未干 ====
         private int _lastVisibleChars = -1;
         private float _inkAge = 60f;
 
-        //==== 选项 hover 缓动(框架给的是 0/1 突变,缓动归皮肤自己管) ====
+        //==== 选项 hover 缓动(框架是 0/1) ====
         private readonly float[] _optionHover = new float[16];
 
         private readonly List<FallingPetal> _petals = [];
@@ -86,7 +83,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
             }
         }
 
-        /// <summary>喂入本帧可见字符数,内部维护"墨迹未干"年龄</summary>
+        /// <summary>喂可见字符数,维护墨迹年龄</summary>
         public void TrackTypewriter(int visibleChars) {
             if (visibleChars != _lastVisibleChars) {
                 _lastVisibleChars = visibleChars;
@@ -94,10 +91,10 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
             }
         }
 
-        /// <summary>最新字符绯红罩色强度 0~1</summary>
+        /// <summary>墨迹强度 0~1</summary>
         public float InkStrength => 1f - MathHelper.Clamp(_inkAge / 16f, 0f, 1f);
 
-        /// <summary>逐帧缓动全部选项的 hover 值(index 为绝对选项序号)</summary>
+        /// <summary>选项 hover 缓动,index 绝对序号</summary>
         public void UpdateOptionHovers(int hoverIndex, int optionCount) {
             int count = Math.Min(optionCount, _optionHover.Length);
             for (int i = 0; i < count; i++) {
@@ -121,10 +118,6 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
             Array.Clear(_optionHover, 0, _optionHover.Length);
         }
 
-        /// <summary>
-        /// 两翼落花。形体由三块像素矩形拼成(暗影/纸白花身/绯红瓣尖),
-        /// 靠"横摆下落 + 宽度呼吸的翻飞透视"卖出花瓣感,而非依赖贴图轮廓
-        /// </summary>
         private sealed class FallingPetal
         {
             private Vector2 _pos;
@@ -142,7 +135,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
 
             public FallingPetal(Rectangle panel) {
                 bool leftSide = Main.rand.NextBool();
-                //只取左右两翼窄条,外扩 shader 边沿区(±14px),不进入正文区
+                //两翼窄条 ±14px,不进正文
                 float x = leftSide
                     ? Main.rand.NextFloat(panel.X - 14f, panel.X + 16f)
                     : Main.rand.NextFloat(panel.Right - 16f, panel.Right + 14f);
@@ -172,7 +165,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
                 Rectangle src = new(0, 0, 1, 1);
                 float t = _life / _maxLife;
                 float fade = (float)Math.Pow(Math.Sin(MathHelper.Clamp(t, 0f, 1f) * MathHelper.Pi), 0.8);
-                //翻飞透视:花瓣绕长轴翻转,视觉宽度呼吸
+                //翻飞透视
                 float flip = MathHelper.Lerp(0.32f, 1f, Math.Abs((float)Math.Sin(_life * _flipFreq + _phase)));
                 Vector2 half = new(0.5f, 0.5f);
                 Vector2 body = new(6.4f * _scale * flip, 3.5f * _scale);

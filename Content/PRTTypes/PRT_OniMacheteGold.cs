@@ -7,9 +7,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.PRTTypes
 {
     /// <summary>
-    /// 鬼砍刀熔金迸屑：白金炽热 → 熔金 → 硫火暗红的冷却色程，
-    /// 受重力抛物下落、沿速度方向拉长，落速衰减后凝成暗色小珠。
-    /// 用于砸地碎金、断链迸火、重斩命中的金屑飞溅
+    /// 鬼砍刀熔金迸屑，白金→熔金→硫火→暗，重力抛物拉长
     /// </summary>
     internal class PRT_OniMacheteGold : BasePRT
     {
@@ -57,7 +55,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
             Scale = baseScale * (1f - t * 0.45f);
 
-            //冷却色程：热白金 → 熔金 → 硫火 → 暗
+            //热白金→熔金→硫火→暗
             Color = t < 0.30f
                 ? Color.Lerp(ColHot, ColGold, t / 0.30f)
                 : t < 0.70f
@@ -74,13 +72,11 @@ namespace CalamityOverhaul.Content.PRTTypes
             Texture2D streak = PRTLoader.PRT_IDToTexture[ID];
             Vector2 drawPos = Position - Main.screenPosition;
 
-            //速度拉长的熔滴主体
             float speedStretch = MathHelper.Clamp(Velocity.Length() * 0.10f, 0.6f, 2.2f);
             Vector2 scale = new Vector2(0.42f, speedStretch) * Scale;
             spriteBatch.Draw(streak, drawPos, null, Color * Opacity, Rotation
                 , streak.Size() * 0.5f, scale, SpriteEffects.None, 0f);
 
-            //热核柔光
             Texture2D glow = SoftGlow?.Value;
             if (glow != null) {
                 spriteBatch.Draw(glow, drawPos, null, Color * (Opacity * 0.55f), 0f

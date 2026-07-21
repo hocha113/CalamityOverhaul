@@ -19,9 +19,8 @@ using Terraria.UI;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
     /// <summary>
-    /// 大比目鱼界面引导：首次完成「初遇比目鱼」后，以"按键/操作占位"方式依次带玩家
-    /// 打开图鉴 → 在研究祭坛投鱼研究 → 认识装备栏 → 亲手按键呼出一次技能转盘。
-    /// 通过 <see cref="GuideLeadQueue"/> 统一排队，优先级高于委托引导，从初遇演出一开始即占位。
+    /// 比目鱼界面引导、初遇后按键占位串图鉴→祭坛→装备栏→转盘
+    /// 经 <see cref="GuideLeadQueue"/> 排队，高于委托，初遇演出起占位
     /// </summary>
     internal class HalibutHudLead : ModSystem, ILocalizedModType, IGuideLead
     {
@@ -38,20 +37,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         #region 本地化
-        //阶段1：深渊之眼 HUD
+        //阶段1、深渊之眼HUD
         public static LocalizedText HudTitle { get; private set; }
         public static LocalizedText HudBody { get; private set; }
         public static LocalizedText HudPrompt { get; private set; }
         public static LocalizedText HudOpenBtn { get; private set; }
-        //阶段2：研究祭坛
+        //阶段2、研究祭坛
         public static LocalizedText ResearchTitle { get; private set; }
         public static LocalizedText ResearchBody { get; private set; }
         public static LocalizedText ResearchPrompt { get; private set; }
-        //阶段3：技能装备栏
+        //阶段3、技能装备栏
         public static LocalizedText EquipTitle { get; private set; }
         public static LocalizedText EquipBody { get; private set; }
         public static LocalizedText EquipWaiting { get; private set; }
-        //阶段4：技能转盘
+        //阶段4、技能转盘
         public static LocalizedText WheelTitle { get; private set; }
         public static LocalizedText WheelBody { get; private set; }
         public static LocalizedText WheelPrompt { get; private set; }
@@ -84,14 +83,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         private static Phase currentPhase = Phase.Inactive;
         private static float animProgress;
-        //当前阶段已停留帧数，用于"卡住一段时间后才出现跳过"
+        //当前阶段停留帧，卡住一段时间后才出跳过
         private static int phaseTimer;
-        //装备栏阶段：研究完成、技能入栏后的停留帧，给解锁演出留出时间再转入转盘环节
+        //装备栏停留帧、解锁演完再进转盘
         private static int holdTimer;
         private const float AnimSpeed = 0.12f;
-        //卡顿约 9 秒后才显示低调的"跳过"兜底，平时以行动推进为主
+        //约9秒卡住才出低调跳过，平时靠行动推进
         private const int StuckFramesBeforeSkip = 60 * 9;
-        //技能入栏后停留约 2.2 秒，让图鉴的解锁演出播完
+        //入栏后约2.2秒，等图鉴解锁演完
         private const int EquipHoldFrames = 130;
 
         public override void OnWorldUnload() {
@@ -109,8 +108,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         void IGuideLead.OnGuideAbandoned() => MarkSeen();
 
         /// <summary>
-        /// 占位条件：拥有比目鱼、已触发初遇（FirstMet 在 OnTriggered 即置位，早于演出结束）、尚未看过。
-        /// 从演出一开始就占住队列，压制委托引导抢先。
+        /// 占位、有鱼+已FirstMet（OnTriggered即置）+未看过
+        /// 演出起占队列，压委托引导
         /// </summary>
         private static bool Reserving {
             get {
@@ -129,7 +128,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 就绪条件：占位之上，手持比目鱼、初遇已演完、无对话/过场干扰
+        /// 就绪、占位+手持鱼+初遇演完+无对话过场
         /// </summary>
         private static bool Ready {
             get {
@@ -178,7 +177,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 return;
             }
 
-            //统一排队：未轮到本引导则按兵不动（异常残留则收起）
+            //统一排队、未轮到则待命，异常残留收起
             if (!GuideLeadQueue.IsHolder(this)) {
                 if (currentPhase != Phase.Inactive && currentPhase != Phase.Complete) {
                     currentPhase = Phase.Inactive;
@@ -187,11 +186,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 return;
             }
 
-            //轮到本引导（队列仅在就绪时授予）：未开始则起步
+            //轮到本引导（就绪才授）、未开始则起步
             if (currentPhase == Phase.Inactive) {
                 SetPhase(Phase.HudIntro);
             }
-            //暂时不可见（未手持/已死）时暂停推进与绘制，不重置，等恢复
+            //未手持/已死时暂停推进与绘制，不重置
             if (!StillActive()) {
                 return;
             }
@@ -221,7 +220,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         //打开图鉴（左键点眼睛 / 按键 / 助手按钮）后进入研究环节
         private static void UpdateHudIntro() {
-            //防呆：已装备技能的玩家若抢先呼出转盘，直接跳到转盘环节收尾，避免卡片与转盘错位
+            //已装备却抢呼转盘则跳到转盘收尾
             if (HalibutWheelController.LocalInstance?.IsOpen == true) {
                 SetPhase(Phase.SkillWheel);
                 return;
@@ -231,7 +230,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
-        //引导玩家点击研究祭坛投鱼：开始研究或已有解锁即推进
+        //点祭坛投鱼、开研究或已解锁即推进
         private static void UpdateResearch() {
             HalibutAtlas atlas = HalibutAtlas.Instance;
             if (atlas == null || !atlas.IsOpen) {
@@ -245,7 +244,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
-        //介绍装备栏：研究完成自动装入（loadout 非空）后稍作停留，再转入转盘环节
+        //介绍装备栏、入栏后稍停再转盘
         private static void UpdateEquip() {
             HalibutAtlas atlas = HalibutAtlas.Instance;
             if (atlas == null || !atlas.IsOpen) {
@@ -263,14 +262,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
-        //引导玩家亲手呼出一次技能转盘：转盘开启即完成
+        //亲手呼转盘、开启即完成
         private static void UpdateSkillWheel() {
             HalibutWheelController ctrl = HalibutWheelController.LocalInstance;
             if (ctrl != null && (ctrl.IsOpen || ctrl.OpenProgress > 0.3f)) {
                 MarkSeen();
                 return;
             }
-            //该阶段聚焦转盘，确保图鉴保持关闭（否则转盘无法呼出）
+            //转盘阶段关图鉴，否则呼不出
             if (HalibutAtlas.Instance?.IsOpen == true) {
                 HalibutAtlas.Instance.Close();
             }
@@ -296,11 +295,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (currentPhase == Phase.Inactive || currentPhase == Phase.Complete) {
                 return;
             }
-            //暂停态（未手持比目鱼/已死）不绘制，避免脱离 HUD 语境的悬浮卡
+            //暂停态不绘制，避免脱离HUD语境的悬浮卡
             if (!StillActive()) {
                 return;
             }
-            //插在原版鼠标文本层之前，从而绘制在所有 UIHandle（HUD/图鉴/转盘）之上
+            //插在原版鼠标文本层前，盖过UIHandle
             int idx = layers.FindIndex(l => l.Name == "Vanilla: Mouse Text");
             if (idx == -1) {
                 return;
@@ -359,7 +358,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             DrawConnector(sb, new Vector2(card.X + 26f, card.Bottom), eye, a, time);
             DrawCardContent(sb, font, card, HudTitle.Value, 0.9f, HalibutTheme.GlowHi, HalibutTheme.Glow, body, a);
 
-            //"打开图鉴"助手按钮：等价于按键/点眼，始终可用
+            //打开图鉴助手钮、等价按键/点眼
             if (DrawActionButton(sb, card, HudOpenBtn.Value, HalibutTheme.Glow, time)) {
                 OpenAtlasAndAdvance();
             }
@@ -375,7 +374,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float a = animProgress;
             bool panelOpen = atlas.AltarPanelOpen;
             Vector2 altar = atlas.AltarCenter;
-            //防呆：祭坛被滚动到屏幕外/切到领域之眼视图/选鱼面板占屏时，不画高亮与连线
+            //祭坛不可见/切领域/选鱼占屏时不画高亮连线
             bool altarVisible = !panelOpen && atlas.SeaViewActive
                 && altar.Y > 60f && altar.Y < HalibutTheme.UIScreenH - 40f;
 
@@ -426,7 +425,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             HalibutSave save = Save;
 
             Rectangle dock = atlas.SeaViewActive ? atlas.DockBounds : Rectangle.Empty;
-            //防呆：装备坞被滚动收起/切视图后不画高亮与连线
+            //装备坞收起/切视图后不画高亮连线
             bool dockVisible = dock.Width > 0 && dock.Top > 40f && dock.Top < HalibutTheme.UIScreenH;
             if (dockVisible) {
                 DrawRegionHighlight(sb, dock, time, a);
@@ -456,7 +455,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
             DrawCardContent(sb, font, card, EquipTitle.Value, 0.9f, HalibutTheme.Accent, HalibutTheme.Accent, body, a);
 
-            //仅在没有进行中研究、尚无技能入栏、且确实卡住时给跳过兜底（入栏后会自动转入下一步）
+            //无研究/无入栏且卡住时才给跳过（入栏会自动下一步）
             if (!save.IsStudying && save.loadout.Count == 0 && phaseTimer > StuckFramesBeforeSkip
                 && DrawActionButton(sb, card, SkipBtn.Value, HalibutTheme.TextDim, time)) {
                 StartSkillWheel();
@@ -558,7 +557,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             return Math.Max(n, 1) * (font.MeasureString("A").Y * scale + 3f);
         }
 
-        //据标题+正文动态计算卡片高度，避免大字体/英文换行溢出
+        //按标题+正文算卡片高，防大字体/英文换行溢出
         private static int MeasureCardH(DynamicSpriteFont font, float titleScale, GLine[] body, float contentW) {
             float la = font.MeasureString("A").Y;
             float h = 13f + (la * titleScale + 8f) + 8f;//顶距 + 标题 + 分割线

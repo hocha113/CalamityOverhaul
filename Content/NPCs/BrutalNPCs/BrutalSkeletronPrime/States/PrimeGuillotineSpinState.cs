@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>断头台旋杀：大半径圆周+悬停锯刃，分段收紧逼破圈</summary>
+    /// <summary>断头台旋杀</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.GuillotineSpin, typeof(PrimeStateContext))]
     internal class PrimeGuillotineSpinState : PrimeStateBase
     {
@@ -34,10 +34,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             NPC npc = context.Npc;
             context.FrameMode = 2;
 
-            //Timer++ 必须在公共路径；预警分支曾提前 return 致 Timer 永为 0，boss 残速漂移
+            //Timer++须在公共路径，曾踩坑
             if (Timer < Telegraph) {
                 npc.damage = 0;
-                //预警期缓刹，消化进入状态时的惯性残速
+                //预警缓刹
                 npc.velocity *= 0.9f;
                 LeanTowards(npc, context.Target.Center);
                 context.SetChargeState(1, Timer / (float)Telegraph);
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 orbitRadius = MathHelper.Lerp(OrbitRadiusStart, OrbitRadiusEnd, (Timer - Telegraph) / (float)SpinFrames);
                 orbitAngle += Main.masterMode ? 0.09f : 0.07f;
                 Vector2 targetPos = context.Target.Center + orbitAngle.ToRotationVector2() * orbitRadius;
-                //软切入：前 15 帧趋近系数渐升，避免入轨第一帧产生巨大瞬时速度撞击玩家
+                //软切入前15帧
                 float approach = MathHelper.Clamp((Timer - Telegraph) / 15f, 0.3f, 1f) * 0.22f;
                 npc.velocity = (targetPos - npc.Center) * approach;
                 float speed = npc.velocity.Length();

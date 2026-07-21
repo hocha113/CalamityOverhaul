@@ -7,10 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 {
-    /// <summary>
-    /// 鬼切传奇成长层：时期伤害/暴击/刀刃尺寸与试炼 tooltip，
-    /// 经 <see cref="ItemOverride"/> 挂到 <see cref="OnikiriItem"/>
-    /// </summary>
+    /// <summary>成长层,经 <see cref="ItemOverride"/> 挂 <see cref="OnikiriItem"/></summary>
     internal class OnikiriOverride : ItemOverride, ILocalizedModType
     {
         public override string LocalizationCategory => "Legend";
@@ -23,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private static Dictionary<int, float> BladeScaleDictionary = [];
         private static Dictionary<int, float> FinaleScaleDictionary = [];
 
-        /// <summary>词缀叠乘后的刀刃尺寸上限，防巨型近战词缀糊屏</summary>
+        /// <summary>词缀叠乘后刀刃尺寸上限</summary>
         public const float MaxCompositeBladeScale = 1.45f;
 
         public static int GetStartDamage => DamageDictionary[0];
@@ -43,14 +40,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         public static int GetOnCrit(Item item) => CritDictionary[GetLevel(item)];
 
-        /// <summary>普攻/残心/肢解居合刀刃尺寸（0.70→1.25）</summary>
+        /// <summary>普攻/残心/肢解刀刃尺寸(0.70→1.25)</summary>
         public static float GetBladeScale(Item item) => BladeScaleDictionary[GetLevel(item)];
 
-        /// <summary>终结乱舞弱缩放（0.95→1.08）；灭世恒 1.0 不走本表</summary>
+        /// <summary>终结乱舞弱缩放(0.95→1.08),灭世恒 1.0</summary>
         public static float GetFinaleScale(Item item) => FinaleScaleDictionary[GetLevel(item)];
 
         public static void LoadWeaponData() {
-            //锚点见计划：0/4/9/14/17/20/22，中间线性插值
+            //锚点 0/4/9/14/17/20/22,中间线性插值
             DamageDictionary = new Dictionary<int, int> {
                 {0, 32}, {1, 42}, {2, 52}, {3, 62}, {4, 72},
                 {5, 81}, {6, 90}, {7, 100}, {8, 109}, {9, 118},

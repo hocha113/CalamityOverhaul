@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
     {
         public override void ProcessTriggers(Terraria.GameInput.TriggersSet triggersSet) {
             if (Player.whoAmI != Main.myPlayer) return;
-            //骇客时间激活期间禁止使用领域技能
+            //HackTime 中禁用
             if (HackTime.Active) return;
             if (CWRKeySystem.CyberBanish_Key != null && CWRKeySystem.CyberBanish_Key.JustPressed) {
                 CyberBanish.BanishAtCursor();

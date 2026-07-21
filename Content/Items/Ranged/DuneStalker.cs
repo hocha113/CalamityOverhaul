@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    /// 荒漠猎行者：链锁远程，发射锁链牵引钩头
+    /// 链锁远程，发射钩头
     /// 左键发射，命中或至最远距回收；右键强制拽回
     internal class DuneStalker : ModItem
     {
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// 荒漠猎行者手持弹幕：瞄准、开火、生成钩头与收回
+    /// Held，瞄准开火与收回
     internal class DuneStalkerHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Ranged + "DuneStalker";
@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         /// 持枪双手姿势
-        /// <see cref="Player.SetCompositeArmFront"/> 世界角：0 向下 ±PI/2 左右；与朝向无关，按重力翻 PI/2
+        /// <see cref="Player.SetCompositeArmFront"/>世界角0向下±PI/2，重力翻PI/2
         private void UpdateOwnerArms() {
             float armRot = Projectile.rotation - MathHelper.PiOver2 * SafeGravDir;
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRot);
@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// 链锁钩头：飞出后自动回收，途中持续命中
+    /// 钩头飞出回收，途中可命中
     internal class DuneStalkerHeadProj : ModProjectile
     {
         public override string Texture => CWRConstant.Item_Ranged + "DuneStalkerHead";
@@ -272,7 +272,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         [VaultLoaden(CWRConstant.Item_Ranged + "DuneStalkerHead")]
         internal static Asset<Texture2D> HeadTex = null;
 
-        /// <summary>当前阶段：0 = 飞出，1 = 回收</summary>
+        /// <summary>0飞出 1回收</summary>
         private ref float State => ref Projectile.ai[0];
         /// <summary>整体计时器</summary>
         private ref float Timer => ref Projectile.ai[1];
@@ -281,7 +281,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         /// <summary>飞出阶段允许达到的最大距离</summary>
         private const float MaxLaunchDistance = 540f;
-        /// <summary>飞出阶段的最大持续时间，避免被卡住</summary>
+        /// <summary>飞出最大时长</summary>
         private const int MaxLaunchTime = 45;
         /// <summary>回收阶段的基础速度</summary>
         private const float ReturnSpeed = 22f;
@@ -352,9 +352,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Lighting.AddLight(Projectile.Center, new Vector3(0.55f, 0.42f, 0.22f) * 0.5f);
         }
 
-        /// 飞出：保初速，达最大距/时转收回
+        /// 飞出保初速，达距/时转回收
         private void LaunchingAI(Vector2 anchor) {
-            //略微的空气阻力，避免飞得过远难以收回
+            //空气阻力
             Projectile.velocity *= 0.992f;
 
             float distance = Vector2.Distance(Projectile.Center, anchor);
@@ -363,7 +363,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
         }
 
-        /// 回收：朝枪口加速返回，近距销毁
+        /// 回收，近距销毁
         private void ReturningAI(Vector2 anchor) {
             Vector2 toAnchor = anchor - Projectile.Center;
             float distance = toAnchor.Length();

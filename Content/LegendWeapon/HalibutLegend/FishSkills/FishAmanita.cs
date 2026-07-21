@@ -13,11 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 真菌鱼技能，周期切换孢子形态并生成对应攻击。<br/>
-    /// 材质：发光真菌孢子（菌蓝紫微光）；四种弹药共享孢子语系，
-    /// 子色相 = 伞红（爆炸）/ 追孢青（追踪）/ 瘴紫（毒雾）/ 菌电紫白（闪电）
-    /// </summary>
+    /// <summary>真菌鱼技能，周期切换孢子形态并生成对应攻击</summary>
     internal class FishAmanita : FishSkill
     {
         public override int UnlockFishID => ItemID.AmanitaFungifin;
@@ -54,7 +50,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return null;
         }
 
-        /// <summary>形态切换拍：菌环双脉冲 + 孢子环撒 + 湿润孢子噗，用颜色宣告下一种弹药</summary>
+        /// <summary>形态切换拍</summary>
         private void SpawnPhaseTransitionEffect(Player player) {
             FishAmanitaVFX.SporePuffSound(player.Center, 0.3f, 0.42f);
 
@@ -63,20 +59,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             Color phaseColor = FishAmanitaVFX.PhaseColor(sporePhase);
 
-            //暗紫压底环 + 新形态色内环：双环异速
+            //暗紫压底环 + 新形态色内环
             PRTLoader.NewParticle<PRT_DWave>(player.Center, Vector2.Zero, FishAmanitaVFX.SporeDusk, 0.15f)
                 ?.Configure(Vector2.One, 0f, 0.85f, 14);
             PRTLoader.NewParticle<PRT_DWave>(player.Center, Vector2.Zero, phaseColor, 0.1f)
                 ?.Configure(Vector2.One, 0f, 0.55f, 10);
 
-            //孢子小环：撒出后转入布朗漂移
+            //孢子小环，撒出后转入布朗漂移
             for (int i = 0; i < 10; i++) {
                 float angle = MathHelper.TwoPi * i / 10f + Main.rand.NextFloat(0.3f);
                 FishAmanitaVFX.SporeDrift(player.Center + angle.ToRotationVector2() * 14f
                     , angle.ToRotationVector2() * Main.rand.NextFloat(2.2f, 3.4f), phaseColor);
             }
 
-            //闪电形态切入：环身抽两道菌丝短弧宣告带电
+            //闪电形态切入
             if (sporePhase == 3) {
                 for (int i = 0; i < 2; i++) {
                     Vector2 dir = Main.rand.NextVector2Unit();
@@ -185,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             Color sporeColor = FishAmanitaVFX.PhaseColor(sporePhase);
 
-            //环绕玩家的低频环境孢子：发光孢子与实体孢子颗粒异质混合
+            //环绕玩家的低频环境孢子
             if (Main.rand.NextBool(3)) {
                 Vector2 spawnPos = player.Center + Main.rand.NextVector2Circular(60f, 60f);
                 FishAmanitaVFX.SporeDrift(spawnPos, Main.rand.NextVector2Circular(0.8f, 0.8f)
@@ -229,7 +225,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void AI() {
             Projectile.velocity.Y += 0.15f; //重力
 
-            //抛掷翻滚：转速随速度爬升，飞行期持续演化
+            //抛掷翻滚
             float speed = Projectile.velocity.Length();
             spin = MathHelper.Lerp(spin, 0.09f + speed * 0.014f, 0.2f);
             Projectile.rotation += spin * (Projectile.velocity.X >= 0f ? 1f : -1f);
@@ -237,7 +233,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f) * 0.3f + 0.7f;
             Lighting.AddLight(Projectile.Center, 0.5f * pulse, 0.16f * pulse, 0.2f * pulse);
 
-            //孢子粉尾：甩出率∝速度
+            //孢子粉尾，甩出率∝速度
             if (!Main.dedServ && Projectile.timeLeft % (speed > 9f ? 3 : 5) == 0) {
                 FishAmanitaVFX.SporeDrift(Projectile.Center + Main.rand.NextVector2Circular(4f, 4f)
                     , -Projectile.velocity * 0.12f, FishAmanitaVFX.CapCrimson, 0.7f, Main.rand.Next(20, 32));
@@ -253,7 +249,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Explode();
         }
 
-        /// <summary>菌盖炸裂：孢子环 + 伞盖碎片上抛 + 瞬时孢光热芯，孢子环活得比弹体久</summary>
+        /// <summary>菌盖炸裂</summary>
         private void Explode() {
             if (exploded) return;
             exploded = true;
@@ -271,7 +267,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     PRTLoader.NewParticle<PRT_FishAmanitaCapShard>(Projectile.Center, vel
                         , FishAmanitaVFX.CapCrimson, Main.rand.NextFloat(1.3f, 2f));
                 }
-                //孢光热芯：小面积速灭的过冲爆点
+                //孢光热芯，小面积速灭的过冲爆点
                 PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Vector2.Zero
                     , FishAmanitaVFX.SporeGlow, 0.3f)?.Configure(8, 0.9f, 0.6f, 1.4f);
             }
@@ -303,12 +299,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float dir = Projectile.velocity.X >= 0f ? 1f : -1f;
 
-            //底层孢光晕：画在蘑菇本体之下
+            //底层孢光晕，画在蘑菇本体之下
             float pulse = 0.72f + 0.28f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f + Projectile.whoAmI);
             Main.EntitySpriteDraw(soft, drawPos, null, FishAmanitaVFX.CapCrimson with { A = 0 } * (0.4f * pulse)
                 , 0f, soft.Size() / 2f, 0.5f, SpriteEffects.None);
 
-            //位移残影：旧位置暗红渐隐
+            //位移残影，旧位置暗红渐隐
             Color ghost = FishAmanitaVFX.CapDeep with { A = 0 };
             for (int i = 2; i < Projectile.oldPos.Length; i += 2) {
                 float fade = (Projectile.oldPos.Length - i) / (float)Projectile.oldPos.Length;
@@ -318,13 +314,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , Projectile.scale * 0.92f, SpriteEffects.None);
             }
 
-            //旋转拖影：自旋的可视化
+            //旋转拖影，自旋的可视化
             for (int i = 1; i <= 3; i++) {
                 Main.EntitySpriteDraw(texture, drawPos, null, ghost * (0.3f - i * 0.08f)
                     , Projectile.rotation - spin * i * 2.6f * dir, origin, Projectile.scale, SpriteEffects.None);
             }
 
-            //本体：实体蘑菇走环境光，混入伞红微提色
+            //本体
             Main.EntitySpriteDraw(texture, drawPos, null, Color.Lerp(lightColor, FishAmanitaVFX.CapCrimson, 0.22f)
                 , Projectile.rotation, origin, Projectile.scale, SpriteEffects.None);
             return false;
@@ -364,7 +360,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 10f) * 0.3f + 0.7f;
             Lighting.AddLight(Projectile.Center, 0.25f * pulse, 0.6f * pulse, 0.62f * pulse);
 
-            //追踪逻辑：延迟后咬合随时间收紧
+            //追踪逻辑，延迟后咬合随时间收紧
             if (homingDelay > 0) {
                 homingDelay--;
             }
@@ -377,7 +373,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             if (!Main.dedServ) {
-                //孢子粉尾：追孢青发光孢子
+                //孢子粉尾，追孢青发光孢子
                 if (Projectile.timeLeft % 6 == 0) {
                     FishAmanitaVFX.SporeDrift(Projectile.Center
                         , -Projectile.velocity * 0.08f + Main.rand.NextVector2Circular(0.4f, 0.4f)
@@ -401,7 +397,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Main.dedServ) {
                 return;
             }
-            //咬中：小孢子环贴着命中点炸开
+            //咬中，小孢子环贴着命中点炸开
             FishAmanitaVFX.SporeRing(Projectile.Center, FishAmanitaVFX.HomingCyan, 7, 2.8f, 0.7f);
         }
 
@@ -423,7 +419,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float stretch = MathHelper.Clamp(0.55f + speed * 0.075f, 0.6f, 1.7f);
             float rot = Projectile.rotation + MathHelper.PiOver2;
 
-            //残影链：暗紫宽层 + 青中层双层异宽
+            //残影链
             for (int i = Projectile.oldPos.Length - 1; i >= 1; i -= 2) {
                 if (Projectile.oldPos[i] == Vector2.Zero) {
                     continue;
@@ -437,7 +433,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , gr, origin, new Vector2(0.16f, 0.5f) * fade * stretch, SpriteEffects.None);
             }
 
-            //本体：速度拉伸的暗外圈 / 饱和中层，孢子实体帧作剪影核仁，极小孢光热芯
+            //本体
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Main.EntitySpriteDraw(soft, drawPos, null, FishAmanitaVFX.SporeDusk with { A = 0 } * 0.55f
                 , rot, origin, new Vector2(0.34f, 0.5f * stretch + 0.2f), SpriteEffects.None);
@@ -466,7 +462,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float spin;
         private float cloudSeed;
 
-        //部署时间轴：timeLeft 自 DeployLife 递减做入场包络，alpha 0→255 做侵蚀驱动
+        //部署时间轴
         private const int DeployLife = 180;
 
         private float DeployAge => DeployLife - Projectile.timeLeft;
@@ -493,7 +489,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void AI() {
             if (!deployed) {
-                //飞行阶段：沉重翻滚 + 孢子下滴
+                //飞行阶段
                 Projectile.velocity.Y += 0.2f;
                 spin = MathHelper.Lerp(spin, 0.05f + Projectile.velocity.Length() * 0.009f, 0.2f);
                 Projectile.rotation += spin * (Projectile.velocity.X >= 0f ? 1f : -1f);
@@ -508,7 +504,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
             else {
-                //部署阶段：alpha 爬升驱动云体侵蚀，满 255 消亡
+                //部署阶段
                 Projectile.velocity = Vector2.Zero;
                 Projectile.alpha += 3;
 
@@ -532,7 +528,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>云内点缀：悬浮亮孢子缓慢上浮 + 实体孢子颗粒，云体主身由 shader 承担</summary>
+        /// <summary>云内点缀</summary>
         private void SpawnToxicCloud() {
             if (Main.dedServ) {
                 return;
@@ -578,7 +574,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             target.AddBuff(BuffID.Poisoned, 180);
         }
 
-        /// <summary>伞盖破裂：碎片上抛 + 瘴紫孢子环，随后云体自 shader 展开</summary>
+        /// <summary>伞盖破裂</summary>
         private void Deploy() {
             if (deployed) return;
             deployed = true;
@@ -605,7 +601,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Main.dedServ || !deployed) {
                 return;
             }
-            //云散残留：长命孢子群继续漂移，活得比云久
+            //云散残留
             for (int i = 0; i < 8; i++) {
                 FishAmanitaVFX.SporeDrift(Projectile.Center + Main.rand.NextVector2Circular(56f, 40f)
                     , new Vector2(0f, -0.15f) + Main.rand.NextVector2Circular(0.35f, 0.2f)
@@ -643,7 +639,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>浓稠孢子云：shader quad 世界锚定，边缘噪声撕裂、内部孢子亮斑上浮；未就绪时降级雾团贴图</summary>
+        /// <summary>浓稠孢子云</summary>
         private void DrawMistCloud() {
             float reveal = MathHelper.Clamp(DeployAge / 16f, 0f, 1f);
             //前 45% 生命云体保持完整，之后进入噪声侵蚀消散
@@ -654,7 +650,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             const float hy = 105f;
 
             if (fx == null || CWRAsset.PerlinNoise?.Value == null) {
-                //降级：雾团贴图三层，暗紫压底
+                //降级，雾团贴图三层，暗紫压底
                 Texture2D fog = CWRAsset.Fog?.Value;
                 if (fog == null) {
                     return;
@@ -748,7 +744,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Lighting.AddLight(Projectile.Center, 0.55f * pulse, 0.45f * pulse, 0.85f * pulse);
 
             if (!Main.dedServ) {
-                //体表生物电：低频短弧贴着飞行路径抽动
+                //体表生物电
                 if (Main.rand.NextBool(20)) {
                     Vector2 back = Projectile.Center - Projectile.velocity * Main.rand.NextFloat(2f, 5f);
                     FishAmanitaVFX.MyceliumArc(back, Projectile.Center + Projectile.velocity * 2f
@@ -790,7 +786,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>命中节点：小孢子环 + 放射短弧，菌丝网络的节点亮起</summary>
+        /// <summary>命中节点</summary>
         private void SpawnLightningEffect(Vector2 position) {
             SoundEngine.PlaySound(SoundID.Item93 with {
                 Volume = 0.4f,
@@ -809,13 +805,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>折射链：一道弯曲带分叉的菌丝主弧连接当前节点与下一目标</summary>
+        /// <summary>折射链</summary>
         private void CreateLightningChain(Vector2 start, Vector2 end) {
             if (Main.dedServ) {
                 return;
             }
             FishAmanitaVFX.MyceliumArc(start, end, FishAmanitaVFX.ArcVolt, 11f, 13, 2);
-            //链身孢子迸出：电流沿菌丝惊起的孢子
+            //链身孢子迸出
             for (int i = 0; i < 4; i++) {
                 Vector2 p = Vector2.Lerp(start, end, Main.rand.NextFloat());
                 FishAmanitaVFX.SporeDrift(p, Main.rand.NextVector2Circular(1.2f, 1.2f)
@@ -827,7 +823,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Main.dedServ) {
                 return;
             }
-            //终末星散：短弧放射 + 孢子留场
+            //终末星散
             for (int i = 0; i < 3; i++) {
                 float ang = MathHelper.TwoPi * i / 3f + Main.rand.NextFloat(0.7f);
                 FishAmanitaVFX.MyceliumArc(Projectile.Center
@@ -845,7 +841,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 origin = soft.Size() / 2f;
             float rot = Projectile.rotation + MathHelper.PiOver2;
 
-            //残影链：确定性正弦抖动模拟生物电嗡鸣，非逐帧随机
+            //残影链
             Vector2 perp = Projectile.velocity.SafeNormalize(Vector2.UnitX).RotatedBy(MathHelper.PiOver2);
             for (int i = Projectile.oldPos.Length - 1; i >= 1; i -= 2) {
                 if (Projectile.oldPos[i] == Vector2.Zero) {
@@ -860,7 +856,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , rot, origin, new Vector2(0.13f, 0.4f) * fade, SpriteEffects.None);
             }
 
-            //本体：暗紫外圈 / 电紫中层速度拉伸，孢子实体帧作剪影核仁，孢光小芯
+            //本体
             float speed = Projectile.velocity.Length();
             float stretch = MathHelper.Clamp(0.5f + speed * 0.06f, 0.55f, 1.4f);
             float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 15f) * 0.25f + 0.75f;

@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
         private float skillCooldownCarry;
 
         public override void OnEnterWorld() {
-            //仅本机玩家需把贡献项写入本机 RAM 列表，多人模式下其他玩家的实例不必参与本机聚合
+            //仅本机写入本机 RAM 列表
             if (Player.whoAmI != Main.myPlayer) {
                 return;
             }
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
                 return;
             }
             if (SelfHackCrystal.GetEquipped(Player) == null) {
-                //未装备时清空冷却，使重新装备后立刻可用
+                //卸装清冷却
                 SkillCooldownTimer = 0;
                 skillCooldownCarry = 0f;
             }
@@ -76,12 +76,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
         /// <summary>扣 RAM、清 debuff、给无敌，immuneTime 取 max 防覆盖</summary>
         private void TryFireSelfHack() {
             if (!RamSystem.TryConsume(SelfHackCrystal.SkillRamCost)) {
-                //保险：极端时序下 RAM 已被其他事件耗尽
+                //极端时序 RAM 已空
                 RamSystem.NotifyInsufficient();
                 return;
             }
 
-            //清除全部 debuff，保留正面 buff
+            //清 debuff，留正面
             int cleared = 0;
             for (int i = 0; i < Player.MaxBuffs; i++) {
                 int buffType = Player.buffType[i];
@@ -95,24 +95,21 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
                 }
             }
 
-            //无敌帧：取 max 避免覆盖更长的现有无敌
+            //immuneTime 取 max
             Player.immune = true;
             Player.immuneTime = Math.Max(Player.immuneTime, SelfHackCrystal.ImmunityFrames);
             Player.immuneNoBlink = false;
 
-            //冷却进入计时
             SkillCooldownTimer = SelfHackCrystal.SkillCooldown;
             skillCooldownCarry = 0f;
 
-            //音效与粒子：清债越多反馈越强，让玩家直观感知"清理了多少负面"
             SoundEngine.PlaySound(SoundID.Item4 with { Pitch = 0.4f, Volume = 0.7f }, Player.Center);
             SoundEngine.PlaySound(SoundID.Item122 with { Pitch = 0.2f, Volume = 0.6f }, Player.Center);
             SpawnSelfHackParticles(cleared);
         }
 
-        /// <summary>自骇粒子，环数随 cleared debuff 数提升</summary>
+        /// <summary>自骇粒子，环数随 cleared 提升</summary>
         private void SpawnSelfHackParticles(int debuffsCleared) {
-            //外环脉冲粒子，数量随被清的 debuff 数提升
             int rings = 24 + Math.Min(debuffsCleared, 6) * 4;
             for (int i = 0; i < rings; i++) {
                 float angle = MathHelper.TwoPi * i / rings;
@@ -121,7 +118,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
                 dust.noGravity = true;
             }
 
-            //斜向闪光线条
             for (int i = 0; i < 6; i++) {
                 Vector2 dir = Main.rand.NextVector2Unit();
                 for (int k = 0; k < 8; k++) {
@@ -131,7 +127,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
                 }
             }
 
-            //中心高光
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(2f, 2f);
                 Dust dust = Dust.NewDustPerfect(Player.Center, DustID.Electric, vel, 100, default, 1.4f);

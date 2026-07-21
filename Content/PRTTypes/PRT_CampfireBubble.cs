@@ -5,9 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>
-    /// 营地锅内沸腾的小气泡粒子
-    /// </summary>
+    /// <summary>营地锅气泡</summary>
     internal class PRT_CampfireBubble : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle6";
@@ -49,13 +47,10 @@ namespace CalamityOverhaul.Content.PRTTypes
             Vector2 origin = texture.Size() / 2f;
             float alpha = MathF.Sin(LifetimeCompletion * MathHelper.Pi);
 
-            //外圈
             spriteBatch.Draw(texture, drawPos, null, Color * (alpha * 0.5f),
                 0f, origin, Scale * 1.4f, SpriteEffects.None, 0f);
-            //内核
             spriteBatch.Draw(texture, drawPos, null, Color * alpha,
                 0f, origin, Scale * 0.7f, SpriteEffects.None, 0f);
-            //高光
             Vector2 highlightOffset = new Vector2(-Scale * 1.5f, -Scale * 1.5f);
             spriteBatch.Draw(texture, drawPos + highlightOffset, null, new Color(255, 255, 255, 150) * alpha,
                 0f, origin, Scale * 0.25f, SpriteEffects.None, 0f);

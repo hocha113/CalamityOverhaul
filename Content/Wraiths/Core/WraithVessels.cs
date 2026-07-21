@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Wraiths.Core
 {
-    /// <summary>解析出的载体：物品与其进度容器；Store 为 null 即无效</summary>
+    /// <summary>载体句柄；Store 为 null 即无效</summary>
     public readonly struct WraithVesselHandle(Item item, WraithProgressStore store)
     {
         public readonly Item Item = item;
@@ -14,15 +14,14 @@ namespace CalamityOverhaul.Content.Wraiths.Core
     }
 
     /// <summary>
-    /// 载体解析缝：厉鬼框架不直接引用鬼切类型，载体方（OnikiriLegend 的 <c>OniWraithSource</c>）
-    /// 在 SetupData 注册 resolver。"持鬼切门控"= <see cref="ResolveHeld"/> 只认手中之物；
-    /// 反噬判定用 <see cref="ResolveCarried"/>：刀在身上，鬼就在身边，收进背包躲不掉躁动
+    /// 载体解析缝，框架不直接引鬼切；载体方 SetupData 注册。<br/>
+    /// ResolveHeld=手中；ResolveCarried=随身（背包躲不掉躁动）
     /// </summary>
     public static class WraithVessels
     {
-        /// <summary>手持解析器表（player, 手中物品）→ handle</summary>
+        /// <summary>手持解析器</summary>
         private static readonly List<Func<Player, WraithVesselHandle>> heldResolvers = [];
-        /// <summary>随身解析器表（含背包扫描）</summary>
+        /// <summary>随身解析器</summary>
         private static readonly List<Func<Player, WraithVesselHandle>> carriedResolvers = [];
 
         public static void Register(Func<Player, WraithVesselHandle> heldResolver, Func<Player, WraithVesselHandle> carriedResolver) {
@@ -39,18 +38,13 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             carriedResolvers.Clear();
         }
 
-        /// <summary>手中载体，无效 handle 表示未持刀</summary>
+        /// <summary>手中载体</summary>
         public static WraithVesselHandle ResolveHeld(Player player) => Resolve(heldResolvers, player);
 
-        /// <summary>随身载体（手中优先，背包兜底）</summary>
+        /// <summary>随身载体，手中优先</summary>
         public static WraithVesselHandle ResolveCarried(Player player) => Resolve(carriedResolvers, player);
 
-        /// <summary>
-        /// 簿面写入后显式推送持有槽同步（仪式确认、借力磨损、调试上簿共用），
-        /// 让服务器与他端的 LegendData 副本即时跟上，不再依赖被动同步时机。
-        /// 走原版装备槽消息，物品数据经 CWRItem.NetSend → LegendData 链自动捎带；
-        /// 单人/服务器端调用为无操作
-        /// </summary>
+        /// <summary>簿面写入后显式推持有槽同步；单人/服务器无操作</summary>
         public static void SyncSlot(Player player, Item item) {
             if (!VaultUtils.isClient || player == null || item == null || item.IsAir
                 || player.whoAmI != Main.myPlayer) {

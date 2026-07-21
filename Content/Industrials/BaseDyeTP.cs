@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Industrials
             DyeSlotItem = ItemIO.Receive(reader, true, true);
             BeDyedItem = ItemIO.Receive(reader, true, true);
             ResultDyedItem = ItemIO.Receive(reader, true, true);
-            //接收后更新一次UI里面显示的物品
+            //接收后刷 UI 槽
             DyeMachineUI.DyeSlot.Item = DyeSlotItem;
             DyeMachineUI.BeDyedItem.Item = BeDyedItem;
             DyeMachineUI.ResultDyedItem.Item = ResultDyedItem;
@@ -71,14 +71,14 @@ namespace CalamityOverhaul.Content.Industrials
 
             foreach (var otherUI in UIHandleLoader.UIHandles) {
                 if (otherUI.ID != DyeMachineUI.ID && otherUI is BaseDyeMachineUI baseDyeMachineUI) {
-                    baseDyeMachineUI.CanOpen = false;//关闭其他所有同类UI面板
+                    baseDyeMachineUI.CanOpen = false;//关其他同类 UI
                 }
             }
         }
 
         public void CloseDyeMachineUI() {
             if (DyeMachineUI.CanOpen && DyeMachineUI.DyeTP.WhoAmI == WhoAmI) {
-                //并行阶段音效播放延迟到主线程执行(串行阶段立即执行)
+                //并行阶段延后到主线程
                 Defer(() => SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.2f }));
                 DyeMachineUI.CanOpen = false;
             }
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.Industrials
             if (Main.LocalPlayer.DistanceSQ(CenterInWorld) > 90000) {
                 CloseDyeMachineUI();
             }
-            //UpdateSlot 含非线程安全副作用(写UI槽Item/DyeProgress、FinishDyeing播放音效、扣TP电量并SendData)，并行阶段延迟到主线程执行
+            //UpdateSlot 非线程安全，并行阶段延后到主线程
             Defer(() => DyeMachineUI.DyeSlot.UpdateSlot());
             UpdateDyeMachine();
         }

@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     null, Main.GameViewMatrix.TransformationMatrix);
             }
 
-            //绘制六角能量罩覆盖层
+            //六角能量罩
             if (wasFrozen) {
                 float progress = CyberDomainFreeze.GetNPCFreezeProgress(npc.whoAmI);
                 float seed = CyberDomainFreeze.GetNPCSeed(npc.whoAmI);
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             float cageRadius = Math.Max(entityWidth, entityHeight) * 0.5f + 20f;
             float quadSize = cageRadius * 2.4f;
 
-            //形成进度: 前30帧 (0.5秒) 从0到1
+            //形成进度，前30帧 0→1
             float formProgress = Math.Min(progress * (CyberDomainFreeze.DefaultFreezeDuration / 30f), 1f);
 
             cageShader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         public static bool? PreAIByOverNPC(NPC npc) {
             if (!CyberDomainFreeze.IsNPCFrozen(npc.whoAmI)) return null;
 
-            //获取冻结位置快照
+            //冻结位快照
             for (int i = 0; i < CyberDomainFreeze.FrozenNPCs.Count; i++) {
                 if (CyberDomainFreeze.FrozenNPCs[i].EntityIndex == npc.whoAmI) {
                     npc.Center = CyberDomainFreeze.FrozenNPCs[i].FreezePosition;
@@ -114,13 +114,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         }
 
         public override bool PreAI(NPC npc) {
-            //PreAIByOverNPC 做停滞
+            //PreAIByOverNPC 停滞
             return true;
         }
 
         private static bool ShouldApplyEffect(NPC npc) {
             if (!CyberDomainFreeze.IsNPCFrozen(npc.whoAmI)) return false;
-            //放逐中 NPC 走放逐 shader，不叠冻结
+            //放逐中不叠冻结 shader
             if (CyberBanish.IsBanishing(npc.whoAmI)) return false;
             return true;
         }

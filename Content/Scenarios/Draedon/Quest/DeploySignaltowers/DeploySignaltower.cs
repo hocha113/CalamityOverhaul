@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
         }
 
         public override bool CanDrop(int i, int j) {
-            return false;//被破坏后不会掉落物品
+            return false;//破坏不掉落
         }
     }
 
@@ -78,25 +78,14 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
     {
         public override int TargetTileID => ModContent.TileType<DeploySignaltowerTile>();
 
-        /// <summary>是否已标记目标点完成</summary>
         private bool hasMarkedCompletion;
-
-        /// <summary>已完成的目标点索引（-1表示未完成任何点）</summary>
-        private int completedTargetIndex = -1;
-
-        /// <summary>连接动画进度计时器</summary>
+        private int completedTargetIndex = -1;//-1无完成点
         private int connectionAnimTimer;
-
-        /// <summary>是否正在播放连接动画</summary>
         private bool isPlayingConnectionAnim;
-
-        /// <summary>连接动画持续时间（帧数）</summary>
-        private const int ConnectionAnimDuration = 180; //3秒
+        private const int ConnectionAnimDuration = 180; //3秒 60帧
 
         public override void Update() {
-            //持续检查是否在目标点范围内
             CheckAndMarkTargetCompletion();
-            //更新连接动画
             if (isPlayingConnectionAnim) {
                 UpdateConnectionAnimation();
             }
@@ -111,32 +100,26 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 return;
             }
 
-            //将Point16转换为Point
             Point tilePos = new(Position.X, Position.Y);
 
-            //检查信号塔位置是否在任何目标点范围内，并获取索引
             int targetIndex = SignalTowerTargetManager.CheckAndMarkCompletionWithIndex(tilePos);
             if (targetIndex >= 0) {
                 hasMarkedCompletion = true;
                 completedTargetIndex = targetIndex;
-                //触发连接动画
                 TriggerConnectionAnimation();
             }
         }
 
-        /// <summary>触发信号塔连接动画</summary>
         private void TriggerConnectionAnimation() {
             isPlayingConnectionAnim = true;
             connectionAnimTimer = 0;
 
-            //播放连接成功音效
             SoundEngine.PlaySound(SoundID.Item4 with {
                 Volume = 0.8f,
                 Pitch = 0.3f,
                 MaxInstances = 2
             }, new Vector2(Position.X * 16, Position.Y * 16));
 
-            //额外的科技感音效
             SoundEngine.PlaySound(SoundID.DD2_EtherianPortalSpawnEnemy with {
                 Volume = 0.6f,
                 Pitch = 0.5f,
@@ -144,35 +127,30 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             }, new Vector2(Position.X * 16, Position.Y * 16));
         }
 
-        /// <summary>更新连接动画</summary>
         private void UpdateConnectionAnimation() {
             connectionAnimTimer++;
 
-            //获取信号塔顶部位置（世界坐标）
-            Vector2 towerTop = new Vector2(Position.X * 16 + 48, Position.Y * 16 + 32); //信号塔宽6格（96像素），取中心点
+            Vector2 towerTop = new Vector2(Position.X * 16 + 48, Position.Y * 16 + 32);//宽6格取中心
 
-            //阶段1：初始能量聚集（0-30帧）
+            //阶段1 能量聚集 0-30
             if (connectionAnimTimer <= 30) {
                 SpawnEnergyGatherEffect(towerTop, connectionAnimTimer / 30f);
             }
-            //阶段2：矩阵雨爆发（30-120帧）
+            //阶段2 矩阵雨 30-120
             else if (connectionAnimTimer <= 120) {
                 SpawnMatrixRainBurst(towerTop, (connectionAnimTimer - 30) / 90f);
             }
-            //阶段3：能量脉冲扩散（120-180帧）
+            //阶段3 能量脉冲 120-180
             else if (connectionAnimTimer <= ConnectionAnimDuration) {
                 SpawnEnergyPulseRings(towerTop, (connectionAnimTimer - 120) / 60f);
             }
 
-            //动画结束
             if (connectionAnimTimer >= ConnectionAnimDuration) {
                 isPlayingConnectionAnim = false;
             }
         }
 
-        /// <summary>生成能量聚集特效</summary>
         private static void SpawnEnergyGatherEffect(Vector2 position, float progress) {
-            //在信号塔周围生成向中心聚集的粒子
             if (Main.rand.NextBool(2)) {
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 float distance = MathHelper.Lerp(200f, 50f, progress);
@@ -187,26 +165,20 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             }
         }
 
-        /// <summary>生成矩阵雨爆发效果</summary>
         private static void SpawnMatrixRainBurst(Vector2 position, float progress) {
-            //每帧生成多条矩阵雨
             int rainCount = (int)MathHelper.Lerp(3, 8, progress);
             for (int i = 0; i < rainCount; i++) {
-                //在信号塔上方区域随机生成矩阵雨起始点
                 float horizontalSpread = Main.rand.NextFloat(-60f, 60f);
                 Vector2 rainStart = position + new Vector2(horizontalSpread, -Main.rand.Next(20, 50));
 
-                //向上发射的速度（模拟数据流向天空）
                 Vector2 velocity = new Vector2(
                     Main.rand.NextFloat(-0.5f, 0.5f),
-                    Main.rand.NextFloat(-8f, -4f) //负值表示向上
+                    Main.rand.NextFloat(-8f, -4f)//向上
                 );
 
-                //创建矩阵雨字符粒子
                 SpawnMatrixCharacter(rainStart, velocity, progress);
             }
 
-            //额外的能量波纹
             if (Main.rand.NextBool(5)) {
                 for (int i = 0; i < 8; i++) {
                     float angle = MathHelper.TwoPi * i / 8f;
@@ -221,15 +193,12 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             }
         }
 
-        /// <summary>生成矩阵字符粒子</summary>
         private static void SpawnMatrixCharacter(Vector2 position, Vector2 velocity, float intensity) {
-            //使用Dust模拟字符效果
             Dust charDust = Dust.NewDustPerfect(position, DustID.Electric, velocity);
             charDust.noGravity = true;
             charDust.scale = Main.rand.NextFloat(0.8f, 1.4f);
             charDust.alpha = 50;
 
-            //科技蓝绿色渐变
             float colorLerp = Main.rand.NextFloat();
             charDust.color = Color.Lerp(
                 new Color(80, 200, 255),
@@ -237,13 +206,10 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 colorLerp
             );
 
-            //添加轻微的拖尾效果
             charDust.fadeIn = Main.rand.NextFloat(1.2f, 1.6f);
         }
 
-        /// <summary>生成能量脉冲环</summary>
         private static void SpawnEnergyPulseRings(Vector2 position, float progress) {
-            //生成向外扩散的能量环
             if (Main.rand.NextBool(3)) {
                 int ringSegments = 16;
                 float ringRadius = MathHelper.Lerp(50f, 150f, progress);
@@ -261,7 +227,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 }
             }
 
-            //向上发射的余波粒子
             if (Main.rand.NextBool(2)) {
                 Vector2 upwardVelocity = new Vector2(
                     Main.rand.NextFloat(-1f, 1f),
@@ -275,12 +240,10 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             }
         }
 
-        /// <summary>当TileProcessor被移除时调用（信号塔被破坏）</summary>
+        /// <summary>信号塔破坏时取消目标点完成</summary>
         public override void OnKill() {
-            //如果该信号塔已完成某个目标点，则取消该目标点的完成状态
             if (hasMarkedCompletion && completedTargetIndex >= 0) {
                 SignalTowerTargetManager.UnmarkCompletionByIndex(completedTargetIndex);
-                //播放失效音效
                 SoundEngine.PlaySound(SoundID.Item8 with {
                     Volume = 0.6f,
                     Pitch = -0.3f,

@@ -32,7 +32,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
                 return;
             }
             if (PlowSteelClampArm.GetEquipped(Player) == null) {
-                //卸下义体后即时清理冷却
                 SkillCooldownTimer = 0;
                 skillCooldownCarry = 0f;
             }
@@ -51,7 +50,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
                 return;
             }
 
-            //长线搜锚点，找不到静默 fallback 短线
+            //长线搜锚点，无则短线
             if (longMode && FindAnchorTile(aimWorld, out Vector2 anchor)) {
                 FireLongWire(anchor);
                 return;
@@ -75,7 +74,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             }
 
             SoundEngine.PlaySound(SoundID.Item122 with { Pitch = 0.4f, Volume = 0.7f }, Player.Center);
-            //装填火花：朝锚点方向喷射
+            //朝锚点喷火花
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = (anchor - Player.Center).SafeNormalize(Vector2.UnitX) * Main.rand.NextFloat(2f, 4.5f)
                     + Main.rand.NextVector2Circular(1.5f, 1.5f);
@@ -90,7 +89,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         /// <summary>短线发射，ai2=1 静态模式，两端冻结于生成瞬间</summary>
         private void FireShortWire(Vector2 aimWorld) {
             Vector2 dir = (aimWorld - Player.Center).SafeNormalize(Vector2.UnitX);
-            //from/to 冻结，IsStatic 下不再跟随玩家
+            //from/to 冻结
             Vector2 from = Player.Center;
             Vector2 to = from + dir * PlowSteelClampArm.ShortWireLengthPixels;
 
@@ -110,7 +109,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             }
 
             SoundEngine.PlaySound(SoundID.Item122 with { Pitch = 0.55f, Volume = 0.55f }, Player.Center);
-            //冷射粒子：沿线段路径分布，强化"瞬间铺线"质感
+            //沿线段冷射粒子
             int steps = 8;
             for (int i = 0; i < steps; i++) {
                 float t = (float)i / steps;
@@ -121,7 +120,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
                 dust.noGravity = true;
             }
 
-            //短线冷却更短，鼓励玩家频繁使用作为常规手段
+            //短线半冷却
             SkillCooldownTimer = PlowSteelClampArm.SkillCooldown / 2;
             skillCooldownCarry = 0f;
         }
@@ -142,7 +141,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
                 return true;
             }
 
-            //周围 4 格半径搜索最近的实心物块
+            //周围 4 格搜最近实心块
             const int searchRadius = 4;
             int bestX = -1, bestY = -1;
             int bestDistSq = int.MaxValue;

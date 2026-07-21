@@ -4,19 +4,13 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
-    /// <summary>
-    /// 鬼切 UI 共享笔触原语：刀痕、朱印、纸垂、绘马挂绳、渐变线、焦边、背光辉。<br/>
-    /// 叙事皮肤(<c>OnikiriPanelDraw</c>)与点鬼簿三屏共用本类，保证笔触语言单一来源
-    /// </summary>
+    /// <summary>鬼切 UI 笔触原语,叙事皮肤与点鬼簿共用</summary>
     internal static class OniBrush
     {
         private static Texture2D Pixel => VaultAsset.placeholder2.Value;
         private static readonly Rectangle PixelSrc = new(0, 0, 1, 1);
 
-        /// <summary>
-        /// 刀痕笔触：两端收尖、中段最宽、带轻微上弓的渐变笔画，底色深红、前段叠白热芯。<br/>
-        /// 分隔线与选项扫线共用；sweep 取 0~1 截断绘制长度(hover 扫入动画)
-        /// </summary>
+        /// <summary>刀痕,sweep 0~1 截断(hover 扫入)</summary>
         public static void DrawTaperedSlash(SpriteBatch spriteBatch, Vector2 start, Vector2 end, float maxThick, float bow, float alpha, float sweep = 1f) {
             Vector2 edge = end - start;
             float fullLen = edge.Length();
@@ -49,10 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>
-        /// 朱印方章：阴影/深红衬底/朱红章体/纸白刻痕(简化印文)。<br/>
-        /// rotation 供盖章动画用；integrity &lt; 1 时章体褪色并裂开一道暗痕(驾驭不稳的印)
-        /// </summary>
+        /// <summary>朱印方章,integrity&lt;1 褪色裂痕</summary>
         public static void DrawSealGlyph(SpriteBatch spriteBatch, Vector2 center, float size, float alpha, float rotation = 0f, float integrity = 1f) {
             if (size < 1f || alpha <= 0.01f) {
                 return;
@@ -84,19 +75,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>
-        /// 纸垂：两条白纸之字形垂片挂在顶沿注连墨绸上。<br/>
-        /// 落点与 shader 绸带的中央下垂公式同源(sin(πu)*3.4)，纸垂长度只吃边沿带,不进正文区
-        /// </summary>
+        /// <summary>双纸垂,落点与 shader 绸带下垂同源</summary>
         public static void DrawShide(SpriteBatch spriteBatch, Rectangle rect, float alpha, float swayTimer) {
             DrawSingleShide(spriteBatch, rect, 0.10f, 15f, alpha, swayTimer, 0f);
             DrawSingleShide(spriteBatch, rect, 0.78f, 18f, alpha * 0.92f, swayTimer, 2.1f);
         }
 
-        /// <summary>
-        /// 单条纸垂：绳结 + 三段之字折纸，摆角向纸尾递增(钟摆感)。u 为顶沿归一横坐标。<br/>
-        /// 摆动为双谐波 + 阵风包络；每段折面按朝向对虚拟光源(左上)算明暗，折缝叠一线高光——纸是折过的,不是三个矩形
-        /// </summary>
+        /// <summary>单纸垂,u=顶沿归一,折面明暗+折缝高光</summary>
         public static void DrawSingleShide(SpriteBatch sb, Rectangle rect, float u, float length, float alpha, float swayTimer, float phase) {
             float sag = (float)Math.Sin(u * Math.PI) * 3.4f;
             Vector2 anchor = new(rect.X + rect.Width * u, rect.Y - 6f + sag);
@@ -136,10 +121,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>
-        /// 纸条(封印札/HUD 札共用)：阴影 + 纵向三段明暗(顶亮底沉) + 上折角 + 双侧深红压边 + 缓移光泽带。<br/>
-        /// top 为纸条顶部中点，纸条沿 rot 决定的"下"方向铺开
-        /// </summary>
+        /// <summary>纸条,top=顶中点,沿 rot 的下方向铺</summary>
         public static void DrawPaperStrip(SpriteBatch sb, Vector2 top, float rot, Vector2 size, float alpha, float sheenPhase) {
             Vector2 down = (MathHelper.PiOver2 + rot).ToRotationVector2();
             Vector2 side = rot.ToRotationVector2();
@@ -171,7 +153,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             sb.Draw(Pixel, sheenCenter, PixelSrc, OnikiriUITheme.HotWhite * (alpha * 0.10f * sheenA), rot, half, new Vector2(size.X - 2f, 5f), SpriteEffects.None, 0f);
         }
 
-        /// <summary>绘马挂绳：两根斜绳收到顶结，结下垂一缕随摆的流苏(弹窗用)</summary>
+        /// <summary>绘马挂绳+流苏(弹窗)</summary>
         public static void DrawHangingKnot(SpriteBatch spriteBatch, Rectangle rect, float alpha, float swayTimer) {
             Vector2 knot = new(rect.Center.X, rect.Y - 15f);
             Color rope = OnikiriUITheme.Deep * (alpha * 0.8f);
@@ -205,10 +187,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>
-        /// 焦边燃烧：矩形下缘被鬼火舔过的痕迹。char 炭黑参差 + 青焰苗低闪。<br/>
-        /// intensity 0~1 控制炭化高度与火苗密度；用于封印札濒危态与细节板异象
-        /// </summary>
+        /// <summary>焦边,intensity 0~1 炭化高与火苗密度</summary>
         public static void DrawCharredEdge(SpriteBatch sb, Rectangle rect, float intensity, float time, float alpha) {
             if (intensity <= 0.01f || alpha <= 0.01f) {
                 return;
@@ -239,7 +218,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>背光径向辉：软光斑叠两档，细节板"隔纸照影"的光源。A 置 0 走预乘加法,光不遮物</summary>
+        /// <summary>背光径向辉,A=0 预乘加法</summary>
         public static void DrawBacklight(SpriteBatch sb, Vector2 center, float radius, Color color, float alpha) {
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 origin = glow.Size() * 0.5f;
@@ -249,7 +228,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             sb.Draw(glow, center, null, add * (alpha * 0.35f), 0f, origin, scale * 0.55f, SpriteEffects.None, 0f);
         }
 
-        /// <summary>确定性 0~1 hash，焦边参差/名录抖动等需要逐帧稳定的随机量用</summary>
+        /// <summary>确定性 0~1 hash</summary>
         public static float Hash01(int n) {
             unchecked {
                 n = n * 374761393 + 668265263;
@@ -258,7 +237,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>字符串是否含 CJK 字符(汉字/假名)，决定名录是否走竖排</summary>
+        /// <summary>含 CJK 则名录竖排</summary>
         public static bool ContainsCJK(string text) {
             if (string.IsNullOrEmpty(text)) {
                 return false;

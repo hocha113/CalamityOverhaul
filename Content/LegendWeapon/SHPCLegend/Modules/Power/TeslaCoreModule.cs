@@ -1,6 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>能源：光束命中后向最近的敌人弹跳两次</summary>
+    /// <summary>特斯拉核心，光束命中后向最近敌人弹跳两次</summary>
     internal sealed class TeslaCoreModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;

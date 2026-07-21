@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// <summary>
     /// 凛冬神性HeldProj，射速攀升极寒机枪
     /// <br/>帧0-3: 开火循环, 帧4: 待机
-    /// <br/>每次扫射发射3颗冰雹弹与3颗追踪水晶；高转速下每20发进入超频爆发：
+    /// <br/>扫射3冰雹+3追踪水晶；高转速每20发超频
     /// 枪身轰鸣蓄势约1秒，下一次开火在鼠标处掀起巨大的冰柱天罚
     /// </summary>
     internal class DarkFrostSolsticeHeld : BaseSnowCannonHeld
@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
 
             if (onFireTime > 0) {
-                //超频轰鸣：音调持续爬升的蓄势呼啸
+                //超频轰鸣爬升
                 SoundEngine.PlaySound(SoundID.Item23 with {
                     Pitch = (60 - onFireTime) * 0.15f,
                     MaxInstances = 13,
@@ -154,7 +154,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
         }
 
-        /// <summary>开火：普通扫射或超频爆发的冰柱天罚</summary>
+        /// <summary>开火，扫射或超频</summary>
         private void Fire() {
             if (!PickSnowAmmo(out int projToShoot, out int damage, out float knockback)) {
                 return;
@@ -174,7 +174,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
 
             SnowCannonPlayer state = GunState;
-            //轰鸣蓄势中：这一次开火就是冰柱天罚
+            //蓄势完成→冰柱天罚
             if (onFireTime > 0) {
                 FireIcePillar(damage, knockback);
                 cooldown = 15;
@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
             recoil = 2.5f;
 
-            //射速攀升：每2发提一档，最快6tick一发
+            //每2发提速，最快6tick
             if (++state.SolsticeFireIndex > 1) {
                 if (state.SolsticeFireRate > 6) {
                     state.SolsticeFireRate--;
@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 state.SolsticeFireIndex = 0;
             }
 
-            //3颗冰雹弹：高转速下随机被淬上更重的神性
+            //3冰雹，高转速可淬神性
             for (int i = 0; i < 3; i++) {
                 Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), MuzzlePos
                     , shootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.7f, 1.1f)
@@ -221,7 +221,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 iceorb.rotation = iceorb.velocity.ToRotation();
             }
 
-            //高转速下积累超频：每20发进入一次轰鸣蓄势
+            //每20发超频蓄势
             if (state.SolsticeFireRate <= 8) {
                 if (++state.SolsticeFireIndex2 > 20) {
                     state.SolsticeFireRate = 50;
@@ -234,7 +234,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             NetUpdate();
         }
 
-        /// <summary>超频爆发：在鼠标处（向下吸附至地面）掀起巨大的冰柱与冰枪阵</summary>
+        /// <summary>超频，鼠标处贴地冰柱阵</summary>
         private void FireIcePillar(int damage, float knockback) {
             recoil = 10f;
 

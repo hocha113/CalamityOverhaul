@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    /// 引导法阵核心控制器
+    /// 引导法阵控制器
     internal class PandemoniumChannel : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -23,21 +23,17 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private const int Tier2Time = 300;  //5秒到达2层
         private const int Tier3Time = 540;  //9秒到达3层
 
-        //攻击间隔
         private int attackCooldown = 0;
         private const int BaseAttackInterval = 50;
 
-        //连击系统
         private int comboCounter = 0;
 
-        //符文多层动画
         private List<RuneData>[] runeLayers = new List<RuneData>[3];
         private List<EnergyOrbData> orbs = new List<EnergyOrbData>();
         private List<LightningArcData> lightningArcs = new List<LightningArcData>();
         private List<CircleRingData> circleRings = new List<CircleRingData>();
         private List<BrimstoneEmberData> brimstoneEmbers = new List<BrimstoneEmberData>();
 
-        //层级平滑过渡
         private float visualTier = 0f;
         private float expandScale = 0f;
         private float tierTransitionProgress = 1f; //层级过渡 0=中 1=稳
@@ -61,7 +57,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             public float DistanceModifier;
             public float BaseDistance;
             public float Alpha = 0f;
-            //火焰动画相关
             public int FireFrame = 0;
             public float FireFrameCounter = 0;
             public float IntensityPulse = 0;
@@ -136,7 +131,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
 
 
-            //持续耗蓝
             if (ChargeTimer > 1 && ChargeTimer % 8 == 0) {
                 int manaCost = 2 + (int)CurrentTier;
                 if (!Owner.CheckMana(Owner.inventory[Owner.selectedItem], -manaCost, true)) {
@@ -152,7 +146,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             ChargeTimer++;
             attackCooldown--;
 
-            //初始化符文层
             if (ChargeTimer == 1) {
                 SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with { Volume = 1.2f, Pitch = -0.8f }, Projectile.Center);
                 for (int i = 0; i < runeLayers.Length; i++) {
@@ -163,18 +156,15 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 SpawnTierUpEffect(0);
             }
 
-            //平滑视觉层级过渡
             visualTier = MathHelper.Lerp(visualTier, CurrentTier, 0.05f);
             expandScale = MathHelper.Lerp(expandScale, 1f + CurrentTier * 0.3f, 0.08f);
 
-            //层级过渡进度更新
             if (tierTransitionProgress < 1f) {
                 tierTransitionProgress = Math.Min(tierTransitionProgress + 0.015f, 1f);
             }
 
-            //层级提升
             if (ChargeTimer == Tier1Time && CurrentTier < 1) {
-                tierTransitionProgress = 0f; //开始过渡
+                tierTransitionProgress = 0f;
                 CurrentTier = 1;
                 SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { Volume = 1.3f, Pitch = -0.2f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.8f, Pitch = -0.4f }, Projectile.Center);
@@ -205,19 +195,16 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 ExpandProjectileSize(1000);
             }
 
-            //按层级调攻击间隔与模式
             int attackInterval = BaseAttackInterval - (int)CurrentTier * 8;
             if (attackCooldown <= 0 && CurrentTier >= 1) {
                 PerformTieredAttack();
                 attackCooldown = attackInterval;
             }
 
-            //更新所有符文层
             for (int i = 0; i <= (int)CurrentTier && i < runeLayers.Length; i++) {
                 UpdateRuneLayer(i);
             }
 
-            //生成和更新效果
             SpawnEnergyOrbs();
             UpdateEnergyOrbs();
             UpdateLightningArcs();
@@ -226,15 +213,13 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             UpdateBrimstoneEmbers();
             SpawnChargeParticles();
 
-            //硫磺火照明
             float lightIntensity = (1.5f + visualTier) * 2.5f;
             float flicker = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 12f) * 0.15f + 0.85f;
             Lighting.AddLight(Projectile.Center,
-                2.0f * lightIntensity * flicker,  //红色分量增强
-                0.6f * lightIntensity * flicker,  //绿色分量
-                0.3f * lightIntensity * flicker); //蓝色分量降低，呈现橙红色
+                2.0f * lightIntensity * flicker,
+                0.6f * lightIntensity * flicker,
+                0.3f * lightIntensity * flicker);
 
-            //屏幕震动（更平滑）
             if (CurrentTier >= 2) {
                 float shakeValue = (CurrentTier - 1) * 0.8f * (float)Math.Sin(ChargeTimer * 0.05f);
                 Owner.GetModPlayer<CWRPlayer>().ScreenShakeValue = Math.Max(
@@ -251,27 +236,23 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         private void SpawnTierUpEffect(int tier) {
-            //硫磺火层级提升特效
             for (int i = 0; i < 80; i++) {
                 float angle = MathHelper.TwoPi * i / 80f;
                 float distance = 150f + tier * 80f;
                 Vector2 pos = Projectile.Center + angle.ToRotationVector2() * distance;
                 Vector2 vel = (pos - Projectile.Center).SafeNormalize(Vector2.Zero) * (5f + tier * 2.5f);
 
-                //硫磺火粒子
                 Dust d = Dust.NewDustPerfect(Projectile.Center, CWRID.Dust_Brimstone, vel, 100, default, 2.5f + tier * 0.5f);
                 d.noGravity = true;
                 d.fadeIn = 1.5f;
             }
 
-            //红色火焰核心
             for (int i = 0; i < 40; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(8f, 8f);
                 Dust fire = Dust.NewDustPerfect(Projectile.Center, DustID.Torch, vel, 100, Color.Red, 2f + tier * 0.5f);
                 fire.noGravity = true;
             }
 
-            //地狱火环
             for (int j = 0; j < 3; j++) {
                 for (int i = 0; i < 24; i++) {
                     float angle = MathHelper.TwoPi * i / 24f;
@@ -343,30 +324,24 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             float layerIntensity = 1f + layer * 0.4f;
 
             foreach (var rune in runeLayers[layer]) {
-                //过渡期加速淡入
                 float fadeSpeed = tierTransitionProgress < 0.5f ? 0.06f : 0.03f;
                 rune.Alpha = MathHelper.Lerp(rune.Alpha, 1f, fadeSpeed);
                 rune.CoreGlowAlpha = MathHelper.Lerp(rune.CoreGlowAlpha, 1f, fadeSpeed * 0.5f);
 
-                //火焰帧动画更新
                 rune.FireFrameCounter += 0.3f + layerIntensity * 0.1f;
                 if (rune.FireFrameCounter >= 1f) {
                     rune.FireFrameCounter = 0;
                     rune.FireFrame = (rune.FireFrame + 1) % 16;//4x4=16帧循环
                 }
 
-                //强度脉冲(火焰闪烁)
                 rune.IntensityPulse += 0.15f * layerIntensity;
 
-                //基础旋转（更平滑）
                 rune.Rotation += rune.RotationSpeed * layerIntensity;
                 rune.PulsePhase += 0.06f * layerIntensity;
                 rune.NoisePhase += 0.04f;
 
-                //轨道运动
                 rune.OrbitPhase += rune.OrbitSpeed;
 
-                //Lissajous 轨道
                 float a = 2.5f + layer * 0.8f;
                 float b = 1.8f + layer * 0.6f;
                 float delta = layer * VaultUtils.PiOver3;
@@ -374,23 +349,18 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 float lissajousX = (float)Math.Sin(a * rune.OrbitPhase + delta);
                 float lissajousY = (float)Math.Sin(b * rune.OrbitPhase);
 
-                //螺旋调制
                 float spiral = rune.SpiralAmount * (float)Math.Sin(time * 1.5f + rune.OrbitPhase * 2.5f);
 
-                //Perlin 噪声扰动
                 float noise1 = (float)Math.Sin(rune.NoisePhase * 2.2f) * 0.25f;
                 float noise2 = (float)Math.Cos(rune.NoisePhase * 3.7f + layer) * 0.18f;
                 float noiseModulation = (noise1 + noise2) * 15f;
 
-                //呼吸缩放
                 rune.DistanceModifier = 1f + (float)Math.Sin(time * 1.2f + layer * MathHelper.TwoPi / 3 + rune.OrbitPhase) * 0.12f;
 
-                //组合运动
                 Vector2 basePos = rune.OrbitPhase.ToRotationVector2() * rune.BaseDistance * rune.DistanceModifier;
                 Vector2 lissajousOffset = new Vector2(lissajousX, lissajousY) * 25f * (1f + layer * 0.25f);
                 Vector2 spiralOffset = basePos.RotatedBy(spiral) - basePos;
 
-                //平滑的随机扰动
                 if (Main.rand.NextBool(180 - layer * 30)) {
                     rune.Velocity += Main.rand.NextVector2Circular(8f, 8f);
                 }
@@ -413,7 +383,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 float distance = Main.rand.NextFloat(450f, 650f);
                 Vector2 spawnPos = Projectile.Center + angle.ToRotationVector2() * distance;
 
-                //硫磺火色彩
                 Color[] orbColors = {
                     new Color(255, 120, 60),   //亮橙
                     new Color(255, 80, 40),    //橙红
@@ -447,7 +416,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 orb.Velocity = Vector2.Lerp(orb.Velocity, toCenter.SafeNormalize(Vector2.Zero) * MathHelper.Clamp(distanceToCenter * 0.02f, 3f, 12f), 0.06f);
 
                 if (orb.Life > orb.MaxLife || distanceToCenter < 50f) {
-                    //硫磺火汇聚效果
                     for (int j = 0; j < 6; j++) {
                         Dust d = Dust.NewDustPerfect(orb.Position, CWRID.Dust_Brimstone,
                             Main.rand.NextVector2Circular(3f, 3f), 100, default, 1.5f);
@@ -481,7 +449,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                         EndPos = endPos,
                         Life = 0,
                         MaxLife = 18,
-                        Color = new Color(255, 140, 80, 200), //硫磺火色彩
+                        Color = new Color(255, 140, 80, 200),
                         Intensity = Main.rand.NextFloat(0.7f, 1f),
                         SegmentPoints = points
                     });
@@ -506,7 +474,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         private void SpawnBrimstoneEmbers() {
-            //硫磺火余烬粒子
             if (Main.rand.NextBool(4)) {
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 float distance = Main.rand.NextFloat(100f, 400f);
@@ -536,10 +503,9 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 ember.Life++;
                 ember.Alpha = Math.Min(ember.Alpha + 0.08f, 1f);
                 ember.Position += ember.Velocity;
-                ember.Velocity.Y -= 0.02f; //轻微上升
+                ember.Velocity.Y -= 0.02f;
                 ember.Rotation += ember.RotationSpeed;
 
-                //逐渐消失
                 if (ember.Life > ember.MaxLife * 0.7f) {
                     ember.Alpha = MathHelper.Lerp(1f, 0f, (ember.Life - ember.MaxLife * 0.7f) / (ember.MaxLife * 0.3f));
                 }
@@ -565,11 +531,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
             int tier = (int)CurrentTier;
 
-            //连击数选攻击模式
             int attackPattern = (comboCounter % 4);
 
             switch (tier) {
-                case 1: //第一层：基础镰刀螺旋
+                case 1://镰刀螺旋
                     if (attackPattern == 0 || attackPattern == 2) {
                         ReleaseSpiralScytheWave(tier, 6);
                     }
@@ -578,7 +543,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     }
                     break;
 
-                case 2: //第二层：添加追踪镰刀和集束火球
+                case 2://追踪镰+集束球
                     if (attackPattern == 0) {
                         ReleaseSpiralScytheWave(tier, 8);
                     }
@@ -593,7 +558,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     }
                     break;
 
-                case 3: //第三层：全面攻击组合
+                case 3://全组合
                     if (attackPattern == 0) {
                         ReleaseSpiralScytheWave(tier, 12);
                         if (Main.rand.NextBool(2)) {
@@ -614,7 +579,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     break;
             }
 
-            //更新连击计数
             comboCounter++;
         }
 
@@ -628,7 +592,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 float angle = MathHelper.TwoPi / count * i;
                 float spiralPhase = i * 0.5f;
 
-                //螺旋轨迹的初始速度
                 Vector2 velocity = angle.ToRotationVector2() * speedBase;
 
                 int damage = (int)(Projectile.damage * (2f + tier * 0.1f));
@@ -655,7 +618,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             NPC[] targets = new NPC[count];
             float searchRadius = 900f;
 
-            //先找出最近的几个敌人
             List<NPC> potentialTargets = new List<NPC>();
             foreach (NPC npc in Main.npc) {
                 if (npc.CanBeChasedBy(this) && npc.Distance(Projectile.Center) < searchRadius) {
@@ -682,7 +644,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     Projectile.knockBack,
                     Owner.whoAmI,
                     tier,
-                    targetIndex, //将目标索引传递给镰刀
+                    targetIndex,
                     i
                 );
 
@@ -690,7 +652,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        //改进火球-预判鼠标
+        //火球预判鼠标
         private void ReleaseHomingFireball(int count) {
             SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with { Volume = 1.3f, Pitch = -0.3f }, Projectile.Center);
 
@@ -699,7 +661,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             for (int i = 0; i < count; i++) {
                 float delay = i * 5f;
 
-                //预判目标位置（如果玩家在移动）
                 Vector2 predictedPos = targetPos;
                 if (Owner != null) {
                     predictedPos += Owner.velocity * (delay / 60f) * 20f;
@@ -722,13 +683,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        //集束火球-空中阵型后齐爆
+        //集束火球齐爆
         private void ReleaseClusterFireball(int clusterCount) {
             SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with { Volume = 1.4f, Pitch = -0.4f }, Projectile.Center);
 
             Vector2 targetPos = Main.MouseWorld;
 
-            //在目标位置周围生成一圈火球
             for (int i = 0; i < clusterCount; i++) {
                 float angle = MathHelper.TwoPi * i / clusterCount;
                 Vector2 clusterOffset = angle.ToRotationVector2() * 150f;
@@ -752,7 +712,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        //闪电链-法阵边缘跳跃
+        //闪电链边缘跳
         private void ReleaseLightningChain() {
             SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1.2f, Pitch = -0.2f }, Projectile.Center);
 
@@ -807,7 +767,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private void SpawnChargeParticles() {
             int particleChance = Math.Max(1, 5 - (int)CurrentTier);
 
-            //硫磺火粒子
             if (Main.rand.NextBool(particleChance)) {
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                 float distance = Main.rand.NextFloat(350f, 550f);
@@ -819,7 +778,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 d.fadeIn = 1.3f;
             }
 
-            //红色火焰粒子
             if (Main.rand.NextBool(3)) {
                 float angle = Main.GlobalTimeWrappedHourly * 5f + Main.rand.NextFloat(MathHelper.TwoPi);
                 float radius = 80f + visualTier * 25f;
@@ -836,16 +794,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             float time = Main.GlobalTimeWrappedHourly;
             int tier = (int)CurrentTier;
 
-            //计算过渡效果
             float transitionEase = VaultUtils.EaseOutCubic(tierTransitionProgress);
 
-            //绘制着色器领域
             DrawBrimstoneDomainShader(sb, center, time, tier, transitionEase);
 
-            //绘制能量球（保持CPU侧粒子效果作为点缀）
             DrawEnergyOrbs(sb);
 
-            //绘制闪电弧
             DrawLightningArcsVisual(sb);
 
             return false;
@@ -859,26 +813,23 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Texture2D noise = CWRAsset.Extra_193.Value;
             if (canvas == null || noise == null) return;
 
-            //绘制区域：根据当前层级计算法阵大小
+            
             float baseRadius = 300f + tier * 120f;
-            float drawRadius = baseRadius * expandScale * 1.15f; //额外留出辉光空间
+            float drawRadius = baseRadius * expandScale * 1.15f;//辉光余量
             float drawDiameter = drawRadius * 2f;
 
-            //设置着色器参数
             shader.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.016f);
             shader.Parameters["fadeAlpha"]?.SetValue(Math.Min(expandScale, 1f) * transitionEase);
             shader.Parameters["tierLevel"]?.SetValue(visualTier);
             shader.Parameters["expandProgress"]?.SetValue(MathHelper.Clamp(expandScale, 0f, 1f));
             shader.Parameters["pulseIntensity"]?.SetValue(0.6f + (float)Math.Sin(time * 3f) * 0.4f);
 
-            //硫磺火色彩方案
             shader.Parameters["coreColor"]?.SetValue(new Vector3(1f, 0.31f, 0.16f));    //255,80,40
             shader.Parameters["midColor"]?.SetValue(new Vector3(0.78f, 0.2f, 0.12f));   //200,50,30
             shader.Parameters["edgeColor"]?.SetValue(new Vector3(0.47f, 0.12f, 0.08f)); //120,30,20
             shader.Parameters["voidColor"]?.SetValue(new Vector3(0.16f, 0.04f, 0.04f)); //40,10,10
             shader.Parameters["uNoiseTex"]?.SetValue(noise);
 
-            //切换到Immediate模式应用着色器
             sb.End();
             sb.Begin(SpriteSortMode.Immediate, BlendState.Additive,
                 SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone,
@@ -890,7 +841,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 0f, canvas.Size() * 0.5f, new Vector2(drawDiameter, drawDiameter),
                 SpriteEffects.None, 0f);
 
-            //恢复正常批次状态
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone,

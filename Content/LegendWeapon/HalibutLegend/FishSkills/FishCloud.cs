@@ -52,56 +52,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 云朵乘骑弹幕
-    /// </summary>
     internal class CloudRide : ModProjectile, IOverlayDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
         private Player Owner => Main.player[Projectile.owner];
 
-        /// <summary>
-        /// 生命计时器
-        /// </summary>
         private ref float LifeTimer => ref Projectile.ai[0];
 
-        /// <summary>
-        /// 阶段：0=飞向玩家脚下，1=载着玩家飞行，2=消散
-        /// </summary>
+        /// <summary>阶段，0=飞向玩家脚下，1=载着玩家飞行，2=消散</summary>
         private int Phase {
             get => (int)Projectile.ai[1];
             set => Projectile.ai[1] = value;
         }
 
-        /// <summary>
-        /// 最大持续时间（8秒）
-        /// </summary>
-        private const int MaxDuration = 60 * 8;
+        private const int MaxDuration = 60 * 8; //8s
 
-        /// <summary>
-        /// 云鱼粒子系统（伴飞的云鱼）
-        /// </summary>
         private List<CloudFishParticle> cloudFishParticles = new();
 
-        /// <summary>
-        /// 雨滴生成计时器
-        /// </summary>
         private int rainTimer = 0;
 
-        /// <summary>
-        /// 云朵缩放
-        /// </summary>
         private float cloudScale = 0f;
 
-        /// <summary>
-        /// 云朵透明度
-        /// </summary>
         private float cloudAlpha = 0f;
 
-        /// <summary>
-        /// 目标位置（玩家脚下）
-        /// </summary>
         private Vector2 targetPosition = Vector2.Zero;
 
         /// <summary>玩家原始重力（结束时恢复）</summary>
@@ -125,9 +99,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// <summary>散逸拍是否已放（Phase2 入场一次性云絮外扑）</summary>
         private bool dissipateBurst = false;
 
-        /// <summary>
-        /// 云鱼数量
-        /// </summary>
         private const int CloudFishCount = 15;
 
         public override void SetDefaults() {
@@ -176,21 +147,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             if (LifeTimer == 0) {
-                //初始化云鱼粒子
                 InitializeCloudFish();
             }
 
             LifeTimer++;
 
-            //风矢量平滑：驱动云体剪切拉伸与尾侧蚀散方向
+            //风矢量平滑
             windSmooth = Vector2.Lerp(windSmooth, Projectile.velocity / 25f, 0.10f);
-            //雨幕包络：乘骑时缓升，离云缓落
+            //雨幕包络，乘骑时缓升，离云缓落
             rainVeil = MathHelper.Lerp(rainVeil, Phase == 1 ? 1f : 0f, 0.05f);
             if (mountPulse > 0) {
                 mountPulse--;
             }
 
-            //更新云鱼粒子
             UpdateCloudFishParticles();
 
             switch (Phase) {
@@ -205,18 +174,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     break;
             }
 
-            //生成雨滴
             if (Phase == 1) {
                 SpawnRain();
             }
 
-            //环境音效
             if (Phase == 1 && LifeTimer % 120 == 0) {
                 SoundEngine.PlaySound(SoundID.LiquidsWaterLava with { Volume = 0.3f, Pitch = 0.3f }, Projectile.Center);
             }
         }
 
-        /// <summary>云絮灰白配色：0=亮顶 1=暗底</summary>
+        /// <summary>云絮灰白配色，0=亮顶 1=暗底</summary>
         private static Color WispColor(float shade) => Color.Lerp(new Color(233, 237, 243), new Color(158, 166, 180), shade);
 
         /// <summary>云鱼 boids tick</summary>
@@ -224,7 +191,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             for (int i = 0; i < cloudFishParticles.Count; i++) {
                 CloudFishParticle fish = cloudFishParticles[i];
 
-                //淡入效果
                 if (Phase == 0 || Phase == 1) {
                     if (fish.Alpha < 1f) {
                         fish.Alpha += 0.05f;
@@ -244,7 +210,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 averageVelocity = Vector2.Zero;
                 int nearbyFishCount = 0;
 
-                //计算与其他云鱼的关系
                 for (int j = 0; j < cloudFishParticles.Count; j++) {
                     if (i == j) continue;
 
@@ -257,7 +222,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         separationForce += awayFromOther / distance;
                     }
 
-                    //对齐和聚合计算
                     if (distance < 120f) {
                         centerOfMass += otherFish.Position;
                         averageVelocity += otherFish.Velocity;
@@ -328,7 +292,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     (float)Math.Cos(waveTime * 1.7f)
                 ) * 0.3f * fish.BehaviorRandomness;
 
-                //合成所有力
                 Vector2 totalForce = Vector2.Zero;
                 totalForce += separationForce * 2.5f; //分离力（避免重叠）
                 totalForce += alignmentForce * 1.2f; //对齐力
@@ -339,10 +302,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 totalForce += waveForce; //波动
                 totalForce += randomWander; //随机游动
 
-                //应用力
                 fish.Velocity += totalForce * 0.15f;
 
-                //速度限制
                 float maxSpeed = 8f * fish.BehaviorRandomness;
                 float minSpeed = 2f;
                 float currentSpeed = fish.Velocity.Length();
@@ -354,11 +315,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     fish.Velocity = fish.Velocity.SafeNormalize(Vector2.Zero) * minSpeed;
                 }
 
-                //更新位置
                 fish.Position += fish.Velocity;
                 fish.Position += Projectile.velocity * 0.64f;
 
-                //更新旋转（面向移动方向）
                 if (fish.Velocity.LengthSquared() > 0.1f) {
                     fish.Rotation = MathHelper.Lerp(fish.Rotation, fish.Velocity.ToRotation(), 0.2f);
                 }
@@ -366,23 +325,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 //轻微的游动摆尾效果
                 fish.Rotation += (float)Math.Sin(LifeTimer * 0.2f + fish.PhaseOffset) * 0.08f;
 
-                //更新回列表
                 cloudFishParticles[i] = fish;
             }
         }
 
-        /// <summary>
-        /// 阶段0，飞向玩家脚下
-        /// </summary>
+        /// <summary>阶段0，飞向玩家脚下</summary>
         private void FlyToPlayerPhase() {
-            //淡入
             cloudAlpha += 0.08f;
             if (cloudAlpha > 1f) cloudAlpha = 1f;
 
             cloudScale += 0.05f;
             if (cloudScale > 1f) cloudScale = 1f;
 
-            //聚拢成形：瓣心从四散收敛，蚀阈回退（shader 侧读 cloudGrow）
+            //聚拢成形
             cloudGrow = Math.Min(cloudGrow + 0.045f, 0.85f);
 
             //计算目标位置（玩家脚下）
@@ -402,7 +357,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 originalGravity = Owner.gravity;
                 mountPulse = 14;
 
-                //乘云英雄拍：聚拢过冲 + 云絮外扑 + 足下扁平水雾环
+                //乘云英雄拍
                 if (Main.netMode != NetmodeID.Server) {
                     for (int i = 0; i < 10; i++) {
                         float ang = MathHelper.TwoPi * i / 10f;
@@ -416,11 +371,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         new Color(196, 208, 226), 1f)?.Configure(15, 0.24f);
                 }
 
-                //播放到位音效
                 SoundEngine.PlaySound(SoundID.Item45 with { Volume = 0.5f, Pitch = 0.4f }, Projectile.Center);
             }
 
-            //凝聚吸入：云絮从外围被卷进云心
+            //凝聚吸入，云絮从外围被卷进云心
             if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(3)) {
                 Vector2 off = Main.rand.NextVector2CircularEdge(110f, 55f);
                 PRTLoader.NewParticle<PRT_FishCloudWisp>(Projectile.Center + off,
@@ -430,9 +384,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 阶段1：载着玩家飞行
-        /// </summary>
+        /// <summary>阶段1</summary>
         private void RidingPhase() {
             cloudAlpha = 1f;
             cloudScale = 1f + (float)Math.Sin(LifeTimer * 0.08f) * 0.06f; //轻微呼吸效果
@@ -447,7 +399,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Projectile.velocity += toMouse * acceleration;
 
-            //速度限制
             float currentSpeed = Projectile.velocity.Length();
             if (currentSpeed > maxSpeed) {
                 Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * maxSpeed;
@@ -482,7 +433,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Owner.fullRotation = MathHelper.Lerp(Owner.fullRotation, 0f, 0.2f) * Owner.direction;
             }
 
-            //蜕云：边缘常态剥落碎云，随体后拖
+            //蜕云
             if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(3)) {
                 Vector2 off = new Vector2(Main.rand.NextFloat(-95f, 95f), Main.rand.NextFloat(-16f, 26f));
                 PRTLoader.NewParticle<PRT_FishCloudWisp>(Projectile.Center + off,
@@ -491,7 +442,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     ?.Configure(Main.rand.Next(30, 48));
             }
 
-            //高速尾撕：尾侧被风撕下的碎云，缩着消散
+            //高速尾撕
             if (Main.netMode != NetmodeID.Server && currentSpeed > 12f && Main.rand.NextBool(2)) {
                 Vector2 tailDir = -Projectile.velocity.SafeNormalize(Vector2.Zero);
                 Vector2 pos = Projectile.Center + tailDir * Main.rand.NextFloat(60f, 100f)
@@ -509,22 +460,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 d.alpha = 160;
             }
 
-            //超时检查
             if (LifeTimer > MaxDuration) {
                 Phase = 2;
             }
         }
 
-        /// <summary>
-        /// 阶段2：消散
-        /// </summary>
+        /// <summary>阶段2</summary>
         private void DissipatePhase() {
             cloudAlpha -= 0.030f;
             cloudScale += 0.006f;
-            //蚀散：噪声阈值推进，云被从边缘吃掉
+            //蚀散
             cloudGrow = Math.Max(cloudGrow - 0.033f, 0f);
 
-            //散逸拍：入场一次性云絮外扑
+            //散逸拍，入场一次性云絮外扑
             if (!dissipateBurst) {
                 dissipateBurst = true;
                 if (Main.netMode != NetmodeID.Server) {
@@ -548,7 +496,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //减速
             Projectile.velocity *= 0.95f;
 
-            //持续散逸：碎云外飘上浮
+            //持续散逸，碎云外飘上浮
             if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(2)) {
                 Vector2 off = Main.rand.NextVector2Circular(85f, 40f);
                 PRTLoader.NewParticle<PRT_FishCloudWisp>(Projectile.Center + off,
@@ -562,9 +510,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 生成雨滴
-        /// </summary>
+        /// <summary>生成雨滴</summary>
         private void SpawnRain() {
             rainTimer++;
 
@@ -606,7 +552,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 center = Projectile.Center - Main.screenPosition;
 
             if (cloudAlpha > 0.01f) {
-                //环境光压暗：云是漫反射体，夜里随环境变暗，保底 0.35 保证可读
+                //环境光压暗
                 float light = MathF.Max(MathF.Max(lightColor.R, MathF.Max(lightColor.G, lightColor.B)) / 255f, 0.35f);
                 Effect fx = FishCloudAssets.FishCloudPuff;
                 Texture2D noise = CWRAsset.PerlinNoise?.Value;
@@ -624,9 +570,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>shader 云体：单 quad 内画 6 瓣积云 + 蚀边翻卷 + 雨幕</summary>
+        /// <summary>shader 云体，单 quad 内画 6 瓣积云 + 蚀边翻卷 + 雨幕</summary>
         private void DrawCloudShader(SpriteBatch sb, Vector2 center, Effect fx, Texture2D noise, float light) {
-            //乘云过冲：到位瞬间 grow 越过 1 再回落，读作猛地聚拢压实
+            //乘云过冲
             float pulse = mountPulse > 0 ? 0.20f * (mountPulse / 14f) : 0f;
             float grow = MathHelper.Clamp(cloudGrow + pulse, 0f, 1.2f);
 
@@ -646,7 +592,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //1×1 白像素拉成整块云 quad，shader 在其中成形，下段留给雨幕
             Texture2D px = VaultAsset.placeholder2.Value;
-            //速度拉伸按分量拆轴：横飞横拉、竖飞竖拉（竖向同时加深雨幕区）
+            //速度拉伸按分量拆轴
             float stretchX = 1f + MathHelper.Clamp(MathF.Abs(windSmooth.X) * 0.35f, 0f, 0.35f);
             float stretchY = 1f + MathHelper.Clamp(MathF.Abs(windSmooth.Y) * 0.22f, 0f, 0.22f);
             Vector2 size = new Vector2(360f * stretchX, 300f * stretchY) * cloudScale;
@@ -658,7 +604,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        /// <summary>兜底云体：缺 .fxc 时的 Fog 剪影布团，同样顶亮底暗</summary>
+        /// <summary>兜底云体</summary>
         private static readonly Vector2[] FallbackOffsets = [
             new(0, -6), new(-52, 6), new(50, 4), new(-24, -20), new(26, -18), new(78, 12), new(-80, 12)
         ];
@@ -677,7 +623,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //前唇云絮：玩家精灵之后再画一层薄云盖住脚踝，与身后云体构成夹心
+        //前唇云絮
         private static readonly Vector2[] FrontLipOffsets = [new(-34, 0), new(2, 8), new(36, -2)];
 
         void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
@@ -730,7 +676,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void OnKill(int timeLeft) {
             if (Main.netMode != NetmodeID.Server) {
-                //残云余韵：碎絮活得比云体久，向外缓散上浮
+                //残云余韵
                 for (int i = 0; i < 12; i++) {
                     Vector2 off = new Vector2(Main.rand.NextFloat(-85f, 85f), Main.rand.NextFloat(-30f, 30f));
                     PRTLoader.NewParticle<PRT_FishCloudWisp>(Projectile.Center + off,
@@ -765,9 +711,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 云鱼粒子数据结构（伴飞的云鱼）
-    /// </summary>
+    /// <summary>云鱼粒子数据结构（伴飞的云鱼）</summary>
     internal struct CloudFishParticle
     {
         public Vector2 Position;
@@ -781,9 +725,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public Color Color;
     }
 
-    /// <summary>
-    /// 雨滴弹幕
-    /// </summary>
+    /// <summary>雨滴弹幕</summary>
     internal class CloudRain : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -826,7 +768,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void OnKill(int timeLeft) {
             if (Main.netMode != NetmodeID.Server) {
-                //溅斑：落点扁平水环 decal，活得比雨滴久
+                //溅斑
                 PRTLoader.NewParticle<PRT_FishCloudSplash>(Projectile.Center, Vector2.Zero,
                     new Color(178, 198, 222), 1f)?.Configure(Main.rand.Next(12, 17), Main.rand.NextFloat(0.10f, 0.15f));
                 //迸起水珠
@@ -845,7 +787,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //雨线：暗长尾 + 亮短头双段，顺速度拉伸（rotation 使条带由中心向运动反向延伸）
+            //雨线
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float fade = 1f - Projectile.alpha / 255f;
             Texture2D px = VaultAsset.placeholder2.Value;

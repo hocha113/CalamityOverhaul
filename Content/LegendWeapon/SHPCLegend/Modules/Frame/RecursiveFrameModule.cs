@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>递归机匣：光束消亡从玩家沿原向重发低伤副本，IsDerived 防无限</summary>
+    /// <summary>递归机匣，消亡自玩家沿原向重发低伤副本，IsDerived 防无限</summary>
     internal sealed class RecursiveFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;

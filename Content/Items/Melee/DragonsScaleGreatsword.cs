@@ -17,7 +17,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    /// 龙藻巨刃：三段连击+螺旋绿藻剑气，右键翠龙之魂
+    /// 龙藻巨刃，三段+绿藻剑气，右键翠龙之魂
     internal class DragonsScaleGreatsword : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "DragonsScaleGreatsword";
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// 龙藻巨刃手持：三段连击+DragonSlashTrail.fx+绿藻剑气
+    /// 龙藻巨刃手持，DragonSlashTrail+绿藻剑气
     internal class DragonsScaleGreatswordHeld : BaseHeldProj, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Item_Melee + "DragonsScaleGreatsword";
@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private bool beamsFired;
         private float trailFade;
 
-        //刀光轨迹缓存：每逻辑帧细分采样以保证弧光平滑
+        //刀光轨迹缓存，每逻辑帧细分采样
         private const int TrailMax = 64;
         private const int TrailSubdiv = 4;
         private readonly float[] trailRot = new float[TrailMax];
@@ -245,7 +245,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
             else {
-                //收势：刀停住，弧光收缩渐隐
+                //收势
                 float t = (elapsed - slashEnd) / RecoverTime;
                 currentRotation = endAngle;
                 trailFade = 1f - t;
@@ -406,7 +406,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// 螺旋绿藻剑气：DragonSporeBeam.fx，命中炸毒藻雾
+    /// 螺旋绿藻剑气，DragonSporeBeam.fx
     internal class DragonsScaleGreatswordBeam : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -532,7 +532,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// 翠龙之魂：DragonSoulSerpent.fx 蛟龙追猎+毒藻雾
+    /// 翠龙之魂，DragonSoulSerpent.fx
     internal class DragonSoulSerpent : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -591,7 +591,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             //蜿蜒游动
             Projectile.velocity = Projectile.velocity.RotatedBy(MathF.Sin(Time * 0.22f) * 0.03f);
 
-            //追猎：锁定猎物后陷入狂怒
+            //追猎锁定
             NPC target = Projectile.Center.FindClosestNPC(620f, true, chasedByNPC: npc => npc.CanBeChasedBy(Projectile));
             if (Time > 40 && target != null) {
                 Projectile.SmoothHomingBehavior(target.Center, 1f, 0.07f);

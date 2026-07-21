@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.UIs.UIEffect
 {
-    /// <summary>星流粒子，模拟流动的金色星尘光带</summary>
+    /// <summary>金色星流</summary>
     public class StarStreamPRT(Vector2 p)
     {
         public Vector2 Pos = p;
@@ -38,14 +38,12 @@ namespace CalamityOverhaul.Content.UIs.UIEffect
 
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            //金色核心
             Color gold = new Color(255, 210, 100) * (0.85f * fade);
             sb.Draw(px, Pos, null, gold, Rot, new Vector2(0.5f),
                 new Vector2(scale * 2.5f, scale * 0.35f), SpriteEffects.None, 0f);
             sb.Draw(px, Pos, null, gold * 0.8f, Rot + MathHelper.PiOver2, new Vector2(0.5f),
                 new Vector2(scale * 2.5f, scale * 0.35f), SpriteEffects.None, 0f);
 
-            //暖白光晕
             Color warm = new Color(255, 240, 200) * (0.4f * fade);
             sb.Draw(px, Pos, null, warm, 0f, new Vector2(0.5f),
                 new Vector2(scale * 0.6f), SpriteEffects.None, 0f);

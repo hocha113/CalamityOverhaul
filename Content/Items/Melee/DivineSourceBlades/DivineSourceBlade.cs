@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             Item.height = 164;
             Item.damage = 1560;
             Item.DamageType = DamageClass.Melee;
-            //实际节奏由手持弹幕存活期接管：快斩约 21 帧，大斩切约 37 帧
+            //节奏由手持存活期接管（快斩~21/大斩~37 帧）
             Item.useAnimation = Item.useTime = 16;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 5.5f;

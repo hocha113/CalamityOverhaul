@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             Trial("shpc.021.boss_rush", BossRush(bossRushName, eventActiveFormat), titles, summaries, 21),
         ];
 
-        /// <summary>鬼切试炼：目标序列与 SHPC 同密，稳定键为 onikiri.*</summary>
+        /// <summary>鬼切试炼，序列同 SHPC，键 onikiri.*</summary>
         public static LegendTrialDefinition[] CreateOnikiri(LocalizedText[] titles = null, LocalizedText[] summaries = null,
             LocalizedText bossRushName = null, LocalizedText eventActiveFormat = null) => [
             Trial("onikiri.000.eye_of_cthulhu", Npc(() => [NPCID.EyeofCthulhu], InWorldBossPhase.DownedV1), titles, summaries, 0),

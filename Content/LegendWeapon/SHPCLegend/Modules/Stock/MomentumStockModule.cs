@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>动量枪托：移动叠动能层，停下衰减并注入攻速/弹速</summary>
+    /// <summary>动量枪托，移动叠层，停下衰减，注入攻速/弹速</summary>
     internal sealed class MomentumStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         public override void Apply(ref ShootContext ctx) {
             ctx.DamageMul += -0.05f;
             ctx.SpreadMul += 0.25f;
-            //层数动态注入
+            //层数注入
             ctx.AttackSpeedMul += _stacks * AttackSpeedPerStack;
             ctx.BeamSpeedMul += _stacks * BeamSpeedPerStack;
         }

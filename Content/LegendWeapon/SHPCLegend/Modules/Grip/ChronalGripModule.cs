@@ -3,7 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>时相握把：命中施加时相减速</summary>
+    /// <summary>时相握把，命中减速</summary>
     internal sealed class ChronalGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;

@@ -17,7 +17,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    /// 怨念编织者：三段怨魂大刀+右键怨魂冲刺
+    /// 怨念编织者，三段+右键冲刺
     internal class WeaverGrievances : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "WeaverGrievances";
@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// 怨念编织者手持：三段连击+WeaverSlashTrail.fx+怨灵之爪
+    /// 怨念编织者手持，WeaverSlashTrail+怨灵之爪
     internal class WeaverGrievancesHeld : BaseHeldProj, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Item_Melee + "WeaverGrievances";
@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private bool wraithsFired;
         private float trailFade;
 
-        //刀光轨迹缓存：每逻辑帧细分采样以保证弧光平滑
+        //刀光轨迹缓存，每逻辑帧细分采样
         private const int TrailMax = 64;
         private const int TrailSubdiv = 4;
         private readonly float[] trailRot = new float[TrailMax];
@@ -280,7 +280,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
             else {
-                //收势：刀停住，弧光收缩渐隐
+                //收势
                 float t = (elapsed - slashEnd) / RecoverTime;
                 currentRotation = endAngle;
                 trailFade = 1f - t;
@@ -424,7 +424,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// 怨念编织者冲刺：怨魂风车+WeaverSoulVortex.fx
+    /// 怨念编织者冲刺，WeaverSoulVortex.fx
     internal class WeaverGrievancesDash : BaseHeldProj, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Item_Melee + "WeaverGrievances";
@@ -490,7 +490,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
 
-            //风车旋转：转速随冲刺速度小幅提升
+            //风车旋转随速
             spinSpeed = (0.38f + MathHelper.Clamp(Owner.velocity.Length() / 200f, 0f, 0.1f)) * DirSignSpin;
             float lastSpin = spinAngle;
             spinAngle += spinSpeed;
@@ -603,7 +603,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //怨魂风车：大刀绕身旋转 + 渐隐残影
+            //怨魂风车
             Texture2D tex = TextureValue;
             Vector2 origin = tex.Size() / 2f;
             Vector2 center = Projectile.Center - Main.screenPosition;
@@ -718,7 +718,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// 怨灵之爪：WeaverWraith.fx 程序化怨魂弹幕
+    /// 怨灵之爪，WeaverWraith.fx
     internal class WeaverBeam : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;

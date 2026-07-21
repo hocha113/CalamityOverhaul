@@ -12,23 +12,22 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee
 {
     /// <summary>
-    /// 刻心者专属色彩脚本：动脉暗红 + 心肌粉白高光 + 黑。<br/>
-    /// 粉白只允许瞬时小面积高光，不得常驻；禁用青绿/金色/橙色——所有刻心者视觉取色必须经由此处
+    /// 刻心者色板，动脉暗红+心肌粉白+黑；粉白仅瞬时小面积，取色经由此处
     /// </summary>
     internal static class HeartcarverPalette
     {
-        /// <summary>动脉暗红：主体能量色</summary>
+        /// <summary>动脉暗红</summary>
         public static readonly Color Arterial = new(164, 10, 22);
-        /// <summary>干涸深红：暗部、拖尾末端</summary>
+        /// <summary>干涸深红</summary>
         public static readonly Color ArterialDeep = new(70, 3, 10);
-        /// <summary>心肌粉白：白热高光、剜心击强调（仅瞬时小面积）</summary>
+        /// <summary>心肌粉白（瞬时小面积）</summary>
         public static readonly Color Myocard = new(255, 214, 218);
-        /// <summary>近黑：轮廓与收势</summary>
+        /// <summary>近黑</summary>
         public static readonly Color Night = new(14, 2, 5);
 
-        /// <summary>暗红族随机取色（粒子用）</summary>
+        /// <summary>暗红族随机（粒子）</summary>
         public static Color Blood(float t) => Color.Lerp(ArterialDeep, Arterial, t);
-        /// <summary>暗红 → 粉白的热度取色</summary>
+        /// <summary>暗红→粉白热度</summary>
         public static Color Heat(float t) => Color.Lerp(Arterial, Myocard, t);
     }
 
@@ -37,24 +36,22 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class HeartcarverAssets
     {
-        /// <summary>刺击针状白热刺线（静态 quad 图元）</summary>
+        /// <summary>刺击白热刺线</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Asset<Effect> HeartcarverLance { get; set; }
-        /// <summary>冲刺血刃条带拖尾（TriangleStrip）</summary>
+        /// <summary>冲刺血刃条带</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Asset<Effect> HeartcarverRibbon { get; set; }
-        /// <summary>剜出心脏的程序化本体（SDF 心形 + 嘴）</summary>
+        /// <summary>心脏 SDF 本体</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Asset<Effect> HeartcarverOrgan { get; set; }
-        /// <summary>剜心瞬间红黑高对比 impact frame（全屏后效）</summary>
+        /// <summary>剜心 impact frame</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Asset<Effect> HeartcarverImpact { get; set; }
     }
 
     /// <summary>
-    /// 刻心者专属玩家状态：心跳节拍计时 / 冲刺冷却 / 剜心狂热攻速窗 / 剜心击信号。<br/>
-    /// 心跳只在手持刻心者时行进；节拍由武器本地视觉广播——刀身辉光随拍脉动、
-    /// 窗口开启时刀刃泛白热一瞬、心口微弱血光——不做任何常驻屏幕空间效果
+    /// 刻心者玩家态，心跳/冲刺冷却/狂热攻速窗/剜心击信号；心跳仅手持时行进，本地视觉广播节拍
     /// </summary>
     internal class HeartcarverPlayer : ModPlayer
     {
@@ -78,7 +75,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public int BeatPhase => BeatTimer % BeatCycle;
         /// <summary>心音包络（lub 拍满、dub 拍次满、随后指数衰减），供刀身辉光与血刃同步取用</summary>
         public float BeatEnvelope { get; private set; }
-        /// <summary>窗口开启瞬间的白热闪包络：开启帧置满后快速衰减，供刀刃"泛白一瞬"取用</summary>
+        /// <summary>窗口开启白热闪包络</summary>
         public float WindowFlash { get; private set; }
         /// <summary>剜心窗口开启态</summary>
         public bool InCarveWindow => HoldingHeartcarver && BeatPhase >= WindowOpen && BeatPhase < WindowClose;
@@ -86,12 +83,12 @@ namespace CalamityOverhaul.Content.Items.Melee
         //==== 冲刺冷却（原 HeartcarverAlt 隐形弹幕的替代）====
         public int DashCooldown;
 
-        //==== 剜心狂热：吸收心脏后的攻速窗 ====
+        //==== 剜心狂热攻速窗 ====
         public const int FrenzyDuration = 300;
         public const float FrenzyAttackSpeed = 0.25f;
         public int FrenzyTimer;
 
-        //==== 剜心击信号：血刃齐射的触发因果 ====
+        //==== 剜心击信号（血刃齐射）====
         /// <summary>信号自增戳，血刃比对该值感知新剜心击</summary>
         public int CarveSignalStamp { get; private set; }
         /// <summary>最近一次剜心击命中的 NPC 索引</summary>
@@ -102,7 +99,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public bool HoldingHeartcarver => !Player.dead && Player.HeldItem != null
             && Player.HeldItem.type == ModContent.ItemType<Heartcarver>();
 
-        /// <summary>剜心判定：攻击是否落在两次心跳之间的间隙窗口（带边缘宽容）</summary>
+        /// <summary>剜心判定，间隙窗口（含边缘宽容）</summary>
         public bool JudgeCarve() {
             if (!HoldingHeartcarver) {
                 return false;
@@ -111,13 +108,13 @@ namespace CalamityOverhaul.Content.Items.Melee
             return phase >= WindowOpen - JudgeGrace && phase < WindowClose + JudgeGrace;
         }
 
-        /// <summary>由持械/冲刺弹幕在剜心击命中时调用（拥有者端）：驱动血刃齐射</summary>
+        /// <summary>剜心击命中时调用（拥有者端），驱动血刃齐射</summary>
         public void NotifyCarveStrike(int npcWhoAmI) {
             CarveSignalStamp++;
             CarveSignalNpc = npcWhoAmI;
         }
 
-        /// <summary>心脏被刀吸收：开启剜心狂热攻速窗（"刀听到了剜心声"）</summary>
+        /// <summary>吸收心脏，开狂热攻速窗</summary>
         public void NotifyAbsorb() => FrenzyTimer = FrenzyDuration;
 
         public override void PostUpdateEquips() {
@@ -154,13 +151,13 @@ namespace CalamityOverhaul.Content.Items.Melee
                     SpawnWindowCue();
                 }
 
-                //心跳血光：只在搏动瞬间随包络泛起的点光，拍间归零，非常驻
+                //心跳血光，搏动瞬间点光
                 if (BeatEnvelope > 0.05f && !VaultUtils.isServer) {
                     Lighting.AddLight(Player.MountedCenter,
                         HeartcarverPalette.Arterial.ToVector3() * (BeatEnvelope * 0.55f));
                 }
 
-                //冷却就绪提示：一次性轻响，广播"可以再冲了"
+                //冷却就绪提示音
                 if (DashCooldown <= 0 && dashReadyCueArmed) {
                     dashReadyCueArmed = false;
                     if (!VaultUtils.isServer && Player.whoAmI == Main.myPlayer) {
@@ -179,7 +176,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             WindowFlash *= 0.80f;
         }
 
-        /// <summary>lub-dub 双音：原版鼓组压低音高分层拼合，压低存在感，随狂热微升</summary>
+        /// <summary>lub-dub 双音，鼓组压低拼合</summary>
         private void PlayHeartTone(bool isLub) {
             if (VaultUtils.isServer) {
                 return;
@@ -194,7 +191,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        /// <summary>搏动瞬间的心口微光环：小、暗红、即生即灭——替代已移除的屏幕红晕承担节拍广播</summary>
+        /// <summary>搏动心口微光环</summary>
         private void SpawnBeatCue(bool isLub) {
             if (VaultUtils.isServer) {
                 return;
@@ -205,7 +202,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 ?.Configure(0.03f, isLub ? 0.15f : 0.10f, 10);
         }
 
-        /// <summary>窗口开启瞬间：持手处一粒血珠上浮欲坠，一瞬即灭</summary>
+        /// <summary>窗口开启瞬间血珠上浮</summary>
         private void SpawnWindowCue() {
             if (VaultUtils.isServer) {
                 return;
@@ -217,8 +214,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     }
 
     /// <summary>
-    /// 剜心瞬间红黑高对比 impact frame：~10 帧全屏后效，限频防贬值。<br/>
-    /// 纯本地客户端演出，静态状态为每客户端一份的屏幕表现，非玩家逻辑态
+    /// 剜心 impact frame，~10 帧全屏后效，限频；纯本地客户端
     /// </summary>
     internal sealed class HeartcarverImpactRender : RenderHandle
     {

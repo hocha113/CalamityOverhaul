@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         private int onFireTime;
         /// <summary>爆发期间的帧动画维持计时</summary>
         private int onFireTime2;
-        /// <summary>持续射击热度，越低射越久，解锁强化弹与过热爆发</summary>
+        /// <summary>持续射击热度，越低射越久</summary>
         private int fireRateValue = 20;
         //过热爆发未结束时枪体不要消失
         public override bool StayAlive() => onFireTime > 0;
@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 onFireTime2--;
             }
 
-            //过热爆发期间的演出：呼啸声、喷雪、枪体狂震
+            //过热爆发演出
             if (onFireTime > 0) {
                 SoundEngine.PlaySound(SoundID.Item23 with { Pitch = (60 - onFireTime) * 0.15f, MaxInstances = 13, Volume = 0.2f + (60 - onFireTime) * 0.006f }, Projectile.Center);
                 if (onFireTime % 15 == 0) {
@@ -275,7 +275,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
     internal class ExtremeColdHail : ModProjectile
     {
-        //外观取自灾厄的冰块贴图，绘制时经GetT2DAsset安全获取，Texture本身只挂占位资源
+        //外观取自灾厄冰块贴图，Texture挂占位
         public override string Texture => CWRConstant.VaultPlaceholder;
         private const string IceChunkTexture = CWRConstant.Cay_Proj_Ranged + "FlurrystormIceChunk";
         public override void SetDefaults() {

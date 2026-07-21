@@ -2,9 +2,7 @@
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaidersUIs
 {
-    /// <summary>
-    /// 海洋吞噬者UI动画 - 硫磺海主题
-    /// </summary>
+    /// <summary>海洋吞噬者UI动画</summary>
     internal class OceanRaidersAnimation : BaseChestAnimation
     {
         public float ToxicWavePhase { get; private set; } = 0f;
@@ -13,7 +11,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaiders
         public float BubbleTimer { get; private set; } = 0f;
         public float AcidFlowTimer { get; private set; } = 0f;
 
-        public OceanRaidersAnimation() : base(360) { } //20x18=360格
+        public OceanRaidersAnimation() : base(360) { }//20x18
 
         public override void UpdateThemeEffects() {
             ToxicWavePhase += 0.022f;

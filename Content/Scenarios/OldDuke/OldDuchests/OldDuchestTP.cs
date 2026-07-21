@@ -14,31 +14,24 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
 {
-    /// <summary>
-    /// 老箱子的TileProcessor 管理大型存储空间
-    /// </summary>
+    /// <summary>老箱子TP</summary>
     public class OldDuchestTP : TileProcessor
     {
         public override int TargetTileID => ModContent.TileType<OldDuchestTile>();
 
-        //存储常量
         private const int MAX_INTERACTION_DISTANCE = 9000;
 
-        //存储物品列表
         public List<Item> storedItems = new();
 
-        //动画相关
         private int glowTimer = 0;
         private float glowIntensity = 0f;
         internal bool isOpen = false;
         private int closeTimer = 0;
 
-        //每日刷新相关
         private bool isInCampsite = false;
         private int lastRefreshCycle = -1;
         private bool hasBeenOpened = false;
 
-        //水下状态
         public bool isUnderwater = false;
 
         public override void SetProperty() {
@@ -46,7 +39,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
         }
 
         public override void SendData(ModPacket data) {
-            //发送存储物品数据
             data.Write(storedItems.Count);
             foreach (var item in storedItems) {
                 if (item == null) {
@@ -57,32 +49,27 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                 }
             }
 
-            //发送刷新相关数据
             data.Write(isInCampsite);
             data.Write(lastRefreshCycle);
             data.Write(hasBeenOpened);
         }
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
-            //接收存储物品数据
             int count = reader.ReadInt32();
             storedItems.Clear();
             for (int i = 0; i < count; i++) {
                 storedItems.Add(ItemIO.Receive(reader, true, true));
             }
 
-            //接收刷新相关数据
             isInCampsite = reader.ReadBoolean();
             lastRefreshCycle = reader.ReadInt32();
             hasBeenOpened = reader.ReadBoolean();
 
-            //同步到UI
             SyncItemsToUI();
         }
 
         public override void SaveData(TagCompound tag) {
             try {
-                //保存存储的物品
                 List<TagCompound> itemTags = [];
                 foreach (var item in storedItems) {
                     if (item == null) {
@@ -94,7 +81,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                 }
                 tag["itemTags"] = itemTags;
 
-                //保存刷新数据
                 tag["isInCampsite"] = isInCampsite;
                 tag["lastRefreshCycle"] = lastRefreshCycle;
                 tag["hasBeenOpened"] = hasBeenOpened;
@@ -105,7 +91,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
 
         public override void LoadData(TagCompound tag) {
             try {
-                //加载存储的物品
                 if (!tag.TryGet("itemTags", out List<TagCompound> itemTags)) {
                     return;
                 }
@@ -115,7 +100,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                     storedItems.Add(CWRSaveData.LoadItemTag(itemTag, $"{nameof(OldDuchestTP)}:itemTags"));
                 }
 
-                //加载刷新数据
                 if (tag.ContainsKey("isInCampsite")) {
                     isInCampsite = tag.GetBool("isInCampsite");
                 }
@@ -146,7 +130,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
         }
 
         public override void Update() {
-            //更新发光效果
             if (isOpen) {
                 glowIntensity = Math.Min(1f, glowIntensity + 0.1f);
                 glowTimer++;
@@ -155,10 +138,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                 glowIntensity = Math.Max(0f, glowIntensity - 0.05f);
             }
 
-            //检测箱子是否在水下
             isUnderwater = CheckChestUnderwater();
 
-            //检查距离自动关闭
+            //距离自动关
             if (isOpen && (Main.LocalPlayer.DistanceSQ(CenterInWorld) > MAX_INTERACTION_DISTANCE || OldDuchestUI.Instance.CurrentChest != this)) {
                 CloseUI(Main.LocalPlayer);
                 if (OldDuchestUI.Instance.CurrentChest == this) {
@@ -167,7 +149,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                 SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 });
             }
 
-            //营地箱子定期刷新检查
+            //营地定期刷新
             if (isInCampsite && !isOpen) {
                 int currentCycle = OldDuchestLootGenerator.GetGameTimeSeed();
                 if (lastRefreshCycle != currentCycle && hasBeenOpened) {
@@ -175,7 +157,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                 }
 
                 bool updateAdd = false;
-                //移除营地附近的掉落物品
                 foreach (var i in Main.ActiveItems) {
                     float distance = i.DistanceSQ(CenterInWorld);
                     if (distance > 90000) {
@@ -192,12 +173,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                     }
                 }
                 if (updateAdd) {
-                    //同步到UI
-                    SyncItemsToUI();
+                            SyncItemsToUI();
                     SendData();
                     if (closeTimer <= 0) {
                         closeTimer = 60;
-                        //更新图格帧为打开状态
                         UpdateTileFrame(true);
                         SoundEngine.PlaySound(CWRSound.OldDuchestOpen with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 }, CenterInWorld);
                     }
@@ -206,13 +185,11 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
 
             if (closeTimer > 0) {
                 if (--closeTimer == 0) {
-                    //更新图格帧为关闭状态
                     UpdateTileFrame(false);
                     SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 }, CenterInWorld);
                 }
             }
 
-            //更新光照
             if (glowIntensity > 0.01f) {
                 float pulsePulse = MathF.Sin(glowTimer * 0.05f) * 0.3f + 0.7f;
                 Lighting.AddLight(CenterInWorld,
@@ -225,14 +202,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                 return false;
             }
 
-            //处理钱币合并
             if (item.IsACoin) {
                 return MergeCoins(item);
             }
 
             bool changed = false;
 
-            //尝试堆叠到现有物品
             for (int i = 0; i < storedItems.Count && item.stack > 0; i++) {
                 Item slot = storedItems[i];
                 if (slot == null || slot.IsAir) {
@@ -247,7 +222,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                 }
             }
 
-            //如果还有剩余且有空间，添加新槽位
             if (item.stack > 0) {
                 if (storedItems.Count < 240) {
                     storedItems.Add(item.Clone());
@@ -263,7 +237,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
             long totalValue = GetCoinValue(item.type) * item.stack;
             List<Item> coinsInChest = new();
 
-            //收集箱子里的所有钱币
             for (int i = storedItems.Count - 1; i >= 0; i--) {
                 if (storedItems[i].IsACoin) {
                     totalValue += GetCoinValue(storedItems[i].type) * storedItems[i].stack;
@@ -272,19 +245,15 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                 }
             }
 
-            //将总价值转换回钱币物品
             List<Item> newCoins = CoinsFromValue(totalValue);
 
-            //检查是否有足够空间存放整理后的钱币
-            //如果整理后的钱币占用的槽位比原来少或相等，或者箱子还有空位
             if (storedItems.Count + newCoins.Count <= 240) {
                 storedItems.AddRange(newCoins);
-                item.stack = 0; //钱币被完全吸收
+                item.stack = 0;
                 return true;
             }
             else {
-                //空间不足，回滚操作
-                //注意：这里回滚可能顺序会变，但对于钱币来说没关系
+                //空间不足回滚；钱币顺序无所谓
                 storedItems.AddRange(coinsInChest);
                 return false;
             }
@@ -329,15 +298,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
             }
         }
 
-        /// <summary>
-
-        /// 检测箱子是否在水下
-
-        /// </summary>
         private bool CheckChestUnderwater() {
             Point tileCoord = (CenterInWorld / 16).ToPoint();
 
-            //检查箱子上方是否有水
             for (int y = -3; y <= 0; y++) {
                 for (int x = -2; x <= 2; x++) {
                     Tile tile = Framing.GetTileSafely(tileCoord.X + x, tileCoord.Y + y);
@@ -350,48 +313,35 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
             return false;
         }
 
-        /// <summary>
-
-        /// 打开UI
-
-        /// </summary>
         public void OpenUI(Player player) {
             if (player == null || !player.active) return;
 
             isOpen = true;
 
-            //标记营地箱子已被打开
             if (isInCampsite) {
                 hasBeenOpened = true;
                 SendData();
             }
 
-            //如果在水下，播放水泡音效并生成泡泡
+            //水下开箱泡泡
             if (isUnderwater) {
                 SoundEngine.PlaySound(SoundID.Splash with {
                     Pitch = -0.1f,
                     Volume = 0.7f
                 }, CenterInWorld);
 
-                //生成一波泡泡效果
                 SpawnOpenBubbles();
             }
 
-            //更新图格帧为打开状态
             UpdateTileFrame(true);
         }
 
-        /// <summary>
-
-        /// 生成打开箱子时的泡泡
-
-        /// </summary>
         private void SpawnOpenBubbles() {
             if (VaultUtils.isServer) {
                 return;
             }
 
-            //生成15到25个泡泡
+            //15-25泡泡
             int bubbleCount = Main.rand.Next(15, 26);
 
             for (int i = 0; i < bubbleCount; i++) {
@@ -411,7 +361,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                     spawnPos, velocity, Color.White, scale);
             }
 
-            //额外生成一些水粒子
             for (int i = 0; i < 8; i++) {
                 Vector2 dustVel = new Vector2(
                     Main.rand.NextFloat(-2f, 2f),
@@ -422,41 +371,24 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
             }
         }
 
-        /// <summary>
-
-        /// 关闭UI
-
-        /// </summary>
         public void CloseUI(Player player) {
             if (player == null) return;
 
             isOpen = false;
 
-            //保存UI数据
             if (OldDuchestUI.Instance.CurrentChest == this) {
                 SaveItemsFromUI();
             }
 
-            //更新图格帧为关闭状态
             UpdateTileFrame(false);
         }
 
-        /// <summary>
-
-        /// 将物品数据同步到UI
-
-        /// </summary>
         public void SyncItemsToUI() {
             if (OldDuchestUI.Instance == null) return;
 
             OldDuchestUI.Instance.LoadItems(storedItems);
         }
 
-        /// <summary>
-
-        /// 从UI保存物品数据
-
-        /// </summary>
         public void SaveItemsFromUI() {
             if (OldDuchestUI.Instance == null) return;
 
@@ -464,18 +396,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
             SendData();
         }
 
-        /// <summary>
-
-        /// 更新图格动画帧
-
-        /// </summary>
         private void UpdateTileFrame(bool open) {
             if (!VaultUtils.SafeGetTopLeft(Position.X, Position.Y, out var topLeft)) {
                 return;
             }
 
             int frameOffset = open ? 1 : 0;
-            int frameHeight = 4 * 18; //4格高度
+            int frameHeight = 4 * 18;//4格高
 
             for (int i = 0; i < 6; i++) {
                 for (int j = 0; j < 4; j++) {
@@ -492,13 +419,11 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
         }
 
         public override void OnKill() {
-            //关闭UI
             if (isOpen && OldDuchestUI.Instance.CurrentChest == this) {
                 OldDuchestUI.Instance.Close();
                 SoundEngine.PlaySound(CWRSound.OldDuchestClose with { Volume = 0.6f, Pitch = isUnderwater ? -0.4f : 0 });
             }
 
-            //掉落物品
             if (!VaultUtils.isClient) {
                 DropItems();
             }
@@ -506,11 +431,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
             storedItems.Clear();
         }
 
-        /// <summary>
-
-        /// 掉落所有物品
-
-        /// </summary>
         private void DropItems() {
             VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, new Item(ModContent.ItemType<OldDuchest>()));
             foreach (var item in storedItems) {
@@ -533,11 +453,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
             isInCampsite = distance < 600f;
         }
 
-        /// <summary>
-
-        /// 初始化营地箱子内容
-
-        /// </summary>
         private void InitializeCampsiteChest() {
             if (!isInCampsite) {
                 return;
@@ -549,11 +464,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
             }
         }
 
-        /// <summary>
-
-        /// 刷新战利品
-
-        /// </summary>
         private void RefreshLoot(int refreshCycle) {
             if (VaultUtils.isClient) {
                 return;
@@ -565,17 +475,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
             SendData();
         }
 
-        /// <summary>
-
-        /// 触发存入物品的动画效果 短暂打开箱子然后自动关闭
-
-        /// </summary>
+        /// <summary>存入时短暂开关动画</summary>
         public void TriggerDepositAnimation() {
             if (isOpen) {
                 return;
             }
 
-            //设置关闭计时器，触发开关动画
             if (closeTimer <= 0) {
                 closeTimer = 45;//约0.75秒后自动关闭
                 UpdateTileFrame(true);

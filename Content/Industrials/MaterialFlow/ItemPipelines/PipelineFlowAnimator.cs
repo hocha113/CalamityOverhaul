@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
         public bool HasValidPath => branchPaths.Count > 0;
 
-        /// <summary>路径周期(帧)：粒子从起点到终点完成的目标帧数</summary>
+        /// <summary>路径周期(帧)，粒子走完全程目标帧数</summary>
         private const int AnimationCycleFrames = 100;
         /// <summary>粒子生成间隔(帧)</summary>
         private const int BaseSpawnInterval = 8;

@@ -7,7 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>激光炮控制器：行为见<see cref="LaserAimState"/>/<see cref="LaserRapidFireState"/>/<see cref="LaserChargedShotState"/>/<see cref="LaserRingState"/></summary>
+    /// <summary>激光炮，行为见 Laser*State</summary>
     internal class PrimeLaserAI : PrimeArm
     {
         public override int TargetID => NPCID.PrimeLaser;
@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         protected override int FormationIndex => 0;
 
         protected override void ArmPreUpdate() {
-            //蓄力期的汇聚粒子（强度随充能渐增）
+            //蓄力汇聚粒子
             if (VaultUtils.isServer || armContext.ChargeGlow <= 0f || armContext.ChargeGlow >= 1f) {
                 return;
             }
@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Texture2D mainValue = HeadPrimeAI.BSPlaser.Value;
             Texture2D glowValue = HeadPrimeAI.BSPlaserGlow.Value;
 
-            //机械热感滤镜，与头部共用 head.whoAmI
+            //热感滤镜共用头whoAmI
             int controllerId = (int)npc.ai[PrimeAiSlots.ArmHeadIndex];
             Vector2 laserDrawPos = npc.Center - Main.screenPosition;
             Rectangle laserRect = mainValue.Bounds;
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 MechBossThermalRenderer.EndThermalShader(spriteBatch);
             }
 
-            //发光层随蓄力进度由白转青
+            //发光随蓄力变色
             float charge = armContext?.ChargeGlow ?? 0f;
             Color glowColor = Color.White;
             if (charge > 0f) {

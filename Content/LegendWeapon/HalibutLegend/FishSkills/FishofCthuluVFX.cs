@@ -14,12 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public static Effect FishCthuluRibbon { get; private set; }
     }
 
-    /// <summary>
-    /// 深渊凝视共享演出协作类。<br/>
-    /// 材质：深渊血肉之眼，恐怖感来自克制与安静；
-    /// 色彩脚本：虚空紫黑压底 + 暗血肉中层 + 虹膜暗红（唯一小亮点，仅瞳孔尺度/≤2帧过冲），
-    /// 全程压暗、无常驻纯白。与 FishHunger 无眼血肉捕食者群区分：这里是单体大眼的凝视-变形-冲刺三拍
-    /// </summary>
+    /// <summary>深渊凝视 VFX，虚空紫黑+暗血肉+虹膜暗红小亮点，压暗无常驻纯白；异于 FishHunger 群</summary>
     internal static class FishCthuluVFX
     {
         //==== 色彩脚本 ====
@@ -31,7 +26,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public static readonly Color FleshDark = new(58, 18, 26);
         /// <summary>血肉中层（碎屑/血珠主色）</summary>
         public static readonly Color FleshMid = new(118, 34, 42);
-        /// <summary>虹膜暗红：唯一允许的亮点，只在瞳孔尺度与瞬时闪帧出现</summary>
+        /// <summary>虹膜暗红，唯一允许的亮点，只在瞳孔尺度与瞬时闪帧出现</summary>
         public static readonly Color IrisRed = new(196, 38, 38);
         /// <summary>瞳墨（近黑）</summary>
         public static readonly Color PupilInk = new(12, 6, 10);
@@ -50,7 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //==== 粒子族 ====
 
-        /// <summary>虚空雾涌：暗色半透明雾团，缓慢布朗漂移后自散</summary>
+        /// <summary>虚空雾涌，暗色半透明雾团，缓慢布朗漂移后自散</summary>
         public static void MistPuff(Vector2 pos, int count, float scale, Vector2 baseVel = default) {
             if (Main.dedServ) {
                 return;
@@ -63,7 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>暗血飞沫：重力血珠锥，颜色压在暗血肉带（liquid 不是能量）</summary>
+        /// <summary>暗血飞沫，重力血珠锥，颜色压在暗血肉带（liquid 不是能量）</summary>
         public static void BloodSpray(Vector2 pos, Vector2 dir, int drops, float speed) {
             if (Main.dedServ) {
                 return;
@@ -78,7 +73,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>眼膜碎屑：撕膜瞬间的翻滚肉片，旋转拖影编码自旋</summary>
+        /// <summary>眼膜碎屑，撕膜瞬间的翻滚肉片，旋转拖影编码自旋</summary>
         public static void FleshBurst(Vector2 pos, Vector2 dir, int chips) {
             if (Main.dedServ) {
                 return;
@@ -93,7 +88,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>暗环脉冲：压扁的暗紫扩散环，召唤/命中定向事件用（克制，非亮圈）</summary>
+        /// <summary>暗环脉冲，压扁的暗紫扩散环，召唤/命中定向事件用（克制，非亮圈）</summary>
         public static void DarkRing(Vector2 pos, Vector2 dir, float finalScale) {
             if (Main.dedServ) {
                 return;
@@ -120,8 +115,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 虚空雾丝：暗紫黑半透明雾团，AlphaBlend 压暗画面（非发光），
-    /// 缓慢布朗漂移 + 微旋 + 先胀后敛。凝视之瞳的待机脱落物与事件雾涌共用
+    /// 虚空雾丝，暗紫黑半透明雾团，AlphaBlend 压暗画面（非发光）
+    /// 缓慢布朗漂移 + 微旋 + 先胀后敛，凝视之瞳的待机脱落物与事件雾涌共用
     /// </summary>
     internal class PRT_FishCthuluMist : BasePRT
     {
@@ -162,11 +157,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void AI() {
             float lc = LifetimeCompletion;
-            //淡入淡出：雾不 pop
+            //淡入淡出，雾不 pop
             float fadeIn = Math.Min(Time / 10f, 1f);
             Opacity = fadeIn * (1f - MathF.Pow(lc, 2.2f)) * 0.44f;
 
-            //布朗漂移：低频正弦游动替代直线平移
+            //布朗漂移，低频正弦游动替代直线平移
             float t = Main.GlobalTimeWrappedHourly * 1.4f + wanderSeed;
             Velocity += new Vector2(MathF.Sin(t * 1.7f), MathF.Cos(t * 1.3f)) * 0.012f;
             Velocity *= 0.965f;
@@ -182,7 +177,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 origin = frame.Size() * 0.5f;
             Vector2 pos = Position - Main.screenPosition;
 
-            //外圈更暗更大 + 中层主体：两层异径异色，避免单贴图叠亮
+            //外圈更暗更大 + 中层主体
             spriteBatch.Draw(tex, pos, frame, FishCthuluVFX.VoidDark * (Opacity * 0.7f)
                 , Rotation * 0.8f, origin, Scale * 0.30f, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, pos, frame, (baseColor == default ? FishCthuluVFX.VoidMist : baseColor) * Opacity
@@ -192,7 +187,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 眼膜碎屑：撕膜瞬间迸出的小块血肉，受重力翻滚坠落，
+    /// 眼膜碎屑，撕膜瞬间迸出的小块血肉，受重力翻滚坠落
     /// 自旋由旋转拖影编码（两帧残影反向叠画），色程血肉中层 → 暗血肉
     /// </summary>
     internal class PRT_FishCthuluFlesh : BasePRT
@@ -242,7 +237,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float stretch = MathHelper.Clamp(Velocity.Length() * 0.05f, 0f, 0.5f);
             Vector2 scale = new Vector2(0.5f, 0.36f * (1f + stretch)) * Scale;
 
-            //旋转拖影：两帧反向残影表达翻滚（位置残影表达不了自旋）
+            //旋转拖影
             spriteBatch.Draw(tex, pos, null, Color * (Opacity * 0.16f), Rotation - spin * 4.4f
                 , origin, scale * 1.02f, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, pos, null, Color * (Opacity * 0.34f), Rotation - spin * 2.2f

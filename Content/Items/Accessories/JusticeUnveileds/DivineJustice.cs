@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -45,26 +45,25 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
 
                 spawn = true;
             }
-            //蓄能阶段
+            //蓄能
             if (Projectile.timeLeft > 160) {
                 float progress = (190 - Projectile.timeLeft) / 30f;
                 chargeIntensity = MathHelper.Lerp(0f, 1f, VaultUtils.EaseOutCubic(progress));
 
-                //生成充能粒子（减少）
+                //充能粒
                 if (Main.rand.NextBool(3)) {
                     SpawnChargeParticle();
                 }
 
-                //生成闪电（减少）
+                //闪电
                 if (Main.rand.NextBool(8)) {
                     SpawnChargeLightning();
                 }
             }
 
-            //金色光芒粒子
+            //金光粒
             PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, new Vector2(0, 2), Color.Lerp(Color.Gold, Color.Yellow, chargeIntensity), 1.2f).Configure(false, 22);
 
-            //更新闪电
             for (int i = lightningBolts.Count - 1; i >= 0; i--) {
                 lightningBolts[i].Update();
                 if (lightningBolts[i].IsExpired()) {
@@ -72,21 +71,20 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 }
             }
 
-            //音效提示
             if (Projectile.timeLeft == 160) {
                 SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with {
                     Pitch = -0.3f,
-                    Volume = 0.5f//降低音量
+                    Volume = 0.5f
                 }, Projectile.Center);
             }
 
-            //震屏预警（弱化）
+            //震屏预警
             if (Projectile.timeLeft < 20 && Projectile.timeLeft > 10) {
                 if (CWRServerConfig.Instance.ScreenVibration) {
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(
                         Projectile.Center,
                         Main.rand.NextVector2Unit(),
-                        1.5f * chargeIntensity,//减弱震屏强度
+                        1.5f * chargeIntensity,
                         6f,
                         5,
                         800f,
@@ -95,7 +93,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 }
             }
 
-            //强化照明效果（稍微降低）
+            //照明
             Lighting.AddLight(Projectile.Center,
                 1.2f * chargeIntensity,
                 1f * chargeIntensity,
@@ -131,12 +129,12 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //绘制闪电效果
+
             foreach (var bolt in lightningBolts) {
                 bolt.Draw(Main.spriteBatch);
             }
 
-            //绘制充能光环
+            //充能光环
             DrawChargeAura();
 
             return false;
@@ -148,7 +146,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             Texture2D glowTex = CWRAsset.StarTexture.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
-            //多层光晕（减少层数）
+            //多层光晕
             for (int i = 0; i < 2; i++) {
                 float scale = (1f + i * 0.2f) * chargeIntensity * 0.6f;
                 float alpha = (1f - i * 0.3f) * chargeIntensity * 0.5f;

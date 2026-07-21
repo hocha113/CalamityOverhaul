@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         private AtlasSkillNode selectedNode;
         private FishSkill draggingSkill;
         private bool dragFromDock;
-        //按下即捕获拖拽候选：光标移动越过阈值就立刻成形为拖拽，无需"先选中再点击确认"
+        //按下登记拖拽候选，过阈值即成形
         private FishSkill pressSkill;       //候选技能（已解锁节点或装备坞槽位才有值，锁定节点为 null）
         private AtlasSkillNode pressNode;   //按下命中的节点（未成形拖拽时松手=点击打开详情）
         private bool pressFromDock;         //候选来自装备坞
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         //最近一帧的内容区域，供异步回调换算屏幕坐标
         private Rectangle lastContentArea = new(0, 64, 1920, 1016);
 
-        //滚动避让：下潜过程中顶部提示与底部装备坞自动让位
+        //滚动避让、下潜时顶底让位
         private float chromeHide;
         private int scrollIdleTimer = 60;
 
@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             foreach (FishSkill skill in all) {
                 int tier = AtlasTierMap.GetTier(skill);
                 if (tier != currentTier) {
-                    //推进到新带：先把上一带占用的所有行高累入y
+                    //进新带、累入上带行高到y
                     if (currentTier >= 0) {
                         y += RowsUsed(columnIndex) * HalibutTheme.AtlasNodeSpacingY + BandBottomPad;
                     }
@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         }
 
         /// <summary>
-        /// 研究完成回调：飞行图标 + 节点点亮 + 自动下潜 + 复苏计反馈
+        /// 研究完成回调、飞图标+点亮+下潜+复苏反馈
         /// </summary>
         public void OnStudyCompleted(FishSkill skill, bool atlasVisible) {
             AtlasSkillNode node = nodes.Find(n => n.Skill == skill);
@@ -191,7 +191,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             scroll = MathHelper.Lerp(scroll, scrollTarget, 0.16f);
             Depth = maxScroll > 1f ? MathHelper.Clamp(scroll / maxScroll, 0f, 1f) : 0f;
 
-            //滚动避让：下潜进行中收起边缘挂件，停稳或有交互意图时归位
+            //滚动避让、下潜收挂件，停稳/交互归位
             if (MathF.Abs(scroll - scrollTarget) > 2f) {
                 scrollIdleTimer = 0;
             }
@@ -281,14 +281,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
 
         private void HandleMouseInput(Rectangle contentArea, HalibutSave save, Vector2 mouse, bool inputAvailable) {
             if (!inputAvailable) {
-                //输入不可用：放弃尚未成形的按压候选（进行中的拖拽保留，待输入恢复后照常松手结算）
+                //输入不可用、弃未成形候选，进行中拖拽保留
                 if (draggingSkill == null) {
                     ClearPress();
                 }
                 return;
             }
 
-            //详情卡：按下即响应按钮（按钮为即时控件，且位于右缘不与海域节点重叠）
+            //详情卡按钮即时响应，右缘不与节点重叠
             if (selectedNode != null && Main.mouseLeft && Main.mouseLeftRelease
                 && detailRect.Contains(mouse.ToPoint())) {
                 Main.mouseLeftRelease = false;
@@ -296,7 +296,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 return;
             }
 
-            //按下：登记拖拽候选（不再在按下瞬间打开详情/选用，消除"先选中再确认"的繁琐）
+            //按下只登记拖拽候选，不即时开详情
             if (Main.mouseLeft && Main.mouseLeftRelease && draggingSkill == null) {
                 pressActive = true;
                 pressMouse = mouse;
@@ -326,7 +326,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 SoundEngine.PlaySound(SoundID.Grab with { Pitch = 0.25f });
             }
 
-            //松手结算：进行中的拖拽落点入坞/卸下，否则视为点击
+            //松手、拖拽落点入坞/卸下，否则点击
             if (!Main.mouseLeft) {
                 if (draggingSkill != null) {
                     ReleaseDrag(contentArea, save, mouse);
@@ -339,7 +339,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         }
 
         /// <summary>
-        /// 拖拽落点结算：落在装备坞=装备/移动，从坞拖到坞外=卸下
+        /// 拖拽落点、入坞装备/移，拖出卸下
         /// </summary>
         private void ReleaseDrag(Rectangle contentArea, HalibutSave save, Vector2 mouse) {
             bool overDockArea = mouse.Y > contentArea.Bottom - DockHeight - 44f;
@@ -369,7 +369,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         }
 
         /// <summary>
-        /// 未成形拖拽的轻点：装备坞槽=选用，节点=打开详情，空白=关闭详情
+        /// 轻点、坞槽选用/节点开详情/空白关
         /// </summary>
         private void HandleClick(HalibutSave save, Vector2 mouse) {
             //装备坞轻点 = 选用该技能
@@ -390,7 +390,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         }
 
         /// <summary>
-        /// 详情卡按钮命中处理（装备/卸下、选用）
+        /// 详情卡按钮命中（装备/卸下、选用）
         /// </summary>
         private void HandleDetailButtons(HalibutSave save, Vector2 mouse) {
             if (selectedNode == null || !save.IsUnlocked(selectedNode.Skill)) {
@@ -548,7 +548,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         }
 
         private void DrawDock(SpriteBatch sb, Rectangle contentArea, HalibutSave save, float alpha, float time) {
-            //滚动避让：收起时整体下沉淡出
+            //滚动避让、收起下沉淡出
             alpha *= 1f - chromeHide;
             if (alpha < 0.02f) {
                 return;

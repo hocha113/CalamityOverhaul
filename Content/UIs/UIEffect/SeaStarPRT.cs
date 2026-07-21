@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.UIs.UIEffect
 {
-    /// <summary>海洋星光粒子</summary>
+    /// <summary>海洋星光</summary>
     public class SeaStarPRT(Vector2 p)
     {
         public Vector2 Pos = p;

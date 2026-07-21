@@ -8,9 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
 {
-    /// <summary>
-    /// 永恒燃烧结局的视觉特效层
-    /// </summary>
+    /// <summary>Ebn结局玩家视觉层</summary>
     internal class EbnPlayerLayer : PlayerDrawLayer
     {
         public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.Wings);
@@ -44,17 +42,15 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
             if (!ebnPlayer.IsEbn) return;
             if (player.TryGetModPlayer<ProverbsPlayer>(out var proverbsPlayer)) {
                 if (!proverbsPlayer.HasProverbs || proverbsPlayer.HideVisual) {
-                    return;//需要戴着戒指才能触发以下效果
+                    return;//需佩戴Proverbs戒指
                 }
             }
 
-            //更新动画计时器
             auraAnimationTimer += 0.04f;
             if (auraAnimationTimer > MathHelper.TwoPi) {
                 auraAnimationTimer -= MathHelper.TwoPi;
             }
 
-            //初始化符文轨道
             if (runeOrbits.Count == 0) {
                 InitializeRuneOrbits();
             }
@@ -63,26 +59,19 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
             Vector2 drawPosition = player.MountedCenter - Main.screenPosition;
             Vector2 playerCenter = drawPosition;
 
-            //开始绘制
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-            //绘制中层符文轨道
             DrawRuneOrbits(sb, playerCenter);
-
-            //绘制内层能量脉冲
             DrawEnergyPulse(sb, playerCenter);
 
-            //绘制翅膀火焰
             if (player.wingTime > 0) {
                 DrawWingFlames(sb, playerCenter);
             }
 
-            //绘制身体光环
             DrawBodyAura(sb, playerCenter);
 
-            //恢复默认绘制状态
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
@@ -91,7 +80,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         private static void InitializeRuneOrbits() {
             runeOrbits.Clear();
 
-            //创建三层符文轨道
+            //三层符文轨道
             for (int layer = 0; layer < 3; layer++) {
                 int count = 6 + layer * 2;
                 float baseDistance = 60f + layer * 30f;
@@ -118,40 +107,33 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
             foreach (var rune in runeOrbits) {
-                //更新角度
                 rune.Angle += rune.RotationSpeed;
                 rune.PulsePhase += 0.08f;
 
-                //计算位置
                 float pulse = (float)Math.Sin(rune.PulsePhase) * 0.5f + 0.5f;
                 float currentDist = rune.Distance * (1f + pulse * 0.2f);
                 Vector2 pos = center + rune.Angle.ToRotationVector2() * currentDist;
 
-                //绘制符文光点
                 float scale = rune.Scale * (0.8f + pulse * 0.4f);
                 Color color = rune.Color with { A = 0 } * (0.6f + pulse * 0.4f);
 
-                //外发光
+                //外发光、核心、高光
                 sb.Draw(pixel, pos, null, color * 0.3f, 0f,
                     pixel.Size() / 2f, new Vector2(scale * 8f, scale * 8f), SpriteEffects.None, 0f);
 
-                //核心
                 sb.Draw(pixel, pos, null, color, 0f,
                     pixel.Size() / 2f, new Vector2(scale * 4f, scale * 4f), SpriteEffects.None, 0f);
 
-                //高光
                 sb.Draw(pixel, pos, null, Color.White with { A = 0 } * pulse * 0.5f, 0f,
                     pixel.Size() / 2f, new Vector2(scale * 2f, scale * 2f), SpriteEffects.None, 0f);
             }
 
-            //绘制连接线
             DrawOrbitConnections(sb, center);
         }
 
         private static void DrawOrbitConnections(SpriteBatch sb, Vector2 center) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //每层内部连接
             for (int layer = 0; layer < 3; layer++) {
                 int countPerLayer = 6 + layer * 2;
                 float baseDistance = 60f + layer * 30f;
@@ -163,7 +145,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
                     var rune = runeOrbits[index];
                     Vector2 pos1 = center + rune.Angle.ToRotationVector2() * baseDistance;
 
-                    //连接到下一个符文
                     int nextIndex = layer * countPerLayer + (i + 1) % countPerLayer;
                     if (nextIndex < runeOrbits.Count) {
                         var nextRune = runeOrbits[nextIndex];
@@ -178,7 +159,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         private static void DrawEnergyPulse(SpriteBatch sb, Vector2 center) {
             Texture2D glow = CWRAsset.StarTexture_White.Value;
 
-            //内层脉冲波
             for (int i = 0; i < 4; i++) {
                 float phase = (auraAnimationTimer + i * MathHelper.PiOver2) % MathHelper.TwoPi;
                 float intensity = (float)Math.Sin(phase);
@@ -202,7 +182,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
                 }
             }
 
-            //核心光球
             float corePulse = (float)Math.Sin(auraAnimationTimer * 3f) * 0.5f + 0.5f;
             Color coreColor = new Color(255, 120, 60) with { A = 0 };
 
@@ -216,7 +195,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         private static void DrawWingFlames(SpriteBatch sb, Vector2 center) {
             Texture2D glow = VaultAsset.placeholder2.Value;
 
-            //翅膀火焰位置
             float wingSpread = 28f;
             float wingHeight = -12f;
 
@@ -224,7 +202,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
                 float side = i == 0 ? -1f : 1f;
                 Vector2 wingPos = center + new Vector2(wingSpread * side, wingHeight);
 
-                //火焰拖尾
                 for (int j = 0; j < 3; j++) {
                     float offset = j * 10f;
                     float alpha = (1f - j / 3f) * 0.5f;
@@ -242,7 +219,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
                         glow.Size() / 2f, new Vector2(scale, scale * 1.5f), SpriteEffects.None, 0f);
                 }
 
-                //火焰核心
                 Color coreColor = new Color(255, 180, 90) with { A = 0 };
                 float corePulse = (float)Math.Sin(auraAnimationTimer * 4f) * 0.3f + 0.7f;
                 sb.Draw(glow, wingPos, null, coreColor * corePulse * 0.6f, 0f,
@@ -253,10 +229,8 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         private static void DrawBodyAura(SpriteBatch sb, Vector2 center) {
             Texture2D glow = VaultAsset.placeholder2.Value;
 
-            //身体周围的硫磺火光环
             float bodyPulse = (float)Math.Sin(auraAnimationTimer * 2.5f) * 0.5f + 0.5f;
 
-            //外层光环
             Color outerColor = new Color(200, 60, 30) with { A = 0 };
             sb.Draw(glow, center, null, outerColor * bodyPulse * 0.25f,
                 auraAnimationTimer,
@@ -264,7 +238,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
                 new Vector2(1.2f, 1.5f),
                 SpriteEffects.None, 0f);
 
-            //中层光环
             Color midColor = new Color(255, 100, 50) with { A = 0 };
             sb.Draw(glow, center, null, midColor * bodyPulse * 0.35f,
                 -auraAnimationTimer * 1.3f,
@@ -272,7 +245,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
                 new Vector2(0.9f, 1.2f),
                 SpriteEffects.None, 0f);
 
-            //内层光环
             Color innerColor = new Color(255, 140, 70) with { A = 0 };
             sb.Draw(glow, center, null, innerColor * bodyPulse * 0.45f,
                 auraAnimationTimer * 1.7f,

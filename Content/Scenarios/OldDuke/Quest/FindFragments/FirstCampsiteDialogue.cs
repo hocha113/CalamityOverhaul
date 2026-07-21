@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Quest.FindFragments
         }
 
         protected override void OnCompleted() {
-            //手动 Begin 的场景策略回调不触发,委托登记标记须落在本重写
+            //手动Begin，委托写在本体
             OldDukeStorySync.Write(
                 d => d.OldDukeFindFragmentsQuestTriggered = true,
                 d => d.OldDukeFindFragmentsQuestTriggered = true);

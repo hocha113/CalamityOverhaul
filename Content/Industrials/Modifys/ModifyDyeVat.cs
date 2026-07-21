@@ -46,24 +46,20 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 item = ResultDyedItem;
             }
 
-            //如果被染物品槽位有物品，则绘制它并应用搅动动画
+            //染槽有物则搅动绘制
             if (item == null) {
                 return;
             }
 
-            //获取绘制所需的基础信息
-            float time = Main.GlobalTimeWrappedHourly; //使用游戏时间作为动画驱动
-            Vector2 drawPosition = CenterInWorld - Main.screenPosition; //计算物块在屏幕上的绘制中心点
+            float time = Main.GlobalTimeWrappedHourly;
+            Vector2 drawPosition = CenterInWorld - Main.screenPosition;
             Color drawColor = Lighting.GetColor(PosInWorld.ToTileCoordinates());
 
-            //计算物品的动画偏移和旋转
-            //使用Cos和Sin组合让物品进行椭圆运动
+            //椭圆晃动 + 轻旋
             float animOffsetX = (float)Math.Cos(time * 2f) * 4f;
             float animOffsetY = (float)Math.Sin(time * 2f) * 2f;
-            //使用另一个Sin函数让物品轻微旋转
             float rotation = (float)Math.Sin(time * 1.5f) * 0.2f;
 
-            //计算物品最终的绘制位置
             Vector2 itemDrawPos = drawPosition + new Vector2(animOffsetX, animOffsetY);
 
             if (DyeSlotItem.type > ItemID.None) {

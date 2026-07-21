@@ -10,10 +10,8 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content
 {
     /// <summary>
-    /// 旧版 CWR 手动 UI 存档（扁平键，位于 mod_CalamityOverhaul.nbt 的 SaveMod:UIDataSave 条目）
-    /// 到 InnoVault 自动 UI 存档管线的一次性迁移。QuestLog 等 override 型 UI 早已被 InnoVault 双写，
-    /// 唯 <see cref="EnchantUI"/> 曾以 new 遮蔽基类方法，其数据（含炼铸槽内物品）只存在于旧条目中；
-    /// 导入后立即删除旧条目，防止旧值反复覆盖 InnoVault 侧的新数据
+    /// 旧 UIDataSave 扁平键 → InnoVault UI 存档的一次性迁移。
+    /// <see cref="EnchantUI"/> 曾 new 遮蔽基类，数据只在旧条目；导入后删旧键防覆盖
     /// </summary>
     internal class LegacyUIDataImporter : ModSystem
     {
@@ -22,7 +20,7 @@ namespace CalamityOverhaul.Content
         private string LegacySavePath => Path.Combine(VaultSave.RootPath, "ModDatas", $"mod_{Mod.Name}.nbt");
 
         public override void OnWorldLoad() {
-            //MP客户端不触发世界存档，迁移后的内存值无法经 InnoVault 落盘，留待SP或服务器环境再迁移
+            //MP 客户端不落盘，等 SP/服务器再迁
             if (VaultUtils.isClient) {
                 return;
             }
@@ -41,13 +39,13 @@ namespace CalamityOverhaul.Content
             }
 
             if (flatTag.Count > 0) {
-                //旧格式把三个UI的键平铺在同一标签里，键名与各UI的LoadUIData期望一致，可整体喂入
+                //扁平键可直接喂各 UI 的 LoadUIData
                 QuestLog.Instance.LoadUIData(flatTag);
                 EntrustTrackerWidget.Instance.LoadUIData(flatTag);
                 EnchantUI.Instance.LoadUIData(flatTag);
             }
 
-            //同文件还承载 MenuSave 等其他 SaveMod 条目，只摘除本条目后原样写回
+            //只摘本条目，其余 SaveMod 原样写回
             modTag.Remove(LegacyEntryKey);
             if (modTag.Count == 0) {
                 rootTag.Remove(ModEntryKey);

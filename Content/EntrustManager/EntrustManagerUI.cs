@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.EntrustManager
 {
     internal class QuestManagerSysteam : ModSystem
     {
-        /// <summary>需要在委托管理界面打开时隐藏的 Vanilla UI 层</summary>
+        /// <summary>打开时隐藏的 Vanilla UI 层</summary>
         private static readonly HashSet<string> HiddenLayers = [
             "Vanilla: Hotbar",
             "Vanilla: Inventory",
@@ -28,14 +28,12 @@ namespace CalamityOverhaul.Content.EntrustManager
         ];
 
         public override void UpdateUI(GameTime gameTime) {
-            //快捷键开关
             if (CWRKeySystem.QuestManager_Key != null && CWRKeySystem.QuestManager_Key.JustReleased) {
                 QuestManagerUI.Instance.TogglePanel();
             }
         }
 
         public override void OnWorldUnload() {
-            //换存档清空委托列表
             QuestManagerUI.Instance?.ClearAll();
         }
 
@@ -101,43 +99,32 @@ namespace CalamityOverhaul.Content.EntrustManager
 
         #region 状态与配置
 
-        /// <summary>面板是否打开</summary>
         private bool isOpen;
 
-        /// <summary>外部只读访问</summary>
         public new bool IsOpen => isOpen;
 
-        /// <summary>当前面板右边缘X坐标（含滑动动画），用于其他UI联动定位</summary>
+        /// <summary>面板右缘 X，含滑入，供联动</summary>
         public int PanelRightEdge { get; private set; }
 
-        /// <summary>打开/关闭动画进度 0~1</summary>
+        /// <summary>开关动画 0~1</summary>
         private float openProgress;
 
-        /// <summary>内容淡入进度</summary>
         private float contentAlpha;
 
-        /// <summary>面板宽度</summary>
         private const int PanelWidth = 340;
 
-        /// <summary>面板上边距</summary>
         private const int PanelTopMargin = 30;
 
-        /// <summary>面板下边距</summary>
         private const int PanelBottomMargin = 30;
 
-        /// <summary>标题栏高度</summary>
         private const int HeaderHeight = 38;
 
-        /// <summary>选项卡栏高度</summary>
         private const int TabBarHeight = 28;
 
-        /// <summary>底部状态栏高度</summary>
         private const int FooterHeight = 26;
 
-        /// <summary>滚动条宽度</summary>
         private const int ScrollbarWidth = 8;
 
-        /// <summary>关闭按钮尺寸</summary>
         private const int CloseBtnSize = 20;
 
         #endregion
@@ -149,9 +136,8 @@ namespace CalamityOverhaul.Content.EntrustManager
         private int selectedIndex = -1;
         private int hoveredIndex = -1;
         private int selectedCategoryIndex;
-        /// <summary>过滤列表是否需要重建</summary>
         private bool filterDirty = true;
-        /// <summary>上一帧鼠标中键是否按下，用于检测中键点击</summary>
+        /// <summary>上一帧中键按下，检点击沿</summary>
         private bool prevMiddleDown;
 
         private readonly string[] categoryKeys = ["Active", "All", "Completed", "Suspended"];
@@ -163,16 +149,13 @@ namespace CalamityOverhaul.Content.EntrustManager
 
         #region 任务数据
 
-        /// <summary>所有已注册条目</summary>
         private readonly List<EntrustEntryData> allEntries = [];
 
-        /// <summary>当前过滤后的显示列表</summary>
         private readonly List<EntrustEntryData> filteredEntries = [];
 
-        /// <summary>注册一条任务到管理器</summary>
         public void RegisterQuest(EntrustEntryData entry) {
             if (allEntries.All(e => e.Key != entry.Key)) {
-                //新注册 Active 自动设为关注
+                //新注册 Active→关注
                 if (entry.Status == QuestEntryStatus.Active) {
                     entry.Status = QuestEntryStatus.Tracked;
                     EntrustManagerNotification.Notify(entry.Title,
@@ -187,18 +170,15 @@ namespace CalamityOverhaul.Content.EntrustManager
             }
         }
 
-        /// <summary>移除一条任务</summary>
         public void UnregisterQuest(string key) {
             if (allEntries.RemoveAll(e => e.Key == key) > 0)
                 filterDirty = true;
         }
 
-        /// <summary>根据 key 获取任务条目</summary>
         public EntrustEntryData GetEntry(string key) {
             return allEntries.Find(e => e.Key == key);
         }
 
-        /// <summary>清空所有任务</summary>
         public void ClearAll() {
             allEntries.Clear();
             filteredEntries.Clear();
@@ -209,10 +189,9 @@ namespace CalamityOverhaul.Content.EntrustManager
             filterDirty = true;
         }
 
-        /// <summary>标记过滤列表需要重建</summary>
         public void MarkFilterDirty() => filterDirty = true;
 
-        /// <summary>集中修改条目状态，触发通知与过滤刷新</summary>
+        /// <summary>改状态并通知、刷过滤</summary>
         public bool SetEntryStatus(string key, QuestEntryStatus newStatus, float? progress = null) {
             var entry = GetEntry(key);
             if (entry == null || entry.Status == newStatus) return false;
@@ -221,7 +200,7 @@ namespace CalamityOverhaul.Content.EntrustManager
             return ChangeEntryStatus(entry, newStatus);
         }
 
-        /// <summary>获取所有被关注状态的条目，供 <see cref="EntrustTrackerWidget"/> 查询</summary>
+        /// <summary>关注条目，供 <see cref="EntrustTrackerWidget"/></summary>
         public void GetTrackedEntries(List<EntrustEntryData> result) {
             foreach (var e in allEntries) {
                 if (e.Status == QuestEntryStatus.Tracked)
@@ -229,10 +208,8 @@ namespace CalamityOverhaul.Content.EntrustManager
             }
         }
 
-        /// <summary>是否存在任意已注册的委托条目</summary>
         public bool HasAnyEntry => allEntries.Count > 0;
 
-        /// <summary>是否存在被关注条目</summary>
         public bool HasTrackedEntries() {
             foreach (var e in allEntries) {
                 if (e.Status == QuestEntryStatus.Tracked)
@@ -241,7 +218,7 @@ namespace CalamityOverhaul.Content.EntrustManager
             return false;
         }
 
-        /// <summary>统计指定状态条目数，引导兜底用</summary>
+        /// <summary>按状态计数，引导兜底</summary>
         public int CountByStatus(QuestEntryStatus status) {
             int n = 0;
             foreach (var e in allEntries) {
@@ -250,7 +227,7 @@ namespace CalamityOverhaul.Content.EntrustManager
             return n;
         }
 
-        /// <summary>取出第一条可被兜底自动关注的条目Key（优先 Active，其次 Suspended）</summary>
+        /// <summary>兜底关注 Key，Active 优先再 Suspended</summary>
         public string TryGetFirstTrackableKey() {
             foreach (var e in allEntries) {
                 if (e.Status == QuestEntryStatus.Active) return e.Key;
@@ -261,7 +238,7 @@ namespace CalamityOverhaul.Content.EntrustManager
             return null;
         }
 
-        /// <summary>取出第一条可被兜底自动挂起的条目Key（优先非追踪的 Active）</summary>
+        /// <summary>兜底挂起 Key，优先 Active</summary>
         public string TryGetFirstSuspendableKey() {
             foreach (var e in allEntries) {
                 if (e.Status == QuestEntryStatus.Active) return e.Key;
@@ -277,13 +254,12 @@ namespace CalamityOverhaul.Content.EntrustManager
         private readonly List<IEntrustManagerStyle> availableStyles = [];
         private int currentStyleIndex;
 
-        /// <summary>切换样式</summary>
         public void SetStyle(IEntrustManagerStyle style) {
             currentStyle?.Reset();
             currentStyle = style;
         }
 
-        /// <summary>按索引设置样式，sync为true时同步任务书样式</summary>
+        /// <summary>按索引设样式，sync 同步任务书</summary>
         public void SetStyleByIndex(int index, bool sync = true) {
             if (availableStyles.Count == 0) return;
             currentStyleIndex = Math.Clamp(index, 0, availableStyles.Count - 1);
@@ -293,7 +269,6 @@ namespace CalamityOverhaul.Content.EntrustManager
             }
         }
 
-        /// <summary>切换到下一个可用样式</summary>
         private void CycleStyle() {
             if (availableStyles.Count <= 1) return;
             currentStyleIndex = (currentStyleIndex + 1) % availableStyles.Count;
@@ -343,7 +318,6 @@ namespace CalamityOverhaul.Content.EntrustManager
                 CategorySuspended.Value
             ];
 
-            //条目由各 QuestLine ModSystem 注册
         }
 
         public override void LogicUpdate() {
@@ -351,43 +325,35 @@ namespace CalamityOverhaul.Content.EntrustManager
         }
 
         public override void Update() {
-            //动画插值
             float targetOpen = isOpen ? 1f : 0f;
             openProgress = MathHelper.Lerp(openProgress, targetOpen, 0.12f);
             if (!isOpen && openProgress < 0.005f) openProgress = 0f;
             if (isOpen && openProgress > 0.995f) openProgress = 1f;
 
-            //内容淡入延迟
             float contentTarget = openProgress > 0.6f ? 1f : 0f;
             contentAlpha = MathHelper.Lerp(contentAlpha, contentTarget, 0.15f);
 
-            //动画计时器
             edgeGlowPhase += 0.03f;
             if (edgeGlowPhase > MathHelper.TwoPi) edgeGlowPhase -= MathHelper.TwoPi;
             if (panelShake > 0f) panelShake *= 0.88f;
 
-            //滚动平滑
             scrollOffset = MathHelper.Lerp(scrollOffset, scrollTarget, 0.18f);
 
-            //按需刷新过滤列表
             if (filterDirty) {
                 RebuildFilteredEntries();
                 filterDirty = false;
             }
 
-            //条目实时数据与样式
             foreach (var entry in allEntries) {
                 entry.OnUpdate();
                 entry.EntryStyle?.Update();
 
-                //展开/折叠动画插值
                 float expandTarget = entry.IsExpanded ? 1f : 0f;
                 entry.ExpandProgress = MathHelper.Lerp(entry.ExpandProgress, expandTarget, 0.14f);
                 if (entry.ExpandProgress < 0.005f) entry.ExpandProgress = 0f;
                 if (entry.ExpandProgress > 0.995f) entry.ExpandProgress = 1f;
             }
 
-            //面板碰撞区域
             Rectangle panelRect = GetPanelRect();
             PanelRightEdge = panelRect.Right;
             UIHitBox = panelRect;
@@ -395,7 +361,6 @@ namespace CalamityOverhaul.Content.EntrustManager
 
             if (!isOpen || openProgress < 0.3f) return;
 
-            //打开背包时收起面板
             if (Main.playerInventory) {
                 isOpen = false;
                 SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.5f });
@@ -404,14 +369,13 @@ namespace CalamityOverhaul.Content.EntrustManager
 
             UIInputGuard.SuppressWeaponSwitch();
 
-            //交互处理
             if (hoverInMainPage) {
                 player.mouseInterface = true;
                 HandleScrollInput(panelRect);
                 HandleMouseInput(panelRect);
             }
 
-            //始终更新中键状态，避免跨帧漂移
+            //中键态每帧更新，防跨帧漂移
             prevMiddleDown = Mouse.GetState().MiddleButton == ButtonState.Pressed;
         }
 
@@ -419,11 +383,10 @@ namespace CalamityOverhaul.Content.EntrustManager
 
         #region 开关与交互
 
-        /// <summary>切换面板开关状态</summary>
         public void TogglePanel() {
             isOpen = !isOpen;
             if (isOpen) {
-                //关闭背包，避免遮挡
+                //关背包防遮挡
                 Main.playerInventory = false;
                 panelShake = 3f;
                 SoundEngine.PlaySound(SoundID.MenuOpen with { Volume = 0.5f });
@@ -445,7 +408,6 @@ namespace CalamityOverhaul.Content.EntrustManager
             Rectangle contentRect = GetContentRect(panelRect);
             int padding = currentStyle?.GetEntryPadding() ?? 4;
 
-            //分类选项卡点击（按实际文字宽度匹配）
             Rectangle tabRect = GetTabRect(panelRect);
             if (tabRect.Contains(Main.mouseX, Main.mouseY)) {
                 if (keyLeftPressState == KeyPressState.Pressed) {
@@ -462,7 +424,6 @@ namespace CalamityOverhaul.Content.EntrustManager
                 return;
             }
 
-            //样式切换按钮
             if (currentStyle != null) {
                 Rectangle styleRect = currentStyle.GetStyleSwitchButtonRect(panelRect);
                 if (styleRect.Contains(Main.mouseX, Main.mouseY)) {
@@ -474,18 +435,15 @@ namespace CalamityOverhaul.Content.EntrustManager
                 }
             }
 
-            //关闭按钮
             Rectangle closeBtnRect = GetCloseButtonRect(panelRect);
             if (closeBtnRect.Contains(Main.mouseX, Main.mouseY) && keyLeftPressState == KeyPressState.Pressed) {
                 TogglePanel();
                 return;
             }
 
-            //任务条目交互
             hoveredIndex = -1;
             if (contentRect.Contains(Main.mouseX, Main.mouseY)) {
                 float relativeY = Main.mouseY - contentRect.Y + scrollOffset;
-                //遍历累积高度来确定悬停的条目索引
                 int idx = -1;
                 float accY = 0f;
                 for (int i = 0; i < filteredEntries.Count; i++) {
@@ -500,10 +458,8 @@ namespace CalamityOverhaul.Content.EntrustManager
                 if (idx >= 0 && idx < filteredEntries.Count) {
                     hoveredIndex = idx;
 
-                    //左键展开/折叠
                     if (keyLeftPressState == KeyPressState.Pressed) {
                         var entry = filteredEntries[idx];
-                        //折叠其他已展开的条目
                         foreach (var other in filteredEntries) {
                             if (other != entry && other.IsExpanded)
                                 other.IsExpanded = false;
@@ -511,7 +467,7 @@ namespace CalamityOverhaul.Content.EntrustManager
                         entry.IsExpanded = !entry.IsExpanded;
                         selectedIndex = entry.IsExpanded ? idx : -1;
 
-                        //展开时自动滚动确保展开内容可见
+                        //展开后滚入可视区
                         if (entry.IsExpanded) {
                             float entryTop = GetEntryYOffset(idx);
                             int expandedH = (currentStyle?.GetEntryHeight() ?? 62) + CalcExpandedContentHeight(entry);
@@ -526,14 +482,12 @@ namespace CalamityOverhaul.Content.EntrustManager
                         SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.3f });
                     }
 
-                    //右键关注/取消关注
                     if (keyRightPressState == KeyPressState.Pressed) {
                         var entry = filteredEntries[idx];
                         if (ToggleEntryTracked(entry))
                             SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.4f });
                     }
 
-                    //中键挂起/恢复
                     bool middleDown = Mouse.GetState().MiddleButton == ButtonState.Pressed;
                     bool middleJustPressed = middleDown && !prevMiddleDown;
                     if (middleJustPressed) {
@@ -587,7 +541,7 @@ namespace CalamityOverhaul.Content.EntrustManager
             return true;
         }
 
-        /// <summary>根据状态变化发射对应的通知弹窗</summary>
+        /// <summary>按状态变化发通知</summary>
         private static void EmitStatusNotification(EntrustEntryData entry,
             QuestEntryStatus oldStatus, QuestEntryStatus newStatus) {
             var kind = newStatus switch {
@@ -607,7 +561,7 @@ namespace CalamityOverhaul.Content.EntrustManager
             }
         }
 
-        /// <summary>根据渲染时文字宽度匹配选项卡索引（与 DraedonManagerStyle.DrawCategoryTabs 一致）</summary>
+        /// <summary>按文字宽点选项卡，与 Draedon 一致</summary>
         private int GetTabIndexAtX(Rectangle tabRect, int mouseX) {
             var font = FontAssets.MouseText.Value;
             float scale = 0.72f;
@@ -628,7 +582,7 @@ namespace CalamityOverhaul.Content.EntrustManager
             scrollTarget = MathHelper.Clamp(scrollTarget, 0f, maxScroll);
         }
 
-        /// <summary>条目动态高度含展开区</summary>
+        /// <summary>条目动态高，含展开</summary>
         private int GetDynamicEntryHeight(EntrustEntryData entry) {
             int baseH = currentStyle?.GetEntryHeight() ?? 62;
             if (entry.ExpandProgress <= 0.001f) return baseH;
@@ -638,7 +592,7 @@ namespace CalamityOverhaul.Content.EntrustManager
             return (int)MathHelper.Lerp(baseH, expandedH, entry.ExpandProgress);
         }
 
-        /// <summary>展开描述区额外高度</summary>
+        /// <summary>展开区额外高</summary>
         private int CalcExpandedContentHeight(EntrustEntryData entry) {
             string summary = entry.Summary ?? "";
             if (string.IsNullOrEmpty(summary)) return 0;
@@ -646,11 +600,11 @@ namespace CalamityOverhaul.Content.EntrustManager
             var font = FontAssets.MouseText.Value;
             Rectangle panelRect = GetPanelRect();
             Rectangle contentRect = GetContentRect(panelRect);
-            //展开区域的可用宽度（与条目内文本对齐，减去左侧偏移）
+            //展开区宽，对齐条目文本
             float textScale = 0.70f;
             int wrapPixelWidth = (int)((contentRect.Width - 50f) / textScale);
 
-            //按换行符拆分后逐段换行，与绘制逻辑一致
+            //按\n拆段再换行
             int totalLineH = 0;
             string[] paragraphs = summary.Split('\n');
             foreach (string paragraph in paragraphs) {
@@ -662,11 +616,10 @@ namespace CalamityOverhaul.Content.EntrustManager
                     totalLineH += (int)(font.MeasureString(wl.TrimEnd('-', ' ')).Y * textScale) + 2;
                 }
             }
-            //展开区域 = 分隔线(6) + 文本行高 + 底部边距(8)
+            //展开高=分隔6+行高+底边8
             return 6 + totalLineH + 8;
         }
 
-        /// <summary>获取过滤列表中所有条目的动态高度总和（含间距）</summary>
         private float GetTotalEntriesHeight() {
             int padding = currentStyle?.GetEntryPadding() ?? 4;
             float total = 0f;
@@ -676,7 +629,6 @@ namespace CalamityOverhaul.Content.EntrustManager
             return total;
         }
 
-        /// <summary>获取指定过滤列表索引处条目的Y偏移（相对于内容区顶部）</summary>
         private float GetEntryYOffset(int targetIndex) {
             int padding = currentStyle?.GetEntryPadding() ?? 4;
             float y = 0f;
@@ -687,7 +639,7 @@ namespace CalamityOverhaul.Content.EntrustManager
         }
 
         private void RebuildFilteredEntries() {
-            //重建过滤列表时折叠所有展开的条目
+            //重建过滤时折叠展开项
             foreach (var entry in allEntries) {
                 entry.IsExpanded = false;
             }
@@ -707,7 +659,7 @@ namespace CalamityOverhaul.Content.EntrustManager
                     break;
             }
 
-            //排序：Tracked > Active > Suspended > Completed > Failed
+            //排序 Tracked>Active>…
             filteredEntries.AddRange(source.OrderBy(e => e.Status switch {
                 QuestEntryStatus.Tracked => 0,
                 QuestEntryStatus.Active => 1,
@@ -727,7 +679,6 @@ namespace CalamityOverhaul.Content.EntrustManager
             float eased = VaultUtils.EaseOutCubic(MathHelper.Clamp(openProgress, 0f, 1f));
             int panelX = (int)MathHelper.Lerp(-PanelWidth - 20f, 0f, eased);
 
-            //打开/关闭时的轻微抖动
             if (panelShake > 0.1f) {
                 panelX += (int)(MathF.Sin(edgeGlowPhase * 12f) * panelShake);
             }
@@ -774,23 +725,17 @@ namespace CalamityOverhaul.Content.EntrustManager
             Rectangle panelRect = GetPanelRect();
             float alpha = openProgress;
 
-            //1 面板背景
             currentStyle?.DrawPanelBackground(spriteBatch, panelRect, alpha);
 
-            //2 背景粒子
             currentStyle?.DrawParticles(spriteBatch, panelRect, alpha);
 
-            //3 面板边框
             currentStyle?.DrawPanelFrame(spriteBatch, panelRect, alpha);
 
-            //4 标题栏
             Rectangle headerRect = GetHeaderRect(panelRect);
             currentStyle?.DrawHeader(spriteBatch, headerRect, TitleText.Value, alpha);
 
-            //5 关闭按钮
             DrawCloseButton(spriteBatch, panelRect, alpha);
 
-            //5.5 样式切换
             if (currentStyle != null && availableStyles.Count > 1) {
                 Rectangle styleRect = currentStyle.GetStyleSwitchButtonRect(panelRect);
                 bool styleHovered = styleRect.Contains(Main.mouseX, Main.mouseY) && isOpen;
@@ -798,24 +743,19 @@ namespace CalamityOverhaul.Content.EntrustManager
             }
 
             if (contentAlpha < 0.01f) {
-                //展开中加载指示
                 DrawLoadingIndicator(spriteBatch, panelRect, alpha);
                 currentStyle?.DrawOverlayEffects(spriteBatch, panelRect, alpha);
                 return;
             }
 
-            //6 分类选项卡
             Rectangle tabRect = GetTabRect(panelRect);
             currentStyle?.DrawCategoryTabs(spriteBatch, tabRect, categoryNames,
                 selectedCategoryIndex, alpha * contentAlpha);
 
-            //7 条目列表
             DrawQuestEntries(spriteBatch, panelRect, alpha * contentAlpha);
 
-            //8 滚动条
             DrawScrollbarArea(spriteBatch, panelRect, alpha * contentAlpha);
 
-            //9 底部状态栏
             Rectangle footerRect = GetFooterRect(panelRect);
             int activeCount = 0;
             foreach (var e in allEntries) {
@@ -824,10 +764,8 @@ namespace CalamityOverhaul.Content.EntrustManager
             }
             currentStyle?.DrawFooter(spriteBatch, footerRect, allEntries.Count, activeCount, alpha * contentAlpha);
 
-            //10 前景特效
             currentStyle?.DrawOverlayEffects(spriteBatch, panelRect, alpha);
 
-            //11 操作提示
             DrawInteractionHints(spriteBatch, panelRect, alpha * contentAlpha);
         }
 
@@ -835,16 +773,13 @@ namespace CalamityOverhaul.Content.EntrustManager
             Rectangle btn = GetCloseButtonRect(panelRect);
             bool hovered = btn.Contains(Main.mouseX, Main.mouseY) && isOpen;
 
-            //按钮背景
             Color bgC = hovered ? new Color(60, 150, 220) * (alpha * 0.3f) : new Color(10, 20, 40) * (alpha * 0.4f);
             BaseManagerStyle.FillRect(sb, btn, bgC);
 
-            //X 标记
             Color xColor = hovered ? new Color(255, 100, 100) * alpha : new Color(140, 210, 255) * (alpha * 0.6f);
             float cx = btn.X + btn.Width / 2f;
             float cy = btn.Y + btn.Height / 2f;
             float xSize = 4f;
-            //两条交叉线
             sb.Draw(VaultAsset.placeholder2.Value, new Vector2(cx, cy), null, xColor,
                 MathHelper.PiOver4, new Vector2(0.5f), new Vector2(xSize * 2f, 1.5f), SpriteEffects.None, 0f);
             sb.Draw(VaultAsset.placeholder2.Value, new Vector2(cx, cy), null, xColor,
@@ -852,7 +787,6 @@ namespace CalamityOverhaul.Content.EntrustManager
         }
 
         private void DrawLoadingIndicator(SpriteBatch sb, Rectangle panelRect, float alpha) {
-            //展开加载动画三点闪烁
             float t = openProgress * 8f;
             string dots = "";
             for (int i = 0; i < 3; i++) {
@@ -869,7 +803,6 @@ namespace CalamityOverhaul.Content.EntrustManager
             int padding = currentStyle?.GetEntryPadding() ?? 4;
 
             if (filteredEntries.Count == 0) {
-                //空列表提示
                 Vector2 emptyCenter = new(contentRect.X + contentRect.Width / 2f,
                     contentRect.Y + contentRect.Height / 2f);
                 BaseManagerStyle.DrawCenteredText(sb, EmptyHintText.Value, emptyCenter,
@@ -877,7 +810,7 @@ namespace CalamityOverhaul.Content.EntrustManager
                 return;
             }
 
-            //裁剪区域，面板全宽含滚动条
+            //裁剪区，全宽含滚动条
             RasterizerState prevRasterizer = sb.GraphicsDevice.RasterizerState;
             Rectangle prevScissor = sb.GraphicsDevice.ScissorRectangle;
 
@@ -893,7 +826,6 @@ namespace CalamityOverhaul.Content.EntrustManager
                 int entryH = GetDynamicEntryHeight(filteredEntries[i]);
                 float entryY = contentRect.Y + accumulatedY - scrollOffset;
 
-                //视锥裁剪
                 if (entryY + entryH < contentRect.Y - 10f) {
                     accumulatedY += entryH + padding;
                     continue;
@@ -904,7 +836,6 @@ namespace CalamityOverhaul.Content.EntrustManager
                 bool isSelected = i == selectedIndex;
                 bool isHovered = i == hoveredIndex;
 
-                //入场动画（依次延迟淡入）
                 float entryAlpha = alpha;
                 if (contentAlpha < 0.95f) {
                     float delay = i * 0.06f;
@@ -917,7 +848,6 @@ namespace CalamityOverhaul.Content.EntrustManager
                 currentStyle?.DrawQuestEntry(sb, entryRect, filteredEntries[i],
                     isSelected, isHovered, entryAlpha, i);
 
-                //条目分隔线
                 if (i < filteredEntries.Count - 1) {
                     Vector2 sepStart = new(contentRect.X + 40f, entryY + entryH + padding / 2f);
                     Vector2 sepEnd = new(contentRect.Right - 12f, sepStart.Y);
@@ -948,14 +878,12 @@ namespace CalamityOverhaul.Content.EntrustManager
         private void DrawInteractionHints(SpriteBatch sb, Rectangle panelRect, float alpha) {
             if (hoveredIndex < 0 || hoveredIndex >= filteredEntries.Count) return;
 
-            //在面板底部状态栏上方显示操作提示
             Rectangle footerRect = GetFooterRect(panelRect);
             var entry = filteredEntries[hoveredIndex];
             var font = FontAssets.MouseText.Value;
 
             float hintY = footerRect.Y - 16f;
 
-            //挂起/恢复提示（所有非完成、非失败状态均可操作）
             string suspendHint = "";
             if (entry.Status == QuestEntryStatus.Active || entry.Status == QuestEntryStatus.Tracked
                 || entry.Status == QuestEntryStatus.Suspended)
@@ -969,7 +897,6 @@ namespace CalamityOverhaul.Content.EntrustManager
                 hintY -= 14f;
             }
 
-            //关注/取消关注提示
             string trackHint = "";
             if (entry.Status == QuestEntryStatus.Active || entry.Status == QuestEntryStatus.Tracked)
                 trackHint = TrackHintText.Value;
@@ -982,7 +909,6 @@ namespace CalamityOverhaul.Content.EntrustManager
                 hintY -= 14f;
             }
 
-            //展开/折叠提示
             string expandHint = ExpandHintText.Value;
             if (!string.IsNullOrEmpty(expandHint)) {
                 float expandW = font.MeasureString(expandHint).X * 0.55f;

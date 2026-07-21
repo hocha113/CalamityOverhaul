@@ -11,11 +11,9 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
     /// <summary>物块扫描 + IHackTarget</summary>
     internal class TileScannable : IHackTarget
     {
-        //物块的格子坐标
         private readonly int tileX;
         private readonly int tileY;
 
-        //公开坐标供协议面板使用
         public int TileCoordX => tileX;
         public int TileCoordY => tileY;
 
@@ -44,17 +42,14 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             Tile tile = Main.tile[tileX, tileY];
             int type = tile.TileType;
 
-            //NAME
             labels[0] = HackTime.TileScanName.Value;
             values[0] = GetTileName(tileX, tileY, type);
             colors[0] = HackTheme.TextBright;
 
-            //CLASS（分类）
             labels[1] = HackTime.TileScanClass.Value;
             values[1] = GetTileClass(type);
             colors[1] = GetTileClassColor(type);
 
-            //SIZE（多物块尺寸）
             labels[2] = HackTime.TileScanSize.Value;
             TileObjectData data = TileObjectData.GetTileData(type, 0);
             if (data != null) {
@@ -66,12 +61,10 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
                 colors[2] = HackTheme.TextDim;
             }
 
-            //HARDNESS（硬度/破坏信息）
             labels[3] = HackTime.TileScanHardness.Value;
             values[3] = GetHardnessText(type);
             colors[3] = HackTheme.TextBright;
 
-            //STATUS（物块状态）
             labels[4] = HackTime.TileScanStatus.Value;
             values[4] = GetStatusText(tile, type);
             colors[4] = GetStatusColor(tile, type);
@@ -110,7 +103,6 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
         }
 
         public bool ApplyHack(QuickHackDef hack, Player caster) {
-            //物块协议走效果追踪器
             int casterIndex = caster?.whoAmI ?? Main.myPlayer;
             return HackEffectTracker.ApplyTileEffect(hack, tileX, tileY, casterIndex) != null;
         }
@@ -121,27 +113,23 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
 
         #endregion
 
-        /// <summary>物块显示名，MapHelper 查表</summary>
+        /// <summary>显示名，MapHelper → ModTile → 打表 → 掉落物</summary>
         internal static string GetTileName(int x, int y, int type) {
-            //MapHelper 帧到样式映射
             MapTile mapTile = MapHelper.CreateMapTile(x, y, 255);
             if (mapTile.Type > 0) {
                 string mapName = Lang.GetMapObjectName(mapTile.Type);
-                //若名称非空且不是纯数字则直接使用
+                //纯数字地图名视为无效
                 if (!string.IsNullOrEmpty(mapName) && !IsNumericOnly(mapName)) return mapName;
             }
 
-            //Mod物块回退到ModTile名称
             if (type >= TileID.Count) {
                 ModTile modTile = TileLoader.GetTile(type);
                 if (modTile != null) return modTile.Name;
             }
 
             Tile tile = Main.tile[x, y];
-            //地图名失效走打表
             if (TileNameFallbackRegistry.TryGetName(tile, type, out string fallbackName)) return fallbackName;
 
-            //兜底用掉落物名
             int dropId = tile.GetTileDrop(x, y);
             if (dropId > 0) {
                 string itemName = VaultUtils.GetLocalizedItemName(dropId).Value;
@@ -169,7 +157,6 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return data != null && (data.Width > 1 || data.Height > 1);
         }
 
-        /// <summary>物块分类文本</summary>
         internal static string GetTileClass(int type) {
             if (IsCraftingStation(type)) return HackTime.TileScanCrafting.Value;
             if (IsContainer(type)) return HackTime.TileScanContainer.Value;
@@ -178,7 +165,6 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return HackTime.TileScanBlock.Value;
         }
 
-        /// <summary>物块分类颜色</summary>
         internal static Color GetTileClassColor(int type) {
             if (IsCraftingStation(type)) return HackTheme.Uploading;
             if (IsContainer(type)) return HackTheme.AccentAlt;
@@ -187,14 +173,11 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return HackTheme.TextDim;
         }
 
-        /// <summary>物块硬度文本</summary>
         private static string GetHardnessText(int type) {
-            //地牢砖、丛林蜥蜴砖等需要特定工具
             if (Main.tileDungeon[type]) return HackTime.TileScanDungeon.Value;
             if (type == TileID.LihzahrdBrick || type == TileID.LihzahrdAltar)
                 return HackTime.TileScanLihzahrd.Value;
 
-            //根据镐力需求判断
             int minPick = GetMinPickPower(type);
             if (minPick >= 200) return HackTime.TileScanHardnessExtreme.Value;
             if (minPick >= 100) return HackTime.TileScanHardnessHigh.Value;
@@ -202,11 +185,9 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return HackTime.TileScanHardnessLow.Value;
         }
 
-        /// <summary>物块状态文本</summary>
         private static string GetStatusText(Tile tile, int type) {
-            //火把、蜡烛等光源检查开关状态
             if (IsLightSource(type)) {
-                //帧 X 判断开关
+                //帧 X 开关
                 bool isOn = tile.TileFrameX < 66 || Main.tileFrameImportant[type] && tile.TileFrameX == 0;
                 return isOn ? HackTime.TileScanActive.Value : HackTime.TileScanInactive.Value;
             }
@@ -215,7 +196,6 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return HackTime.TileScanIntact.Value;
         }
 
-        /// <summary>状态颜色</summary>
         private static Color GetStatusColor(Tile tile, int type) {
             if (IsLightSource(type)) {
                 bool isOn = tile.TileFrameX < 66 || Main.tileFrameImportant[type] && tile.TileFrameX == 0;
@@ -272,9 +252,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
                 && !IsCraftingStation(type) && !IsContainer(type) && !IsLightSource(type);
         }
 
-        /// <summary>最低镐力</summary>
         private static int GetMinPickPower(int type) {
-            //利用原版的minPick检测数组
             if (type == TileID.Meteorite) return 50;
             if (type == TileID.Demonite || type == TileID.Crimtane) return 55;
             if (type == TileID.Ebonstone || type == TileID.Crimstone
@@ -289,7 +267,6 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
 
         #endregion
 
-        /// <summary>坐标处可扫描物块</summary>
         public static bool TryGetScannableTile(Vector2 worldPos, out int outX, out int outY) {
             outX = (int)(worldPos.X / 16f);
             outY = (int)(worldPos.Y / 16f);
@@ -302,7 +279,6 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return tile.HasTile;
         }
 
-        /// <summary>树木 trunk 物块</summary>
         public static bool IsTreeTile(int type) {
             return type == TileID.Trees
                 || type == TileID.PalmTree
@@ -314,14 +290,12 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
 
         /// <summary>整棵树视觉包围盒</summary>
         public static Rectangle GetTreeFullBounds(int x, int y, int type) {
-            //向上找 trunk 顶（连续同类 HasTile）
             int topY = y;
             while (topY - 1 >= 0) {
                 Tile t = Main.tile[x, topY - 1];
                 if (!t.HasTile || t.TileType != type) break;
                 topY--;
             }
-            //向下找 trunk 底
             int botY = y;
             while (botY + 1 < Main.maxTilesY) {
                 Tile t = Main.tile[x, botY + 1];
@@ -338,7 +312,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return new Rectangle(px, py, w, h);
         }
 
-        /// <summary>物块包围盒，多格/树特例</summary>
+        /// <summary>包围盒，多格/树特例</summary>
         public static Rectangle GetTileWorldBounds(int x, int y) {
             if (x < 0 || x >= Main.maxTilesX || y < 0 || y >= Main.maxTilesY)
                 return new Rectangle(x * 16, y * 16, 16, 16);
@@ -347,7 +321,6 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             if (!tile.HasTile) return new Rectangle(x * 16, y * 16, 16, 16);
 
             int type = tile.TileType;
-            //树 bounding
             if (IsTreeTile(type)) {
                 return GetTreeFullBounds(x, y, type);
             }
@@ -355,13 +328,12 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             TileObjectData data = TileObjectData.GetTileData(type, 0);
             if (data == null) return new Rectangle(x * 16, y * 16, 16, 16);
 
-            //通过帧坐标反推当前格子在多格物块中的偏移
+            //帧坐标反推多格偏移
             int frameWidth = data.CoordinateWidth + data.CoordinatePadding;
             int frameHeight = data.CoordinateHeights[0] + data.CoordinatePadding;
             int offsetX = tile.TileFrameX % (data.Width * frameWidth) / frameWidth;
             int offsetY = tile.TileFrameY % (data.Height * frameHeight) / frameHeight;
 
-            //左上角格子坐标
             int topLeftX = x - offsetX;
             int topLeftY = y - offsetY;
 

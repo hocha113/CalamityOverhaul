@@ -6,10 +6,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.StorageUIs
 {
-    /// <summary>
-    /// 通用箱子UI渲染器基类，提供通用的槽位绘制和布局计算
-    /// 子类覆写主题相关方法以不同的视觉风格
-    /// </summary>
+    /// <summary>箱子UI渲染基类；子类覆写主题绘制</summary>
     internal abstract class BaseChestRenderer
     {
         protected readonly Player player;
@@ -54,25 +51,20 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
             DrawForegroundEffects(spriteBatch, effects);
         }
 
-        //--- 主题相关的抽象/虚方法 ---
+        //主题钩子
 
-        /// <summary>绘制背景层特效</summary>
         protected virtual void DrawBackgroundEffects(SpriteBatch spriteBatch, IChestEffects effects) {
             effects.DrawEffects(spriteBatch, animation.UIAlpha * 0.4f);
         }
 
-        /// <summary>绘制前景层特效</summary>
         protected virtual void DrawForegroundEffects(SpriteBatch spriteBatch, IChestEffects effects) {
             effects.DrawEffects(spriteBatch, animation.UIAlpha * 0.2f);
         }
 
-        /// <summary>绘制主面板背景和边框</summary>
         protected abstract void DrawMainPanel(SpriteBatch spriteBatch, Vector2 panelPosition);
 
-        /// <summary>绘制标题</summary>
         protected abstract void DrawHeader(SpriteBatch spriteBatch, Vector2 panelPosition);
 
-        /// <summary>绘制分隔线</summary>
         protected abstract void DrawHeaderDivider(SpriteBatch spriteBatch, Vector2 panelPosition);
 
         protected abstract Color GetFooterColor();
@@ -85,7 +77,7 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
         protected abstract Color GetCloseButtonHoverColor();
         protected abstract Color GetCloseButtonNormalColor();
 
-        //--- 通用绘制方法 ---
+        //通用绘制
 
         protected void DrawCloseButton(SpriteBatch spriteBatch, Vector2 panelPosition) {
             int buttonSize = ChestInteraction.CloseButtonSize;
@@ -178,8 +170,6 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
             Utils.DrawBorderString(spriteBatch, infoText, infoPos,
                 GetFooterColor() * animation.UIAlpha, 0.8f);
         }
-
-        //--- 通用绘制工具 ---
 
         protected static void DrawLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value;

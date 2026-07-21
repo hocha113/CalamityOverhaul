@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 {
-    //第十眼时代唯一：满层自动激活的无限重启演出
+    //第十眼时代唯一、满层自动无限重启演出
     internal static class YourLevelIsTooLow
     {
         public static int ID = 8;
@@ -411,7 +411,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             Lighting.AddLight(clone.Position, TorchID.Blue);
 
-            //干净克隆体绘制：仅身体本体，不改动真实玩家，也不重放其 buff/特效绘制钩子
+            //干净克隆体、仅身体，不碰真玩家/buff绘制
             Vector2 topLeft = clone.Position - Owner.Size * 0.5f;
             PlayerCloneRenderer.Draw(Owner, topLeft, Color.Blue, Owner.direction,
                 Owner.bodyFrame, Owner.legFrame, Owner.fullRotation, Owner.fullRotationOrigin);

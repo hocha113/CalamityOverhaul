@@ -10,16 +10,16 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>超载核心：球满后右键过载 90 帧增伤扩半径，超 60 帧炸膛反冲烧蓝</summary>
+    /// <summary>超载核心，满球右键过载 90 帧增伤扩半径，超 60 帧炸膛</summary>
     internal sealed class OverloadCoreModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;
         //圣焰金
         public override Color TintColor => new(255, 210, 110);
 
-        /// <summary>超载读满所需帧数（此区间内为纯收益）</summary>
+        /// <summary>超载读满帧数，此内纯收益</summary>
         private const int OverloadFrames = 90;
-        /// <summary>红线后允许的危险帧数，超过即炸膛</summary>
+        /// <summary>红线后危险帧数，超则炸膛</summary>
         private const int DangerFrames = 60;
 
         private static readonly Color HolyCore = new(255, 240, 190);
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 return;
             }
 
-            //进入超载：捕获基准值
+            //进超载，捕获基准
             if (baseDamage == 0) {
                 baseDamage = orb.Projectile.damage;
                 baseRadiusMul = orb.ExplosionRadiusMul;
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             orb.ExplosionRadiusMul = baseRadiusMul * (1f + overload * 0.35f);
 
             bool danger = overloadTimer > OverloadFrames;
-            //圣火向心吸入：超载越深粒子越密
+            //圣火向心吸入
             if (Main.netMode != NetmodeID.Server) {
                 int interval = danger ? 1 : (overload > 0.5f ? 2 : 3);
                 if (overloadTimer % interval == 0) {
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                         danger ? DangerGlow : HolyCore, Main.rand.NextFloat(0.6f, 1.1f))
                         .Configure(orb.Projectile.Center, HolyGlow, Main.rand.Next(14, 24), 1f);
                 }
-                //节拍提示音：超载中音调持续走高，红线后变急促警报
+                //节拍提示音，红线后加急
                 int tickInterval = danger ? 10 : 20;
                 if (overloadTimer % tickInterval == 0) {
                     float pitch = danger ? 0.9f : MathHelper.Lerp(-0.1f, 0.7f, overload);
@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             }
         }
 
-        /// <summary>炸膛：球口爆裂仍伤敌，玩家击退且法力减半</summary>
+        /// <summary>炸膛，球口仍伤敌，击退+法力减半</summary>
         private void Rupture(CyberChargeOrbProj orb, Player owner) {
             ResetState();
             if (orb.Projectile.owner != Main.myPlayer) return;
@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 Main.projectile[idx].localAI[2] = 200f;
             }
 
-            //反冲与法力烧蚀
+            //反冲+法力烧蚀
             if (owner != null && owner.active) {
                 Vector2 push = (owner.Center - orb.Projectile.Center).SafeNormalize(-Vector2.UnitX);
                 owner.velocity = push * 11f - Vector2.UnitY * 3f;
@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         }
 
         public override void OnOrbLaunched(CyberChargeOrbProj orb) {
-            //超载发射：额外的金色爆发提示玩家这发被强化了
+            //超载发射金爆
             if (overloadTimer > 0 && Main.netMode != NetmodeID.Server) {
                 float overload = MathHelper.Clamp(overloadTimer / (float)OverloadFrames, 0f, 1f);
                 SoundEngine.PlaySound(SoundID.Item68 with { Volume = 0.4f + overload * 0.4f, Pitch = 0.2f }, orb.Projectile.Center);

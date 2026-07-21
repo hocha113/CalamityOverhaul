@@ -15,8 +15,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Defeats
         public override StyleId DefaultStyle => "Draedon";
 
         public override void SetStaticDefaults() {
-
-            //第三次战败对话：表现出对玩家一贯性的肯定
             ThirdDefeatLine1 = this.GetLocalization(nameof(ThirdDefeatLine1), () => "稳定的表现，这正是我所追求的完美的一部分");
             ThirdDefeatLine2 = this.GetLocalization(nameof(ThirdDefeatLine2), () => "你已经证明了自己的价值不是偶然");
         }
@@ -35,7 +33,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Defeats
         protected override void OnCompleted() {
             DraedonEffect.IsActive = false;
             DraedonEffect.Send();
-            //手动 Begin 的场景策略回调不触发,完成标记须落在本重写
+            //手动Begin不触发策略回调,完成标记写这里
             DraedonStorySync.WriteDraedon(d => d.ExoMechThirdDefeat = true, d => d.ExoMechThirdDefeat = true);
         }
 

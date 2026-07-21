@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>风暴握把：累计命中释多道 CyberDataArc 电弧</summary>
+    /// <summary>风暴握把，累计命中释 CyberDataArc</summary>
     internal sealed class TempestGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         }
 
         public override void OnLaserHitNPC(CyberPrismLaserProj laser, NPC target, NPC.HitInfo hit, int damageDone) {
-            //激光命中频率高，每 2 次中一次记入风暴累计
+            //激光命中频，每2次记1
             if (Main.rand.NextBool(2)) {
                 TryBurst(laser.Projectile, target.Center, laser.Projectile.damage);
             }

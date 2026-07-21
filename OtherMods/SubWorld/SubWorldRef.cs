@@ -5,10 +5,7 @@ namespace CalamityOverhaul.OtherMods.SubWorld
 {
     internal class SubWorldRef
     {
-        /// <summary>
-        /// 检查是否有任何子世界处于激活状态
-        /// </summary>
-        /// <returns></returns>
+        /// <summary>是否有子世界激活</summary>
         internal static bool AnyActiveSubWorld() {
             if (CWRMod.Instance.subworldLibrary is null) {
                 return false;

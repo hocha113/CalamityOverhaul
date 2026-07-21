@@ -10,8 +10,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
 {
     /// <summary>
-    /// 树木快速重生的演出Actor：按 <see cref="TreeBlueprint"/> 用原版树纹理逐节长出，
-    /// 结束时把同一份蓝图写入世界，动画所见即最终所得
+    /// 树重生演出Actor，按 <see cref="TreeBlueprint"/> 逐节长出后写同一份蓝图入世界
     /// </summary>
     internal class TreeRegrowth : Actor
     {
@@ -43,9 +42,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
         private const float TopFoliageAt = 0.70f;
         private const float TopPopWindow = 0.24f;
 
-        /// <summary>
-        /// 权威端生成后立即调用，落点/树种/种子经SyncVar广播
-        /// </summary>
+        /// <summary>权威端初始化；落点/树种/种子走SyncVar</summary>
         public void Setup(int x, int y, int treeType, int seed) {
             targetTileX = x;
             targetTileY = y;
@@ -81,9 +78,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
             }
         }
 
-        /// <summary>
-        /// 客户端SyncVar可能晚于生成包到达，蓝图延迟构建；数据迟迟不来或地形不符则权威端销毁
-        /// </summary>
+        /// <summary>客户端蓝图延迟构建(SyncVar可能晚到)；超时/地形不符则权威端销毁</summary>
         private void TryBuildBlueprint() {
             if (treeTileType == 0) {
                 if (!VaultUtils.isClient && ++timer > 240) {
@@ -112,7 +107,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
                 SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.8f, Pitch = 0.2f }, Center);
             }
 
-            //根部酝酿：地表冒出草屑
+            //根部酝酿，地表草屑
             if (timer % 3 == 0 && !Main.dedServ) {
                 for (int i = 0; i < 2; i++) {
                     Vector2 dustPos = new Vector2(targetTileX * 16 + Main.rand.NextFloat(-8f, 24f), targetTileY * 16);
@@ -166,9 +161,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
         }
 
         #region 生长节奏
-        /// <summary>
-        /// 单块的萌出进度阈值：主干自底向上0.02-0.62，侧枝叶随所在行错后，顶帽0.66
-        /// </summary>
+        /// <summary>萌出阈值，主干0.02-0.62，侧枝错后，顶帽0.66</summary>
         private float PieceRevealAt(in TreeBlueprint.Piece piece) {
             if (IsTopPiece(piece)) {
                 return 0.66f;
@@ -182,7 +175,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
             return at;
         }
 
-        //顶帽块：普通树 frameY>=198，棕榈 frameX>=88
+        //顶帽，普通frameY>=198，棕榈frameX>=88
         private bool IsTopPiece(in TreeBlueprint.Piece piece) {
             return blueprint.IsPalm ? piece.FrameX >= 88 : piece.IsTopStub;
         }
@@ -197,9 +190,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
             return 1f + (c1 + 1f) * u * u * u + c1 * u * u;
         }
 
-        /// <summary>
-        /// 越过萌出阈值的树块冒木屑，树冠萌出时爆发叶屑
-        /// </summary>
         private void EmitGrowthDust() {
             foreach (TreeBlueprint.Piece piece in blueprint.Pieces) {
                 float at = PieceRevealAt(piece);
@@ -240,7 +230,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
         #endregion
 
         #region 原版轮子绘制
-        //镜像 TileDrawing.GetPalmTreeVariant：沙种0-3，绿洲+4
+        //镜像 GetPalmTreeVariant，沙种0-3，绿洲+4
         private static int GetPalmVariant(int x, int groundY) {
             int variant = Main.tile[x, groundY].TileType switch {
                 TileID.Crimsand => 1,
@@ -254,10 +244,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
             return variant;
         }
 
-        /// <summary>
-        /// 树冠/树枝风格与树冠帧尺寸；普通树走原版 GetCommonTreeFoliageData(只依赖地面，可在树存在前调用)，
-        /// 樱花/柳树/灰烬树为固定常量(原版函数需树块本体存在)
-        /// </summary>
+        /// <summary>树冠风格/帧尺寸；普通走GetCommonTreeFoliageData，樱花/柳/灰烬用常量</summary>
         private bool GetFoliageData(int pieceX, int xoffToTrunk, int baseFrame, out int style, out int frame, out int topW, out int topH) {
             switch (treeTileType) {
                 case TileID.VanityTreeSakura:
@@ -339,9 +326,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
             return false;
         }
 
-        /// <summary>
-        /// 侧枝树冠，位置/风摆/锚点公式照抄 TileDrawing.DrawTrees 的 case 44/66
-        /// </summary>
+        /// <summary>侧枝树冠，照抄 DrawTrees case44/66</summary>
         private void DrawBranchFoliage(SpriteBatch spriteBatch, in TreeBlueprint.Piece piece, int tx, int ty,
             Color light, float progress, TileDrawing renderer, double windCounter) {
             //叶簇比枝块本体稍晚萌出
@@ -390,9 +375,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
             }
         }
 
-        /// <summary>
-        /// 主干树冠，位置/风摆/锚点公式照抄 TileDrawing.DrawTrees 的 case 22 与棕榈分支
-        /// </summary>
+        /// <summary>主干树冠，照抄 DrawTrees case22/棕榈</summary>
         private void DrawTopFoliage(SpriteBatch spriteBatch, in TreeBlueprint.Piece piece, int tx, int ty,
             Color light, float progress, TileDrawing renderer, double windCounter) {
             float pop = Math.Clamp((progress - TopFoliageAt) / TopPopWindow, 0f, 1f);

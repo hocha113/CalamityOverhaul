@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 }
             }
 
-            //回退，没找到正常头部，就用本段自身数据，避免异常
+            //无头则用自身数据
             drawParams.Life = npc.life;
             drawParams.LifeMax = npc.lifeMax;
             return true;

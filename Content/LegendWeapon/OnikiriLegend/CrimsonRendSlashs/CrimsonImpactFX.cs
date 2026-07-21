@@ -7,22 +7,22 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 {
     /// <summary>
-    /// 绯红裂空斩屏幕级演出状态（仅客户端）：冲击白闪 + Bloom 提亮<br/>
-    /// 弹幕侧每帧 Push 推高目标值，渲染端 <see cref="Update"/> 自然衰减 —— 弹幕消失后画面自动回落<br/>
-    /// 不做压暗/震屏/变焦：全屏级镜头运动容易造成眩晕，打击感交给顿帧与白闪
+    /// 屏幕级演出状态(仅客户端),冲击白闪 + Bloom<br/>
+    /// 弹幕侧 Push 推高,渲染端 <see cref="Update"/> 衰减,弹幕消失后回落<br/>
+    /// 不做压暗/震屏/变焦
     /// </summary>
     internal static class CrimsonImpactFX
     {
-        /// <summary>冲击白闪 0..1，触发后指数衰减</summary>
+        /// <summary>冲击白闪 0..1,触发后指数衰减</summary>
         public static float FlashIntensity { get; private set; }
         /// <summary>Bloom 强度 0..1</summary>
         public static float BloomIntensity { get; private set; }
-        /// <summary>白闪中心（世界坐标）</summary>
+        /// <summary>白闪中心(世界坐标)</summary>
         public static Vector2 FocusWorldCenter { get; private set; }
 
         public static bool HasAny => FlashIntensity > 0.01f || BloomIntensity > 0.01f;
 
-        /// <summary>每帧推高 Bloom（弹幕存活期间持续调用）</summary>
+        /// <summary>每帧推高 Bloom(弹幕存活期间)</summary>
         public static void PushAmbience(Vector2 focusWorld, float bloom) {
             if (VaultUtils.isServer) {
                 return;
@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             BloomIntensity = MathHelper.Clamp(MathHelper.Max(BloomIntensity, bloom), 0f, 1.2f);
         }
 
-        /// <summary>冲击瞬间白闪，一次触发自行衰减</summary>
+        /// <summary>冲击白闪,一次触发自行衰减</summary>
         public static void PushImpact(Vector2 focusWorld, float flash) {
             if (VaultUtils.isServer) {
                 return;
@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             FlashIntensity = MathHelper.Clamp(MathHelper.Max(FlashIntensity, flash), 0f, 1f);
         }
 
-        /// <summary>渲染端每帧衰减（由 <see cref="OnikiriImpactRender"/> 驱动）</summary>
+        /// <summary>渲染端每帧衰减(<see cref="OnikiriImpactRender"/>)</summary>
         public static void Update() {
             FlashIntensity *= 0.70f;
             if (FlashIntensity < 0.01f) {
@@ -52,28 +52,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>世界切换/卸载兜底清空</summary>
+        /// <summary>世界切换/卸载清空</summary>
         public static void Clear() {
             FlashIntensity = BloomIntensity = 0f;
         }
     }
 
-    /// <summary>世界卸载时清空屏幕演出状态</summary>
+    /// <summary>世界卸载清空屏幕演出</summary>
     internal sealed class CrimsonImpactSystem : ModSystem
     {
         public override void OnWorldUnload() => CrimsonImpactFX.Clear();
     }
 
     /// <summary>
-    /// 绯红裂空斩全屏后效：Bloom（提亮→双迭代高斯→加色合成）+ 冲击白闪，
-    /// screenTarget ping-pong 回写；Bloom 提取先于白闪，辉光形状不受闪光干扰
+    /// 全屏后效,Bloom(提亮→双迭代高斯→加色) + 冲击白闪<br/>
+    /// screenTarget ping-pong,Bloom 提取先于白闪
     /// </summary>
     internal sealed class OnikiriImpactRender : RenderHandle
     {
-        /// <summary>权重 1.10，晚于 PrimeScreenEffectRender(1.08)，早于弹幕扩展层(1.2)</summary>
+        /// <summary>权重 1.10,晚于 PrimeScreenEffectRender(1.08),早于弹幕扩展层(1.2)</summary>
         public override float Weight => 1.10f;
 
-        /// <summary>两块全屏缓冲：Bloom 亮部 ping-pong</summary>
+        /// <summary>两块全屏缓冲,Bloom 亮部 ping-pong</summary>
         public override int ScreenSlot => 2;
 
         public override void EndCaptureDraw(SpriteBatch sb, GraphicsDevice gd, RenderTarget2D screenSwap) {
@@ -103,9 +103,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 ApplyPost(sb, gd, screenSwap, postFx);
             }
 
-            //3) Bloom 加色合成：Main.screenTarget 为 DiscardContents（tML Main.InitTargets 未指定 usage），
-            //   重绑定即丢弃原画面 —— 必须经 screenSwap 全帧往返，绑定后立刻整帧重绘，
-            //   否则场景被丢弃、只剩加色 Bloom → 全屏黑屏
+            //3) Bloom 加色,Main.screenTarget 为 DiscardContents(tML InitTargets 未指定 usage),
+            //   重绑定即丢弃原画面,须经 screenSwap 全帧往返再整帧重绘,否则只剩加色→黑屏
             if (doBloom) {
                 gd.SetRenderTarget(screenSwap);
                 gd.Clear(Color.Transparent);
@@ -125,7 +124,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>screenTarget → ST0(亮部) → ST1(横模糊) → ST0(纵模糊) → 二迭代加宽，结果留在 ST0</summary>
+        /// <summary>screenTarget→ST0亮部→ST1横模糊→ST0纵模糊→二迭代加宽,结果留 ST0</summary>
         private void BuildBloom(SpriteBatch sb, GraphicsDevice gd, Effect bloomFx) {
             bloomFx.Parameters["uThreshold"]?.SetValue(0.60f);
             bloomFx.Parameters["uBoost"]?.SetValue(1.0f);
@@ -143,7 +142,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             float texelX = 1f / Main.screenWidth;
             float texelY = 1f / Main.screenHeight;
 
-            //两轮可分离模糊，第二轮步长加宽拉开辉光半径
+            //两轮可分离模糊,第二轮步长加宽
             for (int i = 0; i < 2; i++) {
                 float radius = i == 0 ? 2.0f : 4.5f;
 
@@ -165,7 +164,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>拷屏到 screenSwap 再带着 OniCrimsonImpactPost 写回 screenTarget（仅白闪，无压暗）</summary>
+        /// <summary>拷屏到 screenSwap,OniCrimsonImpactPost 写回(仅白闪,无压暗)</summary>
         private static void ApplyPost(SpriteBatch sb, GraphicsDevice gd, RenderTarget2D screenSwap, Effect postFx) {
             Vector2 centerUV = WorldToScreenUV(CrimsonImpactFX.FocusWorldCenter);
 
@@ -190,7 +189,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             sb.End();
         }
 
-        /// <summary>世界坐标 → 归一化 uv（含 GameViewMatrix.Zoom）</summary>
+        /// <summary>世界坐标→归一化 uv(含 GameViewMatrix.Zoom)</summary>
         private static Vector2 WorldToScreenUV(Vector2 worldPos) {
             float screenW = Main.screenWidth;
             float screenH = Main.screenHeight;

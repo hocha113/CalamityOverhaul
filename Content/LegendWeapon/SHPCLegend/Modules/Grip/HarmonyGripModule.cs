@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>谐振握把：命中溢流灵雾，拾取回蓝叠谐鸣层（最多 5 层 +3% 攻速）</summary>
+    /// <summary>谐振握把，命中溢雾，拾取回蓝叠谐鸣（最多5层）</summary>
     internal sealed class HarmonyGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;
@@ -19,9 +19,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         public override Color TintColor => new(120, 255, 180);
 
         private const int MaxResonance = 5;
-        /// <summary>当前谐鸣层数，由灵雾拾取叠加</summary>
+        /// <summary>谐鸣层数</summary>
         internal int ResonanceStacks;
-        /// <summary>层数保持计时，归零后开始衰减</summary>
+        /// <summary>层保持计时，归零后衰减</summary>
         internal int ResonanceTimer;
         private float _resonanceCarry;
 
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
             }
         }
 
-        /// <summary>灵雾拾取入口：返还法力的同时叠层刷新计时</summary>
+        /// <summary>拾雾叠层并刷新计时</summary>
         internal void AddResonance() {
             ResonanceStacks = Math.Min(ResonanceStacks + 1, MaxResonance);
             ResonanceTimer = 300;
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
             if (ResonanceStacks <= 0) return;
             if (ResonanceTimer > 0) {
                 TickDown(ref ResonanceTimer, ref _resonanceCarry);
-                //满层时指尖萦绕薄荷电雾，提示玩家处于全速谐鸣
+                //满层指尖电雾
                 if (ResonanceStacks >= MaxResonance && Main.netMode != NetmodeID.Server && Main.rand.NextBool(6)) {
                     Vector2 pos = player.Center + Main.rand.NextVector2Circular(20f, 26f);
                     PRTLoader.NewParticle<PRT_CyberSquare>(pos, -Vector2.UnitY * Main.rand.NextFloat(0.5f, 1.4f),
@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         }
     }
 
-    /// <summary>谐振灵雾拾取弹幕：漂移后追随玩家，触 pickup 回蓝叠层</summary>
+    /// <summary>谐振灵雾，漂散后追随，触碰回蓝叠层</summary>
     internal sealed class SHPCHarmonyWispProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -119,11 +119,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
                 * MathHelper.Clamp(Projectile.timeLeft / 30f, 0f, 1f);
 
             if (age < DriftPhase) {
-                //漂散段：惯性外抛逐渐悬停
+                //漂散
                 Projectile.velocity *= 0.93f;
             }
             else {
-                //追随段：朝玩家缓缓加速，越近越快，带一点波浪摆动
+                //追随
                 Vector2 toOwner = owner.Center - Projectile.Center;
                 float dist = toOwner.Length();
                 float chase = MathHelper.Clamp(MathHelper.Lerp(0.18f, 0.55f, 1f - dist / 600f), 0.18f, 0.55f);
@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
                     * MathF.Sin(age * 0.12f + Projectile.whoAmI) * 1.2f;
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, desired, chase * 0.12f);
 
-                //拾取判定：仅弹幕拥有者本地结算法力与层数
+                //仅owner端结算
                 if (dist < 42f) {
                     Collect(owner);
                     return;
@@ -176,11 +176,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = glow.Size() * 0.5f;
             float pulse = 0.85f + 0.15f * MathF.Sin((float)Main.timeForVisualEffects * 0.18f + Projectile.whoAmI * 1.7f);
-            //三层灵雾光晕：薄荷核心 → 翠绿辉光 → 暗绿外晕
+            //三层光晕
             spriteBatch.Draw(glow, drawPos, null, WispAura * fadeAlpha * 0.45f * pulse, 0f, origin, 1.15f, SpriteEffects.None, 0f);
             spriteBatch.Draw(glow, drawPos, null, WispGlow * fadeAlpha * 0.7f * pulse, 0f, origin, 0.62f, SpriteEffects.None, 0f);
             spriteBatch.Draw(glow, drawPos, null, WispCore * fadeAlpha * pulse, 0f, origin, 0.3f, SpriteEffects.None, 0f);
-            //中心十字微光，强调"可拾取物"的存在感
             Texture2D star = CWRAsset.StarTexture_White?.Value;
             if (star != null) {
                 float starScale = 0.055f * pulse;

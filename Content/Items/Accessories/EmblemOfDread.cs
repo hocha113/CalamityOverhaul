@@ -19,9 +19,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Accessories
 {
-    /// <summary>
-    /// 惧亡者之证
-    /// </summary>
+    /// <summary>惧亡者之证</summary>
     internal class EmblemOfDread : ModItem
     {
         public override string Texture => CWRConstant.Item_Accessorie + "EmblemOfDread";
@@ -38,7 +36,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.rare = CWRID.Rarity_Turquoise;
         }
 
-        /// <summary>真正击杀目标：无视免伤直接清空生命并触发战利品，蠕虫类假人一并处理</summary>
+        /// <summary>真杀，无视免伤，含假人</summary>
         public static void KillAction(NPC npc) {
             npc.dontTakeDamage = false;
             _ = npc.SimpleStrikeNPC(npc.lifeMax, 0);
@@ -228,7 +226,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         bool IWarpDrawable.CanDrawCustom() => true;
 
         void IWarpDrawable.DrawCustom(SpriteBatch spriteBatch) {
-            if (Projectile.localAI[2] == 0) {//是0就表示隐藏
+            if (Projectile.localAI[2] == 0) {//0=隐藏
                 return;
             }
 
@@ -236,34 +234,25 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
             Vector2 center = Owner.Center - Main.screenPosition;
 
-            //分别控制 X 和 Y 轴的运动范围，制造椭圆轨迹
-            float baseRadiusX = 140 + Projectile.localAI[0] * 50; //X轴半径
-            float baseRadiusY = 80 + Projectile.localAI[0] * 30;  //Y轴半径（通常小于X轴）
-
-            //Z 轴深度模拟
-            float zAmplitude = 40;  //Z轴振幅，控制前后摆动幅度
-            float zScaleFactor = 120f; //透视缩放参数，影响Z轴远近缩放
+            float baseRadiusX = 140 + Projectile.localAI[0] * 50;//椭圆X
+            float baseRadiusY = 80 + Projectile.localAI[0] * 30;//椭圆Y
+            float zAmplitude = 40;//Z振幅
+            float zScaleFactor = 120f;//透视缩放
 
             float timeOffset = Time * 0.01f;
 
-            //盾牌绘制排序缓存
             List<(Vector2 pos, float scale, Rectangle rect, Color color)> shieldData = new();
 
             for (int i = 0; i < 3; i++) {
-                //计算旋转角度
                 float angle = timeOffset + MathHelper.TwoPi / 3f * i;
 
-                //计算椭圆轨迹位置
                 float x = MathF.Cos(angle) * baseRadiusX;
                 float y = MathF.Sin(angle) * baseRadiusY;
                 Vector2 orbitPos = new Vector2(x, y) * Projectile.localAI[1] * 1.2f;
 
-                //计算 Z 轴偏移，制造 3D 立体环绕感
                 float zOffset = MathF.Sin(angle) * zAmplitude;
                 float scale = 1f + (zOffset / zScaleFactor);
-
-                //计算最终绘制位置
-                Vector2 drawPos = center + orbitPos + new Vector2(0, -zOffset); //向上偏移zOffset
+                Vector2 drawPos = center + orbitPos + new Vector2(0, -zOffset);
 
                 Color color = Color.Purple;
                 if (i == 0) {
@@ -275,7 +264,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 shieldData.Add((drawPos, scale, texture.GetRectangle(i, 3), color));
             }
 
-            //按Y纵深排序，远盾先画
+            //Y纵深，远先画
             shieldData = [.. shieldData.OrderBy(s => s.pos.Y)];
 
             foreach (var (pos, scale, rect, color) in shieldData) {
@@ -341,7 +330,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 Projectile.NewProjectile(Owner.GetSource_FromThis(), Owner.Center
                 , Owner.velocity.GetNormalVector() * -22
                 , ModContent.ProjectileType<NeutronLaser>(), 800, 0);
-                //只设置冲刺玩家的镜头，不要把别的玩家的镜头也设置了
+                //仅本机冲刺者镜头
                 if (CWRServerConfig.Instance.LensEasing) {
                     Main.SetCameraLerp(0.1f, 60);
                 }
@@ -399,7 +388,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
         }
 
-        /// <summary>冲刺参数写入</summary>
         public void SetDash() {
             Vector2 dashDirection = (Main.MouseWorld - Player.Center).SafeNormalize(Vector2.UnitX);
             Vector2 newVelocity = dashDirection * DashVelocity;

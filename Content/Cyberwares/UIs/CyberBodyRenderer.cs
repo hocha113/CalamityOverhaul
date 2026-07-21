@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Cyberwares.UIs
 {
-    /// <summary>像素人体渲染：轮廓/电路/植入节点</summary>
+    /// <summary>像素人体，轮廓/电路/节点</summary>
     internal class CyberBodyRenderer
     {
         private readonly struct CircuitCurve
@@ -268,7 +268,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         #region 公共方法
 
-        /// <summary>聚焦节点，选中义体 zoom/pan</summary>
+        /// <summary>聚焦节点 zoom/pan</summary>
         public void SetFocusNode(int nodeIndex, float strength) {
             targetFocusStrength = MathHelper.Clamp(strength, 0f, 1f);
             if (nodeIndex >= 0 && nodeIndex < NodeCount) {
@@ -311,7 +311,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             currentFocusGrid = Vector2.Lerp(currentFocusGrid, targetFocusGrid, 0.26f + focusStrength * 0.1f);
         }
 
-        /// <summary>像素人体完整绘制</summary>
         public void DrawBody(SpriteBatch sb, float alpha, Vector2 bodyOrigin, float globalTimer) {
             Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) return;
@@ -320,10 +319,9 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             GetBodyTransform(bodyOrigin, out float s, out Vector2 bodyOffset);
             float focusScale = s / PixelScale;
 
-            //填充身体主要区域
             DrawBodyFill(sb, px, bodyOffset, s, alpha, breathe);
 
-            //内部骨骼电路（分层主经脉、次级结构和毛细分支）
+            //内层电路
             DrawInnerCircuits(sb, px, bodyOffset, s, alpha, breathe, globalTimer);
 
             //轮廓线
@@ -359,7 +357,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 }
             }
 
-            //能量粒子沿躯干与四肢主经脉流动
+            //主经脉粒子
             DrawSpineEnergyFlow(sb, px, bodyOffset, s, alpha, breathe, globalTimer);
 
             //外发光
@@ -416,7 +414,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         #region 私有方法
 
-        /// <summary>内层电路分层绘制</summary>
         private void DrawInnerCircuits(SpriteBatch sb, Texture2D px, Vector2 bodyOffset, float s, float alpha, float breathe, float globalTimer) {
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             DrawPrimaryCurves(sb, px, glow, bodyOffset, s, alpha, breathe, globalTimer);
@@ -441,7 +438,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             return 1f - inv * inv * inv;
         }
 
-        /// <summary>主经脉流动粒子</summary>
         private void DrawSpineEnergyFlow(SpriteBatch sb, Texture2D px, Vector2 bodyOffset, float s, float alpha, float breathe, float globalTimer) {
             Texture2D glow = CWRAsset.SoftGlow?.Value;
 
@@ -954,7 +950,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             CyberwareTheme.FillGridRect(sb, px, offset, s, 10, 14, 12, 7, fillColor, breathe); //胸部 y14-21
             CyberwareTheme.FillGridRect(sb, px, offset, s, 11, 21, 10, 5, fillColor, breathe); //腰部 y21-26（窄）
             CyberwareTheme.FillGridRect(sb, px, offset, s, 10, 26, 12, 3, fillColor, breathe); //髋部 y26-29
-            //左臂（分段填充：上臂+前臂+手）
+            //左臂分段
             CyberwareTheme.FillGridRect(sb, px, offset, s, 5, 13, 3, 7, fillColor, breathe);   //上臂 y13-20
             CyberwareTheme.FillGridRect(sb, px, offset, s, 5, 20, 2, 10, fillColor, breathe);  //前臂 y20-30
             CyberwareTheme.FillGridRect(sb, px, offset, s, 4, 30, 5, 2, fillColor, breathe);   //手掌 y30-32
@@ -962,7 +958,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             CyberwareTheme.FillGridRect(sb, px, offset, s, 24, 13, 3, 7, fillColor, breathe);  //上臂
             CyberwareTheme.FillGridRect(sb, px, offset, s, 25, 20, 2, 10, fillColor, breathe); //前臂
             CyberwareTheme.FillGridRect(sb, px, offset, s, 24, 30, 5, 2, fillColor, breathe);  //手掌
-            //左腿（分段：大腿+小腿+足）
+            //左腿分段
             CyberwareTheme.FillGridRect(sb, px, offset, s, 10, 29, 5, 13, fillColor, breathe); //大腿+膝 y29-42
             CyberwareTheme.FillGridRect(sb, px, offset, s, 11, 42, 3, 10, fillColor, breathe); //小腿 y42-52
             CyberwareTheme.FillGridRect(sb, px, offset, s, 9, 52, 8, 4, fillColor, breathe);   //足部 y52-56

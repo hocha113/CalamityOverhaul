@@ -12,10 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
-    /// <summary>
-    /// 大理石飞盘：弹射链击回旋镖。在敌人与墙壁间弹射，每次弹射至新目标伤害递增，
-    /// 弹射耗尽后回旋归手，可同时存在两枚
-    /// </summary>
+    /// <summary>大理石飞盘，链击回旋，弹射尽后归手，可并存两枚</summary>
     internal class MarbleDisc : ModItem
     {
         public override void SetDefaults() {
@@ -47,33 +44,28 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         }
     }
 
-    /// <summary>
-    /// 自由飞行的回旋镖弹体（非手持体，不走 BaseHeldProj）：
-    /// 掷出→减速→回手骨架上叠加链击改向，链击层数驱动伤害与金光成长
-    /// </summary>
+    /// <summary>自由飞回旋镖（非 BaseHeldProj），链击层驱动伤害/金光</summary>
     internal class MarbleDiscProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => GraniteMarbleVFX.MarbleTex + "MarbleDisc";
 
-        //弹射总预算（墙壁+敌人合计），耗尽即强制回手
+        //弹射预算(墙+敌)，尽则回手
         private const int MaxBounce = 5;
-        //链击层数上限，每层 +10% 伤害
+        //链击层上限，每层+10%伤
         private const int MaxChainLevel = 3;
-        //链击换目标的搜索半径
+        //链击搜索半径
         private const float ChainRange = 400f;
-        //回手吸附判定半径
+        //回手吸附半径
         private const float CatchRange = 34f;
 
         private Player Owner => Main.player[Projectile.owner];
 
-        //已命中目标记录（仅命中判定发生的所有者端使用）：
-        //换向时整表传给 FindClosestNPC 排除，修掉"最近目标就是刚打过的那个"的回锁问题
+        //owner 端已命中表，换向排除防回锁
         private readonly List<NPC> hitNPCs = new();
 
         private int ChainLevel => (int)Projectile.ai[2];
 
-        //ai[0]: 0=掷出, 1=回手；ai[1]=飞行计时（链击成功时清零续航）；
-        //ai[2]=链击层数 0~3（随弹幕同步，供远端客户端画金光）；localAI[0]=弹射计数
+        //ai[0] 0掷出/1回手；ai[1]飞行计时(链击清零)；ai[2]链击层0~3；localAI[0]弹射计数
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Type] = 2;
             ProjectileID.Sets.TrailCacheLength[Type] = 10;
@@ -97,7 +89,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 return;
             }
 
-            //转速吃飞行速度：减速与回手时肉眼可见地慢下来，旋转金边的闪烁频率随之同步
+            //转速跟飞行速度
             Projectile.rotation += 0.28f + Projectile.velocity.Length() * 0.015f;
             Lighting.AddLight(Projectile.Center, GraniteMarbleVFX.MarbleGold.ToVector3() * (0.4f + 0.14f * ChainLevel));
 
@@ -118,7 +110,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 return;
             }
 
-            //回手段穿墙，保证必定归手，不让卡墙的盘长期占用双盘上限
+            //回手段穿墙
             Projectile.tileCollide = false;
             Vector2 toOwner = Projectile.Center.To(Owner.Center);
             if (toOwner.Length() < CatchRange) {
@@ -144,7 +136,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             }
 
             if (!VaultUtils.isServer) {
-                //短促石响双层：闷击垫底 + 高频凿点收音
+                //石响双层
                 SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.5f, Pitch = 0.3f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Tink with { Volume = 0.22f, Pitch = 0.55f }, Projectile.Center);
                 Vector2 outDir = Projectile.velocity.UnitVector();
@@ -160,7 +152,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             return false;
         }
 
-        //链击成长走乘区而非改写 Projectile.damage：无累乘漂移，重命中旧目标也按当前层数结算
+        //链击走乘区，不改 Projectile.damage
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             modifiers.SourceDamage *= 1f + 0.1f * ChainLevel;
         }
@@ -168,7 +160,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             int chain = ChainLevel;
             if (!VaultUtils.isServer) {
-                //清脆凿击，音调随链击层数逐级抬升；石屑与金闪随层数加量
+                //凿击随层抬调
                 SoundEngine.PlaySound(SoundID.Tink with { Volume = 0.62f, Pitch = -0.05f + 0.16f * chain }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.3f, Pitch = 0.35f }, Projectile.Center);
                 Vector2 back = -Projectile.velocity.UnitVector();
@@ -196,7 +188,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 : null;
             if (next != null) {
                 Projectile.velocity = Projectile.Center.To(next.Center).UnitVector() * 15f;
-                Projectile.ai[1] = 0f;//链击续航：改向成功就刷新飞行窗口
+                Projectile.ai[1] = 0f;//链击续航
                 if (Projectile.ai[2] < MaxChainLevel) {
                     Projectile.ai[2]++;
                 }
@@ -212,7 +204,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 return;
             }
             Player owner = Owner;
-            //回手吸附致死 = 接住：咔哒轻响 + 手部小金色闪光；否则视为中途消散，碎成石屑
+            //吸附致死=接住，否则碎屑
             if (owner.Alives() && Projectile.Center.To(owner.Center).Length() < CatchRange + 26f) {
                 SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.8f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Tink with { Volume = 0.24f, Pitch = 0.72f }, Projectile.Center);
@@ -239,7 +231,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         public override bool PreDraw(ref Color lightColor) {
             Texture2D tex = TextureAssets.Projectile[Type].Value;
             Vector2 origin = tex.Size() / 2f;
-            //旋转残影：逐帧采样历史位置/角度，单帧精灵叠绘，规避带状拖尾在急转弯时的顶点崩坏
+            //旋转残影，避急弯顶点崩
             float ghostAlpha = 0.3f + 0.07f * ChainLevel;
             for (int i = 1; i < Projectile.oldPos.Length; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) {
@@ -247,7 +239,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 }
                 Vector2 dpos = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition;
                 float fade = 1f - i / (float)Projectile.oldPos.Length;
-                //近端暖白、尾端鎏金：MarbleBar 的金白渐变语言
+                //近端暖白、尾端鎏金
                 Color c = Color.Lerp(GraniteMarbleVFX.MarbleGold, GraniteMarbleVFX.MarbleCore, fade) * fade * ghostAlpha;
                 c.A = 0;
                 Main.EntitySpriteDraw(tex, dpos, null, c, Projectile.oldRot[i], origin
@@ -268,10 +260,10 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             core.A = 0;
 
             int chain = ChainLevel;
-            //闪烁相位挂在旋转角上：转速越快金边闪得越急
+            //闪烁挂旋转角
             float flick = 0.5f + 0.5f * MathF.Sin(Projectile.rotation * 3f);
 
-            //历史位置柔光残影（点状叠加，无网格顶点），链击越高路径越亮
+            //历史位柔光残影
             float trailBoost = 0.35f + 0.11f * chain;
             for (int i = 1; i < Projectile.oldPos.Length; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) {
@@ -285,22 +277,21 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
 
             Vector2 pos = Projectile.Center - Main.screenPosition;
 
-            //盘体环境辉光：链击层数越高金光越亮（成长可视化）
+            //盘体辉光随链击
             spriteBatch.Draw(glow, pos, null, gold * (0.5f + 0.16f * chain), 0f, glow.Size() / 2f
                 , 0.48f + 0.05f * chain, SpriteEffects.None, 0f);
 
-            //旋转金边高光：本体放大一圈的加色描边，亮度随转速闪烁、随链击增强
+            //旋转金边
             spriteBatch.Draw(tex, pos, null, gold * (0.3f + 0.32f * flick) * (0.75f + 0.25f * chain), Projectile.rotation
                 , tex.Size() / 2f, Projectile.scale * 1.12f, SpriteEffects.None, 0f);
 
-            //沿盘缘对转的双 glint：追随旋转角读出"旋转的镶金盘"
+            //盘缘双 glint
             Vector2 rim = Projectile.rotation.ToRotationVector2() * 13f * Projectile.scale;
             spriteBatch.Draw(star, pos + rim, null, core * (0.45f + 0.45f * flick), Projectile.rotation
                 , star.Size() / 2f, 0.07f, SpriteEffects.None, 0f);
             spriteBatch.Draw(star, pos - rim, null, gold * (0.3f + 0.35f * (1f - flick)), Projectile.rotation
                 , star.Size() / 2f, 0.055f, SpriteEffects.None, 0f);
 
-            //核心亮斑
             spriteBatch.Draw(star, pos, null, core * 0.75f, -Projectile.rotation * 0.5f, star.Size() / 2f
                 , 0.1f + 0.012f * chain, SpriteEffects.None, 0f);
         }

@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             if (Projectile.ai[0] > 36) {
-                if (Projectile.ai[0] > 80) {//如果时间太长了就设置弹幕可以穿墙收回防止卡墙角
+                if (Projectile.ai[0] > 80) {//超时穿墙收回，防卡墙角
                     Projectile.tileCollide = false;
                 }
                 if (isShoot) {

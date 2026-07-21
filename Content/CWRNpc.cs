@@ -22,61 +22,33 @@ namespace CalamityOverhaul.Content
     {
         #region Data
         public override bool InstancePerEntity => true;
-        /// <summary>
-        /// 瘟疫命中锚点
-        /// </summary>
+        /// <summary>瘟疫命中锚点</summary>
         public Player CreateHitPlayer;
-        /// <summary>
-        /// 瘟疫攻击计数
-        /// </summary>
+        /// <summary>瘟疫攻击计数</summary>
         public byte ContagionOnHitNum = 0;
-        /// <summary>
-        /// 磷光拳套攻击计数
-        /// </summary>
+        /// <summary>磷光拳套攻击计数</summary>
         public byte PhosphorescentGauntletHitCount = 0;
-        /// <summary>
-        /// 鞭子击中次数
-        /// </summary>
+        /// <summary>鞭子击中次数</summary>
         public byte WhipHitNum = 0;
-        /// <summary>
-        /// 鞭子击中类型
-        /// </summary>
+        /// <summary>鞭子击中类型</summary>
         public byte WhipHitType = 0;
-        /// <summary>
-        /// 如果大于0，将停止该实体的大部分活动以模拟冻结效果
-        /// </summary>
+        /// <summary>&gt;0 冻结活动</summary>
         public int TimeFrozenTick;
-        /// <summary>
-        /// 一个特殊标记，朗基努斯识别目标
-        /// </summary>
+        /// <summary>朗基努斯目标标记</summary>
         public bool LonginusSign;
-        /// <summary>
-        /// 上一帧实体的位置
-        /// </summary>
+        /// <summary>上一帧位置</summary>
         public Vector2 OldNPCPos;
-        /// <summary>
-        /// 极寒神性屏障
-        /// </summary>
+        /// <summary>极寒神性屏障</summary>
         public bool IceParclose;
-        /// <summary>
-        /// 是否受到地狱炎爆debuff
-        /// </summary>
+        /// <summary>地狱炎爆</summary>
         public bool HellfireExplosion;
-        /// <summary>
-        /// 是否受到虚空终结debuff
-        /// </summary>
+        /// <summary>虚空终结</summary>
         public bool VoidErosionBool;
-        /// <summary>
-        /// 是否受到灵魂火debuff
-        /// </summary>
+        /// <summary>灵魂火</summary>
         public bool SoulfireExplosion;
-        /// <summary>
-        /// 受到的染料物品ID
-        /// </summary>
+        /// <summary>染料物品 ID</summary>
         public int DyeItemID;
-        /// <summary>
-        /// 如果大于0，则表示该NPC处于虚弱时间状态
-        /// </summary>
+        /// <summary>&gt;0 虚弱中</summary>
         public int IsWeakTime;
         #endregion
 
@@ -90,11 +62,7 @@ namespace CalamityOverhaul.Content
             return cwr;
         }
 
-        /// <summary>
-        /// 接收NPC基本数据
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="whoAmI"></param>
+        /// <summary>接收 NPC 基本数据</summary>
         public static void NPCbasicDataHandler(BinaryReader reader) {
             int whoAmI = reader.ReadByte();
             Vector2 pos = reader.ReadVector2();
@@ -166,12 +134,7 @@ namespace CalamityOverhaul.Content
 
         public override bool SpecialOnKill(NPC npc) {
             if (npc.type == CWRID.NPC_AstrumDeusHead) {
-                //经典的星神游龙，每次都会让电脑死机，简直像是回到了1999年
-                //怎么这么多年过去了，原灾厄那个bug竟然还没修复
-                //写这个Boss的脑袋肯定有问题
-                //一个Boss上百个体节，每个体节每帧受伤好几十次，而每次伤害都要调用
-                //DropHelper.FindClosestWormSegment：这个方法居然要遍历200个NPC
-                //n³复杂度，天才级别的优化
+                //星神游龙跳过 SpecialOnKill，原灾 DropHelper.FindClosestWormSegment 每段每击扫全 NPC 会卡死
                 return false;
             }
             return base.SpecialOnKill(npc);
@@ -210,7 +173,7 @@ namespace CalamityOverhaul.Content
                 }
             }
 
-            if (npc.type == CWRID.NPC_PrimordialWyrmHead && !CWRRef.GetDownedPrimordialWyrm()) {//我不知道为什么原灾厄没有设置这个字段，为了保持进度的正常，我在这里额外设置一次
+            if (npc.type == CWRID.NPC_PrimordialWyrmHead && !CWRRef.GetDownedPrimordialWyrm()) {//原灾未写 downed，补一次进度
                 CWRRef.SetDownedPrimordialWyrm(true);
                 if (Main.dedServ) {
                     NetMessage.SendData(MessageID.WorldData);
@@ -249,7 +212,7 @@ namespace CalamityOverhaul.Content
                 npcLoot.SimpleAdd(3380, 1, 2, 6);
             }
             else if (npc.type == CWRID.NPC_SupremeCalamitas) {
-                npcLoot.SimpleAdd(ModContent.ItemType<CalSelfPortrait>(), 10);//10%概率掉落自画像
+                npcLoot.SimpleAdd(ModContent.ItemType<CalSelfPortrait>(), 10);//10%
             }
             else if (npc.type == CWRID.NPC_DesertScourgeHead) {
                 dontExpertRule.SimpleAdd(ModContent.ItemType<UnderTheSand>(), 10);
@@ -267,21 +230,21 @@ namespace CalamityOverhaul.Content
                 npcLoot.Add(dontExpertRule);
             }
             else if (npc.type == NPCID.WallofFlesh) {
-                npcLoot.SimpleAdd(ModContent.ItemType<Arbiter>(), 1);//血肉墙必定掉落断罪师
+                npcLoot.SimpleAdd(ModContent.ItemType<Arbiter>(), 1);//必掉断罪师
             }
         }
 
         public override void ModifyShop(NPCShop shop) {
-            if (shop.NpcType == NPCID.Clothier) {//裁缝将会售卖娃娃
+            if (shop.NpcType == NPCID.Clothier) {//娃娃
                 shop.Add(ModContent.ItemType<HandmadeDoll>());
             }
             if (shop.NpcType == NPCID.Merchant) {
-                shop.Add(ItemID.WormholePotion, Condition.Multiplayer);//商人会在多人模式下售卖传送药水
-                shop.Add(ItemID.RecallPotion, Condition.DownedEyeOfCthulhu);//击败克苏鲁之眼后售卖回忆药水
-                shop.Add(ItemID.PotionOfReturn, Condition.Hardmode);//击败血肉墙之眼后售卖返回药水
+                shop.Add(ItemID.WormholePotion, Condition.Multiplayer);
+                shop.Add(ItemID.RecallPotion, Condition.DownedEyeOfCthulhu);
+                shop.Add(ItemID.PotionOfReturn, Condition.Hardmode);
             }
             if (shop.NpcType == CWRID.NPC_THIEF) {
-                shop.Add(ModContent.ItemType<Unsunghero>(), Condition.Hardmode);//击败血肉墙之眼后售卖英雄无冕
+                shop.Add(ModContent.ItemType<Unsunghero>(), Condition.Hardmode);
             }
             foreach (AbstractNPCShop.Entry shopEntity in shop.Entries) {
                 Item item = shopEntity.Item;
@@ -298,7 +261,7 @@ namespace CalamityOverhaul.Content
 
         public override void DrawEffects(NPC npc, ref Color drawColor) {
             if (IsWeakTime > 0) {
-                drawColor = Color.Lerp(drawColor, Color.BlueViolet, 0.4f);//虚弱时间时，NPC会变成蓝紫色
+                drawColor = Color.Lerp(drawColor, Color.BlueViolet, 0.4f);//虚弱蓝紫
             }
             if (VoidErosionBool) {
                 drawColor.R = 100;
@@ -344,10 +307,7 @@ namespace CalamityOverhaul.Content
             return base.DrawHealthBar(npc, hbPosition, ref scale, ref position);
         }
 
-        /// <summary>
-        /// 强制让指定NPC掉落物品并设置死亡事件
-        /// </summary>
-        /// <param name="npcID"></param>
+        /// <summary>强制指定 NPC 掉落并死亡</summary>
         public static void SetNPCLoot(int npcID) {
             if (VaultUtils.isClient) {
                 ModPacket modPacket = CWRMod.Instance.GetPacket();

@@ -7,19 +7,19 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>死亡演出玩家侧：过场启停与被抓玩家位移锁定；运镜见 PrimeDeathCutscene；震动经 RequestShake 叠加到当前过场</summary>
+    /// <summary>死亡演出玩家侧</summary>
     internal class PrimeDeathPerformancePlayer : ModPlayer
     {
         //拖拽起点缓存（被抓玩家本地）
         private bool dragStarted;
         private Vector2 dragStartPos;
 
-        /// <summary>由头部演出逻辑请求一次屏幕震动（本地，受屏幕震动设置约束，仅死亡演出运镜期间生效）</summary>
+        /// <summary>请求死亡运镜震动，本地</summary>
         internal static void RequestShake(float intensity, int duration) {
             if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
                 return;
             }
-            //震动统一叠加到死亡演出运镜上；非该演出期间（含被更高优先级演出抢占）直接忽略
+            //非死亡运镜期间忽略
             if (CutsceneDirector.CurrentClip is not PrimeDeathCutscene) {
                 return;
             }
@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private static void UpdateCutscene(HeadPrimeAI headAI, NPC head) {
             bool playing = CutsceneDirector.CurrentClip is PrimeDeathCutscene;
             if (headAI != null && head != null) {
-                //已在播放时 restartSameClip:false 会直接复用，不会每帧重启
+                //restartSameClip:false，已播则复用
                 if (!playing) {
                     CutsceneDirector.Play<PrimeDeathCutscene, NPC>(head, restartSameClip: false);
                 }
@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        /// <summary>查询当前正在进行死亡演出的机械骷髅王头部，无则返回 null</summary>
+        /// <summary>死亡演出中的头部，无则null</summary>
         private static HeadPrimeAI FindPerformanceHead(out NPC head) {
             head = null;
             int h = HeadPrimeAI.ActivePerformanceHead;

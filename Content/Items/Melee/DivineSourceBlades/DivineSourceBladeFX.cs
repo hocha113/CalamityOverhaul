@@ -10,9 +10,9 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
     {
         public const string BladeTexture = CWRConstant.Item_Melee + "DivineSourceBlade";
 
-        /// <summary>贴图 100×164：剑柄抓握点</summary>
+        /// <summary>贴图 100×164 剑柄抓握点</summary>
         public static readonly Vector2 GripPixel = new(15f, 151f);
-        /// <summary>贴图 100×164：剑尖</summary>
+        /// <summary>贴图 100×164 剑尖</summary>
         public static readonly Vector2 TipPixel = new(94f, 8f);
 
         public static Effect BladeGlow => EffectLoader.DivineSourceBladeGlow?.Value;

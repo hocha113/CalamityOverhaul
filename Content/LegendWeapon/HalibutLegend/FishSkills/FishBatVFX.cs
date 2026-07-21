@@ -6,12 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 群蝠幻流化形入场/退场的英雄时刻弹幕：<br/>
-    /// 入场（ai0=0）在施放点冻结玩家姿态，三片暗影剪影加速撕散并蚀空本体；<br/>
-    /// 退场（ai0=1）追踪玩家实时位置，剪影自外收拢重组，前段压住真身显形避免瞬现<br/>
-    /// 零伤害纯视觉，仅拥有者客户端生成、走常规弹幕同步，粒子装饰在各端 AI 内自发
-    /// </summary>
+    /// <summary>群蝠幻流化形入场/退场的英雄时刻弹幕</summary>
     internal class FishBatMorphProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -25,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private bool Assemble => Projectile.ai[0] == 1f;
         private ref float Timer => ref Projectile.localAI[0];
 
-        //共享绘制傀儡：仅在单次 PreDraw 内写入后立即使用，非跨帧状态（镜像 MimicPhantom）
+        //共享绘制傀儡
         private static Player ghostDrawPlayer;
         private bool poseCaptured;
         private Rectangle poseBody;
@@ -70,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 //收拢目标点跟着真身走，落点与显形逐帧对齐
                 Projectile.Center = Owner.Center;
                 if (Timer < 14) {
-                    //压住显形直到剪影凝到峰值：真身在暗影全覆盖下现身，再由剪影衰减揭开
+                    //压住显形直到剪影凝到峰值
                     Owner.GetOverride<HalibutPlayer>().HidePlayerTime = 2;
                 }
                 if (!VaultUtils.isServer) {
@@ -84,7 +79,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Timer++;
         }
 
-        /// <summary>撕散逐帧装饰：起手双声呐环一快一慢、暗烟自躯体渗出、翼影自剪影边撕出</summary>
+        /// <summary>撕散逐帧装饰，起手双声呐环一快一慢、暗烟自躯体渗出、翼影自剪影边撕出</summary>
         private void SpawnTearDress() {
             Vector2 basePos = Projectile.Center;
             if (Timer == 0) {
@@ -111,11 +106,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>重组逐帧装饰：塌缩声呐环定位重组点、暗烟自外圈向心收拢、落定轻响环</summary>
+        /// <summary>重组逐帧装饰，塌缩声呐环定位重组点、暗烟自外圈向心收拢、落定轻响环</summary>
         private void SpawnAssembleDress() {
             Vector2 center = Projectile.Center;
             if (Timer == 0) {
-                //反向环：由外向内塌缩，宣告蝠群的归巢点
+                //反向环
                 PRTLoader.NewParticle<PRT_FishBatSonar>(center, Vector2.Zero, SonarLine, 1f)
                     .Configure(1.8f, 0.18f, 18);
             }
@@ -156,7 +151,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             ghostDrawPlayer ??= new Player();
             Player gp = ghostDrawPlayer;
-            //标记为陈列体：tileRangeX/Y 是全局静态，镜像 MimicPhantom 防止抹掉接触距离加成
+            //标记为陈列体
             gp.isDisplayDollOrInanimate = true;
             gp.CopyVisuals(owner);
             gp.ResetEffects();
@@ -170,7 +165,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Vector2 basePos = Projectile.Center - owner.Size * 0.5f;
 
-            //中心本体：撕散时最先蚀空；重组时快速凝到峰值盖住真身现身帧，尾段衰减揭开
+            //中心本体
             float coreAlpha = Assemble
                 ? MathF.Min(1f, MathF.Max(0f, (t - 0.22f) / 0.36f)) * 0.72f * (1f - SmoothStep((t - 0.68f) / 0.32f))
                 : MathF.Max(0f, 1f - t * 1.9f) * 0.78f;
@@ -203,7 +198,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private static void DrawGhost(Player gp, Vector2 pos, float rotation, float alpha) {
-            //基色固定暗紫，整体透明度交给 shadow 形参：盔甲/时装层一起淡出，读作剪影而非亮甲假人
             gp.skinColor = GhostTint;
             gp.shirtColor = GhostTint;
             gp.underShirtColor = GhostTint;
@@ -218,10 +212,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 新月扑翼残影：蝙蝠下拍瞬间甩出的皮翼暗影，AlphaBlend 暗紫压色非加色，<br/>
-    /// 顺拍翼方向短促漂移、微展开后蚀散，双层窄叠读作皮膜厚度
-    /// </summary>
+    /// <summary>新月扑翼残影</summary>
     internal class PRT_FishBatCrescent : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "CrescentSoft02";
@@ -273,10 +264,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 声呐脉冲细环：回声定位可视化，Ring01 细线环加色绘制、主环+滞后回声双线；<br/>
-    /// from&gt;to 时为塌缩环（退场定位用）。全技能唯一亮部，峰值透明度压在 0.55 以下
-    /// </summary>
+    /// <summary>声呐脉冲细环</summary>
     internal class PRT_FishBatSonar : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Ring01";
@@ -326,10 +314,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 化形暗烟：聚散的载体，SmokeSheet01 随机帧 AlphaBlend 炭黑染色，<br/>
-    /// 缓胀缓散带微升，暗色压底永不发光
-    /// </summary>
+    /// <summary>化形暗烟</summary>
     internal class PRT_FishBatSmoke : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "SmokeSheet01";

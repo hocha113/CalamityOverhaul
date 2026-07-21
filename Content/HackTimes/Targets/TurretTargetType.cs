@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.HackTimes.Targets
 {
-    /// <summary>炮台目标工厂</summary>
+    /// <summary>炮台目标</summary>
     internal class TurretTargetType : HackTargetType
     {
         public override HackTargetKind Kind => HackTargetKind.Turret;

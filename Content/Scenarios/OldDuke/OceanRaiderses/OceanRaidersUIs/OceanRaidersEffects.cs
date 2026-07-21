@@ -5,28 +5,19 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaidersUIs
 {
-    /// <summary>
-    /// 海洋吞噬者UI视觉特效 - 硫磺海粒子
-    /// </summary>
+    /// <summary>海洋吞噬者UI粒子</summary>
     internal class OceanRaidersEffects : IChestEffects
     {
-        //粒子列表
         private readonly List<BubblePRT> bubbles = [];
         private readonly List<AshPRT> ashParticles = [];
         private readonly List<SeaStarPRT> seaStars = [];
 
-        //粒子刷新计时器
         private int bubbleSpawnTimer = 0;
         private int ashSpawnTimer = 0;
         private int starSpawnTimer = 0;
 
         private const float SulfseaSideMargin = 30f;
 
-        /// <summary>
-
-        /// 更新所有粒子和特效
-
-        /// </summary>
         public void UpdateParticles(bool isActive, Vector2 panelPosition, int panelWidth, int panelHeight) {
             UpdateBubbles(isActive, panelPosition, panelWidth, panelHeight);
             UpdateAshParticles(isActive, panelPosition, panelWidth, panelHeight);
@@ -92,27 +83,21 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaiders
         }
 
         public void DrawEffects(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, float uiAlpha) {
-            //先绘制灰烬，在底层
+            //灰烬底层
             foreach (var ash in ashParticles) {
                 ash.Draw(spriteBatch, uiAlpha * 0.75f);
             }
 
-            //然后绘制气泡
             foreach (var b in bubbles) {
                 b.DrawEnhanced(spriteBatch, uiAlpha * 0.9f);
             }
 
-            //最后绘制海星
+            //海星顶层
             foreach (var s in seaStars) {
                 s.DrawEnhanced(spriteBatch, uiAlpha * 0.4f);
             }
         }
 
-        /// <summary>
-
-        /// 清空所有特效
-
-        /// </summary>
         public void Clear() {
             bubbles.Clear();
             ashParticles.Clear();

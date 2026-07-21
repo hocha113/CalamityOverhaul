@@ -5,13 +5,12 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Structures
 {
-    //修复CalamityMod在子世界中HandleTileGrowth抛出ArgumentOutOfRangeException的问题
-    //原因是子世界中Main.worldSurface可能被设置到接近世界底部，导致genRand.Next的minValue>=maxValue
+    //子世界 HandleTileGrowth：worldSurface 近底部时 genRand.Next min>=max
     internal class CalamityWorldBugFix : ICWRLoader
     {
         private static void On_HandleTileGrowth(Action orig) {
             int surfaceLevel = (int)Main.worldSurface - 1;
-            //地表层低于坐标10或高于接近底部时，随机范围会非法，直接跳过整个函数
+            //worldSurface 越界则跳过
             if (surfaceLevel <= 10 || surfaceLevel >= Main.maxTilesY - 20) {
                 return;
             }

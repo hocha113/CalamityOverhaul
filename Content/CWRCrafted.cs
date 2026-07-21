@@ -40,14 +40,14 @@ namespace CalamityOverhaul.Content
         }
 
         private static void AddResultContent() {
-            //添加染缸的合成
+            //染缸
             {
                 Recipe.Create(ItemID.DyeVat)
                 .AddIngredient(ItemID.Wood, 50)
                     .AddTile(TileID.Sawmill)
                     .Register();
             }
-            //添加地狱熔炉的合成
+            //地狱熔炉
             {
                 Recipe.Create(ItemID.Hellforge)
                 .AddIngredient(ItemID.Furnace)
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content
                     .AddTile(TileID.Anvils)
                     .Register();
             }
-            //添加风暴长矛的合成
+            //风暴长矛
             {
                 if (CWRID.Item_StormlionMandible > 0) {
                     Recipe.Create(ItemID.ThunderSpear)
@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content
                         .Register();
                 }
             }
-            //添加闪光皇后鱼的配方
+            //闪光皇后鱼
             {
                 if (CWRID.Item_SparklingEmpress > 0 && CWRID.Item_SeaPrism > 0 && CWRID.Item_PearlShard > 0) {
                     Recipe.Create(CWRID.Item_SparklingEmpress)
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content
                         .Register();
                 }
             }
-            //添加硫火鱼的配方
+            //硫火鱼
             {
                 if (CWRID.Item_DragoonDrizzlefish > 0 && CWRID.Item_PearlShard > 0) {
                     Recipe.Create(CWRID.Item_DragoonDrizzlefish)
@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content
                         .Register();
                 }
             }
-            //添加卢克索礼物的合成
+            //卢克索礼物
             {
                 if (CWRID.Item_LuxorsGift > 0 && CWRID.Item_PearlShard > 0) {
                     Recipe.Create(CWRID.Item_LuxorsGift)
@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content
                         .Register();
                 }
             }
-            //添加雪球炮的合成
+            //雪球炮
             {
                 Recipe.Create(ItemID.SnowballCannon)
                     .AddIngredient(ItemID.IllegalGunParts, 1)
@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content
                     .AddTile(TileID.Anvils)
                     .Register();
             }
-            //添加魔影系列的合成
+            //魔影系列
             {
                 if (CWRID.Tile_DraedonsForge > 0 && CWRID.Item_AshesofAnnihilation > 0) {
                     //诘责
@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Content
                     }
                 }
             }
-            //添加水矢的合成
+            //水矢
             {
                 Recipe.Create(ItemID.WaterBolt)
                     .AddIngredient(ItemID.Book)

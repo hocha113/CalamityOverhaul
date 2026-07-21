@@ -6,10 +6,10 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>机械臂 NPCOverride 基类：从属头部、驱动臂状态机、响应编队/殉爆/退场；攻击行为见 States.Arms 各状态</summary>
+    /// <summary>臂 NPCOverride 基类，行为见 States.Arms</summary>
     internal abstract class PrimeArm : CWRNPCOverride
     {
-        /// <summary>十字绞杀封位锚点（头部正式进入绞杀状态的瞬间冻结，与预警线对齐）</summary>
+        /// <summary>十字封位锚点，绞杀瞬间冻结</summary>
         private Vector2 crossAnchor;
         private bool crossAnchorLatched;
         internal bool bossRush;
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         /// <summary>初始状态工厂</summary>
         protected abstract PrimeArmStateBase CreateInitialState();
-        /// <summary>转阶段殉爆延迟（帧），四肢依次爆裂节拍</summary>
+        /// <summary>转阶段殉爆延迟，帧</summary>
         protected abstract int DetonationDelay { get; }
         /// <summary>环绕编队的角位索引（0~3）</summary>
         protected abstract int FormationIndex { get; }
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return false;
             }
 
-            //Mechdusa（机械混合体）形态交还原版AI
+            //Mechdusa交还原版AI
             if (NPC.IsMechQueenUp) {
                 return true;
             }
@@ -67,13 +67,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             npc.aiStyle = -1;
 
-            //头部已不在：机械臂立即失能坠毁（服务端单点决策，避免客户端凭空消失后被同步回来）
+            //头没了则臂坠毁，服务端决策
             if (!head.active || head.type != NPCID.SkeletronPrime) {
                 KillSelfOnServer();
                 return false;
             }
 
-            //机械臂全程免疫所有 debuff
+            //免疫debuff
             for (int i = 0; i < npc.buffImmune.Length; i++) {
                 npc.buffImmune[i] = true;
             }
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             EnsureStateMachine();
             UpdateContext();
 
-            //纯服务端权威：每帧广播权威位置，客户端傀儡呈现(编队/攻击位移均由此同步)
+            //服务端广播位置，客户端傀儡
             if (!VaultUtils.isClient) {
                 npc.netUpdate = true;
             }
@@ -89,25 +89,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             PrimeStateIndex headState = HeadPrimeAI.GetStateIndex(head);
             int headPhase = (int)head.ai[PrimeAiSlots.HeadPhase];
 
-            //转阶段：收拢编队，按各自延迟依次殉爆
-            //必须先于狂暴击杀兜底：转阶段一进入就挂 Rage 标记
+            //转阶段殉爆
+            //先于狂暴兜底挂Rage
             if (headState == PrimeStateIndex.PhaseTransition) {
                 RunDetonationSequence();
                 return false;
             }
 
-            //头部进入狂暴/死亡演出：四肢不应再存在（转阶段演出漏网的兜底）
+            //狂暴/死亡时四肢兜底清除
             if (headPhase >= PrimePhase.Rage) {
                 KillSelfOnServer();
                 return false;
             }
 
-            //头部脱战离场：跟随退场
+            //脱战跟随退场
             if (headState == PrimeStateIndex.Despawn && npc.timeLeft > 10) {
                 npc.timeLeft = 10;
             }
 
-            //编队接管：冲撞与白昼狂暴期环绕成旋转护盾
+            //冲撞/白昼编队环绕
             if (HandleFormationOverride(headState)) {
                 return false;
             }
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             UpdateVisualDecay();
             ArmPreUpdate();
 
-            //客户端：纯服务端权威，丢弃状态机算出的运动学(位置还原、速度清零不外推)，仅呈现同步位置
+            //客户端只呈现同步位置
             bool clientShadow = VaultUtils.isClient;
             Vector2 savedPos = npc.position;
 
@@ -134,10 +134,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return false;
         }
 
-        /// <summary>状态机更新前的控制器逻辑（距离安全网、专属视觉驱动等）</summary>
+        /// <summary>状态机更新前</summary>
         protected virtual void ArmPreUpdate() { }
 
-        /// <summary>状态机更新后的控制器逻辑（帧动画等）</summary>
+        /// <summary>状态机更新后</summary>
         protected virtual void ArmPostUpdate() { }
 
         #region 状态机维护
@@ -154,7 +154,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             armStateMachine = new NpcStateMachine<PrimeArmStateContext>(armContext, aiSlot: PrimeAiSlots.ArmStateSlot);
 
-            //客户端中途加入时从同步槽恢复服务端当前状态
+            //中途加入从同步槽恢复
             IVaultState<PrimeArmStateContext> syncedState = null;
             int syncedStateId = (int)npc.ai[PrimeAiSlots.ArmStateSlot];
             if (VaultUtils.isClient && syncedStateId > 0) {
@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        /// <summary>编队接管：冲撞/白昼狂暴环绕；收尾蓄力见 PrimeFacts.IsCommittedArmState 延后入列</summary>
+        /// <summary>编队环绕，收尾蓄力见 IsCommittedArmState</summary>
         private bool HandleFormationOverride(PrimeStateIndex headState) {
             PrimeCommandKind command = HeadPrimeAI.GetActiveCommand(head);
 
@@ -208,8 +208,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             bool committed = PrimeFacts.IsCommittedArmState((int)npc.ai[PrimeAiSlots.ArmStateSlot]);
 
             if (headState == PrimeStateIndex.TetherSpin) {
-                //电弧风车 40 帧内就要拉链就位，等不了收尾：干净取消蓄力（走 OnExit 清理）
-                //而非冻结，顺带杜绝"冻结恢复后预警早已过期却凭空开火"的旧问题
+                //TetherSpin硬取消蓄力
                 if (committed && !VaultUtils.isClient) {
                     armStateMachine.ChangeState(CreateInitialState());
                     npc.netUpdate = true;
@@ -253,7 +252,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             npc.dontTakeDamage = true;
             npc.damage = 0;
             npc.velocity = Vector2.Zero;
-            //TetherSpin 期间头部把收紧半径广播在指令槽（720→420），未广播/异常值时取默认
+            //TetherSpin收紧半径在指令槽
             float radius = head.ai[PrimeAiSlots.HeadCommandSlot];
             if (radius < 100f || radius > 900f) {
                 radius = 280f;
@@ -275,7 +274,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return true;
         }
 
-        /// <summary>十字封位：预热跟踪玩家，绞杀态瞬间冻结锚点与预警/射线对齐</summary>
+        /// <summary>十字封位，绞杀瞬间冻锚点</summary>
         private bool ApplyCrossFormation(PrimeStateIndex headState) {
             npc.dontTakeDamage = true;
             npc.damage = 0;
@@ -297,7 +296,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return true;
         }
 
-        /// <summary>转阶段殉爆：收拢贴身编队，预热火花，按延迟自爆</summary>
+        /// <summary>转阶段殉爆</summary>
         private void RunDetonationSequence() {
             npc.dontTakeDamage = true;
             npc.damage = 0;
@@ -308,10 +307,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.25f);
             npc.rotation = head.Center.To(npc.Center).ToRotation() - MathHelper.PiOver2;
 
-            //殉爆倒计时（localAI 本地推进，两端各自走完一致的节拍）
+            //殉爆倒计时
             npc.localAI[2]++;
 
-            //临爆前的窜火预兆
+            //临爆窜火
             if (!VaultUtils.isServer && npc.localAI[2] > DetonationDelay - 14 && Main.GameUpdateCount % 2 == 0) {
                 Dust dust = Dust.NewDustDirect(npc.position, npc.width, npc.height,
                     DustID.FireworkFountain_Red, 0, 0, 100, Color.OrangeRed, Main.rand.NextFloat(1.2f, 2f));
@@ -338,7 +337,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         #endregion
 
-        /// <summary>共享视觉衰减：后坐力回落与硝烟</summary>
+        /// <summary>后坐/硝烟衰减</summary>
         private void UpdateVisualDecay() {
             armContext.RecoilIntensity *= 0.88f;
             if (armContext.RecoilIntensity < 0.1f) {

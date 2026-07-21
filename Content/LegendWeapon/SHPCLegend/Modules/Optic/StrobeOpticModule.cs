@@ -4,7 +4,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>频闪瞄具：光束每 16 帧交替穿墙，命中 30% 混乱</summary>
+    /// <summary>频闪瞄具，每 16 帧交替穿墙，命中 30% 混乱</summary>
     internal sealed class StrobeOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;
@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         }
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
-            //以游戏帧为周期切换穿墙，使光束在墙体内外间歇穿越
+            //16 帧半周期穿墙
             beam.Projectile.tileCollide = Main.GameUpdateCount % 16 < 8;
         }
 

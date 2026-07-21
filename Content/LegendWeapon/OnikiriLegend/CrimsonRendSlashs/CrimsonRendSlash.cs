@@ -18,21 +18,10 @@ using SlashDef = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRend
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 {
     /// <summary>
-    /// 绯红裂空斩：按住左键驱动的滚动五段连段控制器<br/>
-    /// 手感契约：<br/>
-    /// 1. 每拍开火瞬间捕获鼠标方向，连段全程可转向追敌，姿态每帧跟随鼠标<br/>
-    /// 2. 按住循环出刀，轻点只出首拍快斩；松手停排新拍，已挥出的刀光自然收势<br/>
-    /// 3. 收势期间再按下从第一拍立刻重启，没有余韵锁死等待<br/>
-    /// 4. 拍间隔与命中冷却随近战攻速缩放；伤害类别为无速真近战，避免攻速双重生效<br/>
-    /// 5. 连段期间设置玩家持械姿态（heldProj、itemRotation、朝向），角色跟手<br/>
-    /// 6. 实体刀走独立姿态时间轴（首次 2 帧起手蓄势 → 扫掠 → 拍间沉入身后换向 → 松手收刀回背）；
-    /// 深度驱动远近景分层、统一透视缩放与压暗，命中附带 1 帧视觉停驻与回坐——全部纯视觉，不动节拍与判定<br/>
-    /// 节拍（60fps，攻速 1）：首次 +2 帧纯起手，此后纵斩下劈 +10 反手上撩 +10 月牙重斩 +13 蓄势重斩 +15 蓄势终结 +24 回到首拍；
-    /// 前三拍快斩 easeOut 干脆完成，后两拍高离心率椭圆重斩走蓄势-滞帧-爆发曲线，重击伤害加成回报等待<br/>
-    /// 每拍首次命中触发同一套爆点全层演出（强度随拍位递增），拒绝"只有最后一下有反馈"；
-    /// 命中材质分流：金属（NPCValue.ISTheofSteel）保留白热火花，血肉改走重力血珠四溅；
-    /// 不冻结世界或目标时间，屏幕级只保留短白闪与 Bloom，防眩晕<br/>
-    /// ai[0]=初始瞄准角(弧度，远端未同步鼠标前的回退) ai[2]=尺寸倍率
+    /// 绯红裂空斩,按住左键滚动五段连段控制器<br/>
+    /// 按住循环出刀,松手停排,收势再按从第一拍重启,实体刀独立姿态时间轴(纯视觉)<br/>
+    /// 拍间隔/命中冷却随近战攻速缩放,伤害类无速真近战<br/>
+    /// ai[0]=初始瞄准角(弧度) ai[2]=尺寸倍率
     /// </summary>
     internal class CrimsonRendSlash : BaseHeldProj, IPrimitiveDrawable, ICrimsonFarDrawable, IOverlayDrawable
     {
@@ -41,10 +30,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         //==== 节拍常量 ====
         private const int BeatCount = 5;
         private const int BurstFadeFrames = 16;
-        private const int AfterglowEnd = 46;   //命中余韵层最晚结束帧（相对 lastImpactFrame）
+        private const int AfterglowEnd = 46;   //命中余韵最晚结束帧(相对 lastImpactFrame)
         private const int BaseHitCooldown = 10;
         private const int BladeReleaseRecoveryFrames = 12;
-        /// <summary>首次启动的纯起手帧数：反向蓄势后无论是否松手都保证首拍发出（仅首拍延后，节拍间隔不变）</summary>
+        /// <summary>首次纯起手帧数,反向蓄势后无条件出首拍(仅首拍延后)</summary>
         private const int FirstWindupFrames = 2;
         private const float BladePathStart = 0.06f;
         private const float BladePathEnd = 0.94f;
@@ -53,12 +42,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private const int SmearCapacity = 20;
         private const int SmearLifeFrames = 6;
         private const int SmearMaxDrawn = 8;
-        /// <summary>物品贴图中的护手与刀尖位置（UV 比例）；护手作为手心支点，避免刀身绕贴图中心悬空旋转</summary>
+        /// <summary>贴图护手/刀尖 UV,护手作手心支点</summary>
         private static Vector2 BladeHiltUV => new(0.1f, 1f);
         private static Vector2 BladeTipUV => new(0.73f, 0.01f);
-        /// <summary>各拍到下一拍的基准间隔（攻速 1 时），末位为终结后的循环呼吸</summary>
+        /// <summary>各拍到下一拍基准间隔(攻速 1),末位终结后循环呼吸</summary>
         private static readonly int[] BeatGap = [10, 10, 13, 15, 24];
-        /// <summary>快斩四拍收势轻确认参数（白闪强度/火花数/音高/是否命中型白闪）</summary>
+        /// <summary>快斩收势轻确认(白闪/火花/音高/是否命中型白闪)</summary>
         private static readonly (float Flash, int Sparks, float Pitch, bool HitFlash)[] PingTable = [
             (0.02f, 6, 0.50f, false),
             (0.01f, 8, 0.65f, false),
@@ -66,29 +55,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             (0.06f, 12, 0.85f, true),
         ];
 
-        /// <summary>已挥出的子刀光：出生帧与瞄准角在开火瞬间冻结，视觉与判定随其独立走完生命期</summary>
+        /// <summary>已挥出子刀光,出生帧与瞄准角开火瞬间冻结</summary>
         private sealed class ActiveSlash
         {
             public SlashDef Def;
             public int Birth;        //绝对 timer 帧
             public int Beat;         //0..4 拍位
-            public float Aim;        //该拍开火瞬间的瞄准角
-            public int Facing;       //该拍冻结的玩家朝向
+            public float Aim;        //该拍开火瞄准角
+            public int Facing;       //该拍冻结朝向
             public bool ImpactDone;  //本拍首次命中爆点已触发
-            public bool SnapPlayed;  //重击爆发脆响已播（快斩恒 true）
-            public Vector2? FrozenCenter;   //硬让位瞬间就地冻结的世界锚点(平时随玩家)
+            public bool SnapPlayed;  //重击爆发脆响已播(快斩恒 true)
+            public Vector2? FrozenCenter;   //硬让位瞬间冻结世界锚点
         }
 
-        /// <summary>停手超过该帧数后再按从第一拍重启，短停续接拍序（节奏点按可走完整连段）</summary>
+        /// <summary>停手超过该帧后再按从第一拍重启,短停续接拍序</summary>
         private const int ComboResetFrames = 30;
-        /// <summary>从其它模组交接重启时的微前摇（帧）：刀从交接角度划到起手位——
-        /// 仅 <see cref="OniBladeHandoff"/> 新鲜时存在，普通点按/续拍保持当帧出刀，节奏点按玩法逐帧不变</summary>
+        /// <summary>模组交接重启微前摇(帧),仅 <see cref="OniBladeHandoff"/> 新鲜时;普通点按当帧出刀</summary>
         private const int RestartWindupFrames = 3;
-        /// <summary>轻点缓冲（帧）：让位/签名拍保留期间的点击不丢失，窗口一关补发这一拍
-        /// （魂类输入缓冲语义：按了就有，只是等到最近的合法帧）</summary>
+        /// <summary>轻点缓冲(帧),让位/签名拍保留中的点击不丢,窗口关后补发</summary>
         private const int PressBufferFrames = 24;
 
-        /// <summary>实体刀姿态残影采样（body 锚定：绘制时挂在当前手心，只保留角度/深度）</summary>
+        /// <summary>实体刀姿态残影(挂当前手心,只留角度/深度)</summary>
         private struct BladeSmear
         {
             public float Rotation;
@@ -96,7 +83,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             public int Facing;
             public float Scale;
             public int Life;        //剩余帧
-            public float Strength;  //出生时角速度权重
+            public float Strength;  //出生角速度权重
         }
 
         private readonly List<ActiveSlash> actives = new(8);
@@ -106,13 +93,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private int lastBeatFire;
         private bool scheduling;
         private bool firstBeatFired;
-        /// <summary>首拍前摇已走过的帧数（软保留/让位期间不计，保证起手弧线完整播放）</summary>
+        /// <summary>首拍前摇已走帧数(软保留/让位不计)</summary>
         private int firstWindupTicks;
-        /// <summary>上帧 DownLeft，检测真按下沿（区别于让位/保留结束后的按住续接）</summary>
+        /// <summary>上帧 DownLeft,检测真按下沿</summary>
         private bool prevDownLeft;
-        /// <summary>轻点缓冲余量：按下即填满，开火即清——一次点击恰好兑现一拍</summary>
+        /// <summary>轻点缓冲余量,按下填满,开火即清</summary>
         private int pressBuffer;
-        /// <summary>本次起手/重启继承的交接刀角（<see cref="OniBladeHandoff"/>），开火即清</summary>
+        /// <summary>本次继承的交接刀角(<see cref="OniBladeHandoff"/>),开火即清</summary>
         private float handoffRot;
         private bool hasHandoff;
         private float sizeMul = 1f;
@@ -121,20 +108,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private Vector2 lastImpactPos;
         private float lastImpactAim;
         private float lastImpactFlip = 1f;
-        /// <summary>最近一次爆点是否砍在金属上（驱动粒子与爆点绘制材质）</summary>
+        /// <summary>最近爆点是否金属(驱动粒子/爆点材质)</summary>
         private bool lastImpactSteel;
         private Rectangle[] speedLineRects;
         private float[] speedLineOffsets;
-        //==== 实体刀姿态时间轴（纯视觉，确定性推演，不上网络） ====
+        //==== 实体刀姿态时间轴(纯视觉,确定性,不上网络) ====
         private float bladeRotation;
         private float bladePrevRotation;
-        private float bladeDepth;          //-1=完全没入身后 .. +1=完全在身前
+        private float bladeDepth;          //-1=身后 .. +1=身前
         private float bladeOpacity;
         private int bladeFacing = 1;
         private bool bladePoseInitialized;
         private Player.CompositeArmStretchAmount bladeArmStretch = Player.CompositeArmStretchAmount.Full;
         private Vector2 bladeHandWorld;
-        //==== 命中反馈（视觉停驻/回坐/尺寸脉冲，不触碰节拍与判定） ====
+        //==== 命中反馈(视觉停驻/回坐/尺寸脉冲,不碰节拍与判定) ====
         private int impactHoldFrames;
         private float impactRecoil;
         private float impactRecoilSign = 1f;
@@ -143,8 +130,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private readonly BladeSmear[] smears = new BladeSmear[SmearCapacity];
         private int smearHead;
 
-        /// <summary>刃身环境光锚点（与实际命中无关）：最新子刀光刃锋鼓腹沿其瞄准方向的位置，
-        /// 供每帧常驻的 Lighting/Bloom 使用；真实命中特效用 <see cref="lastImpactPos"/>（目标实际中心）</summary>
+        /// <summary>刃身环境光锚点(非命中点),最新子刀光鼓腹位;真实命中用 <see cref="lastImpactPos"/></summary>
         private Vector2 AmbientAnchor {
             get {
                 if (actives.Count > 0) {
@@ -155,17 +141,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>
-        /// 触发接口：在持有者客户端调用（<c>player.whoAmI == Main.myPlayer</c> 时），
-        /// tML 自动完成多人同步；生成后连段由控制器按住循环驱动并跟随玩家移动
-        /// </summary>
-        /// <param name="player">攻击发起者</param>
-        /// <param name="origin">起手锚点（生成后每帧跟随玩家中心）</param>
-        /// <param name="aim">初始瞄准方向（无需归一化，此后每拍重新捕获鼠标方向）</param>
-        /// <param name="damage">单段伤害（连段可多次命中，重击拍附带加成）</param>
-        /// <param name="knockback">击退</param>
-        /// <param name="scale">尺寸倍率（与近战尺寸词缀乘算）</param>
-        /// <param name="source">生成源，null 则回退 Misc 源</param>
+        /// <summary>持有者客户端调用(<c>myPlayer</c>),tML 自动同步</summary>
+        /// <param name="aim">无需归一化,此后每拍重捕鼠标</param>
+        /// <param name="source">null 则 Misc 源</param>
         public static Projectile Fire(Player player, Vector2 origin, Vector2 aim, int damage, float knockback,
             float scale = 1f, IEntitySource source = null) {
             source ??= player.GetSource_Misc("CWR_CrimsonRendSlash");
@@ -186,12 +164,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             Projectile.friendly = true;
             Projectile.DamageType = CWRRef.GetTrueMeleeNoSpeedDamageClass();
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 60;   //常态由 UpdateLifetime 刷新，收势完毕主动 Kill
+            Projectile.timeLeft = 60;   //常态 UpdateLifetime 刷新,收势完主动 Kill
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.netImportant = true;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = BaseHitCooldown;   //随攻速在 FireBeat 内重设
+            Projectile.localNPCHitCooldown = BaseHitCooldown;   //随攻速在 FireBeat 重设
             Projectile.CWR().PierceResist = true;
         }
 
@@ -208,11 +186,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             nextBeatTime = FirstWindupFrames + 1;
         }
 
-        /// <summary>五段弧形变奏的确定性美术参数：aim/flip 逐拍传入，Seed 掺入出生帧防止循环重复同噪声</summary>
+        /// <summary>五段弧形变奏美术参数,Seed 掺入出生帧防循环同噪声</summary>
         private SlashDef BuildBeatDef(int beat, float a, float f, float s) {
             SlashDef d = beat switch {
-                //0 纵斩下劈：正面纵切平面（沿瞄准方向纵深压扁为竖长椭圆），自头顶前压至脚下；
-                //  快斩=干笔疾书：飞白重、墨阶轻、几乎不洇
+                //0 纵斩下劈,干笔飞白重、墨轻、几乎不洇
                 0 => new SlashDef {
                     SweepFrames = 4, Life = 26, ErodeStart = 8, ErodeFrames = 14,
                     ColorShiftDelay = 7, ColorShiftFrames = 12, DamageStart = 1, DamageEnd = 9,
@@ -222,7 +199,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     TailErode = 0.50f, FlashPower = 0.62f, RazorTailWiden = 0.40f, FarDim = 0.78f,
                     Ink = 0.42f, FeiBai = 0.58f, Bleed = 0.06f, SplitTail = 0.50f,
                 },
-                //1 反手上撩：同一平面反向，自脚下撩至头顶收势，覆盖正面 ±100°，更大更立
+                //1 反手上撩,同平面反向更大更立
                 1 => new SlashDef {
                     SweepFrames = 3, Life = 26, ErodeStart = 8, ErodeFrames = 14,
                     ColorShiftDelay = 7, ColorShiftFrames = 12, DamageStart = 1, DamageEnd = 8,
@@ -232,7 +209,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     TailErode = 0.45f, FlashPower = 0.68f, RazorTailWiden = 0.40f, FarDim = 0.78f,
                     Ink = 0.42f, FeiBai = 0.62f, Bleed = 0.06f, SplitTail = 0.50f,
                 },
-                //2 月牙重斩：满弧重月牙正面自上而下重裂，中段力量拍；中墨过渡
+                //2 月牙重斩,满弧中墨过渡
                 2 => new SlashDef {
                     SweepFrames = 3, Life = 34, ErodeStart = 8, ErodeFrames = 18,
                     ColorShiftDelay = 6, ColorShiftFrames = 14, DamageStart = 1, DamageEnd = 10,
@@ -242,8 +219,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     TailErode = 0.42f, FlashPower = 0.60f, RazorTailWiden = 0.55f, FarDim = 0.74f,
                     Ink = 0.52f, FeiBai = 0.42f, Bleed = 0.15f, SplitTail = 0.58f,
                 },
-                //3 蓄势重斩：高离心率椭圆冲击形，负偏移贴身；缓推 30% 滞一拍后末 2 帧爆发，
-                //  伤害窗对齐爆发（蓄势期无判定）；重斩=湿笔浓墨：洇边明显、飞白收
+                //3 蓄势重斩,缓推滞帧后爆发,伤害窗对齐爆发,湿笔洇边
                 3 => new SlashDef {
                     SweepFrames = 8, Life = 30, ErodeStart = 9, ErodeFrames = 16,
                     ColorShiftDelay = 7, ColorShiftFrames = 12, DamageStart = 7, DamageEnd = 12,
@@ -254,8 +230,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     FarDim = 0.70f,
                     Ink = 0.62f, FeiBai = 0.24f, Bleed = 0.30f, SplitTail = 0.75f,
                 },
-                //4 蓄势终结：最大最重的镜像椭圆重斩，巨弧把角色罩进挥砍平面、弧尖绕到身后；
-                //  近泼墨，但整体压在歼灭斩（全参数 1.0 + 泼墨罡气）之下保持大招层级
+                //4 蓄势终结,巨弧罩身,压在歼灭斩之下
                 _ => new SlashDef {
                     SweepFrames = 9, Life = 56, ErodeStart = 12, ErodeFrames = 30,
                     ColorShiftDelay = 7, ColorShiftFrames = 18, DamageStart = 8, DamageEnd = 14,
@@ -271,13 +246,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return d;
         }
 
-        /// <summary>子刀光锚点：平时随玩家(攻击中走位刀光跟人),硬让位后取冻结点——
-        /// 已经劈进空气的斩击不跟着疾走/大招瞬移</summary>
+        /// <summary>子刀光锚点,平时随玩家,硬让位后取冻结点</summary>
         private Vector2 CenterOf(ActiveSlash a)
             => a.FrozenCenter ?? (Projectile.Center + a.Aim.ToRotationVector2() * a.Def.OffsetAlongAim);
 
-        /// <summary>本帧是否持有刀权(排拍中/子刀光未散/实体刀未收完);技能的软姿态据此让位。<br/>
-        /// 硬让位时冻结速褪的"尸体刀光"不算占刀——否则疾走刹停帧会与其残留期重叠,残心姿态被掐一帧</summary>
+        /// <summary>本帧是否持刀权(排拍/活刀光/实体刀未收完);硬让位冻结的尸体刀光不算</summary>
         internal bool ClaimsBlade => scheduling || bladeOpacity > 0.03f || AnyLiveSlash();
 
         /// <summary>是否存在未被硬让位冻结的活刀光</summary>
@@ -290,14 +263,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return false;
         }
 
-        /// <summary>实体刀当前姿态(供肢解居合起手继承,移交瞬间刀角不跳变);刀不可见时返回 false</summary>
+        /// <summary>实体刀当前姿态(肢解居合继承用);不可见返回 false</summary>
         internal bool TryGetBladePose(out float rotation, out int facing) {
             rotation = bladeRotation;
             facing = bladeFacing;
             return bladePoseInitialized && bladeOpacity > 0.05f;
         }
 
-        /// <summary>查找该玩家当前的连段控制器,无则 null(所有客户端可用,弹幕本身已同步)</summary>
+        /// <summary>查找该玩家连段控制器,无则 null</summary>
         internal static CrimsonRendSlash FindController(Player player) {
             int type = ModContent.ProjectileType<CrimsonRendSlash>();
             foreach (Projectile proj in Main.ActiveProjectiles) {
@@ -309,14 +282,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return null;
         }
 
-        /// <summary>刀柄方向支点：略偏离身体中心的稳定点，仅用于解算刀身朝向；
-        /// 绘制锚点用 <see cref="bladeHandWorld"/>（真实复合手臂手心），二者相差数像素，方向误差可忽略——
-        /// 拆开是为了斩断"手位置依赖手臂角度、手臂角度又依赖手位置"的环</summary>
+        /// <summary>刀柄方向支点(解算朝向);绘制锚用 <see cref="bladeHandWorld"/>,拆开斩断手↔臂依赖环</summary>
         private Vector2 BladeHandPosition(int facing) => Owner.GetPlayerStabilityCenter()
             + new Vector2(facing * 3f, -5f * Owner.gravDir);
 
-        /// <summary>把刀光中线上一点还原为实体刀朝向；采样静态椭圆（不含出生缩放/惯性滚转），
-        /// 只使用方向，不把刀身拉伸到能量弧半径</summary>
+        /// <summary>刀光中线点→实体刀朝向,采静态椭圆只取方向</summary>
         private float BladePathRotation(in SlashDef d, float aim, int facing, float u) {
             Vector2 center = Projectile.Center + aim.ToRotationVector2() * d.OffsetAlongAim;
             Vector2 edge = CSR.StaticPointAt(in d, center, MathHelper.Clamp(u, BladePathStart, BladePathEnd));
@@ -324,7 +294,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return fromHand.LengthSquared() > 1f ? fromHand.ToRotation() : aim;
         }
 
-        /// <summary>该刀光起笔端的角速度符号：+1 顺时针 −1 逆时针，供前摇反拉/收势过冲取向</summary>
+        /// <summary>起笔端角速度符号,+1 顺时针 −1 逆时针</summary>
         private float PathSweepSign(in SlashDef d, float aim, int facing) {
             float rotA = BladePathRotation(in d, aim, facing, BladePathStart);
             float rotB = BladePathRotation(in d, aim, facing, BladePathStart + 0.12f);
@@ -334,15 +304,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private static float LerpAngle(float from, float to, float amount)
             => from + MathHelper.WrapAngle(to - from) * MathHelper.Clamp(amount, 0f, 1f);
 
-        /// <summary>深度→近景权重：±0.22 内交叉淡化，避免跨越玩家平面时突然跳层</summary>
+        /// <summary>深度→近景权重,±0.22 交叉淡化</summary>
         private static float NearWeight(float depth) => CSR.SmoothStep01((depth + 0.22f) / 0.44f);
 
-        /// <summary>深度→统一透视缩放：身后收至 ~0.90，身前放至 ~1.045（整张贴图等比，不做局部拉伸）</summary>
+        /// <summary>深度→透视缩放,身后~0.90 身前~1.045</summary>
         private static float DepthScale(float depth) => depth < 0f
             ? MathHelper.Lerp(1f, 0.90f, MathHelper.Clamp(-depth, 0f, 1f))
             : MathHelper.Lerp(1f, 1.045f, MathHelper.Clamp(depth, 0f, 1f));
 
-        /// <summary>深度→亮度：身后压暗至 ~0.72（空间纵深的明度线索）</summary>
+        /// <summary>深度→亮度,身后压暗至~0.72</summary>
         private static float DepthDim(float depth) => MathHelper.Lerp(1f, 0.72f, MathHelper.Clamp(-depth, 0f, 1f));
 
         //==================== 连段推进 ====================
@@ -376,16 +346,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         }
 
         //====刀权让位====
-        /// <summary>硬让位后子刀光的最大余寿(帧):干脆散掉,不拖 26 帧全程</summary>
+        /// <summary>硬让位后子刀光最大余寿(帧)</summary>
         private const int YieldFadeFrames = 8;
-        //上帧硬让位状态,用于检测让位起始沿
+        //上帧硬让位,检测让位起始沿
         private bool yielding;
 
-        /// <summary>
-        /// 刀权仲裁：主人有硬占刀权的技能弹幕(疾走位移段/灭世大挥/终结乱舞开场)时让位——
-        /// 停排、就地冻结在场刀光并速褪、实体刀立刻交权(随人一起化入技能演出)。
-        /// 让位结束后按住左键由既有重启逻辑续接拍序,零额外操作
-        /// </summary>
+        /// <summary>刀权仲裁,主人有硬占刀权技能时停排/冻结刀光速褪/实体刀交权</summary>
         private void UpdateYield() {
             bool hard = OniBladeOccupancy.AnyHardOccupant(Owner);
             if (hard && !yielding) {
@@ -402,17 +368,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             yielding = hard;
         }
 
-        /// <summary>连段排拍：按住推进，松手停排，收势中再按从第一拍重启（DownLeft 由基类自动同步）；
-        /// 肢解居合演出期不排新拍（点纸后按住不把残心踩掉，居合收完按住自然续接）；
-        /// 签名拍软保留（疾走纳刀等）期间不夺刀——输入按住即缓冲，窗口一关自动续接</summary>
+        /// <summary>连段排拍,按住推进松手停排,收势再按从第一拍重启;居合/签名拍软保留期间不夺刀</summary>
         private void UpdateCombo() {
             bool canContinue = !Owner.noItems && !Owner.CCed
                 && Item.type == ModContent.ItemType<OnikiriItem>()
                 && Owner.ownedProjectileCounts[ModContent.ProjectileType<OniDismembers.OniSeverStrike>()] == 0;
-            //真按下沿：区别于让位/保留结束后的按住续接——肢解点选只认前者（按住扫过永不转换）
+            //真按下沿(区别于让位/保留后的按住续接)
             bool justPressed = DownLeft && !prevDownLeft;
             prevDownLeft = DownLeft;
-            //轻点缓冲：让位/签名拍保留中的点击不丢失，窗口一关补发这一拍（开火即清，一击一拍）
+            //轻点缓冲
             if (pressBuffer > 0) {
                 pressBuffer--;
             }
@@ -421,15 +385,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
             bool holding = (DownLeft || pressBuffer > 0) && canContinue && !yielding;
 
-            //首拍前的纯起手窗（反向蓄势）：窗口走完无条件出刀，轻点也有完整反馈；
-            //只有首次启动有这段前摇，之后的节拍间隔与重启响应完全不变
+            //首拍纯起手窗,走完无条件出刀;仅首次有此前摇
             if (!firstBeatFired) {
                 if (yielding || OniBladeOccupancy.BladeReserved(Owner)) {
-                    //技能演出/签名拍保留优先:首拍推迟到窗口结束,前摇计数不走,起手弧线完整保留
+                    //技能/签名拍保留优先,前摇计数不走
                     return;
                 }
                 if (++firstWindupTicks == 1) {
-                    //起手第一帧尝试继承交接刀角:从其它模组(疾走纳刀等)顺过来时刀不瞬移
+                    //起手第一帧继承交接刀角
                     hasHandoff = OniBladeHandoff.TryPeek(Owner, out handoffRot, out _);
                 }
                 if (firstWindupTicks > FirstWindupFrames) {
@@ -445,20 +408,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 return;
             }
             if (!scheduling) {
-                //按下沿（控制器存活期间的再点击）：里世界点中媒介/真身则移交肢解居合——
-                //本次不重启排拍，连段随居合的硬占刀权就地让位；视同技能，无视软保留
+                //按下沿,里世界点中媒介/真身→肢解居合(不重启排拍)
                 if (justPressed && Projectile.IsOwnedByLocalPlayer()
                     && Owner.GetModPlayer<OnikiriPlayer>().TryClickDismember(Item)) {
                     return;
                 }
-                //追斩窗内的按下沿：普攻化为残心斩，视同技能在保留窗里出手；
-                //清缓冲防同一次点击在追斩收势后再兑现一拍（按住续接不受影响）
+                //追斩窗按下沿→残心斩,清缓冲防同点击再兑现
                 if (justPressed && Projectile.IsOwnedByLocalPlayer()
                     && Owner.GetModPlayer<OnikiriPlayer>().TryZanshinStrike(Item, edgeVerified: true)) {
                     pressBuffer = 0;
                     return;
                 }
-                //签名拍软保留：不重启夺刀，按住即缓冲，保留一结束自动走到下面续接
+                //签名拍软保留,不重启夺刀
                 if (OniBladeOccupancy.BladeReserved(Owner)) {
                     return;
                 }
@@ -466,8 +427,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 if (timer - lastBeatFire > ComboResetFrames) {
                     comboIndex = 0;
                 }
-                //从其它模组交接而来：吃 RestartWindupFrames 帧微前摇把刀从交接角度划到起手位；
-                //普通点按/短停续拍无新鲜交接，保持当帧出刀
+                //模组交接吃 RestartWindupFrames 微前摇;普通点按当帧出刀
                 hasHandoff = OniBladeHandoff.TryPeek(Owner, out handoffRot, out _);
                 nextBeatTime = timer + (hasHandoff ? RestartWindupFrames : 0);
             }
@@ -476,10 +436,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>开火一拍：冻结当前鼠标方向为该刀光的瞄准角，按攻速排下一拍并缩放命中冷却</summary>
+        /// <summary>开火一拍,冻结鼠标方向,按攻速排下一拍并缩放命中冷却</summary>
         private void FireBeat() {
             hasHandoff = false;   //交接前摇已兑现
-            pressBuffer = 0;      //缓冲的点击已兑现成这一拍
+            pressBuffer = 0;      //缓冲点击已兑现
             float aim = ToMouse.LengthSquared() > 1f ? ToMouseA : Projectile.ai[0];
             curAim = aim;
             float cos = MathF.Cos(aim);
@@ -503,25 +463,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             nextBeatTime = timer + Math.Max(4, (int)MathF.Round(BeatGap[beat] * speedFactor));
         }
 
-        /// <summary>
-        /// 实体刀姿态时间轴（纯视觉）：首次起手反拉蓄势 → 沿静态椭圆扫掠发力 → 拍间过冲、
-        /// 沉入身后换向、停到下一拍起点 → 松手过冲后收刀回背淡出。<br/>
-        /// 深度(bladeDepth)贯穿四段驱动远近景分层/透视缩放/压暗；朝向只在深度谷底切换，掩盖翻身跳变。
-        /// 命中停驻/回坐在末端叠加，只捏姿态不碰节拍与判定。
-        /// </summary>
+        /// <summary>实体刀姿态时间轴(纯视觉),起手→扫掠→拍间换向→松手收刀;深度驱动远近景</summary>
         private void UpdateBladePose() {
             DecaySmears();
 
-            //硬让位期间刀随人化入技能演出,不再露面;让位结束重启时姿态照常同帧接管
+            //硬让位期间藏刀
             if (yielding) {
                 bladeOpacity = 0f;
                 bladePoseInitialized = false;
                 return;
             }
 
-            //签名拍软保留期间藏刀等待：技能姿态仍在持刀，防双刀同屏；
-            //滚动中的连段（有活刀光）不受保留影响，节奏不被打断——
-            //只剩硬让位冻结的"尸体刀光"时同样藏刀，防刹停帧收势姿态借尸还魂闪现
+            //签名拍软保留藏刀(有活刀光则不受影响);仅剩尸体刀光时同样藏
             if (!AnyLiveSlash() && OniBladeOccupancy.BladeReserved(Owner)) {
                 bladeOpacity = 0f;
                 bladePoseInitialized = false;
@@ -534,8 +487,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             bladeOpacity = 1f;
 
             if (!firstBeatFired) {
-                //A 首次起手：从持刀位快速反拉到肩后蓄势，深度沉入身后（首拍扫掠会把它甩回身前）；
-                //有交接刀角时从该角度顺势拉入蓄势位——从疾走纳刀等演出接过来时刀不瞬移
+                //A 首次起手,反拉蓄势沉入身后;有交接角则顺势拉入
                 float aim = ToMouse.LengthSquared() > 1f ? ToMouseA : curAim;
                 float cos = MathF.Cos(aim);
                 int facing = MathF.Abs(cos) < 0.05f ? Owner.direction : (cos > 0f ? 1 : -1);
@@ -552,7 +504,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
             else if (actives.Count == 0) {
                 if (scheduling && hasHandoff && timer < nextBeatTime) {
-                    //B0 交接重启微前摇：刀从交接角度划向首拍起手位——模组切换刀走连续弧线
+                    //B0 交接重启微前摇
                     float aim = ToMouse.LengthSquared() > 1f ? ToMouseA : curAim;
                     float cos = MathF.Cos(aim);
                     int facing = MathF.Abs(cos) < 0.05f ? Owner.direction : (cos > 0f ? 1 : -1);
@@ -566,7 +518,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     stretch = Player.CompositeArmStretchAmount.ThreeQuarters;
                 }
                 else {
-                    //收势播完、子刀光全部过期：藏刀等待重启（重启时 UpdateCombo 先行开火，姿态同帧接管）
+                    //收势完藏刀等待重启
                     bladeOpacity = 0f;
                     bladePoseInitialized = false;
                     impactHoldFrames = 0;
@@ -581,8 +533,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 bladeFacing = a.Facing;
 
                 if (lt <= a.Def.SweepFrames) {
-                    //B 扫掠：静态椭圆前缘驱动，深度跟随实际扫掠进度自身后甩到身前——
-                    //重击拍的蓄势-滞帧-爆发曲线因此自然映射为"悬在人物平面 → 爆发瞬间探向观者"
+                    //B 扫掠,深度随扫掠进度自身后甩到身前
                     float sweepProgress = MathHelper.Clamp(CSR.Sweep(in a.Def, lt), 0f, 1f);
                     float edgeU = MathHelper.Clamp(sweepProgress * 1.05f, BladePathStart, BladePathEnd);
                     targetRotation = BladePathRotation(in a.Def, a.Aim, a.Facing, edgeU);
@@ -593,7 +544,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     float sweepSign = PathSweepSign(in a.Def, a.Aim, a.Facing);
 
                     if (scheduling && timer < nextBeatTime) {
-                        //C 拍间衔接：顺势过冲 → 沉入身后（谷底换向）→ 稳定到下一拍起点
+                        //C 拍间衔接,过冲→沉入身后谷底换向→下一拍起点
                         int prepStart = a.Birth + a.Def.SweepFrames;
                         float prepT = MathHelper.Clamp((timer - prepStart)
                             / (float)Math.Max(1, nextBeatTime - prepStart), 0f, 1f);
@@ -621,7 +572,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                         }
                     }
                     else if (!scheduling) {
-                        //D 松手收势：短过冲泄力 → 收刀回背 → 末段淡出
+                        //D 松手收势,短过冲→收刀回背→淡出
                         float recoverT = MathHelper.Clamp((lt - a.Def.SweepFrames)
                             / (float)BladeReleaseRecoveryFrames, 0f, 1f);
                         float overshoot = MathF.Sin(MathHelper.Clamp(recoverT / 0.40f, 0f, 1f) * MathF.PI) * 0.16f;
@@ -633,14 +584,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                         stretch = Player.CompositeArmStretchAmount.ThreeQuarters;
                     }
                     else {
-                        //兜底（UpdateCombo 先行开火，理论不可达）：停在收笔端
+                        //兜底(理论不可达),停在收笔端
                         targetRotation = endRot;
                         targetDepth = 0.3f;
                     }
                 }
             }
 
-            //命中视觉停驻：冻结一帧姿态；回坐包络在其后逐帧衰减
+            //命中视觉停驻一帧;回坐包络其后衰减
             if (impactHoldFrames > 0 && bladePoseInitialized) {
                 impactHoldFrames--;
                 targetRotation = bladeRotation;
@@ -676,7 +627,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             PushSmearSamples(prevDepth);
         }
 
-        /// <summary>拍间深度曲线：过冲期仍在身前 → 沉入身后（谷底 ≈0.62 处，配合换向）→ 提到下一拍起手位（仍偏后）</summary>
+        /// <summary>拍间深度曲线,过冲身前→谷底≈0.62 换向→下一拍起手偏后</summary>
         private static float PrepDepth(float prepT) {
             if (prepT < 0.25f) {
                 return MathHelper.Lerp(0.85f, 0.15f, CSR.SmoothStep01(prepT / 0.25f));
@@ -687,7 +638,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return MathHelper.Lerp(-0.95f, -0.45f, CSR.SmoothStep01((prepT - 0.62f) / 0.38f));
         }
 
-        /// <summary>残影寿命衰减（环形缓冲原地更新，无分配）</summary>
+        /// <summary>残影寿命衰减(环形缓冲原地更新)</summary>
         private void DecaySmears() {
             for (int i = 0; i < smears.Length; i++) {
                 if (smears[i].Life > 0) {
@@ -696,7 +647,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>高速帧在上一姿态与当前姿态间细分采样入环，形成代码式 smear（不拉伸贴图本体）</summary>
+        /// <summary>高速帧细分采样入环,代码式 smear</summary>
         private void PushSmearSamples(float prevDepth) {
             if (Main.dedServ || bladeOpacity <= 0.05f) {
                 return;
@@ -709,7 +660,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             int steps = Math.Min(3, (int)(absDelta / 0.14f) + 1);
             float strength = MathHelper.Clamp((absDelta - 0.06f) / 0.50f, 0f, 1f) * bladeOpacity;
             for (int i = 0; i < steps; i++) {
-                float t = (i + 1) / (float)(steps + 1);   //不含当前帧本体位置
+                float t = (i + 1) / (float)(steps + 1);   //不含当前帧本体
                 float depth = MathHelper.Lerp(prevDepth, bladeDepth, t);
                 smears[smearHead] = new BladeSmear {
                     Rotation = bladePrevRotation + delta * t,
@@ -723,7 +674,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>起挥音效：快斩三拍哨声逐段升调（accelerando），重击两拍低音蓄势起手</summary>
+        /// <summary>起挥音效,快斩升调,重击低音</summary>
         private void PlayBeatFireSound(int beat) {
             (float pitch, float volume) = beat switch {
                 0 => (0.20f, 0.60f),
@@ -735,8 +686,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             SoundEngine.PlaySound(CWRSound.KatanaSwing with { Pitch = pitch, Volume = volume }, Projectile.Center);
         }
 
-        /// <summary>逐子刀光的时间轴事件：重击爆发脆响（滞帧末 0.75 处，领先首个伤害帧 1 帧的声音先行）、
-        /// 快斩收势轻确认、过期剔除</summary>
+        /// <summary>子刀光时间轴事件,重击爆发脆响/快斩轻确认/过期剔除</summary>
         private void UpdateBeatEvents() {
             for (int i = actives.Count - 1; i >= 0; i--) {
                 ActiveSlash a = actives[i];
@@ -761,7 +711,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>扫掠完成瞬间的轻确认（白闪/火花/音效），挥空也有：这是刀光美术本身的呼吸，不算打击效果</summary>
+        /// <summary>扫掠完成轻确认(白闪/火花/音效),挥空也有</summary>
         private void PingBeat(ActiveSlash a) {
             (float flash, int sparks, float pitch, bool hitFlash) = PingTable[a.Beat];
             int lt = timer - a.Birth;
@@ -785,8 +735,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>持械姿态：身体与双臂服从实体刀，而非追逐已冻结刀光之外的实时鼠标；
-        /// 前臂伸展随姿态阶段变化（蓄势收臂/发力展臂），并取真实前手手心作为刀身绘制锚点</summary>
+        /// <summary>持械姿态,身体双臂服从实体刀;取真实前手手心作绘制锚</summary>
         private void UpdatePose() {
             if (bladeOpacity <= 0.01f) {
                 return;
@@ -805,12 +754,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             Owner.SetCompositeArmBack(true, backStretch, armRotation + 0.16f * bladeFacing);
             bladeHandWorld = Owner.GetFrontHandPosition(bladeArmStretch, armRotation);
 
-            //连段刀角同样上黑板：技能起手（肢解居合等）从这里继承，双向交接闭环
+            //连段刀角上黑板,技能起手可继承
             OniBladeHandoff.Publish(Owner, bladeRotation, bladeFacing);
         }
 
-        /// <summary>存活契约：排拍中或有子刀光时续命；全部收势且命中余韵播完即 Kill，
-        /// 期间再按下由 <see cref="UpdateCombo"/> 吸收重启，不经过物品使用</summary>
+        /// <summary>存活契约,排拍/子刀光续命;收势且余韵完 Kill,再按由 UpdateCombo 重启</summary>
         private void UpdateLifetime() {
             bool visualsAlive = actives.Count > 0
                 || (lastImpactFrame >= 0 && timer - lastImpactFrame < AfterglowEnd);
@@ -821,8 +769,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             Projectile.Kill();
         }
 
-        /// <summary>每拍首次命中共用的爆点全层演出（材质按目标分流：金属火花 / 血肉四溅），
-        /// 强度按拍位 power(0..1) 缩放；不冻结世界或目标时间，命中确认交给音效/粒子/白闪本身</summary>
+        /// <summary>每拍首次命中爆点全层,power 0..1 按拍位;材质按金属/血肉分流</summary>
         private void TriggerImpactBurst(Vector2 pos, float power, float aim, float flip, bool steel) {
             lastImpactFrame = timer;
             lastImpactPos = pos;
@@ -837,15 +784,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 SoundEngine.PlaySound(CWRSound.KatanaHit with { Pitch = 0.5f - power * 0.2f, Volume = 0.5f + power * 0.4f }, pos);
             }
 
-            //血肉命中压低屏幕白闪：伤口反馈靠血珠，不靠金属耀斑
+            //血肉命中压低屏幕白闪
             float flash = steel ? 0.02f + power * 0.01f : 0.008f + power * 0.004f;
             CrimsonImpactFX.PushImpact(pos, flash);
 
             CrimsonRendHitVFX.SpawnImpactBurst(pos, aim.ToRotationVector2(), power, sizeMul, steel);
         }
 
-        /// <summary>屏幕级演出包络：仅 Bloom + 命中脉冲（白闪由节拍触发）；
-        /// 排拍中恒亮，收势期随最后一道子刀光余寿衰减</summary>
+        /// <summary>屏幕包络,Bloom + 命中脉冲;排拍恒亮,收势随末刀光余寿衰减</summary>
         private void PushScreenState() {
             float envelope = scheduling ? 1f : 0f;
             if (!scheduling) {
@@ -862,9 +808,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             CrimsonImpactFX.PushAmbience(AmbientAnchor, MathF.Max(bloom, 0f));
         }
 
-        /// <summary>各扫开中的刀光前缘火花：喷量随本帧扫掠增量走，
-        /// 蓄势缓推期零星细屑，滞帧近乎无声，爆发帧集中迸发（快慢刀的粒子语言）；
-        /// 湿笔拍位按洇墨权重把部分火花换成暗墨滴——粒子语言与刀光干湿一致</summary>
+        /// <summary>扫开中刀光前缘火花,喷量随扫掠增量;湿笔拍位部分换成暗墨滴</summary>
         private void SpawnSweepSparks() {
             for (int i = 0; i < actives.Count; i++) {
                 ActiveSlash a = actives[i];
@@ -887,8 +831,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
                 for (int k = 0; k < count; k++) {
                     Vector2 vel = tangent * Main.rand.NextFloat(4f, 11f) * speedMul + Main.rand.NextVector2Circular(1.2f, 1.2f);
-                    //墨滴走 AlphaBlend 染暗色（加色画不了黑），读作甩出的墨点而非光屑；
-                    //色值抬到深酒红：明亮背景上近黑圆点过闷
+                    //墨滴 AlphaBlend 染暗(加色画不了黑),色值抬到深酒红
                     if (Main.rand.NextFloat() < a.Def.Bleed + 0.15f) {
                         PRTLoader.NewParticle<PRT_OniInkDrop>(pos, vel * 0.55f, new Color(96, 24, 28)
                             , Main.rand.NextFloat(0.18f, 0.34f) * sizeMul)
@@ -902,7 +845,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>重击两拍（湿笔浓墨）侵蚀期沿外缘生成细碎烟屑，后期停喷；终结拍喷量更足</summary>
+        /// <summary>重击两拍侵蚀期外缘烟屑,终结拍喷量更足</summary>
         private void SpawnEdgeSmoke() {
             if (timer % 2 != 0) {
                 return;
@@ -940,7 +883,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
         //==================== 判定 ====================
 
-        /// <summary>当前处于伤害窗口内的子刀光（同帧多窗时取最新一拍），供命中回调定位拍位</summary>
+        /// <summary>当前伤害窗内子刀光(同帧多窗取最新一拍)</summary>
         private ActiveSlash FindDamagingSlash() {
             for (int i = actives.Count - 1; i >= 0; i--) {
                 int lt = timer - actives[i].Birth;
@@ -951,18 +894,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return null;
         }
 
-        /// <summary>擦边宽恕（px）：目标箱四周外扩——刀光辉光比核心带宽，视觉擦到就该算到</summary>
+        /// <summary>擦边宽恕(px),目标箱外扩</summary>
         private const int GrazePad = 12;
-        /// <summary>辐条判定厚度（px）：月牙内侧"刀身"的贪婪带宽</summary>
+        /// <summary>辐条判定厚度(px),月牙内侧刀身带宽</summary>
         private const float SpokeThickness = 36f;
 
-        /// <summary>
-        /// 贪婪判定，三层覆盖：<br/>
-        /// 1. 弧线折线段——刀锋轨迹本体，厚度对齐视觉带宽（0.8→1.0 倍，辉光宽度玩家读作刀宽）；<br/>
-        /// 2. 辐条（中心→弧上采样点）——刀是从手心扫到刀尖的实体，月牙内侧不是空洞，
-        /// 贴身目标由辐条兜住（近身打不到的根源就是旧判定只测外弧）；<br/>
-        /// 3. 目标箱外扩 <see cref="GrazePad"/>——擦边宽恕，虚接触判给玩家
-        /// </summary>
+        /// <summary>贪婪判定,弧线折线 + 辐条(月牙内侧) + 箱外扩 <see cref="GrazePad"/></summary>
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             Rectangle greedyBox = targetHitbox;
             greedyBox.Inflate(GrazePad, GrazePad);
@@ -976,7 +913,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 float sweepU = MathHelper.Clamp(CSR.Sweep(in a.Def, lt) * 1.05f, 0f, 1f);
                 Vector2 center = CenterOf(a);
 
-                //弧/椭圆：折线采样 + 内侧辐条
+                //弧/椭圆,折线采样 + 内侧辐条
                 const int samples = 15;
                 Vector2 prev = Vector2.Zero;
                 bool hasPrev = false;
@@ -1003,8 +940,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return false;
         }
 
-        /// <summary>割草断藤：沿各活跃刀光的弧线扫切草/藤/南瓜藤等可切物（全挥砍期生效，宽度对齐判定带）；
-        /// 与命中判定同款辐条覆盖月牙内侧——贴脚的草同样被刀身扫到</summary>
+        /// <summary>割草断藤,沿活跃刀光弧线+辐条扫切</summary>
         public override void CutTiles() {
             if (actives.Count == 0) {
                 return;
@@ -1033,7 +969,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                         Utils.PlotTileLine(prev, mid, width, DelegateMethods.CutTiles);
                     }
                     if (k % 2 == 0) {
-                        //辐条：中心→弧上点，月牙内侧（贴身区）的草藤照割
+                        //辐条,月牙内侧
                         Utils.PlotTileLine(center, mid, SpokeThickness, DelegateMethods.CutTiles);
                     }
                     prev = mid;
@@ -1042,7 +978,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>重击拍伤害加成：蓄势期间无判定的等待换成回报（快斩 ×1，重斩 ×1.3，终结 ×1.6）</summary>
+        /// <summary>重击拍伤害加成,快斩×1 重斩×1.3 终结×1.6</summary>
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             ActiveSlash a = FindDamagingSlash();
             if (a != null && a.Beat >= 3) {
@@ -1053,19 +989,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
 
-            //刀刀入肉:连段命中为主人回气蓄势,并记入处决的命中记忆(owner 端自治)
+            //连段命中回气+处决记忆(owner 端)
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Owner.GetModPlayer<OnikiriPlayer>().OnComboHit(target);
             }
 
-            //每拍首次命中触发爆点全层演出，强度按拍位递增，拒绝"只有最后一下有反馈"
+            //每拍首次命中爆点,强度按拍位递增
             ActiveSlash a = FindDamagingSlash();
             if (a != null && !a.ImpactDone) {
                 a.ImpactDone = true;
                 TriggerImpactBurst(target.Center + VaultUtils.RandVr(0, target.width / 3f), (a.Beat + 1) / (float)BeatCount, a.Aim, a.Def.Flip, steel);
 
-                //命中反馈只捏实体刀姿态（1 帧停驻 + 反向回坐 + ~4% 尺寸脉冲），
-                //不冻结世界/目标，不影响判定与下一拍排程；仅当命中拍仍是当前持刀拍时生效
+                //命中只捏实体刀姿态(停驻+回坐+尺寸脉冲),不碰节拍/判定
                 if (actives.Count > 0 && a == actives[^1]) {
                     impactHoldFrames = 1;
                     impactRecoil = 1f;
@@ -1079,14 +1014,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         }
 
         //==================== 绘制 ====================
-        //深度分层（由 bladeDepth 与 SlashDef.FarDim 驱动，跨越玩家平面时按 NearWeight 交叉淡化）：
-        //  玩家身后（DrawBeforePlayers / ICrimsonFarDrawable）：远半侧刀光 + 身后残影 + 身后刀身（缩小压暗）
-        //  实体层（PreDraw）：近侧残影（压在玩家之上、刀光之下）
-        //  EndEntityDraw 图元层（IPrimitiveDrawable）：近半侧刀光 + 命中爆点
-        //  EndEntityDraw 遮挡层（IOverlayDrawable）：近景刀身本体，稳定盖住刀光不被特效吞掉
+        //深度分层(bladeDepth / FarDim,NearWeight 交叉淡化)
+        //  身后层,远半侧刀光+身后残影+身后刀身
+        //  PreDraw,近侧残影
+        //  图元层,近半侧刀光+命中爆点
+        //  遮挡层,近景刀身本体
 
-        /// <summary>实体刀单帧精灵：护手钉在真实前手手心（<see cref="bladeHandWorld"/>），刀尖严格指向 rotation；
-        /// 非对称太刀朝左时垂直翻转并镜像护手支点与刀尖</summary>
+        /// <summary>实体刀精灵,护手钉 <see cref="bladeHandWorld"/>;朝左时垂直翻转并镜像支点</summary>
         private void DrawBladeSprite(SpriteBatch sb, float rotation, int facing, float scale, Color color, Vector2 posOffset = default) {
             Texture2D blade = TextureAssets.Item[ModContent.ItemType<OnikiriItem>()].Value;
             Vector2 textureSize = blade.Size();
@@ -1112,8 +1046,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return false;
         }
 
-        /// <summary>姿态残影：环内自旧到新绘制，按年龄/出生角速度/深度侧权重渐隐；
-        /// 超出上限时丢最旧的，保证最亮的新样本始终在场</summary>
+        /// <summary>姿态残影,环内自旧到新,按年龄/角速度/深度侧渐隐</summary>
         private void DrawSmears(SpriteBatch sb, bool nearSide) {
             int alive = 0;
             for (int i = 0; i < smears.Length; i++) {
@@ -1150,7 +1083,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>实体层只画近侧残影（玩家之上、刀光之下）；刀身本体移交遮挡层，身后部分移交远景层</summary>
+        /// <summary>实体层只画近侧残影;刀身交遮挡层,身后交远景层</summary>
         public override bool PreDraw(ref Color lightColor) {
             if (!Main.dedServ) {
                 DrawSmears(Main.spriteBatch, nearSide: true);
@@ -1158,7 +1091,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return false;
         }
 
-        /// <summary>玩家身后层：远半侧刀光（弧尖绕到身后的空间穿插）+ 身后残影 + 身后刀身（缩小压暗）</summary>
+        /// <summary>身后层,远半侧刀光+身后残影+身后刀身</summary>
         void ICrimsonFarDrawable.DrawFarSlashes() {
             if (Main.dedServ) {
                 return;
@@ -1197,7 +1130,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             sb.End();
         }
 
-        /// <summary>遮挡层：近景刀身本体（阴影 + 主体），在图元/加色刀光之后绘制，保证握持武器清晰可读</summary>
+        /// <summary>遮挡层,近景刀身(阴影+主体),盖在图元刀光之上</summary>
         void IOverlayDrawable.DrawOverlay(SpriteBatch sb) {
             if (Main.dedServ || bladeOpacity <= 0.01f) {
                 return;
@@ -1230,7 +1163,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     if (lt < 0 || lt >= a.Def.Life) {
                         continue;
                     }
-                    //FarDim>0 的拍只画近半侧，远半侧已在玩家身后层提交
+                    //FarDim>0 只画近半侧,远半侧已在身后层
                     CSR.DrawThreeLayers(device, fx, in a.Def, CenterOf(a), lt, a.Def.FarDim > 0f ? 1f : 0f);
                 }
                 CSR.EndDraw(device, pb, pr, pd);
@@ -1240,7 +1173,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             DrawCollapseCore();
         }
 
-        /// <summary>命中爆点 + 余韵光球，自管加色批次</summary>
+        /// <summary>命中爆点 + 余韵光球</summary>
         private void DrawAdditiveLayers() {
             bool burstActive = lastImpactFrame >= 0 && timer - lastImpactFrame < BurstFadeFrames;
             bool afterglowActive = lastImpactFrame >= 0 && timer - lastImpactFrame is >= 26 and < AfterglowEnd;
@@ -1256,7 +1189,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 DrawImpactBurst(sb);
             }
 
-            //余韵：暗紫红光球内爆收束，仅在下一拍命中前完整播放
+            //余韵暗紫红光球内爆
             if (afterglowActive && CWRAsset.StarFlare01?.Value is Texture2D orb) {
                 float t = (timer - lastImpactFrame - 26) / 20f;
                 float oA = MathF.Sin(t * MathF.PI) * 0.42f;
@@ -1269,7 +1202,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             sb.End();
         }
 
-        /// <summary>命中爆点全 layer：金属＝白热星爆/放射/十字；血肉＝暗红伤口撕裂/血环（无纯白核）</summary>
+        /// <summary>命中爆点,金属白热星爆/放射/十字;血肉暗红撕裂/血环</summary>
         private void DrawImpactBurst(SpriteBatch sb) {
             float bt = MathHelper.Clamp(timer - lastImpactFrame, 0f, BurstFadeFrames);
             float bp = bt / BurstFadeFrames;
@@ -1293,7 +1226,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
         private void DrawSteelImpactBurst(SpriteBatch sb, Vector2 impact, Vector2 aimDir
             , float inv, float easeOut, float seedRot, float bt) {
-            //白热核心：峰值收紧到 0.7，避免整块纯白糊住刀光笔触细节，随后急剧收缩
+            //白热核心,峰值收紧到 0.7 防糊笔触
             if (CWRAsset.StarFlare02?.Value is Texture2D flare) {
                 float coreA = MathF.Pow(inv, 2.0f) * 0.70f;
                 float coreS = (0.85f + easeOut * 0.65f) * sizeMul;
@@ -1349,7 +1282,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
         private void DrawFleshImpactBurst(SpriteBatch sb, Vector2 impact, Vector2 aimDir
             , float inv, float easeOut, float seedRot, float bt) {
-            //暗红软核：伤口体积，禁纯白
+            //暗红软核,禁纯白
             if (CWRAsset.StarFlare02?.Value is Texture2D flare) {
                 float coreA = MathF.Pow(inv, 1.8f) * 0.48f;
                 float coreS = (0.7f + easeOut * 0.55f) * sizeMul;
@@ -1367,7 +1300,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     , ring.Size() * 0.5f, ringS, SpriteEffects.None, 0);
             }
 
-            //刃向撕裂口：读作切开的创面
+            //刃向撕裂口
             if (bt < 10f && CWRAsset.TearSpread01?.Value is Texture2D tear) {
                 float tA = MathF.Pow(1f - bt / 10f, 1.6f) * 0.9f;
                 sb.Draw(tear, impact, null, CrimsonRendHitVFX.Arterial * tA, lastImpactAim
@@ -1378,7 +1311,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     , SpriteEffects.FlipVertically, 0);
             }
 
-            //暗红速度线（无白热放射/十字）
+            //暗红速度线(无白热放射/十字)
             if (CWRAsset.SpeedLines01?.Value is Texture2D lines) {
                 EnsureSpeedLineRects();
                 float lA = MathF.Pow(inv, 1.5f) * 0.42f;
@@ -1406,9 +1339,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>负片收缩：爆闪第2~8帧，暗核压在加色星爆之上，只留红边<br/>
-        /// 注意：AlphaBlend 压暗必须用 alpha 通道承载形状的贴图（SmokeSheet01），
-        /// 黑底不透明的亮度型贴图会把整个 quad 糊成暗色方框</summary>
+        /// <summary>负片收缩,爆闪第2~8帧暗核压加色星爆<br/>
+        /// AlphaBlend 压暗须用带 alpha 形状贴图(SmokeSheet01),黑底不透明亮度贴会糊成暗方框</summary>
         private void DrawCollapseCore() {
             float bt = timer - lastImpactFrame;
             if (lastImpactFrame < 0 || bt < 2f || bt > 8f) {
@@ -1420,7 +1352,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
 
             float t = (bt - 2f) / 6f;   //0..1
-            //单帧峰值 ~0.36 倍，收缩至约 1/3
+            //峰值~0.36,收缩至约 1/3
             float coreS = MathHelper.Lerp(0.36f, 0.12f, t * t) * sizeMul;
             float coreA = MathF.Sin(t * MathF.PI) * 0.78f;
             int frameSize = cloud.Width / 2;

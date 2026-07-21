@@ -7,7 +7,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.TrialQuests
 {
-    /// <summary>鬼切追踪窗：无厚底板，朱印+刀痕下划线+朱红细进度条</summary>
+    /// <summary>鬼切追踪窗,朱印+刀痕下划线+细进度条</summary>
     internal class OnikiriTrackerWidgetStyle : IEntrustTrackerWidgetStyle
     {
         private float pulse;

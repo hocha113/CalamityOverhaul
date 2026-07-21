@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>鱼骨调色板：干枯骨钙的哑光取色，全语系零发光零玻璃泽</summary>
+    /// <summary>鱼骨调色板</summary>
     internal static class FishBonePalette
     {
         public static readonly Color Ivory = new(226, 216, 194);   //骨面象牙白
@@ -13,14 +13,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public static readonly Color Shadow = new(122, 108, 88);   //骨缝暗褐
         public static readonly Color Chalk = new(212, 206, 194);   //钙粉灰白
 
-        /// <summary>骨屑取色：象牙白与陈骨黄之间随机</summary>
+        /// <summary>骨屑取色</summary>
         public static Color Chip() => Color.Lerp(Ivory, Aged, Main.rand.NextFloat());
     }
 
-    /// <summary>
-    /// 鱼骨锐利骨屑：哑光双晶面小骨片，受重力抛物翻滚、落地弹一次即碎光收尾，
-    /// 吃环境光照不自发光；受伤碎裂英雄时刻与命中崩屑共用
-    /// </summary>
+    /// <summary>鱼骨锐利骨屑</summary>
     internal class PRT_FishBoneShard : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -96,7 +93,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float stretch = MathHelper.Clamp(Velocity.Length() * 0.035f, 0f, 0.5f);
             Vector2 body = new Vector2(0.2f, 0.62f * (1f + stretch)) * Scale;
 
-            //短哑光残尾：一节旧位置减淡影
+            //短哑光残尾，一节旧位置减淡影
             if (Velocity.Length() > 2.5f) {
                 spriteBatch.Draw(tex, pos - Velocity * 1.2f, null, lit * 0.25f
                     , Rotation - spin * 2f, origin, body * 0.85f, SpriteEffects.None, 0f);
@@ -112,10 +109,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 钙粉尘雾：哑光灰白粉团，比烟重、缓慢沉降微扩张，AlphaBlend 真遮挡给碎裂压底，
-    /// 吃环境光照不自发光
-    /// </summary>
+    /// <summary>钙粉尘雾</summary>
     internal class PRT_FishBoneDust : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "SmokeSheet01";
@@ -153,7 +147,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Velocity *= 0.90f;
             Velocity.Y += settle;
 
-            //快进慢出、峰值压低：粉尘是衬底不糊主体
+            //快进慢出、峰值压低
             float tail = MathHelper.Clamp((t - 0.30f) / 0.65f, 0f, 1f);
             Opacity = MathF.Min(t / 0.12f, 1f) * (1f - tail * tail * (3f - 2f * tail)) * 0.42f;
         }

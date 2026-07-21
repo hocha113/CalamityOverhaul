@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic
 {
-    /// <summary>
-    /// 沙之下：抛射一对沙之涌动，落地后从地表喷涌出垂直沙刺，掀飞接触的敌人
-    /// </summary>
+    /// <summary>沙之下，抛一对沙涌落地变沙刺</summary>
     internal class UnderTheSand : ModItem
     {
         public override string Texture => CWRConstant.Item_Magic + "UnderTheSand";
@@ -59,7 +57,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     {
         public override string Texture => CWRConstant.Item_Magic + "UnderTheSand";
         public override int TargetID => ModContent.ItemType<UnderTheSand>();
-        /// <summary>开火余韵进度，法器出手后胀大发光</summary>
+        /// <summary>开火余韵 0~1</summary>
         private int glowPulse;
         public override void SetGunProperty() {
             Projectile.DamageType = DamageClass.Magic;
@@ -99,7 +97,6 @@ namespace CalamityOverhaul.Content.Items.Magic
             CreateFireLight();
 
             if (Projectile.IsOwnedByLocalPlayer()) {
-                //沿射击方向以微小扇形喷出两枚沙之涌动
                 int surgeType = ModContent.ProjectileType<UnderTheSandSurge>();
                 const int surgeCount = 2;
                 for (int i = 0; i < surgeCount; i++) {
@@ -110,7 +107,6 @@ namespace CalamityOverhaul.Content.Items.Magic
                 }
             }
 
-            //枪口卷起一道环形沙环作为开火反馈
             const int dustRing = 14;
             for (int i = 0; i < dustRing; i++) {
                 Vector2 vr = (MathHelper.TwoPi / dustRing * i).ToRotationVector2() * Main.rand.NextFloat(3f, 5f);
@@ -132,12 +128,10 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
     }
 
-    /// <summary>
-    /// 沙之涌动：飞行段为带拖尾的沙弹，撞地后立即转入“沙刺爆发”阶段，向上耸起一根沙刺造成持续伤害
-    /// </summary>
+    /// <summary>沙涌，飞行撞地后竖起沙刺</summary>
     internal class UnderTheSandSurge : ModProjectile
     {
-        //贴上原 SandThorn 纹理，让沙弹/沙刺都有合适的视觉
+        //复用 SandThorn 贴图
         public override string Texture => CWRConstant.Projectile_Magic + "SandThorn";
 
         private const int FlightLifetime = 240;
@@ -149,9 +143,7 @@ namespace CalamityOverhaul.Content.Items.Magic
 
         //0 = 飞行，1 = 爆发
         private ref float Phase => ref Projectile.ai[0];
-        //爆发阶段计时
         private ref float EruptTimer => ref Projectile.ai[1];
-        //视觉相位
         private ref float SwirlT => ref Projectile.localAI[0];
 
         public override void SetStaticDefaults() {
@@ -177,7 +169,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             SwirlT += 0.2f;
 
             if (Phase == 0f) {
-                //飞行阶段：轻重力 + 速度上限
+                //飞行 轻重力+限速
                 Projectile.velocity.Y += 0.32f;
                 if (Projectile.velocity.Y > 13f) {
                     Projectile.velocity.Y = 13f;
@@ -192,7 +184,7 @@ namespace CalamityOverhaul.Content.Items.Magic
                 }
             }
             else {
-                //爆发阶段：保持原地，时序推进
+                //爆发原地推进
                 Projectile.velocity = Vector2.Zero;
                 Projectile.rotation = 0f;
                 EruptTimer++;
@@ -209,14 +201,14 @@ namespace CalamityOverhaul.Content.Items.Magic
             }
         }
 
-        //当前沙刺的可视/受击高度，含上升、保持、淡出三段
+        //沙刺可视/受击高度
         private float CurrentSpikeHeight() {
             if (Phase != 1f) {
                 return 0f;
             }
             if (EruptTimer < EruptRiseFrames) {
                 float t = EruptTimer / (float)EruptRiseFrames;
-                //缓出曲线，让沙刺有冲出地表的爆发感
+                //缓出冲地感
                 t = 1f - (1f - t) * (1f - t);
                 return SpikeMaxHeight * t;
             }
@@ -248,17 +240,15 @@ namespace CalamityOverhaul.Content.Items.Magic
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
             if (Phase == 0f && oldVelocity.Y > 0f) {
-                //撞地转入爆发阶段
                 Phase = 1f;
                 EruptTimer = 0;
                 Projectile.velocity = Vector2.Zero;
                 Projectile.timeLeft = EruptDuration + 4;
-                //沙刺在 X 方向不再受 tile collide 限制，避免被一块凸起的地形错位推开
+                //爆发后关 X 向 tile 推挤
                 Projectile.tileCollide = false;
                 Projectile.netUpdate = true;
 
                 SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.55f, Pitch = 0.35f }, Projectile.Center);
-                //着地扬尘
                 for (int i = 0; i < 18; i++) {
                     Vector2 vel = new Vector2(Main.rand.NextFloat(-5f, 5f), Main.rand.NextFloat(-6f, -0.5f));
                     int dustId = Main.rand.NextBool(3) ? DustID.Gold : DustID.Sand;
@@ -267,7 +257,6 @@ namespace CalamityOverhaul.Content.Items.Magic
                 }
                 return false;
             }
-            //飞行中蹭到墙壁：轻度反弹再继续坠落
             if (Phase == 0f && oldVelocity.X != Projectile.velocity.X) {
                 Projectile.velocity.X = -oldVelocity.X * 0.45f;
                 return false;
@@ -279,7 +268,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             if (Phase == 0f) {
                 return null;
             }
-            //爆发阶段以一个垂直矩形作为命中判定，宽度恒定，高度随沙刺成长
+            //竖矩形判定随高度成长
             float height = CurrentSpikeHeight();
             if (height <= 0f) {
                 return false;
@@ -291,7 +280,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //命中后将敌人向上掀飞，呼应"从沙下掀起"
+            //命中上掀
             if (target.knockBackResist > 0f) {
                 target.velocity.Y -= 4.2f * target.knockBackResist;
             }
@@ -328,32 +317,31 @@ namespace CalamityOverhaul.Content.Items.Magic
             if (height <= 0f) {
                 return;
             }
-            //总淡出，仅在尾段衰减
+            //尾段淡出
             float fadeOut = MathHelper.Clamp((EruptDuration - EruptTimer) / 10f, 0f, 1f);
-            //刚冲出地表的几帧加亮，增强张力
+            //冲地前几帧加亮
             float impactFlash = MathHelper.Clamp(1f - EruptTimer / 6f, 0f, 1f);
 
             Color baseColor = new Color(225, 195, 110);
             Color tipColor = new Color(255, 235, 175);
 
-            //自下向上堆叠多片 SandThorn，模拟沙刺从地里耸出
+            //叠 SandThorn 成刺
             const int slices = 6;
             Vector2 bottom = Projectile.Bottom - Main.screenPosition;
             for (int i = 0; i < slices; i++) {
                 float t01 = i / (float)(slices - 1);
                 float yOff = -t01 * height;
-                //靠下贴地的层次更宽更扁，越靠尖端越细
+                //底宽尖细
                 float wid = MathHelper.Lerp(1.05f, 0.55f, t01);
                 float hei = MathHelper.Lerp(0.95f, 0.7f, t01);
                 float wobble = MathF.Sin(SwirlT + i) * 0.06f;
                 Color c = Color.Lerp(baseColor, tipColor, t01) * fadeOut;
                 Vector2 drawPos = bottom + new Vector2(MathF.Sin(SwirlT * 0.8f + i * 1.3f) * 1.5f, yOff);
-                //SandThorn 自身是横向的，旋转 -90° 让尖端指向上方
+                //横向贴图转竖
                 Main.EntitySpriteDraw(texture, drawPos, rect, c
                     , -MathHelper.PiOver2 + wobble, origin, new Vector2(wid, hei), SpriteEffects.None, 0);
             }
 
-            //着地刹那的金光闪烁
             if (impactFlash > 0f) {
                 Texture2D glow = CWRAsset.SoftGlow?.Value;
                 if (glow != null) {
@@ -365,7 +353,6 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
 
         public override void OnKill(int timeLeft) {
-            //结束时再补一波细沙
             for (int i = 0; i < 14; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(3.5f, 3.5f);
                 int dustId = Main.rand.NextBool(3) ? DustID.Gold : DustID.Sand;

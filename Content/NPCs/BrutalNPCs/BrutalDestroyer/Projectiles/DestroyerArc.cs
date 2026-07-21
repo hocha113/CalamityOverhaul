@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
 {
-    /// <summary>机械电弧：连接两NPC(体节/探针)高温电弧，纯演出无伤害服务端同步，客户端<see cref="ThunderTrail"/>绘抖动闪电；ai[0]:端点NPCA索引；ai[1]:端点NPCB索引</summary>
+    /// <summary>体节/探针间电弧，无伤；ai[0]/ai[1]端点NPC；客户端ThunderTrail</summary>
     internal class DestroyerArc : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
                 return;
             }
 
-            //首帧各端本地播放电弧噼啪声
+            //首帧本端噼啪声
             if (Projectile.localAI[1] == 0f) {
                 Projectile.localAI[1] = 1f;
                 if (!VaultUtils.isServer) {
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
                 return;
             }
 
-            //端点间采样并周期性抖动重建
+            //采样+周期性抖动
             for (int i = 0; i < ArcPointCount; i++) {
                 arcPoints[i] = Vector2.Lerp(a.Center, b.Center, i / (float)(ArcPointCount - 1));
             }
@@ -99,7 +99,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
             }
             arcTrail.DrawThunder(Main.instance.GraphicsDevice);
 
-            //端点小光斑
             Texture2D glow = CWRAsset.SoftGlow.Value;
             ((int)Projectile.ai[0]).TryGetNPC(out NPC a);
             ((int)Projectile.ai[1]).TryGetNPC(out NPC b);

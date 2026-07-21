@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -39,13 +39,13 @@ namespace CalamityOverhaul.Content.Items.Tools
             if (!player.TryGetModPlayer<HalibutSave>(out var save)) {
                 return false;
             }
-            //检查是否已经解锁所有技能
+            //已全解锁？
             int totalSkills = FishSkill.UnlockFishs.Count;
             if (save.unlocked.Count >= totalSkills) {
                 SoundEngine.PlaySound(SoundID.MenuClose);
                 string text = Text1.Value;
                 CombatText.NewText(player.Hitbox, new Color(100, 200, 255), text, true);
-                return false;//已经全部解锁
+                return false;
             }
             return true;
         }
@@ -55,7 +55,6 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return false;
             }
 
-            //生成特效弹幕
             if (Main.myPlayer == player.whoAmI) {
                 Projectile.NewProjectile(
                     player.GetSource_ItemUse(Item),
@@ -68,13 +67,13 @@ namespace CalamityOverhaul.Content.Items.Tools
                 );
             }
 
-            //延迟解锁走特效Proj
+            //解锁走特效Proj
             return true;
         }
 
         public override void AddRecipes() {
             CreateRecipe()
-                //所有可解锁鱼类
+                //可解锁鱼类
                 .AddIngredient(ItemID.Goldfish)
                 .AddIngredient(ItemID.Bass)
                 .AddIngredient(ItemID.Trout)
@@ -132,16 +131,16 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
     }
 
-    /// 海洋百科使用特效弹幕
+    /// 海洋百科使用特效
     internal class EncyclopediaEffect : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
         private enum EffectPhase
         {
-            Gather,//汇聚阶段
-            Absorb,//吸收阶段
-            Complete//完成阶段
+            Gather,//汇聚
+            Absorb,//吸收
+            Complete//完成
         }
 
         private EffectPhase Phase {
@@ -150,31 +149,31 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         private ref float Timer => ref Projectile.ai[1];
-        private const int GatherDuration = 120;//汇聚持续时间
-        private const int AbsorbDuration = 60;//吸收持续时间
-        private const int CompleteDuration = 60;//完成持续时间
+        private const int GatherDuration = 120;//汇聚帧
+        private const int AbsorbDuration = 60;//吸收帧
+        private const int CompleteDuration = 60;//完成帧
 
-        //技能图标飞行实体列表
+        //飞行图标列表
         private List<FlyingSkillIcon> flyingIcons = new List<FlyingSkillIcon>();
 
-        //柔光粒子系统
+        //柔光粒子
         private List<OceanParticle> particles = new List<OceanParticle>();
 
-        //仪式场状态（驱动着色器）
-        private float fieldRadius;         //当前符文环半径（像素）
-        private float coreIntensity;       //知识核心强度 0~1
-        private float shockProgress = -1f; //完成冲击波进度 0~1，<0 表示未激活
-        private float globalFade = 1f;     //整体淡出 0~1
+        //仪式场(着色器)
+        private float fieldRadius;         //符文环半径px
+        private float coreIntensity;       //核心强度0~1
+        private float shockProgress = -1f; //冲击波0~1，<0未激
+        private float globalFade = 1f;     //整体淡出0~1
 
-        //已解锁的技能列表
+        //已解锁技能
         private List<FishSkill> unlockedSkills = new List<FishSkill>();
 
-        private const float MinRingRadius = 70f;  //收束后的最小环半径
-        private const float MaxRingRadius = 420f; //展开后的最大环半径
-        private const float QuadRadius = 560f;    //着色器绘制区半径（含神光/冲击波余量）
+        private const float MinRingRadius = 70f;  //收束环半径
+        private const float MaxRingRadius = 420f; //展开环半径
+        private const float QuadRadius = 560f;    //着色器绘制半径
 
         public override void SetStaticDefaults() {
-            //仪式场以玩家为中心向外延伸，放宽绘制裁剪避免边缘被剔除
+            //放宽裁剪，防仪式场边缘剔除
             ProjectileID.Sets.DrawScreenCheckFluff[Type] = 1400;
         }
 
@@ -212,7 +211,6 @@ namespace CalamityOverhaul.Content.Items.Tools
                     break;
             }
 
-            //更新飞行图标
             for (int i = flyingIcons.Count - 1; i >= 0; i--) {
                 flyingIcons[i].Update(owner.Center);
                 if (flyingIcons[i].ShouldRemove) {
@@ -220,7 +218,6 @@ namespace CalamityOverhaul.Content.Items.Tools
                 }
             }
 
-            //更新粒子
             for (int i = particles.Count - 1; i >= 0; i--) {
                 particles[i].Update();
                 if (particles[i].ShouldRemove) {
@@ -229,27 +226,26 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
         }
 
-        /// 汇聚：符文环展开，鱼类知识图标自四周汇聚
+        /// 汇聚，环展开+图标汇入
         private void GatherPhaseAI(Player owner) {
-            //初始化飞行图标
+
             if (Timer == 1) {
                 InitializeFlyingIcons(owner);
                 PlayGatherSound(owner);
             }
 
             float progress = Timer / GatherDuration;
-            //仪式环由内向外展开
+            //环外展
             fieldRadius = MathHelper.Lerp(MinRingRadius, MaxRingRadius, VaultUtils.EaseOutCubic(progress));
-            //核心微微亮起
+            //核心亮起
             coreIntensity = MathHelper.Lerp(0f, 0.22f, progress);
             globalFade = 1f;
 
-            //生成汇聚柔光粒子
+            //汇聚柔光
             if (Timer % 2 == 0) {
                 SpawnGatherParticles(owner.Center);
             }
 
-            //音效
             if (Timer % 30 == 0) {
                 SoundEngine.PlaySound(SoundID.Item29 with {
                     Volume = 0.3f,
@@ -257,7 +253,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 }, owner.Center);
             }
 
-            //转入吸收阶段
+            //→吸收
             if (Timer >= GatherDuration) {
                 Phase = EffectPhase.Absorb;
                 Timer = 0;
@@ -265,20 +261,19 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
         }
 
-        /// 吸收：符文环收束，知识汇入核心
+        /// 吸收，环收束入核心
         private void AbsorbPhaseAI(Player owner) {
             float progress = Timer / AbsorbDuration;
 
-            //符文环向内收束
+            //环收束
             fieldRadius = MathHelper.Lerp(MaxRingRadius, MinRingRadius, VaultUtils.EaseInCubic(progress));
-            //核心急剧增亮
+            //核心增亮
             coreIntensity = MathHelper.Lerp(0.22f, 1f, VaultUtils.EaseOutCubic(progress));
             globalFade = 1f;
 
-            //强化的向心吸收粒子
+            //向心吸收粒
             SpawnAbsorbParticles(owner.Center, progress);
 
-            //脉冲音效
             if (Timer % 10 == 0) {
                 SoundEngine.PlaySound(SoundID.MaxMana with {
                     Volume = 0.4f,
@@ -286,32 +281,32 @@ namespace CalamityOverhaul.Content.Items.Tools
                 }, owner.Center);
             }
 
-            //转入完成阶段
+            //→完成
             if (Timer >= AbsorbDuration) {
                 Phase = EffectPhase.Complete;
                 Timer = 0;
-                shockProgress = 0f;//激活冲击波
+                shockProgress = 0f;//激冲击波
                 UnlockAllSkills(owner);
                 PlayCompleteSound(owner);
             }
         }
 
-        /// 完成：核心闪爆 + 冲击波向外扩散
+        /// 完成，闪爆+冲击波
         private void CompletePhaseAI(Player owner) {
             float progress = Timer / CompleteDuration;
 
-            //爆发柔光粒子
+            //爆发柔光
             if (Timer == 1) {
                 for (int i = 0; i < 60; i++) {
                     SpawnBurstParticle(owner.Center);
                 }
             }
 
-            //核心闪爆后回落
+            //闪爆回落
             coreIntensity = MathHelper.Lerp(1f, 0f, progress * progress);
-            //冲击波向外扩散
+            //冲击波外扩
             shockProgress = VaultUtils.EaseOutCubic(progress);
-            //尾段整体淡出
+            //尾段淡出
             globalFade = MathHelper.Clamp(1f - (progress - 0.55f) / 0.45f, 0f, 1f);
 
             if (Timer >= CompleteDuration) {
@@ -319,7 +314,6 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
         }
 
-        /// 初始化飞行图标
         private void InitializeFlyingIcons(Player owner) {
             if (!owner.TryGetModPlayer<HalibutSave>(out var save)) {
                 return;
@@ -329,12 +323,12 @@ namespace CalamityOverhaul.Content.Items.Tools
             int index = 0;
 
             foreach (var skill in allSkills) {
-                //跳过已解锁的技能
+                //跳过已解锁
                 if (save.IsUnlocked(skill)) {
                     continue;
                 }
 
-                //计算起始位置（螺旋分布）
+                //螺旋起点
                 float angle = (index / (float)allSkills.Count) * MathHelper.TwoPi * 3f;
                 float radius = 300f + (index % 3) * 100f;
                 Vector2 startPos = owner.Center + angle.ToRotationVector2() * radius;
@@ -345,7 +339,6 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
         }
 
-        /// 解锁全部技能
         private void UnlockAllSkills(Player owner) {
             if (!owner.TryGetModPlayer<HalibutSave>(out var save)) {
                 return;
@@ -355,21 +348,19 @@ namespace CalamityOverhaul.Content.Items.Tools
                 save.UnlockSkill(skill);
             }
 
-            //触发复苏系统提升
+            //复苏提升
             if (owner.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 float increase = unlockedSkills.Count * 15f;
                 halibutPlayer.ResurrectionSystem.MaxValue += increase;
                 halibutPlayer.ResurrectionSystem.Reset();
             }
 
-            //播放消息
             if (Main.netMode != NetmodeID.Server) {
                 string text = EncyclopediaofOceanicKnowledge.Text2.Value.Replace("[NUM]", unlockedSkills.Count.ToString());
                 CombatText.NewText(owner.Hitbox, new Color(100, 200, 255), text, true);
             }
         }
 
-        //粒子生成方法
         private void SpawnGatherParticles(Vector2 center) {
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
             float radius = Main.rand.NextFloat(50f, Math.Max(60f, fieldRadius));
@@ -397,7 +388,6 @@ namespace CalamityOverhaul.Content.Items.Tools
             particles.Add(new OceanParticle(center, velocity, OceanParticle.ParticleType.Burst));
         }
 
-        //音效方法
         private static void PlayGatherSound(Player owner) {
             SoundEngine.PlaySound(SoundID.Item84 with {
                 Volume = 0.8f,
@@ -425,11 +415,11 @@ namespace CalamityOverhaul.Content.Items.Tools
             Vector2 center = owner.Center;
             SpriteBatch sb = Main.spriteBatch;
 
-            //着色器仪式场（焦散水盘 + 符文环 + 知识核心 + 神光 + 冲击波）
-            //自带 Immediate/Additive 批次，结束时恢复 Deferred/AlphaBlend
+            //着色器仪式场
+            //Immediate/Additive→Deferred/AlphaBlend
             DrawRitualField(center);
 
-            //柔光层：向心粒子 + 图标光晕与拖尾（Additive）
+            //柔光层 Additive
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
@@ -441,7 +431,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
             sb.End();
 
-            //主体层：技能图标本体（AlphaBlend），并恢复默认批次状态
+            //主体层 AlphaBlend，恢复批次
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             foreach (var icon in flyingIcons) {
@@ -451,7 +441,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             return false;
         }
 
-        /// 用着色器单次绘制整个仪式场
+        /// 着色器一次画仪式场
         private void DrawRitualField(Vector2 center) {
             Effect shader = EffectLoader.EncyclopediaKnowledge?.Value;
             if (shader == null) {
@@ -491,7 +481,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
     }
 
-    /// 飞行技能图标实体：自外缘沿贝塞尔曲线汇入核心，带水流柔光拖尾
+    /// 飞行图标，贝塞尔汇入+水流拖尾
     internal class FlyingSkillIcon
     {
         public FishSkill Skill;
@@ -518,14 +508,14 @@ namespace CalamityOverhaul.Content.Items.Tools
             Speed = 0.012f + (index % 10) * 0.0012f;
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             Scale = 0.8f;
-            //控制点偏移固定在生成时，避免逐帧抖动
+            //控制点生成时固定，防抖动
             ctrlOffset = new Vector2(Main.rand.NextFloat(-110f, 110f), Main.rand.NextFloat(-340f, -180f));
         }
 
         public void Update(Vector2 targetPos) {
             Progress = Math.Clamp(Progress + Speed, 0f, 1f);
 
-            //贝塞尔曲线飞行
+            //贝塞尔飞行
             Vector2 mid = (StartPosition + targetPos) * 0.5f;
             Vector2 control1 = StartPosition + new Vector2(0f, -200f);
             Vector2 control2 = mid + ctrlOffset;
@@ -533,7 +523,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 
             Rotation += 0.05f;
 
-            //先放大后收束，汇入核心时变小
+            //放大后收束
             Scale = Progress < 0.5f
                 ? MathHelper.Lerp(0.8f, 1.2f, Progress * 2f)
                 : MathHelper.Lerp(1.2f, 0.3f, (Progress - 0.5f) * 2f);
@@ -544,7 +534,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
         }
 
-        /// 柔光层：水流拖尾 + 图标光晕（Additive）
+        /// 柔光层 Additive
         public void DrawGlow(SpriteBatch sb) {
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null) {
@@ -564,12 +554,12 @@ namespace CalamityOverhaul.Content.Items.Tools
                 sb.Draw(glow, trail[i] - Main.screenPosition, null, c, 0f, glowOrigin, s, SpriteEffects.None, 0f);
             }
 
-            //图标背后的光晕
+            //图标光晕
             Color halo = new Color(120, 210, 255, 0) * (0.25f + life * 0.45f);
             sb.Draw(glow, Position - Main.screenPosition, null, halo, 0f, glowOrigin, Scale * 1.15f, SpriteEffects.None, 0f);
         }
 
-        /// 主体层：技能图标本体（AlphaBlend）
+        /// 主体层 AlphaBlend
         public void DrawBody(SpriteBatch sb) {
             if (Skill?.Icon == null) {
                 return;

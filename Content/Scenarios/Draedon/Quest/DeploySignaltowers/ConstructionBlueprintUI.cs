@@ -5,7 +5,6 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 {
-    /// <summary>量子塔构建蓝图UI</summary>
     internal class ConstructionBlueprintUI : BaseRecipeDisplayUI
     {
         public static ConstructionBlueprintUI Instance => UIHandleLoader.GetUIHandleOfType<ConstructionBlueprintUI>();

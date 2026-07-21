@@ -8,15 +8,10 @@ namespace CalamityOverhaul.Content.HackTimes
     {
         public static HackTimeUI Instance => UIHandleLoader.GetUIHandleOfType<HackTimeUI>();
 
-        //骇入面板
         internal HackPanelRenderer Panel { get; private set; } = new();
-        //上传队列
         internal HackQueueRenderer Queue { get; private set; } = new();
-        //无限骇入风暴
         internal InfiniteHackRenderer InfiniteHack { get; private set; } = new();
-        //扫描信息面板
         internal ScanInfoRenderer ScanInfo { get; private set; } = new();
-        //RAM 弧形 HUD
         internal HackRamRenderer Ram { get; private set; } = new();
 
         public override bool Active => HackTime.Active || HackTime.Intensity >= 0.001f;
@@ -26,7 +21,6 @@ namespace CalamityOverhaul.Content.HackTimes
         }
 
         public override void Update() {
-            //敌我双主色随当前目标过渡
             HackTheme.UpdateProfile();
 
             Panel.Update();
@@ -34,7 +28,7 @@ namespace CalamityOverhaul.Content.HackTimes
             InfiniteHack.Update();
             ScanInfo.Update();
             Ram.Update();
-            //悬停协议成本传给RAM弧做预扣闪烁
+            //悬停成本 → RAM 弧预扣
             Ram.PreviewCost = Panel.HoveredCostPreview;
 
             bool mouseOnPanel = Panel.ContainsMouse();

@@ -22,9 +22,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
         internal int consumeUE = 10;
         internal List<int> ArmActorIndices = new List<int>();
 
-        /// <summary>
-        /// 工作模式(true=循环模式，砍伐后重新种树 false=清理模式，只砍伐不种树)
-        /// </summary>
+        /// <summary>true=砍后重种，false=只砍</summary>
         internal bool CycleMode = false;
 
         //右键交互冷却
@@ -52,9 +50,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             return actor != null && actor.Active && actor is LumberjackSaw;
         }
 
-        /// <summary>
-        /// 检查并生成机械锯臂(仅服务器端)
-        /// </summary>
+        /// <summary>生成锯臂(仅服务器)</summary>
         private void SpawnArmsIfNeeded() {
             if (VaultUtils.isClient) return;
             if (dontSpawnArmTime > 0) return;
@@ -74,9 +70,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             }
         }
 
-        /// <summary>
-        /// 切换工作模式
-        /// </summary>
         public void ToggleMode() {
             CycleMode = !CycleMode;
 

@@ -9,9 +9,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
 {
-    /// <summary>
-    /// 植树者抛射的橡子Actor，使用预计算的抛物线轨迹飞行
-    /// </summary>
+    /// <summary>植树者橡子Actor，预计算抛物线</summary>
     internal class LifeWeaverAcorn : Actor
     {
         //落点/树种/蓝图种子/预计飞行时长，权威端Setup后经SyncVar同步
@@ -44,9 +42,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
         //旋转
         private float rotationSpeed;
 
-        /// <summary>
-        /// 权威端生成后立即调用，锁定落点与这棵树的蓝图种子
-        /// </summary>
+        /// <summary>权威端初始化，锁落点与蓝图种子</summary>
         public void Setup(int tileX, int groundY, int treeType, int seed, float flightTime) {
             targetTileX = tileX;
             targetTileY = groundY;
@@ -94,9 +90,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             }
         }
 
-        /// <summary>
-        /// 更新飞行状态(使用精确的抛物线公式)
-        /// </summary>
         private void UpdateFlying() {
             currentFlightTime++;
 
@@ -106,7 +99,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             float y = startPosition.Y + initialVelocity.Y * t + 0.5f * Gravity * t * t;
             Position = new Vector2(x, y);
 
-            //当前速度，旋转：v=v0+g*t
+            //v=v0+g*t
             float vx = initialVelocity.X;
             float vy = initialVelocity.Y + Gravity * t;
             Vector2 currentVelocity = new Vector2(vx, vy);
@@ -122,15 +115,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
                 CheckLanding();
             }
 
-            //安全检查：超时销毁
+            //超时销毁
             if (currentFlightTime > expectedFlightTime + 60f) {
                 ActorLoader.KillActor(WhoAmI);
             }
         }
 
-        /// <summary>
-        /// 生成飞行轨迹粒子
-        /// </summary>
         private void SpawnTrailParticles(Vector2 currentVelocity) {
             if (Main.netMode == NetmodeID.Server) return;
 
@@ -152,9 +142,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             }
         }
 
-        /// <summary>
-        /// 检测落地
-        /// </summary>
         private void CheckLanding() {
             //检测是否接近目标位置
             Vector2 targetWorld = new Vector2(targetTileX * 16 + 8, targetTileY * 16);
@@ -191,9 +178,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             }
         }
 
-        /// <summary>
-        /// 落地
-        /// </summary>
         private void OnLand() {
             landed = true;
             landedTimer = 0;
@@ -222,9 +206,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             }
         }
 
-        /// <summary>
-        /// 更新落地状态
-        /// </summary>
         private void UpdateLanded() {
             landedTimer++;
 

@@ -5,14 +5,11 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 螺旋枪管：强制发射2束光束，两束绕共同前进轴做螺旋缠绕
-    /// 用 whoAmI→angle 字典独立累积相位，奇偶 ID 初始相位差π形成对称螺旋
-    /// </summary>
+    /// <summary>螺旋枪管，双束绕轴缠绕，whoAmI→相位，奇偶差π</summary>
     internal sealed class HelixBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
-        //螺旋青紫双色偏紫
+        //青紫偏紫
         public override Color TintColor => new(160, 80, 255);
 
         private readonly Dictionary<int, float> _angles = new();
@@ -31,13 +28,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
             angle += 0.1f;
             _angles[id] = angle;
-            //在施加偏移前记录当前速度大小，归一化时沿用，无需硬编码基础速度
+            //偏移前记速，归一化沿用
             float baseSpeed = beam.Projectile.velocity.Length();
             Vector2 dir = beam.Projectile.velocity.SafeNormalize(Vector2.Zero);
             Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
             float nudge = MathF.Sin(angle) * 0.5f;
             beam.Projectile.velocity += perp * nudge;
-            //归一化回施加偏移前的速度大小
+            //归一化回原速
             if (baseSpeed > 0.01f) {
                 beam.Projectile.velocity = beam.Projectile.velocity.SafeNormalize(Vector2.Zero) * baseSpeed;
             }

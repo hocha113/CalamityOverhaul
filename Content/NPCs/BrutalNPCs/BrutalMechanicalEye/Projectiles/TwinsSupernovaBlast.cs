@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectiles
 {
-    /// <summary>双子冲击波：无伤害纯演出，经<see cref="Renders.WarpEffectRender"/>扩张屏幕扭曲环补绘橙红/青紫双色反向旋转可见冲击环，服务端生成保证多人可见；ai[0]:尺寸档位0=冲刺音爆1=死光开火2=超新星对撞；ai[1]:主题0=激光眼青紫1=魔焰眼橙红2=双色混合</summary>
+    /// <summary>无伤冲击波，WarpEffectRender；ai[0]档0音爆1死光2超新星；ai[1]主题0激光1魔焰2混</summary>
     internal class TwinsSupernovaBlast : ModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectil
                 ring.Size() / 2f, scale * 0.74f, SpriteEffects.None, 0f);
         }
 
-        /// <summary>屏幕扭曲：扩张的冲击波折射环</summary>
+        /// <summary>屏幕扭曲，扩张的冲击波折射环</summary>
         public void Warp() {
             float t = Progress;
             float size = BaseSize * (0.3f + t * 1.45f);

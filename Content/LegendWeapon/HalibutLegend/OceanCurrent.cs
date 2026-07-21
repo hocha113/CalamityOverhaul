@@ -260,9 +260,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             //根据速度与是否为溅射决定帧（3x3 共9帧）
             int frame = 0;
             float spd = particleVel.Length();
-            if (spd < 2f) frame = Main.rand.Next(0, 3);           //慢速：上排
-            else if (spd < 5f) frame = Main.rand.Next(3, 6);       //中速：中排
-            else frame = Main.rand.Next(6, 9);                     //快速：下排
+            if (spd < 2f) frame = Main.rand.Next(0, 3);           //慢速上排
+            else if (spd < 5f) frame = Main.rand.Next(3, 6);       //中速中排
+            else frame = Main.rand.Next(6, 9);                     //快速下排
 
             OceanDroplet droplet = new OceanDroplet {
                 Position = Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),

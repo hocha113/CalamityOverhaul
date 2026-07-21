@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Stones.Granites
 {
-    /// <summary>花岗飞刀：穿透飞刀拖曳锐利电弧带，命中向邻近敌人跳一道微型链电，末段/撞地碎晶迸溅</summary>
+    /// <summary>花岗飞刀，电弧拖尾，命中链电跳邻近，末段/撞地碎晶</summary>
     internal class GraniteThrowingKnife : ModItem
     {
         public override void SetDefaults() {
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
     {
         public override string Texture => GraniteMarbleVFX.GraniteTex + "GraniteThrowingKnife";
         private const float SpriteRot = MathHelper.PiOver4;
-        //链电已触发标记：命中判定与生成都发生在 owner 侧，无需同步
+        //链电已触发，owner 侧本地
         private ref float ChainUsed => ref Projectile.localAI[0];
         private Trail Trail;
 
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
 
         public override void AI() {
             Projectile.ai[0]++;
-            //延迟重力：直线段结束后开始下坠
+            //直线段后延迟重力
             if (Projectile.ai[0] > 22) {
                 Projectile.velocity.Y += 0.16f;
             }
@@ -83,7 +83,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
                     PRTLoader.NewParticle<PRT_Light>(Projectile.Center, -Projectile.velocity * 0.06f
                         , GraniteMarbleVFX.GraniteCore, 0.22f).Configure(10, 1f, 1.2f);
                 }
-                //刀刃能量偶发走电
                 if (Main.rand.NextBool(14)) {
                     PRTLoader.NewParticle<PRT_GraniteVolt>(Projectile.Center + Main.rand.NextVector2Circular(6f, 6f)
                         , Projectile.velocity * 0.1f, GraniteMarbleVFX.GraniteSpark
@@ -93,7 +92,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
-            Projectile.velocity = oldVelocity; //恢复撞墙前速度，供 OnKill 反推碎裂点
+            Projectile.velocity = oldVelocity; //供 OnKill 反推碎裂点
             Projectile.Kill();
             return false;
         }
@@ -107,7 +106,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
                         , Main.rand.NextFloat(0.22f, 0.34f)).Configure(Main.rand.Next(3, 6));
                 }
             }
-            //链电跳跃：每把飞刀至多一次，只在 owner 侧结算
+            //每刀至多一次链电，owner 侧
             if (ChainUsed != 0f || !Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
@@ -123,10 +122,9 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
 
         public override void OnKill(int timeLeft) {
             Vector2 baseDir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
-            //碎裂点沿速度反向回退半个刀身，避免碎片与晶屑从墙体内出生
+            //碎裂点回退半刀身，防嵌墙
             Vector2 burstPos = Projectile.Center - baseDir * Projectile.width * 0.5f;
             if (!VaultUtils.isServer) {
-                //水晶碎裂双层 + 电噼点缀
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = 0.5f, Volume = 0.6f }, burstPos);
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.05f, Volume = 0.35f }, burstPos);
                 SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with { Pitch = 0.15f, Volume = 0.3f }, burstPos);
@@ -157,7 +155,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         }
 
         public float GetWidthFunc(float c) {
-            //锐利电弧带：头端在刀体覆盖内快速展开，向尾端二次收针（半宽上限8px，贴刀刃厚度）
+            //半宽上限8px
             float head = MathHelper.Clamp(c * 10f, 0f, 1f);
             float tail = 1f - c;
             return head * tail * tail * 8f * Projectile.scale;
@@ -168,7 +166,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         public override bool PreDraw(ref Color lightColor) {
             Texture2D tex = TextureAssets.Projectile[Type].Value;
             Vector2 origin = tex.Size() / 2f;
-            //单帧精灵残影：刀体余像
             for (int i = 1; i < Projectile.oldPos.Length; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) {
                     continue;
@@ -181,10 +178,9 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(lightColor)
                 , Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
 
-            //刀刃青蓝能量：窄光条沿刀刃朝向叠绘（A=0 加亮），随时间微闪
             Texture2D line = CWRAsset.Line.Value;
             float flicker = 0.68f + 0.32f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 13f + Projectile.whoAmI * 1.7f);
-            float bladeRot = Projectile.rotation - SpriteRot + MathHelper.PiOver2; //Line 为竖向贴图
+            float bladeRot = Projectile.rotation - SpriteRot + MathHelper.PiOver2; //Line 竖向
             Vector2 bladePos = Projectile.Center - Main.screenPosition;
             Vector2 lineOrigin = line.Size() / 2f;
             Color edge = GraniteMarbleVFX.GraniteSpark * 0.85f * flicker; edge.A = 0;
@@ -201,8 +197,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
     }
 
     /// <summary>
-    /// 花岗飞刀的微型链电判定弹：ai[0]=跳跃目标NPC whoAmI，ai[1]=链电起点NPC whoAmI；
-    /// 一闪即逝的 ThunderTrail 电弧，只对指定跳跃目标结算一次伤害
+    /// 链电判定弹，ai[0]=跳跃目标 whoAmI，ai[1]=起点 whoAmI；只伤跳跃目标一次
     /// </summary>
     internal class GraniteKnifeVoltArc : ModProjectile
     {
@@ -210,7 +205,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         /// <summary>链电搜索半径 px</summary>
         internal const float JumpRange = 240f;
         private const int LifeTime = 14;
-        private const int BrightTime = 6; //满亮帧数，其后进入淡出
+        private const int BrightTime = 6; //满亮帧，其后淡出
         private const int ArcPointCount = 10;
 
         private ThunderTrail mainTrail;
@@ -231,13 +226,13 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = -1; //对每个目标只结算一次
+            Projectile.localNPCHitCooldown = -1; //每目标一次
         }
 
         public override bool ShouldUpdatePosition() => false;
 
         public override void AI() {
-            //端点跟随两端NPC，NPC失效时停在最后位置
+            //端点跟 NPC，失效停末位
             if (((int)Projectile.ai[1]).TryGetNPC(out NPC source) && source.Alives()) {
                 startPos = source.Center;
             }
@@ -252,7 +247,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             }
 
             if (Timer == 0 && !VaultUtils.isServer) {
-                //链电触发的高频电弧爆闪
                 SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with { Pitch = 0.6f, Volume = 0.55f }, endPos);
                 for (int i = 0; i < 2; i++) {
                     PRTLoader.NewParticle<PRT_GraniteVolt>(endPos + Main.rand.NextVector2Circular(8f, 8f)
@@ -260,7 +254,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
                         , Main.rand.NextFloat(0.26f, 0.4f)).Configure(Main.rand.Next(3, 6));
                 }
             }
-            //亮相期每2帧重掷电弧路径，随后冻结淡出
+            //亮相每2帧重掷路径，其后冻结淡出
             if (!VaultUtils.isServer && Projectile.timeLeft > LifeTime - BrightTime && (int)Timer % 2 == 0) {
                 BuildArcPath();
             }
@@ -313,7 +307,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         private float GetArcAlpha(float f) => Fade;
 
         public override bool? CanHitNPC(NPC target) {
-            //只允许命中指定的跳跃目标，链电起点与路径上的其他NPC不受伤害
             if (target.whoAmI == (int)Projectile.ai[0]) {
                 return null;
             }
@@ -335,7 +328,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             }
             mainTrail?.DrawThunder(Main.instance.GraphicsDevice);
             coreTrail?.DrawThunder(Main.instance.GraphicsDevice);
-            //两端触点辉光
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Color glowColor = GraniteMarbleVFX.GraniteSpark; glowColor.A = 0;
             Main.EntitySpriteDraw(glow, startPos - Main.screenPosition, null, glowColor * 0.7f * Fade

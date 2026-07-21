@@ -66,9 +66,8 @@ namespace CalamityOverhaul.Content.LegendWeapon
         }
 
         /// <summary>
-        /// 深拷贝钩子，物品克隆链（<see cref="CWRItem.CloneCWRItem"/>）调用。
-        /// 基类拷贝值字段与列表；派生类持有引用型进度容器（如鬼切的点鬼簿）必须覆写补深拷，
-        /// 否则复制出的两把刀共享同一份进度
+        /// 深拷贝钩子，<see cref="CWRItem.CloneCWRItem"/> 调用
+        /// 基类拷贝值与列表；派生若持引用型进度须覆写，否则两把刀共享进度
         /// </summary>
         public virtual LegendData Clone(Item item) {
             LegendData clone = (LegendData)MemberwiseClone();
@@ -84,7 +83,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             writer.Write(UpgradeWorldName ?? string.Empty);
             writer.Write(UpgradeWorldFullName ?? string.Empty);
             writer.Write(SkipUpgradeWorldFullName ?? string.Empty);
-            //可信世界列表：长度前缀 + 字符串
+            //可信世界，长度前缀+字符串
             TrustedWorldFullNames ??= new List<string>();
             writer.Write(TrustedWorldFullNames.Count);
             foreach (var w in TrustedWorldFullNames) {
@@ -149,13 +148,13 @@ namespace CalamityOverhaul.Content.LegendWeapon
             if (!string.IsNullOrEmpty(UpgradeWorldFullName)) {
                 tag["LegendData:UpgradeWorldFullName"] = UpgradeWorldFullName;
             }
-            //仅持久化信任世界列表(SkipUpgradeWorldFullName 是会话级标记，不入档)
+            //仅持久化信任世界(SkipUpgradeWorldFullName 会话级，不入档)
             if (TrustedWorldFullNames != null && TrustedWorldFullNames.Count > 0) {
                 tag["LegendData:TrustedWorlds"] = TrustedWorldFullNames;
             }
             if (TrialDefinitions != null) {
-                //只落已确认进度：仅刷新 schema/路线签名，绝不在存档时吞并当前世界击杀，
-                //否则把武器带进高进度世界存一次档就永久升级，跨世界确认失效
+                //只落已确认进度，存档时不吞并当前世界击杀
+                //(否则高进度世界存一次档就永久升级)
                 TrialSchemaVersion = CurrentTrialSchemaVersion;
                 TrialRouteSignature = LegendTrialRouteResolver.GetRouteSignature(TrialDefinitions);
                 tag["LegendData:TrialSchemaVersion"] = TrialSchemaVersion;
@@ -176,13 +175,12 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 if (!tag.TryGet("LegendData:UpgradeWorldName", out UpgradeWorldName)) {
                     UpgradeWorldName = "";
                 }
-                //旧存档兼容：如果只存了 UpgradeWorldName，直接拿来当 UpgradeWorldFullName
+                //旧档兼容，UpgradeWorldName 顶替 FullName
                 if (!tag.TryGet("LegendData:UpgradeWorldFullName", out UpgradeWorldFullName)) {
                     UpgradeWorldFullName = UpgradeWorldName;
                 }
                 //会话级跳过标记不持久化
                 SkipUpgradeWorldFullName = string.Empty;
-                //可信世界列表
                 TrustedWorldFullNames = new List<string>();
                 if (tag.TryGet("LegendData:TrustedWorlds", out List<string> trusted) && trusted != null) {
                     foreach (var w in trusted) {
@@ -244,7 +242,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             return worldLine + "\n" + trialPreText;
         }
 
-        /// <summary>进世界：清空背包传奇的会话跳过标记</summary>
+        /// <summary>进世界时清空背包传奇的会话跳过标记</summary>
         public static void ResetInventory(Player player) {
             if (player == null) {
                 return;
@@ -297,9 +295,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
 
         /// <summary>仍待升级</summary>
         public bool NeedUpgrade() {
-            //此处不写盘：TargetLevel 已实时 OR 当前世界击杀，足够判定；
-            //若在只读查询里 SyncTrialProgressFromWorld，会把当前世界进度永久并入
-            //CompletedTrialKeys，导致跨世界确认弹窗形同虚设(回到本世界后静默升级)
+            //只读判定，勿 SyncTrialProgressFromWorld(会永久并入 CompletedTrialKeys)
             //本会话已跳过
             if (!string.IsNullOrEmpty(SkipUpgradeWorldFullName) && SkipUpgradeWorldFullName == SaveWorld.WorldFullName) {
                 return false;
@@ -321,7 +317,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             if (IsTrustedWorld()) {
                 return false;
             }
-            //无 tag：Level==0 静默，Level>0 遗留须确认
+            //无 tag，Level==0 静默，Level>0 遗留须确认
             if (UpgradeTagNameIsEmpty) {
                 return Level > 0;
             }
@@ -371,7 +367,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 case LegendUpdateContext.PlayerHolding:
                 case LegendUpdateContext.PlayerInventory:
                     if (NeedCrossWorldConfirm()) {
-                        //仅 owner==myPlayer 弹窗；传 GetEffectiveTargetLevel
+                        //仅 myPlayer 弹窗
                         LegendUpgradeManager.Request(this, item, GetEffectiveTargetLevel(), owner);
                         return;
                     }
@@ -414,7 +410,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             return LegendTrialRouteResolver.GetSequentialOriginalLevel(definitions, IsTrialCompletedInVersionedState);
         }
 
-        /// <summary>试炼已完成：键已记录或世界已击杀(委托/tooltip 同源)</summary>
+        /// <summary>试炼已完成，键已记录或世界已击杀(委托/tooltip 同源)</summary>
         internal bool IsTrialCompleted(LegendTrialDefinition trial) => IsTrialCompletedInVersionedState(trial);
 
         public void SyncTrialProgressFromWorld() {

@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>复制机匣：光束消亡原位短寿低伤回响，不递归</summary>
+    /// <summary>复制机匣，消亡原位短寿低伤回响，不递归</summary>
     internal sealed class ReplicatorFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         public override void OnBeamKill(CyberTraceBeamProj beam, int timeLeft) {
             if (beam.IsDerived || beam.Projectile.owner != Main.myPlayer) return;
             int dmg = Math.Max((int)(beam.Projectile.damage * 0.55f), 1);
-            //回响沿原方向再走一段，初速略低
+            //回响沿原向略减速
             Vector2 vel = beam.Projectile.velocity.SafeNormalize(Vector2.UnitX) * 12f;
             int idx = Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                 beam.Projectile.Center, vel,

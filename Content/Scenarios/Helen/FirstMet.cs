@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.Scenarios.Helen
              .Say("Helen", Line19.Value)
              .Say("Helen", Line20.Value)
              .Say("Helen", Line21.Value);
-            //不再在此直接打开图鉴：交由 HalibutHudLead 引导玩家认识 HUD、装备栏与技能转盘
+            //图鉴改由HalibutHudLead引导
         }
 
         protected override NarrativePolicy ConfigurePolicy() => new() {

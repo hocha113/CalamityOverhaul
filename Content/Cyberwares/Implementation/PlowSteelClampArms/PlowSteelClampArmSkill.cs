@@ -7,8 +7,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 {
     /// <summary>
     /// 犁钢钳臂雷达技能，Charge 双形态
-    /// <br/>短按：固定短线 2 秒；长按满蓄：搜锚点铺长线 5 秒，无锚点降级短线
-    /// <br/>满蓄阈值 30 帧，瞄点读 Main.MouseWorld
+    /// <br/>短按短线 2s，满蓄搜锚点长线 5s，无锚点降级短线
+    /// <br/>满蓄阈值 30 帧，瞄点 Main.MouseWorld
     /// </summary>
     internal sealed class PlowSteelClampArmSkill : CyberwareSkillBase
     {
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         /// <summary>满蓄阈值 30 帧，区分轻点与长按</summary>
         public override int FullChargeTicks => 30;
 
-        //冷却进度：1 表示完全就绪，0 表示刚释放
+        //冷却进度，1 就绪，0 刚放
         public override float StatusFillRatio {
             get {
                 Player p = Main.LocalPlayer;
@@ -64,13 +64,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             }
         }
 
-        /// <summary>蓄力期间手心火花反馈</summary>
+        /// <summary>蓄力期间手心火花</summary>
         public override void OnChargeTick(Player player, float ratio) {
-            //仅本机玩家做反馈，避免多人下重复播放
             if (player.whoAmI != Main.myPlayer) {
                 return;
             }
-            //蓄力刚到阈值的那一刻给一个明显的提示点：粒子变密 + 改色
+            //满蓄阈值瞬间加密改色
             if (ratio >= 1f && Main.rand.NextBool(4)) {
                 Vector2 vel = Main.rand.NextVector2Circular(1.8f, 1.8f);
                 Dust d = Dust.NewDustPerfect(player.Center + new Vector2(player.direction * 12f, -2f),
@@ -85,9 +84,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             }
         }
 
-        /// <summary>松开时按蓄力比例选短线/长线</summary>
+        /// <summary>松开按蓄力比例选短线/长线</summary>
         public override void OnChargeRelease(Player player, float ratio) {
-            //ratio == 1 表示蓄满（达到 FullChargeTicks）；否则视作短按
+            //ratio==1 满蓄，否则短按
             bool longMode = ratio >= 1f;
             player.GetModPlayer<PlowSteelClampArmPlayer>()
                 .TryFireWire(Main.MouseWorld, longMode);

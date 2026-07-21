@@ -23,7 +23,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool? CanUseItem(Item item, Player player) {
             if (player.altFunctionUse == 2) {
-                //检查冷却
                 if (Cooldown > 0) {
                     return false;
                 }
@@ -36,7 +35,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void Use(Item item, Player player) {
-            //设置冷却
             SetCooldown();
 
             //计算冲刺方向（朝向光标）
@@ -58,18 +56,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ai1: swingDir
             );
 
-            //蓄势起手音：水的吸气，出手爆发音押在蓄势结束帧（弹幕内）
+            //蓄势起手音，水的吸气
             SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.55f, Pitch = 0.35f }, player.Center);
         }
     }
 
     /// <summary>
-    /// 金枪鱼须船长突刺：水刃居合。<br/>
-    /// 动力学三拍：反向蓄势后拉 4 帧（pow(t,8)，最后一帧才猛缩）→ 一帧内全速 →
-    /// 两帧硬刹 + 一帧反坐；位移期玩家随行、全程无敌可穿墙（机制与旧版一致）。<br/>
-    /// 演出四阶段：出手=起点小水花+定向震屏；突进=水绸带刀光（FishTunaRibbon 三股条带）
+    /// 金枪鱼须船长突刺，水刃居合<br/>
+    /// 动力学三拍，反向蓄势后拉 4 帧（pow(t,8)，最后一帧才猛缩）→ 一帧内全速 →
+    /// 两帧硬刹 + 一帧反坐；位移期玩家随行、全程无敌可穿墙（机制与旧版一致）<br/>
+    /// 演出四阶段，出手=起点小水花+定向震屏；突进=水绸带刀光（FishTunaRibbon 三股条带）
     /// +水珠沿路甩落+鱼刃残影链+玩家拖影；刹停=终点大水花；余韵=条带从尾端化雾消散、
-    /// 悬浮水雾沿路径缓慢下落（活得比突刺久）。<br/>
+    /// 悬浮水雾沿路径缓慢下落（活得比突刺久）<br/>
     /// ai[0]=计时 ai[1]=挥向（决定鱼刃翻转）
     /// </summary>
     internal class TunabeardDashProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable, IOverlayDrawable
@@ -88,7 +86,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const int LaunchFrame = WindupFrames + 1;          //全速帧
         private const int FullFrames = 19;        //全速持续帧
         private const int BrakeStart = LaunchFrame + FullFrames;   //硬刹起始帧
-        private const int BrakeFrames = 3;        //硬刹：两帧骤减+一帧反坐
+        private const int BrakeFrames = 3;        //硬刹，两帧骤减+一帧反坐
         private const int ControlEnd = BrakeStart + BrakeFrames - 1;//位移与判定结束帧
         //==== 余韵常量 ====
         private const int RetractDelay = 6;       //刹停到条带开始消散
@@ -136,14 +134,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.spriteDirection = Projectile.direction = SwingDirection > 0 ? 1 : -1;
             }
 
-            //判定窗：只在突进+硬刹期造成伤害（与旧版位移期判定一致）
+            //判定窗，只在突进
             Projectile.friendly = t >= LaunchFrame && t <= ControlEnd;
 
             if (t <= ControlEnd) {
                 ControlFrame(t);
             }
             else if (t == ControlEnd + 1) {
-                //交还操控：残余一点前向动量，手感上从水里"滑出来"
+                //交还操控，残余一点前向动量
                 Projectile.velocity = Vector2.Zero;
                 Owner.velocity = dashDir * 6f;
             }
@@ -154,7 +152,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //余韵：消散前沿剥落碎水，条带"化雾散掉"而非原地淡出
+            //余韵，消散前沿剥落碎水
             float rt = RetractT;
             if (!Main.dedServ && rt > 0f && rt < 1f && pathPos.Count >= 2 && t % 2 == 0) {
                 float frontU = MathHelper.Clamp((rt * 2.3f - 0.5f) / 1.15f, 0f, 1f);
@@ -170,10 +168,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>位移期逐帧：蓄势后拉 → 一帧全速 → 硬刹反坐；玩家随行+无敌</summary>
+        /// <summary>位移期逐帧，蓄势后拉 → 一帧全速 → 硬刹反坐；玩家随行+无敌</summary>
         private void ControlFrame(int t) {
             if (t <= WindupFrames) {
-                //反向蓄势：pow(t,8) 曲线，前三帧几乎不动、最后一帧猛缩
+                //反向蓄势，pow(t,8) 曲线
                 float t0 = MathF.Pow((t - 1) / (float)WindupFrames, 8f);
                 float t1 = MathF.Pow(t / (float)WindupFrames, 8f);
                 Vector2 step = -dashDir * PullbackDist * (t1 - t0);
@@ -207,7 +205,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //突进期条带/鱼刃膨胀
             swell = 1f + 0.25f * MathHelper.Clamp((t - LaunchFrame) / 10f, 0f, 1f);
 
-            //玩家随行：位移期全程无敌可穿墙（机制保留）
+            //玩家随行
             Owner.Center = Projectile.Center;
             Owner.velocity = Vector2.Zero;
             Owner.fallStart = (int)(Owner.position.Y / 16f);
@@ -216,7 +214,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Owner.direction = dashDir.X > 0f ? 1 : -1;
             }
 
-            //突进中的速度语言：拖影 + 沿路甩水
+            //突进中的速度语言，拖影 + 沿路甩水
             float speed = Projectile.velocity.Length();
             if (t >= LaunchFrame && speed > 20f) {
                 Owner.armorEffectDrawShadow = true;
@@ -228,7 +226,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             RecordPath(t);
         }
 
-        /// <summary>路径记录：从全速帧起（蓄势后拉的"上膛位"即条带尾端），刹停帧强制收口</summary>
+        /// <summary>路径记录，从全速帧起（蓄势后拉的"上膛位"即条带尾端），刹停帧强制收口</summary>
         private void RecordPath(int t) {
             if (t < LaunchFrame) {
                 return;
@@ -245,7 +243,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>重力下垂量(px)：路径点越老垂得越多，水绸松弛下坠的液体语言</summary>
+        /// <summary>重力下垂量(px)，路径点越老垂得越多，水绸松弛下坠的液体语言</summary>
         private float Sag(float age) => MathF.Min(age * age * 0.009f, 34f);
 
         /// <summary>把下垂叠进路径副本（绘制/播雾/前沿定位共用）</summary>
@@ -256,7 +254,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>出手：起点小水花（向后踢水）+ 爆发音 + 极短定向震屏</summary>
+        /// <summary>出手，起点小水花（向后踢水）+ 爆发音 + 极短定向震屏</summary>
         private void LaunchBurst() {
             SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.8f, Pitch = -0.3f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Volume = 0.6f, Pitch = 0.2f }, Projectile.Center);
@@ -271,7 +269,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>刹停：终点大水花 + 沿整条路径播种悬浮水雾（余韵活得比突刺久）</summary>
+        /// <summary>刹停，终点大水花 + 沿整条路径播种悬浮水雾（余韵活得比突刺久）</summary>
         private void StopBurst() {
             SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.75f, Pitch = -0.1f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.35f, Pitch = -0.55f }, Projectile.Center);
@@ -284,7 +282,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Owner.CWR().GetScreenShake(3f);
         }
 
-        /// <summary>突进沿路甩水：每帧 2 粒重力水珠 + 稀疏水尘底噪，量随速度走</summary>
+        /// <summary>突进沿路甩水，每帧 2 粒重力水珠 + 稀疏水尘底噪，量随速度走</summary>
         private void SpawnDashSpray(float speed) {
             Vector2 prev = Projectile.Center - Projectile.velocity;
             Vector2 perp = new(-dashDir.Y, dashDir.X);
@@ -300,7 +298,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , Main.rand.NextFloat(0.65f, 1.05f))
                     ?.Configure(Main.rand.Next(24, 38), 0.28f, 0.982f);
             }
-            //廉价底噪：一粒水尘（英雄层交给条带与水珠），量随速度走
+            //廉价底噪
             if (Main.rand.NextFloat() < MathHelper.Clamp(speed / FullSpeed, 0.3f, 1f) * 0.55f) {
                 Dust d = Dust.NewDustPerfect(Vector2.Lerp(prev, Projectile.Center, Main.rand.NextFloat())
                     , DustID.Water, -dashDir * Main.rand.NextFloat(0.5f, 1.5f), 120
@@ -314,7 +312,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 0.9f, Pitch = -0.4f }, target.Center);
             SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.65f, Pitch = -0.25f }, target.Center);
 
-            //穿身微滞：世界不停，只有被穿者顿一拍
+            //穿身微滞，世界不停，只有被穿者顿一拍
             target.CWR().TimeFrozenTick = 3;
 
             //击退增强（旧版机制保留）
@@ -327,7 +325,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         //==================== 绘制 ====================
-        //夹心：PreDraw 深水底幕（玩家精灵之下）→ 玩家 → 条带图元层 → 加色水光 → 鱼刃遮挡层
+        //夹心
 
         private Vector2 FishPos() {
             int t = (int)DashTimer;
@@ -335,7 +333,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return Projectile.Center + dashDir * lead;
         }
 
-        /// <summary>夹心底层：头段身下的深水底幕（真 alpha 烟片 AlphaBlend 染深蓝）</summary>
+        /// <summary>夹心底层，头段身下的深水底幕（真 alpha 烟片 AlphaBlend 染深蓝）</summary>
         public override bool PreDraw(ref Color lightColor) {
             if (Main.dedServ || pathPos.Count < 2) {
                 return false;
@@ -365,7 +363,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>三股水绸子带：白沫窄脊 + 主水绸 + 下侧慢流细带（层间视差）</summary>
+        /// <summary>三股水绸子带，白沫窄脊 + 主水绸 + 下侧慢流细带（层间视差）</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
             if (Main.dedServ || pathPos.Count < 2) {
                 return;
@@ -385,13 +383,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float seed = Projectile.identity * 0.6180339887f % 1f;
 
             Span<FishTunaRibbonRenderer.RibbonDef> defs = [
-                //白沫窄脊：窄、快、几乎不撕裂，头段的刃感骨架
+                //白沫窄脊
                 new() { HalfWidth = 13f * swell, PerpOffset = 0f, Seed = seed + 0.71f,
                     FlowMul = 1.70f, TearAmp = 0.25f, HeadBoost = 1.45f, OpacityMul = 0.70f },
-                //主水绸：全宽、撕裂大舌，半透明青蓝的身体
+                //主水绸
                 new() { HalfWidth = 46f * swell, PerpOffset = 0f, Seed = seed,
                     FlowMul = 1.00f, TearAmp = 0.95f, HeadBoost = 0.40f, OpacityMul = 0.95f },
-                //下侧细带：慢流、最碎（水往下松，第三速度视差）
+                //下侧细带
                 new() { HalfWidth = 21f * swell, PerpOffset = -32f * swell, Seed = seed + 0.43f,
                     FlowMul = 0.65f, TearAmp = 1.30f, HeadBoost = 0.15f, OpacityMul = 0.72f },
             ];
@@ -402,14 +400,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             FishTunaRibbonRenderer.EndDraw(device, pb, pr, pd);
         }
 
-        /// <summary>加色水光：出手/刹停爆点（≤5帧）+ 突进期头端引导水线</summary>
+        /// <summary>加色水光，出手/刹停爆点（≤5帧）+ 突进期头端引导水线</summary>
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
             if (Main.dedServ || pathPos.Count == 0) {
                 return;
             }
             int t = (int)DashTimer;
 
-            //出手爆点：小星芒一拍
+            //出手爆点，小星芒一拍
             if (t - LaunchFrame is >= 0 and < 4 && CWRAsset.StarFlare02?.Value is Texture2D launchFlare) {
                 float k = (t - LaunchFrame) / 4f;
                 float a = MathF.Pow(1f - k, 1.6f) * 0.75f;
@@ -418,14 +416,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , 0.5f + k * 0.2f, SpriteEffects.None, 0);
             }
 
-            //突进期头端引导水线：短加色箭头条，读作刃尖犁水
+            //突进期头端引导水线
             if (t >= LaunchFrame && t < BrakeStart && CWRAsset.LightShot?.Value is Texture2D streak) {
                 spriteBatch.Draw(streak, FishPos() - Main.screenPosition, null
                     , FishTunabeardVFX.Bright * 0.40f, dashDir.ToRotation(), new Vector2(streak.Width * 0.72f, streak.Height * 0.5f)
                     , new Vector2(0.55f, 0.42f) * swell, SpriteEffects.None, 0);
             }
 
-            //刹停爆点：终点星芒，比出手大一号
+            //刹停爆点，终点星芒，比出手大一号
             if (t - ControlEnd is >= 0 and < 5 && CWRAsset.StarFlare02?.Value is Texture2D stopFlare) {
                 float k = (t - ControlEnd) / 5f;
                 float a = MathF.Pow(1f - k, 1.6f) * 0.85f;
@@ -435,7 +433,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>遮挡层：鱼刃本体 + 残影链，稳定盖在水绸之上（刃在水面上走）</summary>
+        /// <summary>遮挡层，鱼刃本体 + 残影链，稳定盖在水绸之上（刃在水面上走）</summary>
         void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
             if (Main.dedServ) {
                 return;
@@ -451,7 +449,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 origin = tex.Size() / 2f;
             SpriteEffects effects = SwingDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
 
-            //姿态：蓄势期刃身向后上膛（pow 曲线），出手带一点过冲回正
+            //姿态
             float baseRot = dashDir.ToRotation() + MathHelper.PiOver4 * Projectile.spriteDirection;
             float rot = baseRot;
             if (t <= WindupFrames) {
@@ -461,7 +459,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 rot += SwingDirection * 0.28f * (1f - (t - LaunchFrame) / 3f);
             }
 
-            //幅度：突进膨胀，硬刹三帧内回落
+            //幅度，突进膨胀，硬刹三帧内回落
             float fishScale = swell + 0.03f;
             if (t >= BrakeStart) {
                 fishScale = MathHelper.Lerp(1.28f, 1.02f, MathHelper.Clamp((t - BrakeStart) / 3f, 0f, 1f));
@@ -471,7 +469,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Color bodyC = Color.Lerp(lightC, Color.White, 0.35f) * bodyEnv;
             Vector2 fishPos = FishPos();
 
-            //残影链：速度编码方向（位置残影表达平移，鱼刃自身不旋转）
+            //残影链
             float speed = Projectile.velocity.Length();
             if (speed > 24f) {
                 float gap = MathHelper.Clamp(speed * 0.34f, 10f, 46f);

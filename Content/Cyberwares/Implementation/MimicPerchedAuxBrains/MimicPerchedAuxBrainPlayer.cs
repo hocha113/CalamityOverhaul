@@ -77,17 +77,15 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
         }
 
         public override void ResetEffects() {
-            //冷却与混乱视觉计时持续递减
             BaseCyberware.TickFrameDown(ref TriggerCooldownTimer, ref triggerCooldownCarry);
             BaseCyberware.TickFrameDown(ref ChaosVisualTimer, ref chaosVisualCarry);
         }
 
         public override void PostUpdate() {
-            //每帧检测装备状态，自动维持四个幻象数量
             bool equipped = GetEquipped(Player) != null;
 
             if (equipped && Player.whoAmI == Main.myPlayer) {
-                //冷却结束后自动补全缺失的幻象
+                //冷却结束补幻象
                 if (TriggerCooldownTimer <= 0) {
                     RequestRespawnPhantoms(Player);
                 }
@@ -107,7 +105,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
             if (TriggerCooldownTimer > 0) {
                 return false;
             }
-            //至少要有一个存活的幻象才能借身闪避
+            //无存活幻象不可借身
             if (!AnyPhantomAlive()) {
                 return false;
             }
@@ -118,7 +116,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
                 phantomDamage = 1;
             }
 
-            //尝试解析袭击者实体
             Vector2 attackerCenter = Player.Center;
             int attackerNpcIndex = -1;
             if (info.DamageSource.TryGetCausingEntity(out Entity entity)) {
@@ -128,7 +125,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
                 }
             }
 
-            //命令所有存活的幻象进入冲撞状态
             CommandPhantomsRush(attackerCenter, attackerNpcIndex, phantomDamage);
 
             TriggerCooldownTimer = equipped.TriggerCooldown;
@@ -136,7 +132,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
             ChaosVisualTimer = 30;
             chaosVisualCarry = 0f;
 
-            //制造一阵混乱粒子作为视觉反馈
             for (int i = 0; i < 24; i++) {
                 Vector2 dustVel = Main.rand.NextVector2Circular(6f, 6f);
                 Dust dust = Dust.NewDustPerfect(Player.Center, Terraria.ID.DustID.ShadowbeamStaff, dustVel, 100, default, 1.4f);

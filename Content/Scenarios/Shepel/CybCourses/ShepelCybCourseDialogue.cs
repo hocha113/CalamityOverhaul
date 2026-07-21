@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 {
-    /// <summary>超梦教程对话基类——开场 Happy 立绘，结束时隐藏。</summary>
+    /// <summary>开场Happy立绘，结束时隐藏</summary>
     internal abstract class ShepelCybCourseDialogue : NarrativeScenario, ILocalizedModType
     {
         public abstract string LocalizationCategory { get; }

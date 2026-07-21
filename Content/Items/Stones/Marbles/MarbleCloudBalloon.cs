@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
-    /// <summary>大理石云朵气球：整合瓶中大理石的二段跳与大理石气球的砸地能力</summary>
+    /// <summary>瓶中大理石二段跳 + 大理石气球砸地</summary>
     internal class MarbleCloudBalloon : ModItem
     {
         public override void SetDefaults() {
@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             player.GetJumpState<MarbleinaBottleJump>().Enable();
             MarbleBalloonPlayer modPlayer = player.GetModPlayer<MarbleBalloonPlayer>();
             modPlayer.Equipped = true;
-            //合成件身份：二段跳粒子升级为"白云雾+金石屑"双份形态
+            //二段跳粒子双份（云雾+石屑）
             modPlayer.CloudJumpVariant = true;
             player.noFallDmg = true;
         }

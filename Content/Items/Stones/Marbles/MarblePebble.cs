@@ -11,9 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
-    /// <summary>
-    /// 大理石卵石：无限使用的极快投石，对生命上限越高的敌人造成越多额外伤害，撞地弹射一次
-    /// </summary>
+    /// <summary>大理石卵石，快投石，高血上限加伤，撞地弹一次</summary>
     internal class MarblePebble : ModItem
     {
         public override void SetDefaults() {
@@ -47,7 +45,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         public override string Texture => GraniteMarbleVFX.MarbleTex + "MarblePebble";
         private Trail Trail;
 
-        //大卫投石身份阈值：HP 加成超过该值视为"重击巨物"，命中反馈升级为金色迸裂档
+        //HP加成超此值走金色重击反馈
         private const float HeavyBonusThreshold = 0.25f;
 
         public override void SetStaticDefaults() {
@@ -67,7 +65,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             Projectile.localNPCHitCooldown = 10;
         }
 
-        //大卫投石：生命上限越高额外伤害越多，4000 血封顶 +85%；唯一身份机制，伤害与反馈共用同一数据源
+        //4000血封顶 +85%
         private static float DavidBonus(NPC target) => MathHelper.Clamp(target.lifeMax / 4000f, 0f, 1f) * 0.85f;
 
         public override void AI() {
@@ -81,7 +79,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             Projectile.rotation += 0.3f * Math.Sign(Projectile.velocity.X == 0 ? 1 : Projectile.velocity.X);
             Lighting.AddLight(Projectile.Center, GraniteMarbleVFX.MarbleCore.ToVector3() * 0.3f);
 
-            //偶发石尘粒：给淡尘丝带补上颗粒层
             if (!VaultUtils.isServer && Main.rand.NextBool(9)) {
                 PRTLoader.NewParticle<PRT_Smoke>(Projectile.Center - Projectile.velocity * 0.5f
                     , -Projectile.velocity * 0.06f + Main.rand.NextVector2Circular(0.3f, 0.3f)
@@ -124,7 +121,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             if (VaultUtils.isServer) {
                 return;
             }
-            //寿命终点碎成石屑，让"石头落地"有收尾
             SoundEngine.PlaySound(SoundID.Tink with { Pitch = 0.1f, Volume = 0.35f }, Projectile.Center);
             for (int i = 0; i < 3; i++) {
                 PRTLoader.NewParticle<PRT_MarbleChip>(Projectile.Center, Main.rand.NextVector2Circular(2f, 2f)
@@ -141,11 +137,10 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 return;
             }
             float bonus = DavidBonus(target);
-            float heat = bonus / 0.85f;   //0~1 目标"庞然度"，反馈强度随之提升
+            float heat = bonus / 0.85f;   //0~1 庞然度
             Vector2 impact = Projectile.Center;
             Vector2 recoil = -Projectile.velocity.SafeNormalize(Vector2.UnitX);
 
-            //基础层：石屑沿来向反弹迸溅 + 一缕石尘
             int chips = 3 + (int)(heat * 4f);
             for (int i = 0; i < chips; i++) {
                 PRTLoader.NewParticle<PRT_MarbleChip>(impact, recoil.RotatedByRandom(0.85f) * Main.rand.NextFloat(2f, 4.5f)
@@ -155,7 +150,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 , Main.rand.NextFloat(0.25f, 0.38f))?.Configure(18, 0.5f, 0.04f);
 
             if (bonus > HeavyBonusThreshold) {
-                //高加成档：命中数字附近金环闪光 + 星光迸裂 + 闷重碎石声，"打大个子更疼"看得见
                 PRTLoader.NewParticle<PRT_StarPulseRing>(Vector2.Lerp(impact, target.Center, 0.35f), Vector2.Zero
                     , GraniteMarbleVFX.MarbleGold with { A = 0 }, 0.05f)?.Configure(0.05f, 0.22f + 0.34f * heat, 16);
                 int stars = 3 + (int)(heat * 4f);
@@ -167,24 +161,23 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                     Pitch = -0.2f - heat * 0.15f + Main.rand.NextFloat(0.06f), Volume = 0.55f + 0.3f * heat
                 }, impact);
                 SoundEngine.PlaySound(SoundID.Dig with { Pitch = -0.3f, Volume = 0.5f }, impact);
-                //只有真正的庞然大物（约 2400+ 血）才带轻微震屏，避免速射武器晃个不停
+                //约2400+血才震屏
                 if (heat > 0.6f && CWRServerConfig.Instance.ScreenVibration) {
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(impact, -recoil, 3f, 5f, 8, 600f, FullName));
                 }
             }
             else {
-                //普通档：轻石响
                 SoundEngine.PlaySound(SoundID.Dig with { Pitch = 0.3f + Main.rand.NextFloat(-0.05f, 0.05f), Volume = 0.4f }, impact);
             }
         }
 
         public float GetWidthFunc(float c) {
-            //极窄石尘丝带：慢速段（弹跳后下坠）进一步收细，避免拖出能量光带观感
+            //半宽≤3.2px，慢速再收
             float speedFade = MathHelper.Clamp(Projectile.velocity.Length() / 14f, 0f, 1f);
             return (1f - c) * Projectile.scale * 3.2f * (0.35f + 0.65f * speedFade);
         }
 
-        //RGB 不参与 GradientTrail 出色（由 MarbleBar 决定），此处只压低透明度并沿带衰减
+        //RGB 由 MarbleBar 定，此处只压透明度
         public Color GetColorFunc(Vector2 coord) =>
             GraniteMarbleVFX.MarbleDust * (0.32f * (1f - coord.X * 0.45f) * Projectile.Opacity);
 

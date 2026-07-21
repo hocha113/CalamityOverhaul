@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
         public void Charge() {
             SpearOfLonginus longinus = (SpearOfLonginus)Owner.HeldItem.ModItem;
 
-            //已经达到最大立场层数时停止累积，避免不必要的能量浪费
+            //满层停累积
             if (longinus.ChargeGrade >= SpearOfLonginus.MaxChargeGrade) {
                 longinus.HolyEnergy = SpearOfLonginus.HolyEnergyMax;
                 return;
@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
                 PRTLoader.NewParticle<PRT_LonginusStar>(spanStarPos, vr, Color.Gold, Main.rand.NextFloat(0.9f, 1.1f)).Configure(false, Main.rand.Next(17, 25), Projectile);
             }
 
-            //能量满了：升一层立场
+            //能量满升层
             if (longinus.HolyEnergy >= SpearOfLonginus.HolyEnergyMax) {
                 longinus.HolyEnergy = 0;
                 longinus.ChargeGrade++;

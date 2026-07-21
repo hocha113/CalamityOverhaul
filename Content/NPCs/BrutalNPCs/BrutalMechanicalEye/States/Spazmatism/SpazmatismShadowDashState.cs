@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>残影连冲：蓄力→多段变向 dash+甩头火弹扇</summary>
+    /// <summary>残影连冲，蓄力→多段变向 dash+甩头火弹扇</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismShadowDash, typeof(TwinsStateContext))]
     internal class SpazmatismShadowDashState : TwinsStateBase
     {
@@ -75,9 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 ExecuteRecoveryPhase(npc, player);
             }
 
-            //状态结束
             if (Timer >= TotalDuration) {
-                //独眼模式下切换到狂暴状态
                 if (context.IsSoloRageMode) {
                     return new SpazmatismSoloRageState();
                 }
@@ -87,7 +85,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             return null;
         }
 
-        /// <summary>蓄力聚集：斜上方悬停+能量内聚</summary>
+        /// <summary>蓄力聚集，斜上方悬停+能量内聚</summary>
         private void ExecuteGatherPhase(NPC npc, Player player) {
             float progress = Timer / (float)GatherPhase;
 
@@ -108,7 +106,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 SoundEngine.PlaySound(SoundID.Item74 with { Pitch = -0.3f, Volume = 0.8f }, npc.Center);
             }
 
-            //蓄力完成闪光
             if (Timer == GatherPhase - 2 && !VaultUtils.isServer) {
                 PRTLoader.NewParticle<PRT_DWave>(npc.Center, Vector2.Zero, TwinsMotion.SpazColor, 0.2f)?
                     .Configure(Vector2.One, 0f, 1.2f, 14);
@@ -116,13 +113,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
         }
 
-        /// <summary>多段变向 dash：段首爆发，段内微弧，衔接甩头+火弹扇</summary>
+        /// <summary>多段变向 dash，段首爆发，段内微弧，衔接甩头+火弹扇</summary>
         private void ExecuteDashSegments(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase;
             int segment = (phaseTimer - 1) / SegmentTime;
             int inSegment = (phaseTimer - 1) % SegmentTime;
 
-            //新冲刺段起步:瞬时变向爆发
+            //段首变向爆发
             if (segment != lastSegment) {
                 lastSegment = segment;
                 Context.ResetChargeState();
@@ -140,7 +137,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
 
             if (inSegment < SegmentDashTime) {
-                //全速段:弧线追踪
+                //全速弧线
                 float speed = npc.velocity.Length();
                 TwinsMotion.CurveChase(npc, player.Center, speed, 0.02f);
                 FaceVelocity(npc);
@@ -159,7 +156,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 TwinsMotion.BrakeAndWhip(npc, player.Center, 0.74f, 0.36f);
                 Context.PushDashVisuals(0.4f, 0.8f);
 
-                //甩头瞬间:残影爆发+向后火弹扇
+                //甩头残影+火扇
                 if (inSegment == SegmentDashTime) {
                     if (!VaultUtils.isServer) {
                         //残影爆发环
@@ -185,7 +182,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
         }
 
-        /// <summary>恢复阶段：减速面向玩家，残余火星</summary>
+        /// <summary>恢复阶段，减速面向玩家，残余火星</summary>
         private void ExecuteRecoveryPhase(NPC npc, Player player) {
             DisableContactDamage(npc);
             npc.velocity *= 0.92f;

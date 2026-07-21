@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>人体工学枪托流线粒子：沿速度方向拉伸的气流光线，ErgonomicStockModule</summary>
+    /// <summary>Ergo枪托流线，ErgonomicStockModule</summary>
     internal class PRT_SHPCErgoFlow : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "LightShot";
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override void AI() {
             Velocity *= 0.93f;
             float life = LifetimeCompletion;
-            //前20%淡入，之后三次方衰减
+            //前20%淡入后三次方衰减
             float fadeIn = MathF.Min(life / 0.2f, 1f);
             Color = initialColor * (fadeIn * (1f - MathF.Pow(life, 3f)));
             Scale = initialScale * (1f - life * 0.35f);
@@ -49,11 +49,9 @@ namespace CalamityOverhaul.Content.PRTTypes
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             Vector2 drawPos = Position - Main.screenPosition;
             Vector2 origin = tex.Size() * 0.5f;
-            //沿运动方向拉伸的细流线：速度越快越长
             float stretch = 0.10f + Velocity.Length() * 0.02f;
             Vector2 scale = new Vector2(stretch, 0.028f) * Scale;
             spriteBatch.Draw(tex, drawPos, null, Color, Rotation, origin, scale, SpriteEffects.None, 0f);
-            //亮芯
             spriteBatch.Draw(tex, drawPos, null, Color.Lerp(Color, Color.White, 0.5f) * 0.8f,
                 Rotation, origin, scale * new Vector2(0.7f, 0.5f), SpriteEffects.None, 0f);
             return false;

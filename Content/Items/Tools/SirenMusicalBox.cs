@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Players;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -131,9 +131,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         SyncPlayerCurse,
     }
 
-    /// <summary>
-    /// 海妖八音盒唯一会话，玩法状态真源；幽灵视觉由纯客户端 ModSystem 绘制，不参与 Actor 网络同步
-    /// </summary>
+    /// <summary>海妖八音盒会话真源，幽灵视觉纯客户端不进Actor同步</summary>
     internal class SirenMusicalSystem : ModSystem
     {
         private const int ResolveDeathWindow = 15;
@@ -294,7 +292,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            //诅咒会话激活后不可右键关闭，等音乐结束或外部解除
+            //诅咒中不可右键关，等曲终/外部解除
             if (active) {
                 return;
             }
@@ -890,7 +888,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
     }
 
-    /// 纯客户端幽灵视觉，由会话状态驱动，避免 Actor 同步重复生成
+    /// 纯客户端幽灵视觉，会话驱动，不进Actor同步
     internal static class SirenGhostVisual
     {
         private static int timer;

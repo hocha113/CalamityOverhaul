@@ -61,11 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 寒霜鲦鱼喷射器弹幕。
-    /// 实体生命周期：凝华入场（霜雾收束+镜面闪落定）、蓄力（嘴前六角晶核成型+寒气收束）、
-    /// 三口连喷（按脉冲后坐+缩身）、化雾退场（碎晶剥落，禁 pop-out）
-    /// </summary>
+    /// <summary>寒霜鲦鱼喷射器弹幕</summary>
     internal class FrostMinnowSpitterProjectile : BaseHeldProj
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.FrostMinnow;
@@ -369,7 +365,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>一口喷射：弹幕仅主人客户端生成，总量与散布角保持原公式，按 i%VolleyCount 分口</summary>
+        /// <summary>一口喷射</summary>
         private void SpitVolley(int volleyIndex) {
             Vector2 targetCenter = InMousePos;
             if (IsTargetValid()) {
@@ -514,12 +510,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 寒霜雪花弹幕。
-    /// 六角冰晶碎片核心：暗底描边/淡青中层/极小冰芯，自旋以旋转拖影表达，
-    /// 镜面闪为离散亮事件（固定受光角）；沿途剥落低伏霜雾，
-    /// 命中在目标表面生长冰凌花纹 decal 并碎裂成有棱角的冰屑
-    /// </summary>
+    /// <summary>寒霜雪花弹幕。 六角冰晶碎片核心</summary>
     internal class FrostSnowflakeProjectile : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;

@@ -11,14 +11,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        //生命：与 CyberTeleport.HideDuration(22) 对齐，留出 snap+消散尾
+        //寿命对齐 HideDuration(22)，留 snap+消散尾
         private const int Lifetime = 32;
-        //SNAP 闪光中心帧：玩家在中心实体化（≈22/32=0.69）
+        //SNAP 中心帧 ≈0.69
         private const float SnapPeakT = 0.65f;
-        //演出整体可视半径（像素）
+        //可视半径 px
         private const float DisplayRadius = 240f;
 
-        //向心方向 +1 = reform
+        //direction=+1 向心
         private const float Direction = 1f;
 
         private float seed;
@@ -52,26 +52,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
 
             float t = 1f - (float)Projectile.timeLeft / Lifetime;
 
-            //演出参数计算
-            //reformProgress：0~SnapPeakT 内格子从外飞向目标
+            //0~SnapPeakT 格子外飞入
             float reformProgress = MathHelper.Clamp(t / SnapPeakT, 0f, 1f);
-            //snap 脉冲：以 SnapPeakT 为顶峰，宽 0.18 的钟形
+            //snap 钟形脉冲，峰=SnapPeakT 宽0.18
             float snapWindow = 0.18f;
             float snapDelta = MathF.Abs(t - SnapPeakT);
             float snap = MathF.Max(0f, 1f - snapDelta / snapWindow);
             snap = MathF.Pow(snap, 1.5f);
-            //SNAP 后的消散
+            //SNAP 后消散
             float dissipate = t > SnapPeakT
                 ? MathHelper.Clamp((t - SnapPeakT) / (1f - SnapPeakT), 0f, 1f)
                 : 0f;
 
-            //淡入淡出
             float fadeAlpha;
             if (t < 0.10f) fadeAlpha = MathHelper.SmoothStep(0f, 1f, t / 0.10f);
             else if (t > 0.85f) fadeAlpha = MathHelper.SmoothStep(1f, 0f, (t - 0.85f) / 0.15f);
             else fadeAlpha = 1f;
 
-            //时间基于"主人玩家"的领域状态，避免远端客户端读 Local 造成节奏错位
+            //uTime 取主人领域时间
             CyberspacePlayer ownerCp = Cyberspace.For(Projectile.owner);
             float effectTime = ownerCp != null && ownerCp.Active
                 ? ownerCp.EffectTime

@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged.Starships
 {
-    //终幕陨石雨：极强追踪，无视目标防御与伤害减免
+    //终幕陨石雨，强追踪无视防/DR
     internal class StarshipMeteor : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
             modifiers.FinalDamage.Flat += 0;
             modifiers.FinalDamage *= 1f;
             modifiers.DamageVariationScale *= 0f;
-            //彻底忽略所有伤害减免：使用 SetMaxDamage 让它基本不受削弱
+            //SetMaxDamage无视DR
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

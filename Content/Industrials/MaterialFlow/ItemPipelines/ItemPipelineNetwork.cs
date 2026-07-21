@@ -37,12 +37,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         //上次重建的帧
         private static int LastRebuildFrame = -100000;
 
-        //最小重建间隔(标脏后等待此间隔再重建,避免连串放置时连续抖动)
+        //最小重建间隔，防连放抖动
         private const int MinRebuildIntervalFrames = 12;
-        //强制重建间隔(无脏标记也定期刷新,容错任何遗漏的脏标记)
+        //强制重建间隔，容错漏标脏
         private const int MaxRebuildIntervalFrames = 600;
 
-        //BFS 复用容器, 避免反复分配
+        //BFS 复用容器
         private static readonly Queue<(ItemPipelineTP tp, ushort dist)> BfsQueue = new(64);
         private static readonly HashSet<Point16> BfsVisited = [];
 
@@ -60,9 +60,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
         /// <summary>拓扑变化，EnsureBuilt 将节流重建</summary>
         public static void MarkDirty() {
-            //可能在并行的 Update 中被调用，需用 Interlocked 保证原子递增
+            //并行 Update 可能调用，Interlocked 递增
             Interlocked.Increment(ref TopologyVersion);
-            //同步通知框架的并行岛屿调度：连接关系变化意味着邻接图变化，需要重建岛屿
+            //邻接变则刷并行岛屿
             TileProcessorParallel.MarkTopologyDirty();
         }
 

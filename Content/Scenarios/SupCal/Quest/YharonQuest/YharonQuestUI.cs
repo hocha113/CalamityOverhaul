@@ -7,9 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.YharonQuest
 {
-    /// <summary>
-    /// 鬼面刀任务UI
-    /// </summary>
+    /// <summary>鬼面刀任务UI</summary>
     internal class YharonQuestUI : BaseQuestAcceptUI
     {
         public override string LocalizationCategory => "ADV";

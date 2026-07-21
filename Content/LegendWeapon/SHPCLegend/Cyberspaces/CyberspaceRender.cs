@@ -8,7 +8,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
-    /// <summary>领域 RenderHandle：多玩家边界环/光晕/栅格回退</summary>
+    /// <summary>领域 RenderHandle，多玩家边界环/光晕/栅格回退</summary>
     internal class CyberspaceRender : RenderHandle
     {
         private const int MaxEntities = 32;
@@ -20,8 +20,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         private static Asset<Texture2D> softGlow = null;
 
         public override void UpdateBySystem(int index) {
-            //逻辑在 CyberspaceSystem.PostUpdateEverything；专服不跑 RenderHandle 更新
-            //此处仅在回到主菜单时兜底清理客户端残留状态（主菜单中 PostUpdateEverything 不再运行）
+            //逻辑在 System.PostUpdateEverything，专服不跑
+            //主菜单兜底清残留
             if (Main.gameMenu) {
                 CyberspaceSystem.ResetAll();
             }
@@ -32,19 +32,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 return;
             }
 
-            //聚集本帧所有需要绘制的领域；空集合直接退出，避免无谓的 RT 切换
+            //本帧绘制域，空则退
             List<CyberspacePlayer> domains = CollectVisibleDomains();
             if (domains.Count == 0) {
                 return;
             }
 
-            //整屏后处理：本地域优先，否则离相机最近远端域
+            //整屏后处理，本地域优先
             CyberspacePlayer primary = SelectPrimaryDomain(domains);
             if (primary != null) {
                 ApplyFullScreenShader(spriteBatch, graphicsDevice, screenSwap, primary);
             }
 
-            //逐域绘边界环
+            //逐域边界环
             foreach (CyberspacePlayer cp in domains) {
                 DrawBoundaryShockwaveRing(spriteBatch, cp);
             }
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
             if (localOwn != null) return localOwn;
 
-            //摄像机中心（世界坐标）
+            //相机世界中心
             Vector2 cameraCenter = Main.screenPosition + new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;
             CyberspacePlayer best = null;
             float bestDistSq = float.MaxValue;
@@ -110,23 +110,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (screenSwap == null || screenSwap.IsDisposed) return;
             if (Main.screenTarget == null || Main.screenTarget.IsDisposed) return;
 
-            //活动 RT 非 screenTarget 时强写会顶替 backbuffer，走低质量回退
+            //非 screenTarget 走低质回退
             if (!RenderQualitySafety.IsScreenTargetActive(graphicsDevice)) {
                 DrawLowQualityFieldFallback(spriteBatch);
                 return;
             }
 
-            //保存进入时的 RT 绑定，结束后再还原回去，避免改变上层管线对活动 RT 的预期
+            //保存进入 RT
             RenderTargetBinding[] previousTargets = graphicsDevice.GetRenderTargets();
 
-            //拷屏到 screenSwap
             graphicsDevice.SetRenderTarget(screenSwap);
             graphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
             spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
 
-            //着色器参数
             Vector2 zoom = Main.GameViewMatrix.Zoom;
             Vector2 screenPixels = Main.ScreenSize.ToVector2();
             Vector2 worldViewSize = screenPixels / zoom;
@@ -147,14 +145,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             shader.Parameters["worldViewSize"]?.SetValue(worldViewSize);
             shader.Parameters["gridSize"]?.SetValue(Cyberspace.GridSize);
 
-            //域内 NPC 写入 entityBuffer
+            //域内 NPC→entityBuffer
             int entityCount = CollectEntitiesInDomain(domainCenter, effectiveRadius);
             shader.Parameters["entityCount"]?.SetValue(entityCount);
             if (entityCount > 0) {
                 shader.Parameters["entities"]?.SetValue(entityBuffer);
             }
 
-            //着色器回写 screenTarget
+            //回写 screenTarget
             graphicsDevice.SetRenderTarget(Main.screenTarget);
             graphicsDevice.Clear(Color.Transparent);
             graphicsDevice.Textures[1] = noiseTex;
@@ -163,7 +161,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             spriteBatch.Draw(screenSwap, Vector2.Zero, Color.White);
             spriteBatch.End();
 
-            //还原进入时的 RT 绑定，防止改变上层管线对当前活动 RT 的预期
+            //还原进入 RT
             if (previousTargets != null && previousTargets.Length > 0
                 && previousTargets[0].RenderTarget != Main.screenTarget) {
                 graphicsDevice.SetRenderTargets(previousTargets);
@@ -175,7 +173,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Texture2D pixel = VaultAsset.placeholder2?.Value;
             if (pixel == null) return;
 
-            //压暗罩：取最强 intensity 定压暗强度
+            //压暗取最强 intensity
             float maxAlpha = 0f;
             float maxMotion = 0f;
             foreach (CyberspacePlayer cp in Cyberspace.EnumerateRenderable()) {
@@ -206,7 +204,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 float motion = MathHelper.Clamp(cp.MotionFade, 0f, 1f);
                 float perBaseMul = 1f - motion * 0.50f;
                 float perDetailMul = 1f - motion * 0.65f;
-                //单环设计：只画最外层有效边界对应的一张栅格，避免多层网格叠加压暗画面
+                //单环栅格，仅最外层
                 DrawLowQualityFieldGrid(spriteBatch, pixel, cp, alpha, perBaseMul, perDetailMul);
             }
 
@@ -224,7 +222,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             float time = cp.EffectTime;
             float tier = cp.VisualTier;
             float tierMult = 0.65f + (tier - 1f) * 0.18f;
-            //网格骨架按 baseMul 中度淡化，节点闪烁属花纹按 detailMul 强淡化
+            //骨架 baseMul，花纹 detailMul
             Color lineColor = new Color(220, 35, 22) * (alpha * 0.13f * tierMult * baseMul);
             Color nodeColor = GetTierGlowColor(tier, alpha * 0.28f * tierMult * detailMul);
 
@@ -271,7 +269,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Texture2D glowTex = softGlow?.Value;
             if (glowTex == null || cp.Intensity < 0.01f) return;
 
-            //单环设计：光晕格只环绕最外层有效边界，与边界环位置一致
+            //单环光晕格，贴最外层
             DrawSingleEdgeGlowRing(spriteBatch, glowTex, cp, cp.EffectiveOuterRadius);
         }
 
@@ -281,7 +279,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             float gs = Cyberspace.GridSize;
             float time = cp.EffectTime;
             float effectIntensity = cp.Intensity;
-            //边缘光晕属花纹层，移动时强淡化
+            //边缘光晕随动强淡
             float glowMotionMul = 1f - MathHelper.Clamp(cp.MotionFade, 0f, 1f) * 0.60f;
 
             if (r < gs * 2) return;
@@ -324,7 +322,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     screenY < -margin || screenY > screenH + margin) continue;
 
                 float cellHash = MathF.Abs(MathF.Sin(snapX * 0.137f + snapY * 0.251f));
-                //脉动频率较旧版略放缓，减轻边界格的高频闪烁感
+                //脉动略缓
                 float pulse = 0.3f + 0.7f * MathF.Sin(time * 1.5f + cellHash * MathF.PI * 2f);
                 pulse = MathF.Max(pulse, 0f);
                 float alpha = pulse * effectIntensity * 0.4f * tierMult * glowMotionMul;
@@ -336,9 +334,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>
-        /// 按连续视觉层级插值的边界光晕色：层级越高色温越热
-        /// </summary>
+        /// <summary>边界光晕色，层越高越热</summary>
         private static Color GetTierGlowColor(float tier, float alpha) {
             Vector3 t1 = new(0.80f, 0.05f, 0.04f);
             Vector3 t2 = new(0.90f, 0.10f, 0.06f);
@@ -363,7 +359,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Texture2D canvas = VaultAsset.placeholder2.Value;
             Texture2D noise = CWRAsset.Extra_193.Value;
             Vector2 drawPos = cp.DomainCenter - Main.screenPosition;
-            //边界环属于骨架级显示，移动时中度淡化以削弱晃眼感
+            //边界环随动中淡
             float ringMotionMul = 1f - MathHelper.Clamp(cp.MotionFade, 0f, 1f) * 0.38f;
 
             float tier = cp.VisualTier;
@@ -376,13 +372,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
 
             float time = cp.EffectTime * 0.75f;
-            //四边形外侧留 45% 余量给火舌/热浪光弦/分段弧线，环本体精确落在有效边界上，
-            //与全屏着色器的领域边缘、边缘光晕格三者重合为同一道边界
+            //quad 外留45%，环贴有效边界
             float quadHalf = effectiveRadius * 1.45f;
             float ringPos = effectiveRadius / quadHalf;
             float thickness = 0.085f + tierFrac * 0.022f + 0.007f * MathF.Sin(time * 0.7f + 1.2f);
 
-            //owner 偏移让多个玩家的领域呼吸相位错开
+            //owner 偏移错开呼吸
             float ownerPhase = cp.Player.whoAmI * 1.37f;
             shader.Parameters["uTime"]?.SetValue(time + ownerPhase);
             shader.Parameters["ringProgress"]?.SetValue(ringPos);
@@ -400,9 +395,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             spriteBatch.End();
         }
 
-        /// <summary>
-        /// 按连续视觉层级插值的边界环整体染色：层级越高越偏炽热
-        /// </summary>
+        /// <summary>边界环染色，层越高越炽</summary>
         private static Color GetTierRingTint(float tier) {
             Vector3 t1 = new(1f, 0.82f, 0.68f);
             Vector3 t2 = new(1f, 0.68f, 0.52f);
@@ -433,7 +426,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 count++;
             }
 
-            //未用槽清零
             for (int i = count; i < MaxEntities; i++) {
                 entityBuffer[i] = Vector4.Zero;
             }

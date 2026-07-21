@@ -5,10 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>
-    /// 引力漩涡粒子，围绕黑洞中心螺旋吸入
-    /// 小巧的光点沿螺旋轨迹向中心坍缩
-    /// </summary>
+    /// <summary>引力漩涡螺旋吸入</summary>
     internal class PRT_GravityVortex : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Sparkle";
@@ -47,27 +44,23 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override void AI() {
             float life = LifetimeCompletion;
 
-            //螺旋向心：角速度随半径减小而加快（开普勒）
+            //开普勒，半径越小越快
             float angularSpeed = 0.08f / Math.Max(orbitRadius * 0.01f, 0.3f);
             orbitAngle += angularSpeed;
 
-            //半径持续收缩（被吸入）
             orbitRadius *= 0.97f;
             orbitRadius -= 0.3f;
             if (orbitRadius < 2f) orbitRadius = 2f;
 
-            //更新位置
             Position = center + orbitAngle.ToRotationVector2() * orbitRadius;
 
-            //缩放随靠近中心而缩小
             float radiusFactor = Math.Min(orbitRadius / 60f, 1f);
             Scale = initialScale * radiusFactor * (1f - life * 0.5f);
 
-            //颜色从暖色变为蓝白（引力蓝移）
+            //近心蓝移
             Color blueShift = new Color(180, 200, 255);
             Color = Color.Lerp(initialColor, blueShift, 1f - radiusFactor);
 
-            //接近中心变亮
             Opacity = (1f - life) * (0.7f + (1f - radiusFactor) * 0.3f);
         }
 
@@ -76,7 +69,6 @@ namespace CalamityOverhaul.Content.PRTTypes
             Vector2 origin = texture.Size() * 0.5f;
             Vector2 drawPos = Position - Main.screenPosition;
 
-            //小巧光点
             spriteBatch.Draw(texture, drawPos, null,
                 Color * Opacity * 0.4f,
                 0f, origin,

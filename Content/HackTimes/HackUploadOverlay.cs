@@ -14,7 +14,6 @@ namespace CalamityOverhaul.Content.HackTimes
             pulseTimer += 0.016f;
         }
 
-        /// <summary>绘制上传进度圆环</summary>
         public void Draw(SpriteBatch sb, int npcIndex, float progress, bool completed, float alpha) {
             if (npcIndex < 0 || npcIndex >= Main.maxNPCs) return;
 
@@ -37,7 +36,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 DrawProgressRing(sb, px, glow, ringCenter, ringRadius, progress, alpha);
             }
 
-            //进度百分比文字
+            //进度文字
             string text = completed ? "BREACH OK" : $"{(int)(progress * 100)}%";
             Color textColor = completed
                 ? HackTheme.Accent * alpha
@@ -47,7 +46,6 @@ namespace CalamityOverhaul.Content.HackTimes
             Utils.DrawBorderString(sb, text, textPos, textColor, 0.3f);
         }
 
-        /// <summary>圆弧进度环</summary>
         private void DrawProgressRing(SpriteBatch sb, Texture2D px, Texture2D glow,
             Vector2 center, float radius, float progress, float alpha) {
 
@@ -65,12 +63,11 @@ namespace CalamityOverhaul.Content.HackTimes
                 bool isFilled = i < filledSegments;
 
                 if (isFilled) {
-                    //已上传部分用琥珀色
                     Color segColor = HackTheme.Uploading * (alpha * 0.7f);
                     sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), segColor,
                         midAngle, new Vector2(0.5f, 0.5f), new Vector2(5f, 2f), SpriteEffects.None, 0);
 
-                    //填充前端发光
+                    //前端发光
                     if (i == filledSegments - 1 && glow != null) {
                         Color tipGlow = HackTheme.ProgressGlow * (alpha * 0.35f);
                         tipGlow.A = 0;
@@ -78,7 +75,6 @@ namespace CalamityOverhaul.Content.HackTimes
                     }
                 }
                 else {
-                    //未上传部分用暗色
                     Color dimColor = HackTheme.Border * (alpha * 0.25f);
                     sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), dimColor,
                         midAngle, new Vector2(0.5f, 0.5f), new Vector2(4f, 1.5f), SpriteEffects.None, 0);
@@ -86,7 +82,6 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>完成态脉冲环</summary>
         private void DrawCompletedRing(SpriteBatch sb, Texture2D px, Texture2D glow,
             Vector2 center, float radius, float alpha) {
 

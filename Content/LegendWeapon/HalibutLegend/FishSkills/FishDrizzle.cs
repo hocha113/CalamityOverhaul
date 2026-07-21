@@ -23,10 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public static Asset<Texture2D> SoftGlow { get; private set; }
     }
 
-    /// <summary>
-    /// 炼鱼硫火视觉工具：硫磺色板、焰锥条带、余烬/烟尘生成
-    /// 色系锁定暗红-黑硫磺（与 FishBrimlish 的点状火球群区分：这里是连续附着射流）
-    /// </summary>
+    /// <summary>炼鱼硫火视觉工具</summary>
     internal static class DrizzleVFX
     {
         public static readonly Color EmberHot = new(255, 128, 36);   //余烬亮端
@@ -42,8 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return 1f + c3 * xm * xm * xm + c1 * xm * xm;
         }
 
-        /// <summary>伤害宽度包络闭式（与 <see cref="DrizzleFirePillar"/> 迭代 lerp 同形）：
-        /// 前 25 帧升至 ~0.983，随后 0.92^n 衰减；视觉与判定窗口共用此形状</summary>
+        /// <summary>伤害宽度包络闭式（与 <see cref="DrizzleFirePillar"/> 迭代 lerp 同形）， 前 25 帧升至 ~0.983，随后 0.92^n 衰减；视觉与判定窗口共用此形状</summary>
         public static float JetWidthEnv(int age) {
             if (age < 0 || age > 85) {
                 return 0f;
@@ -53,17 +49,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 : (1f - MathF.Pow(0.85f, 25f)) * MathF.Pow(0.92f, age - 25);
         }
 
-        /// <summary>焰锥几何长度：点火 7 帧 easeOutBack 过冲伸出</summary>
+        /// <summary>焰锥几何长度，点火 7 帧 easeOutBack 过冲伸出</summary>
         public static float JetLen(int age) => 1400f * EaseOutBack(MathHelper.Clamp(age / 7f, 0f, 1f));
 
-        /// <summary>尖端燃烧边界：收势时向根塌缩</summary>
+        /// <summary>尖端燃烧边界</summary>
         public static float JetULen(float wEnv)
             => MathHelper.Lerp(0.12f, 0.98f, MathHelper.Clamp((wEnv - 0.03f) / 0.72f, 0f, 1f));
 
         public static float JetPower(int age, float wEnv)
             => MathHelper.Clamp(age / 6f, 0f, 1f) * MathHelper.Clamp(0.35f + wEnv * 0.75f, 0f, 1f);
 
-        /// <summary>熄火断续：宽度包络走低时火流被缺口撕开</summary>
+        /// <summary>熄火断续</summary>
         public static float JetSputter(float wEnv)
             => 1f - MathHelper.Clamp((wEnv - 0.06f) / 0.45f, 0f, 1f);
 
@@ -77,10 +73,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             d.noGravity = true;
         }
 
-        /// <summary>
-        /// 焰锥条带：嘴口收窄 → pow 展开的锥形 TriangleStrip + FishDrizzleFlame.fx。
-        /// 几何宽度留 1.35 余量给撕边与烟圈；调用方负责 spriteBatch End/Begin
-        /// </summary>
+        /// <summary>焰锥条带</summary>
         public static void DrawFlameCone(Vector2 root, float rotation, float len, float widthScale
             , float uLen, float uPower, float uSputter, float fade, float seed) {
             Effect fx = FishDrizzleAssets.FishDrizzleFlame;
@@ -192,10 +185,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 硫火鱼出现特效：点燃爆发
-    /// 余烬径向迸散（受重力坠落）+ 暗烟垫底 + ≤2 帧过曝小闪，无裸光球 body
-    /// </summary>
+    /// <summary>硫火鱼出现特效</summary>
     internal class DrizzleSpawnEffect : ModProjectile
     {
         public override string Texture => CWRConstant.Masking + "SoftGlow";
@@ -220,7 +210,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //点燃爆发：余烬承担主体，烟垫底，火尘做填充底噪
+            //点燃爆发
             int embers = IsCenterBurst ? 22 : 9;
             float speed = IsCenterBurst ? 8.5f : 5f;
             for (int i = 0; i < embers; i++) {
@@ -281,7 +271,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float t = 1f - Projectile.timeLeft / (float)LifeTime;
             float fade = 1f - Projectile.alpha / 255f;
 
-            //≤2 帧过曝小闪：点燃瞬间唯一亮点
+            //≤2 帧过曝小闪
             int age = LifeTime - Projectile.timeLeft;
             if (age < 2) {
                 Color flash = Color.Lerp(DrizzleVFX.EmberHot, Color.White, 0.4f) * (1f - age * 0.35f);
@@ -290,7 +280,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , IsCenterBurst ? 0.9f : 0.55f, SpriteEffects.None, 0f);
             }
 
-            //残留底光：快速衰减的暗红垫层（非 body，余烬承担主体）
+            //残留底光
             float under = MathF.Pow(1f - t, 2f) * 0.35f * fade;
             if (under > 0.02f) {
                 Color glow = DrizzleVFX.UnderGlow * under;
@@ -302,11 +292,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 硫火鱼承载弹幕
-    /// 持有者权威 + 确定性推进；AimDirection、Fired、LocalTimer 经 OnSpawn/SendExtraAI 同步
-    /// 视觉节拍（出场缩放、吸气、后坐、余烬）全部由确定性 LocalTimer 推导，无需额外同步
-    /// </summary>
     internal class DrizzleFishHolder : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -316,20 +301,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //ai[2] = Fired 标志（自动同步，供 DrizzleSpawnEffect 检测）
         //localAI[0] = 离场累计位移（确定性，无需同步）
 
-        /// <summary>
-        /// 齐射时的瞄准方向（单位向量），由 OnSpawn 从初始 velocity 中读取
-        /// </summary>
+        /// <summary>齐射时的瞄准方向（单位向量），由 OnSpawn 从初始 velocity 中读取</summary>
         public Vector2 AimDirection { get; private set; } = Vector2.UnitX;
 
-        /// <summary>
-        /// 扇形展开方向，完全由 AimDirection.X 符号推导（确定性，跨端一致）
-        /// </summary>
+        /// <summary>扇形展开方向，完全由 AimDirection.X 符号推导（确定性，跨端一致）</summary>
         public sbyte ShootDir => AimDirection.X >= 0 ? (sbyte)1 : (sbyte)-1;
 
-        /// <summary>
-        /// 本地确定性计时，从 0 每帧 +1
-        /// 各端生成时刻一致故自然同步；持有者每 60 帧 netUpdate 兜底
-        /// </summary>
+        /// <summary>本地确定性计时，从 0 每帧 +1 各端生成时刻一致故自然同步；持有者每 60 帧 netUpdate 兜底</summary>
         public int LocalTimer;
 
         public int FishIndex => (int)Projectile.ai[0];
@@ -347,7 +325,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float glowPulse;
         private float fadeOut;
 
-        //---- 视觉状态（确定性 LocalTimer 推导，客户端渲染专用）----
         private float visualScale = 0.42f; //出场 easeOutBack 缩放
         private float recoil;              //点火后坐位移
         private float mouthFlash;          //嘴部过曝闪，每帧减半 ≤2 帧可见
@@ -356,7 +333,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private bool departFlying;         //离场飞行中（残影链开关）
 
         private int FishFireTime => PreFireDelay + FishIndex * FireInterval;
-        /// <summary>喷射龄：负值未点火，0 为点火帧</summary>
+        /// <summary>喷射龄，负值未点火，0 为点火帧</summary>
         private int ConeAge => LocalTimer - FishFireTime;
         private Vector2 MouthPos => Projectile.Center + Projectile.rotation.ToRotationVector2() * 30f * visualScale;
         private float ConeSeed => (FishIndex * 0.173f + 0.05f) % 1f;
@@ -428,7 +405,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 offsetDir = behind.RotatedBy(angOff * ShootDir * -1);
                 Vector2 basePos = owner.Center + offsetDir * radius;
                 float bob = (float)Math.Sin(LocalTimer * 0.09f + FishIndex) * 8f;
-                //点火后坐：沿喷射反方向踢回，指数回弹（确定性，各端同拍）
+                //点火后坐
                 Projectile.Center = Vector2.Lerp(Projectile.Center
                     , basePos + new Vector2(0, bob) - AimDirection * recoil, 0.28f);
 
@@ -474,10 +451,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Projectile.localAI[0] += move.Length();
                     departFlying = true;
 
-                    //淡出效果
                     fadeOut = MathHelper.Clamp((progress - 0.5f) / 0.5f, 0f, 1f);
 
-                    //离场撒烬：飞行轨迹上剥落余烬
+                    //离场撒烬，飞行轨迹上剥落余烬
                     if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
                         DrizzleVFX.SpawnEmber(Projectile.Center - move * 0.5f
                             , -outward * 1.2f + Main.rand.NextVector2Circular(1f, 1f)
@@ -503,15 +479,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>视觉节拍：出场缩放、吸气预告、点火后坐与双层音（全端确定性）</summary>
+        /// <summary>视觉节拍</summary>
         private void UpdateVisualBeats() {
-            //出场：easeOutBack 无 pop-in
+            //出场
             float baseScale = MathHelper.Lerp(0.42f, 1f, DrizzleVFX.EaseOutBack(MathHelper.Clamp(LocalTimer / 14f, 0f, 1f)));
 
             int untilFire = FishFireTime - LocalTimer;
             int coneAge = ConeAge;
 
-            //待机火苗：常燃小舌，开火前 12 帧吸气式增长
+            //待机火苗
             pilotLen = 26f + 6f * MathF.Sin(LocalTimer * 0.11f + FishIndex * 1.7f);
             pilotPower = 0.5f;
             float beatScale = 1f;
@@ -527,13 +503,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             visualScale = baseScale * beatScale;
 
             if (coneAge == 0) {
-                //点火拍：后坐 + 嘴闪 + 双层音（确定性时刻，所有端可闻）
+                //点火拍
                 recoil = 13f;
                 mouthFlash = 1f;
                 SoundEngine.PlaySound(SoundID.Item34 with { Volume = 0.75f, Pitch = -0.15f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.6f, Pitch = 0.2f }, Projectile.Center);
                 if (!VaultUtils.isServer) {
-                    //点火喷发：嘴口锥形余烬 + 烟
+                    //点火喷发，嘴口锥形余烬 + 烟
                     Vector2 dir = Projectile.rotation.ToRotationVector2();
                     for (int i = 0; i < 10; i++) {
                         DrizzleVFX.SpawnEmber(MouthPos, dir.RotatedByRandom(0.38) * Main.rand.NextFloat(6f, 13f)
@@ -562,7 +538,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float wEnv = DrizzleVFX.JetWidthEnv(coneAge);
 
             if (wEnv > 0.12f) {
-                //焰锥中后段剥离余烬：随射流冲出，急减速后受重力下坠
+                //焰锥中后段剥离余烬
                 float len = DrizzleVFX.JetLen(coneAge);
                 Vector2 dir = Projectile.rotation.ToRotationVector2();
                 Vector2 perp = new(-dir.Y, dir.X);
@@ -579,7 +555,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             else {
                 if (coneAge > 0 && coneAge < 130 && Main.rand.NextBool(6)) {
-                    //喷息余韵：嘴部残烟上飘（活得比射流久的痕迹）
+                    //喷息余韵
                     DrizzleVFX.SpawnSmoke(MouthPos, -Vector2.UnitY * Main.rand.NextFloat(0.6f, 1.4f)
                         + Main.rand.NextVector2Circular(0.4f, 0.4f), Main.rand.NextFloat(0.8f, 1.4f));
                 }
@@ -632,7 +608,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 mouth = MouthPos;
             float rot = Projectile.rotation;
 
-            //---- 层1：焰锥全体画在鱼精灵之下（附着三律：夹心）----
             Main.spriteBatch.End();
             if (jetAlive) {
                 DrizzleVFX.DrawFlameCone(mouth, rot, DrizzleVFX.JetLen(coneAge), wEnv
@@ -640,14 +615,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , DrizzleVFX.JetSputter(wEnv), opacity, ConeSeed);
             }
             else {
-                //待机火苗：小舌常燃（含吸气预告膨胀）
+                //待机火苗
                 DrizzleVFX.DrawFlameCone(mouth, rot, pilotLen * visualScale, 0.16f
                     , 0.9f, pilotPower, 0.15f, 0.85f * opacity, ConeSeed);
             }
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
                 , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-            //---- 层2：咽部底光（下层辅光，非 body）----
             Texture2D glowTex = FishDrizzleAssets.SoftGlow?.Value;
             if (glowTex != null) {
                 Vector2 gullet = Projectile.Center + rot.ToRotationVector2() * 12f * visualScale;
@@ -657,9 +631,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , 0f, glowTex.Size() * 0.5f, 0.5f * visualScale, SpriteEffects.None, 0f);
             }
 
-            //---- 层3：鱼体（离场残影链 → 本体）----
             if (departFlying) {
-                //暗红剪影残影：位置链表达高速离场，非同贴图加亮
+                //暗红剪影残影
                 for (int k = 2; k < 8; k += 2) {
                     Vector2 gp = Projectile.oldPos[k];
                     if (gp == Vector2.Zero) {
@@ -675,7 +648,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Main.spriteBatch.Draw(value, drawPosition, sourceRect, bodyCol, drawRotation, origin
                 , breathScale, SpriteEffects.None, 0f);
 
-            //---- 层4：嘴边覆焰（夹心上层：短锥覆在鱼嘴上，火包住下颌）----
             if (opacity > 0.05f) {
                 Main.spriteBatch.End();
                 if (jetAlive) {
@@ -694,7 +666,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
             }
 
-            //---- 层5：嘴部点火过曝闪（≤2 帧）----
             if (mouthFlash > 0.2f && FishDrizzle.Fire != null) {
                 Texture2D fireTex = FishDrizzle.Fire;
                 int fi = LocalTimer % 16;
@@ -710,11 +681,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 硫火柱弹幕：判定与增益承载体
-    /// 视觉焰锥由 <see cref="DrizzleFishHolder"/> 以确定性时序绘制（保证夹心层序），本体不绘制
-    /// 宽度包络（决定判定粗细）与 <see cref="DrizzleVFX.JetWidthEnv"/> 闭式同形
-    /// </summary>
+    /// <summary>硫火柱弹幕，判定与增益承载体 视觉焰锥由 <see cref="DrizzleFishHolder"/> 以确定性时序绘制（保证夹心层序），本体不绘制 宽度包络（决定判定粗细）与 <see cref="DrizzleVFX.JetWidthEnv"/> 闭式同形</summary>
     internal class DrizzleFirePillar : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -765,7 +732,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Projectile.localAI[0] += 1f;
 
-            //沿射流的硫火照明：暗红偏橙，随喷息脉动
+            //沿射流的硫火照明
             float lightPulse = (float)Math.Sin(Projectile.localAI[0] * 0.3f) * 0.2f + 1f;
             float wNorm = pillarWidth / targetWidth;
             Vector2 dir = Projectile.rotation.ToRotationVector2();
@@ -784,7 +751,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (VaultUtils.isServer) {
                 return;
             }
-            //命中迸溅：顺射流方向的余烬 + 烟，替代无向火尘
+            //命中迸溅
             Vector2 dir = Projectile.rotation.ToRotationVector2();
             for (int i = 0; i < 5; i++) {
                 Vector2 pos = target.Center + Main.rand.NextVector2Circular(target.width * 0.35f, target.height * 0.35f);

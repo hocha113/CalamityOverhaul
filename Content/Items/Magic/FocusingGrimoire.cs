@@ -40,7 +40,6 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.CWR().DeathModeItem = true;
         }
 
-        //右键：发射速射激光
         public override bool AltFunctionUse(Player player) => true;
 
         public override bool CanUseItem(Player player)
@@ -63,7 +62,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         public override Asset<Texture2D> GlowAsset => FocusingGrimoire.Glow;
         public override int TargetID => ModContent.ItemType<FocusingGrimoire>();
         public override bool CanRightClick => true;
-        //左键能量线圈与右键速射激光各自的节奏与魔力开销
+        //左右键各自节奏与蓝耗
         private const int CoilUseTime = 18;
         private const int CoilMana = 8;
         private const int LaserUseTime = 5;
@@ -113,8 +112,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             }
         }
 
-        //书本本体改由IOverlayDrawable在ProjectileLayerRender的遮挡层绘制(晚于线圈/射线的图元与加色层)，
-        //使其稳定盖住自身的特效，不依赖弹幕数组遍历顺序的偶然结果
+        //书本走 IOverlayDrawable 遮挡层，盖住自身特效
         public override bool PreDraw(ref Color lightColor) => false;
 
         void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
@@ -126,10 +124,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
     }
 
-    /// <summary>
-    /// 聚能魔典左键热能环：致敬魔焰眼的熔焰主题，追踪+触墙反弹+呼吸缩放；命中后为目标施加<see cref="FocusMark"/>，
-    /// 供右键死亡射线读取并结算连携加成
-    /// </summary>
+    /// <summary>左键热能环，命中挂 <see cref="FocusMark"/> 供右键连携</summary>
     internal class PowerCoil : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Magic + "PowerCoil";
@@ -153,7 +148,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         public override void AI() {
             Lighting.AddLight(Projectile.Center, ThemeColor.ToVector3() * 0.7f * Projectile.scale);
 
-            //发射后短暂直飞蓄势，再激活追踪与脉动(原版节奏保留)
+            //短直飞后再追踪脉动
             if (Projectile.timeLeft > 400) {
                 if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
                     PRTLoader.NewParticle<PRT_TwinsSpark>(Projectile.Center, -Projectile.velocity * 0.05f, Color.White, 0.6f)?.Configure(10, 1);
@@ -232,7 +227,6 @@ namespace CalamityOverhaul.Content.Items.Magic
             Vector2 drawOrigin = rectangle.Size() / 2;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
-            //熔焰底层柔光，置于主体之后绘制
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Main.EntitySpriteDraw(glow, drawPos, null, (ThemeColor with { A = 0 }) * 0.55f, 0f, glow.Size() / 2f, Projectile.scale * 1.5f, SpriteEffects.None, 0);
 
@@ -242,10 +236,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
     }
 
-    /// <summary>
-    /// 聚能魔典右键死亡射线：致敬激光眼的高速射弹，复用<see cref="EffectLoader.TwinsDeathRayBeam"/>(青紫激光眼主题)；
-    /// 命中已被<see cref="FocusMark"/>标记的目标时造成加成伤害、必定暴击并续标，构成与<see cref="PowerCoil"/>的连携
-    /// </summary>
+    /// <summary>右键死亡射线，复用 <see cref="EffectLoader.TwinsDeathRayBeam"/>；命中 <see cref="FocusMark"/> 加伤续标</summary>
     internal class FocusingDeathRay : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;
@@ -298,7 +289,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             }
         }
 
-        //AddBuff对已存在的标记取较大值而非累加，需手动延长剩余时间才能体现"持续点射续标"的连携感
+        //AddBuff 取较大值不累加，续标须手改剩余时间
         private static void ExtendMark(NPC target) {
             int buffIndex = target.FindBuffIndex(ModContent.BuffType<FocusMark>());
             if (buffIndex < 0) {
@@ -342,7 +333,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             DrawHeadGlow(drawPos, opacity);
         }
 
-        /// <summary>主表现:复用双子死亡射线着色器，拉伸到短促射弹长度，模式0=激光眼青紫；锚点为弹头(uv0)，向后(-velocity)拖出渐隐尾(uv1)</summary>
+        /// <summary>主表现，TwinsDeathRay 模式0，弹头 uv0 向后拖尾</summary>
         private void DrawShaderBolt(Vector2 drawPos, Vector2 dir, float opacity) {
             SpriteBatch sb = Main.spriteBatch;
             sb.End();
@@ -371,7 +362,7 @@ namespace CalamityOverhaul.Content.Items.Magic
                 DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        /// <summary>兜底表现:着色器缺失时退回分层拉伸光线条</summary>
+        /// <summary>着色器缺失时的分层光线兜底</summary>
         private void DrawFallbackBolt(Vector2 drawPos, Vector2 dir, float opacity) {
             Texture2D line = CWRAsset.MaskLaserLine.Value;
             Vector2 lineOrigin = new(0, line.Height / 2f);
@@ -386,7 +377,7 @@ namespace CalamityOverhaul.Content.Items.Magic
                 new Vector2(lenScale, BoltWidth / line.Height * 0.7f), SpriteEffects.None, 0);
         }
 
-        /// <summary>弹头辉光，与着色器/兜底表现共用</summary>
+        /// <summary>弹头辉光</summary>
         private void DrawHeadGlow(Vector2 drawPos, float opacity) {
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 origin = glow.Size() / 2f;

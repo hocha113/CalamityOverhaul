@@ -1,4 +1,4 @@
-﻿using InnoVault.PRT;
+using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -133,12 +133,12 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                 }
 
                 if (InScreen && Rand.NextBool(Math.Max(10 - (int)(flabellumRotVlome * 10), 4))) {
-                    //并行阶段粒子生成(及其内部随机数)延迟到主线程执行(串行阶段立即执行)
+                    //并行阶段延后到主线程
                     Defer(() => PRTLoader.NewParticle<PRT_WaterBubble>(FlabellumPos + VaultUtils.RandVr(32), new Vector2(0, -4)
                         , Color.White, Rand.NextFloat(0.4f, 0.8f)));
                 }
 
-                //并行阶段循环音效的查询与播放统一延迟到主线程执行(串行阶段立即执行)
+                //并行阶段延后到主线程
                 Defer(() => {
                     if (!SoundEngine.TryGetActiveSound(hydroelectricSoundSlot, out var activeSound)) {
                         hydroelectricSoundSlot = SoundEngine.PlaySound(hydroelectricSoundStyle, FlabellumPos, LoopingSoundUpdate);

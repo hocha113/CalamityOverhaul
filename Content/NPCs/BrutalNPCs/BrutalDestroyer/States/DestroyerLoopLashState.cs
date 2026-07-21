@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>回旋绞杀：蓄势→突入→环绕→收口贯穿，约2.5秒</summary>
+    /// <summary>回旋绞杀，蓄势→突入→环绕→贯穿</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.LoopLash, typeof(DestroyerStateContext))]
     internal class DestroyerLoopLashState : DestroyerStateBase
     {
@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         private const int ChargeTime = 40;
         private const int LungeTime = 18;
         private const int BrakeTime = 16;
-        /// <summary>蓄势末端的预警提前量（固定36帧预警常数）</summary>
+        /// <summary>蓄势末预警提前，固定36f</summary>
         private const int WarnLead = 36;
         #endregion
 
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             Player player = context.Target;
             int loopTime = LoopTime(context);
 
-            //侧位由进入时的相对位置确定（确定性，无需同步）
+            //侧位由进场相对位定，无需同步
             if (side == 0) {
                 side = Math.Sign(npc.Center.X - player.Center.X);
                 if (side == 0) {
@@ -60,20 +60,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             Timer++;
 
-            //蓄势：迟滞后撤
+            //蓄势迟滞后撤
             if (Timer <= ChargeTime) {
                 UpdateCharge(context);
                 return null;
             }
 
-            //突入释放帧
+            //突入释放
             if (Timer == ChargeTime + 1) {
                 Vector2 lungeDir = (player.Center + player.velocity * 10f - npc.Center).SafeNormalize(Vector2.UnitX * -side);
                 npc.velocity = lungeDir * LungeSpeed(context);
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
 
-                //ForceRoar：突入/贯穿两声间隔短于Roar采样时长，普通Roar会因IgnoreNew上限丢失
+                //ForceRoar，间隔短会被IgnoreNew吞
                 SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.3f, Volume = 1f }, npc.Center);
                 DestroyerMotionFX.SpawnDashBurst(npc.Center, lungeDir);
                 DestroyerMotionFX.CameraPunch(npc.Center, 6f, 14, "DestroyerLashLunge", lungeDir);
@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 }
             }
 
-            //突入直线段
+            //突入直线
             if (Timer <= ChargeTime + LungeTime) {
                 npc.damage = npc.defDamage;
                 context.OrbitalVisual = 2;
@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 return null;
             }
 
-            //环绕段：速度向量每帧定角旋转，一整圈甩成绞索
+            //环绕定角旋转成绞索
             if (Timer <= ChargeTime + LungeTime + loopTime) {
                 npc.damage = npc.defDamage;
                 context.OrbitalVisual = 2;
@@ -102,13 +102,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                     .SafeNormalize(Vector2.UnitY) * speed;
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
 
-                //绞索成型预警：全身低强度充能波 + 环内侧火花由体节速度火花自带
+                //绞索预警，低强度充能波
                 DestroyerChargeWave.Push(npc.whoAmI, 0f, 1f,
                     0.35f + 0.45f * ((Timer - ChargeTime - LungeTime) / (float)loopTime), fullBody: true);
                 return null;
             }
 
-            //环心贯穿冲出（一帧设定）
+            //环心贯穿(一帧)
             if (!exitFired) {
                 exitFired = true;
                 Vector2 exitDir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 DestroyerMotionFX.CameraPunch(npc.Center, 7f, 15, "DestroyerLashExit", exitDir);
             }
 
-            //贯穿直线段 + 阶梯刹车收尾
+            //贯穿+阶梯刹车
             int exitEnd = ChargeTime + LungeTime + loopTime + LungeTime;
             if (Timer <= exitEnd) {
                 npc.damage = npc.defDamage;
@@ -149,7 +149,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             return new DestroyerPatrolState();
         }
 
-        /// <summary>蓄势：侧位悬停+pow(t,8)迟滞后撤，转向率衰减锁线</summary>
+        /// <summary>蓄势悬停+pow迟滞后撤锁线</summary>
         private void UpdateCharge(DestroyerStateContext context) {
             NPC npc = context.Npc;
             Player player = context.Target;
@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             float t = Timer / (float)ChargeTime;
             context.JawCommand = Timer > ChargeTime - 12 ? 2 : 1;
 
-            //悬停锚点 + 迟滞后撤偏移
+            //悬停锚+后撤偏移
             Vector2 away = (npc.Center - player.Center).SafeNormalize(Vector2.UnitX * side);
             Vector2 anchor = player.Center + new Vector2(side * 600f, -130f);
             float reel = (float)Math.Pow(t, 8) * 340f;
@@ -171,16 +171,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
             npc.velocity = Vector2.Lerp(npc.velocity, desired, 0.25f);
 
-            //转向率衰减锁线
+            //转向衰减锁线
             float faceLerp = MathHelper.Lerp(0.28f, 0.05f, t);
             FaceTarget(npc, player.Center, faceLerp);
 
-            //T-36f 预警音（固定预警常数）
+            //T-36f 预警音
             if (Timer == ChargeTime - WarnLead + 1) {
                 SoundEngine.PlaySound(SoundID.Item15 with { Pitch = 0.1f, Volume = 0.8f }, npc.Center);
             }
 
-            //72%进度硬切粒子，临爆静默
+            //72%硬切粒子
             if (t < 0.72f && !VaultUtils.isServer && Timer % 3 == 0) {
                 Vector2 dustPos = npc.Center + Main.rand.NextVector2Circular(50f, 50f);
                 Dust dust = Dust.NewDustDirect(dustPos, 1, 1,

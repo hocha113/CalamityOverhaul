@@ -5,11 +5,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>折射枪管：激光命中两侧弹射追踪副束，OnLaserHitNPC+CD</summary>
+    /// <summary>折射枪管，激光命中两侧弹射追踪副束，OnLaserHitNPC+CD</summary>
     internal sealed class ReflectionBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
-        //折射青蓝
+        //青蓝
         public override Color TintColor => new(100, 180, 255);
 
         private int _reflectCooldown;

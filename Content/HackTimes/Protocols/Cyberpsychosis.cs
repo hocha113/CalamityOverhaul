@@ -19,12 +19,10 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override bool OnApply(IHackTarget target, Player caster) {
             if (target is not NpcScannable s) return false;
             NPC npc = Main.npc[s.NpcIndex];
-            //红色精神崩溃爆发
             EmitBurstParticles(npc);
             CombatText.NewText(npc.Hitbox, new Color(255, 0, 50), HackTime.Cyberpsychosis.Value, true);
-            //群组扩散仅施法端，防远端重复 OnTick 伤害
+            //群组扩散仅施法端，防远端重复 OnTick
             if (!HackTimeNetSync.IsRemoteApply) {
-                //扩散到群组，HasEffect 短路防无限传播
                 HackEffectTracker.PropagateNpcEffectToGroup(this, s.NpcIndex,
                     caster?.whoAmI ?? Main.myPlayer, EmitBurstParticles);
             }
@@ -34,7 +32,6 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override bool OnTick(IHackTarget target, int elapsed) {
             if (target is not NpcScannable s) return true;
             NPC npc = Main.npc[s.NpcIndex];
-            //周期性红色故障粒子
             if (elapsed % 10 == 0) {
                 Vector2 pos = npc.Center + Main.rand.NextVector2Circular(
                     npc.width * 0.4f, npc.height * 0.4f);
@@ -47,14 +44,13 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override void OnRemove(IHackTarget target) {
             if (target is not NpcScannable s) return;
             NPC npc = Main.npc[s.NpcIndex];
-            //精神恢复闪光
             for (int i = 0; i < 5; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(2f, 2f);
                 PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(180, 80, 80), 0.5f).Configure(false, 15);
             }
         }
 
-        //爆发粒子，群组成员复用
+        //群组成员复用
         private static void EmitBurstParticles(NPC npc) {
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3.5f, 3.5f);

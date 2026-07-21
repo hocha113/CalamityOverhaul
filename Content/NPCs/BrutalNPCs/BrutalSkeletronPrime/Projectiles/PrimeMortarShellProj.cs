@@ -11,16 +11,16 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projectiles
 {
-    /// <summary>迫击炮重型榴弹：抛物线飞向预告落点，到点或撞地引爆爆炸范围对齐预警环，兑现蓄力而非普攻火箭；ai[0]=落点X；ai[1]=落点Y；ai[2]=飞行帧数（生成侧反解初速，弹道必中落点）</summary>
+    /// <summary>迫击榴弹；ai[0/1]落点，ai[2]飞行帧，必中落点</summary>
     internal class PrimeMortarShellProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder3;
 
-        /// <summary>重力 px/帧²（与初速反解公式共享）</summary>
+        /// <summary>重力 px/帧²</summary>
         internal static float Gravity => 0.3f;
-        /// <summary>标准飞行帧数（固定值使预警环时长可在发射前预解）</summary>
+        /// <summary>标准飞行帧</summary>
         internal static int FlightFrames => 55;
-        /// <summary>爆炸判定直径（= 预警环直径，承诺即兑现，不多不少）</summary>
+        /// <summary>爆炸直径=预警环</summary>
         internal static int BlastDiameter => 620;
         internal static int BlastFrames => 12;
 
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             set => Projectile.localAI[1] = value ? 1f : 0f;
         }
 
-        /// <summary>反解初速：flightFrames帧后落在impact离散积分(先位移后加重力)：pos(T)=pos0+v0·T+g·T(T-1)/2</summary>
+        /// <summary>反解初速，pos(T)=pos0+v0·T+g·T(T-1)/2</summary>
         internal static Vector2 SolveLaunchVelocity(Vector2 spawn, Vector2 impact, int flightFrames) {
             float dropTerm = Gravity * flightFrames * (flightFrames - 1) / 2f;
             return (impact - spawn - new Vector2(0f, dropTerm)) / flightFrames;
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             Projectile.tileCollide = Timer > 10;
             Projectile.velocity.Y += Gravity;
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
-            //重弹观感：缓慢放大 + 浓尾焰
+            //重弹观感
             Projectile.scale = MathHelper.Clamp(Projectile.scale + 0.008f, 1f, 1.4f);
 
             Lighting.AddLight(Projectile.Center, new Vector3(0.8f, 0.4f, 0.1f));
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             return false;
         }
 
-        /// <summary>引爆：判定箱扩张到预警环大小，火球 + 冲击环 + 震屏一次性兑现</summary>
+        /// <summary>引爆兑现预警环</summary>
         private void Detonate() {
             Detonated = true;
             Timer = 0;
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             PrimeScreenEffects.PushShockRing(Projectile.Center, 0.8f, 380f);
             PrimeDeathPerformancePlayer.RequestShake(7f, 10);
 
-            //火球闪光 + 环状火尘 + 放射火花 + 翻腾烟柱 + 残骸
+            //引爆VFX
             PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Vector2.Zero, Color.OrangeRed, 3f)?.Configure(16);
             for (int i = 0; i < 40; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(8f, 8f);
@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             }
         }
 
-        //爆炸判定按圆形裁决，恰好兑现环形预警
+        //圆形判定兑现环
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             if (!Detonated) {
                 return null;

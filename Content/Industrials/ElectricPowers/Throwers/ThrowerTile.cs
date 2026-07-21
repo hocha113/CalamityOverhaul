@@ -14,10 +14,7 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
 {
-    /// <summary>
-    /// 投掷器瓷砖
-    /// 2x2单帧瓷砖
-    /// </summary>
+    /// <summary>投掷器瓷砖，2x2单帧</summary>
     internal class ThrowerTile : ModTile
     {
         public override string Texture => CWRConstant.Asset + "ElectricPowers/ThrowerTile";

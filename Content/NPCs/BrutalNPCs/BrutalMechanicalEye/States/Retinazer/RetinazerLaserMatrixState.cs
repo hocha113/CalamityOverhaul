@@ -10,35 +10,27 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
-    /// <summary>激光矩阵：玩家周围布点→蓄力→齐射</summary>
+    /// <summary>激光矩阵，玩家周围布点→蓄力→齐射</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerLaserMatrix, typeof(TwinsStateContext))]
     internal class RetinazerLaserMatrixState : TwinsStateBase
     {
         public override string StateName => "RetinazerLaserMatrix";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerLaserMatrix;
 
-        /// <summary>定位阶段</summary>
         private int PositionPhase => Context.IsDeathMode ? 28 : 35;
 
-        /// <summary>部署阶段</summary>
         private int DeployPhase => Context.IsDeathMode ? 50 : 60;
 
-        /// <summary>蓄力阶段</summary>
         private int ChargePhase => Context.IsDeathMode ? 38 : 45;
 
-        /// <summary>发射阶段</summary>
         private int FirePhase => Context.IsDeathMode ? 18 : 20;
 
-        /// <summary>恢复阶段</summary>
         private int RecoveryPhase => Context.IsDeathMode ? 20 : 25;
 
-        /// <summary>总时长</summary>
         private int TotalDuration => PositionPhase + DeployPhase + ChargePhase + FirePhase + RecoveryPhase;
 
-        /// <summary>矩阵点数量</summary>
         private int MatrixPointCount => Context.IsDeathMode ? 5 : 4;
 
-        /// <summary>激光速度</summary>
         private float LaserSpeed => Context.IsDeathMode ? 14f : 12f;
 
         private TwinsStateContext Context;
@@ -69,30 +61,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             Timer++;
 
-            //阶段1: 移动到位置
             if (Timer <= PositionPhase) {
                 ExecutePositionPhase(npc, player);
             }
-            //阶段2: 部署矩阵点
             else if (Timer <= PositionPhase + DeployPhase) {
                 ExecuteDeployPhase(npc, player);
             }
-            //阶段3: 蓄力
             else if (Timer <= PositionPhase + DeployPhase + ChargePhase) {
                 ExecuteChargePhase(npc, player);
             }
-            //阶段4: 发射
             else if (Timer <= PositionPhase + DeployPhase + ChargePhase + FirePhase) {
                 ExecuteFirePhase(npc, player);
             }
-            //阶段5: 恢复
             else {
                 ExecuteRecoveryPhase(npc, player);
             }
 
-            //状态结束
             if (Timer >= TotalDuration) {
-                //独眼模式下切换到狂暴状态
                 if (context.IsSoloRageMode) {
                     return new RetinazerSoloRageState();
                 }
@@ -102,31 +87,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             return null;
         }
 
-        /// <summary>定位阶段</summary>
         private void ExecutePositionPhase(NPC npc, Player player) {
-            //移动到玩家上方
             Vector2 targetPos = player.Center + new Vector2(0, -450);
             MoveTo(npc, targetPos, 16f, 0.12f);
             FaceTarget(npc, player.Center);
 
-            //预警特效
             float progress = Timer / (float)PositionPhase;
             context.SetChargeState(7, progress * 0.2f);
         }
 
-        /// <summary>部署阶段</summary>
         private void ExecuteDeployPhase(NPC npc, Player player) {
             int phaseTimer = Timer - PositionPhase;
             float progress = phaseTimer / (float)DeployPhase;
 
-            //记录中心点
             centerPoint = player.Center;
 
-            //悬停在上方
             npc.velocity *= 0.92f;
             FaceTarget(npc, player.Center);
 
-            //逐步部署矩阵点
             if (!hasDeployed) {
                 for (int i = 0; i < MatrixPointCount; i++) {
                     float angle = MathHelper.TwoPi / MatrixPointCount * i + MathHelper.PiOver4;
@@ -136,13 +114,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 hasDeployed = true;
             }
 
-            //矩阵点渐显特效
             if (!VaultUtils.isServer) {
                 int pointsToShow = (int)(progress * MatrixPointCount) + 1;
                 pointsToShow = Math.Min(pointsToShow, MatrixPointCount);
 
                 for (int i = 0; i < pointsToShow; i++) {
-                    //节点首次显形:涟漪标记
+                    //节点显形涟漪
                     if (phaseTimer == (int)(i * DeployPhase / (float)MatrixPointCount) + 1) {
                         PRTLoader.NewParticle<PRT_DWave>(matrixPoints[i], Vector2.Zero, TwinsMotion.RetinColor, 0.1f)?
                             .Configure(Vector2.One, 0f, 0.55f, 14);
@@ -166,29 +143,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 }
             }
 
-            //设置蓄力状态
             context.SetChargeState(7, 0.2f + progress * 0.3f);
         }
 
-        /// <summary>蓄力阶段</summary>
         private void ExecuteChargePhase(NPC npc, Player player) {
             int phaseTimer = Timer - PositionPhase - DeployPhase;
             float progress = phaseTimer / (float)ChargePhase;
 
-            //悬停
             npc.velocity *= 0.95f;
             FaceTarget(npc, player.Center);
 
-            //设置蓄力状态
             context.SetChargeState(7, 0.5f + progress * 0.5f);
 
-            //所有矩阵点同时蓄力
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < MatrixPointCount; i++) {
                     Vector2 pointPos = matrixPoints[i];
                     Vector2 toCenter = (centerPoint - pointPos).SafeNormalize(Vector2.Zero);
 
-                    //能量聚集
                     if (phaseTimer % 2 == 0) {
                         float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                         float dist = 40f - progress * 25f;
@@ -198,7 +169,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                         dust.velocity = (pointPos - dustPos).SafeNormalize(Vector2.Zero) * 4f;
                     }
 
-                    //瞄准线
                     if (phaseTimer % 4 == 0 && progress > 0.4f) {
                         float lineDist = 30f + (progress - 0.4f) / 0.6f * 200f;
                         Vector2 linePos = pointPos + toCenter * lineDist;
@@ -208,7 +178,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                     }
                 }
 
-                //蓄力完成闪光
                 if (phaseTimer == ChargePhase - 3) {
                     for (int i = 0; i < MatrixPointCount; i++) {
                         Vector2 pointPos = matrixPoints[i];
@@ -224,14 +193,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>发射阶段</summary>
         private void ExecuteFirePhase(NPC npc, Player player) {
             int phaseTimer = Timer - PositionPhase - DeployPhase - ChargePhase;
 
-            //停止蓄力特效
             context.ResetChargeState();
 
-            //发射激光
             if (!hasFired) {
                 hasFired = true;
                 SoundEngine.PlaySound(SoundID.Item33 with { Pitch = 0f, Volume = 1.3f }, npc.Center);
@@ -241,7 +207,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                         Vector2 pointPos = matrixPoints[i];
                         Vector2 toCenter = (centerPoint - pointPos).SafeNormalize(Vector2.Zero);
 
-                        //发射激光
                         Projectile.NewProjectile(
                             npc.GetSource_FromAI(),
                             pointPos,
@@ -252,7 +217,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                             Main.myPlayer
                         );
 
-                        //额外发射慢速穿透激光
                         Projectile.NewProjectile(
                             npc.GetSource_FromAI(),
                             pointPos,
@@ -265,7 +229,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                     }
                 }
 
-                //发射特效:每个节点迸发火花与涟漪
+                //节点发射火花
                 if (!VaultUtils.isServer) {
                     for (int i = 0; i < MatrixPointCount; i++) {
                         Vector2 pointPos = matrixPoints[i];
@@ -283,7 +247,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 }
             }
 
-            //后续的残留粒子
             if (!VaultUtils.isServer && phaseTimer % 3 == 0) {
                 for (int i = 0; i < MatrixPointCount; i++) {
                     Vector2 pointPos = matrixPoints[i];
@@ -293,12 +256,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>恢复阶段</summary>
         private void ExecuteRecoveryPhase(NPC npc, Player player) {
             FaceTarget(npc, player.Center);
             npc.velocity *= 0.95f;
 
-            //残余粒子
             if (!VaultUtils.isServer && Timer % 6 == 0) {
                 Dust dust = Dust.NewDustDirect(npc.Center + Main.rand.NextVector2Circular(25, 25), 1, 1, DustID.Vortex, 0, -1, 100, default, 0.7f);
                 dust.noGravity = true;

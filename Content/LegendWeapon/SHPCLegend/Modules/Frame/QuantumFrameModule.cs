@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>量子机匣：连击两目标纠缠 5s，35% 伤害互传，一方死亡半额轰入幸存者</summary>
+    /// <summary>量子机匣，连击两目标纠缠 5s，35% 伤互传，一方死半额轰入幸存者</summary>
     internal sealed class QuantumFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         private void HandleHit(Projectile source, NPC target, NPC.HitInfo hit, int damageDone) {
             if (source.owner != Main.myPlayer) return;
 
-            //已纠缠：命中任一方时把伤害复制给另一方
+            //已纠缠，命中互传
             if (LinkActive()) {
                 NPC partner = null;
                 if (target.whoAmI == npcA) partner = Main.npc[npcB];
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 return;
             }
 
-            //未纠缠：记录上次命中目标，命中第二个不同目标时建立纠缠
+            //未纠缠，二次不同目标建纠缠
             if (lastHitNpc >= 0 && lastHitNpc != target.whoAmI) {
                 NPC first = Main.npc[lastHitNpc];
                 if (first.active && !first.friendly
@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             bool aGone = !a.active || a.friendly;
             bool bGone = !b.active || b.friendly;
 
-            //坍缩：任一方消亡，把累积复制伤害的一半轰入幸存者
+            //坍缩，半额轰入幸存者
             if (aGone || bGone) {
                 NPC survivor = aGone ? b : a;
                 if (!(aGone && bGone) && survivor.active && accumDamage > 0) {
@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                     if (Main.netMode != NetmodeID.Server) {
                         SoundEngine.PlaySound(SoundID.Item118 with { Volume = 0.6f, Pitch = -0.1f }, survivor.Center);
                         for (int i = 0; i < 14; i++) {
-                            //坍缩内爆：粒子向心收束
+                            //坍缩内爆向心收束
                             Vector2 offset = Main.rand.NextVector2CircularEdge(60f, 60f);
                             PRTLoader.NewParticle<PRT_CyberConverge>(survivor.Center + offset, Vector2.Zero,
                                 VoidViolet, Main.rand.NextFloat(0.6f, 1.1f))
@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         }
     }
 
-    /// <summary>量子丝线：双目标虚空螺旋 Additive，穿行伤；任一端失效崩解</summary>
+    /// <summary>量子丝线，双目标虚空螺旋 Additive，穿行伤，端失效崩解</summary>
     internal sealed class SHPCQuantumLinkProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -192,7 +192,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
         public override void AI() {
             if (!TryGetEnds(out NPC a, out NPC b)) {
-                //端点失效：快速崩解
+                //端点失效快崩
                 Projectile.timeLeft = Math.Min(Projectile.timeLeft, 10);
                 fadeAlpha = MathHelper.Clamp(Projectile.timeLeft / 10f, 0f, 1f);
                 return;
@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             if (!TryGetEnds(out NPC a, out NPC b)) return false;
-            //纠缠对本身不吃丝线伤害
+            //纠缠对不吃丝线伤
             if (targetHitbox.Intersects(a.Hitbox) || targetHitbox.Intersects(b.Hitbox)) return false;
             float _ = 0f;
             return Collision.CheckAABBvLineCollision(
@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             float time = (float)Main.timeForVisualEffects * 0.11f;
 
             SpriteBatch sb = spriteBatch;
-            //双股螺旋：相位相差 π 的两条正弦光带，交点处亮结
+            //双股螺旋，相位差 π
             for (int strand = 0; strand < 2; strand++) {
                 float phase = strand * MathHelper.Pi;
                 Vector2 prev = start;

@@ -7,9 +7,7 @@ using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
 {
-    /// <summary>
-    /// 老公爵营地箱子存储提供者工厂
-    /// </summary>
+    /// <summary>老箱子存储工厂</summary>
     public class OldDuchestStorageProviderFactory : IStorageProviderFactory
     {
         public string Identifier => "CWR.OldDuchest";
@@ -28,16 +26,14 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
         }
     }
 
-    /// <summary>老公爵营地箱子的存储提供者</summary>
+    /// <summary>老箱子存储</summary>
     public class OldDuchestStorageProvider : IStorageProvider
     {
         private readonly OldDuchestTP _chestTP;
         private readonly Point16 _position;
 
-        //最大存储槽位数
         private const int MAX_SLOTS = 240;
 
-        //缓存OldDuchestTP的ID
         private static int _oldDuchestTPID = -1;
         private static int OldDuchestTPID {
             get {
@@ -58,7 +54,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                 if (_chestTP == null) {
                     return false;
                 }
-                //通过TileProcessorLoader验证TP是否仍然有效
                 return TileProcessorLoader.AutoPositionGetTP(_position, out OldDuchestTP tp) && tp == _chestTP;
             }
         }
@@ -68,11 +63,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                 if (!IsValid) {
                     return false;
                 }
-                //检查是否有空槽位
                 if (_chestTP.storedItems.Count < MAX_SLOTS) {
                     return true;
                 }
-                //检查是否有可堆叠的空间
                 foreach (var item in _chestTP.storedItems) {
                     if (item == null || item.IsAir) {
                         return true;
@@ -90,11 +83,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
             _position = chestTP?.Position ?? Point16.NegativeOne;
         }
 
-        /// <summary>
-
-        /// 从位置查找OldDuchestTP并创建存储提供者
-
-        /// </summary>
         public static OldDuchestStorageProvider FromPosition(Point16 position) {
             if (!TileProcessorLoader.AutoPositionGetTP(position, out OldDuchestTP tp)) {
                 return null;
@@ -102,11 +90,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
             return new OldDuchestStorageProvider(tp);
         }
 
-        /// <summary>
-
-        /// 在指定范围内查找最近的OldDuchestTP
-
-        /// </summary>
         public static OldDuchestStorageProvider FindNearPosition(Point16 position, int range, Item item) {
             float rangeSQ = range * range;
             OldDuchestTP nearestTP = null;
@@ -126,7 +109,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                     continue;
                 }
 
-                //检查是否可以存入物品
                 var provider = new OldDuchestStorageProvider(tp);
                 if (item.Alives() && !provider.CanAcceptItem(item)) {
                     continue;
@@ -143,7 +125,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
 
         /// <param name="position"></param>
         /// <param name="item"></param>
-        /// <returns></returns>
         public static OldDuchestStorageProvider GetAtPosition(Point16 position, Item item) {
             if (!TileProcessorLoader.AutoPositionGetTP(position, out OldDuchestTP tp)) {
                 return null;
@@ -167,7 +148,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                 return false;
             }
 
-            //使用OldDuchestTP自带的堆叠添加方法
             bool success = _chestTP.StackAddItem(item);
             if (success) {
                 _chestTP.SyncItemsToUI();
@@ -238,8 +218,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                 return;
             }
 
-            //触发短暂的开关动画，利用OldDuchestTP的closeTimer机制
-            //通过反射调用私有方法UpdateTileFrame，或者直接设置状态触发动画
+            //closeTimer触发短暂开关动画
             _chestTP.TriggerDepositAnimation();
         }
     }

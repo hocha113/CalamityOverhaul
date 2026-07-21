@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>扰场核心：蓄力每 40 帧球周微型冲击波</summary>
+    /// <summary>扰场核心，蓄力每 40 帧球周微型冲击波</summary>
     internal sealed class ScrambleFieldModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;

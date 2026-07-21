@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel.Dialogues.Reactive
 {
-    // Generic fallback; lower priority than all boss-specific dialogues.
+    //通用回落，低于各Boss专属
     internal sealed class ShepelBossDefeatedDialogue : ShepelReactiveNarrative
     {
         public override int DialoguePriority => 48;

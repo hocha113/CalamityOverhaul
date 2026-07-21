@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.TileProcessors
         }
 
         public void UpdateGlow() {
-            drawGlow = mouseOnTile && !OnBoolMoon;//如果开启了就不要显示描边
+            drawGlow = mouseOnTile && !OnBoolMoon;//开了就不描边
             if (drawGlow) {
                 gloawTime++;
                 gloaColor = Color.Red * MathF.Abs(MathF.Sin(gloawTime * 0.04f));

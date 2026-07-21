@@ -9,9 +9,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
-    /// <summary>
-    /// 点鬼簿静态绘制件：卷轴纸体(shader/CPU 降级)、轴杆、绯月、名录竖列四状态、影绘细节板
-    /// </summary>
+    /// <summary>点鬼簿静态绘制,卷轴/轴杆/绯月/名录/细节板</summary>
     internal static class OniRegisterRenderer
     {
         private static Texture2D Pixel => VaultAsset.placeholder2.Value;
@@ -19,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         //====================== 卷轴纸体 ======================
 
-        /// <summary>卷轴纸体：OniGhostScroll.fx；shader 缺失时 CPU 降级</summary>
+        /// <summary>卷轴纸体 OniGhostScroll.fx,缺则 CPU</summary>
         public static void DrawScroll(SpriteBatch sb, Rectangle rect, float alpha, float reveal, float time) {
             //阴影按 alpha 平方衰减,展卷初期不出现整块暗影
             sb.Draw(Pixel, new Rectangle(rect.X + 6, rect.Y + 8, rect.Width, (int)(rect.Height * reveal)), PixelSrc,
@@ -58,7 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 RasterizerState.CullNone, null, Main.UIScaleMatrix);
         }
 
-        /// <summary>CPU 降级卷轴：墨黑底 + 深红双描边 + 上下绫带,展卷高度裁切</summary>
+        /// <summary>CPU 降级卷轴</summary>
         public static void DrawFallbackScroll(SpriteBatch sb, Rectangle rect, float alpha, float reveal) {
             float unroll = reveal * (2f - reveal);
             Rectangle shown = new(rect.X, rect.Y, rect.Width, (int)(rect.Height * unroll));
@@ -79,9 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>
-        /// 卷轴杆：顶杆定悬(带向上挂绳)，底杆随展卷推进下行——纸是从它身上放出来的
-        /// </summary>
+        /// <summary>卷轴杆,顶定悬底随展卷下行</summary>
         public static void DrawRollers(SpriteBatch sb, Rectangle rect, float alpha, float reveal) {
             float unroll = reveal * (2f - reveal);
             int overhang = 20;
@@ -100,7 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             DrawRoller(sb, rect.X - overhang, rect.Right + overhang, rodY, alpha);
         }
 
-        /// <summary>单根轴杆：木杆渐变圆柱 + 朱漆端帽</summary>
+        /// <summary>单根轴杆</summary>
         private static void DrawRoller(SpriteBatch sb, float left, float right, float y, float alpha) {
             int w = (int)(right - left);
             //杆身三段明暗:上缘暗/中亮/下缘暗,卖圆柱感
@@ -114,10 +110,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>
-        /// 收卷木牌：挂在顶部轴杆右端的小木牌，点击关闭。<br/>
-        /// 牌绳是 Verlet 摆——受风、被拂过会真的晃起来；关闭入口本身也是卷轴上的在世挂件
-        /// </summary>
+        /// <summary>收卷木牌,点击关闭,牌绳 Verlet</summary>
         public static void DrawCloseTag(SpriteBatch sb, DynamicSpriteFont font, OniRope rope, float alpha, float hover, float time) {
             //绳与顶结
             rope.Draw(sb, OnikiriUITheme.Deep * 0.9f, OnikiriUITheme.Deep * 0.62f, 1.3f, alpha);
@@ -170,7 +163,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         //====================== 绯月 ======================
 
-        /// <summary>绯月：三档软辉叠出的红月,危态低频睁开一条竖瞳</summary>
+        /// <summary>绯月,危态竖瞳</summary>
         public static void DrawMoon(SpriteBatch sb, Vector2 center, float alpha, float time, float pupilOpen) {
             float breath = (float)Math.Sin(time * 0.5f) * 0.5f + 0.5f;
             OniBrush.DrawBacklight(sb, center, 96f + breath * 8f, OnikiriUITheme.Deep, alpha * 0.7f);
@@ -190,9 +183,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         //====================== 名录竖列 ======================
 
-        /// <summary>
-        /// 单条名录竖列。四状态：稳固(干墨+完章)/躁动(洇血+裂章)/封印(札覆名讳)/未知(墨涂空栏)
-        /// </summary>
+        /// <summary>名录竖列,四状态</summary>
         public static void DrawEntryColumn(SpriteBatch sb, DynamicSpriteFont font, OniGhostEntry entry,
             Rectangle rect, float alpha, float hover, bool selected, float selectEase, float time, int index) {
             //界栏:名册的竖行朱丝栏
@@ -237,7 +228,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>竖列名讳。bleed &gt; 0 时笔画向下洇血(躁动态)；拉丁名整串旋转 90° 顺列书写</summary>
+        /// <summary>竖列名讳,bleed&gt;0 洇血,拉丁转 90°</summary>
         private static void DrawNameColumn(SpriteBatch sb, DynamicSpriteFont font, string name, Rectangle rect,
             Color color, float alpha, float bleed, float time, int index) {
             if (string.IsNullOrEmpty(name)) {
@@ -279,7 +270,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>封印札：糊在名讳上的竖纸条(纸条质感走 OniBrush),朱纹批画,偶发轻颤</summary>
+        /// <summary>封印札覆名讳</summary>
         private static void DrawSealTalisman(SpriteBatch sb, Rectangle rect, float alpha, float time, int index) {
             //偶发轻颤:长周期正弦越过阈值的窄窗内高频抖动
             float gate = (float)Math.Sin(time * 0.21f + index * 2.63f);
@@ -300,7 +291,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             sb.Draw(Pixel, center + new Vector2(0f, -size.Y * 0.10f).RotatedBy(rot), PixelSrc, strokeCol * 0.85f, rot, half, new Vector2(size.X * 0.44f, 1.6f), SpriteEffects.None, 0f);
         }
 
-        /// <summary>未知铭位：一段被墨涂死的空栏</summary>
+        /// <summary>未知铭位墨涂</summary>
         private static void DrawUnknownColumn(SpriteBatch sb, Rectangle rect, float alpha, int index) {
             int blobs = 4;
             float y = rect.Y + 10f;
@@ -318,7 +309,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         //====================== 影绘细节板 ======================
 
-        /// <summary>右侧细节板：背光和纸 + 影绘鬼形 + 名讳/来历/赋力 + 线香驾驭度计</summary>
+        /// <summary>右侧细节板</summary>
         public static void DrawDetail(SpriteBatch sb, OniRegisterUI ui, Rectangle rect, float alpha) {
             OniGhostEntry entry = ui.SelectedEntry;
             if (entry == null || rect.Width < 100) {
@@ -381,7 +372,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>影绘：贴着纸背立起的软形体,只点一双鬼火之眼;闲置久了眼会转向光标</summary>
+        /// <summary>影绘,闲置眼跟光标</summary>
         private static void DrawDetailShadow(SpriteBatch sb, OniRegisterUI ui, OniGhostEntry entry,
             Rectangle rect, Vector2 lightCenter, float alpha) {
             if (entry.State == OniGhostState.Unknown) {
@@ -465,7 +456,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 glance = toMouse.SafeNormalize(Vector2.Zero) * 0.024f * ui.GlanceStrength;
             }
 
-            //伪散射层:放大 1.25 倍、低透明、沿光源反向微沉——影子在纸纤维里晕开
+            //伪散射层,放大低透沿光向微沉
             Rectangle diffuse = quad;
             diffuse.Inflate((int)(w * 0.125f), (int)(h * 0.125f));
             diffuse.Offset(0, 4);
@@ -499,7 +490,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>线香：燃去比例=驾驭度。余香纸白,燃点炽红带闪,灰由 UI 侧粒子剥落</summary>
+        /// <summary>线香,燃去比=驾驭度</summary>
         private static void DrawIncense(SpriteBatch sb, OniRegisterUI ui, OniGhostEntry entry, float alpha, DynamicSpriteFont font) {
             Rectangle stick = ui.IncenseRect();
             Vector2 ember = ui.IncenseEmberPos();
@@ -550,9 +541,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             _ => (OniRegisterUI.StateUnknown.Value, OnikiriUITheme.Disabled),
         };
 
-        /// <summary>
-        /// 简易逐字换行(CJK 友好)+打字机+湿墨绘制。返回文本块底部 Y
-        /// </summary>
+        /// <summary>逐字换行+打字机+湿墨,返回块底 Y</summary>
         private static float DrawTypedWrapped(SpriteBatch sb, DynamicSpriteFont font, string text, Vector2 pos,
             float maxWidth, Color color, float scale, float alpha, int visibleChars, float inkStrength) {
             if (string.IsNullOrEmpty(text)) {

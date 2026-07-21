@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>毒孢鱼泡域内资源（域内加载器，不经 EffectLoader）</summary>
     internal class FishAmanitaAssets
     {
-        /// <summary>浓稠孢子云：域扭曲噪声云体 + 悬浮孢子亮斑 + 边缘噪声撕裂（premultiplied）</summary>
+        /// <summary>浓稠孢子云</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect FishAmanitaMist { get; private set; }
 
@@ -22,15 +22,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         internal static Asset<Texture2D> SporeSheet = null;
     }
 
-    /// <summary>
-    /// 毒孢鱼泡共享演出协作类。<br/>
-    /// 材质：发光真菌孢子（菌蓝紫微光基调）；签名行为 = 孢子无重力布朗漂移、
-    /// 菌盖爆开成孢子环、菌丝节点电弧。<br/>
-    /// 四种弹药子色相同属真菌语系：伞红（爆炸）/ 追孢青（追踪）/ 瘴紫（毒雾）/ 菌电紫白（闪电）
-    /// </summary>
+    /// <summary>毒孢鱼泡</summary>
     internal static class FishAmanitaVFX
     {
-        //==== 色彩脚本：菌蓝紫语系 ====
         /// <summary>暗菌紫（外圈/压底）</summary>
         public static readonly Color SporeDusk = new(46, 28, 74);
         /// <summary>菌紫（语系主强调）</summary>
@@ -61,20 +55,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             _ => SporeViolet
         };
 
-        //==== 音效分层 ====
 
-        /// <summary>湿润孢子噗：菌体挤破的闷响 + 泡泡湿层</summary>
+        /// <summary>湿润孢子噗</summary>
         public static void SporePuffSound(Vector2 pos, float pitch, float volume) {
             SoundEngine.PlaySound(SoundID.NPCDeath1 with { Pitch = pitch, Volume = volume, MaxInstances = 4 }, pos);
             SoundEngine.PlaySound(SoundID.Item85 with { Pitch = pitch + 0.25f, Volume = volume * 0.45f, MaxInstances = 4 }, pos);
         }
 
-        //==== 粒子族 ====
 
-        /// <summary>
-        /// 菌盖爆开成孢子环：发光孢子均匀环撒 + 实体孢子颗粒补底 + 暗紫扩散环。
-        /// 孢子环撒出后减速转入布朗悬浮，活得比爆点久
-        /// </summary>
+        /// <summary>菌盖爆开成孢子环</summary>
         public static void SporeRing(Vector2 pos, Color color, int glowCount, float speed, float scale = 1f) {
             if (Main.dedServ) {
                 return;
@@ -86,7 +75,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 PRTLoader.NewParticle<PRT_FishAmanitaSpore>(pos, vel, color, Main.rand.NextFloat(0.7f, 1.1f) * scale)
                     ?.Configure(Main.rand.Next(34, 52), 0.05f, 0.008f);
             }
-            //实体孢子颗粒：贴图质感补底，与发光孢子异质
+            //实体孢子颗粒
             int grainCount = glowCount / 3;
             for (int i = 0; i < grainCount; i++) {
                 var prt = PRTLoader.NewParticle<PRT_SporeBobo>(pos, Main.rand.NextVector2Unit() * speed * 0.55f);
@@ -95,14 +84,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     prt.Scale = Main.rand.NextFloat(0.6f, 1f) * scale;
                 }
             }
-            //暗紫外环压底 + 弹药色内环：双环异速
+            //暗紫外环压底 + 弹药色内环
             PRTLoader.NewParticle<PRT_DWave>(pos, Vector2.Zero, SporeDusk, 0.16f * scale)
                 ?.Configure(Vector2.One, 0f, 0.95f * scale, 14);
             PRTLoader.NewParticle<PRT_DWave>(pos, Vector2.Zero, color, 0.1f * scale)
                 ?.Configure(Vector2.One, 0f, 0.6f * scale, 10);
         }
 
-        /// <summary>单颗漂移孢子：低频环境点缀</summary>
+        /// <summary>单颗漂移孢子</summary>
         public static void SporeDrift(Vector2 pos, Vector2 vel, Color color, float scale = 1f, int lifetime = 0) {
             if (Main.dedServ) {
                 return;
@@ -112,10 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(lifetime > 0 ? lifetime : Main.rand.Next(28, 44), 0.04f, 0.006f);
         }
 
-        /// <summary>
-        /// 菌丝电弧：from→to 弯曲折线 + 节点亮斑，可带分叉。
-        /// jitterScale 控制弯曲幅度（1 = 标准菌丝弯曲）
-        /// </summary>
+        /// <summary>菌丝电弧</summary>
         public static void MyceliumArc(Vector2 from, Vector2 to, Color color, float width, int lifetime, int branches = 1, float jitterScale = 1f) {
             if (Main.dedServ) {
                 return;
@@ -125,10 +111,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 发光真菌孢子：无重力布朗漂移 + 微上浮 + 呼吸明灭。
-    /// SporeBobo 实体帧作剪影载体，SoftGlow 底光垫层权重封顶，语系核心粒子
-    /// </summary>
+    /// <summary>发光真菌孢子</summary>
     internal class PRT_FishAmanitaSpore : BasePRT
     {
         public override string Texture => CWRConstant.Other + "SporeBobo";
@@ -180,23 +163,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Vector2 pos = Position - Main.screenPosition;
             Color col = Color with { A = 0 };
-            //底光垫层：小半径微光，权重封顶
+            //底光垫层，小半径微光，权重封顶
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow != null) {
                 spriteBatch.Draw(glow, pos, null, col * (0.35f * Opacity), 0f
                     , glow.Size() * 0.5f, 0.14f * Scale, SpriteEffects.None, 0f);
             }
-            //孢子实体帧：剪影载体
+            //孢子实体帧，剪影载体
             spriteBatch.Draw(TexValue, pos, Frame, col * (0.9f * Opacity), Rotation
                 , Frame.Size() / 2f, 0.85f * Scale, SpriteEffects.None, 0f);
             return false;
         }
     }
 
-    /// <summary>
-    /// 菌丝电弧：中点位移折线 + 折点孢子亮斑 + 最多两条短分叉，周期重抖动。
-    /// 粗细不均、弯曲有机，区别于通用直闪电
-    /// </summary>
+    /// <summary>菌丝电弧</summary>
     internal class PRT_FishAmanitaArc : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Line";
@@ -242,7 +222,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>中点位移细分：弯曲有机的菌丝路径，分叉从主径中段抽出</summary>
+        /// <summary>中点位移细分</summary>
         private void BuildArc() {
             Vector2 dir = endPos - Position;
             float len = dir.Length();
@@ -271,7 +251,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            //周期重抖动：电弧在生命期内持续换形
+            //周期重抖动
             if (Time % 3 == 0 && Time > 0) {
                 BuildArc();
             }
@@ -286,7 +266,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 b = pts[i + 1];
                 Vector2 seg = b - a;
                 float t = i / (float)(count - 1);
-                //粗细不均：头尾收细
+                //粗细不均，头尾收细
                 float w = width * widthMul * (0.55f + 0.45f * MathF.Sin(t * MathHelper.Pi)) / tex.Width;
                 sb.Draw(tex, (a + b) * 0.5f - Main.screenPosition, null, col
                     , seg.ToRotation() + MathHelper.PiOver2, tex.Size() * 0.5f
@@ -312,14 +292,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Color body = Color with { A = 0 };
             Color dim = FishAmanitaVFX.SporeViolet with { A = 0 };
 
-            //暗紫底描边（宽）+ 电紫白亮芯（窄）：两层异宽
+            //暗紫底描边（宽）+ 电紫白亮芯（窄）
             DrawSegments(spriteBatch, tex, trunk, TrunkPoints, 2.1f, dim * (0.4f * Opacity));
             DrawSegments(spriteBatch, tex, trunk, TrunkPoints, 1f, body * Opacity);
             for (int b = 0; b < branchCount; b++) {
                 DrawBranch(spriteBatch, tex, b, 0.6f, body * (0.7f * Opacity));
             }
 
-            //折点孢子亮斑：菌丝网络节点发光
+            //折点孢子亮斑，菌丝网络节点发光
             for (int i = 1; i < TrunkPoints - 1; i += 2) {
                 spriteBatch.Draw(glow, trunk[i] - Main.screenPosition, null, body * (0.5f * Opacity)
                     , 0f, glow.Size() * 0.5f, 0.1f + 0.03f * MathF.Sin(Time + i), SpriteEffects.None, 0f);
@@ -328,9 +308,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 菌盖碎片：伞盖贴图随机小块，受重力翻滚坠落，哑光实体质感（AlphaBlend 走环境光）
-    /// </summary>
+    /// <summary>菌盖碎片</summary>
     internal class PRT_FishAmanitaCapShard : BasePRT
     {
         public override string Texture => CWRConstant.Projectile + "Glomushroom";
@@ -348,7 +326,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Lifetime = Main.rand.Next(26, 40);
             spin = Main.rand.NextFloat(0.12f, 0.3f) * (Main.rand.NextBool() ? 1f : -1f);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-            //随机源块：伞盖撕成不规则小片
+            //随机源块，伞盖撕成不规则小片
             int w = Math.Max(TexValue.Width / 3, 4);
             int h = Math.Max(TexValue.Height / 3, 4);
             Frame = new Rectangle(Main.rand.Next(TexValue.Width - w), Main.rand.Next(TexValue.Height - h), w, h);
@@ -363,7 +341,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
-            //环境光调制：哑光碎片不发光
+            //环境光调制，哑光碎片不发光
             Color lit = Lighting.GetColor(Position.ToTileCoordinates());
             Color col = Color.Lerp(lit, Color, 0.35f) * Opacity;
             spriteBatch.Draw(TexValue, Position - Main.screenPosition, Frame, col

@@ -11,20 +11,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>猩红裁决域内 shader 资源（域内加载器，不经 EffectLoader）</summary>
     internal class FishBloodyManowarAssets
     {
-        /// <summary>血腥水母伞膜：半透明伞钟 quad（收缩相位/透明度/种子走顶点色）</summary>
+        /// <summary>血腥水母伞膜</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect FishBloodyManowarBell { get; private set; }
     }
 
-    /// <summary>
-    /// 猩红裁决共享演出协作类。<br/>
-    /// 材质：血液 + 半透明伞膜。色彩脚本：深红/暗红液体系（血=深红非亮红），
-    /// 禁青绿蓝，亮色仅破裂一瞬的小面积暖色过曝。<br/>
-    /// 签名行为：伞膜收缩-滑行两拍推进、血珠受重力滴落、聚拢血丝拉线
-    /// </summary>
+    /// <summary>猩红裁决</summary>
     internal static class FishBloodyManowarVFX
     {
-        //==== 色彩脚本 ====
         /// <summary>伞膜暗缘（近黑的瘀血色，压底）</summary>
         public static readonly Color MembraneDark = new(44, 7, 13);
         /// <summary>伞膜主体深红</summary>
@@ -49,9 +43,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 pos, dir.SafeNormalize(Vector2.UnitY), strength, vibrationsPerSec, frames, falloff, "FishBloodyManowar"));
         }
 
-        //==== 粒子族 ====
 
-        /// <summary>暗血雾团：AlphaBlend 深色压底，爆发与余韵的体积载体</summary>
+        /// <summary>暗血雾团</summary>
         public static void MistPuff(Vector2 pos, int count, float speed, float scale, int lifeMin, int lifeMax) {
             if (Main.dedServ) {
                 return;
@@ -65,7 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>血珠喷洒：受重力、随速度拉丝的液滴锥（复用刻心者血珠）</summary>
+        /// <summary>血珠喷洒</summary>
         public static void DropletSpray(Vector2 pos, Vector2 dir, int count, float speedMin, float speedMax, float cone, float gravity = 0.3f) {
             if (Main.dedServ) {
                 return;
@@ -79,7 +72,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>伞膜碎片迸散：破裂英雄时刻专用</summary>
+        /// <summary>伞膜碎片迸散</summary>
         public static void ShredBurst(Vector2 pos, Vector2 dir, int count, float speed) {
             if (Main.dedServ) {
                 return;
@@ -93,12 +86,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //==== 血丝拉线 ====
 
-        /// <summary>
-        /// 粘稠血丝：from→to 二次贝塞尔垂弧，粗细沿程珠节起伏，一粒血珠沿丝滑行。<br/>
-        /// sag 0..1 越大越松弛下坠，绷紧时垂弧消失读作被拉直的粘液
-        /// </summary>
+        /// <summary>粘稠血丝</summary>
         public static void DrawBloodThread(SpriteBatch sb, Vector2 from, Vector2 to, float sag, float alpha, float seed) {
             Texture2D tex = CWRAsset.Line?.Value;
             if (tex == null || alpha <= 0.02f) {
@@ -117,7 +106,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 b = Vector2.Lerp(mid, to, t);
                 Vector2 p = Vector2.Lerp(a, b, t);
                 Vector2 seg = p - prev;
-                //端部收细 + 沿程珠节：液体表面张力的起伏
+                //端部收细 + 沿程珠节
                 float taperEnd = 1f - MathF.Abs(t * 2f - 1f) * 0.45f;
                 float beadWobble = 0.75f + 0.4f * MathF.Sin(t * 9.3f + seed * 6.7f);
                 float widthPx = 2.4f * taperEnd * beadWobble;
@@ -141,10 +130,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 暗血雾团：AlphaBlend 深色雾，先短促膨胀后长尾消散。<br/>
-    /// 与加色系 PRT_Smoke 相反，本体是"暗"的，用来给亮效压底与承载余韵
-    /// </summary>
+    /// <summary>暗血雾团</summary>
     internal class PRT_FishBloodyManowarMist : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "SmokeSheet01";
@@ -182,7 +168,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Velocity *= 0.955f;
             Velocity.Y -= 0.004f;
             Rotation += spin;
-            //包络：快入长出，血雾沉降过程逐渐转暗
+            //包络
             float envelope = MathHelper.Clamp(t / 0.12f, 0f, 1f) * (1f - MathF.Pow(t, 1.6f));
             Color = Color.Lerp(initialColor, FishBloodyManowarVFX.MembraneDark, t * 0.8f);
             Opacity = baseOpacity * envelope;
@@ -199,10 +185,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 伞膜碎片：半透明深红膜片，受轻重力，横向翻转式扑动飘落。<br/>
-    /// 翻动用横轴缩放振荡表达（薄片在空气里的三维翻面），读作软膜而非硬屑
-    /// </summary>
+    /// <summary>伞膜碎片</summary>
     internal class PRT_FishBloodyManowarShred : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "HitJagged01";
@@ -236,7 +219,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            //初速衰减后进入飘落：轻重力 + 横摆
+            //初速衰减后进入飘落
             Velocity.X *= 0.94f;
             Velocity.Y = MathF.Min(Velocity.Y * 0.94f + 0.055f, 2.6f);
             flutterPhase += flutterRate;

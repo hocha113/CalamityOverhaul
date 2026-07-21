@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
-    /// <summary>赛博空间 ModSystem 驱动器，PostUpdateEverything 推进各子系统</summary>
+    /// <summary>赛博空间 System，PostUpdateEverything 推进子系统</summary>
     internal class CyberspaceSystem : ModSystem
     {
         public override void PostUpdateEverything() {

@@ -30,37 +30,33 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
             Item.height = 32;
             Item.useTime = Item.useAnimation = 30;
             Item.useStyle = ItemUseStyleID.HoldUp;
-            //开关音效交由交换终端 UI 自己播放，避免与道具使用音叠加成廉价的双击声
+            //UseSound交给商店UI,避双击
             Item.UseSound = null;
             Item.rare = ItemRarityID.Cyan;
             Item.value = Item.buyPrice(gold: 50);
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            //计算已完成的信号塔数量
             int completedCount = GetCompletedTowerCount();
 
-            //添加进度提示
             var progressLine = new TooltipLine(
                 Mod,
                 "SignalTowerProgress",
                 string.Format(SignalTowerProgressText.Value, completedCount, RequiredSignalTowers)
             );
 
-            //根据完成度设置颜色
             if (completedCount >= RequiredSignalTowers) {
-                progressLine.OverrideColor = Color.Lime; //全部完成，绿色
+                progressLine.OverrideColor = Color.Lime;
             }
             else if (completedCount > 0) {
-                progressLine.OverrideColor = Color.Yellow; //部分完成，黄色
+                progressLine.OverrideColor = Color.Yellow;
             }
             else {
-                progressLine.OverrideColor = Color.Gray; //未开始，灰色
+                progressLine.OverrideColor = Color.Gray;
             }
 
             tooltips.Add(progressLine);
 
-            //如果未完成，添加警告提示
             if (completedCount < RequiredSignalTowers) {
                 var warningLine = new TooltipLine(
                     Mod,
@@ -74,11 +70,9 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
 
         public override bool? UseItem(Player player) {
             if (player.whoAmI == Main.myPlayer) {
-                //检查是否所有信号塔都已部署
                 int completedCount = GetCompletedTowerCount();
 
                 if (completedCount < RequiredSignalTowers) {
-                    //未完成所有信号塔部署，显示警告并拒绝打开
                     string warningText = string.Format(
                         NeedSignalTowersText.Value,
                         RequiredSignalTowers
@@ -89,7 +83,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
                         RequiredSignalTowers
                     );
 
-                    //显示战斗文本提示
                     CombatText.NewText(
                         player.getRect(),
                         Color.OrangeRed,
@@ -97,7 +90,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
                         dramatic: true
                     );
 
-                    //稍后显示进度提示
                     CombatText.NewText(
                         player.getRect(),
                         Color.Yellow,
@@ -105,7 +97,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
                         dramatic: false
                     );
 
-                    //播放失败音效
                     SoundEngine.PlaySound(SoundID.MenuClose with {
                         Volume = 0.7f,
                         Pitch = -0.3f
@@ -114,13 +105,11 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
                     return true;
                 }
 
-                //所有信号塔已部署，开关商店界面
                 DraedonShopUI.Instance.Toggle();
             }
             return true;
         }
 
-        /// <summary>获取已完成的信号塔数量</summary>
         private static int GetCompletedTowerCount() {
             if (!SignalTowerTargetManager.IsGenerated) {
                 return 0;

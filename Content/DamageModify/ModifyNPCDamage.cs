@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.DamageModify
 
         public override bool? On_ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers) {
             if (modifiers.DamageType == EndlessDamageClass.Instance) {
-                //我们希望无尽伤害类型不会受到其他代码的减伤影响，所以，如果是无尽伤害，那么就阻止后面所有代码的执行
+                //无尽伤害跳过后续减伤
                 return false;
             }
             return base.On_ModifyIncomingHit(npc, ref modifiers);

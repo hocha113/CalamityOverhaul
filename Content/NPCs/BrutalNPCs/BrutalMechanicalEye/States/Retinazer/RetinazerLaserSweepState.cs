@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
-    /// <summary>一阶段激光扫射：上方悬停+扇形扫射</summary>
+    /// <summary>一阶段激光扫射，上方悬停+扇形扫射</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerLaserSweep, typeof(TwinsStateContext))]
     internal class RetinazerLaserSweepState : TwinsStateBase
     {
@@ -18,16 +18,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         /// <summary>进入位置阶段</summary>
         private int PositioningPhase => Context.IsDeathMode ? 25 : 30;
 
-        /// <summary>蓄力阶段</summary>
         private int ChargePhase => Context.IsDeathMode ? 50 : 60;
 
         /// <summary>扫射阶段</summary>
         private int SweepPhase => Context.IsDeathMode ? 65 : 70;
 
-        /// <summary>恢复阶段</summary>
         private int RecoveryPhase => Context.IsDeathMode ? 20 : 25;
 
-        /// <summary>总时长</summary>
         private int TotalDuration => PositioningPhase + ChargePhase + SweepPhase + RecoveryPhase;
 
         private float MoveSpeed => Context.IsDeathMode ? 12f : 10f;
@@ -58,19 +55,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             Timer++;
 
-            //阶段1: 进入位置
             if (Timer <= PositioningPhase) {
                 ExecutePositioningPhase(npc, player);
             }
-            //阶段2: 蓄力
             else if (Timer <= PositioningPhase + ChargePhase) {
                 ExecuteChargePhase(npc, player);
             }
-            //阶段3: 扫射
             else if (Timer <= PositioningPhase + ChargePhase + SweepPhase) {
                 ExecuteSweepPhase(npc, player);
             }
-            //阶段4: 恢复
             else {
                 ExecuteRecoveryPhase(npc, player);
             }
@@ -101,7 +94,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>蓄力阶段</summary>
         private void ExecuteChargePhase(NPC npc, Player player) {
             int phaseTimer = Timer - PositioningPhase;
             float progress = phaseTimer / (float)ChargePhase;
@@ -112,7 +104,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             sweepStartDir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
             FaceTarget(npc, player.Center);
 
-            //设置蓄力状态
             context.SetChargeState(4, 0.2f + progress * 0.8f);
 
             //蓄力粒子效果逐渐增强
@@ -141,7 +132,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 }
             }
 
-            //蓄力音效
             if (phaseTimer == 1) {
                 SoundEngine.PlaySound(SoundID.Item15 with { Pitch = -0.3f, Volume = 0.7f }, npc.Center);
             }
@@ -171,7 +161,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             int phaseTimer = Timer - PositioningPhase - ChargePhase;
             float progress = phaseTimer / (float)SweepPhase;
 
-            //停止蓄力特效
             context.ResetChargeState();
 
             //使用缓动函数使扫射更流畅
@@ -185,7 +174,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             //保持位置稳定
             npc.velocity *= 0.95f;
 
-            //发射激光
             if (phaseTimer % FireInterval == 0 && !VaultUtils.isClient) {
                 Projectile.NewProjectile(
                     npc.GetSource_FromAI(),
@@ -207,7 +195,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>恢复阶段</summary>
         private void ExecuteRecoveryPhase(NPC npc, Player player) {
             //逐渐恢复面向玩家
             FaceTarget(npc, player.Center);
@@ -216,7 +203,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             Vector2 backDir = (npc.Center - player.Center).SafeNormalize(Vector2.Zero);
             npc.velocity = Vector2.Lerp(npc.velocity, backDir * 3f, 0.1f);
 
-            //残余粒子
             if (!VaultUtils.isServer && Timer % 5 == 0) {
                 Dust dust = Dust.NewDustDirect(npc.Center + Main.rand.NextVector2Circular(20, 20), 1, 1, DustID.PurpleTorch, 0, -1, 100, default, 0.8f);
                 dust.noGravity = true;

@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>一阶段 dash 准备：后撤蓄力→锁向→爆发起步</summary>
+    /// <summary>一阶段 dash 准备，后撤蓄力→锁向→爆发起步</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismDashPrepare, typeof(TwinsStateContext))]
     internal class SpazmatismDashPrepareState : TwinsStateBase
     {
@@ -39,14 +39,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             Player player = context.Target;
             float progress = Timer / (float)ChargeTime;
 
-            //弹簧式后撤蓄力:前70%缓慢后撤拉开距离(拉弓)，末段绷紧定身
+            //后撤蓄力前70%
             Vector2 awayDir = (npc.Center - player.Center).SafeNormalize(Vector2.UnitY);
             if (progress < 0.7f) {
                 float pull = VaultUtils.EaseInQuad(progress / 0.7f);
                 npc.velocity = npc.velocity * 0.86f + awayDir * pull * 4.2f;
             }
             else {
-                //绷紧:急刹+轻微颤抖，蓄势待发
+                //绷紧颤抖
                 npc.velocity *= 0.72f;
                 if (!VaultUtils.isServer) {
                     npc.position += Main.rand.NextVector2Circular(1.6f, 1.6f);

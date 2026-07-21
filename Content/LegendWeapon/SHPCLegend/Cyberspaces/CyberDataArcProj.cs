@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         private float fadeAlpha;
         private float jitterSeed;
 
-        //外部覆盖颜色（可选）：默认电蓝色
+        //外部覆色，默认电蓝
         public Vector3 CoreColor = new Color(220, 240, 255).ToVector3();
         public Vector3 GlowColor = new Color(80, 200, 255).ToVector3();
 
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         public override void AI() {
-            //首帧采样：根据起止点生成一条带噪扰动的折线
+            //首帧采样折线
             if (Projectile.localAI[0] == 0f) {
                 Vector2 start = Projectile.Center;
                 Vector2 end = start + new Vector2(Projectile.ai[0], Projectile.ai[1]);

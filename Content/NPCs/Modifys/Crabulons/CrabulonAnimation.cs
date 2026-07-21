@@ -3,7 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
-    /// <summary>菌生蟹帧动画</summary>
+    /// <summary>帧动画</summary>
     internal class CrabulonAnimation
     {
         private readonly NPC npc;
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 return true;
             }
 
-            //骑乘吸附时以骑手落地为准
+            //骑乘以骑手落地为准
             bool grounded = npc.collideY;
             if (owner.Mount && owner.Owner.Alives()) {
                 grounded = owner.Owner.velocity.Y == 0f;

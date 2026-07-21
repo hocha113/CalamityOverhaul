@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
-    /// Q技能星流环带：单quad星环+6颗星卫结点,结点轮转弹射追踪星屑
+    /// Q 星流环，单 quad+6 结点轮转弹星屑
     internal class AriaQSkill : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -63,7 +63,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             nodePhase += 0.032f;
             spinPhase += 0.5f / 60f;
 
-            //出场展开/退场收拢包络
             int age = Lifetime - Projectile.timeLeft;
             if (age < SpawnTime) {
                 lifeEnvelope = VaultUtils.EaseOutCubic(age / (float)SpawnTime);
@@ -79,14 +78,12 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 lifeEnvelope = 1f;
             }
 
-            //结点轮转攻击
             attackTimer++;
             if (attackTimer >= AttackInterval && lifeEnvelope > 0.9f) {
                 attackTimer = 0;
                 TryNodeAttack();
             }
 
-            //环带碎星飘尘
             if (!VaultUtils.isServer && Projectile.timeLeft % 4 == 0 && lifeEnvelope > 0.3f) {
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
                 Vector2 pos = Projectile.Center + ang.ToRotationVector2() * (OrbitR + Main.rand.NextFloat(-14f, 14f));
@@ -110,7 +107,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 return;
             }
 
-            //轮转结点弹射
             Vector2 nodePos = NodeWorldPos(nextNode);
             nextNode = (nextNode + 1) % NodeCount;
 
@@ -136,7 +132,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             }
             SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
 
-            //结点碎裂成星屑
             for (int i = 0; i < NodeCount; i++) {
                 Vector2 nodePos = NodeWorldPos(i);
                 for (int j = 0; j < 6; j++) {
@@ -147,7 +142,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             }
         }
 
-        //=================== 绘制 ===================
 
         public override bool PreDraw(ref Color lightColor) => false;
 
@@ -198,7 +192,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 return;
             }
 
-            //结点星卫本体：星芒+光晕
             for (int i = 0; i < NodeCount; i++) {
                 Vector2 pos = NodeWorldPos(i) - Main.screenPosition;
                 float flick = 1f + 0.14f * (float)Math.Sin(visTime * MathHelper.TwoPi * 3f + i * 1.7f);
@@ -212,7 +205,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
     }
 
-    /// Q技能星屑：结点弹射的追踪光矢
+    /// Q 星屑，结点弹射追踪矢
     internal class AriaQSkillMiniDisk : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -245,7 +238,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             visTime += 1f / 60f;
             Projectile.rotation = Projectile.velocity.ToRotation();
 
-            //追踪：目标失效则重寻
+            //目标失效则重寻
             NPC target = null;
             if (TargetNPCIndex >= 0 && TargetNPCIndex < Main.maxNPCs) {
                 NPC candidate = Main.npc[(int)TargetNPCIndex];
@@ -264,7 +257,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, desired, 0.1f);
             }
 
-            //星尘拖尾
             if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
                 PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
                     -Projectile.velocity * Main.rand.NextFloat(0.1f, 0.25f),
@@ -301,7 +293,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 return;
             }
 
-            //速度方向拉长的彗星残影
             for (int i = Projectile.oldPos.Length - 1; i >= 0; i--) {
                 if (Projectile.oldPos[i] == Vector2.Zero) {
                     continue;

@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 溺尸调色板与粒子协作：浸水腐肉的灰绿/青灰 + 浊水暗青 + 尸胀浊气的低饱和橄榄，
+    /// 溺尸调色板与粒子协作，浸水腐肉的灰绿/青灰 + 浊水暗青 + 尸胀浊气的低饱和橄榄
     /// 全程 AlphaBlend 哑光零发光，禁鲜绿荧光
     /// </summary>
     internal static class FishZombieVFX
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// <summary>稀释陈血（尸块喷点）</summary>
         public static readonly Color BloodOld = new(88, 52, 46);
 
-        /// <summary>浊水随机取色：中间调与深调之间</summary>
+        /// <summary>浊水随机取色，中间调与深调之间</summary>
         public static Color Murk() => Color.Lerp(MurkMid, MurkDeep, Main.rand.NextFloat());
 
         /// <summary>爆点定向震屏，尊重服务器配置</summary>
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 , Main.rand.NextFloat(0.8f, 1.15f) * scale)?.Configure(Main.rand.Next(36, 54));
         }
 
-        /// <summary>甩水：以 center 为心的环状水珠迸出（锁定预告拍/猛拔出土）</summary>
+        /// <summary>甩水，以 center 为心的环状水珠迸出（锁定预告拍/猛拔出土）</summary>
         public static void ShakeOff(Vector2 center, int count, float speed) {
             for (int i = 0; i < count; i++) {
                 Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.5f, 1f) * speed;
@@ -66,31 +66,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
-        /// 尸胀爆裂粒子套装：橄榄浊气外扩 + 暗青水雾 + 径向水珠喷洒。
+        /// 尸胀爆裂粒子套装，橄榄浊气外扩 + 暗青水雾 + 径向水珠喷洒
         /// 尸块 Gore 与音效由弹幕自持（需要 source 与服务端判定）
         /// </summary>
         public static void BloatBurst(Vector2 center) {
-            //浊气云：大团慢胀慢散，压住场面的暗底，峰值合成尺寸约等于爆炸直径
+            //浊气云，大团慢胀慢散
             for (int i = 0; i < 5; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(1.6f, 1.2f) - new Vector2(0f, 0.35f);
                 PRTLoader.NewParticle<PRT_FishZombieMurk>(center + Main.rand.NextVector2Circular(30f, 24f)
                     , vel, GasOlive, Main.rand.NextFloat(0.40f, 0.62f))
                     ?.Configure(Main.rand.Next(46, 72), GasOlive, GasDeep, 1.008f, 0.010f);
             }
-            //浑浊水雾：更小更沉，往下坠
+            //浑浊水雾，更小更沉，往下坠
             for (int i = 0; i < 4; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(2.2f, 1.6f);
                 PRTLoader.NewParticle<PRT_FishZombieMurk>(center + Main.rand.NextVector2Circular(16f, 14f)
                     , vel, MurkMid, Main.rand.NextFloat(0.26f, 0.42f))
                     ?.Configure(Main.rand.Next(30, 46), MurkMid, MurkDeep, 1.006f, -0.012f);
             }
-            //径向水珠：飞出去落地铺一圈水斑，是爆炸的余韵载体
+            //径向水珠，飞出去落地铺一圈水斑
             for (int i = 0; i < 16; i++) {
                 Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 9f);
                 vel.Y -= 1.6f;
                 Drip(center + Main.rand.NextVector2Circular(8f, 8f), vel, Main.rand.NextFloat(0.9f, 1.3f));
             }
-            //稀释陈血底噪：Dust 只做廉价填充
+            //稀释陈血底噪，Dust 只做廉价填充
             for (int i = 0; i < 10; i++) {
                 Dust blood = Dust.NewDustPerfect(center, DustID.Blood
                     , Main.rand.NextVector2CircularEdge(4.5f, 4.5f), 60, BloodOld, Main.rand.NextFloat(0.8f, 1.3f));
@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 溺尸浊水珠：受重力、随速拉伸的哑光液滴，触地转为 <see cref="PRT_FishZombieSplat"/> 水斑。
+    /// 溺尸浊水珠，受重力、随速拉伸的哑光液滴，触地转为 <see cref="PRT_FishZombieSplat"/> 水斑
     /// Extra_98 为真 alpha 贴图，AlphaBlend 直绘安全
     /// </summary>
     internal class PRT_FishZombieDrip : BasePRT
@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Color = Color.Lerp(initColor, FishZombieVFX.MurkDeep, t * 0.6f);
             Opacity = MathF.Min(Time / 3f, 1f) * (1f - MathF.Pow(t, 3f)) * 0.88f;
 
-            //下落中触地：向上吸附到砖顶铺成水斑，防止高速帧钻进砖里
+            //下落中触地，向上吸附到砖顶铺成水斑
             if (Velocity.Y > 0f && Collision.SolidCollision(Position - Vector2.One, 2, 2)) {
                 int tx = (int)(Position.X / 16f);
                 int ty = (int)(Position.Y / 16f);
@@ -166,18 +166,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float stretch = MathHelper.Clamp(Velocity.Length() * 0.05f, 0f, 0.9f);
             Vector2 scale = new Vector2(0.26f * (1f - stretch * 0.35f), 0.5f * (1f + stretch * 1.6f)) * Scale;
 
-            //吃环境光：暗处的水珠随之变暗，保底两成半
+            //吃环境光
             Color env = Lighting.GetColor(Position.ToTileCoordinates());
             Color lit = Color.Lerp(Color.MultiplyRGB(env), Color, 0.25f) * Opacity;
 
-            //双层窄叠：中心更实，读作液滴而非光斑
+            //双层窄叠
             spriteBatch.Draw(tex, pos, null, lit, Rotation, origin, scale, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, pos, null, lit, Rotation, origin, scale * new Vector2(0.45f, 1f), SpriteEffects.None, 0f);
             return false;
         }
     }
 
-    /// <summary>溺尸水斑：贴地横铺的暗青浅渍，微微漫开后干涸淡出</summary>
+    /// <summary>溺尸水斑，贴地横铺的暗青浅渍，微微漫开后干涸淡出</summary>
     internal class PRT_FishZombieSplat : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -210,7 +210,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void AI() {
             float t = LifetimeCompletion;
             Color = Color.Lerp(initColor, FishZombieVFX.MurkDeep, t);
-            //快进慢出：落点即刻显形，随后缓慢干涸
+            //快进慢出，落点即刻显形，随后缓慢干涸
             float tail = MathHelper.Clamp((t - 0.25f) / 0.75f, 0f, 1f);
             Opacity = MathF.Min(Time / 4f, 1f) * (1f - tail * tail) * 0.5f;
         }
@@ -219,7 +219,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             Vector2 pos = Position - Main.screenPosition;
             Vector2 origin = tex.Size() * 0.5f;
-            //横铺扁渍：随时间轻微漫开
+            //横铺扁渍，随时间轻微漫开
             float spread = 1f + LifetimeCompletion * 0.45f;
             Vector2 scale = new Vector2(0.62f * spread, 0.11f) * Scale;
 
@@ -233,7 +233,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 溺尸浊雾团：SmokeSheet01 序列帧 AlphaBlend 染色的哑光雾，
+    /// 溺尸浊雾团，SmokeSheet01 序列帧 AlphaBlend 染色的哑光雾
     /// 浊气（上飘）与水雾（下沉）靠 Configure 的浮力符号分身
     /// </summary>
     internal class PRT_FishZombieMurk : BasePRT
@@ -283,7 +283,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Velocity.Y -= buoyancy;
 
             Color = Color.Lerp(hotColor, coldColor, MathF.Min(1f, t * 1.4f));
-            //峰值压低：雾是衬底，不许糊死尸体与尸块
+            //峰值压低
             float tail = MathHelper.Clamp((t - 0.30f) / 0.65f, 0f, 1f);
             Opacity = MathF.Min(t / 0.10f, 1f) * (1f - tail * tail * (3f - 2f * tail)) * 0.44f;
         }

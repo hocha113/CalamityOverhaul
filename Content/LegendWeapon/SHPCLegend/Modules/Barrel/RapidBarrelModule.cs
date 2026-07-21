@@ -14,15 +14,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>速射枪管「过热红线」：持续开火积热，热量抬升攻速并把光束烧至红热白炽；
-    /// 顶到红线进入过热喷射（攻速峰值+零蓝耗），随后强制冷却，循环往复</summary>
+    /// <summary>速射枪管过热红线，积热抬攻速，顶线喷射后强制冷却</summary>
     internal sealed class RapidBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
         //过热红橙
         public override Color TintColor => new(255, 96, 42);
 
-        /// <summary>热循环三段：积热→过热喷射→强制冷却</summary>
+        /// <summary>热循环，积热→喷射→冷却</summary>
         internal enum HeatPhase : byte
         {
             Building,
@@ -30,24 +29,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Cooling,
         }
 
-        //═════ 可调参数 ═════
-        private const float BaseAttackSpeedAdd = 0.15f;  //基础攻速（高射速身份底盘）
-        private const float BaseDamageAdd = -0.18f;      //常驻伤害代价
-        private const float BaseSpreadAdd = 0.25f;       //高射速散布代价
-        private const float HeatAttackSpeedMax = 0.45f;  //积热攻速上限（heat×此值，满热+45%）
-        private const float HeatPerShot = 0.06f;         //每次击发积热（约17发顶到红线）
-        private const int HeatGraceFrames = 32;          //停火后热量开始散失的缓冲帧
-        private const float HeatDecayPerFrame = 0.005f;  //停火散热速率（满槽约3.3s放空）
-        private const int VentFrames = 230;              //过热喷射时长（约3.8s）
-        private const float VentAttackSpeedAdd = 0.60f;  //喷射攻速峰值（合计+75%）
-        private const float VentManaCostAdd = -1f;       //喷射期魔力消耗-100%
-        private const int CoolFrames = 160;              //强制冷却时长（约2.7s）
-        private const float CoolAttackSpeedAdd = -0.40f; //冷却攻速惩罚（合计-25%）
-        private const float AlarmThreshold = 0.85f;      //红线警报起始热量
-        private const int AlarmBeepInterval = 30;        //警报蜂鸣间隔帧
-        internal const float SheathThreshold = 0.22f;    //光束热鞘/火渣的最低热量快照
+        //═════平衡参数═════
+        private const float BaseAttackSpeedAdd = 0.15f;  //基础攻速
+        private const float BaseDamageAdd = -0.18f;      //常驻伤代价
+        private const float BaseSpreadAdd = 0.25f;       //散布代价
+        private const float HeatAttackSpeedMax = 0.45f;  //积热攻速上限(满热+45%)
+        private const float HeatPerShot = 0.06f;         //每发积热(~17发顶线)
+        private const int HeatGraceFrames = 32;          //停火散热缓冲帧
+        private const float HeatDecayPerFrame = 0.005f;  //停火散热(~3.3s放空)
+        private const int VentFrames = 230;              //喷射时长(~3.8s)
+        private const float VentAttackSpeedAdd = 0.60f;  //喷射攻速峰值
+        private const float VentManaCostAdd = -1f;       //喷射期零蓝
+        private const int CoolFrames = 160;              //强制冷却(~2.7s)
+        private const float CoolAttackSpeedAdd = -0.40f; //冷却攻速惩罚
+        private const float AlarmThreshold = 0.85f;      //红线警报起点
+        private const int AlarmBeepInterval = 30;        //警报间隔帧
+        internal const float SheathThreshold = 0.22f;    //热鞘/火渣最低快照
 
-        //═════ 热量状态（per-玩家：每个玩家槽位持有独立实例，参照守望/支架惯例） ═════
+        //═════热量状态(per-玩家实例)═════
         private HeatPhase phase = HeatPhase.Building;
         private float heat;
         private int phaseTimer;
@@ -58,33 +57,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         private int prevItemAnimation;
         private uint lastTick;
 
-        //光束发射瞬间的热量快照（whoAmI→heat），仅客户端写入；消亡移除+定期兜底清理
+        //发射瞬间热量快照(whoAmI→heat)，仅客户端
         private readonly Dictionary<int, float> beamHeat = new();
         private readonly List<int> pruneScratch = new();
         private int pruneTimer;
 
         internal HeatPhase Phase => phase;
         internal float Heat01 => heat;
-        /// <summary>冷却复位进度 0→1，非冷却期恒 0</summary>
+        /// <summary>冷却复位进度0→1，非冷却恒0</summary>
         internal float CoolProgress => phase == HeatPhase.Cooling
             ? 1f - MathHelper.Clamp(phaseTimer / (float)CoolFrames, 0f, 1f) : 0f;
         internal bool AlarmActive => phase == HeatPhase.Venting
             || (phase == HeatPhase.Building && heat >= AlarmThreshold);
 
-        /// <summary>黑体色温近似：暗红→炽橙→白炽，与 SHPCModRedline.fx 的 heatRamp 对齐</summary>
+        /// <summary>黑体色温，暗红→炽橙→白炽，对齐 heatRamp</summary>
         internal static Color HeatColor(float t) {
             Color c = Color.Lerp(new Color(115, 20, 8), new Color(255, 115, 25), MathHelper.Clamp(t * 2f, 0f, 1f));
             return Color.Lerp(c, new Color(255, 238, 205), MathHelper.Clamp(t * 2f - 1f, 0f, 1f));
         }
 
-        /// <summary>枪口世界坐标与瞄准方向（itemRotation 会被网络同步，远端可用）</summary>
+        /// <summary>枪口坐标与瞄准向，itemRotation 已同步</summary>
         internal static Vector2 GetMuzzle(Player player, out Vector2 aimDir) {
             float aim = player.direction == 1 ? player.itemRotation : player.itemRotation + MathHelper.Pi;
             aimDir = aim.ToRotationVector2();
             return player.RotatedRelativePoint(player.MountedCenter, true) + aimDir * 46f;
         }
 
-        /// <summary>当前装备的本改件实例，未装备 null</summary>
+        /// <summary>本改件实例，未装备 null</summary>
         internal static RapidBarrelModule GetOn(Player player) {
             if (player == null) {
                 return null;
@@ -101,14 +100,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             return null;
         }
 
-        /// <summary>光束发射瞬间的热量快照，未登记返回 -1</summary>
+        /// <summary>光束热量快照，未登记 -1</summary>
         internal float GetBeamHeat(int whoAmI) => beamHeat.TryGetValue(whoAmI, out float v) ? v : -1f;
 
         public override void Apply(ref ShootContext ctx) {
             ctx.AttackSpeedMul += BaseAttackSpeedAdd;
             ctx.DamageMul += BaseDamageAdd;
             ctx.SpreadMul += BaseSpreadAdd;
-            //热循环动态注入
+            //热循环注入
             switch (phase) {
                 case HeatPhase.Building:
                     ctx.AttackSpeedMul += heat * HeatAttackSpeedMax;
@@ -116,7 +115,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 case HeatPhase.Venting:
                     ctx.AttackSpeedMul += VentAttackSpeedAdd;
                     ctx.ManaCostMul += VentManaCostAdd;
-                    //强制免蓝标志：防其他改件的 ManaCostMul 加算抵消"喷射期零蓝耗"招牌
+                    //强制免蓝，挡 ManaCostMul 加算
                     ctx.ManaFree = true;
                     break;
                 case HeatPhase.Cooling:
@@ -129,7 +128,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (player == null || !player.active) {
                 return;
             }
-            //改件曾被卸下/预设切换：喷射与冷却一律折算成足额冷却，防止拆装改件跳过惩罚
+            //卸下/切预设，喷射冷却折足额冷却
             if (Main.GameUpdateCount - lastTick > 4) {
                 if (phase != HeatPhase.Building) {
                     phase = HeatPhase.Cooling;
@@ -152,7 +151,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             int tick = TickUp(ref tickCarry);
             bool holding = player.HeldItem != null && player.HeldItem.type == SHPCOverride.ID;
 
-            //击发侦测：动画计数回跳的那一帧即开火帧（右键蓄力不积热），兼容激光持续压枪
+            //击发侦测，右键不积热
             if (holding && player.ItemAnimationActive && player.altFunctionUse != 2
                 && player.itemAnimation > prevItemAnimation) {
                 OnShotFired(player);
@@ -165,7 +164,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     if (heat > 0f && sinceShot > HeatGraceFrames) {
                         heat = MathF.Max(heat - HeatDecayPerFrame * tick, 0f);
                     }
-                    //红线警报蜂鸣
+                    //红线蜂鸣
                     if (heat >= AlarmThreshold) {
                         alarmSoundTimer -= tick;
                         if (alarmSoundTimer <= 0) {
@@ -181,7 +180,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     break;
                 case HeatPhase.Venting:
                     phaseTimer -= tick;
-                    //喷射期持续蒸汽嘶鸣（低频低量）
+                    //喷射蒸汽嘶鸣
                     ventSoundTimer -= tick;
                     if (ventSoundTimer <= 0) {
                         ventSoundTimer = 26;
@@ -203,7 +202,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
             PruneBeamSnapshots(player, tick);
 
-            //仪表弹幕保障：热量存在或处于喷射/冷却时挂载，仅拥有者端生成
+            //仪表弹幕，仅 owner
             if (player.whoAmI != Main.myPlayer) {
                 return;
             }
@@ -225,7 +224,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     EnterVenting(player);
                 }
             }
-            //枪口灼热焰渣：热度越高越浓
+            //枪口焰渣
             float intensity = phase == HeatPhase.Venting ? 1f : heat;
             if (intensity > 0.15f && Main.netMode != NetmodeID.Server) {
                 Vector2 muzzle = GetMuzzle(player, out Vector2 aimDir);
@@ -245,7 +244,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             ventSoundTimer = 20;
             heat = 1f;
             if (player.whoAmI == Main.myPlayer) {
-                //破线屏震只给拥有者：远端玩家红线不震旁观者屏幕
+                //破线屏震仅 owner
                 SHPCNaturalFx.Shake(3f);
                 CombatText.NewText(player.getRect(), new Color(255, 120, 40), "// REDLINE", true, false);
             }
@@ -254,7 +253,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
             SoundEngine.PlaySound(SoundID.Item34 with { Volume = 0.7f, Pitch = -0.25f }, player.Center);
             SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.5f, Pitch = -0.5f }, player.Center);
-            //破线瞬间：白热冲环 + 蒸汽爆
+            //破线冲环+蒸汽
             Vector2 muzzle = GetMuzzle(player, out Vector2 aimDir);
             PRTLoader.NewParticle<PRT_StarPulseRing>(muzzle, Vector2.Zero,
                 new Color(255, 150, 60, 0), 0.05f).Configure(0.05f, 0.45f, 18);
@@ -279,7 +278,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (Main.netMode == NetmodeID.Server) {
                 return;
             }
-            //淬火收声：汽液骤冷嘶鸣 + 余烟
+            //淬火收声
             SoundEngine.PlaySound(SoundID.LiquidsWaterLava with { Volume = 0.45f, Pitch = -0.3f }, player.Center);
             Vector2 muzzle = GetMuzzle(player, out _);
             for (int i = 0; i < 6; i++) {
@@ -298,13 +297,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (Main.netMode == NetmodeID.Server) {
                 return;
             }
-            //复位就绪：清脆上膛
+            //复位上膛音
             SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.5f, Pitch = 0.4f }, player.Center);
             PRTLoader.NewParticle<PRT_StarPulseRing>(player.Center, Vector2.Zero,
                 new Color(120, 190, 235, 0), 0.05f).Configure(0.05f, 0.28f, 14);
         }
 
-        /// <summary>兜底清理快照字典：改件卸下/漏掉消亡回调时防泄漏</summary>
+        /// <summary>快照字典兜底清理</summary>
         private void PruneBeamSnapshots(Player player, int tick) {
             pruneTimer += tick;
             if (pruneTimer < 90 || beamHeat.Count == 0) {
@@ -324,16 +323,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
         }
 
-        //═════════════ 光束钩子 ═════════════
+        //═════光束钩子═════
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
-            //快照与火渣均为客户端视觉/绘制数据，服务端不登记（消亡回调也只在客户端派发）
+            //快照/火渣仅客户端
             if (Main.netMode == NetmodeID.Server || beam.IsDerived) {
                 return;
             }
             int id = beam.Projectile.whoAmI;
             if (!beamHeat.TryGetValue(id, out float snap)) {
-                //发射瞬间锁定热度：冷枪射出的光束不会在飞行途中变红
+                //发射锁热，途中不变红
                 snap = phase == HeatPhase.Venting ? 1f : heat;
                 beamHeat[id] = snap;
             }
@@ -341,7 +340,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 return;
             }
             Lighting.AddLight(beam.Projectile.Center, HeatColor(snap).ToVector3() * 0.35f * snap);
-            //灼热火渣尾：热度越高越密，喷射态光束几乎连成焰线；光束穿墙飞万余px，屏外不白烧粒子
+            //火渣尾，屏外不烧
             if (!VaultUtils.IsPointOnScreen(beam.Projectile.Center - Main.screenPosition, 150)) {
                 return;
             }
@@ -365,7 +364,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 || !VaultUtils.IsPointOnScreen(target.Center - Main.screenPosition, 150)) {
                 return;
             }
-            //红热命中：火渣飞溅，白炽弹附带灼铁嘶声
+            //红热命中火渣
             int count = 3 + (int)(snap * 5f);
             for (int i = 0; i < count; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3f + snap * 3f, 3f + snap * 3f);
@@ -382,10 +381,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             beamHeat.Remove(beam.Projectile.whoAmI);
         }
 
-        //═════════════ 激光钩子 ═════════════
-        //本改件占据枪管槽，现版本激光模式（均为枪管改件提供）无法与其共存；
-        //仍按规范成对接入：若未来非枪管来源开启激光，积热由击发侦测天然覆盖（持续压枪即持续积热），
-        //此处补上色温接管与命中反馈，喷射期零蓝耗对激光同样生效
+        //═════激光钩子═════
+        //同槽互斥；成对接入色温/命中，积热靠击发侦测
 
         public override void OnLaserAI(CyberPrismLaserProj laser) {
             float q = phase == HeatPhase.Venting ? 1f : heat;
@@ -411,15 +408,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>过热红线仪表：枪口热量弧表+色温辉光+热浪羽流（SHPCModRedline.fx），
-    /// 并为炽热光束叠加色温热鞘；开火时锚定枪口，停火悬停头顶如烟囱泄压</summary>
+    /// <summary>过热红线仪表，SHPCModRedline.fx，开火锚枪口、停火头顶泄压</summary>
     internal sealed class SHPCRedlineGaugeProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        private const int MaxSheaths = 10;      //每帧最多绘制热鞘的光束数
-        private const int SheathPoints = 12;    //热鞘 Trail 顶点数
-        private const int SheathStride = 2;     //oldPos 取样步长
+        private const int MaxSheaths = 10;      //每帧热鞘上限
+        private const int SheathPoints = 12;    //热鞘顶点数
+        private const int SheathStride = 2;     //oldPos 步长
 
         private float smoothAim = -MathHelper.PiOver2;
         private float drawRotation = -MathHelper.PiOver2;
@@ -432,7 +428,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         private float steamTimer;
         private float shimmerTimer;
 
-        //热鞘 Trail 池（Coral 礁线同款复用法）
+        //热鞘 Trail 池
         private readonly List<Trail> sheathTrails = new();
         private readonly List<Vector2[]> sheathSegments = new();
         private float sheathWidth;
@@ -456,7 +452,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 Projectile.Kill();
                 return;
             }
-            //完全冷透且场上已无本主光束（热鞘绘制的宿主）才退场；计数各端一致，避免服务端提前裁决
+            //冷透且无主束才退场
             bool idle = module.Phase == RapidBarrelModule.HeatPhase.Building && module.Heat01 <= 0.01f;
             if (idle && fade < 0.04f
                 && owner.ownedProjectileCounts[ModContent.ProjectileType<CyberTraceBeamProj>()] <= 0) {
@@ -469,7 +465,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             bool holding = owner.HeldItem != null && owner.HeldItem.type == SHPCOverride.ID;
             bool firing = holding && owner.ItemAnimationActive && owner.altFunctionUse != 2;
 
-            //锚点：开火锚枪口随瞄准，停火悬停头顶转为烟囱朝上
+            //开火锚枪口，停火头顶朝上
             if (firing) {
                 float aim = owner.direction == 1 ? owner.itemRotation : owner.itemRotation + MathHelper.Pi;
                 smoothAim = smoothAim.AngleLerp(aim, 0.45f);
@@ -495,7 +491,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Lighting.AddLight(Projectile.Center, lightCol.ToVector3() * fade * (0.2f + displayHeat * 0.4f + ventVis * 0.4f));
         }
 
-        /// <summary>喷射蒸汽刀/冷却凝雾/高热蒸腾的持续粒子</summary>
+        /// <summary>喷射蒸汽/冷却凝雾/高热蒸腾</summary>
         private void SpawnStateParticles(RapidBarrelModule module, float ts) {
             if (Main.netMode == NetmodeID.Server) {
                 return;
@@ -504,7 +500,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
 
             if (module.Phase == RapidBarrelModule.HeatPhase.Venting) {
-                //垂直枪管的双侧泄压蒸汽 + 前向火渣
+                //双侧泄压蒸汽+前向火渣
                 steamTimer += ts;
                 if (steamTimer >= 3f) {
                     steamTimer = 0f;
@@ -523,7 +519,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 }
             }
             else if (module.Phase == RapidBarrelModule.HeatPhase.Cooling) {
-                //冷却期淡蓝凝雾缓缓上飘
+                //冷却凝雾上飘
                 steamTimer += ts;
                 if (steamTimer >= 7f) {
                     steamTimer = 0f;
@@ -534,7 +530,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 }
             }
             else if (displayHeat > 0.55f) {
-                //高热蒸腾：偶发火渣自枪口热浮
+                //高热偶发火渣
                 shimmerTimer += ts;
                 if (shimmerTimer >= 9f) {
                     shimmerTimer = 0f;
@@ -547,7 +543,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
         }
 
-        //═════ 热鞘：为炽热光束叠加色温渐变外皮（复用 CyberTraceBeam.fx，Obsidian 同款用法） ═════
+        //═════热鞘，复用 CyberTraceBeam.fx═════
 
         private float SheathWidthFunction(float progress) {
             float taper = 1f - MathHelper.Clamp(progress, 0f, 1f);
@@ -587,7 +583,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     continue;
                 }
 
-                //顶点池扩容与填充：头部为当前位置，oldPos 隔点取样拉出热鞘段
+                //热鞘顶点，oldPos 隔点取样
                 while (sheathSegments.Count <= drawn) {
                     Vector2[] seg = new Vector2[SheathPoints];
                     sheathSegments.Add(seg);
@@ -602,7 +598,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 }
                 sheathTrails[drawn].TrailPositions = pts;
 
-                //色温注入：快照越高越白炽
+                //色温随快照白炽
                 float glowT = MathF.Pow(snap, 1.2f);
                 Color core = Color.Lerp(RapidBarrelModule.HeatColor(snap), Color.White, snap * 0.3f);
                 Color glow = RapidBarrelModule.HeatColor(snap * 0.72f);
@@ -634,7 +630,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
         }
 
-        //═════ 仪表本体：SHPCModRedline.fx ═════
+        //═════仪表本体 SHPCModRedline.fx═════
 
         public override bool PreDraw(ref Color lightColor) {
             if (fade < 0.02f) {
@@ -684,7 +680,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (glow == null) {
                 return;
             }
-            //枪口余温光核：色温随热度，喷射时白炽鼓胀
+            //枪口余温光核
             float intensity = MathF.Max(displayHeat, ventVis);
             if (intensity < 0.05f && coolVis < 0.05f) {
                 return;

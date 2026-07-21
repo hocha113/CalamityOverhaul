@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 {
-    /// <summary>鬼域 ModSystem 驱动器：状态推进、装饰更新、光照接管</summary>
+    /// <summary>领域系统卸载兜底</summary>
     internal class OniDomainSystem : ModSystem
     {
         public override void PostUpdateEverything() {
@@ -22,7 +22,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             OniDomainDeco.Clear();
         }
 
-        //里世界压光：氛围级而非致盲级，剪影可读性靠淡色雾空反衬
+        //里世界压光、氛围级而非致盲级，剪影可读性靠淡色雾空反衬
+
         public override void ModifyLightingBrightness(ref float scale) {
             float ura = OniDomain.LocalUraSmooth;
             if (ura > 0.001f) {
@@ -36,6 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 return;
             }
             //月光级冷灰蓝，日光换色而非熄灭
+
             Color uraTile = new(92, 97, 122);
             Color uraBg = new(46, 48, 62);
             tileColor = Color.Lerp(tileColor, uraTile, ura);

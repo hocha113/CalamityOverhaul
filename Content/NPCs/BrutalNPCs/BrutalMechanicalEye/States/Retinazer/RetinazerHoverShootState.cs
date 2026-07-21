@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
-    /// <summary>激光眼一阶段悬停射击状态：弹簧悬停带呼吸浮动，三连点射激光并伴随后坐力位移</summary>
+    /// <summary>激光眼一阶段悬停射击状态，弹簧悬停带呼吸浮动，三连点射激光并伴随后坐力位移</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerHoverShoot, typeof(TwinsStateContext))]
     internal class RetinazerHoverShootState : TwinsStateBase
     {
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private int burstRemaining;
         private int burstTimer;
 
-        /// <summary>一阶段套路：悬停射击→扫射→悬停→ reposition；comboStep%4==3 交叉冲刺合击</summary>
+        /// <summary>一阶段套路；comboStep%4==3 交叉合击</summary>
         public RetinazerHoverShootState() : this(0) {
         }
 
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             NPC npc = context.Npc;
             Player player = context.Target;
 
-            //锚点状态:响应搭档发出的合击信号
+            //锚点跟合击信号
             ITwinsState comboFollow = TwinsComboCoordinator.TryFollowSignal(context);
             if (comboFollow != null) {
                 return comboFollow;
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 Counter++;
             }
 
-            //执行点射:每数帧一发，每发带后坐力
+            //点射+后坐
             if (burstRemaining > 0 && ++burstTimer >= BurstInterval) {
                 burstTimer = 0;
                 burstRemaining--;
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 if (comboStep % 4 == 3 && TwinsStateContext.GetPartnerNpc(npc.type).Alives()) {
                     return TwinsComboCoordinator.InitiateCombo(context, TwinsStateIndex.TwinsCrossDash, comboStep + 1);
                 }
-                //固定交替: 激光扫射 → 调整位置 → 激光扫射 → 调整位置...
+                //交替扫射/reposition
                 if (comboStep % 2 == 0) {
                     return new RetinazerLaserSweepState(comboStep + 1);
                 }

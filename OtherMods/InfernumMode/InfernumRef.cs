@@ -2,9 +2,7 @@
 {
     internal class InfernumRef
     {
-        /// <summary>
-        /// 炼狱模式是否开启
-        /// </summary>
+        /// <summary>炼狱模式是否开启</summary>
         internal static bool InfernumModeOpenState {
             get {
                 if (CWRMod.Instance.infernum == null) {

@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             ProjSnapshotIdentities = null;
         }
 
-        //开启：TimeGear 注册 + 快照速度
+        //开，TimeGear 注册+快照速度
         public static void Activate() {
             if (IsActive) {
                 return;
@@ -66,8 +66,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             SnapshotAllEntities();
         }
 
-        //关闭：TimeGear 注销 + restore 原速度 + 清缓存
-        //不 restore 会让弹幕永久卡在 SlowFactor 倍速（大多数弹幕 velocity 是固定的，没有 AI 重算）
+        //关，注销+restore+清缓存；不 restore 弹幕会卡在 SlowFactor 倍速
         public static void Deactivate() {
             if (!IsActive) {
                 return;
@@ -92,7 +91,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             }
         }
 
-        /// <summary>PreAI 兜底：缓速期间首次出现或槽位被复用则重新抓取</summary>
+        /// <summary>PreAI 兜底，首次出现或槽位复用时重抓</summary>
         internal static void EnsureNPCSnapshot(NPC npc) {
             int id = npc.whoAmI;
             if (!NPCHasCache[id] || NPCSnapshotTypes[id] != npc.type) {
@@ -100,7 +99,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             }
         }
 
-        /// <summary>PreAI 兜底：缓速期间首次出现或槽位被复用则重新抓取</summary>
+        /// <summary>PreAI 兜底，首次出现或槽位复用时重抓</summary>
         internal static void EnsureProjectileSnapshot(Projectile proj) {
             int id = proj.whoAmI;
             if (!ProjHasCache[id]
@@ -127,7 +126,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             ProjSnapshotIdentities[id] = proj.identity;
         }
 
-        //把每帧被 PreAI 改写成 slowVel 的 velocity 还原为原速度，校验槽位防越槽
+        //还原 PreAI 改写的 velocity，校验槽位
         private static void RestoreSnapshots() {
             for (int i = 0; i < Main.maxNPCs; i++) {
                 if (!NPCHasCache[i]) {
@@ -171,7 +170,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             if (Main.projPet[proj.type] || proj.minion || Main.projHook[proj.type]) {
                 return false;
             }
-            //ImmuneFrozen 表：免疫时停则免疫时缓
+            //ImmuneFrozen，免时停则免时缓
             if (CWRLoad.ProjValue.ImmuneFrozen[proj.type]) {
                 return false;
             }

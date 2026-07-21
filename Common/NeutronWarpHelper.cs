@@ -3,21 +3,15 @@ using Terraria;
 
 namespace CalamityOverhaul.Common
 {
-    /// <summary>
-    /// 中子星扭曲：NeutronWarp 替 CPU 叠绘
-    /// </summary>
+    /// <summary>中子星扭曲，NeutronWarp 替 CPU 叠绘</summary>
     internal static class NeutronWarpHelper
     {
-        /// <summary>
-        /// NeutronWarp 单次扭曲位移，替代原 33~133 层 CPU 叠绘
-        /// </summary>
-        /// <param name="worldCenter">世界坐标中心</param>
-        /// <param name="screenWidth">屏幕宽度 px</param>
-        /// <param name="screenHeight">屏幕高度 px</param>
+        /// <summary>NeutronWarp 单次扭曲，替代原 33~133 层 CPU 叠绘</summary>
+        /// <param name="screenWidth">屏幕宽 px</param>
+        /// <param name="screenHeight">屏幕高 px</param>
         /// <param name="intensity">位移强度 0~1</param>
         /// <param name="progress">生命进度 0~1，控扩张/收缩</param>
-        /// <param name="rotation">基础旋转</param>
-        /// <param name="technique">Pass 名：GravitationalVortex / ShockwaveRing / RelativisticJet / GravitationalLens</param>
+        /// <param name="technique">Pass 名，GravitationalVortex / ShockwaveRing / RelativisticJet / GravitationalLens</param>
         /// <param name="radius">UV 归一化半径，默认 0.45</param>
         public static void DrawWarp(
             Vector2 worldCenter,

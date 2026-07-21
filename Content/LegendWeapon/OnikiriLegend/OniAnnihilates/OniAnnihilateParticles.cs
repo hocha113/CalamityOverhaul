@@ -5,11 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
 {
-    /// <summary>
-    /// 泼墨墨滴：罡气爆发甩出的暗墨圆滴，抛物坠落、沿速度方向微拉长。<br/>
-    /// 与 <see cref="OniFinaleSlashs.PRT_OniShard"/> 的加色晶片不同，墨滴走
-    /// AlphaBlend 染暗色（加色混合画不了黑），读作实体的墨点而非光屑
-    /// </summary>
+    /// <summary>泼墨墨滴,AlphaBlend 暗色(加色画不了黑)</summary>
     internal class PRT_OniInkDrop : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "SmokeSheet01";
@@ -38,12 +34,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
 
         public override void AI() {
             Velocity.X *= 0.97f;
-            Velocity.Y += 0.35f;   //墨滴坠落
+            Velocity.Y += 0.35f; //坠落
             Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
             Scale *= 0.985f;
 
             float t = LifetimeCompletion;
-            //快进快出：出生 2 帧内实体化，末 35% 洇散淡出
+            //前2帧实体化,末35%淡出
             Opacity = MathF.Min(t / 0.08f, 1f) * (1f - SmoothStep01((t - 0.65f) / 0.35f));
             Color = initialColor;
         }
@@ -58,7 +54,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             int index = (int)ai[0];
             int frameSize = tex.Width / 2;
             Rectangle frame = new(index % 2 * frameSize, index / 2 * frameSize, frameSize, frameSize);
-            //沿速度方向微拉长的小墨点（单帧边长为贴图半宽，0.16 基准缩到几十像素）
+            //沿速度微拉长
             float stretch = MathHelper.Clamp(Velocity.Length() * 0.05f, 1f, 1.7f);
             Vector2 scale = new Vector2(0.80f, stretch) * Scale * 0.16f;
             spriteBatch.Draw(tex, Position - Main.screenPosition, frame, Color * Opacity, Rotation

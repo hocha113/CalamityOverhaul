@@ -8,13 +8,13 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Scenarios.Himayo
 {
     /// <summary>
-    /// 真夜剧情进度同步 + 鬼切试炼发放门禁。<br/>
-    /// 正常路径：FirstMetHimayo OnCompleted → PostFirstMetIsComplete。<br/>
-    /// 兜底：①初遇已触发且叙事空闲 → 视为播完；②鸟居拔刀后硬性倒计时到期 → 强制解锁
+    /// 真夜进度同步与试炼发放门禁<br/>
+    /// 正常 FirstMetHimayo.OnCompleted → PostFirstMetIsComplete<br/>
+    /// 兜底 初遇已触发且叙事空闲视为播完、拔刀后硬倒计时到期强制解锁
     /// </summary>
     internal static class HimayoStorySync
     {
-        /// <summary>拔刀后若初遇未正常落幕，约 90s 强制开试炼（叙事忙碌时不计时）</summary>
+        /// <summary>拔刀后初遇未落幕约90s强制开试炼，叙事忙时不计</summary>
         public const int TrialUnlockSafetyDuration = 60 * 90;
 
         public static HimayoStoryData Story
@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
 
         public static void MarkFirstMet() => Story.FirstMet = true;
 
-        /// <summary>初遇对话已完整播完（试炼委托发放门禁）</summary>
+        /// <summary>初遇播完，试炼发放门禁</summary>
         public static bool PostFirstMetIsComplete => Story.PostFirstMetIsComplete;
 
         public static void MarkPostFirstMetComplete() {
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
             ArmTrialUnlockSafety();
         }
 
-        /// <summary>武装硬性倒计时（已完成/已在倒数则不动）</summary>
+        /// <summary>武装硬倒计时，已完成或已在倒数则跳过</summary>
         public static void ArmTrialUnlockSafety() {
             if (Story.PostFirstMetIsComplete || Story.TrialUnlockSafetyTicks > 0) {
                 return;
@@ -47,9 +47,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
             Story.TrialUnlockSafetyTicks = TrialUnlockSafetyDuration;
         }
 
-        /// <summary>
-        /// 每帧推进倒计时：仅本地玩家；叙事忙碌或初遇正在播时暂停，避免正常演出被抢跑
-        /// </summary>
+        /// <summary>本地玩家推进倒计时，叙事忙或初遇在播时暂停</summary>
         public static void TickTrialUnlockSafety(Player player) {
             if (player == null || !player.active || player.whoAmI != Main.myPlayer || Main.dedServ) {
                 return;
@@ -58,7 +56,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
                 Story.TrialUnlockSafetyTicks = 0;
                 return;
             }
-            //仅鸟居拔刀后才走硬倒计时，创造模式刷刀不会误开试炼
+            //仅鸟居拔刀后硬倒计时，刷刀不开试炼
             if (!Story.ToriiSwordTaken) {
                 return;
             }
@@ -78,9 +76,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
             }
         }
 
-        /// <summary>
-        /// 鬼切试炼委托是否允许发放。多层门禁，任一兜底成功即视为可发
-        /// </summary>
+        /// <summary>试炼委托可发门禁，任一兜底成功即可</summary>
         public static bool CanStartOnikiriTrialQuests(Player player) {
             if (player == null || !player.active || !player.HasItem(OnikiriOverride.ID)) {
                 return false;
@@ -93,14 +89,13 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
                 return true;
             }
 
-            //软兜底：初遇已触发，且当前没有初遇在播 → OnCompleted 丢失时仍可开线
-            //（含旧档：FirstMet=true 但尚无 PostFirstMet 标记）
+            //软兜底，初遇已触发且未在播(含旧档缺PostFirstMet)
             if (Story.FirstMet && !NarrativeRouter.IsActive<FirstMetHimayo>()) {
                 MarkPostFirstMetComplete();
                 return true;
             }
 
-            //硬兜底依赖 Tick 到期写 PostFirstMet；此处确保旧档已拔刀则武装倒计时
+            //硬兜底靠Tick，旧档已拔刀则武装倒计时
             if (Story.ToriiSwordTaken) {
                 ArmTrialUnlockSafety();
             }

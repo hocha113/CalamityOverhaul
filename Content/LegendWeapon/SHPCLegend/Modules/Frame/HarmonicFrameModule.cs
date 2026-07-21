@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>谐振机匣：多束共存时近距互生共振电弧（视觉+微伤）</summary>
+    /// <summary>谐振机匣，多束近距互生共振电弧，视觉+微伤</summary>
     internal sealed class HarmonicFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;
@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         private const int ResonateInterval = 18;
         private const float ResonateRange = 320f;
 
-        //每束光束独立计时，避免互相争抢共振触发
+        //每束独立计时，防争抢触发
         private readonly Dictionary<int, int> _timers = new();
 
         public override void Apply(ref ShootContext ctx) {
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             }
             _timers[id] = 0;
 
-            //在所有更高 whoAmI 的同型光束中选最近一束生成电弧（id 配对避免重复）
+            //更高 whoAmI 同型束最近一对，id 配对防重复
             int beamType = ModContent.ProjectileType<CyberTraceBeamProj>();
             float bestSq = ResonateRange * ResonateRange;
             Projectile bestPair = null;

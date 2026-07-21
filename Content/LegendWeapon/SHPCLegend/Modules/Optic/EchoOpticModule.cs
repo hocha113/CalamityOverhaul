@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>回响瞄具：光束消亡点扇射 3 束强追踪副光束</summary>
+    /// <summary>回响瞄具，消亡点扇射 3 束强追踪副束</summary>
     internal sealed class EchoOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;

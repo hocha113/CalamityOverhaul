@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>速射枪管灼热火渣：沿速度拉伸的炽热碎屑，横向阻尼+热浮上升，色温由白炽冷却到暗红熄灭</summary>
+    /// <summary>速射火渣，横阻+热浮，白炽→暗红</summary>
     internal class PRT_SHPCRedlineCinder : BasePRT
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -40,7 +40,6 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override void AI() {
             Velocity.X *= 0.93f;
             if (buoyant) {
-                //蒸腾热浮：横向衰减后缓慢上飘，模拟被热流卷起的火渣
                 Velocity.Y = MathF.Max(Velocity.Y - 0.05f, -2.2f);
             }
             else {
@@ -60,15 +59,12 @@ namespace CalamityOverhaul.Content.PRTTypes
             Vector2 drawPos = Position - Main.screenPosition;
             Vector2 origin = new(0.5f, 0.5f);
             float speed = Velocity.Length();
-            //沿速度方向拉伸成短焰条，静止时回落为方点
             float stretch = 1f + MathF.Min(speed * 0.45f, 3.2f);
             float rot = speed > 0.2f ? Velocity.ToRotation() : 0f;
             float w = 3.0f * Scale;
 
-            //外层热晕
             spriteBatch.Draw(pixel, drawPos, new Rectangle(0, 0, 1, 1), Color * (Opacity * 0.32f),
                 rot, origin, new Vector2(w * stretch * 1.8f, w * 2.2f), SpriteEffects.None, 0f);
-            //炽核
             Color core = Color.Lerp(Color, Color.White, 0.4f) * Opacity;
             spriteBatch.Draw(pixel, drawPos, new Rectangle(0, 0, 1, 1), core,
                 rot, origin, new Vector2(w * stretch, w * 0.8f), SpriteEffects.None, 0f);

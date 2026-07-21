@@ -15,10 +15,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 {
-    /// <summary>
-    /// 收集器控制台
-    /// 废土工业风格面板：存储绑定管理、投放模式切换、过滤与运行状态总览
-    /// </summary>
+    /// <summary>收集器控制台(绑定/投放模式/过滤)</summary>
     internal class CollectorUI : UIHandle, ILocalizedModType
     {
         //面板尺寸
@@ -35,7 +32,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
         public static CollectorUI Instance => UIHandleLoader.GetUIHandleOfType<CollectorUI>();
 
-        //淡入淡出进度由基类 OpenProgress 驱动，Active 沿用基类默认实现(IsOpen || OpenProgress > 0)
+        //淡入淡出走基类 OpenProgress；Active默认(IsOpen||进度>0)
         private float uiFadeAlpha => OpenProgress.Current;
 
         //拖拽功能
@@ -104,7 +101,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         internal static LocalizedText CloseHint;
 
         internal CollectorTP Station;
-        /// <summary>是否处于世界选取模式：面板收起，点击世界中的容器完成绑定</summary>
+        /// <summary>世界选取绑定中(面板收起)</summary>
         internal bool PickingStorage;
 
         public string LocalizationCategory => "UI";
@@ -166,7 +163,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 return;
             }
 
-            //检查有效性：选取模式下允许玩家走到远处的容器旁
+            //选取时放宽距离
             float keepDistance = PickingStorage ? CollectorTP.MaxBindDistance + 400f : PanelKeepDistance;
             if (IsOpen && (Station == null || !Station.Active
                 || Station.PosInWorld.To(player.Center).Length() > keepDistance)) {
@@ -191,7 +188,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 return;
             }
 
-            //处理拖拽
+            //拖拽
             HandleDragging();
 
             //限制面板位置
@@ -249,7 +246,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 }
             }
 
-            //名单编辑器面板悬浮在上方时，控制台不再响应鼠标，避免点击穿透
+            //编辑器悬停时不抢点击
             if (ItemFilterEditorUI.Instance?.hoverInMainPage == true) {
                 hoveringPanel = hoveringMode = hoveringAdd = false;
                 hoveringClearFilter = hoveringEditFilter = false;
@@ -405,9 +402,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             };
         }
 
-        /// <summary>
-        /// 获取绑定容器的显示名称
-        /// </summary>
         private static string GetStorageDisplayName(IStorageProvider provider) {
             if (provider is ChestStorageProvider chestProvider) {
                 string name = chestProvider.Chest?.name;
@@ -605,7 +599,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                     , new Vector2(bindingUpButtons[i].X - 12 - distSize.X, rowRect.Y + 5)
                     , new Color(170, 145, 120) * alpha, 0.55f);
 
-                //按钮：优先级上移与移除
+                //上移/移除
                 if (i > 0) {
                     DrawButton(sb, bindingUpButtons[i], "^", hoveringUp == i, alpha, new Color(180, 140, 100));
                 }
@@ -637,7 +631,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                     , new Color(130, 110, 95) * alpha, 0.5f);
             }
             else if (Station.FilterInstalled) {
-                //物品过滤名单：平铺显示前几项
+                //过滤名单前几项
                 IReadOnlyList<int> filterItems = Station.Filter.OrderedItems;
                 int shown = Math.Min(filterItems.Count, 7);
                 for (int i = 0; i < shown; i++) {

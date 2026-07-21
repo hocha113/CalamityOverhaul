@@ -5,11 +5,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>震荡膛口：连中计次释微型震荡环，用 CyberDetonationProj</summary>
+    /// <summary>震荡膛口，连中计次释微型环，CyberDetonation</summary>
     internal sealed class ConcussionBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
-        //震荡浅金
+        //浅金
         public override Color TintColor => new(255, 200, 90);
 
         private const int HitsPerPulse = 5;
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 dmg, beam.Projectile.knockBack, beam.Projectile.owner,
                 ai0: 0.15f);
             if (idx >= 0 && idx < Main.maxProjectiles) {
-                //强制为小半径震荡环（70px），避免和大爆炸改件视觉混淆
+                //小环70px，别跟大爆改件混
                 Main.projectile[idx].localAI[2] = 70f;
             }
         }

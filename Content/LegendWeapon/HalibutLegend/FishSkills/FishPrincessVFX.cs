@@ -9,21 +9,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>公主鱼域内 shader 资源（域内加载器，不经 EffectLoader）</summary>
     internal class FishPrincessAssets
     {
-        /// <summary>绘本符号弹体：心/星 SDF 平涂+描边+高光点</summary>
+        /// <summary>绘本符号弹体，心/星 SDF 平涂+描边+高光点</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect FishPrincessSymbol { get; private set; }
 
-        /// <summary>缎带条带：弹尾拖带用，带尾蚀参数</summary>
+        /// <summary>缎带条带，弹尾拖带用，带尾蚀参数</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect FishPrincessRibbon { get; private set; }
     }
 
-    /// <summary>
-    /// 公主鱼绘本魔法演出协作类。<br/>
-    /// 色彩脚本（锁定粉彩三色，中饱和）：Blush 粉 + Lavender 薰衣草 + Cream 奶油金；
-    /// 描边 InkRose、暗托 DeepLilac。禁高饱和荧光粉、禁彩虹 hue 循环、禁常驻纯白。<br/>
-    /// 形状语言：心、星、缎带、圆点，童话感来自形状与轻盈运动而非亮度
-    /// </summary>
+    /// <summary>公主鱼 VFX，粉彩三色 Blush/Lavender/Cream，描边 InkRose，禁荧光粉/彩虹/常驻纯白</summary>
     internal static class FishPrincessVFX
     {
         //==== 色彩脚本 ====
@@ -47,7 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //==== 粒子族（星尘 / 圆点 / 闪光）====
 
-        /// <summary>星尘 motes：小而慢的漂浮尘埃，微浮力+摇曳</summary>
+        /// <summary>星尘 motes，小而慢的漂浮尘埃，微浮力+摇曳</summary>
         public static void Stardust(Vector2 pos, Vector2 baseVel, int count, float spread = 1.2f) {
             if (Main.dedServ) {
                 return;
@@ -60,7 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>绘本圆点爆发：哑光粉彩圆点弹出后轻飘坠落</summary>
+        /// <summary>绘本圆点爆发，哑光粉彩圆点弹出后轻飘坠落</summary>
         public static void DotBurst(Vector2 pos, int count, float speed, int colorSeed = -1) {
             if (Main.dedServ) {
                 return;
@@ -74,7 +69,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>星形闪光：绘本"叮"的一下，小十字星尖闪</summary>
+        /// <summary>星形闪光，绘本"叮"的一下，小十字星尖闪</summary>
         public static void Glint(Vector2 pos, Vector2 vel, Color col, float scale) {
             if (Main.dedServ) {
                 return;
@@ -86,7 +81,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //==== 缎带段绘制（贴图段式，SpriteBatch 内可用，供三明治分层）====
 
         /// <summary>
-        /// 沿点链绘制哑光缎带：段式 Extra_98 软块拼接，沿长渐变 mid→edge，
+        /// 沿点链绘制哑光缎带，段式 Extra_98 软块拼接，沿长渐变 mid→edge
         /// 缎面流光段用 Cream 提色；根部收窄锚定宿主，尾端收梢
         /// </summary>
         public static void DrawRibbonSegments(SpriteBatch sb, ReadOnlySpan<Vector2> pts, int count
@@ -111,7 +106,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     continue;
                 }
                 Color col = Color.Lerp(mid, edge, u);
-                //缎面流光：沿带滑动的高光段
+                //缎面流光，沿带滑动的高光段
                 float sheen = MathF.Exp(-MathF.Pow((u - sheenPos) * 5f, 2f));
                 col = Color.Lerp(col, Cream, sheen * 0.45f);
                 float segAlpha = alpha * (1f - u * 0.45f);
@@ -123,7 +118,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //==== 图元绘制（DrawPrimitives 内用，实体层顶点管线）====
 
-        /// <summary>绘本符号四边形：世界坐标，shape 0 心 1 星，sigil>0 转描边符印</summary>
+        /// <summary>绘本符号四边形，世界坐标，shape 0 心 1 星，sigil>0 转描边符印</summary>
         public static void DrawSymbolQuad(Vector2 center, float rotation, float halfSize
             , int shape, Color fill, float pulse, float fade, float sigil = 0f) {
             Effect fx = FishPrincessAssets.FishPrincessSymbol;
@@ -162,7 +157,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             device.RasterizerState = prevRaster;
         }
 
-        /// <summary>缎带图元条带：世界坐标点链，头宽向尾收梢，erode 尾部先蚀</summary>
+        /// <summary>缎带图元条带，世界坐标点链，头宽向尾收梢，erode 尾部先蚀</summary>
         public static void DrawRibbonStrip(ReadOnlySpan<Vector2> pts, int count
             , float headWidth, float seed, float fade, float erode = 0f) {
             Effect fx = FishPrincessAssets.FishPrincessRibbon;

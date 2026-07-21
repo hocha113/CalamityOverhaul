@@ -9,22 +9,18 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 {
     /// <summary>
-    /// 营地的放置/补种服务：新生成与"世界加载后已生成但尚无存活Actor"两条路径统一走这里，
-    /// 只在服务端/单人下执行，客户端Actor通过框架自带的同步/晚加入快照自动获得
+    /// 营地放置/补种，仅服务端/单人；客户端靠Actor同步拿实体
     /// </summary>
     internal static class OldDukeCampsiteGenerationService
     {
-        //向上搜索地面的最大格数，鱼人钓搬家时地形通常紧邻水面，缩小搜索范围避免找到过远的地面
+        //向上搜地最大格数；搬家用更小值
         private const int UpOffsetValue = 660;
         private const int UpOffsetValueRelocation = 30;
 
-        //补种自检的节流计时器，避免GetActiveActors在每一帧都做一次列表扫描
+        //补种节流，别每帧扫Actor
         private static int ensureCheckTimer;
 
-        /// <summary>
-        /// 声明式补种检查：已生成但没有存活的老公爵Actor时，重新执行一次放置<br/>
-        /// 放置内部对箱子有去重检测，世界重新加载时不会重复生成箱子，只会补回锅/旗杆/老公爵
-        /// </summary>
+        /// <summary>缺老公爵Actor则补种；箱子自带去重</summary>
         public static void EnsureCampsitePlaced() {
             if (!OldDukeCampsite.IsGenerated) {
                 return;
@@ -46,9 +42,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             PlaceCampsite(OldDukeCampsite.CampsitePosition, isRelocation: false);
         }
 
-        /// <summary>
-        /// 在指定位置放置一整套营地内容：锅/旗杆/老公爵Actor + 老箱子(搬家时跳过)
-        /// </summary>
+        /// <summary>放锅/旗杆/老公爵，搬家跳过箱子</summary>
         public static void PlaceCampsite(Vector2 campsiteCenter, bool isRelocation) {
             if (!VaultUtils.isServer && !VaultUtils.isSinglePlayer) {
                 return;
@@ -66,9 +60,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             ActorLoader.NewActor<OldDukeWanderingActor>(campsiteCenter);
         }
 
-        /// <summary>
-        /// 清除所有存活的营地装饰/游荡Actor，供清除营地或搬家前调用
-        /// </summary>
+        /// <summary>清营地装饰/游荡Actor</summary>
         public static void ClearCampsiteActors() {
             KillAllOf<CampsitePotActor>();
             KillAllOf<CampsiteFlagpoleActor>();
@@ -83,7 +75,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
         }
 
         private static void PlacePots(Vector2 campsiteCenter, int upOffsetValue) {
-            //主要布置在老公爵前方和两侧，避免被遮挡
+            //前方与两侧
             Vector2[] potOffsets = [
                 new Vector2(220f, 40f),
                 new Vector2(-240f, 35f),
@@ -111,9 +103,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        /// <summary>
-        /// 从<paramref name="searchPos"/>向下搜索最近的实心地面
-        /// </summary>
+        /// <summary>向下搜最近实心地面</summary>
         private static bool TryFindGround(Vector2 searchPos, int upOffsetValue, bool requireSolidSlope, out Vector2 finalPos) {
             int tileX = (int)(searchPos.X / 16f);
             int tileY = (int)(searchPos.Y / 16f) - upOffsetValue;
@@ -131,7 +121,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                     continue;
                 }
 
-                //旗杆贴地放置，锅稍微上抬避免嵌入地面
+                //旗杆贴地，锅上抬16
                 finalPos = requireSolidSlope
                     ? new Vector2(tileX * 16f + 8f, y * 16f)
                     : new Vector2(tileX * 16f + 8f, y * 16f - 16f);
@@ -142,9 +132,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             return false;
         }
 
-        /// <summary>
-        /// 放置老箱子到营地：区域内已存在老箱子时直接跳过，世界重新加载后不会重复生成
-        /// </summary>
+        /// <summary>放老箱子，区内已有则跳过</summary>
         private static void PlaceOldChest(Vector2 campsiteCenter) {
             Vector2 chestOffset = new Vector2(-320f, 20f);
             Vector2 searchPos = campsiteCenter + chestOffset;
@@ -166,7 +154,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 int chestTileX = baseTileX - 2;
                 int chestTileY = y - 1;
 
-                //检查该区域是否已经存在老箱子，避免重复放置(世界重新加载后走这里补种)
+                //区内已有老箱子则跳过
                 for (int cx = -12; cx < 18; cx++) {
                     for (int cy = -12; cy < 16; cy++) {
                         int checkX = chestTileX + cx;
@@ -182,7 +170,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                     }
                 }
 
-                //清理箱子放置区域，箱子是6x4格
+                //清6x4区域
                 for (int cx = 0; cx < 6; cx++) {
                     for (int cy = 0; cy < 4; cy++) {
                         int clearX = chestTileX + cx;
@@ -198,7 +186,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                     }
                 }
 
-                //确保底座是实心的
+                //底座实心
                 for (int bx = 0; bx < 6; bx++) {
                     int baseX = chestTileX + bx;
                     int baseY = chestTileY + 1;
@@ -211,7 +199,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                     WorldGen.PlaceTile(baseX, baseY, CWRID.Tile_SulphurousSand, true, true);
                 }
 
-                //放置老箱子(箱子的原点在3,3位置)
+                //原点在(3,3)
                 int placeX = chestTileX + 3;
                 int placeY = chestTileY;
 

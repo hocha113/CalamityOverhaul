@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>兔鱼调色板：奶粉绒毛与暖橙火心共享取色</summary>
+    /// <summary>兔鱼调色板</summary>
     internal static class FishBunnyPalette
     {
         /// <summary>奶白到淡粉之间随机取一撮绒毛色</summary>
@@ -15,10 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public static readonly Color EmberDeep = new(235, 96, 30);     //火心深橙
     }
 
-    /// <summary>
-    /// 兔鱼绒毛簇：哑光三瓣蓬毛，轻重力慢落 + 羽毛式左右摇摆，吃环境光照不自发光。<br/>
-    /// 跳跃/落地/心跳挤压掉毛与爆后纷飞共用，是兔鱼"毛绒玩偶"材质的主要载体
-    /// </summary>
+    /// <summary>兔鱼绒毛簇，哑光三瓣蓬毛</summary>
     internal class PRT_FishBunnyFluff : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "SmokeSheet01";
@@ -54,7 +51,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            //轻重力 + 强空气阻力：绒毛落得慢
+            //轻重力 + 强空气阻力
             Velocity.X *= 0.955f;
             Velocity.Y += 0.055f;
             if (Velocity.Y > 1.7f) {
@@ -78,11 +75,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int index = (int)ai[0];
             Vector2 pos = Position - Main.screenPosition;
 
-            //哑光材质吃环境光：暗处的绒毛跟着变暗，保底三成免得纯黑
+            //哑光吃环境光
             Color env = Lighting.GetColor(Position.ToTileCoordinates());
             Color lit = Color.Lerp(baseColor.MultiplyRGB(env), baseColor, 0.30f) * Opacity;
 
-            //三瓣蓬毛：主瓣 + 两片贴身副瓣拼出不规则簇形
+            //三瓣蓬毛
             DrawLobe(spriteBatch, tex, index, pos, lit, Rotation, Scale);
             Vector2 off1 = (Rotation + 0.7f).ToRotationVector2() * (Scale * 185f);
             DrawLobe(spriteBatch, tex, index + 1, pos + off1, lit * 0.85f, Rotation + 0.9f, Scale * 0.62f);
@@ -99,7 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>兔鱼尘烟团：哑光染色烟，落地尘环与爆炸烟圈共用，扩张 + 快进慢出</summary>
+    /// <summary>兔鱼尘烟团</summary>
     internal class PRT_FishBunnySmoke : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "SmokeSheet01";
@@ -148,7 +145,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Velocity.Y -= buoyancy;
 
             Color = Color.Lerp(hotColor, coldColor, MathF.Min(1f, t * 1.4f));
-            //快进慢出、峰值压低：尘是配角，不许糊住兔子
+            //快进慢出、峰值压低
             float tail = MathHelper.Clamp((t - 0.34f) / 0.60f, 0f, 1f);
             Opacity = MathF.Min(t / 0.10f, 1f) * (1f - tail * tail * (3f - 2f * tail)) * 0.46f;
         }
@@ -164,7 +161,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>卡通星点：四芒星弹性 pop-in 后自旋收缩消散，flash 配置兼任爆炸两帧过曝闪</summary>
+    /// <summary>卡通星点</summary>
     internal class PRT_FishBunnyStar : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "StarGlow01";
@@ -198,7 +195,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Velocity *= 0.86f;
             Rotation += spin;
 
-            //过曝只准白两帧：随后强制塌向暖橙
+            //过曝只准白两帧
             if (flash && Time > 1f) {
                 Color = Color.Lerp(Color, new Color(255, 150, 70), 0.45f);
             }
@@ -211,13 +208,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 pos = Position - Main.screenPosition;
             Vector2 origin = tex.Size() * 0.5f;
 
-            //弹性 pop-in：前四分之一过冲，之后缓缓收缩
+            //弹性 pop-in
             float t = LifetimeCompletion;
             float pop = t < 0.25f ? EaseOutBack(t / 0.25f) : MathHelper.Lerp(1f, 0.42f, (t - 0.25f) / 0.75f);
             float s = Scale * pop;
 
             Color col = Color * Opacity;
-            //宽晕 + 窄芯双层：同贴图但构成晕/芯结构
+            //宽晕 + 窄芯双层
             spriteBatch.Draw(tex, pos, null, col * 0.6f, Rotation, origin, s, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, pos, null, col, Rotation, origin, s * 0.5f, SpriteEffects.None, 0f);
             return false;

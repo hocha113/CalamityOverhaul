@@ -8,14 +8,14 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Wraiths.Runtime
 {
-    /// <summary>单个据点的世界状态。锚位/事件计数随世界落档，冷却与在场跟踪为会话级</summary>
+    /// <summary>据点世界状态；冷却与在场为会话级</summary>
     public sealed class WraithSiteRecord
     {
         /// <summary>所属定义的稳定键</summary>
         public string Key;
         /// <summary>据点中心（世界坐标），Anchored 为真才有意义</summary>
         public Vector2 Anchor;
-        /// <summary>已锚定：动态选点成功或被外部手工落锚</summary>
+        /// <summary>已锚定</summary>
         public bool Anchored;
         /// <summary>已完结的据点事件次数</summary>
         public int EventCount;
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         public long CooldownUntil;
         /// <summary>下次尝试动态锚定的游戏帧</summary>
         public long NextAnchorRetry;
-        /// <summary>本据点当前在场实体的 WhoAmI，-1=无事件进行</summary>
+        /// <summary>在场实体 WhoAmI，-1=无</summary>
         public int ActiveWhoAmI = -1;
         /// <summary>在场实体的代标识，防槽位复用后误认</summary>
         public ushort ActiveGeneration;
@@ -56,17 +56,14 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
     }
 
     /// <summary>
-    /// 据点锚状态宿主：键控记录 + 世界存档（镜像 <see cref="Core.WraithWorldProgress"/> 惯例）。
-    /// 权威端持真身；客户端经 <c>WraithNet.SiteSync</c> 持一份只读锚位镜像
-    /// （路标/贴饰层要在遭遇之前就看见据点，公平"可先学"所系），
-    /// 冷却/事件计数/在场跟踪仍为权威端专有。活化调度在 <see cref="WraithDirector"/>
+    /// 据点锚宿主。权威真身；客户端 SiteSync 只读镜像；调度在 Director
     /// </summary>
     public sealed class WraithSiteSystem : ModSystem
     {
         private static readonly Dictionary<string, WraithSiteRecord> records = [];
 
         //====锚位镜像下发（服务器会话态）====
-        //上次已广播的锚状态,变更检测覆盖全部改锚路径(Plant/Unanchor/调度器动态锚定)
+        //上次广播锚状态
         private static readonly Dictionary<string, (Vector2 anchor, bool anchored)> broadcastShadow = [];
         //已补发过全量快照的客户端槽位
         private static readonly bool[] snapshotSent = new bool[Main.maxPlayers];
@@ -83,10 +80,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             return record;
         }
 
-        /// <summary>
-        /// 手工落锚（剧情/结构/调试路径），center 为据点中心；仅权威端有效。
-        /// 只管移锚：冷却是另一个语义，照走 <see cref="ResetCooldown"/>，落锚绝不顺手清
-        /// </summary>
+        /// <summary>手工落锚，仅权威；不清冷却</summary>
         public static void Plant(string key, Vector2 center) {
             if (VaultUtils.isClient || string.IsNullOrEmpty(key)) {
                 return;
@@ -96,7 +90,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             record.Anchored = true;
         }
 
-        /// <summary>显式清零据点再活化冷却（剧情脚本/调试需要立即再演时单独调用）；仅权威端有效</summary>
+        /// <summary>清再活化冷却，仅权威</summary>
         public static void ResetCooldown(string key) {
             if (VaultUtils.isClient || !records.TryGetValue(key, out WraithSiteRecord record)) {
                 return;
@@ -104,7 +98,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             record.CooldownUntil = 0;
         }
 
-        /// <summary>拔除据点锚（记录保留事件计数）；仅权威端有效</summary>
+        /// <summary>拔锚，仅权威</summary>
         public static void Unanchor(string key) {
             if (VaultUtils.isClient || !records.TryGetValue(key, out WraithSiteRecord record)) {
                 return;
@@ -112,7 +106,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             record.Anchored = false;
         }
 
-        /// <summary>客户端套用一帧锚位镜像（<c>WraithNet.SiteSync</c> 入口），权威端调用无效</summary>
+        /// <summary>客户端套用锚位镜像</summary>
         internal static void ApplyClientMirror(string key, Vector2 anchor, bool anchored) {
             if (!VaultUtils.isClient) {
                 return;
@@ -122,10 +116,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             record.Anchored = anchored;
         }
 
-        /// <summary>
-        /// 服务器侧锚位镜像下发：逐记录对影子状态做变更检测（Plant/Unanchor/动态锚定全路径通吃），
-        /// 变更即广播；新入世界的客户端补发一次全量快照
-        /// </summary>
+        /// <summary>服侧锚位变更广播，新客户端补全量</summary>
         public override void PostUpdateEverything() {
             if (!VaultUtils.isServer) {
                 return;
@@ -163,7 +154,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         public override void SaveWorldData(TagCompound tag) {
             List<TagCompound> list = [];
             foreach (WraithSiteRecord record in records.Values) {
-                //从未锚定且无事件史的记录不值得落档
+                //未锚定且无事件史不落档
                 if (!record.Anchored && record.EventCount <= 0) {
                     continue;
                 }

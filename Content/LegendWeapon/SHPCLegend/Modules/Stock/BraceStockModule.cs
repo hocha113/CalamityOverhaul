@@ -12,14 +12,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>支架枪托：站定约1秒自动展开三脚支架进入炮台形态，零散布+射程弹速穿透强化，移动立即收架</summary>
+    /// <summary>支架枪托，站定约1秒进炮台，零散布+射程弹速穿透，移动收架</summary>
     internal sealed class BraceStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;
         //精准钢银
         public override Color TintColor => new(160, 185, 210);
 
-        /// <summary>架设状态机：收起→酝酿→展开→炮台→收架</summary>
+        /// <summary>架设状态，收起→酝酿→展开→炮台→收架</summary>
         internal enum RigState : byte
         {
             Packed,
@@ -33,17 +33,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         private const float StationaryThreshold = 0.6f; //站定速度阈值，与守望枪托一致
         private const int ArmFrames = 55;               //首次架设酝酿帧数（约1秒）
         private const int QuickArmFrames = 20;          //快速重架酝酿帧数
-        private const int RearmWindowFrames = 480;      //收架后快速重架窗口（8秒），被打断后重整旗鼓不必全程重来
+        private const int RearmWindowFrames = 480;      //收架后快速重架窗口 8s
         private const int DeployFrames = 14;            //展开动画帧数
         private const int RetractFrames = 10;           //收架缓冲帧数，期间不重新酝酿
         private const float BaseSpreadAdd = -0.2f;      //携行基础散布
-        private const float BaseAttackSpeedAdd = -0.05f;//携行基础攻速（重型支架负担）
-        private const float DeploySpreadAdd = -1f;      //架设散布（叠加后归零）
+        private const float BaseAttackSpeedAdd = -0.05f;//携行基础攻速（重支架）
+        private const float DeploySpreadAdd = -1f;      //架设散布（叠后归零）
         private const float DeployBeamSpeedAdd = 0.6f;  //架设弹速
         private const float DeployBeamLifeAdd = 0.6f;   //架设射程（光束生命）
         private const int DeployPierceAdd = 1;          //架设额外穿透
         private const float DeployHomingAdd = 0.35f;    //架设弹道稳定辅助
-        private const int DeployCritAdd = 8;            //架设暴击加点，走 On_ModifyWeaponCrit，光束与激光通吃
+        private const int DeployCritAdd = 8;            //架设暴击，On_ModifyWeaponCrit，光束/激光通吃
 
         internal RigState State { get; private set; } = RigState.Packed;
         private int stateTimer;
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         private float rearmCarry;
         private int armFramesNeed = ArmFrames;
 
-        /// <summary>酝酿进度 0~1，展开后保持 1，供地面预备光环绘制</summary>
+        /// <summary>酝酿进度 0~1，展开后保持 1，供预备光环</summary>
         internal float ArmProgress => State switch {
             RigState.Arming => MathHelper.Clamp(stateTimer / (float)Math.Max(armFramesNeed, 1), 0f, 1f),
             RigState.Deploying or RigState.Deployed => 1f,
@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         public override void Apply(ref ShootContext ctx) {
             ctx.SpreadMul += BaseSpreadAdd;
             ctx.AttackSpeedMul += BaseAttackSpeedAdd;
-            //炮台形态动态注入：弹道性质拉满 + 暴击作为唯一输出项（伤害倍率仍不碰，与守望枪托区隔）
+            //炮台注入弹道拉满+暴击，伤倍率不碰（区隔守望）
             if (State == RigState.Deployed) {
                 ctx.SpreadMul += DeploySpreadAdd;
                 ctx.BeamSpeedMul += DeployBeamSpeedAdd;
@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             if (player == null || !player.active) {
                 return;
             }
-            //长时间未被 tick（改件被卸下过/预设切换/复活）：归零，防止装回瞬间跳过架设仪式
+            //久未 tick 归零，防装回跳过架设
             if (Main.GameUpdateCount - lastTick > 4) {
                 ResetState();
                 rearmWindow = 0;
@@ -92,8 +92,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 return;
             }
 
-            //物理架设判定：几乎静止且真正踩在实心/平台支撑上，
-            //排除钩爪悬挂、绳索、飞行坐骑悬停这些 0 速悬空情形
+            //须静止且踩实心/平台，排除钩爪/绳索/坐骑悬空
             bool grounded = MathF.Abs(player.velocity.Y) < 0.05f
                 && player.grapCount == 0 && !player.pulley
                 && !(player.mount.Active && player.mount.CanFly())
@@ -102,7 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 && player.velocity.LengthSquared() < StationaryThreshold * StationaryThreshold;
             UpdateState(still);
 
-            //支架实体保障，仅拥有者端生成
+            //支架实体，仅 owner 端
             if (player.whoAmI != Main.myPlayer || State == RigState.Packed) {
                 return;
             }
@@ -120,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                     if (still) {
                         State = RigState.Arming;
                         stateTimer = 0;
-                        //快速重架窗口内液压系统仍预热，酝酿大幅缩短
+                        //快速重架窗口内酝酿缩短
                         armFramesNeed = rearmWindow > 0 ? QuickArmFrames : ArmFrames;
                     }
                     break;
@@ -160,7 +159,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             }
         }
 
-        /// <summary>展开/炮台被打断进入收架，同时刷新快速重架窗口</summary>
+        /// <summary>打断进收架，刷新快速重架窗口</summary>
         private void BeginRetract() {
             State = RigState.Retracting;
             stateTimer = 0;
@@ -175,8 +174,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
 
         public override void OnLaserAI(CyberPrismLaserProj laser) {
-            //炮台形态下激光染成锚定工程绿；散布/弹速/穿透对即时定长光柱无意义，
-            //数值强化天然只作用于左键光束，激光侧以主题接管宣告形态
+            //炮台激光染工程绿；数值强化只吃左键光束
             if (State != RigState.Deployed) {
                 return;
             }
@@ -205,7 +203,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
     }
 
-    /// <summary>机械三脚支架：展开/收起动画、锚定场着色器、后坐吸收表现；改件卸下或换武器自毁</summary>
+    /// <summary>三脚支架，展开/收起+锚定场+后坐吸收，卸改件/换武自毁</summary>
     internal sealed class SHPCBraceRigProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -258,8 +256,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             }
 
             BraceStockModule.RigState state = module.State;
-            //酝酿期全程跟随脚底（阈值内慢漂不会把支架留在身后），进 Deploying 才锁定世界坐标；
-            //Packed 残影渐隐期不跟随，防止收架残影随玩家滑动
+            //酝酿跟脚底，Deploying 才锁坐标；Packed 残影不跟
             if (state == BraceStockModule.RigState.Arming
                 || (state == BraceStockModule.RigState.Packed && visualDeploy <= 0.05f && armGlow <= 0.25f)) {
                 anchorPos = owner.Bottom;
@@ -268,7 +265,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
             armGlow = MathHelper.Lerp(armGlow, module.ArmProgress, 0.35f);
 
-            //视觉插值随 TimeGear 缩放，与模块 TickUp 计时保持声画同步
+            //视觉插值跟 TimeGear，与 TickUp 同步
             float ts = TimeGear.TimeScale;
             bool wantDeploy = state is BraceStockModule.RigState.Deploying or BraceStockModule.RigState.Deployed;
             float prevVisual = visualDeploy;
@@ -276,7 +273,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 ? MathF.Min(visualDeploy + DeployVisualRate * ts, 1f)
                 : MathF.Max(visualDeploy - RetractVisualRate * ts, 0f);
 
-            //展开/收起的关键帧事件：弹出→脚落地→锁定
+            //关键帧，弹出→落地→锁定
             if (wantDeploy) {
                 retractCued = false;
                 if (prevVisual < 0.12f && visualDeploy >= 0.12f) {
@@ -299,8 +296,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 return;
             }
 
-            //击发侦测：炮台形态下支架吸收后坐，压缩回弹 + 锚栓闪光；
-            //激光为持续无后坐光柱（itemAnimation 每 8 帧循环跳变），不做后坐表现
+            //炮台吸收后坐；激光持续光柱不做后坐
             bool laserActive = owner.ownedProjectileCounts[ModContent.ProjectileType<CyberPrismLaserProj>()] > 0;
             if (visualDeploy > 0.9f && !laserActive && owner.ItemAnimationActive
                 && owner.altFunctionUse != 2 && owner.itemAnimation > prevItemAnimation) {
@@ -311,7 +307,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             recoil = MathF.Max(recoil - 0.09f * ts, 0f);
             recoilFlash = MathF.Max(recoilFlash - 0.12f * ts, 0f);
 
-            //炮台稳态：锚点两侧低频溢出压入地面的能量粒
+            //炮台稳态，锚点两侧压地能量粒
             if (state == BraceStockModule.RigState.Deployed && visualDeploy > 0.95f
                 && Main.netMode != NetmodeID.Server) {
                 idleParticleTimer += ts;
@@ -329,7 +325,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 AnchorMain.ToVector3() * (0.14f + 0.3f * visualDeploy));
         }
 
-        /// <summary>支架弹出：液压解锁音</summary>
+        /// <summary>支架弹出音</summary>
         private void UnfoldFX() {
             if (Main.netMode == NetmodeID.Server) {
                 return;
@@ -337,7 +333,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.35f, Pitch = -0.45f }, anchorPos);
         }
 
-        /// <summary>支架脚落地：液压重音 + 三脚位尘土</summary>
+        /// <summary>脚落地，重音+尘土</summary>
         private void DeployImpactFX() {
             if (Main.netMode == NetmodeID.Server) {
                 return;
@@ -360,7 +356,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             }
         }
 
-        /// <summary>锁定完成：上膛咔哒 + 地面锚环脉冲</summary>
+        /// <summary>锁定，上膛音+锚环</summary>
         private void LockdownFX() {
             if (Main.netMode == NetmodeID.Server) {
                 return;
@@ -376,7 +372,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             }
         }
 
-        /// <summary>收架启动：短促高音提示形态切回</summary>
+        /// <summary>收架启动短音</summary>
         private void RetractFX() {
             if (Main.netMode == NetmodeID.Server) {
                 return;
@@ -385,7 +381,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
 
         public override void OnKill(int timeLeft) {
-            //展开中被强制打断（换武器/卸改件）才放解体火花，正常收好后安静消失
+            //强制打断才放解体火花
             if (Main.netMode == NetmodeID.Server || visualDeploy < 0.25f) {
                 return;
             }
@@ -401,7 +397,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
         private static float Ease(float t) => 1f - MathF.Pow(1f - t, 3f);
 
-        /// <summary>支架几何：由锚点+展开进度推算托架/膝/脚坐标，绘制与光效共用</summary>
+        /// <summary>支架几何，锚点+进度推托架/膝/脚</summary>
         private void GetRigPose(out Vector2 hub, out Vector2[] knees, out Vector2[] feet) {
             float rise = Ease(visualDeploy);
             hub = anchorPos + new Vector2(0f, -(9f + (HubHeight - 9f) * rise) + recoil * 3.5f);
@@ -442,7 +438,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             Color dark = Color.Lerp(SteelDark, Color.White, 0.1f).MultiplyRGB(Color.Lerp(lightColor, Color.White, 0.35f)) * alpha;
             Color light = SteelLight.MultiplyRGB(Color.Lerp(lightColor, Color.White, 0.45f)) * alpha;
 
-            //三条腿：暗底宽条 + 亮心窄条模拟圆柱高光
+            //三腿，暗底+亮心
             for (int i = 0; i < 2; i++) {
                 DrawStrut(Main.spriteBatch, px, hub, knees[i], 4f, dark);
                 DrawStrut(Main.spriteBatch, px, knees[i], feet[i], 3.2f, dark);
@@ -455,7 +451,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             DrawStrut(Main.spriteBatch, px, hub, feet[2], 3.4f, dark);
             DrawStrut(Main.spriteBatch, px, hub, feet[2], 1.2f, light);
 
-            //托架横梁 + 托枪 V 形叉
+            //托架横梁+V叉
             DrawStrut(Main.spriteBatch, px, hub + new Vector2(-7f, 0f), hub + new Vector2(7f, 0f), 5f, dark);
             DrawStrut(Main.spriteBatch, px, hub + new Vector2(-7f, -1f), hub + new Vector2(7f, -1f), 1.4f, light);
             DrawStrut(Main.spriteBatch, px, hub + new Vector2(0f, -2f), hub + new Vector2(-6f, -10f), 2.2f, dark);
@@ -463,7 +459,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             return false;
         }
 
-        /// <summary>地面锚定场：预备光环、能量锚栓、稳定弧带，SHPCModBrace.fx</summary>
+        /// <summary>地面锚定场，SHPCModBrace.fx</summary>
         private void DrawAnchorField() {
             if (visualDeploy <= 0.01f && armGlow <= 0.02f) {
                 return;
@@ -483,7 +479,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             shader.Parameters["mainColor"]?.SetValue(AnchorMain.ToVector3());
             shader.Parameters["accentColor"]?.SetValue(AnchorAccent.ToVector3());
 
-            //画布中心置于地面线上方，fx 内 GROUND_Y=0.69 对齐锚点所在地面
+            //画布中心在地面上，fx GROUND_Y=0.69
             Vector2 drawPos = anchorPos + new Vector2(0f, -12f) - Main.screenPosition;
 
             Main.spriteBatch.End();
@@ -519,7 +515,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             float breathe = 0.7f + 0.3f * MathF.Sin((float)Main.timeForVisualEffects * 0.11f);
             Color energy = AnchorMain * (alpha * (0.55f + recoilFlash * 0.45f));
 
-            //液压杆亮线：托架下缘连向双膝
+            //液压杆亮线
             Vector2 hubLow = hub + new Vector2(0f, 4f);
             DrawStrut(spriteBatch, px, hubLow, knees[0], 1.3f, energy * breathe);
             DrawStrut(spriteBatch, px, hubLow, knees[1], 1.3f, energy * breathe);
@@ -531,7 +527,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                     energy * 0.8f, 0f, glowOrigin, 0.09f + recoilFlash * 0.04f, SpriteEffects.None, 0f);
             }
 
-            //托架状态灯：炮台稳态绿呼吸，后坐瞬间提亮
+            //托架状态灯
             float lampPulse = breathe + recoilFlash * 0.8f;
             spriteBatch.Draw(glow, hub + new Vector2(0f, -6f) - Main.screenPosition, null,
                 Color.Lerp(AnchorMain, AnchorAccent, recoilFlash) * (alpha * lampPulse * 0.9f),

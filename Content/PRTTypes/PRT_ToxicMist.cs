@@ -6,9 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>
-    /// 毒雾粒子，弥漫的酸性雾气效果
-    /// </summary>
+    /// <summary>毒雾</summary>
     internal class PRT_ToxicMist : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Smoke";
@@ -18,7 +16,7 @@ namespace CalamityOverhaul.Content.PRTTypes
 
         private float rotationSpeed;
         private float hueShift;
-        private float depthLayer; //0-1, 深度层次
+        private float depthLayer; //0-1 深浅
         private Color mistColor;
         private int frameIndex;
 
@@ -36,10 +34,9 @@ namespace CalamityOverhaul.Content.PRTTypes
             rotationSpeed = Main.rand.NextFloat(-0.01f, 0.01f);
             hueShift = Main.rand.NextFloat(-0.02f, 0.02f);
 
-            //根据深度选择颜色
             mistColor = depth > 0.6f
-                ? new Color(100, 160, 80) //前景 - 亮绿
-                : new Color(70, 130, 70); //背景 - 暗绿
+                ? new Color(100, 160, 80) //前景亮
+                : new Color(70, 130, 70); //背景暗
 
             frameIndex = Main.rand.Next(16);
         }
@@ -67,12 +64,10 @@ namespace CalamityOverhaul.Content.PRTTypes
         }
 
         public override void AI() {
-            //淡入淡出效果
             float fadeIn = Math.Min(Time / 30f, 1f);
             float fadeOut = 1f - (float)Math.Pow(LifetimeCompletion, 2);
             Opacity = fadeIn * fadeOut * (0.3f + depthLayer * 0.4f);
 
-            //缓慢膨胀
             if (LifetimeCompletion < 0.3f) {
                 Scale *= 1.008f;
             }
@@ -80,20 +75,15 @@ namespace CalamityOverhaul.Content.PRTTypes
                 Scale *= 0.997f;
             }
 
-            //色相偏移（模拟毒性变化）
             mistColor = Main.hslToRgb(
                 (Main.rgbToHsl(mistColor).X + hueShift) % 1,
                 Main.rgbToHsl(mistColor).Y,
                 Main.rgbToHsl(mistColor).Z
             );
 
-            //旋转
             Rotation += rotationSpeed * (Velocity.X > 0 ? 1f : -1f);
 
-            //速度衰减（雾气漂浮）
             Velocity *= 0.98f;
-
-            //轻微上升（毒气特性）
             Velocity.Y -= 0.02f * depthLayer;
         }
 
@@ -107,7 +97,6 @@ namespace CalamityOverhaul.Content.PRTTypes
 
             Vector2 drawPos = Position - Main.screenPosition;
 
-            //计算当前帧
             int frameX = frameIndex % 4;
             int frameY = frameIndex / 4;
             Rectangle frame = new Rectangle(frameX * 256, frameY * 256, 256, 256);
@@ -115,7 +104,6 @@ namespace CalamityOverhaul.Content.PRTTypes
 
             Color drawColor = mistColor * Opacity;
 
-            //绘制底层扩散光晕
             float bloomScale = Scale * 0.2f * (1f + (1f - depthLayer) * 0.05f);
             spriteBatch.Draw(
                 bloomTexture,
@@ -129,7 +117,6 @@ namespace CalamityOverhaul.Content.PRTTypes
                 0f
             );
 
-            //绘制主烟雾体
             spriteBatch.Draw(
                 smokeTexture,
                 drawPos,
@@ -142,7 +129,6 @@ namespace CalamityOverhaul.Content.PRTTypes
                 0f
             );
 
-            //根据深度绘制额外的毒性发光
             if (depthLayer > 0.5f) {
                 float glowIntensity = (depthLayer - 0.5f) * 2f;
                 spriteBatch.Draw(

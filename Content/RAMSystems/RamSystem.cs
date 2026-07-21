@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.RAMSystems
 {
-    /// <summary>CWR 全局 RAM 资源系统，永久基础值加动态修饰器双层架构</summary>
+    /// <summary>永久基础 + 动态修饰器</summary>
     internal class RamSystem : ICWRLoader
     {
         void ICWRLoader.UnLoadData() => UnloadReset();
@@ -19,37 +19,32 @@ namespace CalamityOverhaul.Content.RAMSystems
 
         #region 默认值与边界
 
-        /// <summary>默认基础 RAM 上限</summary>
         public const int DefaultBaseMaxRam = 8;
-        /// <summary>默认基础每秒恢复量</summary>
         public const float DefaultBaseRecoveryRate = 0.1f;
-        /// <summary>基础上限最小值</summary>
         public const int MinBaseMaxRam = 1;
-        /// <summary>基础上限软上限，与 HUD 弧条最大跨度联动</summary>
+        /// <summary>基础上限软顶，HUD 弧条联动</summary>
         public const int SoftMaxBaseMaxRam = 64;
-        /// <summary>RAM 上限芯片最多可用次数</summary>
         public const int MaxCapacityUpgradeChips = 42;
-        /// <summary>RAM 恢复芯片最多可用次数</summary>
         public const int MaxRecoveryUpgradeChips = 30;
-        /// <summary>单枚上限芯片提供基础上限</summary>
+        /// <summary>单枚上限芯片+基值</summary>
         public const int CapacityUpgradeChipBonus = 1;
-        /// <summary>单枚恢复芯片提供基础每秒恢复量</summary>
+        /// <summary>单枚恢复芯片+基值/秒</summary>
         public const float RecoveryUpgradeChipBonus = 0.05f;
-        /// <summary>基础恢复速度上限，不含运行时加成</summary>
+        /// <summary>基础恢复上限，不含运行时</summary>
         public const float MaxBaseRecoveryRate = DefaultBaseRecoveryRate
             + MaxRecoveryUpgradeChips * RecoveryUpgradeChipBonus;
-        /// <summary>消耗后到开始恢复的延迟（秒）</summary>
+        /// <summary>消耗后恢复延迟(秒)</summary>
         public const float RecoveryDelay = 1.5f;
-        /// <summary>RAM 不足闪烁持续帧数</summary>
+        /// <summary>不足闪烁帧数</summary>
         public const int InsufficientFlashFrames = 30;
         //tModLoader 固定每秒 60 tick
         private const float TickSeconds = 1f / 60f;
 
-        //系统锁定计时（帧）：>0 时 RAM 锁定为 0，禁止消耗与恢复
+        //锁定计时(帧)，>0 则 RAM=0
         private static int lockTimer;
         private static int lockTotalFrames;
         private static float lockTimerCarry;
-        //RAM 不足闪烁计时（帧）：>0 时 HUD 红色故障闪烁
+        //不足闪烁计时(帧)
         private static int flashTimer;
         private static float flashTimerCarry;
 
@@ -57,16 +52,14 @@ namespace CalamityOverhaul.Content.RAMSystems
 
         #region 锁定与故障反馈
 
-        /// <summary>是否处于系统锁定</summary>
         public static bool IsLocked => lockTimer > 0;
 
-        /// <summary>系统锁定剩余帧数</summary>
         public static int LockRemain => lockTimer;
 
-        /// <summary>系统锁定总帧数，供 HUD 推算进度</summary>
+        /// <summary>锁定总帧，HUD 进度</summary>
         public static int LockTotal => lockTotalFrames;
 
-        /// <summary>系统锁定剩余比例，供 HUD 倒计时填充</summary>
+        /// <summary>锁定剩余比，HUD 填充</summary>
         public static float LockRemainRatio {
             get {
                 if (lockTimer <= 0 || lockTotalFrames <= 0) {
@@ -76,10 +69,9 @@ namespace CalamityOverhaul.Content.RAMSystems
             }
         }
 
-        /// <summary>是否处于 RAM 不足故障闪烁</summary>
         public static bool IsFlashing => flashTimer > 0;
 
-        /// <summary>HUD 警告强度 0..1，锁定恒 1，闪烁随计时衰减</summary>
+        /// <summary>HUD 警告 0..1，锁定恒1</summary>
         public static float GetWarningPulse() {
             if (lockTimer > 0) {
                 return 1f;
@@ -91,7 +83,7 @@ namespace CalamityOverhaul.Content.RAMSystems
             return 0f;
         }
 
-        /// <summary>触发系统锁定，榨干 RAM 并锁定指定帧数</summary>
+        /// <summary>榨干并锁定指定帧</summary>
         public static void SystemLock(int frames) {
             if (frames <= 0) {
                 return;
@@ -108,13 +100,12 @@ namespace CalamityOverhaul.Content.RAMSystems
             local.InvokeOnDepleted();
         }
 
-        /// <summary>触发 RAM 不足故障闪烁</summary>
         public static void NotifyInsufficient() {
             flashTimer = InsufficientFlashFrames;
             flashTimerCarry = 0f;
         }
 
-        /// <summary>立即解除系统锁定，仅读档/卸载等极端情形</summary>
+        /// <summary>立即解锁定，读档/卸载用</summary>
         public static void ClearLock() {
             lockTimer = 0;
             lockTotalFrames = 0;
@@ -182,23 +173,18 @@ namespace CalamityOverhaul.Content.RAMSystems
             Local?.Providers.Remove(provider);
         }
 
-        /// <summary>已注册修饰器数量，仅供调试/UI</summary>
+        /// <summary>修饰器数，调试/UI</summary>
         public static int ProviderCount => Local?.Providers.Count ?? 0;
 
         #endregion
 
         #region 永久升级 API
 
-        /// <summary>永久增加 RAM 基础上限</summary>
         public static void IncreaseBaseMaxRamBy(int delta) => BaseMaxRam = BaseMaxRam + delta;
-        /// <summary>永久增加基础每秒恢复量</summary>
         public static void IncreaseBaseRecoveryRateBy(float delta) => BaseRecoveryRate = BaseRecoveryRate + delta;
-        /// <summary>是否还能使用 RAM 上限芯片</summary>
         public static bool CanUseCapacityUpgradeChip => UsedCapacityUpgradeChips < MaxCapacityUpgradeChips;
-        /// <summary>是否还能使用 RAM 恢复芯片</summary>
         public static bool CanUseRecoveryUpgradeChip => UsedRecoveryUpgradeChips < MaxRecoveryUpgradeChips;
 
-        /// <summary>使用一枚 RAM 上限芯片并同步永久基础值</summary>
         public static bool TryUseCapacityUpgradeChip() {
             if (!CanUseCapacityUpgradeChip) {
                 return false;
@@ -236,7 +222,6 @@ namespace CalamityOverhaul.Content.RAMSystems
             if (HackTime.InfiniteHack) {
                 return true;
             }
-            //锁定期一律视为不足
             if (lockTimer > 0) {
                 return false;
             }
@@ -251,7 +236,6 @@ namespace CalamityOverhaul.Content.RAMSystems
             if (HackTime.InfiniteHack) {
                 return true;
             }
-            //锁定中拒绝消耗
             if (lockTimer > 0) {
                 return false;
             }
@@ -281,7 +265,6 @@ namespace CalamityOverhaul.Content.RAMSystems
             if (ramPerSecond <= 0f) {
                 return;
             }
-            //锁定期间不再额外扣 RAM
             if (lockTimer > 0) {
                 return;
             }
@@ -323,10 +306,9 @@ namespace CalamityOverhaul.Content.RAMSystems
             }
             local.RecomputeEffective();
 
-            //故障闪烁计时独立推进
             TimeGear.ConsumeFrames(ref flashTimer, ref flashTimerCarry);
 
-            //系统锁定：强制 RAM 为 0、阻断本帧恢复
+            //锁定中 RAM=0，不恢复
             if (lockTimer > 0) {
                 TimeGear.ConsumeFrames(ref lockTimer, ref lockTimerCarry);
                 local.CurrentRam = 0f;
@@ -371,7 +353,6 @@ namespace CalamityOverhaul.Content.RAMSystems
         }
 
         public static void UnloadReset() {
-            //数据生命周期由 ModPlayer 管理
         }
 
         #endregion

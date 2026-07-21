@@ -9,14 +9,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
-    /// <summary>激光眼二阶段游走点射状态：弹簧侧翼游走，三连点射预判激光，二阶段套路锚点</summary>
+    /// <summary>激光眼二阶段游走点射状态，弹簧侧翼游走，三连点射预判激光，二阶段套路锚点</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerVerticalBarrage, typeof(TwinsStateContext))]
     internal class RetinazerVerticalBarrageState : TwinsStateBase
     {
         public override string StateName => "RetinazerVerticalBarrage";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerVerticalBarrage;
 
-        /// <summary>二阶段套路(有搭档/独眼)；合击节点 1/3/5 双眼同步，细节见 ComboSequence*</summary>
+        /// <summary>二阶段套路；合击节点 1/3/5，见 ComboSequence*</summary>
         private static readonly string[] ComboSequenceWithPartner =
         [
             "PrecisionSniper",
@@ -73,13 +73,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 return new RetinazerSoloRageState();
             }
 
-            //锚点状态:响应搭档发出的合击信号，立即跟进合击
+            //锚点跟合击信号，立即跟进合击
             ITwinsState comboFollow = TwinsComboCoordinator.TryFollowSignal(context);
             if (comboFollow != null) {
                 return comboFollow;
             }
 
-            //弹簧侧翼游走:占位玩家侧面并带纵向呼吸
+            //侧翼弹簧游走
             Vector2 targetPos = player.Center
                 + new Vector2(npc.Center.X < player.Center.X ? -420 : 420, 0)
                 + TwinsMotion.BreathingOffset(seed: 2.9f, 18f);
@@ -129,7 +129,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             //按固定套路切换到下一招式
             if (Timer >= Duration && burstRemaining <= 0) {
-                //独眼模式下切换到狂暴状态
                 if (context.IsSoloRageMode) {
                     return new RetinazerSoloRageState();
                 }

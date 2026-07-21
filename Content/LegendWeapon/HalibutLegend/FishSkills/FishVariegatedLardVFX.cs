@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public static Effect FishLardBlob { get; private set; }
     }
 
-    /// <summary>斑驳油渍配色：暗褐油色为主，虹彩只在 shader 内点缀</summary>
+    /// <summary>斑驳油渍配色，暗褐油色为主，虹彩只在 shader 内点缀</summary>
     internal static class FishLardPalette
     {
         /// <summary>暗褐近黑油底</summary>
@@ -27,12 +27,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// <summary>油烟暗灰褐</summary>
         public static readonly Color SmokeDark = new(38, 32, 26);
 
-        /// <summary>油滴随机色：深浅油褐之间取值</summary>
+        /// <summary>油滴随机色，深浅油褐之间取值</summary>
         public static Color Droplet() => Color.Lerp(OilDeep, OilBrown, Main.rand.NextFloat());
     }
 
     /// <summary>
-    /// 油面滋滋气泡：贴着油渍表面缓慢鼓起的小圆圈，尾段 2 帧琥珀爆点后消失；<br/>
+    /// 油面滋滋气泡，贴着油渍表面缓慢鼓起的小圆圈，尾段 2 帧琥珀爆点后消失；<br/>
     /// 暗色 AlphaBlend 细环，读作油里挤出的气泡而非光点
     /// </summary>
     internal class PRT_FishLardBubble : BasePRT
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            //粘稠介质里的迟缓上浮：几乎不动，只鼓一点
+            //粘稠介质里的迟缓上浮
             Velocity.Y = -riseSpeed;
             Velocity.X = MathF.Sin(Time * 0.11f + wobbleSeed) * 0.05f;
 
@@ -83,10 +83,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float px = MathHelper.Lerp(3.5f, 7f, (Scale - 0.55f) / 0.6f) * (1f + (t > 0.86f ? (t - 0.86f) * 3.2f : 0f));
             float s = px / tex.Width;
 
-            //气泡壁：比油面略浅的暗环
+            //气泡壁，比油面略浅的暗环
             spriteBatch.Draw(tex, pos, null, new Color(74, 60, 32) * (Opacity * 0.55f)
                 , 0f, origin, s, SpriteEffects.None, 0f);
-            //破裂瞬间：≤2 帧琥珀小爆点（A=0 加色，唯一亮部）
+            //破裂瞬间，≤2 帧琥珀小爆点（A=0 加色，唯一亮部）
             if (t > 0.90f && t < 0.97f) {
                 spriteBatch.Draw(tex, pos, null, FishLardPalette.OilAmber with { A = 0 } * (Opacity * 0.8f)
                     , 0f, origin, s * 1.25f, SpriteEffects.None, 0f);
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 油烟：燃油特有的浓黑烟团，AlphaBlend 暗色压底、缓慢上升膨胀，<br/>
+    /// 油烟，燃油特有的浓黑烟团，AlphaBlend 暗色压底、缓慢上升膨胀，<br/>
     /// 活得比油渍久，是燃烧余波的主体
     /// </summary>
     internal class PRT_FishLardSmoke : BasePRT
@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int frameSize = tex.Width / 2;
             Rectangle frame = new(idx % 2 * frameSize, idx / 2 * frameSize, frameSize, frameSize);
             Vector2 pos = Position - Main.screenPosition;
-            //双层同帧异径：外圈更暗更淡，压出体积而不提亮
+            //双层同帧异径
             spriteBatch.Draw(tex, pos, frame, FishLardPalette.SmokeDark * (Opacity * 0.42f)
                 , Rotation * 0.7f, frame.Size() / 2f, Scale * 1.35f, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, pos, frame, new Color(52, 44, 34) * (Opacity * 0.6f)

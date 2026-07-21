@@ -7,31 +7,23 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.SignalTower
 {
-    /// <summary>信号塔目标点</summary>
     internal class SignalTowerTargetManager : ModSystem
     {
-        /// <summary>所有目标点</summary>
         public static List<SignalTowerTargetPoint> TargetPoints { get; private set; } = [];
 
-        /// <summary>目标点数量</summary>
         public const int TargetPointCount = 10;
+        public const int PointRange = 50;//图格
+        public const int MinDistanceBetweenPoints = 200;//图格
 
-        /// <summary>每个点位的有效范围(图格)</summary>
-        public const int PointRange = 50;
-
-        /// <summary>点位之间的最小距离(图格)</summary>
-        public const int MinDistanceBetweenPoints = 200;
-
-        /// <summary>是否已生成目标点</summary>
         public static bool IsGenerated { get; private set; }
 
-        /// <summary>存档格式版本号，发生不兼容变更时递增</summary>
+        /// <summary>存档格式版本,不兼容时递增</summary>
         private const int SaveDataVersion = 2;
 
-        /// <summary>单次存档允许保存的最大点位数，作为越界保护</summary>
+        /// <summary>单次存档最大点位,越界保护</summary>
         private const int MaxSaveablePoints = 256;
 
-        /// <summary>获取离玩家最近的未完成目标点</summary>
+        /// <summary>最近未完成目标点</summary>
         public static SignalTowerTargetPoint GetNearestTarget(Player player) {
             SignalTowerTargetPoint nearest = null;
             float minDistance = float.MaxValue;
@@ -51,21 +43,18 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
             return nearest;
         }
 
-        /// <summary>生成目标点位</summary>
         public static void GenerateTargetPoints() {
             TargetPoints.Clear();
 
-            //获取世界尺寸
             int worldWidth = Main.maxTilesX;
             int worldHeight = Main.maxTilesY;
 
-            //定义可用区域(避开地狱和天空)
-            int minY = (int)(worldHeight * 0.15f);//避开太高
-            int maxY = (int)(worldHeight * 0.85f);//避开地狱
+            //避开地狱/天空
+            int minY = (int)(worldHeight * 0.15f);
+            int maxY = (int)(worldHeight * 0.85f);
             int minX = (int)(worldWidth * 0.1f);
             int maxX = (int)(worldWidth * 0.9f);
 
-            //已生成的点位
             List<Point> generatedPoints = [];
 
             int attempts = 0;
@@ -74,17 +63,14 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
             while (generatedPoints.Count < TargetPointCount && attempts < maxAttempts) {
                 attempts++;
 
-                //随机生成候选点
                 int x = Main.rand.Next(minX, maxX);
                 int y = Main.rand.Next(minY, maxY);
                 Point candidate = new(x, y);
 
-                //检查是否在安全区域(不在液体中,有足够空间)
                 if (!IsSafeLocation(candidate)) {
                     continue;
                 }
 
-                //检查与已有点位的距离
                 bool tooClose = false;
                 foreach (Point existingPoint in generatedPoints) {
                     float distance = Vector2.Distance(candidate.ToVector2(), existingPoint.ToVector2());
@@ -98,11 +84,10 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
                     continue;
                 }
 
-                //添加到列表
                 generatedPoints.Add(candidate);
             }
 
-            //如果生成失败,使用均匀分布
+            //均匀分布兜底
             if (generatedPoints.Count < TargetPointCount) {
                 generatedPoints.Clear();
                 int segmentWidth = (maxX - minX) / (TargetPointCount / 2);
@@ -119,10 +104,8 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
                 }
             }
 
-            //发送生成的数据点集
             SendGeneratedPoints(generatedPoints);
 
-            //创建目标点对象
             for (int i = 0; i < generatedPoints.Count; i++) {
                 TargetPoints.Add(new SignalTowerTargetPoint(generatedPoints[i], PointRange, i));
             }
@@ -130,7 +113,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
             SetIsGenerated();
         }
 
-        /// <summary>设置为已生成状态</summary>
         internal static void SetIsGenerated() {
             IsGenerated = true;
             if (Main.LocalPlayer.Alives()) {
@@ -186,9 +168,8 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
         }
         #endregion
 
-        /// <summary>检查位置是否安全</summary>
         private static bool IsSafeLocation(Point tilePos) {
-            //检查是否有足够的空间(6x14区域)
+            //6×14空间
             for (int x = -3; x < 3; x++) {
                 for (int y = -7; y < 7; y++) {
                     int checkX = tilePos.X + x;
@@ -200,7 +181,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
 
                     Tile tile = Framing.GetTileSafely(checkX, checkY);
 
-                    //避开液体
                     if (tile.LiquidAmount > 0) {
                         return false;
                     }
@@ -210,16 +190,13 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
             return true;
         }
 
-        /// <summary>检查并标记点位完成</summary>
         public static bool CheckAndMarkCompletion(Point towerTilePos) {
             foreach (SignalTowerTargetPoint point in TargetPoints) {
                 if (!point.IsCompleted && point.IsInRange(towerTilePos)) {
                     point.IsCompleted = true;
 
-                    //播放完成效果
                     SignalTowerCompletionEffects.PlayCompletionEffect(point.WorldPosition, point.Index);
 
-                    //检查是否全部完成
                     bool allCompleted = true;
                     foreach (SignalTowerTargetPoint p in TargetPoints) {
                         if (!p.IsCompleted) {
@@ -238,16 +215,14 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
             return false;
         }
 
-        /// <summary>检查并标记点位完成，返回完成的目标点索引</summary>
+        /// <summary>标记完成并返回索引</summary>
         public static int CheckAndMarkCompletionWithIndex(Point towerTilePos) {
             foreach (SignalTowerTargetPoint point in TargetPoints) {
                 if (!point.IsCompleted && point.IsInRange(towerTilePos)) {
                     point.IsCompleted = true;
 
-                    //播放完成效果
                     SignalTowerCompletionEffects.PlayCompletionEffect(point.WorldPosition, point.Index);
 
-                    //检查是否全部完成
                     bool allCompleted = true;
                     foreach (SignalTowerTargetPoint p in TargetPoints) {
                         if (!p.IsCompleted) {
@@ -266,7 +241,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
             return -1;
         }
 
-        /// <summary>取消指定位置的目标点完成状态（当信号塔被移除时调用）</summary>
         public static bool UnmarkCompletion(Point towerTilePos) {
             foreach (SignalTowerTargetPoint point in TargetPoints) {
                 if (point.IsCompleted && point.IsInRange(towerTilePos)) {
@@ -277,7 +251,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
             return false;
         }
 
-        /// <summary>根据索引取消目标点完成状态</summary>
         public static bool UnmarkCompletionByIndex(int index) {
             if (index < 0 || index >= TargetPoints.Count) {
                 return false;
@@ -291,7 +264,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
             return false;
         }
 
-        /// <summary>重置所有目标点</summary>
         public static void Reset() {
             TargetPoints.Clear();
             IsGenerated = false;
@@ -329,12 +301,12 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
                 }
 
                 if (!IsGenerated || TargetPoints == null || TargetPoints.Count == 0) {
-                    //当未生成时显式写入 false，避免旧存档残留的 true 被错误读取
+                    //未生成写false,防旧档true残留
                     tag["IsGenerated"] = false;
                     return;
                 }
 
-                //每个点用单独的 TagCompound 持久化，绑定坐标与完成状态，避免两个并行列表错位
+                //每点独立TagCompound,防双列表错位
                 List<TagCompound> pointTags = new List<TagCompound>(TargetPoints.Count);
                 foreach (SignalTowerTargetPoint point in TargetPoints) {
                     if (point == null) {
@@ -363,7 +335,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
         }
 
         public override void LoadWorldData(TagCompound tag) {
-            //先把状态彻底归零，任何加载分支异常都不会留下残缺数据
+            //Load前先清零,防残缺数据
             TargetPoints.Clear();
             IsGenerated = false;
 
@@ -378,7 +350,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
 
                 bool loaded = TryLoadFromV2(tag) || TryLoadFromLegacy(tag);
 
-                //只有真正读到了点位才算"已生成"，否则保持未生成状态等待重新生成
+                //读到点位才算已生成
                 if (loaded && TargetPoints.Count > 0) {
                     IsGenerated = true;
                 }
@@ -393,7 +365,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
             }
         }
 
-        /// <summary>加载新版(V2)存档格式，每个点位为独立 TagCompound</summary>
+        /// <summary>V2每点TagCompound</summary>
         private static bool TryLoadFromV2(TagCompound tag) {
             if (!tag.TryGet("TargetPointsV2", out List<TagCompound> pointTags)
                 || pointTags == null || pointTags.Count == 0) {
@@ -414,8 +386,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
                 int y = pt.GetAsInt("Y");
 
                 if (!IsValidTilePosition(x, y)) {
-                    //坐标非法直接跳过该点位，避免后续越界
-                    continue;
+                    continue;//坐标非法跳过
                 }
 
                 bool isCompleted = pt.GetBool("IsCompleted");
@@ -431,7 +402,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
             return TargetPoints.Count > 0;
         }
 
-        /// <summary>兼容旧版双列表格式的加载逻辑</summary>
+        /// <summary>legacy双列表</summary>
         private static bool TryLoadFromLegacy(TagCompound tag) {
             if (!tag.TryGet("TargetPositions", out List<Point> positions)
                 || !tag.TryGet("TargetCompletions", out List<bool> completions)) {
@@ -457,9 +428,8 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.Si
             return TargetPoints.Count > 0;
         }
 
-        /// <summary>检查图格坐标是否落在当前世界范围内</summary>
         private static bool IsValidTilePosition(int x, int y) {
-            //世界尚未初始化时 maxTilesX/Y 可能为 0，此时仅放行明显合法的非负坐标
+            //世界未初始化时maxTiles=0,仅放行非负坐标
             if (Main.maxTilesX <= 0 || Main.maxTilesY <= 0) {
                 return x >= 0 && y >= 0;
             }

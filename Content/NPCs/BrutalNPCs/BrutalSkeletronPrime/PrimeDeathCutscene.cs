@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>死亡演出运镜，CutsceneClip{TSubject} 对齐 PrimeDeathState 阶段帧；震动经 PrimeDeathPerformancePlayer.RequestShake 叠加</summary>
+    /// <summary>死亡运镜，对齐PrimeDeathState阶段帧</summary>
     internal sealed class PrimeDeathCutscene : CutsceneClip<NPC>
     {
         //死亡演出运镜优先级，高于普通演出
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 CutsceneInputLockFlags.Movement | CutsceneInputLockFlags.Jump | CutsceneInputLockFlags.UseItem));
         }
 
-        //各阶段持续帧数（由 PrimeDeathState 的累计结束帧推导）
+        //各阶段持续帧
         private static int SummonLen => PrimeDeathState.PhaseSummonEnd - PrimeDeathState.PhaseFakeDeathEnd;
         private static int LungeLen => PrimeDeathState.PhaseLungeEnd - PrimeDeathState.PhaseSummonEnd;
         private static int DragLen => PrimeDeathState.PhaseDragEnd - PrimeDeathState.PhaseLungeEnd;

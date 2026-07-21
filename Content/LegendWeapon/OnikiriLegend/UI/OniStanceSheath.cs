@@ -9,12 +9,8 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     /// <summary>
-    /// 架势鞘刀：封印札 HUD 簇内的架势计,墨脉之下横悬一柄微倾的鞘中打刀。<br/>
-    /// 架势=拔刀进度:钢自鲤口向锋尖淹没黑漆,分界的拔刀线即读数,柄随蓄势轻轻后撤;
-    /// 满架势刃线白热呼吸、流光巡刃并响一声鲤口切;释放时拔刀闪沿刃扫出、
-    /// 读数急落,归座时"咔"地一声。<br/>
-    /// 由 <see cref="OniTalismanHud"/> 驱动,共用其锚点;数据经 <see cref="OniStance.Get"/>
-    /// 取原始快照,拔刀/回鞘/点火等演出全部在本类推导
+    /// 架势鞘刀计,<see cref="OniTalismanHud"/> 驱动;
+    /// 读 <see cref="OniStance.Get"/>,拔刀/回鞘/点火在本类推导
     /// </summary>
     internal sealed class OniStanceSheath
     {
@@ -64,7 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 wasFull = newTarget >= 0.995f;
             }
 
-            //事件检测:大幅泄势——满位泄出按拔刀演,余者按短促回鞘演
+            //大幅泄势,满位按拔刀,余按回鞘
             float delta = newTarget - targetFill;
             if (delta < -0.20f) {
                 releaseFlash = Math.Max(releaseFlash, targetFill >= 0.85f ? 1f : 0.45f);
@@ -110,7 +106,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             hoverEase += ((Hovering ? 1f : 0f) - hoverEase) * 0.2f;
         }
 
-        /// <summary>绘制柄/镡/刃鞘/归座反馈/悬浮读数。suppressTag 为真时不出悬浮读数</summary>
+        /// <summary>绘柄/镡/刃鞘/归座/悬浮读数,suppressTag 藏读数</summary>
         public void Draw(SpriteBatch sb, float alpha, float time, bool suppressTag) {
             if (alpha <= 0.01f) {
                 return;
@@ -146,7 +142,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 DrawFallback(sb, quadLC, dir, perp, cant, alpha);
             }
 
-            //半势刻度:鞘身中点一枚朱菱,过阈点亮——灭世一闪的门槛
+            //半势朱菱刻度,灭世门槛
             Vector2 notchPos = quadLC + dir * (OnikiriUITheme.HudStanceBladeW * 0.5f) + perp * 9f;
             bool notchLit = displayFill >= 0.5f;
             Texture2D pixel = VaultAsset.placeholder2.Value;

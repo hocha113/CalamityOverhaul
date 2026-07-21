@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged.Starships
 {
-    //僚机：在玩家上下伴飞并向敌人发射小型星弹
+    //上下伴飞射小星弹
     internal class StarshipWingman : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;

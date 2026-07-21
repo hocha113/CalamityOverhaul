@@ -22,8 +22,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 {
     /// <summary>
-    /// 诊所侧栏：已安装/已拥有/在售三段
-    /// <br/>安装走手术，卸载归背包，购买扣金入背包
+    /// 诊所侧栏，已装/已有/在售；安装走手术，卸归背包，买扣金
     /// </summary>
     internal class VictorClinicPanel
     {
@@ -79,7 +78,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             }
         }
 
-        /// <summary>Victor 售价相对义体基础价值的倍率：基础价偏低，店面统一上调</summary>
+        /// <summary>售价 = 基础价值 × 此倍率</summary>
         private const int PriceMultiplier = 3;
 
         private static long PriceOf(int type) {
@@ -225,7 +224,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 UpdateInteraction();
             }
 
-            //悬停 key 变时重置 hoverAnim
+            //悬停 key 变则重置
             if (hoveredEntryKey != lastHoverKey) {
                 hoverAnim = 0f;
                 lastHoverKey = hoveredEntryKey;
@@ -304,7 +303,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 return;
             }
 
-            //安装走 VictorSurgery 帧 86 换装
+            //帧86换装
             ActionThisFrame = true;
             VictorSurgery.BeginInstall(invIndex, boundSlot);
         }

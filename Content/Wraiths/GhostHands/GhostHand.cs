@@ -7,46 +7,43 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Wraiths.GhostHands
 {
     /// <summary>
-    /// 焦黑枯手：首只毕业的正典厉鬼（规则卡 v1 见 WRAITHS-GHOSTHAND-PLAN.md）。
-    /// 规则：看着它，它不动；移开视线，它在爬。触到你=「攥」，拖进裂隙即死；
-    /// 火烫它必松手，一场只肯被烫一次。反制主线=把「焦黑的长命锁」递到它面前。
-    /// Key 即类型名"GhostHand"，存档锚不可改（鬼律 15）
+    /// 焦黑枯手。规则卡见 WRAITHS-GHOSTHAND-PLAN.md；Key 不可改
     /// </summary>
     internal sealed class GhostHand : WraithDefinition
     {
         public override Type ActorType => typeof(GhostHandActor);
         public override int SortOrder => 60;
 
-        //爬行的手,扁宽命中箱
+        //扁宽命中箱
         public override int HitboxWidth => 52;
         public override int HitboxHeight => 40;
 
-        //显形 255t=180 潜壁+75 破壁;死机窗口 10 秒;在场硬顶 4 分钟
+        //显形 255t，死机 10s，在场顶 4min
         public override int MaterializeFrames => 255;
         public override int DematerializeFrames => 45;
         public override int PresentDurationLimit => 60 * 240;
         public override int HaltWindowTicks => 600;
 
-        //焦炭主色与余烬橙(死机浮字/仪式提示用色同源)
+        //焦炭/余烬色
         public override Color BaseColor => new(30, 26, 24);
         public override Color EyeColor => new(214, 92, 32);
 
         //====规则专属文案（LoadExtraLocalization 装载，各件静态取用）====
-        /// <summary>NPC 残句 1~5（公平"可先学"，权重见 <see cref="GhostHandRumors"/>）</summary>
+        /// <summary>NPC 残句 1~5</summary>
         public static LocalizedText Rumor1 { get; private set; }
         public static LocalizedText Rumor2 { get; private set; }
         public static LocalizedText Rumor3 { get; private set; }
         public static LocalizedText Rumor4 { get; private set; }
         public static LocalizedText Rumor5 { get; private set; }
-        /// <summary>烫退浮字（火的裁定生效）</summary>
+        /// <summary>烫退浮字</summary>
         public static LocalizedText ScorchRelease { get; private set; }
-        /// <summary>烫退已花浮字（一场一次的阀门已用尽，公平可读）</summary>
+        /// <summary>烫退已花浮字</summary>
         public static LocalizedText ScorchSpent { get; private set; }
         /// <summary>借力超射程浮字</summary>
         public static LocalizedText GraspTooFar { get; private set; }
-        /// <summary>犯戒「手不空回」浮字</summary>
+        /// <summary>犯戒浮字</summary>
         public static LocalizedText TabooEcho { get; private set; }
-        /// <summary>反噬期回据点扒灰取锁浮字</summary>
+        /// <summary>反噬取锁浮字</summary>
         public static LocalizedText LockUnearthed { get; private set; }
 
         protected override void LoadExtraLocalization() {
@@ -62,7 +59,7 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             LockUnearthed = this.GetLocalization(nameof(LockUnearthed), () => "灰堆里翻出了一样东西");
         }
 
-        //BuildBehaviors 刻意留空:游荡/保距语义与"贴壁爬行"不符,全部逻辑自持于 GhostHandActor
+        //BuildBehaviors 留空，逻辑自持于 Actor
 
         protected override WraithSitePlan GetSitePlan() => GhostHandSite.BuildPlan();
 

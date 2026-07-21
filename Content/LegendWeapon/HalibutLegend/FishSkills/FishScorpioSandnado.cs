@@ -11,16 +11,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>沙蝎技能域内 shader 资源（域内加载器，不经 EffectLoader）</summary>
     internal class FishScorpioAssets
     {
-        /// <summary>沙龙卷漏斗：三层异相旋带 + 噪声撕顶 + 哑光颗粒</summary>
+        /// <summary>沙龙卷漏斗，三层异相旋带 + 噪声撕顶 + 哑光颗粒</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect FishScorpioNado { get; private set; }
     }
 
-    /// <summary>
-    /// 沙蝎共享演出协作类。<br/>
-    /// 材质：风载干沙，暖沙黄哑光颗粒，零发光；
-    /// 运动语言是"流动与盘旋"（风托着沙走），失能即坠落成丘
-    /// </summary>
+    /// <summary>沙蝎 VFX，风载沙盘旋，失能即坠成丘</summary>
     internal static class FishScorpioVFX
     {
         //==== 沙色谱（哑光，最亮不过亮沙，全程无白）====
@@ -43,7 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //==== 粒子族 ====
 
-        /// <summary>定向沙粒锥：dir 为主喷方向，windLift&gt;0 时沙粒被风托着走一段再落</summary>
+        /// <summary>定向沙粒锥，dir 为主喷方向，windLift&gt;0 时沙粒被风托着走一段再落</summary>
         public static void GrainBurst(Vector2 pos, Vector2 dir, int count, float spdMin, float spdMax, float windLift = 0f, float spread = 0.6f) {
             dir = dir.SafeNormalize(Vector2.UnitX);
             for (int i = 0; i < count; i++) {
@@ -60,7 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(Main.rand.Next(28, 42), strength, 0.004f, 0.012f);
         }
 
-        /// <summary>地面土浪：出入土/龙卷落点用的成组喷发</summary>
+        /// <summary>地面土浪，出入土/龙卷落点用的成组喷发</summary>
         public static void GroundPlume(Vector2 pos, int grains, float scaleMul = 1f) {
             for (int i = 0; i < 3; i++) {
                 Vector2 vel = new Vector2(Main.rand.NextFloat(-1.2f, 1.2f), Main.rand.NextFloat(-1.6f, -0.5f));
@@ -100,8 +96,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //==== 龙卷漏斗绘制 ====
 
         /// <summary>
-        /// 画一根沙龙卷漏斗（shader quad）。
-        /// power 风力 0..1（衰减时旋带失能），grow 出生包络 0..1，fade 整体透明度。
+        /// 画一根沙龙卷漏斗（shader quad）
+        /// power 风力 0..1（衰减时旋带失能），grow 出生包络 0..1，fade 整体透明度
         /// 内部自带 End/Begin，调用处于常规实体批次时使用；shader 缺失时退化为哑光雾柱
         /// </summary>
         public static void DrawNado(SpriteBatch sb, Vector2 center, float widthPx, float heightPx, float seed, float power, float grow, float fade) {
@@ -135,7 +131,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 , RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        /// <summary>.fxc 缺失时的 CPU 退化：哑光雾团摞成粗柱，保证技能不隐形</summary>
+        /// <summary>.fxc 缺失时的 CPU 退化，哑光雾团摞成粗柱，保证技能不隐形</summary>
         private static void DrawNadoFallback(SpriteBatch sb, Vector2 center, float widthPx, float heightPx, float power, float grow, float fade) {
             Texture2D fog = CWRAsset.Fog?.Value;
             if (fog == null) {
@@ -155,7 +151,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //==== 声音分层 ====
 
-        /// <summary>出入土的沙层翻涌：双层 Dig 错开音高</summary>
+        /// <summary>出入土的沙层翻涌，双层 Dig 错开音高</summary>
         public static void BurrowSound(Vector2 pos, float pitch = 0f) {
             SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.6f, Pitch = 0.2f + pitch, MaxInstances = 3 }, pos);
             SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.4f, Pitch = -0.45f + pitch, MaxInstances = 3 }, pos);
@@ -163,7 +159,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 移动沙龙卷：蝎尾聚旋成形后飞向目标。
+    /// 移动沙龙卷，蝎尾聚旋成形后飞向目标
     /// 出膛过冲减速到巡航、蛇摆航线；末端风力衰减掉沙，死后留沙幕与沙丘
     /// </summary>
     internal class FishScorpioSandnado : ModProjectile
@@ -205,7 +201,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>风力包络：出生斜坡上来，末端衰减到 0</summary>
+        /// <summary>风力包络，出生斜坡上来，末端衰减到 0</summary>
         private float WindPower() {
             float up = MathHelper.Clamp(Time / 20f, 0f, 1f) * 0.4f + 0.6f;
             float down = MathHelper.Clamp(Projectile.timeLeft / (float)WindDownFrames, 0f, 1f);
@@ -224,7 +220,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void AI() {
             Time++;
 
-            //蛇摆：航线沿风场缓慢弯曲，飞行期速度方向持续演化
+            //蛇摆，航线沿风场缓慢弯曲
             Projectile.velocity = Projectile.velocity.RotatedBy(MathF.Sin(Time * 0.11f + Seed) * 0.01f);
 
             //出膛过冲衰减到巡航
@@ -232,7 +228,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (speed > CruiseSpeed && CruiseSpeed > 0.1f) {
                 Projectile.velocity *= 0.968f;
             }
-            //末端风力耗尽：整体失速
+            //末端风力耗尽，整体失速
             if (Projectile.timeLeft < WindDownFrames) {
                 Projectile.velocity *= 0.94f;
             }
@@ -244,19 +240,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float power = WindPower();
             Vector2 basePos = Projectile.Center + new Vector2(0f, VisualH * 0.36f);
 
-            //卷入碎屑：沿涡流盘旋上升（风载 PRT 自带正弦盘旋）
+            //卷入碎屑
             if (Main.rand.NextBool(2)) {
                 Vector2 pos = basePos + new Vector2(Main.rand.NextFloat(-VisualW * 0.24f, VisualW * 0.24f), Main.rand.NextFloat(-8f, 4f));
                 Vector2 vel = new Vector2(Main.rand.NextFloat(-1.6f, 1.6f), Main.rand.NextFloat(-1.4f, -0.4f)) + Projectile.velocity * 0.3f;
                 PRTLoader.NewParticle<PRT_FishScorpioSand>(pos, vel, FishScorpioVFX.RandGrain(), Main.rand.NextFloat(0.65f, 1.05f))
                     ?.Configure(Main.rand.Next(24, 38), 1f * power, 0.26f, 0.75f);
             }
-            //底裙尾迹尘：低伏、暗色，留下走过的痕迹
+            //底裙尾迹尘
             if (Time % 6 == 0) {
                 FishScorpioVFX.Puff(basePos + Main.rand.NextVector2Circular(8f, 3f)
                     , new Vector2(-Projectile.velocity.X * 0.1f, -0.2f), 0.2f, 0.16f, true);
             }
-            //末端失能：沙粒失去升力成幕脱落
+            //末端失能，沙粒失去升力成幕脱落
             if (Projectile.timeLeft < WindDownFrames && Main.rand.NextBool(2)) {
                 Vector2 pos = Projectile.Center + new Vector2(Main.rand.NextFloat(-VisualW * 0.3f, VisualW * 0.3f)
                     , Main.rand.NextFloat(-VisualH * 0.4f, VisualH * 0.3f));
@@ -269,7 +265,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Main.dedServ) {
                 return;
             }
-            //命中沙爆：顺行进方向偏置的定向沙锥 + 暗尘团
+            //命中沙爆
             Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             FishScorpioVFX.GrainBurst(target.Center - dir * target.width * 0.25f, dir, 9, 2.5f, 7f, 0.3f, 0.5f);
             FishScorpioVFX.Puff(target.Center, dir * 1.2f, 0.24f, 0.28f, true);
@@ -280,7 +276,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Main.dedServ) {
                 return;
             }
-            //沙幕：整根柱体的沙同时失去动力，从当前带位坠落
+            //沙幕，整根柱体的沙同时失去动力
             for (int i = 0; i < 16; i++) {
                 Vector2 pos = Projectile.Center + new Vector2(Main.rand.NextFloat(-VisualW * 0.32f, VisualW * 0.32f)
                     , Main.rand.NextFloat(-VisualH * 0.42f, VisualH * 0.38f));
@@ -292,7 +288,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 FishScorpioVFX.Puff(Projectile.Center + new Vector2(0f, VisualH * 0.25f * i)
                     , new Vector2(0f, 0.4f), 0.3f, 0.22f, i == 0);
             }
-            //落沙堆丘：脚下找得到地面才留丘
+            //落沙堆丘，脚下找得到地面才留丘
             Vector2? ground = FishScorpioVFX.FindGroundBelow(Projectile.Center + new Vector2(0f, VisualH * 0.3f));
             if (ground != null) {
                 FishScorpioVFX.Mound(ground.Value, 64f, 60);
@@ -305,7 +301,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //末端随风力衰减变淡，但沙幕 PRT 会接住视觉质量
             fade *= MathHelper.Clamp(Projectile.timeLeft / (WindDownFrames * 0.6f), 0f, 1f);
 
-            //地面接触影：贴地暗椭圆把柱子按进世界里
+            //地面接触影
             Texture2D fog = CWRAsset.Fog?.Value;
             Vector2? ground = FishScorpioVFX.FindGroundBelow(Projectile.Center + new Vector2(0f, VisualH * 0.3f), 6);
             if (fog != null && ground != null) {

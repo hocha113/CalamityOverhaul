@@ -19,7 +19,6 @@ namespace CalamityOverhaul.OtherMods.Fargowiltas
                 return;
             }
 
-            //获取 UpdateUI 方法
             var updateUIMethod = uiManagerType.GetMethod("UpdateUI",
                 BindingFlags.Public | BindingFlags.Instance);
 
@@ -35,14 +34,12 @@ namespace CalamityOverhaul.OtherMods.Fargowiltas
         }
 
         private static void UpdateUI_Hook(Action<object, object> orig, object self, object gameTime) {
-            //如果 QuestLog 可见,强制关闭 StatButton
+            //QuestLog 可见时关 Stat 防止冲突
             if (QuestLog.Instance.visible) {
-                //关掉这些UI防止冲突
                 closeStatSheetMethod?.Invoke(self, null);
                 closeStatButtonMethod?.Invoke(self, null);
             }
             else {
-                //调用原始方法
                 orig(self, gameTime);
             }
         }

@@ -4,7 +4,7 @@ using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
-    /// <summary>菌生蟹物理与地形交互</summary>
+    /// <summary>物理与地形</summary>
     internal class CrabulonPhysics
     {
         private readonly NPC npc;
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         private bool DetectStepAhead(Vector2 checkStart, int direction, out int stepHeight) {
             stepHeight = 0;
 
-            //向下检测是否有实心方块
+            //下探实心
             bool hasGroundAhead = false;
             for (int y = 0; y < 20; y += 2) {
                 Vector2 checkPos = checkStart + new Vector2(0, y);
@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         }
 
         public void CheckAndFixStuckPosition() {
-            //骑乘吸附时位置由骑手定，跳过修正
+            //骑乘跳过卡入修正
             if (owner.Mount) {
                 stuckCheckTimer = 0;
                 lastValidPosition = npc.position;
@@ -252,11 +252,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
         public bool? ShouldFallThroughPlatforms() {
             if (owner.Mount) {
-                return true;//骑乘时蟹无碰撞，平台由骑手侧
+                return true;//骑乘无碰，平台骑手侧
             }
 
             if (owner.ai[7] > 0) {
-                return false;//垂直追逐不穿平台
+                return false;//垂追不穿平台
             }
 
             if (owner.ai[10] > 0) {

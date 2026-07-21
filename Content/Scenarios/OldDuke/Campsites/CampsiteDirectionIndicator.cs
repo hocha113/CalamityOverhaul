@@ -9,9 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 {
-    /// <summary>
-    /// 营地方向指示器
-    /// </summary>
+    /// <summary>营地方向指示</summary>
     internal class CampsiteDirectionIndicator : ModSystem
     {
         private static bool shouldShow;
@@ -20,7 +18,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
         private static float wavePhase;
         private static float glowTimer;
 
-        //动画参数
         private const float FadeSpeed = 0.08f;
         private const float MaxAlpha = 0.95f;
 
@@ -29,11 +26,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             UpdateAnimations();
         }
 
-        /// <summary>
-
-        /// 更新指示器状态
-
-        /// </summary>
         private static void UpdateIndicatorState() {
             Player player = Main.LocalPlayer;
             if (player == null || !player.active) {
@@ -41,18 +33,14 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 return;
             }
 
-            //检查寻找营地委托是否处于追踪状态
             var campsiteEntry = QuestManagerUI.Instance?.GetEntry(AbyssQuestLine.CampsiteKey);
             bool questTracked = campsiteEntry != null
                 && campsiteEntry.Status == QuestEntryStatus.Tracked;
 
-            //检查营地是否已生成
             bool campsiteExists = OldDukeCampsite.IsGenerated;
 
-            //委托追踪中且营地已生成时显示
             shouldShow = questTracked && campsiteExists;
 
-            //更新透明度
             if (shouldShow) {
                 if (indicatorAlpha < MaxAlpha) {
                     indicatorAlpha += FadeSpeed;
@@ -67,11 +55,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             indicatorAlpha = MathHelper.Clamp(indicatorAlpha, 0f, MaxAlpha);
         }
 
-        /// <summary>
-
-        /// 更新动画计时器
-
-        /// </summary>
         private static void UpdateAnimations() {
             if (indicatorAlpha > 0.01f) {
                 pulseTimer += 0.045f;
@@ -97,45 +80,36 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             Vector2 playerScreenPos = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
             Vector2 campsiteWorldPos = OldDukeCampsite.CampsitePosition;
 
-            //计算方向
             Vector2 directionToCampsite = campsiteWorldPos - player.Center;
             float distance = directionToCampsite.Length();
 
-            //如果玩家非常接近营地，不显示指示器
+            //近处不显示
             if (distance < 300f) {
                 return;
             }
 
             directionToCampsite.Normalize();
 
-            //计算箭头起始位置（距离玩家一定距离）
             Vector2 arrowStartOffset = directionToCampsite * 180f;
             Vector2 arrowStartPos = playerScreenPos + arrowStartOffset;
 
-            //绘制指示器
             DrawSulfurIndicator(spriteBatch, arrowStartPos, directionToCampsite, distance);
         }
 
         private static void DrawSulfurIndicator(SpriteBatch spriteBatch, Vector2 position, Vector2 direction, float distance) {
             float rotation = direction.ToRotation();
 
-            //脉冲效果
             float pulse = (float)Math.Sin(pulseTimer * 2.2f) * 0.5f + 0.5f;
             float glow = (float)Math.Sin(glowTimer * 1.8f) * 0.5f + 0.5f;
 
-            //绘制外发光
             DrawGlowRing(spriteBatch, position, rotation, pulse, indicatorAlpha);
 
-            //绘制距离文字
             DrawDistanceText(spriteBatch, position, distance, indicatorAlpha);
 
-            //绘制虚线箭头
             DrawDashedArrow(spriteBatch, position, direction, rotation, pulse, indicatorAlpha);
 
-            //绘制箭头头部
             DrawArrowHead(spriteBatch, position, direction, rotation, pulse, glow, indicatorAlpha);
 
-            //绘制装饰性粒子效果
             DrawToxicParticles(spriteBatch, position, rotation, indicatorAlpha);
         }
 
@@ -169,12 +143,11 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             float dashGap = dashLength * 0.45f;
             float dashWidth = 2.8f + pulse * 0.6f;
 
-            //硫磺海配色：深绿到黄绿渐变
+            //深绿→黄绿
             Color dashColorStart = new Color(140, 180, 70);
             Color dashColorEnd = new Color(100, 140, 50);
 
             for (int i = 0; i < dashCount; i++) {
-                //添加波动效果
                 float waveOffset = (float)Math.Sin(wavePhase + i * 0.4f) * 2f;
 
                 float t = i / (float)dashCount;
@@ -188,7 +161,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 Color dashColor = Color.Lerp(dashColorStart, dashColorEnd, t);
                 dashColor *= alpha * (0.85f + pulse * 0.15f);
 
-                //绘制虚线段
                 spriteBatch.Draw(
                     pixel,
                     dashPos,
@@ -201,7 +173,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                     0f
                 );
 
-                //绘制虚线段的发光效果
                 Color glowColor = new Color(160, 190, 80) * (alpha * 0.35f * pulse);
                 spriteBatch.Draw(
                     pixel,
@@ -221,27 +192,21 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             float arrowLength = 65f + pulse * 8f;
             Vector2 arrowTipPos = startPos + direction * arrowLength;
 
-            //箭头头部尺寸
             float headLength = 16f + pulse * 3f;
             float headWidth = 11f + pulse * 2f;
 
-            //主箭头颜色
             Color arrowColor = new Color(140, 180, 70) * (alpha * (0.9f + glow * 0.1f));
             Color arrowGlow = new Color(160, 190, 80) * (alpha * 0.5f * glow);
 
-            //绘制箭头头部发光
             DrawTriangle(spriteBatch, arrowTipPos, rotation, headLength * 1.2f, headWidth * 1.3f, arrowGlow);
 
-            //绘制箭头头部主体
             DrawTriangle(spriteBatch, arrowTipPos, rotation, headLength, headWidth, arrowColor);
 
-            //绘制箭头头部内发光
             Color innerGlow = new Color(200, 220, 100) * (alpha * 0.6f * glow);
             DrawTriangle(spriteBatch, arrowTipPos, rotation, headLength * 0.6f, headWidth * 0.6f, innerGlow);
         }
 
         private static void DrawTriangle(SpriteBatch spriteBatch, Vector2 position, float rotation, float length, float width, Color color) {
-            //绘制三角形的三条边
             Vector2 tip = position;
             Vector2 direction = rotation.ToRotationVector2();
             Vector2 perpendicular = new Vector2(-direction.Y, direction.X);
@@ -250,14 +215,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             Vector2 baseLeft = baseCenter - perpendicular * (width * 0.5f);
             Vector2 baseRight = baseCenter + perpendicular * (width * 0.5f);
 
-            //左边
             DrawLine(spriteBatch, tip, baseLeft, color, 2.5f);
-            //右边
             DrawLine(spriteBatch, tip, baseRight, color, 2.5f);
-            //底边
             DrawLine(spriteBatch, baseLeft, baseRight, color, 2.5f);
 
-            //填充三角形内部
             int segments = 8;
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
@@ -292,10 +253,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
         private static void DrawDistanceText(SpriteBatch spriteBatch, Vector2 position, float distance, float alpha) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
-            //计算文字位置（在箭头旁边）
             Vector2 textPos = position + new Vector2(0, 28);
 
-            //格式化距离
             int distanceInTiles = (int)(distance / 16f);
             string distanceText = $"{distanceInTiles}m";
             string locationText = OldDukeCampsite.TitleText.Value;
@@ -304,7 +263,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             Vector2 locationSize = font.MeasureString(locationText) * 0.75f;
             Vector2 locationTextPos = textPos + new Vector2(0, distanceSize.Y + 4);
 
-            //柔光衬底取代实心方框背景，呼应项目"拒绝方框UI"的规范
+            //柔光衬底，无方框
             Texture2D glow = CWRAsset.SoftGlow.Value;
             float glowPulse = MathF.Sin(Main.GlobalTimeWrappedHourly * 2.2f) * 0.15f + 0.85f;
             Color backingColor = new Color(70, 110, 40) with { A = 0 } * (alpha * 0.45f * glowPulse);
@@ -312,11 +271,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             DrawGlowBacking(spriteBatch, glow, textPos, distanceSize, backingColor);
             DrawGlowBacking(spriteBatch, glow, locationTextPos, locationSize, backingColor);
 
-            //绘制文字
             Color textColor = new Color(200, 220, 150) * alpha;
             Color glowColor = new Color(140, 180, 70) * (alpha * 0.6f);
 
-            //距离文字
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f;
                 Vector2 offset = angle.ToRotationVector2() * 1.5f;
@@ -324,7 +281,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
             Utils.DrawBorderString(spriteBatch, distanceText, textPos, textColor, 0.7f);
 
-            //位置文字
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f;
                 Vector2 offset = angle.ToRotationVector2() * 1.5f;
@@ -333,9 +289,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             Utils.DrawBorderString(spriteBatch, locationText, locationTextPos, textColor, 0.75f);
         }
 
-        /// <summary>
-        /// 在文字左上角对应的行范围内画一片柔光椭圆衬底，代替硬边框方框
-        /// </summary>
         private static void DrawGlowBacking(SpriteBatch spriteBatch, Texture2D glow, Vector2 textTopLeft, Vector2 textSize, Color color) {
             Vector2 center = textTopLeft + textSize / 2f;
             Vector2 scale = new Vector2((textSize.X + 36f) / glow.Width, (textSize.Y + 20f) / glow.Height);
@@ -357,7 +310,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                     0f
                 );
 
-            //绘制围绕箭头的小粒子
             int particleCount = 5;
             for (int i = 0; i < particleCount; i++) {
                 float angle = wavePhase + i * MathHelper.TwoPi / particleCount;
@@ -381,7 +333,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 );
             }
 
-            //绘制拖尾粒子效果
             for (int i = 0; i < 3; i++) {
                 float trailOffset = -15f - i * 8f;
                 Vector2 trailPos = position + rotation.ToRotationVector2() * trailOffset;

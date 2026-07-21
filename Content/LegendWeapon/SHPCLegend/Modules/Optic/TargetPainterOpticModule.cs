@@ -4,7 +4,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>锁定瞄具：命中上 Ichors 减防</summary>
+    /// <summary>锁定瞄具，命中上 Ichor</summary>
     internal sealed class TargetPainterOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;

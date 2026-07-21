@@ -4,34 +4,30 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 {
-    /// <summary>营地位置查找器</summary>
+    /// <summary>营地选址</summary>
     internal static class CampsiteLocationFinder
     {
-        //评分足够高时提前结束扫描；理论满分约350(100+100+0+150)，300已代表贴近硫磺海且干燥的优质点位
+        //提前结束阈值，满分约350
         private const int GoodEnoughScore = 300;
-        //纵向采样步长；地面判定/绘制本就以16像素为最小单位，逐行(step=1)扫描远超实际需要的精度
+        //纵向步长，地面以16px为粒度
         private const int SearchStepY = 3;
 
-        /// <summary>
-        /// 寻找最佳营地位置
-        /// </summary>
         public static Vector2? FindBestLocation() {
-            //首先检测硫磺海的位置
             bool sulphurSeaOnLeft = IsSulphurousSeaOnLeft();
 
-            //第一阶段：在硫磺海海岸区域搜索
+            //1 海岸
             Vector2? position = SearchInSulphurousSeaCoast(sulphurSeaOnLeft);
             if (position.HasValue) {
                 return position;
             }
 
-            //第二阶段：扩大硫磺海区域搜索范围
+            //2 扩大
             position = SearchInExtendedSulphurousArea(sulphurSeaOnLeft);
             if (position.HasValue) {
                 return position;
             }
 
-            //第三阶段：在玩家附近寻找硫磺海地形
+            //3 玩家附近
             position = SearchNearPlayer();
             if (position.HasValue) {
                 return position;
@@ -40,11 +36,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             return null;
         }
 
-        /// <summary>
-
-        /// 检测硫磺海是否在地图左侧
-
-        /// </summary>
         private static bool IsSulphurousSeaOnLeft() {
             int leftCheckStart = 100;
             int leftCheckEnd = 400;
@@ -55,15 +46,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             int leftSulphurCount = CountSulphurousTiles(leftCheckStart, leftCheckEnd, checkY, 50);
             int rightSulphurCount = CountSulphurousTiles(rightCheckStart, rightCheckEnd, checkY, 50);
 
-            //哪边硫磺海物块更多，硫磺海就在哪边
             return leftSulphurCount > rightSulphurCount;
         }
 
-        /// <summary>
-
-        /// 统计指定区域内的硫磺海物块数量
-
-        /// </summary>
         private static int CountSulphurousTiles(int startX, int endX, int centerY, int searchRadius) {
             int count = 0;
 
@@ -87,11 +72,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             return tileType == CWRID.Tile_SulphurousSand || tileType == CWRID.Tile_SulphurousSandstone;
         }
 
-        /// <summary>
-
-        /// 在硫磺海海岸区域搜索最佳位置
-
-        /// </summary>
         private static Vector2? SearchInSulphurousSeaCoast(bool seaOnLeft) {
             int searchStartX, searchEndX;
 
@@ -110,11 +90,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             return SearchWithScoring(searchStartX, searchEndX, startY, endY, stepX: 20);
         }
 
-        /// <summary>
-
-        /// 在扩展的硫磺海区域搜索
-
-        /// </summary>
         private static Vector2? SearchInExtendedSulphurousArea(bool seaOnLeft) {
             int searchStartX, searchEndX;
 
@@ -133,11 +108,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             return SearchWithScoring(searchStartX, searchEndX, startY, endY, stepX: 10);
         }
 
-        /// <summary>
-
-        /// 在玩家附近寻找硫磺海地形
-
-        /// </summary>
         private static Vector2? SearchNearPlayer() {
             Player player = Main.LocalPlayer;
             if (player == null || !player.active) {
@@ -147,7 +117,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             int playerTileX = (int)(player.Center.X / 16);
             int playerTileY = (int)(player.Center.Y / 16);
 
-            //优先搜索玩家周围的硫磺海地形
             for (int radius = 50; radius < 200; radius += 20) {
                 for (int offsetX = -radius; offsetX <= radius; offsetX += 10) {
                     for (int offsetY = -50; offsetY < 50; offsetY += 5) {
@@ -165,11 +134,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             return null;
         }
 
-        /// <summary>
-
-        /// 使用评分系统搜索最佳位置，命中足够高分的位置时提前结束，避免把整个区间扫完
-
-        /// </summary>
+        /// <summary>评分搜索，够高提前返回</summary>
         private static Vector2? SearchWithScoring(int startX, int endX, int startY, int endY, int stepX) {
             Vector2? bestPosition = null;
             int bestScore = -1;
@@ -196,13 +161,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             return bestPosition;
         }
 
-        /// <summary>
-
-        /// 验证位置是否适合生成营地
-
-        /// </summary>
+        /// <summary>校验选址</summary>
         public static Vector2? ValidateLocation(int tileX, int tileY) {
-            //边界检查
             if (!IsWithinBounds(tileX, tileY)) {
                 return null;
             }
@@ -212,25 +172,20 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 return null;
             }
 
-            //必须是实心地面
             if (!tile.HasTile || !Main.tileSolid[tile.TileType]) {
                 return null;
             }
 
-            //优先选择硫磺海物块
             bool isSulphurousTile = IsSulphurousTile(tile.TileType);
 
-            //不能是危险的方块类型
             if (IsDangerousTile(tile)) {
                 return null;
             }
 
-            //水域检查
             if (IsUnderwater(tileX, tileY)) {
                 return null;
             }
 
-            //空间检查
             if (!HasVerticalSpace(tileX, tileY, 10)) {
                 return null;
             }
@@ -239,22 +194,18 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 return null;
             }
 
-            //水包围检查
             if (IsSurroundedByWater(tileX, tileY)) {
                 return null;
             }
 
-            //海洋区域特殊检查
             if (IsInOceanBiome(tileX, tileY) && tileY > Main.worldSurface * 0.8f) {
                 return null;
             }
 
-            //如果不是硫磺海物块，检查周围是否有硫磺海物块
             if (!isSulphurousTile && !HasNearbySulphurousTiles(tileX, tileY)) {
                 return null;
             }
 
-            //通过所有检查，返回像素坐标
             return new Vector2(
                 tileX * 16 + 8,
                 tileY * 16 - 48
@@ -283,7 +234,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 }
             }
 
-            //如果周围至少有20%是硫磺海物块，则认为在硫磺海区域
+            //周围硫磺≥20%
             return totalChecks > 0 && (float)sulphurCount / totalChecks >= 0.2f;
         }
 
@@ -396,51 +347,31 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 
         #region 位置评分系统
 
-        /// <summary>
-
-        /// 评估位置质量，返回分数（越高越好）
-
-        /// </summary>
         private static int EvaluateLocation(int tileX, int tileY) {
             int score = 100;
 
-            //地表距离评分
             score += ScoreBySurfaceDistance(tileY);
 
-            //地面类型评分
             score += ScoreByTileType(tileX, tileY);
 
-            //周围水量评分
             score += ScoreByNearbyWater(tileX, tileY);
 
-            //硫磺海物块密度评分
             score += ScoreBySulphurousDensity(tileX, tileY);
 
             return score;
         }
 
-        /// <summary>
-
-        /// 根据与地表的距离评分
-
-        /// </summary>
         private static int ScoreBySurfaceDistance(int tileY) {
             float surfaceDistance = (float)Math.Abs(tileY - Main.worldSurface);
             return -(int)(surfaceDistance * 0.5f);
         }
 
-        /// <summary>
-
-        /// 根据地面类型评分
-
-        /// </summary>
         private static int ScoreByTileType(int tileX, int tileY) {
             Tile tile = Main.tile[tileX, tileY];
             if (tile == null || !tile.HasTile) {
                 return 0;
             }
 
-            //硫磺海物块优先级最高
             if (IsSulphurousTile(tile.TileType)) {
                 return 100;
             }
@@ -456,11 +387,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             return 0;
         }
 
-        /// <summary>
-
-        /// 根据周围水量评分（水越少越好）
-
-        /// </summary>
         private static int ScoreByNearbyWater(int tileX, int tileY) {
             int waterCount = 0;
 
@@ -481,11 +407,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             return -waterCount * 2;
         }
 
-        /// <summary>
-
-        /// 根据周围硫磺海物块密度评分（密度越高越好）
-
-        /// </summary>
         private static int ScoreBySulphurousDensity(int tileX, int tileY) {
             const int checkRadius = 15;
             int sulphurCount = 0;
@@ -512,7 +433,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 return 0;
             }
 
-            //硫磺海密度越高，分数越高
             float density = (float)sulphurCount / totalChecks;
             return (int)(density * 150);
         }

@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon
         private static bool defeat;
         private static int battleStartTime;
 
-        /// <summary>是否等待机甲选择UI生成完毕</summary>
+        /// <summary>等机甲选择UI</summary>
         public static bool AwaitSummonUIbeenGenerated;
 
         public override bool CanOverride() {

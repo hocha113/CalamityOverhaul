@@ -9,13 +9,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>钻地伏击：俯角入土→潜行(地表尘迹)→40帧预警→垂直破土→拱弧再入地</summary>
+    /// <summary>钻地伏击，入土→潜行尘迹→预警→破土→再入</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.BurrowAmbush, typeof(DestroyerStateContext))]
     internal class DestroyerBurrowAmbushState : DestroyerStateBase
     {
         public override string StateName => "BurrowAmbush";
         public override DestroyerStateIndex StateIndex => DestroyerStateIndex.BurrowAmbush;
-        /// <summary>钻地伏击自带地下走位，回归瞬移阀不介入</summary>
+        /// <summary>自带地下走位，关远距瞬移阀</summary>
         public override bool AllowFarSnap => false;
 
         #region 节奏常量
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             entryFired = false;
             exitBurstFired = false;
 
-            //客户端中途加入恢复状态时 Target 可能尚未赋值，回退用头部位置取地表
+            //中途加入Target未就绪时用头位取地表
             Vector2 anchor = context.Target.Alives() ? context.Target.Center : context.Npc.Center;
             groundY = DestroyerMotionFX.FindGroundBelow(anchor).Y;
             SoundEngine.PlaySound(SoundID.Roar with { Pitch = -0.45f, Volume = 1f }, context.Npc.Center);
@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 MathHelper.Lerp(34f, 52f, Math.Min(Timer / 40f, 1f)), 1.0f);
             context.AccelRate = 0.085f;
 
-            //入土瞬间：尘爆 + 钻地声
+            //入土尘爆
             if (!entryFired && npc.Center.Y > groundY + 40f) {
                 entryFired = true;
                 SpawnGroundBurst(npc.Center.X, 1f);
@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             SetMovement(context, new Vector2(player.Center.X, groundY + 400f), StalkSpeed(context), 1.2f);
 
-            //地表尘迹：沿头部X喷土+低鸣(可读性阀，可追踪地下轨迹)
+            //地表尘迹跟头X
             if (!VaultUtils.isServer) {
                 Vector2 surface = DestroyerMotionFX.FindGroundBelow(new Vector2(npc.Center.X, groundY - 600f));
                 if (Timer % 2 == 0 && DestroyerMotionFX.OnScreen(surface)) {
@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             //就位（与玩家水平对齐）或超时 → 喷发预警
             if ((Timer > 24 && Math.Abs(npc.Center.X - player.Center.X) < 100f) || Timer > StalkMaxTime) {
-                //喷发点在预警开始时锁定（公平阀：40帧反应窗口）
+                //预警锁定喷发点，40f窗
                 warnX = player.Center.X + player.velocity.X * 12f;
                 groundY = DestroyerMotionFX.FindGroundBelow(new Vector2(warnX, player.Center.Y)).Y;
                 breachFired = false;
@@ -225,13 +225,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             context.OrbitalVisual = 2;
             context.JawCommand = 1;
 
-            //喷发帧：一帧设定垂直全速
+            //喷发帧垂直全速
             if (Timer == 1) {
                 npc.Center = new Vector2(warnX, groundY + 880f);
                 npc.velocity = -Vector2.UnitY * EruptSpeed(context);
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
-                //ForceRoar：避免被入土咆哮的余音按IgnoreNew上限吞掉
+                //ForceRoar，防入土余音吞
                 SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.4f, Volume = 1.1f }, new Vector2(warnX, groundY));
                 if (!VaultUtils.isClient) {
                     DestroyerHeatWakeProj.EnsureForHead(npc);
@@ -241,7 +241,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             //速度门控接触伤害
             npc.damage = npc.velocity.Length() > 24f ? npc.defDamage : 0;
 
-            //破土瞬间：冲击环 + 碎屑喷泉 + 垂直定向震屏
+            //破土冲击+碎屑+震屏
             if (!breachFired && npc.Center.Y < groundY) {
                 breachFired = true;
                 Vector2 breachPoint = new Vector2(warnX, groundY);
@@ -253,7 +253,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 DestroyerMotionFX.CameraPunch(breachPoint, 8f, 16, "DestroyerErupt", -Vector2.UnitY);
             }
 
-            //越顶拱弧：破土后重力式弯落 + 横向漂移回地
+            //越顶拱弧回地
             if (breachFired && Timer > 26) {
                 npc.velocity.Y += 1.7f;
                 npc.velocity.X += Math.Sign(npc.velocity.X == 0 ? 1f : npc.velocity.X) * 0.25f;
@@ -263,7 +263,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
             npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
 
-            //再入地：小尘爆，决定继续伏击还是收场
+            //再入地小尘爆
             bool reentered = breachFired && npc.velocity.Y > 0f && npc.Center.Y > groundY + 60f;
             if (reentered && !reentryFired) {
                 reentryFired = true;

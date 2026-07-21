@@ -14,9 +14,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
     /// <summary>
     /// 比目鱼常驻 HUD（左下，手持时显示）
-    /// 核心 HalibutHudEye.fx：光标跟踪、眨眼、层数虹膜、死机红化、冷却翳、就绪闪
-    /// 复苏条 HalibutHudGauge.fx：液面、气泡、阈值刻线、临界态
-    /// 外围：技能徽章、层数弧、领域冷却环、研究进度弧
+    /// 核心 HalibutHudEye.fx、跟踪/眨眼/虹膜/红化/冷却翳/就绪闪
+    /// 复苏条 HalibutHudGauge.fx、液面/气泡/刻线/临界
+    /// 外围、徽章/层数弧/冷却环/研究弧
     /// </summary>
     [VaultLoaden(CWRConstant.UI + "FishSkill")]
     internal class HalibutHud : UIHandle, ILocalizedModType, IBottomLeftHud
@@ -86,11 +86,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         #region 左下角 HUD 队列接入
-        //比目鱼是主武器 HUD，作为左下角队列的底部锚定成员（次序最小，独占时不被顶高）
+        //主武器HUD、左下队列底锚（次序最小，独占不顶高）
         bool IBottomLeftHud.HudStackActive => Active;
         int IBottomLeftHud.HudStackOrder => 0;
         Vector2 IBottomLeftHud.HudStackAnchor => NaturalAnchor;
-        //自眼心向上覆盖卫星环/层数弧/压力柱顶，向下覆盖技能徽章与命中盒底部
+        //上下覆盖卫星环/层弧/压力柱与徽章命中盒
         float IBottomLeftHud.HudStackTopExtent => 60f;
         float IBottomLeftHud.HudStackBottomExtent => 70f;
         #endregion
@@ -135,15 +135,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private int hoverSatellite = -1;
 
         /// <summary>
-        /// HUD自然锚点（深渊之眼圆心），基于UI空间屏幕尺寸，不受缩放语境影响
-        /// <br/>未参与左下角队列避让时的原始位置
+        /// HUD自然锚点（深渊之眼圆心）、UI空间屏尺寸，不受缩放语境
+        /// <br/>未参与左下队列避让时的原始位置
         /// </summary>
         public static Vector2 NaturalAnchor => new(HalibutTheme.HudAnchorOffset.X,
             HalibutTheme.UIScreenH + HalibutTheme.HudAnchorOffset.Y);
 
         /// <summary>
-        /// HUD锚点（深渊之眼圆心），经左下角 HUD 队列避让后的最终位置
-        /// <br/>比目鱼为队列底部成员，独占时与 <see cref="NaturalAnchor"/> 一致；绘制与命中盒统一用本属性
+        /// HUD锚点（深渊之眼圆心）、经左下队列避让后的最终位
+        /// <br/>队列底成员，独占时与 <see cref="NaturalAnchor"/> 一致；绘制/命中统一用本属性
         /// </summary>
         public static Vector2 Anchor {
             get {
@@ -158,7 +158,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public static Vector2 GaugeCenter => Anchor + new Vector2(64f, -4f);
 
         /// <summary>
-        /// 研究完成等时刻的复苏计强化反馈：光粒飞向压力柱
+        /// 研究完成等、复苏强化，光粒飞向压力柱
         /// </summary>
         public void TriggerGaugeImprove(Vector2 from, int count) {
             count = Math.Clamp(count, 1, 20);
@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 技能切换通知：眼睛眨一下并点亮徽章
+        /// 技能切换、眨眼+点亮徽章
         /// </summary>
         public void NotifySkillSwitched() {
             if (blinkPhase >= 1f) {
@@ -240,7 +240,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private void UpdateEyeState(HalibutSave save, HalibutPlayer hp, float ratio) {
-            //眨眼调度：随机间隔触发，眨眼过程 blinkPhase 0→1
+            //眨眼调度、随机间隔，blinkPhase 0→1
             if (blinkPhase >= 1f) {
                 nextBlinkTimer--;
                 if (nextBlinkTimer <= 0) {
@@ -255,23 +255,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             else {
                 blinkPhase = MathF.Min(blinkPhase + 0.085f, 1f);
             }
-            //睁眼量：眨眼过程是一个迅速闭合再张开的三角波
+            //睁眼量、闭开三角波
             float blinkOpen = blinkPhase >= 1f ? 1f : MathF.Abs(blinkPhase * 2f - 1f);
             //复苏临界时眼睛圆睁
             float openTarget = MathF.Min(blinkOpen + ratio * 0.1f, 1.05f);
             eyeOpen = MathHelper.Lerp(eyeOpen, openTarget, 0.5f);
 
-            //注视：朝向光标的轻微偏移
+            //注视、光标微偏
             Vector2 toMouse = MousePosition - Anchor;
             float len = toMouse.Length();
             Vector2 gazeTarget = len > 4f ? toMouse / len * MathF.Min(len * 0.06f, 4.5f) : Vector2.Zero;
             pupilOffset = Vector2.Lerp(pupilOffset, gazeTarget, 0.12f);
 
-            //扩张：基础呼吸 + 躁动 + 悬停 + 就绪瞬间
+            //扩张、呼吸+躁动+悬停+就绪
             FishSkill skill = save.FishSkill;
             float cd = skill?.CooldownRatio ?? 0f;
             if (prevCooldownRatio > 0.02f && cd <= 0.001f) {
-                readyFlash = 1f;//冷却结束：闪光 + 瞳孔骤张
+                readyFlash = 1f;//冷却结束、闪光+瞳孔骤张
             }
             prevCooldownRatio = cd;
             if (readyFlash > 0f) {
@@ -380,7 +380,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 着色器缺失时的CPU回退：简单的环 + 图标
+        /// 着色器缺失CPU回退、环+图标
         /// </summary>
         private void DrawEyeFallback(SpriteBatch sb, Vector2 anchor, FishSkill skill, float cd, float a) {
             float time = Main.GlobalTimeWrappedHourly;
@@ -397,7 +397,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 当前技能徽章：眼睛右下方的小环图标
+        /// 技能徽章、眼右下小环图标
         /// </summary>
         private void DrawSkillBadge(SpriteBatch sb, Vector2 anchor, HalibutSave save, float a, float time) {
             FishSkill skill = save.FishSkill;
@@ -481,7 +481,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Rectangle dest = new((int)(center.X - GaugeW * 0.5f), (int)(center.Y - GaugeH * 0.5f), GaugeW, GaugeH);
             HalibutRenderer.DrawEffectQuad(sb, effect, dest);
 
-            //临界警告：外侧脉动红环
+            //临界警告、外侧脉动红环
             if (ratio >= 0.9f) {
                 float pulse = HalibutTheme.Breath(time, 3f, 6f);
                 HalibutRenderer.DrawRing(sb, center, 22f + pulse * 6f, 1.3f,

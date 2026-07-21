@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged.Starships
 {
-    //陨石雨命中后汇聚于光标处的微型星系：毁灭性范围伤害
+    //陨石雨后光标处微型星系AoE
     internal class StarshipMicroGalaxy : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;

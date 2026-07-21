@@ -3,26 +3,26 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 {
-    /// <summary>逐体节充能波：以头部 whoAmI 索引，体节按位置比例读波强调热感</summary>
+    /// <summary>充能波，头whoAmI索引，体节按比例读</summary>
     internal static class DestroyerChargeWave
     {
         private struct WaveData
         {
-            /// <summary>波峰位置（0=头部, 1=尾部）</summary>
+            /// <summary>波峰 0头1尾</summary>
             public float Phase;
-            /// <summary>波峰宽度（体节比例单位）</summary>
+            /// <summary>波峰宽(体节比例)</summary>
             public float Width;
             /// <summary>波峰强度 0~1</summary>
             public float Intensity;
-            /// <summary>整体均匀发光（全环闪烁用），为true时忽略Phase/Width</summary>
+            /// <summary>全环均匀发光，忽略Phase/Width</summary>
             public bool FullBody;
-            /// <summary>末次推送帧号，过期判定</summary>
+            /// <summary>末次推送帧</summary>
             public uint LastPushFrame;
         }
 
         private static readonly WaveData[] waves = new WaveData[Main.maxNPCs];
 
-        /// <summary>每帧由状态推送当前波形（所有端都可调用，纯视觉）</summary>
+        /// <summary>每帧推送波形，纯视觉</summary>
         public static void Push(int controllerId, float phase, float width, float intensity, bool fullBody = false) {
             if (controllerId < 0 || controllerId >= waves.Length) {
                 return;
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             };
         }
 
-        /// <summary>体节读取自身位置（0=头, 1=尾）处的波强度，未推送或已过期返回0</summary>
+        /// <summary>读体节波强，过期回0</summary>
         public static float Read(int controllerId, float bodyFraction) {
             if (controllerId < 0 || controllerId >= waves.Length) {
                 return 0f;
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             }
 
             float dist = Math.Abs(bodyFraction - wave.Phase);
-            //高斯衰减的波峰
+            //高斯波峰
             float falloff = (float)Math.Exp(-(dist * dist) / (wave.Width * wave.Width) * 4f);
             return wave.Intensity * falloff;
         }

@@ -12,13 +12,11 @@ using Terraria.ModLoader.Default;
 
 namespace CalamityOverhaul.Content.Items.Modifys
 {
-    //补救卸载副本物品，防更新后满背包卸载物
+    //卸载物回写映射
     internal class RecoverUnloadedItem : ICWRLoader
     {
         public static int TargetID { get; private set; }
-        /// <summary>
-        /// 需要恢复的卸载物品，从字符键对应到目标物品的ID
-        /// </summary>
+        /// <summary>卸载键 → 目标物品ID</summary>
         internal static Dictionary<string, int> RecoverUnloadedItemDic { get; private set; } = [];
         void ICWRLoader.SetupData() {
             foreach (var rItem in ItemOverride.Instances) {
@@ -39,10 +37,7 @@ namespace CalamityOverhaul.Content.Items.Modifys
             TargetID = ModContent.ItemType<UnloadedItem>();
         }
 
-        /// <summary>
-        /// 无尽系列与超级工作台移除后的替补映射：材料折算为链上仍然存在的等价物，
-        /// 灾厄不在场时回落到原版物品，保证旧存档不留卸载占位
-        /// </summary>
+        /// <summary>无尽系/超级工作台替补，灾厄不在则回落原版</summary>
         private static void AddInfiniteSeriesRecovers() {
             int neutronIngot = ModContent.ItemType<NeutronStarIngot>();
             RecoverUnloadedItemDic.Add("CalamityOverhaul/InfiniteIngot", neutronIngot);

@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    /// 荒芜弓：按住左键自动张弓，箭亡时爆发连锁沙金电流
+    /// 按住张弓，箭亡连锁沙金电流
     internal class BarrenBow : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "BarrenBow";
@@ -72,20 +72,20 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// 荒芜弓手持弹幕：<see cref="BarrenBow.Shoot"/> 生成，开火期存活
+    /// <see cref="BarrenBow.Shoot"/>生成，开火期存活
     /// 瞄准张弓、追踪箭矢，箭亡处引爆电流；松键后在途箭未结算时隐形守望
     internal class BarrenBowHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Ranged + "BarrenBow";
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<BarrenBow>();
 
-        /// <summary>弹药消耗门控，仅手持放箭时放行(<see cref="BarrenBow.CanConsumeAmmo"/>)</summary>
+        /// <summary>弹药消耗门控，仅放箭时放行</summary>
         internal static bool AmmoConsumeContext { get; private set; }
 
         //弓弦锚点(纹理 56×78，弦 x=18~20)
         private static readonly Vector2 StringTopTex = new(18.5f, 21f);
         private static readonly Vector2 StringBottomTex = new(18.5f, 60f);
-        /// <summary>张弓计时器，达到 <see cref="Item.useTime"/> 时放箭</summary>
+        /// <summary>张弓计时，满useTime放箭</summary>
         private float drawTimer;
         /// <summary>当前帧的弹药状态预览（不消耗）</summary>
         private ShootState ammoState;
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         private float DrawProgress => MathHelper.Clamp(drawTimer / Item.useTime, 0f, 1f);
         /// <summary>当前是否仍手持着荒芜弓</summary>
         private bool ItemValid => Item != null && !Item.IsAir && Item.type == ModContent.ItemType<BarrenBow>();
-        /// <summary>是否处于开火交互中：按住左键、手持正确物品且鼠标未悬停UI</summary>
+        /// <summary>开火交互中</summary>
         private bool Engaged => ItemValid && DownLeft && !Owner.mouseInterface;
         public override bool CanFire => DownLeft;
         private float HoldDistance => TextureValue.Width / 2f - 8;
@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Projectile.timeLeft = 2;
 
             if (!Engaged) {
-                //守望：不接管姿态/绘制，仅追踪箭矢
+                //守望，只追踪箭
                 drawTimer = 0;
                 Projectile.Center = Owner.GetPlayerStabilityCenter();
                 UpdateTrackedArrows();
@@ -182,7 +182,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             float holdArmRot = Projectile.rotation - MathHelper.PiOver2 * SafeGravDir;
             Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, holdArmRot);
 
-            //拉弦手：张弓越满，手臂越收拢
+            //拉弦手臂收拢
             float pull = DrawProgress;
             Player.CompositeArmStretchAmount stretch = Player.CompositeArmStretchAmount.Full;
             if (pull > 0.25f)
@@ -243,7 +243,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 BurstDamage = damage / 2,
                 LastPos = Projectile.Center
             });
-            //防止极端情况下列表无限膨胀
+            //防列表膨胀
             if (trackedArrows.Count > 30) {
                 trackedArrows.RemoveAt(0);
             }
@@ -325,7 +325,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         /// <summary>
-        /// 绘制动态弓弦：上下锚点到搭箭点的两段直线
+        /// 动态弓弦两段直线
         /// </summary>
         private void DrawBowstring(Color lightColor) {
             Vector2 top = TexPosToWorld(StringTopTex);
@@ -337,7 +337,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         /// <summary>
-        /// 绘制弓体：使用扣除着色器裁掉纹理上烘焙的静态弓弦
+        /// 弓体，扣除着色器裁静态弦
         /// </summary>
         private void DrawBowBody(Vector2 drawPos, Color lightColor) {
             Effect effect = EffectLoader.DeductDraw.Value;
@@ -409,7 +409,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     }
 
     /// <summary>
-    /// 荒芜电流：沙金色的连锁电弧，继承风暴电弧的连锁行为
+    /// 沙金连锁电弧
     /// </summary>
     internal class BarrenArc : StormArc
     {
@@ -425,9 +425,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// <summary>
-    /// 荒芜电涌的视觉冲击波，无伤害，使用 <see cref="EffectLoader.BarrenPulse"/> 着色器绘制
-    /// </summary>
+    /// <summary>荒芜电涌视觉波，无伤害，BarrenPulse</summary>
     internal class BarrenPulseProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;

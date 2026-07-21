@@ -4,16 +4,15 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>骇入目标种类工厂基类，新种类只需新增子类</summary>
+    /// <summary>目标种类工厂基类，新种类加子类即可</summary>
     internal abstract class HackTargetType : VaultType<HackTargetType>, ILocalizedModType
     {
         #region 静态注册表
-        /// <summary>FullName 到实例，持久化用</summary>
+        /// <summary>FullName → 实例，持久化用</summary>
         public static readonly Dictionary<string, HackTargetType> FullNameToInstance = [];
-        /// <summary>HackTargetKind 到实例</summary>
+        /// <summary>Kind → 实例</summary>
         public static readonly Dictionary<HackTargetKind, HackTargetType> KindToInstance = [];
 
-        /// <summary>已注册目标种类总数</summary>
         public static int Count => Instances.Count;
 
         public static T Get<T>() where T : HackTargetType {
@@ -40,13 +39,13 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 实例属性
 
-        /// <summary>注册序号，按加载顺序自增</summary>
+        /// <summary>注册序号</summary>
         public int SlotIndex { get; private set; } = -1;
 
         /// <summary>SupportedTargets 位标志</summary>
         public abstract HackTargetKind Kind { get; }
 
-        /// <summary>悬停优先级，越大越优先选中</summary>
+        /// <summary>悬停优先级，越大越先</summary>
         public virtual int HoverPriority => 0;
 
         #endregion
@@ -75,10 +74,10 @@ namespace CalamityOverhaul.Content.HackTimes
         #endregion
 
         #region 子类重写接口
-        /// <summary>鼠标世界坐标处探测该种类目标，无则 null</summary>
+        /// <summary>鼠标世界坐标探测，无则 null</summary>
         public abstract IHackTarget TryDetectHovered(Vector2 mouseWorld);
 
-        /// <summary>选中目标后的反馈钩子</summary>
+        /// <summary>选中后反馈钩子</summary>
         public virtual void OnSelectFeedback(IHackTarget target) {
             if (!VaultUtils.isServer) {
                 Terraria.Audio.SoundEngine.PlaySound(Common.CWRSound.Hacker);
@@ -89,7 +88,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 全局调度
 
-        /// <summary>按 HoverPriority 从高到低探测，返回最高优先级命中</summary>
+        /// <summary>按 HoverPriority 取最高命中</summary>
         public static IHackTarget DetectTopmostHover(Vector2 mouseWorld) {
             IHackTarget bestHit = null;
             int bestPriority = int.MinValue;

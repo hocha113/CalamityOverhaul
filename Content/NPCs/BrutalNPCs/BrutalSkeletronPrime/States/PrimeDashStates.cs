@@ -9,29 +9,29 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>旋转冲撞：late-snap 蓄势→锁定→全速贯穿→硬刹，3~5 段；伤害绑速度门槛</summary>
+    /// <summary>旋转冲撞，late-snap，伤害绑速度</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.SpinDash, typeof(PrimeStateContext))]
     internal class PrimeSpinDashState : PrimeStateBase
     {
         public override string StateName => "SpinDash";
         public override PrimeStateIndex StateIndex => PrimeStateIndex.SpinDash;
 
-        /// <summary>全速贯穿帧数（速度不衰减；30f × 32px ≈ 960px ≈ 60格）</summary>
+        /// <summary>全速贯穿帧</summary>
         internal static int DashActive => 30;
-        /// <summary>硬刹收势帧数</summary>
+        /// <summary>硬刹帧</summary>
         internal static int BrakeFrames => 14;
-        /// <summary>蓄势末段锁定瞄准的提前量（锁定后玩家走位不再被跟踪）</summary>
+        /// <summary>蓄势末锁定提前量</summary>
         internal static int AimLockLead => 14;
-        /// <summary>基础冲刺速度 px/帧（大师模式）</summary>
+        /// <summary>冲刺速大师</summary>
         internal static float DashSpeedMaster => 36f;
-        /// <summary>基础冲刺速度 px/帧（普通/专家）</summary>
+        /// <summary>冲刺速普/专</summary>
         internal static float DashSpeedNormal => 32f;
-        /// <summary>死亡模式追加速度</summary>
+        /// <summary>死亡追加速</summary>
         internal static float DashSpeedDeathBonus => 3f;
-        /// <summary>Boss急速模式速度倍率</summary>
+        /// <summary>BossRush速倍率</summary>
         internal static float DashSpeedBossRushMult => 1.2f;
 
-        //0=蓄势 1=突进 2=硬刹
+        //0蓄势 1突进 2硬刹
         private int cyclePhase;
         private int phaseTimer;
         private Vector2 lockedAim = Vector2.UnitY;
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             npc.damage = 0;
             int telegraph = PrimeDirector.DashTelegraphFrames;
 
-            //锁定前持续预测跟踪；锁定后瞄准冻结，预警线即真实弹道
+            //锁定前跟踪，锁定后冻瞄准
             if (phaseTimer < telegraph - AimLockLead) {
                 lockedAim = (context.Target.Center + context.Target.velocity * 8f - npc.Center)
                     .SafeNormalize(Vector2.UnitY);
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
             context.DashDirection = lockedAim;
 
-            //late-snap 蓄势曲线：前段几乎不动，末段急速后仰拉满
+            //late-snap蓄势
             float t = phaseTimer / (float)telegraph;
             float windup = (float)System.Math.Pow(t, 8);
             context.SetChargeState(1, windup);
@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             if (!VaultUtils.isServer) {
                 PrimeScreenEffects.PushHeatWake(npc.Center, npc.velocity.ToRotation(), 1f);
                 SoundEngine.PlaySound("CalamityMod/Sounds/Custom/ExoMechs/AresEnraged".GetSound() with { Pitch = 1.18f, Volume = 0.75f }, npc.Center);
-                //冲撞释放帧天空闪雷
+                //释放闪雷
                 MachineEffect.TriggerSkyFlash(npc.Center, 0.8f);
             }
         }
@@ -123,11 +123,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         private void UpdateDash(PrimeStateContext context) {
             NPC npc = context.Npc;
             float speed = npc.velocity.Length();
-            //接触伤害严格绑定冲刺速度
+            //伤害绑冲刺速
             npc.damage = speed > PrimeDirector.DashContactSpeedThreshold ? npc.defDamage * 2 : 0;
             npc.defense = (int)(npc.defDefense * 1.25f);
             SpinRotation(npc, 0.34f);
-            //全速保持：贯穿段不衰减，硬刹只发生在收势段
+            //贯穿不衰减
 
             if (!VaultUtils.isServer) {
                 PrimeScreenEffects.PushHeatWake(npc.Center, npc.velocity.ToRotation(),
@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         private void UpdateBrake(PrimeStateContext context) {
             NPC npc = context.Npc;
             float speed = npc.velocity.Length();
-            //硬刹首帧仍有速度伤害，跌破门槛自动失伤
+            //硬刹跌破门槛失伤
             npc.damage = speed > PrimeDirector.DashContactSpeedThreshold ? npc.defDamage * 2 : 0;
             npc.velocity *= 0.62f;
             SpinRotation(npc, 0.18f);
@@ -166,26 +166,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         }
     }
 
-    /// <summary>狂暴闪现贯穿：预警→远侧闪现→直线贯穿，越界再闪，三连无死区</summary>
+    /// <summary>狂暴闪现贯穿三连</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.RageDash, typeof(PrimeStateContext))]
     internal class PrimeRageDashState : PrimeStateBase
     {
         public override string StateName => "RageDash";
         public override PrimeStateIndex StateIndex => PrimeStateIndex.RageDash;
 
-        /// <summary>预警末段锁定提前量</summary>
+        /// <summary>预警末锁定提前量</summary>
         internal static int AimLockLead => 14;
-        /// <summary>闪现至玩家远侧的距离</summary>
+        /// <summary>远侧闪现距</summary>
         internal static float FlashDistance => 600f;
-        /// <summary>闪现现身后的凝滞帧数：瞬身→定格→爆发的节奏拍，也是玩家最后的确认窗口</summary>
+        /// <summary>现身凝滞帧</summary>
         internal static int AppearFreezeFrames => 5;
-        /// <summary>贯穿速度 px/帧（大师模式）</summary>
+        /// <summary>贯穿速大师</summary>
         internal static float DashSpeedMaster => 34f;
-        /// <summary>贯穿速度 px/帧（普通/专家）</summary>
+        /// <summary>贯穿速普/专</summary>
         internal static float DashSpeedNormal => 30f;
-        /// <summary>越界判定距离（超过即进入下一段闪现）</summary>
+        /// <summary>越界距</summary>
         internal static float OutOfBoundsDistance => 1150f;
-        /// <summary>单段贯穿最长帧数</summary>
+        /// <summary>单段最长帧</summary>
         internal static int MaxDashFrames => 34;
 
         private int phase;
@@ -234,7 +234,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             int telegraph = PrimeDirector.DashTelegraphFrames;
             int lockFrame = telegraph - AimLockLead;
 
-            //锁定前跟踪；锁定后预警线画在闪现后的真实贯穿路径上
+            //锁定前跟踪，锁后画真路径
             if (phaseTimer < lockFrame) {
                 dashDir = DirectionToTarget(context);
             }
@@ -250,7 +250,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             context.SetChargeState(1, phaseTimer / (float)telegraph);
             npc.velocity *= 0.9f;
 
-            //蓄势吼声：固定提前量的预警蜂鸣
+            //蓄势蜂鸣
             if (phaseTimer == 4 && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.ForceRoar with { Volume = Counter == 0 ? 0.9f : 0.6f, Pitch = 0.2f }, npc.Center);
             }
@@ -271,7 +271,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             context.ResetChargeState();
 
             if (!VaultUtils.isServer) {
-                //旧位置：向心内爆电光 + 坍缩闪光（"机体被抽走"）
+                //旧位坍缩
                 for (int i = 0; i < 14; i++) {
                     Vector2 pos = flashFrom + Main.rand.NextVector2CircularEdge(70f, 70f);
                     PRTLoader.NewParticle<PRT_Spark>(pos, (flashFrom - pos) * 0.16f,
@@ -279,7 +279,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 }
                 PRTLoader.NewParticle<PRT_Light>(flashFrom, Vector2.Zero, Color.OrangeRed, 2f)?.Configure(14);
 
-                //新位置：展开闪光 + 外放电光 + 小冲击波（"机体在此重组"）
+                //新位展开
                 for (int i = 0; i < 14; i++) {
                     PRTLoader.NewParticle<PRT_Spark>(npc.Center, VaultUtils.RandVr(4f, 11f),
                         Color.Gold, Main.rand.NextFloat(1.2f, 1.6f))?.Configure(false, 14);
@@ -298,7 +298,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         private void LineDash(PrimeStateContext context) {
             NPC npc = context.Npc;
 
-            //现身凝滞拍：瞬身 → 定格 → 爆发，给玩家最后确认弹道的窗口
+            //现身凝滞
             if (phaseTimer < AppearFreezeFrames) {
                 npc.damage = 0;
                 npc.velocity = Vector2.Zero;
@@ -312,7 +312,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
             npc.velocity = dashDir * speed;
 
-            //贯穿起步：爆发音 + 热浪 + 天空闪雷
+            //贯穿起步
             if (phaseTimer == AppearFreezeFrames && !VaultUtils.isServer) {
                 SoundEngine.PlaySound("CalamityMod/Sounds/Custom/ExoMechs/AresEnraged".GetSound() with { Pitch = 1.1f, Volume = 0.8f }, npc.Center);
                 MachineEffect.TriggerSkyFlash(npc.Center, 0.8f);

@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     {
         public override string StateName => "Despawn";
         public override DestroyerStateIndex StateIndex => DestroyerStateIndex.Despawn;
-        /// <summary>脱战下潜不受回归瞬移阀干预</summary>
+        /// <summary>脱战关远距瞬移阀</summary>
         public override bool AllowFarSnap => false;
 
         public DestroyerDespawnState() {
@@ -46,23 +46,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         }
     }
 
-    /// <summary>死亡演出：锁血停摆，躯体由疏到密殉爆，头部终爆后真死</summary>
+    /// <summary>死亡演出，锁血→疏密殉爆→头终爆真死</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Death, typeof(DestroyerStateContext))]
     internal class DestroyerDeathState : DestroyerStateBase
     {
         public override string StateName => "Death";
         public override DestroyerStateIndex StateIndex => DestroyerStateIndex.Death;
-        /// <summary>死亡演出全程静止，回归瞬移阀不介入</summary>
+        /// <summary>死亡演出关远距瞬移阀</summary>
         public override bool AllowFarSnap => false;
 
-        //演出节奏（单位：帧，60帧/秒）
-        private const int PreludeTime = 50;   //急停 + 关节漏火花
-        private const int ChainTime = 185;    //沿躯体由疏到密的连环爆炸
-        private const int FinaleHold = 15;    //头部终爆后的短暂保持
+        //演出节奏(帧)
+        private const int PreludeTime = 50;//急停+漏火花
+        private const int ChainTime = 185;//疏→密连环爆
+        private const int FinaleHold = 15;//终爆后短持
         private const int FinaleStart = PreludeTime + ChainTime;
         private const int TotalTime = FinaleStart + FinaleHold;
 
-        /// <summary>探针 ai[3] 标记：死亡演出期间由 DestroyerDeathState 接管，ProbeAI 进入僵直殉爆模式</summary>
+        /// <summary>探针ai[3]死亡演出标记</summary>
         internal const float ProbeDeathPerformanceMarker = -2f;
 
         public DestroyerDeathState() {
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             FreezeWorm(context);
             PrepareProbesForDeathPerformance();
 
-            //过载警报音（服务端为 no-op，单人/客户端本地播放，自然同步）
+            //过载警报，本端播
             SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -0.8f, Volume = 0.9f }, npc.Center);
             SoundEngine.PlaySound(SoundID.NPCDeath14 with { Pitch = -0.6f, Volume = 0.7f }, npc.Center);
         }
@@ -92,14 +92,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         public override IDestroyerState OnUpdate(DestroyerStateContext context) {
             NPC npc = context.Npc;
 
-            //全程锁血、不可受伤、不造成接触伤害
+            //锁血无伤无害
             npc.dontTakeDamage = true;
             npc.damage = 0;
             if (npc.life < 1) {
                 npc.life = 1;
             }
 
-            //蠕虫急停（头部停住，躯体因贴合前节而整体静止）
+            //头急停，躯体跟停
             npc.velocity *= 0.85f;
             if (npc.velocity.Length() < 0.1f) {
                 npc.velocity = Vector2.Zero;
@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             KeepSegmentsHarmless(context);
             KeepProbesInDeathPerformance();
 
-            //探针殉爆与演出计时同步，服务端/单人端执行击杀
+            //探针殉爆跟计时，服务端击杀
             if (Timer < FinaleStart) {
                 UpdateProbeChainExplosions();
             }
@@ -119,14 +119,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 ExplodeAllRemainingProbes(true);
             }
 
-            //演出视觉：非服务端本地生成，单人/多人客户端均可见
+            //视觉本端生成
             if (!VaultUtils.isServer) {
                 UpdatePerformanceVisuals(context);
             }
 
             Timer++;
 
-            //演出结束：由服务端/单人端放行并真正击杀，触发正常掉落与击杀标记
+            //服务端/单人放行真死
             if (Timer >= TotalTime && !VaultUtils.isClient) {
                 context.DeathPerformanceFinished = true;
                 npc.dontTakeDamage = false;
@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         private void UpdatePerformanceVisuals(DestroyerStateContext context) {
             if (Timer < PreludeTime) {
-                //前奏：屏幕内关节漏火花 + 零星小爆，机体"卡死"质感
+                //前奏漏火花+零星小爆
                 if (Timer % 3 == 0) {
                     SpawnSparksOnVisibleSegments(context, 0.25f, 5f, new Color(255, 190, 70));
                 }
@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 }
             }
             else if (Timer < FinaleStart) {
-                //连环爆炸：每波间隔由疏到密，且每波点燃屏幕内大量体节，使可见区域爆炸非常密集
+                //连环爆，疏→密
                 float chainProgress = (Timer - PreludeTime) / (float)ChainTime; //0→1
                 int burstInterval = (int)MathHelper.Lerp(7f, 2f, chainProgress);
                 if (Timer % Math.Max(burstInterval, 2) == 0) {
@@ -171,12 +171,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 }
             }
             else if (Timer == FinaleStart) {
-                //头部终极殉爆 + 全身连锁爆裂
+                //头终爆+全身连锁
                 SpawnFinaleBlast(context);
             }
         }
 
-        /// <summary>屏幕内头/体节按概率爆炸，屏外跳过；返回实际爆炸数</summary>
+        /// <summary>屏内按概率爆，回实际数</summary>
         private static int SpawnBlastsOnVisibleSegments(DestroyerStateContext context, float perSegmentChance, float intensity) {
             if (VaultUtils.isServer) {
                 return 0;
@@ -203,7 +203,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             return 1;
         }
 
-        /// <summary>生成一团殉爆：爆炸光团 + 火花四溅 + 余烬 + 烟雾 + 动态光照 + 音效</summary>
+        /// <summary>一团殉爆(光+火花+余烬+烟+光+音)</summary>
         private static void SpawnBlast(Vector2 pos, float scale, bool isFinale) {
             if (VaultUtils.isServer) {
                 return;
@@ -211,11 +211,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             Color warm = Color.Lerp(new Color(255, 150, 50), new Color(255, 85, 35), Main.rand.NextFloat());
 
-            //核心爆炸光团（SoftGlow 叠加）
+            //核心光团
             PRTLoader.NewParticle<PRT_MechExplosion>(pos, Main.rand.NextVector2Circular(1.5f, 1.5f), warm, scale)
                 .Configure(Main.rand.Next(28, 40), warm);
 
-            //火花四溅（密集连环靠数量取胜，单团精简粒子量）
+            //火花
             int sparkCount = isFinale ? 46 : Main.rand.Next(4, 8);
             for (int i = 0; i < sparkCount; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(3f, 11f) * (isFinale ? 1.6f : scale);
@@ -224,7 +224,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                     Main.rand.NextFloat(1.0f, 1.8f)).Configure(true, Main.rand.Next(16, 30));
             }
 
-            //岩浆余烬
+            //余烬
             int emberCount = isFinale ? 26 : 2;
             for (int i = 0; i < emberCount; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(3.5f, 3.5f);
@@ -232,7 +232,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                     Color.White, Main.rand.NextFloat(0.8f, 1.4f) * scale).SetLifetime(20, 48);
             }
 
-            //滚滚浓烟
+            //浓烟
             int smokeCount = isFinale ? 18 : 2;
             for (int i = 0; i < smokeCount; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(2f, 2f) - Vector2.UnitY * Main.rand.NextFloat(0.5f, 1.8f);
@@ -244,7 +244,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             Lighting.AddLight(pos, warm.ToVector3() * (isFinale ? 3.2f : 1.2f) * scale);
 
-            //密集连环爆炸时按概率播放，避免大量爆音同帧叠加导致破音
+            //密集时按概率播爆音
             if (isFinale || Main.rand.NextBool(3)) {
                 SoundEngine.PlaySound(SoundID.Item14 with {
                     Pitch = isFinale ? -0.5f : Main.rand.NextFloat(-0.2f, 0.35f),
@@ -253,7 +253,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
         }
 
-        /// <summary>对屏幕内的各体节按概率喷射火花，模拟各处接缝喷火 / 电路过载，屏幕外跳过</summary>
+        /// <summary>屏内体节按概率喷火花</summary>
         private static void SpawnSparksOnVisibleSegments(DestroyerStateContext context, float perSegmentChance, float speed, Color color) {
             if (VaultUtils.isServer) {
                 return;
@@ -272,7 +272,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
         }
 
-        /// <summary>头部终极殉爆 + 全身连锁爆裂 + 强烈屏幕震动</summary>
+        /// <summary>头终爆+全身连锁+震屏</summary>
         private void SpawnFinaleBlast(DestroyerStateContext context) {
             if (VaultUtils.isServer) {
                 return;
@@ -304,7 +304,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             KeepSegmentsHarmless(context);
         }
 
-        /// <summary>让躯体各节停止造成伤害且不可受伤，避免演出期间还能撞死玩家或被打出异常</summary>
+        /// <summary>躯体无伤无害</summary>
         private static void KeepSegmentsHarmless(DestroyerStateContext context) {
             foreach (var seg in context.BodySegments) {
                 if (seg.Alives()) {
@@ -319,7 +319,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
         }
 
-        /// <summary>现存探针切入死亡演出：僵直锁血，排定殉爆帧 ai[1]；ai[0]=0 未爆，ai[3]=Marker</summary>
+        /// <summary>探针入演出，ai[1]殉爆帧 ai[3]=Marker</summary>
         private static void PrepareProbesForDeathPerformance() {
             if (VaultUtils.isClient) {
                 return;
@@ -344,7 +344,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
         }
 
-        /// <summary>演出期间维持探针僵直、无害，并镜像当前演出计时到 ai[2] 供客户端表现参考</summary>
+        /// <summary>探针僵直无害，计时镜像ai[2]</summary>
         private void KeepProbesInDeathPerformance() {
             foreach (var probe in Main.ActiveNPCs) {
                 if (probe.type != NPCID.Probe || probe.ai[3] != ProbeDeathPerformanceMarker) {
@@ -368,7 +368,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
         }
 
-        /// <summary>连环爆炸阶段：在排定帧精确引爆探针，避免重复殉爆</summary>
+        /// <summary>排定帧引爆探针</summary>
         private void UpdateProbeChainExplosions() {
             foreach (var probe in Main.ActiveNPCs) {
                 if (probe.type != NPCID.Probe || probe.ai[3] != ProbeDeathPerformanceMarker || probe.ai[0] >= 1f) {
@@ -381,7 +381,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
         }
 
-        /// <summary>终爆阶段：引爆所有尚未殉爆的探针</summary>
+        /// <summary>终爆清剩余探针</summary>
         private static void ExplodeAllRemainingProbes(bool isFinale) {
             foreach (var probe in Main.ActiveNPCs) {
                 if (probe.type != NPCID.Probe || probe.ai[3] != ProbeDeathPerformanceMarker || probe.ai[0] >= 1f) {
@@ -409,7 +409,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
         }
 
-        /// <summary>前奏/连环阶段：为僵直探针喷射过载火花</summary>
+        /// <summary>僵直探针过载火花</summary>
         private static void SpawnSparksOnDeathPerformanceProbes(float chance, float speed, Color color) {
             if (VaultUtils.isServer) {
                 return;
@@ -430,7 +430,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
         }
 
-        /// <summary>供 ProbeAI 判断当前探针是否应进入死亡演出僵直模式</summary>
+        /// <summary>ProbeAI 是否死亡演出僵直</summary>
         internal static bool IsProbeInDeathPerformance(NPC probe) {
             if (probe == null || probe.type != NPCID.Probe) {
                 return false;
@@ -439,7 +439,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 return probe.ai[0] < 1f;
             }
 
-            //标记尚未同步时的兜底：只要毁灭者头部处于 Death 状态，也视为演出探针
+            //标记未同步时，头Death也算演出探针
             foreach (var npc in Main.ActiveNPCs) {
                 if (npc.type == NPCID.TheDestroyer && npc.active
                     && (int)npc.ai[2] == (int)DestroyerStateIndex.Death) {
@@ -458,7 +458,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             Main.instance.CameraModifiers.Add(modifier);
         }
 
-        /// <summary>世界坐标是否在屏幕可见范围(含外扩边距)，屏外跳过爆炸</summary>
+        /// <summary>是否屏内(含边距)</summary>
         private static bool OnScreen(Vector2 worldPos, float margin = 260f) {
             return worldPos.X > Main.screenPosition.X - margin
                 && worldPos.X < Main.screenPosition.X + Main.screenWidth + margin

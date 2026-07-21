@@ -79,11 +79,11 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
         #region 颜色系统 - 改为白蓝色系
         public override Color GetLightningColor(float factor) {
-            //风暴女武神主题：白色到蓝色的渐变
+            //白→蓝渐变
             Color baseColor = ColorStyle switch {
-                1 => new Color(200, 230, 255),    //亮白蓝（第一击 - 突刺）
-                2 => new Color(150, 200, 255),    //中蓝白（第二击 - 横扫）
-                3 => new Color(100, 180, 255),    //深蓝白（第三击 - 上挑，不追踪）
+                1 => new Color(200, 230, 255),    //亮白蓝（突刺）
+                2 => new Color(150, 200, 255),    //中蓝白（横扫）
+                3 => new Color(100, 180, 255),    //深蓝白（上挑，不追踪）
                 _ => new Color(180, 220, 255)     //默认白蓝
             };
 

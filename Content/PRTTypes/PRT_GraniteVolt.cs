@@ -5,10 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>
-    /// 花岗微电弧：一闪即逝（2~6帧）的青白小电弧，能量命中点缀；
-    /// 有初速度时顺速度方向劈出，否则随机取向
-    /// </summary>
+    /// <summary>花岗微电弧，2~6帧，有初速顺速劈否则随机向</summary>
     internal class PRT_GraniteVolt : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "ThunderTrail";
@@ -17,8 +14,8 @@ namespace CalamityOverhaul.Content.PRTTypes
         private float aspect;
         private float flicker;
 
-        /// <param name="lifetime">帧数，内部强制夹到 2~6</param>
-        /// <param name="aspect">弧带宽长比（相对贴图 256×128），默认 0.42</param>
+        /// <param name="lifetime">帧，夹到 2~6</param>
+        /// <param name="aspect">宽长比，默认 0.42</param>
         public PRT_GraniteVolt Configure(int lifetime, float aspect = 0.42f) {
             Lifetime = Math.Clamp(lifetime, 2, 6);
             this.aspect = aspect;
@@ -34,7 +31,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             Rotation = Velocity != Vector2.Zero ? Velocity.ToRotation() : Main.rand.NextFloat(MathHelper.TwoPi);
-            ai[0] = Main.rand.NextBool() ? 1f : 0f; //随机垂直翻转破除重复感
+            ai[0] = Main.rand.NextBool() ? 1f : 0f; //随机竖翻
             flicker = 1f;
             if (Lifetime <= 0) {
                 Lifetime = Main.rand.Next(3, 6);

@@ -4,8 +4,7 @@ namespace CalamityOverhaul.Common
 {
     internal interface IAdditiveDrawable
     {
-        /// <summary><see cref="BlendState.Additive"/> 批次，Non 层之后绘制</summary>
-        /// <param name="spriteBatch"></param>
+        /// <summary><see cref="BlendState.Additive"/> 批次，Non 层之后</summary>
         void DrawAdditiveAfterNon(SpriteBatch spriteBatch);
     }
 }

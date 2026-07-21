@@ -6,20 +6,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     internal enum OniParticleKind : byte
     {
-        /// <summary>落花：横摆下落 + 宽度呼吸的翻飞透视</summary>
+        /// <summary>落花</summary>
         Petal,
-        /// <summary>香灰：从线香燃点剥落，微摆缓沉</summary>
+        /// <summary>香灰</summary>
         Ash,
-        /// <summary>墨粒：沿微弧线收束到目标点（烟凝成字）</summary>
+        /// <summary>墨粒</summary>
         InkMote,
-        /// <summary>鬼火余烬：青色小火星上飘低闪</summary>
+        /// <summary>鬼火余烬</summary>
         Ember,
     }
 
-    /// <summary>
-    /// 池化的鬼切 UI 粒子系统，点鬼簿三屏各持有一个实例自行驱动。<br/>
-    /// 全部形体由像素矩形拼成，不依赖贴图轮廓
-    /// </summary>
+    /// <summary>池化 UI 粒子,三屏各一实例,像素矩形形体</summary>
     internal sealed class OniUIParticlePool
     {
         private struct Particle
@@ -59,7 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         public void Clear() => Array.Clear(particles, 0, particles.Length);
 
-        /// <summary>落花。outward 为水平漂移方向(-1 左 / +1 右 / 0 直落)</summary>
+        /// <summary>落花,outward -1左/+1右/0直落</summary>
         public void SpawnPetal(Vector2 pos, float outward = 0f, float scale = 1f) {
             ref Particle p = ref Next();
             p.Active = true;
@@ -75,7 +72,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             p.Delay = 0f;
         }
 
-        /// <summary>香灰，从线香燃点剥落</summary>
+        /// <summary>香灰</summary>
         public void SpawnAsh(Vector2 pos) {
             ref Particle p = ref Next();
             p.Active = true;
@@ -89,7 +86,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             p.Delay = 0f;
         }
 
-        /// <summary>墨粒：delay 帧后沿微弧线飞向 target，抵近时缩小熄灭</summary>
+        /// <summary>墨粒,delay 后飞向 target</summary>
         public void SpawnInkMote(Vector2 pos, Vector2 target, Color color, float delay = 0f) {
             ref Particle p = ref Next();
             p.Active = true;
@@ -109,7 +106,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             p.Color = color;
         }
 
-        /// <summary>纸札焚烧余烬，自 pos 上飘</summary>
+        /// <summary>余烬上飘</summary>
         public void SpawnEmber(Vector2 pos) {
             ref Particle p = ref Next();
             p.Active = true;

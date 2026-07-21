@@ -9,15 +9,15 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
 {
-    /// <summary>预警线：锁定前红脉冲追踪，锁定后白闪定格无伤害演出，服务端生成；ai[0]:锚定NPC索引（-1=固定在生成点）；ai[1]:追踪的玩家索引（-1=不追踪）；ai[2]:打包参数=模式+时长*4（用<see cref="PackParams"/>生成；时长走ai槽(timeLeft不参与生成同步包)；模式0方向固定1旋追踪2垂线跟玩家X）；velocity=单位方向</summary>
+    /// <summary>预警线；ai[0]锚NPC(-1定点) ai[1]追玩家(-1不追) ai[2]=PackParams(模式,时长)；模式0定线1旋追2垂跟X；时长走ai槽</summary>
     internal class DestroyerStrikeTelegraph : ModProjectile
     {
         public override string Texture => CWRConstant.Masking + "MaskLaserLine";
 
-        /// <summary>锁定窗口：到期前这段时间停止追踪并白闪</summary>
+        /// <summary>末段停追+白闪帧数</summary>
         internal const int LockTime = 16;
 
-        /// <summary>把模式与持续时长打包进 ai[2]（随生成包同步到所有端）</summary>
+        /// <summary>模式+时长打进 ai[2]，随生成同步</summary>
         internal static float PackParams(int mode, int duration) => mode + duration * 4f;
 
         private int AnchorNpc => (int)Projectile.ai[0];
@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
         public override bool ShouldUpdatePosition() => false;
 
         public override void AI() {
-            //首帧应用打包时长并记录总时长淡入基准
+            //首帧套打包时长
             if (Projectile.localAI[0] == 0f) {
                 if (Duration > 0) {
                     Projectile.timeLeft = Duration;
@@ -51,13 +51,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
                 Projectile.rotation = Projectile.velocity.ToRotation();
             }
 
-            //锚定到NPC
             NPC anchor = AnchorNpc.TryGetNPC(out NPC a) ? a : null;
             if (anchor.Alives()) {
                 Projectile.Center = anchor.Center;
             }
 
-            //追踪目标
             Player player = TrackPlayer.TryGetPlayer(out Player p) ? p : null;
             if (!Locked && player.Alives()) {
                 if (Mode == 1) {
@@ -78,11 +76,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
         public override bool PreDraw(ref Color lightColor) {
             float total = Math.Max(Projectile.localAI[0], 1f);
             float lifeT = 1f - Projectile.timeLeft / total;
-            //淡入
             float fadeIn = MathHelper.Clamp(lifeT * 4f, 0f, 1f);
             float lockT = Locked ? 1f - Projectile.timeLeft / (float)LockTime : 0f;
 
-            //优先走专属能量流着色器；着色器资产缺失时回退到sprite绘制
+            //有fx走着色器，缺则sprite回退
             if (EffectLoader.DestroyerTelegraph?.Value != null) {
                 DrawShaderLine(EffectLoader.DestroyerTelegraph.Value, fadeIn, lockT);
                 return false;
@@ -92,7 +89,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
             return false;
         }
 
-        /// <summary>着色器quad拉伸，噪声流+锁定白闪</summary>
+        /// <summary>着色器拉伸线</summary>
         private void DrawShaderLine(Effect effect, float fadeIn, float lockT) {
             const float LineLength = 4800f;
             float width = 120f + lockT * 70f;
@@ -119,7 +116,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
                 DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        /// <summary>sprite回退(DestroyerTelegraph.fxc缺失)</summary>
+        /// <summary>sprite回退</summary>
         private void DrawSpriteFallback(float fadeIn, float lockT) {
             Texture2D tex = TextureAssets.Projectile[Type].Value;
             float pulse = 0.65f + 0.35f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 14f);
@@ -127,7 +124,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
             Vector2 origin = new Vector2(0, tex.Height / 2f);
 
             if (!Locked) {
-                //追踪期：暗红主线 + 呼吸脉冲
+                //追踪暗红+呼吸
                 Color warn = new Color(255, 50, 30, 0) * (0.45f * fadeIn * pulse);
                 Main.EntitySpriteDraw(tex, drawPos, null, warn, Projectile.rotation,
                     origin, new Vector2(1200f, 0.45f + 0.25f * pulse), SpriteEffects.None, 0);
@@ -135,7 +132,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
                     origin, new Vector2(1200f, 1.1f), SpriteEffects.None, 0);
             }
             else {
-                //锁定白闪：高亮核心 + 宽外晕，强提示即将打击
+                //锁定白闪
                 float flash = 0.7f + 0.3f * (float)Math.Sin(lockT * MathHelper.Pi * 6f);
                 Color core = new Color(255, 235, 210, 0) * (0.9f * flash);
                 Color glow = new Color(255, 90, 40, 0) * (0.75f * flash);

@@ -3,8 +3,8 @@
 namespace CalamityOverhaul.Content.Narrative
 {
     /// <summary>
-    /// 宿主注册用的完整 id（<c>ModName/Name</c>）。<br/>
-    /// 场景 <see cref="InnoVault.Narrative.Composition.NarrativeComposer"/> 构建期可写短名（如 <c>"Helen"</c>），框架会按所属 Mod 自动补全
+    /// 宿主注册完整 id（<c>ModName/Name</c>）。
+    /// <see cref="InnoVault.Narrative.Composition.NarrativeComposer"/> 构建期可写短名，框架按 Mod 补全
     /// </summary>
     internal static class NarrativeIds
     {

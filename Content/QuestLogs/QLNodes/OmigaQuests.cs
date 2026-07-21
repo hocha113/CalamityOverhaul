@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 quest.ParentIDs.Add(nameof(RockQuestII));
             }
             else {
-                //没有RockQuestII时直接挂到岩石门槛链上，位置补上原本两级父节点的纵向偏移
+                //无RockII则挂门槛链+纵偏
                 quest.Position += new Vector2(0, -300);
                 AddRockGateParent(quest);
             }

@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>归档机匣：累积命中伤害达阈值释数据归档爆破</summary>
+    /// <summary>归档机匣，累积命中伤达阈值释归档爆破</summary>
     internal sealed class ArchiveFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         }
 
         public override void OnLaserHitNPC(CyberPrismLaserProj laser, NPC target, NPC.HitInfo hit, int damageDone) {
-            //激光命中频次高，按一半计入累积
+            //激光半额计入
             Accumulate(laser.Projectile, damageDone / 2);
         }
 
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             _accumulated += damageDone;
             if (_cooldown > 0 || _accumulated < Threshold) return;
 
-            //达成阈值，扣除阈值并触发数据归档爆破在玩家位置
+            //达阈值扣额并在玩家处爆破
             _accumulated -= Threshold;
             _cooldown = CooldownFrames;
             _cooldownCarry = 0f;

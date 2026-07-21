@@ -7,28 +7,19 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>目标档案面板：左侧分节数据牌，全息头像 + 威胁刻度 + 逐行解码</summary>
+    /// <summary>左侧档案面板，头像 + 威胁刻度 + 逐行解码</summary>
     internal class ScanInfoRenderer
     {
         #region 状态字段
 
-        //上一帧扫描目标
         private IHackTarget lastScanTarget;
-        //扫描目标数据行数
         private int currentDataRowCount;
-        //扫描进度(0~1)
-        private float scanProgress;
-        //扫描完成后的计时器(秒)
-        private float revealTimer;
-        //已展开的数据行数
+        private float scanProgress;//0~1
+        private float revealTimer;//扫描完成后秒
         private int revealedRows;
-        //当前行打字机字符进度
         private float typewriterChar;
-        //全局计时器
         private float timer;
-        //飞入进度(0~1)
-        private float flyInProgress;
-        //故障抖动强度
+        private float flyInProgress;//0~1
         private float glitchIntensity;
 
         #endregion
@@ -58,7 +49,7 @@ namespace CalamityOverhaul.Content.HackTimes
         private const float TypewriterSpeed = 2.5f;
         //数据行数组容量
         private const int MaxDataRowCount = 10;
-        //字体：MouseText 中文低于 0.5 会糊，0.5 为下限
+        //MouseText 中文不低于 0.5
         private const float FontTitle = 0.86f;
         private const float FontRow = 0.72f;
         private const float FontLabel = 0.62f;
@@ -165,7 +156,7 @@ namespace CalamityOverhaul.Content.HackTimes
             float alpha = HackTime.Intensity * flyInProgress;
             if (alpha < 0.01f) return;
 
-            //侧行数：头像右侧最多容纳的行
+            //头像右侧最多行数
             int sideRows = Math.Min(currentDataRowCount, 3);
             int belowRows = currentDataRowCount - sideRows;
             float portraitBlockH = PortraitSize + 4f + PipsRowHeight;
@@ -174,7 +165,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 + sideBlockH + (belowRows > 0 ? 4f + belowRows * RowHeight : 0f)
                 + SepHeight + StatusHeight + BottomPad;
 
-            //位置：左侧垂直居中
+            //左侧垂直居中
             float baseX = LeftMargin;
             float panelTop = (Main.screenHeight - panelH) * 0.5f;
 
@@ -298,12 +289,12 @@ namespace CalamityOverhaul.Content.HackTimes
                     DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
             }
             else {
-                //CPU回退：暗底 + 右下斜切近似（整块填充）+ CRT
+                //CPU 回退暗底斜切 + CRT
                 sb.Draw(px, panelRect, HackTheme.SrcPixel, HackTheme.BgPanel * (alpha * 0.9f));
                 HackTheme.DrawCRTOverlay(sb, panelRect, alpha * 0.04f);
             }
 
-            //开放式框架：左强调轨 + 顶部悬挑发丝线 + 底部短线，右侧不封口
+            //开放框，右侧不封口
             float railBreathe = MathF.Sin(timer * 2.5f) * 0.1f + 0.9f;
             sb.Draw(px, new Rectangle(panelRect.X, panelRect.Y + 4, 3, panelRect.Height - 8),
                 HackTheme.SrcPixel, HackTheme.Accent * (alpha * 0.55f * railBreathe));
@@ -320,7 +311,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 HackTheme.Accent * (alpha * 0.6f));
         }
 
-        //标签页：DATA 高亮 + SCAN 暗置
+        //DATA 高亮 / SCAN 暗置
         private void DrawTabs(SpriteBatch sb, float textX, float curY, float alpha, Rectangle panelRect) {
             Texture2D px = HackTheme.Pixel;
             string tab1 = $"//{HackTime.DataTab.Value}";
@@ -335,7 +326,7 @@ namespace CalamityOverhaul.Content.HackTimes
             HackTheme.DrawRawText(sb, tab2, new Vector2(textX + tab1W + 16, curY),
                 HackTheme.TextNormal * (alpha * 0.6f), 0.6f);
 
-            //右上角微型ID：无描边装饰字
+            //右上微型 ID，无描边
             string idTag = $"ID:{(lastScanTarget?.GetHashCode() ?? 0) & 0xFFF:X3}";
             Vector2 idSize = FontAssets.MouseText.Value.MeasureString(idTag) * FontMicro;
             HackTheme.DrawRawText(sb, idTag, new Vector2(panelRect.Right - idSize.X - 12, curY + 2),
@@ -387,7 +378,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
 
             if (!drewSprite) {
-                //非NPC：类别大字形
+                //非 NPC 类别大字
                 string glyph = KindGlyph(lastScanTarget?.TargetType?.Kind ?? HackTargetKind.None);
                 Vector2 gs = FontAssets.MouseText.Value.MeasureString(glyph) * 1.4f;
                 Utils.DrawBorderString(sb, glyph,
@@ -481,7 +472,7 @@ namespace CalamityOverhaul.Content.HackTimes
             Utils.DrawBorderString(sb, scanText, new Vector2((int)(baseX + 14), (int)curY),
                 Color.Lerp(HackTheme.Uploading, Color.White, 0.15f) * (alpha * pulse), 0.64f);
 
-            //滚动数据噪声：无描边装饰字
+            //滚动噪声，无描边
             curY += 24f;
             string noise = $"0x{(int)(timer * 200) % 0xFFFFFF:X6}  "
                 + $"BUF:{(int)(timer * 80) % 999:D3}  "

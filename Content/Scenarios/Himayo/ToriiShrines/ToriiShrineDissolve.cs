@@ -8,18 +8,17 @@ using Terraria;
 namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 {
     /// <summary>
-    /// 鸟居退场的 RT 溶解合成器：退场期间接管 Models3D 的 AfterTiles 层合成，
-    /// 对烘焙好的模型画面做世界空间噪声溶解 + 地面线裁剪（沉入部分由此获得土层遮挡）。
-    /// 另提供一次性的层 RT 剪影采样，让樱瓣从真实渲染轮廓上剥离。
-    /// 纯客户端视觉，由 <see cref="ToriiShrineActor"/> 驱动
+    /// 鸟居退场 RT 溶解，接管 Models3D AfterTiles 合成<br/>
+    /// 世界空间噪声溶解+地面线裁剪；一次性层RT剪影采样供樱瓣剥离<br/>
+    /// 纯客户端，由 <see cref="ToriiShrineActor"/> 驱动
     /// </summary>
     internal static class ToriiShrineDissolve
     {
-        //委托实例缓存：解钩时用引用相等判断，避免顶掉未来其它订阅者
+        //委托实例缓存，解钩用引用相等
         private static readonly Model3DRenderer.Model3DCompositeOverride CompositeFn = Composite;
         private static readonly Action<Model3DLayer, RenderTarget2D> CaptureFn = CaptureSilhouette;
 
-        //鸟居的世界空间包围盒（相对地面锚点），比模型实际延展略宽以容纳颤抖位移
+        //相对地面锚点的包围盒，略宽以容纳颤抖
         private const float BoundsHalfWidth = 185f;
         private const float BoundsTop = 310f;
         private const float BoundsBottom = 30f;
@@ -30,20 +29,17 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         private static Vector2 captureAnchor;
         private static List<Vector2> capturedOffsets;
 
-        /// <summary>溶解推进度：0=完好 1=溶尽，由退场状态机逐帧写入</summary>
+        /// <summary>溶解推进度0=完好1=溶尽</summary>
         public static float Progress { get; set; }
         /// <summary>
-        /// 地面裁剪线（世界Y），之下的模型像素视为已入土。
-        /// 原地化樱方案下不再需要入土遮挡，<see cref="Begin"/> 会把它压到锚点远下方使其失效；
-        /// shader 通道保留，未来需要"沉降/半埋"类演出时直接回填即可
+        /// 地面裁剪线(世界Y)，其下视为已入土<br/>
+        /// 原地化樱下 <see cref="Begin"/> 压到锚点远下方失效，shader通道保留备沉降类演出
         /// </summary>
         public static float GroundY { get; set; }
-        /// <summary>鸟居地面锚点，用于计算 shader 作用包围盒</summary>
+        /// <summary>地面锚点，shader包围盒用</summary>
         public static Vector2 Anchor { get; private set; }
 
-        /// <summary>
-        /// 开始接管合成并请求一次剪影采样；在退场动画第一帧调用（此时模型仍完整在屏）
-        /// </summary>
+        /// <summary>接管合成并请求剪影采样，退场首帧调(模型仍完整)</summary>
         public static void Begin(Vector2 anchor) {
             if (Main.dedServ) {
                 return;
@@ -51,7 +47,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
             Anchor = anchor;
             Progress = 0f;
-            //中性化：远低于模型可视范围，地面裁剪不参与本演出
+            //压低使地面裁剪不参与本演出
             GroundY = anchor.Y + 1000f;
 
             if (!hooked) {
@@ -65,9 +61,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             }
         }
 
-        /// <summary>
-        /// 归还合成权并解除采样订阅；退场结束/中断时调用，幂等
-        /// </summary>
+        /// <summary>归还合成权并解采样订阅，幂等</summary>
         public static void End() {
             if (hooked) {
                 if (Model3DRenderer.CompositeOverride == CompositeFn) {
@@ -82,16 +76,14 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             Progress = 0f;
         }
 
-        /// <summary>完全复位（含丢弃已采样剪影），世界卸载/Mod卸载路径调用</summary>
+        /// <summary>完全复位(含丢弃剪影)，世界/Mod卸载用</summary>
         public static void Reset() {
             End();
             capturedOffsets = null;
             failureLogged = false;
         }
 
-        /// <summary>
-        /// 取走剪影采样结果（相对锚点的世界偏移集合）；一次性移交，未就绪或采样失败返回 false
-        /// </summary>
+        /// <summary>取走剪影(相对锚点偏移)，一次性移交</summary>
         public static bool TryTakeSilhouette(out List<Vector2> points) {
             points = capturedOffsets;
             capturedOffsets = null;
@@ -110,7 +102,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 return false;
             }
 
-            //uv→世界坐标的仿射映射：取 RT 两角求逆变换，天然兼容缩放/翻转镜头
+            //uv→世界仿射，兼容缩放/翻转镜头
             Matrix view = Main.GameViewMatrix.TransformationMatrix;
             Matrix inverse = Matrix.Invert(view);
             Vector2 world00 = Vector2.Transform(Vector2.Zero, inverse) + Main.screenPosition;
@@ -158,10 +150,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             return true;
         }
 
-        /// <summary>
-        /// 一次性剪影采样：读回层 RT 中鸟居包围盒内的不透明像素，转换为相对锚点的世界偏移。
-        /// GPU→CPU 读回只发生这一帧，之后立即退订
-        /// </summary>
+        /// <summary>一次性剪影采样，GPU→CPU只这一帧后立即退订</summary>
         private static void CaptureSilhouette(Model3DLayer layer, RenderTarget2D rt) {
             if (layer != Model3DLayer.AfterTiles || rt == null || rt.IsDisposed) {
                 return;
@@ -191,7 +180,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             int width = x1 - x0;
             int height = y1 - y0;
             if (width < 16 || height < 16) {
-                //鸟居几乎不在屏上：放弃读回，交给调用方的程序化兜底
+                //几乎不在屏上，放弃读回
                 return null;
             }
 
@@ -211,7 +200,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 }
             }
 
-            //控制点数：均匀抽稀到发射点池的合理规模
+            //抽稀到发射点池规模
             const int MaxPoints = 340;
             if (points.Count > MaxPoints) {
                 List<Vector2> trimmed = new(MaxPoints);

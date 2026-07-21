@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>火力阵：升高位+四臂炮台阵，波浪寻热导弹，滚动缺口</summary>
+    /// <summary>火力阵</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.BarrageCommand, typeof(PrimeStateContext))]
     internal class PrimeBarrageCommandState : PrimeStateBase
     {
@@ -50,8 +50,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             int damage = ScaleDamage(CWRRef.GetProjectileDamage(npc, ProjectileID.RocketSkeleton));
             float warmup = MathHelper.Clamp(MathHelper.Lerp(PrimeDirector.ProjectileWarmupStart, 1f, timer / 60f), 0f, 1f);
 
-            //从四联炮台阵位（与 PrimeArm.ApplyBarrageFormation 对齐）向上扇形抛射，
-            //导弹自身完成滞空→错相点火→俯冲微追踪
+            //四联炮台扇形抛射
             Vector2 muzzle = npc.Center + new Vector2((armSlot - 1.5f) * 70f, 90f);
             Vector2 vel = (-Vector2.UnitY).RotatedBy((armSlot - 1.5f) * 0.34f + Main.rand.NextFloat(-0.07f, 0.07f))
                 * 3.8f * warmup;

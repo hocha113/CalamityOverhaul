@@ -14,10 +14,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
 {
     /// <summary>
-    /// 过滤名单编辑器：面向<see cref="IItemFilterHost"/>工作的通用编辑面板，
-    /// 手持卡、收集器、物流管道共用同一个编辑器<br/>
-    /// 交互约定：光标持物点击网格=添加；空手点击条目=移除；滚轮翻行；
-    /// 标题栏可拖动；右键面板或[ESC]关闭；宿主失效/距离过远自动关闭
+    /// 通用过滤编辑面板(<see cref="IItemFilterHost"/>)<br/>
+    /// 持物点格=加；空手点格=删；滚轮翻行；拖标题；右键/ESC关；宿主失效或过远自动关
     /// </summary>
     internal class ItemFilterEditorUI : UIHandle, ILocalizedModType
     {
@@ -27,7 +25,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
         public override bool CloseOnEscape => true;
         public override SoundStyle? OpenSound => CWRSound.ButtonZero with { Pitch = 0.2f, Volume = 0.6f };
         public override SoundStyle? CloseSound => CWRSound.ButtonZero with { Pitch = -0.15f, Volume = 0.5f };
-        //命中判定与绘制布局统一走UI空间坐标
+        //命中与绘制统一走UI空间坐标
         public override Vector2 MousePosition => ItemFilterTheme.UIMouse;
 
         #region 本地化
@@ -55,7 +53,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
         #endregion
 
         #region 状态
-        /// <summary>当前绑定的宿主，编辑器所有读写都指向它的名单</summary>
         internal IItemFilterHost Host { get; private set; }
 
         private float eased;
@@ -71,7 +68,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
         private float scrollPx;
         private float scrollTarget;
 
-        //悬停状态
         private int hoverCellIndex = -1;
         private bool hoverGrid;
         private bool hoverMode;
@@ -79,16 +75,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
         private bool hoverUninstall;
         private readonly Dictionary<int, float> cellHoverEase = [];
 
-        //拖拽(标题栏)
         private bool dragging;
         private Vector2 dragOffset;
 
-        //出场缓动:负值表示按索引错开的延迟
+        //出场缓动:负值=按索引错开的延迟
         private readonly Dictionary<int, float> appearEase = [];
-        //重复添加时的闪烁提示
         private readonly Dictionary<int, float> duplicateFlash = [];
 
-        //移除残影(纯视觉，数据在点击瞬间已删除)
+        //移除残影(纯视觉，数据在点击瞬间已删)
         private struct GhostEntry
         {
             public int ItemType;
@@ -102,7 +96,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
 
         #region 开关
 
-        /// <summary>为指定宿主打开编辑器；已打开时切换绑定并保持面板位置</summary>
+        /// <summary>打开；已开则换绑并保持面板位置</summary>
         public void OpenFor(IItemFilterHost host) {
             bool rebindOnly = IsOpen;
             Host = host;
@@ -122,7 +116,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
             }
         }
 
-        /// <summary>同宿主再次触发时关闭，否则(重新)打开</summary>
+        /// <summary>同宿主再触发则关，否则打开</summary>
         public void ToggleFor(IItemFilterHost host) {
             if (IsOpen && ReferenceEquals(Host, host)) {
                 Close();
@@ -137,7 +131,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
             hoverCellIndex = -1;
         }
 
-        //出场动画:按名单索引错开的弹入波
         private void SeedAppearStagger() {
             appearEase.Clear();
             if (Host == null) {
@@ -196,7 +189,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
                     HandleHovers();
                     HandleClicks();
 
-                    //右键面板空白处快速关闭
+                    //右键面板空白处关
                     if (hoverInMainPage && keyRightPressState == KeyPressState.Pressed) {
                         Close();
                     }
@@ -311,13 +304,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
                 return;
             }
 
-            //光标持物 → 收录该物品
+            //持物收录
             if (!Main.mouseItem.IsAir) {
                 TryAddItem(Main.mouseItem.type);
                 return;
             }
 
-            //空手点击条目 → 移除
+            //空手移除
             if (hoverCellIndex >= 0) {
                 RemoveItemAt(hoverCellIndex);
             }
@@ -327,17 +320,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
             if (Host.Filter.Add(itemType)) {
                 Host.OnFilterChanged();
                 appearEase[itemType] = 0f;
-                //滚到底部展示新条目
                 scrollTarget = MaxScroll();
                 SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.8f, Pitch = 0.1f });
             }
             else if (Host.Filter.Contains(itemType)) {
-                //重复收录:闪烁提示已有条目
+                //重复收录闪一下
                 duplicateFlash[itemType] = 1f;
                 SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.5f, Pitch = -0.35f });
             }
             else {
-                //容量已满
                 SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.6f, Pitch = -0.3f });
             }
         }
@@ -349,7 +340,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
             }
             int itemType = items[index];
 
-            //数据立即删除，残影仅作视觉过渡——绝不延迟数据操作
+            //先删数据，残影仅视觉
             Rectangle cell = CellRect(index);
             ghosts.Add(new GhostEntry {
                 ItemType = itemType,
@@ -367,7 +358,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
             scrollTarget = MathHelper.Clamp(scrollTarget, 0f, MaxScroll());
             scrollPx = MathHelper.Lerp(scrollPx, scrollTarget, 0.25f);
 
-            //出场缓动推进
+            //出场
             if (Host != null) {
                 IReadOnlyList<int> items = Host.Filter.OrderedItems;
                 for (int i = 0; i < items.Count; i++) {
@@ -379,7 +370,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
                 }
             }
 
-            //悬停缓动
+            //悬停
             if (Host != null) {
                 IReadOnlyList<int> items = Host.Filter.OrderedItems;
                 for (int i = 0; i < items.Count; i++) {
@@ -452,7 +443,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
             if (col >= ItemFilterTheme.GridCols) {
                 return -1;
             }
-            //落点必须在格子内(排除格间空隙)
+            //须落在格子内(排除格间空隙)
             if (localX % RowStep >= ItemFilterTheme.CellSize || localY % RowStep >= ItemFilterTheme.CellSize) {
                 return -1;
             }
@@ -486,7 +477,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
         }
 
         private void DrawHeader(SpriteBatch sb, float alpha) {
-            //标题(宿主名)
             string title = Host.FilterHostName;
             Vector2 titlePos = new(panelRect.X + ItemFilterTheme.Padding, panelRect.Y + 14);
             Color glow = ItemFilterTheme.EdgeBright * (alpha * 0.5f);
@@ -496,14 +486,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
             }
             Utils.DrawBorderString(sb, title, titlePos, ItemFilterTheme.TextWarm * alpha, 0.85f);
 
-            //右侧计数
             string count = CountFormat.Format(Host.Filter.Count);
             Vector2 countSize = FontAssets.MouseText.Value.MeasureString(count) * 0.68f;
             Utils.DrawBorderString(sb, count
                 , new Vector2(panelRect.Right - ItemFilterTheme.Padding - countSize.X, panelRect.Y + 18)
                 , ItemFilterTheme.Label * alpha, 0.68f);
 
-            //流动分隔线
             ItemFilterRenderer.DrawDivider(sb
                 , new Vector2(panelRect.X + ItemFilterTheme.Padding, panelRect.Y + ItemFilterTheme.HeaderHeight - 10)
                 , panelRect.Width - ItemFilterTheme.Padding * 2, alpha, GlobalTimer);
@@ -577,7 +565,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
                 , ItemFilterTheme.TextDim * (alpha * 0.9f), 0.56f);
         }
 
-        /// <summary>悬停条目交给原版提示系统绘制完整物品信息</summary>
         private void ShowHoveredTooltip() {
             if (hoverCellIndex < 0 || Host == null || hoverCellIndex >= Host.Filter.Count) {
                 return;

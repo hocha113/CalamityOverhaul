@@ -5,10 +5,6 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
 {
-    /// <summary>
-    /// 鬼切奖励弹窗:绘马式挂牌。顶部挂绳收于朱结、结下流苏随摆,
-    /// 四角朱笔角签,面板本体沿用墨染 shader。整体克制,只挂饰在动
-    /// </summary>
     internal sealed class OnikiriPopupSkin : StoryPopupSkin
     {
         private readonly OnikiriPanelState _state = new();
@@ -34,7 +30,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
 
         public override void DrawFrame(SpriteBatch spriteBatch, PopupLayoutContext context) {
             float alpha = context.Alpha;
-            //挂绳与流苏等面板基本展开后浮现
+            //挂绳流苏等展开后浮现
             float hangAlpha = MathHelper.Clamp((alpha - 0.5f) / 0.5f, 0f, 1f);
             if (hangAlpha > 0.01f) {
                 OnikiriPanelDraw.DrawHangingKnot(spriteBatch, context.PanelRect, hangAlpha, _state.SwayTimer);

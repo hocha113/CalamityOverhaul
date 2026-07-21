@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectiles
 {
-    /// <summary>双子魔眼持续性死亡射线：锚定眼睛，方向随NPC旋转(AI驱动扫射)；ai[0]=宿主NPC的whoAmI；ai[1]=总持续时间(帧)；ai[2]=主题0=激光眼青紫死光1=魔焰眼烈焰射线；展开/收束缓动，未完全展开无伤害；宿主死亡时快速收束</summary>
+    /// <summary>持续死光；ai[0]宿主whoAmI；ai[1]持续帧；ai[2]主题0激光1魔焰；未展满无伤</summary>
     internal class RetinazerDeathRay : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectil
             //宽度展开/收束缓动
             float collapseStart = Duration - CollapseTime;
 
-            //锚定与朝向:跟随宿主旋转(状态机驱动npc.rotation完成扫射)
+            //锚宿主，跟 npc.rotation
             if (owner.Alives() && Timer < collapseStart) {
                 Vector2 dir = (owner.rotation + MathHelper.PiOver2).ToRotationVector2();
                 Projectile.Center = owner.Center + dir * 46f;
@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectil
                 DrawFallbackBeam(drawPos, rot, outer, mid, core, flicker);
             }
 
-            //枪口辉光:多层呼吸光球+十字星闪
+            //枪口辉光
             float muzzleScale = beamWidth / MaxWidth;
             Main.EntitySpriteDraw(glow, drawPos, null, outer * 0.9f, 0f, glow.Size() / 2f,
                 muzzleScale * 1.9f * flicker, SpriteEffects.None, 0);
@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectil
             shader.Parameters["uImage2"]?.SetValue(CWRAsset.PerlinNoise.Value);
             shader.CurrentTechnique.Passes[0].Apply();
 
-            //光柱面片:着色器在UV空间内完成全部造型
+            //光柱面片，着色器造型
             Texture2D quad = VaultAsset.placeholder2.Value;
             //视觉宽度比碰撞宽度更厚，撕裂边缘需要余量
             float visualWidth = beamWidth * 3.4f;

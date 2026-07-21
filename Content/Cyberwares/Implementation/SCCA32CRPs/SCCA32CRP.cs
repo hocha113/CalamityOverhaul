@@ -1,4 +1,4 @@
-﻿using Terraria;
+using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.SCCA32CRPs
@@ -6,8 +6,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SCCA32CRPs
     /// <summary>
     /// SCCA-32 CRP，左臂神经反射义体
     /// <br/>常驻 +CritChanceBonus% 暴击、+MoveSpeedBonus 移速
-    /// <br/>致命攻击 DodgeChance 概率反射闪避，亢奋 ReflexBoostFrames 帧额外暴击/移速+短暂无敌
-    /// <br/>闪避内部冷却 DodgeCooldownFrames 帧，防密集伤害实质无敌
+    /// <br/>致命攻击 DodgeChance 反射闪避，亢奋 ReflexBoostFrames 帧额外暴击/移速+短无敌
+    /// <br/>闪避冷却 DodgeCooldownFrames，防密集伤害实质无敌
     /// </summary>
     internal class SCCA32CRP : BaseCyberware
     {
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SCCA32CRPs
             Item.value = Item.sellPrice(0, 10, 0, 0);
         }
 
-        /// <summary>查询玩家是否装备本义体，未装备返回 null</summary>
+        /// <summary>未装备返回 null</summary>
         public static SCCA32CRP GetEquipped(Player player) {
             if (player == null || !player.active) {
                 return null;

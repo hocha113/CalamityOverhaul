@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return null;
         }
 
-        /// <summary>召唤云涡：云絮向心聚拢+收缩环+轻声高吟，materialize 禁 pop-in</summary>
+        /// <summary>召唤云涡</summary>
         private static void SpawnSummonEffect(Vector2 position) {
             SoundEngine.PlaySound(SoundID.DD2_OgreRoar with { Volume = 0.35f, Pitch = 0.4f }, position);
             FishWyverntailVFX.SummonBurst(position);
@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     }
                 }
 
-                //出膛破云：低吼+锥形云爆
+                //出膛破云，低吼+锥形云爆
                 SoundEngine.PlaySound(SoundID.DD2_OgreRoar with { Volume = 0.6f, Pitch = -0.2f }, firePos);
                 FishWyverntailVFX.MuzzleBurst(firePos, burstDir);
             }
@@ -127,10 +127,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 云蛟白龙：龙身为沿轨迹重采样的 TriangleStrip 连续条带（FishWyverntailBody.fx，
-    /// 珍珠白靠灰蓝暗部塑形+背脊金鬃），体节游动波从头向尾传播；飞行沿身蜕云絮；
-    /// 命中云爆后龙身冻在原地从尾向头化云蚀散（穿透残影）<br/>
-    /// ai[0]：≥0 目标索引 / -1 无目标 / -2 命中化散 / -3 自然化散
+    /// 云蛟白龙，轨迹重采样 TriangleStrip（FishWyverntailBody.fx），命中后尾→头化云蚀散<br/>
+    /// ai[0]，≥0 目标 / -1 无 / -2 命中化散 / -3 自然化散
     /// </summary>
     internal class MiniWhiteWyvern : ModProjectile, IPrimitiveDrawable, IOverlayDrawable
     {
@@ -140,7 +138,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private ref float StateTimer => ref Projectile.ai[1];
         private ref float SerpentinePhase => ref Projectile.ai[2];
 
-        /// <summary>化散演出时长（帧）：残影从尾向头蚀完的窗口</summary>
+        /// <summary>化散演出时长（帧），残影从尾向头蚀完的窗口</summary>
         private const int DissolveDuration = 18;
         private const int MaxStripPoints = 26;
         private const float StripStep = 16f;//重采样弧长步长，龙长 ≈ 400px
@@ -182,7 +180,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SerpentinePhase += 0.15f;
             swimPhase += 0.11f + Projectile.velocity.Length() * 0.006f;
 
-            //获取目标
             if (TargetIndex >= 0 && TargetIndex < Main.maxNPCs && Main.npc[(int)TargetIndex].active && Main.npc[(int)TargetIndex].CanBeChasedBy()) {
                 target = Main.npc[(int)TargetIndex];
             }
@@ -191,7 +188,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (target != null) TargetIndex = target.whoAmI;
             }
 
-            //初始化蛇形参数
             if (StateTimer == 1) {
                 serpAmplitude = Main.rand.NextFloat(12f, 24f);
                 serpFrequency = Main.rand.NextFloat(1.2f, 2f);
@@ -208,7 +204,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float wave = (float)Math.Sin(SerpentinePhase * serpFrequency) * serpAmplitude *
                     MathHelper.Clamp(dist / 400f, 0.2f, 1f);
 
-                //贯影拍：近身收幅提速，化作直线白影贯穿
+                //贯影拍
                 float lunge = 1f;
                 float steer = 0.15f;
                 if (dist < 200f) {
@@ -227,7 +223,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Projectile.rotation = desiredRot;
 
-            //帧动画
             int frameCount = Main.projFrames[Projectile.type];
             float animSpeed = MathHelper.Clamp(Projectile.velocity.Length() / 16f, 0.3f, 1.4f);
             if (++Projectile.frameCounter >= 6 / animSpeed) {
@@ -236,7 +231,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (Projectile.frame >= frameCount) Projectile.frame = 0;
             }
 
-            //蜕云：龙是云所化，沿身随机骨节掉云屑，速度快蜕得密
+            //蜕云，龙是云所化
             if (!VaultUtils.isServer) {
                 int shedOdds = Projectile.velocity.Length() > 24f ? 2 : 4;
                 if (Main.rand.NextBool(shedOdds)) {
@@ -253,7 +248,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Lighting.AddLight(Projectile.Center, 0.18f, 0.24f, 0.34f);
         }
 
-        /// <summary>化散：急停冻住，视觉一次性触发（远端由 netUpdate 后的 ai 值驱动），尾向头蚀由 shader 承担</summary>
+        /// <summary>化散，急停冻住，视觉一次性触发（远端由 netUpdate 后的 ai 值驱动），尾向头蚀由 shader 承担</summary>
         private void DissolveAI() {
             Projectile.velocity *= 0.82f;
             swimPhase += 0.05f;
@@ -275,7 +270,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ShedFromBody();
             }
 
-            //帧动画减速残喘
             if (++Projectile.frameCounter >= 10) {
                 Projectile.frameCounter = 0;
                 Projectile.frame = (Projectile.frame + 1) % Main.projFrames[Projectile.type];
@@ -318,7 +312,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             FishWyverntailVFX.ImpactBurst(Projectile.Center, impactVel, Projectile.GetSource_FromThis());
         }
 
-        /// <summary>沿 oldPos 链按固定弧长重采样：龙长恒定、密度均匀、出生时自然从头长出</summary>
+        /// <summary>沿 oldPos 链按固定弧长重采样，龙长恒定、密度均匀、出生时自然从头长出</summary>
         private int ResampleBody(Span<Vector2> pts) {
             Vector2 half = Projectile.Size / 2f;
             Vector2 walkPos = Projectile.Center;
@@ -344,7 +338,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return n;
         }
 
-        /// <summary>体节游动波：头不摆、波从头向尾传播、身体延迟跟随（幅度沿体渐入）</summary>
+        /// <summary>体节游动波，头不摆、波从头向尾传播、身体延迟跟随（幅度沿体渐入）</summary>
         private void ApplySwimWave(Span<Vector2> pts, Span<Vector2> raw, int n) {
             for (int i = 0; i < n; i++) {
                 raw[i] = pts[i];
@@ -366,7 +360,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return 15f * Projectile.scale * neck * breath;
         }
 
-        /// <summary>龙身条带：珍珠白靠灰蓝暗部塑形，顶点色 r 存该段哪侧朝天供 shader 布光</summary>
+        /// <summary>龙身条带，珍珠白靠灰蓝暗部塑形，顶点色 r 存该段哪侧朝天供 shader 布光</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
             if (Main.dedServ) {
                 return;
@@ -423,7 +417,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             device.RasterizerState = prevRaster;
         }
 
-        /// <summary>头部：条带之上盖 WyvernHead 贴图（夹心遮接缝），急转留旋转拖影，化云时淡出微上飘</summary>
+        /// <summary>头部，条带之上盖 WyvernHead 贴图（夹心遮接缝），急转留旋转拖影，化云时淡出微上飘</summary>
         void IOverlayDrawable.DrawOverlay(SpriteBatch sb) {
             if (Main.dedServ) {
                 return;
@@ -441,12 +435,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //珍珠白保底光：夜里也读得出白龙，仍吃 55% 环境光保体积
+            //珍珠白保底光，夜里也读得出白龙
             Color tileLight = Lighting.GetColor(Projectile.Center.ToTileCoordinates());
             Color lit = Color.Lerp(tileLight, Color.White, 0.45f) * headAlpha;
             SpriteEffects flip = Projectile.velocity.X < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            //急转拖影：角速度大时头部留旋转残影（位置残影表达不了转向）
+            //急转拖影
             if (dissolveT <= 0f && Projectile.oldPos.Length > 6 && Projectile.oldPos[6] != Vector2.Zero) {
                 float turn = Math.Abs(MathHelper.WrapAngle(Projectile.oldRot[0] - Projectile.oldRot[6]));
                 if (turn > 0.35f) {

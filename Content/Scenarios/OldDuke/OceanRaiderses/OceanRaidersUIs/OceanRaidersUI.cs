@@ -9,9 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaidersUIs
 {
-    /// <summary>
-    /// 海洋吞噬者专属箱子UI - 基于通用箱子框架，每次修改自动同步
-    /// </summary>
+    /// <summary>海洋吞噬者箱子UI</summary>
     internal class OceanRaidersUI : BaseChestUI
     {
         public static OceanRaidersUI Instance => UIHandleLoader.GetUIHandleOfType<OceanRaidersUI>();
@@ -20,16 +18,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaiders
         public static LocalizedText TitleText;
         public static LocalizedText StorageText;
 
-        //尺寸配置
         public override int PanelWidth => 760;
         public override int PanelHeight => 780;
         public override int SlotsPerRow => 20;
         public override int SlotRows => 18;
 
-        //当前绑定的机器
         private OceanRaidersTP currentMachine;
 
-        //组件
         private readonly OceanRaidersAnimation _animation = new();
         private readonly OceanRaidersEffects _effects = new();
         private OceanRaidersRenderer _renderer;
@@ -43,7 +38,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaiders
             StorageText = this.GetLocalization(nameof(StorageText), () => "存储空间");
         }
 
-        //--- IChestStorage 实现 (直接操作机器存储) ---
 
         public override int UsedSlotCount {
             get {
@@ -86,13 +80,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaiders
             }
         }
 
-        //--- 机器行为 ---
-
-        /// <summary>
-
-        /// 打开UI并绑定机器
-
-        /// </summary>
         public void Interactive(OceanRaidersTP machine) {
             if (machine == null) return;
 
@@ -111,7 +98,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaiders
                 SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.2f });
             }
             else if (IsOpen) {
-                //关闭交由基类生命周期播放 GetCloseSound
+                //关箱音效走基类
                 Close();
             }
             else {
@@ -120,7 +107,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaiders
             }
         }
 
-        //--- BaseChestUI 抽象方法实现 ---
 
         protected override bool ValidateSource() {
             return currentMachine != null

@@ -4,14 +4,11 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 归零枪管：伤害极低但穿透无限，命中施加数据侵蚀
-    /// 定位扫射清怪流，配合 Homing 构建全屏覆盖
-    /// </summary>
+    /// <summary>归零枪管，低伤无限穿，命中数据侵蚀</summary>
     internal sealed class NullBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
-        //数据侵蚀灰绿
+        //灰绿
         public override Color TintColor => new(100, 255, 140);
 
         public override void Apply(ref ShootContext ctx) {

@@ -200,8 +200,8 @@ namespace CalamityOverhaul.Content.HackTimes
 
             //生成区域随时间从队列区扩散到整个左半屏
             float zoneExpand = Math.Min(modeActiveTime / ZoneExpandDuration, 1f);
-            //初始区域：左侧36px、垂直居中±200px
-            //最终区域：左半屏0~50%宽度、整个高度
+            //初始区，左 36px、垂直居中 ±200
+            //终区，左半屏全高
             float maxX = MathHelper.Lerp(320f, Main.screenWidth * 0.50f, zoneExpand);
             float minX = 20f;
             float centerY = Main.screenHeight * 0.5f;
@@ -473,7 +473,7 @@ namespace CalamityOverhaul.Content.HackTimes
                     new Vector2(36f + glitch, 78f), headerColor, 0.62f);
             }
 
-            //计数：无描边装饰字
+            //计数，无描边
             string countStr = $"[{popups.Count} ACTIVE]";
             float countBlink = MathF.Sin(timer * 6f) * 0.3f + 0.7f;
             HackTheme.DrawRawText(sb, countStr,

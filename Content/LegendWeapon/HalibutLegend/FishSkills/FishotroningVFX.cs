@@ -9,12 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 骷臂掴击骨骸碎屑：哑光骨钙材质，受重力翻滚坠落，自旋用旋转拖影编码。<br/>
-    /// chunk 模式用原版骨头贴图作大块骨骸（损手崩碎的英雄时刻），
-    /// chip 模式用 Extra_98 真 alpha 细条作骨屑（蓄力剥落/砸地碎石）。
-    /// 全程 AlphaBlend 场景光照着色，零发光
-    /// </summary>
+    /// <summary>骷臂骨屑，chunk=原版骨头大块，chip=Extra_98 细条，AlphaBlend 场景光零发光</summary>
     internal class PRT_FishOtronShard : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -87,11 +82,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Vector2 pos = Position - Main.screenPosition;
             Vector2 origin = tex.Size() * 0.5f;
-            //场景光×骨白：哑光受光材质
+            //场景光×骨白
             Color lit = Lighting.GetColor((int)(Position.X / 16f), (int)(Position.Y / 16f));
             Color body = new Color(lit.R * BoneTint.R / 255, lit.G * BoneTint.G / 255, lit.B * BoneTint.B / 255, (byte)255);
 
-            //旋转拖影：历史角残影编码自旋（位置残影表达不了翻滚）
+            //旋转拖影
             for (int i = 2; i >= 1; i--) {
                 float k = i / 3f;
                 spriteBatch.Draw(tex, pos - Velocity * (i * 0.7f), null, body * (Opacity * (0.3f - k * 0.12f))
@@ -103,7 +98,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 骷臂投掷骨（替换裸 ProjectileID.Bone 的表现层，伤害/击退/数量/散射全部沿用原调用值）：<br/>
+    /// 骷臂投掷骨（替换裸 ProjectileID.Bone 的表现层，伤害/击退/数量/散射全部沿用原调用值）
     /// 重力弧＋自旋随速度衰减，飞行 = 历史旋转角残影链＋剥落骨尘，落点碎裂成骨屑
     /// </summary>
     internal class FishotroningBone : ModProjectile
@@ -135,7 +130,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             spin *= 0.995f;
             Projectile.rotation += spin;
 
-            //延迟重力：先直飞一小段再入抛物弧
+            //延迟重力，先直飞一小段再入抛物弧
             Projectile.ai[0]++;
             if (Projectile.ai[0] > 10f) {
                 if (Projectile.velocity.Y < 16f) {
@@ -155,7 +150,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (VaultUtils.isServer) {
                 return;
             }
-            //碎裂：骨屑抛物＋钙尘，低沉碎骨声
+            //碎裂，骨屑抛物＋钙尘，低沉碎骨声
             for (int i = 0; i < 3; i++) {
                 PRTLoader.NewParticle<PRT_FishOtronShard>(Projectile.Center
                     , new Vector2(Main.rand.NextFloat(-3.5f, 3.5f), Main.rand.NextFloat(-4.5f, -1f))
@@ -176,7 +171,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Texture2D tex = TextureAssets.Projectile[ProjectileID.Bone].Value;
             Vector2 origin = tex.Size() * 0.5f;
 
-            //旋转拖影链：历史位置＋历史旋转角，哑光衰减
+            //旋转拖影链
             for (int i = Projectile.oldPos.Length - 1; i >= 1; i--) {
                 if (Projectile.oldPos[i] == Vector2.Zero) {
                     continue;

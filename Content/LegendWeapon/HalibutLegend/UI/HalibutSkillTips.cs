@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (!FishSkill.UnlockFishs.TryGetValue(item.type, out FishSkill fishSkill)) {
                 return;
             }
-            //水色渐变：柔和且高对比度
+            //水色渐变、柔和高对比
             float ft = (Main.LocalPlayer.miscCounter % 120) / 120f;
             float wave = (float)Math.Sin(ft * MathHelper.TwoPi) * 0.5f + 0.5f;
             Color mainA = new Color(40, 140, 190);

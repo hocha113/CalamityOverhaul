@@ -12,10 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 {
-    /// <summary>
-    /// Victor 对话条，右键打开
-    /// <br/>贴底 CyberwarePanel 着色器；立绘/打字机/诊所·闲聊·离开
-    /// </summary>
+    /// <summary>对话条，右键开；底栏 CyberwarePanel + 立绘打字机</summary>
     internal class VictorTalkUI : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "UI";

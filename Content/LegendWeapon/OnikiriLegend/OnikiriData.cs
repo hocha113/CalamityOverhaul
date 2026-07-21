@@ -8,8 +8,8 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 {
     /// <summary>
-    /// 鬼切的传奇数据：点鬼簿绑定层 + 试炼路线。每把刀实例各持一份 <see cref="WraithProgressStore"/>，
-    /// 随物品存档与联机同步；试炼进度驱动 <see cref="LegendData.Level"/>
+    /// 鬼切传奇数据,每刀一份 <see cref="WraithProgressStore"/>;
+    /// 试炼进度驱动 <see cref="LegendData.Level"/>
     /// </summary>
     internal class OnikiriData : LegendData
     {
@@ -18,16 +18,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         public override int TargetLevel => GetVersionedTrialTargetLevel();
 
-        //存档标记:区分"存过档(即使记录全默认)"与"本功能之前的老刀"。
-        //老档兼容语义:带 InitTag 的刀读档回放存档值;无 InitTag 的刀吃下方出厂表。
-        //标记曾为 "OnikiriWraiths:Init"(认主收敛试验期):键名升位使该批测试刀读档时
-        //重播出厂表,簿面统一回到演示期钦定态——认主叙事已按用户钦定回滚,不留中间态存档
+        //InitTag 区分已存档与功能前老刀;无标吃出厂表
+        //曾用 Init1,升位 Init2 使测试刀重播出厂
         private const string InitTag = "OnikiriWraiths:Init2";
 
-        /// <summary>
-        /// 出厂铭刻名单：新刀按此表落 Bound + 驾驭度，数值为演示期钦定值（点鬼簿的正典样貌）。
-        /// 认主收敛（0.15~0.35 低位起步）已按用户钦定回滚——簿面不做"认主前"压制
-        /// </summary>
+        /// <summary>出厂铭刻,Bound+驾驭度</summary>
         private static readonly (string Key, float Mastery)[] FactoryEngravings = [
             ("NoFace", 0.86f),
             ("LanternBoy", 0.58f),
@@ -44,7 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             SeedFactoryState();
         }
 
-        /// <summary>克隆链深拷：每把刀必须各持一份点鬼簿，绝不共写</summary>
+        /// <summary>深拷,每刀各持一份簿</summary>
         public override LegendData Clone(Item item) {
             OnikiriData clone = (OnikiriData)base.Clone(item);
             clone.Wraiths = new WraithProgressStore();
@@ -52,7 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return clone;
         }
 
-        /// <summary>从 Item 取鬼切数据，非鬼切或空物品返回 null</summary>
+        /// <summary>取鬼切数据,非鬼切/空则 null</summary>
         public static OnikiriData TryGet(Item item) {
             if (item == null || item.IsAir) {
                 return null;
@@ -60,10 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return item.CWR()?.LegendData as OnikiriData;
         }
 
-        /// <summary>
-        /// 出厂态：名录鬼先按定义的初始绑定状态落记录（井中鸣=Sealed），
-        /// 再对出厂名单盖 Bound + 驾驭度
-        /// </summary>
+        /// <summary>出厂态,先 InitialBindState 再盖 Bound+驾驭</summary>
         private void SeedFactoryState() {
             Wraiths.Clear();
             foreach (WraithDefinition definition in WraithRegistry.All) {

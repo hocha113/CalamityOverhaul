@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>武装阶段指挥 hub：~120帧悬停+指令广播，固定 7 步序列</summary>
+    /// <summary>武装指挥hub，7步序列</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.CommandSequence, typeof(PrimeStateContext))]
     internal class PrimeCommandSequenceState : PrimeStateBase
     {
@@ -31,8 +31,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
             int remaining = hubDuration - Timer;
 
-            //出招门闸：等待期间不进入倒计时，臂的蓄力一兑现立刻恢复推进
-            //（倒计时一旦开始，30 帧内不可能再有新的蓄力招起手，门闸只需守在门口）
+            //出招门闸，等蓄力兑现
             if (remaining == TelegraphLead && NextStepHijacksArms(context) && PrimeFacts.AnyArmCommitted()) {
                 return null;
             }
@@ -53,7 +52,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             return null;
         }
 
-        /// <summary>下一步是否为接管四臂编队的招式（步 0/2 是指令窗口，不接管）</summary>
+        /// <summary>下一步是否接管四臂</summary>
         private static bool NextStepHijacksArms(PrimeStateContext context) {
             int step = context.AttackPhaseIndex % 7;
             return step is 1 or 3 or 4 or 5 or 6;
@@ -62,8 +61,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         private static void BroadcastTelegraph(PrimeStateContext context) {
             int step = context.AttackPhaseIndex % 7;
 
-            //只有冲撞步需要空间预警（方向线）；
-            //指令步的预告由机体充能热感表达，不放置无躲避语义的视觉
+            //冲撞步方向线预警
             if (step is 1 or 5) {
                 PrimeTelegraphLine.SpawnLine(context.Npc, context.Npc.Center,
                     DirectionToTarget(context).ToRotation(), TelegraphLead);

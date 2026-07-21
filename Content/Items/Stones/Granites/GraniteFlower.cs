@@ -14,10 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Stones.Granites
 {
-    /// <summary>
-    /// 花岗之花：抛出水晶种子，落点绽放成驻场能量花，
-    /// 朝最近的敌人定向脉冲喷射花瓣碎片，凋谢时花瓣碎裂成一圈晶屑
-    /// </summary>
+    /// <summary>花岗之花，种子落点驻场，定向脉冲花瓣，凋谢碎晶</summary>
     internal class GraniteFlower : ModItem
     {
         public override void SetDefaults() {
@@ -51,9 +48,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         }
     }
 
-    /// <summary>
-    /// 持杖施法体：位置由锚定驱动（不吃速度积分），发种子前可跟随鼠标微调瞄准
-    /// </summary>
+    /// <summary>持杖体，锚定定位，发种前跟鼠标微调</summary>
     internal class GraniteFlowerHeld : BaseHeldProj
     {
         public override string Texture => GraniteMarbleVFX.GraniteTex + "GraniteFlower";
@@ -69,7 +64,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             Projectile.friendly = false;
         }
 
-        //位置全程由 AI 直接赋值，禁止速度积分产生逐帧漂移
+        //位置 AI 直赋，禁速度积分
         public override bool ShouldUpdatePosition() => false;
 
         public override void OnSpawn(IEntitySource source) {
@@ -88,7 +83,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
                 Projectile.timeLeft = duration;
             }
 
-            //发种子前跟随鼠标微调方向（ToMouse 由基类同步，远端同样生效）
+            //发种前跟鼠标(ToMouse 基类同步)
             if (Projectile.ai[0] == 0f && ToMouse != Vector2.Zero) {
                 aim = UnitToMouseV;
             }
@@ -100,7 +95,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             Projectile.rotation = aim.ToRotation();
             SetDirection();
 
-            //蓄势期能量在杖尖汇聚
+            //蓄势杖尖汇聚
             if (Projectile.ai[0] == 0f && !VaultUtils.isServer && Main.rand.NextBool(3)) {
                 Vector2 tip = Projectile.Center + aim * 26f;
                 Vector2 from = tip + Main.rand.NextVector2CircularEdge(18f, 18f);
@@ -112,7 +107,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
                 Projectile.ai[0] = 1f;
                 SoundEngine.PlaySound(SoundID.Item43 with { Pitch = -0.1f }, Projectile.Center);
                 if (Projectile.IsOwnedByLocalPlayer()) {
-                    //初速加向上分量，配合种子自重形成上抛弧线
+                    //初速加向上分量
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + aim * 30f
                         , aim * 11f - Vector2.UnitY * 2.4f, ModContent.ProjectileType<GraniteFlowerSeed>()
                         , Projectile.damage, Projectile.knockBack, Projectile.owner);
@@ -139,10 +134,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         }
     }
 
-    /// <summary>
-    /// 水晶种子：上抛弧线飞行，命中 / 触地 / 超时后绽放成能量花；
-    /// 撞墙时绽放点沿来向反推出墙体，避免花体嵌墙
-    /// </summary>
+    /// <summary>水晶种子，命中/触地/超时绽放；撞墙反推绽放点</summary>
     internal class GraniteFlowerSeed : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -168,7 +160,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         }
 
         public override void AI() {
-            //自重下坠拼出抛物弧线
+            //自重下坠
             if (Projectile.velocity.Y < 12f) {
                 Projectile.velocity.Y += 0.14f;
             }
@@ -181,7 +173,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
-            //绽放点沿撞击反方向退出墙体，直到花体包围盒不再嵌入实体物块
+            //绽放点退出墙体
             Vector2 back = -oldVelocity.SafeNormalize(Vector2.UnitY);
             Vector2 spot = Projectile.Center + back * 12f;
             for (int i = 0; i < 8 && Collision.SolidCollision(spot - new Vector2(20f), 40, 40); i++) {
@@ -205,7 +197,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         }
 
         public float GetWidthFunc(float c) {
-            //种子电弧细丝：中段半宽上限 7px，贴 16px 种子体
+            //半宽上限7px，贴16px体
             float p = c > 0.5f ? 1f - c : c;
             return p * 2f * Projectile.scale * 7f;
         }
@@ -217,7 +209,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         }
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
-            //种子形体：翻滚的小水晶（主晶面+斜切副晶面+白芯），不再是裸光斑
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Texture2D sliver = CWRAsset.Line.Value;
             Vector2 pos = Projectile.Center - Main.screenPosition;
@@ -235,10 +226,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         }
     }
 
-    /// <summary>
-    /// 驻场能量花：开花 16t → 3 次定向脉冲（每 44t，朝最近敌人扇形迸射花瓣碎片）→
-    /// 凋谢 20t 后花瓣碎裂成一圈晶片；全程对范围内敌人保持接触伤害
-    /// </summary>
+    /// <summary>驻场花，开16t→3次脉冲每44t→凋谢20t碎晶；全程接触伤</summary>
     internal class GraniteBloom : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -250,7 +238,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         private const int Life = WitherStart + WitherTime;
         private const int PetalCount = 6;
 
-        //脉冲收张动画计时（1→0），仅本地视觉
+        //脉冲收张 1→0，本地视觉
         private float pulseAnim;
 
         public override void SetDefaults() {
@@ -272,7 +260,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         private float WitherFade => Elapsed <= WitherStart ? 1f
             : MathHelper.Clamp(Projectile.timeLeft / (float)WitherTime, 0f, 1f);
 
-        //下次脉冲前 14t 蓄势（核心增亮、花瓣内收），脉冲打完恒为 0
+        //脉冲前14t蓄势，打完恒0
         private float Charge {
             get {
                 if (Projectile.ai[1] >= MaxPulses) {
@@ -286,7 +274,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         public override void AI() {
             Projectile.velocity = Vector2.Zero;
 
-            //开花：水晶展开声 + 一圈迸散微光
+            //开花
             if (Elapsed == 1 && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item29 with { Pitch = -0.2f, Volume = 0.9f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Item4 with { Pitch = 0.6f, Volume = 0.3f }, Projectile.Center);
@@ -302,14 +290,14 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
                 Pulse((int)Projectile.ai[1] - 1);
             }
 
-            //蓄势期能量向心汇聚
+            //蓄势向心
             if (Charge > 0f && !VaultUtils.isServer && Main.rand.NextBool(2)) {
                 Vector2 from = Projectile.Center + Main.rand.NextVector2CircularEdge(50f, 50f);
                 PRTLoader.NewParticle<PRT_Light>(from, from.To(Projectile.Center) * 0.07f
                     , GraniteMarbleVFX.GraniteCore, 0.28f).Configure(12, 1f, 1.2f);
             }
 
-            //凋谢起点：花瓣回拢的轻响
+            //凋谢起点
             if (Elapsed == WitherStart + 1 && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item29 with { Pitch = 0.45f, Volume = 0.4f }, Projectile.Center);
             }
@@ -324,7 +312,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
 
         private void Pulse(int index) {
             pulseAnim = 1f;
-            //620px 内最近敌人定向；无目标退化为随机方向
+            //620px 最近敌，无则随机
             NPC target = Projectile.Center.FindClosestNPC(620f);
             float baseAngle = target != null
                 ? Projectile.Center.To(target.Center).ToRotation()
@@ -332,12 +320,12 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             Vector2 pulseDir = baseAngle.ToRotationVector2();
 
             if (!VaultUtils.isServer) {
-                //轻迸发，音阶随第几次脉冲递进
+                //脉冲音阶递进
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = index * 0.22f, Volume = 0.9f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Item4 with { Pitch = 0.2f + index * 0.25f, Volume = 0.25f }, Projectile.Center);
                 PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero
                     , GraniteMarbleVFX.GraniteCore, 0).Configure(0.1f, 0.8f, 22);
-                //定向光屑锥指示弹道
+                //光屑锥
                 for (int i = 0; i < 10; i++) {
                     Vector2 v = pulseDir.RotatedByRandom(0.45f) * Main.rand.NextFloat(3f, 7f);
                     PRTLoader.NewParticle<PRT_Light>(Projectile.Center + pulseDir * 16f, v
@@ -366,7 +354,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             if (VaultUtils.isServer) {
                 return;
             }
-            //凋谢终点：全体花瓣碎裂成一圈晶片 + 微电弧
+            //凋谢终点碎晶
             SoundEngine.PlaySound(SoundID.Shatter with { Volume = 0.6f, Pitch = 0.25f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.5f, Pitch = -0.2f }, Projectile.Center);
             for (int i = 0; i < 14; i++) {
@@ -410,15 +398,15 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             float snap = MathF.Sin(pulseAnim * MathHelper.Pi);
             float breathe = 1f + 0.06f * MathF.Sin(Main.GlobalTimeWrappedHourly * 5f);
 
-            //地面投光：压扁的深色光晕铺在花体下方
+            //地面投光
             spriteBatch.Draw(glow, pos + new Vector2(0f, 26f), null, deep * 0.4f * vis, 0f
                 , glow.Size() / 2f, new Vector2(3.2f, 0.9f) * vis, SpriteEffects.None, 0f);
 
-            //能量场边界环：与接触判定半径同步张缩
+            //边界环=接触半径
             spriteBatch.Draw(ring, pos, null, deep * (0.45f + 0.3f * charge) * vis, Main.GlobalTimeWrappedHourly
                 , ring.Size() / 2f, vis * 0.42f, SpriteEffects.None, 0f);
 
-            //花瓣：开花从"合拢向上"展开为放射状，凋谢时回拢；蓄势内收、脉冲瞬间收张回弹
+            //花瓣开合/蓄势内收/脉冲回弹
             float unfold = 1f - (1f - Open) * (1f - Open);
             unfold *= 0.3f + 0.7f * WitherFade;
             float reach = (1f - 0.2f * charge + 0.24f * snap) * vis;
@@ -435,20 +423,20 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
                 float petalLen = 46f * reach;
                 float lenScale = petalLen / blade.Height;
 
-                //深色底刃 → 青蓝主刃 → 白亮芯，三层叠出晶体花瓣
+                //三层晶体花瓣
                 spriteBatch.Draw(blade, root, null, deep * 0.8f * vis, rot, bladeOrigin
                     , new Vector2(0.5f * widthScale, lenScale * 1.06f), SpriteEffects.None, 0f);
                 spriteBatch.Draw(blade, root, null, spark * 0.95f * vis, rot, bladeOrigin
                     , new Vector2(0.3f * widthScale, lenScale), SpriteEffects.None, 0f);
                 spriteBatch.Draw(blade, root, null, Color.White * 0.7f * vis, rot, bladeOrigin
                     , new Vector2(0.13f * widthScale, lenScale * 0.82f), SpriteEffects.None, 0f);
-                //花瓣尖端星光，蓄势与脉冲时增亮
+                //尖端星光
                 Vector2 tip = root + dir * petalLen;
                 spriteBatch.Draw(star, tip, null, spark * (0.6f + 0.25f * charge + 0.3f * snap) * vis, ang
                     , star.Size() / 2f, (0.05f + 0.02f * snap) * vis, SpriteEffects.None, 0f);
             }
 
-            //中心能量核：深晕/亮核/白芯 + 慢旋四芒星
+            //中心核
             spriteBatch.Draw(glow, pos, null, deep * 0.85f * vis, 0f, glow.Size() / 2f
                 , (1.5f + 0.5f * charge) * vis * breathe, SpriteEffects.None, 0f);
             spriteBatch.Draw(glow, pos, null, core * 0.95f * vis, 0f, glow.Size() / 2f

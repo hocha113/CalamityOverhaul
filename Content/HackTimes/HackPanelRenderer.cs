@@ -8,44 +8,32 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>骇入面板渲染器：右侧协议旗标列，尖端指向屏幕中心目标</summary>
+    /// <summary>右侧协议旗标列，尖端指向屏幕中心目标</summary>
     internal class HackPanelRenderer
     {
         #region 状态字段
 
-        //槽位飞入进度 0..1
-        private float[] slotFlyIn;
-        //槽位悬停动画
+        private float[] slotFlyIn;//0..1
         private float[] slotHoverAnim;
-        //槽位故障种子
         private float[] slotGlitchSeed;
-        //槽位绘制矩形，悬停检测用
+        //悬停检测用
         private Rectangle[] slotRects;
-        //槽位纵向偏移（分组标题产生的错位）
+        //分组标题造成的纵偏
         private float[] slotYOffset;
-        //该槽位是否为分组首行
         private bool[] slotGroupHead;
-        //悬停槽位索引
         private int hoveredSlot = -1;
-        //是否有悬停槽位
         public bool HasHoveredSlot => hoveredSlot >= 0;
-        /// <summary>悬停协议的实际RAM消耗，无悬停为0，RAM弧预扣闪烁用</summary>
+        /// <summary>悬停协议实际 RAM，无悬停为 0，弧预扣用</summary>
         public int HoveredCostPreview { get; private set; }
-        //全局计时
         private float timer;
-        //是否显示
         private bool visible;
-        //上传队列引用
         internal HackQueueRenderer Queue;
-        //列表展开计时，Show 时重置
+        //Show 时重置
         private float revealTime;
-        //故障带 Y 坐标
         private float glitchBandY;
-        //故障带冷却
         private float glitchBandCooldown;
-        //槽位到协议全局索引映射（按类别分组后的显示顺序）
+        //类别分组后显示序 → 全局协议索引
         private readonly List<int> displayIndices = [];
-        //过滤后协议数量
         private int displayCount;
 
         #endregion
@@ -72,7 +60,7 @@ namespace CalamityOverhaul.Content.HackTimes
         private const float TopPadding = 60f;
         //详情页脚高度
         private const float FooterHeight = 92f;
-        //字体尺寸：MouseText 中文字形低于 0.5 会糊，此处 0.5 为下限
+        //MouseText 中文不低于 0.5，否则糊
         private static float FontName => 0.80f;
         private static float FontCost => 0.88f;
         private static float FontDesc => 0.72f;
@@ -310,7 +298,7 @@ namespace CalamityOverhaul.Content.HackTimes
             RowState[] rows = rowStates;
             BuildRowStates(rows, baseX, startY);
 
-            //行背景：着色器材质优先，缺失回退CPU旗标填充
+            //行背景，着色器优先，缺则 CPU 旗标
             Effect deck = EffectLoader.HackDeckPanel?.Value;
             if (deck != null) {
                 DrawRowBackgroundsShader(sb, px, deck, rows, alpha);
@@ -400,7 +388,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        //整行换色语义：红=不可用，琥珀=队列/上传，青/红主题色=可用
+        //红不可用、琥珀队列/上传、主题色可用
         private Color ResolveRowAccent(in RowState rs, int index) {
             Color accent;
             if (rs.QueueState == QueueSlotState.Uploading) accent = HackTheme.Uploading;
@@ -409,7 +397,7 @@ namespace CalamityOverhaul.Content.HackTimes
             else if (rs.Disabled) accent = HackTheme.Danger;
             else accent = HackTheme.Accent;
 
-            //无限骇入：全体红色闪烁
+            //无限骇入全红闪
             if (HackTime.InfiniteHack) {
                 float rFlicker = MathF.Sin(timer * 15f + slotGlitchSeed[index] * 3f) * 0.35f
                     + MathF.Sin(timer * 23f + slotGlitchSeed[index] * 7f) * 0.15f + 0.5f;
@@ -487,7 +475,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
             //---- 成本大格（左端，指向目标） ----
             Rectangle costCell = new(rect.X + (int)TaperWidth, rect.Y, (int)CostCellWidth, rect.Height);
-            //悬停反色：格子亮起、数字变暗
+            //悬停反色
             if (rs.Hover > 0.35f) {
                 sb.Draw(px, costCell, HackTheme.SrcPixel, accent * (rowAlpha * 0.85f * rs.Hover));
             }
@@ -500,7 +488,7 @@ namespace CalamityOverhaul.Content.HackTimes
             int actualCost = HackCostEvaluator.GetActualCost(rs.Hack, HackTime.CurrentScanTarget);
             string costStr = $"{actualCost}";
             Vector2 costSize = FontAssets.MouseText.Value.MeasureString(costStr) * FontCost;
-            //悬停反色时数字用暗底色（大字号下仍清晰），常态用亮化的主色实色
+            //悬停数字暗底，常态主色
             Color costColor = rs.Hover > 0.35f
                 ? HackTheme.BgDarkest * rowAlpha
                 : Color.Lerp(accent, Color.White, 0.25f) * rowAlpha;
@@ -510,7 +498,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
             Utils.DrawBorderString(sb, costStr,
                 new Vector2((int)(costCell.Center.X - costSize.X * 0.5f), rect.Y + 4), costColor, FontCost);
-            //RAM 微标注：无描边淡字，避免小字号黑边糊块
+            //RAM 微标注，无描边淡字
             Vector2 ramCapSize = FontAssets.MouseText.Value.MeasureString("RAM") * 0.5f;
             Color ramCapColor = rs.Hover > 0.35f
                 ? HackTheme.BgDarkest * (rowAlpha * 0.9f)
@@ -566,7 +554,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
             HackTheme.DrawBadge(sb, new Vector2(nameX, rect.Y + 26), badgeText, badgeColor, rowAlpha, 0.56f);
 
-            //---- 右区：耗时/类别 ----
+            //右区 耗时/类别
             if (rs.QueueState == QueueSlotState.None) {
                 float sec = rs.Hack.UploadTime / 60f;
                 string timeStr = $"{sec:F1}s";
@@ -601,7 +589,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 HackTheme.DrawHatch(sb, hatchArea, 11f, HackTheme.Danger * (rowAlpha * 0.10f));
             }
 
-            //---- 开放式描边：顶发丝线 + 底暗线 + 右端亮端帽 + 斜切边 ----
+            //开放描边
             Color edge = accent * (rowAlpha * (0.35f + rs.Hover * 0.4f));
             //顶线超出行宽的悬挑
             sb.Draw(px, new Rectangle(rect.X + (int)TaperWidth, rect.Y, rect.Width - (int)TaperWidth + 6, 1),
@@ -650,7 +638,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        //解码乱码：入场未完成时名称部分字符替换为十六进制噪声
+        //入场未完时名称掺十六进制噪声
         private string GetDecodedName(string name, float fly, int index) {
             if (fly >= 0.92f || string.IsNullOrEmpty(name)) return name;
             float decodeProgress = Math.Clamp((fly - 0.3f) / 0.62f, 0f, 1f);
@@ -765,7 +753,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 //垂直干线保持实线（结构件）
                 HackTheme.DrawLine(sb, new Vector2(trunkX, trunkTop), new Vector2(trunkX, trunkBot), 1.5f, wireColor * 0.8f);
 
-                //分支：待命虚线，悬停/上传实线点亮
+                //待命虚线，悬停/上传实线
                 for (int i = 0; i < displayCount; i++) {
                     float fly = slotFlyIn[i];
                     if (fly < 0.05f) continue;
@@ -912,7 +900,7 @@ namespace CalamityOverhaul.Content.HackTimes
             Utils.DrawBorderString(sb, status, new Vector2((int)(baseX + 16), (int)footerY),
                 HackTheme.TextNormal * alpha, 0.62f);
 
-            //伪十六进制标签 + 协议计数：无描边装饰字
+            //伪十六进制 + 协议计数，无描边
             string tag = $"NET::0x{(int)(timer * 100) % 0xFFFF:X4}";
             HackTheme.DrawRawText(sb, tag, new Vector2(baseX + RowWidth - 110, footerY + 1),
                 HackTheme.Accent * (alpha * 0.5f), FontMicro);
@@ -932,7 +920,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 视觉辅助
 
-        //扫描线：一条竖线横穿条目
+        //竖扫描线
         private static void DrawScanLine(SpriteBatch sb, Texture2D px, Rectangle rect, float pos, float alpha, Color color) {
             int lineX = rect.X + (int)(rect.Width * pos);
             if (lineX < rect.X || lineX > rect.Right - 2) return;

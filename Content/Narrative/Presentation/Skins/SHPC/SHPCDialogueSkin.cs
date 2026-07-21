@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.SHPC
 
 {
 
-    /// <summary>SHPC 对话框——布局/字号与 <see cref="Sea.SeaDialogueSkin"/> 一致，仅替换赛博特效面板。</summary>
+    /// <summary>布局字号同 <see cref="Sea.SeaDialogueSkin"/>,仅换赛博面板</summary>
 
     internal sealed class SHPCDialogueSkin : StoryDialogueSkin
 
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.SHPC
 
         public override float Padding => 10;
 
-        /// <summary>对齐 ADV SHPCDialogueBox 与 CyberPanel shader 内缘。</summary>
+        /// <summary>对齐 ADV/CyberPanel 内缘</summary>
 
         public override float TextWrapInset => 24f;
 

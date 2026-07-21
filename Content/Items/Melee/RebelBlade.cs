@@ -141,7 +141,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private float SlashTime => IsFinisher ? 17f : 12f;
         private float RecoverTime => 8f;
         private float TotalTime => WindupTime + SlashTime + RecoverTime;
-        //挥砍弧度：终结技近乎一整圈的回旋
+        //挥砍弧度，终结技近整圈
         private float SwingArc => IsFinisher ? 5.7f : 3.5f;
         //刀尖距离持握点的长度
         private float BladeReach => IsFinisher ? 215f : 195f;
@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private float trailFade;
         private readonly HashSet<int> hitNPCs = [];
 
-        //刀光轨迹缓存：每逻辑帧细分采样以保证弧光平滑
+        //刀光轨迹缓存，每逻辑帧细分采样
         private const int TrailMax = 64;
         private const int TrailSubdiv = 4;
         private readonly float[] trailRot = new float[TrailMax];
@@ -277,7 +277,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
             else {
-                //收势：刀停住，弧光收缩渐隐
+                //收势
                 float t = (elapsed - slashEnd) / RecoverTime;
                 currentRotation = endAngle;
                 trailFade = 1f - t;

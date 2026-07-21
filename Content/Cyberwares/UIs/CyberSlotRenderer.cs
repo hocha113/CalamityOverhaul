@@ -5,25 +5,23 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.Cyberwares.UIs
 {
-    /// <summary>义体槽位渲染：排布/交互/连接线</summary>
+    /// <summary>槽位排布/交互/连线</summary>
     internal class CyberSlotRenderer
     {
         #region 槽位定义
 
-        /// <summary>槽位布局定义</summary>
         internal readonly struct SlotDef(float xRatio, float yRatio, int nodeIndex)
         {
-            ///水平比例
+            /// <summary>水平比例</summary>
             public readonly float XRatio = xRatio;
-            ///垂直比例
+            /// <summary>垂直比例</summary>
             public readonly float YRatio = yRatio;
-            ///连接人体节点索引
+            /// <summary>人体节点索引</summary>
             public readonly int NodeIndex = nodeIndex;
-            ///面板左侧
             public bool IsLeft => XRatio < 0.5f;
         }
 
-        /// <summary>12 槽位布局，左右各 6</summary>
+        /// <summary>12 槽，左右各 6</summary>
         public static readonly SlotDef[] Definitions = [
             //左侧槽位
             new(0.04f, 0.08f,  0),   //额叶皮层 → 头部
@@ -68,7 +66,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         private int hoveredSlot = -1;
         private int selectedSlot = -1;
         private readonly float[] slotHoverAnim = new float[12];
-        //节点状态缓存，避免每帧分配
+        //节点状态缓存，免每帧分配
         private readonly int[] nodeStatesCache = new int[CyberBodyRenderer.NodeCount];
 
         public int HoveredSlot => hoveredSlot;
@@ -98,9 +96,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         #region 公共方法
 
-        /// <summary>
-        ///检测鼠标悬停和点击交互，返回本帧是否发生了点击
-        /// </summary>
         public bool UpdateInteraction(Rectangle panelRect) {
             bool clicked = false;
             hoveredSlot = -1;
@@ -123,9 +118,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             return clicked;
         }
 
-        /// <summary>
-        ///更新槽位悬停动画的平滑过渡
-        /// </summary>
         public void UpdateAnimations() {
             for (int i = 0; i < slotHoverAnim.Length; i++) {
                 float target = i == hoveredSlot ? 1f : i == selectedSlot ? 0.6f : 0f;
@@ -133,10 +125,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
         }
 
-        /// <summary>
-        ///计算各节点的激活状态数组，0普通 1已连接 2高亮
-        ///返回的数组为内部缓存引用，下次调用会覆盖内容
-        /// </summary>
+        /// <summary>节点态 0普通 1已连 2高亮；返回内部缓存，下次覆盖</summary>
         public int[] ComputeNodeStates() {
             Array.Clear(nodeStatesCache);
             for (int i = 0; i < Definitions.Length; i++) {
@@ -151,9 +140,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             return nodeStatesCache;
         }
 
-        /// <summary>
-        ///绘制所有义体槽位的背景、边框和文字标签
-        /// </summary>
         public void DrawSlots(SpriteBatch sb, float alpha, Rectangle panelRect,
             string[] slotLabels, string selectedText, string emptyText, CyberwarePlayer cyberPlayer = null) {
             Texture2D px = VaultAsset.placeholder2?.Value;
@@ -252,14 +238,13 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                             itemTex.Size() / 2f, iconScale, SpriteEffects.None, 0f);
                     }
 
-                    //状态文字：显示义体名称
+                    //已装备名
                     string itemName = equippedItem.Name ?? "???";
                     if (itemName.Length > 14) itemName = itemName[..13] + "…";
                     Color nameColor = CyberwareTheme.AccentGold * (alpha * 0.7f);
                     Utils.DrawBorderString(sb, itemName, new Vector2(textX, rect.Y + 26), nameColor, 0.50f * CyberwareTheme.FontScale);
                 }
                 else {
-                    //状态文字
                     string statusStr = isSelected ? selectedText : emptyText;
                     Color statusColor = isSelected ? CyberwareTheme.AccentGold : CyberwareTheme.TextDim;
                     statusColor *= alpha * 0.6f;
@@ -268,9 +253,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
         }
 
-        /// <summary>
-        ///绘制各槽位到人体节点之间的折线连接和流动光点
-        /// </summary>
         public void DrawConnectors(SpriteBatch sb, float alpha, Rectangle panelRect,
             CyberBodyRenderer body, Vector2 bodyOrigin, float dataStreamPhase) {
             Texture2D px = VaultAsset.placeholder2?.Value;
@@ -284,12 +266,12 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 var def = Definitions[i];
                 Rectangle slotRect = GetSlotRect(i, panelRect);
 
-                //连线起点（槽位靠内侧边缘）
+                //槽位内侧边
                 Vector2 slotEdge = def.IsLeft
                     ? new Vector2(slotRect.Right, slotRect.Center.Y)
                     : new Vector2(slotRect.Left, slotRect.Center.Y);
 
-                //连线终点（人体节点位置）
+                //人体节点
                 Vector2 nodePos = body.GetNodeWorldPosition(def.NodeIndex, bodyOrigin);
                 Vector2 nodeApproach = nodePos + ConnectorNodeOffsets[i];
 
@@ -306,7 +288,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                     : Color.Lerp(CyberwareTheme.Connector, CyberwareTheme.Accent, 0.18f);
                 lineColor *= alpha * lineAlpha;
 
-                //分道折线路径：水平出线→独立竖向通道→节点前汇入
+                //水平出→竖道→汇入节点
                 float laneFactor = ConnectorLaneFactors[i];
                 float midX = MathHelper.Lerp(slotEdge.X, nodeApproach.X, laneFactor);
                 float laneSpread = (i % 6 - 2.5f) * (def.IsLeft ? -2.6f : 2.6f);
@@ -335,7 +317,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 DrawOffsetGuide(sb, px, p3, p4, new Vector2(0f, -sideOffset * 0.3f), guideColor * 0.8f);
                 DrawOffsetGuide(sb, px, p4, p5, new Vector2(sideOffset * 0.18f, 0f), guideColor * 0.65f);
 
-                //沿连接线绘制多颗数据脉冲
+                //数据脉冲
                 int packetCount = isActive ? 3 : passiveHideStrength < 0.35f ? 1 : 0;
                 for (int packet = 0; packet < packetCount; packet++) {
                     float packetPhase = (dataStreamPhase / MathHelper.TwoPi + packet / (float)packetCount + i * 0.037f) % 1f;
@@ -353,13 +335,13 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                     }
                 }
 
-                //折线拐角的中继节点
+                //拐角中继
                 Color relayColor = Color.Lerp(lineColor, CyberwareTheme.AccentGold * alpha, isActive ? 0.22f : 0.08f);
                 DrawRelayJunction(sb, px, glow, p2, relayColor, alpha, isActive, dataStreamPhase + i * 0.11f);
                 DrawRelayJunction(sb, px, glow, p3, relayColor, alpha, isActive, dataStreamPhase + i * 0.16f);
                 DrawRelayJunction(sb, px, glow, p4, relayColor * 0.9f, alpha, isActive, dataStreamPhase + i * 0.2f);
 
-                //槽位端与人体端的瞄准锁定标记
+                //两端瞄准标
                 DrawReticleEndpoint(sb, px, glow, p1, def.IsLeft ? 1f : -1f, lineColor, alpha, isActive, hover, dataStreamPhase + i * 0.13f, true);
                 DrawReticleEndpoint(sb, px, glow, p5, def.IsLeft ? -1f : 1f, lineColor, alpha, isActive, hover, dataStreamPhase + i * 0.17f, false);
             }
@@ -468,9 +450,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             CyberwareTheme.DrawLine(sb, px, corner, corner + new Vector2(0f, -yDir * length), 0.85f, color);
         }
 
-        /// <summary>
-        ///获取指定槽位的屏幕矩形区域
-        /// </summary>
         public Rectangle GetSlotRect(int index, Rectangle panelRect) {
             var def = Definitions[index];
             float slotW = CyberwareTheme.PanelWidth * 0.20f;

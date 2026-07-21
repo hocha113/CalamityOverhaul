@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>霜蕨枪管：命中沿弹道抽冰晶脉络，穿线共享寒霜</summary>
+    /// <summary>霜蕨枪管，命中抽冰晶脉络，穿线共享寒霜</summary>
     internal sealed class FrostfernBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>霜蕨脉络：L-system 折线+Trail</summary>
+    /// <summary>霜蕨脉络，L-system 折线+Trail</summary>
     internal sealed class SHPCFrostfernLineProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         private static readonly Vector3 CoreVec = new Color(220, 245, 255).ToVector3();
         private static readonly Vector3 GlowVec = new Color(170, 220, 255).ToVector3();
 
-        //每条分叉为一段连续顶点序列；首段是主干，其余为派生子分叉
+        //分叉顶点，首段主干
         private List<Vector2[]> branches;
         private List<Trail> trails;
         private float fadeAlpha;
@@ -71,12 +71,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     SoundEngine.PlaySound(SoundID.Item28 with { Volume = 0.45f, Pitch = 0.4f }, Projectile.Center);
                 }
             }
-            //快进快出：前 4 帧强势出现，剩余渐隐
+            //前4帧淡入，其后淡出
             int t = 24 - Projectile.timeLeft;
             if (t < 4) fadeAlpha = MathHelper.SmoothStep(0f, 1f, t / 4f);
             else fadeAlpha = MathHelper.SmoothStep(1f, 0f, (t - 4) / 20f);
 
-            //节点处随机霜花闪烁
+            //节点霜花闪烁
             if (Main.netMode != NetmodeID.Server && branches != null && Main.GameUpdateCount % 2 == 0) {
                 var branch = branches[Main.rand.Next(branches.Count)];
                 Vector2 pt = branch[Main.rand.Next(branch.Length)];
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         private void BuildLSystem() {
             branches = new List<Vector2[]>();
             Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
-            //主干 4 段，每段 110px
+            //主干3~4段×110px
             int trunkSegs = Main.rand.Next(3, 5);
             float trunkSegLen = 110f;
             Vector2[] trunk = new Vector2[trunkSegs + 1];
@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
             branches.Add(trunk);
 
-            //子分叉：从主干第 i 段中点向 ±35° 派生 1~2 段
+            //子分叉，中点±35°
             for (int i = 1; i < trunk.Length - 1; i++) {
                 int childCount = Main.rand.Next(1, 3);
                 for (int c = 0; c < childCount; c++) {
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     for (int s = 1; s <= subSegs; s++) {
                         Vector2 wobble = childDir.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f));
                         sub[s] = sub[s - 1] + wobble * trunkSegLen * 0.55f;
-                        //深度2：再分叉一次
+                        //深度2再分
                         if (s == subSegs - 1 && Main.rand.NextBool(2)) {
                             float side2 = Main.rand.NextBool() ? 1f : -1f;
                             Vector2 grandDir = childDir.RotatedBy(MathHelper.ToRadians(28f) * side2);
@@ -149,7 +149,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             target.AddBuff(BuffID.Frostburn, 240);
             if (Main.netMode == NetmodeID.Server) return;
             SoundEngine.PlaySound(SoundID.Item120 with { Volume = 0.35f, Pitch = 0.5f }, target.Center);
-            //霜星脉冲环 + 火花
+            //霜星环+火花
             PRTLoader.NewParticle<PRT_StarPulseRing>(target.Center, Vector2.Zero, new Color(180, 230, 255, 0), 0.05f).Configure(0.05f, 0.4f, 18);
             for (int i = 0; i < 5; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3f, 3f);
@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Texture2D noise = CWRAsset.ThunderTrail?.Value ?? CWRAsset.Extra_193?.Value;
             if (noise == null) return;
 
-            //每条分叉一个 Trail 实例
+            //每分叉一 Trail
             if (trails == null) {
                 trails = new List<Trail>(branches.Count);
                 foreach (var branch in branches) {
@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (branches == null || fadeAlpha < 0.05f) return;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null) return;
-            //在主干末端节点贴一张 SoftGlow，强化"霜花结点"
+            //末端 SoftGlow 结点
             Vector2 origin = glow.Size() * 0.5f;
             foreach (var branch in branches) {
                 Vector2 tip = branch[branch.Length - 1];

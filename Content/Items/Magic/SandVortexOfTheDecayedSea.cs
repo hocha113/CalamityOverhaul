@@ -11,10 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic
 {
-    /// <summary>
-    /// 腐化深海漩涡：在光标位置召唤一个吸纳敌人的大型漩涡，漩涡持续期间不断吸入并撕咬目标，
-    /// 周期性向外抛射追踪型的腐化深海珠，结束时还会爆裂一圈深海珠
-    /// </summary>
+    /// <summary>腐化深海漩涡，光标处吸扯并抛追踪珠</summary>
     internal class SandVortexOfTheDecayedSea : ModItem
     {
         public override string Texture => CWRConstant.Item_Magic + "SandVortexOfTheDecayedSea";
@@ -50,7 +47,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     {
         public override string Texture => CWRConstant.Item_Magic + "SandVortexOfTheDecayedSea";
         public override int TargetID => ModContent.ItemType<SandVortexOfTheDecayedSea>();
-        /// <summary>开火余韵进度，法器出手后胀大发光</summary>
+        /// <summary>开火余韵 0~1</summary>
         private int glowPulse;
         public override void SetGunProperty() {
             Projectile.DamageType = DamageClass.Magic;
@@ -81,7 +78,6 @@ namespace CalamityOverhaul.Content.Items.Magic
             SoundEngine.PlaySound(SoundID.Item84 with { Pitch = -0.4f, Volume = 0.7f }, InMousePos);
 
             if (Projectile.IsOwnedByLocalPlayer()) {
-                //在光标处生成新漩涡
                 Projectile.NewProjectile(Source, InMousePos, Vector2.Zero
                     , ModContent.ProjectileType<DecayedSeaVortex>()
                     , WeaponDamage, WeaponKnockback, Owner.whoAmI);
@@ -96,7 +92,6 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
 
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
-            //出手余韵的发光残影
             float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
             Color color = Color.GreenYellow;
             color.A = 0;
@@ -108,10 +103,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
     }
 
-    /// <summary>
-    /// 大型腐化深海漩涡：停驻在光标处，对敌方造成牵引与持续伤害，定期向外抛出追踪深海珠，
-    /// 自然消散时还会绽放一圈深海珠
-    /// </summary>
+    /// <summary>深海漩涡本体，牵引+抛珠，消散爆一圈</summary>
     internal class DecayedSeaVortex : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -123,7 +115,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         private const int DamageTickInterval = 14;
         private const int OrbSpawnInterval = 32;
 
-        //true 表示这次结束不应触发结束爆裂（保留作为未来扩展，目前没强制使用）
+        //true=跳过结束爆裂(预留)
         public bool SuppressDeathBurst { get; set; }
 
         private ref float OrbTimer => ref Projectile.ai[0];
@@ -134,7 +126,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Projectile.width = (int)(DamageRadius * 2);
             Projectile.height = (int)(DamageRadius * 2);
             Projectile.DamageType = DamageClass.Magic;
-            //伤害走SimpleStrikeNPC，不走Terraria命中循环
+            //伤害走 SimpleStrikeNPC
             Projectile.friendly = false;
             Projectile.hostile = false;
             Projectile.tileCollide = false;
@@ -187,11 +179,11 @@ namespace CalamityOverhaul.Content.Items.Magic
                 Vector2 pull = toCenter.SafeNormalize(Vector2.Zero) * pullT * 5f * npc.knockBackResist;
                 Vector2 tangent = toCenter.SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2);
                 Vector2 swirl = tangent * pullT * 2.5f * npc.knockBackResist;
-                //平滑混合，避免直接覆盖速度造成跳变
+                //平滑混速防跳变
                 npc.velocity = Vector2.Lerp(npc.velocity, npc.velocity + pull + swirl, 0.35f);
             }
 
-            //对敌方弹幕也施加一点扰动，让漩涡有一点弹幕清场的味道
+            //顺带扰敌方弹幕
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile hostile = Main.projectile[i];
                 if (!hostile.active || !hostile.hostile || hostile.friendly) {
@@ -241,7 +233,7 @@ namespace CalamityOverhaul.Content.Items.Magic
                 float ang = baseRot + i * (MathHelper.TwoPi / orbCount);
                 Vector2 dir = ang.ToRotationVector2();
                 Vector2 spawnPos = Projectile.Center + dir * 64f;
-                //略带切向速度，让orb一开始绕漩涡外抛
+                //切向外抛
                 Vector2 vel = dir.RotatedBy(MathHelper.PiOver4 * 0.5f) * 9.5f;
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnPos, vel
                     , orbType, orbDmg, Projectile.knockBack, Projectile.owner);
@@ -249,7 +241,6 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
 
         private void SpawnAmbientDust() {
-            //贴近漩涡外沿的螺旋粒子，体现出向心吸入感
             int count = Main.rand.NextBool(2) ? 3 : 2;
             for (int i = 0; i < count; i++) {
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -277,7 +268,6 @@ namespace CalamityOverhaul.Content.Items.Magic
             Color acidYellow = new Color(200, 220, 100);
             Color sand = new Color(220, 185, 110);
 
-            //主旋涡：两层 cyclone 反向旋转
             Texture2D cyclone = CWRAsset.Cyclone?.Value;
             if (cyclone != null) {
                 Vector2 origin = cyclone.Size() * 0.5f;
@@ -291,7 +281,7 @@ namespace CalamityOverhaul.Content.Items.Magic
                     , -t * 0.8f, origin, DamageRadius / cyclone.Width * 1.8f * endPulse, SpriteEffects.None, 0f);
             }
 
-            //气流条带，5 张围绕漩涡螺旋打转
+            //5 条气流带
             Texture2D airflow = CWRAsset.Fog?.Value;
             if (airflow != null) {
                 Vector2 origin = airflow.Size() * 0.5f;
@@ -306,7 +296,6 @@ namespace CalamityOverhaul.Content.Items.Magic
                 }
             }
 
-            //浓雾团：增加体积感
             Texture2D fog = CWRAsset.Fog?.Value;
             if (fog != null) {
                 Vector2 origin = fog.Size() * 0.5f;
@@ -323,7 +312,6 @@ namespace CalamityOverhaul.Content.Items.Magic
                 }
             }
 
-            //核心高光
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow != null) {
                 Vector2 origin = glow.Size() / 2f;
@@ -338,7 +326,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         public override void OnKill(int timeLeft) {
             SoundEngine.PlaySound(SoundID.NPCDeath13 with { Volume = 0.9f, Pitch = -0.5f }, Projectile.Center);
 
-            //结束时向 8 个方向爆出一圈深海珠
+            //结束爆 8 向珠
             if (!SuppressDeathBurst && Projectile.IsOwnedByLocalPlayer()) {
                 int orbType = ModContent.ProjectileType<DecayedSeaOrb>();
                 int orbDmg = Math.Max((int)(Projectile.damage * 0.65f), 1);
@@ -350,7 +338,6 @@ namespace CalamityOverhaul.Content.Items.Magic
                 }
             }
 
-            //大量尾流粒子
             for (int i = 0; i < 80; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(9f, 9f);
                 int dustType = Main.rand.NextBool(3) ? CWRID.Dust_SulphurousSeaAcid : DustID.Sand;
@@ -360,9 +347,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
     }
 
-    /// <summary>
-    /// 腐化深海珠：作为漩涡的远程攻击载体，飞行一段时间后进入追踪状态
-    /// </summary>
+    /// <summary>深海珠，短飞后追踪</summary>
     internal class DecayedSeaOrb : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Magic + "DecayedSeaOrb";

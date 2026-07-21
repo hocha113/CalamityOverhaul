@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
-    /// <summary>菌生蟹渲染</summary>
+    /// <summary>渲染</summary>
     internal class CrabulonRenderer
     {
         private readonly NPC npc;

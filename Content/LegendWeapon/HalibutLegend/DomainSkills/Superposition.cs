@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 {
-    /// <summary>叠加攻击：克隆体汇聚后齐射比目鱼炮</summary>
+    /// <summary>叠加攻击、克隆汇聚后齐射比目鱼炮</summary>
     internal static class Superposition
     {
         public static int ID = 6;
@@ -538,7 +538,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
         }
 
-        //干净克隆体绘制：仅身体本体，不改动真实玩家，也不重放其 buff/特效绘制钩子
+        //干净克隆体、仅身体，不碰真玩家/buff绘制
         private void DrawTimeClone(TimeClone clone) {
             if (clone.Alpha < 0.05f) {
                 return;
@@ -584,7 +584,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
     #region 齐射炮弹幕
     /// <summary>
-    /// 大比目鱼炮 - 叠加态齐射发射器：长蓄力→塌缩沉默→重锤齐射，炮口随领域层数叠加重影
+    /// 大比目鱼炮、叠加态齐射，蓄力→沉默→齐射，层数叠重影
     /// </summary>
     internal class SuperpositionCannon : ModProjectile
     {
@@ -592,7 +592,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
         private Player Owner => Main.player[Projectile.owner];
 
-        //owner 同步后的瞄准点：远程端读近似鼠标，避免误用本地视角鼠标
+        //owner同步瞄准点，远程读近似鼠标
         private Vector2 AimWorld {
             get {
                 if (Owner.TryGetOverride<HalibutPlayer>(out var hp)) {
@@ -629,7 +629,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
         public bool Completed => state == CannonState.Finish;
 
-        //配色：青蓝水流 + 紫电叠加；满层转白金。A=255 以便加算/PRT 正常显色
+        //青蓝+紫电，满层白金，A=255给加算/PRT
         private Color GlowColor => infinite ? new Color(55, 26, 150) : new Color(50, 20, 255);
         private Color FlashColor => infinite ? new Color(55, 44, 206) : new Color(90, 70, 255);
 
@@ -728,7 +728,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 }
             }
 
-            //临射前的"塌缩"沉默：辉光回落，蓄势待发（爆发的留白）
+            //临射塌缩沉默、辉光回落
             if (timer >= ChargeTime - 5) {
                 barrelGlow = MathHelper.Lerp(1f, 0.5f, (timer - (ChargeTime - 5)) / 5f);
             }
@@ -777,7 +777,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
         }
 
-        //齐射的"重锤"反馈：大后坐 + 镜头冲击 + 炮口星芒/火花（首发最猛）
+        //齐射重锤、后坐+镜头+炮口星芒
         private void FireFlash(Vector2 forward) {
             recoil = 26f - volleyIndex * 3f;
             Owner.GetModPlayer<CWRPlayer>().GetScreenShake(volleyIndex == 0 ? 6.5f : 4f);
@@ -863,7 +863,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             Vector2 drawPosition = Projectile.Center - Main.screenPosition - direction * recoil;
             Vector2 muzzle = drawPosition + direction * 40f * scale;
 
-            //加算辉光层：炮身底光 + 炮口蓄力核心 + 齐射星芒
+            //加算辉光、炮身+炮口核+星芒
             Main.spriteBatch.End();
             BeginAdditiveBatch();
 
@@ -887,7 +887,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
     }
 
-    /// <summary>鱼群轻量实体：沿炮口轴线高速突进、向轴心汇拢并叠加重影，表现"叠加"的洪流冲击</summary>
+    /// <summary>鱼群轻量实体、轴线突进汇拢叠重影</summary>
     internal class FishEntity
     {
         public Vector2 Position;
@@ -945,7 +945,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             float fadeOut = 1f - MathHelper.Clamp((t - 0.74f) / 0.26f, 0f, 1f);
             Alpha = fadeIn * fadeOut;
 
-            //炮口爆发：初段极速冲出，随后回落巡航（速度即冲击感）
+            //炮口爆发、初段极速后巡航
             float burst = MathHelper.Lerp(1.7f, 1f, VaultUtils.EaseOutCubic(MathHelper.Clamp(t / 0.22f, 0f, 1f)));
             float speed = baseSpeed * burst;
 
@@ -955,7 +955,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             Vector2 axisPoint = axisOrigin + axisDir * along;
             float curPerp = Vector2.Dot(Position - axisPoint, perp);
 
-            //目标横向：车道随时间收拢，叠加正弦摆动（摆动随汇拢减弱）——越走越聚成一束
+            //横向收拢+正弦摆，越走越聚
             float laneNow = laneOffset * MathHelper.Lerp(1f, 0.55f, VaultUtils.EaseOutCubic(t));
             float wave = (float)Math.Sin(Life * waveFreq + wavePhase) * 26f * (1f - t * 0.7f);
             float targetPerp = laneNow + wave;
@@ -994,7 +994,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             return TextureAssets.Item[itemType].Value;
         }
 
-        /// <summary>加算光层（须在 Additive 批次中调用）：拖尾洪流 + 叠加重影 + 炮口辉光</summary>
+        /// <summary>加算光层（Additive批次）、拖尾+重影+炮口辉光</summary>
         public void DrawGlow(float globalAlpha) {
             if (Alpha < 0.04f) {
                 return;
@@ -1005,7 +1005,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             Vector2 glowOrigin = glow.Size() * 0.5f;
             float speedT = MathHelper.Clamp(Velocity.Length() / 26f, 0f, 1f);
 
-            //拖尾：沿历史位置铺柔光，越尾越细越淡——水之洪流
+            //拖尾柔光、越尾越细淡
             for (int i = 1; i < TrailPositions.Count; i++) {
                 float p = i / (float)TrailPositions.Count;
                 Vector2 pos = TrailPositions[i] - Main.screenPosition;
@@ -1014,7 +1014,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 Main.spriteBatch.Draw(glow, pos, null, glowTint * ta, 0f, glowOrigin, ts, SpriteEffects.None, 0f);
             }
 
-            //叠加重影：把同一条鱼相位错移再画若干层，越叠越亮——"叠加态"的视觉本体
+            //叠加重影、相位错移多层
             Texture2D fishTex = GetFishTexture(FishType);
             Rectangle rect = fishTex.Bounds;
             Vector2 fishOrigin = rect.Size() * 0.5f;
@@ -1035,7 +1035,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 , glowTint * (a * (0.5f + speedT * 0.5f)), 0f, glowOrigin, FishScale * (0.7f + speedT * 0.7f), SpriteEffects.None, 0f);
         }
 
-        /// <summary>本体绘制（须在 AlphaBlend 批次中调用）：清晰鱼身 + 高速白热锋面</summary>
+        /// <summary>本体绘制（AlphaBlend批次）、鱼身+白热锋面</summary>
         public void DrawBody(float globalAlpha) {
             if (Alpha < 0.04f) {
                 return;
@@ -1060,7 +1060,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
     }
 
-    /// <summary>叠加齐射的统一伤害判定弹幕：承载一束鱼群洪流</summary>
+    /// <summary>叠加齐射统一伤害弹幕、一束鱼群</summary>
     internal class CannonFishSwarmHitbox : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -1145,7 +1145,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             if (Main.dedServ) {
                 return;
             }
-            //命中冲击：加算光爆 + 偶发脉冲环
+            //命中冲击、光爆+脉冲环
             Color tint = Infinite ? new Color(55, 32, 170) : new Color(50, 100, 255);
             for (int i = 0; i < 5; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(5f, 5f);
@@ -1160,7 +1160,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             if (Main.dedServ || fishSwarm.Count == 0) {
                 return;
             }
-            //消散：洪流尽头的余光
+            //消散余光
             Color tint = Infinite ? new Color(55, 26, 150) : new Color(50, 100, 255);
             for (int i = 0; i < 8; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(4f, 4f);
@@ -1181,7 +1181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 return false;
             }
 
-            //加算层：辉光本体 + 拖尾洪流 + 叠加重影（重叠的炮束自然在此处叠亮成核）
+            //加算层、辉光+拖尾+重影
             Main.spriteBatch.End();
             BeginAdditiveBatch();
             foreach (var fish in fishSwarm) {
@@ -1189,7 +1189,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
             Main.spriteBatch.End();
 
-            //常规层：清晰鱼身
+            //常规层、清晰鱼身
             BeginWorldAlphaBatch();
             foreach (var fish in fishSwarm) {
                 fish.DrawBody(1f);

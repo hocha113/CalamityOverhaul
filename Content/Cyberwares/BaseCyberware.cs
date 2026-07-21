@@ -41,23 +41,17 @@ namespace CalamityOverhaul.Content.Cyberwares
         /// <summary>装备期间每帧更新</summary>
         public virtual void UpdateEquipped(Player player) { }
 
-        /// <summary>
-        /// PostUpdateEquips 同期统计加成入口
-        /// <br/>防御/击退/移速等属性在此覆写
-        /// </summary>
+        /// <summary>PostUpdateEquips 同期属性加成</summary>
         public virtual void PostUpdateEquipped(Player player) { }
 
-        /// <summary>
-        /// 主动技能描述符，null 不参与雷达
-        /// <br/>建议 static 单例；运行时状态留在 ModPlayer/ModSystem
-        /// </summary>
+        /// <summary>主动技能，null 不进雷达；建议 static 单例，状态放 ModPlayer</summary>
         public virtual CyberwareSkillBase ActiveSkill => null;
 
-        /// <summary>按 <see cref="TimeGear"/> 推进整帧倒计时，供关联 ModPlayer 冷却</summary>
+        /// <summary>按 <see cref="TimeGear"/> 推进倒计时整帧</summary>
         public static void TickFrameDown(ref int frames, ref float carry, float scale = -1f)
             => TimeGear.ConsumeFrames(ref frames, ref carry, scale);
 
-        /// <summary>按 <see cref="TimeGear"/> 返回本帧应推进的整帧数（正计时）</summary>
+        /// <summary>按 <see cref="TimeGear"/> 本帧正计时整帧数</summary>
         public static int TickFrameUp(ref float carry, float scale = -1f)
             => TimeGear.PullFrameAdvance(ref carry, scale);
 

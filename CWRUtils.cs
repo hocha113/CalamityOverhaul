@@ -20,7 +20,7 @@ namespace CalamityOverhaul
     public static class CWRUtils
     {
         #region System
-        /// <summary>向游戏内打印对象 ToString</summary>
+        /// <summary>游戏内打印 ToString</summary>
         public static void Domp(this object obj, Color color = default) {
             if (color == default) {
                 color = Color.White;
@@ -32,7 +32,7 @@ namespace CalamityOverhaul
             VaultUtils.Text(obj.ToString(), color);
         }
 
-        /// <summary>向控制台打印对象 ToString 并换行</summary>
+        /// <summary>控制台打印 ToString</summary>
         public static void DompInConsole(this object obj, bool outputLogger = true) {
             if (obj == null) {
                 Console.WriteLine("ERROR Is Null");
@@ -45,7 +45,7 @@ namespace CalamityOverhaul
             }
         }
 
-        //已注释：Item 数组导出到文件
+        //旧 Item 数组导出
         //public static void ExportItemTypesToFile(Item[] items, string path = "D:\\Mod_Resource\\input.cs") {
         //try {
         //int columnIndex = 0;
@@ -116,17 +116,17 @@ namespace CalamityOverhaul
         public static void SetArrowRot(int proj) => Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
         public static void SetArrowRot(this Projectile proj) => proj.rotation = proj.velocity.ToRotation() + MathHelper.PiOver2;
 
-        /// <summary>蠕虫体节按 1/randomCount 概率返回 true</summary>
+        /// <summary>蠕虫体节 1/randomCount</summary>
         public static bool FromWormBodysRandomSet(int targetNPCType, int randomCount) {
             return CWRLoad.WormBodys.Contains(targetNPCType) && !Main.rand.NextBool(randomCount);
         }
-        /// <summary>蠕虫体节按 1/randomCount 概率返回 true</summary>
+        /// <summary>蠕虫体节 1/randomCount</summary>
         public static bool FromWormBodysRandomSet(this NPC npc, int randomCount) => FromWormBodysRandomSet(npc.type, randomCount);
 
-        /// <summary>是否蠕虫体节</summary>
+        /// <summary>蠕虫体节</summary>
         public static bool IsWormBody(this NPC npc) => CWRLoad.WormBodys.Contains(npc.type);
 
-        /// <summary>鞭类弹幕路径控制点</summary>
+        /// <summary>鞭路径控制点</summary>
         public static List<Vector2> GetWhipControlPoints(this Projectile projectile) {
             List<Vector2> list = [];
             Projectile.FillWhipControlPoints(projectile, list);
@@ -156,14 +156,14 @@ namespace CalamityOverhaul
 
         public static void EntityToRot(this NPC entity, float toRot, float rotSpeed) => entity.rotation = entity.rotation.RotTowards(toRot, rotSpeed);
 
-        /// <summary>弹幕旋转插值逼近目标角</summary>
+        /// <summary>弹幕旋转逼近</summary>
         public static void EntityToRot(this Projectile entity, float targetRot, float rotSpeed) {
             entity.rotation = MathHelper.WrapAngle(entity.rotation);
             float diff = MathHelper.WrapAngle(targetRot - entity.rotation);
             entity.rotation += diff * rotSpeed;
         }
 
-        /// <summary>同步 NPC 位置与旋转</summary>
+        /// <summary>同步 NPC position/rotation</summary>
         public static void SendNPCbasicData(this NPC npc, int player = -1) {
             ModPacket modPacket = CWRMod.Instance.GetPacket();
             modPacket.Write((byte)CWRMessageType.NPCbasicData);
@@ -194,7 +194,7 @@ namespace CalamityOverhaul
             return mainRule.OnSuccess(rule, hideLootReport);
         }
 
-        /// <summary>统计物品列表中指定 type 总数量</summary>
+        /// <summary>列表内指定 type 总量</summary>
         public static int InquireItem(this IList<Item> items, params HashSet<int> itemTypes) {
             int num = 0;
             foreach (var item in items.ToList()) {
@@ -208,7 +208,7 @@ namespace CalamityOverhaul
             return num;
         }
 
-        /// <summary>统计玩家背包(可选银行)中指定物品数量</summary>
+        /// <summary>背包(+银行)指定物品量</summary>
         public static int InquireItem(this Player player, int itemType, bool checkBank = false) {
             int num = player.inventory.InquireItem(itemType);
             if (checkBank) {
@@ -220,7 +220,7 @@ namespace CalamityOverhaul
             return num;
         }
 
-        /// <summary>统计玩家背包(可选银行)中多 type 总数量</summary>
+        /// <summary>背包(+银行)多 type 总量</summary>
         public static int InquireItem(this Player player, bool checkBank, params HashSet<int> itemTypes) {
             int num = player.inventory.InquireItem(itemTypes);
             if (checkBank) {
@@ -232,7 +232,7 @@ namespace CalamityOverhaul
             return num;
         }
 
-        /// <summary>尝试取玩家 HalibutPlayer</summary>
+        /// <summary>取 HalibutPlayer</summary>
         internal static bool TryGetHalibutPlayer(this Player player, out HalibutPlayer halibutPlayer) {
             halibutPlayer = null;
             if (player.TryGetOverride(out halibutPlayer)) {
@@ -241,7 +241,7 @@ namespace CalamityOverhaul
             return false;
         }
 
-        /// <summary>玩家是否持有比目鱼传说武器</summary>
+        /// <summary>持有比目鱼</summary>
         internal static bool HasHalibut(this Player player) => player.TryGetHalibutPlayer(out var halibutPlayer) && halibutPlayer.HasHalubut;
 
         public static void SetItemLegendContentTops(ref List<TooltipLine> tooltips, string itemKey) {
@@ -259,10 +259,10 @@ namespace CalamityOverhaul
             }
         }
 
-        /// <summary>灾厄物品 FullName 前缀</summary>
+        /// <summary>灾厄 FullName</summary>
         public static string GetCalItem(string itemKey) => $"CalamityMod/{itemKey}";
 
-        /// <summary>灾厄物品 type ID</summary>
+        /// <summary>灾厄 item type</summary>
         public static int GetCalItemID(string itemKey) => VaultUtils.GetItemTypeFromFullName(GetCalItem(itemKey));
 
         public static NPC FindNPCFromeType(int type) {
@@ -278,11 +278,11 @@ namespace CalamityOverhaul
             return npc;
         }
 
-        /// <summary>终局配方站台：嘉登熔炉，灾厄缺席时回落到远古操纵机</summary>
+        /// <summary>终局站台，嘉登熔炉缺席则远古操纵机</summary>
         public static Recipe AddEndgameStation(this Recipe recipe) =>
             recipe.AddTile(CWRID.Tile_DraedonsForge > 0 ? CWRID.Tile_DraedonsForge : TileID.LunarCraftingStation);
 
-        /// <summary>用宿主本地化文本替换原版 Tooltip 行</summary>
+        /// <summary>替换 Tooltip 行为宿主本地化</summary>
         public static void OnModifyTooltips(Mod mod, List<TooltipLine> tooltips, LocalizedText value) {
             List<TooltipLine> newTooltips = new(tooltips);
             List<TooltipLine> overTooltips = [];
@@ -434,7 +434,7 @@ namespace CalamityOverhaul
         #endregion
 
         #region MathUtils
-        /// <summary>弹性缓出</summary>
+        /// <summary>EaseOutElastic</summary>
         public static float EaseOutElastic(float t) {
             const float c4 = (2f * MathHelper.Pi) / 3f;
             return t == 0f ? 0f
@@ -444,7 +444,7 @@ namespace CalamityOverhaul
         #endregion
 
         #region DrawUtils
-        /// <summary>按路径取 Asset&lt;Texture2D&gt;，immediateLoad 同步加载</summary>
+        /// <summary>按路径取 Texture2D，immediateLoad 同步</summary>
         public static Asset<Texture2D> GetT2DAsset(string texture, bool immediateLoad = false) {
             if (string.IsNullOrEmpty(texture) || !ModContent.HasAsset(texture)) {
                 return VaultAsset.placeholder3;

@@ -4,9 +4,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables
 {
-    /// <summary>
-    /// 模具加工台（放置物品）：右键已放置的物块以打开 <see cref="UI.MoldProcessingUI"/>
-    /// </summary>
+    /// <summary>模具加工台放置物，右键开 <see cref="UI.MoldProcessingUI"/></summary>
     internal class MoldProcessingTable : ModItem
     {
         public override string Texture => "CalamityOverhaul/Content/LegendWeapon/SHPCLegend/MoldProcessingTables/MoldProcessingTable";

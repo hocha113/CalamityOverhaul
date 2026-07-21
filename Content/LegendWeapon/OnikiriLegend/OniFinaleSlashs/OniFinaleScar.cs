@@ -12,19 +12,13 @@ using OFR = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs.
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 {
-    /// <summary>
-    /// 终之太刀·激光直痕：三态时间轴外控的跨屏直线斩痕。<br/>
-    /// 闪现（1~2 帧白热割开，伤害窗）→ 定格（不侵蚀的余烬红伤痕，屏幕上蓄积成刀痕网）→
-    /// 引爆（终斩纳刀瞬间白热回燃、碎成晶片）。<br/>
-    /// 蓄积-引爆让乱舞与终斩产生因果：每道直痕都是给最后一刀布线。<br/>
-    /// 生命周期不走 <see cref="OFR.ComputeState"/> 标准采样，由本类状态机手工合成。<br/>
-    /// ai[0]=刃方向角(弧度) ai[1]=引爆延迟(帧，&lt;=0 回退 70) ai[2]=尺寸倍率
-    /// </summary>
+    /// <summary>终之太刀直痕斩痕</summary>
     internal class OniFinaleScar : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int FadeFrames = 12;      //引爆后残影淡出
+
         private const int DefaultDetonate = 70; //独立调试时的自爆延迟
 
         private OFR.BladeDef def;
@@ -36,9 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         private float BladeAngle => Projectile.ai[0];
         private float SizeMul => Projectile.ai[2] > 0.05f ? Projectile.ai[2] : 1f;
 
-        /// <summary>
-        /// 触发接口：在持有者客户端调用，世界锚定于 center
-        /// </summary>
+        /// <summary>触发接口、在持有者客户端调用，世界锚定于 center</summary>
         /// <param name="player">攻击发起者</param>
         /// <param name="center">刀刃中心（世界坐标，生成后不追踪）</param>
         /// <param name="bladeAngle">刃方向角（弧度）</param>
@@ -67,10 +59,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 300;   //Initialize 按引爆帧重设
+
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 60;   //闪现窗单次结算
+
         }
 
         public override bool ShouldUpdatePosition() => false;
@@ -85,6 +79,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             def = new OFR.BladeDef {
                 SweepFrames = 2, Life = detonateFrame + FadeFrames,
                 ErodeStart = 0, ErodeFrames = 1,      //侵蚀由状态机手工驱动，标准采样不使用
+
                 ColorShiftDelay = 0, ColorShiftFrames = 1,
                 DamageStart = 0, DamageEnd = 6,
                 Mode = 1f, Rot = BladeAngle, Span = 0f, Thick = 0.26f,
@@ -97,9 +92,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             };
         }
 
-        //==================== 状态机 ====================
-
-        /// <summary>手工合成本帧动态量：闪现→定格→引爆三态</summary>
+        /// <summary>手工合成本帧动态量、闪现→定格→引爆三态</summary>
         private OFR.BladeState ComposeState() {
             OFR.BladeState s = new() {
                 Sweep = OFR.EaseOutCubic(timer / 2f),
@@ -110,11 +103,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 FrontGlow = timer <= 3 ? def.FrontGlow : 0.5f,
             };
 
-            //闪现白闪：割开瞬间过曝，速落
+            //闪现白闪、割开瞬间过曝，速落
+
             float spawnFlash = timer <= 1 ? 1f : MathF.Pow(0.55f, timer - 1);
             s.Flash = spawnFlash > 0.02f ? spawnFlash : 0f;
 
-            //定格降温：白热→余烬红伤痕，微弱呼吸防"贴纸感"
+            //定格降温、白热→余烬红伤痕，微弱呼吸防"贴纸感"
+
             float settle = MathHelper.Clamp((timer - 6) / 14f, 0f, 1f);
             s.ColorShift = settle * 0.72f;
             s.Opacity = def.Opacity * MathHelper.Lerp(1f, 0.78f, settle);
@@ -123,7 +118,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
             if (detonated) {
                 int dt = timer - detonateFrame;
-                //回燃：伤痕重新烧白 + 增厚，随后随侵蚀碎去
+                //回燃、伤痕重新烧白 + 增厚，随后随侵蚀碎去
+
                 float burn = MathF.Pow(0.62f, dt);
                 s.Flash = MathF.Max(s.Flash, 1.15f * burn);
                 s.ColorShift = 0f;
@@ -149,6 +145,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             }
 
             //闪现期前缘火花
+
             if (!Main.dedServ && timer <= def.SweepFrames + 1) {
                 OFR.BladeState st = ComposeState();
                 float edgeU = MathHelper.Clamp(st.Sweep * 1.05f, 0.06f, 0.94f);
@@ -164,14 +161,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             }
 
             //定格期伤痕微光
+
             float glow = detonated ? 0.9f : 0.35f;
             Lighting.AddLight(Projectile.Center, new Vector3(0.8f, 0.14f, 0.12f) * glow);
         }
 
-        /// <summary>引爆：白热回燃 + 沿刃碎成晶片，碎晶顺主控给的流向漂移（斩碎的空间被终斩卷走）</summary>
+        /// <summary>引爆、白热回燃 + 沿刃碎成晶片，碎晶顺主控给的流向漂移（斩碎的空间被终斩卷走）</summary>
         private void Detonate() {
             detonated = true;
-            //引爆瞬间调色烧向白热，配合 ColorShift=0 的回燃读作"伤痕被终斩点燃"
+            //引爆瞬间调色烧向白热
+
             def.Palette = OFR.BladePalette.Escalate(0.92f);
 
             SoundEngine.PlaySound(SoundID.Item27 with {
@@ -204,8 +203,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             }
         }
 
-        //==================== 判定 ====================
-
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             if (!initialized || timer < def.DamageStart || timer > def.DamageEnd) {
                 return false;
@@ -233,8 +230,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                     ?.Configure(Main.rand.Next(14, 24), affectedByGravity: true);
             }
         }
-
-        //==================== 绘制 ====================
 
         public override bool PreDraw(ref Color lightColor) => false;
 

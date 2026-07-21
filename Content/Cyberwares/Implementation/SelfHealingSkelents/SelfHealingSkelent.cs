@@ -4,9 +4,9 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHealingSkelents
 {
     /// <summary>
-    /// 自愈骨骼，骨骼槽位被动义体
-    /// <br/>常驻 +LifeRegenBonus 回复；脱战 OutOfCombatThreshold 帧后纳米修复 +OutOfCombatRegenBonus
-    /// <br/>免疫坠落伤害，+MaxLifeBonus 最大生命；lifeRegen 须在 UpdateLifeRegen 写入
+    /// 自愈骨骼，骨骼槽被动
+    /// <br/>常驻 +LifeRegenBonus，脱战 OutOfCombatThreshold 后纳米修复
+    /// <br/>无坠落伤，+MaxLifeBonus；lifeRegen 须写 UpdateLifeRegen
     /// </summary>
     internal class SelfHealingSkelent : BaseCyberware
     {
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHealingSkelents
             Item.value = Item.sellPrice(0, 6, 0, 0);
         }
 
-        /// <summary>查询玩家是否装备本义体，未装备返回 null</summary>
+        /// <summary>未装备返回 null</summary>
         public static SelfHealingSkelent GetEquipped(Player player) {
             if (player == null || !player.active) {
                 return null;
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHealingSkelents
         }
 
         public override void PostUpdateEquipped(Player player) {
-            //坠落伤害免疫无需依赖玩家状态，只要装备就启用，避免高摔时的窗口期被吞掉
+            //装备即无坠落伤，防高摔窗口被吞
             player.noFallDmg = true;
         }
     }

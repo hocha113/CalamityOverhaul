@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 {
     public class ForestQuestLogStyle : IQuestLogStyle
     {
-        //动画计时器
         private float magicTimer;
         private float leafTimer;
         private float runeTimer;
@@ -20,7 +19,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         private float shaderTime;
         private const int EdgePad = 16;
 
-        //叶片粒子
         private struct LeafParticle
         {
             public Vector2 Pos;
@@ -113,7 +111,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 sb.Draw(px, new Rectangle(rect.X, y1, rect.Width, Math.Max(1, y2 - y1)), c * alpha * 0.9f);
             }
 
-            //木纹扫描线
             for (int i = 0; i < 40; i++) {
                 float t = i / 40f;
                 int y = rect.Y + (int)(t * rect.Height);
@@ -121,7 +118,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 sb.Draw(px, new Rectangle(rect.X, y, rect.Width, 1), Color.Black * alpha * scan * 0.08f);
             }
 
-            //暗角
             int vSize = rect.Width / 3;
             sb.Draw(px, new Rectangle(rect.X, rect.Y, vSize, rect.Height), Color.Black * alpha * 0.15f);
             sb.Draw(px, new Rectangle(rect.Right - vSize, rect.Y, vSize, rect.Height), Color.Black * alpha * 0.15f);
@@ -134,10 +130,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             bool nightMode = log.NightMode;
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //着色器面板
             DrawShaderPanel(spriteBatch, panelRect, alpha, nightMode);
 
-            //叶片粒子覆盖层
             foreach (var leaf in leafParticles) {
                 float x = panelRect.X + leaf.Pos.X * panelRect.Width;
                 float y = panelRect.Y + leaf.Pos.Y * panelRect.Height;
@@ -156,7 +150,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                     c * a * 0.5f, leaf.Rot, new Vector2(0.5f), leaf.Size, SpriteEffects.None, 0f);
             }
 
-            //四角符文装饰
             float runePulse = (float)Math.Sin(runeTimer) * 0.5f + 0.5f;
             Color runeColor = nightMode ? new Color(80, 200, 160) : new Color(120, 200, 80);
             runeColor *= (0.4f + runePulse * 0.3f) * alpha;
@@ -167,7 +160,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             DrawRuneNode(spriteBatch, pixel, new Vector2(panelRect.X + runeOff, panelRect.Bottom - runeOff), 14, runeColor, runeTimer + MathHelper.Pi);
             DrawRuneNode(spriteBatch, pixel, new Vector2(panelRect.Right - runeOff, panelRect.Bottom - runeOff), 14, runeColor, runeTimer + MathHelper.Pi * 1.5f);
 
-            //角落藤蔓走线
             Color vineColor = nightMode ? new Color(60, 140, 100) : new Color(80, 160, 80);
             vineColor *= alpha * 0.35f;
             int traceLen = 50;
@@ -187,7 +179,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             float radius = size * 0.5f;
             bool hasUnclaimed = node.HasUnclaimedRewards;
 
-            //四状态色彩
             Color baseColor;
             if (node.IsCompleted && !hasUnclaimed) {
                 baseColor = new Color(100, 200, 120);
@@ -204,7 +195,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             if (isHovered) baseColor = Color.Lerp(baseColor, Color.White, 0.4f);
 
-            //外层辉光
             if (node.IsUnlocked || node.IsCompleted) {
                 float gp = (float)Math.Sin(glowTimer * 2f) * 0.5f + 0.5f;
                 Color gc;
@@ -222,23 +212,17 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 DrawHexagon(spriteBatch, pixel, drawPos, radius + 3, gc * (0.25f * gp * alpha));
             }
 
-            //投影
             DrawHexagon(spriteBatch, pixel, drawPos + new Vector2(3, 3), radius, Color.Black * 0.35f * alpha);
 
-            //主体填充
             DrawHexagon(spriteBatch, pixel, drawPos, radius, baseColor * 0.85f * alpha);
 
-            //内层高光
             Color highlight = Color.Lerp(baseColor, Color.White, 0.3f);
             DrawHexagon(spriteBatch, pixel, drawPos - new Vector2(1, 2), radius * 0.7f, highlight * 0.2f * alpha);
 
-            //图标
             DrawQuestIcon(spriteBatch, node, drawPos, scale, alpha);
 
-            //边框
             DrawHexagonBorder(spriteBatch, pixel, drawPos, radius, baseColor * 1.3f * alpha, isHovered ? 3 : 2);
 
-            //节点名称
             Color textColor;
             if (node.IsCompleted && !hasUnclaimed) {
                 textColor = new Color(150, 255, 180);
@@ -267,18 +251,15 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             float rotation = diff.ToRotation();
             int lineWidth = 6;
 
-            //阴影
             spriteBatch.Draw(pixel, start + new Vector2(2, 2).RotatedBy(rotation),
                 new Rectangle(0, 0, (int)length, lineWidth), Color.Black * 0.3f * alpha,
                 rotation, new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
 
             if (isUnlocked) {
-                //藤蔓底层
                 Color vineBase = new Color(60, 100, 55);
                 spriteBatch.Draw(pixel, start, new Rectangle(0, 0, (int)length, lineWidth),
                     vineBase * 0.8f * alpha, rotation, new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
 
-                //流动脉冲
                 int segs = Math.Max((int)(length / 12f), 3);
                 float flow = (magicTimer * 0.35f) % 1f;
                 for (int i = 0; i < segs; i++) {
@@ -293,12 +274,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                         c * alpha * 0.65f, rotation, new Vector2(0, lineWidth / 2f), 1f, SpriteEffects.None, 0f);
                 }
 
-                //外层辉光
                 spriteBatch.Draw(pixel, start, new Rectangle(0, 0, (int)length, lineWidth + 4),
                     new Color(120, 255, 140) * 0.08f * alpha, rotation,
                     new Vector2(0, (lineWidth + 4) / 2f), 1f, SpriteEffects.None, 0f);
 
-                //魔法光点
                 int particleCount = Math.Max((int)(length / 45f), 2);
                 for (int i = 0; i < particleCount; i++) {
                     float t = ((magicTimer * 0.4f + i * (1f / particleCount)) % 1f);
@@ -310,7 +289,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 }
             }
             else {
-                //未解锁：虚线
+                //未解锁虚线
                 int dotLen = 10;
                 int gapLen = 8;
                 int total = dotLen + gapLen;
@@ -338,21 +317,16 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         public void DrawQuestDetail(SpriteBatch spriteBatch, QuestNode node, Rectangle panelRect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //全屏遮罩
             spriteBatch.Draw(pixel, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black * (0.65f * alpha));
 
-            //阴影
             Rectangle shadowRect = panelRect;
             shadowRect.Offset(6, 6);
             spriteBatch.Draw(pixel, shadowRect, Color.Black * (0.6f * alpha));
 
-            //着色器面板
             DrawShaderPanel(spriteBatch, panelRect, alpha, false);
 
-            //自然边框
             DrawNatureBorder(spriteBatch, pixel, panelRect, alpha);
 
-            //角落符文
             int ro = 18;
             Color rc = new Color(120, 200, 130) * alpha;
             DrawRuneNode(spriteBatch, pixel, new Vector2(panelRect.X + ro, panelRect.Y + ro), 12, rc, runeTimer);
@@ -360,7 +334,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             DrawRuneNode(spriteBatch, pixel, new Vector2(panelRect.X + ro, panelRect.Bottom - ro), 12, rc, runeTimer + MathHelper.Pi);
             DrawRuneNode(spriteBatch, pixel, new Vector2(panelRect.Right - ro, panelRect.Bottom - ro), 12, rc, runeTimer + MathHelper.Pi * 1.5f);
 
-            //内容
             DrawDetailContent(spriteBatch, node, panelRect, alpha);
         }
 
@@ -369,19 +342,16 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             int padding = 25;
             int currentY = panelRect.Y + padding;
 
-            //标题
             Color titleColor = node.IsCompleted ? new Color(150, 255, 180) : new Color(255, 220, 150);
             Utils.DrawBorderString(spriteBatch, node.DisplayName?.Value, new Vector2(panelRect.X + padding, currentY), titleColor * alpha, 1.3f);
             currentY += (int)(FontAssets.MouseText.Value.MeasureString(node.DisplayName?.Value).Y * 1.3f) + 12;
 
-            //分隔线
             Color divColor = new Color(100, 150, 100) * alpha;
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X + padding, currentY, panelRect.Width - padding * 2, 2), divColor * 0.6f);
             int cx = panelRect.X + panelRect.Width / 2;
             DrawRuneNode(spriteBatch, pixel, new Vector2(cx, currentY), 8, divColor * 1.2f, runeTimer);
             currentY += 18;
 
-            //描述
             string description = string.IsNullOrEmpty(node.DetailedDescription?.Value) ? node.Description?.Value : node.DetailedDescription?.Value;
             if (!string.IsNullOrEmpty(description)) {
                 int maxW = panelRect.Width - padding * 2;
@@ -394,7 +364,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 currentY += 12;
             }
 
-            //目标
             if (node.Objectives != null && node.Objectives.Count > 0) {
                 Utils.DrawBorderString(spriteBatch, QuestLog.ObjectiveText.Value + ":", new Vector2(panelRect.X + padding, currentY),
                     new Color(255, 220, 150) * alpha, 1f);
@@ -431,7 +400,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 currentY += 12;
             }
 
-            //奖励
             if (node.Rewards != null && node.Rewards.Count > 0) {
                 Utils.DrawBorderString(spriteBatch, QuestLog.RewardText.Value + ":", new Vector2(panelRect.X + padding, currentY),
                     new Color(255, 220, 150) * alpha, 1f);
@@ -470,7 +438,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 currentY += 55;
             }
 
-            //领取按钮
             if (node.IsCompleted && node.Rewards != null && node.Rewards.Exists(r => !r.Claimed)) {
                 Rectangle buttonRect = GetRewardButtonRect(panelRect);
                 bool hover = buttonRect.Contains(Main.MouseScreen.ToPoint());
@@ -494,10 +461,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             int barWidth = panelRect.Width - 40;
             Rectangle barRect = new Rectangle(panelRect.X + 20, panelRect.Bottom + 12, barWidth, barHeight);
 
-            //背景
             spriteBatch.Draw(pixel, barRect, new Color(20, 15, 10) * 0.8f * alpha);
 
-            //边框
             Color borderColor = (nightMode ? new Color(80, 160, 120) : new Color(100, 180, 120)) * alpha;
             int border = 2;
             spriteBatch.Draw(pixel, new Rectangle(barRect.X, barRect.Y, barRect.Width, border), borderColor);
@@ -505,7 +470,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             spriteBatch.Draw(pixel, new Rectangle(barRect.X, barRect.Y, border, barRect.Height), borderColor);
             spriteBatch.Draw(pixel, new Rectangle(barRect.Right - border, barRect.Y, border, barRect.Height), borderColor);
 
-            //填充
             if (total > 0) {
                 int fillW = (int)((barWidth - border * 2) * progress);
                 Rectangle fillRect = new Rectangle(barRect.X + border, barRect.Y + border, fillW, barHeight - border * 2);
@@ -534,7 +498,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 Utils.DrawBorderString(spriteBatch, text, new Vector2(barRect.X + barRect.Width / 2 - ts.X / 2, barRect.Y + barRect.Height / 2 - ts.Y / 2 + 2), Color.White * alpha, 0.85f);
             }
 
-            //折叠按钮
             Rectangle toggleRect = new Rectangle(barRect.Right + 6, barRect.Y + barHeight / 2 - 12, 24, 24);
             bool hoverToggle = toggleRect.Contains(Main.MouseScreen.ToPoint());
             Color toggleColor = hoverToggle ? new Color(220, 255, 200) : new Color(180, 220, 160);
@@ -609,7 +572,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             DrawSmallNatureButton(spriteBatch, pixel, buttonRect, isHovered, alpha, null);
 
-            //指南针刻度
             float time = Main.GameUpdateCount * 0.015f;
             for (int i = 0; i < 6; i++) {
                 float rot = i * MathHelper.PiOver2 * 0.666f + time;
@@ -617,7 +579,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 spriteBatch.Draw(pixel, center + offset, new Rectangle(0, 0, 2, 4), new Color(180, 220, 180) * 0.4f * alpha, rot, new Vector2(1, 2), 1f, SpriteEffects.None, 0f);
             }
 
-            //箭头
             float rotation = directionToCenter.ToRotation();
             float arrowPulse = (float)Math.Sin(Main.GameUpdateCount * 0.12f) * 0.2f + 1f;
             Color arrowColor = isHovered ? Color.White : new Color(220, 255, 220);
@@ -629,7 +590,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             spriteBatch.Draw(pixel, headPos, new Rectangle(0, 0, (int)headSize, 2), arrowColor * alpha, rotation + MathHelper.Pi * 0.75f, new Vector2(0, 1), 1f, SpriteEffects.None, 0f);
             spriteBatch.Draw(pixel, headPos, new Rectangle(0, 0, (int)headSize, 2), arrowColor * alpha, rotation - MathHelper.Pi * 0.75f, new Vector2(0, 1), 1f, SpriteEffects.None, 0f);
 
-            //中心点
             spriteBatch.Draw(pixel, center, new Rectangle(0, 0, 4, 4), new Color(255, 100, 100) * alpha, 0f, new Vector2(2, 2), 1f, SpriteEffects.None, 0f);
         }
 
@@ -670,18 +630,14 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             Vector2 center = buttonRect.Center.ToVector2();
             float radius = buttonRect.Width * 0.4f;
 
-            //投影
             DrawHexagon(spriteBatch, pixel, center + new Vector2(2, 2), radius, Color.Black * 0.4f * alpha);
 
-            //主体
             Color bgColor = isHovered ? new Color(120, 180, 140) : new Color(80, 120, 90);
             DrawHexagon(spriteBatch, pixel, center, radius, bgColor * alpha);
 
-            //边框
             Color borderColor = isHovered ? Color.White : new Color(180, 220, 180);
             DrawHexagonBorder(spriteBatch, pixel, center, radius, borderColor * alpha, 2);
 
-            //图标文字
             if (!string.IsNullOrEmpty(icon)) {
                 Utils.DrawBorderString(spriteBatch, icon, center - new Vector2(12, 12), Color.White * alpha, 1f, 0.5f, 0.5f);
             }
@@ -706,7 +662,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         }
 
         private void DrawRuneNode(SpriteBatch spriteBatch, Texture2D pixel, Vector2 center, float size, Color color, float rotation) {
-            //六芒星符文
             int points = 6;
             for (int i = 0; i < points; i++) {
                 float a1 = (i / (float)points) * MathHelper.TwoPi + rotation;
@@ -721,7 +676,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 spriteBatch.Draw(pixel, p1, new Rectangle(0, 0, (int)len, 2), color, rot, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
 
-            //中心点
             spriteBatch.Draw(pixel, center, new Rectangle(0, 0, 6, 6), color * 1.2f, 0f, new Vector2(3, 3), 1f, SpriteEffects.None, 0f);
         }
 

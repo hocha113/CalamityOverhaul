@@ -74,8 +74,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
         }
     }
 
-    /// 洛希之弦手持弹幕：<see cref="NeutronBow.Shoot"/> 生成，开火/蓄力期存活
-    /// 左键重力箭(强制 <see cref="NeutronArrow"/>)，右键三级蓄力松手射三发引力箭
+    /// <see cref="NeutronBow.Shoot"/>生成，开火/蓄力期存活
+    /// 左键重力箭，右键三级蓄力射引力箭
     internal class NeutronBowHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Ranged + "NeutronBow";

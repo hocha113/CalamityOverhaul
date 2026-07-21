@@ -13,10 +13,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
             if (CWRKeySystem.Legend_Teleport == null) return;
             if (!CWRKeySystem.Legend_Teleport.JustPressed) return;
 
-            //骇客时间激活期间禁止使用领域技能
+            //HackTime 中禁用
             if (HackTime.Active) return;
 
-            //领域未激活时不抢按键，留给 Halibut 等其它系统响应
+            //领域未激活不抢键
             if (!Cyberspace.Active) return;
 
             CyberTeleport.TryTeleport(Player);

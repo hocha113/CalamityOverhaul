@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>冲刺蓄力：S形后撤→充能波尾推头→冲量释放+音爆</summary>
+    /// <summary>冲刺蓄力，S后撤→尾推头→释放+音爆</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.DashPrepare, typeof(DestroyerStateContext))]
     internal class DestroyerDashPrepareState : DestroyerStateBase
     {
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         public override void OnEnter(DestroyerStateContext context) {
             base.OnEnter(context);
             context.SkipDefaultMovement = true;
-            //机械应力声：液压关节锁止蓄力
+            //液压锁止应力声
             SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = -0.5f, Volume = 0.7f }, context.Npc.Center);
         }
 
@@ -46,26 +46,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             int chargeTime = ChargeTime(context);
             float progress = Math.Min(Timer / (float)chargeTime, 1f);
 
-            //转向率随蓄力衰减，后撤同时锁线
+            //蓄力降转向，后撤锁线
             dashDirection = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
             FaceTarget(npc, player.Center, MathHelper.Lerp(0.26f, 0.05f, progress));
 
-            //迟滞后撤：前70%近乎悬停（轻微漂离），pow(t,8)末段猛然吸气式后缩
+            //迟滞后撤，pow(t,8)末段急缩
             float reel = (float)Math.Pow(progress, 8) * 30f;
             Vector2 desired = -dashDirection * (1.6f + reel);
             npc.velocity = Vector2.Lerp(npc.velocity, desired, 0.22f);
 
-            //蓄力进度 + 瞄准线（DestroyerRenderHelper本地绘制）
+            //蓄力进度+瞄准线
             context.SetChargeState(1, progress);
             context.DashDirection = dashDirection;
 
-            //下颚：蓄力期弹性张开威吓，释放前12帧猛然咬合
+            //蓄力张口，释放前12f咬合
             context.JawCommand = Timer > chargeTime - 12 ? 2 : 1;
 
-            //充能波从尾部涌向头部：能量向头部汇聚
+            //充能波尾→头
             DestroyerChargeWave.Push(npc.whoAmI, 1f - progress, 0.22f, 0.35f + 0.65f * progress);
 
-            //72%进度硬切粒子/震动，临爆静默
+            //72%硬切粒子，临爆静默
             if (progress < 0.72f && !VaultUtils.isServer) {
                 if (Timer % 3 == 0) {
                     for (int i = 0; i < (int)(progress * 5) + 1; i++) {
@@ -85,18 +85,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             Timer++;
 
             if (Timer >= chargeTime) {
-                //冲量释放：峰值速度高于巡航冲刺速度，由DashingState指数衰减回落
+                //冲量释放，DashingState衰减
                 context.ResetChargeState();
                 npc.velocity = dashDirection * (DashSpeed(context) * 1.3f);
                 npc.netUpdate = true;
 
                 if (!VaultUtils.isServer) {
-                    //ForceRoar：连突间隔(~1.3s)短于Roar采样时长(~2s)，普通Roar因IgnoreNew上限会整声丢失
+                    //ForceRoar，间隔短于采样会被IgnoreNew吞
                     SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.2f }, npc.Center);
                     DestroyerMotionFX.SpawnDashBurst(npc.Center, dashDirection);
                     DestroyerMotionFX.CameraPunch(npc.Center, 6f, 14, "DestroyerDash", dashDirection);
                 }
-                //音爆扭曲环 + 热浪尾流（服务端生成保证多人可见）
+                //音爆+热浪，服务端生成
                 if (!VaultUtils.isClient) {
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + dashDirection * 60f,
                         Vector2.Zero, ModContent.ProjectileType<DestroyerShockwave>(), 0, 0f, Main.myPlayer, 0);

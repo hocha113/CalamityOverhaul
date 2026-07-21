@@ -6,15 +6,12 @@ namespace CalamityOverhaul.Content.HackTimes
     //队列条目状态
     internal enum HackQueueState
     {
-        //等待上传
-        Waiting,
-        //正在上传
-        Uploading,
-        //上传完成，短暂闪烁
-        Completed,
+        Waiting,//等上传
+        Uploading,//上传中
+        Completed,//完成闪一下
     }
 
-    //右侧面板 slot 状态查询
+    //右侧面板 slot 查询
     internal enum QueueSlotState
     {
         None,
@@ -23,26 +20,19 @@ namespace CalamityOverhaul.Content.HackTimes
         Completed,
     }
 
-    /// <summary>队列单条记录，统一 IHackTarget</summary>
+    /// <summary>队列单条，统一 IHackTarget</summary>
     internal class HackQueueEntry
     {
-        //对应的协议定义
         public QuickHackDef Hack;
-        //在 QuickHackDef.Instances 中的索引
+        //QuickHackDef.Instances 索引
         public int SlotIndex;
-        //目标引用
         public IHackTarget Target;
-        //当前队列状态
         public HackQueueState State;
-        //上传进度 0~1
-        public float UploadProgress;
-        //飞入动画进度 0~1
-        public float FlyIn;
-        //完成后闪烁计时
-        public float CompletedTimer;
-        //故障种子
+        public float UploadProgress;//0~1
+        public float FlyIn;//0~1 飞入
+        public float CompletedTimer;//完成闪烁
         public float GlitchSeed;
-        //RAM 成本，入队时由 HackCostEvaluator 固定
+        //入队时锁定的 RAM 成本
         public int ComputedRamCost;
 
         public HackQueueEntry(QuickHackDef hack, int slotIndex, IHackTarget target, int computedRamCost) {
@@ -57,10 +47,8 @@ namespace CalamityOverhaul.Content.HackTimes
             GlitchSeed = Main.rand?.Next(10000) / 100f ?? 0f;
         }
 
-        //目标是否仍然有效
         public bool IsTargetValid => Target != null && Target.IsValid;
 
-        //目标种类（旁路便捷查询）
         public HackTargetKind TargetKind => Target?.TargetType?.Kind ?? HackTargetKind.None;
 
         //兼容旧 API

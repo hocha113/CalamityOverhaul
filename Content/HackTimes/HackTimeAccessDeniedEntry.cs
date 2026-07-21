@@ -9,7 +9,7 @@ using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>骇客时间条件不满足时的警告弹窗</summary>
+    /// <summary>权限不足警告弹窗</summary>
     internal class HackTimeAccessDeniedEntry : NotificationEntry
     {
         private readonly LocalizedText titleOverride;
@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         public HackTimeAccessDeniedEntry() { }
 
-        /// <summary>自定义标题/描述复用警示弹窗</summary>
+        /// <summary>自定义标题/描述复用本弹窗</summary>
         public HackTimeAccessDeniedEntry(LocalizedText title, LocalizedText desc) {
             titleOverride = title;
             descOverride = desc;
@@ -53,28 +53,28 @@ namespace CalamityOverhaul.Content.HackTimes
                 sb.Draw(px, shadow, Color.Black * (alpha * 0.05f * d));
             }
 
-            //深色渐变背景
+            //渐变背景
             DrawGradientBg(sb, px, r, alpha);
 
-            //左侧脉冲强调条
+            //左侧脉冲条
             const int barW = 4;
             float barPulse = 0.7f + pulse * 0.3f;
             sb.Draw(px, new Rectangle(r.X, r.Y, barW, r.Height), PrimaryColor * (alpha * barPulse));
             sb.Draw(px, new Rectangle(r.X + barW, r.Y + 1, 12, r.Height - 2),
                 PrimaryColor * (alpha * 0.10f * (0.6f + pulse * 0.4f)));
 
-            //四边框系统
+            //边框
             sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, 2), PrimaryColor * (alpha * 0.85f));
             sb.Draw(px, new Rectangle(r.X, r.Bottom - 1, r.Width, 1), PrimaryColor * (alpha * 0.35f));
             sb.Draw(px, new Rectangle(r.Right - 1, r.Y, 1, r.Height), PrimaryColor * (alpha * 0.18f));
 
-            //右上角警告斜切
+            //右上斜切
             DrawCornerCut(sb, px, r, alpha);
 
-            //垂直扫描线
+            //扫描线
             DrawScanLine(sb, px, r, barW, alpha, animTime);
 
-            //左侧警告三角图标
+            //警告三角
             int iconCX = r.X + barW + 22;
             int iconCY = r.Y + r.Height / 2;
             DrawWarningIcon(sb, px, iconCX, iconCY, alpha, pulse);
@@ -83,30 +83,29 @@ namespace CalamityOverhaul.Content.HackTimes
             int sepX = r.X + barW + 44;
             sb.Draw(px, new Rectangle(sepX, r.Y + 10, 1, r.Height - 20), PrimaryColor * (alpha * 0.22f));
 
-            //标题与描述
             float textX = sepX + 10;
             string title = (titleOverride ?? HackTime.AccessDeniedTitle)?.Value ?? "ACCESS DENIED";
             string desc = (descOverride ?? HackTime.AccessDeniedDesc)?.Value ?? "";
 
-            //标题：渐入 + 微脉冲色
+            //标题
             float titleAlpha = MathHelper.Clamp((LifeTimer - 4) / 10f, 0f, 1f);
             Color titleColor = Color.Lerp(PrimaryColor, AccentColor, 0.3f + pulse * 0.25f);
             Utils.DrawBorderString(sb, title,
                 new Vector2(textX, r.Y + 10),
                 titleColor * (alpha * titleAlpha), 0.78f);
 
-            //标题下方装饰横线
+            //标题下装饰线
             DrawGradientHLine(sb, px, (int)textX, r.Y + 28, r.Right - (int)textX - 12,
                 PrimaryColor * (alpha * 0.32f), Color.Transparent);
 
-            //描述文本：自动换行裁剪
+            //描述，自动换行
             float descAlpha = MathHelper.Clamp((LifeTimer - 8) / 12f, 0f, 1f);
             DrawWrappedText(sb, desc,
                 new Vector2(textX, r.Y + 32),
                 r.Right - textX - 12f, 0.72f,
                 Color.White * (alpha * descAlpha * 0.92f));
 
-            //右上角小型数据指示灯
+            //右上指示灯
             DrawDataDots(sb, px, r, alpha, animTime);
 
             //底部倒计时条
@@ -156,14 +155,13 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>红色警告三角与感叹号</summary>
         private static void DrawWarningIcon(SpriteBatch sb, Texture2D px,
             int cx, int cy, float alpha, float pulse) {
             int radius = 11;
             Color body = Color.Lerp(PrimaryColor, Color.White, 0.05f) * (alpha * (0.85f + pulse * 0.15f));
             Color edge = Color.Lerp(PrimaryColor, Color.Black, 0.35f) * alpha;
 
-            //三角实心，由顶向下逐行铺
+            //三角实心
             for (int row = 0; row < radius * 2; row++) {
                 int rowWidth = (int)((row / (float)(radius * 2)) * radius * 2);
                 int y = cy - radius + row;
@@ -171,10 +169,10 @@ namespace CalamityOverhaul.Content.HackTimes
                 sb.Draw(px, new Rectangle(x, y, Math.Max(rowWidth, 1), 1), body);
             }
 
-            //三角下底
+            //下底
             sb.Draw(px, new Rectangle(cx - radius, cy + radius - 1, radius * 2, 1), edge);
 
-            //三角描边（左右斜边模拟）
+            //斜边描边
             for (int row = 0; row < radius * 2; row++) {
                 int rowWidth = (int)((row / (float)(radius * 2)) * radius * 2);
                 int y = cy - radius + row;
@@ -184,7 +182,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 sb.Draw(px, new Rectangle(rightX - 1, y, 1, 1), edge);
             }
 
-            //中央感叹号
+            //感叹号
             Color exclColor = Color.Black * alpha;
             sb.Draw(px, new Rectangle(cx - 1, cy - radius / 2, 2, radius), exclColor);
             sb.Draw(px, new Rectangle(cx - 1, cy + radius / 2 + 1, 2, 2), exclColor);
@@ -241,7 +239,6 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>描述文本自动换行绘制</summary>
         private static void DrawWrappedText(SpriteBatch sb, string text,
             Vector2 startPos, float maxWidth, float scale, Color color) {
             if (string.IsNullOrEmpty(text) || maxWidth <= 0f) {
@@ -251,7 +248,7 @@ namespace CalamityOverhaul.Content.HackTimes
             var font = FontAssets.MouseText.Value;
             float lineHeight = font.LineSpacing * scale * 0.95f;
             float y = startPos.Y;
-            //统一走 VaultUtils.WrapText：CJK 感知，最多 2 行并在末行附省略号
+            //VaultUtils.WrapText，最多 2 行
             foreach (string drawn in VaultUtils.WrapText(text, font, maxWidth, scale, maxLines: 2, ellipsis: true)) {
                 Utils.DrawBorderString(sb, drawn, new Vector2(startPos.X, y), color, scale);
                 y += lineHeight;

@@ -5,11 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
 {
-    /// <summary>
-    /// 赛博放逐NPC绘制拦截器
-    /// <br/>在PreDraw中切换SpriteBatch到Immediate模式并应用放逐故障着色器
-    /// <br/>让原版绘制逻辑在着色器生效状态下执行，PostDraw中恢复
-    /// </summary>
+    /// <summary>放逐 NPC 绘制，PreDraw Immediate+故障 shader，PostDraw 恢复</summary>
     internal class CyberBanishNPCDraw : GlobalNPC
     {
         private static bool _shaderActive;
@@ -23,10 +19,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             float progress = CyberBanish.GetProgress(npc.whoAmI);
             if (progress < 0f) return true;
 
-            //NPC 纹理 texelSize
+            //texelSize
             Texture2D tex = TextureAssets.Npc[npc.type].Value;
 
-            //获取对应entry的seed
+            //entry seed
             float seed = 0f;
             for (int i = 0; i < CyberBanish.ActiveBanishments.Count; i++) {
                 if (CyberBanish.ActiveBanishments[i].NpcIndex == npc.whoAmI) {

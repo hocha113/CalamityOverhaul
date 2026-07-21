@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>精密瞄具：零散布，连中 10 层射裁决射线必暴贯线，脱靶清零</summary>
+    /// <summary>精密瞄具，零散布，连中 10 层射裁决射线必暴贯线，脱靶清零</summary>
     internal sealed class PrecisionOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;
@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             if (beam.IsDerived) return;
             calibration++;
             if (calibration < CalibrationCap) {
-                //每两层一声渐高的校准滴答，给玩家清晰的进度反馈
+                //每两层一声校准滴答
                 if (calibration % 2 == 0 && Main.netMode != NetmodeID.Server) {
                     float pitch = MathHelper.Lerp(-0.2f, 0.8f, calibration / (float)CalibrationCap);
                     SoundEngine.PlaySound(SoundID.Item114 with { Volume = 0.22f, Pitch = pitch }, target.Center);
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         }
 
         public override void OnBeamKill(CyberTraceBeamProj beam, int timeLeft) {
-            //主光束自然消亡且全程未命中 = 脱靶，校准清零
+            //主束未命中消亡 = 脱靶清零
             if (beam.IsDerived || beam.Projectile.numHits > 0) return;
             if (calibration > 0 && Main.netMode != NetmodeID.Server && beam.Projectile.owner == Main.myPlayer) {
                 SoundEngine.PlaySound(SoundID.Item16 with { Volume = 0.25f, Pitch = -0.7f }, beam.Projectile.Center);
@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             Projectile.penetrate = -1;
             Projectile.timeLeft = Lifetime;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = -1; //同一道射线只裁决每个敌人一次
+            Projectile.localNPCHitCooldown = -1; //一线一结算
             Projectile.DamageType = DamageClass.Magic;
         }
 
@@ -121,7 +121,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             }
         }
 
-        /// <summary>沿弹道以 32px 步进探测墙体，确定实际射线长度</summary>
+        /// <summary>32px 步进探墙定长度</summary>
         private void ResolveLength() {
             rayLength = 120f;
             while (rayLength < MaxLength) {
@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             shader.Parameters["coreColor"]?.SetValue(RayCore.ToVector3());
             shader.Parameters["edgeColor"]?.SetValue(RayEdge.ToVector3());
 
-            //四边形沿射线方向拉伸：origin 放在左边中点，横向即 coords.x
+            //quad 沿射线拉伸，origin 左边中点 = coords.x
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
             Main.spriteBatch.End();
@@ -212,7 +212,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             if (fadeAlpha < 0.02f) return;
             Texture2D star = CWRAsset.StarTexture_White?.Value;
             if (star == null) return;
-            //枪口十字耀星：开镜击发的高光记忆点
+            //枪口十字耀星
             Vector2 muzzleScreen = Projectile.Center - Main.screenPosition;
             float flash = MathF.Pow(fadeAlpha, 1.6f);
             spriteBatch.Draw(star, muzzleScreen, null, RayCore * flash * 0.9f,

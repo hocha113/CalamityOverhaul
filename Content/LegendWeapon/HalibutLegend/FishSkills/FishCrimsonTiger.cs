@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         internal static int MaxTigerFish => 5 + HalibutData.GetDomainLayer();
 
-        //猩红语系调色板：暗红外缘 → 饱和猩红，禁冷白
+        //猩红语系调色板
         internal static readonly Color BloodDeep = new(112, 14, 24);
         internal static readonly Color BloodCrim = new(205, 36, 46);
         internal static Color BloodShade(float t) => Color.Lerp(BloodDeep, BloodCrim, t);
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                     SpawnSummonEffect(player.Center, mouseDir, spawnCount);
 
-                    //虎鱼召唤音效：低吼 + 咬合 + 破水
+                    //虎鱼召唤音效
                     SoundEngine.PlaySound(SoundID.NPCHit1 with {
                         Volume = 0.8f,
                         Pitch = -0.5f
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //定向血珠扇：沿召唤方向撕开的水面，受重力坠落
+            //定向血珠扇
             int drops = 8 + spawnCount * 2;
             for (int i = 0; i < drops; i++) {
                 Vector2 vel = direction.RotatedBy(Main.rand.NextFloat(-0.55f, 0.55f))
@@ -134,11 +134,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 猩红虎鱼召唤物：巡弋编队随行，锁敌后蓄势弹射突击。<br/>
-    /// 表现三件套：速度拉伸残影链 + FishCrimsonTigerWake.fx 尾波绸带（宽度∝速度）
-    /// + 咬合定帧与血珠撕裂飞沫（PRT_HeartcarverDroplet）
-    /// </summary>
+    /// <summary>猩红虎鱼召唤物</summary>
     internal class CrimsonTigerFishMinion : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.CrimsonTigerfish;
@@ -233,7 +229,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             biteFlash *= 0.35f;
 
-            //咬合定帧：撕开的一瞬全画面停驻
+            //咬合定帧，撕开的一瞬全画面停驻
             if (freezeFrames > 0) {
                 freezeFrames--;
                 Projectile.velocity = Vector2.Zero;
@@ -267,7 +263,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //更新拖尾锚点（取尾鳍位置，尾波从尾根撕开）
             UpdateTrail();
 
-            //摆尾相位：速度越快摆越急
+            //摆尾相位，速度越快摆越急
             float speed = Projectile.velocity.Length();
             swimPhase += 0.16f + speed * 0.010f;
 
@@ -275,12 +271,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float wakeTarget = MathHelper.Clamp((speed - 5f) / 15f, 0f, 1f);
             wakeStrength = MathHelper.Lerp(wakeStrength, wakeTarget, 0.18f);
 
-            //朝向缓存：仅在明确横速下改判，防低速抖动翻面
+            //朝向缓存
             if (MathF.Abs(Projectile.velocity.X) > 0.8f) {
                 facingSign = Projectile.velocity.X > 0 ? 1 : -1;
             }
 
-            //血色光照：压暗基底，嗜血时增亮
+            //血色光照，压暗基底，嗜血时增亮
             Lighting.AddLight(Projectile.Center, 0.30f + bloodLust * 0.28f, 0.05f, 0.07f);
 
             //嗜血状态衰减
@@ -288,7 +284,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 bloodLust *= 0.95f;
             }
 
-            //高速尾流：偶发血珠向后甩落，慢游不喷
+            //高速尾流
             if (!VaultUtils.isServer && speed > 11f && Main.rand.NextBool(5)) {
                 Vector2 back = -Projectile.velocity.SafeNormalize(Vector2.Zero);
                 PRTLoader.NewParticle<PRT_HeartcarverDroplet>(
@@ -302,18 +298,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private Vector2 TailAnchor()
             => Projectile.Center - Projectile.rotation.ToRotationVector2() * 16f * Projectile.scale;
 
-        /// <summary>破水入场：快冲缓滑，easeOutBack 尺度过冲回稳，禁 pop-in</summary>
+        /// <summary>破水入场</summary>
         private void SpawningAI() {
             float progress = StateTimer / SpawningDuration;
 
             Projectile.alpha = (int)((1f - progress) * 220f);
             Projectile.scale = 0.4f + 0.6f * EaseOutBack(progress);
 
-            //先冲后滑：入场初速逐帧泄掉
+            //先冲后滑，入场初速逐帧泄掉
             Projectile.velocity *= 0.965f;
             Projectile.rotation = Projectile.velocity.ToRotation();
 
-            //破水血珠：首帧集中甩出
+            //破水血珠，首帧集中甩出
             if (!VaultUtils.isServer && StateTimer <= 1f) {
                 Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
                 for (int i = 0; i < 5; i++) {
@@ -345,7 +341,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 NPC target = Main.npc[targetNPCID];
                 float dist = Vector2.Distance(Projectile.Center, target.Center);
 
-                //有冲刺空间且蓄势就绪：进入预告拍
+                //有冲刺空间且蓄势就绪
                 if (dist > PounceMinDist && dist < 900f && pounceCooldown <= 0) {
                     State = TigerState.Pouncing;
                     StateTimer = 0;
@@ -367,7 +363,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     StateTimer = 0;
                 }
                 else {
-                    //松散巡弋编队：慢旋椭圆轨道 + 每鱼半径错层 + 呼吸涨落
+                    //松散巡弋编队
                     float orbitAngle = Main.GlobalTimeWrappedHourly * 1.1f + FishIndex * 2.4f;
                     float radius = 165f + (FishIndex % 3f) * 22f
                         + MathF.Sin(Main.GlobalTimeWrappedHourly * 0.8f + FishIndex) * 14f;
@@ -381,7 +377,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             FaceVelocity();
         }
 
-        /// <summary>预告拍：后坐蓄势，速度泄空 + 反向缓退 + 微缩绷紧，尾波收拢</summary>
+        /// <summary>预告拍</summary>
         private void PouncingAI() {
             if (!IsTargetValid()) {
                 State = TigerState.Hunting;
@@ -394,7 +390,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 toTarget = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitX);
 
             float t = StateTimer / PounceWindup;
-            //反向缓退：pow 迟滞，蓄势末段几乎定住
+            //反向缓退
             Projectile.velocity = Projectile.velocity * 0.72f - toTarget * 1.4f * (1f - MathF.Pow(t, 3f));
             //绷紧微缩
             Projectile.scale = 1f - 0.08f * MathF.Sin(t * MathHelper.Pi);
@@ -403,7 +399,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 facingSign = toTarget.X > 0 ? 1 : -1;
             }
 
-            //张力泄漏：蓄势中血珠往后滴
+            //张力泄漏，蓄势中血珠往后滴
             if (!VaultUtils.isServer && (int)StateTimer % 3 == 0) {
                 PRTLoader.NewParticle<PRT_HeartcarverDroplet>(TailAnchor(),
                     -toTarget * Main.rand.NextFloat(1f, 2.5f) + Main.rand.NextVector2Circular(0.6f, 0.6f),
@@ -411,7 +407,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Main.rand.NextFloat(0.5f, 0.8f))?.Configure(Main.rand.Next(10, 16), 0.20f);
             }
 
-            //过冲拍：一帧全速弹射，尺度过冲回落接续绷紧微缩
+            //过冲拍
             if (StateTimer >= PounceWindup) {
                 State = TigerState.Dashing;
                 StateTimer = 0;
@@ -425,7 +421,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         Pitch = 0.32f
                     }, Projectile.Center);
 
-                    //弹射反冲血珠：向后喷出的加速度可视化
+                    //弹射反冲血珠
                     for (int i = 0; i < 4; i++) {
                         PRTLoader.NewParticle<PRT_HeartcarverDroplet>(TailAnchor(),
                             -toTarget.RotatedBy(Main.rand.NextFloat(-0.4f, 0.4f)) * Main.rand.NextFloat(4f, 8f),
@@ -436,7 +432,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>释放拍：直线全速冲刺，仅微量转向修正保持锐利线条</summary>
+        /// <summary>释放拍</summary>
         private void DashingAI() {
             Projectile.scale = MathHelper.Lerp(Projectile.scale, 1f, 0.15f);
 
@@ -449,7 +445,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             NPC target = Main.npc[targetNPCID];
             float dist = Vector2.Distance(Projectile.Center, target.Center);
 
-            //有限转向：每帧至多 0.06 rad，冲刺读作一条直线（定帧清零后用朝向兜底）
+            //有限转向
             Vector2 desired = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitX);
             Vector2 current = Projectile.velocity.SafeNormalize(Projectile.rotation.ToRotationVector2());
             float turn = MathHelper.Clamp(
@@ -462,7 +458,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //冲刺超时：目标已脱离弹道，回巡航追击（36 帧足够覆盖 900px 弹道）
+            //冲刺超时
             if (StateTimer > 36f) {
                 State = TigerState.Hunting;
                 StateTimer = 0;
@@ -502,7 +498,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0.3f
             );
 
-            //甩头撕扯：绕咬合角往复摆动，非连续自旋
+            //甩头撕扯
             Projectile.rotation = biteBaseRot + MathF.Sin(StateTimer * 0.9f) * 0.5f;
 
             //减速
@@ -558,7 +554,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>游动横摆：垂直速度方向的正弦摆动力，每鱼相位错开</summary>
+        /// <summary>游动横摆</summary>
         private void ApplySwimSway() {
             if (Projectile.velocity.LengthSquared() < 1f) {
                 return;
@@ -601,7 +597,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //撕裂飞沫：从咬合点沿甩头方向锥形甩出，受重力
+            //撕裂飞沫
             Vector2 fling = Projectile.rotation.ToRotationVector2();
             for (int i = 0; i < 3; i++) {
                 PRTLoader.NewParticle<PRT_HeartcarverDroplet>(
@@ -629,7 +625,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             freezeFrames = 2;
             biteFlash = 1f;
 
-            //冲刺/蓄势中撞上目标：命中即咬合达成，防止定帧清速后方向漂移
+            //冲刺/蓄势中撞上目标
             if (State == TigerState.Dashing || State == TigerState.Pouncing) {
                 targetNPCID = target.whoAmI;
                 EnterBiting(target, playSound: false);
@@ -651,7 +647,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //击中撕裂喷溅：沿入射向的血珠锥
+            //击中撕裂喷溅，沿入射向的血珠锥
             Vector2 inDir = Projectile.velocity.SafeNormalize(
                 (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitX));
             for (int i = 0; i < 7; i++) {
@@ -677,7 +673,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         Main.rand.NextFloat(0.9f, 1.6f))?.Configure(Main.rand.Next(16, 26), 0.26f);
                 }
 
-                //尾波余韵：血珠沿轨迹排布，尾端寿命更短先蚀掉
+                //尾波余韵
                 for (int i = 0; i < trailPositions.Count; i += 2) {
                     Vector2 drift = i + 1 < trailPositions.Count
                         ? (trailPositions[i] - trailPositions[i + 1]) * 0.25f : Vector2.Zero;
@@ -709,13 +705,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Texture2D fishTex = TextureAssets.Item[ItemID.CrimsonTigerfish].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = fishTex.Size() / 2f;
-            //贴图斜置：右向 +PiOver4 校正，左向垂直翻转取 -PiOver4
+            //贴图斜置
             SpriteEffects spriteEffects = facingSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
             float drawRot = Projectile.rotation + (facingSign > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
 
             float alpha = (255f - Projectile.alpha) / 255f;
 
-            //速度残影链：位置链编码运动方向，速度低时消隐
+            //速度残影链
             float speedFactor = MathHelper.Clamp((Projectile.velocity.Length() - 6f) / 16f, 0f, 1f);
             float ghostBoost = MathHelper.Clamp(speedFactor + bloodLust * 0.3f, 0f, 1f);
             if (ghostBoost > 0.05f) {
@@ -736,7 +732,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //嗜血辉光：单层加色描边，不再三层同贴图堆叠
+            //嗜血辉光
             if (bloodLust > 0.3f) {
                 sb.Draw(fishTex, drawPos, null,
                     new Color(205, 40, 46, 0) * (bloodLust * 0.38f * alpha),
@@ -748,7 +744,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             sb.Draw(fishTex, drawPos, null, mainColor * alpha, drawRot, origin,
                 Projectile.scale, spriteEffects, 0);
 
-            //咬合白闪：≤2 帧过曝爆点
+            //咬合白闪，≤2 帧过曝爆点
             if (biteFlash > 0.08f) {
                 sb.Draw(fishTex, drawPos, null,
                     new Color(255, 235, 225, 0) * (biteFlash * 0.85f * alpha),
@@ -758,7 +754,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>尾波绸带：沿尾锚轨迹的 TriangleStrip，宽度∝速度，慢游近乎无痕</summary>
+        /// <summary>尾波绸带</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
             if (Main.dedServ || wakeStrength < 0.06f) {
                 return;
@@ -769,7 +765,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //采样点：尾锚打头，历史轨迹向尾（去过近点）
+            //采样点
             Span<Vector2> pts = stackalloc Vector2[1 + MaxTrailLength];
             int count = 0;
             pts[count++] = TailAnchor();
@@ -784,7 +780,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //条带顶点：头段快速铺满宽度，向尾收成撕开的尖
+            //条带顶点
             float maxWidth = (3.5f + 8.5f * wakeStrength) * Projectile.scale;
             var verts = new VertexPositionColorTexture[count * 2];
             for (int i = 0; i < count; i++) {

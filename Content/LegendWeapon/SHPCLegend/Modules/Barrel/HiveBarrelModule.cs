@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>蜂巢枪管：左键铺信息素，右键爆派蜂群俯冲标记目标</summary>
+    /// <summary>蜂巢枪管，左键铺信息素，右键派蜂俯冲</summary>
     internal sealed class HiveBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     ModContent.ProjectileType<SHPCHiveDroneProj>(),
                     Math.Max(orb.Projectile.damage / 5, 1), 0f, orb.Projectile.owner, ai0: target.whoAmI);
             }
-            //召唤瞬间：信息素扩散环 + 屏幕震动 + 音效
+            //召唤震+环+音
             SHPCNaturalFx.Shake(2f);
             if (Main.netMode != NetmodeID.Server) {
                 SoundEngine.PlaySound(SoundID.NPCHit44 with { Volume = 0.5f, Pitch = 0.3f }, orb.Projectile.Center);
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>赛博蜂单体：Trail+Additive 头部光</summary>
+    /// <summary>赛博蜂，Trail+Additive 头光</summary>
     internal sealed class SHPCHiveDroneProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
             Projectile.rotation = Projectile.velocity.ToRotation();
             Lighting.AddLight(Projectile.Center, new Vector3(0.55f, 0.45f, 0.15f));
-            //偶发蜜糖火星
+            //蜜糖火星
             if (Main.netMode != NetmodeID.Server && Main.GameUpdateCount % 3 == 0) {
                 Vector2 vel = -Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.6f, 1.4f);
                 PRTLoader.NewParticle<PRT_Sparkle>(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), vel, new Color(255, 210, 80), Main.rand.NextFloat(0.3f, 0.55f)).Configure(new Color(140, 90, 25), Main.rand.Next(8, 14), Main.rand.NextFloat(-0.3f, 0.3f), 0.7f);
@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Main.netMode == NetmodeID.Server) return;
             SoundEngine.PlaySound(SoundID.NPCDeath28 with { Volume = 0.35f, Pitch = 0.2f }, target.Center);
-            //蜂窝六边形效果：HeavenStar
+            //蜂窝 HeavenStar
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f + Main.rand.NextFloat(-0.1f, 0.1f);
                 PRTLoader.NewParticle<PRT_HeavenStar>(target.Center, Vector2.Zero, new Color(255, 220, 100), 1f).Configure(new Color(120, 80, 25), angle, new Vector2(0.2f, 0.05f), new Vector2(0.45f, 0.12f), 26, Main.rand.NextFloat(-0.05f, 0.05f), 0.85f);

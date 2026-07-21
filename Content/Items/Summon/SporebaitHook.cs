@@ -1,4 +1,4 @@
-﻿namespace CalamityOverhaul.Content.Items.Summon
+namespace CalamityOverhaul.Content.Items.Summon
 {
     /// <summary>
     /// 带饵菌钩

@@ -6,15 +6,11 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
 {
-    /// <summary>
-    /// 鬼切选择框:御神签式暗色签条。左端常驻朱印列(hover 时印章砸落),
-    /// 签条下缘随 hover 扫入一道刀痕。抉择时刻不落花,保持静场
-    /// </summary>
     internal sealed class OnikiriChoiceSkin : StoryChoiceSkin
     {
         private readonly OnikiriPanelState _state = new();
 
-        /// <summary>朱印列宽:选项文字统一让位,避免盖章时文字跳动</summary>
+        /// <summary>朱印列宽,文字让位</summary>
         private const float SealColumn = 26f;
 
         public override Color TextColor => OnikiriPanelState.Paper;
@@ -36,7 +32,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
             DrawTitleDecoration(spriteBatch, context);
             string title = ResolveChoiceTitle();
             Vector2 pos = context.TitleRect.Location.ToVector2();
-            //标题前一枚小印,标题字用白热色
+            //标题前小印
             OnikiriPanelDraw.DrawSealGlyph(spriteBatch, pos + new Vector2(6f, 10f), 11f, context.Alpha);
             Utils.DrawBorderString(spriteBatch, title, pos + new Vector2(17f, 0f), OnikiriPanelState.HotWhite * context.Alpha, 0.85f);
         }
@@ -52,13 +48,13 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
             Rectangle src = new(0, 0, 1, 1);
             float ease = option.Enabled ? _state.GetOptionHover(optionIndex) : 0f;
 
-            //暗色签条:纸感靠形与左端印列,而非亮底(维持全 mod 暗底纪律与正负对比一致)
+            //暗色签条
             Color slip = option.Enabled
                 ? Color.Lerp(OnikiriPanelState.Dark * 0.34f, OnikiriPanelState.Deep * 0.46f, ease)
                 : OnikiriPanelState.Dark * 0.14f;
             spriteBatch.Draw(pixel, rect, src, slip * context.Alpha);
 
-            //签条左端的浅色签头切角提示(常驻,极淡)
+            //左端签头切角
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, 2, rect.Height), src,
                 (option.Enabled ? OnikiriPanelState.Paper : OnikiriPanelState.Dark) * (context.Alpha * (option.Enabled ? 0.18f : 0.25f)));
 
@@ -68,12 +64,12 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
             }
 
             if (ease > 0.02f) {
-                //朱印砸落:EaseOutBack 弹入
+                //朱印砸落
                 float pop = VaultUtils.EaseOutBack(Math.Min(1f, ease));
                 OnikiriPanelDraw.DrawSealGlyph(spriteBatch,
                     new Vector2(rect.X + 13f, rect.Center.Y), 14f * pop, context.Alpha * ease, (1f - ease) * 0.25f);
 
-                //刀痕沿签条下缘扫入
+                //刀痕下缘扫入
                 float sweep = 1f - (float)Math.Pow(1f - ease, 3);
                 OnikiriPanelDraw.DrawTaperedSlash(spriteBatch,
                     new Vector2(rect.X + 4f, rect.Bottom - 2f), new Vector2(rect.Right - 4f, rect.Bottom - 2f),

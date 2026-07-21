@@ -49,7 +49,6 @@ namespace CalamityOverhaul.Content.Items.Magic
                 .Register();
         }
 
-        //右键：蓄力中子湮灭阵列
         public override bool AltFunctionUse(Player player) => true;
 
         public override bool CanUseItem(Player player)
@@ -107,7 +106,6 @@ namespace CalamityOverhaul.Content.Items.Magic
             }
 
             if (rightHolding) {
-                //右键按下瞬间锚定落点并蓄力
                 if (!colers2) {
                     colers2 = true;
                     if (colers <= 0) {

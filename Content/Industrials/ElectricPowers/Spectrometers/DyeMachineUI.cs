@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
         public BaseDyeTP DyeTP { get; set; }
 
         public override bool Active {
-            get { return CanOpen || sengs > 0.01f; } //防止sengs过小时UI仍在活动
+            get { return CanOpen || sengs > 0.01f; } //sengs过小也保持活动
             set { CanOpen = value; }
         }
 
@@ -159,9 +159,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
             }
         }
 
-        /// <summary>
-        /// 复杂的物品放入、取出和交换逻辑
-        /// </summary>
         private void HandleItemSlotting() {
             if (PreCheckLeft(Main.mouseItem)) {
                 //情况1: 玩家手上有物品
@@ -260,9 +257,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
 
     #region 模板方法模式应用
 
-    /// <summary>
-    /// 通用化的“待染色物品”槽，包含进度条逻辑
-    /// </summary>
+    /// <summary>待染色物品槽(+进度条)</summary>
     internal class BeDyedItemSlot : BaseDyeMachineSlot
     {
         public float DyeProgress = 0f;
@@ -286,9 +281,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
         }
     }
 
-    /// <summary>
-    /// 通用化的“染色结果”槽
-    /// </summary>
+    /// <summary>染色结果槽</summary>
     internal class ResultDyedItemSlot : BaseDyeMachineSlot
     {
         public override Texture2D SymbolTex => DyeMachineAsset.OutputSymbol;
@@ -302,18 +295,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
         }
     }
 
-    /// <summary>
-    /// 染料槽的基类，使用模板方法模式定义染色流程
-    /// </summary>
+    /// <summary>染料槽基类(染色流程模板)</summary>
     internal abstract class BaseDyeSlot : BaseDyeMachineSlot
     {
         public override Texture2D SymbolTex => DyeMachineAsset.DyeSymbol;
         public override Texture2D SymbolTexAlt => DyeMachineAsset.DyeSymbolAlt;
         public override bool CanCheckLeft(Item heldItem) => heldItem.dye > 0 || heldItem.IsWaterBucket();
 
-        /// <summary>
-        /// 模板方法：定义了染色的标准流程骨架
-        /// </summary>
+        /// <summary>染色流程骨架</summary>
         public sealed override void UpdateSlot() {
             if (CanStartDyeing(out BeDyedItemSlot dyedItemSlot, out BaseDyeMachineSlot resultSlot)) {
                 if (ConsumeResources()) {
@@ -365,7 +354,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
             ParentUI.DyeTP.SendData();
         }
 
-        //子类必须实现的差异化步骤
+        //子类差异步骤
         protected abstract bool ConsumeResources();
         protected abstract void UpdateProgress(BeDyedItemSlot dyedItemSlot);
     }
@@ -432,7 +421,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
 
     internal class SpectrometerDyeSlot : BaseDyeSlot
     {
-        //实现模板方法的具体步骤
+        //模板步骤
         protected override bool ConsumeResources() {
             if (ParentUI is SpectrometerUI { DyeTP: SpectrometerTP tp } && tp.MachineData.UEvalue > 1f) {
                 tp.MachineData.UEvalue--;

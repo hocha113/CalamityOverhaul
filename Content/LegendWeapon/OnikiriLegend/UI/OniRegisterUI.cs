@@ -13,12 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
-    /// <summary>
-    /// 点鬼簿：鬼切铭刻全屏界面。<br/>
-    /// 竖挂卷轴向下展卷，铭刻之鬼为一列列墨字名录 + 朱印状态章；
-    /// 右侧背光和纸上以影绘显形选中之鬼，配来历残句与线香驾驭度计。<br/>
-    /// 低频异象：闲置后鬼眼转向光标、躁动条目笔画洇血、危态下绯月睁竖瞳
-    /// </summary>
+    /// <summary>点鬼簿全屏,卷轴名录+影绘细节板</summary>
     internal sealed class OniRegisterUI : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "Legend.OnikiriText";
@@ -59,7 +54,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             UnknownHint = this.GetLocalization(nameof(UnknownHint), () => "簿上留白。夜还长，总会有名字自己走上来");
             SealedOriginHint = this.GetLocalization(nameof(SealedOriginHint), () => "封印未解。莫揭，莫应，莫回头");
             SealedPowerHint = this.GetLocalization(nameof(SealedPowerHint), () => "———");
-            //残页门控:旧契认刀不认手,认主前来历与赋力不肯示人
+            //残页门控文案键(现不挡簿面)
             UnrenewedOriginHint = this.GetLocalization(nameof(UnrenewedOriginHint), () => "旧契认刀，不认这只手。去它被收伏之地，重续名字");
             UnrenewedPowerHint = this.GetLocalization(nameof(UnrenewedPowerHint), () => "———");
             CloseTagText = this.GetLocalization(nameof(CloseTagText), () => "收卷");
@@ -79,7 +74,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private float selectEase;
         private Rectangle scrollRect;
         private Rectangle detailRect;
-        //收卷木牌:挂在顶部轴杆右端,点击关闭。牌绳为 Verlet 摆
+        //收卷木牌,点击关闭,牌绳 Verlet
         private Rectangle closeTagRect;
         private float closeTagHover;
         private bool closeTagWasHovered;
@@ -323,7 +318,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>线香燃点(细节板左下),灰自此剥落。香自顶向下燃,燃去比例 = 驾驭度</summary>
+        /// <summary>线香燃点,燃去比=驾驭度</summary>
         internal Vector2 IncenseEmberPos() {
             OniGhostEntry sel = SelectedEntry;
             float mastery = MathHelper.Clamp(sel?.Mastery ?? 0f, 0f, 1f);
@@ -356,7 +351,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 idleTimer = 60; //不立即重看,留一段安静
             }
 
-            //绯月竖瞳:仅危态,低频单发——冷却归零后睁约 1.6s,随后重掷冷却
+            //绯月竖瞳,危态低频,睁约 1.6s
             if (OniRegistry.InDanger) {
                 pupilCooldown--;
                 bool pupilActive = pupilCooldown <= 0;
@@ -479,7 +474,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
     }
 
-    /// <summary>点鬼簿键位开关：手持鬼切(或调试物品)时按传奇武器 UI 键开阖</summary>
+    /// <summary>点鬼簿键位开关,持刀时传奇 UI 键开阖</summary>
     internal sealed class OniRegisterKeyPlayer : ModPlayer
     {
         public override void PostUpdate() {

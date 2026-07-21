@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Sulfsea
 {
     internal static class SulfseaPanelDraw
     {
-        /// <summary>硫磺海面板背景：优先 SulfseaPanel 着色器，着色器缺失时回退到 CPU 色带绘制</summary>
+        /// <summary>面板背景,SulfseaPanel 优先否则 CPU</summary>
         public static void DrawShaderBackground(SpriteBatch spriteBatch, Rectangle rect, float alpha, SulfseaPanelState state, float hoverGlow = 0f) {
             SkinDrawUtil.DrawPanelShadow(spriteBatch, rect, Color.Black * (alpha * 0.60f), 6, 8);
 
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Sulfsea
             }
         }
 
-        /// <summary>面板描边与四角星：着色器内边之上的清晰前景细节</summary>
+        /// <summary>描边与四角星</summary>
         public static void DrawFrame(SpriteBatch spriteBatch, Rectangle rect, float alpha, float pulse) {
             Color edge = Color.Lerp(new Color(70, 100, 35), new Color(130, 160, 65), pulse) * (alpha * 0.85f);
             SkinDrawUtil.DrawRectBorder(spriteBatch, rect, edge, 2);
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Sulfsea
             SkinDrawUtil.DrawCornerStar(spriteBatch, new Vector2(rect.Right - 10, rect.Bottom - 10), alpha * 0.65f, starTint);
         }
 
-        /// <summary>仅绘制四角星：对话/选项皮肤在着色器内边之上的轻量签名细节</summary>
+        /// <summary>仅四角星</summary>
         public static void DrawCornerStars(SpriteBatch spriteBatch, Rectangle rect, float alpha) {
             Color starTint = new(160, 190, 80);
             SkinDrawUtil.DrawCornerStar(spriteBatch, new Vector2(rect.X + 10, rect.Y + 10), alpha * 0.9f, starTint);

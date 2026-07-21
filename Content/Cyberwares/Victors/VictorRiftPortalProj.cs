@@ -14,48 +14,46 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Victors
 {
     /// <summary>
-    /// Victor 出场传送门：赛博乱流裂口，撕开→稳定→Victor 浮现→坍塌
-    /// <br/>由 <see cref="VictorPortalSpawner"/> 服务端/单机生成，AI 在 NPC 浮现帧主端 NewNPC
-    /// <br/>ai[0]=facing(±1) ai[1]=绑定 Victor whoAmI (主端写客户端读) ai[2]=尺寸缩放
+    /// Victor 出场门；<see cref="VictorPortalSpawner"/> 主端生成，StableEnd 主端 NewNPC
+    /// <br/>ai0=facing±1 ai1=Victor whoAmI(主写客读) ai2=尺寸缩放
     /// </summary>
     internal class VictorRiftPortalProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        /// <summary>总生命，与下方各阶段帧数同步</summary>
+        /// <summary>总生命，与阶段帧同步</summary>
         public const int TotalLife = 220;
         /// <summary>0..TearEnd 撕开</summary>
         public const int TearEnd = 28;
-        /// <summary>TearEnd..StableEnd 稳定开放；StableEnd 时主端生成 NPC</summary>
+        /// <summary>TearEnd..StableEnd 稳定；StableEnd 主端生成 NPC</summary>
         public const int StableEnd = 96;
-        /// <summary>StableEnd..EmergeEnd Victor 淡入 + 浮出</summary>
+        /// <summary>StableEnd..EmergeEnd 淡入浮出</summary>
         public const int EmergeEnd = 160;
-        /// <summary>CollapseStart..TotalLife 坍塌关闭</summary>
+        /// <summary>CollapseStart..TotalLife 坍塌</summary>
         public const int CollapseStart = 165;
 
-        /// <summary>视觉半径（像素），椭圆门口的宽轴</summary>
+        /// <summary>椭圆宽轴半径 px</summary>
         public const float BaseHalfWidth = 80f;
-        /// <summary>椭圆高宽比，>1 偏竖立"撕开的口"形状</summary>
+        /// <summary>高宽比，&gt;1 偏竖</summary>
         public const float AspectRatio = 1.55f;
-        /// <summary>椭圆高度半径（像素），用于 Spawner 锚定 portal 下沿到地面</summary>
+        /// <summary>高轴半径，Spawner 用下沿贴地</summary>
         public const float BaseHalfHeight = BaseHalfWidth * AspectRatio;
 
         private float Facing => Projectile.ai[0] >= 0f ? 1f : -1f;
-        /// <summary>主端写入：被绑定的 Victor NPC whoAmI，负值表示尚未生成</summary>
+        /// <summary>主端写 whoAmI，负值未生成</summary>
         public int BoundVictorWhoAmI {
             get => (int)Projectile.ai[1];
             set => Projectile.ai[1] = value;
         }
         private float Scale => Projectile.ai[2] <= 0.01f ? 1f : Projectile.ai[2];
 
-        /// <summary>当前已经历的帧数（从 0 开始）</summary>
         private int AgeFrame => TotalLife - Projectile.timeLeft;
 
-        /// <summary>每实例随机种子（不参与同步，每端各自渲染）</summary>
+        /// <summary>每端独立渲染种子，不同步</summary>
         private float visualSeed;
 
         public override void SetStaticDefaults() {
-            //保证弹幕"半离屏"也能继续绘制传送门发光带
+            //半离屏仍绘发光带
             ProjectileID.Sets.DrawScreenCheckFluff[Type] = 800;
             ProjectileID.Sets.TrailingMode[Type] = -1;
         }
@@ -69,7 +67,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
             Projectile.timeLeft = TotalLife;
-            //城镇 NPC 生成事件，需保证多人客户端能稳定接收弹幕
+            //城镇出场，需客户端稳收弹幕
             Projectile.netImportant = true;
         }
 
@@ -79,51 +77,45 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
         public override void AI() {
             int age = AgeFrame;
 
-            //初始化：随机化每端独立的渲染种子；主端首帧确保 BoundVictorWhoAmI=-1
+            //首帧种子；主端 ai1 默认 0 与 whoAmI=0 冲突，置 -1
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
                 visualSeed = Main.rand.NextFloat();
                 if (Main.netMode != NetmodeID.MultiplayerClient && BoundVictorWhoAmI == 0) {
-                    //ai[1] 默认 0 会和 whoAmI=0 冲突，初始化为 -1 表示"未生成"
                     BoundVictorWhoAmI = -1;
                     Projectile.netUpdate = true;
                 }
             }
 
-            //稳定开放期间的环境音/震屏
             if (age == TearEnd && !VaultUtils.isServer) {
                 PlaySfxStable();
             }
 
-            //主端：稳定结束帧创建 Victor，并同步 whoAmI
+            //主端 StableEnd 生成并同步 whoAmI
             if (age == StableEnd && Main.netMode != NetmodeID.MultiplayerClient && BoundVictorWhoAmI < 0) {
                 SpawnVictorOnServer();
             }
 
-            //出场期间：锁定/淡入 Victor，并向门内吐故障粒子（任意端可独立做视觉）
             UpdateBoundVictor(age);
             SpawnAmbientParticles(age);
 
-            //坍塌瞬间播放关闭音
             if (age == CollapseStart && !VaultUtils.isServer) {
                 PlaySfxCollapse();
             }
         }
 
-        /// <summary>主端创建 Victor NPC，写入 ai[1] 同步给客户端</summary>
+        /// <summary>主端 NewNPC，写 ai1</summary>
         private void SpawnVictorOnServer() {
             int npcType = ModContent.NPCType<Victor>();
-            //已经存在 Victor 就不再重复（兜底防异常二次生成）
             if (NPC.AnyNPCs(npcType)) {
-                BoundVictorWhoAmI = -2;//-2 = 放弃生成，但允许动画继续走完
+                BoundVictorWhoAmI = -2;//放弃生成，动画继续
                 Projectile.netUpdate = true;
                 return;
             }
 
-            //Spawner 已把 portal 下沿对齐到地面，groundY = Center.Y + halfH
+            //下沿已贴地；NewNPC y=地面顶，脚贴地
             float halfH = BaseHalfHeight * Scale;
             int groundY = (int)(Projectile.Center.Y + halfH);
-            //NPC.NewNPC 的 x/y 是 NPC 顶部参考点，y 给 groundY，让 NPC 脚部贴地
             int x = (int)Projectile.Center.X;
             int y = groundY;
 
@@ -135,11 +127,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             }
 
             NPC v = Main.npc[index];
-            //初始状态：完全透明、面向玩家方向（即 Facing 指向）、零速度
             v.alpha = 255;
             v.direction = v.spriteDirection = Facing >= 0f ? 1 : -1;
             v.velocity = Vector2.Zero;
-            //立即把脚部锚定到地面
             v.Bottom = new Vector2(Projectile.Center.X, groundY);
             v.netUpdate = true;
 
@@ -147,7 +137,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             Projectile.netUpdate = true;
         }
 
-        /// <summary>每帧维护绑定 Victor 的可见性/朝向/位置锚定</summary>
         private void UpdateBoundVictor(int age) {
             int who = BoundVictorWhoAmI;
             if (who < 0 || who >= Main.maxNPCs) {
@@ -159,21 +148,18 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             }
 
             if (age < StableEnd) {
-                //生成前：保险起见若 NPC 已存在则保持隐藏（生成由 SpawnVictorOnServer 触发）
                 return;
             }
 
-            //出场曲线：StableEnd→EmergeEnd 内 alpha 255→0
+            //StableEnd→EmergeEnd alpha 255→0
             int emergeAge = age - StableEnd;
             int emergeSpan = EmergeEnd - StableEnd;
             float emergeT = MathHelper.Clamp(emergeAge / (float)emergeSpan, 0f, 1f);
-            //缓出，前段更暗后段快显
             float emergeEase = 1f - (1f - emergeT) * (1f - emergeT);
             int targetAlpha = (int)MathHelper.Lerp(255f, 0f, emergeEase);
-            //逐帧逼近，避免突跳
             v.alpha = (int)MathHelper.Lerp(v.alpha, targetAlpha, 0.35f);
 
-            //出场锚定：Victor 从门口"踏出"半步，脚部紧贴 portal 下沿（=地面）
+            //门口踏出半步，脚下沿=地
             float halfH = BaseHalfHeight * Scale;
             float groundY = Projectile.Center.Y + halfH;
             float walkOff = MathHelper.Lerp(0f, 22f, emergeEase) * Facing;
@@ -181,17 +167,15 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             v.Bottom = new Vector2(Projectile.Center.X + walkOff, groundY);
             v.velocity = Vector2.Zero;
             v.direction = v.spriteDirection = Facing >= 0f ? 1 : -1;
-            //完全出场后释放，让原版 Passive AI 自然接管
             if (emergeT >= 1f && v.alpha <= 4) {
                 v.alpha = 0;
             }
         }
 
-        /// <summary>客户端/单机：每隔几帧吐一些故障粒子，加强乱码氛围</summary>
         private void SpawnAmbientParticles(int age) {
             if (VaultUtils.isServer) return;
 
-            //频率：撕开期最密，稳定期适中，坍塌期一次性爆发
+            //撕开密、稳定中、坍塌爆发
             int interval;
             if (age < TearEnd) interval = 1;
             else if (age < StableEnd) interval = 3;
@@ -203,7 +187,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                 return;
             }
 
-            //椭圆边缘上随机点吐粒子（向外侧抛出）
             float halfW = BaseHalfWidth * Scale;
             float halfH = halfW * AspectRatio;
 
@@ -213,7 +196,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
 
             for (int i = 0; i < count; i++) {
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
-                //撕开/坍塌瞬间扩散到门外，稳定期沿门口贴边
+                //撕开/坍塌外扩，稳定贴边
                 float radial = age < TearEnd || age >= CollapseStart
                     ? Main.rand.NextFloat(0.9f, 1.3f)
                     : Main.rand.NextFloat(0.75f, 1.05f);
@@ -221,7 +204,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                 Vector2 spawn = Projectile.Center + ringPos;
                 Vector2 outward = (ringPos.SafeNormalize(Vector2.UnitX)) * Main.rand.NextFloat(1.5f, 4.5f);
 
-                //撕开期向外飞，坍塌期反向被吸进去
+                //坍塌反向吸入
                 if (age >= CollapseStart) {
                     outward = -outward * 1.4f;
                 }
@@ -231,7 +214,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                 PRTLoader.NewParticle<PRT_BanishGlitch>(spawn, outward, Color.White, scl).Configure(life);
             }
 
-            //出场闪光帧：从中心 burst 一次密集粒子
+            //StableEnd 中心 burst
             if (age == StableEnd) {
                 for (int i = 0; i < 28; i++) {
                     float ang = MathHelper.TwoPi * i / 28f + Main.rand.NextFloat(-0.1f, 0.1f);
@@ -261,7 +244,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             float emergePulse = ComputeEmergePulse(age);
             float collapseT = ComputeCollapseT(age);
 
-            //着色器缺失时回退到简易绘制，保证不出空场
+            //着色器缺失走兜底
             Effect shader = EffectLoader.VictorCyberPortal?.Value;
             if (shader == null || VaultAsset.placeholder2?.Value == null
                 || CWRAsset.Extra_193?.Value == null) {
@@ -276,23 +259,22 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
         private float ComputeOpenProgress(int age) {
             if (age < TearEnd) {
                 float t = age / (float)TearEnd;
-                //撕开使用 ease-out 弹起，让"门"先快速张开再微微回弹
+                //ease-out 撕开
                 return 1f - MathF.Pow(1f - t, 2.4f);
             }
             if (age < CollapseStart) {
-                //稳定期 1，呼吸 ±0.04
+                //稳定 1±0.04 呼吸
                 float t = (age - TearEnd) * 0.08f;
                 return 1f + 0.04f * MathF.Sin(t);
             }
-            //坍塌期：先线性回到 1，由 collapse 接管收缩
+            //坍塌先回 1，collapse 接管
             return 1f - (age - CollapseStart) / (float)(TotalLife - CollapseStart) * 0.15f;
         }
 
         private float ComputeEmergePulse(int age) {
-            //在 StableEnd 出现一次强闪，然后衰减
+            //StableEnd 尖峰，约 25 帧衰减
             int diff = age - StableEnd;
             if (diff < 0 || diff > 40) return 0f;
-            //尖峰在 0 帧，衰减约 25 帧
             return MathF.Exp(-diff / 12f);
         }
 
@@ -301,10 +283,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             return MathHelper.Clamp((age - CollapseStart) / (float)(TotalLife - CollapseStart), 0f, 1f);
         }
 
-        /// <summary>
-        /// 画布相对 portal 半径的放大倍数：quad 半径 = portal 半径 × QuadOverPortal
-        /// <br/>必须 > 1.0；越大，辉光/锯齿/坍塌冲击波越不容易被 quad 边切；shader 同步收到 1/QuadOverPortal 作为内圈半径
-        /// </summary>
+        /// <summary>quad 半径 = portal×此值；须&gt;1，防辉光被切边；shader 收 1/此值作内圈</summary>
         private const float QuadOverPortal = 1.6f;
 
         private void DrawShaderPortal(Effect shader, float openProg, float emergePulse, float collapseT) {
@@ -313,7 +292,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
 
             float halfW = BaseHalfWidth * Scale;
             float halfH = halfW * AspectRatio;
-            //quad 半轴 = portal 半轴 × QuadOverPortal，给所有外发光留出软淡出余量
+            //外发光余量
             float quadW = halfW * QuadOverPortal * 2f;
             float quadH = halfH * QuadOverPortal * 2f;
 
@@ -347,7 +326,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             Lighting.AddLight(Projectile.Center, new Vector3(0.85f, 0.18f, 0.10f) * MathHelper.Clamp(openProg, 0f, 1f));
         }
 
-        /// <summary>着色器缺失兜底：以纯色椭圆 + 多层光斑表示传送门</summary>
+        /// <summary>着色器缺失兜底</summary>
         private void DrawFallback(float openProg, float emergePulse, float collapseT) {
             Texture2D px = VaultAsset.placeholder2.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
@@ -369,7 +348,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
 
         public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs,
             List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) {
-            //传送门在 NPC 之前绘制（让 Victor 走出时压在传送门上）
+            //Victor 走出压在门上
             behindNPCs.Add(index);
         }
     }

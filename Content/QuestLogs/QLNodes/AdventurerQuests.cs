@@ -801,14 +801,13 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             }
         }
 
-        /// <summary>检测周围空岛特征方块</summary>
         private bool CheckIsOnFloatingIsland(Player player) {
             int playerX = (int)(player.Center.X / 16f);
             int playerY = (int)(player.Center.Y / 16f);
 
-            //扫描半径 20 格
+            //半径20格
             int range = 20;
-            //阈值 5，防垫块作弊
+            //阈值5防垫块
             int cloudCount = 0;
             int threshold = 5;
 
@@ -936,7 +935,6 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public static bool CheckPlayerHouse(Player player) {
-            //世界坐标转物块坐标
             int tileX = (int)(player.Center.X / 16f);
             int tileY = (int)(player.Center.Y / 16f);
             if (WorldGen.StartRoomCheck(tileX, tileY)) {
@@ -951,7 +949,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            //每秒检查是否有房屋
+            //每秒查房屋
             if (Main.GameUpdateCount % 60 == 0 && CheckPlayerHouse(Main.LocalPlayer)) {
                 Objectives[0].CurrentProgress = 1;
             }

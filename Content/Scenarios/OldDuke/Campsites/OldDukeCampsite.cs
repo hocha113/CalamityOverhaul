@@ -14,62 +14,44 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 {
-    /// <summary>
-    /// 老公爵营地
-    /// </summary>
+    /// <summary>老公爵营地</summary>
     [VaultLoaden("@CalamityMod/NPCs/OldDuke/")]
     internal class OldDukeCampsite : ModSystem, ILocalizedModType, IWorldInfo
     {
-        //头像矩形区域
         public readonly static Rectangle PortraitRec = new(128, 26, 78, 94);
-        //反射加载老公爵纹理，以便在ADV场景中使用，总共七帧，一般只使用前六帧，因为第七帧是张嘴动画
+        //ADV用，7帧里只用前6(第7张嘴)
         public static Texture2D OldDuke = null!;
-        //老公爵的头像图标
         public static Texture2D OldDuke_Head_Boss = null!;
         [VaultLoaden(CWRConstant.ADV + "Abysse/")]
-        public static Texture2D OldPot = null!;//反射加载老公爵营地的锅纹理，大小宽46像素高48像素，适合放地上用于丰富营地场景
+        public static Texture2D OldPot = null!;//46x48
         [VaultLoaden(CWRConstant.ADV + "Abysse/")]
-        public static Texture2D Oldflagpole = null!;//反射加载老公爵营地的旗帜纹理，大小宽60像素高160像素，适合放地上用于丰富营地场景
-        /// <summary>
-        /// 人鱼钓是否正在收回
-        /// </summary>
+        public static Texture2D Oldflagpole = null!;//60x160
+        /// <summary>人鱼钓收回中</summary>
         public static bool MermanRodMoveback { get; internal set; }
-        /// <summary>
-        /// 营地是否已生成
-        /// </summary>
+        /// <summary>营地已生成</summary>
         public static bool IsGenerated { get; internal set; }
-        /// <summary>
-        /// 是否在和老公爵切磋
-        /// </summary>
+        /// <summary>切磋中</summary>
         public static bool WannaToFight { get; set; }
-        /// <summary>
-        /// 营地位置
-        /// </summary>
+        /// <summary>营地位置</summary>
         public static Vector2 CampsitePosition { get; private set; }
 
         public string LocalizationCategory => "ADV.OldDukeCampsite";
 
-        //动画状态
         private static int animationFrame;
         private static int animationTimer;
-        private const int FrameDuration = 8;//每帧持续时间
-        private const int TotalFrames = 6;//使用前6帧
+        private const int FrameDuration = 8;//帧时长
+        private const int TotalFrames = 6;
 
-        //交互状态
         private static bool isPlayerNearby;
         private static float interactPromptAlpha;
-        private const float InteractDistance = 220f;//交互距离（像素）
+        private const float InteractDistance = 220f;//px
 
-        //生成请求去重，避免联机下条件成立到收到回执之间逐帧刷包
+        //联机生成请求去重，等回执前不重发
         private static bool pendingGenerationRequest;
 
         public static LocalizedText TitleText;
 
-        /// <summary>
-
-        /// 玩家进入营地事件
-
-        /// </summary>
+        /// <summary>进入营地</summary>
         public static event Action<Vector2> OnEnterCampsite;
 
         public override void SaveWorldData(TagCompound tag) {
@@ -137,14 +119,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 return;
             }
 
-            //声明式补种检查：世界刚加载或搬家失败导致装饰Actor缺失时自动补回
+            //Actor缺失时补种
             OldDukeCampsiteGenerationService.EnsureCampsitePlaced();
 
             UpdateAnimation();
             CheckPlayerProximity();
             CheckWannaToFight();
 
-            //检测右键交互
             if (CanInteract() && CanTriggerInteraction() && Main.mouseRight && Main.mouseRightRelease) {
                 TriggerInteraction();
             }
@@ -156,14 +137,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 return;
             }
 
-            //检查是否应该生成营地
             if (ShouldGenerateCampsite(player)) {
                 RequestCampsiteGeneration();
             }
         }
 
         private static bool ShouldGenerateCampsite(Player player) {
-            //玩家不在营地周围，这个检测是用于如果营地中途发生搬家的情况，避免在玩家视觉中发生营地搬迁
+            //搬家时等玩家远离再清旧营地
             if (MermanRodMoveback && player.DistanceSQ(CampsitePosition) > 1200 * 1200) {
                 if (VaultUtils.isSinglePlayer) {
                     ClearCampsiteAndSync();
@@ -171,29 +151,24 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 return true;
             }
 
-            //检查营地是否已经生成
             if (IsGenerated) {
                 return false;
             }
 
-            //检查老公爵不在的时候
             if (NPC.AnyNPCs(CWRID.NPC_OldDuke)) {
                 return false;
             }
 
-            //检查是否在子世界中
             if (SubWorldRef.AnyActiveSubWorld()) {
                 return false;
             }
 
-            //检查玩家是否已经完成碎片任务
             if (OldDukeStorySync.Read(
                     d => d.OldDukeFindFragmentsQuestTriggered || d.OldDukeFindFragmentsQuestCompleted,
                     d => d.OldDukeFindFragmentsQuestTriggered || d.OldDukeFindFragmentsQuestCompleted)) {
                 return true;
             }
 
-            //检查玩家是否已经同意合作
             if (!OldDukeStorySync.Read(d => d.OldDukeCooperationAccepted, d => d.OldDukeCooperationAccepted)) {
                 return false;
             }
@@ -201,11 +176,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             return true;
         }
 
-        /// <summary>
-
-        /// 请求生成营地（客户端发送给服务器或单人直接生成）
-
-        /// </summary>
+        /// <summary>请求生成营地(客户端发包/单人直调)</summary>
         private static void RequestCampsiteGeneration() {
             if (VaultUtils.isSinglePlayer) {
                 TryGenerateCampsite();
@@ -215,11 +186,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        /// <summary>
-
-        /// 客户端发送生成请求给服务器，带去重标记避免收到回执前逐帧刷包
-
-        /// </summary>
+        /// <summary>客户端生成请求，pending去重</summary>
         private static void SendGenerationRequest() {
             if (VaultUtils.isSinglePlayer || pendingGenerationRequest) {
                 return;
@@ -230,24 +197,19 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             packet.Send();
         }
 
-        /// <summary>
-
-        /// 尝试生成营地（服务器或单人执行）
-
-        /// </summary>
+        /// <summary>服务端/单人生成营地</summary>
         public static void TryGenerateCampsite() {
             if (VaultUtils.isClient) {
-                return;//客户端不要自己生成营地中心
+                return;//客户端不生成
             }
 
-            //使用位置查找器寻找最佳位置
             Vector2? position = CampsiteLocationFinder.FindBestLocation();
 
             if (position.HasValue) {
                 GenerateCampsite(position.Value);
             }
             else {
-                //如果找不到合适位置，则在世界右上角生成
+                //找不到就右上角兜底
                 GenerateCampsite(new Vector2((Main.maxTilesX - 400) * 16, Main.maxTilesY / 8 * 16));
             }
 
@@ -256,11 +218,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        /// <summary>
-
-        /// 服务器同步营地数据给所有客户端
-
-        /// </summary>
+        /// <summary>服务端同步营地</summary>
         private static void SyncCampsiteToClients() {
             ModPacket packet = CWRMod.Instance.GetPacket();
             packet.Write((byte)CWRMessageType.OldDukeCampsiteSync);
@@ -271,13 +229,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             packet.Send();
         }
 
-        /// <summary>
-
-        /// 客户端接收营地同步数据
-
-        /// </summary>
+        /// <summary>客户端收营地同步</summary>
         internal static void ReceiveCampsiteSync(BinaryReader reader) {
-            //无论结果如何，收到一次回执就说明请求周期已经走完，允许下次再发
+            //回执到，清pending
             pendingGenerationRequest = false;
 
             bool wasGenerated = IsGenerated;
@@ -292,11 +246,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        /// <summary>
-
-        /// 营地生成后的表现（装饰/老公爵Actor由生成服务负责放置，这里只负责客户端听觉反馈）
-
-        /// </summary>
+        /// <summary>生成后客户端音效</summary>
         private static void OnCampsiteGenerated() {
             SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.5f, Pitch = -0.2f }, CampsitePosition);
         }
@@ -317,17 +267,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             CampsiteInteractionDialogue.GiveTeaOnStart = true;
         }
 
-        /// <summary>
-
-        /// 检测是否在和老公爵切磋
-
-        /// </summary>
         private static void CheckWannaToFight() {
             if (WannaToFight) {
                 if (!NPC.AnyNPCs(CWRID.NPC_OldDuke)) {
                     WannaToFight = false;
-                    //OldDukeEffect.IsActive由声明式计算自动管理
-                    //NPC消失后ComputeShouldBeActive()将返回false
                     if (VaultUtils.isServer) {
                         NetMessage.SendData(MessageID.WorldData);
                     }
@@ -335,37 +278,29 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        /// <returns></returns>
         private static bool CanTriggerInteraction() {
             if (Main.mapFullscreen) {
-                return false;//玩家如果展开了全屏地图，就不要进行交互
+                return false;//全屏地图
             }
 
             if (OldDukeEffect.IsActive) {
-                return false;//如果硫磺海效果已经启用，就不要进行交互
+                return false;//硫磺海效果中
             }
 
             if (NPC.AnyNPCs(CWRID.NPC_OldDuke)) {
-                return false;//如果老公爵还在，就不要进行交互
+                return false;//老公爵在场
             }
 
             if (Main.LocalPlayer.mouseInterface) {
-                return false;//鼠标正在交互状态下，就不要进行交互
+                return false;//mouseInterface
             }
 
             return true;
         }
 
-        /// <summary>
-
-        /// 触发交互
-
-        /// </summary>
         private static void TriggerInteraction() {
-            //播放交互音效
             SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.3f, Volume = 0.6f });
 
-            //首次营地对话
             if (!OldDukeStorySync.Read(d => d.OldDukeFirstCampsiteDialogueCompleted, d => d.OldDukeFirstCampsiteDialogueCompleted)) {
                 OldDukeStorySync.Write(
                     d => d.OldDukeFirstCampsiteDialogueCompleted = true,
@@ -374,15 +309,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 return;
             }
 
-            //后续交互对话
             NarrativeRouter.Begin<CampsiteInteractionDialogue>();
         }
 
-        /// <summary>
-
-        /// 更新动画
-
-        /// </summary>
         private static void UpdateAnimation() {
             animationTimer++;
             if (animationTimer >= FrameDuration) {
@@ -410,7 +339,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 }
             }
 
-            //交互提示淡入淡出
             if (isPlayerNearby && CanTriggerInteraction()) {
                 if (interactPromptAlpha < 1f) {
                     interactPromptAlpha += 0.05f;
@@ -424,17 +352,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 
             interactPromptAlpha = MathHelper.Clamp(interactPromptAlpha, 0f, 1f);
 
-            //触发进入营地事件
             if (isPlayerNearby && !wasNearby) {
                 OnEnterCampsite?.Invoke(CampsitePosition);
             }
         }
 
-        /// <summary>
-
-        /// 生成营地
-
-        /// </summary>
+        /// <summary>生成营地，isRelocation跳过箱子</summary>
         public static void GenerateCampsite(Vector2 position, bool isRelocation = false) {
             if (IsGenerated) {
                 return;
@@ -443,10 +366,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             CampsitePosition = position;
             IsGenerated = true;
 
-            //放置锅/旗杆/老公爵Actor；isRelocation时跳过箱子重复放置(鱼人钓搬家场景)
             OldDukeCampsiteGenerationService.PlaceCampsite(position, isRelocation);
 
-            //调整营地位置的Y值，使其更贴近实际摆放的锅群
+            //Y贴锅群，±120
             List<CampsitePotActor> pots = ActorLoader.GetActiveActors<CampsitePotActor>();
             if (pots.Count > 0) {
                 float y = 0;
@@ -454,18 +376,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                     y += pot.Position.Y;
                 }
                 y /= pots.Count;
-                //将营地Y位置限制在锅位置的上下120像素范围内
                 CampsitePosition = new Vector2(CampsitePosition.X, MathHelper.Clamp(CampsitePosition.Y, y - 120, y + 120));
             }
 
             OnCampsiteGenerated();
         }
 
-        /// <summary>
-
-        /// 清除营地的本地/存档状态(不含Actor清理，世界卸载等收尾路径调用)
-
-        /// </summary>
+        /// <summary>清本地状态，不含Actor</summary>
         public static void ClearCampsite() {
             MermanRodMoveback = false;
             IsGenerated = false;
@@ -477,11 +394,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             CampsitePosition = Vector2.Zero;
         }
 
-        /// <summary>
-
-        /// 清除营地并同步给所有客户端：状态重置+销毁装饰/老公爵Actor+广播，统一入口供搬家/剧情重置等场景调用
-
-        /// </summary>
+        /// <summary>清营地+Actor并广播</summary>
         public static void ClearCampsiteAndSync() {
             if (VaultUtils.isServer) {
                 ClearCampsite();
@@ -502,7 +415,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 return Rectangle.Empty;
             }
 
-            int frameHeight = OldDuke.Height / 7;//总共7帧
+            int frameHeight = OldDuke.Height / 7;
             return new Rectangle(0, frameHeight * animationFrame, OldDuke.Width, frameHeight);
         }
 

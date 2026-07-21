@@ -10,8 +10,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PrimePlasamas
     internal class PrimePlasamaPlayer : ModPlayer
     {
         public override void ModifyHurt(ref Player.HurtModifiers modifiers) {
-            //装备本义体后击退量按 (1 - KnockbackResistanceBonus) 倍缩放
-            //乘性叠加：本帧若有其他来源也修改 Knockback，互不干扰
+            //乘性缩放 Knockback，与其他来源不互踩
             if (PrimePlasama.GetEquipped(Player) == null) {
                 return;
             }

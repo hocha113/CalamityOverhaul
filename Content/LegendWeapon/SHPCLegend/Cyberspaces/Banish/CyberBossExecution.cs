@@ -17,24 +17,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
     {
         void ICWRLoader.UnLoadData() => Reset();
 
-        /// <summary>
-        /// 单次执行总时长（帧）
-        /// </summary>
+        /// <summary>总时长帧</summary>
         public const int ExecutionDuration = 150;
 
-        /// <summary>
-        /// 单次执行消耗的RAM
-        /// </summary>
+        /// <summary>单次 RAM</summary>
         public const int RamCostPerCast = 12;
 
-        /// <summary>
-        /// 每次执行的目标主雷数，最多劈五下
-        /// </summary>
+        /// <summary>主雷数，最多5</summary>
         private const int TargetBoltCount = 5;
 
-        /// <summary>
-        /// 伤害最终倍率（基于SHPC面板伤害*改件DamageMul后再放大）
-        /// </summary>
+        /// <summary>伤害倍率，面板×改件后再放大</summary>
         private const float DamageMultiplier = 6f;
 
         public static readonly List<ExecutionEntry> ActiveExecutions = [];
@@ -51,7 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             if (npc == null || !npc.active) return false;
             if (npc.boss) return true;
             if (NPCID.Sets.ShouldBeCountedAsBoss[npc.type]) return true;
-            //群组判定：蠕虫体节本身npc.boss为false，但realLife指向的实际boss体上为true
+            //群组看 realLife.boss
             int rl = npc.realLife;
             if (rl >= 0 && rl < Main.maxNPCs) {
                 NPC anchor = Main.npc[rl];
@@ -92,7 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             }
         }
 
-        /// <summary>单发伤害：最高级 SHPC 面板 × 改件 × DamageMultiplier</summary>
+        /// <summary>单发伤，最高级面板×改件×倍率</summary>
         private static int ResolveExecutionDamage(Player owner) {
             int baseDamage = SHPCOverride.GetStartDamage;
             if (owner != null) {
@@ -129,8 +121,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                     continue;
                 }
 
-                //多人语义：仅由"发起者"客户端真正生成执行雷弹幕，避免每个客户端都各自再 spawn 一遍
-                //其它端只推进 Timer 和 IsExecuting 状态，让放逐结束判定在所有端一致
+                //仅发起者客户端 spawn 雷
+                //其它端只推 Timer/IsExecuting
                 bool authoritative = Main.netMode == NetmodeID.SinglePlayer
                     || entry.OwnerWho == Main.myPlayer;
                 if (authoritative) {
@@ -166,9 +158,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             if (npc.realLife > 0) {
                 return;//排除子实体
             }
-            //根据剩余进度决定本帧应已生成数量，弥补到该数量为止（每帧最多生成2发）
+            //按进度补雷，每帧最多2
             float progress = (float)entry.Timer / ExecutionDuration;
-            //0.95是为了把所有雷压到前95%生命周期内打完，最后一截留作收尾
+            //前95%打完，尾段收尾
             int expected = (int)(progress / 0.92f * TargetBoltCount);
             if (expected > TargetBoltCount) expected = TargetBoltCount;
 
@@ -181,19 +173,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
         }
 
         private static void SpawnSingleBolt(ExecutionEntry entry, NPC npc) {
-            //从Boss外围随机点向内劈：起点距离Boss 600~1100像素
+            //外起点距 Boss 600~1100
             float incomingAngle = Main.rand.NextFloat(MathHelper.TwoPi);
             float startDist = Main.rand.NextFloat(600f, 1100f);
-            //雷的"路径起点"在外围，路径角度沿incomingAngle反向（朝向Boss）
-            //incomingAngle定义的是从Boss出发到起点的方向
+            //路径自外围朝 Boss
             Vector2 startPos = npc.Center + incomingAngle.ToRotationVector2() * startDist;
-            //轻微抖动让起点不过于规整
+            //起点微抖
             startPos += Main.rand.NextVector2Circular(60f, 60f);
             float pathAngle = (npc.Center - startPos).ToRotation();
-            //再加点随机摆动
+            //角微摆
             pathAngle += Main.rand.NextFloat(-0.18f, 0.18f);
 
-            //短延迟使多发雷错开，营造连续轰击节奏
+            //短延迟错开
             int delay = Main.rand.Next(0, 5);
 
             EntitySource_Misc source = new EntitySource_Misc("CyberBossExecution");

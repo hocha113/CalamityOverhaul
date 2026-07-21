@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
 
         public override CyberwareSkillKind Kind => CyberwareSkillKind.Instant;
 
-        //冷却进度：1 表示完全就绪，0 表示刚释放
+        //冷却进度，1 就绪，0 刚放
         public override float StatusFillRatio {
             get {
                 Player p = Main.LocalPlayer;
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
             }
         }
 
-        //状态文字：优先显示冷却剩余秒数，无冷却时显示 RAM 消耗
+        //冷却剩余秒，无冷却显示 RAM 消耗
         public override string StatusText {
             get {
                 Player p = Main.LocalPlayer;

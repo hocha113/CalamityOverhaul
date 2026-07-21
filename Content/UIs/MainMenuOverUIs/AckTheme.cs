@@ -4,10 +4,7 @@ using Terraria.GameInput;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
-    /// <summary>
-    /// ED 致谢界面的色板、版式常量与 UI 空间坐标换算。
-    /// 风格参考明日方舟片尾：近黑底 + 单一暖琥珀强调 + 冷钢青副色 + 米白文字，留白克制
-    /// </summary>
+    /// <summary>致谢 ED 色板/版式；坐标走 UI 空间，勿直接读 Main.screen*</summary>
     internal static class AckTheme
     {
         #region UI空间坐标（与调用语境无关，禁止直接读 Main.screenWidth/Height）
@@ -17,40 +14,30 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         #endregion
 
         #region 色板
-        //近黑基底，由深到浅
+        //近黑，深→浅
         public static readonly Color Void = new(4, 5, 8);
         public static readonly Color Base = new(9, 10, 14);
         public static readonly Color Panel = new(15, 17, 23);
-        //暖琥珀强调（与 HalibutTheme.Accent 对齐，维持模组识别度）
+        //暖琥珀，对齐 HalibutTheme.Accent
         public static readonly Color Accent = new(255, 200, 97);
         public static readonly Color AccentHi = new(255, 226, 170);
-        //冷钢青副色，避免整屏暖调单一
+        //冷钢青副色
         public static readonly Color Cool = new(120, 196, 224);
-        //文字主色与次色
         public static readonly Color Text = new(233, 236, 240);
         public static readonly Color TextDim = new(154, 160, 172);
         public static readonly Color TextFaint = new(92, 99, 114);
         #endregion
 
         #region 版式
-        //内容列左右安全边距占屏比
-        public const float SideMarginRatio = 0.135f;
-        //分节标题之上的额外留白
-        public const float SectionGap = 66f;
-        //分节标题占高（容纳元信息小行 + 大号角色名 + 分割线，且各层不重叠）
-        public const float HeaderHeight = 82f;
-        //单列名字行高
+        public const float SideMarginRatio = 0.135f;//左右安全边距占屏比
+        public const float SectionGap = 66f;//分节标题上留白
+        public const float HeaderHeight = 82f;//元信息+角色名+分割线
         public const float NameRowHeight = 32f;
-        //捐赠者网格行高与列宽
         public const float DonorRowHeight = 28f;
         public const float DonorColWidth = 210f;
-        //名字进入视野时的淡入带高度（UI空间像素）
-        public const float FadeBand = 150f;
+        public const float FadeBand = 150f;//入视野淡入带(UI px)
         #endregion
 
-        /// <summary>
-        /// 给定角色返回其强调色
-        /// </summary>
         public static Color RoleColor(CreditRole role) => role switch {
             CreditRole.Artist => new Color(255, 178, 128),
             CreditRole.CodeAssistance => new Color(122, 198, 226),
@@ -59,7 +46,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             _ => Accent,
         };
 
-        /// <summary>异相位呼吸波，给定相位种子返回 0-1 的缓慢脉动</summary>
+        /// <summary>异相位呼吸 0-1</summary>
         public static float Breath(float time, float seed, float speed = 2f)
             => MathF.Sin(time * speed + seed * 17.39f) * 0.5f + 0.5f;
 
@@ -72,7 +59,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
         public static float EaseOutQuint(float t) => 1f - MathF.Pow(1f - Saturate(t), 5f);
 
-        /// <summary>带轻微回弹的缓出，用于标志/标题入场</summary>
+        /// <summary>带回弹缓出，标志/标题入场</summary>
         public static float EaseOutBack(float t) {
             t = Saturate(t);
             const float c1 = 1.70158f;

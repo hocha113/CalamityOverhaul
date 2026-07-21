@@ -21,16 +21,15 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             NPC npc = Main.npc[s.NpcIndex];
             EmitApplyParticles(npc);
             CombatText.NewText(npc.Hitbox, new Color(40, 150, 255), HackTime.Rebooting.Value, true);
-            //群组扩散仅施法端注册
+            //群组扩散仅施法端
             if (!HackTimeNetSync.IsRemoteApply) {
-                //蠕虫体节、月总实体一并重启
                 HackEffectTracker.PropagateNpcEffectToGroup(this, s.NpcIndex,
                     caster?.whoAmI ?? Main.myPlayer, EmitApplyParticles);
             }
             return true;
         }
 
-        //蓝屏粒子，群组成员复用
+        //群组成员复用
         private static void EmitApplyParticles(NPC npc) {
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3f, 3f);
@@ -41,7 +40,6 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override bool OnTick(IHackTarget target, int elapsed) {
             if (target is not NpcScannable s) return true;
             NPC npc = Main.npc[s.NpcIndex];
-            //向上飘散的数据流粒子
             if (elapsed % 8 == 0) {
                 Vector2 pos = new(
                     npc.Center.X + Main.rand.NextFloat(-npc.width * 0.4f, npc.width * 0.4f),
@@ -49,7 +47,6 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 Vector2 vel = new(0, Main.rand.NextFloat(-2f, -0.5f));
                 PRTLoader.NewParticle<PRT_Spark>(pos, vel, new Color(40, 100, 255), 0.5f).Configure(false, 30);
             }
-            //偶尔闪烁蓝色光点
             if (elapsed % 30 == 0) {
                 PRTLoader.NewParticle<PRT_Spark>(npc.Center + Main.rand.NextVector2Circular(npc.width * 0.3f, npc.height * 0.3f), Vector2.Zero, new Color(80, 160, 255), 1.2f).Configure(false, 10);
             }
@@ -59,7 +56,6 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override void OnRemove(IHackTarget target) {
             if (target is not NpcScannable s) return;
             NPC npc = Main.npc[s.NpcIndex];
-            //重启完成闪光
             for (int i = 0; i < 6; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(2.5f, 2.5f);
                 PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(100, 200, 255), 0.8f).Configure(false, 12);

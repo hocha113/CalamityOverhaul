@@ -59,20 +59,17 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool FirstMetTzeentch;
     }
 
-    /// <summary>
-    /// 老公爵交互状态枚举
-    /// </summary>
     public enum OldDukeInteractionState
     {
         /// <summary>未遇见</summary>
         NotMet = 0,
-        /// <summary>已遇见但未做选择</summary>
+        /// <summary>已遇见未选</summary>
         Met = 1,
         /// <summary>接受合作</summary>
         AcceptedCooperation = 2,
-        /// <summary>拒绝合作（可重新选择）</summary>
+        /// <summary>拒绝合作，可重选</summary>
         DeclinedCooperation = 3,
-        /// <summary>选择战斗（永久战斗）</summary>
+        /// <summary>永久开战</summary>
         ChoseToFight = 4
     }
 
@@ -140,13 +137,10 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
     public sealed class HimayoStoryData : DataModule
     {
         public bool FirstMet;
-        /// <summary>初遇对话播完（FirstMetHimayo OnCompleted）；试炼委托以此为门禁</summary>
+        /// <summary>初遇对话播完，试炼委托门禁</summary>
         public bool PostFirstMetIsComplete;
         public bool ToriiSwordTaken;
-        /// <summary>
-        /// 试炼解锁硬性倒计时剩余帧：0=未武装，&gt;0=倒数中。
-        /// 拔刀后武装；叙事忙碌时暂停；到期强制视为初遇完成，防整条线卡死
-        /// </summary>
+        /// <summary>试炼解锁保底剩余帧，0=未武装；拔刀武装，叙事忙暂停，到期强制初遇完成</summary>
         public int TrialUnlockSafetyTicks;
     }
 

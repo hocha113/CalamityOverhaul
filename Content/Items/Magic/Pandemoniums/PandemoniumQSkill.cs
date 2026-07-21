@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    /// <summary>Q技能硫磺火天罚，鼠标周围大范围火柱</summary>
+    /// <summary>Q 硫磺火天罚，鼠标周围火柱</summary>
     internal class PandemoniumQSkill : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -17,13 +17,11 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private ref float Phase => ref Projectile.ai[0];
         private ref float Timer => ref Projectile.ai[1];
 
-        //技能参数
         private Vector2 targetCenter;
         private const float SkillRadius = 600f;
         private const int PillarCount = 20;
         private const int Duration = 180;
 
-        //视觉效果
         private List<PillarSpawnData> pillarSpawnQueue = new();
         private List<RuneRingData> runeRings = new();
         private float warningIntensity = 0f;
@@ -64,13 +62,11 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         public override void AI() {
             Timer++;
 
-            //初始化
             if (Timer == 1) {
                 targetCenter = Main.MouseWorld;
                 Projectile.Center = targetCenter;
                 InitializeSkill();
 
-                //超必杀启动音效
                 SoundEngine.PlaySound(SoundID.DD2_BetsyScream with {
                     Volume = 1.5f,
                     Pitch = -0.6f
@@ -82,7 +78,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 }, targetCenter);
             }
 
-            //阶段0：预警阶段 (0-60帧)
+            //预警 0-60
             if (Phase == 0) {
                 WarningPhase();
                 if (Timer >= 60) {
@@ -90,28 +86,24 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     Timer = 0;
                 }
             }
-            //阶段1：火柱降临 (60-150帧)
+            //火柱 60-150
             else if (Phase == 1) {
                 PillarPhase();
                 if (Timer >= 90) {
                     Phase = 2;
                 }
             }
-            //阶段2：余波 (150-180帧)
             else {
                 AftermathPhase();
             }
 
-            //生成火柱弹幕
             SpawnPillars();
 
-            //超强照明
             float lightIntensity = 3f + warningIntensity * 2f;
             Lighting.AddLight(targetCenter, 2.5f * lightIntensity, 0.8f * lightIntensity, 0.4f * lightIntensity);
         }
 
         private void InitializeSkill() {
-            //初始化火柱生成队列
             for (int i = 0; i < PillarCount; i++) {
                 float angle = MathHelper.TwoPi * i / PillarCount + Main.rand.NextFloat(-0.2f, 0.2f);
                 float distance = Main.rand.NextFloat(SkillRadius * 0.3f, SkillRadius);
@@ -124,7 +116,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 });
             }
 
-            //初始化符文环
             for (int i = 0; i < 3; i++) {
                 runeRings.Add(new RuneRingData {
                     Position = targetCenter,
@@ -138,15 +129,12 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         private void WarningPhase() {
-            //预警强度脉冲
             warningIntensity = (float)Math.Sin(Timer * 0.2f) * 0.5f + 0.5f;
 
-            //符文环淡入并旋转
             foreach (var ring in runeRings) {
                 ring.Alpha = MathHelper.Lerp(ring.Alpha, 1f, 0.05f);
                 ring.Rotation += 0.02f;
 
-                //火焰帧更新
                 ring.FireFrameCounter += 0.5f;
                 if (ring.FireFrameCounter >= 1f) {
                     ring.FireFrameCounter = 0;
@@ -154,12 +142,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 }
             }
 
-            //预警粒子
             if (Main.rand.NextBool(2)) {
                 SpawnWarningParticles();
             }
 
-            //预警音效
             if (Timer % 20 == 0) {
                 SoundEngine.PlaySound(SoundID.DD2_BetsyFireballImpact with {
                     Volume = 0.4f + warningIntensity * 0.3f,
@@ -169,7 +155,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         private void PillarPhase() {
-            //符文环加速旋转
             foreach (var ring in runeRings) {
                 ring.Rotation += 0.05f;
                 ring.FireFrameCounter += 0.6f;
@@ -179,7 +164,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 }
             }
 
-            //持续火焰音效
             if (Timer % 10 == 0) {
                 SoundEngine.PlaySound(SoundID.Item74 with {
                     Volume = 0.8f,
@@ -189,12 +173,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         private void AftermathPhase() {
-            //符文环淡出
             foreach (var ring in runeRings) {
                 ring.Alpha *= 0.95f;
                 ring.Rotation += 0.03f;
 
-                //更新火焰帧
                 ring.FireFrameCounter += 0.4f;
                 if (ring.FireFrameCounter >= 1f) {
                     ring.FireFrameCounter = 0;
@@ -208,12 +190,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private void SpawnPillars() {
             if (Main.myPlayer != Projectile.owner) return;
 
-            //遍历生成队列
             for (int i = pillarSpawnQueue.Count - 1; i >= 0; i--) {
                 var data = pillarSpawnQueue[i];
 
                 if (!data.Spawned && Projectile.timeLeft <= (Duration - data.SpawnTime)) {
-                    //生成火柱弹幕
                     Projectile.NewProjectile(
                         Projectile.GetSource_FromThis(),
                         data.Position,
@@ -249,7 +229,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         public override void OnKill(int timeLeft) {
-            //终结爆发
             for (int i = 0; i < 100; i++) {
                 float angle = MathHelper.TwoPi * i / 100f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(10f, 20f);
@@ -269,12 +248,10 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
 
-            //绘制预警区域
             if (Phase == 0) {
                 DrawWarningArea(sb);
             }
 
-            //绘制符文环
             DrawRuneRings(sb);
 
             return false;
@@ -286,7 +263,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Vector2 screenCenter = targetCenter - Main.screenPosition;
             float pulse = (float)Math.Sin(Timer * 0.3f) * 0.4f + 0.6f;
 
-            //红色预警光晕
             for (int i = 0; i < 4; i++) {
                 float scale = (SkillRadius / GlowAsset.Value.Width) * (2f + i * 0.3f);
                 float alpha = warningIntensity * (0.3f - i * 0.06f) * pulse;

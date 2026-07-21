@@ -21,7 +21,7 @@ namespace CalamityOverhaul
     /// <summary>Calamity Mod 内部内容反射访问</summary>
     internal static class CWRRef
     {
-        /// <summary>是否安装 CalamityMod，不校验版本；成员级空值防护，勿用版本匹配一刀切</summary>
+        /// <summary>已装 CalamityMod(不校版本)；成员空值防护</summary>
         public static bool Has {
             get {
                 _has ??= ModLoader.TryGetMod("CalamityMod", out _);
@@ -32,7 +32,7 @@ namespace CalamityOverhaul
 
         private static Type DownedBossSystemType;
 
-        #region 反射缓存：Calamity 静态状态
+        #region 反射缓存-Calamity 静态状态
         //CalamityWorld
         private static FieldInfo calWorld_death_Field;
         private static FieldInfo calWorld_revenge_Field;
@@ -51,14 +51,14 @@ namespace CalamityOverhaul
         private static MethodInfo calNPC_SetNewBossJustDowned_Method;
         //ArsenalTierGatedRecipe
         private static MethodInfo arsenalRecipe_ConstructCondition_Method;
-        //BalancingConstants.UniversalStealthStrikeDamageFactor，Hook 实时读 double
+        //BalancingConstants.UniversalStealthStrikeDamageFactor，Hook 读 double
         private static FieldInfo balancing_StealthFactor_Field;
         //DamageClasses
         private static DamageClass trueMeleeDamageClass;
         private static DamageClass trueMeleeNoSpeedDamageClass;
         #endregion
 
-        #region 反射缓存：Calamity ModNPC 类型与字段
+        #region 反射缓存-Calamity ModNPC
         //SupremeCalamitas
         private static Type supCalType;
         private static FieldInfo supCal_giveUpCounter_Field; //giveUpCounter
@@ -67,15 +67,15 @@ namespace CalamityOverhaul
         private static MemberInfo draedon_DefeatTimer_M;   //DefeatTimer
         #endregion
 
-        #region 反射缓存：Calamity 全局内容模板
-        //ModContent.TryFind 模板，供 GetModPlayer / TryGetGlobal* 使用
+        #region 反射缓存-Calamity 全局模板
+        //ModContent.TryFind 模板，供 GetModPlayer/TryGetGlobal*
         private static ModPlayer calPlayerTemplate;           //CalamityPlayer
         private static GlobalItem calGlobalItemTemplate;      //CalamityGlobalItem
         private static GlobalNPC calGlobalNPCTemplate;        //CalamityGlobalNPC
         private static GlobalProjectile calGlobalProjectileTemplate; //CalamityGlobalProjectile
         #endregion
 
-        #region 反射缓存：CalamityPlayer / CalamityGlobalItem / CalamityGlobalNPC / CalamityGlobalProjectile 成员
+        #region 反射缓存-CalPlayer/Global 成员
         //CalamityPlayer
         private static MemberInfo calPlayer_bladeArmEnchant_M;
         private static MemberInfo calPlayer_adrenalineModeActive_M;
@@ -113,7 +113,7 @@ namespace CalamityOverhaul
         private static MemberInfo calProj_conditionalHomingRange_M;
         #endregion
 
-        #region 反射缓存：灾厄附魔（炼铸）系统
+        #region 反射缓存-炼铸附魔
         //EnchantmentManager (CalamitasEnchants)
         private static MethodInfo enchantManager_GetValidEnchantments_Method; //GetValidEnchantmentsForItem
         private static MemberInfo enchantManager_ClearEnchantment_M;
@@ -125,7 +125,7 @@ namespace CalamityOverhaul
         private static MemberInfo enchant_CreationEffect_M;
         #endregion
 
-        #region 反射缓存：BossHealthBarManager
+        #region 反射缓存-BossHealthBarManager
         //BossHealthBarManager / BossHPUI
         private static MemberInfo bossBar_Bars_M;               //Bars
         private static MethodInfo bossHPUI_Draw_Method;         //BossHPUI.Draw
@@ -617,169 +617,103 @@ namespace CalamityOverhaul
         private static PropertyInfo downedBossRushProp;
         private static PropertyInfo downedThanatosProp;
 
-        /// <summary>
-        /// 荒漠灾虫
-        /// </summary>
+        /// <summary>荒漠灾虫</summary>
         public static bool GetDownedDesertScourge() => GetDownedProp(downedDesertScourgeProp);
 
-        /// <summary>
-        /// 巨像蛤
-        /// </summary>
+        /// <summary>巨像蛤</summary>
         public static bool GetDownedCLAM() => GetDownedProp(downedCLAMProp);
 
-        /// <summary>
-        /// 蘑菇蟹
-        /// </summary>
+        /// <summary>蘑菇蟹</summary>
         public static bool GetDownedCrabulon() => GetDownedProp(downedCrabulonProp);
 
-        /// <summary>
-        /// 腐巢意志
-        /// </summary>
+        /// <summary>腐巢意志</summary>
         public static bool GetDownedHiveMind() => GetDownedProp(downedHiveMindProp);
 
-        /// <summary>
-        /// 血肉宿主
-        /// </summary>
+        /// <summary>血肉宿主</summary>
         public static bool GetDownedPerforator() => GetDownedProp(downedPerforatorProp);
 
-        /// <summary>
-        /// 史莱姆之神
-        /// </summary>
+        /// <summary>史莱姆之神</summary>
         public static bool GetDownedSlimeGod() => GetDownedProp(downedSlimeGodProp);
 
-        /// <summary>
-        /// 极地冰灵
-        /// </summary>
+        /// <summary>极地冰灵</summary>
         public static bool GetDownedCryogen() => GetDownedProp(downedCryogenProp);
 
-        /// <summary>
-        /// 硫磺火元素
-        /// </summary>
+        /// <summary>硫磺火元素</summary>
         public static bool GetDownedBrimstoneElemental() => GetDownedProp(downedBrimstoneElementalProp);
 
-        /// <summary>
-        /// 渊海灾虫
-        /// </summary>
+        /// <summary>渊海灾虫</summary>
         public static bool GetDownedAquaticScourge() => GetDownedProp(downedAquaticScourgeProp);
 
-        /// <summary>
-        /// 辐射之主
-        /// </summary>
+        /// <summary>辐射之主</summary>
         public static bool GetDownedCragmawMire() => GetDownedProp(downedCragmawMireProp);
 
-        /// <summary>
-        /// 灾厄之影
-        /// </summary>
+        /// <summary>灾厄之影</summary>
         public static bool GetDownedCalamitasClone() => GetDownedProp(downedCalamitasCloneProp);
 
-        /// <summary>
-        /// 沙漠巨鲨
-        /// </summary>
+        /// <summary>沙漠巨鲨</summary>
         public static bool GetDownedGSS() => GetDownedProp(downedGSSProp);
 
-        /// <summary>
-        /// 利维坦
-        /// </summary>
+        /// <summary>利维坦</summary>
         public static bool GetDownedLeviathan() => GetDownedProp(downedLeviathanProp);
 
-        /// <summary>
-        /// 白金星舰
-        /// </summary>
+        /// <summary>白金星舰</summary>
         public static bool GetDownedAstrumAureus() => GetDownedProp(downedAstrumAureusProp);
 
-        /// <summary>
-        /// 瘟疫使者
-        /// </summary>
+        /// <summary>瘟疫使者</summary>
         public static bool GetDownedPlaguebringer() => GetDownedProp(downedPlaguebringerProp);
 
-        /// <summary>
-        /// 毁灭魔像
-        /// </summary>
+        /// <summary>毁灭魔像</summary>
         public static bool GetDownedRavager() => GetDownedProp(downedRavagerProp);
 
-        /// <summary>
-        /// 星神游龙
-        /// </summary>
+        /// <summary>星神游龙</summary>
         public static bool GetDownedAstrumDeus() => GetDownedProp(downedAstrumDeusProp);
 
-        /// <summary>
-        /// 亵渎使徒
-        /// </summary>
+        /// <summary>亵渎使徒</summary>
         public static bool GetDownedGuardians() => GetDownedProp(downedGuardiansProp);
 
-        /// <summary>
-        /// 痴愚金龙
-        /// </summary>
+        /// <summary>痴愚金龙</summary>
         public static bool GetDownedDragonfolly() => GetDownedProp(downedDragonfollyProp);
 
-        /// <summary>
-        /// 亵渎天神
-        /// </summary>
+        /// <summary>亵渎天神</summary>
         public static bool GetDownedProvidence() => GetDownedProp(downedProvidenceProp);
 
-        /// <summary>
-        /// 无尽虚空
-        /// </summary>
+        /// <summary>无尽虚空</summary>
         public static bool GetDownedCeaselessVoid() => GetDownedProp(downedCeaselessVoidProp);
 
-        /// <summary>
-        /// 风暴编织者
-        /// </summary>
+        /// <summary>风暴编织者</summary>
         public static bool GetDownedStormWeaver() => GetDownedProp(downedStormWeaverProp);
 
-        /// <summary>
-        /// 西格纳斯
-        /// </summary>
+        /// <summary>西格纳斯</summary>
         public static bool GetDownedSignus() => GetDownedProp(downedSignusProp);
 
-        /// <summary>
-        /// 噬魂幽花
-        /// </summary>
+        /// <summary>噬魂幽花</summary>
         public static bool GetDownedPolterghast() => GetDownedProp(downedPolterghastProp);
 
-        /// <summary>
-        /// 酸雨二
-        /// </summary>
+        /// <summary>酸雨二</summary>
         public static bool GetDownedMauler() => GetDownedProp(downedMaulerProp);
 
-        /// <summary>
-        /// 生化恐惧
-        /// </summary>
+        /// <summary>生化恐惧</summary>
         public static bool GetDownedNuclearTerror() => GetDownedProp(downedNuclearTerrorProp);
 
-        /// <summary>
-        /// 老核弹
-        /// </summary>
+        /// <summary>老核弹</summary>
         public static bool GetDownedBoomerDuke() => GetDownedProp(downedBoomerDukeProp);
 
-        /// <summary>
-        /// 神明吞噬者
-        /// </summary>
+        /// <summary>神明吞噬者</summary>
         public static bool GetDownedDoG() => GetDownedProp(downedDoGProp);
 
-        /// <summary>
-        /// 丛林龙
-        /// </summary>
+        /// <summary>丛林龙</summary>
         public static bool GetDownedYharon() => GetDownedProp(downedYharonProp);
 
-        /// <summary>
-        /// 星流巨械
-        /// </summary>
+        /// <summary>星流巨械</summary>
         public static bool GetDownedExoMechs() => GetDownedProp(downedExoMechsProp);
 
-        /// <summary>
-        /// 至尊灾厄
-        /// </summary>
+        /// <summary>至尊灾厄</summary>
         public static bool GetDownedCalamitas() => GetDownedProp(downedCalamitasProp);
 
-        /// <summary>
-        /// 始源妖龙
-        /// </summary>
+        /// <summary>始源妖龙</summary>
         public static bool GetDownedPrimordialWyrm() => GetDownedProp(downedPrimordialWyrmProp);
 
-        /// <summary>
-        /// 终焉之战
-        /// </summary>
+        /// <summary>终焉之战</summary>
         public static bool GetDownedBossRush() => GetDownedProp(downedBossRushProp);
 
         public static void SetDownedPrimordialWyrm(bool value) => SetDownedProp(downedPrimordialWyrmProp, value);
@@ -832,9 +766,7 @@ namespace CalamityOverhaul
             return (bool)GetMember(calPlayer_adrenalineModeActive_M, cp);
         }
 
-        /// <summary>
-        /// 抓取玩家的怒气与肾上腺素相关字段快照，仅在Calamity安装时生效
-        /// </summary>
+        /// <summary>怒气/肾上腺素字段快照(需 Calamity)</summary>
         public static void SnapshotRippers(Player player, ref float rage, ref float adrenaline
             , ref int rageGainCooldown, ref int rageCombatFrames, ref int adrenalinePauseTimer) {
             ModPlayer cp = GetCalPlayer(player);
@@ -848,9 +780,7 @@ namespace CalamityOverhaul
             if (calPlayer_adrenalinePauseTimer_M != null) adrenalinePauseTimer = (int)GetMember(calPlayer_adrenalinePauseTimer_M, cp);
         }
 
-        /// <summary>
-        /// 将怒气与肾上腺素相关字段还原为快照值，仅在Calamity安装时生效
-        /// </summary>
+        /// <summary>还原怒气/肾上腺素快照(需 Calamity)</summary>
         public static void RestoreRippers(Player player, float rage, float adrenaline
             , int rageGainCooldown, int rageCombatFrames, int adrenalinePauseTimer) {
             ModPlayer cp = GetCalPlayer(player);
@@ -900,7 +830,7 @@ namespace CalamityOverhaul
             if (!Has) {
                 return;
             }
-            //写入 CalamityWorld.DraedonMechToSummon（枚举字段，使用 Enum.ToObject 转换）
+            //写 CalamityWorld.DraedonMechToSummon(Enum.ToObject)
             if (calWorld_DraedonMechToSummon_Field != null) {
                 try {
                     calWorld_DraedonMechToSummon_Field.SetValue(null
@@ -911,7 +841,7 @@ namespace CalamityOverhaul
                 }
             }
             if (VaultUtils.isClient) {//客户端发送网络数据到服务器
-                //通过反射直接调用 ExoMechSelectionPacket.Send()
+                //反射 ExoMechSelectionPacket.Send
                 var calMod = CWRMod.Instance.calamity;
                 var packetType = GetModType(calMod, "CalamityMod.Packets.ExoMechSelectionPacket");
                 var sendMethod = GetMethod(packetType, "Send", PublicStaticFlags);
@@ -921,7 +851,7 @@ namespace CalamityOverhaul
                 sendMethod.Invoke(null, [/* toClient */ -1, /* ignoreClient */ -1]);
                 return;
             }
-            //枚举值与灾厄 ExoMech 一致：1=Destroyer(塔纳托斯) 2=Prime(阿瑞斯) 3=Twins(双子)
+            //ExoMech 枚举 1=Thanatos 2=Ares 3=Twins
             switch (exoType) {
                 case 1:
                     Vector2 thanatosSpawnPosition = player.Center + Vector2.UnitY * 2100f;
@@ -944,9 +874,7 @@ namespace CalamityOverhaul
             }
         }
 
-        /// <summary>
-        /// 在指定世界坐标生成Boss并同步，行为等价于灾厄的SpawnBossBetter，独立以避免类型引用
-        /// </summary>
+        /// <summary>生成 Boss 并同步，等价 SpawnBossBetter(无类型引用)</summary>
         private static NPC SpawnBoss(Vector2 spawnPos, int npcType) {
             if (npcType <= NPCID.None || VaultUtils.isClient) {
                 return null;
@@ -1040,7 +968,7 @@ namespace CalamityOverhaul
 
         public static bool GetDownedThanatos() => GetDownedProp(downedThanatosProp);
 
-        //将所有灾厄Boss击杀标志批量写入emit回调（key为短键名，value为当前标志值）
+        //批量 emit 灾厄 Boss 击杀标志(短键→bool)
         internal static void BulkCopyCalamityFlags(Action<string, bool> emit) {
             if (DownedBossSystemType is null) return;
             emit("ds", GetDownedProp(downedDesertScourgeProp));
@@ -1079,7 +1007,7 @@ namespace CalamityOverhaul
             emit("than", GetDownedProp(downedThanatosProp));
         }
 
-        //将快照中值为true的灾厄Boss标志以OR方式写回（只补true，不抹除已有的true）
+        //快照 true 以 OR 写回(只补不抹)
         internal static void BulkRestoreCalamityFlagsOr(Func<string, bool> read) {
             if (DownedBossSystemType is null) return;
             if (read("ds")) SetDownedProp(downedDesertScourgeProp, true);
@@ -1305,28 +1233,28 @@ namespace CalamityOverhaul
                     LogReflectionException(nameof(ConstructRecipeCondition), ex);
                 }
             }
-            //灾厄缺失或反射失败时退化为恒真条件，保证配方注册不会因null条件而崩溃
+            //反射失败则恒真，配方不因 null 崩
             condition = () => true;
             return LocalizedText.Empty;
         }
 
         #region 炼铸系统包装器
-        /// CalamityMod Enchantment 安全包装
+        /// 灾厄附魔安全包装
         public struct EnchantmentWrapper
         {
-            /// 附魔名
+            /// 名
             public LocalizedText Name { get; set; }
 
-            /// 附魔描述
+            /// 描述
             public LocalizedText Description { get; set; }
 
-            /// 图标路径
+            /// 图标
             public string IconTexturePath { get; set; }
 
-            /// 内部比较 ID
+            /// 比较 ID
             internal int InternalId { get; set; }
 
-            /// 是否清除附魔项
+            /// 清除项
             public bool IsClearEnchantment { get; set; }
 
             public override bool Equals(object obj) {
@@ -1357,7 +1285,7 @@ namespace CalamityOverhaul
             }
         }
 
-        /// 获取物品有效附魔列表
+        /// 物品有效附魔列表
         public static List<EnchantmentWrapper> GetValidEnchantmentsForItem(Item item) {
             var result = new List<EnchantmentWrapper>();
             if (item == null || item.IsAir) {
@@ -1385,7 +1313,7 @@ namespace CalamityOverhaul
             return result;
         }
 
-        /// 应用附魔到物品
+        /// 应用附魔
         public static void ApplyEnchantmentToItem(Item item, EnchantmentWrapper wrapper, Action<Item> creationEffect = null) {
             if (item == null || item.IsAir || calItem_AppliedEnchantment_M == null) {
                 return;
@@ -1406,7 +1334,7 @@ namespace CalamityOverhaul
                 return;
             }
 
-            //按 Name+Description 回匹配 Enchantment
+            //Name+Description 回匹配
             IEnumerable allEnchantments = GetRawEnchantmentsForItem(item);
             if (allEnchantments == null || enchant_Name_M == null || enchant_Description_M == null) {
                 return;
@@ -1427,7 +1355,7 @@ namespace CalamityOverhaul
             }
 
             try {
-                //装箱 Enchantment 赋给 AppliedEnchantment? 成员
+                //装箱赋 AppliedEnchantment?
                 SetMember(calItem_AppliedEnchantment_M, cgi, targetEnchant);
                 creationEffect?.Invoke(item);
                 if (enchant_CreationEffect_M != null
@@ -1460,7 +1388,7 @@ namespace CalamityOverhaul
                 return;
             }
             try {
-                //无扩展接口，Hook Draw 让村正充能 UI 改血条位置
+                //Hook Draw，村正充能 UI 改血条位
                 Type bossHealthBarManagerType = GetModType(mod, "CalamityMod.UI.BossHealthBarManager");
                 BossHealthBarManager_Draw_Method = GetMethod(bossHealthBarManagerType, "Draw", PublicInstanceFlags);
                 Type bossHPUIType = GetModType(mod, "CalamityMod.UI.BossHealthBarManager+BossHPUI");
@@ -1476,14 +1404,14 @@ namespace CalamityOverhaul
                     VaultHook.Add(BossHealthBarManager_Draw_Method, On_BossHealthBarManager_Draw_Hook);
                 }
 
-                //Hook BroadcastLocalizedText → ModifyDisplayText
+                //Hook BroadcastLocalizedText→ModifyDisplayText
                 Type calUtilsType = GetModType(mod, "CalamityMod.CalamityUtils");
                 MethodInfo methodInfo = GetMethod(calUtilsType, "BroadcastLocalizedText", PublicStaticFlags);
                 if (methodInfo != null) {
                     VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
                 }
 
-                //Luminance 同名 BroadcastLocalizedText 也需 Hook
+                //Luminance 同名方法一并 Hook
                 if (CWRMod.Instance.luminance != null) {
                     Type utType = FindModType(CWRMod.Instance.luminance, "Utilities");
                     methodInfo = GetMethod(utType, "BroadcastLocalizedText", PublicStaticFlags);
@@ -1520,7 +1448,7 @@ namespace CalamityOverhaul
         }
 
         private static void On_BossHealthBarManager_Draw_Hook(On_BossHealthBarManager_Draw_Dalegate orig, object obj, SpriteBatch spriteBatch, IBigProgressBar currentBar, BigProgressBarInfo info) {
-            //Bars/BossHPUI 为 public，迭代自定义绘制
+            //迭代 Bars 自定义绘制
             if (GetMember(bossBar_Bars_M, null) is not IEnumerable bars || bossHPUI_Draw_Method == null) {
                 orig.Invoke(obj, spriteBatch, currentBar, info);
                 return;
@@ -1568,11 +1496,11 @@ namespace CalamityOverhaul
                 Item item = player.GetItem();
                 int realUseTime = Math.Max(item.useTime, item.useAnimation);
                 double useTimeFactor = 0.75 + 0.75 * Math.Log(realUseTime + 2D, 4D);
-                //Unsunghero 固定 4 秒潜行 generation
+                //Unsunghero 固定 4s 潜行 generation
                 double stealthGenFactor = Math.Max(Math.Pow(4f, 2D / 3D), 1.5);
 
                 float rogueStealth = (float)GetMember(calPlayer_rogueStealth_M, calamityPlayer);
-                //double 可变静态，Convert 兼容类型变动
+                //double 可变静态，Convert 兼容类型
                 double stealthStrikeFactor = Convert.ToDouble(balancing_StealthFactor_Field.GetValue(null));
                 double stealthAddedDamage = rogueStealth * stealthStrikeFactor * useTimeFactor * stealthGenFactor;
                 SetMember(calPlayer_stealthDamage_M, calamityPlayer

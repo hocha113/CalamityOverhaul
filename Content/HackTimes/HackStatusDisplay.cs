@@ -28,13 +28,10 @@ namespace CalamityOverhaul.Content.HackTimes
         private static readonly List<HackQueueEntry> tileQueueBuf = [];
         private static readonly List<HackQueueEntry> turretQueueBuf = [];
         private static readonly List<HackQueueEntry> signalTowerQueueBuf = [];
-        //收集需要绘制的NPC索引集合（避免重复）
         private static readonly HashSet<int> npcSet = [];
-        //收集需要绘制的物块坐标集合（避免重复，用long编码x|y）
+        //物块坐标 long 编码 x|y
         private static readonly HashSet<long> tileSet = [];
-        //收集需要绘制的炮台集合（避免重复）
         private static readonly HashSet<IHackableTurret> turretSet = [];
-        //收集需要绘制的信号塔集合（避免重复）
         private static readonly HashSet<IHackableSignalTower> signalTowerSet = [];
 
         public static void Draw(SpriteBatch sb) {

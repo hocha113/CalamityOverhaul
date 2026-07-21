@@ -2,13 +2,9 @@
 {
     internal interface IWorldInfo
     {
-        /// <summary>
-        /// 最好只操作静态数据
-        /// </summary>
+        /// <summary>宜只动静态</summary>
         public void OnWorldLoad() { }
-        /// <summary>
-        /// 最好只操作静态数据
-        /// </summary>
+        /// <summary>宜只动静态</summary>
         public void OnWorldUnLoad() { }
     }
 }

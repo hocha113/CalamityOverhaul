@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>脉冲电容：蓄力周期从球体释微型脉冲爆破</summary>
+    /// <summary>脉冲电容，蓄力周期释微型脉冲爆破</summary>
     internal sealed class CapacitorPulseModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             _timer = 0;
 
             if (Main.netMode != Terraria.ID.NetmodeID.Server) {
-                //球面快速喷发的电容粒子环
+                //球面粒子环
                 Vector2 center = orb.Projectile.Center;
                 int count = 14;
                 for (int i = 0; i < count; i++) {

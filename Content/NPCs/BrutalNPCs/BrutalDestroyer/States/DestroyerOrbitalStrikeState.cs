@@ -10,13 +10,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>低血量大招「轨道绞杀」：撤离→交叉俯冲2趟→垂直终结贯穿→回场散热；普攻俯冲见 DestroyerDiveStrikeState；全难度完整演出，Death 只调数值</summary>
+    /// <summary>轨道绞杀大招，撤离→交叉俯冲→终结贯穿→回场；普攻见DiveStrike</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.OrbitalStrike, typeof(DestroyerStateContext))]
     internal class DestroyerOrbitalStrikeState : DestroyerStateBase
     {
         public override string StateName => "OrbitalStrike";
         public override DestroyerStateIndex StateIndex => DestroyerStateIndex.OrbitalStrike;
-        /// <summary>大招自带高空/地下走位，回归瞬移阀不介入</summary>
+        /// <summary>自带高空/地下走位，关远距瞬移阀</summary>
         public override bool AllowFarSnap => false;
 
         #region 演出节奏常量
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         private float DiveSpeed(DestroyerStateContext ctx)
             => 82f + (ctx.IsDeathMode ? 10f : 0f);
 
-        //以下字段均由 Timer 与同步的 npc.ai[3] 确定性推导，各端独立计算
+        //字段由Timer+ai[3]确定性推导
         private Vector2 lineCenter;
         private Vector2 diveDir;
         private bool passBoomFired;
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             impactFired = false;
             emergeFired = false;
 
-            //服务端决定首趟俯冲方位并经 ai[3] 同步，后续趟次由此确定性推导
+            //服务端首趟方位进ai[3]
             if (!VaultUtils.isClient) {
                 context.Npc.ai[3] = Main.rand.Next(2);
                 context.Npc.netUpdate = true;
@@ -78,37 +78,37 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             Timer++;
 
-            //幕一：蓄能撤离
+            //幕一 蓄能撤离
             if (Timer <= AscendEnd) {
                 UpdateAscend(context);
                 return null;
             }
 
-            //幕一后段：高空静默蓄势
+            //幕一后 高空静默
             if (Timer <= SilenceEnd) {
                 UpdateSilence(context);
                 return null;
             }
 
-            //幕二：交叉俯冲
+            //幕二 交叉俯冲
             if (Timer <= divesEnd) {
                 UpdateCrossDives(context, Timer - SilenceEnd - 1);
                 return null;
             }
 
-            //幕三：终结贯穿，垂直预警
+            //幕三 终结预警
             if (Timer <= finalDiveStart) {
                 UpdateFinalTelegraph(context, Timer - divesEnd);
                 return null;
             }
 
-            //幕三：垂直俯冲与冲击
+            //幕三 垂直俯冲
             if (Timer <= returnStart) {
                 UpdateFinalDive(context);
                 return null;
             }
 
-            //破土回场：散热惩罚窗口
+            //破土回场散热窗
             if (Timer <= returnStart + ReturnTime) {
                 UpdateReturn(context, (Timer - returnStart) / (float)ReturnTime);
                 return null;
@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             return new DestroyerPatrolState();
         }
 
-        #region 幕一：撤离与静默
+        #region 幕一 撤离与静默
 
         private void UpdateAscend(DestroyerStateContext context) {
             NPC npc = context.Npc;
@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             context.OrbitalVisual = 1;
             npc.damage = 0;
 
-            //撤离不伤人，目标点在玩家正上方极高处，速度随充能急剧攀升
+            //撤离不伤，上方极高攀速
             float speed = MathHelper.Lerp(16f, 64f, progress * progress);
             SetMovement(context, player.Center + new Vector2(0, -2400f), speed, 1.2f);
             context.AccelRate = 0.09f;
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 DestroyerHeatWakeProj.EnsureForHead(npc);
             }
 
-            //全身充能波循环加速：能量一圈圈涌向头部
+            //充能波循环涌向头
             float wavePhase = 1f - (Timer * (0.012f + progress * 0.05f)) % 1f;
             DestroyerChargeWave.Push(npc.whoAmI, wavePhase, 0.28f, 0.4f + 0.6f * progress);
 
@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             //保持在极高空盘旋待命
             SetMovement(context, player.Center + new Vector2(0, -2600f), 30f, 0.8f);
 
-            //远处轰鸣 + 持续低强度震动，制造"暴风雨前"的压迫感
+            //远处轰鸣+低压震动
             if (Timer == SilenceEnd - 30) {
                 SoundEngine.PlaySound(SoundID.Thunder with { Volume = 0.8f, Pitch = -0.7f }, player.Center);
             }
@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         #endregion
 
-        #region 幕二：交叉俯冲
+        #region 幕二 交叉俯冲
 
         private void UpdateCrossDives(DestroyerStateContext context, int diveTimer) {
             NPC npc = context.Npc;
@@ -182,7 +182,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             int passIndex = Math.Min(diveTimer / PassLength, PassCount(context) - 1);
             int t = diveTimer - passIndex * PassLength;
 
-            //新一趟开始：确定本趟贯穿线（方位由同步的 ai[3] 推导，左右交替）
+            //新趟贯穿线，ai[3]左右交替
             if (passIndex != currentPass) {
                 currentPass = passIndex;
                 passBoomFired = false;
@@ -192,7 +192,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 diveDir = Vector2.UnitY.RotatedBy(angleFromVertical);
                 lineCenter = player.Center + player.velocity * 24f;
 
-                //预警线（服务端生成同步弹幕，所有玩家看到一致的警告）
+                //预警线，服务端生成
                 if (!VaultUtils.isClient) {
                     Projectile.NewProjectile(npc.GetSource_FromAI(),
                         lineCenter - diveDir * 2400f, diveDir,
@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 SoundEngine.PlaySound(SoundID.Item15 with { Pitch = -0.2f, Volume = 0.85f }, player.Center);
             }
 
-            //预警阶段：蠕虫仍在高空，等待线锁定
+            //预警高空待命
             if (t < TelegraphTime) {
                 context.SkipDefaultMovement = false;
                 context.OrbitalVisual = 1;
@@ -212,13 +212,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 return;
             }
 
-            //俯冲释放帧：瞬移到线外起点并全速贯入（轨迹与预警线一致，公平可躲）
+            //释放帧瞬移线外全速贯入
             if (t == TelegraphTime) {
                 npc.Center = lineCenter - diveDir * 2700f;
                 npc.velocity = diveDir * DiveSpeed(context);
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
-                //ForceRoar：防未播完Roar被IgnoreNew吞(同DiveStrike)
+                //ForceRoar，防IgnoreNew吞
                 SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.35f, Volume = 1f }, player.Center);
                 //俯冲瞬间天空闪雷
                 MachineEffect.TriggerSkyFlash(lineCenter, 1f);
@@ -227,7 +227,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 }
             }
 
-            //俯冲阶段：直线贯穿，接触伤害开启
+            //俯冲直线，开接触伤
             if (t <= TelegraphTime + DiveTime) {
                 context.SkipDefaultMovement = true;
                 context.OrbitalVisual = 2;
@@ -246,7 +246,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 return;
             }
 
-            //间隙：冲出屏幕后略微减速，准备下一趟
+            //间隙微减速
             context.SkipDefaultMovement = true;
             context.OrbitalVisual = 1;
             npc.damage = 0;
@@ -255,7 +255,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         #endregion
 
-        #region 幕三：终结贯穿
+        #region 幕三 终结贯穿
 
         private void UpdateFinalTelegraph(DestroyerStateContext context, int t) {
             NPC npc = context.Npc;
@@ -266,7 +266,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             npc.damage = 0;
             SetMovement(context, player.Center + new Vector2(0, -2800f), 34f, 0.9f);
 
-            //垂直警告光柱：横向跟随玩家，锁定窗口后定格
+            //垂直警告，跟X后定格
             if (t == 1) {
                 if (!VaultUtils.isClient) {
                     Projectile.NewProjectile(npc.GetSource_FromAI(),
@@ -292,7 +292,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             context.SkipDefaultMovement = true;
 
-            //俯冲起始：瞬移到锁定X的高空，垂直全速向下
+            //瞬移锁定X高空垂直下
             if (!finalDiveStarted) {
                 finalDiveStarted = true;
                 if (lockedX == 0f) {
@@ -303,9 +303,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 npc.velocity = Vector2.UnitY * (DiveSpeed(context) + 14f);
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
-                //ForceRoar：终结贯穿是全场最重的一声，绝不能被实例上限吞掉
+                //ForceRoar，终结声不可吞
                 SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.5f, Volume = 1.1f }, player.Center);
-                //终结贯穿释放：最强一道闪雷劈向冲击点
+                //终结闪雷
                 MachineEffect.TriggerSkyFlash(impactPoint, 1f);
                 if (!VaultUtils.isClient) {
                     DestroyerHeatWakeProj.EnsureForHead(npc);
@@ -316,7 +316,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             npc.damage = impactFired ? 0 : npc.defDamage;
             npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
 
-            //砸入大地：巨型冲击 + 碎屑喷泉 + 全身闪烁
+            //砸地冲击+碎屑
             if (!impactFired && npc.Center.Y >= impactPoint.Y) {
                 impactFired = true;
                 if (!VaultUtils.isClient) {
@@ -338,7 +338,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             NPC npc = context.Npc;
             Player player = context.Target;
 
-            //破土回场：散热冒烟的惩罚窗口，不开火、不造成接触伤害
+            //回场散热窗，无伤无弹
             context.SkipDefaultMovement = false;
             context.OrbitalVisual = 3;
             context.SlitherStrength = 0.6f;
@@ -348,7 +348,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             SetMovement(context, player.Center + new Vector2(side * 620f, -430f), 24f, 0.9f);
             context.AccelRate = 0.05f;
 
-            //破土瞬间：从地下回到玩家水平线以上时炸开一圈尘土
+            //破土尘圈
             if (!emergeFired && npc.Center.Y < player.Bottom.Y) {
                 emergeFired = true;
                 if (!VaultUtils.isClient) {

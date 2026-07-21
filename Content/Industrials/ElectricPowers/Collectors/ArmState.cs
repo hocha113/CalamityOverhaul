@@ -1,8 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 {
-    /// <summary>
-    /// 机械臂状态枚举
-    /// </summary>
+    /// <summary>收集臂状态</summary>
     internal enum ArmState : byte
     {
         Idle = 0,           //待机

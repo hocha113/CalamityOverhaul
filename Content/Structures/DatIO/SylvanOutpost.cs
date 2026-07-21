@@ -9,7 +9,6 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Structures.DatIO
 {
-    //护林者基地
     internal class SylvanOutpost : SaveStructure
     {
         public override string SavePath => Path.Combine(StructurePath, "SylvanOutpost_v1.nbt");
@@ -50,16 +49,13 @@ namespace CalamityOverhaul.Content.Structures.DatIO
             TagCache.Invalidate(SavePath);
         }
 
-        /// <summary>
-        /// 寻找森林环境下的地表位置，采用更激进的搜索策略
-        /// </summary>
         private static Point16 FindForestSurfacePosition(Point16 regionSize, int instanceIndex = 0) {
             int width = regionSize.X;
             int height = regionSize.Y;
             int minDistFromSpawn = 180 + WorldGen.GetWorldSize() * 60
                 + instanceIndex * 120;
 
-            //第一阶段：优先在理想距离内搜索森林
+            //阶段1 理想距森林
             int searchMinDist = Math.Max(minDistFromSpawn, 200) + instanceIndex * 150;
             int searchMaxDist = 600 + instanceIndex * 200;
             Point16 result = SearchInRange(width, height, searchMinDist, searchMaxDist, true);
@@ -67,25 +63,22 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                 return result;
             }
 
-            //第二阶段：扩大范围，放宽森林要求
+            //阶段2 放宽森林
             result = SearchInRange(width, height, Math.Max(minDistFromSpawn, 150), 900 + instanceIndex * 200, false);
             if (result != Point16.Zero) {
                 return result;
             }
 
-            //第三阶段：全地图扫描，只要是地表就行
+            //阶段3 全图地表
             result = FullSurfaceScan(width, height, minDistFromSpawn);
             return result;
         }
 
-        /// <summary>
-        /// 在指定范围内搜索合适位置
-        /// </summary>
         private static Point16 SearchInRange(int width, int height, int minDist, int maxDist, bool requireForest) {
             Point16 bestPos = Point16.Zero;
             int bestScore = -1;
 
-            //从出生点向两侧系统性搜索，步长更小以找到更好的位置
+            //自出生点两侧搜，小步长
             for (int dist = minDist; dist <= maxDist; dist += 15) {
                 for (int dir = -1; dir <= 1; dir += 2) {
                     int testX = Main.spawnTileX + dir * dist;
@@ -96,7 +89,7 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                         continue;
                     }
 
-                    //平坦度太低直接跳过，避免生成在山峰上
+                    //太平坦度不够则跳
                     if (flatnessScore < 30) {
                         continue;
                     }
@@ -104,17 +97,15 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                     int placeX = testX;
                     int placeY = surfaceY - height + 2;
 
-                    //基础边界检查
                     if (placeY < 50 || placeY + height > Main.worldSurface + 50) {
                         continue;
                     }
 
-                    //检查是否在恶劣环境
                     if (IsInBadBiome(placeX, placeY, width, height)) {
                         continue;
                     }
 
-                    //综合评分，平坦度权重很高
+                    //评分，平坦权重高
                     int baseScore = EvaluatePositionSimple(placeX, placeY, width, height, requireForest);
                     int score = baseScore + flatnessScore;//平坦度直接加到总分中
 
@@ -123,14 +114,13 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                         bestPos = new Point16(placeX, placeY);
                     }
 
-                    //分数够高直接返回，要求更高的分数以确保平坦
+                    //分够高直接返回
                     if (score >= 140) {
                         return bestPos;
                     }
                 }
             }
 
-            //只要找到了任何可用位置就返回
             if (bestScore >= 50) {
                 return bestPos;
             }
@@ -138,13 +128,9 @@ namespace CalamityOverhaul.Content.Structures.DatIO
             return Point16.Zero;
         }
 
-        /// <summary>
-        /// 全地图扫描寻找任意可用的地表位置
-        /// </summary>
         private static Point16 FullSurfaceScan(int width, int height, int minDistFromSpawn) {
-            //从世界中心向两侧扫描
             int centerX = Main.maxTilesX / 2;
-            int scanStep = 30;//更小的步长以找到更平坦的位置
+            int scanStep = 30;
 
             Point16 bestPos = Point16.Zero;
             int bestFlatness = -1;
@@ -156,7 +142,6 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                         continue;
                     }
 
-                    //检查是否离出生点太近
                     if (Math.Abs(testX - Main.spawnTileX) < minDistFromSpawn) {
                         continue;
                     }
@@ -171,16 +156,14 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                         continue;
                     }
 
-                    //最后阶段只排除最恶劣的环境
+                    //只排除最恶劣环境
                     if (IsInBadBiome(testX, placeY, width, height)) {
                         continue;
                     }
 
-                    //即使是全图扫描也要尽量选择平坦的位置
                     if (flatnessScore > bestFlatness) {
                         bestFlatness = flatnessScore;
                         bestPos = new Point16(testX, placeY);
-                        //找到足够平坦的位置就返回
                         if (flatnessScore >= 60) {
                             return bestPos;
                         }
@@ -191,15 +174,11 @@ namespace CalamityOverhaul.Content.Structures.DatIO
             return bestPos;
         }
 
-        /// <summary>
-        /// 寻找最佳地表Y坐标，会尝试找到相对平坦的区域并排除空岛
-        /// </summary>
         private static int FindBestSurfaceY(int startX, int width, out int flatnessScore) {
             flatnessScore = 0;
-            int[] surfaceHeights = new int[width / 4 + 1];//更密集的采样以准确评估平坦度
+            int[] surfaceHeights = new int[width / 4 + 1];
             int validCount = 0;
 
-            //采样多个点获取地表高度
             for (int i = 0; i < surfaceHeights.Length; i++) {
                 int checkX = startX + i * 4;
                 if (checkX >= Main.maxTilesX) {
@@ -219,13 +198,12 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                 return -1;
             }
 
-            //计算中位数作为基准高度
+            //中位数作基准高
             int[] sortedHeights = new int[validCount];
             Array.Copy(surfaceHeights, sortedHeights, validCount);
             Array.Sort(sortedHeights);
             int medianY = sortedHeights[validCount / 2];
 
-            //计算平坦度分数，统计高度差异
             int totalDeviation = 0;
             int maxDeviation = 0;
             for (int i = 0; i < validCount; i++) {
@@ -236,18 +214,16 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                 }
             }
 
-            //平均偏差和最大偏差都会影响平坦度评分
             float avgDeviation = (float)totalDeviation / validCount;
-            //平坦度分数：偏差越小分数越高，满分100
-            //平均偏差小于2格为非常平坦，大于8格为很不平坦
+            //平坦分，偏差小更高，满分100
+            //均偏<2很好，>8很差
             flatnessScore = Math.Max(0, 100 - (int)(avgDeviation * 12) - maxDeviation * 2);
 
-            //如果最大偏差超过12格，说明地形起伏太大，直接判定为不平坦
+            //最大偏>12直接不平坦
             if (maxDeviation > 12) {
                 flatnessScore = Math.Min(flatnessScore, 20);
             }
 
-            //验证这个高度是否是真正的地表而非空岛
             if (!IsValidGroundLevel(startX, medianY, width)) {
                 return -1;
             }
@@ -255,27 +231,20 @@ namespace CalamityOverhaul.Content.Structures.DatIO
             return medianY;
         }
 
-        /// <summary>
-        /// 重载版本，不需要平坦度分数时使用
-        /// </summary>
         private static int FindBestSurfaceY(int startX, int width) {
             return FindBestSurfaceY(startX, width, out _);
         }
 
-        /// <summary>
-        /// 验证指定高度是否为真正的地表而非空岛或高空建筑
-        /// </summary>
         private static bool IsValidGroundLevel(int startX, int surfaceY, int width) {
-            //如果高度明显高于世界地表线太多，很可能是空岛
+            //明显高于地表线→疑空岛
             if (surfaceY < Main.worldSurface * 0.35) {
                 return false;
             }
 
-            //检查地表下方是否有足够的连续实心地层
-            //真正的地表下方应该有大量连续的泥土石头，空岛下方则是空气
+            //下方需连续实心层
             int solidCount = 0;
             int airCount = 0;
-            int checkDepth = 40;//检查深度
+            int checkDepth = 40;
 
             for (int checkX = startX; checkX < startX + width; checkX += 12) {
                 if (checkX >= Main.maxTilesX) {
@@ -298,14 +267,13 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                 }
             }
 
-            //如果下方空气占比超过60%，判定为空岛
+            //下方空气>60%→空岛
             int total = solidCount + airCount;
             if (total > 0 && (float)airCount / total > 0.6f) {
                 return false;
             }
 
-            //额外检查：验证该位置下方在更深处是否能找到真正的地层
-            //检查是否存在连续的实心层
+            //深处再验实心层
             int consecutiveSolid = 0;
             int maxConsecutive = 0;
             int centerX = startX + width / 2;
@@ -326,12 +294,12 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                 }
             }
 
-            //真正的地表下方应该有至少15格连续实心层
+            //至少15格连续实心
             if (maxConsecutive < 15) {
                 return false;
             }
 
-            //检查是否是模组建筑方块(比如实验室镀板等)
+            //模组建筑方块？
             int modTileCount = 0;
             for (int checkX = startX; checkX < startX + width; checkX += 15) {
                 for (int dy = 0; dy < 10; dy++) {
@@ -342,11 +310,10 @@ namespace CalamityOverhaul.Content.Structures.DatIO
 
                     Tile tile = Framing.GetTileSafely(checkX, checkY);
                     if (tile.HasTile) {
-                        //原版方块ID上限约为700，超过的可能是模组方块
+                        //ID>700 疑模组方块
                         if (tile.TileType >= 700) {
                             modTileCount++;
                         }
-                        //云块和日盘等空岛特有方块
                         if (tile.TileType == TileID.Cloud || tile.TileType == TileID.RainCloud
                             || tile.TileType == TileID.SnowCloud || tile.TileType == TileID.Sunplate
                             || tile.TileType == TileID.LivingWood || tile.TileType == TileID.LeafBlock) {
@@ -356,7 +323,7 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                 }
             }
 
-            //如果模组方块占比过高，可能是模组建筑
+            //模组方块过多→模组建筑
             if (modTileCount > 5) {
                 return false;
             }
@@ -364,9 +331,6 @@ namespace CalamityOverhaul.Content.Structures.DatIO
             return true;
         }
 
-        /// <summary>
-        /// 检查是否在不适合的生物群系中
-        /// </summary>
         private static bool IsInBadBiome(int x, int y, int width, int height) {
             int badTileCount = 0;
             int checkCount = 0;
@@ -379,7 +343,6 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                         continue;
                     }
 
-                    //腐化猩红神圣丛林雪地沙漠等
                     if (tile.TileType == TileID.CorruptGrass || tile.TileType == TileID.CrimsonGrass
                         || tile.TileType == TileID.Ebonstone || tile.TileType == TileID.Crimstone
                         || tile.TileType == TileID.JungleGrass || tile.TileType == TileID.SnowBlock
@@ -390,17 +353,13 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                 }
             }
 
-            //超过30%是恶劣地形则排除
+            //恶劣地形>30%排除
             return checkCount > 0 && (float)badTileCount / checkCount > 0.3f;
         }
 
-        /// <summary>
-        /// 简化的位置评分
-        /// </summary>
         private static int EvaluatePositionSimple(int x, int y, int width, int height, bool requireForest) {
             int score = 50;
 
-            //统计草地数量判断是否森林
             int grassCount = 0;
             int groundY = y + height - 2;
             for (int checkX = x; checkX < x + width; checkX += 8) {
@@ -411,11 +370,10 @@ namespace CalamityOverhaul.Content.Structures.DatIO
             }
 
             if (requireForest && grassCount < 3) {
-                return 10;//不是森林但也不完全排除
+                return 10;//非森林，弱保留
             }
             score += grassCount * 3;
 
-            //检查液体
             for (int checkX = x; checkX < x + width; checkX += 12) {
                 for (int checkY = y; checkY < y + height; checkY += 8) {
                     Tile tile = Framing.GetTileSafely(checkX, checkY);
@@ -425,8 +383,7 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                 }
             }
 
-            //检查地基下方是否有足够的实心地层支撑
-            //这能避免生成在悬崖边或地形断层处
+            //地基下实心支撑
             int solidFoundationCount = 0;
             int checkFoundationDepth = 15;
             for (int checkX = x; checkX < x + width; checkX += 10) {
@@ -441,32 +398,27 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                         solidInColumn++;
                     }
                 }
-                //该列有超过一半是实心则计入
                 if (solidInColumn > checkFoundationDepth / 2) {
                     solidFoundationCount++;
                 }
             }
 
-            //地基支撑越完整分数越高
             int expectedColumns = width / 10;
             if (expectedColumns > 0) {
                 float foundationRatio = (float)solidFoundationCount / expectedColumns;
-                score += (int)(foundationRatio * 20);//最多加20分
+                score += (int)(foundationRatio * 20);
             }
 
             return Math.Max(0, Math.Min(100, score));
         }
 
-        /// <summary>
-        /// 准备地形，清理建筑放置区域
-        /// </summary>
         private static void PrepareTerrainForOutpost(Point16 startPos, Point16 regionSize) {
             int x = startPos.X;
             int y = startPos.Y;
             int width = regionSize.X;
             int height = regionSize.Y;
 
-            //清理建筑区域内的方块和墙壁
+            //清建筑区
             for (int px = x; px < x + width; px++) {
                 for (int py = y; py < y + height; py++) {
                     if (!WorldGen.InWorld(px, py)) {
@@ -474,20 +426,17 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                     }
 
                     Tile tile = Framing.GetTileSafely(px, py);
-                    //清除方块
                     if (tile.HasTile) {
                         WorldGen.KillTile(px, py, false, false, true);
                     }
-                    //清除自然墙壁
                     if (tile.WallType > WallID.None && tile.WallType < WallID.Count) {
                         WorldGen.KillWall(px, py, false);
                     }
-                    //清除液体
                     tile.LiquidAmount = 0;
                 }
             }
 
-            //清理上方可能遮挡的树木和方块
+            //清上方树木
             for (int px = x - 5; px < x + width + 5; px++) {
                 for (int py = y - 30; py < y; py++) {
                     if (!WorldGen.InWorld(px, py)) {
@@ -496,7 +445,6 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                     Tile tile = Framing.GetTileSafely(px, py);
                     if (tile.HasTile) {
                         int tileType = tile.TileType;
-                        //清除树木及其相关物块
                         if (tileType == TileID.Trees || tileType == TileID.VanityTreeSakura
                             || tileType == TileID.VanityTreeYellowWillow || tileType == TileID.Sunflower) {
                             WorldGen.KillTile(px, py, false, false, true);
@@ -506,24 +454,20 @@ namespace CalamityOverhaul.Content.Structures.DatIO
             }
         }
 
-        /// <summary>
-        /// 修复地基，建筑下方完全填充且自然融入周围地形
-        /// </summary>
         private static void RepairFoundation(Point16 startPos, Point16 regionSize) {
             int x = startPos.X;
             int y = startPos.Y;
             int width = regionSize.X;
             int height = regionSize.Y;
-            int groundY = y + height - 2;//建筑底部(自带两层泥土)
+            int groundY = y + height - 2;//建筑底(含两层土)
 
-            //第一步：深度填充建筑下方区域
-            int fillDepth = 25;//向下填充深度
+            //1 深填下方
+            int fillDepth = 25;
             for (int px = x; px < x + width; px++) {
                 if (!WorldGen.InWorld(px, groundY)) {
                     continue;
                 }
 
-                //找到该列最深的实心方块位置
                 int deepestSolid = groundY + fillDepth;
                 for (int py = groundY; py < groundY + fillDepth + 10; py++) {
                     if (!WorldGen.InWorld(px, py)) {
@@ -536,7 +480,6 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                     }
                 }
 
-                //从地基向下填充直到遇到实心方块或达到最大深度
                 for (int py = groundY; py <= Math.Min(deepestSolid, groundY + fillDepth); py++) {
                     if (!WorldGen.InWorld(px, py)) {
                         continue;
@@ -544,32 +487,28 @@ namespace CalamityOverhaul.Content.Structures.DatIO
 
                     Tile tile = Framing.GetTileSafely(px, py);
                     if (!tile.HasTile) {
-                        //根据深度选择填充物
                         int fillType = TileID.Dirt;
                         if (py > groundY + 8) {
-                            fillType = TileID.Stone;//深处用石头
+                            fillType = TileID.Stone;
                         }
                         WorldGen.PlaceTile(px, py, fillType, true, true);
                     }
                 }
             }
 
-            //第二步：处理两侧边缘的地形过渡
-            int blendRange = 12;//融合范围
-            int blendDepth = 20;//融合深度
+            //2 两侧过渡
+            int blendRange = 12;
+            int blendDepth = 20;
 
-            //左侧融合
             BlendEdge(x, groundY, blendRange, blendDepth, true);
-            //右侧融合
             BlendEdge(x + width - 1, groundY, blendRange, blendDepth, false);
 
-            //第三步：铺设草地表层
+            //3 草地表层
             for (int px = x - blendRange; px < x + width + blendRange; px++) {
                 if (!WorldGen.InWorld(px, groundY)) {
                     continue;
                 }
 
-                //找到该位置的实际地表
                 for (int py = groundY - 5; py < groundY + 10; py++) {
                     if (!WorldGen.InWorld(px, py)) {
                         continue;
@@ -577,7 +516,6 @@ namespace CalamityOverhaul.Content.Structures.DatIO
 
                     Tile tile = Framing.GetTileSafely(px, py);
                     if (tile.HasTile && tile.TileType == TileID.Dirt) {
-                        //检查上方是否露天
                         Tile above = Framing.GetTileSafely(px, py - 1);
                         if (!above.HasTile || !Main.tileSolid[above.TileType]) {
                             tile.TileType = TileID.Grass;
@@ -587,13 +525,10 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                 }
             }
 
-            //第四步：添加自然装饰让地形更自然
+            //4 自然装饰
             AddNaturalDecoration(x, groundY, width, blendRange);
         }
 
-        /// <summary>
-        /// 融合边缘地形
-        /// </summary>
         private static void BlendEdge(int edgeX, int groundY, int blendRange, int blendDepth, bool isLeft) {
             int dir = isLeft ? -1 : 1;
 
@@ -603,7 +538,7 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                     continue;
                 }
 
-                //融合因子：距离建筑越远融合程度越低
+                //越远融合越弱
                 float blendFactor = 1f - (float)offset / blendRange;
 
                 //找到周围地形的自然高度
@@ -660,9 +595,6 @@ namespace CalamityOverhaul.Content.Structures.DatIO
             }
         }
 
-        /// <summary>
-        /// 添加自然装饰
-        /// </summary>
         private static void AddNaturalDecoration(int baseX, int groundY, int width, int blendRange) {
             //在建筑两侧随机生成一些草和小植物
             for (int px = baseX - blendRange; px < baseX + width + blendRange; px++) {
@@ -715,9 +647,6 @@ namespace CalamityOverhaul.Content.Structures.DatIO
             }
         }
 
-        /// <summary>
-        /// 设置箱子内容物
-        /// </summary>
         private static void SetChestItem(RegionSaveData regionSaveData, Point16 orig) {
             //定义可能的战利品
             int[] commonItems = [
@@ -734,7 +663,7 @@ namespace CalamityOverhaul.Content.Structures.DatIO
 
             foreach (var chestTag in regionSaveData.Chests) {
                 ChestSaveData chestSaveData = ChestSaveData.FromTag(chestTag);
-                //需要注意这里chestSaveData拿到的坐标只是相对坐标，所以需要加上orig
+                //chestSaveData 相对坐标，需加 orig
                 int chestIndex = Chest.FindChest(orig.X + chestSaveData.X, orig.Y + chestSaveData.Y);
                 if (chestIndex < 0) {
                     continue;

@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        //抛掷特效：出手方向奶粉绒毛扑 + 两粒卡通星点
+        //抛掷特效
         private static void SpawnThrowEffect(Vector2 position, Vector2 direction) {
             Vector2 dir = direction.SafeNormalize(Vector2.Zero);
             for (int i = 0; i < 5; i++) {
@@ -151,7 +151,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private int idleAnimTimer = 0;
         /// <summary>本次落地的压扁深度，按坠落速度决定，越高摔越扁</summary>
         private float impactSquash = 0.7f;
-        /// <summary>预定起跳帧：一次落地只掷一次骰子，末尾几帧留给下蹲预告</summary>
+        /// <summary>预定起跳帧，一次落地只掷一次骰子，末尾几帧留给下蹲预告</summary>
         private int plannedJumpTime = 0;
         private bool crouching = false;
         private bool apexFluffDone = false;
@@ -216,7 +216,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //更新生物动画
             UpdateBunnyAnimation();
 
-            //引信预热：寿命后段心跳隐约响起，进入爆炸预警后由 ExplodingPhaseAI 接管提速
+            //引信预热
             if (State != BunnyState.Exploding && Projectile.timeLeft < 150) {
                 float preUrgency = MathHelper.Clamp(1f - (Projectile.timeLeft - 30f) / 120f, 0f, 1f);
                 float interval = MathHelper.Lerp(30f, 16f, preUrgency);
@@ -237,7 +237,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 beatEnvelope *= 0.84f;
             }
 
-            //兔子粉色照明：心跳期随包络搏动
+            //兔子粉色照明，心跳期随包络搏动
             float lightIntensity = 0.5f + beatEnvelope * 0.6f;
             Lighting.AddLight(Projectile.Center,
                 1.0f * lightIntensity,
@@ -266,7 +266,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 bodyRotation = MathHelper.Lerp(bodyRotation, Projectile.velocity.Y * 0.05f, 0.2f);
             }
 
-            //弧顶拍：过顶瞬间掉一撮绒毛，标记大弧跳最高点
+            //弧顶拍
             if (!apexFluffDone && Projectile.velocity.Y > -0.5f) {
                 apexFluffDone = true;
                 if (!Main.dedServ) {
@@ -365,7 +365,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //计算跳跃方向
             Vector2 toTarget = target.Center - Projectile.Center;
 
-            //追击节奏更急：短窗掷骰，末 3 帧下蹲
+            //追击节奏更急
             if (plannedJumpTime <= 0) {
                 plannedJumpTime = Main.rand.Next(5, 15);
             }
@@ -401,7 +401,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //爆炸状态：粉红心跳，拍点随倒计时逼近越跳越快
+        //爆炸状态
         private void ExplodingPhaseAI() {
             //停止移动
             Projectile.velocity *= 0.85f;
@@ -477,7 +477,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SpawnJumpParticle();
         }
 
-        //锁定目标提示：一粒警觉星点弹出 + 短促尖叫
+        //锁定目标提示
         private void SpawnAlertMark() {
             SoundEngine.PlaySound(SoundID.NPCHit1 with {
                 Volume = 0.32f,
@@ -537,7 +537,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.rotation = bodyRotation;
         }
 
-        //跳跃粒子：蹬地尘 + 掉毛
+        //跳跃粒子，蹬地尘 + 掉毛
         private void SpawnJumpParticle() {
             if (Main.dedServ) {
                 return;
@@ -576,7 +576,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float impact = MathHelper.Clamp(Math.Abs(oldVelocity.Y) / MaxFallSpeed, 0f, 1f);
                 impactSquash = MathHelper.Lerp(0.78f, 0.52f, impact);
 
-                //着地音效：摔得越重越沉
+                //着地音效，摔得越重越沉
                 SoundEngine.PlaySound(SoundID.Dig with {
                     Volume = 0.24f + 0.18f * impact,
                     Pitch = 0.5f - 0.35f * impact
@@ -614,7 +614,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        //落地尘环：贴地横扫的左右哑光尘团 + 顶起的绒毛
+        //落地尘环
         private void SpawnLandingRing(float impact) {
             if (Main.dedServ) {
                 return;
@@ -668,7 +668,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, Projectile.Center);
         }
 
-        //创建兔子爆炸：暖橙火心 + 哑光烟圈 + 绒毛纷飞 + 少量卡通星点
+        //创建兔子爆炸
         private void CreateBunnyExplosion() {
             Projectile.Explode(ExplosionRadius, default, false);
 
@@ -683,7 +683,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             PRTLoader.NewParticle<PRT_FishBunnyStar>(center, Vector2.Zero
                 , new Color(255, 244, 230), 1.05f)?.Configure(8, true);
 
-            //卡通星点：绕爆心弹出少量四芒星
+            //卡通星点，绕爆心弹出少量四芒星
             for (int i = 0; i < 4; i++) {
                 float ang = MathHelper.TwoPi * i / 4f + Main.rand.NextFloat(0.7f);
                 PRTLoader.NewParticle<PRT_FishBunnyStar>(center + ang.ToRotationVector2() * 10f
@@ -692,7 +692,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , Main.rand.NextFloat(0.34f, 0.55f))?.Configure(Main.rand.Next(16, 26));
             }
 
-            //暖橙火心：拉丝余烬径向迸出，微重力下坠
+            //暖橙火心
             int emberCount = Math.Min(10 + layer, 12);
             for (int i = 0; i < emberCount; i++) {
                 Vector2 vel = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.NextFloat(2.5f, 7.5f);
@@ -702,7 +702,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , Main.rand.NextFloat(0.5f, 0.9f))?.Configure(Main.rand.Next(18, 30));
             }
 
-            //哑光烟圈：环形外涌，压住加色亮部
+            //哑光烟圈
             for (int i = 0; i < 8; i++) {
                 float ang = MathHelper.TwoPi * i / 8f + Main.rand.NextFloat(0.35f);
                 Vector2 dir = ang.ToRotationVector2();
@@ -719,7 +719,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     ?.Configure(Main.rand.Next(36, 50), new Color(198, 176, 164), new Color(112, 106, 104), 1.010f, 0.012f);
             }
 
-            //绒毛纷飞：玩偶填充物炸开，比弹体活得久
+            //绒毛纷飞
             int fluffCount = Math.Min(12 + layer, 13);
             for (int i = 0; i < fluffCount; i++) {
                 Vector2 vel = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.NextFloat(1.5f, 5.5f);
@@ -740,7 +740,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //暖橙光斑一闪
             Lighting.AddLight(center, 1.4f, 0.9f, 0.5f);
 
-            //克制的落点小震：多只兔子可能同帧炸，单发幅度压低
+            //克制的落点小震
             if (CWRServerConfig.Instance.ScreenVibration) {
                 Main.instance.CameraModifiers.Add(new PunchCameraModifier(center
                     , Main.rand.NextVector2Unit(), 2f, 5f, 6, 620f, FullName));
@@ -758,21 +758,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 effects = SpriteEffects.FlipHorizontally;
             }
 
-            //形变缩放：预热期心跳给一点整体膨缩，爆炸期由 squashStretch 自己搏动
+            //形变缩放
             float beatSwell = State == BunnyState.Exploding ? 1f : 1f + beatEnvelope * 0.05f;
             Vector2 scale = new Vector2(Projectile.scale / squashStretch, Projectile.scale * squashStretch) * beatSwell;
 
             //基础颜色
             Color drawColor = Projectile.GetAlpha(lightColor);
 
-            //追击警觉潮红，心跳按包络瞬时泛粉：预热浅、爆炸期深
+            //追击警觉潮红，心跳按包络瞬时泛粉
             if (State == BunnyState.Chasing) {
                 drawColor = Color.Lerp(drawColor, new Color(255, 190, 195), 0.25f);
             }
             float flush = State == BunnyState.Exploding ? 0.75f : 0.3f;
             drawColor = Color.Lerp(drawColor, FishBunnyPalette.HeartFlush, beatEnvelope * flush);
 
-            //心跳底光：夹在残影与本体之下的暖粉泛光，仅在拍点亮起
+            //心跳底光
             if (State == BunnyState.Exploding && beatEnvelope > 0.05f && CWRAsset.SoftGlow?.Value is Texture2D glowTex) {
                 Color glowCol = FishBunnyPalette.HeartFlush with { A = 0 } * (beatEnvelope * 0.45f);
                 float glowScale = 0.95f + beatEnvelope * 0.45f;

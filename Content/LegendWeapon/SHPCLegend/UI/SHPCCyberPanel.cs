@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         private const int SkillEntryLeftPad = (int)(10 * Scale);
         //技能描述文本缩放
         private const float SkillDescScale = 0.54f * FontScale;
-        //三级面板纵向偏移：L1 在上、L2 在中、L3 在下
+        //三级面板纵偏，L1上L2中L3下
         private const float SkillPanelYOffset = 64f * Scale;
         //段悬停时外径最大延展量
         private const float SegmentExpandMax = 14f * Scale;
@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             public Rectangle Toggle;
         }
 
-        //三段环各自的悬停延展进度，0=未悬停 1=完全延展，由 <see cref="UpdateHover"/> 平滑跟随
+        //三段悬停延展0~1，UpdateHover平滑
         private static readonly float[] segmentExpandAmt = new float[3];
 
         /// <summary>三级技能条目定义</summary>
@@ -210,13 +210,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             return segmentExpandAmt[segIdx];
         }
 
-        /// <summary>命中测试：开关→三级面板→三段环</summary>
+        /// <summary>命中，开关→三级面板→三段环</summary>
         public static HitKind HitTest(in Layout layout, Vector2 mouse) {
             if (layout.Toggle.Contains((int)mouse.X, (int)mouse.Y)) {
                 return HitKind.Toggle;
             }
 
-            //三级面板命中：仅当对应段已展开时才参与命中，避免无悬停时出现幽灵区
+            //三级面板命中，仅段展开时，防幽灵区
             for (int i = 0; i < 3; i++) {
                 if (segmentExpandAmt[i] <= 0.05f) {
                     continue;
@@ -501,7 +501,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             Utils.DrawBorderString(sb, s, textPos - sz * 0.5f, tc * a, 0.55f * FontScale);
         }
 
-        /// <summary>右侧状态栏：层/RAM/SUSTAIN</summary>
+        /// <summary>右侧状态栏，层/RAM/SUSTAIN</summary>
         private static void DrawStatusColumn(SpriteBatch sb, DynamicSpriteFont font,
             Rectangle panel, in Layout layout, float a) {
             float colX = layout.RingCenter.X + RingOuterR + 18f * Scale;
@@ -523,7 +523,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 Color tc = lit ? new Color(255, 210, 180) : new Color(145, 85, 85);
                 Utils.DrawBorderString(sb, $"{mark} L{layer}", new Vector2(colX, colY), tc * a, 0.50f * FontScale);
 
-                //每层消耗速度："-X.X/s"，当前激活层用更亮的红色
+                //每层消耗速度，激活层更亮
                 float drainRate = Cyberspace.GetLayerDrainRate(layer);
                 if (drainRate > 0f) {
                     string drainTxt = string.Format(SHPCUI.Cyber_DrainPerSec.Value, drainRate.ToString("F1"));
@@ -534,7 +534,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 colY += lineH;
             }
 
-            //当前层的 SUSTAIN 估算："SUSTAIN ~Xs"
+            //当前层SUSTAIN估算
             //仅在激活态显示，剩余时间过短(<2s)用闪烁红警示，无限模式下显示 ∞
             if (Cyberspace.Active && Cyberspace.CurrentLayer >= 1) {
                 colY += 2f * Scale;
@@ -623,7 +623,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 return;
             }
 
-            //入场偏移：从二级面板右侧向外滑出
+            //入场，从二级右侧滑出
             float slide = (1f - expandAmt) * 22f * Scale;
             Rectangle drawRect = new(
                 skillRect.X - (int)slide, skillRect.Y,
@@ -633,7 +633,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 : layer == 2 ? new Color(255, 140, 80)
                 : new Color(255, 200, 90);
 
-            //连接弧线：从环段外缘指向面板左边缘中点
+            //连接弧，环段→面板左缘
             DrawSkillConnector(sb, px, layout, layer, drawRect, expandAmt, panelAlpha * globalAlpha, hot);
 
             //投影
@@ -673,7 +673,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                     new Color(255, 240, 220) * (0.45f * a));
             }
 
-            //标题：L{layer} · 层名
+            //标题 L{layer}·层名
             string title = layer == 1 ? SHPCUI.Cyber_Layer1_Title.Value
                 : layer == 2 ? SHPCUI.Cyber_Layer2_Title.Value
                 : SHPCUI.Cyber_Layer3_Title.Value;
@@ -734,7 +734,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             }
         }
 
-        /// <summary>单条技能：名称/描述/快捷键/解锁</summary>
+        /// <summary>单条技能，名称/描述/快捷键/解锁</summary>
         private static void DrawSkillEntry(SpriteBatch sb, Texture2D px,
             DynamicSpriteFont font, Rectangle panel, int entryY,
             SkillEntry entry, Color hot, float a) {
@@ -776,7 +776,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 new Vector2(panel.X + SkillEntryLeftPad, entryY + 2f * Scale),
                 nameCol * a, nameScale);
 
-            //描述自动换行：超出面板内宽时按字符断行，避免长描述被简单省略
+            //描述按宽断行
             string desc = entry.Desc?.Invoke() ?? string.Empty;
             float descMaxW = panel.Width - SkillEntryLeftPad * 2;
             int lineCount = 0;
@@ -791,7 +791,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 lineCount = 1;
             }
 
-            //解锁状态行：紧随描述末行之后，避免长描述与状态行重叠
+            //解锁行跟描述末
             int statusY = descTopY + lineCount * SkillDescLineHeight + (int)(4 * Scale);
             string status = unlocked
                 ? SHPCUI.Cyber_SkillUnlocked.Value
@@ -853,7 +853,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             Vector2 segPoint = layout.RingCenter + SHPCRenderer.AngleDir(midA) * outerR;
             Vector2 panelAttach = new(drawRect.X, drawRect.Y + drawRect.Height * 0.5f);
 
-            //中转点：水平在面板左侧附近，给一段内凹折角
+            //弧中转点，内凹折角
             Vector2 mid = new(panelAttach.X - 12f * Scale, panelAttach.Y);
 
             SHPCRenderer.DrawLine(sb, px, segPoint, mid, 1.2f, glow * (0.45f * a));

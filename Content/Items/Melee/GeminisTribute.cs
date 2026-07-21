@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// 双生彼岸飞镰：抛出/悬停/回收三阶段
+    /// 双生彼岸飞镰，抛出/悬停/回收
     internal class GeminisTributeProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item + "Melee/GeminisTribute";
@@ -489,7 +489,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             shader.Parameters["uPupilDilation"]?.SetValue(phase == 1 ? 0.85f : 0.35f);
             shader.Parameters["uBloodshot"]?.SetValue(bloodshot);
             shader.Parameters["uPupilOffset"]?.SetValue(pupilOffset);
-            //眼睛保持水平不随镰刀转动 — 提供视觉锚点
+            //眼睛保持水平（视觉锚点）
             shader.Parameters["uRotation"]?.SetValue(0f);
             shader.Parameters["uIrisColor"]?.SetValue(iris);
             shader.Parameters["uPupilGlow"]?.SetValue(glow);
@@ -500,7 +500,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             shader.CurrentTechnique.Passes[0].Apply();
 
-            //画布尺寸 — 魔眼在镰刀刀身的中央装饰位置
+            //画布尺寸，魔眼居中装饰
             float eyeSize = 44f;
             sb.Draw(canvas, drawPos, null, Color.White, 0f,
                 canvas.Size() / 2f,
@@ -512,7 +512,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// 融合魔眼：双镰交汇寄生轰击
+    /// 融合魔眼，双镰交汇轰击
     internal class GeminisTributeFusion : BaseHeldProj
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -607,7 +607,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool? CanHitNPC(NPC target) {
-            //仅在脉冲帧前后短窗口内可造成伤害，避免每帧持续命中
+            //仅脉冲帧前后短窗可伤
             return eyeTimer % 12 == 1 ? null : false;
         }
 
@@ -680,7 +680,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Texture2D canvas = VaultAsset.placeholder2?.Value;
             if (shader == null || canvas == null) return;
 
-            //眼睛模式在 0 和 1 之间脉动以混合 — 在 shader 内部不直接支持，但通过双绘
+            //眼睛模式 0/1 脉动混合（双绘）
             float lifeProgress = eyeTimer / (float)Duration;
 
             //先绘魔焰眼层

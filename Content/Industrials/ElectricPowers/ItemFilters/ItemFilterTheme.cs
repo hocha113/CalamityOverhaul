@@ -4,16 +4,12 @@ using Terraria.GameInput;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
 {
-    /// <summary>
-    /// 过滤名单编辑器的色板与几何常量<br/>
-    /// 废土工业锈色系，与收集器控制台(CollectorUI)同族；
-    /// 青色为白名单强调、警示红为黑名单强调
-    /// </summary>
+    /// <summary>编辑器色板与几何；锈色系，青=白名单、红=黑名单</summary>
     internal static class ItemFilterTheme
     {
         #region UI空间坐标（与调用语境无关）
-        //UIHandle 的 Update/Draw 运行在 InterfaceScaleType.UI 层内，布局必须用这组换算，
-        //禁止直接读 Main.screenWidth/Height，否则改变 UI 缩放时元素会漂移
+        //UIHandle 的 Update/Draw 在 InterfaceScaleType.UI 层，须用这组换算
+        //禁直接读 Main.screenWidth/Height，否则改 UI 缩放会漂
         public static float UIScreenW => PlayerInput.RealScreenWidth / Main.UIScale;
         public static float UIScreenH => PlayerInput.RealScreenHeight / Main.UIScale;
         public static Vector2 UIMouse => new Vector2(PlayerInput.MouseX, PlayerInput.MouseY) / Main.UIScale;
@@ -40,21 +36,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
         #endregion
 
         #region 几何
-        /// <summary>名单网格列数</summary>
         public const int GridCols = 8;
-        /// <summary>格子边长</summary>
         public const int CellSize = 46;
-        /// <summary>格子间距</summary>
         public const int CellGap = 5;
-        /// <summary>一屏可见行数，超出滚动</summary>
         public const int VisibleRows = 5;
-        /// <summary>面板内边距</summary>
         public const int Padding = 16;
-        /// <summary>标题带高度(含模式芯片)</summary>
         public const int HeaderHeight = 58;
-        /// <summary>底部按钮行高度</summary>
         public const int ButtonRowHeight = 34;
-        /// <summary>底部提示行高度</summary>
         public const int FooterHeight = 24;
 
         public const int GridWidth = GridCols * CellSize + (GridCols - 1) * CellGap;
@@ -62,15 +50,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
         public const int PanelWidth = GridWidth + Padding * 2 + 10; //右侧留滚动条
         public const int PanelHeight = HeaderHeight + GridHeight + ButtonRowHeight + FooterHeight + Padding * 2;
 
-        /// <summary>编辑TP宿主时允许的最大距离(像素)，超出自动关闭</summary>
+        /// <summary>TP宿主最远距离(像素)</summary>
         public const float KeepDistance = 300f;
         #endregion
 
-        /// <summary>当前模式的强调色</summary>
         public static Color ModeAccent(ItemFilterMode mode)
             => mode == ItemFilterMode.Whitelist ? AccentWhitelist : AccentBlacklist;
 
-        /// <summary>异相位呼吸波，返回 0-1 的缓慢脉动</summary>
+        /// <summary>异相位呼吸，返回0-1</summary>
         public static float Breath(float time, float seed, float speed = 2f)
             => MathF.Sin(time * speed + seed * 17.39f) * 0.5f + 0.5f;
     }

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Narrative.Data;
+using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
 using CalamityOverhaul.Content.UIs.MainMenuCharacters;
 using InnoVault.Narrative.Runtime;
@@ -47,25 +47,23 @@ namespace CalamityOverhaul.Content.Items.Tools
         internal static int ResetAllADVData(Player owner) {
             int resetFieldCount = 0;
 
-            //重置该玩家的全部剧情数据模块：角色剧情标记、Boss 礼物记录、剧本进度(StoryProgress)等一并回到初始状态
-            //重构后剧情数据由 StoryPlayer.StoryData 持有，旧版基于 ADVSave 反射清空字段的逻辑已失效，这里改为驱动新数据系统
+            //改走StoryPlayer.StoryData.Reset，旧ADVSave反射已失效
             StoryPlayer storyPlayer = owner.GetModPlayer<StoryPlayer>();
             resetFieldCount += storyPlayer.StoryData.Modules.Count;
             storyPlayer.StoryData.Reset();
 
-            //中止当前正在播放/排队的叙事会话并关闭对话框，避免重置后界面仍引用已被清空的剧情状态
+            //中止叙事会话与对话框
             NarrativeRunner.Reset();
 
             if (CWRRef.GetDownedCalamitas()) {
                 resetFieldCount++;
-                //设置至尊灾厄未击败
-                CWRRef.SetDownedCalamitas(false);
+                CWRRef.SetDownedCalamitas(false);//至尊灾厄未击败
                 if (VaultUtils.isServer) {
                     NetMessage.SendData(MessageID.WorldData);
                 }
             }
 
-            //先清理旧营地(含锅/旗杆/老公爵Actor)
+            //清旧营地(锅/旗杆/老公爵)
             OldDukeCampsite.ClearCampsiteAndSync();
 
             return resetFieldCount;
@@ -384,7 +382,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //血红色光晕，带有脉动效果
+            //血红脉动光晕
             float pulse = (float)Math.Sin(Timer * 0.15f) * 0.2f + 0.8f;
             Color auraColor = new Color(200, 30, 30) * (auraIntensity * 0.4f * pulse);
             Color innerColor = new Color(140, 0, 0) * (auraIntensity * 0.5f * pulse);
@@ -473,7 +471,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 _ => 60
             };
 
-            //设置不同类型粒子的血红色调
+            //血红粒子调
             BaseColor = type switch {
                 ParticleType.Gather => new Color(180, 40, 40),
                 ParticleType.Rewind => new Color(200, 20, 20),
@@ -497,7 +495,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Rotation += 0.1f;
             Alpha = 1f - (Life / (float)MaxLife);
 
-            //粒子在消散时变暗
+            //消散变暗
             float fadeProgress = Life / (float)MaxLife;
             if (fadeProgress > 0.7f) {
                 BaseColor = Color.Lerp(BaseColor, new Color(80, 0, 0), (fadeProgress - 0.7f) / 0.3f);
@@ -549,14 +547,14 @@ namespace CalamityOverhaul.Content.Items.Tools
             float length = diff.Length();
             float rotation = diff.ToRotation();
 
-            //血红色时针，带有暗红渐变
+            //血红时针
             Color handColor = new Color(160, 20, 20) * (Alpha * 0.7f);
             Color tipColor = new Color(200, 40, 40) * (Alpha * 0.8f);
 
             sb.Draw(pixel, center - Main.screenPosition, null, handColor,
                 rotation, Vector2.Zero, new Vector2(length, 2.5f), SpriteEffects.None, 0f);
 
-            //时针末端的血珠效果
+            //时针血珠
             for (int i = 0; i < 4; i++) {
                 float glowAlpha = (1f - i / 4f) * Alpha * 0.4f;
                 Color glowColor = Color.Lerp(handColor, tipColor, i / 4f);

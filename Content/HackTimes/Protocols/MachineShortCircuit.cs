@@ -12,9 +12,8 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// <summary>机械短路，清空电能并电弧伤害</summary>
     internal class MachineShortCircuit : QuickHackDef
     {
-        //电弧伤害半径（像素）
+        //电弧半径（像素）
         private const float ArcRadius = 160f;
-        //电弧伤害值
         private const int ArcDamage = 40;
 
         public override void SetDefaults() {
@@ -36,12 +35,10 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
             Vector2 center = machine.CenterInWorld;
 
-            //本端权威：清空电能、伤害、TileSquare 同步，远端仅视觉
+            //本端清电能+伤害+TileSquare，远端仅视觉
             if (!HackTimeNetSync.IsRemoteApply) {
-                //清空电能
                 machine.MachineData.UEvalue = 0;
 
-                //电弧范围伤害
                 if (!VaultUtils.isClient) {
                     for (int i = 0; i < Main.maxNPCs; i++) {
                         NPC npc = Main.npc[i];
@@ -56,7 +53,6 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                     }
                 }
 
-                //网络同步物块状态
                 if (Main.netMode != NetmodeID.SinglePlayer) {
                     int tileW = machine.Width / 16;
                     int tileH = machine.Height / 16;
@@ -64,14 +60,12 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 }
             }
 
-            //视觉效果：电火花粒子
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < 20; i++) {
                     Vector2 vel = Main.rand.NextVector2CircularEdge(7f, 7f);
                     Color c = Color.Lerp(new Color(100, 180, 255), new Color(200, 220, 255), Main.rand.NextFloat());
                     PRTLoader.NewParticle<PRT_Spark>(center, vel, c, 1.2f).Configure(false, 25);
                 }
-                //外圈扩散粒子
                 for (int i = 0; i < 12; i++) {
                     float angle = MathHelper.TwoPi * i / 12f;
                     Vector2 dir = angle.ToRotationVector2();
@@ -84,7 +78,6 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             return true;
         }
 
-        /// <summary>从物块坐标取 MachineTP</summary>
         private static bool TryGetMachine(int tileX, int tileY, out MachineTP machine) {
             machine = null;
             if (!VaultUtils.SafeGetTopLeft(tileX, tileY, out var topLeft)) return false;

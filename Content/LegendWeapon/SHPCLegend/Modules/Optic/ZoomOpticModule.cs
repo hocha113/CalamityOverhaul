@@ -6,7 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>焦距瞄具：远距命中（≥600px）额外白热打击</summary>
+    /// <summary>焦距瞄具，≥600px 命中追加白热打击</summary>
     internal sealed class ZoomOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             if (owner == null || !owner.active) return;
             float dist = Vector2.Distance(owner.Center, target.Center);
             if (dist < LongRangeThreshold) return;
-            //距离每超 200 像素 +25% 额外伤害，最多 +75%
+            //每超 200px +25%，封顶 +75%
             float bonus = MathHelper.Clamp((dist - LongRangeThreshold) / 200f, 0f, 3f) * 0.25f;
             int extra = Math.Max((int)(damageDone * (0.35f + bonus)), 1);
             target.SimpleStrikeNPC(extra, hit.HitDirection, false, 0f, hit.DamageType, false, 0f, true);
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 
         public override void OnLaserHitNPC(CyberPrismLaserProj laser, NPC target, NPC.HitInfo hit, int damageDone) {
             if (laser.Projectile.owner != Main.myPlayer) return;
-            //激光每命中频繁，节流为 25% 概率触发远射判定
+            //激光 25% 节流
             if (Main.rand.NextFloat() > 0.25f) return;
             Player owner = Main.player[laser.Projectile.owner];
             if (owner == null || !owner.active) return;

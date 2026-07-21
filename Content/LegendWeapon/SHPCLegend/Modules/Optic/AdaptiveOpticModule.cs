@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>自适应瞄具：预测拦截点偏转光束首帧，移动目标 +25% 适应打击</summary>
+    /// <summary>自适应瞄具，首帧偏转至拦截点，移动目标 +25% 适应打击</summary>
     internal sealed class AdaptiveOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         private const float LockRange = 1000f;
         private const float MovingThreshold = 2f;
 
-        /// <summary>已完成偏转的光束，OnBeamKill 时清理</summary>
+        /// <summary>已偏转光束 whoAmI，OnBeamKill 清理</summary>
         private readonly HashSet<int> steeredBeams = [];
 
         public override void Apply(ref ShootContext ctx) {
@@ -31,9 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             ctx.CritAdd += 4;
         }
 
-        /// <summary>
-        /// 解算拦截点：用两轮迭代逼近"光束抵达时目标所在位置"
-        /// </summary>
+        /// <summary>两轮迭代逼近抵达时目标位置</summary>
         internal static Vector2 PredictIntercept(Vector2 from, NPC target, float beamSpeed) {
             Vector2 predicted = target.Center;
             for (int i = 0; i < 2; i++) {
@@ -43,7 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             return predicted;
         }
 
-        /// <summary>寻找光标附近的锁定目标</summary>
+        /// <summary>光标附近锁定目标</summary>
         internal static NPC FindLockTarget(Player player) {
             NPC target = Main.MouseWorld.FindClosestNPC(400f, false, true);
             target ??= player.Center.FindClosestNPC(LockRange, false, true);
@@ -55,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
             if (beam.IsDerived || beam.Projectile.owner != Main.myPlayer) return;
-            if (!steeredBeams.Add(beam.Projectile.whoAmI)) return; //仅在首帧偏转一次
+            if (!steeredBeams.Add(beam.Projectile.whoAmI)) return; //仅首帧偏转一次
 
             Player owner = Main.player[beam.Projectile.owner];
             NPC target = FindLockTarget(owner);
@@ -64,7 +62,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             Vector2 intercept = PredictIntercept(beam.Projectile.Center, target,
                 BeamBaseSpeed * MathF.Max(beam.SpeedMul, 0.1f));
             Vector2 desired = intercept - beam.Projectile.Center;
-            //偏转角限制在 ±50°，防止光束向后回折
+            //偏转角 ±50°，防回折
             float diff = MathHelper.WrapAngle(desired.ToRotation() - beam.FlightDirection.ToRotation());
             if (Math.Abs(diff) > MathHelper.ToRadians(50f)) return;
             beam.SetFlightDirection(desired);
@@ -77,7 +75,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
             if (beam.Projectile.owner != Main.myPlayer) return;
             if (target.velocity.Length() < MovingThreshold) return;
-            //火控确认：对移动中的目标追加适应打击
+            //移动目标适应打击
             int extra = Math.Max((int)(damageDone * 0.25f), 1);
             target.SimpleStrikeNPC(extra, hit.HitDirection, false, 0f, hit.DamageType, false, 0f, true);
             if (Main.netMode != NetmodeID.Server) {
@@ -93,7 +91,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         public override void OnPlayerUpdate(Player player) {
             if (player.whoAmI != Main.myPlayer) return;
             if (player.HeldItem == null || player.HeldItem.type != SHPCOverride.ID) return;
-            //维持唯一的全息标线弹幕
+            //唯一全息标线
             int markerType = ModContent.ProjectileType<SHPCAdaptiveReticleProj>();
             if (player.ownedProjectileCounts[markerType] <= 0) {
                 Projectile.NewProjectile(player.GetSource_FromThis(),
@@ -102,7 +100,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         }
     }
 
-    /// <summary>预测拦截点全息标线，纯视觉；失锁或收枪淡出</summary>
+    /// <summary>拦截点全息标线，纯视觉，失锁/收枪淡出</summary>
     internal sealed class SHPCAdaptiveReticleProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -141,7 +139,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 return;
             }
 
-            //新锁定时的捕获提示音
+            //新锁捕获音
             if (lockedNpcId != target.whoAmI && Main.netMode != NetmodeID.Server && fadeAlpha < 0.3f) {
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Item114 with { Volume = 0.25f, Pitch = 0.8f }, target.Center);
             }
@@ -149,7 +147,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             fadeAlpha = MathF.Min(fadeAlpha + 0.1f, 1f);
 
             Vector2 intercept = AdaptiveOpticModule.PredictIntercept(owner.Center, target, 14f);
-            //标线平滑追踪拦截点，目标急转时带一点惯性滞后
+            //标线 Lerp，急转带滞后
             Projectile.Center = Vector2.Lerp(Projectile.Center, intercept, 0.4f);
         }
 
@@ -164,7 +162,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             float spin = (float)Main.timeForVisualEffects * 0.05f;
             float breathe = 26f + 4f * MathF.Sin((float)Main.timeForVisualEffects * 0.12f);
 
-            //四角旋转括弧：每个括弧由两条短亮线构成
+            //四角旋转括弧
             for (int i = 0; i < 4; i++) {
                 float ang = spin + MathHelper.PiOver2 * i + MathHelper.PiOver4;
                 Vector2 cornerPos = drawPos + ang.ToRotationVector2() * breathe;
@@ -176,7 +174,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 spriteBatch.Draw(white, cornerPos, null, ReticleMain * fadeAlpha * 0.9f,
                     armAng2, new Vector2(0.5f, 0.5f), new Vector2(11f, 2f), SpriteEffects.None, 0f);
             }
-            //中心预测点：粉色小点 + 柔光
+            //中心预测点
             if (glow != null) {
                 spriteBatch.Draw(glow, drawPos, null, ReticleAccent * fadeAlpha * 0.6f, 0f,
                     glow.Size() * 0.5f, 0.32f, SpriteEffects.None, 0f);

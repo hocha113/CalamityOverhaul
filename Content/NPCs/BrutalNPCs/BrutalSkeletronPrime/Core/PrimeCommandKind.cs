@@ -4,11 +4,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
     internal enum PrimeCommandKind : int
     {
         None = 0,
-        /// <summary>物理突击：钳爪突刺 + 电锯冲锋</summary>
+        /// <summary>物理突击</summary>
         PhysicalAssault = 1,
-        /// <summary>火力压制：激光横扫 + 火箭迫击</summary>
+        /// <summary>火力压制</summary>
         FireSuppression = 2,
-        /// <summary>十字绞杀：四臂合体封位</summary>
+        /// <summary>十字绞杀</summary>
         CrossExecute = 3,
     }
 }

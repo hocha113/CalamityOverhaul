@@ -17,11 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public static Effect FishNeonTrail { get; private set; }
     }
 
-    /// <summary>
-    /// 霓虹足迹共享演出协作类。<br/>
-    /// 色彩脚本：深海生物荧光=高饱和低明度，青 <see cref="NeonCyan"/> ↔ 品红 <see cref="NeonMagenta"/>
-    /// 双色渐变 + 深渊蓝压底；禁常驻纯白，亮度起伏一律走呼吸节律（慢正弦）而非提高明度
-    /// </summary>
+    /// <summary>霓虹足迹 VFX，青 <see cref="NeonCyan"/> ↔ 品红 <see cref="NeonMagenta"/>，深渊压底，呼吸明暗，禁常驻纯白</summary>
     internal static class FishNeonTetraVFX
     {
         /// <summary>深海青（饱和低明度）</summary>
@@ -60,7 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             fx.Parameters["uColAbyss"]?.SetValue(Abyss.ToVector3());
         }
 
-        /// <summary>化现：光斑缓速外扩 + 微型暗环 + 轻水滴声，禁 pop-in</summary>
+        /// <summary>化现</summary>
         public static void MaterializeBurst(Vector2 pos, float hueT) {
             if (Main.dedServ) {
                 return;
@@ -78,7 +74,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, pos);
         }
 
-        /// <summary>触碰迸发：荧光沿命中方向 squirt + 目标处小暗环，无白闪</summary>
+        /// <summary>触碰迸发，荧光沿命中方向 squirt + 目标处小暗环，无白闪</summary>
         public static void TouchBurst(Vector2 pos, Vector2 targetCenter, float hueT) {
             if (Main.dedServ) {
                 return;
@@ -94,7 +90,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(new Vector2(1f, 0.8f), dir.ToRotation(), 0.22f, 9);
         }
 
-        /// <summary>消散：光斑上浮散逸 + 暗环，粒子寿命长于弹体承载 aftermath</summary>
+        /// <summary>消散，光斑上浮散逸 + 暗环，粒子寿命长于弹体承载 aftermath</summary>
         public static void DissolveBurst(Vector2 pos, float hueT) {
             if (Main.dedServ) {
                 return;
@@ -109,7 +105,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(Vector2.One, Main.rand.NextFloat(MathHelper.TwoPi), 0.2f, 12);
         }
 
-        /// <summary>巡游期环境光斑：单个缓浮 mote，随鱼残速漂出</summary>
+        /// <summary>巡游期环境光斑，单个缓浮 mote，随鱼残速漂出</summary>
         public static void AmbientMote(Vector2 center, Vector2 fishVel, float hueT) {
             if (Main.dedServ) {
                 return;
@@ -123,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 深海荧光浮游光斑：浮力缓升 + 正弦横摆 + 慢呼吸明暗（生物节律，非随机火花闪烁），
+    /// 深海荧光浮游光斑，浮力缓升 + 正弦横摆 + 慢呼吸明暗（生物节律，非随机火花闪烁）
     /// 速度快时顺速度拉伸成丝；SoftGlow 仅作垫底晕 + Photosphere 小芯（同色提亮，无纯白）
     /// </summary>
     internal class PRT_FishNeonMote : BasePRT
@@ -164,7 +160,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Velocity.X += MathF.Sin(Time * 0.09f + swaySeed) * 0.014f;
 
             float lc = LifetimeCompletion;
-            //荧光呼吸：慢正弦节律叠首尾渐入渐出
+            //荧光呼吸，慢正弦节律叠首尾渐入渐出
             float breath = 0.62f + 0.38f * MathF.Sin(Time * 0.12f + breathSeed);
             Opacity = MathF.Min(lc * 6f, 1f) * (1f - lc * lc) * breath;
         }
@@ -175,7 +171,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 pos = Position - Main.screenPosition;
             Color col = Color with { A = 0 };
 
-            //速度拉伸：迸发时呈丝、缓浮时圆点
+            //速度拉伸，迸发时呈丝、缓浮时圆点
             float speed = Velocity.Length();
             float stretch = MathHelper.Clamp(speed * 0.30f, 0f, 1.1f);
             float rot = Velocity.ToRotation() + MathHelper.PiOver2;

@@ -4,11 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
-    /// <summary>
-    /// UI 空间的轻量 Verlet 绳：8~12 质点、每帧数次约束迭代。<br/>
-    /// 挂绳自然垂成悬链线、随锚点移动甩摆、被风扰动——刚性直线和会晃的绳子之间就是贴图感与手工感的差距。<br/>
-    /// 单端钉(挂坠/流苏)或双端钉(两点间松弛悬绳)皆可
-    /// </summary>
+    /// <summary>UI Verlet 绳,8~12 点,单端钉或双端悬</summary>
     internal sealed class OniRope
     {
         private readonly Vector2[] pos;
@@ -37,10 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             warmed = true;
         }
 
-        /// <summary>
-        /// 推进一帧。anchor 钉首端;tail 非空则钉末端(双端悬绳);
-        /// windAmp 风扰强度(像素/帧);endWeight 末端附加重力(挂坠质量感)
-        /// </summary>
+        /// <summary>推进一帧,anchor 钉首,tail 钉末,windAmp px/帧,endWeight 末端重</summary>
         public void Update(Vector2 anchor, Vector2? tail, float time, float windAmp,
             float endWeight = 0f, float damping = 0.90f, int iterations = 3) {
             //布局跳变(开窗/改分辨率)时重摆,防止绳从屏幕另一端甩来
@@ -104,10 +97,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>
-        /// 末端向目标点软牵引(悬停持握用):位置与历史同步平移,不注入动能;<br/>
-        /// strength 为每帧插值比例,约束迭代会把超出绳长的部分拉回,牵引因此自带弹性余量
-        /// </summary>
+        /// <summary>末端软牵引,位与史同移不注入动能,strength=每帧插值</summary>
         public void PullEnd(Vector2 target, float strength) {
             if (!warmed) {
                 return;
@@ -121,9 +111,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>
-        /// 逐段折线绘制:主体首尾渐变 + 绞纹高光(每段一粒斜向亮点,随材质走不滑动)
-        /// </summary>
+        /// <summary>逐段折线,首尾渐变+绞纹高光</summary>
         public void Draw(SpriteBatch sb, Color start, Color end, float thickness, float alpha, bool twist = true) {
             if (!warmed || alpha <= 0.01f) {
                 return;

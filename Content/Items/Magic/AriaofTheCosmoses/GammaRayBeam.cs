@@ -10,13 +10,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
-    /// 伽马射线：细过曝白核短脉冲，tile raycast 真实终点，四顶点条带 + AriaGammaRay.fx
-    /// ai[0]=1 锚定主人中心(R技能)，0 固定发射点；ai[1]=编队相位种子
+    /// 伽马短脉冲，raycast 终点 + AriaGammaRay.fx
+    /// ai[0]=1 跟主人(R) / 0 固定点；ai[1]=编队相位
     internal class GammaRayBeam : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        //三段生命周期：过冲展开→维持→收束
         internal const int ExpandTime = 4;
         internal const int SustainTime = 26;
         internal const int CollapseTime = 8;
@@ -59,7 +58,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         public override bool ShouldUpdatePosition() => false;
 
         public override void AI() {
-            //首帧锁定朝向：velocity 只用来传方向
             if (Age == 0) {
                 Projectile.rotation = Projectile.velocity.ToRotation();
                 Projectile.velocity = Vector2.Zero;
@@ -69,7 +67,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 }
             }
 
-            //R技能模式：起点跟随主人,角度保持
             if (AnchorOwner >= 1f) {
                 Player owner = Main.player[Projectile.owner];
                 if (!owner.active || owner.dead) {
@@ -99,7 +96,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             }
         }
 
-        //沿射线步进至首个实心瓦片：碰撞与绘制共用终点
         private void MeasureRayLength() {
             Vector2 dir = Projectile.rotation.ToRotationVector2();
             float length = 0f;
@@ -124,7 +120,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 Lighting.AddLight(Projectile.Center + dir * (i * 60f), ColViolet.ToVector3() * 0.7f * widthMul);
             }
 
-            //沿束电离火花
             if (Main.rand.NextBool(3)) {
                 float along = Main.rand.NextFloat(0.05f, 0.95f);
                 Vector2 pos = Projectile.Center + dir * (rayLength * along) + perp * Main.rand.NextFloat(-CoreWidth * 0.5f, CoreWidth * 0.5f);
@@ -133,7 +128,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     ?.Configure(false, Main.rand.Next(8, 14));
             }
 
-            //命中端反溅电离弧
             if (hitWall && Main.rand.NextBool(2)) {
                 Vector2 hitPos = Projectile.Center + dir * rayLength;
                 Vector2 splashVel = (-dir).RotatedBy(Main.rand.NextFloat(-1.1f, 1.1f)) * Main.rand.NextFloat(4f, 10f);
@@ -155,7 +149,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (!VaultUtils.isServer && Projectile.numHits <= 2) {
-                //电离散射
                 for (int i = 0; i < 10; i++) {
                     float ang = MathHelper.TwoPi * i / 10f + Main.rand.NextFloat(-0.2f, 0.2f);
                     PRTLoader.NewParticle<PRT_GammaIonize>(target.Center + Main.rand.NextVector2Circular(8f, 8f),
@@ -163,7 +156,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                         Color.Lerp(ColViolet, ColCore, Main.rand.NextFloat(0.2f, 0.6f)), Main.rand.NextFloat(0.4f, 0.9f))
                         ?.Configure(Main.rand.Next(10, 20), Main.rand.NextFloat(MathHelper.TwoPi));
                 }
-                //辐射光斑
                 for (int i = 0; i < 6; i++) {
                     PRTLoader.NewParticle<PRT_Light>(target.Center, Main.rand.NextVector2Circular(18f, 18f),
                         Color.Lerp(ColViolet, ColCheren, Main.rand.NextFloat()), Main.rand.NextFloat(0.5f, 1f))
@@ -171,7 +163,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 }
             }
 
-            //穿透伤害递减
             Projectile.damage = (int)(Projectile.damage * 0.85f);
         }
 
@@ -190,13 +181,13 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             Vector2 dir = Projectile.rotation.ToRotationVector2();
             Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
 
-            //条带止于 raycast 命中点,不再向外延伸(热球由 shader SDF + 加色层圆光负责)
+            //条带止于 raycast，热球交 shader
             float stripLen = rayLength;
             Vector2 origin = Projectile.Center - dir * 10f;
             Vector2 tip = Projectile.Center + dir * stripLen;
             float halfW = StripHalfWidth * (0.45f + 0.55f * widthMul);
 
-            //末端顶点收尖,消灭 quad 方角(撞墙端略宽以承接热球)
+            //末端收尖，撞墙端略宽
             float tipPinch = hitWall ? 0.32f : 0.06f;
 
             var verts = new VertexPositionColorTexture[4];
@@ -247,7 +238,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             Vector2 muzzle = Projectile.Center - Main.screenPosition;
             float flicker = 1f + 0.12f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 46f + PhaseSeed * 9f);
 
-            //枪口聚焦光球 + 星芒
             Main.EntitySpriteDraw(glow, muzzle, null, ColViolet * (0.85f * widthMul), 0f, glow.Size() / 2f,
                 0.5f * widthMul * flicker, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(glow, muzzle, null, ColCore * (0.6f * widthMul), 0f, glow.Size() / 2f,
@@ -255,7 +245,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             Main.EntitySpriteDraw(star, muzzle, null, ColCore * (0.9f * widthMul), Main.GlobalTimeWrappedHourly * 4f,
                 star.Size() / 2f, 0.42f * widthMul * flicker, SpriteEffects.None, 0);
 
-            //命中端冲击辉光
             if (hitWall) {
                 Vector2 hitPos = Projectile.Center + dir * rayLength - Main.screenPosition;
                 Main.EntitySpriteDraw(glow, hitPos, null, ColCheren * (0.8f * widthMul), 0f, glow.Size() / 2f,

@@ -294,7 +294,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 PlayerLoader.OnHitNPC(Owner, target, hit, damageDone);
             }
 
-            //命中粒子：颗粒大小受连击阶段影响
+            //命中粒子随连击
             if (VaultUtils.isServer) {
                 return;
             }
@@ -441,7 +441,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             //生长 → 巡航 → 消散 三段曲线
             if (t < 0.25f) {
-                //快速膨胀：EaseOutExpo
+                //快速膨胀 EaseOutExpo
                 float p = t / 0.25f;
                 growProgress = 1f - MathF.Pow(2f, -8f * p);
                 fadeAlpha = MathHelper.Lerp(0.4f, 1f, p);
@@ -460,10 +460,10 @@ namespace CalamityOverhaul.Content.Items.Melee
             //能量脉冲，贴图呼吸
             energyPulse = 0.5f + 0.5f * MathF.Sin(t * MathF.PI * (2.4f + Stage * 0.4f) + Seed * 0.13f);
 
-            //飞行减速：随时间逐渐失去推力，让月牙"停下来再散开"
+            //飞行减速
             Projectile.velocity *= MathHelper.Lerp(0.985f, 0.94f, t);
 
-            //朝向：根据速度方向修正，避免反向飞行带来的画面错乱
+            //朝向随速度
             if (Projectile.velocity.LengthSquared() > 0.01f) {
                 Projectile.rotation = Projectile.velocity.ToRotation();
             }
@@ -493,7 +493,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return false;
             }
 
-            //用一个加宽的椭圆近似月牙的命中区域：横向更宽，纵向（沿飞行方向）较窄
+            //月牙命中椭圆近似
             float radius = CurrentRadius;
             //horns 在前部，整体命中区域略向前突出
             Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
@@ -557,7 +557,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            //命中粒子：向后炸开（与冲击方向相反），强化"被打飞"的视觉
+            //命中粒子向后炸
             Vector2 back = -Projectile.velocity.SafeNormalize(Vector2.Zero);
             for (int i = 0; i < 8 + Stage * 4; i++) {
                 Vector2 vel = back.RotatedBy(Main.rand.NextFloat(-0.7f, 0.7f)) * Main.rand.NextFloat(3f, 8f);
@@ -583,7 +583,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            //四边形片元：以飞行方向为 X 轴，正前方为 UV.x = 1
+            //四边形片元，飞行为 X
             //顶点世界坐标，transformMatrix进裁剪空间
             Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             Vector2 side = new(-forward.Y, forward.X);
@@ -593,14 +593,14 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             Vector2 center = Projectile.Center;
 
-            //quad 四角：UV (0,0) 后上、(1,0) 前上、(0,1) 后下、(1,1) 前下
+            //quad 四角 UV
             //"后下/后上" 是远离飞行方向那侧
             Vector2 backTop = center - forward * halfWidth - side * halfHeight;
             Vector2 frontTop = center + forward * halfWidth - side * halfHeight;
             Vector2 backBottom = center - forward * halfWidth + side * halfHeight;
             Vector2 frontBottom = center + forward * halfWidth + side * halfHeight;
 
-            //TriangleStrip 需要 4 个顶点：TL, TR, BL, BR
+            //TriangleStrip 四顶点
             VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
             verts[0] = new VertexPositionColorTexture(new Vector3(backTop, 0f), Color.White, new Vector2(0f, 0f));
             verts[1] = new VertexPositionColorTexture(new Vector3(frontTop, 0f), Color.White, new Vector2(1f, 0f));

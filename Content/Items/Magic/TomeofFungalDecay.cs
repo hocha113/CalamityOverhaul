@@ -11,9 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic
 {
-    /// <summary>
-    /// 腐菌秘典
-    /// </summary>
+    /// <summary>腐菌秘典</summary>
     internal class TomeofFungalDecay : ModItem
     {
         public override string Texture => CWRConstant.Item_Magic + "TomeofFungalDecay";
@@ -47,7 +45,6 @@ namespace CalamityOverhaul.Content.Items.Magic
         public override string Texture => CWRConstant.Item_Magic + "TomeofFungalDecay";
         public override int TargetID => ModContent.ItemType<TomeofFungalDecay>();
         public override SoundStyle? ShootSound => CWRSound.SporeBubble;
-        //每轮点射的发数与节奏
         private const int BurstCount = 3;
         private const int ShotInterval = 10;
         private const int BurstCooldown = 60;
@@ -60,7 +57,6 @@ namespace CalamityOverhaul.Content.Items.Magic
         public override void AI() {
             UpdateHeldPose(WantsFireLeft);
 
-            //点射进行中书页震颤
             if (WantsFireLeft && fireIndex != 0) {
                 RecoilOffset = Vector2.Lerp(RecoilOffset, VaultUtils.RandVr(16f), 0.2f);
             }
@@ -79,7 +75,6 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
 
         private void Fire() {
-            //每轮点射开始时播放一次音效
             if (fireIndex == 0) {
                 PlayShootSound();
             }
@@ -87,7 +82,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             SnapToAimPose();
 
             if (Projectile.IsOwnedByLocalPlayer()) {
-                //向八个方向喷出孢子泡泡，各自奔向远处的标记点
+                //八向孢子奔标记点
                 Vector2 velocity = ShootVelocity;
                 for (int i = 0; i < 8; i++) {
                     velocity = velocity.RotatedBy(MathHelper.TwoPi / 8f * i);
@@ -97,7 +92,6 @@ namespace CalamityOverhaul.Content.Items.Magic
                 }
             }
 
-            //打满一轮后进入较长的吟唱冷却
             if (++fireIndex >= BurstCount) {
                 fireIndex = 0;
                 FireCooldown = BurstCooldown;
@@ -108,7 +102,6 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
 
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
-            //吟唱蓄势时的发光胀大
             if (fireIndex == 0 && WantsFireLeft && FireCooldown > 0) {
                 float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
                 Color color = Color.BlueViolet;

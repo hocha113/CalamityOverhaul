@@ -8,9 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
 {
-    /// <summary>
-    /// 正义的显现
-    /// </summary>
+    /// <summary>正义的显现</summary>
     internal class JusticeUnveiled : ModItem
     {
         public override string Texture => CWRConstant.Item_Accessorie + "JusticeUnveiled";
@@ -69,28 +67,24 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 return true;
             }
 
-            //修改触发条件，不再是暴击，而是按概率给予玩家触发机会
+            //远程暴击33%充能
             if (projectile.DamageType == DamageClass.Ranged) {
-                if (hit.Crit && Main.rand.NextBool(3)) {//暴击后33%概率给予机会
+                if (hit.Crit && Main.rand.NextBool(3)) {
                     player.CWR().JusticeUnveiledCharges++;
                     if (player.whoAmI == Main.myPlayer && player.CWR().JusticeUnveiledCharges <= 5) {
                         Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero
                             , ModContent.ProjectileType<JusticeUnveiledCross>(), 0, 0, player.whoAmI, player.CWR().JusticeUnveiledCharges);
                     }
                     if (player.CWR().JusticeUnveiledCharges > 5) {
-                        player.CWR().JusticeUnveiledCharges = 5;//最多5次
+                        player.CWR().JusticeUnveiledCharges = 5;//上限5
                     }
                 }
             }
             return false;
         }
 
-        /// <summary>
-        /// 生成命中十字标记特效
-        /// </summary>
         public static void SpawnCrossMarker(NPC target, int whoAmI) {
             if (whoAmI == Main.myPlayer) {
-                //生成十字标记弹幕
                 Projectile.NewProjectile(
                     Main.player[Main.myPlayer].GetSource_Misc("JusticeUnveiledMark"),
                     target.Center,
@@ -103,12 +97,10 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 );
             }
 
-            //命中闪光特效
             for (int i = 0; i < 2; i++) {
                 float angle = MathHelper.TwoPi * i / 2f;
                 Vector2 direction = angle.ToRotationVector2();
 
-                //金色光线爆发
                 for (int j = 0; j < 3; j++) {
                     Vector2 velocity = direction * Main.rand.NextFloat(2f, 5f);
                     Dust light = Dust.NewDustPerfect(
@@ -124,7 +116,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 }
             }
 
-            //环形冲击波粒子
             for (int i = 0; i < 8; i++) {
                 float angle = MathHelper.TwoPi * i / 8f;
                 Vector2 velocity = angle.ToRotationVector2() * 5f;
@@ -139,7 +130,6 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
                 ring.noGravity = true;
             }
 
-            //命中音效
             SoundEngine.PlaySound(SoundID.Item4 with {
                 Volume = 0.3f,
                 Pitch = 0.5f

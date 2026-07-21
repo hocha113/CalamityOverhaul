@@ -9,14 +9,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>二阶段喷火追击：弧线贴近+持续扇形火舌</summary>
+    /// <summary>二阶段喷火追击，弧线贴近+持续扇形火舌</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismFlameChase, typeof(TwinsStateContext))]
     internal class SpazmatismFlameChaseState : TwinsStateBase
     {
         public override string StateName => "SpazmatismFlameChase";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismFlameChase;
 
-        /// <summary>二阶段套路(有搭档/独眼)；合击节点由 ComboSignal 同步，细节见 ComboSequence*</summary>
+        /// <summary>二阶段套路；合击见 ComboSignal/ComboSequence*</summary>
         private static readonly string[] ComboSequenceWithPartner =
         [
             "Phase2Dash",
@@ -66,20 +66,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 return new SpazmatismSoloRageState();
             }
 
-            //锚点状态:响应搭档发出的合击信号，立即跟进合击
+            //锚点跟合击信号，立即跟进合击
             ITwinsState comboFollow = TwinsComboCoordinator.TryFollowSignal(context);
             if (comboFollow != null) {
                 return comboFollow;
             }
 
-            //弧线追击玩家:速度恒定+限转速，产生贴身缠斗的弧线轨迹
+            //弧线追击
             TwinsMotion.CurveChase(npc, player.Center, ChaseSpeed, MaxTurnRad);
             FaceVelocity(npc);
             context.PushDashVisuals(0.25f, 0.35f);
 
             Timer++;
 
-            //喷吐火舌:沿运动方向的扇形火焰流
+            //扇形火舌
             if (Timer % FlameInterval == 0) {
                 if (!VaultUtils.isClient) {
                     Vector2 fireDir = npc.velocity.SafeNormalize(Vector2.UnitY);
@@ -112,7 +112,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
             //喷火结束，按固定套路切换到下一招式
             if (Timer >= FlameDuration) {
-                //独眼模式下切换到狂暴状态
                 if (context.IsSoloRageMode) {
                     return new SpazmatismSoloRageState();
                 }

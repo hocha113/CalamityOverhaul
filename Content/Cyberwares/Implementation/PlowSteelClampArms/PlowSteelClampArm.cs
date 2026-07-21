@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Cyberwares.Skills;
 using System.Collections.Generic;
 using Terraria;
@@ -9,8 +9,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 {
     /// <summary>
-    /// 犁钢钳臂，手部槽位：挖掘/放置范围扩展、磁吸拾取
-    /// <br/>技能：高热单分子线，短线/长线双形态，详见 <see cref="MonomolecularWire"/>
+    /// 犁钢钳臂，手部槽，挖掘/放置范围+磁吸
+    /// <br/>技能高热单分子线，短/长双形态，见 <see cref="MonomolecularWire"/>
     /// </summary>
     internal class PlowSteelClampArm : BaseCyberware
     {
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         /// <summary>长线模式持续帧，锚点伤害判定窗口</summary>
         public const int WireLifetime = 60 * 5;
 
-        /// <summary>短线模式持续帧，无锚点快速铺线，时长较短作平衡</summary>
+        /// <summary>短线持续帧，无锚点快速铺线</summary>
         public const int ShortWireLifetime = 60 * 2;
 
         /// <summary>短线长度像素，约 12 tile</summary>
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             Item.value = Item.sellPrice(0, 7, 0, 0);
         }
 
-        /// <summary>查询玩家是否装备本义体，未装备返回 null</summary>
+        /// <summary>未装备返回 null</summary>
         public static PlowSteelClampArm GetEquipped(Player player) {
             if (player == null || !player.active) {
                 return null;
@@ -71,11 +71,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         }
 
         public override void PostUpdateEquipped(Player player) {
-            //blockRange 扩展挖掘范围，equippedAnyTileRangeAcc 激活原版范围流程
+            //blockRange + equippedAnyTileRangeAcc 走原版范围流程
             player.blockRange += TileRangeBonus;
             player.equippedAnyTileRangeAcc = true;
 
-            //磁吸：物品与金币
+            //磁吸物品与金币
             player.treasureMagnet = true;
             player.goldRing = true;
         }

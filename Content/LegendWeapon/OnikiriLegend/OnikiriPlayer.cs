@@ -22,20 +22,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 {
     /// <summary>
-    /// 鬼切玩法资源层：气力(神威疾走的燃料)与架势(处决技的蓄势)。<br/>
-    /// 右键=神威疾走：耗气,按下即出;气力自然恢复(消耗后有回气延迟),连段命中回气。<br/>
-    /// 表世界(黄昏表层领域)中疾走跑满仍按住右键 → 衔接樱流化身:化樱续飞逐帧耗气,
-    /// 松手/气尽/离开表世界即回卷重组(<see cref="TryChainSakuraFlight"/>/<see cref="ManageSakuraFlight"/>)。<br/>
-    /// 疾走刹停/樱流落地的操控交还帧开追斩窗:窗内左键按下沿把普攻化为残心斩
-    /// (表世界=樱衣),锵前按下缓冲到纳刀结算同帧释放(<see cref="TryZanshinStrike"/>)。<br/>
-    /// 架势由连段命中与疾走穿身格挡(蠕虫全身算一条,单次冲刺封顶)积攒;
-    /// <see cref="CWRKeySystem.WeponSkill_R"/> 处决：蓄满出终结乱舞(耗全部),
-    /// 过半出灭世一闪(耗一半),不足则鞘刀顿挫提醒。处决键任何状态下即时响应,不被连段阻塞。<br/>
-    /// 肢解无专用键：里世界中左键点中真身/媒介即化为肢解居合(<see cref="TryClickDismember"/>,
-    /// 领域翻转本身就是模式切换),肢解的代价是纳刀后同等的肢解连同必定伤害落回自己
-    /// (<see cref="OniPlayerDismember"/>反噬),点真身点媒介皆然,刀无善恶。<br/>
-    /// 数值 owner 端自治,不存 static、不进网络、不存档(进世界/复活重置);
-    /// HUD 经 <see cref="OnikiriResourceSource"/> 只读本类,招式弹幕由 tML 自动同步
+    /// 鬼切资源层,气力+架势,owner 端自治不进网络/存档.
+    /// 右键疾走;表世界可衔樱流;交还帧开追斩窗;
+    /// <see cref="CWRKeySystem.WeponSkill_R"/> 处决;里世界点选肢解.
+    /// HUD 经 <see cref="OnikiriResourceSource"/> 只读
     /// </summary>
     internal class OnikiriPlayer : ModPlayer
     {
@@ -146,7 +136,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return;
             }
 
-            //试炼门禁硬倒计时：与招式输入无关，反噬僵直期也要推进（叙事忙碌时内部会暂停）
+            //试炼门禁硬倒计时,与招式无关,反噬僵直也推进
             HimayoStorySync.TickTrialUnlockSafety(Player);
 
             if (vigorRegenDelay > 0) {
@@ -199,11 +189,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         //==================== 鬼域 ====================
 
         /// <summary>
-        /// 领域快捷键：<see cref="CWRKeySystem.Legend_Domain"/> 开阖(共享键,持刀才受理,防与其他传奇武器串键)；
-        /// <see cref="CWRKeySystem.Onikiri_DomainFlip"/>(默认鼠标中键)表里翻转,阖着先展到表,
-        /// 域开着时不持刀也受理——控制面不随收刀弃守。<br/>
-        /// 骇客时间(另一套时停,翻转还要挂 WorldFreeze)与点鬼簿/铭刻演出中不受理;
-        /// 仪式中被拒的命令由 HUD 鬼眼眨眼回应
+        /// 领域键 <see cref="CWRKeySystem.Legend_Domain"/> 开阖(持刀);
+        /// <see cref="CWRKeySystem.Onikiri_DomainFlip"/> 翻转,域开时不持刀也受理;
+        /// 骇客时停/点鬼簿/铭刻中不受理
         /// </summary>
         private void HandleDomainInput(bool holding) {
             if (Player.dead) {
@@ -261,9 +249,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         //==================== 樱流化身 ====================
 
         /// <summary>
-        /// 疾走跑满全程且右键仍按住时的樱流衔接,由 <see cref="OniFlashStep"/> 在停止帧调用(owner 端)。<br/>
-        /// 门禁:黄昏表层领域稳态(表世界)+最低气力;失败静默,疾走照常刹停即是答复。<br/>
-        /// 时长上限按当前气力折算,真实时长由 <see cref="ManageSakuraFlight"/> 的逐帧抽气决定
+        /// 疾走衔樱流,<see cref="OniFlashStep"/> 停止帧(owner);
+        /// 需表世界+最低气力,失败静默
         /// </summary>
         internal bool TryChainSakuraFlight(Vector2 direction, IEntitySource source) {
             if (Player.whoAmI != Main.myPlayer || Player.mount?.Active == true) {
@@ -311,10 +298,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         //==================== 残心追斩 ====================
 
-        /// <summary>
-        /// 操控交还帧开追斩窗(owner 端):疾走刹停传入距锵帧数与墨痕数,樱流落地传 (0, 0)。<br/>
-        /// 窗内按下沿把普攻化为残心斩;有墨痕时锵前按下缓冲到结算同帧释放
-        /// </summary>
+        /// <summary>交还帧开追斩窗(owner),窗内按下沿→残心斩</summary>
         internal void OpenZanshinWindow(int judgeDelay, int markCount) {
             if (Player.whoAmI != Main.myPlayer) {
                 return;
@@ -338,11 +322,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         /// <summary>
-        /// 追斩按下沿受理,两条输入路径共用:<see cref="OnikiriItem.Shoot"/>(无连段控制器)传
-        /// edgeVerified=false,自行以 prevMouseLeft 鉴别按下沿(ItemCheck 先于 PostUpdate 更新,
-        /// 当帧可判,按住穿过不转换);<see cref="CrimsonRendSlash"/> 排拍路径已有 justPressed,传 true。<br/>
-        /// 有墨痕且锵未响 → 挂起缓冲,结算同帧释放(出刀与墨痕齐裂压成一拍);
-        /// 锵后/挥空 → 即时出刀。返回 false 时调用方回退连段
+        /// 追斩按下沿;<see cref="OnikiriItem.Shoot"/> 传 edgeVerified=false,
+        /// <see cref="CrimsonRendSlash"/> 传 true;false 则回退连段
         /// </summary>
         internal bool TryZanshinStrike(Item item, bool edgeVerified) {
             if (Player.whoAmI != Main.myPlayer || zanshinWindow <= 0) {
@@ -426,7 +407,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                     , source: Player.GetSource_ItemUse(item));
             }
             else if (Stance >= AnnihilateCost - 0.01f) {
-                //过半:灭世一闪,以我为中心朝光标张开——尺寸恒 1.0(已是上限)
+                //过半,灭世一闪,尺寸恒 1.0
                 Stance -= AnnihilateCost;
                 Vector2 aim = Main.MouseWorld - Player.Center;
                 OniAnnihilate.Fire(Player, Player.Center, aim, (int)(state.WeaponDamage * AnnihilateDamageMul)
@@ -440,16 +421,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         //==================== 肢解 ====================
 
         /// <summary>
-        /// 左键点击的肢解判定——里世界的攻击语言,不耗气力不耗架势,无专用键。<br/>
-        /// 只认按下沿的一次点击(调用方保证:<see cref="OnikiriItem.Shoot"/> 新使用 +
-        /// <see cref="CrimsonRendSlash"/> 排拍重启沿),按住扫过永不转换;两层精确点选:<br/>
-        /// 1. 点在真身碰撞箱上(贴身容差) → 直接肢解,当帧入冻;
-        /// 新影常挂在敌人当前位置上,真身压过纸的优先级,点谁斩谁;<br/>
-        /// 2. 点在媒介(面影纸面)上 → 点锚斩纸,裂纸放脉冲斩"过去"的真身。<br/>
-        /// 两条路落刀成功都以反噬作结:纳刀后同等的肢解连同必定伤害落回自己
-        /// (<see cref="OniPlayerDismember"/>约一秒完全暴露的僵直,天然限频),媒介只替真身受刀。<br/>
-        /// 均未命中/不在里世界/演出反噬中 → 返回 false,调用方回退普攻连段。
-        /// 仅 owner 端决策(纸为客户端本地,居合弹幕经 tML 同步)
+        /// 里世界肢解点选(按下沿),真身或媒介;
+        /// 成功落刀后 <see cref="OniPlayerDismember"/> 反噬;miss 回退连段;owner 端
         /// </summary>
         internal bool TryClickDismember(Item item) {
             if (Player.whoAmI != Main.myPlayer) {
@@ -508,10 +481,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return aim.ToRotation();
         }
 
-        /// <summary>
-        /// 直接肢解目标:光标 pad 距离内最要紧者(boss 旗 &gt; 最大生命 &gt; 距离,蠕虫按主体计旗);
-        /// 蠕虫节段整体排除——冻结一节其余照动,画面会散架,头部仍可肢解
-        /// </summary>
+        /// <summary>肢解目标点选,蠕虫节段排除(头部可)</summary>
         private NPC PickDismemberTarget(Vector2 cursor, float pad) {
             NPC best = null;
             bool bestBoss = false;
@@ -544,12 +514,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         /// <summary>
-        /// 终结乱舞焦点的智能选点——四层意图级联(魂类"隐形辅助"的思路:
-        /// 帮玩家把想做的事做准,而不是替玩家做决定)：<br/>
-        /// 1. 光标直选:光标小半径内有敌(精确碰撞箱距离),吸附到最要紧者中心——玩家在瞄,帮他瞄到点上;<br/>
-        /// 2. 命中记忆:光标附近无敌说明没在瞄,回查近 5 秒打过的目标,优先 boss、其次最近命中,须在射程内——打谁处决谁;<br/>
-        /// 3. 在场 boss 兜底:什么都没打过(架势是先前攒的),射程内有 boss 就取离光标最近的一只——boss 战里几乎不会真想劈空气;<br/>
-        /// 4. 全部落空:光标钳进射程照放——玩家的选择作数,不跨屏改判
+        /// 终结乱舞焦点级联,光标直选→命中记忆→在场 boss→光标钳射程
         /// </summary>
         private Vector2 ComputeFinaleFocus(out Vector2 aim) {
             Vector2 mouse = Main.MouseWorld;
@@ -578,8 +543,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return focus;
         }
 
-        /// <summary>第一层:光标直选。半径内取最要紧者(boss 旗 &gt; 最大生命 &gt; 距离,蠕虫按主体计旗);
-        /// 光标点名可略超射程(<see cref="FinaleCursorSlack"/>),但不追到天边</summary>
+        /// <summary>光标直选最要紧者,可略超射程(<see cref="FinaleCursorSlack"/>)</summary>
         private NPC PickAtCursor(Vector2 cursor) {
             NPC best = null;
             bool bestBoss = false;
@@ -611,8 +575,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return best;
         }
 
-        /// <summary>第二层:命中记忆。近 5 秒打过、仍然有效且在射程内的目标里,优先 boss、其次最近命中;
-        /// 蠕虫记的是实际挨刀的节段,焦点自然落在一直在砍的那截肉上</summary>
+        /// <summary>命中记忆,近 5 秒,优先 boss</summary>
         private NPC PickFromHitMemory() {
             int now = (int)Main.GameUpdateCount;
             NPC best = null;
@@ -643,7 +606,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return best;
         }
 
-        /// <summary>第三层:在场 boss 兜底。射程内的 boss(含蠕虫节段)取离光标最近者,多 boss 时尊重光标倾向</summary>
+        /// <summary>在场 boss 兜底,取离光标最近</summary>
         private NPC PickBossInRange(Vector2 cursor) {
             NPC best = null;
             float bestD = float.MaxValue;
@@ -721,7 +684,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             Stance = Math.Min(StanceMax, Stance + gain);
         }
 
-        /// <summary>满架势的身上提示：身周低密度绯焰火星上升,不看角落也知道刀可拔了</summary>
+        /// <summary>满架势身周绯焰提示</summary>
         private void ReadyCue() {
             if (Stance < StanceMax - 0.01f) {
                 readyCueTimer = 0;

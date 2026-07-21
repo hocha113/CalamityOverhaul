@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>十字绞杀：四臂封位 → 预警充能 → 四道热射线向心，对角缝为安全区</summary>
+    /// <summary>十字绞杀</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.CrossExecute, typeof(PrimeStateContext))]
     internal class PrimeCrossExecuteState : PrimeStateBase
     {
@@ -18,12 +18,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         internal static int Execute => 90;
         private static int Total => Telegraph + Execute + 20;
 
-        /// <summary>四臂封位槽（左/右/上/下），热射线与 PrimeArm 编队共用</summary>
+        /// <summary>四臂封位槽</summary>
         internal static readonly Vector2[] ArmSlots = new Vector2[] {
             new(-320f, 0f), new(320f, 0f), new(0f, -280f), new(0f, 280f),
         };
 
-        /// <summary>十字锚点：预警瞬间冻结，射线与警戒线对齐</summary>
+        /// <summary>十字锚点，预警瞬间冻</summary>
         private Vector2 crossCenter;
 
         public override void OnEnter(PrimeStateContext context) {
@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 crossCenter = context.Target.Center;
             }
 
-            //头部退到对角缝隙上方旁观，给绞杀网让出画面中心
+            //头退对角缝上方
             int side = npc.Center.X >= crossCenter.X ? 1 : -1;
             Vector2 anchor = crossCenter + new Vector2(330f * side, -400f);
             npc.velocity = Vector2.Lerp(npc.velocity, (anchor - npc.Center) * 0.05f, 0.12f);
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
             if (Timer < Telegraph) {
                 context.SetChargeState(1, Timer / (float)Telegraph);
-                //四条灼烧走廊预警：以冻结锚点为中心的十字（左右钳形+上下封位），对角缝隙可走
+                //十字灼烧预警
                 if (!VaultUtils.isClient && Timer == 1) {
                     for (int i = 0; i < 4; i++) {
                         PrimeTelegraphLine.SpawnLine(npc, crossCenter, MathHelper.PiOver2 * i, Telegraph);
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             return null;
         }
 
-        /// <summary>四道热射线自四臂封位向心释放，两两相对接成完整十字</summary>
+        /// <summary>四道热射线向心</summary>
         private void FireCrossBeams(PrimeStateContext context) {
             NPC npc = context.Npc;
 

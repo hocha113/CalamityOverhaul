@@ -6,9 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul
 {
-    /// <summary>
-    /// 所有引用外部模组内部内容的ID集中地
-    /// </summary>
+    /// <summary>跨模组内容 ID 缓存(Calamity 等)</summary>
     internal static class CWRID
     {
         #region 物品ID引用
@@ -405,9 +403,7 @@ namespace CalamityOverhaul
 
         public static bool IsValid(int id) => id > 0;
 
-        /// <summary>
-        /// 所有给定ID均已成功解析时返回<see langword="true"/>，用作跨模组配方注册守卫
-        /// </summary>
+        /// <summary>配方守卫，全部 id>0</summary>
         public static bool AllValid(params int[] ids) {
             foreach (int id in ids) {
                 if (id <= 0) {
@@ -417,19 +413,14 @@ namespace CalamityOverhaul
             return true;
         }
 
-        /// <summary>
-        /// 可疑镀层与神秘电路板是否均已成功解析（工业化灾厄材料配方分支）
-        /// </summary>
+        /// <summary>DubiousPlating+MysteriousCircuitry 均已解析</summary>
         public static bool DubiousCircuitryAvailable => Item_DubiousPlating > 0 && Item_MysteriousCircuitry > 0;
 
         #endregion
 
         #region 保底加载
 
-        /// <summary>
-        /// 在Setup阶段调用，强制访问所有ID属性以预填充缓存
-        /// 加载失败的条目会通过日志输出，便于在调试阶段排查失效内容
-        /// </summary>
+        /// <summary>Setup 时强制访问全部 ID 属性预填缓存，失败打日志</summary>
         public static void PreloadAll() {
             var logger = CWRMod.Instance.Logger;
             int total = 0;
@@ -528,11 +519,10 @@ namespace CalamityOverhaul
             }
             else {
                 if (ModLoader.TryGetMod("CalamityMod", out _)) {
-                    //如果没找到，可能是因为模组还没加载完，或者ID真的错了
+                    //未找到，过早访问或 ID 写错
                     ModLoader.GetMod("CalamityOverhaul").Logger.Warn($"[CWRID] Failed to find {name} in CalamityMod. It might be too early to access, or the ID is incorrect.");
                 }
-                return 0;//不要返回0，否则容易发生各种意料之外的情况
-                //不，必须返回0，这样才能知道那里错了
+                return 0;//失败必须回 0，便于排查
             }
         }
         #endregion

@@ -21,16 +21,15 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             NPC npc = Main.npc[s.NpcIndex];
             EmitApplyParticles(npc);
             CombatText.NewText(npc.Hitbox, new Color(80, 255, 200), HackTime.MemoryWiped.Value, true);
-            //群组扩散仅施法端注册效果
+            //群组扩散仅施法端
             if (!HackTimeNetSync.IsRemoteApply) {
-                //群组扩散，HasEffect 短路防递归
                 HackEffectTracker.PropagateNpcEffectToGroup(this, s.NpcIndex,
                     caster?.whoAmI ?? Main.myPlayer, EmitApplyParticles);
             }
             return true;
         }
 
-        //初始溶解粒子，群组成员复用
+        //群组成员复用
         private static void EmitApplyParticles(NPC npc) {
             for (int i = 0; i < 10; i++) {
                 Vector2 pos = npc.Center + Main.rand.NextVector2Circular(
@@ -43,7 +42,6 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override bool OnTick(IHackTarget target, int elapsed) {
             if (target is not NpcScannable s) return true;
             NPC npc = Main.npc[s.NpcIndex];
-            //持续数据碎片升腾
             if (elapsed % 12 == 0) {
                 Vector2 pos = npc.Center + Main.rand.NextVector2Circular(
                     npc.width * 0.4f, npc.height * 0.4f);
@@ -56,7 +54,6 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override void OnRemove(IHackTarget target) {
             if (target is not NpcScannable s) return;
             NPC npc = Main.npc[s.NpcIndex];
-            //记忆恢复粒子
             for (int i = 0; i < 4; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(1.5f, 1.5f);
                 PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(0, 180, 120), 0.5f).Configure(false, 15);

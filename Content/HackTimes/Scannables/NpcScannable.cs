@@ -38,7 +38,6 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             NPC npc = Main.npc[NpcIndex];
             if (!npc.active) return;
 
-            //TYPE
             labels[0] = HackTime.TypeLabel.Value;
             if (npc.townNPC) {
                 values[0] = HackTime.TownNpc.Value;
@@ -69,7 +68,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
                 colors[0] = HackTheme.TextBright;
             }
 
-            //THREAT，相对玩家生命/防御/减伤
+            //相对玩家生命/防御/减伤
             float relThreat = ComputeRelativeThreat(npc);
             labels[1] = HackTime.ThreatLabel.Value;
             if (relThreat >= 40f) {
@@ -89,24 +88,20 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
                 colors[1] = HackTheme.Accent;
             }
 
-            //HP
             labels[2] = "HP";
             values[2] = $"{npc.life:N0} / {npc.lifeMax:N0}";
             float hpPct = (float)npc.life / Math.Max(npc.lifeMax, 1);
             colors[2] = hpPct > 0.5f ? HackTheme.Accent
                 : hpPct > 0.25f ? HackTheme.Uploading : HackTheme.Danger;
 
-            //DEF
             labels[3] = HackTime.DefLabel.Value;
             values[3] = $"{npc.defense}";
             colors[3] = HackTheme.TextBright;
 
-            //DMG
             labels[4] = HackTime.DmgLabel.Value;
             values[4] = $"{npc.damage}";
             colors[4] = HackTheme.TextBright;
 
-            //KB.RES
             labels[5] = HackTime.KbResLabel.Value;
             values[5] = $"{npc.knockBackResist:F2}";
             colors[5] = npc.knockBackResist >= 0.9f ? HackTheme.Danger
@@ -117,24 +112,21 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return npc.townNPC || npc.friendly || npc.CountsAsACritter;
         }
 
-        /// <summary>相对玩家的威胁值，扫描行与档案星级共用</summary>
+        /// <summary>相对玩家威胁，扫描行与档案星级共用</summary>
         public static float ComputeRelativeThreat(NPC npc) {
             if (IsNonCombatNpc(npc)) return 0f;
             Player localPlayer = Main.LocalPlayer;
             float playerDR = Math.Clamp(localPlayer.endurance, 0f, 0.99f);
-            //有效单次伤害
             float effectiveDmg = Math.Max(1f, npc.damage - localPlayer.statDefense * 0.5f) * (1f - playerDR);
-            //单次命中 HP 占比
             float hitImpact = effectiveDmg / Math.Max(localPlayer.statLifeMax, 1);
-            //HP 比取 log2 压缩 Boss 数值
+            //HP 比 log2 压缩 Boss
             float hpRatio = (float)npc.lifeMax / Math.Max(localPlayer.statLifeMax, 1);
             float durabilityIndex = MathF.Log2(1f + hpRatio);
-            //NPC自身防御系数
             float defenseIndex = npc.defense / 50f;
             return hitImpact * 50f + durabilityIndex * 5f + defenseIndex * 5f;
         }
 
-        /// <summary>威胁星级 0..5，档案面板菱形刻度用</summary>
+        /// <summary>威胁星级 0..5</summary>
         public static int ComputeThreatPips(NPC npc) {
             float t = ComputeRelativeThreat(npc);
             if (t >= 40f) return 5;
@@ -177,7 +169,6 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
         }
 
         public bool ApplyHack(QuickHackDef hack, Player caster) {
-            //NPC 协议走效果追踪器
             int casterIndex = caster?.whoAmI ?? Main.myPlayer;
             return HackEffectTracker.ApplyNpcEffect(hack, NpcIndex, casterIndex) != null;
         }

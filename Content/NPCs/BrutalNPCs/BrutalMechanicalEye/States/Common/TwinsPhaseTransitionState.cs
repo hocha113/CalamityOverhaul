@@ -10,32 +10,31 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common
 {
-    /// <summary>同步转阶段：移动汇聚+形态切换，视野内可读</summary>
+    /// <summary>同步转阶段，汇聚+换形</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.TwinsPhaseTransition, typeof(TwinsStateContext))]
     internal class TwinsPhaseTransitionState : TwinsStateBase
     {
         public override string StateName => "TwinsPhaseTransition";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.TwinsPhaseTransition;
 
-        /// <summary>集合移动阶段</summary>
+        /// <summary>集合</summary>
         private const int GatherPhase = 60;
 
-        /// <summary>对峙阶段</summary>
+        /// <summary>对峙</summary>
         private const int ConfrontPhase = 40;
 
-        /// <summary>收缩蓄力阶段</summary>
+        /// <summary>收缩蓄力</summary>
         private const int ContractPhase = 50;
 
-        /// <summary>爆发阶段</summary>
+        /// <summary>爆发</summary>
         private const int BurstPhase = 45;
 
-        /// <summary>分离阶段</summary>
+        /// <summary>分离</summary>
         private const int SeparatePhase = 50;
 
-        /// <summary>恢复阶段</summary>
+        /// <summary>恢复</summary>
         private const int RecoveryPhase = 30;
 
-        /// <summary>总时长</summary>
         private const int TotalDuration = GatherPhase + ConfrontPhase + ContractPhase + BurstPhase + SeparatePhase + RecoveryPhase;
 
         private TwinsStateContext Context;
@@ -58,10 +57,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             hasBurst = false;
             hasPlayedGatherSound = false;
 
-            //寻找另一只眼睛
             partnerNpc = TwinsStateContext.GetPartnerNpc(context.Npc.type);
 
-            //进入转阶段时设置无敌
             context.Npc.dontTakeDamage = true;
         }
 
@@ -71,35 +68,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
 
             Timer++;
 
-            //计算集合点(玩家上方)
             gatherPoint = player.Center + new Vector2(0, -350);
 
-            //阶段1: 集合移动
             if (Timer <= GatherPhase) {
                 ExecuteGatherPhase(npc, player);
             }
-            //阶段2: 对峙
             else if (Timer <= GatherPhase + ConfrontPhase) {
                 ExecuteConfrontPhase(npc, player);
             }
-            //阶段3: 收缩蓄力
             else if (Timer <= GatherPhase + ConfrontPhase + ContractPhase) {
                 ExecuteContractPhase(npc, player);
             }
-            //阶段4: 爆发
             else if (Timer <= GatherPhase + ConfrontPhase + ContractPhase + BurstPhase) {
                 ExecuteBurstPhase(npc, player);
             }
-            //阶段5: 分离
             else if (Timer <= GatherPhase + ConfrontPhase + ContractPhase + BurstPhase + SeparatePhase) {
                 ExecuteSeparatePhase(npc, player);
             }
-            //阶段6: 恢复
             else {
                 ExecuteRecoveryPhase(npc, player);
             }
 
-            //转阶段完成
             if (Timer >= TotalDuration) {
                 context.IsInPhaseTransition = false;
                 return GetPhase2InitialState();
@@ -108,31 +97,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             return null;
         }
 
-        /// <summary>集合移动阶段 - 两只眼睛飞向玩家上方集合</summary>
+        /// <summary>集合移动</summary>
         private void ExecuteGatherPhase(NPC npc, Player player) {
             float progress = Timer / (float)GatherPhase;
 
-            //计算各自的目标位置(玩家上方两侧)
             float sideOffset = Context.IsSpazmatism ? -120f : 120f;
             Vector2 targetPos = gatherPoint + new Vector2(sideOffset, 0);
 
-            //快速移动到集合点
             float speed = 20f - progress * 10f;
             MoveTo(npc, targetPos, speed, 0.12f);
 
-            //始终面向玩家
             FaceTarget(npc, player.Center);
 
-            //跟随玩家移动
             npc.position += player.velocity * 0.5f;
 
-            //集合音效
             if (!hasPlayedGatherSound && Timer == 1) {
                 hasPlayedGatherSound = true;
                 SoundEngine.PlaySound(SoundID.Item103 with { Pitch = -0.3f, Volume = 0.8f }, npc.Center);
             }
 
-            //移动轨迹粒子
             if (!VaultUtils.isServer && Timer % 2 == 0) {
                 int dustType = Context.IsSpazmatism ? DustID.SolarFlare : DustID.Vortex;
                 Vector2 dustPos = npc.Center + Main.rand.NextVector2Circular(15, 15);
@@ -140,25 +123,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 dust.noGravity = true;
             }
 
-            //设置蓄力状态
             Context.SetChargeState(11, progress * 0.2f);
         }
 
-        /// <summary>对峙阶段 - 两只眼睛面对面悬停</summary>
+        /// <summary>对峙</summary>
         private void ExecuteConfrontPhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase;
             float progress = phaseTimer / (float)ConfrontPhase;
 
-            //悬停在位置
             float sideOffset = Context.IsSpazmatism ? -120f : 120f;
             Vector2 targetPos = gatherPoint + new Vector2(sideOffset, 0);
             npc.Center = Vector2.Lerp(npc.Center, targetPos, 0.1f);
             npc.velocity *= 0.9f;
 
-            //跟随玩家
             npc.position += player.velocity;
 
-            //面向对方(如果有)
             if (partnerNpc != null && partnerNpc.active) {
                 FaceTarget(npc, partnerNpc.Center);
             }
@@ -166,7 +145,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 FaceTarget(npc, player.Center);
             }
 
-            //对峙特效 - 两眼之间的能量连接
+            //对峙能量连线
             if (!VaultUtils.isServer && phaseTimer % 3 == 0 && partnerNpc != null && partnerNpc.active) {
                 Vector2 midPoint = (npc.Center + partnerNpc.Center) / 2f;
                 int segments = 5;
@@ -180,7 +159,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 }
             }
 
-            //警告粒子
             if (!VaultUtils.isServer && phaseTimer % 4 == 0) {
                 int dustType = Context.IsSpazmatism ? DustID.Torch : DustID.PurpleTorch;
                 Vector2 dustPos = npc.Center + Main.rand.NextVector2Circular(npc.width, npc.height);
@@ -189,46 +167,37 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 dust.velocity = Vector2.Zero;
             }
 
-            //对峙音效
             if (phaseTimer == 1) {
                 SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = -0.5f }, npc.Center);
             }
 
-            //设置蓄力状态
             Context.SetChargeState(11, 0.2f + progress * 0.2f);
         }
 
-        /// <summary>收缩蓄力阶段</summary>
+        /// <summary>收缩蓄力</summary>
         private void ExecuteContractPhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase - ConfrontPhase;
             float progress = phaseTimer / (float)ContractPhase;
 
-            //记录当前位置作为震动基准
             if (phaseTimer == 1) {
                 originalPosition = npc.Center;
             }
 
-            //跟随玩家
             originalPosition += player.velocity;
 
-            //逐渐增强的颤抖
             shakeIntensity = progress * 10f;
             Vector2 shake = Main.rand.NextVector2Circular(shakeIntensity, shakeIntensity);
             npc.Center = originalPosition + shake;
             npc.velocity = Vector2.Zero;
 
-            //缩小效果
             npc.scale = 1f - progress * 0.2f;
 
-            //面向对方
             if (partnerNpc != null && partnerNpc.active) {
                 FaceTarget(npc, partnerNpc.Center);
             }
 
-            //设置蓄力状态
             Context.SetChargeState(11, 0.4f + progress * 0.6f);
 
-            //能量聚集粒子
             if (!VaultUtils.isServer && phaseTimer % 2 == 0) {
                 int dustType = Context.IsSpazmatism ? DustID.SolarFlare : DustID.Vortex;
                 float angle = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -239,7 +208,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 dust.velocity = (npc.Center - dustPos).SafeNormalize(Vector2.Zero) * (6f + progress * 5f);
             }
 
-            //两眼之间的高压电弧流动
+            //双眼高压电弧
             if (!VaultUtils.isServer && phaseTimer % 2 == 0 && partnerNpc != null && partnerNpc.active) {
                 float t = Main.rand.NextFloat();
                 Vector2 linePos = Vector2.Lerp(npc.Center, partnerNpc.Center, t);
@@ -247,41 +216,37 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 if (!Context.IsSpazmatism) {
                     flowDir = -flowDir;
                 }
-                //沿连线奔涌的能量束(带垂直抖动模拟电弧)
+                //连线能量束
                 Vector2 perp = flowDir.RotatedBy(MathHelper.PiOver2) * (float)Math.Sin(t * 14f + Main.GlobalTimeWrappedHourly * 10f) * 9f;
                 PRTLoader.NewParticle<PRT_TwinsSpark>(linePos + perp, flowDir * 6f,
                     Color.White, Main.rand.NextFloat(1f, 1.6f) * (0.7f + progress * 0.5f))?
                     .Configure(12, Context.IsSpazmatism ? 1 : 0);
             }
 
-            //节拍式蓄力震感
             if (phaseTimer % 16 == 0 && !VaultUtils.isServer) {
                 TwinsMotion.Shake(npc.Center, 1.5f + progress * 3f, 8);
             }
 
-            //蓄力音效
             if (phaseTimer == 1) {
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.2f, Volume = 0.9f }, npc.Center);
             }
         }
 
-        /// <summary>爆发阶段</summary>
+        /// <summary>爆发</summary>
         private void ExecuteBurstPhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase - ConfrontPhase - ContractPhase;
             float progress = phaseTimer / (float)BurstPhase;
 
-            //跟随玩家
             originalPosition += player.velocity;
 
-            //爆发瞬间:同步咆哮+殉爆光团+多层冲击环+强震屏
+            //爆发，咆哮+殉爆+冲击环+强震
             if (!hasBurst) {
                 hasBurst = true;
 
-                //播放爆发音效
                 SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.1f, Volume = 1.3f }, npc.Center);
                 SoundEngine.PlaySound(SoundID.Item62 with { Volume = 1.2f }, npc.Center);
 
-                //屏幕扭曲冲击波(由魔焰眼单侧生成，双色混合主题)
+                //扭曲环，魔焰侧生成
                 if (Context.IsSpazmatism && !VaultUtils.isClient) {
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
                         ModContent.ProjectileType<TwinsSupernovaBlast>(), 0, 0f, Main.myPlayer, 1f, 2f);
@@ -290,23 +255,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 if (!VaultUtils.isServer) {
                     Color themeColor = Context.IsSpazmatism ? TwinsMotion.SpazColor : TwinsMotion.RetinColor;
 
-                    //过载能量光团
                     PRTLoader.NewParticle<PRT_MechExplosion>(npc.Center, Vector2.Zero, themeColor, 1.8f)?
                         .Configure(30, themeColor);
 
-                    //双层错相冲击环
                     PRTLoader.NewParticle<PRT_DWave>(npc.Center, Vector2.Zero, themeColor, 0.25f)?
                         .Configure(Vector2.One, Main.rand.NextFloat(MathHelper.TwoPi), 1.7f, 22);
                     PRTLoader.NewParticle<PRT_DWave>(npc.Center, Vector2.Zero, Color.White * 0.8f, 0.15f)?
                         .Configure(Vector2.One, Main.rand.NextFloat(MathHelper.TwoPi), 1f, 16);
 
-                    //放射状能量火花
                     for (int i = 0; i < 18; i++) {
                         PRTLoader.NewParticle<PRT_TwinsSpark>(npc.Center, VaultUtils.RandVr(7, 16),
                             Color.White, Main.rand.NextFloat(1.3f, 2.2f))?.Configure(22, Context.IsSpazmatism ? 1 : 0);
                     }
 
-                    //经典爆发尘埃打底
                     int dustType = Context.IsSpazmatism ? DustID.SolarFlare : DustID.Vortex;
                     for (int i = 0; i < 40; i++) {
                         float angle = MathHelper.TwoPi / 40f * i;
@@ -315,24 +276,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                         dust.noGravity = true;
                     }
 
-                    //强震屏(只由魔焰眼触发一次，避免双倍震动)
+                    //强震，仅魔焰侧一次
                     if (Context.IsSpazmatism) {
                         TwinsMotion.Shake(npc.Center, 11f, 24);
                     }
                 }
 
-                //恢复位置
                 npc.Center = originalPosition;
             }
 
-            //逐渐放大并有弹跳效果
             float bounce = (float)Math.Sin(progress * MathHelper.Pi * 2f) * 0.1f * (1f - progress);
             npc.scale = 0.8f + progress * 0.2f + bounce;
 
-            //停止蓄力特效
             Context.ResetChargeState();
 
-            //能量波动粒子
             if (!VaultUtils.isServer && phaseTimer % 3 == 0) {
                 int dustType = Context.IsSpazmatism ? DustID.SolarFlare : DustID.Vortex;
                 float waveRadius = progress * 250f;
@@ -345,31 +302,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 }
             }
 
-            //轻微震动
             float smallShake = (1f - progress) * 4f;
             npc.Center = originalPosition + Main.rand.NextVector2Circular(smallShake, smallShake);
         }
 
-        /// <summary>分离阶段 - 两只眼睛分开，各自移动到战斗位置</summary>
+        /// <summary>分离</summary>
         private void ExecuteSeparatePhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase - ConfrontPhase - ContractPhase - BurstPhase;
             float progress = phaseTimer / (float)SeparatePhase;
 
-            //恢复大小
             npc.scale = 1f;
 
-            //计算分离目标位置
             float sideOffset = Context.IsSpazmatism ? -400f : 400f;
             float vertOffset = Context.IsSpazmatism ? 100f : -100f;
             Vector2 separateTarget = player.Center + new Vector2(sideOffset, vertOffset);
 
-            //移动到分离位置
             MoveTo(npc, separateTarget, 12f, 0.08f);
 
-            //面向玩家
             FaceTarget(npc, player.Center);
 
-            //分离轨迹粒子
             if (!VaultUtils.isServer && phaseTimer % 3 == 0) {
                 int dustType = Context.IsSpazmatism ? DustID.SolarFlare : DustID.Vortex;
                 Vector2 dustPos = npc.Center + Main.rand.NextVector2Circular(20, 20);
@@ -377,28 +328,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 dust.noGravity = true;
             }
 
-            //分离音效
             if (phaseTimer == 1) {
                 SoundEngine.PlaySound(SoundID.Item8 with { Pitch = 0.3f }, npc.Center);
             }
         }
 
-        /// <summary>恢复阶段</summary>
+        /// <summary>恢复</summary>
         private void ExecuteRecoveryPhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase - ConfrontPhase - ContractPhase - BurstPhase - SeparatePhase;
             float progress = phaseTimer / (float)RecoveryPhase;
 
-            //恢复正常
             npc.scale = 1f;
             npc.velocity *= 0.95f;
             FaceTarget(npc, player.Center);
 
-            //恢复可受伤状态
             if (phaseTimer == 5) {
                 npc.dontTakeDamage = false;
             }
 
-            //残余粒子
             if (!VaultUtils.isServer && phaseTimer % 5 == 0) {
                 int dustType = Context.IsSpazmatism ? DustID.SolarFlare : DustID.Vortex;
                 Vector2 dustPos = npc.Center + Main.rand.NextVector2Circular(25, 25);
@@ -407,7 +354,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>获取二阶段初始状态</summary>
         private ITwinsState GetPhase2InitialState() {
             if (Context.IsSpazmatism) {
                 return new Spazmatism.SpazmatismFlameChaseState(0);
@@ -420,7 +366,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         public override void OnExit(TwinsStateContext context) {
             base.OnExit(context);
 
-            //退出时恢复 scale/无敌/转阶段标记
+            //退出恢复 scale/无敌/标记
             context.Npc.scale = 1f;
             context.Npc.dontTakeDamage = false;
             context.IsInPhaseTransition = false;

@@ -20,13 +20,13 @@ namespace CalamityOverhaul.Content.Renders
         public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {
             CollectDrawables();
 
-            //图元层：各实现自管 SpriteBatch
+            //图元层，自管 SpriteBatch
             int primitiveCount = _primitiveBuffer.Count;
             for (int i = 0; i < primitiveCount; i++) {
                 _primitiveBuffer[i].DrawPrimitives();
             }
 
-            //加色层：有内容才 Begin，省状态切换
+            //加色层，有内容才 Begin
             int additiveCount = _additiveBuffer.Count;
             if (additiveCount > 0) {
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointWrap
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Renders
                 spriteBatch.End();
             }
 
-            //遮挡层：在图元/加色层之后正常混合绘制，让需要稳定盖住特效的精灵体（如握持武器本体）有确定的层级
+            //遮挡层，盖住特效的本体
             int overlayCount = _overlayBuffer.Count;
             if (overlayCount > 0) {
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp
@@ -53,7 +53,6 @@ namespace CalamityOverhaul.Content.Renders
             }
         }
 
-        /// <summary>单次扫描 <see cref="Main.projectile"/> 填充图元、加色与遮挡缓冲</summary>
         private static void CollectDrawables() {
             _primitiveBuffer.Clear();
             _additiveBuffer.Clear();

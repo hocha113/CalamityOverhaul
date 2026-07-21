@@ -39,13 +39,11 @@ namespace CalamityOverhaul.Content.TimeFreezes
             ProjSnapshotIdentities = null;
         }
 
-        /// <summary>至少一个 reason 活跃</summary>
         public static bool IsActive { get; private set; }
 
-        /// <summary>活跃 reason 只读集合</summary>
         public static IReadOnlyCollection<string> ActiveReasons => activeReasons;
 
-        //内部 reason 计数。同一 reason 重复 Activate 不重复入集合
+        //reason 计数，重复 Activate 不叠入
         private static readonly HashSet<string> activeReasons = [];
 
         //NPC 冻结位置快照
@@ -153,7 +151,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             orig(self);
         }
 
-        /// <summary>reason 冻结，重复调用幂等</summary>
+        /// <summary>reason 冻结，幂等</summary>
         public static void Activate(string reason) {
             if (string.IsNullOrEmpty(reason)) {
                 return;
@@ -167,7 +165,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             }
         }
 
-        /// <summary>释放 reason，全空才解冻</summary>
+        /// <summary>释放 reason，空才解冻</summary>
         public static void Deactivate(string reason) {
             if (string.IsNullOrEmpty(reason)) {
                 return;
@@ -180,7 +178,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             }
         }
 
-        /// <summary>清空全部 reason，死亡/卸载兜底</summary>
+        /// <summary>清空 reason，死亡/卸载兜底</summary>
         public static void DeactivateAll() {
             if (activeReasons.Count == 0 && !IsActive) {
                 return;
@@ -191,7 +189,6 @@ namespace CalamityOverhaul.Content.TimeFreezes
             }
         }
 
-        /// <summary>reason 是否仍活跃</summary>
         public static bool HasReason(string reason)
             => !string.IsNullOrEmpty(reason) && activeReasons.Contains(reason);
 
@@ -301,13 +298,13 @@ namespace CalamityOverhaul.Content.TimeFreezes
             }
         }
 
-        /// <summary>NPC 冻结判定，现一律 true</summary>
+        /// <summary>NPC 冻结，现一律 true</summary>
         internal static bool ShouldFreezeNPC(NPC npc) {
             if (!npc.active) return false;
             return true;
         }
 
-        /// <summary>弹幕冻结判定，现一律 true</summary>
+        /// <summary>弹幕冻结，现一律 true</summary>
         internal static bool ShouldFreezeProjectile(Projectile proj) {
             if (!proj.active) return false;
             return true;

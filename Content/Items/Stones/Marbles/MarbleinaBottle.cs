@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
-    /// <summary>
-    /// 瓶中大理石：额外赋予一段沉重而有力的二段跳，按住跳跃键可借升力多抬升一段
-    /// </summary>
+    /// <summary>瓶中大理石，沉重二段跳，按住跳可借升力</summary>
     internal class MarbleinaBottle : ModItem
     {
         public override void SetDefaults() {
@@ -41,8 +39,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
 
         public override Position GetDefaultPosition() => AfterBottleJumps;
 
-        //保持 0：原版跳跃维持会把速度钉在 jumpSpeed(约5.01)，低于 8.2 的重跳冲量，
-        //任何非零时长都会让"按住跳"反而变矮；按住抬升改由 MarbleBalloonPlayer 的升力窗口实现
+        //必须为0，原版维持钉 jumpSpeed≈5.01低于8.2冲量；升力改走 MarbleBalloonPlayer
         public override float GetDurationMultiplier(Player player) => 0f;
 
         public override bool CanStart(Player player) => !player.GetModPlayer<MarbleBalloonPlayer>().Slamming;
@@ -56,7 +53,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 return;
             }
 
-            //沉重起跳分层音：低频石磨蹬踏 + 石块闷响
             SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.7f, Pitch = -0.45f, MaxInstances = 3 }, player.Center);
             SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.4f, Pitch = -0.6f, MaxInstances = 3 }, player.Center);
 
@@ -69,7 +65,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             Vector2 feet = player.gravDir == 1f ? player.Bottom : player.Top;
             float up = -player.gravDir;
 
-            //脚下金白石尘环：沿扁椭圆排布向外散开
             const int ringCount = 12;
             for (int i = 0; i < ringCount; i++) {
                 float ang = MathHelper.TwoPi * i / ringCount;
@@ -79,7 +74,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                     , Main.rand.NextFloat(0.38f, 0.58f)).Configure(24, 0.7f, 0.05f);
             }
 
-            //云朵气球身份：石尘环之上再叠一层缓涌的白云大团，"云雾+石尘"双份
+            //云朵气球叠白云团
             if (cloud) {
                 for (int i = 0; i < 6; i++) {
                     Vector2 puffPos = feet + new Vector2(Main.rand.NextFloat(-16f, 16f), up * Main.rand.NextFloat(0f, 8f));
@@ -89,7 +84,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 }
             }
 
-            //少许白金石屑向上迸起，云朵气球加量以撑起双份质感
             int chips = cloud ? 7 : 4;
             for (int i = 0; i < chips; i++) {
                 PRTLoader.NewParticle<PRT_MarbleChip>(feet + new Vector2(Main.rand.NextFloat(-10f, 10f), 0f)

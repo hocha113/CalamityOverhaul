@@ -1,6 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 {
-    /// <summary>机械骷髅王全屏 FX，仅客户端；三通道：冲击波环 MaxRings、冲击帧单实例、冲刺热浪；Push* 写入；Renders.PrimeScreenEffectRender 调 Update 衰减</summary>
+    /// <summary>全屏FX，客户端，Push*写入，Render调Update</summary>
     internal static class PrimeScreenEffects
     {
         internal const int MaxRings = 3;
@@ -17,13 +17,13 @@
 
         internal static readonly RingInstance[] Rings = new RingInstance[MaxRings];
 
-        //冲击帧（黑白高对比，一场战斗只该触发一次）
+        //冲击帧
         internal static float ImpactIntensity { get; private set; }
         internal static int ImpactAge { get; private set; }
         internal static int ImpactLife { get; private set; }
         internal static bool ImpactActive => ImpactAge < ImpactLife && ImpactIntensity > 0.01f;
 
-        //冲刺热浪（状态每帧推高，渲染端自然衰减）
+        //冲刺热浪
         internal static float HeatIntensity { get; private set; }
         internal static Vector2 HeatWorldCenter { get; private set; }
         internal static float HeatDirection { get; private set; }
@@ -42,7 +42,7 @@
             }
         }
 
-        /// <summary>触发一圈冲击波（折射环 + 色散），并发超限时顶替最老的环</summary>
+        /// <summary>冲击波环，超限顶替最老</summary>
         public static void PushShockRing(Vector2 worldCenter, float intensity = 1f, float maxRadiusPx = 560f, int lifeFrames = 26) {
             if (VaultUtils.isServer) {
                 return;
@@ -71,7 +71,7 @@
             };
         }
 
-        /// <summary>全屏冲击帧(负相→黑白→淡出)，死亡终爆专属，全场一次</summary>
+        /// <summary>冲击帧，终爆一次</summary>
         public static void PushImpactFrame(float intensity = 1f, int lifeFrames = 26) {
             if (VaultUtils.isServer) {
                 return;
@@ -81,7 +81,7 @@
             ImpactLife = System.Math.Max(lifeFrames, 8);
         }
 
-        /// <summary>冲刺状态每帧调用：推高热浪强度并刷新源位置与运动方向（弧度）</summary>
+        /// <summary>冲刺热浪每帧推高</summary>
         public static void PushHeatWake(Vector2 worldCenter, float directionRadians, float intensity) {
             if (VaultUtils.isServer) {
                 return;
@@ -113,7 +113,7 @@
             }
         }
 
-        /// <summary>世界切换/卸载时清空，防止残留效果跨场景闪现</summary>
+        /// <summary>卸载清空</summary>
         public static void Clear() {
             for (int i = 0; i < MaxRings; i++) {
                 Rings[i].Active = false;

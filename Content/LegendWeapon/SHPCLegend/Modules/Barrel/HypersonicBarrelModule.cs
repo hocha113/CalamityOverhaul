@@ -12,11 +12,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>超音速枪管：飞行 420px 音爆 70%，之后 +30% 伤 +2 穿透与蒸汽尾</summary>
+    /// <summary>超音速枪管，飞420px音爆70%，其后+30%伤+2穿透</summary>
     internal sealed class HypersonicBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
-        //超音速曙金
+        //曙金
         public override Color TintColor => new(255, 200, 90);
 
         private const float BoomDistance = 420f;
@@ -44,11 +44,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 flightStates[id] = state;
             }
 
-            //冲压加速：飞得越久越快
+            //冲压加速
             beam.SpeedMul = MathF.Min(beam.SpeedMul + 0.022f, 3.2f);
 
             if (state.Boomed) {
-                //白热态：蒸汽凝结尾
+                //白热蒸汽尾
                 if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(3)) {
                     PRTLoader.NewParticle<PRT_Smoke>(
                         beam.Projectile.Center - beam.FlightDirection * 14f,
@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 return;
             }
 
-            //突破音障
+            //破音障
             state.Boomed = true;
             beam.Projectile.damage = (int)(beam.Projectile.damage * 1.3f);
             if (beam.Projectile.penetrate > 0) {
@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     ai0: beam.FlightDirection.ToRotation());
             }
             if (Main.netMode != NetmodeID.Server) {
-                //破障白闪 + 锥形喷散
+                //破障白闪+锥喷
                 for (int i = 0; i < 8; i++) {
                     Vector2 vel = beam.FlightDirection.RotatedBy(Main.rand.NextFloat(-2.4f, 2.4f))
                         * -Main.rand.NextFloat(2f, 7f);
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>音爆马赫环，扩张波前伤害；SHPCSonicBoom.fx</summary>
+    /// <summary>音爆马赫环，波前伤害；SHPCSonicBoom.fx</summary>
     internal sealed class SHPCSonicBoomProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Projectile.penetrate = -1;
             Projectile.timeLeft = Lifetime;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = -1; //一圈音爆每个敌人只震一次
+            Projectile.localNPCHitCooldown = -1; //一圈每敌一次
             Projectile.DamageType = DamageClass.Magic;
         }
 
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            //椭圆波前判定：沿飞行方向压扁，与着色器的马赫环形状一致
+            //椭圆波前，沿飞行压扁
             Vector2 rel = targetHitbox.Center.ToVector2() - Projectile.Center;
             Vector2 flightDir = FlightRotation.ToRotationVector2();
             float along = Vector2.Dot(rel, flightDir) * 1.9f;

@@ -11,9 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 灵液鱼技能，灵液感染与周期性射流
-    /// </summary>
+    /// <summary>灵液鱼技能，灵液感染与周期性射流</summary>
     internal class FishIchorn : FishSkill
     {
         public override int UnlockFishID => ItemID.Ichorfish;
@@ -105,10 +103,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 灵液射流弹幕：受重力微弯的高压液柱。液柱条带 shader 承担飞行主体，
-    /// 沿途甩滴，命中迸溅并留下挂壁金渍与蚀甲纹
-    /// </summary>
+    /// <summary>灵液射流弹幕</summary>
     internal class IchorStream : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -178,7 +173,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //粘性阻力
             Projectile.velocity *= 0.995f;
 
-            //液柱表面张力失稳：沿途甩滴，速度越快甩得越勤
+            //液柱表面张力失稳
             if (!Main.dedServ && StreamLife % 3 == 0) {
                 float speed = Projectile.velocity.Length();
                 Vector2 spawnPos = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(8f, 22f);
@@ -266,11 +261,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Main.dedServ) {
                 return;
             }
-            //飞行中死亡（贯穿耗尽/超时）：头部再迸溅一次
+            //飞行中死亡（贯穿耗尽/超时）
             if (State == FluidState.Streaming) {
                 FishIchornVFX.SplashBurst(Projectile.Center, Projectile.velocity * 0.5f, onTile: false);
             }
-            //液柱失压散珠：旧轨迹上的液体失去动压，就地凝珠坠落，活得比弹体久
+            //液柱失压散珠
             Vector2[] oldPos = Projectile.oldPos;
             if (oldPos != null) {
                 for (int i = 2; i < oldPos.Length; i += 4) {
@@ -286,7 +281,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //==== 绘制 ====
 
         public float GetWidthFunc(float completionRatio) =>
             MathHelper.Lerp(12f, 2.5f, completionRatio) * VisualFade; //completion 0 = 液锋端最宽
@@ -300,7 +294,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //液柱条带
             FishIchornVFX.DrawJetTrail(Projectile, ref trail, GetWidthFunc, GetColorFunc, VisualFade);
 
-            //液锋头部：条带之上的领头液团
+            //液锋头部，条带之上的领头液团
             SpriteBatch sb = Main.spriteBatch;
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
@@ -308,7 +302,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             sb.End();
         }
 
-        //液锋：随速度拉伸的三层液团，暗金压边+饱和金体+极小亮芯
+        //液锋
         private void DrawJetHead(SpriteBatch sb) {
             Texture2D tex = CWRAsset.Extra_98?.Value;
             if (tex == null) {
@@ -326,7 +320,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //饱和金液体
             sb.Draw(tex, pos, null, FishIchornVFX.IchorGold * fade, rotation, origin
                 , new Vector2(0.38f, 0.45f + stretch * 0.8f), SpriteEffects.None, 0f);
-            //液锋亮芯：极小面积加色
+            //液锋亮芯，极小面积加色
             Color core = FishIchornVFX.IchorBright with { A = 0 };
             sb.Draw(tex, pos, null, core * (0.7f * fade), rotation, origin
                 , new Vector2(0.14f, 0.24f + stretch * 0.35f), SpriteEffects.None, 0f);

@@ -6,24 +6,19 @@ using static CalamityOverhaul.Content.Narrative.Common.BaseDamageTracker;
 
 namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest
 {
-    /// <summary>
-    /// 硫火女巫猎杀委托 <see cref="EntrustEntryData"/>，追踪 Boss 存活与伤害贡献
-    /// </summary>
+    /// <summary>硫火女巫猎杀委托，追踪Boss存活与伤害贡献</summary>
     internal class SupCalHuntQuestEntry : EntrustEntryData
     {
-        /// <summary>目标Boss的NPC type</summary>
+        /// <summary>目标Boss NPC type</summary>
         public int TargetNpcType { get; init; }
 
-        /// <summary>所需的伤害贡献度阈值（0.8 = 80%）</summary>
+        /// <summary>伤害贡献阈值，0.8=80%</summary>
         public float RequiredContribution { get; init; }
 
-        /// <summary>Boss不在场时的提示文本，{0} 为Boss名称</summary>
         public LocalizedText SummonHintFormat { get; init; }
 
-        /// <summary>伤害贡献度的格式文本，{0} 为当前贡献度</summary>
         public LocalizedText ContributionFormat { get; init; }
 
-        /// <summary>所需贡献度的格式文本，{0} 为所需阈值</summary>
         public LocalizedText RequiredFormat { get; init; }
 
         private bool isBossAlive;
@@ -32,8 +27,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest
         public SupCalHuntQuestEntry(string key, LocalizedText title, LocalizedText summary, LocalizedText category)
             : base(key, title, summary, category) { }
 
-        //追踪窗口使用极简HUD样式时，需要在内容区顶部预留5px，
-        //让标题下划线与首行描述之间留出可见的呼吸空间
+        //极简HUD，标题下划线与描述间5px
         public override float GetTrackerContentTopPadding() => 5f;
 
         public override void OnUpdate() {

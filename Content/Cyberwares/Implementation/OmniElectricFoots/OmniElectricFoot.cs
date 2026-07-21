@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Cyberwares.Skills;
 using System.Collections.Generic;
 using Terraria;
@@ -9,8 +9,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
 {
     /// <summary>
-    /// 全向电动义足，足部槽位：空中二段跳、地面蓄力跳
-    /// <br/>蓄力满 60 帧，倍率 1.15~2.5x；进度见 <see cref="OmniElectricFootHUD"/>
+    /// 全向电动义足，足部槽，空中二段跳、地面蓄力跳
+    /// <br/>蓄力满 60 帧，倍率 1.15~2.5x，进度见 <see cref="OmniElectricFootHUD"/>
     /// </summary>
     internal class OmniElectricFoot : BaseCyberware
     {
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             Item.value = Item.sellPrice(0, 7, 0, 0);
         }
 
-        /// <summary>查询玩家是否装备本义体，未装备返回 null</summary>
+        /// <summary>未装备返回 null</summary>
         public static OmniElectricFoot GetEquipped(Player player) {
             if (player == null || !player.active) {
                 return null;
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            //在工具提示中嵌入实际绑定的快捷键，未绑定时给出可读的"未绑定"提示
+            //嵌入绑定键，未绑定时可读提示
             string keyHint = CWRKeySystem.CyberwareSkill_Key?.GetAssignedKeys() is { Count: > 0 } keys
                 ? $"[{keys[0]}]"
                 : CWRKeySystem.Notbound.Value + $"[{CWRKeySystem.CyberwareSkill_Key?.DisplayName}]";

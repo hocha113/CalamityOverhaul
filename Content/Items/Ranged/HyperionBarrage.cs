@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     }
 
     /// <summary>
-    /// 海伯利昂色盘与共用绘制：基础版机械琥珀，EX殉爆猩红，着色器与粒子共用同一组色值
+    /// 色盘，基础琥珀/EX猩红
     /// </summary>
     internal static class HyperionTheme
     {
@@ -123,20 +123,17 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public static readonly Vector3 CrimsonEmber = new(0.52f, 0.06f, 0.04f);
         public static readonly Color CrimsonGlow = new(255, 66, 40);
 
-        /// <summary>黄金比散列：种子 → [0,1) 确定性伪随机，各端一致</summary>
+        /// <summary>黄金比散列，种子→[0,1)</summary>
         public static float Hash01(float seed) => seed * 0.6180339887f % 1f;
 
-        /// <summary>把主题三色写入<see cref="EffectLoader.HyperionExhaust"/>或<see cref="EffectLoader.HyperionBlast"/></summary>
+        /// <summary>写入Exhaust/Blast三色</summary>
         public static void ApplyPalette(Effect effect, bool crimson) {
             effect.Parameters["coreColor"]?.SetValue(crimson ? CrimsonCore : AmberCore);
             effect.Parameters["sheathColor"]?.SetValue(crimson ? CrimsonSheath : AmberSheath);
             effect.Parameters["emberColor"]?.SetValue(crimson ? CrimsonEmber : AmberEmber);
         }
 
-        /// <summary>
-        /// 以世界空间顶点四边形绘制<see cref="EffectLoader.HyperionBlast"/>的指定technique，
-        /// 走实体后图元层，不触碰SpriteBatch状态
-        /// </summary>
+        /// <summary>世界空间quad画Blast technique，实体后层</summary>
         public static void DrawBlastQuad(string technique, Vector2 worldCenter, float size
             , float progress, float intensity, float seed, Vector2 direction, bool crimson) {
             Effect effect = EffectLoader.HyperionBlast?.Value;
@@ -177,7 +174,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     }
 
     /// <summary>
-    /// 海伯利昂自动炮的共同持握骨架：开火反馈（后坐、震屏、烟尘）与枪口炬着色器绘制在此，
+    /// 持握骨架，开火反馈与枪口炬在此，
     /// 每次扣动扳机发射什么由子类的 <see cref="LaunchOrdnance"/> 决定
     /// </summary>
     internal abstract class BaseHyperionHeld : BaseHeldGun, IPrimitiveDrawable
@@ -185,7 +182,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         private const int MuzzleFlashTime = 8;
         private int muzzleFlash;
         private float muzzleSeed;
-        /// <summary>炮管积热0-1，随射击累积、随时间冷却，驱动炮口余温辉光</summary>
+        /// <summary>炮管积热0-1</summary>
         private float heat;
 
         protected abstract bool CrimsonTheme { get; }
@@ -277,7 +274,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             return false;
         }
 
-        //枪口炬走实体后图元层：heldProj的PreDraw运行在玩家绘制批次内，不宜做批次三明治
+        //枪口炬走实体后层，Held内不宜批三明治
         void IPrimitiveDrawable.DrawPrimitives() {
             if (muzzleFlash <= 0 || !OnHandheldDisplayBool) {
                 return;
@@ -287,7 +284,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 , progress, 1f, muzzleSeed, Projectile.rotation.ToRotationVector2(), CrimsonTheme);
         }
 
-        /// <summary>炮口余温：连射后残留的暗红辉光，A=0在Alpha批次中呈加色观感</summary>
+        /// <summary>炮口余温，A=0加色</summary>
         private void DrawHeatGlow() {
             if (heat < 0.1f) {
                 return;
@@ -323,7 +320,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return;
             }
 
-            //垂直齐射：三枚跃升导弹扇形弹出，各自锁定准星附近的散布点俯冲
+            //三枚跃升导弹扇形
             for (int i = 0; i < 3; i++) {
                 Vector2 eject = (-Vector2.UnitY).RotatedBy((i - 1) * 0.36f) * 7.2f + Owner.velocity * 0.3f;
                 Vector2 target = InMousePos + new Vector2((i - 1) * 30f, 0f);
@@ -353,7 +350,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     }
 
     /// <summary>
-    /// 热射巡航弹：弹出→点火→巡航三段飞行，尾焰由<see cref="EffectLoader.HyperionExhaust"/>顶点条带绘制
+    /// 弹出→点火→巡航，尾焰见<see cref="EffectLoader.HyperionExhaust"/>
     /// <para>ai[0]=发射模式（<see cref="LaunchMode"/>）；ai[1]/ai[2]=垂发模式的俯冲目标点</para>
     /// </summary>
     internal class HyperionCruiseMissile : ModProjectile, IPrimitiveDrawable
@@ -362,13 +359,13 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         internal enum LaunchMode
         {
-            /// <summary>炮口直射，短促弹出后点火直线巡航</summary>
+            /// <summary>直射巡航</summary>
             Direct,
-            /// <summary>垂直弹出滞空，错相点火后俯冲扑向目标点</summary>
+            /// <summary>垂直跃升后俯冲</summary>
             Vertical,
-            /// <summary>重型殉爆后的集束子弹，自行锁定近旁目标</summary>
+            /// <summary>集束子弹</summary>
             Cluster,
-            /// <summary>EX重型巡航弹，殉爆分裂集束</summary>
+            /// <summary>EX重型，殉爆分裂</summary>
             Heavy
         }
 
@@ -378,12 +375,12 @@ namespace CalamityOverhaul.Content.Items.Ranged
         private LaunchMode Mode => (LaunchMode)(int)Projectile.ai[0];
         private Vector2 DiveTarget => new(Projectile.ai[1], Projectile.ai[2]);
         private ref float Tick => ref Projectile.localAI[0];
-        /// <summary>localAI[1]：集束模式=锁定的NPC索引+1（0未锁定）；垂发模式=1时表示已越过目标熄锁</summary>
+        /// <summary>localAI1，集束=NPC索引+1，垂发1=熄锁</summary>
         private ref float TargetCache => ref Projectile.localAI[1];
 
         private bool IsHeavy => Mode == LaunchMode.Heavy;
         private bool Crimson => Mode is LaunchMode.Cluster or LaunchMode.Heavy;
-        /// <summary>点火时刻（更新数，extraUpdates=1下两倍于帧）：垂发按识别码错相，弹群依次俯冲</summary>
+        /// <summary>点火时刻（extraUpdates=1下×2），垂发错相</summary>
         private int IgniteTick => Mode switch {
             LaunchMode.Vertical => 30 + (int)(HyperionTheme.Hash01(Projectile.identity) * 20f),
             LaunchMode.Cluster => 8,
@@ -437,7 +434,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 UpdateCruisePhase(seedPhase);
             }
 
-            //出膛与跃升阶段免碰撞，点火且脱离实心物块后恢复，防止贴墙开火即殉爆
+            //出膛/跃升免碰，离墙后恢复
             if (!Projectile.tileCollide && Ignited
                 && !Framing.GetTileSafely(Projectile.Center).HasSolidTile()) {
                 Projectile.tileCollide = true;
@@ -453,7 +450,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         private void UpdateEjectPhase() {
             if (Mode == LaunchMode.Vertical) {
-                //跃升滞空：上抛减速微坠，弹体缓慢转向下坠姿态
+                //跃升滞空
                 Projectile.velocity *= 0.955f;
                 Projectile.velocity.Y += 0.12f;
             }
@@ -471,7 +468,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
             if (Mode == LaunchMode.Vertical) {
                 float distSQ = Projectile.DistanceSQ(DiveTarget);
-                //俯冲制导：初段强转向锁定目标点，随后衰减；抵近即空爆，近旁掠过则永久熄锁防绕圈
+                //俯冲制导，掠过熄锁
                 if (distSQ < 40f * 40f) {
                     Projectile.Kill();
                     return;
@@ -488,7 +485,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 UpdateClusterHoming();
             }
             else {
-                //直射/重型：微幅蛇行破除直线呆板
+                //微幅蛇行
                 float weave = IsHeavy ? 0.006f : 0.011f;
                 Projectile.velocity = Projectile.velocity.RotatedBy(MathF.Sin(Tick * 0.09f + seedPhase) * weave);
             }
@@ -498,7 +495,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         private void UpdateClusterHoming() {
-            //每6跳重新校验/搜索目标，避免逐帧全表扫描
+            //每6跳搜目标
             if ((int)Tick % 6 == 0) {
                 NPC cached = TargetCache > 0 ? Main.npc[(int)TargetCache - 1] : null;
                 if (!cached.Alives() || !cached.CanBeChasedBy(Projectile)) {
@@ -580,20 +577,20 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return;
             }
 
-            //殉爆溅射：撑开判定盒结算一次AoE，localNPCHitCooldown=-1保证直击目标不吃二次伤害
+            //殉爆AoE，直击不二次伤
             Projectile.penetrate = -1;
             Projectile.position = Projectile.Center;
             Projectile.width = Projectile.height = IsHeavy ? 150 : 80;
             Projectile.Center = Projectile.position;
             Projectile.Damage();
 
-            //殉爆着色器面片：ai0绝对值为规模，负号切换猩红色盘
+            //殉爆面片，ai0规模，负号猩红
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero
                 , ModContent.ProjectileType<HyperionBlastProj>(), 0, 0, Owner: Projectile.owner
                 , ai0: Crimson ? -boom : boom, ai1: dir.X, ai2: dir.Y);
 
             if (IsHeavy) {
-                //集束分裂：六枚子弹环形弹出，继承少量前向动量后自行锁定
+                //六枚子弹环形
                 int childDamage = (int)(Projectile.damage * 0.35f);
                 for (int i = 0; i < 6; i++) {
                     Vector2 vel = (MathHelper.TwoPi / 6f * i + 0.3f).ToRotationVector2() * 6.5f + Projectile.velocity * 0.15f;
@@ -636,7 +633,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return;
             }
 
-            //尾迹锚点取历史喷口位置：oldPos[k]自新到旧，Trail要求[^1]为最新
+            //尾迹用oldPos，[^1]最新
             Vector2[] pts = new Vector2[TrailLen];
             trail ??= new Trail(pts, WidthFunc, ColorFunc);
             Vector2 lastValid = NozzlePos(Projectile.Center, Projectile.rotation);
@@ -679,7 +676,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     }
 
     /// <summary>
-    /// 殉爆视觉：<see cref="EffectLoader.HyperionBlast"/>的BlastTech面片，无伤害
+    /// <see cref="EffectLoader.HyperionBlast"/>面片，无伤害
     /// <para>ai[0]=规模倍率（负值切换猩红色盘）；ai[1]/ai[2]=入射方向单位向量</para>
     /// </summary>
     internal class HyperionBlastProj : ModProjectile, IPrimitiveDrawable

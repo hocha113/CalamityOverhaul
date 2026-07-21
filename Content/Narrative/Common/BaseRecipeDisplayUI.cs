@@ -13,9 +13,6 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Narrative.Common
 {
-    /// <summary>
-    /// 配方展示 UI 基类
-    /// </summary>
     internal abstract class BaseRecipeDisplayUI : UIHandle, ILocalizedModType
     {
         public virtual string LocalizationCategory => "UI";
@@ -23,49 +20,35 @@ namespace CalamityOverhaul.Content.Narrative.Common
         public override bool Active => isShowing || fadeProgress > 0f;
         public override float RenderPriority => 0.9f;
 
-        // UI 状态
         protected bool isShowing = false;
         protected float fadeProgress = 0f;
         protected float expandProgress = 0f;
 
-        // 动画参数
         protected const float FadeSpeed = 0.08f;
         protected const float ExpandSpeed = 0.1f;
 
-        // UI 尺寸
         protected virtual float UIWidth => 600f;
         protected virtual float UIHeight => 400f;
 
-        // 科技效果
         protected float techPulseTimer = 0f;
         protected float scanLineProgress = 0f;
         protected float hologramFlicker = 0f;
 
-        // 粒子
         protected readonly List<TechPRT> techParticles = new();
         protected int particleSpawnTimer = 0;
 
-        // 物品悬停
         protected readonly List<ItemHoverArea> itemHoverAreas = new();
         protected ItemHoverArea currentHoverItem = null;
 
-        // 本地化，实例共享
         protected static LocalizedText UITitle;
         protected static LocalizedText MaterialsRequired;
         protected static LocalizedText CloseHint;
         protected static LocalizedText CraftingStation;
 
-        // 配方缓存
         protected Recipe cachedRecipe = null;
 
-        /// <summary>
-        /// 获取要显示的配方
-        /// </summary>
         protected abstract Recipe GetDisplayRecipe();
 
-        /// <summary>
-        /// 获取UI标题文本
-        /// </summary>
         protected abstract string GetUITitle();
 
         public override void LogicUpdate() {
@@ -73,10 +56,8 @@ namespace CalamityOverhaul.Content.Narrative.Common
                 return;
             }
 
-            // 更新动画
             UpdateAnimations();
 
-            // 更新粒子
             UpdateParticles();
         }
 
@@ -85,13 +66,11 @@ namespace CalamityOverhaul.Content.Narrative.Common
                 return;
             }
 
-            // UI 位置
             DrawPosition = new Vector2(
                 (Main.screenWidth - UIWidth * expandProgress) / 2,
                 (Main.screenHeight - UIHeight * expandProgress)
             );
 
-            // 碰撞盒
             UIHitBox = new Rectangle(
                 (int)DrawPosition.X,
                 (int)DrawPosition.Y,
@@ -101,7 +80,6 @@ namespace CalamityOverhaul.Content.Narrative.Common
 
             hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
 
-            // 关闭按钮
             if (hoverInMainPage && isShowing) {
                 player.mouseInterface = true;
 
@@ -112,7 +90,6 @@ namespace CalamityOverhaul.Content.Narrative.Common
                 }
             }
 
-            // 物品悬停
             UpdateItemHover();
         }
 
@@ -121,29 +98,22 @@ namespace CalamityOverhaul.Content.Narrative.Common
                 return;
             }
 
-            // 清空悬停区
             itemHoverAreas.Clear();
 
-            // 背景边框
             DrawBackground(spriteBatch);
 
-            // 标题
             DrawTitle(spriteBatch);
 
-            // 配方内容
             DrawRecipeContent(spriteBatch);
 
-            // 关闭按钮
             DrawCloseButton(spriteBatch);
 
-            // 科技粒子
             DrawTechParticles(spriteBatch);
         }
 
         #region 动画更新
 
         protected virtual void UpdateAnimations() {
-            // 淡入淡出
             if (isShowing) {
                 if (fadeProgress < 1f) {
                     fadeProgress = Math.Min(fadeProgress + FadeSpeed, 1f);
@@ -161,7 +131,6 @@ namespace CalamityOverhaul.Content.Narrative.Common
                 }
             }
 
-            // 科技计时
             techPulseTimer += 0.04f;
             scanLineProgress += 0.03f;
             hologramFlicker += 0.06f;
@@ -176,14 +145,12 @@ namespace CalamityOverhaul.Content.Narrative.Common
                 return;
             }
 
-            // 生成粒子
             particleSpawnTimer++;
             if (particleSpawnTimer >= 3 && techParticles.Count < 30) {
                 particleSpawnTimer = 0;
                 SpawnTechParticle();
             }
 
-            // 更新粒子
             for (int i = techParticles.Count - 1; i >= 0; i--) {
                 if (techParticles[i].Update()) {
                     techParticles.RemoveAt(i);
@@ -203,7 +170,6 @@ namespace CalamityOverhaul.Content.Narrative.Common
         protected virtual void UpdateItemHover() {
             currentHoverItem = null;
 
-            // 鼠标悬停
             foreach (var hoverArea in itemHoverAreas) {
                 if (hoverArea.Bounds.Intersects(MouseHitBox)) {
                     currentHoverItem = hoverArea;
@@ -211,7 +177,6 @@ namespace CalamityOverhaul.Content.Narrative.Common
                 }
             }
 
-            // Main.HoverItem 提示
             if (currentHoverItem != null && currentHoverItem.Item.type != ItemID.None) {
                 Main.HoverItem = currentHoverItem.Item.Clone();
                 Main.hoverItemName = currentHoverItem.Item.Name;
@@ -233,15 +198,12 @@ namespace CalamityOverhaul.Content.Narrative.Common
             Color techColor = new Color(80, 200, 255);
             Color bgColor = new Color(8, 15, 25);
 
-            // 阴影
             Rectangle shadowRect = UIHitBox;
             shadowRect.Offset(6, 6);
             sb.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), new Color(0, 0, 0) * (alpha * 0.6f));
 
-            // 主背景
             sb.Draw(pixel, UIHitBox, new Rectangle(0, 0, 1, 1), bgColor * alpha);
 
-            // 渐变叠加
             for (int i = 0; i < 10; i++) {
                 float t = i / 10f;
                 Rectangle gradRect = new Rectangle(
@@ -255,10 +217,8 @@ namespace CalamityOverhaul.Content.Narrative.Common
                 sb.Draw(pixel, gradRect, new Color(80, 120, 160) * (alpha * gradientAlpha));
             }
 
-            // 边框
             DrawFrame(sb, UIHitBox, alpha, techColor);
 
-            // 扫描线
             DrawScanLines(sb, UIHitBox, alpha);
         }
 
@@ -268,13 +228,11 @@ namespace CalamityOverhaul.Content.Narrative.Common
 
             Color frameColor = color * (alpha * 0.9f);
 
-            // 外边框
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 3), frameColor);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 3, rect.Width, 3), frameColor * 0.7f);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y, 3, rect.Height), frameColor * 0.85f);
             sb.Draw(pixel, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), frameColor * 0.85f);
 
-            // 内发光
             Rectangle inner = rect;
             inner.Inflate(-6, -6);
             Color glowColor = color * (alpha * 0.2f);
@@ -283,7 +241,6 @@ namespace CalamityOverhaul.Content.Narrative.Common
             sb.Draw(pixel, new Rectangle(inner.X, inner.Y, 1, inner.Height), glowColor);
             sb.Draw(pixel, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), glowColor);
 
-            // 角落装饰
             DrawCornerTech(sb, new Vector2(rect.X + 10, rect.Y + 10), color * (alpha * 0.9f), -MathHelper.PiOver2);
             DrawCornerTech(sb, new Vector2(rect.Right - 10, rect.Y + 10), color * (alpha * 0.9f), 0f);
             DrawCornerTech(sb, new Vector2(rect.X + 10, rect.Bottom - 10), color * (alpha * 0.9f), MathHelper.Pi);
@@ -305,7 +262,6 @@ namespace CalamityOverhaul.Content.Narrative.Common
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
 
-            // 主扫描线
             float scanY = rect.Y + scanLineProgress * rect.Height;
             for (int layer = 0; layer < 3; layer++) {
                 float offset = layer * 1.5f;
@@ -327,7 +283,6 @@ namespace CalamityOverhaul.Content.Narrative.Common
             float alpha = fadeProgress * 0.9f;
             Color titleColor = new Color(100, 220, 255);
 
-            // 标题发光
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f;
                 Vector2 offset = angle.ToRotationVector2() * 1.5f;
@@ -336,7 +291,6 @@ namespace CalamityOverhaul.Content.Narrative.Common
 
             Utils.DrawBorderString(sb, title, titlePos, Color.White * alpha, 0.9f);
 
-            // 标题下划线
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel != null) {
                 sb.Draw(pixel, new Rectangle(
@@ -354,10 +308,8 @@ namespace CalamityOverhaul.Content.Narrative.Common
 
             Vector2 contentStart = DrawPosition + new Vector2(50, 80);
 
-            // 材料标题
             Utils.DrawBorderString(sb, MaterialsRequired.Value, contentStart, new Color(100, 220, 255) * alpha, 0.85f);
 
-            // 配方数据
             if (cachedRecipe == null) {
                 cachedRecipe = GetDisplayRecipe();
             }
@@ -366,7 +318,6 @@ namespace CalamityOverhaul.Content.Narrative.Common
                 return;
             }
 
-            // 材料列表
             Vector2 materialPos = contentStart + new Vector2(0, 35);
             float lineHeight = 50f;
 
@@ -375,10 +326,8 @@ namespace CalamityOverhaul.Content.Narrative.Common
                     continue;
                 }
 
-                // 物品图标与悬停区
                 DrawItemIcon(sb, ingredient, materialPos, alpha);
 
-                // 名称与数量
                 string itemText = $"{ingredient.Name} x{ingredient.stack}";
                 Vector2 textPos = materialPos + new Vector2(50, 8);
                 Utils.DrawBorderString(sb, itemText, textPos, Color.White * alpha, 0.75f);
@@ -386,18 +335,15 @@ namespace CalamityOverhaul.Content.Narrative.Common
                 materialPos.Y += lineHeight;
             }
 
-            // 合成站点
             materialPos.Y += 20;
             DrawCraftingStation(sb, cachedRecipe, materialPos, alpha);
 
-            // 结果物品
             Vector2 resultPos = DrawPosition + new Vector2(UIWidth * expandProgress - 150, 80);
             DrawResultItem(sb, resultPos, alpha);
         }
 
         protected virtual string GetCraftingStationText(Recipe recipe) {
             if (recipe.requiredTile.Count > 0) {
-                // 合成台物品 ID
                 int itemType = TileLoader.GetItemDropFromTypeAndStyle(recipe.requiredTile[0]);
                 string tileName = VaultUtils.GetLocalizedItemName(itemType).Value;
                 return $"{CraftingStation.Value} {tileName}";
@@ -407,30 +353,24 @@ namespace CalamityOverhaul.Content.Narrative.Common
 
         protected virtual void DrawCraftingStation(SpriteBatch sb, Recipe recipe, Vector2 position, float alpha) {
             if (recipe.requiredTile.Count <= 0) {
-                // 无合成台，显示手工
                 Utils.DrawBorderString(sb, CraftingStation.Value, position, new Color(255, 200, 100) * alpha, 0.75f);
                 return;
             }
 
-            // 合成台物品
             int tileType = recipe.requiredTile[0];
             int itemType = TileLoader.GetItemDropFromTypeAndStyle(tileType);
 
             if (itemType <= 0 || itemType >= ItemLoader.ItemCount) {
-                // 无效 ID，仅文本
                 string craftingStationText = GetCraftingStationText(recipe);
                 Utils.DrawBorderString(sb, craftingStationText, position, new Color(255, 200, 100) * alpha, 0.75f);
                 return;
             }
 
-            // 合成台实例
             Item craftingStationItem = new Item(itemType);
             Main.instance.LoadItem(itemType);
 
-            // 合成台图标
             DrawItemIcon(sb, craftingStationItem, position + new Vector2(0, 24), alpha);
 
-            // 合成台名称
             string stationName = craftingStationItem.Name;
             string stationText = $"{CraftingStation.Value} {stationName}";
             Vector2 textPos = position;
@@ -447,7 +387,6 @@ namespace CalamityOverhaul.Content.Narrative.Common
                 scale = 40f / Math.Max(sourceRect.Width, sourceRect.Height);
             }
 
-            // 物品渲染区
             Rectangle itemBounds = new Rectangle(
                 (int)position.X - 2,
                 (int)position.Y - 2,
@@ -455,29 +394,24 @@ namespace CalamityOverhaul.Content.Narrative.Common
                 44
             );
 
-            // 注册悬停区
             itemHoverAreas.Add(new ItemHoverArea {
                 Item = item,
                 Bounds = itemBounds
             });
 
-            // 悬停检测
             bool isHovering = itemBounds.Intersects(MouseHitBox);
             float hoverGlow = isHovering ? 0.4f : 0.2f;
 
-            // 发光背景
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel != null) {
                 sb.Draw(pixel, itemBounds,
                     new Color(80, 200, 255) * (alpha * hoverGlow));
 
-                // 悬停边框
                 if (isHovering) {
                     DrawItemHoverBorder(sb, itemBounds, alpha);
                 }
             }
 
-            // 绘制物品
             sb.Draw(itemTexture, position + new Vector2(20, 20), sourceRect,
                 Color.White * alpha, 0f, sourceRect.Size() / 2f, scale, SpriteEffects.None, 0f);
         }
@@ -489,20 +423,15 @@ namespace CalamityOverhaul.Content.Narrative.Common
             Color borderColor = new Color(100, 220, 255) * (alpha * 0.8f);
             int thickness = 2;
 
-            // 上
             sb.Draw(pixel, new Rectangle(bounds.X, bounds.Y, bounds.Width, thickness), borderColor);
-            // 下
             sb.Draw(pixel, new Rectangle(bounds.X, bounds.Bottom - thickness, bounds.Width, thickness), borderColor);
-            // 左
             sb.Draw(pixel, new Rectangle(bounds.X, bounds.Y, thickness, bounds.Height), borderColor);
-            // 右
             sb.Draw(pixel, new Rectangle(bounds.Right - thickness, bounds.Y, thickness, bounds.Height), borderColor);
         }
 
         protected virtual void DrawResultItem(SpriteBatch sb, Vector2 position, float alpha) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
-            // 箭头
             string arrow = "=>";
             Vector2 arrowSize = font.MeasureString(arrow);
             Vector2 arrowPos = position + new Vector2(-arrowSize.X - 10, 15);
@@ -512,7 +441,6 @@ namespace CalamityOverhaul.Content.Narrative.Common
                 return;
             }
 
-            // 结果物品
             Item resultItem = cachedRecipe.createItem;
             Main.instance.LoadItem(resultItem.type);
 
@@ -524,7 +452,6 @@ namespace CalamityOverhaul.Content.Narrative.Common
                 scale = 60f / Math.Max(sourceRect.Width, sourceRect.Height);
             }
 
-            // 结果渲染区
             Rectangle resultBounds = new Rectangle(
                 (int)position.X - 5,
                 (int)position.Y - 5,
@@ -532,34 +459,28 @@ namespace CalamityOverhaul.Content.Narrative.Common
                 70
             );
 
-            // 注册悬停区
             itemHoverAreas.Add(new ItemHoverArea {
                 Item = resultItem,
                 Bounds = resultBounds
             });
 
-            // 悬停检测
             bool isHovering = resultBounds.Intersects(MouseHitBox);
             float pulseScale = 1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.1f;
             float hoverGlow = isHovering ? 0.5f : 0.3f;
 
-            //发光背景
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel != null) {
                 sb.Draw(pixel, resultBounds,
                     new Color(100, 220, 255) * (alpha * hoverGlow * pulseScale));
 
-                // 悬停边框
                 if (isHovering) {
                     DrawItemHoverBorder(sb, resultBounds, alpha);
                 }
             }
 
-            // 绘制物品
             sb.Draw(itemTexture, position + new Vector2(30, 30), sourceRect,
                 Color.White * alpha, 0f, sourceRect.Size() / 2f, scale, SpriteEffects.None, 0f);
 
-            // 绘制物品名称
             string itemName = resultItem.Name;
             Vector2 nameSize = font.MeasureString(itemName);
             Vector2 namePos = position + new Vector2((60 - nameSize.X * 0.65f) / 2, 75);
@@ -584,25 +505,21 @@ namespace CalamityOverhaul.Content.Narrative.Common
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
 
-            //按钮背景
             Color buttonColor = new Color(180, 60, 60) * (alpha * 0.8f);
             sb.Draw(pixel, closeButtonRect, buttonColor);
 
-            //按钮边框
             Color borderColor = new Color(255, 100, 100) * alpha;
             sb.Draw(pixel, new Rectangle(closeButtonRect.X, closeButtonRect.Y, closeButtonRect.Width, 2), borderColor);
             sb.Draw(pixel, new Rectangle(closeButtonRect.X, closeButtonRect.Bottom - 2, closeButtonRect.Width, 2), borderColor);
             sb.Draw(pixel, new Rectangle(closeButtonRect.X, closeButtonRect.Y, 2, closeButtonRect.Height), borderColor);
             sb.Draw(pixel, new Rectangle(closeButtonRect.Right - 2, closeButtonRect.Y, 2, closeButtonRect.Height), borderColor);
 
-            //X标记
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             string closeText = "×";
             Vector2 textSize = font.MeasureString(closeText);
             Vector2 textPos = closeButtonRect.Center.ToVector2() - textSize / 2;
             Utils.DrawBorderString(sb, closeText, textPos, Color.White * alpha, 1.2f);
 
-            //悬停提示
             if (isHovering) {
                 string hintText = CloseHint.Value;
                 Vector2 hintSize = font.MeasureString(hintText);
@@ -624,9 +541,6 @@ namespace CalamityOverhaul.Content.Narrative.Common
 
         #region 公共接口
 
-        /// <summary>
-        /// 显示UI
-        /// </summary>
         public void Show() {
             if (isShowing) {
                 return;
@@ -634,10 +548,8 @@ namespace CalamityOverhaul.Content.Narrative.Common
 
             isShowing = true;
 
-            //清除缓存,确保显示最新的配方
             cachedRecipe = null;
 
-            //播放音效
             SoundEngine.PlaySound(SoundID.Item8 with {
                 Volume = 0.6f,
                 Pitch = 0.3f,
@@ -645,9 +557,6 @@ namespace CalamityOverhaul.Content.Narrative.Common
             });
         }
 
-        /// <summary>
-        /// 隐藏UI
-        /// </summary>
         public void Hide() {
             if (!isShowing) {
                 return;
@@ -655,23 +564,16 @@ namespace CalamityOverhaul.Content.Narrative.Common
 
             isShowing = false;
 
-            //播放音效
             SoundEngine.PlaySound(SoundID.MenuClose with {
                 Volume = 0.5f,
                 Pitch = 0.2f
             });
         }
 
-        /// <summary>
-        /// 检查UI是否正在显示
-        /// </summary>
         public bool IsShowing() => isShowing;
 
         #endregion
 
-        /// <summary>
-        /// 物品悬停区域
-        /// </summary>
         protected class ItemHoverArea
         {
             public Item Item { get; set; }

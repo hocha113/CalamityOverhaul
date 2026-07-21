@@ -12,10 +12,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>自然元素枪管共享 VFX：屏幕震、Additive 晕、owned 计数/近距节流</summary>
+    /// <summary>自然元素枪管共享 VFX，屏震/晕/owned 计数与近距节流</summary>
     internal static class SHPCNaturalFx
     {
-        /// <summary>多层柔光叠加，inner→outer 按 t 渐变</summary>
+        /// <summary>多层柔光，inner→outer</summary>
         public static void GlowLayered(SpriteBatch sb, Texture2D tex, Vector2 screenPos,
             Color inner, Color outer, float scale, float rotation, int layers = 3) {
             if (tex == null) return;
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
         }
 
-        /// <summary>屏幕震动，仅本地玩家</summary>
+        /// <summary>屏震，仅本地</summary>
         public static void Shake(float amount) {
             if (amount <= 0f || Main.netMode == NetmodeID.Server) return;
             Player p = Main.LocalPlayer;
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (p.TryGetModPlayer(out CWRPlayer cp)) cp.GetScreenShake(amount);
         }
 
-        /// <summary>统计主人某类型活跃弹幕数</summary>
+        /// <summary>同主同类型活跃数</summary>
         public static int CountOwned(int owner, int type) {
             int n = 0;
             for (int i = 0; i < Main.maxProjectiles; i++) {
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             return n;
         }
 
-        /// <summary>半径内是否已有同主同类型弹幕</summary>
+        /// <summary>半径内是否已有同主同型</summary>
         public static bool HasOwnedNear(int owner, int type, Vector2 center, float radius) {
             float r2 = radius * radius;
             for (int i = 0; i < Main.maxProjectiles; i++) {
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>黑曜石枪管：命中叠裂纹，满层碎裂为寻敌玻璃碎片</summary>
+    /// <summary>黑曜石枪管，命中叠裂纹，满层碎为寻敌碎片</summary>
     internal sealed class ObsidianBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>黑曜石碎片：Trail+Additive，命中小脉冲</summary>
+    /// <summary>黑曜石碎片，Trail+Additive，命中小脉冲</summary>
     internal sealed class SHPCObsidianShardProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation();
             fadeAlpha = MathHelper.Clamp(Projectile.timeLeft / 18f, 0f, 1f);
-            //首帧前置粒子点缀，强调玻璃喷出
+            //首帧玻璃喷出点缀
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
                 if (Main.netMode != NetmodeID.Server) {
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (Main.netMode == NetmodeID.Server) return;
             SoundEngine.PlaySound(SoundID.Item50 with { Volume = 0.45f, Pitch = 0.4f }, target.Center);
             SoundEngine.PlaySound(SoundID.NPCDeath6 with { Volume = 0.35f, Pitch = -0.2f }, target.Center);
-            //小型碎片爆：复用 CyberDetonationProj 50px 半径
+            //小爆，CyberDetonation 50px
             if (Projectile.owner == Main.myPlayer) {
                 int dmg = Math.Max(Projectile.damage / 8, 1);
                 int idx = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
@@ -180,7 +180,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (noise == null) return;
 
-            //汇总 oldPos 历史为 trail 顶点（屏蔽零向量首帧，避免拖尾跳变）
+            //oldPos→trail，零向量首帧用 head
             trailPoints ??= new Vector2[TrailLen];
             Vector2 head = Projectile.Center;
             for (int i = 0; i < TrailLen; i++) {
@@ -218,7 +218,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 new Color(255, 200, 110) * fadeAlpha,
                 new Color(120, 40, 90) * fadeAlpha * 0.3f,
                 0.7f, Projectile.rotation, 3);
-            //叠一层 LightShot 强化方向感
+            //LightShot 方向感
             Texture2D shot = CWRAsset.LightShotAlt?.Value;
             if (shot != null) {
                 Vector2 origin = new(shot.Width, shot.Height * 0.5f);
@@ -229,7 +229,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //本体由 Trail + Additive 接管，PreDraw 留空避免占位贴图
+            //Trail+Additive 接管，PreDraw 空
             return false;
         }
     }

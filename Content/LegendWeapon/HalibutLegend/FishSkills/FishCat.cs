@@ -397,7 +397,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return target.active && target.CanBeChasedBy();
         }
 
-        /// <summary>喵一声：嘴部声弧+叫声，strength 控制弧的尺寸</summary>
+        /// <summary>喵一声</summary>
         private void EmitMeow(float strength, Color color, float volume, float pitch) {
             float mouthRot = bodyRotation + spinRotation + wriggleRot;
             Vector2 mouthOff = new Vector2(facing * 15f, -2f).RotatedBy(mouthRot);
@@ -545,7 +545,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>油光缓扫：抽贴图竖切片做加色高光带，被鱼形 alpha 天然遮罩，相位按 whoAmI 错开</summary>
+        /// <summary>油光缓扫</summary>
         private void DrawOilSheen(SpriteBatch sb, Texture2D tex, Vector2 drawPos, Vector2 scale, SpriteEffects effects, float rot) {
             float sweep = (Main.GlobalTimeWrappedHourly * 0.5f + Projectile.whoAmI * 0.373f) % 1f;
             int bandW = Math.Max(2, tex.Width / 7);

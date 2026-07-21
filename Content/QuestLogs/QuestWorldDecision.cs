@@ -7,22 +7,19 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.QuestLogs
 {
-    /// <summary>
-    /// 跨世界进入时的任务检测入世决策；本地单例，回答或世界切换后释放
-    /// <br/><see cref="IsPending"/> 供 <see cref="QLPlayer.PostUpdate"/> 在未回答期间暂停任务更新
-    /// </summary>
+    /// <summary>跨世界入世任务检测决策，本地单例，答完或切世界释放；<see cref="IsPending"/> 给 <see cref="QLPlayer.PostUpdate"/> 暂停更新</summary>
     internal sealed class QuestWorldDecision : EntryDecision
     {
         private static QuestWorldDecision current;
 
-        /// <summary>存在未回答的任务检测决策</summary>
+        /// <summary>未回答的决策仍在</summary>
         public static bool IsPending => current != null;
 
         private bool answered;
 
         private QuestWorldDecision() { }
 
-        /// <summary>请求任务检测确认，仅本地玩家 OnEnterWorld 触发</summary>
+        /// <summary>仅本地玩家 OnEnterWorld 请求确认</summary>
         public static void Request(Player owner) {
             if (Main.netMode == NetmodeID.Server) {
                 return;

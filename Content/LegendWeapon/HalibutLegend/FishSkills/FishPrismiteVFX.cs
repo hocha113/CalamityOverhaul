@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>棱彩冲击波域内资源（域内加载器，不经 EffectLoader）</summary>
     internal class FishPrismiteAssets
     {
-        /// <summary>波前弧线：冷白发丝线 + 色散边 + 暗干涉纹</summary>
+        /// <summary>波前弧线，冷白发丝线 + 色散边 + 暗干涉纹</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect FishPrismWave { get; private set; }
 
@@ -22,12 +22,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public static Asset<Texture2D> ArcWaveTex { get; private set; }
     }
 
-    /// <summary>
-    /// 棱彩冲击波共享演出协作类。<br/>
-    /// 色彩脚本：平时 = 冷白（波前发丝线）+ 前红后蓝极窄色散边（透镜色差）；
-    /// 彩虹只在分裂事件出现：白光在分裂点展开成光谱扇，子波按角序继承红→紫色相切片。<br/>
-    /// 与近邻差异：FishJewel 是离散宝石实体，FishUnicorn 是神话装饰彩虹，本技能是连续光学波 + 严格物理色散
-    /// </summary>
+    /// <summary>棱彩冲击波 VFX，平时冷白+红蓝色散边，彩虹仅分裂扇；异于 FishJewel 离散宝石</summary>
     internal static class FishPrismiteVFX
     {
         //==== 色彩脚本 ====
@@ -38,14 +33,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// <summary>后缘色散（蓝侧）</summary>
         public static readonly Color TrailBlue = new(96, 138, 255);
 
-        /// <summary>光谱采样：t 0=红 → 1=紫，饱和压明度（防过曝：宁提饱和度不提明度）</summary>
+        /// <summary>光谱采样，t 0=红 → 1=紫，饱和压明度（防过曝，宁提饱和度不提明度）</summary>
         public static Color Spectrum(float t) {
             t = MathHelper.Clamp(t, 0f, 1f);
             return Main.hslToRgb(t * 0.75f, 0.96f, 0.52f);
         }
 
         /// <summary>
-        /// 波的三色组：hueT &lt; 0 = 白光波（红/冷白/蓝色差），否则为谱色子波
+        /// 波的三色组，hueT &lt; 0 = 白光波（红/冷白/蓝色差），否则为谱色子波
         /// （色散边取其光谱邻位色相，像从光谱上剪下的一窄条）
         /// </summary>
         public static void WaveColors(float hueT, out Color lead, out Color core, out Color trail) {
@@ -70,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
-        /// 分裂时刻的完整演出：光谱扇 + 玻璃闪点锥 + 小定向震屏 + 碎裂/晶莹双层音。
+        /// 分裂时刻的完整演出，光谱扇 + 玻璃闪点锥 + 小定向震屏 + 碎裂/晶莹双层音
         /// spread 与 count 传分裂逻辑的同一组值，扇面射线与子波出射方向严格对位
         /// </summary>
         public static void PrismBurst(Vector2 pos, Vector2 dir, float spread, int count, float scaleMul) {
@@ -82,7 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float baseRot = dir.SafeNormalize(Vector2.UnitX).ToRotation();
             PRTLoader.NewParticle<PRT_FishPrismSpectrum>(pos, Vector2.Zero, ColdWhite, scaleMul)
                 ?.Configure(count, baseRot, spread, Main.rand.NextFloat(100f));
-            //玻璃闪点锥：色相与出射角对位，冷白少量混入
+            //玻璃闪点锥
             for (int i = 0; i < 8; i++) {
                 float rt = Main.rand.NextFloat();
                 Vector2 vel = (baseRot - spread / 2f + spread * rt).ToRotationVector2() * Main.rand.NextFloat(2.5f, 7f);
@@ -95,8 +90,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 波痕残弧：波前身后脱落的相位残迹。原地缓慢扩散、变薄、消散；
-    /// 三层色散绘制随生命推移彼此分离（退相干的可视化）。黑底 ArcWave，仅加色
+    /// 波痕残弧，波前身后脱落的相位残迹，原地缓慢扩散、变薄、消散；
+    /// 三层色散绘制随生命推移彼此分离（退相干的可视化），黑底 ArcWave，仅加色
     /// </summary>
     internal class PRT_FishPrismWavelet : BasePRT
     {
@@ -145,9 +140,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 origin = new(tex.Width * 0.72f, tex.Height * 0.5f);
             Vector2 pos = Position - Main.screenPosition;
             Vector2 dirVec = dirRot.ToRotationVector2();
-            //色散分离随衰老增大：残迹逐渐散成红蓝双边
+            //色散分离随衰老增大
             float disp = 2f + 5f * LifetimeCompletion;
-            //变薄：跨波方向随生命收缩
+            //变薄，跨波方向随生命收缩
             Vector2 texScale = new Vector2(0.6f, 0.8f * (1f - LifetimeCompletion * 0.3f)) * Scale;
 
             Color lead = colLead with { A = 0 };
@@ -161,8 +156,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 玻璃微闪点：单帧镜面反光的质感。前 2 帧冷白过冲后落回本色急衰；
-    /// SoftGlow 小底晕 + 四芒星芯双层异质。黑底贴图，仅加色
+    /// 玻璃微闪点，单帧镜面反光的质感，前 2 帧冷白过冲后落回本色急衰；
+    /// SoftGlow 小底晕 + 四芒星芯双层异质，黑底贴图，仅加色
     /// </summary>
     internal class PRT_FishPrismGlint : BasePRT
     {
@@ -214,10 +209,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 光谱扇：分裂点的彩虹时刻。中心棱镜白闪（≤2 帧）+ N 道细谱色射线按子波出射角展开，
-    /// 射线快速生长后自根部蚀退，尾段留色散残光 aftermath。黑底贴图，仅加色
-    /// </summary>
+    /// <summary>光谱扇，中心白闪≤2帧 + N 道谱色射线，自根蚀退留残光，黑底加色</summary>
     internal class PRT_FishPrismSpectrum : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -267,7 +259,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 center = Position - Main.screenPosition;
             float lc = LifetimeCompletion;
             float grow = VaultUtils.EaseOutCubic(MathF.Min(1f, Time / 5f));
-            //根部先蚀：第 7 帧起残光从分裂点向外撤退，尾端最后熄灭
+            //根部先蚀
             float rootT = MathHelper.Clamp((Time - 7f) / (Lifetime - 7f), 0f, 1f);
 
             for (int i = 0; i < rayCount; i++) {
@@ -289,7 +281,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 spriteBatch.Draw(ray, segPos, null, col * (Opacity * 0.85f), ang + MathHelper.PiOver2
                     , ray.Size() * 0.5f, segScale, SpriteEffects.None, 0f);
 
-                //射线端头的谱色小闪点：扇面外缘的一圈亮痕
+                //射线端头的谱色小闪点
                 if (Time < 10f) {
                     Texture2D tip = CWRAsset.StarGlow01?.Value;
                     if (tip != null) {
@@ -299,7 +291,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //中心棱镜闪：≤2 帧白色十字过冲 → 冷白光斑衰减
+            //中心棱镜闪
             if (Time <= 2f) {
                 Texture2D cross = CWRAsset.RayCross01?.Value;
                 if (cross != null) {

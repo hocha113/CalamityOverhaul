@@ -13,12 +13,11 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 {
     internal class CybCourseWorld : Subworld
     {
-        //世界宽保持极小，够用就行，不浪费内存
+        //宽度400够用
         public override int Width => 400;
-        //高度必须让"地狱层"(Terraria 固定取 maxTilesY-200)落到走廊下方。
-        //若世界太矮(如 250)，地狱层会落在 tile≈50，而走廊在 tile≈148-178 → 整条走廊被判成地狱生物群系，
-        //从而误触发各种地狱判定(任务书地狱探索节点、比目鱼/海伦的地狱赠礼、巫毒玩偶等)。
-        //取 FloorY(170)+280=450 → 地狱层=450-200=250，稳稳落在走廊下方(余量≈72格)。
+        //高度须让地狱层(maxY-200)落走廊下
+        //太矮则走廊判地狱,误触发探索/赠礼/巫毒
+        //FloorY170+280=450,地狱层250,余量≈72
         public override int Height => CybCourseGen.FloorY + 280;
 
         public static bool Active => SubworldSystem.IsActive<CybCourseWorld>();
@@ -28,18 +27,17 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         public static void Enter() => SubworldSystem.Enter<CybCourseWorld>();
         public static void Exit() => SubworldSystem.Exit();
 
-        //加载动画累计时间，每次进入子世界时重置
+        //加载计时,入子世界重置
         private static float _loadTime = 0f;
-        //预估加载时长（秒），进度条基于此动画，超出后钉在95%
+        //估时5.5s,超95%钉住
         private const float _estDuration = 5.5f;
 
-        //入场揭示动画累计时间。-1 = 等待真实进入（OnEnter 后、首帧 Update 前）
-        //0..EntryRevealDuration = 进行中；>= EntryRevealDuration = 演出结束
+        //入场揭示,-1=等OnEnter后首帧Update
+        //0..Duration进行中,>=Duration结束
         private static float _entryRevealTime = -1f;
-        //入场演出阶段时长（秒）
-        private const float EntryHoldDuration = 0.18f;     //开场短暂停留（暗场，蓄势）
-        private const float EntryExpandDuration = 1.95f;   //波前从中心扩散到屏幕外
-        private const float EntryFadeDuration = 0.55f;     //尾声整体淡出
+        private const float EntryHoldDuration = 0.18f;     //暗场蓄势
+        private const float EntryExpandDuration = 1.95f;   //波前扩散
+        private const float EntryFadeDuration = 0.55f;     //整体淡出
         private const float EntryRevealDuration =
             EntryHoldDuration + EntryExpandDuration + EntryFadeDuration;
 
@@ -48,41 +46,37 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 
         public override void OnEnter() {
             _loadTime = 0f;
-            //置为哨兵值，等首帧 Update 真正进入游戏时再启动
+            //-1哨兵,首帧Update再启
             _entryRevealTime = -1f;
         }
 
         public override void OnExit() {
-            //离开教程世界时清理兜底状态，避免被带回主世界造成异常
+            //离世界清兜底态
             HackTime.InfiniteHack = false;
-            //避免下次进入时误用旧值
             _entryRevealTime = -1f;
-            //释放整图回滚快照，避免整张子世界尺寸的结构体数组常驻内存
+            //清快照释内存
             CybCourseGen.ClearSnapshot();
         }
 
         public override void OnLoad() {
-            //固定为永夜，强化赛博朋克氛围
             Main.dayTime = false;
             Main.time = 0;
-            //把地表线/岩层线放在走廊正下方，使整条走廊判定为"地表(Overworld)"，避免任何地下/地狱/天空判定：
-            //· 走廊(tile≈148-178)位于地表线之上 → 环境光正常工作，不会出现地下黑暗
-            //· 地表线(FloorY+30=200)在走廊下方，且 0.35*200=70 在走廊上方 → 既不算地下也不算天空
-            //· 地狱层(maxTilesY-200=250)同样在走廊下方 → 不会被判成地狱
+            //worldSurface/rockLayer放走廊下,避地下/地狱/天空
+            //FloorY+30=200地表线,走廊148-178在其上
+            //maxY-200=250地狱层,同样在走廊下
             Main.worldSurface = CybCourseGen.FloorY + 30;
             Main.rockLayer = CybCourseGen.FloorY + 55;
         }
 
         public override void Update() {
-            //子世界 Update 仅在真正游戏帧调用（加载阶段不调用），适合作为入场演出的起点
+            //Update仅游戏帧,适合作入场起点
             if (_entryRevealTime < 0f) {
                 _entryRevealTime = 0f;
             }
             else if (_entryRevealTime < EntryRevealDuration) {
-                //Terraria 子世界帧率固定 60Hz
+                //子世界固定60Hz
                 _entryRevealTime += 1f / 60f;
             }
-            //清理掉落物
             for (int i = 0; i < Main.maxItems; i++) {
                 Item item = Main.item[i];
                 if (item.Alives() && item.CWR().InventoryTimer == 0) {
@@ -91,18 +85,16 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             }
         }
 
-        //完全接管加载界面的绘制逻辑
         public override void DrawSetup(GameTime gameTime) {
-            //限制单帧增量避免首帧跳变
+            //限单帧增量避跳变
             _loadTime += 0.02f;
 
             PlayerInput.SetZoom_UI();
             Main.instance.GraphicsDevice.Clear(Color.Black);
 
-            //先绘制着色器背景（单独的SpriteBatch，使用Immediate模式应用shader）
+            //shader背景,Immediate batch
             DrawLoadingBackground(_loadTime);
 
-            //文字层沿用base结构（Deferred + UIScaleMatrix）
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer,
                 null, Main.UIScaleMatrix);
@@ -111,8 +103,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             Main.spriteBatch.End();
         }
 
-        //入场演出：进入子世界后第一秒到第二秒之间，从屏幕中心扩散一圈六角能量网格揭示真实场景
-        //由 CybCourseEntryRevealLayer 在最高层级调用，盖住一切常规UI；演出结束后自动停止
+        //入场揭示,EntryRevealLayer最高层
         internal static void DrawEntryRevealOverlay(SpriteBatch sb) {
             if (!EntryRevealActive) {
                 return;
@@ -123,14 +114,13 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             }
 
             float t = _entryRevealTime;
-            //reveal 三段：[0,Hold]=0；[Hold,Hold+Expand] 0→1；[Hold+Expand,total] 1→1.18
+            //reveal三段,Hold/Expand/Fade
             float reveal;
             if (t < EntryHoldDuration) {
                 reveal = 0f;
             }
             else if (t < EntryHoldDuration + EntryExpandDuration) {
                 float u = (t - EntryHoldDuration) / EntryExpandDuration;
-                //先慢起步，过中段后稍快推进，再略微减速；让能量波前充满"展开"的仪式感
                 reveal = MathHelper.SmoothStep(0f, 1f, u);
             }
             else {
@@ -141,7 +131,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             int w = Main.screenWidth;
             int h = Main.screenHeight;
 
-            //接管 SpriteBatch，使用 Immediate 模式以应用 shader
+            //Immediate应用shader
             sb.End();
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
                 SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone,
@@ -155,13 +145,12 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             sb.Draw(VaultAsset.placeholder2.Value, new Rectangle(0, 0, w, h), Color.White);
 
             sb.End();
-            //还原至默认 Deferred 状态，匹配 Terraria 界面层调用约定
+            //还原Deferred batch
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone,
                 null, Main.UIScaleMatrix);
         }
 
-        //绘制全屏着色器背景（在DrawSetup内、文字层之前调用）
         private static void DrawLoadingBackground(float time) {
             var shader = EffectLoader.CybCourseLoading?.Value;
             if (shader == null || VaultAsset.placeholder2 == null || VaultAsset.placeholder2.IsDisposed) {
@@ -184,7 +173,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             Main.spriteBatch.End();
         }
 
-        //加载 UI 五块：识别码、标题、雷达百分比、状态行、进度条
         public override void DrawMenu(GameTime gameTime) {
             int sw = Main.screenWidth;
             int sh = Main.screenHeight;
@@ -205,21 +193,18 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             DrawBarLabel(sw, sh, bodyFont, dim);
         }
 
-        //顶部识别码（极淡，纯文字，不闪烁不动）
         private static void DrawTopIdentifier(int sw, int sh, DynamicSpriteFont font, Color dim) {
             string tag = "// CYBERSPACE  NODE-4082E";
             Main.spriteBatch.DrawString(font, tag,
                 new Vector2(sw * 0.034f, sh * 0.090f), dim * 0.50f);
         }
 
-        //中央标题：主标题（DeathText）+ 副标题 + 下划线锚点
         private static void DrawTitleBlock(int sw, int sh, DynamicSpriteFont titleFont,
             DynamicSpriteFont bodyFont, Color gold, Color dim, Texture2D px) {
             string title = "ENGRAM  LINK";
             Vector2 titleSz = titleFont.MeasureString(title);
             Vector2 titlePos = new Vector2(sw * 0.5f - titleSz.X * 0.5f, sh * 0.180f);
 
-            //仅一层投影（避免色差/抖动等故障特效，保持高质感）
             Main.spriteBatch.DrawString(titleFont, title,
                 titlePos + new Vector2(2f, 3f), Color.Black * 0.55f);
             Main.spriteBatch.DrawString(titleFont, title,
@@ -232,18 +217,15 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             Main.spriteBatch.DrawString(bodyFont, sub,
                 subPos, dim * 0.65f);
 
-            //下划线锚点：一条克制的金色细线 + 中央菱形（衔接副标题与下方雷达盘）
             int ulY = (int)(subPos.Y + subSz.Y + 14f);
             int ulW = (int)(titleSz.X * 0.55f);
             int ulX = (int)(sw * 0.5f - ulW / 2f);
-            //左右两段，中央留出菱形位置
             int gap = 6;
             Main.spriteBatch.Draw(px, new Rectangle(ulX, ulY, ulW / 2 - gap, 1),
                 new Rectangle(0, 0, 1, 1), gold * 0.55f);
             Main.spriteBatch.Draw(px, new Rectangle(ulX + ulW / 2 + gap, ulY, ulW / 2 - gap, 1),
                 new Rectangle(0, 0, 1, 1), gold * 0.55f);
 
-            //中心菱形（用三段水平像素拼接近似）
             int cx = ulX + ulW / 2;
             Main.spriteBatch.Draw(px, new Rectangle(cx - 1, ulY - 2, 2, 1),
                 new Rectangle(0, 0, 1, 1), gold * 0.95f);
@@ -257,8 +239,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 new Rectangle(0, 0, 1, 1), gold * 0.95f);
         }
 
-        //雷达盘心：放大百分比数字（焦点）+ 小号"%"符号
-        //数字使用DeathText（与标题同源）以保证排版一致；scale<1降至适合内环框尺寸
         private static void DrawDialPercentage(int sw, int sh, DynamicSpriteFont titleFont,
             DynamicSpriteFont bodyFont, Color gold, Color warm, float progress) {
             int pct = (int)(progress * 100);
@@ -268,22 +248,18 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             Vector2 numActSz = new Vector2(numSz.X * scale.X, numSz.Y * scale.Y);
 
             Vector2 dialCenter = new Vector2(sw * 0.5f, sh * 0.510f);
-            //数字基点：相对中心居中，整体略向左偏移以为右上方"%"符号留位
             float signOffset = 6f;
             Vector2 numPos = new Vector2(
                 dialCenter.X - (numActSz.X + signOffset + 14f) * 0.5f,
                 dialCenter.Y - numActSz.Y * 0.5f);
 
-            //投影
             Main.spriteBatch.DrawString(titleFont, num,
                 numPos + new Vector2(2f, 3f), Color.Black * 0.55f,
                 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
-            //主体
             Main.spriteBatch.DrawString(titleFont, num,
                 numPos, gold,
                 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
 
-            //"%"符号：小号，置于数字右上角，颜色稍暖
             string sign = "%";
             Vector2 signSz = bodyFont.MeasureString(sign);
             Vector2 signPos = new Vector2(
@@ -293,7 +269,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 signPos, warm * 0.92f);
         }
 
-        //状态行：当前WorldGen进度文本 + 动画省略号；克制的描边阴影
         private static void DrawStatus(int sw, int sh, DynamicSpriteFont font, Color dim) {
             string status = (Main.statusText ?? string.Empty).ToUpperInvariant();
             if (string.IsNullOrEmpty(status)) {
@@ -310,7 +285,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 pos, dim * 0.85f);
         }
 
-        //底部进度条左侧标签：极简，对应着色器进度条y≈0.928
         private static void DrawBarLabel(int sw, int sh, DynamicSpriteFont font, Color dim) {
             string label = "NEURAL  BRIDGE";
             Main.spriteBatch.DrawString(font, label,

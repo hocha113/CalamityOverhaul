@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 {
-    /// 风暴电弧：小型连锁闪电，二次打击与追踪
+    /// 风暴电弧，连锁闪电二次打击
     internal class StormArc : Lightning
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
         /// 从指定点尝试连锁
         private void AttemptChain(Vector2 fromPosition) {
-            //防止重复触发
+            //防重复触发
             if (hasAttemptedChain) return;
             hasAttemptedChain = true;
 

@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Vector2 shootVel = velocity.SafeNormalize(Vector2.UnitX) * 18f;
 
-            //ai[1] 为光谱色相：-1 = 未分光的白光波
+            //ai[1] 为光谱色相，-1 = 未分光的白光波
             Projectile.NewProjectile(
                 source,
                 position,
@@ -46,9 +46,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 棱彩冲击波：一道相干白光波前。飞行中 = 冷白发丝弧线 + 前红后蓝的极窄色散边，
+    /// 棱彩冲击波，一道相干白光波前，飞行中 = 冷白发丝弧线 + 前红后蓝的极窄色散边
     /// 身后脱落波痕残弧；命中或触地分裂时白光展开成光谱扇，子波按出射角序
-    /// 继承红→紫色相切片继续前进。<br/>
+    /// 继承红→紫色相切片继续前进<br/>
     /// ai[0] = 分裂代数；ai[1] = 光谱色相 0..1（-1 = 白光）
     /// </summary>
     internal class PrismiteWaveProjectile : BaseHeldProj, IPrimitiveDrawable
@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Main.dedServ) {
                 return;
             }
-            //出生玻璃闪：各端都会执行，子波的诞生闪即光谱扇在远端的可见对应物
+            //出生玻璃闪，各端都会执行
             Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             int glintCount = generation == 0 ? 6 : 3;
             for (int i = 0; i < glintCount; i++) {
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     ?.Configure(Main.rand.Next(10, 16));
             }
             if (generation == 0) {
-                //出膛棱镜闪：白光上路
+                //出膛棱镜闪，白光上路
                 PRTLoader.NewParticle<PRT_FishPrismGlint>(Projectile.Center, dir * 3f, FishPrismiteVFX.ColdWhite, 1.15f)
                     ?.Configure(10);
             }
@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.rotation = Projectile.velocity.ToRotation();
             pulsePhase += 0.2f;
 
-            //缩放动画：入场生长、呼吸、临终收缩（原骨架保留）
+            //缩放动画，入场生长
             if (lifeProgress < 0.1f) {
                 scale = VaultUtils.EaseOutBack(lifeProgress / 0.1f) * 1f;
             }
@@ -155,14 +155,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             if (!Main.dedServ) {
-                //波痕脱落：约 3 帧一道原地衰减的残弧（extraUpdates=2，AI 每帧 3 次）
+                //波痕脱落，约 3 帧一道原地衰减的残弧（extraUpdates=2，AI 每帧 3 次）
                 if (++waveletShedTimer >= 9) {
                     waveletShedTimer = 0;
                     PRTLoader.NewParticle<PRT_FishPrismWavelet>(Projectile.Center, Projectile.velocity * 0.05f
                         , colCore, scale * Projectile.scale * 0.82f)
                         ?.Configure(Projectile.rotation, colLead, colTrail, 13, 1.014f);
                 }
-                //相位闪点：沿弧随机位置的稀疏单帧反光
+                //相位闪点，沿弧随机位置的稀疏单帧反光
                 if (Main.rand.NextBool(11)) {
                     Vector2 perp = Projectile.velocity.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.Zero);
                     Vector2 pos = Projectile.Center + perp * Main.rand.NextFloat(-40f, 40f) * scale * Projectile.scale;
@@ -179,7 +179,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             bool splitting = generation == 0 && Projectile.numHits == 0;
             if (splitting) {
-                //白光在体内展开的一瞬：短顿帧
+                //白光在体内展开的一瞬，短顿帧
                 target.CWR().TimeFrozenTick = 3;
             }
             SplitOnImpact(Projectile.Center, Projectile.velocity);
@@ -226,7 +226,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 baseDir = impactDirection.SafeNormalize(Vector2.UnitX);
             float spreadAngle = MathHelper.Pi * 0.8f;
 
-            //彩虹时刻：光谱扇演出在所有跑到这里的端上播放，子波生成仍只归主端
+            //彩虹时刻
             FishPrismiteVFX.PrismBurst(impactPos, baseDir, spreadAngle, splitCount, scale * Projectile.scale);
 
             if (!Projectile.IsOwnedByLocalPlayer()) {
@@ -236,7 +236,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             for (int i = 0; i < splitCount; i++) {
                 float angle = -spreadAngle / 2f + (spreadAngle * i / (splitCount - 1));
                 Vector2 splitVel = baseDir.RotatedBy(angle) * Main.rand.NextFloat(12f, 16f);
-                //子波按角序继承光谱切片：红 → 紫
+                //子波按角序继承光谱切片，红 → 紫
                 float hue = i / (float)(splitCount - 1);
 
                 Projectile.NewProjectile(
@@ -253,7 +253,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>贯穿目标时的折射闪点：光穿过身体的一小簇反光</summary>
+        /// <summary>贯穿目标时的折射闪点，光穿过身体的一小簇反光</summary>
         private void SpawnPierceGlints(bool withChime) {
             if (withChime) {
                 SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.25f, Pitch = 0.55f, MaxInstances = 5 }, Projectile.Center);
@@ -272,7 +272,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>触地反弹的反射闪：一道顺新方向的波痕 + 少量接触闪点</summary>
+        /// <summary>触地反弹的反射闪，一道顺新方向的波痕 + 少量接触闪点</summary>
         private void SpawnBounceFlash() {
             if (Main.dedServ) {
                 return;
@@ -292,7 +292,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Main.dedServ) {
                 return;
             }
-            //退相干 aftermath：三道波痕接力扩散 + 慢漂闪点，活得比弹体久
+            //退相干 aftermath
             Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             float rot = dir.ToRotation();
             float ws = MathF.Max(scale * Projectile.scale, 0.3f);
@@ -310,7 +310,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //shader 缺失时的降级：三层色散残弧直绘
+            //shader 缺失时的降级
             if (FishPrismiteAssets.FishPrismWave == null) {
                 DrawFallbackArc();
             }
@@ -386,7 +386,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             GraphicsDevice device = Main.instance.GraphicsDevice;
             BlendState prevBlend = device.BlendState;
             RasterizerState prevRaster = device.RasterizerState;
-            //预乘输出走 AlphaBlend：暗干涉纹靠 alpha 压暗背景
+            //预乘输出走 AlphaBlend
             device.BlendState = BlendState.AlphaBlend;
             device.RasterizerState = RasterizerState.CullNone;
 

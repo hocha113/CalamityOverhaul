@@ -5,16 +5,14 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>
-    /// 酸液飞溅粒子，气泡破裂和硫酸爆发效果
-    /// </summary>
+    /// <summary>酸液飞溅</summary>
     internal class PRT_AcidSplash : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
 
         private Color acidColor;
         private bool affectedByGravity;
-        private float stretchFactor; //拉伸因子
+        private float stretchFactor;
 
         public override bool CanPool => true;
         public PRT_AcidSplash() {
@@ -28,7 +26,6 @@ namespace CalamityOverhaul.Content.PRTTypes
             Lifetime = lifetime;
             affectedByGravity = gravity;
 
-            //随机酸液颜色
             acidColor = Main.rand.Next(4) switch {
                 0 => new Color(110, 200, 120),
                 1 => new Color(90, 180, 100),
@@ -59,13 +56,10 @@ namespace CalamityOverhaul.Content.PRTTypes
         }
 
         public override void AI() {
-            //颜色渐变到更深的绿色
             Color = Color.Lerp(acidColor, Color.Green, LifetimeCompletion);
 
-            //透明度变化
             Opacity = 1f - (float)Math.Pow(LifetimeCompletion, 2);
 
-            //重力影响
             if (affectedByGravity) {
                 Velocity.Y += 0.15f;
                 Velocity.X *= 0.98f;
@@ -74,13 +68,10 @@ namespace CalamityOverhaul.Content.PRTTypes
                 Velocity *= 0.96f;
             }
 
-            //根据速度计算拉伸
             stretchFactor = MathHelper.Clamp(Velocity.Length() / 5f, 0.5f, 3f);
 
-            //旋转朝向速度方向
             Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
 
-            //尺寸衰减
             Scale *= 0.97f;
         }
 
@@ -89,10 +80,8 @@ namespace CalamityOverhaul.Content.PRTTypes
             Vector2 drawPos = Position - Main.screenPosition;
             Vector2 origin = texture.Size() / 2f;
 
-            //拉伸向量
             Vector2 scaleVec = new Vector2(Scale * 0.6f, Scale * stretchFactor * 1.8f);
 
-            //主飞溅体
             spriteBatch.Draw(
                 texture,
                 drawPos,
@@ -105,7 +94,6 @@ namespace CalamityOverhaul.Content.PRTTypes
                 0f
             );
 
-            //发光层
             spriteBatch.Draw(
                 texture,
                 drawPos,

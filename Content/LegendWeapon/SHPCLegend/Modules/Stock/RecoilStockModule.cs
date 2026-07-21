@@ -1,6 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>枪托：能量球爆炸时反推玩家弹射</summary>
+    /// <summary>后坐枪托，球爆反推玩家</summary>
     internal sealed class RecoilStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;

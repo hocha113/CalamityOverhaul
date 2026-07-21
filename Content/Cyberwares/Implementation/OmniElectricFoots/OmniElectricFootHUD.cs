@@ -8,8 +8,8 @@ using Terraria;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
 {
     /// <summary>
-    /// 全向电动义足 HUD，头顶半弧蓄力条+电流粒子
-    /// <br/>装备且蓄力中或残余进度时显示，全屏 UI 打开隐藏
+    /// 全向电动义足 HUD，头顶半弧蓄力条
+    /// <br/>蓄力中或残余进度时显示，全屏 UI 打开隐藏
     /// </summary>
     internal class OmniElectricFootHUD : UIHandle
     {
@@ -29,13 +29,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
                 if (QuestLog.Instance?.visible == true || QuestManagerUI.Instance?.IsOpen == true) {
                     return false;
                 }
-                //仅在蓄力进行中或者还有残余进度时显示，避免无功率时的视觉噪声
+                //蓄力中或残余进度
                 OmniElectricFootPlayer fp = p.GetModPlayer<OmniElectricFootPlayer>();
                 return fp.IsCharging || fp.ChargeRatio > 0.005f;
             }
         }
 
-        //冷色调电流配色，与义足"高压电磁推进"的设定保持一致
+        //冷色电流
         private static readonly Color BarColdLow = new(40, 80, 130);
         private static readonly Color BarColdHi = new(120, 220, 255);
         private static readonly Color BarHotHi = new(255, 230, 120);
@@ -45,11 +45,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
 
         #region 平滑/节奏状态
 
-        //平滑跟随真实进度，避免数值抖动
+        //平滑进度
         private float displayRatio;
-        //蓄力全局计时，扫光/电弧节奏，秒
+        //扫光/电弧节奏，秒
         private float time;
-        //蓄满时的脉冲强度
+        //蓄满脉冲
         private float fullPulse;
 
         #endregion
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
                 displayRatio = target;
             }
 
-            //蓄满时的呼吸脉冲
+            //蓄满呼吸
             if (target >= 0.999f) {
                 fullPulse = MathF.Min(1f, fullPulse + 0.08f);
             }
@@ -81,11 +81,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             }
 
             Player player = Main.LocalPlayer;
-            //定位：从玩家头顶上方 70 像素处垂直向上展开弧条，便于玩家视线集中区
+            //头顶上方
             Vector2 anchor = player.Top - Main.screenPosition + new Vector2(0f, -52f * player.gravDir);
 
             float ratio = MathHelper.Clamp(displayRatio, 0f, 1f);
-            //配色与电压强度联动
             Color barCol = Color.Lerp(BarColdLow, BarColdHi, ratio);
             if (ratio > 0.85f) {
                 float t = (ratio - 0.85f) / 0.15f;
@@ -100,16 +99,16 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             }
         }
 
-        /// <summary>弧形蓄力条：底环+进度环+顶端帽</summary>
+        /// <summary>弧形蓄力条，底环+进度环+顶端帽</summary>
         private void DrawArcBar(SpriteBatch sb, Texture2D px, Vector2 center, float ratio, Color barCol) {
             const float radius = 26f;
             const float thickness = 4.2f;
-            //顶部 195° 的半弧（即 -7°/8 圆周左右的横向圆顶），开口朝下让玩家头顶不被遮挡
+            //顶部 195° 半弧，开口朝下
             const float arcStart = MathHelper.Pi + MathHelper.PiOver4 * 0.7f;
             const float arcEnd = MathHelper.TwoPi - MathHelper.PiOver4 * 0.7f;
             const int seg = 36;
 
-            //底环（描边 + 半透明衬底）
+            //底环
             DrawArcStroke(sb, px, center, radius + thickness * 0.6f + 1f, arcStart, arcEnd, 1.4f, BarFrame * 0.85f, seg);
             DrawArcStroke(sb, px, center, radius - thickness * 0.6f - 1f, arcStart, arcEnd, 1.1f, BarFrame * 0.65f, seg);
             DrawArcSolid(sb, px, center, radius, arcStart, arcEnd, thickness, BarColdLow * 0.42f, seg);
@@ -118,11 +117,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             float fillEnd = MathHelper.Lerp(arcStart, arcEnd, ratio);
             if (fillEnd > arcStart + 0.001f) {
                 int segFill = Math.Max(8, (int)(seg * ratio) + 4);
-                //外层柔光
                 DrawArcSolid(sb, px, center, radius, arcStart, fillEnd, thickness + 4f, barCol * 0.18f, segFill);
-                //主体
                 DrawArcSolid(sb, px, center, radius, arcStart, fillEnd, thickness, barCol * 0.95f, segFill);
-                //内核高亮
                 DrawArcSolid(sb, px, center, radius, arcStart, fillEnd, thickness * 0.45f, Color.White * (0.55f + ratio * 0.4f), segFill);
 
                 //蓄满闪烁
@@ -132,14 +128,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
                         BarHotHi * (0.45f + 0.4f * flash), segFill);
                 }
 
-                //顶端帽：在填充末端绘制小亮点表达"能量正在汇聚"
+                //顶端帽
                 Vector2 capDir = new(MathF.Cos(fillEnd), MathF.Sin(fillEnd));
                 Vector2 capPos = center + capDir * radius;
                 DrawDot(sb, px, capPos, 4f, Color.White * (0.85f + 0.15f * MathF.Sin(time * 12f)));
                 DrawDot(sb, px, capPos, 7f, barCol * 0.4f);
             }
 
-            //中央电池图标：简化为竖向小矩形 + 顶部端子，强化"电能"语义
             DrawBatteryGlyph(sb, px, center, ratio, barCol);
         }
 
@@ -148,15 +143,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             if (ratio < 0.05f) {
                 return;
             }
-            //电弧数量与亮度按蓄力进度提升
             int boltCount = 1 + (int)MathF.Floor(ratio * 4f);
             for (int i = 0; i < boltCount; i++) {
-                //每帧选取一段弧形位置上的随机点作为电弧起点
                 float angle = MathHelper.Pi + MathHelper.PiOver4 * 0.7f
                     + (MathHelper.TwoPi - MathHelper.PiOver2 * 1.4f) * Main.rand.NextFloat();
                 Vector2 dir = new(MathF.Cos(angle), MathF.Sin(angle));
                 Vector2 from = center + dir * 26f;
-                //中心稍偏移，避免所有电弧汇聚到同一点造成结块视觉
+                //中心微偏，防结块
                 Vector2 to = center + new Vector2(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-3f, 3f));
 
                 Color boltCol = Color.Lerp(barCol, Color.White, 0.45f) * (0.55f + ratio * 0.4f);
@@ -166,12 +159,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
 
         /// <summary>蓄满脉冲环，约 0.8 秒一轮</summary>
         private void DrawFullPulseRing(SpriteBatch sb, Texture2D px, Vector2 center, float pulse) {
-            //循环展开：每 0.8 秒一次
+            //0.8 秒一轮
             float phase = (time * 1.25f) % 1f;
             float r = MathHelper.Lerp(20f, 46f, phase);
             float alpha = (1f - phase) * pulse * 0.7f;
             DrawArcStroke(sb, px, center, r, 0f, MathHelper.TwoPi, 2f, BarHotHi * alpha, 36);
-            //核心光斑
             DrawDot(sb, px, center, 9f, BarHotHi * (pulse * 0.3f));
         }
 
@@ -179,23 +171,20 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
         private static void DrawBatteryGlyph(SpriteBatch sb, Texture2D px, Vector2 center, float ratio, Color barCol) {
             const float bodyW = 9f;
             const float bodyH = 14f;
-            //外框
             DrawRect(sb, px, center - new Vector2(bodyW * 0.5f, bodyH * 0.5f), bodyW, bodyH, BarFrame * 0.95f);
-            //内填充：从底部向上随 ratio 增长
+            //内填充自下而上
             float fillH = (bodyH - 2f) * ratio;
             if (fillH > 0.5f) {
                 Vector2 fillTL = center + new Vector2(-bodyW * 0.5f + 1f, bodyH * 0.5f - 1f - fillH);
                 DrawRect(sb, px, fillTL, bodyW - 2f, fillH, barCol);
             }
-            //顶部端子
             DrawRect(sb, px, center - new Vector2(2f, bodyH * 0.5f + 2f), 4f, 2f, BarFrame * 0.95f);
-            //蓄满时端子亮起
             if (ratio > 0.95f) {
                 DrawDot(sb, px, center - new Vector2(0f, bodyH * 0.5f + 1f), 3f, BarHotHi * 0.85f);
             }
         }
 
-        #region 几何工具：纯像素绘制，无外部贴图依赖
+        #region 几何工具
 
         private static void DrawArcSolid(SpriteBatch sb, Texture2D px, Vector2 center,
             float radius, float startAngle, float endAngle, float thickness, Color color, int segments) {
@@ -218,7 +207,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
         }
 
         private static void DrawJaggedLine(SpriteBatch sb, Texture2D px, Vector2 from, Vector2 to, int kinks, Color color) {
-            //生成一段折线模拟雷电感，每段中点法向偏移随机量
+            //折线雷电，法向抖动
             Vector2 prev = from;
             int total = kinks + 1;
             Vector2 dir = to - from;
@@ -248,7 +237,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
         }
 
         private static void DrawDot(SpriteBatch sb, Texture2D px, Vector2 pos, float size, Color color) {
-            //用 1 像素纹理拉伸出近似圆点：以正方形近似，足够小尺寸下肉眼无差别
+            //1px 纹理当圆点
             int sz = Math.Max(1, (int)MathF.Round(size));
             Rectangle dst = new((int)(pos.X - sz * 0.5f), (int)(pos.Y - sz * 0.5f), sz, sz);
             sb.Draw(px, dst, color);

@@ -12,7 +12,6 @@ namespace CalamityOverhaul.Content.LegendWeapon
     /// <summary>跨世界升级确认队列，仅本地客户端；UI 只读 <see cref="Current"/></summary>
     internal static class LegendUpgradeManager
     {
-        /// <summary>挂起中的升级请求</summary>
         public sealed class PendingRequest
         {
             public LegendData Data;
@@ -43,9 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             }
         }
 
-        //待处理队列
         private static readonly Queue<PendingRequest> queue = new();
-        //当前展示
         private static PendingRequest current;
 
         /// <summary>当前展示请求，可 null</summary>
@@ -99,7 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 queue.Enqueue(req);
             }
 
-            //入世决策通道统一展示，出场时机与音效由 EntryDecisionUI 控制
+            //走 EntryDecisionUI 通道
             EntryDecisionManager.Register(LegendUpgradeDecision.Instance);
         }
 
@@ -135,7 +132,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             AdvanceQueue();
         }
 
-        /// <summary>信任此世界并升级，之后该世界静默同步</summary>
+        /// <summary>信任此世界并升级，之后静默同步</summary>
         public static void TrustCurrentAndConfirm() {
             if (current == null) {
                 return;
@@ -158,7 +155,6 @@ namespace CalamityOverhaul.Content.LegendWeapon
             queue.Clear();
         }
 
-        /// <summary>弹出下一个有效请求</summary>
         private static void AdvanceQueue() {
             while (queue.Count > 0) {
                 var next = queue.Dequeue();

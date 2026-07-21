@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>龙车俯冲开场：预兆→破土首趟→两趟交叉俯冲→尖刺亮相</summary>
+    /// <summary>龙车开场，预兆→破土→交叉俯冲→尖刺亮相</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Intro, typeof(DestroyerStateContext))]
     internal class DestroyerIntroState : DestroyerStateBase
     {
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         private const float AimedSpeed = 74f;
         #endregion
 
-        /// <summary>尖刺展开波相位(0头→1尾，-1未展，2全展)；Intro 且波未过本节时画无刺</summary>
+        /// <summary>尖刺波相位0头→1尾，-1未展2全展</summary>
         internal static float DeployWavePhase = 2f;
 
         private Vector2 breachPoint;
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             context.Npc.damage = 0;
 
-            //服务端定首趟方位(ai[3])；地下待命位等首帧 Target 就绪
+            //服务端首趟方位ai[3]
             if (!VaultUtils.isClient) {
                 context.Npc.ai[3] = Main.rand.Next(2);
                 context.Npc.netUpdate = true;
@@ -71,13 +71,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             Timer++;
 
-            //幕一：地面预兆
+            //幕一 地面预兆
             if (Timer <= OmenTime) {
                 UpdateOmen(context, side);
                 return null;
             }
 
-            //破土贯入帧：一帧设定全速 + 体节此刻生成
+            //破土贯入帧，生节
             if (Timer == OmenTime + 1) {
                 npc.Center = breachPoint - dir1 * 2200f;
                 npc.velocity = dir1 * Pass1Speed;
@@ -90,19 +90,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.1f, Volume = 1.25f }, player.Center);
             }
 
-            //幕二：第一趟贯穿（偏移线，体节在高速位移中展开）
+            //幕二 偏移首趟
             if (Timer <= Pass1End) {
                 UpdatePass1(context);
                 return null;
             }
 
-            //幕三：两趟正常瞄准的交叉俯冲
+            //幕三 交叉俯冲
             if (Timer <= AimedEnd) {
                 UpdateAimedPass(context, Timer - Pass1End - 1, side);
                 return null;
             }
 
-            //亮相：边回场边尖刺展开
+            //亮相尖刺展开
             if (Timer < IntroEnd) {
                 UpdateDeploy(context, side);
                 return null;
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             return new DestroyerPatrolState();
         }
 
-        #region 幕一：预兆
+        #region 幕一 预兆
 
         private void UpdateOmen(DestroyerStateContext context, int side) {
             NPC npc = context.Npc;
@@ -122,13 +122,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             npc.damage = 0;
 
             if (Timer == 1) {
-                //头部移到地下待命位（远离玩家武器射程，预兆期间不可见）
+                //头移地下待命
                 npc.Center = player.Center + new Vector2(side * 420f, 1700f);
                 npc.netUpdate = true;
                 SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.7f, Pitch = -0.65f }, player.Center);
             }
 
-            //首趟贯穿线：破土点偏移玩家约260px(公平阀)，自地下对角向上
+            //首趟偏玩家~260px对角向上
             if (Timer == 2) {
                 breachPoint = DestroyerMotionFX.FindGroundBelow(player.Center + new Vector2(side * 260f, 0f));
                 dir1 = (-Vector2.UnitY).RotatedBy(side * 0.62f);
@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 }
             }
 
-            //地面隆隆：尘柱密度/震动强度随 t³ 爬升（"slow start, hard end"）
+            //地面隆隆，t³爬升
             float t = Timer / (float)OmenTime;
             float ramp = t * t * t;
             if (!VaultUtils.isServer) {
@@ -166,7 +166,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         #endregion
 
-        #region 幕二：破土第一趟
+        #region 幕二 破土第一趟
 
         private void UpdatePass1(DestroyerStateContext context) {
             NPC npc = context.Npc;
@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             context.OrbitalVisual = 2;
             context.JawCommand = 1;
 
-            //破土瞬间：冲击环 + 碎屑喷泉 + 沿线定向震屏
+            //破土冲击+碎屑+震屏
             if (!breach1Fired && Vector2.Dot(npc.Center - breachPoint, dir1) > 0f) {
                 breach1Fired = true;
                 if (!VaultUtils.isClient) {
@@ -187,7 +187,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 DestroyerMotionFX.CameraPunch(breachPoint, 9f, 18, "DestroyerIntroBreach", dir1);
             }
 
-            //贯穿出屏后提前进入下一拍（no dead waiting）
+            //出屏提前下一拍
             if (breach1Fired && Vector2.Dot(npc.Center - breachPoint, dir1) > 2600f && Timer < Pass1End) {
                 Timer = Pass1End;
             }
@@ -195,7 +195,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         #endregion
 
-        #region 幕三：交叉瞄准俯冲
+        #region 幕三 交叉瞄准俯冲
 
         private void UpdateAimedPass(DestroyerStateContext context, int aimedTimer, int side) {
             NPC npc = context.Npc;
@@ -204,7 +204,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             int passIndex = Math.Min(aimedTimer / AimedPassLength, AimedPassCount - 1);
             int t = aimedTimer - passIndex * AimedPassLength;
 
-            //新一趟：左右交替的下落对角线，与上一趟成X交叉
+            //新趟左右对角成X
             if (passIndex != currentAimedPass) {
                 currentAimedPass = passIndex;
                 aimedBoomFired = false;
@@ -221,7 +221,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 SoundEngine.PlaySound(SoundID.Item15 with { Pitch = -0.2f, Volume = 0.85f, MaxInstances = 3 }, player.Center);
             }
 
-            //预警期：头部远处缓行，末12帧下颚咬合
+            //预警缓行，末12f咬合
             if (t < TelegraphTime) {
                 npc.damage = 0;
                 npc.velocity *= 0.985f;
@@ -236,7 +236,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 npc.velocity = aimedDir * AimedSpeed;
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
-                //ForceRoar：避免被开幕咆哮的余音按IgnoreNew上限吞掉
+                //ForceRoar，防开幕余音吞
                 SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.35f, Volume = 1.1f }, player.Center);
                 if (!VaultUtils.isClient) {
                     DestroyerHeatWakeProj.EnsureForHead(npc);
@@ -258,7 +258,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 DestroyerMotionFX.CameraPunch(aimedLineCenter, 7f, 16, "DestroyerIntroPass", aimedDir);
             }
 
-            //越过战场足够远立即进入下一趟（no dead waiting）
+            //越场够远下一趟
             int passEndTimer = Pass1End + 1 + passIndex * AimedPassLength + AimedPassLength - 1;
             if (aimedBoomFired && Vector2.Dot(npc.Center - aimedLineCenter, aimedDir) > 1200f && Timer < passEndTimer) {
                 Timer = passEndTimer;
@@ -267,7 +267,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         #endregion
 
-        #region 亮相：回场 + 尖刺展开波
+        #region 亮相 回场+尖刺波
 
         private void UpdateDeploy(DestroyerStateContext context, int side) {
             NPC npc = context.Npc;
@@ -276,7 +276,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             npc.damage = 0;
             context.JawCommand = 0;
 
-            //前10帧阶梯刹车，随后转向回玩家身侧；亮相同步回场，远距由回归加速接管
+            //前10f阶梯刹，回身侧亮相
             if (Timer <= AimedEnd + 10) {
                 float spd = npc.velocity.Length();
                 float brake = spd > 40f ? 0.92f : spd > 25f ? 0.94f : 0.965f;
@@ -295,12 +295,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = -0.35f, Volume = 0.8f, MaxInstances = 3 }, npc.Center);
             }
 
-            //尖刺展开波：从头部扫向尾部，扫过的体节切换为带刺贴图
+            //尖刺波头→尾换贴图
             float phase = MathHelper.Clamp((Timer - AimedEnd) / (float)DeployTime, 0f, 1f);
             DeployWavePhase = phase * 1.15f;
             DestroyerChargeWave.Push(npc.whoAmI, MathHelper.Clamp(DeployWavePhase, 0f, 1f), 0.1f, 1f);
 
-            //逐节金属咔哒 + 火花（客户端，跟随波峰所在体节）
+            //逐节咔哒+火花(客户端)
             if (!VaultUtils.isServer && Timer % 3 == 0 && context.BodySegments.Count > 0) {
                 int idx = (int)(MathHelper.Clamp(DeployWavePhase, 0f, 1f) * (context.BodySegments.Count - 1));
                 NPC segment = context.BodySegments[idx];

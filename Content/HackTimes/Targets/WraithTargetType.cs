@@ -6,26 +6,17 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes.Targets
 {
-    /// <summary>
-    /// 主题隐身声明缝：显形强度读不出的"它在但不该被看见"（潜壁未破壁一类），
-    /// 实体自报期间扫描器不受理悬停锁定。纯 UI 层门——吞没回执（WraithSwallow）刻意不查它：
-    /// 对着墙里隐形位置挥击冒烟+闷响是"墙里有东西"的环境先兆彩蛋，与传闻文案呼应（设计定夺保留）
-    /// </summary>
+    /// <summary>实体自报隐身，扫描器跳过悬停（WraithSwallow 不查）</summary>
     internal interface IWraithHoverConcealed
     {
-        /// <summary>为真时扫描器跳过本实体的悬停锁定</summary>
+        /// <summary>为真时跳过悬停锁定</summary>
         bool HoverConcealed { get; }
     }
 
-    /// <summary>
-    /// 灵异目标工厂（框架级通用件，覆盖全部厉鬼含调试件）：可扫不可骇，
-    /// 科技视角遇鬼必须失效（鬼律 14 的 ERR 范式）。悬停优先级低于 NPC。
-    /// 未现身者不受锁定：显形强度低于可见阈（同 WraithSwallow 的 0.35 语义）
-    /// 或实体自报主题隐身——扫描不许剧透还没登场的东西
-    /// </summary>
+    /// <summary>厉鬼目标，可扫不可骇，悬停优先低于 NPC，未现身不锁</summary>
     internal class WraithTargetType : HackTargetType
     {
-        /// <summary>悬停可见阈：低于此显形强度的虚影不受锁定（对照 WraithSwallow.MinStrength）</summary>
+        /// <summary>悬停可见阈，对照 WraithSwallow.MinStrength</summary>
         private const float MinHoverStrength = 0.35f;
 
         public override HackTargetKind Kind => HackTargetKind.Wraith;
@@ -56,10 +47,7 @@ namespace CalamityOverhaul.Content.HackTimes.Targets
         }
     }
 
-    /// <summary>
-    /// 骇客时间的灵异高亮层：悬停/选中的厉鬼以 <c>HackWraithHighlight.fx</c> 重绘本体
-    /// （紫红撕裂/冷紫魂光）。接管绘制而非叠批：死机提示等 PostDraw 文字不吃着色器
-    /// </summary>
+    /// <summary>悬停/选中厉鬼用 HackWraithHighlight.fx 重绘，拦默认 PreDraw，PostDraw 照常</summary>
     internal sealed class WraithHighlightDraw : GlobalActor
     {
         public override bool PreDraw(SpriteBatch spriteBatch, Actor actor, Color drawColor) {
@@ -94,7 +82,7 @@ namespace CalamityOverhaul.Content.HackTimes.Targets
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
                 null, Main.GameViewMatrix.TransformationMatrix);
-            //本体已由高亮层画过,拦下默认绘制;PostDraw(死机提示)照常走干净批次
+            //拦默认绘制，PostDraw(死机提示)走干净批次
             return false;
         }
     }

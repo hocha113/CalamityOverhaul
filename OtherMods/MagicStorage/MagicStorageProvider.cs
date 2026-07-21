@@ -5,9 +5,6 @@ using Terraria.DataStructures;
 
 namespace CalamityOverhaul.OtherMods.MagicStorage
 {
-    /// <summary>
-    /// Magic Storage存储提供者工厂
-    /// </summary>
     public class MagicStorageProviderFactory : IStorageProviderFactory
     {
         public string Identifier => "MagicStorage.StorageHeart";
@@ -26,8 +23,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
     }
 
     /// <summary>
-    /// Magic Storage模组的存储核心提供者，
-    /// 与MagicStorage的所有交互统一经由<see cref="MSRef"/>的反射缓存完成，无编译期依赖
+    /// 经 <see cref="MSRef"/> 访问的存储核心
     /// </summary>
     public class MagicStorageProvider : IStorageProvider
     {
@@ -50,9 +46,6 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             _position = position;
         }
 
-        /// <summary>
-        /// 在指定范围内查找Magic Storage存储核心
-        /// </summary>
         public static MagicStorageProvider FindNearPosition(Point16 position, int range, Item item) {
             if (MSRef.FindMagicStorage(item, position, range) is not TileEntity heart) {
                 return null;
@@ -60,9 +53,6 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             return new MagicStorageProvider(heart, heart.Position);
         }
 
-        /// <summary>
-        /// 获取指定位置的Magic Storage存储核心
-        /// </summary>
         public static MagicStorageProvider GetAtPosition(Point16 position, Item item) {
             if (MSRef.GetMagicStorage(item, position) is not TileEntity heart) {
                 return null;
@@ -108,7 +98,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         }
 
         public void PlayDepositAnimation() {
-            //Magic Storage没有吞噬动画
+            //无吞噬动画
         }
     }
 }

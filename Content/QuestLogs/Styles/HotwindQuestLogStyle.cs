@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
         #region 面板着色器背景
 
-        //着色器面板背景，降级用程序化绘制
+        //着色器面板，降级程序化
         private void DrawShaderPanel(SpriteBatch sb, Rectangle rect, float alpha, bool nightMode) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             }
         }
 
-        //降级背景：金属噪声渐变 + 扫描线 + 暗角 + 脉冲光
+        //降级背景，噪声/扫描线/暗角/脉冲
         private void DrawFallbackBackground(SpriteBatch sb, Texture2D px, Rectangle rect, float alpha, bool nightMode) {
             Color top = nightMode ? new Color(14, 20, 38) : new Color(28, 18, 10);
             Color mid = nightMode ? new Color(8, 14, 28) : new Color(18, 10, 6);
@@ -76,12 +76,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 sb.Draw(px, new Rectangle(rect.X, y1, rect.Width, Math.Max(1, y2 - y1)), c * alpha);
             }
 
-            //扫描线
             Color scanC = nightMode ? new Color(12, 20, 40) : new Color(30, 18, 8);
             for (int y = rect.Y; y < rect.Bottom; y += 3)
                 sb.Draw(px, new Rectangle(rect.X + 2, y, rect.Width - 4, 1), scanC * (alpha * 0.08f));
 
-            //暗角
             int vigW = 30;
             for (int v = 0; v < vigW; v += 3) {
                 float fade = (1f - v / (float)vigW);
@@ -98,12 +96,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 sb.Draw(px, new Rectangle(rect.X, rect.Bottom - v - 2, rect.Width, 2), vc);
             }
 
-            //脉冲光覆盖
             float pulse = MathF.Sin(pulseTimer * 2f) * 0.5f + 0.5f;
             Color pulseC = nightMode ? new Color(30, 70, 160) : new Color(160, 70, 30);
             sb.Draw(px, rect, pulseC * (0.03f * pulse * alpha));
 
-            //扫掠光带
             float scanY = rect.Y + (shaderTime * 0.055f % 1f) * rect.Height;
             for (int dy = -5; dy <= 5; dy++) {
                 int py = (int)scanY + dy;
@@ -121,10 +117,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             bool nightMode = log.NightMode;
             float alpha = log.MainPanelAlpha;
 
-            //着色器驱动的面板背景（含柔化边缘、金属纹理、脉络、浮雕等）
+            //着色器面板背景
             DrawShaderPanel(spriteBatch, panelRect, alpha, nightMode);
 
-            //角落铆钉装饰
             float pulse = MathF.Sin(pulseTimer * 2f) * 0.5f + 0.5f;
             DrawCornerRivet(spriteBatch, new Vector2(panelRect.X + 12, panelRect.Y + 12), pulse, alpha, nightMode);
             DrawCornerRivet(spriteBatch, new Vector2(panelRect.Right - 12, panelRect.Y + 12), pulse, alpha, nightMode);
@@ -138,30 +133,28 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             int halfSize = size / 2;
             float glowPulse = MathF.Sin(Main.GameUpdateCount * 0.05f) * 0.5f + 0.5f;
 
-            //四状态色彩体系：未解锁/进行中/已完成待领取/已完成已领取
+            //四状态色，未解/进行/待领/已领
             bool hasUnclaimed = node.HasUnclaimedRewards;
             Color coreColor, glowColor, edgeLight;
 
             if (node.IsCompleted && !hasUnclaimed) {
-                //已完成已领取，沉稳绿
+                //已领沉绿
                 coreColor = new Color(45, 130, 65);
                 glowColor = new Color(70, 200, 90);
                 edgeLight = new Color(130, 255, 155);
             }
             else if (hasUnclaimed) {
-                //已完成待领取，金色
+                //待领金
                 coreColor = new Color(160, 130, 30);
                 glowColor = new Color(245, 210, 60);
                 edgeLight = new Color(255, 240, 120);
             }
             else if (node.IsUnlocked) {
-                //解锁进行中
                 coreColor = new Color(155, 85, 35);
                 glowColor = new Color(220, 140, 55);
                 edgeLight = new Color(255, 180, 90);
             }
             else {
-                //未解锁
                 coreColor = new Color(45, 45, 55);
                 glowColor = new Color(70, 70, 85);
                 edgeLight = new Color(110, 110, 130);
@@ -173,12 +166,12 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 edgeLight = Color.White;
             }
 
-            //多层辐射光晕（从外到内，营造悬浮发光感）
+            //多层辐射光晕
             if (node.IsUnlocked || node.IsCompleted) {
                 for (int layer = 3; layer >= 1; layer--) {
                     int expand = layer * 5 + (isHovered ? 3 : 0);
                     float layerAlpha = (0.06f + glowPulse * 0.04f) / layer;
-                    //待领取奖励时光晕更强烈
+                    //待领光晕加强
                     if (hasUnclaimed) layerAlpha *= 1.6f;
                     Rectangle glowRect = new Rectangle(
                         (int)drawPos.X - halfSize - expand,
@@ -188,14 +181,14 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 }
             }
 
-            //投影（偏移、模糊的暗色）
+            //投影
             Rectangle shadowR = new Rectangle(
                 (int)drawPos.X - halfSize + 3,
                 (int)drawPos.Y - halfSize + 4,
                 size, size);
             spriteBatch.Draw(px, shadowR, Color.Black * (0.45f * alpha));
 
-            //节点主体纵向渐变
+            //节点纵渐变
             Rectangle nodeRect = new Rectangle(
                 (int)drawPos.X - halfSize,
                 (int)drawPos.Y - halfSize,
@@ -208,7 +201,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 int gy1 = nodeRect.Y + (int)(gt * nodeRect.Height);
                 int gy2 = nodeRect.Y + (int)(gt2 * nodeRect.Height);
 
-                //上部偏亮（光照面），下部偏暗（阴影面）
+                //上亮下暗
                 float lightFactor = 1f - gt * 0.6f;
                 Color gc = new Color(
                     (int)(coreColor.R * lightFactor),
@@ -218,13 +211,13 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                     gc * alpha);
             }
 
-            //顶部高光条（模拟反射弧光）
+            //顶高光条
             spriteBatch.Draw(px, new Rectangle(nodeRect.X + 3, nodeRect.Y + 1, nodeRect.Width - 6, 1),
                 edgeLight * (0.3f * alpha));
             spriteBatch.Draw(px, new Rectangle(nodeRect.X + 5, nodeRect.Y + 2, nodeRect.Width - 10, 1),
                 edgeLight * (0.15f * alpha));
 
-            //左侧高光边 + 右/下阴影边（光照斜面）
+            //左亮右下阴影
             Color hlEdge = edgeLight * (0.4f * alpha);
             Color shEdge = Color.Black * (0.5f * alpha);
             int bw = isHovered ? 2 : 1;
@@ -233,10 +226,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             spriteBatch.Draw(px, new Rectangle(nodeRect.Right - bw, nodeRect.Y, bw, nodeRect.Height), shEdge);
             spriteBatch.Draw(px, new Rectangle(nodeRect.X, nodeRect.Bottom - bw, nodeRect.Width, bw), shEdge);
 
-            //任务图标
             DrawQuestIcon(spriteBatch, node, drawPos, scale, alpha);
 
-            //节点名称
             Vector2 nameSize = FontAssets.MouseText.Value.MeasureString(node.DisplayName?.Value) * 0.75f;
             Vector2 namePos = new Vector2(drawPos.X, drawPos.Y + halfSize + 8);
             Color textColor;
@@ -266,18 +257,15 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             int lineW = 6;
 
-            //投影
             spriteBatch.Draw(px, start + new Vector2(2, 3).RotatedBy(rotation),
                 new Rectangle(0, 0, (int)length, lineW), Color.Black * (0.35f * alpha),
                 rotation, new Vector2(0, lineW / 2f), 1f, SpriteEffects.None, 0f);
 
             if (isUnlocked) {
-                //暗色管道底层
                 spriteBatch.Draw(px, start,
                     new Rectangle(0, 0, (int)length, lineW), new Color(55, 35, 18) * (0.85f * alpha),
                     rotation, new Vector2(0, lineW / 2f), 1f, SpriteEffects.None, 0f);
 
-                //流动渐变
                 int segments = Math.Max((int)(length / 10f), 3);
                 float flowProgress = (flowTimer * 0.2f) % 1f;
                 for (int i = 0; i < segments; i++) {
@@ -287,25 +275,20 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                     float wave = MathF.Sin((t - flowProgress) * MathHelper.TwoPi * 2f);
                     float brightness = wave * 0.5f + 0.5f;
 
-                    //中心高亮
                     Color c = Color.Lerp(new Color(130, 65, 25), new Color(255, 170, 65), brightness);
                     int segLen = (int)(length / segments) + 1;
 
-                    //外层（全宽）
                     spriteBatch.Draw(px, pos, new Rectangle(0, 0, segLen, lineW),
                         c * (0.5f * alpha), rotation, new Vector2(0, lineW / 2f), 1f, SpriteEffects.None, 0f);
-                    //内核（窄线，更亮）
                     spriteBatch.Draw(px, pos, new Rectangle(0, 0, segLen, lineW / 2),
                         c * (0.7f * alpha * brightness), rotation, new Vector2(0, lineW / 4f), 1f, SpriteEffects.None, 0f);
                 }
 
-                //外辉光
                 int glowW = lineW + 8;
                 spriteBatch.Draw(px, start, new Rectangle(0, 0, (int)length, glowW),
                     new Color(255, 130, 50) * (0.12f * alpha), rotation,
                     new Vector2(0, glowW / 2f), 1f, SpriteEffects.None, 0f);
 
-                //能量脉冲点
                 int pulseCount = Math.Max((int)(length / 55f), 2);
                 for (int i = 0; i < pulseCount; i++) {
                     float t = ((flowTimer * 0.5f + i * (1f / pulseCount)) % 1f);
@@ -317,7 +300,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 }
             }
             else {
-                //虚线
                 int dashLen = 12;
                 int gapLen = 8;
                 int total = dashLen + gapLen;
@@ -343,16 +325,13 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         public void DrawQuestDetail(SpriteBatch spriteBatch, QuestNode node, Rectangle panelRect, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            //全屏遮罩
             spriteBatch.Draw(px, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
                 Color.Black * (0.6f * alpha));
 
             bool nightMode = QuestLog.Instance?.NightMode ?? false;
 
-            //着色器面板
             DrawShaderPanel(spriteBatch, panelRect, alpha, nightMode);
 
-            //绘制内容
             DrawDetailContent(spriteBatch, node, panelRect, alpha);
         }
 
@@ -361,13 +340,12 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             int padding = 20;
             int currentY = panelRect.Y + padding;
 
-            //标题
             Color titleColor = node.IsCompleted ? new Color(115, 220, 135) : new Color(225, 175, 115);
             Utils.DrawBorderString(spriteBatch, node.DisplayName?.Value,
                 new Vector2(panelRect.X + padding, currentY), titleColor * alpha, 1.2f);
             currentY += (int)(FontAssets.MouseText.Value.MeasureString(node.DisplayName?.Value).Y * 1.2f) + 8;
 
-            //分隔线（凹槽效果）
+            //凹槽分隔线
             int lineW = panelRect.Width - padding * 2;
             spriteBatch.Draw(px, new Rectangle(panelRect.X + padding, currentY, lineW, 1),
                 new Color(8, 5, 2) * (alpha * 0.8f));
@@ -375,7 +353,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 new Color(170, 105, 45) * (alpha * 0.35f));
             currentY += 14;
 
-            //描述
             string desc = string.IsNullOrEmpty(node.DetailedDescription?.Value)
                 ? node.Description?.Value : node.DetailedDescription?.Value;
             if (!string.IsNullOrEmpty(desc)) {
@@ -390,7 +367,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 currentY += 10;
             }
 
-            //目标
             if (node.Objectives != null && node.Objectives.Count > 0) {
                 Utils.DrawBorderString(spriteBatch, QuestLog.ObjectiveText.Value + ":",
                     new Vector2(panelRect.X + padding, currentY), new Color(215, 165, 105) * alpha, 0.9f);
@@ -432,7 +408,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 currentY += 10;
             }
 
-            //奖励
             if (node.Rewards != null && node.Rewards.Count > 0) {
                 Utils.DrawBorderString(spriteBatch, QuestLog.RewardText.Value + ":",
                     new Vector2(panelRect.X + padding, currentY), new Color(215, 165, 105) * alpha, 0.9f);
@@ -475,7 +450,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 currentY += 50;
             }
 
-            //领取按钮
             if (node.IsCompleted && node.Rewards != null && node.Rewards.Exists(r => !r.Claimed)) {
                 Rectangle btnRect = GetRewardButtonRect(panelRect);
                 bool hover = btnRect.Contains(Main.MouseScreen.ToPoint());
@@ -499,10 +473,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             int barW = panelRect.Width - 40;
             Rectangle barRect = new Rectangle(panelRect.X + 20, panelRect.Bottom + 10, barW, barH);
 
-            //暗底
             spriteBatch.Draw(px, barRect, new Color(8, 6, 4) * (0.75f * alpha));
 
-            //进度填充
             if (total > 0) {
                 int fillW = (int)(barW * progress);
                 if (fillW > 0) {
@@ -510,11 +482,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                     Color fillC = nightMode ? new Color(50, 110, 200) : new Color(200, 120, 40);
                     spriteBatch.Draw(px, fillRect, fillC * (0.55f * alpha));
 
-                    //内部高光
                     spriteBatch.Draw(px, new Rectangle(fillRect.X, fillRect.Y, fillW, 1),
                         Color.White * (0.15f * alpha));
 
-                    //流光
                     float flow = (flowTimer * 2f) % 1f;
                     int flowX = fillRect.X + (int)(flow * fillW);
                     if (flowX < fillRect.Right)
@@ -523,7 +493,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 }
             }
 
-            //边缘光照效果（上亮下暗）
+            //边光上亮下暗
             Color edgeHL = nightMode ? new Color(60, 130, 220) : new Color(220, 130, 55);
             spriteBatch.Draw(px, new Rectangle(barRect.X, barRect.Y, barRect.Width, 1), edgeHL * (0.5f * alpha));
             spriteBatch.Draw(px, new Rectangle(barRect.X, barRect.Bottom - 1, barRect.Width, 1),
@@ -553,13 +523,12 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
         #region 通用绘制工具
 
-        //金属质感按钮：纵向渐变 + 顶部反光 + 光照边缘
+        //金属按钮，纵渐变/顶反光/边光
         private void DrawMetallicButton(SpriteBatch sb, Rectangle rect, string text, bool hover, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
             bool nightMode = QuestLog.Instance?.NightMode ?? false;
             float pulse = MathF.Sin(pulseTimer * 3f) * 0.5f + 0.5f;
 
-            //投影
             Rectangle shadowR = rect;
             shadowR.Offset(2, 3);
             sb.Draw(px, shadowR, Color.Black * (0.4f * alpha));
@@ -589,7 +558,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             sb.Draw(px, new Rectangle(rect.X + 3, rect.Y + 1, rect.Width - 6, 1),
                 Color.White * (0.25f * alpha));
 
-            //光照边缘
             Color hlC = nightMode
                 ? Color.Lerp(new Color(100, 180, 255), new Color(150, 220, 255), pulse)
                 : Color.Lerp(new Color(255, 200, 120), new Color(255, 230, 170), pulse);
@@ -600,14 +568,12 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             sb.Draw(px, new Rectangle(rect.Right - 1, rect.Y, 1, rect.Height), Color.Black * (0.3f * alpha));
             sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1), Color.Black * (0.4f * alpha));
 
-            //文字
             Color textC = hover ? Color.White : new Color(255, 245, 230);
             Utils.DrawBorderString(sb, text,
                 new Vector2(rect.X + rect.Width / 2, rect.Y + rect.Height / 2),
                 textC * alpha, 0.85f, 0.5f, 0.5f);
         }
 
-        //节点图标绘制
         private void DrawQuestIcon(SpriteBatch spriteBatch, QuestNode node, Vector2 center, float scale, float alpha) {
             Texture2D iconTex = node.GetIconTexture();
             if (iconTex == null) return;
@@ -627,21 +593,18 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 frame.Size() / 2f, iconScale, SpriteEffects.None, 0f);
         }
 
-        //角落铆钉装饰
         private void DrawCornerRivet(SpriteBatch sb, Vector2 pos, float pulse, float alpha, bool nightMode) {
             Texture2D px = VaultAsset.placeholder2.Value;
             Color baseC = nightMode ? new Color(50, 110, 190) : new Color(190, 110, 50);
             Color glowC = nightMode ? new Color(35, 80, 160) : new Color(160, 80, 35);
 
-            //外层辉光
             sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), glowC * (0.2f * pulse * alpha), 0f,
                 new Vector2(0.5f, 0.5f), new Vector2(14f, 14f), SpriteEffects.None, 0f);
 
-            //铆钉主体（中心圆模拟）
+            //铆钉中心圆
             sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), baseC * (0.8f * pulse * alpha), 0f,
                 new Vector2(0.5f, 0.5f), new Vector2(5f, 5f), SpriteEffects.None, 0f);
 
-            //高光点
             sb.Draw(px, pos + new Vector2(-1, -1), new Rectangle(0, 0, 1, 1),
                 Color.White * (0.3f * pulse * alpha), 0f,
                 new Vector2(0.5f, 0.5f), new Vector2(2f, 2f), SpriteEffects.None, 0f);
@@ -686,7 +649,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
             DrawSmallIconButton(spriteBatch, btnRect, isHovered, alpha, null);
 
-            //指南针箭头
             float rot = directionToCenter.ToRotation();
             Color arrowC = isHovered ? Color.White : new Color(255, 240, 210);
 
@@ -700,23 +662,19 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             spriteBatch.Draw(px, headPos, new Rectangle(0, 0, (int)headSz, 2), arrowC * alpha,
                 rot - MathHelper.Pi * 0.75f, new Vector2(0, 1), 1f, SpriteEffects.None, 0f);
 
-            //中心点
             spriteBatch.Draw(px, center, new Rectangle(0, 0, 3, 3), new Color(255, 100, 60) * alpha,
                 0f, new Vector2(1.5f, 1.5f), 1f, SpriteEffects.None, 0f);
         }
 
-        //小型图标按钮通用绘制
         private void DrawSmallIconButton(SpriteBatch sb, Rectangle rect, bool hover, float alpha,
             Action<SpriteBatch, Vector2, float> drawIcon) {
             Texture2D px = VaultAsset.placeholder2.Value;
             bool nightMode = QuestLog.Instance?.NightMode ?? false;
 
-            //投影
             Rectangle shadow = rect;
             shadow.Offset(1, 2);
             sb.Draw(px, shadow, Color.Black * (0.35f * alpha));
 
-            //金属渐变
             Color topC = nightMode
                 ? (hover ? new Color(55, 90, 145) : new Color(35, 55, 90))
                 : (hover ? new Color(130, 90, 50) : new Color(90, 60, 35));
@@ -733,11 +691,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                     Color.Lerp(topC, botC, t) * alpha);
             }
 
-            //顶部反光
             sb.Draw(px, new Rectangle(rect.X + 2, rect.Y, rect.Width - 4, 1),
                 Color.White * (0.18f * alpha));
 
-            //光照边缘
             Color edgeC = hover ? Color.White : (nightMode ? new Color(80, 140, 210) : new Color(210, 140, 70));
             sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 1), edgeC * (0.5f * alpha));
             sb.Draw(px, new Rectangle(rect.X, rect.Y, 1, rect.Height), edgeC * (0.3f * alpha));
@@ -747,7 +703,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             drawIcon?.Invoke(sb, rect.Center.ToVector2(), alpha);
         }
 
-        //页面图标
         private void DrawPageIcon(SpriteBatch sb, Vector2 center, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
             Color ic = new Color(230, 225, 210) * alpha;
@@ -763,7 +718,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 new Rectangle(0, 0, 5, 1), Color.Black * (0.4f * alpha), 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
         }
 
-        //日夜模式图标
         private void DrawDayNightIcon(SpriteBatch sb, Vector2 center, float alpha, bool isNight, Rectangle btnBg) {
             Texture2D px = VaultAsset.placeholder2.Value;
             Color ic = new Color(255, 245, 200) * alpha;

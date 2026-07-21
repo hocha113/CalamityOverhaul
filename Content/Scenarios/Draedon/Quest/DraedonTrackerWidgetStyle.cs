@@ -6,7 +6,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest
 {
-    /// <summary>嘉登委托追踪HUD，无背景极简数据终端</summary>
+    /// <summary>嘉登委托追踪HUD</summary>
     internal class DraedonTrackerWidgetStyle : IEntrustTrackerWidgetStyle
     {
         #region 色板
@@ -33,10 +33,8 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest
 
         public void Reset() { pulse = 0f; scan = 0f; }
 
-        //极简：不绘制背景
         public void DrawWidgetBackground(SpriteBatch sb, Rectangle rect, float alpha) { }
 
-        //极简：不绘制外框
         public void DrawWidgetFrame(SpriteBatch sb, Rectangle rect, float alpha) { }
 
         public void DrawWidgetHeader(SpriteBatch sb, Rectangle headerRect, string title, float alpha) {
@@ -52,7 +50,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest
             //标题深色投影+清亮蓝
             const float titleScale = 0.95f;
             int textX = headerRect.X + 20;
-            //大字号下需略微下移基线，让顶部不贴顶
+            //大字号基线下移防贴顶
             float textY = headerRect.Y + (headerRect.Height - 16f) / 2f;
             Vector2 titlePos = new(textX, textY);
 
@@ -89,7 +87,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest
             }
         }
 
-        //四角传感目镜：4个L形角点框住一个7x7区域 + 中央1px数据粒
+        //四角传感目镜 7×7 + 中央1px粒
         private void DrawSensorReticle(SpriteBatch sb, Texture2D px, Rectangle uv, int cx, int cy, float alpha) {
             float p = MathF.Sin(pulse * 2.2f) * 0.25f + 0.75f;
             Color corner = DataCyanBright * (alpha * p);
@@ -171,7 +169,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest
             Vector2 dir = (end - start) / len;
             float rot = MathF.Atan2(dir.Y, dir.X);
 
-            //机械节律：3px短划 + 3px间隔
+            //3px短划3px间隔
             for (float c = 0; c < len; c += 6f) {
                 float segLen = Math.Min(3f, len - c);
                 sb.Draw(px, start + dir * c, new Rectangle(0, 0, 1, 1),
@@ -180,7 +178,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest
             }
         }
 
-        //极简：不绘制覆盖特效
         public void DrawWidgetOverlay(SpriteBatch sb, Rectangle rect, float alpha) { }
 
         public Color GetWidgetTitleColor(float alpha) => TitleSky * alpha;
@@ -190,9 +187,8 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest
         public int? GetPreferredWidth() => 240;
         public int? GetMinHeight() => 62;
         public int? GetIdleCompactHeight(EntrustEntryData entry) {
-            //待机时折叠成"标题 + 下划线 + 描述 + 等待提示"的双行紧凑布局
             if (entry.Progress <= 0f && entry.Status != QuestEntryStatus.Completed)
-                return 70;
+                return 70;//待机双行紧凑
             return null;
         }
     }

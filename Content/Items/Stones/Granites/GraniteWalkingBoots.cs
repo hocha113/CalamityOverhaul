@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Stones.Granites
 {
-    /// <summary>花岗行走靴：跑速/加速度饰品；达到全速的瞬间"通电"迸发电弧，维持期脚下走火并拖曳青蓝残影</summary>
+    /// <summary>花岗行走靴，全速瞬间通电迸弧，维持期脚下走火+残影</summary>
     internal class GraniteWalkingBoots : ModItem
     {
         public override void SetDefaults() {
@@ -41,23 +41,22 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
 
     internal class GraniteWalkingBootsPlayer : ModPlayer
     {
-        /// <summary>残影个数与采样间隔（帧），供残影层取样</summary>
+        /// <summary>残影个数与采样间隔（帧）</summary>
         public const int GhostCount = 3;
         private const int GhostSpacing = 4;
         private const int TrailLength = 16;
-        //入态迸发的防抖冷却：崎岖地形上接地判定抖动时避免电弧音连响
+        //入态防抖，崎岖地形防连响
         private const int BurstCooldownTicks = 30;
 
         public bool Equipped;
-        /// <summary>饰品栏隐藏可见性时为 true：数值保留，粒子/照明/音效/残影全部关闭</summary>
+        /// <summary>隐藏可见性时关粒子/音/残影，数值保留</summary>
         public bool VisualsHidden;
-        /// <summary>本帧是否处于全速通电状态（接地且 |vx| ≥ accRunSpeed×0.85），残影层据此开关</summary>
+        /// <summary>接地且 |vx|≥accRunSpeed×0.85</summary>
         public bool FullSpeedNow { get; private set; }
 
         private bool wasFullSpeed;
         private int burstCooldown;
 
-        //残影位置环形缓存：装备期间每帧写入一格
         private readonly Vector2[] trailPositions = new Vector2[TrailLength];
         private int trailHead;
         private int trailFilled;
@@ -102,7 +101,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             wasFullSpeed = fullSpeed;
         }
 
-        /// <summary>取第 <paramref name="index"/> 个残影（1 为最新）的历史世界坐标；缓存尚未填够时返回 false</summary>
+        /// <summary>第 index 个残影（1=最新）；未填够返回 false</summary>
         public bool TryGetGhostPosition(int index, out Vector2 position) {
             position = default;
             int back = index * GhostSpacing;
@@ -117,7 +116,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             return true;
         }
 
-        //入态一次性通电迸发：三道微电弧 + 向后火花扇 + 脚下闪光 + 一声短促电弧音
         private void EntryBurst(Vector2 feet) {
             int dir = Math.Sign(Player.velocity.X);
             SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with {
@@ -145,7 +143,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
                 , GraniteMarbleVFX.GraniteCore, 0.5f).Configure(12, 1f, 1.4f);
         }
 
-        //维持期：脚下青蓝照明 + 低频率火花/光斑 + 偶发微电弧，不循环发声
         private void SustainSparks(Vector2 feet) {
             Lighting.AddLight(feet, GraniteMarbleVFX.GraniteCore.ToVector3() * 0.7f);
 
@@ -168,13 +165,10 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         }
     }
 
-    /// <summary>
-    /// 全速残影层：把当帧已积累的玩家 DrawData 以青蓝加法色平移复制到身后的缓存位置，
-    /// 压入绘制队首使残影垫在本体之下；只在全速通电且未隐藏可见性时绘制
-    /// </summary>
+    /// <summary>全速残影层，加法青蓝剪影垫本体下</summary>
     internal class GraniteWalkingBootsGhostLayer : PlayerDrawLayer
     {
-        //挂在最后一个固定位置的原版层之后，此时 DrawDataCache 已包含完整的躯体/护甲/翅膀数据
+        //EyebrellaCloud 之后，DrawDataCache 已齐
         public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.EyebrellaCloud);
 
         public override bool GetDefaultVisibility(PlayerDrawSet drawInfo) {
@@ -194,7 +188,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
 
             GraniteWalkingBootsPlayer modPlayer = drawInfo.drawPlayer.GetModPlayer<GraniteWalkingBootsPlayer>();
             List<DrawData> ghosts = null;
-            //旧→新遍历，使最旧的残影落在队列最前（画在最底层）
             for (int g = GraniteWalkingBootsPlayer.GhostCount; g >= 1; g--) {
                 if (!modPlayer.TryGetGhostPosition(g, out Vector2 ghostPos)) {
                     continue;
@@ -202,27 +195,27 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
                 Vector2 delta = ghostPos - drawInfo.drawPlayer.position;
                 float distSQ = delta.LengthSquared();
                 if (distSQ < 100f || distSQ > 200f * 200f) {
-                    continue; //几乎重叠会加法叠亮本体；过远说明刚传送，历史位置作废
+                    continue; //过近叠亮本体，过远当传送作废
                 }
 
                 float t = (g - 1) / (float)(GraniteWalkingBootsPlayer.GhostCount - 1);
                 Color tint = Color.Lerp(GraniteMarbleVFX.GraniteSpark, GraniteMarbleVFX.GraniteDeep, t)
                     * MathHelper.Lerp(0.55f, 0.2f, t);
-                tint.A = 0; //预乘贴图下 A=0 即为加法发光
+                tint.A = 0; //预乘下 A=0 加法发光
 
                 ghosts ??= new List<DrawData>(baseCount * GraniteWalkingBootsPlayer.GhostCount);
                 for (int i = 0; i < baseCount; i++) {
                     DrawData data = cache[i];
                     data.position += delta;
                     data.color = tint;
-                    data.shader = 0; //残影为纯色剪影，不重放染料
+                    data.shader = 0; //纯色剪影，不重放染料
                     ghosts.Add(data);
                 }
             }
 
             if (ghosts != null) {
                 cache.InsertRange(0, ghosts);
-                //heldProj 的插绘索引指向缓存中的一个边界，前插残影后必须同步右移，否则手持弹幕绘制深度错位
+                //前插后同步 heldProj 插绘索引
                 if (drawInfo.projectileDrawPosition >= 0) {
                     drawInfo.projectileDrawPosition += ghosts.Count;
                 }

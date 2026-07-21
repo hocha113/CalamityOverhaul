@@ -2,9 +2,7 @@
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 {
-    /// <summary>
-    /// 老公爵商店物品数据
-    /// </summary>
+    /// <summary>商店物品数据</summary>
     public class OldDukeShopItem
     {
         public int itemType;

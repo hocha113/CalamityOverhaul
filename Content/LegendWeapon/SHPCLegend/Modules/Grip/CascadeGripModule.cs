@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>级联握把：累计 5 命中生级联节点，周期射追踪束</summary>
+    /// <summary>级联握把，5命中生节点，周期射追踪束</summary>
     internal sealed class CascadeGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;
@@ -34,7 +34,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
                 origin, Vector2.Zero,
                 ModContent.ProjectileType<CyberCascadeNodeProj>(),
                 dmg, 0f, source.owner);
-            //节点弹幕 damage 已通过上面的 dmg 传入，无需额外字段写入
             _ = idx;
         }
     }

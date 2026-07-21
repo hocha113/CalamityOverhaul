@@ -5,10 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>
-    /// 花岗棱角晶片：交叠细长晶面拼出的旋转碎屑，青蓝边缘发光，
-    /// 受重力，落地弹跳一次，第二次触地快速碎光消散
-    /// </summary>
+    /// <summary>花岗棱角晶片，落地弹一次，二触碎光</summary>
     internal class PRT_GraniteShard : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -42,7 +39,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-            //防漏 Configure：Lifetime<0 视为永久，兜底常规寿命与物理参数
+            //Lifetime<=0 兜底
             if (Lifetime <= 0) {
                 Lifetime = Main.rand.Next(26, 40);
                 useGravity = true;
@@ -59,7 +56,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             Velocity.X *= 0.985f;
             Rotation += spin * (0.6f + Math.Abs(Velocity.X) * 0.08f);
 
-            //落地弹一次；第二次触地进入快速碎光
+            //落地弹一次，二触碎光
             if (Velocity.Y > 0f && Collision.SolidCollision(Position - new Vector2(3f), 6, 6)) {
                 if (canBounce && !bounced) {
                     bounced = true;
@@ -90,7 +87,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             Vector2 facet = new Vector2(0.22f, 0.62f) * Scale;
 
             spriteBatch.Draw(glow, pos, null, edge * 0.35f * Opacity, 0f, glow.Size() / 2f, Scale * 0.28f, SpriteEffects.None, 0f);
-            //主晶面 + 斜切副晶面：硬角度差拼出棱角感
+            //主晶面+斜切副面
             spriteBatch.Draw(tex, pos, null, edge * Opacity, Rotation, origin, main, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, pos, null, edge * 0.7f * Opacity, Rotation + 1.25f, origin, facet, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, pos, null, Color.White * 0.75f * Opacity, Rotation, origin, main * new Vector2(0.45f, 0.8f), SpriteEffects.None, 0f);

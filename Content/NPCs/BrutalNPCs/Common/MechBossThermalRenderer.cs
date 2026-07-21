@@ -5,12 +5,12 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
 {
-    /// <summary>机械 Boss 通用热感滤镜渲染；流程：DrawOutlineHalo → BeginThermalShader 绘本体 → EndThermalShader</summary>
+    /// <summary>热感滤镜，Halo→BeginShader→绘本体→EndShader</summary>
     internal static class MechBossThermalRenderer
     {
         #region 8方向描边光环
 
-        /// <summary>各状态描边主色+高光色</summary>
+        /// <summary>描边主色</summary>
         private static Color GetHaloColor(MechBossVisualMode mode, float progress, float pulse) {
             return mode switch {
                 MechBossVisualMode.Dashing =>
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
             };
         }
 
-        /// <summary>8 向偏移描边光环，独立于着色器，远距可读轮廓</summary>
+        /// <summary>8向描边，远距轮廓</summary>
         public static void DrawOutlineHalo(SpriteBatch spriteBatch, Texture2D texture, Vector2 drawPos,
             Rectangle? sourceRect, float rotation, Vector2 origin, float scale, SpriteEffects effects,
             MechBossVisualMode mode, float intensity, float progress) {
@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
                     rotation, origin, scale, effects, 0f);
             }
 
-            //冲刺时再叠一圈更宽更浅的外晕，强化"高速过热"视觉感
+            //冲刺再叠外晕
             if (mode == MechBossVisualMode.Dashing) {
                 Color softColor = haloColor * 0.45f;
                 for (int i = 0; i < 6; i++) {
@@ -83,8 +83,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
 
         #region 机械热感像素着色器
 
-        /// <summary>Immediate 模式启用热感着色器，绘完须 EndThermalShader</summary>
-        /// <param name="sourceRect">当前帧 UV 边界，防多帧贴图越界采样</param>
+        /// <summary>Immediate 启热感，须 EndThermalShader</summary>
+        /// <param name="sourceRect">当前帧 UV，防越界采样</param>
         public static bool BeginThermalShader(SpriteBatch spriteBatch, Texture2D texture, Rectangle sourceRect,
             MechBossVisualMode mode, float intensity, float progress, float seed = 0f) {
             if (intensity <= 0.01f) return false;
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
 
             float invW = 1f / texture.Width;
             float invH = 1f / texture.Height;
-            //内缩半像素：贴帧边的采样仍属本帧，但越界采样不会触及相邻帧的首列/首行
+            //内缩半像素，防邻帧采样
             Vector4 frameUV = new Vector4(
                 (sourceRect.X + 0.5f) * invW,
                 (sourceRect.Y + 0.5f) * invH,
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
             return true;
         }
 
-        /// <summary>还原 Deferred AlphaBlend SpriteBatch</summary>
+        /// <summary>还原 Deferred AlphaBlend</summary>
         public static void EndThermalShader(SpriteBatch spriteBatch) {
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
 
         #region NPC ID 状态查询便捷重载
 
-        /// <summary>按 MechBossVisualState 读控制器状态后绘描边</summary>
+        /// <summary>读状态绘描边</summary>
         public static void DrawOutlineHaloByController(SpriteBatch spriteBatch, Texture2D texture, Vector2 drawPos,
             Rectangle? sourceRect, float rotation, Vector2 origin, float scale, SpriteEffects effects,
             int controllerNpcId) {
@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
                 mode, intensity, progress);
         }
 
-        /// <summary>按 MechBossVisualState 读控制器状态后启用着色器</summary>
+        /// <summary>读状态启着色器</summary>
         public static bool BeginThermalShaderByController(SpriteBatch spriteBatch, Texture2D texture, Rectangle sourceRect,
             int controllerNpcId, float seed = 0f) {
             var (mode, intensity, progress) = MechBossVisualState.Read(controllerNpcId);

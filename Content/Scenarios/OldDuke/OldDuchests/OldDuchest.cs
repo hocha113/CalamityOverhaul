@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
 
     internal class OldDuchestTile : ModTile
     {
-        //宽6格，高4格，共两帧，第一帧为关闭状态，第二帧为打开状态
+        //6x4，两帧关/开
         public override string Texture => CWRConstant.Item_Placeable + "OldDuchestTile";
 
         public override void SetStaticDefaults() {

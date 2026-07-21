@@ -1,4 +1,4 @@
-﻿using InnoVault.PRT;
+using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Utilities;
@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                     continue;
                 }
 
-                //并行阶段粒子生成(及其内部随机数与返回值使用)统一延迟到主线程执行(串行阶段立即执行)
+                //并行阶段延后到主线程
                 Defer(() => {
                     PRTLoader.NewParticle<PRT_WaterBubble>(
                         CenterInWorld + new Vector2(62, -16) + VaultUtils.RandVr(6)
@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                 });
             }
 
-            //并行阶段循环音效的查询与播放统一延迟到主线程执行(串行阶段立即执行)
+            //并行阶段延后到主线程
             Defer(() => {
                 if (!SoundEngine.TryGetActiveSound(hydroelectricSoundSlot, out var activeSound)) {
                     hydroelectricSoundSlot = SoundEngine.PlaySound(hydroelectricSoundStyle, CenterInWorld, LoopingSoundUpdate);

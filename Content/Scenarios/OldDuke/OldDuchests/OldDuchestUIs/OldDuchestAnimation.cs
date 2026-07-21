@@ -2,9 +2,7 @@
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests.OldDuchestUIs
 {
-    /// <summary>
-    /// 老箱子UI动画 - 木质主题
-    /// </summary>
+    /// <summary>老箱子UI动画</summary>
     internal class OldDuchestAnimation : BaseChestAnimation
     {
         public float WoodGrainPhase { get; private set; } = 0f;

@@ -10,14 +10,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>骇客时间核心状态，控制激活/目标/运镜/冻结</summary>
+    /// <summary>骇客时间核心状态，激活/目标/运镜/冻结</summary>
     internal class HackTime : ModSystem, ILocalizedModType
     {
         public string LocalizationCategory => "UI";
 
         public override void Unload() {
             Reset();
-            //卸载时清空访问条件注册
             HackTimeAccess.Reset();
         }
 
@@ -436,7 +435,6 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #endregion
 
-        /// <summary>骇客时间是否激活</summary>
         public static bool Active { get; private set; }
         /// <summary>屏幕效果强度 0..1</summary>
         public static float Intensity { get; set; }
@@ -444,9 +442,9 @@ namespace CalamityOverhaul.Content.HackTimes
         public static float CameraProgress { get; set; }
         /// <summary>运镜缩放进度 0..1</summary>
         public static float ZoomProgress { get; set; }
-        /// <summary>选中光圈动画计时</summary>
+        /// <summary>选中光圈计时</summary>
         public static float ReticleTimer { get; set; }
-        /// <summary>运镜偏移，ModifyScreenPosition 应用</summary>
+        /// <summary>运镜偏移，ModifyScreenPosition 用</summary>
         public static Vector2 CameraOffset { get; set; }
 
         /// <summary>当前扫描目标，null 为无</summary>
@@ -460,26 +458,23 @@ namespace CalamityOverhaul.Content.HackTimes
         public static int HoveredTargetIndex
             => HackTimeTargeting.HoveredTarget is NpcScannable n ? n.NpcIndex : -1;
 
-        //无限骇入模式，无限袭击终态演出用
+        //无限骇入，无限袭击终态用
         public static bool InfiniteHack { get; set; }
 
         private static float targetIntensity;
-        //运镜目标位置（选中NPC的中心世界坐标）
+        //运镜目标世界坐标
         private static Vector2 cameraTo;
 
-        //基础缩放增量，选中目标后画面放大倍率
+        //选中后缩放增量
         private const float TargetZoomBoost = 0.35f;
-        //运镜插值速度
         private const float CameraLerpSpeed = 0.06f;
-        //效果淡入速度
         private const float FadeInSpeed = 0.055f;
-        //效果淡出速度
         private const float FadeOutSpeed = 0.07f;
 
-        //WorldFreezeSystem reason 标签
+        //WorldFreezeSystem reason
         private const string FreezeReason = "HackTime";
 
-        /// <summary>切换骇客时间开关</summary>
+        /// <summary>切换开关</summary>
         public static void Toggle() {
             if (Active) {
                 Deactivate();
@@ -488,7 +483,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 //淡出中直接反转
                 Active = true;
                 targetIntensity = 1f;
-                if (VaultUtils.isSinglePlayer)//单人模式时停
+                if (VaultUtils.isSinglePlayer)//单人时停
                     WorldFreezeSystem.Activate(FreezeReason);
             }
             else {
@@ -496,7 +491,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>激活骇客时间</summary>
+        /// <summary>激活</summary>
         public static void Activate() {
             if (Main.gameMenu) return;
             Active = true;
@@ -507,10 +502,10 @@ namespace CalamityOverhaul.Content.HackTimes
             ReticleTimer = 0f;
             CameraOffset = Vector2.Zero;
             cameraTo = Vector2.Zero;
-            if (VaultUtils.isSinglePlayer)//单人模式时停
+            if (VaultUtils.isSinglePlayer)//单人时停
                 WorldFreezeSystem.Activate(FreezeReason);
             if (WorldFreezeSystem.IsActive && Main.LocalPlayer.Alives()) {
-                //预填飞行时间，防首次进入快照被零值覆盖
+                //预填飞行时间，防首次快照被零覆盖
                 WorldFreezePlayer freezePlayer = Main.LocalPlayer.GetModPlayer<WorldFreezePlayer>();
                 freezePlayer.frozenWingTime = Main.LocalPlayer.wingTime;
                 freezePlayer.frozenRocketTime = Main.LocalPlayer.rocketTime;
@@ -520,7 +515,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>退出骇客时间</summary>
+        /// <summary>退出</summary>
         public static void Deactivate() {
             Active = false;
             targetIntensity = 0f;
@@ -529,26 +524,25 @@ namespace CalamityOverhaul.Content.HackTimes
             HackTimeUI.Instance?.Panel.Hide();
         }
 
-        /// <summary>选中骇入目标，触发运镜</summary>
+        /// <summary>选中目标，触发运镜</summary>
         public static void Select(IHackTarget target) {
             if (!Active || target == null || !target.IsValid) return;
 
             //同目标跳过
             if (CurrentScanTarget != null && target.TargetEquals(CurrentScanTarget)) return;
 
-            //切换目标保留各目标上传进度，队列按 (slot, target) 独立维护
+            //切换不丢各目标上传进度
 
             bool freshSelect = CurrentScanTarget == null;
             CurrentScanTarget = target;
             cameraTo = target.WorldCenter;
 
-            //首次选中从零推进，切换时保持进度平滑重定向
+            //首次从零，切换保持进度重定向
             if (freshSelect) {
                 CameraProgress = 0f;
                 ZoomProgress = 0f;
             }
 
-            //目标工厂选中反馈
             target.TargetType?.OnSelectFeedback(target);
         }
 
@@ -562,41 +556,38 @@ namespace CalamityOverhaul.Content.HackTimes
         /// <summary>取消选中，运镜平滑回归</summary>
         public static void DeselectTarget() {
             CurrentScanTarget = null;
-            //CameraProgress/Offset 由 UpdateCamera 平滑归零
+            //进度/偏移由 UpdateCamera 归零
             HackTimeUI.Instance?.Panel.Hide();
         }
 
-        /// <summary>世界更新，RAM/效果/队列推进</summary>
+        /// <summary>世界更新，RAM/效果/队列</summary>
         public override void PostUpdateEverything() {
-            //RAM 自动恢复
             RamSystem.Update();
-            //骇入效果驱动，退出后仍持续
+            //效果与队列，退出后仍推进
             HackEffectTracker.Update();
             HackEffectTracker.UpdateTileEffects();
-            //队列上传与消费，退出后仍推进
             var queue = HackTimeUI.Instance?.Queue;
             queue?.Update();
             queue?.ConsumeAndApplyAll();
         }
 
-        /// <summary>每帧逻辑更新</summary>
+        /// <summary>每帧逻辑</summary>
         public static void Update() {
             if (Main.gameMenu) {
                 Reset();
                 return;
             }
 
-            //死亡/幽灵态自动关闭
+            //死亡/幽灵自动关
             if (Active && Main.LocalPlayer != null
                 && (Main.LocalPlayer.dead || Main.LocalPlayer.ghost)) {
                 Deactivate();
             }
 
-            //效果强度插值
             float fadeSpeed = Active ? FadeInSpeed : FadeOutSpeed;
             Intensity = MathHelper.Lerp(Intensity, targetIntensity, fadeSpeed);
 
-            //淡出完毕清理残余
+            //淡出完毕清残余
             if (!Active && targetIntensity <= 0f && Intensity < 0.005f) {
                 Intensity = 0f;
                 CameraOffset = Vector2.Zero;
@@ -605,34 +596,29 @@ namespace CalamityOverhaul.Content.HackTimes
                 return;
             }
 
-            //光圈动画计时
             ReticleTimer += 0.016f;
-
-            //运镜
             UpdateCamera();
         }
 
         private static void UpdateCamera() {
-            //有有效目标时推进运镜
             if (CurrentScanTarget != null && CurrentScanTarget.IsValid) {
                 cameraTo = CurrentScanTarget.WorldCenter;
 
                 CameraProgress = MathHelper.Lerp(CameraProgress, 1f, CameraLerpSpeed);
                 ZoomProgress = MathHelper.Lerp(ZoomProgress, 1f, CameraLerpSpeed * 0.8f);
 
-                //偏移平滑插值到目标
                 Vector2 desiredOffset = cameraTo - Main.LocalPlayer.Center;
                 CameraOffset = Vector2.Lerp(CameraOffset, desiredOffset, CameraLerpSpeed);
                 return;
             }
 
-            //目标失效自动取消
+            //目标失效取消
             if (CurrentScanTarget != null && !CurrentScanTarget.IsValid) {
                 DeselectTarget();
                 return;
             }
 
-            //无目标时平滑回归
+            //无目标平滑回归
             float returnSpeed = CameraLerpSpeed * 1.5f;
             CameraProgress = MathHelper.Lerp(CameraProgress, 0f, returnSpeed);
             ZoomProgress = MathHelper.Lerp(ZoomProgress, 0f, returnSpeed);
@@ -645,15 +631,15 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>运镜额外缩放值</summary>
+        /// <summary>运镜额外缩放</summary>
         public static float GetZoomBoost() {
             return TargetZoomBoost * ZoomProgress * Intensity;
         }
 
-        /// <summary>是否可骇入目标</summary>
+        /// <summary>是否可骇入该 NPC</summary>
         public static bool IsHackableTarget(NPC npc) {
             if (npc == null || !npc.active) return false;
-            //赛博空间外默认可骇入
+            //赛博空间外默认可骇
             if (!Cyberspace.Active) return true;
             float dx = npc.Center.X - Main.LocalPlayer.Center.X;
             float dy = npc.Center.Y - Main.LocalPlayer.Center.Y;
@@ -673,7 +659,7 @@ namespace CalamityOverhaul.Content.HackTimes
             CameraOffset = Vector2.Zero;
             cameraTo = Vector2.Zero;
             InfiniteHack = false;
-            //异常路径仅释放本系统 FreezeReason
+            //仅释放本系统 FreezeReason
             WorldFreezeSystem.Deactivate(FreezeReason);
             HackTimeUI.Instance?.Queue?.Clear();
             HackEffectTracker.Reset();

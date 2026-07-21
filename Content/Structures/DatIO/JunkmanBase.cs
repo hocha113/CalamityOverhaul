@@ -51,7 +51,6 @@ namespace CalamityOverhaul.Content.Structures.DatIO
         }
 
         private static void LoadChest(RegionSaveData regionSaveData, Point16 orig) {
-            //定义物品池
             int[] mineralItems = [
                 ItemID.CopperOre, ItemID.TinOre, ItemID.IronOre, ItemID.LeadOre,
                 ItemID.SilverOre, ItemID.TungstenOre, ItemID.GoldOre, ItemID.PlatinumOre,
@@ -75,16 +74,16 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                 num++;
                 ChestSaveData chestSaveData = ChestSaveData.FromTag(chestTag);
 
-                //需要注意这里chestSaveData拿到的坐标只是相对坐标，所以需要加上orig
+                //chestSaveData 相对坐标，需加 orig
                 int chestIndex = Chest.FindChest(orig.X + chestSaveData.X, orig.Y + chestSaveData.Y);
                 if (chestIndex < 0) {
                     continue;
                 }
 
-                //处理第一个箱子（偏向矿物）
+                //箱1 矿物向
                 if (num == 1) {//运行第一个箱子时为1
                     Chest chest = Main.chest[chestIndex];
-                    int itemCount = Math.Min(WorldGen.genRand.Next(30, 36), chest.item.Length); //随机 30-35 个物品
+                    int itemCount = Math.Min(WorldGen.genRand.Next(30, 36), chest.item.Length);
                     for (int i = 0; i < itemCount; i++) {
                         int itemType;
                         int stackSize;
@@ -92,24 +91,24 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                         int rand = WorldGen.genRand.Next(100);
                         if (rand < 70) {
                             itemType = mineralItems[WorldGen.genRand.Next(mineralItems.Length)];
-                            stackSize = WorldGen.genRand.Next(10, 51); //矿物堆叠 10-50
+                            stackSize = WorldGen.genRand.Next(10, 51);
                         }
                         else if (rand < 90) {
                             itemType = junkItems[WorldGen.genRand.Next(junkItems.Length)];
-                            stackSize = WorldGen.genRand.Next(1, 11); //垃圾堆叠 1-10
+                            stackSize = WorldGen.genRand.Next(1, 11);
                         }
                         else {
                             itemType = miscItems[WorldGen.genRand.Next(miscItems.Length)];
-                            stackSize = WorldGen.genRand.Next(5, 21); //杂物堆叠 5-20
+                            stackSize = WorldGen.genRand.Next(5, 21);
                         }
 
                         chest.item[i] = new Item(itemType, stackSize);
                     }
                 }
                 else {//运行第两个箱子时为2
-                    //处理第二个箱子（偏向垃圾）
+                    //箱2 垃圾向
                     Chest chest = Main.chest[chestIndex];
-                    int itemCount = Math.Min(WorldGen.genRand.Next(30, 36), chest.item.Length); //随机 30-35 个物品
+                    int itemCount = Math.Min(WorldGen.genRand.Next(30, 36), chest.item.Length);
                     for (int i = 0; i < itemCount; i++) {
                         int itemType;
                         int stackSize;
@@ -117,15 +116,15 @@ namespace CalamityOverhaul.Content.Structures.DatIO
                         int rand = WorldGen.genRand.Next(100);
                         if (rand < 60) {
                             itemType = junkItems[WorldGen.genRand.Next(junkItems.Length)];
-                            stackSize = WorldGen.genRand.Next(1, 11); //垃圾堆叠 1-10
+                            stackSize = WorldGen.genRand.Next(1, 11);
                         }
                         else if (rand < 90) {
                             itemType = miscItems[WorldGen.genRand.Next(miscItems.Length)];
-                            stackSize = WorldGen.genRand.Next(5, 21); //杂物堆叠 5-20
+                            stackSize = WorldGen.genRand.Next(5, 21);
                         }
                         else {
                             itemType = mineralItems[WorldGen.genRand.Next(mineralItems.Length)];
-                            stackSize = WorldGen.genRand.Next(10, 51); //矿物堆叠 10-50
+                            stackSize = WorldGen.genRand.Next(10, 51);
                         }
 
                         chest.item[i] = new Item(itemType, stackSize);

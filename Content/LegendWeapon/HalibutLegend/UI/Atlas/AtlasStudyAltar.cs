@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         private int dissolveTimer;
 
         /// <summary>
-        /// 次级选鱼面板：点击祭坛弹出，列出背包中可研究的鱼供投入研究
+        /// 次级选鱼面板、点祭坛弹出可研究鱼
         /// </summary>
         public readonly AtlasFishStudyPanel Panel = new();
 
@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             Vector2 center = ScreenCenter;
             float breath = HalibutTheme.Breath(time, 5.1f);
 
-            //祭坛环：双环 + 缓转刻度
+            //祭坛环、双环+缓转刻度
             HalibutRenderer.DrawSoftGlow(sb, center, Radius + 26f,
                 HalibutTheme.Teal * ((0.30f + hover * 0.18f) * alpha));
             HalibutRenderer.DrawRing(sb, center, Radius, 1.6f,
@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 float progress = save.IsStudying
                     ? MathHelper.Clamp(save.StudyTimer / (float)save.StudyDuration, 0f, 1f)
                     : 0f;
-                //研究中鱼：慢旋 + 随进度淡出
+                //研究中鱼、慢旋+随进度淡出
                 float dissolve = 1f - progress * 0.55f;
                 float bob = MathF.Sin(time * 1.6f) * 3f;
                 float itemRot = MathF.Sin(time * 0.8f) * 0.18f;

@@ -7,9 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    /// <summary>
-    /// 爆炸波
-    /// </summary>
+    /// <summary>爆炸波</summary>
     internal class PandemoniumBlastWave : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -71,7 +69,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Texture2D noise = CWRAsset.Extra_193.Value;
             if (canvas == null || noise == null) return;
 
-            //爆炸波的绘制范围随进度扩大
             float drawRadius = 50f + progress * 600f;
             float drawDiameter = drawRadius;
 

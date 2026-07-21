@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>高压核心：命中充压至 100kV，满压下次命中放电直线电弧</summary>
+    /// <summary>高压核心，命中充压至 100kV，满压下次命中放电直线电弧</summary>
     internal sealed class HighVoltageCoreModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
             if (beam.IsDerived) return;
-            //满压时本次命中即为放电触发点
+            //满压命中即放电
             if (voltage >= VoltageCap) {
                 Discharge(beam.Projectile, target);
                 return;
@@ -53,9 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             voltage = Math.Min(voltage + 50f, VoltageCap);
         }
 
-        /// <summary>
-        /// 高压放电：从玩家枪口穿过触发目标延伸 1300px 的电弧，命中线上所有敌人
-        /// </summary>
+        /// <summary>高压放电，枪口穿目标延 1300px，线上全伤</summary>
         private void Discharge(Projectile source, NPC throughTarget) {
             voltage = 0f;
             fullPinged = false;
@@ -76,7 +74,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 fullPinged = false;
                 return;
             }
-            //满压状态：电火花在玩家周身爆跳 + 一次性提示音
+            //满压，周身电火花+一次性提示音
             if (!fullPinged) {
                 fullPinged = true;
                 if (Main.netMode != NetmodeID.Server) {
@@ -129,7 +127,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         public override bool ShouldUpdatePosition() => false;
 
         public override void AI() {
-            //首帧：固定方向与随机种子，velocity 仅作为方向载体
+            //首帧钉方向与种子，velocity 只作方向
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
                 arcDir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
@@ -145,7 +143,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             }
 
             int age = Lifetime - Projectile.timeLeft;
-            //折点重掷：放电期间高频抖动，残辉期减慢
+            //折点重掷，放电高频/残辉减速
             if (age % 4 == 0) {
                 RebuildArc();
             }
@@ -154,13 +152,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 ? 1f
                 : 1f - (age - DamageWindow) / (float)(Lifetime - DamageWindow);
 
-            //沿弧线整路照明
+            //沿线照明
             for (int i = 0; i < 5; i++) {
                 Vector2 lightPos = Projectile.Center + arcDir * (ArcLength * i / 4f);
                 Lighting.AddLight(lightPos, ArcGlow.ToVector3() * 0.8f * fadeAlpha);
             }
 
-            //放电期沿线持续蹦出电火花
+            //放电期沿线火花
             if (age <= DamageWindow && Main.netMode != NetmodeID.Server) {
                 for (int i = 0; i < 3; i++) {
                     float t = Main.rand.NextFloat();

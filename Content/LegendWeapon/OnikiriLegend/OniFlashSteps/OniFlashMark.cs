@@ -13,20 +13,15 @@ using OKF = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps.On
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 {
-    /// <summary>
-    /// 神威疾走·墨痕：冲刺穿过敌人时缠上身的黑红细痕，纳刀帧同帧引爆成墨裂。<br/>
-    /// 居合的因果链：穿过（无伤害，只留痕）→ 死寂等待 → "锵"一声所有墨痕同时裂开结算。<br/>
-    /// 潜伏期细痕随目标移动、微弱脉动，引爆前 6 帧增亮增宽（可读性预告）；
-    /// 引爆瞬间过曝白闪 → 墨裂沿冲刺方向定向蒸发，碎晶垂直喷出。<br/>
-    /// 伤害只结算给被标记者本人（重叠敌群互不误伤，各自有各自的痕）。<br/>
-    /// ai[0]=绑定NPC索引 ai[1]=引爆延迟(帧，相对生成) ai[2]=冲刺方向角(弧度)
-    /// </summary>
+    /// <summary>神威标记/墨痕. 冲刺扫掠挂点,纳刀帧结算</summary>
     internal class OniFlashMark : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int RendFadeFrames = 14;   //引爆后墨裂蒸发时长
+
         private const int DamageWindow = 3;      //引爆帧起的伤害窗口
+
         private const int ForetellFrames = 6;    //引爆前增亮预告
 
         private bool initialized;
@@ -54,9 +49,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             }
         }
 
-        /// <summary>
-        /// 触发接口：在持有者客户端调用（冲刺主控扫描命中时）
-        /// </summary>
+        /// <summary>触发接口、在持有者客户端调用（冲刺主控扫描命中时）</summary>
         /// <param name="player">攻击发起者</param>
         /// <param name="npc">被标记目标（痕随其移动）</param>
         /// <param name="detonateDelay">引爆延迟（帧）；主控传"距纳刀帧数"使全部墨痕同帧裂开</param>
@@ -84,11 +77,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Projectile.DamageType = CWRRef.GetTrueMeleeNoSpeedDamageClass();
             Projectile.penetrate = -1;
             Projectile.timeLeft = 300;   //Initialize 按引爆帧重设
+
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.netImportant = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 30;   //窗口仅数帧，单次结算
+
         }
 
         public override bool ShouldUpdatePosition() => false;
@@ -99,6 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Projectile.timeLeft = detonateFrame + RendFadeFrames + 8;
             seed = Projectile.identity * 0.6180339887f % 1f;
             //痕的走向在冲刺方向上带一点确定性偏斜，敌群里不会全员平行
+
             brandAngle = DashAngle + (seed - 0.5f) * 0.42f;
             lastCenter = Projectile.Center;
 
@@ -125,7 +121,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 Projectile.Center = lastCenter;
             }
             else if (!detonated) {
-                //目标提前死亡：痕无声散去
+                //目标提前死亡、痕无声散去
+
                 Fizzle();
                 return;
             }
@@ -138,7 +135,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Lighting.AddLight(lastCenter, new Vector3(0.75f, 0.13f, 0.11f) * glow);
         }
 
-        /// <summary>目标死亡的兜底退场：一缕墨烟</summary>
+        /// <summary>目标死亡的兜底退场、一缕墨烟</summary>
         private void Fizzle() {
             if (!Main.dedServ) {
                 for (int i = 0; i < 3; i++) {
@@ -151,7 +148,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Projectile.Kill();
         }
 
-        /// <summary>引爆：伤害窗开启 + 墨裂过曝白闪 + 碎晶垂直喷出（视觉沿冲刺方向定向蒸发）</summary>
+        /// <summary>引爆、伤害窗开启 + 墨裂过曝白闪 + 碎晶垂直喷出（视觉沿冲刺方向定向蒸发）</summary>
         private void Detonate() {
             detonated = true;
 
@@ -159,6 +156,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 Pitch = 0.12f + seed * 0.3f,
                 Volume = 0.46f,
                 MaxInstances = 3,   //齐裂同帧多痕限流，防爆音
+
             }, lastCenter);
 
             if (Main.dedServ) {
@@ -190,9 +188,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             }
         }
 
-        //==================== 判定 ====================
-
-        /// <summary>只伤被标记者本人：重叠敌群互不误伤</summary>
+        /// <summary>只伤被标记者本人、重叠敌群互不误伤</summary>
         public override bool? CanHitNPC(NPC target) {
             if (!detonated || target.whoAmI != BoundNPC) {
                 return false;
@@ -211,12 +207,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //齐裂顿帧拉到接近终斩档：吃下这一刀的重量要留在身上一拍
+            //齐裂顿帧拉到接近终斩档、吃下这一刀的重量要留在身上一拍
+
             target.CWR().TimeFrozenTick = 8;
             SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.25f, Volume = 0.6f, MaxInstances = 3 }, target.Center);
         }
-
-        //==================== 绘制 ====================
 
         public override bool PreDraw(ref Color lightColor) => false;
 
@@ -240,12 +235,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             OKF.EndDraw(device, pb, pr, pd);
         }
 
-        /// <summary>潜伏期：缠身细痕，微脉动；引爆前 6 帧增亮增宽预告</summary>
+        /// <summary>潜伏期、缠身细痕，微脉动；引爆前 6 帧增亮增宽预告</summary>
         private void DrawBrand(GraphicsDevice device, Effect fx) {
             float pulse = 0.42f + 0.10f * MathF.Sin(timer * 0.34f + seed * 9f);
             float foretell = MathHelper.Clamp((timer - (detonateFrame - ForetellFrames)) / (float)ForetellFrames, 0f, 1f);
             float opacity = MathHelper.Lerp(pulse, 0.92f, foretell);
             //出生白闪速落
+
             float flash = timer <= 1 ? 0.8f : MathF.Pow(0.5f, timer - 1) * 0.8f;
             flash = MathF.Max(flash, foretell * 0.35f);
 
@@ -265,7 +261,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             OKF.DrawRibbon(device, fx, pts, in def, retract: 0f, flash: flash, opacity: opacity);
         }
 
-        /// <summary>引爆后：全宽墨裂，过曝一拍后沿冲刺方向定向蒸发</summary>
+        /// <summary>引爆后、全宽墨裂，过曝一拍后沿冲刺方向定向蒸发</summary>
         private void DrawRend(GraphicsDevice device, Effect fx) {
             int dt = timer - detonateFrame;
             float fadeT = MathHelper.Clamp(dt / (float)RendFadeFrames, 0f, 1f);

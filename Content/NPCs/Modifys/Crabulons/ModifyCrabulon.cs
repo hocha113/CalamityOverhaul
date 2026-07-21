@@ -12,7 +12,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
-    /// <summary>驯养菌生蟹，不依赖生物大修</summary>
+    /// <summary>驯养菌生蟹，不依赖BiologyOverhaul</summary>
     internal class ModifyCrabulon : NPCOverride, ILocalizedModType
     {
         public override int TargetID => CWRID.NPC_Crabulon;
@@ -60,17 +60,17 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         public bool hoverNPC;
         internal int DyeItemID;
         internal float dontTurnTo;
-        //进世界时主人可能未连入，记名待认领
+        //主人未连入，记名待认领
         internal string pendingOwnerName = string.Empty;
 
         internal bool rightPressed;
         internal static int mountPlayerHeldProj;
         internal static Vector2 mountPlayerHeldPosOffset;
 
-        //指令环 UI 的纯本地视觉态：受击闪光与上一帧生命
+        //指令环本地视觉，受击闪+上帧生命
         internal int uiOldLife = -1;
         internal float uiDamageFlash;
-        //指令环开启时占位，供骑乘逻辑跳过右键上马，避免“开环右键取消”被读成上马
+        //开环占位，防右键取消被读成上马
         internal bool uiCommandOpen;
 
         public CrabulonPhysics Physics { get; private set; }
@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             Renderer = new CrabulonRenderer(npc, this);
         }
 
-        //投喂入口，按驯服状态分流
+        //投喂入口
         public void ApplyFeed(Player feeder, int dyeItemID) {
             if (FeedValue > 0f) {
                 FeedTamed();
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //初次驯服投喂
+        //初驯投喂
         public void Feed(Player feeder, int dyeItemID) {
             DyeItemID = dyeItemID;
             npc.lifeMax = Main.masterMode ? CrabulonConstants.LifeMaxMaster : CrabulonConstants.LifeMaxNormal;
@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             FeedValue += CrabulonConstants.FeedValuePerFeed;
             ai[8] = CrabulonConstants.DigestTime;
             npc.ai[0] = npc.ai[1] = npc.ai[2] = 0f;
-            //驯服瞬间复位物理标志，防穿墙沉地
+            //驯服复位物理，防穿墙
             npc.noGravity = false;
             npc.noTileCollide = false;
             if (!VaultUtils.isClient) {
@@ -139,11 +139,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //已驯服投喂
+        //已驯投喂
         public void FeedTamed() {
             float maxFeed = CrabulonConstants.MaxFeedValue;
             if (FeedValue >= maxFeed) {
-                //饱食满则小幅回血
+                //饱食满小回血
                 if (npc.life < npc.lifeMax) {
                     npc.life = (int)MathHelper.Clamp(npc.life + CrabulonConstants.FeedHealAmount, 0, npc.lifeMax);
                     npc.netUpdate = true;
@@ -178,7 +178,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             npc.netUpdate = true;
         }
 
-        //网络接收后须调，保证各端派生字段一致
+        //网络收后刷新派生字段
         internal void ApplyStateFields() {
             if (FeedValue > 0f) {
                 SetFeedState();
@@ -195,8 +195,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
         public void SetFeedState() {
             npc.timeLeft = 1800;
-            //Boss 音乐由灾厄的 CrabulonMusicScene(ModSceneEffect)驱动，仅看 npc.type，与 npc.boss 无关；
-            //驯服后的压制改由 CrabulonMusicOverride 处理。这里不再写 npc.ModNPC.Music，避免污染共享单例
+            //Boss音乐见CrabulonMusicOverride，勿写ModNPC.Music
             npc.BossBar = ModContent.GetInstance<CrabulonFriendBossBar>();
             npc.boss = false;
             npc.friendly = true;
@@ -211,7 +210,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return null;
         }
 
-        //状态走 NPCOverride：客户端 SendNetworkData，服务器 NetOtherWorkSend
+        //状态走NPCOverride通道
         public void SendNetWork() {
             if (VaultUtils.isClient) {
                 RequestSync(NPCOverrideSyncField.All);
@@ -233,7 +232,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             tag["g"] = MountACrabulon;
             tag["h"] = DontMount;
             tag["i"] = DyeItemID;
-            //同名玩家认领有局限
+            //同名认领有局限
             tag["j"] = Owner.Alives() ? Owner.name : string.Empty;
             tag["k"] = ItemIO.Save(SaddleItem);
         }
@@ -266,7 +265,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
             SaddleItem = CWRSaveData.LoadItemFromTag(tag, "k", nameof(ModifyCrabulon));
 
-            //骑乘为会话状态，读档后重置
+            //骑乘会话态，读档重置
             Mount = false;
             MountACrabulon = false;
 
@@ -318,7 +317,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
         public override bool FindFrame(int frameHeight) => Animation.UpdateFrame(frameHeight);
 
-        //主人重连按名认领，成功后服务器推送
+        //主人重连按名认领
         internal void TryResolvePendingOwner() {
             if (VaultUtils.isClient || Owner.Alives() || string.IsNullOrEmpty(pendingOwnerName)) {
                 return;
@@ -345,7 +344,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             TryResolvePendingOwner();
 
             if (!Owner.Alives()) {
-                //主人失效时本端立即下马
+                //主人失效本端下马
                 if (Mount || MountACrabulon) {
                     MountSystem.ForceDismount();
                 }

@@ -37,10 +37,10 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         public static ChargingStationUI Instance => UIHandleLoader.GetUIHandleOfType<ChargingStationUI>();
         public bool ids;
 
-        //淡入淡出进度由基类 OpenProgress 驱动，Active 沿用基类默认实现(IsOpen || OpenProgress > 0)
+        //淡入由基类 OpenProgress 驱动
         private float uiFadeAlpha => OpenProgress.Current;
 
-        //拖拽功能
+        //拖拽
         private bool isDragging = false;
         private Vector2 dragOffset = Vector2.Zero;
         private Rectangle titleBarRect;
@@ -117,14 +117,11 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 return;
             }
 
-            //处理拖拽
             HandleDragging();
 
-            //限制面板位置在屏幕内
             DrawPosition.X = MathHelper.Clamp(DrawPosition.X, PanelWidth / 2 + 10, Main.screenWidth - PanelWidth / 2 - 10);
             DrawPosition.Y = MathHelper.Clamp(DrawPosition.Y, PanelHeight / 2 + 10, Main.screenHeight - PanelHeight / 2 - 10);
 
-            //更新动画计时器
             scanLineTimer += 0.04f;
             chargeGlow += 0.055f;
             pulseTimer += 0.02f;
@@ -143,20 +140,16 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 return;
             }
 
-            //计算面板区域
             Vector2 topLeft = DrawPosition - new Vector2(PanelWidth / 2, PanelHeight / 2);
             panelRect = new Rectangle((int)topLeft.X, (int)topLeft.Y, (int)PanelWidth, (int)PanelHeight);
 
-            //标题栏拖拽区
             titleBarRect = new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, 55);
 
-            //计算子区域
             itemSlotRect = new Rectangle((int)(topLeft.X + 35), (int)(topLeft.Y + 80), 70, 70);
             batterySlotRect = new Rectangle((int)(topLeft.X + 35), (int)(topLeft.Y + 170), 70, 70);
             energyBarRect = new Rectangle((int)(topLeft.X + 145), (int)(topLeft.Y + 80), 40, 160);
             chargeBarRect = new Rectangle((int)(topLeft.X + 285), (int)(topLeft.Y + 80), 40, 160);
 
-            //鼠标交互检测
             Vector2 mousePos = new Vector2(Main.mouseX, Main.mouseY);
             hoveringItemSlot = itemSlotRect.Contains(mousePos.ToPoint()) && !isDragging;
             hoveringBatterySlot = batterySlotRect.Contains(mousePos.ToPoint()) && !isDragging;
@@ -169,7 +162,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 player.mouseInterface = true;
             }
 
-            //处理槽位交互
             if (hoveringItemSlot && UIHandleLoader.keyLeftPressState == KeyPressState.Pressed) {
                 if (ChargingStationTP.ItemIsCharge(Main.mouseItem, out _, out _) || Main.mouseItem.IsAir) {
                     HandlerSlotItem(ref station.Item);
@@ -192,14 +184,12 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 }
             }
 
-            //更新粒子
             UpdateParticles();
         }
 
         private void HandleDragging() {
             Vector2 mousePos = new Vector2(Main.mouseX, Main.mouseY);
 
-            //开始拖拽
             if (hoveringPanel && !hoveringItemSlot && !hoveringBatterySlot && !hoveringEnergyBar && !hoveringChargeBar
                 && UIHandleLoader.keyLeftPressState == KeyPressState.Pressed && !isDragging) {
                 isDragging = true;
@@ -207,11 +197,9 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.3f });
             }
 
-            //执行拖拽
             if (isDragging) {
                 DrawPosition = mousePos + dragOffset;
                 if (UIHandleLoader.keyLeftPressState == KeyPressState.Released) {
-                    //结束拖拽
                     isDragging = false;
                     SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.3f });
                 }
@@ -252,7 +240,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
 
             Vector2 panelCenter = DrawPosition;
 
-            //电火花粒子
+            //电火花
             sparkSpawnTimer++;
             if (sparkSpawnTimer >= 6 && electricSparks.Count < 30) {
                 sparkSpawnTimer = 0;
@@ -268,7 +256,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 }
             }
 
-            //数据流粒子
             dataParticleTimer++;
             if (dataParticleTimer >= 20 && dataParticles.Count < 12) {
                 dataParticleTimer = 0;
@@ -286,10 +273,9 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         public override void Draw(SpriteBatch spriteBatch) {
             if (uiFadeAlpha < 0.01f || station == null) return;
 
-            //绘制主面板
+            //主面板
             DrawMainPanel(spriteBatch);
 
-            //绘制粒子
             foreach (var particle in dataParticles) {
                 particle.Draw(spriteBatch, uiFadeAlpha * 0.5f);
             }
@@ -297,7 +283,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 spark.Draw(spriteBatch, uiFadeAlpha * 0.8f);
             }
 
-            //绘制UI元素
             DrawSlots(spriteBatch);
             DrawEnergyBar(spriteBatch);
             DrawChargeBar(spriteBatch);
@@ -309,7 +294,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             Texture2D px = VaultAsset.placeholder2.Value;
             float alpha = uiFadeAlpha;
 
-            //主背景渐变，废土深色调
             int segments = 40;
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
@@ -318,7 +302,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
                 Rectangle r = new(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
 
-                //废土色调，深灰、暗红、锈橙
                 Color wastelandDark = new Color(12, 8, 8);
                 Color rustMid = new Color(25, 15, 10);
                 Color emberGlow_color = new Color(45, 22, 15);
@@ -331,32 +314,26 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 sb.Draw(px, r, new Rectangle(0, 0, 1, 1), finalColor);
             }
 
-            //热量闪烁覆盖层
+            //热量闪烁
             float flicker = (float)Math.Sin(chargeGlow * 1.5f) * 0.5f + 0.5f;
             Color heatOverlay = new Color(40, 18, 10) * (alpha * 0.3f * flicker);
             sb.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), heatOverlay);
 
-            //锈蚀网格纹理
             DrawRustGrid(sb, panelRect, alpha * 0.7f);
 
-            //扫描线效果
             DrawWastelandScanLines(sb, panelRect, alpha * 0.8f);
 
-            //内发光
             float innerPulse = (float)Math.Sin(pulseTimer * 1.2f) * 0.5f + 0.5f;
             Rectangle inner = panelRect;
             inner.Inflate(-10, -10);
             sb.Draw(px, inner, new Rectangle(0, 0, 1, 1), new Color(140, 60, 30) * (alpha * 0.08f * innerPulse));
 
-            //废土边框
             DrawWastelandFrame(sb, panelRect, alpha, innerPulse);
 
-            //标题文字
             string title = TitleText.Value;
             Vector2 titlePos = new Vector2(panelRect.Center.X, panelRect.Y + 28);
             Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(title) * 0.9f;
 
-            //发光描边
             Color glowColor = new Color(255, 140, 80) * (alpha * 0.6f);
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f;
@@ -366,7 +343,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
 
             Utils.DrawBorderString(sb, title, titlePos - titleSize / 2, new Color(220, 180, 160) * alpha, 0.9f);
 
-            //拖拽提示
             if (hoveringTitleBar && !isDragging) {
                 Color hintColor = new Color(200, 180, 140) * (alpha * 0.6f);
                 string dragHint = "◈";
@@ -386,7 +362,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 float phase = gridPhase + t * MathHelper.Pi * 0.7f;
                 float brightness = (float)Math.Sin(phase) * 0.5f + 0.5f;
 
-                //锈色网格线
                 Color gridColor = new Color(80, 40, 25) * (alpha * 0.05f * brightness);
                 sb.Draw(px, new Rectangle(rect.X + 20, (int)y, rect.Width - 40, 1), new Rectangle(0, 0, 1, 1), gridColor);
 
@@ -415,14 +390,12 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         private void DrawWastelandFrame(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            //外框，锈橙色
             Color rustEdge = Color.Lerp(new Color(140, 70, 40), new Color(200, 110, 60), pulse) * (alpha * 0.75f);
             sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 4), new Rectangle(0, 0, 1, 1), rustEdge);
             sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 4, rect.Width, 4), new Rectangle(0, 0, 1, 1), rustEdge * 0.7f);
             sb.Draw(px, new Rectangle(rect.X, rect.Y, 4, rect.Height), new Rectangle(0, 0, 1, 1), rustEdge * 0.85f);
             sb.Draw(px, new Rectangle(rect.Right - 4, rect.Y, 4, rect.Height), new Rectangle(0, 0, 1, 1), rustEdge * 0.85f);
 
-            //内框发光
             Rectangle inner = rect;
             inner.Inflate(-10, -10);
             Color innerGlow = new Color(200, 100, 50) * (alpha * 0.18f * pulse);
@@ -431,7 +404,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             sb.Draw(px, new Rectangle(inner.X, inner.Y, 2, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.8f);
             sb.Draw(px, new Rectangle(inner.Right - 2, inner.Y, 2, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.8f);
 
-            //角落标记，废土警告标志
+            //角标
             DrawWastelandMark(sb, new Vector2(rect.X + 16, rect.Y + 16), alpha * 0.9f);
             DrawWastelandMark(sb, new Vector2(rect.Right - 16, rect.Y + 16), alpha * 0.9f);
             DrawWastelandMark(sb, new Vector2(rect.X + 16, rect.Bottom - 16), alpha * 0.65f);
@@ -443,14 +416,12 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             float size = 7f;
             Color markColor = new Color(200, 100, 50) * alpha;
 
-            //警告三角形样式
             sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), markColor, 0f, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.2f), SpriteEffects.None, 0f);
             sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), markColor * 0.8f, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.2f), SpriteEffects.None, 0f);
             sb.Draw(px, pos, new Rectangle(0, 0, 1, 1), markColor * 0.5f, 0f, new Vector2(0.5f, 0.5f), new Vector2(size * 0.4f, size * 0.4f), SpriteEffects.None, 0f);
         }
 
         private void DrawSlotHover(SpriteBatch sb) {
-            //悬停提示
             if (hoveringItemSlot && station.Item.IsAir) {
                 ShowTooltip(sb, InsertItemHint.Value);
             }
@@ -471,7 +442,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         private void DrawSlots(SpriteBatch sb) {
             float alpha = uiFadeAlpha;
 
-            //绘制物品槽
             DrawSlot(sb, itemSlotRect, hoveringItemSlot, ItemSlotLabel.Value, alpha);
             if (!station.Item.IsAir) {
                 VaultUtils.SimpleDrawItem(sb, station.Item.type, itemSlotRect.Center.ToVector2(), 50, 1f, 0, Color.White * alpha);
@@ -484,7 +454,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 }
             }
 
-            //绘制电池槽
             DrawSlot(sb, batterySlotRect, hoveringBatterySlot, BatterySlotLabel.Value, alpha);
             if (!station.Empty.IsAir) {
                 VaultUtils.SimpleDrawItem(sb, station.Empty.type, batterySlotRect.Center.ToVector2(), 50, 1f, 0, Color.White * alpha);
@@ -502,18 +471,15 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             Texture2D px = VaultAsset.placeholder2.Value;
             float hoverGlow = hovering ? 0.3f : 0f;
 
-            //背景，深色金属质感
             Color slotBg = new Color(18, 12, 10) * (alpha * 0.9f);
             sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), slotBg);
 
-            //边框，锈蚀金属
             Color edgeColor = Color.Lerp(new Color(120, 70, 40), new Color(180, 110, 60), (float)Math.Sin(pulseTimer * 1.3f) * 0.5f + 0.5f) * (alpha * (0.75f + hoverGlow));
             sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 3), new Rectangle(0, 0, 1, 1), edgeColor);
             sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 3, rect.Width, 3), new Rectangle(0, 0, 1, 1), edgeColor);
             sb.Draw(px, new Rectangle(rect.X, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), edgeColor);
             sb.Draw(px, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), edgeColor);
 
-            //标签
             Vector2 labelSize = FontAssets.MouseText.Value.MeasureString(label) * 0.65f;
             Vector2 labelPos = new Vector2(rect.Center.X - labelSize.X / 2, rect.Y - 22);
 
@@ -546,7 +512,6 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             float alpha = uiFadeAlpha;
             float hoverGlow = hovering ? 0.3f : 0f;
 
-            //背景
             Color barBg = new Color(18, 12, 10) * (alpha * 0.9f);
             sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), barBg);
 
@@ -590,14 +555,12 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 }
             }
 
-            //边框
             Color edgeColor = Color.Lerp(new Color(120, 70, 40), new Color(180, 110, 60), (float)Math.Sin(pulseTimer * 1.3f) * 0.5f + 0.5f) * (alpha * (0.75f + hoverGlow));
             sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 3), new Rectangle(0, 0, 1, 1), edgeColor);
             sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 3, rect.Width, 3), new Rectangle(0, 0, 1, 1), edgeColor);
             sb.Draw(px, new Rectangle(rect.X, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), edgeColor);
             sb.Draw(px, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), edgeColor);
 
-            //标签
             Vector2 labelSize = FontAssets.MouseText.Value.MeasureString(label) * 0.6f;
             Vector2 labelPos = new Vector2(rect.Center.X - labelSize.X / 2, rect.Y - 22);
 
@@ -649,7 +612,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.75f;
             Vector2 textPos = mousePos + new Vector2(18, 18);
 
-            //工业风格提示框
+            //提示框
             Rectangle tooltipBg = new Rectangle((int)textPos.X - 10, (int)textPos.Y - 6, (int)textSize.X + 20, (int)textSize.Y + 12);
             sb.Draw(px, tooltipBg, new Rectangle(0, 0, 1, 1), new Color(15, 10, 8) * 0.95f);
             sb.Draw(px, new Rectangle(tooltipBg.X, tooltipBg.Y, tooltipBg.Width, 3), new Rectangle(0, 0, 1, 1), new Color(180, 100, 50) * 0.8f);
@@ -659,7 +622,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         }
     }
 
-    //电火花粒子
+    //电火花 PRT
     internal class ElectricSparkPRT
     {
         private Vector2 position;

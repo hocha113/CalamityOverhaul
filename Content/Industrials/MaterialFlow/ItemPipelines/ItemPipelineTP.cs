@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters;
 using InnoVault.Concurrent;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -122,13 +122,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
         /// <summary>本节卡死帧数</summary>
         private int stuckFrames;
-        /// <summary>阶段一：放宽路由</summary>
+        /// <summary>阶段一，放宽路由</summary>
         private const int LooseRoutingThreshold = 60;
-        /// <summary>阶段二：任意前向空管</summary>
+        /// <summary>阶段二，任意前向空管</summary>
         private const int AnyForwardThreshold = 180;
-        /// <summary>阶段三：允许反向回流</summary>
+        /// <summary>阶段三，允许反向回流</summary>
         private const int ReverseFlowThreshold = 360;
-        /// <summary>阶段四：投存储或掉落(60s)</summary>
+        /// <summary>阶段四，投存储或掉落(60s)</summary>
         private const int RescueDropThreshold = 3600;
         /// <summary>单物品最大反向跳数</summary>
         private const int MaxReverseHopsPerItem = 8;
@@ -146,13 +146,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         /// <summary>侧位已初始化</summary>
         private bool sideStatesInitialized;
 
-        /// <summary>物品筛选名单，自带 O(1) 查询，空名单=全部放行</summary>
+        /// <summary>筛选名单，O(1)，空=全放行</summary>
         internal ItemFilterSet Filter = new();
 
         /// <summary>悬停动画进度</summary>
         internal float hoverSengs;
 
-        /// <summary>跨岛共享存储(如同一箱子被不同管网连接)时的访问互斥锁，避免并发存取损坏物品数据</summary>
+        /// <summary>跨岛共享存储互斥锁</summary>
         private static readonly object storageGate = new();
         #endregion
 
@@ -171,7 +171,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             ItemPipelineNetwork.MarkDirty();
         }
 
-        /// <summary>管道与相邻管道互相 hand-off 物品，按连通岛屿并行更新(岛内串行，跨岛并行)</summary>
+        /// <summary>邻管 hand-off，连通岛并行(岛内串行)</summary>
         public override ParallelExecutionKind ParallelKind => ParallelExecutionKind.Grouped;
 
         /// <summary>声明四向相邻格，使同一连通管网的管道落入同一并行岛屿</summary>
@@ -182,7 +182,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             builder.Link(Position.X + 1, Position.Y);
         }
 
-        /// <summary>并行前在主线程统一重建全局路由，避免并行 Update 中并发触碰路由表</summary>
+        /// <summary>并行前主线程重建路由，防并发碰表</summary>
         public override void PreParallel() => ItemPipelineNetwork.EnsureBuilt();
 
         public override void Update() {
@@ -203,7 +203,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             //形状变亦标脏
             UpdateShape();
 
-            //路由重建已上移到 PreParallel() 在主线程统一执行，此处不再调用
+            //路由重建已上移 PreParallel
 
             //模式驱动逻辑
             switch (Mode) {
@@ -306,7 +306,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                     continue;
                 }
 
-                //跨岛共享存储互斥，避免并发抽取损坏数据
+                //跨岛共享存储互斥
                 lock (storageGate) {
                     //首个允许类型
                     foreach (var storedItem in storage.GetStoredItems()) {
@@ -334,9 +334,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             }
         }
 
-        /// <summary>
-        /// 网络中是否存在能接收指定物品类型的输入端
-        /// </summary>
+        /// <summary>网内是否有可收该类型的输入端</summary>
         private bool HasAvailableInputForItem(int itemType, List<Point16> reachableInputs) {
             for (int i = 0; i < reachableInputs.Count; i++) {
                 var inputPos = reachableInputs[i];
@@ -376,7 +374,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                     continue;
                 }
 
-                //跨岛共享存储互斥，避免并发存入损坏数据
+                //跨岛共享存储互斥
                 lock (storageGate) {
                     Item toDeposit = new Item(item.ItemType, item.Stack) { prefix = (byte)item.Prefix };
                     if (!storage.CanAcceptItem(toDeposit)) {
@@ -389,7 +387,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                             CurrentItem = null;
                         }
                         else {
-                            //部分存入: 剩余的继续等待或在卡死自愈阶段被重定向
+                            //部分存入，剩余自愈
                             item.Stack = remaining;
                             CurrentItem = item;
                         }
@@ -398,7 +396,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 }
             }
 
-            //没存进去, 记录拒收时间, 让其他输出端在短期内不要再选自己
+            //拒收记时，上游先绕开
             lastDepositRejectFrame = (int)Main.GameUpdateCount;
         }
 
@@ -486,7 +484,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             stuckFrames++;
             CurrentItem = item;
 
-            //最后兜底: 把物品塞回直连的任意存储, 实在不行才掉到世界
+            //兜底塞回或掉落
             if (stuckFrames >= RescueDropThreshold && !VaultUtils.isClient) {
                 if (TryRescueDeposit(ref item)) {
                     if (item.Stack <= 0) {
@@ -504,7 +502,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             }
         }
 
-        /// <summary>渐进选路：严格→宽松→前向→回流</summary>
+        /// <summary>渐进选路，严格→宽松→前向→回流</summary>
         private bool TryPassToNextPipeline(ref TransportingItem item) {
             int sourceDir = item.SourceDirection;
             bool allowReverse = stuckFrames >= ReverseFlowThreshold && item.ReverseHops < MaxReverseHopsPerItem;
@@ -591,9 +589,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             return -1;
         }
 
-        /// <summary>
-        /// 任意非来源方向的空邻居管道(在多个候选时随机)
-        /// </summary>
+        /// <summary>非来源向空邻管，多候选随机</summary>
         private int SelectAnyForwardDirection(int excludeDir) {
             Span<int> candidates = stackalloc int[4];
             int count = 0;
@@ -611,13 +607,11 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 }
                 candidates[count++] = i;
             }
-            //并行阶段使用线程安全的 Rand(Main.rand 非线程安全)
+            //并行用线程安全 Rand
             return count == 0 ? -1 : candidates[Rand.Next(count)];
         }
 
-        /// <summary>
-        /// 反向回流（仅当来源方向的邻居为空时）
-        /// </summary>
+        /// <summary>反向回流，仅来源邻为空</summary>
         private int SelectReverseDirection(int sourceDir) {
             if ((uint)sourceDir > 3u) {
                 return -1;
@@ -633,9 +627,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             return sourceDir;
         }
 
-        /// <summary>
-        /// 兜底救援: 把物品塞回直连的任意存储 (输出端的"原存储", 输入端的"目标存储", 都可用)
-        /// </summary>
+        /// <summary>兜底塞回直连存储</summary>
         private bool TryRescueDeposit(ref TransportingItem item) {
             for (int i = 0; i < SideStates.Count; i++) {
                 var side = SideStates[i];
@@ -669,16 +661,14 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             _ => -1
         };
 
-        /// <summary>
-        /// 卡死且无法救援时, 把当前物品丢到世界, 避免永久阻塞
-        /// </summary>
+        /// <summary>卡死无救援则丢世界</summary>
         private void DropCurrentItem() {
             if (!CurrentItem.HasValue) {
                 return;
             }
             var item = CurrentItem.Value;
             Item drop = new Item(item.ItemType, item.Stack) { prefix = (byte)item.Prefix };
-            //并行阶段把物品生成与发包延迟到主线程执行
+            //并行阶段延后到主线程
             DeferSpawnItem(new EntitySource_WorldEvent(), HitBox, drop, type => {
                 if (VaultUtils.isServer) {
                     NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type);
@@ -703,7 +693,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
             Item item = player.GetItem();
 
-            //手持过滤卡：把卡上名单安装到本管道
+            //手持过滤卡，装名单到本管
             if (item.ModItem is ItemFilter card) {
                 Filter.CopyFrom(card.Filter);
 
@@ -715,7 +705,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 return true;
             }
 
-            //空手右键输入/输出端：就地打开名单编辑器
+            //空手右键端点开名单编辑
             if (!item.Alives()) {
                 if (player.whoAmI == Main.myPlayer) {
                     ItemFilterEditorUI.Instance?.ToggleFor(this);
@@ -744,7 +734,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 _ => ItemPipelineMode.Normal
             };
 
-            //模式切换属于强拓扑变化(影响 Output/Input 集合)
+            //模式切换=强拓扑变化
             ItemPipelineNetwork.MarkDirty();
 
             SoundEngine.PlaySound(SoundID.MenuTick, CenterInWorld);
@@ -829,7 +819,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 try {
                     Filter.Save(tag, "ItemPipeline_Filter");
                 } catch (Exception ex) {
-                    //单独的筛选器序列化失败不应影响主数据保存
+                    //筛选器序列化失败不影响主档
                     CWRMod.Instance.Logger.Error($"[ItemPipelineTP:SaveData] save filter failed:{ex.Message}");
                 }
             } catch (Exception ex) {
@@ -838,7 +828,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         }
 
         public override void LoadData(TagCompound tag) {
-            //先把可变状态归位, 异常退出时不会留下残缺数据
+            //先归位可变状态
             Mode = ItemPipelineMode.Normal;
             CurrentItem = null;
             Filter = new ItemFilterSet();
@@ -853,14 +843,14 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                     Mode = (ItemPipelineMode)mode;
                 }
 
-                //所有数值都走 TryGet, 缺键或类型不匹配时使用默认值, 避免 GetInt 抛异常
+                //数值走 TryGet，防脏键抛异常
                 if (tag.TryGet("ItemPipeline_ItemType", out int itemType) && itemType > ItemID.None && itemType < ItemLoader.ItemCount) {
                     int stack = tag.TryGet("ItemPipeline_Stack", out int s) ? s : 0;
                     int prefix = tag.TryGet("ItemPipeline_Prefix", out int p) ? p : 0;
                     float progress = tag.TryGet("ItemPipeline_Progress", out float prog) ? prog : 0f;
                     int sourceDir = tag.TryGet("ItemPipeline_SourceDirection", out int sd) ? sd : -1;
 
-                    //合理性矫正, 避免脏数据进入运行时
+                    //合理性矫正
                     if (stack > 0) {
                         progress = MathHelper.Clamp(progress, 0f, 1f);
                         if (sourceDir < -1 || sourceDir > 3) {
@@ -876,7 +866,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 }
 
                 try {
-                    //新格式优先；旧存档存的是整只过滤卡物品，迁移垫片会把旧名单回填进卡的 ModItem
+                    //新格式优先；旧档整卡物品由垫片回填
                     if (!Filter.TryLoad(tag, "ItemPipeline_Filter")
                         && tag.TryGet<TagCompound>("ItemPipeline_ItemFilter", out var filterTag) && filterTag != null
                         && ItemIO.Load(filterTag) is Item legacyCard && legacyCard.ModItem is ItemFilter card) {
@@ -893,23 +883,23 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 Filter = new ItemFilterSet();
             }
 
-            //加载完毕后强制刷新一次路由
+            //加载后强制刷路由
             ItemPipelineNetwork.MarkDirty();
         }
 
         public override void OnKill() {
-            //掉落正在传输的物品
+            //掉落在传物品
             if (CurrentItem.HasValue && !VaultUtils.isClient) {
                 var item = CurrentItem.Value;
                 Item drop = new Item(item.ItemType, item.Stack) { prefix = (byte)item.Prefix };
-                //并行阶段把物品生成与发包延迟到主线程执行
+                //并行阶段延后到主线程
                 DeferSpawnItem(new EntitySource_WorldEvent(), HitBox, drop, type => {
                     if (VaultUtils.isServer) {
                         NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type);
                     }
                 });
             }
-            //从网络中移除自身, 触发路由表重建
+            //离网，刷路由
             ItemPipelineNetwork.MarkDirty();
         }
         #endregion

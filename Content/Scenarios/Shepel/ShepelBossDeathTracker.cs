@@ -3,9 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel
 {
-    /// <summary>
-    /// 客户端 Boss 死亡时写入 <see cref="ShepelReactiveEvent.BossDefeated"/>，仅 <c>npc.boss</c>
-    /// </summary>
+    /// <summary>客户端Boss死亡写 <see cref="ShepelReactiveEvent.BossDefeated"/>，仅npc.boss</summary>
     internal class ShepelBossDeathTracker : DeathTrackingNPC
     {
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.boss;

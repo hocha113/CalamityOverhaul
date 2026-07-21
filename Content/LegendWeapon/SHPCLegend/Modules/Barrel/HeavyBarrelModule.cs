@@ -11,28 +11,28 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>重型枪管：连续命中同一目标叠凿击刻痕，满四道锻入贯体重锤爆击并砸碎护甲</summary>
+    /// <summary>重型枪管，连中叠凿痕，满四锻入贯体重锤并破甲</summary>
     internal sealed class HeavyBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
         //重型炮管赤红
         public override Color TintColor => new(220, 40, 60);
 
-        //═════ 可调参数（平衡位） ═════
-        /// <summary>触发重锤所需凿击刻痕数</summary>
+        //═════平衡参数═════
+        /// <summary>触发重锤所需凿痕数</summary>
         internal const int MaxStacks = 4;
-        /// <summary>凿击结算内置冷却（帧），一次多束齐射只计一凿，保持"凿-凿-凿"节奏</summary>
+        /// <summary>凿击 ICD 帧，齐射只计一凿</summary>
         internal const int GougeIcdTicks = 10;
-        /// <summary>刻痕保持窗口（帧），窗口内未续凿则全部消退</summary>
+        /// <summary>刻痕保持窗口帧，超时清零</summary>
         internal const int GougeWindowTicks = 300;
-        /// <summary>重锤伤害 = 窗口内最重一凿 × 此倍率（落锤强制爆击，实际约两倍于面值，故保守取 1）</summary>
+        /// <summary>重锤伤=窗口最重一凿×此值(落锤强制暴击)</summary>
         internal const float BurstDamageMul = 1.0f;
-        /// <summary>破甲持续（帧）</summary>
+        /// <summary>破甲持续帧</summary>
         internal const int SunderDurationTicks = 180;
-        /// <summary>破甲期间无视防御比例</summary>
+        /// <summary>破甲无视防御比例</summary>
         internal const float SunderArmorPen = 0.5f;
 
-        //锻铁配色：白热 → 灼铁橙 → 暗铁
+        //锻铁配色，白热→灼铁→暗铁
         internal static readonly Color HotColor = new(255, 236, 200);
         internal static readonly Color EmberColor = new(255, 150, 60);
         internal static readonly Color IronColor = new(120, 55, 35);
@@ -44,20 +44,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
-            //全局约定：派生束（链跳/分裂/齐射子束等）不回喂任何模块机制
+            //派生束不回喂
             if (beam.IsDerived) return;
             if (beam.Projectile.owner != Main.myPlayer) return;
             AddGouge(target, beam.Projectile, damageDone, beam.FlightDirection);
         }
 
-        //防御性代码：LaserMode 只能由同槽 Barrel 模块开启，正常装配下激光模式与本模块互斥，
-        //此路径仅在模块热切换残窗内可达，保留以保证残窗行为一致
+        //同槽互斥，热切换残窗才进激光钩
         public override void OnLaserHitNPC(CyberPrismLaserProj laser, NPC target, NPC.HitInfo hit, int damageDone) {
             if (laser.Projectile.owner != Main.myPlayer) return;
             AddGouge(target, laser.Projectile, damageDone, laser.Projectile.rotation.ToRotationVector2());
         }
 
-        /// <summary>凿击结算：叠刻痕、播报节奏反馈，攒满触发贯体重锤；仅拥有者客户端调用</summary>
+        /// <summary>凿击结算，攒满落锤；仅 owner</summary>
         private static void AddGouge(NPC target, Projectile source, int damageDone, Vector2 dir) {
             if (!target.active || !target.TryGetGlobalNPC(out SHPCHeavyGougeNPC gouge)) return;
             if (gouge.IcdTimer > 0) return;
@@ -72,7 +71,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
 
             if (gouge.Stacks >= MaxStacks) {
-                //轰：贯体重锤，之后该目标从零重凿
+                //贯体重锤，刻痕归零
                 int burst = Math.Max((int)(gouge.StoredDamage * BurstDamageMul), 1);
                 Projectile.NewProjectile(source.GetSource_FromThis(),
                     target.Center, Vector2.Zero,
@@ -85,9 +84,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
         }
 
-        /// <summary>每凿的可读反馈：音高爬升的金属凿音、飞溅剥片与刻痕计数排</summary>
+        /// <summary>凿击反馈，音高爬升+剥片+计数排</summary>
         private static void GougeFeedback(NPC target, Vector2 dir, int stacks) {
-            //凿音音高随刻痕爬升，满层前一凿换上膛提示，形成听得见的节奏
+            //凿音随层爬升，满层前上膛提示
             SoundEngine.PlaySound(SoundID.Tink with {
                 Volume = 0.5f,
                 Pitch = -0.35f + stacks * 0.16f
@@ -96,7 +95,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.55f, Pitch = -0.1f }, target.Center);
             }
 
-            //凿点反溅的白热剥片：逆着来向弹出，受重力坠落
+            //反溅白热剥片
             Vector2 back = -dir;
             for (int i = 0; i < 5; i++) {
                 Vector2 vel = back.RotatedBy(Main.rand.NextFloat(-0.7f, 0.7f)) * Main.rand.NextFloat(2.5f, 6.5f)
@@ -106,7 +105,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     ?.Configure(IronColor, Main.rand.Next(20, 38));
             }
 
-            //目标头顶的刻痕计数排：已有几凿亮几格，最新一格白热
+            //头顶刻痕计数排
             for (int i = 0; i < stacks; i++) {
                 Vector2 pipPos = target.Top + new Vector2((i - (stacks - 1) * 0.5f) * 12f, -16f);
                 Color pipCol = i == stacks - 1 ? HotColor : EmberColor;
@@ -116,20 +115,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>凿击 per-NPC 状态：刻痕计数与窗口、结算冷却、破甲计时；随 NPC 实例自动回收</summary>
+    /// <summary>凿击 per-NPC，刻痕/窗口/ICD/破甲</summary>
     internal sealed class SHPCHeavyGougeNPC : GlobalNPC
     {
         public override bool InstancePerEntity => true;
 
-        /// <summary>当前凿击刻痕数</summary>
+        /// <summary>凿击刻痕数</summary>
         public int Stacks;
-        /// <summary>刻痕保持窗口剩余帧数，归零全部消退</summary>
+        /// <summary>刻痕窗口剩余帧</summary>
         public int WindowTime;
-        /// <summary>凿击结算内置冷却</summary>
+        /// <summary>凿击 ICD</summary>
         public int IcdTimer;
-        /// <summary>窗口内最重一击的实际伤害，作为重锤基数</summary>
+        /// <summary>窗口最重一击，重锤基数</summary>
         public int StoredDamage;
-        /// <summary>破甲剩余帧数</summary>
+        /// <summary>破甲剩余帧</summary>
         public int SunderTime;
 
         public override bool PreAI(NPC npc) {
@@ -141,7 +140,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     Stacks = 0;
                     StoredDamage = 0;
                 }
-                //刻痕余烬：层数越多迸得越密，不看面板也能感知进度
+                //刻痕余烬，层越高越密
                 else if (Stacks > 0 && Main.netMode != NetmodeID.Server
                     && Main.rand.NextBool(Math.Max(12 - Stacks * 3, 3))) {
                     Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.45f, npc.height * 0.45f);
@@ -155,7 +154,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 SunderTime--;
                 if (Main.netMode != NetmodeID.Server) {
                     if (Main.rand.NextBool(4)) {
-                        //甲缝漏火：破甲期间裂口持续渗出暗铁碎屑与火线
+                        //甲缝漏火
                         Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.5f, npc.height * 0.5f);
                         PRTLoader.NewParticle<PRT_CyberSquare>(pos, Main.rand.NextVector2Circular(1f, 1f),
                             HeavyBarrelModule.IronColor, Main.rand.NextFloat(0.4f, 0.9f))
@@ -175,7 +174,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>贯体重锤：锁定单体的凿击终结爆击，落锤施加破甲；SHPCModHeavyMaul.fx</summary>
+    /// <summary>贯体重锤，单体终结+破甲；SHPCModHeavyMaul.fx</summary>
     internal sealed class SHPCHeavyMaulProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -184,9 +183,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         private const int ExpandFrames = 20;
         private const int DamageWindow = 6;
         private const float MaxRadius = 132f;
-        /// <summary>落锤屏震满幅幅度</summary>
+        /// <summary>落锤屏震满幅</summary>
         private const float MaulShake = 5f;
-        /// <summary>屏震衰减距离（像素），本地玩家距爆点超过此距离不再震动</summary>
+        /// <summary>屏震衰减距离px</summary>
         private const float ShakeFalloffDist = 900f;
 
         private float StrikeRotation => Projectile.ai[0];
@@ -194,7 +193,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         private int MarkedType => (int)Projectile.ai[2];
         private float Progress => MathHelper.Clamp((Lifetime - Projectile.timeLeft) / (float)ExpandFrames, 0f, 1f);
 
-        /// <summary>标记目标仍有效：槽位未被复用（whoAmI 可能在目标死亡后指向新 NPC，用 type 双重校验）</summary>
+        /// <summary>标记目标有效，whoAmI+type 双校验防槽复用</summary>
         private bool TryGetMarkedNPC(out NPC npc) {
             npc = null;
             if (MarkedIndex < 0 || MarkedIndex >= Main.maxNPCs) return false;
@@ -220,15 +219,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override bool ShouldUpdatePosition() => false;
 
-        /// <summary>重锤只砸被凿满的那一个目标，与范围爆破类改件明确区分</summary>
+        /// <summary>只砸被凿满的那一个</summary>
         public override bool? CanHitNPC(NPC target)
             => target.whoAmI == MarkedIndex && target.type == MarkedType ? null : false;
 
-        /// <summary>伤害窗口只在落锤前几帧，其后是纯余波演出</summary>
+        /// <summary>伤害窗口仅落锤前几帧</summary>
         public override bool? CanDamage() => Projectile.timeLeft > Lifetime - DamageWindow ? null : false;
 
         public override void AI() {
-            //贯体：冲击环钉在目标身上随其移动
+            //冲击环钉目标
             if (TryGetMarkedNPC(out NPC npc)) {
                 Projectile.Center = npc.Center;
             }
@@ -236,11 +235,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
                 if (Main.netMode != NetmodeID.Server) {
-                    //厚重落锤：闷响垫底 + 铁砧金属高频
+                    //落锤双层音
                     SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.95f, Pitch = -0.3f }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.65f, Pitch = -0.45f }, Projectile.Center);
                     SpawnImpactParticles();
-                    //屏震随本地玩家与爆点距离线性衰减，远处旁观者不吃满幅震动
+                    //屏震距衰
                     float falloff = 1f - MathHelper.Clamp(Main.LocalPlayer.Distance(Projectile.Center) / ShakeFalloffDist, 0f, 1f);
                     SHPCNaturalFx.Shake(MaulShake * falloff);
                 }
@@ -251,7 +250,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         private void SpawnImpactParticles() {
             Vector2 dir = StrikeRotation.ToRotationVector2();
-            //贯穿向白热剥片喷泉：沿打击方向锥形喷出，重力坠落
+            //贯穿向剥片喷泉
             for (int i = 0; i < 14; i++) {
                 Vector2 vel = dir.RotatedBy(Main.rand.NextFloat(-0.85f, 0.85f)) * Main.rand.NextFloat(4f, 12f)
                     + new Vector2(0f, Main.rand.NextFloat(-3f, -1f));
@@ -259,14 +258,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     HeavyBarrelModule.HotColor, Main.rand.NextFloat(0.7f, 1.3f))
                     ?.Configure(HeavyBarrelModule.IronColor, Main.rand.Next(26, 46));
             }
-            //反冲侧少量碎屑，保证爆点四周都有金属质感
+            //反冲侧碎屑
             for (int i = 0; i < 6; i++) {
                 Vector2 vel = (-dir).RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f)) * Main.rand.NextFloat(2f, 6f);
                 PRTLoader.NewParticle<PRT_SHPCHeavySpall>(Projectile.Center, vel,
                     HeavyBarrelModule.EmberColor, Main.rand.NextFloat(0.5f, 0.9f))
                     ?.Configure(HeavyBarrelModule.IronColor, Main.rand.Next(18, 32));
             }
-            //双层脉冲环：白热快环 + 灼铁慢环
+            //双层脉冲环
             PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
                 new Color(255, 236, 200, 0), 0.05f)?.Configure(0.05f, 0.5f, 20);
             PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
@@ -274,13 +273,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            //贯体重锤必定爆击，击退沿贯穿方向
+            //强制暴击，击退沿贯穿
             modifiers.SetCrit();
             modifiers.HitDirectionOverride = StrikeRotation.ToRotationVector2().X >= 0f ? 1 : -1;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //落锤即破甲：为下一轮凿击垫高收益，闭合循环
+            //落锤破甲
             if (target.TryGetGlobalNPC(out SHPCHeavyGougeNPC gouge)) {
                 gouge.SunderTime = Math.Max(gouge.SunderTime, HeavyBarrelModule.SunderDurationTicks);
             }

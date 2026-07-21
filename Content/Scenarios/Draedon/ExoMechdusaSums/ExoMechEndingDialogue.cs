@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
 
         public override void SetStaticDefaults() {
 
-            //结束对话(对应原游戏的 DraedonEndText 系列)
+            //对应原版 DraedonEndText
             EndLine1 = this.GetLocalization(nameof(EndLine1), () => "一个未知因素——你，是一个特异点");
             EndLine2 = this.GetLocalization(nameof(EndLine2), () => "你对这片大地和它的历史而言，只是外来之人，就和我一样");
             EndLine3 = this.GetLocalization(nameof(EndLine3), () => "......很抱歉，但在看了这样一场\"展示\"之后，我必须得离开一小会儿去整理我的思绪");
@@ -35,7 +35,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
             EndLine8 = this.GetLocalization(nameof(EndLine8), () => "但你过去也成功过，所以你最后会找到办法的");
             EndLine9 = this.GetLocalization(nameof(EndLine9), () => "我必须尊重并承认你的胜利，但现在，我得把注意力放回到我的机械上了");
 
-            //击杀尝试对话
             KillAttemptLine = this.GetLocalization(nameof(KillAttemptLine), () => "......你的行为没什么必要");
         }
 
@@ -60,7 +59,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
         protected override void OnCompleted() {
             DraedonEffect.IsActive = false;
             DraedonEffect.Send();
-            //本场景由 DraedonTriggerService 手动 Begin,策略回调只在调度器路径生效,完成标记须落在本重写
+            //手动Begin不触发策略回调,完成标记写这里
             DraedonStorySync.WriteDraedon(d => d.ExoMechEndingDialogue = true, d => d.ExoMechEndingDialogue = true);
         }
 

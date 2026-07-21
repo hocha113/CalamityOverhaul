@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     if (hungryProj >= 0 && hungryProj < Main.maxProjectiles) {
                         ActiveHungries.Add(hungryProj);
 
-                        //显形收束:血珠倒吸+内收暗环, 本体端负责撑开
+                        //显形收束,血珠倒吸+内收暗环
                         FishHungerVFX.SummonConverge(spawnPos);
 
                         //恶鬼召唤音效:肉响+湿滑挤出
@@ -94,12 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 恶鬼伴随弹幕。<br/>
-    /// 视觉身份：血肉饿鬼（湿肉捕食者），生命周期 = 血珠倒吸成形（禁 pop-in）→
-    /// 待机蠕动/垂涎（躁动幅度∝包群饱和度）→ 蓄力后撤+充血 → 复合加速扑咬 →
-    /// 咬合定帧+血沫+拉锯 → 生命尾段瘪缩渗血 → 塌散成碎肉（aftermath 活得比本体久）
-    /// </summary>
+    /// <summary>恶鬼伴随弹幕</summary>
     internal class HungryCompanionProjectile : ModProjectile
     {
         public override string Texture => "Terraria/Images/NPC_" + NPCID.TheHungryII;
@@ -107,10 +102,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //状态机
         private enum HungryState
         {
-            Idle,           //待机：围绕玩家漂浮
-            FollowPlayer,   //跟随：跟随玩家移动
-            Attacking,      //攻击：冲向目标
-            Returning       //返回：攻击后返回玩家附近
+            Idle,           //待机，围绕玩家漂浮
+            FollowPlayer,   //跟随，跟随玩家移动
+            Attacking,      //攻击，冲向目标
+            Returning       //返回，攻击后返回玩家附近
         }
 
         private HungryState State {
@@ -185,7 +180,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             attackTarget = reader.ReadVector2();
         }
 
-        /// <summary>成形完成前不咬人：半凝的血肉没有咬合力</summary>
+        /// <summary>成形完成前不咬人</summary>
         public override bool? CanDamage() => materializeT < 1f ? false : null;
 
         public override void AI() {
@@ -317,9 +312,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private Vector2 MouthPos => Projectile.Center + facing.ToRotationVector2() * 10f * Projectile.scale;
 
-        /// <summary>
-        /// 命令恶鬼攻击目标
-        /// </summary>
+        /// <summary>命令恶鬼攻击目标</summary>
         public void CommandAttack(Vector2 target) {
             attackTarget = target;
             hasAttackTarget = true;
@@ -333,9 +326,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             FishHungerVFX.ChargeSuction(MouthPos);
         }
 
-        /// <summary>
-        /// 待机状态：围绕玩家漂浮
-        /// </summary>
+        /// <summary>待机状态</summary>
         private void IdleAI(Player owner) {
             //计算理想位置:轨道半径带呼吸涨落, 饥饿时越游越急
             idleAngle += 0.02f + hungerT * 0.012f;
@@ -361,9 +352,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 跟随状态：快速跟上玩家
-        /// </summary>
+        /// <summary>跟随状态</summary>
         private void FollowPlayerAI(Player owner) {
             Vector2 toOwner = owner.Center - Projectile.Center;
             float distance = toOwner.Length();
@@ -384,9 +373,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 攻击状态：冲向目标
-        /// </summary>
+        /// <summary>攻击状态</summary>
         private void AttackingAI(Player owner) {
             if (!hasAttackTarget) {
                 State = HungryState.Returning;
@@ -396,7 +383,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             float attackProgress = StateTimer / 60f;
 
-            //前20帧：蓄力
+            //前20帧，蓄力
             if (StateTimer < 20) {
                 //后退蓄力
                 Vector2 toTarget = (attackTarget - Projectile.Center).SafeNormalize(Vector2.Zero);
@@ -407,7 +394,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     FishHungerVFX.Drool(MouthPos, toTarget);
                 }
             }
-            //20-40帧：扑咬冲刺, 复合加速(越冲越快, 拉伸随速度增长)
+            //20-40帧
             else if (StateTimer < 40) {
                 float rushT = (StateTimer - 20f) / 20f;
                 Vector2 toTarget = (attackTarget - Projectile.Center).SafeNormalize(Vector2.Zero);
@@ -431,7 +418,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     }, Projectile.Center);
                 }
             }
-            //40帧后：减速并返回
+            //40帧后，减速并返回
             else {
                 Projectile.velocity *= 0.95f;
 
@@ -443,9 +430,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 返回状态：攻击后返回玩家附近
-        /// </summary>
+        /// <summary>返回状态</summary>
         private void ReturningAI(Player owner) {
             Vector2 returnPos = owner.Center + idleAngle.ToRotationVector2() * idleRadius;
             Vector2 toReturn = returnPos - Projectile.Center;
@@ -462,7 +447,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>动画帧 tick：饥饿与攻击节奏驱动咀嚼速度</summary>
+        /// <summary>动画帧 tick，饥饿与攻击节奏驱动咀嚼速度</summary>
         private void UpdateAnimation() {
             int speed = State == HungryState.Attacking
                 ? (StateTimer < 20 ? 2 : 3)
@@ -487,7 +472,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             squashStretch = MathHelper.Lerp(squashStretch, 1f + breathScale, 0.2f);
         }
 
-        /// <summary>朝向平滑：嘴指向随状态收敛，禁瞬时甩头</summary>
+        /// <summary>朝向平滑</summary>
         private void UpdateFacing() {
             float desired = facing;
             if (State == HungryState.Attacking) {
@@ -568,7 +553,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             formScale *= 1f - 0.26f * dissolveT;
             alpha *= MathHelper.Lerp(0.35f, 1f, materializeT) * (1f - 0.45f * dissolveT);
 
-            //躁动抖动只作用于绘制, 判定不动:蓄力期在饥饿基础上再加一层渐强
+            //躁动只改绘制,判定不动
             float windupBoost = State == HungryState.Attacking && StateTimer < 20 && bitePause <= 0
                 ? StateTimer / 20f * 2.6f : 0f;
             float amp = hungerT * 1.9f + windupBoost;
@@ -623,10 +608,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>
-        /// 触须蠕动：三条像素段链肉须锚在尾侧，相位沿体节传递+鞭梢包络；
-        /// 蓄力僵直高频颤、冲刺顺流后摆、尖端收细转暗（禁平滑收口的贴纸感）
-        /// </summary>
+        /// <summary>触须蠕动</summary>
         private void DrawTentacles(SpriteBatch sb, Vector2 drawPos, Color lightColor, float alpha, float formScale) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle src = new(0, 0, 1, 1);

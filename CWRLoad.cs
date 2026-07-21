@@ -11,153 +11,75 @@ namespace CalamityOverhaul
     public static class CWRLoad
     {
         #region Boss/蠕虫体节列表
-        /// <summary>
-        /// 灾坟虫
-        /// </summary>
+        /// <summary>灾坟虫</summary>
         public static List<int> SepulcherSegments;
-        /// <summary>
-        /// 风暴编织者
-        /// </summary>
+        /// <summary>风暴编织者</summary>
         public static List<int> StormWeaverSegments;
-        /// <summary>
-        /// 幻海妖龙
-        /// </summary>
+        /// <summary>幻海妖龙</summary>
         public static List<int> PrimordialWyrmSegments;
-        /// <summary>
-        /// 血肉蠕虫（大）
-        /// </summary>
+        /// <summary>血肉蠕虫（大）</summary>
         public static List<int> PerforatorLargeSegments;
-        /// <summary>
-        /// 血肉蠕虫（中）
-        /// </summary>
+        /// <summary>血肉蠕虫（中）</summary>
         public static List<int> PerforatorMediumSegments;
-        /// <summary>
-        /// 装甲掘地虫
-        /// </summary>
+        /// <summary>装甲掘地虫</summary>
         public static List<int> ArmoredDiggerSegments;
-        /// <summary>
-        /// 星流巨械（全部件）
-        /// </summary>
+        /// <summary>星流巨械（全部件）</summary>
         public static List<int> ExoMechSegments;
-        /// <summary>
-        /// 星流巨械（Ares部件）
-        /// </summary>
+        /// <summary>星流巨械（Ares部件）</summary>
         public static List<int> ExoMechAresSegments;
-        /// <summary>
-        /// 神明吞噬者
-        /// </summary>
+        /// <summary>神明吞噬者</summary>
         public static List<int> DevourerofGodsSegments;
-        /// <summary>
-        /// 荒漠灾虫
-        /// </summary>
+        /// <summary>荒漠灾虫</summary>
         public static List<int> DesertScourgeSegments;
-        /// <summary>
-        /// 星神游龙
-        /// </summary>
+        /// <summary>星神游龙</summary>
         public static List<int> AstrumDeusSegments;
-        /// <summary>
-        /// 渊海灾虫
-        /// </summary>
+        /// <summary>渊海灾虫</summary>
         public static List<int> AquaticScourgeSegments;
-        /// <summary>
-        /// 幻海妖龙幼年体
-        /// </summary>
+        /// <summary>幻海妖龙幼年体</summary>
         public static List<int> EidolonWyrmSegments;
-        /// <summary>
-        /// 月球领主
-        /// </summary>
+        /// <summary>月球领主</summary>
         public static List<int> MoonLordSegments;
-        /// <summary>
-        /// 世界吞噬者
-        /// </summary>
+        /// <summary>世界吞噬者</summary>
         public static List<int> EaterofWorldsSegments;
-        /// <summary>
-        /// 毁灭者
-        /// </summary>
+        /// <summary>毁灭者</summary>
         public static List<int> DestroyerSegments;
-        /// <summary>
-        /// 毁灭魔像
-        /// </summary>
+        /// <summary>毁灭魔像</summary>
         public static List<int> RavagerSegments;
-        /// <summary>
-        /// 血肉蠕虫（小）
-        /// </summary>
+        /// <summary>血肉蠕虫（小）</summary>
         public static List<int> PerforatorSmallSegments;
-        /// <summary>
-        /// 石巨人（本体/头/双拳无 realLife 链接，全靠类型表归组）
-        /// </summary>
+        /// <summary>石巨人(无 realLife，靠类型表)</summary>
         public static List<int> GolemSegments;
-        /// <summary>
-        /// 骷髅王（头+双手）
-        /// </summary>
+        /// <summary>骷髅王（头+双手）</summary>
         public static List<int> SkeletronSegments;
-        /// <summary>
-        /// 机械骷髅王（头+四臂）
-        /// </summary>
+        /// <summary>机械骷髅王（头+四臂）</summary>
         public static List<int> SkeletronPrimeSegments;
-        /// <summary>
-        /// 所有Boss/蠕虫体节列表的集合，批量检查
-        /// </summary>
+        /// <summary>全部体节表</summary>
         public static List<List<int>> AllBossSegmentLists { get; private set; }
-        /// <summary>
-        /// 蠕虫类体节ID集合
-        /// </summary>
+        /// <summary>蠕虫体节</summary>
         public static int[] WormBodys { get; private set; }
         #endregion
 
         #region 物品属性映射
-        /// <summary>
-        /// 关于哪些物品应该被设置为64的最大堆叠数
-        /// </summary>
+        /// <summary>堆叠上限 64</summary>
         public static int[] AddMaxStackItemsIn64 { get; private set; } = [];
-        /// <summary>
-        /// 物块对应掉落物的词典
-        /// </summary>
+        /// <summary>物块→掉落</summary>
         public static Dictionary<int, int> TileToItem { get; private set; } = [];
-        /// <summary>
-        /// 墙体对应掉落物的词典
-        /// </summary>
+        /// <summary>墙→掉落</summary>
         public static Dictionary<int, int> WallToItem { get; private set; } = [];
-        /// <summary>
-        /// 该物品是否是一把枪械
-        /// </summary>
         internal static Dictionary<int, bool> ItemIsGun { get; private set; } = [];
-        /// <summary>
-        /// 该物品是否是一把霰弹枪
-        /// </summary>
         internal static Dictionary<int, bool> ItemIsShotgun { get; private set; } = [];
-        /// <summary>
-        /// 该物品是否是一个弓
-        /// </summary>
         internal static Dictionary<int, bool> ItemIsBow { get; private set; } = [];
-        /// <summary>
-        /// 该物品是否是一个十字弩
-        /// </summary>
         internal static Dictionary<int, bool> ItemIsCrossBow { get; private set; } = [];
-        /// <summary>
-        /// 该物品是否是一个基本的远程类
-        /// </summary>
         internal static Dictionary<int, bool> ItemIsRanged { get; private set; } = [];
-        /// <summary>
-        /// 该物品是否是一个基本的远程类，并且可以右键开火使用
-        /// </summary>
         internal static Dictionary<int, bool> ItemIsRangedAndCanRightClickFire { get; private set; } = [];
-        /// <summary>
-        /// 获取一个弓类的箭族数量
-        /// </summary>
         internal static Dictionary<int, int> ItemIsBowAndArrowNum { get; private set; } = [];
-        /// <summary>
-        /// 该枪械是否必定消耗弹药
-        /// </summary>
         internal static Dictionary<int, bool> ItemIsGunAndMustConsumeAmmunition { get; private set; } = [];
         #endregion
 
         #region NPC/弹幕属性
         public static class NPCValue
         {
-            /// <summary>
-            /// 是否免疫冻结
-            /// </summary>
+            /// <summary>免疫冻结</summary>
             public readonly static Dictionary<int, bool> ImmuneFrozen = [];
 
             private static readonly HashSet<int> _nonSteelBossTypes = [
@@ -175,9 +97,7 @@ namespace CalamityOverhaul
                 SoundID.NPCHit54,
             ];
 
-            /// <summary>
-            /// 判断NPC是否为金属材质（根据受击音效和特定Boss类型判断）
-            /// </summary>
+            /// <summary>金属材质(HitSound/黑名单)</summary>
             public static bool ISTheofSteel(NPC npc) {
                 if (_nonSteelBossTypes.Contains(npc.type)) {
                     return false;
@@ -191,9 +111,7 @@ namespace CalamityOverhaul
 
         public static class ProjValue
         {
-            /// <summary>
-            /// 是否免疫冻结
-            /// </summary>
+            /// <summary>免疫冻结</summary>
             public readonly static Dictionary<int, bool> ImmuneFrozen = [];
         }
         #endregion
@@ -304,9 +222,7 @@ namespace CalamityOverhaul
             PopulateHeldGunData();
         }
 
-        /// <summary>
-        /// 手持武器不使用 heldProjType 绑定，扫描 <see cref="BaseHeldGun"/> 子类按 TargetID 反向登记
-        /// </summary>
+        /// <summary>无 heldProjType 时扫 BaseHeldGun 按 TargetID 登记</summary>
         private static void PopulateHeldGunData() {
             foreach (BaseHeldGun heldGun in VaultUtils.GetDerivedInstances<BaseHeldGun>()) {
                 int itemType = heldGun.TargetID;
@@ -390,9 +306,7 @@ namespace CalamityOverhaul
             [ItemID.MiniNukeII] = ProjectileID.MiniNukeRocketII,
         };
 
-        /// <summary>
-        /// 修改一些原弹药设定异常的物品的shoot值
-        /// </summary>
+        /// <summary>修正异常弹药 shoot</summary>
         public static void SetAmmoItem(Item ammoItem) {
             if (_ammoShootOverrides.TryGetValue(ammoItem.type, out int shootType)) {
                 ammoItem.shoot = shootType;

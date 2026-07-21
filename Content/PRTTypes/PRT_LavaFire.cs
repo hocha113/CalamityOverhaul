@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             SetLifetime(minLifeTime, maxLifeTime);
         }
 
-        //在 NewParticle 返回后调用，覆盖 SetProperty 中已计算的默认寿命
+        //NewParticle 后调用，覆盖 SetProperty 默认寿命
         public PRT_LavaFire SetLifetime(int minLife, int maxLife) {
             minLifeTime = minLife;
             maxLifeTime = maxLife;

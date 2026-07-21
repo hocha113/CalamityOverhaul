@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>轻量枪托：主光束拖 2 节轨迹光链，各 40% 独立伤害</summary>
+    /// <summary>轻量枪托，主光束拖 2 节光链，各 40% 伤</summary>
     internal sealed class LightStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;
@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             if (beam.IsDerived || beam.Projectile.owner != Main.myPlayer) return;
             if (!linkedBeams.Add(beam.Projectile.whoAmI)) return;
 
-            //为新生光束挂载 2 节链节：滞后 12 / 24 帧位
+            //挂 2 节，滞后 12/24 帧
             int dmg = Math.Max((int)(beam.Projectile.damage * 0.4f), 1);
             for (int i = 1; i <= 2; i++) {
                 Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
@@ -49,12 +49,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
     }
 
-    /// <summary>光链子节：沿父束 oldPos 滞后爬行，父束消亡后惯性散链</summary>
+    /// <summary>光链子节，沿父束 oldPos 滞后，父亡惯性散链</summary>
     internal sealed class SHPCBeamSegmentProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        //三种主题近似色（蓝/黄/青），与 CyberTraceBeamProj 的主题索引对应
+        //主题色对齐 CyberTraceBeamProj 索引
         private static readonly Color[] ThemeMain = [
             new Color(110, 180, 255),
             new Color(255, 215, 110),
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 && parent.ModProjectile is CyberTraceBeamProj;
 
             if (parentValid) {
-                //从父束轨迹缓存取滞后位置；缓存未填充时退回父束当前位置
+                //父束 oldPos 滞后，未填则用当前位置
                 int lag = Math.Clamp(LagFrames, 0, parent.oldPos.Length - 1);
                 Vector2 raw = parent.oldPos[lag];
                 Vector2 targetPos = raw == Vector2.Zero ? parent.Center : raw + parent.Size * 0.5f;
@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 fadeAlpha = MathF.Min(fadeAlpha + 0.1f, 1f);
             }
             else {
-                //父束消亡：惯性散链 18 帧后熄灭
+                //父亡，惯性散链 18 帧
                 if (!orphaned) {
                     orphaned = true;
                     Projectile.timeLeft = 18;
@@ -158,7 +158,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                     glow.Size() * 0.5f, 0.34f, SpriteEffects.None, 0f);
             }
             if (white != null) {
-                //节体：沿行进方向拉长的胶囊状光块，越靠后的节越小
+                //节体胶囊光块，后节更小
                 float bodyLen = LagFrames > 12 ? 16f : 20f;
                 spriteBatch.Draw(white, drawPos, null, main * fadeAlpha * 0.95f,
                     Projectile.rotation, new Vector2(0.5f, 0.5f), new Vector2(bodyLen, 7f), SpriteEffects.None, 0f);

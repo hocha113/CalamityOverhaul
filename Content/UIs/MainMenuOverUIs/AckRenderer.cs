@@ -7,10 +7,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
-    /// <summary>
-    /// ED 致谢界面的矢量绘制层：1 像素白纹理 + 参数化线/弧/辉光 + 着色器背板。
-    /// 背景走 AckBackdrop.fx / AckFinale.fx，缺失时回退 CPU 暗色绘制；结构参考 HalibutRenderer
-    /// </summary>
+    /// <summary>致谢 ED 矢量绘制；背景 Ack*.fx，缺则 CPU</summary>
     internal static class AckRenderer
     {
         public static Texture2D Pixel => VaultAsset.placeholder2.Value;
@@ -29,7 +26,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 new Vector2(0f, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0f);
         }
 
-        /// <summary>三层叠加模拟辉光的直线段</summary>
+        /// <summary>三层辉光直线</summary>
         public static void DrawGlowLine(SpriteBatch sb, Vector2 start, Vector2 end, float thickness, Color color) {
             DrawLine(sb, start, end, thickness + 3.5f, color * 0.16f);
             DrawLine(sb, start, end, thickness + 1.4f, color * 0.42f);
@@ -54,7 +51,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
         }
 
-        /// <summary>用径向线段填充环形扇区，自适应分段无缝拼接</summary>
+        /// <summary>径向线段填环形扇区</summary>
         public static void DrawArc(SpriteBatch sb, Vector2 center,
             float rIn, float rOut, float aStart, float aEnd, Color color) {
             if (aEnd <= aStart) {
@@ -71,7 +68,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
         }
 
-        /// <summary>程序化软边圆盘</summary>
+        /// <summary>软边圆盘</summary>
         public static void DrawDisc(SpriteBatch sb, Vector2 center, float radius, float softPad, Color color) {
             if (radius <= 0f) {
                 return;
@@ -89,13 +86,13 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
         }
 
-        /// <summary>旋转 45° 的菱形点饰</summary>
+        /// <summary>45°菱形点饰</summary>
         public static void DrawDiamond(SpriteBatch sb, Vector2 center, float size, Color color) {
             sb.Draw(Pixel, center, new Rectangle(0, 0, 1, 1), color, MathHelper.PiOver4,
                 new Vector2(0.5f, 0.5f), new Vector2(size, size), SpriteEffects.None, 0f);
         }
 
-        /// <summary>L 形角括号（明日方舟取景框母题），dir 决定开口朝向象限</summary>
+        /// <summary>L形角括号，dir 定开口象限</summary>
         public static void DrawBracket(SpriteBatch sb, Vector2 corner, float armLen, float thickness,
             int dirX, int dirY, Color color) {
             DrawLine(sb, corner, corner + new Vector2(dirX * armLen, 0f), thickness, color);
@@ -104,7 +101,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         #endregion
 
         #region 文字
-        /// <summary>四向辉光描边文字</summary>
+        /// <summary>四向辉光描边字</summary>
         public static void DrawGlowText(SpriteBatch sb, string text, Vector2 pos,
             Color textColor, Color glowColor, float scale, float glowRadius = 1.4f) {
             if (string.IsNullOrEmpty(text)) {
@@ -127,7 +124,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             return size;
         }
 
-        /// <summary>字距拉开的文字（用于拉丁文小标签的留白质感），返回总宽度</summary>
+        /// <summary>字距拉开，返回总宽</summary>
         public static float DrawTrackedText(SpriteBatch sb, string text, Vector2 pos,
             Color color, float scale, float tracking) {
             if (string.IsNullOrEmpty(text)) {
@@ -155,7 +152,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         #endregion
 
         #region 组合元素
-        /// <summary>角色的拉丁文副标签，营造方舟式中英双行的留白感</summary>
+        /// <summary>角色拉丁副标签</summary>
         public static string RoleTag(CreditRole role) => role switch {
             CreditRole.Artist => "ARTIST",
             CreditRole.CodeAssistance => "CODE ASSISTANCE",
@@ -164,11 +161,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             _ => "DONORS",
         };
 
-        /// <summary>
-        /// 分节标题，自上而下三层互不重叠：
-        /// 元信息小行（竖纹 + 序号/总数 + 拉丁标签） → 大号角色名（清晰描边，无彩色偏移辉光） → 全宽分割线。
-        /// 分割线在文字下方独占一行，线上的菱形与游走高光不会被任何元素遮挡
-        /// </summary>
+        /// <summary>分节标题，元信息→角色名→分割线(含游走高光)</summary>
         public static void DrawSectionHeader(SpriteBatch sb, int index, int total, CreditRole role,
             string headerText, float leftX, float headerTop, float headerHeight, float contentRight,
             float alpha, float reveal, float time) {
@@ -195,14 +188,14 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             Utils.DrawBorderString(sb, headerText, new Vector2(leftX, nameY), nameCol * alpha, nameScale);
             float nameH = Font.MeasureString(headerText).Y * nameScale;
 
-            //全宽分割线，文字之下独占一行
+            //全宽分割线
             float lineY = nameY + nameH + 8f;
             float curLen = MathF.Max(0f, contentRight - leftX) * AckTheme.EaseOutQuint(reveal);
             if (curLen > 6f) {
                 DrawDiamond(sb, new Vector2(leftX, lineY), 5f, roleCol * (alpha * 0.95f));
                 DrawGradientLine(sb, new Vector2(leftX + 7f, lineY), new Vector2(leftX + curLen, lineY),
                     roleCol * (alpha * 0.65f), roleCol * (alpha * 0.02f), 1.5f);
-                //沿线游走的高光段（清晰线段，非像素堆叠辉光）
+                //沿线游走高光
                 float travel = (time * 0.12f + index * 0.27f) % 1f;
                 float hx = leftX + 7f + travel * MathF.Max(0f, curLen - 14f);
                 DrawLine(sb, new Vector2(hx - 7f, lineY), new Vector2(hx + 7f, lineY),
@@ -210,7 +203,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
         }
 
-        /// <summary>单列名字行：左侧细引导点 + 名字</summary>
+        /// <summary>单列名字行</summary>
         public static void DrawName(SpriteBatch sb, string name, Vector2 pos, Color baseColor, float alpha, float scale) {
             if (alpha < 0.01f) {
                 return;
@@ -219,7 +212,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             Utils.DrawBorderString(sb, name, pos + new Vector2(14f, 0f), baseColor * alpha, scale);
         }
 
-        /// <summary>居中名字（捐赠者网格单元），超过 maxWidth 时按比例缩小以免越列重叠</summary>
+        /// <summary>捐赠者网格居中名，超宽按比例缩</summary>
         public static void DrawNameCentered(SpriteBatch sb, string name, Vector2 center,
             Color baseColor, float alpha, float scale, float maxWidth = 0f) {
             if (alpha < 0.01f) {
@@ -234,7 +227,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             Utils.DrawBorderString(sb, name, center - size * 0.5f, baseColor * alpha, s);
         }
 
-        /// <summary>展示级居中文字：着色器辉光球作底 + 清晰描边正文（替代彩色偏移辉光的拼接观感）</summary>
+        /// <summary>展示字，辉光球底+描边正文</summary>
         public static void DrawDisplayText(SpriteBatch sb, string text, Vector2 center,
             Color textColor, Color glowColor, float scale, float glowAlpha) {
             if (string.IsNullOrEmpty(text)) {
@@ -247,7 +240,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             Utils.DrawBorderString(sb, text, center - size * 0.5f, textColor, scale);
         }
 
-        /// <summary>标志绘制：着色器软辉光作底 + 本体</summary>
+        /// <summary>标志，软辉光底+本体</summary>
         public static void DrawLogo(SpriteBatch sb, Texture2D logo, Vector2 center, float scale, float alpha, Color glow) {
             if (logo == null) {
                 return;
@@ -257,7 +250,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             sb.Draw(logo, center, null, Color.White * alpha, 0f, origin, scale, SpriteEffects.None, 0f);
         }
 
-        /// <summary>屏幕四角取景括号 + 上下边中点刻度，reveal 驱动入场</summary>
+        /// <summary>四角取景括号+边中刻度，reveal 驱动</summary>
         public static void DrawScreenFrame(SpriteBatch sb, float screenW, float screenH, float alpha, float reveal, float time) {
             float ease = AckTheme.EaseOutCubic(reveal);
             float m = 30f;
@@ -269,7 +262,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             DrawBracket(sb, new Vector2(m, screenH - m), arm, th, 1, -1, col);
             DrawBracket(sb, new Vector2(screenW - m, screenH - m), arm, th, -1, -1, col);
 
-            //上下边中点的呼吸刻度
+            //上下边中点呼吸刻度
             float breath = 0.5f + 0.5f * MathF.Sin(time * 1.6f);
             float tick = 7f * ease;
             Color tickCol = AckTheme.AccentHi * (alpha * (0.3f + breath * 0.3f));
@@ -279,7 +272,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         #endregion
 
         #region 着色器背板
-        /// <summary>用 AckBackdrop.fx 绘制全屏 ED 氛围背景；缺失时回退 CPU 纵向渐变 + 暗角</summary>
+        /// <summary>AckBackdrop 全屏背景，缺则 CPU 渐变+暗角</summary>
         public static void DrawBackdrop(SpriteBatch sb, Rectangle rect, float alpha, float progress, Color accent) {
             if (rect.Width < 4 || rect.Height < 4 || alpha < 0.01f) {
                 return;
@@ -318,7 +311,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
         }
 
-        /// <summary>用 AckFinale.fx 绘制谢幕辉光场；缺失时回退 CPU 同心柔光</summary>
+        /// <summary>AckFinale 谢幕辉光，缺则 CPU 同心柔光</summary>
         public static void DrawFinaleAura(SpriteBatch sb, Vector2 center, float radius,
             float alpha, float intensity, Color accent) {
             if (radius < 2f || alpha < 0.01f) {
@@ -342,7 +335,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             ShaderQuad(sb, effect, rect);
         }
 
-        /// <summary>用 AckGlow.fx 绘制软径向辉光球；缺失时回退 CPU 同心柔光</summary>
+        /// <summary>AckGlow 软辉光球，缺则 CPU</summary>
         public static void DrawGlowOrb(SpriteBatch sb, Vector2 center, float radius, Color color, float alpha, float falloff = 2.4f) {
             if (radius < 1f || alpha < 0.01f) {
                 return;
@@ -362,7 +355,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
         public static void DrawEffectQuad(SpriteBatch sb, Effect effect, Rectangle dest) => ShaderQuad(sb, effect, dest);
 
-        /// <summary>切到 Immediate 模式应用效果绘制四边形后恢复 Deferred</summary>
+        /// <summary>Immediate 画四边形后恢复 Deferred</summary>
         private static void ShaderQuad(SpriteBatch sb, Effect effect, Rectangle dest) {
             sb.End();
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,

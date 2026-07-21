@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Structures
 
             int wggCollectorTile = ModContent.TileType<WGGCollectorTile>();
 
-            //支撑地块，判底部稳定
+            //底部支撑
             int[] validGroundTiles = [
                 TileID.Stone, TileID.Mud, TileID.JungleGrass,
                 TileID.ClayBlock, TileID.Silt, TileID.Sandstone
@@ -66,12 +66,12 @@ namespace CalamityOverhaul.Content.Structures
 
             List<Point16> candidateSpots = new();
 
-            //收集所有可能放置的平地点
+            //收集平地点
             for (int x = minX; x < maxX - 2; x++) {
                 for (int y = minY; y < maxY - 4; y++) {
                     bool valid = true;
 
-                    //检查底部 3 个支撑块是否稳定
+                    //底 3 块支撑
                     for (int i = 0; i < 3; i++) {
                         Point16 bottom = new(x + i, y + 1);
                         if (!WorldGen.InWorld(bottom.X, bottom.Y)) {
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Structures
                         continue;
                     }
 
-                    //3x5空区检查(建筑空间)
+                    //3x5 空区
                     for (int i = 0; i < 3; i++) {
                         for (int j = -4; j <= 0; j++) {
                             Point16 check = new(x + i, y + j);
@@ -117,12 +117,12 @@ namespace CalamityOverhaul.Content.Structures
                 }
             }
 
-            //稀疏性筛选，过滤靠得太近的点位
+            //稀疏筛选
             List<Point16> sparseFiltered = new();
             float distanceFactor = WorldGenDensitySave.GetDistanceFactor("WGGCollector");
             int minDistance = (int)(60 * distanceFactor); //曼哈顿距离最小值，受密度等级影响
 
-            Shuffle(candidateSpots); //打乱点位以避免集中排序偏差
+            Shuffle(candidateSpots); //打乱防排序扎堆
 
             foreach (var pos in candidateSpots) {
                 bool tooClose = false;
@@ -140,14 +140,14 @@ namespace CalamityOverhaul.Content.Structures
                 }
             }
 
-            //根据深度与地形做进一步筛选（丛林/深度优先）
+            //深度/丛林筛选
             List<Point16> finalSpots = new();
 
             foreach (var pos in sparseFiltered) {
                 Tile below = Framing.GetTileSafely(pos.X + 1, pos.Y + 1);
                 bool isJungle = below.TileType == TileID.Mud || below.TileType == TileID.JungleGrass;
 
-                //深度因子（越深越容易留下）
+                //越深越易留
                 float depth = (float)(pos.Y - minY) / (maxY - minY);
                 float keepChance = 0.1f + depth * 0.9f; //0.1 ~ 1.0
 
@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.Structures
                 }
             }
 
-            //最多保留的数量受密度等级影响
+            //上限跟密度
             float densityMultiplier = WorldGenDensitySave.GetMultiplier("WGGCollector");
             int maxCount = (int)(300 * densityMultiplier);
             if (maxCount <= 0) return;
@@ -169,9 +169,8 @@ namespace CalamityOverhaul.Content.Structures
                 finalSpots = finalSpots.Take(maxCount).ToList();
             }
 
-            //最后正式放置
+            //正式放置
             foreach (var pos in finalSpots) {
-                //清理区域
                 for (int i = 0; i < 3; i++) {
                     for (int j = -4; j <= 0; j++) {
                         Point16 clear = new(pos.X + i, pos.Y + j);
@@ -184,7 +183,7 @@ namespace CalamityOverhaul.Content.Structures
                     }
                 }
 
-                //放置拾荒者（偏移：原点(1,3)）
+                //拾荒者，原点偏移(1,3)
                 WorldGen.PlaceTile(pos.X + 1, pos.Y - 1, wggCollectorTile, mute: true);
             }
         }
@@ -234,11 +233,11 @@ namespace CalamityOverhaul.Content.Structures
                 dontFindByY = false;
             }
 
-            Point16 mainPos = scheduledPosList.Count == 0 ? default : scheduledPosList[0]; //初始化为第一个点
+            Point16 mainPos = scheduledPosList.Count == 0 ? default : scheduledPosList[0];
 
             foreach (var point in scheduledPosList) {
                 if (Math.Abs(point.X - asteroidCoreTopPoint2.X) < Math.Abs(mainPos.X - asteroidCoreTopPoint2.X)) {
-                    mainPos = point; //选择 X 轴距离更小的点
+                    mainPos = point; //取更近 X
                 }
             }
 
@@ -303,7 +302,6 @@ namespace CalamityOverhaul.Content.Structures
                 }
             }
 
-            //放置底座
             int laboratoryPipePlating = CWRID.Tile_LaboratoryPipePlating;
             for (int z = 0; z < 2; z++) {
                 for (int q = 0; q < 5; q++) {
@@ -315,9 +313,7 @@ namespace CalamityOverhaul.Content.Structures
                 }
             }
 
-            //找到实验室镀板
             int laboratoryPlating = CWRID.Tile_LaboratoryPlating;
-            //放置管道
             int uePipelineTile = ModContent.TileType<UEPipelineTile>();
             for (int y = 0; y < 55; y++) {
                 Point16 newPos = mainPos + new Point16(-3, y + maxExcavateY - 3);
@@ -335,7 +331,7 @@ namespace CalamityOverhaul.Content.Structures
                 }
             }
 
-            //我不太清除为什么要减3，一般来讲减2就够了，可能是因为建筑太大的原因吧
+            //减3 原因未清，建筑偏大？
             if (WorldGen.InWorld(mainPos.X, mainPos.Y + maxExcavateY - 3)) {
                 WorldGen.PlaceTile(mainPos.X, mainPos.Y + maxExcavateY - 3, ModContent.TileType<WGGMK2WildernessTile>());
             }

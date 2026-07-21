@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Narrative;
+using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.UIs.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,59 +20,52 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
         public static SupCalPortraitUI Instance => UIHandleLoader.GetUIHandleOfType<SupCalPortraitUI>();
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
 
-        /// <summary>立绘表情类型枚举</summary>
         private enum PortraitExpression
         {
-            Default,    // 默认表情
-            CloseEyes,  // 闭眼
-            Smile       // 微笑
+            Default,
+            CloseEyes,
+            Smile
         }
 
         private PortraitExpression _currentExpression = PortraitExpression.Default;
-        private bool _showFullPortrait = false; // 是否显示全身立绘
-        private float _portraitAlpha = 0f; // 立绘透明度
-        private float _transitionProgress = 0f; // 过渡进度
+        private bool _showFullPortrait = false;
+        private float _portraitAlpha = 0f;
+        private float _transitionProgress = 0f;
 
-        //动画计时器
         private float _flameTimer = 0f;
         private float _glowTimer = 0f;
 
-        //粒子系统
         private readonly List<EmberPRT> _embers = new();
         private readonly List<FlameWispPRT> _flameWisps = new();
         private int _emberSpawnTimer = 0;
         private int _wispSpawnTimer = 0;
 
-        //左侧立绘参数(半身大图,从腰部开始裁剪)
+        //左侧半身大图，腰部起裁
         private const float LeftPortraitXRatio = 0.14f;
         private const float LeftPortraitCropBottom = 0.5f;
 
-        //右侧立绘参数(全身小图)
+        //右侧全身小图
         private const float RightPortraitXRatio = 0.96f;
 
-        //立绘缩放相关
-        private float _leftPortraitScale = 2.0f;   // 左侧立绘缩放
-        private float _rightPortraitScale = 0.85f; // 右侧立绘缩放
-        private const float MinScale = 0.3f;       // 最小缩放
-        private const float MaxScale = 5.0f;       // 最大缩放
-        private const float ScaleStep = 0.05f;     // 缩放步进
-        private int _scaleKeyTimer = 0;            // 按键缩放计时器
-        private const int ScaleKeyDelay = 3;       // 按键缩放延迟(帧)
+        private float _leftPortraitScale = 2.0f;
+        private float _rightPortraitScale = 0.85f;
+        private const float MinScale = 0.3f;
+        private const float MaxScale = 5.0f;
+        private const float ScaleStep = 0.05f;
+        private int _scaleKeyTimer = 0;
+        private const int ScaleKeyDelay = 3;//按键缩放延迟帧
 
-        //立绘拖动相关
         private bool _draggingLeftPortrait = false;
         private bool _draggingRightPortrait = false;
-        private Vector2 _leftPortraitOffset = Vector2.Zero; // 左侧立绘偏移
-        private Vector2 _rightPortraitOffset = Vector2.Zero; // 右侧立绘偏移
+        private Vector2 _leftPortraitOffset = Vector2.Zero;
+        private Vector2 _rightPortraitOffset = Vector2.Zero;
         private Vector2 _dragStartMousePos = Vector2.Zero;
         private Vector2 _dragStartOffset = Vector2.Zero;
-        private const float MinVisibleSize = 80f; // 立绘在屏幕内的最小可见像素
+        private const float MinVisibleSize = 80f;//最小可见px
 
-        //表情切换按钮相关
         private const float ExpressionButtonSize = 30f;
         private float _expressionButtonAlpha = 0f;
 
-        //重写基类属性
         protected override Vector2 GetIconBasePosition() => new Vector2(
             Main.screenWidth / 2 - IconSize / 2 - IconSpacing / 2,
             Main.screenHeight - IconSize - IconBottomMargin
@@ -97,7 +90,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
         protected override Color GetHoverGlowColor() => new Color(255, 180, 80);
         protected override Color GetPulseColor() => new Color(120, 25, 15);
 
-        //表情切换按钮位置(在头像框右侧)
         private Vector2 ExpressionButtonPosition => new Vector2(
             IconPosition.X + ExpressionButtonSize / 2,
             IconPosition.Y - ExpressionButtonSize
@@ -110,7 +102,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
             (int)ExpressionButtonSize
         );
 
-        //左侧立绘点击区域
         private Rectangle LeftPortraitHitBox {
             get {
                 Texture2D portraitTex = GetCurrentPortraitTexture();
@@ -124,7 +115,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
             }
         }
 
-        //右侧立绘点击区域
         private Rectangle RightPortraitHitBox {
             get {
                 Texture2D portraitTex = GetCurrentPortraitTexture();
@@ -189,7 +179,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
             _leftPortraitScale = MenuSave.SupCal_LeftPortraitScale;
             _rightPortraitScale = MenuSave.SupCal_RightPortraitScale;
 
-            //确保缩放值在合法范围内
             _leftPortraitScale = Math.Clamp(_leftPortraitScale, MinScale, MaxScale);
             _rightPortraitScale = Math.Clamp(_rightPortraitScale, MinScale, MaxScale);
 
@@ -259,13 +248,11 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
             return basePos + _rightPortraitOffset;
         }
 
-        /// <summary>调整左侧立绘缩放</summary>
         private void AdjustLeftPortraitScale(float delta) {
             _leftPortraitScale = Math.Clamp(_leftPortraitScale + delta, MinScale, MaxScale);
             MarkNeedsSave();
         }
 
-        /// <summary>调整右侧立绘缩放</summary>
         private void AdjustRightPortraitScale(float delta) {
             _rightPortraitScale = Math.Clamp(_rightPortraitScale + delta, MinScale, MaxScale);
             MarkNeedsSave();
@@ -319,7 +306,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
             HandleAutoSave();
             UpdateIconAlpha();
 
-            //表情按钮渐入效果
             if (_showFullPortrait && _expressionButtonAlpha < 1f) {
                 _expressionButtonAlpha += 0.05f;
             }
@@ -327,7 +313,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
                 _expressionButtonAlpha -= 0.05f;
             }
 
-            //立绘过渡
             if (_showFullPortrait) {
                 if (_transitionProgress < 1f) {
                     _transitionProgress += 0.04f;
@@ -345,7 +330,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
                 }
             }
 
-            //动画计时器
+    
             _flameTimer += 0.045f;
             _glowTimer += 0.038f;
             UpdatePulseTimer();
@@ -411,7 +396,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
                 _rightPortraitOffset = _dragStartOffset + (MousePosition - _dragStartMousePos);
             }
 
-            //处理鼠标滚轮缩放
             if (_showFullPortrait && CanInteract()) {
                 int scrollDelta = PlayerInput.ScrollWheelDeltaForUI;
                 if (scrollDelta != 0) {
@@ -427,14 +411,12 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
             }
         }
 
-        /// <summary>更新键盘缩放输入</summary>
         private void UpdateScaleInput() {
             if (!_showFullPortrait || !CanInteract()) {
                 _scaleKeyTimer = 0;
                 return;
             }
 
-            //减少计时器
             if (_scaleKeyTimer > 0) {
                 _scaleKeyTimer--;
                 return;
@@ -443,7 +425,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
             bool hoverLeftPortrait = LeftPortraitHitBox.Contains(MousePosition.ToPoint());
             bool hoverRightPortrait = RightPortraitHitBox.Contains(MousePosition.ToPoint());
 
-            //加号键或等号键(+/=)增大
+            //+/=增大
             if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.OemPlus) ||
                 Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Add)) {
 
@@ -456,7 +438,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
                     _scaleKeyTimer = ScaleKeyDelay;
                 }
             }
-            //减号键(-)减小
+            //-减小
             else if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.OemMinus) ||
                      Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Subtract)) {
 
@@ -689,3 +671,4 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
         #endregion
     }
 }
+

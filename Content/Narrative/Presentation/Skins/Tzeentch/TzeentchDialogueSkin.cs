@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Tzeentch
                     draw = fullLine[..Math.Max(0, remaining)];
                 }
                 if (draw.Length > 0) {
-                    //极轻的现实流变抖动,呼应"变数"主题且不妨碍阅读
+                    //轻抖动
                     float wobble = (float)Math.Sin(_state.WarpTimer * 2.0f + i * 0.7f) * 0.7f;
                     Vector2 pos = new(context.TextRect.X + wobble, context.TextRect.Y + i * context.LineHeight);
                     Utils.DrawBorderString(spriteBatch, draw, pos, TextColor * context.Alpha, TextScale);

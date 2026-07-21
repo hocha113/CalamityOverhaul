@@ -5,7 +5,6 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Cyberwares.UIs
 {
-    /// <summary>数据流粒子，人体周围飘动</summary>
     internal class CyberDataParticle
     {
         public Vector2 Position;
@@ -24,7 +23,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             phase = Main.rand.NextFloat(MathHelper.TwoPi);
         }
 
-        /// <summary>粒子消亡返回 true</summary>
+        /// <summary>消亡返回 true</summary>
         public bool Update() {
             Life--;
             if (Life <= 0) return true;
@@ -46,13 +45,11 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         }
     }
 
-    /// <summary>数据流粒子系统</summary>
     internal class CyberDataParticleSystem
     {
         private readonly List<CyberDataParticle> particles = [];
         private int spawnTimer;
 
-        /// <summary>在 origin 周围生成并更新粒子</summary>
         public void Update(Vector2 origin, float openProgress) {
             spawnTimer++;
             if (spawnTimer >= 6 && particles.Count < 50 && openProgress > 0.5f) {
@@ -74,7 +71,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
         }
 
-        /// <summary>绘制活跃粒子</summary>
         public void Draw(SpriteBatch sb, float alpha) {
             foreach (var p in particles) {
                 p.Draw(sb, alpha);

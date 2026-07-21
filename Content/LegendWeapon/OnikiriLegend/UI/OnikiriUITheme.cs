@@ -3,29 +3,22 @@ using Terraria.GameInput;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
-    /// <summary>
-    /// 鬼切 UI 色板与几何常量。<br/>
-    /// 绯红家族(纸/墨/朱)为人间侧——刀、驭鬼者意志、簿与契；<br/>
-    /// 鬼火青为界面唯一冷色,专属于"鬼"——鬼影之眼与失控预兆；纸札焚烧则使用暖色火焰。<br/>
-    /// 驾驭度的拉锯直接用"朱红压青焰"讲
-    /// </summary>
+    /// <summary>鬼切 UI 色板与几何常量(绯红人间侧 / 鬼火青唯一冷色 / 焚烧暖焰)</summary>
     internal static class OnikiriUITheme
     {
         #region UI空间坐标（与调用语境无关）
-        //UIHandle 的 Update/Draw 运行在 InterfaceScaleType.UI 层内，此时 Main.screenWidth 已被
-        //除以 UIScale；但 ModPlayer.PostUpdate 等逻辑帧里它是原始后台缓冲尺寸。
-        //任何跨语境的布局计算都必须使用下面这组换算，禁止直接读 Main.screenWidth/Height
-        /// <summary>UI空间下的屏幕宽度（任何调用语境下取值一致）</summary>
+        //UI 层已除 UIScale,逻辑帧仍是后台缓冲;跨语境布局用下面换算,禁直接读 Main.screenWidth
+        /// <summary>UI 空间屏宽</summary>
         public static float UIScreenW => PlayerInput.RealScreenWidth / Main.UIScale;
-        /// <summary>UI空间下的屏幕高度（任何调用语境下取值一致）</summary>
+        /// <summary>UI 空间屏高</summary>
         public static float UIScreenH => PlayerInput.RealScreenHeight / Main.UIScale;
-        /// <summary>UI空间下的屏幕尺寸</summary>
+        /// <summary>UI 空间屏尺寸</summary>
         public static Vector2 UIScreenSize => new(UIScreenW, UIScreenH);
-        /// <summary>UI空间下的鼠标位置（任何调用语境下取值一致）</summary>
+        /// <summary>UI 空间鼠标</summary>
         public static Vector2 UIMouse => new Vector2(PlayerInput.MouseX, PlayerInput.MouseY) / Main.UIScale;
         #endregion
 
-        //====人间侧：纸墨绯红(LDR，与 CrimsonSlashRenderer 四色 HDR 同源)====
+        //====人间侧 纸墨绯红(LDR,与 CrimsonSlashRenderer HDR 同源)====
         /// <summary>和纸白，正文主色</summary>
         public static readonly Color Paper = new(242, 234, 222);
         /// <summary>白热，刀痕前芯/强调</summary>
@@ -40,15 +33,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static readonly Color Ink = new(24, 12, 15);
         /// <summary>朱印红，印章体</summary>
         public static readonly Color Seal = new(186, 32, 26);
-        /// <summary>纸札焚烧暗部：炭边外侧的暗红橙</summary>
+        /// <summary>焚烧暗部,炭边外暗红橙</summary>
         public static readonly Color BurnDim = new(184, 43, 12);
-        /// <summary>纸札焚烧高温芯：低蓝量的橙黄，避免过曝成银白</summary>
+        /// <summary>焚烧高温芯,低蓝橙黄防过曝银白</summary>
         public static readonly Color BurnHot = new(255, 196, 64);
 
-        //====鬼侧：鬼火青(界面唯一冷色)====
-        /// <summary>鬼火亮青：鬼影之眼/火苗芯</summary>
+        //====鬼侧 鬼火青(唯一冷色)====
+        /// <summary>鬼火亮青,眼/火苗芯</summary>
         public static readonly Color GhostFire = new(150, 226, 205);
-        /// <summary>鬼火暗青：焰裙/余烬</summary>
+        /// <summary>鬼火暗青,焰裙/余烬</summary>
         public static readonly Color GhostDim = new(62, 112, 104);
 
         //====文本====
@@ -73,7 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         #endregion
 
         #region 封印札 HUD 几何
-        /// <summary>HUD 绳结锚点：距屏幕左下角的偏移</summary>
+        /// <summary>HUD 绳结锚点,距左下角偏移</summary>
         public static readonly Vector2 HudAnchorOffset = new(64f, -168f);
         /// <summary>纸札宽</summary>
         public const float HudTalismanW = 34f;
@@ -103,7 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public const float HudVigorQuadH = 50f;
         /// <summary>笔画两端在 quad 内的横向留白(与 OniVigorInk.fx 的 padL/padR 同值)</summary>
         public const float HudVigorPad = 10f;
-        /// <summary>气力墨脉形状种子:会话内恒定,笔形不逐帧变形——读数才可信</summary>
+        /// <summary>墨脉形状种子,会话内恒定</summary>
         public const float HudVigorSeed = 7.31f;
         #endregion
 
@@ -119,11 +112,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         #endregion
 
         #region 架势鞘刀 HUD 几何
-        //构图纪律:柄头与气力墨脉的朱印同踩一条左轨,锋尖与墨痕尾端齐平,
-        //刀整体让开纸札摆动列(含焚烧札脚)——札/墨/刀三件各归其位才不显乱
+        //柄头与墨脉朱印同左轨,锋尖齐墨尾,刀让开纸札摆动列
         /// <summary>鞘刀柄头中心相对绳结锚点的偏移(不随纸札摆角)</summary>
         public static readonly Vector2 HudStanceOffset = new(26f, 124f);
-        /// <summary>鞘刀倾角(弧度)。放平与墨脉同轨,"兵器感"交给刀形与反(sori)本身</summary>
+        /// <summary>鞘刀倾角(弧度),放平与墨脉同轨</summary>
         public const float HudStanceCant = 0f;
         /// <summary>柄长(柄头到镡)</summary>
         public const float HudStanceTsukaLen = 34f;
@@ -137,7 +129,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public const float HudStanceSeed = 3.77f;
         #endregion
 
-        /// <summary>异相位呼吸波，给定相位种子返回 0-1 的缓慢脉动</summary>
+        /// <summary>异相位呼吸波 0~1</summary>
         public static float Breath(float time, float seed, float speed = 2f) {
             return (float)System.Math.Sin(time * speed + seed * 17.39f) * 0.5f + 0.5f;
         }

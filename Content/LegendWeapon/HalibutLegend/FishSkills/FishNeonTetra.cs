@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 霓虹脂鲤发光弹幕：深海生物荧光，青-品红呼吸脉动 + 缎带尾迹 + 浮游光斑
+    /// 霓虹脂鲤发光弹幕，深海生物荧光，青-品红呼吸脉动 + 缎带尾迹 + 浮游光斑
     /// </summary>
     internal class NeonTetraLightProjectile : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable, IOverlayDrawable
     {
@@ -101,11 +101,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const float LightRadius = 200f;
         private const int LifeTime = 120;
 
-        /// <summary>每鱼相位：identity 派生，各客户端一致</summary>
+        /// <summary>每鱼相位，identity 派生，各客户端一致</summary>
         private float Phase => Projectile.identity * 2.399f;
-        /// <summary>呼吸 0..1：慢周期正弦，生物发光节律（周期约84帧）</summary>
+        /// <summary>呼吸 0..1，慢周期正弦，生物发光节律（周期约84帧）</summary>
         private float Breath => 0.5f + 0.5f * MathF.Sin(Timer * 0.075f + Phase);
-        /// <summary>当前色相 0=青 1=品红：每鱼慢速滑移，队列错相</summary>
+        /// <summary>当前色相 0=青 1=品红，每鱼慢速滑移，队列错相</summary>
         private float HueT => 0.5f + 0.5f * MathF.Sin(Timer * 0.02f + HueQueue * 1.05f + Phase * 0.5f);
 
         public override void SetStaticDefaults() {
@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void AI() {
             Timer++;
 
-            //生命包络：化现淡入 → 稳态 → 消散淡出
+            //生命包络
             float lifeProgress = Timer / (float)LifeTime;
             if (lifeProgress < 0.2f) {
                 float fadeIn = lifeProgress / 0.2f;
@@ -153,29 +153,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 hitPulse -= 0.12f;
             }
 
-            //化现一拍：光斑外扩 + 微暗环 + 水滴声
+            //化现一拍
             if (Timer == 1f) {
                 FishNeonTetraVFX.MaterializeBurst(Projectile.Center, HueT);
             }
 
-            //慢速利萨茹巡游：荧光鱼绕生成点游弋（漂移半径约30px），尾迹画出缎带环
+            //慢速利萨茹巡游，荧光鱼绕生成点游弋（漂移半径约30px），尾迹画出缎带环
             Projectile.velocity = new Vector2(
                 MathF.Sin(Timer * 0.062f + Phase) * 1.9f,
                 MathF.Cos(Timer * 0.048f + Phase * 1.37f) * 1.4f);
 
-            //朝向沿泳向：贴图头朝右上，+PiOver4 校正；叠尾摆微振
+            //朝向沿泳向，贴图头朝右上
             float heading = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
             float wiggle = MathF.Sin(Timer * 0.31f + Phase) * 0.09f;
             Projectile.rotation = Timer <= 1f ? heading
                 : Projectile.rotation.AngleLerp(heading + wiggle, 0.14f);
 
-            //呼吸同步照明：饱和低明度的青-品红光，节律起伏
+            //呼吸同步照明
             Vector3 lightHue = Vector3.Lerp(new Vector3(0.10f, 0.44f, 0.54f)
                 , new Vector3(0.44f, 0.07f, 0.36f), HueT);
             float breathMul = (0.7f + 0.3f * Breath) * glowIntensity * (1f + hitPulse * 0.4f);
             Lighting.AddLight(Projectile.Center, lightHue * breathMul);
 
-            //浮游光斑：巡游期缓吐，消散期加速散逸（上浮）
+            //浮游光斑
             bool dissolving = lifeProgress > 0.7f;
             if (dissolving) {
                 if (Timer % 5 == 0) {
@@ -186,7 +186,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 FishNeonTetraVFX.AmbientMote(Projectile.Center, Projectile.velocity, HueT);
             }
 
-            //照亮路径上的敌人：荧光渗染光照（描边叠层在绘制层）
+            //照亮路径上的敌人
             IlluminateEnemies();
         }
 
@@ -205,7 +205,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //触碰节拍：体表荧光短促提亮 + 沿命中方向 squirt，无白闪
+            //触碰节拍
             hitPulse = 1f;
             FishNeonTetraVFX.TouchBurst(Projectile.Center, target.Center, HueT);
         }
@@ -219,7 +219,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, Projectile.Center);
         }
 
-        //==== 绘制：缎带(图元层) → 底晕+敌人描边(加色层) → 鱼体+侧线(遮挡层) ====
+        //==== 绘制，缎带(图元层) → 底晕+敌人描边(加色层) → 鱼体+侧线(遮挡层) ====
 
         public override bool PreDraw(ref Color lightColor) => false;
 
@@ -260,7 +260,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Color hue = FishNeonTetraVFX.HueColor(HueT);
             Color hueAlt = FishNeonTetraVFX.HueColor(1f - HueT);
 
-            //底层水晕：SoftGlow 仅作垫底（暗渊宽晕 + 饱和窄晕），非效果 body
+            //底层水晕
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow != null) {
                 Vector2 gpos = Projectile.Center - Main.screenPosition;
@@ -272,7 +272,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , 0f, glow.Size() * 0.5f, gs * 1.2f, SpriteEffects.None, 0f);
             }
 
-            //荧光照亮敌人：沿身形的加色渗染描边（放大晕轮 + 原尺寸补色低染），非白闪
+            //荧光照亮敌人
             DrawEnemyRims(spriteBatch, hue, hueAlt, breath);
         }
 
@@ -319,25 +319,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float breath = Breath;
             Color hue = FishNeonTetraVFX.HueColor(HueT);
 
-            //呼吸挤压拉伸：±4% 反相，游弋的活物感
+            //呼吸挤压拉伸
             float squash = MathF.Sin(Timer * 0.075f + Phase) * 0.04f;
             Vector2 scale = new Vector2(1f + squash, 1f - squash) * Projectile.scale * ScaleEnvelope();
 
-            //自发光体色：暗冷底与荧光色相融合，环境光只占小头（黑暗中仍可见）
+            //自发光体色，暗冷底与荧光色相融合
             Color lightColor = Lighting.GetColor(Projectile.Center.ToTileCoordinates());
             Color body = Color.Lerp(Color.Lerp(lightColor, FishNeonTetraVFX.AbyssBody, 0.55f)
                 , hue, (0.30f + 0.25f * breath) * glowIntensity);
             spriteBatch.Draw(fishTex, drawPos, null, body * alpha, Projectile.rotation
                 , origin, scale, SpriteEffects.None, 0f);
 
-            //霓虹侧线：沿体轴的加色细条（脂鲤标志性荧光带），呼吸+命中提亮，A=0 走预乘加色
+            //霓虹侧线，沿体轴的加色细条（脂鲤标志性荧光带），呼吸+命中提亮，A=0 走预乘加色
             Texture2D streak = CWRAsset.Extra_98?.Value;
             if (streak != null) {
                 float bodyAxis = Projectile.rotation - MathHelper.PiOver4;
                 Vector2 perp = (bodyAxis + MathHelper.PiOver2).ToRotationVector2();
                 float stripeGlow = (0.30f + 0.38f * breath) * glowIntensity * (1f + hitPulse * 0.8f) * alpha;
                 Vector2 stripeScale = new Vector2(0.065f, 0.32f) * scale; //72px 贴图 → 约4.7×23px 细条
-                //上侧当前色相、下侧补色暗一档：双色渐变在体表相接
+                //上侧当前色相、下侧补色暗一档
                 spriteBatch.Draw(streak, drawPos - perp * 1.5f, null, (hue with { A = 0 }) * stripeGlow
                     , bodyAxis + MathHelper.PiOver2, streak.Size() * 0.5f, stripeScale, SpriteEffects.None, 0f);
                 spriteBatch.Draw(streak, drawPos + perp * 1.5f, null

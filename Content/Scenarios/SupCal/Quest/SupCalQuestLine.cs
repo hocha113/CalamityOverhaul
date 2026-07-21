@@ -6,9 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest
 {
-    /// <summary>
-    /// 硫火女巫委托线，三段委托注册到 <see cref="QuestManagerUI"/>
-    /// </summary>
+    /// <summary>硫火女巫委托线，三段注册到 <see cref="QuestManagerUI"/></summary>
     internal sealed class SupCalQuestLine : ModSystem, ILocalizedModType
     {
         private const string PallbearerKey = "SupCal_Pallbearer";

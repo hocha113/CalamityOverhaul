@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze
 {
-    /// <summary>领域冻结管理：域内 NPC/弹幕独立计时；net 同步锚点</summary>
+    /// <summary>领域冻结，NPC/弹幕独立计时，net 锚点</summary>
     internal class CyberDomainFreeze : ICWRLoader
     {
         void ICWRLoader.UnLoadData() => Reset();
@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             if (cp == null) return;
             if (!cp.Active || cp.Intensity < 0.5f || cp.CurrentLayer < Cyberspace.MaxLayerCount) return;
 
-            //RAM检查：消耗极高，不足时触发HUD故障闪烁并拦截（仅本机看到，因为其它客户端不会触发此函数）
+            //RAM 不足则 HUD 闪并拦截，仅本机
             if (!HackTime.InfiniteHack && (RamSystem.IsLocked || !RamSystem.CanAfford(RamCost))) {
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(CWRSound.FailureCurrent with { Volume = 0.4f, Pitch = -0.3f }, owner.Center);
@@ -100,9 +100,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             float effectiveRadius = cp.Radius * cp.ExpandProgress;
             float radiusSq = effectiveRadius * effectiveRadius;
 
-            //先在本地计算所有应被冻结的 NPC / 弹幕索引、种子和冻结锚点位置，再统一应用 + 广播
-            //冻结位置随包广播：各端 NPC 位置因延迟略有差异，统一钉在发起端看到的坐标，解冻时不会跳变
-            //同组（蠕虫等多节实体）视为整体一并冻结
+            //先算名单/种子/锚点，再应用+广播
+            //锚点随包广播，解冻不跳变
+            //同组一并冻
             List<(int idx, float seed, Vector2 center)> npcEntries = new();
             HashSet<int> processedGroups = new HashSet<int>();
             for (int i = 0; i < Main.maxNPCs; i++) {
@@ -140,18 +140,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 projEntries.Add((i, Main.rand.NextFloat(), proj.Center));
             }
 
-            //本机先把这批冻结记录入 list（让本地立刻看到效果），再广播给其它端
+            //本机先入 list，再广播
             ApplyFreezeBatch(owner.whoAmI, npcEntries, projEntries);
 
-            //生成黑墙能量波弹幕（NewProjectile 自带网络同步，远端会看到能量波）
+            //冻结能量波
             if (Main.myPlayer == owner.whoAmI) {
                 IEntitySource source = owner.GetSource_FromThis();
                 Projectile.NewProjectile(source, owner.Center, Vector2.Zero,
                     ModContent.ProjectileType<CyberFreezeWaveProj>(), 0, 0, owner.whoAmI);
             }
 
-            //广播给其它客户端 / 服务端
-            //弹幕跨端用 (owner, identity) 对，不用 whoAmI
+            //广播
+            //弹幕用 owner+identity
             if (Main.netMode != NetmodeID.SinglePlayer) {
                 List<(byte projOwner, int projIdentity, float seed, Vector2 center)> projPairs = new(projEntries.Count);
                 for (int i = 0; i < projEntries.Count; i++) {
@@ -259,7 +259,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 projPairs.Add((projOwner, projIdentity, seed, center));
             }
 
-            //把 (owner, identity) 对解析回本机的弹幕索引；本端尚未同步到的弹幕直接跳过
+            //owner+identity 解析，未同步则跳过
             List<(int idx, float seed, Vector2 center)> projEntries = new(projPairs.Count);
             for (int i = 0; i < projPairs.Count; i++) {
                 int idx = FindProjectileIndex(projPairs[i].projOwner, projPairs[i].projIdentity);
@@ -269,8 +269,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
 
             ApplyFreezeBatch(ownerWho, npcEntries, projEntries);
 
-            //服务端转发给除发送者外的其它客户端，让所有客户端共享同一份冻结名单
-            //注意转发的是原始 (owner, identity) 对，而不是本机解析后的索引
+            //服务端转发，保留原始 owner+identity
             if (VaultUtils.isServer) {
                 BroadcastStart(ownerWho, npcEntries, projPairs, ignoreClient: whoAmI);
             }
@@ -297,7 +296,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     npc.CWR().TimeFrozenTick = 2;
                 }
 
-                //如果整个群组都已离开"冻结发起者"的领域，快速推进到解冻演出阶段
+                //整组离发起者域则快进解冻
                 int thawStart = Math.Max(0, entry.Duration - 90);
                 if (entry.Timer < thawStart
                     && !Cyberspace.IsInsideDomainOf(entry.OwnerWho, npc.Center)
@@ -305,32 +304,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     entry.Timer = thawStart;
                 }
 
-                //生成冻结粒子（仅客户端）
+                //冻结粒子，仅客户端
                 if (!Main.dedServ) {
                     CyberDomainFreezeParticles.SpawnFreezeParticles(npc, entry.Progress, entry.Seed);
                 }
 
-                //解冻动画（最后15%时间）；位置抖动属于演出，服务端保持精确钉死
+                //末15%解冻演出，抖动仅客户端
                 float progress = entry.Progress;
                 if (progress > 0.85f && !Main.dedServ) {
                     float thawPhase = (progress - 0.85f) / 0.15f;
-                    //逐渐恢复一点速度抖动表示即将解冻
+                    //解冻前速度抖
                     float jitter = thawPhase * 2f;
                     npc.position += new Vector2(
                         Main.rand.NextFloat(-jitter, jitter),
                         Main.rand.NextFloat(-jitter, jitter));
                 }
 
-                //音效只由锚点节段（头部或单体）播放，避免蠕虫群组同帧触发N次
+                //音效仅锚点节
                 if (entry.Timer == thawStart && NpcGroupHelper.GetAnchorIndex(npc) == npc.whoAmI) {
                     if (!VaultUtils.isServer) {
                         SoundEngine.PlaySound(CWRSound.FaultTransition, npc.Center);
                     }
                 }
 
-                //冻结时间结束 → 解冻
+                //到期解冻
                 if (entry.Timer >= entry.Duration) {
-                    //恢复原始速度
                     npc.velocity = entry.FreezeVelocity * 0.5f;
                     npc.CWR().TimeFrozenTick = 0;
                     if (!Main.dedServ) {
@@ -368,7 +366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     proj.CWR().TimeFrozenTick = 2;
                 }
 
-                //冻结时间结束 → 解冻
+                //到期解冻
                 if (entry.Timer >= entry.Duration) {
                     proj.velocity = entry.FreezeVelocity;
                     proj.CWR().TimeFrozenTick = 0;

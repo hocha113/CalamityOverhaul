@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>水晶握把：暴击折射 3 枚棱片，抛物+引力偏转二段伤</summary>
+    /// <summary>水晶握把，暴击折射棱片</summary>
     internal sealed class CrystalGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 
         private static void SpawnShards(Projectile source, NPC target, int damage, int count) {
             for (int i = 0; i < count; i++) {
-                //向上扇形迸出，横向带随机散布
+                //扇形上抛
                 Vector2 vel = new(Main.rand.NextFloat(-4.5f, 4.5f), Main.rand.NextFloat(-9.5f, -5.5f));
                 Projectile.NewProjectile(source.GetSource_FromThis(),
                     target.Center + Main.rand.NextVector2Circular(target.width * 0.3f, target.height * 0.3f),
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         }
     }
 
-    /// <summary>水晶棱片：重力+220px 引力偏转，穿透 2</summary>
+    /// <summary>水晶棱片，重力+220px引力，穿透2</summary>
     internal sealed class SHPCCrystalShardProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -77,11 +77,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         }
 
         public override void AI() {
-            //重力 + 末速限制
+            //重力+末速
             Projectile.velocity.Y += 0.24f;
             if (Projectile.velocity.Y > 12f) Projectile.velocity.Y = 12f;
 
-            //晶格引力：下坠阶段被附近敌人缓缓捕获
+            //下坠引力捕获
             if (Projectile.velocity.Y > 0f) {
                 NPC target = Projectile.Center.FindClosestNPC(220f, false, true);
                 if (target != null) {
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
             }
             if (white != null) {
                 Vector2 origin = white.Size() * 0.5f;
-                //旋转 45° 的双层矩形叠成闪烁菱晶（VaultAsset.placeholder2 为 1px 白图，scale 即像素尺寸）
+                //45°双层菱晶
                 spriteBatch.Draw(white, drawPos, null, GemGlow * fadeAlpha * 0.9f,
                     spin + MathHelper.PiOver4, origin, new Vector2(20f, 9f), SpriteEffects.None, 0f);
                 spriteBatch.Draw(white, drawPos, null, GemCore * fadeAlpha,

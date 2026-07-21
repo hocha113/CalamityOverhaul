@@ -15,9 +15,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
     /// <summary>
-    /// 共振机匣：驻波节拍器——射击计数，每第 N 发升格为共振节拍束（显著增粗+驻波护层+增伤），
-    /// 节拍束首次命中掀起驻波震荡环（范围伤害+轻推）；跟稳节奏连续打拍叠节奏层小幅提升节拍威力。
-    /// 激光模式按固定节拍周期蓄振染色，节拍窗口内命中打出震荡环
+    /// 共振机匣，驻波节拍器，每第 N 发升格节拍束（增粗+护层+增伤），
+    /// 首命中掀震荡环；跟稳节奏叠节奏层；激光按周期蓄振染色取拍
     /// </summary>
     internal sealed class ResonanceFrameModule : SHPCModuleItem
     {
@@ -58,31 +57,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
         #endregion
 
-        //驻波节拍配色：洋红三阶，与同槽量子紫/谐振绿明确区分
+        //驻波洋红三阶，区别同槽量子紫/谐振绿
         internal static readonly Color BeatBright = new(255, 170, 220);
         internal static readonly Color BeatMain = new(240, 80, 165);
         internal static readonly Color BeatDeep = new(130, 20, 85);
 
-        //═════ 每玩家节拍器状态（模块实例即每玩家实例，不入 static） ═════
+        //每玩家节拍器状态，模块实例即每玩家，不入 static
 
-        /// <summary>自上一节拍以来的射击数，达 BeatEvery 时该发为节拍束</summary>
+        /// <summary>自上一节拍射击数，达 BeatEvery 为本拍</summary>
         private int _shotsSinceBeat;
         /// <summary>节奏层 0~MaxTempo，断拍清零</summary>
         private int _tempo;
-        /// <summary>距上次射击的帧数，判定断拍；按 TimeGear 推进</summary>
+        /// <summary>距上次射击帧，断拍判定，TimeGear 推进</summary>
         private int _framesSinceShot = 100000;
         private float _frameCarry;
-        /// <summary>上次登记射击的帧号，同帧多束视作同一次扣扳机</summary>
+        /// <summary>上次登记射击帧号，同帧多束同扣扳机</summary>
         private uint _lastVolleyTick = uint.MaxValue;
 
         private struct BeamEntry
         {
-            /// <summary>节奏层，-1=平拍束</summary>
+            /// <summary>节奏层，-1=平拍</summary>
             public int Tempo;
-            /// <summary>identity 校验，防 whoAmI 槽位复用串台</summary>
+            /// <summary>identity 校验，防 whoAmI 槽复用</summary>
             public int Identity;
         }
-        /// <summary>已登记的原生光束：whoAmI → 节拍信息</summary>
+        /// <summary>已登记原生光束 whoAmI→节拍信息</summary>
         private readonly Dictionary<int, BeamEntry> _beams = new();
 
         private struct LaserBeatState
@@ -92,9 +91,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             public int Flash;
             public bool Armed;
         }
-        /// <summary>激光节拍状态：whoAmI → 计时/染色窗/取拍待命</summary>
+        /// <summary>激光节拍 whoAmI→计时/染色窗/取拍</summary>
         private readonly Dictionary<int, LaserBeatState> _lasers = new();
-        /// <summary>字典周期清扫计时，防泄漏</summary>
+        /// <summary>字典周期清扫，防泄漏</summary>
         private int _sweepTimer;
 
         public override void Apply(ref ShootContext ctx) {
@@ -113,7 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 return; //已登记
             }
 
-            //首见新光束＝一次射击登记；同一帧的散射姊妹束归入同一次扣扳机
+            //首见新束＝一次射击，同帧姊妹束同扣扳机
             int beatTempo = -1;
             if (Main.GameUpdateCount != _lastVolleyTick) {
                 _lastVolleyTick = Main.GameUpdateCount;
@@ -127,10 +126,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             }
         }
 
-        /// <summary>推进节拍器一格；返回该发是否为节拍，tempoUsed 为本拍生效的节奏层</summary>
+        /// <summary>推进节拍器一格，返回是否节拍与 tempoUsed</summary>
         private bool RegisterShot(CyberTraceBeamProj beam, out int tempoUsed) {
             tempoUsed = 0;
-            //断拍判定先于计数：停火过久节奏层归零（射击计数保留，节拍位置不漂移）
+            //断拍先于计数，停火久节奏归零，射击计数保留
             if (_framesSinceShot > TempoBreakFrames) {
                 _tempo = 0;
             }
@@ -140,7 +139,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             Vector2 muzzle = beam.Projectile.Center;
             _shotsSinceBeat++;
             if (_shotsSinceBeat < BeatEvery) {
-                //平拍：渐强渐高的节拍器嘀嗒，铺垫下一记重拍
+                //平拍嘀嗒铺垫
                 if (Main.netMode != NetmodeID.Server) {
                     float progress = _shotsSinceBeat / (float)BeatEvery;
                     SoundEngine.PlaySound(SoundID.DrumHiHat with {
@@ -156,7 +155,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             tempoUsed = _tempo;
             int newTempo = Math.Min(_tempo + 1, MaxTempo);
             if (Main.netMode != NetmodeID.Server) {
-                //定音鼓主拍 + 底鼓补点
+                //定音鼓+底鼓
                 SoundEngine.PlaySound(SoundID.DrumFloorTom with { Volume = 0.85f, Pitch = 0.12f + tempoUsed * 0.05f }, muzzle);
                 SoundEngine.PlaySound(SoundID.DrumKick with { Volume = 0.5f, Pitch = 0.2f }, muzzle);
                 PRTLoader.NewParticle<PRT_StarPulseRing>(muzzle, Vector2.Zero,
@@ -179,12 +178,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             return true;
         }
 
-        /// <summary>升格节拍束：增伤+穿透，并挂上驻波护层弹幕</summary>
+        /// <summary>升格节拍束，增伤+穿透+驻波护层</summary>
         private void UpgradeToBeatBeam(CyberTraceBeamProj beam, int beatTempo) {
             float mul = BeatDamageMul + beatTempo * TempoDamageStep;
             beam.Projectile.damage = Math.Max((int)(beam.Projectile.damage * mul), 1);
             beam.Projectile.penetrate += BeatExtraPierce;
-            //ai0 传 identity（跨端稳定），ai1 传节奏层强度
+            //ai0=identity，ai1=节奏层
             Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                 beam.Projectile.Center, Vector2.Zero,
                 ModContent.ProjectileType<SHPCResonanceWaveProj>(),
@@ -201,7 +200,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 || entry.Tempo < 0) {
                 return;
             }
-            //每束节拍只在首个命中打一次拍，穿透后续不重复掀环
+            //每束仅首命中掀环
             if (beam.Projectile.numHits > 0) return;
 
             int dmg = Math.Max((int)(beam.Projectile.damage * RingDamageRatio), 1);
@@ -225,7 +224,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             st.Timer++;
             if (st.Flash > 0) {
                 st.Flash--;
-                if (st.Flash == 0) st.Armed = false; //取拍窗口关闭，节拍过期作废
+                if (st.Flash == 0) st.Armed = false; //取拍窗关，节拍作废
             }
             if (st.Timer >= LaserBeatPeriod) {
                 st.Timer = 0;
@@ -237,7 +236,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                         BeatBright with { A = 0 }, 0.05f).Configure(0.05f, 0.2f, 12);
                 }
             }
-            //节拍窗口内洋红蓄振染色，随窗口衰减淡回原配色
+            //节拍窗内洋红蓄振染色
             if (st.Flash > 0) {
                 float f = st.Flash / (float)LaserFlashFrames;
                 laser.ThemeCore = Color.Lerp(laser.ThemeCore, BeatBright, f);
@@ -257,7 +256,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 || !st.Armed) {
                 return;
             }
-            //窗口内首个命中取走本拍
+            //窗内首命中取拍
             st.Armed = false;
             _lasers[id] = st;
 
@@ -271,7 +270,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
         #endregion
 
-        /// <summary>命中点掀起驻波震荡环（范围伤害+轻推）</summary>
+        /// <summary>命中点掀驻波震荡环</summary>
         private static void SpawnResonanceRing(Projectile source, Vector2 center, int damage, float radius, float waveBoost) {
             Projectile.NewProjectile(source.GetSource_FromThis(),
                 center, Vector2.Zero,
@@ -283,7 +282,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         #region 每帧维护与蓄振预兆
 
         public override void OnPlayerUpdate(Player player) {
-            //清扫对所有实例执行：远端玩家实例的 _lasers 也会被 OnLaserAI（染色路径）写入
+            //清扫全实例，远端 _lasers 也会被 OnLaserAI 写入
             SweepDead();
             if (player.whoAmI != Main.myPlayer) return;
             if (_framesSinceShot < 100000) {
@@ -293,10 +292,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             SpawnBuildupFx(player);
         }
 
-        /// <summary>节拍临近的枪口蓄振粒子与临界提示音</summary>
+        /// <summary>节拍临近枪口蓄振粒子与临界音</summary>
         private void SpawnBuildupFx(Player player) {
             if (player.HeldItem == null || player.HeldItem.type != SHPCOverride.ID) return;
-            //激光/蓄力通道模式没有离散射击节拍，不给预兆
+            //激光/蓄力无离散节拍，不给预兆
             if (player.channel) return;
             if (_shotsSinceBeat <= 0 || _framesSinceShot > TempoBreakFrames) return;
 
@@ -305,7 +304,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             Vector2 aim = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX * player.direction);
             Vector2 muzzle = player.GetPlayerStabilityCenter() + aim * 52f;
 
-            //蓄振粒子向枪口收束，越临近节拍越密
+            //蓄振粒子向枪口收束
             if (Main.rand.NextFloat() < 0.2f + t * 0.5f) {
                 Vector2 from = muzzle + Main.rand.NextVector2CircularEdge(36f, 36f);
                 PRTLoader.NewParticle<PRT_CyberConverge>(from, Vector2.Zero,
@@ -318,14 +317,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                         aim * Main.rand.NextFloat(0.5f, 1.5f), BeatBright,
                         Main.rand.NextFloat(0.4f, 0.8f)).Configure(BeatMain, Main.rand.Next(8, 14));
                 }
-                //渐强提示音的临界闪音
+                //临界闪音
                 if (Main.rand.NextBool(20)) {
                     SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.2f, Pitch = 0.4f }, muzzle);
                 }
             }
         }
 
-        /// <summary>周期清扫失效字典项（改件被卸下时 OnBeamKill 不再触达本模块，防泄漏）</summary>
+        /// <summary>周期清扫失效项，改件卸下 OnBeamKill 不到达，防泄漏</summary>
         private void SweepDead() {
             if (++_sweepTimer < 150) return;
             _sweepTimer = 0;
@@ -357,8 +356,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
     }
 
     /// <summary>
-    /// 节拍束驻波护层：跟随宿主光束绘制驻波纹理宽束（SHPCModResonanceWave.fx），
-    /// ai0=宿主 identity（跨端稳定），ai1=节奏层 0~1；纯视觉无伤害
+    /// 节拍束驻波护层，跟宿主画宽束（SHPCModResonanceWave.fx），
+    /// ai0=宿主 identity，ai1=节奏层 0~1，纯视觉
     /// </summary>
     internal sealed class SHPCResonanceWaveProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
@@ -367,7 +366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         private const int TrailLen = 42;
         private const float PointSpacing = 10f;
         private const int FadeOutFrames = 12;
-        /// <summary>驻波时间角频率（帧域），与着色器 uTime(0.045/帧)×6 保持同频</summary>
+        /// <summary>驻波角频率，与着色器 uTime(0.045/帧)×6 同频</summary>
         private const float WaveOmega = 0.27f;
 
         private Vector2[] history;   //[0]=最新记录点
@@ -376,7 +375,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         private int validCount;
         private Trail trail;
         private float fadeIn;
-        /// <summary>-1=跟随中；>=0 为剩余淡出帧</summary>
+        /// <summary>-1=跟随中，>=0 剩余淡出帧</summary>
         private int fadeOut = -1;
 
         private int HostIdentity => (int)Projectile.ai[0];
@@ -400,7 +399,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
         public override bool ShouldUpdatePosition() => false;
 
-        /// <summary>按 identity 定位宿主光束；localAI[1] 缓存槽位+1，失效时重扫描</summary>
+        /// <summary>按 identity 定位宿主，localAI[1] 缓存槽+1</summary>
         private Projectile ResolveHost() {
             int beamType = ModContent.ProjectileType<CyberTraceBeamProj>();
             int cached = (int)Projectile.localAI[1] - 1;
@@ -438,7 +437,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 }
             }
             else if (fadeIn > 0f) {
-                //宿主消亡：护层原地驻留淡出
+                //宿主消亡，护层淡出
                 if (fadeOut < 0) fadeOut = FadeOutFrames;
                 else fadeOut--;
                 if (fadeOut <= 0) {
@@ -447,10 +446,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 }
                 Projectile.timeLeft = 2;
             }
-            //宿主尚未同步到本端：静默等待 timeLeft 自然耗尽
+            //宿主未同步，等 timeLeft 耗尽
         }
 
-        /// <summary>以固定间距记录拖尾点，段间插值避免整帧位移导致的折线粗糙</summary>
+        /// <summary>固定间距记拖尾点，段间插值防折线粗糙</summary>
         private void RecordTrail(Vector2 pos) {
             history ??= new Vector2[TrailLen];
             if (historyCount == 0) {
@@ -469,7 +468,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         }
 
         private float WidthFunction(float progress) {
-            //有效顶点区间内收尾，参考 CyberTraceBeamProj 的断尾处理
+            //有效顶点收尾，参考 CyberTraceBeamProj
             float validRatio = MathF.Max((float)validCount / TrailLen, 0.05f);
             float p = MathHelper.Clamp(progress / validRatio, 0f, 1f);
             float noseRise = MathF.Sin(MathF.Min(p / 0.07f, 1f) * MathHelper.PiOver2);
@@ -518,7 +517,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             if (a < 0.02f) return;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null) return;
-            //头部光球随驻波频率鼓动，与护层着色器同频呼吸
+            //头部光球与护层着色器同频
             float osc = MathF.Abs(MathF.Cos((float)Main.timeForVisualEffects * WaveOmega));
             float pulse = 0.85f + 0.35f * osc;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
@@ -535,15 +534,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
     }
 
     /// <summary>
-    /// 驻波震荡环：节拍命中掀起的一次性扩张环形 AoE（范围伤害+外推轻击退），
-    /// ai0=最大半径（像素），ai1=节奏层 0~1；SHPCModResonanceRing.fx
+    /// 驻波震荡环，节拍命中一次性扩张 AoE，
+    /// ai0=最大半径 px，ai1=节奏层 0~1；SHPCModResonanceRing.fx
     /// </summary>
     internal sealed class SHPCResonanceRingProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 26;
-        /// <summary>环前沿判定厚度（像素）</summary>
+        /// <summary>环前沿判定厚度 px</summary>
         private const float HitBand = 44f;
 
         private float MaxRadius => MathF.Max(Projectile.ai[0], 60f);
@@ -565,7 +564,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             Projectile.penetrate = -1;
             Projectile.timeLeft = Lifetime;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = -1; //一环对每个敌人只结算一次
+            Projectile.localNPCHitCooldown = -1; //一环一结算
             Projectile.DamageType = DamageClass.Magic;
         }
 
@@ -575,11 +574,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
                 if (Main.netMode != NetmodeID.Server) {
-                    //命中打拍：能量炸响+高音鼓点
+                    //命中打拍炸响
                     SoundEngine.PlaySound(SoundID.Item118 with { Volume = 0.55f, Pitch = 0.25f }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.DrumTomHigh with { Volume = 0.45f, Pitch = 0.1f }, Projectile.Center);
                     SpawnBurstFx();
-                    //震荡波屏震随本地玩家与波心距离衰减（全局约定：不满幅震旁观者）
+                    //屏震随距波心衰减，不满幅震旁观者
                     float falloff = 1f - MathHelper.Clamp(Main.LocalPlayer.Distance(Projectile.Center) / 900f, 0f, 1f);
                     SHPCNaturalFx.Shake(3f * falloff);
                 }
@@ -622,7 +621,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         public override bool? CanDamage() => Progress <= 0.7f;
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            //环形前沿判定：目标包围盒与 [r-带宽, r+带宽] 圆环相交
+            //环前沿判定，盒与 [r±带宽] 相交
             float r = CurrentRadius;
             Vector2 c = Projectile.Center;
             Vector2 nearest = new(MathHelper.Clamp(c.X, targetHitbox.Left, targetHitbox.Right),
@@ -636,9 +635,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            //击退方向沿环心向外
+            //击退沿环心外
             modifiers.HitDirectionOverride = target.Center.X >= Projectile.Center.X ? 1 : -1;
-            //蠕虫体节折减：环扫过共血长虫时每节各结算一次，压制多节总伤尖峰（对齐延伸枪托 0.45 口径）
+            //蠕虫体节折减 0.45，对齐延伸枪托
             if (target.realLife >= 0 && target.realLife != target.whoAmI) {
                 modifiers.FinalDamage *= 0.45f;
             }
@@ -667,7 +666,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (shader == null || canvas == null || noise == null) return false;
 
-            //向外留辉光带，环进度按绘制半径归一
+            //外辉光带，环进度按绘制半径归一
             float drawRadius = MaxRadius * 1.15f;
             float fade = FadeAlpha();
 

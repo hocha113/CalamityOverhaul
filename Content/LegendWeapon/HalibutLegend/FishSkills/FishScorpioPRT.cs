@@ -6,8 +6,8 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
     /// <summary>
-    /// 风载干沙粒：沙蝎技能专属。风载段被升力托着沿正弦流线盘旋上卷，
-    /// 风力耗尽后立即恢复重力坠落；随速度拉丝，哑光零发光。<br/>
+    /// 风载干沙粒，沙蝎技能专属，风载段被升力托着沿正弦流线盘旋上卷
+    /// 风力耗尽后立即恢复重力坠落；随速度拉丝，哑光零发光<br/>
     /// 贴图用带真 alpha 的 Extra_98，AlphaBlend 直绘读作沙粒而非光点
     /// </summary>
     internal class PRT_FishScorpioSand : BasePRT
@@ -49,14 +49,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void AI() {
             float lc = LifetimeCompletion;
             if (windLift > 0f && lc < liftEnd) {
-                //风载段：升力抵消重力，横向正弦盘旋，轨迹沿风场弯曲
+                //风载段，升力抵消重力
                 Velocity *= 0.982f;
                 Velocity.Y -= windLift * 0.055f;
                 Vector2 perp = Velocity.SafeNormalize(Vector2.UnitX).RotatedBy(MathHelper.PiOver2);
                 Velocity += perp * MathF.Sin(Time * 0.24f + swayPhase) * windLift * 0.16f;
             }
             else {
-                //失能段：重力接管，横向速度被地面气流磨掉
+                //失能段
                 Velocity.X *= 0.955f;
                 if (Velocity.Y < 11f) {
                     Velocity.Y += gravity;
@@ -71,11 +71,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Texture2D tex = TexValue;
             Vector2 origin = tex.Size() * 0.5f;
             Vector2 pos = Position - Main.screenPosition;
-            //随速度纵向拉丝：快则成沙丝、慢则成沙粒
+            //随速度纵向拉丝
             float stretch = MathHelper.Clamp(Velocity.Length() * 0.05f, 0f, 1f);
             Vector2 scale = new Vector2(0.30f * (1f - stretch * 0.3f), 0.5f * (1f + stretch * 1.9f)) * Scale;
 
-            //暗沙衬底 + 本体：哑光双层给颗粒一点厚度
+            //暗沙衬底 + 本体
             Color dark = Color.Lerp(Color, new Color(96, 74, 46), 0.55f);
             spriteBatch.Draw(tex, pos + new Vector2(1f, 2f), null, dark * (Opacity * 0.6f), Rotation, origin, scale * 1.05f, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, pos, null, Color * Opacity, Rotation, origin, scale, SpriteEffects.None, 0f);
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 哑光沙尘雾团：Fog 真 alpha 贴图 AlphaBlend 直绘，暗衬底+主色双层，
+    /// 哑光沙尘雾团，Fog 真 alpha 贴图 AlphaBlend 直绘，暗衬底+主色双层
     /// 微浮升缓涨后消散；蝎子出入土的土浪、龙卷底裙与尾迹用
     /// </summary>
     internal class PRT_FishScorpioDust : BasePRT
@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 短命沙丘 decal：位置钉死在地面，隆起成形后缓慢塌陷摊平并消散；
+    /// 短命沙丘 decal，位置钉死在地面，隆起成形后缓慢塌陷摊平并消散；
     /// 龙卷失能落沙、蝎子出入土的 aftermath 残迹
     /// </summary>
     internal class PRT_FishScorpioMound : BasePRT
@@ -189,14 +189,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 origin = tex.Size() * 0.5f;
             float lc = LifetimeCompletion;
 
-            //隆起-塌陷：高度先冲高后缓慢摊平，宽度随塌陷微涨
+            //隆起-塌陷
             float form = MathF.Min(lc / 0.18f, 1f);
             float heightK = (1f - MathF.Pow(1f - form, 3f)) * MathHelper.Lerp(1f, 0.5f, MathF.Max(lc - 0.3f, 0f) / 0.7f);
             float widthK = 1f + MathF.Max(lc - 0.3f, 0f) * 0.22f;
 
             float sx = widthPx / tex.Width * widthK;
             float sy = widthPx / tex.Width * 0.34f * heightK;
-            //锚定地面：贴图中心上移半个可视高度，让丘顶从地面线鼓出来
+            //锚定地面，贴图中心上移半个可视高度
             Vector2 pos = Position - Main.screenPosition - new Vector2(0f, tex.Height * sy * 0.34f);
 
             Color dark = Color.Lerp(Color, new Color(96, 74, 46), 0.62f);

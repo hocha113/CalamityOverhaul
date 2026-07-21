@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projectiles
 {
-    /// <summary>颅骨主炮巨型扫射光束：锚定头部，固定角速度横扫；ai[0]=头部NPC的whoAmI；ai[1]=起始角（弧度）；ai[2]=每帧扫射角速度（含方向）；展开/收束缓动，未完全展开无伤害；头部失效或脱离主炮状态时快速收束</summary>
+    /// <summary>颅骨扫射束；ai[0]头whoAmI，ai[1]起始角，ai[2]角速度；未展开无伤</summary>
     internal class PrimeSkullBeamProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
         public override void AI() {
             NPC head = Head;
 
-            //头部失效或已不在主炮状态：快进到收束段
+            //头失效快进收束
             bool hostValid = head.Alives() && head.type == NPCID.SkeletronPrime
                 && (int)head.ai[PrimeAiSlots.HeadStateSlot] == (int)PrimeStateIndex.SkullCannon;
             if (!hostValid && Timer < TotalLife - CollapseTime) {
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
                 SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 1f, Pitch = -0.35f, MaxInstances = 3 }, Projectile.Center);
             }
 
-            //扫射角：展开期定格起始角 → 匀速横扫 → 收束期定格末角
+            //扫射角
             float sweepT = MathHelper.Clamp(Timer - ExpandTime, 0f, SweepFrames);
             Projectile.rotation = Projectile.ai[1] + Projectile.ai[2] * sweepT;
 
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
                 Projectile.Center = head.Center + Projectile.rotation.ToRotationVector2() * 44f;
             }
 
-            //宽度展开/收束缓动
+            //宽度缓动
             float collapseStart = TotalLife - CollapseTime;
             if (Timer < ExpandTime) {
                 float t = Timer / ExpandTime;
@@ -103,12 +103,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
                 return;
             }
 
-            //全功率期间的低频震屏
+            //全功率震屏
             if ((int)Timer % 7 == 0) {
                 PrimeDeathPerformancePlayer.RequestShake(3.2f, 6);
             }
 
-            //沿线飞溅火花
+            //沿线火花
             if (Main.rand.NextBool(2)) {
                 float along = Main.rand.NextFloat();
                 Vector2 sparkPos = Projectile.Center + beamDir * beamLength * along
@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
                     Color.Gold, Main.rand.NextFloat(1f, 1.6f))?.Configure(false, 16);
             }
 
-            //枪口聚能（向心汇聚）
+            //枪口聚能
             if (Main.rand.NextBool(3)) {
                 Vector2 gatherPos = Projectile.Center + Main.rand.NextVector2CircularEdge(70f, 70f);
                 PRTLoader.NewParticle<PRT_Spark>(gatherPos,
@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             }
         }
 
-        //未完全展开时不造成伤害，给玩家反应窗口
+        //未展开无伤
         public override bool? CanDamage() => Timer > ExpandTime ? null : false;
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
                 DrawFallbackBeam(drawPos, rot, outer, mid, core, flicker);
             }
 
-            //枪口辉光：多层呼吸光球 + 十字星闪
+            //枪口辉光
             float muzzleScale = beamWidth / MaxWidth;
             Main.EntitySpriteDraw(glow, drawPos, null, outer * 0.95f, 0f, glow.Size() / 2f,
                 muzzleScale * 2.2f * flicker, SpriteEffects.None, 0);
@@ -194,7 +194,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             shader.CurrentTechnique.Passes[0].Apply();
 
             Texture2D quad = VaultAsset.placeholder2.Value;
-            //视觉宽度大于碰撞宽度，撕裂边缘需要余量
+            //视觉宽>碰撞宽
             float visualWidth = beamWidth * 3.6f;
             sb.Draw(quad, Projectile.Center - Main.screenPosition, null, Color.White, rot,
                 new Vector2(0, quad.Height / 2f),

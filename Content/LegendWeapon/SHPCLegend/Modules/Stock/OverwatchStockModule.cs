@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>守望枪托：静止叠哨戒精度层，动态注入 ShootContext</summary>
+    /// <summary>守望枪托，静止叠哨戒层，注入 ShootContext</summary>
     internal sealed class OverwatchStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;
@@ -21,10 +21,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         private int _stackUpTimer;
 
         public override void Apply(ref ShootContext ctx) {
-            //基础属性：精确但攻速略减
+            //基础，精确但攻速略减
             ctx.SpreadMul += -0.35f;
             ctx.AttackSpeedMul += -0.1f;
-            //当前层数动态注入
+            //层数注入
             ctx.DamageMul += _stacks * DamagePerStack;
             ctx.CritAdd += (int)(_stacks * CritPerStack);
         }
@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         private static void SpawnStackVFX(Player player) {
             if (Main.netMode == Terraria.ID.NetmodeID.Server) return;
             if (player.whoAmI != Main.myPlayer) return;
-            //简短的提示粒子，避免长期堆积
+            //短促提示粒子
             for (int i = 0; i < 6; i++) {
                 Vector2 angle = MathHelper.TwoPi * i / 6f * Vector2.One;
                 Vector2 vel = (MathHelper.TwoPi * i / 6f).ToRotationVector2() * 2.5f;

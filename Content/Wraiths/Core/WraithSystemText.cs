@@ -3,10 +3,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Wraiths.Core
 {
-    /// <summary>
-    /// 厉鬼框架级文案（残句美学，zh-Hans 正典）。键：Mods.CalamityOverhaul.Wraiths.System.*，
-    /// 与定义文案同住 Wraiths.hjson；随 <see cref="ICWRLoader"/> 在 Mod.Load 期装载
-    /// </summary>
+    /// <summary>框架级文案，键 Wraiths.System.*，Mod.Load 装载</summary>
     internal sealed class WraithSystemText : ILocalizedModType, ICWRLoader
     {
         public Mod Mod => CWRMod.Instance;
@@ -16,37 +13,37 @@ namespace CalamityOverhaul.Content.Wraiths.Core
 
         /// <summary>死机入场浮字</summary>
         public static LocalizedText HaltPopup { get; private set; }
-        /// <summary>死机窗口头顶提示，{0}=借力键名</summary>
+        /// <summary>死机窗头顶提示，{0}=借力键</summary>
         public static LocalizedText RitePrompt { get; private set; }
         /// <summary>首次铭刻回执，{0}=鬼名</summary>
         public static LocalizedText RiteFirstBind { get; private set; }
-        /// <summary>重续契约（认主）回执，{0}=鬼名</summary>
+        /// <summary>认主回执，{0}=鬼名</summary>
         public static LocalizedText RiteRenewPact { get; private set; }
-        /// <summary>重新收伏（反噬平定）回执，{0}=鬼名</summary>
+        /// <summary>收伏回执，{0}=鬼名</summary>
         public static LocalizedText RiteResubdue { get; private set; }
-        /// <summary>对封印之鬼行仪式被拒</summary>
+        /// <summary>封印之鬼仪式被拒</summary>
         public static LocalizedText RiteDeniedSealed { get; private set; }
-        /// <summary>对他人挣脱体行仪式被拒（挣脱体只认放走它的那只手）</summary>
+        /// <summary>他人挣脱体仪式被拒</summary>
         public static LocalizedText RiteDeniedEscaped { get; private set; }
-        /// <summary>借力被拒：未持载体</summary>
+        /// <summary>借力拒，未持载体</summary>
         public static LocalizedText PowerDeniedNoVessel { get; private set; }
-        /// <summary>借力被拒：该鬼正挣脱在外（鬼不在簿上，力借不出来）</summary>
+        /// <summary>借力拒，鬼正挣脱在外</summary>
         public static LocalizedText PowerDeniedEscaped { get; private set; }
-        /// <summary>借力被拒：簿上无可借之力</summary>
+        /// <summary>借力拒，簿上无可借</summary>
         public static LocalizedText PowerDeniedNoBound { get; private set; }
-        /// <summary>借力被拒：冷却未过</summary>
+        /// <summary>借力拒，冷却中</summary>
         public static LocalizedText PowerDeniedCooldown { get; private set; }
         /// <summary>犯戒回执，{0}=鬼名</summary>
         public static LocalizedText PowerTaboo { get; private set; }
         /// <summary>反噬挣脱播报，{0}=鬼名</summary>
         public static LocalizedText BacklashEscape { get; private set; }
-        /// <summary>挣脱之鬼自行散去（未收伏），{0}=鬼名</summary>
+        /// <summary>挣脱体自行散去，{0}=鬼名</summary>
         public static LocalizedText BacklashFade { get; private set; }
-        /// <summary>侵蚀一阶残句</summary>
+        /// <summary>侵蚀一阶</summary>
         public static LocalizedText ErosionCrawl { get; private set; }
-        /// <summary>侵蚀二阶残句</summary>
+        /// <summary>侵蚀二阶</summary>
         public static LocalizedText ErosionStain { get; private set; }
-        /// <summary>侵蚀三阶残句</summary>
+        /// <summary>侵蚀三阶</summary>
         public static LocalizedText ErosionMirror { get; private set; }
 
         void ICWRLoader.LoadData() {

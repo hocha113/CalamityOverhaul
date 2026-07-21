@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 {
-    //SHPC HUD 教程目标，位置由 SHPCTheme 常量推算
+    //SHPC HUD教程目标，对齐SHPCTheme
     internal class SHPCHUDTargets : ILoadable
     {
         private const int SectorCount = 4;
@@ -18,10 +18,10 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 
         public void Unload() => CybTutorialRegistry.Clear();
 
-        //核心节点位置，与SHPCUI.GetCorePosition()完全一致
+        //对齐SHPCUI.CorePos
         internal static Vector2 CorePos => new(96f, Main.screenHeight - 96f);
 
-        //复现SHPCUI.GetSectorAngles私有方法，仅依赖SHPCTheme公开常量
+        //复现SHPCUI.GetSectorAngles(私有)
         internal static void GetSectorAngles(int idx, out float aStart, out float aEnd) {
             float total = SHPCTheme.FanEnd - SHPCTheme.FanStart;
             float gap = SHPCTheme.ButtonGap;

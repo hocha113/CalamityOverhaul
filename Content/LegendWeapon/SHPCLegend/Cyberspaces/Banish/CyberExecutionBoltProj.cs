@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
         private float visibleStart;
         private float visibleEnd;
         private float fadeAlpha;
-        //fork 终点：主干 ai[2]→localAI[1]/[2]
+        //fork 终点 localAI[1]/[2]
         private Vector2 forkEndOverride;
         private bool hasForkEnd;
 
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
         }
 
         public override void AI() {
-            //ai[1]延迟阶段：保持隐藏并刷新存活时间
+            //ai1 延迟，隐藏保活
             if (Projectile.ai[1] > 0) {
                 Projectile.ai[1]--;
                 Projectile.timeLeft = MaxLife;
@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             }
 
             if (!pathReady) {
-                //fork自带终点覆写：由生成方将终点坐标编码到localAI[1]/[2]
+                //fork 终点写 localAI[1]/[2]
                 if (IsFork && (Projectile.localAI[1] != 0f || Projectile.localAI[2] != 0f)) {
                     forkEndOverride = new Vector2(Projectile.localAI[1], Projectile.localAI[2]);
                     hasForkEnd = true;
@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             //仅在延伸+全亮阶段（t < 0.65）发射，消退时不再补充
             if (t > 0.65f) return;
 
-            //末端位置：当前visibleEnd对应的曲线点
+            //末端=visibleEnd 曲线点
             int endIdx = Math.Clamp((int)(visibleEnd * (pointCount - 1)), 0, pointCount - 1);
             Vector2 endPos = points[endIdx];
 
@@ -155,11 +155,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
         }
 
         private void GeneratePath() {
-            //先确定起点与终点：用"主轴+垂直偏移"模型，避免随机漫步导致的折叠/扭曲与急拐断裂
+            //主轴+垂偏，避漫步折叠
             Vector2 start = Projectile.Center;
             Vector2 end;
             if (!ResolveEndPoint(out end)) {
-                //Fallback：沿入射角延伸一个默认长度
+                //Fallback 沿入射延伸
                 float defaultLen = IsFork ? 240f : 900f;
                 end = start + Projectile.ai[0].ToRotationVector2() * defaultLen;
             }
@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             Vector2 axis = end - start;
             float length = axis.Length();
             if (length < 1f) {
-                //长度过小时退化为短直线，至少保证两个端点，避免后续除零
+                //过短退化为两端直线
                 points = new Vector2[2] { start, end };
                 pointCount = 2;
                 return;
@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             //至少保留4个关键点供Catmull-Rom插值
             if (keyCount < 4) keyCount = 4;
 
-            //横向抖动幅度：主干更大、fork更小；并随长度成比例缩放但有上限
+            //横抖，主干大 fork 小
             float baseAmp = IsFork
                 ? MathF.Min(length * 0.18f, 90f)
                 : MathF.Min(length * 0.16f, 220f);
@@ -190,14 +190,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             keys[0] = start;
             keys[keyCount - 1] = end;
 
-            //中间关键点：沿主轴均匀分布 + 垂直方向带"包络抖动"，端点处包络为0以保证精确连接
+            //关键点主轴均分+包络抖，端点0
             //包络采用 sin(t*PI)，中段最大、两端为0
             float prevOffset = 0f;
             for (int i = 1; i < keyCount - 1; i++) {
                 float t = (float)i / (keyCount - 1);
                 Vector2 onAxis = Vector2.Lerp(start, end, t);
                 float envelope = MathF.Sin(t * MathF.PI);
-                //生成带轻微"惯性"的偏移：本次目标 = 随机偏移；通过插值使曲线相对平滑而非锯齿
+                //惯性格偏移插值
                 float target = Main.rand.NextFloat(-1f, 1f) * baseAmp * envelope;
                 float offset = MathHelper.Lerp(prevOffset, target, 0.65f);
                 prevOffset = offset;
@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                 keys[i] = onAxis + perp * (offset + jitter);
             }
 
-            //Catmull-Rom 细分：每段插入若干子点，得到光滑无急拐的曲线
+            //Catmull-Rom 细分
             int subPerSeg = IsFork ? 4 : 6;
             int segCount = keyCount - 1;
             pointCount = segCount * subPerSeg + 1;
@@ -225,7 +225,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             points[writeIdx] = keys[keyCount - 1];
         }
 
-        /// <summary>解析终点：主干用 ai2 NPC，fork 用 localAI 覆写</summary>
+        /// <summary>终点，主干 ai2 NPC，fork localAI</summary>
         private bool ResolveEndPoint(out Vector2 end) {
             if (IsFork) {
                 if (hasForkEnd) {
@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             if (targetIdx >= 0 && targetIdx < Main.maxNPCs) {
                 NPC npc = Main.npc[targetIdx];
                 if (npc.active) {
-                    //命中点带轻微抖动避免所有雷打到同一像素
+                    //命中点微抖
                     end = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.3f, npc.height * 0.3f);
                     return true;
                 }
@@ -292,7 +292,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                 Vector2 tangent = points[bIdx] - points[aIdx];
                 float baseAngle = tangent.LengthSquared() < 1f ? Projectile.ai[0] : tangent.ToRotation();
                 float forkAngle = baseAngle + Main.rand.NextFloat(-1.4f, 1.4f);
-                //fork终点：沿forkAngle再外延一段，制造"四散电弧"的观感
+                //fork 沿角外延
                 Vector2 forkEnd = origin + forkAngle.ToRotationVector2() * Main.rand.NextFloat(180f, 320f);
 
                 //fork纯视觉，不造成伤害
@@ -349,7 +349,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             trail.TrailPositions = points;
 
             shader.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
-            //取主人玩家的领域时间；远端客户端不能读 Local，否则雷击节奏与主人不一致
+            //uTime 取主人领域时间
             CyberspacePlayer ownerCp = Cyberspace.For(Projectile.owner);
             float effectTime = ownerCp != null && ownerCp.Active
                 ? ownerCp.EffectTime
@@ -363,7 +363,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
 
             GraphicsDevice device = Main.graphics.GraphicsDevice;
             device.BlendState = BlendState.Additive;
-            //叠加两次绘制制造光晕：第一次正常宽度，第二次加宽降亮做外辉光
+            //双绘光晕
             trail.DrawTrail(shader);
 
             shader.Parameters["fadeAlpha"]?.SetValue(MathHelper.Clamp(fadeAlpha * 0.55f, 0f, 1f));

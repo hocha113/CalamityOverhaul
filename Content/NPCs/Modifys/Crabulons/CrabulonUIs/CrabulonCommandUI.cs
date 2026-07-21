@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
 {
-    /// <summary>菌生蟹可下达的指令</summary>
+    /// <summary>指令枚举</summary>
     internal enum CrabCommand
     {
         Crouch,
@@ -21,12 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         Release
     }
 
-    /// <summary>
-    /// 菌生蟹指令环状态机：贴着宠物本体绘制的世界锚定 UI（非屏幕面板），绘制见 <see cref="CrabulonClusterRenderer"/>。
-    /// 靠近本机已驯蟹时，蟹背上方浮现一颗小菌芽（展开键）；点击它在蟹身周绽放菌盖指令环，再点花瓣下令。
-    /// 生命/饱食光环与名牌仅在悬停宠物或开环时显示，受击时短暂闪现，绝不靠近就铺一整块面板。
-    /// 骑乘=右键、装鞍=手持鞍具左键，仍走世界交互，本类不接管。
-    /// </summary>
+    /// <summary>指令环状态机，世界锚定；绘见CrabulonClusterRenderer；骑乘/装鞍仍走世界交互</summary>
     internal class CrabulonCommandController : ModPlayer
     {
         public static CrabulonCommandController Local => Main.LocalPlayer?.GetModPlayer<CrabulonCommandController>();
@@ -53,7 +48,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         public IReadOnlyList<Spore> Spores => spores;
         private float sporeTimer;
 
-        //展开键出现的距离（世界像素）
+        //展开键出现距离
         private const float DetectRange = 360f;
 
         public override void PostUpdate() {
@@ -75,7 +70,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             }
         }
 
-        //遍历本机已驯蟹：刷新受击闪光（纯本地视觉），返回悬停目标并输出范围内最近目标
+        //扫本机已驯蟹，回悬停/最近
         private ModifyCrabulon ScanCrabulons(out ModifyCrabulon nearest) {
             ModifyCrabulon hovered = null;
             nearest = null;
@@ -101,7 +96,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 }
 
                 if (m.Mount) {
-                    continue;//骑乘态由骑乘血条接管
+                    continue;//骑乘走骑乘血条
                 }
                 if (m.hoverNPC) {
                     hovered = m;
@@ -116,7 +111,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         }
 
         private void UpdateFocus(ModifyCrabulon hovered, ModifyCrabulon nearest) {
-            //开环期间焦点锁定在该蟹，避免多蟹相邻时悬停另一只导致绘制与命中错位
+            //开环锁焦点
             ModifyCrabulon desired = WheelOpen ? wheelTarget : (hovered ?? nearest);
             if (desired != null && !desired.Mount) {
                 Focus = desired;
@@ -153,7 +148,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 return;
             }
 
-            //开环目标失效则收起
+            //目标失效收起
             if (WheelOpen && (wheelTarget == null || !wheelTarget.npc.Alives() || wheelTarget.Mount
                 || wheelTarget.FeedValue <= 0f
                 || wheelTarget.npc.DistanceSQ(Player.Center) > DetectRange * 1.4f * (DetectRange * 1.4f))) {
@@ -165,7 +160,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 && (Main.MouseWorld - buttonWorld).Length() < CrabulonClusterRenderer.ButtonHitRadius;
             ButtonHover = MathHelper.Lerp(ButtonHover, overButton ? 1f : 0f, 0.2f);
 
-            //指令环命中与悬停
+            //环命中/悬停
             if (WheelOpen) {
                 HoveredCommand = WorldHitTest(wheelTarget);
                 if (HoveredCommand != lastHover) {
@@ -182,12 +177,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 HoveredCommand = -1;
             }
 
-            //占据鼠标：仅当光标落在展开键或指令环上，避免误触世界
+            //占鼠标仅键/环上
             if (overButton || (WheelOpen && (HoveredCommand >= 0 || WithinWheelBand(wheelTarget)))) {
                 Player.mouseInterface = true;
             }
 
-            //右键：开环时即时取消（不触发骑乘）
+            //开环右键取消
             if (WheelOpen && Main.mouseRight && Main.mouseRightRelease) {
                 Main.mouseRightRelease = false;
                 CloseWheel(false);
@@ -198,7 +193,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 return;
             }
 
-            //左键点击分发
+            //左键分发
             if (overButton) {
                 if (WheelOpen) {
                     CloseWheel(false);
@@ -217,7 +212,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 Main.mouseLeftRelease = false;
                 return;
             }
-            //点在环内死区（蟹身）= 收起并吃掉点击；点在环外远处 = 收起但放行给世界
+            //环内死区收起吃点击，环外收起放行
             float bodyR = CrabulonClusterRenderer.BodyRadius(wheelTarget.npc);
             if ((Main.MouseWorld - wheelTarget.npc.Center).Length() < bodyR + 12f) {
                 CloseWheel(false);
@@ -236,7 +231,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
 
             if (cmd == CrabCommand.Release) {
                 if (!ReleaseArmed) {
-                    ReleaseArmed = true;//首击仅武装，需再次确认
+                    ReleaseArmed = true;//首击武装，再确认
                     SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.45f, Pitch = -0.4f });
                 }
                 else {
@@ -252,14 +247,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                     SoundEngine.PlaySound(CWRSound.ButtonZero);
                     wheelTarget.Crouch = !wheelTarget.Crouch;
                     wheelTarget.SendNetWork();
-                    break;//切换后保持开环，便于连续操作
+                    break;//切换后保持开环
                 case CrabCommand.Recall:
                     wheelTarget.Networking.SendRecallRequest();
                     SoundEngine.PlaySound(SoundID.Item6 with { Volume = 0.4f, Pitch = 0.3f });
                     break;
                 case CrabCommand.Unsaddle:
                     DoUnsaddle(wheelTarget);
-                    CloseWheel(true);//鞍具集合变动，收起重置
+                    CloseWheel(true);//鞍具变则收起
                     break;
             }
         }
@@ -281,7 +276,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             lastHover = -1;
             ReleaseArmed = false;
             WheelOpen = true;
-            target.uiCommandOpen = true;//开环期间屏蔽右键上马
+            target.uiCommandOpen = true;//开环屏蔽右键上马
             SoundEngine.PlaySound(SoundID.MenuOpen with { Volume = 0.4f, Pitch = 0.25f }, target.npc.Center);
         }
 
@@ -375,7 +370,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         }
         #endregion
 
-        //世界坐标极坐标命中：返回指令索引或 -1（落在死区或环外）
+        //极坐标命中，-1死区/环外
         private int WorldHitTest(ModifyCrabulon m) {
             int count = activeCommands.Count;
             if (count <= 0 || m == null) {
@@ -415,7 +410,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             return a;
         }
 
-        //首扇区中线朝正上方，顺时针排布
+        //首扇区朝上顺时针
         public static void GetSectorAngles(int idx, int count, out float aStart, out float aEnd) {
             if (count <= 0) {
                 aStart = aEnd = 0f;
@@ -429,10 +424,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         }
     }
 
-    /// <summary>
-    /// 菌生蟹世界锚定 UI 的矢量绘制层，复用 <see cref="HalibutRenderer"/> 的弧/环/辉光原语，配荧光真菌色板。
-    /// 由 <see cref="ModifyCrabulon.PostDraw"/> 在世界批次内逐蟹调用，状态读 <see cref="CrabulonCommandController"/>。
-    /// </summary>
+    /// <summary>世界锚定矢量绘，复用HalibutRenderer；ModifyCrabulon.PostDraw逐蟹调</summary>
     internal static class CrabulonClusterRenderer
     {
         internal static readonly Color Cyan = new(70, 220, 205);
@@ -443,13 +435,13 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         internal static readonly Color Warm = new(255, 205, 120);
         internal static readonly Color TextCol = new(200, 245, 235);
 
-        //展开键基础缩放与点击半径，二者同源以保证视觉与命中一致
+        //展开键缩放=点击半径
         internal const float ButtonBaseScale = 2f;
         internal const float ButtonHitRadius = 5.2f * ButtonBaseScale + 6f;
 
         public static float BodyRadius(NPC npc) => MathHelper.Clamp(MathF.Max(npc.width, npc.height) * 0.5f, 40f, 90f);
 
-        //展开键世界坐标：蟹背上方，带轻微呼吸浮动；开环时上抬至指令环顶上方，避免与顶部花瓣重叠
+        //展开键蟹背上，开环上抬
         public static Vector2 ButtonWorld(ModifyCrabulon m, float time, float wheelProgress = 0f)
             => m.npc.Top + new Vector2(0f, -16f - MathHelper.Clamp(wheelProgress, 0f, 1f) * 46f + MathF.Sin(time * 2f) * 1.6f);
 
@@ -506,7 +498,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             }
         }
 
-        //生命/饱食弧形光环，弧线贴着蟹壳顶部，像一圈发亮的鳃裂
+        //生命/饱食顶弧
         private static void DrawVitalHalo(SpriteBatch sb, ModifyCrabulon m, Vector2 center, float bodyR, float alpha, float time) {
             float hp = m.npc.lifeMax > 0 ? MathHelper.Clamp((float)m.npc.life / m.npc.lifeMax, 0f, 1f) : 0f;
             float feed = MathHelper.Clamp(m.FeedValue / CrabulonConstants.MaxFeedValue, 0f, 1f);
@@ -519,7 +511,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             float a0 = mid - half;
             float a1 = mid + half;
 
-            //生命：暗轨 + 填充
+            //生命弧
             HalibutRenderer.DrawArcStroke(sb, center, hpR, a0, a1, 4.5f, Dark * (0.7f * alpha));
             Color hpCol = hp > 0.5f ? Color.Lerp(Green, Cyan, (hp - 0.5f) * 2f) : Color.Lerp(Danger, Green, hp * 2f);
             if (m.uiDamageFlash > 0.01f) {
@@ -530,7 +522,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             HalibutRenderer.DrawSoftGlow(sb, center + HalibutRenderer.AngleDir(hpEnd) * hpR, 6f,
                 (hpCol with { A = 0 }) * (alpha * (0.4f + breath * 0.3f)));
 
-            //饱食：内侧更细更暗
+            //饱食弧
             float fa0 = a0 + 0.14f;
             float fa1 = a1 - 0.14f;
             HalibutRenderer.DrawArcStroke(sb, center, feedR, fa0, fa1, 2.6f, Dark * (0.6f * alpha));
@@ -571,7 +563,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                     HalibutRenderer.DrawArc(sb, center, rIn, rOut, aStart, aEnd, accent * (hover * 0.18f * a));
                 }
 
-                //描边与径向封口
+                //描边封口
                 Color border = Color.Lerp(accent * 0.7f, Glow, hover);
                 HalibutRenderer.DrawArcStroke(sb, center, rOut - 0.5f, aStart, aEnd, 1.4f, border * a);
                 HalibutRenderer.DrawArcStroke(sb, center, rIn + 0.5f, aStart, aEnd, 1f, border * (0.55f * a));
@@ -580,7 +572,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 HalibutRenderer.DrawLine(sb, center + dS * rIn, center + dS * rOut, 1.1f, border * (0.5f * a));
                 HalibutRenderer.DrawLine(sb, center + dE * rIn, center + dE * rOut, 1.1f, border * (0.5f * a));
 
-                //放生武装后外缘红环脉动
+                //放生武装红环
                 if (armedRelease) {
                     HalibutRenderer.DrawArcStroke(sb, center, rOut + 3f, aStart, aEnd, 2.2f, Danger * a);
                 }
@@ -590,7 +582,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 DrawCommandGlyph(sb, cmds[i], m, iconPos, accent, hover, a);
             }
 
-            //放生确认提示（环下方）
+            //放生确认提示
             if (ctrl.HoveredCommand >= 0 && ctrl.HoveredCommand < count
                 && cmds[ctrl.HoveredCommand] == CrabCommand.Release && ctrl.ReleaseArmed) {
                 HalibutRenderer.DrawGlowTextCentered(sb, ModifyCrabulon.ReleaseConfirmText.Value,
@@ -612,7 +604,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             HalibutRenderer.DrawGlowTextCentered(sb, label, iconPos, textColor, glowColor, 0.62f + hover * 0.05f);
         }
 
-        //展开键：一颗发亮小菌芽，'+' 随开环渐变为 'x'
+        //展开键 +→x
         private static void DrawBloomButton(SpriteBatch sb, ModifyCrabulon m, CrabulonCommandController ctrl,
             float appear, float wheel, float time) {
             Vector2 pos = ButtonWorld(m, time, wheel) - Main.screenPosition;
@@ -633,7 +625,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             HalibutRenderer.DrawLine(sb, pos - ax, pos + ax, 1.5f, glyph);
             HalibutRenderer.DrawLine(sb, pos - ay, pos + ay, 1.5f, glyph);
 
-            //悬停展开键时给一行极小提示，教学用
+            //悬停展开键提示
             if (hover > 0.25f && wheel < 0.05f) {
                 HalibutRenderer.DrawGlowTextCentered(sb, ModifyCrabulon.CommandHintText.Value,
                     pos + new Vector2(0f, -16f), TextCol * (appear * hover * 0.85f), Color.Black * (0.3f * appear), 0.52f);
@@ -669,7 +661,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 sc * (info * pulse), sc * (0.2f * info), 0.6f);
         }
 
-        //鞍具悬停提示，沿用旧世界交互的视觉（绘于光标处）
+        //鞍具悬停提示
         private static void DrawSaddleHover(SpriteBatch sb, ModifyCrabulon m, float alpha) {
             if (!m.hoverNPC) {
                 return;

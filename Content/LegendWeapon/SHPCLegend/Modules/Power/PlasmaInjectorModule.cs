@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>等离子注入器：球爆后留等离子残阳灼烧+日珥追打</summary>
+    /// <summary>等离子注入器，球爆留残阳灼烧+日珥追打</summary>
     internal sealed class PlasmaInjectorModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 
         public override void OnOrbDetonation(CyberChargeOrbProj orb) {
             if (orb.Projectile.owner != Main.myPlayer) return;
-            //同屏只保留一颗残阳：旧日凋零，新日升起
+            //同屏只留一颗残阳，旧的 Kill
             int sunType = ModContent.ProjectileType<SHPCPlasmaSunProj>();
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile p = Main.projectile[i];
@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 
             Lighting.AddLight(Projectile.Center, SunSurface.ToVector3() * 1.4f * fadeAlpha);
 
-            //表面持续蒸腾的等离子余烬
+            //表面等离子余烬
             if (Main.netMode != NetmodeID.Server && Main.GameUpdateCount % 3 == 0) {
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
                 Vector2 surfacePos = Projectile.Center + ang.ToRotationVector2() * Main.rand.NextFloat(48f, 66f) * fadeAlpha;
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                     Color.White, Main.rand.NextFloat(0.5f, 1.0f))?.SetLifetime(20, 40);
             }
 
-            //日珥火舌：周期性喷向最近敌人
+            //日珥火舌周期喷出
             flareTimer++;
             if (flareTimer >= FlareInterval && fadeAlpha > 0.6f) {
                 flareTimer = 0;
@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         public override void OnKill(int timeLeft) {
             if (Main.netMode == NetmodeID.Server) return;
             SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.5f, Pitch = -0.5f }, Projectile.Center);
-            //塌缩：等离子向心回吸后散为余烬
+            //塌缩回吸散余烬
             for (int i = 0; i < 18; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(7f, 7f);
                 PRTLoader.NewParticle<PRT_LavaFire>(Projectile.Center + vel * 6f, vel * 0.4f,
@@ -183,10 +183,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         }
     }
 
-    /// <summary>
-    /// 日珥火舌：残阳喷出的高温等离子流，轻微追踪目标，
-    /// 命中点燃敌人并爆出火焰飞溅
-    /// </summary>
+    /// <summary>日珥火舌，轻追目标，命中点燃</summary>
     internal sealed class SHPCSolarFlareProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -205,7 +202,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         }
 
         public override void AI() {
-            //轻微追踪：让火舌像活物般舔向目标
+            //轻追
             NPC target = Projectile.Center.FindClosestNPC(420f, false, true);
             if (target != null) {
                 Vector2 desired = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * 15f;
@@ -251,7 +248,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 spriteBatch.Draw(glow, drawPos, null, new Color(255, 230, 180, 0), 0f, origin, 0.3f, SpriteEffects.None, 0f);
             }
             if (shot != null) {
-                //彗尾朝速度反向
+                //彗尾反向
                 Vector2 origin = new(shot.Width, shot.Height * 0.5f);
                 spriteBatch.Draw(shot, drawPos, null, new Color(255, 110, 50, 0) * 0.75f,
                     Projectile.rotation, origin, new Vector2(0.55f, 0.3f), SpriteEffects.None, 0f);

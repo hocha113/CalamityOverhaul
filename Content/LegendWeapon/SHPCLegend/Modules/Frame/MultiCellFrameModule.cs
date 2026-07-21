@@ -12,14 +12,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>多格机匣：周身六格能量矩阵，光束命中逐格充能，六格集满向目标齐射六道定位光束</summary>
+    /// <summary>多格机匣，周身六格矩阵，命中逐格充能，满格齐射六道定位束</summary>
     internal sealed class MultiCellFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;
         //多重荧绿
         public override Color TintColor => new(100, 255, 80);
 
-        //光束/激光命中的充能内置冷却（帧）：激光命中频次高，冷却翻倍
+        //充能内置冷却帧，激光冷却翻倍
         private const float ChargeICDBeam = 6f;
         private const float ChargeICDLaser = 12f;
 
@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
-            //齐射光束与其他派生光束不回充，防止自循环
+            //齐射/派生不回充，防自循环
             if (beam.IsDerived) return;
             ChargeCell(beam.Projectile, target, ChargeICDBeam);
         }
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             ChargeCell(laser.Projectile, target, ChargeICDLaser);
         }
 
-        /// <summary>为矩阵充能一格，拥有者端执行</summary>
+        /// <summary>矩阵充能一格，拥有者端</summary>
         private static void ChargeCell(Projectile source, NPC target, float icdFrames) {
             if (source.owner != Main.myPlayer) return;
             if (target == null || !target.active || target.friendly) return;
@@ -66,8 +66,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
     }
 
     /// <summary>
-    /// 六格能量矩阵：环绕玩家的六边形单元格阵列（SHPCModHexCell.fx 逐格绘制）；
-    /// ai[0]=充能格数（同步），ai[1]=齐射蓄势倒数；改件卸下或换武器自毁
+    /// 六格能量矩阵，环绕六边形阵列（SHPCModHexCell.fx）；
+    /// ai[0]=充能格数，ai[1]=齐射蓄势倒数；卸改件/换武器自毁
     /// </summary>
     internal sealed class SHPCMultiCellMatrixProj : ModProjectile, IAdditiveDrawable
     {
@@ -75,17 +75,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
         private const int CellCount = 6;
         private const float RingRadius = 62f;
-        //单格画布边长（px），六边形绘制在此 quad 内
+        //单格画布边长 px
         private const float CellQuadSize = 46f;
-        //满格→齐射的蓄势帧数（预备动作窗口，全格脉冲可读）
+        //满格→齐射蓄势帧
         private const float SalvoDelayFrames = 14f;
-        //齐射后冷却帧数，期间不充能
+        //齐射后冷却帧，期间不充能
         private const float SalvoCooldownFrames = 45f;
-        //每道齐射光束伤害占武器伤害比例
+        //齐射束伤占武器伤比例
         private const float SalvoDamageRatio = 0.45f;
-        //齐射光束追踪强度（定位光束的可靠命中来源）
+        //齐射束追踪强度
         private const float SalvoHomingMul = 2.6f;
-        //记录目标的有效追射距离与失效重索半径
+        //目标追射距离与失效重索半径
         private const float TargetKeepRange = 1400f;
         private const float RetargetRange = 1100f;
 
@@ -93,18 +93,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         private static readonly Color MatrixDim = new(20, 120, 70);
         private static readonly Color MatrixCore = new(215, 255, 205);
 
-        /// <summary>已充能格数 0~6，经 ai[0] 网络同步</summary>
+        /// <summary>已充能格数 0~6，ai[0] 同步</summary>
         private int Charge {
             get => (int)Projectile.ai[0];
             set => Projectile.ai[0] = value;
         }
-        /// <summary>齐射蓄势倒数，>0 表示满格待发；仅拥有者端推进</summary>
+        /// <summary>齐射蓄势倒数，>0 满格待发，仅拥有者推进</summary>
         private float SalvoDelay {
             get => Projectile.ai[1];
             set => Projectile.ai[1] = value;
         }
 
-        //───── 本地视觉状态（各端由 Charge 变化独立推演，不需同步）─────
+        //本地视觉状态，各端由 Charge 独立推演
         private readonly float[] cellFlash = new float[CellCount];
         private readonly float[] cellFill = new float[CellCount];
         private float salvoFlash;
@@ -112,16 +112,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         private float ringSpin;
         private float spawnFade;
         private float readyPulse;
-        /// <summary>冷却可视量 1→0：齐射事件各端独立置 1，按冷却总帧数衰减，
-        /// 与拥有者端真实 salvoCooldown 同节奏，让"空格但不充能"可读</summary>
+        /// <summary>冷却可视量 1→0，齐射各端置 1 按冷却帧衰减，
+        /// 与拥有者 salvoCooldown 同节奏，空格不充能可读</summary>
         private float cooldownVisual;
         private int prevCharge;
 
-        //───── 拥有者端逻辑状态 ─────
+        //拥有者端逻辑状态
         private float chargeIcd;
         private float salvoCooldown;
         private int pendingTarget = -1;
-        //目标 type 双重校验：蓄势期内 NPC 槽位可能被复用（参考 SHPCHeavyMaulProj 惯例）
+        //目标 type 双校验，蓄势期槽位可能复用
         private int pendingTargetType = -1;
 
         public override void SetDefaults() {
@@ -135,13 +135,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             Projectile.timeLeft = 30;
         }
 
-        /// <summary>阵位 i 的世界坐标（随环旋转）</summary>
+        /// <summary>阵位 i 世界坐标，随环旋转</summary>
         private Vector2 CellWorldPos(int index) =>
             Projectile.Center + (ringRotation + MathHelper.TwoPi * index / CellCount).ToRotationVector2() * RingRadius;
 
         /// <summary>
-        /// 模块钩子调用：命中充能一格，拥有者端执行；
-        /// 满格转入蓄势倒数，倒数结束由 AI 触发齐射
+        /// 命中充能一格，拥有者端；
+        /// 满格进蓄势，倒数尽 AI 触发齐射
         /// </summary>
         public void TryCharge(NPC target, float icdFrames) {
             if (Projectile.owner != Main.myPlayer) return;
@@ -171,13 +171,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             Projectile.timeLeft = 30;
 
             float timeScale = TimeGear.TimeScale;
-            //弹性跟随玩家，环心带一点尾随感
+            //弹性跟随玩家
             Projectile.Center = Vector2.Lerp(Projectile.Center, owner.Center, 0.3f);
 
             int chargeNow = Math.Clamp(Charge, 0, CellCount);
             bool ready = SalvoDelay > 0f || chargeNow >= CellCount;
 
-            //环旋转：充能越多越快，待发提速蓄势，齐射瞬间反冲加转
+            //环旋转，充能越快，待发提速，齐射反冲
             float targetSpin = 0.008f + chargeNow * 0.0035f + (ready ? 0.045f : 0f);
             ringSpin = MathHelper.Lerp(ringSpin, targetSpin, 0.1f);
             ringRotation += (ringSpin + salvoFlash * 0.06f) * timeScale;
@@ -188,12 +188,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             cooldownVisual = MathF.Max(cooldownVisual - timeScale / SalvoCooldownFrames, 0f);
             for (int i = 0; i < CellCount; i++) {
                 cellFlash[i] = MathF.Max(cellFlash[i] - 0.07f, 0f);
-                //充能格填充平滑过渡：点亮渐涨、齐射排空渐落
+                //充能格平滑过渡
                 float fillTarget = i < chargeNow ? 1f : 0f;
                 cellFill[i] = MathHelper.Lerp(cellFill[i], fillTarget, 0.16f);
             }
 
-            //状态变化检测：各端由同步的 Charge 驱动音画反馈
+            //Charge 变化驱动音画
             if (chargeNow != prevCharge) {
                 if (chargeNow > prevCharge) {
                     OnCellCharged(chargeNow);
@@ -204,7 +204,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 prevCharge = chargeNow;
             }
 
-            //拥有者端：计时推进与齐射触发
+            //拥有者端计时与齐射
             if (Projectile.owner == Main.myPlayer) {
                 chargeIcd = MathF.Max(chargeIcd - timeScale, 0f);
                 salvoCooldown = MathF.Max(salvoCooldown - timeScale, 0f);
@@ -217,7 +217,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 }
             }
 
-            //充能格逸散微粒
+            //充能格微粒
             if (Main.netMode != NetmodeID.Server) {
                 for (int i = 0; i < chargeNow; i++) {
                     if (!Main.rand.NextBool(26)) continue;
@@ -231,7 +231,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             Lighting.AddLight(Projectile.Center, MatrixMain.ToVector3() * (0.12f + chargeNow * 0.05f) * spawnFade);
         }
 
-        /// <summary>第 chargeNow 格点亮：逐格上升音 + 六边形碎屑；满格附加就绪提示</summary>
+        /// <summary>第 chargeNow 格点亮，上升音+碎屑，满格就绪提示</summary>
         private void OnCellCharged(int chargeNow) {
             int idx = Math.Clamp(chargeNow - 1, 0, CellCount - 1);
             cellFlash[idx] = 1f;
@@ -246,14 +246,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                     MatrixMain, Main.rand.NextFloat(0.4f, 0.8f)).Configure(MatrixDim, Main.rand.Next(10, 18));
             }
             if (chargeNow >= CellCount) {
-                //六格集满：就绪提示音 + 扩散环
+                //六格集满就绪音+扩散环
                 SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.55f, Pitch = 0.35f }, Projectile.Center);
                 PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
                     MatrixMain with { A = 0 }, 0.05f).Configure(0.05f, 0.4f, 16);
             }
         }
 
-        /// <summary>齐射瞬间（Charge 6→0）：六格闪白爆发，各端本地播放</summary>
+        /// <summary>齐射瞬间 Charge 6→0，六格闪白，各端本地</summary>
         private void OnSalvoFired() {
             salvoFlash = 1f;
             cooldownVisual = 1f;
@@ -280,10 +280,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 MatrixMain with { A = 0 }, 0.05f).Configure(0.05f, 0.65f, 20);
         }
 
-        /// <summary>矩阵齐射：从六个阵位向目标各射一道定位光束（IsDerived 防递归）</summary>
+        /// <summary>矩阵齐射，六阵位定位束，IsDerived 防递归</summary>
         private void DoSalvo(Player owner) {
-            //目标解析：优先最后充能命中的目标，失效则就近重索；
-            //type 比对拦截蓄势期内槽位被新怪复用的顶替者
+            //目标优先末次充能命中，失效就近重索；
+            //type 比对拦蓄势期槽复用
             NPC target = null;
             if (pendingTarget >= 0 && pendingTarget < Main.maxNPCs) {
                 NPC cand = Main.npc[pendingTarget];
@@ -295,7 +295,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             }
             target ??= Projectile.Center.FindClosestNPC(RetargetRange, false, true);
             if (target == null) {
-                //无目标：保持满格待发，稍后重试
+                //无目标保持满格待发
                 SalvoDelay = 15f;
                 return;
             }
@@ -326,7 +326,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         }
 
         public override void OnKill(int timeLeft) {
-            //回收解体：六格碎屑，避免凭空消失
+            //回收六格碎屑
             if (Main.netMode == NetmodeID.Server) return;
             for (int i = 0; i < CellCount; i++) {
                 PRTLoader.NewParticle<PRT_SHPCHexBit>(CellWorldPos(i), Main.rand.NextVector2Circular(2f, 2f),
@@ -345,11 +345,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             int chargeNow = Math.Clamp(Charge, 0, CellCount);
             Vector2 centerScreen = Projectile.Center - Main.screenPosition;
 
-            //中心枢纽微光
+            //中心微光
             spriteBatch.Draw(glow, centerScreen, null, MatrixDim * (0.35f * spawnFade), 0f,
                 glow.Size() * 0.5f, 0.5f + salvoFlash * 0.4f, SpriteEffects.None, 0f);
 
-            //输能线与充能格背光（当前批次为 Deferred+Additive，直接绘制）
+            //输能线与充能格背光，Deferred+Additive
             for (int i = 0; i < CellCount; i++) {
                 bool lit = i < chargeNow;
                 Vector2 cellScreen = CellWorldPos(i) - Main.screenPosition;
@@ -360,7 +360,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                     spriteBatch.Draw(white, centerScreen, null, lineCol, delta.ToRotation(),
                         new Vector2(0f, 0.5f), new Vector2(len, lit ? 1.6f : 1f), SpriteEffects.None, 0f);
                     if (lit) {
-                        //输能流点：中心向格心滑动的亮珠
+                        //输能流点
                         float t = (float)Main.timeForVisualEffects * 0.02f + i * 0.37f;
                         t -= MathF.Floor(t);
                         spriteBatch.Draw(glow, centerScreen + delta * t, null,
@@ -374,7 +374,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 }
             }
 
-            //切 Immediate 批次，用专属六边形着色器逐格绘制
+            //切 Immediate，六边形着色器逐格
             Effect shader = EffectLoader.SHPCModHexCell?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (shader != null && noise != null) {
@@ -402,7 +402,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                         new Vector2(0.5f, 0.5f), CellQuadSize, SpriteEffects.None, 0f);
                 }
 
-                //恢复调用方期望的批次状态（Deferred + Additive + PointWrap）
+                //恢复 Deferred+Additive+PointWrap
                 spriteBatch.End();
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointWrap,
                     DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);

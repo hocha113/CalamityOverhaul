@@ -1,8 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
 {
-    /// <summary>
-    /// 伐木锯机械臂状态枚举
-    /// </summary>
+    /// <summary>伐木锯臂状态</summary>
     internal enum LumberjackSawState : byte
     {
         Idle = 0,           //待机

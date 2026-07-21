@@ -7,17 +7,16 @@ namespace CalamityOverhaul.Content.HackTimes
     /// <summary>骇客时间开关条件</summary>
     public interface IHackTimeAccessCondition
     {
-        /// <summary>判断玩家当前帧是否满足条件</summary>
         bool IsSatisfied(Player player);
     }
 
-    /// <summary>骇客时间使用权限管理，已注册条件按逻辑或求值</summary>
+    /// <summary>骇客时间权限，已注册条件按或求值</summary>
     public static class HackTimeAccess
     {
         private static readonly List<IHackTimeAccessCondition> conditions = new();
 
-        /// <summary>注册骇客时间使用条件</summary>
-        /// <param name="condition">null 或重复注册会被忽略</param>
+        /// <summary>注册使用条件</summary>
+        /// <param name="condition">null 或重复则忽略</param>
         public static void Register(IHackTimeAccessCondition condition) {
             if (condition == null) {
                 return;
@@ -27,9 +26,8 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>以委托注册骇客时间使用条件</summary>
-        /// <param name="predicate">传入玩家并返回是否满足</param>
-        /// <param name="description">可选描述，仅调试用</param>
+        /// <summary>委托注册</summary>
+        /// <param name="description">可选，仅调试</param>
         /// <returns>Unregister 用包装实例</returns>
         public static IHackTimeAccessCondition Register(Func<Player, bool> predicate, string description = null) {
             if (predicate == null) {
@@ -48,11 +46,11 @@ namespace CalamityOverhaul.Content.HackTimes
             return conditions.Remove(condition);
         }
 
-        /// <summary>清空全部已注册条件，模组卸载时调用</summary>
+        /// <summary>清空，模组卸载时调</summary>
         internal static void Reset() => conditions.Clear();
 
-        /// <summary>判断玩家是否满足任意已注册条件</summary>
-        /// <remarks>无条件注册时返回 false；默认条件由<see cref="HackTimeAccessDefaults"/>在 PostSetupContent 注册</remarks>
+        /// <summary>是否满足任一条件</summary>
+        /// <remarks>无注册返回 false，默认条件见 <see cref="HackTimeAccessDefaults"/></remarks>
         public static bool CanUse(Player player) {
             if (player == null || !player.active || player.dead) {
                 return false;
@@ -67,7 +65,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 try {
                     ok = c.IsSatisfied(player);
                 } catch (Exception ex) {
-                    //单一条件抛错不影响整体判定
+                    //单条件抛错不拖垮整体
                     CWRMod.Instance.Logger.Warn($"HackTimeAccess condition threw: {ex}");
                     continue;
                 }

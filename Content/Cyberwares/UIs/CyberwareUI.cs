@@ -199,7 +199,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
         }
 
-        /// <summary>关闭动画：Phase1 纵向压缩→Phase2 水平坍缩</summary>
+        /// <summary>关闭动画 Phase1 纵压→Phase2 横坍</summary>
         private void UpdateCloseAnimation() {
             const float closeSpeed = 0.038f;
             const float phase1End = 0.6f;

@@ -8,9 +8,7 @@ using Terraria.DataStructures;
 namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 {
     #region MK1 热力发电机
-    /// <summary>
-    /// 热力发电机存储提供者工厂
-    /// </summary>
+    /// <summary>热力机存储工厂</summary>
     internal class ThermalStorageProviderFactory : IStorageProviderFactory
     {
         public string Identifier => "CWR.ThermalGenerator";
@@ -29,10 +27,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         }
     }
 
-    /// <summary>
-    /// 热力发电机的存储提供者
-    /// 物流管道向热力发电机输入燃料
-    /// </summary>
+    /// <summary>物流管向热力机灌燃料</summary>
     internal class ThermalStorageProvider : IStorageProvider
     {
         private readonly ThermalGeneratorTP _generatorTP;
@@ -253,9 +248,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
     #endregion
 
     #region MK2 热力发电机
-    /// <summary>
-    /// MK2热力发电机存储提供者工厂
-    /// </summary>
+    /// <summary>MK2 热力机存储工厂</summary>
     internal class ThermalMK2StorageProviderFactory : IStorageProviderFactory
     {
         public string Identifier => "CWR.ThermalGeneratorMK2";
@@ -274,10 +267,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         }
     }
 
-    /// <summary>
-    /// MK2热力发电机的存储提供者
-    /// 物流管道向MK2热力发电机输入燃料
-    /// </summary>
+    /// <summary>物流管向 MK2 热力机灌燃料</summary>
     internal class ThermalMK2StorageProvider : IStorageProvider
     {
         private readonly ThermalGeneratorMK2TP _generatorTP;

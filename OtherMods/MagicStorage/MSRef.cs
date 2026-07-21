@@ -10,38 +10,31 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.OtherMods.MagicStorage
 {
     /// <summary>
-    /// MagicStorage的弱引用访问层，不持有任何MagicStorage的编译期类型
-    /// 所有成员在加载期反射定位一次，并编译为表达式树委托，调用开销接近直接调用且无装箱，
-    /// 模式与<see cref="CWRRef"/>一致
+    /// MagicStorage 弱引用层，模式同 <see cref="CWRRef"/>
     /// </summary>
     internal static class MSRef
     {
-        /// <summary>
-        /// 兼容的最低MagicStorage版本
-        /// </summary>
+        /// <summary>最低兼容版本</summary>
         internal static Version TargetVersion => new(0, 7, 0, 11);
-        /// <summary>
-        /// MagicStorage是否存在、版本兼容且核心存取委托可用，物流存取以此为准
-        /// </summary>
+        /// <summary>模组可用且核心委托已就绪</summary>
         internal static bool Has { get; private set; }
 
         #region 编译委托缓存
-        //类型缓存，调用前实例类型守卫
+        //类型守卫用
         private static Type storageComponentType;
         private static Type storageHeartType;
-        //TEStorageComponent.GetHeart()是虚方法，经基类编译的委托同样走虚分派，
-        //可覆盖StorageHeart、RemoteAccess、StorageAccess、CraftingAccess等所有组件
+        //GetHeart 虚方法，基类委托可覆盖全部组件
         private static Func<object, object> getHeartFunc;
-        //TEStorageHeart成员
+        //TEStorageHeart
         private static Func<object, IEnumerable> getStorageUnitsFunc;
         private static Func<object, IEnumerable<Item>> getStoredItemsFunc;
         private static Action<object, Item> depositItemFunc;
         private static Func<object, Item, bool, Item> withdrawFunc;
-        //TEAbstractStorageUnit成员，处于逐单元遍历的热路径上
+        //TEAbstractStorageUnit，热路径
         private static Func<object, bool> unitInactiveFunc;
         private static Func<object, bool> unitIsFullFunc;
         private static Func<object, Item, bool> unitHasSpaceInStackForFunc;
-        //SecuritySystem的静态方法
+        //SecuritySystem
         private static Func<Player, int, bool> canPlayerAccessFunc;
         #endregion
 
@@ -83,7 +76,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             canPlayerAccessFunc = Compile<Func<Player, int, bool>>(
                 GetMethod(securityType, "CanPlayerAccessImmediately", PubStatic), "SecuritySystem.CanPlayerAccessImmediately");
 
-            //核心存取能力，物流存取所需
+            //核心委托齐才算可用
             Has = storageComponentType != null
                 && storageHeartType != null
                 && getHeartFunc != null
@@ -143,11 +136,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             return property;
         }
 
-        /// <summary>
-        /// 把反射成员编译成指定签名的委托：
-        /// 委托参数与成员签名间自动插入类型转换（首个参数视为实例，静态成员除外），
-        /// 调用开销接近直接调用且没有Invoke的参数数组分配与装箱
-        /// </summary>
+        /// <summary>反射成员→委托，自动插类型转换</summary>
         private static TDelegate Compile<TDelegate>(MemberInfo member, string context) where TDelegate : Delegate {
             if (member == null) {
                 return null;
@@ -199,7 +188,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             }
         }
 
-        //一次性异常日志，防止每帧/每tick刷屏
+        //异常只打一次，防刷屏
         private static readonly HashSet<string> loggedFailures = [];
         private static void LogException(string context, Exception ex) {
             string key = $"{context}|{ex.GetType().Name}";
@@ -210,10 +199,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         #endregion
 
         #region 存储核心访问
-        /// <summary>
-        /// 从TileEntity获取关联的StorageHeart，
-        /// 通过基类虚方法分派支持StorageHeart、RemoteAccess、StorageAccess、CraftingAccess等全部组件
-        /// </summary>
+        /// <summary>经虚分派取 StorageHeart</summary>
         internal static object GetHeartFromTileEntity(TileEntity te) {
             if (!Has || te == null || !storageComponentType.IsInstanceOfType(te)) {
                 return null;
@@ -226,14 +212,11 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             }
         }
 
-        /// <summary>
-        /// 检查存储核心是否有空间存放物品，item传null时只检查是否存在未满的存储单元
-        /// </summary>
+        /// <summary>item 为 null 时只查是否有未满单元</summary>
         internal static bool HeartHasSpace(object heart, Item item) {
             if (!Has || heart == null || !storageHeartType.IsInstanceOfType(heart)) {
                 return false;
             }
-            //检查安全系统权限
             if (!canPlayerAccessFunc(Main.LocalPlayer, -1)) {
                 return false;
             }
@@ -255,9 +238,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             return false;
         }
 
-        /// <summary>
-        /// 在指定范围内查找有空间的MagicStorage存储核心（包括各类远程端口），找不到返回null
-        /// </summary>
+        /// <summary>范围内找有空间的存储核心</summary>
         internal static object FindMagicStorage(Item item, Point16 position, int maxFindChestMode) {
             if (!Has) {
                 return null;
@@ -281,9 +262,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             return null;
         }
 
-        /// <summary>
-        /// 获取指定位置处关联的、有空间的存储核心，没有则返回null
-        /// </summary>
+        /// <summary>指定位置的存储核心</summary>
         internal static object GetMagicStorage(Item item, Point16 position) {
             if (!Has || !TileEntity.ByPosition.TryGetValue(position, out TileEntity te)) {
                 return null;
@@ -295,9 +274,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             return null;
         }
 
-        /// <summary>
-        /// 向存储核心存入物品，成功调用返回true（剩余数量语义由调用方）
-        /// </summary>
+        /// <summary>存入，剩余量由调用方读 item</summary>
         internal static bool DepositIntoHeart(object heart, Item item) {
             if (!Has || heart == null || !storageHeartType.IsInstanceOfType(heart) || item == null || item.IsAir) {
                 return false;
@@ -311,9 +288,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             }
         }
 
-        /// <summary>
-        /// 从存储核心取出指定类型与数量的物品
-        /// </summary>
+        /// <summary>按类型与数量取出</summary>
         internal static Item WithdrawFromHeart(object heart, int itemType, int count) {
             Item toWithdraw = new Item();
             toWithdraw.SetDefaults(itemType);
@@ -321,14 +296,11 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             return WithdrawFromHeart(heart, toWithdraw);
         }
 
-        /// <summary>
-        /// 从存储核心取出指定物品
-        /// </summary>
+        /// <summary>按 Item 取出</summary>
         internal static Item WithdrawFromHeart(object heart, Item toWithdraw) {
             if (!Has || heart == null || !storageHeartType.IsInstanceOfType(heart)) {
                 return new Item();
             }
-            //检查安全系统权限
             if (!canPlayerAccessFunc(Main.LocalPlayer, -1)) {
                 return new Item();
             }
@@ -340,9 +312,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             }
         }
 
-        /// <summary>
-        /// 枚举指定存储核心内的物品
-        /// </summary>
+        /// <summary>枚举核心内物品</summary>
         internal static IEnumerable<Item> GetStoredItems(object heart) {
             if (!Has || heart == null || !storageHeartType.IsInstanceOfType(heart)) {
                 return [];
@@ -355,9 +325,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             }
         }
 
-        /// <summary>
-        /// 统计指定存储核心内某类型物品的总数
-        /// </summary>
+        /// <summary>统计某类型总数</summary>
         internal static long GetItemCount(object heart, int itemType) {
             long count = 0;
             foreach (Item item in GetStoredItems(heart)) {

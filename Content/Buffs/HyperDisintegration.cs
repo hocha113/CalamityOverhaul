@@ -4,7 +4,6 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Buffs
 {
-    //超位崩解：每秒对被标记的目标造成额外真实伤害，并微量降低其防御
     internal class HyperDisintegration : ModBuff
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;

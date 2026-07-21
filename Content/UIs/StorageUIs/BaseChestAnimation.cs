@@ -2,18 +2,14 @@ using System;
 
 namespace CalamityOverhaul.Content.UIs.StorageUIs
 {
-    /// <summary>
-    /// 箱子UI动画基类，管理通用的淡入淡出、滑动、槽位悬停动画
-    /// </summary>
+    /// <summary>箱子UI动画，淡入滑入+槽悬停</summary>
     internal abstract class BaseChestAnimation
     {
-        //UI基础动画
         public float UIAlpha { get; set; } = 0f;
         public float PanelSlideProgress { get; set; } = 0f;
         private const float FadeSpeed = 0.08f;
         private const float SlideSpeed = 0.12f;
 
-        //槽位悬停动画
         public float[] SlotHoverProgress { get; private set; }
         private const float HoverSpeed = 0.15f;
 
@@ -21,9 +17,6 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
             SlotHoverProgress = new float[totalSlots];
         }
 
-        /// <summary>
-        /// 更新UI渐入渐出动画
-        /// </summary>
         public void UpdateUIAnimation(bool isActive) {
             if (isActive) {
                 UIAlpha = Math.Min(1f, UIAlpha + FadeSpeed);
@@ -35,14 +28,9 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
             }
         }
 
-        /// <summary>
-        /// 更新主题特有的效果计时器，子类覆写以不同视觉风格
-        /// </summary>
+        /// <summary>主题计时器，子类覆写</summary>
         public abstract void UpdateThemeEffects();
 
-        /// <summary>
-        /// 更新槽位悬停动画
-        /// </summary>
         public void UpdateSlotHoverAnimations(int hoveredSlot) {
             for (int i = 0; i < SlotHoverProgress.Length; i++) {
                 if (i == hoveredSlot) {
@@ -54,9 +42,6 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
             }
         }
 
-        /// <summary>
-        /// 重置所有动画状态
-        /// </summary>
         public virtual void Reset() {
             UIAlpha = 0f;
             PanelSlideProgress = 0f;

@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 {
     internal class QLNPC : DeathTrackingNPC
     {
-        public override void OnNPCDeath(NPC npc) {//死亡钩子，多人各端调用
+        public override void OnNPCDeath(NPC npc) {//死亡钩子，MP各端
             foreach (var quest in QuestNode.AllQuests) {
                 if (quest.IsUnlocked && !quest.IsCompleted) {
                     quest.OnKillByNPC(npc);

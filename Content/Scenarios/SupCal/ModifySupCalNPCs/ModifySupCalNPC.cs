@@ -38,20 +38,20 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.ModifySupCalNPCs
             }
         }
 
-        //???????????????
+        //头像槽临时伪装击败态/关BossRush
         private static void OnBossHeadSlotHook(BossHeadSlotDelegate orig, ModNPC modNPC, ref int index) {
             originallyDownedCalamitas = CWRRef.GetDownedCalamitas();
             originallyBossRush = CWRRef.GetBossRushActive();
             if (EbnState.IsConquered(Main.player[modNPC.NPC.target]) || EbnState.OnEbn(Main.player[modNPC.NPC.target])) {
-                CWRRef.SetDownedCalamitas(true);//???????????????????????????
-                CWRRef.SetBossRushActive(false);//????BossRush??????
+                CWRRef.SetDownedCalamitas(true);//伪装已击败
+                CWRRef.SetBossRushActive(false);//临时关BossRush差分
             }
             orig.Invoke(modNPC, ref index);
             CWRRef.SetDownedCalamitas(originallyDownedCalamitas);
             CWRRef.SetBossRushActive(originallyBossRush);
         }
 
-        /// <summary>??????? SupCal NPC ???</summary>
+        /// <summary>Infernum开启时不改写SupCal AI</summary>
         internal static bool SetAIState() {
             if (InfernumRef.InfernumModeOpenState) {
                 return false;
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.ModifySupCalNPCs
                 originallyBossRush = CWRRef.GetBossRushActive();
                 if (originallyBossRush) {
                     if (EbnState.OnEbn(Main.player[npc.target]) && CWRRef.GetSupCalGiveUpCounter(npc) > 0) {
-                        CWRRef.SetDownedCalamitas(false);//??????????????????????????????????
+                        CWRRef.SetDownedCalamitas(false);//Ebn放弃反击需未击败态
                         CWRRef.SetBossRushActive(false);
                         TrueBossRushStateByAI = true;
                     }
@@ -73,13 +73,12 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.ModifySupCalNPCs
                 }
             }
 
-            if (!CWRRef.GetBossRushActive()) {//??BossRush??????????????????????????????I?????
+            if (!CWRRef.GetBossRushActive()) {//非BossRush下驱散Ebn玩家旁的本NPC
                 foreach (var p in Main.ActivePlayers) {
-                    //??????????????????????????????????????????????I????????
                     if (EbnState.OnEbn(p)) {
                         p.Teleport(npc.Center, 999);
                         if (BCKRef.Has) {
-                            BCKRef.SetActiveNPCEntryFlags(npc.whoAmI, -1);//????Boss??????????????????????????????????????????
+                            BCKRef.SetActiveNPCEntryFlags(npc.whoAmI, -1);//关Boss清单活跃标记
                         }
                         npc.active = false;
                         npc.netUpdate = true;
@@ -110,7 +109,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.ModifySupCalNPCs
             originallyDownedCalamitas = CWRRef.GetDownedCalamitas();
             originallyBossRush = CWRRef.GetBossRushActive();
             if (EbnState.IsConquered(Main.player[npc.target]) || EbnState.OnEbn(Main.player[npc.target])) {
-                CWRRef.SetDownedCalamitas(true);//???????????????????????????
+                CWRRef.SetDownedCalamitas(true);//伪装已击败
                 CWRRef.SetBossRushActive(false);
             }
             return base.Draw(spriteBatch, screenPos, drawColor);

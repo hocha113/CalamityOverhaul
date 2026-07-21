@@ -6,7 +6,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    //左下角上行链路线程条渲染器
+    //左下角上行链路线程条
     internal class HackQueueRenderer
     {
         #region 布局常量
@@ -16,26 +16,23 @@ namespace CalamityOverhaul.Content.HackTimes
         private const float ItemHeight = 25f;
         private const float ItemGap = 6f;
         private const float BarHeight = 2f;
-        //状态菱形区宽
         private const float DiamondZone = 16f;
-        //距屏幕底的基线
+        //距屏底基线
         private const float BottomMargin = 150f;
         private const float FontName = 0.64f;
         private const float FontPct = 0.56f;
-        //完成闪烁时长（秒）
+        //完成闪烁秒数
         private static float CompletedDuration => 0.2f;
 
         #endregion
 
-        //队列数据
         private readonly List<HackQueueEntry> queue = new();
-        //队列只读访问
         public IReadOnlyList<HackQueueEntry> Entries => queue;
         private float timer;
 
         #region 公共接口
 
-        /// <summary>入队协议，同目标同 slot 不重复</summary>
+        /// <summary>入队，同目标同 slot 不重复</summary>
         public bool Enqueue(QuickHackDef hack, int slotIndex, IHackTarget target, int computedRamCost) {
             if (target == null) return false;
             for (int i = 0; i < queue.Count; i++) {
@@ -56,7 +53,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        //取消指定 slot 与目标
+        //取消指定 slot + 目标
         public void Cancel(int slotIndex, IHackTarget target) {
             if (target == null) return;
             for (int i = queue.Count - 1; i >= 0; i--) {
@@ -67,21 +64,19 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        //清空队列
         public void Clear() {
             queue.Clear();
         }
 
-        //全局消费已完成条目，不依赖 UI Active
+        //全局消费完成条，不依赖 UI Active
         public void ConsumeAndApplyAll() {
             for (int i = queue.Count - 1; i >= 0; i--) {
                 var entry = queue[i];
-                //目标失效则移除
                 if (!entry.IsTargetValid) {
                     queue.RemoveAt(i);
                     continue;
                 }
-                //上传完成且闪烁结束，由目标自身分派协议生效
+                //完成且闪烁结束 → 目标分派协议
                 if (entry.State == HackQueueState.Completed && entry.CompletedTimer <= 0f) {
                     entry.Target.ApplyHack(entry.Hack, Main.LocalPlayer);
                     //多人广播视觉复刻
@@ -91,7 +86,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        //查询 slot 状态，Uploading 优先
+        //slot 状态，Uploading 优先
         public QueueSlotState GetSlotState(int slotIndex) {
             QueueSlotState best = QueueSlotState.None;
             for (int i = 0; i < queue.Count; i++) {
@@ -385,7 +380,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 _ => HackTheme.TextDim,
             };
 
-            //状态菱形：上传中旋转，等待呼吸，完成实心闪
+            //菱形，上传转/等待呼吸/完成闪
             Vector2 diamondC = new(rect.X + DiamondZone * 0.5f, rect.Y + 9f);
             switch (entry.State) {
                 case HackQueueState.Uploading: {

@@ -27,7 +27,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
 
-            //检查技能是否在冷却中
             if (Cooldown > 0) {
                 return null;
             }
@@ -51,7 +50,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
             }
 
-            //播放克苏鲁之眼召唤音效
             SoundEngine.PlaySound(SoundID.NPCHit1 with {
                 Volume = 0.7f,
                 Pitch = -0.5f,
@@ -70,18 +68,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Main.dedServ) {
                 return;
             }
-            //暗隙涌雾：召唤点先见暗，眼球各自的入场展开接管后续
+            //暗隙涌雾，召唤点先见暗
             FishCthuluVFX.MistPuff(position, 4, 1.1f);
             FishCthuluVFX.BloodSpray(position, -Vector2.UnitY, 3, 3f);
             FishCthuluVFX.DarkRing(position, Vector2.UnitX, 0.8f);
         }
     }
 
-    /// <summary>
-    /// 克苏鲁之眼弹幕，具有追踪、冲刺和环绕能力。<br/>
-    /// 演出：深渊血肉之眼，凝视期只有瞳孔追踪与雾丝游动的安静，
-    /// 变形撕膜露齿是定帧英雄时刻，冲刺拖暗绸带尾流
-    /// </summary>
+    /// <summary>克苏鲁之眼，追踪/冲刺/环绕；凝视安静→撕膜定帧→冲刺暗绸带</summary>
     internal class CthulhuEye : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => "Terraria/Images/NPC_" + NPCID.EyeofCthulhu;
@@ -129,7 +123,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const int RibbonMaxPts = 22;
         private int spawnTimer; //入场计时
         private int irisFlash; //虹膜过冲闪帧，≤2 帧
-        private int tearHold; //撕膜定帧：獠牙初帧冻结
+        private int tearHold; //撕膜定帧，獠牙初帧冻结
         private bool tearDone; //本次蓄力是否已撕膜
         private float pupilStrain; //瞳孔紧张度 0..1，蓄力/冲刺散大
         private float stretchAlong = 1f; //沿朝向挤压拉伸（蓄力压缩/冲刺拉伸）
@@ -170,7 +164,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 30;
 
-            //初始化环绕参数
             orbitAngle = EyeID * MathHelper.TwoPi / 4f;
             randOrbitRadius = Main.rand.NextFloat(-20f, 20f);
             wispPhase = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -186,7 +179,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 dashCooldown--;
             }
 
-            //状态机
             EyeState currentState = (EyeState)AIState;
             switch (currentState) {
                 case EyeState.Seeking:
@@ -234,7 +226,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //演出计时与包络
             UpdateVisualEnvelopes();
 
-            //粒子层：凝视期只有低频雾丝脱落，安静是观察期的灵魂；冲刺喷发独立
+            //粒子层，凝视期只有低频雾丝脱落
             if (!VaultUtils.isServer) {
                 if (isDashing) {
                     if (Main.rand.NextBool(2)) {
@@ -261,7 +253,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 irisFlash--;
             }
 
-            //挤压拉伸：蓄力沿冲刺向压缩，冲刺随速度拉长，其余回弹
+            //挤压拉伸，蓄力沿冲刺向压缩
             float stretchTarget = 1f;
             if (AIState == (float)EyeState.PreDash) {
                 stretchTarget = 0.88f;
@@ -274,28 +266,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             stretchAlong = MathHelper.Lerp(stretchAlong, stretchTarget, 0.28f);
 
-            //瞳孔紧张度：蓄力/冲刺散大，凝视期回落
+            //瞳孔紧张度
             float strainTarget = AIState == (float)EyeState.PreDash || isDashing ? 1f
                 : AIState == (float)EyeState.PostDash ? 0.45f : 0f;
             pupilStrain = MathHelper.Lerp(pupilStrain, strainTarget, 0.16f);
 
-            //雾丝公转：缓慢基速 + 移动耦合
+            //雾丝公转，缓慢基速 + 移动耦合
             wispPhase += 0.006f + Projectile.velocity.Length() * 0.0004f;
 
             if (VaultUtils.isServer) {
                 return;
             }
 
-            //虹膜微光的暗红点光：唯一光源，闪帧时略强
+            //虹膜微光的暗红点光
             float lightMul = irisFlash > 0 ? 0.30f : 0.09f;
             Lighting.AddLight(Projectile.Center, lightMul, lightMul * 0.16f, lightMul * 0.18f);
 
-            //入场：暗雾中展开眼睑
+            //入场，暗雾中展开眼睑
             if (spawnTimer == 1) {
                 FishCthuluVFX.MistPuff(Projectile.Center, 3, 0.9f);
                 FishCthuluVFX.DarkRing(Projectile.Center, Projectile.velocity, 0.5f);
             }
-            //退场：闭睑前释放雾丝，禁 pop-out
+            //退场
             if (Projectile.timeLeft == 28) {
                 FishCthuluVFX.MistPuff(Projectile.Center, 3, 0.9f);
             }
@@ -303,11 +295,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             UpdateRibbon();
         }
 
-        /// <summary>冲刺绸带点列：冲刺期录头，结束后尾端先蚀 + 渐隐（残迹比冲刺活得久）</summary>
+        /// <summary>冲刺绸带点列，冲刺期录头，结束后尾端先蚀 + 渐隐（残迹比冲刺活得久）</summary>
         private void UpdateRibbon() {
             if (isDashing) {
                 ribbonFade = Math.Min(1f, ribbonFade + 0.25f);
-                //头点锚在体后：绸带从眼球身后拖出，不盖脸
+                //头点锚在体后
                 Vector2 head = Projectile.Center
                     - Projectile.velocity.SafeNormalize(Vector2.UnitX) * 16f * Projectile.scale;
                 if (ribbonPts.Count == 0 || Vector2.DistanceSquared(ribbonPts[0], head) > 16f) {
@@ -334,9 +326,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>帧过渡 tick：撕膜后定格獠牙初帧，其余状态平滑过渡</summary>
+        /// <summary>帧过渡 tick，撕膜后定格獠牙初帧，其余状态平滑过渡</summary>
         private void UpdateFrameTransition() {
-            //撕膜定帧：獠牙初帧冻结数帧，变形读作一次性事件而非渐变
+            //撕膜定帧
             if (tearHold > 0) {
                 tearHold--;
                 frameTransition = 1f;
@@ -356,7 +348,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SeekingAI() {
-            //寻找目标阶段
             if (targetNPC == -1 || !Main.npc[targetNPC].active || !Main.npc[targetNPC].CanBeChasedBy()) {
                 var npc = Projectile.Center.FindClosestNPC(1000f);
                 if (npc != null && npc.CanBeChasedBy()) {
@@ -371,7 +362,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 orbitDuration = 0;
                 isOrbiting = true;
 
-                //播放锁定音效
                 SoundEngine.PlaySound(SoundID.NPCHit1 with {
                     Volume = 0.4f,
                     Pitch = 0.3f
@@ -445,7 +435,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //保持朝向冲刺方向
             desiredRotation = dashDirection.ToRotation();
 
-            //撕膜拍：蓄力中点眼膜裂开露齿，定帧 + 碎屑 + 微型咆哮
+            //撕膜拍，蓄力中点眼膜裂开露齿
             if (!tearDone && AITimer >= PreDashTime / 2) {
                 tearDone = true;
                 frameTransition = 1f;
@@ -473,7 +463,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 AITimer = 0;
                 isDashing = true;
 
-                //播放冲刺开始音效
                 SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with {
                     Volume = 0.5f,
                     Pitch = 0.3f
@@ -521,23 +510,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 baseChance += orbitBonus;
             }
 
-            //强制冲刺条件：环绕时间过长
+            //强制冲刺条件，环绕时间过长
             if (orbitDuration > MaxOrbitTime) {
                 return 1.0f; //100%冲刺
             }
 
-            //距离因素：最佳冲刺距离（150-300）时概率更高
+            //距离因素
             if (distanceToTarget > 150f && distanceToTarget < 300f) {
                 baseChance += 0.15f;
             }
 
-            //目标移动速度因素：目标移动越快，冲刺概率越高
+            //目标移动速度因素
             float targetSpeed = target.velocity.Length();
             if (targetSpeed > 5f) {
                 baseChance += Math.Min(targetSpeed / 50f, 0.1f);
             }
 
-            //冲刺次数因素：冲刺次数少时更倾向于冲刺
+            //冲刺次数因素
             if (totalDashes < 3) {
                 baseChance += 0.05f;
             }
@@ -545,7 +534,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //领域等级加成
             baseChance += HalibutData.GetDomainLayer() * 0.01f;
 
-            //位置因素：当在目标后方时更容易冲刺
+            //位置因素，当在目标后方时更容易冲刺
             Vector2 toTarget = target.Center - Projectile.Center;
             float alignmentWithVelocity = Vector2.Dot(toTarget.SafeNormalize(Vector2.Zero), target.velocity.SafeNormalize(Vector2.Zero));
             if (alignmentWithVelocity > 0.5f) { //在目标前进方向前方
@@ -573,7 +562,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //设置朝向为冲刺方向
             desiredRotation = dashDirection.ToRotation();
 
-            //播放冲刺音效
             SoundEngine.PlaySound(SoundID.NPCHit1 with {
                 Volume = forced ? 0.8f : 0.6f,
                 Pitch = forced ? 0.7f : 0.5f
@@ -646,7 +634,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             NPC target = Main.npc[targetNPC];
 
             orbitRadius = target.width / 2f + 40f + randOrbitRadius;
-            //计算目标环绕位置
             Vector2 orbitPosition = target.Center + orbitAngle.ToRotationVector2() * orbitRadius;
             Vector2 toOrbit = orbitPosition - Projectile.Center;
             float distanceToOrbit = toOrbit.Length();
@@ -710,13 +697,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void UpdatePupilRotation() {
-            //瞳孔焦点：最近的敌人或鼠标
+            //瞳孔焦点，最近的敌人或鼠标
             Vector2 focus = targetNPC >= 0 && Main.npc[targetNPC].active
                 ? Main.npc[targetNPC].Center
                 : Main.MouseWorld;
             float targetRot = (focus - Projectile.Center).ToRotation();
 
-            //跳视：大偏差瞬时到位、小偏差缓跟，读作活物眼动而非匀速云台
+            //跳视
             float diff = MathHelper.WrapAngle(targetRot - pupilRotation);
             if (Math.Abs(diff) > 0.55f) {
                 pupilRotation = targetRot;
@@ -725,14 +712,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 pupilRotation += diff * 0.30f;
             }
 
-            //凝视微颤：环绕观察期偶发的眼神颤动
+            //凝视微颤，环绕观察期偶发的眼神颤动
             if (AIState == (float)EyeState.Orbiting && Main.rand.NextBool(26)) {
                 pupilTremor = Main.rand.NextVector2Circular(1.7f, 1.7f);
             }
             pupilTremor *= 0.86f;
         }
 
-        /// <summary>凝视期脱落的雾丝：从体缘剥离，切向缓漂</summary>
+        /// <summary>凝视期脱落的雾丝，从体缘剥离，切向缓漂</summary>
         private void SpawnIdleMist() {
             Vector2 off = Main.rand.NextVector2Unit() * Main.rand.NextFloat(14f, 24f);
             PRTLoader.NewParticle<PRT_FishCthuluMist>(Projectile.Center + off
@@ -741,7 +728,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(Main.rand.Next(40, 60));
         }
 
-        /// <summary>冲刺喷发：尾端雾缕回卷 + 偶发暗血珠甩落，绸带承担主尾流</summary>
+        /// <summary>冲刺喷发，尾端雾缕回卷 + 偶发暗血珠甩落，绸带承担主尾流</summary>
         private void SpawnDashParticles() {
             Vector2 tail = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.UnitX) * 18f;
             PRTLoader.NewParticle<PRT_FishCthuluMist>(tail + Main.rand.NextVector2Circular(8f, 8f)
@@ -765,7 +752,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //重置无行动计时器（击中算有效行动）
             noActionTimer = 0;
 
-            //撕咬迸发：暗血飞沫锥 + 眼膜碎屑 + 雾涌 + 定向暗环
+            //撕咬迸发，暗血飞沫锥
             irisFlash = 2;
             if (!VaultUtils.isServer) {
                 Vector2 biteDir = isDashing || AIState == (float)EyeState.PreDash
@@ -816,10 +803,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float matT = MathHelper.Clamp(spawnTimer / (float)MaterializeTime, 0f, 1f);
             float deathT = Projectile.timeLeft < 30 ? 1f - Projectile.timeLeft / 30f : 0f;
 
-            //夹心下层：两条雾丝画在眼球之下
+            //夹心下层，两条雾丝画在眼球之下
             DrawVoidWisps(mainDrawPos, fadeAlpha, matT, true);
 
-            //冲刺残影：暗肉色半透明鬼影，只在冲刺三态出现，凝视期静止无残影
+            //冲刺残影，暗肉色半透明鬼影
             bool dashPhases = isDashing || AIState == (float)EyeState.PreDash || AIState == (float)EyeState.PostDash;
             if (dashPhases) {
                 for (int i = 2; i < Projectile.oldPos.Length; i += 3) {
@@ -835,7 +822,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //蓄力后坐偏移：撕膜期附带微幅颤抖
+            //蓄力后坐偏移，撕膜期附带微幅颤抖
             Vector2 anticipationOff = Vector2.Zero;
             if (AIState == (float)EyeState.PreDash) {
                 float preT = MathHelper.Clamp(AITimer / (float)PreDashTime, 0f, 1f);
@@ -845,7 +832,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //本体：压暗偏紫的血肉瞳体 + 挤压拉伸
+            //本体
             Vector2 squash = ComputeBodySquash(matT, deathT);
             Color bodyCol = new Color((int)(lightColor.R * 0.70f), (int)(lightColor.G * 0.58f)
                 , (int)(lightColor.B * 0.76f), 255) * fadeAlpha;
@@ -853,14 +840,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 , Projectile.rotation - MathHelper.PiOver2, origin
                 , new Vector2(0.6f * squash.X, 0.6f * squash.Y) * Projectile.scale, SpriteEffects.None, 0);
 
-            //夹心上层：一条低透明雾丝盖在眼球上，形成体积包裹
+            //夹心上层，一条低透明雾丝盖在眼球上
             DrawVoidWisps(mainDrawPos, fadeAlpha, matT, false);
 
-            //瞳孔与虹膜：追踪是凝视的灵魂；撕膜露齿后眼已成巨口，瞳孔随过渡淡出
+            //瞳孔与虹膜
             float pupilFade = MathHelper.Clamp(1f - frameTransition * 1.6f, 0f, 1f);
             DrawPupil(mainDrawPos + anticipationOff, fadeAlpha * matT * (1f - deathT) * pupilFade);
 
-            //撕膜/撕咬过冲：≤2 帧的虹膜色尖刺闪，唯一允许的瞬时亮点
+            //撕膜/撕咬过冲
             if (irisFlash > 0) {
                 Texture2D tear = CWRAsset.TearSpread01?.Value;
                 if (tear != null) {
@@ -873,17 +860,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>体缩放向量：x=横向 y=沿朝向；呼吸 + 蓄力压缩/冲刺拉伸 + 开闭睑</summary>
+        /// <summary>体缩放向量，x=横向 y=沿朝向；呼吸 + 蓄力压缩/冲刺拉伸 + 开闭睑</summary>
         private Vector2 ComputeBodySquash(float matT, float deathT) {
             float breath = MathF.Sin(Main.GlobalTimeWrappedHourly * 2.2f + Projectile.whoAmI * 1.71f) * 0.03f;
             float along = stretchAlong * (1f - breath);
             float across = (1f - (stretchAlong - 1f) * 0.6f) * (1f + breath);
 
-            //入场：眼睑从缝隙弹开
+            //入场，眼睑从缝隙弹开
             across *= MathHelper.Lerp(0.10f, 1f, FishCthuluVFX.EaseOutBack(matT));
             along *= MathHelper.Lerp(1.12f, 1f, FishCthuluVFX.SmoothStep01(matT));
 
-            //退场：合拢成缝再消失，禁 pop-out
+            //退场
             if (deathT > 0f) {
                 across *= MathHelper.Lerp(1f, 0.07f, FishCthuluVFX.SmoothStep01(deathT));
                 along *= 1f + 0.08f * deathT;
@@ -891,7 +878,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return new Vector2(across, along);
         }
 
-        /// <summary>虚空雾丝：贴体公转的暗紫雾带，under 画体下两条、体上一条低透明</summary>
+        /// <summary>虚空雾丝，贴体公转的暗紫雾带，under 画体下两条、体上一条低透明</summary>
         private void DrawVoidWisps(Vector2 drawPos, float fade, float matT, bool underLayer) {
             Texture2D smoke = CWRAsset.SmokeSheet01?.Value;
             if (smoke == null || fade <= 0.01f || matT <= 0.05f) {
@@ -915,7 +902,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float alpha = (underLayer ? 0.35f : 0.20f) * fade * matT;
                 float rot = phase * 0.5f + t * 0.25f;
                 float scl = (0.16f + MathF.Sin(t * 1.1f + idx) * 0.02f) * Projectile.scale;
-                //外圈更暗更大 + 中层：两层异径异色压暗，不发光
+                //外圈更暗更大 + 中层
                 Main.EntitySpriteDraw(smoke, drawPos + off, fr, FishCthuluVFX.VoidDark * (alpha * 0.7f)
                     , rot * 0.9f, fo, scl * 1.3f, SpriteEffects.None, 0);
                 Main.EntitySpriteDraw(smoke, drawPos + off, fr, FishCthuluVFX.VoidMist * alpha
@@ -935,13 +922,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 pupilPos = anchor + fine;
             Vector2 o = dot.Size() * 0.5f;
 
-            //虹膜微光：呼吸脉动的暗红，紧张与闪帧时增幅，永不到白
+            //虹膜微光，呼吸脉动的暗红
             float pulse = 0.85f + MathF.Sin(Main.GlobalTimeWrappedHourly * 2.6f + Projectile.whoAmI) * 0.15f;
             float irisAlpha = (0.30f + pupilStrain * 0.18f + (irisFlash > 0 ? 0.55f : 0f)) * pulse * fade;
             Main.EntitySpriteDraw(dot, pupilPos, null, (FishCthuluVFX.IrisRed with { A = 0 }) * irisAlpha
                 , 0f, o, 0.34f + pupilStrain * 0.05f, SpriteEffects.None, 0);
 
-            //瞳墨：紧张时散大
+            //瞳墨，紧张时散大
             Main.EntitySpriteDraw(dot, pupilPos, null, FishCthuluVFX.PupilInk * (0.92f * fade)
                 , 0f, o, 0.16f + pupilStrain * 0.06f, SpriteEffects.None, 0);
         }

@@ -97,14 +97,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         #endregion
 
         #region 形状查找表
-        //连接掩码：上1下2左4右8
+        //连接掩码 上1下2左4右8
         private const int UP = 1, DOWN = 2, LEFT = 4, RIGHT = 8;
 
         //掩码查形状与旋转
         private static readonly (PipelineShape shape, int rotation)[] ShapeLookup = new (PipelineShape, int)[16];
 
         static UEPipelineTP() {
-            //初始化查找表
             for (int mask = 0; mask < 16; mask++) {
                 ShapeLookup[mask] = CalculateShape(mask);
             }
@@ -166,24 +165,21 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 
         /// <summary>更新连接与形状</summary>
         public override void UpdateMachine() {
-            //每帧先重置供电，连接检测会重设
+            //先重置供电
             IsNetworkPowered = false;
 
-            //四向连接与输电
             foreach (var side in SideState) {
                 side.coreTP = this;
                 side.Position = Position;
                 side.UpdateConnectionState();
             }
 
-            //计算连接掩码
             int connectionMask = 0;
             if (SideState[0].LinkType == PipelineLinkType.Pipeline) connectionMask |= UP;
             if (SideState[1].LinkType == PipelineLinkType.Pipeline) connectionMask |= DOWN;
             if (SideState[2].LinkType == PipelineLinkType.Pipeline) connectionMask |= LEFT;
             if (SideState[3].LinkType == PipelineLinkType.Pipeline) connectionMask |= RIGHT;
 
-            //掩码变才重算形状
             if (connectionMask != lastConnectionMask) {
                 var (shape, rotation) = ShapeLookup[connectionMask];
                 Shape = shape;
@@ -191,29 +187,27 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 lastConnectionMask = connectionMask;
             }
 
-            //更新绘制状态
             foreach (var side in SideState) {
                 side.UpdateDrawState();
             }
         }
 
-        /// <summary>预绘制非管道连接臂金属外壳（能量层由对应合批器经着色器统一绘制）</summary>
+        /// <summary>预画非管道臂外壳</summary>
         public override void PreTileDraw(SpriteBatch spriteBatch) {
             if (Shape == PipelineShape.Cross) return;
 
             foreach (var side in SideState) {
-                //发电机/电池等非管道臂
+                //非管道臂
                 if (side.canDraw && side.LinkType != PipelineLinkType.Pipeline) {
                     side.DrawCasing(spriteBatch);
                 }
             }
         }
 
-        /// <summary>按形状绘制管道本体金属外壳（能量层由对应合批器经着色器统一绘制）</summary>
+        /// <summary>按形状画管本体外壳</summary>
         public override void Draw(SpriteBatch spriteBatch) {
             Color lightingColor = Lighting.GetColor(Position.ToPoint());
 
-            //管道间连接臂
             if (Shape != PipelineShape.Cross) {
                 foreach (var side in SideState) {
                     if (side.canDraw && side.LinkType == PipelineLinkType.Pipeline) {
@@ -241,7 +235,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             }
         }
 
-        /// <summary>能量层：本体 + 所有连接臂，由合批器（基础/创造）经各自着色器统一调用</summary>
+        /// <summary>能量层本体+臂，合批器着色器调用</summary>
         internal void DrawEnergy(SpriteBatch spriteBatch, Color energyColor) {
             if (MachineData == null) return;
 
@@ -272,7 +266,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             }
         }
 
-        /// <summary>能量绘制色：rgb=色调(BaseColor)，a=真实充盈度(0~1)供着色器读取强度</summary>
+        /// <summary>能量色 rgb=BaseColor，a=充盈度0~1</summary>
         internal Color GetEnergyDrawColor() {
             Color c = BaseColor;
             c.A = (byte)(MathHelper.Clamp(MachineData.UEvalue / MaxUEValue, 0f, 1f) * 255);
@@ -335,15 +329,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         #endregion
     }
 
-    /// <summary>
-    /// 电力管道能量层统一绘制：在墙后物块前(PreTileDraw 层)用 <see cref="EffectLoader.UEPipelineFlow"/>
-    /// 单批次渲染全网管道的流动能量，金属外壳由各 TP 在其上叠加。着色器缺失时各 TP 内联平涂回退
-    /// </summary>
+    /// <summary>电力管能量合批，PreTileDraw + <see cref="EffectLoader.UEPipelineFlow"/>；缺着色器则 TP 平涂回退</summary>
     internal class UEPipelineEnergyDraw : GlobalTileProcessor
     {
         public override bool PreTileDrawEverything(SpriteBatch spriteBatch) {
             MachineShaderBatch.DrawBatch(spriteBatch, EffectLoader.UEPipelineFlow, SamplerState.PointClamp,
-                //仅基础管道；创造管道(子类)有自己的星空渲染，排除
+                //仅基础管，排除创造管子类
                 static tp => tp.GetType() == typeof(UEPipelineTP),
                 static effect => {
                     effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);

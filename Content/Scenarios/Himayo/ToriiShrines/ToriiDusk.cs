@@ -10,20 +10,19 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 {
     /// <summary>
-    /// 拔刀叙事的黄昏氛围控制器：拔出鬼切后天色渐入逢魔黄昏，
-    /// 贯穿鸟居化樱退场与 <see cref="FirstMetHimayo"/> 对话，对话落幕后缓缓退场。
-    /// 纯本地视觉；保持条件逐帧轮询（退场闸门 / 对话在演），无粘滞状态
+    /// 拔刀后逢魔黄昏，贯穿化樱与 <see cref="FirstMetHimayo"/>，落幕后渐出<br/>
+    /// 纯本地，保持条件逐帧轮询，无粘滞
     /// </summary>
     internal static class ToriiDusk
     {
-        //渐入约0.75秒（在鸟居开始消散前完成天色切换），渐出约1.5秒
+        //渐入约0.75s，渐出约1.5s
         private const float FadeInPerTick = 1f / 45f;
         private const float FadeOutPerTick = 1f / 90f;
 
-        /// <summary>黄昏在场强度 0~1，驱动天空/滤镜/日光暖色</summary>
+        /// <summary>在场强度0~1</summary>
         public static float Intensity { get; private set; }
 
-        /// <summary>视觉是否仍需在场（含渐出尾巴），场景特效以此判定</summary>
+        /// <summary>仍需在场(含渐出尾巴)</summary>
         public static bool Visible => Intensity > 0.004f;
 
         internal static void Update() {
@@ -33,10 +32,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
         internal static void Reset() => Intensity = 0f;
 
-        /// <summary>
-        /// 黄昏保持条件：鸟居退场进行中（含余响静默拍）或初见对话在演；
-        /// 鬼域激活时让位（避免两层全屏天空叠画）
-        /// </summary>
+        /// <summary>退场中或初见在播则保持，鬼域激活时让位</summary>
         private static bool Hold() {
             if (Main.dedServ || Main.gameMenu) {
                 return false;
@@ -65,7 +61,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             ToriiDusk.Reset();
         }
 
-        //黄昏日光：世界前后景向暖金收拢，这是"天色变黄昏"的主要体感来源
+        //日光向暖金收拢
         public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor) {
             float dusk = ToriiDusk.Intensity;
             if (dusk <= 0.001f) {
@@ -90,9 +86,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
     }
 
     /// <summary>
-    /// 拔刀叙事的逢魔黄昏天空：复用 <see cref="EffectLoader.OniSky"/> 的表世界调色板
-    /// （uUraBlend=0），全覆盖模式（uSpreadMode=0）不依赖任何鬼域状态；
-    /// 强度全程由 <see cref="ToriiDusk.Intensity"/> 驱动
+    /// 逢魔黄昏天空，复用 <see cref="EffectLoader.OniSky"/> 表世界调色板(uUraBlend=0)，全覆盖(uSpreadMode=0)<br/>
+    /// 强度由 <see cref="ToriiDusk.Intensity"/> 驱动
     /// </summary>
     internal class ToriiDuskSky : CustomSky, ICWRLoader
     {
@@ -106,7 +101,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             }
             //ManageSpecialBiomeVisuals 对 Filters.Scene[name] 不做空检查，
             //Sky 与 Filter 必须同名成对注册，缺 Filter 直接 NRE；
-            //滤镜顺带承担一层极淡的暖金罩，补足前景氛围
+            //滤镜顺带极淡暖金罩
             SkyManager.Instance[Name] = this;
             Filters.Scene[Name] = new Filter(new ScreenShaderData("FilterMiniTower")
                 .UseColor(0.30f, 0.20f, 0.06f)
@@ -115,11 +110,10 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
         public override void Activate(Vector2 position, params object[] args) => active = true;
         public override void Deactivate(params object[] args) => active = false;
-        //IsActive 只反映 SkyManager 的激活状态：ManageSpecialBiomeVisuals 只在
-        //inZone != IsActive() 时才调用 Activate——若把外部强度并进判定，首次激活时
-        //IsActive 已为 true，Activate 被短路，天空永远进不了活跃列表（实测踩坑）。
-        //渐出尾巴由场景特效条件 ToriiDusk.Visible 兜住：强度未排干前 inZone 恒真、
-        //天空保持激活，排干后才 Deactivate，此时本就无可绘制内容
+        //IsActive 只反映 SkyManager 激活态。ManageSpecialBiomeVisuals 只在
+        //inZone != IsActive() 时才 Activate。若把外部强度并进判定，首次激活时
+        //IsActive 已为 true，Activate 被短路，天空永远进不了活跃列表（实测踩坑）
+        //渐出尾巴由 ToriiDusk.Visible 兜住，强度排干后才 Deactivate
         public override bool IsActive() => active;
         public override void Reset() => active = false;
 
@@ -128,7 +122,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         }
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth) {
-            //跨 0 深度切片只画一次：该切片在所有原版背景层之后绘制，覆盖山野等背景
+            //跨0深度切片只画一次，盖住原版背景层
             if (maxDepth < 0f || minDepth >= 0f) {
                 return;
             }

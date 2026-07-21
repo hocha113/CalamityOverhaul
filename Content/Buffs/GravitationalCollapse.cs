@@ -6,7 +6,6 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Buffs
 {
-    //引力坍缩：被诅咒的目标化作局部引力井，持续失血并把周围的敌人拖向自己
     internal class GravitationalCollapse : ModBuff
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;
@@ -23,7 +22,7 @@ namespace CalamityOverhaul.Content.Buffs
             }
             npc.lifeRegen -= 150;
 
-            //把周围的敌人拖向坍缩中心
+            //拖周围敌人
             float pullRadius = 320f;
             foreach (var other in Main.ActiveNPCs) {
                 if (other.whoAmI == npc.whoAmI || other.friendly || other.dontTakeDamage || other.boss) {
@@ -36,11 +35,9 @@ namespace CalamityOverhaul.Content.Buffs
                 }
             }
 
-            //被坍缩者自身行动迟滞
             npc.velocity *= 0.96f;
 
             if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
-                //外缘向内坠落粒子
                 Vector2 offset = Main.rand.NextVector2CircularEdge(npc.width, npc.height) * 1.5f;
                 Vector2 vel = -offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 4f);
                 PRTLoader.NewParticle<PRT_Spark>(npc.Center + offset, vel, Color.MediumPurple, Main.rand.NextFloat(0.5f, 1f)).Configure(false, 12);

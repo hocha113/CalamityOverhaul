@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 _active = false;
                 return;
             }
-            //运行环境比较敏感，为了防止玩家在卸载模组时还要和UI进行交互，这里判断一下资源是否已经被释放
+            //卸载时资源可能已释放
             if (VaultAsset.placeholder2 == null || VaultAsset.placeholder2.IsDisposed) {
                 _active = false;
                 return;

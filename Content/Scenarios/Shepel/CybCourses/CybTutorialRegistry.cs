@@ -2,8 +2,7 @@
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 {
-    //教程目标注册表，在SHPCHUDTargets.Load时填入，Unload时清空
-    //CybTutorialLead通过Key查询目标位置，不持有目标引用
+    //SHPCHUDTargets.Load填入，Lead按Key查
     internal static class CybTutorialRegistry
     {
         private static readonly Dictionary<string, ICybTutorialTarget> _targets = new();

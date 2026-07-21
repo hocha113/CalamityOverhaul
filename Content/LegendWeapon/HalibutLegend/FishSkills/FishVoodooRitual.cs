@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>替死娃娃专属资源（域内加载器，不动 EffectLoader）</summary>
     internal class FishVoodooAssets
     {
-        /// <summary>程序化麻布娃娃：SDF 剪影 + 织纹 + 蛇形绕线显形 + 焚毁溶解</summary>
+        /// <summary>程序化麻布娃娃，SDF 剪影 + 织纹 + 蛇形绕线显形 + 焚毁溶解</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect FishVoodooDoll { get; private set; }
 
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
-        /// sprite 拼合小布偶（Mark 吊坠与 shader 缺失回退共用）：哑光麻布 + 中缝针脚 + X 眼 + 斜插钢针
+        /// sprite 拼合小布偶（Mark 吊坠与 shader 缺失回退共用）
         /// </summary>
         public static void DrawEffigy(SpriteBatch sb, Vector2 center, float scale, float rot, float alpha, float lightMul = 1f, bool needle = true) {
             Texture2D blob = FishVoodooAssets.Blob?.Value;
@@ -98,8 +98,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
     /// <summary>
     /// 替死仪式娃娃（纯视觉，伤害转移在 <see cref="FishVoodooPlayer"/> 即时结算）<br/>
-    /// ai[0]=0 触发演出：绕线显形 → 持线等待 → 钢针刺入(≤2 帧白闪) → 自燃成灰<br/>
-    /// ai[0]=1 冷却结束重织：双股丝线螺旋收拢 + 蛇形绕线显形 → 就绪音 → 消散
+    /// ai[0]=0 触发演出，绕线显形 → 持线等待 → 钢针刺入(≤2 帧白闪) → 自燃成灰<br/>
+    /// ai[0]=1 冷却结束重织，双股丝线螺旋收拢 + 蛇形绕线显形 → 就绪音 → 消散
     /// </summary>
     internal class FishVoodooRitual : ModProjectile
     {
@@ -432,7 +432,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 灵魂缝线：针步节奏缝向目标（2 帧疾送 + 2 帧顿针，方向只在针步起点折转），
+    /// 灵魂缝线，针步节奏缝向目标（2 帧疾送 + 2 帧顿针，方向只在针步起点折转）
     /// 留下针脚虚线轨迹；命中针刺定帧，随后自根部燃蚀、灰烬升腾<br/>
     /// ai[0]=目标 npc，ai[1]=起针延迟帧
     /// </summary>

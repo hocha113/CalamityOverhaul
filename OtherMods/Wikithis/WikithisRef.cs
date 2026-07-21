@@ -29,7 +29,7 @@ namespace CalamityOverhaul.OtherMods.Wikithis
         private static GlobalItem _wikithisGlobalItem;
         private static bool _wikithisGlobalItemResolved;
 
-        //物品 ID wiki 图标覆盖，非 CWR 归属也显示 CWR 图标
+        //按物品 ID 强制 CWR wiki 图标
         private static readonly Dictionary<int, Asset<Texture2D>> _iconOverrides = new();
 
         private delegate bool On_WikithisItem_PreDrawTooltipLine_Delegate(object self, Item item, DrawableTooltipLine line, ref int yOffset);
@@ -43,12 +43,12 @@ namespace CalamityOverhaul.OtherMods.Wikithis
                 return;
             }
 
-            //Wikithis 30×30 小图标，CWR 归属物品
+            //CWR 归属用小图标
             if (CWRAsset.icon_small != null) {
                 wikithis.Call("AddWikiTexture", CWRMod.Instance, CWRAsset.icon_small);
             }
 
-            //PreDrawTooltipLine 按 ID 强制 CWR 图标(灾厄传奇武器)
+            //传奇武器按 ID 强制图标
             HookWikithisPreDrawTooltipLine(wikithis);
 
             var englishIds = new List<int>();
@@ -83,8 +83,8 @@ namespace CalamityOverhaul.OtherMods.Wikithis
                 return;
             }
 
-            //Wikithis 的 ReplaceItem 内部用 TryAdd，遇到外部模组已注册的物品 ID 无法顶掉
-            //这里通过反射直接写入其内部字典，实现强制覆盖；反射失败时退回到原始 Call 调用以保证兼容性
+            //ReplaceItem 用 TryAdd，外部已注册的 ID 顶不掉
+            //反射写内部字典强制覆盖，失败再退回 Call
             int overwritten = ForceOverwriteUrls(wikithis, englishIds, englishUrls, GameCulture.CultureName.English)
                 + ForceOverwriteUrls(wikithis, chineseIds, chineseUrls, GameCulture.CultureName.Chinese);
 
@@ -95,8 +95,7 @@ namespace CalamityOverhaul.OtherMods.Wikithis
 
             CWRMod.Instance.Logger.Info($"WikithisRef registered {englishIds.Count} Calamity Overhaul item wiki links.");
 
-            //让灾厄归属的传奇武器在 Wikithis 提示行前显示 CWR 自己的图标
-            //（Wikithis 默认以 item.ModItem.Mod 为键取图标，灾厄物品会拿到灾厄注册的图标）
+            //灾厄归属传奇武器改显示 CWR 图标
             if (CWRAsset.icon_small != null) {
                 if (SHPCOverride.ID > ItemID.None) {
                     _iconOverrides[SHPCOverride.ID] = CWRAsset.icon_small;
@@ -123,9 +122,7 @@ namespace CalamityOverhaul.OtherMods.Wikithis
             }
         }
 
-        /// <summary>
-        /// VaultHook：拦截 Wikithis 的 <c>PreDrawTooltipLine</c>，对注册了图标覆盖的物品自行绘制
-        /// </summary>
+        /// <summary>拦截 PreDrawTooltipLine，画覆盖图标</summary>
         private static bool OnWikithisItem_PreDrawTooltipLine(
             On_WikithisItem_PreDrawTooltipLine_Delegate orig,
             object self, Item item, DrawableTooltipLine line, ref int yOffset) {
@@ -140,7 +137,7 @@ namespace CalamityOverhaul.OtherMods.Wikithis
             return orig(self, item, line, ref yOffset);
         }
 
-        //复刻 Wikithis.WikithisItem.DrawIcon 的布局，只把图源换成自定义资源
+        //复刻 Wikithis DrawIcon 布局，换图源
         private static void DrawCustomWikiIcon(DrawableTooltipLine line, Asset<Texture2D> asset) {
             Texture2D texture = asset.Value;
             Vector2 position = new Vector2(line.X, line.Y);
@@ -158,9 +155,8 @@ namespace CalamityOverhaul.OtherMods.Wikithis
         }
 
         /// <summary>
-        /// 手动转发 Wikithis 的 <c>GlobalItem.ModifyTooltips</c> 到 <paramref name="tooltips"/>
-        ///  <c>On_ModifyTooltips</c> 返回 <c>false</c> 而屏蔽掉钩子链的情况（例如 SHPC）
-        /// 已存在 Wikithis 行时不会重复添加
+        /// 手动补 Wikithis ModifyTooltips（钩子被屏蔽时，如 SHPC）
+        /// 已有 Wiki 行则跳过
         /// </summary>
         public static void TryAppendWikiTooltip(Item item, List<TooltipLine> tooltips) {
             if (Main.dedServ || item is null || tooltips is null || !Has) {
@@ -198,7 +194,7 @@ namespace CalamityOverhaul.OtherMods.Wikithis
         private static bool _itemReplacementsResolved;
         private static Type _keyTupleType;
 
-        /// <summary>反射取 Wikithis itemReplacements 并强制覆盖，返回覆盖数</summary>
+        /// <summary>反射写 itemReplacements，返回覆盖数</summary>
         private static int ForceOverwriteUrls(Mod wikithis, List<int> ids, List<string> urls, GameCulture.CultureName language) {
             IDictionary dict = GetItemReplacementsDict(wikithis);
             if (dict is null || _keyTupleType is null) {

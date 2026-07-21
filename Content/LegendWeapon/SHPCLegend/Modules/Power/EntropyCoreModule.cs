@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>熵核：球飞行吸熵蓄能，引爆按累积释余波</summary>
+    /// <summary>熵核，球飞行吸熵蓄能，引爆按累积释余波</summary>
     internal sealed class EntropyCoreModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             e = MathF.Min(e + gain, MaxEntropy);
             _entropy[id] = e;
 
-            //每次累积时在球周喷一点暗紫色熵粒子
+            //球周熵粒子
             if (Main.netMode == Terraria.ID.NetmodeID.Server) return;
             for (int i = 0; i < 2; i++) {
                 Vector2 angle = Main.rand.NextVector2CircularEdge(2.5f, 2.5f);
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             int id = orb.Projectile.whoAmI;
             if (!_entropy.TryGetValue(id, out float e) || e <= 0.4f) return;
 
-            //余波爆炸：伤害与半径都按熵蓄能比例放大
+            //余波，伤与半径按熵比例
             if (orb.Projectile.owner == Main.myPlayer) {
                 float ratio = MathHelper.Clamp(e / MaxEntropy, 0f, 1f);
                 int dmg = Math.Max((int)(orb.Projectile.damage * (0.4f + ratio * 0.6f)), 1);
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                     ModContent.ProjectileType<CyberDetonationProj>(),
                     dmg, 0f, orb.Projectile.owner, ai0: 0.4f + ratio * 0.4f);
                 if (idx >= 0 && idx < Main.maxProjectiles) {
-                    //余波半径 120-640 像素
+                    //余波半径 120~640px
                     Main.projectile[idx].localAI[2] = MathHelper.Lerp(120f, 640f, ratio);
                 }
             }

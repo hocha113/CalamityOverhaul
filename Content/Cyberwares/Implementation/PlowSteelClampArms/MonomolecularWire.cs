@@ -11,8 +11,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 {
     /// <summary>
     /// 高热单分子线弹幕，OwnerCenter 到 AnchorWorld 线段
-    /// <br/>动态模式（IsStatic=false）：from 跟随玩家；静态模式（IsStatic=true）：两端冻结
-    /// <br/>伤害周期 WireHitCooldown，无击退；锚点经 ai[0]/ai[1] 同步，静态 from 经 SendExtraAI
+    /// <br/>动态 from 跟玩家，静态两端冻结
+    /// <br/>伤害周期 WireHitCooldown，无击退，锚点 ai[0]/ai[1]，静态 from 经 SendExtraAI
     /// </summary>
     [Autoload(true)]
     internal class MonomolecularWire : ModProjectile
@@ -30,16 +30,16 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             }
         }
 
-        /// <summary>静态模式开关，ai[2]：true 两端冻结，false from 跟随玩家</summary>
+        /// <summary>静态模式，ai[2]，true 两端冻结</summary>
         public bool IsStatic {
             get => Projectile.ai[2] > 0.5f;
             set => Projectile.ai[2] = value ? 1f : 0f;
         }
 
-        /// <summary>静态模式 from 端快照，经 SendExtraAI 同步</summary>
+        /// <summary>静态 from 端快照，SendExtraAI 同步</summary>
         public Vector2 StaticFromWorld { get; set; }
 
-        /// <summary>线段 from 端：动态=玩家中心，静态=StaticFromWorld</summary>
+        /// <summary>线段 from，动态=玩家中心，静态=StaticFromWorld</summary>
         public Vector2 OwnerCenter { get; private set; }
 
         /// <summary>视觉脉冲计时，与伤害无关</summary>
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         }
 
         public override void SetDefaults() {
-            //极小判定盒，命中走 Colliding 线段距离
+            //极小判定盒，命中走 Colliding
             Projectile.width = 4;
             Projectile.height = 4;
             Projectile.aiStyle = -1;
@@ -75,21 +75,21 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
                 return;
             }
 
-            //装备被卸下立即销毁，防止形成"装备外的持续输出"
+            //卸装即毁
             if (PlowSteelClampArm.GetEquipped(owner) == null) {
                 Projectile.Kill();
                 return;
             }
 
             if (IsStatic) {
-                //首帧 ExtraAI 未到前兜底用玩家中心
+                //ExtraAI 未到前兜底玩家中心
                 if (StaticFromWorld == Vector2.Zero) {
                     StaticFromWorld = owner.Center;
                 }
                 OwnerCenter = StaticFromWorld;
             }
             else {
-                //动态模式：锚点过远断线（1.4x MaxAnchorDistance）
+                //锚点过远断线，1.4x MaxAnchorDistance
                 if (Vector2.DistanceSquared(owner.Center, AnchorWorld)
                     > (PlowSteelClampArm.MaxAnchorDistance * 1.4f) * (PlowSteelClampArm.MaxAnchorDistance * 1.4f)) {
                     Projectile.Kill();
@@ -97,12 +97,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
                 }
                 OwnerCenter = owner.Center;
             }
-            //中心落在线段中点，便于音效定位
+            //中心落线段中点，音效定位
             Projectile.Center = (OwnerCenter + AnchorWorld) * 0.5f;
 
             visualTimer += 1f / 60f;
 
-            //pulseTimer 控视觉节奏，伤害由 idStaticNPCHitCooldown 控制
+            //pulseTimer 控视觉，伤害走 idStaticNPCHitCooldown
             pulseTimer++;
             if (pulseTimer >= PlowSteelClampArm.WireHitCooldown) {
                 pulseTimer = 0;
@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 
             SpawnLineParticles();
 
-            //接近寿命末尾时附加淡出粒子
+            //寿命末尾淡出粒子
             if (Projectile.timeLeft < 30) {
                 if (Projectile.timeLeft % 3 == 0) {
                     SpawnFadeParticles();
@@ -123,7 +123,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 
         /// <summary>线段-AABB 最短距离命中，阈值 8px</summary>
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            //展开 AABB 后线段最短距离 < 8 视为命中
             float dist = SegmentRectDistance(OwnerCenter, AnchorWorld, targetHitbox);
             if (dist <= 8f) {
                 return true;
@@ -132,9 +131,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //附加灼烧 buff，强化"高热"语义
             target.AddBuff(BuffID.OnFire3, PlowSteelClampArm.WireHitCooldown + 30);
-            //命中点散开火花
             Vector2 hitPoint = ClosestPointOnSegment(OwnerCenter, AnchorWorld, target.Center);
             for (int i = 0; i < 8; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(3.5f, 3.5f);
@@ -144,12 +141,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            //单分子线没有击退，避免连续脉冲对小怪造成不合理的位移
+            //无击退，防连续脉冲推飞
             modifiers.Knockback *= 0f;
         }
 
         public override void OnKill(int timeLeft) {
-            //断线时沿全程播散粒子，给出明显的"线段消散"反馈
+            //断线沿程播散
             int steps = Math.Max(1, (int)(Vector2.Distance(OwnerCenter, AnchorWorld) / 12f));
             for (int i = 0; i <= steps; i++) {
                 float t = (float)i / steps;
@@ -161,10 +158,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             SoundEngine.PlaySound(SoundID.Item56 with { Pitch = 0.2f, Volume = 0.45f }, Projectile.Center);
         }
 
-        /// <summary>沿线段火花粒子，强度随剩余寿命衰减</summary>
+        /// <summary>沿线段火花，强度随剩余寿命衰减</summary>
         private void SpawnLineParticles() {
             float lifeFactor = MathHelper.Clamp((float)Projectile.timeLeft / MaxLifetime, 0f, 1f);
-            //长度越长粒子越多，但有上限避免巨量粒子
             float distance = Vector2.Distance(OwnerCenter, AnchorWorld);
             int count = Math.Min(8, 1 + (int)(distance / 64f));
             for (int i = 0; i < count; i++) {
@@ -173,7 +169,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
                 }
                 float t = Main.rand.NextFloat();
                 Vector2 pos = Vector2.Lerp(OwnerCenter, AnchorWorld, t);
-                //法向小偏移
                 Vector2 dir = (AnchorWorld - OwnerCenter).SafeNormalize(Vector2.UnitX);
                 Vector2 normal = new(-dir.Y, dir.X);
                 pos += normal * Main.rand.NextFloat(-1.5f, 1.5f);
@@ -211,9 +206,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             }
             float rotation = diff.ToRotation();
 
-            //寿命衰减：剩余时间越短整体越淡
             float lifeFactor = MathHelper.Clamp((float)Projectile.timeLeft / MaxLifetime, 0f, 1f);
-            //节奏闪烁：每次脉冲计时器越接近触发时整体越亮
             float pulse = MathHelper.Clamp((float)pulseTimer / PlowSteelClampArm.WireHitCooldown, 0f, 1f);
             float globalAlpha = MathHelper.Lerp(0.55f, 1f, lifeFactor) * (0.85f + 0.15f * pulse);
 
@@ -225,13 +218,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             DrawLineRaw(px, from, length, rotation, 3.4f, body);
             DrawLineRaw(px, from, length, rotation, 1.4f, core);
 
-            //扫描点：沿线段前进的明亮高光，强化"高频脉冲"质感
+            //扫描高光
             float scanT = (visualTimer * 0.55f) % 1f;
             Vector2 scanPos = from + diff * scanT;
             DrawDot(px, scanPos, 6f, new Color(255, 220, 140, 0) * (0.6f * globalAlpha));
             DrawDot(px, scanPos, 3f, new Color(255, 250, 220, 0) * globalAlpha);
 
-            //两端锚点高亮
             DrawDot(px, from, 5f, body);
             DrawDot(px, to, 5f, body);
             DrawDot(px, to, 9f, glow);
@@ -265,7 +257,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 
         /// <summary>线段 AB 到 AABB 最短距离，6 点采样</summary>
         public static float SegmentRectDistance(Vector2 a, Vector2 b, Rectangle rect) {
-            //取矩形的 4 个顶点 + 2 个对角中点作为采样
+            //4 顶点 + 2 对角中点
             Vector2 tl = new(rect.Left, rect.Top);
             Vector2 tr = new(rect.Right, rect.Top);
             Vector2 bl = new(rect.Left, rect.Bottom);
@@ -287,7 +279,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 
         public override void SendExtraAI(BinaryWriter writer) {
             writer.Write(pulseTimer);
-            //静态模式才同步 from 端，省带宽
+            //静态才同步 from，省带宽
             if (IsStatic) {
                 writer.Write(StaticFromWorld.X);
                 writer.Write(StaticFromWorld.Y);

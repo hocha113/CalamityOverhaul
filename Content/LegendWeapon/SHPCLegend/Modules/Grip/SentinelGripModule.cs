@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>哨戒握把：球飞行每 20 帧射一束追踪光束</summary>
+    /// <summary>哨戒握把，球飞行每20帧射追踪束</summary>
     internal sealed class SentinelGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;

@@ -16,13 +16,7 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.Wraiths.Runtime
 {
     /// <summary>
-    /// 厉鬼系统的每玩家状态层。<br/>
-    /// 侵蚀（身层代价，鬼律第十二条）：借力即涨、静息缓退，阈值分级演出，随玩家落档；<br/>
-    /// 预警拍（omen，鬼律第十条"有预警"）：倒计时与死亡判定在权威侧（本类权威分支），
-    /// 受害者本端只持演出镜像（心跳渐急，视觉在 <see cref="WraithOmenRender"/>），入口见 <see cref="WraithLethality"/>；<br/>
-    /// 借力键：死机仪式优先（服务器确认制事务，见 <see cref="WraithRites"/>），其次施放共鸣之力；<br/>
-    /// 反噬判定：躁动之鬼按 owner 端数据掷签挣脱（owner 自治掷签，服务器复核资格后落实生成）。
-    /// 所有字段实例级，绝无 static 每玩家状态
+    /// 每玩家状态。侵蚀/omen/借力键/反噬；字段全实例级
     /// </summary>
     internal class WraithPlayer : ModPlayer
     {
@@ -31,7 +25,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         private const float ErosionDecayPerTick = 1f / (60f * 240f);
         /// <summary>最后一次上涨后的消退延迟（帧）</summary>
         private const int ErosionDecayDelay = 60 * 6;
-        /// <summary>阈值分级：一阶(低语)/二阶(尸斑)/三阶(临界)</summary>
+        /// <summary>侵蚀阈值，一/二/三阶</summary>
         public const float TierCrawl = 0.35f, TierStain = 0.70f, TierMirror = 0.95f;
 
         //====反噬调参====
@@ -45,43 +39,42 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         private int erosionIdleTimer;
         private int lastCueTier;
         private int backlashCheckTimer;
-        //赋力冷却与反噬冷却:键=定义 Key
+        //赋力/反噬冷却，键=定义 Key
         private readonly Dictionary<string, int> abilityCooldowns = [];
         private readonly Dictionary<string, long> backlashCooldownUntil = [];
-        //上一秒仍在场的挣脱体名单,用于本地判读"散了还是被收伏了"
+        //上一秒在场挣脱体，去向判读用
         private readonly HashSet<string> escapedWatch = [];
-        //挣脱确认挂起:键→剩余观测次数(1Hz)。多人下请求已发但挣脱体未现身,
-        //首次真实观测到才播报+落冷却;窗口内一直没来=服务器拒了,无声作废
+        //挣脱确认挂起，键→剩余观测次数(1Hz)
         private readonly Dictionary<string, int> escapedPending = [];
-        //键遍历临时缓冲(纯临时量,非每玩家状态;owner 端单线程串行使用)
+        //键遍历临时缓冲
         private static readonly List<string> keyScratch = [];
 
-        //====预警拍:权威侧（倒计时与死亡判定,服务器或单人）====
+        //====预警拍权威侧====
         private int omenAuthTicksLeft;
         private WraithDefinition omenAuthDefinition;
         private LocalizedText omenAuthReason;
 
-        //====预警拍:演出镜像（受害者本端心跳与收黑）====
+        //====预警拍演出镜像====
         private int omenTicksLeft;
         private int omenDuration;
         private WraithDefinition omenDefinition;
         private int omenBeatTimer;
 
-        /// <summary>侵蚀值 0~1（身层代价累计）</summary>
+        /// <summary>侵蚀 0~1</summary>
         public float Erosion => erosion;
 
-        /// <summary>侵蚀阶级 0~3，视觉与反噬概率的公共读数</summary>
+        /// <summary>侵蚀阶级 0~3</summary>
         public int ErosionTier => erosion >= TierMirror ? 3 : erosion >= TierStain ? 2 : erosion >= TierCrawl ? 1 : 0;
 
-        /// <summary>预警拍演出进行中（本端镜像）</summary>
+        /// <summary>预警演出中</summary>
         public bool OmenActive => omenDuration > 0;
 
-        /// <summary>预警拍进度 0~1（1=死亡判定瞬间），渲染层读它收黑；镜像宽限期计穿为负也钳在 1</summary>
+        /// <summary>预警进度 0~1，收黑用</summary>
         public float OmenProgress => OmenActive ? MathHelper.Clamp(1f - omenTicksLeft / (float)omenDuration, 0f, 1f) : 0f;
 
         //====侵蚀====
 
-        /// <summary>上涨侵蚀（owner 端调用），越阶时给一段残句与低语</summary>
+        /// <summary>上涨侵蚀，越阶播残句</summary>
         public void AddErosion(float amount) {
             if (Player.whoAmI != Main.myPlayer || amount <= 0f) {
                 return;
@@ -95,7 +88,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             lastCueTier = tier;
         }
 
-        /// <summary>直接清整侵蚀（调试/特殊净化用）</summary>
+        /// <summary>清侵蚀</summary>
         public void SetErosion(float value) {
             erosion = MathHelper.Clamp(value, 0f, 1f);
             lastCueTier = ErosionTier;
@@ -112,11 +105,11 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             Player.CWR()?.GetScreenShake(1.5f + tier);
         }
 
-        //====预警拍（入口在 WraithLethality.StartOmen/CancelOmen，权威端专用）====
+        //====预警拍====
 
-        /// <summary>权威侧起拍：倒计时落权威，本地受害者（单人）同时镜像演出；被更紧迫的现拍压住时返回 false</summary>
+        /// <summary>权威起拍；更紧迫现拍压住返回 false</summary>
         internal bool BeginOmenAuthority(WraithDefinition definition, int ticks, LocalizedText reason) {
-            //重复起拍取更紧迫的一段
+            //取更紧迫一段
             if (omenAuthTicksLeft > 0 && omenAuthTicksLeft <= ticks) {
                 return false;
             }
@@ -129,7 +122,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             return true;
         }
 
-        /// <summary>权威侧撤拍（死亡/挣脱规则），本地受害者顺带撤演出</summary>
+        /// <summary>权威撤拍</summary>
         internal void ClearOmenAuthority() {
             omenAuthTicksLeft = 0;
             omenAuthDefinition = null;
@@ -139,9 +132,9 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             }
         }
 
-        /// <summary>受害者本端演出镜像起拍（网络 op / 单人直呼）</summary>
+        /// <summary>受害者镜像起拍</summary>
         internal void BeginOmenMirror(WraithDefinition definition, int ticks) {
-            //现拍更紧迫时保拍;已计穿(宽限期负值)的残拍不挡新拍
+            //更紧迫保拍；计穿残拍不挡新拍
             if (OmenActive && omenTicksLeft > 0 && omenTicksLeft <= ticks) {
                 return;
             }
@@ -151,18 +144,14 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             omenBeatTimer = 0;
         }
 
-        /// <summary>受害者本端演出镜像撤拍</summary>
+        /// <summary>受害者镜像撤拍</summary>
         internal void ClearOmenMirror() {
             omenDuration = 0;
             omenTicksLeft = 0;
             omenDefinition = null;
         }
 
-        /// <summary>
-        /// 权威侧逐帧：倒计时推进与死亡判定。死于他因的撤拍不在这里——
-        /// 死亡期间 PostUpdate 不执行（TML Player.Update 对 dead 提前 return），
-        /// 由 <see cref="UpdateDead"/> 逐帧清拍，离场由 <see cref="PlayerDisconnect"/> 兜底
-        /// </summary>
+        /// <summary>权威逐帧倒计时与判死；死于他因撤拍见 UpdateDead</summary>
         private void UpdateOmenAuthority() {
             if (omenAuthTicksLeft <= 0) {
                 return;
@@ -176,10 +165,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             WraithLethality.Kill(Player, def, reason);
         }
 
-        /// <summary>
-        /// 死亡期间的撤拍兜底（本钩子死时逐帧执行，两侧都跑）：中拍者死于他因时，
-        /// 权威侧清倒计时并通知受害者端，复活后绝不带着旧拍还魂；镜像顺带清场
-        /// </summary>
+        /// <summary>死亡期间撤拍兜底，两侧都跑</summary>
         public override void UpdateDead() {
             if (!VaultUtils.isClient && omenAuthTicksLeft > 0) {
                 ClearOmenAuthority();
@@ -192,27 +178,27 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             }
         }
 
-        /// <summary>中拍者离场：权威侧撤拍兜底（人已走，撤拍包不必发）</summary>
+        /// <summary>中拍者离场，权威撤拍</summary>
         public override void PlayerDisconnect() {
             if (!VaultUtils.isClient) {
                 ClearOmenAuthority();
             }
         }
 
-        /// <summary>受害者本端逐帧：心跳渐急；计到零只收演出（死亡判定权在权威侧，死时清场在 <see cref="UpdateDead"/>）</summary>
+        /// <summary>受害者镜像逐帧，心跳渐急</summary>
         private void UpdateOmenMirror() {
             if (!OmenActive) {
                 return;
             }
-            //无条件递减:允许计穿到宽限负值,权威包缺席时演出也能自行收场,不永久挂死收黑
+            //允许计穿宽限，权威包缺席也能收场
             omenTicksLeft--;
-            //心跳:越近越急
+            //心跳
             int beatInterval = (int)MathHelper.Lerp(46f, 15f, OmenProgress);
             if (++omenBeatTimer >= beatInterval) {
                 omenBeatTimer = 0;
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Pitch = -0.92f, Volume = 0.42f, MaxInstances = 2 });
             }
-            //镜像走完仍未收到死亡/撤拍(权威包在途),再宽限半秒收场
+            //镜像走完再宽限半秒
             if (omenTicksLeft <= -30) {
                 ClearOmenMirror();
             }
@@ -221,7 +207,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         //====借力键====
 
         public override void ProcessTriggers(TriggersSet triggersSet) {
-            //上线闸关时键位未注册(为 null),整条借力/仪式输入链静默
+            //上线闸关则键位 null，输入静默
             if (CWRKeySystem.Wraith_Power?.JustPressed != true || Player.dead || Player.CCed) {
                 return;
             }
@@ -237,17 +223,14 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 VaultUtils.Text(WraithSystemText.PowerDeniedNoVessel.Value, Color.DarkGray);
                 return;
             }
-            //死机仪式优先:窗口在前,力可以等
+            //死机仪式优先
             if (WraithRites.TryPerform(Player, vessel)) {
                 return;
             }
             TryCastAbility(vessel);
         }
 
-        /// <summary>
-        /// 共鸣之鬼：簿上 Bound 且有赋力者中驾驭度最高的一只（选择 UI 留给后续阶段）。
-        /// 挣脱契约态（鬼律第十一条）：同键挣脱体在场=名讳空悬，该鬼的力借不出来
-        /// </summary>
+        /// <summary>共鸣之鬼，Bound 有赋力者中驾驭最高；挣脱在场则借不出</summary>
         private WraithDefinition ResolveAttuned(WraithProgressStore store, out WraithProgressRecord record, out bool escapedBlocked) {
             WraithDefinition best = null;
             record = null;
@@ -259,7 +242,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 if (!WraithRegistry.TryGet(key, out WraithDefinition definition) || definition.Ability == null) {
                     continue;
                 }
-                //上线闸:系统未开放期间正典鬼的力借不出来(出厂绑定的焦黑枯手按 P 无事发生,走"无可借之力"回执)
+                //上线闸关则正典借不出
                 if (!WraithDirector.ContentActiveFor(definition)) {
                     continue;
                 }
@@ -301,8 +284,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 return;
             }
 
-            //双层代价:刀层磨损(犯戒加罚)+身层侵蚀;躁动与簿面读数经 Version 即时生效,
-            //磨损写完显式推送持有槽同步,服务器/他端副本即时跟上(反噬复核与簿面最终一致都靠它)
+            //双层代价，磨损后 SyncSlot
             float wear = ability.MasteryWear + (result == WraithCastResult.Taboo ? ability.TabooPenalty : 0f);
             record.Mastery = MathHelper.Clamp(record.Mastery - wear, 0f, 1f);
             vessel.Store.BumpVersion();
@@ -315,7 +297,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 SoundEngine.PlaySound(SoundID.NPCDeath52 with { Pitch = -0.3f, Volume = 0.4f });
             }
 
-            //世界改动走权威,演出本端即时、他端经广播
+            //世界改动权威，演出本端即时
             if (VaultUtils.isClient) {
                 WraithNet.SendAbilityCast(definition, ctx.AimWorld, record.Mastery);
             }
@@ -328,7 +310,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         //====主循环====
 
         public override void PostUpdate() {
-            //权威侧:预警拍倒计时与死亡判定(服务器为每名玩家推进,单人即本地)
+            //权威预警倒计时
             if (!VaultUtils.isClient) {
                 UpdateOmenAuthority();
             }
@@ -363,7 +345,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
             UpdateOmenMirror();
 
-            //反噬:1Hz 掷签 + 挂起确认观测 + 挣脱体去向判读
+            //反噬
             if (++backlashCheckTimer >= BacklashCheckInterval) {
                 backlashCheckTimer = 0;
                 WraithBacklash.Judge(this);
@@ -372,7 +354,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             }
         }
 
-        /// <summary>高侵蚀的身周征兆：黑雾缕自脚边升起，阶级越高越稠</summary>
+        /// <summary>高侵蚀身周黑雾</summary>
         private void UpdateErosionAmbience() {
             int tier = ErosionTier;
             if (tier <= 0 || Main.gamePaused) {
@@ -395,19 +377,16 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         internal void SetBacklashCooldown(string key, long until) => backlashCooldownUntil[key] = until;
 
-        /// <summary>登记一只已现世的挣脱体，供去向判读</summary>
+        /// <summary>登记挣脱体</summary>
         internal void NoteEscaped(string key) => escapedWatch.Add(key);
 
-        /// <summary>挂起一次挣脱确认观测（多人请求已发，等挣脱体真实现身），观测窗约 6 秒</summary>
+        /// <summary>挂起挣脱确认观测，约 6 秒</summary>
         internal void NotePendingEscape(string key) => escapedPending[key] = 6;
 
-        /// <summary>该键的挣脱确认仍在挂起观测中（掷签跳过它，防 1Hz 重复请求）</summary>
+        /// <summary>该键确认仍挂起</summary>
         internal bool IsEscapePending(string key) => escapedPending.ContainsKey(key);
 
-        /// <summary>
-        /// 挂起确认观测（1Hz）：挣脱体首次真实现身才播报+落 90 秒冷却并转入去向判读；
-        /// 观测窗内始终没来=服务器拒了（互斥/资格/冷却），无声作废，双端冷却都不白烧
-        /// </summary>
+        /// <summary>挂起观测 1Hz，现身才播报落冷却</summary>
         private void WatchPendingEscapes() {
             if (escapedPending.Count == 0) {
                 return;
@@ -434,10 +413,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             }
         }
 
-        /// <summary>
-        /// 挣脱体去向判读：上秒还在、这秒没了——驾驭度回到线上=被收伏（仪式已播报），
-        /// 仍在线下=它自己散了（播"还会回来"）
-        /// </summary>
+        /// <summary>挣脱体去向，线上=收伏，线下=自散</summary>
         private void WatchEscaped() {
             if (escapedWatch.Count == 0) {
                 return;

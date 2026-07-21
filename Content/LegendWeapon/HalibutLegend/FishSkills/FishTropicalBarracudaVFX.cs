@@ -9,17 +9,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>热带梭鱼域内 shader 资源（域内加载器，不经 EffectLoader）</summary>
     internal class FishBarracudaAssets
     {
-        /// <summary>白沫水射流条带：横穿呼啸段的速度尾迹</summary>
+        /// <summary>白沫水射流条带，横穿呼啸段的速度尾迹</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect FishBarracudaJet { get; private set; }
     }
 
-    /// <summary>
-    /// 热带梭鱼共享演出协作类。<br/>
-    /// 材质：珊瑚礁浪涌，鱼是被浪推着的鱼雷、水才是媒介；
-    /// 色彩脚本：深礁青压底 + 绿松石主色 + 珊瑚橙/柠檬黄条纹点缀 + 海沫亮芯（非纯白）。<br/>
-    /// 与 FishSwarm（玩家化形银鳞群）、FishNeonTetra（青-品红霓虹）区分：这里是外部空袭的热带色带流
-    /// </summary>
+    /// <summary>热带梭鱼 VFX，异于 FishSwarm 银鳞群、FishNeonTetra 霓虹</summary>
     internal static class FishBarracudaVFX
     {
         /// <summary>深礁青（压底/外缘/暗雾）</summary>
@@ -33,7 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// <summary>海沫（亮芯与水珠，非纯白）</summary>
         public static readonly Color Foam = new(210, 244, 238);
 
-        /// <summary>三色条纹轮换：青绿 → 珊瑚橙 → 柠檬黄</summary>
+        /// <summary>三色条纹轮换，青绿 → 珊瑚橙 → 柠檬黄</summary>
         public static Color Stripe(int i) => (i % 3) switch {
             0 => Turquoise,
             1 => Coral,
@@ -53,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             fx.Parameters["uColFoam"]?.SetValue(Foam.ToVector3());
         }
 
-        /// <summary>入场预告：屏缘涌动线一条 + 沿线内漂气泡数枚，时长与鱼群出闸对齐</summary>
+        /// <summary>入场预告，屏缘涌动线一条 + 沿线内漂气泡数枚，时长与鱼群出闸对齐</summary>
         public static void EdgeTelegraph(Vector2 lineCenter, Vector2 tangent, Vector2 inward, float length, int ticks) {
             if (Main.dedServ) {
                 return;
@@ -67,7 +62,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>破水/化水水花：压扁暗环 + 前向水珠扇 + 海沫细珠 + 悬浮气泡，scale 0.4~1.2</summary>
+        /// <summary>破水/化水水花，压扁暗环 + 前向水珠扇 + 海沫细珠 + 悬浮气泡，scale 0.4~1.2</summary>
         public static void BurstSplash(Vector2 pos, Vector2 dir, float scale) {
             if (Main.dedServ) {
                 return;
@@ -104,7 +99,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>穿体喷溅：沿冲刺方向的水珠锥 + 条纹色锐线 + 顺行进压扁波环 + 一撮悬雾，ke 0..1 动能系数</summary>
+        /// <summary>穿体喷溅，沿冲刺方向的水珠锥 + 条纹色锐线 + 顺行进压扁波环 + 一撮悬雾，ke 0..1 动能系数</summary>
         public static void ImpactSpray(Vector2 pos, Vector2 vel, Color stripe, float ke) {
             if (Main.dedServ) {
                 return;
@@ -139,8 +134,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 屏缘涌动预告线：鱼群入场侧的水压前锋。宽暗底光 + 主涌动带 + 两道向屏内推进的
-    /// 波纹副线 + 沿线海沫闪点，亮度随寿命渐强（预期感），到点即被破水帧接管。纯程序化
+    /// 屏缘涌动预告线，鱼群入场侧的水压前锋，宽暗底光 + 主涌动带 + 两道向屏内推进的
+    /// 波纹副线 + 沿线海沫闪点，亮度随寿命渐强（预期感），到点即被破水帧接管，纯程序化
     /// </summary>
     internal class PRT_FishBarracudaSurge : BasePRT
     {
@@ -176,7 +171,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void AI() {
             //水压前锋缓慢压向屏内
             Position += inward * 0.4f;
-            //渐强包络：预告越接近出闸越亮
+            //渐强包络，预告越接近出闸越亮
             Opacity = MathF.Pow(LifetimeCompletion, 1.4f);
             //沿线零星内漂气泡
             if (Time % 5 == 0) {
@@ -199,15 +194,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 streakOrigin = streak.Size() * 0.5f;
             float lenScale = length / streak.Height;
 
-            //底光：宽而暗的深礁青雾带，只作压底
+            //底光，宽而暗的深礁青雾带，只作压底
             spriteBatch.Draw(soft, mid, null, FishBarracudaVFX.SeaDeep with { A = 0 } * (0.55f * Opacity)
                 , lineRot, soft.Size() / 2f, new Vector2(length / soft.Width, 96f / soft.Height), SpriteEffects.None, 0f);
 
-            //主涌动带：绿松石
+            //主涌动带，绿松石
             spriteBatch.Draw(streak, mid, null, FishBarracudaVFX.Turquoise with { A = 0 } * (0.5f * Opacity)
                 , streakRot, streakOrigin, new Vector2(24f / streak.Width, lenScale), SpriteEffects.None, 0f);
 
-            //两道推进副线：沿屏内方向往复涌动的波纹前锋
+            //两道推进副线
             for (int k = 0; k < 2; k++) {
                 float push = (6f + 5f * k) + MathF.Sin(Time * 0.45f + seed + k * 2.1f) * 4.5f;
                 Color c = (k == 0 ? FishBarracudaVFX.Foam : FishBarracudaVFX.Turquoise) with { A = 0 };
@@ -216,7 +211,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     , SpriteEffects.None, 0f);
             }
 
-            //海沫闪点：沿线四处明灭的微光（渐强的预期信号）
+            //海沫闪点
             if (glint != null) {
                 for (int i = 0; i < 4; i++) {
                     float t = 0.12f + 0.253f * i;
@@ -233,8 +228,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 海水气泡：缓升 + 横向摆动，末段轻微鼓胀后破裂消散。
-    /// DiffusionCircle6 三层（外圈/内芯/偏置高光点），呼啸余波与预告内漂共用。纯程序化
+    /// 海水气泡，缓升 + 横向摆动，末段轻微鼓胀后破裂消散
+    /// DiffusionCircle6 三层（外圈/内芯/偏置高光点），呼啸余波与预告内漂共用，纯程序化
     /// </summary>
     internal class PRT_FishBarracudaBubble : BasePRT
     {
@@ -290,7 +285,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             spriteBatch.Draw(tex, pos, null, rim * (0.5f * Opacity), 0f, origin, Scale, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, pos, null, FishBarracudaVFX.Turquoise with { A = 0 } * (0.3f * Opacity)
                 , 0f, origin, Scale * 0.55f, SpriteEffects.None, 0f);
-            //偏置高光点：读作球面反光而非光斑
+            //偏置高光点
             Vector2 highlight = new Vector2(-tex.Width, -tex.Width) * Scale * 0.16f;
             spriteBatch.Draw(tex, pos + highlight, null, rim * (0.85f * Opacity), 0f, origin, Scale * 0.2f, SpriteEffects.None, 0f);
             return false;
@@ -298,9 +293,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 残留白沫水痕：破水口与鱼身化水处多活 10~18 帧的沫线。
-    /// 尾端先蚀（尾点向头点回缩）+ 头尾不同速沉降；Extra_98 三层同轴：
-    /// 深礁青宽晕 / 绿松石中层 / 海沫细芯（芯先熄）。纯程序化
+    /// 残留白沫水痕，破水口与鱼身化水处多活 10~18 帧的沫线
+    /// 尾端先蚀（尾点向头点回缩）+ 头尾不同速沉降；Extra_98 三层同轴
+    /// 深礁青宽晕 / 绿松石中层 / 海沫细芯（芯先熄），纯程序化
     /// </summary>
     internal class PRT_FishBarracudaWake : BasePRT
     {
@@ -334,9 +329,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void AI() {
             float lc = LifetimeCompletion;
             Opacity = MathF.Pow(1f - lc, 1.5f);
-            //尾端先蚀：沫线从最旧端消散
+            //尾端先蚀，沫线从最旧端消散
             tail = Vector2.Lerp(tail, head, 0.05f);
-            //沫水沉降：头尾不同速下坠，线条随之微倾
+            //沫水沉降
             head.Y += 0.1f;
             tail.Y += 0.18f;
             Position = (head + tail) * 0.5f;
@@ -358,7 +353,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Color dark = FishBarracudaVFX.SeaDeep with { A = 0 };
             Color midCol = (Color == default ? FishBarracudaVFX.Turquoise : Color) with { A = 0 };
             Color foam = FishBarracudaVFX.Foam with { A = 0 };
-            //海沫芯先熄：亮芯只存在于最初几帧
+            //海沫芯先熄，亮芯只存在于最初几帧
             float coreOpacity = MathF.Pow(1f - lc, 3.2f);
 
             spriteBatch.Draw(streak, mid, null, dark * (0.45f * Opacity), rot, texOrigin

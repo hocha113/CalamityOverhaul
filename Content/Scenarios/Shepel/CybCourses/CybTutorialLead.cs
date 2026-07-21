@@ -17,17 +17,14 @@ using Terraria.UI;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 {
-    //超梦教程引导：开场对话、步骤状态、教学卡片与高亮
-    //复用EntrustGuideCard着色器（variant=1青色版），不修改任何被教学的目标UI代码
-    //作为IGuideLead以最高优先级登记进引导队列：整段教程子世界期间独占展示权，
-    //压制比目鱼/委托等无关首次引导，避免它们与教学卡片同屏抢镜
+    //SHPC超梦教程，IGuideLead登记
+    //GuidePriority=0子世界内独占引导队列
     internal class CybTutorialLead : ModSystem, ILocalizedModType, IGuideLead
     {
         private enum Phase { Inactive, Running, FadeOut, Done }
 
         public string LocalizationCategory => "ADV.Shepel";
 
-        //各步骤的固定元数据（目标键和推进方式）
         private static readonly (string TargetKey, bool IsAuto)[] StepMeta =
         {
             (null,              false),
@@ -39,7 +36,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             (null,              true),
         };
 
-        //各步骤的本地化标题与正文
         private static LocalizedText[] _stepTitles;
         private static LocalizedText[] _stepBodies;
         private static LocalizedText _textCalibrating;
@@ -77,24 +73,17 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         private const int CardW = 310;
         private const int CardH = 118;
         private const int EdgePad = 8;
-        //自动步骤的统一倒计时（缩短至1.6s，节奏紧凑且不失仪式感）
         private const float AutoStepDuration = 1.6f;
-        //手动步骤无操作多少秒后给红色提示
         private const float StuckHintAfter = 12f;
 
         public static bool IsDone => _phase == Phase.Done;
-        //SHPC教学的最后一步（FadeOut或Done阶段）：允许下游HackTime教学提前接入
+        //IsTailing供HackTime衔接
         public static bool IsTailing => _phase == Phase.FadeOut || _phase == Phase.Done;
 
-        #region 引导排队协议
-        //教程是子世界内的强制流程（SHPC教学 → 骇客时间教学 → 通关收尾），
-        //整段子世界期间都由本引导独占引导队列，压制比目鱼/委托等无关首次引导。
-        //骇客时间教学(HackTimeTutorialLead)是同一流程的下游环节，已被本引导对整段
-        //子世界的占位覆盖，无需单独登记。退出子世界后CybCourseWorld.Active转false，占位自然释放。
-        int IGuideLead.GuidePriority => 0;//最高优先级，子世界内压制其它一切引导
+        #region 引导排队
+        int IGuideLead.GuidePriority => 0;//GuidePriority=0独占子世界引导队列
         bool IGuideLead.GuideReserving => CybCourseWorld.Active;
         bool IGuideLead.GuideReady => CybCourseWorld.Active;
-        //子世界强制流程始终就绪、不会被饥饿保底放弃；占位随退出子世界自然释放，无需额外处理
         void IGuideLead.OnGuideAbandoned() { }
         #endregion
 
@@ -104,22 +93,18 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         private static float _shaderTimer = 0f;
         private static float _highlightPulse = 0f;
         private static float _stepTimer = 0f;
-        //手动步骤无操作累计，触发卡死提示
         private static float _stuckTimer = 0f;
         private static bool _introAttempted = false;
         private static bool _prevMouseLeft = false;
         private static Rectangle _nextBtnRect = Rectangle.Empty;
         private static Rectangle _cardRect = Rectangle.Empty;
-        //手动步骤实际推进时记录上一次pinnedSector，避免重复推进
         private static int _lastPinned = -1;
-        //卡片 Y 平滑插值，规避三级面板展开跳动
+        //卡片Y平滑，避面板展开跳
         private static float _smoothCardY = 0f;
-        //本地化：卡死提示
         private static LocalizedText _textHintStuck;
 
         public override void OnWorldUnload() => ResetForRetry();
 
-        //完整重置教程状态，可被OnWorldUnload与RETRY软重启复用
         public static void ResetForRetry() {
             _phase = Phase.Inactive;
             _currentStep = 0;
@@ -136,7 +121,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             _smoothCardY = 0f;
         }
 
-        //由CybCourseIntroDialogue.OnScenarioComplete()在对话结束后调用
         public static void BeginSHPCTutorial() {
             _phase = Phase.Running;
             _currentStep = 0;
@@ -157,7 +141,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 
             AutoTriggerIntro();
 
-            //平滑插值卡片Y轴，规避已展开的三级面板
+            //卡片Y平滑
             float targetCardY = ComputeTargetCardY();
             _smoothCardY = MathHelper.Lerp(_smoothCardY, targetCardY, 0.15f);
 
@@ -165,7 +149,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             bool mouseClicked = mouseDown && !_prevMouseLeft;
             _prevMouseLeft = mouseDown;
 
-            //卡片可见时屏蔽世界点击，防止玩家在操作引导界面时误触武器
             if (_cardRect != Rectangle.Empty && _cardRect.Contains(Main.mouseX, Main.mouseY)) {
                 Main.LocalPlayer.mouseInterface = true;
             }
@@ -178,31 +161,29 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                     _stepTimer += dt;
                     bool isAuto = StepMeta[_currentStep].IsAuto;
                     if (isAuto) {
-                        //自动步骤同样允许点击 / 任意键 / 空格跳过等待
                         if (CheckAutoAdvance() || mouseClicked) {
                             AdvanceStep();
                         }
                         _stuckTimer = 0f;
                     }
                     else {
-                        //step 0：玩家自行持握SHPC时自动推进，无需点击NEXT
+                        //step0持握
                         if (_currentStep == 0 && SHPCUI.Instance?.Active == true) {
                             AdvanceStep();
                             break;
                         }
-                        //step 1：玩家点击核心展开操作面板时自动推进
+                        //step1展开
                         if (_currentStep == 1 && SHPCUI.Instance?.IsExpanded == true) {
                             AdvanceStep();
                             break;
                         }
-                        //step 2~5：固定面板用 PinnedSector 推进，普通按钮用自身打开后的状态推进
+                        //step2~5扇区
                         if (_currentStep >= 2 && _currentStep <= 5) {
                             int targetSector = GetTargetSectorForStep(_currentStep);
                             int pinned = SHPCUI.Instance?.PinnedSector ?? -1;
                             bool completed = false;
                             if (targetSector == SHPCUI.CyberDomainSectorIndex
                                 || targetSector == SHPCUI.ModifySectorIndex) {
-                                //pinned变化即认为玩家确实点过；锁定目标扇区即推进
                                 completed = pinned == targetSector && _lastPinned != targetSector;
                             }
                             else if (targetSector == SHPCUI.CyberwareSectorIndex) {
@@ -218,20 +199,17 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                             }
                             _lastPinned = pinned;
                         }
-                        //NEXT按钮：手动跳过当前步骤的兜底通道
+                        //NEXT兜底
                         if (mouseClicked && _nextBtnRect != Rectangle.Empty
                             && _nextBtnRect.Contains(Main.mouseX, Main.mouseY)) {
                             Main.mouseLeft = false;
-                            //玩家直接点NEXT跳过装备步骤，强制将SHPC移至持握槽
                             if (_currentStep == 0 && SHPCUI.Instance?.Active != true)
                                 ForceEquipSHPC();
-                            //玩家直接点NEXT跳过核心点击步骤，强制展开操作面板
                             if (_currentStep == 1)
                                 SHPCUI.Instance?.ForceExpand();
                             AdvanceStep();
                             break;
                         }
-                        //无操作时累计卡死计时
                         _stuckTimer += dt;
                     }
                     break;
@@ -246,7 +224,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             }
         }
 
-        //开场对话尚未触发时自动启动，_introAttempted 在 OnWorldUnload 中重置，天然防重入
         private static void AutoTriggerIntro() {
             if (_introAttempted) return;
             if (NarrativeRunner.IsBusy) return;
@@ -254,7 +231,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             _introAttempted = true;
         }
 
-        //计算卡片目标Y坐标，若有固定面板展开则将卡片移至面板顶部以上
         private static float ComputeTargetCardY() {
             Vector2 corePos = SHPCHUDTargets.CorePos;
             float defaultY = corePos.Y - CardH + 8;
@@ -268,7 +244,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             return panelTop - CardH - 12f;
         }
 
-        //各自动推进步骤的完成条件（仅IsAuto=true的步骤会调用此方法）
         private static bool CheckAutoAdvance() {
             if (_currentStep == StepMeta.Length - 1)
                 return _stepTimer >= AutoStepDuration;
@@ -283,7 +258,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             _ => -1,
         };
 
-        //在热键栏或背包中找SHPC并装备到当前持握槽
         private static void ForceEquipSHPC() {
             Player p = Main.LocalPlayer;
             if (p == null || p.dead) return;
@@ -293,8 +267,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                     return;
                 }
             }
-            //上界止于主背包末尾(50)，绝不延伸到钱币/弹药槽(50~57)：
-            //否则交换会把当前手持的主武器塞进非法槽位而丢失
+            //只扫0~49，勿触钱币弹药槽50~57
             for (int i = 10; i < 50; i++) {
                 if (p.inventory[i].type == SHPCOverride.ID) {
                     var tmp = p.inventory[p.selectedItem];
@@ -310,7 +283,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             _stepTimer = 0f;
             _stuckTimer = 0f;
             _cardAnim = 0f;
-            //跨步骤时重置上一帧锁定状态，避免连续推进
             _lastPinned = SHPCUI.Instance?.PinnedSector ?? -1;
             if (_currentStep >= StepMeta.Length) {
                 _phase = Phase.FadeOut;
@@ -339,13 +311,12 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             int stepIdx = (int)MathHelper.Clamp(_currentStep, 0, StepMeta.Length - 1);
             string targetKey = StepMeta[stepIdx].TargetKey;
 
-            //卡片位置固定在SHPC HUD右侧，从下往上偏移
             Vector2 corePos = SHPCHUDTargets.CorePos;
             int cx = (int)(corePos.X + SHPCTheme.ButtonOuterR + 18f);
             int cy = (int)corePos.Y - CardH + 8;
             float slideX = (1f - alpha) * 30f;
             int finalX = cx + (int)slideX;
-            //屏幕边界 clamp，防止低分辨率被推出屏幕
+            //屏幕clamp
             finalX = (int)MathHelper.Clamp(finalX, 8, Math.Max(8, Main.screenWidth - CardW - 8));
             int finalY = (int)MathHelper.Clamp(_smoothCardY, 8, Math.Max(8, Main.screenHeight - CardH - 8));
             var card = new Rectangle(finalX, finalY, CardW, CardH);
@@ -398,25 +369,21 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             float px2 = card.X + 14f;
             float py = card.Y + 12f;
 
-            //步骤计数
             string counter = $"{stepIdx + 1:D2} / {StepMeta.Length:D2}";
             float counterW = font.MeasureString(counter).X * subSc;
             Utils.DrawBorderString(sb, counter,
                 new Vector2(card.Right - 14f - counterW, py),
                 new Color(70, 155, 175, (int)(150 * alpha)), subSc);
 
-            //标题（青色）
             Utils.DrawBorderString(sb, title, new Vector2(px2, py),
                 new Color(80, 220, 245, (int)(255 * alpha)), titleSc);
             py += lineT + 2f;
 
-            //分割线
             BaseManagerStyle.FillRect(sb,
                 new Rectangle((int)px2, (int)py, CardW - 28, 1),
                 new Color(45, 130, 155, (int)(90 * alpha)));
             py += 6f;
 
-            //正文（支持换行）
             int bodyWrapW = (int)((CardW - 28) / bodySc);
             foreach (string line in body.Split('\n')) {
                 string[] bodyWrapped = VaultUtils.WrapTextArray(line, font, bodyWrapW, 99, out _);
@@ -428,7 +395,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 }
             }
 
-            //卡死提示：玩家长时间未操作时附加红色提示
             if (stuck && _textHintStuck != null) {
                 float pulse = 0.7f + 0.3f * MathF.Sin(_shaderTimer * 14f);
                 Utils.DrawBorderString(sb, _textHintStuck.Value,
@@ -436,7 +402,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                     new Color(255, 110, 90, (int)(220 * alpha * pulse)), subSc);
             }
 
-            //底部按钮区
             if (!isAuto) {
                 DrawNextButton(sb, card, alpha, stuck);
             }
@@ -455,7 +420,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             _nextBtnRect = btn;
 
             bool hovered = btn.Contains(Main.mouseX, Main.mouseY);
-            //卡死时强化按钮高亮，让玩家明确兜底入口
             float emphasize = stuck ? 0.85f + 0.15f * MathF.Sin(_shaderTimer * 14f) : 0f;
             Color bgColor = hovered
                 ? new Color(40, 155, 180, (int)(210 * alpha))
@@ -499,12 +463,10 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                     a0, a1, hColor);
             }
 
-            //目标区域L角括号
             Rectangle rect = target.GetScreenRect();
             DrawLBrackets(sb, px, rect, bracketColor);
         }
 
-        //绘制四角L形括号标注框
         private static void DrawLBrackets(SpriteBatch sb, Texture2D px, Rectangle r, Color c) {
             const int len = 12;
             const int thick = 2;

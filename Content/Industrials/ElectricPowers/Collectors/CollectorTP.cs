@@ -17,16 +17,14 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 {
-    /// <summary>
-    /// 收集器的存储投放策略
-    /// </summary>
+    /// <summary>收集器投放策略</summary>
     internal enum CollectorStorageMode : byte
     {
-        /// <summary>就近存储：自动存入范围内最近的可用容器</summary>
+        /// <summary>就近，范围内最近容器</summary>
         Auto = 0,
-        /// <summary>绑定优先：先尝试绑定容器，失败后回退就近存储</summary>
+        /// <summary>绑定优先，失败回退就近</summary>
         BoundFirst = 1,
-        /// <summary>仅限绑定：只存入绑定的容器</summary>
+        /// <summary>仅限绑定容器</summary>
         BoundOnly = 2
     }
 
@@ -38,15 +36,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         public override float MaxUEValue => 800;
         /// <summary>就近模式的存储搜索半径(像素)</summary>
         internal const int StorageSearchRange = 600;
-        /// <summary>绑定容器允许的最大距离(像素)，超出后绑定视为失效</summary>
+        /// <summary>绑定最远距离(像素)</summary>
         internal const int MaxBindDistance = 2000;
-        /// <summary>最大绑定数量</summary>
+        /// <summary>绑定上限</summary>
         internal const int MaxBindings = 6;
-        /// <summary>每次抓取消耗的能量</summary>
+        /// <summary>单次抓取能耗</summary>
         internal const int consumeUE = 8;
-        /// <summary>存储候选快照的缓存时长(帧)</summary>
+        /// <summary>存储候选缓存(帧)</summary>
         private const int StorageCacheTicks = 30;
-        /// <summary>全局机械臂总数上限</summary>
+        /// <summary>全局臂上限</summary>
         private const int GlobalArmLimit = 300;
         public Vector2 ArmPos => CenterInWorld + new Vector2(0, 14);
         private int textIdleTime;
@@ -59,7 +57,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         internal List<int> ArmActorIndices = new List<int>();
         internal float hoverSengs;
 
-        /// <summary>过滤模式是否已装载(以过滤卡为标记物)</summary>
+        /// <summary>已装过滤卡</summary>
         internal bool FilterInstalled => TagItemSign == ModContent.ItemType<ItemFilter>();
 
         #region IItemFilterHost
@@ -83,7 +81,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         internal List<Point16> BoundStorages = [];
         internal CollectorStorageMode StorageMode = CollectorStorageMode.Auto;
 
-        //存储候选快照缓存，避免每次搜索都全量扫描箱子
+        //存储候选快照缓存
         private readonly List<IStorageProvider> storageCandidates = [];
         private bool storageCacheDirty = true;
         private uint storageCacheTick;
@@ -208,9 +206,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             VaultUtils.ClockFrame(ref frame, 5, maxFrame - 1);
         }
 
-        /// <summary>
-        /// 检查臂索引是否有效且归属于本收集器，防止Actor槽位复用后跨收集器认领
-        /// </summary>
+        /// <summary>臂是否仍属本收集器(防Actor槽复用)</summary>
         internal bool IsOwnedArmValid(int actorIndex) {
             if (actorIndex < 0 || actorIndex >= ActorLoader.MaxActorCount) {
                 return false;
@@ -219,9 +215,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             return actor != null && actor.Active && actor is CollectorArm arm && arm.collectorPos == Position;
         }
 
-        /// <summary>
-        /// 统计归属于本收集器的活跃机械臂数量，客户端也可用(归属坐标经同步)
-        /// </summary>
+        /// <summary>本机活跃臂数(客户端可读)</summary>
         internal int CountOwnedArms() {
             int count = 0;
             foreach (CollectorArm arm in ActorLoader.GetActiveActors<CollectorArm>()) {
@@ -244,7 +238,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 return false;
             }
 
-            //手持过滤卡右键：安装或刷新名单副本(卸载入口在控制台/编辑器中)
+            //过滤卡右键，装/刷名单
             if (item.ModItem is ItemFilter card) {
                 TagItemSign = item.type;
                 Filter.CopyFrom(card.Filter);
@@ -258,7 +252,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 return false;
             }
 
-            //手持普通物品右键：设定或取消单一收集标记
+            //普通物品右键，设/清单一标记
             if (TagItemSign > ItemID.None && TagItemSign == item.type) {
                 TagItemSign = ItemID.None;
             }
@@ -276,20 +270,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
         #region 存储绑定与查找
 
-        /// <summary>
-        /// 使快照缓存失效，绑定数据变化后调用
-        /// </summary>
         internal void InvalidateStorageCache() => storageCacheDirty = true;
 
-        /// <summary>
-        /// 绑定坐标是否在允许距离内
-        /// </summary>
         internal bool BindingInRange(Point16 pos)
             => CenterInWorld.Distance(pos.ToWorldCoordinates()) <= MaxBindDistance;
 
-        /// <summary>
-        /// 解析一个绑定坐标为存储提供者，失效或超距返回null
-        /// </summary>
+        /// <summary>绑定坐标解析，失效/超距返回null</summary>
         internal IStorageProvider ResolveBinding(Point16 pos) {
             if (!BindingInRange(pos)) {
                 return null;
@@ -298,9 +284,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             return provider != null && provider.IsValid ? provider : null;
         }
 
-        /// <summary>
-        /// 尝试添加一个绑定，返回是否成功；首次绑定会把模式从就近切换为绑定优先
-        /// </summary>
+        /// <summary>添加绑定；首次会切到绑定优先</summary>
         internal bool TryAddBinding(Point16 pos) {
             if (BoundStorages.Count >= MaxBindings || BoundStorages.Contains(pos)) {
                 return false;
@@ -332,10 +316,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             InvalidateStorageCache();
         }
 
-        /// <summary>
-        /// 获取当前可用的存储候选列表(带缓存)，绑定目标按优先级排在最前，
-        /// 非仅绑定模式下追加就近搜索的结果
-        /// </summary>
+        /// <summary>存储候选(缓存)；绑定优先，非BoundOnly再追加就近</summary>
         internal IReadOnlyList<IStorageProvider> GetStorageCandidates() {
             if (!storageCacheDirty && Main.GameUpdateCount - storageCacheTick < StorageCacheTicks) {
                 return storageCandidates;
@@ -360,7 +341,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                         continue;
                     }
                     storageCandidates.Add(provider);
-                    //防御性上限，避免箱阵场景下候选爆炸
+                    //箱阵候选上限
                     if (++autoCount >= 24) {
                         break;
                     }
@@ -379,9 +360,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             return false;
         }
 
-        /// <summary>
-        /// 按当前模式与优先级查找可存放指定物品的存储目标
-        /// </summary>
         internal IStorageProvider FindStorageTarget(Item item) {
             var candidates = GetStorageCandidates();
 
@@ -398,9 +376,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             return null;
         }
 
-        /// <summary>
-        /// 找不到任何存储目标时的提示(带节流)，仅服务器/单人逻辑侧调用
-        /// </summary>
+        /// <summary>无存储提示(节流，仅权威端)</summary>
         internal void PromptNoStorage() {
             if (textIdleTime > 0 || VaultUtils.isClient) {
                 return;
@@ -419,9 +395,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             }
         }
 
-        /// <summary>
-        /// 机器提示文本，专用服务器上通过网络广播到所有客户端，否则本地生成
-        /// </summary>
+        /// <summary>提示文本(服务器广播 / 本地生成)</summary>
         internal void BroadcastPrompt(string text) {
             if (VaultUtils.isServer) {
                 NetMessage.SendData(MessageID.CombatTextString, -1, -1, NetworkText.FromLiteral(text)
@@ -434,9 +408,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
         #endregion
 
-        ///<summary>
-        ///检查并生成机械臂(仅服务器端)
-        ///</summary>
+        /// <summary>生成机械臂(仅服务器)</summary>
         private void SpawnArmsIfNeeded() {
             if (VaultUtils.isClient) {
                 return;
@@ -539,9 +511,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             DrawChargeBar();
         }
 
-        /// <summary>
-        /// 绘制收集器到绑定容器的连线与选取模式的辅助可视化
-        /// </summary>
         private void DrawStorageLinks(SpriteBatch spriteBatch) {
             CollectorUI ui = CollectorUI.Instance;
             bool uiFocus = ui != null && ui.Station == this && ui.Active;
@@ -577,7 +546,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 }
             }
 
-            //选取模式：范围环 + 鼠标悬停容器高亮
+            //选取模式，范围环+悬停高亮
             if (picking) {
                 const int ringDots = 72;
                 for (int i = 0; i < ringDots; i++) {

@@ -158,7 +158,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void FallingPhase() {
             if (StateTimer == 1) {
-                //出仓：小幅翻滚 + 高空微尘，渐显入场
+                //出仓
                 rotationSpeed = Main.rand.NextFloat(-0.22f, 0.22f);
                 Projectile.alpha = 200;
                 FishPengVFX.SnowBurst(Projectile.Center, 2, 1.6f);
@@ -219,7 +219,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //神风锁定：翻滚衰减，姿态笔直转向头朝下
+            //神风锁定
             rotationSpeed *= 0.88f;
             float aim = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             rotation = rotation.AngleLerp(aim, 0.16f);
@@ -234,7 +234,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 FishPengVFX.DiveWhoosh(Projectile.Center, 1);
             }
 
-            //风切线：高速段身侧甩线，每 2 帧至多 1 条
+            //风切线，高速段身侧甩线
             if (speed > 17f && StateTimer % 2 == 0) {
                 FishPengVFX.WindShear(Projectile.Center, Projectile.velocity);
             }
@@ -279,7 +279,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void BouncingPhase() {
             if (StateTimer == 1) {
-                //回弹翻滚：布娃娃式的喜剧空翻
+                //回弹翻滚，布娃娃式的喜剧空翻
                 rotationSpeed = Main.rand.NextFloat(0.2f, 0.34f) * (Main.rand.NextBool() ? 1f : -1f);
             }
 
@@ -379,7 +379,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
             FishPengVFX.Punch(Projectile.Center, first ? 4.5f : 2.2f, first ? 8 : 5);
 
-            //Dust 只作雪屑填充底噪：贴地锥形上抛后受重力落回
+            //Dust 只作雪屑填充底噪
             int dustN = first ? 12 : 6;
             for (int i = 0; i < dustN; i++) {
                 Dust d = Dust.NewDustPerfect(ground + new Vector2(Main.rand.NextFloat(-16f, 16f), -4f)
@@ -475,7 +475,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             target.AddBuff(BuffID.Slow, 180);
         }
 
-        /// <summary>落点阴影预告：软阴影椭圆随高度渐缩聚焦 + 冰蓝预告圈收拢</summary>
+        /// <summary>落点阴影预告，软阴影椭圆随高度渐缩聚焦 + 冰蓝预告圈收拢</summary>
         private void DrawGroundShadow(SpriteBatch sb, float bodyAlpha) {
             if (groundY < 0f || groundY <= Projectile.Bottom.Y) {
                 return;
@@ -498,7 +498,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             sb.Draw(soft, sPos, null, FishPengVFX.ShadowInk * (sA * 0.8f), 0f, softOrigin
                 , new Vector2(wPx * 0.9f / soft.Width, wPx * 0.24f / soft.Height), SpriteEffects.None, 0f);
 
-            //冰蓝预告圈：随企鹅逼近向落点收拢
+            //冰蓝预告圈，随企鹅逼近向落点收拢
             Texture2D ring = CWRAsset.Ring01?.Value;
             if (ring != null) {
                 float rPx = wPx * MathHelper.Lerp(1.7f, 0.62f, closeness);
@@ -525,12 +525,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             bool diving = State == PenguinState.Falling || State == PenguinState.Descending;
             float speedT = MathHelper.Clamp(Projectile.velocity.Length() / MaxFallSpeed, 0f, 1f);
 
-            //层 1：落点阴影预告，画在一切之下
+            //层 1，落点阴影预告，画在一切之下
             if (diving) {
                 DrawGroundShadow(sb, bodyAlpha);
             }
 
-            //层 2：凝结尾迹（活体），画在企鹅精灵之下
+            //层 2
             if (diving) {
                 float contrailStrength = MathHelper.Clamp((Projectile.velocity.Length() - 8f) / 16f, 0f, 1f) * bodyAlpha;
                 FishPengVFX.DrawLiveContrail(sb, Projectile, contrailStrength);
@@ -540,13 +540,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 scaleVec = Vector2.One;
             float entryScale = 1f;
             if (diving) {
-                //俯冲：沿速度拉伸；高空时读作小黑点，逼近后放大成形
+                //俯冲
                 scaleVec = new Vector2(1f - 0.20f * speedT, 1f + 0.40f * speedT);
                 float closeness = groundY > 0f ? 1f - MathHelper.Clamp((groundY - Projectile.Bottom.Y) / 620f, 0f, 1f) : 0f;
                 //入场年龄由 timeLeft 推导（初值 600），高空小黑点在 45 帧内长成机体
                 float ageGrow = MathHelper.Clamp((600f - Projectile.timeLeft) / 45f, 0f, 1f);
                 entryScale = MathHelper.Lerp(0.6f, 1f, Math.Max(closeness, ageGrow));
-                //高空剪影：远处的小黑点比机体更暗
+                //高空剪影，远处的小黑点比机体更暗
                 drawColor = Color.Lerp(drawColor, FishPengVFX.ShadowInk, (1f - Math.Max(closeness, ageGrow)) * 0.5f);
                 //贴近音障的冷雾染面
                 drawColor = Color.Lerp(drawColor, FishPengVFX.Mist, speedT * 0.22f);
@@ -569,7 +569,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             float drawScale = Projectile.scale * entryScale;
 
-            //层 3：俯冲速度残影链（哑光，非加色）
+            //层 3
             if (diving && Projectile.oldPos != null && Projectile.oldPos.Length > 9 && speedT > 0.3f) {
                 Vector2 half = Projectile.Size * 0.5f;
                 for (int k = 0; k < 2; k++) {
@@ -583,16 +583,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //层 4：翻滚期旋转拖影（位置残影表达不了自旋）
+            //层 4
             if (Math.Abs(rotationSpeed) > 0.05f) {
                 sb.Draw(texture, drawPos, rectangle, drawColor * 0.28f, rotation - rotationSpeed * 2.5f
                     , origin, drawScale * scaleVec, spriteEffects, 0f);
             }
 
-            //层 5：企鹅本体
+            //层 5，企鹅本体
             sb.Draw(texture, drawPos, rectangle, drawColor, rotation, origin, drawScale * scaleVec, spriteEffects, 0f);
 
-            //层 6：着陆 2 帧过冲爆点（A=0 加色观感，绝不常驻）
+            //层 6，着陆 2 帧过冲爆点（A=0 加色观感，绝不常驻）
             if (State == PenguinState.Impact && StateTimer <= 2 && bounceCount <= 1) {
                 Texture2D burst = CWRAsset.RayBurst01?.Value;
                 if (burst != null) {

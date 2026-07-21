@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>低温核心：球爆炸范围内施加冰冻</summary>
+    /// <summary>低温核心，球爆范围冰冻</summary>
     internal sealed class CryoCoreModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;

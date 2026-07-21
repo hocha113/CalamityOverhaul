@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             var hp = player.GetOverride<HalibutPlayer>();
             var source = player.FromObjectGetParent();
 
-            //生成多个克隆体，每个有不同的延迟与轮转序号（index/count 用于轮流射击）
+            //多克隆体、各带延迟与轮转序号（index/count 轮流射击）
             int count = Math.Clamp(hp.CloneCount, 1, 10);
             for (int i = 0; i < count; i++) {
                 int delay = hp.CloneMinDelay + (i * hp.CloneInterval);
@@ -227,11 +227,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         //轮流射击配置（通过 ai[1]/ai[2] 传递）
         private int cloneIndex;     //本过去身在轮转中的序号
         private int cloneCount = 1; //本批过去身总数
-        //每个齐射“同时”开火的过去身数量上限：封顶弹幕量，使其与过去身总数解耦，避免后期成倍堆叠卡顿
+        //齐射同时开火上限，与过去身总数解耦
         private const int MaxConcurrentShooters = 1;
         //实际每齐射开火的过去身数量 = min(cloneCount, 上限)，初始化时算好
         private int shootersPerVolley = 1;
-        //火力补偿系数：把“开火位装不下的那部分过去身”的火力折算进单发伤害
+        //火力补偿，装不下的过去身折进单发
         //使总DPS仍随过去身数量线性增长（如10个过去身≈10倍总输出），但弹幕量封顶
         private float cloneDamageScale = 1f;
 
@@ -319,7 +319,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 return;
             }
 
-            //轮流射击：同一帧的事件同属一个齐射，仅当该齐射轮到本过去身时才重放
+            //同帧齐射内轮流，未轮到则跳过
             //使过去身总弹幕量与过去身数量解耦，避免后期成倍堆叠导致卡顿
             if (!IsMyVolley(events[eventIndex].VolleyId)) {
                 return;
@@ -338,7 +338,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
                 int evShootNum = shootNum;
                 float addby = ev.Type == oceanCurrentType ? 0.25f : 0.4f;
-                //叠加火力补偿：被轮转“省下”的过去身火力折算进单发伤害，总DPS随过去身数量线性增长
+                //轮转省下的火力折进单发
                 int evDamage = (int)(ev.Damage * (1f + evShootNum * addby) * cloneDamageScale);
                 int proj = Projectile.NewProjectile(shootState.Source
                    , shootPosition, ev.Velocity.RotatedByRandom(randomRot)
@@ -370,7 +370,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             return result;
         }
 
-        //轮转分配：判断某个齐射是否轮到本过去身开火
+        //是否轮到本过去身开火
         //每个齐射固定属于 (volleyId - cloneIndex) 落在 [0, shootersPerVolley) 窗口内的过去身，随齐射递增而轮转
         private bool IsMyVolley(int volleyId) {
             if (cloneCount <= 1) {
@@ -484,7 +484,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             Color drawColor = Color.BlueViolet * cloneAlpha;
             //傀儡外观已由调用方按 Owner 统一 Prepare（每个 Owner 每帧仅一次），此处只摆位绘制本体；
-            //避免每个过去身都重复执行重度的 CopyVisuals/ResetEffects——这是过去身越多越掉帧的根因
+            //勿对每个过去身重复 CopyVisuals/ResetEffects，掉帧根因
             PlayerCloneRenderer.DrawPrepared(snap.Position, drawColor, snap.Direction,
                 snap.BodyFrame, snap.LegFrame, Owner.fullRotation, Owner.fullRotationOrigin);
 
@@ -587,7 +587,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp
                     , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
 
-                //同一玩家的全部过去身共用一份傀儡外观：cloneBuffer 已按 owner 排序，每个 Owner 每帧只 Prepare 一次，
+                //同 Owner 共用傀儡外观，每帧 Prepare 一次，
                 //把原先“每个过去身一次”的重度 CopyVisuals/ResetEffects 降为“每个玩家一次”
                 int lastOwner = -1;
                 for (int i = 0; i < cloneCount; i++) {

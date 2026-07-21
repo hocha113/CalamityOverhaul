@@ -8,13 +8,9 @@ namespace CalamityOverhaul.Content
 {
     internal class CWRWorld : ModSystem
     {
-        /// <summary>
-        /// 值大于0时会停止大部分的游戏活动模拟冻结效果，这个值每帧会自动减1
-        /// </summary>
+        /// <summary>&gt;0 冻结世界活动，每帧减 1</summary>
         public static int TimeFrozenTick;
-        /// <summary>
-        /// 当前世界是否存在Boss
-        /// </summary>
+        /// <summary>世界有 Boss</summary>
         public static bool HasBoss;
 
         internal static bool BossRush => CWRRef.GetBossRushActive();
@@ -36,13 +32,13 @@ namespace CalamityOverhaul.Content
             if (index < 0)
                 return;
 
-            //若获取失败，NPC无效
+            //索引无效
             if (!index.TryGetNPC(out var npc)) {
                 index = -1;
                 return;
             }
 
-            //NPC 已死亡或类型不匹配
+            //已死或类型不对
             if (!npc.Alives() || npc.type != npcID) {
                 index = -1;
                 return;
@@ -79,15 +75,12 @@ namespace CalamityOverhaul.Content
 
         public override void PostUpdateProjectiles() {
             if (ModifyCrabulon.mountPlayerHeldProj.TryGetProjectile(out var heldProj) && heldProj.IsOwnedByLocalPlayer()) {
-                //缓存手持弹幕与玩家位置差，绘制二次矫正
+                //持弹相对玩家偏移，绘制矫正
                 ModifyCrabulon.mountPlayerHeldPosOffset = Main.LocalPlayer.To(heldProj.Center);
             }
         }
 
-        /// <summary>
-        /// 判断是否应该冻结时间
-        /// </summary>
-        /// <returns></returns>
+        /// <summary>是否冻结时间</summary>
         public static bool CanTimeFrozen() {
             if (Main.gameMenu) {
                 return false;
@@ -116,7 +109,7 @@ namespace CalamityOverhaul.Content
                         HasBoss = true;
                         break;
                     }
-                    if (n.type == NPCID.EaterofWorldsHead) {//世界吞噬者没有boss标签，需要手动判定
+                    if (n.type == NPCID.EaterofWorldsHead) {//世吞无 boss 标签
                         HasBoss = true;
                         break;
                     }

@@ -15,11 +15,8 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.Wraiths.Runtime
 {
     /// <summary>
-    /// 厉鬼显形态实体基类。显形/消散过渡、感知边沿事件、行为积木驱动与占位绘制都在这里，
-    /// 子类通常只覆写事件钩子与 <see cref="DrawBody"/>。
-    /// 权威模型沿用 Actor 惯例：决策只在服务器/单人推进，客户端吃内建同步 + 本地视觉预测。
-    /// 身份经 <see cref="WraithRegistry.FindByActorType"/> 反查，因此子类与定义一一对应，生成后即可用，无需额外同步。
-    /// 并行策略密封为串行：行为积木与感知走 Main.rand / Collision，均非线程安全
+    /// 显形态基类。子类覆写事件钩子与 DrawBody；权威决策，客户端同步+本地视觉。<br/>
+    /// 身份经 FindByActorType 反查；并行密封串行
     /// </summary>
     public abstract class WraithActor : Actor
     {
@@ -29,7 +26,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         //死机窗口时长，BeginHalt 时由权威写入，两端各自用 presenceTimer 对表
         [SyncVar]
         private int haltDuration;
-        //反噬挣脱态：挣脱自哪名玩家的载体，-1=常规显形；挣脱是据点制的唯一合法例外
+        //挣脱源玩家 whoAmI，-1=常规显形
         [SyncVar]
         private int escapedOwner = -1;
         //挣脱源玩家名，槽位被复用（原主下线、新人顶位）时的二次校验，与 escapedOwner 同步写
@@ -39,7 +36,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         private WraithPresence lastSeenPresence = WraithPresence.Materializing;
         private int presenceTimer;
         private int presentTimer;
-        //过渡起点强度:消散可能打断显形,自当时强度衰减而不是从 1 重来
+        //过渡起点强度，打断显形时自当下衰减
         private float presenceBaseStrength = 1f;
         private bool discovered;
         private WraithDefinition definition;
@@ -58,16 +55,16 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         /// <summary>存在状态，权威端经 <see cref="SetPresence"/> 推进</summary>
         public WraithPresence Presence => (WraithPresence)presenceRaw;
 
-        /// <summary>处于死机窗口（鬼律第九条：唯一的"战胜"形态）</summary>
+        /// <summary>死机窗口中</summary>
         public bool IsHalted => Presence == WraithPresence.Halted;
 
         /// <summary>死机窗口剩余帧数，非死机为 0；两端本地对表，仅作演出与提示参考</summary>
         public int HaltRemaining => IsHalted ? Math.Max(haltDuration - presenceTimer, 0) : 0;
 
-        /// <summary>反噬挣脱态：自某玩家的载体挣脱显形</summary>
+        /// <summary>反噬挣脱态</summary>
         public bool IsEscaped => escapedOwner >= 0;
 
-        /// <summary>挣脱源玩家，非挣脱态、玩家已失效或槽位已被他人顶替（名字对不上）为 null</summary>
+        /// <summary>挣脱源玩家，失效或槽位复用为 null</summary>
         public Player EscapedOwnerPlayer {
             get {
                 if (escapedOwner < 0 || escapedOwner >= Main.maxPlayers) {
@@ -77,7 +74,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 if (player == null || !player.active) {
                     return null;
                 }
-                //槽位复用防御:挣脱时记下的名字与现占位者不符,视为原主已离场
+                //槽位复用，名字不符则原主离场
                 if (!string.IsNullOrEmpty(escapedOwnerName) && player.name != escapedOwnerName) {
                     return null;
                 }
@@ -85,10 +82,10 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             }
         }
 
-        /// <summary>显形强度 0~1（平滑曲线），绘制透明度与灯光直接乘它</summary>
+        /// <summary>显形强度 0~1</summary>
         public float PresenceStrength { get; private set; }
 
-        /// <summary>生成锚点，游荡行为的圆心，经 ExtraData 同步给晚加入端</summary>
+        /// <summary>生成锚点</summary>
         public Vector2 SpawnAnchor { get; private set; }
 
         /// <summary>任意玩家正在注视，仅权威端有效</summary>
@@ -111,8 +108,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             DrawLayer = ActorDrawLayer.Default;
 
             SpawnAnchor = Position;
-            //presenceRaw 不在此重置:克隆出的新实例本就是 Materializing,而客户端网络生成路径
-            //在 OnSpawn 之前已读入权威 SyncVar,这里硬写会把晚加入收到的状态覆盖掉
+            //勿重置 presenceRaw，晚加入 SyncVar 会先到
             lastSeenPresence = Presence;
             presenceTimer = 0;
             presentTimer = 0;
@@ -138,20 +134,20 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             presentTimer = reader.ReadInt32();
             presenceBaseStrength = reader.ReadSingle();
             discovered = reader.ReadBoolean();
-            //权威 SyncVar 已先套用，对齐基准防止首帧误判翻转
+            //对齐基准，防首帧误判翻转
             lastSeenPresence = Presence;
         }
 
         public override void AI() {
             if (Definition == null) {
-                //注册表查不到定义:孤儿实体,权威端直接清理
+                //无定义则权威清理
                 if (IsAuthority) {
                     RequestKill();
                 }
                 return;
             }
 
-            //死机=冻在当下:视觉相位停摆,摆动/闪烁全部凝固
+            //死机冻相位
             if (!IsHalted) {
                 VisualPhase += 0.045f;
                 if (VisualPhase > MathHelper.TwoPi) {
@@ -176,7 +172,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                     Velocity *= 0.88f;
                 }
                 else if (IsHalted) {
-                    //死机期间行为积木停驱,残速迅速凝滞
+                    //死机停行为
                     Velocity *= 0.72f;
                 }
                 else {
@@ -196,13 +192,13 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         //====存在状态推进====
 
         private void UpdatePresence() {
-            //客户端:权威状态翻转经增量同步到达时重置本地过渡计时,并以当下强度为新过渡起点
+            //客户端翻转重置过渡计时
             if (Presence != lastSeenPresence) {
                 WraithPresence previous = lastSeenPresence;
                 lastSeenPresence = Presence;
                 presenceTimer = 0;
                 presenceBaseStrength = PresenceStrength;
-                //远端的死机入场拍(权威端由 BeginHalt 直接播,不走翻转检测)
+                //远端死机入场拍
                 if (Presence == WraithPresence.Halted && previous != WraithPresence.Halted) {
                     PlayHaltCue();
                 }
@@ -228,7 +224,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                     PresenceStrength = 1f;
                     presentTimer++;
                     if (IsAuthority) {
-                        //迟到的发现补登:显形完成时没人在场,之后有人靠近
+                        //迟到发现补登
                         if (!discovered && presentTimer % 30 == 0) {
                             TryMarkDiscovered();
                         }
@@ -240,7 +236,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                     break;
                 }
                 case WraithPresence.Dematerializing: {
-                    //自过渡起点衰减:显形中途被打断不会先跳满再消散
+                    //自过渡起点衰减
                     float t = MathHelper.Clamp(presenceTimer / (float)dematerializeFrames, 0f, 1f);
                     PresenceStrength = presenceBaseStrength * (1f - t * t);
                     if (IsAuthority && presenceTimer >= dematerializeFrames) {
@@ -249,7 +245,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                     break;
                 }
                 case WraithPresence.Halted: {
-                    //死机:全形在场但凝滞;窗口尽由权威裁决(默认自然消散)
+                    //死机凝滞，窗尽权威裁决
                     PresenceStrength = 1f;
                     if (IsAuthority && haltDuration > 0 && presenceTimer >= haltDuration) {
                         OnHaltExpired();
@@ -270,7 +266,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             NetUpdate = true;
         }
 
-        /// <summary>进入消散过渡，结束后实体销毁；仅权威端有效，消散中重复调用无事发生</summary>
+        /// <summary>进消散，仅权威</summary>
         public void BeginDematerialize() {
             if (!IsAuthority || Presence == WraithPresence.Dematerializing) {
                 return;
@@ -281,10 +277,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         //====死机窗口====
 
-        /// <summary>
-        /// 进入死机窗口；仅权威端、自 Materializing/Present 有效（消散中的鬼追不回来）。
-        /// durationTicks &lt;=0 取定义的 <see cref="WraithDefinition.HaltWindowTicks"/>
-        /// </summary>
+        /// <summary>进死机窗，仅权威；duration≤0 取定义默认</summary>
         public void BeginHalt(int durationTicks = -1) {
             if (!IsAuthority || IsHalted
                 || (Presence != WraithPresence.Materializing && Presence != WraithPresence.Present)) {
@@ -293,13 +286,13 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             haltDuration = durationTicks > 0 ? durationTicks : Math.Max(Definition?.HaltWindowTicks ?? 60 * 8, 1);
             SetPresence(WraithPresence.Halted);
             OnHaltBegin();
-            //单人时权威即本地画面,入场拍在此播;多人客户端走翻转检测
+            //单人本地播入场拍
             if (!Main.dedServ) {
                 PlayHaltCue();
             }
         }
 
-        /// <summary>解除死机回到在场（规则允许"惊醒"的鬼用）；仅权威端、死机中有效</summary>
+        /// <summary>解除死机，仅权威</summary>
         public void EndHalt() {
             if (!IsAuthority || !IsHalted) {
                 return;
@@ -309,7 +302,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             OnHaltEnd();
         }
 
-        /// <summary>死机入场拍：凝滞音 + 状态浮字（各端本地演出）</summary>
+        /// <summary>死机入场拍</summary>
         private void PlayHaltCue() {
             SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.9f, Volume = 0.6f, MaxInstances = 2 }, Center);
             SoundEngine.PlaySound(SoundID.NPCDeath6 with { Pitch = 0.6f, Volume = 0.25f, MaxInstances = 2 }, Center);
@@ -320,10 +313,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         //====反噬挣脱====
 
-        /// <summary>
-        /// 标为反噬挣脱态；仅权威端。挣脱是据点制的唯一合法例外：它挣脱的据点是刀本身，
-        /// 因而显形在载体主人身边并缠着不走（默认 <see cref="UpdateEscaped"/> 的贴身漂移）
-        /// </summary>
+        /// <summary>标挣脱态，仅权威；默认缠主人</summary>
         internal void MarkEscaped(int playerWhoAmI) {
             if (!IsAuthority || playerWhoAmI < 0 || playerWhoAmI >= Main.maxPlayers) {
                 return;
@@ -334,10 +324,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             OnBacklashEscape(EscapedOwnerPlayer);
         }
 
-        /// <summary>
-        /// 挣脱态默认驱动（权威端，非死机/消散时每帧）：缠着载体主人不走，
-        /// 主人失效（下线/死亡）则失去缠附对象自然消散。主题化表现覆写本方法
-        /// </summary>
+        /// <summary>挣脱默认驱动，缠主人；主人失效则消散</summary>
         protected virtual void UpdateEscaped() {
             Player owner = EscapedOwnerPlayer;
             if (owner == null || owner.dead) {
@@ -353,11 +340,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         //====感知与事件====
 
-        /// <summary>
-        /// 感知事件窗口，默认仅完全显形期间开启：半透明的成形体不触发触碰/凝视事件，
-        /// 消散中不再响应，死机中同样关闭（凝滞之物不再看人，仪式交互走 WraithRites 的主动判距）。
-        /// 想让"成形中就怕被看"的主题放宽窗口，覆写本属性
-        /// </summary>
+        /// <summary>感知窗口，默认仅 Present；死机/消散关</summary>
         protected virtual bool SensorsActive => Presence == WraithPresence.Present;
 
         private void ResetSensorStates() {
@@ -392,7 +375,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                     }
                 }
 
-                //接近/脱离用双半径迟滞,贴着阈值抖动不会刷事件
+                //接近/脱离双半径迟滞
                 float distSq = alive ? Vector2.DistanceSquared(player.Center, Center) : float.MaxValue;
                 bool near = alive && (nearState[i] ? distSq < retreatSq : distSq < approachSq);
                 if (near != nearState[i]) {
@@ -449,13 +432,13 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         protected virtual void OnBeginDematerialize() { }
         /// <summary>进入死机窗口</summary>
         protected virtual void OnHaltBegin() { }
-        /// <summary>死机被解除（EndHalt 惊醒路径，窗口自然到期不走这里）</summary>
+        /// <summary>死机被解除，窗尽不走这里</summary>
         protected virtual void OnHaltEnd() { }
-        /// <summary>死机窗口到期未被消耗，默认自然消散；"带着执念缩回去"这类主题收场覆写它</summary>
+        /// <summary>死机窗尽未消耗，默认消散</summary>
         protected virtual void OnHaltExpired() => BeginDematerialize();
-        /// <summary>被标为反噬挣脱态（owner 可能为 null：极端时序下主人已离场）</summary>
+        /// <summary>被标挣脱态，owner 可能 null</summary>
         protected virtual void OnBacklashEscape(Player owner) { }
-        /// <summary>权威端每帧尾调用，子类自定逻辑挂这里而不是重写 AI</summary>
+        /// <summary>权威每帧尾，子类挂逻辑</summary>
         protected virtual void OnAuthorityUpdate() { }
 
         //====绘制====
@@ -464,11 +447,11 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             if (PresenceStrength > 0.003f) {
                 DrawBody(spriteBatch, drawColor);
             }
-            //实体没有注册贴图,永远跳过框架默认绘制
+            //无贴图跳过默认绘制
             return false;
         }
 
-        //死机提示的键名缓存:键位变更低频,粗粒度定期刷新即可,不逐帧查绑定表(客户端 UI 态)
+        //死机提示键名缓存
         private static string promptKeyCache;
         private static uint promptKeyCachedAt;
 
@@ -481,10 +464,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             return promptKeyCache;
         }
 
-        /// <summary>
-        /// 死机窗口提示：本地玩家持载体走近时，头顶浮现借力键仪式提示，
-        /// 窗口越接近尽头脉动越急（框架级演出，主题化时可整体覆写）
-        /// </summary>
+        /// <summary>死机窗头顶仪式提示</summary>
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor) {
             if (!IsHalted || Main.dedServ || PresenceStrength < 0.8f) {
                 return;
@@ -509,10 +489,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             Utils.DrawBorderString(spriteBatch, text, pos, (Definition?.EyeColor ?? new Color(120, 220, 200)) * pulse, TextScale);
         }
 
-        /// <summary>
-        /// 本体绘制，默认给一具无主题的三层雾影 + 双眼占位；主题化时整体覆写。
-        /// 批次已在世界空间（GameViewMatrix）开好，直接以 Center - Main.screenPosition 绘制
-        /// </summary>
+        /// <summary>本体绘制，默认三层雾影+双眼</summary>
         public virtual void DrawBody(SpriteBatch spriteBatch, Color lightColor) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle src = new(0, 0, 1, 1);
@@ -526,7 +503,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             float bob = MathF.Sin(VisualPhase) * 4f;
             Vector2 half = new(0.5f);
 
-            //三层雾体:自下而上收窄,各层异相位横摆
+            //三层雾体
             for (int i = 0; i < 3; i++) {
                 float sway = MathF.Sin(VisualPhase * (0.8f + i * 0.31f) + i * 2.1f) * (3f + i * 2f);
                 float yOffset = size.Y * (0.30f - i * 0.27f);
@@ -535,7 +512,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 spriteBatch.Draw(pixel, pos, src, body * (alpha * (0.34f - i * 0.06f)), 0f, half, scale, SpriteEffects.None, 0f);
             }
 
-            //鬼火眼:显形过半才睁,带闪烁;眼距系数为固定常量,逐帧零分配
+            //鬼火眼
             const float EyeSideFactor = 0.14f;
             if (alpha > 0.5f) {
                 float eyeA = (alpha - 0.5f) * 2f;

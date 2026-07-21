@@ -35,11 +35,9 @@ namespace CalamityOverhaul.Content.PRTTypes
         }
 
         public override void AI() {
-            //淡入效果
             if (Time < 10) {
                 Opacity = Time / 10f;
             }
-            //淡出效果
             else if (LifetimeCompletion > 0.7f) {
                 Opacity = 1f - (LifetimeCompletion - 0.7f) / 0.3f;
             }
@@ -47,25 +45,20 @@ namespace CalamityOverhaul.Content.PRTTypes
                 Opacity = 1f;
             }
 
-            //旋转动画
             Rotation = Velocity.ToRotation();
 
-            //轻微的上下浮动
             pulseTimer += 0.1f;
             float verticalWave = MathF.Sin(pulseTimer + floatOffset) * 0.5f;
             Velocity.Y += verticalWave * 0.01f;
 
-            //速度衰减
             Velocity *= 0.97f;
 
-            //缩放脉动
             float pulseFactor = 1f + MathF.Sin(pulseTimer * 2f) * 0.1f;
-            Scale *= 0.995f; //逐渐缩小
-            Scale *= pulseFactor; //脉动效果
+            Scale *= 0.995f;
+            Scale *= pulseFactor;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
-            //加载对应的音符弹幕纹理
             int projType = noteType switch {
                 0 => ProjectileID.TiedEighthNote,
                 1 => ProjectileID.EighthNote,
@@ -79,7 +72,6 @@ namespace CalamityOverhaul.Content.PRTTypes
             Vector2 drawPos = Position - Main.screenPosition;
             Color drawColor = Color * Opacity;
 
-            //绘制主体
             spriteBatch.Draw(
                 texture,
                 drawPos,
@@ -92,7 +84,6 @@ namespace CalamityOverhaul.Content.PRTTypes
                 0f
             );
 
-            //添加一个微弱的外发光效果
             float glowScale = Scale * 1.2f;
             Color glowColor = Color * Opacity * 0.3f;
             spriteBatch.Draw(

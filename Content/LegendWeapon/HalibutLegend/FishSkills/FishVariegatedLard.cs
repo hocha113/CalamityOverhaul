@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             });
         }
 
-        //油污离体喷洒：顺喷射方向的重力油珠扇 + 断丝回坠的粘稠慢滴
+        //油污离体喷洒，顺喷射方向的重力油珠扇
         private static void SpawnOilCreateEffect(Vector2 position, Vector2 sprayVel) {
             if (VaultUtils.isServer) {
                 return;
@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     FishLardPalette.Droplet(), Main.rand.NextFloat(0.9f, 1.6f))
                     ?.Configure(Main.rand.Next(20, 34), 0.30f, 0.988f);
             }
-            //离体拉丝残余：几颗几乎不动的肥大慢滴原地坠落
+            //离体拉丝残余
             for (int i = 0; i < 3; i++) {
                 PRTLoader.NewParticle<PRT_HeartcarverDroplet>(
                     position + Main.rand.NextVector2Circular(8f, 8f),
@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 油污球弹幕：飞行为受重力的速度拉伸油滴，触块压扁成附着油渍，
+    /// 油污球弹幕，飞行为受重力的速度拉伸油滴，触块压扁成附着油渍
     /// 存活期缓慢下垂流淌并析出薄膜虹彩，遇火转入燃烧焦化
     /// </summary>
     internal class OilBlob : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
@@ -180,7 +180,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void AI() {
             OilLife++;
 
-            //状态机
             switch (State) {
                 case OilState.Flying:
                     FlyingPhaseAI();
@@ -208,7 +207,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //视觉混合量推进：成膜、流淌、焦化各走各的时间曲线
+        //视觉混合量推进
         private void UpdateVisualBlend() {
             if (State == OilState.Stuck && attachAt >= 0f) {
                 float held = OilLife - attachAt;
@@ -240,7 +239,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (VaultUtils.isServer) {
                 return;
             }
-            //粘稠脱滴：从尾侧甩出跟不上本体的重力油珠
+            //粘稠脱滴
             if (OilLife % 4 == 0 && Projectile.velocity.Length() > 2.5f) {
                 ShedDroplet(0.5f);
             }
@@ -255,12 +254,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 SpawnDripThread();
             }
 
-            //油面滋滋冒泡：成膜后偶发小气泡
+            //油面滋滋冒泡，成膜后偶发小气泡
             if (!VaultUtils.isServer && iridAmount > 0.4f && Main.rand.NextBool(40)) {
                 SpawnSurfaceBubble();
             }
 
-            //检查是否应该开始滴落
             if (OilLife > 180 && Main.rand.NextBool(120)) {
                 State = OilState.Dripping;
                 attachAt = -1f;
@@ -268,7 +266,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.tileCollide = true;
             }
 
-            //检查附近是否有火焰，如果有则点燃
             CheckForIgnition();
         }
 
@@ -284,7 +281,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ShedDroplet(0.35f);
             }
 
-            //检查附近是否有火焰
             CheckForIgnition();
         }
 
@@ -312,7 +308,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //燃烧期粒子预算：暗烟 1/5f、火星 1/6f、沸腾气泡 1/8f、Torch 底噪 1/4f
+        //燃烧期粒子预算，暗烟 1/5f
         private void SpawnBurnEffects() {
             Vector2 topFace = Projectile.Center - Vector2.UnitY * (14f * blobScale);
             if (Main.rand.NextBool(5)) {
@@ -332,7 +328,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Main.rand.NextBool(8)) {
                 SpawnSurfaceBubble();
             }
-            //廉价填充底噪：少量火炬尘
+            //廉价填充底噪，少量火炬尘
             if (Main.rand.NextBool(4)) {
                 Dust flame = Dust.NewDustPerfect(
                     Projectile.Center + Main.rand.NextVector2Circular(16f * blobScale, 8f),
@@ -351,7 +347,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile proj = Main.projectile[i];
                 if (proj.active && proj.friendly &&
                     Vector2.Distance(Projectile.Center, proj.Center) < checkRange) {
-                    //检查是否是火焰类弹幕
                     if (proj.type == ProjectileID.Flames ||
                         proj.type == ProjectileID.FlamesTrap ||
                         proj.type == ProjectileID.Fireball ||
@@ -364,7 +359,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //检查附近NPC是否着火
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
                 if (npc.active && Vector2.Distance(Projectile.Center, npc.Center) < checkRange) {
@@ -415,7 +409,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //尾侧甩滴：油珠脱体瞬间用 2 颗插值微滴续出断丝
+        //尾侧甩滴
         private void ShedDroplet(float speedKeep) {
             Vector2 tail = Projectile.Center - Projectile.velocity.UnitVector() * 12f;
             Vector2 dropVel = Projectile.velocity * speedKeep
@@ -423,7 +417,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             PRTLoader.NewParticle<PRT_HeartcarverDroplet>(tail, dropVel,
                 FishLardPalette.Droplet(), Main.rand.NextFloat(0.8f, 1.3f))
                 ?.Configure(Main.rand.Next(18, 30), 0.30f, 0.985f);
-            //断丝：本体与脱滴之间的过渡微滴
+            //断丝，本体与脱滴之间的过渡微滴
             for (int i = 1; i <= 2; i++) {
                 float t = i / 3f;
                 PRTLoader.NewParticle<PRT_HeartcarverDroplet>(
@@ -434,7 +428,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //附着油渍底缘垂滴：慢滴 + 断丝微滴，读作粘稠拉丝而非落雨
+        //附着油渍底缘垂滴
         private void SpawnDripThread() {
             if (VaultUtils.isServer) {
                 return;
@@ -456,7 +450,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //油面小气泡：出生在朝上的油面带
+        //油面小气泡，出生在朝上的油面带
         private void SpawnSurfaceBubble() {
             Vector2 tangent = stuckNormal == Vector2.Zero
                 ? Vector2.UnitX : stuckNormal.RotatedBy(MathHelper.PiOver2);
@@ -512,7 +506,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        //拍上表面：沿切向甩出压溅油珠，一次到位无弹性回弹
+        //拍上表面，沿切向甩出压溅油珠
         private void SpawnStickEffect(Vector2 impactVel) {
             if (VaultUtils.isServer) {
                 return;
@@ -533,7 +527,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.OnFire, 180);
 
-            //击中油污飞溅：顺行进方向偏折的油珠扇
+            //击中油污飞溅，顺行进方向偏折的油珠扇
             if (!VaultUtils.isServer) {
                 Vector2 dir = Projectile.velocity.UnitVector();
                 for (int i = 0; i < 8; i++) {
@@ -551,7 +545,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, Projectile.Center);
         }
 
-        //点燃爆发：暗烟先压底，火星与飞溅燃滴作亮部
+        //点燃爆发
         private void SpawnIgniteEffect() {
             if (VaultUtils.isServer) {
                 return;
@@ -570,7 +564,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     FishLardPalette.HeatOrange, Main.rand.NextFloat(0.9f, 1.5f))
                     ?.Configure(Main.rand.Next(18, 30), 0.07f);
             }
-            //燃滴迸出：着火的油珠本身也是亮部
+            //燃滴迸出，着火的油珠本身也是亮部
             for (int i = 0; i < 5; i++) {
                 PRTLoader.NewParticle<PRT_HeartcarverDroplet>(Projectile.Center,
                     Main.rand.NextVector2Circular(3.5f, 2.5f) - Vector2.UnitY * 2f,
@@ -582,7 +576,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void OnKill(int timeLeft) {
             if (!VaultUtils.isServer) {
-                //死亡油污飞溅：大而慢的重力油珠
+                //死亡油污飞溅，大而慢的重力油珠
                 int count = State == OilState.Burning ? 8 : 12;
                 for (int i = 0; i < count; i++) {
                     PRTLoader.NewParticle<PRT_HeartcarverDroplet>(Projectile.Center,
@@ -592,7 +586,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
 
                 if (State == OilState.Burning) {
-                    //燃尽余波：黑烟与零星火星比油渍活得更久
+                    //燃尽余波
                     for (int i = 0; i < 5; i++) {
                         PRTLoader.NewParticle<PRT_FishLardSmoke>(
                             Projectile.Center + Main.rand.NextVector2Circular(10f, 6f),
@@ -615,7 +609,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, Projectile.Center);
         }
 
-        //形体坐标系：x=主轴（飞行为速度向，附着为表面切向），y=其法向
+        //形体坐标系，x=主轴（飞行为速度向，附着为表面切向），y=其法向
         private void GetBodyAxes(out Vector2 ax, out Vector2 ay) {
             ax = State switch {
                 OilState.Flying or OilState.Dripping => Projectile.velocity.UnitVector(),
@@ -624,7 +618,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             ay = ax.RotatedBy(MathHelper.PiOver2);
         }
 
-        //燃烧火舌帧：油面之下的根部层，PreDraw 时机先于图元油体 = 夹心下层
+        //燃烧火舌帧，油面之下的根部层，PreDraw 时机先于图元油体 = 夹心下层
         public override bool PreDraw(ref Color lightColor) {
             if (State != OilState.Burning || blobScale <= 0.05f) {
                 return false;
@@ -655,7 +649,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        //油体本身：程序化 shader 四边形，实体层之后绘制
+        //油体本身
         void IPrimitiveDrawable.DrawPrimitives() {
             Effect effect = FishLardAssets.FishLardBlob;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
@@ -674,14 +668,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float halfY;
             float tear;
             if (State == OilState.Flying || State == OilState.Dripping) {
-                //飞行：顺速度拉长、横向收窄
+                //飞行，顺速度拉长、横向收窄
                 float stretch = MathHelper.Clamp(speed * 0.055f, 0f, 0.8f);
                 halfX = baseHalf * (1f + stretch);
                 halfY = baseHalf * (1f - stretch * 0.38f);
                 tear = MathHelper.Clamp(speed * 0.075f, 0.1f, 1f);
             }
             else {
-                //附着：8 帧内压扁摊开，一次到位（油无弹性）
+                //附着，8 帧内压扁摊开
                 float settle = attachAt >= 0f
                     ? MathHelper.Clamp((OilLife - attachAt) / 8f, 0f, 1f) : 1f;
                 settle = 1f - MathF.Pow(1f - settle, 3f);
@@ -725,12 +719,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             device.RasterizerState = origRaster;
         }
 
-        //火舌热尖：图元油体之上的加色上层，与 PreDraw 根部层构成夹心
+        //火舌热尖，图元油体之上的加色上层
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
             if (State != OilState.Burning || Main.dedServ) {
                 return;
             }
-            //点燃瞬间琥珀闪环：随 igniteFlash 衰减扩散，约十帧消散
+            //点燃瞬间琥珀闪环
             if (igniteFlash > 0.1f && CWRAsset.Ring01?.Value is Texture2D ring) {
                 float fs = (1.4f - igniteFlash) * 80f / ring.Width;
                 spriteBatch.Draw(ring, Projectile.Center - Main.screenPosition, null,

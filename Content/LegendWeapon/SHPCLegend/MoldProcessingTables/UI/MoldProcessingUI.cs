@@ -15,11 +15,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.UI
 {
-    /// <summary>
-    /// 模具加工台主 UI：右键加工台物块后由 <see cref="MoldProcessingTableTile.RightClick"/> 调用 <see cref="Open"/>
-    /// 整体布局：顶部 Header + 左侧 Sidebar（6 类别） + 右侧 Tab 切换的 Workbench / Codex
-    /// 视觉与配色完全复用 <see cref="SHPCRenderer"/> / <see cref="SHPCTheme"/> / <see cref="EffectLoader.SHPCModPanel"/>
-    /// </summary>
+    /// <summary>模具主UI，Header+Sidebar+Workbench/Codex，复用SHPC配色</summary>
     internal class MoldProcessingUI : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "Legend";
@@ -89,7 +85,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
         private bool hasBoundTile;
         //当前选中的类别
         public SHPCSlotCategory SelectedCategory { get; set; } = SHPCSlotCategory.Barrel;
-        //当前 Tab：false=Workbench, true=Codex
+        //false=Workbench true=Codex
         public bool CodexMode { get; private set; }
 
         //缓存的布局（每帧由 Update 重建）
@@ -98,9 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
         private enum TopHit { None, Close, TabWorkbench, TabCodex }
         private TopHit topHover;
 
-        /// <summary>
-        /// 由 <see cref="MoldProcessingTableTile.RightClick"/> 调用。如果 UI 已经开着则切换为关闭；不同位置则切换绑定
-        /// </summary>
+        /// <summary>RightClick入口，同开则关，异位换绑</summary>
         public void Open(Point16 tilePos) {
             if (visible && hasBoundTile && boundTile == tilePos) {
                 Close();
@@ -186,7 +180,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
                 UIInputGuard.SuppressWeaponSwitch();
             }
 
-            //滚轮：按当前 tab 分发
+            //滚轮按tab分发
             if (CodexMode) {
                 if (cachedLayout.Content.Contains((int)MousePosition.X, (int)MousePosition.Y)) {
                     MoldCodexPanel.HandleScroll();
@@ -337,7 +331,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
                 SHPCRenderer.DrawCornerBrackets(sb, px, r, 3f, 1.1f, SHPCTheme.CyanHi * a);
             }
 
-            //Tab 文本：当中文/英文较长时按宽度截断，并随之缩小一档
+            //Tab过长则截断缩档
             float maxLabelW = r.Width - 12f;
             float scale = MoldFont.TabLabelBase * MoldFont.FontScale;
             string drawLabel = MoldFont.TruncateForWidth(font, label, maxLabelW, scale);
@@ -364,9 +358,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
                 textCol, scale);
         }
 
-        /// <summary>
-        /// 直接复用 <see cref="UI.SHPCModPanel"/> 的着色器入口，只把焦点从枪体中心改为工作台预览中心
-        /// </summary>
+        /// <summary>复用SHPCModPanel着色器，焦点改工作台预览</summary>
         private static void DrawShaderBackground(SpriteBatch sb, Texture2D px,
             Rectangle rect, Vector2 focus, float openProgress) {
             float a = openProgress;

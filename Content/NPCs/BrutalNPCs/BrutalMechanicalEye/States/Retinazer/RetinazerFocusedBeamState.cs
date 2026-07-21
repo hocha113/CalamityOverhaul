@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
-    /// <summary>死亡射线扫射：就位→锁定蓄力→受限追踪宽射线→过热硬直</summary>
+    /// <summary>死亡射线扫射，就位→锁定蓄力→受限追踪宽射线→过热硬直</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerFocusedBeam, typeof(TwinsStateContext))]
     internal class RetinazerFocusedBeamState : TwinsStateBase
     {
@@ -65,9 +65,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 ExecuteRecoveryPhase(npc, player);
             }
 
-            //状态结束
             if (Timer >= TotalDuration) {
-                //独眼模式下切换到狂暴状态
                 if (context.IsSoloRageMode) {
                     return new RetinazerSoloRageState();
                 }
@@ -77,7 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             return null;
         }
 
-        /// <summary>就位阶段：弹簧飞抵玩家斜上方射击位</summary>
+        /// <summary>就位阶段，弹簧飞抵玩家斜上方射击位</summary>
         private void ExecuteApproachPhase(NPC npc, Player player) {
             float progress = Timer / (float)ApproachPhase;
 
@@ -89,7 +87,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             Context.SetChargeState(6, progress * 0.25f);
         }
 
-        /// <summary>锁定蓄力阶段：准心预警，机体绷紧颤抖，能量向瞳孔汇聚</summary>
+        /// <summary>锁定蓄力阶段，准心预警，机体绷紧颤抖，能量向瞳孔汇聚</summary>
         private void ExecuteChargePhase(NPC npc, Player player) {
             int phaseTimer = Timer - ApproachPhase;
             float progress = phaseTimer / (float)ChargePhase;
@@ -119,7 +117,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 TwinsMotion.ChargeGatherFX(muzzle, false, progress, 90f);
             }
 
-            //蓄力完成预告:收束闪光
+            //蓄力完收束闪光
             if (phaseTimer == ChargePhase - 4 && !VaultUtils.isServer) {
                 PRTLoader.NewParticle<PRT_DWave>(npc.Center, Vector2.Zero, TwinsMotion.RetinColor, 0.18f)?
                     .Configure(Vector2.One, 0f, 0.9f, 12);
@@ -127,7 +125,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>射线阶段：释放死亡射线，受限角速度追踪玩家，机体承受持续后坐</summary>
+        /// <summary>射线阶段，释放死亡射线，受限角速度追踪玩家，机体承受持续后坐</summary>
         private void ExecuteBeamPhase(NPC npc, Player player) {
             int phaseTimer = Timer - ApproachPhase - ChargePhase;
 
@@ -150,11 +148,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 }
             }
 
-            //受限角速度追踪玩家(rotation驱动射线方向)
+            //限角速追踪，rotation 驱射线
             float targetDirRot = (player.Center - npc.Center).ToRotation();
             TwinsMotion.RotateToward(npc, targetDirRot, TrackTurnRate);
 
-            //射线后坐:机体被缓缓推离射线方向
+            //射线后坐
             Vector2 beamDir = (npc.rotation + MathHelper.PiOver2).ToRotationVector2();
             npc.velocity = npc.velocity * 0.9f - beamDir * 0.55f;
             if (npc.velocity.Length() > 6f) {
@@ -168,7 +166,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>过热硬直阶段：射线收束后排气下沉，给予输出窗口</summary>
+        /// <summary>过热硬直阶段，射线收束后排气下沉，给予输出窗口</summary>
         private void ExecuteRecoveryPhase(NPC npc, Player player) {
             int phaseTimer = Timer - ApproachPhase - ChargePhase - BeamPhase;
 

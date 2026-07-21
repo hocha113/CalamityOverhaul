@@ -1,4 +1,4 @@
-﻿using InnoVault.GameSystem;
+using InnoVault.GameSystem;
 using Terraria;
 using Terraria.ModLoader.IO;
 
@@ -7,31 +7,25 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
     /// <summary>主菜单立绘存档</summary>
     internal class MenuSave : SaveMod
     {
-        //数据结构版本戳
+
         private const int CurrentDataVersion = 1;
 
-        /// <summary>是否解锁了"永恒燃烧的现在"结局的主菜单立绘</summary>
+        /// <summary>解锁"永恒燃烧的现在"结局立绘</summary>
         public static bool ADV_SupCal_EBN { get; private set; }
 
-        /// <summary>Helen立绘的偏移位置</summary>
         public static Vector2 Helen_PortraitOffset { get; private set; } = Vector2.Zero;
 
-        /// <summary>SupCal立绘的表情状态(0=Default, 1=CloseEyes, 2=Smile)</summary>
+        /// <summary>SupCal表情 0/1/2=Default/CloseEyes/Smile</summary>
         public static int SupCal_Expression { get; private set; } = 0;
 
-        /// <summary>SupCal左侧立绘的偏移位置</summary>
         public static Vector2 SupCal_LeftPortraitOffset { get; private set; } = Vector2.Zero;
 
-        /// <summary>SupCal右侧立绘的偏移位置</summary>
         public static Vector2 SupCal_RightPortraitOffset { get; private set; } = Vector2.Zero;
 
-        /// <summary>SupCal立绘的显示状态</summary>
         public static bool SupCal_ShowFullPortrait { get; private set; } = false;
 
-        /// <summary>SupCal左侧立绘的缩放值</summary>
         public static float SupCal_LeftPortraitScale { get; private set; } = 2.0f;
 
-        /// <summary>SupCal右侧立绘的缩放值</summary>
         public static float SupCal_RightPortraitScale { get; private set; } = 0.85f;
 
         public override void SetStaticDefaults() {
@@ -42,10 +36,9 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
         }
 
         public override void SaveData(TagCompound tag) {
-            //保存版本戳
+
             tag["DataVersion"] = CurrentDataVersion;
 
-            //保存所有数据
             tag["ADV_SupCal_EBN"] = ADV_SupCal_EBN;
             tag["SupCal_Expression"] = SupCal_Expression;
             tag["SupCal_LeftPortraitOffset"] = SupCal_LeftPortraitOffset;
@@ -57,30 +50,26 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
         }
 
         public override void LoadData(TagCompound tag) {
-            //读取版本号
+
             if (!tag.TryGet("DataVersion", out int dataVersion)) {
-                dataVersion = 0; // 旧版本存档没有版本戳,默认为0
+                dataVersion = 0;//旧档无版本戳
             }
 
-            //根据版本号进行数据迁移
             MigrateData(tag, dataVersion);
 
-            //加载数据(始终使用最新格式)
             LoadCurrentVersionData(tag);
 
-            //加载后立即同步到UI状态(如果UI已初始化)
+            //加载后同步UI(若已init)
             if (ADV_SupCal_EBN) {
                 SupCalPortraitUI.Instance?.LoadSavedState();
                 HelenPortraitUI.Instance?.LoadSavedState();
             }
         }
 
-        /// <summary>数据迁移逻辑</summary>
         private static void MigrateData(TagCompound tag, int fromVersion) {
 
         }
 
-        /// <summary>加载当前版本的数据</summary>
         private static void LoadCurrentVersionData(TagCompound tag) {
             if (!tag.TryGet("Helen_PortraitOffset", out Vector2 helenOffset)) {
                 helenOffset = Vector2.Zero;
@@ -123,22 +112,19 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
             SupCal_RightPortraitScale = rightScale;
         }
 
-        /// <summary>玩家达成"永恒燃烧的现在"结局时调用，解锁主菜单立绘</summary>
+        /// <summary>达成结局时解锁主菜单立绘</summary>
         public static void UnlockEternalBlazingNowPortrait(Player player) {
             if (!ADV_SupCal_EBN) {
                 ADV_SupCal_EBN = true;
                 DoSave<MenuSave>();
 
-                //立即更新UI状态
                 SupCalPortraitUI.Instance?.LoadSavedState();
                 HelenPortraitUI.Instance?.LoadSavedState();
             }
         }
 
-        /// <summary>检查玩家是否已解锁主菜单立绘</summary>
         public static bool IsPortraitUnlocked() => ADV_SupCal_EBN;
 
-        /// <summary>保存SupCal立绘的UI状态</summary>
         public static void SaveSupCalPortraitState(int expression, Vector2 leftOffset, Vector2 rightOffset, bool showFullPortrait, float leftScale = 2.0f, float rightScale = 0.85f) {
             bool changed = false;
 
@@ -177,7 +163,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
             }
         }
 
-        /// <summary>保存Helen立绘的UI状态</summary>
         public static void SaveHelenPortraitState(Vector2 offset) {
             if (Helen_PortraitOffset != offset) {
                 Helen_PortraitOffset = offset;
@@ -185,35 +170,30 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
             }
         }
 
-        /// <summary>重置所有立绘位置到默认状态</summary>
         public static void ResetPortraitPositions() {
             SupCal_LeftPortraitOffset = Vector2.Zero;
             SupCal_RightPortraitOffset = Vector2.Zero;
             Helen_PortraitOffset = Vector2.Zero;
             DoSave<MenuSave>();
 
-            //立即同步到UI
             SupCalPortraitUI.Instance?.LoadSavedState();
             HelenPortraitUI.Instance?.LoadSavedState();
         }
 
-        /// <summary>重置SupCal表情到默认状态</summary>
         public static void ResetSupCalExpression() {
             SupCal_Expression = 0;
             DoSave<MenuSave>();
 
-            //立即同步到UI
             SupCalPortraitUI.Instance?.LoadSavedState();
         }
 
-        /// <summary>重置SupCal立绘缩放到默认状态</summary>
         public static void ResetSupCalPortraitScale() {
             SupCal_LeftPortraitScale = 2.0f;
             SupCal_RightPortraitScale = 0.85f;
             DoSave<MenuSave>();
 
-            //立即同步到UI
             SupCalPortraitUI.Instance?.LoadSavedState();
         }
     }
 }
+

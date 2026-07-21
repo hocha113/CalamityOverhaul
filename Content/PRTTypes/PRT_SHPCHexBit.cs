@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>六边形轮廓微粒：多格机匣充能/齐射的碎格飞屑，六段线段拼合旋转渐隐</summary>
+    /// <summary>六边形轮廓飞屑，多格机匣</summary>
     internal class PRT_SHPCHexBit : BasePRT
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             Velocity *= 0.94f;
             Rotation += rotationSpeed;
             float life = LifetimeCompletion;
-            //前段膨出，后段收缩
+            //前胀后收
             Scale = initialScale * (life < 0.25f
                 ? MathHelper.Lerp(0.5f, 1f, life / 0.25f)
                 : 1f - MathF.Pow((life - 0.25f) / 0.75f, 2f));
@@ -57,14 +57,12 @@ namespace CalamityOverhaul.Content.PRTTypes
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 drawPos = Position - Main.screenPosition;
 
-            //六段线段围成六边形轮廓：顶点 i 到 i+1
             float radius = 9f * Scale;
-            float sideLen = radius; //正六边形边长等于外接圆半径
+            float sideLen = radius; //正六边形边长=外接圆半径
             Color inner = Color * Opacity;
             Color outer = edgeColor * Opacity * 0.5f;
             for (int i = 0; i < SegmentCount; i++) {
                 float midAngle = Rotation + MathHelper.TwoPi * (i + 0.5f) / SegmentCount;
-                //边中点位于内切圆上，边方向垂直于中点半径
                 Vector2 mid = drawPos + midAngle.ToRotationVector2() * (radius * 0.866f);
                 float segRot = midAngle + MathHelper.PiOver2;
                 spriteBatch.Draw(pixel, mid, new Rectangle(0, 0, 1, 1), outer, segRot,
@@ -72,7 +70,6 @@ namespace CalamityOverhaul.Content.PRTTypes
                 spriteBatch.Draw(pixel, mid, new Rectangle(0, 0, 1, 1), inner, segRot,
                     new Vector2(0.5f, 0.5f), new Vector2(sideLen, 1.2f), SpriteEffects.None, 0f);
             }
-            //中心微光
             Color core = Color.Lerp(inner, Color.White, 0.5f) * (Opacity * 0.6f);
             spriteBatch.Draw(pixel, drawPos, new Rectangle(0, 0, 1, 1), core, Rotation,
                 new Vector2(0.5f, 0.5f), new Vector2(3f * Scale, 3f * Scale), SpriteEffects.None, 0f);

@@ -7,9 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    /// <summary>
-    /// 硫磺火柱弹幕
-    /// </summary>
+    /// <summary>硫磺火柱</summary>
     internal class PandemoniumFirePillar : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -38,23 +36,18 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
         public override void AI() {
             if (Life == 0) {
-                //初始化
                 MaxLife = MaxLifeTime;
                 radius = Main.rand.NextFloat(180f, 220f);
                 Projectile.width = Projectile.height = (int)(radius * 2);
-
-                //生成爆发特效
                 SpawnInitialEffect();
             }
 
             Life++;
 
-            //持续粒子效果
             if (Main.rand.NextBool(2)) {
                 SpawnParticles();
             }
 
-            //强烈照明
             float lightIntensity = GetAlphaValue() * 3f;
             Lighting.AddLight(Projectile.Center, 2.5f * lightIntensity, 0.8f * lightIntensity, 0.3f * lightIntensity);
         }
@@ -71,7 +64,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         private void SpawnInitialEffect() {
-            //火柱生成爆发
             for (int i = 0; i < 60; i++) {
                 Vector2 velocity = new Vector2(
                     Main.rand.NextFloat(-8f, 8f),
@@ -90,7 +82,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 brimstone.fadeIn = 2f;
             }
 
-            //火焰核心
             for (int i = 0; i < 40; i++) {
                 Dust fire = Dust.NewDustPerfect(
                     Projectile.Center,
@@ -103,7 +94,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 fire.noGravity = true;
             }
 
-            //地面冲击环
             for (int i = 0; i < 30; i++) {
                 float angle = MathHelper.TwoPi * i / 30f;
                 Vector2 velocity = angle.ToRotationVector2() * 12f;
@@ -128,7 +118,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private void SpawnParticles() {
             float lifeRatio = Life / MaxLife;
 
-            //上升火焰
             for (int i = 0; i < 3; i++) {
                 Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(radius * 0.5f, 10f);
                 Dust flame = Dust.NewDustPerfect(
@@ -142,7 +131,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 flame.noGravity = true;
             }
 
-            //火焰余烬
             if (Main.rand.NextBool(2)) {
                 Dust ember = Dust.NewDustPerfect(
                     Projectile.Center + Main.rand.NextVector2Circular(radius * 0.7f, radius * 0.7f),
@@ -161,7 +149,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         public override void OnKill(int timeLeft) {
-            //消散特效
             for (int i = 0; i < 30; i++) {
                 Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
 
@@ -184,7 +171,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Vector2 screenPos = Projectile.Center - Main.screenPosition;
             float alpha = GetAlphaValue();
 
-            //火柱基础辉光
             for (int i = 0; i < 4; i++) {
                 float scale = (radius / GlowAsset.Value.Width) * (2f + i * 0.2f);
                 float layerAlpha = alpha * (0.6f - i * 0.12f);
@@ -202,7 +188,6 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 );
             }
 
-            //核心白光
             sb.Draw(
                 GlowAsset.Value,
                 screenPos,

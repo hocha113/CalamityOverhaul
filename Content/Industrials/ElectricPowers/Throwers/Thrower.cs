@@ -7,10 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
 {
-    /// <summary>
-    /// 投掷者物品
-    /// 可以自动将存储的物品投掷出去的机器
-    /// </summary>
+    /// <summary>投掷者，自动投出存储物</summary>
     internal class Thrower : ModItem
     {
         public override string Texture => CWRConstant.Asset + "ElectricPowers/Thrower";

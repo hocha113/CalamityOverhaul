@@ -80,9 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return null;
         }
 
-        /// <summary>
-        /// 触发天降星雨
-        /// </summary>
+        /// <summary>触发天降星雨</summary>
         private void TriggerStarRain(Player player, EntitySource_ItemUse_WithAmmo source, int baseDamage) {
             //在鼠标周围区域生成多个下落星星
             Vector2 targetArea = Main.MouseWorld;
@@ -114,7 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
             }
 
-            //星雨触发音效：星云爆鸣垫底，亮铃对齐"天空亮起"节拍
+            //星雨触发音效
             SoundEngine.PlaySound(SoundID.Item88 with {
                 Volume = 0.8f,
                 Pitch = 0.3f
@@ -157,11 +155,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 螺旋星星弹幕，主星星和伴随星星。<br/>
-    /// 演出：星体自旋拖影 + 十字闪芒（双轴错相脉动）+ 彗尾条带 shader，
-    /// 伴星公转带相位差，每圈过近点一次镜面闪；死亡时轨迹交给独立残迹尾部先蚀
-    /// </summary>
+    /// <summary>螺旋星星弹幕，主星星和伴随星星</summary>
     internal class SpiralStarProjectile : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.FallenStar;
@@ -202,11 +196,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.localAI[1]++;
 
             if (IsMainStar) {
-                //主星星：直线前进
+                //主星星，直线前进
                 MainStarAI();
             }
             else {
-                //伴随星星：螺旋围绕主星星
+                //伴随星星，螺旋围绕主星星
                 CompanionStarAI();
             }
 
@@ -218,7 +212,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void MainStarAI() {
-            //出膛过冲：前12帧微加速，之后轻微衰减
+            //出膛过冲
             if (Projectile.localAI[1] < 12f) {
                 Projectile.velocity *= 1.015f;
             }
@@ -231,7 +225,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 perpendicular = Projectile.velocity.SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2);
             Projectile.velocity += perpendicular * wave * 0.1f;
 
-            //星尾星屑：低频拉伸星屑替代刷屏 Dust
+            //星尾星屑
             SpawnTrailStardust(5, 0.32f);
         }
 
@@ -272,7 +266,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SpawnTrailStardust(7, 0.24f);
         }
 
-        /// <summary>低频星屑尾迹：金色拉伸星屑为主，偶发深蓝屑点缀</summary>
+        /// <summary>低频星屑尾迹</summary>
         private void SpawnTrailStardust(int interval, float baseScale) {
             if (Main.dedServ) {
                 return;
@@ -292,7 +286,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnKill(int timeLeft) {
-            //轨迹交给独立残迹：星尾比弹体活得久，尾部先蚀
+            //轨迹交给独立残迹
             FishFallenStarVFX.SpawnTrace(Projectile, IsMainStar ? 13f : 9f, 15);
 
             if (!Main.dedServ) {
@@ -314,7 +308,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Main.dedServ) {
                 return;
             }
-            //命中：一记十字闪 + 顺入射向的火花锥
+            //命中
             FishFallenStarVFX.CrossPop(Projectile.Center, 0.55f, 12);
             Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             for (int i = 0; i < 4; i++) {
@@ -338,19 +332,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float alpha = (255f - Projectile.alpha) / 255f;
             float scale = Projectile.scale * (IsMainStar ? 1.05f : 0.75f);
 
-            //自旋拖影：两枚落后相位残影，表达自旋而非提亮
+            //自旋拖影
             Color ghostCol = FishFallenStarVFX.StarGold with { A = 0 };
             sb.Draw(starTex, drawPos, sourceRect, ghostCol * (alpha * 0.22f)
                 , Projectile.rotation - 0.55f, origin, scale * 0.94f, SpriteEffects.None, 0);
             sb.Draw(starTex, drawPos, sourceRect, ghostCol * (alpha * 0.11f)
                 , Projectile.rotation - 1.1f, origin, scale * 0.88f, SpriteEffects.None, 0);
 
-            //星体本体：保留掉落星识别度，金染不加白罩
+            //星体本体
             Color bodyCol = Color.Lerp(lightColor, FishFallenStarVFX.StarGold, 0.55f);
             sb.Draw(starTex, drawPos, sourceRect, bodyCol * alpha
                 , Projectile.rotation, origin, scale, SpriteEffects.None, 0);
 
-            //十字闪芒：锐利窄芒承担星感，双轴错相脉动，轴缓摆
+            //十字闪芒
             float twinkle = Main.GlobalTimeWrappedHourly * 5.6f + Projectile.whoAmI * 2.4f;
             float sway = MathF.Sin(Main.GlobalTimeWrappedHourly * 1.7f + Projectile.whoAmI) * 0.22f;
             FishFallenStarVFX.DrawStarGlint(sb, drawPos, alpha * 0.95f
@@ -359,25 +353,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>星尾彗带：深蓝→金渐变窄条带（shader 承载），替代贴图串尾迹</summary>
+        /// <summary>星尾彗带，深蓝→金渐变窄条带（shader 承载），替代贴图串尾迹</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
             float fade = MathHelper.Clamp(Projectile.localAI[1] / 10f, 0f, 1f) * ((255f - Projectile.alpha) / 255f);
             FishFallenStarVFX.DrawCometStrip(Projectile, IsMainStar ? 14f : 9f, fade);
         }
     }
 
-    /// <summary>
-    /// 天降星星弹幕。<br/>
-    /// 时序：延迟 → 预告（天空微光点渐亮闪烁 22 帧）→ 释放下坠；
-    /// 下坠期长彗尾条带 + 空气摩擦火花剥落，落点小新星环 + 星尘余韵，
-    /// 死亡时轨迹交给独立残迹尾部先蚀
-    /// </summary>
+    /// <summary>天降星星弹幕</summary>
     internal class FallingStarProjectile : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.FallenStar;
 
         private ref float SpawnDelay => ref Projectile.ai[0];
-        /// <summary>预告窗（帧）：天空星闪半秒再落</summary>
+        /// <summary>预告窗（帧），天空星闪半秒再落</summary>
         public const int TelegraphTime = 22;
         private float telegraphTimer;
         private bool falling;
@@ -417,7 +406,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //预告：原地微光点闪烁，蓄而不发
+            //预告，原地微光点闪烁，蓄而不发
             if (telegraphTimer < TelegraphTime) {
                 telegraphTimer++;
                 Projectile.velocity = Vector2.Zero;
@@ -429,7 +418,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //淡入
             if (Projectile.alpha > 0) {
                 Projectile.alpha -= 25;
                 if (Projectile.alpha < 0) Projectile.alpha = 0;
@@ -450,7 +438,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //照明
             Lighting.AddLight(Projectile.Center, 0.9f, 0.8f, 0.55f);
 
-            //空气摩擦剥落：向后剥离的受重力火花 + 偶发深蓝星屑
+            //空气摩擦剥落
             if (!Main.dedServ) {
                 if (Main.rand.NextBool(4)) {
                     PRTLoader.NewParticle<PRT_Spark>(
@@ -467,7 +455,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>预告结束，释放下坠：无延迟星恢复瞄准初速，其余自由落体</summary>
+        /// <summary>预告结束，释放下坠</summary>
         private void Release() {
             falling = true;
             Projectile.velocity = keepAim ? aimVelocity : Vector2.Zero;
@@ -482,7 +470,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Main.dedServ) {
                 return;
             }
-            //释放一瞬：小簇外抛星屑
+            //释放一瞬，小簇外抛星屑
             for (int i = 0; i < 3; i++) {
                 PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center
                     , Main.rand.NextVector2Circular(2.4f, 2.4f)
@@ -492,7 +480,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnKill(int timeLeft) {
-            //彗迹交给独立残迹：尾部先蚀，不与弹体同帧蒸发
+            //彗迹交给独立残迹
             if (falling) {
                 FishFallenStarVFX.SpawnTrace(Projectile, 20f, 20);
             }
@@ -504,7 +492,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 FishFallenStarVFX.NovaRing(Projectile.Center, 1.25f);
                 FishFallenStarVFX.CrossPop(Projectile.Center, 1.0f, 16);
 
-                //星屑迸溅：顺反冲向偏置的受重力星尘，比弹体活得久
+                //星屑迸溅
                 FishFallenStarVFX.StardustBurst(Projectile.Center, upDir * 2.6f, 9, 3.6f);
                 for (int i = 0; i < 4; i++) {
                     PRTLoader.NewParticle<PRT_Spark>(Projectile.Center
@@ -517,7 +505,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 FishFallenStarVFX.Punch(Projectile.Center, Projectile.velocity, 3f, 8);
             }
 
-            //撞击音效：闷响 + 薄亮铃
+            //撞击音效，闷响 + 薄亮铃
             SoundEngine.PlaySound(SoundID.Item10 with {
                 Volume = 0.7f,
                 Pitch = 0.3f,
@@ -548,7 +536,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SpriteBatch sb = Main.spriteBatch;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
-            //预告期：天空微光点渐亮，双重闪烁，无星体
+            //预告期
             if (!falling) {
                 if (SpawnDelay > 0) {
                     return false;
@@ -584,7 +572,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             sb.Draw(starTex, drawPos, sourceRect, bodyCol * alpha
                 , Projectile.rotation, origin, scale, SpriteEffects.None, 0);
 
-            //十字闪芒：长轴锁坠向，读作破空流星
+            //十字闪芒
             float twinkle = Main.GlobalTimeWrappedHourly * 6.8f + Projectile.whoAmI * 2.4f;
             FishFallenStarVFX.DrawStarGlint(sb, drawPos, alpha * trailIntensity
                 , 0.95f, twinkle, velRot);
@@ -592,7 +580,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        /// <summary>坠星彗尾：长条带 shader</summary>
+        /// <summary>坠星彗尾</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
             if (!falling) {
                 return;

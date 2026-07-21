@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.Arms
 {
-    /// <summary>火箭炮点射：头侧悬浮单发；激光速射时收敛点射防火力叠加</summary>
+    /// <summary>火箭点射</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.CannonBombard, typeof(PrimeArmStateContext))]
     internal class CannonBombardState : PrimeArmStateBase
     {
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             return EvaluateModeSwitch(ctx, wantSpreadWhenFree: true);
         }
 
-        /// <summary>激光存活时跟其节奏（速射→点射，其余→散射）；激光阵亡后计时切换</summary>
+        /// <summary>跟激光节奏切换</summary>
         private PrimeArmStateBase EvaluateModeSwitch(PrimeArmStateContext ctx, bool wantSpreadWhenFree) {
             if (VaultUtils.isClient) {
                 return null;
@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 return null;
             }
 
-            //失去激光炮后自主切换
+            //无激光则切换
             modeTimer += 1f + ctx.MissingPartnerCount * PrimeDirector.MissingHeavyLimbChargeBonus;
             if (modeTimer >= (ctx.MasterMode ? 200f : 800f)) {
                 return new CannonSpreadState();
@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             return (int)Main.npc[laser].ai[PrimeAiSlots.ArmStateSlot] == (int)PrimeArmStateIndex.LaserRapidFire;
         }
 
-        /// <summary>火箭炮的头侧悬浮跟随</summary>
+        /// <summary>头侧悬浮跟随</summary>
         internal static void Follow(PrimeArmStateContext ctx) {
             AnchoredFollow(ctx, -130f, -170f, 160f, 200f);
         }
@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             Vector2 rocketVelocity = ctx.AimDirection * 10f;
             Vector2 spawnPos = npc.Center + ctx.AimDirection * 40f;
 
-            //制导炮弹（带瞄准线预警）全难度统一使用，难度只影响预警时长
+            //制导炮弹，难度只改预警时长
             int proj = Projectile.NewProjectile(npc.GetSource_FromAI(),
                 spawnPos, rocketVelocity,
                 ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>火箭扇形齐射：长装填换 3~5 连覆盖</summary>
+    /// <summary>火箭扇形齐射</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.CannonSpread, typeof(PrimeArmStateContext))]
     internal class CannonSpreadState : PrimeArmStateBase
     {
@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             int damage = ScaleDamage(CWRRef.GetProjectileDamage(npc, ProjectileID.RocketSkeleton));
 
             Vector2 baseVelocity = ctx.AimDirection * 10f;
-            //制导炮弹全难度统一使用，难度只影响弹数与张角
+            //制导炮弹，难度改弹数张角
             int numProj = ctx.BossRush ? 5 : (ctx.Death ? 4 : 3);
             float rotation = MathHelper.ToRadians(ctx.BossRush ? 15 : 9);
 
@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>抛物线迫击：落点环预告→必中环心火球；最小距 350px</summary>
+    /// <summary>迫击，落点环，最小距350px</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.CannonMortar, typeof(PrimeArmStateContext))]
     internal class CannonMortarState : PrimeArmStateBase
     {
@@ -199,7 +199,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             base.OnEnter(ctx);
             impactPoint = ctx.Target.Center + ctx.Target.velocity * 18f;
             if (!VaultUtils.isClient) {
-                //预警环一直亮到弹着：充能填满的瞬间就是爆炸落地的瞬间
+                //预警环亮到弹着
                 PrimeTelegraphLine.SpawnRing(ctx.Npc, impactPoint, PrimeMortarShellProj.BlastDiameter / 2f,
                     TelegraphFrames + PrimeMortarShellProj.FlightFrames);
             }
@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
             CannonBombardState.Follow(ctx);
 
-            //炮管压向高抛出膛角，姿态即弹道预告
+            //高抛出膛角
             Vector2 launchDir = PrimeMortarShellProj.SolveLaunchVelocity(ctx.Npc.Center, impactPoint,
                 PrimeMortarShellProj.FlightFrames).SafeNormalize(Vector2.UnitY);
             ctx.AimDirection = Vector2.Lerp(ctx.AimDirection, launchDir, 0.15f);
@@ -225,7 +225,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             return null;
         }
 
-        /// <summary>弹道学反解初速，必中预警环心</summary>
+        /// <summary>反解初速必中环心</summary>
         private void FireMortar(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             int damage = ScaleDamage((int)(CWRRef.GetProjectileDamage(npc, ProjectileID.RocketSkeleton) * 1.25f));

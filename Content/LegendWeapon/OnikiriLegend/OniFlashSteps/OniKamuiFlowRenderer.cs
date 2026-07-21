@@ -7,28 +7,29 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 {
-    /// <summary>
-    /// 神威流带渲染：沿冲刺路径铺三角带，交给 <see cref="EffectLoader.OniKamuiFlow"/>
-    /// 画成流动的黑红墨绸。<br/>
-    /// 一条路径叠多股子带（垂直偏移 + 各自的种子/流速/撕裂度）构成"多股平行流带"的
-    /// 手绘观感；白热主脊由 HeadBoost 大的窄带承担。调色板与绯红裂空斩共享
-    /// （<see cref="CrimsonSlashRenderer"/> 四色），形态语言完全独立
-    /// </summary>
+    /// <summary>神威流带. EffectLoader.OniKamuiFlow,多股子带</summary>
     internal static class OniKamuiFlowRenderer
     {
         /// <summary>子带静态定义（一次冲刺内不变，动态量走 DrawRibbon 参数）</summary>
         public struct RibbonDef
         {
             public float HalfWidth;   //半幅宽(px)
+
             public float PerpOffset;  //垂直路径的平行偏移(px)
+
             public float Seed;        //噪声相位
+
             public float FlowMul;     //流速倍率（子带各异 → 层间视差）
+
             public float TearAmp;     //轮廓撕裂幅度
+
             public float HeadBoost;   //头段白热中脊强度
+
             public float OpacityMul;  //相对整体的透明度
+
         }
 
-        /// <summary>沿带噪声瓦片长度(px)：uLenScale = 路径长/此值，墨纹钉在世界空间</summary>
+        /// <summary>沿带噪声瓦片长度(px)、uLenScale = 路径长/此值，墨纹钉在世界空间</summary>
         private const float NoiseTilePx = 260f;
 
         /// <summary>设备状态 + 帧级公共 uniform；返回 false 表示资产未就绪</summary>
@@ -64,10 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             device.DepthStencilState = prevDepth;
         }
 
-        /// <summary>
-        /// 绘制一股子带。points 首元素=起点(尾)、末元素=头端；
-        /// retract 0..1 从尾向头蒸发，flash 全形过曝帧，opacity 整体包络
-        /// </summary>
+        /// <summary>绘制一股子带。points 首元素=起点(尾)</summary>
         public static void DrawRibbon(GraphicsDevice device, Effect fx
             , IReadOnlyList<Vector2> rawPoints, in RibbonDef def
             , float retract, float flash, float opacity) {
@@ -75,7 +73,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 return;
             }
 
-            //整形：剔短段 → 切角圆滑 → 细分到 ≤44px 段（极端路径的顶点自折/开裂在这里兜底）
+            //整形、剔短段 → 切角圆滑 → 细分到 ≤44px
+
             List<Vector2> points = ShapePath(rawPoints);
             if (points.Count < 2) {
                 return;
@@ -113,6 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 float u = cum / totalLen;
 
                 //切向取邻段平均，端点用单侧
+
                 Vector2 dir = i == 0
                     ? points[1] - points[0]
                     : i == count - 1
@@ -121,11 +121,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 dir = dir.SafeNormalize(Vector2.UnitX);
                 Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
 
-                //幅宽包络：尾端略收、头端全宽（收束尖与撕裂舌由 shader 负责，几何只给画布）
+                //幅宽包络、尾端略收
+
                 float hw = def.HalfWidth * MathHelper.Lerp(0.68f, 1f, u);
-                //平行偏移在头段漏斗式归零：多股流带汇入同一个收束点
+                //平行偏移在头段漏斗式归零、多股流带汇入同一个收束点
+
                 float funnel = MathHelper.Clamp((1f - u) / 0.34f, 0f, 1f);
                 funnel = funnel * (2f - funnel);   //easeOut，汇入平滑无折角
+
                 Vector2 center = points[i] + perp * (def.PerpOffset * funnel);
 
                 verts[i * 2] = new VertexPositionColorTexture(
@@ -140,17 +143,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             }
         }
 
-        /// <summary>剔除阈值(px)：短于此的段其切向已是噪声，垂直挤出必然自折</summary>
+        /// <summary>剔除阈值(px)、短于此的段其切向已是噪声，垂直挤出必然自折</summary>
         private const float MinSeg = 10f;
 
-        /// <summary>
-        /// 路径整形三步——极端情况（向脚下急停的顶点簇、转向/台阶造成的弯折）的破损兜底：<br/>
-        /// 1. 剔退化短段：顶点簇的切向是噪声，法线乱翻导致条带自折；<br/>
-        /// 2. Chaikin 两轮切角：尖角磨圆（端点保持），最宽 58px 的垂直挤出不再在拐点自交开裂；<br/>
-        /// 3. 细分到 ≤44px 段：收束尖与子带汇入的漏斗曲线需要足够采样
-        /// </summary>
+        /// <summary>路径整形三步、极端情况（向脚下急停的顶点簇、转向/台阶造成的弯折）的破损兜底</summary>
         private static List<Vector2> ShapePath(IReadOnlyList<Vector2> raw) {
-            //1. 剔短段（末点承载头端语义：距离不足时顶替前点而不是丢弃）
+            //1. 剔短段（末点承载头端语义、距离不足时顶替前点而不是丢弃）
+
             List<Vector2> culled = new(raw.Count);
             culled.Add(raw[0]);
             for (int i = 1; i < raw.Count; i++) {
@@ -171,6 +170,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             }
 
             //2. Chaikin 两轮切角
+
             List<Vector2> smooth = culled;
             for (int round = 0; round < 2; round++) {
                 List<Vector2> next = new(smooth.Count * 2) { smooth[0] };
@@ -183,10 +183,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             }
 
             //3. 补密
+
             return SubdividePath(smooth);
         }
 
-        /// <summary>路径细分：任何超过 44px 的段插入等分点（原点集不变，仅补密）</summary>
+        /// <summary>路径细分、任何超过 44px 的段插入等分点（原点集不变，仅补密）</summary>
         private static List<Vector2> SubdividePath(IReadOnlyList<Vector2> raw) {
             const float MaxSeg = 44f;
             if (raw.Count < 2) {

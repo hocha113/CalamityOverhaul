@@ -5,10 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 土鱼环游的干土陶土调色板与迸发帮手：全哑光 AlphaBlend、零加色零发光，
-    /// 颗粒颜色在生成点按世界光照压暗，黑暗处与原版尘土一样隐没
-    /// </summary>
+    /// <summary>土鱼环游的干土陶土调色板与迸发帮手</summary>
     internal static class FishDirtVFX
     {
         public static readonly Color SoilLight = new(176, 130, 92);
@@ -36,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             _ => SoilDark,
         };
 
-        /// <summary>干土碎屑：受重力短命剥落，lifetime 0 走默认随机寿命</summary>
+        /// <summary>干土碎屑，受重力短命剥落，lifetime 0 走默认随机寿命</summary>
         public static void Crumb(Vector2 pos, Vector2 vel, float scale, int lifetime = 0) {
             if (Main.dedServ) {
                 return;
@@ -45,7 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(lifetime > 0 ? lifetime : Main.rand.Next(16, 26));
         }
 
-        /// <summary>哑光尘团：lifetime 0 走默认，opacityMul 压峰值防糊屏</summary>
+        /// <summary>哑光尘团，lifetime 0 走默认，opacityMul 压峰值防糊屏</summary>
         public static void Puff(Vector2 pos, Vector2 vel, float scale, int lifetime = 0, float opacityMul = 1f) {
             if (Main.dedServ) {
                 return;
@@ -54,7 +51,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(lifetime > 0 ? lifetime : Main.rand.Next(22, 32), Lit(pos, DustFade), opacityMul);
         }
 
-        /// <summary>碎石：更大更重的灰岩块，落地弹跳一次再碎散</summary>
+        /// <summary>碎石</summary>
         public static void Pebble(Vector2 pos, Vector2 vel, float scale) {
             if (Main.dedServ) {
                 return;
@@ -64,7 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(Main.rand.Next(30, 44), 0.38f, bounce: true);
         }
 
-        /// <summary>滚痕：贴地短命压痕 decal</summary>
+        /// <summary>滚痕</summary>
         public static void Track(Vector2 pos, float scale) {
             if (Main.dedServ) {
                 return;
@@ -74,10 +71,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 干土碎屑：双叠面拼出的不规则哑光土粒，受重力翻滚下坠，
-    /// 可选弹跳一次读作碎石抛物，触地即碎快速隐去
-    /// </summary>
+    /// <summary>干土碎屑</summary>
     internal class PRT_FishDirtCrumb : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
@@ -123,7 +117,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Velocity.X *= 0.98f;
             Rotation += spin * (0.5f + Velocity.Length() * 0.05f);
 
-            //触地：可弹一次读作碎石，否则碎散快速收尾
+            //触地
             if (Velocity.Y > 0f && Collision.SolidCollision(Position - new Vector2(2f), 4, 4)) {
                 if (canBounce && !grounded) {
                     grounded = true;
@@ -157,7 +151,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>干土尘团：哑光烟团帧染土色，快起慢散、短暂悬浮后自沉，峰值透明度压低防糊屏</summary>
+    /// <summary>干土尘团，哑光烟团帧染土色，快起慢散、短暂悬浮后自沉，峰值透明度压低防糊屏</summary>
     internal class PRT_FishDirtPuff : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "SmokeSheet01";
@@ -229,7 +223,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>滚痕：贴地短命压痕 decal，横向摊开的暗土抹迹，静止淡出</summary>
+    /// <summary>滚痕</summary>
     internal class PRT_FishDirtTrack : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";

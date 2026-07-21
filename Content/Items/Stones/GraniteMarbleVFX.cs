@@ -6,12 +6,10 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Items.Stones
 {
-    /// <summary>
-    /// 花岗/大理石系列共用VFX枢纽：主题色常量、专属渐变条、shader参数装配与投射物拖尾样板
-    /// </summary>
+    /// <summary>花岗/大理石共用VFX，色、渐变条、shader、拖尾样板</summary>
     internal class GraniteMarbleVFX : ICWRLoader
     {
-        //资源所在目录（贴图与 .cs 同放在 Content 下，默认自动加载）
+        //贴图目录
         public const string GraniteTex = "CalamityOverhaul/Content/Items/Stones/Granites/";
         public const string MarbleTex = "CalamityOverhaul/Content/Items/Stones/Marbles/";
 
@@ -23,19 +21,19 @@ namespace CalamityOverhaul.Content.Items.Stones
         public static readonly Color MarbleGold = new Color(228, 196, 120);
         public static readonly Color MarbleDust = new Color(214, 210, 196);
 
-        //专属渐变条：运行时生成 64×5 横向渐变（对齐 ColorBar 资源规格），懒加载、卸载时释放
+        //64×5 横向渐变，懒加载
         private static Texture2D graniteBar;
         private static Texture2D marbleBar;
 
-        /// <summary>花岗渐变条：x=0 深蓝 → 青 → x=1 白蓝（GradientTrail 沿 x 采样）</summary>
+        /// <summary>花岗条 x=0深蓝→青→x=1白蓝</summary>
         public static Texture2D GraniteBar => graniteBar ??= BuildGradientBar(
             new Color(45, 75, 190), new Color(90, 200, 255), new Color(205, 240, 255));
 
-        /// <summary>大理石渐变条：x=0 暖白 → 鎏金 → x=1 白（GradientTrail 沿 x 采样）</summary>
+        /// <summary>大理石条 x=0暖白→鎏金→x=1白</summary>
         public static Texture2D MarbleBar => marbleBar ??= BuildGradientBar(
             new Color(255, 238, 208), new Color(222, 178, 98), new Color(255, 255, 252));
 
-        //仅在绘制路径（客户端主线程）懒调用，多段色标间平滑插值
+        //主线程懒生成
         private static Texture2D BuildGradientBar(params Color[] stops) {
             const int width = 64, height = 5;
             var tex = new Texture2D(Main.instance.GraphicsDevice, width, height);
@@ -53,7 +51,7 @@ namespace CalamityOverhaul.Content.Items.Stones
         }
 
         void ICWRLoader.UnLoadData() {
-            //GPU 资源回主线程释放；先摘引用再调度，避免闭包读到已置空的字段
+            //先摘引用再主线程 Dispose
             Texture2D g = graniteBar, m = marbleBar;
             graniteBar = marbleBar = null;
             if (g != null || m != null) {
@@ -64,9 +62,7 @@ namespace CalamityOverhaul.Content.Items.Stones
             }
         }
 
-        /// <summary>
-        /// 脚下着地探测：沿重力方向 2px 的 TileCollision 探针，坐骑上视为未着地
-        /// </summary>
+        /// <summary>沿重力 2px TileCollision 探针，坐骑视为未着地</summary>
         public static bool IsGrounded(Player player) {
             if (player.mount.Active) {
                 return false;
@@ -77,7 +73,7 @@ namespace CalamityOverhaul.Content.Items.Stones
             return constrained.Y != probeVelocity.Y;
         }
 
-        /// <summary>GradientTrail 标准参数，调用方设 BlendState 后 DrawTrail</summary>
+        /// <summary>GradientTrail 参数，调用方设 BlendState 后 DrawTrail</summary>
         public static void ApplyGradientTrail(Effect effect, Texture2D gradientBar, Texture2D baseImage) {
             effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
@@ -89,9 +85,7 @@ namespace CalamityOverhaul.Content.Items.Stones
             effect.Parameters["uDissolve"].SetValue(CWRAsset.Extra_193.Value);
         }
 
-        /// <summary>
-        /// GraniteArc 标准参数（青蓝电弧带）；带内 uv.x=0 为最新端（oldPos[0] 侧），x=1 为尾端
-        /// </summary>
+        /// <summary>GraniteArc 参数，uv.x=0 最新端</summary>
         public static void ApplyGraniteArc(Effect effect, float fade = 1f) {
             effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
@@ -99,12 +93,9 @@ namespace CalamityOverhaul.Content.Items.Stones
             effect.Parameters["uNoiseTex"]?.SetValue(CWRAsset.PerlinNoise.Value);
         }
 
-        /// <summary>
-        /// MarbleSlash 标准参数（白芯金边刀光）；uv.x=1 为最新挥砍缘，uv.y=0 为外缘（刀尖侧）
-        /// </summary>
-        /// <param name="effect">EffectLoader.MarbleSlash.Value</param>
-        /// <param name="fade">整体透明度 0~1（收势时衰减）</param>
-        /// <param name="heat">强击度 0~1，重击/终结挥砍时提升金边与白芯亮度</param>
+        /// <summary>MarbleSlash 参数，uv.x=1 最新缘、uv.y=0 外缘</summary>
+        /// <param name="fade">透明度 0~1</param>
+        /// <param name="heat">强击度 0~1</param>
         public static void ApplyMarbleSlash(Effect effect, float fade = 1f, float heat = 0f) {
             effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
@@ -113,16 +104,7 @@ namespace CalamityOverhaul.Content.Items.Stones
             effect.Parameters["uNoiseTex"]?.SetValue(CWRAsset.PerlinNoise.Value);
         }
 
-        /// <summary>
-        /// 投射物标准拖尾样板：oldPos→世界位置数组（零位补 position）、Trail 懒建+更新、
-        /// Additive 绘制后恢复 AlphaBlend。传入的 effect 需已完成参数装配
-        /// （<see cref="ApplyGradientTrail"/> / <see cref="ApplyGraniteArc"/>）
-        /// </summary>
-        /// <param name="projectile">拖尾主体，需在 SetStaticDefaults 配置 TrailCacheLength/TrailingMode</param>
-        /// <param name="trail">调用方持有的 Trail 字段（懒初始化）</param>
-        /// <param name="widthFunc">宽度函数，入参为沿带进度 0~1</param>
-        /// <param name="colorFunc">颜色函数，入参为纹理坐标（x 沿带、y 跨带）</param>
-        /// <param name="effect">已装配参数的 shader</param>
+        /// <summary>oldPos 拖尾样板，Additive 后恢复 AlphaBlend，effect 需已装配</summary>
         public static void DrawTrailFromOldPos(Projectile projectile, ref Trail trail
             , TrailThicknessCalculator widthFunc, TrailColorEvaluator colorFunc, Effect effect) {
             if (effect == null || projectile.oldPos == null || projectile.oldPos.Length == 0) {
@@ -142,7 +124,7 @@ namespace CalamityOverhaul.Content.Items.Stones
             Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
         }
 
-        /// <summary>GradientTrail 全套拖尾：装配参数并按标准样板绘制</summary>
+        /// <summary>GradientTrail 全套</summary>
         public static void DrawGradientTrailFromOldPos(Projectile projectile, ref Trail trail
             , TrailThicknessCalculator widthFunc, TrailColorEvaluator colorFunc
             , Texture2D gradientBar, Texture2D baseImage) {
@@ -154,7 +136,7 @@ namespace CalamityOverhaul.Content.Items.Stones
             DrawTrailFromOldPos(projectile, ref trail, widthFunc, colorFunc, effect);
         }
 
-        /// <summary>GraniteArc 全套拖尾：青蓝电弧带，花岗系投射物标准拖尾</summary>
+        /// <summary>GraniteArc 全套</summary>
         public static void DrawGraniteArcTrailFromOldPos(Projectile projectile, ref Trail trail
             , TrailThicknessCalculator widthFunc, TrailColorEvaluator colorFunc, float fade = 1f) {
             Effect effect = EffectLoader.GraniteArc?.Value;

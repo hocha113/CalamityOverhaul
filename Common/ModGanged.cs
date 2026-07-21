@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Common
             orig.Invoke(obj, ref drawInfo);
         }
 
-        /// <summary>FGS PostAI：hide 且不可开火则跳过</summary>
+        /// <summary>FGS PostAI，hide 且不可开火则跳过</summary>
         private static void On_FGS_PostAI_Hook(On_PostAI_Dalegate orig, object instance, Projectile projectile) {
             if (projectile.hide && projectile.ModProjectile is BaseHeldGun heldGun && !heldGun.CanFire) {
                 return;
@@ -193,17 +193,17 @@ namespace CalamityOverhaul.Common
             orig.Invoke(instance, projectile);
         }
 
-        /// <summary>TrO 蓄力：空物品拒绝</summary>
+        /// <summary>TrO 蓄力，空物品拒绝</summary>
         private static bool On_AttemptPowerAttackStart_Hook(On_AttemptPowerAttackStart_Dalegate orig, object obj, Item item, Player player) {
             return !item.IsAir && item.type != ItemID.None && orig.Invoke(obj, item, player);
         }
 
-        /// <summary>FGS 附魔：<see cref="CWRProj.NotSubjectToSpecialEffects"/> 弹幕跳过</summary>
+        /// <summary>FGS 附魔，<see cref="CWRProj.NotSubjectToSpecialEffects"/> 弹幕跳过</summary>
         private static bool On_OnSpawnEnchCanAffectProjectile_Hook(On_OnSpawnEnchCanAffectProjectile_Dalegate orig, Projectile projectile, bool allowMinions) {
             return !projectile.CWR().NotSubjectToSpecialEffects && orig.Invoke(projectile, allowMinions);
         }
 
-        /// <summary>TrO ShouldForceUseAnim：CWR 手持不播 use 动画</summary>
+        /// <summary>TrO ShouldForceUseAnim，CWR 手持不播 use 动画</summary>
         private static bool On_ShouldForceUseAnim_Hook(On_ShouldForceUseAnim_Dalegate orig, Player player, Item item) {
             if (item == null || item.type == ItemID.None) {
                 return orig.Invoke(player, item);
@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Common
             CWRItem ritem = heldItem.CWR();
             bool hasHeldProj = ritem.heldProjType > 0;
 
-            //手持武器弹幕显示中时不让其他 Mod 重复绘制
+            //手持弹幕显示中，禁其他 Mod 重复绘制
             CWRPlayer modPlayer = drawPlayer.CWR();
             if (modPlayer.HeldWeaponInDisplay()) {
                 return false;
@@ -252,7 +252,7 @@ namespace CalamityOverhaul.Common
             return !isHeld;
         }
 
-        /// <summary>TrO ShouldForceUseAnim 是否覆盖 CWR 手持武器</summary>
+        /// <summary>TrO ShouldForceUseAnim 是否覆盖 CWR 手持</summary>
         private static bool ShouldApplyHeldOverride(Item heldItem, Player player) {
             CWRItem ritem = heldItem.CWR();
             bool isHeld = ritem.isHeldItem || ritem.heldProjType > 0;
@@ -261,7 +261,7 @@ namespace CalamityOverhaul.Common
                 return false;
             }
 
-            //新一代手持武器弹幕活跃期间同样屏蔽覆盖逻辑
+            //手持弹幕活跃期间同样屏蔽
             if (player.CWR().HeldWeaponInDisplay()) {
                 return false;
             }

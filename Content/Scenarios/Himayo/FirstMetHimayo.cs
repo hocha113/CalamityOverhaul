@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
         }
 
         protected override void Build(NarrativeComposer n) {
-            // allowSkipThrough：换脸是装饰，不挡 Skip
+            //换脸装饰，不挡Skip
             n.Say(NarrativeIds.Mayo, Line1.Value, Voice[1],
                     onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Doubt),
                     allowSkipThrough: true)
@@ -63,14 +63,13 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
              .End();
         }
 
-        //拿到鬼切即触发，但要等鸟居退场演出（含余响后的静默拍）收完——
-        //目送容身的鸟居沉没之后，真夜才开口
+        //有刀且鸟居退场(含静默拍)收完才触发
         protected override NarrativePolicy ConfigurePolicy() => new() {
             IsCompleted = _ => HimayoStorySync.FirstMet,
             CanTrigger = (_, player) => player.HasItem(ModContent.ItemType<OnikiriItem>())
                 && !ToriiShrineActor.DepartureHoldingStage,
             OnTriggered = _ => HimayoStorySync.MarkFirstMet(),
-            //对话真正落幕才记「播完」：试炼委托以此为发放门禁
+            //落幕才记播完，试炼门禁
             OnCompleted = _ => HimayoStorySync.MarkPostFirstMetComplete(),
         };
 

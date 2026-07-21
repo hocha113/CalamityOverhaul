@@ -13,10 +13,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee
 {
     /// <summary>
-    /// 剜出的心脏：终结斩剜心击命中后从目标身上剜出的悬浮跳动实体。<br/>
-    /// 每搏动一次尖叫一声并放出一圈血色脉冲伤害，搏动间隔逐次缩短（心脏在恐慌），
-    /// 数次搏动后被刀吸收，给予拥有者剜心狂热攻速窗并凝成一柄环绕血刃。<br/>
-    /// 程序化绘制（HeartcarverOrgan.fx SDF 心形 + 闭不上的嘴），不引用新贴图
+    /// 剜出心脏，悬浮搏动实体；每搏尖叫+血色脉冲，间隔缩短后吸收开狂热并凝环绕血刃；HeartcarverOrgan.fx SDF
     /// </summary>
     internal class HeartcarverExcisedHeart : ModProjectile, IPrimitiveDrawable
     {
@@ -31,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private const int AbsorbStart = 118;
         private const int MaxLife = 260;
 
-        //==== 搏动调度：间隔逐次缩短 ====
+        //==== 搏动调度（间隔缩短）====
         private const float FirstBeatDelay = 14f;
         private const float FirstInterval = 40f;
         private const float IntervalStep = 8f;
@@ -78,7 +75,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             if (Timer < ExtractTime) {
-                //剜出瞬间：向上飘出，初速衰减
+                //剜出瞬间上飘
                 float t = Timer / ExtractTime;
                 fade = t;
                 Projectile.velocity *= 0.86f;
@@ -108,7 +105,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
             else {
-                //吸收期：加速飞向持刀者，缩小暗去
+                //吸收期飞向持刀者
                 float t = MathHelper.Clamp((Timer - AbsorbStart) / 26f, 0f, 1f);
                 fade = 1f - t * 0.55f;
                 float pull = 0.08f + MathF.Pow(t, 3f) * 0.42f;
@@ -138,7 +135,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Timer++;
         }
 
-        /// <summary>一次搏动：嘴张开尖叫 + 血色脉冲伤害 + 溅血；一人份的恐怖重演</summary>
+        /// <summary>一次搏动，尖叫+脉冲伤害+溅血</summary>
         private void DoBeat() {
             beatPunch = 1f;
             mouthOpen = 1f;
@@ -158,7 +155,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.9f, Volume = 0.40f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.NPCHit18 with { Pitch = -0.4f, Volume = 0.45f }, Projectile.Center);
 
-            //搏动喷血：向四周溅出液滴
+            //搏动喷血
             for (int i = 0; i < 10; i++) {
                 Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 7f);
                 vel.Y -= 1.5f;
@@ -173,7 +170,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        /// <summary>吸收完成：狂热攻速窗开启，心脏凝成一柄环绕血刃</summary>
+        /// <summary>吸收完成，开狂热+凝环绕血刃</summary>
         private void CompleteAbsorb() {
             absorbed = true;
 
@@ -191,7 +188,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             if (!VaultUtils.isServer) {
-                //"刀听到了剜心声"：满足的轻鸣 + 收束粒子
+                //吸收完成音+收束粒子
                 SoundEngine.PlaySound(SoundID.Item8 with { Pitch = -0.3f, Volume = 0.6f }, Owner.Center);
                 SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.1f, Volume = 0.5f }, Owner.Center);
 
@@ -213,7 +210,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (absorbed || VaultUtils.isServer) {
                 return;
             }
-            //非吸收路径的意外死亡：血雾散尽
+            //非吸收死亡，血雾散尽
             for (int i = 0; i < 12; i++) {
                 PRTLoader.NewParticle<PRT_HeartcarverDroplet>(Projectile.Center,
                     Main.rand.NextVector2Circular(4f, 4f),
@@ -223,7 +220,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //心脏底光：随搏动呼吸的暗红光晕（图元本体绘制在实体层之后）
+            //心脏底光
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 pos = Projectile.Center - Main.screenPosition;
             float pulse = 0.9f + beatPunch * 0.8f;
@@ -274,7 +271,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     }
 
     /// <summary>
-    /// 心脏搏动脉冲：以心脏为圆心扩张的血色环形伤害波，每个目标只被同一圈波打一次
+    /// 搏动脉冲环伤，同圈每目标一次
     /// </summary>
     internal class HeartcarverPulseProj : ModProjectile
     {
@@ -317,7 +314,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            //环带判定：目标到圆心的最近距离落在当前波前环带内
+            //环带判定
             Vector2 nearest = new(
                 MathHelper.Clamp(Projectile.Center.X, targetHitbox.Left, targetHitbox.Right),
                 MathHelper.Clamp(Projectile.Center.Y, targetHitbox.Top, targetHitbox.Bottom));

@@ -7,12 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 {
-    /// <summary>
-    /// 终之太刀屏幕级演出状态（仅客户端）：压暗聚焦 + 负片闪 + 沿刀线裂屏滑移<br/>
-    /// 弹幕侧每帧 Push 推高目标值，渲染端 <see cref="Update"/> 自然衰减 —— 弹幕消失后画面自动回落<br/>
-    /// 白闪与 Bloom 复用 <see cref="CrimsonRendSlashs.CrimsonImpactFX"/>：两套后效独立叠加，
-    /// 本类权重更低先行执行 —— 暗场先落地，亮部提取只剩刀光，辉光恰好圈住演出主体
-    /// </summary>
+    /// <summary>终之太刀屏幕后效状态(客户端). Push 抬高,Update 衰减</summary>
     internal static class OniFinaleFX
     {
         /// <summary>场景压暗 0..1，随推送平滑逼近、停推后自然回落</summary>
@@ -24,9 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         public static float SeamGlow { get; private set; }
         /// <summary>裂屏滑移量（像素，两半各滑一半）</summary>
         public static float SplitOffsetPx { get; private set; }
-        /// <summary>裂屏滑移逐帧衰减系数：渲染端先衰减后取值，
-        /// 推送端如需让"本帧渲染位移"精确等于自己的包络值，按此预除
-        /// （<see cref="OniFinaleCut"/> 的伤口断面 quad 与虚空带就靠这个严格对位）</summary>
+        /// <summary>裂屏滑移逐帧衰减系数</summary>
         public const float SplitDecay = 0.70f;
         /// <summary>刀线角度（世界空间弧度，缩放各向同性故与屏幕空间一致）</summary>
         public static float SplitAngle { get; private set; }
@@ -112,14 +105,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         }
     }
 
-    /// <summary>
-    /// 终之太刀全屏后效：<see cref="EffectLoader.OniFinalePost"/> 单 pass 完成
-    /// 裂屏采样 → 压暗聚焦 → 负片 → 裂缝辉光，screenTarget ping-pong 回写
-    /// </summary>
+    /// <summary>终之太刀全屏后效、<see</summary>
     internal sealed class OniFinaleRender : RenderHandle
     {
-        /// <summary>权重 1.09：晚于 PrimeScreenEffectRender(1.08)，早于 OnikiriImpactRender(1.10)——
-        /// 压暗先于 Bloom 提取，暗场中亮部只剩刀光，辉光恰好圈住演出主体</summary>
+        /// <summary>权重 1.09、晚于 PrimeScreenEffectRender(1.08)</summary>
         public override float Weight => 1.09f;
 
         public override void EndCaptureDraw(SpriteBatch sb, GraphicsDevice gd, RenderTarget2D screenSwap) {
@@ -137,7 +126,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             }
 
             fx.Parameters["uDim"]?.SetValue(MathHelper.Clamp(OniFinaleFX.Dim, 0f, 1f));
-            //暗场压向暗酒红：与鬼切绯红主题同色相，只降明度不偏色
+            //暗场压向暗酒红、与鬼切绯红主题同色相，只降明度不偏色
+
             fx.Parameters["uDimTint"]?.SetValue(new Vector3(0.74f, 0.40f, 0.42f));
             fx.Parameters["uDesat"]?.SetValue(0.55f);
             fx.Parameters["uCenter"]?.SetValue(WorldToScreenUV(OniFinaleFX.FocusWorld));
@@ -151,6 +141,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             fx.Parameters["uSeamColor"]?.SetValue(new Vector3(1.80f, 1.18f, 0.92f));
 
             //拷屏到 screenSwap 再带着后效写回 screenTarget
+
             gd.SetRenderTarget(screenSwap);
             gd.Clear(Color.Transparent);
             sb.Begin(SpriteSortMode.Deferred, BlendState.Opaque);

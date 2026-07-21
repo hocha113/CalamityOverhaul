@@ -5,13 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 {
-    /// <summary>
-    /// 终之太刀共用刀光渲染机制：静态几何(<see cref="BladeDef"/>) 与逐帧动态量(<see cref="BladeState"/>)
-    /// 分离 —— 环斩/终斩走 <see cref="ComputeState"/> 的标准生命周期，
-    /// 直痕的"闪现-定格-引爆"外控时间轴则自行合成 state 后驱动同一套绘制。<br/>
-    /// 与 <see cref="CrimsonRendSlashs.CrimsonSlashRenderer"/> 的分工差异：调色逐刀传入
-    /// （绯红→白热升调），远近半侧双 pass 为立体环斩的常开路径
-    /// </summary>
+    /// <summary>终之太刀刀光. BladeDef/BladeState</summary>
     internal static class OniFinaleRenderer
     {
         /// <summary>四段调色板（白热核心/主亮色/深色/暗描边）</summary>
@@ -30,8 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 Dark = new Vector3(0.16f, 0.015f, 0.035f),
             };
 
-            /// <summary>白热绯红：大招升调的终点色，终斩独占的"烧穿常态"——
-            /// 同一绯红色相烧得更烫（深红提亮、暗描边化作余烬红），不偏移色相</summary>
+            /// <summary>白热绯红、大招升调的终点色，终斩独占的"烧穿常态"、 同一绯红色相烧得更烫</summary>
             public static readonly BladePalette WhiteHot = new() {
                 Hot = new Vector3(1.85f, 1.62f, 1.30f),
                 Bright = new Vector3(1.72f, 0.52f, 0.22f),
@@ -39,7 +32,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 Dark = new Vector3(0.30f, 0.05f, 0.05f),
             };
 
-            /// <summary>升调采样：t=0 常态绯红 → t=1 白热绯红</summary>
+            /// <summary>升调采样、t=0 常态绯红 → t=1 白热绯红</summary>
             public static BladePalette Escalate(float t) {
                 t = MathHelper.Clamp(t, 0f, 1f);
                 return new BladePalette {
@@ -55,48 +48,70 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         public struct BladeDef
         {
             public int SweepFrames;      //扫开帧数
+
             public int Life;             //总寿命（相对出生；外控时间轴的直痕由弹幕自行管理）
+
             public int ErodeStart;       //侵蚀起点（相对出生）
+
             public int ErodeFrames;
             public float ColorShiftDelay;
             public float ColorShiftFrames;
             public int DamageStart;      //伤害窗口（相对出生）
+
             public int DamageEnd;
             public float Mode;           //0=弧形环斩 1=直线激光
+
             public float Rot;            //弧:quad 基准角（含滚转） 直:刃方向角
+
             public float Span;           //弧跨度（弧度，须<2π）
+
             public float Thick;          //shader 厚度
+
             public float HalfX;          //quad 半尺寸（直线=半刃长）
+
             public float HalfY;          //quad 半尺寸（<HalfX 即透视压扁；直线=半幅宽）
+
             public float Flip;
             public float Opacity;
             public float FrontGlow;
             public float Seed;
             public float TailErode;      //彗星尾定向蒸发强度上限（0=不蒸发）
+
             public float FlashPower;     //全形白闪帧强度
-            public float FarDim;         //>0 = 启用远近半侧分层：远半侧压暗系数并绘制于玩家身后
+
+            public float FarDim;         //>0 = 启用远近半侧分层、远半侧压暗系数并绘制于玩家身后
+
             public float SweepSnap;      //>0 = 蓄势-爆发扫掠曲线权重
+
             public float RazorTailWiden; //剃刀线向收笔端展宽强度
+
             public BladePalette Palette;
         }
 
-        /// <summary>刀光单帧动态量：几何动画 + 生命周期采样的合成包，可由弹幕外控改写</summary>
+        /// <summary>刀光单帧动态量、几何动画 + 生命周期采样的合成包，可由弹幕外控改写</summary>
         public struct BladeState
         {
             public float Sweep;      //0..1 扫掠揭开
+
             public float Erode;      //0..1 整体侵蚀
+
             public float TailErode;  //0..1 彗星尾蒸发
+
             public float ColorShift; //0..1 亮→暗压暗（直痕余烬态的载体）
+
             public float Flash;      //全形白闪
+
             public float Opacity;
             public float FrontGlow;
             public float FlowPhase;  //能量沿刃奔涌相位
-            public float ScaleMul;   //出生爆发+过冲+缓慢外扩
-            public float RotOffset;  //扫掠后惯性收势旋转
-            public float ThickMul;   //薄入→冲击帧最厚→衰减
-        }
 
-        //==== 缓动 ====
+            public float ScaleMul;   //出生爆发+过冲+缓慢外扩
+
+            public float RotOffset;  //扫掠后惯性收势旋转
+
+            public float ThickMul;   //薄入→冲击帧最厚→衰减
+
+        }
 
         public static float EaseOutCubic(float x) => 1f - MathF.Pow(1f - MathHelper.Clamp(x, 0f, 1f), 3f);
 
@@ -114,8 +129,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             return x * x * (3f - 2f * x);
         }
 
-        /// <summary>蓄势-爆发扫掠曲线：前 60% 时间缓推只揭开 30% 弧长，
-        /// 滞一拍后末 25% 时间瞬间完成；爆发起点 ≈ SweepFrames * 0.75</summary>
+        /// <summary>蓄势-爆发扫掠曲线、前 60% 时间缓推只揭开 30% 弧长</summary>
         public static float SweepAnticipate(float t) {
             t = MathHelper.Clamp(t, 0f, 1f);
             const float creepEnd = 0.60f;
@@ -130,8 +144,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             return creepAmt + (1f - creepAmt) * EaseOutCubic((t - holdEnd) / (1f - holdEnd));
         }
 
-        //==== 标准生命周期 ====
-
         public static float Sweep(in BladeDef d, int lt) {
             float t = lt / (float)d.SweepFrames;
             return d.SweepSnap > 0f
@@ -139,25 +151,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 : EaseOutCubic(t);
         }
 
-        /// <summary>标准生命周期：从 (def, lt) 合成本帧动态量，环斩/终斩直接用；
-        /// 直痕拿到结果后按定格/引爆需求改写字段再提交绘制</summary>
+        /// <summary>标准生命周期、从 (def, lt) 合成本帧动态量</summary>
         public static BladeState ComputeState(in BladeDef d, int lt) {
             float lifeT = MathHelper.Clamp(lt / (float)d.Life, 0f, 1f);
 
-            //出生爆发：62% 尺寸起步，easeOutBack 过冲回落，随后全程缓慢外扩
+            //出生爆发、62% 尺寸起步，easeOutBack 过冲回落，随后全程缓慢外扩
+
             float burstT = MathHelper.Clamp(lt / (d.SweepFrames + 2f), 0f, 1f);
             float scale = MathHelper.Lerp(0.62f, 1f, EaseOutBack(burstT)) + 0.07f * lifeT;
 
-            //惯性收势：扫掠结束后沿挥动方向继续减速旋转
+            //惯性收势、扫掠结束后沿挥动方向继续减速旋转
+
             float followT = MathHelper.Clamp((lt - d.SweepFrames) / 14f, 0f, 1f);
             float rotOff = d.Flip * 0.13f * (1f - (1f - followT) * (1f - followT));
 
-            //厚度呼吸：薄入 → 冲击帧最厚 → 消散期变薄
+            //厚度呼吸、薄入 → 冲击帧最厚 → 消散期变薄
+
             float thickIn = EaseOutCubic(lt / (d.SweepFrames + 2f));
             float thickMul = MathHelper.Lerp(0.68f, 1.12f, thickIn)
                 * (1f - 0.42f * SmoothStep01((lifeT - 0.45f) / 0.55f));
 
-            //全形白闪帧：完全张开瞬间过曝 1~2 帧，速落
+            //全形白闪帧、完全张开瞬间过曝 1~2 帧，速落
+
             float ft = lt - d.SweepFrames;
             float flash = ft < 0f ? 0f : ft <= 1f ? 1f : MathF.Pow(0.52f, ft - 1f);
             if (flash < 0.02f) {
@@ -181,7 +196,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             };
         }
 
-        /// <summary>刀光带中线上一点：uc=0..1 沿刃，几何随 state 缩放/滚转</summary>
+        /// <summary>刀光带中线上一点、uc=0..1 沿刃，几何随 state 缩放/滚转</summary>
         public static Vector2 PointAt(in BladeDef d, in BladeState s, Vector2 center, float uc) {
             Vector2 ax = (d.Rot + s.RotOffset).ToRotationVector2();
             Vector2 ay = ax.RotatedBy(MathHelper.PiOver2);
@@ -196,8 +211,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             float phi = d.Flip * (uc - 0.5f) * d.Span;
             return center + ax * MathF.Cos(phi) * rFrac * hx + ay * MathF.Sin(phi) * rFrac * hy;
         }
-
-        //==== 绘制 ====
 
         /// <summary>设备状态 + 帧级公共 uniform；返回 false 表示资产未就绪</summary>
         public static bool BeginDraw(GraphicsDevice device, out Effect fx
@@ -230,15 +243,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             device.DepthStencilState = prevDepth;
         }
 
-        /// <summary>双层异步结构：主体色带 + 白热核心薄条（不随生命期压暗、前缘增益）。
-        /// farSel：0=整体 +1=仅近半侧 -1=仅远半侧（配合玩家遮挡分层）</summary>
+        /// <summary>双层刀光. farSel 0=全亮 +1=近端远淡 -1=远端远淡</summary>
         public static void DrawBladeLayers(GraphicsDevice device, Effect fx, in BladeDef d
             , in BladeState s, Vector2 center, float farSel) {
             //主体色带
+
             DrawBlade(device, fx, in d, in s, center, farSel
                 , opacityMul: 1f, thickMul: 1f, frontMul: 1f, forceHot: false);
 
-            //白热核心薄条：贴锋利侧，前缘增益领跑
+            //白热核心薄条、贴锋利侧，前缘增益领跑
+
             BladeState core = s;
             core.ColorShift = 0f;
             core.Opacity = s.Opacity * 0.92f;
@@ -246,7 +260,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 , opacityMul: 1f, thickMul: 0.42f, frontMul: 1.25f, forceHot: true);
         }
 
-        /// <summary>单层绘制：以 (def, state) 提交 quad，调色取自 def.Palette</summary>
+        /// <summary>单层绘制、以 (def, state) 提交 quad，调色取自 def.Palette</summary>
         public static void DrawBlade(GraphicsDevice device, Effect fx, in BladeDef d
             , in BladeState s, Vector2 center, float farSel
             , float opacityMul, float thickMul, float frontMul, bool forceHot) {
@@ -260,7 +274,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             float hx = d.HalfX * s.ScaleMul;
             float hy = d.HalfY * s.ScaleMul;
 
-            //远近半侧选择方向：世界"屏幕上方"映射到 quad uv 空间（非等比 quad 需按轴分量归一）
+            //远近半侧选择方向
+
             Vector2 farDirLocal = Vector2.Zero;
             if (d.FarDim > 0f && farSel != 0f) {
                 Vector2 worldUp = new(0f, -1f);

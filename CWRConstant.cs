@@ -4,7 +4,7 @@
     {
         public const string Asset = "CalamityOverhaul/Assets/";
         public const string Effects = Asset + "Effects/";
-        //魔法像素统一使用InnoVault的公共资源，与VaultAsset.placeholder系列同源：透明1x1、白色1x1、错误占位图
+        //InnoVault 占位像素，与 VaultAsset.placeholder 同源
         public const string VaultPlaceholder = "InnoVault/Assets/placeholder";
         public const string VaultPlaceholder2 = "InnoVault/Assets/placeholder2";
         public const string VaultPlaceholder3 = "InnoVault/Assets/placeholder3";

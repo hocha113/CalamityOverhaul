@@ -6,9 +6,8 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.LegendWeapon
 {
     /// <summary>
-    /// 传奇武器跨世界升级的入世决策，整条 <see cref="LegendUpgradeManager"/> 队列共用一个条目，
-    /// 卡片内容随 <see cref="LegendUpgradeManager.Current"/> 推进而更新
-    /// <br/>队列失效/清空后条目自动移除；缓存展示数据以支撑退场动画
+    /// 跨世界升级入世决策，整队共用一条目，内容随 <see cref="LegendUpgradeManager.Current"/> 更新
+    /// <br/>队列空后自动移除；缓存支撑退场动画
     /// </summary>
     internal sealed class LegendUpgradeDecision : EntryDecision
     {
@@ -19,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
         private int cachedLevel;
         private int cachedItemType;
 
-        /// <summary>刷新展示缓存，Current 为空时保持旧值</summary>
+        /// <summary>刷新展示缓存，Current 空则保留旧值</summary>
         private void Sync() {
             var current = LegendUpgradeManager.Current;
             if (current == null) {

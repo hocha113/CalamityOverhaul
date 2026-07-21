@@ -11,15 +11,10 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     /// <summary>
-    /// 鬼域之眼：封印札 HUD 簇的挂点与领域控制面,整簇纸札"挂"在这只眼下。<br/>
-    /// 阖目态是独立设计的"封眼"符号——闭睑有肉、睑缝主笔、封印朱点压着,皮下透一点微温
-    /// (按 236px 仪式眼作画的 shader 在 44px 下闭眼会缩成发丝,故阖目走 CPU 笔触,
-    /// 睁开 0~0.35 区间与 shader 眼交叉交棒);<br/>
-    /// 睁眼后与开域仪式共用 OniEye.fx(三勾玉写轮眼)——表世界绯红虹膜,里世界鬼火青,
-    /// 翻转时负片爆闪;开/收域时眼离巢去天上干活,HUD 处只留一圈噪声消散的空窝。<br/>
-    /// 左键开阖领域,右键翻转表里(阖着先展到表);仪式进行中被拒时睑缝抖动、朱印现裂。<br/>
-    /// 由 <see cref="OniTalismanHud"/> 驱动,共用其锚点;状态直读 <see cref="OniDomain.Local"/>,
-    /// 动画全部本地缓动推导
+    /// 鬼域之眼,HUD 挂点与领域控制面.
+    /// 阖目走 CPU(44px shader 闭眼会缩成发丝),睁开交棒 OniEye.fx;
+    /// 左键开阖,右键翻转;拒令睑缝抖、朱印裂.
+    /// <see cref="OniTalismanHud"/> 驱动,读 <see cref="OniDomain.Local"/>
     /// </summary>
     internal sealed class OniDomainEye
     {
@@ -45,7 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         /// <summary>本帧悬浮在眼上</summary>
         public bool Hovering { get; private set; }
 
-        /// <summary>挂点微移:眼的呼吸传给绳结,札随之轻晃——"挂在活物上"</summary>
+        /// <summary>挂点微移,眼呼吸传绳结</summary>
         public Vector2 HangSway { get; private set; }
 
         /// <summary>系带上端:眼的下缘,绳结自此垂下</summary>
@@ -72,10 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.75f, Volume = 0.38f });
         }
 
-        /// <summary>
-        /// 推进眼的动画与交互。clickToggle/clickFlip 为本帧鼠标按下沿
-        /// (左键=开阖,右键或中键=翻转,由 HUD 用 UIHandle 按键状态判好传入)
-        /// </summary>
+        /// <summary>推进动画与交互,clickToggle/clickFlip 为本帧按下沿</summary>
         public void Update(Player player, Vector2 knot, bool interactive, Vector2 mouse, float time,
             bool clickToggle, bool clickFlip) {
             lastMouse = mouse;
@@ -117,7 +109,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             away += (awayTarget - away) * (awayTarget > away ? 0.12f : 0.07f);
             uraBlend += (((odp?.WorldIsUra ?? false) ? 1f : 0f) - uraBlend) * 0.12f;
 
-            //勾玉:表顺旋,里逆旋,翻转狂旋,阖眼时几不可察地蠕动——它在做梦
+            //勾玉,表顺里逆,翻转狂旋,阖眼微蠕
             float spinSpeed = phase switch {
                 OniDomainPhase.Omote => 0.011f,
                 OniDomainPhase.Ura => -0.017f,
@@ -165,7 +157,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>绘制眼本体(shader 缺席退回 CPU 简笔)。调用方保证当前批为 Deferred+UIScaleMatrix</summary>
+        /// <summary>绘眼本体,缺 shader 走 CPU,批须 Deferred+UIScaleMatrix</summary>
         public void Draw(SpriteBatch sb, float alpha, float time) {
             lastAlpha = alpha;
             if (alpha <= 0.01f) {
@@ -178,7 +170,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             float presence = 1f - away * 0.92f;
             float intensity = alpha * presence;
 
-            //离巢空窝:淡墨勾一圈眼眶,中心一点余烬——眼会回来的
+            //离巢空窝,淡墨眶+余烬
             if (away > 0.05f) {
                 DrawSocket(sb, alpha * away, time);
             }
@@ -246,12 +238,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
         }
 
-        /// <summary>
-        /// 阖目封眼:领域未展时眼被朱印封着。闭睑填肉 + 杏叶轮廓 + 二重淡墨 +
-        /// 睑缝主笔(眼尾上挑) + 下睫飞白 + 封印朱点 + 睑下微温呼吸。<br/>
-        /// hover 时缝绷直、微温抬亮;被拒时缝抖动、朱印现裂;
-        /// 接令开域瞬间(flash 脉冲)印裂欲碎并闪光,随即交棒给 shader 眼/离巢空窝
-        /// </summary>
+        /// <summary>阖目封眼 CPU 笔触,拒令裂印,开域交棒 shader</summary>
         private void DrawSealedLid(SpriteBatch sb, float alpha, float time) {
             if (alpha <= 0.01f) {
                 return;
@@ -300,8 +287,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniBrush.DrawGradientLine(sb, root, tip, OnikiriUITheme.Deep * (alpha * 0.5f), OnikiriUITheme.Dark * (alpha * 0.05f), 1.1f);
             }
 
-            //封印朱点:睑缝中央呼吸微旋;被拒现裂,接令开域时印裂欲碎并闪光。
-            //裂纹只属于"开域接令"(相位已离开 Closed)与被拒——收域重盖的闪光是完好的新印
+            //封印朱点;裂纹仅开域接令与被拒,收域重盖为完印
             float commandCrack = (OniDomain.Local?.Phase ?? OniDomainPhase.Closed) != OniDomainPhase.Closed ? flash * 1.4f : 0f;
             float crack = MathHelper.Clamp(MathF.Max(commandCrack, denyPulse * 0.4f), 0f, 0.85f);
             float sealSize = 5.8f + hoverEase * 0.7f + flash * 2.2f;
@@ -351,7 +337,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             OniBrush.DrawTaperedSlash(sb, l, r, 1.5f, h + 1f, intensity * 0.7f);
         }
 
-        /// <summary>悬浮说明:小裱墨牌,题名/当前世界/两行键位。由 HUD 在最后调用保证压在别的元素上</summary>
+        /// <summary>悬浮说明墨牌,HUD 最后绘保证置顶</summary>
         public void DrawHoverTag(SpriteBatch sb) {
             float alpha = lastAlpha * hoverEase;
             if (alpha <= 0.05f) {

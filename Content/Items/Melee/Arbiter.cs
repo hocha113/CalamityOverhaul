@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    /// 断罪师重斧：蓄力高举松手劈下，着地蔓延火焰冲击波
+    /// 断罪师重斧，蓄力高举松手劈下+火冲击波
     internal class Arbiter : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "Arbiter";
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// 断罪师手持弹幕：接管蓄力→劈砍→收手→自毁
+    /// 断罪师手持，蓄力→劈砍→收手→自毁
     internal class ArbiterHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Melee + "Arbiter";
@@ -186,7 +186,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             PhaseTimer++;
         }
 
-        /// 蓄力：按住累计，松手或满蓄进劈砍
+        /// 蓄力，按住累计，松手或满蓄进劈砍
         private void UpdateCharging() {
             //蓄力到上限后强制释放
             bool reachedCap = chargeFrames >= MaxChargeTime;
@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        /// 收手：劈砍后短暂停留再自毁
+        /// 收手，短暂停留再自毁
         private void UpdateRecovering() {
             //收力姿势(朝左镜像加 0.35)
             float t = MathHelper.Clamp(PhaseTimer / RecoverTime, 0f, 1f);
@@ -287,7 +287,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        /// 地面冲击：斧下扫描实心地面并生成 ArbiterShockwave
+        /// 地面冲击，扫描地面生成 ArbiterShockwave
         private void TriggerGroundImpact() {
             if (CWRServerConfig.Instance.ScreenVibration) {
                 Vector2 dir = new Vector2(lockedDirection, 1f).SafeNormalize(Vector2.UnitY);
@@ -489,7 +489,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// 地面冲击点：竖直火柱+左右火蛇+持久火坑
+    /// 地面冲击点，火柱+火蛇+火坑
     internal class ArbiterShockwave : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -586,7 +586,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// 火蛇：沿地形蔓延，吸附地面，遇高墙/深渊停止
+    /// 火蛇，沿地形蔓延
     internal class ArbiterFireSnake : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -854,7 +854,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Timer++;
             swayPhase += 0.18f;
 
-            //高度呼吸：点燃→稳定→衰减
+            //高度呼吸
             float lifeRatio = Projectile.timeLeft / Math.Max(LifeMax, 1f);
             float baseHeight = BaseVisualHeight * VisualScale;
             visualWidth = BaseVisualWidth * VisualScale;

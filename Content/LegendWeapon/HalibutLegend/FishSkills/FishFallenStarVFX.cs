@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>漫天星鱼域内资源（域内加载器，不经 EffectLoader）</summary>
     internal class FishFallenStarAssets
     {
-        /// <summary>坠星彗尾条带：金头→深蓝→靛蓝星尘撕尾</summary>
+        /// <summary>坠星彗尾条带，金头→深蓝→靛蓝星尘撕尾</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect FishFallenStarComet { get; private set; }
 
@@ -24,11 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         internal static Asset<Texture2D> GlowTex = null;//仅作靛蓝底晕与微热芯，禁当 body
     }
 
-    /// <summary>
-    /// 漫天星鱼共享演出协作。<br/>
-    /// 色彩脚本：夜空靛蓝暗底衬金色星光，亮度结构 = 靛蓝暗外圈 / 星金饱和中层 / 极小淡金热芯；
-    /// 禁大面积白爆，淡金过曝只作短驻留爆点；星星是"点亮"不是"闪瞎"
-    /// </summary>
+    /// <summary>漫天星鱼</summary>
     internal static class FishFallenStarVFX
     {
         /// <summary>夜空靛蓝（暗底/外圈）</summary>
@@ -49,7 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 pos, dir.SafeNormalize(Vector2.UnitY), strength, 12f, frames, falloff, "FishFallenStar"));
         }
 
-        /// <summary>星尘迸洒：受重力微星尘缓落闪烁，金/深蓝混色，比事件本体活得久</summary>
+        /// <summary>星尘迸洒</summary>
         public static void StardustBurst(Vector2 pos, Vector2 bias, int count, float speed, float scaleMul = 1f) {
             for (int i = 0; i < count; i++) {
                 Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.3f, 1f) * speed + bias;
@@ -59,13 +55,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>十字闪芒爆点：金芒 + 靛蓝托底 bloom</summary>
+        /// <summary>十字闪芒爆点</summary>
         public static void CrossPop(Vector2 pos, float scale, int life = 14) {
             PRTLoader.NewParticle<PRT_Sparkle>(pos, Vector2.Zero, StarGold, scale)
                 ?.Configure(NightIndigo, life, Main.rand.NextFloat(-0.06f, 0.06f), 0.85f);
         }
 
-        /// <summary>星光汇聚：环上细芒向心飞入，汇聚式预告（非地面阴影圈）</summary>
+        /// <summary>星光汇聚</summary>
         public static void Converge(Vector2 center, float radius, int count, float inSpeed, float scaleMul = 1f) {
             for (int i = 0; i < count; i++) {
                 float ang = MathHelper.TwoPi * i / count + Main.rand.NextFloat(-0.25f, 0.25f);
@@ -77,7 +73,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>落点小新星环爆：靛蓝宽环垫底 + 金窄环，两层异径</summary>
+        /// <summary>落点小新星环爆</summary>
         public static void NovaRing(Vector2 pos, float scale) {
             PRTLoader.NewParticle<PRT_DWave>(pos, Vector2.Zero, NightIndigo, 0.16f * scale)
                 ?.Configure(Vector2.One, 0f, 0.58f * scale, 14);
@@ -85,10 +81,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(Vector2.One, 0f, 0.40f * scale, 11);
         }
 
-        /// <summary>
-        /// 星体十字闪芒：靛蓝底晕(衬底) → 金色窄十字双轴错相脉动 → 四芒星芯 → 淡金微热芯。<br/>
-        /// 锐利感来自窄芒而非光晕，twinkle 相位分离 H/V 两轴模拟星光闪烁
-        /// </summary>
+        /// <summary>星体十字闪芒</summary>
         public static void DrawStarGlint(SpriteBatch sb, Vector2 drawPos, float alpha, float scale, float twinkle, float rot) {
             Texture2D ray = FishFallenStarAssets.RayTex?.Value;
             Texture2D cross = FishFallenStarAssets.CrossTex?.Value;
@@ -96,7 +89,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (ray == null || cross == null) {
                 return;
             }
-            //靛蓝底晕：暗外圈只作衬底，不作 body
+            //靛蓝底晕
             if (glow != null) {
                 sb.Draw(glow, drawPos, null, (NightIndigo with { A = 0 }) * (alpha * 0.55f), 0f
                     , glow.Size() * 0.5f, scale * 1.05f, SpriteEffects.None, 0f);
@@ -113,17 +106,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //四芒星芯
             sb.Draw(cross, drawPos, null, gold * alpha, rot * 0.5f, cross.Size() * 0.5f
                 , scale * 0.34f, SpriteEffects.None, 0f);
-            //淡金微热芯：极小面积
+            //淡金微热芯，极小面积
             if (glow != null) {
                 sb.Draw(glow, drawPos, null, (PaleGold with { A = 0 }) * (alpha * 0.9f), 0f
                     , glow.Size() * 0.5f, scale * 0.16f, SpriteEffects.None, 0f);
             }
         }
 
-        /// <summary>
-        /// 星尾细条带：沿点列分段拉丝，靛蓝宽底垫金窄芯，颜色沿带深蓝(尾)→金(头)。<br/>
-        /// pts[0] 为头端(最新)；erode 0..1 蚀线从尾端推向头端；phase 驱动沿带微光闪烁
-        /// </summary>
+        /// <summary>星尾细条带</summary>
         public static void DrawRibbon(SpriteBatch sb, ReadOnlySpan<Vector2> pts, float headWidth, float alpha, float erode, float phase) {
             Texture2D tex = FishFallenStarAssets.RayTex?.Value;
             if (tex == null || pts.Length < 2 || alpha <= 0.01f) {
@@ -136,7 +126,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Color pale = PaleGold with { A = 0 };
             for (int i = 1; i < pts.Length; i++) {
                 float t = i / (float)(pts.Length - 1);
-                //尾端先蚀：过蚀线的段淡出
+                //尾端先蚀，过蚀线的段淡出
                 float fade = 1f;
                 if (t > cut) {
                     fade = 1f - (t - cut) / 0.20f;
@@ -153,7 +143,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
                 float rot = seg.ToRotation() + MathHelper.PiOver2;
                 Vector2 mid = (a + b) * 0.5f - Main.screenPosition;
-                //星尾非稳定火焰：沿带低频明暗微闪
+                //星尾非稳定火焰
                 float shimmer = 0.82f + 0.18f * MathF.Sin(i * 2.3f + phase);
                 float headT = MathF.Pow(1f - t, 1.6f);
                 float w = headWidth * MathF.Pow(1f - t, 0.75f);
@@ -166,7 +156,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Color coreCol = Color.Lerp(DeepBlue, StarGold, headT) with { A = 0 };
                 sb.Draw(tex, mid, null, coreCol * segA, rot, origin
                     , new Vector2(w * 1.6f * k, lenScale), SpriteEffects.None, 0f);
-                //头段淡金热线：短驻留小面积
+                //头段淡金热线，短驻留小面积
                 if (t < 0.22f) {
                     sb.Draw(tex, mid, null, pale * (segA * 0.75f * (1f - t / 0.22f)), rot, origin
                         , new Vector2(w * 0.6f * k, lenScale), SpriteEffects.None, 0f);
@@ -174,10 +164,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 彗尾条带：沿 oldPos 轨迹的 TriangleStrip，FishFallenStarComet.fx 承载
-        /// 深蓝→金渐变、尾端蚀散与星尘斑点；fade 为出生淡入
-        /// </summary>
+        /// <summary>彗尾条带</summary>
         public static void DrawCometStrip(Projectile proj, float maxWidth, float fade) {
             if (Main.dedServ || fade <= 0.01f) {
                 return;
@@ -188,7 +175,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //采样点：当前中心打头，oldPos 依次向尾（跳过未写入的零槽与过近点）
+            //采样点
             Vector2 half = proj.Size / 2f;
             Span<Vector2> pts = stackalloc Vector2[1 + proj.oldPos.Length];
             int count = 0;
@@ -207,7 +194,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            //条带顶点：头段快速铺满宽度再向尾收成尖
+            //条带顶点
             var verts = new VertexPositionColorTexture[count * 2];
             for (int i = 0; i < count; i++) {
                 float t = i / (float)(count - 1);
@@ -270,9 +257,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 星尾残迹：弹体死后接管其轨迹点的独立短命实体，尾端先蚀地熄灭
-    /// </summary>
+    /// <summary>星尾残迹</summary>
     internal class PRT_FishFallenStarTrace : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "SoftGlow";

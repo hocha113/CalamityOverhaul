@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
     public enum OniFlipStage : byte
     {
         None,
-        /// <summary>死寂：风停、花瓣冻结、音乐掐掉</summary>
+        /// <summary>死寂、风停、花瓣冻结、音乐掐掉</summary>
         PreSilence,
         /// <summary>负片闪 + 全屏刀痕 + 日月化眼</summary>
         Flash,
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         Settle
     }
 
-    /// <summary>鬼域每玩家状态机，仅本地玩家实际推进</summary>
+    /// <summary>领域玩家态/印记</summary>
     public class OniDomainPlayer : ModPlayer
     {
         public OniDomainPhase Phase { get; private set; } = OniDomainPhase.Closed;
@@ -46,7 +46,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         /// <summary>表世界错位帧脉冲 0~1，数帧内衰减</summary>
         public float AnomalyPulse { get; private set; }
 
-        //====== 鬼眼 ======
         /// <summary>眼睛世界坐标，开/收域锚点兼墨水扩散原点</summary>
         public Vector2 EyeWorldPos { get; private set; }
         /// <summary>眼睛整体可见度 0~1</summary>
@@ -62,7 +61,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
         public bool EyeVisible => EyeIntensity > 0.003f;
 
-        //====== 翻转专用 ======
         public OniFlipStage FlipStage { get; private set; } = OniFlipStage.None;
         public bool FlipToUra { get; private set; }
         /// <summary>负片闪强度 0~1</summary>
@@ -73,7 +71,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         public float FlipSlashAngle { get; private set; }
         /// <summary>两半滑移不对称占比 0.32~0.68</summary>
         public float PeelBias { get; private set; } = 0.5f;
-        /// <summary>渲染线待办：捕获当前帧作纸层</summary>
+        /// <summary>渲染线待办、捕获当前帧作纸层</summary>
         public bool PendingPaperCapture { get; internal set; }
         /// <summary>纸层内容有效（捕获成功且分辨率未变）</summary>
         public bool PaperValid { get; internal set; }
@@ -83,15 +81,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         private long lastCommandFrame = -1;
 
         //WorldFreezeSystem reason 标签
+
         private const string FreezeReason = "OniDomainFlip";
         //本次翻转是否由本机挂了时停
+
         private bool flipFreezeHeld;
 
         //环境音计时
+
         private int ambienceTimer;
         //错位帧计时
+
         private int anomalyTimer;
         //收域阖眼音效只放一次
+
         private bool closeClickPlayed;
 
         /// <summary>域是否处于任意激活阶段（含开合过渡）</summary>
@@ -99,8 +102,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
         /// <summary>调色是否需要执行</summary>
         public bool GradeVisible => AnyActive;
-
-        //====== 对外命令 ======
 
         internal bool OpenDomain() {
             if (Phase != OniDomainPhase.Closed || !ConsumeCommandGate()) {
@@ -121,6 +122,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
             if (IsLocalVisual) {
                 //低鸣，有什么东西在头顶成形
+
                 SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.32f, Pitch = -0.9f, MaxInstances = 1 }, Player.Center);
             }
             return true;
@@ -141,12 +143,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             PaperValid = false;
             closeClickPlayed = false;
             //吸回锚点重锚到玩家当前位置上方
+
             EyeWorldPos = Player.Center + new Vector2(0f, -150f);
             EyeIntensity = 0f;
             EyeOpenAmount = 1f;
             EyeDissolve = 0f;
             OniDomainDeco.NotifyClosing();
-            //收域：过去归还给过去
+            //收域、过去归还给过去
+
             OniOmokage.BurnAll();
 
             if (IsLocalVisual) {
@@ -170,19 +174,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             preSilenceDuration = FlipToUra ? OniDomain.PreSilenceToUra : OniDomain.PreSilenceToOmote;
             NegativeFlash = 0f;
             PeelProgress = 0f;
-            //刀痕完全随机：左右倾向与陡缓都掷骰
+            //刀痕完全随机、左右倾向与陡缓都掷骰
+
             float lean = Main.rand.NextBool() ? 1f : -1f;
             FlipSlashAngle = lean * Main.rand.NextFloat(0.35f, 1.22f);
             //两半不对称滑移
+
             PeelBias = Main.rand.NextFloat(0.32f, 0.68f);
             OniDomainDeco.NotifyFreeze();
 
-            //翻转仪式全程时停：世界屏息，纸层揭开后恢复。多人下静态快照体系会失同步，单人才挂
+            //翻转仪式全程时停、世界屏息，纸层揭开后恢复。多人下静态快照体系会失同步，单人才挂
+
             if (VaultUtils.isSinglePlayer && Player.whoAmI == Main.myPlayer) {
                 WorldFreezeSystem.Activate(FreezeReason);
                 flipFreezeHeld = true;
                 if (Main.LocalPlayer.Alives()) {
                     //预填飞行时间，防首次进入快照被零值覆盖
+
                     WorldFreezePlayer freezePlayer = Main.LocalPlayer.GetModPlayer<WorldFreezePlayer>();
                     freezePlayer.frozenWingTime = Main.LocalPlayer.wingTime;
                     freezePlayer.frozenRocketTime = Main.LocalPlayer.rocketTime;
@@ -200,6 +208,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         }
 
         //同帧防重入
+
         private bool ConsumeCommandGate() {
             long frame = (long)Main.GameUpdateCount;
             if (lastCommandFrame == frame) {
@@ -210,8 +219,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         }
 
         private bool IsLocalVisual => !Main.dedServ && Player.whoAmI == Main.myPlayer;
-
-        //====== 状态机推进，仅本地玩家由 OniDomainSystem 调用 ======
 
         internal void UpdateLocal() {
             if (Phase == OniDomainPhase.Closed) {
@@ -242,19 +249,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
         }
 
-        //鬼眼开域：浮现→睁眼→勾玉狂旋→爆域（圈内即表世界）
+        //鬼眼开域、浮现→睁眼→勾玉狂旋→爆域（圈内即表世界）
+
         private void UpdateOpening() {
             int t = PhaseTimer;
             int tOpenEnd = OniDomain.EyeEmergeFrames + OniDomain.EyeOpenFrames;
             int tBurst = tOpenEnd + OniDomain.EyeBurstFrames;
 
             if (t <= OniDomain.EyeEmergeFrames) {
-                //浮现：闭眼轮廓渐显微颤，灵体向眼汇聚
+                //浮现、闭眼轮廓渐显微颤，灵体向眼汇聚
+
                 EyeIntensity = t / (float)OniDomain.EyeEmergeFrames;
                 EyeOpenAmount = 0.025f + 0.02f * MathF.Sin(t * 0.55f);
                 if (IsLocalVisual) {
                     if (t == 6 || t == 20) {
                         //心跳
+
                         SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.25f, Pitch = -0.95f, MaxInstances = 2 }, Player.Center);
                     }
                     if (t % 2 == 0) {
@@ -265,7 +275,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
 
             if (t <= tOpenEnd) {
-                //睁眼：数帧内猛然撑开
+                //睁眼、数帧内猛然撑开
+
                 float f = (t - OniDomain.EyeEmergeFrames) / (float)OniDomain.EyeOpenFrames;
                 EyeIntensity = 1f;
                 EyeOpenAmount = f * f * (3f - 2f * f);
@@ -280,11 +291,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
             if (t <= tBurst) {
                 //勾玉加速狂旋
+
                 float f = (t - tOpenEnd) / (float)OniDomain.EyeBurstFrames;
                 EyeOpenAmount = 1f;
                 EyeSpin += MathHelper.Lerp(0.08f, 0.5f, f * f);
                 if (t == tBurst) {
                     //爆域
+
                     EyeFlash = 1f;
                     if (IsLocalVisual) {
                         SoundEngine.PlaySound(CWRSound.Thunder with { Volume = 0.55f, Pitch = -0.25f, MaxInstances = 1 }, Player.Center);
@@ -296,8 +309,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 return;
             }
 
-            //墨浪爆扩：缓出曲线前 0.3s 走完七成屏幕
+            //墨浪爆扩、缓出曲线前 0.3s 走完七成屏幕
+
             //眼睛保持半实体悬在天上看着你，消散大头留给 Omote 里的余韵衰减
+
             int st = t - tBurst;
             float raw = MathHelper.Clamp(st / (float)OniDomain.OpenSpreadFrames, 0f, 1f);
             float inv = 1f - raw;
@@ -314,6 +329,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 PhaseTimer = 0;
                 if (IsLocalVisual) {
                     //落定风铃
+
                     SoundEngine.PlaySound(SoundID.Item35 with { Volume = 0.35f, Pitch = 0.15f, MaxInstances = 1 }, Player.Center);
                 }
             }
@@ -324,12 +340,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             DecayEyeLeftover();
 
             //低频错位帧
+
             if (--anomalyTimer <= 0) {
                 AnomalyPulse = 1f;
                 anomalyTimer = SetAnomalyInterval();
             }
 
             //偶发远处风铃
+
             if (--ambienceTimer <= 0) {
                 ambienceTimer = Main.rand.Next(720, 1200);
                 if (IsLocalVisual) {
@@ -345,7 +363,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
             switch (FlipStage) {
                 case OniFlipStage.PreSilence:
-                    //倒数第 12 帧：死寂中唯一一声风铃
+                    //倒数第 12 帧、死寂中唯一一声风铃
+
                     if (flipStageTimer == preSilenceDuration - 12 && FlipToUra && IsLocalVisual) {
                         SoundEngine.PlaySound(SoundID.Item35 with { Volume = 0.5f, Pitch = 0.45f, MaxInstances = 1 }, Player.Center);
                     }
@@ -355,6 +374,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                         NegativeFlash = 1f;
                         if (IsLocalVisual) {
                             //斩 + 太鼓闷击
+
                             SoundEngine.PlaySound(CWRSound.SwiftSlice with { Volume = 0.75f, Pitch = -0.1f, MaxInstances = 1 }, Player.Center);
                             SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.85f, Pitch = -0.7f, MaxInstances = 1 }, Player.Center);
                             Player.CWR().GetScreenShake(6f);
@@ -366,13 +386,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                     NegativeFlash = MathHelper.Clamp(1f - flipStageTimer / (float)OniDomain.FlashFrames, 0f, 1f);
                     if (flipStageTimer >= OniDomain.FlashFrames) {
                         //捕获旧世界画面作纸层，随后调色切至新世界
+
                         PendingPaperCapture = true;
                         WorldIsUra = FlipToUra;
                         FlipStage = OniFlipStage.Peel;
                         flipStageTimer = 0;
                         PeelProgress = 0f;
                         OniDomainDeco.NotifyPeelStart(FlipToUra);
-                        //快门：入里瞬间把屏内敌人的"过去"钉成面影；回表则全部烧散
+                        //快门、入里瞬间把屏内敌人的"过去"钉成面影；回表则全部烧散
+
                         if (FlipToUra) {
                             if (OniOmokage.AutoShutterOnFlip) {
                                 OniOmokage.ImprintVisible();
@@ -383,6 +405,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                         }
                         if (IsLocalVisual) {
                             //纸帛撕裂感
+
                             SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.8f, Pitch = -0.75f, MaxInstances = 1 }, Player.Center);
                         }
                     }
@@ -395,6 +418,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                         flipStageTimer = 0;
                         PaperValid = false;
                         //纸层落尽，新世界开始呼吸
+
                         ReleaseFlipFreeze();
                     }
                     break;
@@ -416,6 +440,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             DecayEyeLeftover();
 
             //远处太鼓心跳
+
             if (--ambienceTimer <= 0) {
                 ambienceTimer = Main.rand.Next(480, 780);
                 if (IsLocalVisual) {
@@ -424,7 +449,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
         }
 
-        //收域对称化：眼睛重现→墨水吸回眼中→阖眼
+        //收域对称化、眼睛重现→墨水吸回眼中→阖眼
+
         private void UpdateClosing() {
             int t = PhaseTimer;
             int c0 = OniDomain.CloseEyeFrames;
@@ -433,6 +459,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
             if (t <= c0) {
                 //眼睛重现，已睁开
+
                 EyeIntensity = t / (float)c0;
                 EyeOpenAmount = 1f;
                 EyeSpin -= 0.04f;
@@ -441,7 +468,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
 
             if (t <= c1) {
-                //墨水吸回：缓入，先慢后疾冲进眼里
+                //墨水吸回、缓入，先慢后疾冲进眼里
+
                 float f = (t - c0) / (float)OniDomain.CloseRetractFrames;
                 SpreadProgress = 1f - f * f * f;
                 EyeIntensity = 1f;
@@ -451,12 +479,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 }
                 if (IsLocalVisual && t % 2 == 0) {
                     //墨水化灵体被吸入
+
                     OniDomainDeco.SpawnEyeConverge(EyeWorldPos, 2);
                 }
                 return;
             }
 
             //阖眼
+
             float bf = (t - c1) / (float)OniDomain.CloseBlinkFrames;
             SpreadProgress = 0f;
             EyeOpenAmount = MathHelper.Clamp(1f - bf * 1.8f, 0f, 1f);
@@ -464,6 +494,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 closeClickPlayed = true;
                 if (IsLocalVisual) {
                     //归鞘咔 + 尾铃
+
                     SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.6f, Pitch = -0.1f, MaxInstances = 1 }, Player.Center);
                     SoundEngine.PlaySound(SoundID.Item35 with { Volume = 0.28f, Pitch = 0.2f, MaxInstances = 1 }, Player.Center);
                     OniDomainDeco.SpawnEyeScatter(EyeWorldPos, 6);
@@ -482,7 +513,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
         }
 
-        //稳态里眼睛的余韵：继续消散成灵体，勾玉惯性转着淡出
+        //稳态里眼睛的余韵、继续消散成灵体，勾玉惯性转着淡出
+
         private void DecayEyeLeftover() {
             if (EyeIntensity <= 0f) {
                 return;
@@ -502,6 +534,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
             else if (WorldIsUra && Phase == OniDomainPhase.Closing) {
                 //收域时跟随墨水吸回回明
+
                 target = SpreadProgress;
             }
             float rate = target > UraSmooth ? 0.03f : 0.035f;
@@ -510,6 +543,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         }
 
         //各阶段压低音乐；不直接归零由引擎自然回升
+
         private void UpdateMusicCap() {
             if (!IsLocalVisual || Main.gameMenu) {
                 return;

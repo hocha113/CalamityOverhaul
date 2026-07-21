@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
 
         public override int FullChargeTicks => OmniElectricFoot.FullChargeTicks;
 
-        //仅在地面且未在挂钩/坐骑等特殊状态下允许蓄力，避免空中误触
+        //仅地面可蓄力
         public override bool IsReady {
             get {
                 Player p = Main.LocalPlayer;
@@ -43,14 +43,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             }
         }
 
-        //扇区填充：实时蓄力比例，松开瞬间会被雷达通过 OnChargeRelease 消费
+        //扇区填充=实时蓄力比例
         public override float StatusFillRatio => RadialChargeRatio;
 
-        //状态文字：百分比快速阅读
         public override string StatusText => ((int)(RadialChargeRatio * 100f)) + "%";
 
         public override void OnChargeTick(Player player, float ratio) {
-            //每帧把雷达累积的比例同步给 ModPlayer，让头顶 HUD 显示真实的蓄力进度
             OmniElectricFootPlayer fp = player.GetModPlayer<OmniElectricFootPlayer>();
             fp.RadialDriveCharge(ratio);
         }

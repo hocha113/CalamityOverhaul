@@ -83,9 +83,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
     }
 
-    /// <summary>
-    /// 指挥官法杖的共同持握行为：单手45°持杖指向鼠标，从杖尖放出指挥射线
-    /// </summary>
+    /// <summary>指挥官持握，45°持杖从杖尖放射线</summary>
     internal abstract class BaseCommandersStaffHeld : BaseHeldGun, IOverlayDrawable
     {
         public override SoundStyle? ShootSound => SoundID.Item68;
@@ -119,13 +117,10 @@ namespace CalamityOverhaul.Content.Items.Magic
             Time++;
         }
 
-        /// <summary>
-        /// 放出指挥射线，仅在弹幕主人端调用
-        /// </summary>
+        /// <summary>放射线，仅主人端</summary>
         public abstract void FireRay();
 
-        //法杖本体改由IOverlayDrawable在ProjectileLayerRender的遮挡层绘制(晚于射线的图元/加色层)，
-        //从而稳定盖住射线在杖尖处的顶点几何，不依赖弹幕数组遍历顺序的偶然结果
+        //法杖走 IOverlayDrawable 遮挡层，盖住杖尖射线几何
         public sealed override bool PreDraw(ref Color lightColor) => false;
 
         void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
@@ -136,7 +131,6 @@ namespace CalamityOverhaul.Content.Items.Magic
             GunDraw(Projectile.Center - Main.screenPosition + SpecialDrawPositionOffset, ref lightColor);
         }
 
-        //法杖持握绘制：原点设在握把端，旋转角附加45°，让杖体从手中向外延伸
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
             float rot = DirSign > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4;
             float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
@@ -163,7 +157,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         public override string Texture => CWRConstant.Item_Magic + "CommandersStaffEXHeld";
         public override int TargetID => ModContent.ItemType<CommandersStaffEX>();
         public override void FireRay() {
-            //五道射线均匀分布在环形枪口上，ai1记录端口序号供CommandersRayEX计算自旋与汇聚方向
+            //五束环口，ai1=端口号给 EX 自旋
             const int beamCount = 5;
             for (int i = 0; i < beamCount; i++) {
                 Projectile.NewProjectile(Source, ShootPos, ShootVelocity
@@ -174,15 +168,12 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
     }
 
-    /// <summary>
-    /// 指挥官射线公共骨架：跟随持握武器的瞄准方向逐帧重定位，沿方向步进求与地形的命中长度，
-    /// 以顶点四边形+<see cref="EffectLoader.CommandersBeam"/>着色器绘制连续光柱，取代旧版逐像素粒子拼接的拖尾
-    /// </summary>
+    /// <summary>射线骨架，跟瞄准 raycast 长度，quad+<see cref="EffectLoader.CommandersBeam"/></summary>
     internal abstract class BaseCommandersRay : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        //展开/维持/收束三段式生命周期，时长贴近原版的一次脉冲射击节奏
+        //展开/维持/收束
         private const int ExpandTime = 6;
         private const int SustainTime = 38;
         private const int CollapseTime = 10;
@@ -193,19 +184,19 @@ namespace CalamityOverhaul.Content.Items.Magic
         private float widthMul;
         private float toTileLeng;
 
-        /// <summary>射线的视觉/碰撞基准宽度</summary>
+        /// <summary>视觉/碰撞基准宽</summary>
         protected abstract float BeamWidth { get; }
-        /// <summary>顶点四边形相对<see cref="BeamWidth"/>的放大倍率，留出着色器光晕余量；多束并存时调小以保持彼此独立可辨</summary>
+        /// <summary>quad 相对 <see cref="BeamWidth"/> 倍率，多束时宜小</summary>
         protected virtual float VisualWidthMul => 3.2f;
-        /// <summary>0=热能分解 1=EX过载切割，直接喂给<see cref="EffectLoader.CommandersBeam"/>的exMode</summary>
+        /// <summary>0=热能 1=EX，喂 CommandersBeam.exMode</summary>
         protected abstract float BeamMode { get; }
         protected abstract Color CoreThemeColor { get; }
         protected abstract Color GlowThemeColor { get; }
 
-        /// <summary>由子类基于持握武器当前瞄准给出本帧射线的起点与方向</summary>
+        /// <summary>子类给本帧起点与方向</summary>
         protected abstract void GetMuzzle(Projectile gunProj, out Vector2 origin, out Vector2 direction);
 
-        /// <summary>子类可在此追加专属的SetDefaults收尾，默认空</summary>
+        /// <summary>子类 SetDefaults 收尾，默认可空</summary>
         protected virtual void SetExtraDefaults() { }
 
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
@@ -255,7 +246,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             }
         }
 
-        //沿射线方向步进至首个实心瓦片，碰撞与绘制共用，故服务端也需要计算
+        //raycast 终点，碰撞/绘制共用，服务端也算
         private float MeasureRayLength(Vector2 direction) {
             float length = 0f;
             while (length < MaxRayLength) {
@@ -343,7 +334,7 @@ namespace CalamityOverhaul.Content.Items.Magic
 
             Vector2 direction = Projectile.rotation.ToRotationVector2();
             Vector2 perp = direction.RotatedBy(MathHelper.PiOver2);
-            //起点沿自身方向回缩一段，让光柱视觉上从杖体内部涌出而非在杖尖处硬切
+            //起点回缩进杖体
             Vector2 muzzle = Projectile.Center - direction * (BeamWidth * 0.6f + 16f);
             Vector2 tip = Projectile.Center + direction * toTileLeng;
             float halfWidth = BeamWidth * VisualWidthMul * widthMul;
@@ -392,13 +383,11 @@ namespace CalamityOverhaul.Content.Items.Magic
             float flicker = 1f + 0.08f * MathF.Sin(Main.GlobalTimeWrappedHourly * 30f);
             float widthScale = BeamWidth / glow.Width;
 
-            //杖口聚能
             spriteBatch.Draw(glow, muzzleScreen, null, CoreThemeColor * (0.85f * widthMul), 0f
                 , glow.Size() / 2f, widthScale * 2.4f * flicker, SpriteEffects.None, 0f);
             spriteBatch.Draw(glow, muzzleScreen, null, Color.White * (0.6f * widthMul), 0f
                 , glow.Size() / 2f, widthScale * 1.1f, SpriteEffects.None, 0f);
 
-            //命中点迸发
             spriteBatch.Draw(glow, tipScreen, null, GlowThemeColor * (0.8f * widthMul), 0f
                 , glow.Size() / 2f, widthScale * 1.7f * flicker, SpriteEffects.None, 0f);
             spriteBatch.Draw(star, tipScreen, null, CoreThemeColor * (0.7f * widthMul), Main.GlobalTimeWrappedHourly * 2.4f
@@ -406,7 +395,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
     }
 
-    /// <summary>统帅之杖基础射线：单束直出，沿瞄准方向延伸的热能分解光柱</summary>
+    /// <summary>基础射线，单束热能柱</summary>
     internal class CommandersRay : BaseCommandersRay
     {
         protected override float BeamWidth => 24f;
@@ -420,10 +409,7 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
     }
 
-    /// <summary>
-    /// 统帅之杖EX专属切割射线：五束围绕瞄准轴小半径环形分布、缓慢自旋，
-    /// 各自朝前方同一焦点收束后再发散，形成旋转的切割锥而非单纯的平行扩散
-    /// </summary>
+    /// <summary>EX 切割射线，五束环绕自旋并收束成锥</summary>
     internal class CommandersRayEX : BaseCommandersRay
     {
         private const int PortCount = 5;
@@ -432,15 +418,14 @@ namespace CalamityOverhaul.Content.Items.Magic
         private const float SpinSpeed = 0.06f;//弧度/帧
 
         protected override float BeamWidth => 21f;
-        //五束并行环绕，光晕倍率略小于基础版以保持切割锥的独立刃口可辨，但不应细成丝线
+        //五束环绕，光晕略小于基础版
         protected override float VisualWidthMul => 2.6f;
         protected override float BeamMode => 1f;
-        //呼应毁灭者/机械骷髅王的血红毁灭色系：比基础版更深邃浓烈、核心更炽白，而非偏离到品红
         protected override Color CoreThemeColor => new(255, 32, 18);
         protected override Color GlowThemeColor => new(255, 120, 60);
 
         protected override void SetExtraDefaults() {
-            //五束并行命中同一目标，需独立免疫帧才能各自持续造成伤害
+            //五束各吃独立免疫帧
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10;
         }

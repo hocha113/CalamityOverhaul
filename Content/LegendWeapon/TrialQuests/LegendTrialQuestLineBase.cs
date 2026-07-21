@@ -24,9 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
         protected virtual LegendData GetLegendData(Player player) => null;
 
         private static LocalizedText trackerBlockedText;
-        /// <summary>
-        /// 下一关因相关内容(如灾厄)未加载而无法开始时，委托受阻提示
-        /// </summary>
+        /// <summary>委托受阻提示</summary>
         protected static LocalizedText TrackerBlockedText
             => trackerBlockedText ??= Language.GetOrRegister("Mods.CalamityOverhaul.Legend.TrialBlockedHint",
                 static () => "需要启用相应内容后才能开始本试炼");
@@ -42,17 +40,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             }
 
             bool allowCreate = CanCreateEntries(Main.LocalPlayer);
-            //完成状态 = 已确认的版本化进度 ∪ 当前世界实时击杀，且只读不写盘：
-            //在此 SyncTrialProgressFromWorld 会把当前世界进度永久并入武器，令跨世界升级确认失效；
-            //已确认进度的落盘只在 PerformUpgrade 时发生。无对应物品时退回世界Boss状态
+            //完成态=已确认进度∪世界实时击杀，只读；落盘仅 PerformUpgrade
             LegendData data = GetLegendData(Main.LocalPlayer);
             Func<LegendTrialDefinition, bool> isCompleted = BuildCompletionCheck(data);
 
             IReadOnlyList<LegendTrialDefinition> availableTrials = LegendTrialRouteResolver.GetAvailableTrials(Trials);
             int currentLevel = LegendTrialRouteResolver.GetSequentialLevel(Trials, isCompleted);
 
-            //可用路线已无"下一关"时，找出被未加载内容挡住的那一关，
-            //让工具提示试炼编号始终对应一条委托，避免"显示试炼N却没有委托"
+            //无可用下一关时补受阻关，避免试炼号悬空
             LegendTrialDefinition blockedFrontier = currentLevel >= availableTrials.Count
                 ? FindBlockedFrontier(isCompleted)
                 : null;
@@ -96,9 +91,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             }
         }
 
-        /// <summary>
-        /// 未加载内容挡住的下一关，同步为进行中受阻委托
-        /// </summary>
+        /// <summary>未加载内容挡住的下一关，同步为受阻委托</summary>
         private void SyncBlockedFrontier(QuestManagerUI manager, LegendTrialDefinition trial, int originalIndex, int routeCount, bool allowCreate) {
             string key = GetEntryKey(trial);
             var entry = manager.GetEntry(key) as LegendTrialQuestEntry;
@@ -123,7 +116,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             LocalizedText hint = TrackerBlockedText;
             entry.BlockedHint = hint;
             if (hint != null) {
-                //主面板里直接把描述替换成受阻提示，让玩家明确卡点原因
+                //描述换成受阻提示
                 entry.SummaryText = hint;
             }
         }
@@ -132,7 +125,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             string key = GetEntryKey(trial);
             var entry = manager.GetEntry(key) as LegendTrialQuestEntry;
             if (entry != null) {
-                //此前若被标记为受阻(下一关曾不可用)，现在重新进入常规流程时复位，恢复正常试炼展示
+                //曾受阻则复位
                 if (entry.Blocked) {
                     entry.Blocked = false;
                     entry.BlockedHint = null;
@@ -175,9 +168,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             return static trial => trial?.IsCompleted == true;
         }
 
-        /// <summary>
-        /// 可用试炼全完成后，定位进度后首关未完成且不可用的试炼
-        /// </summary>
+        /// <summary>可用试炼全完成后，定位进度后首关不可用的试炼</summary>
         private LegendTrialDefinition FindBlockedFrontier(Func<LegendTrialDefinition, bool> isCompleted) {
             int lastCompleted = -1;
             for (int i = 0; i < Trials.Count; i++) {
@@ -191,7 +182,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
                 if (trial == null || isCompleted(trial)) {
                     continue;
                 }
-                //进度后首关：可用走常规流程，不可用作受阻关卡
+                //进度后首关，不可用则受阻
                 return trial.IsAvailable ? null : trial;
             }
             return null;

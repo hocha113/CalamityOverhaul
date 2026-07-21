@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Stones.Granites
 {
-    /// <summary>花岗魔典，吟咏充能三枚光点，充满后扇形齐射三发轻追踪能量球，命中碎水晶</summary>
+    /// <summary>花岗魔典，充能三点齐射三发轻追踪球，命中碎晶</summary>
     internal class GraniteTome : ModItem
     {
         public override void SetDefaults() {
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.knockBack = 2.5f;
-            //翻页起手音，作为吟咏音效链的第一层（其后是三声递进轻音阶与齐射迸发）
+            //翻页起手音
             Item.UseSound = SoundID.Item43 with { Volume = 0.6f, Pitch = -0.12f };
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<GraniteTomeHeld>();
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             Item.rare = ItemRarityID.Orange;
         }
 
-        //同一时刻只允许一本法书存在，配合 autoReuse 形成稳定的吟咏-齐射节奏
+        //场上仅一本法书
         public override bool CanUseItem(Player player)
             => player.ownedProjectileCounts[ModContent.ProjectileType<GraniteTomeHeld>()] <= 0;
 
@@ -50,25 +50,21 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         }
     }
 
-    /// <summary>
-    /// 浮空法书持握体：吟咏期间跟随鼠标瞄准，三颗充能光点依次汇聚到书前，
-    /// 第三颗到位瞬间扇形齐射三发能量球并后坐闪光
-    /// </summary>
+    /// <summary>浮空法书，三点汇聚后扇形齐射+后坐闪光</summary>
     internal class GraniteTomeHeld : BaseHeldProj, IAdditiveDrawable
     {
         public override string Texture => GraniteMarbleVFX.GraniteTex + "GraniteTome";
 
-        //吟咏节点：三颗光点在总时长 24% / 51% / 78% 处汇聚完成（基础 26tick 下约每 7tick 一颗），
-        //第三颗即齐射点，余下时长表现后坐收势
+        //汇聚节点 24%/51%/78%，第三颗齐射
         private const float FirstCharge = 0.24f;
         private const float ChargeStep = 0.27f;
         private const int ChargeCount = 3;
 
         private Vector2 aim = Vector2.UnitX;
-        private int banked;      //已汇聚的光点数，由进度推导，各端独立做边沿检测
-        private int chantTime;   //吟咏计时，仅驱动视觉相位
-        private float recoil;    //齐射后坐位移强度，出弹瞬间置 1 后指数衰减
-        private float fireFlash; //齐射闪光强度
+        private int banked;      //已汇聚点数，边沿检测
+        private int chantTime;   //吟咏视觉计时
+        private float recoil;    //齐射后坐，置1后指数衰减
+        private float fireFlash; //齐射闪光
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 40;
@@ -80,10 +76,10 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             Projectile.friendly = false;
         }
 
-        //书体不做位移积分，位置每帧由 Owner 锚定重算，杜绝残留速度造成的漂移
+        //书体锚定，禁速度积分
         public override bool ShouldUpdatePosition() => false;
 
-        //Initialize 在每个客户端各执行一次且晚于鼠标数据更新：远程端速度已被清零时退回同步的鼠标方向
+        //Initialize 远端速度清零时退回同步鼠标方向
         public override void Initialize() {
             Vector2 dir = Projectile.velocity != Vector2.Zero ? Projectile.velocity : ToMouse;
             aim = dir.SafeNormalize(Vector2.UnitX);
@@ -94,7 +90,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
 
         private float Progress => 1f - Projectile.timeLeft / (float)Duration;
 
-        //光点驻留槽位：书前一列垂直于瞄准线的弧位，带轻微游动
+        //光点槽位，书前垂于瞄准
         private Vector2 GatherSlot(int index) {
             Vector2 perp = aim.RotatedBy(MathHelper.PiOver2);
             Vector2 rest = Projectile.Center + aim * 34f + perp * ((index - 1) * 13f);
@@ -105,19 +101,19 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         public override void AI() {
             SetHeld();
             chantTime++;
-            //首帧把寿命精确对齐本次使用动画，之后 timeLeft 即吟咏进度的单一数据源
+            //首帧对齐寿命，其后 timeLeft=进度
             if (chantTime == 1) {
                 Projectile.timeLeft = Duration;
             }
 
-            //施法期间每帧跟随鼠标（ToMouseA 由 BaseHeldProj 自动同步），限转速消除抖动
+            //跟鼠标，限转速
             aim = aim.ToRotation().AngleTowards(ToMouseA, 0.22f).ToRotationVector2();
             SetDirection();
 
             recoil *= 0.82f;
             fireFlash *= 0.86f;
 
-            //由进度推导应汇聚的光点数，边沿触发递进轻音阶；第三颗到位即齐射
+            //进度推点数，第三颗齐射
             float progress = Progress;
             int charges = 0;
             for (int i = 0; i < ChargeCount; i++) {
@@ -133,7 +129,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
                 }
             }
 
-            //书本浮动呼吸：吟咏弧线起伏 + 常驻低频漂浮，齐射后坐沿瞄准线回撤
+            //浮动呼吸+后坐
             float bob = MathF.Sin(progress * MathHelper.Pi) * 6f + MathF.Sin(chantTime * 0.11f) * 1.6f;
             Projectile.Center = Owner.GetPlayerStabilityCenter() + aim * (26f - recoil * 10f)
                 + aim.RotatedBy(MathHelper.PiOver2) * bob + new Vector2(0f, -4f);
@@ -147,7 +143,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
                 * (0.45f + 0.18f * banked + fireFlash * 0.8f));
         }
 
-        //光点汇聚到位：递进音阶 + 收束闪粒
+        //光点到位音阶
         private void OnMoteBanked(int index) {
             Vector2 slot = GatherSlot(index);
             SoundEngine.PlaySound(SoundID.MaxMana with {
@@ -167,7 +163,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
                 , Main.rand.NextFloat(0.2f, 0.3f)).Configure(Main.rand.Next(3, 6));
         }
 
-        //充满三颗后一次性扇形射出三发能量球：书页后坐 + 青蓝闪光 + 能量迸发音
+        //三点齐射
         private void FireVolley() {
             Vector2 muzzle = Projectile.Center + aim * 26f;
             SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with { Volume = 0.9f, Pitch = 0.25f }, muzzle);
@@ -176,7 +172,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             fireFlash = 1f;
 
             if (Projectile.IsOwnedByLocalPlayer()) {
-                //一次齐射三发，单发收敛到 0.75x 控制每轮总伤预算
+                //单发0.75x 控总伤
                 int damage = (int)(Projectile.damage * 0.75f);
                 for (int i = -1; i <= 1; i++) {
                     Vector2 vel = aim.RotatedBy(i * 0.16f) * 11f;
@@ -209,7 +205,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             }
         }
 
-        //吟咏氛围：周围能量向正在汇聚的光点收束 + 环绕书身的符文微粒与偶发微电弧
+        //吟咏氛围粒子
         private void UpdateChantDust(int charges) {
             if (VaultUtils.isServer) {
                 return;
@@ -239,7 +235,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             Texture2D tex = TextureAssets.Projectile[Type].Value;
             Vector2 pos = Projectile.Center - Main.screenPosition;
             SpriteEffects fx = Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-            //书体保持近竖直，仅随瞄准俯仰微倾；呼吸缩放 + 齐射瞬间轻微鼓张
+            //近竖直微倾+呼吸缩放
             float tilt = aim.Y * 0.3f * Owner.direction;
             float breath = 1f + MathF.Sin(chantTime * 0.09f) * 0.035f + fireFlash * 0.08f;
             Main.EntitySpriteDraw(tex, pos, null, Projectile.GetAlpha(lightColor), tilt
@@ -254,12 +250,12 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             Color core = GraniteMarbleVFX.GraniteCore; core.A = 0;
             Color spark = GraniteMarbleVFX.GraniteSpark; spark.A = 0;
 
-            //书身底辉，随充能数增强
+            //书身底辉
             Vector2 bookPos = Projectile.Center - Main.screenPosition;
             spriteBatch.Draw(glow, bookPos, null, deep * (0.3f + 0.1f * banked), 0f
                 , glow.Size() / 2f, 0.52f, SpriteEffects.None, 0f);
 
-            //充能光点：已汇聚的满亮驻留，正在汇聚的按进度长大
+            //充能光点
             float progress = Progress;
             if (banked < ChargeCount) {
                 for (int i = 0; i < ChargeCount; i++) {
@@ -289,7 +285,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
                 }
             }
 
-            //齐射闪光：书前一记青蓝爆闪 + 沿瞄准线的拉长星芒
+            //齐射闪光
             if (fireFlash > 0.05f) {
                 Vector2 muzzle = Projectile.Center + aim * 26f - Main.screenPosition;
                 Color flashWhite = Color.White; flashWhite.A = 0;
@@ -303,15 +299,12 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         }
     }
 
-    /// <summary>
-    /// 花岗能量球：扇形射出后轻微追踪，青蓝电弧拖尾包裹晶棱能量核，
-    /// 命中或撞地碎裂为两枚追击水晶与晶片粒子
-    /// </summary>
+    /// <summary>能量球，轻追踪，命中/撞地裂两枚追击晶</summary>
     internal class GraniteEnergyOrb : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
         private Trail Trail;
-        //扇形散开的观感窗口：延迟锁定，避免三发出膛即拧成一股
+        //延迟锁定，避三发拧成一股
         private const int HomingDelay = 9;
 
         public override void SetStaticDefaults() {
@@ -356,7 +349,6 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
                 PRTLoader.NewParticle<PRT_Light>(Projectile.Center, -Projectile.velocity * 0.06f
                     , GraniteMarbleVFX.GraniteCore, 0.26f).Configure(14, 1f, 1.15f);
             }
-            //能量核偶发微电弧点缀
             if (Main.rand.NextBool(10)) {
                 PRTLoader.NewParticle<PRT_GraniteVolt>(Projectile.Center + Main.rand.NextVector2Circular(7f, 7f)
                     , Projectile.velocity * 0.1f, GraniteMarbleVFX.GraniteSpark
@@ -368,7 +360,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
 
         public override void OnKill(int timeLeft) {
             if (!VaultUtils.isServer) {
-                //碎裂分层：水晶脆响 + 低量电弧劈啪
+                //碎裂分层音
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = 0.35f, Volume = 0.7f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with { Volume = 0.32f, Pitch = 0.5f }, Projectile.Center);
 
@@ -391,7 +383,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
                     , GraniteMarbleVFX.GraniteDeep, 0).Configure(0.05f, 0.5f, 16);
             }
 
-            //一轮齐射三发，单发碎裂收敛为两枚水晶，避免弹幕总量失控
+            //单发裂两枚晶
             if (Projectile.IsOwnedByLocalPlayer()) {
                 float baseRot = Main.rand.NextFloat(MathHelper.TwoPi);
                 for (int i = 0; i < 2; i++) {
@@ -404,14 +396,14 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             }
         }
 
-        //头端半宽 10px 贴 18px 能量核，避免拖成实心光锥
+        //半宽10px，贴18px核
         public float GetWidthFunc(float completionRatio)
             => MathF.Pow(1f - completionRatio, 0.75f) * 10f * Projectile.scale;
 
         public Color GetColorFunc(Vector2 completionRatio) => Color.White * Projectile.Opacity;
 
         void IPrimitiveDrawable.DrawPrimitives() {
-            //出膛淡入 + 濒死淡出，避免拖尾生硬起止
+            //出膛淡入/濒死淡出
             float fade = MathHelper.Clamp(Projectile.ai[0] / 8f, 0f, 1f)
                 * MathHelper.Clamp(Projectile.timeLeft / 20f, 0f, 1f);
             GraniteMarbleVFX.DrawGraniteArcTrailFromOldPos(Projectile, ref Trail
@@ -430,17 +422,16 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             Color core = GraniteMarbleVFX.GraniteCore; core.A = 0;
             Color spark = GraniteMarbleVFX.GraniteSpark; spark.A = 0;
 
-            //外辉
             spriteBatch.Draw(glow, pos, null, deep * 0.7f, 0f, glow.Size() / 2f
                 , s * 1.05f * pulse, SpriteEffects.None, 0f);
-            //棱角外圈：三片切向晶棱围出旋转晶笼（Line 为竖向贴图，切向再补 PiOver2 即 +Pi）
+            //三片切向晶棱，Line+PiOver2
             for (int i = 0; i < 3; i++) {
                 float a = Projectile.rotation + MathHelper.TwoPi / 3f * i;
                 Vector2 p = pos + a.ToRotationVector2() * 10f * s;
                 spriteBatch.Draw(sliver, p, null, core * 0.75f, a + MathHelper.Pi
                     , sliver.Size() / 2f, new Vector2(0.05f, 0.085f) * s, SpriteEffects.None, 0f);
             }
-            //核心亮球：青芯 + 星芒 + 白点
+            //核心亮球
             spriteBatch.Draw(glow, pos, null, core * 0.95f, 0f, glow.Size() / 2f
                 , s * 0.55f * pulse, SpriteEffects.None, 0f);
             spriteBatch.Draw(star, pos, null, spark * 0.85f, Projectile.rotation * 1.5f

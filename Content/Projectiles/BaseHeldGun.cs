@@ -13,28 +13,15 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles
 {
     /// <summary>
-    /// 新一代手持武器基类，直接建立在 InnoVault <see cref="BaseHeldProj"/> 之上
-    /// <para>手持弹幕由物品的 <see cref="ModItem.Shoot"/> 在使用瞬间生成（物品侧调用 <see cref="SpawnHeldProj{T}"/>），
-    /// 松开按键且没有未结算状态时自动销毁，不再使用选中即生成的 SetHeldProj 模式</para>
-    /// <para>它不包含任何固定的开火管线，子类完全拥有自己的 <see cref="ModProjectile.AI"/> 循环</para>
-    /// <para>基类只三件事：
-    /// 一，生存性维护（物品校验、玩家状态校验、闲置自毁、武器占用锁）；
-    /// 二，提供可选调用的工具（持枪姿态、后坐力、弹药、魔力、枪口、绘制）；
-    /// 三，向 CWRLoad/ModGanged 等基础设施暴露识别属性</para>
+    /// Shoot 瞬间 <see cref="SpawnHeldProj{T}"/> 生成，松键且无 StayAlive 自毁；无固定开火管线，子类自管 AI
     /// </summary>
     public abstract class BaseHeldGun : BaseHeldProj
     {
-        /// <summary>
-        /// 弹药消耗上下文开关：物品使用本身不应消耗弹药（物品侧的 <see cref="ModItem.CanConsumeAmmo"/> 返回该值），
-        /// 只有手持弹幕经 <see cref="ConsumeAmmo"/> 主动拾取时才放行消耗
-        /// </summary>
+        /// <summary>CanConsumeAmmo 返回此值；仅 <see cref="ConsumeAmmo"/> 放行消耗</summary>
         public static bool AmmoConsumeContext { get; private set; }
 
-        /// <summary>
-        /// 在物品的 <see cref="ModItem.Shoot"/> 中调用：若场上没有对应手持弹幕则生成一个
-        /// <para>必须显式使用 T 的弹幕ID而非 Shoot 传入的 type，后者会被 useAmmo 转化为弹药射弹</para>
-        /// </summary>
-        /// <returns>恒为<see langword="false"/>，可直接作为 Shoot 的返回值，阻止默认射击</returns>
+        /// <summary>Shoot 里调；用 T 的弹幕ID，勿用 Shoot 的 type（会被 useAmmo 换掉）</summary>
+        /// <returns>恒 false，可作 Shoot 返回值</returns>
         public static bool SpawnHeldProj<T>(Player player, EntitySource_ItemUse_WithAmmo source) where T : BaseHeldGun {
             int heldType = ModContent.ProjectileType<T>();
             if (player.CountProjectilesOfID(heldType) <= 0) {
@@ -44,138 +31,111 @@ namespace CalamityOverhaul.Content.Projectiles
         }
 
         #region 识别属性
-        /// <summary>
-        /// 所属物品的ID，玩家手持物品与之不符时弹幕会自杀
-        /// </summary>
+        /// <summary>所属物品ID，不符则自杀</summary>
         public abstract int TargetID { get; }
-        /// <summary>
-        /// 是否是一把弩，供 <see cref="CWRLoad"/> 数据表使用，默认为<see langword="false"/>
-        /// </summary>
+        /// <summary><see cref="CWRLoad"/> 用，默认 false</summary>
         public virtual bool IsCrossbow => false;
-        /// <summary>
-        /// 是否必定消耗弹药（无视弹药节约效果），供 <see cref="CWRLoad"/> 数据表与 <see cref="ConsumeAmmo"/> 使用，默认为<see langword="true"/>
-        /// </summary>
+        /// <summary>无视节约，默认 true；<see cref="CWRLoad"/> / <see cref="ConsumeAmmo"/></summary>
         public virtual bool MustConsumeAmmunition => true;
-        /// <summary>
-        /// 是否响应右键开火，供 <see cref="CWRLoad"/> 数据表与 <see cref="WantsFireRight"/> 使用，默认为<see langword="false"/>
-        /// </summary>
+        /// <summary>右键开火，默认 false；<see cref="CWRLoad"/> / <see cref="WantsFireRight"/></summary>
         public virtual bool CanRightClick => false;
-        /// <summary>
-        /// 当前是否处于手持展示状态，供 ModGanged 兼容层与默认绘制使用，默认为<see langword="true"/>
-        /// </summary>
+        /// <summary>手持展示，默认 true；ModGanged / 默认绘制</summary>
         public virtual bool OnHandheldDisplayBool => true;
         #endregion
 
         #region 持握与后坐力参数（在 SetGunProperty 中配置）
-        /// <summary>闲置时持枪点相对玩家中心的水平距离，默认为15</summary>
+        /// <summary>闲置持枪点 X，默认15</summary>
         public float HandIdleDistanceX = 15;
-        /// <summary>闲置时持枪点相对玩家中心的竖直距离，默认为0</summary>
+        /// <summary>闲置持枪点 Y，默认0</summary>
         public float HandIdleDistanceY = 0;
-        /// <summary>瞄准时持枪点相对玩家中心的距离，默认为20</summary>
+        /// <summary>瞄准持枪点 X，默认20</summary>
         public float HandFireDistanceX = 20;
-        /// <summary>瞄准时持枪点的竖直偏移，默认为-4</summary>
+        /// <summary>瞄准持枪点 Y，默认-4</summary>
         public float HandFireDistanceY = -4;
-        /// <summary>闲置时枪体的仰角（周角而非弧度角），默认为12</summary>
+        /// <summary>闲置仰角(周角)，默认12</summary>
         public float AngleFirearmRest = 12f;
-        /// <summary>闲置时右手角度矫正值（周角）</summary>
+        /// <summary>闲置右手角矫正(周角)</summary>
         public float ArmRotSengsFrontNoFireOffset;
-        /// <summary>闲置时左手角度矫正值（周角）</summary>
+        /// <summary>闲置左手角矫正(周角)</summary>
         public float ArmRotSengsBackNoFireOffset;
-        /// <summary>是否单手持握，默认为<see langword="false"/></summary>
         public bool Onehanded;
-        /// <summary>从瞄准回到闲置姿势的过渡速度，默认为0.2f</summary>
+        /// <summary>瞄准→闲置过渡速，默认0.2</summary>
         public float AimingAnimationSpeed = 0.2f;
-        /// <summary>是否始终保持瞄准姿势（替代旧框架的 InOwner_HandState_AlwaysSetInFireRoding）</summary>
+        /// <summary>始终瞄准(旧 AlwaysSetInFireRoding)</summary>
         public bool AlwaysAimPose;
-        /// <summary>枪压，决定每次 <see cref="CreateRecoil"/> 的上抬力度，默认为0</summary>
+        /// <summary>枪压上抬，默认0</summary>
         public float GunPressure = 0;
-        /// <summary>压枪力度，决定枪压恢复速度，默认为0.01f</summary>
+        /// <summary>枪压恢复，默认0.01</summary>
         public float ControlForce = 0.01f;
-        /// <summary>后坐力制退模长，为0时不产生制退位移，默认为0</summary>
+        /// <summary>制退模长，0=无，默认0</summary>
         public float RecoilRetroForceMagnitude = 0;
-        /// <summary>制退位移恢复系数，越接近1恢复越慢，默认为0.6f</summary>
+        /// <summary>制退恢复，近1更慢，默认0.6</summary>
         public float RecoilOffsetRecoverValue = 0.6f;
-        /// <summary>枪口沿枪身方向的偏移（原 ShootPosToMouLengValue）</summary>
+        /// <summary>枪口沿枪身偏移(旧 ShootPosToMouLengValue)</summary>
         public float MuzzleForwardOffset = 0;
-        /// <summary>枪口垂直枪身方向的偏移（原 ShootPosNorlLengValue）</summary>
+        /// <summary>枪口垂直偏移(旧 ShootPosNorlLengValue)</summary>
         public float MuzzleNormalOffset = 0;
-        /// <summary>开火时枪口火光强度，为0时关闭，默认为1</summary>
+        /// <summary>枪口火光，0关，默认1</summary>
         public float FireLight = 1;
         #endregion
 
         #region 运行时状态
-        /// <summary>当前的后坐力俯仰角累积（原 OffsetRot）</summary>
+        /// <summary>后坐俯仰(旧 OffsetRot)</summary>
         public float RecoilPitch;
-        /// <summary>当前的后坐力制退位移累积（原 OffsetPos）</summary>
+        /// <summary>后坐制退(旧 OffsetPos)</summary>
         public Vector2 RecoilOffset;
-        /// <summary>右手最终角度值，由 <see cref="UpdateHeldPose"/> 写入</summary>
         public float ArmRotSengsFront;
-        /// <summary>左手最终角度值，由 <see cref="UpdateHeldPose"/> 写入</summary>
         public float ArmRotSengsBack;
-        /// <summary>姿态过渡进度，0为完全闲置，1为完全瞄准</summary>
+        /// <summary>姿态进度 0闲置~1瞄准</summary>
         protected float aimProgress;
-        /// <summary>一个通用的开火计数器</summary>
         public int fireIndex;
-        /// <summary>每帧刷新的弹药预览（不消耗），由 <see cref="PreUpdate"/> 维护</summary>
+        /// <summary>弹药预览，不消耗</summary>
         public ShootState AmmoState;
-        /// <summary>魔力恢复延迟基准值，首次使用魔力工具时取 <see cref="Player.maxRegenDelay"/></summary>
+        /// <summary>魔力恢复延迟基准</summary>
         private float manaRegenDelayValue;
-        /// <summary>鼠标是否未悬停在UI上（仅在非开火期间更新，自动同步）</summary>
+        /// <summary>非开火时刷新，已同步</summary>
         private bool mouseUIFree = true;
         private bool oldMouseUIFree = true;
         #endregion
 
         #region 快捷访问
-        /// <summary>一个通用计时器，存储在 ai[0] 中以获得自动同步</summary>
+        /// <summary>ai[0] 通用计时</summary>
         public ref float Time => ref Projectile.ai[0];
-        /// <summary>开火冷却计时器，存储在 ai[1] 中以获得自动同步，由 <see cref="PreUpdate"/> 自动递减</summary>
+        /// <summary>ai[1] 开火冷却，PreUpdate 递减</summary>
         public float FireCooldown {
             get => Projectile.ai[1];
             set => Projectile.ai[1] = value;
         }
-        /// <summary>是否拥有可用弹药；不需要弹药的武器恒为<see langword="true"/></summary>
         public bool HasAmmo => Item.useAmmo == AmmoID.None || AmmoState.HasAmmo;
-        /// <summary>攻速加成系数（含玩家加成与CWR前缀），换算开火间隔</summary>
+        /// <summary>攻速系数，换算开火间隔</summary>
         public virtual float AttackSpeed => Owner.GetWeaponAttackSpeed(Item) + Item.GetPrefixState().shootSpeedMult - 1f;
-        /// <summary>当前弹药转化出的弹幕类型</summary>
         public int AmmoTypes => AmmoState.AmmoTypes;
-        /// <summary>实时武器伤害</summary>
         public int WeaponDamage => AmmoState.WeaponDamage;
-        /// <summary>实时武器击退</summary>
         public float WeaponKnockback => AmmoState.WeaponKnockback;
-        /// <summary>射击向量，以鼠标方向为基准</summary>
+        /// <summary>射击向量(鼠标向)</summary>
         public Vector2 ShootVelocity => UnitToMouseV * AmmoState.ShootSpeed;
-        /// <summary>射击向量，以枪体当前旋转角为基准</summary>
+        /// <summary>射击向量(枪旋)</summary>
         public Vector2 ShootVelocityInProjRot => Projectile.rotation.ToRotationVector2() * AmmoState.ShootSpeed;
-        /// <summary>枪口位置</summary>
         public virtual Vector2 ShootPos => GetMuzzlePos(MuzzleForwardOffset, MuzzleNormalOffset);
-        /// <summary>携带CWRGunShoot标签的物品生成源</summary>
+        /// <summary>CWRGunShoot 生成源</summary>
         public virtual EntitySource_ItemUse_WithAmmo Source => new(Owner, Item, AmmoState.UseAmmoItemType, "CWRGunShoot");
-        /// <summary>鼠标是否未被UI占用（已同步，可在所有端安全使用）</summary>
+        /// <summary>鼠标未占UI，已同步</summary>
         public bool MouseUIFree => mouseUIFree;
-        /// <summary>鼠标指针是否未悬停在可交互物上（仅主人端有意义，远程端恒为真）</summary>
+        /// <summary>未悬停可交互物，仅主人端有意义</summary>
         public bool MouseIconFree => !Owner.cursorItemIconEnabled && Owner.cursorItemIconID == ItemID.None;
-        /// <summary>武器是否可被操作，默认排除亵渎水晶变身状态</summary>
+        /// <summary>可操作，默认排除亵渎水晶</summary>
         public virtual bool GunCanUse => !Owner.GetPlayerProfanedCrystalBuffs();
-        /// <summary>玩家是否正在尝试左键开火（已含UI与可用性判定）</summary>
         public virtual bool WantsFireLeft => DownLeft && mouseUIFree && GunCanUse;
-        /// <summary>玩家是否正在尝试右键开火（已含UI与可用性判定）</summary>
         public virtual bool WantsFireRight => CanRightClick && DownRight && !DownLeft && mouseUIFree && MouseIconFree && GunCanUse;
-        /// <summary>
-        /// 是否处于开火尝试状态，该属性同时驱动 <see cref="BaseHeldProj"/> 的鼠标同步
-        /// </summary>
+        /// <summary>开火尝试，兼驱动 BaseHeldProj 鼠标同步</summary>
         public override bool CanFire => (DownLeft || DownRight && CanRightClick && MouseIconFree) && mouseUIFree;
-        /// <summary>瞄准期间保持鼠标同步，让动作在队友眼中保持平滑</summary>
+        /// <summary>瞄准时保持鼠标同步</summary>
         public override bool CanMouseNet => AlwaysAimPose;
-        /// <summary>手持的绘制矫正值，跟随玩家身体动画的起伏</summary>
+        /// <summary>绘制位矫正，跟身体起伏</summary>
         public Vector2 SpecialDrawPositionOffset => CanFire ? Vector2.Zero : Owner.CWR().SpecialDrawPositionOffset;
-        /// <summary>发光层资产，子类用 [VaultLoaden] 加载后返回，为 null 时不绘制</summary>
+        /// <summary>发光层，null 不绘</summary>
         public virtual Asset<Texture2D> GlowAsset => null;
-        /// <summary>绘制时附加的旋转矫正值</summary>
         public float DrawGunBodyRotOffset;
-        /// <summary>
-        /// 自定义本地化键，沿用所属物品的名字
-        /// </summary>
         public override LocalizedText DisplayName {
             get {
                 if (TargetID <= ItemID.None) {
@@ -191,10 +151,9 @@ namespace CalamityOverhaul.Content.Projectiles
         #region 生命周期
         public override bool IsLoadingEnabled(Mod mod) => TargetID > ItemID.None;
 
-        //手持弹幕不应受速度更新，否则会发生轻微的抽搐
+        //不跟速度，防抽搐
         public override bool ShouldUpdatePosition() => false;
 
-        //手持枪体本身默认没有碰撞伤害
         public override bool? CanDamage() => false;
 
         public override void SetDefaults() {
@@ -210,9 +169,7 @@ namespace CalamityOverhaul.Content.Projectiles
             SetGunProperty();
         }
 
-        /// <summary>
-        /// 在 <see cref="SetDefaults"/> 末尾被调用，配置持握与后坐力等参数
-        /// </summary>
+        /// <summary>SetDefaults 末配置持握/后坐力</summary>
         public virtual void SetGunProperty() {
 
         }
@@ -226,17 +183,12 @@ namespace CalamityOverhaul.Content.Projectiles
             return true;
         }
 
-        /// <summary>
-        /// 松开按键后是否仍需存活，结算未完成的状态（持续射线、终幕、已装填的特殊弹等），默认为<see langword="false"/>
-        /// </summary>
+        /// <summary>松键后仍存活，默认 false</summary>
         public virtual bool StayAlive() => false;
 
-        /// <summary>
-        /// 基础的生存性维护：保活、闲置自毁、手持注册、UI安全判定、弹药预览刷新、武器占用锁与冷却递减
-        /// <para>子类重写时应当调用 <see langword="base"/>.<see cref="PreUpdate"/></para>
-        /// </summary>
+        /// <summary>保活/自毁/手持注册/弹药预览/占用锁/冷却；重写须调 base</summary>
         public override bool PreUpdate() {
-            //该弹幕由物品使用生成，松开所有开火键且没有待结算状态时自行销毁
+            //松键且无 StayAlive 则自毁
             if (!DownLeft && !DownRight && !StayAlive()) {
                 Projectile.Kill();
                 return false;
@@ -258,16 +210,14 @@ namespace CalamityOverhaul.Content.Projectiles
             return true;
         }
 
-        /// <summary>
-        /// 锁定物品使用与武器切换，开火与冷却期间由 <see cref="PreUpdate"/> 自动调用
-        /// </summary>
+        /// <summary>锁物品使用与切枪，PreUpdate 在开火/冷却时调</summary>
         public void KeepWeaponOccupied() {
             Owner.itemTime = 2;
             UIInputGuard.SuppressWeaponSwitch();
         }
 
         private void UpdateMouseUIFree() {
-            //只有在玩家不进行开火尝试时才能更改空闲状态，防止开火中途被UI打断造成抖动
+            //开火中不改，防UI打断抖动
             if (CanFire || !Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
@@ -278,18 +228,14 @@ namespace CalamityOverhaul.Content.Projectiles
             oldMouseUIFree = mouseUIFree;
         }
 
-        /// <summary>
-        /// 发送一个比特体，基类已占用至2号位，子类重写时应从3号位开始使用
-        /// </summary>
+        /// <summary>flags[2]=mouseUIFree，子类从3起</summary>
         public override BitsByte SendBitsByte(BitsByte flags) {
             flags = base.SendBitsByte(flags);
             flags[2] = mouseUIFree;
             return flags;
         }
 
-        /// <summary>
-        /// 接收一个比特体，基类已占用至2号位，子类重写时应从3号位开始使用
-        /// </summary>
+        /// <summary>flags[2]=mouseUIFree，子类从3起</summary>
         public override void ReceiveBitsByte(BitsByte flags) {
             base.ReceiveBitsByte(flags);
             mouseUIFree = flags[2];
@@ -297,13 +243,9 @@ namespace CalamityOverhaul.Content.Projectiles
         #endregion
 
         #region 姿态工具
-        /// <summary>
-        /// 统一更新持枪姿态：在闲置姿势与瞄准姿势之间平滑过渡，后坐力恢复并设置手臂
-        /// <para>在子类 AI 中每帧调用一次即可获得完整的持枪表现</para>
-        /// </summary>
-        /// <param name="aiming">当前是否处于瞄准（开火尝试）状态</param>
+        /// <summary>闲置↔瞄准过渡+后坐+手臂；子类 AI 每帧调</summary>
         public void UpdateHeldPose(bool aiming) {
-            //冲刺旋转期间不应强行瞄准
+            //冲刺旋转不瞄准
             bool effectiveAim = (aiming || AlwaysAimPose) && !Owner.CWR().IsRotatingDuringDash;
             aimProgress = MathHelper.Clamp(aimProgress + (effectiveAim ? 1f : -AimingAnimationSpeed), 0f, 1f);
 
@@ -339,23 +281,14 @@ namespace CalamityOverhaul.Content.Projectiles
             SetCompositeArm();
         }
 
-        /// <summary>
-        /// 获取瞄准状态下枪体的旋转角
-        /// </summary>
         public virtual float GetAimGunRot() => ToMouseA - RecoilPitch * DirSign;
 
-        /// <summary>
-        /// 获取瞄准状态下枪体的中心位置
-        /// </summary>
         public virtual Vector2 GetAimGunCenter() {
             Vector2 gunBodyRotOffset = Projectile.rotation.ToRotationVector2() * HandFireDistanceX;
             Vector2 gunHeldOffsetY = new Vector2(0, HandFireDistanceY * SafeGravDir);
             return Owner.GetPlayerStabilityCenter() + gunBodyRotOffset + gunHeldOffsetY + RecoilOffset;
         }
 
-        /// <summary>
-        /// 获取闲置状态下枪体的旋转角
-        /// </summary>
         public virtual float GetIdleGunRot() {
             float art = AngleFirearmRest;
             if (SafeGravDir < 0) {
@@ -366,17 +299,12 @@ namespace CalamityOverhaul.Content.Projectiles
             return Owner.direction > 0 ? MathHelper.ToRadians(value) : MathHelper.ToRadians(180 - value);
         }
 
-        /// <summary>
-        /// 获取闲置状态下枪体的中心位置
-        /// </summary>
         public virtual Vector2 GetIdleGunCenter() {
             Vector2 handOffset = new Vector2(Owner.direction * HandIdleDistanceX, HandIdleDistanceY * SafeGravDir);
             return Owner.GetPlayerStabilityCenter() + handOffset.RotatedBy(Owner.fullRotation);
         }
 
-        /// <summary>
-        /// 将枪体立即设置为瞄准姿态（不经过过渡），开火瞬间矫正延迟帧
-        /// </summary>
+        /// <summary>瞬切瞄准姿态</summary>
         public void SnapToAimPose() {
             Owner.direction = ToMouse.X > 0 ? 1 : -1;
             Projectile.rotation = GetAimGunRot();
@@ -385,9 +313,6 @@ namespace CalamityOverhaul.Content.Projectiles
             aimProgress = 1f;
         }
 
-        /// <summary>
-        /// 按当前手臂角度设置玩家复合手臂
-        /// </summary>
         public virtual void SetCompositeArm() {
             if (OnHandheldDisplayBool) {
                 Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotSengsFront * -DirSign);
@@ -397,9 +322,6 @@ namespace CalamityOverhaul.Content.Projectiles
             }
         }
 
-        /// <summary>
-        /// 更新后坐力恢复，已由 <see cref="UpdateHeldPose"/> 自动调用
-        /// </summary>
         public void UpdateRecoil() {
             RecoilPitch = MathHelper.Clamp(RecoilPitch - ControlForce, 0, GunPressure * 2);
             if (RecoilOffset != Vector2.Zero) {
@@ -410,9 +332,7 @@ namespace CalamityOverhaul.Content.Projectiles
             }
         }
 
-        /// <summary>
-        /// 制造一次后坐力（枪压上抬与制退位移），应在开火时调用
-        /// </summary>
+        /// <summary>开火时上抬+制退</summary>
         public virtual void CreateRecoil() {
             RecoilPitch += GunPressure;
             if (RecoilRetroForceMagnitude > 0) {
@@ -422,21 +342,12 @@ namespace CalamityOverhaul.Content.Projectiles
         #endregion
 
         #region 弹药与魔力工具
-        /// <summary>
-        /// 获取枪口位置
-        /// </summary>
-        /// <param name="forward">沿枪身方向的偏移</param>
-        /// <param name="normal">垂直枪身方向的偏移</param>
         public Vector2 GetMuzzlePos(float forward, float normal) {
             Vector2 norlVr = (Projectile.rotation + (DirSign > 0 ? MathHelper.PiOver2 : -MathHelper.PiOver2)).ToRotationVector2();
             return Projectile.Center + Projectile.rotation.ToRotationVector2() * forward + norlVr * normal;
         }
 
-        /// <summary>
-        /// 实际拾取并消耗一发弹药，所有端均可调用以保证背包消耗一致
-        /// <para>消耗期间会放行 <see cref="AmmoConsumeContext"/>，物品侧的 CanConsumeAmmo 应返回该值</para>
-        /// </summary>
-        /// <param name="allowFreeChance">是否允许弹药节约效果生效（受 <see cref="MustConsumeAmmunition"/> 覆盖）</param>
+        /// <summary>全端消耗弹药；期间放行 AmmoConsumeContext</summary>
         protected void ConsumeAmmo(bool allowFreeChance = true) {
             if (Item.useAmmo == AmmoID.None) {
                 return;
@@ -448,17 +359,12 @@ namespace CalamityOverhaul.Content.Projectiles
             AmmoConsumeContext = false;
         }
 
-        /// <summary>
-        /// 按物品使用时间与攻速加成累加开火冷却
-        /// </summary>
-        /// <param name="timeMultiplier">使用时间倍率</param>
+        /// <summary>按 useTime/攻速累加冷却</summary>
         public void SetFireCooldown(float timeMultiplier = 1f) {
             FireCooldown += MathF.Max(Item.useTime * timeMultiplier / AttackSpeed, 1f);
         }
 
-        /// <summary>
-        /// 按住开火期间调用，抑制魔力自然恢复
-        /// </summary>
+        /// <summary>按住开火时压魔力恢复</summary>
         protected void HoldManaRegenDelay() {
             if (manaRegenDelayValue == 0) {
                 manaRegenDelayValue = Owner.maxRegenDelay;
@@ -466,10 +372,7 @@ namespace CalamityOverhaul.Content.Projectiles
             Owner.manaRegenDelay = manaRegenDelayValue;
         }
 
-        /// <summary>
-        /// 检查并支付一次魔力消耗，返回是否支付成功
-        /// </summary>
-        /// <param name="overrideMana">覆盖本次消耗的基础魔力值，不填则使用 <see cref="Item.mana"/></param>
+        /// <summary>支付魔力，成功与否</summary>
         protected bool TryConsumeMana(int? overrideMana = null) {
             int baseMana = overrideMana ?? Item.mana;
             if (!Owner.CheckMana(Item, baseMana)) {
@@ -481,15 +384,10 @@ namespace CalamityOverhaul.Content.Projectiles
             return true;
         }
 
-        /// <summary>
-        /// 生成本弹幕的那次物品使用已经支付过一次魔力，首发射击应跳过支付
-        /// </summary>
+        /// <summary>物品使用已付魔力，首发跳过</summary>
         protected bool manaPaidByItemUse = true;
 
-        /// <summary>
-        /// 魔法武器的每发魔力支付：首发由物品使用代付，其后每发经 <see cref="TryConsumeMana"/> 支付
-        /// </summary>
-        /// <param name="overrideMana">覆盖本次消耗的基础魔力值，不填则使用 <see cref="Item.mana"/></param>
+        /// <summary>每发魔力，首发代付其后 TryConsumeMana</summary>
         protected bool PayMana(int? overrideMana = null) {
             if (manaPaidByItemUse) {
                 manaPaidByItemUse = false;
@@ -501,23 +399,15 @@ namespace CalamityOverhaul.Content.Projectiles
         #endregion
 
         #region 表现工具
-        /// <summary>
-        /// 开火音效，物品侧的 UseSound 应设为 null 以避免使用动画重复出声，音效改由这里提供
-        /// </summary>
+        /// <summary>开火音；物品 UseSound 宜置 null 防重复</summary>
         public virtual SoundStyle? ShootSound => Item.UseSound;
 
-        /// <summary>
-        /// 播放开火音效
-        /// </summary>
         public virtual void PlayShootSound() {
             if (ShootSound.HasValue) {
                 SoundEngine.PlaySound(ShootSound.Value, Projectile.Center);
             }
         }
 
-        /// <summary>
-        /// 在枪口制造火光照明，应在开火时调用
-        /// </summary>
         public void CreateFireLight() {
             if (FireLight > 0) {
                 Lighting.AddLight(ShootPos, VaultUtils.MultiStepColorLerp(Main.rand.NextFloat(0.3f, 0.65f)
@@ -525,9 +415,6 @@ namespace CalamityOverhaul.Content.Projectiles
             }
         }
 
-        /// <summary>
-        /// 一个快捷的开火烟尘粒子效果
-        /// </summary>
         public void SpawnGunFireDust(Vector2 pos = default, Vector2 velocity = default
             , float splNum = 1f, int dustID1 = 262, int dustID2 = 54, int dustID3 = 53) {
             if (pos == default) {
@@ -559,9 +446,7 @@ namespace CalamityOverhaul.Content.Projectiles
             return false;
         }
 
-        /// <summary>
-        /// 默认的枪体绘制：主体加可选的发光层，重写它以自定义绘制
-        /// </summary>
+        /// <summary>默认枪体+可选发光层</summary>
         public virtual void GunDraw(Vector2 drawPos, ref Color lightColor) {
             float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
             Main.EntitySpriteDraw(TextureValue, drawPos, null, lightColor

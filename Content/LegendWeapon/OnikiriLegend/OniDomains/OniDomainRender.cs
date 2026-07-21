@@ -6,14 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 {
-    /// <summary>
-    /// 鬼域 RenderHandle，调色拆两个时机以保实体可读性：<br/>
-    /// <see cref="DrawNPCsOverTiles"/>（NPC 层之前）跑 TechGrade 环境调色——墨阶量化/墨线
-    /// 只吃天空/墙/物块，之后画上来的 NPC/弹幕/玩家保持原色；<br/>
-    /// <see cref="EndCaptureDraw"/> 跑 TechUnify 全帧轻统一罩（去饱和+冷暖染+错位帧+负片闪），
-    /// 并承担翻转纸层捕获与剥落、开域白线、低画质回退
-    /// <br/>ScreenTargets[0] 为翻转纸层（捕获的旧世界画面）
-    /// </summary>
+    /// <summary>领域 RenderHandle</summary>
     internal class OniDomainRender : RenderHandle
     {
         public override int ScreenSlot => 1;
@@ -22,12 +15,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
         public override void UpdateBySystem(int index) {
             //主菜单兜底清理（PostUpdateEverything 不再运行）
+
             if (Main.gameMenu) {
                 OniDomainDeco.Clear();
             }
         }
-
-        //====== 环境调色：NPC 层之前，画面里只有环境 ======
 
         public override void DrawNPCsOverTiles(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
             if (Main.gameMenu) {
@@ -38,6 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 return;
             }
             //低画质回退整体走 EndCaptureDraw 的纯色叠层，这里不做事
+
             if (RenderQualitySafety.NeedsScreenTargetFallback()) {
                 return;
             }
@@ -54,6 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             RenderTargetBinding[] previousTargets = graphicsDevice.GetRenderTargets();
 
             //拷屏到交换缓冲
+
             graphicsDevice.SetRenderTarget(screenSwap);
             graphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
@@ -61,7 +55,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             spriteBatch.End();
 
             SetSharedGradeParams(grade, odp);
-            //浪头红烬：爆域最烈随扩散衰减，吸回时余温
+            //浪头红烬、爆域最烈随扩散衰减，吸回时余温
+
             float frontEmber = 0f;
             if (odp.Phase == OniDomainPhase.Opening) {
                 frontEmber = MathHelper.Lerp(1.0f, 0.3f, odp.SpreadProgress);
@@ -72,6 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             grade.Parameters["uFrontEmber"]?.SetValue(frontEmber);
 
             //调色回写主屏
+
             graphicsDevice.SetRenderTarget(Main.screenTarget);
             graphicsDevice.Clear(Color.Transparent);
             graphicsDevice.Textures[1] = noise;
@@ -83,13 +79,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             spriteBatch.End();
 
             //还原 RT 绑定
+
             if (previousTargets != null && previousTargets.Length > 0
                 && previousTargets[0].RenderTarget != Main.screenTarget) {
                 graphicsDevice.SetRenderTargets(previousTargets);
             }
         }
-
-        //====== 全帧统一罩 + 纸层捕获/剥落：EndCapture，实体已在画面里 ======
 
         public override void EndCaptureDraw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
             if (Main.gameMenu) {
@@ -119,9 +114,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             OniDomainDeco.Draw(spriteBatch);
         }
 
-        //两个 technique 共用的参数（世界选择/浸染前沿/死寂），前沿形状必须一致
+        //两个 technique 共用的参数（世界选择/浸染前沿/死寂）
+
         private static void SetSharedGradeParams(Effect grade, OniDomainPlayer odp) {
             //捕获帧要以旧世界调色（WorldIsUra 已在状态机先行切换）
+
             bool gradeUra = odp.PendingPaperCapture ? !odp.WorldIsUra : odp.WorldIsUra;
 
             Vector2 screenSize = new(Main.screenWidth, Main.screenHeight);
@@ -161,6 +158,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             RenderTargetBinding[] previousTargets = graphicsDevice.GetRenderTargets();
 
             //拷屏到交换缓冲
+
             graphicsDevice.SetRenderTarget(screenSwap);
             graphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
@@ -172,6 +170,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             grade.Parameters["uNegativeFlash"]?.SetValue(odp.NegativeFlash);
 
             //统一罩回写主屏
+
             graphicsDevice.SetRenderTarget(Main.screenTarget);
             graphicsDevice.Clear(Color.Transparent);
             graphicsDevice.Textures[1] = noise;
@@ -182,7 +181,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             spriteBatch.Draw(screenSwap, Vector2.Zero, Color.White);
             spriteBatch.End();
 
-            //捕获：此刻主屏已是"调色环境+清晰实体+统一罩"的完整旧世界成品帧，直接存作纸层
+            //捕获、此刻主屏已是"调色环境+清晰实体+统一罩"的完整旧世界成品帧，直接存作纸层
+
             if (odp.PendingPaperCapture) {
                 RenderTarget2D paper = GetPaperTarget();
                 if (paper != null) {
@@ -198,11 +198,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
 
             //纸层剥落
+
             if (odp.Phase == OniDomainPhase.Flipping && odp.FlipStage == OniFlipStage.Peel && odp.PaperValid) {
                 DrawPaperPeel(spriteBatch, graphicsDevice, odp);
             }
 
             //还原 RT 绑定
+
             if (previousTargets != null && previousTargets.Length > 0
                 && previousTargets[0].RenderTarget != Main.screenTarget) {
                 graphicsDevice.SetRenderTargets(previousTargets);
@@ -218,6 +220,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 return null;
             }
             //分辨率变化后尺寸不符则放弃本次翻转纸层
+
             if (paper.Width != Main.screenTarget.Width || paper.Height != Main.screenTarget.Height) {
                 return null;
             }
@@ -238,7 +241,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             Vector2 dir = odp.FlipSlashAngle.ToRotationVector2();
             Vector2 nrm = new(-dir.Y, dir.X);
             float prog = odp.PeelProgress;
-            //滑出：三次缓入，末段加速离场；两半按 PeelBias 不对称分滑
+            //滑出、三次缓入，末段加速离场；两半按 PeelBias 不对称分滑
+
             float slide = prog * prog * (3f - 2f * prog);
             float slideDist = screenSize.Length() * 0.72f * slide * slide;
             float rot = 0.085f * slide;
@@ -258,6 +262,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             for (int half = 0; half < 2; half++) {
                 float sign = half == 0 ? 1f : -1f;
                 //两半按 PeelBias 不对称分滑，每次翻转构图不同
+
                 float bias = half == 0 ? odp.PeelBias : 1f - odp.PeelBias;
                 peel.Parameters["uHalfSign"]?.SetValue(sign);
                 peel.CurrentTechnique.Passes[0].Apply();
@@ -269,8 +274,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             spriteBatch.End();
         }
 
-        //====== 调色后叠加层：翻转刀痕 / 鬼眼 ======
-
         private static void DrawOverlays(SpriteBatch spriteBatch, OniDomainPlayer odp) {
             DrawOpeningDim(spriteBatch, odp);
             DrawBurstShockwave(spriteBatch, odp);
@@ -278,7 +281,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             DrawEyeOverlays(spriteBatch, odp);
         }
 
-        //爆域冲击波：追着浸染前沿跑的红光环 + 头几帧的红闪
+        //爆域冲击波、追着浸染前沿跑的红光环 + 头几帧的红闪
+
         private static void DrawBurstShockwave(SpriteBatch spriteBatch, OniDomainPlayer odp) {
             if (odp.Phase != OniDomainPhase.Opening) {
                 return;
@@ -300,12 +304,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 Main.GameViewMatrix.TransformationMatrix);
             float diag = new Vector2(Main.screenWidth, Main.screenHeight).Length();
             //环半径贴合浸染前沿（mask 前沿位于 dist≈progress*1.18）
+
             float radius = odp.SpreadProgress * 1.18f * diag + 50f;
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive,
                 SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
 
             //头 5 帧红闪
+
             if (st < 5) {
                 float flashA = 0.30f * (1f - st / 5f);
                 spriteBatch.Draw(white, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
@@ -321,6 +327,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         }
 
         //鬼眼成形期间世界屏息压暗，爆域随扩散抬回
+
         private static void DrawOpeningDim(SpriteBatch spriteBatch, OniDomainPlayer odp) {
             if (odp.Phase != OniDomainPhase.Opening) {
                 return;
@@ -368,6 +375,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
 
             //全屏斜断刀痕
+
             Vector2 center = new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;
             float diag = new Vector2(Main.screenWidth, Main.screenHeight).Length();
             DrawSlashLine(spriteBatch, white, glow, center,
@@ -385,11 +393,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
 
             //主眼，世界锚定；不限阶段，Omote 里的余韵也画
+
             if (odp.EyeVisible) {
                 Vector2 pos = Vector2.Transform(
                     odp.EyeWorldPos - Main.screenPosition,
                     Main.GameViewMatrix.TransformationMatrix);
-                //活体悬浮：轻微上下漂 + 睁眼撑大 + 爆闪鼓胀
+                //活体悬浮、轻微上下漂 + 睁眼撑大 + 爆闪鼓胀
+
                 pos.Y += MathF.Sin(odp.EffectTime * 2.1f) * 3.5f;
                 float halfSize = 118f * (0.88f + 0.12f * odp.EyeOpenAmount) + 16f * odp.EyeFlash;
                 DrawEyeQuad(spriteBatch, eye, white, noise, pos, halfSize,
@@ -397,18 +407,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                     odp.EyeDissolve, odp.UraSmooth, odp.EffectTime);
             }
 
-            //负片帧彩蛋：旧世界的日/月化作同一只眼看你一眼
+            //负片帧彩蛋、旧世界的日/月化作同一只眼看你一眼
+
             if (odp.Phase == OniDomainPhase.Flipping && odp.FlipStage == OniFlipStage.Flash
                 && odp.NegativeFlash > 0.01f) {
                 float camX = Main.screenPosition.X;
                 bool sun = odp.FlipToUra;
                 //与 OniSky.fx 的天体位置常量保持一致
+
                 Vector2 c = sun
                     ? new Vector2(0.310f - camX * 0.000010f, 0.560f)
                     : new Vector2(0.700f - camX * 0.000012f, 0.250f);
                 Vector2 pos = new(c.X * Main.screenWidth, c.Y * Main.screenHeight);
                 float bodyR = (sun ? 0.105f : 0.150f) * Main.screenHeight;
-                //旧世界的天体化眼：表世界的日染绯红，里世界的月燃鬼火青
+                //旧世界的天体化眼、表世界的日染绯红，里世界的月燃鬼火青
+
                 DrawEyeQuad(spriteBatch, eye, white, noise, pos, bodyR * 2.3f,
                     odp.NegativeFlash, 1f, odp.EffectTime * 1.3f, 0f, 0f, sun ? 0f : 1f, odp.EffectTime);
             }
@@ -426,7 +439,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             eye.Parameters["uFlash"]?.SetValue(flash);
             eye.Parameters["uDissolve"]?.SetValue(dissolve);
             eye.Parameters["uUra"]?.SetValue(ura);
-            //Effect 实例与 HUD 眼共享,参数会残留——世界眼必须显式回置笔宽增益
+            //Effect 实例与 HUD 眼共享,参数会残留、世界眼必须显式回置笔宽增益
+
             eye.Parameters["uStrokeBoost"]?.SetValue(1f);
 
             Vector2 scale = new(halfSize * 2f / white.Width, halfSize * 2f / white.Height);
@@ -436,6 +450,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             gd.SamplerStates[1] = SamplerState.LinearWrap;
 
             //本体
+
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
                 SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
             eye.CurrentTechnique = eye.Techniques["TechEyeBase"];
@@ -444,6 +459,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             spriteBatch.End();
 
             //红光
+
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive,
                 SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
             eye.CurrentTechnique = eye.Techniques["TechEyeGlow"];
@@ -459,22 +475,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             Vector2 glowOrigin = glow.Size() * 0.5f;
 
             //宽晕
+
             Color haze = new Color(0.75f, 0.72f, 0.85f, 0f) * (0.35f * intensity);
             spriteBatch.Draw(glow, pos, null, haze, angle, glowOrigin,
                 new Vector2(26f / glow.Width, length * 1.06f / glow.Height), SpriteEffects.None, 0f);
 
             //中层
+
             Color mid = new Color(0.9f, 0.88f, 0.95f, 0f) * (0.55f * intensity);
             spriteBatch.Draw(white, pos, null, mid, angle, whiteOrigin,
                 new Vector2(5f / white.Width, length / white.Height), SpriteEffects.None, 0f);
 
             //白芯
+
             Color core = Color.White * intensity;
             spriteBatch.Draw(white, pos, null, core, angle, whiteOrigin,
                 new Vector2(2f / white.Width, length * 0.96f / white.Height), SpriteEffects.None, 0f);
         }
-
-        //====== 低画质回退：纯色叠层 ======
 
         private static void DrawLowQualityFallback(SpriteBatch spriteBatch, OniDomainPlayer odp) {
             Texture2D white = VaultAsset.placeholder2?.Value;

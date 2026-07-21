@@ -12,15 +12,13 @@ namespace CalamityOverhaul.Content.Narrative.Common
             if (_deathHandled) {
                 return;
             }
-            if (npc.life <= 0 || !npc.active) {//有些情况下是手动设置的死亡，这时life可能不为0，但active会被设为false
+            //手动死时 life 可能仍>0，靠 active==false
+            if (npc.life <= 0 || !npc.active) {
                 _deathHandled = true;
                 OnNPCDeath(npc);
             }
         }
-        /// <summary>
-        /// 当NPC被击杀时调用，在客户端或者服务端上均会运行
-        /// </summary>
-        /// <param name="npc"></param>
+        /// <summary>击杀回调，客户端与服务端都会跑</summary>
         public virtual void OnNPCDeath(NPC npc) { }
     }
 }

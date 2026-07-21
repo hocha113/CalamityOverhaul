@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
-    /// <summary>二阶段水平弹幕：玩家上方连射激光</summary>
+    /// <summary>二阶段水平弹幕，玩家上方连射激光</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerHorizontalBarrage, typeof(TwinsStateContext))]
     internal class RetinazerHorizontalBarrageState : TwinsStateBase
     {
@@ -71,7 +71,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             //弹幕结束，回到垂直弹幕继续套路循环
             if (Timer >= Duration) {
-                //独眼模式下切换到狂暴状态
                 if (context.IsSoloRageMode) {
                     return new RetinazerSoloRageState();
                 }

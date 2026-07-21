@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using Terraria;
@@ -67,7 +67,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override void PreUpdateMovement() {
             if (!EquipScabbard) {
-                //未装备清空拔刀值
                 DrawCharge = 0;
                 DrawChargeReady = false;
                 readyPulseTimer = 0;
@@ -77,8 +76,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
 
             Item heldItem = Player.HeldItem;
-
-            //手持近战判定
             bool isMeleeWeapon = heldItem != null && !heldItem.IsAir
                 && (heldItem.DamageType == DamageClass.Melee
                 || heldItem.DamageType == CWRRef.GetTrueMeleeDamageClass()
@@ -86,74 +83,50 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
             bool isAttacking = Player.itemAnimation > 0;
             bool notAttacking = !isAttacking && Player.itemTime <= 0;
-
-            //攻击动画刚结束
             if (wasAttacking && !isAttacking && DrawChargeReady && isMeleeWeapon) {
-                //挥空惩罚
                 if (!hasHitThisSwing) {
-                    //清空蓄力
                     DrawCharge = 0;
                     DrawChargeReady = false;
                     readyPulseTimer = 0;
                     missEffectTimer = 20;
-                    //失败音效
                     SoundEngine.PlaySound(SoundID.Item64 with { Pitch = -0.5f, Volume = 0.5f }, Player.Center);
-                    //失败特效
                     SpawnMissEffect();
                 }
-                //重置命中标记
                 hasHitThisSwing = false;
             }
-
-            //更新攻击状态
             wasAttacking = isAttacking;
 
             if (isMeleeWeapon && notAttacking) {
-                //积累拔刀值
                 if (DrawCharge < GodslayerScabbard.MaxDrawCharge) {
                     DrawCharge++;
-                    //满值标志+音效
                     if (DrawCharge >= GodslayerScabbard.MaxDrawCharge && !DrawChargeReady) {
                         DrawChargeReady = true;
                         readyPulseTimer = 60;
-                        //充能完成音效
                         SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = 0.5f, Volume = 0.6f }, Player.Center);
                         SoundEngine.PlaySound(SoundID.Item29 with { Pitch = 0.3f, Volume = 0.5f }, Player.Center);
-                        //充能完成粒子
                         SpawnChargeReadyEffect();
                     }
                 }
             }
-
-            //充能完成脉冲
             if (readyPulseTimer > 0) {
                 readyPulseTimer--;
                 if (readyPulseTimer % 8 == 0) {
                     SpawnReadyPulseEffect();
                 }
             }
-
-            //蓄力完成待机光环
             if (DrawChargeReady && Main.GameUpdateCount % 4 == 0) {
                 SpawnReadyAuraEffect();
             }
-
-            //更新无敌帧计时器
             if (iFrameTimer > 0) {
                 iFrameTimer--;
-                //无敌期间保护光环
                 if (iFrameTimer % 2 == 0) {
                     SpawnProtectionAura();
                 }
             }
-
-            //更新触发效果计时器
             if (triggerEffectTimer > 0) {
                 triggerEffectTimer--;
                 SpawnTriggerTrailEffect();
             }
-
-            //更新打空失败效果计时器
             if (missEffectTimer > 0) {
                 missEffectTimer--;
                 if (missEffectTimer % 4 == 0) {
@@ -166,8 +139,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (!EquipScabbard) {
                 return;
             }
-
-            //近战伤害判定
             bool isMeleeDamage = hit.DamageType == DamageClass.Melee
                 || hit.DamageType == CWRRef.GetTrueMeleeDamageClass()
                 || hit.DamageType == CWRRef.GetTrueMeleeNoSpeedDamageClass();
@@ -175,58 +146,38 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (!isMeleeDamage) {
                 return;
             }
-
-            //标记本挥命中
             hasHitThisSwing = true;
 
             if (!DrawChargeReady) {
                 return;
             }
-
-            //满蓄近战命中触发无敌
             Player.GivePlayerImmuneState(GodslayerScabbard.IFrameTime, true);
             iFrameTimer = GodslayerScabbard.IFrameTime;
             triggerEffectTimer = 30;
-
-            //拔刀音效
             SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.3f, Volume = 0.8f }, Player.Center);
             SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { Pitch = 0.2f, Volume = 0.7f }, Player.Center);
-
-            //拔刀特效
             SpawnDrawEffect(target.Center);
-
-            //清空拔刀值
             DrawCharge = 0;
             DrawChargeReady = false;
             readyPulseTimer = 0;
         }
-
-        //挥空失败粒子
         private void SpawnMissEffect() {
             if (VaultUtils.isServer) return;
-
-            //暗淡失败色
             Color missColor = new Color(100, 100, 150);
             Color darkBlue = new Color(40, 60, 100);
-
-            //向外扩散暗淡粒
             for (int i = 0; i < 16; i++) {
                 float angle = MathHelper.TwoPi * i / 16f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 6f);
                 PRTLoader.NewParticle<PRT_Spark>(Player.Center, velocity, Color.Lerp(missColor, darkBlue, Main.rand.NextFloat()), Main.rand.NextFloat(0.8f, 1.2f)).Configure(true, Main.rand.Next(15, 25), Player);
             }
-
-            //碎裂效果
             for (int i = 0; i < 12; i++) {
                 Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f);
-                velocity.Y -= 2f; //稍微向上
+                velocity.Y -= 2f;//略上抬
                 int dust = Dust.NewDust(Player.Center, 0, 0, DustID.Electric, velocity.X, velocity.Y, 180, missColor, 0.8f);
                 Main.dust[dust].noGravity = false;
                 Main.dust[dust].fadeIn = 0.5f;
             }
         }
-
-        //挥空拖尾
         private void SpawnMissTrailEffect() {
             if (VaultUtils.isServer) return;
 
@@ -237,23 +188,15 @@ namespace CalamityOverhaul.Content.Items.Accessories
             int dust = Dust.NewDust(pos, 0, 0, DustID.Smoke, 0, -1f, 150, trailColor, 0.6f);
             Main.dust[dust].noGravity = true;
         }
-
-        //充能完成粒子
         private void SpawnChargeReadyEffect() {
             if (VaultUtils.isServer) return;
-
-            //弑神者深紫蓝主题色
             Color godslayerBlue = new Color(80, 180, 255);
             Color godslayerPurple = new Color(160, 80, 255);
-
-            //环形爆发
             for (int i = 0; i < 24; i++) {
                 float angle = MathHelper.TwoPi * i / 24f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 8f);
                 PRTLoader.NewParticle<PRT_Spark>(Player.Center, velocity, Color.Lerp(godslayerBlue, godslayerPurple, Main.rand.NextFloat()), Main.rand.NextFloat(1.2f, 1.8f)).Configure(false, Main.rand.Next(20, 35), Player);
             }
-
-            //内层光芒
             for (int i = 0; i < 16; i++) {
                 Vector2 velocity = Main.rand.NextVector2CircularEdge(6f, 6f);
                 PRTLoader.NewParticle<PRT_Light>(
@@ -263,8 +206,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     0.6f
                 ).Configure(Main.rand.Next(25, 40), opacity: 1.5f, squishStrenght: 2.5f, hueShift: 0.02f);
             }
-
-            //扩散圆环
             for (int i = 0; i < 36; i++) {
                 float angle = MathHelper.TwoPi * i / 36f;
                 Vector2 pos = Player.Center + angle.ToRotationVector2() * 50f;
@@ -273,8 +214,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 Main.dust[dust].velocity = angle.ToRotationVector2() * 3f;
             }
         }
-
-        //蓄力完成脉冲
         private void SpawnReadyPulseEffect() {
             if (VaultUtils.isServer) return;
 
@@ -289,8 +228,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 Main.dust[dust].velocity = Vector2.Zero;
             }
         }
-
-        //待机光环
         private void SpawnReadyAuraEffect() {
             if (VaultUtils.isServer) return;
 
@@ -303,8 +240,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Main.dust[dust].noGravity = true;
             Main.dust[dust].velocity = (Player.Center - pos).SafeNormalize(Vector2.Zero) * 0.5f;
         }
-
-        //拔刀命中粒子
         private void SpawnDrawEffect(Vector2 targetPos) {
             if (VaultUtils.isServer) return;
 
@@ -312,15 +247,11 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Color godslayerBlue = new Color(80, 180, 255);
             Color godslayerPurple = new Color(160, 80, 255);
             Color godslayerCyan = new Color(100, 255, 255);
-
-            //斩击线特效
             for (int i = 0; i < 20; i++) {
                 Vector2 offset = direction.RotatedBy(Main.rand.NextFloat(-0.4f, 0.4f)) * Main.rand.NextFloat(20f, 80f);
                 Vector2 vel = -offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(3f, 8f);
                 PRTLoader.NewParticle<PRT_Spark>(Player.Center + offset, vel, Color.Lerp(godslayerCyan, godslayerBlue, Main.rand.NextFloat()), Main.rand.NextFloat(1.5f, 2.5f)).Configure(false, Main.rand.Next(15, 30), Player);
             }
-
-            //环状冲击波
             for (int i = 0; i < 32; i++) {
                 float angle = MathHelper.TwoPi * i / 32f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(8f, 14f);
@@ -331,16 +262,12 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     0.5f
                 ).Configure(Main.rand.Next(20, 35), opacity: 1.2f, squishStrenght: 2f, hueShift: 0.01f);
             }
-
-            //向目标剑气
             for (int i = 0; i < 12; i++) {
                 float t = i / 12f;
                 Vector2 pos = Vector2.Lerp(Player.Center, targetPos, t);
                 Vector2 vel = direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(2f, 5f);
                 PRTLoader.NewParticle<PRT_Spark>(pos + Main.rand.NextVector2Circular(10f, 10f), vel, godslayerCyan, Main.rand.NextFloat(1f, 1.8f)).Configure(false, Main.rand.Next(10, 20), Player);
             }
-
-            //爆发光芒
             for (int i = 0; i < 24; i++) {
                 Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(6f, 12f);
                 PRTLoader.NewParticle<PRT_Light>(
@@ -351,8 +278,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 ).Configure(Main.rand.Next(15, 25), opacity: 1f, squishStrenght: 1.8f, hueShift: 0f);
             }
         }
-
-        //触发拖尾
         private void SpawnTriggerTrailEffect() {
             if (VaultUtils.isServer) return;
 
@@ -365,8 +290,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 PRTLoader.NewParticle<PRT_Spark>(pos, vel, trailColor * (1f - progress), Main.rand.NextFloat(0.8f, 1.2f)).Configure(false, Main.rand.Next(8, 15), Player);
             }
         }
-
-        //保护光环
         private void SpawnProtectionAura() {
             if (VaultUtils.isServer) return;
 
@@ -376,8 +299,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
             Color godslayerBlue = new Color(80, 180, 255);
             Color godslayerPurple = new Color(160, 80, 255);
-
-            //旋转光环
             float rotAngle = Main.GlobalTimeWrappedHourly * 4f;
             for (int i = 0; i < 3; i++) {
                 float angle = rotAngle + MathHelper.TwoPi * i / 3f;
@@ -388,8 +309,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 Main.dust[dust].noGravity = true;
                 Main.dust[dust].velocity = angle.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * 2f;
             }
-
-            //随机护盾粒子
             if (Main.rand.NextBool(3)) {
                 Vector2 offset = Main.rand.NextVector2Circular(radius, radius);
                 PRTLoader.NewParticle<PRT_Light>(
@@ -402,11 +321,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void PostUpdate() {
-            //拔刀值充能光环
             if (EquipScabbard && DrawCharge > 0 && !DrawChargeReady) {
                 float chargeRatio = DrawCharge / (float)GodslayerScabbard.MaxDrawCharge;
-
-                //充能进度调粒子频率
                 int interval = (int)MathHelper.Lerp(15, 5, chargeRatio);
                 if (Main.GameUpdateCount % interval == 0) {
                     float angle = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -421,8 +337,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     Main.dust[dust].noGravity = true;
                     Main.dust[dust].velocity = (Player.Center - Main.dust[dust].position).SafeNormalize(Vector2.Zero) * (1f + chargeRatio * 2f);
                 }
-
-                //高充能额外光粒
                 if (chargeRatio > 0.7f && Main.GameUpdateCount % 8 == 0 && !VaultUtils.isServer) {
                     Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 3f);
                     PRTLoader.NewParticle<PRT_Light>(

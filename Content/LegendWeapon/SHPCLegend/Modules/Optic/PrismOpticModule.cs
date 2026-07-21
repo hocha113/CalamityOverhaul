@@ -1,6 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>瞄具：光束消亡时分裂出 2 道副光束</summary>
+    /// <summary>棱镜瞄具，消亡分裂 2 道副束</summary>
     internal sealed class PrismOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;
@@ -9,7 +9,7 @@
 
         public override void Apply(ref ShootContext ctx) {
             ctx.BeamSplitOnDeath += 2;
-            //分光透镜会让原始光束略微短命，但暴击爬升
+            //原束略短命换暴击
             ctx.BeamLifeMul += -0.24f;
             ctx.CritAdd += 4;
         }

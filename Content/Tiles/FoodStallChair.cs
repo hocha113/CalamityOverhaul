@@ -21,8 +21,8 @@ namespace CalamityOverhaul.Content.Tiles
             Main.tileNoAttach[Type] = true;
             Main.tileLavaDeath[Type] = true;
             TileID.Sets.HasOutlines[Type] = true;
-            TileID.Sets.CanBeSatOnForNPCs[Type] = true; //供 ModifySittingTargetInfo 读取
-            TileID.Sets.CanBeSatOnForPlayers[Type] = true; //供 ModifySittingTargetInfo 读取
+            TileID.Sets.CanBeSatOnForNPCs[Type] = true; //ModifySittingTargetInfo
+            TileID.Sets.CanBeSatOnForPlayers[Type] = true; //ModifySittingTargetInfo
             TileID.Sets.DisableSmartCursor[Type] = true;
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
             AddMapEntry(new Color(200, 200, 200), Language.GetText("MapObject.Chair"));
@@ -36,14 +36,14 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.addTile(Type);
         }
 
-        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) {//距离门限内才允许智能交互
-            return settings.player.IsWithinSnappngRangeToTile(i, j, 180);//禁止远距离触发
+        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) {
+            return settings.player.IsWithinSnappngRangeToTile(i, j, 180);
         }
 
         public override void ModifySittingTargetInfo(int i, int j, ref TileRestingInfo info) {
             Tile tile = Framing.GetTileSafely(i, j);
             info.ExtraInfo.IsAToilet = true;
-            //落座实体可能是任意玩家或 NPC，取乘坐者本身的朝向而不是本地玩家的
+            //取乘坐者朝向，勿用本地玩家
             if (info.RestingEntity is not null) {
                 info.TargetDirection = info.RestingEntity.direction;
             }
@@ -75,14 +75,14 @@ namespace CalamityOverhaul.Content.Tiles
         public override void MouseOver(int i, int j) {
             Player player = Main.LocalPlayer;
 
-            if (!player.IsWithinSnappngRangeToTile(i, j, 180)) { //与 RightClick 同距，超距不显示交互
+            if (!player.IsWithinSnappngRangeToTile(i, j, 180)) {
                 return;
             }
 
             player.noThrow = 2;
             player.mouseInterface = true;
             player.cursorItemIconEnabled = true;
-            player.cursorItemIconID = ModContent.ItemType<Items.Placeable.FoodStallChair>();//悬停显示对应物品图标
+            player.cursorItemIconID = ModContent.ItemType<Items.Placeable.FoodStallChair>();
 
             if (Main.tile[i, j].TileFrameX / 18 < 1) {
                 player.cursorItemIconReversed = true;
@@ -107,11 +107,7 @@ namespace CalamityOverhaul.Content.Tiles
             return false;
         }
 
-        /// <summary>
-        /// 玩家当前是否坐在大排档塑料椅上。
-        /// 与原版 <see cref="PlayerSittingHelper.UpdateSitting"/> 同源：由玩家脚底锚点反查落座物块，
-        /// 而不是拿玩家与椅子的距离做模糊判定，多把椅子相邻或旁人路过都不会误触
-        /// </summary>
+        /// <summary>脚底锚点反查落座物块，同源 <see cref="PlayerSittingHelper.UpdateSitting"/></summary>
         internal static bool IsSeatedOn(Player player) {
             if (!player.active || player.dead || !player.sitting.isSitting) {
                 return false;
@@ -122,10 +118,7 @@ namespace CalamityOverhaul.Content.Tiles
         }
     }
 
-    /// <summary>
-    /// 大排档塑料椅彩蛋场景：落座即入魔人雨夜——Bury The Light、暴雨幻象、魔人蓝辉光与低频震感。
-    /// 音乐走场景效果优先级体系，与生态、Boss 等其他音乐正常竞争，不再直写 <see cref="Main.newMusic"/>
-    /// </summary>
+    /// <summary>落座彩蛋，音乐走 SceneEffect 优先级，勿直写 Main.newMusic</summary>
     internal class FoodStallChairScene : ModSceneEffect
     {
         public override int Music => MusicLoader.GetMusicSlot(Mod, "Assets/Sounds/Music/BuryTheLight");
@@ -134,18 +127,17 @@ namespace CalamityOverhaul.Content.Tiles
         public override bool IsSceneEffectActive(Player player) => FoodStallChair.IsSeatedOn(player);
 
         public override void SpecialVisuals(Player player, bool isActive) {
-            //天气幻象与光效只属于客户端；服务端改 Main.raining 会变成真实天气广播给所有人
+            //仅客户端；服务端改 raining 会成真天气
             if (Main.dedServ) {
                 return;
             }
 
             if (isActive) {
-                //座上的任何玩家(包括联机中的旁人)都在本地客户端发出脉动的魔人蓝辉光
                 float pulse = 0.5f + 0.5f * MathF.Sin(Main.GlobalTimeWrappedHourly * MathHelper.TwoPi * 0.75f);
                 Lighting.AddLight(player.Center, new Vector3(0.32f, 0.24f, 0.9f) * (0.7f + pulse * 0.5f));
             }
 
-            //天气幻象与震感只跟随本地玩家自己的落座状态
+            //幻象/震感跟本地落座
             if (player.whoAmI != Main.myPlayer) {
                 return;
             }
@@ -153,16 +145,13 @@ namespace CalamityOverhaul.Content.Tiles
             FoodStallChairAmbience.UpdateIllusion(isActive);
 
             if (isActive) {
-                //低频持续震感走统一屏幕震动通道，遵循 ScreenVibration 配置并自然衰减
+                //统一震感通道
                 player.CWR().GetScreenShake(0.9f + 0.6f * MathF.Sin(Main.GameUpdateCount * 0.11f));
             }
         }
     }
 
-    /// <summary>
-    /// 雨夜幻象的全局单份状态：落座沿记录真实天气，离座恢复。
-    /// 仅本地客户端改动 <see cref="Main"/> 天气字段，属纯视觉幻象，不参与网络同步
-    /// </summary>
+    /// <summary>本地天气幻象，落座快照离座恢复，不同步</summary>
     internal class FoodStallChairAmbience : ModSystem
     {
         private static bool illusionActive;
@@ -174,13 +163,12 @@ namespace CalamityOverhaul.Content.Tiles
         internal static void UpdateIllusion(bool seated) {
             if (seated) {
                 if (!illusionActive) {
-                    //先快照后覆写，绝不把幻象值当真实天气记录下来
+                    //先快照后覆写
                     realRaining = Main.raining;
                     realMaxRaining = Main.maxRaining;
                     realCloudAlpha = Main.cloudAlpha;
                     realWindSpeedTarget = Main.windSpeedTarget;
                     illusionActive = true;
-                    //远处滚过一声闷雷，宣告雨夜开场
                     SoundEngine.PlaySound(SoundID.Thunder with { Volume = 0.55f, Pitch = -0.55f });
                 }
                 Main.raining = true;
@@ -203,7 +191,7 @@ namespace CalamityOverhaul.Content.Tiles
             Main.windSpeedTarget = realWindSpeedTarget;
         }
 
-        //存档与退出路径上兜底恢复，避免把幻象暴雨写进世界档或带进下一个世界
+        //存档/退出兜底，防幻象写进世界档
         public override void PreSaveAndQuit() => RestoreIllusion();
         public override void OnWorldUnload() => RestoreIllusion();
         public override void OnWorldLoad() => illusionActive = false;

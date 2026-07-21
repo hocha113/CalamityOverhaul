@@ -11,10 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 {
-    /// <summary>
-    /// Victor 义体诊所，CyberwareUI 人体槽位 + VictorClinicPanel 侧栏
-    /// <br/>槽位内查看/更换/购买三段合一
-    /// </summary>
+    /// <summary>诊所，人体槽位 + 侧栏查看/更换/购买</summary>
     internal class VictorClinicUI : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "UI";

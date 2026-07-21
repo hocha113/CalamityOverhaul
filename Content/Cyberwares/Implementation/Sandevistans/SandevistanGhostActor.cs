@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, ref Color drawColor) {
-            //每帧首个残影触发一次批量绘制
+            //每帧首个残影批量绘一次
             if (Main.GameUpdateCount == lastBatchDrawFrame) {
                 return false;
             }
@@ -71,16 +71,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 return false;
             }
 
-            //直接绘到当前渲染目标，绝不切换 RenderTarget：
-            //复古/Trippy 光照、低水波质量等模式下世界是直接画在 backbuffer 上的，
-            //一旦切到自建 RT 再切回，backbuffer 已绘的物块与背景会被丢弃，造成整屏黑屏/闪黑。
-            //镜像 MimicPhantom/CloneFish 的安全做法：仅切换 SpriteBatch 批次，由 PlayerRenderer 直绘。
+            //不切 RenderTarget，只切 SpriteBatch；Retro/低水波下世界画在 backbuffer，切 RT 再回会丢背景闪黑
+            //同 MimicPhantom/CloneFish
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
 
             try {
-                //同源残影只准备一次傀儡，避免逐体重复 CopyVisuals/ResetEffects
+                //同源残影傀儡只准备一次
                 int preparedOwner = -1;
                 foreach (SandevistanGhostActor ghost in ghosts) {
                     if (!ghost.Active || ghost.Alpha <= 0.01f) {
@@ -115,9 +113,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             return false;
         }
 
-        //用已准备好的傀儡绘制身体残影：固定在过去那一帧的姿态/朝向，不跟随玩家当前动作，也不重放特效
+        //固定快照姿态，不跟当前动作
         private static void DrawGhost(SandevistanGhostActor ghost) {
-            //蓝→青绿 tint，A 通道随生命淡出
+            //蓝→青绿，A 随生命淡出
             float fadeProgress = 1f - ghost.Alpha;
             Color tint = Color.Lerp(new Color(0, 180, 255, 255), new Color(0, 255, 200, 255), fadeProgress);
             tint.A = (byte)(255 * ghost.Alpha);

@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
 {
-    /// <summary>比目鱼试炼线：14 段试炼注册 QuestManagerUI，按 Halibut_Level 同步状态</summary>
+    /// <summary>比目鱼试炼线、14段注册QuestManagerUI，按Halibut_Level同步</summary>
     internal class HalibutTrialQuestLine : LegendTrialQuestLineBase, ILocalizedModType
     {
         public string LocalizationCategory => "Legend";

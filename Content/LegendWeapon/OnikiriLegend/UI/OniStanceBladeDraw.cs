@@ -19,19 +19,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public float Time;
     }
 
-    /// <summary>
-    /// 架势鞘刀刃/鞘段 shader 绘制(OniStanceBlade.fx)：钢材质/刃文/黑漆鞘身/
-    /// 拔刀线/满势流光/释放拔刀闪全部在 shader 内完成。<br/>
-    /// 失败时由调用方退回 CPU 简笔。柄与镡始终由 CPU 绘制
-    /// </summary>
+    /// <summary>刃/鞘段(OniStanceBlade.fx),失败 CPU 简笔,柄镡始终 CPU</summary>
     internal static class OniStanceBladeDraw
     {
         public static bool Available => EffectLoader.OniStanceBlade?.Value != null;
 
-        /// <summary>
-        /// 绘制刃/鞘段 quad。leftCenter 为镡侧左端中点,rot 为刀身倾角。<br/>
-        /// 调用方保证当前批为 Deferred+UIScaleMatrix
-        /// </summary>
+        /// <summary>刃/鞘段 quad,leftCenter=镡侧中点,批须 Deferred+UIScaleMatrix</summary>
         public static void Draw(SpriteBatch sb, Vector2 leftCenter, float rot, Vector2 size, in OniStanceBladeParams p) {
             Effect effect = EffectLoader.OniStanceBlade?.Value;
             if (effect == null) {

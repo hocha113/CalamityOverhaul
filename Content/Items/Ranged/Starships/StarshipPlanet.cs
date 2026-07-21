@@ -7,12 +7,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged.Starships
 {
-    //从玩家身后发射的行星弹幕，共八种形态（按 ai[0] 区分），使用 CelestialStar 着色器渲染天体
+    //行星弹，ai0形态，CelestialStar渲染
     internal class StarshipPlanet : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        //行星数据：核心色、表面色、日冕色、尾迹色、应用的 debuff（取 CWRID）
+        //行星色+debuff(CWRID)
         private struct PlanetData
         {
             public Vector3 Core;
@@ -25,37 +25,37 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
         }
 
         private static PlanetData GetData(int kind) => kind switch {
-            0 => new PlanetData { //火星：双足翼龙诅咒
+            0 => new PlanetData { //火星/双足翼龙诅咒
                 Core = new Vector3(1f, 0.75f, 0.5f), Surface = new Vector3(0.95f, 0.45f, 0.25f),
                 Corona = new Vector3(1f, 0.35f, 0.15f), Trail = new Vector3(1f, 0.3f, 0.1f),
                 Radius = 0.23f, DebuffId = CWRID.Buff_PearlAura, DebuffDuration = 300
             },
-            1 => new PlanetData { //海王星：冰封
+            1 => new PlanetData { //海王星/冰封
                 Core = new Vector3(0.75f, 0.9f, 1f), Surface = new Vector3(0.3f, 0.6f, 0.95f),
                 Corona = new Vector3(0.5f, 0.85f, 1f), Trail = new Vector3(0.2f, 0.5f, 1f),
                 Radius = 0.25f, DebuffId = BuffID.Frozen, DebuffDuration = 300
             },
-            2 => new PlanetData { //木星：粉碎
+            2 => new PlanetData { //木星/粉碎
                 Core = new Vector3(1f, 0.85f, 0.55f), Surface = new Vector3(0.85f, 0.6f, 0.4f),
                 Corona = new Vector3(0.9f, 0.7f, 0.4f), Trail = new Vector3(0.8f, 0.5f, 0.3f),
                 Radius = 0.28f, DebuffId = CWRID.Buff_CrushDepth, DebuffDuration = 300
             },
-            3 => new PlanetData { //冥王星：死亡低语
+            3 => new PlanetData { //冥王星/死亡低语
                 Core = new Vector3(0.75f, 0.7f, 0.85f), Surface = new Vector3(0.5f, 0.4f, 0.65f),
                 Corona = new Vector3(0.6f, 0.45f, 0.75f), Trail = new Vector3(0.35f, 0.25f, 0.55f),
                 Radius = 0.2f, DebuffId = CWRID.Buff_WhisperingDeath, DebuffDuration = 300
             },
-            4 => new PlanetData { //水星：莫名的悲伤（Nightwither）
+            4 => new PlanetData { //水星/Nightwither
                 Core = new Vector3(0.9f, 0.9f, 0.95f), Surface = new Vector3(0.6f, 0.55f, 0.6f),
                 Corona = new Vector3(0.55f, 0.5f, 0.7f), Trail = new Vector3(0.35f, 0.3f, 0.5f),
                 Radius = 0.19f, DebuffId = CWRID.Buff_Nightwither, DebuffDuration = 300
             },
-            5 => new PlanetData { //金星：放逐之火
+            5 => new PlanetData { //金星/放逐之火
                 Core = new Vector3(1f, 0.9f, 0.6f), Surface = new Vector3(1f, 0.7f, 0.35f),
                 Corona = new Vector3(1f, 0.55f, 0.2f), Trail = new Vector3(0.9f, 0.4f, 0.1f),
                 Radius = 0.22f, DebuffId = CWRID.Buff_BanishingFire, DebuffDuration = 300
             },
-            6 => new PlanetData { //土星：碎甲
+            6 => new PlanetData { //土星/碎甲
                 Core = new Vector3(1f, 0.92f, 0.7f), Surface = new Vector3(0.9f, 0.75f, 0.5f),
                 Corona = new Vector3(0.95f, 0.85f, 0.5f), Trail = new Vector3(0.8f, 0.7f, 0.35f),
                 Radius = 0.24f, DebuffId = CWRID.Buff_ArmorCrunch, DebuffDuration = 300
@@ -140,7 +140,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
             PlanetData data = GetData((int)Kind);
             float time = Main.GlobalTimeWrappedHourly;
 
-            //拖尾：使用 SoftGlow 堆叠营造行星光芒带
+            //SoftGlow拖尾
             Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             Vector2 backward = -forward;
             for (int i = Projectile.oldPos.Length - 1; i >= 0; i--) {

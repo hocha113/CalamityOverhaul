@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         private const int MaxSnapshots = 60 * 10; //最多记录10秒（支持更长延迟）
         /// <summary>当前齐射编号（同一帧的射击共享一个编号，供过去身轮流分配）</summary>
         private int cloneVolleySeq = -1;
-        /// <summary>上一次记录射击事件所在帧，用于划分齐射边界</summary>
+        /// <summary>上次记录射击事件的帧，划齐射边界</summary>
         private int cloneLastShootFrame = -1;
         /// <summary>
         /// 克隆技能触发冷却，防止一帧多次切换
@@ -259,7 +259,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             return baseCount;
         }
 
-        /// <summary>第十眼当前是否生效：玩家已开启且满足存在条件（外圈满九眼且时代唯一）；只读判定，切走武器只是暂时不计入，不清除持久开启状态</summary>
+        /// <summary>第十眼是否生效（已开且满九眼+时代唯一）；只读，切武器暂不计但不清状态</summary>
         internal bool ExtraEyeEffective(HalibutSave save) {
             return save != null && save.ExtraEyeActive
                 && save.activationSequence.Count >= 9

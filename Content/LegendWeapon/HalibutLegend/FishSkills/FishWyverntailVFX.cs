@@ -13,8 +13,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 云蛟蜕落的云絮：SmokeSheet01 随机帧 AlphaBlend 染色，珍珠白亮絮与灰蓝暗絮双色，
-    /// 微升力慢散、快进慢出。召唤云涡/出膛破云/飞行蜕鳞/命中云爆共用
+    /// 云蛟蜕落的云絮，SmokeSheet01 随机帧 AlphaBlend 染色，珍珠白亮絮与灰蓝暗絮双色
+    /// 微升力慢散、快进慢出，召唤云涡/出膛破云/飞行蜕鳞/命中云爆共用
     /// </summary>
     internal class PRT_FishWyverntailFluff : BasePRT
     {
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Rotation += spin;
 
             float lc = LifetimeCompletion;
-            //快进慢出：前20%胀出峰值，其后长尾消散
+            //快进慢出
             float env = lc < 0.2f
                 ? lc / 0.2f
                 : MathHelper.Lerp(1f, 0f, (lc - 0.2f) / 0.8f * (lc - 0.2f) / 0.8f);
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>长白贯影爆发演出集合：召唤云涡、出膛破云、命中云爆、自然化散，全 client-only</summary>
+    /// <summary>长白贯影爆发演出集合，召唤云涡、出膛破云、命中云爆、自然化散，全 client-only</summary>
     internal static class FishWyverntailVFX
     {
         //珍珠白亮絮 / 灰蓝暗絮 / 金鬃点缀 / 冲击环冷灰蓝
@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public static readonly Color ManeGold = new(226, 184, 94);
         public static readonly Color RingBlue = new(150, 165, 195);
 
-        /// <summary>召唤云涡：四周云絮向心聚拢+收缩环，materialize 禁 pop-in</summary>
+        /// <summary>召唤云涡</summary>
         public static void SummonBurst(Vector2 center) {
             if (VaultUtils.isServer) {
                 return;
@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>出膛破云：沿发射方向的锥形云爆+定向椭圆环+金屑</summary>
+        /// <summary>出膛破云，沿发射方向的锥形云爆+定向椭圆环+金屑</summary>
         public static void MuzzleBurst(Vector2 pos, Vector2 dir) {
             if (VaultUtils.isServer) {
                 return;
@@ -141,14 +141,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>命中云爆：≤2帧珍珠白过冲闪、暗云压底亮云覆面、冲击环、金屑、云 Gore</summary>
+        /// <summary>命中云爆，≤2帧珍珠白过冲闪、暗云压底亮云覆面、冲击环、金屑、云 Gore</summary>
         public static void ImpactBurst(Vector2 center, Vector2 impactVel, IEntitySource goreSource) {
             if (VaultUtils.isServer) {
                 return;
             }
             Vector2 dirBias = impactVel.SafeNormalize(Vector2.Zero);
 
-            //珍珠白过冲闪：sin 包络峰值仅 1-2 帧
+            //珍珠白过冲闪
             PRTLoader.NewParticle<PRT_Sparkle>(center, Vector2.Zero, new Color(242, 246, 252), 1.4f)
                 ?.Configure(new Color(242, 246, 252), 7, 0f, 1.6f);
 
@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     ?.Configure(ManeGold, Main.rand.Next(16, 22), 0.06f, 0.75f);
             }
 
-            //原版云 Gore：实体碎屑给云爆咬合感
+            //原版云 Gore
             for (int i = 0; i < 5; i++) {
                 Gore gore = Gore.NewGoreDirect(goreSource, center,
                     Main.rand.NextVector2Circular(3f, 3f) + impactVel * 0.25f, Main.rand.Next(11, 14));
@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>自然到期的静默化散：少量白絮原地慢散，无声无环</summary>
+        /// <summary>自然到期的静默化散，少量白絮原地慢散，无声无环</summary>
         public static void QuietDissolve(Vector2 center) {
             if (VaultUtils.isServer) {
                 return;
@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>飞行蜕云：龙身某骨节掉一片云屑</summary>
+        /// <summary>飞行蜕云，龙身某骨节掉一片云屑</summary>
         public static void ShedFluff(Vector2 pos, Vector2 vel) {
             if (VaultUtils.isServer) {
                 return;

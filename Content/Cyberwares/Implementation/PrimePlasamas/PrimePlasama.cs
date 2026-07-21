@@ -1,12 +1,12 @@
-﻿using Terraria;
+using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.PrimePlasamas
 {
     /// <summary>
-    /// 原型等离子皮下护甲，循环系统槽位
-    /// <br/>+DefenseBonus 防御、+EnduranceBonus 减伤；击退抗性经 PrimePlasamaPlayer.ModifyHurt 缩放
-    /// <br/>数值在 PostUpdateEquipped 写入，与 ResetEffects 不冲突
+    /// 原型等离子皮下护甲，循环系统槽
+    /// <br/>+DefenseBonus/+EnduranceBonus，击退经 PrimePlasamaPlayer.ModifyHurt 缩放
+    /// <br/>数值 PostUpdateEquipped 写入，与 ResetEffects 不冲突
     /// </summary>
     internal class PrimePlasama : BaseCyberware
     {
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PrimePlasamas
             Item.value = Item.sellPrice(0, 6, 0, 0);
         }
 
-        /// <summary>查询玩家是否装备本义体，未装备返回 null</summary>
+        /// <summary>未装备返回 null</summary>
         public static PrimePlasama GetEquipped(Player player) {
             if (player == null || !player.active) {
                 return null;

@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 {
-    /// <summary>老公爵商店交互逻辑</summary>
+    /// <summary>商店交互</summary>
     internal class OldDukeShopInteraction
     {
         private readonly Player player;

@@ -14,9 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
-    /// <summary>
-    /// 大理石猎刀：高速的交替连斩，每第三击为更宽的终结斩，向前突进并迸射大理石碎片
-    /// </summary>
+    /// <summary>大理石猎刀，交替连斩，每第三击终结斩突进碎石</summary>
     internal class MarbleHuntingKnife : ModItem
     {
         public override string Texture => GraniteMarbleVFX.MarbleTex + "MarbleHuntingKnife";
@@ -37,7 +35,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             Item.shootSpeed = 8f;
             Item.value = Item.sellPrice(0, 0, 50, 0);
             Item.rare = ItemRarityID.Green;
-            //noMelee 武器需要手动允许近战词缀
+            //noMelee 须手动允许近战词缀
             ItemOverride.ItemMeleePrefixDic[Type] = true;
         }
 
@@ -45,8 +43,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position
             , Vector2 velocity, int type, int damage, float knockback) {
-            //连击状态的唯一数据源：MarbleSwingPlayer 计数经 ai[0] 传入，
-            //%3 定终结、%2 定交替方向（周期 6 同时覆盖两个相位）
+            //ai[0]=连击计数，%3终结、%2交替
             MarbleSwingPlayer mp = player.GetModPlayer<MarbleSwingPlayer>();
             int step = mp.ComboStep;
             mp.ComboStep = (step + 1) % 6;
@@ -66,29 +63,26 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         }
     }
 
-    /// <summary>
-    /// 猎刀手持弹幕：瞄准向交替快斩，终结斩弧度更大、附带小步前突与收尾碎片（骨架镜像 WeaverGrievancesHeld）
-    /// </summary>
+    /// <summary>猎刀 Held，交替快斩；终结斩更大弧+前突+碎石</summary>
     internal class MarbleHuntingKnifeHeld : BaseHeldProj, IPrimitiveDrawable
     {
         public override string Texture => GraniteMarbleVFX.MarbleTex + "MarbleHuntingKnife";
 
-        /// 连击索引 0~5：%3==2 为终结斩，%2 决定上/下斩交替
+        /// 连击 0~5，%3==2 终结，%2 上下交替
         private ref float ComboIndex => ref Projectile.ai[0];
         private bool IsFinisher => (int)ComboIndex % 3 == 2;
 
-        //阶段时长（逻辑帧，受攻速缩放）
+        //阶段时长(逻辑帧，吃攻速)
         private float WindupTime => IsFinisher ? 5f : 3.5f;
         private float SlashTime => IsFinisher ? 10f : 8f;
         private float RecoverTime => IsFinisher ? 7.5f : 5f;
         private float TotalTime => WindupTime + SlashTime + RecoverTime;
-        //挥砍弧度与刀刃长度
         private float SwingArc => IsFinisher ? 3.6f : 2.3f;
-        //刀尖距枢轴距离：贴图 36×48 半对角恰好 30px，终结斩经 scale 1.06 微增；判定与弧光贴合可见刀体
+        //刀尖距枢轴30px，终结斩×1.06
         private const float BladeLength = 30f;
         private const float HoldDistance = 24f;
         private const float SwingDistance = 30f;
-        //刀刃在无旋转时指向约 -57°（右上，依据贴图像素主轴实测）
+        //贴图刀刃约 -57°
         private const float TextureBladeAngle = -0.996f;
 
         private float elapsed;
@@ -108,7 +102,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         private bool shardsSpawned;
         private Vector2 pivot;
 
-        //刀光轨迹缓存：每逻辑帧细分采样以保证快斩弧光平滑
+        //刀光轨迹缓存
         private const int TrailMax = 32;
         private const int TrailSubdiv = 4;
         private readonly float[] trailRot = new float[TrailMax];
@@ -155,7 +149,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 speedMul = 1f;
             }
 
-            //弧线以瞄准方向为中心，swingSign 决定自上而下还是自下而上
+            //弧线中心=瞄准，swingSign 定上下
             baseAngle = Projectile.velocity.ToRotation();
             startAngle = baseAngle - swingSign * SwingArc * 0.5f;
             endAngle = baseAngle + swingSign * SwingArc * 0.5f;
@@ -166,7 +160,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 Projectile.damage = (int)(Projectile.damage * 1.25f);
                 Projectile.scale = 1.06f;
                 if (!VaultUtils.isServer) {
-                    //收刀蓄势的石刃刮擦声
+                    //收刀刮擦音
                     SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.4f, Pitch = 0.7f, MaxInstances = 3 }, Owner.Center);
                 }
             }
@@ -182,7 +176,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 return;
             }
 
-            //终结斩命中顿帧：冻结挥砍推进，保持当前姿势
+            //终结斩命中顿帧
             if (hitstopTimer > 0f) {
                 hitstopTimer--;
                 UpdatePlayerPose();
@@ -193,14 +187,14 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             float slashEnd = WindupTime + SlashTime;
 
             if (elapsed < WindupTime) {
-                //收刀蓄势：刀身回拉过头一点，收紧到身侧
+                //收刀蓄势
                 float t = elapsed / WindupTime;
                 currentRotation = startAngle - swingSign * (IsFinisher ? 0.5f : 0.35f) * MathF.Sin(t * MathHelper.PiOver2);
                 currentDistance = MathHelper.Lerp(HoldDistance, HoldDistance * 0.8f, t);
                 trailFade = 0f;
             }
             else if (elapsed < slashEnd) {
-                //利落的 ease-out 快斩
+                //ease-out 快斩
                 float t = (elapsed - WindupTime) / SlashTime;
                 float eased = 1f - MathF.Pow(1f - t, IsFinisher ? 4.2f : 3.4f);
                 currentRotation = MathHelper.Lerp(startAngle, endAngle, eased);
@@ -215,7 +209,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                     }
                 }
 
-                //终结斩小步前突：3 帧、每帧 4px 的水平位移；不压低已有的更快前进速度
+                //终结前突 3帧×4px，不压已有更快前进
                 if (lungeTimer > 0f) {
                     lungeTimer--;
                     if (Owner.velocity.X * lockedDirection < 4f) {
@@ -225,7 +219,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
 
                 PushTrailSamples();
 
-                //终结斩刀刃鎏金闪烁
+                //终结鎏金闪
                 if (IsFinisher && !VaultUtils.isServer && Main.rand.NextBool(2)) {
                     Vector2 along = GetHandPos() + currentRotation.ToRotationVector2()
                         * Main.rand.NextFloat(BladeLength * 0.5f, BladeLength + SwingDistance);
@@ -234,7 +228,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 }
             }
             else {
-                //收势：刀停在终点，弧光渐隐
+                //收势
                 float t = (elapsed - slashEnd) / RecoverTime;
                 currentRotation = endAngle;
                 currentDistance = SwingDistance;
@@ -244,7 +238,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
 
             pivot = GetHandPos() + currentRotation.ToRotationVector2() * currentDistance;
 
-            //终结斩收尾迸射碎片（不依赖是否命中，保证机制稳定可见）
+            //终结斩收尾碎石(不依赖命中)
             if (IsFinisher && !shardsSpawned && elapsed >= slashEnd - 1f) {
                 shardsSpawned = true;
                 SpawnFinisherShards();
@@ -260,12 +254,12 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 return;
             }
             if (IsFinisher) {
-                //终结斩：更低更厚的双层破空
+                //终结双层破空
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.05f, Volume = 0.85f, MaxInstances = 3 }, Owner.Center);
                 SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -0.05f, Volume = 0.65f, MaxInstances = 3 }, Owner.Center);
             }
             else {
-                //普通斩：上/下斩音调交替的轻快破空，叠一层气声
+                //普斩破空
                 float pitch = swingSign > 0 ? 0.3f : 0.45f;
                 SoundEngine.PlaySound(SoundID.Item1 with { Pitch = pitch, Volume = 0.7f, MaxInstances = 3 }, Owner.Center);
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.6f, Volume = 0.22f, MaxInstances = 3 }, Owner.Center);
@@ -314,7 +308,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (!VaultUtils.isServer) {
-                //石凿命中声：终结斩更低沉，另叠一层石裂
+                //命中石凿音
                 SoundEngine.PlaySound(SoundID.Dig with {
                     Pitch = IsFinisher ? 0.1f : 0.4f,
                     Volume = IsFinisher ? 0.7f : 0.5f,
@@ -324,7 +318,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                     SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.15f, Volume = 0.45f, MaxInstances = 3 }, target.Center);
                 }
 
-                //白金石屑沿刀势迸溅 + 石尘
+                //石屑+石尘
                 int chips = IsFinisher ? 4 : Main.rand.Next(2, 4);
                 for (int i = 0; i < chips; i++) {
                     PRTLoader.NewParticle<PRT_MarbleChip>(target.Center
@@ -338,7 +332,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             }
 
             if (IsFinisher) {
-                //终结斩命中：2 帧微顿帧 + 轻微震屏
+                //终结命中 2帧顿+轻震
                 hitstopTimer = 2f;
                 if (CWRServerConfig.Instance.ScreenVibration) {
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(target.Center
@@ -355,7 +349,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
 
             float armAngle = currentRotation - MathHelper.PiOver2;
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armAngle);
-            //后臂微收在前臂之后，补全挥砍侧身姿势
+            //后臂微收
             Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, armAngle + 0.3f * lockedDirection);
 
             Projectile.Center = pivot;
@@ -375,7 +369,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             SpriteEffects effect = lockedDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
             float drawRot = lockedDirection == -1 ? currentRotation + TextureBladeAngle : currentRotation - TextureBladeAngle;
 
-            //斩击期两帧轻残影，弧光主体交给 MarbleSlash shader
+            //斩击轻残影
             if (CanDamage() == true) {
                 Color tint = IsFinisher ? GraniteMarbleVFX.MarbleGold : GraniteMarbleVFX.MarbleCore;
                 for (int i = 1; i <= 2; i++) {
@@ -402,8 +396,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 return;
             }
 
-            //TriangleStrip 扇面：x=1 最新挥砍缘，y=0 外缘（刀尖侧）；
-            //外径只比可见刀尖多 3px 能量毛边，内径收在刀身中段，弧光贴合贴图尺寸
+            //扇面 x=1 最新缘，外径+3px 毛边
             var bars = new VertexPositionColorTexture[trailCount * 2];
             Vector2 center = GetHandPos();
             float reach = (SwingDistance + BladeLength) * Projectile.scale;
@@ -424,7 +417,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             device.BlendState = BlendState.AlphaBlend;
             device.RasterizerState = RasterizerState.CullNone;
 
-            //普通斩短而淡，终结斩全亮金边
+            //普斩淡，终结全亮
             GraniteMarbleVFX.ApplyMarbleSlash(effect, trailFade * (IsFinisher ? 1f : 0.7f), IsFinisher ? 1f : 0.2f);
             foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
                 pass.Apply();
@@ -436,7 +429,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         }
     }
 
-    /// <summary>大理石近战连击状态，猎刀三连终结判定</summary>
+    /// <summary>猎刀连击计数</summary>
     internal class MarbleSwingPlayer : ModPlayer
     {
         public int ComboStep;

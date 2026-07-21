@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         public static readonly Color Border = new(40, 110, 130);
         //高亮边框色
         public static readonly Color BorderHi = new(120, 220, 240);
-        //选中时的暖色，避免整屏冷色单调
+        //选中暖色
         public static readonly Color Accent = new(255, 170, 60);
         //禁用按钮的灰青色
         public static readonly Color Disabled = new(60, 80, 90);

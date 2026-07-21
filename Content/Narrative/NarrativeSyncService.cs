@@ -6,8 +6,7 @@ namespace CalamityOverhaul.Content.Narrative
     internal sealed class NarrativeSyncService : INarrativeSyncService
     {
         public void SyncProgress(string scenarioKey, ScenarioProgress progress) {
-            // Scenario progress is player-local for now. Gameplay-critical state keeps using
-            // existing CWR packets owned by the relevant content system.
+            //进度暂玩家本地；玩法关键状态走既有 CWR 包
         }
     }
 }

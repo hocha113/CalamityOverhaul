@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
         private HalibutSave Save => Player.GetModPlayer<HalibutSave>();
 
         /// <summary>
-        /// 轮盘允许显示：存活、手持比目鱼、装备栏非空、图鉴未打开
+        /// 轮盘可显示、存活+手持鱼+栏非空+图鉴关
         /// </summary>
         private bool CanWheelBeShown() {
             if (Player == null || !Player.active || Player.dead) {
@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
                 return;
             }
             if (IsOpen && key.JustReleased) {
-                //松键 = 确认选择：有悬停扇区则选定它
+                //松键确认、有悬停扇区则选定
                 if (HoveredIndex >= 0 && HoveredIndex < sectors.Count) {
                     SelectSkill(sectors[HoveredIndex].Skill);
                 }
@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
         }
 
         /// <summary>
-        /// 选定技能：写入存档数据并触发头顶切换演出
+        /// 选定技能、写存档+头顶切换演出
         /// </summary>
         public void SelectSkill(FishSkill skill) {
             if (skill == null) {
@@ -275,7 +275,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
         }
 
         /// <summary>
-        /// 极坐标命中检测：返回扇区索引或 -1
+        /// 极坐标命中、扇区索引或-1
         /// </summary>
         private int HitTest() {
             if (sectors.Count <= 0) {

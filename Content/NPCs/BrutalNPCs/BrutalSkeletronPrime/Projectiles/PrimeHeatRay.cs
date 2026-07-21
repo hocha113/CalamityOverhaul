@@ -12,22 +12,22 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projectiles
 {
-    /// <summary>机械骷髅王热射线基类：展开→全功率→收束未完全展开无伤害(公平阀)，宿主失效快进收束；ai[0]=宿主NPC的whoAmI（有效性判定/锚定）；ai[1]=起始角（弧度）；ai[2]=每帧扫射角速度（0=定向光束）渲染复用PrimeSkullBeam着色器，与颅骨主炮同套热能视觉</summary>
+    /// <summary>热射线基类；ai[0]宿主，ai[1]起始角，ai[2]角速度(0定向)；未展开无伤</summary>
     internal abstract class PrimeHeatRayBase : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder2;
 
-        /// <summary>全功率碰撞宽度</summary>
+        /// <summary>全功率碰撞宽</summary>
         protected abstract float MaxWidth { get; }
-        /// <summary>光束长度</summary>
+        /// <summary>光束长</summary>
         protected abstract float MaxLength { get; }
-        /// <summary>全功率持续帧数</summary>
+        /// <summary>全功率帧</summary>
         protected abstract int SustainFrames { get; }
         protected virtual int ExpandTime => 10;
         protected virtual int CollapseTime => 12;
         protected virtual Color ThemeColor => new(255, 86, 22);
         protected virtual Color ThemeGlow => new(255, 212, 120);
-        /// <summary>出生音效；返回 null 时静默（由状态侧统一配乐）</summary>
+        /// <summary>出生音效，null则静默</summary>
         protected virtual SoundStyle? BirthSound => SoundID.Zombie104 with { Volume = 0.75f, Pitch = 0.1f, MaxInstances = 3 };
 
         internal int TotalLife => ExpandTime + SustainFrames + CollapseTime;
@@ -38,9 +38,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
         protected float beamWidth;
         protected float beamLength;
 
-        /// <summary>宿主有效性判定，失效时光束快进到收束段</summary>
+        /// <summary>宿主有效性</summary>
         protected abstract bool HostValid();
-        /// <summary>每帧更新光束根部位置（默认钉在生成点）</summary>
+        /// <summary>更新束根位置</summary>
         protected virtual void UpdateAnchor() { }
 
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 3200;
@@ -65,13 +65,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
                 SoundEngine.PlaySound(BirthSound.Value, Projectile.Center);
             }
 
-            //扫射角：展开期定格起始角 → 匀速扫射 → 收束期定格末角
+            //扫射角
             float sweepT = MathHelper.Clamp(Timer - ExpandTime, 0f, SustainFrames);
             Projectile.rotation = Projectile.ai[1] + Projectile.ai[2] * sweepT;
 
             UpdateAnchor();
 
-            //宽度展开/收束缓动
+            //宽度缓动
             float collapseStart = TotalLife - CollapseTime;
             if (Timer < ExpandTime) {
                 float t = Timer / ExpandTime;
@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
                 return;
             }
 
-            //沿线飞溅火花
+            //沿线火花
             if (Main.rand.NextBool(3)) {
                 float along = Main.rand.NextFloat();
                 Vector2 sparkPos = Projectile.Center + beamDir * beamLength * along
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             }
         }
 
-        //未完全展开时不造成伤害，给玩家反应窗口
+        //未展开无伤
         public override bool? CanDamage() => beamWidth >= MaxWidth * 0.6f ? null : false;
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
@@ -152,7 +152,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
                 DrawFallbackBeam(drawPos, rot, outer, mid, core, flicker);
             }
 
-            //枪口辉光：按绝对宽度缩放，窄束的辉光也成比例收小
+            //枪口辉光随宽缩放
             float muzzleScale = beamWidth / 64f;
             Main.EntitySpriteDraw(glow, drawPos, null, outer * 0.95f, 0f, glow.Size() / 2f,
                 muzzleScale * 2.2f * flicker, SpriteEffects.None, 0);
@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             shader.CurrentTechnique.Passes[0].Apply();
 
             Texture2D quad = VaultAsset.placeholder2.Value;
-            //视觉宽度大于碰撞宽度，撕裂边缘需要余量
+            //视觉宽>碰撞宽
             float visualWidth = beamWidth * 3.6f;
             sb.Draw(quad, Projectile.Center - Main.screenPosition, null, Color.White, rot,
                 new Vector2(0, quad.Height / 2f),
@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
         }
     }
 
-    /// <summary>十字绞杀热射线：钉在预警线原位定向光束，四臂向心封位两两相对成十字，对角缝为唯一安全区宿主头部脱离十字绞杀状态时快速收束</summary>
+    /// <summary>十字绞杀热射线，钉预警线原位</summary>
     internal class PrimeCrossBeamProj : PrimeHeatRayBase
     {
         protected override float MaxWidth => 50f;
@@ -217,7 +217,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
         protected override int SustainFrames => 68;
         protected override Color ThemeColor => new(255, 56, 26);
         protected override Color ThemeGlow => new(255, 186, 96);
-        //四道齐鸣会爆音，由状态侧统一播放一次
+        //音效由状态侧播一次
         protected override SoundStyle? BirthSound => null;
 
         protected override bool HostValid() {
@@ -227,12 +227,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
         }
     }
 
-    /// <summary>激光炮臂热射线：锚定炮口，ai[2]=0 定向轰击，≠0 匀速扫射炮臂阵亡或切出发射状态时快速收束</summary>
+    /// <summary>炮臂热射线，ai[2]=0定向</summary>
     internal class PrimeArmHeatRayProj : PrimeHeatRayBase
     {
-        /// <summary>扫射模式的全功率帧数（状态侧驱动炮体同步转动时引用）</summary>
+        /// <summary>扫射全功率帧</summary>
         internal static int SweepSustain => 70;
-        /// <summary>炮口前伸距离</summary>
+        /// <summary>炮口前伸</summary>
         internal static float MuzzleOffset => 70f;
 
         protected override float MaxWidth => 38f;
@@ -244,17 +244,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             if (!arm.Alives() || arm.type != NPCID.PrimeLaser) {
                 return false;
             }
-            //出生宽限：客户端可能先收到弹幕、后收到 ai 槽更新，给同步留余量
+            //出生宽限，等ai同步
             if (Timer < 8) {
                 return true;
             }
-            //炮臂被切出发射状态（电弧风车硬性接管取消等）→ 光束随之收束
+            //切出发射则收束
             int armState = (int)arm.ai[PrimeAiSlots.ArmStateSlot];
             if (armState != (int)PrimeArmStateIndex.LaserSweep
                 && armState != (int)PrimeArmStateIndex.LaserChargedShot) {
                 return false;
             }
-            //头部转阶段殉爆演出会无条件收走四肢，光束不应继续灼烧
+            //转阶段收束
             ((int)arm.ai[PrimeAiSlots.ArmHeadIndex]).TryGetNPC(out NPC head);
             return !(head.Alives() && head.type == NPCID.SkeletronPrime
                 && (int)head.ai[PrimeAiSlots.HeadStateSlot] == (int)PrimeStateIndex.PhaseTransition);

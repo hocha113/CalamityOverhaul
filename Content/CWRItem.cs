@@ -42,65 +42,33 @@ namespace CalamityOverhaul.Content
 
         #region Data
         public override bool InstancePerEntity => true;
-        /// <summary>
-        /// 是否是一个手持物品，改判定与<see cref="heldProjType"/> >0 具有同样的功效，都会被系统认定为手持物品
-        /// </summary>
+        /// <summary>手持物品标记，与 <see cref="heldProjType"/> &gt;0 等价</summary>
         public bool isHeldItem;
-        /// <summary>
-        /// 设置这个物品的手持弹幕Type，默认为0，如果是0便认定为无手持
-        /// </summary>
+        /// <summary>手持弹幕 Type，0=无</summary>
         public int heldProjType;
-        /// <summary>
-        /// 在有手持弹幕存在时还可以使用武器吗？和<see cref="heldProjType"/>配合使用，
-        /// 设置为<see langword="true"/>在拥有手持弹幕时禁止物品使用，
-        /// 设置为<see langword="false"/>默认物品的原使用
-        /// </summary>
+        /// <summary>true 时有手持弹幕则禁用原使用，配合 <see cref="heldProjType"/></summary>
         public bool hasHeldNoCanUseBool;
-        /// <summary>
-        /// 在背包中的时间
-        /// </summary>
+        /// <summary>背包内停留帧数</summary>
         public int InventoryTimer;
-        /// <summary>
-        /// 如果该物品被一个收集者视作为目标，那么该值会被设置为对应手臂的的弹幕索引
-        /// </summary>
+        /// <summary>收集者手臂弹幕索引，-1 无</summary>
         internal int TargetByCollector = -1;
-        /// <summary>
-        /// 收集者锁定的剩余帧数，由机械臂在追踪期间持续刷新
-        /// 归零后自动解除<see cref="TargetByCollector"/>，
-        /// 避免机械臂被销毁(Actor没有死亡钩子)后物品被幽灵索引永久锁定
-        /// </summary>
+        /// <summary>收集者锁剩余帧，归零清 <see cref="TargetByCollector"/>（Actor 无死亡钩子防幽灵锁）</summary>
         internal int CollectorLockTime;
-        /// <summary>
-        /// 是否存储UE
-        /// </summary>
+        /// <summary>是否存储 UE</summary>
         public bool StorageUE;
-        /// <summary>
-        /// UE储能
-        /// </summary>
+        /// <summary>UE 储能</summary>
         public float UEValue;
-        /// <summary>
-        /// 单件物品的最大UE电力容量，如果为默认0，则会自动设置为<see cref="ConsumeUseUE"/>的值，如果ConsumeUseUE也为0，则设置为20
-        /// </summary>
+        /// <summary>UE 容量上限，0 时回落 <see cref="ConsumeUseUE"/> 再 20</summary>
         public float MaxUEValue;
-        /// <summary>
-        /// 当这个物品被消耗时，会消耗的UE值
-        /// </summary>
+        /// <summary>单次消耗 UE</summary>
         public float ConsumeUseUE;
-        /// <summary>
-        /// 被传奇武器所使用，保存一些数据
-        /// </summary>
+        /// <summary>传奇升级数据</summary>
         public LegendData LegendData;
-        /// <summary>
-        /// 是否是死亡模式专属物品
-        /// </summary>
+        /// <summary>死亡模式专属</summary>
         public bool DeathModeItem;
-        /// <summary>
-        /// 需要锁定的弹药类型
-        /// </summary>
+        /// <summary>锁定弹药</summary>
         public Item TargetLockAmmo;
-        /// <summary>
-        /// 使用的染色物品ID
-        /// </summary>
+        /// <summary>染色物品 ID</summary>
         public int DyeItemID;
         #endregion
         public override void Load() {
@@ -115,7 +83,7 @@ namespace CalamityOverhaul.Content
         }
         public override GlobalItem Clone(Item from, Item to) => CloneCWRItem((CWRItem)base.Clone(from, to), to);
         public CWRItem CloneCWRItem(CWRItem cwr, Item to) {
-            //LegendData 是引用型:浅拷会让复制出的两件物品共写同一份状态
+            //LegendData 引用型，浅拷会共写
             cwr.isHeldItem = isHeldItem;
             cwr.heldProjType = heldProjType;
             cwr.hasHeldNoCanUseBool = hasHeldNoCanUseBool;
@@ -145,17 +113,17 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        //TODO:这里的设置受到时效性的影响，可能会让一些属性错过设置实际，最好是在 ItemRebuildLoader 中编辑代码
+        //TODO:时机受限，属性可能错过，优先在 ItemRebuildLoader 改
         public override void SetDefaults(Item item) { }
 
-        //调用在 ItemRebuildLoader.SetDefaults 之前
+        //ItemRebuildLoader.SetDefaults 之前
         public static void PreSetDefaults(Item item) {
             CWRItem cwrItem = item.CWR();
             cwrItem.TargetLockAmmo = new Item();
             SmiperItemSet(item);
             CWRLoad.SetAmmoItem(item);
         }
-        //调用在 ItemRebuildLoader.SetDefaults 之后
+        //ItemRebuildLoader.SetDefaults 之后
         public static void PostSetDefaults(Item item) {
             CWRItem cwrItem = item.CWR();
 
@@ -238,7 +206,7 @@ namespace CalamityOverhaul.Content
             return true;
         }
 
-        //有意思的是，在数次令角色死亡死后，我确认当角色死亡时，该函数会被加载一次
+        //死亡时也会调一次 SaveData
         public override void SaveData(Item item, TagCompound tag) {
             if (DyeItemID > ItemID.None) {
                 tag.Add("_DyeItemID", DyeItemID);
@@ -261,9 +229,8 @@ namespace CalamityOverhaul.Content
             }
 
             try {
-                //加载数据
                 LegendData?.LoadData(item, tag);
-                //加载操作使用StorageOperation上下文，静默升级不弹窗
+                //StorageOperation，静默不弹窗
                 LegendData?.DoUpdate(item, LegendUpdateContext.StorageOperation);
             } catch (Exception ex) {
                 CWRMod.Instance.Logger.Error($"[LegendData:LoadData] an error has occurred:{ex.Message}");
@@ -277,28 +244,19 @@ namespace CalamityOverhaul.Content
         }
 
         public override void HoldItem(Item item, Player player) {
-            //玩家手持，PlayerHolding 上下文，带 player 做 owner 校验
-            //避免多人模式下 A 玩家的物品在 B 玩家屏幕上弹出确认 UI
+            //PlayerHolding+owner 校验，防 MP 旁观端弹窗
             LegendData?.DoUpdate(item, player, LegendUpdateContext.PlayerHolding);
             if (heldProjType > 0) {
-                //使用GetProjectileHasNum即时检测，而不是使用ownedProjectileCounts，这样获得的弹幕数量最为保险
-                if (player.CountProjectilesOfID(heldProjType) <= 0 && Main.myPlayer == player.whoAmI) {//player.ownedProjectileCounts[heldProjType] == 0
+                //CountProjectilesOfID，不用 ownedProjectileCounts
+                if (player.CountProjectilesOfID(heldProjType) <= 0 && Main.myPlayer == player.whoAmI) {
                     Projectile.NewProjectileDirect(item.GetSource_FromThis(), player.Center, Vector2.Zero
                         , heldProjType, item.damage, item.knockBack, player.whoAmI);
                 }
-                //if (CWRLoad.ItemIsRanged[item.type]) {
-                //    bool lDown = player.PressKey();
-                //    bool rDown = player.PressKey(false);
-                //    if (lDown || (rDown && !lDown && CWRLoad.ItemIsRangedAndCanRightClickFire[item.type] && !player.cursorItemIconEnabled)) {
-                //        player.CWR().HeldStyle = 0;
-                //    }
-                //}
             }
         }
 
         public override void UpdateInventory(Item item, Player player) {
-            //玩家背包，PlayerInventory 上下文，带 player 做 owner 校验
-            //避免多人模式下 A 玩家的物品在 B 玩家屏幕上弹出确认 UI
+            //PlayerInventory+owner 校验，防 MP 旁观端弹窗
             LegendData?.DoUpdate(item, player, LegendUpdateContext.PlayerInventory);
             RecoverUnloadedItem.UpdateInventory(item);
             if (InventoryTimer < int.MaxValue)
@@ -306,11 +264,11 @@ namespace CalamityOverhaul.Content
         }
 
         public override void Update(Item item, ref float gravity, ref float maxFallSpeed) {
-            //收集者锁超时自动过期，防止锁泄漏导致物品永久无法被收集
+            //锁超时过期，防泄漏
             if (TargetByCollector >= 0 && --CollectorLockTime <= 0) {
                 TargetByCollector = -1;
             }
-            //世界掉落物，使用WorldItem上下文，静默升级不弹窗
+            //WorldItem，静默不弹窗
             LegendData?.DoUpdate(item, LegendUpdateContext.WorldItem);
         }
 
@@ -322,7 +280,7 @@ namespace CalamityOverhaul.Content
                     List<TooltipLine> newTooltips = new(tooltips);
                     List<TooltipLine> prefixTooltips = [];
                     List<TooltipLine> tooltip = [];
-                    foreach (TooltipLine line in tooltips.ToList()) {//复制 tooltips 集合，以便在遍历时修改
+                    foreach (TooltipLine line in tooltips.ToList()) {
                         for (int i = 0; i < 9; i++) {
                             if (line.Name == "Tooltip" + i) {
                                 tooltip.Add(line.Clone());
@@ -335,8 +293,8 @@ namespace CalamityOverhaul.Content
                         }
                     }
                     newTooltips.AddRange(tooltip);
-                    tooltips.Clear(); //清空原 tooltips 集合
-                    tooltips.AddRange(newTooltips); //添加修改后的 newTooltips 集合
+                    tooltips.Clear();
+                    tooltips.AddRange(newTooltips);
                     tooltips.AddRange(prefixTooltips);
                 }
             }

@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
-    /// <summary>SHPC 武器 NPC 附加效果：数据侵蚀、时相减速等</summary>
+    /// <summary>SHPC 命中附加效果，数据侵蚀/时相减速等</summary>
     internal class SHPCNPCEffects : GlobalNPC
     {
         public override bool InstancePerEntity => true;
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     ModContent.ProjectileType<SHPCObsidianShardProj>(),
                     shardDamage, 0f, owner);
             }
-            //中央可见冲击：CyberDetonationProj 以 110px 半径 + ai0 = 0.4 触发着色器
+            //中央冲击，Detonation 半径110 ai0=0.4
             int centerDmg = Math.Max(damage * 2, 1);
             int idx = Projectile.NewProjectile(npc.GetSource_FromThis(),
                 npc.Center, Vector2.Zero,
@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     Vector2 vel = Main.rand.NextVector2CircularEdge(5f, 5f);
                     PRTLoader.NewParticle<PRT_CyberSquare>(npc.Center, vel, new Color(60, 35, 95), Main.rand.NextFloat(0.7f, 1.5f)).Configure(new Color(255, 80, 35), Main.rand.Next(16, 30));
                 }
-                //玻璃环：紫色快速 + 橙色慢速双层
+                //玻璃环双层，紫快橙慢
                 PRTLoader.NewParticle<PRT_StarPulseRing>(npc.Center, Vector2.Zero, new Color(150, 80, 220, 0), 0.05f).Configure(0.05f, 0.55f, 22);
                 PRTLoader.NewParticle<PRT_StarPulseRing>(npc.Center, Vector2.Zero, new Color(255, 110, 50, 0), 0.05f).Configure(0.05f, 0.4f, 28);
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Item50 with { Volume = 0.55f, Pitch = 0.2f }, npc.Center);
@@ -226,7 +226,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (shader == null) return true;
 
             Texture2D tex = TextureAssets.Npc[npc.type].Value;
-            //progress 0→1 随侵蚀剩余时间的消耗推进，用 saturate 夹住
+            //progress 0→1 随侵蚀剩余，saturate
             float totalTime = 240f;
             float progress = Math.Clamp(1f - DataErosionTime / totalTime, 0f, 1f);
 

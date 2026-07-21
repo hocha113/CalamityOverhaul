@@ -10,12 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
 {
-    /// <summary>
-    /// 鬼切樱流化身：玩家化作分层风幕般的樱流高速飞行，并在终点回卷重组。
-    /// <br/>真实移动仅由持有者客户端推进；控制弹幕负责同步生命周期，花瓣在各客户端本地重建。
-    /// <br/>生产触发：黄昏表层领域(表世界)中神威疾走跑满全程且右键仍按住时衔接入飞，
-    /// 门禁与逐帧耗气在 <see cref="OnikiriPlayer"/>，松手/气尽/离开表世界即回卷
-    /// </summary>
+    /// <summary>樱流飞行. 冲刺后表世界衔接</summary>
     internal sealed class OniSakuraFlight : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         private enum PetalRole : byte
@@ -120,14 +115,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
         private int ReappearFrame => FlightEndFrame + (int)(ReformFrames * 0.72f);
         private int KillFrame => ReformEndFrame + AfterglowFrames;
 
-        /// <summary>该控制器当前是否应取代持有者本体绘制。</summary>
+        /// <summary>该控制器当前是否应取代持有者本体绘制</summary>
         internal bool ShouldHideOwner => Timer >= HideStartFrame && Timer < ReappearFrame;
 
-        /// <summary>
-        /// 在持有者客户端启动樱流飞行。方向键可在飞行期间平滑转向，超时后自动重组。
-        /// <br/><paramref name="seamless"/>：起始帧直接落在 <see cref="HideStartFrame"/>，
-        /// 跳过起手滞留、当帧隐身入飞，供疾走等带速前段无缝衔接
-        /// </summary>
+        /// <summary>在持有者客户端启动樱流飞行。方向键可在飞行期间平滑转向</summary>
         public static Projectile Fire(Player player, Vector2 aim, float speed = 32f,
             int flightFrames = 40, IEntitySource source = null, bool seamless = false) {
             if (player == null || !player.Alives()) {
@@ -150,7 +141,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                 ai0: seamless ? HideStartFrame : 0f, ai1: flightFrames, ai2: seed);
         }
 
-        /// <summary>令指定玩家正在进行的樱流飞行立即进入回卷重组阶段。</summary>
+        /// <summary>令指定玩家正在进行的樱流飞行立即进入回卷重组阶段</summary>
         public static void RequestStop(Player player) {
             if (player == null) {
                 return;
@@ -175,10 +166,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
             return null;
         }
 
-        /// <summary>供 PlayerOverride 查询任意玩家是否已被同步的樱流控制器取代。</summary>
+        /// <summary>供 PlayerOverride 查询任意玩家是否已被同步的樱流控制器取代</summary>
         internal static bool IsPlayerHidden(int playerIndex) => Find(playerIndex)?.ShouldHideOwner ?? false;
 
-        /// <summary>飞行段(可被 <see cref="RequestStop"/> 收束的窗口)，经济层逐帧抽气的依据</summary>
+        /// <summary>飞行段(可被 <see cref="RequestStop"/> 收束的窗口)</summary>
         internal static bool IsTraveling(int playerIndex) {
             OniSakuraFlight flight = Find(playerIndex);
             return flight != null && flight.Timer < flight.FlightEndFrame;
@@ -340,7 +331,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
             Owner.position += allowedMove;
             Owner.velocity = Vector2.Zero;
             Owner.fallStart = (int)(Owner.position.Y / 16f);
-            //无敌只给起飞散瓣窗，巡航段仅免击退：可转向的持续位移不附赠免伤按钮
+            //无敌只给起飞散瓣窗，巡航段仅免击退、可转向的持续位移不附赠免伤按钮
+
             if (Timer <= DissolveFrames + 4) {
                 Owner.GivePlayerImmuneState(4);
             }
@@ -378,6 +370,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
             Owner.velocity = moveDirection * 5.5f;
             Owner.CWR().GetScreenShake(1.8f);
             //落地=操控交还帧,开追斩窗;樱流只存在于表世界,追斩自然采樱衣
+
             Owner.GetModPlayer<OnikiriPlayer>().OpenZanshinWindow(0, 0);
         }
 
@@ -855,6 +848,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                     ? Color.Lerp(back, middle, front * 2f)
                     : Color.Lerp(middle, face, front * 2f - 1f);
                 //PSPetal 会自行输出预乘色；这里只写透明度，不能再次压暗 RGB。
+
                 float opacity = MathHelper.Clamp(
                     petal.Alpha * MathHelper.Lerp(0.76f, 1f, front), 0f, 1f);
                 color.A = (byte)(opacity * byte.MaxValue);

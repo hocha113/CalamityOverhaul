@@ -17,44 +17,37 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee
 {
     /// <summary>
-    /// 鬼手：六只被硫火锁在刀上的不安分之物（三个蠢货，一对一双）。<br/>
-    /// 八态基础状态机 + FABRIK IK 手臂骨架保留；本轮重做：<br/>
-    /// 1. 攻击令牌：同一时刻至多 2 只手处于攻击段，其余保持编队（替代纯随机错开）<br/>
-    /// 2. 动作编排：蓄力 pow(t,8) 迟滞后吸、砸地后余震弹跳、投掷后座<br/>
-    /// 3. 躁动态：硫火压制耗尽时攻击更凶，并周期性回头掐向持刀者（扼颈）<br/>
-    /// 4. 手臂画法：OniArm 鬼影青灰底 + 附着式硫火火鞘 shader 条带
-    /// （压制走低火鞘断续变薄、躁动时大面积熄灭并迸暗红危焰）<br/>
-    /// 网络：状态/计时走 ai[]，攻击锚点与目标走 NetHeldSend，躁动位走 BitsByte[2]；
-    /// 一切随机决策仅 owner 端做出并 netUpdate 广播
+    /// 鬼手×6，八态状态机 + FABRIK IK。攻击令牌至多 2；蓄力 pow(t,8) 迟滞后吸；躁动可扼颈。<br/>
+    /// ai[]=状态/计时；攻击锚点与目标走 NetHeldSend；躁动位 BitsByte[2]；随机仅 owner 端决策后 netUpdate
     /// </summary>
     internal class OniHandMinion : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Melee + "OniHand";
 
         public const int HandCount = 6;
-        /// <summary>鬼手单击伤害系数（相对武器面板）</summary>
+        /// <summary>单击伤害系数（相对武器面板）</summary>
         public const float HandDamageFactor = 0.5f;
-        /// <summary>同时处于攻击段的手数上限</summary>
+        /// <summary>同时攻击段手数上限</summary>
         public const int AttackTokens = 2;
-        /// <summary>单次出击消耗的硫火压制</summary>
+        /// <summary>单次出击压制消耗</summary>
         public const float AttackCost = 6f;
 
         private enum HandState
         {
             Idle = 0,        //编队漂浮
             Targeting,       //锁定接近
-            WindupSwing,     //蓄力：挥击
-            WindupSlam,      //蓄力：下砸
-            WindupSweep,     //蓄力：横扫
-            WindupThrow,     //蓄力：投掷
+            WindupSwing,     //蓄力挥击
+            WindupSlam,      //蓄力下砸
+            WindupSweep,     //蓄力横扫
+            WindupThrow,     //蓄力投掷
             Swinging,        //挥击
             Slamming,        //下砸
             Sweeping,        //横扫
             Throwing,        //投掷鬼火
-            Recovering,      //收势（含砸地余震弹跳）
-            GripApproach,    //躁动：扑向持刀者
-            Gripping,        //躁动：扼颈
-            GripReturn       //躁动：收手归队
+            Recovering,      //收势（含砸地余震）
+            GripApproach,    //躁动扑向持刀者
+            Gripping,        //躁动扼颈
+            GripReturn       //躁动收手归队
         }
 
         private ref float HandIndex => ref Projectile.ai[0];
@@ -96,16 +89,16 @@ namespace CalamityOverhaul.Content.Items.Melee
         private const int GripApproachDuration = 42;
         private const int GripDuration = 55;
         private const int GripReturnDuration = 24;
-        /// <summary>蓄力收束粒子硬切点（爆发前的静默）</summary>
+        /// <summary>蓄力收束粒子硬切点</summary>
         private const float ChargeSilenceAt = 0.72f;
 
         //==== 视觉状态（本地）====
         private float glowIntensity;
         private float handScale = 1f;
-        private float restlessBlend;      //躁动视觉的平滑混合 0..1
-        private Vector2 throwRecoil;      //投掷后座位移
+        private float restlessBlend;      //躁动视觉平滑 0..1
+        private Vector2 throwRecoil;      //投掷后座
         private Vector2 slamLandPos;
-        private bool slamAftermath;       //本次收势带余震弹跳
+        private bool slamAftermath;       //本次收势带余震
         private float armSparkTimer;
         private readonly List<Vector2> trailPositions = new();
         private const int MaxTrailLength = 12;
@@ -142,10 +135,10 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        /// <summary>全部状态自管位移（MoveToPosition / 直接设 Center），关掉原版速度积分防双重步进</summary>
+        /// <summary>自管位移，关掉原版速度积分防双重步进</summary>
         public override bool ShouldUpdatePosition() => false;
 
-        //==== 网络：锚点/目标/躁动位 ====
+        //==== 网络 锚点/目标/躁动位 ====
 
         public override void NetHeldSend(BinaryWriter writer) {
             writer.Write((short)targetNPCID);
@@ -170,7 +163,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             restlessSynced = flags[2];
         }
 
-        /// <summary>躁动态：owner 端直读 ModPlayer，远端读同步位</summary>
+        /// <summary>躁动，owner 读 ModPlayer，远端读同步位</summary>
         private bool IsRestless => Owner.whoAmI == Main.myPlayer
             ? Owner.GetModPlayer<OniMachetePlayer>().Restless
             : restlessSynced;
@@ -206,7 +199,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             return Math.Max(6, (int)(baseDuration * mul));
         }
 
-        /// <summary>不吃躁动加速的时长（扼颈演出需要完整播放）</summary>
+        /// <summary>不吃躁动加速的时长（扼颈演出完整播）</summary>
         private int DurRaw(int baseDuration)
             => Math.Max(6, (int)(baseDuration * personalitySpeedMultiplier));
 
@@ -227,12 +220,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             InitializePersonality();
             Projectile.timeLeft = 120;
 
-            //面板伤害逐帧对齐武器管线（owner 端权威）：Boss 阶段增伤等后续加成即时生效
+            //面板伤害对齐武器（owner 端权威）
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Projectile.damage = (int)(Owner.GetWeaponDamage(Owner.GetItem(), true) * HandDamageFactor);
             }
 
-            //出生帧演出（各端本地跑）
+            //出生帧演出（各端本地）
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
                 SpawnBirthBurst();
@@ -258,15 +251,14 @@ namespace CalamityOverhaul.Content.Items.Melee
                 case HandState.GripReturn: GripReturnBehavior(); break;
             }
 
-            //躁动扼颈调度：owner 端在编队里挑一只手扑向主人
+            //躁动扼颈调度（owner 端）
             TryScheduleGrip();
 
             UpdateArmIK();
             UpdateTrail();
             UpdateRotation();
 
-            //躁动视觉平滑混合：压制走低时火鞘先变薄断续（owner 端可读自己的精确压制值），
-            //彻底躁动后大面积熄灭，臂上火势即压制量的在场仪表
+            //躁动视觉混合，压制走低火鞘先变薄（owner 可读精确压制）
             float rageTarget = IsRestless ? 1f : 0f;
             if (!IsRestless && Owner.whoAmI == Main.myPlayer) {
                 float supp = Owner.GetModPlayer<OniMachetePlayer>().Suppression;
@@ -274,8 +266,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             restlessBlend = MathHelper.Lerp(restlessBlend, rageTarget, 0.06f);
 
-            //贴骨火星（少量点缀，火鞘条带才是主体）：忠仆偶发橙红火星上飘；
-            //躁动改为熄火处迸出的暗红余烬 + 黑烟
+            //贴骨火星点缀；躁动改暗红余烬+黑烟
             if (!VaultUtils.isServer && ++armSparkTimer > 9f) {
                 armSparkTimer = 0f;
                 Vector2 sparkPos = Vector2.Lerp(shoulderPos, Projectile.Center, Main.rand.NextFloat(0.2f, 0.92f));
@@ -299,7 +290,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
 
-            //躁动位同步：owner 端翻转时广播
+            //躁动位同步（owner 翻转时广播）
             if (Projectile.IsOwnedByLocalPlayer()) {
                 bool restless = IsRestless;
                 restlessSynced = restless;
@@ -309,7 +300,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
 
-            //硫火照明：忠仆金橙 / 躁动血红
+            //硫火照明，忠仆金橙 / 躁动血红
             float pulse = (float)Math.Sin(PersonalTime() * 6f) * 0.3f + 0.7f;
             Vector3 lightCol = Vector3.Lerp(new Vector3(0.75f, 0.45f, 0.12f)
                 , new Vector3(0.95f, 0.16f, 0.06f), restlessBlend);
@@ -318,7 +309,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             handScale = MathHelper.Lerp(handScale, 1f, 0.1f);
             throwRecoil *= 0.85f;
 
-            //环境余烬（低频，Dust 只做碎屑）
+            //环境余烬（低频）
             if (!VaultUtils.isServer && Main.rand.NextBool(14)) {
                 PRTLoader.NewParticle<PRT_LavaFire>(Projectile.Center + VaultUtils.RandVr(24f)
                     , -Vector2.UnitY * Main.rand.NextFloat(0.4f, 1.2f)
@@ -353,14 +344,14 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         //==== 编队 / 索敌 ====
 
-        /// <summary>六手满圆编队位（顶部偏置），成对的手相邻（三个蠢货，各出一双）</summary>
+        /// <summary>六手满圆编队（顶部偏置，成对相邻）</summary>
         private Vector2 FormationPos() {
             int pair = (int)HandIndex / 2;
             float ang = HandIndex * MathHelper.TwoPi / HandCount - MathHelper.PiOver2
                 + PersonalTime() * 0.30f;
             Vector2 offset = ang.ToRotationVector2() * (118f + pair * 12f);
             offset.X *= ownerDirection;
-            //躁动时编队涣散：漂移振幅加大
+            //躁动时编队涣散
             float bobMul = 1f + restlessBlend * 1.6f;
             Vector2 bob = new((float)Math.Sin(PersonalTime() * 2f) * 26f * bobMul
                 , (float)Math.Cos(PersonalTime() * 1.5f) * 16f * bobMul);
@@ -410,7 +401,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             glowIntensity = 0.6f;
             armTension = 0.6f;
 
-            //接近位：目标上方悬停
+            //接近位，目标上方悬停
             Vector2 approach = target.Center + new Vector2(0f, -170f);
             MoveToPosition(approach, 0.2f * personalitySpeedMultiplier);
 
@@ -418,16 +409,16 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            //攻击令牌：编队里最多两只手同时出击，其余悬停施压
+            //攻击令牌，编队至多两只同时出击
             bool tokenFree = CountAttackingHands(Projectile.owner) < AttackTokens;
             if (!tokenFree) {
                 if (StateTimer > 90f) {
-                    Transition(HandState.Idle);   //排队过久回编队，防全员堵在目标头顶
+                    Transition(HandState.Idle);   //排队过久回编队
                 }
                 return;
             }
 
-            //臂长约束：IK 手臂全展 ~270px，超出者只能投掷（近战招式必然够得着才选）
+            //臂长约束，全展~270px 超出只投掷
             float armReach = Vector2.Distance(Owner.Center, target.Center);
             if (armReach > 300f || distance > 380f * personalityRangePreference) {
                 BeginAttack(HandState.WindupThrow, target);
@@ -452,7 +443,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             return sweepScore > swingScore ? HandState.WindupSweep : HandState.WindupSwing;
         }
 
-        /// <summary>owner 端出击起手：扣压制、冻结锚点、广播</summary>
+        /// <summary>owner 端出击起手，扣压制、冻锚点、广播</summary>
         private void BeginAttack(HandState windup, NPC target) {
             Owner.GetModPlayer<OniMachetePlayer>().ConsumeSuppression(AttackCost);
             attackStartPos = Projectile.Center;
@@ -469,7 +460,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.netUpdate = true;
         }
 
-        //==== 蓄力（四式共用：pow(t,8) 迟滞后吸）====
+        //==== 蓄力（四式共用 pow(t,8) 迟滞后吸）====
 
         private Vector2 WindupOffset() => State switch {
             HandState.WindupSwing => new Vector2(-190f * ownerDirection, -90f),
@@ -489,7 +480,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             glowIntensity = 0.6f + t * 0.4f;
             armTension = 0.9f;
 
-            //迟滞后吸：前段缓浮，末几帧猛地抽回（sharp inhale）
+            //迟滞后吸，前缓末猛抽
             float snap = 0.30f * VaultUtils.EaseOutCubic(t) + 0.70f * MathF.Pow(t, 8f);
             Vector2 windPos = attackStartPos + WindupOffset() * snap;
             //末端蓄满的细颤
@@ -509,7 +500,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             if (StateTimer >= duration) {
-                //蓄力打满：单帧切换 + 爆发音（各端 timer 对齐，确定性转换）
+                //蓄力打满，单帧切换+爆发音（各端 timer 对齐）
                 HandState strike = State switch {
                     HandState.WindupSwing => HandState.Swinging,
                     HandState.WindupSlam => HandState.Slamming,
@@ -517,7 +508,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     _ => HandState.Throwing,
                 };
                 if (strike == HandState.Slamming) {
-                    //砸地锚点：从目标当前位置向下取地面（各端世界一致，免同步）
+                    //砸地锚点，目标下取地面（各端世界一致）
                     attackTargetPos = IsTargetValid() ? Main.npc[targetNPCID].Center : attackTargetPos;
                     slamLandPos = FindGroundBelow(attackTargetPos) ?? (attackTargetPos + new Vector2(0f, 60f));
                 }
@@ -546,7 +537,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             glowIntensity = 1f;
             armTension = 1f;
 
-            //陡峭 ease-out：几乎所有角距离在头几帧完成
+            //陡峭 ease-out
             float eased = 1f - MathF.Pow(1f - t, 9f);
             float startAngle = MathHelper.PiOver2 * 1.2f;
             float endAngle = -MathHelper.PiOver4 * 1.5f;
@@ -594,11 +585,11 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             if (StateTimer >= duration) {
                 slamAftermath = true;
-                //IK 臂长可能把拳头拦在半路：结算与余震都锚在拳头实际停住的位置，伤害与画面同址
+                //IK 可能拦半路，结算锚实际停点
                 slamLandPos = Projectile.Center;
                 State = HandState.Recovering;
                 StateTimer = 0;
-                //砸地结算：owner 生成 OniHandExplode（伤害盒 + 熔金裂缝 decal + 全套演出）
+                //砸地结算（owner 生成 OniHandExplode）
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), slamLandPos, Vector2.Zero
                         , ModContent.ProjectileType<OniHandExplode>(), (int)(Projectile.damage * 1.5f)
@@ -656,12 +647,12 @@ namespace CalamityOverhaul.Content.Items.Melee
 
                 if (StateTimer == (int)(duration * 0.46f)) {
                     ReleaseFireballs();
-                    //投掷后座：手猛地向后一顿
+                    //投掷后座
                     throwRecoil = (attackStartPos - attackTargetPos).SafeNormalize(Vector2.Zero) * 26f;
                 }
             }
             else {
-                //收手：后座衰减，缓慢回稳
+                //收手，后座衰减
                 Projectile.velocity *= 0.85f;
                 Projectile.Center += throwRecoil * 0.12f;
                 handScale = MathHelper.Lerp(handScale, 1f, 0.1f);
@@ -708,7 +699,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             armTension = 0.5f;
 
             if (slamAftermath && t < 0.42f) {
-                //余震弹跳：拳头钉在坑里颤 2~3 次再抬起（阻尼正弦）
+                //余震弹跳，阻尼正弦 2~3 次
                 float bt = t / 0.42f;
                 float bounce = MathF.Abs(MathF.Sin(bt * MathF.PI * 2.6f)) * 34f * (1f - bt);
                 Vector2 next = slamLandPos - new Vector2(0f, bounce);
@@ -728,10 +719,10 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        //==== 躁动：扼颈 ====
+        //==== 躁动扼颈 ====
 
-        /// <summary>owner 端调度：躁动 + 冷却结束时，编队/索敌中的手抢占扼颈名额
-        /// （已进入攻击段的手先把招打完，挥出去的拳头收不回来）</summary>
+        /// <summary>owner 端调度，躁动+冷却结束时编队/索敌手抢扼颈名额
+        /// （攻击段中的手先打完）</summary>
         private void TryScheduleGrip() {
             if (!Projectile.IsOwnedByLocalPlayer() || !IsRestless) {
                 return;
@@ -746,7 +737,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             mp.GripCooldown = 420;   //抢占即锁冷却，同帧只有一只手能拿到
             Transition(HandState.GripApproach);
             if (!VaultUtils.isServer) {
-                //预警声：鬼物转头的呜咽（风险可读的起点）
+                //预警声
                 SoundEngine.PlaySound(SoundID.NPCDeath6 with { Volume = 0.75f, Pitch = -0.7f }, Owner.Center);
                 SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.5f, Pitch = -0.8f }, Projectile.Center);
             }
@@ -760,13 +751,13 @@ namespace CalamityOverhaul.Content.Items.Melee
             int duration = DurRaw(GripApproachDuration);
             float t = MathHelper.Clamp(StateTimer / duration, 0f, 1f);
 
-            //可规避窗口：接近期内重新压服（挥刀命中回气）即中止
+            //可规避窗，接近期内压服即中止
             if (Projectile.IsOwnedByLocalPlayer() && !IsRestless) {
                 Transition(HandState.Recovering);
                 return;
             }
 
-            //先绕后直扑：前段拉开一点距离蓄势，末段 ease-in 猛扑
+            //先绕后直扑，末段 ease-in
             Vector2 neck = NeckPos();
             float lunge = MathF.Pow(t, 2.2f);
             Vector2 hover = neck + new Vector2(60f * ownerDirection, -110f);
@@ -795,7 +786,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.velocity = neck - Projectile.Center;
             Projectile.Center = neck;
 
-            //两次离散攥紧（非节拍脉动）：掐一下、再掐一下
+            //两次离散攥紧
             float squeeze = 0f;
             float st1 = MathF.Abs(StateTimer - duration * 0.30f);
             float st2 = MathF.Abs(StateTimer - duration * 0.66f);
@@ -810,7 +801,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Projectile.IsOwnedByLocalPlayer()) {
                 OniMachetePlayer mp = Owner.GetModPlayer<OniMachetePlayer>();
                 Owner.AddBuff(ModContent.BuffType<OniNeckGripDebuff>(), 8);
-                //暗角包络：入掐渐紧，攥紧瞬间顶满
+                //暗角包络，攥紧顶满
                 mp.PushGripVignette(MathHelper.Clamp(t * 2.2f, 0f, 0.85f) + squeeze * 0.15f);
 
                 //攥紧的顿挫震屏（小幅，尊重配置）
@@ -820,7 +811,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     Main.instance.CameraModifiers.Add(modifier);
                 }
 
-                //挣脱条件：压制回升（挥刀命中）即提前松手
+                //压制回升即松手
                 if (mp.Suppression >= 10f && t > 0.25f) {
                     Transition(HandState.GripReturn);
                     return;
@@ -873,7 +864,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Projectile.Center = handPos;
             }
 
-            //FABRIK：前向手→肩
+            //FABRIK 前向手→肩
             armSegments[0] = handPos;
             for (int i = 1; i < ArmSegmentCount; i++) {
                 Vector2 direction = (armSegments[i - 1] - (i == ArmSegmentCount - 1 ? shoulderPos : armSegments[i])).SafeNormalize(Vector2.Zero);
@@ -901,7 +892,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         private void UpdateRotation() {
             if (State == HandState.Gripping) {
-                //扼颈：指尖朝下扣住
+                //扼颈，指尖朝下
                 Projectile.rotation = MathHelper.Lerp(Projectile.rotation, 0f, 0.3f);
                 return;
             }
@@ -990,13 +981,13 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
 
-            //1. 硫火火鞘图元最先绘制：压在手臂贴图之下，火读作从骨臂背后缠上来
+            //1. 火鞘图元先画（压在臂贴图下）
             sb.End();
             DrawFlameSheath();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
                 , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-            //2. 手臂鬼影底（盖在火鞘上，露出骨形轮廓）
+            //2. 手臂青灰底（盖火鞘）
             DrawArmSprites(sb, lightColor);
 
             //3. 攻击拖尾 + 辉光 + 手本体
@@ -1023,7 +1014,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
 
-            //鬼影青灰底色（仅手本体），躁动时向红偏
+            //青灰底色（手本体），躁动偏红
             Color ghost = Color.Lerp(new Color(168, 182, 186), new Color(210, 150, 140), restlessBlend);
             Color bodyColor = lightColor.MultiplyRGB(ghost);
             sb.Draw(handTexture, drawPos, null, bodyColor
@@ -1033,7 +1024,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             return false;
         }
 
-        /// <summary>手臂骨节：OniArm 鬼影青灰底（沿 IK 曲线），躁动微微泛红</summary>
+        /// <summary>手臂骨节，OniArm 青灰底沿 IK，躁动微红</summary>
         private void DrawArmSprites(SpriteBatch sb, Color lightColor) {
             Texture2D armTexture = OniMachete.OniArm;
             if (armTexture == null) {
@@ -1064,9 +1055,8 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         /// <summary>
-        /// 硫火火鞘：沿 IK 曲线细分采样的加宽 TriangleStrip + OniMacheteFlame.fx。<br/>
-        /// 两侧宽度按世界向上偏置（上侧留更多火舌空间，火向上飘），
-        /// 臂中线在 v 上的实际位置编码进顶点色 R 供 shader 归一化，火根永远贴着臂线生长
+        /// 硫火火鞘，IK 曲线 TriangleStrip + OniMacheteFlame.fx<br/>
+        /// 上侧加宽；臂中线位置进顶点色 R 供 shader 归一化
         /// </summary>
         private void DrawFlameSheath() {
             Effect fx = OniMacheteAssets.OniMacheteFlame;
@@ -1075,7 +1065,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            //Catmull-Rom 平滑采样：肩(尾)→手(头)
+            //Catmull-Rom 采样，肩(尾)→手(头)
             const int sampleCount = 26;
             Span<Vector2> pts = stackalloc Vector2[sampleCount];
             for (int i = 0; i < sampleCount; i++) {
@@ -1092,7 +1082,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 pts[i] = Vector2.CatmullRom(p0, p1, p2, p3, frac);
             }
 
-            //火鞘预算：臂线到火尖的最大空间（贴骨收窄）；上侧按世界向上加宽（火向上舔）
+            //火鞘预算，上侧加宽
             const float sheathReach = 15f;
             const float upBias = 0.38f;
             var verts = new VertexPositionColorTexture[sampleCount * 2];
@@ -1148,10 +1138,8 @@ namespace CalamityOverhaul.Content.Items.Melee
     }
 
     /// <summary>
-    /// 鬼手之火：投掷的硫火鬼球，短程追踪，命中挂硫火。<br/>
-    /// 表现层三件套：硫磺火 Dust 尾迹（本弹幕特批的主视觉 Dust）+ 武器贴图多层黑底加色辉光弹头
-    /// + OniMacheteComet.fx 图元彗尾条带（宽度衰减/头亮尾灭/热扰动撕边），
-    /// 读作"拖着硫磺焰彗尾的火球"
+    /// 鬼手之火，短程追踪硫火球，命中挂硫火<br/>
+    /// Dust 尾迹 + 贴图弹头 + OniMacheteComet.fx 彗尾
     /// </summary>
     internal class OniFireBall : ModProjectile, IPrimitiveDrawable
     {
@@ -1283,7 +1271,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //弹头：武器贴图多层黑底加色辉光（回归旧版基底）：
+            //弹头，贴图多层黑底加色辉光
             //外发光 3 层 → 熔金热核（暖金，非冷白）→ 主体 → 炽热外缘
             SpriteBatch sb = Main.spriteBatch;
             Texture2D mainValue = TextureAssets.Projectile[Type].Value;
@@ -1311,7 +1299,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             return false;
         }
 
-        /// <summary>彗尾条带：沿 oldPos 轨迹的 TriangleStrip（宽度衰减，头亮尾灭，热扰动撕边）</summary>
+        /// <summary>彗尾条带，沿 oldPos 的 TriangleStrip</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
             if (Main.dedServ) {
                 return;
@@ -1322,7 +1310,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            //采样点：当前中心打头，oldPos 依次向尾（去掉未写入的零槽与过近点）
+            //采样点，当前中心打头，oldPos 向尾
             Vector2 half = Projectile.Size / 2f;
             Span<Vector2> pts = stackalloc Vector2[1 + Projectile.oldPos.Length];
             int count = 0;
@@ -1341,7 +1329,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            //条带顶点：头段先快速铺满宽度再向尾收拢成尖
+            //条带顶点，头宽尾尖
             float maxWidth = 21f * Projectile.scale;
             var verts = new VertexPositionColorTexture[count * 2];
             for (int i = 0; i < count; i++) {
@@ -1380,14 +1368,13 @@ namespace CalamityOverhaul.Content.Items.Melee
     }
 
     /// <summary>
-    /// 鬼手砸地结算：短促伤害盒（前 5 帧）+ 地面熔金裂缝 decal（存活 ~2.6 秒）+ 全套冲击演出。<br/>
-    /// 伤害与画面同源同址，裂缝亮着的地方就是刚刚挨过打的地方
+    /// 砸地结算，伤害盒前 5 帧 + 熔金裂缝 decal ~2.6s + 冲击演出
     /// </summary>
     internal class OniHandExplode : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        /// <summary>总寿命 = 伤害窗(5) + decal 余寿</summary>
+        /// <summary>总寿命=伤害窗(5)+decal 余寿</summary>
         public const int DecalLife = 155;
 
         private ref float GroundedAi => ref Projectile.ai[0];
@@ -1415,7 +1402,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void AI() {
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
-                //地面锚定（各端世界一致，免同步）：找到地面则裂缝贴地，否则只留空中爆发
+                //地面锚定（各端世界一致）
                 Vector2? ground = OniHandMinion.FindGroundBelow(Projectile.Center, 18);
                 if (ground.HasValue) {
                     GroundedAi = 1f;
@@ -1425,7 +1412,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             if (GroundedAi > 0.5f && Projectile.timeLeft > DecalLife - 60) {
-                //裂缝余温：零星熔金泡与上升余烬
+                //裂缝余温
                 if (!VaultUtils.isServer && Main.rand.NextBool(4)) {
                     float span = Main.rand.NextFloat(-120f, 120f);
                     PRTLoader.NewParticle<PRT_LavaFire>(Projectile.Center + new Vector2(span, 2f)
@@ -1436,7 +1423,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        /// <summary>冲击帧全层：定向震屏 + 分层音效 + 冲击环 + 火柱 + 金屑抛洒</summary>
+        /// <summary>冲击帧全层，震屏+音+环+火柱+金屑</summary>
         private void BirthBurst() {
             //定向震屏（沿砸击方向向下，尊重配置开关）
             if (CWRServerConfig.Instance.ScreenVibration && !Main.dedServ) {
@@ -1458,7 +1445,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             PRTLoader.NewParticle<PRT_DWave>(Projectile.Center, Vector2.Zero, new Color(255, 90, 30), 0.4f)
                 ?.Configure(new Vector2(1.2f, 0.4f), 0f, 1.7f, 18);
 
-            //地狱火柱：中央高两侧矮
+            //地狱火柱，中央高两侧矮
             for (int i = 0; i < 9; i++) {
                 float span = MathHelper.Lerp(-110f, 110f, i / 8f);
                 float centrality = 1f - MathF.Abs(span) / 130f;
@@ -1470,7 +1457,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
 
-            //熔金抛洒：数量∝冲击动能
+            //熔金抛洒，数量∝动能
             for (int i = 0; i < 26; i++) {
                 Vector2 vel = new(Main.rand.NextFloat(-9f, 9f), Main.rand.NextFloat(-13f, -4f));
                 PRTLoader.NewParticle<PRT_OniMacheteGold>(Projectile.Center + new Vector2(Main.rand.NextFloat(-60f, 60f), 0f)
@@ -1530,8 +1517,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     }
 
     /// <summary>
-    /// 削甲可见化：被鬼砍刀系打击的 NPC 挂熔金裂纹覆盖层（加色重绘本体贴图帧），
-    /// 强度随命中叠加、随时间冷却。命中登记发生在打击方客户端，纯视觉不入网络
+    /// 削甲可见化，NPC 熔金裂纹覆盖（加色重绘贴图帧）；命中登记在打击方客户端，纯视觉不入网
     /// </summary>
     internal class OniMacheteGlobalNPC : GlobalNPC
     {
@@ -1593,12 +1579,12 @@ namespace CalamityOverhaul.Content.Items.Melee
     }
 
     /// <summary>
-    /// 鬼手扼颈全屏后效：screenTarget ping-pong 带 OniMacheteGrip.fx 回写，
-    /// 包络由本地玩家 <see cref="OniMachetePlayer.GripVignette"/> 驱动（掐颈的手逐帧推高、自然衰减）
+    /// 扼颈全屏后效，screenTarget ping-pong + OniMacheteGrip.fx<br/>
+    /// 包络由 <see cref="OniMachetePlayer.GripVignette"/> 驱动
     /// </summary>
     internal sealed class OniMacheteGripRender : RenderHandle
     {
-        /// <summary>权重 1.12：晚于鬼切冲击后效(1.10)，早于弹幕扩展层(1.2)</summary>
+        /// <summary>权重 1.12，晚于鬼切冲击(1.10)、早于弹幕扩展(1.2)</summary>
         public override float Weight => 1.12f;
 
         public override void EndCaptureDraw(SpriteBatch sb, GraphicsDevice gd, RenderTarget2D screenSwap) {

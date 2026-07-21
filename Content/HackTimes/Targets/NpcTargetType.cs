@@ -3,7 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes.Targets
 {
-    /// <summary>NPC 目标工厂，悬停优先级最高</summary>
+    /// <summary>NPC 目标，悬停优先最高</summary>
     internal class NpcTargetType : HackTargetType
     {
         public override HackTargetKind Kind => HackTargetKind.Npc;

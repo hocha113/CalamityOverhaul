@@ -13,10 +13,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.UI
 {
-    /// <summary>
-    /// 图鉴 Tab：当前选中类别下的所有模块网格，已发现彩色 + 钉选交互；未发现剪影 + ???
-    /// 悬停已发现模块时弹出 Tooltip 卡片（仿 <see cref="SHPCModuleSelectPanel"/>.DrawCustomTooltip）
-    /// </summary>
+    /// <summary>图鉴Tab，模块网格，已发现可钉选，悬停Tooltip</summary>
     internal static class MoldCodexPanel
     {
         private const int Columns = 5;
@@ -122,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
             string header = $"{MoldProcessingUI.Discovered.Value}  ·  {progress}";
             float headerScale = MoldFont.ColumnTitleBase * MoldFont.FontScale;
 
-            //先按比例分配左右空间：标题最多占 60%，剩余给右侧提示
+            //标题最多60%，右侧提示
             float headerMaxW = layout.Content.Width * 0.6f - 8f;
             string headerDraw = MoldFont.TruncateForWidth(font, header, headerMaxW, headerScale);
             Utils.DrawBorderString(sb, headerDraw,
@@ -130,7 +127,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
 
             float hintScale = MoldFont.HintBase * MoldFont.FontScale;
             string hint = MoldProcessingUI.CodexHint.Value;
-            //提示文字可用宽度：从内容右边缘往左到 header 实际占用宽度之外
+            //提示可用宽
             float headerActualW = font.MeasureString(headerDraw).X * headerScale;
             float hintMaxW = layout.Content.Width - 16f - headerActualW - 12f;
             if (hintMaxW < 60f) {
@@ -201,14 +198,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
         }
 
         private static int VisibleRowsCount() {
-            //内容区约 332 高，扣掉 header(28)+pad(12)+下方 pad(6) -> 约 286；行高 66 -> 4 行
-            //取保守值 4 以避免 layout 漂移
+            //约4行可见
+            //保守4，防layout漂移
             return 4;
         }
 
         private static void RefreshTypesForCategory(SHPCSlotCategory cat) {
             currentTypes.Clear();
-            //完整池（含 lab=false 的隐藏件），稳定排序：先按是否发现，再按 type
+            //完整池含隐藏，先发现后type
             Player p = Main.LocalPlayer;
             SHPCPlayer sp = p != null ? SHPCPlayer.Get(p) : null;
             HashSet<int> disc = sp?.DiscoveredModules ?? new HashSet<int>();
@@ -229,7 +226,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
                 : new Color(6, 20, 30) * (0.85f * a);
             SHPCRenderer.DrawFilledRect(sb, px, cell, bg);
 
-            //顶部色带：钉选用 accent，已发现用 module tint，未发现用 dim border
+            //顶色带，钉选/发现/未发现
             Color topBar;
             if (isPinned) {
                 topBar = SHPCTheme.Accent;
@@ -278,7 +275,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
                     SHPCModuleRender.End(sb);
                 }
                 else {
-                    //未发现：纯黑剪影 + 中央 ? 字符叠加
+                    //未发现剪影+?
                     sb.Draw(iconTex, center, frame, new Color(0, 6, 10) * (0.9f * a), 0f,
                         new Vector2(frame.Width * 0.5f, frame.Height * 0.5f), iconScale, SpriteEffects.None, 0f);
                     float qScale = MoldFont.CodexQmarkBase * MoldFont.FontScale;
@@ -318,7 +315,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
 
         private static void DrawCustomTooltip(SpriteBatch sb, Texture2D px, DynamicSpriteFont font,
             Item item, float a) {
-            //仿 SHPCModuleSelectPanel.DrawCustomTooltip
+            //仿模块选择Tooltip
             List<string> lines = new();
             List<Color> colors = new();
 

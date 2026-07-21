@@ -7,17 +7,9 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 鱼中饿鬼共享演出协作类。<br/>
-    /// 材质：血肉饿鬼（WoF 语系湿肉捕食者），暗红生肉 AlphaBlend 本体、光效极少；
-    /// 三签名行为：触须蠕动（相位沿体节传递）、饥饿躁动（数量逼近上限时抖动渐强）、
-    /// 扑咬定帧+血沫+撕扯拉锯。<br/>
-    /// 与近邻区分：FishCrimsonTiger 是锐利冲刺线条、FishBloodyManowar 是软体伞膜、
-    /// FishEaterofPlankton 是腐绿小虫群，这里是中大型不透明肉块
-    /// </summary>
+    /// <summary>鱼中饿鬼</summary>
     internal static class FishHungerVFX
     {
-        //==== 色彩脚本（生肉暗红族，比虎鱼猩红更暗更浊）====
         /// <summary>暗肉深红（剪影底/触须尖/外缘）</summary>
         public static readonly Color MeatDark = new(44, 8, 12);
         /// <summary>生肉红（主体）</summary>
@@ -39,7 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return 1f + c3 * xm * xm * xm + c1 * xm * xm;
         }
 
-        /// <summary>显形收束：血珠向成形点倒吸 + 内收暗肉环，配合本体 easeOutBack 撑开构成入场拍</summary>
+        /// <summary>显形收束</summary>
         public static void SummonConverge(Vector2 center, float scale = 1f) {
             if (Main.dedServ) {
                 return;
@@ -60,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>攻击蓄力吸气：血珠被倒吸进嘴，替代旧的均匀 Dust 环</summary>
+        /// <summary>攻击蓄力吸气</summary>
         public static void ChargeSuction(Vector2 mouth) {
             if (Main.dedServ) {
                 return;
@@ -73,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>扑咬起跳：压扁暗环沿冲刺轴 + 蹬出的后抛血珠</summary>
+        /// <summary>扑咬起跳</summary>
         public static void LungeKick(Vector2 pos, Vector2 dir) {
             if (Main.dedServ) {
                 return;
@@ -88,9 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 咬合血沫：沿咬向的重力血珠锥 + 筋膜碎屑 + 碎肉块。ke 0..1 动能系数，量与初速∝动能
-        /// </summary>
+        /// <summary>咬合血沫</summary>
         public static void BiteSpray(Vector2 pos, Vector2 dir, float ke) {
             if (Main.dedServ) {
                 return;
@@ -122,7 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>拉锯甩沫：撕扯期沿咬轴两侧甩出的少量血珠</summary>
+        /// <summary>拉锯甩沫</summary>
         public static void TugShed(Vector2 pos, Vector2 axis) {
             if (Main.dedServ) {
                 return;
@@ -135,7 +125,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>垂涎：嘴角滴落单珠，饥饿越深滴得越勤（调用端控频率）</summary>
+        /// <summary>垂涎</summary>
         public static void Drool(Vector2 mouth, Vector2 faceDir) {
             if (Main.dedServ) {
                 return;
@@ -146,7 +136,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ?.Configure(Main.rand.Next(18, 26), 0.3f);
         }
 
-        /// <summary>肉体塌散：本体死亡处炸开碎肉块与血珠，残迹活得比本体久（aftermath）</summary>
+        /// <summary>肉体塌散</summary>
         public static void CollapseBurst(Vector2 pos, float scale = 1f) {
             if (Main.dedServ) {
                 return;
@@ -171,10 +161,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 饿鬼碎肉块：白像素三层矩形拼装的哑光肉屑（暗底/肉面/筋膜棱），乘环境光零发光；<br/>
-    /// 受重力抛物翻滚、触地弹跳一次后落定收尾，年轻期带极小面积湿光点
-    /// </summary>
+    /// <summary>饿鬼碎肉块</summary>
     internal class PRT_FishHungerGobbet : BasePRT
     {
         public override string Texture => CWRConstant.VaultPlaceholder;

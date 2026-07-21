@@ -7,7 +7,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
 {
-    /// <summary>至尊灾厄女巫全身立绘，告别场景燃烧消失演出</summary>
+    /// <summary>告别场景全身立绘燃烧消失</summary>
     internal sealed class SupCalFullBodyPortrait : FullBodyPortraitBase
     {
         public override string PortraitKey => "SupremeCalamitasFullBody";

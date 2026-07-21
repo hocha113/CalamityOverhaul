@@ -7,9 +7,6 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel
 {
-    /// <summary>
-    /// SHPC（Shepel）全身立绘演出
-    /// </summary>
     internal class ShepelFullBodyPortrait : FullBodyPortraitBase
     {
         public override string PortraitKey => "ShepelFullBody";
@@ -30,33 +27,23 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel
             Smirk,
         }
 
-        //故障扭曲状态
         private float glitchTimer;       //剩余帧数
-        private float glitchIntensity;   //当前强度 0~1
-        private float glitchTimeAccum;   //着色器时间累积
+        private float glitchIntensity;   //0~1
+        private float glitchTimeAccum;   //着色器时间
 
-        /// <summary>
-        /// 触发故障扭曲效果
-        /// </summary>
-        /// <param name="durationSeconds">持续时间（秒）</param>
-        /// <param name="intensity">强度 0~1</param>
+        /// <param name="durationSeconds">秒</param>
+        /// <param name="intensity">0~1</param>
         public void TriggerGlitch(float durationSeconds, float intensity) {
             glitchTimer = durationSeconds * 60f;
             glitchIntensity = Math.Clamp(intensity, 0f, 1f);
             glitchTimeAccum = 0f;
         }
 
-        /// <summary>
-        /// 立即停止故障扭曲
-        /// </summary>
         public void StopGlitch() {
             glitchTimer = 0f;
             glitchIntensity = 0f;
         }
 
-        /// <summary>
-        /// 是否正在故障扭曲中
-        /// </summary>
         public bool IsGlitching => glitchTimer > 0f;
 
         protected override void OnInitialize() {

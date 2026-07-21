@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         public bool CannonAlive { get; set; }
         public bool SawAlive { get; set; }
         public bool LaserAlive { get; set; }
-        /// <summary>生成宽限期内禁止攻击</summary>
+        /// <summary>生成宽限禁攻击</summary>
         public bool DontAttack { get; set; }
         /// <summary>臂侧 (-1 / 1)，取自 npc.ai[0]</summary>
         public int Side => (int)Npc.ai[PrimeAiSlots.ArmSide];
@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         public float TargetSpinSpeed { get; set; }
         /// <summary>钳爪冲击反馈强度</summary>
         public float ImpactIntensity { get; set; }
-        /// <summary>钳口是否张开（驱动钳爪帧动画：蓄力/突刺时张开，命中/待机时闭合）</summary>
+        /// <summary>钳口张开，驱动帧动画</summary>
         public bool ClawOpen { get; set; }
         /// <summary>激光蓄力进度 0~1（发光层渐变用）</summary>
         public float ChargeGlow { get; set; }
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         /// <summary>同步蓄力计时槽（npc.ai[3]，两端确定性自增）</summary>
         public ref float ChargeTimer => ref Npc.ai[PrimeAiSlots.ArmChargeTimer];
 
-        /// <summary>发射后坐力：反推机体并抬升视觉反馈强度</summary>
+        /// <summary>发射后坐</summary>
         public void ApplyRecoil(float intensity) {
             RecoilIntensity = intensity;
             Npc.velocity -= AimDirection * intensity * 0.5f;

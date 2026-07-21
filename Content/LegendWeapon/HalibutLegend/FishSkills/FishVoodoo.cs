@@ -11,7 +11,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>替死娃娃鱼：受伤时冷却内将伤害转给附近敌人</summary>
+    /// <summary>替死娃娃鱼，受伤时冷却内将伤害转给附近敌人</summary>
     internal class FishVoodoo : FishSkill
     {
         public override int UnlockFishID => ItemID.GuideVoodooFish;

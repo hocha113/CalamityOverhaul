@@ -73,7 +73,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         #region 绘制工具
 
-        /// <summary>绘制直线</summary>
         public static void DrawLine(SpriteBatch sb, Texture2D px, Vector2 start, Vector2 end, float thickness, Color color) {
             Vector2 diff = end - start;
             float length = diff.Length();
@@ -82,7 +81,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 Vector2.Zero, new Vector2(length, thickness), SpriteEffects.None, 0f);
         }
 
-        /// <summary>像素网格填充矩形</summary>
         public static void FillGridRect(SpriteBatch sb, Texture2D px, Vector2 offset, float scale,
             int gx, int gy, int gw, int gh, Color color, float breathe = 0f) {
             Rectangle rect = new(
@@ -94,7 +92,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), color);
         }
 
-        /// <summary>折线路径 t 处坐标</summary>
+        /// <summary>折线路径 t∈0~1</summary>
         public static Vector2 EvaluatePolyline(float t, Vector2 a, Vector2 b, Vector2 c, Vector2 d) {
             float dAB = Vector2.Distance(a, b);
             float dBC = Vector2.Distance(b, c);

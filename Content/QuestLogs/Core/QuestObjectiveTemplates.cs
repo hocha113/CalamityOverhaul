@@ -2,20 +2,18 @@
 
 namespace CalamityOverhaul.Content.QuestLogs.Core
 {
-    /// <summary>任务目标描述的自动生成样式</summary>
     public enum QuestObjectiveDescriptionStyle
     {
-        /// <summary>使用 <see cref="QuestObjective.Description"/> 自定义文案</summary>
+        /// <summary>用 <see cref="QuestObjective.Description"/></summary>
         Custom,
-        /// <summary>击败 {NPC名}</summary>
+        /// <summary>击败{NPC名}</summary>
         DefeatNpc,
-        /// <summary>获得 {物品名}</summary>
+        /// <summary>获得{物品名}</summary>
         ObtainItem,
-        /// <summary>收集 {数量} 块 {物品名}</summary>
+        /// <summary>收集{数量}块{物品名}</summary>
         CollectItem
     }
 
-    /// <summary>任务目标描述的通用本地化模板</summary>
     internal static class QuestObjectiveTemplates
     {
         public static string Format(QuestObjective objective) {

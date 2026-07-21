@@ -120,10 +120,8 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
         }
     }
 
-    //检测到量子塔自我构建器后进行的处理
-    //检测左边两格为StarflowPlatedBlock，右侧两格为StarflowPlatedBlock，并往上检测高14格都为StarflowPlatedBlock
-    //也就是需要6*14-4=80个StarflowPlatedBlock
-    //如果满足，则将这些物块替换为量子塔，也就是移除自己，并在原地放置量子塔 DeploySignaltowerTile，这个多结构物块也是6*14大小，刚好够填充
+    //6×14=80块星流镀板，满足后换DeploySignaltowerTile(同6×14)
+    //构建器2×2底中 X:2-3 Y:12-13，底下一格起检地面5格，放置原点2,13
     internal class CQETConstructorTP : TileProcessor, ILocalizedModType
     {
         public override int TargetTileID => ModContent.TileType<CQETConstructorTile>();
@@ -133,22 +131,19 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
         private int constructionTime;
         private int checkDelay;
         private bool isConstructing;
-        private const int ConstructionDuration = 180; //3秒（60帧/秒）
-        private const int CheckInterval = 30; //每0.5秒检测一次
+        private const int ConstructionDuration = 180; //3秒 60帧
+        private const int CheckInterval = 30; //0.5秒
 
         public int frame;
         private int frameCounter;
 
-        //用于搭建指示
         private bool showGuide;
         private int guideAlphaTime;
-        private const float GuideMaxDistance = 300f; //玩家距离小于此值时显示指示
+        private const float GuideMaxDistance = 300f; //近距显示指示
 
-        //地面完整性检测
         private bool isGroundIncomplete = false;
         private readonly List<Point> incompleteGroundPositions = new();
 
-        //本地化文本
         public static LocalizedText GuideText_NeedBlocks { get; private set; }
         public static LocalizedText GuideText_Ready { get; private set; }
         public static LocalizedText GuideText_GroundIncomplete { get; private set; }
@@ -175,7 +170,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             if (checkDelay >= CheckInterval) {
                 checkDelay = 0;
 
-                //先检测地面完整性
                 if (!CheckGroundIntegrity()) {
                     isGroundIncomplete = true;
                     isConstructing = false;
@@ -194,19 +188,16 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             if (isConstructing) {
                 constructionTime++;
 
-                //显示粒子效果
                 if (constructionTime % 5 == 0) {
                     CreateConstructionDust();
                 }
 
-                //完成构建
                 if (constructionTime >= ConstructionDuration) {
                     PerformConstruction();
                     isConstructing = false;
                 }
             }
 
-            //更新搭建指示状态
             UpdateGuideDisplay();
         }
 
@@ -215,7 +206,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 return;
             }
 
-            //检测玩家是否在附近
             Player closestPlayer = CenterInWorld.FindClosestPlayer(GuideMaxDistance);
             showGuide = closestPlayer != null && !isConstructing;
 
@@ -227,11 +217,11 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             }
         }
 
-        /// <summary>地面完整性，下方5格须为实心方块</summary>
+        /// <summary>地面5格须实心</summary>
         private bool CheckGroundIntegrity() {
             incompleteGroundPositions.Clear();
 
-            int groundY = Position.Y + 2;//构建器下方一格
+            int groundY = Position.Y + 2;//构建器下一格
 
             for (int offsetX = -2; offsetX <= 3; offsetX++) {
                 int checkX = Position.X + offsetX;
@@ -239,7 +229,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 
                 Tile tile = Framing.GetTileSafely(checkX, checkY);
 
-                //检测方块是否存在、是否完整（非半砖、无斜坡）
                 if (!tile.HasTile || tile.IsHalfBlock || tile.Slope != SlopeType.Solid) {
                     incompleteGroundPositions.Add(new Point(checkX, checkY));
                 }
@@ -255,18 +244,16 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 
             int starflowBlockType = ModContent.TileType<StarflowPlatedBlockTile>();
 
-            //构建器位于底部中间位置，需要检测周围6×14区域
-            //构建器是2×2，位于底部中间（占用X: 2-3, Y: 12-13）
-            int baseX = Position.X - 2;//向左延伸2格
-            int baseY = Position.Y - 12;//向上延伸12格（总高14格）
+            //6×14，构建器2×2占 X:2-3 Y:12-13
+            int baseX = Position.X - 2;//左2格
+            int baseY = Position.Y - 12;//上12格
 
-            //检测6×14区域是否都是StarflowPlatedBlock
             for (int x = 0; x < 6; x++) {
                 for (int y = 0; y < 14; y++) {
                     int checkX = baseX + x;
                     int checkY = baseY + y;
 
-                    //跳过构建器自身位置（2×2）
+                    //跳过构建器2×2
                     if (x >= 2 && x < 4 && y >= 12 && y < 14) {
                         continue;
                     }
@@ -292,7 +279,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             int baseX = Position.X - 2;
             int baseY = Position.Y - 12;
 
-            //清除所有StarflowPlatedBlock和构建器
+            //清除6×14区
             for (int x = 0; x < 6; x++) {
                 for (int y = 0; y < 14; y++) {
                     int checkX = baseX + x;
@@ -307,9 +294,8 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 
             int placeX = baseX + 2;
             int placeY = baseY + 13;
-            //放置信号塔（6×14，原点在底部中间偏左：2, 13）
+            //DeploySignaltowerTile 原点2,13
             WorldGen.PlaceTile(placeX, placeY, signalTowerType, true, true);
-            //放置TP实体
             if (TPUtils.TryGetTopLeft(placeX, placeY, out var point)) {
                 TileProcessorLoader.AddInWorld(signalTowerType, point, null);
                 if (Main.netMode == NetmodeID.Server) {
@@ -318,17 +304,14 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 }
             }
 
-            //播放完成音效
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 1.5f }, PosInWorld);
 
-            //创建完成特效
             for (int i = 0; i < 50; i++) {
                 Vector2 dustPos = PosInWorld + new Vector2(Main.rand.Next(-48, 48), Main.rand.Next(-96, 32));
                 Dust dust = Dust.NewDustPerfect(dustPos, DustID.Electric, Vector2.Zero, 0, default, 1.5f);
                 dust.noGravity = true;
             }
 
-            //同步到其他客户端
             if (Main.netMode == NetmodeID.Server) {
                 NetMessage.SendTileSquare(-1, baseX, baseY, 6, 14);
             }
@@ -342,53 +325,43 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             int baseX = Position.X - 2;
             int baseY = Position.Y - 12;
 
-            //在6×14区域周围创建粒子
             float progress = constructionTime / (float)ConstructionDuration;
 
-            //使用 PRT_TileHightlight 粒子创建更好的构建效果
             for (int i = 0; i < 2; i++) {
                 int x = baseX + Main.rand.Next(0, 6);
                 int y = baseY + (int)(14 * progress) + Main.rand.Next(-2, 2);
 
                 Vector2 particlePos = new Vector2(x * 16, y * 16) + new Vector2(Main.rand.Next(0, 16), Main.rand.Next(0, 16));
 
-                //生成 TileHightlight 粒子，颜色为青色，表示构建进度
                 PRTLoader.NewParticle<PRT_TileHightlight>(particlePos, Vector2.Zero, Color.Gold);
             }
         }
 
         public override void BackDraw(SpriteBatch spriteBatch) {
-            //优先显示地面不完整警告
             if (isGroundIncomplete && showGuide) {
                 DrawGroundIncompleteWarning(spriteBatch);
             }
-            //绘制搭建指示
             else if (showGuide && !isConstructing) {
                 DrawConstructionGuide(spriteBatch);
             }
 
-            //绘制构建进度指示
             if (isConstructing) {
                 DrawConstructionProgress(spriteBatch);
             }
         }
 
         [VaultLoaden(CWRConstant.Item + "Placeable/")]
-        public static Texture2D StarflowPlatedBlockAlt = null!;//发现这个占位符纹理效果意外不错，于是便留着
+        public static Texture2D StarflowPlatedBlockAlt = null!;//占位纹理意外不错
 
-        /// <summary>绘制地面不完整警告</summary>
         private void DrawGroundIncompleteWarning(SpriteBatch spriteBatch) {
             float alphaBase = 0.5f + 0.3f * MathF.Sin(guideAlphaTime * 0.08f);
 
-            //绘制不完整的地面方块标记
             foreach (Point pos in incompleteGroundPositions) {
                 Vector2 drawPos = new Vector2(pos.X * 16, pos.Y * 16) - Main.screenPosition;
 
-                //红色警告边框
                 Color warningColor = Color.Red * alphaBase;
                 Color fillColor = new Color(255, 100, 100) * (alphaBase * 0.3f);
 
-                //绘制填充
                 spriteBatch.Draw(
                     VaultAsset.placeholder2.Value,
                     drawPos,
@@ -401,9 +374,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                     0f
                 );
 
-                //绘制闪烁的边框（4条线）
                 int borderThickness = 2;
-                //上边框
                 spriteBatch.Draw(
                     VaultAsset.placeholder2.Value,
                     drawPos,
@@ -415,7 +386,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                     SpriteEffects.None,
                     0f
                 );
-                //下边框
                 spriteBatch.Draw(
                     VaultAsset.placeholder2.Value,
                     drawPos + new Vector2(0, 16 - borderThickness),
@@ -427,7 +397,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                     SpriteEffects.None,
                     0f
                 );
-                //左边框
                 spriteBatch.Draw(
                     VaultAsset.placeholder2.Value,
                     drawPos,
@@ -439,7 +408,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                     SpriteEffects.None,
                     0f
                 );
-                //右边框
                 spriteBatch.Draw(
                     VaultAsset.placeholder2.Value,
                     drawPos + new Vector2(16 - borderThickness, 0),
@@ -452,11 +420,9 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                     0f
                 );
 
-                //绘制X标记
                 float crossSize = 12f;
                 Vector2 crossCenter = drawPos + new Vector2(8, 8);
 
-                //对角线1
                 for (int i = 0; i < (int)crossSize; i++) {
                     Vector2 pixelPos = crossCenter + new Vector2(-crossSize / 2 + i, -crossSize / 2 + i);
                     spriteBatch.Draw(
@@ -472,7 +438,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                     );
                 }
 
-                //对角线2
                 for (int i = 0; i < (int)crossSize; i++) {
                     Vector2 pixelPos = crossCenter + new Vector2(-crossSize / 2 + i, crossSize / 2 - i);
                     spriteBatch.Draw(
@@ -489,7 +454,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 }
             }
 
-            //绘制警告文本
             Vector2 textPos = new Vector2(Position.X * 16, (Position.Y - 2) * 16) - Main.screenPosition;
             float textAlpha = 0.9f + 0.1f * MathF.Sin(guideAlphaTime * 0.1f);
 
@@ -497,17 +461,13 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             Color textColor = Color.Red * textAlpha;
             Color shadowColor = Color.Black * textAlpha * 0.7f;
 
-            //绘制阴影
             Utils.DrawBorderString(spriteBatch, warningText, textPos + new Vector2(2, 2), shadowColor, 1.2f);
-            //绘制文本（带闪烁效果）
             float flashEffect = 0.8f + 0.2f * MathF.Sin(guideAlphaTime * 0.15f);
             Utils.DrawBorderString(spriteBatch, warningText, textPos, textColor * flashEffect, 1.2f);
 
-            //绘制地面检测区域边框
             DrawGroundCheckArea(spriteBatch);
         }
 
-        /// <summary>绘制地面检测区域边框</summary>
         private void DrawGroundCheckArea(SpriteBatch spriteBatch) {
             int groundY = Position.Y + 2;
             Vector2 topLeft = new Vector2((Position.X - 2) * 16, groundY * 16) - Main.screenPosition;
@@ -518,19 +478,15 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             float alpha = 0.7f + 0.3f * MathF.Sin(guideAlphaTime * 0.1f);
             Color borderColor = Color.Red * alpha;
 
-            //上边框
             spriteBatch.Draw(VaultAsset.placeholder2.Value, topLeft + new Vector2(-borderThickness, -borderThickness),
                 new Rectangle(0, 0, 1, 1), borderColor, 0f, Vector2.Zero,
                 new Vector2(width + borderThickness * 2, borderThickness), SpriteEffects.None, 0f);
-            //下边框
             spriteBatch.Draw(VaultAsset.placeholder2.Value, topLeft + new Vector2(-borderThickness, height),
                 new Rectangle(0, 0, 1, 1), borderColor, 0f, Vector2.Zero,
                 new Vector2(width + borderThickness * 2, borderThickness), SpriteEffects.None, 0f);
-            //左边框
             spriteBatch.Draw(VaultAsset.placeholder2.Value, topLeft + new Vector2(-borderThickness, 0),
                 new Rectangle(0, 0, 1, 1), borderColor, 0f, Vector2.Zero,
                 new Vector2(borderThickness, height), SpriteEffects.None, 0f);
-            //右边框
             spriteBatch.Draw(VaultAsset.placeholder2.Value, topLeft + new Vector2(width, 0),
                 new Rectangle(0, 0, 1, 1), borderColor, 0f, Vector2.Zero,
                 new Vector2(borderThickness, height), SpriteEffects.None, 0f);
@@ -541,7 +497,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             int baseX = Position.X - 2;
             int baseY = Position.Y - 12;
 
-            //计算透明度（呼吸效果）
             float alphaBase = 0.3f + 0.2f * MathF.Sin(guideAlphaTime * 0.05f);
 
             Texture2D blockTexture = StarflowPlatedBlockAlt;
@@ -551,27 +506,22 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                     int checkX = baseX + x;
                     int checkY = baseY + y;
 
-                    //跳过构建器自身位置（2×2）
+                    //跳过构建器2×2
                     if (x >= 2 && x < 4 && y >= 12 && y < 14) {
                         continue;
                     }
 
                     Tile tile = Framing.GetTileSafely(checkX, checkY);
 
-                    //只为缺失的方块绘制虚影
                     if (!tile.HasTile || tile.TileType != starflowBlockType) {
                         Vector2 drawPos = new Vector2(checkX * 16, checkY * 16) - Main.screenPosition;
 
-                        //计算当前方块的特殊效果（从下到上渐变）
-                        float heightFactor = 1f - y / 14f;
+                        float heightFactor = 1f - y / 14f;//自下而上渐变
                         float alpha = alphaBase * heightFactor;
 
-                        //边框颜色（青色）
                         Color borderColor = new Color(100, 200, 255) * alpha;
-                        //填充颜色（更淡的青色）
                         Color fillColor = new Color(150, 180, 220) * (alpha * 0.5f);
 
-                        //绘制填充
                         spriteBatch.Draw(
                             VaultAsset.placeholder2.Value,
                             drawPos,
@@ -584,9 +534,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                             0f
                         );
 
-                        //绘制边框（4条线）
                         int borderThickness = 1;
-                        //上边框
                         spriteBatch.Draw(
                             VaultAsset.placeholder2.Value,
                             drawPos,
@@ -598,7 +546,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                             SpriteEffects.None,
                             0f
                         );
-                        //下边框
                         spriteBatch.Draw(
                             VaultAsset.placeholder2.Value,
                             drawPos + new Vector2(0, 16 - borderThickness),
@@ -610,7 +557,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                             SpriteEffects.None,
                             0f
                         );
-                        //左边框
                         spriteBatch.Draw(
                             VaultAsset.placeholder2.Value,
                             drawPos,
@@ -622,7 +568,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                             SpriteEffects.None,
                             0f
                         );
-                        //右边框
                         spriteBatch.Draw(
                             VaultAsset.placeholder2.Value,
                             drawPos + new Vector2(16 - borderThickness, 0),
@@ -635,7 +580,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                             0f
                         );
 
-                        //绘制方块纹理预览（半透明）
                         spriteBatch.Draw(
                             blockTexture,
                             drawPos,
@@ -651,41 +595,34 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 }
             }
 
-            //绘制构建区域外框和提示文本
             DrawConstructionAreaBorder(spriteBatch, baseX, baseY);
             DrawGuideText(spriteBatch, baseX, baseY);
         }
 
         private void DrawConstructionAreaBorder(SpriteBatch spriteBatch, int baseX, int baseY) {
-            //绘制6×14区域的外边框
             Vector2 topLeft = new Vector2(baseX * 16, baseY * 16) - Main.screenPosition;
             int width = 6 * 16;
             int height = 14 * 16;
             int borderThickness = 2;
 
             float alpha = 0.6f + 0.4f * MathF.Sin(guideAlphaTime * 0.08f);
-            Color borderColor = new Color(255, 200, 100) * alpha; //金色边框
+            Color borderColor = new Color(255, 200, 100) * alpha;
 
-            //上边框
             spriteBatch.Draw(VaultAsset.placeholder2.Value, topLeft + new Vector2(-borderThickness, -borderThickness),
                 new Rectangle(0, 0, 1, 1), borderColor, 0f, Vector2.Zero,
                 new Vector2(width + borderThickness * 2, borderThickness), SpriteEffects.None, 0f);
-            //下边框
             spriteBatch.Draw(VaultAsset.placeholder2.Value, topLeft + new Vector2(-borderThickness, height),
                 new Rectangle(0, 0, 1, 1), borderColor, 0f, Vector2.Zero,
                 new Vector2(width + borderThickness * 2, borderThickness), SpriteEffects.None, 0f);
-            //左边框
             spriteBatch.Draw(VaultAsset.placeholder2.Value, topLeft + new Vector2(-borderThickness, 0),
                 new Rectangle(0, 0, 1, 1), borderColor, 0f, Vector2.Zero,
                 new Vector2(borderThickness, height), SpriteEffects.None, 0f);
-            //右边框
             spriteBatch.Draw(VaultAsset.placeholder2.Value, topLeft + new Vector2(width, 0),
                 new Rectangle(0, 0, 1, 1), borderColor, 0f, Vector2.Zero,
                 new Vector2(borderThickness, height), SpriteEffects.None, 0f);
         }
 
         private void DrawGuideText(SpriteBatch spriteBatch, int baseX, int baseY) {
-            //计算缺失的方块数量
             int starflowBlockType = ModContent.TileType<StarflowPlatedBlockTile>();
             int missingBlocks = 0;
 
@@ -713,9 +650,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 Color textColor = Color.Yellow * textAlpha;
                 Color shadowColor = Color.Black * textAlpha * 0.5f;
 
-                //绘制阴影
                 Utils.DrawBorderString(spriteBatch, text, textPos + new Vector2(2, 2), shadowColor, 1f);
-                //绘制文本
                 Utils.DrawBorderString(spriteBatch, text, textPos, textColor, 1f);
             }
             else {
@@ -723,9 +658,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 Color textColor = Color.Lime * textAlpha;
                 Color shadowColor = Color.Black * textAlpha * 0.5f;
 
-                //绘制阴影
                 Utils.DrawBorderString(spriteBatch, text, textPos + new Vector2(2, 2), shadowColor, 1.2f);
-                //绘制文本
                 Utils.DrawBorderString(spriteBatch, text, textPos, textColor, 1.2f);
             }
         }
@@ -738,30 +671,24 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             int baseY = Position.Y - 12;
             Vector2 drawPos = new Vector2((baseX + 3) * 16, (baseY + 7) * 16) - Main.screenPosition;
 
-            //绘制进度条
             Vector2 progressBarPos = new Vector2((baseX + 3) * 16, (baseY - 1) * 16) - Main.screenPosition;
             int barWidth = 80;
             int barHeight = 8;
 
-            //进度条背景
             spriteBatch.Draw(VaultAsset.placeholder2.Value, progressBarPos - new Vector2(barWidth / 2, 0),
                 new Rectangle(0, 0, 1, 1), Color.Black * 0.7f, 0f, Vector2.Zero,
                 new Vector2(barWidth, barHeight), SpriteEffects.None, 0f);
 
-            //进度条填充
             Color progressColor = Color.Lerp(Color.Yellow, Color.Lime, progress);
             spriteBatch.Draw(VaultAsset.placeholder2.Value, progressBarPos - new Vector2(barWidth / 2, 0) + new Vector2(1, 1),
                 new Rectangle(0, 0, 1, 1), progressColor, 0f, Vector2.Zero,
                 new Vector2((barWidth - 2) * progress, barHeight - 2), SpriteEffects.None, 0f);
 
-            //进度百分比文字
             string progressText = $"{(int)(progress * 100)}%";
             Vector2 textPos = progressBarPos + new Vector2(0, barHeight + 5);
             Color shadowColor = Color.Black * 0.8f;
 
-            //绘制阴影
             Utils.DrawBorderString(spriteBatch, progressText, textPos + new Vector2(1, 1), shadowColor, 0.8f);
-            //绘制文本
             Utils.DrawBorderString(spriteBatch, progressText, textPos, Color.White, 0.8f);
         }
     }

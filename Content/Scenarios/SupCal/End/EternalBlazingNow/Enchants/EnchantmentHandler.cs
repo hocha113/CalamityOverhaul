@@ -7,9 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchants
 {
-    /// <summary>
-    /// Ebn 炼铸逻辑：附魔选择、进度、应用
-    /// </summary>
+    /// <summary>Ebn炼铸，选择/进度/应用</summary>
     internal class EnchantmentHandler
     {
         public Item CurrentItem { get; set; }
@@ -37,7 +35,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
             SelectedEnchantmentIndex = 0;
         }
 
-        /// <summary>每帧推进炼铸进度</summary>
         public void Update() {
             if (!IsEnchanting) {
                 return;
@@ -67,7 +64,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
                 return;
             }
 
-            //索引 clamp
+            //索引clamp
             if (SelectedEnchantmentIndex < 0) {
                 SelectedEnchantmentIndex = 0;
             }
@@ -116,7 +113,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
             return false;
         }
 
-        /// <summary>开始炼铸</summary>
         public bool StartEnchanting(Player player) {
             if (IsEnchanting) {
                 return false;
@@ -130,7 +126,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
                 return false;
             }
 
-            //验证附魔有效性
             if (!CanEnchant(CurrentItem, SelectedEnchantment.Value)) {
                 return false;
             }
@@ -138,10 +133,8 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
             IsEnchanting = true;
             EnchantProgress = 0f;
 
-            //播放开始音效
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.7f, Pitch = -0.3f }, player.Center);
 
-            //触发开始回调
             OnEnchantStart?.Invoke(CurrentItem, SelectedEnchantment.Value);
 
             return true;
@@ -163,22 +156,18 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
                 return;
             }
 
-            //应用附魔
             ApplyEnchantment(CurrentItem, SelectedEnchantment.Value);
 
-            //重置状态
             IsEnchanting = false;
             EnchantProgress = 0f;
             SelectedEnchantmentIndex = 0;
 
-            //播放完成音效
             Player player = Main.LocalPlayer;
             if (player != null) {
                 SoundStyle enchantSound = "CalamityMod/Sounds/Custom/WeaponEnchant".GetSound();
                 SoundEngine.PlaySound(enchantSound with { Volume = 0.8f }, player.Center);
             }
 
-            //触发完成回调
             OnEnchantComplete?.Invoke(CurrentItem, SelectedEnchantment.Value);
         }
 
@@ -187,7 +176,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
                 return false;
             }
 
-            //获取可用附魔列表并检查目标附魔是否在其中
             IEnumerable<CWRRef.EnchantmentWrapper> validEnchantments = CWRRef.GetValidEnchantmentsForItem(item);
             return validEnchantments.Contains(enchantment);
         }

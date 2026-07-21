@@ -9,7 +9,6 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.QuestLogs
 {
-    /// <summary>任务完成通知弹窗条目</summary>
     internal class QuestCompletionEntry : NotificationEntry
     {
         private readonly QuestNode node;
@@ -49,7 +48,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             string titleText = QuestNotificationSystem.Text1?.Value ?? "任务完成";
             string nameText = node.DisplayName?.Value ?? "";
 
-            //面板背景，通用底色加特化装饰
+            //底色+特化装饰
             DrawPanelBackground(sb, panelRect, Color.Black * 0.75f, Color.Gold, alpha);
             DrawQuestPanelOverlay(sb, pixel, panelRect, alpha, time, life);
 
@@ -61,7 +60,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             //图标辉光
             DrawIconGlow(sb, new Vector2(iconCenterX, iconCenterY), iconAreaWidth, alpha, time);
 
-            //竖向分隔线，3段渐变代替逐像素
+            //竖分线3段渐变
             float separatorX = panelRect.X + padding * 2 + iconAreaWidth;
             int sepH = panelRect.Height - 16;
             int segH = sepH / 3;
@@ -71,7 +70,6 @@ namespace CalamityOverhaul.Content.QuestLogs
                     Color.Gold * (fade * alpha));
             }
 
-            //图标绘制
             var icon = node.GetIconTexture();
             if (icon != null) {
                 Rectangle? frame = node.GetIconSourceRect(icon);
@@ -97,10 +95,9 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
             }
 
-            //文字区域
             float textX = separatorX + 10;
 
-            //标题辉光底色
+            //标题辉光底
             Vector2 titlePos = new(textX, panelRect.Y + 12);
             Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(titleText) * 0.75f;
             sb.Draw(pixel, new Rectangle((int)titlePos.X - 2, (int)titlePos.Y, (int)(titleSize.X + 4), (int)(titleSize.Y + 2)),
@@ -114,16 +111,16 @@ namespace CalamityOverhaul.Content.QuestLogs
             Vector2 namePos = new(textX, panelRect.Y + 34);
             Utils.DrawBorderString(sb, nameText, namePos, Color.White * (alpha * nameAlpha), 0.95f);
 
-            //底部进度装饰条
+            //底进度条
             DrawProgressBar(sb, pixel, panelRect, alpha, life);
 
-            //微型星火粒子
+            //星火
             DrawSparks(sb, pixel, panelRect, alpha, life);
         }
 
-        /// <summary>任务完成弹窗特化装饰层，纵向渐变、扫光、脉冲边框、角标</summary>
+        //纵渐变/扫光/脉冲边框/角标
         private static void DrawQuestPanelOverlay(SpriteBatch sb, Texture2D pixel, Rectangle rect, float alpha, float time, int life) {
-            //纵向渐变叠加，4段
+            //纵渐变4段
             int segH = rect.Height / 4;
             for (int i = 0; i < 4; i++) {
                 float t = i / 4f;
@@ -131,7 +128,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 sb.Draw(pixel, new Rectangle(rect.X, rect.Y + i * segH, rect.Width, segH + 1), gradColor * alpha);
             }
 
-            //横向扫光，约6段模拟高斯分布
+            //横扫光~6段
             float sweepPos = ((time * 0.4f + life * 0.01f) % 1.5f) - 0.25f;
             int sweepWidth = rect.Width / 4;
             int sweepCenterX = rect.X + (int)(sweepPos * (rect.Width + sweepWidth));
@@ -151,18 +148,17 @@ namespace CalamityOverhaul.Content.QuestLogs
                     Color.Gold * (sweepAlpha * 0.12f * alpha));
             }
 
-            //脉冲辉光上边框
+            //上边框脉冲
             float pulse = MathF.Sin(time * 2.5f) * 0.5f + 0.5f;
             Color glowBorder = Color.Lerp(Color.Gold, Color.White, pulse * 0.3f);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y - 1, rect.Width, 1), glowBorder * (0.3f * pulse * alpha));
 
-            //角落十字标记，上方两角亮下方两角暗
+            //角标上亮下暗
             DrawCornerGlyph(sb, pixel, new Vector2(rect.X + 5, rect.Y + 5), glowBorder, alpha, pulse);
             DrawCornerGlyph(sb, pixel, new Vector2(rect.Right - 5, rect.Y + 5), glowBorder, alpha, pulse);
             DrawCornerGlyph(sb, pixel, new Vector2(rect.X + 5, rect.Bottom - 5), glowBorder * 0.6f, alpha, pulse * 0.7f);
             DrawCornerGlyph(sb, pixel, new Vector2(rect.Right - 5, rect.Bottom - 5), glowBorder * 0.6f, alpha, pulse * 0.7f);
 
-            //上部装饰细线
             sb.Draw(pixel, new Rectangle(rect.X + 8, rect.Y + 3, rect.Width - 16, 1),
                 Color.Gold * (0.2f * alpha));
         }
@@ -177,7 +173,6 @@ namespace CalamityOverhaul.Content.QuestLogs
                 new Vector2(0.5f, 0.5f), new Vector2(1.5f, 1.5f), SpriteEffects.None, 0f);
         }
 
-        /// <summary>底部进度装饰条（分段渐变）</summary>
         private static void DrawProgressBar(SpriteBatch sb, Texture2D pixel, Rectangle panelRect, float alpha, int life) {
             float progressBarY = panelRect.Bottom - 8;
             float barMaxWidth = panelRect.Width - 20;
@@ -185,11 +180,10 @@ namespace CalamityOverhaul.Content.QuestLogs
             fillProgress = 1f - (1f - fillProgress) * (1f - fillProgress);
             int fillWidth = (int)(barMaxWidth * fillProgress);
 
-            //背景槽
             sb.Draw(pixel, new Rectangle(panelRect.X + 10, (int)progressBarY, (int)barMaxWidth, 3),
                 Color.Black * (0.4f * alpha));
 
-            //填充，8段渐变
+            //填充8段渐变
             if (fillWidth > 0) {
                 int segs = 8;
                 int segW = Math.Max(1, fillWidth / segs);
@@ -242,7 +236,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 -MathHelper.PiOver4 * 0.7f, new Vector2(0, 0.5f), new Vector2(longLen, 1.5f), SpriteEffects.None, 0f);
         }
 
-        /// <summary>帧率无关的星火粒子，位置基LifeTimer计算不在Draw中累加</summary>
+        //星火用LifeTimer算位姿
         private void DrawSparks(SpriteBatch sb, Texture2D pixel, Rectangle panelRect, float alpha, int life) {
             if (!sparksInited) {
                 sparksInited = true;
@@ -261,14 +255,13 @@ namespace CalamityOverhaul.Content.QuestLogs
 
             for (int i = 0; i < sparks.Length; i++) {
                 ref readonly var sp = ref sparks[i];
-                //基于life计算粒子生命周期位置，帧率无关
+                //life驱动位移，帧率无关
                 float particleTime = (life + sp.Phase * 10f) % sp.MaxLife;
                 float lifeRatio = particleTime / sp.MaxLife;
                 float spAlpha = MathF.Sin(lifeRatio * MathF.PI);
                 spAlpha = MathF.Pow(spAlpha, 1.5f);
                 if (spAlpha < 0.02f) continue;
 
-                //位置基于初始偏移加life线性位移
                 float px = panelRect.X + ((sp.Pos.X + sp.Vel.X * life) % panelRect.Width + panelRect.Width) % panelRect.Width;
                 float py = panelRect.Y + ((sp.Pos.Y + sp.Vel.Y * life) % panelRect.Height + panelRect.Height) % panelRect.Height;
 

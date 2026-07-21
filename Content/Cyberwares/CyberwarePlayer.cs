@@ -41,15 +41,12 @@ namespace CalamityOverhaul.Content.Cyberwares
         /// <summary>剩余容量</summary>
         public int RemainingCapacity => MaxCapacity - UsedCapacity;
 
-        /// <summary>检查物品能否装入 slot</summary>
         public bool CanEquip(Item item, int slotIndex) {
             if (slotIndex < 0 || slotIndex >= SlotCount) return false;
             if (item?.ModItem is not BaseCyberware cyber) return false;
-
-            //槽位类别匹配
             if ((int)cyber.SlotCategory != slotIndex) return false;
 
-            //容量：先扣旧义体再算新义体
+            //先扣旧再算新
             int currentUsed = UsedCapacity;
             if (EquippedCyberwares[slotIndex]?.ModItem is BaseCyberware oldCyber) {
                 currentUsed -= oldCyber.CapacityCost;
@@ -59,14 +56,12 @@ namespace CalamityOverhaul.Content.Cyberwares
             return true;
         }
 
-        /// <summary>装入 slot，成功返回 true</summary>
         public bool Equip(Item item, int slotIndex) {
             if (!CanEquip(item, slotIndex)) return false;
 
             Item cloned = item.Clone();
             EquippedCyberwares[slotIndex] = cloned;
 
-            //克隆实例后 OnEquip
             if (cloned.ModItem is BaseCyberware newCyber) {
                 newCyber.OnEquip(Player);
             }
@@ -74,14 +69,12 @@ namespace CalamityOverhaul.Content.Cyberwares
             return true;
         }
 
-        /// <summary>卸载 slot，返回旧物品</summary>
         public Item Unequip(int slotIndex) {
             if (slotIndex < 0 || slotIndex >= SlotCount) return null;
 
             Item oldItem = EquippedCyberwares[slotIndex];
             if (oldItem == null || oldItem.IsAir) return null;
 
-            //OnUnequip
             if (oldItem.ModItem is BaseCyberware cyber) {
                 cyber.OnUnequip(Player);
             }
@@ -90,7 +83,7 @@ namespace CalamityOverhaul.Content.Cyberwares
             return oldItem;
         }
 
-        /// <summary>背包中可装入 slot 的义体索引列表</summary>
+        /// <summary>背包中可装入 slot 的索引</summary>
         public List<int> GetCompatibleItems(int slotIndex) {
             List<int> result = [];
             if (slotIndex < 0 || slotIndex >= SlotCount) return result;
@@ -114,7 +107,7 @@ namespace CalamityOverhaul.Content.Cyberwares
         }
 
         public override void PostUpdateEquips() {
-            //PostUpdateEquips 后立即写入，避免同帧 ResetEffects 抹掉
+            //同帧赶在 ResetEffects 前写入
             for (int i = 0; i < SlotCount; i++) {
                 if (EquippedCyberwares[i]?.ModItem is BaseCyberware cyber) {
                     cyber.PostUpdateEquipped(Player);

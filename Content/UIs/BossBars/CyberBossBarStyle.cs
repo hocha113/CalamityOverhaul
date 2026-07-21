@@ -11,16 +11,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.BossBars
 {
-    /// <summary>
-    /// 赛博朋克2077风格Boss血条
-    /// </summary>
+    /// <summary>赛博2077风 Boss 血条</summary>
     public class CyberBossBarStyle : ModBossBarStyle
     {
         public const int MaxBars = 4;
         public const int BarWidth = 540;
-        //薄条：核心信号线，不再是粗血槽
+        //薄条信号线
         public const int BarHeight = 12;
-        //断续分段数量（对应2077的分段信号槽）
+        //断续分段数
         public const int Segments = 5;
         public const int TopMargin = 40;
         public const int VerticalSpacing = 84;
@@ -47,7 +45,7 @@ namespace CalamityOverhaul.Content.UIs.BossBars
             foreach (NPC n in Main.ActiveNPCs) {
                 if (ExclusionList.Contains(n.type))
                     continue;
-                //realLife>=0表示该NPC是某段蠕虫子节点，跳过避免重复添加
+                //realLife>=0 蠕虫子节，跳过
                 if (n.boss && n.realLife < 0)
                     TryAddBar(n.whoAmI);
             }
@@ -81,9 +79,7 @@ namespace CalamityOverhaul.Content.UIs.BossBars
         }
     }
 
-    /// <summary>
-    /// 单个Boss血条的状态与绘制
-    /// </summary>
+    /// <summary>单条 Boss 血条状态/绘制</summary>
     public class CyberBossHPUI
     {
         public const int OpenTime = 50;
@@ -100,14 +96,13 @@ namespace CalamityOverhaul.Content.UIs.BossBars
         public float TrailRatio = 1f;
         public float HitFlash;
 
-        //赛博朋克2077 HUD红色信号色系（满血珊瑚红→残血猩红，不用黄）
+        //满血珊瑚红→残血猩红，不用黄
         private static readonly Color HpHigh = new(255, 88, 70);
         private static readonly Color HpMid = new(255, 55, 52);
         private static readonly Color HpLow = new(240, 35, 48);
-        //文字：暖珊瑚（读数感），暗珊瑚（次要信息）
+        //字色暖珊瑚/暗珊瑚
         private static readonly Color Coral = new(255, 150, 130);
         private static readonly Color CoralDim = new(205, 95, 88);
-        //受击色散
         private static readonly Color ChromaCyan = new(60, 220, 255);
         private static readonly Color ChromaRed = new(255, 45, 70);
 
@@ -157,14 +152,14 @@ namespace CalamityOverhaul.Content.UIs.BossBars
             if (HitFlash < 0f) HitFlash = 0f;
         }
 
-        //威胁色插值(高=珊瑚红,中=红,低=猩红)，全程红色系
+        //威胁色插值，全程红系
         private static Color ThreatColor(float r) {
             if (r > 0.6f) return Color.Lerp(HpMid, HpHigh, (r - 0.6f) / 0.4f);
             if (r > 0.3f) return Color.Lerp(HpLow, HpMid, (r - 0.3f) / 0.3f);
             return HpLow;
         }
 
-        //lifeMax对数映射出威胁等级(仅视觉)
+        //lifeMax对数→威胁等级(仅视觉)
         private static int ComputeLevel(long maxLife) {
             if (maxLife <= 1) return 1;
             double lv = Math.Log10(maxLife) * 9.5;
@@ -188,7 +183,7 @@ namespace CalamityOverhaul.Content.UIs.BossBars
                 alpha = 1f - MathHelper.Clamp(CloseTimer / (float)CloseTime, 0f, 1f);
             if (alpha <= 0f) return;
 
-            //开场赛博启动闪烁
+            //开场闪烁
             if (OpenTimer == 3 || OpenTimer == 7 || OpenTimer == 14)
                 alpha *= Main.rand.NextFloat(0.35f, 0.55f);
             if (OpenTimer == 4 || OpenTimer == 8 || OpenTimer == 15)
@@ -220,10 +215,9 @@ namespace CalamityOverhaul.Content.UIs.BossBars
             float barY = y + rowTopH + 7f;
             float row3Y = barY + barH + 7f;
 
-            //暗雾背景
             DrawBacking(sb, cx, y - 6f, row3Y + pctSize.Y + 6f, barW, alpha);
 
-            //顶行：LV+名称+HP读数
+            //顶行 LV+名+HP
             float lvY = y + (rowTopH - lvSize.Y) / 2f;
             DrawHudText(sb, font, lvText, new Vector2(left, lvY), CoralDim * (alpha * 0.9f), smallScale);
 
@@ -238,13 +232,13 @@ namespace CalamityOverhaul.Content.UIs.BossBars
             float hpY = y + (rowTopH - hpSize.Y) / 2f;
             DrawHudText(sb, font, hpText, new Vector2(left + barW - hpSize.X, hpY), CoralDim * (alpha * 0.85f), smallScale);
 
-            //：： 着色器主条（材质式 HUD 信号线）：：
+            //着色器主条
             DrawShaderBar(sb, left, barY, barW, barH, alpha);
 
-            //：： 附加辉光层（红色漏光 + 前沿亮点）：：
+            //附加辉光
             DrawGlow(sb, left, barY, barW, barH, primary, alpha);
 
-            //：： 第三行：百分比（左，醒目）+ ID/状态（右下，暗）：：
+            //第三行 %左 + ID/状态右
             DrawHudText(sb, font, pctText, new Vector2(left, row3Y), primary * alpha, pctScale);
 
             string idTag = $"TYPE:{npc.type:0000}";
@@ -264,7 +258,7 @@ namespace CalamityOverhaul.Content.UIs.BossBars
                 primary * tagAlpha, tagScale);
         }
 
-        //羽化暗雾背景：用 Fog 蒙版拉伸成横向暗带，中心压暗、边缘透明，杜绝硬框
+        //Fog蒙版横向暗带，避硬框
         private static void DrawBacking(SpriteBatch sb, float cx, float top, float bottom, float barW, float alpha) {
             Texture2D fog = CWRAsset.Fog?.Value;
             if (fog == null) return;
@@ -276,12 +270,12 @@ namespace CalamityOverhaul.Content.UIs.BossBars
             Color outer = new Color(10, 3, 4) * (alpha * 0.55f);
             sb.Draw(fog, new Rectangle((int)(cx - w / 2f), (int)(cy - h / 2f), (int)w, (int)h), outer);
 
-            //中心再叠一层更深更窄，加强文字/条的可读性
+            //中心再叠更深窄层
             Color inner = new Color(6, 1, 2) * (alpha * 0.5f);
             sb.Draw(fog, new Rectangle((int)(cx - w * 0.36f), (int)(cy - h * 0.42f), (int)(w * 0.72f), (int)(h * 0.84f)), inner);
         }
 
-        //HUD文字：1.5px暗影 + 主体，弃用粗黑四向描边以摆脱卡通感
+        //HUD字 1.5px暗影+主体
         private static void DrawHudText(SpriteBatch sb, DynamicSpriteFont font, string text,
             Vector2 pos, Color color, float scale) {
             float sa = color.A / 255f;
@@ -290,7 +284,7 @@ namespace CalamityOverhaul.Content.UIs.BossBars
             sb.DrawString(font, text, pos, color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
 
-        //红色辉光：沿填充宽度的宽幅底光 + 前沿亮点 + 受击暖白扩散（Additive）
+        //红辉光底光+前沿+受击扩散
         private void DrawGlow(SpriteBatch sb, float left, float barY, float barW, int barH, Color primary, float alpha) {
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
@@ -341,7 +335,7 @@ namespace CalamityOverhaul.Content.UIs.BossBars
                 effect.Parameters["uSegments"]?.SetValue((float)CyberBossBarStyle.Segments);
                 effect.CurrentTechnique.Passes[0].Apply();
 
-                //预乘 alpha 由着色器处理，这里传 White 即可
+                //预乘alpha走着色器，传White
                 sb.Draw(px, new Rectangle((int)x, (int)y, (int)w, (int)h), Color.White);
 
                 sb.End();
@@ -349,7 +343,7 @@ namespace CalamityOverhaul.Content.UIs.BossBars
                     DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
             }
             else {
-                //降级绘制：红色分段填充
+                //降级红分段填
                 Color fallback = ThreatColor(LifeRatio);
                 int fillW = (int)(w * SmoothRatio);
                 int segN = CyberBossBarStyle.Segments;

@@ -12,9 +12,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        //总寿命：从延伸到收尾约 0.5 秒
+        //总寿命约0.5s
         private const int MaxLife = 30;
-        //命中目标的归一化时间点：在此前完成"延伸"，到达后触发冲击脉冲
+        //ImpactT 前延伸，之后冲击
         private const float ImpactT = 0.32f;
 
         private Vector2 startPos;
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
         }
 
         private void ComputeAnimation(float t) {
-            //三段式：延伸（0~ImpactT）→ 命中提亮（ImpactT~0.5）→ 急速尾收（0.5~1）
+            //延伸→提亮→尾收
             if (t < ImpactT) {
                 float ext = t / ImpactT;
                 visibleEnd = 1f - MathF.Pow(1f - ext, 2.4f);
@@ -83,8 +83,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
         }
 
         private void GeneratePath() {
-            //笔直主轴 + 极轻微正弦"呼吸"摇摆，让走廊看起来是稳定的传输管道
-            //刻意避免大幅弧线/锯齿，因为像素格走廊一旦弯曲就会被拉成菱形丑像素
+            //主轴微呼吸摆
+            //走廊少弯，防菱形像素
             Vector2 axis = endPos - startPos;
             float length = axis.Length();
             corridorLength = length;
@@ -96,12 +96,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
             Vector2 dir = axis / length;
             Vector2 perp = new(-dir.Y, dir.X);
 
-            //段数适中，过多会扭弯像素格
+            //段数适中
             int segs = (int)MathHelper.Clamp(length / 60f, 8f, 18f);
             pointCount = segs + 1;
             points = new Vector2[pointCount];
 
-            //极小幅度的整体弧度（最大 8px 内），仅为避免一根直线的纯几何感
+            //微弧 ≤8px
             float arcSign = Main.rand.NextBool() ? 1f : -1f;
             float arcMag = MathHelper.Clamp(length * 0.012f, 2f, 8f);
 
@@ -116,11 +116,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
         }
 
         private float WidthFunction(float progress) {
-            //走廊宽度：两端微收，中段保持，避免梭形（梭形会让网格被拉伸）
+            //走廊两端微收，避梭形
             float taper = MathF.Sin(progress * MathF.PI);
             taper = MathF.Pow(MathF.Max(taper, 0.18f), 0.45f);
             float boost = 1f + impactPulse * 0.30f;
-            //命中冲击时整条走廊轻微加粗
+            //命中微加粗
             return 56f * taper * boost;
         }
 
@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
             trail.TrailPositions = points;
 
             shader.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
-            //取主人玩家的领域时间，避免远端客户端读 Local 造成裂缝走廊节奏不一致
+            //uTime 取主人领域时间
             CyberspacePlayer ownerCp = Cyberspace.For(Projectile.owner);
             float ownerTime = ownerCp?.EffectTime ?? Cyberspace.EffectTime;
             shader.Parameters["uTime"]?.SetValue(ownerTime);

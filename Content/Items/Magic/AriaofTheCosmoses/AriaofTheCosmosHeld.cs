@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         public override int TargetID => ModContent.ItemType<AriaofTheCosmos>();
         public override bool CanRightClick => true;
 
-        //蓄力阶段分界
         private const int Stage1 = 60;
         private const int Stage2 = 120;
         private const int MaxChargeTime = 180;
@@ -28,7 +27,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private int accretionDiskIndex = -1;
         private bool isCharging;
 
-        //右键蓄力状态
         private int chargeTimeR;
         private float chargeProgressR;
         private int flattenedDiskIndex = -1;
@@ -50,7 +48,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         public override void AI() {
             UpdateHeldPose(CanFire);
 
-            //左键蓄力
             if (WantsFireLeft) {
                 isCharging = true;
                 chargeTime = Math.Min(chargeTime + 1, MaxChargeTime);
@@ -63,7 +60,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 ResetCharge();
             }
 
-            //右键蓄力
             if (WantsFireRight) {
                 isChargingR = true;
                 chargeTimeR = Math.Min(chargeTimeR + 1, MaxChargeTime);
@@ -80,11 +76,10 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             Time++;
         }
 
-        #region 左键：黑洞
+        #region 左键黑洞
         private void UpdateChargeEffects() {
-            //黑洞自身演出(恒星→坍缩→视界)由 AccretionDisk 自驱；这里只做持械者侧反馈
+            //黑洞演出交 AccretionDisk，这里只做持械反馈
             if (!VaultUtils.isServer && chargeTime > AccretionDisk.CollapseEnd && Main.rand.NextBool(6)) {
-                //法杖口飘向黑洞的引力尘
                 Vector2 particlePos = ShootPos + Main.rand.NextVector2Circular(20, 20);
                 PRTLoader.NewParticle<PRT_Spark>(particlePos,
                     (DiskAnchorPos - particlePos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 4f),
@@ -92,13 +87,12 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     Main.rand.NextFloat(0.5f, 0.9f))?.Configure(false, Main.rand.Next(10, 16), Owner);
             }
 
-            //满蓄低频压迫感
             if (chargeTime >= MaxChargeTime - 1) {
                 Owner.CWR().GetScreenShake(1.2f);
             }
         }
 
-        /// <summary>黑洞锚点：法杖前方随蓄力推远，给成长的天体让位</summary>
+        /// <summary>黑洞锚，杖前随蓄力推远</summary>
         private Vector2 DiskAnchorPos => ShootPos + ToMouse.SafeNormalize(Vector2.Zero) * (40f + chargeProgress * 90f);
 
         private void UpdateAccretionDisk() {
@@ -122,7 +116,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
 
         private void ReleaseAttack() {
-            //视界尚未诞生就松手：恒星溃散,不掷出不耗蓝
+            //视界未生松手→溃散不掷不耗蓝
             if (chargeTime < AccretionDisk.MinThrowCharge) {
                 return;
             }
@@ -134,7 +128,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 return;
             }
 
-            //黑洞转入掷出态
             if (accretionDiskIndex >= 0 && Main.projectile[accretionDiskIndex].active) {
                 Projectile disk = Main.projectile[accretionDiskIndex];
                 if (disk.ModProjectile is AccretionDisk accretion) {
@@ -149,7 +142,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 }
             }
 
-            //掷出的反作用力与魔力支付
             Owner.velocity -= ShootVelocity.SafeNormalize(Vector2.Zero) * (3f + chargeProgress * 5f);
             Owner.statMana = Math.Max(Owner.statMana - (int)(Item.mana * (1f + chargeProgress)), 0);
             HoldManaRegenDelay();
@@ -183,9 +175,9 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
         #endregion
 
-        #region 右键：事件视界领域
+        #region 右键事件视界
         private void UpdateChargeEffectsR() {
-            //领域自身演出由 FlattenedAccretionDisk 自驱;这里只做持械者侧反馈
+            //领域演出交 FlattenedAccretionDisk，这里只做持械反馈
             if (!VaultUtils.isServer && Main.rand.NextBool(6)) {
                 Vector2 particlePos = ShootPos + Main.rand.NextVector2Circular(20, 20);
                 PRTLoader.NewParticle<PRT_Spark>(particlePos,
@@ -199,7 +191,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             }
         }
 
-        /// <summary>领域锚点：法杖前方随蓄力推远</summary>
+        /// <summary>领域锚，杖前随蓄力推远</summary>
         private Vector2 DomainAnchorPos => ShootPos + ToMouse.SafeNormalize(Vector2.Zero) * (50f + chargeProgressR * 110f);
 
         private void UpdateFlattenedDisk() {

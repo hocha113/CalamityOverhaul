@@ -12,38 +12,33 @@ namespace CalamityOverhaul.Content.HackTimes
     /// <summary>单个骇入效果运行时实例</summary>
     internal class ActiveHackEffect
     {
-        /// <summary>协议定义</summary>
         public QuickHackDef Hack;
-        /// <summary>受影响目标</summary>
         public IHackTarget Target;
         /// <summary>施法玩家 whoAmI</summary>
         public int CasterIndex;
         /// <summary>已持续帧数</summary>
         public int Elapsed;
         internal float ElapsedCarry;
-        /// <summary>是否仍活跃</summary>
         public bool Active = true;
-        /// <summary>是否已调用 OnApply</summary>
         public bool Applied;
-        /// <summary>Boss 效果倍率，Boss 0.5f 普通 1f</summary>
+        /// <summary>Boss 效果倍率，Boss 0.5f / 普通 1f</summary>
         public float EffectMult = 1f;
-        /// <summary>传播代数，0 初始 1 已传播一次</summary>
+        /// <summary>传播代数，0 初始，1 已传一次</summary>
         public int Generation;
 
-        //兼容旧 API：NPC/Tile 便捷查询
+        //兼容旧 API
 
-        /// <summary>NpcScannable 时返回 NPC 索引，否则 -1</summary>
+        /// <summary>NpcScannable 时 NPC 索引，否则 -1</summary>
         public int TargetIndex => Target is NpcScannable n ? n.NpcIndex : -1;
-        /// <summary>TileScannable 时返回物块 X，否则 -1</summary>
+        /// <summary>TileScannable 时物块 X，否则 -1</summary>
         public int TileX => Target is TileScannable t ? t.TileCoordX : -1;
-        /// <summary>TileScannable 时返回物块 Y，否则 -1</summary>
+        /// <summary>TileScannable 时物块 Y，否则 -1</summary>
         public int TileY => Target is TileScannable t ? t.TileCoordY : -1;
     }
 
-    /// <summary>骇入效果全局追踪器，驱动 Apply→Tick→Remove</summary>
+    /// <summary>骇入效果全局追踪器，Apply→Tick→Remove</summary>
     internal class HackEffectTracker : ICWRLoader
     {
-        //所有 NPC 维度的活跃效果
         private static readonly List<ActiveHackEffect> activeEffects = [];
         //帧内移除缓冲
         private static readonly List<ActiveHackEffect> removeBuffer = [];
@@ -51,13 +46,12 @@ namespace CalamityOverhaul.Content.HackTimes
         private static readonly List<ActiveHackEffect> pendingEffects = [];
         private static bool updatingNpcEffects;
 
-        //所有 Tile 维度的活跃效果
         private static readonly List<ActiveHackEffect> activeTileEffects = [];
         private static readonly List<ActiveHackEffect> tileRemoveBuffer = [];
 
         //击杀回收 RAM 比例
         private const float KillRefundRatio = 0.5f;
-        //本帧击杀回收 NPC，防重复
+        //本帧已退过的 NPC，防重复
         private static readonly HashSet<int> killRefundedThisFrame = [];
 
         void ICWRLoader.UnLoadData() => Reset();
@@ -80,7 +74,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 Elapsed = 0,
                 Active = true,
                 Applied = false,
-                //Boss 效果减半
+                //Boss 减半
                 EffectMult = npc.boss ? 0.5f : 1f,
             };
 
@@ -91,11 +85,11 @@ namespace CalamityOverhaul.Content.HackTimes
             return effect;
         }
 
-        /// <summary>兼容旧 API：等价于 <see cref="ApplyNpcEffect"/></summary>
+        /// <summary>兼容旧 API，见 <see cref="ApplyNpcEffect"/></summary>
         public static ActiveHackEffect Apply(QuickHackDef hack, int targetIndex, int casterIndex)
             => ApplyNpcEffect(hack, targetIndex, casterIndex);
 
-        /// <summary>每帧更新所有 NPC 维度的活跃效果</summary>
+        /// <summary>每帧更新 NPC 效果</summary>
         public static void Update() {
             removeBuffer.Clear();
             killRefundedThisFrame.Clear();
@@ -109,7 +103,6 @@ namespace CalamityOverhaul.Content.HackTimes
                 }
 
                 NPC npc = eff.Target is NpcScannable n ? Main.npc[n.NpcIndex] : null;
-                //目标死亡或失效则移除
                 if (npc == null || !npc.active || npc.life <= 0) {
                     if (!HackTime.InfiniteHack && npc != null && eff.Target is NpcScannable np
                         && !killRefundedThisFrame.Contains(np.NpcIndex)) {
@@ -123,13 +116,13 @@ namespace CalamityOverhaul.Content.HackTimes
                 Player caster = eff.CasterIndex >= 0 && eff.CasterIndex < Main.maxPlayers
                     ? Main.player[eff.CasterIndex] : Main.LocalPlayer;
 
-                //首帧触发 OnApply
+                //首帧 OnApply
                 if (!eff.Applied) {
                     eff.Applied = true;
                     eff.Hack.OnApply(eff.Target, caster);
                 }
 
-                //驱动 TickEffect（内含持续时间检查）；Boss 减半：实际 duration = GetDuration * EffectMult
+                //时长 × EffectMult
                 int effectiveDuration = (int)(eff.Hack.GetDuration() * eff.EffectMult);
                 if (effectiveDuration > 0 && eff.Elapsed >= effectiveDuration) {
                     eff.Hack.OnRemove(eff.Target);
@@ -138,14 +131,13 @@ namespace CalamityOverhaul.Content.HackTimes
                     continue;
                 }
 
-                //即时效果（duration=0）在 Apply 后直接结束
+                //duration=0 即结束
                 if (eff.Hack.GetDuration() == 0 && eff.Applied) {
                     eff.Active = false;
                     removeBuffer.Add(eff);
                     continue;
                 }
 
-                //持续效果每帧 tick
                 bool alive = eff.Hack.OnTick(eff.Target, eff.Elapsed);
                 if (!alive) {
                     eff.Hack.OnRemove(eff.Target);
@@ -168,7 +160,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>查询指定 NPC 身上是否有某类型的活跃效果</summary>
+        /// <summary>NPC 是否有某类型活跃效果</summary>
         public static bool HasEffect<T>(int npcIndex) where T : QuickHackDef {
             for (int i = 0; i < activeEffects.Count; i++) {
                 var e = activeEffects[i];
@@ -183,7 +175,7 @@ namespace CalamityOverhaul.Content.HackTimes
             return false;
         }
 
-        /// <summary>获取指定 NPC 身上某类型效果的进度(0~1)，不存在返回 -1</summary>
+        /// <summary>效果进度 0~1，无则 -1</summary>
         public static float GetEffectProgress<T>(int npcIndex) where T : QuickHackDef {
             for (int i = 0; i < activeEffects.Count; i++) {
                 var eff = activeEffects[i];
@@ -196,7 +188,7 @@ namespace CalamityOverhaul.Content.HackTimes
             return -1f;
         }
 
-        /// <summary>获取指定 NPC 身上所有活跃效果</summary>
+        /// <summary>NPC 身上全部活跃效果</summary>
         public static void GetEffects(int npcIndex, List<ActiveHackEffect> result) {
             result.Clear();
             for (int i = 0; i < activeEffects.Count; i++) {
@@ -206,7 +198,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>获取指定 NPC 身上某类型效果的实例，不存在返回 null</summary>
+        /// <summary>某类型效果实例，无则 null</summary>
         public static ActiveHackEffect GetEffect<T>(int npcIndex) where T : QuickHackDef {
             for (int i = 0; i < activeEffects.Count; i++) {
                 var eff = activeEffects[i];
@@ -216,10 +208,10 @@ namespace CalamityOverhaul.Content.HackTimes
             return null;
         }
 
-        /// <summary>所有 NPC 维度的活跃效果列表（只读访问）</summary>
+        /// <summary>NPC 活跃效果只读列表</summary>
         public static IReadOnlyList<ActiveHackEffect> AllActiveEffects => activeEffects;
 
-        //群组扩散用的复用缓冲，所有 NPC 协议共享，避免每次都分配
+        //群组扩散复用缓冲
         private static readonly List<NPC> groupBuffer = [];
 
         /// <summary>扩散到多实体 Boss 群组，同类型跳过防递归</summary>
@@ -240,7 +232,7 @@ namespace CalamityOverhaul.Content.HackTimes
             groupBuffer.Clear();
         }
 
-        //击杀带骇入效果 NPC 时按比例返还 RAM
+        //击杀按比例退 RAM
         private static void OnHackedTargetKilled(NPC target, int npcIndex) {
             killRefundedThisFrame.Add(npcIndex);
 
@@ -270,7 +262,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 物块效果
 
-        /// <summary>对指定物块施加一个骇入协议效果</summary>
+        /// <summary>对物块施加协议效果</summary>
         public static ActiveHackEffect ApplyTileEffect(QuickHackDef hack, int tileX, int tileY, int casterIndex) {
             if (tileX < 0 || tileX >= Main.maxTilesX || tileY < 0 || tileY >= Main.maxTilesY)
                 return null;
@@ -292,11 +284,11 @@ namespace CalamityOverhaul.Content.HackTimes
             return effect;
         }
 
-        /// <summary>兼容旧 API：等价于 <see cref="ApplyTileEffect"/></summary>
+        /// <summary>兼容旧 API，见 <see cref="ApplyTileEffect"/></summary>
         public static ActiveHackEffect ApplyToTile(QuickHackDef hack, int tileX, int tileY, int casterIndex)
             => ApplyTileEffect(hack, tileX, tileY, casterIndex);
 
-        /// <summary>每帧更新所有物块效果</summary>
+        /// <summary>每帧更新物块效果</summary>
         public static void UpdateTileEffects() {
             tileRemoveBuffer.Clear();
 
@@ -316,7 +308,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 Player caster = eff.CasterIndex >= 0 && eff.CasterIndex < Main.maxPlayers
                     ? Main.player[eff.CasterIndex] : Main.LocalPlayer;
 
-                //首帧触发 OnApply
+                //首帧 OnApply
                 if (!eff.Applied) {
                     eff.Applied = true;
                     eff.Hack.OnApply(eff.Target, caster);
@@ -352,7 +344,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>查询指定物块位置是否有某类型的活跃效果</summary>
+        /// <summary>物块是否有某类型活跃效果</summary>
         public static bool HasTileEffect<T>(int tileX, int tileY) where T : QuickHackDef {
             for (int i = 0; i < activeTileEffects.Count; i++) {
                 var e = activeTileEffects[i];
@@ -363,7 +355,7 @@ namespace CalamityOverhaul.Content.HackTimes
             return false;
         }
 
-        /// <summary>获取指定物块坐标上所有活跃效果</summary>
+        /// <summary>物块坐标上全部活跃效果</summary>
         public static void GetTileEffects(int tileX, int tileY, List<ActiveHackEffect> result) {
             result.Clear();
             for (int i = 0; i < activeTileEffects.Count; i++) {
@@ -374,7 +366,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>所有活跃的物块效果（只读）</summary>
+        /// <summary>物块活跃效果只读列表</summary>
         public static IReadOnlyList<ActiveHackEffect> AllActiveTileEffects => activeTileEffects;
 
         #endregion

@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         private float gridScroll;
         private float gridScrollMax;
 
-        //命中区缓存：Update 计算，Draw 复用
+        //命中区缓存、Update算Draw用
         private Rectangle panelRect;
         private Rectangle gridClip;
         private Rectangle closeBtnRect;
@@ -421,7 +421,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 return;
             }
 
-            //研究中：左侧鱼图标 + 名称 + 进度，右侧取回按钮
+            //研究中、左图标名进度/右取回
             Vector2 iconPos = new(panelRect.X + Pad + 14f, footerTop + 32f);
             HalibutRenderer.DrawDisc(sb, iconPos, 15f, 2f, HalibutTheme.Deep * (0.7f * alpha));
             VaultUtils.SimpleDrawItem(sb, save.StudyItem.type, iconPos, 24, 1f, 0f, Color.White * alpha);
