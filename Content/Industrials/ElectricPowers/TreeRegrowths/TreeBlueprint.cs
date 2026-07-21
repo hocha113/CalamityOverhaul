@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -502,7 +502,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
                 return false;
             }
             Tile above = Main.tile[i, j - 1];
-            if (above.WallType != 0 || above.LiquidAmount != 0) {
+            if (above.WallType != WallID.None || above.LiquidAmount != 0) {
                 return false;
             }
             return WorldGen.EmptyTileCheck(i, i, j - 2, j - 1, TileID.Saplings)

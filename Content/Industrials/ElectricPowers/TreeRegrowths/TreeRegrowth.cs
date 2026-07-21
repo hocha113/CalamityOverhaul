@@ -1,4 +1,4 @@
-using InnoVault.Actors;
+﻿using InnoVault.Actors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -358,7 +358,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
             }
 
             Texture2D branchTex = TextureAssets.TreeBranch[style].Value;
-            bool hasWall = Main.tile[tx, ty].WallType > 0;
+            bool hasWall = Main.tile[tx, ty].WallType > WallID.None;
             float wind = hasWall ? 0f : renderer.GetWindCycle(tx, ty, windCounter);
 
             Vector2 pos;
@@ -400,7 +400,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
                 return;
             }
             float scale = PopScale(pop);
-            bool hasWall = Main.tile[tx, ty].WallType > 0;
+            bool hasWall = Main.tile[tx, ty].WallType > WallID.None;
             float wind = hasWall ? 0f : renderer.GetWindCycle(tx, ty, windCounter);
 
             if (blueprint.IsPalm) {

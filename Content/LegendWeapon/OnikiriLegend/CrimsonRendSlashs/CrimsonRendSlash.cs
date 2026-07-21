@@ -828,7 +828,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             lastImpactFlip = flip;
             lastImpactSteel = steel;
 
-            SoundEngine.PlaySound(CWRSound.KatanaHit with { Pitch = 0.5f - power * 0.2f, Volume = 0.5f + power * 0.4f }, pos);
+            if (!steel) {
+                SoundEngine.PlaySound(CWRSound.KatanaHitB, pos);
+            }
+            else {
+                SoundEngine.PlaySound(CWRSound.KatanaHit with { Pitch = 0.5f - power * 0.2f, Volume = 0.5f + power * 0.4f }, pos);
+            }
+            
 
             //血肉命中压低屏幕白闪：伤口反馈靠血珠，不靠金属耀斑
             float flash = steel ? 0.02f + power * 0.01f : 0.008f + power * 0.004f;
@@ -1045,10 +1051,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
-            SoundEngine.PlaySound((steel ? SoundID.NPCHit4 : SoundID.NPCHit1) with {
-                Pitch = steel ? -0.1f : -0.3f,
-                Volume = 0.75f
-            }, target.Center);
 
             //刀刀入肉:连段命中为主人回气蓄势,并记入处决的命中记忆(owner 端自治)
             if (Projectile.IsOwnedByLocalPlayer()) {
