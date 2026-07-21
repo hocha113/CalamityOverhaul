@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.TrialQuests
 {
-    /// <summary>鬼切试炼线：22 段试炼注册 QuestManagerUI，按 Onikiri Level 同步状态</summary>
+    /// <summary>鬼切试炼线：22 段试炼注册 QuestManagerUI；文案为真夜对持刀者的口吻</summary>
     internal class OnikiriTrialQuestLine : LegendTrialQuestLineBase, ILocalizedModType
     {
         public string LocalizationCategory => "Legend";
@@ -29,37 +29,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.TrialQuests
         private static IReadOnlyList<LegendTrialDefinition> trials;
 
         public override void SetStaticDefaults() {
-            QuestCategory = this.GetLocalization(nameof(QuestCategory), () => "鬼切·试炼");
-            TrackerWaiting = this.GetLocalization(nameof(TrackerWaiting), () => "目标不在场，等待召唤...");
+            QuestCategory = this.GetLocalization(nameof(QuestCategory), () => "鬼切·试刃");
+            TrackerWaiting = this.GetLocalization(nameof(TrackerWaiting), () => "它还不在。等等，或我们去请。");
             TrackerFighting = this.GetLocalization(nameof(TrackerFighting), () => "{0}: {1:0%}");
-            TrackerBrief = this.GetLocalization(nameof(TrackerBrief), () => "试刃目标：{0}");
-            BossRushTargetName = this.GetLocalization(nameof(BossRushTargetName), () => "终焉之战");
+            TrackerBrief = this.GetLocalization(nameof(TrackerBrief), () => "下一刀：{0}");
+            BossRushTargetName = this.GetLocalization(nameof(BossRushTargetName), () => "散不掉的夜");
             EventActiveFormat = this.GetLocalization(nameof(EventActiveFormat), () => "{0}: 进行中");
 
             TrialTitles = new LocalizedText[TRIAL_COUNT];
+            //标题偏真夜随口起的外号；摘要是她对持刀者说的话
             string[] defaultTitles = [
-                "不速之瞳",     //0 克苏鲁之眼
-                "邪物双生",     //1 世界吞噬者/克苏鲁之脑
-                "腐巢血祀",     //2 腐巢意志/血肉宿主
-                "凝胶伪神",     //3 史莱姆之神
-                "血墙试刃",     //4 血肉墙
-                "硫海巨虫",     //5 渊海灾虫
-                "硫火使者",     //6 硫磺火元素
-                "钢铁长虫",     //7 毁灭者
-                "双瞳裂解",     //8 双子魔眼
-                "机械王颅",     //9 机械骷髅王
-                "灾影摹本",     //10 灾厄之影
-                "丛林妖花",     //11 世纪之花
-                "遗迹石卫",     //12 石巨人
-                "邪教仪典",     //13 邪教徒
-                "月背斩痕",     //14 月球领主
-                "地核圣火",     //15 亵渎天神
-                "幽魂共生体",   //16 噬魂幽花
-                "弑神之刃",     //17 神明吞噬者
-                "龙裔试羽",     //18 丛林龙
-                "造物巨械",     //19 星流巨械
-                "至尊女巫",     //20 至尊灾厄
-                "终焉乱舞",     //21 终焉之战
+                "不闭眼的",       //0 克苏鲁之眼
+                "腐土里的两样",   //1 世界吞噬者/克苏鲁之脑
+                "抱团的秽",       //2 腐巢意志/血肉宿主
+                "会走路的糖",     //3 史莱姆之神
+                "挡路的肉",       //4 血肉墙
+                "硫海上的虫",     //5 渊海灾虫
+                "火里的那个",     //6 硫磺火元素
+                "铁做的长虫",     //7 毁灭者
+                "一对假眼睛",     //8 双子魔眼
+                "戴颅骨的",       //9 机械骷髅王
+                "学人走路的影",   //10 灾厄之影
+                "开错的花",       //11 世纪之花
+                "石屋里的卫",     //12 石巨人
+                "门口那群人",     //13 邪教徒
+                "月亮背面",       //14 月球领主
+                "地心里的火",     //15 亵渎天神
+                "抱成一团的鬼",   //16 噬魂幽花
+                "吃神的",         //17 神明吞噬者
+                "还活着的龙",     //18 丛林龙
+                "造物主的铁",     //19 星流巨械
+                "那个女巫",       //20 至尊灾厄
+                "又聚回来的夜",   //21 终焉之战
             ];
             for (int i = 0; i < TRIAL_COUNT; i++) {
                 int idx = i;
@@ -68,28 +69,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.TrialQuests
 
             TrialSummaries = new LocalizedText[TRIAL_COUNT];
             string[] defaultSummaries = [
-                "第一刀：那只悬空巨眼。斩下它，让鬼切记住何谓「试刃」。",
-                "腐土巨虫与血肉之脑——择一斩核，邪气便知刀名。",
-                "腐巢意志或血肉宿主，污秽聚合之物。斩尽源头。",
-                "凝胶居然自称神？提纯到只剩一滩，看它还能剩什么神格。",
-                "地狱横亘血肉长墙。穿过它，硬模式之门才会为刀敞开。",
-                "硫磺之海浮出巨虫。拆下它的吞噬器官。",
-                "熔岩深处的硫火使者。熄灭核心火焰。",
-                "钢铁蠕虫第一台。切成可回收的废料。",
-                "空中镜像双瞳。逐个拆除武装。",
-                "戴旧王颅骨的机械末席。轰碎那颗金属头颅。",
-                "女巫的克隆体在游荡。用它校准灾厄之刃的反应。",
-                "丛林地下妖艳花苞已开。采集后斩落。",
-                "神庙石卫等待充能。顺便试一试遗迹之铁。",
-                "地牢门前狂热仪典。打断他们。",
-                "月亮背面的秘密将被知晓。世界回到原来的样子。",
-                "寄生地核的神明注意到了你。取得它的热能。",
-                "地牢怨灵聚成共生体。记录它，然后让它归于沉寂。",
-                "它吞噬神明——但我们不是神。斩之。",
-                "世上仅存的龙裔。去见它，取一羽。",
-                "拜访造物主的巨械。带回控制核心。",
-                "女巫的存在令人困扰。终止她的混沌实验。",
-                "曾被击败的敌人联合总攻。终焉乱舞，一刀定局。",
+                "天上挂着一只不眨眼的东西。看着就累。你去让它闭上吧。",
+                "腐土里要么是条虫，要么是颗脑子。哪样脏，斩哪样。刀会认得味。",
+                "秽气抱成一团了。源头在那儿——帮我斩断。",
+                "一摊糖还自称神。名要是这么好取，我也早成神仙了。去把它的名摘掉。",
+                "路被一堵肉堵住了。从中间斩过去就行。后面比这边沉。",
+                "硫磺海上浮出一条虫。嘴一张就腥。别让它靠近岸。",
+                "熔岩里有个还在烧的。焰灭了，那地方才能喘口气。",
+                "铁做的长虫。第一台。切开就好，别跟它比谁更长。",
+                "天上两只眼睛，学着一对人的样子。一只一只来。",
+                "戴着旧王颅骨的铁疙瘩。头没了，剩下的只是零件。",
+                "有个影子在学另一个人走路。学得越像，我越烦。帮我斩了。",
+                "丛林底下开了不该开的花。花一落，地气会干净些。",
+                "石屋里站着个不会眨眼的卫兵。敲醒它，或者让它睡过去。",
+                "地牢门口有人在念叨。仪式还没完——打断就行。",
+                "月亮背面压着什么。揭开它。世界会轻一点。",
+                "地心里住着一团不肯冷的火。你去见它。刀会热，忍一下。",
+                "鬼抱成了一团。别一一数，整团斩开就散了。",
+                "它吃过神。我们不是神，可刀怕神的话，就只是铁。去吧。",
+                "世上还剩一条龙。去见它。羽掉下来的话，捡一片给我也行。",
+                "有人给自己造了铁巨人。核心在里头——取出来，它就停了。",
+                "那个女巫。她在的地方，夜会发粘。去终止她。",
+                "它们又聚回来了。像散不掉的夜。最长那一刀，你来。我看着。",
             ];
             for (int i = 0; i < TRIAL_COUNT; i++) {
                 int idx = i;
