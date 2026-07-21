@@ -834,7 +834,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             else {
                 SoundEngine.PlaySound(CWRSound.KatanaHit with { Pitch = 0.5f - power * 0.2f, Volume = 0.5f + power * 0.4f }, pos);
             }
-            
 
             //血肉命中压低屏幕白闪：伤口反馈靠血珠，不靠金属耀斑
             float flash = steel ? 0.02f + power * 0.01f : 0.008f + power * 0.004f;
@@ -1061,7 +1060,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             ActiveSlash a = FindDamagingSlash();
             if (a != null && !a.ImpactDone) {
                 a.ImpactDone = true;
-                TriggerImpactBurst(target.Center, (a.Beat + 1) / (float)BeatCount, a.Aim, a.Def.Flip, steel);
+                TriggerImpactBurst(target.Center + VaultUtils.RandVr(0, target.width / 3f), (a.Beat + 1) / (float)BeatCount, a.Aim, a.Def.Flip, steel);
 
                 //命中反馈只捏实体刀姿态（1 帧停驻 + 反向回坐 + ~4% 尺寸脉冲），
                 //不冻结世界/目标，不影响判定与下一拍排程；仅当命中拍仍是当前持刀拍时生效
