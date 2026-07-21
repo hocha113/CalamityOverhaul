@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
 
         //==== 时间轴常量 ====
         /// <summary>反拔甩刀帧数(itemTime 锁仅覆盖此窗)</summary>
-        private const int PoseFrames = 4;
+        private const int PoseFrames = 5;
         /// <summary>踏步前压帧数</summary>
         private const int StepFrames = 3;
         /// <summary>每帧前压距离(px),合计 ~72px</summary>
@@ -43,13 +43,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
         /// <summary>甩刀后的残心余韵帧数</summary>
         private const int ZanshinHoldFrames = 12;
         //==== 几何常量(层级纪律:明确小于灭世一闪的 760/690/3.60) ====
-        private const float ArcHalfX = 430f;
-        private const float ArcHalfY = 385f;
-        private const float ArcSpan = 2.42f;
+        private const float ArcHalfX = 520f;
+        private const float ArcHalfY = 465f;
+        private const float ArcSpan = 2.95f;
+        /// <summary>无交接时的反手预备位相对刀线角(弧度)</summary>
+        private const float SwingBack = 2.15f;
+        /// <summary>收势过冲相对刀线角(弧度)；与纳刀位(~1.05)叠加后读出完整反拔</summary>
+        private const float SwingFront = 1.15f;
+        /// <summary>交接起手最短挥舞弧长：过短则补足，避免纳刀角贴近瞄准时只剩抽搐</summary>
+        private const float MinSwingRad = 2.20f;
         /// <summary>贴身补判半径(px)</summary>
-        private const float NearRadius = 120f;
+        private const float NearRadius = 140f;
         /// <summary>弧带判定走廊宽(px)</summary>
-        private const float ArcCorridor = 150f;
+        private const float ArcCorridor = 170f;
         /// <summary>扇形补心辐条宽(px)</summary>
         private const float SpokeWidth = 120f;
         /// <summary>樱衣沿弧绽放的花瓣数</summary>
@@ -144,9 +150,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             facing = MathF.Abs(cos) < 0.05f ? Owner.direction : MathF.Sign(cos);
             Owner.ChangeDir(facing);
 
-            //反拔起手:纳刀位有新鲜交接就从那里划出,否则反手预备位
-            if (!OniBladeHandoff.TryPeek(Owner, out drawStartRot, out _)) {
-                drawStartRot = CutAngle - facing * 2.0f;
+            //反拔起手:纳刀位有新鲜交接就从那里划出;弧长不足时沿反手侧补足,避免只剩抽搐
+            float endRot = CutAngle + facing * SwingFront;
+            if (OniBladeHandoff.TryPeek(Owner, out drawStartRot, out _)) {
+                float delta = Math.Abs(MathHelper.WrapAngle(endRot - drawStartRot));
+                if (delta < MinSwingRad) {
+                    drawStartRot = endRot - facing * MinSwingRad;
+                }
+            }
+            else {
+                drawStartRot = CutAngle - facing * SwingBack;
             }
 
             arcDef = new OFR.BladeDef {
@@ -210,17 +223,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
         }
 
         /// <summary>
-        /// 反拔甩刀：实体刀 4 帧内从纳刀交接位反手甩到收势位(挥动帧甩残影)，
+        /// 反拔甩刀：实体刀数帧内从纳刀交接/反手预备位甩到收势过冲位(挥动帧甩残影)，
         /// 随后残心停刀、末段淡出；只摆姿态不锁位移，itemTime 锁仅覆盖甩刀窗
         /// </summary>
         private void ApplyCastPose() {
             float sw = OFR.EaseOutCubic(MathHelper.Clamp(timer / (float)PoseFrames, 0f, 1f));
-            bladePose.Rotation = OniBladePose.LerpAngle(drawStartRot, CutAngle + facing * 0.55f, sw);
+            float endRot = CutAngle + facing * SwingFront;
+            bladePose.Rotation = OniBladePose.LerpAngle(drawStartRot, endRot, sw);
 
             if (timer <= PoseFrames) {
                 Owner.itemTime = Owner.itemAnimation = 2;
                 Owner.itemRotation = MathHelper.WrapAngle(CutAngle
-                    + Owner.direction * MathHelper.Lerp(-0.8f, 0.45f, sw));
+                    + Owner.direction * MathHelper.Lerp(-1.05f, 0.70f, sw));
                 bladePose.Opacity = 1f;
                 if (timer >= 2) {
                     bladePose.PushSmear(1f);
