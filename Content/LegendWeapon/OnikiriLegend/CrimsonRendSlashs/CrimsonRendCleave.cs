@@ -135,12 +135,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             if (!initialized || timer < def.DamageStart || timer > def.DamageEnd) {
                 return false;
             }
+            Rectangle greedyBox = targetHitbox;
+            greedyBox.Inflate(14, 14);
             float sweepU = MathHelper.Clamp(CSR.Sweep(in def, timer) * 1.05f, 0f, 1f);
             Vector2 head = CSR.PointAt(in def, Projectile.Center, 0.05f, timer);
             Vector2 tail = CSR.PointAt(in def, Projectile.Center, MathF.Min(0.95f, sweepU), timer);
             float cp = 0f;
-            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
-                , head, tail, def.HalfY * 0.62f, ref cp);
+            float thick = MathF.Max(28f, def.HalfY * 0.85f);
+            return Collision.CheckAABBvLineCollision(greedyBox.TopLeft(), greedyBox.Size()
+                , head, tail, thick, ref cp);
+        }
+
+        /// <summary>割草断藤：沿直线刃扫切</summary>
+        public override void CutTiles() {
+            if (!initialized || timer < def.DamageStart || timer > Math.Max(def.DamageEnd, def.SweepFrames)) {
+                return;
+            }
+            DelegateMethods.tilecut_0 = Terraria.Enums.TileCuttingContext.AttackProjectile;
+            float sweepU = MathHelper.Clamp(CSR.Sweep(in def, timer) * 1.05f, 0f, 1f);
+            Vector2 head = CSR.PointAt(in def, Projectile.Center, 0.05f, timer);
+            Vector2 tail = CSR.PointAt(in def, Projectile.Center, MathF.Min(0.95f, sweepU), timer);
+            Utils.PlotTileLine(head, tail, MathF.Max(24f, def.HalfY * 0.8f), DelegateMethods.CutTiles);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

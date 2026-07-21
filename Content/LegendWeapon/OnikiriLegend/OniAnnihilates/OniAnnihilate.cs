@@ -44,9 +44,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         /// <summary>主弧 quad 半短轴(px)（略压扁的滚转透视）</summary>
         private const float ArcHalfY = 690f;
         /// <summary>近身罡气判定半径(px):泼墨罡气(墨舌 190~280px)视觉覆盖的贴身圈,略盖过其外缘</summary>
-        private const float NearBurstRadius = 300f;
+        private const float NearBurstRadius = 320f;
+        /// <summary>擦边宽恕（px）：目标箱外扩——刀光辉光比核心宽</summary>
+        private const int GrazePad = 18;
+        /// <summary>弧带判定相对视觉厚度的贪婪倍率</summary>
+        private const float ArcThickMul = 1.12f;
         /// <summary>扇形补心辐条宽(px):相邻辐条在弧半径处间距约 105px,须小于此宽以保证扇内无缝</summary>
-        private const float SpokeWidth = 160f;
+        private const float SpokeWidth = 180f;
         /// <summary>罡气舌数量</summary>
         private const int TongueCount = 10;
 
@@ -297,11 +301,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         }
 
         /// <summary>
-        /// 三层判定,填掉"环内空挡"：<br/>
-        /// 1. 近身罡气圈——泼墨罡气的视觉本就吞没贴身一圈,所见即所得,贴脸的敌人不再漏刀;<br/>
-        /// 2. 弧带本体——沿主弧带中线取 24 段折线逐段检测,刀光画到哪打到哪;<br/>
-        /// 3. 扇形补心辐条——每段再自施法点向段中点连线检测,挡在人与刀光之间的都在挥砍平面里;
-        /// 辐条终点取自折线采样,自动跟随弧的揭开动画。<br/>
+        /// 贪婪判定（对齐残心斩/绯红裂空）：目标箱外扩擦边 + 弧带折线（厚度对齐视觉辉光）
+        /// + 中心→弧上辐条填月牙内侧 + 贴身罡气圈。<br/>
+        /// 碰撞 ScaleMul 下限避免出生爆发未涨满时"画到了打不到"；
         /// localNPCHitCooldown(60) 大于伤害窗,多层命中仍是单次结算
         /// </summary>
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
@@ -309,34 +311,74 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
                 return false;
             }
 
-            //近身罡气圈:圆对碰撞箱取最近点判距
+            Rectangle greedyBox = targetHitbox;
+            greedyBox.Inflate(GrazePad, GrazePad);
+
             float nearR = NearBurstRadius * SizeMul;
             Vector2 nearest = new(
-                MathHelper.Clamp(Projectile.Center.X, targetHitbox.Left, targetHitbox.Right),
-                MathHelper.Clamp(Projectile.Center.Y, targetHitbox.Top, targetHitbox.Bottom));
+                MathHelper.Clamp(Projectile.Center.X, greedyBox.Left, greedyBox.Right),
+                MathHelper.Clamp(Projectile.Center.Y, greedyBox.Top, greedyBox.Bottom));
             if (Vector2.DistanceSquared(Projectile.Center, nearest) <= nearR * nearR) {
                 return true;
             }
 
             const int Segments = 24;
             OFR.BladeState state = OFR.ComputeState(in arcDef, Math.Max(timer, 1));
+            float hitScale = MathF.Max(state.ScaleMul, 0.92f);
+            //HalfX 已含 SizeMul；厚度对齐视觉 Thick×HalfX，不再用偏低的硬编码 220
+            float thickWorld = MathF.Max(56f, arcDef.Thick * arcDef.HalfX * hitScale * ArcThickMul);
+            float spokeW = SpokeWidth * SizeMul;
             float cp = 0f;
-            Vector2 prev = OFR.PointAt(in arcDef, in state, Projectile.Center, 0f);
+            Vector2 prev = HitPointAt(in state, hitScale, 0f);
             for (int i = 1; i <= Segments; i++) {
-                Vector2 next = OFR.PointAt(in arcDef, in state, Projectile.Center, i / (float)Segments);
-                //弧带本体
-                if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
-                    , prev, next, 220f * SizeMul, ref cp)) {
+                float uc = i / (float)Segments;
+                Vector2 next = HitPointAt(in state, hitScale, uc);
+                if (Collision.CheckAABBvLineCollision(greedyBox.TopLeft(), greedyBox.Size()
+                    , prev, next, thickWorld, ref cp)) {
                     return true;
                 }
-                //扇形补心:施法点到段中点的辐条
-                if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
-                    , Projectile.Center, (prev + next) * 0.5f, SpokeWidth * SizeMul, ref cp)) {
+                if (Collision.CheckAABBvLineCollision(greedyBox.TopLeft(), greedyBox.Size()
+                    , Projectile.Center, (prev + next) * 0.5f, spokeW, ref cp)) {
                     return true;
                 }
                 prev = next;
             }
             return false;
+        }
+
+        /// <summary>碰撞/割草用弧上点：强制 hitScale，几何与绘制同源但不吃出生缩小</summary>
+        private Vector2 HitPointAt(in OFR.BladeState state, float hitScale, float uc) {
+            OFR.BladeState hitState = state;
+            hitState.ScaleMul = hitScale;
+            return OFR.PointAt(in arcDef, in hitState, Projectile.Center, uc);
+        }
+
+        /// <summary>割草断藤：沿弧带 + 辐条扫切草/藤等可切物（伤害窗内全开）</summary>
+        public override void CutTiles() {
+            if (!initialized || timer > DamageEnd) {
+                return;
+            }
+            DelegateMethods.tilecut_0 = Terraria.Enums.TileCuttingContext.AttackProjectile;
+
+            const int Samples = 14;
+            OFR.BladeState state = OFR.ComputeState(in arcDef, Math.Max(timer, 1));
+            float hitScale = MathF.Max(state.ScaleMul, 0.92f);
+            float width = MathF.Max(40f, arcDef.Thick * arcDef.HalfX * hitScale * 0.95f);
+            float spokeW = SpokeWidth * SizeMul;
+            Vector2 prev = Vector2.Zero;
+            bool hasPrev = false;
+            for (int k = 0; k < Samples; k++) {
+                float uc = k / (float)(Samples - 1);
+                Vector2 mid = HitPointAt(in state, hitScale, uc);
+                if (hasPrev) {
+                    Utils.PlotTileLine(prev, mid, width, DelegateMethods.CutTiles);
+                }
+                if (k % 2 == 0) {
+                    Utils.PlotTileLine(Projectile.Center, mid, spokeW, DelegateMethods.CutTiles);
+                }
+                prev = mid;
+                hasPrev = true;
+            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

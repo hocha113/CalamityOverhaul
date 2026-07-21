@@ -152,12 +152,57 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             if (!initialized || timer < def.DamageStart || timer > def.DamageEnd) {
                 return false;
             }
-            OFR.BladeState state = OFR.ComputeState(in def, timer);
-            float sweepU = MathHelper.Clamp(state.Sweep * 1.05f, 0f, 1f);
-            float thickWorld = def.Thick * def.HalfX;
 
-            //椭圆弧折线采样
-            const int samples = 15;
+            Rectangle greedyBox = targetHitbox;
+            greedyBox.Inflate(14, 14);
+
+            OFR.BladeState state = OFR.ComputeState(in def, timer);
+            float hitScale = MathF.Max(state.ScaleMul, 0.92f);
+            float sweepU = MathHelper.Clamp(state.Sweep * 1.05f, 0f, 1f);
+            float thickWorld = MathF.Max(32f, def.Thick * def.HalfX * hitScale * 1.1f);
+            float spokeW = MathF.Max(40f, def.HalfX * hitScale * 0.12f);
+
+            const int samples = 18;
+            Vector2 prev = Vector2.Zero;
+            bool hasPrev = false;
+            float cp = 0f;
+            for (int k = 0; k < samples; k++) {
+                float uc = 0.05f + 0.90f * (k / (float)(samples - 1));
+                if (uc > sweepU) {
+                    break;
+                }
+                OFR.BladeState hitState = state;
+                hitState.ScaleMul = hitScale;
+                Vector2 mid = OFR.PointAt(in def, in hitState, Projectile.Center, uc);
+                if (hasPrev && Collision.CheckAABBvLineCollision(greedyBox.TopLeft(), greedyBox.Size()
+                    , prev, mid, thickWorld, ref cp)) {
+                    return true;
+                }
+                //辐条：立体环内侧不是空洞（罩进挥砍平面的目标）
+                if (k % 2 == 0 && Collision.CheckAABBvLineCollision(greedyBox.TopLeft(), greedyBox.Size()
+                    , Projectile.Center, mid, spokeW, ref cp)) {
+                    return true;
+                }
+                prev = mid;
+                hasPrev = true;
+            }
+            return false;
+        }
+
+        /// <summary>割草断藤：沿揭开中的环弧 + 辐条扫切</summary>
+        public override void CutTiles() {
+            if (!initialized || timer < def.DamageStart || timer > def.DamageEnd) {
+                return;
+            }
+            DelegateMethods.tilecut_0 = Terraria.Enums.TileCuttingContext.AttackProjectile;
+
+            OFR.BladeState state = OFR.ComputeState(in def, timer);
+            float hitScale = MathF.Max(state.ScaleMul, 0.92f);
+            float sweepU = MathHelper.Clamp(state.Sweep * 1.05f, 0f, 1f);
+            float width = MathF.Max(28f, def.Thick * def.HalfX * hitScale * 0.9f);
+            float spokeW = MathF.Max(36f, def.HalfX * hitScale * 0.12f);
+
+            const int samples = 12;
             Vector2 prev = Vector2.Zero;
             bool hasPrev = false;
             for (int k = 0; k < samples; k++) {
@@ -165,18 +210,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 if (uc > sweepU) {
                     break;
                 }
-                Vector2 mid = OFR.PointAt(in def, in state, Projectile.Center, uc);
+                OFR.BladeState hitState = state;
+                hitState.ScaleMul = hitScale;
+                Vector2 mid = OFR.PointAt(in def, in hitState, Projectile.Center, uc);
                 if (hasPrev) {
-                    float cp = 0f;
-                    if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
-                        , prev, mid, MathF.Max(28f, thickWorld * 0.8f), ref cp)) {
-                        return true;
-                    }
+                    Utils.PlotTileLine(prev, mid, width, DelegateMethods.CutTiles);
+                }
+                if (k % 2 == 0) {
+                    Utils.PlotTileLine(Projectile.Center, mid, spokeW, DelegateMethods.CutTiles);
                 }
                 prev = mid;
                 hasPrev = true;
             }
-            return false;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

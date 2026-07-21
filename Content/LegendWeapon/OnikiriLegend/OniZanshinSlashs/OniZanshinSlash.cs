@@ -36,8 +36,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
         private const int StepFrames = 3;
         /// <summary>每帧前压距离(px),合计 ~72px</summary>
         private const float StepPerFrame = 24f;
-        /// <summary>伤害窗末帧</summary>
-        private const int DamageEnd = 6;
+        /// <summary>伤害窗末帧（略宽于旧值：踏步前压结束后仍留咬合余量）</summary>
+        private const int DamageEnd = 8;
         /// <summary>演出总时长</summary>
         private const int Lifetime = 36;
         /// <summary>甩刀后的残心余韵帧数</summary>
@@ -52,12 +52,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
         private const float SwingFront = 1.15f;
         /// <summary>交接起手最短挥舞弧长：过短则补足，避免纳刀角贴近瞄准时只剩抽搐</summary>
         private const float MinSwingRad = 2.20f;
-        /// <summary>贴身补判半径(px)</summary>
-        private const float NearRadius = 140f;
-        /// <summary>弧带判定走廊宽(px)</summary>
-        private const float ArcCorridor = 170f;
-        /// <summary>扇形补心辐条宽(px)</summary>
-        private const float SpokeWidth = 120f;
+        /// <summary>贴身补判半径(px)：贴脸 + 月牙内侧空洞兜底</summary>
+        private const float NearRadius = 200f;
+        /// <summary>擦边宽恕（px）：目标箱外扩——刀光辉光比核心宽，视觉擦到就算</summary>
+        private const int GrazePad = 16;
+        /// <summary>弧带判定相对视觉厚度的贪婪倍率</summary>
+        private const float ArcThickMul = 1.12f;
+        /// <summary>辐条判定厚度（px）：月牙内侧"刀身"贪婪带宽</summary>
+        private const float SpokeThickness = 56f;
         /// <summary>樱衣沿弧绽放的花瓣数</summary>
         private const int PetalCount = 36;
 
@@ -327,38 +329,82 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
         }
 
         /// <summary>
-        /// 三层判定(缩规格移植灭世一闪):贴身小圈 + 弧带折线(16 段) + 扇形补心辐条;
-        /// localNPCHitCooldown 大于伤害窗,多层命中仍是单次结算
+        /// 贪婪判定（对齐绯红裂空三层）：目标箱外扩擦边 + 弧带折线（厚度对齐视觉辉光）
+        /// + 中心→弧上辐条填月牙内侧空挡 + 贴身圆兜底。<br/>
+        /// 碰撞几何取 ScaleMul 下限，避免出生爆发未涨满时"画到了打不到"；
+        /// localNPCHitCooldown 大于伤害窗，多层命中仍是单次结算
         /// </summary>
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             if (!initialized) {
                 return false;
             }
 
+            Rectangle greedyBox = targetHitbox;
+            greedyBox.Inflate(GrazePad, GrazePad);
+
             Vector2 nearest = new(
-                MathHelper.Clamp(Projectile.Center.X, targetHitbox.Left, targetHitbox.Right),
-                MathHelper.Clamp(Projectile.Center.Y, targetHitbox.Top, targetHitbox.Bottom));
+                MathHelper.Clamp(Projectile.Center.X, greedyBox.Left, greedyBox.Right),
+                MathHelper.Clamp(Projectile.Center.Y, greedyBox.Top, greedyBox.Bottom));
             if (Vector2.DistanceSquared(Projectile.Center, nearest) <= NearRadius * NearRadius) {
                 return true;
             }
 
-            const int Segments = 16;
+            const int Segments = 20;
             OFR.BladeState state = OFR.ComputeState(in arcDef, Math.Max(timer, 1));
+            //碰撞用尺寸不低于视觉可读刀弧，出生 0.62 起步不缩判定
+            float hitScale = MathF.Max(state.ScaleMul, 0.92f);
+            float thickWorld = MathF.Max(48f, arcDef.Thick * ArcHalfX * hitScale * ArcThickMul);
             float cp = 0f;
-            Vector2 prev = OFR.PointAt(in arcDef, in state, Projectile.Center, 0f);
+            Vector2 prev = HitPointAt(in state, hitScale, 0f);
             for (int i = 1; i <= Segments; i++) {
-                Vector2 next = OFR.PointAt(in arcDef, in state, Projectile.Center, i / (float)Segments);
-                if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
-                    , prev, next, ArcCorridor, ref cp)) {
+                float uc = i / (float)Segments;
+                Vector2 next = HitPointAt(in state, hitScale, uc);
+                if (Collision.CheckAABBvLineCollision(greedyBox.TopLeft(), greedyBox.Size()
+                    , prev, next, thickWorld, ref cp)) {
                     return true;
                 }
-                if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
-                    , Projectile.Center, (prev + next) * 0.5f, SpokeWidth, ref cp)) {
+                //每段都测辐条：月牙内侧（人与外弧之间）不再是空洞
+                if (Collision.CheckAABBvLineCollision(greedyBox.TopLeft(), greedyBox.Size()
+                    , Projectile.Center, (prev + next) * 0.5f, SpokeThickness, ref cp)) {
                     return true;
                 }
                 prev = next;
             }
             return false;
+        }
+
+        /// <summary>碰撞/割草用弧上点：强制 hitScale，几何与绘制同源但不吃出生缩小</summary>
+        private Vector2 HitPointAt(in OFR.BladeState state, float hitScale, float uc) {
+            OFR.BladeState hitState = state;
+            hitState.ScaleMul = hitScale;
+            return OFR.PointAt(in arcDef, in hitState, Projectile.Center, uc);
+        }
+
+        /// <summary>割草断藤：沿弧带 + 辐条扫切草/藤等可切物（伤害窗内全开，对齐绯红裂空）</summary>
+        public override void CutTiles() {
+            if (!initialized || timer > DamageEnd) {
+                return;
+            }
+            DelegateMethods.tilecut_0 = Terraria.Enums.TileCuttingContext.AttackProjectile;
+
+            const int Samples = 12;
+            OFR.BladeState state = OFR.ComputeState(in arcDef, Math.Max(timer, 1));
+            float hitScale = MathF.Max(state.ScaleMul, 0.92f);
+            float width = MathF.Max(36f, arcDef.Thick * ArcHalfX * hitScale * 0.95f);
+            Vector2 prev = Vector2.Zero;
+            bool hasPrev = false;
+            for (int k = 0; k < Samples; k++) {
+                float uc = k / (float)(Samples - 1);
+                Vector2 mid = HitPointAt(in state, hitScale, uc);
+                if (hasPrev) {
+                    Utils.PlotTileLine(prev, mid, width, DelegateMethods.CutTiles);
+                }
+                if (k % 2 == 0) {
+                    Utils.PlotTileLine(Projectile.Center, mid, SpokeThickness, DelegateMethods.CutTiles);
+                }
+                prev = mid;
+                hasPrev = true;
+            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
