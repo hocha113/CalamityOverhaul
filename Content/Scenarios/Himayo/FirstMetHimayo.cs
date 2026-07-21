@@ -40,36 +40,31 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
         }
 
         protected override void Build(NarrativeComposer n) {
-            //换脸装饰，不挡Skip
-            n.Say(NarrativeIds.Mayo, Line1.Value, Voice[1],
-                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Doubt),
-                    allowSkipThrough: true)
+            n.AllowSkipThrough()
+             .Say(NarrativeIds.Mayo, Line1.Value, Voice[1],
+                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Doubt))
              .Say(NarrativeIds.Mayo, Line2.Value, Voice[2],
-                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Ruminate),
-                    allowSkipThrough: true)
+                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Ruminate))
              .Say(NarrativeIds.Mayo, Line3.Value, Voice[3])
              .Say(NarrativeIds.Mayo, Line4.Value, Voice[4],
-                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Doubt),
-                    allowSkipThrough: true)
+                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Doubt))
              .Say(NarrativeIds.Mayo, Line5.Value, Voice[5],
-                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Ruminate),
-                    allowSkipThrough: true)
+                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Ruminate))
              .Say(NarrativeIds.Mayo, Line6.Value, Voice[6],
-                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Ruminate),
-                    allowSkipThrough: true)
+                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Ruminate))
              .Say(NarrativeIds.Mayo, Line7.Value, Voice[7],
-                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Forsmile),
-                    allowSkipThrough: true)
+                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Forsmile))
              .End();
         }
 
-        //有刀且鸟居退场(含静默拍)收完才触发
+        //拿到鬼切即触发，但要等鸟居退场演出（含余响后的静默拍）收完——
+        //目送容身的鸟居沉没之后，真夜才开口
         protected override NarrativePolicy ConfigurePolicy() => new() {
             IsCompleted = _ => HimayoStorySync.FirstMet,
             CanTrigger = (_, player) => player.HasItem(ModContent.ItemType<OnikiriItem>())
                 && !ToriiShrineActor.DepartureHoldingStage,
             OnTriggered = _ => HimayoStorySync.MarkFirstMet(),
-            //落幕才记播完，试炼门禁
+            //对话真正落幕才记「播完」：试炼委托以此为发放门禁
             OnCompleted = _ => HimayoStorySync.MarkPostFirstMetComplete(),
         };
 
