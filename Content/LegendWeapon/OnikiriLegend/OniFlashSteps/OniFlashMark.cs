@@ -206,6 +206,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 , lastCenter - along, lastCenter + along, 46f * sizeMul, ref cp);
         }
 
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            modifiers.HitDirectionOverride = MathF.Cos(DashAngle) >= 0f ? 1 : -1;
+        }
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             //齐裂顿帧拉到接近终斩档、吃下这一刀的重量要留在身上一拍
 

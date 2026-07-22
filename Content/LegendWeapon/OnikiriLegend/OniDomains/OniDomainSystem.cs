@@ -32,10 +32,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         }
 
         public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor) {
-            float ura = OniDomain.LocalUraSmooth;
-            if (ura <= 0.001f) {
+            OniDomainPlayer domain = OniDomain.Local;
+            float ura = domain?.UraSmooth ?? 0f;
+            float omote = 0f;
+            if (domain != null && domain.AnyActive && !domain.WorldIsUra) {
+                omote = MathHelper.Clamp(domain.SpreadProgress, 0f, 1f) * (1f - ura);
+            }
+            if (omote <= 0.001f && ura <= 0.001f) {
                 return;
             }
+
+            //露天区域补一层柔和暮光，地下遮光仍由原版传播规则保留
+
+            if (omote > 0.001f) {
+                Color omoteTile = new(236, 166, 100);
+                Color omoteBg = new(176, 111, 76);
+                tileColor = Color.Lerp(tileColor, omoteTile, omote * 0.42f);
+                backgroundColor = Color.Lerp(backgroundColor, omoteBg, omote * 0.32f);
+            }
+
             //月光级冷灰蓝，日光换色而非熄灭
 
             Color uraTile = new(92, 97, 122);

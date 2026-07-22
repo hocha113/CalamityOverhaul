@@ -216,6 +216,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 , head, tail, def.HalfY * 0.62f, ref cp);
         }
 
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            float offsetX = Projectile.To(target.Center).X;
+            modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
+                ? Math.Sign(offsetX)
+                : (MathF.Cos(BladeAngle) >= 0f ? 1 : -1);
+        }
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.CWR().TimeFrozenTick = 2;
             SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.2f, Volume = 0.65f }, target.Center);

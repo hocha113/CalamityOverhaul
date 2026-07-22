@@ -407,16 +407,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             //残心/纳刀沿本次居合方向
 
             float dirA = dashDir.ToRotation();
-            int facing = dashDir.X >= 0f ? 1 : -1;
+            int facing = MathF.Abs(dashDir.X) < 0.05f ? Owner.direction : (dashDir.X > 0f ? 1 : -1);
             int sinceJudge = timer - JudgmentFrame;
             OnikiriPlayer onikiri = Owner.GetModPlayer<OnikiriPlayer>();
             if (onikiri.ZanshinAutoHandoffActive) {
                 float t = onikiri.ZanshinAutoHandoffProgress;
                 float ease = 1f - (1f - t) * (1f - t) * (1f - t);
-                bladePose.Rotation = OniBladePose.LerpAngle(dirA, dirA - facing * 0.72f, ease);
+                bladePose.Rotation = OniBladePose.LerpAngle(dirA, dirA - facing * 1.20f, ease);
                 bladePose.Opacity = 1f;
                 if (t > 0f && t < 1f) {
-                    bladePose.PushSmear(0.4f);
+                    bladePose.PushSmear(0.65f);
                 }
             }
             else if (sinceJudge <= 0) {
@@ -430,7 +430,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
                 float t = sinceJudge / (float)NotoFlickFrames;
                 float ease = 1f - (1f - t) * (1f - t) * (1f - t);
-                bladePose.Rotation = OniBladePose.LerpAngle(dirA, dirA - facing * 1.05f, ease);
+                bladePose.Rotation = OniBladePose.LerpAngle(dirA, dirA - facing * 1.20f, ease);
                 bladePose.Opacity = 1f;
                 if (sinceJudge <= 3) {
                     bladePose.PushSmear(1f - t * 0.4f);
@@ -439,7 +439,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             else {
                 bladePose.Opacity = 1f - (sinceJudge - NotoFlickFrames) / (float)TailFadeFrames;
             }
-            bladePose.ApplyPose(Owner, Projectile);
+            bladePose.ApplyPose(Owner, Projectile, fixedFacing: facing);
         }
 
         /// <summary>遮挡层、收尾残心/纳刀的实体刀,稳定盖在流带辉光之上</summary>

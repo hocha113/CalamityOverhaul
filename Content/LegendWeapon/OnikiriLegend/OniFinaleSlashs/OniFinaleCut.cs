@@ -304,6 +304,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             if (CWRLoad.ExoMechAresSegments.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.4f;
             }
+            float offsetX = Projectile.To(target.Center).X;
+            modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
+                ? Math.Sign(offsetX)
+                : (MathF.Cos(CutAngle) >= 0f ? 1 : -1);
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {

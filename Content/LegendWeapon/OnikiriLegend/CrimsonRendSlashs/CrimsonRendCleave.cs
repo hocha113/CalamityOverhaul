@@ -150,6 +150,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             Utils.PlotTileLine(head, tail, MathF.Max(24f, def.HalfY * 0.8f), DelegateMethods.CutTiles);
         }
 
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            float offsetX = Projectile.To(target.Center).X;
+            modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
+                ? Math.Sign(offsetX)
+                : (MathF.Cos(BladeAngle) >= 0f ? 1 : -1);
+        }
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.CWR().TimeFrozenTick = 4;
             bool steel = CWRLoad.NPCValue.ISTheofSteel(target);

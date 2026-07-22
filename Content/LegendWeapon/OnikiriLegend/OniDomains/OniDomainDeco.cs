@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
     /// <summary>领域装饰</summary>
     internal static class OniDomainDeco
     {
-        private enum PetalState : byte { Falling, Frozen, Burning }
+        private enum PetalState : byte { Falling, Frozen, Burning, Fading }
 
         private class Petal
         {
@@ -154,7 +154,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
         }
 
-        /// <summary>剥落开始、入里则冻瓣点燃，回表则灯笼熄灭</summary>
+        /// <summary>剥落开始、入里则冻瓣点燃，回表则冻瓣淡出并熄灭灯笼</summary>
         public static void NotifyPeelStart(bool toUra) {
             if (toUra) {
                 int i = 0;
@@ -167,11 +167,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 }
                 return;
             }
+            BeginPetalFade();
             StaggerLanternExtinguish();
         }
 
-        /// <summary>收域、灯逐盏熄灭</summary>
-        public static void NotifyClosing() => StaggerLanternExtinguish();
+        /// <summary>收域、花瓣淡出且灯逐盏熄灭</summary>
+        public static void NotifyClosing() {
+            BeginPetalFade();
+            StaggerLanternExtinguish();
+        }
+
+        private static void BeginPetalFade() {
+            foreach (Petal p in petals) {
+                p.State = PetalState.Fading;
+            }
+        }
 
         private static void StaggerLanternExtinguish() {
             for (int i = 0; i < lanterns.Count; i++) {
@@ -265,6 +275,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                             SpawnAsh(p.Pos, p.Vel * 0.3f, Main.rand.NextFloat(2f, 4f));
                         }
                         if (p.BurnT >= 1f) {
+                            petals.RemoveAt(i);
+                            continue;
+                        }
+                        break;
+
+                    case PetalState.Fading:
+                        p.SwayPhase += 0.04f;
+                        p.Vel *= 0.985f;
+                        p.Vel.X += MathF.Sin(p.SwayPhase) * 0.025f;
+                        p.Pos += p.Vel;
+                        p.Rot += p.RotSpeed;
+                        p.Alpha = MathF.Max(p.Alpha - 0.045f, 0f);
+                        if (p.Alpha <= 0f) {
                             petals.RemoveAt(i);
                             continue;
                         }

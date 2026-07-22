@@ -159,11 +159,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// 可见帧发布 <see cref="OniBladeHandoff"/>
         /// </summary>
         public void ApplyPose(Player owner, Projectile host,
-            Player.CompositeArmStretchAmount stretch = Player.CompositeArmStretchAmount.ThreeQuarters) {
+            Player.CompositeArmStretchAmount stretch = Player.CompositeArmStretchAmount.ThreeQuarters,
+            int fixedFacing = 0) {
             owner.heldProj = host.whoAmI;
-            float cos = MathF.Cos(Rotation);
-            if (MathF.Abs(cos) >= 0.05f) {
-                owner.ChangeDir(cos > 0f ? 1 : -1);
+            if (fixedFacing != 0) {
+                owner.ChangeDir(fixedFacing);
+            }
+            else {
+                float cos = MathF.Cos(Rotation);
+                if (MathF.Abs(cos) >= 0.05f) {
+                    owner.ChangeDir(cos > 0f ? 1 : -1);
+                }
             }
             Facing = owner.direction;
             float armRotation = Rotation - MathHelper.PiOver2;

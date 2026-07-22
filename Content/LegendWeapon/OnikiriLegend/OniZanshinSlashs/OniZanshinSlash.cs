@@ -24,36 +24,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
         public override string Texture => CWRConstant.VaultPlaceholder;
 
         /// <summary>反拔甩刀帧数(itemTime 锁仅覆盖此窗)</summary>
-        private const int PoseFrames = 5;
+        private const int PoseFrames = 6;
         /// <summary>踏步前压帧数</summary>
         private const int StepFrames = 3;
         /// <summary>每帧前压距离(px),合计 ~72px</summary>
         private const float StepPerFrame = 24f;
+        /// <summary>主挥砍进入伤害窗的帧</summary>
+        private const int DamageStart = 2;
         /// <summary>伤害窗末帧（略宽于旧值、踏步前压结束后仍留咬合余量）</summary>
         private const int DamageEnd = 8;
         /// <summary>演出总时长</summary>
         private const int Lifetime = 36;
         /// <summary>甩刀后的残心余韵帧数</summary>
         private const int ZanshinHoldFrames = 12;
-        private const float ArcHalfX = 520f;
-        private const float ArcHalfY = 465f;
-        private const float ArcSpan = 2.95f;
+        private const float ArcHalfX = 590f;
+        private const float ArcHalfY = 525f;
+        private const float ArcSpan = 3.90f;
         /// <summary>无交接时的反手预备位相对刀线角(弧度)</summary>
         private const float SwingBack = 2.15f;
-        /// <summary>收势过冲相对刀线角(弧度)；与纳刀位(~1.05)叠加后读出完整反拔</summary>
-        private const float SwingFront = 1.15f;
-        /// <summary>交接起手最短挥舞弧长、过短则补足，避免纳刀角贴近瞄准时只剩抽搐</summary>
-        private const float MinSwingRad = 2.20f;
+        /// <summary>收势过冲相对刀线角(弧度),与纳刀位(~1.20)叠加后读出完整反拔</summary>
+        private const float SwingFront = 1.20f;
+        /// <summary>反拔横扫的有符号挥舞弧长(约 195°)</summary>
+        private const float SwingArc = 3.40f;
         /// <summary>贴身补判半径(px)、贴脸 + 月牙内侧空洞兜底</summary>
-        private const float NearRadius = 200f;
+        private const float NearRadius = 230f;
         /// <summary>擦边宽恕（px）、目标箱外扩、刀光辉光比核心宽，视觉擦到就算</summary>
-        private const int GrazePad = 16;
+        private const int GrazePad = 18;
         /// <summary>弧带判定相对视觉厚度的贪婪倍率</summary>
         private const float ArcThickMul = 1.12f;
         /// <summary>辐条判定厚度（px）、月牙内侧"刀身"贪婪带宽</summary>
-        private const float SpokeThickness = 56f;
+        private const float SpokeThickness = 72f;
         /// <summary>樱衣沿弧绽放的花瓣数</summary>
-        private const int PetalCount = 36;
+        private const int PetalCount = 44;
 
         /// <summary>樱衣调色:同一套水墨管线换粉白基底,白热核仍偏暖</summary>
         private static readonly OFR.BladePalette SakuraPalette = new() {
@@ -152,28 +154,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
                 : 1f;
             bladePose.Scale = 0.9f * bladeScale;
 
-            //反拔起手:纳刀位有新鲜交接就从那里划出;弧长不足时沿反手侧补足,避免只剩抽搐
-
-            float endRot = CutAngle + facing * SwingFront;
-            if (OniBladeHandoff.TryPeek(Owner, out drawStartRot, out _)) {
-                float delta = Math.Abs(MathHelper.WrapAngle(endRot - drawStartRot));
-                if (delta < MinSwingRad) {
-                    drawStartRot = endRot - facing * MinSwingRad;
-                }
-            }
-            else {
+            //反拔起手继承交接刀角,无交接退回身后预备位
+            if (!OniBladeHandoff.TryPeek(Owner, out drawStartRot, out _)) {
                 drawStartRot = CutAngle - facing * SwingBack;
             }
 
             arcDef = new OFR.BladeDef {
-                SweepFrames = 2, Life = Lifetime,
+                SweepFrames = 3, Life = Lifetime,
                 ErodeStart = 8, ErodeFrames = 22,
                 ColorShiftDelay = 10, ColorShiftFrames = 20,
                 Mode = 0f, Rot = CutAngle, Span = ArcSpan,
-                Thick = 0.42f,
+                Thick = 0.45f,
                 HalfX = ArcHalfX * bladeScale, HalfY = ArcHalfY * bladeScale, Flip = facing,
                 Opacity = 1f, FrontGlow = IsSakura ? 2.1f : 1.9f, Seed = seed + 0.29f,
                 TailErode = 0.35f, FlashPower = 0.9f,
+                SweepSnap = 0.35f,
                 RazorTailWiden = 0.70f,
                 Palette = IsSakura ? SakuraPalette : OFR.BladePalette.Escalate(0.25f),
             };
@@ -195,7 +190,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
 
             //弧完全揭开的那一帧绽放瓣爆(樱衣,客户端本地)
 
-            if (IsSakura && timer == 2 && !Main.dedServ) {
+            if (IsSakura && timer == 3 && !Main.dedServ) {
                 BloomPetals();
             }
             UpdatePetals();
@@ -228,14 +223,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
 
         /// <summary>反拔甩刀、实体刀数帧内从纳刀交接/反手预备位甩到收势过冲位(挥动帧甩残影)</summary>
         private void ApplyCastPose() {
-            float sw = OFR.EaseOutCubic(MathHelper.Clamp(timer / (float)PoseFrames, 0f, 1f));
-            float endRot = CutAngle + facing * SwingFront;
-            bladePose.Rotation = OniBladePose.LerpAngle(drawStartRot, endRot, sw);
+            float t = MathHelper.Clamp(timer / (float)PoseFrames, 0f, 1f);
+            const float AnticipationEnd = 0.20f;
+            const float StrikeEnd = 0.68f;
+            float sweep;
+            if (t < AnticipationEnd) {
+                float wind = t / AnticipationEnd;
+                sweep = 0.05f * wind * wind;
+            }
+            else {
+                sweep = 0.05f + 0.95f * OFR.EaseOutCubic((t - AnticipationEnd)
+                    / (StrikeEnd - AnticipationEnd));
+            }
+
+            float sweepEndRot = drawStartRot + facing * SwingArc;
+            if (t <= StrikeEnd) {
+                bladePose.Rotation = drawStartRot + facing * SwingArc * sweep;
+            }
+            else {
+                float settle = OFR.SmoothStep01((t - StrikeEnd) / (1f - StrikeEnd));
+                bladePose.Rotation = OniBladePose.LerpAngle(
+                    sweepEndRot, CutAngle + facing * SwingFront, settle);
+            }
 
             if (timer <= PoseFrames) {
                 Owner.itemTime = Owner.itemAnimation = 2;
-                Owner.itemRotation = MathHelper.WrapAngle(CutAngle
-                    + Owner.direction * MathHelper.Lerp(-1.05f, 0.70f, sw));
+                Owner.itemRotation = (bladePose.Rotation.ToRotationVector2() * facing).ToRotation();
                 bladePose.Opacity = 1f;
                 if (timer >= 2) {
                     bladePose.PushSmear(1f);
@@ -250,7 +263,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
                 }
                 bladePose.Opacity = 1f - MathHelper.Clamp((timer - PoseFrames - 4f) / (ZanshinHoldFrames - 4f), 0f, 1f);
             }
-            bladePose.ApplyPose(Owner, Projectile);
+            bladePose.ApplyPose(Owner, Projectile, fixedFacing: facing);
         }
 
         /// <summary>遮挡层:反拔实体刀与其残影,稳定盖在弧刃之上</summary>
@@ -313,7 +326,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
         }
 
         public override bool? CanHitNPC(NPC target) {
-            if (timer > DamageEnd) {
+            if (timer < DamageStart || timer > DamageEnd) {
                 return false;
             }
             return base.CanHitNPC(target);
@@ -327,6 +340,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             if (CWRLoad.ExoMechAresSegments.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.45f;
             }
+            float offsetX = Projectile.To(target.Center).X;
+            modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
+                ? Math.Sign(offsetX)
+                : (MathF.Cos(CutAngle) >= 0f ? 1 : -1);
         }
 
         /// <summary>贪婪判定（对齐绯红裂空三层）</summary>
@@ -345,12 +362,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
                 return true;
             }
 
-            const int Segments = 20;
+            const int Segments = 24;
             OFR.BladeState state = OFR.ComputeState(in arcDef, Math.Max(timer, 1));
             //碰撞用尺寸不低于视觉可读刀弧，出生 0.62 起步不缩判定
 
             float hitScale = MathF.Max(state.ScaleMul, 0.92f);
-            float thickWorld = MathF.Max(48f, arcDef.Thick * ArcHalfX * hitScale * ArcThickMul);
+            float thickWorld = MathF.Max(48f, arcDef.Thick * arcDef.HalfX * hitScale * ArcThickMul);
             float cp = 0f;
             Vector2 prev = HitPointAt(in state, hitScale, 0f);
             for (int i = 1; i <= Segments; i++) {
@@ -388,7 +405,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             const int Samples = 12;
             OFR.BladeState state = OFR.ComputeState(in arcDef, Math.Max(timer, 1));
             float hitScale = MathF.Max(state.ScaleMul, 0.92f);
-            float width = MathF.Max(36f, arcDef.Thick * ArcHalfX * hitScale * 0.95f);
+            float width = MathF.Max(36f, arcDef.Thick * arcDef.HalfX * hitScale * 0.95f);
             Vector2 prev = Vector2.Zero;
             bool hasPrev = false;
             for (int k = 0; k < Samples; k++) {

@@ -991,7 +991,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             if (a != null && a.Beat >= 3) {
                 modifiers.SourceDamage *= a.Beat == BeatCount - 1 ? 1.6f : 1.3f;
             }
-            modifiers.HitDirectionOverride = Math.Sign(Projectile.To(target.Center).X);
+            float offsetX = Projectile.To(target.Center).X;
+            modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
+                ? Math.Sign(offsetX)
+                : (MathF.Cos(a?.Aim ?? curAim) >= 0f ? 1 : -1);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

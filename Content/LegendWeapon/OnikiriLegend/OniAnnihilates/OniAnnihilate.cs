@@ -271,6 +271,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             if (CWRLoad.ExoMechAresSegments.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.4f;
             }
+            float offsetX = Projectile.To(target.Center).X;
+            modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
+                ? Math.Sign(offsetX)
+                : (MathF.Cos(CutAngle) >= 0f ? 1 : -1);
         }
 
         /// <summary>擦边外扩+弧折线+辐条+贴身圈,ScaleMul 下限防出生漏打</summary>
