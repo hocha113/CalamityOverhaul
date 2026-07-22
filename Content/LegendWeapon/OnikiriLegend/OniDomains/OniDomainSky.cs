@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 uraTarget = odp.WorldIsUra ? 1f : 0f;
             }
             else {
-                //域已闭、收域末帧遮罩本就全遮，直接归零防止 mode=0 后整屏闪回
+                //域已闭、Update 排空缓存，Draw 同帧按实时状态截断
 
                 presence = 0f;
             }
@@ -82,6 +82,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         }
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth) {
+            OniDomainPlayer odp = OniDomain.Local;
+            if (odp == null || !odp.AnyActive) {
+                Filters.Scene[Name]?.GetShader()?.UseOpacity(0f);
+                return;
+            }
             //跨 0 深度切片只画一次、该切片在所有原版背景层之后绘制，覆盖山野等背景
 
             if (maxDepth < 0f || minDepth >= 0f) {
@@ -108,17 +113,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             gd.Textures[1] = noise;
             gd.SamplerStates[1] = SamplerState.LinearWrap;
 
-            OniDomainPlayer odp = OniDomain.Local;
-            bool spread = odp != null
-                && (odp.Phase == OniDomainPhase.Opening || odp.Phase == OniDomainPhase.Closing);
+            bool spread = odp.Phase == OniDomainPhase.Opening || odp.Phase == OniDomainPhase.Closing;
             //原点与遮罩噪声时间都必须与 OniWorldGrade
 
             //两个着色器的浸染前沿才能在任意缩放下逐像素重合
 
-            Vector2 origin = odp != null
-                ? Vector2.Transform(odp.EyeWorldPos - Main.screenPosition, Main.GameViewMatrix.TransformationMatrix)
-                : Vector2.Zero;
-            float maskTime = odp?.EffectTime ?? 0f;
+            Vector2 origin = Vector2.Transform(
+                odp.EyeWorldPos - Main.screenPosition,
+                Main.GameViewMatrix.TransformationMatrix);
+            float maskTime = odp.EffectTime;
 
             shader.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.016f);
             shader.Parameters["uSkyAlpha"]?.SetValue(presence);
@@ -129,7 +132,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             shader.Parameters["uCamX"]?.SetValue(Main.screenPosition.X);
             shader.Parameters["uCamY"]?.SetValue(Main.screenPosition.Y);
             shader.Parameters["uSpreadMode"]?.SetValue(spread ? 1f : 0f);
-            shader.Parameters["uSpreadProgress"]?.SetValue(odp?.SpreadProgress ?? 0f);
+            shader.Parameters["uSpreadProgress"]?.SetValue(odp.SpreadProgress);
             shader.Parameters["uSpreadOrigin"]?.SetValue(origin);
             shader.Parameters["uMaskTime"]?.SetValue(maskTime);
             shader.CurrentTechnique.Passes[0].Apply();
