@@ -64,6 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             public float Aim;        //该拍开火瞄准角
             public int Facing;       //该拍冻结朝向
             public bool ImpactDone;  //本拍首次命中爆点已触发
+            public bool ResourceGranted;  //本拍首次命中的资源已结算
             public bool SnapPlayed;  //重击爆发脆响已播(快斩恒 true)
             public Vector2? FrozenCenter;   //硬让位瞬间冻结世界锚点
         }
@@ -999,14 +1000,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
+            ActiveSlash a = FindDamagingSlash();
 
-            //连段命中回气+处决记忆(owner 端)
+            //伤害逐敌结算,资源按拍结算;同拍后续目标仍进入处决命中记忆
             if (Projectile.IsOwnedByLocalPlayer()) {
-                Owner.GetModPlayer<OnikiriPlayer>().OnComboHit(target);
+                bool grantResources = a != null && !a.ResourceGranted;
+                if (grantResources) {
+                    a.ResourceGranted = true;
+                }
+                Owner.GetModPlayer<OnikiriPlayer>().OnComboHit(target, grantResources);
             }
 
             //每拍首次命中爆点,强度按拍位递增
-            ActiveSlash a = FindDamagingSlash();
             if (a != null && !a.ImpactDone) {
                 a.ImpactDone = true;
                 TriggerImpactBurst(target.Center + VaultUtils.RandVr(0, target.width / 3f), (a.Beat + 1) / (float)BeatCount, a.Aim, a.Def.Flip, steel);

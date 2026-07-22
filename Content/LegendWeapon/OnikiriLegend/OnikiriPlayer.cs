@@ -13,7 +13,6 @@ using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
 using CalamityOverhaul.Content.Scenarios.Himayo;
 using InnoVault.PRT;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
@@ -39,18 +38,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private const float VigorRegenPerTick = 0.10f;
         /// <summary>消耗后回气延迟(帧),防右键无脑连打</summary>
         private const int VigorRegenDelayTicks = 48;
-        /// <summary>连段每命中一敌回气</summary>
-        private const float VigorPerComboHit = 2f;
+        /// <summary>连段每拍首次命中回气</summary>
+        private const float VigorPerComboBeat = 2f;
 
         public const float StanceMax = 100f;
         /// <summary>灭世一闪的架势门槛与开销</summary>
         public const float AnnihilateCost = 50f;
-        /// <summary>连段每命中一敌蓄势</summary>
-        private const float StancePerComboHit = 2.5f;
-        /// <summary>疾走穿身格挡每敌蓄势</summary>
-        private const float StancePerParry = 12f;
-        /// <summary>单次冲刺穿身蓄势封顶</summary>
-        private const float StanceParryCapPerDash = 36f;
+        /// <summary>连段每拍首次命中蓄势</summary>
+        private const float StancePerComboBeat = 2.5f;
+        /// <summary>一次疾走中首次成功穿身格挡的固定蓄势</summary>
+        private const float StancePerDashParry = 12f;
 
         /// <summary>疾走墨痕伤害系数:定位是位移+格挡工具,不与连段争输出</summary>
         private const float DashDamageMul = 0.65f;
@@ -76,8 +73,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private const float ZanshinRedirectMouseDistance = 64f;
         /// <summary>追斩伤害倍率:层级卡在连段单拍与灭世一闪(5x)之间</summary>
         private const float ZanshinDamageMul = 2f;
-        /// <summary>追斩命中回架势(每敌),比连段单拍(2.5)厚,喂处决循环</summary>
-        private const float StancePerZanshinHit = 6f;
+        /// <summary>追斩每刀首次命中回架势,比连段单拍(2.5)厚,喂处决循环</summary>
+        private const float StancePerZanshinSlash = 6f;
         /// <summary>锵后仍算"同帧"的宽限(帧):此窗内出刀视同与结算压拍,震屏减半</summary>
         private const int ZanshinSyncSlackTicks = 2;
         /// <summary>终结乱舞焦点距离钳制(与疾走射程同量级,演出保持在可读范围)</summary>
@@ -104,9 +101,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         internal float Stance;
         private int vigorRegenDelay;
         private int dashLock;
-        //本次冲刺穿身蓄势的已得量与已计根:蠕虫全身只算一条
-        private float dashParryGained;
-        private readonly HashSet<int> parriedRoots = [];
         private int readyCueTimer;
         //====追斩资格(owner 端自治)====
         private int zanshinWindow;          //剩余帧数,0=关
@@ -304,8 +298,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
             Vigor -= DashVigorCost;
             vigorRegenDelay = VigorRegenDelayTicks;
-            dashParryGained = 0f;
-            parriedRoots.Clear();
             //新位移开始,上一窗作废
             zanshinWindow = 0;
             zanshinPending = false;
@@ -512,10 +504,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return liveAim.SafeNormalize(fallback);
         }
 
-        /// <summary>追斩命中:回架势 + 记入命中记忆(<see cref="OniZanshinSlash"/>.OnHitNPC 调用)</summary>
-        internal void OnZanshinHit(NPC target) {
-            Stance = Math.Min(StanceMax, Stance + StancePerZanshinHit);
+        /// <summary>追斩接触:每刀仅首次命中回架势,所有目标都记入命中记忆</summary>
+        internal void OnZanshinHit(NPC target, bool grantResources) {
             RecordHit(target);
+            if (grantResources) {
+                Stance = Math.Min(StanceMax, Stance + StancePerZanshinSlash);
+            }
         }
 
         //==================== 处决 ====================
@@ -769,9 +763,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private static NPC RootOf(NPC npc)
             => npc.realLife >= 0 && npc.realLife < Main.maxNPCs ? Main.npc[npc.realLife] : npc;
 
-        /// <summary>记入命中记忆:去重刷新,满则顶掉最旧</summary>
+        /// <summary>记入命中记忆:蠕虫归主体,去重刷新,满则顶掉最旧</summary>
         private void RecordHit(NPC npc) {
-            if (npc == null || !npc.active) {
+            if (npc == null) {
+                return;
+            }
+            npc = RootOf(npc);
+            if (!npc.active) {
                 return;
             }
             int now = (int)Main.GameUpdateCount;
@@ -795,24 +793,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         //==================== 资源增益(玩法挂点调用,owner 端) ====================
 
-        /// <summary>连段命中:回气 + 蓄势 + 记入命中记忆(<see cref="CrimsonRendSlash.OnHitNPC"/> 调用)</summary>
-        internal void OnComboHit(NPC target) {
-            Vigor = Math.Min(VigorMax, Vigor + VigorPerComboHit);
-            Stance = Math.Min(StanceMax, Stance + StancePerComboHit);
+        /// <summary>连段接触:每拍仅首次命中回气蓄势,所有目标都记入命中记忆</summary>
+        internal void OnComboHit(NPC target, bool grantResources) {
             RecordHit(target);
-        }
-
-        /// <summary>疾走穿身即格挡:蓄势 + 记入命中记忆(<see cref="OniFlashStep"/> 标记成功时调用);
-        /// 蓄势按 realLife 归主体只算一条,单次冲刺封顶;记忆不受封顶影响</summary>
-        internal void OnDashParry(NPC npc) {
-            RecordHit(npc);
-            int root = npc.realLife >= 0 ? npc.realLife : npc.whoAmI;
-            if (!parriedRoots.Add(root) || dashParryGained >= StanceParryCapPerDash - 0.01f) {
+            if (!grantResources) {
                 return;
             }
-            float gain = Math.Min(StancePerParry, StanceParryCapPerDash - dashParryGained);
-            dashParryGained += gain;
-            Stance = Math.Min(StanceMax, Stance + gain);
+            Vigor = Math.Min(VigorMax, Vigor + VigorPerComboBeat);
+            Stance = Math.Min(StanceMax, Stance + StancePerComboBeat);
+        }
+
+        /// <summary>疾走穿身即格挡:每次疾走仅首次格挡固定蓄势,所有目标都记入命中记忆</summary>
+        internal void OnDashParry(NPC npc, bool grantResources) {
+            RecordHit(npc);
+            if (grantResources) {
+                Stance = Math.Min(StanceMax, Stance + StancePerDashParry);
+            }
         }
 
         /// <summary>满架势身周绯焰提示</summary>

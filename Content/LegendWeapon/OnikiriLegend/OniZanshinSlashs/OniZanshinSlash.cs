@@ -84,6 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
         private OFR.BladeDef arcDef;
         private bool initialized;
         private int timer;
+        private bool resourceGranted;
         private int facing = 1;
         /// <summary>反拔起手刀角:优先继承交接黑板(纳刀位),无交接退回反手预备位</summary>
         private float drawStartRot;
@@ -427,7 +428,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             target.CWR().TimeFrozenTick = 3;   //穿身微滞:惊人一刻的咬合感
 
             if (Projectile.IsOwnedByLocalPlayer()) {
-                Owner.GetModPlayer<OnikiriPlayer>().OnZanshinHit(target);
+                bool grantResources = !resourceGranted;
+                resourceGranted = true;
+                Owner.GetModPlayer<OnikiriPlayer>().OnZanshinHit(target, grantResources);
             }
 
             if (Main.dedServ) {

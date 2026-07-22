@@ -51,6 +51,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         private readonly List<Vector2> path = new(16);
         private readonly HashSet<int> marked = new(16);
+        private bool stanceGranted;
         private bool initialized;
         private int timer;
         private Vector2 dashDir;
@@ -342,9 +343,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
                     OniFlashMark.Fire(Owner, npc, judgeDelay, Projectile.damage
                         , Projectile.knockBack, dashDir.ToRotation(), Projectile.GetSource_FromAI());
-                    //穿身即格挡:居合掠过之敌为主人蓄势(封顶/蠕虫去重在资源层)
-
-                    Owner.GetModPlayer<OnikiriPlayer>().OnDashParry(npc);
+                    //穿身即格挡:每次疾走仅首次穿身蓄势,后续目标仍写入处决记忆
+                    bool grantResources = !stanceGranted;
+                    stanceGranted = true;
+                    Owner.GetModPlayer<OnikiriPlayer>().OnDashParry(npc, grantResources);
                 }
 
                 SoundEngine.PlaySound(SoundID.Item71 with {
