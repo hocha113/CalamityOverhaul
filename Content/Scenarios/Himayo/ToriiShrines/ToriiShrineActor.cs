@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             Height = 128;
             //剔除扩张防半入屏弹出
             DrawExtendMode = 700;
-            DrawLayer = ActorDrawLayer.BeforeTiles;
+            DrawLayer = ActorDrawLayer.AfterTiles;
 
             glowTimer = Main.rand.NextFloat(MathHelper.TwoPi);
         }
