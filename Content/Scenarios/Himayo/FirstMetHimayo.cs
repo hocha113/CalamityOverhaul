@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
                     onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Ruminate))
              .Say(NarrativeIds.Mayo, Line7.Value, Voice[7],
                     onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Forsmile))
-             .End();
+             .End(); 
         }
 
         //拿到鬼切即触发，但要等鸟居退场演出（含余响后的静默拍）收完——
