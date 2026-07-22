@@ -270,9 +270,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             return MaxScan;
         }
 
-        /// <summary>表世界的樱流衔接、跑满计划距离时右键仍按住</summary>
+        /// <summary>表世界的樱流衔接、跑满计划距离时疾走输入仍按住</summary>
         private bool TryChainIntoSakura() {
-            if (chained || !Projectile.IsOwnedByLocalPlayer() || !Main.mouseRight) {
+            if (chained || !Projectile.IsOwnedByLocalPlayer() || !OnikiriPlayer.FlashStepInputHeld) {
                 return false;
             }
             if (!Owner.GetModPlayer<OnikiriPlayer>().TryChainSakuraFlight(dashDir, Projectile.GetSource_FromAI())) {

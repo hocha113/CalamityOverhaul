@@ -17,14 +17,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameInput;
+using Terraria.Graphics.Capture;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 {
     /// <summary>
     /// 鬼切资源层,气力+架势,owner 端自治不进网络/存档.
-    /// 右键疾走;表世界可衔樱流;交还帧开追斩窗;
-    /// <see cref="CWRKeySystem.WeponSkill_R"/> 处决;里世界点选肢解.
+    /// 疾走键未绑定时回退右键;表世界可衔樱流;交还帧开追斩窗;
+    /// <see cref="CWRKeySystem.Onikiri_Execute"/> 处决;里世界点选肢解.
     /// HUD 经 <see cref="OnikiriResourceSource"/> 只读
     /// </summary>
     internal class OnikiriPlayer : ModPlayer
@@ -102,7 +104,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         internal float Stance;
         private int vigorRegenDelay;
         private int dashLock;
-        private bool prevMouseRight;
         //本次冲刺穿身蓄势的已得量与已计根:蠕虫全身只算一条
         private float dashParryGained;
         private readonly HashSet<int> parriedRoots = [];
@@ -127,6 +128,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             public int Tick;
         }
         private readonly HitMemory[] hitMemory = new HitMemory[HitMemoryCapacity];
+
+        private static InputMode FlashStepBindingMode
+            => PlayerInput.UsingGamepad ? InputMode.XBoxGamepad : InputMode.Keyboard;
+
+        internal static bool FlashStepInputHeld {
+            get {
+                ModKeybind keybind = CWRKeySystem.Onikiri_FlashStep;
+                return CWRKeySystem.IsKeybindUnbound(keybind, FlashStepBindingMode)
+                    ? Main.mouseRight
+                    : keybind.Current;
+            }
+        }
 
         public override void OnEnterWorld() {
             Vigor = VigorMax;
@@ -170,8 +183,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             TickZanshinWindow();
 
-            bool justRight = Main.mouseRight && !prevMouseRight;
-            prevMouseRight = Main.mouseRight;
+            ModKeybind flashStepKey = CWRKeySystem.Onikiri_FlashStep;
+            bool flashStepUnbound = CWRKeySystem.IsKeybindUnbound(flashStepKey, FlashStepBindingMode);
+            bool flashStepPressed = flashStepUnbound
+                ? Main.mouseRight && Main.mouseRightRelease
+                : flashStepKey.JustPressed;
             //左键沿供 TryZanshinStrike 的 Shoot 路径鉴别:ItemCheck 先于 PostUpdate,
             //此处更新后,下一帧的物品使用读到的仍是"上一帧是否按着"
             prevMouseLeft = Main.mouseLeft;
@@ -205,7 +221,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             ReleaseZanshinPending(item);
             ReadyCue();
 
-            if (justRight && !Player.mouseInterface && !Player.cursorItemIconEnabled) {
+            if (flashStepPressed && CanAcceptFlashStepInput(flashStepUnbound)) {
                 TryDash(item);
             }
             if (CWRKeySystem.Onikiri_Execute.JustPressed) {
@@ -246,6 +262,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         //==================== 神威疾走 ====================
+
+        private bool CanAcceptFlashStepInput(bool rightClickFallback) {
+            if (Main.mapFullscreen || Main.gamePaused || Main.ingameOptionsWindow || Main.inFancyUI
+                || Main.drawingPlayerChat || Main.editSign || Main.editChest || Main.blockInput
+                || Player.noItems || Player.mouseInterface || Player.talkNPC != -1 || Player.sign != -1
+                || CaptureManager.Instance.Active || Player.tileInteractionHappened
+                || Main.HoveringOverAnNPC || Main.SmartInteractShowingGenuine
+                || CursorOverInteractiveProjectile()) {
+                return false;
+            }
+            return !rightClickFallback
+                || (Player.controlUseTile && Player.releaseUseItem && !Player.controlUseItem);
+        }
+
+        private bool CursorOverInteractiveProjectile() {
+            Point cursor = Main.MouseWorld.ToPoint();
+            foreach (int projectileIndex in Player.GetListOfProjectilesToInteractWithHack()) {
+                if (projectileIndex < 0 || projectileIndex >= Main.maxProjectiles) {
+                    continue;
+                }
+                Projectile projectile = Main.projectile[projectileIndex];
+                if (projectile.active && (projectile.Hitbox.Contains(cursor)
+                    || Main.SmartInteractProj == projectile.whoAmI)) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         private void TryDash(Item item) {
             //再触发锁内静默(是节拍不是资源问题);骑乘时位移权在坐骑;樱流握有本体时不受理
@@ -325,7 +369,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             vigorRegenDelay = Math.Max(vigorRegenDelay, VigorRegenDelayTicks);
             OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
-            if (!Main.mouseRight || Vigor <= 0.01f
+            if (!FlashStepInputHeld || Vigor <= 0.01f
                 || domain.Phase != OniDomainPhase.Omote || domain.WorldIsUra) {
                 OniSakuraFlight.RequestStop(Player);
                 return;

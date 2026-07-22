@@ -13,10 +13,16 @@ VoidTimeShift_Key.DisplayName: Void Time Shift
 Halibut_Clone.DisplayName: Halibut: Past Self Invasion
 Halibut_Superposition.DisplayName: Halibut: Superposition
 Halibut_SkillWheel.DisplayName: Halibut: Hold to open skill wheel
+Onikiri_FlashStep.DisplayName: Onikiri: Kamui Flash Step
 Onikiri_Execute.DisplayName: Onikiri: Execute
 Onikiri_DomainFlip.DisplayName: Onikiri: Flip Domain (Omote/Ura)
 WeponSkill_Q.DisplayName: Weapon: Left Skill Key
 WeponSkill_R.DisplayName: Weapon: Right Skill Key
 Accessory_Skills.DisplayName: Accessory Skill
-CWRKeySystem.Notbound: "[Unbound Key]"
+
+CWRKeySystem: {
+	Notbound: "[Unbound Key]"
+	RightClickFallback: Right-click
+}
+
 Wraith_Power.DisplayName: Wraith: Borrowed Power / Rite

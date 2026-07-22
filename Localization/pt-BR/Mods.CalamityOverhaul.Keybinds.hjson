@@ -13,10 +13,16 @@ VoidTimeShift_Key.DisplayName: Mudanca Temporal do Vazio
 Halibut_Clone.DisplayName: Linguado: Invasao do Eu do Passado
 Halibut_Superposition.DisplayName: Linguado: Superposicao
 Halibut_SkillWheel.DisplayName: Linguado: Segure para abrir roda de habilidades
+// Onikiri_FlashStep.DisplayName: Onikiri: Kamui Flash Step
 // Onikiri_Execute.DisplayName: Onikiri: Execute
 // Onikiri_DomainFlip.DisplayName: Onikiri: Flip Domain (Omote/Ura)
 WeponSkill_Q.DisplayName: Arma: Tecla de Habilidade Esquerda
 WeponSkill_R.DisplayName: Arma: Tecla de Habilidade Direita
 Accessory_Skills.DisplayName: Habilidade de Acessorio
-CWRKeySystem.Notbound: "[Teclas nao vinculadas]"
+
+CWRKeySystem: {
+	Notbound: "[Teclas nao vinculadas]"
+	// RightClickFallback: Right-click
+}
+
 // Wraith_Power.DisplayName: Wraith: Borrowed Power / Rite

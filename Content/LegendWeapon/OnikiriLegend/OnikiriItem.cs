@@ -46,6 +46,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             && player.ownedProjectileCounts[ModContent.ProjectileType<OniSeverStrike>()] == 0;
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            string flashStepInput = CWRKeySystem.GetKeybindText(CWRKeySystem.Onikiri_FlashStep,
+                CWRKeySystem.RightClickFallback.Value);
+            tooltips.ReplacePlaceholder("[DASH]", flashStepInput);
             tooltips.InsertHotkeyBinding(CWRKeySystem.Onikiri_Execute, noneTip: CWRKeySystem.Notbound.Value);
             OnikiriOverride.SetTooltip(Item, ref tooltips);
         }
