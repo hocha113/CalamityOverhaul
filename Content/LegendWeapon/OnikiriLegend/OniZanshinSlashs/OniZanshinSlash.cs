@@ -425,7 +425,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             SoundEngine.PlaySound(CWRSound.KatanaHit with { Pitch = 0.25f, Volume = 0.85f, MaxInstances = 3 }, target.Center);
-            target.CWR().TimeFrozenTick = 3;   //穿身微滞:惊人一刻的咬合感
 
             if (Projectile.IsOwnedByLocalPlayer()) {
                 bool grantResources = !resourceGranted;

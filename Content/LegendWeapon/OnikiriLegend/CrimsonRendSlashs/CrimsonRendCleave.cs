@@ -158,7 +158,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.CWR().TimeFrozenTick = 4;
             bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
             SoundEngine.PlaySound((steel ? SoundID.NPCHit4 : SoundID.NPCHit1) with {
                 Pitch = steel ? -0.05f : -0.2f,

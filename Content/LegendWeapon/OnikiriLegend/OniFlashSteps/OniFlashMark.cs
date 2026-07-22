@@ -211,9 +211,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //齐裂顿帧拉到接近终斩档、吃下这一刀的重量要留在身上一拍
-
-            target.CWR().TimeFrozenTick = 8;
             SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.25f, Volume = 0.6f, MaxInstances = 3 }, target.Center);
         }
 

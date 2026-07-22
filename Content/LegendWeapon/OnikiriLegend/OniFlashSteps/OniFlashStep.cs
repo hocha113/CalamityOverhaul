@@ -336,7 +336,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 }
 
                 marked.Add(npc.whoAmI);
-                npc.CWR().TimeFrozenTick = 3;   //穿身微滞、世界不停，只有被穿者顿一下
 
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     //墨痕走向与本次直线居合方向一致

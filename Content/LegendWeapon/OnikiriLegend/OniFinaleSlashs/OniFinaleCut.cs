@@ -320,9 +320,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //世界刚解冻就吃下终斩的顿帧，命中重量最大化
-
-            target.CWR().TimeFrozenTick = 10;
             SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.45f, Volume = 0.9f }, target.Center);
 
             if (Main.dedServ) {
