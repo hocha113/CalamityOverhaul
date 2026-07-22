@@ -52,20 +52,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         /// <summary>疾走墨痕伤害系数:定位是位移+格挡工具,不与连段争输出</summary>
         private const float DashDamageMul = 0.65f;
+        /// <summary>居合越过光标的固定余量(px)</summary>
+        private const float DashCursorOvershoot = 220f;
         /// <summary>灭世一闪伤害倍率(单次巨额结算)</summary>
         private const float AnnihilateDamageMul = 5f;
-        /// <summary>冲刺再触发锁(帧):盖住位移+刹车段,防中途二次起跳双花</summary>
+        /// <summary>冲刺基础再触发锁(帧)，长距离时会自动延长到覆盖完整位移</summary>
         private const int DashRefireLockTicks = 14;
 
         /// <summary>樱流化身每帧耗气(疾走衔接的持续飞行,气尽自动回卷),满气冲刺后余量约可飞 1.4s</summary>
         private const float SakuraDrainPerTick = 0.8f;
-        /// <summary>樱流入飞门槛:低于此气力不衔接,疾走照常刹停</summary>
+        /// <summary>樱流入飞门槛:低于此气力不衔接,疾走照常收势</summary>
         private const float SakuraMinVigor = 10f;
-        /// <summary>樱流巡航速度(px/帧),模块钳制上限 48;疾走 210px/帧骤降到此,是"化形"的减速拍</summary>
+        /// <summary>樱流巡航速度(px/帧),模块钳制上限 48;从疾走高速骤降到此,是"化形"的减速拍</summary>
         private const float SakuraFlightSpeed = 40f;
 
-        /// <summary>追斩窗时长(帧):操控交还帧起算,盖住锵(+8)与纳刀一挑(+6)再留宽限</summary>
-        private const int ZanshinWindowTicks = 24;
+        /// <summary>追斩资格时长(帧),交还操控后保留 1.5 秒</summary>
+        private const int ZanshinWindowTicks = 90;
         /// <summary>追斩伤害倍率:层级卡在连段单拍与灭世一闪(5x)之间</summary>
         private const float ZanshinDamageMul = 2f;
         /// <summary>追斩命中回架势(每敌),比连段单拍(2.5)厚,喂处决循环</summary>
@@ -101,12 +103,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private float dashParryGained;
         private readonly HashSet<int> parriedRoots = [];
         private int readyCueTimer;
-        //====追斩窗(owner 端自治)====
+        //====追斩资格(owner 端自治)====
         private int zanshinWindow;          //剩余帧数,0=关
         private int zanshinJudgeCountdown;  //距锵帧数,窗开着时持续递减(负值=锵已过)
         private bool zanshinHasMarks;       //开窗时疾走带墨痕:锵前按下走缓冲,同帧释放
-        private bool zanshinPending;        //按下沿已受理,挂起等锵
-        private bool prevMouseLeft;         //Shoot 路径的按下沿鉴别(按住穿过不转换)
+        private bool zanshinPending;        //左键意图已受理,带墨痕时挂起等锵
+        private bool zanshinInputBuffered;  //疾走/樱流控身期间按下左键,交还帧兑现
+        private bool prevMouseLeft;         //Shoot 路径按下沿鉴别,防资格期自动重用
 
         //====命中记忆:处决智能选点的第二层依据====
         private struct HitMemory
@@ -122,6 +125,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             Stance = 0f;
             zanshinWindow = 0;
             zanshinPending = false;
+            zanshinInputBuffered = false;
         }
 
         public override void OnRespawn() {
@@ -129,6 +133,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             Stance = 0f;
             zanshinWindow = 0;
             zanshinPending = false;
+            zanshinInputBuffered = false;
         }
 
         public override void PostUpdate() {
@@ -166,6 +171,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
             Item item = Player.GetItem();
             bool holding = item != null && item.Alives() && item.type == ModContent.ItemType<OnikiriItem>();
+            if (holding && zanshinWindow <= 0 && Main.mouseLeft
+                && (dashLock > 0 || OniSakuraFlight.ControlsOwner(Player.whoAmI))) {
+                zanshinInputBuffered = true;
+            }
             HandleDomainInput(holding);
             if (holding) {
                 ManageSakuraFlight();
@@ -236,17 +245,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
             Vigor -= DashVigorCost;
             vigorRegenDelay = VigorRegenDelayTicks;
-            dashLock = DashRefireLockTicks;
             dashParryGained = 0f;
             parriedRoots.Clear();
             //新位移开始,上一窗作废
             zanshinWindow = 0;
             zanshinPending = false;
+            zanshinInputBuffered = Main.mouseLeft;
 
             ShootState state = Player.GetShootState();
             Vector2 aim = Main.MouseWorld - Player.Center;
+            float distance = aim.Length() + DashCursorOvershoot;
+            dashLock = Math.Max(DashRefireLockTicks, OniFlashStep.CalculateTravelFrames(distance));
             OniFlashStep.Fire(Player, aim, (int)(state.WeaponDamage * DashDamageMul)
-                , state.WeaponKnockback, source: Player.GetSource_ItemUse(item));
+                , state.WeaponKnockback, distance, source: Player.GetSource_ItemUse(item));
         }
 
         //==================== 樱流化身 ====================
@@ -301,15 +312,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         //==================== 残心追斩 ====================
 
-        /// <summary>交还帧开追斩窗(owner),窗内按下沿→残心斩</summary>
+        /// <summary>交还帧开追斩资格(owner),控身期间的左键在此转为挂起</summary>
         internal void OpenZanshinWindow(int judgeDelay, int markCount) {
             if (Player.whoAmI != Main.myPlayer) {
                 return;
             }
+            bool bufferedInput = zanshinInputBuffered || Main.mouseLeft;
             zanshinWindow = ZanshinWindowTicks;
             zanshinJudgeCountdown = Math.Max(judgeDelay, 0);
             zanshinHasMarks = markCount > 0;
-            zanshinPending = false;
+            zanshinPending = bufferedInput;
+            zanshinInputBuffered = false;
         }
 
         /// <summary>追斩窗每帧推进:锵倒计时递减(负值=锵已过),窗口过期清挂起</summary>
@@ -321,6 +334,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinJudgeCountdown--;
             if (zanshinWindow <= 0) {
                 zanshinPending = false;
+                zanshinInputBuffered = false;
             }
         }
 
@@ -354,7 +368,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return FireZanshin(item);
         }
 
-        /// <summary>挂起的追斩到锵释放(holding 语境每帧调用,倒计时归零即出刀);
+        /// <summary>挂起的追斩在交还后释放,带墨痕则押到锵帧;
         /// 等锵期间玩家另起大招/化樱则弃挂起,大动作优先</summary>
         private void ReleaseZanshinPending(Item item) {
             if (!zanshinPending) {
@@ -365,7 +379,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 zanshinWindow = 0;
                 return;
             }
-            if (zanshinJudgeCountdown <= 0) {
+            if (!zanshinHasMarks || zanshinJudgeCountdown <= 0) {
                 FireZanshin(item);
             }
         }
@@ -374,14 +388,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private bool FireZanshin(Item item) {
             zanshinWindow = 0;
             zanshinPending = false;
+            zanshinInputBuffered = false;
             ShootState state = Player.GetShootState();
             Vector2 aim = Main.MouseWorld - Player.Center;
             OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
             bool sakura = domain.Phase == OniDomainPhase.Omote && !domain.WorldIsUra;
             bool synced = zanshinHasMarks && zanshinJudgeCountdown <= 0
                 && zanshinJudgeCountdown >= -ZanshinSyncSlackTicks;
-            return OniZanshinSlash.Fire(Player, aim, (int)(state.WeaponDamage * ZanshinDamageMul)
-                , state.WeaponKnockback, sakura, synced, Player.GetSource_ItemUse(item)) != null;
+            Projectile zanshin = OniZanshinSlash.Fire(Player, aim
+                , (int)(state.WeaponDamage * ZanshinDamageMul), state.WeaponKnockback
+                , sakura, synced, Player.GetSource_ItemUse(item));
+            if (zanshin == null) {
+                return false;
+            }
+            CrimsonRendSlash.FindController(Player)?.ConsumeZanshinInput();
+            return true;
         }
 
         /// <summary>追斩命中:回架势 + 记入命中记忆(<see cref="OniZanshinSlash"/>.OnHitNPC 调用)</summary>

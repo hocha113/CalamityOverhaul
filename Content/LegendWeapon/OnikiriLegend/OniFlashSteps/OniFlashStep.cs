@@ -21,12 +21,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        //缓降台地+加速,前 TapWindowFrames 为点按辨义窗
-        private static readonly float[] DashSpeedRamp = [60f, 48f, 38f, 30f, 27f, 26f, 25f, 24f, 95f, 150f, 190f, 210f]; //px/帧,末=巡航
-
-        /// <summary>点按判定窗（帧）、此窗内松开 = 点按手势</summary>
-        private const int TapWindowFrames = 8;
-        private const int BrakeFrames = 2;      //硬刹、+过冲 → −回拉
+        /// <summary>单段冲刺速度(px/帧)，距离在出手时由光标位置一次性确定</summary>
+        private const float DashSpeed = 170f;
 
         private const int JudgmentDelay = 8;    //刹停到纳刀结算
 
@@ -42,8 +38,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         private const float CollisionSubStep = 14f; //直线斩停子步长(小于玩家宽度,防隧穿)
 
-        /// <summary>巡航段方向键转向速率(弧度/帧)、全程合计约 ±28° 的小幅弯曲</summary>
-        private const float SteerRate = 0.155f;
         private const float SweepLead = 44f;        //扫掠前导:冲刺终点脸前的目标不漏标
 
         private const float SweepBackPad = 24f;     //扫掠后补:起手贴脸的目标不漏标
@@ -69,30 +63,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private bool judged;
         private float headExt;           //刹停后流带头端 follow-through 残余外推
 
-        /// <summary>被墙面斩停、刹车改回弹、头端预算清零、墨溅上墙</summary>
-        private bool wallStopped;
         /// <summary>流带头端超前身体的距离（px），停止时按身前自由空间 clamp、墨最多亲到墙面，永不入墙</summary>
         private float headOffset = 100f;
-        /// <summary>点按手势已锁定、目标距离改写为台地终点，滑到位自然停，不受后续松开状态影响</summary>
-        private bool tapCommitted;
-        /// <summary>台地终点距离</summary>
-        private float tapDistance;
-        /// <summary>已衔接樱流(表世界跑满仍按住右键)、跳过硬刹与残心纳刀，操控当帧移交</summary>
+        /// <summary>已衔接樱流(表世界跑满仍按住右键)，跳过残心纳刀并当帧移交操控</summary>
         private bool chained;
 
         /// <summary>衔接视觉分支的判据、owner 端看 chained</summary>
         private bool ChainedToSakura => chained || OniSakuraFlight.ControlsOwner(Projectile.owner);
 
-        private bool Dashing => stopFrame < 0 && timer <= plannedDashFrames;
-        private bool Braking => stopFrame < 0 && timer > plannedDashFrames;
-        /// <summary>纳刀结算的绝对帧、按计划距离恒定，撞墙早停只是"锵"前多一拍死寂，节奏不散</summary>
-        private int JudgmentFrame => plannedDashFrames + BrakeFrames + JudgmentDelay;
+        private bool Dashing => stopFrame < 0;
+        /// <summary>纳刀结算的绝对帧，按出手时确定的距离稳定排拍</summary>
+        private int JudgmentFrame => plannedDashFrames + JudgmentDelay;
 
         //收尾残心/纳刀的实体刀(纯视觉,非阻塞)
 
         private readonly OniBladePose bladePose = new();
 
-        /// <summary>位移+刹车段硬占刀权:人已化入神威,连段就地冻结让位</summary>
+        /// <summary>位移段硬占刀权:人已化入神威,连段就地冻结让位</summary>
         bool IOniBladeOccupant.HardOccupiesBlade => stopFrame < 0;
 
         /// <summary>挥空后的保留余量(帧):没东西可演就不收税,只留极短落地拍</summary>
@@ -103,18 +90,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             && timer <= (marked.Count == 0 ? stopFrame + WhiffReserveFrames : JudgmentFrame + NotoFlickFrames);
 
         private float DashAngle => Projectile.ai[0];
-        private float Distance => Projectile.ai[1] > 60f ? Projectile.ai[1] : 900f;
+        private float Distance => MathF.Max(Projectile.ai[1], 1f);
+
+        internal static int CalculateTravelFrames(float distance)
+            => Math.Max((int)MathF.Ceiling(MathF.Max(distance, 1f) / DashSpeed), 2);
 
         /// <summary>触发接口、在持有者客户端调用</summary>
         /// <param name="player">冲刺者</param>
         /// <param name="aim">冲刺方向（无需归一化）</param>
         /// <param name="damage">墨痕引爆伤害（每个被穿过的敌人全额一次）</param>
         /// <param name="knockback">击退</param>
-        /// <param name="distance">冲刺距离(px)，撞墙提前止步</param>
+        /// <param name="distance">冲刺距离(px)，触碰实体物块立即终止</param>
         /// <param name="scale">尺寸倍率（流带幅宽/粒子随之缩放）</param>
         /// <param name="source">生成源，null 则回退 Misc 源</param>
         public static Projectile Fire(Player player, Vector2 aim, int damage, float knockback,
-            float distance = 900f, float scale = 1f, IEntitySource source = null) {
+            float distance, float scale = 1f, IEntitySource source = null) {
             source ??= player.GetSource_Misc("CWR_OniFlashStep");
             float aimAngle = aim.SafeNormalize(Vector2.UnitX * player.direction).ToRotation();
             return Projectile.NewProjectileDirect(source, player.Center, Vector2.Zero
@@ -149,21 +139,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             dashDir = DashAngle.ToRotationVector2();
             sizeMul = Projectile.ai[2] > 0.05f ? Projectile.ai[2] : 1f;
             seed = Projectile.identity * 0.6180339887f % 1f;
-            //沿加速曲线累计到计划距离
-
-            plannedDashFrames = 0;
-            for (float acc = 0f; acc < Distance - 0.5f; plannedDashFrames++) {
-                acc += DashSpeedRamp[Math.Min(plannedDashFrames, DashSpeedRamp.Length - 1)];
-            }
-            plannedDashFrames = Math.Max(plannedDashFrames, 2);
-
-            //台地终点 = 点按手势的统一落点
-
-            tapDistance = 0f;
-            for (int i = 0; i < TapWindowFrames; i++) {
-                tapDistance += DashSpeedRamp[Math.Min(i, DashSpeedRamp.Length - 1)];
-            }
-            tapDistance = MathF.Min(tapDistance, Distance);
+            plannedDashFrames = CalculateTravelFrames(Distance);
             Projectile.timeLeft = JudgmentFrame + RetractDelay + RetractFrames + 30;
 
             path.Add(GetCenter());
@@ -201,9 +177,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
             if (Dashing) {
                 DashFrame();
-            }
-            else if (Braking) {
-                BrakeFrame();
+                if (!Projectile.active) {
+                    return;
+                }
             }
             else {
                 headExt *= 0.80f;   //follow-through 残余回缩
@@ -227,70 +203,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             }
         }
 
-        /// <summary>冲刺帧、沿 <see cref="DashSpeedRamp"/> 推进，位移、标记、姿态</summary>
+        /// <summary>冲刺帧，沿出手时锁定的方向和距离推进</summary>
         private void DashFrame() {
             Vector2 prevHead = GetCenter();
             Vector2 fromBody = Owner.Center;
 
-            //松手收势分两种手势
-
-            //辨义窗内松开 = 点按，量化到台地终点统一落点（不立即刹车，滑到位由距离条件
-
-            //自然停、落点恒定，消掉松开时刻的 ±2~3 帧抖动）；
-
-            //窗后松开 = 长按的模拟控长
-
-            bool released = !tapCommitted && Projectile.IsOwnedByLocalPlayer() && !Main.mouseRight;
-            if (released && timer <= TapWindowFrames) {
-                tapCommitted = true;
-                if (Distance > tapDistance + 1f) {
-                    Projectile.ai[1] = MathF.Max(tapDistance, 61f);
-                    Projectile.netUpdate = true;
-                }
-            }
-            bool analogStop = released && timer > TapWindowFrames;
-
             float moved = 0f;
             bool blocked = false;
-            if (!analogStop) {
-                //方向键微转向、按住的方向把墨绸小幅掰弯（首帧保持出手直线，转向随控制位同步各端）
+            float stepLen = MathF.Min(DashSpeed, MathF.Max(Distance - traveled, 0f));
 
-                //if (timer > 1) {
-                //    int h = (Owner.controlRight ? 1 : 0) - (Owner.controlLeft ? 1 : 0);
-                //    int v = (Owner.controlDown ? 1 : 0) - (Owner.controlUp ? 1 : 0);
-                //    if (h != 0 || v != 0) {
-                //        float delta = MathHelper.WrapAngle(new Vector2(h, v).ToRotation() - dashDir.ToRotation());
-                //        dashDir = (dashDir.ToRotation() + MathHelper.Clamp(delta, -SteerRate, SteerRate))
-                //            .ToRotationVector2();
-                //    }
-                //}
-
-                float speed = DashSpeedRamp[Math.Min(timer - 1, DashSpeedRamp.Length - 1)];
-                float stepLen = MathF.Min(speed, Distance - traveled);
-
-                //直线斩停子步推进
-
-                while (moved < stepLen - 0.01f) {
-                    float sub = MathF.Min(CollisionSubStep, stepLen - moved);
-                    Vector2 next = Owner.position + dashDir * sub;
-                    if (!Collision.SolidCollision(next, Owner.width, Owner.height)) {
-                        Owner.position = next;
-                        moved += sub;
-                        continue;
-                    }
-                    //一格台阶容差、抬升一格可过则继续、地面小台阶不打断冲刺；
-
-                    //16px 竖向微错位在 path 点距(≥64px)下彩带读不出折角
-
-                    Vector2 lifted = next - Vector2.UnitY * (16f * Owner.gravDir);
-                    if (!Collision.SolidCollision(lifted, Owner.width, Owner.height)) {
-                        Owner.position = lifted;
-                        moved += sub;
-                        continue;
-                    }
+            //高速位移必须保留子步检测防止穿墙，但不再尝试抬阶或修正轨迹
+            while (moved < stepLen - 0.01f) {
+                float sub = MathF.Min(CollisionSubStep, stepLen - moved);
+                Vector2 next = Owner.position + dashDir * sub;
+                if (Collision.SolidCollision(next, Owner.width, Owner.height)) {
                     blocked = true;
                     break;
                 }
+                Owner.position = next;
+                moved += sub;
             }
 
             Owner.velocity = Vector2.Zero;
@@ -299,36 +230,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Owner.GivePlayerImmuneState(10);
             HoldPose();
 
-            bool finished = blocked || analogStop || traveled >= Distance - 1f;
-            if (finished) {
-                if (blocked && !wallStopped) {
-                    wallStopped = true;
-                    WallSplat();
-                }
-                if (analogStop && traveled < Distance - 1f) {
-                    Projectile.ai[1] = MathF.Max(traveled, 61f);
-                    Projectile.netUpdate = true;
-                }
-                //任何停止都按身前自由空间收拢头端、墨最多亲到墙面，永不入墙
+            //扫掠锚定身体并带前导/后补、起手贴脸与终点脸前的目标都不漏
+            Vector2 sweepEnd = blocked ? Owner.Center : Owner.Center + dashDir * SweepLead;
+            MarkSweep(fromBody - dashDir * SweepBackPad, sweepEnd);
 
-                headOffset = MathF.Min(headOffset, MathF.Max(FreeAheadBudget() - 6f, 8f));
-                timer = Math.Max(timer, plannedDashFrames);
-                //自然跑满且右键仍按住:尝试化樱续飞(撞墙/松手不衔接)
-
-                if (!blocked && !analogStop) {
-                    TryChainIntoSakura();
-                }
+            if (blocked) {
+                Projectile.Kill();
+                return;
             }
 
-            //撞墙帧不塞重合点，避免流带出现退化段
+            if (traveled >= Distance - 1f) {
+                headOffset = MathF.Min(headOffset, MathF.Max(FreeAheadBudget() - 6f, 8f));
+                if (!TryChainIntoSakura()) {
+                    FinishDash();
+                }
+            }
 
             if (Vector2.DistanceSquared(path[^1], GetCenter()) > 64f) {
                 path.Add(GetCenter());
             }
-
-            //扫掠锚定身体并带前导/后补、起手贴脸与终点脸前的目标都不漏
-
-            MarkSweep(fromBody - dashDir * SweepBackPad, Owner.Center + dashDir * SweepLead);
 
             if (!Main.dedServ && moved > 1f) {
                 SpawnDashWisps(prevHead, GetCenter());
@@ -349,110 +269,42 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             return MaxScan;
         }
 
-        /// <summary>撞墙的落点反馈、墨溅上墙（贴墙横向铺开）+ 闷响 + 震屏</summary>
-        private void WallSplat() {
-            Vector2 contact = Owner.Center + dashDir * MathF.Max(FreeAheadBudget() - 4f, 8f);
-            SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.75f, Pitch = -0.55f, MaxInstances = 2 }, contact);
-            SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.6f, Pitch = -0.35f, MaxInstances = 2 }, contact);
-            Owner.CWR().GetScreenShake(3.5f);
-
-            if (Main.dedServ) {
-                return;
-            }
-            //墨沿墙面（垂直冲刺向）溅开、动能没有消失，只是换了方向
-
-            Vector2 perp = new(-dashDir.Y, dashDir.X);
-            for (int i = 0; i < 10; i++) {
-                float side = Main.rand.NextBool() ? 1f : -1f;
-                Vector2 vel = perp * side * Main.rand.NextFloat(2f, 6.5f) - dashDir * Main.rand.NextFloat(0.4f, 1.6f);
-                PRTLoader.NewParticle<PRT_CrimsonSmoke>(contact + perp * side * Main.rand.NextFloat(0f, 18f)
-                    , vel, Color.White, Main.rand.NextFloat(0.07f, 0.13f) * sizeMul)
-                    ?.Configure(Main.rand.Next(18, 30), new Color(115, 24, 32), new Color(28, 13, 21));
-            }
-            for (int i = 0; i < 6; i++) {
-                Vector2 vel = (-dashDir).RotatedByRandom(0.85) * Main.rand.NextFloat(2.5f, 7f);
-                PRTLoader.NewParticle<PRT_OniShard>(contact, vel, new Color(255, 116, 66)
-                    , Main.rand.NextFloat(0.3f, 0.55f) * sizeMul)
-                    ?.Configure(Main.rand.Next(14, 24), Main.rand.NextFloat(-0.2f, 0.2f)
-                        , Main.rand.NextFloat(1.2f, 2.2f), affectedByGravity: true);
-            }
-            PRTLoader.NewParticle<PRT_CrimsonHitFlash>(contact, Vector2.Zero
-                , new Color(255, 190, 170), 0.7f * sizeMul);
-        }
-
         /// <summary>表世界的樱流衔接、跑满计划距离时右键仍按住</summary>
-        private void TryChainIntoSakura() {
+        private bool TryChainIntoSakura() {
             if (chained || !Projectile.IsOwnedByLocalPlayer() || !Main.mouseRight) {
-                return;
+                return false;
             }
             if (!Owner.GetModPlayer<OnikiriPlayer>().TryChainSakuraFlight(dashDir, Projectile.GetSource_FromAI())) {
-                return;
+                return false;
             }
             chained = true;
-            //跳过硬刹，操控当帧移交樱流；头端照常吃
-
             stopFrame = timer;
             headExt = MathF.Min(22f * sizeMul, MathF.Max(FreeAheadBudget() - headOffset - 4f, 0f));
+            return true;
         }
 
-        /// <summary>硬刹两帧、+过冲 → −回拉</summary>
-        private void BrakeFrame() {
-            int bt = timer - plannedDashFrames;   //1..BrakeFrames
+        /// <summary>自然抵达目标距离，原地结束位移并进入残心排拍</summary>
+        private void FinishDash() {
+            stopFrame = timer;
+            headOffset = MathF.Min(headOffset, MathF.Max(FreeAheadBudget() - 6f, 8f));
+            headExt = MathF.Min(22f * sizeMul, MathF.Max(FreeAheadBudget() - headOffset - 4f, 0f));
+            Owner.CWR().GetScreenShake(2.2f);
 
-            Vector2 fromBody = Owner.Center;
-            float move = wallStopped
-                ? (bt == 1 ? -14f : 5f)
-                : (bt == 1 ? 26f : -12f);
-            //小步位移同样走共线检测,保持轨迹笔直
-
-            Vector2 next = Owner.position + dashDir * move;
-            if (!Collision.SolidCollision(next, Owner.width, Owner.height)) {
-                Owner.position = next;
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                Owner.GetModPlayer<OnikiriPlayer>().OpenZanshinWindow(JudgmentFrame - timer, marked.Count);
             }
-            Owner.velocity = Vector2.Zero;
-            Owner.fallStart = (int)(Owner.position.Y / 16f);
 
-            //过冲帧记录头端；回拉帧不回撤墨迹、身体从墨里向后挣出，墨保持前伸
-
-            if (bt == 1 && !wallStopped && Vector2.DistanceSquared(path[^1], GetCenter()) > 16f) {
-                path.Add(GetCenter());
-            }
-            Owner.GivePlayerImmuneState(8);
-            HoldPose();
-
-            //过冲尖端补扫、刹车段掠过的目标同样入痕
-
-            MarkSweep(fromBody - dashDir * SweepBackPad, Owner.Center + dashDir * SweepLead);
-
-            if (bt >= BrakeFrames) {
-                stopFrame = timer;
-                //follow-through 外推吃身前预算、墙前清零,墨不入墙
-
-                headExt = MathF.Min(22f * sizeMul, MathF.Max(FreeAheadBudget() - headOffset - 4f, 0f));
-                Owner.CWR().GetScreenShake(2.2f);
-
-                //操控交还帧开追斩窗:锵前的左键按下沿将化为残心斩,与墨痕齐裂同帧释放
-
-                //
-
-                if (Projectile.IsOwnedByLocalPlayer()) {
-                    Owner.GetModPlayer<OnikiriPlayer>().OpenZanshinWindow(JudgmentFrame - timer, marked.Count);
-                }
-
-                if (!Main.dedServ) {
-                    //刹停点几缕墨屑落定
-
-                    for (int i = 0; i < 4; i++) {
-                        PRTLoader.NewParticle<PRT_CrimsonSmoke>(GetCenter() + Main.rand.NextVector2Circular(18f, 24f)
-                            , dashDir * Main.rand.NextFloat(0.6f, 1.8f) + Main.rand.NextVector2Circular(0.5f, 0.5f)
-                            , Color.White, Main.rand.NextFloat(0.05f, 0.09f) * sizeMul)
-                            ?.Configure(Main.rand.Next(16, 26), new Color(120, 26, 34), new Color(30, 14, 22));
-                    }
+            if (!Main.dedServ) {
+                for (int i = 0; i < 4; i++) {
+                    PRTLoader.NewParticle<PRT_CrimsonSmoke>(GetCenter() + Main.rand.NextVector2Circular(18f, 24f)
+                        , dashDir * Main.rand.NextFloat(0.6f, 1.8f) + Main.rand.NextVector2Circular(0.5f, 0.5f)
+                        , Color.White, Main.rand.NextFloat(0.05f, 0.09f) * sizeMul)
+                        ?.Configure(Main.rand.Next(16, 26), new Color(120, 26, 34), new Color(30, 14, 22));
                 }
             }
         }
 
-        /// <summary>冲刺/刹车期持械姿态、角色读作"低姿态突进"，不占用物品使用（朝向跟随实时转向）</summary>
+        /// <summary>冲刺期持械姿态，角色读作低姿态直线突进</summary>
         private void HoldPose() {
             Owner.heldProj = Projectile.whoAmI;
             Owner.itemTime = Owner.itemAnimation = 2;
@@ -484,7 +336,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 npc.CWR().TimeFrozenTick = 3;   //穿身微滞、世界不停，只有被穿者顿一下
 
                 if (Projectile.IsOwnedByLocalPlayer()) {
-                    //墨痕走向对齐穿过瞬间的实时方向（转向后仍与轨迹一致）
+                    //墨痕走向与本次直线居合方向一致
 
                     OniFlashMark.Fire(Owner, npc, judgeDelay, Projectile.damage
                         , Projectile.knockBack, dashDir.ToRotation(), Projectile.GetSource_FromAI());
@@ -550,7 +402,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 return;
             }
 
-            //残心/纳刀沿刹停时的实时方向（转向后的最终朝向），不回读出手角
+            //残心/纳刀沿本次居合方向
 
             float dirA = dashDir.ToRotation();
             int facing = dashDir.X >= 0f ? 1 : -1;
@@ -588,7 +440,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         private bool hideHeld;
 
-        /// <summary>可选隐藏、冲刺+刹车期本地玩家不绘制，交还操控立刻恢复</summary>
+        /// <summary>可选隐藏，冲刺期本地玩家不绘制，交还操控立刻恢复</summary>
         private void UpdateHideState() {
             if (Owner.whoAmI != Main.myPlayer) {
                 return;

@@ -282,6 +282,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return null;
         }
 
+        /// <summary>残心接管本次左键,清掉普攻补发</summary>
+        internal void ConsumeZanshinInput() {
+            pressBuffer = 0;
+            scheduling = false;
+            prevDownLeft = DownLeft;
+        }
+
         /// <summary>刀柄方向支点(解算朝向);绘制锚用 <see cref="bladeHandWorld"/>,拆开斩断手↔臂依赖环</summary>
         private Vector2 BladeHandPosition(int facing) => Owner.GetPlayerStabilityCenter()
             + new Vector2(facing * 3f, -5f * Owner.gravDir);
