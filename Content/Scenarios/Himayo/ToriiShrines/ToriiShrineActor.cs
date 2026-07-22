@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             Height = 128;
             //剔除扩张防半入屏弹出
             DrawExtendMode = 700;
-            DrawLayer = ActorDrawLayer.AfterTiles;
+            DrawLayer = ActorDrawLayer.BeforeTiles;
 
             glowTimer = Main.rand.NextFloat(MathHelper.TwoPi);
         }
@@ -353,7 +353,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                     riteGlint = 1f;
                     SwordPulledBurst();
                     player.CWR().GetScreenShake(7f);
-                    SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.35f, Volume = 0.9f }, SwordAnchor);
                 }
             }
             else if (departTimer < RiteFrames) {
@@ -431,8 +430,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 //静默拍起算，走完放行初见
                 postGoneTimer = 0;
                 ToriiShrineDissolve.End();
-                //余响
-                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.45f, Pitch = -0.5f }, Position);
             }
         }
 
