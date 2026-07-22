@@ -68,6 +68,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         /// <summary>追斩资格时长(帧),交还操控后保留 1.5 秒</summary>
         private const int ZanshinWindowTicks = 90;
+        /// <summary>持续左键自动衔接前的举刀交接帧</summary>
+        private const int ZanshinAutoHandoffFrames = 5;
+        /// <summary>冲刺期间认定为主动改向的鼠标屏幕位移(px)</summary>
+        private const float ZanshinRedirectMouseDistance = 64f;
         /// <summary>追斩伤害倍率:层级卡在连段单拍与灭世一闪(5x)之间</summary>
         private const float ZanshinDamageMul = 2f;
         /// <summary>追斩命中回架势(每敌),比连段单拍(2.5)厚,喂处决循环</summary>
@@ -109,6 +113,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private bool zanshinHasMarks;       //开窗时疾走带墨痕:锵前按下走缓冲,同帧释放
         private bool zanshinPending;        //左键意图已受理,带墨痕时挂起等锵
         private bool zanshinInputBuffered;  //疾走/樱流控身期间按下左键,交还帧兑现
+        private bool zanshinAutoHandoff;    //持续左键自动衔接,走短举刀与稳定方向
+        private int zanshinAutoHandoffCountdown;
+        private Vector2 zanshinHandoffDirection = Vector2.UnitX;
+        private Vector2 zanshinBufferedMouseScreen;
         private bool prevMouseLeft;         //Shoot 路径按下沿鉴别,防资格期自动重用
 
         //====命中记忆:处决智能选点的第二层依据====
@@ -126,6 +134,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinWindow = 0;
             zanshinPending = false;
             zanshinInputBuffered = false;
+            zanshinAutoHandoff = false;
+            zanshinAutoHandoffCountdown = 0;
         }
 
         public override void OnRespawn() {
@@ -134,6 +144,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinWindow = 0;
             zanshinPending = false;
             zanshinInputBuffered = false;
+            zanshinAutoHandoff = false;
+            zanshinAutoHandoffCountdown = 0;
         }
 
         public override void PostUpdate() {
@@ -173,6 +185,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             bool holding = item != null && item.Alives() && item.type == ModContent.ItemType<OnikiriItem>();
             if (holding && zanshinWindow <= 0 && Main.mouseLeft
                 && (dashLock > 0 || OniSakuraFlight.ControlsOwner(Player.whoAmI))) {
+                if (!zanshinInputBuffered) {
+                    zanshinBufferedMouseScreen = Main.MouseScreen;
+                }
                 zanshinInputBuffered = true;
             }
             HandleDomainInput(holding);
@@ -251,9 +266,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinWindow = 0;
             zanshinPending = false;
             zanshinInputBuffered = Main.mouseLeft;
+            zanshinAutoHandoff = false;
+            zanshinAutoHandoffCountdown = 0;
 
             ShootState state = Player.GetShootState();
             Vector2 aim = Main.MouseWorld - Player.Center;
+            zanshinHandoffDirection = aim.SafeNormalize(Vector2.UnitX * Player.direction);
+            if (zanshinInputBuffered) {
+                zanshinBufferedMouseScreen = Main.MouseScreen;
+            }
             float distance = aim.Length() + DashCursorOvershoot;
             dashLock = Math.Max(DashRefireLockTicks, OniFlashStep.CalculateTravelFrames(distance));
             OniFlashStep.Fire(Player, aim, (int)(state.WeaponDamage * DashDamageMul)
@@ -289,6 +310,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             //化樱起飞,疾走的旧窗作废;落地(ReleaseOwner)会开新窗
             zanshinWindow = 0;
             zanshinPending = false;
+            zanshinAutoHandoff = false;
+            zanshinAutoHandoffCountdown = 0;
             return true;
         }
 
@@ -313,17 +336,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         //==================== 残心追斩 ====================
 
         /// <summary>交还帧开追斩资格(owner),控身期间的左键在此转为挂起</summary>
-        internal void OpenZanshinWindow(int judgeDelay, int markCount) {
+        internal void OpenZanshinWindow(int judgeDelay, int markCount, Vector2 handoffDirection) {
             if (Player.whoAmI != Main.myPlayer) {
                 return;
             }
             bool bufferedInput = zanshinInputBuffered || Main.mouseLeft;
+            if (handoffDirection.LengthSquared() > 0.01f) {
+                zanshinHandoffDirection = handoffDirection.SafeNormalize(Vector2.UnitX * Player.direction);
+            }
+            if (bufferedInput && !zanshinInputBuffered) {
+                zanshinBufferedMouseScreen = Main.MouseScreen;
+            }
             zanshinWindow = ZanshinWindowTicks;
             zanshinJudgeCountdown = Math.Max(judgeDelay, 0);
             zanshinHasMarks = markCount > 0;
             zanshinPending = bufferedInput;
+            zanshinAutoHandoff = bufferedInput;
+            zanshinAutoHandoffCountdown = bufferedInput ? ZanshinAutoHandoffFrames + 1 : 0;
             zanshinInputBuffered = false;
         }
+
+        internal bool ZanshinAutoHandoffActive
+            => zanshinWindow > 0 && zanshinPending && zanshinAutoHandoff;
+
+        internal float ZanshinAutoHandoffProgress => !ZanshinAutoHandoffActive ? 0f
+            : 1f - MathHelper.Clamp((zanshinAutoHandoffCountdown - 1f)
+                / ZanshinAutoHandoffFrames, 0f, 1f);
 
         /// <summary>追斩窗每帧推进:锵倒计时递减(负值=锵已过),窗口过期清挂起</summary>
         private void TickZanshinWindow() {
@@ -332,9 +370,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             zanshinWindow--;
             zanshinJudgeCountdown--;
+            if (zanshinAutoHandoff && zanshinAutoHandoffCountdown > 0) {
+                zanshinAutoHandoffCountdown--;
+            }
             if (zanshinWindow <= 0) {
                 zanshinPending = false;
                 zanshinInputBuffered = false;
+                zanshinAutoHandoff = false;
+                zanshinAutoHandoffCountdown = 0;
             }
         }
 
@@ -361,6 +404,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return false;
             }
 
+            zanshinAutoHandoff = false;
+            zanshinAutoHandoffCountdown = 0;
             if (zanshinHasMarks && zanshinJudgeCountdown > 0) {
                 zanshinPending = true;
                 return true;
@@ -377,6 +422,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (OniBladeOccupancy.AnyHardOccupant(Player) || OniSakuraFlight.ControlsOwner(Player.whoAmI)) {
                 zanshinPending = false;
                 zanshinWindow = 0;
+                zanshinAutoHandoff = false;
+                zanshinAutoHandoffCountdown = 0;
+                return;
+            }
+            if (zanshinAutoHandoff && zanshinAutoHandoffCountdown > 0) {
                 return;
             }
             if (!zanshinHasMarks || zanshinJudgeCountdown <= 0) {
@@ -386,11 +436,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         /// <summary>追斩出刀:瞄准角与领域变体(表世界=樱衣)都在释放帧采样,锵同帧(含宽限)震屏减半</summary>
         private bool FireZanshin(Item item) {
+            Vector2 aim = ResolveZanshinAim();
             zanshinWindow = 0;
             zanshinPending = false;
             zanshinInputBuffered = false;
+            zanshinAutoHandoff = false;
+            zanshinAutoHandoffCountdown = 0;
             ShootState state = Player.GetShootState();
-            Vector2 aim = Main.MouseWorld - Player.Center;
             OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
             bool sakura = domain.Phase == OniDomainPhase.Omote && !domain.WorldIsUra;
             bool synced = zanshinHasMarks && zanshinJudgeCountdown <= 0
@@ -403,6 +455,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             CrimsonRendSlash.FindController(Player)?.ConsumeZanshinInput();
             return true;
+        }
+
+        private Vector2 ResolveZanshinAim() {
+            Vector2 fallback = zanshinHandoffDirection.SafeNormalize(Vector2.UnitX * Player.direction);
+            Vector2 liveAim = Main.MouseWorld - Player.Center;
+            bool deliberateRedirect = Vector2.DistanceSquared(Main.MouseScreen, zanshinBufferedMouseScreen)
+                >= ZanshinRedirectMouseDistance * ZanshinRedirectMouseDistance;
+            if (zanshinAutoHandoff && !deliberateRedirect) {
+                return fallback;
+            }
+            return liveAim.SafeNormalize(fallback);
         }
 
         /// <summary>追斩命中:回架势 + 记入命中记忆(<see cref="OniZanshinSlash"/>.OnHitNPC 调用)</summary>

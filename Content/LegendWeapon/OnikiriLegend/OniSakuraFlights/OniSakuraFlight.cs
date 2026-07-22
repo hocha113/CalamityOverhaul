@@ -371,7 +371,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
             Owner.CWR().GetScreenShake(1.8f);
             //落地=操控交还帧,开追斩窗;樱流只存在于表世界,追斩自然采樱衣
 
-            Owner.GetModPlayer<OnikiriPlayer>().OpenZanshinWindow(0, 0);
+            Owner.GetModPlayer<OnikiriPlayer>().OpenZanshinWindow(0, 0, moveDirection);
         }
 
         private void RecordPath(Vector2 currentCenter) {

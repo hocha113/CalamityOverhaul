@@ -87,7 +87,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         /// <summary>刹停后的签名拍软保留</summary>
         bool IOniBladeOccupant.ReservesBlade => stopFrame >= 0
-            && timer <= (marked.Count == 0 ? stopFrame + WhiffReserveFrames : JudgmentFrame + NotoFlickFrames);
+            && (Owner.GetModPlayer<OnikiriPlayer>().ZanshinAutoHandoffActive
+                || timer <= (marked.Count == 0 ? stopFrame + WhiffReserveFrames : JudgmentFrame + NotoFlickFrames));
 
         private float DashAngle => Projectile.ai[0];
         private float Distance => MathF.Max(Projectile.ai[1], 1f);
@@ -291,7 +292,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Owner.CWR().GetScreenShake(2.2f);
 
             if (Projectile.IsOwnedByLocalPlayer()) {
-                Owner.GetModPlayer<OnikiriPlayer>().OpenZanshinWindow(JudgmentFrame - timer, marked.Count);
+                Owner.GetModPlayer<OnikiriPlayer>().OpenZanshinWindow(
+                    JudgmentFrame - timer, marked.Count, dashDir);
             }
 
             if (!Main.dedServ) {
@@ -407,7 +409,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             float dirA = dashDir.ToRotation();
             int facing = dashDir.X >= 0f ? 1 : -1;
             int sinceJudge = timer - JudgmentFrame;
-            if (sinceJudge <= 0) {
+            OnikiriPlayer onikiri = Owner.GetModPlayer<OnikiriPlayer>();
+            if (onikiri.ZanshinAutoHandoffActive) {
+                float t = onikiri.ZanshinAutoHandoffProgress;
+                float ease = 1f - (1f - t) * (1f - t) * (1f - t);
+                bladePose.Rotation = OniBladePose.LerpAngle(dirA, dirA - facing * 0.72f, ease);
+                bladePose.Opacity = 1f;
+                if (t > 0f && t < 1f) {
+                    bladePose.PushSmear(0.4f);
+                }
+            }
+            else if (sinceJudge <= 0) {
                 //残心:刀沿冲刺向平指,极轻的呼吸下沉
 
                 bladePose.Rotation = dirA + facing * 0.05f * MathF.Sin((timer - stopFrame) * 0.35f);
