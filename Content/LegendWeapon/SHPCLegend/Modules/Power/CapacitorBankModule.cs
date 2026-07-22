@@ -322,7 +322,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 int newIdx = litCount - 1;
                 cellFlash[newIdx] = 1f;
                 SoundEngine.PlaySound(SoundID.Item93 with {
-                    Volume = 0.22f, Pitch = -0.2f + newIdx * 0.12f
+                    Volume = 0.22f,
+                    Pitch = -0.2f + newIdx * 0.12f
                 }, anchor);
                 Vector2 top = CellPosition(newIdx) + new Vector2(0f, -CellH * 0.5f);
                 for (int k = 0; k < 4; k++) {
@@ -445,7 +446,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             if (Main.netMode != NetmodeID.Server) {
                 Vector2 pos = orb.Projectile.Center;
                 SoundEngine.PlaySound(SoundID.Item93 with {
-                    Volume = 0.38f, Pitch = 0.25f + delivered * 0.08f
+                    Volume = 0.38f,
+                    Pitch = 0.25f + delivered * 0.08f
                 }, pos);
                 //球过载闪光
                 PRTLoader.NewParticle<PRT_StarPulseRing>(pos, Vector2.Zero,

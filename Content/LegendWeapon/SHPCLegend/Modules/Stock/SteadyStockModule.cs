@@ -290,7 +290,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 if (Main.netMode != NetmodeID.Server) {
                     //放电反馈随电荷缩放
                     SoundEngine.PlaySound(SoundID.Item94 with {
-                        Volume = 0.18f + c * 0.3f, Pitch = full ? -0.15f : 0.25f
+                        Volume = 0.18f + c * 0.3f,
+                        Pitch = full ? -0.15f : 0.25f
                     }, player.Center);
                     Vector2 muzzle = GetMuzzle(player, out Vector2 aimDir);
                     int count = 3 + (int)(c * 7f);

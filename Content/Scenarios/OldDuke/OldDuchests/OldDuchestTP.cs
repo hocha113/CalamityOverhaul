@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
                     }
                 }
                 if (updateAdd) {
-                            SyncItemsToUI();
+                    SyncItemsToUI();
                     SendData();
                     if (closeTimer <= 0) {
                         closeTimer = 60;

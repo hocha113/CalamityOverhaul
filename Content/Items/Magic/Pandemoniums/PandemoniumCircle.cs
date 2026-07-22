@@ -311,7 +311,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Texture2D noise = CWRAsset.Extra_193.Value;
             if (canvas == null || noise == null) return;
 
-            
+
             float drawRadius = circleRadius * 1.3f;
             float drawDiameter = drawRadius * 2f;
 

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Narrative;
+﻿using CalamityOverhaul.Content.Narrative;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -204,7 +204,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
                 _unlockProgress -= 0.03f;
             }
 
-    
+
             _waveTimer += 0.035f;
             _bubbleTimer += 0.025f;
             UpdatePulseTimer();

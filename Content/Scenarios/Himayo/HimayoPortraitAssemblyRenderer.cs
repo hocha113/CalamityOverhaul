@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Narrative;
+﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -185,11 +184,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
                 }
 
                 DrawPetalLayer(spriteBatch, portraitPosition, portraitScale, portraitRotation, alpha, true);
-            }
-            catch (Exception exception) {
+            } catch (Exception exception) {
                 DisableAdvanced(exception);
-            }
-            finally {
+            } finally {
                 if (callerBatchEnded) {
                     BeginDefaultUiBatch(spriteBatch);
                 }
@@ -222,11 +219,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
                 BuildPetalMask(spriteBatch, graphicsDevice, petalEffect, white);
                 BlurMask(spriteBatch, graphicsDevice, assemblyEffect);
                 renderPrepared = true;
-            }
-            catch (Exception exception) {
+            } catch (Exception exception) {
                 failure = exception;
-            }
-            finally {
+            } finally {
                 UnbindAllTextures(graphicsDevice);
                 graphicsDevice.SetRenderTarget(null);
             }
@@ -276,8 +271,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
                 if (faceTexture != null && !faceTexture.IsDisposed) {
                     spriteBatch.Draw(faceTexture, padding + faceOffset, Color.White);
                 }
-            }
-            finally {
+            } finally {
                 spriteBatch.End();
             }
         }
@@ -316,8 +310,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
                     spriteBatch.Draw(white, padding + petal.Target, null, maskColor,
                         stampRotation, origin, stampScale, SpriteEffects.None, 0f);
                 }
-            }
-            finally {
+            } finally {
                 spriteBatch.End();
             }
         }
@@ -339,8 +332,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
                 try {
                     assemblyEffect.CurrentTechnique.Passes[0].Apply();
                     spriteBatch.Draw(maskTargetA, Vector2.Zero, Color.White);
-                }
-                finally {
+                } finally {
                     spriteBatch.End();
                 }
 
@@ -353,8 +345,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
                 try {
                     assemblyEffect.CurrentTechnique.Passes[0].Apply();
                     spriteBatch.Draw(maskTargetB, Vector2.Zero, Color.White);
-                }
-                finally {
+                } finally {
                     spriteBatch.End();
                 }
             }
@@ -388,8 +379,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
                 effect.CurrentTechnique.Passes[0].Apply();
                 spriteBatch.Draw(portraitTarget, portraitPosition, null, drawColor * alpha,
                     portraitRotation, new Vector2(TargetPadding), portraitScale, SpriteEffects.None, 0f);
-            }
-            finally {
+            } finally {
                 spriteBatch.End();
                 graphicsDevice.Textures[1] = previousTexture1;
                 graphicsDevice.Textures[2] = previousTexture2;
@@ -426,8 +416,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
                             color, portraitRotation, Vector2.Zero, portraitScale, SpriteEffects.None, 0f);
                     }
                 }
-            }
-            finally {
+            } finally {
                 spriteBatch.End();
             }
         }
@@ -478,8 +467,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
                     spriteBatch.Draw(white, screenPosition, null, color,
                         pose.Rotation + portraitRotation, origin, petalScale, SpriteEffects.None, 0f);
                 }
-            }
-            finally {
+            } finally {
                 spriteBatch.End();
             }
         }
@@ -543,8 +531,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
             try {
                 pixels = new Color[width * height];
                 portrait.GetData(pixels);
-            }
-            catch {
+            } catch {
                 pixels = null;
             }
 

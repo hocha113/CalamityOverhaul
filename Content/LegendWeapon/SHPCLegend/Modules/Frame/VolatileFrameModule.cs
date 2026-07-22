@@ -267,7 +267,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                     proj.netUpdate = true;
                     if (Main.netMode != NetmodeID.Server && OnScreen(proj.Center)) {
                         SoundEngine.PlaySound(SoundID.Item114 with {
-                            Volume = 0.2f, Pitch = -0.1f + _surgeMutation * 0.18f
+                            Volume = 0.2f,
+                            Pitch = -0.1f + _surgeMutation * 0.18f
                         }, proj.Center);
                     }
                 }

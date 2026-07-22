@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
 using InnoVault.GameSystem;
 using InnoVault.PRT;
@@ -292,8 +292,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             try {
                 rt = new RenderTarget2D(gd, entry.SnapWidth, entry.SnapHeight, false
                     , SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            }
-            catch {
+            } catch {
                 return null;
             }
             SnapRTs[entry.PlayerIndex] = rt;
@@ -463,17 +462,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 PlayerCloneRenderer.Prepare(player);
                 PlayerCloneRenderer.DrawPreparedNatural(entry.AnchorCenter - player.Size * 0.5f
                     , entry.Direction, entry.GravDir, entry.BodyFrame, entry.LegFrame);
-            }
-            catch {
+            } catch {
                 //玩家绘制层钩子异常不拖垮捕获管线
 
-            }
-            finally {
+            } finally {
                 Main.screenPosition = realScreenPos;
                 try {
                     sb.End();
-                }
-                catch {
+                } catch {
                 }
             }
             entry.Captured = true;

@@ -447,7 +447,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
 
             vortexEffect?.Update();
 
-                UpdateSoundEffects();
+            UpdateSoundEffects();
         }
 
         public override void PreTileDraw(SpriteBatch spriteBatch) {

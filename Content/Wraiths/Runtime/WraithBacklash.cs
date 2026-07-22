@@ -1,7 +1,5 @@
-using CalamityOverhaul.Content.Wraiths.Core;
+﻿using CalamityOverhaul.Content.Wraiths.Core;
 using InnoVault.Actors;
-using Microsoft.Xna.Framework;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

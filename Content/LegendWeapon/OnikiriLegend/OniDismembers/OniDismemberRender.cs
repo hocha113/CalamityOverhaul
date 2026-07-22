@@ -124,17 +124,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
             try {
                 Main.instance.DrawNPCDirect(sb, npc, behindTiles, fakeScreenPos);
-            }
-            catch {
+            } catch {
                 //单个 NPC 绘制钩子异常不拖垮捕获管线
 
-            }
-            finally {
+            } finally {
                 Main.screenPosition = realScreenPos;
                 try {
                     sb.End();
-                }
-                catch {
+                } catch {
                     //绘制钩子把 spriteBatch 留在非活跃状态时兜底
 
                 }

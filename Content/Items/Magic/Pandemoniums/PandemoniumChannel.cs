@@ -813,7 +813,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Texture2D noise = CWRAsset.Extra_193.Value;
             if (canvas == null || noise == null) return;
 
-            
+
             float baseRadius = 300f + tier * 120f;
             float drawRadius = baseRadius * expandScale * 1.15f;//辉光余量
             float drawDiameter = drawRadius * 2f;

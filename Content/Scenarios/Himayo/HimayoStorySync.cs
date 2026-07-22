@@ -1,9 +1,8 @@
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Himayo
 {

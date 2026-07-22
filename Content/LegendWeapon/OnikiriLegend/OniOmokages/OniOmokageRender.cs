@@ -134,8 +134,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             try {
                 snap.RT = new RenderTarget2D(gd, snap.Width, snap.Height, false,
                     SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            }
-            catch {
+            } catch {
                 snap.RT = null;
                 return false;
             }

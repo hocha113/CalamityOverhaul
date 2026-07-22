@@ -1,7 +1,6 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Wraiths.Core;
 using InnoVault.PRT;
-using Microsoft.Xna.Framework;
 using System;
 using System.IO;
 using Terraria;

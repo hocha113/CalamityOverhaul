@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.Models3D.Runtime;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -132,15 +132,13 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 graphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
                 effect.CurrentTechnique.Passes[0].Apply();
                 spriteBatch.Draw(rt, Vector2.Zero, Color.White);
-            }
-            catch (Exception exception) {
+            } catch (Exception exception) {
                 if (!failureLogged) {
                     failureLogged = true;
                     CWRMod.Instance.Logger.Warn($"[ToriiShrineDissolve] composite failed, falling back: {exception.Message}");
                 }
                 return false;
-            }
-            finally {
+            } finally {
                 if (begun) {
                     spriteBatch.End();
                 }
@@ -161,8 +159,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
             try {
                 capturedOffsets = SampleSilhouette(rt, captureAnchor);
-            }
-            catch (Exception exception) {
+            } catch (Exception exception) {
                 capturedOffsets = null;
                 CWRMod.Instance.Logger.Warn($"[ToriiShrineDissolve] silhouette capture failed: {exception.Message}");
             }

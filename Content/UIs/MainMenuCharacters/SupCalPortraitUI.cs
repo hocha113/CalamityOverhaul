@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Narrative;
+﻿using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.UIs.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -330,7 +330,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
                 }
             }
 
-    
+
             _flameTimer += 0.045f;
             _glowTimer += 0.038f;
             UpdatePulseTimer();

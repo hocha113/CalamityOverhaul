@@ -562,8 +562,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                         petal.Rotation, origin,
                         new Vector2(width / white.Width, height / white.Height), SpriteEffects.None, 0f);
                 }
-            }
-            finally {
+            } finally {
                 spriteBatch.End();
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
                     DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);

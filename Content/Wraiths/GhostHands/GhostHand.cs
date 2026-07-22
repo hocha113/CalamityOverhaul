@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Wraiths.Core;
-using Microsoft.Xna.Framework;
 using System;
 using Terraria.Localization;
 using Terraria.ModLoader;

@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 frozenWingTime = Player.wingTime;
                 frozenRocketTime = Player.rocketTime;
                 positionCaptured = true;
-                        snapshotInventoryOpen = Main.playerInventory;
+                snapshotInventoryOpen = Main.playerInventory;
                 frozenSelectedItem = Player.selectedItem;
             }
 

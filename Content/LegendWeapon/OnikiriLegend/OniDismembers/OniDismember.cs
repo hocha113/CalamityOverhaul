@@ -538,8 +538,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             try {
                 rt = new RenderTarget2D(gd, entry.SnapWidth, entry.SnapHeight, false
                     , SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            }
-            catch {
+            } catch {
                 return null;
             }
             SnapRTs[entry.NpcIndex] = rt;

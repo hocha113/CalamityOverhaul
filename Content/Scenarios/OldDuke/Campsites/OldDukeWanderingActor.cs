@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.Actors;
-using InnoVault.PRT;
+﻿using InnoVault.Actors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;

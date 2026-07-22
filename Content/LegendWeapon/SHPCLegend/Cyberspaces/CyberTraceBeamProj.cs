@@ -447,7 +447,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 orbShader.Parameters["auraColor"]?.SetValue(orbAura.ToVector3());
                 orbShader.Parameters["orbScale"]?.SetValue(pulse);
                 orbShader.Parameters["uNoiseTex"]?.SetValue(noise);
-                    orbShader.Parameters["overdriveAmount"]?.SetValue(od);
+                orbShader.Parameters["overdriveAmount"]?.SetValue(od);
                 orbShader.Parameters["glitchBurst"]?.SetValue(glitchBurstIntensity);
                 orbShader.Parameters["odCoreColor"]?.SetValue(OverdriveTheme.CoreVec);
                 orbShader.Parameters["odGlowColor"]?.SetValue(OverdriveTheme.GlowVec);

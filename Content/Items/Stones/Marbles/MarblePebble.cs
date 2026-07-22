@@ -158,7 +158,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                         , GraniteMarbleVFX.MarbleGold, 0.5f)?.Configure(GraniteMarbleVFX.MarbleGold, 14, 0.25f, Main.rand.NextFloat(0.5f, 0.85f));
                 }
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                    Pitch = -0.2f - heat * 0.15f + Main.rand.NextFloat(0.06f), Volume = 0.55f + 0.3f * heat
+                    Pitch = -0.2f - heat * 0.15f + Main.rand.NextFloat(0.06f),
+                    Volume = 0.55f + 0.3f * heat
                 }, impact);
                 SoundEngine.PlaySound(SoundID.Dig with { Pitch = -0.3f, Volume = 0.5f }, impact);
                 //约2400+血才震屏

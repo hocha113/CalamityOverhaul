@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
                 RazorTailWiden = 0.85f,
                 Palette = OFR.BladePalette.Escalate(0.55f),
             };
-            
+
             //黄金角均布+抖动
             const float GoldenAngle = 2.39996323f;
             for (int i = 0; i < TongueCount; i++) {

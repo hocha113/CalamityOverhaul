@@ -1,4 +1,4 @@
-using InnoVault.Trails;
+﻿using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Content.Projectiles
                     TrailPoints.RemoveFirst();
                 }
 
-                    if (Timer % Math.Max(1, Projectile.MaxUpdates / 2) == 0) {
+                if (Timer % Math.Max(1, Projectile.MaxUpdates / 2) == 0) {
                     MainTrail.BasePositions = TrailPoints.ToArray();
                     if (MainTrail.BasePositions.Length > 2) {
                         MainTrail.RandomThunder();

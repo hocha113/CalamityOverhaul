@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -70,7 +70,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             PRTLoader.NewParticle<PRT_DWave>(pos, Vector2.Zero, Color.Lerp(HueColor(hueT), Abyss, 0.45f), 0.06f)
                 ?.Configure(Vector2.One, Main.rand.NextFloat(MathHelper.TwoPi), 0.16f, 12);
             SoundEngine.PlaySound(SoundID.Drip with {
-                Volume = 0.18f, Pitch = 0.35f + Main.rand.NextFloat(0.2f), MaxInstances = 3
+                Volume = 0.18f,
+                Pitch = 0.35f + Main.rand.NextFloat(0.2f),
+                MaxInstances = 3
             }, pos);
         }
 

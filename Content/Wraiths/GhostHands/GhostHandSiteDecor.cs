@@ -1,9 +1,8 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Wraiths.Core;
 using CalamityOverhaul.Content.Wraiths.Runtime;
 using InnoVault.Actors;
 using InnoVault.PRT;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;

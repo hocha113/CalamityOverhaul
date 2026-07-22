@@ -97,10 +97,10 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 }
             }
 
-                DrawPosition.X = MathHelper.Clamp(DrawPosition.X, PanelWidth / 2 + 10, Main.screenWidth - PanelWidth / 2 - 10);
+            DrawPosition.X = MathHelper.Clamp(DrawPosition.X, PanelWidth / 2 + 10, Main.screenWidth - PanelWidth / 2 - 10);
             DrawPosition.Y = MathHelper.Clamp(DrawPosition.Y, PanelHeight / 2 + 10, Main.screenHeight - PanelHeight / 2 - 10);
 
-                shaderTime += 0.016f;
+            shaderTime += 0.016f;
             heatPulse += 0.018f;
             powerFlowTimer += 0.06f;
             sparkTimer += 0.095f;
@@ -109,21 +109,21 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             if (powerFlowTimer > MathHelper.TwoPi) powerFlowTimer -= MathHelper.TwoPi;
             if (sparkTimer > MathHelper.TwoPi) sparkTimer -= MathHelper.TwoPi;
 
-                targetAlpha = IsActive ? 1f : 0f;
+            targetAlpha = IsActive ? 1f : 0f;
             uiFadeAlpha = MathHelper.Lerp(uiFadeAlpha, targetAlpha, 0.15f);
 
             if (uiFadeAlpha < 0.01f && !IsActive) {
                 return;
             }
 
-                Vector2 topLeft = DrawPosition - new Vector2(PanelWidth / 2, PanelHeight / 2);
+            Vector2 topLeft = DrawPosition - new Vector2(PanelWidth / 2, PanelHeight / 2);
             panelRect = new Rectangle((int)topLeft.X, (int)topLeft.Y, (int)PanelWidth, (int)PanelHeight);
 
-                fuelSlotRect = new Rectangle((int)(topLeft.X + 45), (int)(topLeft.Y + 90), 90, 90);
+            fuelSlotRect = new Rectangle((int)(topLeft.X + 45), (int)(topLeft.Y + 90), 90, 90);
             temperatureBarRect = new Rectangle((int)(topLeft.X + 180), (int)(topLeft.Y + 70), 45, 190);
             powerBarRect = new Rectangle((int)(topLeft.X + 355), (int)(topLeft.Y + 70), 45, 190);
 
-                hoveringFuelSlot = fuelSlotRect.Contains(MouseHitBox);
+            hoveringFuelSlot = fuelSlotRect.Contains(MouseHitBox);
             hoveringTempBar = temperatureBarRect.Contains(MouseHitBox);
             hoveringPowerBar = powerBarRect.Contains(MouseHitBox);
             hoverInMainPage = panelRect.Contains(MouseHitBox);
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 }
             }
 
-                if (hoveringFuelSlot && !isDragging && ThermalData != null) {
+            if (hoveringFuelSlot && !isDragging && ThermalData != null) {
                 if (!ThermalData.FuelItem.IsAir) {
                     Main.HoverItem = ThermalData.FuelItem.Clone();
                     Main.hoverItemName = ThermalData.FuelItem.Name;
@@ -157,7 +157,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 }
             }
 
-                UpdateParticles();
+            UpdateParticles();
         }
 
         private void UpdateParticles() {

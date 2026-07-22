@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.Wraiths.Core;
 using CalamityOverhaul.Content.Wraiths.Runtime;
 using CalamityOverhaul.Content.Wraiths.Runtime.Behaviors;
 using InnoVault.PRT;
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using Terraria;

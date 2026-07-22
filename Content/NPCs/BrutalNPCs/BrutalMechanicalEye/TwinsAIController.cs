@@ -32,13 +32,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
         #region 常量与枚举
 
-                private enum PrimaryAIState
+        private enum PrimaryAIState
         {
-                        Initialization = 0,
-                        Debut = 1,
-                        Battle = 2,
-                        EnragedBattle = 3,
-                        Flee = 4
+            Initialization = 0,
+            Debut = 1,
+            Battle = 2,
+            EnragedBattle = 3,
+            Flee = 4
         }
 
         /// <summary>死亡演出血量阈值，同毁灭者</summary>
@@ -56,11 +56,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
         public override int TargetID => NPCID.Spazmatism;
 
-                protected VaultStateMachine<TwinsStateContext> stateMachine;
+        protected VaultStateMachine<TwinsStateContext> stateMachine;
 
-                protected TwinsStateContext stateContext;
+        protected TwinsStateContext stateContext;
 
-                protected Player player;
+        protected Player player;
 
         public static Color TextColor1 => new(155, 215, 215);
         public static Color TextColor2 => new(200, 54, 91);

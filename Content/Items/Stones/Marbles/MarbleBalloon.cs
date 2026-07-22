@@ -164,10 +164,14 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             if (!VaultUtils.isServer) {
                 //砸击分层音
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                    Volume = 0.7f + growth * 0.4f, Pitch = -0.35f - growth * 0.3f, MaxInstances = 3
+                    Volume = 0.7f + growth * 0.4f,
+                    Pitch = -0.35f - growth * 0.3f,
+                    MaxInstances = 3
                 }, feet);
                 SoundEngine.PlaySound(SoundID.Tink with {
-                    Volume = 0.35f + growth * 0.2f, Pitch = 0.1f - growth * 0.4f, MaxInstances = 3
+                    Volume = 0.35f + growth * 0.2f,
+                    Pitch = 0.1f - growth * 0.4f,
+                    MaxInstances = 3
                 }, feet);
                 if (growth > 0.6f) {
                     SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.5f, Pitch = -0.7f, MaxInstances = 2 }, feet);

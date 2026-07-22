@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -55,10 +55,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
         /// <summary>落棺钟鸣，depth 0..1 沉度</summary>
         public static void BellToll(Vector2 pos, float depth, float volume = 0.85f) {
             SoundEngine.PlaySound(SoundID.Item35 with {
-                Pitch = -0.45f - 0.45f * depth, Volume = volume, MaxInstances = 3
+                Pitch = -0.45f - 0.45f * depth,
+                Volume = volume,
+                MaxInstances = 3
             }, pos);
             SoundEngine.PlaySound(SoundID.Dig with {
-                Pitch = -0.75f, Volume = volume * 0.5f, MaxInstances = 3
+                Pitch = -0.75f,
+                Volume = volume * 0.5f,
+                MaxInstances = 3
             }, pos);
         }
 

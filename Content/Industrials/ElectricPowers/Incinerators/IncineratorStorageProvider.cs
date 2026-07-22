@@ -1,4 +1,4 @@
-using InnoVault.Storages;
+﻿using InnoVault.Storages;
 using InnoVault.TileProcessors;
 using System;
 using System.Collections.Generic;
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                     return false;
                 }
 
-                    if (incData.InputItem == null || incData.InputItem.IsAir) {
+                if (incData.InputItem == null || incData.InputItem.IsAir) {
                     return true;
                 }
 
@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                 return false;
             }
 
-                if (incData.InputItem == null || incData.InputItem.IsAir) {
+            if (incData.InputItem == null || incData.InputItem.IsAir) {
                 return true;
             }
 

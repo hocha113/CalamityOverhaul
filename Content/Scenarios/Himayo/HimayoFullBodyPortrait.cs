@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Narrative;
+﻿using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Presentation;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

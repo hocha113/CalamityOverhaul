@@ -443,18 +443,18 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Texture2D noise = CWRAsset.Extra_193.Value;
             if (canvas == null || noise == null) return;
 
-            
+
             float drawRadius = currentRadius * 1.2f;
             float drawDiameter = drawRadius * 2f;
 
-            
+
             shader.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.016f);
             shader.Parameters["fadeAlpha"]?.SetValue(intensity);
             shader.Parameters["tierLevel"]?.SetValue(3f); //R技能始终满级法阵
             shader.Parameters["expandProgress"]?.SetValue(MathHelper.Clamp(intensity, 0f, 1f));
             shader.Parameters["pulseIntensity"]?.SetValue(0.7f + (float)Math.Sin(Timer * 0.1f) * 0.3f);
 
-            
+
             shader.Parameters["coreColor"]?.SetValue(new Vector3(1f, 0.35f, 0.18f));
             shader.Parameters["midColor"]?.SetValue(new Vector3(0.85f, 0.22f, 0.13f));
             shader.Parameters["edgeColor"]?.SetValue(new Vector3(0.55f, 0.14f, 0.09f));
