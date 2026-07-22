@@ -22,22 +22,10 @@ namespace CalamityOverhaul.Content
     {
         #region Data
         public override bool InstancePerEntity => true;
-        /// <summary>瘟疫命中锚点</summary>
-        public Player CreateHitPlayer;
-        /// <summary>瘟疫攻击计数</summary>
-        public byte ContagionOnHitNum = 0;
-        /// <summary>磷光拳套攻击计数</summary>
-        public byte PhosphorescentGauntletHitCount = 0;
-        /// <summary>鞭子击中次数</summary>
-        public byte WhipHitNum = 0;
-        /// <summary>鞭子击中类型</summary>
-        public byte WhipHitType = 0;
         /// <summary>&gt;0 冻结活动</summary>
         public int TimeFrozenTick;
         /// <summary>朗基努斯目标标记</summary>
         public bool LonginusSign;
-        /// <summary>上一帧位置</summary>
-        public Vector2 OldNPCPos;
         /// <summary>极寒神性屏障</summary>
         public bool IceParclose;
         /// <summary>地狱炎爆</summary>
@@ -54,9 +42,6 @@ namespace CalamityOverhaul.Content
 
         public override GlobalNPC Clone(NPC from, NPC to) => CloneCWRNpc((CWRNpc)base.Clone(from, to));
         public CWRNpc CloneCWRNpc(CWRNpc cwr) {
-            cwr.CreateHitPlayer = CreateHitPlayer;
-            cwr.ContagionOnHitNum = ContagionOnHitNum;
-            cwr.PhosphorescentGauntletHitCount = PhosphorescentGauntletHitCount;
             cwr.LonginusSign = LonginusSign;
             cwr.IceParclose = IceParclose;
             return cwr;
