@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights;
+using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -16,7 +17,7 @@ using OKF = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps.On
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 {
     /// <summary>神威疾走主控. ai[0]=瞄准角(弧度) ai[1]=冲刺距离(px) ai[2]=尺寸倍率</summary>
-    internal class OniFlashStep : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable, IOverlayDrawable, IOniBladeOccupant
+    internal class OniFlashStep : BaseHeldProj, IPrimitiveDrawable, IAdditiveDrawable, IOverlayDrawable, IOniBladeOccupant
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
@@ -101,7 +102,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         bool IOniBladeOccupant.ReservesBlade => stopFrame >= 0
             && timer <= (marked.Count == 0 ? stopFrame + WhiffReserveFrames : JudgmentFrame + NotoFlickFrames);
 
-        private Player Owner => Main.player[Projectile.owner];
         private float DashAngle => Projectile.ai[0];
         private float Distance => Projectile.ai[1] > 60f ? Projectile.ai[1] : 900f;
 
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         private Vector2 GetCenter() => Owner.Center + dashDir * headOffset;
 
-        private void Initialize() {
+        public override void Initialize() {
             initialized = true;
             dashDir = DashAngle.ToRotationVector2();
             sizeMul = Projectile.ai[2] > 0.05f ? Projectile.ai[2] : 1f;
@@ -255,15 +255,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             if (!analogStop) {
                 //方向键微转向、按住的方向把墨绸小幅掰弯（首帧保持出手直线，转向随控制位同步各端）
 
-                if (timer > 1) {
-                    int h = (Owner.controlRight ? 1 : 0) - (Owner.controlLeft ? 1 : 0);
-                    int v = (Owner.controlDown ? 1 : 0) - (Owner.controlUp ? 1 : 0);
-                    if (h != 0 || v != 0) {
-                        float delta = MathHelper.WrapAngle(new Vector2(h, v).ToRotation() - dashDir.ToRotation());
-                        dashDir = (dashDir.ToRotation() + MathHelper.Clamp(delta, -SteerRate, SteerRate))
-                            .ToRotationVector2();
-                    }
-                }
+                //if (timer > 1) {
+                //    int h = (Owner.controlRight ? 1 : 0) - (Owner.controlLeft ? 1 : 0);
+                //    int v = (Owner.controlDown ? 1 : 0) - (Owner.controlUp ? 1 : 0);
+                //    if (h != 0 || v != 0) {
+                //        float delta = MathHelper.WrapAngle(new Vector2(h, v).ToRotation() - dashDir.ToRotation());
+                //        dashDir = (dashDir.ToRotation() + MathHelper.Clamp(delta, -SteerRate, SteerRate))
+                //            .ToRotationVector2();
+                //    }
+                //}
 
                 float speed = DashSpeedRamp[Math.Min(timer - 1, DashSpeedRamp.Length - 1)];
                 float stepLen = MathF.Min(speed, Distance - traveled);
