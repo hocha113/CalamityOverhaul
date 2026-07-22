@@ -2577,13 +2577,3 @@ WraithDebugTool: {
 	RegisterLine: "{0}：{1}，驾驭 {2}，续签 {3}，遭遇 {4}"
 	RegisterEmpty: 随身没有载体
 }
-
-CharredLock: {
-	DisplayName: 焦黑的长命锁
-	Tooltip:
-		'''
-		银的，烧黑了，锁梁上有五道指痕
-		锁得住命，锁不住火
-		"递过去。或者，放在它面前。"
-		'''
-}

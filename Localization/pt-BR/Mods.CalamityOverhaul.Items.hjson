@@ -2525,13 +2525,3 @@ WraithDebugTool: {
 	// RegisterLine: "{0}: {1}, mastery {2}, renewed {3}, encounters {4}"
 	// RegisterEmpty: No vessel on your person
 }
-
-CharredLock: {
-	// DisplayName: Charred Longevity Lock
-	/* Tooltip:
-		'''
-		Silver, burned black; five finger-marks scored into the shackle
-		It could lock a life in place, but not the fire
-		"Hold it out. Or set it down before the hand."
-		''' */
-}

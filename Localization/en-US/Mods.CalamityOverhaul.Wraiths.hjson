@@ -35,26 +35,9 @@ HeadlessShade: {
 
 GhostHand: {
 	DisplayName: The Charred Hand
-	Origin:
-		'''
-		The night the old shaft caught fire, he forced his arm into the crack in the rock —
-		on the far side, his child's longevity lock lay just beyond his fingertips.
-		The fire climbed his back; to the very end, his five fingers never closed.
-		Miners say the scratching in the walls has only gone deeper, year after year.
-		It has long forgotten what it was reaching for. It remembers one thing: never go back empty-handed.
-		'''
-	Power: 「Grip」A withered hand reaches out from behind the target; five fingers close, and what they clutch cannot move. It grasps on your behalf — but remember its law: the hand must never return empty.
+	Origin: A charred, withered, horrifying arm
+	Power: 「Grip」Seized targets are suppressed and their movement is restricted
 	DeathReason: "{0} was dragged into the wall"
-	Rumor1: The old shafts below the rock layer aren't clean. Some hear scratching in the walls — one stroke, then another, like it's counting your steps.
-	Rumor2: The old miners say: if that hand crawls out, keep your eyes on it. While you watch, it dares not move. The moment you look away, it crawls.
-	Rumor3: Don't let the hand in the wall touch you. Everyone it seized went into the wall, and not one came back.
-	Rumor4: Fire scalds it into letting go. But in a single encounter, fire will only save you once.
-	Rumor5: It has clawed through the ash for decades, as if searching. The thing it failed to grasp on the day of the collapse may still lie buried in the ash beneath the fissure.
-	ScorchRelease: It lets go — the charred fingers curl back from the flame
-	ScorchSpent: Its flesh hisses against the fire. This time, it does not let go
-	GraspTooFar: Too far — its hand cannot reach
-	TabooEcho: It came back empty-handed — five scorched gouges rake across the register page
-	LockUnearthed: Something turns up out of the ash
 }
 
 WellThing: {
