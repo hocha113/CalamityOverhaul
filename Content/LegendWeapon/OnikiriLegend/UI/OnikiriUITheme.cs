@@ -87,8 +87,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public const float MeiFanGlyphSize = 44f;
         /// <summary>扇面全张角(弧度)</summary>
         public const float MeiFanSpread = 1.55f;
-        /// <summary>烙印木牌尺寸</summary>
-        public static readonly Vector2 MeiTagSize = new(380f, 196f);
+        /// <summary>烙印木牌尺寸(赋效/代价双栏后加高)</summary>
+        public static readonly Vector2 MeiTagSize = new(380f, 236f);
         /// <summary>右缘竖排大字中轴 X 占屏比</summary>
         public const float MeiNameColXRatio = 0.905f;
         /// <summary>竖排大字字号</summary>

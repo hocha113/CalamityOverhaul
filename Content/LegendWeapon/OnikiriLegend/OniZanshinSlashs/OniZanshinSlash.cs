@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -84,6 +85,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
         private int timer;
         private bool resourceGranted;
         private bool hitVfxBurst;
+        /// <summary>髭切断首:本刀的击杀返势已结算(每次招式至多一次)</summary>
+        private bool executeRefunded;
         private int facing = 1;
         /// <summary>反拔起手刀角:优先继承交接黑板(纳刀位),无交接退回反手预备位</summary>
         private float drawStartRot;
@@ -337,6 +340,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             if (CWRLoad.ExoMechAresSegments.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.45f;
             }
+            //髭切「断首」:斩杀线内随已损生命递增的终结倍率(owner 端结算,随命中包同步)
+            if (OniMeiCombat.TryGetExecuteBonus(Owner, target, out float executeMul)) {
+                modifiers.FinalDamage *= executeMul;
+            }
             float offsetX = Projectile.To(target.Center).X;
             modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
                 ? Math.Sign(offsetX)
@@ -427,6 +434,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
                 bool grantResources = !resourceGranted;
                 resourceGranted = true;
                 Owner.GetModPlayer<OnikiriPlayer>().OnZanshinHit(target, grantResources);
+                //髭切断首:入线命中画断线,了结返势(每刀一次)
+                OniMeiCombat.OnExecuteStrikeHit(Owner, target, CutAngle, ref executeRefunded);
             }
 
             if (Main.dedServ) {

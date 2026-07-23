@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -48,6 +49,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         private bool initialized;
         private bool hitVfxBurst;
         private int timer;
+        /// <summary>髭切断首:本闪的击杀返势已结算(每次招式至多一次)</summary>
+        private bool executeRefunded;
 
         //罡气舌,出生帧定死不追人
         private readonly float[] tongueAngle = new float[TongueCount];
@@ -271,6 +274,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             if (CWRLoad.ExoMechAresSegments.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.4f;
             }
+            //髭切「断首」:斩杀线内随已损生命递增的终结倍率(owner 端结算,随命中包同步)
+            if (OniMeiCombat.TryGetExecuteBonus(Owner, target, out float executeMul)) {
+                modifiers.FinalDamage *= executeMul;
+            }
             float offsetX = Projectile.To(target.Center).X;
             modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
                 ? Math.Sign(offsetX)
@@ -356,6 +363,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             SoundEngine.PlaySound(CWRSound.KatanaHit with { Pitch = 0.15f, Volume = 1.2f }, target.Center);
+
+            //髭切断首:入线命中画断线,了结返势(每闪一次)
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                OniMeiCombat.OnExecuteStrikeHit(Owner, target, CutAngle, ref executeRefunded);
+            }
 
             if (Main.dedServ) {
                 return;

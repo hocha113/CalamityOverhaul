@@ -16,7 +16,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
     /// <summary>
     /// 铭文静态定义，运行期不可变；子类即注册（<see cref="OniMeiRegistry"/> 反射扫描）。<br/>
-    /// 表现层占位：仅名讳/文案/字形/铭位，效果字段待效果层再补；Key 从此稳定，改名即断档
+    /// 效果经 <see cref="ModifyCombatProfile"/> 汇入 <see cref="OniMeiCombatProfile"/>，
+    /// 原铭「鬼切」不覆写=严格基准；Key 从此稳定，改名即断档
     /// </summary>
     public abstract class OniMeiDefinition : ILocalizedModType
     {
@@ -40,13 +41,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public LocalizedText DisplayName { get; private set; }
         /// <summary>来历残句</summary>
         public LocalizedText Origin { get; private set; }
-        /// <summary>赋效文案（表现层仅展示）</summary>
+        /// <summary>赋效文案（真实机制说明）</summary>
         public LocalizedText Power { get; private set; }
+        /// <summary>代价文案（真实负担说明，原铭无代价="———"）</summary>
+        public LocalizedText Burden { get; private set; }
+        /// <summary>物品悬浮短摘要（赋效;代价）</summary>
+        public LocalizedText Summary { get; private set; }
 
         internal void LoadLocalization() {
             DisplayName = this.GetLocalization("DisplayName", () => "???");
             Origin = this.GetLocalization("Origin", () => "...");
             Power = this.GetLocalization("Power", () => "...");
+            Burden = this.GetLocalization("Burden", () => "———");
+            Summary = this.GetLocalization("Summary", () => "...");
         }
+
+        //====效果====
+        /// <summary>
+        /// 汇入三槽合成战斗档（<see cref="OniMeiCombat.Resolve"/> 逐槽调用）。<br/>
+        /// 倍率一律"叠乘/累加"，禁止直接赋值覆盖其他槽；原铭「鬼切」与空铭不覆写
+        /// </summary>
+        public virtual void ModifyCombatProfile(ref OniMeiCombatProfile profile) { }
     }
 }

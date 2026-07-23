@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -109,6 +110,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private bool hasHandoff;
         private float sizeMul = 1f;
         private float curAim;
+        //====铭刻(每拍从持有物品重解析,档随物品同步,各端一致)====
+        private OniMeiCombatProfile meiProfile = OniMeiCombatProfile.Identity;
+        /// <summary>狮势链:连续未被打断的拍数,第五拍吼开;打断/让位归零</summary>
+        private int meiLionChain;
         private int lastImpactFrame = -999;
         private Vector2 lastImpactPos;
         private float lastImpactAim;
@@ -269,6 +274,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return false;
         }
 
+        /// <summary>不动护窗口:后两重拍(蓄势/终结)的活刀光尚在伤害窗附近</summary>
+        internal bool InCommittedBeats {
+            get {
+                for (int i = 0; i < actives.Count; i++) {
+                    ActiveSlash a = actives[i];
+                    if (a.FrozenCenter != null || a.Beat < 3) {
+                        continue;
+                    }
+                    if (timer - a.Birth <= a.Def.DamageEnd + 6) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
         /// <summary>实体刀当前姿态(肢解居合继承用);不可见返回 false</summary>
         internal bool TryGetBladePose(out float rotation, out int facing) {
             rotation = bladeRotation;
@@ -315,8 +336,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             lastImpactFrame = -999;
             Projectile.friendly = false;
             FreezeSlashVisuals(FlashStepInterruptFadeFrames);
+            //铭刻:疾走取消=狮势打断(金粉散落);友切在原刀位留延迟斩影并积咎
+            if (meiLionChain > 1) {
+                OniMeiStrikes.SpawnLionScatter(Projectile.Center, sizeMul);
+            }
+            meiLionChain = 0;
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                TrySpawnGuiltEcho();
+            }
             Projectile.netUpdate = true;
             return true;
+        }
+
+        /// <summary>友切「咎影」:被疾走取消的那拍在原地留错位残像,滞拍后由断斩咬合(owner 端)</summary>
+        private void TrySpawnGuiltEcho() {
+            if (!OniMeiCombat.Resolve(Item).GuiltEcho) {
+                return;
+            }
+            //锚在最近活刀光;拍间空窗退回玩家中心+当前瞄准
+            Vector2 center;
+            float aim;
+            if (actives.Count > 0) {
+                ActiveSlash a = actives[^1];
+                center = CenterOf(a);
+                aim = a.Aim;
+            }
+            else {
+                center = Projectile.Center;
+                aim = curAim;
+            }
+            OniMeiStrikes.FireGuiltEcho(Owner, center, aim, Projectile.damage, Projectile.knockBack, sizeMul);
+            Owner.GetModPlayer<OnikiriPlayer>().OnGuiltEchoSpawned();
         }
 
         /// <summary>残心接管本次左键,清掉普攻补发</summary>
@@ -324,6 +374,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             pressBuffer = 0;
             scheduling = false;
             prevDownLeft = DownLeft;
+            //残心属特殊技打断,狮势链归零
+            meiLionChain = 0;
         }
 
         /// <summary>刀柄方向支点(解算朝向);绘制锚用 <see cref="bladeHandWorld"/>,拆开斩断手↔臂依赖环</summary>
@@ -409,13 +461,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>刀权仲裁,主人有硬占刀权技能时停排/冻结刀光速褪/实体刀交权</summary>
+        /// <summary>刀权仲裁,主人有硬占刀权技能时停排/冻结刀光速褪/实体刀交权;狮势链随让位归零</summary>
         private void UpdateYield() {
             bool hard = OniBladeOccupancy.AnyHardOccupant(Owner);
             if (hard && !yielding) {
                 scheduling = false;
                 bladeOpacity = 0f;
                 FreezeSlashVisuals(YieldFadeFrames);
+                if (meiLionChain > 1) {
+                    OniMeiStrikes.SpawnLionScatter(Projectile.Center, sizeMul);
+                }
+                meiLionChain = 0;
             }
             yielding = hard;
         }
@@ -492,10 +548,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>开火一拍,冻结鼠标方向,按攻速排下一拍并缩放命中冷却</summary>
+        /// <summary>开火一拍,冻结鼠标方向,按攻速排下一拍并缩放命中冷却;铭刻档每拍重解析</summary>
         private void FireBeat() {
             hasHandoff = false;   //交接前摇已兑现
             pressBuffer = 0;      //缓冲点击已兑现
+            meiProfile = OniMeiCombat.Resolve(Item);
             float aim = ToMouse.LengthSquared() > 1f ? ToMouseA : Projectile.ai[0];
             curAim = aim;
             float cos = MathF.Cos(aim);
@@ -516,7 +573,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             Projectile.localNPCHitCooldown = Math.Max(5, (int)(BaseHitCooldown * speedFactor));
             comboIndex = (comboIndex + 1) % BeatCount;
             lastBeatFire = timer;
-            nextBeatTime = timer + Math.Max(4, (int)MathF.Round(BeatGap[beat] * speedFactor));
+            nextBeatTime = timer + Math.Max(4
+                , (int)MathF.Round(BeatGap[beat] * speedFactor * meiProfile.ComboGapMul));
+
+            UpdateMeiOnBeatFired(beat, aim);
+        }
+
+        /// <summary>
+        /// 铭刻逐拍推进:狮势链全客户端按拍序确定性蓄势(档随物品同步),
+        /// 副斩仅 owner 生成;龙火窗口态在 owner 的 ModPlayer 上
+        /// </summary>
+        private void UpdateMeiOnBeatFired(int beat, float aim) {
+            if (meiProfile.LionRoar) {
+                meiLionChain = beat == 0 ? 1 : beat == meiLionChain ? meiLionChain + 1 : 0;
+                if (meiLionChain > 1) {
+                    OniMeiStrikes.SpawnLionBuildup(Projectile.Center, aim, sizeMul, meiLionChain);
+                }
+                if (meiLionChain >= BeatCount) {
+                    meiLionChain = 0;
+                    if (Projectile.IsOwnedByLocalPlayer()) {
+                        OniMeiStrikes.FireLionJaw(Owner, Projectile.Center, aim, Projectile.damage
+                            , Projectile.knockBack, sizeMul);
+                    }
+                }
+            }
+            else {
+                meiLionChain = 0;
+            }
+
+            if (meiProfile.DragonfireLoop && Projectile.IsOwnedByLocalPlayer()) {
+                OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
+                if (beat == BeatCount - 1 && okp.TryConsumeKurikara()) {
+                    OniMeiStrikes.FireKurikaraLoop(Owner, Projectile.Center, aim, Projectile.damage
+                        , Projectile.knockBack, sizeMul);
+                }
+                else if (okp.KurikaraWindow > 0) {
+                    //窗口内前四拍:刀侧火鞘火星(owner 可见,窗口态不进网络)
+                    OniMeiStrikes.SpawnDragonfireBeatFlame(Owner, aim, sizeMul);
+                }
+            }
         }
 
         /// <summary>实体刀姿态时间轴(纯视觉),起手→扫掠→拍间换向→松手收刀;深度驱动远近景</summary>

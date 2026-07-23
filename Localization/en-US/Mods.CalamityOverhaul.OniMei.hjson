@@ -1,47 +1,63 @@
 MeiHigekiri: {
 	DisplayName: Higekiri
 	Origin: The night of the test cut, the head fell with the beard still clinging to the edge — hence the old name
-	Power: Beard-Cutter: the execution threshold rises, and overflowing killing intent passes along the edge to the next slash
+	Power: Beard-Cutter: Zanshin and the World-Razing Flash deal escalating finisher damage to targets below 35% life (up to +50%, +25% vs bosses); finishing a target with either art refunds 10 stance, once per strike
+	Burden: Weapon damage -10% — against the healthy, this blade bites duller than the original name
+	Summary: Stronger finishers on low-life targets, kills refund stance; weapon damage -10%
 }
 
 MeiOnikiri: {
 	DisplayName: Onikiri
 	Origin: At Ichijo-Modoribashi, the oni that lost its arm never dared come back for it. The name has been nailed to the tang ever since
-	Power: Demon-Cutter: the edge bites three parts deeper into demons and things of the Inner World
+	Power: The original inscription. The blade stays exactly as it is — nothing granted, nothing taken
+	Burden: ———
+	Summary: Original inscription: keeps the blade as-is, no boon, no price
 }
 
 MeiShishinoko: {
 	DisplayName: Shishi-no-ko
 	Origin: Left by the pillow at midnight, the blade roared like a lion. Inlaid in gold, to honor the name
-	Power: Lion's Roar: slashes swell louder and wider, and each hit builds stance
+	Power: Lion's Roar: complete five combo beats without dash or art interruption and the fifth beat roars — two converging jaw-waves (about 40% of a slash in total)
+	Burden: Combo beat interval +10% — a roar must be drawn in before it is let out
+	Summary: Jaw-waves crown a full five-beat combo; combo 10% slower
 }
 
 MeiTomokiri: {
 	DisplayName: Tomokiri
 	Origin: Crossed with a friendly blade in trial, it cut the friend in two. A name of blame, chiseled into the tang; the sword has run violent since
-	Power: Friend-Cutter: damage soars, and so does the vigor it devours — an ill name, engrave with care
+	Power: Friend-Cutter: cancelling a combo with the Kamui flash step leaves a delayed phantom slash (about 35% power) that bites shut after a beat
+	Burden: Damage taken +10% while held; each phantom adds a layer of Guilt (max 3), each making the next flash step cost 6 more vigor — repaid on a Zanshin hit
+	Summary: Dash-cancels leave phantom slashes; +10% damage taken, Guilt taxes dashes
 }
 
 MeiKazehi: {
 	DisplayName: Kaze-hi
 	Origin: A groove opened like a wind channel; where the blade passes, only wind is heard, no blade is seen
-	Power: Wind-Rider: the blade grows lighter — faster swings, cheaper footwork
+	Power: Wind-Rider: flash step vigor cost -25%, sakura flight drain -30%
+	Burden: Flash mark damage -25% — the groove was cut for lightness, not slaughter
+	Summary: Cheaper footwork and flight; flash mark damage -25%
 }
 
 MeiChihi: {
 	DisplayName: Chi-hi
 	Origin: This groove is not for lightness, but for letting blood — so said the one who opened the edge
-	Power: Bloodletting: wounds refuse to close, and crimson scars linger longer
+	Power: Bloodletting: the first combo hit of each beat restores +2 extra vigor, a Zanshin hit restores +8
+	Burden: Natural vigor regen halved, regen delay +0.4s after spending — no blood on the edge, no breath returned
+	Summary: Stronger on-hit vigor; natural regen halved
 }
 
 MeiFudo: {
 	DisplayName: Fudo
 	Origin: Carved in the brushwork of the seed syllable Kan — the Immovable One sits by the edge, flames at his back
-	Power: Immovable: the body stands like bedrock mid-slash; stance cannot be struck away
+	Power: Immovable: when struck during heavy combo beats, Zanshin or executions, spend 20 stance to cut that blow's damage by 40% and ignore its knockback (about 2s cooldown); the dismemberment backlash is never shielded
+	Burden: Stance gain -20% — the guarding strength is skimmed from your build-up
+	Summary: Spend stance to stand through committed strikes; stance gain -20%
 }
 
 MeiKurikara: {
 	DisplayName: Kurikara
 	Origin: The dragon coils about the sword and would swallow it — an old horimono subject, its scales inlaid in gold
-	Power: Dragon-Coil: in the Inner World the edge burns fiercer, and every slash trails coiling dragon-script
+	Power: Dragon-Coil: after the World-Razing Flash or the Finale, the carving ignites; finish a five-beat combo within ten seconds and the fifth beat looses a coiling dragonfire slash (about 40% power)
+	Burden: Vigor cap 100 → 80 — where the dragon coils, breath cannot pass
+	Summary: Executions ignite a dragonfire follow-up combo; vigor cap -20
 }

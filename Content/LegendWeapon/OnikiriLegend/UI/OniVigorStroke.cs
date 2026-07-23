@@ -29,6 +29,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private OniVigorSnapshot snap;
         private Vector2 quadTopLeft;
         private Vector2 lastMouse;
+        //====铭刻读数(纯展示)====
+        //上限占比:倶利伽罗压缩后墨脉末段留焦黑断口
+        private float capRatio = 1f;
+        //友切咎层:笔道尾部的错位缺口数
+        private int guiltLayers;
 
         /// <summary>本帧悬浮在笔道核心带上(纯读数,不捕获点击)</summary>
         public bool Hovering { get; private set; }
@@ -55,6 +60,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             quadTopLeft = anchor + OnikiriUITheme.HudVigorOffset;
             lastMouse = mouse;
             snap = OniVigor.Get(player);
+            capRatio = snap.CapRatio <= 0f ? 1f : snap.CapRatio;
+            //咎层直读本地 ModPlayer(纯展示,本地 HUD 不进网络)
+            guiltLayers = player != null && player.TryGetModPlayer(out OnikiriPlayer okp)
+                ? okp.GuiltLayers : 0;
             float newTarget = snap.Ratio;
             if (targetFill < 0f) {
                 targetFill = displayFill = trailFill = newTarget;
@@ -125,13 +134,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //拒绝反馈:干笔横向一颤(只抖墨痕,朱印与墨丝按住不动)
             float denyShake = denyPulse > 0.02f ? MathF.Sin(time * 43f) * 2.2f * denyPulse : 0f;
 
-            //墨痕主体:shader 缺席退回 CPU 简笔
+            //墨痕主体:shader 缺席退回 CPU 简笔;上限压缩时填充只写到断口
             Rectangle dest = new((int)(quadTopLeft.X + denyShake), (int)quadTopLeft.Y,
                 (int)OnikiriUITheme.HudVigorQuadW, (int)OnikiriUITheme.HudVigorQuadH);
             if (OniVigorInkDraw.Available) {
                 OniVigorInkDraw.Draw(sb, dest, new OniVigorInkParams {
-                    Fill = displayFill,
-                    TrailFill = trailFill,
+                    Fill = displayFill * capRatio,
+                    TrailFill = trailFill * capRatio,
                     Flow = flow,
                     SpendPulse = spendPulse,
                     GainPulse = gainPulse,
@@ -144,27 +153,86 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 DrawFallback(sb, alpha, denyShake);
             }
 
+            //倶利伽罗:上限压缩,末段一截不可书写的焦黑断口
+            if (capRatio < 0.995f) {
+                DrawCharredCap(sb, alpha, denyShake, time);
+            }
+            //友切:尾部 1~3 个错位缺口,残心命中偿清即消
+            if (guiltLayers > 0) {
+                DrawGuiltNotches(sb, alpha, denyShake);
+            }
+
             if (!suppressTag && hoverEase > 0.05f) {
                 DrawHoverTag(sb, alpha * hoverEase);
             }
         }
 
-        /// <summary>CPU 降级:上限底痕 + 残痕红线 + 已填充段一笔刀痕(sweep 即截断)</summary>
+        /// <summary>笔道基线两端(受 denyShake)</summary>
+        private (Vector2 start, Vector2 end) StrokeSpan(float shakeX) {
+            float y = quadTopLeft.Y + OnikiriUITheme.HudVigorQuadH * 0.5f;
+            return (new Vector2(quadTopLeft.X + shakeX + OnikiriUITheme.HudVigorPad, y),
+                new Vector2(quadTopLeft.X + shakeX + OnikiriUITheme.HudVigorQuadW - OnikiriUITheme.HudVigorPad, y));
+        }
+
+        /// <summary>焦黑断口:断口处一粒余烬呼吸,其后炭黑残段,不映射满长隐瞒代价</summary>
+        private void DrawCharredCap(SpriteBatch sb, float alpha, float shakeX, float time) {
+            (Vector2 s, Vector2 e) = StrokeSpan(shakeX);
+            Vector2 capPos = Vector2.Lerp(s, e, capRatio);
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Rectangle src = new(0, 0, 1, 1);
+            //炭黑残段:粗糙碎节而非整线
+            int chips = 4;
+            for (int i = 0; i < chips; i++) {
+                float t0 = (i + 0.12f) / chips;
+                float t1 = (i + 0.82f) / chips;
+                Vector2 a = Vector2.Lerp(capPos, e, t0);
+                Vector2 b = Vector2.Lerp(capPos, e, t1);
+                float wobble = ((i * 37 % 5) - 2) * 0.7f;
+                OniBrush.DrawGradientLine(sb, a + new Vector2(0f, wobble), b + new Vector2(0f, wobble),
+                    new Color(26, 13, 12) * (alpha * 0.9f), new Color(14, 7, 8) * (alpha * 0.75f), 2.4f);
+            }
+            //断口一粒余烬,低频呼吸
+            float breath = 0.55f + 0.25f * (float)Math.Sin(time * 2.6f);
+            sb.Draw(pixel, capPos, src, OnikiriUITheme.BurnDim * (alpha * breath),
+                MathHelper.PiOver4, new Vector2(0.5f), new Vector2(3.4f), SpriteEffects.None, 0f);
+            sb.Draw(pixel, capPos, src, OnikiriUITheme.BurnHot * (alpha * breath * 0.5f),
+                MathHelper.PiOver4, new Vector2(0.5f), new Vector2(1.7f), SpriteEffects.None, 0f);
+        }
+
+        /// <summary>咎缺口:可写段尾部的错位断栏(上下半各偏一侧),与友切字形的断口同语义</summary>
+        private void DrawGuiltNotches(SpriteBatch sb, float alpha, float shakeX) {
+            (Vector2 s, Vector2 e) = StrokeSpan(shakeX);
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Rectangle src = new(0, 0, 1, 1);
+            int count = Math.Min(guiltLayers, 3);
+            for (int i = 0; i < count; i++) {
+                Vector2 pos = Vector2.Lerp(s, e, capRatio * (0.72f + 0.10f * i));
+                //错位两半:黑缺口错开半格,当中留发丝
+                sb.Draw(pixel, pos + new Vector2(-1.4f, -3.4f), src, OnikiriUITheme.Ink * (alpha * 0.96f),
+                    0.10f, new Vector2(0.5f), new Vector2(3.4f, 5.2f), SpriteEffects.None, 0f);
+                sb.Draw(pixel, pos + new Vector2(1.4f, 3.4f), src, OnikiriUITheme.Ink * (alpha * 0.96f),
+                    0.10f, new Vector2(0.5f), new Vector2(3.4f, 5.2f), SpriteEffects.None, 0f);
+                sb.Draw(pixel, pos, src, OnikiriUITheme.Bright * (alpha * 0.5f),
+                    0.10f, new Vector2(0.5f), new Vector2(0.9f, 9f), SpriteEffects.None, 0f);
+            }
+        }
+
+        /// <summary>CPU 降级:上限底痕 + 残痕红线 + 已填充段一笔刀痕(sweep 即截断,同样只写到断口)</summary>
         private void DrawFallback(SpriteBatch sb, float alpha, float shakeX = 0f) {
             float y = quadTopLeft.Y + OnikiriUITheme.HudVigorQuadH * 0.5f;
             float x0 = quadTopLeft.X + shakeX + OnikiriUITheme.HudVigorPad;
             float x1 = quadTopLeft.X + shakeX + OnikiriUITheme.HudVigorQuadW - OnikiriUITheme.HudVigorPad;
             OniBrush.DrawGradientLine(sb, new Vector2(x0, y), new Vector2(x1, y),
                 OnikiriUITheme.TextDim * (alpha * 0.30f), OnikiriUITheme.TextDim * (alpha * 0.16f), 1.2f);
-            float fillX = MathHelper.Lerp(x0, x1, displayFill);
-            float trailX = MathHelper.Lerp(x0, x1, trailFill);
+            float fillX = MathHelper.Lerp(x0, x1, displayFill * capRatio);
+            float trailX = MathHelper.Lerp(x0, x1, trailFill * capRatio);
             if (trailX - fillX > 1.5f) {
                 OniBrush.DrawGradientLine(sb, new Vector2(fillX, y), new Vector2(trailX, y),
                     OnikiriUITheme.Bright * (alpha * 0.55f), OnikiriUITheme.Bright * (alpha * 0.10f), 2.2f);
             }
             if (displayFill > 0.01f) {
                 OniBrush.DrawTaperedSlash(sb, new Vector2(x0, y + 1f), new Vector2(x1, y - 1f),
-                    5.8f, 1.3f, alpha * 0.95f, displayFill);
+                    5.8f, 1.3f, alpha * 0.95f, displayFill * capRatio);
             }
         }
 

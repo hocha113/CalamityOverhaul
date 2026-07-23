@@ -566,6 +566,7 @@ OnikiriText: {
 		// EraseHint: File this inscription away — a mei can be cut again, but the blade forgets no scar
 		// OriginLabel: Provenance
 		// PowerLabel: Bestowal
+		// BurdenLabel: Price
 		// CurrentMark: Present
 		// GoldMark: Gold Inlay
 		// RegisterTabText: Ghost Register

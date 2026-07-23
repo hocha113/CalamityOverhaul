@@ -386,7 +386,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>细节木牌:漆木底+烙印文字打字机,金阶盖金签,除铭题绯红</summary>
         public static void DrawWoodTag(SpriteBatch sb, DynamicSpriteFont font, Rectangle rect,
-            string title, string kindLabel, string origin, string power, bool gold, bool erase,
+            string title, string kindLabel, string origin, string power, string burden, bool gold, bool erase,
             int visibleChars, float burnFresh, float alpha, float time) {
             //板影/包边/板体
             sb.Draw(Pixel, new Rectangle(rect.X + 4, rect.Y + 6, rect.Width, rect.Height), PixelSrc,
@@ -425,7 +425,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             OniBrush.DrawTaperedSlash(sb, new Vector2(rect.X + 12f, rect.Y + 38f),
                 new Vector2(rect.Right - 12f, rect.Y + 36f), 1.8f, 1.2f, alpha * 0.75f);
 
-            //出处 + 赋效,烙印打字机(最新字覆灼橙)
+            //出处 + 赋效 + 代价,烙印打字机(最新字覆灼橙);凿前必见真实数值
             float y = rect.Y + 48f;
             Utils.DrawBorderString(sb, OniMeiUI.OriginLabel.Value, new Vector2(textLeft, y),
                 OnikiriUITheme.Deep * (alpha * 1.2f), 0.6f);
@@ -441,9 +441,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 Color powerCol = gold
                     ? Color.Lerp(OnikiriUITheme.Paper, OnikiriUITheme.GoldInlay, 0.4f)
                     : Color.Lerp(OnikiriUITheme.Paper, OnikiriUITheme.Bright, 0.28f);
-                OniRegisterRenderer.DrawTypedWrapped(sb, font, power, new Vector2(textLeft, y),
+                y = OniRegisterRenderer.DrawTypedWrapped(sb, font, power, new Vector2(textLeft, y),
                     headerRight - textLeft, powerCol, 0.7f, alpha, visibleChars - origin.Length, burnFresh,
                     OnikiriUITheme.BurnHot);
+            }
+            if (burden.Length > 0 && visibleChars > origin.Length + power.Length) {
+                y += 6f;
+                Utils.DrawBorderString(sb, OniMeiUI.BurdenLabel.Value, new Vector2(textLeft, y),
+                    OnikiriUITheme.Seal * (alpha * 1.2f), 0.6f);
+                y += 15f;
+                //代价用压暗绯红,与赋效的亮色分列可辨
+                Color burdenCol = Color.Lerp(OnikiriUITheme.TextDim, OnikiriUITheme.Bright, 0.45f);
+                OniRegisterRenderer.DrawTypedWrapped(sb, font, burden, new Vector2(textLeft, y),
+                    headerRight - textLeft, burdenCol, 0.7f, alpha,
+                    visibleChars - origin.Length - power.Length, burnFresh, OnikiriUITheme.BurnHot);
             }
         }
 

@@ -566,6 +566,7 @@ OnikiriText: {
 		EraseHint: 锉去此铭——铭可再凿，刀不忘痕
 		OriginLabel: 出处
 		PowerLabel: 赋效
+		BurdenLabel: 代价
 		CurrentMark: 现铭
 		GoldMark: 金象嵌
 		RegisterTabText: 点鬼簿

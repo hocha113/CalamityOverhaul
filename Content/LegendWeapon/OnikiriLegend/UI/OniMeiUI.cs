@@ -42,6 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText EraseHint { get; private set; }
         public static LocalizedText OriginLabel { get; private set; }
         public static LocalizedText PowerLabel { get; private set; }
+        public static LocalizedText BurdenLabel { get; private set; }
         public static LocalizedText CurrentMark { get; private set; }
         public static LocalizedText GoldMark { get; private set; }
         public static LocalizedText RegisterTabText { get; private set; }
@@ -63,6 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             EraseHint = this.GetLocalization(nameof(EraseHint), () => "锉去此铭——铭可再凿，刀不忘痕");
             OriginLabel = this.GetLocalization(nameof(OriginLabel), () => "出处");
             PowerLabel = this.GetLocalization(nameof(PowerLabel), () => "赋效");
+            BurdenLabel = this.GetLocalization(nameof(BurdenLabel), () => "代价");
             CurrentMark = this.GetLocalization(nameof(CurrentMark), () => "现铭");
             GoldMark = this.GetLocalization(nameof(GoldMark), () => "金象嵌");
             RegisterTabText = this.GetLocalization(nameof(RegisterTabText), () => "点鬼簿");
@@ -485,46 +487,50 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         //====木牌内容解析与打字机====
 
-        /// <summary>本帧木牌应展示的内容,返回(戳,题名,类目,出处,赋效,金阶,除铭)</summary>
-        private (string stamp, string title, string kind, string origin, string power, bool gold, bool erase) ResolveTag() {
+        /// <summary>本帧木牌应展示的内容,返回(戳,题名,类目,出处,赋效,代价,金阶,除铭)</summary>
+        private (string stamp, string title, string kind, string origin, string power, string burden, bool gold, bool erase) ResolveTag() {
             //仪式中:展示正在凿/锉的铭
             if (Rite.Active) {
                 string key = Rite.NewKey ?? Rite.OldKey;
                 if (key != null && OniMeiRegistry.TryGet(key, out OniMeiDefinition riteDef)) {
                     return ($"rite:{key}", riteDef.DisplayName.Value, SlotLabel(Rite.Slot),
-                        riteDef.Origin.Value, riteDef.Power.Value, riteDef.IsGoldTier, Rite.NewKey == null);
+                        riteDef.Origin.Value, riteDef.Power.Value, riteDef.Burden.Value,
+                        riteDef.IsGoldTier, Rite.NewKey == null);
                 }
             }
-            //悬停扇骨:预览
+            //悬停扇骨:预览(凿前必见真实赋效与代价)
             if (selectedSlot >= 0 && hoverRib >= 0) {
                 if (IsEraseRib(hoverRib)) {
-                    return ("erase", EraseName.Value, SlotLabel(SlotOf(selectedSlot)), EraseHint.Value, "———", false, true);
+                    return ("erase", EraseName.Value, SlotLabel(SlotOf(selectedSlot)), EraseHint.Value,
+                        "———", "———", false, true);
                 }
                 OniMeiDefinition def = ribs[hoverRib];
                 return ($"def:{def.Key}", def.DisplayName.Value, SlotLabel(def.SlotKind),
-                    def.Origin.Value, def.Power.Value, def.IsGoldTier, false);
+                    def.Origin.Value, def.Power.Value, def.Burden.Value, def.IsGoldTier, false);
             }
             //选中铭位:现铭或空悬文案
             if (selectedSlot >= 0) {
                 OniMeiDefinition engraved = EngravedAt(selectedSlot);
                 if (engraved != null) {
                     return ($"def:{engraved.Key}", engraved.DisplayName.Value, SlotLabel(SlotOf(selectedSlot)),
-                        engraved.Origin.Value, engraved.Power.Value, engraved.IsGoldTier, false);
+                        engraved.Origin.Value, engraved.Power.Value, engraved.Burden.Value,
+                        engraved.IsGoldTier, false);
                 }
                 string hint = SlotOf(selectedSlot) switch {
                     OniMeiSlotKind.Hi => EmptyHintHi.Value,
                     OniMeiSlotKind.Horimono => EmptyHintHorimono.Value,
                     _ => EmptyHintNakago.Value,
                 };
-                return ($"empty:{selectedSlot}", EmptyName.Value, SlotLabel(SlotOf(selectedSlot)), hint, "———", false, false);
+                return ($"empty:{selectedSlot}", EmptyName.Value, SlotLabel(SlotOf(selectedSlot)), hint,
+                    "———", "———", false, false);
             }
             //默认:今名
             OniMeiDefinition name = OniMeiRegistry.CurrentBladeName(OniMeiRegistry.DisplayStore);
             if (name != null) {
                 return ($"name:{name.Key}", name.DisplayName.Value, SlotLabel(OniMeiSlotKind.Nakago),
-                    name.Origin.Value, name.Power.Value, name.IsGoldTier, false);
+                    name.Origin.Value, name.Power.Value, name.Burden.Value, name.IsGoldTier, false);
             }
-            return ("none", "", "", "", "", false, false);
+            return ("none", "", "", "", "", "", false, false);
         }
 
         internal static string SlotLabel(OniMeiSlotKind slot) => slot switch {
@@ -534,7 +540,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         };
 
         private void UpdateTagTypewriter() {
-            (string stamp, _, _, _, _, _, _) = ResolveTag();
+            (string stamp, _, _, _, _, _, _, _) = ResolveTag();
             if (stamp != tagStamp) {
                 tagStamp = stamp;
                 typeTimer = 0f;
@@ -619,10 +625,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             //====烙印木牌====
             if (contentA > 0.01f) {
-                (_, string title, string kind, string origin, string power, bool gold, bool erase) = ResolveTag();
+                (_, string title, string kind, string origin, string power, string burden, bool gold, bool erase) = ResolveTag();
                 if (title.Length > 0) {
                     OniMeiRenderer.DrawWoodTag(spriteBatch, font, tagRect, title, kind, origin, power,
-                        gold, erase, TagVisibleChars, TagBurnStrength, contentA, ShaderTime);
+                        burden, gold, erase, TagVisibleChars, TagBurnStrength, contentA, ShaderTime);
                 }
             }
 

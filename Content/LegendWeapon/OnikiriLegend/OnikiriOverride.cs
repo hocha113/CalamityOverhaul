@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.OtherMods.Wikithis;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
@@ -162,6 +163,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
             VaultUtils.ApplyWeaponDamageScaling(item, GetOnDamage(item), GetStartDamage, ref damage);
+            //铭刻负担:面板伤害倍率(髭切 0.90);铭数据在物品上,面板各端一致
+            float meiMul = OniMeiCombat.Resolve(item).DamageMul;
+            if (meiMul != 1f) {
+                damage *= meiMul;
+            }
             return false;
         }
 
@@ -191,6 +197,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             string text = LegendData.GetLevelTrialPreText(item.CWR(), LegendUpgradeManagerSystem.Text_Lang_0, num);
             tooltips.ReplacePlaceholder("[Lang4]", text, "");
+            AppendMeiSummary(item, tooltips);
+        }
+
+        /// <summary>在铭三槽的短摘要:离开改铭台也看得到赋效/代价(SetTooltip 可能被调两次,按行名去重)</summary>
+        private static void AppendMeiSummary(Item item, List<TooltipLine> tooltips) {
+            if (item.CWR()?.LegendData is not OnikiriData data) {
+                return;
+            }
+            foreach (OniMeiSlotKind slot in OniMeiStore.SlotKinds) {
+                OniMeiDefinition def = OniMeiRegistry.GetEngraved(data.Mei, slot);
+                if (def == null) {
+                    continue;
+                }
+                string lineName = $"CWR_OniMei_{slot}";
+                if (tooltips.Exists(line => line.Name == lineName)) {
+                    continue;
+                }
+                tooltips.Add(new TooltipLine(CWRMod.Instance, lineName
+                    , $"「{def.DisplayName.Value}」{def.Summary.Value}") {
+                    OverrideColor = def.IsGoldTier
+                        ? new Color(218, 172, 82)
+                        : new Color(198, 120, 112),
+                });
+            }
         }
     }
 }

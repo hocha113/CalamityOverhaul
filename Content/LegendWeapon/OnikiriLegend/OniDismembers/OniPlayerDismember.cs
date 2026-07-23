@@ -84,6 +84,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         public static bool IsLocked(Player player)
             => player != null && GetEntry(player.whoAmI) != null;
 
+        /// <summary>反噬自伤结算中（同帧），铭刻的承伤增减/守护挂点据此放行这刀固定契约</summary>
+        internal static bool SelfHurtResolving { get; private set; }
+
         /// <summary>落下反噬、必定伤害先落（owner 端结算，原版受伤包同步），玩家当帧定格</summary>
         public static void Trigger(Player player, float cutAngle) {
             if (Main.dedServ || player == null || !player.active || player.dead) {
@@ -98,9 +101,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 int selfDamage = Math.Max((int)(player.statLifeMax2 * SelfHurtFraction), 1);
                 player.immune = false;
                 player.immuneTime = 0;
-                player.Hurt(PlayerDeathReason.ByCustomReason(
-                    OniPlayerDismemberSystem.SelfHurtDeathReason.ToNetworkText(player.name))
-                    , selfDamage, 0, dodgeable: false, scalingArmorPenetration: 1f, knockback: 0f);
+                SelfHurtResolving = true;
+                try {
+                    player.Hurt(PlayerDeathReason.ByCustomReason(
+                        OniPlayerDismemberSystem.SelfHurtDeathReason.ToNetworkText(player.name))
+                        , selfDamage, 0, dodgeable: false, scalingArmorPenetration: 1f, knockback: 0f);
+                }
+                finally {
+                    SelfHurtResolving = false;
+                }
                 if (player.dead) {
                     return; //死亡流程接管，僵直与弥合都不再有意义
 

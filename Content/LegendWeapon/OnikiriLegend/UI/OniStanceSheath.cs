@@ -50,6 +50,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             SoundEngine.PlaySound(SoundID.Unlock with { Pitch = -0.62f, Volume = 0.38f });
         }
 
+        /// <summary>不动护发动:护法碎裂的金铁一声,鞘刀沉重归座(区别于泄势的绯红拔刀)</summary>
+        public void NotifyGuard() {
+            releaseFlash = Math.Max(releaseFlash, 0.7f);
+            seating = true;
+            SoundEngine.PlaySound(SoundID.Tink with { Pitch = -0.35f, Volume = 0.5f });
+        }
+
         public void Update(Player player, Vector2 anchor, bool interactive, Vector2 mouse) {
             pommelBase = anchor + OnikiriUITheme.HudStanceOffset;
             lastMouse = mouse;

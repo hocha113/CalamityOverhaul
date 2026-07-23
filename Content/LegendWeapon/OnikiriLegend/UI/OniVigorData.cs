@@ -10,10 +10,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public readonly float Value;
         /// <summary>气力上限</summary>
         public readonly float MaxValue;
+        /// <summary>上限相对基准的占比(铭刻压缩上限时 &lt;1),墨脉末段据此留焦黑断口</summary>
+        public readonly float CapRatio;
 
-        public OniVigorSnapshot(float value, float maxValue) {
+        public OniVigorSnapshot(float value, float maxValue) : this(value, maxValue, 1f) { }
+
+        public OniVigorSnapshot(float value, float maxValue, float capRatio) {
             Value = value;
             MaxValue = maxValue;
+            CapRatio = MathHelper.Clamp(capRatio, 0.1f, 1f);
         }
 
         /// <summary>0~1 填充比,上限非正视为空</summary>

@@ -66,6 +66,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static void NotifyVigorDenied() => Instance?.vigor.NotifyDenied();
         /// <summary>架势不足反馈:刀在鞘中一顿(玩法层调用,本地客户端)</summary>
         public static void NotifyStanceDenied() => Instance?.stance.NotifyDenied();
+        /// <summary>不动护发动反馈:鞘刀沉重归座+金铁裂响(玩法层调用,本地客户端)</summary>
+        public static void NotifyStanceGuard() => Instance?.stance.NotifyGuard();
         /// <summary>领域命令被拒反馈:鬼眼急促眨动(玩法层调用,本地客户端)</summary>
         public static void NotifyDomainDenied() => Instance?.domainEye.NotifyDenied();
 

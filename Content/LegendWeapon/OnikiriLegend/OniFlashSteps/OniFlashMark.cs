@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -30,6 +31,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private float seed;
         private float brandAngle;
         private float sizeMul = 1f;
+        //风樋:痕带收窄(伤害已降,视觉强度与威力一致;纯表现,判定不变)
+        private float windSlimMul = 1f;
         private Vector2 lastCenter;
         private float rendHalfLen;
 
@@ -92,6 +95,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             detonateFrame = (int)Projectile.ai[1];
             Projectile.timeLeft = detonateFrame + RendFadeFrames + 8;
             seed = Projectile.identity * 0.6180339887f % 1f;
+            //铭档随物品同步,各端解析一致
+            if (Projectile.owner >= 0 && Projectile.owner < Main.maxPlayers
+                && OniMeiCombat.ResolveHeld(Main.player[Projectile.owner]).WindGroove) {
+                windSlimMul = 0.85f;
+            }
             //痕的走向在冲刺方向上带一点确定性偏斜，敌群里不会全员平行
 
             brandAngle = DashAngle + (seed - 0.5f) * 0.42f;
@@ -246,7 +254,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Vector2[] pts = [lastCenter - along, lastCenter, lastCenter + along];
 
             OKF.RibbonDef def = new() {
-                HalfWidth = (8.5f + foretell * 4.5f) * sizeMul,
+                HalfWidth = (8.5f + foretell * 4.5f) * sizeMul * windSlimMul,
                 PerpOffset = 0f,
                 Seed = seed,
                 FlowMul = 0.85f,
@@ -268,7 +276,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Vector2[] pts = [lastCenter - along, lastCenter, lastCenter + along];
 
             OKF.RibbonDef def = new() {
-                HalfWidth = 40f * sizeMul,
+                HalfWidth = 40f * sizeMul * windSlimMul,
                 PerpOffset = 0f,
                 Seed = seed,
                 FlowMul = 1.25f,

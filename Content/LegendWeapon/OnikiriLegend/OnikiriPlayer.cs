@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
@@ -96,12 +97,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// <summary>媒介点选的光标容差(点到纸面矩形距离)</summary>
         private const float PaperMagnetPad = 60f;
 
+        //====铭刻效果层调参(机制常量在此,倍率在 OniMeiCombatProfile)====
+        /// <summary>友切:每层「咎」的疾走额外气力(残心命中偿清)</summary>
+        private const float GuiltDashVigorPerLayer = 6f;
+        /// <summary>友切:咎层上限</summary>
+        private const int GuiltMaxLayers = 3;
+        /// <summary>不动护:每次守护消耗的架势</summary>
+        private const float FudoGuardStanceCost = 20f;
+        /// <summary>不动护:该次受击的伤害削减比</summary>
+        private const float FudoGuardDamageCut = 0.40f;
+        /// <summary>不动护:内部冷却(帧,约两秒)</summary>
+        private const int FudoGuardCooldownTicks = 120;
+        /// <summary>倶利伽罗:处决后点燃的龙火窗口(帧,约十秒)</summary>
+        private const int KurikaraWindowTicks = 600;
+
         //====状态(owner 端自治)====
         internal float Vigor = VigorMax;
         internal float Stance;
         private int vigorRegenDelay;
         private int dashLock;
         private int readyCueTimer;
+
+        //====铭刻状态(owner 端自治,禁 static)====
+        /// <summary>本帧铭刻合成档(手持解析;未持刀=Identity,负担随刀离手消失)</summary>
+        internal OniMeiCombatProfile Mei = OniMeiCombatProfile.Identity;
+        /// <summary>友切:当前咎层数(0..<see cref="GuiltMaxLayers"/>)</summary>
+        internal int GuiltLayers { get; private set; }
+        /// <summary>倶利伽罗:龙火窗口余量(帧),>0 时第五拍收束回环斩</summary>
+        internal int KurikaraWindow { get; private set; }
+        private int fudoGuardCooldown;
+
+        /// <summary>当前气力上限(倶利伽罗压缩至 80)</summary>
+        internal float VigorMaxCurrent => VigorMax * Mei.VigorMaxMul;
         //====追斩资格(owner 端自治)====
         private int zanshinWindow;          //剩余帧数,0=关
         private int zanshinJudgeCountdown;  //距锵帧数,窗开着时持续递减(负值=锵已过)
@@ -143,6 +170,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinInputBuffered = false;
             zanshinAutoHandoff = false;
             zanshinAutoHandoffCountdown = 0;
+            ResetMeiTransient();
         }
 
         public override void OnRespawn() {
@@ -153,6 +181,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinInputBuffered = false;
             zanshinAutoHandoff = false;
             zanshinAutoHandoffCountdown = 0;
+            ResetMeiTransient();
+        }
+
+        private void ResetMeiTransient() {
+            GuiltLayers = 0;
+            KurikaraWindow = 0;
+            fudoGuardCooldown = 0;
         }
 
         public override void PostUpdate() {
@@ -166,14 +201,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             //试炼门禁硬倒计时,与招式无关,反噬僵直也推进
             HimayoStorySync.TickTrialUnlockSafety(Player);
 
+            //铭刻档每帧从手中刀解析:换刀/改铭/收刀即时生效,负担只在手持时存在
+            Mei = OniMeiCombat.ResolveHeld(Player);
+            Vigor = Math.Min(Vigor, VigorMaxCurrent);
+
             if (vigorRegenDelay > 0) {
                 vigorRegenDelay--;
             }
             else {
-                Vigor = Math.Min(VigorMax, Vigor + VigorRegenPerTick);
+                Vigor = Math.Min(VigorMaxCurrent, Vigor + VigorRegenPerTick * Mei.NaturalRegenMul);
             }
             if (dashLock > 0) {
                 dashLock--;
+            }
+            if (fudoGuardCooldown > 0) {
+                fudoGuardCooldown--;
+            }
+            if (KurikaraWindow > 0) {
+                KurikaraWindow--;
             }
             TickZanshinWindow();
 
@@ -290,13 +335,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 || OniSakuraFlight.ControlsOwner(Player.whoAmI)) {
                 return;
             }
-            if (Vigor < DashVigorCost - 0.01f) {
+            //风樋减耗;友切的咎逐层加价,残心命中偿清
+            float dashCost = DashVigorCost * Mei.DashVigorCostMul + GuiltLayers * GuiltDashVigorPerLayer;
+            if (Vigor < dashCost - 0.01f) {
                 OniTalismanHud.NotifyVigorDenied();
                 return;
             }
 
-            Vigor -= DashVigorCost;
-            vigorRegenDelay = VigorRegenDelayTicks;
+            Vigor -= dashCost;
+            vigorRegenDelay = VigorRegenDelayTicks + Mei.ExtraRegenDelayTicks;
             //新位移开始,上一窗作废
             zanshinWindow = 0;
             zanshinPending = false;
@@ -317,7 +364,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 && combo.BeginFlashStepInterrupt(aim, out interruptRotation);
             dashLock = Math.Max(DashRefireLockTicks
                 , OniFlashStep.CalculateControlFrames(distance, interruptCombo));
-            OniFlashStep.Fire(Player, aim, (int)(state.WeaponDamage * DashDamageMul)
+            OniFlashStep.Fire(Player, aim, (int)(state.WeaponDamage * DashDamageMul * Mei.FlashMarkDamageMul)
                 , state.WeaponKnockback, distance, interruptCombo: interruptCombo
                 , interruptRotation: interruptRotation, source: Player.GetSource_ItemUse(item));
         }
@@ -343,7 +390,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (Vigor < SakuraMinVigor - 0.01f) {
                 return false;
             }
-            int flightFrames = (int)(Vigor / SakuraDrainPerTick);
+            int flightFrames = (int)(Vigor / (SakuraDrainPerTick * Mei.SakuraDrainMul));
             if (OniSakuraFlight.Fire(Player, direction, SakuraFlightSpeed,
                 flightFrames, source, seamless: true) == null) {
                 return false;
@@ -364,14 +411,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (!OniSakuraFlight.IsTraveling(Player.whoAmI)) {
                 return;
             }
-            vigorRegenDelay = Math.Max(vigorRegenDelay, VigorRegenDelayTicks);
+            vigorRegenDelay = Math.Max(vigorRegenDelay, VigorRegenDelayTicks + Mei.ExtraRegenDelayTicks);
             OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
             if (!FlashStepInputHeld || Vigor <= 0.01f
                 || domain.Phase != OniDomainPhase.Omote || domain.WorldIsUra) {
                 OniSakuraFlight.RequestStop(Player);
                 return;
             }
-            Vigor = Math.Max(0f, Vigor - SakuraDrainPerTick);
+            Vigor = Math.Max(0f, Vigor - SakuraDrainPerTick * Mei.SakuraDrainMul);
         }
 
         //==================== 残心追斩 ====================
@@ -512,11 +559,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return liveAim.SafeNormalize(fallback);
         }
 
-        /// <summary>追斩接触:每刀仅首次命中回架势,所有目标都记入命中记忆</summary>
+        /// <summary>追斩接触:每刀仅首次命中回架势,所有目标都记入命中记忆;血樋补气,咎在此偿清</summary>
         internal void OnZanshinHit(NPC target, bool grantResources) {
             RecordHit(target);
-            if (grantResources) {
-                Stance = Math.Min(StanceMax, Stance + StancePerZanshinSlash);
+            if (GuiltLayers > 0) {
+                GuiltLayers = 0;
+            }
+            if (!grantResources) {
+                return;
+            }
+            Stance = Math.Min(StanceMax, Stance + StancePerZanshinSlash * Mei.StanceGainMul);
+            if (Mei.ZanshinHitVigorBonus > 0f) {
+                Vigor = Math.Min(VigorMaxCurrent, Vigor + Mei.ZanshinHitVigorBonus);
+                if (Mei.BloodGroove) {
+                    OniMeiStrikes.SpawnBloodBackflow(Player, target);
+                }
             }
         }
 
@@ -538,6 +595,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 OniFinaleSlash.Fire(Player, focus, aim, state.WeaponDamage
                     , state.WeaponKnockback, scale: OnikiriOverride.GetFinaleScale(item)
                     , source: Player.GetSource_ItemUse(item));
+                IgniteKurikara();
             }
             else if (Stance >= AnnihilateCost - 0.01f) {
                 //过半,灭世一闪,尺寸恒 1.0
@@ -545,10 +603,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 Vector2 aim = Main.MouseWorld - Player.Center;
                 OniAnnihilate.Fire(Player, Player.Center, aim, (int)(state.WeaponDamage * AnnihilateDamageMul)
                     , state.WeaponKnockback, source: Player.GetSource_ItemUse(item));
+                IgniteKurikara();
             }
             else {
                 OniTalismanHud.NotifyStanceDenied();
             }
+        }
+
+        /// <summary>倶利伽罗:处决消费架势后点燃雕纹,窗口内完成五段连斩即回环</summary>
+        private void IgniteKurikara() {
+            if (!Mei.DragonfireLoop) {
+                return;
+            }
+            KurikaraWindow = KurikaraWindowTicks;
+            OniMeiStrikes.SpawnKurikaraIgnite(Player);
         }
 
         //==================== 肢解 ====================
@@ -801,21 +869,80 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         //==================== 资源增益(玩法挂点调用,owner 端) ====================
 
-        /// <summary>连段接触:每拍仅首次命中回气蓄势,所有目标都记入命中记忆</summary>
+        /// <summary>连段接触:每拍仅首次命中回气蓄势,所有目标都记入命中记忆;血樋在此补气(禁多目标套利)</summary>
         internal void OnComboHit(NPC target, bool grantResources) {
             RecordHit(target);
             if (!grantResources) {
                 return;
             }
-            Vigor = Math.Min(VigorMax, Vigor + VigorPerComboBeat);
-            Stance = Math.Min(StanceMax, Stance + StancePerComboBeat);
+            Vigor = Math.Min(VigorMaxCurrent, Vigor + VigorPerComboBeat + Mei.ComboHitVigorBonus);
+            Stance = Math.Min(StanceMax, Stance + StancePerComboBeat * Mei.StanceGainMul);
+            if (Mei.BloodGroove && Mei.ComboHitVigorBonus > 0f) {
+                OniMeiStrikes.SpawnBloodBackflow(Player, target);
+            }
         }
 
         /// <summary>疾走穿身即格挡:每次疾走仅首次格挡固定蓄势,所有目标都记入命中记忆</summary>
         internal void OnDashParry(NPC npc, bool grantResources) {
             RecordHit(npc);
             if (grantResources) {
-                Stance = Math.Min(StanceMax, Stance + StancePerDashParry);
+                Stance = Math.Min(StanceMax, Stance + StancePerDashParry * Mei.StanceGainMul);
+            }
+        }
+
+        //==================== 铭刻效果层挂点(owner 端) ====================
+
+        /// <summary>友切咎影已留下:积一层咎,下一次疾走更贵;残心命中偿清</summary>
+        internal void OnGuiltEchoSpawned() {
+            GuiltLayers = Math.Min(GuiltLayers + 1, GuiltMaxLayers);
+        }
+
+        /// <summary>倶利伽罗:第五拍尝试收束龙火(窗口内仅一次)</summary>
+        internal bool TryConsumeKurikara() {
+            if (KurikaraWindow <= 0) {
+                return false;
+            }
+            KurikaraWindow = 0;
+            return true;
+        }
+
+        /// <summary>髭切断首击杀返势(每次招式至多一次,OniMeiCombat 把关)</summary>
+        internal void GrantExecuteRefund() {
+            Stance = Math.Min(StanceMax, Stance + OniMeiCombat.ExecuteKillStanceRefund);
+        }
+
+        /// <summary>不动护窗口:连段后两重拍/残心/处决演出中</summary>
+        private bool IsInCommittedAction() {
+            if (Player.ownedProjectileCounts[ModContent.ProjectileType<OniZanshinSlash>()] > 0
+                || Player.ownedProjectileCounts[ModContent.ProjectileType<OniAnnihilate>()] > 0
+                || Player.ownedProjectileCounts[ModContent.ProjectileType<OniFinaleSlash>()] > 0) {
+                return true;
+            }
+            return CrimsonRendSlash.FindController(Player)?.InCommittedBeats ?? false;
+        }
+
+        /// <summary>
+        /// 铭刻承伤挂点:友切+10%,不动护耗架势削减该击并免击退;
+        /// 肢解反噬是固定契约,增减一律不碰
+        /// </summary>
+        public override void ModifyHurt(ref Player.HurtModifiers modifiers) {
+            if (Main.dedServ || Player.whoAmI != Main.myPlayer
+                || OniPlayerDismember.SelfHurtResolving) {
+                return;
+            }
+            if (Math.Abs(Mei.IncomingDamageMul - 1f) > 0.001f) {
+                modifiers.FinalDamage *= Mei.IncomingDamageMul;
+            }
+            if (Mei.StanceGuard && fudoGuardCooldown <= 0
+                && Stance >= FudoGuardStanceCost - 0.01f
+                && !OniPlayerDismember.IsLocked(Player)
+                && IsInCommittedAction()) {
+                Stance -= FudoGuardStanceCost;
+                fudoGuardCooldown = FudoGuardCooldownTicks;
+                modifiers.FinalDamage *= 1f - FudoGuardDamageCut;
+                modifiers.Knockback *= 0f;
+                OniMeiStrikes.SpawnFudoGuard(Player);
+                OniTalismanHud.NotifyStanceGuard();
             }
         }
 
@@ -841,7 +968,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
     {
         public bool TryGetVigor(Player player, out OniVigorSnapshot snapshot) {
             if (player != null && player.active && player.TryGetModPlayer(out OnikiriPlayer okp)) {
-                snapshot = new OniVigorSnapshot(okp.Vigor, OnikiriPlayer.VigorMax);
+                //上限占比随铭刻变化(倶利伽罗 0.8):墨脉据此留焦黑断口,读数显示真实上限
+                snapshot = new OniVigorSnapshot(okp.Vigor, okp.VigorMaxCurrent
+                    , okp.VigorMaxCurrent / OnikiriPlayer.VigorMax);
                 return true;
             }
             snapshot = default;

@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights;
 using InnoVault.GameContent.BaseEntity;
@@ -646,23 +647,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 totalLen += Vector2.Distance(pts[i - 1], pts[i]);
             }
             float s = sizeMul * MathHelper.Clamp(totalLen / 320f, 0.4f, 1f);
+            //风樋:主流带更窄、流速更快,纸风质感(铭档随物品同步,纯表现不改判定)
+            bool wind = OniMeiCombat.Resolve(Item).WindGroove;
+            float slim = wind ? 0.82f : 1f;
+            float flowUp = wind ? 1.14f : 1f;
             Span<OKF.RibbonDef> defs = [
                 //白热主脊、窄、快、几乎不撕裂，头段发光的骨架
 
-                new() { HalfWidth = 15f * s, PerpOffset = 0f, Seed = seed + 0.71f,
-                    FlowMul = 1.60f, TearAmp = 0.22f, HeadBoost = 1.55f, OpacityMul = 0.72f },
+                new() { HalfWidth = 15f * s * slim, PerpOffset = 0f, Seed = seed + 0.71f,
+                    FlowMul = 1.60f * flowUp, TearAmp = 0.22f, HeadBoost = 1.55f, OpacityMul = 0.72f },
                 //主墨绸、全宽、撕裂大舌，黑红的身体
 
-                new() { HalfWidth = 58f * s, PerpOffset = 0f, Seed = seed,
-                    FlowMul = 1.00f, TearAmp = 0.95f, HeadBoost = 0.55f, OpacityMul = 0.95f },
+                new() { HalfWidth = 58f * s * slim, PerpOffset = 0f, Seed = seed,
+                    FlowMul = 1.00f * flowUp, TearAmp = 0.95f, HeadBoost = 0.55f, OpacityMul = 0.95f },
                 //上侧细丝、快流、碎
 
-                new() { HalfWidth = 24f * s, PerpOffset = 34f * s, Seed = seed + 0.37f,
-                    FlowMul = 1.45f, TearAmp = 1.25f, HeadBoost = 0.25f, OpacityMul = 0.80f },
+                new() { HalfWidth = 24f * s * slim, PerpOffset = 34f * s, Seed = seed + 0.37f,
+                    FlowMul = 1.45f * flowUp, TearAmp = 1.25f, HeadBoost = 0.25f, OpacityMul = 0.80f },
                 //下侧细丝、慢流、最碎（层间视差的第三速度）
 
-                new() { HalfWidth = 19f * s, PerpOffset = -40f * s, Seed = seed + 0.53f,
-                    FlowMul = 0.70f, TearAmp = 1.35f, HeadBoost = 0.20f, OpacityMul = 0.75f },
+                new() { HalfWidth = 19f * s * slim, PerpOffset = -40f * s, Seed = seed + 0.53f,
+                    FlowMul = 0.70f * flowUp, TearAmp = 1.35f, HeadBoost = 0.20f, OpacityMul = 0.75f },
             ];
             for (int i = 0; i < defs.Length; i++) {
                 OKF.DrawRibbon(device, fx, pts, in defs[i], retract, flash, opacity);
