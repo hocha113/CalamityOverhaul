@@ -232,10 +232,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         public void Draw(SpriteBatch sb, float alpha) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            Rectangle src = new(0, 0, 1, 1);
-            Vector2 half = new(0.5f, 0.5f);
-
             for (int i = 0; i < particles.Length; i++) {
                 ref Particle p = ref particles[i];
                 if (!p.Active || p.Delay > 0f) {
@@ -246,58 +242,63 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 switch (p.Kind) {
                     case OniParticleKind.Petal: {
                         float fade = (float)Math.Pow(Math.Sin(MathHelper.Clamp(t, 0f, 1f) * MathHelper.Pi), 0.8);
-                        //翻飞透视:花瓣绕长轴翻转,视觉宽度呼吸
+                        //翻飞透视:花瓣绕长轴翻转,视觉宽度呼吸;软边扁瓣,告别硬方块
                         float flip = MathHelper.Lerp(0.32f, 1f, Math.Abs((float)Math.Sin(p.Life * 0.07f + p.Seed)));
                         Vector2 body = new(6.4f * p.Scale * flip, 3.5f * p.Scale);
                         Vector2 tipOff = p.Rotation.ToRotationVector2() * (3.1f * p.Scale * flip);
-                        sb.Draw(pixel, p.Position + new Vector2(0.8f, 1.1f), src, OnikiriUITheme.Dark * (alpha * 0.34f * fade), p.Rotation, half, body, SpriteEffects.None, 0f);
-                        sb.Draw(pixel, p.Position, src, OnikiriUITheme.Paper * (alpha * 0.60f * fade), p.Rotation, half, body, SpriteEffects.None, 0f);
-                        sb.Draw(pixel, p.Position + tipOff, src, OnikiriUITheme.Bright * (alpha * 0.42f * fade), p.Rotation, half, new Vector2(2.5f * p.Scale * flip, 2.0f * p.Scale), SpriteEffects.None, 0f);
+                        OniBrush.DrawFeathered(sb, p.Position + new Vector2(0.8f, 1.1f), p.Rotation, body,
+                            OnikiriUITheme.Dark, alpha * 0.34f * fade);
+                        OniBrush.DrawFeathered(sb, p.Position, p.Rotation, body,
+                            OnikiriUITheme.Paper, alpha * 0.60f * fade);
+                        OniBrush.DrawSoftDot(sb, p.Position + tipOff, 2.4f * p.Scale * flip,
+                            OnikiriUITheme.Bright, alpha * 0.42f * fade);
                         break;
                     }
                     case OniParticleKind.Ash: {
                         float fade = 1f - t;
-                        Color col = Color.Lerp(OnikiriUITheme.TextDim, OnikiriUITheme.Ink, t) * (alpha * 0.7f * fade);
-                        sb.Draw(pixel, p.Position, src, col, 0f, half, new Vector2(1.6f * p.Scale, 1.2f * p.Scale), SpriteEffects.None, 0f);
+                        Color col = Color.Lerp(OnikiriUITheme.TextDim, OnikiriUITheme.Ink, t);
+                        OniBrush.DrawSoftDot(sb, p.Position, 1.5f * p.Scale, col, alpha * 0.7f * fade);
                         break;
                     }
                     case OniParticleKind.InkMote: {
                         //抵近收小:头 20% 淡入,尾 30% 缩没
                         float fadeIn = MathHelper.Clamp(t / 0.2f, 0f, 1f);
                         float shrink = 1f - MathHelper.Clamp((t - 0.7f) / 0.3f, 0f, 1f) * 0.8f;
-                        Color col = p.Color * (alpha * 0.85f * fadeIn);
-                        sb.Draw(pixel, p.Position, src, col, p.Seed + p.Life * 0.1f, half, new Vector2(p.Scale * shrink), SpriteEffects.None, 0f);
+                        float r = p.Scale * shrink * 0.85f;
+                        OniBrush.DrawSoftDot(sb, p.Position, r * 1.55f, p.Color, alpha * 0.35f * fadeIn);
+                        OniBrush.DrawSoftDot(sb, p.Position, r, p.Color, alpha * 0.85f * fadeIn);
                         break;
                     }
                     case OniParticleKind.Ember: {
                         float flick = 0.6f + 0.4f * (float)Math.Sin(p.Life * 0.5f + p.Seed);
                         float fade = (1f - t) * flick;
-                        sb.Draw(pixel, p.Position, src, OnikiriUITheme.BurnDim * (alpha * 0.5f * fade), 0f, half, new Vector2(2.2f * p.Scale), SpriteEffects.None, 0f);
-                        sb.Draw(pixel, p.Position, src, OnikiriUITheme.BurnHot * (alpha * 0.8f * fade), 0f, half, new Vector2(1.1f * p.Scale), SpriteEffects.None, 0f);
+                        OniBrush.DrawSoftDot(sb, p.Position, 2.4f * p.Scale, OnikiriUITheme.BurnDim, alpha * 0.5f * fade);
+                        OniBrush.DrawSoftDot(sb, p.Position, 1.2f * p.Scale, OnikiriUITheme.BurnHot, alpha * 0.8f * fade);
                         break;
                     }
                     case OniParticleKind.Spark: {
-                        //速度拉伸:火星是划出来的短线,不是圆点
+                        //速度拉伸:火星是划出来的短线,两端没入
                         float fade = 1f - t;
                         float speed = p.Velocity.Length();
                         float rot = p.Velocity.ToRotation();
-                        Vector2 body = new(2.2f + speed * 1.6f, 1.1f * p.Scale);
+                        float len = (2.2f + speed * 1.6f) * p.Scale;
                         Color col = t < 0.25f ? OnikiriUITheme.HotWhite
                             : t < 0.6f ? OnikiriUITheme.GoldInlay : OnikiriUITheme.BurnDim;
-                        sb.Draw(pixel, p.Position, src, col * (alpha * 0.9f * fade), rot, half, body * p.Scale, SpriteEffects.None, 0f);
+                        OniBrush.DrawSoftStreak(sb, p.Position, rot, Math.Max(3f, len), Math.Max(1f, 1.1f * p.Scale),
+                            col, alpha * 0.9f * fade);
                         break;
                     }
                     case OniParticleKind.Filing: {
                         float fade = 1f - t * t;
-                        sb.Draw(pixel, p.Position, src, OnikiriUITheme.Ink * (alpha * 0.85f * fade), p.Rotation, half,
-                            new Vector2(2.4f * p.Scale, 1.1f * p.Scale), SpriteEffects.None, 0f);
+                        OniBrush.DrawSoftStreak(sb, p.Position, p.Rotation, Math.Max(3f, 3.2f * p.Scale),
+                            Math.Max(1f, 1.0f * p.Scale), OnikiriUITheme.Ink, alpha * 0.85f * fade, 0.35f);
                         break;
                     }
                     case OniParticleKind.Powder: {
                         float fade = (float)Math.Pow(Math.Sin(MathHelper.Clamp(t, 0f, 1f) * MathHelper.Pi), 0.7);
                         float grow = 1f + t * 1.6f;
-                        sb.Draw(pixel, p.Position, src, OnikiriUITheme.Paper * (alpha * 0.20f * fade), p.Seed, half,
-                            new Vector2(3.2f * p.Scale * grow, 2.4f * p.Scale * grow), SpriteEffects.None, 0f);
+                        OniBrush.DrawSoftDot(sb, p.Position, 2.2f * p.Scale * grow,
+                            OnikiriUITheme.Paper, alpha * 0.22f * fade);
                         break;
                     }
                 }

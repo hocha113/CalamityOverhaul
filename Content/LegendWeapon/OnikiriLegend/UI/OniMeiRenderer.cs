@@ -408,11 +408,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             style.Lit = hover * 0.7f;
             OniMeiGlyph.Draw(sb, glyphKey, drawPos, g * 0.72f * lift, style);
 
-            //现铭标记:顶角一粒朱印点
+            //现铭标记:顶角一粒朱印软点
             if (isCurrent) {
                 Vector2 mark = drawPos + new Vector2(0f, -g * 0.72f);
-                sb.Draw(Pixel, mark, PixelSrc, OnikiriUITheme.Seal * (a * 0.95f),
-                    MathHelper.PiOver4, half, new Vector2(4.2f), SpriteEffects.None, 0f);
+                OniBrush.DrawSoftDot(sb, mark, 3.6f, OnikiriUITheme.Seal, a * 0.95f);
             }
         }
 
@@ -622,8 +621,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 new Vector2(0f, 0.5f), new Vector2(26f, 3f), SpriteEffects.None, 0f);
             sb.Draw(Pixel, chiselC + cRot.ToRotationVector2() * 18f, PixelSrc, OnikiriUITheme.Dark * (alpha * 0.95f), cRot,
                 new Vector2(0f, 0.5f), new Vector2(9f, 4.4f), SpriteEffects.None, 0f);
-            sb.Draw(Pixel, chiselC, PixelSrc, OnikiriUITheme.HotWhite * (alpha * 0.5f), cRot,
-                new Vector2(0.5f), new Vector2(1.8f), SpriteEffects.None, 0f);
+            OniBrush.DrawSoftDot(sb, chiselC, 2.2f, OnikiriUITheme.HotWhite, alpha * 0.5f);
 
             //丁子油瓶:深琉璃小瓶+木塞+烛光高光
             Vector2 bottleC = baseP + new Vector2(-42f, -6f);
@@ -636,8 +634,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             sb.Draw(Pixel, bottleC - new Vector2(0f, 14f), PixelSrc, OnikiriUITheme.GoldDeep * (alpha * 0.9f), 0f,
                 new Vector2(0.5f), new Vector2(4f, 3f), SpriteEffects.None, 0f);
             float glint = 0.5f + 0.3f * (float)Math.Sin(time * 1.3f);
-            sb.Draw(Pixel, bottleC + new Vector2(-2.6f, -3f), PixelSrc, OnikiriUITheme.CandleWarm * (alpha * 0.5f * glint), 0f,
-                new Vector2(0.5f), new Vector2(1.4f, 6f), SpriteEffects.None, 0f);
+            OniBrush.DrawSoftStreak(sb, bottleC + new Vector2(-2.6f, -3f), MathHelper.PiOver2, 7f, 1.4f,
+                OnikiriUITheme.CandleWarm, alpha * 0.5f * glint, 0.6f);
         }
 
         /// <summary>台题:布上居中横书+朱印+短烙痕(左上让位给吊挂卷轴)</summary>
@@ -719,15 +717,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             sb.Draw(Pixel, P(38f, 8f), PixelSrc, OnikiriUITheme.Deep * (a * 0.85f), rot + MathHelper.PiOver4,
                 half, Sz(3f, 3f), SpriteEffects.None, 0f);
 
-            //====回声:鬼火自卷缝漏一丝====
+            //====回声:鬼火自卷缝漏一丝(软焰,非硬条)====
             float echo = sw.Echo01;
             if (echo > 0.01f) {
                 float pulse = MathF.Sin(echo * MathHelper.Pi);
                 Vector2 seam = P(30f + echo * 14f, -6f);
-                sb.Draw(Pixel, seam, PixelSrc, OnikiriUITheme.GhostDim * (a * 0.5f * pulse), rot,
-                    new Vector2(0.5f, 1f), Sz(2.4f, 6f * pulse), SpriteEffects.None, 0f);
-                sb.Draw(Pixel, seam, PixelSrc, OnikiriUITheme.GhostFire * (a * 0.7f * pulse), rot,
-                    new Vector2(0.5f, 1f), Sz(1.1f, 3.6f * pulse), SpriteEffects.None, 0f);
+                OniBrush.DrawSoftStreak(sb, seam - down * (2.5f * s * pulse), rot + MathHelper.PiOver2,
+                    7f * s * pulse, 1.6f * s, OnikiriUITheme.GhostDim, a * 0.5f * pulse, 0.7f);
+                OniBrush.DrawSoftDot(sb, seam, 3.2f * s * pulse, OnikiriUITheme.GhostFire, a * 0.7f * pulse);
             }
 
             //====地杆:预演时向下弹开,缝里瞥见名录====
@@ -796,9 +793,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //杆尾铜箍(受锤的一端)
             sb.Draw(Pixel, tipDraw + shaft * 36f, PixelSrc, OnikiriUITheme.GoldDeep * (a * 0.95f), rot,
                 new Vector2(0.5f), new Vector2(6f, 7f), SpriteEffects.None, 0f);
-            //锋尖一点白
-            sb.Draw(Pixel, tipDraw, PixelSrc, OnikiriUITheme.HotWhite * (a * 0.8f), MathHelper.PiOver4,
-                new Vector2(0.5f), new Vector2(2.2f + shake.Length() * 0.6f), SpriteEffects.None, 0f);
+            //锋尖一点白(软辉)
+            OniBrush.DrawSoftDot(sb, tipDraw, 2.4f + shake.Length() * 0.7f, OnikiriUITheme.HotWhite, a * 0.8f);
         }
 
         /// <summary>锉刀:横杆在字形上往复,t 0~1 锉程</summary>
@@ -811,8 +807,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 new Vector2(0.5f), new Vector2(size * 1.15f, 6f), SpriteEffects.None, 0f);
             sb.Draw(Pixel, pos, PixelSrc, OnikiriUITheme.Dark * (a * 0.96f), rot,
                 new Vector2(0.5f), new Vector2(size * 1.15f, 5.4f), SpriteEffects.None, 0f);
-            sb.Draw(Pixel, pos - new Vector2(0f, 2.4f), PixelSrc, OnikiriUITheme.TextDim * (a * 0.7f), rot,
-                new Vector2(0.5f), new Vector2(size * 1.1f, 1.2f), SpriteEffects.None, 0f);
+            OniBrush.DrawSoftStreak(sb, pos - new Vector2(0f, 2.4f), rot, size * 1.1f, 1.2f,
+                OnikiriUITheme.TextDim, a * 0.55f, 0.25f);
             //柄头
             sb.Draw(Pixel, pos + rot.ToRotationVector2() * (size * 0.62f), PixelSrc, OnikiriUITheme.Deep * (a * 0.9f), rot,
                 new Vector2(0.5f), new Vector2(9f, 6.5f), SpriteEffects.None, 0f);
