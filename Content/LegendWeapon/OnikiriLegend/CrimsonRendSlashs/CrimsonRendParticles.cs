@@ -48,11 +48,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     Vector2 vel = aimDir.RotatedByRandom(0.75) * Main.rand.NextFloat(4.5f, 11f) * sizeMul;
                     vel.Y -= Main.rand.NextFloat(0.4f, 1.8f);
                     Color c = Main.rand.NextBool(3) ? Arterial : Blood;
-                    //跟刀约半数可贴块
-                    if (Main.rand.NextBool()) {
+                    //跟刀多数可贴,加重落地
+                    if (!Main.rand.NextBool(3)) {
                         PRTLoader.NewParticle<PRT_CrimsonBloodStain>(pos, vel, c
                             , Main.rand.NextFloat(0.95f, 1.55f) * sizeMul)
-                            ?.Configure(Main.rand.Next(22, 36), 0.30f, stuckLifetime: Main.rand.Next(36, 56));
+                            ?.Configure(Main.rand.Next(36, 56), 0.42f, 0.99f, stuckLifetime: Main.rand.Next(36, 56));
                     }
                     else {
                         PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, c
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     Vector2 vel = aimDir.RotatedByRandom(1.1) * Main.rand.NextFloat(1.2f, 3.5f) * sizeMul;
                     PRTLoader.NewParticle<PRT_CrimsonBloodStain>(pos, vel, BloodDeep
                         , Main.rand.NextFloat(1.1f, 1.7f) * sizeMul)
-                        ?.Configure(Main.rand.Next(30, 44), 0.36f, 0.978f, stuckLifetime: Main.rand.Next(42, 64));
+                        ?.Configure(Main.rand.Next(44, 68), 0.48f, 0.985f, stuckLifetime: Main.rand.Next(42, 64));
                 }
             }
         }
@@ -106,19 +106,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     ?.Configure(Main.rand.Next(22, 36), Blood, BloodDeep, 0.01f);
             }
 
-            //动脉喷溅,沿刃向锥形甩出;约 1/3 可贴块,其余空中淡出
+            //动脉喷溅;约 2/3 可贴块,加重+延寿方便落地
             int mainDrops = 10 + (int)(power * 16f);
             for (int i = 0; i < mainDrops; i++) {
                 Vector2 vel = aimDir.RotatedByRandom(0.82) * Main.rand.NextFloat(6f, 13f + power * 10f) * sizeMul;
                 vel.Y -= Main.rand.NextFloat(0.8f, 2.8f);
                 Color c = Main.rand.NextBool(4) ? Arterial : (Main.rand.NextBool() ? Blood : WoundHot);
                 float sc = Main.rand.NextFloat(1.0f, 1.75f + power * 0.35f) * sizeMul;
-                int life = Main.rand.Next(22, 36 + (int)(power * 10f));
-                if (Main.rand.NextBool(3)) {
+                if (!Main.rand.NextBool(3)) {
                     PRTLoader.NewParticle<PRT_CrimsonBloodStain>(pos, vel, c, sc)
-                        ?.Configure(life, 0.30f, stuckLifetime: Main.rand.Next(38, 58));
+                        ?.Configure(Main.rand.Next(40, 62 + (int)(power * 12f)), 0.42f, 0.99f
+                            , stuckLifetime: Main.rand.Next(38, 58));
                 }
                 else {
+                    int life = Main.rand.Next(22, 36 + (int)(power * 10f));
                     PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, c, sc)
                         ?.Configure(life, 0.30f);
                 }
@@ -130,18 +131,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 Vector2 vel = aimDir.RotatedByRandom(1.15) * Main.rand.NextFloat(1.4f, 4.2f) * sizeMul;
                 PRTLoader.NewParticle<PRT_CrimsonBloodStain>(pos, vel, BloodDeep
                     , Main.rand.NextFloat(1.2f, 1.9f) * sizeMul)
-                    ?.Configure(Main.rand.Next(32, 52), 0.36f, 0.978f, stuckLifetime: Main.rand.Next(44, 68));
+                    ?.Configure(Main.rand.Next(48, 72), 0.50f, 0.985f, stuckLifetime: Main.rand.Next(44, 68));
             }
 
-            //背向溅出,半数可贴
+            //背向溅出,多数可贴
             int backDrops = 2 + (int)(power * 4f);
             for (int i = 0; i < backDrops; i++) {
                 Vector2 vel = (-aimDir).RotatedByRandom(1.0) * Main.rand.NextFloat(2.5f, 7f) * sizeMul;
                 vel.Y -= Main.rand.NextFloat(0.3f, 1.5f);
                 float sc = Main.rand.NextFloat(0.9f, 1.4f) * sizeMul;
-                if (Main.rand.NextBool()) {
+                if (!Main.rand.NextBool(3)) {
                     PRTLoader.NewParticle<PRT_CrimsonBloodStain>(pos, vel, Blood, sc)
-                        ?.Configure(Main.rand.Next(22, 36), 0.28f, stuckLifetime: Main.rand.Next(36, 54));
+                        ?.Configure(Main.rand.Next(36, 56), 0.40f, 0.99f, stuckLifetime: Main.rand.Next(36, 54));
                 }
                 else {
                     PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, Blood, sc)
@@ -244,40 +245,83 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         }
 
         private void TryEnterStuck() {
-            if (Velocity.LengthSquared() < 0.35f) {
-                return;
-            }
-
-            //2×2 探针,贴面更贴地/贴墙
             const int hitW = 2;
             const int hitH = 2;
             Vector2 half = new(hitW * 0.5f, hitH * 0.5f);
-            if (!Collision.SolidCollision(Position - half, hitW, hitH)) {
+
+            Vector2 prev = Position - Velocity;
+            bool inSolid = Collision.SolidCollision(Position - half, hitW, hitH);
+
+            //前瞻半步:高速时提前咬住表面
+            if (!inSolid) {
+                Vector2 ahead = Position + Velocity * 0.55f;
+                if (Collision.SolidCollision(ahead - half, hitW, hitH)) {
+                    Position = ahead;
+                    inSolid = true;
+                }
+            }
+
+            //下落近距吸附:下方 12px 内有实心则拉贴,避免悬空淡出
+            Vector2 snapNormal = -Vector2.UnitY;
+            if (!inSolid && Velocity.Y > 0.5f) {
+                for (float d = 1f; d <= 12f; d += 1f) {
+                    Vector2 probe = Position + new Vector2(0f, d);
+                    if (Collision.SolidCollision(probe - half, hitW, hitH)) {
+                        Position = probe;
+                        inSolid = true;
+                        snapNormal = -Vector2.UnitY;
+                        break;
+                    }
+                }
+            }
+
+            //侧向近距吸附(贴墙)
+            if (!inSolid && Math.Abs(Velocity.X) > 0.6f) {
+                float side = Math.Sign(Velocity.X);
+                for (float d = 1f; d <= 8f; d += 1f) {
+                    Vector2 probe = Position + new Vector2(side * d, 0f);
+                    if (Collision.SolidCollision(probe - half, hitW, hitH)) {
+                        Position = probe;
+                        inSolid = true;
+                        snapNormal = new Vector2(-side, 0f);
+                        break;
+                    }
+                }
+            }
+
+            if (!inSolid) {
                 return;
             }
 
-            Vector2 prev = Position - Velocity;
             Vector2 n = Vector2.Zero;
             if (Collision.SolidCollision(prev + new Vector2(Velocity.X, 0f) - half, hitW, hitH)) {
-                n.X = -Math.Sign(Velocity.X);
+                n.X = -Math.Sign(Velocity.X == 0f ? snapNormal.X : Velocity.X);
             }
             if (Collision.SolidCollision(prev + new Vector2(0f, Velocity.Y) - half, hitW, hitH)) {
-                n.Y = -Math.Sign(Velocity.Y);
+                n.Y = -Math.Sign(Velocity.Y == 0f ? 1f : Velocity.Y);
             }
             if (n == Vector2.Zero) {
-                n = Velocity.Y >= 0f
-                    ? -Vector2.UnitY
-                    : new Vector2(-Math.Sign(Velocity.X == 0f ? 1f : Velocity.X), 0f);
+                n = snapNormal;
             }
 
             stuckNormal = n.SafeNormalize(-Vector2.UnitY);
-            impactSpeed = Velocity.Length();
-            Position = prev;
-            for (int i = 0; i < 8 && Collision.SolidCollision(Position - half, hitW, hitH); i++) {
-                Position += stuckNormal;
+            impactSpeed = MathF.Max(Velocity.Length(), 1f);
+
+            //从实体内部沿外法线推出到刚好离开,贴死表面(勿回退到空中 prev)
+            for (int i = 0; i < 32 && Collision.SolidCollision(Position - half, hitW, hitH); i++) {
+                Position += stuckNormal * 0.5f;
             }
-            //只微微推出实体,避免悬空
-            Position += stuckNormal * 0.6f;
+            //若已在空气中(近距吸附过头),沿 -normal 拉回贴面
+            if (!Collision.SolidCollision(Position - half, hitW, hitH)) {
+                for (int i = 0; i < 16; i++) {
+                    Vector2 next = Position - stuckNormal * 0.5f;
+                    if (Collision.SolidCollision(next - half, hitW, hitH)) {
+                        break;
+                    }
+                    Position = next;
+                }
+                Position += stuckNormal * 0.35f;
+            }
 
             phase = Phase.Stuck;
             Velocity = Vector2.Zero;
@@ -363,10 +407,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 Vector2 body = new Vector2(wide, thin + sag * 0.06f) * Scale;
                 Vector2 core = body * new Vector2(0.5f, 0.8f);
                 spriteBatch.Draw(tex, pos, null, draw, Rotation, origin, body, SpriteEffects.None, 0f);
-                spriteBatch.Draw(tex, pos + stuckNormal.RotatedBy(MathHelper.PiOver2) * (1.1f * sag)
+                spriteBatch.Draw(tex, pos + stuckNormal.RotatedBy(MathHelper.PiOver2) * (0.8f * sag)
                     , null, draw * 0.7f, Rotation + 0.14f, origin
                     , body * new Vector2(0.58f, 0.85f), SpriteEffects.None, 0f);
-                spriteBatch.Draw(tex, pos - stuckNormal * (0.6f + sag * 0.5f), null, draw * 0.5f
+                spriteBatch.Draw(tex, pos - stuckNormal * (0.25f + sag * 0.2f), null, draw * 0.5f
                     , Rotation, origin, core, SpriteEffects.None, 0f);
                 return false;
             }
