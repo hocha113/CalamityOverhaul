@@ -105,9 +105,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
         /// <summary>触发接口、在持有者客户端调用</summary>
         public static Projectile Fire(Player player, Vector2 aim, int damage, float knockback,
             bool sakura, bool syncedWithJudge, IEntitySource source = null) {
-            if (player.ownedProjectileCounts[ModContent.ProjectileType<OniZanshinSlash>()] > 0) {
-                return null;
-            }
+            //if (player.ownedProjectileCounts[ModContent.ProjectileType<OniZanshinSlash>()] > 0) {
+            //    return null;
+            //}
             source ??= player.GetSource_Misc("CWR_OniZanshinSlash");
             float aimAngle = aim.SafeNormalize(Vector2.UnitX * player.direction).ToRotation();
             return Projectile.NewProjectileDirect(source, player.Center, Vector2.Zero
