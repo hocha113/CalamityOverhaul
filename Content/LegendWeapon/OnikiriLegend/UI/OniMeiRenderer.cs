@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         //====================== 白布 ======================
 
-        /// <summary>解剑白布:烛光下的素布横幅,三段明暗+褶皱暗线+深红压边</summary>
+        /// <summary>解剑白布:shader 织纹布面优先(OniMeiStand.TechCloth),缺席退回 CPU 三段简笔</summary>
         public static void DrawCloth(SpriteBatch sb, Rectangle rect, float alpha, float reveal, float time) {
             float unroll = reveal * (2f - reveal);
             Rectangle shown = new(rect.X, (int)(rect.Center.Y - rect.Height * 0.5f * unroll),
@@ -42,10 +42,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return;
             }
 
-            //布影
-            sb.Draw(Pixel, new Rectangle(shown.X + 5, shown.Y + 8, shown.Width, shown.Height), PixelSrc,
-                new Color(8, 2, 5) * (alpha * alpha * 0.55f));
+            //布影:羽化的落影,不再一整块硬边矩形
+            OniBrush.DrawFeathered(sb, shown.Center.ToVector2() + new Vector2(5f, 9f), 0f,
+                new Vector2(shown.Width * 0.98f, shown.Height * 0.96f), new Color(8, 2, 5), alpha * alpha * 0.75f);
 
+            if (OniMeiStandDraw.Available) {
+                OniMeiStandDraw.DrawCloth(sb, shown, alpha, time);
+            }
+            else {
+                DrawClothFallback(sb, shown, alpha, time);
+            }
+
+            //边缘微垂:两端下摆一点弧影(两条路径共用)
+            sb.Draw(Pixel, new Vector2(shown.X + 3f, shown.Bottom + 3f), PixelSrc, new Color(8, 2, 5) * (alpha * 0.4f),
+                0.16f, new Vector2(0f, 0.5f), new Vector2(26f, 4f), SpriteEffects.None, 0f);
+            sb.Draw(Pixel, new Vector2(shown.Right - 3f, shown.Bottom + 3f), PixelSrc, new Color(8, 2, 5) * (alpha * 0.4f),
+                MathHelper.Pi - 0.16f, new Vector2(0f, 0.5f), new Vector2(26f, 4f), SpriteEffects.None, 0f);
+        }
+
+        /// <summary>CPU 简笔布面(shader 降级):三段明暗+褶皱暗线+深红压边</summary>
+        private static void DrawClothFallback(SpriteBatch sb, Rectangle shown, float alpha, float time) {
             //布体:暗调素布,烛光里下缘更暖更亮
             Color clothTop = new Color(46, 40, 36) * (alpha * 0.96f);
             Color clothMid = new Color(58, 50, 44) * (alpha * 0.96f);
@@ -71,11 +87,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //深红压边:上下缘各一线(裱布的绫边)
             sb.Draw(Pixel, new Rectangle(shown.X, shown.Y, shown.Width, 3), PixelSrc, OnikiriUITheme.Deep * (alpha * 0.6f));
             sb.Draw(Pixel, new Rectangle(shown.X, shown.Bottom - 3, shown.Width, 3), PixelSrc, OnikiriUITheme.Deep * (alpha * 0.75f));
-            //边缘微垂:两端下摆一点弧影
-            sb.Draw(Pixel, new Vector2(shown.X + 3f, shown.Bottom + 3f), PixelSrc, new Color(8, 2, 5) * (alpha * 0.4f),
-                0.16f, new Vector2(0f, 0.5f), new Vector2(26f, 4f), SpriteEffects.None, 0f);
-            sb.Draw(Pixel, new Vector2(shown.Right - 3f, shown.Bottom + 3f), PixelSrc, new Color(8, 2, 5) * (alpha * 0.4f),
-                MathHelper.Pi - 0.16f, new Vector2(0f, 0.5f), new Vector2(26f, 4f), SpriteEffects.None, 0f);
         }
 
         //====================== 刀身 ======================
@@ -95,35 +106,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 DrawBladeFallback(sb, tip, dir, perp, bladeW, quadH, alpha, time);
             }
 
-            //拔刀扫入的白闪:滑入速度越大越亮
+            //拔刀扫入的白闪:两端没入的软流光,不再一根硬边长条
             if (slide > 2f) {
                 float flash = MathHelper.Clamp(slide / 60f, 0f, 1f);
-                sb.Draw(Pixel, center - perp * (quadH * 0.135f), PixelSrc, OnikiriUITheme.HotWhite * (alpha * 0.5f * flash),
-                    OnikiriUITheme.MeiBladeCant, new Vector2(0.5f), new Vector2(bladeW, 1.6f), SpriteEffects.None, 0f);
+                OniBrush.DrawSoftStreak(sb, center - perp * (quadH * 0.135f), OnikiriUITheme.MeiBladeCant,
+                    bladeW, 2.0f, OnikiriUITheme.HotWhite, alpha * 0.55f * flash, glowMul: 0.6f);
             }
 
-            //刀鸣:一线白光沿刃口颤过
+            //刀鸣:一线白光沿刃口颤过(软芯+辉光,读作流光不是方块)
             if (songRun >= 0f) {
                 float t = songRun / 90f;
                 float u = MathHelper.Lerp(0.04f, 0.96f, t);
                 float pulse = (float)Math.Sin(t * MathHelper.Pi);
                 Vector2 pos = tip + dir * (bladeW * u) - perp * (quadH * 0.135f + (float)Math.Sin(songRun * 1.7f) * 1.2f);
-                sb.Draw(Pixel, pos, PixelSrc, OnikiriUITheme.HotWhite * (alpha * 0.75f * pulse),
-                    OnikiriUITheme.MeiBladeCant, new Vector2(0.5f), new Vector2(46f, 1.4f), SpriteEffects.None, 0f);
-                sb.Draw(Pixel, pos, PixelSrc, OnikiriUITheme.Bright * (alpha * 0.35f * pulse),
-                    OnikiriUITheme.MeiBladeCant, new Vector2(0.5f), new Vector2(20f, 3f), SpriteEffects.None, 0f);
+                OniBrush.DrawSoftStreak(sb, pos, OnikiriUITheme.MeiBladeCant, 54f, 1.5f,
+                    OnikiriUITheme.HotWhite, alpha * 0.8f * pulse, glowMul: 1.1f);
+                OniBrush.DrawSoftDot(sb, pos, 11f, OnikiriUITheme.Bright, alpha * 0.30f * pulse);
             }
 
-            //鬼影掠面:刀面倒影里一道暗痕走过(不用鬼火青,只是影子)
+            //鬼影掠面:刀面倒影里一道暗痕走过(羽化退晕,影子没有直角)
             if (wispRun >= 0f) {
                 float t = wispRun / 70f;
                 float u = MathHelper.Lerp(0.9f, 0.08f, t);
                 float pulse = (float)Math.Sin(t * MathHelper.Pi);
                 Vector2 pos = tip + dir * (bladeW * u) + perp * ((float)Math.Sin(t * 9f) * 2f);
-                sb.Draw(Pixel, pos, PixelSrc, OnikiriUITheme.Ink * (alpha * 0.45f * pulse),
-                    OnikiriUITheme.MeiBladeCant + 0.05f, new Vector2(0.5f), new Vector2(64f, quadH * 0.16f), SpriteEffects.None, 0f);
-                sb.Draw(Pixel, pos + dir * 40f, PixelSrc, OnikiriUITheme.Paper * (alpha * 0.10f * pulse),
-                    OnikiriUITheme.MeiBladeCant, new Vector2(0.5f), new Vector2(20f, quadH * 0.10f), SpriteEffects.None, 0f);
+                OniBrush.DrawFeathered(sb, pos, OnikiriUITheme.MeiBladeCant + 0.05f,
+                    new Vector2(52f, quadH * 0.12f), OnikiriUITheme.Ink, alpha * 0.8f * pulse);
+                OniBrush.DrawSoftStreak(sb, pos + dir * 40f, OnikiriUITheme.MeiBladeCant, 26f, 1.6f,
+                    OnikiriUITheme.Paper, alpha * 0.12f * pulse, glowMul: 0.3f);
             }
         }
 
@@ -291,6 +301,58 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 new Vector2(len, thick), SpriteEffects.None, 0f);
         }
 
+        /// <summary>
+        /// 铭位常驻标记:呼吸暖芒垫底+环上小刻标(朱菱+垂针)+周期巡环亮弧+开屏涟漪,
+        /// 让三处铭位不靠悬停也读得出"此处可铭"
+        /// </summary>
+        public static void DrawSlotMarker(SpriteBatch sb, Vector2 pos, float radius, bool engraved,
+            float hover, float alpha, float time, float ripple, int index) {
+            float breath = OnikiriUITheme.Breath(time, index * 0.77f, 1.5f);
+            //呼吸暖芒:空位醒目(等着落鏨),已铭收敛一档;悬停时让位给环
+            float baseA = engraved ? 0.10f : 0.20f;
+            OniBrush.DrawSoftDot(sb, pos, radius * (1.45f + breath * 0.35f), OnikiriUITheme.CandleWarm,
+                alpha * (baseA + breath * 0.09f) * (1f - hover * 0.55f));
+
+            //环上小刻标:一枚朱菱悬在环顶,垂一根短针指向铭位
+            float tickLift = breath * 2.2f;
+            Vector2 tickTop = pos - Vector2.UnitY * (radius + 14f + tickLift);
+            Color tick = Color.Lerp(OnikiriUITheme.Seal, OnikiriUITheme.Bright, hover)
+                * (alpha * (0.50f + breath * 0.28f + hover * 0.22f));
+            sb.Draw(Pixel, tickTop, PixelSrc, tick, MathHelper.PiOver4, new Vector2(0.5f),
+                new Vector2(4.4f + hover * 1.2f), SpriteEffects.None, 0f);
+            sb.Draw(Pixel, tickTop + Vector2.UnitY * 6.5f, PixelSrc, tick * 0.85f, 0f,
+                new Vector2(0.5f, 0f), new Vector2(1.1f, 6f), SpriteEffects.None, 0f);
+
+            //周期巡环:一小段亮弧每约六秒绕行一周(三位错相),睡着的标记轮流醒一下
+            float sweepT = (time * 0.155f + index * 0.36f) % 1f;
+            if (sweepT < 0.30f) {
+                float k = sweepT / 0.30f;
+                float fade = (float)Math.Sin(k * MathHelper.Pi);
+                float baseAng = k * MathHelper.TwoPi - MathHelper.PiOver2;
+                Color arc = OnikiriUITheme.GoldInlay * (alpha * 0.55f * fade * (1f - hover));
+                for (int i = 0; i < 4; i++) {
+                    float ang = baseAng + i * 0.16f;
+                    Vector2 a = pos + ang.ToRotationVector2() * radius;
+                    sb.Draw(Pixel, a, PixelSrc, arc * (1f - i * 0.2f), ang + MathHelper.PiOver2,
+                        new Vector2(0f, 0.5f), new Vector2(5f, 1.1f), SpriteEffects.None, 0f);
+                }
+            }
+
+            //开屏涟漪:一圈刻度环自铭位扩散,伴一记软亮,开台即点名三处位置
+            if (ripple > 0.01f && ripple < 0.995f) {
+                float rr = radius * (0.55f + ripple * 2.1f);
+                float ra = (1f - ripple) * (1f - ripple);
+                Color ring = Color.Lerp(OnikiriUITheme.HotWhite, OnikiriUITheme.Seal, ripple) * (alpha * 0.8f * ra);
+                for (int i = 0; i < 12; i++) {
+                    float ang = MathHelper.TwoPi * i / 12f + ripple * 0.9f;
+                    Vector2 a = pos + ang.ToRotationVector2() * rr;
+                    sb.Draw(Pixel, a, PixelSrc, ring, ang, new Vector2(0f, 0.5f),
+                        new Vector2(4f + ripple * 3f, 1.1f), SpriteEffects.None, 0f);
+                }
+                OniBrush.DrawSoftDot(sb, pos, rr * 0.8f, OnikiriUITheme.CandleWarm, alpha * 0.35f * ra);
+            }
+        }
+
         /// <summary>铭位环:悬停点亮一圈短刻度,选中加朱色常亮</summary>
         public static void DrawSlotRing(SpriteBatch sb, Vector2 pos, float radius, float hover, float select,
             float alpha, float time) {
@@ -384,27 +446,51 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         //====================== 烙印木牌 ======================
 
-        /// <summary>细节木牌:漆木底+烙印文字打字机,金阶盖金签,除铭题绯红</summary>
+        /// <summary>
+        /// 细节木牌:手裁板体(shader 木纹焦边优先)+系绳挂钉+烙印文字打字机,
+        /// 金阶盖金签,除铭题绯红;它是挂在台边的一块荷札,不是浮空面板
+        /// </summary>
         public static void DrawWoodTag(SpriteBatch sb, DynamicSpriteFont font, Rectangle rect,
             string title, string kindLabel, string origin, string power, string burden, bool gold, bool erase,
             int visibleChars, float burnFresh, float alpha, float time) {
-            //板影/包边/板体
-            sb.Draw(Pixel, new Rectangle(rect.X + 4, rect.Y + 6, rect.Width, rect.Height), PixelSrc,
-                new Color(8, 2, 5) * (alpha * 0.55f));
-            sb.Draw(Pixel, new Rectangle(rect.X - 3, rect.Y - 3, rect.Width + 6, rect.Height + 6), PixelSrc,
-                OnikiriUITheme.Deep * (alpha * 0.5f));
-            sb.Draw(Pixel, rect, PixelSrc, new Color(52, 18, 16) * (alpha * 0.97f));
+            //板影:羽化落影
+            OniBrush.DrawFeathered(sb, rect.Center.ToVector2() + new Vector2(5f, 7f), 0.008f,
+                new Vector2(rect.Width, rect.Height), new Color(8, 2, 5), alpha * 0.72f);
 
-            //木纹:几道纵向暗纹
-            for (int i = 0; i < 5; i++) {
-                float u = 0.1f + Hash01(i * 61 + 3) * 0.8f;
-                sb.Draw(Pixel, new Vector2(rect.X + rect.Width * u, rect.Center.Y), PixelSrc,
-                    OnikiriUITheme.Ink * (alpha * 0.28f), 0f, new Vector2(0.5f),
-                    new Vector2(1f, rect.Height * 0.85f), SpriteEffects.None, 0f);
+            //系绳:从穿绳孔上挑到台缘一枚钉,让牌"挂"在世界里
+            Vector2 hole = new(rect.X + 14f, rect.Y + 12f);
+            Vector2 nail = hole + new Vector2(-22f, -40f);
+            float sway = (float)Math.Sin(time * 1.1f) * 1.6f;
+            Vector2 mid = (hole + nail) * 0.5f + new Vector2(5f + sway, 6f);
+            OniBrush.DrawGradientLine(sb, nail, mid, OnikiriUITheme.Deep * (alpha * 0.85f),
+                OnikiriUITheme.Deep * (alpha * 0.7f), 1.5f);
+            OniBrush.DrawGradientLine(sb, mid, hole, OnikiriUITheme.Deep * (alpha * 0.7f),
+                OnikiriUITheme.Dark * (alpha * 0.85f), 1.5f);
+            sb.Draw(Pixel, nail, PixelSrc, OnikiriUITheme.GoldDeep * (alpha * 0.95f), MathHelper.PiOver4,
+                new Vector2(0.5f), new Vector2(4.2f), SpriteEffects.None, 0f);
+            sb.Draw(Pixel, nail + new Vector2(-0.8f, -0.8f), PixelSrc, OnikiriUITheme.GoldInlay * (alpha * 0.6f),
+                MathHelper.PiOver4, new Vector2(0.5f), new Vector2(1.8f), SpriteEffects.None, 0f);
+
+            //板体:shader 手裁木板(木纹/焦边/缺角/绳孔),缺席退回简笔
+            if (OniMeiStandDraw.Available) {
+                Rectangle plank = rect;
+                plank.Inflate(6, 6);
+                OniMeiStandDraw.DrawWoodPlank(sb, plank, alpha, time);
             }
-            //穿绳孔:左上一粒
-            sb.Draw(Pixel, new Vector2(rect.X + 13f, rect.Y + 12f), PixelSrc, OnikiriUITheme.Ink * (alpha * 0.9f),
-                MathHelper.PiOver4, new Vector2(0.5f), new Vector2(4.4f), SpriteEffects.None, 0f);
+            else {
+                //CPU 简笔:包边+板体+纵纹+绳孔
+                sb.Draw(Pixel, new Rectangle(rect.X - 3, rect.Y - 3, rect.Width + 6, rect.Height + 6), PixelSrc,
+                    OnikiriUITheme.Deep * (alpha * 0.5f));
+                sb.Draw(Pixel, rect, PixelSrc, new Color(52, 18, 16) * (alpha * 0.97f));
+                for (int i = 0; i < 5; i++) {
+                    float u = 0.1f + Hash01(i * 61 + 3) * 0.8f;
+                    sb.Draw(Pixel, new Vector2(rect.X + rect.Width * u, rect.Center.Y), PixelSrc,
+                        OnikiriUITheme.Ink * (alpha * 0.28f), 0f, new Vector2(0.5f),
+                        new Vector2(1f, rect.Height * 0.85f), SpriteEffects.None, 0f);
+                }
+                sb.Draw(Pixel, hole, PixelSrc, OnikiriUITheme.Ink * (alpha * 0.9f),
+                    MathHelper.PiOver4, new Vector2(0.5f), new Vector2(4.4f), SpriteEffects.None, 0f);
+            }
 
             float textLeft = rect.X + 28f;
             float headerRight = rect.Right - 16f;

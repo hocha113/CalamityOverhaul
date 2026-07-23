@@ -95,6 +95,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private readonly float[] slotHover = new float[3];
         private readonly float[] slotSelect = new float[3];
         private int selectedSlot = -1;      //-1 未选;0~2 = OniMeiSlotKind
+        /// <summary>扇面向上张(下方会压到烙印木牌时翻到刀上方)</summary>
+        private bool fanUp;
         private float fanEase;
         private readonly List<OniMeiDefinition> ribs = [];
         private bool ribsHasErase;
@@ -113,6 +115,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private bool mekugiPopped;
         private float mekugiAnim;
         private float postRiteNameEase = 1f;
+        //开屏涟漪:内容可见后逐位点名三处铭位(帧计数,溢出即停)
+        private int slotRevealTimer;
 
         //====木牌打字机====
         private string tagStamp = "";
@@ -147,6 +151,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             fanEase = 0f;
             mekugiPopped = false;
             mekugiAnim = 0f;
+            slotRevealTimer = 0;
             tagStamp = "";
             lastTypedChars = -1;
             postRiteNameEase = 1f;
@@ -208,6 +213,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (mekugiPopped && mekugiAnim < 1f) {
                 mekugiAnim = Math.Min(mekugiAnim + 1f / 26f, 1f);
             }
+            //开屏涟漪计时:内容可见后开始点名铭位
+            if (IsOpen && a >= 0.8f && slotRevealTimer < 400) {
+                slotRevealTimer++;
+            }
 
             //收卷木牌摆
             closeTagRope.Update(closeTagAnchor, null, GlobalTimer, 0.24f, endWeight: 0.55f);
@@ -261,7 +270,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 (int)clothW, (int)OnikiriUITheme.MeiClothH);
 
             if (selectedSlot >= 0) {
-                fanPivot = slotPos[selectedSlot] + bladePerp * 108f;
+                fanPivot = slotPos[selectedSlot] + bladePerp * (fanUp ? -108f : 108f);
             }
 
             tagRect = new Rectangle((int)(sw * 0.055f),
@@ -382,12 +391,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             hoverRib = -1;
             Array.Clear(ribEase, 0, ribEase.Length);
             if (index >= 0) {
+                //扇面朝向:向下张开会压到烙印木牌时翻到刀上方,骨与牌互不遮挡
+                fanUp = FanWouldHitTag(index);
                 SoundEngine.PlaySound(CWRSound.ButtonZero with { Volume = 0.5f });
                 RebuildRibs();
             }
             else {
                 SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.2f, Volume = 0.3f });
             }
+        }
+
+        /// <summary>预判向下张开的扇面外包是否压到烙印木牌(小分辨率下左侧铭位会撞)</summary>
+        private bool FanWouldHitTag(int index) {
+            Vector2 pivot = slotPos[index] + bladePerp * 108f;
+            float reach = OnikiriUITheme.MeiFanRibLen + OnikiriUITheme.MeiFanGlyphSize * 1.4f;
+            float halfW = reach * MathF.Sin(OnikiriUITheme.MeiFanSpread * 0.5f) + OnikiriUITheme.MeiFanGlyphSize;
+            Rectangle fan = new((int)(pivot.X - halfW), (int)(pivot.Y - OnikiriUITheme.MeiFanGlyphSize * 0.5f),
+                (int)(halfW * 2f), (int)(reach + OnikiriUITheme.MeiFanGlyphSize));
+            Rectangle tagPad = tagRect;
+            tagPad.Inflate(24, 24);
+            return fan.Intersects(tagPad);
         }
 
         private void RebuildRibs() {
@@ -398,9 +421,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         private int RibCount() => ribs.Count + (ribsHasErase ? 1 : 0);
 
-        /// <summary>扇骨纹章心位置,骨自枢下张</summary>
+        /// <summary>扇骨纹章心位置,骨自枢张出(默认向下,防遮挡时向上)</summary>
         private Vector2 RibPos(int index, int count) {
-            float ang = MathHelper.PiOver2;
+            float ang = fanUp ? -MathHelper.PiOver2 : MathHelper.PiOver2;
             if (count > 1) {
                 ang += (index / (count - 1f) - 0.5f) * OnikiriUITheme.MeiFanSpread;
             }
@@ -539,6 +562,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             _ => SlotNakago.Value,
         };
 
+        /// <summary>烙印打字机速度(字/帧):快而仍读得出"烫上去"的次第</summary>
+        private const float TagCharsPerFrame = 2.1f;
+
         private void UpdateTagTypewriter() {
             (string stamp, _, _, _, _, _, _, _) = ResolveTag();
             if (stamp != tagStamp) {
@@ -548,7 +574,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 burnAge = 60f;
             }
             typeTimer += 1f;
-            int chars = (int)(typeTimer / 1.3f);
+            int chars = (int)(typeTimer * TagCharsPerFrame);
             if (chars != lastTypedChars) {
                 lastTypedChars = chars;
                 burnAge = 0f;
@@ -557,7 +583,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         /// <summary>木牌烙印可见字符数</summary>
-        internal int TagVisibleChars => Math.Max(0, (int)(typeTimer / 1.3f));
+        internal int TagVisibleChars => Math.Max(0, (int)(typeTimer * TagCharsPerFrame));
         /// <summary>木牌最新字的灼热度 0~1</summary>
         internal float TagBurnStrength => 1f - MathHelper.Clamp(burnAge / 16f, 0f, 1f);
 
@@ -608,6 +634,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniBrush.DrawBacklight(spriteBatch, riteAnchor, 120f, OnikiriUITheme.CandleWarm, Rite.Dim * 1.4f);
             }
 
+            //====烙印木牌(先画:鏨盘扇与铭位交互层压在其上,不再被牌面遮挡)====
+            if (contentA > 0.01f) {
+                (_, string title, string kind, string origin, string power, string burden, bool gold, bool erase) = ResolveTag();
+                if (title.Length > 0) {
+                    OniMeiRenderer.DrawWoodTag(spriteBatch, font, tagRect, title, kind, origin, power,
+                        burden, gold, erase, TagVisibleChars, TagBurnStrength, contentA, ShaderTime);
+                }
+            }
+
             //====铭位与字形====
             if (contentA > 0.01f) {
                 DrawSlots(spriteBatch, font, contentA);
@@ -621,15 +656,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //====仪式工具(鏨/锉)====
             if (Rite.Active) {
                 DrawRiteTools(spriteBatch);
-            }
-
-            //====烙印木牌====
-            if (contentA > 0.01f) {
-                (_, string title, string kind, string origin, string power, string burden, bool gold, bool erase) = ResolveTag();
-                if (title.Length > 0) {
-                    OniMeiRenderer.DrawWoodTag(spriteBatch, font, tagRect, title, kind, origin, power,
-                        burden, gold, erase, TagVisibleChars, TagBurnStrength, contentA, ShaderTime);
-                }
             }
 
             //====右缘刀铭大字====
@@ -664,6 +690,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniMeiDefinition engraved = EngravedAt(i);
                 bool riteHere = Rite.Active && (int)Rite.Slot == i;
 
+                //常驻标记:暖芒/刻标/巡环/开屏涟漪,先垫在字形之下;仪式位让位给聚光
+                if (!riteHere) {
+                    float ripple = MathHelper.Clamp((slotRevealTimer - 6 - i * 13) / 34f, 0f, 1f);
+                    OniMeiRenderer.DrawSlotMarker(sb, pos, OnikiriUITheme.MeiSlotRadius, engraved != null,
+                        slotHover[i], a, ShaderTime, ripple, i);
+                }
+
                 //铭位字形
                 if (riteHere) {
                     //旧铭锉去中
@@ -684,14 +717,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                             Time = ShaderTime,
                         };
                         OniMeiGlyph.Draw(sb, Rite.NewKey, pos, RiteGlyphSize(), style);
-                        //油布抹过:一线亮光扫过字形
+                        //油布抹过:一线软亮扫过字形(两端没入,不再硬边横条)
                         if (Rite.OilWipe > 0.01f && Rite.OilWipe < 0.99f) {
                             float sweepX = MathHelper.Lerp(-1.2f, 1.2f, Rite.OilWipe);
                             Vector2 wipePos = pos + bladeDir * (sweepX * RiteGlyphSize() * 0.6f);
-                            sb.Draw(VaultAsset.placeholder2.Value, wipePos, new Rectangle(0, 0, 1, 1),
-                                OnikiriUITheme.HotWhite * (a * 0.35f * (float)Math.Sin(Rite.OilWipe * MathHelper.Pi)),
-                                OnikiriUITheme.MeiBladeCant + MathHelper.PiOver2, new Vector2(0.5f),
-                                new Vector2(RiteGlyphSize() * 1.2f, 3f), SpriteEffects.None, 0f);
+                            OniBrush.DrawSoftStreak(sb, wipePos, OnikiriUITheme.MeiBladeCant + MathHelper.PiOver2,
+                                RiteGlyphSize() * 1.25f, 2.4f, OnikiriUITheme.HotWhite,
+                                a * 0.40f * (float)Math.Sin(Rite.OilWipe * MathHelper.Pi), glowMul: 0.7f);
                         }
                     }
                 }

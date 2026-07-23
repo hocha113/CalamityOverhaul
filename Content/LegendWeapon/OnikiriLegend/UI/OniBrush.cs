@@ -228,6 +228,57 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             sb.Draw(glow, center, null, add * (alpha * 0.35f), 0f, origin, scale * 0.55f, SpriteEffects.None, 0f);
         }
 
+        /// <summary>软光点,A=0 预乘加法(单层,粒子用;比 <see cref="DrawBacklight"/> 轻)</summary>
+        public static void DrawSoftDot(SpriteBatch sb, Vector2 center, float radius, Color color, float alpha) {
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+            Color add = new Color(color.R, color.G, color.B, 0);
+            sb.Draw(glow, center, null, add * alpha, 0f, glow.Size() * 0.5f,
+                radius * 2f / glow.Width, SpriteEffects.None, 0f);
+        }
+
+        /// <summary>
+        /// 发光流带:沿向高斯衰减的分段亮条+芯上软辉,两端自然没入,取代硬边像素长条;
+        /// core 走 AlphaBlend、辉光 A=0 加法,同批可画
+        /// </summary>
+        public static void DrawSoftStreak(SpriteBatch sb, Vector2 center, float rotation, float length,
+            float thick, Color color, float alpha, float glowMul = 1f) {
+            if (alpha <= 0.01f || length < 2f) {
+                return;
+            }
+            Vector2 dir = rotation.ToRotationVector2();
+            const int Seg = 9;
+            float segLen = length / Seg;
+            for (int i = 0; i < Seg; i++) {
+                float t = (i + 0.5f) / Seg - 0.5f;             //-0.5..0.5
+                float falloff = (float)Math.Exp(-t * t * 14f); //两端高斯没入
+                Vector2 pos = center + dir * (t * length);
+                sb.Draw(Pixel, pos, PixelSrc, color * (alpha * falloff), rotation,
+                    new Vector2(0.5f), new Vector2(segLen + 0.8f, thick * (0.55f + falloff * 0.45f)),
+                    SpriteEffects.None, 0f);
+            }
+            if (glowMul > 0.01f) {
+                Texture2D glow = CWRAsset.SoftGlow.Value;
+                Color add = new Color(color.R, color.G, color.B, 0);
+                sb.Draw(glow, center, null, add * (alpha * 0.40f * glowMul), rotation, glow.Size() * 0.5f,
+                    new Vector2(length * 1.05f / glow.Width, thick * 5.2f / glow.Height), SpriteEffects.None, 0f);
+            }
+        }
+
+        /// <summary>
+        /// 羽化色块:三层同心堆叠的假模糊(内实外虚),给暗色/哑光形体用
+        /// (暗影无法加色发光,用层叠退晕替代硬边)
+        /// </summary>
+        public static void DrawFeathered(SpriteBatch sb, Vector2 center, float rotation, Vector2 size,
+            Color color, float alpha) {
+            if (alpha <= 0.01f) {
+                return;
+            }
+            Vector2 half = new(0.5f);
+            sb.Draw(Pixel, center, PixelSrc, color * (alpha * 0.13f), rotation, half, size * 1.75f, SpriteEffects.None, 0f);
+            sb.Draw(Pixel, center, PixelSrc, color * (alpha * 0.30f), rotation, half, size * 1.32f, SpriteEffects.None, 0f);
+            sb.Draw(Pixel, center, PixelSrc, color * (alpha * 0.55f), rotation, half, size, SpriteEffects.None, 0f);
+        }
+
         /// <summary>确定性 0~1 hash</summary>
         public static float Hash01(int n) {
             unchecked {
