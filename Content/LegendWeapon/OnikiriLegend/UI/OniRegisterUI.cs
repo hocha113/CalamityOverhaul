@@ -40,6 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText CloseTagText { get; private set; }
         public static LocalizedText CloseHintFormat { get; private set; }
         public static LocalizedText MeiTabText { get; private set; }
+        public static LocalizedText MeiTabHint { get; private set; }
 
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "点 鬼 簿");
@@ -61,6 +62,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             CloseTagText = this.GetLocalization(nameof(CloseTagText), () => "收卷");
             CloseHintFormat = this.GetLocalization(nameof(CloseHintFormat), () => "ESC · {0} · 点击卷外 收卷");
             MeiTabText = this.GetLocalization(nameof(MeiTabText), () => "改铭台");
+            MeiTabHint = this.GetLocalization(nameof(MeiTabHint), () => "点击 移步");
         }
         #endregion
 
@@ -82,9 +84,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private bool closeTagWasHovered;
         private Vector2 closeTagAnchor;
         private readonly OniRope closeTagRope = new(5, 22f);
-        //姊妹页签:去改铭台
-        private Rectangle meiTabRect;
-        private float meiTabHover;
+        //吊挂太刀:去改铭台的门(对面器物的微缩,挂在卷轴左肩的梁下)
+        private readonly OniHangingSwitch meiSwitch = new(SoundID.Unlock with { Pitch = 0.3f, Volume = 0.35f });
+        private Vector2 meiSwitchAnchor;
         private readonly Rectangle[] entryRects = new Rectangle[16];
 
         //====动画状态====
@@ -120,6 +122,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (OniMeiUI.Instance?.IsOpen ?? false) {
                 OniMeiUI.Instance.Close();
             }
+            meiSwitch.Reset();
             SwayTimer = 0f;
             petalTimer = 0;
             particles.Clear();
@@ -203,6 +206,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Vector2 tagTop = closeTagRope.End;
             closeTagRect = new Rectangle((int)(tagTop.X - 16f), (int)tagTop.Y - 2, 32, 48);
 
+            //吊挂太刀:点击预演到帧即移步改铭台
+            bool meiRiteBusy = OniEngraveRiteUI.Instance?.Active ?? false;
+            if (meiSwitch.Update(meiSwitchAnchor, MousePosition, IsOpen && a > 0.9f && !meiRiteBusy,
+                GlobalTimer, new Vector2(30f, 100f), keyLeftPressState)) {
+                OniMeiUI.Instance?.Open();
+            }
+
             UpdateInteraction(a);
             UpdateAmbient(a);
             UpdateAnomalies();
@@ -229,8 +239,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //收卷木牌绳锚:顶部轴杆右端帽,牌体位置由 Verlet 绳每帧决定
             closeTagAnchor = new Vector2(scrollRect.Right + 17f, scrollRect.Y - 7f);
 
-            //姊妹页签:卷左缘下段探出
-            meiTabRect = new Rectangle(scrollRect.X - 24, scrollRect.Bottom - 150, 26, 64);
+            //吊挂太刀锚:卷轴左肩外的梁下,与右肩收卷牌对称成"一梁两挂"
+            meiSwitchAnchor = new Vector2(scrollRect.X - 48f, scrollRect.Y - 7f);
 
             //名录竖列,右起左行(旧式名册自右向左)
             Rectangle inner = scrollRect;
@@ -280,28 +290,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             closeTagWasHovered = tagHovered;
 
-            //姊妹页签 hover
-            bool meiTabHovered = inputAvailable && meiTabRect.Contains(mp);
-            meiTabHover += ((meiTabHovered ? 1f : 0f) - meiTabHover) * 0.2f;
-
             if (inputAvailable && keyLeftPressState == KeyPressState.Pressed) {
                 if (tagHovered) {
                     Close();
-                    return;
-                }
-                if (meiTabHovered) {
-                    //去改铭台(它的 OnOpen 会收本卷)
-                    OniMeiUI.Instance?.Open();
                     return;
                 }
                 if (hoverIndex >= 0) {
                     SelectEntry(hoverIndex);
                     return;
                 }
-                //点击卷外压暗区收卷:卷轴(含外扩边)、细节板、收卷牌之外都算"外"
+                //点击卷外压暗区收卷:卷轴(含外扩边)、细节板、收卷牌、吊挂太刀之外都算"外"
                 Rectangle scrollHit = scrollRect;
                 scrollHit.Inflate(OnikiriUITheme.ScrollEdgePad + 22, OnikiriUITheme.ScrollEdgePad + 22);
-                if (!scrollHit.Contains(mp) && !detailRect.Contains(mp)) {
+                if (!scrollHit.Contains(mp) && !detailRect.Contains(mp) && !meiSwitch.Hovering) {
                     Close();
                 }
             }
@@ -441,12 +442,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniRegisterRenderer.DrawDetail(spriteBatch, this, detailRect, contentA);
                 OniRegisterRenderer.DrawCloseTag(spriteBatch, font, closeTagRope, contentA, closeTagHover, GlobalTimer);
                 DrawCloseHint(spriteBatch, font, contentA);
-                OniMeiRenderer.DrawSiblingTab(spriteBatch, font, meiTabRect, meiTabHover, contentA,
-                    ShaderTime, MeiTabText.Value, paperIcon: false);
+                //吊挂太刀:荷札上书今名(铭位数据是每刀一份,展示缓存直读)
+                string bladeName = Inscriptions.OniMeiRegistry.CurrentBladeName(
+                    Inscriptions.OniMeiRegistry.DisplayStore)?.DisplayName.Value ?? "";
+                OniRegisterRenderer.DrawHangingTachi(spriteBatch, font, meiSwitch, contentA, GlobalTimer, bladeName);
             }
 
             //====两翼落花====
             particles.Draw(spriteBatch, a);
+
+            //吊挂太刀的悬浮说明(最后画,压在一切之上)
+            if (meiSwitch.HoverEase > 0.05f) {
+                OniMeiRenderer.DrawSwitchHoverTag(spriteBatch, font, MousePosition,
+                    MeiTabText.Value, MeiTabHint.Value, a * meiSwitch.HoverEase);
+            }
         }
 
         private void DrawHeader(SpriteBatch sb, DynamicSpriteFont font, float a) {

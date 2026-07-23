@@ -547,6 +547,7 @@ OnikiriText: {
 		// CloseTagText: ROLL
 		// CloseHintFormat: ESC · {0} · click outside to roll up
 		// MeiTabText: Inscription Stand
+		// MeiTabHint: Click to step over
 	}
 
 	OniMeiUI: {
@@ -568,6 +569,7 @@ OnikiriText: {
 		// CurrentMark: Present
 		// GoldMark: Gold Inlay
 		// RegisterTabText: Ghost Register
+		// RegisterTabHint: Click to step over
 	}
 
 	OniEngraveRiteUI: {

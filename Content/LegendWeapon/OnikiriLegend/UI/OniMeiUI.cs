@@ -45,6 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText CurrentMark { get; private set; }
         public static LocalizedText GoldMark { get; private set; }
         public static LocalizedText RegisterTabText { get; private set; }
+        public static LocalizedText RegisterTabHint { get; private set; }
 
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "改 铭 台");
@@ -65,6 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             CurrentMark = this.GetLocalization(nameof(CurrentMark), () => "现铭");
             GoldMark = this.GetLocalization(nameof(GoldMark), () => "金象嵌");
             RegisterTabText = this.GetLocalization(nameof(RegisterTabText), () => "点鬼簿");
+            RegisterTabHint = this.GetLocalization(nameof(RegisterTabHint), () => "点击 移步");
         }
         #endregion
 
@@ -83,7 +85,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private Vector2 fanPivot;
         private Rectangle tagRect;
         private Vector2 nameColTop;
-        private Rectangle sideTabRect;
         private Vector2 closeTagAnchor;
         private Rectangle closeTagRect;
 
@@ -100,7 +101,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private float closeTagHover;
         private bool closeTagWasHovered;
         private readonly OniRope closeTagRope = new(5, 22f);
-        private float sideTabHover;
+        //吊挂卷轴:回点鬼簿的门(对面器物的微缩,挂在布左上的梁下)
+        private readonly OniHangingSwitch registerSwitch = new(SoundID.MenuTick with { Pitch = -0.2f, Volume = 0.45f });
+        private Vector2 registerSwitchAnchor;
 
         //====动画状态====
         internal float ShaderTime;
@@ -145,6 +148,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             tagStamp = "";
             lastTypedChars = -1;
             postRiteNameEase = 1f;
+            registerSwitch.Reset();
             songCooldown = Main.rand.Next(700, 1400);
             songRun = -1f;
             wispRun = -1f;
@@ -208,6 +212,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Vector2 tagTop = closeTagRope.End;
             closeTagRect = new Rectangle((int)(tagTop.X - 16f), (int)tagTop.Y - 2, 32, 48);
 
+            //吊挂卷轴:点击预演到帧即移步点鬼簿;簿上有鬼躁动时回声更急
+            if (registerSwitch.Update(registerSwitchAnchor, MousePosition, IsOpen && a > 0.9f && !Rite.Active,
+                GlobalTimer, new Vector2(34f, 92f), keyLeftPressState, OniRegistry.InDanger)) {
+                OniRegisterUI.Instance?.Open();
+            }
+
             //鏨仪式推进:期间吞交互,点击可跳
             if (Rite.Active) {
                 Vector2 riteAnchor = slotPos[(int)Rite.Slot];
@@ -257,7 +267,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 (int)OnikiriUITheme.MeiTagSize.X, (int)OnikiriUITheme.MeiTagSize.Y);
 
             nameColTop = new Vector2(sw * OnikiriUITheme.MeiNameColXRatio, sh * 0.16f);
-            sideTabRect = new Rectangle(clothRect.X - 24, clothRect.Bottom - 122, 26, 64);
+            //吊挂卷轴锚:布左上的梁下,与右上的纳刀牌对称成"一梁两挂"
+            registerSwitchAnchor = new Vector2(clothRect.X + 36f, clothRect.Y - 6f);
             closeTagAnchor = new Vector2(clothRect.Right - 30f, clothRect.Y - 6f);
         }
 
@@ -321,15 +332,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 }
             }
 
-            //收卷牌/姊妹页签悬停
+            //收卷牌悬停
             bool tagHovered = inputAvailable && closeTagRect.Contains(mp);
             closeTagHover += ((tagHovered ? 1f : 0f) - closeTagHover) * 0.2f;
             if (tagHovered && !closeTagWasHovered) {
                 closeTagRope.Nudge(Main.rand.NextFloat(0.8f, 1.5f) * (Main.rand.NextBool() ? 1f : -1f));
             }
             closeTagWasHovered = tagHovered;
-            bool tabHovered = inputAvailable && sideTabRect.Contains(mp);
-            sideTabHover += ((tabHovered ? 1f : 0f) - sideTabHover) * 0.2f;
 
             EaseArrays();
 
@@ -340,11 +349,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //====点击====
             if (tagHovered) {
                 Close();
-                return;
-            }
-            if (tabHovered) {
-                //姊妹页签:去点鬼簿(它的 OnOpen 会收本台)
-                OniRegisterUI.Instance?.Open();
                 return;
             }
             if (hoverSlot >= 0) {
@@ -360,12 +364,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 SelectSlot(-1);
                 return;
             }
-            //点台外收台:白布(含余量)/木牌/名字列之外
+            //点台外收台:白布(含余量)/木牌/名字列/吊挂卷轴之外
             Rectangle clothHit = clothRect;
             clothHit.Inflate(30, 46);
             Rectangle nameHit = new((int)(nameColTop.X - 46f), (int)(nameColTop.Y - 20f), 92,
                 (int)(OnikiriUITheme.UIScreenH * 0.6f));
-            if (!clothHit.Contains(mp) && !tagRect.Contains(mp) && !nameHit.Contains(mp)) {
+            if (!clothHit.Contains(mp) && !tagRect.Contains(mp) && !nameHit.Contains(mp)
+                && !registerSwitch.Hovering) {
                 Close();
             }
         }
@@ -634,11 +639,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniRegisterRenderer.DrawCloseTag(spriteBatch, font, closeTagRope, contentA, closeTagHover,
                     GlobalTimer, CloseTagText.Value);
                 DrawCloseHint(spriteBatch, font, contentA);
-                OniMeiRenderer.DrawSiblingTab(spriteBatch, font, sideTabRect, sideTabHover, contentA,
-                    ShaderTime, RegisterTabText.Value, paperIcon: true);
+                OniMeiRenderer.DrawHangingScroll(spriteBatch, registerSwitch, contentA, GlobalTimer,
+                    OniRegistry.InDanger);
             }
 
             particles.Draw(spriteBatch, a);
+
+            //吊挂卷轴的悬浮说明(最后画,压在一切之上)
+            if (registerSwitch.HoverEase > 0.05f) {
+                OniMeiRenderer.DrawSwitchHoverTag(spriteBatch, font, MousePosition,
+                    RegisterTabText.Value, RegisterTabHint.Value, a * registerSwitch.HoverEase);
+            }
         }
 
         private void DrawSlots(SpriteBatch sb, DynamicSpriteFont font, float a) {

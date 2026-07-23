@@ -543,57 +543,138 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 new Vector2(0.5f), new Vector2(1.4f, 6f), SpriteEffects.None, 0f);
         }
 
-        /// <summary>台题:左上横书+朱印+短烙痕</summary>
+        /// <summary>台题:布上居中横书+朱印+短烙痕(左上让位给吊挂卷轴)</summary>
         public static void DrawTitle(SpriteBatch sb, DynamicSpriteFont font, Rectangle clothRect, string title, float alpha) {
-            Vector2 tPos = new(clothRect.X + 42f, clothRect.Y - 42f);
-            OniBrush.DrawSealGlyph(sb, tPos + new Vector2(-22f, 12f), 12f, alpha * 0.95f);
-            Utils.DrawBorderString(sb, title, tPos, OnikiriUITheme.HotWhite * alpha, 1.02f);
             Vector2 tSize = font.MeasureString(title) * 1.02f;
+            Vector2 tPos = new(clothRect.Center.X - tSize.X * 0.5f, clothRect.Y - 42f);
+            OniBrush.DrawSealGlyph(sb, tPos + new Vector2(-24f, tSize.Y * 0.5f), 12f, alpha * 0.95f);
+            Utils.DrawBorderString(sb, title, tPos, OnikiriUITheme.HotWhite * alpha, 1.02f);
             OniBrush.DrawTaperedSlash(sb, tPos + new Vector2(-4f, tSize.Y + 5f),
-                tPos + new Vector2(tSize.X + 26f, tSize.Y + 3f), 2f, 1.4f, alpha * 0.85f);
+                tPos + new Vector2(tSize.X + 4f, tSize.Y + 3f), 2f, 1.4f, alpha * 0.85f);
         }
 
-        /// <summary>姊妹页签:布缘伸出的小木签,竖排字,悬停探出</summary>
-        public static void DrawSiblingTab(SpriteBatch sb, DynamicSpriteFont font, Rectangle rect, float hover,
-            float alpha, float time, string label, bool paperIcon) {
-            float slide = hover * 5f;
-            Rectangle r = rect;
-            r.X -= (int)slide;
+        //====================== 吊挂卷轴(回点鬼簿的门) ======================
 
-            sb.Draw(Pixel, new Rectangle(r.X + 2, r.Y + 3, r.Width, r.Height), PixelSrc, new Color(8, 2, 5) * (alpha * 0.5f));
-            sb.Draw(Pixel, new Rectangle(r.X - 2, r.Y - 2, r.Width + 2, r.Height + 4), PixelSrc,
-                Color.Lerp(OnikiriUITheme.Deep, OnikiriUITheme.Bright, hover * 0.4f) * (alpha * 0.6f));
-            sb.Draw(Pixel, r, PixelSrc, new Color(42, 16, 14) * (alpha * 0.96f));
+        /// <summary>
+        /// 悬挂的收卷点鬼簿微缩:对面屏(纸面)的器物本体挂在梁下作切换门。
+        /// 纸垂随风;Echo 鬼火漏缝(本屏唯一许可的青——簿那头在闹);Ceremony 地杆弹开一截瞥见名录
+        /// </summary>
+        public static void DrawHangingScroll(SpriteBatch sb, OniHangingSwitch sw, float alpha, float time, bool danger) {
+            if (alpha <= 0.01f) {
+                return;
+            }
+            sw.DrawRope(sb, alpha);
 
-            //小图形:纸札(去点鬼簿)或刀镡(去改铭台)
-            Vector2 icon = new(r.Center.X, r.Y + 11f);
-            if (paperIcon) {
-                sb.Draw(Pixel, icon, PixelSrc, OnikiriUITheme.Paper * (alpha * (0.7f + hover * 0.3f)), 0.06f,
-                    new Vector2(0.5f), new Vector2(7f, 12f), SpriteEffects.None, 0f);
-                sb.Draw(Pixel, icon - new Vector2(0f, 3f), PixelSrc, OnikiriUITheme.Seal * (alpha * 0.9f), MathHelper.PiOver4,
-                    new Vector2(0.5f), new Vector2(2.8f), SpriteEffects.None, 0f);
-            }
-            else {
-                sb.Draw(Pixel, icon, PixelSrc, OnikiriUITheme.TextDim * (alpha * (0.75f + hover * 0.25f)), 0f,
-                    new Vector2(0.5f), new Vector2(12f, 1.8f), SpriteEffects.None, 0f);
-                sb.Draw(Pixel, icon, PixelSrc, OnikiriUITheme.Deep * (alpha * 0.9f), MathHelper.PiOver4,
-                    new Vector2(0.5f), new Vector2(5f), SpriteEffects.None, 0f);
+            float rot = sw.Rot;
+            Vector2 top = sw.End;
+            Vector2 down = (MathHelper.PiOver2 + rot).ToRotationVector2();
+            Vector2 side = rot.ToRotationVector2();
+            float a = alpha * (0.92f + sw.HoverEase * 0.08f);
+            float lift = 1f + sw.HoverEase * 0.05f;
+            Vector2 half = new(0.5f);
+            Vector2 P(float y, float x = 0f) => top + down * y + side * x;
+
+            //挂绪结
+            sb.Draw(Pixel, top, PixelSrc, OnikiriUITheme.Seal * a, MathHelper.PiOver4 + rot * 0.4f,
+                half, new Vector2(4.2f), SpriteEffects.None, 0f);
+
+            //整卷淡影
+            sb.Draw(Pixel, P(40f) + new Vector2(1.5f, 2.2f), PixelSrc, new Color(8, 2, 5) * (a * 0.45f),
+                rot, half, new Vector2(16f, 72f), SpriteEffects.None, 0f);
+
+            //====天杆+朱漆端帽====
+            Vector2 rodTopC = P(7f);
+            sb.Draw(Pixel, rodTopC, PixelSrc, OnikiriUITheme.Dark * (a * 0.96f), rot, half,
+                new Vector2(30f, 3.6f), SpriteEffects.None, 0f);
+            sb.Draw(Pixel, rodTopC - down * 0.8f, PixelSrc, new Color(120, 52, 40) * (a * 0.6f), rot, half,
+                new Vector2(28f, 1f), SpriteEffects.None, 0f);
+            foreach (float x in new[] { -16f, 16f }) {
+                sb.Draw(Pixel, P(7f, x), PixelSrc, OnikiriUITheme.Deep * (a * 0.95f), rot, half,
+                    new Vector2(5f, 6f), SpriteEffects.None, 0f);
+                sb.Draw(Pixel, P(5.8f, x), PixelSrc, OnikiriUITheme.Bright * (a * 0.5f), rot, half,
+                    new Vector2(1.6f), SpriteEffects.None, 0f);
             }
 
-            //竖排签文
-            Color textCol = Color.Lerp(OnikiriUITheme.TextDim, OnikiriUITheme.HotWhite, hover) * alpha;
-            const float Scale = 0.6f;
-            float charH = font.MeasureString("字").Y * Scale + 1f;
-            float y = r.Y + 22f;
-            foreach (char c in label) {
-                string s = c.ToString();
-                Vector2 size = font.MeasureString(s) * Scale;
-                Utils.DrawBorderString(sb, s, new Vector2(r.Center.X - size.X * 0.5f, y), textCol, Scale);
-                y += charH;
-                if (y > r.Bottom - charH * 0.4f) {
-                    break;
-                }
+            //====纸垂两条:挂在天杆上,簿上有鬼躁动时抖得更急====
+            Rectangle shideRect = new((int)(rodTopC.X - 13f), (int)(rodTopC.Y + 1f), 26, 6);
+            float shideTime = time * (danger ? 1.7f : 1f);
+            OniBrush.DrawSingleShide(sb, shideRect, 0.10f, 12f, a * 0.95f, shideTime, 0.4f);
+            OniBrush.DrawSingleShide(sb, shideRect, 0.90f, 13f, a * 0.9f, shideTime, 2.3f);
+
+            //====卷体:纸筒三带卖圆,卷层暗线,束带一匝====
+            float c = sw.Ceremony01;
+            float cEase = c * (2f - c);
+            Vector2 rollC = P(38f);
+            sb.Draw(Pixel, rollC, PixelSrc, OnikiriUITheme.Paper * (a * 0.62f), rot, half,
+                new Vector2(14f, 52f) * lift, SpriteEffects.None, 0f);
+            sb.Draw(Pixel, rollC - side * 3.5f, PixelSrc, OnikiriUITheme.Paper * (a * 0.78f), rot, half,
+                new Vector2(5.5f, 52f) * lift, SpriteEffects.None, 0f);
+            sb.Draw(Pixel, rollC + side * 5f, PixelSrc, OnikiriUITheme.Paper * (a * 0.42f), rot, half,
+                new Vector2(3.5f, 52f) * lift, SpriteEffects.None, 0f);
+            foreach (float y in new[] { 22f, 36f, 50f }) {
+                sb.Draw(Pixel, P(y), PixelSrc, OnikiriUITheme.TextDim * (a * 0.30f), rot, half,
+                    new Vector2(13f, 1f), SpriteEffects.None, 0f);
             }
+            sb.Draw(Pixel, P(38f), PixelSrc, OnikiriUITheme.Deep * (a * 0.9f), rot, half,
+                new Vector2(15.5f, 2.6f), SpriteEffects.None, 0f);
+            sb.Draw(Pixel, P(38f, 8f), PixelSrc, OnikiriUITheme.Deep * (a * 0.85f), rot + MathHelper.PiOver4,
+                half, new Vector2(3f), SpriteEffects.None, 0f);
+
+            //====回声:鬼火自卷缝漏一丝====
+            float echo = sw.Echo01;
+            if (echo > 0.01f) {
+                float pulse = MathF.Sin(echo * MathHelper.Pi);
+                Vector2 seam = P(30f + echo * 14f, -6f);
+                sb.Draw(Pixel, seam, PixelSrc, OnikiriUITheme.GhostDim * (a * 0.5f * pulse), rot,
+                    new Vector2(0.5f, 1f), new Vector2(2.4f, 6f * pulse), SpriteEffects.None, 0f);
+                sb.Draw(Pixel, seam, PixelSrc, OnikiriUITheme.GhostFire * (a * 0.7f * pulse), rot,
+                    new Vector2(0.5f, 1f), new Vector2(1.1f, 3.6f * pulse), SpriteEffects.None, 0f);
+            }
+
+            //====地杆:预演时向下弹开,缝里瞥见名录====
+            float dropY = 66f + cEase * 16f;
+            if (cEase > 0.03f) {
+                float gap = dropY - 64f;
+                Vector2 gapC = P(64f + gap * 0.5f);
+                float flash = MathF.Sin(c * MathHelper.Pi);
+                OniBrush.DrawBacklight(sb, gapC, 18f, OnikiriUITheme.GhostDim, a * 0.4f * flash);
+                sb.Draw(Pixel, gapC, PixelSrc, OnikiriUITheme.Paper * (a * 0.85f), rot, half,
+                    new Vector2(11f, gap), SpriteEffects.None, 0f);
+                sb.Draw(Pixel, P(64f + gap * 0.45f, -2.5f), PixelSrc, OnikiriUITheme.Ink * (a * 0.7f), rot, half,
+                    new Vector2(1.2f, gap * 0.55f), SpriteEffects.None, 0f);
+                sb.Draw(Pixel, P(64f + gap * 0.55f, 2.5f), PixelSrc, OnikiriUITheme.Ink * (a * 0.6f), rot, half,
+                    new Vector2(1.2f, gap * 0.4f), SpriteEffects.None, 0f);
+            }
+            Vector2 rodBotC = P(dropY);
+            sb.Draw(Pixel, rodBotC, PixelSrc, OnikiriUITheme.Dark * (a * 0.96f), rot, half,
+                new Vector2(26f, 3.2f), SpriteEffects.None, 0f);
+            foreach (float x in new[] { -14f, 14f }) {
+                sb.Draw(Pixel, P(dropY, x), PixelSrc, OnikiriUITheme.Deep * (a * 0.95f), rot, half,
+                    new Vector2(4.4f, 5.4f), SpriteEffects.None, 0f);
+            }
+        }
+
+        /// <summary>切换门悬浮说明:小裱墨牌(跟随光标),题名+移步提示;两屏共用</summary>
+        public static void DrawSwitchHoverTag(SpriteBatch sb, DynamicSpriteFont font, Vector2 mouse,
+            string title, string hint, float alpha) {
+            if (alpha <= 0.02f) {
+                return;
+            }
+            float w = Math.Max(font.MeasureString(title).X * 0.78f, font.MeasureString(hint).X * 0.7f);
+            Rectangle panel = new((int)mouse.X + 16, (int)mouse.Y - 6, (int)w + 20, 42);
+            //不出屏
+            if (panel.Right > OnikiriUITheme.UIScreenW - 8f) {
+                panel.X = (int)(mouse.X - panel.Width - 12f);
+            }
+            sb.Draw(Pixel, new Rectangle(panel.X + 2, panel.Y + 3, panel.Width, panel.Height), PixelSrc,
+                new Color(8, 2, 5) * (alpha * 0.5f));
+            sb.Draw(Pixel, panel, PixelSrc, OnikiriUITheme.Ink * (alpha * 0.95f));
+            OniBrush.DrawTaperedSlash(sb, new Vector2(panel.X + 4f, panel.Y + 20f),
+                new Vector2(panel.Right - 4f, panel.Y + 19f), 1.3f, 0.7f, alpha * 0.7f);
+            Utils.DrawBorderString(sb, title, new Vector2(panel.X + 9f, panel.Y + 3f),
+                OnikiriUITheme.HotWhite * alpha, 0.78f);
+            Utils.DrawBorderString(sb, hint, new Vector2(panel.X + 9f, panel.Y + 23f),
+                OnikiriUITheme.TextDim * alpha, 0.7f);
         }
 
         //====================== 仪式工具 ======================

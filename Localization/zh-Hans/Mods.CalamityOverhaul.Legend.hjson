@@ -547,6 +547,7 @@ OnikiriText: {
 		CloseTagText: 收卷
 		CloseHintFormat: ESC · {0} · 点击卷外 收卷
 		MeiTabText: 改铭台
+		MeiTabHint: 点击 移步
 	}
 
 	OniMeiUI: {
@@ -568,6 +569,7 @@ OnikiriText: {
 		CurrentMark: 现铭
 		GoldMark: 金象嵌
 		RegisterTabText: 点鬼簿
+		RegisterTabHint: 点击 移步
 	}
 
 	OniEngraveRiteUI: {

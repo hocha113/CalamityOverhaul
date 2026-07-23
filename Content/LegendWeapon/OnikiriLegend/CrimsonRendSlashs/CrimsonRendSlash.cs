@@ -81,6 +81,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             public float Rotation;
             public float Depth;
             public int Facing;
+            public bool EdgeFlip;
             public float Scale;
             public int Life;        //剩余帧
             public float Strength;  //出生角速度权重
@@ -118,6 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private float bladeDepth;          //-1=身后 .. +1=身前
         private float bladeOpacity;
         private int bladeFacing = 1;
+        private bool bladeEdgeFlip;        //翻刃态,反向拍刃口朝挥动前缘
         private bool bladePoseInitialized;
         private Player.CompositeArmStretchAmount bladeArmStretch = Player.CompositeArmStretchAmount.Full;
         private Vector2 bladeHandWorld;
@@ -307,6 +309,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             float rotB = BladePathRotation(in d, aim, facing, BladePathStart + 0.12f);
             return MathHelper.WrapAngle(rotB - rotA) >= 0f ? 1f : -1f;
         }
+
+        /// <summary>反向扫掠拍(上撩/回抡)须翻刃,刃口镜像到挥动前缘,否则读作刀背砍人</summary>
+        private static bool EdgeFlipOf(in SlashDef d, int facing) => d.Flip * facing < 0f;
 
         private static float LerpAngle(float from, float to, float amount)
             => from + MathHelper.WrapAngle(to - from) * MathHelper.Clamp(amount, 0f, 1f);
@@ -500,6 +505,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 int facing = MathF.Abs(cos) < 0.05f ? Owner.direction : (cos > 0f ? 1 : -1);
                 bladeFacing = facing;
                 SlashDef first = BuildBeatDef(0, aim, facing, sizeMul);
+                bladeEdgeFlip = EdgeFlipOf(in first, facing);
                 float startRot = BladePathRotation(in first, aim, facing, BladePathStart);
                 float sweepSign = PathSweepSign(in first, aim, facing);
                 float windT = CSR.EaseOutCubic(MathHelper.Clamp(firstWindupTicks / (float)FirstWindupFrames, 0f, 1f));
@@ -517,6 +523,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     int facing = MathF.Abs(cos) < 0.05f ? Owner.direction : (cos > 0f ? 1 : -1);
                     bladeFacing = facing;
                     SlashDef next = BuildBeatDef(comboIndex, aim, facing, sizeMul);
+                    bladeEdgeFlip = EdgeFlipOf(in next, facing);
                     float startRot = BladePathRotation(in next, aim, facing, BladePathStart);
                     float windT = CSR.EaseOutCubic(
                         1f - (nextBeatTime - timer) / (float)RestartWindupFrames);
@@ -538,6 +545,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 ActiveSlash a = actives[^1];
                 int lt = Math.Max(0, timer - a.Birth);
                 bladeFacing = a.Facing;
+                bladeEdgeFlip = EdgeFlipOf(in a.Def, a.Facing);
 
                 if (lt <= a.Def.SweepFrames) {
                     //B 扫掠,深度随扫掠进度自身后甩到身前
@@ -575,7 +583,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                             ? Player.CompositeArmStretchAmount.Full
                             : Player.CompositeArmStretchAmount.ThreeQuarters;
                         if (prepT > 0.62f) {
+                            //深度谷底刀在身后,同帧换向+转腕翻刃
                             bladeFacing = previewFacing;
+                            bladeEdgeFlip = EdgeFlipOf(in nextDef, previewFacing);
                         }
                     }
                     else if (!scheduling) {
@@ -673,6 +683,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     Rotation = bladePrevRotation + delta * t,
                     Depth = depth,
                     Facing = bladeFacing,
+                    EdgeFlip = bladeEdgeFlip,
                     Scale = DepthScale(depth),
                     Life = SmearLifeFrames,
                     Strength = strength,
@@ -793,7 +804,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
             //血肉命中压低屏幕白闪
             float flash = steel ? 0.02f + power * 0.01f : 0.008f + power * 0.004f;
-            CrimsonImpactFX.PushImpact(pos, flash);
+            //CrimsonImpactFX.PushImpact(pos, flash);
 
             CrimsonRendHitVFX.SpawnImpactBurst(pos, aim.ToRotationVector2(), power, sizeMul, steel);
         }
@@ -1035,14 +1046,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         //  图元层,近半侧刀光+命中爆点
         //  遮挡层,近景刀身本体
 
-        /// <summary>实体刀精灵,护手钉 <see cref="bladeHandWorld"/>;朝左时垂直翻转并镜像支点</summary>
-        private void DrawBladeSprite(SpriteBatch sb, float rotation, int facing, float scale, Color color, Vector2 posOffset = default) {
+        /// <summary>实体刀精灵,护手钉 <see cref="bladeHandWorld"/>;朝左时垂直翻转并镜像支点,edgeFlip 再镜像一次=转腕翻刃</summary>
+        private void DrawBladeSprite(SpriteBatch sb, float rotation, int facing, float scale, Color color
+            , Vector2 posOffset = default, bool edgeFlip = false) {
             Texture2D blade = TextureAssets.Item[ModContent.ItemType<OnikiriItem>()].Value;
             Vector2 textureSize = blade.Size();
             Vector2 origin = new(textureSize.X * BladeHiltUV.X, textureSize.Y * BladeHiltUV.Y);
             Vector2 textureTip = new(textureSize.X * BladeTipUV.X, textureSize.Y * BladeTipUV.Y);
             SpriteEffects bladeEffect = SpriteEffects.None;
-            if (facing < 0) {
+            if (facing < 0 != edgeFlip) {
                 bladeEffect = SpriteEffects.FlipVertically;
                 origin.Y = textureSize.Y - origin.Y;
                 textureTip.Y = textureSize.Y - textureTip.Y;
@@ -1094,7 +1106,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 if (!nearSide) {
                     c *= DepthDim(s.Depth);
                 }
-                DrawBladeSprite(sb, s.Rotation, s.Facing, BladeDrawScale * sizeMul * s.Scale, c);
+                DrawBladeSprite(sb, s.Rotation, s.Facing, BladeDrawScale * sizeMul * s.Scale, c
+                    , default, s.EdgeFlip);
             }
         }
 
@@ -1140,7 +1153,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 float scale = BladeDrawScale * sizeMul * DepthScale(bladeDepth) * (1f + bladeScalePulse);
                 Color body = Color.Lerp(lightColor, Color.White, 0.12f)
                     * (bladeOpacity * farW * DepthDim(bladeDepth));
-                DrawBladeSprite(sb, bladeRotation, bladeFacing, scale, body);
+                DrawBladeSprite(sb, bladeRotation, bladeFacing, scale, body, default, bladeEdgeFlip);
             }
             sb.End();
         }
@@ -1159,10 +1172,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             float scale = BladeDrawScale * sizeMul * DepthScale(bladeDepth) * (1f + bladeScalePulse);
 
             Color shadow = new Color(15, 3, 8, 190) * (bladeOpacity * 0.62f * nearW);
-            DrawBladeSprite(sb, bladeRotation, bladeFacing, scale * 1.018f, shadow, new Vector2(bladeFacing, 1f));
+            DrawBladeSprite(sb, bladeRotation, bladeFacing, scale * 1.018f, shadow
+                , new Vector2(bladeFacing, 1f), bladeEdgeFlip);
 
             Color body = Color.Lerp(lightColor, Color.White, 0.24f) * (bladeOpacity * nearW);
-            DrawBladeSprite(sb, bladeRotation, bladeFacing, scale, body);
+            DrawBladeSprite(sb, bladeRotation, bladeFacing, scale, body, default, bladeEdgeFlip);
         }
 
         void IPrimitiveDrawable.DrawPrimitives() {
