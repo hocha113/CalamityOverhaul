@@ -257,21 +257,31 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             ToriiShrineDissolve.End();
         }
 
+        /// <summary>
+        /// 本地可见性闸门：玩家就绪后立刻判定，已拔刀则静默Gone<br/>
+        /// PreDraw与AI共用，避免「先画一帧再隐藏」闪现
+        /// </summary>
+        private void EnsureDepartureInit() {
+            if (departInitChecked || Main.dedServ) {
+                return;
+            }
+            Player player = Main.LocalPlayer;
+            //本地玩家未就绪前不判定，防误判重播退场；期间也不提交模型
+            if (player == null || !player.active) {
+                return;
+            }
+            departInitChecked = true;
+            if (HimayoStorySync.ToriiSwordTaken) {
+                departPhase = DeparturePhase.Gone;
+                postGoneTimer = PostGoneQuietFrames;
+                ToriiShrineDissolve.End();
+            }
+        }
+
         private void UpdateDeparture() {
+            EnsureDepartureInit();
             if (!departInitChecked) {
-                //本地玩家未就绪前不判定，防误判重播退场
-                Player player = Main.LocalPlayer;
-                if (player == null || !player.active) {
-                    return;
-                }
-                departInitChecked = true;
-                //进场已拔刀则直接Gone，解前任合成钩子，静默拍置过期
-                if (HimayoStorySync.ToriiSwordTaken) {
-                    departPhase = DeparturePhase.Gone;
-                    postGoneTimer = PostGoneQuietFrames;
-                    ToriiShrineDissolve.End();
-                    return;
-                }
+                return;
             }
 
             if (departPhase == DeparturePhase.Gone && !LocalPlayerTookSword() && departPetals.Count == 0) {
@@ -576,9 +586,14 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         #endregion
 
         public override bool PreDraw(SpriteBatch spriteBatch, ref Color drawColor) {
-            if (departPhase != DeparturePhase.Gone) {
-                SubmitToriiModel();
+            //绘制前先落本地闸门，已拔刀玩家进世界不会闪一帧鸟居
+            EnsureDepartureInit();
+            if (!departInitChecked || departPhase == DeparturePhase.Gone) {
+                DrawDeparturePetals(spriteBatch);
+                return false;
             }
+
+            SubmitToriiModel();
 
             if (ToriiShrine.SwordPresentForLocalPlayer()) {
                 DrawSword(spriteBatch);
