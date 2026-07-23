@@ -102,19 +102,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
         /// <summary>落定后的签名拍软保留:连段续接时刀从收势位划出</summary>
         bool IOniBladeOccupant.ReservesBlade => timer <= PoseFrames + 6;
 
-        /// <summary>触发接口、在持有者客户端调用;同主已有残心斩则先收掉再出新刀</summary>
+        /// <summary>触发接口、在持有者客户端调用;允许多刀并存(连居合不收掉上一刀)</summary>
         public static Projectile Fire(Player player, Vector2 aim, int damage, float knockback,
             bool sakura, bool syncedWithJudge, IEntitySource source = null) {
-            int type = ModContent.ProjectileType<OniZanshinSlash>();
-            foreach (Projectile proj in Main.ActiveProjectiles) {
-                if (proj.owner == player.whoAmI && proj.type == type) {
-                    proj.Kill();
-                }
-            }
             source ??= player.GetSource_Misc("CWR_OniZanshinSlash");
             float aimAngle = aim.SafeNormalize(Vector2.UnitX * player.direction).ToRotation();
             return Projectile.NewProjectileDirect(source, player.Center, Vector2.Zero
-                , type, damage, knockback, player.whoAmI
+                , ModContent.ProjectileType<OniZanshinSlash>(), damage, knockback, player.whoAmI
                 , ai0: MathHelper.WrapAngle(aimAngle), ai1: sakura ? 1f : 0f, ai2: syncedWithJudge ? 1f : 0f);
         }
 

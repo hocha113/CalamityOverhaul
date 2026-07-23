@@ -376,8 +376,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (Player.whoAmI != Main.myPlayer) {
                 return;
             }
-            //新窗覆盖旧追斩:连续疾走时上一刀余晖仍硬占刀权,会把挂起直接清掉导致第二刀放不出
-            ClearLingeringZanshinSlash();
             bool bufferedInput = zanshinInputBuffered || Main.mouseLeft;
             if (handoffDirection.LengthSquared() > 0.01f) {
                 zanshinHandoffDirection = handoffDirection.SafeNormalize(Vector2.UnitX * Player.direction);
@@ -392,16 +390,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinAutoHandoff = bufferedInput;
             zanshinAutoHandoffCountdown = bufferedInput ? ZanshinAutoHandoffFrames + 1 : 0;
             zanshinInputBuffered = false;
-        }
-
-        /// <summary>收掉仍在场的残心斩(含收势淡出),避免连居合被旧刀弹幕/硬占挡住</summary>
-        private void ClearLingeringZanshinSlash() {
-            int type = ModContent.ProjectileType<OniZanshinSlash>();
-            foreach (Projectile proj in Main.ActiveProjectiles) {
-                if (proj.owner == Player.whoAmI && proj.type == type) {
-                    proj.Kill();
-                }
-            }
         }
 
         internal bool ZanshinAutoHandoffActive
@@ -444,11 +432,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 //已挂起等锵,窗内重复点击吸收,不落回连段
                 return true;
             }
-            //硬占刀权的演出(灭世大挥/终结乱舞开场等)期间不抢出手,落回连段的既有让位缓冲
-            //注意:不拦上一刀 OniZanshinSlash——其 Lifetime(~36) 远长于硬占窗,连居合时计数门闩会吞掉第二刀
+            //硬占刀权的演出(灭世大挥/终结乱舞开场等)期间不抢出手,落回连段的既有让位缓冲;
+            //上一刀残心斩可并存,硬占/弹幕计数都不挡连居合第二刀
             if (Player.mount?.Active == true || OniPlayerDismember.IsLocked(Player)
                 || OniSakuraFlight.ControlsOwner(Player.whoAmI)
-                || OniBladeOccupancy.AnyHardOccupant(Player)) {
+                || OniBladeOccupancy.AnyHardOccupant(Player
+                    , ignoreType: ModContent.ProjectileType<OniZanshinSlash>())) {
                 return false;
             }
 
@@ -462,12 +451,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         /// <summary>挂起的追斩在交还后释放,带墨痕则押到锵帧;
-        /// 等锵期间玩家另起大招/化樱则弃挂起,大动作优先</summary>
+        /// 等锵期间玩家另起大招/化樱则弃挂起,大动作优先;旧残心斩硬占不弃窗</summary>
         private void ReleaseZanshinPending(Item item) {
             if (!zanshinPending) {
                 return;
             }
-            if (OniBladeOccupancy.AnyHardOccupant(Player) || OniSakuraFlight.ControlsOwner(Player.whoAmI)) {
+            if (OniBladeOccupancy.AnyHardOccupant(Player
+                    , ignoreType: ModContent.ProjectileType<OniZanshinSlash>())
+                || OniSakuraFlight.ControlsOwner(Player.whoAmI)) {
                 zanshinPending = false;
                 zanshinWindow = 0;
                 zanshinAutoHandoff = false;

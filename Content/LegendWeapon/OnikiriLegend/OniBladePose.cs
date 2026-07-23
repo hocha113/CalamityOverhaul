@@ -24,10 +24,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
     /// <summary>刀权查询,本地从在场弹幕推导</summary>
     internal static class OniBladeOccupancy
     {
-        /// <summary>该玩家是否有硬占刀权的技能弹幕在场(except 排除查询者自身)</summary>
-        public static bool AnyHardOccupant(Player player, Projectile except = null) {
+        /// <summary>该玩家是否有硬占刀权的技能弹幕在场(except 排除查询者自身;
+        /// ignoreType≥0 时跳过该弹幕类型,供连残心斩互不挡)</summary>
+        public static bool AnyHardOccupant(Player player, Projectile except = null, int ignoreType = -1) {
             foreach (Projectile proj in Main.ActiveProjectiles) {
                 if (proj.owner != player.whoAmI || proj == except) {
+                    continue;
+                }
+                if (ignoreType >= 0 && proj.type == ignoreType) {
                     continue;
                 }
                 if (proj.ModProjectile is IOniBladeOccupant occupant && occupant.HardOccupiesBlade) {
