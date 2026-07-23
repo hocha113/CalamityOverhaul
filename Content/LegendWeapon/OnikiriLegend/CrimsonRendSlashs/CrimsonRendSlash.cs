@@ -736,7 +736,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             Vector2 pos = CSR.PointAt(in a.Def, CenterOf(a), 0.94f, lt);
 
             SoundEngine.PlaySound(SoundID.Item71 with { Pitch = pitch, Volume = 0.38f }, pos);
-            CrimsonImpactFX.PushImpact(pos, flash);
 
             if (Main.dedServ) {
                 return;
@@ -801,10 +800,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             else {
                 SoundEngine.PlaySound(CWRSound.KatanaHit with { Pitch = 0.5f - power * 0.2f, Volume = 0.5f + power * 0.4f }, pos);
             }
-
-            //血肉命中压低屏幕白闪
-            float flash = steel ? 0.02f + power * 0.01f : 0.008f + power * 0.004f;
-            //CrimsonImpactFX.PushImpact(pos, flash);
 
             CrimsonRendHitVFX.SpawnImpactBurst(pos, aim.ToRotationVector2(), power, sizeMul, steel);
         }
