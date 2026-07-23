@@ -196,14 +196,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             modifiers.HitDirectionOverride = MathF.Cos(DashAngle) >= 0f ? 1 : -1;
-            modifiers.DefenseEffectiveness *= 0f;
-            TryApplyDRPenetration(target, ref modifiers);
-        }
-        private void TryApplyDRPenetration(NPC target, ref NPC.HitModifiers modifiers) {
-            float dr = CWRRef.GetNPCDR(target);
-            if (dr > 0f && dr <= 0.9f) {
-                modifiers.FinalDamage *= (1f - dr * 0.5f) / (1f - dr);
-            }
+            OnikiriItem.ApplySlashPenetration(target, ref modifiers);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

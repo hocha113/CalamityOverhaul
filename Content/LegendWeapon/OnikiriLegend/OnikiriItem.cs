@@ -40,6 +40,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             OnikiriOverride.SetDefaultsFunc(Item);
         }
 
+        /// <summary>无视防御 + 半穿 DR（斩击弹幕管线统一调用）</summary>
+        internal static void ApplySlashPenetration(NPC target, ref NPC.HitModifiers modifiers) {
+            modifiers.DefenseEffectiveness *= 0f;
+            float dr = CWRRef.GetNPCDR(target);
+            if (dr > 0f && dr <= 0.9f) {
+                modifiers.FinalDamage *= (1f - dr * 0.5f) / (1f - dr);
+            }
+        }
+
         /// <summary>连段/肢解在场时封锁再用</summary>
         public override bool CanUseItem(Player player)
             => player.ownedProjectileCounts[ModContent.ProjectileType<CrimsonRendSlash>()] == 0

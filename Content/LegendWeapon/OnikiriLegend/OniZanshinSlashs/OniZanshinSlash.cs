@@ -341,14 +341,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
                 ? Math.Sign(offsetX)
                 : (MathF.Cos(CutAngle) >= 0f ? 1 : -1);
-            modifiers.DefenseEffectiveness *= 0f;
-            TryApplyDRPenetration(target, ref modifiers);
-        }
-        private void TryApplyDRPenetration(NPC target, ref NPC.HitModifiers modifiers) {
-            float dr = CWRRef.GetNPCDR(target);
-            if (dr > 0f && dr <= 0.9f) {
-                modifiers.FinalDamage *= (1f - dr * 0.5f) / (1f - dr);
-            }
+            OnikiriItem.ApplySlashPenetration(target, ref modifiers);
         }
 
         /// <summary>贪婪判定（对齐绯红裂空三层）</summary>
