@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -16,7 +15,7 @@ using OFR = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs.
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
 {
-    /// <summary>鬼哭·灭世一闪. ai[0]=刀线角(弧度) ai[1]=尺寸倍率</summary>
+    /// <summary>鬼哭·灭世一闪. ai[0]=刀线角(弧度) ai[1]=尺寸倍率</summary>50%架势技能
     internal class OniAnnihilate : ModProjectile, IPrimitiveDrawable, ICrimsonFarDrawable, IOverlayDrawable, IOniBladeOccupant
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -276,6 +275,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
                 ? Math.Sign(offsetX)
                 : (MathF.Cos(CutAngle) >= 0f ? 1 : -1);
+            modifiers.DefenseEffectiveness *= 0f;
+            TryApplyDRPenetration(target, ref modifiers);
+        }
+        private void TryApplyDRPenetration(NPC target, ref NPC.HitModifiers modifiers) {
+            float dr = CWRRef.GetNPCDR(target);
+            if (dr > 0f && dr <= 0.9f) {
+                modifiers.FinalDamage *= (1f - dr * 0.5f) / (1f - dr);
+            }
         }
 
         /// <summary>擦边外扩+弧折线+辐条+贴身圈,ScaleMul 下限防出生漏打</summary>
