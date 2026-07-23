@@ -47,6 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         private OFR.BladeDef arcDef; //主弧
 
         private bool initialized;
+        private bool hitVfxBurst;
         private int timer;
 
         //罡气舌,出生帧定死不追人
@@ -359,14 +360,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             if (Main.dedServ) {
                 return;
             }
-            PRTLoader.NewParticle<PRT_CrimsonHitFlash>(target.Center, Vector2.Zero
-                , new Color(255, 222, 198), 1.2f);
-            for (int i = 0; i < 10; i++) {
-                Vector2 vel = CutAngle.ToRotationVector2().RotatedByRandom(0.55) * Main.rand.NextFloat(5f, 13f);
-                PRTLoader.NewParticle<PRT_OniShard>(target.Center, vel, new Color(255, 132, 76)
-                    , Main.rand.NextFloat(0.45f, 0.8f))
-                    ?.Configure(Main.rand.Next(20, 34), Main.rand.NextFloat(-0.25f, 0.25f)
-                        , Main.rand.NextFloat(1.5f, 2.6f), affectedByGravity: true);
+            bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
+            Vector2 cutDir = CutAngle.ToRotationVector2();
+            if (!hitVfxBurst) {
+                hitVfxBurst = true;
+                CrimsonRendHitVFX.SpawnImpactBurst(target.Center, cutDir, 1f, SizeMul, steel);
+            }
+            else {
+                CrimsonRendHitVFX.SpawnHitTick(target.Center, cutDir, SizeMul, steel);
             }
         }
 

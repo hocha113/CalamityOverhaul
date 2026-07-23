@@ -84,6 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
         private bool initialized;
         private int timer;
         private bool resourceGranted;
+        private bool hitVfxBurst;
         private int facing = 1;
         /// <summary>反拔起手刀角:优先继承交接黑板(纳刀位),无交接退回反手预备位</summary>
         private float drawStartRot;
@@ -431,26 +432,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             if (Main.dedServ) {
                 return;
             }
-            PRTLoader.NewParticle<PRT_CrimsonHitFlash>(target.Center, Vector2.Zero
-                , IsSakura ? new Color(255, 214, 224) : new Color(255, 222, 198), 0.9f);
+            bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
             Vector2 cutDir = CutAngle.ToRotationVector2();
-            if (IsSakura) {
-                //命中溅散瓣:花瓣沿刀线掠出
+            //首击爆点 + 跟刀血/火花(与普攻同材质分流)
+            if (!hitVfxBurst) {
+                hitVfxBurst = true;
+                CrimsonRendHitVFX.SpawnImpactBurst(target.Center, cutDir, 0.72f, 1f, steel);
+            }
+            else {
+                CrimsonRendHitVFX.SpawnHitTick(target.Center, cutDir, 1f, steel);
+            }
 
+            if (IsSakura) {
+                //命中溅散瓣:花瓣沿刀线掠出(叠在血上,不取代)
                 for (int i = 0; i < 6 && petals.Count < PetalCount + 14; i++) {
                     SpawnPetal(target.Center + Main.rand.NextVector2Circular(12f, 12f)
                         , cutDir.RotatedByRandom(0.55) * Main.rand.NextFloat(3.5f, 8f)
                             - Vector2.UnitY * Main.rand.NextFloat(0f, 1.2f)
                         , Main.rand.Next(30, 48), Main.rand.NextFloat(0.5f, 0.8f));
-                }
-            }
-            else {
-                for (int i = 0; i < 7; i++) {
-                    Vector2 vel = cutDir.RotatedByRandom(0.5) * Main.rand.NextFloat(4f, 11f);
-                    PRTLoader.NewParticle<PRT_OniShard>(target.Center, vel, new Color(255, 132, 76)
-                        , Main.rand.NextFloat(0.35f, 0.65f))
-                        ?.Configure(Main.rand.Next(16, 28), Main.rand.NextFloat(-0.22f, 0.22f)
-                            , Main.rand.NextFloat(1.3f, 2.2f), affectedByGravity: true);
                 }
             }
         }

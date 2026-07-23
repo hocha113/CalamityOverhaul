@@ -164,22 +164,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             }
             CrimsonImpactFX.PushImpact(lastCenter, 0.03f);
 
-            Vector2 perp = (brandAngle + MathHelper.PiOver2).ToRotationVector2();
             Vector2 along = brandAngle.ToRotationVector2();
-
-            PRTLoader.NewParticle<PRT_CrimsonHitFlash>(lastCenter, Vector2.Zero
-                , new Color(255, 220, 200), 1.15f * sizeMul);
-
-            int shards = 13 + (int)(seed * 5);
-            for (int i = 0; i < shards; i++) {
-                Vector2 vel = perp * Main.rand.NextFloat(2.5f, 7.5f) * (Main.rand.NextBool() ? 1f : -1f)
-                    + along * Main.rand.NextFloat(1f, 3.5f) + Main.rand.NextVector2Circular(1.2f, 1.2f);
-                Color c = Main.rand.NextBool(3) ? new Color(255, 232, 205) : new Color(255, 110, 62);
-                PRTLoader.NewParticle<PRT_OniShard>(lastCenter, vel, c
-                    , Main.rand.NextFloat(0.38f, 0.68f) * sizeMul)
-                    ?.Configure(Main.rand.Next(20, 34), Main.rand.NextFloat(-0.22f, 0.22f)
-                        , Main.rand.NextFloat(1.5f, 2.6f), affectedByGravity: true);
-            }
+            bool steel = BoundNPC.TryGetNPC(out NPC marked) && CWRLoad.NPCValue.ISTheofSteel(marked);
+            //引爆材质分流:血肉可贴血渍 / 金属碎晶火花
+            CrimsonRendHitVFX.SpawnImpactBurst(lastCenter, along, 0.85f, sizeMul, steel);
+            Vector2 perp = (brandAngle + MathHelper.PiOver2).ToRotationVector2();
             for (int i = 0; i < 5; i++) {
                 PRTLoader.NewParticle<PRT_CrimsonSmoke>(lastCenter + Main.rand.NextVector2Circular(16f, 16f)
                     , perp * Main.rand.NextFloat(-1.5f, 1.5f) + Main.rand.NextVector2Circular(0.6f, 0.6f)
@@ -212,6 +201,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.25f, Volume = 0.6f, MaxInstances = 3 }, target.Center);
+
+            if (Main.dedServ) {
+                return;
+            }
+            bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
+            CrimsonRendHitVFX.SpawnHitTick(target.Center, brandAngle.ToRotationVector2(), sizeMul, steel);
         }
 
         public override bool PreDraw(ref Color lightColor) => false;

@@ -232,21 +232,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             if (Main.dedServ) {
                 return;
             }
+            bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
             float t = EscalateT;
-            //每环首次命中给一次轻量爆点确认，重头戏留给终斩
-
+            Vector2 aim = Main.rand.NextVector2Unit();
+            //每环首次命中轻量爆点,血肉可贴血 / 金属火花;重头戏留给终斩
             if (!impactDone) {
                 impactDone = true;
                 CrimsonImpactFX.PushImpact(target.Center, 0.015f + 0.02f * t);
-                PRTLoader.NewParticle<PRT_CrimsonHitFlash>(target.Center, Vector2.Zero
-                    , Color.Lerp(new Color(255, 210, 190), new Color(255, 238, 218), t), (0.6f + 0.4f * t) * SizeMul);
+                CrimsonRendHitVFX.SpawnImpactBurst(target.Center, aim, 0.35f + 0.35f * t, SizeMul, steel);
             }
-            Color sparkColor = Color.Lerp(new Color(255, 96, 60), new Color(255, 155, 92), t);
-            for (int i = 0; i < 6; i++) {
-                Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(4f, 10f);
-                PRTLoader.NewParticle<PRT_CrimsonSpark>(target.Center, vel, sparkColor
-                    , Main.rand.NextFloat(0.4f, 0.7f))
-                    ?.Configure(Main.rand.Next(14, 24), affectedByGravity: true);
+            else {
+                CrimsonRendHitVFX.SpawnHitTick(target.Center, aim, SizeMul * (0.75f + 0.25f * t), steel);
             }
         }
 

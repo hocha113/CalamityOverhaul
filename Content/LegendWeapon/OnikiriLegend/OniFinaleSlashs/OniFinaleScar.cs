@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         private OFR.BladeDef def;
         private bool initialized;
         private bool detonated;
+        private bool hitVfxBurst;
         private int timer;
         private int detonateFrame;
 
@@ -229,11 +230,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             if (Main.dedServ) {
                 return;
             }
-            for (int i = 0; i < 6; i++) {
-                Vector2 vel = BladeAngle.ToRotationVector2().RotatedByRandom(0.6) * Main.rand.NextFloat(4f, 11f);
-                PRTLoader.NewParticle<PRT_CrimsonSpark>(target.Center, vel, new Color(255, 96, 60)
-                    , Main.rand.NextFloat(0.4f, 0.7f))
-                    ?.Configure(Main.rand.Next(14, 24), affectedByGravity: true);
+            bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
+            Vector2 dir = BladeAngle.ToRotationVector2();
+            if (!hitVfxBurst) {
+                hitVfxBurst = true;
+                CrimsonRendHitVFX.SpawnImpactBurst(target.Center, dir, 0.55f, SizeMul, steel);
+            }
+            else {
+                CrimsonRendHitVFX.SpawnHitTick(target.Center, dir, SizeMul, steel);
             }
         }
 
