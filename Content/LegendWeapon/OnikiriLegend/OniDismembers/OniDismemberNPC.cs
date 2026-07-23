@@ -29,45 +29,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
             //快照未就绪（捕获排队中/低质量降级）时本体照常绘制
 
-            //调试插桩、逐分支记录为何没走到碎片绘制
-
-            if (entry.SnapWidth <= 0) {
-                OniDismemberDebug.Log($"draw_downgraded_{npc.whoAmI}"
-                    , $"PreDraw: entry downgraded (SnapWidth=0), freeze-only npc={npc.FullName}#{npc.whoAmI}", 120);
-                return true;
-            }
-            if (!entry.Captured) {
-                //捕获正常应在触发后 1-2 帧内完成，持续未捕获=渲染端每帧都在放弃（看 cap_* 日志）
-
-                if (entry.Timer > 5) {
-                    OniDismemberDebug.Log($"draw_nocap_{npc.whoAmI}", $"PreDraw: snapshot still not captured"
-                        + $" after {entry.Timer} ticks npc={npc.FullName}#{npc.whoAmI}", 120);
-                }
+            if (!entry.Captured || entry.SnapWidth <= 0) {
                 return true;
             }
             if (!OniDismember.SnapRTs.TryGetValue(npc.whoAmI, out RenderTarget2D rt)
                 || rt == null || rt.IsDisposed) {
-                OniDismemberDebug.Log($"draw_rtlost_{npc.whoAmI}"
-                    , $"PreDraw: snapshot RT missing/disposed npc={npc.FullName}#{npc.whoAmI}", 120);
                 return true;
             }
             Effect fx = EffectLoader.OniDismember?.Value;
             if (fx == null) {
-                OniDismemberDebug.Log("draw_fxnull"
-                    , "PreDraw: EffectLoader.OniDismember is null (shader not loaded)", 120);
                 return true;
             }
 
             //暂停 NPC 层批次，原地插入顶点绘制，层序不变
 
             spriteBatch.End();
-            try {
-                DrawPieces(entry, rt, fx);
-                OniDismemberDebug.Log($"draw_ok_{npc.whoAmI}", $"drawing pieces npc={npc.FullName}#{npc.whoAmI}"
-                    + $" pieces={entry.Pieces.Count} cuts={entry.Cuts.Count} timer={entry.Timer}", 300);
-            } catch (Exception ex) {
-                OniDismemberDebug.Log("draw_ex", $"DrawPieces threw npc={npc.FullName}#{npc.whoAmI}: {ex}", 300);
-            }
+            DrawPieces(entry, rt, fx);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
                 null, Main.GameViewMatrix.TransformationMatrix);
@@ -84,34 +61,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             gd.RasterizerState = RasterizerState.CullNone;
             gd.DepthStencilState = DepthStencilState.None;
 
-            //调试期用 try/finally 兜底还原设备状态，绘制中途抛异常不放大成后续批次错乱
+            BuildVertices(entry);
 
-            try {
-                BuildVertices(entry);
-
-                int batchCapacity = EnsureCutParamBuffers(fx);
-                if (vertexScratch.Count >= 3 && entry.Cuts.Count > 0 && batchCapacity > 0) {
-                    SetCommonShaderParams(entry, rt, fx);
-                    VertexPositionColorTexture[] verts = [.. vertexScratch];
-                    for (int start = 0; start < entry.Cuts.Count; start += batchCapacity) {
-                        SetCutBatchParams(entry, fx, start, batchCapacity);
-                        foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
-                            pass.Apply();
-                            gd.DrawUserPrimitives(PrimitiveType.TriangleList, verts, 0, verts.Length / 3);
-                        }
+            int batchCapacity = EnsureCutParamBuffers(fx);
+            if (vertexScratch.Count >= 3 && entry.Cuts.Count > 0 && batchCapacity > 0) {
+                SetCommonShaderParams(entry, rt, fx);
+                VertexPositionColorTexture[] verts = [.. vertexScratch];
+                for (int start = 0; start < entry.Cuts.Count; start += batchCapacity) {
+                    SetCutBatchParams(entry, fx, start, batchCapacity);
+                    foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
+                        pass.Apply();
+                        gd.DrawUserPrimitives(PrimitiveType.TriangleList, verts, 0, verts.Length / 3);
                     }
                 }
-                else {
-                    //本体已隐藏（PreDraw 返回 false）但碎片没画出来=目标隐形，这条必须留痕
-
-                    OniDismemberDebug.Log("draw_skip", $"piece draw skipped verts={vertexScratch.Count}"
-                        + $" cuts={entry.Cuts.Count} paramCapacity={batchCapacity} (shader param arrays missing?)", 120);
-                }
-            } finally {
-                gd.BlendState = prevBlend;
-                gd.RasterizerState = prevRaster;
-                gd.DepthStencilState = prevDepth;
             }
+
+            gd.BlendState = prevBlend;
+            gd.RasterizerState = prevRaster;
+            gd.DepthStencilState = prevDepth;
         }
 
         /// <summary>从 effect 反射着色器单批容量，避免 C# 维护重复常量</summary>

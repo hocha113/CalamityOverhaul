@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.HackTimes
             if (rtW <= 0 || rtH <= 0) return;
 
             //低光照时走不切换 RT 回退
-            if (RenderQualitySafety.NeedsScreenTargetFallback()) {
+            if (RenderQualitySafety.ScreenTargetUnavailable()) {
                 DrawDirectCompositeFallback(sb, worldBounds, effectStr, isSelected);
                 return;
             }

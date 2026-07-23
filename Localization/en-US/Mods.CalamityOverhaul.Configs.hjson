@@ -17,7 +17,7 @@ CWRServerConfig: {
 
 	DomainConciseDisplay: {
 		Label: Domain Minimal Display
-		Tooltip: Off by default. When enabled, most visual effects within the domain will be hidden.
+		Tooltip: Off by default. When enabled, only Cyberspace / Sea Domain style domain visuals are reduced. Onikiri's Oni Domain is unaffected, as are weapon and cyberware visuals such as dismember, omokage, and HackTime.
 	}
 
 	Headers: {

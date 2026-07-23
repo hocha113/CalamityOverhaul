@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 
             //低质量光照/RT 异常时放弃捕获、面影走素纸回退
 
-            if (RenderQualitySafety.NeedsScreenTargetFallback()) {
+            if (RenderQualitySafety.ScreenTargetUnavailable()) {
                 return;
             }
             if (screenSwap == null || screenSwap.IsDisposed) {

@@ -29,9 +29,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             if (odp == null || !odp.GradeVisible) {
                 return;
             }
-            //低画质回退整体走 EndCaptureDraw 的纯色叠层，这里不做事
+            //RT 不可用时跳过世界浸染，整体走 EndCaptureDraw 的纯色叠层；鬼域不受领域简约偏好影响
 
-            if (RenderQualitySafety.NeedsScreenTargetFallback()) {
+            if (RenderQualitySafety.ScreenTargetUnavailable()) {
                 return;
             }
 
@@ -95,7 +95,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 return;
             }
 
-            if (RenderQualitySafety.NeedsScreenTargetFallback()) {
+            //鬼域不受领域简约偏好影响，仅技术性 RT 不可用时走低质量回退
+
+            if (RenderQualitySafety.ScreenTargetUnavailable()) {
                 odp.PendingPaperCapture = false;
                 odp.PaperValid = false;
                 DrawLowQualityFallback(spriteBatch, odp);

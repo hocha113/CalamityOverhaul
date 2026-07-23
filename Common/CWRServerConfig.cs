@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Common
 
         [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(false)]
-        public bool DomainConciseDisplay { get; set; }//领域简洁显示
+        public bool DomainConciseDisplay { get; set; }//领域简约显示（赛博空间/海域；不含鬼域）
 
         [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]

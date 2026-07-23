@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             }
 
             //低水波/低光照或 RT 异常，跳过，防强写顶替 backbuffer
-            if (RenderQualitySafety.NeedsScreenTargetFallback()) {
+            if (RenderQualitySafety.ScreenTargetUnavailable()) {
                 return;
             }
             //活动 RT 非 screenTarget 则放弃本帧

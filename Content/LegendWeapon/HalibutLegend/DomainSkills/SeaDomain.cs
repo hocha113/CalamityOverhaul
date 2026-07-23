@@ -592,7 +592,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 DrawDomainField();
             }
 
-            if (CWRServerConfig.Instance.DomainConciseDisplay) {
+            if (DomainVisuals.Concise) {
                 return false;
             }
 

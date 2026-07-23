@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.HackTimes
             if (Main.screenTarget == null || Main.screenTarget.IsDisposed) return;
 
             //低光照 RT 异常时跳过着色器
-            if (RenderQualitySafety.NeedsScreenTargetFallback()) return;
+            if (RenderQualitySafety.ScreenTargetUnavailable()) return;
             if (!RenderQualitySafety.IsScreenTargetActive(graphicsDevice)) return;
 
             //保存/还原 RT 绑定

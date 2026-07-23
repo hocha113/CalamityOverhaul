@@ -17,7 +17,7 @@ CWRServerConfig: {
 
 	DomainConciseDisplay: {
 		Label: 领域简约显示
-		Tooltip: 默认关闭，开启后会屏蔽掉领域内大多数的视觉效果
+		Tooltip: 默认关闭。开启后仅简化赛博空间、海域等领域演出，不影响鬼切鬼域，以及肢解、面影、黑客时间等武器与植入体效果
 	}
 
 	Headers: {

@@ -154,15 +154,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
             AddCut(entry, cutPointWorld, cutAngle, holdFrames, birthDelay);
 
-            //调试插桩、确认逻辑端触发与快照参数
-
-            OniDismemberDebug.Log("trigger", $"Trigger npc={npc.FullName}#{npc.whoAmI} type={npc.type}"
-                + $" snap={entry.SnapWidth}x{entry.SnapHeight} cuts={entry.Cuts.Count} pieces={entry.Pieces.Count}"
-                + $" captured={entry.Captured} entries={Entries.Count} dedServ={Main.dedServ}");
-            if (!Main.dedServ) {
-                OniDismemberDebug.Log("env", $"Env {OniDismemberDebug.Env()}", 300);
-            }
-
             //立即入冻、不等下一次系统刷新
 
             npc.CWR().TimeFrozenTick = 2;
@@ -547,11 +538,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             try {
                 rt = new RenderTarget2D(gd, entry.SnapWidth, entry.SnapHeight, false
                     , SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            } catch (Exception ex) {
-                //调试插桩、RT 创建失败（显存/设备异常）是永久降级为仅定身的源头
-
-                OniDismemberDebug.Log("rt_fail", $"EnsureSnapshotRT FAILED"
-                    + $" {entry.SnapWidth}x{entry.SnapHeight} npc#{entry.NpcIndex}: {ex.Message}", 120);
+            } catch {
                 return null;
             }
             SnapRTs[entry.NpcIndex] = rt;

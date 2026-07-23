@@ -99,7 +99,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         private static void ApplyFullScreenShader(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice,
             RenderTarget2D screenSwap, CyberspacePlayer primary) {
-            if (RenderQualitySafety.NeedsScreenTargetFallback()) {
+            //简约偏好或 RT 不可用 → 低质量场回退
+
+            if (DomainVisuals.Concise || RenderQualitySafety.ScreenTargetUnavailable()) {
                 DrawLowQualityFieldFallback(spriteBatch);
                 return;
             }
