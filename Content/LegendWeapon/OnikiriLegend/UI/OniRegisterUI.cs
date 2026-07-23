@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //吊挂太刀:点击预演到帧即移步改铭台
             bool meiRiteBusy = OniEngraveRiteUI.Instance?.Active ?? false;
             if (meiSwitch.Update(meiSwitchAnchor, MousePosition, IsOpen && a > 0.9f && !meiRiteBusy,
-                GlobalTimer, new Vector2(30f, 100f), keyLeftPressState)) {
+                GlobalTimer, OnikiriUITheme.HangTachiHit, keyLeftPressState)) {
                 OniMeiUI.Instance?.Open();
             }
 
@@ -240,7 +240,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             closeTagAnchor = new Vector2(scrollRect.Right + 17f, scrollRect.Y - 7f);
 
             //吊挂太刀锚:卷轴左肩外的梁下,与右肩收卷牌对称成"一梁两挂"
-            meiSwitchAnchor = new Vector2(scrollRect.X - 48f, scrollRect.Y - 7f);
+            meiSwitchAnchor = new Vector2(scrollRect.X - 78f, scrollRect.Y - 12f);
 
             //名录竖列,右起左行(旧式名册自右向左)
             Rectangle inner = scrollRect;

@@ -565,60 +565,62 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             sw.DrawRope(sb, alpha);
 
+            float s = OnikiriUITheme.HangSwitchScale;
             float rot = sw.Rot;
             Vector2 top = sw.End;
             Vector2 down = (MathHelper.PiOver2 + rot).ToRotationVector2();
             Vector2 side = rot.ToRotationVector2();
             float a = alpha * (0.92f + sw.HoverEase * 0.08f);
-            float lift = 1f + sw.HoverEase * 0.05f;
+            float lift = 1f + sw.HoverEase * 0.08f;
             Vector2 half = new(0.5f);
-            Vector2 P(float y, float x = 0f) => top + down * y + side * x;
+            Vector2 P(float y, float x = 0f) => top + down * (y * s) + side * (x * s);
+            Vector2 Sz(float w, float h) => new Vector2(w, h) * s;
 
             //挂绪结
             sb.Draw(Pixel, top, PixelSrc, OnikiriUITheme.Seal * a, MathHelper.PiOver4 + rot * 0.4f,
-                half, new Vector2(4.2f), SpriteEffects.None, 0f);
+                half, Sz(4.2f, 4.2f), SpriteEffects.None, 0f);
 
             //整卷淡影
-            sb.Draw(Pixel, P(40f) + new Vector2(1.5f, 2.2f), PixelSrc, new Color(8, 2, 5) * (a * 0.45f),
-                rot, half, new Vector2(16f, 72f), SpriteEffects.None, 0f);
+            sb.Draw(Pixel, P(40f) + new Vector2(1.5f, 2.2f) * s, PixelSrc, new Color(8, 2, 5) * (a * 0.45f),
+                rot, half, Sz(16f, 72f), SpriteEffects.None, 0f);
 
             //====天杆+朱漆端帽====
             Vector2 rodTopC = P(7f);
             sb.Draw(Pixel, rodTopC, PixelSrc, OnikiriUITheme.Dark * (a * 0.96f), rot, half,
-                new Vector2(30f, 3.6f), SpriteEffects.None, 0f);
-            sb.Draw(Pixel, rodTopC - down * 0.8f, PixelSrc, new Color(120, 52, 40) * (a * 0.6f), rot, half,
-                new Vector2(28f, 1f), SpriteEffects.None, 0f);
+                Sz(30f, 3.6f), SpriteEffects.None, 0f);
+            sb.Draw(Pixel, rodTopC - down * (0.8f * s), PixelSrc, new Color(120, 52, 40) * (a * 0.6f), rot, half,
+                Sz(28f, 1f), SpriteEffects.None, 0f);
             foreach (float x in new[] { -16f, 16f }) {
                 sb.Draw(Pixel, P(7f, x), PixelSrc, OnikiriUITheme.Deep * (a * 0.95f), rot, half,
-                    new Vector2(5f, 6f), SpriteEffects.None, 0f);
+                    Sz(5f, 6f), SpriteEffects.None, 0f);
                 sb.Draw(Pixel, P(5.8f, x), PixelSrc, OnikiriUITheme.Bright * (a * 0.5f), rot, half,
-                    new Vector2(1.6f), SpriteEffects.None, 0f);
+                    Sz(1.6f, 1.6f), SpriteEffects.None, 0f);
             }
 
             //====纸垂两条:挂在天杆上,簿上有鬼躁动时抖得更急====
-            Rectangle shideRect = new((int)(rodTopC.X - 13f), (int)(rodTopC.Y + 1f), 26, 6);
+            Rectangle shideRect = new((int)(rodTopC.X - 13f * s), (int)(rodTopC.Y + 1f * s), (int)(26f * s), (int)(6f * s));
             float shideTime = time * (danger ? 1.7f : 1f);
-            OniBrush.DrawSingleShide(sb, shideRect, 0.10f, 12f, a * 0.95f, shideTime, 0.4f);
-            OniBrush.DrawSingleShide(sb, shideRect, 0.90f, 13f, a * 0.9f, shideTime, 2.3f);
+            OniBrush.DrawSingleShide(sb, shideRect, 0.10f, 12f * s, a * 0.95f, shideTime, 0.4f);
+            OniBrush.DrawSingleShide(sb, shideRect, 0.90f, 13f * s, a * 0.9f, shideTime, 2.3f);
 
             //====卷体:纸筒三带卖圆,卷层暗线,束带一匝====
             float c = sw.Ceremony01;
             float cEase = c * (2f - c);
             Vector2 rollC = P(38f);
             sb.Draw(Pixel, rollC, PixelSrc, OnikiriUITheme.Paper * (a * 0.62f), rot, half,
-                new Vector2(14f, 52f) * lift, SpriteEffects.None, 0f);
-            sb.Draw(Pixel, rollC - side * 3.5f, PixelSrc, OnikiriUITheme.Paper * (a * 0.78f), rot, half,
-                new Vector2(5.5f, 52f) * lift, SpriteEffects.None, 0f);
-            sb.Draw(Pixel, rollC + side * 5f, PixelSrc, OnikiriUITheme.Paper * (a * 0.42f), rot, half,
-                new Vector2(3.5f, 52f) * lift, SpriteEffects.None, 0f);
+                Sz(14f, 52f) * lift, SpriteEffects.None, 0f);
+            sb.Draw(Pixel, rollC - side * (3.5f * s), PixelSrc, OnikiriUITheme.Paper * (a * 0.78f), rot, half,
+                Sz(5.5f, 52f) * lift, SpriteEffects.None, 0f);
+            sb.Draw(Pixel, rollC + side * (5f * s), PixelSrc, OnikiriUITheme.Paper * (a * 0.42f), rot, half,
+                Sz(3.5f, 52f) * lift, SpriteEffects.None, 0f);
             foreach (float y in new[] { 22f, 36f, 50f }) {
                 sb.Draw(Pixel, P(y), PixelSrc, OnikiriUITheme.TextDim * (a * 0.30f), rot, half,
-                    new Vector2(13f, 1f), SpriteEffects.None, 0f);
+                    Sz(13f, 1f), SpriteEffects.None, 0f);
             }
             sb.Draw(Pixel, P(38f), PixelSrc, OnikiriUITheme.Deep * (a * 0.9f), rot, half,
-                new Vector2(15.5f, 2.6f), SpriteEffects.None, 0f);
+                Sz(15.5f, 2.6f), SpriteEffects.None, 0f);
             sb.Draw(Pixel, P(38f, 8f), PixelSrc, OnikiriUITheme.Deep * (a * 0.85f), rot + MathHelper.PiOver4,
-                half, new Vector2(3f), SpriteEffects.None, 0f);
+                half, Sz(3f, 3f), SpriteEffects.None, 0f);
 
             //====回声:鬼火自卷缝漏一丝====
             float echo = sw.Echo01;
@@ -626,31 +628,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 float pulse = MathF.Sin(echo * MathHelper.Pi);
                 Vector2 seam = P(30f + echo * 14f, -6f);
                 sb.Draw(Pixel, seam, PixelSrc, OnikiriUITheme.GhostDim * (a * 0.5f * pulse), rot,
-                    new Vector2(0.5f, 1f), new Vector2(2.4f, 6f * pulse), SpriteEffects.None, 0f);
+                    new Vector2(0.5f, 1f), Sz(2.4f, 6f * pulse), SpriteEffects.None, 0f);
                 sb.Draw(Pixel, seam, PixelSrc, OnikiriUITheme.GhostFire * (a * 0.7f * pulse), rot,
-                    new Vector2(0.5f, 1f), new Vector2(1.1f, 3.6f * pulse), SpriteEffects.None, 0f);
+                    new Vector2(0.5f, 1f), Sz(1.1f, 3.6f * pulse), SpriteEffects.None, 0f);
             }
 
             //====地杆:预演时向下弹开,缝里瞥见名录====
             float dropY = 66f + cEase * 16f;
             if (cEase > 0.03f) {
-                float gap = dropY - 64f;
-                Vector2 gapC = P(64f + gap * 0.5f);
+                float gap = (dropY - 64f) * s;
+                Vector2 gapC = P(64f + (dropY - 64f) * 0.5f);
                 float flash = MathF.Sin(c * MathHelper.Pi);
-                OniBrush.DrawBacklight(sb, gapC, 18f, OnikiriUITheme.GhostDim, a * 0.4f * flash);
+                OniBrush.DrawBacklight(sb, gapC, 18f * s, OnikiriUITheme.GhostDim, a * 0.4f * flash);
                 sb.Draw(Pixel, gapC, PixelSrc, OnikiriUITheme.Paper * (a * 0.85f), rot, half,
-                    new Vector2(11f, gap), SpriteEffects.None, 0f);
-                sb.Draw(Pixel, P(64f + gap * 0.45f, -2.5f), PixelSrc, OnikiriUITheme.Ink * (a * 0.7f), rot, half,
-                    new Vector2(1.2f, gap * 0.55f), SpriteEffects.None, 0f);
-                sb.Draw(Pixel, P(64f + gap * 0.55f, 2.5f), PixelSrc, OnikiriUITheme.Ink * (a * 0.6f), rot, half,
-                    new Vector2(1.2f, gap * 0.4f), SpriteEffects.None, 0f);
+                    new Vector2(11f * s, gap), SpriteEffects.None, 0f);
+                sb.Draw(Pixel, P(64f + (dropY - 64f) * 0.45f, -2.5f), PixelSrc, OnikiriUITheme.Ink * (a * 0.7f), rot, half,
+                    new Vector2(1.2f * s, gap * 0.55f), SpriteEffects.None, 0f);
+                sb.Draw(Pixel, P(64f + (dropY - 64f) * 0.55f, 2.5f), PixelSrc, OnikiriUITheme.Ink * (a * 0.6f), rot, half,
+                    new Vector2(1.2f * s, gap * 0.4f), SpriteEffects.None, 0f);
             }
             Vector2 rodBotC = P(dropY);
             sb.Draw(Pixel, rodBotC, PixelSrc, OnikiriUITheme.Dark * (a * 0.96f), rot, half,
-                new Vector2(26f, 3.2f), SpriteEffects.None, 0f);
+                Sz(26f, 3.2f), SpriteEffects.None, 0f);
             foreach (float x in new[] { -14f, 14f }) {
                 sb.Draw(Pixel, P(dropY, x), PixelSrc, OnikiriUITheme.Deep * (a * 0.95f), rot, half,
-                    new Vector2(4.4f, 5.4f), SpriteEffects.None, 0f);
+                    Sz(4.4f, 5.4f), SpriteEffects.None, 0f);
             }
         }
 

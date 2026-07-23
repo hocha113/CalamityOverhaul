@@ -99,6 +99,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public const float MeiBladeSeed = 11.73f;
         #endregion
 
+        #region 吊挂切换门
+        /// <summary>梁下微缩物整体倍率(门要一眼看见,别缩成页签)</summary>
+        public const float HangSwitchScale = 2.25f;
+        /// <summary>点鬼簿屏上挂轴命中外包</summary>
+        public static readonly Vector2 HangScrollHit = new(76f, 207f);
+        /// <summary>改铭台屏上挂刀命中外包</summary>
+        public static readonly Vector2 HangTachiHit = new(68f, 225f);
+        #endregion
+
         #region 点鬼簿几何
         /// <summary>卷轴纸面 shader 边沿外扩(墨缘侵蚀住在这一圈)</summary>
         public const int ScrollEdgePad = 14;

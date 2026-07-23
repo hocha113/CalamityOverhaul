@@ -13,8 +13,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     /// </summary>
     internal sealed class OniHangingSwitch(SoundStyle clickSound)
     {
-        /// <summary>绳长(锚到物件顶挂点)</summary>
-        public const float RopeLen = 40f;
+        /// <summary>绳长(锚到物件顶挂点;物件放大后略加长,仍贴梁)</summary>
+        public const float RopeLen = 62f;
         private const float CeremonyFrames = 12f;
         private const float EchoFrames = 70f;
 
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>绘制挂绳(物件本体由调用方画在 End 之下)</summary>
         public void DrawRope(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, float alpha) {
-            rope.Draw(sb, OnikiriUITheme.Deep * 0.9f, OnikiriUITheme.Deep * 0.62f, 1.3f, alpha);
+            rope.Draw(sb, OnikiriUITheme.Deep * 0.9f, OnikiriUITheme.Deep * 0.62f, 1.8f, alpha);
         }
 
         /// <summary>

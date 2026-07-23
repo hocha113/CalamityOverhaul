@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             //吊挂卷轴:点击预演到帧即移步点鬼簿;簿上有鬼躁动时回声更急
             if (registerSwitch.Update(registerSwitchAnchor, MousePosition, IsOpen && a > 0.9f && !Rite.Active,
-                GlobalTimer, new Vector2(34f, 92f), keyLeftPressState, OniRegistry.InDanger)) {
+                GlobalTimer, OnikiriUITheme.HangScrollHit, keyLeftPressState, OniRegistry.InDanger)) {
                 OniRegisterUI.Instance?.Open();
             }
 
@@ -268,7 +268,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             nameColTop = new Vector2(sw * OnikiriUITheme.MeiNameColXRatio, sh * 0.16f);
             //吊挂卷轴锚:布左上的梁下,与右上的纳刀牌对称成"一梁两挂"
-            registerSwitchAnchor = new Vector2(clothRect.X + 36f, clothRect.Y - 6f);
+            registerSwitchAnchor = new Vector2(clothRect.X + 14f, clothRect.Y - 10f);
             closeTagAnchor = new Vector2(clothRect.Right - 30f, clothRect.Y - 6f);
         }
 
