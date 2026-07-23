@@ -16,7 +16,7 @@ using OKF = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps.On
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 {
-    /// <summary>神威疾走主控. ai[0]=瞄准角(弧度) ai[1]=冲刺距离(px) ai[2]=尺寸倍率</summary>
+    /// <summary>神威疾走主控. ai[0]=瞄准角(弧度) ai[1]=冲刺距离(px) ai[2]=尺寸倍率,负值含连段收刃</summary>
     internal class OniFlashStep : BaseHeldProj, IPrimitiveDrawable, IAdditiveDrawable, IOverlayDrawable, IOniBladeOccupant
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -35,6 +35,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private const int NotoFlickFrames = 6;  //纳刀一挑时长(起于纳刀结算帧,与"锵"同步)
 
         private const int TailFadeFrames = 8;   //纳刀后持刀淡出
+
+        /// <summary>左键连段被接管后的强制收刃帧数</summary>
+        private const int InterruptHandoffFrames = 4;
 
         private const float CollisionSubStep = 14f; //直线斩停子步长(小于玩家宽度,防隧穿)
 
@@ -60,6 +63,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private float sizeMul = 1f;
         private int plannedDashFrames;
         private int stopFrame = -1;      //刹停帧（操控交还帧）
+        private bool dashPresentationStarted;
+        private bool interruptHandoff;
+        private float interruptStartRotation;
 
         private bool judged;
         private float headExt;           //刹停后流带头端 follow-through 残余外推
@@ -73,14 +79,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private bool ChainedToSakura => chained || OniSakuraFlight.ControlsOwner(Projectile.owner);
 
         private bool Dashing => stopFrame < 0;
+        private bool InterruptHandoffActive => interruptHandoff && timer <= InterruptHandoffFrames;
+        private int TravelStartFrame => interruptHandoff ? InterruptHandoffFrames : 0;
         /// <summary>纳刀结算的绝对帧，按出手时确定的距离稳定排拍</summary>
-        private int JudgmentFrame => plannedDashFrames + JudgmentDelay;
+        private int JudgmentFrame => TravelStartFrame + plannedDashFrames + JudgmentDelay;
 
         //收尾残心/纳刀的实体刀(纯视觉,非阻塞)
 
         private readonly OniBladePose bladePose = new();
 
-        /// <summary>位移段硬占刀权:人已化入神威,连段就地冻结让位</summary>
+        /// <summary>收刃与位移段硬占刀权,连段就地冻结让位</summary>
         bool IOniBladeOccupant.HardOccupiesBlade => stopFrame < 0;
 
         /// <summary>挥空后的保留余量(帧):没东西可演就不收税,只留极短落地拍</summary>
@@ -97,6 +105,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         internal static int CalculateTravelFrames(float distance)
             => Math.Max((int)MathF.Ceiling(MathF.Max(distance, 1f) / DashSpeed), 2);
 
+        internal static int CalculateControlFrames(float distance, bool interruptHandoff)
+            => CalculateTravelFrames(distance) + (interruptHandoff ? InterruptHandoffFrames : 0);
+
         /// <summary>触发接口、在持有者客户端调用</summary>
         /// <param name="player">冲刺者</param>
         /// <param name="aim">冲刺方向（无需归一化）</param>
@@ -104,14 +115,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         /// <param name="knockback">击退</param>
         /// <param name="distance">冲刺距离(px)，触碰实体物块立即终止</param>
         /// <param name="scale">尺寸倍率（流带幅宽/粒子随之缩放）</param>
+        /// <param name="interruptCombo">是否先播放连段收刃</param>
+        /// <param name="interruptRotation">被接管时的实体刀角</param>
         /// <param name="source">生成源，null 则回退 Misc 源</param>
         public static Projectile Fire(Player player, Vector2 aim, int damage, float knockback,
-            float distance, float scale = 1f, IEntitySource source = null) {
+            float distance, float scale = 1f, bool interruptCombo = false,
+            float interruptRotation = 0f, IEntitySource source = null) {
             source ??= player.GetSource_Misc("CWR_OniFlashStep");
             float aimAngle = aim.SafeNormalize(Vector2.UnitX * player.direction).ToRotation();
-            return Projectile.NewProjectileDirect(source, player.Center, Vector2.Zero
+            Vector2 encodedPose = interruptCombo ? interruptRotation.ToRotationVector2() : Vector2.Zero;
+            float encodedScale = MathF.Abs(scale) * (interruptCombo ? -1f : 1f);
+            return Projectile.NewProjectileDirect(source, player.Center, encodedPose
                 , ModContent.ProjectileType<OniFlashStep>(), damage, knockback, player.whoAmI
-                , ai0: aimAngle, ai1: distance, ai2: scale);
+                , ai0: aimAngle, ai1: distance, ai2: encodedScale);
         }
 
         public override void SetStaticDefaults() {
@@ -139,7 +155,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         public override void Initialize() {
             initialized = true;
             dashDir = DashAngle.ToRotationVector2();
-            sizeMul = Projectile.ai[2] > 0.05f ? Projectile.ai[2] : 1f;
+            interruptHandoff = Projectile.ai[2] < -0.05f;
+            interruptStartRotation = Projectile.velocity.LengthSquared() > 0.01f
+                ? Projectile.velocity.ToRotation()
+                : DashAngle;
+            sizeMul = MathF.Abs(Projectile.ai[2]) > 0.05f ? MathF.Abs(Projectile.ai[2]) : 1f;
             seed = Projectile.identity * 0.6180339887f % 1f;
             plannedDashFrames = CalculateTravelFrames(Distance);
             Projectile.timeLeft = JudgmentFrame + RetractDelay + RetractFrames + 30;
@@ -149,8 +169,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 Owner.RemoveAllGrapplingHooks();
             }
 
-            //出发即巅峰、布帛撕裂 + 风切 + 低太鼓，没有任何充能音
+            if (interruptHandoff) {
+                SoundEngine.PlaySound(CWRSound.KatanaSwing with { Pitch = 0.72f, Volume = 0.62f }, Owner.Center);
+                SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.85f, Volume = 0.30f }, Owner.Center);
+                Owner.CWR().GetScreenShake(1.5f);
+            }
+            else {
+                StartDashPresentation();
+            }
+        }
 
+        /// <summary>位移真正起步时的声画爆发</summary>
+        private void StartDashPresentation() {
+            if (dashPresentationStarted) {
+                return;
+            }
+            dashPresentationStarted = true;
+            //出发即巅峰、布帛撕裂 + 风切 + 低太鼓，没有任何充能音
             SoundEngine.PlaySound(SoundID.Grass with { Pitch = -0.78f, Volume = 0.90f }, GetCenter());
             SoundEngine.PlaySound(CWRSound.SwiftSlice with { Pitch = -0.05f, Volume = 0.80f }, GetCenter());
             SoundEngine.PlaySound(CWRSound.KatanaSprint with { Pitch = -0.72f, Volume = 0.62f }, GetCenter());
@@ -177,7 +212,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 return;
             }
 
-            if (Dashing) {
+            if (Dashing && !InterruptHandoffActive) {
+                StartDashPresentation();
                 DashFrame();
                 if (!Projectile.active) {
                     return;
@@ -386,10 +422,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Owner.CWR().GetScreenShake(MathF.Min(3f + marked.Count * 0.8f, 8f));
         }
 
+        /// <summary>连段刀角→疾走低姿的四帧强制收刃</summary>
+        private void UpdateInterruptHandoffPose() {
+            float t = MathHelper.Clamp(timer / (float)InterruptHandoffFrames, 0f, 1f);
+            float ease = 1f - MathF.Pow(1f - t, 3f);
+            int facing = MathF.Abs(dashDir.X) < 0.05f ? Owner.direction : (dashDir.X > 0f ? 1 : -1);
+            float readyRotation = DashAngle - facing * 1.15f;
+            float whip = MathF.Sin(t * MathF.PI) * facing * 0.60f;
+
+            bladePose.Rotation = OniBladePose.LerpAngle(interruptStartRotation, readyRotation, ease) + whip;
+            bladePose.Opacity = 1f;
+            Owner.itemTime = Owner.itemAnimation = 2;
+            bladePose.ApplyPose(Owner, Projectile, fixedFacing: facing);
+            bladePose.PushSmear(0.85f + (1f - t) * 0.15f);
+        }
+
         /// <summary>刹停后的残心→纳刀(纯视觉,非阻塞)</summary>
         private void UpdateTailPose() {
             bladePose.Update();
+            if (InterruptHandoffActive) {
+                UpdateInterruptHandoffPose();
+                return;
+            }
             if (stopFrame < 0 || !Owner.active || Owner.dead) {
+                bladePose.Opacity = 0f;
                 return;
             }
             //已化樱远去:残心纳刀没有身体可摆,结算照常押后
@@ -458,7 +514,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             if (Owner.whoAmI != Main.myPlayer) {
                 return;
             }
-            if (HidePlayerDuringDash && stopFrame < 0) {
+            if (HidePlayerDuringDash && Dashing && !InterruptHandoffActive) {
                 LocalPlayerHidden = hideHeld = true;
             }
             else if (hideHeld) {

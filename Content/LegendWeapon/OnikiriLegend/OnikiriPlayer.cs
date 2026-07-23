@@ -215,7 +215,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             ReleaseZanshinPending(item);
             ReadyCue();
 
-            if (flashStepPressed && CanAcceptFlashStepInput(flashStepUnbound)) {
+            if (flashStepPressed && CanAcceptFlashStepInput()) {
                 TryDash(item);
             }
             if (CWRKeySystem.Onikiri_Execute.JustPressed) {
@@ -257,7 +257,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         //==================== 神威疾走 ====================
 
-        private bool CanAcceptFlashStepInput(bool rightClickFallback) {
+        private bool CanAcceptFlashStepInput() {
             if (Main.mapFullscreen || Main.gamePaused || Main.ingameOptionsWindow || Main.inFancyUI
                 || Main.drawingPlayerChat || Main.editSign || Main.editChest || Main.blockInput
                 || Player.noItems || Player.mouseInterface || Player.talkNPC != -1 || Player.sign != -1
@@ -266,8 +266,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 || CursorOverInteractiveProjectile()) {
                 return false;
             }
-            return !rightClickFallback
-                || (Player.controlUseTile && Player.releaseUseItem && !Player.controlUseItem);
+            return true;
         }
 
         private bool CursorOverInteractiveProjectile() {
@@ -312,9 +311,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 zanshinBufferedMouseScreen = Main.MouseScreen;
             }
             float distance = aim.Length() + DashCursorOvershoot;
-            dashLock = Math.Max(DashRefireLockTicks, OniFlashStep.CalculateTravelFrames(distance));
+            float interruptRotation = 0f;
+            CrimsonRendSlash combo = CrimsonRendSlash.FindController(Player);
+            bool interruptCombo = combo != null
+                && combo.BeginFlashStepInterrupt(aim, out interruptRotation);
+            dashLock = Math.Max(DashRefireLockTicks
+                , OniFlashStep.CalculateControlFrames(distance, interruptCombo));
             OniFlashStep.Fire(Player, aim, (int)(state.WeaponDamage * DashDamageMul)
-                , state.WeaponKnockback, distance, source: Player.GetSource_ItemUse(item));
+                , state.WeaponKnockback, distance, interruptCombo: interruptCombo
+                , interruptRotation: interruptRotation, source: Player.GetSource_ItemUse(item));
         }
 
         //==================== 樱流化身 ====================

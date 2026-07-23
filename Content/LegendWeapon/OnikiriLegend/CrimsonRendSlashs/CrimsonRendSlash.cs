@@ -32,6 +32,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private const int AfterglowEnd = 46;   //命中余韵最晚结束帧(相对 lastImpactFrame)
         private const int BaseHitCooldown = 10;
         private const int BladeReleaseRecoveryFrames = 12;
+        /// <summary>疾走接管时旧刀光保留的极速褪去帧数</summary>
+        private const int FlashStepInterruptFadeFrames = 6;
         /// <summary>首次纯起手帧数,反向蓄势后无条件出首拍(仅首拍延后)</summary>
         private const int FirstWindupFrames = 2;
         private const float BladePathStart = 0.06f;
@@ -94,6 +96,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private int lastBeatFire;
         private bool scheduling;
         private bool firstBeatFired;
+        /// <summary>疾走已接管本控制器;旧刀光只退场、不再排拍或造成伤害</summary>
+        private bool flashStepInterrupted;
         /// <summary>首拍前摇已走帧数(软保留/让位不计)</summary>
         private int firstWindupTicks;
         /// <summary>上帧 DownLeft,检测真按下沿</summary>
@@ -284,6 +288,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return null;
         }
 
+        /// <summary>
+        /// 持续左键→疾走的刀权交接,返回当前刀角;
+        /// 旧刀光冻结退场并关闭伤害
+        /// </summary>
+        internal bool BeginFlashStepInterrupt(Vector2 dashAim, out float startRotation) {
+            startRotation = bladeRotation;
+            bool leftHeld = DownLeft || Owner.controlUseItem
+                || (Projectile.IsOwnedByLocalPlayer() && Main.mouseLeft);
+            bool attackActive = scheduling || firstWindupTicks > 0
+                || bladePoseInitialized || AnyLiveSlash();
+            if (flashStepInterrupted || !leftHeld || !attackActive) {
+                return false;
+            }
+
+            if (!bladePoseInitialized || bladeOpacity <= 0.05f) {
+                Vector2 aim = dashAim.SafeNormalize(Vector2.UnitX * Owner.direction);
+                int facing = MathF.Abs(aim.X) < 0.05f ? Owner.direction : (aim.X > 0f ? 1 : -1);
+                startRotation = aim.ToRotation() + facing * 0.55f;
+            }
+
+            flashStepInterrupted = true;
+            scheduling = false;
+            pressBuffer = 0;
+            prevDownLeft = true;
+            lastImpactFrame = -999;
+            Projectile.friendly = false;
+            FreezeSlashVisuals(FlashStepInterruptFadeFrames);
+            Projectile.netUpdate = true;
+            return true;
+        }
+
         /// <summary>残心接管本次左键,清掉普攻补发</summary>
         internal void ConsumeZanshinInput() {
             pressBuffer = 0;
@@ -363,25 +398,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         //上帧硬让位,检测让位起始沿
         private bool yielding;
 
+        /// <summary>把在场刀光冻结在世界坐标并压缩到指定余寿</summary>
+        private void FreezeSlashVisuals(int maxFadeFrames) {
+            foreach (ActiveSlash a in actives) {
+                a.FrozenCenter ??= Projectile.Center + a.Aim.ToRotationVector2() * a.Def.OffsetAlongAim;
+                int remain = a.Def.Life - (timer - a.Birth);
+                if (remain > maxFadeFrames) {
+                    a.Birth = timer - (a.Def.Life - maxFadeFrames);
+                }
+            }
+        }
+
         /// <summary>刀权仲裁,主人有硬占刀权技能时停排/冻结刀光速褪/实体刀交权</summary>
         private void UpdateYield() {
             bool hard = OniBladeOccupancy.AnyHardOccupant(Owner);
             if (hard && !yielding) {
                 scheduling = false;
                 bladeOpacity = 0f;
-                foreach (ActiveSlash a in actives) {
-                    a.FrozenCenter ??= Projectile.Center + a.Aim.ToRotationVector2() * a.Def.OffsetAlongAim;
-                    int remain = a.Def.Life - (timer - a.Birth);
-                    if (remain > YieldFadeFrames) {
-                        a.Birth = timer - (a.Def.Life - YieldFadeFrames);
-                    }
-                }
+                FreezeSlashVisuals(YieldFadeFrames);
             }
             yielding = hard;
         }
 
         /// <summary>连段排拍,按住推进松手停排,收势再按从第一拍重启;居合/签名拍软保留期间不夺刀</summary>
         private void UpdateCombo() {
+            if (flashStepInterrupted) {
+                prevDownLeft = DownLeft;
+                return;
+            }
             bool canContinue = !Owner.noItems && !Owner.CCed
                 && Item.type == ModContent.ItemType<OnikiriItem>()
                 && Owner.ownedProjectileCounts[ModContent.ProjectileType<OniDismembers.OniSeverStrike>()] == 0;
@@ -779,7 +823,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private void UpdateLifetime() {
             bool visualsAlive = actives.Count > 0
                 || (lastImpactFrame >= 0 && timer - lastImpactFrame < AfterglowEnd);
-            if (scheduling || visualsAlive) {
+            //疾走控身期保留休眠控制器,阻止按住左键被 autoReuse 重新起刀
+            if (scheduling || visualsAlive || (flashStepInterrupted && yielding)) {
                 Projectile.timeLeft = 30;
                 return;
             }
