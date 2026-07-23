@@ -7,7 +7,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 {
     /// <summary>
-    /// 命中材质分流,金属火花/白热,血肉重力血珠+可贴块血渍<br/>
+    /// 命中材质分流,金属弹射钢屑/白热,血肉重力血珠+可贴块血渍<br/>
     /// 挥空刀光呼吸粒子不走此处
     /// </summary>
     internal static class CrimsonRendHitVFX
@@ -38,9 +38,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             if (steel) {
                 for (int i = 0; i < 8; i++) {
                     Vector2 vel = aimDir.RotatedByRandom(0.65) * Main.rand.NextFloat(4f, 12f) * sizeMul;
-                    PRTLoader.NewParticle<PRT_CrimsonSpark>(pos, vel, new Color(255, 96, 60)
+                    PRTLoader.NewParticle<PRT_CrimsonSteelSpark>(pos, vel, new Color(255, 96, 60)
                         , Main.rand.NextFloat(0.4f, 0.8f) * sizeMul)
-                        ?.Configure(Main.rand.Next(16, 28), affectedByGravity: true);
+                        ?.Configure(Main.rand.Next(18, 32), gravity: true, maxBounces: 2);
                 }
             }
             else {
@@ -80,20 +80,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     , new Color(255, 140, 110), Main.rand.NextFloat(0.5f, 0.75f) * sizeMul);
             }
 
+            //可弹射钢屑(主视觉)+少量无碰撞飞星垫密度
             int mainSparks = 8 + (int)(power * 14f);
             for (int i = 0; i < mainSparks; i++) {
                 Vector2 vel = aimDir.RotatedByRandom(0.78) * Main.rand.NextFloat(5f, 12f + power * 10f) * sizeMul;
                 Color c = Main.rand.NextBool(3) ? new Color(255, 236, 210) : new Color(255, 92, 58);
-                PRTLoader.NewParticle<PRT_CrimsonSpark>(pos, vel, c
-                    , Main.rand.NextFloat(0.45f, 0.7f + power * 0.4f) * sizeMul)
-                    ?.Configure(Main.rand.Next(18, 30 + (int)(power * 12f)), affectedByGravity: true);
+                float sc = Main.rand.NextFloat(0.45f, 0.7f + power * 0.4f) * sizeMul;
+                int life = Main.rand.Next(20, 34 + (int)(power * 12f));
+                if (!Main.rand.NextBool(4)) {
+                    PRTLoader.NewParticle<PRT_CrimsonSteelSpark>(pos, vel, c, sc)
+                        ?.Configure(life, gravity: true, maxBounces: Main.rand.Next(1, 3));
+                }
+                else {
+                    PRTLoader.NewParticle<PRT_CrimsonSpark>(pos, vel, c, sc)
+                        ?.Configure(life, affectedByGravity: true);
+                }
             }
             int backSparks = 2 + (int)(power * 5f);
             for (int i = 0; i < backSparks; i++) {
                 Vector2 vel = (-aimDir).RotatedByRandom(1.1) * Main.rand.NextFloat(3f, 8f) * sizeMul;
-                PRTLoader.NewParticle<PRT_CrimsonSpark>(pos, vel, new Color(255, 70, 46)
-                    , Main.rand.NextFloat(0.35f, 0.6f) * sizeMul)
-                    ?.Configure(Main.rand.Next(16, 26), affectedByGravity: false);
+                //背向轻屑也可弹一次
+                if (Main.rand.NextBool()) {
+                    PRTLoader.NewParticle<PRT_CrimsonSteelSpark>(pos, vel, new Color(255, 70, 46)
+                        , Main.rand.NextFloat(0.35f, 0.6f) * sizeMul)
+                        ?.Configure(Main.rand.Next(16, 26), gravity: true, maxBounces: 1);
+                }
+                else {
+                    PRTLoader.NewParticle<PRT_CrimsonSpark>(pos, vel, new Color(255, 70, 46)
+                        , Main.rand.NextFloat(0.35f, 0.6f) * sizeMul)
+                        ?.Configure(Main.rand.Next(16, 26), affectedByGravity: false);
+                }
             }
         }
 
@@ -252,13 +268,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             bool landTops = Velocity.Y > 0.15f;
 
             Vector2 prev = Position - Velocity;
-            bool inSolid = HitsSurface(Position - half, hitW, hitH, landTops);
+            bool inSolid = CrimsonHitSurface.Hits(Position - half, hitW, hitH, landTops);
 
             //前瞻半步:高速时提前咬住表面
             if (!inSolid) {
                 Vector2 ahead = Position + Velocity * 0.55f;
                 bool aheadLand = Velocity.Y + Velocity.Y * 0.55f > 0.15f || landTops;
-                if (HitsSurface(ahead - half, hitW, hitH, aheadLand)) {
+                if (CrimsonHitSurface.Hits(ahead - half, hitW, hitH, aheadLand)) {
                     Position = ahead;
                     inSolid = true;
                     landTops = aheadLand;
@@ -270,7 +286,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             if (!inSolid && Velocity.Y > 0.5f) {
                 for (float d = 1f; d <= 12f; d += 1f) {
                     Vector2 probe = Position + new Vector2(0f, d);
-                    if (HitsSurface(probe - half, hitW, hitH, allowPlatforms: true)) {
+                    if (CrimsonHitSurface.Hits(probe - half, hitW, hitH, allowPlatforms: true)) {
                         Position = probe;
                         inSolid = true;
                         landTops = true;
@@ -285,7 +301,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 float side = Math.Sign(Velocity.X);
                 for (float d = 1f; d <= 8f; d += 1f) {
                     Vector2 probe = Position + new Vector2(side * d, 0f);
-                    if (HitsSurface(probe - half, hitW, hitH, allowPlatforms: false)) {
+                    if (CrimsonHitSurface.Hits(probe - half, hitW, hitH, allowPlatforms: false)) {
                         Position = probe;
                         inSolid = true;
                         landTops = false;
@@ -300,10 +316,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
 
             Vector2 n = Vector2.Zero;
-            if (HitsSurface(prev + new Vector2(Velocity.X, 0f) - half, hitW, hitH, allowPlatforms: false)) {
+            if (CrimsonHitSurface.Hits(prev + new Vector2(Velocity.X, 0f) - half, hitW, hitH, allowPlatforms: false)) {
                 n.X = -Math.Sign(Velocity.X == 0f ? snapNormal.X : Velocity.X);
             }
-            if (HitsSurface(prev + new Vector2(0f, Velocity.Y) - half, hitW, hitH, landTops)) {
+            if (CrimsonHitSurface.Hits(prev + new Vector2(0f, Velocity.Y) - half, hitW, hitH, landTops)) {
                 n.Y = -Math.Sign(Velocity.Y == 0f ? 1f : Velocity.Y);
             }
             if (n == Vector2.Zero) {
@@ -314,14 +330,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             impactSpeed = MathF.Max(Velocity.Length(), 1f);
 
             //从实体内部沿外法线推出到刚好离开,贴死表面(勿回退到空中 prev)
-            for (int i = 0; i < 32 && HitsSurface(Position - half, hitW, hitH, landTops); i++) {
+            for (int i = 0; i < 32 && CrimsonHitSurface.Hits(Position - half, hitW, hitH, landTops); i++) {
                 Position += stuckNormal * 0.5f;
             }
             //若已在空气中(近距吸附过头),沿 -normal 拉回贴面
-            if (!HitsSurface(Position - half, hitW, hitH, landTops)) {
+            if (!CrimsonHitSurface.Hits(Position - half, hitW, hitH, landTops)) {
                 for (int i = 0; i < 16; i++) {
                     Vector2 next = Position - stuckNormal * 0.5f;
-                    if (HitsSurface(next - half, hitW, hitH, landTops)) {
+                    if (CrimsonHitSurface.Hits(next - half, hitW, hitH, landTops)) {
                         break;
                     }
                     Position = next;
@@ -343,13 +359,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             if (impactSpeed > 5.5f && Main.rand.NextBool(2)) {
                 SpawnImpactSplash();
             }
-        }
-
-        /// <summary>实心块始终挡;平台等 SolidTop 仅 <paramref name="allowPlatforms"/> 时挡(可上穿、落下滞留)</summary>
-        private static bool HitsSurface(Vector2 topLeft, int width, int height, bool allowPlatforms) {
-            return allowPlatforms
-                ? Collision.SolidCollision(topLeft, width, height, acceptTopSurfaces: true)
-                : Collision.SolidCollision(topLeft, width, height);
         }
 
         private void StuckAI() {
@@ -432,6 +441,201 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             Vector2 scale = new Vector2(0.34f * (1f - stretch * 0.35f), 0.62f * (1f + stretch * 1.7f)) * Scale;
             spriteBatch.Draw(tex, pos, null, draw, Rotation, origin, scale, SpriteEffects.None, 0f);
             spriteBatch.Draw(tex, pos, null, draw, Rotation, origin, scale * new Vector2(0.45f, 1f), SpriteEffects.None, 0f);
+            return false;
+        }
+    }
+
+    /// <summary>命中粒子共用表面判定:全实心始终挡;SolidTop 仅下落时挡</summary>
+    internal static class CrimsonHitSurface
+    {
+        public static bool Hits(Vector2 topLeft, int width, int height, bool allowPlatforms) {
+            return allowPlatforms
+                ? Collision.SolidCollision(topLeft, width, height, acceptTopSurfaces: true)
+                : Collision.SolidCollision(topLeft, width, height);
+        }
+    }
+
+    /// <summary>
+    /// 金属命中钢屑:加色拉长火花,触块弹射/刮擦(对比血珠贴附)<br/>
+    /// 平台仅下落时碰撞;刀光呼吸仍用无碰撞 PRT_CrimsonSpark
+    /// </summary>
+    internal class PRT_CrimsonSteelSpark : BasePRT
+    {
+        public override string Texture => CWRConstant.Masking + "StarGlow01";
+        public override bool CanPool => true;
+        public override int InGame_World_MaxCount => 220;
+
+        private Color initialColor;
+        private bool useGravity;
+        private int maxBounces;
+        private int bounceCount;
+        private int lastBounceTime;
+        private float restitution;
+
+        public PRT_CrimsonSteelSpark Configure(int lifetime, bool gravity = true, int maxBounces = 2
+            , float restitution = 0.58f) {
+            Lifetime = lifetime;
+            initialColor = Color;
+            useGravity = gravity;
+            this.maxBounces = Math.Clamp(maxBounces, 0, 3);
+            this.restitution = MathHelper.Clamp(restitution, 0.25f, 0.85f);
+            return this;
+        }
+
+        public override void Reset() {
+            base.Reset();
+            initialColor = default;
+            useGravity = false;
+            maxBounces = 0;
+            bounceCount = 0;
+            lastBounceTime = -10;
+            restitution = 0.58f;
+        }
+
+        public override void SetProperty() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+            Opacity = 1f;
+            if (Lifetime <= 0) {
+                Lifetime = Main.rand.Next(20, 34);
+            }
+            if (initialColor == default) {
+                initialColor = Color;
+            }
+            if (maxBounces <= 0 && bounceCount == 0) {
+                maxBounces = 2;
+            }
+        }
+
+        public override void AI() {
+            Scale *= 0.972f;
+            Velocity *= 0.975f;
+            if (useGravity && Velocity.Y < 16f) {
+                Velocity.Y += 0.28f;
+            }
+
+            TryRicochet();
+
+            Rotation = Velocity.LengthSquared() > 0.04f
+                ? Velocity.ToRotation() + MathHelper.PiOver2
+                : Rotation;
+            Color = Color.Lerp(initialColor, Color.Transparent, MathF.Pow(LifetimeCompletion, 2.1f));
+            Opacity = MathHelper.Clamp(1f - LifetimeCompletion * 0.15f, 0.55f, 1f)
+                * MathHelper.Clamp((1f - LifetimeCompletion) * 3.5f, 0f, 1f);
+
+            if (Scale < 0.035f) {
+                active = false;
+            }
+        }
+
+        private void TryRicochet() {
+            if (Time - lastBounceTime < 2) {
+                return;
+            }
+            if (Velocity.LengthSquared() < 0.5f) {
+                return;
+            }
+
+            const int hitW = 2;
+            const int hitH = 2;
+            Vector2 half = new(hitW * 0.5f, hitH * 0.5f);
+            bool landTops = Velocity.Y > 0.15f;
+
+            bool hit = CrimsonHitSurface.Hits(Position - half, hitW, hitH, landTops);
+            if (!hit) {
+                Vector2 ahead = Position + Velocity * 0.45f;
+                if (CrimsonHitSurface.Hits(ahead - half, hitW, hitH, Velocity.Y > 0.15f)) {
+                    Position = ahead;
+                    hit = true;
+                    landTops = Velocity.Y > 0.15f;
+                }
+            }
+            if (!hit && Velocity.Y > 0.6f) {
+                for (float d = 1f; d <= 8f; d += 1f) {
+                    Vector2 probe = Position + new Vector2(0f, d);
+                    if (CrimsonHitSurface.Hits(probe - half, hitW, hitH, allowPlatforms: true)) {
+                        Position = probe;
+                        hit = true;
+                        landTops = true;
+                        break;
+                    }
+                }
+            }
+            if (!hit) {
+                return;
+            }
+
+            Vector2 prev = Position - Velocity;
+            Vector2 n = Vector2.Zero;
+            if (CrimsonHitSurface.Hits(prev + new Vector2(Velocity.X, 0f) - half, hitW, hitH, allowPlatforms: false)) {
+                n.X = -Math.Sign(Velocity.X);
+            }
+            if (CrimsonHitSurface.Hits(prev + new Vector2(0f, Velocity.Y) - half, hitW, hitH, landTops)) {
+                n.Y = -Math.Sign(Velocity.Y == 0f ? 1f : Velocity.Y);
+            }
+            if (n == Vector2.Zero) {
+                n = landTops ? -Vector2.UnitY : new Vector2(-Math.Sign(Velocity.X == 0f ? 1f : Velocity.X), 0f);
+            }
+            Vector2 normal = n.SafeNormalize(-Vector2.UnitY);
+
+            //推出实体再反射
+            for (int i = 0; i < 24 && CrimsonHitSurface.Hits(Position - half, hitW, hitH, landTops); i++) {
+                Position += normal * 0.5f;
+            }
+
+            Vector2 oldVel = Velocity;
+            float impact = oldVel.Length();
+            lastBounceTime = Time;
+            bounceCount++;
+
+            //能量不足或弹尽:刮擦熄灭(不贴附)
+            if (bounceCount > maxBounces || impact < 2.8f) {
+                Velocity = Vector2.Reflect(oldVel, normal) * 0.18f;
+                Velocity += normal * Main.rand.NextFloat(0.4f, 1.1f);
+                Scale *= 0.7f;
+                if (Lifetime - Time > 7) {
+                    Time = Lifetime - 7;
+                }
+                SpawnScrapeChips(normal, impact * 0.35f, 1);
+                return;
+            }
+
+            Velocity = Vector2.Reflect(oldVel, normal) * restitution;
+            Velocity = Velocity.RotatedByRandom(0.22f);
+            //略抬离表面防贴帧再撞
+            Position += normal * 1.2f;
+            Scale *= 0.92f;
+            SpawnScrapeChips(normal, impact * 0.55f, impact > 8f ? 2 : 1);
+        }
+
+        private void SpawnScrapeChips(Vector2 normal, float force, int count) {
+            Vector2 tangent = normal.RotatedBy(MathHelper.PiOver2);
+            for (int i = 0; i < count; i++) {
+                float side = Main.rand.NextBool() ? 1f : -1f;
+                Vector2 v = tangent * side * force * Main.rand.NextFloat(0.25f, 0.7f)
+                    + normal * force * Main.rand.NextFloat(0.15f, 0.45f);
+                PRTLoader.NewParticle<PRT_CrimsonSpark>(Position, v
+                    , Color.Lerp(initialColor, new Color(255, 240, 210), 0.45f)
+                    , Scale * Main.rand.NextFloat(0.35f, 0.55f))
+                    ?.Configure(Main.rand.Next(8, 14), affectedByGravity: false);
+            }
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
+            Vector2 origin = tex.Size() * 0.5f;
+            Vector2 pos = Position - Main.screenPosition;
+            Color draw = Color * Opacity;
+            float stretch = MathHelper.Clamp(Velocity.Length() * 0.18f, 0.85f, 3.0f);
+            Vector2 scale = new Vector2(0.38f, stretch) * Scale;
+            //热芯 + 拉长条
+            spriteBatch.Draw(tex, pos, null, draw, Rotation, origin, scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, pos, null, draw * 0.85f, Rotation, origin
+                , scale * new Vector2(0.42f, 1f), SpriteEffects.None, 0);
+            if (bounceCount > 0 && Time - lastBounceTime < 4) {
+                float flash = 1f - (Time - lastBounceTime) / 4f;
+                spriteBatch.Draw(tex, pos, null, new Color(255, 245, 220) * (flash * 0.7f * Opacity)
+                    , Rotation, origin, scale * (1.15f + flash * 0.25f), SpriteEffects.None, 0);
+            }
             return false;
         }
     }
