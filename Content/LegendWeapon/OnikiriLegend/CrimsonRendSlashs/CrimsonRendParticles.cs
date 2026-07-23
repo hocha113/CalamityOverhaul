@@ -248,41 +248,47 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             const int hitW = 2;
             const int hitH = 2;
             Vector2 half = new(hitW * 0.5f, hitH * 0.5f);
+            //下落才认平台/桌面等 SolidTop:可上穿、落下滞留
+            bool landTops = Velocity.Y > 0.15f;
 
             Vector2 prev = Position - Velocity;
-            bool inSolid = Collision.SolidCollision(Position - half, hitW, hitH);
+            bool inSolid = HitsSurface(Position - half, hitW, hitH, landTops);
 
             //前瞻半步:高速时提前咬住表面
             if (!inSolid) {
                 Vector2 ahead = Position + Velocity * 0.55f;
-                if (Collision.SolidCollision(ahead - half, hitW, hitH)) {
+                bool aheadLand = Velocity.Y + Velocity.Y * 0.55f > 0.15f || landTops;
+                if (HitsSurface(ahead - half, hitW, hitH, aheadLand)) {
                     Position = ahead;
                     inSolid = true;
+                    landTops = aheadLand;
                 }
             }
 
-            //下落近距吸附:下方 12px 内有实心则拉贴,避免悬空淡出
+            //下落近距吸附:下方 12px 内有实心/平台则拉贴
             Vector2 snapNormal = -Vector2.UnitY;
             if (!inSolid && Velocity.Y > 0.5f) {
                 for (float d = 1f; d <= 12f; d += 1f) {
                     Vector2 probe = Position + new Vector2(0f, d);
-                    if (Collision.SolidCollision(probe - half, hitW, hitH)) {
+                    if (HitsSurface(probe - half, hitW, hitH, allowPlatforms: true)) {
                         Position = probe;
                         inSolid = true;
+                        landTops = true;
                         snapNormal = -Vector2.UnitY;
                         break;
                     }
                 }
             }
 
-            //侧向近距吸附(贴墙)
+            //侧向近距吸附(仅全实心墙,平台不可侧贴)
             if (!inSolid && Math.Abs(Velocity.X) > 0.6f) {
                 float side = Math.Sign(Velocity.X);
                 for (float d = 1f; d <= 8f; d += 1f) {
                     Vector2 probe = Position + new Vector2(side * d, 0f);
-                    if (Collision.SolidCollision(probe - half, hitW, hitH)) {
+                    if (HitsSurface(probe - half, hitW, hitH, allowPlatforms: false)) {
                         Position = probe;
                         inSolid = true;
+                        landTops = false;
                         snapNormal = new Vector2(-side, 0f);
                         break;
                     }
@@ -294,10 +300,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
 
             Vector2 n = Vector2.Zero;
-            if (Collision.SolidCollision(prev + new Vector2(Velocity.X, 0f) - half, hitW, hitH)) {
+            if (HitsSurface(prev + new Vector2(Velocity.X, 0f) - half, hitW, hitH, allowPlatforms: false)) {
                 n.X = -Math.Sign(Velocity.X == 0f ? snapNormal.X : Velocity.X);
             }
-            if (Collision.SolidCollision(prev + new Vector2(0f, Velocity.Y) - half, hitW, hitH)) {
+            if (HitsSurface(prev + new Vector2(0f, Velocity.Y) - half, hitW, hitH, landTops)) {
                 n.Y = -Math.Sign(Velocity.Y == 0f ? 1f : Velocity.Y);
             }
             if (n == Vector2.Zero) {
@@ -308,14 +314,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             impactSpeed = MathF.Max(Velocity.Length(), 1f);
 
             //从实体内部沿外法线推出到刚好离开,贴死表面(勿回退到空中 prev)
-            for (int i = 0; i < 32 && Collision.SolidCollision(Position - half, hitW, hitH); i++) {
+            for (int i = 0; i < 32 && HitsSurface(Position - half, hitW, hitH, landTops); i++) {
                 Position += stuckNormal * 0.5f;
             }
             //若已在空气中(近距吸附过头),沿 -normal 拉回贴面
-            if (!Collision.SolidCollision(Position - half, hitW, hitH)) {
+            if (!HitsSurface(Position - half, hitW, hitH, landTops)) {
                 for (int i = 0; i < 16; i++) {
                     Vector2 next = Position - stuckNormal * 0.5f;
-                    if (Collision.SolidCollision(next - half, hitW, hitH)) {
+                    if (HitsSurface(next - half, hitW, hitH, landTops)) {
                         break;
                     }
                     Position = next;
@@ -337,6 +343,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             if (impactSpeed > 5.5f && Main.rand.NextBool(2)) {
                 SpawnImpactSplash();
             }
+        }
+
+        /// <summary>实心块始终挡;平台等 SolidTop 仅 <paramref name="allowPlatforms"/> 时挡(可上穿、落下滞留)</summary>
+        private static bool HitsSurface(Vector2 topLeft, int width, int height, bool allowPlatforms) {
+            return allowPlatforms
+                ? Collision.SolidCollision(topLeft, width, height, acceptTopSurfaces: true)
+                : Collision.SolidCollision(topLeft, width, height);
         }
 
         private void StuckAI() {
