@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
         private const string ReplayLabel = "replay";
         private const string FarewellLabel = "farewell";
 
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.Himayo";
 
         public static LocalizedText MayoName { get; private set; }
         public static LocalizedText L1 { get; private set; }

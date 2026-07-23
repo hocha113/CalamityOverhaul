@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         /// <summary>地面锚点，鸟居正下地表中心，像素</summary>
         public static Vector2 ShrinePosition { get; private set; }
 
-        public string LocalizationCategory => "ADV.ToriiShrine";
+        public string LocalizationCategory => "ADV.Himayo";
 
         public static LocalizedText InteractHint { get; private set; }
         public static LocalizedText InventoryFullHint { get; private set; }

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
 {
     internal sealed class FirstMetHimayo : NarrativeScenario, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.Himayo";
 
         public static LocalizedText SpeakerName { get; private set; }
         public static LocalizedText Line1 { get; private set; }

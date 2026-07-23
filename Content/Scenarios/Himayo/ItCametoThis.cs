@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
 {
     internal class ItCametoThis : NarrativeScenario, ILocalizedModType
     {
-        public string LocalizationCategory => "ADV";
+        public string LocalizationCategory => "ADV.Himayo";
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
