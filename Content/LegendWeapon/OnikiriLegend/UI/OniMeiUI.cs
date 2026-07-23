@@ -127,8 +127,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         //====低频异象====
         private int songCooldown = 900;
         private float songRun = -1f;
-        private int wispCooldown = 600;
-        private float wispRun = -1f;
 
         /// <summary>鏨仪式演出态</summary>
         internal readonly OniMeiRite Rite = new();
@@ -158,7 +156,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             registerSwitch.Reset();
             songCooldown = Main.rand.Next(700, 1400);
             songRun = -1f;
-            wispRun = -1f;
             particles.Clear();
             if (VaultUtils.isSinglePlayer) {
                 WorldFreezeSystem.Activate(FreezeReason);
@@ -490,22 +487,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 songRun = 0f;
                 SoundEngine.PlaySound(SoundID.Item35 with { Pitch = 0.55f, Volume = 0.1f, MaxInstances = 1 });
             }
-            //鬼影掠面:躁动之鬼在刀面倒影里走过(暗痕,不用鬼火青)
-            if (OniRegistry.InDanger) {
-                if (wispRun >= 0f) {
-                    wispRun += 1f;
-                    if (wispRun > 70f) {
-                        wispRun = -1f;
-                        wispCooldown = Main.rand.Next(320, 720);
-                    }
-                }
-                else if (--wispCooldown <= 0) {
-                    wispRun = 0f;
-                }
-            }
-            else {
-                wispRun = -1f;
-            }
         }
 
         //====木牌内容解析与打字机====
@@ -613,7 +594,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             float slide = (1f - slideEase) * OnikiriUITheme.UIScreenW * 0.42f;
             Vector2 bladeDrawCenter = bladeCenter + bladeDir * slide + Rite.Shake;
             OniMeiRenderer.DrawBlade(spriteBatch, bladeDrawCenter, bladeDir, bladePerp, bladeW,
-                OnikiriUITheme.MeiBladeQuadH, a, ShaderTime, slide, songRun, wispRun);
+                OnikiriUITheme.MeiBladeQuadH, a, ShaderTime, slide, songRun);
 
             //开屏编舞:目钉飞脱 + 柄影褪去
             if (mekugiAnim > 0.001f && mekugiAnim < 1f) {

@@ -92,9 +92,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         //====================== 刀身 ======================
 
-        /// <summary>刀身入口:shader 在则 shader,否则 CPU 简笔;刀鸣/鬼影掠面恒走 CPU 叠加</summary>
+        /// <summary>刀身入口:shader 在则 shader,否则 CPU 简笔;刀鸣恒走 CPU 叠加</summary>
         public static void DrawBlade(SpriteBatch sb, Vector2 center, Vector2 dir, Vector2 perp,
-            float bladeW, float quadH, float alpha, float time, float slide, float songRun, float wispRun) {
+            float bladeW, float quadH, float alpha, float time, float slide, float songRun) {
             //布上刀影
             Vector2 tip = center - dir * (bladeW * 0.5f);
             sb.Draw(Pixel, center + new Vector2(2f, 7f), PixelSrc, new Color(8, 2, 5) * (alpha * 0.5f),
@@ -123,18 +123,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniBrush.DrawSoftStreak(sb, pos, OnikiriUITheme.MeiBladeCant, 54f, 1.5f,
                     OnikiriUITheme.HotWhite, alpha * 0.8f * pulse, glowMul: 1.1f);
                 OniBrush.DrawSoftDot(sb, pos, 11f, OnikiriUITheme.Bright, alpha * 0.30f * pulse);
-            }
-
-            //鬼影掠面:刀面倒影里一道暗痕走过(羽化退晕,影子没有直角)
-            if (wispRun >= 0f) {
-                float t = wispRun / 70f;
-                float u = MathHelper.Lerp(0.9f, 0.08f, t);
-                float pulse = (float)Math.Sin(t * MathHelper.Pi);
-                Vector2 pos = tip + dir * (bladeW * u) + perp * ((float)Math.Sin(t * 9f) * 2f);
-                OniBrush.DrawFeathered(sb, pos, OnikiriUITheme.MeiBladeCant + 0.05f,
-                    new Vector2(52f, quadH * 0.12f), OnikiriUITheme.Ink, alpha * 0.8f * pulse);
-                OniBrush.DrawSoftStreak(sb, pos + dir * 40f, OnikiriUITheme.MeiBladeCant, 26f, 1.6f,
-                    OnikiriUITheme.Paper, alpha * 0.12f * pulse, glowMul: 0.3f);
             }
         }
 
