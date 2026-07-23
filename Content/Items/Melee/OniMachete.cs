@@ -845,9 +845,12 @@ namespace CalamityOverhaul.Content.Items.Melee
             float dist = BladeReach * 0.52f;
             float drawScale = Projectile.scale * 1.52f * (1f + recoilPulse * 0.04f);
 
-            SpriteEffects effect = lockedDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
-            //贴图刀尖右上(-PiOver4)，翻转后右下(+PiOver4)
-            float rotOffset = lockedDirection == -1 ? -MathHelper.PiOver4 : MathHelper.PiOver4;
+            //朝左翻一次、反向挥再翻一次(XOR);刃口始终朝挥动前缘,终结拍 swingSign==facing 不额外翻
+            bool edgeFlip = swingSign * lockedDirection < 0;
+            bool flipY = lockedDirection < 0 != edgeFlip;
+            SpriteEffects effect = flipY ? SpriteEffects.FlipVertically : SpriteEffects.None;
+            //贴图刀尖右上(-PiOver4),翻转后右下(+PiOver4)
+            float rotOffset = flipY ? -MathHelper.PiOver4 : MathHelper.PiOver4;
 
             //打击段残影
             float strikeStart = WindupTime + HoldTime;
