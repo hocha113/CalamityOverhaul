@@ -226,7 +226,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>悬浮读数:小裱墨牌,题名 + 当前/上限;满架势多题一行"只欠一拔"</summary>
+        /// <summary>悬浮读数:小裱墨牌,题名 + 当前/上限 + 开改铭台指引;满架势多题一行"只欠一拔"</summary>
         private void DrawHoverTag(SpriteBatch sb, float alpha) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             string title = OniTalismanHud.StanceTitle.Value;
@@ -235,12 +235,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //满出终结乱舞,半满提示灭世一闪已可用
             string readyLine = displayFill >= 0.995f ? OniTalismanHud.StanceReadyLine.Value
                 : displayFill >= 0.5f ? OniTalismanHud.StanceHalfLine.Value : null;
+            string meiHint = OniTalismanHud.StanceMeiHint.Value;
 
             float w = Math.Max(font.MeasureString(title).X * 0.78f, font.MeasureString(line).X * 0.7f);
             if (readyLine != null) {
                 w = Math.Max(w, font.MeasureString(readyLine).X * 0.7f);
             }
-            float h = 42f + (readyLine != null ? 18f : 0f);
+            w = Math.Max(w, font.MeasureString(meiHint).X * 0.7f);
+            float h = 60f + (readyLine != null ? 18f : 0f);
             Rectangle panel = new((int)lastMouse.X + 16, (int)lastMouse.Y - 6, (int)w + 20, (int)h);
             //不出屏
             if (panel.Right > OnikiriUITheme.UIScreenW - 8f) {
@@ -256,9 +258,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             Utils.DrawBorderString(sb, title, new Vector2(panel.X + 9f, panel.Y + 3f), OnikiriUITheme.HotWhite * alpha, 0.78f);
             Utils.DrawBorderString(sb, line, new Vector2(panel.X + 9f, panel.Y + 23f), OnikiriUITheme.TextDim * alpha, 0.7f);
+            float y = panel.Y + 41f;
             if (readyLine != null) {
-                Utils.DrawBorderString(sb, readyLine, new Vector2(panel.X + 9f, panel.Y + 41f), OnikiriUITheme.Bright * (alpha * 0.95f), 0.7f);
+                Utils.DrawBorderString(sb, readyLine, new Vector2(panel.X + 9f, y), OnikiriUITheme.Bright * (alpha * 0.95f), 0.7f);
+                y += 18f;
             }
+            Utils.DrawBorderString(sb, meiHint, new Vector2(panel.X + 9f, y), OnikiriUITheme.GoldInlay * (alpha * 0.85f), 0.7f);
         }
     }
 }

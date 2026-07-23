@@ -44,11 +44,60 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         /// <summary>鬼火暗青,焰裙/余烬</summary>
         public static readonly Color GhostDim = new(62, 112, 104);
 
+        //====改铭台侧 金象嵌(本屏专属 accent,不进点鬼簿)====
+        /// <summary>金象嵌亮部,填缝/点亮/扇骨高光</summary>
+        public static readonly Color GoldInlay = new(218, 172, 82);
+        /// <summary>金象嵌暗部,氧化边/衬底</summary>
+        public static readonly Color GoldDeep = new(140, 96, 34);
+        /// <summary>烛焰暖色,底缘光源(与细节板背光同源)</summary>
+        public static readonly Color CandleWarm = new(226, 160, 108);
+
         //====文本====
         /// <summary>文本次色，来历/提示</summary>
         public static readonly Color TextDim = new(158, 134, 124);
         /// <summary>禁用/未知灰</summary>
         public static readonly Color Disabled = new(96, 78, 74);
+
+        #region 改铭台几何
+        /// <summary>刀身 quad 宽占屏比</summary>
+        public const float MeiBladeWidthRatio = 0.72f;
+        /// <summary>刀身 quad 宽上限</summary>
+        public const float MeiBladeMaxW = 1150f;
+        /// <summary>刀身 quad 高(刀身核心约 46px,余量给刃辉/字形/烛照)</summary>
+        public const float MeiBladeQuadH = 190f;
+        /// <summary>刀心占屏比(横陈偏上,下方留给鏨盘扇与木牌)</summary>
+        public static readonly Vector2 MeiBladeCenterRatio = new(0.46f, 0.40f);
+        /// <summary>横陈微倾(弧度),轴向锋(左)→茎(右),正值=锋侧略抬——鉴刀不摆正</summary>
+        public const float MeiBladeCant = 0.03f;
+        /// <summary>茎段占刀长比(右侧,裸茎见锉痕与锈)</summary>
+        public const float MeiTangFraction = 0.24f;
+        /// <summary>樋位归一位置(锋 0 → 茎尾 1)</summary>
+        public const float MeiSlotUHi = 0.26f;
+        /// <summary>雕位归一位置</summary>
+        public const float MeiSlotUHorimono = 0.52f;
+        /// <summary>茎铭位归一位置(落在裸茎上)</summary>
+        public const float MeiSlotUNakago = 0.875f;
+        /// <summary>铭位命中半径</summary>
+        public const float MeiSlotRadius = 34f;
+        /// <summary>刀上铭字形尺寸</summary>
+        public const float MeiGlyphOnBlade = 54f;
+        /// <summary>鏨盘扇骨长(轴心到纹章心)</summary>
+        public const float MeiFanRibLen = 150f;
+        /// <summary>扇骨纹章尺寸</summary>
+        public const float MeiFanGlyphSize = 44f;
+        /// <summary>扇面全张角(弧度)</summary>
+        public const float MeiFanSpread = 1.55f;
+        /// <summary>烙印木牌尺寸</summary>
+        public static readonly Vector2 MeiTagSize = new(380f, 196f);
+        /// <summary>右缘竖排大字中轴 X 占屏比</summary>
+        public const float MeiNameColXRatio = 0.905f;
+        /// <summary>竖排大字字号</summary>
+        public const float MeiNameScale = 1.6f;
+        /// <summary>白布横幅高</summary>
+        public const float MeiClothH = 330f;
+        /// <summary>刀身形状种子(肌理/刃文/锈斑,会话内恒定)</summary>
+        public const float MeiBladeSeed = 11.73f;
+        #endregion
 
         #region 点鬼簿几何
         /// <summary>卷轴纸面 shader 边沿外扩(墨缘侵蚀住在这一圈)</summary>

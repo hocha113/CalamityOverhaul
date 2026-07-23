@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using CalamityOverhaul.Content.Wraiths.Core;
 using System.Collections.Generic;
@@ -32,8 +33,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             ("GhostHand", 0.45f),
         ];
 
+        //铭位表独立 InitTag:老刀存档无铭数据时重播出厂铭
+        private const string MeiInitTag = "OnikiriMei:Init1";
+
         /// <summary>本刀的厉鬼绑定进度</summary>
         public WraithProgressStore Wraiths { get; private set; } = new();
+
+        /// <summary>本刀的铭位表(表现层数据缝,效果层后补)</summary>
+        public OniMeiStore Mei { get; private set; } = new();
 
         public OnikiriData() {
             SeedFactoryState();
@@ -44,6 +51,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             OnikiriData clone = (OnikiriData)base.Clone(item);
             clone.Wraiths = new WraithProgressStore();
             clone.Wraiths.CopyFrom(Wraiths);
+            clone.Mei = new OniMeiStore();
+            clone.Mei.CopyFrom(Mei);
             return clone;
         }
 
@@ -70,12 +79,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 record.Mastery = mastery;
             }
             Wraiths.BumpVersion();
+            SeedFactoryMei();
+        }
+
+        /// <summary>出厂铭:茎上默认铭「鬼切」,余位空悬</summary>
+        private void SeedFactoryMei() {
+            Mei.Clear();
+            Mei.Engrave(OniMeiSlotKind.Nakago, nameof(MeiOnikiri));
         }
 
         public override void SaveData(Item item, TagCompound tag) {
             base.SaveData(item, tag);
             tag[InitTag] = true;
             Wraiths.SaveData(tag);
+            tag[MeiInitTag] = true;
+            Mei.SaveData(tag);
         }
 
         public override void LoadData(Item item, TagCompound tag) {
@@ -89,10 +107,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             else {
                 SeedFactoryState();
             }
+            //铭位表独立门控:功能前老刀重播出厂铭
+            if (tag.ContainsKey(MeiInitTag)) {
+                Mei.LoadData(tag);
+            }
+            else {
+                SeedFactoryMei();
+            }
         }
 
-        public override void SendLegend(Item item, BinaryWriter writer) => Wraiths.NetSend(writer);
+        public override void SendLegend(Item item, BinaryWriter writer) {
+            Wraiths.NetSend(writer);
+            Mei.NetSend(writer);
+        }
 
-        public override void ReceiveLegend(Item item, BinaryReader reader) => Wraiths.NetReceive(reader);
+        public override void ReceiveLegend(Item item, BinaryReader reader) {
+            Wraiths.NetReceive(reader);
+            Mei.NetReceive(reader);
+        }
     }
 }

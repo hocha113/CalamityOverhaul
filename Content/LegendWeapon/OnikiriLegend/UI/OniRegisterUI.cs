@@ -39,6 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText UnrenewedPowerHint { get; private set; }
         public static LocalizedText CloseTagText { get; private set; }
         public static LocalizedText CloseHintFormat { get; private set; }
+        public static LocalizedText MeiTabText { get; private set; }
 
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "点 鬼 簿");
@@ -59,6 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             UnrenewedPowerHint = this.GetLocalization(nameof(UnrenewedPowerHint), () => "———");
             CloseTagText = this.GetLocalization(nameof(CloseTagText), () => "收卷");
             CloseHintFormat = this.GetLocalization(nameof(CloseHintFormat), () => "ESC · {0} · 点击卷外 收卷");
+            MeiTabText = this.GetLocalization(nameof(MeiTabText), () => "改铭台");
         }
         #endregion
 
@@ -80,6 +82,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private bool closeTagWasHovered;
         private Vector2 closeTagAnchor;
         private readonly OniRope closeTagRope = new(5, 22f);
+        //姊妹页签:去改铭台
+        private Rectangle meiTabRect;
+        private float meiTabHover;
         private readonly Rectangle[] entryRects = new Rectangle[16];
 
         //====动画状态====
@@ -111,6 +116,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         protected override void OnOpen() {
             Main.playerInventory = false;
+            //姊妹屏互斥:一卷开另一台收
+            if (OniMeiUI.Instance?.IsOpen ?? false) {
+                OniMeiUI.Instance.Close();
+            }
             SwayTimer = 0f;
             petalTimer = 0;
             particles.Clear();
@@ -220,6 +229,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //收卷木牌绳锚:顶部轴杆右端帽,牌体位置由 Verlet 绳每帧决定
             closeTagAnchor = new Vector2(scrollRect.Right + 17f, scrollRect.Y - 7f);
 
+            //姊妹页签:卷左缘下段探出
+            meiTabRect = new Rectangle(scrollRect.X - 24, scrollRect.Bottom - 150, 26, 64);
+
             //名录竖列,右起左行(旧式名册自右向左)
             Rectangle inner = scrollRect;
             inner.Inflate(-30, -36);
@@ -268,9 +280,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             closeTagWasHovered = tagHovered;
 
+            //姊妹页签 hover
+            bool meiTabHovered = inputAvailable && meiTabRect.Contains(mp);
+            meiTabHover += ((meiTabHovered ? 1f : 0f) - meiTabHover) * 0.2f;
+
             if (inputAvailable && keyLeftPressState == KeyPressState.Pressed) {
                 if (tagHovered) {
                     Close();
+                    return;
+                }
+                if (meiTabHovered) {
+                    //去改铭台(它的 OnOpen 会收本卷)
+                    OniMeiUI.Instance?.Open();
                     return;
                 }
                 if (hoverIndex >= 0) {
@@ -420,6 +441,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniRegisterRenderer.DrawDetail(spriteBatch, this, detailRect, contentA);
                 OniRegisterRenderer.DrawCloseTag(spriteBatch, font, closeTagRope, contentA, closeTagHover, GlobalTimer);
                 DrawCloseHint(spriteBatch, font, contentA);
+                OniMeiRenderer.DrawSiblingTab(spriteBatch, font, meiTabRect, meiTabHover, contentA,
+                    ShaderTime, MeiTabText.Value, paperIcon: false);
             }
 
             //====两翼落花====
@@ -487,12 +510,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (!holding) {
                 return;
             }
-            //仪式演出中不响应开阖,避免两层演出叠打
-            if (OniEngraveRiteUI.Instance?.Active ?? false) {
+            //仪式演出中不响应开阖,避免两层演出叠打(铭刻窗与鏨仪式同理)
+            if ((OniEngraveRiteUI.Instance?.Active ?? false) || (OniMeiUI.Instance?.Rite.Active ?? false)) {
                 return;
             }
-            if (CWRKeySystem.Legend_UIControl.JustPressed && OniRegisterUI.Instance != null) {
-                OniRegisterUI.Instance.Toggle();
+            if (CWRKeySystem.Legend_UIControl.JustPressed) {
+                //改铭台开着:键先收台;否则开阖点鬼簿
+                if (OniMeiUI.Instance?.IsOpen ?? false) {
+                    OniMeiUI.Instance.Close();
+                }
+                else {
+                    OniRegisterUI.Instance?.Toggle();
+                }
             }
         }
     }

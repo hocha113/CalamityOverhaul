@@ -33,6 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText StanceValueFormat { get; private set; }
         public static LocalizedText StanceReadyLine { get; private set; }
         public static LocalizedText StanceHalfLine { get; private set; }
+        public static LocalizedText StanceMeiHint { get; private set; }
         public static LocalizedText DomainTitle { get; private set; }
         public static LocalizedText DomainStateClosed { get; private set; }
         public static LocalizedText DomainStateOmote { get; private set; }
@@ -51,6 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             StanceValueFormat = this.GetLocalization(nameof(StanceValueFormat), () => "{0} / {1}");
             StanceReadyLine = this.GetLocalization(nameof(StanceReadyLine), () => "锋已离鞘——只欠一拔");
             StanceHalfLine = this.GetLocalization(nameof(StanceHalfLine), () => "势已过半——足以一记灭世一闪");
+            StanceMeiHint = this.GetLocalization(nameof(StanceMeiHint), () => "点击 开改铭台");
             DomainTitle = this.GetLocalization(nameof(DomainTitle), () => "鬼域之眼");
             DomainStateClosed = this.GetLocalization(nameof(DomainStateClosed), () => "阖目——领域未展");
             DomainStateOmote = this.GetLocalization(nameof(DomainStateOmote), () => "表世界——泛黄和纸");
@@ -151,7 +153,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             float registerOpen = OniRegisterUI.Instance?.OpenProgress ?? 0f;
             float riteOpen = OniEngraveRiteUI.Instance?.OpenProgress ?? 0f;
-            bool uiCovered = registerOpen > 0.4f || riteOpen > 0.4f;
+            float meiOpen = OniMeiUI.Instance?.OpenProgress ?? 0f;
+            bool uiCovered = registerOpen > 0.4f || riteOpen > 0.4f || meiOpen > 0.4f;
 
             //鬼域之眼:先推进眼(它是整簇的挂点),左键开阖、右键/中键翻转
             Vector2 knot = Anchor;
@@ -250,6 +253,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     OniRegisterUI.Instance?.Toggle();
                 }
             }
+            //架势鞘刀是改铭台的门:点纸札开簿,点鞘刀开台
+            else if (stance.Hovering) {
+                player.mouseInterface = true;
+                if (keyLeftPressState == KeyPressState.Pressed) {
+                    SoundEngine.PlaySound(CWRSound.ButtonZero with { Volume = 0.6f });
+                    OniMeiUI.Instance?.Toggle();
+                }
+            }
 
             //危态:札脚剥落鬼火余烬
             if (danger) {
@@ -268,7 +279,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return;
             }
             float registerOpen = OniRegisterUI.Instance?.OpenProgress ?? 0f;
-            float a = appear * (1f - registerOpen * 0.7f);
+            float meiOpen = OniMeiUI.Instance?.OpenProgress ?? 0f;
+            float a = appear * (1f - Math.Max(registerOpen, meiOpen) * 0.7f);
             if (a <= 0.01f) {
                 return;
             }

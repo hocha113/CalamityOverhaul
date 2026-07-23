@@ -546,6 +546,28 @@ OnikiriText: {
 		UnrenewedPowerHint: ———
 		CloseTagText: ROLL
 		CloseHintFormat: ESC · {0} · click outside to roll up
+		MeiTabText: Inscription Stand
+	}
+
+	OniMeiUI: {
+		TitleText: INSCRIPTION STAND
+		CloseTagText: SHEATHE
+		CloseHintFormat: ESC · {0} · click off the stand to sheathe
+		StatusFormat: '''{0} inscriptions · Present name "{1}"'''
+		SlotNakago: Tang Mei
+		SlotHi: Groove
+		SlotHorimono: Horimono
+		EmptyName: (vacant)
+		EmptyHintNakago: No name on the tang. A bare blade is fine — only, nothing answers it at night
+		EmptyHintHi: No groove opened. Each groove cut is a measure of weight gone
+		EmptyHintHorimono: The carving bed is bare. To invite a deity into the steel, first show it respect
+		EraseName: EFFACE
+		EraseHint: File this inscription away — a mei can be cut again, but the blade forgets no scar
+		OriginLabel: Provenance
+		PowerLabel: Bestowal
+		CurrentMark: Present
+		GoldMark: Gold Inlay
+		RegisterTabText: Ghost Register
 	}
 
 	OniEngraveRiteUI: {
@@ -568,6 +590,7 @@ OnikiriText: {
 		StanceValueFormat: "{0} / {1}"
 		StanceReadyLine: The edge has left its sheath — one draw remains
 		StanceHalfLine: Past the half — enough for an Annihilating Flash
+		StanceMeiHint: Click to open the Inscription Stand
 		DomainTitle: Eye of the Oni Domain
 		DomainStateClosed: Shut — no domain unfolded
 		DomainStateOmote: Omote — the yellowed-paper world

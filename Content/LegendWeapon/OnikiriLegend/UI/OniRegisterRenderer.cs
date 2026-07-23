@@ -110,8 +110,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>收卷木牌,点击关闭,牌绳 Verlet</summary>
-        public static void DrawCloseTag(SpriteBatch sb, DynamicSpriteFont font, OniRope rope, float alpha, float hover, float time) {
+        /// <summary>收卷木牌,点击关闭,牌绳 Verlet;text 缺省取点鬼簿收卷文案(改铭台传「纳刀」)</summary>
+        public static void DrawCloseTag(SpriteBatch sb, DynamicSpriteFont font, OniRope rope, float alpha, float hover, float time, string text = null) {
             //绳与顶结
             rope.Draw(sb, OnikiriUITheme.Deep * 0.9f, OnikiriUITheme.Deep * 0.62f, 1.3f, alpha);
             sb.Draw(Pixel, rope[0], PixelSrc, OnikiriUITheme.Seal * (alpha * 0.9f), MathHelper.PiOver4, new Vector2(0.5f), new Vector2(3.8f), SpriteEffects.None, 0f);
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             sb.Draw(Pixel, tagTop + down * 4f, PixelSrc, OnikiriUITheme.Ink * (alpha * 0.9f), rot, half, new Vector2(3f), SpriteEffects.None, 0f);
 
             //牌文:CJK 逐字竖排 / 拉丁旋转 90°
-            string text = OniRegisterUI.CloseTagText.Value;
+            text ??= OniRegisterUI.CloseTagText.Value;
             Color textCol = Color.Lerp(OnikiriUITheme.Paper, OnikiriUITheme.HotWhite, hover) * (alpha * (0.8f + hover * 0.2f));
             const float Scale = 0.72f;
             if (OniBrush.ContainsCJK(text)) {
@@ -541,9 +541,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             _ => (OniRegisterUI.StateUnknown.Value, OnikiriUITheme.Disabled),
         };
 
-        /// <summary>逐字换行+打字机+湿墨,返回块底 Y</summary>
-        private static float DrawTypedWrapped(SpriteBatch sb, DynamicSpriteFont font, string text, Vector2 pos,
-            float maxWidth, Color color, float scale, float alpha, int visibleChars, float inkStrength) {
+        /// <summary>逐字换行+打字机+湿墨,返回块底 Y;freshColor 缺省湿墨绯红(改铭台传灼橙作烙印)</summary>
+        internal static float DrawTypedWrapped(SpriteBatch sb, DynamicSpriteFont font, string text, Vector2 pos,
+            float maxWidth, Color color, float scale, float alpha, int visibleChars, float inkStrength,
+            Color? freshColor = null) {
             if (string.IsNullOrEmpty(text)) {
                 return pos.Y;
             }
@@ -559,14 +560,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 string draw = isRevealLine ? line[..Math.Max(0, remaining)] : line;
                 if (draw.Length > 0) {
                     Utils.DrawBorderString(sb, draw, new Vector2(pos.X, y), color * alpha, scale);
-                    //湿墨:最新 1~2 字覆一层随时间褪去的绯红
+                    //湿墨:最新 1~2 字覆一层随时间褪去的绯红(或调用方指定的灼色)
                     if (isRevealLine && inkStrength > 0.02f) {
                         int tail = Math.Min(2, draw.Length);
                         string prefix = draw[..^tail];
                         string tailStr = draw[^tail..];
                         float prefixW = font.MeasureString(prefix).X * scale;
                         Utils.DrawBorderString(sb, tailStr, new Vector2(pos.X + prefixW, y),
-                            OnikiriUITheme.Bright * (alpha * 0.8f * inkStrength), scale);
+                            (freshColor ?? OnikiriUITheme.Bright) * (alpha * 0.8f * inkStrength), scale);
                     }
                 }
                 remaining -= line.Length;

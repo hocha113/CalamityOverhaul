@@ -546,6 +546,28 @@ OnikiriText: {
 		UnrenewedPowerHint: ———
 		CloseTagText: 收卷
 		CloseHintFormat: ESC · {0} · 点击卷外 收卷
+		MeiTabText: 改铭台
+	}
+
+	OniMeiUI: {
+		TitleText: 改 铭 台
+		CloseTagText: 纳 刀
+		CloseHintFormat: ESC · {0} · 点击台外 收台
+		StatusFormat: 在铭 {0} 处 · 今名「{1}」
+		SlotNakago: 茎铭
+		SlotHi: 樋位
+		SlotHorimono: 雕位
+		EmptyName: （铭位空悬）
+		EmptyHintNakago: 茎上无名。素刃也好，只是夜里没人应它
+		EmptyHintHi: 樋未开。开樋一分，刀轻一分
+		EmptyHintHorimono: 雕位素净。请神入刀，先得敬它
+		EraseName: 除 铭
+		EraseHint: 锉去此铭——铭可再凿，刀不忘痕
+		OriginLabel: 出处
+		PowerLabel: 赋效
+		CurrentMark: 现铭
+		GoldMark: 金象嵌
+		RegisterTabText: 点鬼簿
 	}
 
 	OniEngraveRiteUI: {
@@ -568,6 +590,7 @@ OnikiriText: {
 		StanceValueFormat: "{0} / {1}"
 		StanceReadyLine: 锋已离鞘——只欠一拔
 		StanceHalfLine: 势已过半——足以一记灭世一闪
+		StanceMeiHint: 点击 开改铭台
 		DomainTitle: 鬼域之眼
 		DomainStateClosed: 阖目——领域未展
 		DomainStateOmote: 表世界——泛黄和纸

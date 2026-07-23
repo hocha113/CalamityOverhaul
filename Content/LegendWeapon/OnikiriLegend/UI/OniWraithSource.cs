@@ -32,10 +32,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             OniRegistry.SetSource(this);
             //载体解析缝:手持=仪式与借力门控,随身=反噬判定(刀在身上,鬼就在身边)
             WraithVessels.Register(ResolveHeldVessel, ResolveCarriedVessel);
-            //数据已由 WraithRites 落簿,这里弹铭刻窗;演出中不受理借力
+            //数据已由 WraithRites 落簿,这里弹铭刻窗;演出中不受理借力;改铭台开着也算忙
             WraithRites.RitePresenter = PresentRite;
             WraithRites.PresentationBusy = static ()
-                => (OniEngraveRiteUI.Instance?.Active ?? false) || (OniRegisterUI.Instance?.IsOpen ?? false);
+                => (OniEngraveRiteUI.Instance?.Active ?? false) || (OniRegisterUI.Instance?.IsOpen ?? false)
+                || (OniMeiUI.Instance?.IsOpen ?? false);
         }
 
         void ICWRLoader.UnLoadData() {

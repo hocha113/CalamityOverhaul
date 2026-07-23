@@ -1,0 +1,47 @@
+MeiHigekiri: {
+	DisplayName: Higekiri
+	Origin: The night of the test cut, the head fell with the beard still clinging to the edge — hence the old name
+	Power: Beard-Cutter: the execution threshold rises, and overflowing killing intent passes along the edge to the next slash
+}
+
+MeiOnikiri: {
+	DisplayName: Onikiri
+	Origin: At Ichijo-Modoribashi, the oni that lost its arm never dared come back for it. The name has been nailed to the tang ever since
+	Power: Demon-Cutter: the edge bites three parts deeper into demons and things of the Inner World
+}
+
+MeiShishinoko: {
+	DisplayName: Shishi-no-ko
+	Origin: Left by the pillow at midnight, the blade roared like a lion. Inlaid in gold, to honor the name
+	Power: Lion's Roar: slashes swell louder and wider, and each hit builds stance
+}
+
+MeiTomokiri: {
+	DisplayName: Tomokiri
+	Origin: Crossed with a friendly blade in trial, it cut the friend in two. A name of blame, chiseled into the tang; the sword has run violent since
+	Power: Friend-Cutter: damage soars, and so does the vigor it devours — an ill name, engrave with care
+}
+
+MeiKazehi: {
+	DisplayName: Kaze-hi
+	Origin: A groove opened like a wind channel; where the blade passes, only wind is heard, no blade is seen
+	Power: Wind-Rider: the blade grows lighter — faster swings, cheaper footwork
+}
+
+MeiChihi: {
+	DisplayName: Chi-hi
+	Origin: This groove is not for lightness, but for letting blood — so said the one who opened the edge
+	Power: Bloodletting: wounds refuse to close, and crimson scars linger longer
+}
+
+MeiFudo: {
+	DisplayName: Fudo
+	Origin: Carved in the brushwork of the seed syllable Kan — the Immovable One sits by the edge, flames at his back
+	Power: Immovable: the body stands like bedrock mid-slash; stance cannot be struck away
+}
+
+MeiKurikara: {
+	DisplayName: Kurikara
+	Origin: The dragon coils about the sword and would swallow it — an old horimono subject, its scales inlaid in gold
+	Power: Dragon-Coil: in the Inner World the edge burns fiercer, and every slash trails coiling dragon-script
+}

@@ -1,0 +1,47 @@
+MeiHigekiri: {
+	DisplayName: 髭切
+	Origin: 试斩那夜首级落地，颔下须髯犹连刃上——旧名由此而来
+	Power: 「断首」处决之线上扬，溢出的杀意顺刃传给下一斩
+}
+
+MeiOnikiri: {
+	DisplayName: 鬼切
+	Origin: 一条戾桥，断腕的鬼没敢回来讨。此名自此钉在茎上
+	Power: 「斩鬼」对鬼类与里世界之物，刃更利三分
+}
+
+MeiShishinoko: {
+	DisplayName: 狮子之子
+	Origin: 夜半置于枕边，刀作狮吼。金字象嵌，以荣其名
+	Power: 「狮吼」斩击声势更盛，刃波张大，命中蓄势
+}
+
+MeiTomokiri: {
+	DisplayName: 友切
+	Origin: 与友刀相试，误断其身。咎名入茎，刀性自此暴烈
+	Power: 「噬主」杀伤大涨，气力靡费同涨——名不祥，慎凿
+}
+
+MeiKazehi: {
+	DisplayName: 风樋
+	Origin: 樋开如风道，挥刀过处只闻风声，不见刀影
+	Power: 「乘风」刀身更轻，挥速与身法开销皆减
+}
+
+MeiChihi: {
+	DisplayName: 血樋
+	Origin: 此樋不为轻身，为放血——开锋人如是说
+	Power: 「放血」创口难合，绯红刀痕滞留更久
+}
+
+MeiFudo: {
+	DisplayName: 不动
+	Origin: 以梵字カーン笔意入雕，不动尊坐镇刃侧，背负火焰
+	Power: 「不动」斩击中身形如磐，架势不为击打所夺
+}
+
+MeiKurikara: {
+	DisplayName: 倶利伽罗
+	Origin: 龙缠剑而欲吞之——刀身雕的古题，金鳞入缝
+	Power: 「龙缠」里世界中刃威更炽，斩迹缠绕龙纹
+}

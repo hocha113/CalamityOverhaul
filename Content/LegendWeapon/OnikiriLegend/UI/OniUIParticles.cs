@@ -14,6 +14,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         InkMote,
         /// <summary>鬼火余烬</summary>
         Ember,
+        /// <summary>鏨下火星(改铭台)</summary>
+        Spark,
+        /// <summary>锉下铁屑(改铭台)</summary>
+        Filing,
+        /// <summary>打粉白雾(改铭台)</summary>
+        Powder,
     }
 
     /// <summary>池化 UI 粒子,三屏各一实例,像素矩形形体</summary>
@@ -120,6 +126,51 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             p.Delay = 0f;
         }
 
+        /// <summary>鏨下火星,自凿点锥形上迸,受重力,白热→金→深红</summary>
+        public void SpawnSpark(Vector2 pos) {
+            ref Particle p = ref Next();
+            p.Active = true;
+            p.Kind = OniParticleKind.Spark;
+            p.Position = pos;
+            float ang = -MathHelper.PiOver2 + Main.rand.NextFloat(-0.9f, 0.9f);
+            p.Velocity = ang.ToRotationVector2() * Main.rand.NextFloat(1.4f, 3.6f);
+            p.Life = 0f;
+            p.MaxLife = Main.rand.NextFloat(16f, 34f);
+            p.Scale = Main.rand.NextFloat(0.7f, 1.4f);
+            p.Seed = Main.rand.NextFloat(MathHelper.TwoPi);
+            p.Delay = 0f;
+        }
+
+        /// <summary>锉下铁屑,坠落带翻转</summary>
+        public void SpawnFiling(Vector2 pos) {
+            ref Particle p = ref Next();
+            p.Active = true;
+            p.Kind = OniParticleKind.Filing;
+            p.Position = pos + Main.rand.NextVector2Circular(3f, 1.2f);
+            p.Velocity = new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(0.3f, 0.9f));
+            p.Life = 0f;
+            p.MaxLife = Main.rand.NextFloat(30f, 62f);
+            p.Scale = Main.rand.NextFloat(0.7f, 1.5f);
+            p.Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+            p.RotSpeed = Main.rand.NextFloat(-0.16f, 0.16f);
+            p.Seed = Main.rand.NextFloat(MathHelper.TwoPi);
+            p.Delay = 0f;
+        }
+
+        /// <summary>打粉白雾,缓浮缓散</summary>
+        public void SpawnPowder(Vector2 pos) {
+            ref Particle p = ref Next();
+            p.Active = true;
+            p.Kind = OniParticleKind.Powder;
+            p.Position = pos + Main.rand.NextVector2Circular(5f, 3f);
+            p.Velocity = Main.rand.NextVector2Circular(0.5f, 0.3f) - new Vector2(0f, Main.rand.NextFloat(0.1f, 0.35f));
+            p.Life = 0f;
+            p.MaxLife = Main.rand.NextFloat(26f, 52f);
+            p.Scale = Main.rand.NextFloat(1.4f, 3.2f);
+            p.Seed = Main.rand.NextFloat(MathHelper.TwoPi);
+            p.Delay = 0f;
+        }
+
         public void Update() {
             for (int i = 0; i < particles.Length; i++) {
                 ref Particle p = ref particles[i];
@@ -160,6 +211,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                         p.Position += p.Velocity;
                         p.Velocity.Y *= 0.985f;
                         p.Position.X += (float)Math.Sin(p.Life * 0.14f + p.Seed) * 0.14f;
+                        break;
+                    case OniParticleKind.Spark:
+                        p.Position += p.Velocity;
+                        p.Velocity.Y += 0.09f;
+                        p.Velocity *= 0.97f;
+                        break;
+                    case OniParticleKind.Filing:
+                        p.Position += p.Velocity;
+                        p.Velocity.Y += 0.045f;
+                        p.Rotation += p.RotSpeed;
+                        break;
+                    case OniParticleKind.Powder:
+                        p.Position += p.Velocity;
+                        p.Velocity *= 0.96f;
+                        p.Position.X += (float)Math.Sin(p.Life * 0.09f + p.Seed) * 0.08f;
                         break;
                 }
             }
@@ -208,6 +274,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                         float fade = (1f - t) * flick;
                         sb.Draw(pixel, p.Position, src, OnikiriUITheme.BurnDim * (alpha * 0.5f * fade), 0f, half, new Vector2(2.2f * p.Scale), SpriteEffects.None, 0f);
                         sb.Draw(pixel, p.Position, src, OnikiriUITheme.BurnHot * (alpha * 0.8f * fade), 0f, half, new Vector2(1.1f * p.Scale), SpriteEffects.None, 0f);
+                        break;
+                    }
+                    case OniParticleKind.Spark: {
+                        //速度拉伸:火星是划出来的短线,不是圆点
+                        float fade = 1f - t;
+                        float speed = p.Velocity.Length();
+                        float rot = p.Velocity.ToRotation();
+                        Vector2 body = new(2.2f + speed * 1.6f, 1.1f * p.Scale);
+                        Color col = t < 0.25f ? OnikiriUITheme.HotWhite
+                            : t < 0.6f ? OnikiriUITheme.GoldInlay : OnikiriUITheme.BurnDim;
+                        sb.Draw(pixel, p.Position, src, col * (alpha * 0.9f * fade), rot, half, body * p.Scale, SpriteEffects.None, 0f);
+                        break;
+                    }
+                    case OniParticleKind.Filing: {
+                        float fade = 1f - t * t;
+                        sb.Draw(pixel, p.Position, src, OnikiriUITheme.Ink * (alpha * 0.85f * fade), p.Rotation, half,
+                            new Vector2(2.4f * p.Scale, 1.1f * p.Scale), SpriteEffects.None, 0f);
+                        break;
+                    }
+                    case OniParticleKind.Powder: {
+                        float fade = (float)Math.Pow(Math.Sin(MathHelper.Clamp(t, 0f, 1f) * MathHelper.Pi), 0.7);
+                        float grow = 1f + t * 1.6f;
+                        sb.Draw(pixel, p.Position, src, OnikiriUITheme.Paper * (alpha * 0.20f * fade), p.Seed, half,
+                            new Vector2(3.2f * p.Scale * grow, 2.4f * p.Scale * grow), SpriteEffects.None, 0f);
                         break;
                     }
                 }
