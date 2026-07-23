@@ -7,7 +7,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 {
     /// <summary>
-    /// 命中材质分流,金属火花/白热,血肉重力血珠(复用刻心者液滴)<br/>
+    /// 命中材质分流,金属火花/白热,血肉重力血珠+可贴块血渍<br/>
     /// 挥空刀光呼吸粒子不走此处
     /// </summary>
     internal static class CrimsonRendHitVFX
@@ -48,16 +48,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     Vector2 vel = aimDir.RotatedByRandom(0.75) * Main.rand.NextFloat(4.5f, 11f) * sizeMul;
                     vel.Y -= Main.rand.NextFloat(0.4f, 1.8f);
                     Color c = Main.rand.NextBool(3) ? Arterial : Blood;
-                    PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, c
-                        , Main.rand.NextFloat(0.95f, 1.55f) * sizeMul)
-                        ?.Configure(Main.rand.Next(20, 34), 0.30f);
+                    //跟刀约半数可贴块
+                    if (Main.rand.NextBool()) {
+                        PRTLoader.NewParticle<PRT_CrimsonBloodStain>(pos, vel, c
+                            , Main.rand.NextFloat(0.95f, 1.55f) * sizeMul)
+                            ?.Configure(Main.rand.Next(22, 36), 0.30f, stuckLifetime: Main.rand.Next(64, 96));
+                    }
+                    else {
+                        PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, c
+                            , Main.rand.NextFloat(0.95f, 1.55f) * sizeMul)
+                            ?.Configure(Main.rand.Next(20, 34), 0.30f);
+                    }
                 }
-                //慢重余韵
+                //慢重余韵,全部可贴
                 for (int i = 0; i < 2; i++) {
                     Vector2 vel = aimDir.RotatedByRandom(1.1) * Main.rand.NextFloat(1.2f, 3.5f) * sizeMul;
-                    PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, BloodDeep
+                    PRTLoader.NewParticle<PRT_CrimsonBloodStain>(pos, vel, BloodDeep
                         , Main.rand.NextFloat(1.1f, 1.7f) * sizeMul)
-                        ?.Configure(Main.rand.Next(28, 42), 0.36f);
+                        ?.Configure(Main.rand.Next(30, 44), 0.36f, 0.978f, stuckLifetime: Main.rand.Next(80, 120));
                 }
             }
         }
@@ -98,35 +106,274 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     ?.Configure(Main.rand.Next(22, 36), Blood, BloodDeep, 0.01f);
             }
 
-            //动脉喷溅,沿刃向锥形甩出
+            //动脉喷溅,沿刃向锥形甩出;约 1/3 可贴块,其余空中淡出
             int mainDrops = 10 + (int)(power * 16f);
             for (int i = 0; i < mainDrops; i++) {
                 Vector2 vel = aimDir.RotatedByRandom(0.82) * Main.rand.NextFloat(6f, 13f + power * 10f) * sizeMul;
                 vel.Y -= Main.rand.NextFloat(0.8f, 2.8f);
                 Color c = Main.rand.NextBool(4) ? Arterial : (Main.rand.NextBool() ? Blood : WoundHot);
-                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, c
-                    , Main.rand.NextFloat(1.0f, 1.75f + power * 0.35f) * sizeMul)
-                    ?.Configure(Main.rand.Next(22, 36 + (int)(power * 10f)), 0.30f);
+                float sc = Main.rand.NextFloat(1.0f, 1.75f + power * 0.35f) * sizeMul;
+                int life = Main.rand.Next(22, 36 + (int)(power * 10f));
+                if (Main.rand.NextBool(3)) {
+                    PRTLoader.NewParticle<PRT_CrimsonBloodStain>(pos, vel, c, sc)
+                        ?.Configure(life, 0.30f, stuckLifetime: Main.rand.Next(70, 110));
+                }
+                else {
+                    PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, c, sc)
+                        ?.Configure(life, 0.30f);
+                }
             }
 
-            //慢重血珠
+            //慢重血珠,全部可贴(主血渍贡献)
             int slowDrops = 3 + (int)(power * 5f);
             for (int i = 0; i < slowDrops; i++) {
                 Vector2 vel = aimDir.RotatedByRandom(1.15) * Main.rand.NextFloat(1.4f, 4.2f) * sizeMul;
-                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, BloodDeep
+                PRTLoader.NewParticle<PRT_CrimsonBloodStain>(pos, vel, BloodDeep
                     , Main.rand.NextFloat(1.2f, 1.9f) * sizeMul)
-                    ?.Configure(Main.rand.Next(30, 48), 0.36f, 0.978f);
+                    ?.Configure(Main.rand.Next(32, 52), 0.36f, 0.978f, stuckLifetime: Main.rand.Next(90, 140));
             }
 
-            //背向溅出
+            //背向溅出,半数可贴
             int backDrops = 2 + (int)(power * 4f);
             for (int i = 0; i < backDrops; i++) {
                 Vector2 vel = (-aimDir).RotatedByRandom(1.0) * Main.rand.NextFloat(2.5f, 7f) * sizeMul;
                 vel.Y -= Main.rand.NextFloat(0.3f, 1.5f);
-                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, Blood
-                    , Main.rand.NextFloat(0.9f, 1.4f) * sizeMul)
-                    ?.Configure(Main.rand.Next(20, 34), 0.28f);
+                float sc = Main.rand.NextFloat(0.9f, 1.4f) * sizeMul;
+                if (Main.rand.NextBool()) {
+                    PRTLoader.NewParticle<PRT_CrimsonBloodStain>(pos, vel, Blood, sc)
+                        ?.Configure(Main.rand.Next(22, 36), 0.28f, stuckLifetime: Main.rand.Next(64, 100));
+                }
+                else {
+                    PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, Blood, sc)
+                        ?.Configure(Main.rand.Next(20, 34), 0.28f);
+                }
             }
+        }
+    }
+
+    /// <summary>
+    /// 绯红血珠:飞行同刻心者液滴,触实心块压扁贴附,短暂下垂后淡出<br/>
+    /// 仅 Crimson 血肉命中使用,不改全局 PRT_HeartcarverDroplet
+    /// </summary>
+    internal class PRT_CrimsonBloodStain : BasePRT
+    {
+        public override string Texture => CWRConstant.Masking + "Extra_98";
+        public override bool CanPool => true;
+        public override int InGame_World_MaxCount => 140;
+
+        private enum Phase : byte { Flying, Stuck }
+
+        private Phase phase;
+        private Color initialColor;
+        private float gravity;
+        private float drag;
+        private int stickLife;
+        private int stuckAt;
+        private Vector2 stuckNormal;
+        private float impactSpeed;
+        private float splatMul;
+        private float sag;
+        private float stuckScale;
+
+        public PRT_CrimsonBloodStain Configure(int flyLifetime, float gravityPerFrame = 0.32f
+            , float dragMul = 0.985f, int stuckLifetime = 96) {
+            Lifetime = flyLifetime;
+            initialColor = Color;
+            gravity = gravityPerFrame;
+            drag = dragMul;
+            stickLife = Math.Max(24, stuckLifetime);
+            return this;
+        }
+
+        public override void Reset() {
+            base.Reset();
+            phase = Phase.Flying;
+            initialColor = default;
+            gravity = 0f;
+            drag = 1f;
+            stickLife = 0;
+            stuckAt = 0;
+            stuckNormal = default;
+            impactSpeed = 0f;
+            splatMul = 1f;
+            sag = 0f;
+            stuckScale = 1f;
+        }
+
+        public override void SetProperty() {
+            PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
+            Opacity = 1f;
+            if (Lifetime <= 0) {
+                Lifetime = Main.rand.Next(26, 40);
+            }
+            if (gravity <= 0f) {
+                gravity = 0.32f;
+            }
+            if (drag <= 0f || drag > 1f) {
+                drag = 0.985f;
+            }
+            if (stickLife <= 0) {
+                stickLife = Main.rand.Next(80, 120);
+            }
+            if (initialColor == default) {
+                initialColor = Color;
+            }
+        }
+
+        public override bool ShouldUpdatePosition() => phase == Phase.Flying;
+
+        public override void AI() {
+            if (phase == Phase.Stuck) {
+                StuckAI();
+                return;
+            }
+
+            Velocity.X *= drag;
+            Velocity.Y += gravity;
+            if (Velocity.Y > 14f) {
+                Velocity.Y = 14f;
+            }
+
+            //空中轻淡,给撞墙留色量
+            float flyT = LifetimeCompletion;
+            Scale *= 0.988f;
+            Color = Color.Lerp(initialColor, Color.Transparent, MathF.Pow(flyT, 3.2f) * 0.4f);
+            Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
+
+            TryEnterStuck();
+        }
+
+        private void TryEnterStuck() {
+            if (Velocity.LengthSquared() < 0.35f) {
+                return;
+            }
+
+            const int hitW = 4;
+            const int hitH = 4;
+            Vector2 half = new(hitW * 0.5f, hitH * 0.5f);
+            if (!Collision.SolidCollision(Position - half, hitW, hitH)) {
+                return;
+            }
+
+            Vector2 prev = Position - Velocity;
+            Vector2 n = Vector2.Zero;
+            if (Collision.SolidCollision(prev + new Vector2(Velocity.X, 0f) - half, hitW, hitH)) {
+                n.X = -Math.Sign(Velocity.X);
+            }
+            if (Collision.SolidCollision(prev + new Vector2(0f, Velocity.Y) - half, hitW, hitH)) {
+                n.Y = -Math.Sign(Velocity.Y);
+            }
+            if (n == Vector2.Zero) {
+                n = Velocity.Y >= 0f
+                    ? -Vector2.UnitY
+                    : new Vector2(-Math.Sign(Velocity.X == 0f ? 1f : Velocity.X), 0f);
+            }
+
+            stuckNormal = n.SafeNormalize(-Vector2.UnitY);
+            impactSpeed = Velocity.Length();
+            Position = prev;
+            for (int i = 0; i < 10 && Collision.SolidCollision(Position - half, hitW, hitH); i++) {
+                Position += stuckNormal * 1.5f;
+            }
+            Position += stuckNormal * 2.2f;
+
+            phase = Phase.Stuck;
+            Velocity = Vector2.Zero;
+            stuckAt = Time;
+            Lifetime = Time + stickLife;
+            stuckScale = Scale;
+            splatMul = MathHelper.Clamp(0.75f + impactSpeed * 0.07f, 0.85f, 1.85f)
+                * Main.rand.NextFloat(0.9f, 1.2f);
+            Rotation = stuckNormal.ToRotation() + MathHelper.PiOver2;
+            Color = initialColor;
+            Opacity = 1f;
+
+            if (impactSpeed > 5.5f && Main.rand.NextBool(2)) {
+                SpawnImpactSplash();
+            }
+        }
+
+        private void StuckAI() {
+            float held = Time - stuckAt;
+            float stuckT = MathHelper.Clamp(held / stickLife, 0f, 1f);
+            sag = MathHelper.Clamp(held / 55f, 0f, 0.72f);
+
+            //贴附后略铺开再收
+            float spread = 1f + MathF.Sin(MathHelper.Clamp(stuckT * 2.2f, 0f, 1f) * MathHelper.PiOver2) * 0.18f;
+            Scale = stuckScale * spread;
+
+            Color = Color.Lerp(initialColor, Color.Transparent, MathF.Pow(stuckT, 1.55f));
+            Opacity = 1f - SmoothStep01((stuckT - 0.55f) / 0.45f);
+
+            //底缘偶发垂滴
+            int heldFrames = Time - stuckAt;
+            if (heldFrames > 18 && heldFrames % 26 == 0 && Main.rand.NextBool(3) && sag > 0.2f) {
+                SpawnDrip();
+            }
+        }
+
+        private void SpawnImpactSplash() {
+            Vector2 tangent = stuckNormal.RotatedBy(MathHelper.PiOver2);
+            float force = MathHelper.Clamp(impactSpeed * 0.28f, 1.0f, 3.8f);
+            int n = impactSpeed > 10f ? 3 : 2;
+            for (int i = 0; i < n; i++) {
+                float side = Main.rand.NextBool() ? 1f : -1f;
+                Vector2 v = tangent * side * force * Main.rand.NextFloat(0.35f, 1f)
+                    + stuckNormal * force * Main.rand.NextFloat(0.15f, 0.55f);
+                v.Y -= Main.rand.NextFloat(0.2f, 0.8f);
+                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(
+                    Position + tangent * Main.rand.NextFloat(-5f, 5f), v
+                    , initialColor, Scale * Main.rand.NextFloat(0.45f, 0.75f))
+                    ?.Configure(Main.rand.Next(14, 24), 0.28f, 0.985f);
+            }
+        }
+
+        private void SpawnDrip() {
+            Vector2 tangent = stuckNormal.RotatedBy(MathHelper.PiOver2);
+            //重力向垂滴:墙面从下缘,地面从中心略偏
+            Vector2 dripPos = Position
+                + tangent * Main.rand.NextFloat(-5f, 5f)
+                + Vector2.UnitY * (2f + sag * 4f)
+                - stuckNormal * 1.5f;
+            PRTLoader.NewParticle<PRT_HeartcarverDroplet>(dripPos
+                , new Vector2(Main.rand.NextFloat(-0.25f, 0.25f), Main.rand.NextFloat(0.35f, 0.85f))
+                , initialColor, Scale * Main.rand.NextFloat(0.35f, 0.55f))
+                ?.Configure(Main.rand.Next(18, 30), 0.20f, 0.992f);
+        }
+
+        private static float SmoothStep01(float x) {
+            x = MathHelper.Clamp(x, 0f, 1f);
+            return x * x * (3f - 2f * x);
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
+            Vector2 origin = tex.Size() * 0.5f;
+            Vector2 pos = Position - Main.screenPosition;
+            Color light = Lighting.GetColor(Position.ToTileCoordinates());
+            Color draw = Color.MultiplyRGB(light) * Opacity;
+
+            if (phase == Phase.Stuck) {
+                //切向铺开、法向压扁;sag 拉出下垂
+                float wide = (0.55f + sag * 0.22f) * splatMul;
+                float thin = (0.22f - sag * 0.04f) * splatMul;
+                Vector2 body = new Vector2(wide, thin + sag * 0.12f) * Scale;
+                Vector2 core = body * new Vector2(0.55f, 0.85f);
+                //主体 + 略偏的副瓣造不规则血渍
+                spriteBatch.Draw(tex, pos, null, draw, Rotation, origin, body, SpriteEffects.None, 0f);
+                spriteBatch.Draw(tex, pos + stuckNormal.RotatedBy(MathHelper.PiOver2) * (2.2f * sag)
+                    , null, draw * 0.75f, Rotation + 0.18f, origin
+                    , body * new Vector2(0.62f, 0.9f), SpriteEffects.None, 0f);
+                spriteBatch.Draw(tex, pos - stuckNormal * (1.2f + sag), null, draw * 0.55f
+                    , Rotation, origin, core, SpriteEffects.None, 0f);
+                return false;
+            }
+
+            float stretch = MathHelper.Clamp(Velocity.Length() * 0.045f, 0f, 0.85f);
+            Vector2 scale = new Vector2(0.34f * (1f - stretch * 0.35f), 0.62f * (1f + stretch * 1.7f)) * Scale;
+            spriteBatch.Draw(tex, pos, null, draw, Rotation, origin, scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, pos, null, draw, Rotation, origin, scale * new Vector2(0.45f, 1f), SpriteEffects.None, 0f);
+            return false;
         }
     }
 
