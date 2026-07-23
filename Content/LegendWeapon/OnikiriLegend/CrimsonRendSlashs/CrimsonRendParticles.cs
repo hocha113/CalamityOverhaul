@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     if (Main.rand.NextBool()) {
                         PRTLoader.NewParticle<PRT_CrimsonBloodStain>(pos, vel, c
                             , Main.rand.NextFloat(0.95f, 1.55f) * sizeMul)
-                            ?.Configure(Main.rand.Next(22, 36), 0.30f, stuckLifetime: Main.rand.Next(64, 96));
+                            ?.Configure(Main.rand.Next(22, 36), 0.30f, stuckLifetime: Main.rand.Next(36, 56));
                     }
                     else {
                         PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, c
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     Vector2 vel = aimDir.RotatedByRandom(1.1) * Main.rand.NextFloat(1.2f, 3.5f) * sizeMul;
                     PRTLoader.NewParticle<PRT_CrimsonBloodStain>(pos, vel, BloodDeep
                         , Main.rand.NextFloat(1.1f, 1.7f) * sizeMul)
-                        ?.Configure(Main.rand.Next(30, 44), 0.36f, 0.978f, stuckLifetime: Main.rand.Next(80, 120));
+                        ?.Configure(Main.rand.Next(30, 44), 0.36f, 0.978f, stuckLifetime: Main.rand.Next(42, 64));
                 }
             }
         }
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 int life = Main.rand.Next(22, 36 + (int)(power * 10f));
                 if (Main.rand.NextBool(3)) {
                     PRTLoader.NewParticle<PRT_CrimsonBloodStain>(pos, vel, c, sc)
-                        ?.Configure(life, 0.30f, stuckLifetime: Main.rand.Next(70, 110));
+                        ?.Configure(life, 0.30f, stuckLifetime: Main.rand.Next(38, 58));
                 }
                 else {
                     PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, c, sc)
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 Vector2 vel = aimDir.RotatedByRandom(1.15) * Main.rand.NextFloat(1.4f, 4.2f) * sizeMul;
                 PRTLoader.NewParticle<PRT_CrimsonBloodStain>(pos, vel, BloodDeep
                     , Main.rand.NextFloat(1.2f, 1.9f) * sizeMul)
-                    ?.Configure(Main.rand.Next(32, 52), 0.36f, 0.978f, stuckLifetime: Main.rand.Next(90, 140));
+                    ?.Configure(Main.rand.Next(32, 52), 0.36f, 0.978f, stuckLifetime: Main.rand.Next(44, 68));
             }
 
             //背向溅出,半数可贴
@@ -141,7 +141,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 float sc = Main.rand.NextFloat(0.9f, 1.4f) * sizeMul;
                 if (Main.rand.NextBool()) {
                     PRTLoader.NewParticle<PRT_CrimsonBloodStain>(pos, vel, Blood, sc)
-                        ?.Configure(Main.rand.Next(22, 36), 0.28f, stuckLifetime: Main.rand.Next(64, 100));
+                        ?.Configure(Main.rand.Next(22, 36), 0.28f, stuckLifetime: Main.rand.Next(36, 54));
                 }
                 else {
                     PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, Blood, sc)
@@ -176,12 +176,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private float stuckScale;
 
         public PRT_CrimsonBloodStain Configure(int flyLifetime, float gravityPerFrame = 0.32f
-            , float dragMul = 0.985f, int stuckLifetime = 96) {
+            , float dragMul = 0.985f, int stuckLifetime = 48) {
             Lifetime = flyLifetime;
             initialColor = Color;
             gravity = gravityPerFrame;
             drag = dragMul;
-            stickLife = Math.Max(24, stuckLifetime);
+            stickLife = Math.Max(18, stuckLifetime);
             return this;
         }
 
@@ -213,7 +213,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 drag = 0.985f;
             }
             if (stickLife <= 0) {
-                stickLife = Main.rand.Next(80, 120);
+                stickLife = Main.rand.Next(40, 58);
             }
             if (initialColor == default) {
                 initialColor = Color;
@@ -248,8 +248,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 return;
             }
 
-            const int hitW = 4;
-            const int hitH = 4;
+            //2×2 探针,贴面更贴地/贴墙
+            const int hitW = 2;
+            const int hitH = 2;
             Vector2 half = new(hitW * 0.5f, hitH * 0.5f);
             if (!Collision.SolidCollision(Position - half, hitW, hitH)) {
                 return;
@@ -272,18 +273,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             stuckNormal = n.SafeNormalize(-Vector2.UnitY);
             impactSpeed = Velocity.Length();
             Position = prev;
-            for (int i = 0; i < 10 && Collision.SolidCollision(Position - half, hitW, hitH); i++) {
-                Position += stuckNormal * 1.5f;
+            for (int i = 0; i < 8 && Collision.SolidCollision(Position - half, hitW, hitH); i++) {
+                Position += stuckNormal;
             }
-            Position += stuckNormal * 2.2f;
+            //只微微推出实体,避免悬空
+            Position += stuckNormal * 0.6f;
 
             phase = Phase.Stuck;
             Velocity = Vector2.Zero;
             stuckAt = Time;
             Lifetime = Time + stickLife;
-            stuckScale = Scale;
-            splatMul = MathHelper.Clamp(0.75f + impactSpeed * 0.07f, 0.85f, 1.85f)
-                * Main.rand.NextFloat(0.9f, 1.2f);
+            stuckScale = Scale * 0.72f;
+            splatMul = MathHelper.Clamp(0.55f + impactSpeed * 0.045f, 0.55f, 1.15f)
+                * Main.rand.NextFloat(0.85f, 1.05f);
             Rotation = stuckNormal.ToRotation() + MathHelper.PiOver2;
             Color = initialColor;
             Opacity = 1f;
@@ -296,18 +298,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private void StuckAI() {
             float held = Time - stuckAt;
             float stuckT = MathHelper.Clamp(held / stickLife, 0f, 1f);
-            sag = MathHelper.Clamp(held / 55f, 0f, 0.72f);
+            sag = MathHelper.Clamp(held / 36f, 0f, 0.55f);
 
-            //贴附后略铺开再收
-            float spread = 1f + MathF.Sin(MathHelper.Clamp(stuckT * 2.2f, 0f, 1f) * MathHelper.PiOver2) * 0.18f;
+            //贴附后轻微铺开
+            float spread = 1f + MathF.Sin(MathHelper.Clamp(stuckT * 2.6f, 0f, 1f) * MathHelper.PiOver2) * 0.10f;
             Scale = stuckScale * spread;
 
-            Color = Color.Lerp(initialColor, Color.Transparent, MathF.Pow(stuckT, 1.55f));
-            Opacity = 1f - SmoothStep01((stuckT - 0.55f) / 0.45f);
+            //更快淡出
+            Color = Color.Lerp(initialColor, Color.Transparent, MathF.Pow(stuckT, 1.15f));
+            Opacity = 1f - SmoothStep01((stuckT - 0.28f) / 0.55f);
 
-            //底缘偶发垂滴
+            //底缘偶发垂滴(寿命短,少滴一次)
             int heldFrames = Time - stuckAt;
-            if (heldFrames > 18 && heldFrames % 26 == 0 && Main.rand.NextBool(3) && sag > 0.2f) {
+            if (heldFrames > 12 && heldFrames % 22 == 0 && Main.rand.NextBool(4) && sag > 0.18f) {
                 SpawnDrip();
             }
         }
@@ -354,17 +357,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             Color draw = Color.MultiplyRGB(light) * Opacity;
 
             if (phase == Phase.Stuck) {
-                //切向铺开、法向压扁;sag 拉出下垂
-                float wide = (0.55f + sag * 0.22f) * splatMul;
-                float thin = (0.22f - sag * 0.04f) * splatMul;
-                Vector2 body = new Vector2(wide, thin + sag * 0.12f) * Scale;
-                Vector2 core = body * new Vector2(0.55f, 0.85f);
-                //主体 + 略偏的副瓣造不规则血渍
+                //更小血渍:切向铺开、法向压扁
+                float wide = (0.32f + sag * 0.12f) * splatMul;
+                float thin = (0.12f - sag * 0.02f) * splatMul;
+                Vector2 body = new Vector2(wide, thin + sag * 0.06f) * Scale;
+                Vector2 core = body * new Vector2(0.5f, 0.8f);
                 spriteBatch.Draw(tex, pos, null, draw, Rotation, origin, body, SpriteEffects.None, 0f);
-                spriteBatch.Draw(tex, pos + stuckNormal.RotatedBy(MathHelper.PiOver2) * (2.2f * sag)
-                    , null, draw * 0.75f, Rotation + 0.18f, origin
-                    , body * new Vector2(0.62f, 0.9f), SpriteEffects.None, 0f);
-                spriteBatch.Draw(tex, pos - stuckNormal * (1.2f + sag), null, draw * 0.55f
+                spriteBatch.Draw(tex, pos + stuckNormal.RotatedBy(MathHelper.PiOver2) * (1.1f * sag)
+                    , null, draw * 0.7f, Rotation + 0.14f, origin
+                    , body * new Vector2(0.58f, 0.85f), SpriteEffects.None, 0f);
+                spriteBatch.Draw(tex, pos - stuckNormal * (0.6f + sag * 0.5f), null, draw * 0.5f
                     , Rotation, origin, core, SpriteEffects.None, 0f);
                 return false;
             }
