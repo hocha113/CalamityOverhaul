@@ -129,6 +129,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             BuildPieces(entry);
             Entries.Add(entry);
 
+            //调试插桩、确认反噬逻辑端触发
+
+            OniDismemberDebug.Log("ply_trigger", $"player dismember trigger player={player.name}#{player.whoAmI}"
+                + $" pieces={entry.Pieces.Count} entries={Entries.Count}");
+
             //位移类挂点立即斩断、反噬期间人钉在原地
 
             if (player.whoAmI == Main.myPlayer) {
@@ -292,7 +297,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             try {
                 rt = new RenderTarget2D(gd, entry.SnapWidth, entry.SnapHeight, false
                     , SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            } catch {
+            } catch (Exception ex) {
+                //调试插桩、RT 创建失败是玩家反噬永久降级为仅锁定的源头
+
+                OniDismemberDebug.Log("ply_rt_fail", $"player EnsureSnapshotRT FAILED"
+                    + $" {entry.SnapWidth}x{entry.SnapHeight}: {ex.Message}", 120);
                 return null;
             }
             SnapRTs[entry.PlayerIndex] = rt;
@@ -393,12 +402,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
             //低质量光照/RT 异常时放弃捕获、仅锁定无碎片视觉，本体照常绘制
 
+            //调试插桩、放弃原因留痕
+
             if (RenderQualitySafety.NeedsScreenTargetFallback()) {
+                OniDismemberDebug.Log("ply_fallback"
+                    , $"player capture skipped: NeedsScreenTargetFallback. {OniDismemberDebug.Env()}");
                 return;
             }
             if (screenSwap == null || screenSwap.IsDisposed
                 || Main.screenTarget == null || Main.screenTarget.IsDisposed
                 || !RenderQualitySafety.IsScreenTargetActive(graphicsDevice)) {
+                OniDismemberDebug.Log("ply_st", "player capture skipped: screenSwap/screenTarget unavailable"
+                    + $" or not active, current={OniDismemberDebug.CurrentRT(graphicsDevice)}");
                 return;
             }
 
@@ -443,6 +458,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             if (rt == null) {
                 entry.SnapWidth = 0;    //显存异常、降级为仅锁定
 
+                OniDismemberDebug.Log("ply_rtnull", $"player snapshot RT unavailable, downgrade"
+                    + $" player={player.name}#{player.whoAmI}", 120);
                 return;
             }
 
@@ -462,17 +479,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 PlayerCloneRenderer.Prepare(player);
                 PlayerCloneRenderer.DrawPreparedNatural(entry.AnchorCenter - player.Size * 0.5f
                     , entry.Direction, entry.GravDir, entry.BodyFrame, entry.LegFrame);
-            } catch {
+            } catch (Exception ex) {
                 //玩家绘制层钩子异常不拖垮捕获管线
 
+                //调试插桩、此异常会导致快照留空 → 反噬期间玩家整个隐形
+
+                OniDismemberDebug.Log("ply_drawex", $"player clone draw threw"
+                    + $" player={player.name}#{player.whoAmI}: {ex}", 300);
             } finally {
                 Main.screenPosition = realScreenPos;
                 try {
                     sb.End();
                 } catch {
+                    OniDismemberDebug.Log("ply_sbend"
+                        , "spriteBatch left inactive by a player draw hook during capture", 300);
                 }
             }
             entry.Captured = true;
+            OniDismemberDebug.Log("ply_cap_ok", $"player snapshot captured player={player.name}#{player.whoAmI}"
+                + $" rt={rt.Width}x{rt.Height}");
         }
 
         private static bool AnyPendingCapture() {
@@ -507,6 +532,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
             Effect fx = EffectLoader.OniDismember?.Value;
             if (fx == null) {
+                OniDismemberDebug.Log("ply_fxnull"
+                    , "player piece draw skipped: EffectLoader.OniDismember is null", 120);
                 return;
             }
 

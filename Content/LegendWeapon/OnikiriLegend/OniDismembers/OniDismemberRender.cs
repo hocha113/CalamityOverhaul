@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using Terraria;
 
@@ -39,16 +40,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
             //低质量光照/RT 异常时放弃捕获、目标仅定身不裂开，本体照常绘制
 
+            //调试插桩、有待捕获目标却走到任一放弃分支时记录原因
+
             if (RenderQualitySafety.NeedsScreenTargetFallback()) {
+                OniDismemberDebug.Log("cap_fallback"
+                    , $"NPC capture skipped: NeedsScreenTargetFallback. {OniDismemberDebug.Env()}");
                 return;
             }
             if (screenSwap == null || screenSwap.IsDisposed) {
+                OniDismemberDebug.Log("cap_swap", "NPC capture skipped: screenSwap null/disposed");
                 return;
             }
             if (Main.screenTarget == null || Main.screenTarget.IsDisposed) {
+                OniDismemberDebug.Log("cap_screentarget", "NPC capture skipped: Main.screenTarget null/disposed");
                 return;
             }
             if (!RenderQualitySafety.IsScreenTargetActive(graphicsDevice)) {
+                OniDismemberDebug.Log("cap_notactive", "NPC capture skipped: screenTarget not the active RT"
+                    + $" current={OniDismemberDebug.CurrentRT(graphicsDevice)}");
                 return;
             }
 
@@ -101,11 +110,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             if (rt == null) {
                 entry.SnapWidth = 0;    //显存不足等异常、永久降级为仅定身
 
+                OniDismemberDebug.Log("cap_rtnull", $"snapshot RT unavailable, downgrade to freeze-only"
+                    + $" npc={npc.FullName}#{npc.whoAmI}", 120);
                 return;
             }
 
             CaptureNpcAppearance(sb, gd, npc, rt, entry.AnchorCenter, entry.BehindTiles);
             entry.Captured = true;
+            OniDismemberDebug.Log("cap_ok", $"snapshot captured npc={npc.FullName}#{npc.whoAmI}"
+                + $" rt={rt.Width}x{rt.Height}");
         }
 
         /// <summary>把 NPC 完整外观（含 glowmask 等全部绘制层）画进给定 RT</summary>
@@ -124,9 +137,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
             try {
                 Main.instance.DrawNPCDirect(sb, npc, behindTiles, fakeScreenPos);
-            } catch {
+            } catch (Exception ex) {
                 //单个 NPC 绘制钩子异常不拖垮捕获管线
 
+                //调试插桩、此异常会导致快照留空 → 肢解期间目标整个隐形
+
+                OniDismemberDebug.Log($"cap_drawex_{npc.type}"
+                    , $"DrawNPCDirect threw for npc={npc.FullName} type={npc.type}: {ex}", 300);
             } finally {
                 Main.screenPosition = realScreenPos;
                 try {
@@ -134,6 +151,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 } catch {
                     //绘制钩子把 spriteBatch 留在非活跃状态时兜底
 
+                    OniDismemberDebug.Log("cap_sbend"
+                        , "spriteBatch left inactive by a draw hook during capture", 300);
                 }
             }
         }
