@@ -58,8 +58,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// <summary>冲刺基础再触发锁(帧)，长距离时会自动延长到覆盖完整位移</summary>
         private const int DashRefireLockTicks = 14;
 
-        /// <summary>樱流化身每帧耗气(疾走衔接的持续飞行,气尽自动回卷),满气冲刺后余量约可飞 1.4s</summary>
-        private const float SakuraDrainPerTick = 0.8f;
+        /// <summary>樱流化身每帧耗气(疾走衔接的持续飞行,气尽自动回卷);冲刺后余量约可飞满程(~3s)且只抽十余点气</summary>
+        private const float SakuraDrainPerTick = 0.15f;
         /// <summary>樱流入飞门槛:低于此气力不衔接,疾走照常收势</summary>
         private const float SakuraMinVigor = 10f;
         /// <summary>樱流巡航速度(px/帧),模块钳制上限 48;从疾走高速骤降到此,是"化形"的减速拍</summary>
@@ -376,6 +376,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (Player.whoAmI != Main.myPlayer) {
                 return;
             }
+            //新窗覆盖旧追斩:连续疾走时上一刀余晖仍硬占刀权,会把挂起直接清掉导致第二刀放不出
+            ClearLingeringZanshinSlash();
             bool bufferedInput = zanshinInputBuffered || Main.mouseLeft;
             if (handoffDirection.LengthSquared() > 0.01f) {
                 zanshinHandoffDirection = handoffDirection.SafeNormalize(Vector2.UnitX * Player.direction);
@@ -390,6 +392,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinAutoHandoff = bufferedInput;
             zanshinAutoHandoffCountdown = bufferedInput ? ZanshinAutoHandoffFrames + 1 : 0;
             zanshinInputBuffered = false;
+        }
+
+        /// <summary>收掉仍在场的残心斩(含收势淡出),避免连居合被旧刀弹幕/硬占挡住</summary>
+        private void ClearLingeringZanshinSlash() {
+            int type = ModContent.ProjectileType<OniZanshinSlash>();
+            foreach (Projectile proj in Main.ActiveProjectiles) {
+                if (proj.owner == Player.whoAmI && proj.type == type) {
+                    proj.Kill();
+                }
+            }
         }
 
         internal bool ZanshinAutoHandoffActive
@@ -433,10 +445,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return true;
             }
             //硬占刀权的演出(灭世大挥/终结乱舞开场等)期间不抢出手,落回连段的既有让位缓冲
+            //注意:不拦上一刀 OniZanshinSlash——其 Lifetime(~36) 远长于硬占窗,连居合时计数门闩会吞掉第二刀
             if (Player.mount?.Active == true || OniPlayerDismember.IsLocked(Player)
                 || OniSakuraFlight.ControlsOwner(Player.whoAmI)
-                || OniBladeOccupancy.AnyHardOccupant(Player)
-                || Player.ownedProjectileCounts[ModContent.ProjectileType<OniZanshinSlash>()] > 0) {
+                || OniBladeOccupancy.AnyHardOccupant(Player)) {
                 return false;
             }
 

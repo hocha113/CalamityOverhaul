@@ -83,6 +83,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
         private const int MaxPathPoints = 52;
         private const float MinFlightSpeed = 14f;
         private const float MaxFlightSpeed = 48f;
+        private const int MinFlightFrames = 12;
+        private const int MaxFlightFrames = 180;
+        /// <summary>贴光标死区(px²):过近不改向,避免绕着光标原地抖转</summary>
+        private const float AimDeadzoneSq = 576f;
 
         private readonly List<Vector2> path = new(MaxPathPoints);
         private readonly List<Petal> petals = new(MaxPetalCount);
@@ -108,7 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
             get => (int)Projectile.ai[0];
             set => Projectile.ai[0] = value;
         }
-        private int FlightDuration => Math.Clamp((int)Projectile.ai[1], 12, 120);
+        private int FlightDuration => Math.Clamp((int)Projectile.ai[1], MinFlightFrames, MaxFlightFrames);
         private float Seed => Projectile.ai[2];
         private int FlightEndFrame => DissolveFrames + FlightDuration;
         private int ReformEndFrame => FlightEndFrame + ReformFrames;
@@ -118,7 +122,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
         /// <summary>该控制器当前是否应取代持有者本体绘制</summary>
         internal bool ShouldHideOwner => Timer >= HideStartFrame && Timer < ReappearFrame;
 
-        /// <summary>在持有者客户端启动樱流飞行。方向键可在飞行期间平滑转向</summary>
+        /// <summary>在持有者客户端启动樱流飞行。巡航段跟随光标平滑转向</summary>
         public static Projectile Fire(Player player, Vector2 aim, float speed = 32f,
             int flightFrames = 40, IEntitySource source = null, bool seamless = false) {
             if (player == null || !player.Alives()) {
@@ -133,7 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
             source ??= player.GetSource_Misc("CWR_OniSakuraFlight");
             Vector2 direction = aim.SafeNormalize(Vector2.UnitX * player.direction);
             speed = MathHelper.Clamp(speed, MinFlightSpeed, MaxFlightSpeed);
-            flightFrames = Math.Clamp(flightFrames, 12, 120);
+            flightFrames = Math.Clamp(flightFrames, MinFlightFrames, MaxFlightFrames);
             float seed = Main.rand.NextFloat(0.01f, 0.99f);
 
             return Projectile.NewProjectileDirect(source, player.Center, direction * speed,
@@ -300,15 +304,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                 return;
             }
 
-            Vector2 input = new(
-                (Owner.controlRight ? 1f : 0f) - (Owner.controlLeft ? 1f : 0f),
-                (Owner.controlDown ? 1f : 0f) - (Owner.controlUp ? 1f : 0f));
-
-            if (input.LengthSquared() > 0.01f) {
-                Vector2 desiredDirection = input.SafeNormalize(moveDirection);
+            Vector2 toMouse = Main.MouseWorld - Owner.Center;
+            if (toMouse.LengthSquared() > AimDeadzoneSq) {
+                Vector2 desiredDirection = toMouse.SafeNormalize(moveDirection);
                 float currentAngle = moveDirection.ToRotation();
                 float turn = MathHelper.WrapAngle(desiredDirection.ToRotation() - currentAngle);
-                float maxTurn = MathHelper.Lerp(0.12f, 0.205f, 1f - MathHelper.Clamp(visualSpeedRatio, 0f, 1f));
+                //光标瞄准比方向键更吃响应:略放宽每帧转角,高速时仍保留一点惯性
+                float maxTurn = MathHelper.Lerp(0.18f, 0.32f, 1f - MathHelper.Clamp(visualSpeedRatio, 0f, 1f));
                 moveDirection = (currentAngle + MathHelper.Clamp(turn, -maxTurn, maxTurn))
                     .ToRotationVector2();
             }
