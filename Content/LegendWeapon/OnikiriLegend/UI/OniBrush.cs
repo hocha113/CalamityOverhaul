@@ -265,8 +265,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         /// <summary>
-        /// 羽化色块:三层同心堆叠的假模糊(内实外虚),给暗色/哑光形体用
-        /// (暗影无法加色发光,用层叠退晕替代硬边)
+        /// 羽化色块:三层同心堆叠的假模糊(内实外虚),给小暗色/哑光形体用
+        /// (粒子、刀影条带等;大面板请用 <see cref="DrawPanelDropShadow"/>——大幅扩层会叠出方块黑层)
         /// </summary>
         public static void DrawFeathered(SpriteBatch sb, Vector2 center, float rotation, Vector2 size,
             Color color, float alpha) {
@@ -274,9 +274,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return;
             }
             Vector2 half = new(0.5f);
-            sb.Draw(Pixel, center, PixelSrc, color * (alpha * 0.13f), rotation, half, size * 1.75f, SpriteEffects.None, 0f);
-            sb.Draw(Pixel, center, PixelSrc, color * (alpha * 0.30f), rotation, half, size * 1.32f, SpriteEffects.None, 0f);
+            sb.Draw(Pixel, center, PixelSrc, color * (alpha * 0.13f), rotation, half, size * 1.28f, SpriteEffects.None, 0f);
+            sb.Draw(Pixel, center, PixelSrc, color * (alpha * 0.30f), rotation, half, size * 1.12f, SpriteEffects.None, 0f);
             sb.Draw(Pixel, center, PixelSrc, color * (alpha * 0.55f), rotation, half, size, SpriteEffects.None, 0f);
+        }
+
+        /// <summary>
+        /// 大面板落影:仅错位一截紧贴暗底,不做同心扩层(扩层在白布/木牌尺度会露出阶梯黑方块)
+        /// </summary>
+        public static void DrawPanelDropShadow(SpriteBatch sb, Vector2 center, Vector2 size, float alpha,
+            Vector2? offset = null) {
+            if (alpha <= 0.01f) {
+                return;
+            }
+            Vector2 off = offset ?? new Vector2(4f, 7f);
+            Vector2 half = new(0.5f);
+            Color ink = new(8, 2, 5);
+            sb.Draw(Pixel, center + off + new Vector2(1.5f, 1.5f), PixelSrc, ink * (alpha * 0.14f),
+                0f, half, size * 1.015f, SpriteEffects.None, 0f);
+            sb.Draw(Pixel, center + off, PixelSrc, ink * (alpha * 0.38f),
+                0f, half, size, SpriteEffects.None, 0f);
         }
 
         /// <summary>确定性 0~1 hash</summary>

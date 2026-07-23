@@ -42,9 +42,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return;
             }
 
-            //布影:羽化的落影,不再一整块硬边矩形
-            OniBrush.DrawFeathered(sb, shown.Center.ToVector2() + new Vector2(5f, 9f), 0f,
-                new Vector2(shown.Width * 0.98f, shown.Height * 0.96f), new Color(8, 2, 5), alpha * alpha * 0.75f);
+            //布影:紧贴落影(大面板禁止同心扩层羽化,否则叠出方块黑层)
+            OniBrush.DrawPanelDropShadow(sb, shown.Center.ToVector2(),
+                new Vector2(shown.Width * 0.98f, shown.Height * 0.96f), alpha * alpha * 0.85f,
+                new Vector2(5f, 9f));
 
             if (OniMeiStandDraw.Available) {
                 OniMeiStandDraw.DrawCloth(sb, shown, alpha, time);
@@ -452,9 +453,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static void DrawWoodTag(SpriteBatch sb, DynamicSpriteFont font, Rectangle rect,
             string title, string kindLabel, string origin, string power, string burden, bool gold, bool erase,
             int visibleChars, float burnFresh, float alpha, float time) {
-            //板影:羽化落影
-            OniBrush.DrawFeathered(sb, rect.Center.ToVector2() + new Vector2(5f, 7f), 0.008f,
-                new Vector2(rect.Width, rect.Height), new Color(8, 2, 5), alpha * 0.72f);
+            //板影:紧贴落影(大面板禁止同心扩层羽化)
+            OniBrush.DrawPanelDropShadow(sb, rect.Center.ToVector2(),
+                new Vector2(rect.Width, rect.Height), alpha * 0.85f, new Vector2(5f, 7f));
 
             //系绳:从穿绳孔上挑到台缘一枚钉,让牌"挂"在世界里
             Vector2 hole = new(rect.X + 14f, rect.Y + 12f);
