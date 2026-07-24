@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
             n.Say(NarrativeIds.Mayo, L0.Value, Voice[1], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Grin))
              .Say(NarrativeIds.Mayo, L1.Value, Voice[2])
              .Say(NarrativeIds.Mayo, L2.Value, Voice[3], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Forsmile))
-             .Say(NarrativeIds.Mayo, L3.Value, Voice[4]);
+             .Say(NarrativeIds.Mayo, L3.Value, Voice[4], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Grin));
         }
 
         protected override bool IsGiftCompleted()
