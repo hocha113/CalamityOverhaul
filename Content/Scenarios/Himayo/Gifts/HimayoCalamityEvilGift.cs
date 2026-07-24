@@ -2,6 +2,7 @@ using CalamityOverhaul.Content.Narrative;
 using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -38,6 +39,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
              .Say(NarrativeIds.Mayo, L1.Value, Voice[2], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Forsmile))
              .Say(NarrativeIds.Mayo, L2.Value, Voice[3])
              .Say(NarrativeIds.Mayo, L3.Value, Voice[4], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Ruminate))
+             .Reward(ItemID.IronPickaxe, title: string.Empty, blocking: false)
              .Say(NarrativeIds.Mayo, L4.Value, Voice[5], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Forsmile));
         }
 
