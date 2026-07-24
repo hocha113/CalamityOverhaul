@@ -99,9 +99,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         //====写入（仅认手中刀）====
 
-        /// <summary>凿铭/改铭手中刀，成功推物品同步</summary>
+        /// <summary>凿铭/改铭手中刀，成功推物品同步；须所持</summary>
         public static bool EngraveHeld(OniMeiSlotKind slot, string key) {
             Player player = Main.LocalPlayer;
+            if (!OniMeiOwned.Owns(player, key)) {
+                return false;
+            }
             Item item = player?.GetItem();
             OnikiriData data = OnikiriData.TryGet(item);
             if (data == null || !data.Mei.Engrave(slot, key)) {

@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Items;
 using CalamityOverhaul.Content.Narrative;
 using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;
@@ -36,7 +37,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
             bool brain = HimayoGiftNarrativeTracker.LastDefeatedBossId == NPCID.BrainofCthulhu;
             n.Say(NarrativeIds.Mayo, brain ? L0Brain.Value : L0Worm.Value, brain ? Voice[3] : Voice[1],
                     onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Doubt))
-             .Reward(ItemID.IronPickaxe, title: string.Empty, blocking: false)
+             .Reward(ModContent.ItemType<OniMeiRubbingChihi>(), title: string.Empty, blocking: false)
              .Say(NarrativeIds.Mayo, brain ? L1Brain.Value : L1Worm.Value, brain ? Voice[4] : Voice[2],
                     onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Ruminate));
         }

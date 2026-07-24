@@ -14,17 +14,20 @@ using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
 using CalamityOverhaul.Content.Scenarios.Himayo;
 using InnoVault.PRT;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameInput;
 using Terraria.Graphics.Capture;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 {
     /// <summary>
-    /// 鬼切资源层,气力+架势,owner 端自治不进网络/存档.
+    /// 鬼切资源层,气力+架势 owner 端自治不进网络/存档;
+    /// 所持铭库(<see cref="OwnedMeiKeys"/>)例外,跟玩家存档.
     /// 疾走键未绑定时回退右键;表世界可衔樱流;交还帧开追斩窗;
     /// <see cref="CWRKeySystem.Onikiri_Execute"/> 处决;里世界点选肢解.
     /// HUD 经 <see cref="OnikiriResourceSource"/> 只读
@@ -127,6 +130,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         internal int KurikaraWindow { get; private set; }
         private int fudoGuardCooldown;
 
+        /// <summary>所持铭 Key 集合(改铭台扇骨门闩);种子含鬼切</summary>
+        internal HashSet<string> OwnedMeiKeys = [];
+
         /// <summary>当前气力上限(倶利伽罗压缩至 80)</summary>
         internal float VigorMaxCurrent => VigorMax * Mei.VigorMaxMul;
         //====追斩资格(owner 端自治)====
@@ -171,6 +177,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinAutoHandoff = false;
             zanshinAutoHandoffCountdown = 0;
             ResetMeiTransient();
+            OniMeiOwned.EnsureSeed(this);
+        }
+
+        public override void SaveData(TagCompound tag) {
+            OniMeiOwned.EnsureSeed(this);
+            List<string> keys = OwnedMeiKeys.Where(k => !string.IsNullOrEmpty(k)).Distinct().OrderBy(k => k).ToList();
+            tag["OniMeiOwned"] = keys;
+        }
+
+        public override void LoadData(TagCompound tag) {
+            OwnedMeiKeys = [];
+            if (tag.TryGet("OniMeiOwned", out List<string> keys) && keys != null) {
+                foreach (string key in keys) {
+                    if (!string.IsNullOrEmpty(key)) {
+                        OwnedMeiKeys.Add(key);
+                    }
+                }
+            }
+            OniMeiOwned.EnsureSeed(this);
         }
 
         public override void OnRespawn() {

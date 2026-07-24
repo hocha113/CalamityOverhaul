@@ -87,6 +87,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public const float MeiFanGlyphSize = 44f;
         /// <summary>扇面全张角(弧度)</summary>
         public const float MeiFanSpread = 1.55f;
+        /// <summary>錾样匣格菱章尺寸(略小于扇骨)</summary>
+        public const float MeiTrayGlyphSize = 37f;
+        /// <summary>匣格心间距</summary>
+        public const float MeiTrayCellGap = 48f;
+        /// <summary>单行最多格数,超出翻页</summary>
+        public const int MeiTrayMaxCols = 6;
+        /// <summary>匣格命中半径</summary>
+        public const float MeiTrayHitRadius = 22f;
+        /// <summary>匣木板尺寸(与烙印木牌同底边距,靠右并列)</summary>
+        public static readonly Vector2 MeiTrayPanelSize = new(340f, 124f);
+        /// <summary>匣/木牌距屏底留白(同款)</summary>
+        public const float MeiTrayBottomMargin = 76f;
+        /// <summary>匣与木牌水平间隙</summary>
+        public const float MeiTrayTagGap = 22f;
         /// <summary>烙印木牌尺寸(赋效/代价双栏后加高)</summary>
         public static readonly Vector2 MeiTagSize = new(380f, 236f);
         /// <summary>右缘竖排大字中轴 X 占屏比</summary>

@@ -47,6 +47,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText GoldMark { get; private set; }
         public static LocalizedText RegisterTabText { get; private set; }
         public static LocalizedText RegisterTabHint { get; private set; }
+        public static LocalizedText TrayTitle { get; private set; }
+        public static LocalizedText TrayEmpty { get; private set; }
 
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "改 铭 台");
@@ -69,6 +71,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             GoldMark = this.GetLocalization(nameof(GoldMark), () => "金象嵌");
             RegisterTabText = this.GetLocalization(nameof(RegisterTabText), () => "点鬼簿");
             RegisterTabHint = this.GetLocalization(nameof(RegisterTabHint), () => "点击 移步");
+            TrayTitle = this.GetLocalization(nameof(TrayTitle), () => "行囊錾样");
+            TrayEmpty = this.GetLocalization(nameof(TrayEmpty), () => "行囊无此位錾样。扇上所持仍可先凿");
         }
         #endregion
 
@@ -105,6 +109,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private float closeTagHover;
         private bool closeTagWasHovered;
         private readonly OniRope closeTagRope = new(5, 22f);
+        //錾样匣:与烙印木牌同底边的行囊木板
+        private readonly List<OniMeiTrayEntry> tray = [];
+        private int hoverTray = -1;
+        private readonly float[] trayCellEase = new float[12];
+        private int trayPage;
+        private Vector2 trayOrigin;
+        private Rectangle trayRect;
+        private bool trayPageLeftHover;
+        private bool trayPageRightHover;
         //吊挂卷轴:回点鬼簿的门(对面器物的微缩,挂在布左上的梁下)
         private readonly OniHangingSwitch registerSwitch = new(SoundID.MenuTick with { Pitch = -0.2f, Volume = 0.45f });
         private Vector2 registerSwitchAnchor;
@@ -146,7 +159,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             selectedSlot = -1;
             hoverRib = -1;
+            hoverTray = -1;
+            trayPage = 0;
             fanEase = 0f;
+            tray.Clear();
+            Array.Clear(trayCellEase, 0, trayCellEase.Length);
             mekugiPopped = false;
             mekugiAnim = 0f;
             slotRevealTimer = 0;
@@ -236,6 +253,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 }
                 hoverSlot = -1;
                 hoverRib = -1;
+                hoverTray = -1;
                 EaseArrays();
                 UpdateTagTypewriter();
                 return;
@@ -271,8 +289,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
 
             tagRect = new Rectangle((int)(sw * 0.055f),
-                (int)(sh - OnikiriUITheme.MeiTagSize.Y - 76f),
+                (int)(sh - OnikiriUITheme.MeiTagSize.Y - OnikiriUITheme.MeiTrayBottomMargin),
                 (int)OnikiriUITheme.MeiTagSize.X, (int)OnikiriUITheme.MeiTagSize.Y);
+
+            //匣木板:与木牌同底边距,坐其右侧;溢出则夹到屏内
+            float trayW = OnikiriUITheme.MeiTrayPanelSize.X;
+            float trayH = OnikiriUITheme.MeiTrayPanelSize.Y;
+            float trayX = tagRect.Right + OnikiriUITheme.MeiTrayTagGap;
+            float trayY = sh - trayH - OnikiriUITheme.MeiTrayBottomMargin;
+            if (trayX + trayW > sw - 36f) {
+                trayX = Math.Max(36f, sw - trayW - 36f);
+            }
+            trayRect = new Rectangle((int)trayX, (int)trayY, (int)trayW, (int)trayH);
+            //格心行:题头朱线下方
+            trayOrigin = new Vector2(trayRect.Center.X, trayRect.Y + 72f);
 
             nameColTop = new Vector2(sw * OnikiriUITheme.MeiNameColXRatio, sh * 0.16f);
             //吊挂卷轴锚:布左上的梁下,与右上的纳刀牌对称成"一梁两挂"
@@ -303,6 +333,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 float rt = i == hoverRib ? 1f : 0f;
                 ribEase[i] += (rt - ribEase[i]) * (rt > ribEase[i] ? 0.25f : 0.14f);
             }
+            for (int i = 0; i < trayCellEase.Length; i++) {
+                float tt = i == hoverTray ? 1f : 0f;
+                trayCellEase[i] += (tt - trayCellEase[i]) * (tt > trayCellEase[i] ? 0.25f : 0.14f);
+            }
         }
 
         private void UpdateInteraction(float a) {
@@ -323,7 +357,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             //扇骨悬停
             int newHoverRib = -1;
-            if (inputAvailable && selectedSlot >= 0 && fanEase > 0.6f) {
+            if (inputAvailable && selectedSlot >= 0 && fanEase > 0.6f && !Rite.Active) {
                 int count = RibCount();
                 float hitR = OnikiriUITheme.MeiFanGlyphSize * 0.62f;
                 for (int i = 0; i < count; i++) {
@@ -337,6 +371,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 hoverRib = newHoverRib;
                 if (hoverRib >= 0) {
                     SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.25f, Volume = 0.3f });
+                }
+            }
+
+            //錾样匣悬停(+翻页点)
+            int newHoverTray = -1;
+            trayPageLeftHover = false;
+            trayPageRightHover = false;
+            if (inputAvailable && selectedSlot >= 0 && fanEase > 0.55f && !Rite.Active) {
+                int visible = TrayVisibleCount();
+                for (int i = 0; i < visible; i++) {
+                    if (Vector2.Distance(mouse, TrayCellPos(i, visible)) < OnikiriUITheme.MeiTrayHitRadius) {
+                        newHoverTray = i;
+                        break;
+                    }
+                }
+                int pages = TrayPageCount();
+                if (pages > 1 && newHoverTray < 0) {
+                    Vector2 leftDot = TrayPageDotPos(true);
+                    Vector2 rightDot = TrayPageDotPos(false);
+                    trayPageLeftHover = Vector2.Distance(mouse, leftDot) < 10f && trayPage > 0;
+                    trayPageRightHover = Vector2.Distance(mouse, rightDot) < 10f && trayPage < pages - 1;
+                }
+            }
+            if (newHoverTray != hoverTray) {
+                hoverTray = newHoverTray;
+                if (hoverTray >= 0) {
+                    SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.3f, Volume = 0.28f });
                 }
             }
 
@@ -363,6 +424,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 SelectSlot(hoverSlot == selectedSlot ? -1 : hoverSlot);
                 return;
             }
+            if (trayPageLeftHover) {
+                trayPage--;
+                hoverTray = -1;
+                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.1f, Volume = 0.35f });
+                return;
+            }
+            if (trayPageRightHover) {
+                trayPage++;
+                hoverTray = -1;
+                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.15f, Volume = 0.35f });
+                return;
+            }
+            if (hoverTray >= 0) {
+                HandleTrayClick(hoverTray);
+                return;
+            }
+            //点在匣木板上(非格)吞掉,勿误收扇
+            if (selectedSlot >= 0 && trayRect.Contains(mp)) {
+                return;
+            }
             if (hoverRib >= 0) {
                 HandleRibClick(hoverRib);
                 return;
@@ -377,7 +458,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             clothHit.Inflate(30, 46);
             Rectangle nameHit = new((int)(nameColTop.X - 46f), (int)(nameColTop.Y - 20f), 92,
                 (int)(OnikiriUITheme.UIScreenH * 0.6f));
-            if (!clothHit.Contains(mp) && !tagRect.Contains(mp) && !nameHit.Contains(mp)
+            bool trayHit = selectedSlot >= 0 && fanEase > 0.25f && trayRect.Contains(mp);
+            if (!clothHit.Contains(mp) && !tagRect.Contains(mp) && !trayHit && !nameHit.Contains(mp)
                 && !registerSwitch.Hovering) {
                 Close();
             }
@@ -386,14 +468,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private void SelectSlot(int index) {
             selectedSlot = index;
             hoverRib = -1;
+            hoverTray = -1;
+            trayPage = 0;
             Array.Clear(ribEase, 0, ribEase.Length);
+            Array.Clear(trayCellEase, 0, trayCellEase.Length);
             if (index >= 0) {
                 //扇面朝向:向下张开会压到烙印木牌时翻到刀上方,骨与牌互不遮挡
                 fanUp = FanWouldHitTag(index);
                 SoundEngine.PlaySound(CWRSound.ButtonZero with { Volume = 0.5f });
                 RebuildRibs();
+                RebuildTray();
             }
             else {
+                tray.Clear();
                 SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.2f, Volume = 0.3f });
             }
         }
@@ -412,11 +499,54 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         private void RebuildRibs() {
             ribs.Clear();
-            ribs.AddRange(OniMeiRegistry.GetBySlot(SlotOf(selectedSlot)));
+            ribs.AddRange(OniMeiOwned.GetBySlotOwned(SlotOf(selectedSlot), Main.LocalPlayer));
             ribsHasErase = EngravedAt(selectedSlot) != null;
         }
 
+        private void RebuildTray() {
+            tray.Clear();
+            if (selectedSlot < 0) {
+                return;
+            }
+            tray.AddRange(OniMeiTrayLogic.CollectForSlot(Main.LocalPlayer, SlotOf(selectedSlot)));
+            int pages = TrayPageCount();
+            if (trayPage >= pages) {
+                trayPage = Math.Max(0, pages - 1);
+            }
+        }
+
         private int RibCount() => ribs.Count + (ribsHasErase ? 1 : 0);
+
+        private int TrayPageCount() {
+            if (tray.Count <= 0) {
+                return 1;
+            }
+            return (tray.Count + OnikiriUITheme.MeiTrayMaxCols - 1) / OnikiriUITheme.MeiTrayMaxCols;
+        }
+
+        private int TrayPageStart() => trayPage * OnikiriUITheme.MeiTrayMaxCols;
+
+        private int TrayVisibleCount() {
+            if (tray.Count <= 0) {
+                return 0;
+            }
+            return Math.Min(OnikiriUITheme.MeiTrayMaxCols, tray.Count - TrayPageStart());
+        }
+
+        private Vector2 TrayCellPos(int visibleIndex, int visibleCount) {
+            float half = (visibleCount - 1) * OnikiriUITheme.MeiTrayCellGap * 0.5f;
+            float x = trayOrigin.X - half + visibleIndex * OnikiriUITheme.MeiTrayCellGap;
+            float lift = visibleIndex < trayCellEase.Length ? trayCellEase[visibleIndex] * 5f : 0f;
+            return new Vector2(x, trayOrigin.Y - lift);
+        }
+
+        private Vector2 TrayPageDotPos(bool left) {
+            int visible = Math.Max(1, TrayVisibleCount());
+            float half = (visible - 1) * OnikiriUITheme.MeiTrayCellGap * 0.5f
+                + OnikiriUITheme.MeiTrayGlyphSize * 0.55f;
+            float x = left ? trayOrigin.X - half - 18f : trayOrigin.X + half + 18f;
+            return new Vector2(x, trayOrigin.Y);
+        }
 
         /// <summary>扇骨纹章心位置,骨自枢张出(默认向下,防遮挡时向上)</summary>
         private Vector2 RibPos(int index, int count) {
@@ -437,6 +567,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             if (IsEraseRib(index)) {
                 if (OniMeiRegistry.EraseHeld(slot)) {
+                    if (oldKey != null) {
+                        OniMeiTrayLogic.TryRefund(Main.LocalPlayer, oldKey);
+                    }
+                    RebuildTray();
                     Rite.Start(OniMeiRiteKind.Erase, slot, oldKey, null);
                     SelectSlotSilently(-1);
                 }
@@ -461,11 +595,57 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
+        /// <summary>匣格点击:消耗錾样凿上,旧铭退样</summary>
+        private void HandleTrayClick(int visibleIndex) {
+            int abs = TrayPageStart() + visibleIndex;
+            if (abs < 0 || abs >= tray.Count) {
+                DenyFeedback();
+                return;
+            }
+
+            OniMeiTrayEntry entry = tray[abs];
+            OniMeiSlotKind slot = SlotOf(selectedSlot);
+            string oldKey = OniMeiRegistry.DisplayStore?.Get(slot);
+
+            if (entry.Key == oldKey) {
+                SelectSlot(-1);
+                return;
+            }
+
+            Player player = Main.LocalPlayer;
+            if (!OniMeiTrayLogic.TryConsume(player, entry.Key)) {
+                DenyFeedback();
+                RebuildTray();
+                return;
+            }
+
+            OniMeiOwned.Unlock(player, entry.Key);
+            if (!OniMeiRegistry.EngraveHeld(slot, entry.Key)) {
+                OniMeiTrayLogic.TryRefund(player, entry.Key);
+                DenyFeedback();
+                RebuildTray();
+                return;
+            }
+
+            if (oldKey != null && oldKey != entry.Key) {
+                OniMeiTrayLogic.TryRefund(player, oldKey);
+            }
+
+            RebuildTray();
+            Rite.Start(oldKey != null ? OniMeiRiteKind.Rename : OniMeiRiteKind.Engrave, slot, oldKey, entry.Key);
+            SelectSlotSilently(-1);
+        }
+
         /// <summary>收扇不响声(仪式开演自带音)</summary>
         private void SelectSlotSilently(int index) {
             selectedSlot = index;
             hoverRib = -1;
+            hoverTray = -1;
             Array.Clear(ribEase, 0, ribEase.Length);
+            Array.Clear(trayCellEase, 0, trayCellEase.Length);
+            if (index < 0) {
+                tray.Clear();
+            }
         }
 
         private static void DenyFeedback()
@@ -502,6 +682,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                         riteDef.IsGoldTier, Rite.NewKey == null);
                 }
             }
+            //悬停匣格:行囊錾样预览(优先于扇骨)
+            if (selectedSlot >= 0 && hoverTray >= 0) {
+                int abs = TrayPageStart() + hoverTray;
+                if (abs >= 0 && abs < tray.Count) {
+                    string key = tray[abs].Key;
+                    if (OniMeiRegistry.TryGet(key, out OniMeiDefinition trayDef)) {
+                        return ($"tray:{trayDef.Key}", trayDef.DisplayName.Value, SlotLabel(trayDef.SlotKind),
+                            trayDef.Origin.Value, trayDef.Power.Value, trayDef.Burden.Value, trayDef.IsGoldTier, false);
+                    }
+                }
+            }
             //悬停扇骨:预览(凿前必见真实赋效与代价)
             if (selectedSlot >= 0 && hoverRib >= 0) {
                 if (IsEraseRib(hoverRib)) {
@@ -512,7 +703,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return ($"def:{def.Key}", def.DisplayName.Value, SlotLabel(def.SlotKind),
                     def.Origin.Value, def.Power.Value, def.Burden.Value, def.IsGoldTier, false);
             }
-            //选中铭位:现铭或空悬文案
+            //选中铭位:现铭或空悬文案(匣空时短提示并入空悬出处)
             if (selectedSlot >= 0) {
                 OniMeiDefinition engraved = EngravedAt(selectedSlot);
                 if (engraved != null) {
@@ -525,6 +716,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     OniMeiSlotKind.Horimono => EmptyHintHorimono.Value,
                     _ => EmptyHintNakago.Value,
                 };
+                if (tray.Count == 0) {
+                    hint = TrayEmpty.Value;
+                }
                 return ($"empty:{selectedSlot}", EmptyName.Value, SlotLabel(SlotOf(selectedSlot)), hint,
                     "———", "———", false, false);
             }
@@ -656,6 +850,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     OniRegistry.InDanger);
             }
 
+            //錾样匣放在静物之后,避免被布上静物盖住
+            if (contentA > 0.01f && fanEase > 0.02f && selectedSlot >= 0) {
+                DrawTray(spriteBatch, font, contentA);
+            }
+
             particles.Draw(spriteBatch, a);
 
             //吊挂卷轴的悬浮说明(最后画,压在一切之上)
@@ -739,6 +938,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     OnikiriUITheme.MeiGlyphOnBlade, a * pulse * ribEase[Math.Min(hoverRib, ribEase.Length - 1)],
                     OnikiriUITheme.MeiBladeCant);
             }
+            //悬停匣格:粉笔稿试铭
+            if (selectedSlot >= 0 && hoverTray >= 0 && hoverRib < 0) {
+                int abs = TrayPageStart() + hoverTray;
+                if (abs >= 0 && abs < tray.Count) {
+                    float pulse = 0.75f + 0.25f * (float)Math.Sin(ShaderTime * 4f);
+                    float hov = hoverTray < trayCellEase.Length ? trayCellEase[hoverTray] : 1f;
+                    OniMeiGlyph.DrawChalk(sb, tray[abs].Key, slotPos[selectedSlot],
+                        OnikiriUITheme.MeiGlyphOnBlade, a * pulse * hov, OnikiriUITheme.MeiBladeCant);
+                }
+            }
         }
 
         private void DrawFan(SpriteBatch sb, float a) {
@@ -765,6 +974,67 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Texture2D pixel = VaultAsset.placeholder2.Value;
             sb.Draw(pixel, fanPivot, new Rectangle(0, 0, 1, 1), OnikiriUITheme.Seal * (a * fanEase),
                 MathHelper.PiOver4, new Vector2(0.5f), new Vector2(4.4f), SpriteEffects.None, 0f);
+        }
+
+        private void DrawTray(SpriteBatch sb, DynamicSpriteFont font, float a) {
+            float trayA = a * fanEase;
+            if (trayA <= 0.01f) {
+                return;
+            }
+
+            OniMeiRenderer.DrawTrayPlank(sb, trayRect, trayA, ShaderTime);
+
+            int visible = TrayVisibleCount();
+            int pages = TrayPageCount();
+            OniMeiDefinition engraved = EngravedAt(selectedSlot);
+
+            Vector2 titleSize = font.MeasureString(TrayTitle.Value) * 0.7f;
+            Utils.DrawBorderString(sb, TrayTitle.Value,
+                new Vector2(trayRect.Center.X - titleSize.X * 0.5f, trayRect.Y + 12f),
+                OnikiriUITheme.Paper * (trayA * 0.95f), 0.7f);
+
+            if (visible <= 0) {
+                Vector2 emptySize = font.MeasureString(TrayEmpty.Value) * 0.58f;
+                //窄板内折行观感:居中短提示
+                Utils.DrawBorderString(sb, TrayEmpty.Value,
+                    new Vector2(trayRect.Center.X - emptySize.X * 0.5f, trayOrigin.Y - emptySize.Y * 0.5f),
+                    OnikiriUITheme.TextDim * (trayA * 0.9f), 0.58f);
+                return;
+            }
+
+            float halfSpan = (visible - 1) * OnikiriUITheme.MeiTrayCellGap * 0.5f
+                + OnikiriUITheme.MeiTrayGlyphSize * 0.55f;
+            OniMeiRenderer.DrawTrayRail(sb,
+                trayOrigin + new Vector2(-halfSpan, 18f),
+                trayOrigin + new Vector2(halfSpan, 18f),
+                trayA * 0.75f, ShaderTime, trayPage, pages);
+
+            int start = TrayPageStart();
+            for (int i = 0; i < visible; i++) {
+                float vis = MathHelper.Clamp((fanEase - i * 0.06f) * 1.5f, 0f, 1f);
+                if (vis <= 0.01f) {
+                    continue;
+                }
+                OniMeiTrayEntry entry = tray[start + i];
+                Vector2 pos = TrayCellPos(i, visible);
+                float hov = i < trayCellEase.Length ? trayCellEase[i] : 0f;
+                bool isCurrent = engraved != null && engraved.Key == entry.Key;
+                OniMeiRenderer.DrawTrayCell(sb, pos, entry.Key, entry.Gold, isCurrent, entry.Stack,
+                    vis, hov, a, ShaderTime);
+            }
+
+            if (pages > 1) {
+                Vector2 leftDot = TrayPageDotPos(true);
+                Vector2 rightDot = TrayPageDotPos(false);
+                if (trayPage > 0) {
+                    OniBrush.DrawSoftDot(sb, leftDot, trayPageLeftHover ? 4.2f : 3.2f,
+                        OnikiriUITheme.Seal, trayA * (trayPageLeftHover ? 1f : 0.65f));
+                }
+                if (trayPage < pages - 1) {
+                    OniBrush.DrawSoftDot(sb, rightDot, trayPageRightHover ? 4.2f : 3.2f,
+                        OnikiriUITheme.Seal, trayA * (trayPageRightHover ? 1f : 0.65f));
+                }
+            }
         }
 
         private void DrawRiteTools(SpriteBatch sb) {

@@ -5,6 +5,7 @@ using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -65,7 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// </summary>
     internal class BrimfishSpitterProjectile : ModProjectile
     {
-        public override string Texture => "CalamityMod/Items/Fishing/BrimstoneCragCatches/Brimlish";
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private enum FishState
         {
@@ -536,7 +537,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
-            Texture2D fishTex = CWRUtils.GetT2DAsset(Texture).Value;
+            Texture2D fishTex;
+            if (CWRID.Item_Brimlish > 0) {
+                fishTex = TextureAssets.Item[CWRID.Item_Brimlish].Value;
+            }
+            else {
+                Main.instance.LoadItem(ItemID.Flounder);
+                fishTex = TextureAssets.Item[ItemID.Flounder].Value;
+            }
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = fishTex.Size() / 2f;
             float drawRot = Projectile.rotation;

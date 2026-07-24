@@ -571,6 +571,8 @@ OnikiriText: {
 		GoldMark: 金象嵌
 		RegisterTabText: 点鬼簿
 		RegisterTabHint: 点击 移步
+		TrayTitle: 行囊錾样
+		TrayEmpty: 行囊无此位錾样。扇上所持仍可先凿
 	}
 
 	OniEngraveRiteUI: {

@@ -571,6 +571,8 @@ OnikiriText: {
 		// GoldMark: Gold Inlay
 		// RegisterTabText: Ghost Register
 		// RegisterTabHint: Click to step over
+		// TrayTitle: Satchel Rubbings
+		// TrayEmpty: No rubbing for this seat in your satchel. Fan ribs of owned mei still carve
 	}
 
 	OniEngraveRiteUI: {

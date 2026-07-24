@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using Terraria;
+using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
@@ -402,6 +403,111 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 Vector2 mark = drawPos + new Vector2(0f, -g * 0.72f);
                 OniBrush.DrawSoftDot(sb, mark, 3.6f, OnikiriUITheme.Seal, a * 0.95f);
             }
+        }
+
+        /// <summary>
+        /// 錾样匣一格:缩小扇菱章(无扇骨线)+堆叠角标。台上拓片,非背包方格
+        /// </summary>
+        public static void DrawTrayCell(SpriteBatch sb, Vector2 pos, string glyphKey, bool gold, bool isCurrent,
+            int stack, float vis, float hover, float alpha, float time) {
+            float ease = vis * (2f - vis);
+            float a = alpha * ease;
+            if (a <= 0.01f) {
+                return;
+            }
+
+            float g = OnikiriUITheme.MeiTrayGlyphSize;
+            float lift = 1f + hover * 0.1f;
+            Vector2 half = new(0.5f);
+            Color rim = gold
+                ? Color.Lerp(OnikiriUITheme.GoldDeep, OnikiriUITheme.GoldInlay, 0.4f + hover * 0.5f)
+                : Color.Lerp(OnikiriUITheme.Deep, OnikiriUITheme.Bright, hover * 0.6f);
+
+            sb.Draw(Pixel, pos + new Vector2(1.4f, 2f), PixelSrc, new Color(8, 2, 5) * (a * 0.5f),
+                MathHelper.PiOver4, half, new Vector2(g * 1.06f * lift), SpriteEffects.None, 0f);
+            sb.Draw(Pixel, pos, PixelSrc, rim * (a * 0.9f),
+                MathHelper.PiOver4, half, new Vector2(g * 1.06f * lift), SpriteEffects.None, 0f);
+            sb.Draw(Pixel, pos, PixelSrc, OnikiriUITheme.Ink * (a * 0.97f),
+                MathHelper.PiOver4, half, new Vector2(g * 0.96f * lift), SpriteEffects.None, 0f);
+            sb.Draw(Pixel, pos, PixelSrc, OnikiriUITheme.Paper * (a * 0.14f),
+                MathHelper.PiOver4, half, new Vector2(g * 0.82f * lift), SpriteEffects.None, 0f);
+
+            OniMeiGlyphStyle style = OniMeiGlyphStyle.Engraved(a);
+            style.Time = time;
+            style.Inlay = gold ? 1f : 0f;
+            style.Accent = gold ? OnikiriUITheme.GoldInlay : OnikiriUITheme.Bright;
+            style.Lit = hover * 0.7f;
+            OniMeiGlyph.Draw(sb, glyphKey, pos, g * 0.72f * lift, style);
+
+            if (isCurrent) {
+                OniBrush.DrawSoftDot(sb, pos + new Vector2(0f, -g * 0.72f), 3.2f, OnikiriUITheme.Seal, a * 0.95f);
+            }
+
+            //堆叠:右下角纸色小字,勿原版灰标
+            if (stack > 1) {
+                string n = stack > 99 ? "99+" : stack.ToString();
+                DynamicSpriteFont font = FontAssets.MouseText.Value;
+                Vector2 size = font.MeasureString(n) * 0.7f;
+                Vector2 corner = pos + new Vector2(g * 0.22f, g * 0.18f);
+                Utils.DrawBorderString(sb, n, corner - size * 0.5f, OnikiriUITheme.Paper * a, 0.7f);
+            }
+        }
+
+        /// <summary>匣底一截淡墨轨;页点为朱印软点</summary>
+        public static void DrawTrayRail(SpriteBatch sb, Vector2 left, Vector2 right, float alpha, float time,
+            int page, int pageCount) {
+            if (alpha <= 0.01f) {
+                return;
+            }
+            OniBrush.DrawGradientLine(sb, left, right,
+                OnikiriUITheme.Dark * (alpha * 0.35f), OnikiriUITheme.Deep * (alpha * 0.55f), 1.6f);
+            if (pageCount <= 1) {
+                return;
+            }
+            float midX = (left.X + right.X) * 0.5f;
+            float y = right.Y + 14f;
+            for (int i = 0; i < pageCount; i++) {
+                float x = midX + (i - (pageCount - 1) * 0.5f) * 12f;
+                float lit = i == page ? 1f : 0.35f;
+                OniBrush.DrawSoftDot(sb, new Vector2(x, y), i == page ? 3.4f : 2.4f,
+                    OnikiriUITheme.Seal, alpha * lit);
+            }
+        }
+
+        /// <summary>
+        /// 錾样匣木板:复用烙印木牌的手裁木纹板体,无系绳(坐在台底,与左牌并列)
+        /// </summary>
+        public static void DrawTrayPlank(SpriteBatch sb, Rectangle rect, float alpha, float time) {
+            if (alpha <= 0.01f) {
+                return;
+            }
+            OniBrush.DrawPanelDropShadow(sb, rect.Center.ToVector2(),
+                new Vector2(rect.Width, rect.Height), alpha * 0.85f, new Vector2(5f, 7f));
+
+            if (OniMeiStandDraw.Available) {
+                Rectangle plank = rect;
+                plank.Inflate(6, 6);
+                OniMeiStandDraw.DrawWoodPlank(sb, plank, alpha, time);
+            }
+            else {
+                sb.Draw(Pixel, new Rectangle(rect.X - 3, rect.Y - 3, rect.Width + 6, rect.Height + 6), PixelSrc,
+                    OnikiriUITheme.Deep * (alpha * 0.5f));
+                sb.Draw(Pixel, rect, PixelSrc, new Color(52, 18, 16) * (alpha * 0.97f));
+                for (int i = 0; i < 4; i++) {
+                    float u = 0.12f + Hash01(i * 71 + 9) * 0.76f;
+                    sb.Draw(Pixel, new Vector2(rect.X + rect.Width * u, rect.Center.Y), PixelSrc,
+                        OnikiriUITheme.Ink * (alpha * 0.28f), 0f, new Vector2(0.5f),
+                        new Vector2(1f, rect.Height * 0.82f), SpriteEffects.None, 0f);
+                }
+            }
+
+            //题下朱线,与木牌题头分隔同气
+            float lineY = rect.Y + 34f;
+            OniBrush.DrawGradientLine(sb,
+                new Vector2(rect.X + 22f, lineY),
+                new Vector2(rect.Right - 22f, lineY),
+                OnikiriUITheme.Seal * (alpha * 0.55f),
+                OnikiriUITheme.Deep * (alpha * 0.35f), 1.4f);
         }
 
         /// <summary>除铭骨:暗章锉叉,悬停转绯红</summary>

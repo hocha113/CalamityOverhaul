@@ -2577,3 +2577,75 @@ WraithDebugTool: {
 	RegisterLine: "{0}：{1}，驾驭 {2}，续签 {3}，遭遇 {4}"
 	RegisterEmpty: 随身没有载体
 }
+
+OniMeiRubbingHigekiri: {
+	DisplayName: 旧刃拓片
+	Tooltip:
+		'''
+		纸面上拓下一道旧刃纹
+		拿到改铭台，便可凿进刀茎
+		'''
+}
+
+OniMeiRubbingOnikiri: {
+	DisplayName: 本铭拓片
+	Tooltip:
+		'''
+		出厂本铭的纸样
+		拿到改铭台，便可凿回刀茎
+		'''
+}
+
+OniMeiRubbingShishinoko: {
+	DisplayName: 夜吼金箔
+	Tooltip:
+		'''
+		箔面压着一声未散的吼
+		拿到改铭台，便可凿进刀茎
+		'''
+}
+
+OniMeiRubbingTomokiri: {
+	DisplayName: 咎影纸片
+	Tooltip:
+		'''
+		纸角像被谁误裁过一刀
+		拿到改铭台，便可凿进刀茎
+		'''
+}
+
+OniMeiRubbingChihi: {
+	DisplayName: 血渍纸样
+	Tooltip:
+		'''
+		纸边还带着一点腥
+		拿到改铭台，便可凿进血槽
+		'''
+}
+
+OniMeiRubbingKazehi: {
+	DisplayName: 顺风布札
+	Tooltip:
+		'''
+		薄布上压着一道轻痕
+		拿到改铭台，便可凿进血槽位旁的风路
+		'''
+}
+
+OniMeiRubbingFudo: {
+	DisplayName: 护身梵札
+	Tooltip:
+		'''
+		布札上压着一笔站住的意思
+		拿到改铭台，便可凿进雕位
+		'''
+}
+
+OniMeiRubbingKurikara: {
+	DisplayName: 缠龙火笺
+	Tooltip:
+		'''
+		笺面还留着一点烫
+		拿到改铭台，便可凿进雕位
+		'''
+}

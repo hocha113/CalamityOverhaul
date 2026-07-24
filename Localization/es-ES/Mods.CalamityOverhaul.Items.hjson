@@ -2531,3 +2531,75 @@ WraithDebugTool: {
 	// RegisterLine: "{0}: {1}, mastery {2}, renewed {3}, encounters {4}"
 	// RegisterEmpty: No vessel on your person
 }
+
+OniMeiRubbingHigekiri: {
+	// DisplayName: Old Blade Rubbing
+	/* Tooltip:
+		'''
+		An old blade mark pressed onto paper
+		Take it to the inscription stand to carve it into the tang
+		''' */
+}
+
+OniMeiRubbingOnikiri: {
+	// DisplayName: True-Name Rubbing
+	/* Tooltip:
+		'''
+		A paper pattern of the factory true name
+		Take it to the inscription stand to carve it back into the tang
+		''' */
+}
+
+OniMeiRubbingShishinoko: {
+	// DisplayName: Night-Roar Gold Leaf
+	/* Tooltip:
+		'''
+		A roar still pressed into the foil
+		Take it to the inscription stand to carve it into the tang
+		''' */
+}
+
+OniMeiRubbingTomokiri: {
+	// DisplayName: Guilt-Shadow Scrap
+	/* Tooltip:
+		'''
+		The corner looks like it was cut by mistake
+		Take it to the inscription stand to carve it into the tang
+		''' */
+}
+
+OniMeiRubbingChihi: {
+	// DisplayName: Bloodstained Paper Pattern
+	/* Tooltip:
+		'''
+		The paper edge still smells faintly of iron
+		Take it to the inscription stand to carve it into the blood groove
+		''' */
+}
+
+OniMeiRubbingKazehi: {
+	// DisplayName: Tailwind Cloth Talisman
+	/* Tooltip:
+		'''
+		A light mark pressed into thin cloth
+		Take it to the inscription stand to carve it into the groove of wind
+		''' */
+}
+
+OniMeiRubbingFudo: {
+	// DisplayName: Ward Sanskrit Talisman
+	/* Tooltip:
+		'''
+		A mark that means stand your ground
+		Take it to the inscription stand to carve it into the carving seat
+		''' */
+}
+
+OniMeiRubbingKurikara: {
+	// DisplayName: Coiling-Dragon Fire Slip
+	/* Tooltip:
+		'''
+		The slip still holds a little heat
+		Take it to the inscription stand to carve it into the carving seat
+		''' */
+}

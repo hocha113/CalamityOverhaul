@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Items;
 using CalamityOverhaul.Content.Narrative;
 using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;
@@ -38,7 +39,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
              .Say(NarrativeIds.Mayo, L1.Value, Voice[2])
              .Say(NarrativeIds.Mayo, L2.Value, Voice[3], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Doubt))
              .Say(NarrativeIds.Mayo, L3.Value, Voice[4], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Grin))
-             .Reward(ItemID.IronPickaxe, title: string.Empty, blocking: false)
+             .Reward(ModContent.ItemType<OniMeiRubbingHigekiri>(), title: string.Empty, blocking: false)
              .Say(NarrativeIds.Mayo, L4.Value, Voice[5], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Ruminate));
         }
 
