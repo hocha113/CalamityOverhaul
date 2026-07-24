@@ -1,6 +1,8 @@
 ﻿using CalamityOverhaul.OtherMods.InfernumMode;
+using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
+using System;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -40,6 +42,8 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
 
         private const float TimeLimitSeconds = 20f;
 
+        private static NarrativeVoiceBank Voice;
+
         public override StyleId DefaultStyle => "Draedon";
 
         public override void SetStaticDefaults() {
@@ -53,6 +57,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
             ChoiceAres = this.GetLocalization(nameof(ChoiceAres), () => "战神阿瑞斯");
             ChoiceThanatos = this.GetLocalization(nameof(ChoiceThanatos), () => "死神塔纳托斯");
             ChoiceTwins = this.GetLocalization(nameof(ChoiceTwins), () => "双子神阿尔忒弥斯");
+            Voice = NarrativeVoiceBank.Create(Mod, "Content/Scenarios/Draedon/Lines/ExoMechdusaSum", count: 7);
         }
 
         protected override void Build(NarrativeComposer n) {
@@ -64,30 +69,32 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
 
             if (simpleMode) {
                 if (CompatibleMode) {
-                    n.Say("Draedon", "Red", BossRushLine.Value, onExit: EnableVanillaSelect);
+                    n.Say("Draedon", "Red", BossRushLine.Value, Voice[7], onExit: EnableVanillaSelect);
                 }
                 else {
                     n.Choice("Draedon", "Red", BossRushLine.Value, c => c
                         .Timed(TimeLimitSeconds)
                         .Option("ares", ChoiceAres.Value, onSelect: () => SummonMech(ExoMechType.Prime))
                         .Option("thanatos", ChoiceThanatos.Value, onSelect: () => SummonMech(ExoMechType.Destroyer))
-                        .Option("twins", ChoiceTwins.Value, onSelect: () => SummonMech(ExoMechType.Twins)));
+                        .Option("twins", ChoiceTwins.Value, onSelect: () => SummonMech(ExoMechType.Twins))
+                        .Voice(Voice[7]));
                 }
             }
             else {
-                n.Say("Draedon", IntroLine1.Value)
-                 .Say("Draedon", IntroLine2.Value)
-                 .Say("Draedon", IntroLine3.Value)
-                 .Say("Draedon", "Red", IntroLine4.Value);
+                n.Say("Draedon", IntroLine1.Value, Voice[1])
+                 .Say("Draedon", IntroLine2.Value, Voice[2])
+                 .Say("Draedon", IntroLine3.Value, Voice[3])
+                 .Say("Draedon", "Red", IntroLine4.Value, Voice[4]);
 
                 if (CompatibleMode) {
-                    n.Say("Draedon", "Red", IntroLine5.Value, onExit: EnableVanillaSelect);
+                    n.Say("Draedon", "Red", IntroLine5.Value, Voice[5], onExit: EnableVanillaSelect);
                 }
                 else {
                     n.Choice("Draedon", "Red", IntroLine5.Value, c => c
                         .Option("ares", ChoiceAres.Value, onSelect: () => SummonMech(ExoMechType.Prime))
                         .Option("thanatos", ChoiceThanatos.Value, onSelect: () => SummonMech(ExoMechType.Destroyer))
-                        .Option("twins", ChoiceTwins.Value, onSelect: () => SummonMech(ExoMechType.Twins)));
+                        .Option("twins", ChoiceTwins.Value, onSelect: () => SummonMech(ExoMechType.Twins))
+                        .Voice(Voice[5]));
                 }
             }
         }
