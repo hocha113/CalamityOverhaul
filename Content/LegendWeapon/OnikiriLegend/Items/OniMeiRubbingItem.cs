@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Items
     /// </summary>
     internal abstract class OniMeiRubbingItem : ModItem, ILocalizedModType
     {
-        public string LocalizationCategory => "Items";
+        public override string LocalizationCategory => "Items";
 
         /// <summary>绑定铭 Key，须与 <see cref="OniMeiDefinition.Key"/> 一致</summary>
         public abstract string MeiKey { get; }
