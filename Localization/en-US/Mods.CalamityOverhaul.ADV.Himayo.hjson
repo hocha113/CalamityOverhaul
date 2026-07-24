@@ -1,4 +1,4 @@
-﻿FirstMetHimayo: {
+FirstMetHimayo: {
 	SpeakerName: Himura Mayo
 	Line1: ...I'm still alive?
 	Line2: Wait, let me make sure... Is this some kind of spirit summoning?
@@ -69,7 +69,7 @@ HimayoBrimstoneElementalGift: {
 }
 
 HimayoDestroyerGift: {
-	L0: '"The Destroyer"… sounds scary enough.'
+	L0: '''"The Destroyer"… sounds scary enough.'''
 	L1: Turns out it's just a really long piece of iron.
 	L2: That thing—don't drop it. I'm not picking it up.
 }

@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.Narrative;
+using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using Terraria.Localization;
@@ -15,6 +16,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
 
+        private static NarrativeVoiceBank Voice;
+
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
         public override int TargetBossId => CWRID.NPC_SupremeCalamitas;
 
@@ -22,12 +25,13 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
             L0 = this.GetLocalization(nameof(L0), () => "那边弄得空气发沉。发滞那种");
             L1 = this.GetLocalization(nameof(L1), () => "去吹吹风，或者洗把脸。不是嫌脏，是让你清醒点");
             L2 = this.GetLocalization(nameof(L2), () => "这种程度……我倒习惯了。你别愣着就行");
+            Voice = NarrativeVoiceBank.Create(Mod, "Content/Scenarios/Himayo/Lines/Gifts/HimayoSupremeCalamitasGift", count: 3);
         }
 
         protected override void Build(NarrativeComposer n) {
-            n.Say(NarrativeIds.Mayo, L0.Value, onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Ruminate))
-             .Say(NarrativeIds.Mayo, L1.Value)
-             .Say(NarrativeIds.Mayo, L2.Value, onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Forsmile));
+            n.Say(NarrativeIds.Mayo, L0.Value, Voice[1], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Ruminate))
+             .Say(NarrativeIds.Mayo, L1.Value, Voice[2])
+             .Say(NarrativeIds.Mayo, L2.Value, Voice[3], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Forsmile));
         }
 
         protected override bool IsGiftCompleted()

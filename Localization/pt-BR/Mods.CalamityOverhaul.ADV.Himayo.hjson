@@ -19,3 +19,144 @@ ItCametoThis: {
 	// Line1: 真不想走到这一步啊
 	// Line2: 从现在开始，这个世界我接管了
 }
+
+HimayoEyeOfCthulhuGift: {
+	// L0: Right—back home we used to have a guy who couldn't close his eyes when he slept.
+	// L1: Not the creepy wide-open kind. Lids half down, staring at the beam like he was spacing out.
+	// L2: Blankets tucked tight, house dead quiet. One time I walked past his window and almost yelled for help.
+	// L3: Next day he was fine, hollering from the fields for me to help haul flower pots.
+	// L4: Ugh, talking about it… looking at those eyes of yours, I'm getting sleepy too. Dropping it.
+}
+
+HimayoEvilBossGift: {
+	// L0Worm: Gross… chunk after chunk jammed in the dirt.
+	// L1Worm: Reeks like a freshly turned mud ditch. Enough. I don't want to smell that again.
+	// L0Brain: Brains belong inside a skull.
+	// L1Brain: Soggy, sprawled out in the open. One look and I'm done.
+}
+
+HimayoCalamityEvilGift: {
+	// L0: Don't just stand there spacing out. Catch your breath, at least.
+	// L1: That clump earlier… doesn't it look a lot like spoiled red bean paste?
+	// L2: I regret saying that out loud. Now I'm hungry too.
+	// L3: If you are too, go find something to eat. Toughing it out after a fight is the dumbest move.
+	// L4: And don't wipe your hands on your face. Not because you're dirty—it'll sting your eyes. Trust me.
+}
+
+HimayoSlimeGodGift: {
+	// L0: A little sticky, sure. Compared to having sticky in the name, this is nothing.
+	// L1: Used to bother me. Now… I'm used to it.
+	// L2: Here. Ask where I pulled it from and I'll pretend I didn't hear.
+}
+
+HimayoWallOfFleshGift: {
+	// L0: …It really fell. Wall's down.
+	// L1: Not sure if I'm glad or not. Just feels like… weather's about to turn.
+	// L2: …You know what I mean. That's enough.
+}
+
+HimayoAquaticScourgeGift: {
+	// L0: Hold on. That smell on the edge…
+	// L1: I live in here. Feels like someone opened a seafood stall.
+	// L2: Can't even open a window. Swords don't have windows.
+	// L3: You sure went all in, shoving the whole blade into that stink. Next time, ease up, okay?
+}
+
+HimayoBrimstoneElementalGift: {
+	// L0: Heat's still hanging. Look at that puddle—still steaming.
+	// L1: What if you stuck a foot in? …No. I'm not telling you to try.
+	// L2: Just don't touch it. Burns.
+}
+
+HimayoDestroyerGift: {
+	// L0: '''"The Destroyer"… sounds scary enough.'''
+	// L1: Turns out it's just a really long piece of iron.
+	// L2: That thing—don't drop it. I'm not picking it up.
+}
+
+HimayoTwinsGift: {
+	// L0: Stare at each other too long and people start laughing.
+	// L1: You know. The more you hold it in, the more your mouth wants to curl.
+	// L2: I used to race people on who broke first. I always lost.
+	// L3: Looking at those two… never mind. I'm smiling again.
+}
+
+HimayoSkeletronPrimeGift: {
+	// L0: Head's still the old one. Body got new iron.
+	// L1: Like mid-costume-change and they charged out anyway. Off.
+	// L2: Next time finish changing before the fight, okay? I'm anxious just watching.
+}
+
+HimayoCalamitasCloneGift: {
+	// L0: Copying a walk that well is annoying.
+	// L1: Not scared—just wrong. The closer the copy, the faker it feels.
+	// L2: Take it. Ask where I got it and I'll pretend I didn't hear.
+}
+
+HimayoPlanteraGift: {
+	// L0: When a flower's spent, you cut it.
+	// L1: Leaving the stem doesn't help. Takes space, just irritates people.
+	// L2: Flower sellers back home all do it that way. Spent means cut—don't dawdle.
+	// L3: Ah, why am I talking about this. You're not here to buy flowers.
+}
+
+HimayoGolemGift: {
+	// L0: Wrists still numb? Ease your shoulders too.
+	// L1: Stone's like that—one hit and the buzz crawls into your palm.
+	// L2: I've had my grip go numb from the shock. Not fun.
+	// L3: And don't bash the blade on it. If it chips, I feel that.
+}
+
+HimayoCultistGift: {
+	// L0: Quiet at the door at last.
+	// L1: Ears can rest. That racket earlier had me wanting to cover them.
+}
+
+HimayoMoonLordGift: {
+	// L0: That moon thing up there is gone.
+	// L1: Not sure I'd call it relief… more like a piece went empty.
+	// L2: Still on your feet?
+}
+
+HimayoProvidenceGift: {
+	// L0: Tch. Air's still hot.
+	// L1: Back of the hand feels tight. Standing here is like getting roasted like a sweet potato.
+	// L2: Take it. Don't stand here getting roasted.
+}
+
+HimayoPolterghastGift: {
+	// L0: Damp like laundry hung indoors for a week that never dries.
+	// L1: Sleep here and you'll wake up with a sore back for sure.
+	// L2: Open a window? What window. No charcoal either.
+	// L3: Anyway, don't overnight here.
+}
+
+HimayoDevourerOfGodsGift: {
+	// L0: Too big. Empty like someone scooped a chunk out of the sky.
+	// L1: I stared a bit and even I spaced out.
+	// L2: Don't look too long. Look long enough and you go empty inside… ugh, that sounded scarier out loud.
+}
+
+HimayoYharonGift: {
+	// L0: Edge is still hot. Warm on my side too—uncomfortable.
+	// L1: Honestly, my side feels like I got shoved into an oven.
+	// L2: Don't sheath it yet. I'm the one who feels the burn.
+	// L3: Set this aside for now. We'll talk later.
+}
+
+HimayoExoMechsGift: {
+	// L0: After all that booming, ears still buzz.
+	// L1: Like someone's tapping a tiny hammer in there. Annoying.
+	// L2: Want to step away from the noise for a bit? Let your ears rest.
+}
+
+HimayoSupremeCalamitasGift: {
+	// L0: Over there made the air heavy. Sticky-stale kind of heavy.
+	// L1: Go get some wind, or wash your face. Not because you're dirty—so you clear your head.
+	// L2: This much… I'm used to it. Just don't stand there blank.
+}
+
+HimayoBossRushGift: {
+	// L0: Stand still first.
+	// L1: Don't sway. You haven't even caught your breath.
+}

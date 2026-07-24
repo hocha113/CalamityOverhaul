@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.Narrative;
+using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using Terraria.ID;
@@ -17,6 +18,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static LocalizedText L0Brain { get; private set; }
         public static LocalizedText L1Brain { get; private set; }
 
+        private static NarrativeVoiceBank Voice;
+
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override int[] TargetBossIds => [NPCID.EaterofWorldsHead, NPCID.BrainofCthulhu];
@@ -26,12 +29,14 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
             L1Worm = this.GetLocalization(nameof(L1Worm), () => "腥得像刚翻开的泥沟。够了，我不想再闻");
             L0Brain = this.GetLocalization(nameof(L0Brain), () => "脑子就该待在头壳里");
             L1Brain = this.GetLocalization(nameof(L1Brain), () => "湿乎乎摊在外面。我看一眼都嫌");
+            Voice = NarrativeVoiceBank.Create(Mod, "Content/Scenarios/Himayo/Lines/Gifts/HimayoEvilBossGift", count: 4);
         }
 
         protected override void Build(NarrativeComposer n) {
             bool brain = HimayoGiftNarrativeTracker.LastDefeatedBossId == NPCID.BrainofCthulhu;
-            n.Say(NarrativeIds.Mayo, brain ? L0Brain.Value : L0Worm.Value, onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Doubt))
-             .Say(NarrativeIds.Mayo, brain ? L1Brain.Value : L1Worm.Value);
+            n.Say(NarrativeIds.Mayo, brain ? L0Brain.Value : L0Worm.Value, brain ? Voice[3] : Voice[1],
+                    onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Doubt))
+             .Say(NarrativeIds.Mayo, brain ? L1Brain.Value : L1Worm.Value, brain ? Voice[4] : Voice[2]);
         }
 
         protected override bool IsGiftCompleted()

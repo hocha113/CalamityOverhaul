@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.Narrative;
+using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using Terraria.ID;
@@ -17,6 +18,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
 
+        private static NarrativeVoiceBank Voice;
+
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
         public override int TargetBossId => CWRID.NPC_Yharon;
 
@@ -25,13 +28,15 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
             L1 = this.GetLocalization(nameof(L1), () => "说真的，我这边现在跟塞进烤箱差不多");
             L2 = this.GetLocalization(nameof(L2), () => "先别急着入鞘。烫着难受的是我");
             L3 = this.GetLocalization(nameof(L3), () => "这个，先搁一边。回头再说");
+            Voice = NarrativeVoiceBank.Create(Mod, "Content/Scenarios/Himayo/Lines/Gifts/HimayoYharonGift", count: 4);
         }
 
         protected override void Build(NarrativeComposer n) {
-            n.Say(NarrativeIds.Mayo, L0.Value, onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Doubt))
-             .Say(NarrativeIds.Mayo, L1.Value, onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Forsmile))
-             .Say(NarrativeIds.Mayo, L2.Value)
-             .SayReward(NarrativeIds.Mayo, L3.Value, ItemID.IronPickaxe, title: string.Empty);
+            n.Say(NarrativeIds.Mayo, L0.Value, Voice[1], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Doubt))
+             .Say(NarrativeIds.Mayo, L1.Value, Voice[2], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Forsmile))
+             .Say(NarrativeIds.Mayo, L2.Value, Voice[3])
+             .Reward(ItemID.IronPickaxe, title: string.Empty, blocking: false)
+             .Say(NarrativeIds.Mayo, L3.Value, Voice[4]);
         }
 
         protected override bool IsGiftCompleted()

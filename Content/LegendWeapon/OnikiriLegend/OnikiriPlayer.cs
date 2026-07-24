@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// <summary>疾走墨痕伤害系数:定位是位移+格挡工具,不与连段争输出</summary>
         private const float DashDamageMul = 0.65f;
         /// <summary>居合越过光标的固定余量(px)</summary>
-        private const float DashCursorOvershoot = 220f;
+        private const float DashCursorOvershoot = 20f;
         /// <summary>灭世一闪伤害倍率(单次巨额结算)</summary>
         private const float AnnihilateDamageMul = 5f;
         /// <summary>冲刺基础再触发锁(帧)，长距离时会自动延长到覆盖完整位移</summary>

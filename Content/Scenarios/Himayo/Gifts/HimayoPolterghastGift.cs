@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.Narrative;
+using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using Terraria.Localization;
@@ -16,6 +17,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
 
+        private static NarrativeVoiceBank Voice;
+
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
         public override int TargetBossId => CWRID.NPC_Polterghast;
 
@@ -24,13 +27,14 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
             L1 = this.GetLocalization(nameof(L1), () => "这种地方睡觉，醒来腰一定疼");
             L2 = this.GetLocalization(nameof(L2), () => "开窗？这儿哪来的窗。炭也没有");
             L3 = this.GetLocalization(nameof(L3), () => "反正别在这儿过夜。听劝");
+            Voice = NarrativeVoiceBank.Create(Mod, "Content/Scenarios/Himayo/Lines/Gifts/HimayoPolterghastGift", count: 4);
         }
 
         protected override void Build(NarrativeComposer n) {
-            n.Say(NarrativeIds.Mayo, L0.Value, onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Ruminate))
-             .Say(NarrativeIds.Mayo, L1.Value)
-             .Say(NarrativeIds.Mayo, L2.Value, onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Forsmile))
-             .Say(NarrativeIds.Mayo, L3.Value);
+            n.Say(NarrativeIds.Mayo, L0.Value, Voice[1], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Ruminate))
+             .Say(NarrativeIds.Mayo, L1.Value, Voice[2])
+             .Say(NarrativeIds.Mayo, L2.Value, Voice[3], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Forsmile))
+             .Say(NarrativeIds.Mayo, L3.Value, Voice[4]);
         }
 
         protected override bool IsGiftCompleted()
