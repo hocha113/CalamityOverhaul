@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
+using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content.Scenarios.Himayo
@@ -100,6 +101,22 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
             }
 
             return false;
+        }
+
+        public static HimayoGiftStoryData GiftStory
+            => Main.LocalPlayer.GetModPlayer<StoryPlayer>().Get<HimayoGiftStoryData>();
+
+        public static bool ReadGift(Func<HimayoGiftStoryData, bool> story, Func<HimayoGiftStoryData, bool> legacy) {
+            if (story(GiftStory)) {
+                return true;
+            }
+
+            return legacy(GiftStory);
+        }
+
+        public static void WriteGift(Action<HimayoGiftStoryData> story, Action<HimayoGiftStoryData> legacy) {
+            story(GiftStory);
+            legacy(GiftStory);
         }
     }
 }

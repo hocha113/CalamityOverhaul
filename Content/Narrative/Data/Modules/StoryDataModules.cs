@@ -144,6 +144,33 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public int TrialUnlockSafetyTicks;
     }
 
+    /// <summary>鬼切试炼节点礼物完成位（双目标试炼共用一位）</summary>
+    public sealed class HimayoGiftStoryData : DataModule
+    {
+        public bool EyeOfCthulhuGift;
+        public bool EvilBossGift;
+        public bool CalamityEvilGift;
+        public bool SlimeGodGift;
+        public bool WallOfFleshGift;
+        public bool AquaticScourgeGift;
+        public bool BrimstoneElementalGift;
+        public bool DestroyerGift;
+        public bool TwinsGift;
+        public bool SkeletronPrimeGift;
+        public bool CalamitasCloneGift;
+        public bool PlanteraGift;
+        public bool GolemGift;
+        public bool CultistGift;
+        public bool MoonLordGift;
+        public bool ProvidenceGift;
+        public bool PolterghastGift;
+        public bool DevourerOfGodsGift;
+        public bool YharonGift;
+        public bool ExoMechsGift;
+        public bool SupremeCalamitasGift;
+        public bool BossRushGift;
+    }
+
     public sealed class ShepelGiftStoryData : DataModule
     {
         public bool EyeOfCthulhuGift;

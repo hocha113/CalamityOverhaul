@@ -44,3 +44,112 @@ ItCametoThis: {
 	Line1: 真不想走到这一步啊
 	Line2: 从现在开始，这个世界我接管了
 }
+
+HimayoEyeOfCthulhuGift: {
+	L0: We used to have a guy back home who slept with his eyes open.
+	L1: Covers pulled up neat, just staring at the beam.
+	L2: Makes you sleepy just looking. Never mind, drop it.
+}
+
+HimayoEvilBossGift: {
+	L0Worm: Chunk after chunk jammed in the dirt... reeks.
+	L0Brain: Brains aren't supposed to be out in the open. All soggy.
+}
+
+HimayoCalamityEvilGift: {
+	L0: Hey. Your cuff.
+	L1: Shoes picked some up too, right?
+	L2: Go wash your hands. Don't touch everything.
+}
+
+HimayoSlimeGodGift: {
+	L0: Outside's dry enough. Don't rub that on me.
+	L1: Take it. Don't ask.
+}
+
+HimayoWallOfFleshGift: {
+	L0: Wall's down.
+	L1: Things will be different from here. Like weather turning.
+}
+
+HimayoAquaticScourgeGift: {
+	L0: The edge reeks. I live in here. Hard to breathe.
+	L1: Next time don't shove the whole blade into that smell.
+}
+
+HimayoBrimstoneElementalGift: {
+	L0: Heat's still rising. Don't touch that puddle yet.
+}
+
+HimayoDestroyerGift: {
+	L0: "The Destroyer"... it's just a long piece of iron.
+	L1: That thing. Don't drop it.
+}
+
+HimayoTwinsGift: {
+	L0: Stare at each other too long and people start laughing.
+	L1: You know. The more you hold it in, the worse it gets.
+}
+
+HimayoSkeletronPrimeGift: {
+	L0: Old head, new body... weird.
+}
+
+HimayoCalamitasCloneGift: {
+	L0: Copying a walk that well is annoying.
+	L1: Take it.
+}
+
+HimayoPlanteraGift: {
+	L0: When a flower's spent, you cut it.
+	L1: Leaving the stem doesn't help anyone.
+}
+
+HimayoGolemGift: {
+	L0: Wrists still numb? Ease your shoulders too.
+	L1: Don't bash the blade on stone. It'll chip.
+}
+
+HimayoCultistGift: {
+	L0: Quiet at the door at last.
+}
+
+HimayoMoonLordGift: {
+	L0: That thing up there is gone.
+	L1: Still on your feet?
+}
+
+HimayoProvidenceGift: {
+	L0: Air's still hot. Back of the hand feels it.
+	L1: Take it.
+}
+
+HimayoPolterghastGift: {
+	L0: Damp places make things mold.
+	L1: Don't sleep here overnight.
+}
+
+HimayoDevourerOfGodsGift: {
+	L0: Too big. Empty enough to make you dizzy.
+	L1: Don't look too long.
+}
+
+HimayoYharonGift: {
+	L0: Edge is still hot. Warm on my side too.
+	L1: Don't sheath it yet.
+	L2: Set this aside for now.
+}
+
+HimayoExoMechsGift: {
+	L0: After all that booming, ears still buzz.
+	L1: Want to step away from the noise for a bit?
+}
+
+HimayoSupremeCalamitasGift: {
+	L0: Over there made the night sticky.
+	L1: Go get some air, or wash your face. Don't just stand there.
+}
+
+HimayoBossRushGift: {
+	L0: Stand still first.
+}

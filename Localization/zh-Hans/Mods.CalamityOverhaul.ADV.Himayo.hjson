@@ -44,3 +44,113 @@ ItCametoThis: {
 	// Line1: 真不想走到这一步啊
 	// Line2: 从现在开始，这个世界我接管了
 }
+
+//==== 礼物场景（第一版草稿，对齐细纲；文学精修另轮）====
+HimayoEyeOfCthulhuGift: {
+	L0: 我们那儿以前有个人，睡觉眼睛不合上
+	L1: 被子盖得好好的，就那么对着房梁瞪着
+	L2: 看着就困。算了，不说了
+}
+
+HimayoEvilBossGift: {
+	L0Worm: 一截一截挤在土里……腥得慌
+	L0Brain: 脑子不该露在外面的。湿乎乎的
+}
+
+HimayoCalamityEvilGift: {
+	L0: 哎，你袖口
+	L1: 鞋边也沾上了吧
+	L2: 先去洗手。别到处摸
+}
+
+HimayoSlimeGodGift: {
+	L0: 外面倒是干了。别蹭我
+	L1: 拿着。别问
+}
+
+HimayoWallOfFleshGift: {
+	L0: 墙倒了
+	L1: 后面会不一样。像要变天那样
+}
+
+HimayoAquaticScourgeGift: {
+	L0: 刃上全是腥的。我住里面，闻着难受
+	L1: 下次别整柄往味里杵
+}
+
+HimayoBrimstoneElementalGift: {
+	L0: 热气还没散。先别碰那滩
+}
+
+HimayoDestroyerGift: {
+	L0: 叫毁灭者……不就是很长的铁吗
+	L1: 那个，别掉地上
+}
+
+HimayoTwinsGift: {
+	L0: 两个人对视太久，会忍不住笑
+	L1: 你懂吧。越忍越想笑那种
+}
+
+HimayoSkeletronPrimeGift: {
+	L0: 头像旧的，身子却是新拼的……别扭
+}
+
+HimayoCalamitasCloneGift: {
+	L0: 学走路学得那么像，烦
+	L1: 拿着
+}
+
+HimayoPlanteraGift: {
+	L0: 花开败了，就该剪掉
+	L1: 梗留着也没意思
+}
+
+HimayoGolemGift: {
+	L0: 手腕还麻吗。肩膀也缓缓
+	L1: 刀别拿去硬磕石头，刃会崩
+}
+
+HimayoCultistGift: {
+	L0: 门口总算清静了
+}
+
+HimayoMoonLordGift: {
+	L0: 上面那摊没了
+	L1: 你还站得住吗
+}
+
+HimayoProvidenceGift: {
+	L0: 空气还烫，手背都热
+	L1: 拿着
+}
+
+HimayoPolterghastGift: {
+	L0: 潮气重的地方，东西爱霉
+	L1: 别在这儿过夜
+}
+
+HimayoDevourerOfGodsGift: {
+	L0: 太大了。空得发虚
+	L1: 别看太久
+}
+
+HimayoYharonGift: {
+	L0: 刃还烫。我这边也热
+	L1: 先别急着入鞘
+	L2: 这个，先搁一边
+}
+
+HimayoExoMechsGift: {
+	L0: 轰完了，耳朵里还在嗡
+	L1: 要不要先避一下吵的地方
+}
+
+HimayoSupremeCalamitasGift: {
+	L0: 那边弄得夜发黏
+	L1: 去吹吹风，或者洗把脸。别愣着
+}
+
+HimayoBossRushGift: {
+	L0: 先站住
+}
