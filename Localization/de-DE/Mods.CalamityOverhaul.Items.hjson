@@ -2579,6 +2579,7 @@ OniMeiRubbingKurikara: {
 		Take it to the inscription stand to carve it into the carving seat
 		''' */
 }
+
 OniMeiRubbingTessetsu: {
 	DisplayName: Iron-Cut Rubbing
 	Tooltip:

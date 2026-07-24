@@ -2649,6 +2649,7 @@ OniMeiRubbingKurikara: {
 		拿到改铭台，便可凿进雕位
 		'''
 }
+
 OniMeiRubbingTessetsu: {
 	DisplayName: 铁截拓片
 	Tooltip:

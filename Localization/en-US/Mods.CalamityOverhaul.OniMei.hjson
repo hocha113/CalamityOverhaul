@@ -61,122 +61,123 @@ MeiKurikara: {
 	Burden: Vigor cap 100 → 80 — where the dragon coils, breath cannot pass
 	Summary: Executions ignite a dragonfire follow-up combo; vigor cap -20
 }
+
 MeiTessetsu: {
-	DisplayName: Iron Cut
-	Origin: A grand name for a scrap of iron—nailed into the tang as a joke that stuck
-	Power: "Sever" — Zanshin and World-End Flash deal rising execute damage on low-life targets; the blade is duller overall
+	DisplayName: Tessetsu
+	Origin: A grand name for a scrap of iron — nailed into the tang as a joke that stuck
+	Power: Iron-Cut: Zanshin and the World-Razing Flash deal escalating finisher damage on low-life targets; the blade is duller overall
 	Burden: Weapon damage -15% — strong on leftovers, clumsy on full health
 	Summary: Low-life execute; damage -15%
 }
 
 MeiKyushu: {
-	DisplayName: Old Head
+	DisplayName: Kyushu
 	Origin: The head is still the old one. Cut clean; no need for a scare-name
-	Power: "Sever" — Zanshin and World-End Flash deal rising execute damage on low-life targets
+	Power: Old-Head: Zanshin and the World-Razing Flash deal escalating finisher damage on low-life targets
 	Burden: Weapon damage -8% — old method, lighter tax
 	Summary: Low-life execute; damage -8%
 }
 
 MeiIkiai: {
-	DisplayName: Breath Match
-	Origin: The breath you held while staring—then the blades met on the beat
-	Power: "Lion Poise" — finish an uninterrupted combo for a closing jaw wave
-	Burden: Combo gap +5% — shallow charge, not gold renown
+	DisplayName: Ikiai
+	Origin: The breath you held while staring — then the blades met on the beat
+	Power: Breath-Match: finish an uninterrupted combo for a closing jaw wave
+	Burden: Combo beat interval +5% — shallow charge, not gold renown
 	Summary: Combo jaw wave; slightly slower combo
 }
 
 MeiKyoko: {
-	DisplayName: Hollow Roar
+	DisplayName: Kyoko
 	Origin: A roar into empty air; the echo finds no place to land
-	Power: "Lion Poise" — finish an uninterrupted combo for a closing jaw wave
-	Burden: Combo gap +14% — slower when focus breaks
+	Power: Hollow-Roar: finish an uninterrupted combo for a closing jaw wave
+	Burden: Combo beat interval +14% — slower when focus breaks
 	Summary: Combo jaw wave; slower combo
 }
 
 MeiKarikiri: {
-	DisplayName: False Cut
+	DisplayName: Karikiri
 	Origin: Learned so well it turned fake. A guilt-shadow step enters the tang
-	Power: "Guilt Echo" — dash-canceling a combo leaves a delayed echo cut
-	Burden: Incoming damage +12%; guilt stacks tax dash vigor
+	Power: False-Cut: cancelling a combo with the flash step leaves a delayed echo cut
+	Burden: Damage taken +12% while held; Guilt stacks tax dash vigor
 	Summary: Dash-cancel echo; incoming +12%
 }
 
 MeiMokukiri: {
-	DisplayName: Quiet Cut
+	DisplayName: Mokukiri
 	Origin: The air sank. You got used to it. The guilt stayed
-	Power: "Guilt Echo" — dash-canceling a combo leaves a delayed echo cut
-	Burden: Incoming damage +8%; guilt stacks tax dash vigor
+	Power: Quiet-Cut: cancelling a combo with the flash step leaves a delayed echo cut
+	Burden: Damage taken +8% while held; Guilt stacks tax dash vigor
 	Summary: Dash-cancel echo; incoming +8%
 }
 
 MeiKogehi: {
-	DisplayName: Scorch Groove
-	Origin: Don't put your foot in the hot shallows. The groove is for stepping clear
-	Power: "Tailwind" — cheaper dash vigor; sakura drain slightly cheaper
-	Burden: Flash-mark damage lower — standing still hurts more
+	DisplayName: Koge-hi
+	Origin: Do not put your foot in the hot shallows. The groove is for stepping clear
+	Power: Scorch-Groove: cheaper dash vigor; sakura drain slightly cheaper
+	Burden: Flash mark damage lower — standing still hurts more
 	Summary: Cheaper movement; weaker flash marks
 }
 
 MeiKanhi: {
-	DisplayName: Idle Groove
+	DisplayName: Kan-hi
 	Origin: Quiet by the door. Let the ears rest
-	Power: "Tailwind" — cheaper sakura cruise; dash slightly cheaper
-	Burden: Flash-mark damage slightly lower — idle travel, not hard trades
+	Power: Idle-Groove: cheaper sakura cruise; dash slightly cheaper
+	Burden: Flash mark damage slightly lower — idle travel, not hard trades
 	Summary: Cheaper cruise; slightly weaker marks
 }
 
 MeiTodohi: {
-	DisplayName: Sticking Groove
+	DisplayName: Todo-hi
 	Origin: A bit sticky. Keep contact to turn; break off and it stalls
-	Power: "Backflow" — combo hits restore a bit more vigor
+	Power: Sticking-Groove: combo hits restore a bit more vigor
 	Burden: Worse natural regen and longer post-skill delay — drought out of contact
 	Summary: Contact regen; worse out-of-fight regen
 }
 
 MeiShiorihi: {
-	DisplayName: Wither Groove
-	Origin: Cut the spent flower to open the edge—not for looks
-	Power: "Backflow" — stronger Zanshin vigor return; lighter combo return
-	Burden: Natural regen still poor — empty swings don't feed the blade
+	DisplayName: Shiori-hi
+	Origin: Cut the spent flower to open the edge — not for looks
+	Power: Wither-Groove: stronger Zanshin vigor return; lighter combo return
+	Burden: Natural regen still poor — empty swings do not feed the blade
 	Summary: Stronger Zanshin regen; poor natural regen
 }
 
 MeiShiohi: {
-	DisplayName: Tide Groove
+	DisplayName: Shio-hi
 	Origin: Tide marks overnight. Wet contact feeds the return
-	Power: "Backflow" — hit and Zanshin vigor stretch longer
+	Power: Tide-Groove: hit and Zanshin vigor stretch longer
 	Burden: Worse natural regen — overnight drought when you disengage
 	Summary: Wet-contact regen; worse disengage regen
 }
 
 MeiShibori: {
-	DisplayName: Numb Carving
+	DisplayName: Shibori
 	Origin: Guard even with numb hands. The blade hurts too
-	Power: "Fudo Guard" — spend stance to blunt hits during committed moves
+	Power: Numb-Carving: spend stance to blunt hits during committed moves
 	Burden: Stance gain -30% — thicker guard costs more poise
 	Summary: Commit-window guard; stance gain -30%
 }
 
 MeiChinmei: {
-	DisplayName: Still Ring
+	DisplayName: Chinmei
 	Origin: When the ears buzz, settle first, then move
-	Power: "Fudo Guard" — spend stance to blunt hits during committed moves
+	Power: Still-Ring: spend stance to blunt hits during committed moves
 	Burden: Stance gain -15% — rest-guard; aggressive builds stack slower
 	Summary: Commit-window guard; stance gain -15%
 }
 
 MeiAshidome: {
-	DisplayName: Planted Feet
+	DisplayName: Ashidome
 	Origin: Stand still. Guard lives where the feet stop
-	Power: "Fudo Guard" — spend stance to blunt hits during committed moves
+	Power: Planted-Feet: spend stance to blunt hits during committed moves
 	Burden: Stance gain -22% — running while cutting still feels unprotected
 	Summary: Commit-window guard; stance gain -22%
 }
 
 MeiYoen: {
-	DisplayName: Ember Remnant
+	DisplayName: Yoen
 	Origin: Oven heat still on the edge. Fire out; burn not gone
-	Power: "Dragonfire Loop" — after execute, a full combo's last beat looses a dragonfire ring
+	Power: Ember-Remnant: after an execution, a full combo last beat looses a dragonfire ring
 	Burden: Slightly lower vigor cap — embers can still empty the tank
 	Summary: Post-execute dragonfire combo; slightly lower vigor cap
 }
