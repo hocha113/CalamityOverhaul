@@ -7,25 +7,28 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 {
-    /// <summary>onikiri.009，B 头旧身新，幽默违和</summary>
+    /// <summary>onikiri.009，B 头旧身新</summary>
     internal sealed class HimayoSkeletronPrimeGift : HimayoBossGiftNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Himayo";
 
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
+        public static LocalizedText L2 { get; private set; }
 
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
         public override int TargetBossId => NPCID.SkeletronPrime;
 
         public override void SetStaticDefaults() {
             L0 = this.GetLocalization(nameof(L0), () => "头还是旧的，身子倒换了新铁");
-            L1 = this.GetLocalization(nameof(L1), () => "像换装换到一半就冲出来了。别扭");
+            L1 = this.GetLocalization(nameof(L1), () => "像换装换到一半就冲出来了，别扭");
+            L2 = this.GetLocalization(nameof(L2), () => "下次换完再出来打行不行。看得我都替它着急");
         }
 
         protected override void Build(NarrativeComposer n) {
             n.Say(NarrativeIds.Mayo, L0.Value, onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Doubt))
-             .Say(NarrativeIds.Mayo, L1.Value, onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Grin));
+             .Say(NarrativeIds.Mayo, L1.Value, onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Grin))
+             .Say(NarrativeIds.Mayo, L2.Value);
         }
 
         protected override bool IsGiftCompleted()

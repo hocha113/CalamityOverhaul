@@ -21,8 +21,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 
         public override void SetStaticDefaults() {
             L0 = this.GetLocalization(nameof(L0), () => "学走路学得那么像，烦");
-            L1 = this.GetLocalization(nameof(L1), () => "学得越像越让人不舒服。你懂吗");
-            L2 = this.GetLocalization(nameof(L2), () => "拿着。别问");
+            L1 = this.GetLocalization(nameof(L1), () => "不是怕它，是看着别扭。学得越像越假");
+            L2 = this.GetLocalization(nameof(L2), () => "拿着。问从哪摸的，我装听不见");
         }
 
         protected override void Build(NarrativeComposer n) {

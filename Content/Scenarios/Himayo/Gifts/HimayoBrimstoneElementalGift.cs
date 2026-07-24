@@ -6,22 +6,28 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 {
-    /// <summary>onikiri.006，G 热滩禁令，话少仍在</summary>
+    /// <summary>onikiri.006，G 热滩；起-歪-收</summary>
     internal sealed class HimayoBrimstoneElementalGift : HimayoBossGiftNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Himayo";
 
         public static LocalizedText L0 { get; private set; }
+        public static LocalizedText L1 { get; private set; }
+        public static LocalizedText L2 { get; private set; }
 
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
         public override int TargetBossId => CWRID.NPC_BrimstoneElemental;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "热气还没散。那滩先别碰，烫手");
+            L0 = this.GetLocalization(nameof(L0), () => "热气还没散。你看那滩，还在冒");
+            L1 = this.GetLocalization(nameof(L1), () => "脚伸进去会怎样？……别，我不是让你试");
+            L2 = this.GetLocalization(nameof(L2), () => "总之先别碰。烫手");
         }
 
         protected override void Build(NarrativeComposer n) {
-            n.Say(NarrativeIds.Mayo, L0.Value, onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Doubt));
+            n.Say(NarrativeIds.Mayo, L0.Value, onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Doubt))
+             .Say(NarrativeIds.Mayo, L1.Value, onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Forsmile))
+             .Say(NarrativeIds.Mayo, L2.Value);
         }
 
         protected override bool IsGiftCompleted()

@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public override int TargetBossId => NPCID.WallofFlesh;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "墙倒了");
+            L0 = this.GetLocalization(nameof(L0), () => "……真倒了。墙倒了");
             L1 = this.GetLocalization(nameof(L1), () => "说不上高兴不高兴。就是感觉……后面要变天了");
             L2 = this.GetLocalization(nameof(L2), () => "……你自己心里有数就行");
         }

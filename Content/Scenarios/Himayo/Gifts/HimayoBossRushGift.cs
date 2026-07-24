@@ -12,16 +12,19 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public string LocalizationCategory => "ADV.Himayo";
 
         public static LocalizedText L0 { get; private set; }
+        public static LocalizedText L1 { get; private set; }
 
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
         public override bool IsBossRushGift => true;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "先站住。别晃");
+            L0 = this.GetLocalization(nameof(L0), () => "先站住");
+            L1 = this.GetLocalization(nameof(L1), () => "别晃。气还没喘匀呢");
         }
 
         protected override void Build(NarrativeComposer n) {
-            n.Say(NarrativeIds.Mayo, L0.Value);
+            n.Say(NarrativeIds.Mayo, L0.Value)
+             .Say(NarrativeIds.Mayo, L1.Value);
         }
 
         protected override bool IsGiftCompleted()

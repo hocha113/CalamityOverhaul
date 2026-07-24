@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 {
-    /// <summary>onikiri.012，C 叮人+护刀半句</summary>
+    /// <summary>onikiri.012，C 叮人+护刀</summary>
     internal sealed class HimayoGolemGift : HimayoBossGiftNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Himayo";
@@ -15,20 +15,23 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
+        public static LocalizedText L3 { get; private set; }
 
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
         public override int TargetBossId => NPCID.Golem;
 
         public override void SetStaticDefaults() {
-            L0 = this.GetLocalization(nameof(L0), () => "手腕还麻吗。肩膀也缓缓");
-            L1 = this.GetLocalization(nameof(L1), () => "石头硬，硬碰硬最伤人");
-            L2 = this.GetLocalization(nameof(L2), () => "刀也别拿去硬磕。刃崩了，我住里面也不舒服");
+            L0 = this.GetLocalization(nameof(L0), () => "手腕还麻吗？肩膀也缓缓");
+            L1 = this.GetLocalization(nameof(L1), () => "石头这东西，撞一下，麻意能窜到手心");
+            L2 = this.GetLocalization(nameof(L2), () => "我以前也被震得虎口发麻，可不舒服");
+            L3 = this.GetLocalization(nameof(L3), () => "主要刀也别拿去硬磕。刃崩了，我会不舒服");
         }
 
         protected override void Build(NarrativeComposer n) {
             n.Say(NarrativeIds.Mayo, L0.Value, onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Ruminate))
              .Say(NarrativeIds.Mayo, L1.Value)
-             .Say(NarrativeIds.Mayo, L2.Value);
+             .Say(NarrativeIds.Mayo, L2.Value)
+             .Say(NarrativeIds.Mayo, L3.Value);
         }
 
         protected override bool IsGiftCompleted()

@@ -6,25 +6,28 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 {
-    /// <summary>onikiri.017，B 空/大，略紧非洁癖</summary>
+    /// <summary>onikiri.017，B 空/大</summary>
     internal sealed class HimayoDevourerOfGodsGift : HimayoBossGiftNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Himayo";
 
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
+        public static LocalizedText L2 { get; private set; }
 
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
         public override int TargetBossId => CWRID.NPC_DevourerofGodsHead;
 
         public override void SetStaticDefaults() {
             L0 = this.GetLocalization(nameof(L0), () => "太大了。空得像把天挖掉了一块");
-            L1 = this.GetLocalization(nameof(L1), () => "别看太久。看久了，心里也空");
+            L1 = this.GetLocalization(nameof(L1), () => "我盯着看了一会儿，自己也有点发愣");
+            L2 = this.GetLocalization(nameof(L2), () => "别看太久。看久了心里也空……哎，我说完更像在吓人");
         }
 
         protected override void Build(NarrativeComposer n) {
             n.Say(NarrativeIds.Mayo, L0.Value, onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Doubt))
-             .Say(NarrativeIds.Mayo, L1.Value);
+             .Say(NarrativeIds.Mayo, L1.Value)
+             .Say(NarrativeIds.Mayo, L2.Value, onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Forsmile));
         }
 
         protected override bool IsGiftCompleted()

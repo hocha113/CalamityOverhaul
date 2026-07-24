@@ -77,7 +77,7 @@ HimayoSlimeGodGift: {
 }
 
 HimayoWallOfFleshGift: {
-	L0: Wall's down.
+	L0: …It really fell. Wall's down.
 	L1: Not sure if I'm glad or not. Just feels like… weather's about to turn.
 	L2: …You know what I mean. That's enough.
 }
@@ -90,7 +90,9 @@ HimayoAquaticScourgeGift: {
 }
 
 HimayoBrimstoneElementalGift: {
-	L0: Heat's still hanging. Don't touch that puddle—it'll burn.
+	L0: Heat's still hanging. Look at that puddle—still steaming.
+	L1: What if you stuck a foot in? …No. I'm not telling you to try.
+	L2: Just don't touch it. Burns.
 }
 
 HimayoDestroyerGift: {
@@ -109,12 +111,13 @@ HimayoTwinsGift: {
 HimayoSkeletronPrimeGift: {
 	L0: Head's still the old one. Body got new iron.
 	L1: Like mid-costume-change and they charged out anyway. Off.
+	L2: Next time finish changing before the fight, okay? I'm anxious just watching.
 }
 
 HimayoCalamitasCloneGift: {
 	L0: Copying a walk that well is annoying.
-	L1: The closer the copy, the worse it feels. You get it?
-	L2: Take it. Don't ask.
+	L1: Not scared—just wrong. The closer the copy, the faker it feels.
+	L2: Take it. Ask where I got it and I'll pretend I didn't hear.
 }
 
 HimayoPlanteraGift: {
@@ -126,41 +129,46 @@ HimayoPlanteraGift: {
 
 HimayoGolemGift: {
 	L0: Wrists still numb? Ease your shoulders too.
-	L1: Stone's hard. Matching force with force hurts people most.
-	L2: Don't bash the blade on it either. If it chips, I live in here—I feel that.
+	L1: Stone's like that—one hit and the buzz crawls into your palm.
+	L2: I've had my grip go numb from the shock. Not fun.
+	L3: And don't bash the blade on it. If it chips, I feel that.
 }
 
 HimayoCultistGift: {
-	L0: Quiet at the door at last. Ears can rest.
+	L0: Quiet at the door at last.
+	L1: Ears can rest. That racket earlier had me wanting to cover them.
 }
 
 HimayoMoonLordGift: {
-	L0: That thing up there is gone.
+	L0: That moon thing up there is gone.
 	L1: Not sure I'd call it relief… more like a piece went empty.
 	L2: Still on your feet?
 }
 
 HimayoProvidenceGift: {
-	L0: Air's still hot. Back of the hand feels tight from it.
-	L1: Take it. Don't stand here getting roasted.
+	L0: Tch. Air's still hot.
+	L1: Back of the hand feels tight. Standing here is like getting roasted like a sweet potato.
+	L2: Take it. Don't stand here getting roasted.
 }
 
 HimayoPolterghastGift: {
 	L0: Damp like laundry hung indoors for a week that never dries.
 	L1: Sleep here and you'll wake up with a sore back for sure.
 	L2: Open a window? What window. No charcoal either.
-	L3: Anyway, don't overnight here. Listen to me.
+	L3: Anyway, don't overnight here.
 }
 
 HimayoDevourerOfGodsGift: {
 	L0: Too big. Empty like someone scooped a chunk out of the sky.
-	L1: Don't look too long. Look long enough and you go empty inside too.
+	L1: I stared a bit and even I spaced out.
+	L2: Don't look too long. Look long enough and you go empty inside… ugh, that sounded scarier out loud.
 }
 
 HimayoYharonGift: {
 	L0: Edge is still hot. Warm on my side too—uncomfortable.
-	L1: Don't sheath it yet. I'm the one who feels the burn.
-	L2: Set this aside for now. We'll talk later.
+	L1: Honestly, my side feels like I got shoved into an oven.
+	L2: Don't sheath it yet. I'm the one who feels the burn.
+	L3: Set this aside for now. We'll talk later.
 }
 
 HimayoExoMechsGift: {
@@ -176,5 +184,6 @@ HimayoSupremeCalamitasGift: {
 }
 
 HimayoBossRushGift: {
-	L0: Stand still first. Don't sway.
+	L0: Stand still first.
+	L1: Don't sway. You haven't even caught your breath.
 }
