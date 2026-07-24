@@ -101,7 +101,7 @@ HimayoPlanteraGift: {
 }
 
 HimayoGolemGift: {
-	L0: 手腕还麻吗？肩膀也缓缓
+	L0: 手腕还麻吗？肩膀也得缓缓
 	L1: 石头这东西，撞一下，麻意能窜到手心
 	L2: 我以前也被震得虎口发麻，可不舒服
 	L3: 主要刀也别拿去硬磕，刃崩了，我会不舒服
@@ -153,7 +153,7 @@ HimayoExoMechsGift: {
 HimayoSupremeCalamitasGift: {
 	L0: 那边弄得空气发沉，发滞那种
 	L1: 去吹吹风，或者洗把脸，不是嫌脏，是让你清醒点
-	L2: 这种程度……我倒习惯了，你别愣着就行
+	L2: 这种程度……我倒习惯了
 }
 
 HimayoBossRushGift: {
