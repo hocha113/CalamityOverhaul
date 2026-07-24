@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Items
     /// <summary>
     /// 錾样/拓本载体：入包即 Unlock 所持；装刀只在改铭台。<br/>
     /// 图标复用 <see cref="OniMeiGlyph"/>，与扇骨菱章同色系。<br/>
-    /// 现有名册 8 铭均有物品形态，便于日后「换铭退旧样」对接
+    /// 名册可送铭均有物品形态，匣换铭耗件退旧
     /// </summary>
     internal abstract class OniMeiRubbingItem : ModItem, ILocalizedModType
     {
@@ -99,9 +99,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Items
         public override string MeiKey => nameof(MeiHigekiri);
     }
 
+    internal sealed class OniMeiRubbingTessetsu : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiTessetsu);
+    }
+
+    internal sealed class OniMeiRubbingKyushu : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiKyushu);
+    }
+
     internal sealed class OniMeiRubbingShishinoko : OniMeiRubbingItem
     {
         public override string MeiKey => nameof(MeiShishinoko);
+    }
+
+    internal sealed class OniMeiRubbingIkiai : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiIkiai);
+    }
+
+    internal sealed class OniMeiRubbingKyoko : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiKyoko);
     }
 
     internal sealed class OniMeiRubbingTomokiri : OniMeiRubbingItem
@@ -109,9 +129,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Items
         public override string MeiKey => nameof(MeiTomokiri);
     }
 
+    internal sealed class OniMeiRubbingKarikiri : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiKarikiri);
+    }
+
+    internal sealed class OniMeiRubbingMokukiri : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiMokukiri);
+    }
+
     internal sealed class OniMeiRubbingKazehi : OniMeiRubbingItem
     {
         public override string MeiKey => nameof(MeiKazehi);
+    }
+
+    internal sealed class OniMeiRubbingKogehi : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiKogehi);
+    }
+
+    internal sealed class OniMeiRubbingKanhi : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiKanhi);
     }
 
     internal sealed class OniMeiRubbingChihi : OniMeiRubbingItem
@@ -119,13 +159,48 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Items
         public override string MeiKey => nameof(MeiChihi);
     }
 
+    internal sealed class OniMeiRubbingTodohi : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiTodohi);
+    }
+
+    internal sealed class OniMeiRubbingShiorihi : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiShiorihi);
+    }
+
+    internal sealed class OniMeiRubbingShiohi : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiShiohi);
+    }
+
     internal sealed class OniMeiRubbingFudo : OniMeiRubbingItem
     {
         public override string MeiKey => nameof(MeiFudo);
     }
 
+    internal sealed class OniMeiRubbingShibori : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiShibori);
+    }
+
+    internal sealed class OniMeiRubbingChinmei : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiChinmei);
+    }
+
+    internal sealed class OniMeiRubbingAshidome : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiAshidome);
+    }
+
     internal sealed class OniMeiRubbingKurikara : OniMeiRubbingItem
     {
         public override string MeiKey => nameof(MeiKurikara);
+    }
+
+    internal sealed class OniMeiRubbingYoen : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiYoen);
     }
 }

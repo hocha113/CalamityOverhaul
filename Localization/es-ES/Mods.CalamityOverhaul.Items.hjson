@@ -2603,3 +2603,137 @@ OniMeiRubbingKurikara: {
 		Take it to the inscription stand to carve it into the carving seat
 		''' */
 }
+OniMeiRubbingTessetsu: {
+	DisplayName: Iron-Cut Rubbing
+	Tooltip:
+		'''
+		A blunt scrap of iron pressed onto paper
+		Take it to the inscription stand to carve it into the tang
+		'''
+}
+
+OniMeiRubbingKyushu: {
+	DisplayName: Old-Head Rubbing
+	Tooltip:
+		'''
+		"The head is still old" pressed into paper
+		Take it to the inscription stand to carve it into the tang
+		'''
+}
+
+OniMeiRubbingIkiai: {
+	DisplayName: Beat-Match Scrap
+	Tooltip:
+		'''
+		A scrap that feels like a held breath
+		Take it to the inscription stand to carve it into the tang
+		'''
+}
+
+OniMeiRubbingKyoko: {
+	DisplayName: Hollow Gold Leaf
+	Tooltip:
+		'''
+		A roar missing its place, pressed into foil
+		Take it to the inscription stand to carve it into the tang
+		'''
+}
+
+OniMeiRubbingKarikiri: {
+	DisplayName: False-Step Scrap
+	Tooltip:
+		'''
+		A step learned too well, pressed onto paper
+		Take it to the inscription stand to carve it into the tang
+		'''
+}
+
+OniMeiRubbingMokukiri: {
+	DisplayName: Heavy-Air Scrap
+	Tooltip:
+		'''
+		The sunk air still sits on the page
+		Take it to the inscription stand to carve it into the tang
+		'''
+}
+
+OniMeiRubbingKogehi: {
+	DisplayName: Heat-Avoid Talisman
+	Tooltip:
+		'''
+		"Don't put your foot in" stitched into cloth
+		Take it to the inscription stand to carve it into the groove
+		'''
+}
+
+OniMeiRubbingKanhi: {
+	DisplayName: Quiet-Ear Talisman
+	Tooltip:
+		'''
+		Thin cloth for letting the ears rest
+		Take it to the inscription stand to carve it into the groove
+		'''
+}
+
+OniMeiRubbingTodohi: {
+	DisplayName: Sticky Stain Pattern
+	Tooltip:
+		'''
+		A bit sticky; the edge still clings
+		Take it to the inscription stand to carve it into the groove
+		'''
+}
+
+OniMeiRubbingShiorihi: {
+	DisplayName: Spent-Flower Pattern
+	Tooltip:
+		'''
+		The cut that trimmed a spent bloom
+		Take it to the inscription stand to carve it into the groove
+		'''
+}
+
+OniMeiRubbingShiohi: {
+	DisplayName: Tide-Mark Pattern
+	Tooltip:
+		'''
+		Overnight damp still on the paper
+		Take it to the inscription stand to carve it into the groove
+		'''
+}
+
+OniMeiRubbingShibori: {
+	DisplayName: Numb-Hand Charm
+	Tooltip:
+		'''
+		Guard even with numb hands
+		Take it to the inscription stand to carve it into the carving slot
+		'''
+}
+
+OniMeiRubbingChinmei: {
+	DisplayName: Ear-Buzz Charm
+	Tooltip:
+		'''
+		A charm for standing still when the ears ring
+		Take it to the inscription stand to carve it into the carving slot
+		'''
+}
+
+OniMeiRubbingAshidome: {
+	DisplayName: Planted-Feet Charm
+	Tooltip:
+		'''
+		"Don't sway" pressed into the charm
+		Take it to the inscription stand to carve it into the carving slot
+		'''
+}
+
+OniMeiRubbingYoen: {
+	DisplayName: Oven-Ember Note
+	Tooltip:
+		'''
+		Blade-heat still on the note
+		Take it to the inscription stand to carve it into the carving slot
+		'''
+}

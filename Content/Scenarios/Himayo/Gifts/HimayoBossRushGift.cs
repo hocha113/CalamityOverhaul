@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Items;
 using CalamityOverhaul.Content.Narrative;
 using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;
@@ -29,7 +30,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 
         protected override void Build(NarrativeComposer n) {
             n.Say(NarrativeIds.Mayo, L0.Value, Voice[1], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Doubt))
-             .Reward(ItemID.IronPickaxe, title: string.Empty, blocking: false)
+             .Reward(ModContent.ItemType<OniMeiRubbingAshidome>(), title: string.Empty, blocking: false)
              .Say(NarrativeIds.Mayo, L1.Value, Voice[2], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Ruminate));
         }
 

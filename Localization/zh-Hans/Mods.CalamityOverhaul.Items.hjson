@@ -2649,3 +2649,137 @@ OniMeiRubbingKurikara: {
 		拿到改铭台，便可凿进雕位
 		'''
 }
+OniMeiRubbingTessetsu: {
+	DisplayName: 铁截拓片
+	Tooltip:
+		'''
+		纸面上拓着一截拆台的钝痛快
+		拿到改铭台，便可凿进刀茎
+		'''
+}
+
+OniMeiRubbingKyushu: {
+	DisplayName: 旧首拓片
+	Tooltip:
+		'''
+		头还是旧的意思压在纸上
+		拿到改铭台，便可凿进刀茎
+		'''
+}
+
+OniMeiRubbingIkiai: {
+	DisplayName: 合拍纸片
+	Tooltip:
+		'''
+		纸角像憋着一口气
+		拿到改铭台，便可凿进刀茎
+		'''
+}
+
+OniMeiRubbingKyoko: {
+	DisplayName: 空缺金箔
+	Tooltip:
+		'''
+		箔面空着一声吼
+		拿到改铭台，便可凿进刀茎
+		'''
+}
+
+OniMeiRubbingKarikiri: {
+	DisplayName: 假步纸片
+	Tooltip:
+		'''
+		学得像的那一步拓在纸上
+		拿到改铭台，便可凿进刀茎
+		'''
+}
+
+OniMeiRubbingMokukiri: {
+	DisplayName: 沉气纸片
+	Tooltip:
+		'''
+		空气沉下去的感觉还留着
+		拿到改铭台，便可凿进刀茎
+		'''
+}
+
+OniMeiRubbingKogehi: {
+	DisplayName: 避热布札
+	Tooltip:
+		'''
+		别伸脚的意思缝在布上
+		拿到改铭台，便可凿进樋位
+		'''
+}
+
+OniMeiRubbingKanhi: {
+	DisplayName: 清静布札
+	Tooltip:
+		'''
+		耳朵歇一会儿的薄布
+		拿到改铭台，便可凿进樋位
+		'''
+}
+
+OniMeiRubbingTodohi: {
+	DisplayName: 黏渍纸样
+	Tooltip:
+		'''
+		黏是黏了点，纸边还贴着
+		拿到改铭台，便可凿进樋位
+		'''
+}
+
+OniMeiRubbingShiorihi: {
+	DisplayName: 败花纸样
+	Tooltip:
+		'''
+		剪败花的那一下拓下来
+		拿到改铭台，便可凿进樋位
+		'''
+}
+
+OniMeiRubbingShiohi: {
+	DisplayName: 潮痕纸样
+	Tooltip:
+		'''
+		潮过夜的湿痕还在
+		拿到改铭台，便可凿进樋位
+		'''
+}
+
+OniMeiRubbingShibori: {
+	DisplayName: 麻手梵札
+	Tooltip:
+		'''
+		麻着手也护一下的意思
+		拿到改铭台，便可凿进雕位
+		'''
+}
+
+OniMeiRubbingChinmei: {
+	DisplayName: 耳鸣梵札
+	Tooltip:
+		'''
+		耳嗡时先站住的布札
+		拿到改铭台，便可凿进雕位
+		'''
+}
+
+OniMeiRubbingAshidome: {
+	DisplayName: 站住梵札
+	Tooltip:
+		'''
+		站住别晃，压在札上
+		拿到改铭台，便可凿进雕位
+		'''
+}
+
+OniMeiRubbingYoen: {
+	DisplayName: 烤箱火笺
+	Tooltip:
+		'''
+		刃烫余温还留在笺面
+		拿到改铭台，便可凿进雕位
+		'''
+}

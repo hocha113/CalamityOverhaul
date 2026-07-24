@@ -6,13 +6,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
     /// <summary>
     /// 所持铭库门闩：玩家已获得、可在改铭台扇骨出现的 Key 集合。<br/>
     /// 在凿仍走 <see cref="OniMeiStore"/>；本类不写刀槽。<br/>
-    /// 现有名册 8 铭出厂默认所持（过渡期）；日后新铭只靠 Unlock / 錾样入包
+    /// 过渡期：仅核 7 + 鬼切出厂所持；扩册 15 变体只靠 Unlock / 錾样入包
     /// </summary>
     internal static class OniMeiOwned
     {
         public static string SeedKey => nameof(MeiOnikiri);
 
-        /// <summary>现有名册出厂全开，不随 Registry 自动扩；新铭勿写入此表</summary>
+        /// <summary>出厂所持白名单，不随 Registry 自动扩；新铭勿写入此表</summary>
         private static readonly string[] DefaultOwnedKeys = [
             nameof(MeiOnikiri),
             nameof(MeiHigekiri),
