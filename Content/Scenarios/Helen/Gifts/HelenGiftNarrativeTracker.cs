@@ -124,10 +124,14 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
 
     internal sealed class HelenGiftBossKillNPC : DeathTrackingNPC
     {
-        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.boss;
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
+            => AppliesToBossOrSegment(entity);
 
         public override void OnNPCDeath(NPC npc) {
-            if (Main.dedServ) return;
+            if (Main.dedServ) {
+                return;
+            }
+
             HelenGiftNarrativeTracker.NotifyBossDefeated(npc.type);
         }
     }

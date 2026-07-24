@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.Content.Narrative.Common;
+using CalamityOverhaul.Content.Scenarios.Shepel;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
 using System;
@@ -131,13 +132,21 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         }
     }
 
+    /// <summary>
+    /// Shepel 礼物 + 响应式台词共用的 Boss 击杀入口（原 ShepelBossDeathTracker 已并入）。
+    /// </summary>
     internal sealed class ShepelGiftBossKillNPC : DeathTrackingNPC
     {
-        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.boss;
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
+            => AppliesToBossOrSegment(entity);
 
         public override void OnNPCDeath(NPC npc) {
-            if (Main.dedServ) return;
+            if (Main.dedServ) {
+                return;
+            }
+
             ShepelGiftNarrativeTracker.NotifyBossDefeated(npc.type);
+            ShepelReactiveEvents.EnqueueBossDefeated(Main.LocalPlayer, npc.type);
         }
     }
 }

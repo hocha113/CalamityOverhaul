@@ -186,7 +186,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 
     internal sealed class HimayoGiftBossKillNPC : DeathTrackingNPC
     {
-        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.boss;
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
+            => AppliesToBossOrSegment(entity);
 
         public override void OnNPCDeath(NPC npc) {
             if (Main.dedServ) {
