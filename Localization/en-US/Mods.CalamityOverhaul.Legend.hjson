@@ -618,53 +618,166 @@ OnikiriOverride: {
 
 OnikiriTrialQuestLine: {
 	QuestCategory: Onikiri · Trial Cuts
-	TrackerWaiting: It isn't here yet. Wait—or we go ask for it.
+	TrackerWaiting: It isn't here yet. Wait, or we go ask for it
 	TrackerFighting: "{0}: {1:0%}"
-	TrackerBrief: Next cut: {0}
+	TrackerBrief: "Next cut: {0}"
 	BossRushTargetName: Night That Won't Break
 	EventActiveFormat: "{0}: underway"
-	Trial_0: The Unblinking
-	Trial_1: Two Things in the Dirt
-	Trial_2: Clumped Filth
-	Trial_3: Walking Sugar
-	Trial_4: Meat in the Way
-	Trial_5: Worm on the Brimstone Sea
-	Trial_6: The One in the Fire
-	Trial_7: Iron Long-Worm
-	Trial_8: A Pair of Fake Eyes
-	Trial_9: The Skull-Wearer
-	Trial_10: Shadow That Mimics a Walk
-	Trial_11: Flower Opened Wrong
-	Trial_12: Guard in the Stone House
-	Trial_13: Those at the Door
-	Trial_14: Far Side of the Moon
-	Trial_15: Fire in the Earth's Heart
-	Trial_16: Ghosts in a Clump
-	Trial_17: God-Eater
-	Trial_18: Dragon Still Alive
-	Trial_19: The Maker's Iron
-	Trial_20: That Witch
-	Trial_21: Night Gathering Again
-	TrialSummary_0: There's something hanging in the sky that won't blink. Looking at it makes me tired. Go make it close its eyes.
-	TrialSummary_1: In the dirt it's either a worm or a brain. Whichever's filthier, cut that. The blade will know the taste.
-	TrialSummary_2: The filth has bunched up. The source is there—help me cut it loose.
-	TrialSummary_3: A puddle of sugar calling itself a god. If names were that easy, I'd be a goddess already. Go take its name off.
-	TrialSummary_4: The road's blocked by a wall of meat. Cut straight through. What's past it sits heavier than here.
-	TrialSummary_5: A worm surfaced on the brimstone sea. One open mouth and it reeks. Don't let it near the shore.
-	TrialSummary_6: Something in the lava is still burning. When the flame goes out, that place can breathe again.
-	TrialSummary_7: An iron long-worm. The first one. Cut it open—don't race it for length.
-	TrialSummary_8: Two eyes in the sky, pretending to be a pair of people. One at a time.
-	TrialSummary_9: An iron lump wearing an old king's skull. Take the head and the rest is just parts.
-	TrialSummary_10: A shadow copying someone else's walk. The closer it gets, the more it bothers me. Help me cut it down.
-	TrialSummary_11: A flower opened underground that shouldn't have. When it falls, the ground air clears a little.
-	TrialSummary_12: A guard in a stone house that won't blink. Wake it up—or put it to sleep.
-	TrialSummary_13: People muttering at the dungeon door. The rite isn't finished—interrupt them.
-	TrialSummary_14: Something's pressed against the far side of the moon. Peel it open. The world gets lighter.
-	TrialSummary_15: A fire that won't go cold lives in the earth's heart. Go see it. The blade will run hot—bear with it.
-	TrialSummary_16: Ghosts stuck in one clump. Don't count them. Split the whole mass and they scatter.
-	TrialSummary_17: It has eaten gods. We aren't gods—but if a blade fears gods, it's only iron. Go.
-	TrialSummary_18: One dragon left in the world. Go see it. If a feather falls, pick one up for me too.
-	TrialSummary_19: Someone built themselves an iron giant. The core's inside—pull it out and it stops.
-	TrialSummary_20: That witch. Where she stays, the night turns sticky. Go end her.
-	TrialSummary_21: They're gathering again. Like a night that won't break. The longest cut is yours. I'll watch.
+	Trial_0: That Business in the Sky
+	Trial_1: Two Wrong Pulls in the Dirt
+	Trial_2: Clumped into One Blob
+	Trial_3: Heard It's a God
+	Trial_4: Whatever's Blocking the Road
+	Trial_5: That Brimstone Smell
+	Trial_6: Fire Pit Still Lit
+	Trial_7: The Big Name
+	Trial_8: Two Dots in a Pair
+	Trial_9: Old and New Mixed Up
+	Trial_10: Walks Too Much Like a Person
+	Trial_11: That One Down Below
+	Trial_12: The One in the Stone House
+	Trial_13: Mutterers at the Door
+	Trial_14: What's Pressing Up There
+	Trial_15: Heat from the Earth's Heart
+	Trial_16: A Clump in the Damp
+	Trial_17: Where It Feels Too Empty
+	Trial_18: Dragon Still Around
+	Trial_19: Where the Booming Hits the Ears
+	Trial_20: Where the Air Goes Heavy
+	Trial_21: Gathering Again
+	TrialSummary_0:
+		'''
+		There's something going on up in the sky, and I can't say what
+		Just feels like we're being watched, and the blade's getting restless too
+		Go take a look, then come back and tell me what it even was
+		Oh—and don't tip your head back too long. Neck'll ache
+		'''
+	TrialSummary_1:
+		'''
+		Two wrong pulls from the dirt that way—I can't tell them apart
+		Whichever sticks its head out first, cut that one. Don't stare at both
+		The blade will know the taste is off. You go first
+		'''
+	TrialSummary_2:
+		'''
+		Filth bunched into one blob over there—even the wind of it is annoying
+		Don't stand around staring. Go deal with it
+		Getting it done matters more than anything else when you're back
+		'''
+	TrialSummary_3:
+		'''
+		Heard some puddle calls itself a god. Almost made me laugh
+		If names were that easy, who'd bother working
+		Go check. If it really calls itself that, take the name apart
+		Hey—I'm not sending you to worship. Listen carefully
+		'''
+	TrialSummary_4:
+		'''
+		Up ahead feels blocked shut, and I can't say by what
+		Road's closed, so open it
+		How it feels past that—we'll talk when you're back
+		'''
+	TrialSummary_5:
+		'''
+		Smell off the brimstone sea is wrong. Something's churning
+		Don't let it near the shore. Go cut it off
+		If the blade stinks when you're back, then we'll talk
+		'''
+	TrialSummary_6:
+		'''
+		Fire pit that way is still lit, like someone won't go out
+		Put it out, and watch your feet while you're at it
+		If you burn yourself, I can't blow on it for you
+		'''
+	TrialSummary_7:
+		'''
+		There's a thing with a loud name. Sounds scary enough
+		Iron's making noise—go poke it, see if it's all bluster
+		Don't race it for whose name is bigger
+		'''
+	TrialSummary_8:
+		'''
+		Two dots in the sky, like they agreed to come out together
+		If they show up as a pair, handle them separate—don't take both glares
+		When you're back you can complain whether they look human
+		'''
+	TrialSummary_9:
+		'''
+		Old and new mixed together over there—feels wrong, but I haven't seen clear
+		Go sort it out. Don't get bluffed
+		We'll talk later which side was even real
+		'''
+	TrialSummary_10:
+		'''
+		A shadow walking too much like a person—I haven't seen the face and I'm already annoyed
+		Don't freeze staring. Go deal with it
+		Who it's copying—we'll swear about that when you're back
+		'''
+	TrialSummary_11:
+		'''
+		Something blooming down below that shouldn't. Smell's already wrong
+		If it's spent, deal with it. Don't leave it to bother me
+		Florist rules later. You go first
+		'''
+	TrialSummary_12:
+		'''
+		Something in the stone house that doesn't like moving. Looks hard
+		Knock it down. Don't bash the blade on stone—I feel that too
+		If your hands go numb, rub them when you're back
+		'''
+	TrialSummary_13:
+		'''
+		People muttering at the dungeon door, like they aren't finished
+		Interrupt them. Spare the ears
+		What they were chanting—we'll talk later. Don't believe it
+		'''
+	TrialSummary_14:
+		'''
+		Something like it's pressing on the moon. Looking up feels heavy
+		Go get rid of it. Don't just stand there staring up
+		When you're back I'll ask if you're worn out
+		'''
+	TrialSummary_15:
+		'''
+		Heat from the earth's heart that way—my side feels preheated too
+		Go. The edge will run hot—know that ahead of time
+		Don't linger in the heat. Finish and pull out
+		'''
+	TrialSummary_16:
+		'''
+		Ghosts knotted in the damp over there. I'm not counting
+		Handle the whole clump. Don't pick them one by one
+		And don't overnight there—I'll nag you about that when you're back
+		'''
+	TrialSummary_17:
+		'''
+		That direction feels too empty. I'm going heavy on my side too
+		I can't say what it is. Just wrong
+		Go. Don't stand there alone spacing out—if you can't see clear, look after yourself first
+		We'll talk when you're back. Staying alive beats seeing clear
+		'''
+	TrialSummary_18:
+		'''
+		Heard there's still a dragon like this. True or not, you go see
+		Edge'll probably burn—don't sheath it in a hurry
+		I don't want feathers. Just come back yourself
+		'''
+	TrialSummary_19:
+		'''
+		One boom from far off and the ears quit first
+		Go make them stop, and cover your ears on the way
+		If they're still buzzing when you're back, find somewhere quiet
+		'''
+	TrialSummary_20:
+		'''
+		Air over there goes heavy and stagnant, like a door that won't air out
+		Go end it. Don't freeze in the doorway breathing that in
+		When you're back I'll tell you how to clear your head
+		'''
+	TrialSummary_21:
+		'''
+		They're gathering again, like nothing ever fully breaks apart
+		This one'll run long. You take it. I'll watch
+		Stand steady before you start—I'll nag you about swaying when you're back
+		'''
 }
