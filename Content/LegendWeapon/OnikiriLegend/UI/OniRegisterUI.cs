@@ -524,13 +524,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return;
             }
             if (CWRKeySystem.Legend_UIControl.JustPressed) {
-                //改铭台开着:键先收台;否则开阖点鬼簿
-                if (OniMeiUI.Instance?.IsOpen ?? false) {
-                    OniMeiUI.Instance.Close();
+                //默认开阖改铭台;点鬼簿开着时键先收簿再开台(OnOpen 亦互斥)
+                if (OniRegisterUI.Instance?.IsOpen ?? false) {
+                    OniRegisterUI.Instance.Close();
                 }
-                else {
-                    OniRegisterUI.Instance?.Toggle();
-                }
+                OniMeiUI.Instance?.Toggle();
             }
         }
     }

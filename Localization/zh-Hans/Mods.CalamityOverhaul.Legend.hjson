@@ -587,7 +587,7 @@ OnikiriText: {
 
 	OniTalismanHud: {
 		HudTitle: 封印札
-		HudHintFormat: "{0} 或点击 开阖点鬼簿"
+		HudHintFormat: "{0} 或点击札 开阖改铭台 · 点击鞘开点鬼簿"
 		HudDangerLine: 札下起了青焰
 		VigorTitle: 气力
 		VigorValueFormat: "{0} / {1}"
@@ -595,7 +595,7 @@ OnikiriText: {
 		StanceValueFormat: "{0} / {1}"
 		StanceReadyLine: 锋已离鞘——只欠一拔
 		StanceHalfLine: 势已过半——足以一记灭世一闪
-		StanceMeiHint: 点击 开改铭台
+		StanceMeiHint: 点击 开点鬼簿
 		DomainTitle: 鬼域之眼
 		DomainStateClosed: 阖目——领域未展
 		DomainStateOmote: 表世界——泛黄和纸

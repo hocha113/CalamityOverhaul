@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         public override void SetStaticDefaults() {
             HudTitle = this.GetLocalization(nameof(HudTitle), () => "封印札");
-            HudHintFormat = this.GetLocalization(nameof(HudHintFormat), () => "{0} 或点击 开阖点鬼簿");
+            HudHintFormat = this.GetLocalization(nameof(HudHintFormat), () => "{0} 或点击札 开阖改铭台 · 点击鞘开点鬼簿");
             HudDangerLine = this.GetLocalization(nameof(HudDangerLine), () => "札下起了青焰——有鬼躁动");
             VigorTitle = this.GetLocalization(nameof(VigorTitle), () => "气力");
             VigorValueFormat = this.GetLocalization(nameof(VigorValueFormat), () => "{0} / {1}");
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             StanceValueFormat = this.GetLocalization(nameof(StanceValueFormat), () => "{0} / {1}");
             StanceReadyLine = this.GetLocalization(nameof(StanceReadyLine), () => "锋已离鞘——只欠一拔");
             StanceHalfLine = this.GetLocalization(nameof(StanceHalfLine), () => "势已过半——足以一记灭世一闪");
-            StanceMeiHint = this.GetLocalization(nameof(StanceMeiHint), () => "点击 开改铭台");
+            StanceMeiHint = this.GetLocalization(nameof(StanceMeiHint), () => "点击 开点鬼簿");
             DomainTitle = this.GetLocalization(nameof(DomainTitle), () => "鬼域之眼");
             DomainStateClosed = this.GetLocalization(nameof(DomainStateClosed), () => "阖目——领域未展");
             DomainStateOmote = this.GetLocalization(nameof(DomainStateOmote), () => "表世界——泛黄和纸");
@@ -252,15 +252,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 player.mouseInterface = true;
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(CWRSound.ButtonZero with { Volume = 0.6f });
-                    OniRegisterUI.Instance?.Toggle();
+                    OniMeiUI.Instance?.Toggle();
                 }
             }
-            //架势鞘刀是改铭台的门:点纸札开簿,点鞘刀开台
+            //点纸札开改铭台;点鞘刀开点鬼簿
             else if (stance.Hovering) {
                 player.mouseInterface = true;
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(CWRSound.ButtonZero with { Volume = 0.6f });
-                    OniMeiUI.Instance?.Toggle();
+                    OniRegisterUI.Instance?.Toggle();
                 }
             }
 
