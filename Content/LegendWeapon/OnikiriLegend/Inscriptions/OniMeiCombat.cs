@@ -206,13 +206,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         /// <summary>息合：弧剑气相对本拍武器伤害</summary>
         public const float BreathArcDamageMul = 0.55f;
         /// <summary>息合：弧剑气视觉/判定规模(叠在刀尺寸上)</summary>
-        public const float BreathArcSizeMul = 1.85f;
+        public static float BreathArcSizeMul => 1.85f;
         /// <summary>息合：弧剑气出手速度(px/帧)</summary>
-        public const float BreathArcLaunchSpeed = 28f;
-        /// <summary>息合：弧剑气巡航速度(px/帧，出手后缓降至此)</summary>
-        public const float BreathArcCruiseSpeed = 16f;
+        public static float BreathArcLaunchSpeed => 62f;
+        /// <summary>息合：弧剑气巡航速度(px/帧，出手后急降至此)</summary>
+        public static float BreathArcCruiseSpeed => 30f;
         /// <summary>息合：飞行帧数(到程即侵蚀消散)</summary>
-        public const int BreathArcFlightFrames = 42;
+        public static int BreathArcFlightFrames => 16;
 
         //====H1 灼地共型====
         /// <summary>焦痕：灼地寿命(帧)</summary>

@@ -644,12 +644,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     OniMeiStrikes.SpawnDragonfireBeatFlame(Owner, aim, sizeMul);
                 }
             }
-
-            //息合:第五拍固定甩出一道行进弧形剑气(无蓄力,与狮颚同拍位)
-            if (meiProfile.BreathWave && beat == BeatCount - 1 && Projectile.IsOwnedByLocalPlayer()) {
-                OniMeiStrikes.FireBreathWave(Owner, Projectile.Center, aim, Projectile.damage
-                    , Projectile.knockBack, sizeMul);
-            }
         }
 
         /// <summary>实体刀姿态时间轴(纯视觉),收势反拉→爆发甩过→停驻静止谷→松手收刀;深度驱动远近景与透视</summary>
@@ -914,6 +908,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                         Volume = volume,
                         MaxInstances = 3
                     }, Projectile.Center);
+
+                    //息合:卡在爆发脆响同一帧甩出弧剑气(从本拍刃弧中段甩离)
+                    if (a.Beat == BeatCount - 1 && meiProfile.BreathWave
+                        && Projectile.IsOwnedByLocalPlayer()) {
+                        Vector2 tip = CSR.PointAt(in a.Def, CenterOf(a), 0.62f, lt);
+                        OniMeiStrikes.FireBreathWave(Owner, tip, a.Aim, Projectile.damage
+                            , Projectile.knockBack, sizeMul, a.Def.Flip);
+                    }
                 }
 
                 if (a.Beat < PingTable.Length && lt == a.Def.SweepFrames) {

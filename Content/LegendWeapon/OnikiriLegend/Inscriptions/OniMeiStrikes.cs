@@ -223,33 +223,43 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
 
         /// <summary>
-        /// 息合吐息:第五拍沿瞄准甩出一道行进弧形剑气(凸面朝前,穿透每目标一次);
-        /// 不回调气/架势
+        /// 息合吐息:第五拍爆发脆响同帧沿瞄准甩出一道行进弧形剑气(凸面朝前,穿透每目标一次);
+        /// 不回调气/架势。origin 应为刃弧中段(由 Slash 爆发帧传入)
         /// </summary>
         public static void FireBreathWave(Player player, Vector2 origin, float aim, int beatDamage,
-            float knockback, float sizeMul = 1f) {
+            float knockback, float sizeMul = 1f, float flip = 1f) {
             if (player == null) {
                 return;
             }
             float arcSize = sizeMul * OniMeiCombat.BreathArcSizeMul;
             int damage = Math.Max(1, (int)(beatDamage * OniMeiCombat.BreathArcDamageMul));
             Vector2 aimDir = aim.ToRotationVector2();
-
-            OniMeiBreathArc.Fire(player, origin, aim, damage, knockback * 0.4f, arcSize
+            //刃上已卡点,只略前送一截读作甩离
+            Vector2 muzzle = origin;
+            OniMeiBreathArc.Fire(player, muzzle, aim, damage, knockback * 0.55f, arcSize, flip
                 , player.GetSource_ItemUse(player.HeldItem));
 
             if (Main.dedServ) {
                 return;
             }
-            for (int i = 0; i < 8; i++) {
-                PRTLoader.NewParticle<PRT_CrimsonSpark>(origin + Main.rand.NextVector2Circular(16f, 16f)
-                    , aimDir.RotatedByRandom(0.45f) * Main.rand.NextFloat(3f, 8f)
-                    , new Color(255, 236, 220), Main.rand.NextFloat(0.28f, 0.48f) * arcSize)
-                    ?.Configure(Main.rand.Next(12, 18), affectedByGravity: false);
+            player.CWR()?.GetScreenShake(2.6f);
+            Vector2 perp = aimDir.RotatedBy(MathHelper.PiOver2);
+            //出手爆点:沿甩向拉长的纸白火花 + 墨烟尾,禁各向同性喷雾
+            for (int i = 0; i < 10; i++) {
+                float along = Main.rand.NextFloat(0.4f, 1.2f);
+                Vector2 vel = aimDir * Main.rand.NextFloat(8f, 18f) * along
+                    + perp * Main.rand.NextFloat(-2.2f, 2.2f);
+                PRTLoader.NewParticle<PRT_CrimsonSpark>(muzzle + perp * Main.rand.NextFloat(-18f, 18f) * arcSize
+                    , vel, new Color(255, 236, 220), Main.rand.NextFloat(0.32f, 0.55f) * arcSize)
+                    ?.Configure(Main.rand.Next(10, 16), affectedByGravity: false);
             }
-            PRTLoader.NewParticle<PRT_CrimsonSmoke>(origin + aimDir * 24f, aimDir * 1.4f
-                , Color.White, 0.07f * arcSize)
-                ?.Configure(16, new Color(110, 30, 34), new Color(24, 12, 16));
+            for (int i = 0; i < 4; i++) {
+                PRTLoader.NewParticle<PRT_CrimsonSmoke>(muzzle - aimDir * (10f + i * 8f)
+                    , -aimDir * Main.rand.NextFloat(0.6f, 1.6f) + perp * Main.rand.NextFloat(-0.8f, 0.8f)
+                    , Color.White, (0.08f + i * 0.015f) * arcSize)
+                    ?.Configure(18 + i * 3, new Color(110, 30, 34), new Color(24, 12, 16));
+            }
+            CrimsonImpactFX.PushImpact(muzzle, 0.22f);
         }
 
         //==================== 逐拍/状态演出 ====================
