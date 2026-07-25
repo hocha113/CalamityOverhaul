@@ -202,25 +202,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         /// <summary>空鸣：失焦统计窗(帧)</summary>
         public const int HollowFocusLossWindowTicks = 48;
 
-        //====H0 息合吐息弧剑气====
-        /// <summary>息合：短蓄松手最低帧(低于此松手照常出第一拍)</summary>
-        public const int BreathMinChargeTicks = 12;
-        /// <summary>息合：首拍前摇满帧(按满则出连)</summary>
-        public const int BreathMaxChargeTicks = 20;
-        /// <summary>息合：吐息气耗</summary>
-        public const float BreathWaveVigorCost = 22f;
-        /// <summary>息合：空蓄受击白扣气</summary>
-        public const float BreathCancelVigorTax = 8f;
-        /// <summary>息合：蓄息期间移动力倍率(温和阻尼，不冻脚)</summary>
-        public const float BreathChargeMoveMul = 0.80f;
-        /// <summary>息合：弧剑气相对武器伤害(单发穿透，每目标一次)</summary>
-        public const float BreathArcDamageMul = 0.45f;
+        //====H0 息合吐息弧剑气(第五拍固定甩出)====
+        /// <summary>息合：弧剑气相对本拍武器伤害</summary>
+        public const float BreathArcDamageMul = 0.55f;
+        /// <summary>息合：弧剑气视觉/判定规模(叠在刀尺寸上)</summary>
+        public const float BreathArcSizeMul = 1.85f;
         /// <summary>息合：弧剑气出手速度(px/帧)</summary>
-        public const float BreathArcLaunchSpeed = 26f;
+        public const float BreathArcLaunchSpeed = 28f;
         /// <summary>息合：弧剑气巡航速度(px/帧，出手后缓降至此)</summary>
-        public const float BreathArcCruiseSpeed = 15f;
-        /// <summary>息合：飞行帧数(到程即侵蚀消散，射程约 680px)</summary>
-        public const int BreathArcFlightFrames = 36;
+        public const float BreathArcCruiseSpeed = 16f;
+        /// <summary>息合：飞行帧数(到程即侵蚀消散)</summary>
+        public const int BreathArcFlightFrames = 42;
 
         //====H1 灼地共型====
         /// <summary>焦痕：灼地寿命(帧)</summary>

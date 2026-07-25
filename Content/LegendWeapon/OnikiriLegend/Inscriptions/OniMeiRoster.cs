@@ -60,13 +60,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
     }
 
-    /// <summary>息合，吐息刀压：短蓄松手行进定锚断斩链</summary>
+    /// <summary>息合，吐息：完整五连第五拍甩出一道行进弧形剑气；连段略慢</summary>
     internal sealed class MeiIkiai : OniMeiDefinition
     {
         public override int SortOrder => 32;
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Nakago;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
+            profile.ComboGapMul *= 1.08f;
             profile.BreathWave = true;
         }
     }

@@ -81,9 +81,9 @@ MeiKyushu: {
 MeiIkiai: {
 	DisplayName: 息合
 	Origin: 对视那一瞬憋住的气，合拍落刃
-	Power: 「吐息」短蓄松手，沿瞄准吐出一道行进弧形剑气（绯红月牙，穿透每敌一次）；轻点松手仍是寻常一刀
-	Burden: 蓄息时身形变沉；空蓄挨打会白耗气
-	Summary: 吐息弧剑气；蓄息有价
+	Power: 「吐息」完整五连第五拍沿瞄准甩出一道行进弧形剑气（绯红月牙，穿透每敌一次）
+	Burden: 连段略慢
+	Summary: 第五拍甩弧剑气；连段略慢
 }
 
 MeiKyoko: {

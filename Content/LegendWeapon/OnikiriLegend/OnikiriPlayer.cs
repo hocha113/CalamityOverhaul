@@ -160,8 +160,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private int hollowDenseWindowStart;
         /// <summary>空鸣：失焦生效余量</summary>
         private int hollowFocusLossTicks;
-        /// <summary>息合：蓄息帧(仅认 Slash 首拍前摇上报)</summary>
-        private int breathCharge;
         /// <summary>假身：影破真空余量(帧)</summary>
         private int falseBodyVacuumTicks;
 
@@ -264,7 +262,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             hollowDenseHits = 0;
             hollowDenseWindowStart = 0;
             hollowFocusLossTicks = 0;
-            ClearBreathCharge();
             falseBodyVacuumTicks = 0;
         }
 
@@ -333,7 +330,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 }
                 TickPlantedStep();
                 TickHollowRoar();
-                TickBreathWave();
                 TickZanshinWindow();
             }
 
@@ -1330,99 +1326,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
         }
 
-        /// <summary>Slash 上报蓄息帧(首拍前摇中)</summary>
-        internal void ReportBreathChargeFromSlash(int chargeTicks) {
-            breathCharge = Math.Max(0, chargeTicks);
-        }
-
-        /// <summary>Slash 清蓄息(出首拍或放弃)</summary>
-        internal void ClearBreathCharge() {
-            breathCharge = 0;
-        }
-
-        /// <summary>蓄息中受击：取消并白扣气</summary>
-        internal void CancelBreathCharge(float tax) {
-            if (breathCharge <= 0) {
-                return;
-            }
-            ClearBreathCharge();
-            if (tax > 0f) {
-                Vigor = Math.Max(0f, Vigor - tax);
-                vigorRegenDelay = Math.Max(vigorRegenDelay, VigorRegenDelayTicks + Mei.ExtraRegenDelayTicks);
-            }
-        }
-
-        /// <summary>短蓄松手吐息；气够则扣气开链。返回是否已吐息</summary>
-        internal bool TryReleaseBreathWave() {
-            if (!Mei.BreathWave || breathCharge < OniMeiCombat.BreathMinChargeTicks) {
-                ClearBreathCharge();
-                return false;
-            }
-            if (Vigor < OniMeiCombat.BreathWaveVigorCost - 0.01f) {
-                ClearBreathCharge();
-                return false;
-            }
-            Item item = Player.GetItem();
-            if (item == null || item.type != ModContent.ItemType<OnikiriItem>()) {
-                ClearBreathCharge();
-                return false;
-            }
-            ShootState state = Player.GetShootState();
-            Vigor = Math.Max(0f, Vigor - OniMeiCombat.BreathWaveVigorCost);
-            vigorRegenDelay = VigorRegenDelayTicks + Mei.ExtraRegenDelayTicks;
-            float aim = (Main.MouseWorld - Player.Center).SafeNormalize(Vector2.UnitX * Player.direction).ToRotation();
-            OniMeiStrikes.FireBreathWave(Player, Player.Center, aim
-                , (int)(state.WeaponDamage * Mei.DamageMul), state.WeaponKnockback);
-            ClearBreathCharge();
-            return true;
-        }
-
-        /// <summary>
-        /// 蓄息经济与提示(owner 端)：蓄息只认 Slash 首拍上报，无控制器点按路径已删
-        /// (背包/UI 点击不再误蓄误发)；控制器让位/收势消亡则弃蓄。
-        /// 减速走 <see cref="PostUpdateRunSpeeds"/> 温和阻尼
-        /// </summary>
-        private void TickBreathWave() {
-            if (!Mei.BreathWave || Player.dead) {
-                ClearBreathCharge();
-                return;
-            }
-            if (breathCharge <= 0) {
-                return;
-            }
-            if (CrimsonRendSlash.FindController(Player) == null) {
-                ClearBreathCharge();
-                return;
-            }
-            if (Main.dedServ) {
-                return;
-            }
-            //蓄息可视：墨屑向出刀口聚拢；到最低蓄息帧纸白一亮+轻音，读作"气蓄够了"
-            Vector2 aimDir = (Main.MouseWorld - Player.Center).SafeNormalize(Vector2.UnitX * Player.direction);
-            if (breathCharge % 3 == 0) {
-                Vector2 anchor = Player.Center + aimDir * 26f;
-                Vector2 pos = anchor + aimDir.RotatedByRandom(1.4f) * Main.rand.NextFloat(26f, 54f);
-                PRTLoader.NewParticle<PRT_CrimsonSpark>(pos, (anchor - pos) * 0.16f
-                    , new Color(255, 236, 220), Main.rand.NextFloat(0.14f, 0.24f))
-                    ?.Configure(Main.rand.Next(8, 13), affectedByGravity: false);
-            }
-            if (breathCharge == OniMeiCombat.BreathMinChargeTicks) {
-                SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = 0.30f, Volume = 0.38f }, Player.Center);
-                PRTLoader.NewParticle<PRT_CrimsonHitFlash>(Player.Center + aimDir * 30f
-                    , Vector2.Zero, new Color(255, 243, 226), 0.5f);
-            }
-        }
-
-        /// <summary>蓄息身形变沉：移动力温和阻尼(不冻脚不锁输入)</summary>
-        public override void PostUpdateRunSpeeds() {
-            if (breathCharge <= 0) {
-                return;
-            }
-            Player.maxRunSpeed *= OniMeiCombat.BreathChargeMoveMul;
-            Player.accRunSpeed *= OniMeiCombat.BreathChargeMoveMul;
-            Player.runAcceleration *= 0.7f;
-        }
-
         //==================== 铭刻效果层挂点(owner 端) ====================
 
         /// <summary>友切咎影已留下:积一层咎,下一次疾走更贵;残心命中偿清</summary>
@@ -1464,9 +1367,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return;
             }
             if (TryAbsorbFalseBody(ref modifiers)) {
-                if (breathCharge > 0) {
-                    CancelBreathCharge(OniMeiCombat.BreathCancelVigorTax);
-                }
                 return;
             }
             if (Math.Abs(Mei.IncomingDamageMul - 1f) > 0.001f) {
@@ -1496,9 +1396,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             if (Mei.PlantedStep) {
                 plantedKnockbackGrace = OniMeiCombat.PlantedKnockbackGraceTicks;
-            }
-            if (breathCharge > 0) {
-                CancelBreathCharge(OniMeiCombat.BreathCancelVigorTax);
             }
         }
 

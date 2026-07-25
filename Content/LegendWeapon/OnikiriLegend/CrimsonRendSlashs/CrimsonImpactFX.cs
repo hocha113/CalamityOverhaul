@@ -31,6 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             BloomIntensity = MathHelper.Clamp(MathHelper.Max(BloomIntensity, bloom), 0f, 1.2f);
         }
 
+        //警告！！这个方法绝对不要轻易调用，因为闪屏真的很他妈烦！！！
         /// <summary>冲击白闪,一次触发自行衰减</summary>
         public static void PushImpact(Vector2 focusWorld, float flash) {
             if (VaultUtils.isServer) {

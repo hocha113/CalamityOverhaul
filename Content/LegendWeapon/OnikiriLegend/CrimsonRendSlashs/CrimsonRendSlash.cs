@@ -210,9 +210,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             scheduling = true;
             nextBeatTime = FirstWindupFrames + 1;
             meiProfile = OniMeiCombat.Resolve(Item);
-            if (meiProfile.BreathWave) {
-                nextBeatTime = OniMeiCombat.BreathMaxChargeTicks + 1;
-            }
         }
 
         /// <summary>五段弧形变奏美术参数,Seed 掺入出生帧防循环同噪声<br/>
@@ -530,44 +527,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             bool holding = (DownLeft || pressBuffer > 0) && canContinue && !yielding;
 
             //首拍纯起手窗,走完无条件出刀;仅首次有此前摇
-            //息合:前摇拉长为蓄息窗,松手且够蓄则吐息刀压
             if (!firstBeatFired) {
                 if (yielding || OniBladeOccupancy.BladeReserved(Owner)) {
                     //技能/签名拍保留优先,前摇计数不走
                     return;
                 }
-                bool breath = meiProfile.BreathWave;
-                int windupNeed = breath ? OniMeiCombat.BreathMaxChargeTicks : FirstWindupFrames;
                 if (++firstWindupTicks == 1) {
                     //起手第一帧继承交接刀角
                     hasHandoff = OniBladeHandoff.TryPeek(Owner, out handoffRot, out _);
                     meiProfile = OniMeiCombat.Resolve(Item);
-                    breath = meiProfile.BreathWave;
-                    windupNeed = breath ? OniMeiCombat.BreathMaxChargeTicks : FirstWindupFrames;
                 }
-                if (breath && Projectile.IsOwnedByLocalPlayer()) {
-                    OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
-                    okp.ReportBreathChargeFromSlash(firstWindupTicks);
-                    //松手只认真实按键:holding 含 24 帧轻点缓冲,会把"松手"整个藏过
-                    //20 帧蓄息窗,按满分支先行——释放路径永远走不到,吐息就发不出来
-                    if (!DownLeft) {
-                        if (firstWindupTicks >= OniMeiCombat.BreathMinChargeTicks
-                            && okp.TryReleaseBreathWave()) {
-                            Projectile.Kill();
-                            return;
-                        }
-                        //轻点蓄不足:照常打出第一拍,不吞输入
-                        okp.ClearBreathCharge();
-                        FireBeat();
-                        firstBeatFired = true;
-                        scheduling = false;
-                        return;
-                    }
-                }
-                if (firstWindupTicks > windupNeed) {
-                    if (breath && Projectile.IsOwnedByLocalPlayer()) {
-                        Owner.GetModPlayer<OnikiriPlayer>().ClearBreathCharge();
-                    }
+                if (firstWindupTicks > FirstWindupFrames) {
                     FireBeat();
                     firstBeatFired = true;
                     scheduling = holding;
@@ -593,20 +563,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 }
                 //签名拍软保留,不重启夺刀
                 if (OniBladeOccupancy.BladeReserved(Owner)) {
-                    return;
-                }
-                //息合:收势后再按重开蓄息窗(勿只认控制器出厂首拍,否则轻点一次后永远吐不出)
-                meiProfile = OniMeiCombat.Resolve(Item);
-                if (meiProfile.BreathWave) {
-                    firstBeatFired = false;
-                    firstWindupTicks = 0;
-                    pressBuffer = 0;
-                    //蓄息期间必须续命,否则无活刀光时 UpdateLifetime 会当场 Kill
-                    scheduling = true;
-                    hasHandoff = OniBladeHandoff.TryPeek(Owner, out handoffRot, out _);
-                    if (timer - lastBeatFire > ComboResetFrames) {
-                        comboIndex = 0;
-                    }
                     return;
                 }
                 scheduling = true;
@@ -688,6 +644,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     OniMeiStrikes.SpawnDragonfireBeatFlame(Owner, aim, sizeMul);
                 }
             }
+
+            //息合:第五拍固定甩出一道行进弧形剑气(无蓄力,与狮颚同拍位)
+            if (meiProfile.BreathWave && beat == BeatCount - 1 && Projectile.IsOwnedByLocalPlayer()) {
+                OniMeiStrikes.FireBreathWave(Owner, Projectile.Center, aim, Projectile.damage
+                    , Projectile.knockBack, sizeMul);
+            }
         }
 
         /// <summary>实体刀姿态时间轴(纯视觉),收势反拉→爆发甩过→停驻静止谷→松手收刀;深度驱动远近景与透视</summary>
@@ -728,7 +690,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 bladeEdgeFlip = EdgeFlipOf(in first, facing);
                 float startRot = BladePathRotation(in first, aim, facing, BladePathStart);
                 float sweepSign = PathSweepSign(in first, aim, facing);
-                int windFrames = meiProfile.BreathWave ? OniMeiCombat.BreathMaxChargeTicks : FirstWindupFrames;
+                int windFrames = FirstWindupFrames;
                 float windT = CSR.EaseOutCubic(MathHelper.Clamp(firstWindupTicks / (float)Math.Max(windFrames, 1), 0f, 1f));
                 targetRotation = hasHandoff
                     ? OniBladePose.LerpAngle(handoffRot, startRot - sweepSign * 0.55f, windT)

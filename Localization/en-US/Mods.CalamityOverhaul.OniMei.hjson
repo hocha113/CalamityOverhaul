@@ -81,9 +81,9 @@ MeiKyushu: {
 MeiIkiai: {
 	DisplayName: Ikiai
 	Origin: The breath you held while staring — then the blades met on the beat
-	Power: Breath-Wave: charge briefly and release to exhale a traveling crimson arc of sword-qi (a flying crescent that pierces each foe once); a quick tap still swings as normal
-	Burden: Charging sinks your step; getting hit mid-charge wastes vigor
-	Summary: Breath arc-qi; charging has a price
+	Power: Breath-Wave: the fifth beat of a full combo flings a traveling crimson arc of sword-qi (a flying crescent that pierces each foe once)
+	Burden: Combo slightly slower
+	Summary: Fifth-beat arc-qi; slightly slower combo
 }
 
 MeiKyoko: {

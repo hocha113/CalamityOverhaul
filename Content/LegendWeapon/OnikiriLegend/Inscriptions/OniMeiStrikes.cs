@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
 using CalamityOverhaul.Content.PRTTypes;
@@ -223,33 +223,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
 
         /// <summary>
-        /// 息合吐息:沿瞄准飞出一道行进弧形剑气(凸面朝前,穿透每目标一次);
+        /// 息合吐息:第五拍沿瞄准甩出一道行进弧形剑气(凸面朝前,穿透每目标一次);
         /// 不回调气/架势
         /// </summary>
-        public static void FireBreathWave(Player player, Vector2 origin, float aim, int weaponDamage, float knockback) {
+        public static void FireBreathWave(Player player, Vector2 origin, float aim, int beatDamage,
+            float knockback, float sizeMul = 1f) {
             if (player == null) {
                 return;
             }
-            int damage = Math.Max(1, (int)(weaponDamage * OniMeiCombat.BreathArcDamageMul));
+            float arcSize = sizeMul * OniMeiCombat.BreathArcSizeMul;
+            int damage = Math.Max(1, (int)(beatDamage * OniMeiCombat.BreathArcDamageMul));
             Vector2 aimDir = aim.ToRotationVector2();
-            //出口略离身,读作吐出
-            Vector2 muzzle = origin + aimDir * 46f;
-            OniMeiBreathArc.Fire(player, muzzle, aim, damage, knockback * 0.35f
+
+            OniMeiBreathArc.Fire(player, origin, aim, damage, knockback * 0.4f, arcSize
                 , player.GetSource_ItemUse(player.HeldItem));
 
             if (Main.dedServ) {
                 return;
             }
-            //吐出的那口气:胸前纸白火花顺势前抛 + 一缕薄墨烟
-            for (int i = 0; i < 6; i++) {
-                PRTLoader.NewParticle<PRT_CrimsonSpark>(origin + Main.rand.NextVector2Circular(12f, 12f)
-                    , aimDir.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 6f)
-                    , new Color(255, 236, 220), Main.rand.NextFloat(0.22f, 0.38f))
-                    ?.Configure(Main.rand.Next(10, 16), affectedByGravity: false);
+            for (int i = 0; i < 8; i++) {
+                PRTLoader.NewParticle<PRT_CrimsonSpark>(origin + Main.rand.NextVector2Circular(16f, 16f)
+                    , aimDir.RotatedByRandom(0.45f) * Main.rand.NextFloat(3f, 8f)
+                    , new Color(255, 236, 220), Main.rand.NextFloat(0.28f, 0.48f) * arcSize)
+                    ?.Configure(Main.rand.Next(12, 18), affectedByGravity: false);
             }
-            PRTLoader.NewParticle<PRT_CrimsonSmoke>(origin + aimDir * 20f, aimDir * 1.2f
-                , Color.White, 0.05f)?.Configure(14, new Color(110, 30, 34), new Color(24, 12, 16));
-            CrimsonImpactFX.PushImpact(muzzle, 0.08f);
+            PRTLoader.NewParticle<PRT_CrimsonSmoke>(origin + aimDir * 24f, aimDir * 1.4f
+                , Color.White, 0.07f * arcSize)
+                ?.Configure(16, new Color(110, 30, 34), new Color(24, 12, 16));
         }
 
         //==================== 逐拍/状态演出 ====================

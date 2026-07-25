@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates;
 using InnoVault.PRT;
@@ -15,7 +15,7 @@ using SlashDef = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRend
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 {
     /// <summary>
-    /// 息合「吐息」行进弧形剑气：短蓄松手后沿瞄准线飞出的绯红月牙，
+    /// 息合「吐息」行进弧形剑气：第五拍沿瞄准线甩出的绯红月牙，
     /// 凸面朝前，穿透每目标一次，到程后侵蚀消散。<br/>
     /// 渲染/命中全走绯系列断斩栈(<see cref="CrimsonSlashRenderer"/> + <see cref="CrimsonRendHitVFX"/>)，
     /// 飞行四阶段：出手爆点→行进(减速曲线+前缘介质)→命中→沿途丝痕余寿大于弹体。<br/>
@@ -40,19 +40,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         private float AimAngle => Projectile.ai[0];
         private float SizeMul => Projectile.ai[1] > 0.05f ? Projectile.ai[1] : 1f;
 
-        /// <summary>owner 端生成；伤害基数由调用方压好</summary>
+        /// <summary>owner 端生成；伤害基数由调用方压好；sizeMul 写入 ai[1]</summary>
         public static Projectile Fire(Player player, Vector2 origin, float aim, int damage,
-            float knockback, IEntitySource source = null) {
+            float knockback, float sizeMul = 1f, IEntitySource source = null) {
             source ??= player.GetSource_Misc("CWR_OniMeiBreathArc");
             return Projectile.NewProjectileDirect(source, origin
                 , aim.ToRotationVector2() * OniMeiCombat.BreathArcLaunchSpeed
                 , ModContent.ProjectileType<OniMeiBreathArc>(), damage, knockback, player.whoAmI
-                , ai0: MathHelper.WrapAngle(aim), ai1: 1f);
+                , ai0: MathHelper.WrapAngle(aim), ai1: sizeMul > 0.05f ? sizeMul : 1f);
         }
 
         public override void SetDefaults() {
-            Projectile.width = 54;
-            Projectile.height = 54;
+            Projectile.width = 96;
+            Projectile.height = 96;
             Projectile.aiStyle = -1;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Melee;
@@ -67,16 +67,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         private void Initialize() {
             initialized = true;
             float s = SizeMul;
+            Vector2 keepCenter = Projectile.Center;
+            int box = (int)MathF.Max(96f, 110f * s);
+            Projectile.width = box;
+            Projectile.height = box;
+            Projectile.Center = keepCenter;
             //Life/ErodeStart 先放远，到程 BeginDissolve 再压回来播侵蚀
             def = new SlashDef {
-                Birth = 0, SweepFrames = 4, Life = 600, ErodeStart = 590, ErodeFrames = 12,
+                Birth = 0, SweepFrames = 5, Life = 600, ErodeStart = 590, ErodeFrames = 14,
                 ColorShiftDelay = 8f, ColorShiftFrames = 30f, DamageStart = 1, DamageEnd = 580,
-                Mode = 0f, Rot = AimAngle, Span = 1.85f, Thick = 0.30f,
-                HalfX = 152f * s, HalfY = 130f * s, Flip = 1f,
-                Opacity = 0.94f, FrontGlow = 2.8f, OffsetAlongAim = 0f,
+                Mode = 0f, Rot = AimAngle, Span = 2.25f, Thick = 0.34f,
+                HalfX = 248f * s, HalfY = 210f * s, Flip = 1f,
+                Opacity = 0.95f, FrontGlow = 3.1f, OffsetAlongAim = 0f,
                 Seed = Projectile.identity * 0.173f % 1f,
-                TailErode = 0.30f, FlashPower = 0.60f, FarDim = 0f,
-                Ink = 0.40f, FeiBai = 0.60f, Bleed = 0.12f, SplitTail = 0.68f,
+                TailErode = 0.28f, FlashPower = 0.70f, FarDim = 0f,
+                Ink = 0.42f, FeiBai = 0.62f, Bleed = 0.14f, SplitTail = 0.72f,
             };
         }
 
@@ -109,7 +114,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                 Initialize();
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.28f, Volume = 0.45f }, Projectile.Center);
                 SoundEngine.PlaySound(CWRSound.KatanaSwing with { Pitch = -0.25f, Volume = 0.4f, MaxInstances = 3 }, Projectile.Center);
-                CrimsonImpactFX.PushImpact(Projectile.Center, 0.10f);
+
                 if (!Main.dedServ) {
                     //出手爆点：纸白火花顺刃前抛
                     Vector2 aimDir0 = AimAngle.ToRotationVector2();
@@ -246,7 +251,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                 Volume = 0.65f
             }, target.Center);
             CrimsonRendHitVFX.SpawnHitTick(target.Center, AimAngle.ToRotationVector2(), SizeMul, steel);
-            CrimsonImpactFX.PushImpact(target.Center, 0.10f);
         }
 
         public override bool PreDraw(ref Color lightColor) => false;
