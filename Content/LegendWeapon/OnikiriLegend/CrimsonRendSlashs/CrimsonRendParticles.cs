@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
     }
 
     /// <summary>
-    /// 绯红血珠:飞行同刻心者液滴,触实心块压扁贴附,短暂下垂后淡出<br/>
+    /// 绯红血珠:飞行同刻心者液滴;全实心压扁永久贴附;平台/桌面等顶面短暂粘连后向下渗过(无弹起)<br/>
     /// 仅 Crimson 血肉命中使用,不改全局 PRT_HeartcarverDroplet
     /// </summary>
     internal class PRT_CrimsonBloodStain : BasePRT
@@ -191,6 +191,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private float splatMul;
         private float sag;
         private float stuckScale;
+        /// <summary>平台/桌面等顶面:短暂粘连后渗过落下,不再微弹</summary>
+        private bool topCling;
+        /// <summary>已渗过顶面后忽略 SolidTop,避免同平台反复粘</summary>
+        private bool ignoreTops;
 
         public PRT_CrimsonBloodStain Configure(int flyLifetime, float gravityPerFrame = 0.32f
             , float dragMul = 0.985f, int stuckLifetime = 48) {
@@ -215,6 +219,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             splatMul = 1f;
             sag = 0f;
             stuckScale = 1f;
+            topCling = false;
+            ignoreTops = false;
         }
 
         public override void SetProperty() {
@@ -264,8 +270,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             const int hitW = 2;
             const int hitH = 2;
             Vector2 half = new(hitW * 0.5f, hitH * 0.5f);
-            //下落才认平台/桌面等 SolidTop:可上穿、落下滞留
-            bool landTops = Velocity.Y > 0.15f;
+            //下落才认平台/桌面等 SolidTop;渗过后只撞全实心
+            bool landTops = !ignoreTops && Velocity.Y > 0.15f;
 
             Vector2 prev = Position - Velocity;
             bool inSolid = CrimsonHitSurface.Hits(Position - half, hitW, hitH, landTops);
@@ -273,11 +279,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             //前瞻半步:高速时提前咬住表面
             if (!inSolid) {
                 Vector2 ahead = Position + Velocity * 0.55f;
-                bool aheadLand = Velocity.Y + Velocity.Y * 0.55f > 0.15f || landTops;
-                if (CrimsonHitSurface.Hits(ahead - half, hitW, hitH, aheadLand)) {
+                if (CrimsonHitSurface.Hits(ahead - half, hitW, hitH, landTops)) {
                     Position = ahead;
                     inSolid = true;
-                    landTops = aheadLand;
                 }
             }
 
@@ -286,10 +290,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             if (!inSolid && Velocity.Y > 0.5f) {
                 for (float d = 1f; d <= 12f; d += 1f) {
                     Vector2 probe = Position + new Vector2(0f, d);
-                    if (CrimsonHitSurface.Hits(probe - half, hitW, hitH, allowPlatforms: true)) {
+                    if (CrimsonHitSurface.Hits(probe - half, hitW, hitH, allowPlatforms: !ignoreTops)) {
                         Position = probe;
                         inSolid = true;
-                        landTops = true;
+                        landTops = !ignoreTops;
                         snapNormal = -Vector2.UnitY;
                         break;
                     }
@@ -342,33 +346,59 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     }
                     Position = next;
                 }
+            }
+
+            //朝表面内侧探针:全实心永久贴;仅顶面则短暂粘连后渗落
+            Vector2 under = Position - stuckNormal * 2f;
+            bool fullSolid = CrimsonHitSurface.Hits(under - half, hitW, hitH, allowPlatforms: false);
+            topCling = !fullSolid && landTops
+                && CrimsonHitSurface.Hits(under - half, hitW, hitH, allowPlatforms: true);
+
+            if (topCling) {
+                //非固体顶面:贴死不外推,避免微弹;短粘连
+                stickLife = Main.rand.Next(10, 18);
+            }
+            else {
+                //全实心:略抬离表面防陷帧
                 Position += stuckNormal * 0.35f;
             }
 
             phase = Phase.Stuck;
             Velocity = Vector2.Zero;
             stuckAt = Time;
-            Lifetime = Time + stickLife;
-            stuckScale = Scale * 0.72f;
+            Lifetime = Math.Max(Lifetime, Time + stickLife + (topCling ? 28 : 0));
+            stuckScale = Scale * (topCling ? 0.78f : 0.72f);
             splatMul = MathHelper.Clamp(0.55f + impactSpeed * 0.045f, 0.55f, 1.15f)
                 * Main.rand.NextFloat(0.85f, 1.05f);
             Rotation = stuckNormal.ToRotation() + MathHelper.PiOver2;
             Color = initialColor;
             Opacity = 1f;
 
-            if (impactSpeed > 5.5f && Main.rand.NextBool(2)) {
+            //平台粘连不溅跳;实心高速才溅
+            if (!topCling && impactSpeed > 5.5f && Main.rand.NextBool(2)) {
                 SpawnImpactSplash();
             }
         }
 
         private void StuckAI() {
             float held = Time - stuckAt;
-            float stuckT = MathHelper.Clamp(held / stickLife, 0f, 1f);
-            sag = MathHelper.Clamp(held / 36f, 0f, 0.55f);
+            float stuckT = MathHelper.Clamp(held / Math.Max(1, stickLife), 0f, 1f);
+            sag = MathHelper.Clamp(held / (topCling ? 14f : 36f), 0f, topCling ? 0.35f : 0.55f);
 
-            //贴附后轻微铺开
-            float spread = 1f + MathF.Sin(MathHelper.Clamp(stuckT * 2.6f, 0f, 1f) * MathHelper.PiOver2) * 0.10f;
+            //贴附后轻微铺开;顶面粘连更克制
+            float spreadAmp = topCling ? 0.05f : 0.10f;
+            float spread = 1f + MathF.Sin(MathHelper.Clamp(stuckT * 2.6f, 0f, 1f) * MathHelper.PiOver2) * spreadAmp;
             Scale = stuckScale * spread;
+
+            if (topCling) {
+                //短暂压扁粘滞,末段略透明准备渗落
+                Color = Color.Lerp(initialColor, Color.Transparent, MathF.Pow(stuckT, 1.8f) * 0.25f);
+                Opacity = 1f - SmoothStep01((stuckT - 0.55f) / 0.45f) * 0.2f;
+                if (held >= stickLife) {
+                    ReleaseTopCling();
+                }
+                return;
+            }
 
             //更快淡出
             Color = Color.Lerp(initialColor, Color.Transparent, MathF.Pow(stuckT, 1.15f));
@@ -378,6 +408,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             int heldFrames = Time - stuckAt;
             if (heldFrames > 12 && heldFrames % 22 == 0 && Main.rand.NextBool(4) && sag > 0.18f) {
                 SpawnDrip();
+            }
+        }
+
+        /// <summary>顶面粘连结束:向下渗过,之后忽略 SolidTop</summary>
+        private void ReleaseTopCling() {
+            topCling = false;
+            ignoreTops = true;
+            phase = Phase.Flying;
+            //沿重力渗出,不给上向反弹
+            Velocity = new Vector2(Main.rand.NextFloat(-0.35f, 0.35f), Main.rand.NextFloat(1.2f, 2.4f));
+            Position -= stuckNormal * 1.5f;
+            Position += Vector2.UnitY * 2f;
+            Scale = stuckScale * 0.92f;
+            Color = initialColor;
+            Opacity = MathHelper.Clamp(Opacity, 0.65f, 1f);
+            Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
+            //留足下落寿命,落地(实心)仍可再贴
+            if (Lifetime - Time < 36) {
+                Lifetime = Time + Main.rand.Next(36, 52);
             }
         }
 
@@ -445,13 +494,59 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         }
     }
 
-    /// <summary>命中粒子共用表面判定:全实心始终挡;SolidTop 仅下落时挡</summary>
+    /// <summary>
+    /// 命中粒子共用表面判定:全实心始终挡;SolidTop/平台仅下落时挡<br/>
+    /// 勿用 <c>SolidCollision(acceptTopSurfaces)</c>:它要求 <c>SolidTop &amp;&amp; frameY==0</c>,
+    /// 会漏掉非木平台等 frameY&gt;0 的样式;玩家可站立靠的是 TileCollision 的
+    /// <c>tileSolid || (SolidTop &amp;&amp; frameY==0)</c>(平台本身是 tileSolid,任意 frameY 都算)
+    /// </summary>
     internal static class CrimsonHitSurface
     {
         public static bool Hits(Vector2 topLeft, int width, int height, bool allowPlatforms) {
-            return allowPlatforms
-                ? Collision.SolidCollision(topLeft, width, height, acceptTopSurfaces: true)
-                : Collision.SolidCollision(topLeft, width, height);
+            if (!allowPlatforms) {
+                return Collision.SolidCollision(topLeft, width, height);
+            }
+            return HitsIncludingTops(topLeft, width, height);
+        }
+
+        /// <summary>对齐 TileCollision/HitTiles 的物块收录:tileSolid(含各式平台)或顶面家具</summary>
+        private static bool HitsIncludingTops(Vector2 topLeft, int width, int height) {
+            int left = (int)(topLeft.X / 16f) - 1;
+            int right = (int)((topLeft.X + width) / 16f) + 2;
+            int top = (int)(topLeft.Y / 16f) - 1;
+            int bottom = (int)((topLeft.Y + height) / 16f) + 2;
+            left = Utils.Clamp(left, 0, Main.maxTilesX - 1);
+            right = Utils.Clamp(right, 0, Main.maxTilesX - 1);
+            top = Utils.Clamp(top, 0, Main.maxTilesY - 1);
+            bottom = Utils.Clamp(bottom, 0, Main.maxTilesY - 1);
+
+            for (int i = left; i < right; i++) {
+                for (int j = top; j < bottom; j++) {
+                    Tile tile = Main.tile[i, j];
+                    if (!tile.HasUnactuatedTile) {
+                        continue;
+                    }
+                    //与 Collision.TileCollision 收录一致,勿套 acceptTopSurfaces
+                    bool blocks = Main.tileSolid[tile.TileType]
+                        || (Main.tileSolidTop[tile.TileType] && tile.TileFrameY == 0);
+                    if (!blocks) {
+                        continue;
+                    }
+
+                    float tileX = i * 16;
+                    float tileY = j * 16;
+                    int tileH = 16;
+                    if (tile.IsHalfBlock) {
+                        tileY += 8f;
+                        tileH -= 8;
+                    }
+                    if (topLeft.X + width > tileX && topLeft.X < tileX + 16f
+                        && topLeft.Y + height > tileY && topLeft.Y < tileY + tileH) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 
