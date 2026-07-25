@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -205,6 +206,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             modifiers.HitDirectionOverride = MathF.Cos(DashAngle) >= 0f ? 1 : -1;
             OnikiriItem.ApplySlashPenetration(target, ref modifiers);
+            if (CWRLoad.WormBodys.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.65f;
+            }
+            if (CWRLoad.ExoMechAresSegments.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.85f;
+            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

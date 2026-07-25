@@ -338,13 +338,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             return base.CanHitNPC(target);
         }
 
-        /// <summary>巨物减伤(与灭世一闪同表,伤害基数低故略缓):蠕虫节体 0.25,阿瑞斯节段 0.45</summary>
+        /// <summary>巨物减伤(与灭世一闪同表,伤害基数低故略缓):蠕虫节体 0.5,阿瑞斯节段 0.75</summary>
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             if (CWRLoad.WormBodys.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.25f;
             }
             if (CWRLoad.ExoMechAresSegments.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.45f;
+                modifiers.FinalDamage *= 0.5f;
             }
             //髭切「断首」/旧首「取首」:斩杀线内随已损生命递增的终结倍率(owner 端结算,随命中包同步)
             if (OniMeiCombat.TryGetExecuteBonus(Owner, target, out float executeMul)) {

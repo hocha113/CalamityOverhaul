@@ -6,6 +6,7 @@ using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -1294,6 +1295,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 if (okp.IsTideOnBeatNow) {
                     bladeScalePulse = Math.Max(bladeScalePulse, 0.07f);
                 }
+            }
+            if (CWRLoad.WormBodys.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.25f;
+            }
+            if (CWRLoad.ExoMechAresSegments.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.5f;
             }
         }
 

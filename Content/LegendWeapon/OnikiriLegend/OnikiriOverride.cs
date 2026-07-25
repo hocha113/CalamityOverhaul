@@ -50,12 +50,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         public static void LoadWeaponData() {
             //锚点 0/4/9/14/17/20/22,中间线性插值
             DamageDictionary = new Dictionary<int, int> {
-                {0, 12},
-                {1, 22},
-                {2, 32},
-                {3, 50},
-                {4, 72},
-                {5, 81},
+                {0, 10},
+                {1, 16},
+                {2, 22},
+                {3, 30},
+                {4, 60},
+                {5, 80},
                 {6, 90},
                 {7, 100},
                 {8, 109},

@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -225,6 +226,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 ? Math.Sign(offsetX)
                 : (MathF.Cos(Roll) >= 0f ? 1 : -1);
             OnikiriItem.ApplySlashPenetration(target, ref modifiers);
+            if (CWRLoad.WormBodys.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.5f;
+            }
+            if (CWRLoad.ExoMechAresSegments.Contains(target.type)) {
+                modifiers.FinalDamage *= 0.75f;
+            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

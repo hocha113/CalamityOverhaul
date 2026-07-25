@@ -266,13 +266,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             return base.CanHitNPC(target);
         }
 
-        /// <summary>蠕虫0.2 阿瑞斯节段0.4</summary>
+        /// <summary>蠕虫0.55 阿瑞斯节段0.75</summary>
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             if (CWRLoad.WormBodys.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.2f;
+                modifiers.FinalDamage *= 0.55f;
             }
             if (CWRLoad.ExoMechAresSegments.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.4f;
+                modifiers.FinalDamage *= 0.75f;
             }
             //髭切「断首」/旧首「取首」:斩杀线内随已损生命递增的终结倍率(owner 端结算,随命中包同步)
             if (OniMeiCombat.TryGetExecuteBonus(Owner, target, out float executeMul)) {

@@ -297,13 +297,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             return base.CanHitNPC(target);
         }
 
-        /// <summary>巨物减伤（参照村正处刑斩）、蠕虫节体 0.2，阿瑞斯节段 0.4</summary>
+        /// <summary>巨物减伤（参照村正处刑斩）、蠕虫节体 0.5，阿瑞斯节段 0.75</summary>
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             if (CWRLoad.WormBodys.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.2f;
+                modifiers.FinalDamage *= 0.5f;
             }
             if (CWRLoad.ExoMechAresSegments.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.4f;
+                modifiers.FinalDamage *= 0.75f;
             }
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Main.player[Projectile.owner].GetModPlayer<OnikiriPlayer>().TryConsumePlantedStep(ref modifiers);
