@@ -425,8 +425,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         /// <summary>深度→近景权重,±0.22 交叉淡化</summary>
         private static float NearWeight(float depth) => CSR.SmoothStep01((depth + 0.22f) / 0.44f);
 
-        /// <summary>深度→透视缩放,按当前 z 幅度走真透视除法(身后缩小身前放大)</summary>
-        private float DepthScale(float depth) => CSR.PerspectiveK(depth * bladeDepthAmpPx);
+        /// <summary>深度→透视缩放,透视除法软化 60% 再夹紧;刀光是正交投影,刀身独享全额透视会读作比刀光大一圈</summary>
+        private float DepthScale(float depth) => MathHelper.Clamp(
+            MathHelper.Lerp(1f, CSR.PerspectiveK(depth * bladeDepthAmpPx), 0.6f), 0.82f, 1.18f);
 
         /// <summary>体态倾斜幅度(rad),收势反向蓄、爆发正向甩</summary>
         private static float BeatLeanAmp(int beat) => beat switch {

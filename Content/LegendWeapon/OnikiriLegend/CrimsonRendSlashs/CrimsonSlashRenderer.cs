@@ -191,13 +191,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         public static float DepthAmp(in SlashDef d) => d.DepthSign == 0f ? 0f
             : MathF.Sqrt(MathF.Abs(d.HalfX * d.HalfX - d.HalfY * d.HalfY));
 
-        /// <summary>刀光带 uc 处伪 z(px,+朝观者)</summary>
+        /// <summary>刀光带 uc 处伪 z(px,+朝观者);相位不含 Flip,深度剖面沿笔画固定、不随朝向镜像</summary>
         public static float DepthAt(in SlashDef d, float uc) {
             float amp = DepthAmp(in d);
             if (amp <= 0f) {
                 return 0f;
             }
-            float phi = d.Flip * (uc - 0.5f) * d.Span;
+            float phi = (uc - 0.5f) * d.Span;
             float c = d.HalfX >= d.HalfY ? MathF.Sin(phi) : MathF.Cos(phi);
             return c * 0.90f * amp * d.DepthSign;
         }
@@ -307,11 +307,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             float hy = d.HalfY * anim.ScaleMul * scaleMul;
 
             //远近半侧,有 z 通道时远侧=z<0 半侧(与刀身深度同源);否则退回世界"屏幕上方"启发
+            //横椭圆 z∝sin(不含 Flip 的基准角),映回本地 y 轴须乘 Flip 镜像
             Vector2 farDirLocal = Vector2.Zero;
             if (d.FarDim > 0f && farSel != 0f) {
                 if (d.DepthSign != 0f) {
+                    float flipSign = d.Flip < 0f ? -1f : 1f;
                     farDirLocal = d.HalfX >= d.HalfY
-                        ? new Vector2(0f, -d.DepthSign)
+                        ? new Vector2(0f, -d.DepthSign * flipSign)
                         : new Vector2(-d.DepthSign, 0f);
                 }
                 else {
