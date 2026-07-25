@@ -61,11 +61,6 @@ float noiseTex(float2 uv) {
     return tex2D(uImage1, uv).r;
 }
 
-//tex2Dlod 版噪声：供动态分支内取样（规避梯度指令限制）
-float noiseLod(float2 uv) {
-    return tex2Dlod(uImage1, float4(uv, 0.0, 0.0)).r;
-}
-
 //墨水浸染遮罩：毛边墨须为双频笛卡尔噪声扰动前沿
 //返回 x=覆盖遮罩 y=前沿淤积带，两个 technique 共用同一前沿
 float2 spreadMaskFront(float2 coords) {
@@ -85,6 +80,8 @@ float2 spreadMaskFront(float2 coords) {
 
 //开合墨墙：浓黑墨环叠红环，扩散/吸回的视觉主体（仅 TechUnify 压全帧）
 //返回 x=墨体 y=内缘红烬 z=前缘红棱 w=尾随墨环
+//始终整算、由调用方乘门控合成：动态分支/tex2Dlod 会在 FNA 效果翻译下
+//损坏整个 effect（全帧糊成单色），必须沿用本文件 step/lerp 纪律
 float4 inkWallLayers(float2 coords) {
     float diag = length(uScreenSize);
     float2 rel = (coords * uScreenSize - uSpreadOrigin) / diag;
@@ -92,8 +89,8 @@ float4 inkWallLayers(float2 coords) {
     float2 flowDir = rel / max(dist, 0.0015);
 
     //前沿定位与 spreadMaskFront 同一套 sd，墙体骑在调色揭示线上
-    float n1 = noiseLod(coords * 2.3 + uTime * 0.012);
-    float n2 = noiseLod(coords * 5.1 - uTime * 0.017);
+    float n1 = noiseTex(coords * 2.3 + uTime * 0.012);
+    float n2 = noiseTex(coords * 5.1 - uTime * 0.017);
     float jag = n1 * 0.6 + n2 * 0.4;
     float jagAmp = lerp(0.030, 0.160, smoothstep(0.10, 0.70, uSpreadProgress));
     float sd = dist + (jag - 0.5) * jagAmp - uSpreadProgress * 1.18;
@@ -102,12 +99,12 @@ float4 inkWallLayers(float2 coords) {
     float lead = 1.0 - smoothstep(-0.004, 0.034, sd);
     float trailJag = (n2 - 0.5) * 0.06;
     float trail = smoothstep(-WALL_W - 0.050 + trailJag, -WALL_W + 0.014 + trailJag, sd);
-    float wisp = 0.70 + 0.30 * noiseLod(coords * 3.4 + float2(uTime * 0.021, -uTime * 0.014));
+    float wisp = 0.70 + 0.30 * noiseTex(coords * 3.4 + float2(uTime * 0.021, -uTime * 0.014));
     float wall = lead * trail * wisp;
 
     //内缘红烬：贴墨体内侧、沿径向外流的絮状光带
     float emberSd = sd + WALL_W * 0.70;
-    float streak = 0.35 + 0.65 * noiseLod(coords * 4.6 - flowDir * (uTime * 0.055));
+    float streak = 0.35 + 0.65 * noiseTex(coords * 4.6 - flowDir * (uTime * 0.055));
     float ember = exp(-emberSd * emberSd / 0.0011) * streak * lead;
 
     //前缘红棱：细亮线勾住浪头
@@ -241,16 +238,15 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     float3 final = lerp(src, tone, mf.x);
 
     //开合墨墙压全帧（含实体）：黑墨环叠红环，前沿即领域之壁
+    //门控乘法而非分支，稳态时 wallGate=0 自然归零
     float wallGate = step(0.5, uSpreadMode) * uWallFade;
-    [branch] if (wallGate > 0.001) {
-        float4 wl = inkWallLayers(coords) * wallGate;
-        float emberHot = 0.50 + 0.95 * uFrontEmber;
-        final = lerp(final, float3(0.043, 0.036, 0.055), wl.x * 0.94);
-        final += float3(0.80, 0.11, 0.06) * wl.y * emberHot;
-        final += float3(0.98, 0.20, 0.12) * wl.z * (0.55 + 0.75 * uFrontEmber);
-        final = lerp(final, final * float3(0.26, 0.22, 0.31), wl.w * 0.85);
-        final += float3(0.55, 0.07, 0.04) * wl.w * (0.25 + 0.55 * uFrontEmber);
-    }
+    float4 wl = inkWallLayers(coords) * wallGate;
+    float emberHot = 0.50 + 0.95 * uFrontEmber;
+    final = lerp(final, float3(0.043, 0.036, 0.055), wl.x * 0.94);
+    final += float3(0.80, 0.11, 0.06) * wl.y * emberHot;
+    final += float3(0.98, 0.20, 0.12) * wl.z * (0.55 + 0.75 * uFrontEmber);
+    final = lerp(final, final * float3(0.26, 0.22, 0.31), wl.w * 0.85);
+    final += float3(0.55, 0.07, 0.04) * wl.w * (0.25 + 0.55 * uFrontEmber);
 
     //负片闪：全画面事件，旧世界日月化眼的一瞬
     final = lerp(final, 1.0 - final, uNegativeFlash * 0.92);
