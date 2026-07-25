@@ -629,6 +629,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         private static void BuildVertices(PlayerDismemberEntry entry) {
             vertexScratch.Clear();
             Vector2 snapHalf = new(entry.SnapWidth * 0.5f, entry.SnapHeight * 0.5f);
+            int maxVerts = 0;
+            for (int i = 0; i < entry.Pieces.Count; i++) {
+                if (entry.Pieces[i].Length > maxVerts) {
+                    maxVerts = entry.Pieces[i].Length;
+                }
+            }
+            //一次 stackalloc，循环内复用（CA2014：循环内每次 stackalloc 到方法返回才释放）
+            Span<Vector2> world = stackalloc Vector2[maxVerts];
 
             for (int i = 0; i < entry.Pieces.Count; i++) {
                 Vector2[] piece = entry.Pieces[i];
@@ -644,7 +652,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 float sin = MathF.Sin(rotation);
                 float cos = MathF.Cos(rotation);
 
-                Span<Vector2> world = stackalloc Vector2[piece.Length];
                 for (int k = 0; k < piece.Length; k++) {
                     Vector2 rel = piece[k] - centroid;
                     Vector2 spun = new(rel.X * cos - rel.Y * sin, rel.X * sin + rel.Y * cos);

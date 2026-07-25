@@ -165,19 +165,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         private static void BuildVertices(DismemberEntry entry) {
             vertexScratch.Clear();
             int requiredCapacity = 0;
+            int maxVerts = 0;
             foreach (DismemberPiece piece in entry.Pieces) {
                 requiredCapacity += Math.Max(piece.Verts.Length - 2, 0) * 3;
+                if (piece.Verts.Length > maxVerts) {
+                    maxVerts = piece.Verts.Length;
+                }
             }
             vertexScratch.EnsureCapacity(requiredCapacity);
             Color tint = Color.White * entry.FadeAlpha;
             Vector2 snapHalf = new(entry.SnapWidth * 0.5f, entry.SnapHeight * 0.5f);
+            //一次 stackalloc，循环内复用（CA2014：循环内每次 stackalloc 到方法返回才释放）
+            Span<Vector2> world = stackalloc Vector2[maxVerts];
 
             foreach (DismemberPiece piece in entry.Pieces) {
                 OniDismember.GetPieceMotion(entry, piece, out Vector2 offset, out float rotation);
                 float sin = MathF.Sin(rotation);
                 float cos = MathF.Cos(rotation);
 
-                Span<Vector2> world = stackalloc Vector2[piece.Verts.Length];
                 for (int i = 0; i < piece.Verts.Length; i++) {
                     //绕碎片质心旋转 → 平移分离位移 → 锚点定位；uv 恒取原始局部坐标
 
