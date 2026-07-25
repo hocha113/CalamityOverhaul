@@ -274,9 +274,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             if (CWRLoad.ExoMechAresSegments.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.4f;
             }
-            //髭切「断首」:斩杀线内随已损生命递增的终结倍率(owner 端结算,随命中包同步)
+            //髭切「断首」/旧首「取首」:斩杀线内随已损生命递增的终结倍率(owner 端结算,随命中包同步)
             if (OniMeiCombat.TryGetExecuteBonus(Owner, target, out float executeMul)) {
                 modifiers.FinalDamage *= executeMul;
+            }
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                Owner.GetModPlayer<OnikiriPlayer>().TryConsumePlantedStep(ref modifiers);
             }
             float offsetX = Projectile.To(target.Center).X;
             modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
@@ -367,6 +370,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             //髭切断首:入线命中画断线,了结返势(每闪一次)
             if (Projectile.IsOwnedByLocalPlayer()) {
                 OniMeiCombat.OnExecuteStrikeHit(Owner, target, CutAngle, ref executeRefunded);
+                if (!target.active || target.life <= 0) {
+                    Owner.GetModPlayer<OnikiriPlayer>().TryPetalPruneOnKill(target, Projectile.damage, Projectile.knockBack);
+                }
             }
 
             if (Main.dedServ) {

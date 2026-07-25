@@ -1,7 +1,8 @@
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 {
     //铭文名册：每铭=一个可感知赋效+一项明确负担，数值全走 OniMeiCombatProfile 叠算；
-    //茎铭取髭切一系改名史，Key 沿用保证存档连续。扩册 15 为同族变体（型号 B）
+    //茎铭取髭切一系改名史，Key 沿用保证存档连续。
+    //L0 已改型号 U：铁截/滞樋/闲樋/镇鸣；其余扩册暂仍型号 B 待下批。
 
     /// <summary>髭切，斩首连须的旧名：残血终结增强，面板伤害 -10%</summary>
     internal sealed class MeiHigekiri : OniMeiDefinition
@@ -22,19 +23,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Nakago;
     }
 
-    /// <summary>铁截，拆台断首变体：斩杀线仍开，面板更钝</summary>
+    /// <summary>铁截，拆台钝铁：连段首击截金钢铁体，血肉局面板钝</summary>
     internal sealed class MeiTessetsu : OniMeiDefinition
     {
         public override int SortOrder => 25;
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Nakago;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.DamageMul *= 0.85f;
-            profile.ExecuteLowLifeBonus = true;
+            profile.DamageMul *= 0.88f;
+            profile.IronSever = true;
         }
     }
 
-    /// <summary>旧首，断首变体：面板税略轻，斩杀仍开</summary>
+    /// <summary>旧首，取首：残心/灭世专收头残血；清杂略钝</summary>
     internal sealed class MeiKyushu : OniMeiDefinition
     {
         public override int SortOrder => 28;
@@ -42,7 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
             profile.DamageMul *= 0.92f;
-            profile.ExecuteLowLifeBonus = true;
+            profile.HeadHunt = true;
         }
     }
 
@@ -59,27 +60,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
     }
 
-    /// <summary>息合，合颚预告变体（非金）：合颚仍开，连段变慢更轻</summary>
+    /// <summary>息合，吐息刀压：短蓄松手行进定锚断斩链</summary>
     internal sealed class MeiIkiai : OniMeiDefinition
     {
         public override int SortOrder => 32;
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Nakago;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.ComboGapMul *= 1.05f;
-            profile.LionRoar = true;
+            profile.BreathWave = true;
         }
     }
 
-    /// <summary>虚吼，合颚失焦变体：合颚开，连段更慢</summary>
+    /// <summary>虚吼，空鸣：空场周期威压；远离再近一刀；贴身失焦</summary>
     internal sealed class MeiKyoko : OniMeiDefinition
     {
         public override int SortOrder => 35;
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Nakago;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.ComboGapMul *= 1.14f;
-            profile.LionRoar = true;
+            profile.HollowRoar = true;
         }
     }
 
@@ -95,27 +94,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
     }
 
-    /// <summary>假切，咎影学步变体：影仍开，承伤税略重</summary>
+    /// <summary>假切，假身：疾走留残影吸一击；影在/影破承伤与疾走税</summary>
     internal sealed class MeiKarikiri : OniMeiDefinition
     {
         public override int SortOrder => 42;
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Nakago;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.IncomingDamageMul *= 1.12f;
-            profile.GuiltEcho = true;
+            profile.FalseBody = true;
         }
     }
 
-    /// <summary>默切，终局沉咎变体：影仍开，承伤税略轻</summary>
+    /// <summary>默切，默杀：疾走结束后短窗下一刀加深；狂闪不亮</summary>
     internal sealed class MeiMokukiri : OniMeiDefinition
     {
         public override int SortOrder => 45;
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Nakago;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.IncomingDamageMul *= 1.08f;
-            profile.GuiltEcho = true;
+            profile.SilentKill = true;
         }
     }
 
@@ -133,31 +130,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
     }
 
-    /// <summary>焦樋，避热顺风变体：疾走更省，墨痕税更狠</summary>
+    /// <summary>焦樋，焦痕：疾走路径留短灼地；站桩亏输出</summary>
     internal sealed class MeiKogehi : OniMeiDefinition
     {
         public override int SortOrder => 52;
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Hi;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.DashVigorCostMul *= 0.70f;
-            profile.SakuraDrainMul *= 0.75f;
-            profile.FlashMarkDamageMul *= 0.65f;
-            profile.WindGroove = true;
+            profile.DamageMul *= 0.92f;
+            profile.ScorchTrail = true;
         }
     }
 
-    /// <summary>闲樋，清静顺风变体：樱流更省，疾走省气略弱</summary>
+    /// <summary>闲樋，清静回气：脱战闲息快回；交战疾走/樱流略贵</summary>
     internal sealed class MeiKanhi : OniMeiDefinition
     {
         public override int SortOrder => 55;
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Hi;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.DashVigorCostMul *= 0.80f;
-            profile.SakuraDrainMul *= 0.60f;
-            profile.FlashMarkDamageMul *= 0.80f;
-            profile.WindGroove = true;
+            profile.DashVigorCostMul *= 1.12f;
+            profile.SakuraDrainMul *= 1.12f;
+            profile.QuietBreath = true;
         }
     }
 
@@ -176,48 +170,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
     }
 
-    /// <summary>滞樋，黏着回流变体：连段回气略多，脱战延迟更重</summary>
+    /// <summary>滞樋，黏着之槽：命中黏敌，疾走起步自黏</summary>
     internal sealed class MeiTodohi : OniMeiDefinition
     {
         public override int SortOrder => 62;
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Hi;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.NaturalRegenMul *= 0.45f;
-            profile.ExtraRegenDelayTicks += 30;
-            profile.ComboHitVigorBonus += 3f;
-            profile.ZanshinHitVigorBonus += 7f;
-            profile.BloodGroove = true;
+            profile.StickyBind = true;
         }
     }
 
-    /// <summary>谢樋，剪除回流变体：残心回气更厚，连段回气略薄</summary>
+    /// <summary>谢樋，剪落：击杀溅邻域小剪刃；空磨旱</summary>
     internal sealed class MeiShiorihi : OniMeiDefinition
     {
         public override int SortOrder => 65;
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Hi;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.NaturalRegenMul *= 0.55f;
-            profile.ExtraRegenDelayTicks += 20;
-            profile.ComboHitVigorBonus += 1f;
-            profile.ZanshinHitVigorBonus += 11f;
-            profile.BloodGroove = true;
+            profile.NaturalRegenMul *= 0.85f;
+            profile.PetalPrune = true;
         }
     }
 
-    /// <summary>潮樋，潮湿回流变体：命中回气拉长感，自然回气更差</summary>
+    /// <summary>潮樋，潮拍：合潮回气；错拍连段略亏</summary>
     internal sealed class MeiShiohi : OniMeiDefinition
     {
         public override int SortOrder => 68;
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Hi;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.NaturalRegenMul *= 0.40f;
-            profile.ExtraRegenDelayTicks += 28;
-            profile.ComboHitVigorBonus += 2f;
-            profile.ZanshinHitVigorBonus += 10f;
-            profile.BloodGroove = true;
+            profile.TideBeat = true;
         }
     }
 
@@ -233,7 +216,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
     }
 
-    /// <summary>痺雕，厚护变体：护仍开，架势税更重</summary>
+    /// <summary>痺雕，痺反：穿身格挡成功反麻来手；架势账更苛</summary>
     internal sealed class MeiShibori : OniMeiDefinition
     {
         public override int SortOrder => 72;
@@ -241,11 +224,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
             profile.StanceGainMul *= 0.70f;
-            profile.StanceGuard = true;
+            profile.NumbCounter = true;
         }
     }
 
-    /// <summary>镇鸣，耳嗡护身变体：护仍开，架势税略轻</summary>
+    /// <summary>镇鸣，耳嗡抗弹：受弹伤/击退削弱；架势获取略慢</summary>
     internal sealed class MeiChinmei : OniMeiDefinition
     {
         public override int SortOrder => 75;
@@ -253,19 +236,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
             profile.StanceGainMul *= 0.85f;
-            profile.StanceGuard = true;
+            profile.QuellProjectiles = true;
         }
     }
 
-    /// <summary>止足，站住收束变体：护仍开，架势税中等</summary>
+    /// <summary>止足，止步：立定充电后残心/灭世/第五拍加深；跑砍无</summary>
     internal sealed class MeiAshidome : OniMeiDefinition
     {
         public override int SortOrder => 78;
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Horimono;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.StanceGainMul *= 0.78f;
-            profile.StanceGuard = true;
+            profile.PlantedStep = true;
         }
     }
 
@@ -282,15 +264,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
     }
 
-    /// <summary>余炎，龙火余烬变体：龙火仍开，气上限税略轻</summary>
+    /// <summary>余炎，余烬场：处决后留持续灼地；气上限略紧，场在疾走更贵</summary>
     internal sealed class MeiYoen : OniMeiDefinition
     {
         public override int SortOrder => 85;
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Horimono;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.VigorMaxMul *= 0.85f;
-            profile.DragonfireLoop = true;
+            profile.VigorMaxMul *= 0.90f;
+            profile.EmberField = true;
         }
     }
 }

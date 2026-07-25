@@ -200,6 +200,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             Lighting.AddLight(Projectile.Center, glow * seam * 1.2f);
         }
 
+        public override void OnKill(int timeLeft) {
+            if (Projectile.IsOwnedByLocalPlayer() && !resourceGranted) {
+                Owner.GetModPlayer<OnikiriPlayer>().NotifyEmptyZanshin();
+            }
+        }
+
         /// <summary>踏步前压:出刀头 3 帧沿刀线小步压进(子步碰撞),旧动量顺势衰减不清零</summary>
         private void StepIn() {
             if (!Projectile.IsOwnedByLocalPlayer() || timer > StepFrames
@@ -340,9 +346,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             if (CWRLoad.ExoMechAresSegments.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.45f;
             }
-            //髭切「断首」:斩杀线内随已损生命递增的终结倍率(owner 端结算,随命中包同步)
+            //髭切「断首」/旧首「取首」:斩杀线内随已损生命递增的终结倍率(owner 端结算,随命中包同步)
             if (OniMeiCombat.TryGetExecuteBonus(Owner, target, out float executeMul)) {
                 modifiers.FinalDamage *= executeMul;
+            }
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
+                okp.ApplyZanshinMeiConsumeMuls(ref modifiers);
+                okp.ApplyHollowRoarHitMuls(ref modifiers);
             }
             float offsetX = Projectile.To(target.Center).X;
             modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
@@ -433,9 +444,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             if (Projectile.IsOwnedByLocalPlayer()) {
                 bool grantResources = !resourceGranted;
                 resourceGranted = true;
-                Owner.GetModPlayer<OnikiriPlayer>().OnZanshinHit(target, grantResources);
+                OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
+                okp.OnZanshinHit(target, grantResources);
                 //髭切断首:入线命中画断线,了结返势(每刀一次)
                 OniMeiCombat.OnExecuteStrikeHit(Owner, target, CutAngle, ref executeRefunded);
+                if (!target.active || target.life <= 0) {
+                    okp.TryPetalPruneOnKill(target, Projectile.damage, Projectile.knockBack);
+                }
             }
 
             if (Main.dedServ) {

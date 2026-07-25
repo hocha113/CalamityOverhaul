@@ -195,6 +195,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             curAim = Projectile.ai[0];
             scheduling = true;
             nextBeatTime = FirstWindupFrames + 1;
+            meiProfile = OniMeiCombat.Resolve(Item);
+            if (meiProfile.BreathWave) {
+                nextBeatTime = OniMeiCombat.BreathMaxChargeTicks + 1;
+            }
         }
 
         /// <summary>五段弧形变奏美术参数,Seed 掺入出生帧防循环同噪声</summary>
@@ -498,16 +502,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             bool holding = (DownLeft || pressBuffer > 0) && canContinue && !yielding;
 
             //首拍纯起手窗,走完无条件出刀;仅首次有此前摇
+            //息合:前摇拉长为蓄息窗,松手且够蓄则吐息刀压
             if (!firstBeatFired) {
                 if (yielding || OniBladeOccupancy.BladeReserved(Owner)) {
                     //技能/签名拍保留优先,前摇计数不走
                     return;
                 }
+                bool breath = meiProfile.BreathWave;
+                int windupNeed = breath ? OniMeiCombat.BreathMaxChargeTicks : FirstWindupFrames;
                 if (++firstWindupTicks == 1) {
                     //起手第一帧继承交接刀角
                     hasHandoff = OniBladeHandoff.TryPeek(Owner, out handoffRot, out _);
+                    meiProfile = OniMeiCombat.Resolve(Item);
+                    breath = meiProfile.BreathWave;
+                    windupNeed = breath ? OniMeiCombat.BreathMaxChargeTicks : FirstWindupFrames;
                 }
-                if (firstWindupTicks > FirstWindupFrames) {
+                if (breath && Projectile.IsOwnedByLocalPlayer()) {
+                    OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
+                    okp.ReportBreathChargeFromSlash(firstWindupTicks);
+                    if (!holding) {
+                        if (firstWindupTicks >= OniMeiCombat.BreathMinChargeTicks
+                            && okp.TryReleaseBreathWave()) {
+                            Projectile.Kill();
+                            return;
+                        }
+                        okp.ClearBreathCharge();
+                        Projectile.Kill();
+                        return;
+                    }
+                }
+                if (firstWindupTicks > windupNeed) {
+                    if (breath && Projectile.IsOwnedByLocalPlayer()) {
+                        Owner.GetModPlayer<OnikiriPlayer>().ClearBreathCharge();
+                    }
                     FireBeat();
                     firstBeatFired = true;
                     scheduling = holding;
@@ -647,7 +674,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 bladeEdgeFlip = EdgeFlipOf(in first, facing);
                 float startRot = BladePathRotation(in first, aim, facing, BladePathStart);
                 float sweepSign = PathSweepSign(in first, aim, facing);
-                float windT = CSR.EaseOutCubic(MathHelper.Clamp(firstWindupTicks / (float)FirstWindupFrames, 0f, 1f));
+                int windFrames = meiProfile.BreathWave ? OniMeiCombat.BreathMaxChargeTicks : FirstWindupFrames;
+                float windT = CSR.EaseOutCubic(MathHelper.Clamp(firstWindupTicks / (float)Math.Max(windFrames, 1), 0f, 1f));
                 targetRotation = hasHandoff
                     ? OniBladePose.LerpAngle(handoffRot, startRot - sweepSign * 0.55f, windT)
                     : startRot - sweepSign * 0.55f * windT;
@@ -1142,6 +1170,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 ? Math.Sign(offsetX)
                 : (MathF.Cos(a?.Aim ?? curAim) >= 0f ? 1 : -1);
             OnikiriItem.ApplySlashPenetration(target, ref modifiers);
+            //与 OnComboHit grantResources 同门：本拍尚未结算资源的首次命中
+            if (Projectile.IsOwnedByLocalPlayer() && a != null && !a.ResourceGranted) {
+                OniMeiCombat.TryApplyIronSever(Owner, target, ref modifiers);
+                OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
+                okp.TryConsumeSilentKill(ref modifiers);
+                if (a.Beat == BeatCount - 1) {
+                    okp.TryConsumePlantedStep(ref modifiers);
+                }
+                okp.TryApplyTideOffBeatHit(ref modifiers);
+                okp.ApplyHollowRoarHitMuls(ref modifiers);
+                if (okp.IsTideOnBeatNow) {
+                    bladeScalePulse = Math.Max(bladeScalePulse, 0.07f);
+                }
+            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -1154,7 +1196,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 if (grantResources) {
                     a.ResourceGranted = true;
                 }
-                Owner.GetModPlayer<OnikiriPlayer>().OnComboHit(target, grantResources);
+                OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
+                okp.OnComboHit(target, grantResources);
+                if (!target.active || target.life <= 0) {
+                    okp.TryPetalPruneOnKill(target, Projectile.damage, Projectile.knockBack);
+                }
             }
 
             //每拍首次命中爆点,强度按拍位递增

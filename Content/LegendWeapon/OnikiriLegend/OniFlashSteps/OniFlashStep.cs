@@ -67,6 +67,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private bool dashPresentationStarted;
         private bool interruptHandoff;
         private float interruptStartRotation;
+        /// <summary>焦痕：本疾走已累计采样路程</summary>
+        private float scorchAccDist;
+        /// <summary>焦痕：本疾走已生成坑数</summary>
+        private int scorchSpawned;
 
         private bool judged;
         private float headExt;           //刹停后流带头端 follow-through 残余外推
@@ -168,6 +172,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             path.Add(GetCenter());
             if (Owner.whoAmI == Main.myPlayer) {
                 Owner.RemoveAllGrapplingHooks();
+                if (OniMeiCombat.ResolveHeld(Owner).FalseBody) {
+                    OniMeiFalseBody.Fire(Owner, Owner.Center);
+                }
             }
 
             if (interruptHandoff) {
@@ -289,8 +296,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 path.Add(GetCenter());
             }
 
+            TrySampleScorchTrail(prevHead, GetCenter());
+
             if (!Main.dedServ && moved > 1f) {
                 SpawnDashWisps(prevHead, GetCenter());
+            }
+        }
+
+        /// <summary>焦樋：疾走路径节流落灼地</summary>
+        private void TrySampleScorchTrail(Vector2 from, Vector2 to) {
+            if (!Projectile.IsOwnedByLocalPlayer() || scorchSpawned >= OniMeiCombat.ScorchMaxPerDash) {
+                return;
+            }
+            OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
+            if (!okp.Mei.ScorchTrail) {
+                return;
+            }
+            float step = Vector2.Distance(from, to);
+            if (step < 0.5f) {
+                return;
+            }
+            scorchAccDist += step;
+            while (scorchAccDist >= OniMeiCombat.ScorchSampleDist
+                && scorchSpawned < OniMeiCombat.ScorchMaxPerDash) {
+                scorchAccDist -= OniMeiCombat.ScorchSampleDist;
+                int dmg = Math.Max(1, (int)(Projectile.damage * OniMeiCombat.ScorchDamageMul));
+                OniMeiGroundBurn.TrySpawnOrRefresh(Owner, to, dmg, OniMeiCombat.ScorchLifeTicks
+                    , OniMeiCombat.ScorchScale, OniMeiBurnStyle.Scorch);
+                scorchSpawned++;
             }
         }
 
@@ -332,6 +365,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Owner.GetModPlayer<OnikiriPlayer>().OpenZanshinWindow(
                     JudgmentFrame - timer, marked.Count, dashDir);
+                Owner.GetModPlayer<OnikiriPlayer>().ArmSilentKillFromDash();
             }
 
             if (!Main.dedServ) {

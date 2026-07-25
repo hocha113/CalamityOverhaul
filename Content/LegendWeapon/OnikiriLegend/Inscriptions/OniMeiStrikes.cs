@@ -89,6 +89,83 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             }
         }
 
+        /// <summary>谢樋剪落:了结点溅一小段邻域剪刃;花瓣仅 PRT;不得再触发剪落</summary>
+        public static void FirePetalPrune(Player player, Vector2 origin, float aim, int weaponDamage, float knockback) {
+            int damage = Math.Max(1, (int)(weaponDamage * OniMeiCombat.PetalPruneDamageMul));
+            CrimsonRendCleave.Fire(player, origin, aim, damage, knockback * 0.25f, scale: 0.72f
+                , flip: Main.rand.NextBool() ? 1 : -1, player.GetSource_ItemUse(player.HeldItem)
+                , CleaveStyle.PetalPrune);
+
+            if (Main.dedServ) {
+                return;
+            }
+            Vector2 aimDir = aim.ToRotationVector2();
+            for (int i = 0; i < 8; i++) {
+                Vector2 vel = aimDir.RotatedByRandom(0.9f) * Main.rand.NextFloat(2.5f, 7f)
+                    - Vector2.UnitY * Main.rand.NextFloat(0.2f, 1.4f);
+                PRTLoader.NewParticle<PRT_CrimsonSpark>(origin + Main.rand.NextVector2Circular(18f, 18f)
+                    , vel, new Color(255, 150, 170), Main.rand.NextFloat(0.22f, 0.4f))
+                    ?.Configure(Main.rand.Next(14, 24), affectedByGravity: true);
+            }
+        }
+
+        /// <summary>虚吼空鸣:空场低压脉冲,半径内 Slow,无狮颚伤害</summary>
+        public static void FireHollowRoarPulse(Player player) {
+            if (player == null) {
+                return;
+            }
+            Vector2 center = player.Center;
+            float radiusSq = OniMeiCombat.HollowRoarRadius * OniMeiCombat.HollowRoarRadius;
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (!npc.CanBeChasedBy() || npc.friendly) {
+                    continue;
+                }
+                if (npc.DistanceSQ(center) > radiusSq) {
+                    continue;
+                }
+                npc.AddBuff(BuffID.Slow, OniMeiCombat.HollowRoarSlowTicks);
+            }
+            if (Main.dedServ) {
+                return;
+            }
+            for (int i = 0; i < 10; i++) {
+                Vector2 dir = (MathHelper.TwoPi * i / 10f).ToRotationVector2();
+                PRTLoader.NewParticle<PRT_CrimsonSmoke>(center + dir * 28f, dir * Main.rand.NextFloat(1.2f, 2.8f)
+                    , Color.White, Main.rand.NextFloat(0.06f, 0.10f))
+                    ?.Configure(Main.rand.Next(16, 26), new Color(90, 28, 40), new Color(22, 10, 16));
+            }
+            CrimsonImpactFX.PushImpact(center, 0.06f);
+        }
+
+        /// <summary>
+        /// 息合吐息刀压:首段立刻定锚,余段交 Player 队列按间隔推进;
+        /// 不回调气/架势
+        /// </summary>
+        public static void FireBreathWave(Player player, Vector2 origin, float aim, int weaponDamage, float knockback) {
+            if (player == null || !player.TryGetModPlayer(out OnikiriPlayer okp)) {
+                return;
+            }
+            int damage = Math.Max(1, (int)(weaponDamage * OniMeiCombat.BreathWaveDamageMul));
+            Vector2 aimDir = aim.ToRotationVector2();
+            //首段略离身,读作吐出
+            Vector2 first = origin + aimDir * (OniMeiCombat.BreathWaveSpacing * 0.55f);
+            CrimsonRendCleave.Fire(player, first, aim, damage, knockback * 0.35f, scale: 0.95f
+                , flip: 1, player.GetSource_ItemUse(player.HeldItem), CleaveStyle.BreathWave);
+            okp.BeginBreathWaveChain(origin, aim, damage, knockback
+                , remainingSegments: OniMeiCombat.BreathWaveSegments - 1);
+
+            if (Main.dedServ) {
+                return;
+            }
+            for (int i = 0; i < 6; i++) {
+                PRTLoader.NewParticle<PRT_CrimsonSpark>(first + Main.rand.NextVector2Circular(12f, 12f)
+                    , aimDir.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 6f)
+                    , new Color(255, 236, 220), Main.rand.NextFloat(0.22f, 0.38f))
+                    ?.Configure(Main.rand.Next(10, 16), affectedByGravity: false);
+            }
+            CrimsonImpactFX.PushImpact(first, 0.08f);
+        }
+
         //==================== 逐拍/状态演出 ====================
 
         /// <summary>狮势蓄势:成功续拍时刀光背缘的暗金共振线(全客户端,量随链数)</summary>

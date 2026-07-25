@@ -305,6 +305,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             if (CWRLoad.ExoMechAresSegments.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.4f;
             }
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                Main.player[Projectile.owner].GetModPlayer<OnikiriPlayer>().TryConsumePlantedStep(ref modifiers);
+            }
             float offsetX = Projectile.To(target.Center).X;
             modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
                 ? Math.Sign(offsetX)
@@ -323,6 +326,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.45f, Volume = 0.9f }, target.Center);
+
+            if (Projectile.IsOwnedByLocalPlayer() && (!target.active || target.life <= 0)) {
+                Main.player[Projectile.owner].GetModPlayer<OnikiriPlayer>()
+                    .TryPetalPruneOnKill(target, Projectile.damage, Projectile.knockBack);
+            }
 
             if (Main.dedServ) {
                 return;

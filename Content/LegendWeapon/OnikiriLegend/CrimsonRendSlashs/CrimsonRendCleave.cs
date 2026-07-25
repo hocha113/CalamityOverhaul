@@ -25,6 +25,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         GuiltEcho,
         /// <summary>倶利伽罗「龙火回环」：深红龙火缠刃，断火留烟</summary>
         KurikaraLoop,
+        /// <summary>谢樋「剪落」：了结溅花小剪刃（不得再触发剪落）</summary>
+        PetalPrune,
+        /// <summary>息合「吐息刀压」：薄长行进定锚链</summary>
+        BreathWave,
     }
 
     /// <summary>
@@ -147,6 +151,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     def.FrontGlow = 2.4f;
                     def.Thick = 0.38f;
                     break;
+                case CleaveStyle.PetalPrune:
+                    //剪落:薄刃碎花,声势压低
+                    def.FrontGlow = 1.8f;
+                    def.Opacity = 0.80f;
+                    def.Ink = 0.50f;
+                    def.Bleed = 0.22f;
+                    def.FlashPower = 0.45f;
+                    def.HalfX = 160f * s;
+                    def.HalfY = 90f * s;
+                    break;
+                case CleaveStyle.BreathWave:
+                    //吐息刀压:更薄更长,纸白刃口,向前咬合
+                    def.HalfX = 310f * s;
+                    def.HalfY = 78f * s;
+                    def.Thick = 0.26f;
+                    def.FrontGlow = 2.9f;
+                    def.FeiBai = 0.62f;
+                    def.Bleed = 0.10f;
+                    def.Ink = 0.38f;
+                    def.FlashPower = 0.55f;
+                    def.SplitTail = 0.70f;
+                    def.Opacity = 0.92f;
+                    break;
             }
         }
 
@@ -166,6 +193,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 case CleaveStyle.KurikaraLoop:
                     SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.05f, Volume = 0.5f }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.Item34 with { Pitch = 0.2f, Volume = 0.4f, MaxInstances = 2 }, Projectile.Center);
+                    break;
+                case CleaveStyle.PetalPrune:
+                    SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.45f, Volume = 0.32f }, Projectile.Center);
+                    break;
+                case CleaveStyle.BreathWave:
+                    SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.28f, Volume = 0.42f }, Projectile.Center);
+                    SoundEngine.PlaySound(CWRSound.KatanaSwing with { Pitch = -0.25f, Volume = 0.35f, MaxInstances = 3 }, Projectile.Center);
                     break;
                 default:
                     SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.5f, Volume = 0.5f }, Projectile.Center);
@@ -272,6 +306,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     }
                     PRTLoader.NewParticle<PRT_CrimsonSmoke>(tip, -Vector2.UnitY * 0.8f, Color.White
                         , 0.08f * SizeMul)?.Configure(22, new Color(150, 44, 22), new Color(22, 11, 10));
+                    break;
+                case CleaveStyle.BreathWave:
+                    for (int i = 0; i < 5; i++) {
+                        Vector2 vel = BladeAngle.ToRotationVector2().RotatedByRandom(0.35)
+                            * Main.rand.NextFloat(5f, 12f) * SizeMul;
+                        PRTLoader.NewParticle<PRT_CrimsonSpark>(tip, vel, new Color(255, 236, 220)
+                            , Main.rand.NextFloat(0.28f, 0.48f) * SizeMul)
+                            ?.Configure(Main.rand.Next(10, 16), affectedByGravity: false);
+                    }
                     break;
                 default:
                     for (int i = 0; i < 6; i++) {

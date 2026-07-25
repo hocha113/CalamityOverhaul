@@ -65,119 +65,119 @@ MeiKurikara: {
 MeiTessetsu: {
 	DisplayName: 铁截
 	Origin: 名唬人，刃却像一截铁——拆台的旧话钉进茎里
-	Power: 「断首」残心与灭世一闪对残血目标追加终结伤害；面板更钝
-	Burden: 面板伤害 -15%——收残血痛快，满血更笨
-	Summary: 残血终结；面板伤害 -15%
+	Power: 「截金」对钢铁/装甲体的连段首击多一截破
+	Burden: 砍血肉时更像钝铁——面板伤害 -12%
+	Summary: 破甲一截；血肉钝
 }
 
 MeiKyushu: {
 	DisplayName: 旧首
 	Origin: 头还是旧的。断得干脆，不必换名吓唬谁
-	Power: 「断首」残心与灭世一闪对残血目标追加终结伤害
-	Burden: 面板伤害 -8%——旧法收头，税略轻
-	Summary: 残血终结；面板伤害 -8%
+	Power: 「取首」对主体/头颅的残血终结更深
+	Burden: 清杂鱼时赋效冷清，一般目标略钝
+	Summary: 专收头；杂鱼一般
 }
 
 MeiIkiai: {
 	DisplayName: 息合
 	Origin: 对视那一瞬憋住的气，合拍落刃
-	Power: 「狮势」不被打断地完成连斩，末拍合颚刃波
-	Burden: 连段排拍间隔 +5%——浅蓄，非金荣名
-	Summary: 连斩合颚；连段略慢
+	Power: 「吐息」短蓄后沿瞄准向前咬出一道行进刀压（绯红斩弧连环咬合）
+	Burden: 蓄息时身形变沉；空蓄挨打会白耗气
+	Summary: 吐息刀压；蓄息有价
 }
 
 MeiKyoko: {
 	DisplayName: 虚吼
 	Origin: 吼进空里，回声找不到落点
-	Power: 「狮势」完整连斩末拍合颚刃波
-	Burden: 连段排拍间隔 +14%——失焦时更慢
-	Summary: 连斩合颚；连段更慢
+	Power: 「空鸣」空场时周期威压；远离再近的一刀更重
+	Burden: 贴身砍太密会失焦变钝
+	Summary: 空场威压；贴身失焦
 }
 
 MeiKarikiri: {
 	DisplayName: 假切
-	Origin: 学得像，越像越假。咎影学步入茎
-	Power: 「咎影」疾走取消连段时留下延迟斩影
-	Burden: 承伤 +12%；积咎耗气——假步乱闪更痛
-	Summary: 取消留影；承伤 +12%
+	Origin: 学得像，越像越假。残影入茎
+	Power: 「假身」疾走起步留下残影，替真身吸收一次接触或一层弹伤
+	Burden: 影在时真身更脆、疾走更费；影碎后短真空更险
+	Summary: 残影骗伤；真身更险
 }
 
 MeiMokukiri: {
 	DisplayName: 默切
 	Origin: 空气沉下去了。习惯了，咎还在
-	Power: 「咎影」疾走取消连段时留下延迟斩影
-	Burden: 承伤 +8%；积咎耗气——沉着闪仍咬，慌闪仍崩
-	Summary: 取消留影；承伤 +8%
+	Power: 「默杀」沉住气（低速或闪后短窗）的下一刀显著加重
+	Burden: 永动疾走时赋效不亮
+	Summary: 沉气一刀；狂闪无
 }
 
 MeiKogehi: {
 	DisplayName: 焦樋
 	Origin: 烫滩旁别伸脚。樋为躲开热而开
-	Power: 「顺风」疾走耗气更省，樱流略省
-	Burden: 墨痕伤害更低——站桩更亏
-	Summary: 走位更省气；墨痕伤更弱
+	Power: 「焦痕」疾走路径留下短时灼地
+	Burden: 站着砍时铭沉睡且输出偏亏
+	Summary: 走位灼地；站桩亏
 }
 
 MeiKanhi: {
 	DisplayName: 闲樋
 	Origin: 门口清静，耳朵歇一会儿
-	Power: 「顺风」樱流巡航更省气，疾走略省
-	Burden: 墨痕伤害略降——闲时走，战中勿硬刚
-	Summary: 巡航更省；墨痕略弱
+	Power: 「闲息」脱战短歇后气力快速回一轮
+	Burden: 交战硬刚时疾走与樱流更费气
+	Summary: 歇着回气；硬刚贵
 }
 
 MeiTodohi: {
 	DisplayName: 滞樋
 	Origin: 黏是黏了点。沾着转，脱开就滞
-	Power: 「回流」连段命中回气略多
-	Burden: 自然回气更差，回气延迟更长——脱战更旱
-	Summary: 贴脸回气；脱战更滞
+	Power: 「滞缚」命中让目标短暂黏脚难走
+	Burden: 疾走起步自身也略滞
+	Summary: 黏敌；自身也黏
 }
 
 MeiShiorihi: {
 	DisplayName: 谢樋
 	Origin: 剪败花，为开锋，不为好看
-	Power: 「回流」残心命中回气更厚，连段回气略薄
-	Burden: 自然回气仍差——瞎挥不养刀
-	Summary: 残心多回气；自然回气差
+	Power: 「剪落」击杀或残心了结时刃花溅向周围残血
+	Burden: 磨而不杀、空残心不养刀
+	Summary: 了结溅花；空磨旱
 }
 
 MeiShiohi: {
 	DisplayName: 潮樋
 	Origin: 潮痕过夜。湿着贴脸才回
-	Power: 「回流」命中与残心回气拉长
-	Burden: 自然回气更差——过夜式脱战更旱
-	Summary: 湿命中回气；脱战更旱
+	Power: 「潮拍」赶上潮汐节拍的命中更疼或更回气
+	Burden: 总错拍则不如素刀
+	Summary: 合潮受益；错拍亏
 }
 
 MeiShibori: {
 	DisplayName: 痺雕
 	Origin: 麻着手也护一下。刀也疼
-	Power: 「不动护」承诺动作中耗架势挡伤
-	Burden: 架势获取 -30%——厚护从蓄势里多扣
-	Summary: 承诺招挡伤；架势获取 -30%
+	Power: 「痺反」护身或穿身格挡成功时反麻来手一瞬
+	Burden: 架势账更苛
+	Summary: 挡成功反麻；架势贵
 }
 
 MeiChinmei: {
 	DisplayName: 镇鸣
 	Origin: 耳嗡的时候，先镇住再动
-	Power: 「不动护」承诺动作中耗架势挡伤
-	Burden: 架势获取 -15%——歇着护，猛攻攒势慢
-	Summary: 承诺招挡伤；架势获取 -15%
+	Power: 「镇鸣」受弹时更站得住，弹击退大减、弹伤略减
+	Burden: 纯近战肉搏时铭偏闲，架势获取 -15%
+	Summary: 抗弹站稳；近搏一般
 }
 
 MeiAshidome: {
 	DisplayName: 止足
 	Origin: 站住别晃。脚定了，护才在
-	Power: 「不动护」承诺动作中耗架势挡伤
-	Burden: 架势获取 -22%——边跑边砍护不住的感觉仍在
-	Summary: 承诺招挡伤；架势获取 -22%
+	Power: 「止足」立定片刻后，下一次承诺大招更重
+	Burden: 边跑边砍几乎吃不到
+	Summary: 站住开大；跑动无
 }
 
 MeiYoen: {
 	DisplayName: 余炎
 	Origin: 烤箱余温还在刃上。火熄了，烫没熄
-	Power: 「龙火回环」处决后点燃，窗内完整连段末拍龙火
-	Burden: 气力上限略降——余烬也能烧空气
-	Summary: 处决后龙火连段；气上限略降
+	Power: 「余烬」处决后留下一片持续灼地，无须再打满五连
+	Burden: 气略紧，场在时疾走更烫更费
+	Summary: 处决留灼地；气/走有价
 }
