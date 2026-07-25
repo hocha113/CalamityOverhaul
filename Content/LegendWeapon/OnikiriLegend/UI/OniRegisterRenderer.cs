@@ -710,6 +710,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             return y;
         }
 
+        /// <summary>逐字换行后的整块高度(与 <see cref="DrawTypedWrapped"/> 同口径),供面板按内容实测定高</summary>
+        internal static float MeasureWrappedHeight(DynamicSpriteFont font, string text, float maxWidth, float scale) {
+            if (string.IsNullOrEmpty(text)) {
+                return 0f;
+            }
+            float lineH = font.MeasureString("字").Y * scale + 2f;
+            return WrapText(font, text, maxWidth, scale).Count * lineH;
+        }
+
         /// <summary>逐字累宽换行,无空格的 CJK 文本也能断行</summary>
         private static List<string> WrapText(DynamicSpriteFont font, string text, float maxWidth, float scale) {
             List<string> lines = [];

@@ -329,6 +329,44 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
+        /// <summary>
+        /// 拓片反白:墨面留白字,笔画走亮色(金阶鎏金)+白热细芯,无受光缘无深芯;
+        /// 錾样物品图标等小尺寸暗底场景用,最小笔宽兜底保清晰
+        /// </summary>
+        public static void DrawRubbing(SpriteBatch sb, string key, Vector2 center, float size, float alpha,
+            bool gold, float time, float rotation = 0f) {
+            if (alpha <= 0.01f || size < 4f) {
+                return;
+            }
+            Stroke[] strokes = Get(key);
+            float half = size * 0.5f;
+            //拓墨未干似的极轻呼吸
+            float breath = 0.92f + 0.08f * MathF.Sin(time * 1.8f + center.X * 0.05f);
+            Color bodyBase = gold ? OnikiriUITheme.GoldInlay : OnikiriUITheme.Paper;
+            Color body = bodyBase * (alpha * 0.94f * breath);
+            Color core = Color.Lerp(bodyBase, OnikiriUITheme.HotWhite, 0.7f) * (alpha * 0.5f * breath);
+
+            foreach (Stroke stroke in strokes) {
+                if (stroke.IsDot) {
+                    Vector2 pos = Map(stroke.Points[0], center, half, rotation);
+                    float s = MathF.Max(stroke.Width * half, 1.8f);
+                    float rot = MathHelper.PiOver4 + rotation;
+                    sb.Draw(Pixel, pos, PixelSrc, body, rot, new Vector2(0.5f), new Vector2(s), SpriteEffects.None, 0f);
+                    sb.Draw(Pixel, pos, PixelSrc, core, rot, new Vector2(0.5f), new Vector2(s * 0.55f), SpriteEffects.None, 0f);
+                    continue;
+                }
+                int segCount = stroke.Points.Length - 1;
+                for (int i = 0; i < segCount; i++) {
+                    float tm = (i + 0.5f) / segCount;
+                    Vector2 a = Map(stroke.Points[i], center, half, rotation);
+                    Vector2 b = Map(stroke.Points[i + 1], center, half, rotation);
+                    float thick = MathF.Max(stroke.Width * half * CarveProfile(tm), 1.2f);
+                    DrawSeg(sb, a, b, body, thick);
+                    DrawSeg(sb, a, b, core, thick * 0.45f);
+                }
+            }
+        }
+
         /// <summary>凿现中的落鏨点(屏幕空间),火星/微震锚点;非凿现态返回章心</summary>
         public static Vector2 GetChiselPoint(string key, Vector2 center, float size, float rotation, float reveal) {
             Stroke[] strokes = Get(key);

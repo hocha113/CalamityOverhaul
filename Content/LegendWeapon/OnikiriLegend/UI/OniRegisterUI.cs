@@ -70,6 +70,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public override float RenderPriority => 2f;
         public override SoundStyle? OpenSound => SoundID.MenuOpen with { Pitch = -0.45f, Volume = 0.55f };
         public override SoundStyle? CloseSound => SoundID.MenuClose with { Pitch = -0.3f, Volume = 0.5f };
+        public override Vector2 MousePosition => OnikiriUITheme.UIMouse;
 
         //====交互状态====
         private int selectedIndex;
@@ -131,6 +132,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             glanceStrength = 0f;
             pupilOpen = 0f;
             pupilCooldown = Main.rand.Next(900, 1800);
+            LayoutCompute();
+            closeTagRope.WarmStart(closeTagAnchor);
             if (VaultUtils.isSinglePlayer) {
                 WorldFreezeSystem.Activate(FreezeReason);
             }
@@ -177,17 +180,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         public override void Update() {
-            float a = OpenProgress;
-            if (a < 0.01f) {
-                return;
+            if (IsOpen) {
+                player.mouseInterface = true;
             }
+        }
 
+        public override void LogicUpdate() {
             if (IsOpen) {
                 player.mouseInterface = true;
                 UIInputGuard.SuppressWeaponSwitch();
                 if (!player.active || player.dead) {
                     Close();
                 }
+            }
+
+            float a = OpenProgress;
+            if (a < 0.01f) {
+                return;
             }
 
             SwayTimer += 0.022f;
@@ -202,14 +211,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             LayoutCompute();
 
             //收卷牌摆:绳受风,牌是末端配重
-            closeTagRope.Update(closeTagAnchor, null, GlobalTimer, 0.26f, endWeight: 0.55f);
+            closeTagRope.Update(closeTagAnchor, null, ShaderTime, 0.26f, endWeight: 0.55f);
             Vector2 tagTop = closeTagRope.End;
             closeTagRect = new Rectangle((int)(tagTop.X - 16f), (int)tagTop.Y - 2, 32, 48);
 
             //吊挂太刀:点击预演到帧即移步改铭台
             bool meiRiteBusy = OniEngraveRiteUI.Instance?.Active ?? false;
             if (meiSwitch.Update(meiSwitchAnchor, MousePosition, IsOpen && a > 0.9f && !meiRiteBusy,
-                GlobalTimer, OnikiriUITheme.HangTachiHit, keyLeftPressState)) {
+                ShaderTime, OnikiriUITheme.HangTachiHit, keyLeftPressState)) {
                 OniMeiUI.Instance?.Open();
             }
 

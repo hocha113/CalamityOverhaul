@@ -7,6 +7,8 @@
 //TechUnify（EndCapture，吃整帧含 NPC/弹幕/玩家）：
 //  轻统一色罩（去饱和+冷/暖染，红色保真）+ 呼吸 + 错位帧 + 负片闪
 //  实体只经过这层轻罩，墨阶量化/墨线不上身，战斗可读性优先
+//  开/收域另压墨墙：浓黑墨环叠红环（前缘红棱/内缘红烬/尾随墨环），
+//  实体一并吞没，前沿即领域之壁——开合演出的视觉主体
 //呼吸与错位帧属全帧位移，必须在 TechUnify：拆在环境层会让实体相对地形滑动
 //全部噪声输入为屏幕空间笛卡尔 UV，无极坐标
 // ============================================================================
@@ -24,8 +26,12 @@ float uAnomalyPulse;    //0~1 错位帧
 float uNegativeFlash;   //0~1 负片闪
 float uStillness;       //0~1 死寂加深
 float uFrontEmber;      //0~1 扩散前沿红烬强度（爆域时最烈）
+float uWallFade;        //0~1 开合墨墙可见度（爆域起浪渐显/阖眼吸干渐隐）
 
 #define LUMA_W float3(0.299, 0.587, 0.114)
+
+//开合墨墙厚度（屏幕对角线归一）
+#define WALL_W 0.125
 
 static const float3 WASHI_TINT = float3(1.030, 1.000, 0.935);
 static const float3 INK_BLACK = float3(0.085, 0.082, 0.098);
@@ -55,6 +61,11 @@ float noiseTex(float2 uv) {
     return tex2D(uImage1, uv).r;
 }
 
+//tex2Dlod 版噪声：供动态分支内取样（规避梯度指令限制）
+float noiseLod(float2 uv) {
+    return tex2Dlod(uImage1, float4(uv, 0.0, 0.0)).r;
+}
+
 //墨水浸染遮罩：毛边墨须为双频笛卡尔噪声扰动前沿
 //返回 x=覆盖遮罩 y=前沿淤积带，两个 technique 共用同一前沿
 float2 spreadMaskFront(float2 coords) {
@@ -70,6 +81,44 @@ float2 spreadMaskFront(float2 coords) {
     float mask = lerp(1.0, 1.0 - smoothstep(-0.012, 0.014, sd), useSpread);
     float front = exp(-sd * sd / 0.0011) * (0.45 + 0.55 * jag) * useSpread;
     return float2(mask, front);
+}
+
+//开合墨墙：浓黑墨环叠红环，扩散/吸回的视觉主体（仅 TechUnify 压全帧）
+//返回 x=墨体 y=内缘红烬 z=前缘红棱 w=尾随墨环
+float4 inkWallLayers(float2 coords) {
+    float diag = length(uScreenSize);
+    float2 rel = (coords * uScreenSize - uSpreadOrigin) / diag;
+    float dist = length(rel);
+    float2 flowDir = rel / max(dist, 0.0015);
+
+    //前沿定位与 spreadMaskFront 同一套 sd，墙体骑在调色揭示线上
+    float n1 = noiseLod(coords * 2.3 + uTime * 0.012);
+    float n2 = noiseLod(coords * 5.1 - uTime * 0.017);
+    float jag = n1 * 0.6 + n2 * 0.4;
+    float jagAmp = lerp(0.030, 0.160, smoothstep(0.10, 0.70, uSpreadProgress));
+    float sd = dist + (jag - 0.5) * jagAmp - uSpreadProgress * 1.18;
+
+    //墨体：前缘毛边吃 jag 扰动，尾缘叠独立起伏让环宽有机变化，体内絮状密度
+    float lead = 1.0 - smoothstep(-0.004, 0.034, sd);
+    float trailJag = (n2 - 0.5) * 0.06;
+    float trail = smoothstep(-WALL_W - 0.050 + trailJag, -WALL_W + 0.014 + trailJag, sd);
+    float wisp = 0.70 + 0.30 * noiseLod(coords * 3.4 + float2(uTime * 0.021, -uTime * 0.014));
+    float wall = lead * trail * wisp;
+
+    //内缘红烬：贴墨体内侧、沿径向外流的絮状光带
+    float emberSd = sd + WALL_W * 0.70;
+    float streak = 0.35 + 0.65 * noiseLod(coords * 4.6 - flowDir * (uTime * 0.055));
+    float ember = exp(-emberSd * emberSd / 0.0011) * streak * lead;
+
+    //前缘红棱：细亮线勾住浪头
+    float rimSd = sd - 0.006;
+    float rim = exp(-rimSd * rimSd / 0.00013) * (0.45 + 0.55 * n1);
+
+    //尾随墨环：主浪身后第二道视觉停留点
+    float echoSd = sd + WALL_W + 0.075;
+    float echo = exp(-echoSd * echoSd / 0.00055) * (0.30 + 0.70 * jag);
+
+    return float4(wall, ember, rim, echo);
 }
 
 //表世界：轻胶片质感，氛围主体交给天空层，死寂时才明显收紧
@@ -190,6 +239,18 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     //浸染遮罩内生效：开/收域时墨浪压过哪里，哪里才染上
     float2 mf = spreadMaskFront(coords);
     float3 final = lerp(src, tone, mf.x);
+
+    //开合墨墙压全帧（含实体）：黑墨环叠红环，前沿即领域之壁
+    float wallGate = step(0.5, uSpreadMode) * uWallFade;
+    [branch] if (wallGate > 0.001) {
+        float4 wl = inkWallLayers(coords) * wallGate;
+        float emberHot = 0.50 + 0.95 * uFrontEmber;
+        final = lerp(final, float3(0.043, 0.036, 0.055), wl.x * 0.94);
+        final += float3(0.80, 0.11, 0.06) * wl.y * emberHot;
+        final += float3(0.98, 0.20, 0.12) * wl.z * (0.55 + 0.75 * uFrontEmber);
+        final = lerp(final, final * float3(0.26, 0.22, 0.31), wl.w * 0.85);
+        final += float3(0.55, 0.07, 0.04) * wl.w * (0.25 + 0.55 * uFrontEmber);
+    }
 
     //负片闪：全画面事件，旧世界日月化眼的一瞬
     final = lerp(final, 1.0 - final, uNegativeFlash * 0.92);

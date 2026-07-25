@@ -309,19 +309,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 return;
             }
 
-            //墨浪爆扩、缓出曲线前 0.3s 走完七成屏幕
+            //墨浪三段推进、爆冲后墨墙横陈滞行读秒，再加速吞没屏角
 
             //眼睛保持半实体悬在天上看着你，消散大头留给 Omote 里的余韵衰减
 
             int st = t - tBurst;
             float raw = MathHelper.Clamp(st / (float)OniDomain.OpenSpreadFrames, 0f, 1f);
-            float inv = 1f - raw;
-            SpreadProgress = 1f - inv * inv * inv;
+            SpreadProgress = OpenSpreadCurve(raw);
             EyeDissolve = raw * 0.55f;
             EyeIntensity = 1f - raw * 0.6f;
             EyeSpin += MathHelper.Lerp(0.5f, 0.06f, raw);
             if (IsLocalVisual && st % 3 == 0 && raw < 0.85f) {
                 OniDomainDeco.SpawnEyeScatter(EyeWorldPos, 2);
+            }
+            //吞没段起步、墨墙加速离场的浪声
+
+            if (st == (int)(OniDomain.OpenSpreadFrames * 0.62f) && IsLocalVisual) {
+                SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.55f, Pitch = -0.55f, MaxInstances = 1 }, Player.Center);
+                Player.CWR().GetScreenShake(4f);
             }
 
             if (raw >= 1f) {
@@ -468,14 +473,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
 
             if (t <= c1) {
-                //墨水吸回、缓入，先慢后疾冲进眼里
+                //墨水吸回三段、黑环扫入屏缘悬停读秒，再加速冲进眼里
 
                 float f = (t - c0) / (float)OniDomain.CloseRetractFrames;
-                SpreadProgress = 1f - f * f * f;
+                SpreadProgress = CloseSpreadCurve(f);
                 EyeIntensity = 1f;
                 EyeSpin -= MathHelper.Lerp(0.04f, 0.28f, f);
                 if (t == c0 + 1 && IsLocalVisual) {
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.45f, Pitch = -0.45f, MaxInstances = 1 }, Player.Center);
+                }
+                //吸尽段起步、墨水加速灌回的抽吸声
+
+                if (t == c0 + (int)(OniDomain.CloseRetractFrames * 0.60f) && IsLocalVisual) {
+                    SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.5f, Pitch = 0.05f, MaxInstances = 1 }, Player.Center);
                 }
                 if (IsLocalVisual && t % 2 == 0) {
                     //墨水化灵体被吸入
@@ -483,6 +493,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                     OniDomainDeco.SpawnEyeConverge(EyeWorldPos, 2);
                 }
                 return;
+            }
+
+            //墨浪吸尽、眼睛饱噬一闪
+
+            if (t == c1 + 1) {
+                EyeFlash = 1f;
+                if (IsLocalVisual) {
+                    SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.7f, Pitch = -0.6f, MaxInstances = 1 }, Player.Center);
+                    Player.CWR().GetScreenShake(5f);
+                    OniDomainDeco.SpawnEyeScatter(EyeWorldPos, 8);
+                }
             }
 
             //阖眼
@@ -511,6 +532,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 EyeOpenAmount = 0f;
                 PaperValid = false;
             }
+        }
+
+        //开域墨浪三段：爆冲(0→0.30)→滞行(0.30→0.46、墨墙横陈读秒)→吞没(0.46→1 加速离场)
+        //前沿 dist≈progress*1.18 而屏角约 0.5，可视行程集中在 0~0.55，滞行段必须落在其中
+        //分段端点斜率相接，肉眼无折点
+
+        private static float OpenSpreadCurve(float x) {
+            if (x < 0.20f) {
+                float f = x / 0.20f;
+                return (0.524f - 0.224f * f) * f;
+            }
+            if (x < 0.62f) {
+                return 0.30f + (x - 0.20f) * (0.16f / 0.42f);
+            }
+            float g = (x - 0.62f) / 0.38f;
+            return 0.46f + 0.1444f * g + 0.3956f * g * g * g;
+        }
+
+        //收域吸回三段：扫入(1→0.52)→滞行(0.52→0.30、黑环悬在屏缘)→吸尽(0.30→0 冲进眼里)
+
+        private static float CloseSpreadCurve(float x) {
+            if (x < 0.15f) {
+                float f = x / 0.15f;
+                return 1f - (0.8867f - 0.4067f * f) * f;
+            }
+            if (x < 0.60f) {
+                return 0.52f - (x - 0.15f) * (0.22f / 0.45f);
+            }
+            float g = (x - 0.60f) / 0.40f;
+            return 0.30f - 0.1956f * g - 0.1044f * g * g * g;
         }
 
         //稳态里眼睛的余韵、继续消散成灵体，勾玉惯性转着淡出

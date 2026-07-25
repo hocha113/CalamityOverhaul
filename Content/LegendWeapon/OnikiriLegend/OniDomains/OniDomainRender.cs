@@ -55,16 +55,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             spriteBatch.End();
 
             SetSharedGradeParams(grade, odp);
-            //浪头红烬、爆域最烈随扩散衰减，吸回时余温
-
-            float frontEmber = 0f;
-            if (odp.Phase == OniDomainPhase.Opening) {
-                frontEmber = MathHelper.Lerp(1.0f, 0.3f, odp.SpreadProgress);
-            }
-            else if (odp.Phase == OniDomainPhase.Closing) {
-                frontEmber = 0.3f;
-            }
-            grade.Parameters["uFrontEmber"]?.SetValue(frontEmber);
 
             //调色回写主屏
 
@@ -135,6 +125,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
             bool spread = odp.Phase == OniDomainPhase.Opening || odp.Phase == OniDomainPhase.Closing;
 
+            //浪头红烬与墨墙可见度、爆域最烈随扩散退火，吸回逼近眼时增温；墙起浪渐显、阖眼吸干渐隐
+
+            float frontEmber = 0f;
+            float wallFade = 0f;
+            if (odp.Phase == OniDomainPhase.Opening) {
+                int tBurst = OniDomain.EyeEmergeFrames + OniDomain.EyeOpenFrames + OniDomain.EyeBurstFrames;
+                frontEmber = MathHelper.Lerp(1.0f, 0.35f, odp.SpreadProgress);
+                wallFade = MathHelper.Clamp((odp.PhaseTimer - tBurst) / 5f, 0f, 1f);
+            }
+            else if (odp.Phase == OniDomainPhase.Closing) {
+                int c1 = OniDomain.CloseEyeFrames + OniDomain.CloseRetractFrames;
+                frontEmber = MathHelper.Lerp(0.55f, 1.0f, 1f - odp.SpreadProgress);
+                wallFade = odp.PhaseTimer <= c1
+                    ? 1f
+                    : MathHelper.Clamp(1f - (odp.PhaseTimer - c1) / (OniDomain.CloseBlinkFrames * 0.6f), 0f, 1f);
+            }
+
             grade.Parameters["uTime"]?.SetValue(odp.EffectTime);
             grade.Parameters["uScreenSize"]?.SetValue(screenSize);
             grade.Parameters["uWorldBlend"]?.SetValue(gradeUra ? 1f : 0f);
@@ -142,6 +149,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             grade.Parameters["uSpreadProgress"]?.SetValue(odp.SpreadProgress);
             grade.Parameters["uSpreadOrigin"]?.SetValue(spreadOrigin);
             grade.Parameters["uStillness"]?.SetValue(stillness);
+            grade.Parameters["uFrontEmber"]?.SetValue(frontEmber);
+            grade.Parameters["uWallFade"]?.SetValue(wallFade);
         }
 
         private void ApplyUnifyAndPeel(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice,
@@ -291,7 +300,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
             int tBurst = OniDomain.EyeEmergeFrames + OniDomain.EyeOpenFrames + OniDomain.EyeBurstFrames;
             int st = odp.PhaseTimer - tBurst;
-            if (st < 0 || st > 16) {
+            if (st < 0 || st > 20) {
                 return;
             }
             Texture2D ring = CWRAsset.DiffusionCircle?.Value;
@@ -300,7 +309,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 return;
             }
 
-            float f = st / 16f;
+            float f = st / 20f;
             Vector2 origin = Vector2.Transform(
                 odp.EyeWorldPos - Main.screenPosition,
                 Main.GameViewMatrix.TransformationMatrix);

@@ -12,6 +12,7 @@ using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
 using CalamityOverhaul.Content.Scenarios.Himayo;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
@@ -122,6 +123,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private int vigorRegenDelay;
         private int dashLock;
         private int readyCueTimer;
+        /// <summary>时间齿轮的离散帧余量；所有鬼切自有计时共用同一逻辑时钟</summary>
+        private float timeAdvanceCarry;
+        /// <summary>受 <see cref="TimeGear"/> 缩放的本地时间戳，供命中记忆与脱战窗口使用</summary>
+        private int scaledTime = 1;
 
         //====铭刻状态(owner 端自治,禁 static)====
         /// <summary>本帧铭刻合成档(手持解析;未持刀=Identity,负担随刀离手消失)</summary>
@@ -201,6 +206,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         public override void OnEnterWorld() {
             Vigor = VigorMax;
             Stance = 0f;
+            timeAdvanceCarry = 0f;
+            scaledTime = 1;
+            Array.Clear(hitMemory, 0, hitMemory.Length);
             zanshinWindow = 0;
             zanshinPending = false;
             zanshinInputBuffered = false;
@@ -231,6 +239,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         public override void OnRespawn() {
             Vigor = VigorMax;
             Stance = 0f;
+            timeAdvanceCarry = 0f;
             zanshinWindow = 0;
             zanshinPending = false;
             zanshinInputBuffered = false;
@@ -274,53 +283,59 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             Mei = OniMeiCombat.ResolveHeld(Player);
             Vigor = Math.Min(Vigor, VigorMaxCurrent);
 
-            if (vigorRegenDelay > 0) {
-                vigorRegenDelay--;
-            }
-            else {
-                float regenMul = Mei.NaturalRegenMul;
-                if (Mei.QuietBreath && IsCombatCold()) {
-                    regenMul *= OniMeiCombat.QuietBreathRegenMul;
+            //TimeGear 只缩放时间属性；输入与手持铭解析仍逐逻辑帧响应。
+            //TimeScale 被约束在 0..1，因此每个主逻辑帧至多放行一个鬼切逻辑帧。
+            bool advanceTime = TimeGear.PullFrameAdvance(ref timeAdvanceCarry) > 0;
+            if (advanceTime) {
+                scaledTime++;
+                if (vigorRegenDelay > 0) {
+                    vigorRegenDelay--;
                 }
-                Vigor = Math.Min(VigorMaxCurrent, Vigor + VigorRegenPerTick * regenMul);
-            }
-            if (dashLock > 0) {
-                dashLock--;
-            }
-            if (fudoGuardCooldown > 0) {
-                fudoGuardCooldown--;
-            }
-            if (KurikaraWindow > 0) {
-                KurikaraWindow--;
-            }
-            if (silentKillWindow > 0) {
-                silentKillWindow--;
-                //默杀窗内:身周细碎哑黑墨纱,读作"气沉住了"
-                if (!Main.dedServ && silentKillWindow % 8 == 0) {
-                    PRTLoader.NewParticle<PRT_CrimsonSmoke>(Player.Center + Main.rand.NextVector2Circular(14f, 20f)
-                        , -Vector2.UnitY * 0.3f, Color.White, 0.04f)
-                        ?.Configure(Main.rand.Next(10, 16), new Color(46, 16, 22), new Color(14, 8, 12));
+                else {
+                    float regenMul = Mei.NaturalRegenMul;
+                    if (Mei.QuietBreath && IsCombatCold()) {
+                        regenMul *= OniMeiCombat.QuietBreathRegenMul;
+                    }
+                    Vigor = Math.Min(VigorMaxCurrent, Vigor + VigorRegenPerTick * regenMul);
                 }
+                if (dashLock > 0) {
+                    dashLock--;
+                }
+                if (fudoGuardCooldown > 0) {
+                    fudoGuardCooldown--;
+                }
+                if (KurikaraWindow > 0) {
+                    KurikaraWindow--;
+                }
+                if (silentKillWindow > 0) {
+                    silentKillWindow--;
+                    //默杀窗内:身周细碎哑黑墨纱,读作"气沉住了"
+                    if (!Main.dedServ && silentKillWindow % 8 == 0) {
+                        PRTLoader.NewParticle<PRT_CrimsonSmoke>(Player.Center + Main.rand.NextVector2Circular(14f, 20f)
+                            , -Vector2.UnitY * 0.3f, Color.White, 0.04f)
+                            ?.Configure(Main.rand.Next(10, 16), new Color(46, 16, 22), new Color(14, 8, 12));
+                    }
+                }
+                if (falseBodyVacuumTicks > 0) {
+                    falseBodyVacuumTicks--;
+                }
+                if (plantedKnockbackGrace > 0) {
+                    plantedKnockbackGrace--;
+                }
+                if (petalPruneCooldown > 0) {
+                    petalPruneCooldown--;
+                }
+                if (hollowFocusLossTicks > 0) {
+                    hollowFocusLossTicks--;
+                }
+                if (Mei.TideBeat) {
+                    tidePhase++;
+                }
+                TickPlantedStep();
+                TickHollowRoar();
+                TickBreathWave();
+                TickZanshinWindow();
             }
-            if (falseBodyVacuumTicks > 0) {
-                falseBodyVacuumTicks--;
-            }
-            if (plantedKnockbackGrace > 0) {
-                plantedKnockbackGrace--;
-            }
-            if (petalPruneCooldown > 0) {
-                petalPruneCooldown--;
-            }
-            if (hollowFocusLossTicks > 0) {
-                hollowFocusLossTicks--;
-            }
-            if (Mei.TideBeat) {
-                tidePhase++;
-            }
-            TickPlantedStep();
-            TickHollowRoar();
-            TickBreathWave();
-            TickZanshinWindow();
 
             ModKeybind flashStepKey = CWRKeySystem.Onikiri_FlashStep;
             bool flashStepUnbound = CWRKeySystem.IsKeybindUnbound(flashStepKey, FlashStepBindingMode);
@@ -347,7 +362,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             HandleDomainInput(holding);
             if (holding) {
-                ManageSakuraFlight();
+                ManageSakuraFlight(advanceTime);
             }
             if (!holding || Player.dead || Player.CCed) {
                 return;
@@ -358,7 +373,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
 
             ReleaseZanshinPending(item);
-            ReadyCue();
+            if (advanceTime) {
+                ReadyCue();
+            }
 
             if (flashStepPressed && CanAcceptFlashStepInput()) {
                 TryDash(item);
@@ -517,7 +534,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// 樱流飞行的经济与手势(owner 端,每帧):逐帧抽气并压住回气延迟;
         /// 松手、气尽或领域离开表世界稳态均发出回卷,重组收尾由模块自理
         /// </summary>
-        private void ManageSakuraFlight() {
+        private void ManageSakuraFlight(bool advanceTime) {
             if (!OniSakuraFlight.IsTraveling(Player.whoAmI)) {
                 return;
             }
@@ -528,7 +545,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 OniSakuraFlight.RequestStop(Player);
                 return;
             }
-            Vigor = Math.Max(0f, Vigor - SakuraDrainPerTick * Mei.SakuraDrainMul);
+            if (advanceTime) {
+                Vigor = Math.Max(0f, Vigor - SakuraDrainPerTick * Mei.SakuraDrainMul);
+            }
         }
 
         //==================== 残心追斩 ====================
@@ -902,7 +921,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         /// <summary>命中记忆,近 5 秒,优先 boss</summary>
         private NPC PickFromHitMemory() {
-            int now = (int)Main.GameUpdateCount;
+            int now = scaledTime;
             NPC best = null;
             bool bestBoss = false;
             int bestTick = int.MinValue;
@@ -972,7 +991,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (!npc.active) {
                 return;
             }
-            int now = (int)Main.GameUpdateCount;
+            int now = scaledTime;
             int slot = -1;
             for (int i = 0; i < hitMemory.Length; i++) {
                 if (hitMemory[i].NpcId == npc.whoAmI && hitMemory[i].NpcType == npc.type) {
@@ -1061,7 +1080,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                     }
                 }
                 //就绪呼吸:足元一圈慢息的纸白微光
-                else if (!Main.dedServ && (int)Main.GameUpdateCount % 16 == 0) {
+                else if (!Main.dedServ && scaledTime % 16 == 0) {
                     float ang = Main.rand.NextFloat(MathHelper.TwoPi);
                     Vector2 foot = Player.Bottom - Vector2.UnitY * 3f;
                     PRTLoader.NewParticle<PRT_CrimsonSpark>(foot + ang.ToRotationVector2() * 14f
@@ -1248,7 +1267,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         private bool IsCombatColdForHollow() {
-            int now = (int)Main.GameUpdateCount;
+            int now = scaledTime;
             for (int i = 0; i < hitMemory.Length; i++) {
                 int tick = hitMemory[i].Tick;
                 if (tick > 0 && now - tick <= OniMeiCombat.HollowRoarColdTicks) {
@@ -1289,7 +1308,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         private void RecordHollowDenseHit() {
-            int now = (int)Main.GameUpdateCount;
+            int now = scaledTime;
             if (now - hollowDenseWindowStart > OniMeiCombat.HollowFocusLossWindowTicks) {
                 hollowDenseWindowStart = now;
                 hollowDenseHits = 0;
@@ -1539,7 +1558,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         /// <summary>闲樋：命中记忆在冷战窗口内无刷新则视为脱战</summary>
         private bool IsCombatCold() {
-            int now = (int)Main.GameUpdateCount;
+            int now = scaledTime;
             for (int i = 0; i < hitMemory.Length; i++) {
                 int tick = hitMemory[i].Tick;
                 if (tick > 0 && now - tick <= OniMeiCombat.QuietBreathColdTicks) {

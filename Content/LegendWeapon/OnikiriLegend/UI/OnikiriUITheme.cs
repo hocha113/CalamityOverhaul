@@ -81,27 +81,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public const float MeiSlotRadius = 34f;
         /// <summary>刀上铭字形尺寸</summary>
         public const float MeiGlyphOnBlade = 54f;
-        /// <summary>鏨盘扇骨长(轴心到纹章心)</summary>
+        /// <summary>鏨盘扇骨长(轴心到纹章心;骨少时的基准)</summary>
         public const float MeiFanRibLen = 150f;
-        /// <summary>扇骨纹章尺寸</summary>
+        /// <summary>骨多时骨长缓升上限(与张角/双排联动)</summary>
+        public const float MeiFanRibLenFar = 170f;
+        /// <summary>扇骨纹章尺寸(骨少时的基准)</summary>
         public const float MeiFanGlyphSize = 44f;
-        /// <summary>扇面全张角(弧度)</summary>
+        /// <summary>骨多时纹章缓降下限</summary>
+        public const float MeiFanGlyphSizeMin = 36f;
+        /// <summary>扇面全张角(弧度;骨少时的基准)</summary>
         public const float MeiFanSpread = 1.55f;
+        /// <summary>骨多时张角渐宽上限(弧度)</summary>
+        public const float MeiFanSpreadMax = 2.05f;
+        /// <summary>双排交错径向错距(骨数≥7 启用;偶数位外圈,奇数位内圈)</summary>
+        public const float MeiFanRowOffset = 30f;
         /// <summary>錾样匣格菱章尺寸(略小于扇骨)</summary>
         public const float MeiTrayGlyphSize = 37f;
         /// <summary>匣格心间距</summary>
-        public const float MeiTrayCellGap = 48f;
+        public const float MeiTrayCellGap = 56f;
         /// <summary>单行最多格数,超出翻页</summary>
         public const int MeiTrayMaxCols = 6;
         /// <summary>匣格命中半径</summary>
         public const float MeiTrayHitRadius = 22f;
         /// <summary>匣木板尺寸(与烙印木牌同底边距,靠右并列)</summary>
-        public static readonly Vector2 MeiTrayPanelSize = new(340f, 124f);
+        public static readonly Vector2 MeiTrayPanelSize = new(380f, 128f);
         /// <summary>匣/木牌距屏底留白(同款)</summary>
         public const float MeiTrayBottomMargin = 76f;
         /// <summary>匣与木牌水平间隙</summary>
         public const float MeiTrayTagGap = 22f;
-        /// <summary>烙印木牌尺寸(赋效/代价双栏后加高)</summary>
+        /// <summary>烙印木牌尺寸(宽固定;高为空牌兜底,实高按内容逐帧实测,底边锚定向上生长)</summary>
         public static readonly Vector2 MeiTagSize = new(380f, 236f);
         /// <summary>右缘竖排大字中轴 X 占屏比</summary>
         public const float MeiNameColXRatio = 0.905f;

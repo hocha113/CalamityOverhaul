@@ -241,14 +241,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         public override void Update() {
-            float a = OpenProgress;
-            if (a < 0.01f) {
-                return;
+            if (IsOpen) {
+                player.mouseInterface = true;
             }
+        }
 
+        public override void LogicUpdate() {
             if (IsOpen) {
                 player.mouseInterface = true;
                 UIInputGuard.SuppressWeaponSwitch();
+            }
+
+            float a = OpenProgress;
+            if (a < 0.01f) {
+                return;
             }
 
             timer += 1f;

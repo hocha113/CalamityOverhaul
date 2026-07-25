@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 {
     /// <summary>
     /// 錾样/拓本载体：入包即 Unlock 所持；装刀只在改铭台。<br/>
-    /// 图标复用 <see cref="OniMeiGlyph"/>，与扇骨菱章同色系。<br/>
+    /// 图标为拓片反白（墨面留白字，金阶鎏金），复用 <see cref="OniMeiGlyph"/> 笔画库。<br/>
     /// 名册可送铭均有物品形态；拓本不消耗，匣上点选仅作样板凿铭
     /// </summary>
     internal abstract class OniMeiRubbingItem : ModItem, ILocalizedModType
@@ -55,7 +55,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor
             , ref float rotation, ref float scale, int whoAmI) {
             Vector2 center = Item.Center - Main.screenPosition;
-            float a = lightColor.A / 255f;
+            //暗处可寻:alpha 兜底 + 一点烛暖背光
+            float a = MathHelper.Max(lightColor.A / 255f, 0.35f);
+            OniBrush.DrawBacklight(spriteBatch, center, 30f * scale, OnikiriUITheme.CandleWarm, a * 0.28f);
             DrawRubbing(spriteBatch, center, 28f * scale, a);
             return false;
         }
@@ -65,26 +67,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             Rectangle src = new(0, 0, 1, 1);
             Vector2 half = new(0.5f);
             bool gold = OniMeiRegistry.TryGet(MeiKey, out OniMeiDefinition def) && def.IsGoldTier;
+            //rim 提亮:暗底上先立住轮廓
             Color rim = gold
-                ? Color.Lerp(OnikiriUITheme.GoldDeep, OnikiriUITheme.GoldInlay, 0.45f)
-                : Color.Lerp(OnikiriUITheme.Deep, OnikiriUITheme.Bright, 0.35f);
+                ? Color.Lerp(OnikiriUITheme.GoldDeep, OnikiriUITheme.GoldInlay, 0.55f)
+                : Color.Lerp(OnikiriUITheme.Seal, OnikiriUITheme.Bright, 0.40f);
 
             float g = size;
             sb.Draw(pixel, center + new Vector2(1.2f, 1.8f) * (g / 44f), src, new Color(8, 2, 5) * (alpha * 0.5f),
                 MathHelper.PiOver4, half, new Vector2(g * 1.06f), SpriteEffects.None, 0f);
-            sb.Draw(pixel, center, src, rim * (alpha * 0.9f),
+            sb.Draw(pixel, center, src, rim * (alpha * 0.95f),
                 MathHelper.PiOver4, half, new Vector2(g * 1.06f), SpriteEffects.None, 0f);
             sb.Draw(pixel, center, src, OnikiriUITheme.Ink * (alpha * 0.97f),
-                MathHelper.PiOver4, half, new Vector2(g * 0.96f), SpriteEffects.None, 0f);
-            sb.Draw(pixel, center, src, OnikiriUITheme.Paper * (alpha * 0.16f),
-                MathHelper.PiOver4, half, new Vector2(g * 0.82f), SpriteEffects.None, 0f);
+                MathHelper.PiOver4, half, new Vector2(g * 0.94f), SpriteEffects.None, 0f);
 
-            OniMeiGlyphStyle style = OniMeiGlyphStyle.Engraved(alpha);
-            style.Inlay = gold ? 1f : 0f;
-            style.Accent = gold ? OnikiriUITheme.GoldInlay : OnikiriUITheme.Bright;
-            style.Lit = 0.15f;
-            style.Time = Main.GameUpdateCount * 0.02f;
-            OniMeiGlyph.Draw(sb, MeiKey, center, g * 0.72f, style);
+            //拓片反白:墨面留白字,亮笔画天然可读
+            OniMeiGlyph.DrawRubbing(sb, MeiKey, center, g * 0.80f, alpha, gold, Main.GameUpdateCount * 0.02f);
         }
     }
 

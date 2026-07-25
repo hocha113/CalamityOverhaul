@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
         public const int EyeBurstFrames = 10;       //勾玉加速至虹膜闪白
 
-        public const int OpenSpreadFrames = 46;     //墨浪爆扩全屏（缓出）
+        public const int OpenSpreadFrames = 92;     //墨浪爆扩全屏（爆冲→滞行→吞没三段）
 
         //Flipping 时序
 
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
         public const int CloseEyeFrames = 16;       //眼睛重现
 
-        public const int CloseRetractFrames = 56;   //墨水吸回眼中（缓入）
+        public const int CloseRetractFrames = 84;   //墨水吸回眼中（扫入→滞行→吸尽三段）
 
         public const int CloseBlinkFrames = 14;     //阖眼收尾
 

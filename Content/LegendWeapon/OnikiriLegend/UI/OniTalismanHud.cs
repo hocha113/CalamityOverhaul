@@ -96,6 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         //鬼域之眼:整簇的挂点兼领域控制面(状态直读 OniDomain.Local)
         private readonly OniDomainEye domainEye = new();
         private int emberTimer;
+        private float logicTime;
         //挂绳 Verlet:锚点随 HUD 队列避让移动时绳会带着滞后甩摆
         private readonly OniRope rope = new(5, OnikiriUITheme.HudRopeLen + 5f);
         //本帧札体姿态(绳末位置+摆角弹簧),Update 算好供 Draw/粒子/命中共用
@@ -121,6 +122,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
+        public override Vector2 MousePosition => OnikiriUITheme.UIMouse;
+
         private static bool LocalHolding() {
             if (Main.gameMenu || Main.dedServ) {
                 return false;
@@ -137,8 +140,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public override bool Active => LocalKeepAlive() || appear > 0.01f;
 
         public override void Update() {
+            if (hover || stance.Hovering || domainEye.Hovering) {
+                player.mouseInterface = true;
+            }
+        }
+
+        public override void LogicUpdate() {
             bool keepAlive = LocalKeepAlive();
             appear = MathHelper.Clamp(appear + (keepAlive ? 0.07f : -0.09f), 0f, 1f);
+            logicTime += 1f / 60f;
             if (appear <= 0.01f) {
                 hover = wasHovered = false;
                 hoverOffTicks = Math.Min(hoverOffTicks + 1, 600);
@@ -160,7 +170,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             //鬼域之眼:先推进眼(它是整簇的挂点),左键开阖、右键/中键翻转
             Vector2 knot = Anchor;
-            domainEye.Update(player, knot, !uiCovered && appear > 0.5f, MousePosition, GlobalTimer,
+            domainEye.Update(player, knot, !uiCovered && appear > 0.5f, MousePosition, logicTime,
                 keyLeftPressState == KeyPressState.Pressed,
                 keyRightPressState == KeyPressState.Pressed || keyMiddlePressState == KeyPressState.Pressed);
 
@@ -171,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (hover) {
                 windAmp *= 0.2f;
             }
-            rope.Update(knot + domainEye.HangSway, null, GlobalTimer, windAmp, endWeight: 0.5f, damping: hover ? 0.78f : 0.84f);
+            rope.Update(knot + domainEye.HangSway, null, logicTime, windAmp, endWeight: 0.5f, damping: hover ? 0.78f : 0.84f);
             if (danger && !hover && Main.rand.NextBool(180)) {
                 rope.Nudge(Main.rand.NextFloat(0.45f, 0.95f) * (Main.rand.NextBool() ? 1f : -1f), Main.rand.NextFloat(0.35f));
             }
@@ -202,7 +212,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             stripRot = MathHelper.Clamp(stripRot + stripRotVel, -0.32f, 0.32f);
             stripRotNow = stripRot;
             if (danger) {
-                stripRotNow += (float)Math.Sin(GlobalTimer * 11f) * 0.010f;
+                stripRotNow += (float)Math.Sin(logicTime * 11f) * 0.010f;
             }
 
             //命中:光标变换进札面局部空间,与绘制同一姿态的 OBB(旧的轴对齐外包在摆角大时会漏判)
