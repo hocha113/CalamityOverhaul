@@ -553,8 +553,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                             Projectile.Kill();
                             return;
                         }
+                        //轻点蓄不足:照常打出第一拍,不吞输入
                         okp.ClearBreathCharge();
-                        Projectile.Kill();
+                        FireBeat();
+                        firstBeatFired = true;
+                        scheduling = false;
                         return;
                     }
                 }
@@ -1284,10 +1287,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             if (Projectile.IsOwnedByLocalPlayer() && a != null && !a.ResourceGranted) {
                 OniMeiCombat.TryApplyIronSever(Owner, target, ref modifiers);
                 OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
-                okp.TryConsumeSilentKill(ref modifiers);
-                if (a.Beat == BeatCount - 1) {
-                    okp.TryConsumePlantedStep(ref modifiers);
-                }
+                //默杀×止足与残心同门收口(止足只认第五拍),同帧叠乘吃软帽
+                okp.ApplyMeiConsumeMuls(ref modifiers, allowPlanted: a.Beat == BeatCount - 1);
                 okp.TryApplyTideOffBeatHit(ref modifiers);
                 okp.ApplyHollowRoarHitMuls(ref modifiers);
                 if (okp.IsTideOnBeatNow) {

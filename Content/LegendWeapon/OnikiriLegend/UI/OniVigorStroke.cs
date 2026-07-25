@@ -34,6 +34,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private float capRatio = 1f;
         //友切咎层:笔道尾部的错位缺口数
         private int guiltLayers;
+        //潮樋潮相:0..1(窗心 0.5),未装 -1;游标沿笔道涨落,合潮纸白涨亮
+        private float tidePhase01 = -1f;
+        private bool tideOnBeat;
 
         /// <summary>本帧悬浮在笔道核心带上(纯读数,不捕获点击)</summary>
         public bool Hovering { get; private set; }
@@ -61,9 +64,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             lastMouse = mouse;
             snap = OniVigor.Get(player);
             capRatio = snap.CapRatio <= 0f ? 1f : snap.CapRatio;
-            //咎层直读本地 ModPlayer(纯展示,本地 HUD 不进网络)
-            guiltLayers = player != null && player.TryGetModPlayer(out OnikiriPlayer okp)
-                ? okp.GuiltLayers : 0;
+            //咎层/潮相直读本地 ModPlayer(纯展示,本地 HUD 不进网络)
+            if (player != null && player.TryGetModPlayer(out OnikiriPlayer okp)) {
+                guiltLayers = okp.GuiltLayers;
+                tidePhase01 = okp.TidePhase01;
+                tideOnBeat = okp.IsTideOnBeatNow;
+            }
+            else {
+                guiltLayers = 0;
+                tidePhase01 = -1f;
+                tideOnBeat = false;
+            }
             float newTarget = snap.Ratio;
             if (targetFill < 0f) {
                 targetFill = displayFill = trailFill = newTarget;
@@ -161,9 +172,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (guiltLayers > 0) {
                 DrawGuiltNotches(sb, alpha, denyShake);
             }
+            //潮樋:笔道下方潮头游标涨落,合潮窗纸白涨亮——节拍从此看得见
+            if (tidePhase01 >= 0f) {
+                DrawTideCrest(sb, alpha, denyShake, time);
+            }
 
             if (!suppressTag && hoverEase > 0.05f) {
                 DrawHoverTag(sb, alpha * hoverEase);
+            }
+        }
+
+        /// <summary>潮头游标:相位三角波沿笔道往返(窗心=最右),合潮时纸白横浪涨亮</summary>
+        private void DrawTideCrest(SpriteBatch sb, float alpha, float shakeX, float time) {
+            (Vector2 s, Vector2 e) = StrokeSpan(shakeX);
+            //三角波:0→窗心(0.5)潮涨到头,再退回;可写段内往返
+            float tri = 1f - Math.Abs(tidePhase01 - 0.5f) * 2f;
+            Vector2 pos = Vector2.Lerp(s, e, MathHelper.Lerp(0.06f, 0.94f, tri) * capRatio);
+            pos.Y += 7f;
+
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Rectangle src = new(0, 0, 1, 1);
+            Color crest = tideOnBeat ? new Color(255, 243, 226) : OnikiriUITheme.Deep;
+            float size = tideOnBeat ? 3.4f + (float)Math.Sin(time * 9f) * 0.5f : 2.1f;
+            //潮位基线:极淡,只给游标一个"水面"参照
+            OniBrush.DrawGradientLine(sb, new Vector2(s.X, pos.Y), new Vector2(e.X, pos.Y),
+                OnikiriUITheme.TextDim * (alpha * 0.14f), OnikiriUITheme.TextDim * (alpha * 0.07f), 1f);
+            //潮头
+            sb.Draw(pixel, pos, src, crest * (alpha * (tideOnBeat ? 0.95f : 0.55f)),
+                MathHelper.PiOver4, new Vector2(0.5f), new Vector2(size), SpriteEffects.None, 0f);
+            if (tideOnBeat) {
+                //合潮横浪:一线纸白拉开
+                sb.Draw(pixel, pos, src, OnikiriUITheme.Bright * (alpha * 0.45f),
+                    0f, new Vector2(0.5f), new Vector2(size * 4.2f, 1.1f), SpriteEffects.None, 0f);
             }
         }
 

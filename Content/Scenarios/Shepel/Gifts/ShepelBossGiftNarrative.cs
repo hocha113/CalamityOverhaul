@@ -136,8 +136,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
     /// </summary>
     internal sealed class ShepelGiftBossKillNPC : DeathTrackingNPC
     {
-        public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
-            => AppliesToBossOrSegment(entity);
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => true;
 
         public override void OnNPCDeath(NPC npc) {
             if (Main.dedServ) {

@@ -43,6 +43,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         private const float CollisionSubStep = 14f; //直线斩停子步长(小于玩家宽度,防隧穿)
 
+        private const float CollisionEpsilon = 0.01f;
+
+        /// <summary>着地瞄准向地侧小于约 17° 时吸附水平</summary>
+        private const float GroundAimSnapMaxSin = 0.30f;
+
+        /// <summary>向地碰撞允许沿表面掠行的最大角度,约 25°</summary>
+        private const float GroundGrazeMaxSin = 0.42f;
+
         private const float SweepLead = 44f;        //扫掠前导:冲刺终点脸前的目标不漏标
 
         private const float SweepBackPad = 24f;     //扫掠后补:起手贴脸的目标不漏标
@@ -142,7 +150,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         /// <param name="aim">冲刺方向（无需归一化）</param>
         /// <param name="damage">墨痕引爆伤害（每个被穿过的敌人全额一次）</param>
         /// <param name="knockback">击退</param>
-        /// <param name="distance">冲刺距离(px)，触碰实体物块立即终止</param>
+        /// <param name="distance">冲刺距离(px)，实体阻挡提前止步</param>
         /// <param name="scale">尺寸倍率（流带幅宽/粒子随之缩放）</param>
         /// <param name="interruptCombo">是否先播放连段收刃</param>
         /// <param name="interruptRotation">被接管时的实体刀角</param>
@@ -151,12 +159,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             float distance, float scale = 1f, bool interruptCombo = false,
             float interruptRotation = 0f, IEntitySource source = null) {
             source ??= player.GetSource_Misc("CWR_OniFlashStep");
-            float aimAngle = aim.SafeNormalize(Vector2.UnitX * player.direction).ToRotation();
+            Vector2 aimDir = aim.SafeNormalize(Vector2.UnitX * player.direction);
+            if (aimDir.Y * player.gravDir > 0f
+                && MathF.Abs(aimDir.Y) <= GroundAimSnapMaxSin
+                && IsGrounded(player)) {
+                aimDir.Y = 0f;
+                aimDir = aimDir.SafeNormalize(Vector2.UnitX * player.direction);
+            }
+            float aimAngle = aimDir.ToRotation();
             Vector2 encodedPose = interruptCombo ? interruptRotation.ToRotationVector2() : Vector2.Zero;
             float encodedScale = MathF.Abs(scale) * (interruptCombo ? -1f : 1f);
             return Projectile.NewProjectileDirect(source, player.Center, encodedPose
                 , ModContent.ProjectileType<OniFlashStep>(), damage, knockback, player.whoAmI
                 , ai0: aimAngle, ai1: distance, ai2: encodedScale);
+        }
+
+        private static bool IsGrounded(Player player) {
+            Vector2 probe = Vector2.UnitY * player.gravDir * 2f;
+            Vector2 resolved = Collision.TileCollision(player.position, probe, player.width, player.height
+                , fallThrough: false, fall2: false, gravDir: (int)player.gravDir);
+            return MathF.Abs(resolved.Y - probe.Y) > CollisionEpsilon;
         }
 
         public override void SetStaticDefaults() {
@@ -284,16 +306,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             float stepLen = MathF.Min(StepLengthAt(timer - TravelStartFrame - 1, plannedDashFrames)
                 , MathF.Max(Distance - traveled, 0f));
 
-            //高速位移必须保留子步检测防止穿墙，但不再尝试抬阶或修正轨迹
+            //高速位移保留子步检测,浅角度触地只裁掉向地分量
             while (moved < stepLen - 0.01f) {
                 float sub = MathF.Min(CollisionSubStep, stepLen - moved);
-                Vector2 next = Owner.position + dashDir * sub;
-                if (Collision.SolidCollision(next, Owner.width, Owner.height)) {
+                if (!TryAdvanceDashSubstep(sub, out float consumed)) {
+                    moved += consumed;
                     blocked = true;
                     break;
                 }
-                Owner.position = next;
-                moved += sub;
+                moved += consumed;
             }
 
             Owner.velocity = Vector2.Zero;
@@ -307,11 +328,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             MarkSweep(fromBody - dashDir * SweepBackPad, sweepEnd);
 
             if (blocked) {
-                Projectile.Kill();
-                return;
+                FinishDash();
             }
-
-            if (traveled >= Distance - 1f) {
+            else if (traveled >= Distance - 1f) {
                 headOffset = MathF.Min(headOffset, MathF.Max(FreeAheadBudget() - 6f, 8f));
                 if (!TryChainIntoSakura()) {
                     FinishDash();
@@ -327,6 +346,49 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             if (!Main.dedServ && moved > 1f) {
                 SpawnDashWisps(prevHead, GetCenter());
             }
+        }
+
+        /// <summary>直线子步,浅角度触地时沿表面保留切向位移</summary>
+        private bool TryAdvanceDashSubstep(float distance, out float consumed) {
+            Vector2 wanted = dashDir * distance;
+            Vector2 resolved = Collision.TileCollision(Owner.position, wanted, Owner.width, Owner.height
+                , fallThrough: true, fall2: true, gravDir: (int)Owner.gravDir);
+            bool clippedX = MathF.Abs(resolved.X - wanted.X) > CollisionEpsilon;
+            bool clippedY = MathF.Abs(resolved.Y - wanted.Y) > CollisionEpsilon;
+            bool groundGraze = !clippedX && clippedY
+                && wanted.Y * Owner.gravDir > 0f
+                && MathF.Abs(dashDir.Y) <= GroundGrazeMaxSin;
+
+            if (clippedX || (clippedY && !groundGraze)) {
+                float fraction = 1f;
+                if (clippedX) {
+                    fraction = MathF.Min(fraction, MathF.Abs(wanted.X) > CollisionEpsilon
+                        ? MathHelper.Clamp(resolved.X / wanted.X, 0f, 1f)
+                        : 0f);
+                }
+                if (clippedY) {
+                    fraction = MathF.Min(fraction, MathF.Abs(wanted.Y) > CollisionEpsilon
+                        ? MathHelper.Clamp(resolved.Y / wanted.Y, 0f, 1f)
+                        : 0f);
+                }
+                consumed = distance * fraction;
+                ApplyDashDisplacement(wanted * fraction);
+                return false;
+            }
+
+            consumed = distance;
+            ApplyDashDisplacement(resolved);
+            return true;
+        }
+
+        private void ApplyDashDisplacement(Vector2 displacement) {
+            if (displacement.LengthSquared() <= CollisionEpsilon * CollisionEpsilon) {
+                return;
+            }
+            Owner.position += displacement;
+            Vector4 slope = Collision.SlopeCollision(Owner.position, displacement
+                , Owner.width, Owner.height, gravity: 0f, fall: true);
+            Owner.position = new Vector2(slope.X, slope.Y);
         }
 
         /// <summary>焦樋：疾走路径节流落灼地</summary>

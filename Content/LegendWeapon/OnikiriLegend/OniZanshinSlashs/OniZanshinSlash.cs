@@ -352,7 +352,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             }
             if (Projectile.IsOwnedByLocalPlayer()) {
                 OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
-                okp.ApplyZanshinMeiConsumeMuls(ref modifiers);
+                okp.ApplyMeiConsumeMuls(ref modifiers, allowPlanted: true);
                 okp.ApplyHollowRoarHitMuls(ref modifiers);
             }
             float offsetX = Projectile.To(target.Center).X;

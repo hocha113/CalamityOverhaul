@@ -81,15 +81,15 @@ MeiKyushu: {
 MeiIkiai: {
 	DisplayName: 息合
 	Origin: 对视那一瞬憋住的气，合拍落刃
-	Power: 「吐息」短蓄后沿瞄准向前咬出一道行进刀压（绯红斩弧连环咬合）
+	Power: 「吐息」短蓄松手，沿瞄准吐出一道行进弧形剑气（绯红月牙，穿透每敌一次）；轻点松手仍是寻常一刀
 	Burden: 蓄息时身形变沉；空蓄挨打会白耗气
-	Summary: 吐息刀压；蓄息有价
+	Summary: 吐息弧剑气；蓄息有价
 }
 
 MeiKyoko: {
 	DisplayName: 虚吼
 	Origin: 吼进空里，回声找不到落点
-	Power: 「空鸣」空场时周期威压；远离再近的一刀更重
+	Power: 「空鸣」空场时周期吼出墨压涟漪，波及之敌脚下一滞；远离再近的一刀更重
 	Burden: 贴身砍太密会失焦变钝
 	Summary: 空场威压；贴身失焦
 }
@@ -129,9 +129,9 @@ MeiKanhi: {
 MeiTodohi: {
 	DisplayName: 滞樋
 	Origin: 黏是黏了点。沾着转，脱开就滞
-	Power: 「滞缚」命中让目标短暂黏脚难走
-	Burden: 疾走起步自身也略滞
-	Summary: 黏敌；自身也黏
+	Power: 「滞缚」命中把墨黏上脚，目标短暂难走（巨物略韧）
+	Burden: 疾走过后，下一步疾走慢半拍才备好
+	Summary: 黏敌；再走钝半拍
 }
 
 MeiShiorihi: {
@@ -153,7 +153,7 @@ MeiShiohi: {
 MeiShibori: {
 	DisplayName: 痺雕
 	Origin: 麻着手也护一下。刀也疼
-	Power: 「痺反」护身或穿身格挡成功时反麻来手一瞬
+	Power: 「痺反」护身或穿身格挡成功反麻来手——麻着的手脚更慢，打人也不疼
 	Burden: 架势账更苛
 	Summary: 挡成功反麻；架势贵
 }

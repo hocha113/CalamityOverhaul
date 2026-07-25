@@ -8,6 +8,7 @@ using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 {
@@ -109,7 +110,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             }
         }
 
-        /// <summary>虚吼空鸣:空场低压脉冲,半径内 Slow,无狮颚伤害</summary>
+        /// <summary>虚吼空鸣:空场低压脉冲,半径内叠短「滞缚」(真实阻尼),无狮颚伤害</summary>
         public static void FireHollowRoarPulse(Player player) {
             if (player == null) {
                 return;
@@ -123,10 +124,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                 if (npc.DistanceSQ(center) > radiusSq) {
                     continue;
                 }
-                npc.AddBuff(BuffID.Slow, OniMeiCombat.HollowRoarSlowTicks);
+                npc.AddBuff(ModContent.BuffType<OniBindDebuff>(), OniMeiCombat.HollowRoarSlowTicks);
             }
+            SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.55f, Volume = 0.22f }, center);
             if (Main.dedServ) {
                 return;
+            }
+            //墨压涟漪:一圈外扩纸白细屑+墨烟,读作吼出去的那圈空气
+            for (int i = 0; i < 14; i++) {
+                Vector2 dir = (MathHelper.TwoPi * i / 14f).ToRotationVector2();
+                PRTLoader.NewParticle<PRT_CrimsonSpark>(center + dir * 24f, dir * Main.rand.NextFloat(6f, 9f)
+                    , PaperSteel * 0.85f, Main.rand.NextFloat(0.16f, 0.26f))
+                    ?.Configure(Main.rand.Next(12, 18), affectedByGravity: false);
             }
             for (int i = 0; i < 10; i++) {
                 Vector2 dir = (MathHelper.TwoPi * i / 10f).ToRotationVector2();
@@ -134,36 +143,113 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                     , Color.White, Main.rand.NextFloat(0.06f, 0.10f))
                     ?.Configure(Main.rand.Next(16, 26), new Color(90, 28, 40), new Color(22, 10, 16));
             }
-            CrimsonImpactFX.PushImpact(center, 0.06f);
+            CrimsonImpactFX.PushImpact(center, 0.09f);
         }
 
-        /// <summary>
-        /// 息合吐息刀压:首段立刻定锚,余段交 Player 队列按间隔推进;
-        /// 不回调气/架势
-        /// </summary>
-        public static void FireBreathWave(Player player, Vector2 origin, float aim, int weaponDamage, float knockback) {
-            if (player == null || !player.TryGetModPlayer(out OnikiriPlayer okp)) {
+        /// <summary>铁截「截金」命中反馈:钢体命中处旧金重钢屑 + 金属脆响(owner 客户端)</summary>
+        public static void SpawnIronSeverFX(NPC target) {
+            if (target == null) {
                 return;
             }
-            int damage = Math.Max(1, (int)(weaponDamage * OniMeiCombat.BreathWaveDamageMul));
-            Vector2 aimDir = aim.ToRotationVector2();
-            //首段略离身,读作吐出
-            Vector2 first = origin + aimDir * (OniMeiCombat.BreathWaveSpacing * 0.55f);
-            CrimsonRendCleave.Fire(player, first, aim, damage, knockback * 0.35f, scale: 0.95f
-                , flip: 1, player.GetSource_ItemUse(player.HeldItem), CleaveStyle.BreathWave);
-            okp.BeginBreathWaveChain(origin, aim, damage, knockback
-                , remainingSegments: OniMeiCombat.BreathWaveSegments - 1);
+            SoundEngine.PlaySound(SoundID.Tink with { Pitch = 0.30f, Volume = 0.5f }, target.Center);
+            if (Main.dedServ) {
+                return;
+            }
+            for (int i = 0; i < 5; i++) {
+                PRTLoader.NewParticle<PRT_CrimsonSteelSpark>(target.Center + Main.rand.NextVector2Circular(10f, 10f)
+                    , Main.rand.NextVector2Circular(3.5f, 2.5f) - Vector2.UnitY * Main.rand.NextFloat(1f, 3f)
+                    , GoldSpark, Main.rand.NextFloat(0.26f, 0.42f))
+                    ?.Configure(Main.rand.Next(14, 22));
+            }
+        }
 
+        /// <summary>止足消费反馈:足元「止足」字形一闪 + 立定环碎成纸白屑(owner 客户端)</summary>
+        public static void SpawnPlantedConsumeFX(Player player) {
+            if (player == null) {
+                return;
+            }
+            SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.35f, Volume = 0.40f }, player.Center);
+            if (Main.dedServ) {
+                return;
+            }
+            Vector2 foot = player.Bottom - Vector2.UnitY * 4f;
+            PRTLoader.NewParticle<PRT_OniMeiGlyph>(foot - Vector2.UnitY * 18f, Vector2.Zero, Color.White, 1f)
+                ?.Configure(nameof(MeiAshidome), 26, 30f, OnikiriUITheme.Bright
+                    , maxReveal: 1f, followPlayer: player.whoAmI
+                    , followOffset: foot - Vector2.UnitY * 18f - player.Center);
+            for (int i = 0; i < 8; i++) {
+                float ang = MathHelper.TwoPi * i / 8f;
+                PRTLoader.NewParticle<PRT_CrimsonSpark>(foot + ang.ToRotationVector2() * 12f
+                    , ang.ToRotationVector2() * Main.rand.NextFloat(2f, 4f) - Vector2.UnitY * 0.5f
+                    , PaperSteel, Main.rand.NextFloat(0.18f, 0.30f))
+                    ?.Configure(12, affectedByGravity: false);
+            }
+        }
+
+        /// <summary>默切消费反馈:一记消音重击——发丝白闪 + 坠墨,声音沉短(owner 客户端)</summary>
+        public static void SpawnSilentConsumeFX(Player player) {
+            if (player == null) {
+                return;
+            }
+            SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.90f, Volume = 0.45f }, player.Center);
+            if (Main.dedServ) {
+                return;
+            }
+            PRTLoader.NewParticle<PRT_CrimsonHitFlash>(player.Center, Vector2.Zero, PaperSteel, 0.55f);
+            for (int i = 0; i < 4; i++) {
+                PRTLoader.NewParticle<PRT_OniInkDrop>(player.Center + Main.rand.NextVector2Circular(14f, 18f)
+                    , Main.rand.NextVector2Circular(1.6f, 1f) + Vector2.UnitY * Main.rand.NextFloat(0.4f, 1.2f)
+                    , LacquerDark, Main.rand.NextFloat(0.18f, 0.30f))
+                    ?.Configure(Main.rand.Next(14, 22));
+            }
+        }
+
+        /// <summary>痺反命中反馈:来手身上纸白麻花炸开 + 短促"麻"音</summary>
+        public static void SpawnNumbCounterFX(NPC source) {
+            if (source == null) {
+                return;
+            }
+            SoundEngine.PlaySound(SoundID.Item37 with { Pitch = 0.42f, Volume = 0.34f }, source.Center);
             if (Main.dedServ) {
                 return;
             }
             for (int i = 0; i < 6; i++) {
-                PRTLoader.NewParticle<PRT_CrimsonSpark>(first + Main.rand.NextVector2Circular(12f, 12f)
+                PRTLoader.NewParticle<PRT_CrimsonSpark>(
+                    source.Center + Main.rand.NextVector2Circular(source.width * 0.4f, source.height * 0.4f)
+                    , Main.rand.NextVector2Circular(2.5f, 2.5f), PaperSteel
+                    , Main.rand.NextFloat(0.16f, 0.30f))
+                    ?.Configure(Main.rand.Next(8, 14), affectedByGravity: false);
+            }
+        }
+
+        /// <summary>
+        /// 息合吐息:沿瞄准飞出一道行进弧形剑气(凸面朝前,穿透每目标一次);
+        /// 不回调气/架势
+        /// </summary>
+        public static void FireBreathWave(Player player, Vector2 origin, float aim, int weaponDamage, float knockback) {
+            if (player == null) {
+                return;
+            }
+            int damage = Math.Max(1, (int)(weaponDamage * OniMeiCombat.BreathArcDamageMul));
+            Vector2 aimDir = aim.ToRotationVector2();
+            //出口略离身,读作吐出
+            Vector2 muzzle = origin + aimDir * 46f;
+            OniMeiBreathArc.Fire(player, muzzle, aim, damage, knockback * 0.35f
+                , player.GetSource_ItemUse(player.HeldItem));
+
+            if (Main.dedServ) {
+                return;
+            }
+            //吐出的那口气:胸前纸白火花顺势前抛 + 一缕薄墨烟
+            for (int i = 0; i < 6; i++) {
+                PRTLoader.NewParticle<PRT_CrimsonSpark>(origin + Main.rand.NextVector2Circular(12f, 12f)
                     , aimDir.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 6f)
                     , new Color(255, 236, 220), Main.rand.NextFloat(0.22f, 0.38f))
                     ?.Configure(Main.rand.Next(10, 16), affectedByGravity: false);
             }
-            CrimsonImpactFX.PushImpact(first, 0.08f);
+            PRTLoader.NewParticle<PRT_CrimsonSmoke>(origin + aimDir * 20f, aimDir * 1.2f
+                , Color.White, 0.05f)?.Configure(14, new Color(110, 30, 34), new Color(24, 12, 16));
+            CrimsonImpactFX.PushImpact(muzzle, 0.08f);
         }
 
         //==================== 逐拍/状态演出 ====================
@@ -269,22 +355,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             }
         }
 
-        //==================== 髭切断首 ====================
+        //==================== 断首/取首 ====================
 
-        /// <summary>断线:入线目标轮廓上的极细错位断口(仅命中者,不扫全屏)</summary>
-        public static void SpawnSeverLine(NPC target, float cutAngle) {
+        /// <summary>断线:入线目标轮廓上的极细错位断口(仅命中者,不扫全屏);aged=旧首取首的旧钢色调</summary>
+        public static void SpawnSeverLine(NPC target, float cutAngle, bool aged = false) {
             if (Main.dedServ || target == null) {
                 return;
             }
             Vector2 dir = cutAngle.ToRotationVector2();
             float half = MathF.Max(target.width, target.height) * 0.42f;
-            //两粒高速拉伸的纸白钢屑对开,读作一根发丝断线
+            Color steel = aged ? new Color(214, 196, 170) : PaperSteel;
+            //两粒高速拉伸的钢屑对开,读作一根发丝断线
             PRTLoader.NewParticle<PRT_CrimsonSpark>(target.Center + dir.RotatedBy(MathHelper.PiOver2) * 2f
-                , dir * 16f, PaperSteel, 0.34f)?.Configure(9, affectedByGravity: false);
+                , dir * 16f, steel, 0.34f)?.Configure(9, affectedByGravity: false);
             PRTLoader.NewParticle<PRT_CrimsonSpark>(target.Center - dir.RotatedBy(MathHelper.PiOver2) * 2f
-                , -dir * 16f, PaperSteel, 0.34f)?.Configure(9, affectedByGravity: false);
+                , -dir * 16f, steel, 0.34f)?.Configure(9, affectedByGravity: false);
             PRTLoader.NewParticle<PRT_CrimsonSpark>(target.Center + dir * half, dir * 4f
-                , PaperSteel * 0.8f, 0.22f)?.Configure(12, affectedByGravity: false);
+                , steel * 0.8f, 0.22f)?.Configure(12, affectedByGravity: false);
         }
 
         /// <summary>断首了结:一粒纸白钢屑沿刀路倒飞回鞘(架势返还的具象)</summary>

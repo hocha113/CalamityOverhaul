@@ -81,15 +81,15 @@ MeiKyushu: {
 MeiIkiai: {
 	DisplayName: Ikiai
 	Origin: The breath you held while staring — then the blades met on the beat
-	Power: Breath-Wave: after a short charge, a traveling crimson cut-chain bites forward along your aim
+	Power: Breath-Wave: charge briefly and release to exhale a traveling crimson arc of sword-qi (a flying crescent that pierces each foe once); a quick tap still swings as normal
 	Burden: Charging sinks your step; getting hit mid-charge wastes vigor
-	Summary: Breath cut-chain; charging has a price
+	Summary: Breath arc-qi; charging has a price
 }
 
 MeiKyoko: {
 	DisplayName: Kyoko
 	Origin: A roar into empty air; the echo finds no place to land
-	Power: Hollow-Roar: periodic pressure in empty space; the first cut after leaving and returning hits harder
+	Power: Hollow-Roar: in empty space, periodically roars out a ripple of ink pressure that stalls the footing of foes it touches; the first cut after leaving and returning hits harder
 	Burden: Dense close-range chopping loses focus and dulls
 	Summary: Empty-space pressure; close-range blur
 }
@@ -129,9 +129,9 @@ MeiKanhi: {
 MeiTodohi: {
 	DisplayName: Todo-hi
 	Origin: A bit sticky. Keep contact to turn; break off and it stalls
-	Power: Sticky-Bind: hits briefly slow the target's movement
-	Burden: Your own dash start is a bit sticky too
-	Summary: Slow foes; self also sticky
+	Power: Sticky-Bind: hits ink-snare the target's footing, briefly slowing it (great beasts resist somewhat)
+	Burden: After a dash, the next dash takes half a beat longer to ready
+	Summary: Snare foes; dash re-arms slower
 }
 
 MeiShiorihi: {
@@ -153,7 +153,7 @@ MeiShiohi: {
 MeiShibori: {
 	DisplayName: Shibori
 	Origin: Guard even with numb hands. The blade hurts too
-	Power: Numb-Counter: successful guard or dash-body parry briefly numbs the attacker
+	Power: Numb-Counter: a successful guard or dash-body parry numbs the attacker — numbed limbs move slower and strike softer
 	Burden: Stance economy is harsher
 	Summary: Parry numbs; stance costly
 }

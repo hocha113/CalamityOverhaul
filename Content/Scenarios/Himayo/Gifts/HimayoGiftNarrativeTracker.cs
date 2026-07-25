@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Common;
 using InnoVault.Narrative.Core;
@@ -186,8 +186,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 
     internal sealed class HimayoGiftBossKillNPC : DeathTrackingNPC
     {
-        public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
-            => AppliesToBossOrSegment(entity);
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => true;
 
         public override void OnNPCDeath(NPC npc) {
             if (Main.dedServ) {

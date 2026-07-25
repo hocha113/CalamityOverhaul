@@ -72,3 +72,13 @@ OniNeckGripDebuff: {
 	DisplayName: Oni Chokehold
 	Description: An oni hand is squeezing your throat; your movements grow heavy
 }
+
+OniBindDebuff: {
+	DisplayName: Ink-Bound
+	Description: Ink clings to its footing; movement turns sluggish
+}
+
+OniNumbDebuff: {
+	DisplayName: Numbed
+	Description: Limbs gone numb — slower to move, softer to strike
+}

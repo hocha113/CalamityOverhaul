@@ -15,13 +15,6 @@ namespace CalamityOverhaul.Content.Narrative.Common
 
         private bool _deathHandled;
 
-        /// <summary>
-        /// Boss 本体，或挂了 <see cref="NPC.realLife"/> 的体节（击杀常落在体节上）
-        /// 礼物/响应式等只关心 Boss 死亡的子类应使用此过滤器。
-        /// </summary>
-        protected static bool AppliesToBossOrSegment(NPC entity)
-            => entity.boss || entity.realLife >= 0;
-
         /// <summary>禁止子类走 OnKill：仅服务端，且与 HitEffect 语义重复，易在 MP 漏端</summary>
         public sealed override void OnKill(NPC npc) { }
 

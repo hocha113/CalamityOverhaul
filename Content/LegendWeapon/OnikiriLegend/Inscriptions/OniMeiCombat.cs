@@ -2,6 +2,7 @@
 using System.Linq;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 {
@@ -120,10 +121,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         //====L0 独特化调参====
         /// <summary>铁截：钢铁体连段首击伤害倍率</summary>
         public const float IronSeverSteelHitMul = 1.30f;
-        /// <summary>滞樋：命中黏敌时长(帧)</summary>
+        /// <summary>滞樋：命中滞缚时长(帧)</summary>
         public const int StickyBindTargetSlowTicks = 45;
-        /// <summary>滞樋：疾走起步自黏时长(帧)</summary>
-        public const int StickyBindSelfSlowTicks = 20;
+        /// <summary>滞樋：疾走再触发锁额外帧(自黏负担=节奏税，不糊脚)</summary>
+        public const int StickyBindDashLockTicks = 5;
+        /// <summary>滞缚：非 boss 每帧位移阻尼(香草 Slow 对 NPC 无效，自实现)</summary>
+        public const float BindDampMul = 0.85f;
+        /// <summary>滞缚：boss 每帧位移阻尼(减效)</summary>
+        public const float BindBossDampMul = 0.95f;
         /// <summary>闲樋：无命中记忆刷新视为脱战的窗口(帧)</summary>
         public const int QuietBreathColdTicks = 180;
         /// <summary>闲樋：脱战时自然回气额外倍率(叠在 NaturalRegenMul 上)</summary>
@@ -142,8 +147,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public const int SilentKillWindowTicks = 45;
         /// <summary>默切：窗内下一记加深倍率</summary>
         public const float SilentKillHitMul = 1.35f;
-        /// <summary>痺反：来手 Slow 时长(帧)</summary>
+        /// <summary>痺反：来手痺时长(帧)</summary>
         public const int NumbCounterSlowTicks = 36;
+        /// <summary>痺：非 boss 每帧位移阻尼(轻)</summary>
+        public const float NumbDampMul = 0.92f;
+        /// <summary>痺：boss 每帧位移阻尼</summary>
+        public const float NumbBossDampMul = 0.97f;
+        /// <summary>痺：麻手接触伤倍率("麻了的手打不疼"，boss 也吃)</summary>
+        public const float NumbContactDamageMul = 0.85f;
         /// <summary>止足：低位移累计达此帧数视为立定就绪</summary>
         public const int PlantedChargeNeedTicks = 45;
         /// <summary>止足：速度平方阈(\|v\|≈1.5)</summary>
@@ -152,7 +163,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public const int PlantedKnockbackGraceTicks = 12;
         /// <summary>止足：大招/第五拍加深倍率</summary>
         public const float PlantedStepHitMul = 1.25f;
-        /// <summary>残心同帧默杀×止足叠乘软帽</summary>
+        /// <summary>默杀×止足同帧叠乘软帽(残心与第五拍同门收口)</summary>
         public const float SilentPlantedSoftCap = 1.55f;
 
         //====M2 独特化调参====
@@ -191,25 +202,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         /// <summary>空鸣：失焦统计窗(帧)</summary>
         public const int HollowFocusLossWindowTicks = 48;
 
-        //====H0 息合吐息刀压====
-        /// <summary>息合：短蓄松手最低帧</summary>
-        public const int BreathMinChargeTicks = 21;
+        //====H0 息合吐息弧剑气====
+        /// <summary>息合：短蓄松手最低帧(低于此松手照常出第一拍)</summary>
+        public const int BreathMinChargeTicks = 12;
         /// <summary>息合：首拍前摇满帧(按满则出连)</summary>
-        public const int BreathMaxChargeTicks = 36;
+        public const int BreathMaxChargeTicks = 20;
         /// <summary>息合：吐息气耗</summary>
         public const float BreathWaveVigorCost = 22f;
         /// <summary>息合：空蓄受击白扣气</summary>
         public const float BreathCancelVigorTax = 8f;
-        /// <summary>息合：蓄息速度倍率</summary>
-        public const float BreathChargeSlowMul = 0.55f;
-        /// <summary>息合：断斩链段数</summary>
-        public const int BreathWaveSegments = 4;
-        /// <summary>息合：段间距(世界单位)</summary>
-        public const float BreathWaveSpacing = 88f;
-        /// <summary>息合：段间隔(帧)</summary>
-        public const int BreathWaveSegmentDelay = 10;
-        /// <summary>息合：单段相对武器伤害</summary>
-        public const float BreathWaveDamageMul = 0.16f;
+        /// <summary>息合：蓄息期间移动力倍率(温和阻尼，不冻脚)</summary>
+        public const float BreathChargeMoveMul = 0.80f;
+        /// <summary>息合：弧剑气相对武器伤害(单发穿透，每目标一次)</summary>
+        public const float BreathArcDamageMul = 0.45f;
+        /// <summary>息合：弧剑气出手速度(px/帧)</summary>
+        public const float BreathArcLaunchSpeed = 26f;
+        /// <summary>息合：弧剑气巡航速度(px/帧，出手后缓降至此)</summary>
+        public const float BreathArcCruiseSpeed = 15f;
+        /// <summary>息合：飞行帧数(到程即侵蚀消散，射程约 680px)</summary>
+        public const int BreathArcFlightFrames = 36;
 
         //====H1 灼地共型====
         /// <summary>焦痕：灼地寿命(帧)</summary>
@@ -321,21 +332,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             return !CWRLoad.WormBodys.Contains(target.type);
         }
 
-        /// <summary>痺反：对来手叠短 Slow；无源/未装返回 false</summary>
+        /// <summary>痺反：对来手叠「痺」(自实现阻尼+接触伤打折)；无源/未装返回 false</summary>
         public static bool TryApplyNumbCounter(Player owner, NPC source) {
             if (source == null || !source.active || !ResolveHeld(owner).NumbCounter) {
                 return false;
             }
-            source.AddBuff(BuffID.Slow, NumbCounterSlowTicks);
+            source.AddBuff(ModContent.BuffType<OniNumbDebuff>(), NumbCounterSlowTicks);
+            OniMeiStrikes.SpawnNumbCounterFX(source);
             return true;
         }
 
         /// <summary>
-        /// 断首命中收尾(owner 端 OnHitNPC 调用)：入线命中画断线；
-        /// 由本招式了结目标时返还架势(refunded 保证每次招式至多一次)
+        /// 断首/取首命中收尾(owner 端 OnHitNPC 调用)：入线命中画断线；
+        /// 髭切由本招式了结目标时返还架势(refunded 保证每次招式至多一次)，
+        /// 旧首只有断线(旧钢色)无返势
         /// </summary>
         public static void OnExecuteStrikeHit(Player owner, NPC target, float cutAngle, ref bool refunded) {
-            if (target == null || !ResolveHeld(owner).ExecuteLowLifeBonus) {
+            if (target == null) {
+                return;
+            }
+            OniMeiCombatProfile profile = ResolveHeld(owner);
+            bool execute = profile.ExecuteLowLifeBonus;
+            bool headHunt = profile.HeadHunt;
+            if (!execute && !headHunt) {
+                return;
+            }
+            if (!execute && headHunt && !IsHeadHuntTarget(target)) {
                 return;
             }
             NPC root = RootOf(target);
@@ -344,7 +366,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             if (!killed && frac >= ExecuteThreshold) {
                 return;
             }
-            OniMeiStrikes.SpawnSeverLine(target, cutAngle);
+            OniMeiStrikes.SpawnSeverLine(target, cutAngle, aged: !execute);
+            if (!execute) {
+                return;
+            }
             if (killed && !refunded) {
                 refunded = true;
                 if (owner.TryGetModPlayer(out OnikiriPlayer okp)) {
@@ -355,8 +380,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
 
         /// <summary>
-        /// 铁截「截金」：钢铁/装甲体加深。由连段本拍首击门闸调用；
-        /// 未装铁截或非钢体返回 false
+        /// 铁截「截金」：钢铁/装甲体加深，触发时旧金钢屑+金属脆响。
+        /// 由连段本拍首击门闸调用；未装铁截或非钢体返回 false
         /// </summary>
         public static bool TryApplyIronSever(Player owner, NPC target, ref NPC.HitModifiers modifiers) {
             if (target == null || !ResolveHeld(owner).IronSever) {
@@ -366,6 +391,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                 return false;
             }
             modifiers.FinalDamage *= IronSeverSteelHitMul;
+            OniMeiStrikes.SpawnIronSeverFX(target);
             return true;
         }
     }
