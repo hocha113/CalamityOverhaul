@@ -548,7 +548,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 if (breath && Projectile.IsOwnedByLocalPlayer()) {
                     OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
                     okp.ReportBreathChargeFromSlash(firstWindupTicks);
-                    if (!holding) {
+                    //松手只认真实按键:holding 含 24 帧轻点缓冲,会把"松手"整个藏过
+                    //20 帧蓄息窗,按满分支先行——释放路径永远走不到,吐息就发不出来
+                    if (!DownLeft) {
                         if (firstWindupTicks >= OniMeiCombat.BreathMinChargeTicks
                             && okp.TryReleaseBreathWave()) {
                             Projectile.Kill();
@@ -591,6 +593,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 }
                 //签名拍软保留,不重启夺刀
                 if (OniBladeOccupancy.BladeReserved(Owner)) {
+                    return;
+                }
+                //息合:收势后再按重开蓄息窗(勿只认控制器出厂首拍,否则轻点一次后永远吐不出)
+                meiProfile = OniMeiCombat.Resolve(Item);
+                if (meiProfile.BreathWave) {
+                    firstBeatFired = false;
+                    firstWindupTicks = 0;
+                    pressBuffer = 0;
+                    //蓄息期间必须续命,否则无活刀光时 UpdateLifetime 会当场 Kill
+                    scheduling = true;
+                    hasHandoff = OniBladeHandoff.TryPeek(Owner, out handoffRot, out _);
+                    if (timer - lastBeatFire > ComboResetFrames) {
+                        comboIndex = 0;
+                    }
                     return;
                 }
                 scheduling = true;
