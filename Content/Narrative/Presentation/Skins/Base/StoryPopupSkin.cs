@@ -1,5 +1,5 @@
-﻿using InnoVault.Narrative.Styling;
-using InnoVault.Narrative.Presentation.Popups;
+﻿using InnoVault.Narrative.Presentation.Popups;
+using InnoVault.Narrative.Styling;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
