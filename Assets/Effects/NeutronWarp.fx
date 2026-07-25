@@ -230,6 +230,29 @@ float4 GravitationalLensPS(float2 uv : TEXCOORD0) : COLOR0
     return float4(direction, magnitude, 0, saturate(alpha));
 }
 
+//KamuiLine 神威疾走沿线拉扯
+//局部 Y 为线轴、X 为横向；uRotation = 位移的绝对屏幕角（几何由 CPU 侧旋转对齐）
+//两端沿轴羽化防硬切，横向核+翼双高斯，沿线湍流让拉扯有呼吸
+float4 KamuiLinePS(float2 uv : TEXCOORD0) : COLOR0
+{
+    float2 centered = uv - 0.5;
+
+    float lateral = abs(centered.x);
+    float core = exp(-pow(lateral / 0.10, 2.0));
+    float wing = exp(-pow(lateral / 0.26, 2.0)) * 0.4;
+
+    float endFade = smoothstep(0.50, 0.34, abs(centered.y));
+
+    float turb = fbm2(centered * float2(6.0, 2.2) + uTime * float2(0.3, 1.6));
+    float breath = 0.72 + 0.28 * turb;
+
+    float direction = frac(uRotation / TAU + 0.5);
+    float magnitude = saturate((core + wing) * endFade * breath * uIntensity * uProgress);
+    float alpha = saturate((core + wing * 0.6) * endFade * uProgress);
+
+    return float4(direction, magnitude, 0, alpha);
+}
+
 technique GravitationalVortex
 {
     pass P0
@@ -259,5 +282,13 @@ technique GravitationalLens
     pass P0
     {
         PixelShader = compile ps_3_0 GravitationalLensPS();
+    }
+}
+
+technique KamuiLine
+{
+    pass P0
+    {
+        PixelShader = compile ps_3_0 KamuiLinePS();
     }
 }

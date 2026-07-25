@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Common
         /// <param name="screenHeight">屏幕高 px</param>
         /// <param name="intensity">位移强度 0~1</param>
         /// <param name="progress">生命进度 0~1，控扩张/收缩</param>
-        /// <param name="technique">Pass 名，GravitationalVortex / ShockwaveRing / RelativisticJet / GravitationalLens</param>
+        /// <param name="technique">Pass 名，GravitationalVortex / ShockwaveRing / RelativisticJet / GravitationalLens / KamuiLine</param>
         /// <param name="radius">UV 归一化半径，默认 0.45</param>
         public static void DrawWarp(
             Vector2 worldCenter,

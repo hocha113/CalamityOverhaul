@@ -120,15 +120,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 dir = dir.SafeNormalize(Vector2.UnitX);
                 Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
 
-                //幅宽包络、尾端略收
+                //幅宽包络、梭形：尾端从近零长出、最宽落在头侧（头端收尖由 shader 彗星鼻 taper 负责）
 
-                float hw = def.HalfWidth * MathHelper.Lerp(0.68f, 1f, u);
-                //平行偏移在头段漏斗式归零、多股流带汇入同一个收束点
+                float tailGrow = MathHelper.Clamp(u / 0.14f, 0f, 1f);
+                tailGrow *= 2f - tailGrow;   //easeOut
+                float hw = def.HalfWidth * MathHelper.Lerp(0.68f, 1f, u) * tailGrow;
+                //平行偏移双向漏斗：头段归零汇入收束点，尾段收到三成、四股闭合成叶形但保留撕裂散口
 
                 float funnel = MathHelper.Clamp((1f - u) / 0.34f, 0f, 1f);
                 funnel = funnel * (2f - funnel);   //easeOut，汇入平滑无折角
 
-                Vector2 center = points[i] + perp * (def.PerpOffset * funnel);
+                float tailFunnel = MathHelper.Clamp(u / 0.20f, 0f, 1f);
+                tailFunnel = MathHelper.Lerp(0.30f, 1f, tailFunnel * (2f - tailFunnel));
+
+                Vector2 center = points[i] + perp * (def.PerpOffset * funnel * tailFunnel);
 
                 verts[i * 2] = new VertexPositionColorTexture(
                     (center - perp * hw).ToVector3(), Color.White, new Vector2(u, 0f));

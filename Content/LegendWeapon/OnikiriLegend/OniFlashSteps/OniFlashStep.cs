@@ -18,11 +18,12 @@ using OKF = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps.On
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 {
     /// <summary>神威疾走主控. ai[0]=瞄准角(弧度) ai[1]=冲刺距离(px) ai[2]=尺寸倍率,负值含连段收刃</summary>
-    internal class OniFlashStep : BaseHeldProj, IPrimitiveDrawable, IAdditiveDrawable, IOverlayDrawable, IOniBladeOccupant
+    internal class OniFlashStep : BaseHeldProj, IPrimitiveDrawable, IAdditiveDrawable, IOverlayDrawable, IOniBladeOccupant, IWarpDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        /// <summary>单段冲刺速度(px/帧)，距离在出手时由光标位置一次性确定</summary>
+        /// <summary>巡航速度(px/帧)，距离在出手时由光标位置一次性确定；
+        /// 逐帧实际步长由 <see cref="StepWeight"/> 赋形：首帧冲量→巡航→末两帧缓出</summary>
         private const float DashSpeed = 170f;
 
         private const int JudgmentDelay = 8;    //刹停到纳刀结算
@@ -108,10 +109,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private float Distance => MathF.Max(Projectile.ai[1], 1f);
 
         internal static int CalculateTravelFrames(float distance)
-            => Math.Max((int)MathF.Ceiling(MathF.Max(distance, 1f) / DashSpeed), 2);
+            => Math.Max((int)MathF.Ceiling(MathF.Max(distance, 1f) / DashSpeed + SpeedShapeExtraFrames), 2);
 
         internal static int CalculateControlFrames(float distance, bool interruptHandoff)
             => CalculateTravelFrames(distance) + (interruptHandoff ? InterruptHandoffFrames : 0);
+
+        /// <summary>速度赋形的帧数补偿：n≥4 时权重和 = n-0.87，须多要 0.87 帧巡航段速度才守得住 DashSpeed</summary>
+        private const float SpeedShapeExtraFrames = 0.87f;
+
+        /// <summary>帧步长权重：首帧冲量、末两帧缓出、中段巡航（与 <see cref="SpeedShapeExtraFrames"/> 互为反函数）</summary>
+        private static float StepWeight(int i, int n) {
+            if (i >= n - 1) {
+                return 0.28f;   //末帧缓出
+            }
+            if (i == n - 2 && n >= 3) {
+                return 0.55f;   //次末帧减速
+            }
+            return i == 0 ? 1.30f : 1f;
+        }
+
+        /// <summary>本帧计划步长(px)，全程积分恰等于总距离、指哪停哪不变</summary>
+        private float StepLengthAt(int frameIdx, int totalFrames) {
+            float weightSum = 0f;
+            for (int i = 0; i < totalFrames; i++) {
+                weightSum += StepWeight(i, totalFrames);
+            }
+            return Distance * StepWeight(Math.Clamp(frameIdx, 0, totalFrames - 1), totalFrames) / weightSum;
+        }
 
         /// <summary>触发接口、在持有者客户端调用</summary>
         /// <param name="player">冲刺者</param>
@@ -256,7 +280,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
             float moved = 0f;
             bool blocked = false;
-            float stepLen = MathF.Min(DashSpeed, MathF.Max(Distance - traveled, 0f));
+            //三段式步长（冲量→巡航→缓出），残余距离兜底防浮点漂移
+            float stepLen = MathF.Min(StepLengthAt(timer - TravelStartFrame - 1, plannedDashFrames)
+                , MathF.Max(Distance - traveled, 0f));
 
             //高速位移必须保留子步检测防止穿墙，但不再尝试抬阶或修正轨迹
             while (moved < stepLen - 0.01f) {
@@ -670,6 +696,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             //出发过曝一拍速落
 
             float flash = timer <= 1 ? 0.9f : MathF.Pow(0.55f, timer - 1) * 0.9f;
+            //纳刀脉冲："锵"落在流带上提亮两三帧，挥空不响也不闪
+
+            if (marked.Count > 0 && timer >= JudgmentFrame) {
+                flash = MathF.Max(flash, MathF.Pow(0.50f, timer - JudgmentFrame) * 0.55f);
+            }
             //兜底淡出（蒸发进度之外的最后保险）
 
             float opacity = 1f - MathHelper.Clamp((timer - (JudgmentFrame + RetractDelay + RetractFrames)) / 10f, 0f, 1f);
@@ -707,7 +738,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 OKF.DrawRibbon(device, fx, pts, in defs[i], retract, flash, opacity);
             }
 
+            DrawInkRings(device, fx, opacity);
+
             OKF.EndDraw(device, pb, pr, pd);
+        }
+
+        /// <summary>出发点小环 + 刹停大环；衔接樱流时人已远去、不画刹停环</summary>
+        private void DrawInkRings(GraphicsDevice device, Effect fx, float opacity) {
+            const int OriginRingFrames = 14;
+            if (timer < OriginRingFrames && path.Count > 0) {
+                float t = timer / (float)OriginRingFrames;
+                DrawInkRing(device, fx, path[0]
+                    , (24f + 26f * CrimsonSlashRenderer.EaseOutCubic(t)) * sizeMul
+                    , 7f * sizeMul, (1f - t) * 0.75f * opacity, t * 0.9f, 0.11f);
+            }
+
+            const int StopRingFrames = 18;
+            if (stopFrame >= 0 && !ChainedToSakura && timer - stopFrame < StopRingFrames) {
+                float t = (timer - stopFrame) / (float)StopRingFrames;
+                DrawInkRing(device, fx, path[^1] + dashDir * headExt
+                    , (52f + 26f * CrimsonSlashRenderer.EaseOutCubic(t)) * sizeMul
+                    , 10f * sizeMul, MathF.Pow(1f - t, 1.35f) * 0.95f * opacity, t, 0.29f);
+            }
+        }
+
+        /// <summary>枯笔墨环：椭圆点环走同一套流带管线，梭形包络与 shader 彗星鼻在环缝处
+        /// 天然给出起笔收笔断口；unwind 复用 uRetract、环沿笔顺散墨消隐；短轴沿冲刺向透视压扁</summary>
+        private void DrawInkRing(GraphicsDevice device, Effect fx, Vector2 center
+            , float radius, float thickness, float ringOpacity, float unwind, float seedOffset) {
+            if (ringOpacity <= 0.02f || radius < 14f) {
+                return;
+            }
+            const float Squash = 0.34f;   //透视短轴比
+            //点距须压过 ShapePath 的 10px 剔除阈值（短轴处点会被压密到 ~1/3）
+            int segs = Math.Clamp((int)(MathHelper.TwoPi * radius / 17f), 10, 40);
+            Vector2 perpAxis = dashDir.RotatedBy(MathHelper.PiOver2);
+            float phase = (seed + seedOffset) * MathHelper.TwoPi;
+            List<Vector2> ring = new(segs + 1);
+            for (int i = 0; i <= segs; i++) {
+                float theta = phase + MathHelper.TwoPi * i / segs;
+                ring.Add(center + perpAxis * (MathF.Sin(theta) * radius)
+                    + dashDir * (MathF.Cos(theta) * radius * Squash));
+            }
+            OKF.RibbonDef def = new() {
+                HalfWidth = thickness, PerpOffset = 0f, Seed = seed + seedOffset,
+                FlowMul = 0.75f, TearAmp = 1.15f, HeadBoost = 0f, OpacityMul = 1f,
+            };
+            OKF.DrawRibbon(device, fx, ring, in def, unwind, 0f, ringOpacity);
         }
 
         /// <summary>加色层、冲刺期头端流光锋头包裹 + 出发点撕裂形/白闪（前 10 帧）</summary>
@@ -746,5 +823,49 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                     , seed * 6f, flare.Size() * 0.5f, (0.7f + fA * 0.3f) * sizeMul, SpriteEffects.None, 0);
             }
         }
+
+        /// <summary>沿冲刺线的空气拉扯（KamuiLine 位移场），蒸发期随流带一同回落；
+        /// helper 只画轴对齐四边形，此处手动旋转对齐线轴</summary>
+        void IWarpDrawable.Warp() {
+            if (path.Count < 2 || EffectLoader.NeutronWarp?.Value is not Effect warpFx) {
+                return;
+            }
+            float envelope = stopFrame < 0 ? 1f : 1f - RetractT;
+            if (envelope <= 0.03f) {
+                return;
+            }
+            Vector2 head = path[^1] + dashDir * headExt;
+            float length = Vector2.Distance(path[0], head);
+            if (length < 40f) {
+                return;
+            }
+
+            warpFx.Parameters["uTime"]?.SetValue((float)Main.GameUpdateCount * 0.05f);
+            warpFx.Parameters["uIntensity"]?.SetValue(0.55f);
+            warpFx.Parameters["uProgress"]?.SetValue(envelope);
+            warpFx.Parameters["uRotation"]?.SetValue(DashAngle);
+            warpFx.CurrentTechnique = warpFx.Techniques["KamuiLine"];
+
+            SpriteBatch sb = Main.spriteBatch;
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState
+                , DepthStencilState.None, RasterizerState.CullNone, warpFx, Main.GameViewMatrix.TransformationMatrix);
+            warpFx.CurrentTechnique.Passes[0].Apply();
+
+            //长度余量喂给 shader 两端羽化（羽化带完全落在线外，线身全程实场）；局部 +Y 旋到冲刺向
+            Vector2 mid = (path[0] + head) * 0.5f - Main.screenPosition;
+            Vector2 quad = new(300f * sizeMul, length * 1.5f + 120f);
+            sb.Draw(VaultAsset.placeholder2.Value, mid, new Rectangle(0, 0, 1, 1), Color.White
+                , DashAngle - MathHelper.PiOver2, new Vector2(0.5f), quad, SpriteEffects.None, 0);
+
+            sb.End();
+            sb.Begin(0, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None
+                , RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        /// <summary>墨的空气拉扯要中性色差，蓝移是中子星语言</summary>
+        public bool DontUseBlueshiftEffect() => true;
+
+        public void DrawCustom(SpriteBatch spriteBatch) { }
     }
 }
