@@ -567,9 +567,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             if (IsEraseRib(index)) {
                 if (OniMeiRegistry.EraseHeld(slot)) {
-                    if (oldKey != null) {
-                        OniMeiTrayLogic.TryRefund(Main.LocalPlayer, oldKey);
-                    }
                     RebuildTray();
                     Rite.Start(OniMeiRiteKind.Erase, slot, oldKey, null);
                     SelectSlotSilently(-1);
@@ -595,7 +592,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>匣格点击:消耗錾样凿上,旧铭退样</summary>
+        /// <summary>匣格点击:持样凿上，拓本不消耗</summary>
         private void HandleTrayClick(int visibleIndex) {
             int abs = TrayPageStart() + visibleIndex;
             if (abs < 0 || abs >= tray.Count) {
@@ -613,7 +610,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
 
             Player player = Main.LocalPlayer;
-            if (!OniMeiTrayLogic.TryConsume(player, entry.Key)) {
+            if (!OniMeiTrayLogic.Has(player, entry.Key)) {
                 DenyFeedback();
                 RebuildTray();
                 return;
@@ -621,14 +618,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             OniMeiOwned.Unlock(player, entry.Key);
             if (!OniMeiRegistry.EngraveHeld(slot, entry.Key)) {
-                OniMeiTrayLogic.TryRefund(player, entry.Key);
                 DenyFeedback();
                 RebuildTray();
                 return;
-            }
-
-            if (oldKey != null && oldKey != entry.Key) {
-                OniMeiTrayLogic.TryRefund(player, oldKey);
             }
 
             RebuildTray();

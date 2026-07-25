@@ -406,7 +406,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         /// <summary>
-        /// 錾样匣一格:缩小扇菱章(无扇骨线)+堆叠角标。台上拓片,非背包方格
+        /// 錾样匣一格:缩小扇菱章(无扇骨线)。台上拓片,非背包方格
         /// </summary>
         public static void DrawTrayCell(SpriteBatch sb, Vector2 pos, string glyphKey, bool gold, bool isCurrent,
             int stack, float vis, float hover, float alpha, float time) {

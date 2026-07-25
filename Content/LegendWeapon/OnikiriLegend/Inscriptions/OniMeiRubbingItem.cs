@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
     /// <summary>
     /// 錾样/拓本载体：入包即 Unlock 所持；装刀只在改铭台。<br/>
     /// 图标复用 <see cref="OniMeiGlyph"/>，与扇骨菱章同色系。<br/>
-    /// 名册可送铭均有物品形态，匣换铭耗件退旧
+    /// 名册可送铭均有物品形态；拓本不消耗，匣上点选仅作样板凿铭
     /// </summary>
     internal abstract class OniMeiRubbingItem : ModItem, ILocalizedModType
     {
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override void SetDefaults() {
             Item.width = 32;
             Item.height = 32;
-            Item.maxStack = 99;
+            Item.maxStack = 1;
             Item.rare = ItemRarityID.Orange;
             Item.value = Item.sellPrice(silver: 50);
             if (OniMeiRegistry.TryGet(MeiKey, out OniMeiDefinition def) && def.IsGoldTier) {
