@@ -738,53 +738,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 OKF.DrawRibbon(device, fx, pts, in defs[i], retract, flash, opacity);
             }
 
-            DrawInkRings(device, fx, opacity);
-
             OKF.EndDraw(device, pb, pr, pd);
-        }
-
-        /// <summary>出发点小环 + 刹停大环；衔接樱流时人已远去、不画刹停环</summary>
-        private void DrawInkRings(GraphicsDevice device, Effect fx, float opacity) {
-            const int OriginRingFrames = 14;
-            if (timer < OriginRingFrames && path.Count > 0) {
-                float t = timer / (float)OriginRingFrames;
-                DrawInkRing(device, fx, path[0]
-                    , (24f + 26f * CrimsonSlashRenderer.EaseOutCubic(t)) * sizeMul
-                    , 7f * sizeMul, (1f - t) * 0.75f * opacity, t * 0.9f, 0.11f);
-            }
-
-            const int StopRingFrames = 18;
-            if (stopFrame >= 0 && !ChainedToSakura && timer - stopFrame < StopRingFrames) {
-                float t = (timer - stopFrame) / (float)StopRingFrames;
-                DrawInkRing(device, fx, path[^1] + dashDir * headExt
-                    , (52f + 26f * CrimsonSlashRenderer.EaseOutCubic(t)) * sizeMul
-                    , 10f * sizeMul, MathF.Pow(1f - t, 1.35f) * 0.95f * opacity, t, 0.29f);
-            }
-        }
-
-        /// <summary>枯笔墨环：椭圆点环走同一套流带管线，梭形包络与 shader 彗星鼻在环缝处
-        /// 天然给出起笔收笔断口；unwind 复用 uRetract、环沿笔顺散墨消隐；短轴沿冲刺向透视压扁</summary>
-        private void DrawInkRing(GraphicsDevice device, Effect fx, Vector2 center
-            , float radius, float thickness, float ringOpacity, float unwind, float seedOffset) {
-            if (ringOpacity <= 0.02f || radius < 14f) {
-                return;
-            }
-            const float Squash = 0.34f;   //透视短轴比
-            //点距须压过 ShapePath 的 10px 剔除阈值（短轴处点会被压密到 ~1/3）
-            int segs = Math.Clamp((int)(MathHelper.TwoPi * radius / 17f), 10, 40);
-            Vector2 perpAxis = dashDir.RotatedBy(MathHelper.PiOver2);
-            float phase = (seed + seedOffset) * MathHelper.TwoPi;
-            List<Vector2> ring = new(segs + 1);
-            for (int i = 0; i <= segs; i++) {
-                float theta = phase + MathHelper.TwoPi * i / segs;
-                ring.Add(center + perpAxis * (MathF.Sin(theta) * radius)
-                    + dashDir * (MathF.Cos(theta) * radius * Squash));
-            }
-            OKF.RibbonDef def = new() {
-                HalfWidth = thickness, PerpOffset = 0f, Seed = seed + seedOffset,
-                FlowMul = 0.75f, TearAmp = 1.15f, HeadBoost = 0f, OpacityMul = 1f,
-            };
-            OKF.DrawRibbon(device, fx, ring, in def, unwind, 0f, ringOpacity);
         }
 
         /// <summary>加色层、冲刺期头端流光锋头包裹 + 出发点撕裂形/白闪（前 10 帧）</summary>
@@ -841,7 +795,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             }
 
             warpFx.Parameters["uTime"]?.SetValue((float)Main.GameUpdateCount * 0.05f);
-            warpFx.Parameters["uIntensity"]?.SetValue(0.55f);
+            warpFx.Parameters["uIntensity"]?.SetValue(0.22f);
             warpFx.Parameters["uProgress"]?.SetValue(envelope);
             warpFx.Parameters["uRotation"]?.SetValue(DashAngle);
             warpFx.CurrentTechnique = warpFx.Techniques["KamuiLine"];
