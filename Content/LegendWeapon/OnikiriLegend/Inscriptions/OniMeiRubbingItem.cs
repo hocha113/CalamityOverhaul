@@ -1,12 +1,11 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Items
+namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 {
     /// <summary>
     /// 錾样/拓本载体：入包即 Unlock 所持；装刀只在改铭台。<br/>
@@ -84,7 +83,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Items
             style.Inlay = gold ? 1f : 0f;
             style.Accent = gold ? OnikiriUITheme.GoldInlay : OnikiriUITheme.Bright;
             style.Lit = 0.15f;
-            style.Time = (float)Main.GameUpdateCount * 0.02f;
+            style.Time = Main.GameUpdateCount * 0.02f;
             OniMeiGlyph.Draw(sb, MeiKey, center, g * 0.72f, style);
         }
     }
