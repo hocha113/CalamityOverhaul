@@ -39,8 +39,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             public float TailErode;      //彗星尾蒸发上限(0=不蒸发)
             public float FlashPower;     //全形白闪强度
             public float FarDim;         //>0 远近半侧分层,远半侧压暗并画身后
-            public float SweepSnap;      //>0 蓄势-爆发扫掠权重
+            public float SweepSnap;      //>0 蓄势-爆发扫掠权重(旧曲线,GatherFrames=0 时生效)
             public float RazorTailWiden; //剃刀线收笔端展宽
+            //==== 收-爆-停时间轴(GatherFrames>0 启用,轻拍收势零揭开重拍缓推) ====
+            public int GatherFrames;     //收势帧数,爆发帧数=SweepFrames-GatherFrames
+            public float CreepAmt;       //收势期揭开上限(0=全藏,重拍~0.3 缓推telegraph)
+            //==== 伪 z 通道(椭圆=倾斜圆,z 幅度由长短轴差导出) ====
+            public float DepthSign;      //0=平面 ±1=启用,符号选哪半侧沉入身后
             //==== 水墨旋钮(0=原光润能量) ====
             public float Ink;            //0..1 墨场主权重
             public float FeiBai;         //0..1 飞白干笔(侵蚀期加剧)
@@ -69,6 +74,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
         public static float EaseOutCubic(float x) => 1f - MathF.Pow(1f - MathHelper.Clamp(x, 0f, 1f), 3f);
 
+        public static float EaseOutQuad(float x) {
+            x = MathHelper.Clamp(x, 0f, 1f);
+            return 1f - (1f - x) * (1f - x);
+        }
+
         /// <summary>带过冲缓出,峰值 ~1.05 回落 1</summary>
         public static float EaseOutBack(float x) {
             x = MathHelper.Clamp(x, 0f, 1f);
@@ -85,8 +95,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
         //==== 生命周期采样 ====
 
+        /// <summary>收-爆-停揭开,收势期缓推至 CreepAmt,爆发段 1~3 帧内砸满,无减速尾巴</summary>
         public static float Sweep(in SlashDef d, int lt) {
             float t = lt / (float)d.SweepFrames;
+            if (d.GatherFrames > 0) {
+                float g = d.GatherFrames / (float)d.SweepFrames;
+                if (t < g) {
+                    return d.CreepAmt * EaseOutCubic(t / g);
+                }
+                return d.CreepAmt + (1f - d.CreepAmt) * EaseOutQuad((t - g) / (1f - g));
+            }
             return d.SweepSnap > 0f
                 ? MathHelper.Lerp(EaseOutCubic(t), SweepAnticipate(t), d.SweepSnap)
                 : EaseOutCubic(t);
@@ -122,16 +140,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         public static SlashAnim GetAnim(in SlashDef d, int lt) {
             float lifeT = MathHelper.Clamp(lt / (float)d.Life, 0f, 1f);
 
-            //出生爆发,62%→easeOutBack~104%回落,再缓慢外扩
-            float burstT = MathHelper.Clamp(lt / (d.SweepFrames + 2f), 0f, 1f);
-            float scale = MathHelper.Lerp(0.62f, 1f, EaseOutBack(burstT)) + 0.07f * lifeT;
+            //出生爆发,收势期蜷在小尺寸,爆发段 easeOutBack 砸到全尺寸后冻结
+            float burstT;
+            float preScale = 0.62f;
+            if (d.GatherFrames > 0) {
+                float gT = MathHelper.Clamp(lt / (float)d.GatherFrames, 0f, 1f);
+                preScale = MathHelper.Lerp(0.62f, 0.80f, gT);
+                burstT = MathHelper.Clamp((lt - d.GatherFrames) / (d.SweepFrames - d.GatherFrames + 2f), 0f, 1f);
+            }
+            else {
+                burstT = MathHelper.Clamp(lt / (d.SweepFrames + 2f), 0f, 1f);
+            }
+            float scale = MathHelper.Lerp(preScale, 1f, EaseOutBack(burstT))
+                + 0.02f * SmoothStep01(lifeT / 0.35f);
 
-            //惯性收势,扫掠后沿挥动方向减速旋转
-            float followT = MathHelper.Clamp((lt - d.SweepFrames) / 14f, 0f, 1f);
-            float rotOff = d.Flip * 0.13f * (1f - (1f - followT) * (1f - followT));
+            //停帧回坐,3 帧小过冲落定后冻结(旧 14 帧惯性漂移=软的来源)
+            float rotOff = d.Flip * 0.04f * EaseOutCubic((lt - d.SweepFrames) / 3f);
 
             //厚度呼吸,薄入→冲击最厚→消散变薄
-            float thickIn = EaseOutCubic(lt / (d.SweepFrames + 2f));
+            float thickIn = EaseOutCubic((lt - d.GatherFrames) / (d.SweepFrames - d.GatherFrames + 2f));
             float thickMul = MathHelper.Lerp(0.68f, 1.12f, thickIn)
                 * (1f - 0.42f * SmoothStep01((lifeT - 0.45f) / 0.55f));
 
@@ -154,6 +181,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 TailErode = tail, Flash = flash, FlowPhase = flowPhase,
             };
         }
+
+        //==== 伪 z 通道,椭圆视作倾斜圆的正交投影,z 沿短轴方向分布 ====
+
+        /// <summary>透视参考距离(px)</summary>
+        public const float ViewZ = 900f;
+
+        /// <summary>z 幅度(px),长短轴差导出;DepthSign=0 或正圆返回 0</summary>
+        public static float DepthAmp(in SlashDef d) => d.DepthSign == 0f ? 0f
+            : MathF.Sqrt(MathF.Abs(d.HalfX * d.HalfX - d.HalfY * d.HalfY));
+
+        /// <summary>刀光带 uc 处伪 z(px,+朝观者)</summary>
+        public static float DepthAt(in SlashDef d, float uc) {
+            float amp = DepthAmp(in d);
+            if (amp <= 0f) {
+                return 0f;
+            }
+            float phi = d.Flip * (uc - 0.5f) * d.Span;
+            float c = d.HalfX >= d.HalfY ? MathF.Sin(phi) : MathF.Cos(phi);
+            return c * 0.90f * amp * d.DepthSign;
+        }
+
+        /// <summary>透视缩放因子,z 朝观者(+)放大,远离(−)缩小</summary>
+        public static float PerspectiveK(float z) => ViewZ / MathF.Max(ViewZ - z, 220f);
 
         /// <summary>刀光中线静态点,忽略出生缩放/惯性滚转/厚度呼吸(实体刀路径用)</summary>
         public static Vector2 StaticPointAt(in SlashDef d, Vector2 center, float uc) {
@@ -256,14 +306,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             float hx = d.HalfX * anim.ScaleMul * scaleMul;
             float hy = d.HalfY * anim.ScaleMul * scaleMul;
 
-            //远近半侧,世界"屏幕上方"映到 quad uv(非等比需按轴归一)
+            //远近半侧,有 z 通道时远侧=z<0 半侧(与刀身深度同源);否则退回世界"屏幕上方"启发
             Vector2 farDirLocal = Vector2.Zero;
             if (d.FarDim > 0f && farSel != 0f) {
-                Vector2 worldUp = new(0f, -1f);
-                farDirLocal = new Vector2(Vector2.Dot(worldUp, axisX) / MathF.Max(hx, 1f)
-                    , Vector2.Dot(worldUp, axisY) / MathF.Max(hy, 1f));
-                if (farDirLocal.LengthSquared() > 1e-8f) {
-                    farDirLocal.Normalize();
+                if (d.DepthSign != 0f) {
+                    farDirLocal = d.HalfX >= d.HalfY
+                        ? new Vector2(0f, -d.DepthSign)
+                        : new Vector2(-d.DepthSign, 0f);
+                }
+                else {
+                    Vector2 worldUp = new(0f, -1f);
+                    farDirLocal = new Vector2(Vector2.Dot(worldUp, axisX) / MathF.Max(hx, 1f)
+                        , Vector2.Dot(worldUp, axisY) / MathF.Max(hy, 1f));
+                    if (farDirLocal.LengthSquared() > 1e-8f) {
+                        farDirLocal.Normalize();
+                    }
                 }
             }
 
