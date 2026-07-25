@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Items;
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.Narrative;
 using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;

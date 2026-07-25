@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Items;
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
