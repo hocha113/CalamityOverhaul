@@ -106,8 +106,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                     player.Hurt(PlayerDeathReason.ByCustomReason(
                         OniPlayerDismemberSystem.SelfHurtDeathReason.ToNetworkText(player.name))
                         , selfDamage, 0, dodgeable: false, scalingArmorPenetration: 1f, knockback: 0f);
-                }
-                finally {
+                } finally {
                     SelfHurtResolving = false;
                 }
                 if (player.dead) {

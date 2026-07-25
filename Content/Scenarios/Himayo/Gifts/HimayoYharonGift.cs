@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.Narrative;
 using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 

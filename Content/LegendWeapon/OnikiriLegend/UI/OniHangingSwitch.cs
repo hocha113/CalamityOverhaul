@@ -1,5 +1,4 @@
-using InnoVault.UIHandles;
-using System;
+﻿using InnoVault.UIHandles;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
