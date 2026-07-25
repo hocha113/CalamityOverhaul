@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position
             , Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            DrawRubbing(spriteBatch, position, 28f * scale, 1f);
+            DrawRubbing(spriteBatch, position, 28f * scale, drawColor.A / 255f);
             return false;
         }
 

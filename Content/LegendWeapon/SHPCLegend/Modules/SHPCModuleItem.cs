@@ -200,7 +200,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
             if (!SHPCModuleRender.Begin(spriteBatch, TintColor, texSize, Main.UIScaleMatrix, TintIntensity)) {
                 return true;
             }
-            spriteBatch.Draw(tex, position, frame, Color.White, 0f, origin, scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, position, frame, Color.White * (drawColor.A / 255f),
+                0f, origin, scale, SpriteEffects.None, 0f);
             SHPCModuleRender.End(spriteBatch);
             return false;
         }
