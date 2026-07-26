@@ -77,6 +77,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             float s = SizeMul;
             float seed = Projectile.identity * 0.6180339887f % 1f;
 
+            //闪现瞬间画面本身被切开一瞬——两侧沿法线错位、缝里烧线（切的是屏幕，不只是世界）
+
+            if (!Main.dedServ) {
+                OniFinaleFX.PushSlice(Projectile.Center, BladeAngle, 7f * s);
+            }
+
+            //过刃线与落刀碎面只在整场演出中挂账：格架由主控驱动更新/绘制，独立调试直痕不留悬账
+
+            if (!Main.dedServ && OniFinaleSlash.ShatterFlowActive) {
+                //这一刀切出去比你看到的更远——刀身之外的贯穿屏幕细线，
+                //另抛 1~2 条深度回声错帧闪现，刀意穿进纵深
+
+                OniFinaleLattice.AddLine(Projectile.Center, BladeAngle, 0f, s);
+                int echoes = Main.rand.NextBool(3) ? 2 : 1;
+                for (int i = 0; i < echoes; i++) {
+                    float depth = Main.rand.NextFloat(0.22f, 0.65f);
+                    OniFinaleLattice.AddLine(Projectile.Center + Main.rand.NextVector2Circular(170f, 120f)
+                        , BladeAngle + Main.rand.NextFloat(-0.09f, 0.09f), depth, s
+                        , delay: 1 + (int)(depth * 3f));
+                }
+                //落点附近碎开两面折射面：空间随每一刀逐步碎掉
+
+                OniFinaleShatter.AddFacets(Projectile.Center, 2, s);
+            }
+
             def = new OFR.BladeDef {
                 SweepFrames = 2, Life = detonateFrame + FadeFrames,
                 ErodeStart = 0, ErodeFrames = 1,      //侵蚀由状态机手工驱动，标准采样不使用

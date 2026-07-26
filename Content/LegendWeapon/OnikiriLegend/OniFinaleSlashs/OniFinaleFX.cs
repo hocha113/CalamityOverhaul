@@ -28,8 +28,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         /// <summary>压暗聚焦中心（世界坐标）</summary>
         public static Vector2 FocusWorld { get; private set; }
 
+        /// <summary>过刃切片槽：刀线新生时把画面本身切开一瞬（两侧沿法线错开 + 缝内白热线），
+        /// 四槽循环复用、快速衰减，多条近拍刀线可并存</summary>
+        private struct SliceState
+        {
+            public Vector2 CenterWorld;
+            public float Angle;
+            public float AmpPx;
+        }
+
+        private static readonly SliceState[] slices = new SliceState[4];
+        private static int sliceCursor;
+        private static bool sliceLive;
+
         public static bool HasAny => Dim > 0.012f || Negative > 0.012f
-            || SeamGlow > 0.012f || SplitOffsetPx > 0.05f;
+            || SeamGlow > 0.012f || SplitOffsetPx > 0.05f || sliceLive;
+
+        /// <summary>登记一次过刃切片（ampPx=两侧各错开的像素量，指数衰减 ~5 帧自灭）</summary>
+        public static void PushSlice(Vector2 centerWorld, float angle, float ampPx) {
+            if (!FocusNearLocalView(centerWorld)) {
+                return;
+            }
+            slices[sliceCursor] = new SliceState {
+                CenterWorld = centerWorld,
+                Angle = angle,
+                AmpPx = ampPx,
+            };
+            sliceCursor = (sliceCursor + 1) % slices.Length;
+            sliceLive = true;
+        }
+
+        internal static (Vector2 CenterWorld, float Angle, float AmpPx) GetSlice(int i)
+            => (slices[i].CenterWorld, slices[i].Angle, slices[i].AmpPx);
 
         /// <summary>演出焦点离本地视野中心过远时忽略推送，多人下远处玩家不承受全屏后效</summary>
         private static bool FocusNearLocalView(Vector2 focusWorld) {
@@ -88,11 +118,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             if (SplitOffsetPx < 0.05f) {
                 SplitOffsetPx = 0f;
             }
+
+            sliceLive = false;
+            for (int i = 0; i < slices.Length; i++) {
+                slices[i].AmpPx *= 0.70f;
+                if (slices[i].AmpPx < 0.15f) {
+                    slices[i].AmpPx = 0f;
+                }
+                else {
+                    sliceLive = true;
+                }
+            }
         }
 
         /// <summary>世界切换/卸载兜底清空</summary>
         public static void Clear() {
             Dim = dimTarget = Negative = SeamGlow = SplitOffsetPx = 0f;
+            sliceLive = false;
+            for (int i = 0; i < slices.Length; i++) {
+                slices[i].AmpPx = 0f;
+            }
         }
     }
 
@@ -102,6 +147,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         public override void OnWorldUnload() {
             OniFinaleFX.Clear();
             OniFinaleSlash.ShatterFlowActive = false;
+            OniFinaleLattice.Clear();
+            OniFinaleShatter.Clear();
         }
     }
 
@@ -110,6 +157,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
     {
         /// <summary>权重 1.09、晚于 PrimeScreenEffectRender(1.08)</summary>
         public override float Weight => 1.09f;
+
+        private static readonly Vector4[] sliceGeo = new Vector4[4];
+        private static readonly float[] sliceAmp = new float[4];
 
         public override void EndCaptureDraw(SpriteBatch sb, GraphicsDevice gd, RenderTarget2D screenSwap) {
             OniFinaleFX.Update();
@@ -139,6 +189,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             fx.Parameters["uSplitCenter"]?.SetValue(WorldToScreenUV(OniFinaleFX.SplitCenterWorld));
             fx.Parameters["uSeamGlow"]?.SetValue(OniFinaleFX.SeamGlow);
             fx.Parameters["uSeamColor"]?.SetValue(new Vector3(1.80f, 1.18f, 0.92f));
+
+            //过刃切片槽上载（空槽 amp=0，shader 侧 step 门掉）
+
+            float aspect = Main.screenWidth / (float)Main.screenHeight;
+            for (int i = 0; i < 4; i++) {
+                (Vector2 centerWorld, float angle, float ampPx) = OniFinaleFX.GetSlice(i);
+                Vector2 uv = WorldToScreenUV(centerWorld);
+                sliceGeo[i] = new Vector4(uv.X * aspect, uv.Y, -MathF.Sin(angle), MathF.Cos(angle));
+                sliceAmp[i] = ampPx / Main.screenHeight * Main.GameViewMatrix.Zoom.Y;
+            }
+            fx.Parameters["uSliceGeo"]?.SetValue(sliceGeo);
+            fx.Parameters["uSliceAmp"]?.SetValue(new Vector4(sliceAmp[0], sliceAmp[1], sliceAmp[2], sliceAmp[3]));
 
             //拷屏到 screenSwap 再带着后效写回 screenTarget
 

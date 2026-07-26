@@ -135,9 +135,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         public override void AI() {
             if (!initialized) {
                 Initialize();
-                //出鞘的"斩击"本身近乎无声、世界还没意识到已经被斩开
+                //出鞘的"斩击"本身近乎无声、世界还没意识到已经被斩开——但画面本身被切开一瞬
 
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 1f, Volume = 0.28f }, Projectile.Center);
+                OniFinaleFX.PushSlice(Projectile.Center, CutAngle, 5f * SizeMul);
             }
             timer++;
 
@@ -230,6 +231,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             if (Main.dedServ) {
                 return;
             }
+
+            //全场过刃线兑现退场；积攒整场的碎镜面在此刻急速闭合——被斩碎的空间随纳刀合拢，
+            //径向模糊与 RGB 色差同帧打峰（村正次元斩的爆发语言）
+
+            OniFinaleLattice.CashIn();
+            OniFinaleShatter.Burst(Projectile.Center);
+
+            //碎镜闭合的一声玻璃脆响，垫在纳刀声浪之下
+
+            SoundEngine.PlaySound(SoundID.Shatter with { Pitch = -0.10f, Volume = 0.55f }, Projectile.Center);
 
             CrimsonImpactFX.PushImpact(Projectile.Center, 0.10f);
 

@@ -1,7 +1,7 @@
 // ============================================================================
-//OniFinalePost.fx 鬼切终之太刀屏幕后处理：压暗聚焦 + 负片闪 + 沿刀线裂屏滑移
-//采样 uImage0 屏幕；uDim/uNegative/uSplitOffset 均为 0 时透传
-//处理顺序：裂屏采样 → 压暗/去饱和/暗角 → 负片 → 裂缝辉光（保持缝隙最亮）
+//OniFinalePost.fx 鬼切终之太刀屏幕后处理：压暗聚焦 + 负片闪 + 沿刀线裂屏滑移 + 过刃切片
+//采样 uImage0 屏幕；uDim/uNegative/uSplitOffset/uSliceAmp 均为 0 时透传
+//处理顺序：裂屏/切片采样 → 压暗/去饱和/暗角 → 负片 → 裂缝辉光（保持缝隙最亮）
 //ps_3_0
 // ============================================================================
 
@@ -18,6 +18,8 @@ float uSplitAngle;   //刀线角度（屏幕空间弧度）
 float2 uSplitCenter; //刀线中心 uv
 float uSeamGlow;     //0..1 裂缝辉光强度
 float3 uSeamColor;   //裂缝辉光色（白热绯红）
+float4 uSliceGeo[4]; //过刃切片槽 (cx*Aspect, cy, perpX, perpY)
+float4 uSliceAmp;    //四槽切片滑移量（屏幕高度归一），0=空槽
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
@@ -41,6 +43,20 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         float inGap = uSplitOffset - abs(side);
         gapMask = smoothstep(-0.0015, 0.0015, inGap);
         gapEdge = exp(-pow(max(inGap, 0.0) / 0.010, 2.0));
+    }
+
+    //---- 过刃切片：新生刀线把画面本身切开一瞬，两侧沿法线错开、缝里烧一条白热线 ----
+    float sliceGlow = 0.0;
+    for (int i = 0; i < 4; i++)
+    {
+        float4 geo = uSliceGeo[i];
+        float amp = uSliceAmp[i];
+        float gate = step(1e-5, amp);
+        float sliceSide = dot(ac - geo.xy, geo.zw);
+        float sgn = sliceSide >= 0.0 ? 1.0 : -1.0;
+        sampleUV -= float2(geo.z / max(uAspect, 1e-3), geo.w) * (sgn * amp * gate);
+        float band = max(amp * 1.25 - abs(sliceSide), 0.0) / max(amp * 1.25, 1e-5);
+        sliceGlow += band * gate * min(amp * 700.0, 1.0);
     }
 
     float4 src = tex2D(uImage0, sampleUV);
@@ -78,6 +94,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         float seamHalo = exp(-pow(abs(side) / 0.030, 2.0));
         col += uSeamColor * (seamCore * 1.6 + seamHalo * 0.45) * uSeamGlow;
     }
+
+    //---- 过刃切片缝光：割开一瞬的白热细线，随滑移量衰减自灭 ----
+    col += uSeamColor * sliceGlow * 1.15;
 
     return float4(col, src.a);
 }

@@ -7,11 +7,13 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using OFR = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs.OniFinaleRenderer;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 {
     /// <summary>终之太刀主控. 时停蓄势→裂世</summary>
     internal class OniFinaleSlash : ModProjectile, IOverlayDrawable, IOniBladeOccupant
+        , IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
@@ -38,6 +40,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         private static readonly (int Frame, float AngleOff)[] ScarBeats = [
             (38,  1.35f), (48, -0.52f), (50,  0.55f), (60, -1.15f), (70,  0.22f),
             (74, -0.88f), (78,  1.55f), (82, -0.30f), (86,  0.75f), (88, -1.60f),
+        ];
+
+        /// <summary>死寂期纯演出过刃线排拍、(帧, 相对瞄准角偏移, 深度)。静止中世界仍被无声切开，
+        /// 节奏渐急、深浅混排撑纵深；近平面(深度&lt;0.28)的线兑入碎屏网格</summary>
+        private static readonly (int Frame, float AngleOff, float Depth)[] SilenceBeats = [
+            (95, -0.55f, 0.30f), (99, 1.18f, 0.55f), (102, 0.30f, 0.16f),
+            (105, -1.30f, 0.68f), (108, 0.82f, 0.22f),
         ];
 
         /// <summary>碎晶流向偏置（弧度）、直痕引爆时碎片顺终斩刀线漂移，仅演出期有效</summary>
@@ -123,9 +132,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
             PlayTimelineSounds();
             UpdateStandPose();
+            RunLatticeTimeline();
 
             if (Projectile.owner == Main.myPlayer) {
                 RunSpawnTimeline();
+            }
+        }
+
+        /// <summary>过刃线格架的客户端时间轴：起手清上一场登记，死寂期排纯演出线并推同步呼吸</summary>
+        private void RunLatticeTimeline() {
+            if (Main.dedServ) {
+                return;
+            }
+            OniFinaleLattice.Update();
+
+            //死寂呼吸、全场细线同一口气，随逼近纳刀升压（深处相位滞后在格架内处理）；
+            //同窗径向模糊向刀线中心蓄力——空间被吸向那道将落未落的斩线
+
+            if (timer >= SilenceStart - 4 && timer <= DetonateFrame) {
+                float amp = MathHelper.Lerp(0.45f, 1f
+                    , (timer - SilenceStart + 4) / (float)(DetonateFrame - SilenceStart + 4));
+                OniFinaleLattice.PushBreath(timer, amp);
+                OniFinaleShatter.PushCharge(Projectile.Center
+                    , (timer - SilenceStart + 4) / (float)(DetonateFrame - SilenceStart + 4));
+            }
+
+            foreach ((int frame, float angleOff, float depth) in SilenceBeats) {
+                if (timer != frame) {
+                    continue;
+                }
+                Vector2 center = Projectile.Center + Main.rand.NextVector2Circular(130f, 95f);
+                float angle = Aim + angleOff + Main.rand.NextFloat(-0.05f, 0.05f);
+                OniFinaleLattice.AddLine(center, angle, depth, SizeMul);
+                if (depth < 0.28f) {
+                    //近平面的线切开画面本体+落刀碎面，配一声几不可闻的高频细响；深处的保持死寂
+
+                    OniFinaleFX.PushSlice(center, angle, 5f * SizeMul);
+                    OniFinaleShatter.AddFacets(center, 2, SizeMul);
+                    SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.9f, Volume = 0.14f }, center);
+                }
             }
         }
 
@@ -174,6 +219,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 return;
             }
             bladePose.Draw(spriteBatch, Owner);
+        }
+
+        /// <summary>格架指定绘制者：编号最小的在场主控代画，多场演出并存也只画一遍，
+        /// 且与暂停解耦（不依赖 AI 复位标志）</summary>
+        private bool IsLatticeDriver() {
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile p = Main.projectile[i];
+                if (p.active && p.type == Type) {
+                    return p.whoAmI == Projectile.whoAmI;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>过刃线格架主体</summary>
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (Main.dedServ || !OniFinaleLattice.HasAny || !IsLatticeDriver()) {
+                return;
+            }
+            GraphicsDevice device = Main.instance.GraphicsDevice;
+            if (OFR.BeginDraw(device, out Effect fx, out var pb, out var pr, out var pd)) {
+                OniFinaleLattice.DrawLines(device, fx);
+                OFR.EndDraw(device, pb, pr, pd);
+            }
+        }
+
+        /// <summary>过刃线出生掠光</summary>
+        void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
+            if (!OniFinaleLattice.HasAny || !IsLatticeDriver()) {
+                return;
+            }
+            OniFinaleLattice.DrawGlints(spriteBatch);
         }
 
         /// <summary>暗场包络、起手浸入 → 乱舞恒定 → 死寂压到最深 → 纳刀后停推自然回落</summary>
@@ -247,6 +324,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
         public override void OnKill(int timeLeft) {
             ShatterFlowActive = false;
+            //格架随主控退场：自然走完时细线早已在纳刀帧兑现清空，
+            //提前夭折（玩家阵亡等）则硬清——没有主控继续驱动淡出
+
+            OniFinaleLattice.Clear();
+
+            //提前夭折时碎镜面优雅闭合（自然流程由终斩在纳刀帧 Burst）
+
+            if (timer <= DetonateFrame) {
+                OniFinaleShatter.Burst(Projectile.Center);
+            }
         }
 
         public override bool PreDraw(ref Color lightColor) => false;

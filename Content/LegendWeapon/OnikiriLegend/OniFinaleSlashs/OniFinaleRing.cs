@@ -107,6 +107,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 if (!Main.dedServ) {
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center
                         , Main.rand.NextVector2Unit(), 1.6f + 2.4f * t, 5f, 9, -1f, FullName));
+                    //升调后段的环斩开始切到画面本体+落刀碎面，乱舞越到后面世界被切得越狠越碎
+
+                    if (t > 0.45f) {
+                        OniFinaleFX.PushSlice(Projectile.Center, Roll, (2.2f + 2.6f * t) * SizeMul);
+                        OniFinaleShatter.AddFacets(Projectile.Center, 1, SizeMul);
+                    }
                 }
             }
             timer++;
