@@ -56,7 +56,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                     , Color.White, Main.rand.NextFloat(0.07f, 0.11f) * sizeMul)
                     ?.Configure(Main.rand.Next(14, 22), new Color(120, 30, 34), new Color(24, 12, 18));
             }
-            CrimsonImpactFX.PushImpact(center, 0.12f);
         }
 
         /// <summary>友切:疾走取消连段的原地延迟斩影(滞拍后咬合);owner 端</summary>
@@ -143,7 +142,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                     , Color.White, Main.rand.NextFloat(0.06f, 0.10f))
                     ?.Configure(Main.rand.Next(16, 26), new Color(90, 28, 40), new Color(22, 10, 16));
             }
-            CrimsonImpactFX.PushImpact(center, 0.09f);
         }
 
         /// <summary>铁截「截金」命中反馈:钢体命中处旧金重钢屑 + 金属脆响(owner 客户端)</summary>
@@ -259,7 +257,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                     , Color.White, (0.08f + i * 0.015f) * arcSize)
                     ?.Configure(18 + i * 3, new Color(110, 30, 34), new Color(24, 12, 16));
             }
-            CrimsonImpactFX.PushImpact(muzzle, 0.22f);
         }
 
         //==================== 逐拍/状态演出 ====================
