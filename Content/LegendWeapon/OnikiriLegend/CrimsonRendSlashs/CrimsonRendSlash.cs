@@ -445,9 +445,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 ceil = 1.18f;
             }
             else if (beat == 3) {
-                influence = 0.48f;
+                influence = 0.52f;
                 floor = 0.88f;
-                ceil = 1.14f;
+                ceil = 1.10f;
             }
             else {
                 influence = 0.6f;
@@ -461,8 +461,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             if (beat < 3) {
                 return 1f;
             }
-            float start = beat >= 4 ? 1.08f : 1.03f;
-            float peak = beat >= 4 ? 1.24f : 1.10f;
+            float start = beat >= 4 ? 1.08f : 1.02f;
+            float peak = beat >= 4 ? 1.24f : 1.05f;
             if (lt < d.GatherFrames) {
                 float gT = CSR.EaseOutCubic((lt + 1) / (float)(d.GatherFrames + 1));
                 return MathHelper.Lerp(start * 0.96f, start, gT);
@@ -470,10 +470,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             float progress = lt >= d.SweepFrames
                 ? 1f
                 : MathHelper.Clamp(CSR.Sweep(in d, lt), 0f, 1f);
-            //终结后段仍抬,但用 SmoothStep 收住尖端,避免末端穿出
+            //终结后段仍抬;蓄势拍末端略收,避免刀尖穿出
             float shaped = beat >= 4
                 ? CSR.SmoothStep01(progress)
-                : CSR.EaseOutCubic(progress);
+                : CSR.EaseOutCubic(progress) * 0.75f;
             return MathHelper.Lerp(start, peak, MathHelper.Clamp(shaped, 0f, 1f));
         }
 
