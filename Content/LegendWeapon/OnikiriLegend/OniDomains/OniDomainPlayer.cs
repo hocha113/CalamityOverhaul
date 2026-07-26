@@ -46,6 +46,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         /// <summary>表世界错位帧脉冲 0~1，数帧内衰减</summary>
         public float AnomalyPulse { get; private set; }
 
+        /// <summary>开域屏息压暗 0~1，中断收域时平滑退场</summary>
+        public float OpenDim { get; private set; }
+
+        /// <summary>爆域冲击环 0~1，贴浸染前沿，中断后自然衰减</summary>
+        public float BurstGlow { get; private set; }
+
         /// <summary>眼睛世界坐标，开/收域锚点兼墨水扩散原点</summary>
         public Vector2 EyeWorldPos { get; private set; }
         /// <summary>眼睛整体可见度 0~1</summary>
@@ -104,6 +110,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         public bool GradeVisible => AnyActive;
 
         internal bool OpenDomain() {
+            //收域中途反悔，原地续开
+
+            if (Phase == OniDomainPhase.Closing) {
+                if (!ConsumeCommandGate()) {
+                    return false;
+                }
+                ResumeOpenFromClosing();
+                return true;
+            }
             if (Phase != OniDomainPhase.Closed || !ConsumeCommandGate()) {
                 return false;
             }
@@ -128,6 +143,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             return true;
         }
 
+        //眼已在场、跳过召唤仪式，反解开域曲线从等值覆盖处续扩，锚点保持原样圈心不跳
+
+        private void ResumeOpenFromClosing() {
+            float p = SpreadProgress;
+            int ritual = OniDomain.EyeEmergeFrames + OniDomain.EyeOpenFrames + OniDomain.EyeBurstFrames;
+            Phase = OniDomainPhase.Opening;
+            PhaseTimer = ritual + (int)(InvertOpenSpread(p) * OniDomain.OpenSpreadFrames);
+            EyeOpenAmount = 1f;
+            anomalyTimer = SetAnomalyInterval();
+            ambienceTimer = 600;
+            closeClickPlayed = false;
+            //再燃一闪，盖掉眼态接管的微跳
+
+            if (p < 0.997f) {
+                EyeFlash = MathF.Max(EyeFlash, 0.45f);
+            }
+            if (IsLocalVisual) {
+                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.30f, Pitch = -0.5f, MaxInstances = 2 }, Player.Center);
+            }
+        }
+
         internal bool CloseDomain() {
             if (Phase == OniDomainPhase.Closed || Phase == OniDomainPhase.Closing || Phase == OniDomainPhase.Flipping) {
                 return false;
@@ -135,19 +171,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             if (!ConsumeCommandGate()) {
                 return false;
             }
+            bool interrupt = Phase == OniDomainPhase.Opening;
+            float p = SpreadProgress;
             Phase = OniDomainPhase.Closing;
-            PhaseTimer = 0;
             FlipStage = OniFlipStage.None;
             NegativeFlash = 0f;
             PeelProgress = 0f;
             PaperValid = false;
             closeClickPlayed = false;
-            //吸回锚点重锚到玩家当前位置上方
 
-            EyeWorldPos = Player.Center + new Vector2(0f, -150f);
-            EyeIntensity = 0f;
-            EyeOpenAmount = 1f;
-            EyeDissolve = 0f;
+            if (interrupt) {
+                //开域中途反悔，锚点与眼态原样保留，墨浪从当前覆盖处原路吸回
+
+                if (p <= 0.012f) {
+                    //墨浪尚未出眼，跳过吸回直接阖眼(+1 跳过饱噬一闪)
+
+                    PhaseTimer = OniDomain.CloseEyeFrames + OniDomain.CloseRetractFrames + 1;
+                    SpreadProgress = 0f;
+                }
+                else {
+                    PhaseTimer = OniDomain.CloseEyeFrames
+                        + (int)(InvertCloseSpread(p) * OniDomain.CloseRetractFrames);
+                }
+            }
+            else {
+                //稳态收域，吸回锚点重锚到玩家当前位置上方(满屏覆盖下重锚不可见)
+
+                PhaseTimer = 0;
+                EyeWorldPos = Player.Center + new Vector2(0f, -150f);
+                EyeIntensity = 0f;
+                EyeOpenAmount = 1f;
+                EyeDissolve = 0f;
+            }
             OniDomainDeco.NotifyClosing();
             //收域、过去归还给过去
 
@@ -224,6 +279,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             if (Phase == OniDomainPhase.Closed) {
                 UraSmooth = MathHelper.Lerp(UraSmooth, 0f, 0.05f);
                 if (UraSmooth < 0.003f) UraSmooth = 0f;
+                OpenDim = 0f;
+                BurstGlow = 0f;
                 return;
             }
 
@@ -241,6 +298,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             UpdateUraSmooth();
             UpdateMusicCap();
 
+            //屏息压暗走包络，中断收域时平滑退场而非瞬灭
+
+            float dimTarget = 0f;
+            if (Phase == OniDomainPhase.Opening) {
+                int tBurst = OniDomain.EyeEmergeFrames + OniDomain.EyeOpenFrames + OniDomain.EyeBurstFrames;
+                dimTarget = PhaseTimer <= tBurst ? PhaseTimer / (float)tBurst : 1f - SpreadProgress;
+            }
+            OpenDim = MathHelper.Lerp(OpenDim, dimTarget, 0.25f);
+            if (OpenDim < 0.004f && dimTarget <= 0f) {
+                OpenDim = 0f;
+            }
+
+            if (BurstGlow > 0f) {
+                BurstGlow = MathF.Max(BurstGlow - 0.05f, 0f);
+            }
             if (AnomalyPulse > 0f) {
                 AnomalyPulse = MathF.Max(AnomalyPulse - 0.25f, 0f);
             }
@@ -299,6 +371,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                     //爆域
 
                     EyeFlash = 1f;
+                    BurstGlow = 1f;
                     if (IsLocalVisual) {
                         SoundEngine.PlaySound(CWRSound.Thunder with { Volume = 0.55f, Pitch = -0.25f, MaxInstances = 1 }, Player.Center);
                         SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.9f, Pitch = -0.7f, MaxInstances = 1 }, Player.Center);
@@ -324,13 +397,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
             //吞没段起步、墨墙加速离场的浪声
 
-            if (st == (int)(OniDomain.OpenSpreadFrames * 0.62f) && IsLocalVisual) {
+            if (st == (int)(OniDomain.OpenSpreadFrames * 0.55f) && IsLocalVisual) {
                 SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.55f, Pitch = -0.55f, MaxInstances = 1 }, Player.Center);
                 Player.CWR().GetScreenShake(4f);
             }
 
             if (raw >= 1f) {
-                Phase = OniDomainPhase.Omote;
+                //续开回到中断前的世界，全新开域恒为表
+
+                Phase = WorldIsUra ? OniDomainPhase.Ura : OniDomainPhase.Omote;
                 PhaseTimer = 0;
                 if (IsLocalVisual) {
                     //落定风铃
@@ -477,14 +552,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
                 float f = (t - c0) / (float)OniDomain.CloseRetractFrames;
                 SpreadProgress = CloseSpreadCurve(f);
-                EyeIntensity = 1f;
+                //渐升而非硬置，中断接管时从开域眼态平滑续走；吸回饱食、消散复原
+
+                EyeIntensity = MathF.Min(1f, EyeIntensity + 0.09f);
+                EyeDissolve = MathF.Max(EyeDissolve - 0.03f, 0f);
                 EyeSpin -= MathHelper.Lerp(0.04f, 0.28f, f);
                 if (t == c0 + 1 && IsLocalVisual) {
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.45f, Pitch = -0.45f, MaxInstances = 1 }, Player.Center);
                 }
                 //吸尽段起步、墨水加速灌回的抽吸声
 
-                if (t == c0 + (int)(OniDomain.CloseRetractFrames * 0.60f) && IsLocalVisual) {
+                if (t == c0 + (int)(OniDomain.CloseRetractFrames * 0.58f) && IsLocalVisual) {
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.5f, Pitch = 0.05f, MaxInstances = 1 }, Player.Center);
                 }
                 if (IsLocalVisual && t % 2 == 0) {
@@ -506,11 +584,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 }
             }
 
-            //阖眼
+            //阖眼、min 接管保证从中断眼态单调阖下，正常路径进场即 1 不受影响
 
             float bf = (t - c1) / (float)OniDomain.CloseBlinkFrames;
             SpreadProgress = 0f;
-            EyeOpenAmount = MathHelper.Clamp(1f - bf * 1.8f, 0f, 1f);
+            EyeOpenAmount = MathF.Min(EyeOpenAmount, MathHelper.Clamp(1f - bf * 1.8f, 0f, 1f));
             if (!closeClickPlayed && EyeOpenAmount <= 0f) {
                 closeClickPlayed = true;
                 if (IsLocalVisual) {
@@ -521,7 +599,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                     OniDomainDeco.SpawnEyeScatter(EyeWorldPos, 6);
                 }
             }
-            EyeIntensity = 1f - MathF.Max(bf - 0.55f, 0f) / 0.45f;
+            EyeIntensity = MathF.Min(EyeIntensity, 1f - MathF.Max(bf - 0.55f, 0f) / 0.45f);
 
             if (t >= c2) {
                 Phase = OniDomainPhase.Closed;
@@ -534,34 +612,64 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
         }
 
-        //开域墨浪三段：爆冲(0→0.30)→滞行(0.30→0.46、墨墙横陈读秒)→吞没(0.46→1 加速离场)
+        //开域墨浪三段：爆冲(0→0.32、起始斜率≈3.2)→滞行(0.32→0.46、墨墙横陈读秒)→吞没(0.46→1 加速离场)
         //前沿 dist≈progress*1.18 而屏角约 0.5，可视行程集中在 0~0.55，滞行段必须落在其中
         //分段端点斜率相接，肉眼无折点
 
         private static float OpenSpreadCurve(float x) {
-            if (x < 0.20f) {
-                float f = x / 0.20f;
-                return (0.524f - 0.224f * f) * f;
+            if (x < 0.18f) {
+                float f = x / 0.18f;
+                return (0.5719f - 0.2519f * f) * f;
             }
-            if (x < 0.62f) {
-                return 0.30f + (x - 0.20f) * (0.16f / 0.42f);
+            if (x < 0.55f) {
+                return 0.32f + (x - 0.18f) * (0.14f / 0.37f);
             }
-            float g = (x - 0.62f) / 0.38f;
-            return 0.46f + 0.1444f * g + 0.3956f * g * g * g;
+            float g = (x - 0.55f) / 0.45f;
+            return 0.46f + 0.1703f * g + 0.3697f * g * g * g;
         }
 
-        //收域吸回三段：扫入(1→0.52)→滞行(0.52→0.30、黑环悬在屏缘)→吸尽(0.30→0 冲进眼里)
+        //收域吸回三段：扫入(1→0.50)→滞行(0.50→0.30、黑环悬在屏缘)→吸尽(0.30→0 冲进眼里)
 
         private static float CloseSpreadCurve(float x) {
-            if (x < 0.15f) {
-                float f = x / 0.15f;
-                return 1f - (0.8867f - 0.4067f * f) * f;
+            if (x < 0.18f) {
+                float f = x / 0.18f;
+                return 1f - (0.91f - 0.41f * f) * f;
             }
-            if (x < 0.60f) {
-                return 0.52f - (x - 0.15f) * (0.22f / 0.45f);
+            if (x < 0.58f) {
+                return 0.50f - (x - 0.18f) * (0.20f / 0.40f);
             }
-            float g = (x - 0.60f) / 0.40f;
-            return 0.30f - 0.1956f * g - 0.1044f * g * g * g;
+            float g = (x - 0.58f) / 0.42f;
+            return 0.30f - 0.21f * g - 0.09f * g * g * g;
+        }
+
+        //单调曲线二分反解，中断反向时从等值覆盖率处接管
+
+        private static float InvertOpenSpread(float target) {
+            float lo = 0f, hi = 1f;
+            for (int i = 0; i < 20; i++) {
+                float mid = (lo + hi) * 0.5f;
+                if (OpenSpreadCurve(mid) < target) {
+                    lo = mid;
+                }
+                else {
+                    hi = mid;
+                }
+            }
+            return (lo + hi) * 0.5f;
+        }
+
+        private static float InvertCloseSpread(float target) {
+            float lo = 0f, hi = 1f;
+            for (int i = 0; i < 20; i++) {
+                float mid = (lo + hi) * 0.5f;
+                if (CloseSpreadCurve(mid) > target) {
+                    lo = mid;
+                }
+                else {
+                    hi = mid;
+                }
+            }
+            return (lo + hi) * 0.5f;
         }
 
         //稳态里眼睛的余韵、继续消散成灵体，勾玉惯性转着淡出
@@ -580,13 +688,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
         private void UpdateUraSmooth() {
             float target = 0f;
-            if (WorldIsUra && Phase != OniDomainPhase.Closing) {
-                target = 1f;
-            }
-            else if (WorldIsUra && Phase == OniDomainPhase.Closing) {
-                //收域时跟随墨水吸回回明
+            if (WorldIsUra) {
+                //开/收过渡跟随墨水覆盖(含续开回里)，稳态与翻转恒 1
 
-                target = SpreadProgress;
+                bool transiting = Phase == OniDomainPhase.Opening || Phase == OniDomainPhase.Closing;
+                target = transiting ? SpreadProgress : 1f;
             }
             float rate = target > UraSmooth ? 0.03f : 0.035f;
             UraSmooth = MathHelper.Lerp(UraSmooth, target, rate);
@@ -619,6 +725,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                     cap = MathHelper.Lerp(1f, 0.4f, SpreadProgress);
                     break;
             }
+            //boss 在场时音乐让位给战斗曲，只保留翻转仪式的死寂掐音
+
+            if (Main.CurrentFrameFlags.AnyActiveBossNPC && Phase != OniDomainPhase.Flipping) {
+                cap = MathF.Max(cap, 0.85f);
+            }
             if (cap >= 1f) {
                 return;
             }
@@ -640,6 +751,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             SpreadProgress = 0f;
             UraSmooth = 0f;
             AnomalyPulse = 0f;
+            OpenDim = 0f;
+            BurstGlow = 0f;
             EyeIntensity = 0f;
             EyeOpenAmount = 0f;
             EyeSpin = 0f;

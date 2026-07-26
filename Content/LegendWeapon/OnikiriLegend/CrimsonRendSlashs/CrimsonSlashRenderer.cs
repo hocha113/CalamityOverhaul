@@ -278,7 +278,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             //主体色带
             DrawLayer(device, fx, in d, center, lt, farSel
                 , opacityMul: 1f, thickMul: 1f, scaleMul: 1f
-                , erodeBias: 0f, frontMul: 1f, flashMul: 1f, forceHot: false);
+                , erodeBias: 0f, frontMul: 1f, flashMul: 1f, forceHot: true);
 
             //白热核心薄条,超前 1 帧,贴锋利侧
             DrawLayer(device, fx, in d, center, Math.Min(lt + 1, d.Life - 1), farSel

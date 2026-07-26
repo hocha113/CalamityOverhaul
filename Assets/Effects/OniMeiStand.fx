@@ -1,7 +1,8 @@
 // ============================================================================
 //OniMeiStand.fx 改铭台的台面质感,两个 technique:
-//  TechCloth——解剑白布:织纹经纬+纵向折痕明暗+绫边压线(深红+金丝)+
-//    底缘烛光暖染(低频摇曳)+两端布边噪声撕散,取代 CPU 平铺色块
+//  TechLacquer——刀掛黑漆底板:SDF 长板轮廓(边沿细噪蚀)+漆下木理+
+//    urushi 承光带与缓移漆光+蒔絵金尘低闪+上缘金压线衬绯线+
+//    端头断口沉色+底缘烛光暖染,鬼切的黑绯配色落在台面上
 //  TechWood——烙印木牌:手裁木板轮廓(SDF 边缘蛀蚀+缺角)+年轮/细鑢木纹+
 //    漆色纵深+焦边炭圈(烛下微燃)+穿绳孔+缓移油光,取代矩形盒
 //全笛卡尔坐标无极角;恒定 uSeed 形状稳定;预乘 alpha 配 AlphaBlend;
@@ -45,63 +46,64 @@ float fbm2(float2 p) {
     return valueNoise(p) * 0.62 + valueNoise(p * 2.31 + float2(3.7, 7.1)) * 0.38;
 }
 
-// ============================ TechCloth ============================
+// ============================ TechLacquer ============================
 
-float4 PSCloth(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
+float4 PSLacquer(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
     float2 px = coords * uResolution;
     float2 uv = coords;
 
-    //====两端布边:噪声撕散,不给整齐的裁切线====
-    float endN = valueNoise(float2(px.y * 0.06, uSeed * 3.1)) * 12.0;
-    float endDist = min(px.x, uResolution.x - px.x);
-    float endMask = smoothstep(2.0, 10.0 + endN, endDist);
-    //上下缘 1.5px 软化
-    float edgeDist = min(px.y, uResolution.y - px.y);
-    float edgeMask = smoothstep(0.0, 1.8, edgeDist);
-    float mask = endMask * edgeMask;
-    if (mask <= 0.004) {
+    //====板形 SDF:低圆角长板,边沿细噪蚀(手作漆器,不给尺规直角)====
+    float wob = (fbm2(px * 0.05 + uSeed * 5.0) - 0.5) * 3.2;
+    float2 center = uResolution * 0.5;
+    float2 halfS = center - float2(3.0, 2.5);
+    float2 d2 = abs(px - center) - halfS + wob;
+    float sdf = length(max(d2, 0.0)) + min(max(d2.x, d2.y), 0.0) - 4.0;
+    float body = 1.0 - smoothstep(-0.9, 0.9, sdf);
+    if (body <= 0.004) {
         return float4(0, 0, 0, 0);
     }
 
-    //====布底:烛光自下,三段过渡揉成连续渐变====
-    float3 clothTop = float3(0.170, 0.148, 0.132);
-    float3 clothLow = float3(0.268, 0.222, 0.182);
-    float3 col = lerp(clothTop, clothLow, uv.y * uv.y * (3.0 - 2.0 * uv.y));
+    //====漆底:近墨深漆微透红,顶面最沉,下缘承烛光回暖====
+    float3 lacqTop = uColInk * 0.52;
+    float3 lacqBot = lerp(uColInk, uColDark, 0.85);
+    float3 col = lerp(lacqTop, lacqBot, smoothstep(0.0, 1.0, uv.y));
 
-    //====织纹:经纬十字细纹 + 布料杂色====
-    float weaveX = sin(px.x * 1.85 + valueNoise(px * 0.11 + uSeed) * 2.4);
-    float weaveY = sin(px.y * 1.85 + valueNoise(px * 0.11 + uSeed * 2.0) * 2.4);
-    col *= 1.0 + (weaveX * weaveY) * 0.030;
-    col *= 0.94 + fbm2(px * 0.16 + uSeed * 7.0) * 0.12;
+    //====漆下木理:横走的极淡纹,漆厚处若隐====
+    float grain = valueNoise(px * float2(0.012, 0.30) + uSeed * 7.0);
+    col *= 1.0 + (grain - 0.5) * 0.06;
 
-    //====纵向折痕:低频折面明暗,折脊接一线高光,烛光里微息====
-    float foldT = uv.x * 8.5 + uSeed;
-    float fold = fbm2(float2(foldT, 0.37));
-    float breath = 1.0 + sin(uTime * 0.9 + fold * 9.0) * 0.03;
-    col *= (0.86 + fold * 0.24) * breath;
-    float ridge = exp(-pow(frac(foldT * 0.5) - 0.5, 2.0) * 34.0);
-    col += float3(0.10, 0.086, 0.070) * ridge * fold * 0.5;
+    //====urushi 漆光:上缘承光带缓呼吸 + 一条极缓横移的窄光====
+    float breath = 0.9 + 0.1 * sin(uTime * 0.8 + uSeed);
+    col += uColPaper * exp(-pow(px.y - uResolution.y * 0.18, 2.0) * 0.006) * 0.030 * breath;
+    float sheenT = frac(uTime * 0.02 + uSeed * 0.7);
+    float sheenX = sheenT * (uResolution.x + 260.0) - 130.0;
+    col += uColPaper * exp(-pow((px.x - sheenX) * 0.012, 2.0)) * exp(-uv.y * 2.2) * 0.05;
 
-    //====绫边:上下缘深红压线,内侧一根金丝====
-    float selvTop = 1.0 - smoothstep(2.0, 4.5, px.y);
-    float selvBot = smoothstep(uResolution.y - 4.5, uResolution.y - 2.0, px.y);
-    float selv = max(selvTop, selvBot);
-    col = lerp(col, uColDeep * 0.62, selv * 0.85);
-    float goldTop = exp(-pow(px.y - 7.5, 2.0) * 0.55);
-    float goldBot = exp(-pow(px.y - (uResolution.y - 7.5), 2.0) * 0.55);
-    col += uColGoldDeep * (goldTop + goldBot) * 0.35;
+    //====蒔絵金尘:稀疏细点散在中带,烛光里低闪====
+    float dust = valueNoise(px * 0.9 + uSeed * 23.0);
+    float dustGate = smoothstep(0.955, 0.985, dust)
+        * smoothstep(0.10, 0.32, uv.y) * (1.0 - smoothstep(0.72, 0.95, uv.y));
+    float tw = 0.6 + 0.4 * sin(uTime * 2.3 + px.x * 0.7 + px.y);
+    col += uColGold * dustGate * 0.5 * tw;
 
-    //====烛光暖染:底缘涌上的暖,低频摇曳;顶缘微沉====
+    //====上缘金压线,内衬一线绯红(台的绫边记忆,换了材质仍是这家的规矩)====
+    float goldLine = exp(-pow(px.y - 2.6, 2.0) * 0.45);
+    col += uColGold * goldLine * 0.5 + uColGoldDeep * goldLine * 0.35;
+    col = lerp(col, uColDeep * 0.72, exp(-pow(px.y - 6.5, 2.0) * 0.35) * 0.55);
+
+    //====端头断口:两端漆色深沉(端面吃不到光)====
+    float endDist = min(px.x, uResolution.x - px.x);
+    col *= lerp(0.72, 1.0, smoothstep(1.0, 14.0, endDist));
+
+    //====底缘烛光暖染(低频摇曳) + 边缘炭沉====
     float flick = 0.86 + 0.10 * sin(uTime * 2.1) + 0.04 * sin(uTime * 7.3 + 1.7);
-    col += uColCandle * exp(-(1.0 - uv.y) * 3.4) * 0.16 * flick;
-    col *= 1.0 - (1.0 - uv.y) * 0.10;
+    col += uColCandle * exp(-(1.0 - uv.y) * 5.0) * 0.10 * flick;
+    col += uColBurnDim * exp(-(1.0 - uv.y) * 9.0) * 0.05 * flick;
+    float edgeT = 1.0 - smoothstep(-5.5, -0.5, sdf);
+    col = lerp(col, uColInk * 0.42, edgeT * 0.5);
 
-    //====布上的旧墨渍:两三处极淡的洇痕(台子用过很多年)====
-    float stain = fbm2(px * 0.021 + uSeed * 13.0);
-    col *= 1.0 - smoothstep(0.62, 0.86, stain) * 0.14;
-
-    float a = mask * 0.965;
+    float a = body * 0.985;
     return float4(col * a, a) * uAlpha * vertexColor;
 }
 
@@ -162,11 +164,11 @@ float4 PSWood(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
     return float4(col * a, a) * uAlpha * vertexColor;
 }
 
-technique TechCloth
+technique TechLacquer
 {
     pass P0
     {
-        PixelShader = compile ps_3_0 PSCloth();
+        PixelShader = compile ps_3_0 PSLacquer();
     }
 }
 

@@ -71,7 +71,6 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniPaperBurn { get; set; }
         public static Asset<Effect> OniVigorInk { get; set; }
         public static Asset<Effect> OniStanceBlade { get; set; }
-        public static Asset<Effect> OniMeiBlade { get; set; }
         public static Asset<Effect> OniMeiStand { get; set; }
         public static Asset<Effect> HalibutHudEye { get; set; }
         public static Asset<Effect> HalibutHudGauge { get; set; }

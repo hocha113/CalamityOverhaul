@@ -1,25 +1,13 @@
 ﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Graphics.Capture;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 {
-    //鬼域激活期间（表里都算）启用天空替换
-
-    internal class OniDomainSkyData : ModSceneEffect
-    {
-        public override int Music => -1;
-        public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
-        public override bool IsSceneEffectActive(Player player) =>
-            player.whoAmI == Main.myPlayer && (OniDomain.Local?.AnyActive ?? false);
-        public override void SpecialVisuals(Player player, bool isActive) =>
-            player.ManageSpecialBiomeVisuals(OniDomainSky.Name, isActive);
-    }
-
-    /// <summary>领域天空</summary>
+    /// <summary>领域天空。玩家主动能力，不走 ModSceneEffect 场景竞争，由 <see cref="OniDomainSystem"/> 每帧手动驱动激活</summary>
     internal class OniDomainSky : CustomSky, ICWRLoader
     {
         internal static string Name => "CWRMod:OniDomainSky";
@@ -36,9 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             if (Main.dedServ) {
                 return;
             }
-            //ManageSpecialBiomeVisuals 对
-
-            //Sky 与 Filter 必须同名成对注册，缺 Filter 直接 NRE
+            //Sky 与 Filter 必须同名成对注册，OniDomainSystem 按该名驱动，缺 Filter 直接 NRE
 
             SkyManager.Instance[Name] = this;
             //冷暗微滤镜、透明度由 Update 动态驱动，仅里世界生效
@@ -95,6 +81,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             if (presence <= 0.004f) {
                 return;
             }
+            //相机捕捉路径另有一套屏幕参数篡改，域天空不入捕捉图
+
+            if (CaptureManager.Instance.IsCapturing) {
+                return;
+            }
             Effect shader = EffectLoader.OniSky?.Value;
             Texture2D white = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
@@ -106,6 +97,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             int vpW = gd.Viewport.Width;
             int vpH = gd.Viewport.Height;
 
+            //DrawBG 窗口内 screenWidth/Height 被除以背景缩放、screenPosition 加了缩放平移(Main.DoDraw)
+
+            //须还原真实相机值，浸染圆才能与 OniWorldGrade/红环在任意缩放下逐像素重合
+
+            Vector2 realScreenPos = Main.screenPosition - Main.BackgroundViewMatrix.Translation;
+            Vector2 realScreenSize = new(vpW, vpH);
+
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
                 SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
@@ -114,23 +112,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             gd.SamplerStates[1] = SamplerState.LinearWrap;
 
             bool spread = odp.Phase == OniDomainPhase.Opening || odp.Phase == OniDomainPhase.Closing;
-            //原点与遮罩噪声时间都必须与 OniWorldGrade
-
-            //两个着色器的浸染前沿才能在任意缩放下逐像素重合
+            //原点与遮罩噪声时间都必须与 OniWorldGrade 同源(GameViewMatrix 未被背景窗口篡改，可直接用)
 
             Vector2 origin = Vector2.Transform(
-                odp.EyeWorldPos - Main.screenPosition,
+                odp.EyeWorldPos - realScreenPos,
                 Main.GameViewMatrix.TransformationMatrix);
             float maskTime = odp.EffectTime;
 
             shader.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.016f);
             shader.Parameters["uSkyAlpha"]?.SetValue(presence);
             shader.Parameters["uUraBlend"]?.SetValue(uraBlend);
-            //遮罩空间尺寸与 OniWorldGrade 严格同源，不用视口尺寸
+            //遮罩空间尺寸取视口真实像素，与 OniWorldGrade 的 uScreenSize 同值
 
-            shader.Parameters["uScreenSize"]?.SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-            shader.Parameters["uCamX"]?.SetValue(Main.screenPosition.X);
-            shader.Parameters["uCamY"]?.SetValue(Main.screenPosition.Y);
+            shader.Parameters["uScreenSize"]?.SetValue(realScreenSize);
+            shader.Parameters["uCamX"]?.SetValue(realScreenPos.X);
+            shader.Parameters["uCamY"]?.SetValue(realScreenPos.Y);
             shader.Parameters["uSpreadMode"]?.SetValue(spread ? 1f : 0f);
             shader.Parameters["uSpreadProgress"]?.SetValue(odp.SpreadProgress);
             shader.Parameters["uSpreadOrigin"]?.SetValue(origin);
@@ -140,9 +136,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             spriteBatch.Draw(white, new Rectangle(0, 0, vpW, vpH), Color.White);
 
             spriteBatch.End();
+            //还原批次复刻 vanilla DrawBG 的精确矩阵，少了平移修正项会在缩放≠1 时偏移后续背景层
+
+            Matrix restore = Main.BackgroundViewMatrix.TransformationMatrix;
+            restore.Translation -= Main.BackgroundViewMatrix.ZoomMatrix.Translation
+                * new Vector3(1f, Main.BackgroundViewMatrix.Effects.HasFlag(SpriteEffects.FlipVertically) ? -1f : 1f, 1f);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
-                null, Main.BackgroundViewMatrix.TransformationMatrix);
+                null, restore);
         }
     }
 }

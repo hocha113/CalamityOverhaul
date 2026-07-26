@@ -5,7 +5,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     /// <summary>
-    /// 改铭台台面 shader 桥(OniMeiStand.fx):TechCloth 白布 / TechWood 烙印木牌;
+    /// 改铭台台面 shader 桥(OniMeiStand.fx):TechLacquer 刀掛黑漆底板 / TechWood 烙印木牌;
     /// 失败退回 <see cref="OniMeiRenderer"/> 的 CPU 简笔
     /// </summary>
     internal static class OniMeiStandDraw
@@ -46,9 +46,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 RasterizerState.CullNone, null, Main.UIScaleMatrix);
         }
 
-        /// <summary>解剑白布(织纹/折痕/绫边/烛染)</summary>
-        public static void DrawCloth(SpriteBatch sb, Rectangle dest, float alpha, float time)
-            => DrawQuad(sb, "TechCloth", dest, alpha, time, OnikiriUITheme.MeiBladeSeed + 3.7f);
+        /// <summary>刀掛黑漆底板(漆理/漆光/蒔絵金尘/金压线/烛染)</summary>
+        public static void DrawLacquerBoard(SpriteBatch sb, Rectangle dest, float alpha, float time)
+            => DrawQuad(sb, "TechLacquer", dest, alpha, time, OnikiriUITheme.MeiBladeSeed + 3.7f);
 
         /// <summary>烙印木牌板体(手裁轮廓/木纹/焦边/绳孔)</summary>
         public static void DrawWoodPlank(SpriteBatch sb, Rectangle dest, float alpha, float time)

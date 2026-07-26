@@ -58,8 +58,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     }
 
     /// <summary>
-    /// 改铭台全屏:解剑横陈+三铭位+鏨盘扇+烙印木牌+右缘刀铭大字;
-    /// 与点鬼簿互斥同级;鏨仪式为内嵌演出态(<see cref="OniMeiRite"/>)
+    /// 改铭台全屏:左列黑漆台账主板(题头+三铭位牌+脚注状态),右侧鬼切本体原生姿态 2x 陈列,
+    /// 注记引线把牌钉到刀身对应位置;鏨仪式走"检分镜头"——以铭位锚为不动点把刀推近 5x 特写,
+    /// 凿毕光包沿引线归牌盖章;鏨盘扇/錾样匣/烙印木牌/右缘大字沿用;
+    /// 与点鬼簿互斥同级(互斥收台静默,切换只响一声);仪式演出态见 <see cref="OniMeiRite"/>
     /// </summary>
     internal sealed class OniMeiUI : UIHandle, ILocalizedModType
     {
@@ -121,16 +123,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public override bool CloseOnEscape => true;
         public override float RenderPriority => 2f;
         public override SoundStyle? OpenSound => SoundID.Unlock with { Pitch = -0.2f, Volume = 0.5f };
-        public override SoundStyle? CloseSound => SoundID.MenuClose with { Pitch = -0.35f, Volume = 0.5f };
+        public override SoundStyle? CloseSound => SilentSwap ? null
+            : SoundID.MenuClose with { Pitch = -0.35f, Volume = 0.5f };
         public override Vector2 MousePosition => OnikiriUITheme.UIMouse;
 
+        /// <summary>姊妹屏互斥收台时置位:抑制本屏关闭音,切换只响新屏开音一声</summary>
+        internal bool SilentSwap;
+
         //====布局(每帧 UI 空间重算)====
-        private Vector2 bladeCenter;
-        private float bladeW;
-        private Vector2 bladeDir;
-        private Vector2 bladePerp;
-        private Rectangle clothRect;
+        /// <summary>台账主板(题头+三铭位牌+脚注)</summary>
+        private Rectangle panelRect;
+        /// <summary>铭位牌心(台账右列)</summary>
         private readonly Vector2[] slotPos = new Vector2[3];
+        /// <summary>铭位刀身锚(贴图 px,剪影中线;检分镜头的不动点候选)</summary>
+        private readonly Vector2[] anchorPx = new Vector2[3];
+        /// <summary>刀身绳结屏幕位(栋侧剪影外扩,随本帧变换)</summary>
+        private readonly Vector2[] pinScreen = new Vector2[3];
+        /// <summary>注记墨线起点(牌右顶点)</summary>
+        private readonly Vector2[] lineStart = new Vector2[3];
+        /// <summary>陈列心屏幕位(贴图几何中心的落点)</summary>
+        private Vector2 exhibitCenter;
+        /// <summary>本帧变换:贴图内不动点(陈列=几何中心,检分=仪式锚)</summary>
+        private Vector2 xformOriginPx = OniMeiBladeDraw.SpriteCenter;
+        /// <summary>本帧变换:不动点的屏幕位</summary>
+        private Vector2 xformPos;
+        /// <summary>本帧缩放(陈列 2x ↔ 检分 5x)</summary>
+        private float curScale = OnikiriUITheme.MeiExhibitScale;
+        /// <summary>陈列外包(收台点外判定)</summary>
+        private Rectangle exhibitRect;
         private Vector2 fanPivot;
         private Rectangle tagRect;
         private Vector2 nameColTop;
@@ -142,8 +162,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private readonly float[] slotHover = new float[3];
         private readonly float[] slotSelect = new float[3];
         private int selectedSlot = -1;      //-1 未选;0~2 = OniMeiSlotKind
-        /// <summary>扇面向上张(下方会压到烙印木牌时翻到刀上方)</summary>
-        private bool fanUp;
         private float fanEase;
         private readonly List<OniMeiDefinition> ribs = [];
         private bool ribsHasErase;
@@ -171,9 +189,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         //====动画状态====
         internal float ShaderTime;
         private readonly OniUIParticlePool particles = new(200);
-        private bool mekugiPopped;
-        private float mekugiAnim;
+        /// <summary>落台编舞:刀自上落定的那一磕(锚钉起尘+醒刀鸣光)</summary>
+        private bool settleStarted;
+        private float settleAnim;
         private float postRiteNameEase = 1f;
+
+        //====检分镜头(仪式聚焦缩放)====
+        /// <summary>0 陈列 → 1 特写,缓动追 Rite.Active;整场以仪式锚为缩放不动点</summary>
+        private float zoomEase;
+        /// <summary>缩放不动点(贴图 px),开演一帧定格到仪式铭位</summary>
+        private Vector2 zoomAnchorPx = OniMeiBladeDraw.SpriteCenter;
+        private bool prevRiteActive;
+        //====接铭归线(收镜时光包沿引线回牌+盖章)====
+        private int receiveSlot = -1;
+        private float receiveAnim = 1f;
+        private bool receiveGold;
         //开屏涟漪:内容可见后逐位点名三处铭位(帧计数,溢出即停)
         private int slotRevealTimer;
 
@@ -201,9 +231,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         protected override void OnOpen() {
             Main.playerInventory = false;
-            //姊妹屏互斥:一台开另一卷收
+            //姊妹屏互斥:一台开另一卷收;静默收卷,免得开音+关音同帧叠成两声切换
             if (OniRegisterUI.Instance?.IsOpen ?? false) {
+                OniRegisterUI.Instance.SilentSwap = true;
                 OniRegisterUI.Instance.Close();
+                OniRegisterUI.Instance.SilentSwap = false;
             }
             selectedSlot = -1;
             hoverRib = -1;
@@ -212,8 +244,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             fanEase = 0f;
             tray.Clear();
             Array.Clear(trayCellEase, 0, trayCellEase.Length);
-            mekugiPopped = false;
-            mekugiAnim = 0f;
+            settleStarted = false;
+            settleAnim = 0f;
+            zoomEase = 0f;
+            zoomAnchorPx = OniMeiBladeDraw.SpriteCenter;
+            prevRiteActive = false;
+            receiveSlot = -1;
+            receiveAnim = 1f;
             slotRevealTimer = 0;
             tagStamp = "";
             lastTypedChars = -1;
@@ -272,17 +309,42 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             particles.Update();
             LayoutCompute();
 
-            //开屏编舞:目钉弹出一响,木销飞脱动画计时
-            if (IsOpen && a >= 0.55f && !mekugiPopped) {
-                mekugiPopped = true;
-                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.6f, Volume = 0.45f });
-                Vector2 mekugi = MekugiPos();
+            //开屏编舞:刀自上落定的一磕——锚钉处起尘,一声轻叩,落定过半刃口鸣光醒刀
+            if (IsOpen && a >= 0.55f && !settleStarted) {
+                settleStarted = true;
+                SoundEngine.PlaySound(SoundID.Dig with { Pitch = -0.35f, Volume = 0.45f });
+                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.4f, Volume = 0.35f });
                 for (int i = 0; i < 3; i++) {
-                    particles.SpawnFiling(mekugi);
+                    particles.SpawnFiling(pinScreen[0]);
+                    particles.SpawnFiling(pinScreen[2]);
                 }
             }
-            if (mekugiPopped && mekugiAnim < 1f) {
-                mekugiAnim = Math.Min(mekugiAnim + 1f / 26f, 1f);
+            if (settleStarted && settleAnim < 1f) {
+                settleAnim = Math.Min(settleAnim + 1f / 26f, 1f);
+                if (settleAnim >= 0.5f && songRun < 0f) {
+                    songRun = 0f;
+                    SoundEngine.PlaySound(SoundID.Item35 with { Pitch = 0.55f, Volume = 0.12f, MaxInstances = 1 });
+                }
+            }
+
+            //检分镜头:开演一帧把不动点定格到仪式铭位;收演回落时放接铭归线
+            if (Rite.Active && !prevRiteActive) {
+                zoomAnchorPx = anchorPx[(int)Rite.Slot];
+            }
+            if (!Rite.Active && prevRiteActive) {
+                receiveSlot = (int)Rite.Slot;
+                receiveGold = Rite.GoldTier;
+                //除铭无新字可归档,不放光包与盖章
+                receiveAnim = Rite.NewKey != null ? 0f : 1f;
+            }
+            prevRiteActive = Rite.Active;
+            float zoomTarget = Rite.Active ? 1f : 0f;
+            zoomEase += (zoomTarget - zoomEase) * (zoomTarget > zoomEase ? 0.085f : 0.105f);
+            if (Math.Abs(zoomEase - zoomTarget) < 0.002f) {
+                zoomEase = zoomTarget;
+            }
+            if (receiveAnim < 1f) {
+                receiveAnim = Math.Min(receiveAnim + 1f / 34f, 1f);
             }
             //开屏涟漪计时:内容可见后开始点名铭位
             if (IsOpen && a >= 0.8f && slotRevealTimer < 400) {
@@ -300,10 +362,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniRegisterUI.Instance?.Open();
             }
 
-            //鏨仪式推进:期间吞交互,点击可跳
+            //鏨仪式推进:期间吞交互,点击可跳;锚=检分镜头不动点的屏幕位
             if (Rite.Active) {
-                Vector2 riteAnchor = slotPos[(int)Rite.Slot];
-                Rite.Update(riteAnchor, RiteGlyphSize(), OnikiriUITheme.MeiBladeCant, particles);
+                Rite.Update(RiteAnchorScreen(), RiteGlyphSize(), OniMeiBladeDraw.GlyphRot, particles);
                 postRiteNameEase = 0f;
                 if (IsOpen && keyLeftPressState == KeyPressState.Pressed) {
                     Rite.Skip();
@@ -326,29 +387,59 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             float sw = OnikiriUITheme.UIScreenW;
             float sh = OnikiriUITheme.UIScreenH;
 
-            bladeW = Math.Min(OnikiriUITheme.MeiBladeMaxW, sw * OnikiriUITheme.MeiBladeWidthRatio);
-            bladeCenter = new Vector2(sw * OnikiriUITheme.MeiBladeCenterRatio.X, sh * OnikiriUITheme.MeiBladeCenterRatio.Y);
-            bladeDir = OnikiriUITheme.MeiBladeCant.ToRotationVector2();
-            bladePerp = (OnikiriUITheme.MeiBladeCant + MathHelper.PiOver2).ToRotationVector2();
+            //台账主板:左列;小屏收高给底行(木牌/匣)让位
+            float panelY = sh * OnikiriUITheme.MeiPanelYRatio;
+            float panelH = Math.Min(OnikiriUITheme.MeiPanelH, sh - panelY - 292f);
+            panelRect = new Rectangle((int)(sw * OnikiriUITheme.MeiPanelXRatio), (int)panelY,
+                (int)OnikiriUITheme.MeiPanelW, (int)panelH);
 
-            Vector2 tip = bladeCenter - bladeDir * (bladeW * 0.5f);
-            slotPos[(int)OniMeiSlotKind.Nakago] = tip + bladeDir * (bladeW * OnikiriUITheme.MeiSlotUNakago);
-            slotPos[(int)OniMeiSlotKind.Hi] = tip + bladeDir * (bladeW * OnikiriUITheme.MeiSlotUHi);
-            slotPos[(int)OniMeiSlotKind.Horimono] = tip + bladeDir * (bladeW * OnikiriUITheme.MeiSlotUHorimono);
-
-            float clothW = bladeW + 150f;
-            clothRect = new Rectangle((int)(bladeCenter.X - clothW * 0.5f),
-                (int)(bladeCenter.Y - OnikiriUITheme.MeiClothH * 0.5f),
-                (int)clothW, (int)OnikiriUITheme.MeiClothH);
-
-            if (selectedSlot >= 0) {
-                fanPivot = slotPos[selectedSlot] + bladePerp * (fanUp ? -108f : 108f);
-                //本帧扇布局:朝向侧的可用纵深作出屏保护
-                float maxReach = fanUp ? fanPivot.Y - 12f : sh - 12f - fanPivot.Y;
-                fanLayout = new OniMeiFanLayout(RibCount(), maxReach);
+            //铭位牌:题头下三行沿内容带均布,牌身靠右缘(引线自右顶点出板)
+            float contentTop = panelRect.Y + OnikiriUITheme.MeiPanelHeaderH;
+            float contentH = panelH - OnikiriUITheme.MeiPanelHeaderH - OnikiriUITheme.MeiPanelFooterH;
+            for (int i = 0; i < 3; i++) {
+                slotPos[i] = new Vector2(panelRect.Right - 64f, contentTop + contentH * (0.18f + 0.32f * i));
+                anchorPx[i] = OniMeiBladeDraw.SpinePx(SlotU(i));
             }
 
-            //烙印木牌:宽固定,高按当前内容实测(底边锚定向上生长,缓动防跳)
+            //陈列心:台账右侧展刀区;底缘向錾样匣行让位。
+            //宽屏时木牌居中列,刀再靠右;窄屏(单行摆不下)木牌回落屏左下,刀左移并硬夹在屏内
+            bool narrow = sw < 1200f;
+            float trayTop = sh - OnikiriUITheme.MeiTrayBottomMargin - OnikiriUITheme.MeiTrayPanelSize.Y;
+            float exY = Math.Min(sh * OnikiriUITheme.MeiExhibitYRatio,
+                trayTop - OniMeiBladeDraw.SpriteSize.Y * OnikiriUITheme.MeiExhibitScale * 0.5f - 14f);
+            float exMinX = panelRect.Right + (narrow ? 260f : 512f);
+            float exX = Math.Min(Math.Max(sw * OnikiriUITheme.MeiExhibitXRatio, exMinX), sw - 122f);
+            exhibitCenter = new Vector2(exX, exY);
+
+            //本帧陈列/检分变换:恒以 zoomAnchorPx 为不动点(zoomEase=0 时等价居中陈列)
+            float zoomK = zoomEase * zoomEase * (3f - 2f * zoomEase);
+            curScale = MathHelper.Lerp(OnikiriUITheme.MeiExhibitScale, OnikiriUITheme.MeiZoomScale, zoomK);
+            Vector2 anchorRest = exhibitCenter
+                + (zoomAnchorPx - OniMeiBladeDraw.SpriteCenter) * OnikiriUITheme.MeiExhibitScale;
+            Vector2 focus = new(sw * 0.5f, sh * 0.46f);
+            xformOriginPx = zoomAnchorPx;
+            xformPos = Vector2.Lerp(anchorRest, focus, zoomK);
+
+            //锚钉与引线端点(随变换,检分时钉随刀走)
+            for (int i = 0; i < 3; i++) {
+                pinScreen[i] = MapSprite(OniMeiBladeDraw.BackPx(SlotU(i), 6f));
+                lineStart[i] = slotPos[i] + new Vector2(OnikiriUITheme.MeiMedallionSize * 0.62f, 0f);
+            }
+
+            //陈列外包(收台点外判定)
+            Vector2 tl = MapSprite(Vector2.Zero);
+            exhibitRect = new Rectangle((int)tl.X, (int)tl.Y,
+                (int)(OniMeiBladeDraw.SpriteSize.X * curScale),
+                (int)(OniMeiBladeDraw.SpriteSize.Y * curScale));
+
+            if (selectedSlot >= 0) {
+                //鏨盘扇向右横开进"台账↔刀"的空档,横向上与牌列彻底分离,骨牌永不压牌
+                fanPivot = slotPos[selectedSlot] + Vector2.UnitX * 96f;
+                float fanRoom = Math.Min(exhibitRect.Left, sw) - 16f - fanPivot.X;
+                fanLayout = new OniMeiFanLayout(RibCount(), fanRoom);
+            }
+
+            //烙印木牌:挂在台账右侧,与錾样匣同底边;宽固定,高按当前内容实测(底边锚定向上生长)
             (_, string tagTitle, _, string tagOrigin, string tagPower, string tagBurden, _, _) = ResolveTag();
             float tagH = OnikiriUITheme.MeiTagSize.Y;
             if (tagTitle.Length > 0) {
@@ -356,7 +447,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     OnikiriUITheme.MeiTagSize.X, tagOrigin, tagPower, tagBurden), 200f, sh * 0.6f);
             }
             tagHeightEase = tagHeightEase <= 0f ? tagH : tagHeightEase + (tagH - tagHeightEase) * 0.3f;
-            tagRect = new Rectangle((int)(sw * 0.055f),
+            tagRect = new Rectangle((int)(narrow ? sw * 0.03f : panelRect.Right + 26f),
                 (int)(sh - tagHeightEase - OnikiriUITheme.MeiTrayBottomMargin),
                 (int)OnikiriUITheme.MeiTagSize.X, (int)tagHeightEase);
 
@@ -373,20 +464,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             trayOrigin = new Vector2(trayRect.Center.X, trayRect.Y + 72f);
 
             nameColTop = new Vector2(sw * OnikiriUITheme.MeiNameColXRatio, sh * 0.16f);
-            //吊挂卷轴锚:布左上的梁下,与右上的纳刀牌对称成"一梁两挂"
-            registerSwitchAnchor = new Vector2(clothRect.X + 14f, clothRect.Y - 10f);
-            closeTagAnchor = new Vector2(clothRect.Right - 30f, clothRect.Y - 6f);
+            //顶梁两挂:卷轴左、纳刀牌右,绳自屏顶垂下,与居中题字同带成"一梁两挂一题"
+            registerSwitchAnchor = new Vector2(sw * OnikiriUITheme.MeiHangLeftXRatio, -4f);
+            closeTagAnchor = new Vector2(sw * OnikiriUITheme.MeiHangRightXRatio, -6f);
         }
 
-        /// <summary>目钉孔屏幕位(茎段前部)</summary>
-        private Vector2 MekugiPos() {
-            Vector2 tip = bladeCenter - bladeDir * (bladeW * 0.5f);
-            return tip + bladeDir * (bladeW * 0.815f);
-        }
+        /// <summary>铭位 index 的轴向归一位</summary>
+        private static float SlotU(int index) => (OniMeiSlotKind)index switch {
+            OniMeiSlotKind.Hi => OnikiriUITheme.MeiSlotUHi,
+            OniMeiSlotKind.Horimono => OnikiriUITheme.MeiSlotUHorimono,
+            _ => OnikiriUITheme.MeiSlotUNakago,
+        };
 
-        /// <summary>仪式字形尺寸:定鏨时放大,油布抹过后归位</summary>
+        /// <summary>贴图 px → 屏幕位(本帧陈列/检分变换)</summary>
+        private Vector2 MapSprite(Vector2 px) => xformPos + (px - xformOriginPx) * curScale;
+
+        /// <summary>本帧仪式锚屏幕位(=检分变换不动点)</summary>
+        private Vector2 RiteAnchorScreen() => xformPos;
+
+        /// <summary>仪式字形尺寸:刀上刻痕字径×当前缩放,定鏨时再放大一挡,油布抹过后归位</summary>
         private float RiteGlyphSize()
-            => OnikiriUITheme.MeiGlyphOnBlade * (1f + 0.45f * Rite.FocusPose * (1f - Rite.OilWipe * 0.9f));
+            => OnikiriUITheme.MeiBladeMarkPx * curScale
+            * (1f + 0.45f * Rite.FocusPose * (1f - Rite.OilWipe * 0.9f));
 
         private void EaseArrays() {
             for (int i = 0; i < 3; i++) {
@@ -408,15 +507,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         private void UpdateInteraction(float a) {
-            bool inputAvailable = IsOpen && a > 0.9f;
+            //检分镜头收尾余波里先不接交互,拉回陈列后再放开
+            bool inputAvailable = IsOpen && a > 0.9f && zoomEase < 0.25f;
             Vector2 mouse = MousePosition;
             Point mp = mouse.ToPoint();
 
-            //铭位悬停
+            //铭位悬停:点牌或点刀上绳结等价(双向呼应)
             hoverSlot = -1;
             if (inputAvailable) {
                 for (int i = 0; i < 3; i++) {
-                    if (Vector2.Distance(mouse, slotPos[i]) < OnikiriUITheme.MeiSlotRadius) {
+                    if (Vector2.Distance(mouse, slotPos[i]) < OnikiriUITheme.MeiMedallionHitRadius
+                        || Vector2.Distance(mouse, pinScreen[i]) < OnikiriUITheme.MeiAnchorHitRadius) {
                         hoverSlot = i;
                         break;
                     }
@@ -521,13 +622,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 SelectSlot(-1);
                 return;
             }
-            //点台外收台:白布(含余量)/木牌/名字列/吊挂卷轴之外
-            Rectangle clothHit = clothRect;
-            clothHit.Inflate(30, 46);
+            //点台外收台:台账/陈列刀域(含余量)/木牌/名字列/吊挂卷轴之外
+            Rectangle stand = Rectangle.Union(panelRect, exhibitRect);
+            stand.Inflate(30, 40);
             Rectangle nameHit = new((int)(nameColTop.X - 46f), (int)(nameColTop.Y - 20f), 92,
                 (int)(OnikiriUITheme.UIScreenH * 0.6f));
             bool trayHit = selectedSlot >= 0 && fanEase > 0.25f && trayRect.Contains(mp);
-            if (!clothHit.Contains(mp) && !tagRect.Contains(mp) && !trayHit && !nameHit.Contains(mp)
+            if (!stand.Contains(mp) && !tagRect.Contains(mp) && !trayHit && !nameHit.Contains(mp)
                 && !registerSwitch.Hovering) {
                 Close();
             }
@@ -543,27 +644,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (index >= 0) {
                 SoundEngine.PlaySound(CWRSound.ButtonZero with { Volume = 0.5f });
                 RebuildRibs();
-                //骨数已知后再判扇面朝向:向下张开会压到烙印木牌时翻到刀上方,骨与牌互不遮挡
-                fanUp = FanWouldHitTag(index);
                 RebuildTray();
             }
             else {
                 tray.Clear();
                 SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.2f, Volume = 0.3f });
             }
-        }
-
-        /// <summary>预判向下张开的扇面外包是否压到烙印木牌(小分辨率下左侧铭位会撞);按额定布局算</summary>
-        private bool FanWouldHitTag(int index) {
-            Vector2 pivot = slotPos[index] + bladePerp * 108f;
-            OniMeiFanLayout nominal = new(RibCount(), 0f);
-            float reach = nominal.OuterReach + 8f;
-            float halfW = reach * MathF.Sin(nominal.Spread * 0.5f) + nominal.GlyphSize;
-            Rectangle fan = new((int)(pivot.X - halfW), (int)(pivot.Y - nominal.GlyphSize * 0.5f),
-                (int)(halfW * 2f), (int)(reach + nominal.GlyphSize));
-            Rectangle tagPad = tagRect;
-            tagPad.Inflate(24, 24);
-            return fan.Intersects(tagPad);
         }
 
         private void RebuildRibs() {
@@ -621,9 +707,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             return new Vector2(x, trayOrigin.Y);
         }
 
-        /// <summary>扇骨纹章心位置,骨自枢张出(默认向下,防遮挡时向上);径与角走本帧自适应布局</summary>
+        /// <summary>扇骨纹章心位置,骨自枢向右张出(横开进台账与刀的空档);径与角走本帧自适应布局</summary>
         private Vector2 RibPos(int index, int count) {
-            float ang = fanUp ? -MathHelper.PiOver2 : MathHelper.PiOver2;
+            float ang = 0f;
             if (count > 1) {
                 ang += (index / (count - 1f) - 0.5f) * fanLayout.Spread;
             }
@@ -842,39 +928,47 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Rectangle full = new(0, 0, (int)OnikiriUITheme.UIScreenW + 2, (int)OnikiriUITheme.UIScreenH + 2);
             spriteBatch.Draw(pixel, full, src, Color.Black * (a * 0.68f));
             Vector2 parallax = (OnikiriUITheme.UIMouse - OnikiriUITheme.UIScreenSize * 0.5f) * -0.012f;
-            OniMeiRenderer.DrawCandleGlow(spriteBatch, bladeCenter, a, ShaderTime, parallax);
-
-            //====白布====
-            float reveal = a;
-            OniMeiRenderer.DrawCloth(spriteBatch, clothRect, a, reveal, ShaderTime);
-
-            //====刀身:开屏自右扫入,微震随仪式====
-            float slideEase = VaultUtils.EaseOutCubic(MathHelper.Clamp(a / 0.55f, 0f, 1f));
-            float slide = (1f - slideEase) * OnikiriUITheme.UIScreenW * 0.42f;
-            Vector2 bladeDrawCenter = bladeCenter + bladeDir * slide + Rite.Shake;
-            OniMeiRenderer.DrawBlade(spriteBatch, bladeDrawCenter, bladeDir, bladePerp, bladeW,
-                OnikiriUITheme.MeiBladeQuadH, a, ShaderTime, slide, songRun);
-
-            //开屏编舞:目钉飞脱 + 柄影褪去
-            if (mekugiAnim > 0.001f && mekugiAnim < 1f) {
-                OniMeiRenderer.DrawMekugiPop(spriteBatch, MekugiPos() + bladeDir * slide, bladeDir, bladePerp, mekugiAnim, a);
-            }
-            float tsukaAnim = MathHelper.Clamp((a - 0.55f) / 0.32f, 0f, 1f);
-            if (IsOpen && tsukaAnim < 1f && a > 0.55f) {
-                Vector2 tangEnd = bladeDrawCenter + bladeDir * (bladeW * 0.5f);
-                OniMeiRenderer.DrawTsukaSlideOff(spriteBatch, tangEnd, bladeDir, bladePerp, tsukaAnim, a);
-            }
+            OniMeiRenderer.DrawCandleGlow(spriteBatch, exhibitCenter, a, ShaderTime, parallax);
 
             float contentA = MathHelper.Clamp((a - 0.5f) / 0.5f, 0f, 1f);
+            //检分镜头里外场退后:台账/牌/线让位给特写(烙印木牌保持可读,写着正凿的铭)
+            float zoomK = zoomEase * zoomEase * (3f - 2f * zoomEase);
+            float chromeA = contentA * (1f - zoomK * 0.85f);
+
+            //====台账主板(题字入题头,状态行入脚注)====
+            OniMeiRenderer.DrawLedgerPanel(spriteBatch, font, panelRect, TitleText.Value,
+                a * (1f - zoomK * 0.85f), a, ShaderTime);
+
+            //====注记墨线(牌→刀身搭点)====
+            if (chromeA > 0.01f) {
+                DrawLeaderLines(spriteBatch, chromeA);
+            }
+
+            //====陈列刀:开屏自上落定,检分镜头绕锚缩放,微震随仪式====
+            float dropEase = VaultUtils.EaseOutCubic(MathHelper.Clamp(a / 0.55f, 0f, 1f));
+            Vector2 drop = new(0f, -(1f - dropEase) * 38f);
+            OniMeiRenderer.DrawExhibit(spriteBatch, xformOriginPx, xformPos + drop + Rite.Shake, curScale,
+                a * MathHelper.Clamp(a / 0.35f, 0f, 1f), ShaderTime, songRun);
+
+            //====刀上锚钉与微缩刻痕(检分时随刀放大,邻位刻痕即可读)====
+            if (contentA > 0.01f) {
+                DrawBladeMarks(spriteBatch, contentA);
+            }
 
             //====仪式压暗与聚光(盖过刀身,衬字形)====
             if (Rite.Dim > 0.01f) {
                 spriteBatch.Draw(pixel, full, src, Color.Black * Rite.Dim);
-                Vector2 riteAnchor = slotPos[(int)Rite.Slot] + Rite.Shake;
-                OniBrush.DrawBacklight(spriteBatch, riteAnchor, 120f, OnikiriUITheme.CandleWarm, Rite.Dim * 1.4f);
+                OniBrush.DrawBacklight(spriteBatch, RiteAnchorScreen() + Rite.Shake, 42f * curScale,
+                    OnikiriUITheme.CandleWarm, Rite.Dim * 1.4f);
             }
 
-            //====烙印木牌(先画:鏨盘扇与铭位交互层压在其上,不再被牌面遮挡)====
+            //====检分特写上的凿刻与工具====
+            if (Rite.Active) {
+                DrawRiteCarving(spriteBatch, a);
+                DrawRiteTools(spriteBatch);
+            }
+
+            //====烙印木牌(仪式中保持全亮,牌上打字机写着正凿的铭)====
             if (contentA > 0.01f) {
                 (_, string title, string kind, string origin, string power, string burden, bool gold, bool erase) = ResolveTag();
                 if (title.Length > 0) {
@@ -883,41 +977,42 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 }
             }
 
-            //====铭位与字形====
-            if (contentA > 0.01f) {
-                DrawSlots(spriteBatch, font, contentA);
+            //====铭位牌(粉笔预览/接铭盖章)====
+            if (chromeA > 0.01f) {
+                DrawMedallions(spriteBatch, font, chromeA);
+            }
+
+            //====接铭归线:光包沿墨线自刀流回牌位(收镜同帧可见)====
+            if (receiveSlot >= 0 && receiveAnim < 0.62f) {
+                OniMeiRenderer.DrawInkPacket(spriteBatch, lineStart[receiveSlot], pinScreen[receiveSlot],
+                    receiveAnim / 0.62f, receiveGold, contentA);
             }
 
             //====鏨盘扇====
-            if (contentA > 0.01f && fanEase > 0.02f && selectedSlot >= 0) {
-                DrawFan(spriteBatch, contentA);
-            }
-
-            //====仪式工具(鏨/锉)====
-            if (Rite.Active) {
-                DrawRiteTools(spriteBatch);
+            if (chromeA > 0.01f && fanEase > 0.02f && selectedSlot >= 0) {
+                DrawFan(spriteBatch, chromeA);
             }
 
             //====右缘刀铭大字====
-            if (contentA > 0.01f) {
-                DrawNameColumn(spriteBatch, font, contentA);
+            if (chromeA > 0.01f) {
+                DrawNameColumn(spriteBatch, font, chromeA);
             }
 
-            //====静物 + 题字 + 状态行====
-            if (contentA > 0.01f) {
-                OniMeiRenderer.DrawStillLife(spriteBatch, clothRect, contentA, ShaderTime);
-                OniMeiRenderer.DrawTitle(spriteBatch, font, clothRect, TitleText.Value, contentA);
-                DrawStatusLine(spriteBatch, font, contentA);
-                OniRegisterRenderer.DrawCloseTag(spriteBatch, font, closeTagRope, contentA, closeTagHover,
+            //====静物 + 台下提示 + 挂件====
+            if (chromeA > 0.01f) {
+                OniMeiRenderer.DrawStillLife(spriteBatch,
+                    MapSprite(new Vector2(34f, 224f)) + new Vector2(-6f, 28f), chromeA, ShaderTime);
+                DrawCloseHint(spriteBatch, font, chromeA);
+                DrawStatusLine(spriteBatch, font, chromeA);
+                OniRegisterRenderer.DrawCloseTag(spriteBatch, font, closeTagRope, chromeA, closeTagHover,
                     GlobalTimer, CloseTagText.Value);
-                DrawCloseHint(spriteBatch, font, contentA);
-                OniMeiRenderer.DrawHangingScroll(spriteBatch, registerSwitch, contentA, GlobalTimer,
+                OniMeiRenderer.DrawHangingScroll(spriteBatch, registerSwitch, chromeA, GlobalTimer,
                     OniRegistry.InDanger);
             }
 
-            //錾样匣放在静物之后,避免被布上静物盖住
-            if (contentA > 0.01f && fanEase > 0.02f && selectedSlot >= 0) {
-                DrawTray(spriteBatch, font, contentA);
+            //====錾样匣====
+            if (chromeA > 0.01f && fanEase > 0.02f && selectedSlot >= 0) {
+                DrawTray(spriteBatch, font, chromeA);
             }
 
             particles.Draw(spriteBatch, a);
@@ -929,79 +1024,46 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        private void DrawSlots(SpriteBatch sb, DynamicSpriteFont font, float a) {
+        /// <summary>注记墨线:三条牌→刀错拍走笔;扇横开时旁线退后让位,选中线略亮</summary>
+        private void DrawLeaderLines(SpriteBatch sb, float a) {
             for (int i = 0; i < 3; i++) {
-                Vector2 pos = slotPos[i] + (Rite.Active && (int)Rite.Slot == i ? Rite.Shake : Vector2.Zero);
+                float drawEase = MathHelper.Clamp((slotRevealTimer - 8 - i * 12) / 24f, 0f, 1f);
+                float lit = Math.Max(slotHover[i], slotSelect[i]);
+                float lineA = a;
+                if (selectedSlot >= 0) {
+                    lineA *= i == selectedSlot ? 0.55f : 0.28f;
+                }
+                bool gold = EngravedAt(i)?.IsGoldTier ?? false;
+                OniMeiRenderer.DrawLeaderInk(sb, lineStart[i], pinScreen[i], drawEase, lit, gold,
+                    lineA, ShaderTime, i);
+            }
+        }
+
+        /// <summary>台账铭位牌:菱章+标签,悬停扇骨/匣格时粉笔稿投影到选中牌上(试铭)</summary>
+        private void DrawMedallions(SpriteBatch sb, DynamicSpriteFont font, float a) {
+            for (int i = 0; i < 3; i++) {
                 OniMeiDefinition engraved = EngravedAt(i);
-                bool riteHere = Rite.Active && (int)Rite.Slot == i;
+                float ripple = MathHelper.Clamp((slotRevealTimer - 6 - i * 13) / 34f, 0f, 1f);
+                float stamp = receiveSlot == i && receiveAnim >= 0.62f && receiveAnim < 1f
+                    ? (receiveAnim - 0.62f) / 0.38f
+                    : 1f;
+                OniMeiRenderer.DrawMedallion(sb, slotPos[i], engraved?.Key, engraved?.IsGoldTier ?? false,
+                    slotHover[i], slotSelect[i], a, ShaderTime, ripple, stamp);
 
-                //常驻标记:暖芒/刻标/巡环/开屏涟漪,先垫在字形之下;仪式位让位给聚光
-                if (!riteHere) {
-                    float ripple = MathHelper.Clamp((slotRevealTimer - 6 - i * 13) / 34f, 0f, 1f);
-                    OniMeiRenderer.DrawSlotMarker(sb, pos, OnikiriUITheme.MeiSlotRadius, engraved != null,
-                        slotHover[i], a, ShaderTime, ripple, i);
-                }
-
-                //铭位字形
-                if (riteHere) {
-                    //旧铭锉去中
-                    if (Rite.OldKey != null && Rite.OldReveal > 0.01f) {
-                        OniMeiGlyphStyle oldStyle = OniMeiGlyphStyle.Engraved(a * Rite.OldReveal, OnikiriUITheme.MeiBladeCant);
-                        oldStyle.Time = ShaderTime;
-                        OniMeiGlyph.Draw(sb, Rite.OldKey, pos, OnikiriUITheme.MeiGlyphOnBlade, oldStyle);
-                    }
-                    //新铭凿现中
-                    if (Rite.NewKey != null && Rite.NewReveal >= 0f) {
-                        OniMeiGlyphStyle style = new() {
-                            Alpha = a,
-                            Rotation = OnikiriUITheme.MeiBladeCant,
-                            ChiselReveal = Rite.NewReveal,
-                            Accent = Rite.GoldTier ? OnikiriUITheme.GoldInlay : OnikiriUITheme.Bright,
-                            Inlay = Rite.InlayFill,
-                            Lit = Rite.OilWipe * 0.5f * (1f - Rite.InlayFill * 0.6f),
-                            Time = ShaderTime,
-                        };
-                        OniMeiGlyph.Draw(sb, Rite.NewKey, pos, RiteGlyphSize(), style);
-                        //油布抹过:一线软亮扫过字形(两端没入,不再硬边横条)
-                        if (Rite.OilWipe > 0.01f && Rite.OilWipe < 0.99f) {
-                            float sweepX = MathHelper.Lerp(-1.2f, 1.2f, Rite.OilWipe);
-                            Vector2 wipePos = pos + bladeDir * (sweepX * RiteGlyphSize() * 0.6f);
-                            OniBrush.DrawSoftStreak(sb, wipePos, OnikiriUITheme.MeiBladeCant + MathHelper.PiOver2,
-                                RiteGlyphSize() * 1.25f, 2.4f, OnikiriUITheme.HotWhite,
-                                a * 0.40f * (float)Math.Sin(Rite.OilWipe * MathHelper.Pi), glowMul: 0.7f);
-                        }
-                    }
-                }
-                else if (engraved != null) {
-                    OniMeiGlyphStyle style = OniMeiGlyphStyle.Engraved(a, OnikiriUITheme.MeiBladeCant);
-                    style.Time = ShaderTime;
-                    style.Inlay = engraved.IsGoldTier ? 1f : 0f;
-                    style.Accent = engraved.IsGoldTier ? OnikiriUITheme.GoldInlay : OnikiriUITheme.Bright;
-                    //悬停/选中:槽内微光呼吸
-                    style.Lit = Math.Max(slotHover[i] * 0.45f, slotSelect[i] * 0.6f);
-                    OniMeiGlyph.Draw(sb, engraved.Key, pos, OnikiriUITheme.MeiGlyphOnBlade, style);
-                }
-                else {
-                    OniMeiRenderer.DrawSlotEmpty(sb, pos, OnikiriUITheme.MeiGlyphOnBlade,
-                        slotHover[i], slotSelect[i], a, ShaderTime, OnikiriUITheme.MeiBladeCant);
-                }
-
-                //铭位环与标签
-                OniMeiRenderer.DrawSlotRing(sb, pos, OnikiriUITheme.MeiSlotRadius,
-                    slotHover[i], slotSelect[i], a, ShaderTime);
+                //标签:牌左侧右对齐,与牌同轴
                 string label = SlotLabel(SlotOf(i));
-                Vector2 lSize = font.MeasureString(label) * 0.75f;
-                Vector2 lPos = pos + bladePerp * (OnikiriUITheme.MeiSlotRadius + 16f) - lSize * 0.5f;
+                Vector2 lSize = font.MeasureString(label) * 0.8f;
+                Vector2 lPos = new(slotPos[i].X - OnikiriUITheme.MeiMedallionSize * 0.62f - 14f - lSize.X,
+                    slotPos[i].Y - lSize.Y * 0.5f);
                 Utils.DrawBorderString(sb, label, lPos,
-                    Color.Lerp(OnikiriUITheme.TextDim, OnikiriUITheme.Paper, slotHover[i]) * (a * 0.8f), 0.75f);
+                    Color.Lerp(OnikiriUITheme.TextDim, OnikiriUITheme.Paper, slotHover[i]) * (a * 0.9f), 0.8f);
             }
 
-            //悬停扇骨:粉笔稿投影到铭位(试铭)
+            //悬停扇骨:粉笔稿投影到选中牌位(试铭)
             if (selectedSlot >= 0 && hoverRib >= 0 && !IsEraseRib(hoverRib)) {
                 float pulse = 0.75f + 0.25f * (float)Math.Sin(ShaderTime * 4f);
                 OniMeiGlyph.DrawChalk(sb, ribs[hoverRib].Key, slotPos[selectedSlot],
-                    OnikiriUITheme.MeiGlyphOnBlade, a * pulse * ribEase[Math.Min(hoverRib, ribEase.Length - 1)],
-                    OnikiriUITheme.MeiBladeCant);
+                    OnikiriUITheme.MeiMedallionGlyph, a * pulse * ribEase[Math.Min(hoverRib, ribEase.Length - 1)]);
             }
             //悬停匣格:粉笔稿试铭
             if (selectedSlot >= 0 && hoverTray >= 0 && hoverRib < 0) {
@@ -1010,7 +1072,66 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     float pulse = 0.75f + 0.25f * (float)Math.Sin(ShaderTime * 4f);
                     float hov = hoverTray < trayCellEase.Length ? trayCellEase[hoverTray] : 1f;
                     OniMeiGlyph.DrawChalk(sb, tray[abs].Key, slotPos[selectedSlot],
-                        OnikiriUITheme.MeiGlyphOnBlade, a * pulse * hov, OnikiriUITheme.MeiBladeCant);
+                        OnikiriUITheme.MeiMedallionGlyph, a * pulse * hov);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 刀上锚钉+已铭微缩刻痕:刀积累着被凿过的痕,可读版本住在牌里;
+        /// 检分镜头下随刀放大,邻位刻痕即可读;仪式位让位给凿刻本体
+        /// </summary>
+        private void DrawBladeMarks(SpriteBatch sb, float a) {
+            for (int i = 0; i < 3; i++) {
+                bool riteHere = Rite.Active && (int)Rite.Slot == i;
+                if (riteHere) {
+                    continue;
+                }
+                OniMeiDefinition engraved = EngravedAt(i);
+                if (engraved != null) {
+                    OniMeiGlyphStyle style = OniMeiGlyphStyle.Engraved(a * 0.6f, OniMeiBladeDraw.GlyphRot);
+                    style.Time = ShaderTime;
+                    style.Inlay = engraved.IsGoldTier ? 1f : 0f;
+                    style.Accent = engraved.IsGoldTier ? OnikiriUITheme.GoldInlay : OnikiriUITheme.Bright;
+                    style.Lit = 0.22f + slotHover[i] * 0.4f;
+                    OniMeiGlyph.Draw(sb, engraved.Key, MapSprite(anchorPx[i]),
+                        OnikiriUITheme.MeiBladeMarkPx * curScale, style);
+                }
+                OniMeiRenderer.DrawAnchorKnot(sb, pinScreen[i], engraved != null,
+                    engraved?.IsGoldTier ?? false, slotHover[i], a * (1f - zoomEase * 0.5f), ShaderTime);
+            }
+        }
+
+        /// <summary>检分特写上的凿刻本体:旧铭锉去/新铭凿现/油布抹光,全部落在缩放锚上</summary>
+        private void DrawRiteCarving(SpriteBatch sb, float a) {
+            Vector2 pos = RiteAnchorScreen() + Rite.Shake;
+            float rot = OniMeiBladeDraw.GlyphRot;
+            //旧铭锉去中
+            if (Rite.OldKey != null && Rite.OldReveal > 0.01f) {
+                OniMeiGlyphStyle oldStyle = OniMeiGlyphStyle.Engraved(a * Rite.OldReveal, rot);
+                oldStyle.Time = ShaderTime;
+                oldStyle.Lit = 0.26f;
+                OniMeiGlyph.Draw(sb, Rite.OldKey, pos, OnikiriUITheme.MeiBladeMarkPx * curScale, oldStyle);
+            }
+            //新铭凿现中
+            if (Rite.NewKey != null && Rite.NewReveal >= 0f) {
+                OniMeiGlyphStyle style = new() {
+                    Alpha = a,
+                    Rotation = rot,
+                    ChiselReveal = Rite.NewReveal,
+                    Accent = Rite.GoldTier ? OnikiriUITheme.GoldInlay : OnikiriUITheme.Bright,
+                    Inlay = Rite.InlayFill,
+                    Lit = 0.24f + Rite.OilWipe * 0.5f * (1f - Rite.InlayFill * 0.6f),
+                    Time = ShaderTime,
+                };
+                OniMeiGlyph.Draw(sb, Rite.NewKey, pos, RiteGlyphSize(), style);
+                //油布抹过:一线软亮沿刀轴扫过字形(两端没入)
+                if (Rite.OilWipe > 0.01f && Rite.OilWipe < 0.99f) {
+                    float sweepX = MathHelper.Lerp(-1.2f, 1.2f, Rite.OilWipe);
+                    Vector2 wipePos = pos + OniMeiBladeDraw.AxisDir * (sweepX * RiteGlyphSize() * 0.6f);
+                    OniBrush.DrawSoftStreak(sb, wipePos, OniMeiBladeDraw.AxisAngle + MathHelper.PiOver2,
+                        RiteGlyphSize() * 1.25f, 2.4f, OnikiriUITheme.HotWhite,
+                        a * 0.40f * (float)Math.Sin(Rite.OilWipe * MathHelper.Pi), glowMul: 0.7f);
                 }
             }
         }
@@ -1104,16 +1225,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         private void DrawRiteTools(SpriteBatch sb) {
-            Vector2 anchor = slotPos[(int)Rite.Slot] + Rite.Shake;
+            Vector2 anchor = RiteAnchorScreen() + Rite.Shake;
             //锉拍:锉刀横扫
             if (Rite.OldKey != null && Rite.OldReveal > 0.01f) {
-                OniMeiRenderer.DrawFileTool(sb, anchor, OnikiriUITheme.MeiGlyphOnBlade,
+                OniMeiRenderer.DrawFileTool(sb, anchor, RiteGlyphSize(),
                     1f - Rite.OldReveal, 1f, ShaderTime);
             }
             //凿拍:鏨具压在笔锋上
             if (Rite.NewKey != null && Rite.FocusPose > 0.01f && Rite.NewReveal < 1f) {
                 Vector2 tip = Rite.NewReveal >= 0f
-                    ? OniMeiGlyph.GetChiselPoint(Rite.NewKey, anchor, RiteGlyphSize(), OnikiriUITheme.MeiBladeCant,
+                    ? OniMeiGlyph.GetChiselPoint(Rite.NewKey, anchor, RiteGlyphSize(), OniMeiBladeDraw.GlyphRot,
                         Math.Max(Rite.NewReveal, 0f))
                     : anchor;
                 OniMeiRenderer.DrawChiselTool(sb, tip, Rite.FocusPose, Rite.Shake, ShaderTime);
@@ -1155,19 +1276,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             string nameText = OniMeiRegistry.CurrentBladeName(OniMeiRegistry.DisplayStore)?.DisplayName.Value ?? "?";
             string status = string.Format(StatusFormat.Value, engraved, nameText);
-            Vector2 size = font.MeasureString(status) * 0.78f;
+            Vector2 size = font.MeasureString(status) * 0.72f;
+            //状态行住台账脚注带,与题头/牌列同板成一账
             Utils.DrawBorderString(sb, status,
-                new Vector2(clothRect.Center.X - size.X * 0.5f, clothRect.Bottom - 36f),
-                OnikiriUITheme.TextDim * (a * 0.85f), 0.78f);
+                new Vector2(panelRect.Center.X - size.X * 0.5f,
+                    panelRect.Bottom - OnikiriUITheme.MeiPanelFooterH * 0.5f - size.Y * 0.5f + 2f),
+                OnikiriUITheme.TextDim * (a * 0.92f), 0.72f);
         }
 
         private void DrawCloseHint(SpriteBatch sb, DynamicSpriteFont font, float a) {
             string keyName = CWRKeySystem.Legend_UIControl.ToTooltipString(CWRKeySystem.Notbound.Value);
             string hint = string.Format(CloseHintFormat.Value, keyName);
             Vector2 size = font.MeasureString(hint) * 0.7f;
-            float y = Math.Min(clothRect.Bottom + 16f, OnikiriUITheme.UIScreenH - 26f);
+            //收台提示贴台账板下,一行收束
+            float y = Math.Min(panelRect.Bottom + 10f, OnikiriUITheme.UIScreenH - 26f);
             Utils.DrawBorderString(sb, hint,
-                new Vector2(clothRect.Center.X - size.X * 0.5f, y),
+                new Vector2(panelRect.Center.X - size.X * 0.5f, y),
                 OnikiriUITheme.TextDim * (a * 0.6f), 0.7f);
         }
     }

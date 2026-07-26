@@ -1,4 +1,5 @@
 ﻿using Terraria;
+using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
@@ -11,7 +12,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 return;
             }
             OniDomain.Local?.UpdateLocal();
+            UpdateSkyActivation();
             OniDomainDeco.Update();
+        }
+
+        //领域是玩家主动能力，不进 ModSceneEffect 场景竞争，不占 boss 的天空/音乐槽位
+
+        //激活期间每帧重激活，SkyManager.OnActivate 把本天空移到活动链表末尾、永远最后绘制压过其他天空
+
+        private static void UpdateSkyActivation() {
+            CustomSky sky = SkyManager.Instance[OniDomainSky.Name];
+            if (sky == null) {
+                return;
+            }
+            bool active = OniDomain.Local?.AnyActive ?? false;
+            if (active) {
+                SkyManager.Instance.Activate(OniDomainSky.Name);
+                if (!Filters.Scene[OniDomainSky.Name].IsActive()) {
+                    Filters.Scene.Activate(OniDomainSky.Name);
+                }
+            }
+            else {
+                if (sky.IsActive()) {
+                    SkyManager.Instance.Deactivate(OniDomainSky.Name);
+                }
+                if (Filters.Scene[OniDomainSky.Name].IsActive()) {
+                    Filters.Scene[OniDomainSky.Name].Deactivate();
+                }
+            }
         }
 
         public override void ClearWorld() {

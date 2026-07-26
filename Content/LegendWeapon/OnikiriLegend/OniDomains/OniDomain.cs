@@ -23,13 +23,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
     {
         //Opening 时序、鬼眼浮现→睁眼→勾玉狂旋→爆域
 
-        public const int EyeEmergeFrames = 26;      //闭眼轮廓浮现，灵体汇聚
+        public const int EyeEmergeFrames = 22;      //闭眼轮廓浮现，灵体汇聚
 
-        public const int EyeOpenFrames = 12;        //眼睑猛然撑开
+        public const int EyeOpenFrames = 10;        //眼睑猛然撑开
 
-        public const int EyeBurstFrames = 10;       //勾玉加速至虹膜闪白
+        public const int EyeBurstFrames = 8;        //勾玉加速至虹膜闪白
 
-        public const int OpenSpreadFrames = 92;     //墨浪爆扩全屏（爆冲→滞行→吞没三段）
+        public const int OpenSpreadFrames = 54;     //墨浪爆扩全屏（爆冲→滞行→吞没三段）
 
         //Flipping 时序
 
@@ -45,11 +45,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
         //Closing 时序、眼睛重现→墨水吸回→阖眼
 
-        public const int CloseEyeFrames = 16;       //眼睛重现
+        public const int CloseEyeFrames = 10;       //眼睛重现
 
-        public const int CloseRetractFrames = 84;   //墨水吸回眼中（扫入→滞行→吸尽三段）
+        public const int CloseRetractFrames = 52;   //墨水吸回眼中（扫入→滞行→吸尽三段）
 
-        public const int CloseBlinkFrames = 14;     //阖眼收尾
+        public const int CloseBlinkFrames = 12;     //阖眼收尾
 
         /// <summary>本地玩家域状态，服务器与主菜单返回 null</summary>
         public static OniDomainPlayer Local {
@@ -68,19 +68,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         /// <summary>本地里世界平滑系数 0~1，驱动光照/天空/装饰</summary>
         public static float LocalUraSmooth => Local?.UraSmooth ?? 0f;
 
-        /// <summary>开域，仅 Closed 可用</summary>
+        /// <summary>开域。Closed 全新开域，Closing 中途反悔从当前覆盖续开</summary>
         public static bool Open(Player player) => player.GetModPlayer<OniDomainPlayer>().OpenDomain();
 
-        /// <summary>收域，Opening/Omote/Ura 可用</summary>
+        /// <summary>收域，Opening/Omote/Ura 可用；开域中途收则从当前覆盖原路吸回</summary>
         public static bool Close(Player player) => player.GetModPlayer<OniDomainPlayer>().CloseDomain();
 
         /// <summary>表里翻转，Omote/Ura 稳态可用，方向自动</summary>
         public static bool Flip(Player player) => player.GetModPlayer<OniDomainPlayer>().FlipDomain();
 
-        /// <summary>关→开，开→关</summary>
+        /// <summary>关→开，开→关，收域中→续开</summary>
         public static bool Toggle(Player player) {
             OniDomainPlayer odp = player.GetModPlayer<OniDomainPlayer>();
-            return odp.Phase == OniDomainPhase.Closed ? odp.OpenDomain() : odp.CloseDomain();
+            return odp.Phase == OniDomainPhase.Closed || odp.Phase == OniDomainPhase.Closing
+                ? odp.OpenDomain() : odp.CloseDomain();
         }
 
         public static OniDomainPhase GetPhase(Player player) => player.GetModPlayer<OniDomainPlayer>().Phase;
@@ -98,11 +99,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                     busy = true;
                     return false;
                 case OniDomainPhase.Closing:
-                    //已在收,冗余按键静默
+                    //收到一半再按=反悔续开
 
-                    return false;
+                    return odp.OpenDomain();
                 default:
-                    //Opening/Omote/Ura 均可收
+                    //Opening/Omote/Ura 均可收，开到一半收=原路吸回
 
                     return odp.CloseDomain();
             }

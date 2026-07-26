@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;

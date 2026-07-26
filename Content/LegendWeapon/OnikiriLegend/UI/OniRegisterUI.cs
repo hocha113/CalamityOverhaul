@@ -69,8 +69,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public override bool CloseOnEscape => true;
         public override float RenderPriority => 2f;
         public override SoundStyle? OpenSound => SoundID.MenuOpen with { Pitch = -0.45f, Volume = 0.55f };
-        public override SoundStyle? CloseSound => SoundID.MenuClose with { Pitch = -0.3f, Volume = 0.5f };
+        public override SoundStyle? CloseSound => SilentSwap ? null
+            : SoundID.MenuClose with { Pitch = -0.3f, Volume = 0.5f };
         public override Vector2 MousePosition => OnikiriUITheme.UIMouse;
+
+        /// <summary>姊妹屏互斥收卷时置位:抑制本屏关闭音,切换只响新屏开音一声</summary>
+        internal bool SilentSwap;
 
         //====交互状态====
         private int selectedIndex;
@@ -119,9 +123,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         protected override void OnOpen() {
             Main.playerInventory = false;
-            //姊妹屏互斥:一卷开另一台收
+            //姊妹屏互斥:一卷开另一台收;静默收台,免得开音+关音同帧叠成两声切换
             if (OniMeiUI.Instance?.IsOpen ?? false) {
+                OniMeiUI.Instance.SilentSwap = true;
                 OniMeiUI.Instance.Close();
+                OniMeiUI.Instance.SilentSwap = false;
             }
             meiSwitch.Reset();
             SwayTimer = 0f;

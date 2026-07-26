@@ -292,15 +292,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             DrawEyeOverlays(spriteBatch, odp);
         }
 
-        //爆域冲击波、追着浸染前沿跑的红光环 + 头几帧的红闪
+        //爆域冲击波、追着浸染前沿跑的红光环 + 起爆红闪；包络驱动，中断收域时贴前沿回撤淡出
 
         private static void DrawBurstShockwave(SpriteBatch spriteBatch, OniDomainPlayer odp) {
-            if (odp.Phase != OniDomainPhase.Opening) {
-                return;
-            }
-            int tBurst = OniDomain.EyeEmergeFrames + OniDomain.EyeOpenFrames + OniDomain.EyeBurstFrames;
-            int st = odp.PhaseTimer - tBurst;
-            if (st < 0 || st > 20) {
+            if (odp.BurstGlow <= 0.001f) {
                 return;
             }
             Texture2D ring = CWRAsset.DiffusionCircle?.Value;
@@ -309,7 +304,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 return;
             }
 
-            float f = st / 20f;
             Vector2 origin = Vector2.Transform(
                 odp.EyeWorldPos - Main.screenPosition,
                 Main.GameViewMatrix.TransformationMatrix);
@@ -321,15 +315,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive,
                 SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
 
-            //头 5 帧红闪
+            //起爆红闪(包络头段)
 
-            if (st < 5) {
-                float flashA = 0.30f * (1f - st / 5f);
+            if (odp.BurstGlow > 0.75f) {
+                float flashA = 0.30f * ((odp.BurstGlow - 0.75f) / 0.25f);
                 spriteBatch.Draw(white, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
                     new Color(0.90f, 0.24f, 0.14f, 0f) * flashA);
             }
 
-            Color ringCol = new Color(1f, 0.30f, 0.14f, 0f) * (0.55f * (1f - f));
+            Color ringCol = new Color(1f, 0.30f, 0.14f, 0f) * (0.55f * odp.BurstGlow);
             float scale = radius * 2f / ring.Width;
             spriteBatch.Draw(ring, origin, null, ringCol, 0f,
                 ring.Size() * 0.5f, scale, SpriteEffects.None, 0f);
@@ -337,28 +331,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             spriteBatch.End();
         }
 
-        //鬼眼成形期间世界屏息压暗，爆域随扩散抬回
+        //鬼眼成形期间世界屏息压暗，包络在玩家侧更新，中断时平滑退场
 
         private static void DrawOpeningDim(SpriteBatch spriteBatch, OniDomainPlayer odp) {
-            if (odp.Phase != OniDomainPhase.Opening) {
+            if (odp.OpenDim <= 0.002f) {
                 return;
             }
             Texture2D white = VaultAsset.placeholder2?.Value;
             if (white == null) {
                 return;
             }
-            int tBurst = OniDomain.EyeEmergeFrames + OniDomain.EyeOpenFrames + OniDomain.EyeBurstFrames;
-            float dim = odp.PhaseTimer <= tBurst
-                ? odp.PhaseTimer / (float)tBurst
-                : 1f - odp.SpreadProgress;
-            if (dim <= 0.002f) {
-                return;
-            }
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone);
             Rectangle full = new(0, 0, Main.screenWidth, Main.screenHeight);
-            spriteBatch.Draw(white, full, new Color(4, 2, 6) * (0.24f * dim));
+            spriteBatch.Draw(white, full, new Color(4, 2, 6) * (0.24f * odp.OpenDim));
             spriteBatch.End();
         }
 

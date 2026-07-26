@@ -59,28 +59,42 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static readonly Color Disabled = new(96, 78, 74);
 
         #region 改铭台几何
-        /// <summary>刀身 quad 宽占屏比</summary>
-        public const float MeiBladeWidthRatio = 0.72f;
-        /// <summary>刀身 quad 宽上限</summary>
-        public const float MeiBladeMaxW = 1150f;
-        /// <summary>刀身 quad 高(刀身核心约 46px,余量给刃辉/字形/烛照)</summary>
-        public const float MeiBladeQuadH = 190f;
-        /// <summary>刀心占屏比(横陈偏上,下方留给鏨盘扇与木牌)</summary>
-        public static readonly Vector2 MeiBladeCenterRatio = new(0.46f, 0.40f);
-        /// <summary>横陈微倾(弧度),轴向锋(左)→茎(右),正值=锋侧略抬——鉴刀不摆正</summary>
-        public const float MeiBladeCant = 0.03f;
-        /// <summary>茎段占刀长比(右侧,裸茎见锉痕与锈)</summary>
-        public const float MeiTangFraction = 0.24f;
-        /// <summary>樋位归一位置(锋 0 → 茎尾 1)</summary>
-        public const float MeiSlotUHi = 0.26f;
-        /// <summary>雕位归一位置</summary>
-        public const float MeiSlotUHorimono = 0.52f;
-        /// <summary>茎铭位归一位置(落在裸茎上)</summary>
-        public const float MeiSlotUNakago = 0.875f;
-        /// <summary>铭位命中半径</summary>
-        public const float MeiSlotRadius = 34f;
-        /// <summary>刀上铭字形尺寸</summary>
-        public const float MeiGlyphOnBlade = 54f;
+        /// <summary>台账主板宽(左列:题头+三铭位牌+脚注)</summary>
+        public const float MeiPanelW = 340f;
+        /// <summary>台账主板高上限(小屏收缩给底行让位)</summary>
+        public const float MeiPanelH = 448f;
+        /// <summary>台账左缘占屏比</summary>
+        public const float MeiPanelXRatio = 0.10f;
+        /// <summary>台账顶缘占屏比</summary>
+        public const float MeiPanelYRatio = 0.085f;
+        /// <summary>台账题头带高(题字+朱丝栏)</summary>
+        public const float MeiPanelHeaderH = 52f;
+        /// <summary>台账脚注带高(状态行)</summary>
+        public const float MeiPanelFooterH = 42f;
+        /// <summary>铭位牌菱章尺寸</summary>
+        public const float MeiMedallionSize = 62f;
+        /// <summary>铭位牌内字形尺寸</summary>
+        public const float MeiMedallionGlyph = 44f;
+        /// <summary>铭位牌命中半径</summary>
+        public const float MeiMedallionHitRadius = 40f;
+        /// <summary>刀身锚钉命中半径(点钉等价点牌)</summary>
+        public const float MeiAnchorHitRadius = 16f;
+        /// <summary>陈列缩放(整数倍,原生姿态零旋转,像素网格不破)</summary>
+        public const float MeiExhibitScale = 2f;
+        /// <summary>检分镜头目标缩放(仪式聚焦特写)</summary>
+        public const float MeiZoomScale = 5f;
+        /// <summary>陈列心X占屏比(台账右侧的展刀区)</summary>
+        public const float MeiExhibitXRatio = 0.585f;
+        /// <summary>陈列心Y占屏比(底缘会向錾样匣让位)</summary>
+        public const float MeiExhibitYRatio = 0.46f;
+        /// <summary>樋位归一位置(锋 0 → 柄尾 1,刀身上段)</summary>
+        public const float MeiSlotUHi = 0.28f;
+        /// <summary>雕位归一位置(刀身下段,绯纹起处)</summary>
+        public const float MeiSlotUHorimono = 0.54f;
+        /// <summary>茎铭归一位置(柄中藏茎)</summary>
+        public const float MeiSlotUNakago = 0.87f;
+        /// <summary>刀上微缩刻痕字径(贴图 px,乘当前缩放;检分镜头下即凿刻字径)</summary>
+        public const float MeiBladeMarkPx = 13f;
         /// <summary>鏨盘扇骨长(轴心到纹章心;骨少时的基准)</summary>
         public const float MeiFanRibLen = 150f;
         /// <summary>骨多时骨长缓升上限(与张角/双排联动)</summary>
@@ -115,10 +129,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public const float MeiNameColXRatio = 0.905f;
         /// <summary>竖排大字字号</summary>
         public const float MeiNameScale = 1.6f;
-        /// <summary>白布横幅高</summary>
-        public const float MeiClothH = 330f;
-        /// <summary>刀身形状种子(肌理/刃文/锈斑,会话内恒定)</summary>
+        /// <summary>台面形状种子(漆理/木纹/焦边,会话内恒定)</summary>
         public const float MeiBladeSeed = 11.73f;
+        /// <summary>吊挂卷轴锚 X 占屏比(顶梁左挂,让开台账主板左肩)</summary>
+        public const float MeiHangLeftXRatio = 0.045f;
+        /// <summary>纳刀牌锚 X 占屏比(顶梁右挂)</summary>
+        public const float MeiHangRightXRatio = 0.925f;
         #endregion
 
         #region 吊挂切换门
