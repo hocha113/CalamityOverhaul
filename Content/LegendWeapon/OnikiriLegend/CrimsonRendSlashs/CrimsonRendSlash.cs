@@ -148,6 +148,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private bool bladeInBurst;          //本帧处于爆发段
         private float bladeSpeedFade;       //角速度包络,峰值期本体让位残影
         private float bladeDepthAmpPx = 240f;   //当前 z 幅度(px),透视缩放基准
+        /// <summary>重拍刀身艺术缩放(相对 DepthScale),终结上挑随揭开长大</summary>
+        private float bladeArtScale = 1f;
+        private float bladePerspInfluence = 0.6f;
+        private float bladePerspFloor = 0.82f;
+        private float bladePerspCeil = 1.18f;
         //==== 全身体态(纯视觉,由刀时间轴确定性导出,不上网络) ====
         private float bodyLean;
         private bool bodyLeanApplied;
@@ -424,9 +429,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         /// <summary>深度→近景权重,±0.22 交叉淡化</summary>
         private static float NearWeight(float depth) => CSR.SmoothStep01((depth + 0.22f) / 0.44f);
 
-        /// <summary>深度→透视缩放,透视除法软化 60% 再夹紧;刀光是正交投影,刀身独享全额透视会读作比刀光大一圈</summary>
+        /// <summary>深度→透视缩放;刀光正交投影,刀身透视软化后夹紧,重拍由 bladePersp* 覆盖</summary>
         private float DepthScale(float depth) => MathHelper.Clamp(
-            MathHelper.Lerp(1f, CSR.PerspectiveK(depth * bladeDepthAmpPx), 0.6f), 0.82f, 1.18f);
+            MathHelper.Lerp(1f, CSR.PerspectiveK(depth * bladeDepthAmpPx), bladePerspInfluence)
+            , bladePerspFloor, bladePerspCeil);
+
+        /// <summary>绘制用刀身总倍率=透视 × 重拍艺术曲线</summary>
+        private float BladeVisualScale(float depth) => DepthScale(depth) * bladeArtScale;
+
+        /// <summary>重拍透视软化:终结上挑弱化缩进并略抬上限,避免收笔刀身被刀光吞掉</summary>
+        private static void BeatPerspective(int beat, out float influence, out float floor, out float ceil) {
+            if (beat >= 4) {
+                influence = 0.34f;
+                floor = 0.94f;
+                ceil = 1.18f;
+            }
+            else if (beat == 3) {
+                influence = 0.48f;
+                floor = 0.88f;
+                ceil = 1.14f;
+            }
+            else {
+                influence = 0.6f;
+                floor = 0.82f;
+                ceil = 1.18f;
+            }
+        }
+
+        /// <summary>重拍刀身艺术缩放:终结随上挑揭开长大贴合巨弧,峰值略保守以免刀尖穿出刀光</summary>
+        private static float BeatBladeArtScale(int beat, int lt, in SlashDef d) {
+            if (beat < 3) {
+                return 1f;
+            }
+            float start = beat >= 4 ? 1.08f : 1.03f;
+            float peak = beat >= 4 ? 1.24f : 1.10f;
+            if (lt < d.GatherFrames) {
+                float gT = CSR.EaseOutCubic((lt + 1) / (float)(d.GatherFrames + 1));
+                return MathHelper.Lerp(start * 0.96f, start, gT);
+            }
+            float progress = lt >= d.SweepFrames
+                ? 1f
+                : MathHelper.Clamp(CSR.Sweep(in d, lt), 0f, 1f);
+            //终结后段仍抬,但用 SmoothStep 收住尖端,避免末端穿出
+            float shaped = beat >= 4
+                ? CSR.SmoothStep01(progress)
+                : CSR.EaseOutCubic(progress);
+            return MathHelper.Lerp(start, peak, MathHelper.Clamp(shaped, 0f, 1f));
+        }
 
         /// <summary>体态倾斜幅度(rad);仅后两重拍(蓄势/终结)前倾发力,前三拍直立</summary>
         private static float BeatLeanAmp(int beat) => beat switch {
@@ -672,6 +721,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             var stretch = Player.CompositeArmStretchAmount.Full;
             bladeOpacity = 1f;
             bladeDepthAmpPx = 240f;   //连段分支按拍位 z 幅度覆盖
+            bladeArtScale = 1f;
+            bladePerspInfluence = 0.6f;
+            bladePerspFloor = 0.82f;
+            bladePerspCeil = 1.18f;
 
             if (!firstBeatFired) {
                 //A 首次起手,反拉蓄势沉入身后;有交接角则顺势拉入
@@ -732,6 +785,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 float leanAmp = BeatLeanAmp(a.Beat);
                 float depthAmp = CSR.DepthAmp(in a.Def);
                 bladeDepthAmpPx = depthAmp > 0f ? depthAmp * 0.9f : 240f;
+                bladeArtScale = BeatBladeArtScale(a.Beat, lt, in a.Def);
+                BeatPerspective(a.Beat, out bladePerspInfluence, out bladePerspFloor, out bladePerspCeil);
 
                 if (lt < a.Def.GatherFrames) {
                     //B1 收势,自上一停驻位反拉上膛,轻拍刀光全藏、重拍留缓推telegraph
@@ -865,7 +920,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     Depth = depth,
                     Facing = bladeFacing,
                     EdgeFlip = bladeEdgeFlip,
-                    Scale = DepthScale(depth),
+                    Scale = BladeVisualScale(depth),
                     Life = SmearLifeFrames,
                     Strength = strength,
                 };
@@ -1432,7 +1487,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             DrawSmears(sb, nearSide: false);
             if (bladeFar) {
                 Color lightColor = Lighting.GetColor((int)(Owner.Center.X / 16f), (int)(Owner.Center.Y / 16f));
-                float scale = BladeDrawScale * sizeMul * DepthScale(bladeDepth) * (1f + bladeScalePulse);
+                float scale = BladeDrawScale * sizeMul * BladeVisualScale(bladeDepth) * (1f + bladeScalePulse);
                 Color body = Color.Lerp(lightColor, Color.White, 0.12f)
                     * (bladeOpacity * farW * DepthDim(bladeDepth) * (1f - 0.62f * bladeSpeedFade));
                 DrawBladeSprite(sb, bladeRotation, bladeFacing, scale, body, default, bladeEdgeFlip);
@@ -1451,7 +1506,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
 
             Color lightColor = Lighting.GetColor((int)(Owner.Center.X / 16f), (int)(Owner.Center.Y / 16f));
-            float scale = BladeDrawScale * sizeMul * DepthScale(bladeDepth) * (1f + bladeScalePulse);
+            float scale = BladeDrawScale * sizeMul * BladeVisualScale(bladeDepth) * (1f + bladeScalePulse);
             //爆发峰值刀体隐去,速度读感交给残影(swoosh 替刀)
             float speedThin = 1f - 0.62f * bladeSpeedFade;
 
