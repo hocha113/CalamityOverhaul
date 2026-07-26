@@ -15,7 +15,7 @@ using OFR = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs.
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 {
     /// <summary>终之太刀环形刀光</summary>
-    internal class OniFinaleRing : ModProjectile, IPrimitiveDrawable, ICrimsonFarDrawable
+    internal class OniFinaleRing : ModProjectile, IOniCrispDrawable, ICrimsonFarDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                     //升调后段的环斩开始切到画面本体+落刀碎面，乱舞越到后面世界被切得越狠越碎
 
                     if (t > 0.45f) {
-                        OniFinaleFX.PushSlice(Projectile.Center, Roll, (2.2f + 2.6f * t) * SizeMul);
+                        OniFinaleFX.PushSlice(Projectile.Center, Roll, (1.8f + 2.1f * t) * SizeMul);
                         OniFinaleShatter.AddFacets(Projectile.Center, 1, SizeMul);
                     }
                 }
@@ -262,10 +262,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
         public override bool PreDraw(ref Color lightColor) => false;
 
-        /// <summary>近半侧、弹幕扩展层（覆盖实体）</summary>
-        void IPrimitiveDrawable.DrawPrimitives() => DrawPass(1f);
+        /// <summary>近半侧、锋利层（后效之上，不被自己的斩击切碎）</summary>
+        void IOniCrispDrawable.DrawCrisp() => DrawPass(1f);
 
-        /// <summary>远半侧、玩家绘制前回调</summary>
+        /// <summary>远半侧、玩家绘制前回调（留在世界层被后效处理，纵深线索）</summary>
         void ICrimsonFarDrawable.DrawFarSlashes() => DrawPass(-1f);
 
         private void DrawPass(float farSel) {

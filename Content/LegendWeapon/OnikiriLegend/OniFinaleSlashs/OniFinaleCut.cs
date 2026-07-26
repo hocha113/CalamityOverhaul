@@ -15,7 +15,7 @@ using OFR = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs.
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 {
     /// <summary>终之太刀·纳刀断世. ai[0]=刀线角(弧度) ai[1]=尺寸倍率</summary>
-    internal class OniFinaleCut : ModProjectile, IPrimitiveDrawable
+    internal class OniFinaleCut : ModProjectile, IPrimitiveDrawable, IOniCrispDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 //出鞘的"斩击"本身近乎无声、世界还没意识到已经被斩开——但画面本身被切开一瞬
 
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 1f, Volume = 0.28f }, Projectile.Center);
-                OniFinaleFX.PushSlice(Projectile.Center, CutAngle, 5f * SizeMul);
+                OniFinaleFX.PushSlice(Projectile.Center, CutAngle, 4f * SizeMul);
             }
             timer++;
 
@@ -423,7 +423,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             };
         }
 
+        /// <summary>世界层只留伤口断面：它与裂屏位移物理对位，必须跟着两半世界一起被劈开/折射</summary>
         void IPrimitiveDrawable.DrawPrimitives() {
+            if (Main.dedServ || !initialized || timer < HoldFrames) {
+                return;
+            }
+            GraphicsDevice device = Main.instance.GraphicsDevice;
+            if (OFR.BeginDraw(device, out Effect _, out var pb, out var pr, out var pd)) {
+                DrawWoundLayers(device);
+                OFR.EndDraw(device, pb, pr, pd);
+            }
+        }
+
+        /// <summary>锋利层（后效之上）：滞拍细线与引爆敷层——刀线永远锋利，不被裂屏/切片/折射处理</summary>
+        void IOniCrispDrawable.DrawCrisp() {
             if (Main.dedServ || !initialized) {
                 return;
             }
@@ -432,9 +445,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 OFR.BladeState lineState = ComposeLineState();
                 if (lineState.Opacity > 0.012f) {
                     OFR.DrawBladeLayers(device, fx, in lineDef, in lineState, Projectile.Center, 0f);
-                }
-                if (timer >= HoldFrames) {
-                    DrawWoundLayers(device);
                 }
                 OFR.EndDraw(device, pb, pr, pd);
             }

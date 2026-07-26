@@ -13,7 +13,7 @@ using OFR = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs.
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 {
     /// <summary>终之太刀直痕斩痕</summary>
-    internal class OniFinaleScar : ModProjectile, IPrimitiveDrawable
+    internal class OniFinaleScar : ModProjectile, IOniCrispDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             //闪现瞬间画面本身被切开一瞬——两侧沿法线错位、缝里烧线（切的是屏幕，不只是世界）
 
             if (!Main.dedServ) {
-                OniFinaleFX.PushSlice(Projectile.Center, BladeAngle, 7f * s);
+                OniFinaleFX.PushSlice(Projectile.Center, BladeAngle, 5.5f * s);
             }
 
             //过刃线与落刀碎面只在整场演出中挂账：格架由主控驱动更新/绘制，独立调试直痕不留悬账
@@ -269,7 +269,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
         public override bool PreDraw(ref Color lightColor) => false;
 
-        void IPrimitiveDrawable.DrawPrimitives() {
+        /// <summary>锋利层（后效之上）、刀光不被自己的斩击切碎</summary>
+        void IOniCrispDrawable.DrawCrisp() {
             if (Main.dedServ || !initialized) {
                 return;
             }

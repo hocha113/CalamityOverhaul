@@ -12,8 +12,7 @@ using OFR = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs.
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 {
     /// <summary>终之太刀主控. 时停蓄势→裂世</summary>
-    internal class OniFinaleSlash : ModProjectile, IOverlayDrawable, IOniBladeOccupant
-        , IPrimitiveDrawable, IAdditiveDrawable
+    internal class OniFinaleSlash : ModProjectile, IOverlayDrawable, IOniBladeOccupant, IOniCrispDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
@@ -167,7 +166,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 if (depth < 0.28f) {
                     //近平面的线切开画面本体+落刀碎面，配一声几不可闻的高频细响；深处的保持死寂
 
-                    OniFinaleFX.PushSlice(center, angle, 5f * SizeMul);
+                    OniFinaleFX.PushSlice(center, angle, 4f * SizeMul);
                     OniFinaleShatter.AddFacets(center, 2, SizeMul);
                     SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.9f, Volume = 0.14f }, center);
                 }
@@ -233,8 +232,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             return false;
         }
 
-        /// <summary>过刃线格架主体</summary>
-        void IPrimitiveDrawable.DrawPrimitives() {
+        /// <summary>过刃线格架主体 + 出生掠光，锋利层（后效之上）——切线是施刀者，不被自己的斩击切碎</summary>
+        void IOniCrispDrawable.DrawCrisp() {
             if (Main.dedServ || !OniFinaleLattice.HasAny || !IsLatticeDriver()) {
                 return;
             }
@@ -243,14 +242,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 OniFinaleLattice.DrawLines(device, fx);
                 OFR.EndDraw(device, pb, pr, pd);
             }
-        }
 
-        /// <summary>过刃线出生掠光</summary>
-        void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
-            if (!OniFinaleLattice.HasAny || !IsLatticeDriver()) {
-                return;
-            }
-            OniFinaleLattice.DrawGlints(spriteBatch);
+            SpriteBatch sb = Main.spriteBatch;
+            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp
+                , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            OniFinaleLattice.DrawGlints(sb);
+            sb.End();
         }
 
         /// <summary>暗场包络、起手浸入 → 乱舞恒定 → 死寂压到最深 → 纳刀后停推自然回落</summary>
