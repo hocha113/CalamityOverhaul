@@ -344,7 +344,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             Item.rare = CWRID.Rarity_BurnishedAuric;
             Item.CWR().isHeldItem = true;
             Item.CWR().heldProjType = ModContent.ProjectileType<MurasamaHeld>();
-            Item.CWR().LegendData = new MuraData();
+            Item.CWR().LegendData ??= new MuraData();
             ItemMeleePrefixDic[Item.type] = true;
             ItemRangedPrefixDic[Item.type] = false;
         }
