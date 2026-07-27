@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.Narrative;
 using Microsoft.Xna.Framework.Graphics;
@@ -52,6 +52,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 return;
             }
             ToriiDusk.Update();
+            if (!CWRRef.GetBossRushActive() && !VaultUtils.isServer && ToriiDusk.Intensity > 0f) {
+                Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Future");
+            }
         }
 
         public override void ClearWorld() {
