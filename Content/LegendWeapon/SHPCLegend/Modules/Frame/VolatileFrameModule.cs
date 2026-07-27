@@ -41,18 +41,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
         //变异权重，过载最强故最低
         private const float FissionWeight = 0.30f;
-        private const float OverloadWeight = 0.18f;
+        private const float OverloadWeight = 0.10f;
         private const float UnstableWeight = 0.32f;
         private const float AberrantWeight = 0.20f;
 
         //裂变，AI调用数触发（每刻3次≈14px，54≈750px）、张角、副束伤速
         private const int FissionDelayCalls = 54;
         private const float FissionForkAngle = 0.36f;
-        private const float FissionChildDamage = 0.30f;
+        private const float FissionChildDamage = 0.45f;
         private const float FissionChildSpeed = 14f;
 
         /// <summary>高额伤倍率、每AI抖动步长、回中混合</summary>
-        private const float OverloadDamageMul = 1.55f;
+        private const float OverloadDamageMul = 2f;
         private const float OverloadJitterStep = 0.085f;
         private const float OverloadReturnBlend = 0.05f;
 

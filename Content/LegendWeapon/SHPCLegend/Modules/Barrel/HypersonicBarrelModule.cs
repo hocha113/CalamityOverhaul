@@ -12,18 +12,21 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>超音速枪管，飞420px音爆70%，其后+30%伤+2穿透</summary>
+    /// <summary>超音速枪管，飞720px音爆70%，其后+30%伤+2穿透</summary>
     internal sealed class HypersonicBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
         //曙金
         public override Color TintColor => new(255, 200, 90);
 
-        private const float BoomDistance = 420f;
+        private const float BoomDistance = 720f;
+        private const float RamjetAcceleration = 0.022f;
+        private const float MaxRamjetSpeedBonus = 1.8f;
 
         private sealed class BeamFlightState
         {
             public Vector2 SpawnPos;
+            public float RamjetSpeedBonus;
             public bool Boomed;
         }
 
@@ -44,8 +47,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 flightStates[id] = state;
             }
 
-            //冲压加速
-            beam.SpeedMul = MathF.Min(beam.SpeedMul + 0.022f, 3.2f);
+            //只限制本枪管提供的冲压增量，不截断其他改件的速度收益
+            float nextRamjetBonus = MathF.Min(
+                state.RamjetSpeedBonus + RamjetAcceleration, MaxRamjetSpeedBonus);
+            beam.SpeedMul += nextRamjetBonus - state.RamjetSpeedBonus;
+            state.RamjetSpeedBonus = nextRamjetBonus;
 
             if (state.Boomed) {
                 //白热蒸汽尾
@@ -65,12 +71,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
             //破音障
             state.Boomed = true;
-            beam.Projectile.damage = (int)(beam.Projectile.damage * 1.15f);
+            beam.Projectile.damage = (int)(beam.Projectile.damage * 1.3f);
             if (beam.Projectile.penetrate > 0) {
                 beam.Projectile.penetrate += 2;
             }
             if (beam.Projectile.owner == Main.myPlayer) {
-                int boomDmg = Math.Max((int)(beam.Projectile.damage * 0.45f), 1);
+                int boomDmg = Math.Max((int)(beam.Projectile.damage * 0.7f), 1);
                 Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                     beam.Projectile.Center, Vector2.Zero,
                     ModContent.ProjectileType<SHPCSonicBoomProj>(),

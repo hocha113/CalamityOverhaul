@@ -3,7 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>超杀机匣，击杀叠层≤15 每层 +1% 伤，衰减交 SHPCPlayer</summary>
+    /// <summary>超杀机匣，击杀叠层≤15 每层 +2% 伤，衰减交 SHPCPlayer</summary>
     internal sealed class OverkillFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;
@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             if (target.life > 0) return;
             SHPCPlayer sp = SHPCPlayer.Get(Main.player[beam.Projectile.owner]);
             sp.OverkillStacks = System.Math.Min(sp.OverkillStacks + 1, 15);
-            sp.OverkillTimer = 240;
+            sp.OverkillTimer = 120;
         }
     }
 }

@@ -1599,7 +1599,7 @@ PrecisionOpticModule: {
 	Tooltip:
 		'''
 		Juicio calibrado: elimina toda la dispersión; impactos consecutivos sin fallar acumulan calibración
-		Con diez cargas dispara un rayo de juicio perforante con crítico garantizado; fallar reinicia la calibración
+		Con quince cargas dispara un rayo de juicio perforante con crítico garantizado; fallar reinicia la calibración
 		'''
 }
 

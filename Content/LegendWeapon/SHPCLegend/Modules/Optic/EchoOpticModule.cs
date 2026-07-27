@@ -12,12 +12,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         //幽灵蓝紫
         public override Color TintColor => new(80, 150, 255);
 
-        private const float EchoDamageRatio = 0.25f;
+        private const float EchoDamageRatio = 1f;
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.BeamLifeMul += -0.36f;
-            ctx.DamageMul += -0.18f;
-            ctx.ManaCostMul += 0.3f;
+            ctx.BeamLifeMul += -0.5f;
+            ctx.DamageMul += -0.28f;
+            ctx.ManaCostMul += 0.6f;
         }
 
         public override void OnBeamKill(CyberTraceBeamProj beam, int timeLeft) {

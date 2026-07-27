@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>高效握把，命中凝聚晶胞，满5胞下次左键零损</summary>
+    /// <summary>高效握把，命中凝聚晶胞，满8胞下次左键零损</summary>
     internal sealed class EfficientGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;
@@ -22,20 +22,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 
         //可调参数
         /// <summary>满环晶胞数，攒满进入零损待发</summary>
-        internal const int MaxCells = 5;
+        internal const int MaxCells = 8;
         /// <summary>凝成一枚晶胞所需回收能量</summary>
-        private const float CellEnergyCost = 16f;
+        private const float CellEnergyCost = 18f;
         /// <summary>光束回收比例，蓝耗×此值，每束首次命中</summary>
-        private const float BeamRecoverRatio = 0.35f;
+        private const float BeamRecoverRatio = 0.30f;
         /// <summary>激光回收比例，受ICD节流</summary>
         private const float LaserRecoverRatio = 0.25f;
         /// <summary>激光回收ICD（帧）</summary>
         private const float LaserRecoverICD = 12f;
-        /// <summary>零损每胞伤害加成，满5=×1.6</summary>
-        private const float EmpowerDamagePerCell = 0.12f;
-        /// <summary>激光零损引爆，基础比例+每胞加成</summary>
-        private const float LaserBlastBase = 0.5f;
-        private const float LaserBlastPerCell = 0.15f;
+        /// <summary>零损每胞伤害加成，满8=×2</summary>
+        private const float EmpowerDamagePerCell = 0.125f;
+        /// <summary>激光零损引爆，满8胞仍为1.85×</summary>
+        private const float LaserBlastBase = 0.6f;
+        private const float LaserBlastPerCell = 0.15625f;
         /// <summary>激光零损引爆半径与限程（px）</summary>
         private const float LaserBlastRadius = 190f;
         private const float LaserBlastMaxRange = 1600f;
@@ -286,7 +286,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         }
     }
 
-    /// <summary>回收晶胞星环，ai0进度0~5，ai1汇聚倒计时</summary>
+    /// <summary>回收晶胞星环，ai0进度0~8，ai1汇聚倒计时</summary>
     internal sealed class SHPCRecycleCellRingProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -298,7 +298,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         /// <summary>汇聚动画帧数</summary>
         internal const float GatherFrames = 12f;
 
-        /// <summary>进度0~5含液面，ai0同步</summary>
+        /// <summary>进度0~8含液面，ai0同步</summary>
         private float Progress {
             get => Projectile.ai[0];
             set => Projectile.ai[0] = value;

@@ -1576,7 +1576,7 @@ PrecisionOpticModule: {
 	Tooltip:
 		'''
 		Kalibriertes Urteil: keinerlei Streuung; aufeinanderfolgende Treffer ohne Fehlschuss bauen Kalibrierung auf
-		Bei zehn Stapeln feuert ein durchschlagender Richtstrahl mit garantiertem Kritischen — ein Fehlschuss setzt alles zurück
+		Bei fünfzehn Stapeln feuert ein durchschlagender Richtstrahl mit garantiertem Kritischen — ein Fehlschuss setzt alles zurück
 		'''
 }
 

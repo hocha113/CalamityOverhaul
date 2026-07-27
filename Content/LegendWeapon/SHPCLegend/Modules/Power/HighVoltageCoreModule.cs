@@ -21,6 +21,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         public override Color TintColor => new(80, 180, 255);
 
         private const float VoltageCap = 100f;
+        private const float BeamVoltageGain = 7f;
+        private const float LaserVoltageGain = 3f;
+        private const float OrbVoltageGain = 30f;
         /// <summary>当前电压 0~100</summary>
         private float voltage;
         /// <summary>满压提示音是否已播放</summary>
@@ -38,7 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 Discharge(beam.Projectile, target);
                 return;
             }
-            voltage = Math.Min(voltage + 12f, VoltageCap);
+            voltage = Math.Min(voltage + BeamVoltageGain, VoltageCap);
         }
 
         public override void OnLaserHitNPC(CyberPrismLaserProj laser, NPC target, NPC.HitInfo hit, int damageDone) {
@@ -46,11 +49,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 Discharge(laser.Projectile, target);
                 return;
             }
-            voltage = Math.Min(voltage + 5f, VoltageCap);
+            voltage = Math.Min(voltage + LaserVoltageGain, VoltageCap);
         }
 
         public override void OnOrbDetonation(CyberChargeOrbProj orb) {
-            voltage = Math.Min(voltage + 50f, VoltageCap);
+            voltage = Math.Min(voltage + OrbVoltageGain, VoltageCap);
         }
 
         /// <summary>高压放电，枪口穿目标延 1300px，线上全伤</summary>
@@ -62,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             if (owner == null || !owner.active) return;
 
             Vector2 dir = (throughTarget.Center - owner.Center).SafeNormalize(Vector2.UnitX);
-            int dmg = Math.Max((int)(source.damage * 2.5f), 1);
+            int dmg = Math.Max(source.damage * 4, 1);
             Projectile.NewProjectile(source.GetSource_FromThis(),
                 owner.Center + dir * 40f, dir,
                 ModContent.ProjectileType<SHPCVoltArcProj>(),

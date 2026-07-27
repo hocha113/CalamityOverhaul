@@ -12,21 +12,21 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>轻量枪托，主光束拖 2 节光链，各 25% 伤</summary>
+    /// <summary>轻量枪托，主光束拖 2 节光链，各 40% 伤</summary>
     internal sealed class LightStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;
         //轻量银白
         public override Color TintColor => new(220, 230, 240);
 
-        private const float SegmentDamageRatio = 0.25f;
+        private const float SegmentDamageRatio = 0.4f;
 
         /// <summary>已挂载子节的光束，OnBeamKill 清理</summary>
         private readonly HashSet<int> linkedBeams = [];
 
         public override void Apply(ref ShootContext ctx) {
             ctx.AttackSpeedMul += 0.2f;
-            ctx.DamageMul += -0.22f;
+            ctx.DamageMul += -0.3f;
         }
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {

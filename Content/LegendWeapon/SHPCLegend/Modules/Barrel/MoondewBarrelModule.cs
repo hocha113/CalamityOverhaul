@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (SHPCNaturalFx.HasOwnedNear(beam.Projectile.owner, prismType, beam.Projectile.Center, MinSpacing)) return;
             Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                 beam.Projectile.Center, Vector2.Zero,
-                prismType, Math.Max(beam.Projectile.damage / 4, 1), 0f, beam.Projectile.owner);
+                prismType, Math.Max(beam.Projectile.damage / 2, 1), 0f, beam.Projectile.owner);
         }
     }
 

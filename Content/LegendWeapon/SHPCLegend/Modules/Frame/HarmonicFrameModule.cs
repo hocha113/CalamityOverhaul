@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
         private const int ResonateInterval = 18;
         private const float ResonateRange = 320f;
-        private const float ArcDamageRatio = 0.10f;
+        private const float ArcDamageRatio = 0.20f;
 
         //每束独立计时，防争抢触发
         private readonly Dictionary<int, int> _timers = new();

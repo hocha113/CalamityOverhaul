@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (SHPCNaturalFx.CountOwned(beam.Projectile.owner, cloudType) >= MaxConcurrentClouds) return;
             Vector2 spawnPos = beam.Projectile.Center + Main.rand.NextVector2Circular(30f, 18f);
             if (SHPCNaturalFx.HasOwnedNear(beam.Projectile.owner, cloudType, spawnPos, MinSpacing)) return;
-            int damage = Math.Max(beam.Projectile.damage / 8, 1);
+            int damage = Math.Max(beam.Projectile.damage / 3, 1);
             Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                 spawnPos, Main.rand.NextVector2Circular(0.8f, 0.5f),
                 cloudType, damage, 0f, beam.Projectile.owner);
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         private float PassiveCharge() {
-            //节流调用，回报×间隔保总速率
+            //返回每帧充能速率；扫描间隔只控制邻近弹幕的重算频率
             float charge = 0.08f;
             int beamType = ModContent.ProjectileType<CyberTraceBeamProj>();
             int orbType = ModContent.ProjectileType<CyberChargeOrbProj>();
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 if (Vector2.DistanceSquared(other.Center, Projectile.Center) > 130f * 130f) continue;
                 charge += 3.2f;
             }
-            return charge * ChargeScanInterval;
+            return charge;
         }
 
         private void ReleaseRain() {

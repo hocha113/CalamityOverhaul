@@ -12,14 +12,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>全息瞄具，交战中周期投光栅，消解敌弹≤12，友方穿栅 +15% 伤</summary>
+    /// <summary>全息瞄具，交战中周期投光栅，消解敌弹≤12，友方穿栅 +25% 伤</summary>
     internal sealed class HoloOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;
         //全息湖蓝
         public override Color TintColor => new(90, 220, 230);
 
-        private const int DeployCooldown = 280;
+        private const int DeployCooldown = 360;
         private int cooldownTimer;
         private float cooldownCarry;
 
@@ -52,6 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 270;
+        private const int DeployFrames = 30;
         private const float HalfLength = 95f;
         private const float SlabHalfThickness = 20f;
         private const int MaxAbsorb = 12;
@@ -59,8 +60,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         private static readonly Color LatticeMain = new(80, 215, 235);
         private static readonly Color LatticeAccent = new(200, 255, 250);
 
-        /// <summary>已校准光束，防一束反复增伤</summary>
-        private readonly HashSet<int> calibratedBeams = [];
+        /// <summary>已校准光束 identity，防一束反复增伤且不受弹幕槽位复用影响</summary>
+        private readonly HashSet<int> calibratedBeamIdentities = [];
         private int absorbCount;
         private float glitchAmount;
         private float fadeAlpha;
@@ -89,7 +90,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 SoundEngine.PlaySound(SoundID.Item78 with { Volume = 0.5f, Pitch = 0.55f }, Projectile.Center);
             }
 
-            deployProgress = MathHelper.Clamp(age / 18f, 0f, 1f);
+            deployProgress = MathHelper.Clamp(age / (float)DeployFrames, 0f, 1f);
             fadeAlpha = deployProgress * MathHelper.Clamp(Projectile.timeLeft / 25f, 0f, 1f);
             glitchAmount = MathF.Max(glitchAmount - 0.06f, 0f);
             Lighting.AddLight(Projectile.Center, LatticeMain.ToVector3() * 0.5f * fadeAlpha);
@@ -135,10 +136,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 Projectile proj = Main.projectile[i];
                 if (!proj.active || proj.owner != Projectile.owner) continue;
                 if (proj.ModProjectile is not CyberTraceBeamProj beam) continue;
-                if (calibratedBeams.Contains(proj.whoAmI) || !InsideSlab(proj.Center)) continue;
+                int beamIdentity = proj.identity;
+                if (calibratedBeamIdentities.Contains(beamIdentity) || !InsideSlab(proj.Center)) continue;
 
-                calibratedBeams.Add(proj.whoAmI);
-                proj.damage = (int)(proj.damage * 1.15f);
+                calibratedBeamIdentities.Add(beamIdentity);
+                proj.damage = (int)(proj.damage * 1.25f);
                 NPC target = proj.Center.FindClosestNPC(700f, false, true);
                 if (target != null) {
                     Vector2 desired = target.Center - proj.Center;

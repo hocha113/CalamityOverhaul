@@ -1593,7 +1593,7 @@ PrecisionOpticModule: {
 	Tooltip:
 		'''
 		Julgamento calibrado: elimina toda a dispersão; acertos consecutivos sem errar acumulam calibração
-		Com dez cargas, dispara um raio de julgamento perfurante com crítico garantido — errar zera a calibração
+		Com quinze cargas, dispara um raio de julgamento perfurante com crítico garantido — errar zera a calibração
 		'''
 }
 

@@ -1608,7 +1608,7 @@ PrecisionOpticModule: {
 	Tooltip:
 		'''
 		Calibrated Judgment: eliminates all spread; consecutive hits without a miss build calibration
-		At ten stacks, fires a guaranteed-crit piercing judgment ray — missing a beam resets calibration
+		At fifteen stacks, fires a guaranteed-crit piercing judgment ray — missing a beam resets calibration
 		'''
 }
 
@@ -1702,7 +1702,7 @@ EfficientGripModule: {
 	Tooltip:
 		'''
 		Zero-Loss Loop protocol: beam and laser hits reclaim energy from each shot's mana cost, condensing recycle cells that orbit you
-		At five cells your next left-click becomes a Zero-Loss Shot — full mana refund, and every cell floods the muzzle to empower that volley
+		At eight cells your next left-click becomes a Zero-Loss Shot — full mana refund, and every cell floods the muzzle to empower that volley
 		In laser mode the Zero-Loss Shot instead dumps every cell at your cursor, detonating the reclaimed energy
 		'''
 }
@@ -2150,7 +2150,7 @@ NullspaceFrameModule: {
 	DisplayName: Nullspace Frame
 	Tooltip:
 		'''
-		A void-rift generator leaves a micro-explosion echo along the beam's path every 30 frames
+		A void-rift generator leaves a micro-explosion echo along the beam's path every 20 frames
 		Slightly extended range; minimal damage penalty
 		'''
 }
@@ -2159,7 +2159,7 @@ OverkillFrameModule: {
 	DisplayName: Overkill Frame
 	Tooltip:
 		'''
-		An overkill-sensing circuit stacks one Overkill charge per kill, up to 10; each stack adds 2% damage
+		An overkill-sensing circuit stacks one Overkill charge per kill, up to 15; each stack adds 2% damage
 		Stacks decay over time — the faster you slay, the stronger you become
 		'''
 }

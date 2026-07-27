@@ -172,8 +172,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Projectile.penetrate = 3;
             Projectile.timeLeft = MaxLife;
             Projectile.usesLocalNPCImmunity = true;
-            //一束只命中同一 NPC 一次，穿透用于不同目标；extraUpdates 不再放大单体命中
-            Projectile.localNPCHitCooldown = -1;
+            //extraUpdates=2 会让局部免疫每帧递减 3 次；36 次更新约等于 12 个真实帧
+            Projectile.localNPCHitCooldown = 36;
             Projectile.extraUpdates = ExtraUpdates;
             Projectile.DamageType = DamageClass.Magic;
         }
@@ -276,10 +276,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     SpawnCyberParticles();
                 }
             }
-            SHPCModificationSystem.ForEachModuleWhile(Main.player[Projectile.owner], mod => {
-                mod.OnBeamAI(this);
-                return Projectile.active;
-            });
+            SHPCModificationSystem.ForEachModule(Main.player[Projectile.owner], mod => mod.OnBeamAI(this));
         }
 
         private void UpdateTrailHistory() {
@@ -551,6 +548,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     child.ExplodeRadius = ExplodeRadius;
                 }
             }
+            //链跳是形态转换，不应同时结算原束的消亡派生
+            SuppressDeathEffects = true;
             Projectile.Kill();
             Projectile.netUpdate = true;
         }
@@ -568,7 +567,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
 
             //改件消亡分裂
-            if (Projectile.owner == Main.myPlayer && !IsDerived && SplitOnDeath > 0) {
+            if (Projectile.owner == Main.myPlayer && !IsDerived && !SuppressDeathEffects && SplitOnDeath > 0) {
                 SpawnSplitBeams();
             }
             SHPCModificationSystem.ForEachModule(Main.player[Projectile.owner], mod => mod.OnBeamKill(this, timeLeft));
@@ -577,7 +576,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         /// <summary>消亡四周分裂副光束</summary>
         private void SpawnSplitBeams() {
             int n = SplitOnDeath;
-            int dmg = (int)(Projectile.damage * 0.4f);
+            int dmg = (int)(Projectile.damage * 0.6f);
             if (dmg < 1) dmg = 1;
             float baseAngle = Projectile.velocity.ToRotation();
             for (int i = 0; i < n; i++) {

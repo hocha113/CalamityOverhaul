@@ -113,6 +113,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         public bool FlyingAttract;
         /// <summary>蓄力耗蓝倍率</summary>
         public float ManaCostMul = 1f;
+        /// <summary>聚合攻速倍率，ai[2] 同步，以连续曲线影响蓄力效率</summary>
+        public float AttackSpeedMul {
+            get => Projectile.ai[2] > 0f ? Projectile.ai[2] : 1f;
+            set => Projectile.ai[2] = value;
+        }
 
         private OrbState State {
             get => (OrbState)Projectile.ai[0];
@@ -248,8 +253,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (canCharge) {
                 chargeTime++;
             }
-            //右键蓄力只受 ChargeTimeMul；左键攻速不跨模式缩短蓄力
-            float effectiveFrames = MaxChargeFrames * MathF.Max(chargeTimeMul, 0.1f);
+            //攻速继续提升右键效率，但使用平滑倒数曲线，避免旧加算公式在高攻速时突变到 0.1
+            float effectiveFrames = MaxChargeFrames * MathF.Max(chargeTimeMul, 0.1f)
+                / MathF.Sqrt(MathF.Max(AttackSpeedMul, 0.1f));
             chargeRatio = MathHelper.Clamp((float)chargeTime / effectiveFrames, 0f, 1f);
 
             //同步手持弹幕蓄力进度

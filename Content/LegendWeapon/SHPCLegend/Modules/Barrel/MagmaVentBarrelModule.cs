@@ -25,13 +25,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
-            if (beam.IsDerived) return;
-            SpawnVent(beam, target.Bottom, Math.Max(damageDone / 8, 1));
+            SpawnVent(beam, target.Bottom, Math.Max(damageDone / 4, 1));
         }
 
         public override void OnBeamKill(CyberTraceBeamProj beam, int timeLeft) {
             if (beam.IsDerived || beam.SuppressDeathEffects || beam.Projectile.numHits > 0) return;
-            SpawnVent(beam, beam.Projectile.Center, Math.Max(beam.Projectile.damage / 8, 1));
+            SpawnVent(beam, beam.Projectile.Center, Math.Max(beam.Projectile.damage / 4, 1));
         }
 
         private static void SpawnVent(CyberTraceBeamProj beam, Vector2 center, int damage) {
@@ -69,11 +68,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (target.IsWormBody()) {
                 modifiers.FinalDamage *= 0.72f;
             }
-        }
-
-        public override bool? CanHitNPC(NPC target) {
-            Projectile.damage = ((int)(Projectile.damage * 0.96f));
-            return null;
         }
 
         public override void AI() {

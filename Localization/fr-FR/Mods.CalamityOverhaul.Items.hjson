@@ -1584,7 +1584,7 @@ PrecisionOpticModule: {
 	Tooltip:
 		'''
 		Jugement calibré : supprime toute dispersion ; les coups consécutifs sans raté accumulent la calibration
-		À dix charges, tire un rayon du jugement perforant à critique garanti — un raté remet la calibration à zéro
+		À quinze charges, tire un rayon du jugement perforant à critique garanti — un raté remet la calibration à zéro
 		'''
 }
 

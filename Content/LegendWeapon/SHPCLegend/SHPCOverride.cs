@@ -168,13 +168,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                     ModContent.ProjectileType<SHPCChargeHeldProj>(),
                     0, 0f, player.whoAmI);
 
-                //再生成蓄力球，ai1=手持索引
+                //再生成蓄力球，ai1=手持索引，ai2=聚合攻速倍率
                 Vector2 spawnPos = player.Center + velocity.SafeNormalize(Vector2.UnitX) * 70f;
                 int orbDamage = (int)(damage * 2);
                 int orbIdx = Projectile.NewProjectile(source, spawnPos, Vector2.Zero,
                     ModContent.ProjectileType<CyberChargeOrbProj>(),
                     orbDamage, knockback, player.whoAmI,
-                    ai1: heldIdx);
+                    ai1: heldIdx, ai2: ctx.AttackSpeedMul);
                 //localAI传蓄力时间与球速倍率
                 if (orbIdx >= 0 && orbIdx < Main.maxProjectiles) {
                     Main.projectile[orbIdx].localAI[1] = ctx.ChargeTimeMul;

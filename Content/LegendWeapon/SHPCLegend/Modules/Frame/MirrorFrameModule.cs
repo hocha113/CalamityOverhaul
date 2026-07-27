@@ -16,15 +16,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         private readonly HashSet<int> _mirrored = new();
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.DamageMul += -0.3f;
-            ctx.ManaCostMul += 0.6f;
+            ctx.DamageMul += -0.42f;
+            ctx.ManaCostMul += 0.9f;
         }
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
             if (beam.IsDerived) return;
             if (beam.Projectile.owner != Main.myPlayer) return;
             if (!_mirrored.Add(beam.Projectile.whoAmI)) return;
-            int dmg = Math.Max((int)(beam.Projectile.damage * 0.45f), 1);
+            int dmg = Math.Max((int)(beam.Projectile.damage * 0.7f), 1);
             Vector2 mirrorVel = -beam.Projectile.velocity;
             int idx = Projectile.NewProjectile(
                 beam.Projectile.GetSource_FromThis(),

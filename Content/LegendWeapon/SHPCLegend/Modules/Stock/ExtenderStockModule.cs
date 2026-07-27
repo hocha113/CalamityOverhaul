@@ -24,15 +24,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         /// <summary>最小切割距离 px，低于此贴脸不触发</summary>
         internal const float MinTriggerDistance = 380f;
         /// <summary>满规格就地收刀距离 px，飞到即触发</summary>
-        internal const float FullTriggerDistance = 950f;
+        internal const float FullTriggerDistance = 1300f;
         /// <summary>缩水档光刃伤害倍率（×光束面值）</summary>
-        internal const float CleaveDamageMulMin = 0.35f;
+        internal const float CleaveDamageMulMin = 0.5f;
         /// <summary>满规格光刃伤害倍率</summary>
-        internal const float CleaveDamageMulMax = 0.65f;
+        internal const float CleaveDamageMulMax = 0.95f;
         /// <summary>激光收束刀所需的最短持续照射帧数</summary>
-        internal const int LaserMinHoldTicks = 30;
+        internal const int LaserMinHoldTicks = 60;
         /// <summary>激光收束刀伤害倍率（×激光单跳面值）</summary>
-        internal const float LaserCleaveDamageMul = 0.85f;
+        internal const float LaserCleaveDamageMul = 1.25f;
         /// <summary>镜像 CyberPrismLaserProj.MaxRange（共享文件禁改）</summary>
         private const float LaserRangeMirror = 1600f;
         /// <summary>追踪字典的周期清扫间隔（帧）</summary>
@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             //死前先摘档案
             if (!beamTracks.Remove(p.whoAmI, out BeamTrack track)) return;
             if (beam.IsDerived || beam.SuppressDeathEffects || p.owner != Main.myPlayer) return;
-            //Consumed=已收刀；否则 380~950px 缩水刀
+            //Consumed=已收刀；否则 380~1300px 缩水刀
             if (track.Consumed || track.Identity != p.identity || track.Distance < MinTriggerDistance) return;
 
             float charge = MathHelper.Clamp(

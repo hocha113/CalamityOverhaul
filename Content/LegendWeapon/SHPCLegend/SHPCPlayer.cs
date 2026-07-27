@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
 using CalamityOverhaul.Content.TimeFreezes;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         //三套预设
         public Item[][] Presets;
 
-        //超杀层 0-10，击杀叠，随时间衰减
+        //超杀层 0-15，击杀叠，随时间衰减
         public int OverkillStacks;
         //超杀衰减计时
         public int OverkillTimer;
@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 return;
             }
             OverkillStacks--;
-            OverkillTimer = 150;
+            OverkillTimer = 90;
             overkillTimerCarry = 0f;
         }
 

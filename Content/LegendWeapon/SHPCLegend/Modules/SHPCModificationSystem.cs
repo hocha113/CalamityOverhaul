@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
                 mod.Apply(ref ctx);
             }
             if (sp.OverkillStacks > 0) {
-                ctx.DamageMul += sp.OverkillStacks * 0.01f;
+                ctx.DamageMul += sp.OverkillStacks * 0.02f;
             }
             Sanitize(ref ctx);
             return ctx;
@@ -53,23 +53,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
                 }
             }
             return false;
-        }
-
-        /// <summary>遍历已装备改件，action 返回 false 时停止</summary>
-        public static void ForEachModuleWhile(Player player, Func<SHPCModuleItem, bool> action) {
-            if (player == null) {
-                return;
-            }
-            SHPCPlayer sp = player.GetModPlayer<SHPCPlayer>();
-            for (int i = 0; i < SHPCData.SlotCount; i++) {
-                Item m = sp.GetModule(i);
-                if (m == null || m.ModItem is not SHPCModuleItem mod) {
-                    continue;
-                }
-                if (!action(mod)) {
-                    return;
-                }
-            }
         }
 
         /// <summary>遍历已装备改件执行 action</summary>

@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         public override Color TintColor => new(100, 30, 160);
 
         private const int TearInterval = 20;
-        private const float TearDamageRatio = 0.10f;
+        private const float TearDamageRatio = 0.25f;
         private readonly Dictionary<int, int> _tearTimers = new();
 
         public override void Apply(ref ShootContext ctx) {

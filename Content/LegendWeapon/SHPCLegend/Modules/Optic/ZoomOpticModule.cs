@@ -14,7 +14,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         public override Color TintColor => new(180, 220, 255);
 
         private const float LongRangeThreshold = 600f;
-        private const float MaxDistanceBonus = 0.60f;
+        private const float LegacyPeakDistance = 1800f;
+        private const float BeamGrowthAtLegacyPeak = 0.75f;
+        private const float LaserGrowthAtLegacyPeak = 0.54f;
 
         public override void Apply(ref ShootContext ctx) {
             ctx.BeamSpeedMul += 0.6f;
@@ -29,8 +31,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             if (owner == null || !owner.active) return;
             float dist = Vector2.Distance(owner.Center, target.Center);
             if (dist < LongRangeThreshold) return;
-            float bonus = MathHelper.Clamp((dist - LongRangeThreshold) / 600f, 0f, 1f) * MaxDistanceBonus;
-            int extra = Math.Max((int)(damageDone * (0.20f + bonus)), 1);
+            float distanceGrowth = GetDistanceGrowth(dist);
+            int extra = Math.Max((int)(damageDone * (0.35f + distanceGrowth * BeamGrowthAtLegacyPeak)), 1);
             target.SimpleStrikeNPC(extra, hit.HitDirection, false, 0f, hit.DamageType, false, 0f, true);
             SpawnImpactParticles(target.Center);
         }
@@ -43,10 +45,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             if (owner == null || !owner.active) return;
             float dist = Vector2.Distance(owner.Center, target.Center);
             if (dist < LongRangeThreshold) return;
-            float bonus = MathHelper.Clamp((dist - LongRangeThreshold) / 600f, 0f, 1f) * 0.30f;
-            int extra = Math.Max((int)(damageDone * (0.15f + bonus)), 1);
+            float distanceGrowth = GetDistanceGrowth(dist);
+            int extra = Math.Max((int)(damageDone * (0.20f + distanceGrowth * LaserGrowthAtLegacyPeak)), 1);
             target.SimpleStrikeNPC(extra, hit.HitDirection, false, 0f, hit.DamageType, false, 0f, true);
             SpawnImpactParticles(target.Center);
+        }
+
+        /// <summary>距离收益单调递增；1800px 达到旧峰值，之后按对数边际递减</summary>
+        private static float GetDistanceGrowth(float distance) {
+            float normalizedDistance = (distance - LongRangeThreshold)
+                / (LegacyPeakDistance - LongRangeThreshold);
+            return MathF.Log(1f + normalizedDistance) / MathF.Log(2f);
         }
 
         private static void SpawnImpactParticles(Vector2 center) {

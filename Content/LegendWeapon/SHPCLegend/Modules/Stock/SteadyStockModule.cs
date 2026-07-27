@@ -30,16 +30,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         //═════ 可调参数 ═════
         private const float BaseAttackSpeedAdd = -0.10f; //基础攻速代价（沉稳节奏身份）
         private const float BaseDamageAdd = 0.05f;       //基础伤害底盘
-        private const int ChargeFrames = 45;             //空闲蓄满所需帧数（约0.75s）
-        private const int WindowFrames = 100;            //满档稳压窗口时长
-        private const int WarnFrames = 40;               //窗口临尽警示起始帧
+        private const int ChargeFrames = 90;             //空闲蓄满所需帧数（约1.5s）
+        private const int WindowFrames = 70;             //满档稳压窗口时长
+        private const int WarnFrames = 30;               //窗口临尽警示起始帧
         private const int LeakFrames = 22;               //泄压相排空帧数
         private const int IdleCutoffFrames = 180;        //脱战阈值，停蓄压并静默放空
         private const float IdleDrainPerFrame = 0.004f;  //脱战静默放空速率
-        private const float EmpowerMaxBonus = 1.0f;      //满档放电伤害加成（1+1=2×）
+        private const float EmpowerMaxBonus = 2.5f;      //满档放电伤害加成（1+2.5=3.5×）
         private const int FullPierceAdd = 2;             //满档强化束额外穿透
         private const int LaserEmpowerMaxFrames = 150;   //激光倾泻回声窗口帧数
-        private const float LaserEchoRatio = 0.25f;      //激光回声伤害占比
+        private const float LaserEchoRatio = 0.4f;       //激光回声伤害占比
 
         //稳压电金 / 电离青（与 SHPCModSteadyVolt.fx 配色对齐）
         internal static readonly Color VoltGold = new(255, 214, 90);

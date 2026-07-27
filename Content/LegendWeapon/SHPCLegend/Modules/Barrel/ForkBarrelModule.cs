@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override Color TintColor => new(0, 220, 180);
 
         private const int ForkInterval = 50;
-        private const float ForkDamageRatio = 0.25f;
+        private const float ForkDamageRatio = 0.5f;
         private readonly Dictionary<int, int> _timers = new();
 
         public override void Apply(ref ShootContext ctx) {

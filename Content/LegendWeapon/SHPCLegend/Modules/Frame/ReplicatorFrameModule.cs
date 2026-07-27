@@ -13,14 +13,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         public override Color TintColor => new(60, 220, 230);
 
         public override void Apply(ref ShootContext ctx) {
-            ctx.BeamLifeMul += -0.36f;
-            ctx.DamageMul += -0.08f;
-            ctx.ManaCostMul += 0.24f;
+            ctx.BeamLifeMul += -0.5f;
+            ctx.DamageMul += -0.16f;
+            ctx.ManaCostMul += 0.42f;
         }
 
         public override void OnBeamKill(CyberTraceBeamProj beam, int timeLeft) {
             if (beam.IsDerived || beam.SuppressDeathEffects || beam.Projectile.owner != Main.myPlayer) return;
-            int dmg = Math.Max((int)(beam.Projectile.damage * 0.35f), 1);
+            int dmg = Math.Max((int)(beam.Projectile.damage * 0.55f), 1);
             //回响沿原向略减速
             Vector2 vel = beam.Projectile.velocity.SafeNormalize(Vector2.UnitX) * 12f;
             int idx = Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),

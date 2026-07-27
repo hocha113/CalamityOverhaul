@@ -12,14 +12,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>精密瞄具，零散布，连中 10 层射裁决射线必暴贯线，脱靶清零</summary>
+    /// <summary>精密瞄具，零散布，连中 15 层射裁决射线必暴贯线，脱靶清零</summary>
     internal sealed class PrecisionOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;
         //精密狙击红
         public override Color TintColor => new(255, 90, 90);
 
-        private const int CalibrationCap = 10;
+        private const int CalibrationCap = 15;
         private int calibration;
 
         public override void Apply(ref ShootContext ctx) {
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             if (owner == null || !owner.active) return;
 
             Vector2 dir = (throughTarget.Center - owner.Center).SafeNormalize(Vector2.UnitX);
-            int dmg = Math.Max(source.damage * 4, 1);
+            int dmg = Math.Max(source.damage * 5, 1);
             Projectile.NewProjectile(source.GetSource_FromThis(),
                 owner.Center + dir * 30f, dir,
                 ModContent.ProjectileType<SHPCJudgmentRayProj>(),

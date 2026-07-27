@@ -13,7 +13,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         //相位紫
         public override Color TintColor => new(180, 80, 255);
 
-        private int _phantomTimer;
+        private const int TeleportInterval = 30;
+        private readonly System.Collections.Generic.Dictionary<int, int> phantomTimers = [];
 
         public override void Apply(ref ShootContext ctx) {
             ctx.BeamLifeMul += 0.24f;
@@ -22,11 +23,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         }
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
-            if (beam.IsDerived || beam.Projectile.numUpdates != -1) return;
-            _phantomTimer++;
-            if (_phantomTimer < 90) return;
-            _phantomTimer = 0;
-            if (beam.Projectile.owner != Main.myPlayer) return;
+            if (beam.IsDerived || beam.Projectile.owner != Main.myPlayer
+                || beam.Projectile.numUpdates != -1) return;
+            int id = beam.Projectile.whoAmI;
+            int timer = phantomTimers.TryGetValue(id, out int value) ? value + 1 : 1;
+            if (timer < TeleportInterval) {
+                phantomTimers[id] = timer;
+                return;
+            }
+            phantomTimers[id] = 0;
             NPC target = beam.Projectile.Center.FindClosestNPC(300f, false, true);
             if (target == null) return;
             Vector2 dir = (target.Center - beam.Projectile.Center).SafeNormalize(Vector2.UnitX);
@@ -40,6 +45,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                     PRTLoader.NewParticle<PRT_CyberSquare>(beam.Projectile.Center, vel, new Color(200, 100, 255), Main.rand.NextFloat(0.8f, 1.8f)).Configure(new Color(100, 40, 200), Main.rand.Next(15, 30));
                 }
             }
+        }
+
+        public override void OnBeamKill(CyberTraceBeamProj beam, int timeLeft) {
+            phantomTimers.Remove(beam.Projectile.whoAmI);
         }
     }
 }
