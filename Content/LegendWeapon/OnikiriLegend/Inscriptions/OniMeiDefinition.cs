@@ -1,5 +1,4 @@
 using Terraria.Localization;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 {
@@ -19,14 +18,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
     /// 效果经 <see cref="ModifyCombatProfile"/> 汇入 <see cref="OniMeiCombatProfile"/>，
     /// 原铭「鬼切」不覆写=严格基准；Key 从此稳定，改名即断档
     /// </summary>
-    public abstract class OniMeiDefinition : ILocalizedModType
+    public abstract class OniMeiDefinition
     {
-        public Mod Mod => CWRMod.Instance;
-        /// <summary>内部名，本地化键第三段</summary>
-        public string Name => GetType().Name;
-        public string FullName => Mod.Name + "/" + Name;
-        public string LocalizationCategory => "OniMei";
-
         /// <summary>稳定键，存档/网络据此挂接，默认类型名</summary>
         public virtual string Key => GetType().Name;
         /// <summary>名册排序，越小越前</summary>
@@ -48,12 +41,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         /// <summary>物品悬浮短摘要（赋效;代价）</summary>
         public LocalizedText Summary { get; private set; }
 
-        internal void LoadLocalization() {
-            DisplayName = this.GetLocalization("DisplayName", () => "???");
-            Origin = this.GetLocalization("Origin", () => "...");
-            Power = this.GetLocalization("Power", () => "...");
-            Burden = this.GetLocalization("Burden", () => "———");
-            Summary = this.GetLocalization("Summary", () => "...");
+        internal bool HasLocalization
+            => DisplayName != null && Origin != null && Power != null && Burden != null && Summary != null;
+
+        /// <summary>铭文案由同 Key 拓本物品统一注册，本定义只保留只读视图</summary>
+        internal void BindLocalization(OniMeiRubbingItem rubbing) {
+            DisplayName = rubbing.DisplayName;
+            Origin = rubbing.Origin;
+            Power = rubbing.Power;
+            Burden = rubbing.Burden;
+            Summary = rubbing.Tooltip;
         }
 
         //====效果====

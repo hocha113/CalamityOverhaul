@@ -2579,208 +2579,185 @@ WraithDebugTool: {
 }
 
 OniMeiRubbingHigekiri: {
-	DisplayName: 旧刃拓片
-	Tooltip:
-		'''
-		纸面上拓下一道旧刃纹
-		拿到改铭台，便可凿进刀茎
-		'''
+	DisplayName: 髭切
+	Tooltip: 残血终结增强，斩杀返势；面板伤害 -10%
+	Origin: 试斩那夜首级落地，颔下须髯犹连刃上。旧名由此而来
+	Power: 「断首」残心与灭世一闪对生命低于35%的目标追加随伤势递增的终结伤害（至多+50%，首领+25%）；以此二式了结目标时，每式返还10点架势
+	Burden: 面板伤害 -10%。目标健壮时，这把刀比原铭更钝
 }
 
 OniMeiRubbingOnikiri: {
-	DisplayName: 本铭拓片
-	Tooltip:
-		'''
-		出厂本铭的纸样
-		拿到改铭台，便可凿回刀茎
-		'''
+	DisplayName: 鬼切
+	Tooltip: 原铭，维持原有刀性，无赋效亦无代价
+	Origin: 一条戾桥，断腕的鬼没敢回来讨。此名自此钉在茎上
+	Power: 原铭。维持这把刀现有的一切，不增一分，不减一毫
+	Burden: 无
 }
 
 OniMeiRubbingShishinoko: {
-	DisplayName: 夜吼金箔
-	Tooltip:
-		'''
-		箔面压着一声未散的吼
-		拿到改铭台，便可凿进刀茎
-		'''
+	DisplayName: 狮子之子
+	Tooltip: 完整五连第五拍合颚刃波；连段变慢 10%
+	Origin: 夜半置于枕边，刀作狮吼。金字象嵌，以荣其名
+	Power: 「狮势」不被疾走或特殊技打断地连续完成五段连斩，第五拍狮口合颚，追加两道交叉刃波（合计约四成一斩之力）
+	Burden: 连段排拍间隔 +10%。吼声要蓄，刀就得慢
 }
 
 OniMeiRubbingTomokiri: {
-	DisplayName: 咎影纸片
-	Tooltip:
-		'''
-		纸角像被谁误裁过一刀
-		拿到改铭台，便可凿进刀茎
-		'''
-}
-
-OniMeiRubbingChihi: {
-	DisplayName: 血渍纸样
-	Tooltip:
-		'''
-		纸边还带着一点腥
-		拿到改铭台，便可凿进血槽
-		'''
+	DisplayName: 友切
+	Tooltip: 疾走取消留延迟斩影；承伤 +10%，积咎耗气
+	Origin: 与友刀相试，误断其身。咎名入茎，刀性自此暴烈
+	Power: 「咎影」以神威疾走取消连段时，原地留下一道约三成五之力的延迟斩影，滞拍后咬合
+	Burden: 手持期间承受的伤害 +10%；每道斩影积一层「咎」（至多三层），每层令下次疾走多耗6点气力，残心命中后偿清
 }
 
 OniMeiRubbingKazehi: {
-	DisplayName: 顺风布札
-	Tooltip:
-		'''
-		薄布上压着一道轻痕
-		拿到改铭台，便可凿进血槽位旁的风路
-		'''
+	DisplayName: 风樋
+	Tooltip: 身法省气；墨痕伤害 -25%
+	Origin: 樋开如风道，挥刀过处只闻风声，不见刀影
+	Power: 「顺风」神威疾走气力消耗 -25%，樱流巡航耗气 -30%
+	Burden: 疾走墨痕伤害 -25%。樋为轻身而开，不为杀伐
+}
+
+OniMeiRubbingChihi: {
+	DisplayName: 血樋
+	Tooltip: 命中回气增强；自然回气减半
+	Origin: 此樋不为轻身，为放血。开锋人如是说
+	Power: 「回流」连段每拍首次命中额外回气 +2，残心命中再回气 +8
+	Burden: 自然回气减半，招式消耗后的回气延迟 +0.4秒。刀不沾血，气就不回
 }
 
 OniMeiRubbingFudo: {
-	DisplayName: 护身梵札
-	Tooltip:
-		'''
-		布札上压着一笔站住的意思
-		拿到改铭台，便可凿进雕位
-		'''
+	DisplayName: 不动
+	Tooltip: 承诺动作中耗架势挡伤；架势获取 -20%
+	Origin: 以梵字カーン笔意入雕，不动尊坐镇刃侧，背负火焰
+	Power: 「不动护」连段重拍、残心或处决中受击时，消耗20点架势削减该击40%伤害并免除击退（冷却约2秒）；肢解的反噬不受庇护
+	Burden: 常规架势获取 -20%。护身的力，从蓄势里扣
 }
 
 OniMeiRubbingKurikara: {
-	DisplayName: 缠龙火笺
-	Tooltip:
-		'''
-		笺面还留着一点烫
-		拿到改铭台，便可凿进雕位
-		'''
+	DisplayName: 倶利伽罗
+	Tooltip: 处决后点燃龙火连段；气力上限 -20
+	Origin: 龙缠剑而欲吞之。刀身雕的古题，金鳞入缝
+	Power: 「龙火回环」灭世一闪或终结乱舞之后点燃雕纹；十秒内完成一套五段连斩，第五拍释放一道约四成之力的龙火回环斩
+	Burden: 气力上限 100 → 80。龙盘着的那截刀身，气走不通
 }
 
 OniMeiRubbingTessetsu: {
-	DisplayName: 铁截拓片
-	Tooltip:
-		'''
-		纸面上拓着一截拆台的钝痛快
-		拿到改铭台，便可凿进刀茎
-		'''
+	DisplayName: 铁截
+	Tooltip: 破甲一截；血肉钝
+	Origin: 名唬人，刃却像一截铁。拆台的旧话钉进茎里
+	Power: 「截金」对钢铁/装甲体的连段首击多一截破
+	Burden: 砍血肉时更像钝铁。面板伤害 -12%
 }
 
 OniMeiRubbingKyushu: {
-	DisplayName: 旧首拓片
-	Tooltip:
-		'''
-		头还是旧的意思压在纸上
-		拿到改铭台，便可凿进刀茎
-		'''
+	DisplayName: 旧首
+	Tooltip: 专收头；杂鱼一般
+	Origin: 头还是旧的。断得干脆，不必换名吓唬谁
+	Power: 「取首」对主体/头颅的残血终结更深
+	Burden: 清杂鱼时赋效冷清，一般目标略钝
 }
 
 OniMeiRubbingIkiai: {
-	DisplayName: 合拍纸片
-	Tooltip:
-		'''
-		纸角像憋着一口气
-		拿到改铭台，便可凿进刀茎
-		'''
+	DisplayName: 息合
+	Tooltip: 第五拍甩弧剑气；连段略慢
+	Origin: 对视那一瞬憋住的气，合拍落刃
+	Power: 「吐息」完整五连第五拍沿瞄准甩出一道行进弧形剑气（绯红月牙，穿透每敌一次）
+	Burden: 连段略慢
 }
 
 OniMeiRubbingKyoko: {
-	DisplayName: 空缺金箔
-	Tooltip:
-		'''
-		箔面空着一声吼
-		拿到改铭台，便可凿进刀茎
-		'''
+	DisplayName: 虚吼
+	Tooltip: 空场威压；贴身失焦
+	Origin: 吼进空里，回声找不到落点
+	Power: 「空鸣」空场时周期吼出墨压涟漪，波及之敌脚下一滞；远离再近的一刀更重
+	Burden: 贴身砍太密会失焦变钝
 }
 
 OniMeiRubbingKarikiri: {
-	DisplayName: 假步纸片
-	Tooltip:
-		'''
-		学得像的那一步拓在纸上
-		拿到改铭台，便可凿进刀茎
-		'''
+	DisplayName: 假切
+	Tooltip: 残影骗伤；真身更险
+	Origin: 学得像，越像越假。残影入茎
+	Power: 「假身」疾走起步留下残影，替真身吸收一次接触或一层弹伤
+	Burden: 影在时真身更脆、疾走更费；影碎后短真空更险
 }
 
 OniMeiRubbingMokukiri: {
-	DisplayName: 沉气纸片
-	Tooltip:
-		'''
-		空气沉下去的感觉还留着
-		拿到改铭台，便可凿进刀茎
-		'''
+	DisplayName: 默切
+	Tooltip: 疾走结束后沉气一刀；连续疾走时难以兑现
+	Origin: 空气沉下去了。习惯了，咎还在
+	Power: 「默杀」神威疾走自然结束后的短窗内，下一刀更沉
+	Burden: 永动疾走时赋效不亮
 }
 
 OniMeiRubbingKogehi: {
-	DisplayName: 避热布札
-	Tooltip:
-		'''
-		别伸脚的意思缝在布上
-		拿到改铭台，便可凿进樋位
-		'''
+	DisplayName: 焦樋
+	Tooltip: 疾走留下灼地；刀击伤害 -8%
+	Origin: 烫滩旁别伸脚。樋为躲开热而开
+	Power: 「焦痕」疾走路径留下短时灼地
+	Burden: 刀击伤害 -8%，须以走位留下的灼地补足
 }
 
 OniMeiRubbingKanhi: {
-	DisplayName: 清静布札
-	Tooltip:
-		'''
-		耳朵歇一会儿的薄布
-		拿到改铭台，便可凿进樋位
-		'''
+	DisplayName: 闲樋
+	Tooltip: 脱战快速回气；疾走与樱流耗气 +12%
+	Origin: 门口清静，耳朵歇一会儿
+	Power: 「闲息」脱战短歇后气力快速回一轮
+	Burden: 疾走与樱流耗气 +12%。清静回气，要从行动上还
 }
 
 OniMeiRubbingTodohi: {
-	DisplayName: 黏渍纸样
-	Tooltip:
-		'''
-		黏是黏了点，纸边还贴着
-		拿到改铭台，便可凿进樋位
-		'''
+	DisplayName: 滞樋
+	Tooltip: 黏敌；再走钝半拍
+	Origin: 黏是黏了点。沾着转，脱开就滞
+	Power: 「滞缚」命中把墨黏上脚，目标短暂难走（巨物略韧）
+	Burden: 疾走过后，下一步疾走慢半拍才备好
 }
 
 OniMeiRubbingShiorihi: {
-	DisplayName: 败花纸样
-	Tooltip:
-		'''
-		剪败花的那一下拓下来
-		拿到改铭台，便可凿进樋位
-		'''
+	DisplayName: 谢樋
+	Tooltip: 了结溅花；自然回气 -15%，空残心耗气
+	Origin: 剪败花，为开锋，不为好看
+	Power: 「剪落」击杀或残心了结时刃花溅向周围残血
+	Burden: 自然回气 -15%；空残心额外消耗2点气力
 }
 
 OniMeiRubbingShiohi: {
-	DisplayName: 潮痕纸样
-	Tooltip:
-		'''
-		潮过夜的湿痕还在
-		拿到改铭台，便可凿进樋位
-		'''
+	DisplayName: 潮樋
+	Tooltip: 合潮受益；错拍亏
+	Origin: 潮痕过夜。湿着贴脸才回
+	Power: 「潮拍」赶上潮汐节拍的命中更疼或更回气
+	Burden: 总错拍则不如素刀
 }
 
 OniMeiRubbingShibori: {
-	DisplayName: 麻手梵札
-	Tooltip:
-		'''
-		麻着手也护一下的意思
-		拿到改铭台，便可凿进雕位
-		'''
+	DisplayName: 痺雕
+	Tooltip: 挡成功反麻；架势贵
+	Origin: 麻着手也护一下。刀也疼
+	Power: 「痺反」护身或穿身格挡成功反麻来手。麻着的手脚更慢，打人也不疼
+	Burden: 架势账更苛
 }
 
 OniMeiRubbingChinmei: {
-	DisplayName: 耳鸣梵札
-	Tooltip:
-		'''
-		耳嗡时先站住的布札
-		拿到改铭台，便可凿进雕位
-		'''
+	DisplayName: 镇鸣
+	Tooltip: 抗弹站稳；近搏一般
+	Origin: 耳嗡的时候，先镇住再动
+	Power: 「镇鸣」受弹时更站得住，弹击退大减、弹伤略减
+	Burden: 纯近战肉搏时铭偏闲，架势获取 -15%
 }
 
 OniMeiRubbingAshidome: {
-	DisplayName: 站住梵札
-	Tooltip:
-		'''
-		站住别晃，压在札上
-		拿到改铭台，便可凿进雕位
-		'''
+	DisplayName: 止足
+	Tooltip: 站住开大；跑动无
+	Origin: 站住别晃。脚定了，护才在
+	Power: 「止足」立定片刻后，下一次承诺大招更重
+	Burden: 边跑边砍几乎吃不到
 }
 
 OniMeiRubbingYoen: {
-	DisplayName: 烤箱火笺
-	Tooltip:
-		'''
-		刃烫余温还留在笺面
-		拿到改铭台，便可凿进雕位
-		'''
+	DisplayName: 余炎
+	Tooltip: 处决留灼地；气/走有价
+	Origin: 烤箱余温还在刃上。火熄了，烫没熄
+	Power: 「余烬」处决后留下一片持续灼地，无须再打满五连
+	Burden: 气略紧，场在时疾走更烫更费
 }

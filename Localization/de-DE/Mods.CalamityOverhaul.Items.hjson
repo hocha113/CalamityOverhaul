@@ -2509,208 +2509,185 @@ WraithDebugTool: {
 }
 
 OniMeiRubbingHigekiri: {
-	// DisplayName: Old Blade Rubbing
-	/* Tooltip:
-		'''
-		An old blade mark pressed onto paper
-		Take it to the inscription stand to carve it into the tang
-		''' */
+	// DisplayName: Higekiri
+	// Tooltip: Stronger finishers on low-life targets, kills refund stance; weapon damage -10%
+	// Origin: The night of the test cut, the head fell with the beard still clinging to the edge — hence the old name
+	// Power: Beard-Cutter: Zanshin and the World-Razing Flash deal escalating finisher damage to targets below 35% life (up to +50%, +25% vs bosses); finishing a target with either art refunds 10 stance, once per strike
+	// Burden: Weapon damage -10% — against the healthy, this blade bites duller than the original name
 }
 
 OniMeiRubbingOnikiri: {
-	// DisplayName: True-Name Rubbing
-	/* Tooltip:
-		'''
-		A paper pattern of the factory true name
-		Take it to the inscription stand to carve it back into the tang
-		''' */
+	// DisplayName: Onikiri
+	// Tooltip: Original inscription: keeps the blade as-is, no boon, no price
+	// Origin: At Ichijo-Modoribashi, the oni that lost its arm never dared come back for it. The name has been nailed to the tang ever since
+	// Power: The original inscription. The blade stays exactly as it is — nothing granted, nothing taken
+	// Burden: ———
 }
 
 OniMeiRubbingShishinoko: {
-	// DisplayName: Night-Roar Gold Leaf
-	/* Tooltip:
-		'''
-		A roar still pressed into the foil
-		Take it to the inscription stand to carve it into the tang
-		''' */
+	// DisplayName: Shishi-no-ko
+	// Tooltip: Jaw-waves crown a full five-beat combo; combo 10% slower
+	// Origin: Left by the pillow at midnight, the blade roared like a lion. Inlaid in gold, to honor the name
+	// Power: Lion's Roar: complete five combo beats without dash or art interruption and the fifth beat roars — two converging jaw-waves (about 40% of a slash in total)
+	// Burden: Combo beat interval +10% — a roar must be drawn in before it is let out
 }
 
 OniMeiRubbingTomokiri: {
-	// DisplayName: Guilt-Shadow Scrap
-	/* Tooltip:
-		'''
-		The corner looks like it was cut by mistake
-		Take it to the inscription stand to carve it into the tang
-		''' */
-}
-
-OniMeiRubbingChihi: {
-	// DisplayName: Bloodstained Paper Pattern
-	/* Tooltip:
-		'''
-		The paper edge still smells faintly of iron
-		Take it to the inscription stand to carve it into the blood groove
-		''' */
+	// DisplayName: Tomokiri
+	// Tooltip: Dash-cancels leave phantom slashes; +10% damage taken, Guilt taxes dashes
+	// Origin: Crossed with a friendly blade in trial, it cut the friend in two. A name of blame, chiseled into the tang; the sword has run violent since
+	// Power: Friend-Cutter: cancelling a combo with the Kamui flash step leaves a delayed phantom slash (about 35% power) that bites shut after a beat
+	// Burden: Damage taken +10% while held; each phantom adds a layer of Guilt (max 3), each making the next flash step cost 6 more vigor — repaid on a Zanshin hit
 }
 
 OniMeiRubbingKazehi: {
-	// DisplayName: Tailwind Cloth Talisman
-	/* Tooltip:
-		'''
-		A light mark pressed into thin cloth
-		Take it to the inscription stand to carve it into the groove of wind
-		''' */
+	// DisplayName: Kaze-hi
+	// Tooltip: Cheaper footwork and flight; flash mark damage -25%
+	// Origin: A groove opened like a wind channel; where the blade passes, only wind is heard, no blade is seen
+	// Power: Wind-Rider: flash step vigor cost -25%, sakura flight drain -30%
+	// Burden: Flash mark damage -25% — the groove was cut for lightness, not slaughter
+}
+
+OniMeiRubbingChihi: {
+	// DisplayName: Chi-hi
+	// Tooltip: Stronger on-hit vigor; natural regen halved
+	// Origin: This groove is not for lightness, but for letting blood — so said the one who opened the edge
+	// Power: Bloodletting: the first combo hit of each beat restores +2 extra vigor, a Zanshin hit restores +8
+	// Burden: Natural vigor regen halved, regen delay +0.4s after spending — no blood on the edge, no breath returned
 }
 
 OniMeiRubbingFudo: {
-	// DisplayName: Ward Sanskrit Talisman
-	/* Tooltip:
-		'''
-		A mark that means stand your ground
-		Take it to the inscription stand to carve it into the carving seat
-		''' */
+	// DisplayName: Fudo
+	// Tooltip: Spend stance to stand through committed strikes; stance gain -20%
+	// Origin: Carved in the brushwork of the seed syllable Kan — the Immovable One sits by the edge, flames at his back
+	// Power: Immovable: when struck during heavy combo beats, Zanshin or executions, spend 20 stance to cut that blow's damage by 40% and ignore its knockback (about 2s cooldown); the dismemberment backlash is never shielded
+	// Burden: Stance gain -20% — the guarding strength is skimmed from your build-up
 }
 
 OniMeiRubbingKurikara: {
-	// DisplayName: Coiling-Dragon Fire Slip
-	/* Tooltip:
-		'''
-		The slip still holds a little heat
-		Take it to the inscription stand to carve it into the carving seat
-		''' */
+	// DisplayName: Kurikara
+	// Tooltip: Executions ignite a dragonfire follow-up combo; vigor cap -20
+	// Origin: The dragon coils about the sword and would swallow it — an old horimono subject, its scales inlaid in gold
+	// Power: Dragon-Coil: after the World-Razing Flash or the Finale, the carving ignites; finish a five-beat combo within ten seconds and the fifth beat looses a coiling dragonfire slash (about 40% power)
+	// Burden: Vigor cap 100 → 80 — where the dragon coils, breath cannot pass
 }
 
 OniMeiRubbingTessetsu: {
-	DisplayName: Iron-Cut Rubbing
-	Tooltip:
-		'''
-		A blunt scrap of iron pressed onto paper
-		Take it to the inscription stand to carve it into the tang
-		'''
+	// DisplayName: Tessetsu
+	// Tooltip: Sever steel; dull on flesh
+	// Origin: A grand name for a scrap of iron — nailed into the tang as a joke that stuck
+	// Power: Iron-Cut: first combo hit of a beat deals extra damage to steel/armored foes
+	// Burden: Feels like dull iron on flesh — weapon damage -12%
 }
 
 OniMeiRubbingKyushu: {
-	DisplayName: Old-Head Rubbing
-	Tooltip:
-		'''
-		"The head is still old" pressed into paper
-		Take it to the inscription stand to carve it into the tang
-		'''
+	// DisplayName: Kyushu
+	// Tooltip: Heads only; weak on trash
+	// Origin: The head is still the old one. Cut clean; no need for a scare-name
+	// Power: Head-Hunt: deeper low-life finishers on the body or head
+	// Burden: Cold on trash clears; ordinary targets feel dull
 }
 
 OniMeiRubbingIkiai: {
-	DisplayName: Beat-Match Scrap
-	Tooltip:
-		'''
-		A scrap that feels like a held breath
-		Take it to the inscription stand to carve it into the tang
-		'''
+	// DisplayName: Ikiai
+	// Tooltip: Fifth-beat arc-qi; slightly slower combo
+	// Origin: The breath you held while staring — then the blades met on the beat
+	// Power: Breath-Wave: the fifth beat of a full combo flings a traveling crimson arc of sword-qi (a flying crescent that pierces each foe once)
+	// Burden: Combo slightly slower
 }
 
 OniMeiRubbingKyoko: {
-	DisplayName: Hollow Gold Leaf
-	Tooltip:
-		'''
-		A roar missing its place, pressed into foil
-		Take it to the inscription stand to carve it into the tang
-		'''
+	// DisplayName: Kyoko
+	// Tooltip: Empty-space pressure; close-range blur
+	// Origin: A roar into empty air; the echo finds no place to land
+	// Power: Hollow-Roar: in empty space, periodically roars out a ripple of ink pressure that stalls the footing of foes it touches; the first cut after leaving and returning hits harder
+	// Burden: Dense close-range chopping loses focus and dulls
 }
 
 OniMeiRubbingKarikiri: {
-	DisplayName: False-Step Scrap
-	Tooltip:
-		'''
-		A step learned too well, pressed onto paper
-		Take it to the inscription stand to carve it into the tang
-		'''
+	// DisplayName: Karikiri
+	// Tooltip: Decoy eats a hit; true body is more exposed
+	// Origin: Learned so well it turned fake. An afterimage enters the tang
+	// Power: False Body: flash-step start leaves a decoy that eats one contact or one projectile hit
+	// Burden: While the decoy lasts you are softer and dashes cost more; after it shatters, a short vacuum window
 }
 
 OniMeiRubbingMokukiri: {
-	DisplayName: Heavy-Air Scrap
-	Tooltip:
-		'''
-		The sunk air still sits on the page
-		Take it to the inscription stand to carve it into the tang
-		'''
+	// DisplayName: Mokukiri
+	// Tooltip: A heavy cut after a dash ends; hard to cash in while chaining dashes
+	// Origin: The air sank. You got used to it. The guilt stayed
+	// Power: Silent-Kill: the next cut during the short window after a flash step naturally ends hits much harder
+	// Burden: Never lights while you flash endlessly
 }
 
 OniMeiRubbingKogehi: {
-	DisplayName: Heat-Avoid Talisman
-	Tooltip:
-		'''
-		"Don't put your foot in" stitched into cloth
-		Take it to the inscription stand to carve it into the groove
-		'''
+	// DisplayName: Koge-hi
+	// Tooltip: Flash steps leave burning ground; weapon damage -8%
+	// Origin: Do not put your foot in the hot shallows. The groove is for stepping clear
+	// Power: Scorch-Trail: the flash-step path leaves brief burning ground
+	// Burden: Weapon damage -8%; make up the loss with burning ground left by movement
 }
 
 OniMeiRubbingKanhi: {
-	DisplayName: Quiet-Ear Talisman
-	Tooltip:
-		'''
-		Thin cloth for letting the ears rest
-		Take it to the inscription stand to carve it into the groove
-		'''
+	// DisplayName: Kan-hi
+	// Tooltip: Faster out-of-combat regen; dash and sakura costs +12%
+	// Origin: Quiet by the door. Let the ears rest
+	// Power: Quiet-Breath: after a short rest out of contact, vigor regenerates much faster
+	// Burden: Dash and sakura cruise vigor costs +12% — quiet recovery is repaid in motion
 }
 
 OniMeiRubbingTodohi: {
-	DisplayName: Sticky Stain Pattern
-	Tooltip:
-		'''
-		A bit sticky; the edge still clings
-		Take it to the inscription stand to carve it into the groove
-		'''
+	// DisplayName: Todo-hi
+	// Tooltip: Snare foes; dash re-arms slower
+	// Origin: A bit sticky. Keep contact to turn; break off and it stalls
+	// Power: Sticky-Bind: hits ink-snare the target's footing, briefly slowing it (great beasts resist somewhat)
+	// Burden: After a dash, the next dash takes half a beat longer to ready
 }
 
 OniMeiRubbingShiorihi: {
-	DisplayName: Spent-Flower Pattern
-	Tooltip:
-		'''
-		The cut that trimmed a spent bloom
-		Take it to the inscription stand to carve it into the groove
-		'''
+	// DisplayName: Shiori-hi
+	// Tooltip: Finish splash; natural regen -15%, empty Zanshin costs vigor
+	// Origin: Cut the spent flower to open the edge — not for looks
+	// Power: Petal-Prune: kills and Zanshin finishes splash a small cut toward nearby low life
+	// Burden: Natural vigor regen -15%; an empty Zanshin costs 2 extra vigor
 }
 
 OniMeiRubbingShiohi: {
-	DisplayName: Tide-Mark Pattern
-	Tooltip:
-		'''
-		Overnight damp still on the paper
-		Take it to the inscription stand to carve it into the groove
-		'''
+	// DisplayName: Shio-hi
+	// Tooltip: On-tide reward; off-beat loss
+	// Origin: Tide marks overnight. Wet contact feeds the return
+	// Power: Tide-Beat: hits that catch the tide window return more vigor (or sting more)
+	// Burden: Constant off-beat chopping underperforms a bare blade
 }
 
 OniMeiRubbingShibori: {
-	DisplayName: Numb-Hand Charm
-	Tooltip:
-		'''
-		Guard even with numb hands
-		Take it to the inscription stand to carve it into the carving slot
-		'''
+	// DisplayName: Shibori
+	// Tooltip: Parry numbs; stance costly
+	// Origin: Guard even with numb hands. The blade hurts too
+	// Power: Numb-Counter: a successful guard or dash-body parry numbs the attacker — numbed limbs move slower and strike softer
+	// Burden: Stance economy is harsher
 }
 
 OniMeiRubbingChinmei: {
-	DisplayName: Ear-Buzz Charm
-	Tooltip:
-		'''
-		A charm for standing still when the ears ring
-		Take it to the inscription stand to carve it into the carving slot
-		'''
+	// DisplayName: Chinmei
+	// Tooltip: Anti-projectile stance; weak in brawls
+	// Origin: When the ears buzz, settle first, then move
+	// Power: Quell: stand firmer under projectiles — less knockback, slightly less projectile damage
+	// Burden: Quiet in pure melee; stance gain -15%
 }
 
 OniMeiRubbingAshidome: {
-	DisplayName: Planted-Feet Charm
-	Tooltip:
-		'''
-		"Don't sway" pressed into the charm
-		Take it to the inscription stand to carve it into the carving slot
-		'''
+	// DisplayName: Ashidome
+	// Tooltip: Plant then finish; no run-cut
+	// Origin: Stand still. Guard lives where the feet stop
+	// Power: Planted-Step: after a brief plant, the next committed finisher hits harder
+	// Burden: Running while cutting almost never pays
 }
 
 OniMeiRubbingYoen: {
-	DisplayName: Oven-Ember Note
-	Tooltip:
-		'''
-		Blade-heat still on the note
-		Take it to the inscription stand to carve it into the carving slot
-		'''
+	// DisplayName: Yoen
+	// Tooltip: Execute leaves burn; vigor/dash priced
+	// Origin: Oven heat still on the edge. Fire out; burn not gone
+	// Power: Ember-Field: after an execution, lasting burn ground remains — no full combo required
+	// Burden: Slightly tighter vigor; dash costs more while the field lives
 }

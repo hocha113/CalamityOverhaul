@@ -46,9 +46,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                     CWRMod.Instance.Logger.Error($"[OniMeiRegistry] duplicate Key '{definition.Key}' from {definition.GetType().FullName}, skipped");
                     continue;
                 }
-                definition.LoadLocalization();
                 all.Add(definition);
                 byKey[definition.Key] = definition;
+                OniMeiRubbingItem.TryBindLocalization(definition);
+            }
+        }
+
+        void ICWRLoader.SetupData() {
+            foreach (OniMeiDefinition definition in all) {
+                if (OniMeiRubbingItem.TryBindLocalization(definition) && definition.HasLocalization) {
+                    continue;
+                }
+                CWRMod.Instance.Logger.Error(
+                    $"[OniMeiRegistry] no rubbing localization source registered for Key '{definition.Key}'");
             }
         }
 

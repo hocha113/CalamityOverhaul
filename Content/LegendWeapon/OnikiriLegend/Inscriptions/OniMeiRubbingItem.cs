@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
@@ -19,15 +20,47 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         /// <summary>绑定铭 Key，须与 <see cref="OniMeiDefinition.Key"/> 一致</summary>
         public abstract string MeiKey { get; }
 
+        /// <summary>铭的来历残句，由物品本地化域统一注册</summary>
+        public LocalizedText Origin { get; private set; }
+        /// <summary>铭的实际赋效说明，由物品本地化域统一注册</summary>
+        public LocalizedText Power { get; private set; }
+        /// <summary>铭的实际负担说明，由物品本地化域统一注册</summary>
+        public LocalizedText Burden { get; private set; }
+
         public override string Texture => CWRConstant.VaultPlaceholder2;
 
         private static readonly Dictionary<string, int> keyToType = [];
+        private static readonly Dictionary<string, OniMeiRubbingItem> keyToItem = [];
 
-        public override void SetStaticDefaults() {
+        public sealed override void SetStaticDefaults() {
             keyToType[MeiKey] = Type;
+            keyToItem[MeiKey] = this;
+            if (OniMeiRegistry.TryGet(MeiKey, out OniMeiDefinition definition)) {
+                definition.BindLocalization(this);
+            }
+        }
+
+        public override void Unload() {
+            Origin = null;
+            Power = null;
+            Burden = null;
+            keyToType.Clear();
+            keyToItem.Clear();
+        }
+
+        /// <summary>把定义绑定到同 Key 拓本的官方物品本地化入口</summary>
+        internal static bool TryBindLocalization(OniMeiDefinition definition) {
+            if (definition == null || !keyToItem.TryGetValue(definition.Key, out OniMeiRubbingItem rubbing)) {
+                return false;
+            }
+            definition.BindLocalization(rubbing);
+            return true;
         }
 
         public override void SetDefaults() {
+            Origin ??= this.GetLocalization(nameof(Origin), () => "...");
+            Power ??= this.GetLocalization(nameof(Power), () => "...");
+            Burden ??= this.GetLocalization(nameof(Burden), () => "———");
             Item.width = 32;
             Item.height = 32;
             Item.maxStack = 1;
@@ -36,6 +69,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             if (OniMeiRegistry.TryGet(MeiKey, out OniMeiDefinition def) && def.IsGoldTier) {
                 Item.rare = ItemRarityID.Yellow;
             }
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            tooltips.Add(new TooltipLine(Mod, "OniMeiOrigin", Origin.Value) {
+                OverrideColor = new Color(146, 137, 130),
+            });
+            tooltips.Add(new TooltipLine(Mod, "OniMeiPower", Power.Value) {
+                OverrideColor = new Color(198, 155, 112),
+            });
+            tooltips.Add(new TooltipLine(Mod, "OniMeiBurden", Burden.Value) {
+                OverrideColor = new Color(174, 104, 104),
+            });
         }
 
         public override void UpdateInventory(Player player) {
