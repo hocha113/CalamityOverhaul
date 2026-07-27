@@ -541,7 +541,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
                 SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -0.62f, Volume = 0.55f, MaxInstances = 1 }, GetCenter());
             }
-            CrimsonImpactFX.PushImpact(GetCenter(), MathF.Min(0.02f + marked.Count * 0.008f, 0.07f));
+            //齐裂确认走Bloom,闪步高频不配闪屏
+            CrimsonImpactFX.PushAmbience(GetCenter(), MathF.Min(0.16f + marked.Count * 0.03f, 0.30f));
             Owner.CWR().GetScreenShake(MathF.Min(3f + marked.Count * 0.8f, 8f));
         }
 
@@ -661,7 +662,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         /// <summary>出发点墨爆、黑红墨浪 + 碎晶 + 一帧白闪、"人从墨里挣脱出去"</summary>
         private void SpawnOriginInkBurst() {
-            CrimsonImpactFX.PushImpact(GetCenter(), 0.02f);
             if (Main.dedServ) {
                 return;
             }

@@ -207,7 +207,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             if (Main.dedServ) {
                 return;
             }
-            CrimsonImpactFX.PushImpact(Projectile.Center, 0.02f);
+            //群痕碎裂只抬Bloom,白闪留给断世本体
+            CrimsonImpactFX.PushAmbience(Projectile.Center, 0.28f);
 
             OFR.BladeState st = ComposeState();
             Vector2 perp = (BladeAngle + MathHelper.PiOver2).ToRotationVector2();

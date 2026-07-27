@@ -9,10 +9,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
     /// <summary>
     /// 屏幕级演出状态(仅客户端),冲击白闪 + Bloom<br/>
     /// 弹幕侧 Push 推高,渲染端 <see cref="Update"/> 衰减,弹幕消失后回落<br/>
+    /// 白闪只留给大招/仪式节点,常规命中、弹幕生成、高频技能一律走 <see cref="PushAmbience"/> + 局部粒子<br/>
     /// 不做压暗/震屏/变焦
     /// </summary>
     internal static class CrimsonImpactFX
     {
+        /// <summary>白闪准入下限,低于此值的请求直接丢弃</summary>
+        public const float MinImpactFlash = 0.08f;
+        /// <summary>白闪最短重触发间隔(tick),窗口内仅更强的节点可顶替</summary>
+        public const int ImpactCooldownTicks = 30;
+
+        private static uint lastImpactTick;
+        private static float lastImpactStrength;
+
         /// <summary>冲击白闪 0..1,触发后指数衰减</summary>
         public static float FlashIntensity { get; private set; }
         /// <summary>Bloom 强度 0..1</summary>
@@ -27,16 +36,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             if (VaultUtils.isServer) {
                 return;
             }
-            FocusWorldCenter = focusWorld;
+            //白闪衰减期不夺中心
+            if (FlashIntensity <= 0.01f) {
+                FocusWorldCenter = focusWorld;
+            }
             BloomIntensity = MathHelper.Clamp(MathHelper.Max(BloomIntensity, bloom), 0f, 1.2f);
         }
 
         //警告！！这个方法绝对不要轻易调用，因为闪屏真的很他妈烦！！！
-        /// <summary>冲击白闪,一次触发自行衰减</summary>
+        /// <summary>
+        /// 冲击白闪,一次触发自行衰减,只准大招/仪式性节点调用<br/>
+        /// 保险丝:强度低于 <see cref="MinImpactFlash"/> 丢弃,冷却窗内仅更强的节点可顶替
+        /// </summary>
         public static void PushImpact(Vector2 focusWorld, float flash) {
             if (VaultUtils.isServer) {
                 return;
             }
+            if (flash < MinImpactFlash) {
+                return;
+            }
+            uint now = Main.GameUpdateCount;
+            if (now - lastImpactTick < ImpactCooldownTicks && flash <= lastImpactStrength) {
+                return;
+            }
+            lastImpactTick = now;
+            lastImpactStrength = flash;
             FocusWorldCenter = focusWorld;
             FlashIntensity = MathHelper.Clamp(MathHelper.Max(FlashIntensity, flash), 0f, 1f);
         }
@@ -56,6 +80,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         /// <summary>世界切换/卸载清空</summary>
         public static void Clear() {
             FlashIntensity = BloomIntensity = 0f;
+            lastImpactTick = 0;
+            lastImpactStrength = 0f;
         }
     }
 

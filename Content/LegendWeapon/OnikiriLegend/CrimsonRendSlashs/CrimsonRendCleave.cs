@@ -221,9 +221,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
             timer++;
 
-            //张开瞬间轻确认
+            //张开瞬间轻确认,副斩高频只推Bloom不闪屏
             if (timer == def.SweepFrames + 1) {
-                CrimsonImpactFX.PushImpact(Projectile.Center, style == CleaveStyle.LionJaw ? 0.26f : 0.2f);
+                CrimsonImpactFX.PushAmbience(Projectile.Center, style == CleaveStyle.LionJaw ? 0.30f : 0.24f);
                 if (!Main.dedServ) {
                     Vector2 tip = CSR.PointAt(in def, Projectile.Center, 0.94f, timer);
                     SpawnSnapBurst(tip);

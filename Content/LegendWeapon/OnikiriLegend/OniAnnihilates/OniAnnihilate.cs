@@ -204,7 +204,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
                 return;
             }
 
-            //Bloom 降档,非闪屏
+            //大招节点,准入一次白闪
             CrimsonImpactFX.PushImpact(Projectile.Center, 0.20f);
             CrimsonImpactFX.PushAmbience(Projectile.Center, 0.35f);
 

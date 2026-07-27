@@ -280,7 +280,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             bladePose.Draw(spriteBatch, Owner);
         }
 
-        /// <summary>出生帧声画:与锵同帧时震屏/Bloom 减半(纳刀结算已经砸过一拍)</summary>
+        /// <summary>出生帧声画:与锵同帧时震屏减半(纳刀结算已经砸过一拍)</summary>
         private void DetonateFx() {
             SoundEngine.PlaySound(CWRSound.KatanaSwing with { Volume = 0.85f, Pitch = 0.05f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.42f, Volume = 0.55f }, Projectile.Center);
@@ -296,7 +296,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             if (Main.dedServ) {
                 return;
             }
-            CrimsonImpactFX.PushImpact(Projectile.Center, SyncedJudge ? 0.05f : 0.10f);
+            //常规追斩出生帧不闪屏,Bloom+局部亮斑
             CrimsonImpactFX.PushAmbience(Projectile.Center, 0.22f);
             PRTLoader.NewParticle<PRT_CrimsonHitFlash>(Projectile.Center, Vector2.Zero
                 , IsSakura ? new Color(255, 226, 233) : new Color(255, 232, 212), 1.1f);

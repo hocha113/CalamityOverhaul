@@ -170,7 +170,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             if (Main.dedServ) {
                 return;
             }
-            CrimsonImpactFX.PushImpact(lastCenter, 0.03f);
+            //痕裂逐个高频,只推Bloom
+            CrimsonImpactFX.PushAmbience(lastCenter, 0.12f);
 
             Vector2 along = brandAngle.ToRotationVector2();
             bool steel = BoundNPC.TryGetNPC(out NPC marked) && CWRLoad.NPCValue.ISTheofSteel(marked);

@@ -252,7 +252,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             //每环首次命中轻量爆点,血肉可贴血 / 金属火花;重头戏留给终斩
             if (!impactDone) {
                 impactDone = true;
-                CrimsonImpactFX.PushImpact(target.Center, 0.015f + 0.02f * t);
+                CrimsonImpactFX.PushAmbience(target.Center, 0.20f + 0.10f * t);
                 CrimsonRendHitVFX.SpawnImpactBurst(target.Center, aim, 0.35f + 0.35f * t, SizeMul, steel);
             }
             else {

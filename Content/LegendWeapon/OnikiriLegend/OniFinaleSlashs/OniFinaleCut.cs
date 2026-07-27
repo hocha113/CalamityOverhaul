@@ -242,6 +242,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
             SoundEngine.PlaySound(SoundID.Shatter with { Pitch = -0.10f, Volume = 0.55f }, Projectile.Center);
 
+            //断世引爆,仪式节点准入白闪
             CrimsonImpactFX.PushImpact(Projectile.Center, 0.10f);
 
             Vector2 perp = (CutAngle + MathHelper.PiOver2).ToRotationVector2();
