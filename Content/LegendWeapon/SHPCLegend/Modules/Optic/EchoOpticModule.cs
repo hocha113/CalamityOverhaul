@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using System;
 using Terraria;
 using Terraria.ModLoader;
@@ -12,6 +12,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         //幽灵蓝紫
         public override Color TintColor => new(80, 150, 255);
 
+        private const float EchoDamageRatio = 0.25f;
+
         public override void Apply(ref ShootContext ctx) {
             ctx.BeamLifeMul += -0.36f;
             ctx.DamageMul += -0.18f;
@@ -19,8 +21,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         }
 
         public override void OnBeamKill(CyberTraceBeamProj beam, int timeLeft) {
-            if (beam.IsDerived || beam.Projectile.owner != Main.myPlayer) return;
-            int dmg = Math.Max(beam.Projectile.damage, 1);
+            if (beam.IsDerived || beam.SuppressDeathEffects || beam.Projectile.owner != Main.myPlayer) return;
+            int dmg = Math.Max((int)(beam.Projectile.damage * EchoDamageRatio), 1);
             float baseAngle = beam.Projectile.velocity.ToRotation();
             for (int i = 0; i < 3; i++) {
                 float ang = baseAngle + MathHelper.Lerp(-MathHelper.PiOver2, MathHelper.PiOver2, (float)i / 2);

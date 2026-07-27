@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -36,10 +36,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         private const int LeakFrames = 22;               //泄压相排空帧数
         private const int IdleCutoffFrames = 180;        //脱战阈值，停蓄压并静默放空
         private const float IdleDrainPerFrame = 0.004f;  //脱战静默放空速率
-        private const float EmpowerMaxBonus = 2.5f;      //满档放电伤害加成（1+2.5=3.5×，补偿停火节奏损失）
+        private const float EmpowerMaxBonus = 1.0f;      //满档放电伤害加成（1+1=2×）
         private const int FullPierceAdd = 2;             //满档强化束额外穿透
         private const int LaserEmpowerMaxFrames = 150;   //激光倾泻回声窗口帧数
-        private const float LaserEchoRatio = 0.4f;       //激光回声伤害占比
+        private const float LaserEchoRatio = 0.25f;      //激光回声伤害占比
 
         //稳压电金 / 电离青（与 SHPCModSteadyVolt.fx 配色对齐）
         internal static readonly Color VoltGold = new(255, 214, 90);

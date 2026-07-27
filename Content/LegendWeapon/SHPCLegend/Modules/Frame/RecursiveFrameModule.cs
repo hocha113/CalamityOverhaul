@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using System;
 using Terraria;
 using Terraria.ModLoader;
@@ -14,15 +14,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
         public override void Apply(ref ShootContext ctx) {
             ctx.BeamLifeMul += -0.3f;
-            ctx.DamageMul += 0.08f;
+            ctx.DamageMul += -0.1f;
             ctx.ManaCostMul += 0.72f;
         }
 
         public override void OnBeamKill(CyberTraceBeamProj beam, int timeLeft) {
-            if (beam.IsDerived || beam.Projectile.owner != Main.myPlayer) return;
+            if (beam.IsDerived || beam.SuppressDeathEffects || beam.Projectile.owner != Main.myPlayer) return;
             Player owner = Main.player[beam.Projectile.owner];
             if (owner == null || !owner.active) return;
-            int dmg = Math.Max((int)(beam.Projectile.damage * 0.6f), 1);
+            int dmg = Math.Max((int)(beam.Projectile.damage * 0.35f), 1);
             Vector2 dir = beam.Projectile.velocity.SafeNormalize(Vector2.UnitX);
             int idx = Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                 owner.Center, dir * 14f,

@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         //═════平衡参数═════
         private const float BaseAttackSpeedAdd = 0.15f;  //基础攻速
-        private const float BaseDamageAdd = -0.18f;      //常驻伤代价
+        private const float BaseDamageAdd = -0.22f;      //常驻伤代价
         private const float BaseSpreadAdd = 0.25f;       //散布代价
         private const float HeatAttackSpeedMax = 0.45f;  //积热攻速上限(满热+45%)
         private const float HeatPerShot = 0.06f;         //每发积热(~17发顶线)

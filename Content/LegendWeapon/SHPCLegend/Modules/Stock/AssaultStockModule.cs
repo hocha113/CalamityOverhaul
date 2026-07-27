@@ -11,7 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>突击枪托，双肩炮臂交替协战镖弹 50%</summary>
+    /// <summary>突击枪托，双肩炮臂交替协战镖弹 25%</summary>
     internal sealed class AssaultStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;
@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
         public override void Apply(ref ShootContext ctx) {
             ctx.AttackSpeedMul += 0.06f;
+            ctx.DamageMul += -0.12f;
             ctx.ManaCostMul += 0.25f;
         }
 
@@ -100,7 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
 
         private void FireBolt(Player owner) {
-            int dmg = Math.Max((int)(owner.GetWeaponDamage(owner.HeldItem) * 0.5f), 1);
+            int dmg = Math.Max((int)(owner.GetWeaponDamage(owner.HeldItem) * 0.25f), 1);
             Vector2 dir = (Main.MouseWorld - Projectile.Center).SafeNormalize(Vector2.UnitX)
                 .RotatedBy(Main.rand.NextFloat(-0.05f, 0.05f));
             Projectile.NewProjectile(Projectile.GetSource_FromThis(),

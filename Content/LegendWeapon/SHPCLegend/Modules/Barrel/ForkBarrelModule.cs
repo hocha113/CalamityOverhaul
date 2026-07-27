@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         //蓝绿
         public override Color TintColor => new(0, 220, 180);
 
+        private const int ForkInterval = 50;
+        private const float ForkDamageRatio = 0.25f;
         private readonly Dictionary<int, int> _timers = new();
 
         public override void Apply(ref ShootContext ctx) {
@@ -22,11 +24,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
             if (beam.IsDerived) return;
-            if (beam.Projectile.owner != Main.myPlayer) return;
+            if (beam.Projectile.owner != Main.myPlayer || beam.Projectile.numUpdates != -1) return;
             int id = beam.Projectile.whoAmI;
             if (!_timers.TryGetValue(id, out int t)) t = 0;
             t++;
-            if (t >= 50) {
+            if (t >= ForkInterval) {
                 t = 0;
                 SpawnFork(beam, -0.44f);
                 SpawnFork(beam, 0.44f);
@@ -39,7 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         private static void SpawnFork(CyberTraceBeamProj source, float angleOffset) {
-            int dmg = Math.Max((int)(source.Projectile.damage * 0.5f), 1);
+            int dmg = Math.Max((int)(source.Projectile.damage * ForkDamageRatio), 1);
             Vector2 vel = source.Projectile.velocity.RotatedBy(angleOffset);
             int idx = Projectile.NewProjectile(
                 source.Projectile.GetSource_FromThis(),

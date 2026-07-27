@@ -1,4 +1,4 @@
-﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
+namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
 {
     /// <summary>SHPC 射击聚合上下文，改件经 Apply 加算修改；浮点默认 1、整型/布尔默认 0/false</summary>
     internal struct ShootContext

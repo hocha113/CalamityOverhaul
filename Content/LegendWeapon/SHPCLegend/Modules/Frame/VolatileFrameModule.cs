@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
     {
         /// <summary>裂变青，中途分裂两道副束，原束继续</summary>
         Fission = 0,
-        /// <summary>过载红，伤害翻倍，弹道狂抖</summary>
+        /// <summary>过载红，伤害显著提升，弹道狂抖</summary>
         Overload = 1,
         /// <summary>失稳橙，首命中小范围爆炸</summary>
         Unstable = 2,
@@ -48,11 +48,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         //裂变，AI调用数触发（每刻3次≈14px，54≈750px）、张角、副束伤速
         private const int FissionDelayCalls = 54;
         private const float FissionForkAngle = 0.36f;
-        private const float FissionChildDamage = 0.45f;
+        private const float FissionChildDamage = 0.30f;
         private const float FissionChildSpeed = 14f;
 
-        //过载，伤倍率翻倍、每AI抖动步长、回中混合
-        private const float OverloadDamageMul = 2f;
+        /// <summary>高额伤倍率、每AI抖动步长、回中混合</summary>
+        private const float OverloadDamageMul = 1.55f;
         private const float OverloadJitterStep = 0.085f;
         private const float OverloadReturnBlend = 0.05f;
 

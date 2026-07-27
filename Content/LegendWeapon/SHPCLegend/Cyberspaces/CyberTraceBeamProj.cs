@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.TimeFreezes;
@@ -172,7 +172,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Projectile.penetrate = 3;
             Projectile.timeLeft = MaxLife;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 12;
+            //一束只命中同一 NPC 一次，穿透用于不同目标；extraUpdates 不再放大单体命中
+            Projectile.localNPCHitCooldown = -1;
             Projectile.extraUpdates = ExtraUpdates;
             Projectile.DamageType = DamageClass.Magic;
         }
@@ -275,7 +276,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     SpawnCyberParticles();
                 }
             }
-            SHPCModificationSystem.ForEachModule(Main.player[Projectile.owner], mod => mod.OnBeamAI(this));
+            SHPCModificationSystem.ForEachModuleWhile(Main.player[Projectile.owner], mod => {
+                mod.OnBeamAI(this);
+                return Projectile.active;
+            });
         }
 
         private void UpdateTrailHistory() {
@@ -573,7 +577,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         /// <summary>消亡四周分裂副光束</summary>
         private void SpawnSplitBeams() {
             int n = SplitOnDeath;
-            int dmg = (int)(Projectile.damage * 0.6f);
+            int dmg = (int)(Projectile.damage * 0.4f);
             if (dmg < 1) dmg = 1;
             float baseAngle = Projectile.velocity.ToRotation();
             for (int i = 0; i < n; i++) {

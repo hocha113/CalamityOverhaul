@@ -35,7 +35,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Projectile.penetrate = -1;
             Projectile.timeLeft = Lifetime;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 18;
+            //爆炸视觉持续 40 帧，但伤害只在每个目标上结算一次
+            Projectile.localNPCHitCooldown = -1;
             Projectile.DamageType = DamageClass.Magic;
         }
 

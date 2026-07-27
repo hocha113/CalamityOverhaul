@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates;
 using InnoVault.PRT;
@@ -28,6 +28,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         private static readonly Color InkDeep = new(70, 16, 22);
 
         private const int GhostCapacity = 4;
+        private const int ArcCollisionSegments = 18;
+        private const float ArcStartU = 0.08f;
+        private const float ArcEndU = 0.92f;
+        private const float ArcCollisionWidthMul = 0.90f;
+        private const float ArcTileCutWidthMul = 0.65f;
+        private const float MinArcCollisionWidth = 10f;
 
         private SlashDef def;
         private bool initialized;
@@ -45,6 +51,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         private float AimAngle => Projectile.ai[0];
         private float SizeMul => Projectile.ai[1] > 0.05f ? Projectile.ai[1] : 1f;
         private float FlipSign => Projectile.ai[2] >= 0f ? 1f : -1f;
+        private Vector2 AimDirection => AimAngle.ToRotationVector2();
+        private Vector2 ArcCenter => ArcCenterAt(Projectile.Center, in def);
+
+        private Vector2 ArcCenterAt(Vector2 projectileCenter, in SlashDef slash) {
+            CSR.SlashAnim anim = CSR.GetAnim(in slash, timer);
+            Vector2 arcForward = (slash.Rot + anim.RotOffset).ToRotationVector2();
+            return projectileCenter - arcForward * slash.HalfX * anim.ScaleMul * 0.90f;
+        }
 
         /// <summary>owner 端生成；伤害基数由调用方压好；sizeMul→ai[1]，flip→ai[2]</summary>
         public static Projectile Fire(Player player, Vector2 origin, float aim, int damage,
@@ -100,10 +114,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.15f, Volume = 0.32f }, Projectile.Center);
 
             if (!Main.dedServ) {
-                Vector2 aimDir0 = AimAngle.ToRotationVector2();
+                Vector2 aimDir0 = AimDirection;
                 Vector2 perp0 = aimDir0.RotatedBy(MathHelper.PiOver2);
                 for (int i = 0; i < 8; i++) {
-                    PRTLoader.NewParticle<PRT_CrimsonSpark>(Projectile.Center + perp0 * Main.rand.NextFloat(-22f, 22f) * s
+                    PRTLoader.NewParticle<PRT_CrimsonSpark>(ArcCenter + perp0 * Main.rand.NextFloat(-22f, 22f) * s
                         , aimDir0 * Main.rand.NextFloat(10f, 20f) + perp0 * Main.rand.NextFloat(-1.5f, 1.5f)
                         , PaperEdge, Main.rand.NextFloat(0.30f, 0.50f) * s)
                         ?.Configure(Main.rand.Next(8, 14), affectedByGravity: false);
@@ -121,10 +135,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             def.Life = timer + 20;
             Projectile.timeLeft = 22;
             if (!Main.dedServ) {
-                Vector2 aimDir = AimAngle.ToRotationVector2();
+                Vector2 aimDir = AimDirection;
                 for (int i = 0; i < 6; i++) {
                     PRTLoader.NewParticle<PRT_OniInkDrop>(
-                        CSR.PointAt(in def, Projectile.Center, Main.rand.NextFloat(0.15f, 0.85f), timer)
+                        CSR.PointAt(in def, ArcCenter, Main.rand.NextFloat(0.15f, 0.85f), timer)
                         , aimDir.RotatedByRandom(0.7f) * Main.rand.NextFloat(1f, 3.5f)
                             + Vector2.UnitY * Main.rand.NextFloat(0.2f, 1.2f)
                         , InkDeep, Main.rand.NextFloat(0.20f, 0.36f) * SizeMul)
@@ -194,14 +208,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             if (Main.dedServ) {
                 return;
             }
-            Vector2 offset = Projectile.velocity.UnitVector() * -Projectile.width * 2;
             if (!dissolving && timer > def.SweepFrames) {
                 float speedNow = Projectile.velocity.Length();
                 //行进介质:速度拉伸火花(沿速长、横向窄)
                 int shed = speedNow > 24f ? 3 : 2;
                 for (int k = 0; k < shed; k++) {
                     float uc = Main.rand.NextFloat(0.28f, 0.72f);
-                    Vector2 pos = CSR.PointAt(in def, Projectile.Center + offset, uc, timer);
+                    Vector2 pos = CSR.PointAt(in def, ArcCenter, uc, timer);
                     Vector2 vel = aimDir * Main.rand.NextFloat(speedNow * 0.35f, speedNow * 0.7f)
                         + perp * Main.rand.NextFloat(-1.4f, 1.4f);
                     PRTLoader.NewParticle<PRT_CrimsonSpark>(pos, vel
@@ -211,7 +224,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                 }
                 if (Main.rand.NextBool(2)) {
                     float tipU = Main.rand.NextBool() ? 0.08f : 0.92f;
-                    Vector2 tip = CSR.PointAt(in def, Projectile.Center + offset, tipU, timer);
+                    Vector2 tip = CSR.PointAt(in def, ArcCenter, tipU, timer);
                     PRTLoader.NewParticle<PRT_OniInkDrop>(tip
                         , -aimDir * Main.rand.NextFloat(0.4f, 1.4f) + Vector2.UnitY * Main.rand.NextFloat(0.2f, 0.9f)
                         , InkDeep, Main.rand.NextFloat(0.14f, 0.26f) * SizeMul)
@@ -221,7 +234,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                 float trailStep = MathHelper.Lerp(18f, 30f, MathHelper.Clamp(1f - (stretch - 1f) / 0.65f, 0f, 1f));
                 while (trailAccum >= trailStep) {
                     trailAccum -= trailStep;
-                    Vector2 pos = CSR.PointAt(in def, Projectile.Center + offset
+                    Vector2 pos = CSR.PointAt(in def, ArcCenter
                         , Main.rand.NextFloat(0.22f, 0.78f), timer) - aimDir * (36f * stretch);
                     PRTLoader.NewParticle<PRT_CrimsonSpark>(pos
                         , aimDir * Main.rand.NextFloat(0.15f, 0.55f)
@@ -229,35 +242,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                         ?.Configure(Main.rand.Next(30, 48), affectedByGravity: false);
                 }
             }
-            Lighting.AddLight(Projectile.Center + aimDir * 36f, new Vector3(0.9f, 0.2f, 0.14f));
+            Lighting.AddLight(ArcCenter + aimDir * 36f, new Vector3(0.9f, 0.2f, 0.14f));
         }
 
         public override bool? CanDamage() => !dissolving && initialized && timer >= def.DamageStart ? null : false;
+
+        private int GetRevealedArcSegments(out float endU) {
+            float sweepU = MathHelper.Clamp(CSR.Sweep(in def, timer) * 1.05f, 0f, 1f);
+            endU = MathF.Min(ArcEndU, sweepU);
+            if (endU <= ArcStartU) {
+                return 0;
+            }
+            float reveal = (endU - ArcStartU) / (ArcEndU - ArcStartU);
+            return Math.Max(1, (int)MathF.Ceiling(ArcCollisionSegments * reveal));
+        }
+
+        private static float ArcSegmentWidth(in CSR.SlashBandSample from, in CSR.SlashBandSample to
+            , float widthMul, float minWidth)
+            => MathF.Max(minWidth, (from.Width + to.Width) * 0.5f * widthMul);
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             if (!initialized || dissolving) {
                 return false;
             }
-            Rectangle greedyBox = targetHitbox;
-            greedyBox.Inflate(14, 14);
-            const int samples = 12;
-            float sweepU = MathHelper.Clamp(CSR.Sweep(in def, timer) * 1.05f, 0f, 1f);
-            float thick = MathF.Max(36f, def.Thick * def.HalfX);
-            Vector2 prev = Vector2.Zero;
-            bool hasPrev = false;
-            float cp = 0f;
-            for (int k = 0; k < samples; k++) {
-                float uc = 0.08f + 0.84f * (k / (float)(samples - 1));
-                if (uc > sweepU) {
-                    break;
-                }
-                Vector2 mid = CSR.PointAt(in def, Projectile.Center, uc, timer);
-                if (hasPrev && Collision.CheckAABBvLineCollision(greedyBox.TopLeft(), greedyBox.Size()
-                    , prev, mid, thick, ref cp)) {
+            int segments = GetRevealedArcSegments(out float endU);
+            if (segments <= 0) {
+                return false;
+            }
+            CSR.SlashBandSample previous = CSR.SampleBand(in def, ArcCenter, ArcStartU, timer);
+            for (int i = 1; i <= segments; i++) {
+                float u = MathHelper.Lerp(ArcStartU, endU, i / (float)segments);
+                CSR.SlashBandSample current = CSR.SampleBand(in def, ArcCenter, u, timer);
+                float lineWidth = ArcSegmentWidth(in previous, in current
+                    , ArcCollisionWidthMul, MinArcCollisionWidth);
+                float collisionPoint = 0f;
+                if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
+                    , previous.Center, current.Center, lineWidth, ref collisionPoint)) {
                     return true;
                 }
-                prev = mid;
-                hasPrev = true;
+                previous = current;
             }
             return false;
         }
@@ -266,23 +289,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             if (!initialized || dissolving) {
                 return;
             }
+            int segments = GetRevealedArcSegments(out float endU);
+            if (segments <= 0) {
+                return;
+            }
             DelegateMethods.tilecut_0 = Terraria.Enums.TileCuttingContext.AttackProjectile;
-            const int samples = 7;
-            Vector2 prev = Vector2.Zero;
-            bool hasPrev = false;
-            for (int k = 0; k < samples; k++) {
-                float uc = 0.10f + 0.80f * (k / (float)(samples - 1));
-                Vector2 mid = CSR.PointAt(in def, Projectile.Center, uc, timer);
-                if (hasPrev) {
-                    Utils.PlotTileLine(prev, mid, 34f, DelegateMethods.CutTiles);
-                }
-                prev = mid;
-                hasPrev = true;
+            CSR.SlashBandSample previous = CSR.SampleBand(in def, ArcCenter, ArcStartU, timer);
+            for (int i = 1; i <= segments; i++) {
+                float u = MathHelper.Lerp(ArcStartU, endU, i / (float)segments);
+                CSR.SlashBandSample current = CSR.SampleBand(in def, ArcCenter, u, timer);
+                float lineWidth = ArcSegmentWidth(in previous, in current
+                    , ArcTileCutWidthMul, MinArcCollisionWidth * ArcTileCutWidthMul);
+                Utils.PlotTileLine(previous.Center, current.Center, lineWidth, DelegateMethods.CutTiles);
+                previous = current;
             }
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            float offsetX = Projectile.To(target.Center).X;
+            float offsetX = target.Center.X - ArcCenter.X;
             modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
                 ? Math.Sign(offsetX)
                 : (MathF.Cos(AimAngle) >= 0f ? 1 : -1);
@@ -312,7 +336,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             if (!CSR.BeginDraw(device, out Effect fx, out var pb, out var pr, out var pd)) {
                 return;
             }
-            Vector2 offset = Projectile.velocity.UnitVector() * -Projectile.width * 2;
             //速度残影:由远到近叠绘淡化月牙,读作甩出而非贴图平移
             SlashDef ghostDef = def;
             for (int i = ghostCount - 1; i >= 1; i--) {
@@ -323,9 +346,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                 ghostDef.Opacity = def.Opacity * fade;
                 ghostDef.FrontGlow = def.FrontGlow * 0.55f;
                 ghostDef.FarDim = MathF.Min(0.85f, def.FarDim + 0.15f);
-                CSR.DrawThreeLayers(device, fx, in ghostDef, ghostPos[i] + offset, timer, 0f);
+                CSR.DrawThreeLayers(device, fx, in ghostDef, ArcCenterAt(ghostPos[i], in ghostDef), timer, 0f);
             }
-            CSR.DrawThreeLayers(device, fx, in def, Projectile.Center + offset, timer, 0f);
+            CSR.DrawThreeLayers(device, fx, in def, ArcCenter, timer, 0f);
             CSR.EndDraw(device, pb, pr, pd);
         }
     }

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override void Apply(ref ShootContext ctx) {
             ctx.BeamSpeedMul += 0.4f;
             ctx.AttackSpeedMul += 0.1f;
-            ctx.DamageMul += -0.1f;
+            ctx.DamageMul += -0.14f;
             ctx.HomingMul += -0.4f;
         }
 
@@ -65,12 +65,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
             //破音障
             state.Boomed = true;
-            beam.Projectile.damage = (int)(beam.Projectile.damage * 1.3f);
+            beam.Projectile.damage = (int)(beam.Projectile.damage * 1.15f);
             if (beam.Projectile.penetrate > 0) {
                 beam.Projectile.penetrate += 2;
             }
             if (beam.Projectile.owner == Main.myPlayer) {
-                int boomDmg = Math.Max((int)(beam.Projectile.damage * 0.7f), 1);
+                int boomDmg = Math.Max((int)(beam.Projectile.damage * 0.45f), 1);
                 Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                     beam.Projectile.Center, Vector2.Zero,
                     ModContent.ProjectileType<SHPCSonicBoomProj>(),

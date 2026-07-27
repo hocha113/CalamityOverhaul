@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         public override Color TintColor => new(180, 220, 255);
 
         private const float LongRangeThreshold = 600f;
+        private const float MaxDistanceBonus = 0.60f;
 
         public override void Apply(ref ShootContext ctx) {
             ctx.BeamSpeedMul += 0.6f;
@@ -28,9 +29,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             if (owner == null || !owner.active) return;
             float dist = Vector2.Distance(owner.Center, target.Center);
             if (dist < LongRangeThreshold) return;
-            //每超 200px +25%，封顶 +75%
-            float bonus = MathHelper.Clamp((dist - LongRangeThreshold) / 200f, 0f, 3f) * 0.25f;
-            int extra = Math.Max((int)(damageDone * (0.35f + bonus)), 1);
+            float bonus = MathHelper.Clamp((dist - LongRangeThreshold) / 600f, 0f, 1f) * MaxDistanceBonus;
+            int extra = Math.Max((int)(damageDone * (0.20f + bonus)), 1);
             target.SimpleStrikeNPC(extra, hit.HitDirection, false, 0f, hit.DamageType, false, 0f, true);
             SpawnImpactParticles(target.Center);
         }
@@ -43,8 +43,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             if (owner == null || !owner.active) return;
             float dist = Vector2.Distance(owner.Center, target.Center);
             if (dist < LongRangeThreshold) return;
-            float bonus = MathHelper.Clamp((dist - LongRangeThreshold) / 200f, 0f, 3f) * 0.18f;
-            int extra = Math.Max((int)(damageDone * (0.20f + bonus)), 1);
+            float bonus = MathHelper.Clamp((dist - LongRangeThreshold) / 600f, 0f, 1f) * 0.30f;
+            int extra = Math.Max((int)(damageDone * (0.15f + bonus)), 1);
             target.SimpleStrikeNPC(extra, hit.HitDirection, false, 0f, hit.DamageType, false, 0f, true);
             SpawnImpactParticles(target.Center);
         }

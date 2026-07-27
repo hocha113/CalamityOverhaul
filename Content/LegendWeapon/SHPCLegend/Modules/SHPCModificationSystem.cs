@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
@@ -21,9 +21,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
                 mod.Apply(ref ctx);
             }
             if (sp.OverkillStacks > 0) {
-                ctx.DamageMul += sp.OverkillStacks * 0.02f;
+                ctx.DamageMul += sp.OverkillStacks * 0.01f;
             }
+            Sanitize(ref ctx);
             return ctx;
+        }
+
+        /// <summary>防止极端负面组合产生零或负倍率；不限制任何正向加成</summary>
+        private static void Sanitize(ref ShootContext ctx) {
+            ctx.DamageMul = MathF.Max(ctx.DamageMul, 0.1f);
+            ctx.AttackSpeedMul = MathF.Max(ctx.AttackSpeedMul, 0.1f);
         }
 
         /// <summary>槽位改件实例，未装备 null</summary>
@@ -46,6 +53,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
                 }
             }
             return false;
+        }
+
+        /// <summary>遍历已装备改件，action 返回 false 时停止</summary>
+        public static void ForEachModuleWhile(Player player, Func<SHPCModuleItem, bool> action) {
+            if (player == null) {
+                return;
+            }
+            SHPCPlayer sp = player.GetModPlayer<SHPCPlayer>();
+            for (int i = 0; i < SHPCData.SlotCount; i++) {
+                Item m = sp.GetModule(i);
+                if (m == null || m.ModItem is not SHPCModuleItem mod) {
+                    continue;
+                }
+                if (!action(mod)) {
+                    return;
+                }
+            }
         }
 
         /// <summary>遍历已装备改件执行 action</summary>

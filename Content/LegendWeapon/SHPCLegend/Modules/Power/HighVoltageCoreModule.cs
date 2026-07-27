@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel;
 using CalamityOverhaul.Content.PRTTypes;
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             if (owner == null || !owner.active) return;
 
             Vector2 dir = (throughTarget.Center - owner.Center).SafeNormalize(Vector2.UnitX);
-            int dmg = Math.Max(source.damage * 4, 1);
+            int dmg = Math.Max((int)(source.damage * 2.5f), 1);
             Projectile.NewProjectile(source.GetSource_FromThis(),
                 owner.Center + dir * 40f, dir,
                 ModContent.ProjectileType<SHPCVoltArcProj>(),

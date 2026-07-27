@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.TimeFreezes;
@@ -31,11 +31,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         private const float LaserRecoverRatio = 0.25f;
         /// <summary>激光回收ICD（帧）</summary>
         private const float LaserRecoverICD = 12f;
-        /// <summary>零损每胞伤害加成，满5=×2</summary>
-        private const float EmpowerDamagePerCell = 0.20f;
+        /// <summary>零损每胞伤害加成，满5=×1.6</summary>
+        private const float EmpowerDamagePerCell = 0.12f;
         /// <summary>激光零损引爆，基础比例+每胞加成</summary>
-        private const float LaserBlastBase = 0.6f;
-        private const float LaserBlastPerCell = 0.25f;
+        private const float LaserBlastBase = 0.5f;
+        private const float LaserBlastPerCell = 0.15f;
         /// <summary>激光零损引爆半径与限程（px）</summary>
         private const float LaserBlastRadius = 190f;
         private const float LaserBlastMaxRange = 1600f;

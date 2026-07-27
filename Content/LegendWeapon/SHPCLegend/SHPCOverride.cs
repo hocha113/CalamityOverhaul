@@ -187,7 +187,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                         orb.ExplosionPropels = ctx.OrbExplosionPropels;
                         orb.FlyingAttract = ctx.OrbFlyingAttract;
                         orb.ManaCostMul = ctx.ManaCostMul;
-                        orb.AttackSpeedMul = ctx.AttackSpeedMul;
                     }
                 }
             }

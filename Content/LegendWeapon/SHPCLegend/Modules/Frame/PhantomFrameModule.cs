@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         }
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
-            if (beam.IsDerived) return;
+            if (beam.IsDerived || beam.Projectile.numUpdates != -1) return;
             _phantomTimer++;
             if (_phantomTimer < 90) return;
             _phantomTimer = 0;

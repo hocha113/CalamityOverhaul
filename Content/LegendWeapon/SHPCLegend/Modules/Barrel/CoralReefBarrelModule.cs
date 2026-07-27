@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (SHPCNaturalFx.HasOwnedNear(beam.Projectile.owner, anchorType, target.Center, MinSpacing)) return;
             Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                 target.Center, Vector2.Zero,
-                anchorType, Math.Max(damageDone / 3, 1), 0f, beam.Projectile.owner);
+                anchorType, Math.Max(damageDone / 8, 1), 0f, beam.Projectile.owner);
         }
 
         public override void OnOrbDetonation(CyberChargeOrbProj orb) {
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Projectile.penetrate = -1;
             Projectile.timeLeft = 420;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 24;
+            Projectile.localNPCHitCooldown = 90;
             Projectile.DamageType = DamageClass.Magic;
         }
 
@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile other = Main.projectile[i];
                 if (!other.active || other.owner != Projectile.owner || other.whoAmI == Projectile.whoAmI) continue;
-                if (other.type != Projectile.type) continue;
+                if (other.type != Projectile.type || other.whoAmI > Projectile.whoAmI) continue;
                 if (Vector2.DistanceSquared(other.Center, Projectile.Center) > 360f * 360f) continue;
                 hit |= Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, other.Center, 12f, ref point);
             }

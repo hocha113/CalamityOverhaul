@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel;
 using CalamityOverhaul.Content.PRTTypes;
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             if (owner == null || !owner.active) return;
 
             Vector2 dir = (throughTarget.Center - owner.Center).SafeNormalize(Vector2.UnitX);
-            int dmg = Math.Max(source.damage * 5, 1);
+            int dmg = Math.Max(source.damage * 4, 1);
             Projectile.NewProjectile(source.GetSource_FromThis(),
                 owner.Center + dir * 30f, dir,
                 ModContent.ProjectileType<SHPCJudgmentRayProj>(),

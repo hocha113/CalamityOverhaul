@@ -12,19 +12,21 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>轻量枪托，主光束拖 2 节光链，各 40% 伤</summary>
+    /// <summary>轻量枪托，主光束拖 2 节光链，各 25% 伤</summary>
     internal sealed class LightStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;
         //轻量银白
         public override Color TintColor => new(220, 230, 240);
 
+        private const float SegmentDamageRatio = 0.25f;
+
         /// <summary>已挂载子节的光束，OnBeamKill 清理</summary>
         private readonly HashSet<int> linkedBeams = [];
 
         public override void Apply(ref ShootContext ctx) {
             ctx.AttackSpeedMul += 0.2f;
-            ctx.DamageMul += -0.15f;
+            ctx.DamageMul += -0.22f;
         }
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
@@ -32,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             if (!linkedBeams.Add(beam.Projectile.whoAmI)) return;
 
             //挂 2 节，滞后 12/24 帧
-            int dmg = Math.Max((int)(beam.Projectile.damage * 0.4f), 1);
+            int dmg = Math.Max((int)(beam.Projectile.damage * SegmentDamageRatio), 1);
             for (int i = 1; i <= 2; i++) {
                 Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                     beam.Projectile.Center, Vector2.Zero,
@@ -83,7 +85,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             Projectile.penetrate = -1;
             Projectile.timeLeft = 600;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 16;
+            Projectile.localNPCHitCooldown = -1;
             Projectile.DamageType = DamageClass.Magic;
         }
 

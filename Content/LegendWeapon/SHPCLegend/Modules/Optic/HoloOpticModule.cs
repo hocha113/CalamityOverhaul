@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>全息瞄具，交战中周期投光栅，消解敌弹≤12，友方穿栅 +25% homing</summary>
+    /// <summary>全息瞄具，交战中周期投光栅，消解敌弹≤12，友方穿栅 +15% 伤</summary>
     internal sealed class HoloOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 if (calibratedBeams.Contains(proj.whoAmI) || !InsideSlab(proj.Center)) continue;
 
                 calibratedBeams.Add(proj.whoAmI);
-                proj.damage = (int)(proj.damage * 1.25f);
+                proj.damage = (int)(proj.damage * 1.15f);
                 NPC target = proj.Center.FindClosestNPC(700f, false, true);
                 if (target != null) {
                     Vector2 desired = target.Center - proj.Center;

@@ -64,6 +64,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             public float FlowPhase;  //能量沿刃相位
         }
 
+        public readonly struct SlashBandSample
+        {
+            public readonly Vector2 Center;
+            public readonly float Width;
+
+            public SlashBandSample(Vector2 center, float width) {
+                Center = center;
+                Width = width;
+            }
+        }
+
         //==== 调色(白热/亮绯红/深红/暗酒红) ====
         public static readonly Vector3 ColHot = new(1.60f, 1.32f, 1.08f);
         public static readonly Vector3 ColBright = new(1.30f, 0.16f, 0.10f);
@@ -219,22 +230,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return center + ax * MathF.Cos(phi) * rFrac * d.HalfX + ay * MathF.Sin(phi) * rFrac * d.HalfY;
         }
 
-        /// <summary>刀光中线点,uc=0..1 沿刃,含几何动画</summary>
-        public static Vector2 PointAt(in SlashDef d, Vector2 center, float uc, int lt) {
+        /// <summary>刀光中线点与可见带宽，碰撞共用</summary>
+        public static SlashBandSample SampleBand(in SlashDef d, Vector2 center, float uc, int lt)
+            => SampleBand(in d, center, uc, lt, measureWidth: true);
+
+        private static SlashBandSample SampleBand(in SlashDef d, Vector2 center, float uc, int lt
+            , bool measureWidth) {
             SlashAnim anim = GetAnim(in d, lt);
             Vector2 ax = (d.Rot + anim.RotOffset).ToRotationVector2();
             Vector2 ay = ax.RotatedBy(MathHelper.PiOver2);
             float hx = d.HalfX * anim.ScaleMul;
             float hy = d.HalfY * anim.ScaleMul;
             if (d.Mode > 0.5f) {
-                return center + ax * (uc * 2f - 1f) * hx * 0.90f;
+                Vector2 point = center + ax * (uc * 2f - 1f) * hx * 0.90f;
+                float width = measureWidth ? d.Thick * anim.ThickMul * hy * 2f : 0f;
+                return new SlashBandSample(point, width);
             }
             float env = MathF.Sin(MathF.Pow(uc, 1.85f) * MathF.PI);
             float w = d.Thick * anim.ThickMul * MathF.Pow(MathF.Max(env, 0.0001f), 0.72f);
             float rFrac = 0.90f - w * 0.5f;
             float phi = d.Flip * (uc - 0.5f) * d.Span;
-            return center + ax * MathF.Cos(phi) * rFrac * hx + ay * MathF.Sin(phi) * rFrac * hy;
+            float cos = MathF.Cos(phi);
+            float sin = MathF.Sin(phi);
+            Vector2 pointOnBand = center + ax * cos * rFrac * hx + ay * sin * rFrac * hy;
+            float radialScale = measureWidth
+                ? MathF.Sqrt(hx * hx * cos * cos + hy * hy * sin * sin)
+                : 0f;
+            return new SlashBandSample(pointOnBand, w * radialScale);
         }
+
+        /// <summary>刀光中线点,uc=0..1 沿刃,含几何动画</summary>
+        public static Vector2 PointAt(in SlashDef d, Vector2 center, float uc, int lt)
+            => SampleBand(in d, center, uc, lt, measureWidth: false).Center;
 
         /// <summary>设备状态 + 帧级公共 uniform,false=资产未就绪</summary>
         public static bool BeginDraw(GraphicsDevice device, out Effect fx

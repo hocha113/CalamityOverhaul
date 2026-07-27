@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
         private const int ResonateInterval = 18;
         private const float ResonateRange = 320f;
+        private const float ArcDamageRatio = 0.10f;
 
         //每束独立计时，防争抢触发
         private readonly Dictionary<int, int> _timers = new();
@@ -26,7 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
             if (beam.IsDerived) return;
-            if (beam.Projectile.owner != Main.myPlayer) return;
+            if (beam.Projectile.owner != Main.myPlayer || beam.Projectile.numUpdates != -1) return;
             int id = beam.Projectile.whoAmI;
             if (!_timers.TryGetValue(id, out int t)) t = 0;
             t++;
@@ -54,7 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             if (bestPair == null) return;
 
             Vector2 delta = bestPair.Center - beam.Projectile.Center;
-            int dmg = System.Math.Max(beam.Projectile.damage / 5, 1);
+            int dmg = System.Math.Max((int)(beam.Projectile.damage * ArcDamageRatio), 1);
             int idx = Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                 beam.Projectile.Center, Vector2.Zero,
                 ModContent.ProjectileType<CyberDataArcProj>(),

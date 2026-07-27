@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -13,6 +13,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         //虚空暗紫
         public override Color TintColor => new(100, 30, 160);
 
+        private const int TearInterval = 20;
+        private const float TearDamageRatio = 0.10f;
         private readonly Dictionary<int, int> _tearTimers = new();
 
         public override void Apply(ref ShootContext ctx) {
@@ -21,10 +23,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         }
 
         public override void OnBeamAI(CyberTraceBeamProj beam) {
+            if (beam.IsDerived || beam.Projectile.owner != Main.myPlayer
+                || beam.Projectile.numUpdates != -1) return;
             int id = beam.Projectile.whoAmI;
             if (!_tearTimers.TryGetValue(id, out int t)) t = 0;
             t++;
-            if (t >= 20) {
+            if (t >= TearInterval) {
                 t = 0;
                 if (beam.Projectile.owner == Main.myPlayer) {
                     SpawnTear(beam);
@@ -38,7 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         }
 
         private static void SpawnTear(CyberTraceBeamProj source) {
-            int dmg = Math.Max((int)(source.Projectile.damage * 0.25f), 1);
+            int dmg = Math.Max((int)(source.Projectile.damage * TearDamageRatio), 1);
             int idx = Projectile.NewProjectile(
                 source.Projectile.GetSource_FromThis(),
                 source.Projectile.Center, Vector2.Zero,

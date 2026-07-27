@@ -1,9 +1,9 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>超杀机匣，击杀叠层≤15 每层 +2% 伤，衰减交 SHPCPlayer</summary>
+    /// <summary>超杀机匣，击杀叠层≤15 每层 +1% 伤，衰减交 SHPCPlayer</summary>
     internal sealed class OverkillFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;
