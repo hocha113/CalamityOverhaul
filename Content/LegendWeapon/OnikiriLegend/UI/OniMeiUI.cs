@@ -69,6 +69,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static OniMeiUI Instance => UIHandleLoader.GetUIHandleOfType<OniMeiUI>();
 
         private const string FreezeReason = "OniMei";
+        private const float FanRibRevealDelay = 0.07f;
+        private const float FanRibRevealDuration = 2f / 3f;
+        private const float FanRibMaxRevealDelay = 0.72f;
+        private const float FanRibInteractiveReveal = 0.5f;
 
         #region 本地化
         public static LocalizedText TitleText { get; private set; }
@@ -530,7 +534,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 int count = RibCount();
                 float hitR = fanLayout.GlyphSize * 0.62f;
                 for (int i = 0; i < count; i++) {
-                    if (Vector2.Distance(mouse, RibPos(i, count)) < hitR) {
+                    float reveal = RibReveal(i, count);
+                    if (reveal < FanRibInteractiveReveal) {
+                        continue;
+                    }
+                    if (Vector2.Distance(mouse, RibDrawPos(i, count, reveal)) < hitR) {
                         newHoverRib = i;
                         break;
                     }
@@ -707,14 +715,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             return new Vector2(x, trayOrigin.Y);
         }
 
-        /// <summary>扇骨纹章心位置,骨自枢向右张出(横开进台账与刀的空档);径与角走本帧自适应布局</summary>
-        private Vector2 RibPos(int index, int count) {
+        /// <summary>index 骨的展开进度；保留逐骨错拍，并保证任意骨数最终都能完全展开</summary>
+        private float RibReveal(int index, int count) {
+            if (count <= 1) {
+                return MathHelper.Clamp(fanEase / FanRibRevealDuration, 0f, 1f);
+            }
+            float totalDelay = Math.Min((count - 1) * FanRibRevealDelay, FanRibMaxRevealDelay);
+            float delay = index / (count - 1f) * totalDelay;
+            float duration = Math.Min(FanRibRevealDuration, 1f - delay);
+            return MathHelper.Clamp((fanEase - delay) / duration, 0f, 1f);
+        }
+
+        /// <summary>骨完全展开后的纹章心位置</summary>
+        private Vector2 RibRestPos(int index, int count) {
             float ang = 0f;
             if (count > 1) {
                 ang += (index / (count - 1f) - 0.5f) * fanLayout.Spread;
             }
             float lift = index < ribEase.Length ? ribEase[index] * 7f : 0f;
             return fanPivot + ang.ToRotationVector2() * (fanLayout.RadiusOf(index) + lift);
+        }
+
+        /// <summary>骨当前实际绘制位置；命中判定必须复用此位置</summary>
+        private Vector2 RibDrawPos(int index, int count, float reveal) {
+            float ease = reveal * (2f - reveal);
+            return Vector2.Lerp(fanPivot, RibRestPos(index, count), ease);
         }
 
         /// <summary>骨 index 是否除铭骨(排在最末)</summary>
@@ -1140,12 +1165,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             int count = RibCount();
             OniMeiDefinition engraved = EngravedAt(selectedSlot);
             for (int i = 0; i < count; i++) {
-                //逐骨错拍展开
-                float vis = MathHelper.Clamp((fanEase - i * 0.07f) * 1.5f, 0f, 1f);
+                //逐骨错拍展开；绘制与命中共用当前实际位置
+                float vis = RibReveal(i, count);
                 if (vis <= 0.01f) {
                     continue;
                 }
-                Vector2 pos = RibPos(i, count);
+                Vector2 pos = RibDrawPos(i, count, vis);
                 float hov = i < ribEase.Length ? ribEase[i] : 0f;
                 if (IsEraseRib(i)) {
                     OniMeiRenderer.DrawFanRibErase(sb, fanPivot, pos, vis, hov, a, ShaderTime,

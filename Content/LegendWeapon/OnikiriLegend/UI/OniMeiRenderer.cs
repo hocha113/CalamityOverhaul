@@ -366,11 +366,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         //====================== 鏨盘扇 ======================
 
-        /// <summary>扇骨+菱纹章:骨自枢张出,章内阴刻字形,悬停点亮;isCurrent 顶角朱点;glyphSize 走扇布局</summary>
+        /// <summary>扇骨+菱纹章:pos 为当前绘制位置,章内阴刻字形,悬停点亮;isCurrent 顶角朱点</summary>
         public static void DrawFanRib(SpriteBatch sb, Vector2 pivot, Vector2 pos, string glyphKey, bool gold,
             bool isCurrent, float vis, float hover, float alpha, float time, float glyphSize) {
-            float ease = vis * (2f - vis);
-            Vector2 drawPos = Vector2.Lerp(pivot, pos, ease);
+            Vector2 drawPos = pos;
             float a = alpha * vis;
 
             //骨
@@ -515,11 +514,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OnikiriUITheme.Deep * (alpha * 0.35f), 1.4f);
         }
 
-        /// <summary>除铭骨:暗章锉叉,悬停转绯红;glyphSize 走扇布局</summary>
+        /// <summary>除铭骨:暗章锉叉,悬停转绯红;pos 为当前绘制位置</summary>
         public static void DrawFanRibErase(SpriteBatch sb, Vector2 pivot, Vector2 pos, float vis, float hover,
             float alpha, float time, float glyphSize) {
-            float ease = vis * (2f - vis);
-            Vector2 drawPos = Vector2.Lerp(pivot, pos, ease);
+            Vector2 drawPos = pos;
             float a = alpha * vis;
 
             OniBrush.DrawGradientLine(sb, pivot, drawPos, OnikiriUITheme.Dark * (a * 0.7f),
