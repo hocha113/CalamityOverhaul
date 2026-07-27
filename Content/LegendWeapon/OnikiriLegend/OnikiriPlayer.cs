@@ -267,7 +267,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         public override void PostUpdate() {
 #if DEBUG
-            Vigor = VigorMax;
+            //Vigor = VigorMax;
 #endif
             if (Main.dedServ || Player.whoAmI != Main.myPlayer) {
                 return;

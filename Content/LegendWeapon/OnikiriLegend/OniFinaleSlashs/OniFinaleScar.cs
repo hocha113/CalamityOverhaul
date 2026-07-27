@@ -249,6 +249,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 ? Math.Sign(offsetX)
                 : (MathF.Cos(BladeAngle) >= 0f ? 1 : -1);
             OnikiriItem.ApplySlashPenetration(target, ref modifiers);
+            //对双子魔眼造成1.25倍伤害
+            if (target.type == NPCID.Spazmatism || target.type == NPCID.Retinazer) {
+                modifiers.FinalDamage *= 1.25f;
+            }
+            //对塔纳托斯头造成2.85倍伤害
+            if (target.type == CWRID.NPC_ThanatosHead) {
+                modifiers.FinalDamage *= 2.85f;
+            }
+            //对星流双子造成1.66倍伤害
+            if (target.type == CWRID.NPC_Apollo || target.type == CWRID.NPC_Artemis) {
+                modifiers.FinalDamage *= 1.66f;
+            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

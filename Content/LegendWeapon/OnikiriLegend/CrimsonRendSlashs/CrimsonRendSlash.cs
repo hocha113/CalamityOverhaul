@@ -1334,10 +1334,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 }
             }
             if (CWRLoad.WormBodys.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.25f;
+                modifiers.FinalDamage *= 0.5f;
             }
             if (CWRLoad.ExoMechAresSegments.Contains(target.type)) {
-                modifiers.FinalDamage *= 0.5f;
+                modifiers.FinalDamage *= 0.75f;
+            }
+            //对双子魔眼造成1.25倍伤害
+            if (target.type == NPCID.Spazmatism || target.type == NPCID.Retinazer) {
+                modifiers.FinalDamage *= 1.25f;
+            }
+            //对塔纳托斯头造成2.85倍伤害
+            if (target.type == CWRID.NPC_ThanatosHead) {
+                modifiers.FinalDamage *= 2.85f;
+            }
+            //对星流双子造成1.66倍伤害
+            if (target.type == CWRID.NPC_Apollo || target.type == CWRID.NPC_Artemis) {
+                modifiers.FinalDamage *= 1.66f;
             }
         }
 

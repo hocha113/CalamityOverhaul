@@ -11,6 +11,8 @@ namespace CalamityOverhaul
     public static class CWRLoad
     {
         #region Boss/蠕虫体节列表
+        /// <summary>飞眼怪</summary>
+        public static List<int> Creeper;
         /// <summary>灾坟虫</summary>
         public static List<int> SepulcherSegments;
         /// <summary>风暴编织者</summary>
