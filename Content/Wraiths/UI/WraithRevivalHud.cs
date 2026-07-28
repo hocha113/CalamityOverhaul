@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Wraiths.Runtime;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,8 +12,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Wraiths.UI
 {
     /// <summary>
-    /// 复苏进度 HUD，屏幕正上方居中，复苏值变化后滑入，静止约2秒后淡出。<br/>
-    /// 进度条由 WraithRevivalHud shader 绘制（墨色→血色，前沿撕裂，危险脉冲）。
+    /// 复苏进度 HUD，屏幕正上方居中，复苏值变化后滑入，静止约2秒后淡出<br/>
+    /// 进度条由 WraithRevivalHud shader 绘制（墨色→血色，前沿撕裂，危险脉冲）
     /// </summary>
     internal sealed class WraithRevivalHud : UIHandle
     {
@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.Wraiths.UI
 
             //--- 小字标题 ---
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            string label = $"复苏 {(int)(wp.Revival * 100)}%";
+            string label = $"{(int)(wp.Revival * 100)}%";
             Vector2 labelSize = font.MeasureString(label) * 0.52f;
             Vector2 labelPos = new((screenW - labelSize.X) * 0.5f, barY - labelSize.Y - 2f);
             Utils.DrawBorderString(sb, label, labelPos, new Color(168, 42, 55) * appear, 0.52f);
