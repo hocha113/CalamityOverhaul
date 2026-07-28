@@ -92,3 +92,8 @@ ScapeAfterburn: {
 	// DisplayName: Scape Afterburn
 	// Description: Mods.CalamityOverhaul.Buffs.ScapeAfterburn.Description
 }
+
+GhostGripDebuff: {
+	// DisplayName: Ghost Grip Debuff
+	// Description: Mods.CalamityOverhaul.Buffs.GhostGripDebuff.Description
+}
