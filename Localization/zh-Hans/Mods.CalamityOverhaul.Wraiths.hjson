@@ -1,4 +1,4 @@
-﻿NoFace: {
+NoFace: {
 	DisplayName: 无面女
 	Origin: 雨夜桥头，她借走了你的脸
 	Power: 「借颜」窃取目标的相貌，短暂复制其能力
@@ -19,10 +19,10 @@ CrimsonBride: {
 	DeathReason: "{0}触犯了不可触犯之物"
 }
 
-StandIn: {
-	DisplayName: 替死簿
-	Origin: 泛黄的硬皮册子里，有一页死死粘连着你的生辰
-	Power: 「替死」致命的袭击或诅咒降临的瞬间，伤害会被强制转移
+ScapeGhost: {
+	DisplayName: 替死鬼
+	Origin: 它生前没有名字，只记得替别人死过很多次。簿页翻动时，它的生辰与你写在一处
+	Power: 「替死」死亡降临的瞬间，它会从远处攥来一条活命，把你的死按进那副躯壳
 	DeathReason: "{0}触犯了不可触犯之物"
 }
 
@@ -68,6 +68,9 @@ System: {
 	PowerDeniedNoBound: 簿上无可借之力
 	PowerDeniedCooldown: 它还不肯再次应声
 	PowerTaboo: 犯戒——「{0}」的名讳在簿上洇开
+	ScapeGhostActivated: 「替死」——{0}替你承下了这次死亡
+	ScapeGhostNoTarget: 四野无活物可替，印记随你的命一同散去
+	ScapeGhostUnknownTarget: 某个活物
 	BacklashEscape: 「{0}」从簿上挣脱了
 	BacklashFade: 「{0}」的气息散了——它还会回来
 	ErosionCrawl: 皮肤下有什么在爬

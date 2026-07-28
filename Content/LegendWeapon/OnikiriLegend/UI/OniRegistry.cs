@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
@@ -32,6 +32,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         /// <summary>条目状态</summary>
         public OniGhostState State;
 
+        /// <summary>条目可被选作当前借力共鸣</summary>
+        public bool CanAttune;
+
         /// <summary>有可显示名讳(封印有名糊住,未知无名)</summary>
         public bool HasName => State != OniGhostState.Unknown && Name != null;
         /// <summary>细节板是否点眼(封印/未知否)</summary>
@@ -42,6 +45,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     internal interface IOniGhostSource
     {
         IReadOnlyList<OniGhostEntry> Entries { get; }
+        string AttunedKey { get; }
+        bool TryAttune(string key);
     }
 
     /// <summary>点鬼簿入口,只读聚合,未挂接为空簿</summary>
@@ -53,6 +58,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static void SetSource(IOniGhostSource s) => source = s;
 
         public static IReadOnlyList<OniGhostEntry> Entries => source?.Entries ?? Array.Empty<OniGhostEntry>();
+
+        public static string AttunedKey => source?.AttunedKey ?? string.Empty;
+
+        public static bool TryAttune(string key) => source?.TryAttune(key) == true;
 
         /// <summary>总驾驭度,已铭刻均值,空簿 0</summary>
         public static float TotalMastery {

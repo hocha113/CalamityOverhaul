@@ -22,13 +22,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         //InitTag 区分已存档与功能前老刀;无标吃出厂表
         //曾用 Init1,升位 Init2 使测试刀重播出厂
         private const string InitTag = "OnikiriWraiths:Init2";
+        private const string ScapeGhostKey = "ScapeGhost";
+        private const string LegacyStandInKey = "StandIn";
 
         /// <summary>出厂铭刻,Bound+驾驭度</summary>
         private static readonly (string Key, float Mastery)[] FactoryEngravings = [
             ("NoFace", 0.86f),
             ("LanternBoy", 0.58f),
             ("CrimsonBride", 0.16f),
-            ("StandIn", 0.77f),
+            (ScapeGhostKey, 0.77f),
             ("HeadlessShade", 0.28f),
             ("GhostHand", 0.45f),
         ];
@@ -79,6 +81,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 record.Mastery = mastery;
             }
             Wraiths.BumpVersion();
+            Wraiths.TryAttune(ScapeGhostKey);
             SeedFactoryMei();
         }
 
@@ -100,9 +103,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             base.LoadData(item, tag);
             if (tag.ContainsKey(InitTag)) {
                 Wraiths.LoadData(tag);
+                Wraiths.MigrateKey(LegacyStandInKey, ScapeGhostKey);
                 //补种老档缺失的定义初始态(只补缺失绝不覆盖):存档后新加的鬼、
                 //以及生来封印者(井中鸣)在旧刀上也封得住
                 Wraiths.SeedMissingStates();
+                if (string.IsNullOrEmpty(Wraiths.AttunedKey)) {
+                    Wraiths.TryAttune(ScapeGhostKey);
+                }
             }
             else {
                 SeedFactoryState();

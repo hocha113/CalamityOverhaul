@@ -39,7 +39,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             public float TailErode;      //彗星尾蒸发上限(0=不蒸发)
             public float FlashPower;     //全形白闪强度
             public float FarDim;         //>0 远近半侧分层,远半侧压暗并画身后
-            public float SweepSnap;      //>0 蓄势-爆发扫掠权重(旧曲线,GatherFrames=0 时生效)
             public float RazorTailWiden; //剃刀线收笔端展宽
             //==== 收-爆-停时间轴(GatherFrames>0 启用,轻拍收势零揭开重拍缓推) ====
             public int GatherFrames;     //收势帧数,爆发帧数=SweepFrames-GatherFrames
@@ -116,9 +115,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 }
                 return d.CreepAmt + (1f - d.CreepAmt) * EaseOutQuad((t - g) / (1f - g));
             }
-            return d.SweepSnap > 0f
-                ? MathHelper.Lerp(EaseOutCubic(t), SweepAnticipate(t), d.SweepSnap)
-                : EaseOutCubic(t);
+            return EaseOutCubic(t);
         }
 
         /// <summary>蓄势-爆发扫掠,前 60% 缓推揭开 30%,滞至 0.75 后末段瞬间完成<br/>

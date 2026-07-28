@@ -1,4 +1,6 @@
-﻿using CalamityOverhaul.Content.Wraiths.Core;
+using CalamityOverhaul.Content.Players;
+using CalamityOverhaul.Content.Wraiths.Core;
+using CalamityOverhaul.Content.Wraiths.VFX;
 using InnoVault.Actors;
 using System.Collections.Generic;
 using System.IO;
@@ -22,6 +24,12 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         AbilityCast,
         /// <summary>服→客，借力演出</summary>
         AbilityFx,
+        /// <summary>服→客，替死触发演出与受害者侵蚀镜像</summary>
+        ScapeGhostFx,
+        /// <summary>客→服，替死裁定请求（携带伤害参数）</summary>
+        ScapeGhostRequest,
+        /// <summary>服→受害者，替死无可用代理目标</summary>
+        ScapeGhostFail,
         /// <summary>服→客，规则死亡转发</summary>
         RuleKill,
         /// <summary>服→受害者，预警起拍</summary>
@@ -100,6 +108,39 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             packet.Write(definition.Key);
             packet.WriteVector2(aim);
             packet.Write(mastery);
+            packet.Send();
+        }
+
+        /// <summary>客→服，替死裁定请求；服务端收到后执行权威逻辑并回包。</summary>
+        public static void SendScapeGhostRequest(int victimWhoAmI, double damage, int hitDirection) {
+            if (!VaultUtils.isClient || victimWhoAmI < 0 || victimWhoAmI >= Main.maxPlayers) {
+                return;
+            }
+            ModPacket packet = NewPacket(WraithNetOp.ScapeGhostRequest);
+            packet.Write((byte)victimWhoAmI);
+            packet.Write(damage);
+            packet.Write(hitDirection);
+            packet.Send();
+        }
+
+        /// <summary>服→受害者客户端，替死无代理目标。</summary>
+        public static void SendScapeGhostFail(int victimWhoAmI) {
+            if (!VaultUtils.isServer || victimWhoAmI < 0 || victimWhoAmI >= Main.maxPlayers) {
+                return;
+            }
+            NewPacket(WraithNetOp.ScapeGhostFail).Send(victimWhoAmI);
+        }
+
+        /// <summary>服→全体客户端，替死血臂；受害者客户端另外镜像侵蚀与回执。</summary>
+        public static void SendScapeGhostFx(Vector2 from, Vector2 to, int victimWhoAmI, string targetName = null) {
+            if (!VaultUtils.isServer || victimWhoAmI < 0 || victimWhoAmI >= Main.maxPlayers) {
+                return;
+            }
+            ModPacket packet = NewPacket(WraithNetOp.ScapeGhostFx);
+            packet.WriteVector2(from);
+            packet.WriteVector2(to);
+            packet.Write((byte)victimWhoAmI);
+            packet.Write(targetName ?? string.Empty);
             packet.Send();
         }
 
@@ -186,6 +227,44 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                     if (player != null && player.active) {
                         definition.Ability.PlayWorldFx(player, aim);
                     }
+                    break;
+                }
+                case WraithNetOp.ScapeGhostFx: {
+                    Vector2 from = reader.ReadVector2();
+                    Vector2 to = reader.ReadVector2();
+                    int victim = reader.ReadByte();
+                    string targetName = reader.ReadString();
+                    if (!VaultUtils.isClient || victim < 0 || victim >= Main.maxPlayers) {
+                        break;
+                    }
+                    //非受害者：只播血臂演出
+                    if (victim != Main.myPlayer) {
+                        ScapeArmRenderer.Trigger(from, to);
+                        break;
+                    }
+                    //受害者：通过 ApplyScapeResult 清 pending 并触发本地演出+侵蚀
+                    Main.LocalPlayer.GetModPlayer<WraithPlayer>().AddErosion(0.30f);
+                    Main.LocalPlayer.TryGetOverride(out PlayerDeath pd);
+                    if (pd != null) {
+                        pd.ApplyScapeResult(true, from, to, targetName);
+                    }
+                    else {
+                        ScapeArmRenderer.Trigger(from, to);
+                        string name = string.IsNullOrWhiteSpace(targetName)
+                            ? WraithSystemText.ScapeGhostUnknownTarget.Value : targetName;
+                        VaultUtils.Text(WraithSystemText.ScapeGhostActivated.Format(name), new Color(178, 34, 44));
+                    }
+                    break;
+                }
+                case WraithNetOp.ScapeGhostRequest:
+                    HandleScapeGhostRequest(reader, whoAmI);
+                    break;
+                case WraithNetOp.ScapeGhostFail: {
+                    if (!VaultUtils.isClient) {
+                        break;
+                    }
+                    Main.LocalPlayer.TryGetOverride(out PlayerDeath pd);
+                    pd?.ApplyScapeResult(false, default, default, null);
                     break;
                 }
                 case WraithNetOp.RuleKill: {
@@ -334,6 +413,9 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 || WraithBacklash.AnyEscapedAlive(key, whoAmI)) {
                 return;
             }
+            if (!string.IsNullOrEmpty(vessel.Store.AttunedKey) && vessel.Store.AttunedKey != key) {
+                return;
+            }
             abilityLastCast[(whoAmI, key)] = now;
             //强度不信客户端，钳到服副本驾驭度
             mastery = MathHelper.Clamp(mastery, 0f, record.Mastery + 0.02f);
@@ -345,6 +427,24 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             packet.Write((byte)whoAmI);
             packet.WriteVector2(aim);
             packet.Send(-1, whoAmI);
+        }
+
+        private static void HandleScapeGhostRequest(BinaryReader reader, int whoAmI) {
+            int victim = reader.ReadByte();
+            double damage = reader.ReadDouble();
+            int hitDirection = reader.ReadInt32();
+            if (!VaultUtils.isServer || victim < 0 || victim >= Main.maxPlayers || victim != whoAmI) {
+                return;
+            }
+            Player player = ResolvePlayer(whoAmI);
+            if (player == null) {
+                return;
+            }
+            bool success = PlayerDeath.ExecuteScapeGhostAuthority(player, damage, hitDirection, null);
+            if (!success) {
+                SendScapeGhostFail(whoAmI);
+            }
+            //成功时 ExecuteScapeGhostAuthority 内部已调 SendScapeGhostFx
         }
 
         //====解析====

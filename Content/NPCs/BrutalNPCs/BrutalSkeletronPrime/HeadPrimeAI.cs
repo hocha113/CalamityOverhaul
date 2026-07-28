@@ -516,6 +516,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         /// <summary>演出未完锁血，播完放行，秒杀也先切死亡演出</summary>
         public override bool? CheckDead() {
+            // 天顶世界 Mechdusa 模式由原版负责死亡，CWR 不拦截
+            if (IsMechdusa(npc)) {
+                return true;
+            }
+
             int phase = (int)npc.ai[PrimeAiSlots.HeadPhase];
 
             //登场锁血

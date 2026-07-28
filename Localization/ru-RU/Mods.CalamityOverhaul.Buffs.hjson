@@ -38,6 +38,11 @@ FocusMark: {
 	Description: Лучи смерти наносят дополнительный урон по этой метке
 }
 
+ScapeGhostMark: {
+	// DisplayName: Death's Stand-In
+	// Description: Your next death will be forced into another living body
+}
+
 TemporalStasis: {
 	DisplayName: Временной стазис
 	Description: Время застывает вокруг цели

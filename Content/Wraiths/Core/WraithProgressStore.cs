@@ -66,7 +66,9 @@ namespace CalamityOverhaul.Content.Wraiths.Core
     public sealed class WraithProgressStore
     {
         /// <summary>schema 版本，结构变更递增</summary>
-        public const int SchemaVersion = 1;
+        public const int SchemaVersion = 2;
+
+        private const string SaveKeyAttuned = "WraithProgress:Attuned";
 
         /// <summary>联机反序列化记录上限</summary>
         private const int NetRecordCap = 512;
@@ -78,7 +80,59 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         /// <summary>变更版本，展示层脏检查；直接改 Record 字段后须手动 Bump</summary>
         public int Version { get; private set; }
 
+        /// <summary>当前共鸣之鬼；空字符串表示沿用自动选择</summary>
+        public string AttunedKey { get; private set; } = string.Empty;
+
         public void BumpVersion() => Version++;
+
+        /// <summary>仅 Bound 且有赋力的记录可被点鬼簿选作共鸣。</summary>
+        public bool TryAttune(string key) {
+            if (string.IsNullOrWhiteSpace(key)
+                || !records.TryGetValue(key, out WraithProgressRecord record)
+                || record.State != WraithBindState.Bound
+                || !WraithRegistry.TryGet(key, out WraithDefinition definition)
+                || definition.Ability == null) {
+                return false;
+            }
+            if (AttunedKey == key) {
+                return true;
+            }
+            AttunedKey = key;
+            BumpVersion();
+            return true;
+        }
+
+        /// <summary>旧定义改名迁移；新键已有非默认进度时保留新键。</summary>
+        public bool MigrateKey(string oldKey, string newKey) {
+            if (string.IsNullOrWhiteSpace(oldKey) || string.IsNullOrWhiteSpace(newKey)
+                || oldKey == newKey || !records.TryGetValue(oldKey, out WraithProgressRecord oldRecord)) {
+                return false;
+            }
+
+            if (!records.TryGetValue(newKey, out WraithProgressRecord newRecord) || newRecord.IsDefault
+                || oldRecord.State == WraithBindState.Bound && newRecord.State != WraithBindState.Bound) {
+                records[newKey] = oldRecord;
+            }
+            else if (oldRecord.State == WraithBindState.Bound && newRecord.State == WraithBindState.Bound) {
+                newRecord.Mastery = Math.Max(newRecord.Mastery, oldRecord.Mastery);
+                newRecord.EncounterCount = Math.Max(newRecord.EncounterCount, oldRecord.EncounterCount);
+                newRecord.PactRenewed |= oldRecord.PactRenewed;
+            }
+            records.Remove(oldKey);
+            if (AttunedKey == oldKey) {
+                AttunedKey = newKey;
+            }
+            BumpVersion();
+            return true;
+        }
+
+        private void SanitizeAttunedKey() {
+            if (string.IsNullOrWhiteSpace(AttunedKey)
+                || !records.TryGetValue(AttunedKey, out WraithProgressRecord record)
+                || record.State != WraithBindState.Bound) {
+                AttunedKey = string.Empty;
+            }
+        }
 
         //====数值消毒====
 
@@ -125,16 +179,20 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         /// <summary>深拷贝，物品克隆链用</summary>
         public void CopyFrom(WraithProgressStore source) {
             records.Clear();
+            AttunedKey = string.Empty;
             if (source != null) {
                 foreach ((string key, WraithProgressRecord record) in source.records) {
                     records[key] = record.Clone();
                 }
+                AttunedKey = source.AttunedKey;
+                SanitizeAttunedKey();
             }
             BumpVersion();
         }
 
         public void Clear() {
             records.Clear();
+            AttunedKey = string.Empty;
             BumpVersion();
         }
 
@@ -149,20 +207,23 @@ namespace CalamityOverhaul.Content.Wraiths.Core
                 entry["Key"] = key;
                 list.Add(entry);
             }
-            if (list.Count == 0) {
-                return;
-            }
             tag["WraithProgress:Version"] = SchemaVersion;
-            tag["WraithProgress:Records"] = list;
+            if (list.Count > 0) {
+                tag["WraithProgress:Records"] = list;
+            }
+            if (!string.IsNullOrEmpty(AttunedKey)) {
+                tag[SaveKeyAttuned] = AttunedKey;
+            }
         }
 
         public void LoadData(TagCompound tag) {
             records.Clear();
+            AttunedKey = tag.TryGet(SaveKeyAttuned, out string attuned) ? attuned : string.Empty;
             BumpVersion();
             if (!tag.TryGet("WraithProgress:Records", out List<TagCompound> list) || list == null) {
+                SanitizeAttunedKey();
                 return;
             }
-            //schema 目前只有 1，读出备迁移
             tag.TryGet("WraithProgress:Version", out int _);
             foreach (TagCompound entry in list) {
                 if (!entry.TryGet("Key", out string key) || string.IsNullOrEmpty(key) || records.ContainsKey(key)) {
@@ -170,6 +231,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
                 }
                 records[key] = WraithProgressRecord.Load(entry);
             }
+            SanitizeAttunedKey();
         }
 
         //====联机序列化====
@@ -183,10 +245,12 @@ namespace CalamityOverhaul.Content.Wraiths.Core
                 writer.Write(Math.Max(record.EncounterCount, 0));
                 writer.Write(record.PactRenewed);
             }
+            writer.Write(AttunedKey ?? string.Empty);
         }
 
         public void NetReceive(BinaryReader reader) {
             records.Clear();
+            AttunedKey = string.Empty;
             int count = reader.ReadInt32();
             //CWRItem.NetReceive 链中段，按声明数读弃保流对齐，超上限丢弃
             for (int i = 0; i < count; i++) {
@@ -205,6 +269,8 @@ namespace CalamityOverhaul.Content.Wraiths.Core
                     PactRenewed = renewed,
                 };
             }
+            AttunedKey = reader.ReadString();
+            SanitizeAttunedKey();
             BumpVersion();
         }
     }

@@ -38,6 +38,11 @@ FocusMark: {
 	Description: Todesstrahlen verursachen zusätzlichen Schaden gegen diese Markierung
 }
 
+ScapeGhostMark: {
+	// DisplayName: Death's Stand-In
+	// Description: Your next death will be forced into another living body
+}
+
 TemporalStasis: {
 	DisplayName: Zeitstillstand
 	Description: Die Zeit erstarrt um sie herum

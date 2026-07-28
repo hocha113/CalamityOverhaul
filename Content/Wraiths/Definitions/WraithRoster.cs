@@ -26,11 +26,12 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         public override int SortOrder => 30;
     }
 
-    /// <summary>替死簿</summary>
-    internal sealed class StandIn : WraithDefinition
+    /// <summary>替死鬼；纯被动，无主动技能</summary>
+    internal sealed class ScapeGhost : WraithDefinition
     {
         public override Type ActorType => null;
         public override int SortOrder => 40;
+        public override bool IsDebugContent => true;
     }
 
     /// <summary>无头人影</summary>

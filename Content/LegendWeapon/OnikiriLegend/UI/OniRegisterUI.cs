@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -41,6 +41,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText CloseHintFormat { get; private set; }
         public static LocalizedText MeiTabText { get; private set; }
         public static LocalizedText MeiTabHint { get; private set; }
+        public static LocalizedText AttuneChanged { get; private set; }
+        public static LocalizedText AttuneActive { get; private set; }
 
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "点 鬼 簿");
@@ -63,6 +65,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             CloseHintFormat = this.GetLocalization(nameof(CloseHintFormat), () => "ESC · {0} · 点击卷外 收卷");
             MeiTabText = this.GetLocalization(nameof(MeiTabText), () => "改铭台");
             MeiTabHint = this.GetLocalization(nameof(MeiTabHint), () => "点击 移步");
+            AttuneChanged = this.GetLocalization(nameof(AttuneChanged), () => "「{0}」应声——借力已与它共鸣");
+            AttuneActive = this.GetLocalization(nameof(AttuneActive), () => "共鸣中");
         }
         #endregion
 
@@ -153,6 +157,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         private static int FindFirstVisible() {
             var entries = OniRegistry.Entries;
+            string attunedKey = OniRegistry.AttunedKey;
+            if (!string.IsNullOrEmpty(attunedKey)) {
+                for (int i = 0; i < entries.Count; i++) {
+                    if (entries[i].Key == attunedKey) {
+                        return i;
+                    }
+                }
+            }
             for (int i = 0; i < entries.Count; i++) {
                 if (entries[i].State != OniGhostState.Unknown) {
                     return i;
@@ -184,6 +196,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return selectedIndex >= 0 && selectedIndex < entries.Count ? entries[selectedIndex] : null;
             }
         }
+
+        internal bool IsAttuned(OniGhostEntry entry)
+            => entry != null && entry.Key == OniRegistry.AttunedKey;
 
         public override void Update() {
             if (IsOpen) {
@@ -311,7 +326,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     return;
                 }
                 if (hoverIndex >= 0) {
+                    OniGhostEntry entry = entries[hoverIndex];
+                    bool wasAttuned = IsAttuned(entry);
                     SelectEntry(hoverIndex);
+                    if (!wasAttuned && entry.CanAttune && OniRegistry.TryAttune(entry.Key)) {
+                        SoundEngine.PlaySound(SoundID.Item29 with { Pitch = -0.72f, Volume = 0.46f });
+                        VaultUtils.Text(AttuneChanged.Format(entry.Name?.Invoke() ?? entry.Key)
+                            , OnikiriUITheme.Bright);
+                    }
                     return;
                 }
                 //点击卷外压暗区收卷:卷轴(含外扩边)、细节板、收卷牌、吊挂太刀之外都算"外"
@@ -505,7 +527,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 float hover = i < hoverEase.Length ? hoverEase[i] : 0f;
                 bool selected = i == selectedIndex;
                 OniRegisterRenderer.DrawEntryColumn(sb, font, entries[i], entryRects[i], a, hover,
-                    selected, selected ? selectEase : 0f, GlobalTimer, i);
+                    selected, IsAttuned(entries[i]), selected ? selectEase : 0f, GlobalTimer, i);
             }
         }
 

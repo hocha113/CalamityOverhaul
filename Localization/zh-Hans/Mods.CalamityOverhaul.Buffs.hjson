@@ -1,4 +1,4 @@
-﻿SoulBurning: {
+SoulBurning: {
 	DisplayName: 灵魂火
 	Description: 来自地狱的火焰
 }
@@ -36,6 +36,11 @@ HyperDisintegration: {
 FocusMark: {
 	DisplayName: 聚焦标记
 	Description: 死亡射线命中此标记将获得加成
+}
+
+ScapeGhostMark: {
+	DisplayName: 替死印
+	Description: 下一次死亡会被攥进另一个活物的躯壳
 }
 
 TemporalStasis: {

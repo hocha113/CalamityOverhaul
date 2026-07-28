@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Wraiths.Core;
 using InnoVault.PRT;
@@ -229,11 +229,26 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             TryCastAbility(vessel);
         }
 
-        /// <summary>共鸣之鬼，Bound 有赋力者中驾驭最高；挣脱在场则借不出</summary>
+        /// <summary>共鸣之鬼优先取点鬼簿选择；旧档无选择时回退到最高驾驭度。</summary>
         private WraithDefinition ResolveAttuned(WraithProgressStore store, out WraithProgressRecord record, out bool escapedBlocked) {
-            WraithDefinition best = null;
             record = null;
             escapedBlocked = false;
+
+            if (!string.IsNullOrEmpty(store.AttunedKey)
+                && store.TryGet(store.AttunedKey, out WraithProgressRecord selectedRecord)
+                && selectedRecord.State == WraithBindState.Bound
+                && WraithRegistry.TryGet(store.AttunedKey, out WraithDefinition selected)
+                && selected.Ability != null
+                && WraithDirector.ContentActiveFor(selected)) {
+                record = selectedRecord;
+                if (WraithBacklash.AnyEscapedAlive(selected.Key, Player.whoAmI)) {
+                    escapedBlocked = true;
+                    return null;
+                }
+                return selected;
+            }
+
+            WraithDefinition best = null;
             foreach ((string key, WraithProgressRecord candidate) in store.Records) {
                 if (candidate.State != WraithBindState.Bound) {
                     continue;
@@ -241,7 +256,6 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 if (!WraithRegistry.TryGet(key, out WraithDefinition definition) || definition.Ability == null) {
                     continue;
                 }
-                //上线闸关则正典借不出
                 if (!WraithDirector.ContentActiveFor(definition)) {
                     continue;
                 }

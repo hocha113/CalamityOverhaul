@@ -19,10 +19,10 @@ CrimsonBride: {
 	// DeathReason: "{0} touched what must never be touched"
 }
 
-StandIn: {
-	// DisplayName: The Stand-In Ledger
-	// Origin: Inside the yellowed hardback ledger, one page clings fast to your date of birth
-	// Power: 「Stand-In」The instant a lethal strike or curse falls, the damage is forcibly transferred away
+ScapeGhost: {
+	// DisplayName: The Scapegoat Wraith
+	// Origin: It had no name in life, only the memory of dying in another's place again and again. When the register turns, its birth date is written beside yours
+	// Power: 「Death's Stand-In」At the instant death arrives, it seizes a life from afar and forces your death into that body
 	// DeathReason: "{0} touched what must never be touched"
 }
 
@@ -68,6 +68,9 @@ System: {
 	// PowerDeniedNoBound: Nothing on the register will lend its power
 	// PowerDeniedCooldown: It refuses to answer again so soon
 	// PowerTaboo: Taboo broken —「{0}」's name bleeds across the register
+	// ScapeGhostActivated: 「Death's Stand-In」— {0} bore this death in your place
+	// ScapeGhostNoTarget: No living thing answers; the mark dies with you
+	// ScapeGhostUnknownTarget: something living
 	// BacklashEscape: 「{0}」has torn itself off the register
 	// BacklashFade: 「{0}」's presence has scattered — it will return
 	// ErosionCrawl: Something is crawling beneath the skin

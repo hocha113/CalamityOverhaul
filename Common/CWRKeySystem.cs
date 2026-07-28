@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,10 +65,8 @@ namespace CalamityOverhaul.Common
             WeponSkill_Q = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_Q), "Q");
             WeponSkill_R = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_R), "R");
             Accessory_Skills = KeybindLoader.RegisterKeybind(mod, nameof(Accessory_Skills), "V");
-            //厉鬼借力/仪式；LiveContent 关则不注册
-            if (Content.Wraiths.Runtime.WraithDirector.LiveContentEnabled) {
-                Wraith_Power = KeybindLoader.RegisterKeybind(mod, nameof(Wraith_Power), "P");
-            }
+            //键位始终注册；是否有可借内容由 WraithPlayer/ContentActiveFor 在运行期裁定。
+            Wraith_Power = KeybindLoader.RegisterKeybind(mod, nameof(Wraith_Power), "P");
         }
 
         public static bool IsKeybindUnbound(ModKeybind keybind, InputMode mode = InputMode.Keyboard) {

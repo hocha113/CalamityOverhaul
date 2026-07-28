@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Modifys.ModifyBag;
@@ -256,6 +256,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             if (CWRWorld.CanTimeFrozen()) {
                 CWRNpc.DoTimeFrozen(npc);
                 return false;
+            }
+
+            // 天顶世界 Mechdusa 模式：交还原版 AI 以维持三王合体行为
+            if (NPC.IsMechQueenUp) {
+                return true;
             }
 
             UpdateAnimation();
@@ -536,6 +541,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         #region 其他覆写
 
         public override bool? CheckDead() {
+            // 天顶世界 Mechdusa 模式由原版负责死亡
+            if (NPC.IsMechQueenUp) {
+                npc.dontTakeDamage = false;
+                return true;
+            }
             //无上下文→原版死亡
             if (stateContext == null) {
                 npc.dontTakeDamage = false;

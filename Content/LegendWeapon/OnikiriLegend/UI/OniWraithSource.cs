@@ -28,6 +28,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
+        public string AttunedKey {
+            get {
+                TryRefresh();
+                return cachedData?.Wraiths.AttunedKey ?? string.Empty;
+            }
+        }
+
+        public bool TryAttune(string key) {
+            OnikiriData data = ResolveLocalData();
+            if (data == null || !data.Wraiths.TryAttune(key)) {
+                return false;
+            }
+            WraithVessels.SyncSlot(Main.LocalPlayer, Main.LocalPlayer.GetItem());
+            TryRefresh();
+            return true;
+        }
+
         void ICWRLoader.SetupData() {
             OniRegistry.SetSource(this);
             //载体解析缝:手持=仪式与借力门控,随身=反噬判定(刀在身上,鬼就在身边)
@@ -141,6 +158,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     //躁动由驾驭度推导,不做独立存储;阈值与反噬判定同源
                     entry.State = record.Mastery < WraithDefinition.RestlessThreshold ? OniGhostState.Restless : OniGhostState.Engraved;
                     entry.Mastery = record.Mastery;
+                    entry.CanAttune = definition.Ability != null && WraithDirector.ContentActiveFor(definition);
                     //Bound 即见来历赋力;PactRenewed 仍落档但不挡簿面
                     entry.Origin = () => definition.Origin.Value;
                     entry.Power = () => definition.Power.Value;

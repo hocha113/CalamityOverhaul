@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -319,7 +319,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>名录竖列,四状态</summary>
         public static void DrawEntryColumn(SpriteBatch sb, DynamicSpriteFont font, OniGhostEntry entry,
-            Rectangle rect, float alpha, float hover, bool selected, float selectEase, float time, int index) {
+            Rectangle rect, float alpha, float hover, bool selected, bool attuned, float selectEase, float time, int index) {
             //界栏:名册的竖行朱丝栏
             sb.Draw(Pixel, new Rectangle(rect.Right + (int)(OnikiriUITheme.EntryColumnGap * 0.5f), rect.Y - 8, 1, rect.Height + 16), PixelSrc,
                 OnikiriUITheme.Deep * (alpha * 0.20f));
@@ -336,6 +336,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniBrush.DrawTaperedSlash(sb,
                     new Vector2(rect.X - 5f, rect.Y - 2f), new Vector2(rect.X - 5f, rect.Bottom + 2f),
                     2.0f, 1.4f, alpha * 0.9f, selectEase);
+            }
+            if (attuned) {
+                Vector2 mark = new(rect.Center.X, rect.Y - 17f);
+                OniBrush.DrawSealGlyph(sb, mark, 8f, alpha * 0.95f, time * 0.018f);
+                OniBrush.DrawGradientLine(sb, mark + new Vector2(0f, 7f), new Vector2(rect.Center.X, rect.Y + 7f)
+                    , OnikiriUITheme.Bright * (alpha * 0.72f), OnikiriUITheme.Deep * (alpha * 0.12f), 1.2f);
             }
 
             switch (entry.State) {
@@ -477,6 +483,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             string name = entry.HasName ? entry.Name() : OniRegisterUI.UnknownName.Value;
             Utils.DrawBorderString(sb, name, new Vector2(textLeft, textTop), OnikiriUITheme.HotWhite * alpha, 1.02f);
             (string stateText, Color stateCol) = StateLabel(entry);
+            if (ui.IsAttuned(entry)) {
+                stateText = OniRegisterUI.AttuneActive.Value + " · " + stateText;
+                stateCol = OnikiriUITheme.Bright;
+            }
             Vector2 stSize = font.MeasureString(stateText) * 0.68f;
             Utils.DrawBorderString(sb, stateText, new Vector2(headerRight - stSize.X, textTop + 6f), stateCol * alpha, 0.68f);
             OniBrush.DrawTaperedSlash(sb, new Vector2(textLeft - 4f, textTop + 26f), new Vector2(headerRight + 4f, textTop + 24f), 1.8f, 1.2f, alpha * 0.8f);
