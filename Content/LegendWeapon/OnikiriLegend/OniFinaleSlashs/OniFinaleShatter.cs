@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -217,8 +217,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             DepthStencilState prevDepth = graphicsDevice.DepthStencilState;
             try {
                 Compose(spriteBatch, graphicsDevice, screenSwap, twist);
-            }
-            finally {
+            } finally {
                 graphicsDevice.BlendState = prevBlend;
                 graphicsDevice.RasterizerState = prevRaster;
                 graphicsDevice.DepthStencilState = prevDepth;

@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Wraiths.VFX;
-using Terraria;
+﻿using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Wraiths.Buffs

@@ -1,16 +1,16 @@
-using CalamityOverhaul.Content.Items.Tools;
+﻿using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.Wraiths.Core;
 using CalamityOverhaul.Content.Wraiths.Runtime;
-using Terraria.Chat;
 using CalamityOverhaul.Content.Wraiths.VFX;
 using InnoVault.GameSystem;
 using System;
 using Terraria;
+using Terraria.Chat;
 using Terraria.DataStructures;
-using Terraria.Localization;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Players

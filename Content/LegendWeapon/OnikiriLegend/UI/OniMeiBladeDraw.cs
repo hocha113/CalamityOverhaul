@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using Terraria;
@@ -87,8 +87,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                         redGlow[i] = MathHelper.Clamp(red * 1.6f, 0f, 1f);
                     }
                 }
-            }
-            catch {
+            } catch {
                 //GetData 偶发失败(设备丢失等)走兜底直刃,下帧不重试
             }
         }
