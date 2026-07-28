@@ -1,8 +1,11 @@
 // WraithRevivalHud.fx
 // 横向进度条：墨色（低值）→ 血色（高值），前沿噪声撕裂，危险区域脉冲心跳。
-// UV: x = 沿条方向 0→1，y = 宽度方向 0→1
+// 只写 pixel shader，顶点变换由 SpriteBatch 内置管线处理。
+// uImage0 (s0) = MagicPixel（SpriteBatch 主纹理，UV 0→1 覆盖整条）
+// uNoiseTex    = 柔性噪声贴图
 
-float4x4 transformMatrix;
+sampler uImage0 : register(s0);
+
 float uTime;
 float uProgress;      // 填充比例 0→1
 float uDangerPulse;   // 进度>0.7 时注入的脉冲强度（0→1）
@@ -19,25 +22,11 @@ sampler noiseSampler = sampler_state {
     AddressV  = wrap;
 };
 
-struct VSInput {
-    float4 Position  : POSITION0;
-    float4 Color     : COLOR0;
-    float2 TexCoords : TEXCOORD0;
-};
-
 struct PSInput {
     float4 Position  : POSITION0;
     float4 Color     : COLOR0;
     float2 TexCoords : TEXCOORD0;
 };
-
-PSInput VertexShaderFunction(VSInput input) {
-    PSInput output;
-    output.Position  = mul(input.Position, transformMatrix);
-    output.Color     = input.Color;
-    output.TexCoords = input.TexCoords;
-    return output;
-}
 
 float4 PixelShaderFunction(PSInput input) : COLOR0 {
     float u   = input.TexCoords.x;
@@ -50,7 +39,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0 {
     float tearNoise = noiseU1 * 0.6 + noiseU2 * 0.4;
 
     // 动态前沿：uProgress 加噪声扰动
-    float fillFront = uProgress - (1.0 - smoothstep(0.0, 0.12, uProgress)) * 0.0;
+    float fillFront = uProgress;
     float jitter = (tearNoise - 0.5) * 0.055;
     float filled = step(u, fillFront + jitter);
 
@@ -64,22 +53,20 @@ float4 PixelShaderFunction(PSInput input) : COLOR0 {
     float spine = smoothstep(0.72, 0.95, spineNoise) * smoothstep(0.12, 0.0, abs(side)) * 0.55;
     barColor += spine * 0.35;
 
-    // 危险脉冲心跳：全条闪
+    // 危险脉冲心跳
     float pulse = uDangerPulse * 0.22 * sin(uTime * 9.8) * smoothstep(0.5, 1.0, uProgress);
     barColor = saturate(barColor + pulse);
 
-    // 边缘软渐变（避免硬边矩形感）
+    // 边缘软渐变
     float edgeFade = 1.0 - smoothstep(0.72, 1.0, abs(side));
-    // 条形两端淡出
     float leftFade  = smoothstep(0.0, 0.018, u);
     float rightFade = 1.0 - smoothstep(0.982, 1.0, u);
 
     float alpha = filled * edgeFade * leftFade * rightFade;
-    // 在填充前沿附近做渐进透明，让边缘看起来是"墨汁浸开"
     float frontBleed = smoothstep(0.0, 0.06, fillFront - u + jitter * 0.5) * 0.38;
     alpha = max(alpha, frontBleed * edgeFade * leftFade * rightFade);
 
-    // 背底薄层：让未填充区域有隐约框架感
+    // 背底薄层：未填充区域隐约框架感
     float backAlpha = edgeFade * leftFade * rightFade * 0.12 * (1.0 - filled);
     float3 backColor = uColInk * 0.4;
 
@@ -91,7 +78,6 @@ float4 PixelShaderFunction(PSInput input) : COLOR0 {
 
 technique Technique1 {
     pass P0 {
-        VertexShader = compile vs_3_0 VertexShaderFunction();
-        PixelShader  = compile ps_3_0 PixelShaderFunction();
+        PixelShader = compile ps_3_0 PixelShaderFunction();
     }
 }
