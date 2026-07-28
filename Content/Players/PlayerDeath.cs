@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.Wraiths.Core;
 using CalamityOverhaul.Content.Wraiths.Runtime;
+using Terraria.Chat;
 using CalamityOverhaul.Content.Wraiths.VFX;
 using InnoVault.GameSystem;
 using System;
@@ -117,6 +118,7 @@ namespace CalamityOverhaul.Content.Players
             string targetName = proxy.FullName;
             NPC.HitInfo hit = BuildTransferredHit(proxy, damage, hitDirection, damageSource);
             proxy.StrikeNPC(hit);
+            BroadcastScapeDeathMessage(player, proxy, damageSource);
 
             player.statLife = Math.Max(player.statLife, Math.Max(1, (int)(player.statLifeMax2 * 0.12f)));
             player.immune = true;
@@ -129,10 +131,34 @@ namespace CalamityOverhaul.Content.Players
             }
             else {
                 ScapeArmRenderer.Trigger(from, to);
-                VaultUtils.Text(WraithSystemText.ScapeGhostActivated.Format(targetName)
-                    , new Color(178, 34, 44));
             }
             return true;
+        }
+
+        /// <summary>
+        /// 全服广播替死公告。单人直接显示；服务端通过 ChatHelper 广播。<br/>
+        /// 复用 PlayerDeathReason.GetDeathText 提取原始致死文本，无死因时退化为仅含 NPC 名。
+        /// </summary>
+        private static void BroadcastScapeDeathMessage(Player player, NPC proxy
+            , PlayerDeathReason damageSource) {
+            if (Main.dedServ && !VaultUtils.isServer) {
+                return;
+            }
+            NetworkText causeTex = damageSource != null
+                ? damageSource.GetDeathText(proxy.FullName)
+                : NetworkText.FromLiteral(proxy.FullName);
+            NetworkText msg = NetworkText.FromKey(
+                WraithSystemText.ScapeGhostDeathBroadcast.Key,
+                NetworkText.FromLiteral(proxy.FullName),
+                NetworkText.FromLiteral(player.name),
+                causeTex);
+            Color broadcast = new Color(200, 42, 52);
+            if (VaultUtils.isServer) {
+                ChatHelper.BroadcastChatMessage(msg, broadcast);
+            }
+            else {
+                Main.NewText(msg.ToString(), broadcast);
+            }
         }
 
         /// <summary>
@@ -143,10 +169,6 @@ namespace CalamityOverhaul.Content.Players
             ScapeGhostPending = false;
             if (success) {
                 ScapeArmRenderer.Trigger(from, to);
-                string name = string.IsNullOrWhiteSpace(targetName)
-                    ? WraithSystemText.ScapeGhostUnknownTarget.Value
-                    : targetName;
-                VaultUtils.Text(WraithSystemText.ScapeGhostActivated.Format(name), new Color(178, 34, 44));
             }
             else {
                 //服务端未找到代理目标，延迟一帧执行真实死亡

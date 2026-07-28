@@ -71,6 +71,7 @@ System: {
 	ScapeGhostActivated: 「替死」——{0}替你承下了这次死亡
 	ScapeGhostNoTarget: 四野无活物可替，印记随你的命一同散去
 	ScapeGhostUnknownTarget: 某个活物
+	ScapeGhostDeathBroadcast: "{0}替{1}承下了这劫——{2}"
 	BacklashEscape: 「{0}」从簿上挣脱了
 	BacklashFade: 「{0}」的气息散了——它还会回来
 	ErosionCrawl: 皮肤下有什么在爬

@@ -39,6 +39,8 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         public static LocalizedText ScapeGhostActivated { get; private set; }
         /// <summary>没有可承受替死的对象</summary>
         public static LocalizedText ScapeGhostNoTarget { get; private set; }
+        /// <summary>替死公告，{0}=NPC名，{1}=玩家名，{2}=原始致死文本</summary>
+        public static LocalizedText ScapeGhostDeathBroadcast { get; private set; }
         /// <summary>联机包缺失目标名时的占位</summary>
         public static LocalizedText ScapeGhostUnknownTarget { get; private set; }
         /// <summary>反噬挣脱播报，{0}=鬼名</summary>
@@ -67,6 +69,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             PowerTaboo = this.GetLocalization(nameof(PowerTaboo), () => "犯戒——「{0}」的名讳在簿上洇开");
             ScapeGhostActivated = this.GetLocalization(nameof(ScapeGhostActivated), () => "「替死」——{0}替你承下了这次死亡");
             ScapeGhostNoTarget = this.GetLocalization(nameof(ScapeGhostNoTarget), () => "四野无活物可替，印记随你的命一同散去");
+            ScapeGhostDeathBroadcast = this.GetLocalization(nameof(ScapeGhostDeathBroadcast), () => "{0}替{1}承下了这劫——{2}");
             ScapeGhostUnknownTarget = this.GetLocalization(nameof(ScapeGhostUnknownTarget), () => "某个活物");
             BacklashEscape = this.GetLocalization(nameof(BacklashEscape), () => "「{0}」从簿上挣脱了");
             BacklashFade = this.GetLocalization(nameof(BacklashFade), () => "「{0}」的气息散了——它还会回来");
@@ -90,6 +93,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             PowerTaboo = null;
             ScapeGhostActivated = null;
             ScapeGhostNoTarget = null;
+            ScapeGhostDeathBroadcast = null;
             ScapeGhostUnknownTarget = null;
             BacklashEscape = null;
             BacklashFade = null;

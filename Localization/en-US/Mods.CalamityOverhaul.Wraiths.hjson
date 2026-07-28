@@ -71,6 +71,7 @@ System: {
 	ScapeGhostActivated: 「Death's Stand-In」— {0} bore this death in your place
 	ScapeGhostNoTarget: No living thing answers; the mark dies with you
 	ScapeGhostUnknownTarget: something living
+	ScapeGhostDeathBroadcast: "{0} took the hit for {1} — {2}"
 	BacklashEscape: 「{0}」has torn itself off the register
 	BacklashFade: 「{0}」's presence has scattered — it will return
 	ErosionCrawl: Something is crawling beneath the skin
