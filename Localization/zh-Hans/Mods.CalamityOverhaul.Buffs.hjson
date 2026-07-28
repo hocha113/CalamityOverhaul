@@ -87,3 +87,8 @@ OniNumbDebuff: {
 	DisplayName: 痺
 	Description: 手脚发麻，动得慢，打得也不疼
 }
+
+ScapeAfterburn: {
+	// DisplayName: Scape Afterburn
+	// Description: Mods.CalamityOverhaul.Buffs.ScapeAfterburn.Description
+}

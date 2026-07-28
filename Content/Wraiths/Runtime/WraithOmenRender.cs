@@ -1,4 +1,5 @@
-﻿using InnoVault.UIHandles;
+using CalamityOverhaul.Content.Wraiths.Buffs;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -6,21 +7,20 @@ using Terraria.GameInput;
 
 namespace CalamityOverhaul.Content.Wraiths.Runtime
 {
-    /// <summary>预警收黑+三阶侵蚀暗角，只读本地 WraithPlayer</summary>
+    /// <summary>预警收黑+三阶侵蚀暗角+替死后遗症血色暗角，只读本地 WraithPlayer</summary>
     internal sealed class WraithOmenRender : UIHandle
     {
         /// <summary>压在常规 HUD 下</summary>
         public override float RenderPriority => 0.5f;
 
-        //收黑缓动
         private float omenEase;
         private float ambientEase;
+        //替死后遗症血色暗角缓动（0=无，1=全强）
+        private float afterburnEase;
 
         private static WraithPlayer LocalWraith {
             get {
-                if (Main.gameMenu || Main.dedServ) {
-                    return null;
-                }
+                if (Main.gameMenu || Main.dedServ) { return null; }
                 Player player = Main.LocalPlayer;
                 return player != null && player.active ? player.GetModPlayer<WraithPlayer>() : null;
             }
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         public override bool Active {
             get {
-                if (omenEase > 0.004f || ambientEase > 0.004f) {
+                if (omenEase > 0.004f || ambientEase > 0.004f || afterburnEase > 0.004f) {
                     return true;
                 }
                 WraithPlayer wraith = LocalWraith;
@@ -40,15 +40,22 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             WraithPlayer wraith = LocalWraith;
             float omenTarget = wraith?.OmenActive == true ? wraith.OmenProgress : 0f;
             float ambientTarget = wraith != null && wraith.ErosionTier >= 3 ? 1f : 0f;
-            //进快退慢
             omenEase += (omenTarget - omenEase) * (omenTarget > omenEase ? 0.16f : 0.06f);
             ambientEase += (ambientTarget - ambientEase) * 0.03f;
+
+            //ScapeAfterburn 血色暗角：每帧取静态值，buff 结束后自然衰退
+            float afterburnTarget = ScapeAfterburn.LocalAfterburn;
+            afterburnEase += (afterburnTarget - afterburnEase) * (afterburnTarget > afterburnEase ? 0.10f : 0.04f);
+            //ScapeAfterburn.Update 每帧写 1，buff 结束后不再写，这里自动衰退
+            ScapeAfterburn.LocalAfterburn = 0f;
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
             float omen = omenEase;
             float ambient = ambientEase;
-            if (omen < 0.004f && ambient < 0.004f) {
+            float afterburn = afterburnEase;
+
+            if (omen < 0.004f && ambient < 0.004f && afterburn < 0.004f) {
                 return;
             }
 
@@ -60,37 +67,49 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             //心跳脉动
             float beat = 0.86f + 0.14f * MathF.Sin(GlobalTimer * MathHelper.Lerp(0.06f, 0.30f, omen));
 
-            //整体压暗
+            //整体压暗（omen）
             float dim = omen * omen * 0.42f * beat;
             if (dim > 0.004f) {
                 spriteBatch.Draw(pixel, new Rectangle(0, 0, w, h), src, Color.Black * dim);
             }
 
-            //四缘收黑
+            //四缘收黑（omen + ambient）
             float edge = MathHelper.Clamp(omen * 0.85f * beat + ambient * 0.30f, 0f, 1f);
             if (edge > 0.004f) {
-                int band = (int)(MathF.Min(w, h) * (0.16f + omen * 0.10f));
-                const int Steps = 9;
-                int thick = Math.Max(band / Steps, 1);
-                for (int i = 0; i < Steps; i++) {
-                    float t = i / (float)(Steps - 1);
-                    float alpha = edge * (1f - t) * (1f - t) * 0.34f;
-                    if (alpha < 0.004f) {
-                        continue;
-                    }
-                    int offset = i * thick;
-                    Color color = Color.Black * alpha;
-                    spriteBatch.Draw(pixel, new Rectangle(0, offset, w, thick), src, color);
-                    spriteBatch.Draw(pixel, new Rectangle(0, h - offset - thick, w, thick), src, color);
-                    spriteBatch.Draw(pixel, new Rectangle(offset, 0, thick, h), src, color);
-                    spriteBatch.Draw(pixel, new Rectangle(w - offset - thick, 0, thick, h), src, color);
-                }
+                DrawEdgeBands(spriteBatch, pixel, src, w, h, edge, Color.Black);
             }
 
-            //濒死薄绯
+            //濒死薄绯（omen）
             float red = MathF.Max(omen - 0.45f, 0f) / 0.55f;
             if (red > 0.004f) {
                 spriteBatch.Draw(pixel, new Rectangle(0, 0, w, h), src, new Color(96, 8, 16) * (red * 0.16f * beat));
+            }
+
+            //替死后遗症：深紫红血色四缘暗角 + 整体薄红晕
+            if (afterburn > 0.004f) {
+                float burnBeat = 0.82f + 0.18f * MathF.Sin(GlobalTimer * 7f);
+                float burnEdge = afterburn * 0.72f * burnBeat;
+                DrawEdgeBands(spriteBatch, pixel, src, w, h, burnEdge, new Color(80, 8, 14));
+                //薄红整体叠加
+                spriteBatch.Draw(pixel, new Rectangle(0, 0, w, h), src
+                    , new Color(60, 6, 12) * (afterburn * 0.10f * burnBeat));
+            }
+        }
+
+        private static void DrawEdgeBands(SpriteBatch sb, Texture2D pixel, Rectangle src
+            , int w, int h, float edge, Color baseColor) {
+            int band = (int)(MathF.Min(w, h) * (0.14f + edge * 0.08f));
+            const int Steps = 9;
+            int thick = Math.Max(band / Steps, 1);
+            for (int i = 0; i < Steps; i++) {
+                float alpha = edge * (1f - i / (float)(Steps - 1)) * (1f - i / (float)(Steps - 1)) * 0.34f;
+                if (alpha < 0.004f) { continue; }
+                int offset = i * thick;
+                Color color = baseColor * alpha;
+                sb.Draw(pixel, new Rectangle(0, offset, w, thick), src, color);
+                sb.Draw(pixel, new Rectangle(0, h - offset - thick, w, thick), src, color);
+                sb.Draw(pixel, new Rectangle(offset, 0, thick, h), src, color);
+                sb.Draw(pixel, new Rectangle(w - offset - thick, 0, thick, h), src, color);
             }
         }
     }

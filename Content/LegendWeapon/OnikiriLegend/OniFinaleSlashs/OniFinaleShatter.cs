@@ -30,13 +30,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
     /// RGB 色差打峰后退潮——被斩碎的空间"啪"地合拢，只剩下那道真正的伤口</summary>
     internal static class OniFinaleShatter
     {
-        private const int MaxFacets = 40;
+        private const int MaxFacets = 22;
         /// <summary>碎面出生的迸开帧数（easeOutBack 弹出）</summary>
         private const int GrowFrames = 3;
-        /// <summary>爆发后碎面每帧收缩量（村正原值 0.17）</summary>
-        private const float BurstShrink = 0.17f;
-        /// <summary>PowerSF 位移强度（村正原值 0.04）</summary>
-        internal const float TwistStrength = 0.045f;
+        /// <summary>爆发后碎面每帧收缩量（收得更快，碎屏更干脆）</summary>
+        private const float BurstShrink = 0.25f;
+        /// <summary>PowerSF 位移强度（降低折射幅度，棱镜感在但不扭曲弹幕读取）</summary>
+        internal const float TwistStrength = 0.030f;
         /// <summary>无主兜底寿命，独立调试/主控失踪时碎面自行收场</summary>
         private const int FailsafeAge = 300;
 
@@ -110,8 +110,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             }
             focusWorld = focus;
             bursting = true;
-            burstBlur = 0.40f;
-            burstColorSep = 0.016f;
+            burstBlur = 0.28f;
+            burstColorSep = 0.010f;
             for (int i = 0; i < facets.Count; i++) {
                 Facet f = facets[i];
                 f.Shrinking = true;
@@ -139,8 +139,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 charge = 0f;
             }
             if (bursting) {
-                burstBlur = MathF.Max(0f, burstBlur - 0.02f);
-                burstColorSep = MathF.Max(0f, burstColorSep - 0.0011f);
+                burstBlur = MathF.Max(0f, burstBlur - 0.04f);
+                burstColorSep = MathF.Max(0f, burstColorSep - 0.0022f);
                 if (burstBlur <= 0f && burstColorSep <= 0f && facets.Count == 0) {
                     bursting = false;
                 }
@@ -163,8 +163,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             }
         }
 
-        /// <summary>径向模糊强度（蓄力≤0.22，爆发脉冲 0.40 退潮）</summary>
-        internal static float BlurStrength => MathF.Max(charge * 0.22f, burstBlur);
+        /// <summary>径向模糊强度（蓄力≤0.12，爆发脉冲 0.28 退潮）</summary>
+        internal static float BlurStrength => MathF.Max(charge * 0.12f, burstBlur);
         /// <summary>RGB 色差强度（蓄力微量渗入，爆发打峰）</summary>
         internal static float ColorSepStrength => MathF.Max(charge * 0.005f, burstColorSep);
         internal static Vector2 FocusWorld => focusWorld;

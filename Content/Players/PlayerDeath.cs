@@ -108,22 +108,33 @@ namespace CalamityOverhaul.Content.Players
         /// </summary>
         internal static bool ExecuteScapeGhostAuthority(Player player, double damage, int hitDirection
             , PlayerDeathReason damageSource) {
-            NPC proxy = FindScapeTargetFor(player);
-            if (proxy == null) {
+            var (proxies, isFriendly) = FindScapeTargetsFor(player);
+            if (proxies == null) {
                 return false;
             }
 
+            NPC primary = proxies[0];
             Vector2 from = player.Center;
-            Vector2 to = proxy.Center;
-            string targetName = proxy.FullName;
-            NPC.HitInfo hit = BuildTransferredHit(proxy, damage, hitDirection, damageSource);
-            proxy.StrikeNPC(hit);
-            BroadcastScapeDeathMessage(player, proxy, damageSource);
+            Vector2 to = primary.Center;
+            string targetName = primary.FullName;
+
+            foreach (NPC proxy in proxies) {
+                NPC.HitInfo hit = BuildTransferredHit(proxy, damage, hitDirection, damageSource);
+                proxy.StrikeNPC(hit);
+            }
+            BroadcastScapeDeathMessage(player, primary, damageSource, proxies.Length);
+
+            //友善替死推进倍率；敌怪替死不推进
+            if (isFriendly) {
+                player.GetModPlayer<WraithPlayer>().AdvanceScapeMultiplier();
+            }
 
             player.statLife = Math.Max(player.statLife, Math.Max(1, (int)(player.statLifeMax2 * 0.12f)));
             player.immune = true;
             player.immuneTime = Math.Max(player.immuneTime, 75);
             player.GetModPlayer<WraithPlayer>().AddErosion(0.30f);
+            player.GetModPlayer<WraithPlayer>().AddRevival(0.25f);
+            player.AddBuff(ModContent.BuffType<Wraiths.Buffs.ScapeAfterburn>(), 60 * 12);
 
             if (VaultUtils.isServer) {
                 WraithNet.SendScapeGhostFx(from, to, player.whoAmI, targetName);
@@ -140,16 +151,20 @@ namespace CalamityOverhaul.Content.Players
         /// 复用 PlayerDeathReason.GetDeathText 提取原始致死文本，无死因时退化为仅含 NPC 名。
         /// </summary>
         private static void BroadcastScapeDeathMessage(Player player, NPC proxy
-            , PlayerDeathReason damageSource) {
+            , PlayerDeathReason damageSource, int victimCount = 1) {
             if (Main.dedServ && !VaultUtils.isServer) {
                 return;
             }
+            //多于1个受害者时显示首个名称+数量
+            string primaryName = victimCount > 1
+                ? $"{proxy.FullName} 等{victimCount}名生灵"
+                : proxy.FullName;
             NetworkText causeTex = damageSource != null
-                ? damageSource.GetDeathText(proxy.FullName)
-                : NetworkText.FromLiteral(proxy.FullName);
+                ? damageSource.GetDeathText(primaryName)
+                : NetworkText.FromLiteral(primaryName);
             NetworkText msg = NetworkText.FromKey(
                 WraithSystemText.ScapeGhostDeathBroadcast.Key,
-                NetworkText.FromLiteral(proxy.FullName),
+                NetworkText.FromLiteral(primaryName),
                 NetworkText.FromLiteral(player.name),
                 causeTex);
             Color broadcast = new Color(200, 42, 52);
@@ -177,47 +192,93 @@ namespace CalamityOverhaul.Content.Players
         }
 
         /// <summary>
-        /// 距离不封顶；先比较牺牲层级，再在同层选最近目标。<br/>
-        /// 城镇居民 → 动物/友善生物 → 中性生物 → 普通敌怪 → Boss。
+        /// 两阶段目标选取：<br/>
+        /// 1. 扩展屏幕范围内优先找友善目标（城镇居民/友善生物），需满足当前倍率数量，不足则失败进入第2阶段。<br/>
+        /// 2. 全局查找最近的敌怪，距离可压过优先级差异，单个目标，不推进倍率。<br/>
+        /// 两者都找不到则返回 null（替死失败）。
         /// </summary>
-        private static NPC FindScapeTargetFor(Player player) {
-            NPC best = null;
-            int bestPriority = int.MaxValue;
-            float bestDistanceSq = float.MaxValue;
+        private static (NPC[] proxies, bool isFriendly) FindScapeTargetsFor(Player player) {
+            int multiplier = player.GetModPlayer<WraithPlayer>().ScapeMultiplier;
+            NPC[] friendly = CollectFriendlyTargets(player, multiplier);
+            if (friendly != null) {
+                return (friendly, true);
+            }
+            NPC enemy = FindBestEnemyTarget(player);
+            if (enemy != null) {
+                return ([enemy], false);
+            }
+            return (null, false);
+        }
 
+        /// <summary>屏幕范围扩大约1.5倍（≈2400px），按距离升序取最近的 count 个友善目标</summary>
+        private const float FriendlyScapeRadius = 2400f;
+        /// <summary>优先级单位距离权重（px）：各优先级差等价于此距离，越小越偏重距离</summary>
+        private const float EnemyPriorityPx = 600f;
+
+        private static NPC[] CollectFriendlyTargets(Player player, int count) {
+            float radiusSq = FriendlyScapeRadius * FriendlyScapeRadius;
+            //手动收集+排序，避免 LINQ 依赖
+            NPC[] found = new NPC[64];
+            float[] dists = new float[64];
+            int n = 0;
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
-                if (!CanReceiveScapeHit(npc)) {
-                    continue;
+                if (!CanReceiveScapeHit(npc) || !IsFriendlyScapeTarget(npc)) { continue; }
+                float distSq = Vector2.DistanceSquared(player.Center, npc.Center);
+                if (distSq > radiusSq) { continue; }
+                if (n < found.Length) {
+                    found[n] = npc;
+                    dists[n] = distSq;
+                    n++;
                 }
+            }
+            if (n < count) { return null; }
+            //插排取前 count 个（count≤32，n≤64，不需要 Array.Sort）
+            for (int i = 0; i < count; i++) {
+                int minIdx = i;
+                for (int j = i + 1; j < n; j++) {
+                    if (dists[j] < dists[minIdx]) { minIdx = j; }
+                }
+                (found[i], found[minIdx]) = (found[minIdx], found[i]);
+                (dists[i], dists[minIdx]) = (dists[minIdx], dists[i]);
+            }
+            NPC[] result = new NPC[count];
+            Array.Copy(found, result, count);
+            return result;
+        }
 
-                int priority = GetScapePriority(npc);
-                float distanceSq = Vector2.DistanceSquared(player.Center, npc.Center);
-                if (priority < bestPriority || priority == bestPriority && distanceSq < bestDistanceSq) {
+        private static bool IsFriendlyScapeTarget(NPC npc)
+            => npc.townNPC || npc.CountsAsACritter || npc.friendly;
+
+        /// <summary>
+        /// 距离加权选最近敌怪：score = enemyPriority * EnemyPriorityPx + distance。<br/>
+        /// 无友善目标时才会调用；中性生物优先，boss 最后。
+        /// </summary>
+        private static NPC FindBestEnemyTarget(Player player) {
+            NPC best = null;
+            float bestScore = float.MaxValue;
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+                if (!CanReceiveScapeHit(npc) || IsFriendlyScapeTarget(npc)) { continue; }
+                float dist = Vector2.Distance(player.Center, npc.Center);
+                float score = GetEnemyPriority(npc) * EnemyPriorityPx + dist;
+                if (score < bestScore) {
+                    bestScore = score;
                     best = npc;
-                    bestPriority = priority;
-                    bestDistanceSq = distanceSq;
                 }
             }
             return best;
         }
 
+        /// <summary>中性=0, 普通敌=1, boss=2（评分越低越优先）</summary>
+        private static int GetEnemyPriority(NPC npc) {
+            if (npc.damage <= 0 && !npc.boss) { return 0; }
+            return npc.boss ? 2 : 1;
+        }
+
         private static bool CanReceiveScapeHit(NPC npc)
             => npc != null && npc.active && npc.life > 0 && npc.lifeMax > 1
                 && !npc.dontTakeDamage && !npc.immortal && npc.type != NPCID.TargetDummy;
-
-        private static int GetScapePriority(NPC npc) {
-            if (npc.townNPC) {
-                return 0;
-            }
-            if (npc.CountsAsACritter || npc.friendly) {
-                return 1;
-            }
-            if (npc.damage <= 0 && !npc.boss) {
-                return 2;
-            }
-            return npc.boss ? 4 : 3;
-        }
 
         /// <summary>
         /// 将 PlayerDeathReason 中仍存活的致因实体投影成 NPC HitInfo。<br/>

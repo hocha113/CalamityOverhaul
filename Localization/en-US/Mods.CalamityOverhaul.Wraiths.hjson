@@ -77,4 +77,5 @@ System: {
 	ErosionCrawl: Something is crawling beneath the skin
 	ErosionStain: A corpse-blue tinge creeps up the fingertips
 	ErosionMirror: The thing in the mirror does not quite look like you
+	RevivalKillReason: "{0}被鬼魂彻底夺走了身躯"
 }

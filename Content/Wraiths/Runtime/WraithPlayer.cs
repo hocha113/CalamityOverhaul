@@ -32,6 +32,33 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         private const int BacklashCheckInterval = 60;
 
         private const string SaveKey_Erosion = "CWRWraith_Erosion";
+        private const string SaveKey_Revival = "CWRWraith_Revival";
+        private const string SaveKey_ScapeMultiplier = "CWRWraith_ScapeMultiplier";
+
+        //====复苏进度（灵异力量代价计量器）====
+        /// <summary>自然消退速率：约8分钟满值归零</summary>
+        private const float RevivalDecayPerTick = 1f / (60f * 480f);
+        /// <summary>上次变化后的消退延迟（帧）</summary>
+        private const int RevivalDecayDelay = 60 * 8;
+
+        private float revival;
+        private int revivalIdleTimer;
+        //供 HUD 判断淡入：0=刚变化，递增到 HUD 开始淡出
+        private int revivalChangedTimer;
+        //友善替死倍率：首次2，每次友善替死后翻倍，最高32
+        private int scapeMultiplier = 2;
+
+        /// <summary>复苏进度 0~1</summary>
+        public float Revival => revival;
+        /// <summary>自上次变化后经过的帧数，供 HUD 驱动淡入淡出</summary>
+        public int RevivalChangedTimer => revivalChangedTimer;
+        /// <summary>当前友善替死所需目标数量（2→4→8→16→32）</summary>
+        public int ScapeMultiplier => scapeMultiplier;
+
+        /// <summary>成功进行一次友善替死后推进倍率（上限32）</summary>
+        public void AdvanceScapeMultiplier() {
+            scapeMultiplier = Math.Min(scapeMultiplier * 2, 32);
+        }
 
         //====状态（全部实例级）====
         private float erosion;
@@ -73,7 +100,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         //====侵蚀====
 
-        /// <summary>上涨侵蚀，越阶播残句</summary>
+        /// <summary>增加侵蚀，越阶播残句</summary>
         public void AddErosion(float amount) {
             if (Player.whoAmI != Main.myPlayer || amount <= 0f) {
                 return;
@@ -91,6 +118,39 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         public void SetErosion(float value) {
             erosion = MathHelper.Clamp(value, 0f, 1f);
             lastCueTier = ErosionTier;
+        }
+
+        //====复苏进度====
+
+        /// <summary>
+        /// 增加复苏进度。仅本地玩家调用（与 AddErosion 同策略）。<br/>
+        /// 满格 → <see cref="WraithLethality.Kill"/>；同时通知 HUD 淡入。
+        /// </summary>
+        public void AddRevival(float amount) {
+            if (Player.whoAmI != Main.myPlayer || amount <= 0f) {
+                return;
+            }
+            revival = MathHelper.Clamp(revival + amount, 0f, 1f);
+            revivalIdleTimer = 0;
+            revivalChangedTimer = 0;
+
+            if (VaultUtils.isClient) {
+                WraithNet.SendRevivalSync(Player.whoAmI, revival);
+            }
+
+            if (revival >= 1f) {
+                revival = 0f;
+                //使用 ScapeGhost 的死亡文案；查不到时退 null（WraithLethality 内部有 null 守护）
+                WraithRegistry.TryGet("ScapeGhost", out WraithDefinition def);
+                WraithLethality.Kill(Player, def ?? WraithRegistry.All[0],
+                    WraithSystemText.RevivalKillReason);
+            }
+        }
+
+        /// <summary>直接设复苏值（网络同步镜像，不触发满格死亡判定）</summary>
+        public void SetRevivalNoKill(float value) {
+            revival = MathHelper.Clamp(value, 0f, 1f);
+            revivalChangedTimer = 0;
         }
 
         private void PlayTierCue(int tier) {
@@ -303,6 +363,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             vessel.Store.BumpVersion();
             WraithVessels.SyncSlot(Player, vessel.Item);
             AddErosion(ability.ErosionCost);
+            float revivalCost = result == WraithCastResult.Taboo ? 0.16f : 0.08f;
+            AddRevival(revivalCost);
             abilityCooldowns[definition.Key] = ability.CooldownTicks;
 
             if (result == WraithCastResult.Taboo) {
@@ -355,6 +417,15 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 lastCueTier = Math.Min(lastCueTier, ErosionTier);
             }
             UpdateErosionAmbience();
+
+            //复苏进度消退 + HUD 计时
+            if (revivalIdleTimer < RevivalDecayDelay) {
+                revivalIdleTimer++;
+            }
+            else if (revival > 0f) {
+                revival = Math.Max(revival - RevivalDecayPerTick, 0f);
+            }
+            revivalChangedTimer = Math.Min(revivalChangedTimer + 1, int.MaxValue - 1);
 
             UpdateOmenMirror();
 
@@ -471,14 +542,28 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             if (erosion > 0f) {
                 tag[SaveKey_Erosion] = erosion;
             }
+            if (revival > 0f) {
+                tag[SaveKey_Revival] = revival;
+            }
+            if (scapeMultiplier != 2) {
+                tag[SaveKey_ScapeMultiplier] = scapeMultiplier;
+            }
         }
 
         public override void LoadData(TagCompound tag) {
             erosion = tag.TryGet(SaveKey_Erosion, out float value) ? MathHelper.Clamp(value, 0f, 1f) : 0f;
-            if (float.IsNaN(erosion)) {
-                erosion = 0f;
-            }
+            if (float.IsNaN(erosion)) { erosion = 0f; }
             lastCueTier = ErosionTier;
+
+            revival = tag.TryGet(SaveKey_Revival, out float rv) ? MathHelper.Clamp(rv, 0f, 1f) : 0f;
+            if (float.IsNaN(revival)) { revival = 0f; }
+
+            scapeMultiplier = tag.TryGet(SaveKey_ScapeMultiplier, out int sm)
+                ? Math.Clamp(sm, 2, 32) : 2;
+            //对齐到合法的2^n值
+            int corrected = 2;
+            while (corrected < scapeMultiplier) { corrected *= 2; }
+            scapeMultiplier = Math.Min(corrected, 32);
         }
     }
 }

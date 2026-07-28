@@ -1,4 +1,4 @@
-NoFace: {
+﻿NoFace: {
 	DisplayName: 无面女
 	Origin: 雨夜桥头，她借走了你的脸
 	Power: 「借颜」窃取目标的相貌，短暂复制其能力
@@ -68,7 +68,7 @@ System: {
 	PowerDeniedNoBound: 簿上无可借之力
 	PowerDeniedCooldown: 它还不肯再次应声
 	PowerTaboo: 犯戒——「{0}」的名讳在簿上洇开
-	ScapeGhostActivated: 「替死」——{0}替你承下了这次死亡
+	ScapeGhostActivated: "{0}成为了替死鬼"
 	ScapeGhostNoTarget: 四野无活物可替，印记随你的命一同散去
 	ScapeGhostUnknownTarget: 某个活物
 	ScapeGhostDeathBroadcast: "{0}替{1}承下了这劫——{2}"
@@ -77,4 +77,5 @@ System: {
 	ErosionCrawl: 皮肤下有什么在爬
 	ErosionStain: 指尖泛起尸斑的青
 	ErosionMirror: 镜子里的东西不太像你
+	RevivalKillReason: "{0}死于厉鬼复苏"
 }

@@ -38,6 +38,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         OmenCancel,
         /// <summary>服→客，据点锚位镜像</summary>
         SiteSync,
+        /// <summary>客→服→全员，复苏进度同步</summary>
+        RevivalSync,
     }
 
     /// <summary>
@@ -164,6 +166,17 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             packet.Write(definition.Key);
             packet.Write(ticks);
             packet.Send(playerWhoAmI);
+        }
+
+        /// <summary>客→服，复苏进度同步</summary>
+        public static void SendRevivalSync(int victimWhoAmI, float revival) {
+            if (!VaultUtils.isClient || victimWhoAmI < 0 || victimWhoAmI >= Main.maxPlayers) {
+                return;
+            }
+            ModPacket packet = NewPacket(WraithNetOp.RevivalSync);
+            packet.Write((byte)victimWhoAmI);
+            packet.Write(revival);
+            packet.Send();
         }
 
         /// <summary>服→受害者，预警撤拍</summary>
@@ -300,6 +313,28 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                         break;
                     }
                     WraithSiteSystem.ApplyClientMirror(key, anchor, anchored);
+                    break;
+                }
+                case WraithNetOp.RevivalSync: {
+                    int playerIdx = reader.ReadByte();
+                    float revivalVal = reader.ReadSingle();
+                    if (playerIdx < 0 || playerIdx >= Main.maxPlayers) {
+                        break;
+                    }
+                    if (VaultUtils.isServer) {
+                        //服务端转发给其他客户端
+                        ModPacket fwd = NewPacket(WraithNetOp.RevivalSync);
+                        fwd.Write((byte)playerIdx);
+                        fwd.Write(revivalVal);
+                        fwd.Send(-1, whoAmI);
+                    }
+                    else if (VaultUtils.isClient && playerIdx != Main.myPlayer) {
+                        //镜像他人复苏值（仅展示用，不触发杀死判定）
+                        Player target = Main.player[playerIdx];
+                        if (target != null && target.active) {
+                            target.GetModPlayer<WraithPlayer>().SetRevivalNoKill(revivalVal);
+                        }
+                    }
                     break;
                 }
             }

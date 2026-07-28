@@ -43,6 +43,8 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         public static LocalizedText ScapeGhostDeathBroadcast { get; private set; }
         /// <summary>联机包缺失目标名时的占位</summary>
         public static LocalizedText ScapeGhostUnknownTarget { get; private set; }
+        /// <summary>复苏进度满格击杀玩家的死亡文案，{0}=玩家名</summary>
+        public static LocalizedText RevivalKillReason { get; private set; }
         /// <summary>反噬挣脱播报，{0}=鬼名</summary>
         public static LocalizedText BacklashEscape { get; private set; }
         /// <summary>挣脱体自行散去，{0}=鬼名</summary>
@@ -71,6 +73,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             ScapeGhostNoTarget = this.GetLocalization(nameof(ScapeGhostNoTarget), () => "四野无活物可替，印记随你的命一同散去");
             ScapeGhostDeathBroadcast = this.GetLocalization(nameof(ScapeGhostDeathBroadcast), () => "{0}替{1}承下了这劫——{2}");
             ScapeGhostUnknownTarget = this.GetLocalization(nameof(ScapeGhostUnknownTarget), () => "某个活物");
+            RevivalKillReason = this.GetLocalization(nameof(RevivalKillReason), () => "{0}被鬼魂彻底夺走了身躯");
             BacklashEscape = this.GetLocalization(nameof(BacklashEscape), () => "「{0}」从簿上挣脱了");
             BacklashFade = this.GetLocalization(nameof(BacklashFade), () => "「{0}」的气息散了——它还会回来");
             ErosionCrawl = this.GetLocalization(nameof(ErosionCrawl), () => "皮肤下有什么在爬");
@@ -95,6 +98,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             ScapeGhostNoTarget = null;
             ScapeGhostDeathBroadcast = null;
             ScapeGhostUnknownTarget = null;
+            RevivalKillReason = null;
             BacklashEscape = null;
             BacklashFade = null;
             ErosionCrawl = null;

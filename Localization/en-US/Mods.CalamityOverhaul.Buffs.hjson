@@ -87,3 +87,8 @@ OniNumbDebuff: {
 	DisplayName: Numbed
 	Description: Limbs gone numb — slower to move, softer to strike
 }
+
+ScapeAfterburn: {
+	DisplayName: Scape Afterburn
+	Description: Mods.CalamityOverhaul.Buffs.ScapeAfterburn.Description
+}

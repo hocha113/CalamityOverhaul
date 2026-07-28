@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -30,8 +30,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         private const int TearFrames = 3;
         /// <summary>裂屏推开起点、伤口先鼓起，世界随后才被推成两半</summary>
         private const int SplitStart = 2;
-        /// <summary>悬停终点、世界保持裂开、伤口呼吸到此，随后开始合拢</summary>
-        private const int HoldOpenEnd = 14;
+        /// <summary>悬停终点、世界保持裂开、伤口呼吸到此，随后开始合拢（缩短4帧，减少弹幕遮挡窗口）</summary>
+        private const int HoldOpenEnd = 10;
         /// <summary>愈合终点、两半合拢、创面捏合完成</summary>
         private const int HealEnd = 32;
         /// <summary>余痕熄灭（光照/裂缝辉光走完）</summary>
@@ -52,8 +52,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
         private float CutAngle => Projectile.ai[0];
         private float SizeMul => Projectile.ai[1] > 0.05f ? Projectile.ai[1] : 1f;
-        /// <summary>裂屏滑移峰值（像素，两半各滑此值，视觉总豁口为其两倍）</summary>
-        private float PeakSplitPx => 46f * SizeMul;
+        /// <summary>裂屏滑移峰值（像素，两半各滑此值，视觉总豁口为其两倍；略降，错位感保留但不暴力）</summary>
+        private float PeakSplitPx => 38f * SizeMul;
 
         /// <summary>伤口单帧动态量、由引爆后时间轴合成，直接映射 OniFinaleWound 的 uniform</summary>
         private struct WoundState
@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             if (dt == SplitStart + 1) {
                 //沿刀线迸出的碎晶帘、压在裂屏位移可见的第一帧、鞘响在先、世界碎在后，撕裂有先后
 
-                for (int i = 0; i < 30; i++) {
+                for (int i = 0; i < 18; i++) {
                     float along = Main.rand.NextFloat(-1f, 1f);
                     Vector2 pos = Projectile.Center + dir * along * 1300f * SizeMul;
                     Vector2 vel = perp * Main.rand.NextFloat(3f, 11f) * (Main.rand.NextBool() ? 1f : -1f)
@@ -275,7 +275,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                         ?.Configure(Main.rand.Next(26, 44), Main.rand.NextFloat(-0.28f, 0.28f)
                             , Main.rand.NextFloat(1.8f, 3.2f), affectedByGravity: true);
                 }
-                for (int i = 0; i < 14; i++) {
+                for (int i = 0; i < 8; i++) {
                     Vector2 vel = perp.RotatedByRandom(0.5) * Main.rand.NextFloat(6f, 15f) * (Main.rand.NextBool() ? 1f : -1f);
                     PRTLoader.NewParticle<PRT_CrimsonSpark>(Projectile.Center + dir * Main.rand.NextFloat(-400f, 400f) * SizeMul
                         , vel, new Color(255, 150, 95), Main.rand.NextFloat(0.5f, 0.9f) * SizeMul)
@@ -592,13 +592,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
             if (CWRAsset.Ring01?.Value is Texture2D ring) {
                 float ringS = (0.5f + easeOut * 2.8f) * SizeMul;
-                float ringA = MathF.Pow(inv, 2.6f) * 0.38f;
+                float ringA = MathF.Pow(inv, 2.6f) * 0.22f;
                 sb.Draw(ring, screenPos, null, new Color(255, 98, 58) * ringA, 0f
                     , ring.Size() * 0.5f, ringS, SpriteEffects.None, 0);
             }
 
             if (CWRAsset.SpeedLines01?.Value is Texture2D lines) {
-                float lA = MathF.Pow(inv, 1.7f) * 0.55f;
+                float lA = MathF.Pow(inv, 1.7f) * 0.38f;
                 for (int i = 0; i < 3; i++) {
                     float seed = (Projectile.whoAmI + i) * 0.6180339887f % 1f;
                     Rectangle src = new(0, (int)(seed * (1024 - 96)), 1024, 96);
