@@ -57,21 +57,12 @@ namespace CalamityOverhaul.Content.Wraiths.UI
             WraithPlayer wp = LocalWraith;
             if (wp == null) { return; }
 
+            Effect effect = EffectLoader.WraithRevivalHud?.Value;
+            if (effect == null) { return; }
+
             float screenW = PlayerInput.RealScreenWidth / Main.UIScale;
             float barX = (screenW - BarW) * 0.5f;
             float barY = -BarH + appear * (BarH + 14f) + 100;
-
-            //--- shader 绘制进度条 ---
-            Effect effect = EffectLoader.WraithRevivalHud?.Value;
-            Texture2D noise = CWRAsset.NoiseSoft01?.Value;
-
-            GraphicsDevice device = Main.graphics.GraphicsDevice;
-            BlendState prevBlend = device.BlendState;
-            RasterizerState prevRaster = device.RasterizerState;
-            DepthStencilState prevDepth = device.DepthStencilState;
-            device.BlendState = BlendState.AlphaBlend;
-            device.RasterizerState = RasterizerState.CullNone;
-            device.DepthStencilState = DepthStencilState.None;
 
             float danger = MathHelper.Clamp((wp.Revival - 0.7f) / 0.3f, 0f, 1f);
             float pulse = 0.5f + 0.5f * MathF.Sin(GlobalTimer * 9.8f);
@@ -82,26 +73,17 @@ namespace CalamityOverhaul.Content.Wraiths.UI
             effect.Parameters["uDangerPulse"]?.SetValue(danger * pulse);
             effect.Parameters["uColInk"]?.SetValue(new Vector3(0.07f, 0.047f, 0.086f));
             effect.Parameters["uColBlood"]?.SetValue(new Vector3(0.63f, 0.078f, 0.118f));
-            effect.Parameters["uNoiseTex"]?.SetValue(noise);
+            effect.Parameters["uNoiseTex"]?.SetValue(CWRAsset.NoiseSoft01?.Value);
 
-            float x = barX, y = barY, w = BarW, h = BarH;
-            var verts = new VertexPositionColorTexture[4];
-            verts[0] = new(new Vector3(x, y, 0), Color.White, new Vector2(0, 0));
-            verts[1] = new(new Vector3(x + w, y, 0), Color.White, new Vector2(1, 0));
-            verts[2] = new(new Vector3(x, y + h, 0), Color.White, new Vector2(0, 1));
-            verts[3] = new(new Vector3(x + w, y + h, 0), Color.White, new Vector2(1, 1));
-            short[] indices = [0, 1, 2, 1, 3, 2];
+            var destRect = new Rectangle((int)barX, (int)barY, (int)BarW, (int)BarH);
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, effect, Main.UIScaleMatrix);
+            sb.Draw(TextureAssets.MagicPixel.Value, destRect, Color.White);
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
 
-            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
-                pass.Apply();
-                device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, verts, 0, 4, indices, 0, 2);
-            }
-
-            device.BlendState = prevBlend;
-            device.RasterizerState = prevRaster;
-            device.DepthStencilState = prevDepth;
-
-            //--- 小字标题 ---
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             string label = $"{(int)(wp.Revival * 100)}%";
             Vector2 labelSize = font.MeasureString(label) * 0.52f;
