@@ -24,5 +24,3 @@ CWRKeySystem: {
 	Notbound: "[Teclas nao vinculadas]"
 	// RightClickFallback: Right-click
 }
-
-// Wraith_Power.DisplayName: Wraith: Borrowed Power / Rite

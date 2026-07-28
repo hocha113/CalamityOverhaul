@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Wraiths.Abilities;
+using CalamityOverhaul.Content.Wraiths.Attunements;
 using CalamityOverhaul.Content.Wraiths.Core;
 using System;
 
@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         public override int SortOrder => 50;
     }
 
-    /// <summary>焦黑枯手。Key 不可改；借力「攥」走 GhostHandAbility</summary>
+    /// <summary>焦黑枯手。Key 不可改；选中后由 GhostHandAttunement 常驻</summary>
     internal sealed class GhostHand : WraithDefinition
     {
         public override Type ActorType => null;
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         public override Color BaseColor => new(30, 26, 24);
         public override Color EyeColor => new(214, 92, 32);
 
-        public override WraithAbility CreateAbility() => new GhostHandAbility();
+        public override WraithAttunement CreateAttunement() => new GhostHandAttunement();
     }
 
     /// <summary>井中鸣，生来封印</summary>

@@ -20,10 +20,6 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         RiteConfirm,
         /// <summary>客→服，反噬生成</summary>
         BacklashSpawn,
-        /// <summary>客→服，借力世界改动</summary>
-        AbilityCast,
-        /// <summary>服→客，借力演出</summary>
-        AbilityFx,
         /// <summary>服→客，替死触发演出与受害者侵蚀镜像</summary>
         ScapeGhostFx,
         /// <summary>客→服，替死裁定请求（携带伤害参数）</summary>
@@ -50,13 +46,11 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         /// <summary>死机请求判距，宽于仪式半径</summary>
         private const float HaltRequestRange = WraithRites.RiteRange * 4f;
 
-        //服会话态，借力限速与反噬冷却；换世界清零
-        private static readonly Dictionary<(int player, string key), long> abilityLastCast = [];
+        //服会话态，反噬冷却；换世界清零
         private static readonly Dictionary<(int player, string key), long> backlashLastSpawn = [];
 
         /// <summary>清服会话态</summary>
         internal static void ClearSession() {
-            abilityLastCast.Clear();
             backlashLastSpawn.Clear();
         }
 
@@ -99,17 +93,6 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             }
             ModPacket packet = NewPacket(WraithNetOp.BacklashSpawn);
             packet.Write(definition.Key);
-            packet.Send();
-        }
-
-        public static void SendAbilityCast(WraithDefinition definition, Vector2 aim, float mastery) {
-            if (!VaultUtils.isClient || definition == null) {
-                return;
-            }
-            ModPacket packet = NewPacket(WraithNetOp.AbilityCast);
-            packet.Write(definition.Key);
-            packet.WriteVector2(aim);
-            packet.Write(mastery);
             packet.Send();
         }
 
@@ -225,23 +208,6 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 case WraithNetOp.BacklashSpawn:
                     HandleBacklashSpawn(reader, whoAmI);
                     break;
-                case WraithNetOp.AbilityCast:
-                    HandleAbilityCast(reader, whoAmI);
-                    break;
-                case WraithNetOp.AbilityFx: {
-                    string key = reader.ReadString();
-                    int caster = reader.ReadByte();
-                    Vector2 aim = reader.ReadVector2();
-                    if (!VaultUtils.isClient || !WraithRegistry.TryGet(key, out WraithDefinition definition)
-                        || definition.Ability == null || caster < 0 || caster >= Main.maxPlayers) {
-                        break;
-                    }
-                    Player player = Main.player[caster];
-                    if (player != null && player.active) {
-                        definition.Ability.PlayWorldFx(player, aim);
-                    }
-                    break;
-                }
                 case WraithNetOp.ScapeGhostFx: {
                     Vector2 from = reader.ReadVector2();
                     Vector2 to = reader.ReadVector2();
@@ -417,51 +383,6 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             if (WraithBacklash.SpawnEscaped(whoAmI, definition)) {
                 backlashLastSpawn[(whoAmI, key)] = now;
             }
-        }
-
-        private static void HandleAbilityCast(BinaryReader reader, int whoAmI) {
-            string key = reader.ReadString();
-            Vector2 aim = reader.ReadVector2();
-            float mastery = reader.ReadSingle();
-            if (!VaultUtils.isServer || !WraithRegistry.TryGet(key, out WraithDefinition definition)
-                || definition.Ability == null) {
-                return;
-            }
-            //上线闸
-            if (!WraithDirector.ContentActiveFor(definition)) {
-                return;
-            }
-            Player caster = ResolvePlayer(whoAmI);
-            if (caster == null) {
-                return;
-            }
-            //限速，低于半冷却丢弃
-            long now = (long)Main.GameUpdateCount;
-            if (abilityLastCast.TryGetValue((whoAmI, key), out long last)
-                && now - last < definition.Ability.CooldownTicks / 2) {
-                return;
-            }
-            //手持+Bound+非挣脱期
-            WraithVesselHandle vessel = WraithVessels.ResolveHeld(caster);
-            if (!vessel.IsValid || !vessel.Store.TryGet(key, out WraithProgressRecord record)
-                || record.State != WraithBindState.Bound
-                || WraithBacklash.AnyEscapedAlive(key, whoAmI)) {
-                return;
-            }
-            if (!string.IsNullOrEmpty(vessel.Store.AttunedKey) && vessel.Store.AttunedKey != key) {
-                return;
-            }
-            abilityLastCast[(whoAmI, key)] = now;
-            //强度不信客户端，钳到服副本驾驭度
-            mastery = MathHelper.Clamp(mastery, 0f, record.Mastery + 0.02f);
-
-            definition.Ability.ExecuteWorld(caster, aim, MathHelper.Clamp(mastery, 0f, 1f));
-            //转播演出，排除施放端
-            ModPacket packet = NewPacket(WraithNetOp.AbilityFx);
-            packet.Write(key);
-            packet.Write((byte)whoAmI);
-            packet.WriteVector2(aim);
-            packet.Send(-1, whoAmI);
         }
 
         private static void HandleScapeGhostRequest(BinaryReader reader, int whoAmI) {

@@ -38,11 +38,6 @@ FocusMark: {
 	Description: Los rayos de muerte causan daño adicional contra esta marca
 }
 
-ScapeGhostMark: {
-	// DisplayName: Death's Stand-In
-	// Description: Your next death will be forced into another living body
-}
-
 TemporalStasis: {
 	DisplayName: Estasis temporal
 	Description: El tiempo se congela a su alrededor

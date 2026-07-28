@@ -548,7 +548,7 @@ OnikiriText: {
 		CloseHintFormat: ESC · {0} · 点击卷外 收卷
 		MeiTabText: 改铭台
 		MeiTabHint: 点击 移步
-		AttuneChanged: 「{0}」应声——借力已与它共鸣
+		AttuneChanged: 「{0}」应声——共鸣已定
 		AttuneActive: 共鸣中
 	}
 

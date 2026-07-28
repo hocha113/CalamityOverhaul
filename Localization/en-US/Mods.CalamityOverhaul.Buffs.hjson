@@ -38,11 +38,6 @@ FocusMark: {
 	Description: Death rays deal bonus damage against this mark
 }
 
-ScapeGhostMark: {
-	DisplayName: Death's Stand-In
-	Description: Your next death will be forced into another living body
-}
-
 TemporalStasis: {
 	DisplayName: Temporal Stasis
 	Description: Time freezes around it

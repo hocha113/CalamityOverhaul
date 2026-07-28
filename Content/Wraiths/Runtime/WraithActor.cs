@@ -1,4 +1,3 @@
-﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Wraiths.Core;
 using InnoVault.Actors;
 using InnoVault.Concurrent;
@@ -8,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Wraiths.Runtime
@@ -448,44 +446,6 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             }
             //无贴图跳过默认绘制
             return false;
-        }
-
-        //死机提示键名缓存
-        private static string promptKeyCache;
-        private static uint promptKeyCachedAt;
-
-        private static string ResolvePromptKeyName() {
-            if (promptKeyCache == null || Main.GameUpdateCount - promptKeyCachedAt > 60) {
-                promptKeyCachedAt = Main.GameUpdateCount;
-                promptKeyCache = CWRKeySystem.Wraith_Power?.GetAssignedKeys() is { Count: > 0 } keys
-                    ? keys[0] : CWRKeySystem.Notbound.Value;
-            }
-            return promptKeyCache;
-        }
-
-        /// <summary>死机窗头顶仪式提示</summary>
-        public override void PostDraw(SpriteBatch spriteBatch, Color drawColor) {
-            if (!IsHalted || Main.dedServ || PresenceStrength < 0.8f) {
-                return;
-            }
-            Player local = Main.LocalPlayer;
-            if (local == null || !local.active || local.dead) {
-                return;
-            }
-            if (!WraithVessels.ResolveHeld(local).IsValid
-                || Vector2.DistanceSquared(local.Center, Center) > WraithRites.RiteRange * WraithRites.RiteRange) {
-                return;
-            }
-
-            string text = WraithSystemText.RitePrompt?.Format(ResolvePromptKeyName()) ?? ResolvePromptKeyName();
-
-            float remaining01 = haltDuration > 0 ? HaltRemaining / (float)haltDuration : 1f;
-            float pulseSpeed = MathHelper.Lerp(9f, 3f, remaining01);
-            float pulse = 0.62f + 0.38f * MathF.Sin((float)Main.timeForVisualEffects * 0.05f * pulseSpeed);
-            const float TextScale = 0.85f;
-            Vector2 size = FontAssets.MouseText.Value.MeasureString(text) * TextScale;
-            Vector2 pos = Center - Main.screenPosition + new Vector2(-size.X * 0.5f, -Size.Y * 0.5f - 36f);
-            Utils.DrawBorderString(spriteBatch, text, pos, (Definition?.EyeColor ?? new Color(120, 220, 200)) * pulse, TextScale);
         }
 
         /// <summary>本体绘制，默认三层雾影+双眼</summary>

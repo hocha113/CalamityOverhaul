@@ -1,8 +1,6 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Wraiths.Core;
 using CalamityOverhaul.Content.Wraiths.Runtime;
 using CalamityOverhaul.Content.Wraiths.Runtime.Behaviors;
-using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -78,8 +76,6 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
             }
             return null;
         }
-
-        public override WraithAbility CreateAbility() => new DebugPulseAbility();
     }
 
     /// <summary>试件实体。触碰即消散；挣脱态触碰进死机</summary>
@@ -104,54 +100,6 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
             else {
                 BeginDematerialize();
             }
-        }
-    }
-
-    /// <summary>
-    /// 「占位」赋力，身周脉冲迟滞。空唤犯戒；Cast/Execute 目标同源
-    /// </summary>
-    internal sealed class DebugPulseAbility : WraithAbility
-    {
-        private const float Radius = 340f;
-
-        public override int CooldownTicks => 60 * 4;
-        public override float ErosionCost => 0.10f;
-        public override float MasteryWear => 0.015f;
-
-        /// <summary>可慑之敌，Cast/Execute 同源</summary>
-        private static bool IsValidTarget(NPC npc, Vector2 center)
-            => npc.CanBeChasedBy() && !npc.buffImmune[BuffID.Slow]
-               && Vector2.DistanceSquared(npc.Center, center) < Radius * Radius;
-
-        public override WraithCastResult Cast(WraithAbilityContext ctx) {
-            foreach (NPC npc in Main.ActiveNPCs) {
-                if (IsValidTarget(npc, ctx.Player.Center)) {
-                    return WraithCastResult.Success;
-                }
-            }
-            return WraithCastResult.Taboo;
-        }
-
-        public override void ExecuteWorld(Player caster, Vector2 aim, float mastery) {
-            //迟滞时长吃驾驭度
-            int slowTicks = (int)(60f * (1.5f + 2.5f * mastery));
-            foreach (NPC npc in Main.ActiveNPCs) {
-                if (IsValidTarget(npc, caster.Center)) {
-                    npc.AddBuff(BuffID.Slow, slowTicks);
-                }
-            }
-        }
-
-        public override void PlayWorldFx(Player caster, Vector2 aim) {
-            const int Motes = 26;
-            for (int i = 0; i < Motes; i++) {
-                float angle = MathHelper.TwoPi * i / Motes;
-                Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(5.5f, 8f);
-                PRTLoader.NewParticle<PRT_Smoke>(caster.Center, vel, new Color(150, 160, 185) * 0.55f
-                    , Main.rand.NextFloat(0.18f, 0.26f))
-                    ?.Configure(Main.rand.Next(20, 30), 0.4f);
-            }
-            SoundEngine.PlaySound(SoundID.NPCDeath6 with { Pitch = 0.35f, Volume = 0.5f }, caster.Center);
         }
     }
 
@@ -343,7 +291,7 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
                 case DebugMode.Bind: {
                     WraithVesselHandle vessel = WraithVessels.ResolveCarried(player);
                     if (!vessel.IsValid) {
-                        VaultUtils.Text(WraithSystemText.PowerDeniedNoVessel.Value, Color.DarkGray);
+                        VaultUtils.Text(WraithSystemText.VesselRequired.Value, Color.DarkGray);
                         break;
                     }
                     WraithProgressRecord record = vessel.Store.GetOrCreate(definition.Key);

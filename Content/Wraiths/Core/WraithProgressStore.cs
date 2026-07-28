@@ -85,13 +85,13 @@ namespace CalamityOverhaul.Content.Wraiths.Core
 
         public void BumpVersion() => Version++;
 
-        /// <summary>仅 Bound 且有赋力的记录可被点鬼簿选作共鸣。</summary>
+        /// <summary>仅 Bound 且有共鸣效果的记录可被点鬼簿选中。</summary>
         public bool TryAttune(string key) {
             if (string.IsNullOrWhiteSpace(key)
                 || !records.TryGetValue(key, out WraithProgressRecord record)
                 || record.State != WraithBindState.Bound
                 || !WraithRegistry.TryGet(key, out WraithDefinition definition)
-                || definition.Ability == null) {
+                || definition.Attunement == null) {
                 return false;
             }
             if (AttunedKey == key) {
@@ -129,7 +129,9 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         private void SanitizeAttunedKey() {
             if (string.IsNullOrWhiteSpace(AttunedKey)
                 || !records.TryGetValue(AttunedKey, out WraithProgressRecord record)
-                || record.State != WraithBindState.Bound) {
+                || record.State != WraithBindState.Bound
+                || !WraithRegistry.TryGet(AttunedKey, out WraithDefinition definition)
+                || definition.Attunement == null) {
                 AttunedKey = string.Empty;
             }
         }

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Wraiths.Core;
+using CalamityOverhaul.Content.Wraiths.Core;
 using InnoVault.Actors;
 using System;
 using Terraria;
@@ -43,9 +43,6 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         /// <summary>演出呈现缝，载体 SetupData 挂接</summary>
         public static Action<WraithDefinition, WraithRiteKind> RitePresenter;
-
-        /// <summary>演出忙判定缝</summary>
-        public static Func<bool> PresentationBusy;
 
         /// <summary>owner 端受理；无死机目标返回 false；预检拒则吞键播回执</summary>
         public static bool TryPerform(Player player, WraithVesselHandle vessel) {

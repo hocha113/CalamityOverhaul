@@ -38,11 +38,6 @@ FocusMark: {
 	Description: Les rayons de mort infligent des dégâts bonus contre cette marque
 }
 
-ScapeGhostMark: {
-	// DisplayName: Death's Stand-In
-	// Description: Your next death will be forced into another living body
-}
-
 TemporalStasis: {
 	DisplayName: Stase temporelle
 	Description: Le temps se fige autour de la cible

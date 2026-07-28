@@ -57,17 +57,12 @@ DebugWraith: {
 
 System: {
 	// HaltPopup: HALTED
-	// RitePrompt: "[{0}] Set its name upon the register"
 	// RiteFirstBind: 「{0}」has been set upon the register
 	// RiteRenewPact: 「{0}」has renewed the pact — it knows this hand now
 	// RiteResubdue: 「{0}」has been pressed back onto the register
 	// RiteDeniedSealed: The seal holds; the name may not be shown
 	// RiteDeniedEscaped: It does not know this hand — find the one who let it loose
-	// PowerDeniedNoVessel: No blade in hand, no name on the register
-	// PowerDeniedEscaped: Its name lies empty on the register — it is still out there
-	// PowerDeniedNoBound: Nothing on the register will lend its power
-	// PowerDeniedCooldown: It refuses to answer again so soon
-	// PowerTaboo: Taboo broken —「{0}」's name bleeds across the register
+	// VesselRequired: No vessel capable of bearing a wraith is at hand
 	// ScapeGhostActivated: 「Death's Stand-In」— {0} bore this death in your place
 	// ScapeGhostNoTarget: No living thing answers; the mark dies with you
 	// ScapeGhostUnknownTarget: something living

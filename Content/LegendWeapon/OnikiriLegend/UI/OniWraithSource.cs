@@ -47,20 +47,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         void ICWRLoader.SetupData() {
             OniRegistry.SetSource(this);
-            //载体解析缝:手持=仪式与借力门控,随身=反噬判定(刀在身上,鬼就在身边)
+            //载体解析缝:手持=仪式与共鸣资格,随身=反噬判定(刀在身上,鬼就在身边)
             WraithVessels.Register(ResolveHeldVessel, ResolveCarriedVessel);
-            //数据已由 WraithRites 落簿,这里弹铭刻窗;演出中不受理借力;改铭台开着也算忙
+            //数据已由 WraithRites 落簿，这里只负责确认后的铭刻演出
             WraithRites.RitePresenter = PresentRite;
-            WraithRites.PresentationBusy = static ()
-                => (OniEngraveRiteUI.Instance?.Active ?? false) || (OniRegisterUI.Instance?.IsOpen ?? false)
-                || (OniMeiUI.Instance?.IsOpen ?? false);
         }
 
         void ICWRLoader.UnLoadData() {
             OniRegistry.SetSource(null);
             WraithVessels.Clear();
             WraithRites.RitePresenter = null;
-            WraithRites.PresentationBusy = null;
             entries.Clear();
             cachedData = null;
             cachedVersion = -1;
@@ -158,7 +154,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     //躁动由驾驭度推导,不做独立存储;阈值与反噬判定同源
                     entry.State = record.Mastery < WraithDefinition.RestlessThreshold ? OniGhostState.Restless : OniGhostState.Engraved;
                     entry.Mastery = record.Mastery;
-                    entry.CanAttune = definition.Ability != null && WraithDirector.ContentActiveFor(definition);
+                    entry.CanAttune = definition.Attunement != null;
                     //Bound 即见来历赋力;PactRenewed 仍落档但不挡簿面
                     entry.Origin = () => definition.Origin.Value;
                     entry.Power = () => definition.Power.Value;

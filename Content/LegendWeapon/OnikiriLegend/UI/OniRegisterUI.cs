@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             CloseHintFormat = this.GetLocalization(nameof(CloseHintFormat), () => "ESC · {0} · 点击卷外 收卷");
             MeiTabText = this.GetLocalization(nameof(MeiTabText), () => "改铭台");
             MeiTabHint = this.GetLocalization(nameof(MeiTabHint), () => "点击 移步");
-            AttuneChanged = this.GetLocalization(nameof(AttuneChanged), () => "「{0}」应声——借力已与它共鸣");
+            AttuneChanged = this.GetLocalization(nameof(AttuneChanged), () => "「{0}」应声——共鸣已定");
             AttuneActive = this.GetLocalization(nameof(AttuneActive), () => "共鸣中");
         }
         #endregion

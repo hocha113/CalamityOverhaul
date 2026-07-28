@@ -13,8 +13,6 @@ namespace CalamityOverhaul.Content.Wraiths.Core
 
         /// <summary>死机入场浮字</summary>
         public static LocalizedText HaltPopup { get; private set; }
-        /// <summary>死机窗头顶提示，{0}=借力键</summary>
-        public static LocalizedText RitePrompt { get; private set; }
         /// <summary>首次铭刻回执，{0}=鬼名</summary>
         public static LocalizedText RiteFirstBind { get; private set; }
         /// <summary>认主回执，{0}=鬼名</summary>
@@ -25,16 +23,8 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         public static LocalizedText RiteDeniedSealed { get; private set; }
         /// <summary>他人挣脱体仪式被拒</summary>
         public static LocalizedText RiteDeniedEscaped { get; private set; }
-        /// <summary>借力拒，未持载体</summary>
-        public static LocalizedText PowerDeniedNoVessel { get; private set; }
-        /// <summary>借力拒，鬼正挣脱在外</summary>
-        public static LocalizedText PowerDeniedEscaped { get; private set; }
-        /// <summary>借力拒，簿上无可借</summary>
-        public static LocalizedText PowerDeniedNoBound { get; private set; }
-        /// <summary>借力拒，冷却中</summary>
-        public static LocalizedText PowerDeniedCooldown { get; private set; }
-        /// <summary>犯戒回执，{0}=鬼名</summary>
-        public static LocalizedText PowerTaboo { get; private set; }
+        /// <summary>操作需要厉鬼载体</summary>
+        public static LocalizedText VesselRequired { get; private set; }
         /// <summary>替死成功，{0}=替死对象</summary>
         public static LocalizedText ScapeGhostActivated { get; private set; }
         /// <summary>没有可承受替死的对象</summary>
@@ -58,17 +48,12 @@ namespace CalamityOverhaul.Content.Wraiths.Core
 
         void ICWRLoader.LoadData() {
             HaltPopup = this.GetLocalization(nameof(HaltPopup), () => "死机");
-            RitePrompt = this.GetLocalization(nameof(RitePrompt), () => "[{0}] 落名于簿");
             RiteFirstBind = this.GetLocalization(nameof(RiteFirstBind), () => "「{0}」落名于簿");
             RiteRenewPact = this.GetLocalization(nameof(RiteRenewPact), () => "「{0}」重续了契约——它认得这只手了");
             RiteResubdue = this.GetLocalization(nameof(RiteResubdue), () => "「{0}」被按回了簿上");
             RiteDeniedSealed = this.GetLocalization(nameof(RiteDeniedSealed), () => "封印未解，名讳不可示人");
             RiteDeniedEscaped = this.GetLocalization(nameof(RiteDeniedEscaped), () => "它不认这只手——去找放走它的人");
-            PowerDeniedNoVessel = this.GetLocalization(nameof(PowerDeniedNoVessel), () => "手中无刀，簿上无名");
-            PowerDeniedEscaped = this.GetLocalization(nameof(PowerDeniedEscaped), () => "簿上的名讳空着——它还在外面");
-            PowerDeniedNoBound = this.GetLocalization(nameof(PowerDeniedNoBound), () => "簿上无可借之力");
-            PowerDeniedCooldown = this.GetLocalization(nameof(PowerDeniedCooldown), () => "它还不肯再次应声");
-            PowerTaboo = this.GetLocalization(nameof(PowerTaboo), () => "犯戒——「{0}」的名讳在簿上洇开");
+            VesselRequired = this.GetLocalization(nameof(VesselRequired), () => "身上没有可承载厉鬼的器物");
             ScapeGhostActivated = this.GetLocalization(nameof(ScapeGhostActivated), () => "「替死」——{0}替你承下了这次死亡");
             ScapeGhostNoTarget = this.GetLocalization(nameof(ScapeGhostNoTarget), () => "四野无活物可替，印记随你的命一同散去");
             ScapeGhostDeathBroadcast = this.GetLocalization(nameof(ScapeGhostDeathBroadcast), () => "{0}替{1}承下了这劫——{2}");
@@ -83,17 +68,12 @@ namespace CalamityOverhaul.Content.Wraiths.Core
 
         void ICWRLoader.UnLoadData() {
             HaltPopup = null;
-            RitePrompt = null;
             RiteFirstBind = null;
             RiteRenewPact = null;
             RiteResubdue = null;
             RiteDeniedSealed = null;
             RiteDeniedEscaped = null;
-            PowerDeniedNoVessel = null;
-            PowerDeniedEscaped = null;
-            PowerDeniedNoBound = null;
-            PowerDeniedCooldown = null;
-            PowerTaboo = null;
+            VesselRequired = null;
             ScapeGhostActivated = null;
             ScapeGhostNoTarget = null;
             ScapeGhostDeathBroadcast = null;

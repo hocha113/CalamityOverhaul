@@ -548,7 +548,7 @@ OnikiriText: {
 		// CloseHintFormat: ESC · {0} · click outside to roll up
 		// MeiTabText: Inscription Stand
 		// MeiTabHint: Click to step over
-		// AttuneChanged: 「{0}」answers — your borrowed power is now attuned to it
+		// AttuneChanged: 「{0}」answers — the attunement is set
 		// AttuneActive: Attuned
 	}
 

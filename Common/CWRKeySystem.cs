@@ -34,7 +34,6 @@ namespace CalamityOverhaul.Common
         public static ModKeybind WeponSkill_Q { get; private set; }
         public static ModKeybind WeponSkill_R { get; private set; }
         public static ModKeybind Accessory_Skills { get; private set; }
-        public static ModKeybind Wraith_Power { get; private set; }
 
         public override void SetStaticDefaults() {
             Notbound = this.GetLocalization(nameof(Notbound), () => "[未绑定按键]");
@@ -65,8 +64,6 @@ namespace CalamityOverhaul.Common
             WeponSkill_Q = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_Q), "Q");
             WeponSkill_R = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_R), "R");
             Accessory_Skills = KeybindLoader.RegisterKeybind(mod, nameof(Accessory_Skills), "V");
-            //键位始终注册；是否有可借内容由 WraithPlayer/ContentActiveFor 在运行期裁定。
-            Wraith_Power = KeybindLoader.RegisterKeybind(mod, nameof(Wraith_Power), "P");
         }
 
         public static bool IsKeybindUnbound(ModKeybind keybind, InputMode mode = InputMode.Keyboard) {
@@ -108,7 +105,6 @@ namespace CalamityOverhaul.Common
             CyberwareSkill_Key = null;
             CyberwareRadial_Key = null;
             VoidTimeShift_Key = null;
-            Wraith_Power = null;
         }
     }
 }

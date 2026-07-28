@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -134,24 +134,24 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             }
         }
 
-        //====赋力====
-        private WraithAbility ability;
-        private bool abilityCreated;
+        //====共鸣====
+        private WraithAttunement attunement;
+        private bool attunementCreated;
 
-        /// <summary>赋力工厂，默认 null；全局单例无状态，冷却在 WraithPlayer</summary>
-        public virtual WraithAbility CreateAbility() => null;
+        /// <summary>共鸣工厂，默认 null；返回非 null 的定义可在点鬼簿中选中。</summary>
+        public virtual WraithAttunement CreateAttunement() => null;
 
-        /// <summary>缓存的赋力单例</summary>
-        public WraithAbility Ability {
+        /// <summary>缓存的无状态共鸣实例。</summary>
+        public WraithAttunement Attunement {
             get {
-                if (!abilityCreated) {
-                    abilityCreated = true;
-                    ability = CreateAbility();
-                    if (ability != null) {
-                        ability.Definition = this;
+                if (!attunementCreated) {
+                    attunementCreated = true;
+                    attunement = CreateAttunement();
+                    if (attunement != null) {
+                        attunement.Definition = this;
                     }
                 }
-                return ability;
+                return attunement;
             }
         }
     }

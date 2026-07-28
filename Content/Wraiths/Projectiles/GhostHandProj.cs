@@ -1,13 +1,15 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.Wraiths.Abilities;
+using CalamityOverhaul.Content.Wraiths.Attunements;
 using CalamityOverhaul.Content.Wraiths.Buffs;
+using CalamityOverhaul.Content.Wraiths.Core;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -15,9 +17,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Wraiths.Projectiles
 {
     /// <summary>
-    /// 鬼手本体，纯顶点绘制无贴图。四态：潜伏索敌 → 扑抓 → 攥握压制 → 缩回。<br/>
-    /// ai[0]=状态 ai[1]=计时 ai[2]=驾驭度；目标与朝向走 SendExtraAI；
-    /// 定时切换各端自走，选目标/提前松手 owner 决策后 netUpdate
+    /// 鬼手本体，纯顶点绘制无贴图。常驻循环：背后待机 → 扑抓 → 攥握压制 → 回位；<br/>
+    /// 仅在失去手持共鸣资格时退场。ai[0]=状态 ai[1]=计时 ai[2]=驾驭度；
+    /// 目标与朝向走 SendExtraAI，索敌和退场由 owner 决策后同步
     /// </summary>
     internal sealed class GhostHandProj : ModProjectile
     {
@@ -25,10 +27,11 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
         private enum HandState
         {
-            Lurking = 0,     //背后漂浮索敌
-            Lunging,         //向目标扑抓
-            Gripping,        //攥握压制
-            Retracting       //收臂消散
+            Idle = 0,
+            Lunging,
+            Gripping,
+            Returning,
+            Dismissing
         }
 
         private ref float StateRaw => ref Projectile.ai[0];
@@ -63,20 +66,24 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         private readonly Vector2[,] fingerJoints = new Vector2[5, 3];
 
         //==== 时长 ====
-        private const int LurkTimeout = 240;
+        private const int InitialScanDelay = 18;
+        private const int ReacquireDelay = 45;
         private const int LungeDuration = 20;
-        private const int RetractDuration = 18;
+        private const int ReturnDuration = 20;
+        private const int DismissDuration = 18;
         private int GripDuration => (int)MathHelper.Lerp(60f, 120f, MathHelper.Clamp(Mastery, 0f, 1f));
 
         //==== 视觉状态（本地平滑）====
-        private HandState prevState = HandState.Lurking;
+        private HandState prevState = HandState.Idle;
         private int visualAge;
+        private int reacquireTimer;
         private float fingerCurl;
         private float gripBlend;
         private float opacitySmooth;
         private float drawOpacity;
         private Vector2 lungeStart;
-        private Vector2 retractStart;
+        private Vector2 returnStart;
+        private Vector2 dismissStart;
         private int wispTimer;
 
         private float Seed => Projectile.identity * 0.137f % 1f;
@@ -87,10 +94,35 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             Projectile.friendly = false;
             Projectile.hostile = false;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 600;
+            Projectile.timeLeft = 2;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.netImportant = true;
+        }
+
+        public override void OnSpawn(IEntitySource source) {
+            ownerDirection = Owner.direction;
+            UpdateShoulderPosition();
+            Projectile.Center = IdleHoverPosition();
+            for (int i = 0; i < ArmSegmentCount; i++) {
+                armSegments[i] = Vector2.Lerp(Projectile.Center, shoulderPos, i / (float)(ArmSegmentCount - 1));
+            }
+
+            if (VaultUtils.isServer) {
+                return;
+            }
+            for (int i = 0; i < 10; i++) {
+                Vector2 pos = shoulderPos + new Vector2(Main.rand.NextFloat(-14f, 14f), Main.rand.NextFloat(-16f, 10f));
+                Vector2 velocity = new(
+                    Main.rand.NextFloat(-0.6f, 0.6f) - Owner.direction * 0.4f,
+                    Main.rand.NextFloat(-1.3f, -0.4f));
+                Color color = Color.Lerp(new Color(96, 12, 18), new Color(150, 22, 30), Main.rand.NextFloat());
+                PRTLoader.NewParticle<PRT_Smoke>(pos, velocity, color, Main.rand.NextFloat(0.09f, 0.15f))
+                    ?.Configure(Main.rand.Next(26, 44), Main.rand.NextFloat(0.4f, 0.65f),
+                        Main.rand.NextFloat(-0.02f, 0.02f));
+            }
+            SoundEngine.PlaySound(SoundID.NPCDeath6 with { Pitch = -0.85f, Volume = 0.4f }, Owner.Center);
+            SoundEngine.PlaySound(SoundID.Item32 with { Pitch = -0.7f, Volume = 0.3f }, Owner.Center);
         }
 
         /// <summary>自管位移</summary>
@@ -109,26 +141,32 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         //==== 主循环 ====
 
         public override void AI() {
-            if (!Owner.active || Owner.dead) {
+            if (!Owner.active) {
                 Projectile.Kill();
                 return;
+            }
+
+            Projectile.timeLeft = 2;
+            if (Projectile.IsOwnedByLocalPlayer() && State != HandState.Dismissing
+                && (Owner.dead || !HasValidAttunement())) {
+                Transition(HandState.Dismissing);
             }
 
             visualAge++;
             StateTimer++;
             UpdateShoulderPosition();
 
-            switch (State) {
-                case HandState.Lurking: LurkingBehavior(); break;
-                case HandState.Lunging: LungingBehavior(); break;
-                case HandState.Gripping: GrippingBehavior(); break;
-                case HandState.Retracting: RetractingBehavior(); break;
-            }
-
-            //状态切换沿（各端本地各触发一次）
             if (State != prevState) {
                 OnStateChanged(State);
                 prevState = State;
+            }
+
+            switch (State) {
+                case HandState.Idle: IdleBehavior(); break;
+                case HandState.Lunging: LungingBehavior(); break;
+                case HandState.Gripping: GrippingBehavior(); break;
+                case HandState.Returning: ReturningBehavior(); break;
+                case HandState.Dismissing: DismissingBehavior(); break;
             }
 
             UpdateArmIK();
@@ -136,17 +174,29 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             UpdateVisuals();
         }
 
+        private bool HasValidAttunement() {
+            WraithVesselHandle vessel = WraithVessels.ResolveHeld(Owner);
+            return vessel.IsValid
+                && vessel.Store.AttunedKey == GhostHandAttunement.Key
+                && vessel.Store.TryGet(GhostHandAttunement.Key, out WraithProgressRecord record)
+                && record.State == WraithBindState.Bound;
+        }
+
         private void UpdateShoulderPosition() {
-            //潜伏期跟随玩家转身，出手后锁向
-            if (State == HandState.Lurking) {
+            if (State is HandState.Idle or HandState.Returning or HandState.Dismissing) {
                 ownerDirection = Owner.direction;
             }
             shoulderPos = Owner.Center + new Vector2(-ownerDirection * 28f, -8f);
         }
 
         private void Transition(HandState next) {
+            if (State == next) {
+                return;
+            }
             State = next;
             StateTimer = 0;
+            OnStateChanged(next);
+            prevState = next;
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Projectile.netUpdate = true;
             }
@@ -154,29 +204,28 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
         //==== 行为 ====
 
-        private Vector2 LurkHoverPos() {
+        private Vector2 IdleHoverPosition() {
             float t = Main.GlobalTimeWrappedHourly + Seed * MathHelper.TwoPi;
             Vector2 bob = new((float)Math.Sin(t * 1.7f) * 9f, (float)Math.Cos(t * 1.3f) * 7f);
             return shoulderPos + new Vector2(-ownerDirection * 34f, -52f) + bob;
         }
 
-        private void LurkingBehavior() {
+        private void IdleBehavior() {
             armTension = 0.3f;
-            MoveToPosition(LurkHoverPos(), 0.12f);
+            MoveToPosition(IdleHoverPosition(), 0.12f);
 
-            //owner 索敌，找到即扑
-            if (Projectile.IsOwnedByLocalPlayer() && StateTimer >= 18f && (int)StateTimer % 6 == 0) {
-                NPC target = FindGrabTarget();
-                if (target != null) {
-                    targetNPCID = target.whoAmI;
-                    Transition(HandState.Lunging);
-                    return;
-                }
+            if (reacquireTimer > 0) {
+                reacquireTimer--;
+                return;
+            }
+            if (!Projectile.IsOwnedByLocalPlayer() || StateTimer < InitialScanDelay || (int)StateTimer % 6 != 0) {
+                return;
             }
 
-            //寻不见，失望缩回
-            if (StateTimer >= LurkTimeout) {
-                Transition(HandState.Retracting);
+            NPC target = FindGrabTarget();
+            if (target != null) {
+                targetNPCID = target.whoAmI;
+                Transition(HandState.Lunging);
             }
         }
 
@@ -184,7 +233,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             NPC best = null;
             float bestSq = float.MaxValue;
             foreach (NPC npc in Main.ActiveNPCs) {
-                if (!GhostHandAbility.IsValidTarget(npc, Owner.Center)) {
+                if (!GhostHandAttunement.CanGrab(npc, Owner.Center)) {
                     continue;
                 }
                 float distSq = Vector2.DistanceSquared(npc.Center, Owner.Center);
@@ -199,7 +248,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         private void LungingBehavior() {
             armTension = 0.95f;
             if (!IsTargetValid()) {
-                Transition(HandState.Retracting);
+                Transition(HandState.Returning);
                 return;
             }
 
@@ -223,18 +272,14 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             Projectile.Center = next;
 
             if (StateTimer >= LungeDuration) {
-                State = HandState.Gripping;
-                StateTimer = 0;
-                if (Projectile.IsOwnedByLocalPlayer()) {
-                    Projectile.netUpdate = true;
-                }
+                Transition(HandState.Gripping);
             }
         }
 
         private void GrippingBehavior() {
             armTension = MathHelper.Lerp(armTension, 1f, 0.15f);
             if (!IsTargetValid()) {
-                Transition(HandState.Retracting);
+                Transition(HandState.Returning);
                 return;
             }
 
@@ -242,7 +287,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
             //拖出臂展被扯脱
             if (Vector2.Distance(shoulderPos, target.Center) > MaxReach * 1.08f) {
-                Transition(HandState.Retracting);
+                Transition(HandState.Returning);
                 return;
             }
 
@@ -274,11 +319,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             }
 
             if (StateTimer >= duration) {
-                State = HandState.Retracting;
-                StateTimer = 0;
-                if (Projectile.IsOwnedByLocalPlayer()) {
-                    Projectile.netUpdate = true;
-                }
+                Transition(HandState.Returning);
             }
         }
 
@@ -290,15 +331,28 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             return near < 5f ? 1f - near / 5f : 0f;
         }
 
-        private void RetractingBehavior() {
+        private void ReturningBehavior() {
             armTension = 0.5f;
-            float t = MathHelper.Clamp(StateTimer / RetractDuration, 0f, 1f);
-            Vector2 home = shoulderPos + new Vector2(-ownerDirection * 22f, -24f);
-            Vector2 next = Vector2.Lerp(retractStart, home, VaultUtils.EaseOutCubic(t));
+            float t = MathHelper.Clamp(StateTimer / ReturnDuration, 0f, 1f);
+            Vector2 next = Vector2.Lerp(returnStart, IdleHoverPosition(), VaultUtils.EaseOutCubic(t));
             Projectile.velocity = next - Projectile.Center;
             Projectile.Center = next;
 
-            if (StateTimer >= RetractDuration) {
+            if (StateTimer >= ReturnDuration) {
+                targetNPCID = -1;
+                Transition(HandState.Idle);
+            }
+        }
+
+        private void DismissingBehavior() {
+            armTension = 0.45f;
+            float t = MathHelper.Clamp(StateTimer / DismissDuration, 0f, 1f);
+            Vector2 home = shoulderPos + new Vector2(-ownerDirection * 22f, -24f);
+            Vector2 next = Vector2.Lerp(dismissStart, home, VaultUtils.EaseOutCubic(t));
+            Projectile.velocity = next - Projectile.Center;
+            Projectile.Center = next;
+
+            if (StateTimer >= DismissDuration) {
                 Projectile.Kill();
             }
         }
@@ -320,8 +374,16 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                 case HandState.Gripping:
                     PlayCatchFx();
                     break;
-                case HandState.Retracting:
-                    retractStart = Projectile.Center;
+                case HandState.Returning:
+                    returnStart = Projectile.Center;
+                    reacquireTimer = ReacquireDelay;
+                    break;
+                case HandState.Idle:
+                    targetNPCID = -1;
+                    break;
+                case HandState.Dismissing:
+                    targetNPCID = -1;
+                    dismissStart = Projectile.Center;
                     if (!VaultUtils.isServer) {
                         SoundEngine.PlaySound(SoundID.NPCDeath6 with { Volume = 0.28f, Pitch = -0.9f }, Projectile.Center);
                     }
@@ -427,9 +489,8 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         //==== 视觉更新 ====
 
         private void UpdateVisuals() {
-            //指曲目标：潜伏微握呼吸，扑抓张开，攥握包死，缩回松劲
             float curlTarget = State switch {
-                HandState.Lurking => 0.22f + 0.06f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2.3f + Seed * 9f),
+                HandState.Idle => 0.22f + 0.06f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2.3f + Seed * 9f),
                 HandState.Lunging => 0.05f,
                 HandState.Gripping => 0.85f + SqueezePulse(GripDuration) * 0.15f,
                 _ => 0.35f,
@@ -439,9 +500,10 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             gripBlend = MathHelper.Lerp(gripBlend, State == HandState.Gripping ? 1f : 0f, 0.15f);
 
             float opacityTarget = State switch {
-                HandState.Lurking => 0.35f,
+                HandState.Idle => 0.35f,
                 HandState.Lunging => 0.85f,
                 HandState.Gripping => 0.9f,
+                HandState.Returning => 0.55f,
                 _ => 0f,
             };
             opacitySmooth = MathHelper.Lerp(opacitySmooth, opacityTarget, 0.16f);
@@ -472,7 +534,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                 return false;
             }
             NPC target = Main.npc[targetNPCID];
-            return target.active && target.CanBeChasedBy();
+            return target.active && target.CanBeChasedBy() && !target.boss;
         }
 
         public override void OnKill(int timeLeft) {

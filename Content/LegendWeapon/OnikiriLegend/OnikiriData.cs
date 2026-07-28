@@ -81,7 +81,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 record.Mastery = mastery;
             }
             Wraiths.BumpVersion();
-            Wraiths.TryAttune(ScapeGhostKey);
             SeedFactoryMei();
         }
 
@@ -107,9 +106,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 //补种老档缺失的定义初始态(只补缺失绝不覆盖):存档后新加的鬼、
                 //以及生来封印者(井中鸣)在旧刀上也封得住
                 Wraiths.SeedMissingStates();
-                if (string.IsNullOrEmpty(Wraiths.AttunedKey)) {
-                    Wraiths.TryAttune(ScapeGhostKey);
-                }
             }
             else {
                 SeedFactoryState();

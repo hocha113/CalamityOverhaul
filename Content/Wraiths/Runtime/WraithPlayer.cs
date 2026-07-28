@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -15,7 +14,7 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.Wraiths.Runtime
 {
     /// <summary>
-    /// 每玩家状态。侵蚀/omen/借力键/反噬；字段全实例级
+    /// 每玩家状态。侵蚀/omen/共鸣/反噬；字段全实例级
     /// </summary>
     internal class WraithPlayer : ModPlayer
     {
@@ -65,8 +64,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         private int erosionIdleTimer;
         private int lastCueTier;
         private int backlashCheckTimer;
-        //赋力/反噬冷却，键=定义 Key
-        private readonly Dictionary<string, int> abilityCooldowns = [];
+        //反噬冷却，键=定义 Key
         private readonly Dictionary<string, long> backlashCooldownUntil = [];
         //上一秒在场挣脱体，去向判读用
         private readonly HashSet<string> escapedWatch = [];
@@ -263,123 +261,21 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             }
         }
 
-        //====借力键====
+        //====共鸣====
 
-        public override void ProcessTriggers(TriggersSet triggersSet) {
-            //上线闸关则键位 null，输入静默
-            if (CWRKeySystem.Wraith_Power?.JustPressed != true || Player.dead || Player.CCed) {
-                return;
-            }
-            if (WraithRites.PresentationBusy?.Invoke() == true) {
-                return;
-            }
-            HandlePowerKey();
-        }
-
-        private void HandlePowerKey() {
+        /// <summary>只投射当前手持载体明确选中的共鸣效果。</summary>
+        private void UpdateAttunement() {
             WraithVesselHandle vessel = WraithVessels.ResolveHeld(Player);
-            if (!vessel.IsValid) {
-                VaultUtils.Text(WraithSystemText.PowerDeniedNoVessel.Value, Color.DarkGray);
-                return;
-            }
-            //死机仪式优先
-            if (WraithRites.TryPerform(Player, vessel)) {
-                return;
-            }
-            TryCastAbility(vessel);
-        }
-
-        /// <summary>共鸣之鬼优先取点鬼簿选择；旧档无选择时回退到最高驾驭度。</summary>
-        private WraithDefinition ResolveAttuned(WraithProgressStore store, out WraithProgressRecord record, out bool escapedBlocked) {
-            record = null;
-            escapedBlocked = false;
-
-            if (!string.IsNullOrEmpty(store.AttunedKey)
-                && store.TryGet(store.AttunedKey, out WraithProgressRecord selectedRecord)
-                && selectedRecord.State == WraithBindState.Bound
-                && WraithRegistry.TryGet(store.AttunedKey, out WraithDefinition selected)
-                && selected.Ability != null
-                && WraithDirector.ContentActiveFor(selected)) {
-                record = selectedRecord;
-                if (WraithBacklash.AnyEscapedAlive(selected.Key, Player.whoAmI)) {
-                    escapedBlocked = true;
-                    return null;
-                }
-                return selected;
-            }
-
-            WraithDefinition best = null;
-            foreach ((string key, WraithProgressRecord candidate) in store.Records) {
-                if (candidate.State != WraithBindState.Bound) {
-                    continue;
-                }
-                if (!WraithRegistry.TryGet(key, out WraithDefinition definition) || definition.Ability == null) {
-                    continue;
-                }
-                if (!WraithDirector.ContentActiveFor(definition)) {
-                    continue;
-                }
-                if (WraithBacklash.AnyEscapedAlive(key, Player.whoAmI)) {
-                    escapedBlocked = true;
-                    continue;
-                }
-                if (best == null || candidate.Mastery > record.Mastery) {
-                    best = definition;
-                    record = candidate;
-                }
-            }
-            return best;
-        }
-
-        private void TryCastAbility(WraithVesselHandle vessel) {
-            WraithDefinition definition = ResolveAttuned(vessel.Store, out WraithProgressRecord record, out bool escapedBlocked);
-            if (definition == null) {
-                var line = escapedBlocked ? WraithSystemText.PowerDeniedEscaped : WraithSystemText.PowerDeniedNoBound;
-                VaultUtils.Text(line.Value, Color.DarkGray);
-                return;
-            }
-            WraithAbility ability = definition.Ability;
-            if (abilityCooldowns.TryGetValue(definition.Key, out int cooldown) && cooldown > 0) {
-                VaultUtils.Text(WraithSystemText.PowerDeniedCooldown.Value, Color.DarkGray);
-                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.5f, Volume = 0.4f });
+            if (!vessel.IsValid || string.IsNullOrEmpty(vessel.Store.AttunedKey)
+                || !vessel.Store.TryGet(vessel.Store.AttunedKey, out WraithProgressRecord record)
+                || record.State != WraithBindState.Bound
+                || !WraithRegistry.TryGet(vessel.Store.AttunedKey, out WraithDefinition definition)
+                || definition.Attunement == null) {
                 return;
             }
 
-            WraithAbilityContext ctx = new() {
-                Player = Player,
-                VesselItem = vessel.Item,
-                Store = vessel.Store,
-                Record = record,
-                AimWorld = Main.MouseWorld,
-            };
-            WraithCastResult result = ability.Cast(ctx);
-            if (result == WraithCastResult.Fail) {
-                return;
-            }
-
-            //双层代价，磨损后 SyncSlot
-            float wear = ability.MasteryWear + (result == WraithCastResult.Taboo ? ability.TabooPenalty : 0f);
-            record.Mastery = MathHelper.Clamp(record.Mastery - wear, 0f, 1f);
-            vessel.Store.BumpVersion();
-            WraithVessels.SyncSlot(Player, vessel.Item);
-            AddErosion(ability.ErosionCost);
-            float revivalCost = result == WraithCastResult.Taboo ? 0.16f : 0.08f;
-            AddRevival(revivalCost);
-            abilityCooldowns[definition.Key] = ability.CooldownTicks;
-
-            if (result == WraithCastResult.Taboo) {
-                VaultUtils.Text(WraithSystemText.PowerTaboo.Format(definition.DisplayName.Value), new Color(190, 60, 70));
-                SoundEngine.PlaySound(SoundID.NPCDeath52 with { Pitch = -0.3f, Volume = 0.4f });
-            }
-
-            //世界改动权威，演出本端即时
-            if (VaultUtils.isClient) {
-                WraithNet.SendAbilityCast(definition, ctx.AimWorld, record.Mastery);
-            }
-            else {
-                ability.ExecuteWorld(Player, ctx.AimWorld, record.Mastery);
-            }
-            ability.PlayWorldFx(Player, ctx.AimWorld);
+            WraithAttunementContext context = new(Player, vessel.Item, vessel.Store, record);
+            definition.Attunement.Update(in context);
         }
 
         //====主循环====
@@ -393,20 +289,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 return;
             }
 
-            //冷却步进
-            if (abilityCooldowns.Count > 0) {
-                keyScratch.Clear();
-                keyScratch.AddRange(abilityCooldowns.Keys);
-                foreach (string key in keyScratch) {
-                    int left = abilityCooldowns[key] - 1;
-                    if (left <= 0) {
-                        abilityCooldowns.Remove(key);
-                    }
-                    else {
-                        abilityCooldowns[key] = left;
-                    }
-                }
-            }
+            UpdateAttunement();
 
             //侵蚀消退与环境征兆
             if (erosionIdleTimer < ErosionDecayDelay) {
@@ -527,7 +410,6 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         //====生命周期与存档====
 
         public override void OnEnterWorld() {
-            abilityCooldowns.Clear();
             backlashCooldownUntil.Clear();
             escapedWatch.Clear();
             escapedPending.Clear();
