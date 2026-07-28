@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Wraiths.UI
 
             float screenW = PlayerInput.RealScreenWidth / Main.UIScale;
             float barX = (screenW - BarW) * 0.5f;
-            float barY = -BarH + appear * (BarH + 14f);
+            float barY = -BarH + appear * (BarH + 14f) + 100;
 
             //--- shader 绘制进度条 ---
             Effect effect = EffectLoader.WraithRevivalHud?.Value;
