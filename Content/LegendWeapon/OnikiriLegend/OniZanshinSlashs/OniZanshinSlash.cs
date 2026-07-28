@@ -152,7 +152,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             bladeScale = held.type == OnikiriOverride.ID
                 ? OnikiriOverride.GetBladeScale(held)
                 : 1f;
-            bladePose.Scale = 0.9f * bladeScale;
+            bladePose.Scale = 0.9f * (0.1f + bladeScale * 0.8f);
 
             //反拔起手继承交接刀角,无交接退回身后预备位
             if (!OniBladeHandoff.TryPeek(Owner, out drawStartRot, out _)) {

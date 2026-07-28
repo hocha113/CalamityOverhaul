@@ -320,7 +320,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Owner.velocity = Vector2.Zero;
             Owner.fallStart = (int)(Owner.position.Y / 16f);
             traveled += moved;
-            Owner.GivePlayerImmuneState(10);
+            Owner.GivePlayerImmuneState(30);
             HoldPose();
 
             //扫掠锚定身体并带前导/后补、起手贴脸与终点脸前的目标都不漏
