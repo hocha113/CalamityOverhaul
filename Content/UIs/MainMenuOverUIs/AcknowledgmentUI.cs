@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             if (ui == null) {
                 return;
             }
-            int targetID = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/ED_WEH");
+            int targetID = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/Future");
             for (int i = 0; i < Main.musicFade.Length; i++) {
                 if (i == targetID) {
                     continue;
