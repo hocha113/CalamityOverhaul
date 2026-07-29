@@ -45,9 +45,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
                     onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Doubt))
              .Say(NarrativeIds.Mayo, Line2.Value, Voice[2],
                     onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Ruminate))
-             .Say(NarrativeIds.Mayo, Line3.Value, Voice[3])
-             .Say(NarrativeIds.Mayo, Line4.Value, Voice[4],
+             .Say(NarrativeIds.Mayo, Line3.Value, Voice[3],
                     onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Doubt))
+             .Say(NarrativeIds.Mayo, Line4.Value, Voice[4])
              .Say(NarrativeIds.Mayo, Line5.Value, Voice[5],
                     onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Ruminate))
              .Say(NarrativeIds.Mayo, Line6.Value, Voice[6],
