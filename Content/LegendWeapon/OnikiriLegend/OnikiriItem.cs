@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
 using InnoVault.GameSystem;
@@ -58,13 +58,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             string flashStepInput = CWRKeySystem.GetKeybindText(CWRKeySystem.Onikiri_FlashStep,
                 CWRKeySystem.RightClickFallback.Value);
             tooltips.ReplacePlaceholder("[DASH]", flashStepInput);
-            tooltips.InsertHotkeyBinding(CWRKeySystem.Onikiri_Execute, noneTip: CWRKeySystem.Notbound.Value);
             OnikiriOverride.SetTooltip(Item, ref tooltips);
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             OnikiriPlayer okp = player.GetModPlayer<OnikiriPlayer>();
+            //处决后续优先消费该左键,禁止同沿补发肢解/残心/普攻
+            if (okp.TryExecutionAnnihilate(Item, edgeVerified: false)) {
+                return false;
+            }
             //里世界按下沿→肢解居合
             if (okp.TryClickDismember(Item)) {
                 return false;
@@ -73,6 +76,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (okp.TryZanshinStrike(Item, edgeVerified: false)) {
                 return false;
             }
+            okp.CancelExecutionIntent(settleFollowup: true);
             float bladeScale = OnikiriOverride.GetBladeScale(Item);
             CrimsonRendSlash.Fire(player, player.Center, velocity, damage, knockback, scale: bladeScale, source);
             return false;

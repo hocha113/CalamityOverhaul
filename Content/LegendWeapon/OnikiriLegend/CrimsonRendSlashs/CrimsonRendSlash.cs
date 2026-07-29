@@ -598,6 +598,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 return;
             }
             if (!scheduling) {
+                //处决后续优先消费按下沿,清缓冲防同点击再兑现
+                if (justPressed && Projectile.IsOwnedByLocalPlayer()
+                    && Owner.GetModPlayer<OnikiriPlayer>().TryExecutionAnnihilate(Item, edgeVerified: true)) {
+                    pressBuffer = 0;
+                    return;
+                }
                 //按下沿,里世界点中媒介/真身→肢解居合(不重启排拍)
                 if (justPressed && Projectile.IsOwnedByLocalPlayer()
                     && Owner.GetModPlayer<OnikiriPlayer>().TryClickDismember(Item)) {
@@ -612,6 +618,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 //签名拍软保留,不重启夺刀
                 if (OniBladeOccupancy.BladeReserved(Owner)) {
                     return;
+                }
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    Owner.GetModPlayer<OnikiriPlayer>().CancelExecutionIntent(settleFollowup: true);
                 }
                 scheduling = true;
                 if (timer - lastBeatFire > ComboResetFrames) {

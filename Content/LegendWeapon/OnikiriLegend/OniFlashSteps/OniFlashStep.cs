@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
@@ -17,7 +17,7 @@ using OKF = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps.On
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 {
-    /// <summary>神威疾走主控. ai[0]=瞄准角(弧度) ai[1]=冲刺距离(px) ai[2]=尺寸倍率,负值含连段收刃</summary>
+    /// <summary>神威疾走主控. ai[0]=瞄准角(弧度) ai[1]=冲刺距离(px,负值=处决疾走) ai[2]=尺寸倍率,负值含连段收刃</summary>
     internal class OniFlashStep : BaseHeldProj, IPrimitiveDrawable, IAdditiveDrawable, IOverlayDrawable, IOniBladeOccupant, IWarpDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -65,6 +65,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private readonly List<Vector2> path = new(16);
         private readonly HashSet<int> marked = new(16);
         private bool stanceGranted;
+        private NPC executionTarget;
+        private bool finishReported;
         private bool initialized;
         private int timer;
         private Vector2 dashDir;
@@ -114,7 +116,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 || timer <= (marked.Count == 0 ? stopFrame + WhiffReserveFrames : JudgmentFrame + NotoFlickFrames));
 
         private float DashAngle => Projectile.ai[0];
-        private float Distance => MathF.Max(Projectile.ai[1], 1f);
+        private bool IsExecutionDash => Projectile.ai[1] < 0f;
+        private float Distance => MathF.Max(MathF.Abs(Projectile.ai[1]), 1f);
 
         internal static int CalculateTravelFrames(float distance)
             => Math.Max((int)MathF.Ceiling(MathF.Max(distance, 1f) / DashSpeed + SpeedShapeExtraFrames), 2);
@@ -151,12 +154,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         /// <param name="damage">墨痕引爆伤害（每个被穿过的敌人全额一次）</param>
         /// <param name="knockback">击退</param>
         /// <param name="distance">冲刺距离(px)，实体阻挡提前止步</param>
+        /// <param name="executionDash">是否为免费处决疾走</param>
         /// <param name="scale">尺寸倍率（流带幅宽/粒子随之缩放）</param>
         /// <param name="interruptCombo">是否先播放连段收刃</param>
         /// <param name="interruptRotation">被接管时的实体刀角</param>
         /// <param name="source">生成源，null 则回退 Misc 源</param>
         public static Projectile Fire(Player player, Vector2 aim, int damage, float knockback,
-            float distance, float scale = 1f, bool interruptCombo = false,
+            float distance, bool executionDash = false, float scale = 1f, bool interruptCombo = false,
             float interruptRotation = 0f, IEntitySource source = null) {
             source ??= player.GetSource_Misc("CWR_OniFlashStep");
             Vector2 aimDir = aim.SafeNormalize(Vector2.UnitX * player.direction);
@@ -169,9 +173,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             float aimAngle = aimDir.ToRotation();
             Vector2 encodedPose = interruptCombo ? interruptRotation.ToRotationVector2() : Vector2.Zero;
             float encodedScale = MathF.Abs(scale) * (interruptCombo ? -1f : 1f);
+            float encodedDistance = MathF.Abs(distance) * (executionDash ? -1f : 1f);
             return Projectile.NewProjectileDirect(source, player.Center, encodedPose
                 , ModContent.ProjectileType<OniFlashStep>(), damage, knockback, player.whoAmI
-                , ai0: aimAngle, ai1: distance, ai2: encodedScale);
+                , ai0: aimAngle, ai1: encodedDistance, ai2: encodedScale);
         }
 
         private static bool IsGrounded(Player player) {
@@ -431,13 +436,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         /// <summary>表世界的樱流衔接、跑满计划距离时疾走输入仍按住</summary>
         private bool TryChainIntoSakura() {
-            if (chained || !Projectile.IsOwnedByLocalPlayer() || !OnikiriPlayer.FlashStepInputHeld) {
+            if (IsExecutionDash || chained || !Projectile.IsOwnedByLocalPlayer()
+                || !OnikiriPlayer.FlashStepInputHeld) {
                 return false;
             }
             if (!Owner.GetModPlayer<OnikiriPlayer>().TryChainSakuraFlight(dashDir, Projectile.GetSource_FromAI())) {
                 return false;
             }
             chained = true;
+            finishReported = true;
+            Owner.GetModPlayer<OnikiriPlayer>().OnFlashStepAborted(executionDash: false);
             stopFrame = timer;
             headExt = MathF.Min(22f * sizeMul, MathF.Max(FreeAheadBudget() - headOffset - 4f, 0f));
             return true;
@@ -451,9 +459,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Owner.CWR().GetScreenShake(2.2f);
 
             if (Projectile.IsOwnedByLocalPlayer()) {
-                Owner.GetModPlayer<OnikiriPlayer>().OpenZanshinWindow(
-                    JudgmentFrame - timer, marked.Count, dashDir);
-                Owner.GetModPlayer<OnikiriPlayer>().ArmSilentKillFromDash();
+                finishReported = true;
+                OnikiriPlayer onikiri = Owner.GetModPlayer<OnikiriPlayer>();
+                onikiri.OnFlashStepFinished(IsExecutionDash, executionTarget, dashDir);
+                if (!IsExecutionDash && !onikiri.ExecutionDashQueued) {
+                    onikiri.OpenZanshinWindow(JudgmentFrame - timer, marked.Count, dashDir);
+                }
+                onikiri.ArmSilentKillFromDash();
             }
 
             if (!Main.dedServ) {
@@ -495,6 +507,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 }
 
                 marked.Add(npc.whoAmI);
+                if (IsExecutionDash && IsBetterExecutionTarget(npc, executionTarget)) {
+                    executionTarget = npc;
+                }
 
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     //墨痕走向与本次直线居合方向一致
@@ -525,6 +540,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                     return;
                 }
             }
+        }
+
+        private static bool IsBetterExecutionTarget(NPC candidate, NPC current) {
+            if (candidate == null || !candidate.active) {
+                return false;
+            }
+            if (current == null || !current.active) {
+                return true;
+            }
+            NPC candidateRoot = candidate.realLife >= 0 && candidate.realLife < Main.maxNPCs
+                ? Main.npc[candidate.realLife]
+                : candidate;
+            NPC currentRoot = current.realLife >= 0 && current.realLife < Main.maxNPCs
+                ? Main.npc[current.realLife]
+                : current;
+            if (candidateRoot.boss != currentRoot.boss) {
+                return candidateRoot.boss;
+            }
+            return candidateRoot.lifeMax > currentRoot.lifeMax;
         }
 
         /// <summary>纳刀帧、"锵"一声，墨痕们（各自对齐本帧）同时裂开；主控只负责声与光的确认</summary>
@@ -654,7 +688,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             }
         }
 
-        public override void OnKill(int timeLeft) => ReleaseHide();
+        public override void OnKill(int timeLeft) {
+            ReleaseHide();
+            if (!finishReported && Projectile.IsOwnedByLocalPlayer()) {
+                Owner.GetModPlayer<OnikiriPlayer>().OnFlashStepAborted(IsExecutionDash);
+            }
+        }
 
         /// <summary>蒸发进度 0..1（刹停前恒 0）</summary>
         private float RetractT => stopFrame < 0 ? 0f

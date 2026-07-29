@@ -595,8 +595,8 @@ OnikiriText: {
 		VigorValueFormat: "{0} / {1}"
 		StanceTitle: Stance
 		StanceValueFormat: "{0} / {1}"
-		StanceReadyLine: The edge has left its sheath — one draw remains
-		StanceHalfLine: Past the half — enough for an Annihilating Flash
+		StanceReadyLine: Stance complete — chain two dashes through a target
+		StanceHalfLine: Past the half — chain two dashes, then strike
 		StanceMeiHint: Click to open the Ghost Register
 		DomainTitle: Eye of the Oni Domain
 		DomainStateClosed: Shut — no domain unfolded
@@ -612,9 +612,10 @@ OnikiriOverride: {
 	DisplayName: 鬼切
 	Tooltip:
 		'''
-		按住左键驱动绯红裂空斩五段连段
-		右键消耗气力施展神威疾走，无敌帧穿过敌人视作格挡，为架势蓄势
-		[KEY] 处决：架势蓄满斩出终结乱舞，过半则为灭世一闪
+		Hold left-click to drive the five-beat Crimson Rend combo
+		[DASH] spends Vigor on Kamui Flash Step; above half Stance, dash again within one second for a free execution dash
+		At full Stance, passing through a target unleashes Finale Slash; otherwise left-click after the dash for Annihilating Flash
+		If neither execution is released, half of your remaining Vigor is lost
 		[Lang4]
 		legend_Text
 		'''

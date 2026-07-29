@@ -595,8 +595,8 @@ OnikiriText: {
 		VigorValueFormat: "{0} / {1}"
 		StanceTitle: 架势
 		StanceValueFormat: "{0} / {1}"
-		StanceReadyLine: 锋已离鞘——只欠一拔
-		StanceHalfLine: 势已过半——足以一记灭世一闪
+		StanceReadyLine: 势已圆满——双疾走穿身可终斩
+		StanceHalfLine: 势已过半——双疾走后可接灭世
 		StanceMeiHint: 点击 开点鬼簿
 		DomainTitle: 鬼域之眼
 		DomainStateClosed: 阖目——领域未展
@@ -613,8 +613,9 @@ OnikiriOverride: {
 	Tooltip:
 		'''
 		按住左键驱动绯红裂空斩五段连段
-		右键消耗气力施展神威疾走，无敌帧穿过敌人视作格挡，为架势蓄势
-		[KEY] 处决：架势蓄满斩出终结乱舞，过半则为灭世一闪
+		[DASH] 消耗气力施展神威疾走；架势过半时于一秒内再次疾走，可免费衔出处决疾走
+		满架势穿中目标释放终结乱舞；否则在疾走结束后按左键释放灭世一闪
+		两式均未兑现时，失去当前剩余气力的一半
 		[Lang4]
 		legend_Text
 		'''

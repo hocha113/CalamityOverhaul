@@ -290,8 +290,9 @@ OnikiriItem: {
 	Tooltip:
 		'''
 		Hold left-click to drive the five-beat Crimson Rend combo
-		[DASH] spends Vigor on the Kamui Flash Step; passing through foes with its immunity counts as a parry, building Stance
-		[KEY] to execute: full Stance unleashes the Finale Slash, half unleashes an Annihilating Flash
+		[DASH] spends Vigor on Kamui Flash Step; above half Stance, dash again within one second for a free execution dash
+		At full Stance, passing through a target unleashes Finale Slash; otherwise left-click after the dash for Annihilating Flash
+		If neither execution is released, half of your remaining Vigor is lost
 		[Lang4]
 		legend_Text
 		'''

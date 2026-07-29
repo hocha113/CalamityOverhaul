@@ -32,7 +32,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
     /// 鬼切资源层,气力+架势 owner 端自治不进网络/存档;
     /// 所持铭库(<see cref="OwnedMeiKeys"/>)例外,跟玩家存档.
     /// 疾走键未绑定时回退右键;表世界可衔樱流;交还帧开追斩窗;
-    /// <see cref="CWRKeySystem.Onikiri_Execute"/> 处决;里世界点选肢解.
+    /// 架势过半时可短窗双疾走处决,满势穿身乱舞,否则左键灭世;
+    /// 里世界左键点选肢解.
     /// HUD 经 <see cref="OnikiriResourceSource"/> 只读
     /// </summary>
     internal class OnikiriPlayer : ModPlayer
@@ -84,13 +85,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private const float StancePerZanshinSlash = 6f;
         /// <summary>锵后仍算"同帧"的宽限(帧):此窗内出刀视同与结算压拍,震屏减半</summary>
         private const int ZanshinSyncSlackTicks = 2;
-        /// <summary>终结乱舞焦点距离钳制(与疾走射程同量级,演出保持在可读范围)</summary>
-        private const float FinaleFocusMaxDist = 800f;
-        /// <summary>终结乱舞光标磁吸半径(按精确碰撞箱距离衡量)</summary>
-        private const float FinaleMagnetRadius = 200f;
-        /// <summary>光标点名允许略超射程的余量:玩家明确指着谁就成全谁</summary>
-        private const float FinaleCursorSlack = 260f;
-        /// <summary>命中记忆容量与保鲜期(帧):近 5 秒打过谁,处决就认得谁</summary>
+        /// <summary>普通疾走结束后的处决连携资格(缩放帧,约一秒)</summary>
+        private const int ExecutionChainWindowTicks = 60;
+        /// <summary>处决疾走结束后的灭世一闪输入窗(缩放帧)</summary>
+        private const int ExecutionAnnihilateWindowTicks = 90;
+        /// <summary>灭世一闪预输入沿用残心的短举刀交接</summary>
+        private const int ExecutionAnnihilateHandoffFrames = ZanshinAutoHandoffFrames;
+        /// <summary>命中记忆容量与保鲜期(帧):近 5 秒打过谁,供脱战与铭刻判定</summary>
         private const int HitMemoryCapacity = 8;
         private const int HitMemoryLifeTicks = 300;
 
@@ -180,7 +181,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private Vector2 zanshinBufferedMouseScreen;
         private bool prevMouseLeft;         //Shoot 路径按下沿鉴别,防资格期自动重用
 
-        //====命中记忆:处决智能选点的第二层依据====
+        //====处决疾走(owner 端自治)====
+        private enum ExecutionTier : byte
+        {
+            None,
+            Half,
+            Full,
+        }
+        private int executionChainWindow;
+        private bool normalDashInFlight;
+        private bool executionDashQueued;
+        private ExecutionTier queuedExecutionTier;
+        private ExecutionTier executionTierInFlight;
+        private Vector2 queuedExecutionTarget;
+        private int executionAnnihilateWindow;
+        private bool executionAnnihilatePending;
+        private int executionAnnihilateHandoffCountdown;
+        private Vector2 executionHandoffDirection = Vector2.UnitX;
+        private Vector2 executionBufferedMouseScreen;
+
+        //====命中记忆:脱战与铭刻判定====
         private struct HitMemory
         {
             public int NpcId;
@@ -201,6 +221,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
         }
 
+        internal bool ExecutionDashQueued => executionDashQueued;
+
         public override void OnEnterWorld() {
             Vigor = VigorMax;
             Stance = 0f;
@@ -212,6 +234,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinInputBuffered = false;
             zanshinAutoHandoff = false;
             zanshinAutoHandoffCountdown = 0;
+            ResetExecutionState();
             ResetMeiTransient();
             OniMeiOwned.EnsureSeed(this);
         }
@@ -243,7 +266,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinInputBuffered = false;
             zanshinAutoHandoff = false;
             zanshinAutoHandoffCountdown = 0;
+            ResetExecutionState();
             ResetMeiTransient();
+        }
+
+        private void ResetExecutionState() {
+            executionChainWindow = 0;
+            normalDashInFlight = false;
+            executionDashQueued = false;
+            queuedExecutionTier = ExecutionTier.None;
+            executionTierInFlight = ExecutionTier.None;
+            queuedExecutionTarget = Vector2.Zero;
+            executionAnnihilateWindow = 0;
+            executionAnnihilatePending = false;
+            executionAnnihilateHandoffCountdown = 0;
+            executionHandoffDirection = Vector2.UnitX * Player.direction;
+            executionBufferedMouseScreen = Vector2.Zero;
         }
 
         private void ResetMeiTransient() {
@@ -332,6 +370,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 TickPlantedStep();
                 TickHollowRoar();
                 TickZanshinWindow();
+                TickExecutionFlow();
             }
 
             ModKeybind flashStepKey = CWRKeySystem.Onikiri_FlashStep;
@@ -350,7 +389,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
             Item item = Player.GetItem();
             bool holding = item != null && item.Alives() && item.type == ModContent.ItemType<OnikiriItem>();
-            if (holding && zanshinWindow <= 0 && Main.mouseLeft
+            if (holding && Main.mouseLeft
+                && (executionDashQueued || executionTierInFlight != ExecutionTier.None
+                    || executionAnnihilateWindow > 0)) {
+                if (!executionAnnihilatePending) {
+                    executionBufferedMouseScreen = Main.MouseScreen;
+                }
+                executionAnnihilatePending = true;
+            }
+            else if (holding && zanshinWindow <= 0 && Main.mouseLeft
                 && (dashLock > 0 || OniSakuraFlight.ControlsOwner(Player.whoAmI))) {
                 if (!zanshinInputBuffered) {
                     zanshinBufferedMouseScreen = Main.MouseScreen;
@@ -358,10 +405,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 zanshinInputBuffered = true;
             }
             HandleDomainInput(holding);
-            if (holding) {
-                ManageSakuraFlight(advanceTime);
-            }
             if (!holding || Player.dead || Player.CCed) {
+                if (Player.dead) {
+                    ResetExecutionState();
+                }
                 return;
             }
             //点鬼簿/铭刻仪式演出中不受理招式输入
@@ -369,16 +416,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return;
             }
 
+            if (flashStepPressed && CanAcceptFlashStepInput()) {
+                HandleFlashStepInput(item);
+            }
+            ManageSakuraFlight(advanceTime);
+            TryLaunchQueuedExecutionDash(item);
+            ReleaseExecutionAnnihilatePending(item);
             ReleaseZanshinPending(item);
             if (advanceTime) {
                 ReadyCue();
-            }
-
-            if (flashStepPressed && CanAcceptFlashStepInput()) {
-                TryDash(item);
-            }
-            if (CWRKeySystem.Onikiri_Execute.JustPressed) {
-                TryExecute(item);
             }
         }
 
@@ -417,12 +463,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         //==================== 神威疾走 ====================
 
         private bool CanAcceptFlashStepInput() {
+            bool chainInput = normalDashInFlight || executionChainWindow > 0;
             if (Main.mapFullscreen || Main.gamePaused || Main.ingameOptionsWindow || Main.inFancyUI
                 || Main.drawingPlayerChat || Main.editSign || Main.editChest || Main.blockInput
-                || Player.noItems || Player.mouseInterface || Player.talkNPC != -1 || Player.sign != -1
+                || Player.noItems || Player.talkNPC != -1 || Player.sign != -1
                 || CaptureManager.Instance.Active || Player.tileInteractionHappened
-                || Main.HoveringOverAnNPC || Main.SmartInteractShowingGenuine
-                || CursorOverInteractiveProjectile()) {
+                || CursorOverInteractiveProjectile()
+                || (!chainInput && (Player.mouseInterface || Main.HoveringOverAnNPC
+                    || Main.SmartInteractShowingGenuine))) {
                 return false;
             }
             return true;
@@ -443,40 +491,94 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return false;
         }
 
-        private void TryDash(Item item) {
+        private void HandleFlashStepInput(Item item) {
+            if (executionDashQueued || executionTierInFlight != ExecutionTier.None) {
+                return;
+            }
+            if (normalDashInFlight
+                || (executionChainWindow > 0 && ResolveExecutionTier() != ExecutionTier.None)) {
+                QueueExecutionDash();
+                return;
+            }
+            if (executionAnnihilateWindow > 0) {
+                FailExecutionFollowup();
+            }
+            TryDash(item, executionDash: false, ExecutionTier.None);
+        }
+
+        private ExecutionTier ResolveExecutionTier() {
+            if (Stance >= StanceMax - 0.01f) {
+                return ExecutionTier.Full;
+            }
+            return Stance >= AnnihilateCost - 0.01f ? ExecutionTier.Half : ExecutionTier.None;
+        }
+
+        private void QueueExecutionDash() {
+            ExecutionTier tier = ResolveExecutionTier();
+            if (tier == ExecutionTier.None && !normalDashInFlight) {
+                return;
+            }
+            queuedExecutionTier = tier;
+            executionDashQueued = true;
+            queuedExecutionTarget = Main.MouseWorld;
+            if (!normalDashInFlight) {
+                executionChainWindow = Math.Max(executionChainWindow, ExecutionChainWindowTicks);
+            }
+            ClearZanshinIntent();
+        }
+
+        private void TryLaunchQueuedExecutionDash(Item item) {
+            if (!executionDashQueued || normalDashInFlight || dashLock > 0
+                || Player.mount?.Active == true || OniSakuraFlight.ControlsOwner(Player.whoAmI)) {
+                return;
+            }
+            ExecutionTier tier = queuedExecutionTier;
+            executionDashQueued = false;
+            queuedExecutionTier = ExecutionTier.None;
+            executionChainWindow = 0;
+            TryDash(item, executionDash: true, tier);
+        }
+
+        private bool TryDash(Item item, bool executionDash, ExecutionTier executionTier) {
             //再触发锁内静默(是节拍不是资源问题);骑乘时位移权在坐骑;樱流握有本体时不受理
             if (dashLock > 0 || Player.mount?.Active == true
                 || OniSakuraFlight.ControlsOwner(Player.whoAmI)) {
-                return;
-            }
-            //风樋减耗;友切的咎逐层加价,残心命中偿清;余烬场在时疾走更烫;假身在场疾走更费
-            float dashCost = DashVigorCost * Mei.DashVigorCostMul + GuiltLayers * GuiltDashVigorPerLayer;
-            if (Mei.EmberField && OniMeiGroundBurn.AnyOwnedStyle(Player, OniMeiBurnStyle.Ember)) {
-                dashCost *= OniMeiCombat.EmberFieldDashCostMul;
-            }
-            if (Mei.FalseBody && OniMeiFalseBody.AnyOwned(Player)) {
-                dashCost *= OniMeiCombat.FalseBodyDashCostMul;
-            }
-            if (Vigor < dashCost - 0.01f) {
-                OniTalismanHud.NotifyVigorDenied();
-                return;
+                return false;
             }
 
-            Vigor -= dashCost;
-            vigorRegenDelay = VigorRegenDelayTicks + Mei.ExtraRegenDelayTicks;
-            //新位移开始,上一窗作废
-            zanshinWindow = 0;
-            zanshinPending = false;
-            zanshinInputBuffered = Main.mouseLeft;
-            zanshinAutoHandoff = false;
-            zanshinAutoHandoffCountdown = 0;
+            if (!executionDash) {
+                //风樋减耗;友切的咎逐层加价,残心命中偿清;余烬场在时疾走更烫;假身在场疾走更费
+                float dashCost = DashVigorCost * Mei.DashVigorCostMul + GuiltLayers * GuiltDashVigorPerLayer;
+                if (Mei.EmberField && OniMeiGroundBurn.AnyOwnedStyle(Player, OniMeiBurnStyle.Ember)) {
+                    dashCost *= OniMeiCombat.EmberFieldDashCostMul;
+                }
+                if (Mei.FalseBody && OniMeiFalseBody.AnyOwned(Player)) {
+                    dashCost *= OniMeiCombat.FalseBodyDashCostMul;
+                }
+                if (Vigor < dashCost - 0.01f) {
+                    OniTalismanHud.NotifyVigorDenied();
+                    return false;
+                }
+                Vigor -= dashCost;
+                vigorRegenDelay = VigorRegenDelayTicks + Mei.ExtraRegenDelayTicks;
+                executionChainWindow = 0;
+                executionDashQueued = false;
+                queuedExecutionTier = ExecutionTier.None;
+            }
 
+            ClearZanshinIntent();
+            zanshinInputBuffered = !executionDash && Main.mouseLeft;
             ShootState state = Player.GetShootState();
-            Vector2 aim = Main.MouseWorld - Player.Center;
+            Vector2 aim = executionDash ? queuedExecutionTarget - Player.Center : Main.MouseWorld - Player.Center;
             zanshinHandoffDirection = aim.SafeNormalize(Vector2.UnitX * Player.direction);
             if (zanshinInputBuffered) {
                 zanshinBufferedMouseScreen = Main.MouseScreen;
             }
+            if (executionDash && Main.mouseLeft) {
+                executionAnnihilatePending = true;
+                executionBufferedMouseScreen = Main.MouseScreen;
+            }
+
             float distance = aim.Length() + DashCursorOvershoot;
             float interruptRotation = 0f;
             CrimsonRendSlash combo = CrimsonRendSlash.FindController(Player);
@@ -488,9 +590,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 //滞樋自黏负担:再触发锁加帧(节奏税),不再用落地半速的泥地感
                 dashLock += OniMeiCombat.StickyBindDashLockTicks;
             }
+
+            normalDashInFlight = !executionDash;
+            executionTierInFlight = executionDash ? executionTier : ExecutionTier.None;
             OniFlashStep.Fire(Player, aim, (int)(state.WeaponDamage * DashDamageMul * Mei.FlashMarkDamageMul)
-                , state.WeaponKnockback, distance, interruptCombo: interruptCombo
-                , interruptRotation: interruptRotation, source: Player.GetSource_ItemUse(item));
+                , state.WeaponKnockback, distance, executionDash: executionDash
+                , interruptCombo: interruptCombo, interruptRotation: interruptRotation
+                , source: Player.GetSource_ItemUse(item));
+            return true;
+        }
+
+        private void ClearZanshinIntent() {
+            zanshinWindow = 0;
+            zanshinPending = false;
+            zanshinInputBuffered = false;
+            zanshinAutoHandoff = false;
+            zanshinAutoHandoffCountdown = 0;
         }
 
         //==================== 樱流化身 ====================
@@ -500,7 +615,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// 需表世界+最低气力,失败静默
         /// </summary>
         internal bool TryChainSakuraFlight(Vector2 direction, IEntitySource source) {
-            if (Player.whoAmI != Main.myPlayer || Player.mount?.Active == true) {
+            if (Player.whoAmI != Main.myPlayer || Player.mount?.Active == true
+                || executionDashQueued || executionTierInFlight != ExecutionTier.None) {
                 return false;
             }
             //上一次飞行的控制器(含余晖期)未消亡则拒绝:模块每玩家仅一个,拿旧实例不算衔接成功
@@ -659,6 +775,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinInputBuffered = false;
             zanshinAutoHandoff = false;
             zanshinAutoHandoffCountdown = 0;
+            CancelExecutionIntent(settleFollowup: false);
             ShootState state = Player.GetShootState();
             OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
             bool sakura = domain.Phase == OniDomainPhase.Omote && !domain.WorldIsUra;
@@ -704,40 +821,200 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             TryApplyStickyBind(target);
         }
 
-        //==================== 处决 ====================
+        //==================== 处决疾走 ====================
 
-        private void TryExecute(Item item) {
-            //演出进行中静默忽略:满屏刀光本身就是"正在忙"的答复;化樱期间人不在,刀也不在
-            if (Player.ownedProjectileCounts[ModContent.ProjectileType<OniFinaleSlash>()] > 0
-                || Player.ownedProjectileCounts[ModContent.ProjectileType<OniAnnihilate>()] > 0
-                || OniSakuraFlight.ControlsOwner(Player.whoAmI)) {
+        private void TickExecutionFlow() {
+            if (executionChainWindow > 0) {
+                executionChainWindow--;
+                if (executionChainWindow <= 0 && executionDashQueued) {
+                    executionDashQueued = false;
+                    queuedExecutionTier = ExecutionTier.None;
+                    queuedExecutionTarget = Vector2.Zero;
+                }
+            }
+            if (executionAnnihilateWindow <= 0) {
+                return;
+            }
+            executionAnnihilateWindow--;
+            if (executionAnnihilatePending && executionAnnihilateHandoffCountdown > 0) {
+                executionAnnihilateHandoffCountdown--;
+            }
+            if (executionAnnihilateWindow <= 0) {
+                FailExecutionFollowup();
+            }
+        }
+
+        /// <summary>疾走交还操控帧回报；普通疾走开连携窗，处决疾走结算档位</summary>
+        internal void OnFlashStepFinished(bool executionDash, NPC directTarget, Vector2 direction) {
+            if (Player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            executionHandoffDirection = direction.SafeNormalize(Vector2.UnitX * Player.direction);
+            if (!executionDash) {
+                normalDashInFlight = false;
+                ExecutionTier tier = ResolveExecutionTier();
+                if (executionDashQueued) {
+                    if (tier == ExecutionTier.None) {
+                        executionDashQueued = false;
+                        queuedExecutionTier = ExecutionTier.None;
+                        queuedExecutionTarget = Vector2.Zero;
+                        executionChainWindow = 0;
+                    }
+                    else {
+                        queuedExecutionTier = tier;
+                        executionChainWindow = ExecutionChainWindowTicks;
+                    }
+                }
+                else {
+                    executionChainWindow = tier == ExecutionTier.None
+                        ? 0
+                        : ExecutionChainWindowTicks;
+                }
                 return;
             }
 
+            ExecutionTier inFlightTier = executionTierInFlight;
+            if (inFlightTier == ExecutionTier.Full && directTarget?.active == true) {
+                FireExecutionFinale(directTarget, direction);
+                return;
+            }
+            executionTierInFlight = ExecutionTier.None;
+            OpenExecutionAnnihilateWindow();
+        }
+
+        /// <summary>主控提前消亡兜底：免费疾走已开始却未交还，按失败结算</summary>
+        internal void OnFlashStepAborted(bool executionDash) {
+            if (Player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            if (!executionDash) {
+                normalDashInFlight = false;
+                executionChainWindow = 0;
+                return;
+            }
+            if (Player.dead) {
+                ResetExecutionState();
+                return;
+            }
+            FailExecutionFollowup();
+        }
+
+        private void FireExecutionFinale(NPC target, Vector2 direction) {
+            Item item = Player.GetItem();
+            if (item == null || item.type != ModContent.ItemType<OnikiriItem>()) {
+                FailExecutionFollowup();
+                return;
+            }
             ShootState state = Player.GetShootState();
-            if (Stance >= StanceMax - 0.01f) {
-                //蓄满:终结乱舞,焦点=光标定区域+小半径磁吸
-                Stance = 0f;
-                Vector2 focus = ComputeFinaleFocus(out Vector2 aim);
-                OniFinaleSlash.Fire(Player, focus, aim, state.WeaponDamage
-                    , state.WeaponKnockback, scale: OnikiriOverride.GetFinaleScale(item)
-                    , source: Player.GetSource_ItemUse(item));
-                IgniteKurikara();
-                TrySpawnEmberField(focus, state.WeaponDamage);
+            Vector2 focus = target.Center;
+            Vector2 aim = direction.SafeNormalize(Vector2.UnitX * Player.direction);
+            Stance = 0f;
+            ClearExecutionFollowup();
+            OniFinaleSlash.Fire(Player, focus, aim, state.WeaponDamage
+                , state.WeaponKnockback, scale: OnikiriOverride.GetFinaleScale(item)
+                , source: Player.GetSource_ItemUse(item));
+            IgniteKurikara();
+            TrySpawnEmberField(focus, state.WeaponDamage);
+        }
+
+        private void OpenExecutionAnnihilateWindow() {
+            executionAnnihilateWindow = ExecutionAnnihilateWindowTicks;
+            executionAnnihilateHandoffCountdown = executionAnnihilatePending
+                ? ExecutionAnnihilateHandoffFrames + 1
+                : 0;
+            executionBufferedMouseScreen = executionAnnihilatePending
+                ? executionBufferedMouseScreen
+                : Main.MouseScreen;
+            ClearZanshinIntent();
+        }
+
+        /// <summary>灭世后续左键入口；处决后续优先于残心和普通连段</summary>
+        internal bool TryExecutionAnnihilate(Item item, bool edgeVerified) {
+            if (Player.whoAmI != Main.myPlayer || executionAnnihilateWindow <= 0) {
+                return false;
             }
-            else if (Stance >= AnnihilateCost - 0.01f) {
-                //过半,灭世一闪,尺寸恒 1.0
-                Stance -= AnnihilateCost;
-                Vector2 aim = Main.MouseWorld - Player.Center;
-                OniAnnihilate.Fire(Player, Player.Center, aim, (int)(state.WeaponDamage * AnnihilateDamageMul)
-                    , state.WeaponKnockback, source: Player.GetSource_ItemUse(item));
-                IgniteKurikara();
-                Vector2 emberAt = Player.Center + aim.SafeNormalize(Vector2.UnitX * Player.direction) * 120f;
-                TrySpawnEmberField(emberAt, state.WeaponDamage);
+            if (!edgeVerified && (!Main.mouseLeft || prevMouseLeft)) {
+                return false;
             }
-            else {
-                OniTalismanHud.NotifyStanceDenied();
+            if (executionAnnihilatePending) {
+                return true;
             }
+            executionAnnihilatePending = true;
+            executionAnnihilateHandoffCountdown = 0;
+            executionBufferedMouseScreen = Main.MouseScreen;
+            FireExecutionAnnihilate(item);
+            return true;
+        }
+
+        private void ReleaseExecutionAnnihilatePending(Item item) {
+            if (!executionAnnihilatePending || executionAnnihilateWindow <= 0
+                || executionAnnihilateHandoffCountdown > 0
+                || OniBladeOccupancy.AnyHardOccupant(Player)) {
+                return;
+            }
+            FireExecutionAnnihilate(item);
+        }
+
+        private bool FireExecutionAnnihilate(Item item) {
+            if (item == null || item.type != ModContent.ItemType<OnikiriItem>()) {
+                FailExecutionFollowup();
+                return false;
+            }
+            Vector2 fallback = executionHandoffDirection.SafeNormalize(Vector2.UnitX * Player.direction);
+            bool deliberateRedirect = Vector2.DistanceSquared(Main.MouseScreen, executionBufferedMouseScreen)
+                >= ZanshinRedirectMouseDistance * ZanshinRedirectMouseDistance;
+            Vector2 aim = deliberateRedirect
+                ? (Main.MouseWorld - Player.Center).SafeNormalize(fallback)
+                : fallback;
+            ShootState state = Player.GetShootState();
+            Projectile annihilate = OniAnnihilate.Fire(Player, Player.Center, aim
+                , (int)(state.WeaponDamage * AnnihilateDamageMul), state.WeaponKnockback
+                , source: Player.GetSource_ItemUse(item));
+            if (annihilate == null) {
+                return false;
+            }
+
+            Stance = Math.Max(0f, Stance - AnnihilateCost);
+            ClearExecutionFollowup();
+            CrimsonRendSlash.FindController(Player)?.ConsumeZanshinInput();
+            IgniteKurikara();
+            Vector2 emberAt = Player.Center + aim * 120f;
+            TrySpawnEmberField(emberAt, state.WeaponDamage);
+            return true;
+        }
+
+        private void FailExecutionFollowup() {
+            bool owesFailure = executionTierInFlight != ExecutionTier.None
+                || executionAnnihilateWindow > 0;
+            ClearExecutionFollowup();
+            if (!owesFailure || Player.dead) {
+                return;
+            }
+            Vigor *= 0.5f;
+            vigorRegenDelay = Math.Max(vigorRegenDelay, VigorRegenDelayTicks + Mei.ExtraRegenDelayTicks);
+        }
+
+        private void ClearExecutionFollowup() {
+            executionChainWindow = 0;
+            executionDashQueued = false;
+            queuedExecutionTier = ExecutionTier.None;
+            executionTierInFlight = ExecutionTier.None;
+            queuedExecutionTarget = Vector2.Zero;
+            executionAnnihilateWindow = 0;
+            executionAnnihilatePending = false;
+            executionAnnihilateHandoffCountdown = 0;
+        }
+
+        /// <summary>普通攻击/肢解接管时取消首段连携；若免费疾走已经结束则当作放弃后续</summary>
+        internal void CancelExecutionIntent(bool settleFollowup) {
+            if (settleFollowup && executionAnnihilateWindow > 0) {
+                FailExecutionFollowup();
+                return;
+            }
+            executionChainWindow = 0;
+            executionDashQueued = false;
+            queuedExecutionTier = ExecutionTier.None;
+            queuedExecutionTarget = Vector2.Zero;
         }
 
         /// <summary>余炎：处决后焦点留余烬场（不走龙火五连）</summary>
@@ -790,6 +1067,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 OniSeverStrike.Fire(Player, target, AimAngleFrom(target.Center), damage
                     , state.WeaponKnockback, scale: OnikiriOverride.GetBladeScale(item)
                     , source: Player.GetSource_ItemUse(item));
+                CancelExecutionIntent(settleFollowup: false);
                 return true;
             }
 
@@ -804,6 +1082,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 OniSeverStrike.FireAtPoint(Player, cutPoint, AimAngleFrom(cutPoint), damage
                     , state.WeaponKnockback, scale: OnikiriOverride.GetBladeScale(item)
                     , source: Player.GetSource_ItemUse(item));
+                CancelExecutionIntent(settleFollowup: false);
                 return true;
             }
 
@@ -849,119 +1128,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                     bestBoss = root.boss;
                     bestLife = root.lifeMax;
                     bestD = d;
-                }
-            }
-            return best;
-        }
-
-        /// <summary>
-        /// 终结乱舞焦点级联,光标直选→命中记忆→在场 boss→光标钳射程
-        /// </summary>
-        private Vector2 ComputeFinaleFocus(out Vector2 aim) {
-            Vector2 mouse = Main.MouseWorld;
-            NPC picked = PickAtCursor(mouse) ?? PickFromHitMemory() ?? PickBossInRange(mouse);
-
-            Vector2 focus;
-            if (picked != null) {
-                focus = picked.Center;
-            }
-            else {
-                focus = mouse;
-                Vector2 toMouse = focus - Player.Center;
-                float dist = toMouse.Length();
-                if (dist > FinaleFocusMaxDist) {
-                    focus = Player.Center + toMouse * (FinaleFocusMaxDist / dist);
-                }
-            }
-
-            aim = focus - Player.Center;
-            if (aim.LengthSquared() < 1f) {
-                aim = mouse - Player.Center;
-            }
-            if (aim.LengthSquared() < 1f) {
-                aim = Vector2.UnitX * Player.direction;
-            }
-            return focus;
-        }
-
-        /// <summary>光标直选最要紧者,可略超射程(<see cref="FinaleCursorSlack"/>)</summary>
-        private NPC PickAtCursor(Vector2 cursor) {
-            NPC best = null;
-            bool bestBoss = false;
-            float bestLife = 0f;
-            float bestD = float.MaxValue;
-            foreach (NPC npc in Main.ActiveNPCs) {
-                if (!npc.CanBeChasedBy()) {
-                    continue;
-                }
-                float d = DistanceToHitbox(npc, cursor);
-                if (d > FinaleMagnetRadius) {
-                    continue;
-                }
-                if (Vector2.Distance(Player.Center, npc.Center) > FinaleFocusMaxDist + FinaleCursorSlack) {
-                    continue;
-                }
-                NPC root = RootOf(npc);
-                bool better = best == null
-                    || (root.boss != bestBoss
-                        ? root.boss
-                        : Math.Abs(root.lifeMax - bestLife) > 1f ? root.lifeMax > bestLife : d < bestD);
-                if (better) {
-                    best = npc;
-                    bestBoss = root.boss;
-                    bestLife = root.lifeMax;
-                    bestD = d;
-                }
-            }
-            return best;
-        }
-
-        /// <summary>命中记忆,近 5 秒,优先 boss</summary>
-        private NPC PickFromHitMemory() {
-            int now = scaledTime;
-            NPC best = null;
-            bool bestBoss = false;
-            int bestTick = int.MinValue;
-            for (int i = 0; i < hitMemory.Length; i++) {
-                ref HitMemory mem = ref hitMemory[i];
-                if (mem.Tick <= 0 || now - mem.Tick > HitMemoryLifeTicks
-                    || mem.NpcId < 0 || mem.NpcId >= Main.maxNPCs) {
-                    continue;
-                }
-                NPC npc = Main.npc[mem.NpcId];
-                //槽位可能已被新生的别的 NPC 复用,校验类型防串号
-                if (!npc.active || npc.type != mem.NpcType || !npc.CanBeChasedBy()) {
-                    continue;
-                }
-                if (Vector2.Distance(Player.Center, npc.Center) > FinaleFocusMaxDist) {
-                    continue;
-                }
-                NPC root = RootOf(npc);
-                bool better = best == null || (root.boss != bestBoss ? root.boss : mem.Tick > bestTick);
-                if (better) {
-                    best = npc;
-                    bestBoss = root.boss;
-                    bestTick = mem.Tick;
-                }
-            }
-            return best;
-        }
-
-        /// <summary>在场 boss 兜底,取离光标最近</summary>
-        private NPC PickBossInRange(Vector2 cursor) {
-            NPC best = null;
-            float bestD = float.MaxValue;
-            foreach (NPC npc in Main.ActiveNPCs) {
-                if (!npc.CanBeChasedBy() || !RootOf(npc).boss) {
-                    continue;
-                }
-                if (Vector2.Distance(Player.Center, npc.Center) > FinaleFocusMaxDist) {
-                    continue;
-                }
-                float d = Vector2.Distance(cursor, npc.Center);
-                if (d < bestD) {
-                    bestD = d;
-                    best = npc;
                 }
             }
             return best;
