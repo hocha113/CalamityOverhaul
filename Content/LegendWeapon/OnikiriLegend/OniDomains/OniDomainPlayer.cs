@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             OniOmokage.BurnAll();
 
             if (IsLocalVisual) {
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.35f, Pitch = -0.7f, MaxInstances = 1 }, Player.Center);
+                //SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.35f, Pitch = -0.7f, MaxInstances = 1 }, Player.Center);
             }
             return true;
         }
