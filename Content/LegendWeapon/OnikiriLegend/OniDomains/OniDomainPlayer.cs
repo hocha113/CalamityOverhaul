@@ -137,8 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
             if (IsLocalVisual) {
                 //低鸣，有什么东西在头顶成形
-
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.32f, Pitch = -0.9f, MaxInstances = 1 }, Player.Center);
+                //SoundEngine.PlaySound(CWRSound.OutburstCC);
             }
             return true;
         }
@@ -160,7 +159,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 EyeFlash = MathF.Max(EyeFlash, 0.45f);
             }
             if (IsLocalVisual) {
-                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.30f, Pitch = -0.5f, MaxInstances = 2 }, Player.Center);
+                //SoundEngine.PlaySound(CWRSound.OutburstCC);
             }
         }
 
@@ -354,8 +353,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 EyeOpenAmount = f * f * (3f - 2f * f);
                 EyeSpin += 0.05f;
                 if (t == OniDomain.EyeEmergeFrames + 1 && IsLocalVisual) {
-                    SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = -0.35f, MaxInstances = 1 }, Player.Center);
-                    SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.4f, Pitch = -0.55f, MaxInstances = 1 }, Player.Center);
+                    SoundEngine.PlaySound(CWRSound.OutburstCC);
+                    SoundEngine.PlaySound(CWRSound.OutburstRelease);
                     Player.CWR().GetScreenShake(3f);
                 }
                 return;

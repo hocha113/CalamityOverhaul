@@ -105,5 +105,7 @@ namespace CalamityOverhaul.Common
         public static SoundStyle KatanaSwing;
         public static SoundStyle KatanaHit;
         public static SoundStyle KatanaHitB;
+        public static SoundStyle OutburstCC;
+        public static SoundStyle OutburstRelease;
     }
 }
