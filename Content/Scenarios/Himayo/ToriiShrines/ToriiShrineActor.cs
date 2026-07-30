@@ -363,6 +363,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                     riteGlint = 1f;
                     SwordPulledBurst();
                     player.CWR().GetScreenShake(7f);
+                    SoundEngine.PlaySound(SoundID.Dig with { Pitch = 0.35f, Volume = 0.9f }, SwordAnchor);
                 }
             }
             else if (departTimer < RiteFrames) {
