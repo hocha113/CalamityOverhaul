@@ -1,7 +1,9 @@
 using CalamityOverhaul.Common;
+using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -22,23 +24,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             return !OniDismember.IsLocked(npc.whoAmI);
         }
 
-        public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            DismemberEntry entry = OniDismember.GetEntry(npc.whoAmI);
-            if (entry == null || entry.NpcType != npc.type) {
-                return true;
-            }
-            //快照未就绪（捕获排队中/低质量降级）时本体照常绘制
+        public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+            => !TryDrawDismembered(npc, spriteBatch);
 
-            if (!entry.Captured || entry.SnapWidth <= 0) {
-                return true;
-            }
-            if (!OniDismember.SnapRTs.TryGetValue(npc.whoAmI, out RenderTarget2D rt)
-                || rt == null || rt.IsDisposed) {
-                return true;
-            }
-            Effect fx = EffectLoader.OniDismember?.Value;
-            if (fx == null) {
-                return true;
+        internal static bool CanTakeOverDraw(NPC npc)
+            => TryGetDrawData(npc, out _, out _, out _);
+
+        internal static bool TryDrawDismembered(NPC npc, SpriteBatch spriteBatch) {
+            if (!TryGetDrawData(npc, out DismemberEntry entry, out RenderTarget2D rt, out Effect fx)) {
+                return false;
             }
 
             //暂停 NPC 层批次，原地插入顶点绘制，层序不变
@@ -48,7 +42,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
                 null, Main.GameViewMatrix.TransformationMatrix);
-            return false;
+            return true;
+        }
+
+        private static bool TryGetDrawData(NPC npc, out DismemberEntry entry,
+            out RenderTarget2D rt, out Effect fx) {
+            entry = OniDismember.GetEntry(npc.whoAmI);
+            rt = null;
+            fx = null;
+            if (entry == null || entry.NpcType != npc.type || !entry.Captured || entry.SnapWidth <= 0) {
+                return false;
+            }
+            if (!OniDismember.SnapRTs.TryGetValue(npc.whoAmI, out rt)
+                || rt == null || rt.IsDisposed) {
+                return false;
+            }
+            fx = EffectLoader.OniDismember?.Value;
+            return fx != null;
         }
 
         private static void DrawPieces(DismemberEntry entry, RenderTarget2D rt, Effect fx) {
@@ -204,6 +214,85 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             Vector2 uv = new((localPos.X + snapHalf.X) / entry.SnapWidth
                 , (localPos.Y + snapHalf.Y) / entry.SnapHeight);
             vertexScratch.Add(new VertexPositionColorTexture(worldPos.ToVector3(), tint, uv));
+        }
+    }
+
+    /// <summary>肢解绘制的高优先级入口</summary>
+    internal sealed class OniDismemberDrawHook : ICWRLoader
+    {
+        private delegate bool PreDrawDelegate(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor);
+        private delegate bool PreDrawHookDelegate(PreDrawDelegate orig, NPC npc,
+            SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor);
+        private delegate void PostDrawDelegate(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor);
+        private delegate void PostDrawHookDelegate(PostDrawDelegate orig, NPC npc,
+            SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor);
+
+        private const int HookPriority = VaultHook.DefaultHookPriority + 100;
+        private static readonly List<(MethodBase Method, Delegate Handler)> mountedHooks = [];
+
+        void ICWRLoader.LoadData() {
+            if (Main.dedServ) {
+                return;
+            }
+
+            MethodInfo preDraw = GetDrawMethod(nameof(NPCLoader.PreDraw));
+            if (preDraw != null) {
+                PreDrawHookDelegate handler = PreDrawHook;
+                VaultHook.Add(preDraw, handler, HookPriority,
+                    "CalamityOverhaul.OniDismember.PreDraw");
+                mountedHooks.Add((preDraw, handler));
+            }
+            else {
+                CWRMod.Instance.Logger.Warn("OniDismember could not hook NPCLoader.PreDraw; using GlobalNPC fallback");
+            }
+
+            MethodInfo postDraw = GetDrawMethod(nameof(NPCLoader.PostDraw));
+            if (postDraw != null) {
+                PostDrawHookDelegate handler = PostDrawHook;
+                VaultHook.Add(postDraw, handler, HookPriority,
+                    "CalamityOverhaul.OniDismember.PostDraw");
+                mountedHooks.Add((postDraw, handler));
+            }
+            else {
+                CWRMod.Instance.Logger.Warn("OniDismember could not hook NPCLoader.PostDraw");
+            }
+        }
+
+        void ICWRLoader.UnLoadData() {
+            foreach ((MethodBase method, Delegate handler) in mountedHooks) {
+                if (!VaultHook.Hooks.TryRemove((method, handler), out var hook)) {
+                    continue;
+                }
+                try {
+                    if (hook.IsApplied) {
+                        hook.Undo();
+                    }
+                    hook.Dispose();
+                } catch (Exception ex) {
+                    CWRMod.Instance.Logger.Warn($"OniDismember failed to unload {method.Name} hook: {ex.Message}");
+                }
+            }
+            mountedHooks.Clear();
+        }
+
+        private static MethodInfo GetDrawMethod(string name)
+            => typeof(NPCLoader).GetMethod(name, BindingFlags.Public | BindingFlags.Static, null,
+                [typeof(NPC), typeof(SpriteBatch), typeof(Vector2), typeof(Color)], null);
+
+        private static bool PreDrawHook(PreDrawDelegate orig, NPC npc, SpriteBatch spriteBatch,
+            Vector2 screenPos, Color drawColor) {
+            if (OniDismemberNPC.TryDrawDismembered(npc, spriteBatch)) {
+                return false;
+            }
+            return orig(npc, spriteBatch, screenPos, drawColor);
+        }
+
+        private static void PostDrawHook(PostDrawDelegate orig, NPC npc, SpriteBatch spriteBatch,
+            Vector2 screenPos, Color drawColor) {
+            if (OniDismemberNPC.CanTakeOverDraw(npc)) {
+                return;
+            }
+            orig(npc, spriteBatch, screenPos, drawColor);
         }
     }
 }
