@@ -64,8 +64,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         private readonly List<Vector2> path = new(16);
         private readonly HashSet<int> marked = new(16);
+        private readonly HashSet<int> executionCandidates = new(16);
         private bool stanceGranted;
         private NPC executionTarget;
+        private Vector2 executionSelectionOrigin;
+        private bool executionTargetResolved;
+        private bool executionFinaleTriggered;
         private bool finishReported;
         private bool initialized;
         private int timer;
@@ -97,6 +101,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private bool Dashing => stopFrame < 0;
         private bool InterruptHandoffActive => interruptHandoff && timer <= InterruptHandoffFrames;
         private int TravelStartFrame => interruptHandoff ? InterruptHandoffFrames : 0;
+        /// <summary>处决目标在移动段倒数第二帧统一结算，最后一帧保留为转场余量</summary>
+        private int ExecutionResolveFrame => TravelStartFrame + Math.Max(plannedDashFrames - 1, 1);
         /// <summary>纳刀结算的绝对帧，按出手时确定的距离稳定排拍</summary>
         private int JudgmentFrame => TravelStartFrame + plannedDashFrames + JudgmentDelay;
 
@@ -332,6 +338,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Vector2 sweepEnd = blocked ? Owner.Center : Owner.Center + dashDir * SweepLead;
             MarkSweep(fromBody - dashDir * SweepBackPad, sweepEnd);
 
+            if (IsExecutionDash && !blocked && timer >= ExecutionResolveFrame) {
+                CollectExecutionLookaheadCandidates();
+                ResolveExecutionTargetAndTryFinale();
+            }
+
             if (blocked) {
                 FinishDash();
             }
@@ -453,6 +464,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         /// <summary>自然抵达目标距离，原地结束位移并进入残心排拍</summary>
         private void FinishDash() {
+            if (IsExecutionDash && !executionFinaleTriggered) {
+                ResolveExecutionTargetAndTryFinale(forceRefresh: !executionTargetResolved || executionTarget == null);
+            }
             stopFrame = timer;
             headOffset = MathF.Min(headOffset, MathF.Max(FreeAheadBudget() - 6f, 8f));
             headExt = MathF.Min(22f * sizeMul, MathF.Max(FreeAheadBudget() - headOffset - 4f, 0f));
@@ -490,6 +504,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         /// <summary>本帧扫掠段上的敌人缠上墨痕（无伤害）、微时停 + 穿身墨屑，结算全部押后到纳刀帧</summary>
         private void MarkSweep(Vector2 from, Vector2 to) {
+            if (IsExecutionDash) {
+                CollectExecutionCandidates(from, to);
+            }
             if (marked.Count >= MaxMarks) {
                 return;
             }
@@ -507,9 +524,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 }
 
                 marked.Add(npc.whoAmI);
-                if (IsExecutionDash && IsBetterExecutionTarget(npc, executionTarget)) {
-                    executionTarget = npc;
-                }
 
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     //墨痕走向与本次直线居合方向一致
@@ -542,10 +556,78 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             }
         }
 
-        private static bool IsBetterExecutionTarget(NPC candidate, NPC current) {
-            if (candidate == null || !candidate.active) {
-                return false;
+        /// <summary>倒数第二帧预扫最后一个位移步，只扩充候选，不提前挂痕或结算伤害</summary>
+        private void CollectExecutionLookaheadCandidates() {
+            float remaining = MathF.Max(Distance - traveled, 0f);
+            if (remaining <= CollisionEpsilon) {
+                return;
             }
+            Vector2 wanted = dashDir * remaining;
+            Vector2 resolved = Collision.TileCollision(Owner.position, wanted, Owner.width, Owner.height
+                , fallThrough: true, fall2: true, gravDir: (int)Owner.gravDir);
+            bool clippedX = MathF.Abs(resolved.X - wanted.X) > CollisionEpsilon;
+            bool clippedY = MathF.Abs(resolved.Y - wanted.Y) > CollisionEpsilon;
+            bool groundGraze = !clippedX && clippedY
+                && wanted.Y * Owner.gravDir > 0f
+                && MathF.Abs(dashDir.Y) <= GroundGrazeMaxSin;
+            bool blocked = clippedX || (clippedY && !groundGraze);
+            Vector2 projectedBody = Owner.Center + resolved;
+            executionSelectionOrigin = projectedBody;
+            Vector2 sweepEnd = blocked ? projectedBody : projectedBody + dashDir * SweepLead;
+            CollectExecutionCandidates(Owner.Center - dashDir * SweepBackPad, sweepEnd);
+        }
+
+        private void CollectExecutionCandidates(Vector2 from, Vector2 to) {
+            float sweepWidth = MarkSweepWidth * sizeMul;
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (executionCandidates.Contains(npc.whoAmI) || !npc.CanBeChasedBy(Projectile)) {
+                    continue;
+                }
+                float cp = 0f;
+                if (!Collision.CheckAABBvLineCollision(npc.Hitbox.TopLeft(), npc.Hitbox.Size()
+                    , from, to, sweepWidth, ref cp)) {
+                    continue;
+                }
+                executionCandidates.Add(npc.whoAmI);
+            }
+        }
+
+        /// <summary>汇总本次扫掠命中的全部实例，再一次性决定乱舞中心</summary>
+        private void ResolveExecutionTargetAndTryFinale(bool forceRefresh = false) {
+            if (!IsExecutionDash || !Projectile.IsOwnedByLocalPlayer() || executionFinaleTriggered
+                || (executionTargetResolved && !forceRefresh)) {
+                return;
+            }
+            executionTargetResolved = true;
+            if (executionSelectionOrigin == Vector2.Zero) {
+                executionSelectionOrigin = Owner.Center;
+            }
+            executionTarget = SelectExecutionTarget();
+            if (executionTarget != null
+                && Owner.GetModPlayer<OnikiriPlayer>().TryResolveExecutionFinale(executionTarget, dashDir)) {
+                executionFinaleTriggered = true;
+            }
+        }
+
+        private NPC SelectExecutionTarget() {
+            NPC best = null;
+            foreach (int npcId in executionCandidates) {
+                if (npcId < 0 || npcId >= Main.maxNPCs) {
+                    continue;
+                }
+                NPC candidate = Main.npc[npcId];
+                if (!candidate.active || !candidate.CanBeChasedBy(Projectile)) {
+                    continue;
+                }
+                if (IsBetterExecutionTarget(candidate, best)) {
+                    best = candidate;
+                }
+            }
+            return best;
+        }
+
+        /// <summary>价值序：Boss → 主体最大生命 → 主体当前生命 → 更靠近疾走终点</summary>
+        private bool IsBetterExecutionTarget(NPC candidate, NPC current) {
             if (current == null || !current.active) {
                 return true;
             }
@@ -558,7 +640,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             if (candidateRoot.boss != currentRoot.boss) {
                 return candidateRoot.boss;
             }
-            return candidateRoot.lifeMax > currentRoot.lifeMax;
+            if (candidateRoot.lifeMax != currentRoot.lifeMax) {
+                return candidateRoot.lifeMax > currentRoot.lifeMax;
+            }
+            if (candidateRoot.life != currentRoot.life) {
+                return candidateRoot.life > currentRoot.life;
+            }
+            float candidateDistance = Vector2.DistanceSquared(candidate.Center, executionSelectionOrigin);
+            float currentDistance = Vector2.DistanceSquared(current.Center, executionSelectionOrigin);
+            if (MathF.Abs(candidateDistance - currentDistance) > 0.01f) {
+                return candidateDistance < currentDistance;
+            }
+            return candidate.whoAmI < current.whoAmI;
         }
 
         /// <summary>纳刀帧、"锵"一声，墨痕们（各自对齐本帧）同时裂开；主控只负责声与光的确认</summary>

@@ -844,6 +844,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
         }
 
+        /// <summary>倒数第二移动帧的提前结算入口；只有出手时锁定的满架势档可兑现</summary>
+        internal bool TryResolveExecutionFinale(NPC target, Vector2 direction) {
+            if (Player.whoAmI != Main.myPlayer || executionTierInFlight != ExecutionTier.Full
+                || target?.active != true) {
+                return false;
+            }
+            executionHandoffDirection = direction.SafeNormalize(Vector2.UnitX * Player.direction);
+            return FireExecutionFinale(target, direction);
+        }
+
         /// <summary>疾走交还操控帧回报；普通疾走开连携窗，处决疾走结算档位</summary>
         internal void OnFlashStepFinished(bool executionDash, NPC directTarget, Vector2 direction) {
             if (Player.whoAmI != Main.myPlayer) {
@@ -873,9 +883,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return;
             }
 
-            ExecutionTier inFlightTier = executionTierInFlight;
-            if (inFlightTier == ExecutionTier.Full && directTarget?.active == true) {
-                FireExecutionFinale(directTarget, direction);
+            if (executionTierInFlight == ExecutionTier.None) {
+                return;
+            }
+            if (executionTierInFlight == ExecutionTier.Full && directTarget?.active == true
+                && TryResolveExecutionFinale(directTarget, direction)) {
                 return;
             }
             executionTierInFlight = ExecutionTier.None;
@@ -899,22 +911,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             FailExecutionFollowup();
         }
 
-        private void FireExecutionFinale(NPC target, Vector2 direction) {
+        private bool FireExecutionFinale(NPC target, Vector2 direction) {
             Item item = Player.GetItem();
             if (item == null || item.type != ModContent.ItemType<OnikiriItem>()) {
                 FailExecutionFollowup();
-                return;
+                return false;
             }
             ShootState state = Player.GetShootState();
             Vector2 focus = target.Center;
             Vector2 aim = direction.SafeNormalize(Vector2.UnitX * Player.direction);
-            Stance = 0f;
-            ClearExecutionFollowup();
-            OniFinaleSlash.Fire(Player, focus, aim, state.WeaponDamage
+            Projectile finale = OniFinaleSlash.Fire(Player, focus, aim, state.WeaponDamage
                 , state.WeaponKnockback, scale: OnikiriOverride.GetFinaleScale(item)
                 , source: Player.GetSource_ItemUse(item));
+            if (finale == null) {
+                return false;
+            }
+            Stance = 0f;
+            ClearExecutionFollowup();
+            ClearZanshinIntent();
             IgniteKurikara();
             TrySpawnEmberField(focus, state.WeaponDamage);
+            return true;
         }
 
         private void OpenExecutionAnnihilateWindow() {
