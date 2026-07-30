@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
 using InnoVault.PRT;
@@ -564,7 +564,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
                 }
                 //僵直中的尸身不留新影、解除定格、重新动起来后冷却才开始走
 
-                if (OniDismember.IsDismembered(npc.whoAmI)) {
+                if (OniDismember.IsLocked(npc.whoAmI)) {
                     reimprintTimers[npc.whoAmI] = ReimprintCooldown;
                     continue;
                 }
@@ -628,11 +628,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 
                 //到达帧、切口按落刀点 1:1 映射到身体 + 伤害结算；
 
-                //滞拍的戏份已在纸上演过（刀线滞拍→引爆），真身立裂不再拖第二拍；
-
-                //蠕虫等多实体从纸上那一节把整组一并裂开（hold=0 无波及窗口，全员同帧）
-
-                OniDismember.TriggerGroup(npc, npc.Center + pulse.BodyLocal, pulse.CutAngle, holdFrames: 0);
+                //真身只承接纸面映射出的局部刀路；同组其余体节保持停止，不复制切口
+                Vector2 cutCenter = npc.Center + pulse.BodyLocal;
+                DismemberStroke stroke = new(cutCenter, pulse.CutAngle,
+                    MathF.Max(npc.Size.Length(), 64f), OniFinaleCut.VisualPathWidth);
+                OniDismember.TriggerGroup(npc, in stroke, holdFrames: 0);
 
                 Player player = Main.player[pulse.PlayerWhoAmI];
                 if (player != null && player.active && pulse.Damage > 0) {

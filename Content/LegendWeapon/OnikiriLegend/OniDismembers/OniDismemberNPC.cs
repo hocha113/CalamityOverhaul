@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot) {
             //僵直的尸身不再构成接触伤害威胁
 
-            return !OniDismember.IsDismembered(npc.whoAmI);
+            return !OniDismember.IsLocked(npc.whoAmI);
         }
 
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {

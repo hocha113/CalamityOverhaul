@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -25,6 +25,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         public int Hold;
     }
 
+    /// <summary>一次肢解演出的有限世界空间刀路</summary>
+    internal readonly struct DismemberStroke
+    {
+        public readonly Vector2 Center;
+        public readonly float Angle;
+        public readonly float HalfLength;
+        public readonly float Width;
+
+        public DismemberStroke(Vector2 center, float angle, float halfLength, float width) {
+            Center = center;
+            Angle = MathHelper.WrapAngle(angle);
+            HalfLength = Math.Max(halfLength, 1f);
+            Width = Math.Max(width, 1f);
+        }
+
+        public Vector2 Direction => Angle.ToRotationVector2();
+        public Vector2 Start => Center - Direction * HalfLength;
+        public Vector2 End => Center + Direction * HalfLength;
+    }
+
     /// <summary>肢解碎片、快照 quad 被切割线裁出的凸多边形</summary>
     internal class DismemberPiece
     {
@@ -38,7 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         public float JitterPhase;
     }
 
-    /// <summary>单个被肢解 NPC 的完整状态</summary>
+    /// <summary>单个被肢解 NPC 的视觉状态</summary>
     internal class DismemberEntry
     {
         public int NpcIndex;
@@ -67,6 +87,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
     /// <summary>鬼切肢解主控. 切断后锁关节</summary>
     internal class OniDismember : ICWRLoader
     {
+        /// <summary>单个 NPC 的停止状态，不代表存在切口视觉</summary>
+        private sealed class DismemberLockEntry
+        {
+            public int NpcIndex;
+            public int NpcType;
+            public int Timer;
+            public int Duration;
+            public Vector2 AnchorCenter;
+        }
+
         /// <summary>默认最大切口数</summary>
         public const int DefaultMaxCuts = 16;
         /// <summary>默认碎片总数上限，足以容纳 16 条直线在矩形内产生的理论最大分区</summary>
@@ -100,8 +130,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
         private const int ShardBudgetPerTick = 120;
 
-        /// <summary>所有活跃肢解状态</summary>
+        /// <summary>所有活跃视觉肢解状态</summary>
         internal static readonly List<DismemberEntry> Entries = [];
+        /// <summary>所有活跃停止状态，群组中未被刀路触及的体节只进入此列表</summary>
+        private static readonly List<DismemberLockEntry> lockEntries = [];
         //TriggerGroup 群组收集复用容器
 
         private static readonly List<NPC> groupScratch = [];
@@ -112,6 +144,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
         void ICWRLoader.UnLoadData() {
             Entries.Clear();
+            lockEntries.Clear();
+            groupScratch.Clear();
             MaxCuts = DefaultMaxCuts;
             MaxPieces = DefaultMaxPieces;
             Main.QueueMainThreadAction(DisposeAllSnapshots);
@@ -128,8 +162,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         /// <param name="duration">从当前帧起的持续帧数，尾段含 <see cref="FadeFrames"/> 帧淡出</param>
         /// <param name="holdFrames">本切口滞拍帧数（亮起 → 分离）；冻结与伤口亮线即刻建立，
         /// 分离推迟到滞拍结束，供外层斩切演出（如 <see cref="OniFinaleCut"/>）把引爆帧压到同一拍；0=立即分离</param>
-        /// <param name="birthDelay">切口亮起延迟帧数、冻结与快照即刻建立，伤口线推迟出现，
-        /// 供 <see cref="TriggerGroup"/> 的波及演出沿身体逐节点亮；调度方需保证 delay+hold 全组对齐</param>
+        /// <param name="birthDelay">切口亮起延迟帧数、冻结与快照即刻建立，伤口线推迟出现</param>
         public static bool Trigger(NPC npc, Vector2 cutPointWorld, float cutAngle,
             int duration = DefaultDuration, int holdFrames = HoldFrames, int birthDelay = 0) {
             if (npc == null || !npc.active) {
@@ -138,13 +171,74 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
             holdFrames = Math.Max(holdFrames, 0);
             birthDelay = Math.Max(birthDelay, 0);
+            int effectiveDuration = Math.Max(duration, birthDelay + holdFrames + FadeFrames);
+            DismemberLockEntry lockEntry = ApplyLock(npc, effectiveDuration);
+            return TriggerVisual(npc, lockEntry, cutPointWorld, cutAngle,
+                duration, holdFrames, birthDelay);
+        }
+
+        /// <summary>停止多实体目标，只在有限刀路实际触及的体节建立肢解视觉</summary>
+        public static bool TriggerGroup(NPC npc, in DismemberStroke stroke,
+            int duration = DefaultDuration, int holdFrames = HoldFrames) {
+            if (npc == null || !npc.active) {
+                return false;
+            }
+
+            NpcGroupHelper.CollectGroup(npc, groupScratch);
+            if (groupScratch.Count <= 1) {
+                Vector2 point = TryGetPathCutPoint(npc, in stroke, out Vector2 pathPoint)
+                    ? pathPoint
+                    : stroke.Center;
+                return Trigger(npc, point, stroke.Angle, duration, holdFrames);
+            }
+
+            holdFrames = Math.Max(holdFrames, 0);
+            Vector2 strokeCenter = stroke.Center;
+
+            //落刀点附近的体节先建立视觉，快照捕获顺序保持稳定
+            groupScratch.Sort((a, b) => Vector2.DistanceSquared(a.Center, strokeCenter)
+                .CompareTo(Vector2.DistanceSquared(b.Center, strokeCenter)));
+
+            int effectiveDuration = Math.Max(duration, holdFrames + FadeFrames);
+            bool any = false;
+            foreach (NPC member in groupScratch) {
+                any |= ApplyLock(member, effectiveDuration) != null;
+            }
+
+            foreach (NPC member in groupScratch) {
+                bool pathTouchesMember = TryGetPathCutPoint(member, in stroke, out Vector2 point);
+                if (!pathTouchesMember && member.whoAmI != npc.whoAmI) {
+                    continue;
+                }
+                if (!pathTouchesMember) {
+                    point = stroke.Center;
+                }
+
+                int delay = 0;
+                if (holdFrames > 1) {
+                    delay = Math.Min((int)(Vector2.Distance(member.Center, stroke.Center) / WaveSpeed), holdFrames - 1);
+                }
+
+                DismemberLockEntry lockEntry = GetLockEntry(member.whoAmI);
+                TriggerVisual(member, lockEntry, point, stroke.Angle,
+                    duration, holdFrames - delay, delay);
+            }
+            groupScratch.Clear();
+            return any;
+        }
+
+        private static bool TriggerVisual(NPC npc, DismemberLockEntry lockEntry,
+            Vector2 cutPointWorld, float cutAngle, int duration, int holdFrames, int birthDelay) {
+            if (lockEntry == null) {
+                return false;
+            }
+
             DismemberEntry entry = GetEntry(npc.whoAmI);
             if (entry == null || entry.NpcType != npc.type) {
                 if (entry != null) {
-                    Entries.Remove(entry);  //槽位被新 NPC 复用，旧状态作废
-
+                    Entries.Remove(entry);
                 }
-                entry = CreateEntry(npc, duration, birthDelay + holdFrames);
+                entry = CreateEntry(npc, lockEntry.AnchorCenter, duration, birthDelay + holdFrames);
                 Entries.Add(entry);
             }
             else {
@@ -153,83 +247,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
 
             AddCut(entry, cutPointWorld, cutAngle, holdFrames, birthDelay);
-
-            //立即入冻、不等下一次系统刷新
-
-            npc.CWR().TimeFrozenTick = 2;
-            npc.velocity = Vector2.Zero;
             return true;
         }
 
-        /// <summary>整体肢解多实体 Boss</summary>
-        /// <inheritdoc cref="Trigger(NPC, Vector2, float, int, int, int)"/>
-        public static bool TriggerGroup(NPC npc, Vector2 cutPointWorld, float cutAngle,
-            int duration = DefaultDuration, int holdFrames = HoldFrames) {
-            if (npc == null || !npc.active) {
+        private static bool TryGetPathCutPoint(NPC npc, in DismemberStroke stroke, out Vector2 cutPoint) {
+            Vector2 pathStart = stroke.Start;
+            Vector2 pathEnd = stroke.End;
+            float collisionPoint = 0f;
+            if (!Collision.CheckAABBvLineCollision(npc.Hitbox.TopLeft(), npc.Hitbox.Size(),
+                pathStart, pathEnd, stroke.Width, ref collisionPoint)) {
+                cutPoint = default;
                 return false;
             }
 
-            NpcGroupHelper.CollectGroup(npc, groupScratch);
-            if (groupScratch.Count <= 1) {
-                return Trigger(npc, cutPointWorld, cutAngle, duration, holdFrames);
-            }
-
-            holdFrames = Math.Max(holdFrames, 0);
-            Vector2 normal = new(-MathF.Sin(cutAngle), MathF.Cos(cutAngle));
-            //解剖学角度、切割角在被击中成员身体系下的表达，供蠕虫体节沿脊线还原
-
-            float anatomyAngle = MathHelper.WrapAngle(cutAngle - npc.rotation);
-            int struckAnchor = NpcGroupHelper.GetAnchorIndex(npc);
-
-            //被击中者零延迟先行，保证声画顺序与 Entries 排序都以落刀点为源头
-
-            groupScratch.Sort((a, b) => Vector2.DistanceSquared(a.Center, cutPointWorld)
-                .CompareTo(Vector2.DistanceSquared(b.Center, cutPointWorld)));
-
-            bool any = false;
-            foreach (NPC member in groupScratch) {
-                //穿越判定用命中盒
-
-                float signedDist = Vector2.Dot(member.Center - cutPointWorld, normal);
-                float slabRadius = (MathF.Abs(normal.X) * member.width + MathF.Abs(normal.Y) * member.height) * 0.6f;
-
-                Vector2 point;
-                float angle;
-                if (MathF.Abs(signedDist) <= slabRadius) {
-                    //刀线真实穿过、取线上最近点，相邻体节的伤口线严丝合缝连成一条
-
-                    point = member.Center - normal * signedDist;
-                    angle = cutAngle;
-                }
-                else if (NpcGroupHelper.GetAnchorIndex(member) == struckAnchor) {
-                    //同 realLife 链（蠕虫，头节自身锚即链锚）、身体系变换，
-
-                    //斜切头部的一刀在每一节自己的轴向上保持同样的斜度，切口沿脊线弯曲传播
-
-                    point = member.Center;
-                    angle = MathHelper.WrapAngle(member.rotation + anatomyAngle);
-                }
-                else {
-                    //跨链成员（魔像拳/月总手/混编机群）、同一世界角平移到部位中心，整组被同方向剪切
-
-                    point = member.Center;
-                    angle = cutAngle;
-                }
-
-                //波及、伤口沿身体从落刀点向外点亮，birth+hold 恒等于统一引爆帧；
-
-                //hold≤1 时无滞拍窗口可分配，全员立裂（面影脉冲路径）
-
-                int delay = 0;
-                if (holdFrames > 1) {
-                    delay = Math.Min((int)(Vector2.Distance(member.Center, cutPointWorld) / WaveSpeed), holdFrames - 1);
-                }
-
-                any |= Trigger(member, point, angle, duration, holdFrames - delay, delay);
-            }
-            groupScratch.Clear();   //不跨帧持有 NPC 引用
-
-            return any;
+            Vector2 path = pathEnd - pathStart;
+            float t = Vector2.Dot(npc.Center - pathStart, path) / path.LengthSquared();
+            cutPoint = pathStart + path * MathHelper.Clamp(t, 0f, 1f);
+            return true;
         }
 
         /// <summary>提前解除、进入淡出，随后自然恢复</summary>
@@ -237,6 +271,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             DismemberEntry entry = GetEntry(npcIndex);
             if (entry != null) {
                 entry.Duration = Math.Min(entry.Duration, entry.Timer + FadeFrames);
+            }
+            DismemberLockEntry lockEntry = GetLockEntry(npcIndex);
+            if (lockEntry != null) {
+                lockEntry.Duration = Math.Min(lockEntry.Duration, lockEntry.Timer + FadeFrames);
             }
         }
 
@@ -249,8 +287,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
         public static bool IsDismembered(int npcIndex) => GetEntry(npcIndex) != null;
 
+        public static bool IsLocked(int npcIndex) => GetLockEntry(npcIndex) != null;
+
         /// <summary>立刻清空全部肢解状态（世界卸载兜底）</summary>
-        public static void Clear() => Entries.Clear();
+        public static void Clear() {
+            Entries.Clear();
+            lockEntries.Clear();
+            groupScratch.Clear();
+        }
 
         internal static DismemberEntry GetEntry(int npcIndex) {
             for (int i = 0; i < Entries.Count; i++) {
@@ -261,13 +305,46 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             return null;
         }
 
-        private static DismemberEntry CreateEntry(NPC npc, int duration, int holdFrames) {
+        private static DismemberLockEntry GetLockEntry(int npcIndex) {
+            for (int i = 0; i < lockEntries.Count; i++) {
+                if (lockEntries[i].NpcIndex == npcIndex) {
+                    return lockEntries[i];
+                }
+            }
+            return null;
+        }
+
+        private static DismemberLockEntry ApplyLock(NPC npc, int duration) {
+            DismemberLockEntry entry = GetLockEntry(npc.whoAmI);
+            if (entry == null || entry.NpcType != npc.type) {
+                if (entry != null) {
+                    lockEntries.Remove(entry);
+                }
+                entry = new DismemberLockEntry {
+                    NpcIndex = npc.whoAmI,
+                    NpcType = npc.type,
+                    Duration = Math.Max(duration, FadeFrames),
+                    AnchorCenter = npc.Center,
+                };
+                lockEntries.Add(entry);
+            }
+            else {
+                entry.Duration = Math.Max(entry.Duration, entry.Timer + duration);
+            }
+
+            npc.CWR().TimeFrozenTick = 2;
+            npc.Center = entry.AnchorCenter;
+            npc.velocity = Vector2.Zero;
+            return entry;
+        }
+
+        private static DismemberEntry CreateEntry(NPC npc, Vector2 anchorCenter, int duration, int holdFrames) {
             DismemberEntry entry = new() {
                 NpcIndex = npc.whoAmI,
                 NpcType = npc.type,
                 Duration = Math.Max(duration, FadeFrames + holdFrames),
                 Seed = Main.rand.NextFloat(),
-                AnchorCenter = npc.Center,
+                AnchorCenter = anchorCenter,
                 BehindTiles = npc.behindTiles,
             };
 
@@ -472,6 +549,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
         /// <summary>逐帧、挂 PostUpdateNPCs</summary>
         internal static void UpdateAll() {
+            for (int i = lockEntries.Count - 1; i >= 0; i--) {
+                DismemberLockEntry entry = lockEntries[i];
+                NPC npc = Main.npc[entry.NpcIndex];
+                if (!npc.active || npc.type != entry.NpcType) {
+                    lockEntries.RemoveAt(i);
+                    continue;
+                }
+
+                entry.Timer++;
+                if (entry.Timer >= entry.Duration) {
+                    lockEntries.RemoveAt(i);
+                    continue;
+                }
+
+                npc.CWR().TimeFrozenTick = 2;
+                npc.Center = entry.AnchorCenter;
+                npc.velocity = Vector2.Zero;
+            }
+
             for (int i = Entries.Count - 1; i >= 0; i--) {
                 DismemberEntry entry = Entries[i];
                 NPC npc = Main.npc[entry.NpcIndex];
@@ -485,12 +581,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                     Entries.RemoveAt(i);
                     continue;
                 }
-
-                //冻结链逐帧续期 + 锚点钉死（击退只改 velocity，一并抹掉）
-
-                npc.CWR().TimeFrozenTick = 2;
-                npc.Center = entry.AnchorCenter;
-                npc.velocity = Vector2.Zero;
 
                 if (!Main.dedServ) {
                     foreach (DismemberCut cut in entry.Cuts) {

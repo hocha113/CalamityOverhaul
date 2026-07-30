@@ -21,6 +21,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
         /// <summary>细线滞拍帧数、出现→纳刀引爆的间隔，主控用它对齐解冻时刻</summary>
         public const int HoldFrames = 18;
+        /// <summary>终斩视觉刀路半长</summary>
+        public const float VisualHalfLength = 2550f;
+        /// <summary>体节视觉筛选使用的中心刃线宽度</summary>
+        public const float VisualPathWidth = 12f;
         private const int DamageEnd = HoldFrames + 8;
         private const int Lifetime = HoldFrames + 58;
 
@@ -119,7 +123,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 SweepFrames = 2, Life = Lifetime,
                 DamageStart = HoldFrames, DamageEnd = DamageEnd,
                 Mode = 1f, Rot = CutAngle, Span = 0f, Thick = 0.22f,
-                HalfX = 2600f * s, HalfY = 26f * s, Flip = flip,
+                HalfX = (VisualHalfLength + 50f) * s, HalfY = 26f * s, Flip = flip,
                 Opacity = 0.85f, FrontGlow = 1.6f, Seed = seed,
                 RazorTailWiden = 0f,
                 Palette = OFR.BladePalette.Escalate(0.55f),
@@ -128,7 +132,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
             //厚度给创面外溢与撕裂参差留余量（shader 内最多用到 ~0.8）
 
-            woundHalfX = 2550f * s;
+            woundHalfX = VisualHalfLength * s;
             woundHalfY = 150f * s;
         }
 

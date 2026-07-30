@@ -169,12 +169,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 }
                 else if (target != null) {
                     struck = true;
-                    //冻结+伤口亮线在所有端确定性触发；滞拍对齐终斩纳刀帧，碎片分离与引爆压同一拍；
-
-                    //多实体 Boss（蠕虫/魔像/月总）整组定格，伤口波沿身体铺开后齐崩
-
-                    OniDismember.TriggerGroup(target, target.Center, CutAngle
-                        , holdFrames: OniFinaleCut.HoldFrames);
+                    //全组停止；只有终斩视觉刃线实际经过的体节捕获快照并裂开
+                    DismemberStroke stroke = new(target.Center, CutAngle,
+                        OniFinaleCut.VisualHalfLength * SizeMul, OniFinaleCut.VisualPathWidth * SizeMul);
+                    OniDismember.TriggerGroup(target, in stroke, holdFrames: OniFinaleCut.HoldFrames);
                     if (Projectile.owner == Main.myPlayer) {
                         OniFinaleCut.Fire(Owner, target.Center, CutAngle, Projectile.damage
                             , Projectile.knockBack, SizeMul, Projectile.GetSource_FromAI());
