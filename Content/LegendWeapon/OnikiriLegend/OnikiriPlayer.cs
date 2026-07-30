@@ -1118,24 +1118,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return aim.ToRotation();
         }
 
-        /// <summary>肢解目标点选,蠕虫节段排除(头部可)</summary>
+        /// <summary>肢解目标点选，蠕虫任意体节均可作为落刀锚点</summary>
         private NPC PickDismemberTarget(Vector2 cursor, float pad) {
             NPC best = null;
             bool bestBoss = false;
             float bestLife = 0f;
             float bestD = float.MaxValue;
             foreach (NPC npc in Main.ActiveNPCs) {
-                if (!npc.CanBeChasedBy() || CWRLoad.WormBodys.Contains(npc.type)) {
+                NPC root = RootOf(npc);
+                bool canPick = npc.CanBeChasedBy()
+                    || (root != npc && root.CanBeChasedBy());
+                if (!canPick) {
                     continue;
                 }
                 float d = DistanceToHitbox(npc, cursor);
                 if (d > pad) {
                     continue;
                 }
-                if (Vector2.Distance(Player.Center, npc.Center) > DismemberRange) {
+                if (DistanceToHitbox(npc, Player.Center) > DismemberRange) {
                     continue;
                 }
-                NPC root = RootOf(npc);
                 bool better = best == null
                     || (root.boss != bestBoss
                         ? root.boss
@@ -1158,9 +1160,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return Vector2.Distance(point, nearest);
         }
 
-        /// <summary>蠕虫类归主体(boss 旗/最大生命都看头)</summary>
-        private static NPC RootOf(NPC npc)
-            => npc.realLife >= 0 && npc.realLife < Main.maxNPCs ? Main.npc[npc.realLife] : npc;
+        /// <summary>蠕虫类归当前活跃主体</summary>
+        private static NPC RootOf(NPC npc) {
+            int rootIndex = NpcGroupHelper.GetAnchorIndex(npc);
+            return rootIndex >= 0 && rootIndex < Main.maxNPCs ? Main.npc[rootIndex] : npc;
+        }
 
         /// <summary>记入命中记忆:蠕虫归主体,去重刷新,满则顶掉最旧</summary>
         private void RecordHit(NPC npc) {
