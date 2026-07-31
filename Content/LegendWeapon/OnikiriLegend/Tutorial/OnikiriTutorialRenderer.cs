@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private const float AnimSpeed = 0.12f;
         private const int EdgePad = 10;
         private const int StuckFramesBeforeSkip = 60 * 9;
-        private const int CardW = 336;
+        private const int CardW = 360;
 
         private readonly struct GLine
         {
@@ -147,12 +147,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             float contentW = CardW - 32f;
             string promptText = FormatPrompt(step, prompt);
             GLine[] lines = string.IsNullOrEmpty(promptText)
-                ? [new(body.Value, 0.74f, OnikiriUITheme.TextDim)]
+                ? [new(body.Value, 0.92f, OnikiriUITheme.TextDim)]
                 : [
-                    new(body.Value, 0.74f, OnikiriUITheme.TextDim),
-                    new(promptText, 0.78f, OnikiriUITheme.HotWhite),
+                    new(body.Value, 0.92f, OnikiriUITheme.TextDim),
+                    new(promptText, 0.96f, OnikiriUITheme.HotWhite),
                 ];
-            int cardH = MeasureCardH(font, 0.9f, lines, contentW);
+            int cardH = MeasureCardH(font, 1.02f, lines, contentW);
             Rectangle card = PlaceCard(focus, cardH, a);
 
             if (focus != null) {
@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
 
             DrawCardPanel(sb, card, a, time);
-            DrawCardContent(sb, font, card, title.Value, 0.9f, lines, a);
+            DrawCardContent(sb, font, card, title.Value, 1.02f, lines, a);
 
             //交互钮：认知步给「已知晓」；开簿/改铭给助手钮；卡住后给出跳过
             if (step == OnikiriTutorialFlow.Step_HudIntro) {
@@ -378,7 +378,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             foreach (GLine gl in body) {
                 h += MeasureWrapH(font, gl.Text, gl.Scale, contentW) + 4f;
             }
-            return (int)MathF.Ceiling(h + 42f);
+            return (int)MathF.Ceiling(h + 48f);
         }
 
         private static void DrawConnector(SpriteBatch sb, Rectangle card, Vector2 target, float a, float time) {
@@ -398,24 +398,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         #region 按钮
         private static bool DrawActionButton(SpriteBatch sb, DynamicSpriteFont font, Rectangle card,
             string text, Color accent, float time, float a) {
-            const int btnH = 26;
-            Vector2 size = font.MeasureString(text) * 0.76f;
-            int btnW = Math.Max(98, (int)size.X + 28);
+            const int btnH = 28;
+            Vector2 size = font.MeasureString(text) * 0.86f;
+            int btnW = Math.Max(108, (int)size.X + 30);
             var rect = new Rectangle(card.Right - btnW - 14, card.Bottom - btnH - 12, btnW, btnH);
             return DrawPaperButton(sb, font, rect, text, accent, time, a);
         }
 
         private static bool DrawSecondaryButton(SpriteBatch sb, DynamicSpriteFont font, Rectangle card,
             string text, float time, float a) {
-            const int btnH = 22;
-            Vector2 size = font.MeasureString(text) * 0.68f;
-            int btnW = Math.Max(72, (int)size.X + 20);
+            const int btnH = 24;
+            Vector2 size = font.MeasureString(text) * 0.78f;
+            int btnW = Math.Max(78, (int)size.X + 22);
             var rect = new Rectangle(card.X + 14, card.Bottom - btnH - 14, btnW, btnH);
-            return DrawPaperButton(sb, font, rect, text, OnikiriUITheme.TextDim, time, a * 0.9f, 0.68f);
+            return DrawPaperButton(sb, font, rect, text, OnikiriUITheme.TextDim, time, a * 0.9f, 0.78f);
         }
 
         private static bool DrawPaperButton(SpriteBatch sb, DynamicSpriteFont font, Rectangle rect,
-            string text, Color accent, float time, float a, float textScale = 0.76f) {
+            string text, Color accent, float time, float a, float textScale = 0.86f) {
             Texture2D px = VaultAsset.placeholder2.Value;
             bool hovered = rect.Contains(OnikiriUITheme.UIMouse.ToPoint());
             float hi = hovered ? 1f : 0f;
