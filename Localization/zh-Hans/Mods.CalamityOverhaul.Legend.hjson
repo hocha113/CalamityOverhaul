@@ -606,6 +606,46 @@ OnikiriText: {
 		DomainToggleHintFormat: "{0} 或左键 展开/收阖领域"
 		DomainFlipHintFormat: "{0} 或右键 翻转表里(阖时先展)"
 	}
+
+	OnikiriTutorialLead: {
+		HudTitle: 气力与架势
+		HudBody: 手持鬼切时，左下角常驻气力笔触与架势鞘。气力供疾走，架势积满可衔出处决
+		HudPrompt: 认一下这组读数；按 {0} 或点札可开改铭台
+		RegisterTitle: 点鬼簿
+		RegisterBody: 点击架势鞘，可展开点鬼簿——铭鬼名录、驾驭与共鸣都记在这里
+		RegisterPrompt: 点高亮的鞘，或按助手钮打开
+		MeiTitle: 改铭台
+		MeiBody: 点封印札，或从点鬼簿移步改铭台。茎铭、樋位、雕位决定刀上赋效
+		MeiPrompt: 按 {0} 或点札打开改铭台，看一眼铭位即可
+		ComboTitle: 绯红五拍
+		ComboBody: 按住左键驱动绯红裂空斩。五拍连段命中练习鬼影，熟悉出刀节奏
+		ComboPrompt: 对练习鬼影打满五拍
+		DashTitle: 神威疾走
+		DashBody: 消耗气力施展疾走，穿身扫掠后墨痕纳刀。命中才会进入纳刀结算
+		DashPrompt: 按 {0} 对鬼影疾走一次
+		ZanshinTitle: 残心
+		ZanshinBody: 樱流化身交还操控后有短暂残心窗。在窗内补一刀命中，可回收资源
+		ZanshinPrompt: 残心窗内命中练习鬼影
+		SakuraTitle: 樱流化身
+		SakuraBody: 展开鬼域表世界后可放樱流。化身起飞，随后操控交还——那是残心的前奏
+		SakuraPrompt: 展域并释放樱流，等操控交还
+		AnnihilateTitle: 灭世一闪
+		AnnihilateBody: 架势过半时，双疾走后接左键可放灭世一闪。资源已替你备好
+		AnnihilatePrompt: 完成双疾走衔接触发灭世一闪
+		FinaleTitle: 终结乱舞
+		FinaleBody: 架势圆满时，双疾走穿中目标释放终结乱舞。势已替你灌满
+		FinalePrompt: 双疾走穿身，放出终结乱舞
+		DismemberTitle: 里世界肢解
+		DismemberBody: 翻转至里世界后可施展肢解一刀。面影会自动快门，对准练习鬼影落刀
+		DismemberPrompt: 翻到里世界，肢解命中鬼影
+		CloseTitle: 收域
+		CloseBody: 练习结束。收阖鬼域，夜色归位——刀仍在鞘，名仍在簿
+		ClosePrompt: 按 {0} 或点鬼域之眼收域
+		NextBtn: 已知晓
+		OpenRegisterBtn: 开点鬼簿
+		OpenMeiBtn: 开改铭台
+		SkipBtn: 跳过
+	}
 }
 
 OnikiriOverride: {
@@ -786,3 +826,5 @@ OnikiriTrialQuestLine: {
 		开打前先自己站稳，回来我再啰嗦
 		'''
 }
+
+OnikiriTutorialWraith.DisplayName: 夜鬼影（练习）

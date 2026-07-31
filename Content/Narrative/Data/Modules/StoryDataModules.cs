@@ -1,4 +1,4 @@
-﻿using InnoVault.DataModules;
+using InnoVault.DataModules;
 
 namespace CalamityOverhaul.Content.Narrative.Data.Modules
 {
@@ -211,5 +211,14 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
     public sealed class HalibutGuideData : DataModule
     {
         public bool GuideSeen;
+    }
+
+    /// <summary>鬼切教程进度；随玩家存档</summary>
+    public sealed class OnikiriGuideData : DataModule
+    {
+        /// <summary>已完成的教程版本；0 = 从未完成</summary>
+        public int CompletedVersion;
+        /// <summary>段落检查点：0=未开始,1=HUD段完成,2=核心战斗完成,3=进阶完成(全局结束)</summary>
+        public int Checkpoint;
     }
 }

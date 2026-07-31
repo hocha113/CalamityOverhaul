@@ -169,6 +169,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 }
                 else if (target != null) {
                     struck = true;
+                    if (Projectile.owner == Main.myPlayer)
+                        Tutorial.OnikiriTutorialEvents.FireDismemberLanded(target);
                     //全组停止；只有终斩视觉刃线实际经过的体节捕获快照并裂开
                     DismemberStroke stroke = new(target.Center, CutAngle,
                         OniFinaleCut.VisualHalfLength * SizeMul, OniFinaleCut.VisualPathWidth * SizeMul);

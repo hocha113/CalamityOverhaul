@@ -120,6 +120,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 (int)(OnikiriUITheme.HudVigorQuadW - OnikiriUITheme.HudVigorPad * 2f + 20f), 24);
             Hovering = interactive && core.Contains(mouse.ToPoint());
             hoverEase += ((Hovering ? 1f : 0f) - hoverEase) * 0.2f;
+            if (Tutorial.OnikiriTutorialLead.IsActive)
+                Tutorial.OnikiriTutorialTargets.Publish(Tutorial.OnikiriTutorialTargets.Tag_VigorStroke, core);
         }
 
         /// <summary>

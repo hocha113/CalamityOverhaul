@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.Narrative;
 using Microsoft.Xna.Framework.Graphics;
@@ -25,12 +25,24 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         /// <summary>仍需在场(含渐出尾巴)</summary>
         public static bool Visible => Intensity > 0.004f;
 
+        //教程活跃时每帧调用 SetTutorialLease() 维持黄昏；停止调用后自动过期（90 帧渐出）
+        private static bool tutorialLease;
+
+        /// <summary>教程活跃帧调用；下一帧未续租即自动失效</summary>
+        public static void SetTutorialLease() => tutorialLease = true;
+
         internal static void Update() {
+            bool lease = tutorialLease;
+            tutorialLease = false;           //自动过期，教程必须每帧续租
+            bool hold = Hold() || lease;
             Intensity = MathHelper.Clamp(
-                Intensity + (Hold() ? FadeInPerTick : -FadeOutPerTick), 0f, 1f);
+                Intensity + (hold ? FadeInPerTick : -FadeOutPerTick), 0f, 1f);
         }
 
-        internal static void Reset() => Intensity = 0f;
+        internal static void Reset() {
+            Intensity = 0f;
+            tutorialLease = false;
+        }
 
         /// <summary>退场中或初见在播则保持，鬼域激活时让位</summary>
         private static bool Hold() {

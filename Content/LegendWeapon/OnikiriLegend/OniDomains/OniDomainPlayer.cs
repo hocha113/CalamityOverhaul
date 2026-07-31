@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages;
 using CalamityOverhaul.Content.TimeFreezes;
 using System;
@@ -411,6 +411,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
                     SoundEngine.PlaySound(SoundID.Item35 with { Volume = 0.35f, Pitch = 0.15f, MaxInstances = 1 }, Player.Center);
                 }
+                if (Player.whoAmI == Main.myPlayer)
+                    Tutorial.OnikiriTutorialEvents.FireDomainPhaseSettled(Phase);
             }
         }
 
@@ -509,6 +511,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                         FlipStage = OniFlipStage.None;
                         ambienceTimer = Main.rand.Next(300, 600);
                         anomalyTimer = SetAnomalyInterval();
+                        if (Player.whoAmI == Main.myPlayer)
+                            Tutorial.OnikiriTutorialEvents.FireDomainPhaseSettled(Phase);
                     }
                     break;
             }
@@ -608,6 +612,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 EyeIntensity = 0f;
                 EyeOpenAmount = 0f;
                 PaperValid = false;
+                if (Player.whoAmI == Main.myPlayer)
+                    Tutorial.OnikiriTutorialEvents.FireDomainPhaseSettled(OniDomainPhase.Closed);
             }
         }
 

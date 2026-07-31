@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
@@ -86,6 +86,17 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
             }
 
             if (Story.PostFirstMetIsComplete) {
+                //教程门禁：新玩家须完成教程后方可接受试炼委托
+                //旧存档兼容：若已有 Boss 礼物进度(教程功能上线前)，自动跳过
+                var guide = player.GetModPlayer<StoryPlayer>().Get<OnikiriGuideData>();
+                if (guide.CompletedVersion < 1) {
+                    if (GiftStory.EyeOfCthulhuGift || GiftStory.WallOfFleshGift) {
+                        guide.CompletedVersion = 1;
+                    }
+                    else {
+                        return false;
+                    }
+                }
                 return true;
             }
 

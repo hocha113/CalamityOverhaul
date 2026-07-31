@@ -279,6 +279,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (VaultUtils.isSinglePlayer) {
                 WorldFreezeSystem.Deactivate(FreezeReason);
             }
+            //教程临时刻铭事务：关闭改铭台时恢复快照，保证教程铭不污染存档
+            Tutorial.OnikiriTutorialFlow.RestoreMeiSnapshotOnClose();
         }
 
         //====数据视图====
@@ -525,6 +527,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                         hoverSlot = i;
                         break;
                     }
+                }
+            }
+            //教程焦点：发布三个铭位和当前选中铭位
+            if (Tutorial.OnikiriTutorialLead.IsActive) {
+                string[] slotTags = [Tutorial.OnikiriTutorialTargets.Tag_MeiSlotNakago,
+                    Tutorial.OnikiriTutorialTargets.Tag_MeiSlotHi, Tutorial.OnikiriTutorialTargets.Tag_MeiSlotHorimono];
+                int sr = (int)OnikiriUITheme.MeiMedallionHitRadius;
+                for (int i = 0; i < 3; i++) {
+                    Tutorial.OnikiriTutorialTargets.Publish(slotTags[i],
+                        new Rectangle((int)(slotPos[i].X - sr), (int)(slotPos[i].Y - sr), sr * 2, sr * 2));
                 }
             }
 

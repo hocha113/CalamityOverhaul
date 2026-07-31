@@ -126,6 +126,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //====命中与点击====
             Hovering = interactive && Vector2.Distance(mouse, Center) <= OnikiriUITheme.HudEyeHitRadius;
             hoverEase += ((Hovering ? 1f : 0f) - hoverEase) * 0.2f;
+            if (Tutorial.OnikiriTutorialLead.IsActive) {
+                int eyeR = (int)OnikiriUITheme.HudEyeHitRadius;
+                Tutorial.OnikiriTutorialTargets.Publish(Tutorial.OnikiriTutorialTargets.Tag_DomainEye,
+                    new Rectangle((int)(Center.X - eyeR), (int)(Center.Y - eyeR), eyeR * 2, eyeR * 2));
+            }
 
             if (Hovering && !wasHover && hoverOffTicks > 8) {
                 SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.3f, Pitch = 0.5f });

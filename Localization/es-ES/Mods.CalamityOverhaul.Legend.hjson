@@ -606,6 +606,46 @@ OnikiriText: {
 		// DomainToggleHintFormat: "{0} or Left Click: unfold / fold the domain"
 		// DomainFlipHintFormat: "{0} or Right Click: flip Omote/Ura (unfolds if shut)"
 	}
+
+	OnikiriTutorialLead: {
+		// HudTitle: Vigor & Stance
+		// HudBody: While holding Onikiri, the vigor stroke and stance sheath stay at the lower left. Vigor fuels Flash Step; full Stance unlocks executions
+		// HudPrompt: Learn these readouts; press {0} or click the talisman for the Inscription Stand
+		// RegisterTitle: Ghost Register
+		// RegisterBody: Click the stance sheath to open the Ghost Register — names, mastery, and attunement live here
+		// RegisterPrompt: Click the highlighted sheath, or use the helper button
+		// MeiTitle: Inscription Stand
+		// MeiBody: Click the talisman, or step over from the Register. Tang, groove, and horimono decide the blade's bestowal
+		// MeiPrompt: Press {0} or click the talisman, glance at the mei seats, then continue
+		// ComboTitle: Crimson Five Beats
+		// ComboBody: Hold left-click to drive Crimson Rend. Land all five beats on the training shade
+		// ComboPrompt: Land a full five-beat combo on the training shade
+		// DashTitle: Kamui Flash Step
+		// DashBody: Spend Vigor to dash; a clean pass marks and sheathes. Only hits settle the judgment
+		// DashPrompt: Press {0} and dash through the shade once
+		// ZanshinTitle: Zanshin
+		// ZanshinBody: After Sakura returns control, a short zanshin window opens. Land a hit inside it to reclaim resources
+		// ZanshinPrompt: Hit the training shade inside the zanshin window
+		// SakuraTitle: Sakura Flight
+		// SakuraBody: Unfold the Omote domain, then release Sakura. The clone takes flight and returns control — prelude to zanshin
+		// SakuraPrompt: Open the domain, release Sakura, wait for control to return
+		// AnnihilateTitle: Annihilating Flash
+		// AnnihilateBody: Past half Stance, chain two dashes then left-click for Annihilating Flash. Resources are prepared
+		// AnnihilatePrompt: Chain two dashes and trigger Annihilating Flash
+		// FinaleTitle: Finale Slash
+		// FinaleBody: At full Stance, two dashes through a target unleash Finale Slash. Stance is filled for you
+		// FinalePrompt: Dash through twice and release Finale Slash
+		// DismemberTitle: Ura Dismember
+		// DismemberBody: Flip to Ura, then land a dismember strike. The face-shadow shutters for you — aim the training shade
+		// DismemberPrompt: Flip to Ura and land dismember on the shade
+		// CloseTitle: Fold the Domain
+		// CloseBody: Practice ends. Fold the domain; night settles — blade in sheath, name in the register
+		// ClosePrompt: Press {0} or click the Domain Eye to fold
+		// NextBtn: Understood
+		// OpenRegisterBtn: Open Register
+		// OpenMeiBtn: Open Stand
+		// SkipBtn: Skip
+	}
 }
 
 OnikiriOverride: {
@@ -786,3 +826,5 @@ OnikiriTrialQuestLine: {
 		Stand steady before you start—I'll nag you about swaying when you're back
 		''' */
 }
+
+// OnikiriTutorialWraith.DisplayName: Training Shade

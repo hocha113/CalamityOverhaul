@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.UIs.HudStack;
 using InnoVault.UIHandles;
@@ -238,6 +238,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             DrawPosition = new Vector2(minX, minY);
             Size = new Vector2(maxX - minX, maxY - minY);
             UIHitBox = new Rectangle((int)minX, (int)minY, (int)(maxX - minX), (int)(maxY - minY));
+            if (Tutorial.OnikiriTutorialLead.IsActive)
+                Tutorial.OnikiriTutorialTargets.Publish(Tutorial.OnikiriTutorialTargets.Tag_TalismanStrip, UIHitBox);
 
             //气力墨脉与架势鞘刀推进:点鬼簿开卷时也继续呼吸,只是不受理悬浮
             vigor.Update(player, knot, !uiCovered && appear > 0.5f, MousePosition);

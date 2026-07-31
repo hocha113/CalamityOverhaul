@@ -53,6 +53,7 @@ namespace CalamityOverhaul
         ReservedToriiShrineGenerationRequest,
         ToriiShrineSync,
         Wraith,
+        OnikiriTutorial,
     }
 
     public static class CWRNetWork
@@ -122,6 +123,7 @@ namespace CalamityOverhaul
             OldDukeEffect.NetHandle(type, reader, whoAmI);
             MachineEffect.NetHandle(type, reader, whoAmI);
             WraithNet.NetHandle(type, reader, whoAmI);
+            Content.LegendWeapon.OnikiriLegend.Tutorial.OnikiriTutorialNet.NetHandle(type, reader, whoAmI);
         }
     }
 }

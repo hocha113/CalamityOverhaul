@@ -311,6 +311,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 float target = i == hoverIndex ? 1f : 0f;
                 hoverEase[i] += (target - hoverEase[i]) * (target > hoverEase[i] ? 0.22f : 0.12f);
             }
+            //教程焦点：当前已选条目的矩形区
+            if (Tutorial.OnikiriTutorialLead.IsActive && selectedIndex >= 0 && selectedIndex < entryRects.Length) {
+                Tutorial.OnikiriTutorialTargets.Publish(Tutorial.OnikiriTutorialTargets.Tag_RegisterEntry, entryRects[selectedIndex]);
+            }
 
             //收卷牌 hover 缓动;拂过时给绳一记横向冲量,像被手碰了一下
             bool tagHovered = inputAvailable && closeTagRect.Contains(mp);

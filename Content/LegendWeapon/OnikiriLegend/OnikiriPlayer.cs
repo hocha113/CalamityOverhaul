@@ -636,6 +636,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return false;
             }
             //化樱起飞,疾走的旧窗作废;落地(ReleaseOwner)会开新窗
+            Tutorial.OnikiriTutorialEvents.FireSakuraStarted();
             zanshinWindow = 0;
             zanshinPending = false;
             zanshinAutoHandoff = false;
@@ -811,6 +812,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (!grantResources) {
                 return;
             }
+            Tutorial.OnikiriTutorialEvents.FireZanshinHit(target);
             Stance = Math.Min(StanceMax, Stance + StancePerZanshinSlash * Mei.StanceGainMul);
             if (Mei.ZanshinHitVigorBonus > 0f) {
                 Vigor = Math.Min(VigorMaxCurrent, Vigor + Mei.ZanshinHitVigorBonus);
@@ -931,6 +933,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             ClearZanshinIntent();
             IgniteKurikara();
             TrySpawnEmberField(focus, state.WeaponDamage);
+            Tutorial.OnikiriTutorialEvents.FireExecutionFinale(target);
             return true;
         }
 
@@ -997,6 +1000,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             IgniteKurikara();
             Vector2 emberAt = Player.Center + aim * 120f;
             TrySpawnEmberField(emberAt, state.WeaponDamage);
+            Tutorial.OnikiriTutorialEvents.FireExecutionAnnihilate();
             return true;
         }
 

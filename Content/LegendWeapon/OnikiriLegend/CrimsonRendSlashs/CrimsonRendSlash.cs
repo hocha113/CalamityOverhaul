@@ -1374,6 +1374,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 }
                 OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
                 okp.OnComboHit(target, grantResources);
+                if (grantResources && a != null) {
+                    Tutorial.OnikiriTutorialEvents.FireComboBeatHit(a.Beat, target);
+                }
                 if (!target.active || target.life <= 0) {
                     okp.TryPetalPruneOnKill(target, Projectile.damage, Projectile.knockBack);
                 }

@@ -110,7 +110,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 (int)(totalLen + OnikiriUITheme.HudStanceTsukaRecede + 8f),
                 (int)(Math.Abs(tipY - pommelBase.Y) + 22f));
             Hovering = interactive && box.Contains(mouse.ToPoint());
-            hoverEase += ((Hovering ? 1f : 0f) - hoverEase) * 0.2f;
+            hoverEase += ((Hovering ? 1f : 0f) - hoverEase) * (Hovering ? 0.22f : 0.12f);
+            if (Tutorial.OnikiriTutorialLead.IsActive)
+                Tutorial.OnikiriTutorialTargets.Publish(Tutorial.OnikiriTutorialTargets.Tag_StanceSheath, box);
         }
 
         /// <summary>绘柄/镡/刃鞘/归座/悬浮读数,suppressTag 藏读数</summary>

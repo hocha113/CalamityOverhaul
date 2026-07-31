@@ -534,6 +534,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                     bool grantResources = !stanceGranted;
                     stanceGranted = true;
                     Owner.GetModPlayer<OnikiriPlayer>().OnDashParry(npc, grantResources);
+                    Tutorial.OnikiriTutorialEvents.FireDashSweep(npc);
                 }
 
                 SoundEngine.PlaySound(SoundID.Item71 with {
@@ -671,6 +672,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             //齐裂确认走Bloom,闪步高频不配闪屏
             CrimsonImpactFX.PushAmbience(GetCenter(), MathF.Min(0.16f + marked.Count * 0.03f, 0.30f));
             Owner.CWR().GetScreenShake(MathF.Min(3f + marked.Count * 0.8f, 8f));
+            if (Projectile.IsOwnedByLocalPlayer())
+                Tutorial.OnikiriTutorialEvents.FireDashJudged();
         }
 
         /// <summary>连段刀角→疾走低姿的四帧强制收刃</summary>
