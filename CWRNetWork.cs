@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content;
+using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
@@ -49,7 +49,8 @@ namespace CalamityOverhaul
         CyberBossExecutionStart,
         HackProtocolApply,
         CrabulonRecall,
-        ToriiShrineGenerationRequest,
+        //保留已发布的协议编号，客户端不再发送该请求。
+        ReservedToriiShrineGenerationRequest,
         ToriiShrineSync,
         Wraith,
     }
@@ -109,9 +110,6 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.HackProtocolApply) {
                 HackTimeNetSync.HandleApplyPacket(reader, whoAmI);
-            }
-            else if (type == CWRMessageType.ToriiShrineGenerationRequest) {
-                ToriiShrine.TryGenerateShrine();
             }
             else if (type == CWRMessageType.ToriiShrineSync) {
                 ToriiShrine.ReceiveShrineSync(reader);

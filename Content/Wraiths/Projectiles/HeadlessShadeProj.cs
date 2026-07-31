@@ -1,8 +1,10 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Wraiths.Attunements;
 using CalamityOverhaul.Content.Wraiths.Core;
+using InnoVault;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -52,7 +54,13 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         private const int RecoverDuration = 24;
         private const int DismissDuration = 18;
         private const int ImpactHoldFrames = 6;
-        private const int HistoryLength = 8;
+        private const int BossVisualDuration = 38;
+        private const int WakeAfterFrames = 12;
+        private const int WakeSamples = 12;
+        private const float WakePointSpacing = 5f;
+        private const float WakeNoiseTilePx = 260f;
+        private const float WakeMaxWidth = 28f;
+        private const float ImpactRadiusPadding = 24f;
         private const float BodyDrawSize = 184f;
 
         private int targetNPCID = -1;
@@ -62,8 +70,14 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         private int visualAge;
         private int wispTimer;
         private int pendingDamageTicks;
+        private int wakeAfterTimer;
+        private int wakePointCount;
+        private ushort impactSerial;
+        private ushort processedImpactSerial;
+        private bool impactEventPending;
         private bool pendingDamage;
         private bool strikeResolved;
+        private bool wakeAnchoredToImpact;
 
         private ShadeState previousState = ShadeState.Idle;
         private Vector2 stalkStart;
@@ -72,6 +86,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         private Vector2 dashEnd;
         private Vector2 dashDirection = Vector2.UnitX;
         private Vector2 lockedTargetCenter;
+        private Vector2 impactCenter;
         private Vector2 recoverStart;
         private Vector2 dismissStart;
 
@@ -80,17 +95,22 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         private float phaseSmooth;
         private float drawOpacity;
 
-        private readonly Vector2[] centerHistory = new Vector2[HistoryLength];
+        private readonly Vector2[] wakePoints = new Vector2[WakeSamples];
         private readonly VertexPositionColorTexture[] quadVertices = new VertexPositionColorTexture[4];
+        private readonly VertexPositionColorTexture[] wakeVertices = new VertexPositionColorTexture[WakeSamples * 2];
 
         private float Seed => Projectile.identity * 0.173f % 1f;
         private float BodyScale => MathHelper.Lerp(0.92f, 1.08f, MathHelper.Clamp(Mastery, 0f, 1f));
         private int ReacquireDelay => (int)MathHelper.Lerp(105f, 72f, MathHelper.Clamp(Mastery, 0f, 1f));
 
+        public override void SetStaticDefaults()
+            => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 240;
+
         public override void SetDefaults() {
             Projectile.width = 54;
             Projectile.height = 104;
             Projectile.aiStyle = -1;
+            Projectile.DamageType = CWRRef.GetTrueMeleeDamageClass();
             Projectile.friendly = false;
             Projectile.hostile = false;
             Projectile.penetrate = -1;
@@ -103,9 +123,6 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         public override void OnSpawn(IEntitySource source) {
             ownerDirection = Owner.direction;
             Projectile.Center = IdleHoverPosition();
-            for (int i = 0; i < centerHistory.Length; i++) {
-                centerHistory[i] = Projectile.Center;
-            }
 
             if (Main.dedServ) {
                 return;
@@ -139,6 +156,9 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             writer.Write(dashDirection.Y);
             writer.Write(lockedTargetCenter.X);
             writer.Write(lockedTargetCenter.Y);
+            writer.Write(impactSerial);
+            writer.Write(impactCenter.X);
+            writer.Write(impactCenter.Y);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader) {
@@ -149,7 +169,18 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             dashEnd = new Vector2(reader.ReadSingle(), reader.ReadSingle());
             dashDirection = new Vector2(reader.ReadSingle(), reader.ReadSingle());
             lockedTargetCenter = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+            ushort incomingImpactSerial = reader.ReadUInt16();
+            Vector2 incomingImpactCenter = new(reader.ReadSingle(), reader.ReadSingle());
+            if (IsNewerImpact(incomingImpactSerial, impactSerial)) {
+                impactSerial = incomingImpactSerial;
+                impactCenter = incomingImpactCenter;
+                impactEventPending = true;
+                strikeResolved = true;
+            }
         }
+
+        private static bool IsNewerImpact(ushort incoming, ushort current)
+            => incoming != current && (ushort)(incoming - current) < 0x8000;
 
         public override void AI() {
             if (!Owner.active) {
@@ -165,13 +196,14 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
             visualAge++;
             StateTimer++;
-            RecordHistory();
-            UpdatePendingDamage();
 
             if (State != previousState) {
                 OnStateChanged(State);
                 previousState = State;
             }
+
+            ProcessImpactEvent();
+            UpdatePendingDamage();
 
             switch (State) {
                 case ShadeState.Idle:
@@ -194,6 +226,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                     break;
             }
 
+            UpdateWake();
             UpdateVisuals();
         }
 
@@ -289,6 +322,9 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             dashOrigin = Projectile.Center;
             lockedTargetCenter = target.Center;
             dashDirection = (lockedTargetCenter - dashOrigin).SafeNormalize(new Vector2(ownerDirection, 0f));
+            if (MathF.Abs(dashDirection.X) > 0.08f) {
+                ownerDirection = dashDirection.X >= 0f ? 1 : -1;
+            }
             float overrun = MathHelper.Clamp(MathF.Max(target.width, target.height) * 0.65f + 105f, 120f, 230f);
             dashEnd = lockedTargetCenter + dashDirection * overrun;
             Transition(ShadeState.Dashing);
@@ -296,23 +332,19 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
         private void DashingBehavior() {
             NPC target = strikeResolved ? null : GetTarget(requireHuntRange: false);
-            if (!strikeResolved && target == null) {
+            if (!strikeResolved && target == null && Projectile.IsOwnedByLocalPlayer()) {
                 Transition(ShadeState.Recovering);
                 return;
             }
 
+            Vector2 previousCenter = Projectile.Center;
             float progress = MathHelper.Clamp(StateTimer / DashDuration, 0f, 1f);
             float travel = 1f - MathF.Pow(1f - progress, 3.2f);
             SetCenter(Vector2.Lerp(dashOrigin, dashEnd, travel));
 
-            if (!strikeResolved) {
-                Vector2 path = dashEnd - dashOrigin;
-                float pathLengthSq = MathF.Max(path.LengthSquared(), 1f);
-                float impactProgress = MathHelper.Clamp(
-                    Vector2.Dot(lockedTargetCenter - dashOrigin, path) / pathLengthSq, 0f, 1f);
-                if (travel >= impactProgress) {
-                    ResolveStrike(target);
-                }
+            if (!strikeResolved && target != null && Projectile.IsOwnedByLocalPlayer()
+                && PathTouchesTarget(target, previousCenter, Projectile.Center, out Vector2 hitPoint)) {
+                PublishImpact(target, hitPoint);
             }
 
             if (!Main.dedServ) {
@@ -324,21 +356,67 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             }
         }
 
-        private void ResolveStrike(NPC target) {
+        private static bool PathTouchesTarget(NPC target, Vector2 start, Vector2 end, out Vector2 hitPoint) {
+            float collisionPoint = 0f;
+            bool touches = Collision.CheckAABBvLineCollision(target.Hitbox.TopLeft(), target.Hitbox.Size(),
+                start, end, ImpactRadiusPadding, ref collisionPoint);
+            if (!touches) {
+                hitPoint = end;
+                return false;
+            }
+
+            Vector2 path = end - start;
+            float lengthSquared = path.LengthSquared();
+            float t = lengthSquared > 0.001f
+                ? Vector2.Dot(target.Center - start, path) / lengthSquared
+                : 0f;
+            hitPoint = start + path * MathHelper.Clamp(t, 0f, 1f);
+            return true;
+        }
+
+        private void PublishImpact(NPC target, Vector2 hitPoint) {
             if (strikeResolved || target == null || !target.active || target.type != targetNPCType) {
                 return;
             }
+
             strikeResolved = true;
+            impactCenter = hitPoint;
+            impactSerial++;
+            impactEventPending = true;
+            Projectile.netUpdate = true;
+            ProcessImpactEvent();
+        }
+
+        private void ProcessImpactEvent() {
+            if (!impactEventPending || processedImpactSerial == impactSerial) {
+                return;
+            }
+            impactEventPending = false;
+            processedImpactSerial = impactSerial;
+            AnchorWakeToImpact();
+
+            NPC target = GetTarget(requireHuntRange: false);
+            if (target == null) {
+                return;
+            }
 
             float cutAngle = dashDirection.ToRotation();
-            float halfLength = MathHelper.Clamp(target.Size.Length() * 1.25f, 96f, 280f);
-            DismemberStroke stroke = new(lockedTargetCenter, cutAngle, halfLength, 52f);
-            int duration = (int)MathHelper.Lerp(78f, 114f, MathHelper.Clamp(Mastery, 0f, 1f));
-            OniDismember.TriggerGroup(target, in stroke, duration, ImpactHoldFrames);
-            pendingDamage = true;
-            pendingDamageTicks = ImpactHoldFrames + 1;
+            if (NpcGroupHelper.IsBossTier(target)) {
+                OniDismember.TriggerVisualOnly(target, impactCenter, cutAngle,
+                    BossVisualDuration, ImpactHoldFrames);
+            }
+            else {
+                float halfLength = MathHelper.Clamp(target.Size.Length() * 1.25f, 96f, 280f);
+                DismemberStroke stroke = new(impactCenter, cutAngle, halfLength, 52f);
+                int duration = (int)MathHelper.Lerp(78f, 114f, MathHelper.Clamp(Mastery, 0f, 1f));
+                OniDismember.TriggerGroup(target, in stroke, duration, ImpactHoldFrames);
+            }
 
-            PlayImpactFx(target.Center);
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                pendingDamage = true;
+                pendingDamageTicks = ImpactHoldFrames + 1;
+            }
+            PlayImpactFx(target);
         }
 
         private void UpdatePendingDamage() {
@@ -356,7 +434,9 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             }
 
             int hitDirection = dashDirection.X >= 0f ? 1 : -1;
-            Owner.ApplyDamageToNPC(target, Projectile.damage, Projectile.knockBack, hitDirection, false);
+            bool crit = Projectile.CritChance > 0 && Main.rand.Next(100) < Projectile.CritChance;
+            Owner.ApplyDamageToNPC(target, Projectile.damage, Projectile.knockBack,
+                hitDirection, crit, Projectile.DamageType);
         }
 
         private void RecoveringBehavior() {
@@ -399,6 +479,10 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                     break;
                 case ShadeState.Dashing:
                     strikeResolved = false;
+                    wakeAfterTimer = 0;
+                    wakePointCount = 0;
+                    wakeAnchoredToImpact = false;
+                    AppendWakePoint(Projectile.Center, force: true);
                     if (!Main.dedServ) {
                         SoundEngine.PlaySound(SoundID.Item71 with {
                             Volume = 0.72f,
@@ -411,14 +495,25 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                 case ShadeState.Recovering:
                     recoverStart = Projectile.Center;
                     reacquireTimer = ReacquireDelay;
+                    wakeAfterTimer = 0;
+                    if (wakePointCount > 0 && !wakeAnchoredToImpact) {
+                        wakePoints[0] = recoverStart;
+                        wakeAnchoredToImpact = true;
+                    }
                     break;
                 case ShadeState.Idle:
                     targetNPCID = -1;
                     targetNPCType = -1;
+                    wakePointCount = 0;
+                    wakeAfterTimer = 0;
+                    wakeAnchoredToImpact = false;
                     break;
                 case ShadeState.Dismissing:
                     targetNPCID = -1;
                     targetNPCType = -1;
+                    wakePointCount = 0;
+                    wakeAfterTimer = 0;
+                    wakeAnchoredToImpact = false;
                     dismissStart = Projectile.Center;
                     if (!Main.dedServ) {
                         SoundEngine.PlaySound(SoundID.NPCDeath6 with {
@@ -432,20 +527,16 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         }
 
         private NPC FindTarget() {
-            NPC best = null;
-            float bestDistanceSq = float.MaxValue;
-            foreach (NPC npc in Main.ActiveNPCs) {
-                if (!HeadlessShadeAttunement.CanHunt(npc, Owner.Center)) {
-                    continue;
-                }
-
-                float distanceSq = Vector2.DistanceSquared(npc.Center, Owner.Center);
-                if (distanceSq < bestDistanceSq) {
-                    bestDistanceSq = distanceSq;
-                    best = npc;
-                }
-            }
-            return best;
+            Vector2 origin = Owner.Center;
+            NPC boss = origin.FindClosestNPC(
+                HeadlessShadeAttunement.HuntRange,
+                ignoreTiles: true,
+                chasedByNPC: npc => HeadlessShadeAttunement.CanHunt(npc)
+                    && NpcGroupHelper.IsBossTier(npc));
+            return boss ?? origin.FindClosestNPC(
+                HeadlessShadeAttunement.HuntRange,
+                ignoreTiles: true,
+                chasedByNPC: HeadlessShadeAttunement.CanHunt);
         }
 
         private NPC GetTarget(bool requireHuntRange) {
@@ -479,11 +570,109 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             Projectile.Center = center;
         }
 
-        private void RecordHistory() {
-            for (int i = centerHistory.Length - 1; i > 0; i--) {
-                centerHistory[i] = centerHistory[i - 1];
+        private void UpdateWake() {
+            if (State == ShadeState.Dashing) {
+                if (wakeAnchoredToImpact) {
+                    if (wakePointCount > 0) {
+                        wakePoints[0] = impactCenter;
+                    }
+                }
+                else {
+                    AppendWakePoint(Projectile.Center);
+                }
+                return;
             }
-            centerHistory[0] = Projectile.Center;
+
+            if (State != ShadeState.Recovering || wakePointCount < 2) {
+                return;
+            }
+
+            wakeAfterTimer++;
+            if (wakeAfterTimer >= WakeAfterFrames) {
+                wakePointCount = 0;
+                wakeAfterTimer = 0;
+                wakeAnchoredToImpact = false;
+            }
+        }
+
+        private void AppendWakePoint(Vector2 point, bool force = false) {
+            if (wakePointCount == 0) {
+                wakePoints[0] = point;
+                wakePointCount = 1;
+                return;
+            }
+
+            if (!force && Vector2.DistanceSquared(point, wakePoints[0]) < WakePointSpacing * WakePointSpacing) {
+                wakePoints[0] = point;
+                return;
+            }
+
+            int nextCount = Math.Min(wakePointCount + 1, wakePoints.Length);
+            for (int i = nextCount - 1; i > 0; i--) {
+                wakePoints[i] = wakePoints[i - 1];
+            }
+            wakePoints[0] = point;
+            wakePointCount = nextCount;
+        }
+
+        private void AnchorWakeToImpact() {
+            wakeAnchoredToImpact = true;
+            wakeAfterTimer = 0;
+            if (wakePointCount == 0) {
+                wakePoints[0] = impactCenter;
+                wakePointCount = 1;
+            }
+            else {
+                if (wakePointCount == 1
+                    && Vector2.DistanceSquared(wakePoints[0], impactCenter) > WakePointSpacing * WakePointSpacing) {
+                    wakePoints[1] = wakePoints[0];
+                    wakePointCount = 2;
+                }
+                while (wakePointCount > 1
+                    && Vector2.Dot(wakePoints[1] - impactCenter, dashDirection) > 0f) {
+                    for (int i = 1; i < wakePointCount - 1; i++) {
+                        wakePoints[i] = wakePoints[i + 1];
+                    }
+                    wakePointCount--;
+                }
+                wakePoints[0] = impactCenter;
+            }
+        }
+
+        private bool BuildWakeVertices(out float totalLength) {
+            totalLength = 0f;
+            if (wakePointCount < 2) {
+                return false;
+            }
+
+            for (int i = 1; i < wakePointCount; i++) {
+                totalLength += Vector2.Distance(wakePoints[i - 1], wakePoints[i]);
+            }
+            if (totalLength < 1f) {
+                return false;
+            }
+
+            float distance = 0f;
+            for (int i = 0; i < wakePointCount; i++) {
+                if (i > 0) {
+                    distance += Vector2.Distance(wakePoints[i - 1], wakePoints[i]);
+                }
+                float u = distance / totalLength;
+                Vector2 tangent = i == 0
+                    ? wakePoints[1] - wakePoints[0]
+                    : i == wakePointCount - 1
+                        ? wakePoints[i] - wakePoints[i - 1]
+                        : wakePoints[i + 1] - wakePoints[i - 1];
+                Vector2 normal = tangent.SafeNormalize(dashDirection).RotatedBy(MathHelper.PiOver2);
+                float envelope = MathF.Pow(MathHelper.Clamp(MathF.Sin(u * MathHelper.Pi), 0f, 1f), 0.62f);
+                float width = MathHelper.Lerp(2.2f, WakeMaxWidth * BodyScale, envelope);
+                Vector2 center = wakePoints[i];
+                wakeVertices[i * 2] = new VertexPositionColorTexture(
+                    (center - normal * width).ToVector3(), Color.White, new Vector2(u, 0f));
+                wakeVertices[i * 2 + 1] = new VertexPositionColorTexture(
+                    (center + normal * width).ToVector3(), Color.White, new Vector2(u, 1f));
+            }
+            return true;
         }
 
         private void UpdateVisuals() {
@@ -565,34 +754,25 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             }
         }
 
-        private void PlayImpactFx(Vector2 center) {
-            if (Main.dedServ) {
+        private void PlayImpactFx(NPC target) {
+            if (Main.dedServ || target == null) {
                 return;
             }
 
+            Vector2 center = target.Center;
+            bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
             SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
                 Volume = 0.88f,
                 Pitch = -0.72f,
                 PitchVariance = 0.06f,
                 MaxInstances = 3
             }, center);
-            SoundEngine.PlaySound(SoundID.NPCHit18 with {
-                Volume = 0.62f,
-                Pitch = -0.38f,
-                MaxInstances = 3
-            }, center);
+            SoundEngine.PlaySound(steel
+                ? CWRSound.KatanaHit with { Pitch = 0.28f, Volume = 0.72f }
+                : CWRSound.KatanaHitB with { Pitch = -0.18f, Volume = 0.72f }, center);
 
-            Vector2 normal = dashDirection.RotatedBy(MathHelper.PiOver2);
-            for (int i = 0; i < 14; i++) {
-                Vector2 velocity = normal * Main.rand.NextFloat(-7.5f, 7.5f)
-                    + dashDirection * Main.rand.NextFloat(1f, 5f)
-                    - Vector2.UnitY * Main.rand.NextFloat(0f, 1.8f);
-                Color color = Main.rand.NextBool(3) ? new Color(154, 20, 35) : new Color(92, 10, 25);
-                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(
-                    center + Main.rand.NextVector2Circular(12f, 16f), velocity, color,
-                    Main.rand.NextFloat(0.65f, 1.15f))
-                    ?.Configure(Main.rand.Next(18, 30), 0.31f, 0.987f);
-            }
+            CrimsonRendHitVFX.SpawnImpactBurst(center, dashDirection,
+                power: 0.86f, sizeMul: BodyScale, steel: steel);
             for (int i = 0; i < 8; i++) {
                 Vector2 velocity = -dashDirection * Main.rand.NextFloat(1f, 4f)
                     + Main.rand.NextVector2Circular(1.8f, 1.8f);
@@ -632,6 +812,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
             Texture2D shutter = CWRAsset.Shutter?.Value;
             Effect effect = EffectLoader.HeadlessShadeBody?.Value;
+            Effect wakeEffect = EffectLoader.WraithScapeArm?.Value;
             Texture2D noise = CWRAsset.NoiseSoft01?.Value;
             if (shutter == null) {
                 return false;
@@ -648,45 +829,78 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             BlendState previousBlend = device.BlendState;
             RasterizerState previousRasterizer = device.RasterizerState;
             DepthStencilState previousDepth = device.DepthStencilState;
-            device.BlendState = BlendState.AlphaBlend;
-            device.RasterizerState = RasterizerState.CullNone;
-            device.DepthStencilState = DepthStencilState.None;
+            SamplerState previousSampler = device.SamplerStates[0];
+            try {
+                device.BlendState = BlendState.AlphaBlend;
+                device.RasterizerState = RasterizerState.CullNone;
+                device.DepthStencilState = DepthStencilState.None;
 
-            effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
-            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-            effect.Parameters["uSeed"]?.SetValue(Seed * 11.7f);
-            effect.Parameters["uShutterTex"]?.SetValue(shutter);
-            effect.Parameters["uNoiseTex"]?.SetValue(noise);
+                if (wakeEffect != null) {
+                    DrawWake(device, wakeEffect, noise);
+                }
 
-            int afterimageCount = State == ShadeState.Dashing ? 6
-                : State == ShadeState.Recovering && StateTimer < 10f ? 3 : 0;
-            for (int i = afterimageCount; i >= 1; i--) {
-                float fade = 1f - i / (float)(afterimageCount + 1);
-                float opacity = drawOpacity * fade * (State == ShadeState.Dashing ? 0.24f : 0.13f);
-                DrawShade(device, effect, centerHistory[Math.Min(i, centerHistory.Length - 1)], opacity,
-                    MathHelper.Clamp(dissolveSmooth + 0.16f + i * 0.045f, 0f, 1f),
-                    phaseSmooth, 1.12f + i * 0.025f);
+                effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+                effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+                effect.Parameters["uSeed"]?.SetValue(Seed * 11.7f);
+                effect.Parameters["uShutterTex"]?.SetValue(shutter);
+                effect.Parameters["uNoiseTex"]?.SetValue(noise);
+
+                float stretch = State == ShadeState.Dashing ? 1.30f : 1f;
+                DrawShade(device, effect, Projectile.Center, drawOpacity, dissolveSmooth, phaseSmooth, stretch);
             }
-
-            float stretch = State == ShadeState.Dashing ? 1.18f : 1f;
-            DrawShade(device, effect, Projectile.Center, drawOpacity, dissolveSmooth, phaseSmooth, stretch);
-
-            device.BlendState = previousBlend;
-            device.RasterizerState = previousRasterizer;
-            device.DepthStencilState = previousDepth;
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
-                DepthStencilState.None, RasterizerState.CullNone, null,
-                Main.GameViewMatrix.TransformationMatrix);
+            finally {
+                device.BlendState = previousBlend;
+                device.RasterizerState = previousRasterizer;
+                device.DepthStencilState = previousDepth;
+                device.SamplerStates[0] = previousSampler;
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                    DepthStencilState.None, RasterizerState.CullNone, null,
+                    Main.GameViewMatrix.TransformationMatrix);
+            }
             return false;
         }
 
+        private void DrawWake(GraphicsDevice device, Effect effect, Texture2D noise) {
+            if (!BuildWakeVertices(out float totalLength)) {
+                return;
+            }
+
+            float retract = State == ShadeState.Recovering
+                ? MathHelper.Clamp(wakeAfterTimer / (float)WakeAfterFrames, 0f, 1f)
+                : 0f;
+            retract = retract * retract * (3f - 2f * retract);
+            float pulse = 0.5f + 0.5f * MathF.Sin(Main.GlobalTimeWrappedHourly * 8.5f + Seed * 17f);
+
+            effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uNoiseTex"]?.SetValue(noise);
+            effect.Parameters["uOpacity"]?.SetValue(drawOpacity * (State == ShadeState.Dashing ? 0.78f : 0.68f));
+            effect.Parameters["uRetract"]?.SetValue(retract);
+            effect.Parameters["uSeed"]?.SetValue(Seed * 83f);
+            effect.Parameters["uTearAmp"]?.SetValue(1.08f + retract * 0.74f);
+            effect.Parameters["uPulse"]?.SetValue(pulse);
+            effect.Parameters["uPulseAmp"]?.SetValue(0.22f + pulse * 0.24f);
+            effect.Parameters["uLenScale"]?.SetValue(totalLength / WakeNoiseTilePx);
+            effect.Parameters["uColBase"]?.SetValue(new Vector3(0.010f, 0.006f, 0.022f));
+            effect.Parameters["uColVein"]?.SetValue(new Vector3(0.070f, 0.032f, 0.130f));
+            effect.Parameters["uColHot"]?.SetValue(new Vector3(0.155f, 0.070f, 0.245f));
+
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, wakeVertices, 0, wakePointCount * 2 - 2);
+            }
+        }
+
         private void DrawShade(GraphicsDevice device, Effect effect, Vector2 center, float opacity,
-            float dissolve, float phase, float horizontalStretch) {
+            float dissolve, float phase, float motionStretch) {
             float lean = State == ShadeState.Dashing
                 ? dashDirection.X * 0.22f
                 : MathHelper.Clamp(Projectile.velocity.X * 0.008f, -0.12f, 0.12f);
-            float halfWidth = BodyDrawSize * BodyScale * horizontalStretch * 0.5f;
-            float halfHeight = BodyDrawSize * BodyScale * 0.5f;
+            float stretchDelta = motionStretch - 1f;
+            float widthStretch = 1f + MathF.Abs(dashDirection.X) * stretchDelta;
+            float heightStretch = 1f + MathF.Abs(dashDirection.Y) * stretchDelta;
+            float halfWidth = BodyDrawSize * BodyScale * widthStretch * 0.5f;
+            float halfHeight = BodyDrawSize * BodyScale * heightStretch * 0.5f;
             Vector2 xAxis = lean.ToRotationVector2() * halfWidth;
             Vector2 yAxis = (lean + MathHelper.PiOver2).ToRotationVector2() * halfHeight;
             float leftU = ownerDirection >= 0 ? 0f : 1f;
@@ -715,11 +929,14 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                 ? dashDirection.X * 0.22f
                 : MathHelper.Clamp(Projectile.velocity.X * 0.008f, -0.12f, 0.12f);
             float scale = BodyDrawSize * BodyScale / shutter.Width;
+            float stretchDelta = State == ShadeState.Dashing ? 0.30f : 0f;
+            Vector2 directionalScale = new(
+                scale * (1f + MathF.Abs(dashDirection.X) * stretchDelta),
+                scale * (1f + MathF.Abs(dashDirection.Y) * stretchDelta));
             Color color = new Color(10, 8, 19) * drawOpacity;
             SpriteEffects effects = ownerDirection >= 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             Main.EntitySpriteDraw(shutter, Projectile.Center - Main.screenPosition, null, color, lean,
-                shutter.Size() * 0.5f, new Vector2(scale * (State == ShadeState.Dashing ? 1.18f : 1f), scale),
-                effects, 0f);
+                shutter.Size() * 0.5f, directionalScale, effects, 0f);
         }
     }
 }

@@ -6,6 +6,7 @@ using InnoVault.Models3D.Runtime;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
@@ -43,11 +44,11 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         private static float interactPromptAlpha;
         private const float InteractDistance = 190f;
 
-        //生成请求去重，防回执前刷包
-        private static bool pendingGenerationRequest;
-
-        //补种自检节流
+        //运行期低频自检；首个安全更新帧不经过该节流
+        private const int EnsureCheckInterval = 60;
+        private const int PlacementFailureLogCooldown = 300;
         private static int ensureCheckTimer;
+        private static int placementFailureLogTimer;
 
         public override void SetStaticDefaults() {
             InteractHint = this.GetLocalization(nameof(InteractHint), () => "[右键] 拔刀");
@@ -75,19 +76,13 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 ShrinePosition = Vector2.Zero;
             }
 
-            //位置缺失/越界则废弃，防落在(0,0)
-            if (IsGenerated && !IsValidShrinePosition(ShrinePosition)) {
+            //世界尺寸已就绪时立即废弃损坏位置；未就绪则由首帧权威维护统一修复。
+            if (IsGenerated && ToriiShrineLocationFinder.WorldGeometryReady
+                && !ToriiShrineLocationFinder.IsValidWorldPosition(ShrinePosition)) {
                 CWRMod.Instance.Logger.Warn($"[ToriiShrine:LoadWorldData] Discarding invalid shrine position {ShrinePosition}, will regenerate");
                 IsGenerated = false;
                 ShrinePosition = Vector2.Zero;
             }
-        }
-
-        /// <summary>锚点是否在有效范围(含40格边缘余量)</summary>
-        private static bool IsValidShrinePosition(Vector2 position) {
-            const float Margin = 40f * 16f;
-            return position.X >= Margin && position.X <= Main.maxTilesX * 16f - Margin
-                && position.Y >= Margin && position.Y <= Main.maxTilesY * 16f - Margin;
         }
 
         public override void NetSend(BinaryWriter writer) {
@@ -99,8 +94,11 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
         public override void NetReceive(BinaryReader reader) {
             IsGenerated = reader.ReadBoolean();
-            if (IsGenerated) {
-                ShrinePosition = reader.ReadVector2();
+            ShrinePosition = IsGenerated ? reader.ReadVector2() : Vector2.Zero;
+            if (IsGenerated && !ToriiShrineLocationFinder.IsValidWorldPosition(ShrinePosition)) {
+                CWRMod.Instance.Logger.Warn($"[ToriiShrine:NetReceive] Ignoring invalid shrine position {ShrinePosition}");
+                IsGenerated = false;
+                ShrinePosition = Vector2.Zero;
             }
         }
 
@@ -113,87 +111,65 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         private static void ResetLocalState() {
             isPlayerNearby = false;
             interactPromptAlpha = 0f;
-            pendingGenerationRequest = false;
             ensureCheckTimer = 0;
-        }
-
-        public override void PostUpdatePlayers() {
-            Player player = Main.LocalPlayer;
-            if (player == null || !player.active) {
-                return;
-            }
-
-            if (ShouldGenerateShrine()) {
-                RequestShrineGeneration();
-            }
+            placementFailureLogTimer = 0;
         }
 
         public override void PostUpdateEverything() {
-            if (!IsGenerated) {
-                return;
-            }
+            MaintainAuthoritativeShrine();
 
-            //世界重载后Actor缺失则补种
-            EnsureShrinePlaced();
-
-            if (!Main.dedServ) {
+            if (IsGenerated && !Main.dedServ) {
                 UpdateInteraction();
             }
         }
 
-        /// <summary>尚未生成且非子世界</summary>
-        private static bool ShouldGenerateShrine() {
-            if (IsGenerated) {
-                return false;
+        /// <summary>
+        /// 世界态由服务端/单人统一维护。首个安全更新帧立即恢复Actor，之后才进入低频自检。
+        /// </summary>
+        private static void MaintainAuthoritativeShrine() {
+            if (VaultUtils.isClient || SubWorldRef.AnyActiveSubWorld()) {
+                return;
             }
-            if (SubWorldRef.AnyActiveSubWorld()) {
-                return false;
-            }
-            return true;
-        }
 
-        private static void RequestShrineGeneration() {
-            if (VaultUtils.isSinglePlayer) {
+            if (placementFailureLogTimer > 0) {
+                placementFailureLogTimer--;
+            }
+
+            if (IsGenerated && !ToriiShrineLocationFinder.IsValidWorldPosition(ShrinePosition)) {
+                CWRMod.Instance.Logger.Warn($"[ToriiShrine] Invalid runtime position {ShrinePosition}, regenerating");
+                IsGenerated = false;
+                ShrinePosition = Vector2.Zero;
+            }
+
+            if (!IsGenerated) {
                 TryGenerateShrine();
-            }
-            else if (VaultUtils.isClient) {
-                SendGenerationRequest();
-            }
-        }
-
-        /// <summary>发生成请求，pending去重</summary>
-        private static void SendGenerationRequest() {
-            if (pendingGenerationRequest) {
                 return;
             }
-            pendingGenerationRequest = true;
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.ToriiShrineGenerationRequest);
-            packet.Send();
+
+            if (ensureCheckTimer > 0) {
+                ensureCheckTimer--;
+                return;
+            }
+
+            bool actorReady = EnsureSingleShrineActor();
+            ensureCheckTimer = actorReady ? EnsureCheckInterval : 0;
         }
 
-        /// <summary>服务端/单人生成，选址失败则出生点吸附地面</summary>
+        /// <summary>服务端/单人解析可靠位置并生成；世界几何未就绪时由下一帧重试</summary>
         public static void TryGenerateShrine() {
-            if (VaultUtils.isClient) {
+            if (VaultUtils.isClient || IsGenerated || SubWorldRef.AnyActiveSubWorld()) {
                 return;
             }
-            if (IsGenerated) {
-                //已生成则补发同步
-                if (VaultUtils.isServer) {
-                    SyncShrineToClients();
-                }
+            if (!ToriiShrineLocationFinder.TryResolveGuaranteedLocation(
+                out Vector2 position, out ToriiShrinePlacementTier tier)) {
                 return;
             }
 
-            Vector2? position = ToriiShrineLocationFinder.FindBestLocation();
-            if (position == null) {
-                //出生点吸附地面，无地面则保留出生点
-                Vector2 spawnPos = new(Main.spawnTileX * 16f + 8f, Main.spawnTileY * 16f);
-                position = ToriiShrineLocationFinder.TrySnapToGround(spawnPos, out Vector2 snapped)
-                    ? snapped : spawnPos;
+            if (tier != ToriiShrinePlacementTier.StrictTerrain) {
+                CWRMod.Instance.Logger.Warn($"[ToriiShrine] Placement used {tier} fallback at {position}");
             }
-            GenerateShrine(position.Value);
 
+            GenerateShrine(position);
             if (VaultUtils.isServer) {
                 SyncShrineToClients();
             }
@@ -209,32 +185,46 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             packet.Send();
         }
 
-        /// <summary>收神社同步</summary>
+        /// <summary>客户端接收权威世界态；Actor实体仍由InnoVault生成广播同步</summary>
         internal static void ReceiveShrineSync(BinaryReader reader) {
-            //回执到，清pending
-            pendingGenerationRequest = false;
+            bool generated = reader.ReadBoolean();
+            Vector2 position = generated ? reader.ReadVector2() : Vector2.Zero;
+            if (!VaultUtils.isClient) {
+                return;
+            }
+
+            if (generated && !ToriiShrineLocationFinder.IsValidWorldPosition(position)) {
+                CWRMod.Instance.Logger.Warn($"[ToriiShrine:ReceiveShrineSync] Ignoring invalid shrine position {position}");
+                generated = false;
+                position = Vector2.Zero;
+            }
 
             bool wasGenerated = IsGenerated;
-            IsGenerated = reader.ReadBoolean();
-
-            if (IsGenerated) {
-                ShrinePosition = reader.ReadVector2();
-                if (!wasGenerated) {
-                    OnShrineGenerated();
-                }
+            IsGenerated = generated;
+            ShrinePosition = position;
+            if (IsGenerated && !wasGenerated) {
+                OnShrineGenerated();
             }
         }
 
-        /// <summary>写入位置并放Actor(仅服务端/单人放，客户端靠框架同步)</summary>
+        /// <summary>提交有效世界态并立即放置Actor；无效输入会走完整兜底链</summary>
         public static void GenerateShrine(Vector2 groundAnchor) {
-            if (IsGenerated) {
+            if (VaultUtils.isClient || IsGenerated) {
                 return;
+            }
+
+            if (!ToriiShrineLocationFinder.IsValidWorldPosition(groundAnchor)) {
+                if (!ToriiShrineLocationFinder.TryResolveGuaranteedLocation(
+                    out groundAnchor, out ToriiShrinePlacementTier tier)) {
+                    return;
+                }
+                CWRMod.Instance.Logger.Warn($"[ToriiShrine] Replaced invalid generation anchor with {tier} fallback at {groundAnchor}");
             }
 
             ShrinePosition = groundAnchor;
             IsGenerated = true;
-
-            PlaceShrineActor();
+            bool actorReady = EnsureSingleShrineActor();
+            ensureCheckTimer = actorReady ? EnsureCheckInterval : 0;
             OnShrineGenerated();
         }
 
@@ -248,30 +238,48 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             //}
         }
 
-        /// <summary>已生成但无存活Actor则重放</summary>
-        private static void EnsureShrinePlaced() {
-            if (!VaultUtils.isServer && !VaultUtils.isSinglePlayer) {
-                return;
+        /// <summary>权威端维持恰好一个Actor，并把位置纠正到存档锚点</summary>
+        private static bool EnsureSingleShrineActor() {
+            if (VaultUtils.isClient || !IsGenerated
+                || !ToriiShrineLocationFinder.IsValidWorldPosition(ShrinePosition)) {
+                return false;
             }
 
-            ensureCheckTimer++;
-            if (ensureCheckTimer < 60) {
-                return;
-            }
-            ensureCheckTimer = 0;
-
-            if (ActorLoader.GetActiveActors<ToriiShrineActor>().Count > 0) {
-                return;
+            List<ToriiShrineActor> actors = ActorLoader.GetActiveActors<ToriiShrineActor>();
+            if (actors.Count > 1) {
+                CWRMod.Instance.Logger.Warn($"[ToriiShrine] Found {actors.Count} shrine actors; removing duplicates");
             }
 
-            PlaceShrineActor();
-        }
-
-        private static void PlaceShrineActor() {
-            if (!VaultUtils.isServer && !VaultUtils.isSinglePlayer) {
-                return;
+            ToriiShrineActor keeper = null;
+            foreach (ToriiShrineActor actor in actors) {
+                if (keeper == null) {
+                    keeper = actor;
+                    continue;
+                }
+                ActorLoader.KillActor(actor.WhoAmI);
             }
-            ActorLoader.NewActor<ToriiShrineActor>(ShrinePosition);
+
+            if (keeper != null) {
+                if ((keeper.Position - ShrinePosition).LengthSquared() > 0.25f) {
+                    CWRMod.Instance.Logger.Warn($"[ToriiShrine] Correcting actor position {keeper.Position} to {ShrinePosition}");
+                    keeper.Position = ShrinePosition;
+                    if (VaultUtils.isServer) {
+                        keeper.NetUpdate = true;
+                    }
+                }
+                return true;
+            }
+
+            int actorIndex = ActorLoader.NewActor<ToriiShrineActor>(ShrinePosition);
+            if (actorIndex >= 0) {
+                return true;
+            }
+
+            if (placementFailureLogTimer <= 0) {
+                CWRMod.Instance.Logger.Error($"[ToriiShrine] Actor placement failed at {ShrinePosition}; retrying automatically");
+                placementFailureLogTimer = PlacementFailureLogCooldown;
+            }
+            return false;
         }
 
         /// <summary>清本地/存档态(不含Actor)，世界卸载等收尾用</summary>
@@ -284,17 +292,16 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         }
 
         #region 交互
-        /// <summary>本地玩家是否仍看得到刀(拔过或包里已有则否)</summary>
-        public static bool SwordPresentForLocalPlayer() {
+        /// <summary>本地玩家是否应看到完整鸟居；已拔刀或随身已有鬼切均隐藏</summary>
+        public static bool ShouldShowForLocalPlayer() {
             Player player = Main.LocalPlayer;
-            if (player == null || !player.active) {
-                return false;
-            }
-            if (HimayoStorySync.ToriiSwordTaken) {
-                return false;
-            }
-            return !player.HasItem(ModContent.ItemType<OnikiriItem>());
+            return player != null && player.active
+                && !HimayoStorySync.ToriiSwordTaken
+                && !player.HasItem(OnikiriOverride.ID);
         }
+
+        /// <summary>本地玩家是否仍看得到并可拔取刀</summary>
+        public static bool SwordPresentForLocalPlayer() => ShouldShowForLocalPlayer();
 
         public static float GetInteractPromptAlpha() => interactPromptAlpha;
 

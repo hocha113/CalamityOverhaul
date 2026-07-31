@@ -67,8 +67,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         public int Timer;
         public int Duration;
         public float Seed;
-        /// <summary>定身锚点（触发帧的 npc.Center，快照与碎片都锚定于此）</summary>
+        /// <summary>定身锚点，或仅视觉模式下随目标中心移动的绘制锚点。</summary>
         public Vector2 AnchorCenter;
+        /// <summary>仅替换外观，不创建锁定状态；用于不能冻结 AI 的 Boss。</summary>
+        public bool VisualOnly;
         public bool BehindTiles;
         /// <summary>快照 RT 像素尺寸，0=服务器/未初始化（无视觉）</summary>
         public int SnapWidth;
@@ -177,6 +179,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 duration, holdFrames, birthDelay);
         }
 
+        /// <summary>
+        /// 仅捕获并切分目标外观，不建立冻结锁；视觉锚点逐帧跟随目标中心。
+        /// 用于 Boss 等不可中断 AI 的目标。
+        /// </summary>
+        public static bool TriggerVisualOnly(NPC npc, Vector2 cutPointWorld, float cutAngle,
+            int duration, int holdFrames = HoldFrames) {
+            if (npc == null || !npc.active) {
+                return false;
+            }
+
+            holdFrames = Math.Max(holdFrames, 0);
+            duration = Math.Max(duration, holdFrames + FadeFrames);
+            DismemberEntry entry = GetEntry(npc.whoAmI);
+            if (entry == null || entry.NpcType != npc.type) {
+                if (entry != null) {
+                    Entries.Remove(entry);
+                }
+                entry = CreateEntry(npc, npc.Center, duration, holdFrames);
+                entry.VisualOnly = true;
+                Entries.Add(entry);
+            }
+            else {
+                entry.Duration = Math.Max(entry.Duration, entry.Timer + duration);
+                if (entry.VisualOnly) {
+                    entry.AnchorCenter = npc.Center;
+                }
+            }
+
+            AddCut(entry, cutPointWorld, cutAngle, holdFrames);
+            return true;
+        }
+
         /// <summary>停止多实体目标，只在有限刀路实际触及的体节建立肢解视觉</summary>
         public static bool TriggerGroup(NPC npc, in DismemberStroke stroke,
             int duration = DefaultDuration, int holdFrames = HoldFrames) {
@@ -246,6 +280,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                     , entry.Timer + Math.Max(duration, birthDelay + holdFrames + FadeFrames));
             }
 
+            entry.VisualOnly = false;
+            entry.AnchorCenter = lockEntry.AnchorCenter;
             AddCut(entry, cutPointWorld, cutAngle, holdFrames, birthDelay);
             return true;
         }
@@ -580,6 +616,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 if (entry.Timer >= entry.Duration) {
                     Entries.RemoveAt(i);
                     continue;
+                }
+                if (entry.VisualOnly) {
+                    entry.AnchorCenter = npc.Center;
                 }
 
                 if (!Main.dedServ) {

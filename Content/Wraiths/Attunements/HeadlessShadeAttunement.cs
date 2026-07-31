@@ -12,10 +12,9 @@ namespace CalamityOverhaul.Content.Wraiths.Attunements
         internal const string Key = "HeadlessShade";
         internal const float HuntRange = 620f;
 
-        internal static bool CanHunt(NPC npc, Vector2 center)
-            => npc.CanBeChasedBy() && !npc.boss
-               && !OniDismember.IsLocked(npc.whoAmI)
-               && Vector2.DistanceSquared(npc.Center, center) < HuntRange * HuntRange;
+        internal static bool CanHunt(NPC npc)
+            => npc.CanBeChasedBy()
+               && !OniDismember.IsLocked(npc.whoAmI);
 
         public override void Update(in WraithAttunementContext context) {
             Player player = context.Player;
@@ -31,10 +30,11 @@ namespace CalamityOverhaul.Content.Wraiths.Attunements
             float mastery = MathHelper.Clamp(context.Mastery, 0f, 1f);
             int weaponDamage = Math.Max(player.GetWeaponDamage(context.VesselItem), 1);
             int damage = Math.Max((int)(weaponDamage * MathHelper.Lerp(0.55f, 0.90f, mastery)), 1);
-            float knockback = MathHelper.Lerp(2.5f, 5f, mastery);
+            float knockback = player.GetWeaponKnockback(context.VesselItem)
+                * MathHelper.Lerp(0.65f, 1f, mastery);
 
             Projectile.NewProjectile(
-                player.GetSource_Misc("CWRWraith_HeadlessShadeAttunement"),
+                player.GetSource_ItemUse(context.VesselItem),
                 player.Center,
                 Vector2.Zero,
                 projectileType,

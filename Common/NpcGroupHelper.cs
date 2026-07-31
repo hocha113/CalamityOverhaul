@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Common
 {
@@ -19,6 +20,26 @@ namespace CalamityOverhaul.Common
                 return rl;
             }
             return npc.whoAmI;
+        }
+
+        /// <summary>Boss 级目标，包含 ShouldBeCountedAsBoss、realLife 锚点与已登记 Boss 体节表。</summary>
+        public static bool IsBossTier(NPC npc) {
+            if (npc == null || !npc.active) {
+                return false;
+            }
+            if (npc.boss || NPCID.Sets.ShouldBeCountedAsBoss[npc.type]) {
+                return true;
+            }
+
+            int anchorIndex = GetAnchorIndex(npc);
+            if (anchorIndex >= 0 && anchorIndex != npc.whoAmI) {
+                NPC anchor = Main.npc[anchorIndex];
+                if (anchor.boss || NPCID.Sets.ShouldBeCountedAsBoss[anchor.type]) {
+                    return true;
+                }
+            }
+
+            return FindSegmentList(npc.type) != null;
         }
 
         /// <summary>同组判定，共享锚点或同体节表</summary>

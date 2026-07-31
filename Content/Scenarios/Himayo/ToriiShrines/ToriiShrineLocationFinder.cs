@@ -3,21 +3,91 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 {
-    /// <summary>出生点附近找平整干燥、上方开阔的地面</summary>
+    /// <summary>鸟居选址层级，越靠后约束越宽松，但始终保证世界坐标有效</summary>
+    internal enum ToriiShrinePlacementTier
+    {
+        StrictTerrain,
+        SpawnGround,
+        SpawnPoint,
+        WorldSurface
+    }
+
+    /// <summary>出生点附近寻找平整干燥、上方开阔的地面，并提供可靠的位置兜底</summary>
     internal static class ToriiShrineLocationFinder
     {
+        private const int WorldEdgeMargin = 40;
         //横向搜索格数，避开复活落点与初始建筑
         private const int MinOffsetX = 14;
         private const int MaxOffsetX = 160;
         //上方净空格数
         private const int RequiredClearance = 18;
-        //平整度采样半径(格)
-        private const int FlatSampleRadius = 8;
+        //鸟居约18格宽，按半宽检查整片落地区域
+        private const int FlatSampleRadius = 9;
         //相邻列允许高差(格)
         private const int MaxGroundDeviation = 3;
 
+        /// <summary>世界尺寸是否足以安全解析鸟居位置</summary>
+        public static bool WorldGeometryReady
+            => Main.maxTilesX > WorldEdgeMargin * 2 && Main.maxTilesY > WorldEdgeMargin * 2;
+
+        /// <summary>
+        /// 解析保证有效的锚点：严格地形 → 出生点地面 → 出生点原位 → 世界地表中心。
+        /// 世界数据尚未就绪时返回false，由调用方下一帧重试。
+        /// </summary>
+        public static bool TryResolveGuaranteedLocation(out Vector2 position, out ToriiShrinePlacementTier tier) {
+            position = default;
+            tier = ToriiShrinePlacementTier.StrictTerrain;
+            if (!WorldGeometryReady) {
+                return false;
+            }
+
+            Vector2? bestPosition = FindBestLocation();
+            if (bestPosition.HasValue && IsValidWorldPosition(bestPosition.Value)) {
+                position = bestPosition.Value;
+                return true;
+            }
+
+            if (TryGetSpawnWorldPosition(out Vector2 spawnPosition)) {
+                if (TrySnapToGround(spawnPosition, out Vector2 snappedPosition)) {
+                    position = snappedPosition;
+                    tier = ToriiShrinePlacementTier.SpawnGround;
+                    return true;
+                }
+
+                //终极出生点兜底允许无视地形，但不允许无效出生点或世界原点。
+                position = spawnPosition;
+                tier = ToriiShrinePlacementTier.SpawnPoint;
+                return true;
+            }
+
+            int tileX = Math.Clamp(Main.maxTilesX / 2, WorldEdgeMargin, Main.maxTilesX - WorldEdgeMargin);
+            int preferredY = double.IsFinite(Main.worldSurface)
+                ? (int)Math.Round(Main.worldSurface)
+                : Main.maxTilesY / 3;
+            int tileY = Math.Clamp(preferredY, WorldEdgeMargin, Main.maxTilesY - WorldEdgeMargin);
+            position = new Vector2(tileX * 16f + 8f, tileY * 16f);
+            tier = ToriiShrinePlacementTier.WorldSurface;
+            return IsValidWorldPosition(position);
+        }
+
+        /// <summary>有限且位于世界内部安全区域的像素坐标</summary>
+        public static bool IsValidWorldPosition(Vector2 position) {
+            if (!WorldGeometryReady || !float.IsFinite(position.X) || !float.IsFinite(position.Y)) {
+                return false;
+            }
+
+            const float TileSize = 16f;
+            float margin = WorldEdgeMargin * TileSize;
+            return position.X >= margin && position.X <= Main.maxTilesX * TileSize - margin
+                && position.Y >= margin && position.Y <= Main.maxTilesY * TileSize - margin;
+        }
+
         /// <summary>最佳地面锚点像素坐标，找不到返回null</summary>
         public static Vector2? FindBestLocation() {
+            if (!WorldGeometryReady) {
+                return null;
+            }
+
             int spawnX = Main.spawnTileX;
             Vector2? bestPosition = null;
             int bestScore = int.MinValue;
@@ -41,26 +111,35 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             return bestPosition;
         }
 
-        /// <summary>向下吸附最近实心地面，调试重建等复用</summary>
+        /// <summary>向下吸附最近实心地面，调试重建与出生点兜底复用</summary>
         public static bool TrySnapToGround(Vector2 worldPos, out Vector2 groundPos) {
-            int tileX = (int)(worldPos.X / 16f);
-            int startY = Math.Max(20, (int)(worldPos.Y / 16f) - 30);
+            groundPos = default;
+            if (!WorldGeometryReady || !float.IsFinite(worldPos.X) || !float.IsFinite(worldPos.Y)) {
+                return false;
+            }
 
-            for (int y = startY; y < Main.maxTilesY - 40; y++) {
-                if (!WorldGen.InWorld(tileX, y)) {
-                    continue;
-                }
-                if (Main.tile[tileX, y].HasSolidTile()) {
-                    groundPos = new Vector2(tileX * 16f + 8f, y * 16f);
-                    return true;
+            int tileX = (int)(worldPos.X / 16f);
+            if (tileX < WorldEdgeMargin || tileX >= Main.maxTilesX - WorldEdgeMargin) {
+                return false;
+            }
+
+            int startY = Math.Clamp((int)(worldPos.Y / 16f) - 30,
+                WorldEdgeMargin, Main.maxTilesY - WorldEdgeMargin);
+            for (int y = startY; y < Main.maxTilesY - WorldEdgeMargin; y++) {
+                Tile tile = Main.tile[tileX, y];
+                if (tile != null && tile.HasSolidTile()) {
+                    Vector2 candidate = new(tileX * 16f + 8f, y * 16f);
+                    if (IsValidWorldPosition(candidate)) {
+                        groundPos = candidate;
+                        return true;
+                    }
                 }
             }
 
-            groundPos = default;
             return false;
         }
 
-        /// <summary>评估一列净空/液体/危险块/平整度，通过则给锚点与分数</summary>
+        /// <summary>评估完整鸟居占地区域的净空、液体、危险块与平整度</summary>
         private static bool TryEvaluateColumn(int tileX, out Vector2 position, out int score) {
             position = default;
             score = 0;
@@ -69,44 +148,45 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 return false;
             }
 
-            //须在地表附近，不接受洞穴；出生点本身在地下的世界按出生高度放行
+            //须在地表附近，不接受洞穴；出生点本身在地下的世界按出生高度放行。
             if (groundY > Main.worldSurface + 40 && Math.Abs(groundY - Main.spawnTileY) > 60) {
                 return false;
             }
 
-            Tile ground = Main.tile[tileX, groundY];
-            if (Main.tileDungeon[ground.TileType] || Main.tileLavaDeath[ground.TileType]) {
-                return false;
-            }
-
-            //上方净空，无实心/液体
-            for (int y = groundY - 1; y >= groundY - RequiredClearance; y--) {
-                if (y < 0) {
-                    return false;
-                }
-                Tile tile = Main.tile[tileX, y];
-                if (tile.HasSolidTile() || tile.LiquidAmount > 0) {
-                    return false;
-                }
-            }
-
-            //两侧地面贴近中心列
             int totalDeviation = 0;
             for (int offsetX = -FlatSampleRadius; offsetX <= FlatSampleRadius; offsetX++) {
-                if (offsetX == 0) {
-                    continue;
-                }
-                if (!TryFindSurfaceGround(tileX + offsetX, out int sideGroundY)) {
+                int sampleX = tileX + offsetX;
+                if (!TryFindSurfaceGround(sampleX, out int sideGroundY)) {
                     return false;
                 }
+
                 int deviation = Math.Abs(sideGroundY - groundY);
                 if (deviation > MaxGroundDeviation) {
                     return false;
                 }
                 totalDeviation += deviation;
+
+                Tile ground = Main.tile[sampleX, sideGroundY];
+                if (ground == null || Main.tileDungeon[ground.TileType] || Main.tileLavaDeath[ground.TileType]) {
+                    return false;
+                }
+
+                for (int y = sideGroundY - 1; y >= sideGroundY - RequiredClearance; y--) {
+                    if (y < WorldEdgeMargin) {
+                        return false;
+                    }
+                    Tile tile = Main.tile[sampleX, y];
+                    if (tile == null || tile.HasSolidTile() || tile.LiquidAmount > 0) {
+                        return false;
+                    }
+                }
             }
 
             position = new Vector2(tileX * 16f + 8f, groundY * 16f);
+            if (!IsValidWorldPosition(position)) {
+                return false;
+            }
+
             score = 100 - totalDeviation * 6;
             return true;
         }
@@ -114,21 +194,37 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         /// <summary>出生高度附近向下扫到第一块实心地面</summary>
         private static bool TryFindSurfaceGround(int tileX, out int groundY) {
             groundY = 0;
-            if (tileX < 40 || tileX >= Main.maxTilesX - 40) {
+            if (tileX < WorldEdgeMargin || tileX >= Main.maxTilesX - WorldEdgeMargin) {
                 return false;
             }
 
-            int startY = Math.Max(40, Main.spawnTileY - 120);
-            int endY = Math.Min(Main.maxTilesY - 40, Main.spawnTileY + 100);
-
+            int startY = Math.Max(WorldEdgeMargin, Main.spawnTileY - 120);
+            int endY = Math.Min(Main.maxTilesY - WorldEdgeMargin, Main.spawnTileY + 100);
             for (int y = startY; y < endY; y++) {
-                if (Main.tile[tileX, y].HasSolidTile()) {
+                Tile tile = Main.tile[tileX, y];
+                if (tile != null && tile.HasSolidTile()) {
                     groundY = y;
                     return true;
                 }
             }
 
             return false;
+        }
+
+        private static bool TryGetSpawnWorldPosition(out Vector2 position) {
+            position = default;
+            if (Main.spawnTileX < WorldEdgeMargin || Main.spawnTileX >= Main.maxTilesX - WorldEdgeMargin
+                || Main.spawnTileY < WorldEdgeMargin || Main.spawnTileY >= Main.maxTilesY - WorldEdgeMargin) {
+                return false;
+            }
+
+            Vector2 candidate = new(Main.spawnTileX * 16f + 8f, Main.spawnTileY * 16f);
+            if (!IsValidWorldPosition(candidate)) {
+                return false;
+            }
+
+            position = candidate;
+            return true;
         }
     }
 }

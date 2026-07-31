@@ -87,6 +87,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
         private DeparturePhase departPhase;
         private bool departInitChecked;
+        //外部已有刀或进场前已拔刀时静默隐藏，区别于正常溶解后的Gone
+        private bool hiddenByEligibility;
         private int departTimer;
         private int postGoneTimer;
         private float modelOpacity = 1f;
@@ -243,6 +245,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         /// <summary>退场复位到从未开始，调试回归与仪式中止用</summary>
         private void ResetDepartureState() {
             departPhase = DeparturePhase.None;
+            hiddenByEligibility = false;
             departTimer = 0;
             postGoneTimer = 0;
             modelOpacity = 1f;
@@ -258,24 +261,31 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         }
 
         /// <summary>
-        /// 本地可见性闸门：玩家就绪后立刻判定，已拔刀则静默Gone<br/>
-        /// PreDraw与AI共用，避免「先画一帧再隐藏」闪现
+        /// 本地可见性闸门：玩家就绪后立刻判定，已拔刀或随身已有鬼切则静默隐藏。<br/>
+        /// PreDraw与AI共用，避免「先画一帧再隐藏」闪现。
         /// </summary>
         private void EnsureDepartureInit() {
             if (departInitChecked || Main.dedServ) {
                 return;
             }
             Player player = Main.LocalPlayer;
-            //本地玩家未就绪前不判定，防误判重播退场；期间也不提交模型
+            //本地玩家未就绪前不判定；期间不提交模型。
             if (player == null || !player.active) {
                 return;
             }
+
             departInitChecked = true;
-            if (HimayoStorySync.ToriiSwordTaken) {
-                departPhase = DeparturePhase.Gone;
-                postGoneTimer = PostGoneQuietFrames;
-                ToriiShrineDissolve.End();
+            if (!ToriiShrine.ShouldShowForLocalPlayer()) {
+                HideByEligibility();
             }
+        }
+
+        private void HideByEligibility() {
+            hiddenByEligibility = true;
+            departPhase = DeparturePhase.Gone;
+            postGoneTimer = PostGoneQuietFrames;
+            modelOpacity = 1f;
+            ToriiShrineDissolve.End();
         }
 
         private void UpdateDeparture() {
@@ -284,13 +294,33 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 return;
             }
 
+            bool shouldShow = ToriiShrine.ShouldShowForLocalPlayer();
+            if (hiddenByEligibility) {
+                if (shouldShow && departPetals.Count == 0) {
+                    ResetDepartureState();
+                }
+                else {
+                    return;
+                }
+            }
+
+            //外部获得鬼切时静默隐藏；正常拔刀仪式已经进入退场相，不在这里截断。
+            if (departPhase == DeparturePhase.None && !shouldShow) {
+                HideByEligibility();
+                return;
+            }
+
             if (departPhase == DeparturePhase.Gone && !LocalPlayerTookSword() && departPetals.Count == 0) {
-                //拔刀标记被重置(调试)，鸟居原样回归
+                //拔刀标记被重置(调试)，鸟居原样回归；若仍持刀则转入资格隐藏。
                 ResetDepartureState();
+                if (!ToriiShrine.ShouldShowForLocalPlayer()) {
+                    HideByEligibility();
+                    return;
+                }
             }
 
             if (departPhase == DeparturePhase.None) {
-                //拔刀瞬间Actor不在场时靠剧情标记补触发
+                //拔刀瞬间Actor不在场时靠剧情标记补触发。
                 if (LocalPlayerTookSword()) {
                     BeginDeparture();
                 }
@@ -594,7 +624,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 return false;
             }
 
-            SubmitToriiModel();
+            if (!SubmitToriiModel()) {
+                DrawFallbackTorii(spriteBatch);
+            }
 
             if (ToriiShrine.SwordPresentForLocalPlayer()) {
                 DrawSword(spriteBatch);
@@ -604,11 +636,11 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             return false;
         }
 
-        /// <summary>每帧提交鸟居实例，化樱时褪色渐隐，位置不动</summary>
-        private void SubmitToriiModel() {
+        /// <summary>每帧提交鸟居实例；返回false时由调用方绘制程序化兜底</summary>
+        private bool SubmitToriiModel() {
             Vault3DModel model = ToriiShrine.ToriiModel;
             if (model is null || !model.IsValid) {
-                return;
+                return false;
             }
 
             //中段环境光，混白保夜里轮廓
@@ -627,6 +659,35 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 Tint = light,
                 Opacity = modelOpacity,
             });
+            return true;
+        }
+
+        /// <summary>模型资源异常时仍提供清晰可辨的双柱鸟居剪影</summary>
+        private void DrawFallbackTorii(SpriteBatch spriteBatch) {
+            Texture2D pixel = VaultAsset.placeholder2?.Value;
+            if (pixel == null || modelOpacity <= 0.01f) {
+                return;
+            }
+
+            Vector2 center = Position - Main.screenPosition;
+            Color light = Lighting.GetColor((int)(Position.X / 16f), (int)((Position.Y - 130f) / 16f));
+            Color vermilion = Color.Lerp(light, new Color(176, 43, 52), 0.72f) * modelOpacity;
+            Color shadow = Color.Lerp(light, new Color(76, 20, 26), 0.78f) * modelOpacity;
+            Vector2 origin = pixel.Size() * 0.5f;
+
+            void DrawBeam(Vector2 offset, Vector2 size, Color color) {
+                spriteBatch.Draw(pixel, center + offset, null, color, 0f, origin,
+                    new Vector2(size.X / pixel.Width, size.Y / pixel.Height), SpriteEffects.None, 0f);
+            }
+
+            DrawBeam(new Vector2(-96f, -116f), new Vector2(26f, 232f), shadow);
+            DrawBeam(new Vector2(96f, -116f), new Vector2(26f, 232f), shadow);
+            DrawBeam(new Vector2(-96f, -126f), new Vector2(18f, 212f), vermilion);
+            DrawBeam(new Vector2(96f, -126f), new Vector2(18f, 212f), vermilion);
+            DrawBeam(new Vector2(0f, -190f), new Vector2(270f, 24f), shadow);
+            DrawBeam(new Vector2(0f, -198f), new Vector2(252f, 16f), vermilion);
+            DrawBeam(new Vector2(0f, -244f), new Vector2(346f, 30f), shadow);
+            DrawBeam(new Vector2(0f, -253f), new Vector2(326f, 20f), vermilion);
         }
 
         /// <summary>插地鬼切，仪式期叠拔离/归弧/刃光</summary>
