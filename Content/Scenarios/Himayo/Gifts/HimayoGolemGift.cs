@@ -1,6 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.Narrative;
-using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using Terraria.ID;
@@ -19,8 +18,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
 
-        private static NarrativeVoiceBank Voice;
-
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
         public override int TargetBossId => NPCID.Golem;
 
@@ -29,7 +26,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
             L1 = this.GetLocalization(nameof(L1), () => "石头这东西，撞一下，麻意能窜到手心");
             L2 = this.GetLocalization(nameof(L2), () => "我以前也被震得虎口发麻，可不舒服");
             L3 = this.GetLocalization(nameof(L3), () => "主要刀也别拿去硬磕。刃崩了，我会不舒服");
-            Voice = NarrativeVoiceBank.Create(Mod, "Content/Scenarios/Himayo/Lines/Gifts/HimayoGolemGift", count: 4);
         }
 
         protected override void Build(NarrativeComposer n) {

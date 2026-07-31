@@ -1,6 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.Narrative;
-using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using Terraria.ID;
@@ -19,8 +18,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
 
-        private static NarrativeVoiceBank Voice;
-
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
         public override int TargetBossId => NPCID.Plantera;
 
@@ -29,7 +26,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
             L1 = this.GetLocalization(nameof(L1), () => "梗留着也没意思。占地方，还看着人心烦");
             L2 = this.GetLocalization(nameof(L2), () => "我们那儿卖花的都这么干。败了就剪，别磨蹭");
             L3 = this.GetLocalization(nameof(L3), () => "哎，说这个干嘛。你又不是来买花的");
-            Voice = NarrativeVoiceBank.Create(Mod, "Content/Scenarios/Himayo/Lines/Gifts/HimayoPlanteraGift", count: 4);
         }
 
         protected override void Build(NarrativeComposer n) {

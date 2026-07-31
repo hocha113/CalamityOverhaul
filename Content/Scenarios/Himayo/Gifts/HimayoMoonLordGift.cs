@@ -1,6 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.Narrative;
-using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using Terraria.ID;
@@ -18,8 +17,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
 
-        private static NarrativeVoiceBank Voice;
-
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
         public override int TargetBossId => NPCID.MoonLordCore;
 
@@ -27,7 +24,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
             L0 = this.GetLocalization(nameof(L0), () => "上面那摊没了");
             L1 = this.GetLocalization(nameof(L1), () => "说不上轻松……就是空了一块");
             L2 = this.GetLocalization(nameof(L2), () => "你还站得住吗");
-            Voice = NarrativeVoiceBank.Create(Mod, "Content/Scenarios/Himayo/Lines/Gifts/HimayoMoonLordGift", count: 3);
         }
 
         protected override void Build(NarrativeComposer n) {

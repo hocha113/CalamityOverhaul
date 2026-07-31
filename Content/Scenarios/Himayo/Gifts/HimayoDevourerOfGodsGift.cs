@@ -1,6 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.Narrative;
-using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using Terraria.Localization;
@@ -17,8 +16,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
 
-        private static NarrativeVoiceBank Voice;
-
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
         public override int TargetBossId => CWRID.NPC_DevourerofGodsHead;
 
@@ -26,7 +23,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
             L0 = this.GetLocalization(nameof(L0), () => "太大了。空得像把天挖掉了一块");
             L1 = this.GetLocalization(nameof(L1), () => "我盯着看了一会儿，自己也有点发愣");
             L2 = this.GetLocalization(nameof(L2), () => "别看太久。看久了心里也空……哎，我说完更像在吓人");
-            Voice = NarrativeVoiceBank.Create(Mod, "Content/Scenarios/Himayo/Lines/Gifts/HimayoDevourerOfGodsGift", count: 3);
         }
 
         protected override void Build(NarrativeComposer n) {

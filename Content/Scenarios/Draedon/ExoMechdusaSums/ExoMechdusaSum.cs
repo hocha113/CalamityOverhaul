@@ -1,5 +1,5 @@
-﻿using CalamityOverhaul.OtherMods.InfernumMode;
-using InnoVault.Narrative.Audio;
+using CalamityOverhaul.Content.Narrative;
+using CalamityOverhaul.OtherMods.InfernumMode;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using Terraria;
@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
 {
-    internal sealed class ExoMechdusaSum : NarrativeScenario, ILocalizedModType
+    internal sealed class ExoMechdusaSum : StoryScenario, ILocalizedModType
     {
         public string LocalizationCategory => "ADV";
         public static LocalizedText IntroLine1 { get; private set; }
@@ -41,8 +41,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
 
         private const float TimeLimitSeconds = 20f;
 
-        private static NarrativeVoiceBank Voice;
-
         public override StyleId DefaultStyle => "Draedon";
 
         public override void SetStaticDefaults() {
@@ -56,7 +54,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
             ChoiceAres = this.GetLocalization(nameof(ChoiceAres), () => "战神阿瑞斯");
             ChoiceThanatos = this.GetLocalization(nameof(ChoiceThanatos), () => "死神塔纳托斯");
             ChoiceTwins = this.GetLocalization(nameof(ChoiceTwins), () => "双子神阿尔忒弥斯");
-            Voice = NarrativeVoiceBank.Create(Mod, "Content/Scenarios/Draedon/Lines/ExoMechdusaSum", count: 7);
         }
 
         protected override void Build(NarrativeComposer n) {

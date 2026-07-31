@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
+using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Common;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
@@ -8,7 +9,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
 {
-    internal abstract class ShepelBossGiftNarrative : NarrativeScenario
+    internal abstract class ShepelBossGiftNarrative : StoryScenario
     {
         public abstract int TargetBossId { get; }
         protected virtual bool CanSpawned() => true;

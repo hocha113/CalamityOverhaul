@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
+using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
@@ -16,7 +17,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel
         bool CanRoute(Player player);
     }
 
-    internal abstract class ShepelReactiveNarrative : NarrativeScenario, ISHPCRoutableNarrative, ILocalizedModType
+    internal abstract class ShepelReactiveNarrative : StoryScenario, ISHPCRoutableNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Shepel";
 
@@ -69,7 +70,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel
         protected override NarrativePolicy ConfigurePolicy() => null;
     }
 
-    internal abstract class ShepelSituationalNarrative : NarrativeScenario, ISHPCRoutableNarrative, ILocalizedModType
+    internal abstract class ShepelSituationalNarrative : StoryScenario, ISHPCRoutableNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Shepel";
 

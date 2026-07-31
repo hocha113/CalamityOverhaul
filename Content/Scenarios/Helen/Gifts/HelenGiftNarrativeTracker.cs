@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Common;
 using InnoVault.Narrative.Core;
@@ -9,7 +9,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
 {
-    internal abstract class HelenBossGiftNarrative : NarrativeScenario
+    internal abstract class HelenBossGiftNarrative : StoryScenario
     {
         public abstract int TargetBossId { get; }
         protected virtual bool CanSpawned() => true;

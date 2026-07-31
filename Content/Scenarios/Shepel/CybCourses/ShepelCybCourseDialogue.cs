@@ -1,10 +1,11 @@
-﻿using InnoVault.Narrative.Core;
+using CalamityOverhaul.Content.Narrative;
+using InnoVault.Narrative.Core;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 {
     /// <summary>开场Happy立绘，结束时隐藏</summary>
-    internal abstract class ShepelCybCourseDialogue : NarrativeScenario, ILocalizedModType
+    internal abstract class ShepelCybCourseDialogue : StoryScenario, ILocalizedModType
     {
         public abstract string LocalizationCategory { get; }
 

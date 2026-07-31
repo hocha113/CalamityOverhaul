@@ -1,6 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.Narrative;
-using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using Terraria.ID;
@@ -19,8 +18,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
 
-        private static NarrativeVoiceBank Voice;
-
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override int[] TargetBossIds => [NPCID.Retinazer, NPCID.Spazmatism];
@@ -30,7 +27,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
             L1 = this.GetLocalization(nameof(L1), () => "你懂吧。越忍越想笑，嘴角自己就翘起来那种");
             L2 = this.GetLocalization(nameof(L2), () => "我以前跟人比赛谁先憋不住。每次都是我输");
             L3 = this.GetLocalization(nameof(L3), () => "看着那两只……算了，我又想笑了");
-            Voice = NarrativeVoiceBank.Create(Mod, "Content/Scenarios/Himayo/Lines/Gifts/HimayoTwinsGift", count: 4);
         }
 
         protected override void Build(NarrativeComposer n) {

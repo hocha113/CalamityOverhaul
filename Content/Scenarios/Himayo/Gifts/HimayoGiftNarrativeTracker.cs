@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Common;
 using InnoVault.Narrative.Core;
@@ -9,7 +9,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 {
-    internal abstract class HimayoBossGiftNarrative : NarrativeScenario
+    internal abstract class HimayoBossGiftNarrative : StoryScenario
     {
         /// <summary>主 Boss type；多目标请覆写 <see cref="TargetBossIds"/></summary>
         public virtual int TargetBossId => 0;

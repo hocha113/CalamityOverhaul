@@ -1,7 +1,6 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines;
-using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
@@ -10,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Himayo
 {
-    internal sealed class FirstMetHimayo : NarrativeScenario, ILocalizedModType
+    internal sealed class FirstMetHimayo : StoryScenario, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Himayo";
 
@@ -23,8 +22,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
         public static LocalizedText Line6 { get; private set; }
         public static LocalizedText Line7 { get; private set; }
 
-        private static NarrativeVoiceBank Voice;
-
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override void SetStaticDefaults() {
@@ -36,7 +33,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
             Line5 = this.GetLocalization(nameof(Line5), () => "头疼……我的状态大概介于活人和异类之间吧。");
             Line6 = this.GetLocalization(nameof(Line6), () => "完全搞不懂发生了什么……");
             Line7 = this.GetLocalization(nameof(Line7), () => "不过从今天开始，就请多多关照了。");
-            Voice = NarrativeVoiceBank.Create(Mod, "Content/Scenarios/Himayo/Lines/FirstMetHimayo", count: 7);
         }
 
         protected override void Build(NarrativeComposer n) {
