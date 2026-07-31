@@ -68,32 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 DrawHighlightRect(sb, focus.Rect, time, a);
             }
 
-            //练习鬼影：世界坐标高亮环（无 HUD 焦点时仍可读）
-            if (step is OnikiriTutorialFlow.Step_Wraith or OnikiriTutorialFlow.Step_Dismember) {
-                NPC wraith = OnikiriTutorialWraith.GetLocalTarget();
-                if (wraith != null) {
-                    DrawWraithHighlight(sb, wraith, time, a);
-                }
-            }
-
             DrawStepCard(sb, step, focus, time, a);
-        }
-
-        private static void DrawWraithHighlight(SpriteBatch sb, NPC wraith, float time, float a) {
-            Vector2 center = wraith.Center - Main.screenPosition;
-            //InterfaceScaleType.UI：世界坐标需除以 UIScale 才与 UI 批对齐
-            center /= Main.UIScale;
-            float pulse = 0.55f + 0.45f * (0.5f + 0.5f * MathF.Sin(time * 2.6f));
-            float r = MathF.Max(wraith.width, wraith.height) * 0.55f / Main.UIScale;
-            OniBrush.DrawBacklight(sb, center, r * 1.6f, OnikiriUITheme.GhostFire, a * 0.28f * pulse);
-            Texture2D px = VaultAsset.placeholder2?.Value;
-            if (px == null) {
-                return;
-            }
-            var box = new Rectangle((int)(center.X - r), (int)(center.Y - r * 1.15f),
-                (int)(r * 2f), (int)(r * 2.3f));
-            DrawDashedBorder(sb, px, box, OnikiriUITheme.GhostFire * ((0.55f + pulse * 0.35f) * a),
-                6f, 4f, time * -20f);
         }
 
         private static HudFocusSnapshot ResolveFocus(int step) {
@@ -104,7 +79,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                     ? OnikiriTutorialTargets.Tag_MeiSlotNakago
                     : OnikiriTutorialTargets.Tag_TalismanStrip,
                 OnikiriTutorialFlow.Step_Domain => OnikiriTutorialTargets.Tag_DomainEye,
-                OnikiriTutorialFlow.Step_Dismember => OnikiriTutorialTargets.Tag_DomainEye,
                 _ => null,
             };
             return tag == null ? null : OnikiriTutorialTargets.Get(tag);
@@ -183,13 +157,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             int cardH = MeasureCardH(font, TitleScale, lines, contentW);
             Rectangle card = PlaceCard(focus, cardH, a);
 
-            Vector2? link = focus != null
-                ? focus.Rect.Center.ToVector2()
-                : OnikiriTutorialWraith.GetLocalTarget() is NPC wr
-                    ? (wr.Center - Main.screenPosition) / Main.UIScale
-                    : null;
-            if (link is Vector2 linkPos) {
-                DrawConnector(sb, card, linkPos, a, time);
+            if (focus != null) {
+                DrawConnector(sb, card, focus.Rect.Center.ToVector2(), a, time);
             }
 
             DrawCardPanel(sb, card, a, time);
@@ -225,16 +194,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                     OnikiriTutorialFlow.RequestAdvance();
                 }
             }
-            else if (step == OnikiriTutorialFlow.Step_Domain
-                || step == OnikiriTutorialFlow.Step_Wraith
-                || step == OnikiriTutorialFlow.Step_Dismember) {
-                if (DrawActionButton(sb, font, card, OnikiriTutorialLead.NextBtn.Value,
-                    step == OnikiriTutorialFlow.Step_Dismember ? OnikiriUITheme.GhostFire : OnikiriUITheme.Bright, time, a)) {
-                    OnikiriTutorialFlow.RequestAdvance();
-                }
-                else if (step == OnikiriTutorialFlow.Step_Dismember
-                    && OnikiriTutorialFlow.StepTimer > StuckFramesBeforeSkip
-                    && DrawSecondaryButton(sb, font, card, OnikiriTutorialLead.SkipBtn.Value, time, a)) {
+            else if (step == OnikiriTutorialFlow.Step_Domain) {
+                if (DrawActionButton(sb, font, card, OnikiriTutorialLead.NextBtn.Value, OnikiriUITheme.GhostFire, time, a)) {
                     OnikiriTutorialFlow.RequestAdvance();
                 }
             }
@@ -260,12 +221,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 case OnikiriTutorialFlow.Step_Domain:
                     title = OnikiriTutorialLead.DomainTitle; body = OnikiriTutorialLead.DomainBody; prompt = OnikiriTutorialLead.DomainPrompt;
                     break;
-                case OnikiriTutorialFlow.Step_Wraith:
-                    title = OnikiriTutorialLead.WraithTitle; body = OnikiriTutorialLead.WraithBody; prompt = OnikiriTutorialLead.WraithPrompt;
-                    break;
-                case OnikiriTutorialFlow.Step_Dismember:
-                    title = OnikiriTutorialLead.DismemberTitle; body = OnikiriTutorialLead.DismemberBody; prompt = OnikiriTutorialLead.DismemberPrompt;
-                    break;
                 default:
                     return false;
             }
@@ -280,7 +235,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             if (string.IsNullOrEmpty(raw) || !raw.Contains("{0}")) {
                 return raw;
             }
-            string key = step is OnikiriTutorialFlow.Step_Domain or OnikiriTutorialFlow.Step_Dismember
+            string key = step == OnikiriTutorialFlow.Step_Domain
                 ? CWRKeySystem.Onikiri_DomainFlip.ToTooltipString(CWRKeySystem.Notbound.Value)
                 : CWRKeySystem.Legend_UIControl.ToTooltipString(CWRKeySystem.Notbound.Value);
             return string.Format(raw, key);
@@ -300,15 +255,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                     x = f.Left - CardW - 18f + slide;
                 }
                 y = f.Center.Y - cardH * 0.5f;
-            }
-            else if (OnikiriTutorialWraith.GetLocalTarget() is NPC wraith) {
-                //贴练习鬼影一侧，避免悬空右栏
-                Vector2 ui = (wraith.Center - Main.screenPosition) / Main.UIScale;
-                x = ui.X + 48f - slide;
-                if (x + CardW > sw - 16f) {
-                    x = ui.X - CardW - 48f + slide;
-                }
-                y = ui.Y - cardH * 0.5f;
             }
             else {
                 x = sw - CardW - 24f;

@@ -11,8 +11,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 {
     /// <summary>
     /// 鬼切教程步骤状态机。<br/>
-    /// 步骤：[0]HUD → [1]点鬼簿 → [2]改铭台 → [3]鬼域之眼 → [4]练习鬼影 → [5]肢解介绍 → [6]结束。<br/>
-    /// 不演示五连/疾走/处决/乱舞等难跟做环节；鬼影与肢解以认知+可选尝试为主。
+    /// 步骤：[0]HUD → [1]点鬼簿 → [2]改铭台 → [3]鬼域之眼 → [4]结束。<br/>
+    /// 不演示练习鬼影、肢解、五连/疾走/处决等战斗跟做环节。
     /// </summary>
     internal static class OnikiriTutorialFlow
     {
@@ -20,14 +20,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         internal const int Step_Register = 1;
         internal const int Step_Mei = 2;
         internal const int Step_Domain = 3;
-        internal const int Step_Wraith = 4;
-        internal const int Step_Dismember = 5;
-        internal const int Step_Done = 6;
+        internal const int Step_Done = 4;
 
         /// <summary>HUD/簿/台段完成后；重进从鬼域步恢复</summary>
         internal const int Checkpoint_Hud = 1;
-        /// <summary>鬼域+鬼影段完成后；重进从肢解介绍恢复</summary>
-        internal const int Checkpoint_Field = 2;
 
         private static int currentStep = -1;
         private static int stepTimer;
@@ -54,7 +50,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             initialized = false;
             meiOpenedThisStep = false;
             meiSnapshot = null;
-            OnikiriTutorialWraith.ClearServerState();
             OnikiriTutorialEvents.ClearAll();
         }
 
@@ -74,13 +69,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             if (currentStep < 0 || currentStep >= Step_Done) return;
 
             stepTimer++;
-            //鬼影步持续确保靶在场（联机确认迟到时补请）
-            if (currentStep is Step_Wraith or Step_Dismember
-                && stepTimer % 60 == 0
-                && OnikiriTutorialWraith.GetLocalTarget() == null)
-            {
-                OnikiriTutorialNet.RequestEnsureTarget();
-            }
             AdvanceIfReady();
         }
 
@@ -90,17 +78,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             Subscribe();
 
             var guide = Main.LocalPlayer.GetModPlayer<StoryPlayer>().Get<OnikiriGuideData>();
-            currentStep = guide.Checkpoint switch
-            {
-                >= Checkpoint_Field => Step_Dismember,
-                Checkpoint_Hud => Step_Domain,
-                _ => Step_HudIntro,
-            };
-            //旧档检查点 3（曾表示全通）直接收尾
-            if (guide.Checkpoint >= 3 && guide.CompletedVersion < OnikiriTutorialLead.TutorialVersion)
-            {
-                currentStep = Step_Dismember;
-            }
+            //检查点≥1（含旧档战斗/鬼影段残留）从鬼域认知续
+            currentStep = guide.Checkpoint >= Checkpoint_Hud ? Step_Domain : Step_HudIntro;
             stepTimer = 0;
             EnterStep(currentStep);
         }
@@ -108,13 +87,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private static void Subscribe()
         {
             OnikiriTutorialEvents.OnDomainPhaseSettled += HandleDomainPhaseSettled;
-            OnikiriTutorialEvents.OnDismemberLanded += HandleDismemberLanded;
         }
 
         private static void Unsubscribe()
         {
             OnikiriTutorialEvents.OnDomainPhaseSettled -= HandleDomainPhaseSettled;
-            OnikiriTutorialEvents.OnDismemberLanded -= HandleDismemberLanded;
         }
 
         private static void EnterStep(int step)
@@ -127,17 +104,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                     meiOpenedThisStep = false;
                     break;
 
-                case Step_Wraith:
-                    OnikiriTutorialNet.RequestEnsureTarget();
-                    break;
-
-                case Step_Dismember:
-                    OnikiriTutorialNet.RequestEnsureTarget();
-                    //面影错位姿态，方便认清肢解靶
-                    if (OnikiriTutorialWraith.GetLocalTarget()?.ModNPC is OnikiriTutorialWraith w)
-                        w.SetPose(OnikiriTutorialWraith.WraithPose.PaperOffset);
-                    break;
-
                 case Step_Done:
                     FinishTutorial();
                     break;
@@ -146,20 +112,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 
         private static void HandleDomainPhaseSettled(OniDomainPhase phase)
         {
-            //鬼域步：玩家亲自展域也算完成认知
             if (currentStep == Step_Domain
                 && phase is OniDomainPhase.Omote or OniDomainPhase.Ura)
             {
                 AdvanceStep();
             }
-        }
-
-        private static void HandleDismemberLanded(NPC target)
-        {
-            if (currentStep != Step_Dismember) return;
-            if (target == null || !target.active) return;
-            if (OnikiriTutorialWraith.GetLocalTarget()?.whoAmI != target.whoAmI) return;
-            AdvanceStep();
         }
 
         private static void AdvanceIfReady()
@@ -190,25 +147,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             if (currentStep == Step_Domain && stepTimer > 60 * 25)
             {
                 AdvanceStep();
-                return;
-            }
-
-            if (currentStep == Step_Wraith && stepTimer > 60 * 25)
-            {
-                AdvanceStep();
-                return;
-            }
-
-            if (currentStep == Step_Dismember && stepTimer > 60 * 30)
-            {
-                AdvanceStep();
             }
         }
 
         private static void AdvanceStep()
         {
             if (currentStep == Step_Mei) WriteCheckpoint(Checkpoint_Hud);
-            if (currentStep == Step_Wraith) WriteCheckpoint(Checkpoint_Field);
 
             currentStep++;
             if (currentStep <= Step_Done) EnterStep(currentStep);
@@ -233,7 +177,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private static void FinishTutorial()
         {
             RestoreMeiSnapshotIfNeeded();
-            OnikiriTutorialNet.RequestReleaseTarget();
             Unsubscribe();
             OnikiriTutorialLead.MarkComplete();
         }

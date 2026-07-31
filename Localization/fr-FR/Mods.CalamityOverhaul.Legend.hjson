@@ -620,12 +620,6 @@ OnikiriText: {
 		// DomainTitle: Eye of the Oni Domain
 		// DomainBody: That eye beside Vigor rules the domain — unfold Omote (yellowed paper), flip to Ura (ink-wash nether), then fold again
 		// DomainPrompt: Left-click unfolds/folds; Right-click or {0} flips Omote/Ura — unfolding once also advances
-		// WraithTitle: Training Shade
-		// WraithBody: The mist ahead is a Night Shade practice target — undying, no drops, meant for learning the blade
-		// WraithPrompt: Note its place and shape; the dismember step will aim at it
-		// DismemberTitle: Ura Dismember
-		// DismemberBody: Flip to Ura, then land a dismember strike. The face-shadow shutters for you — cut the training shade, or just learn the flow
-		// DismemberPrompt: Right-click or {0} to flip Ura, then dismember the shade — or press Understood to skip
 		// NextBtn: Understood
 		// OpenRegisterBtn: Open Register
 		// OpenMeiBtn: Open Stand
@@ -811,5 +805,3 @@ OnikiriTrialQuestLine: {
 		Stand steady before you start—I'll nag you about swaying when you're back
 		''' */
 }
-
-// OnikiriTutorialWraith.DisplayName: Training Shade

@@ -53,7 +53,8 @@ namespace CalamityOverhaul
         ReservedToriiShrineGenerationRequest,
         ToriiShrineSync,
         Wraith,
-        OnikiriTutorial,
+        //保留编号：原鬼切教程练习鬼影通道已删除，客户端不再发送。
+        ReservedOnikiriTutorial,
     }
 
     public static class CWRNetWork
@@ -123,7 +124,6 @@ namespace CalamityOverhaul
             OldDukeEffect.NetHandle(type, reader, whoAmI);
             MachineEffect.NetHandle(type, reader, whoAmI);
             WraithNet.NetHandle(type, reader, whoAmI);
-            Content.LegendWeapon.OnikiriLegend.Tutorial.OnikiriTutorialNet.NetHandle(type, reader, whoAmI);
         }
     }
 }

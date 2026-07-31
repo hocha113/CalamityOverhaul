@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
     internal sealed class OnikiriTutorialLead : ModSystem, ILocalizedModType, IGuideLead
     {
         /// <summary>当前教程版本；<see cref="OnikiriGuideData.CompletedVersion"/> 须达到此值才视为完成</summary>
-        internal const int TutorialVersion = 2;
+        internal const int TutorialVersion = 3;
 
         public string LocalizationCategory => "Legend.OnikiriText";
 
@@ -39,12 +39,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         public static LocalizedText DomainTitle { get; private set; }
         public static LocalizedText DomainBody { get; private set; }
         public static LocalizedText DomainPrompt { get; private set; }
-        public static LocalizedText WraithTitle { get; private set; }
-        public static LocalizedText WraithBody { get; private set; }
-        public static LocalizedText WraithPrompt { get; private set; }
-        public static LocalizedText DismemberTitle { get; private set; }
-        public static LocalizedText DismemberBody { get; private set; }
-        public static LocalizedText DismemberPrompt { get; private set; }
         public static LocalizedText NextBtn { get; private set; }
         public static LocalizedText OpenRegisterBtn { get; private set; }
         public static LocalizedText OpenMeiBtn { get; private set; }
@@ -80,14 +74,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             DomainTitle = this.GetLocalization(nameof(DomainTitle), () => "鬼域之眼");
             DomainBody = this.GetLocalization(nameof(DomainBody), () => "气力旁那只眼掌管鬼域：展开表世界（泛黄和纸）、翻到里世界（水墨阴间），再可收阖");
             DomainPrompt = this.GetLocalization(nameof(DomainPrompt), () => "左键展/收域，右键或 {0} 翻转表里；展一次也可推进");
-
-            WraithTitle = this.GetLocalization(nameof(WraithTitle), () => "练习鬼影");
-            WraithBody = this.GetLocalization(nameof(WraithBody), () => "身前浮起的雾影是夜鬼影练习靶——打不散、无掉落，专供认刀与试招");
-            WraithPrompt = this.GetLocalization(nameof(WraithPrompt), () => "看清它的位置与形体；后文肢解会对着它演示");
-
-            DismemberTitle = this.GetLocalization(nameof(DismemberTitle), () => "里世界肢解");
-            DismemberBody = this.GetLocalization(nameof(DismemberBody), () => "翻到里世界后可施展肢解一刀。面影会自动快门——对准练习鬼影落刀，或先认清流程");
-            DismemberPrompt = this.GetLocalization(nameof(DismemberPrompt), () => "右键或 {0} 翻到里世界，再对鬼影肢解；也可按「已知晓」跳过");
 
             NextBtn = this.GetLocalization(nameof(NextBtn), () => "已知晓");
             OpenRegisterBtn = this.GetLocalization(nameof(OpenRegisterBtn), () => "开点鬼簿");
@@ -133,7 +119,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         {
             OnikiriTutorialFlow.Reset();
             OnikiriTutorialTargets.Clear();
-            OnikiriTutorialWraith.ClearServerState();
         }
 
         public override void UpdateUI(GameTime gameTime)
@@ -181,7 +166,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             if (p == null || !p.active) return;
             var guide = p.GetModPlayer<StoryPlayer>().Get<OnikiriGuideData>();
             guide.CompletedVersion = TutorialVersion;
-            guide.Checkpoint = OnikiriTutorialFlow.Checkpoint_Field;
+            guide.Checkpoint = OnikiriTutorialFlow.Checkpoint_Hud;
         }
     }
 }
