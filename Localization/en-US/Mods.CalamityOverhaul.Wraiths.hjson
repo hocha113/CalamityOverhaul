@@ -27,9 +27,9 @@ ScapeGhost: {
 }
 
 HeadlessShade: {
-	DisplayName: The Headless Figure
+	DisplayName: The Headless Shade
 	Origin: The shadow at your feet twitches; on nights when the lamplight sways, there is nothing above its shoulders
-	Power: 「Limb-Splice」Dismantles a target's limbs, or grafts its own severed body back together to recover
+	Power: 「Dismember」It lurks behind you, then rushes anything living and tears its body into pieces
 	DeathReason: "{0} touched what must never be touched"
 }
 

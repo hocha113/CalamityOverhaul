@@ -102,6 +102,8 @@ namespace CalamityOverhaul
         //---- 噪声 ----
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> NoiseSoft01 = null;//柔性大块噪声，侵蚀/参差用（亮度型，可平铺）
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> Shutter = null;//无头人形 Alpha 遮罩，无头鬼影本体
         [VaultLoaden(CWRConstant.ColorBar)]
         public static Asset<Texture2D> BloodRed_Bar = null;
         [VaultLoaden(CWRConstant.ColorBar)]

@@ -27,9 +27,9 @@ ScapeGhost: {
 }
 
 HeadlessShade: {
-	DisplayName: 无头人影
+	DisplayName: 无头鬼影
 	Origin: 你脚下的黑影抽动着，在灯火摇晃的夜里，影子的肩膀以上空无一物
-	Power: 「拼肢」拆卸目标的肢体，也可以拼接自身断裂的躯体，用于恢复
+	Power: 「肢解」它潜伏在你的身后，嗅到活物便扑杀而出，将其躯体撕成数段
 	DeathReason: "{0}触犯了不可触犯之物"
 }
 

@@ -35,11 +35,12 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         public override bool IsDebugContent => true;
     }
 
-    /// <summary>无头人影</summary>
+    /// <summary>无头鬼影。Key 不可改；选中后由 HeadlessShadeAttunement 常驻</summary>
     internal sealed class HeadlessShade : WraithDefinition
     {
         public override Type ActorType => null;
         public override int SortOrder => 50;
+        public override WraithAttunement CreateAttunement() => new HeadlessShadeAttunement();
     }
 
     /// <summary>焦黑枯手。Key 不可改；选中后由 GhostHandAttunement 常驻</summary>

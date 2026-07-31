@@ -71,6 +71,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> WraithScapeArm { get; set; }
         public static Asset<Effect> WraithRevivalHud { get; set; }
         public static Asset<Effect> GhostHandSheath { get; set; }
+        public static Asset<Effect> HeadlessShadeBody { get; set; }
         public static Asset<Effect> OniPaperBurn { get; set; }
         public static Asset<Effect> OniVigorInk { get; set; }
         public static Asset<Effect> OniStanceBlade { get; set; }
