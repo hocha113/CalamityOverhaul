@@ -31,6 +31,7 @@ namespace CalamityOverhaul.Content.Players
         //服务端只消费原版 PlayerHurtV2 产生的一次性致死事件
         private bool serverLethalHurtPending;
         private Player.HurtInfo serverLethalHurt;
+        private bool localLethalHurtPending;
 
         //RuleKill 先行包与原版 PlayerDeathV2 之间的短时死亡通行证
         private int ruleDeathPermitTicks;
@@ -98,6 +99,10 @@ namespace CalamityOverhaul.Content.Players
                 Player.statLife = Math.Max(Player.statLife, 1);
                 return true;
             }
+            if (VaultUtils.isClient && !localLethalHurtPending) {
+                return false;
+            }
+            localLethalHurtPending = false;
             if (scapeUsedThisTick || !HasScapeGhostContract(Player)) {
                 return false;
             }
@@ -117,6 +122,19 @@ namespace CalamityOverhaul.Content.Players
 
             //单人直接权威执行
             return ExecuteScapeGhostAuthority(Player, damage, hitDirection, damageSource);
+        }
+
+        internal void NoteLocalLethalHurt(Player.HurtInfo info) {
+            if (VaultUtils.isClient && Player.whoAmI == Main.myPlayer && !Player.dead
+                && Player.statLife > 0 && info.Damage >= Player.statLife) {
+                localLethalHurtPending = true;
+            }
+        }
+
+        internal void ClearLethalHurt() {
+            localLethalHurtPending = false;
+            serverLethalHurtPending = false;
+            serverLethalHurt = default;
         }
 
         /// <summary>服务端在原版 Hurt 扣血前登记一次经原版协议处理的致死事件。</summary>
@@ -284,8 +302,7 @@ namespace CalamityOverhaul.Content.Players
 
         internal void PrepareRuleDeath() {
             ClearScapeSession();
-            serverLethalHurtPending = false;
-            serverLethalHurt = default;
+            ClearLethalHurt();
             ruleDeathPermitTicks = 120;
             Doomed = true;
         }
@@ -293,6 +310,7 @@ namespace CalamityOverhaul.Content.Players
         internal void ClearScapeSession() {
             ScapeGhostPending = false;
             scapeGhostPendingTicks = 0;
+            localLethalHurtPending = false;
         }
 
         /// <summary>

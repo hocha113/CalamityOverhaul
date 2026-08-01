@@ -46,12 +46,13 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         private static readonly Dictionary<string, WraithScapeStateRecord> records
             = new(StringComparer.OrdinalIgnoreCase);
 
-        internal static void GetOrCreate(Player player, out float revival, out int multiplier
+        internal static bool TryGetOrCreate(Player player, out float revival, out int multiplier
             , out int revivalIdleTicks) {
             WraithScapeStateRecord record = GetOrCreateRecord(player);
             revival = record?.Revival ?? 0f;
             multiplier = record?.Multiplier ?? 2;
             revivalIdleTicks = record?.RevivalIdleTicks ?? 0;
+            return record != null;
         }
 
         internal static void Set(Player player, float revival, int multiplier, int revivalIdleTicks) {

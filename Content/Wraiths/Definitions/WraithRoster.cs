@@ -33,6 +33,7 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         public override Type ActorType => null;
         public override int SortOrder => 40;
         public override bool IsDebugContent => true;
+        public override bool CanAttune => true;
     }
 
     /// <summary>无头鬼影。Key 不可改；选中后由 HeadlessShadeAttunement 常驻</summary>

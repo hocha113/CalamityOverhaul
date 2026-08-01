@@ -138,8 +138,11 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         private WraithAttunement attunement;
         private bool attunementCreated;
 
-        /// <summary>共鸣工厂，默认 null；返回非 null 的定义可在点鬼簿中选中。</summary>
+        /// <summary>共鸣工厂，默认 null；无主动共鸣的被动厉鬼仍可通过 CanAttune 进入点鬼簿。</summary>
         public virtual WraithAttunement CreateAttunement() => null;
+
+        /// <summary>是否允许在点鬼簿中选中。默认与共鸣工厂绑定。</summary>
+        public virtual bool CanAttune => Attunement != null;
 
         /// <summary>缓存的无状态共鸣实例。</summary>
         public WraithAttunement Attunement {

@@ -174,8 +174,10 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             if (!VaultUtils.isServer || scapeStateAuthorityInitialized) {
                 return;
             }
-            WraithScapeStateSystem.GetOrCreate(Player, out revival, out scapeMultiplier
-                , out revivalIdleTimer);
+            if (!WraithScapeStateSystem.TryGetOrCreate(Player, out revival, out scapeMultiplier
+                , out revivalIdleTimer)) {
+                return;
+            }
             scapeStateAuthorityInitialized = true;
             scapeStateSyncTimer = 0;
         }
@@ -192,6 +194,9 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 return;
             }
             EnsureScapeStateAuthority();
+            if (!scapeStateAuthorityInitialized) {
+                return;
+            }
             CommitScapeStateAuthority();
             WraithNet.SendScapeStateSync(Player.whoAmI, revival, scapeMultiplier
                 , revivalIdleTimer, toWho, ignoreWho);
@@ -280,13 +285,27 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         /// <summary>服务器从原版 HurtInfo 生成替死的一次性致死凭证。</summary>
         public override void OnHurt(Player.HurtInfo info) {
-            if (!VaultUtils.isServer || Player.dead || Player.statLife <= 0
-                || info.Damage < Player.statLife) {
+            if (Player.dead || Player.statLife <= 0 || info.Damage < Player.statLife) {
+                return;
+            }
+            Player.TryGetOverride(out PlayerDeath playerDeath);
+            if (VaultUtils.isClient && Player.whoAmI == Main.myPlayer) {
+                playerDeath?.NoteLocalLethalHurt(info);
+                return;
+            }
+            if (!VaultUtils.isServer) {
                 return;
             }
             EnsureScapeStateAuthority();
-            Player.TryGetOverride(out PlayerDeath playerDeath);
+            if (!scapeStateAuthorityInitialized) {
+                return;
+            }
             playerDeath?.NoteServerLethalHurt(info);
+        }
+
+        public override void PostHurt(Player.HurtInfo info) {
+            Player.TryGetOverride(out PlayerDeath playerDeath);
+            playerDeath?.ClearLethalHurt();
         }
 
         /// <summary>死亡期间撤拍兜底，两侧都跑</summary>
@@ -302,6 +321,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             }
             Player.TryGetOverride(out PlayerDeath playerDeath);
             playerDeath?.ClearScapeSession();
+            playerDeath?.ClearLethalHurt();
         }
 
         /// <summary>中拍者离场，权威撤拍</summary>
@@ -315,6 +335,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             }
             Player.TryGetOverride(out PlayerDeath playerDeath);
             playerDeath?.ClearScapeSession();
+            playerDeath?.ClearLethalHurt();
         }
 
         /// <summary>受害者镜像逐帧，心跳渐急</summary>
@@ -515,12 +536,14 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             lastCueTier = ErosionTier;
             Player.TryGetOverride(out PlayerDeath playerDeath);
             playerDeath?.ClearScapeSession();
+            playerDeath?.ClearLethalHurt();
         }
 
         public override void OnRespawn() {
             ClearOmenMirror();
             Player.TryGetOverride(out PlayerDeath playerDeath);
             playerDeath?.ClearScapeSession();
+            playerDeath?.ClearLethalHurt();
         }
 
         public override void SaveData(TagCompound tag) {
