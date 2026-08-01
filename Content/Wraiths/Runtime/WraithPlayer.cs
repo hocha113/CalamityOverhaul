@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Wraiths.Core;
+using CalamityOverhaul.Content.Players;
 using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         /// <summary>自然消退速率：约8分钟满值归零</summary>
         private const float RevivalDecayPerTick = 1f / (60f * 480f);
         /// <summary>上次变化后的消退延迟（帧）</summary>
-        private const int RevivalDecayDelay = 60 * 8;
+        internal const int RevivalDecayDelay = 60 * 8;
+        private const int ScapeStateSyncInterval = 60;
 
         private float revival;
         private int revivalIdleTimer;
@@ -45,6 +47,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         private int revivalChangedTimer;
         //友善替死倍率：首次2，每次友善替死后翻倍，最高32
         private int scapeMultiplier = 2;
+        private bool scapeStateAuthorityInitialized;
+        private int scapeStateSyncTimer;
 
         /// <summary>复苏进度 0~1</summary>
         public float Revival => revival;
@@ -55,7 +59,12 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         /// <summary>成功进行一次友善替死后推进倍率（上限32）</summary>
         public void AdvanceScapeMultiplier() {
+            if (VaultUtils.isClient) {
+                return;
+            }
+            EnsureScapeStateAuthority();
             scapeMultiplier = Math.Min(scapeMultiplier * 2, 32);
+            CommitScapeStateAuthority();
         }
 
         //====状态（全部实例级）====
@@ -120,34 +129,82 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         //====复苏进度====
 
         /// <summary>
-        /// 增加复苏进度。仅本地玩家调用（与 AddErosion 同策略）。<br/>
+        /// 增加复苏进度。仅权威端调用。<br/>
         /// 满格 → <see cref="WraithLethality.Kill"/>；同时通知 HUD 淡入。
         /// </summary>
-        public void AddRevival(float amount) {
-            if (Player.whoAmI != Main.myPlayer || amount <= 0f) {
-                return;
+        public bool AddRevival(float amount) {
+            if (VaultUtils.isClient || amount <= 0f) {
+                return false;
             }
+            EnsureScapeStateAuthority();
             revival = MathHelper.Clamp(revival + amount, 0f, 1f);
             revivalIdleTimer = 0;
             revivalChangedTimer = 0;
 
-            if (VaultUtils.isClient) {
-                WraithNet.SendRevivalSync(Player.whoAmI, revival);
+            bool reachedLimit = revival >= 1f;
+            if (reachedLimit) {
+                revival = 0f;
             }
 
-            if (revival >= 1f) {
-                revival = 0f;
-                //使用 ScapeGhost 的死亡文案；查不到时退 null（WraithLethality 内部有 null 守护）
-                WraithRegistry.TryGet("ScapeGhost", out WraithDefinition def);
-                WraithLethality.Kill(Player, def ?? WraithRegistry.All[0],
-                    WraithSystemText.RevivalKillReason);
+            if (VaultUtils.isServer) {
+                PublishScapeStateAuthority();
             }
+            if (reachedLimit) {
+                WraithRegistry.TryGet("ScapeGhost", out WraithDefinition definition);
+                if (definition != null) {
+                    WraithLethality.Kill(Player, definition, WraithSystemText.RevivalKillReason);
+                }
+            }
+            return reachedLimit;
         }
 
-        /// <summary>直接设复苏值（网络同步镜像，不触发满格死亡判定）</summary>
-        public void SetRevivalNoKill(float value) {
-            revival = MathHelper.Clamp(value, 0f, 1f);
+        /// <summary>套用服务器替死代价镜像，不触发满格死亡判定。</summary>
+        internal void ApplyScapeStateMirror(float revivalValue, int multiplier, int idleTicks) {
+            if (!VaultUtils.isClient) {
+                return;
+            }
+            revival = float.IsFinite(revivalValue)
+                ? MathHelper.Clamp(revivalValue, 0f, 1f) : 0f;
+            scapeMultiplier = SanitizeScapeMultiplier(multiplier);
+            revivalIdleTimer = Math.Clamp(idleTicks, 0, RevivalDecayDelay);
             revivalChangedTimer = 0;
+        }
+
+        private void EnsureScapeStateAuthority() {
+            if (!VaultUtils.isServer || scapeStateAuthorityInitialized) {
+                return;
+            }
+            WraithScapeStateSystem.GetOrCreate(Player, out revival, out scapeMultiplier
+                , out revivalIdleTimer);
+            scapeStateAuthorityInitialized = true;
+            scapeStateSyncTimer = 0;
+        }
+
+        private void CommitScapeStateAuthority() {
+            if (!VaultUtils.isServer || !scapeStateAuthorityInitialized) {
+                return;
+            }
+            WraithScapeStateSystem.Set(Player, revival, scapeMultiplier, revivalIdleTimer);
+        }
+
+        private void PublishScapeStateAuthority(int toWho = -1, int ignoreWho = -1) {
+            if (!VaultUtils.isServer) {
+                return;
+            }
+            EnsureScapeStateAuthority();
+            CommitScapeStateAuthority();
+            WraithNet.SendScapeStateSync(Player.whoAmI, revival, scapeMultiplier
+                , revivalIdleTimer, toWho, ignoreWho);
+            scapeStateSyncTimer = 0;
+        }
+
+        internal static int SanitizeScapeMultiplier(int value) {
+            value = Math.Clamp(value, 2, 32);
+            int sanitized = 2;
+            while (sanitized < value) {
+                sanitized *= 2;
+            }
+            return Math.Min(sanitized, 32);
         }
 
         private void PlayTierCue(int tier) {
@@ -221,6 +278,17 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             WraithLethality.Kill(Player, def, reason);
         }
 
+        /// <summary>服务器从原版 HurtInfo 生成替死的一次性致死凭证。</summary>
+        public override void OnHurt(Player.HurtInfo info) {
+            if (!VaultUtils.isServer || Player.dead || Player.statLife <= 0
+                || info.Damage < Player.statLife) {
+                return;
+            }
+            EnsureScapeStateAuthority();
+            Player.TryGetOverride(out PlayerDeath playerDeath);
+            playerDeath?.NoteServerLethalHurt(info);
+        }
+
         /// <summary>死亡期间撤拍兜底，两侧都跑</summary>
         public override void UpdateDead() {
             if (!VaultUtils.isClient && omenAuthTicksLeft > 0) {
@@ -232,6 +300,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             if (!Main.dedServ && Player.whoAmI == Main.myPlayer) {
                 ClearOmenMirror();
             }
+            Player.TryGetOverride(out PlayerDeath playerDeath);
+            playerDeath?.ClearScapeSession();
         }
 
         /// <summary>中拍者离场，权威撤拍</summary>
@@ -239,6 +309,12 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             if (!VaultUtils.isClient) {
                 ClearOmenAuthority();
             }
+            if (VaultUtils.isServer) {
+                CommitScapeStateAuthority();
+                scapeStateAuthorityInitialized = false;
+            }
+            Player.TryGetOverride(out PlayerDeath playerDeath);
+            playerDeath?.ClearScapeSession();
         }
 
         /// <summary>受害者镜像逐帧，心跳渐急</summary>
@@ -282,7 +358,14 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         public override void PostUpdate() {
             //权威预警倒计时
             if (!VaultUtils.isClient) {
+                if (VaultUtils.isServer) {
+                    EnsureScapeStateAuthority();
+                }
                 UpdateOmenAuthority();
+            }
+
+            if (!VaultUtils.isClient || (!Main.dedServ && Player.whoAmI == Main.myPlayer)) {
+                UpdateRevivalDecay();
             }
             if (Main.dedServ || Player.whoAmI != Main.myPlayer) {
                 return;
@@ -300,15 +383,6 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             }
             UpdateErosionAmbience();
 
-            //复苏进度消退 + HUD 计时
-            if (revivalIdleTimer < RevivalDecayDelay) {
-                revivalIdleTimer++;
-            }
-            else if (revival > 0f) {
-                revival = Math.Max(revival - RevivalDecayPerTick, 0f);
-            }
-            revivalChangedTimer = Math.Min(revivalChangedTimer + 1, int.MaxValue - 1);
-
             UpdateOmenMirror();
 
             //反噬
@@ -317,6 +391,23 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 WraithBacklash.Judge(this);
                 WatchPendingEscapes();
                 WatchEscaped();
+            }
+        }
+
+        private void UpdateRevivalDecay() {
+            if (revivalIdleTimer < RevivalDecayDelay) {
+                revivalIdleTimer++;
+            }
+            else if (revival > 0f) {
+                revival = Math.Max(revival - RevivalDecayPerTick, 0f);
+            }
+            revivalChangedTimer = Math.Min(revivalChangedTimer + 1, int.MaxValue - 1);
+
+            if (VaultUtils.isServer) {
+                CommitScapeStateAuthority();
+                if (revival > 0f && ++scapeStateSyncTimer >= ScapeStateSyncInterval) {
+                    PublishScapeStateAuthority();
+                }
             }
         }
 
@@ -408,6 +499,13 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         //====生命周期与存档====
 
+        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer) {
+            if (VaultUtils.isServer) {
+                //服务器权威快照必须回到玩家本人，不能用 fromWho 排除发送者
+                PublishScapeStateAuthority(toWho);
+            }
+        }
+
         public override void OnEnterWorld() {
             backlashCooldownUntil.Clear();
             escapedWatch.Clear();
@@ -415,9 +513,15 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             backlashCheckTimer = 0;
             ClearOmenMirror();
             lastCueTier = ErosionTier;
+            Player.TryGetOverride(out PlayerDeath playerDeath);
+            playerDeath?.ClearScapeSession();
         }
 
-        public override void OnRespawn() => ClearOmenMirror();
+        public override void OnRespawn() {
+            ClearOmenMirror();
+            Player.TryGetOverride(out PlayerDeath playerDeath);
+            playerDeath?.ClearScapeSession();
+        }
 
         public override void SaveData(TagCompound tag) {
             if (erosion > 0f) {
@@ -438,13 +542,13 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
             revival = tag.TryGet(SaveKey_Revival, out float rv) ? MathHelper.Clamp(rv, 0f, 1f) : 0f;
             if (float.IsNaN(revival)) { revival = 0f; }
+            revivalIdleTimer = 0;
+            revivalChangedTimer = 0;
 
             scapeMultiplier = tag.TryGet(SaveKey_ScapeMultiplier, out int sm)
-                ? Math.Clamp(sm, 2, 32) : 2;
-            //对齐到合法的2^n值
-            int corrected = 2;
-            while (corrected < scapeMultiplier) { corrected *= 2; }
-            scapeMultiplier = Math.Min(corrected, 32);
+                ? SanitizeScapeMultiplier(sm) : 2;
+            scapeStateAuthorityInitialized = false;
+            scapeStateSyncTimer = 0;
         }
     }
 }

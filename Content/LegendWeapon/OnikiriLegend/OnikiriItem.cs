@@ -5,6 +5,7 @@ using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -55,10 +56,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             && player.ownedProjectileCounts[ModContent.ProjectileType<OniSeverStrike>()] == 0;
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            string flashStepInput = CWRKeySystem.GetKeybindText(CWRKeySystem.Onikiri_FlashStep,
-                CWRKeySystem.RightClickFallback.Value);
-            tooltips.ReplacePlaceholder("[DASH]", flashStepInput);
+            ReplaceInputPlaceholders(tooltips);
             OnikiriOverride.SetTooltip(Item, ref tooltips);
+        }
+
+        internal static void ReplaceInputPlaceholders(List<TooltipLine> tooltips) {
+            InputMode mode = PlayerInput.UsingGamepad ? InputMode.XBoxGamepad : InputMode.Keyboard;
+            string flashStepInput = CWRKeySystem.GetKeybindText(CWRKeySystem.Onikiri_FlashStep,
+                CWRKeySystem.RightClickFallback.Value, mode);
+            string sakuraFlightInput = CWRKeySystem.GetKeybindText(CWRKeySystem.Onikiri_SakuraFlight,
+                CWRKeySystem.Notbound.Value, mode);
+            string executeInput = CWRKeySystem.GetKeybindText(CWRKeySystem.Onikiri_Execute,
+                CWRKeySystem.Notbound.Value, mode);
+            tooltips.ReplacePlaceholder("[DASH]", flashStepInput);
+            tooltips.ReplacePlaceholder("[SAKURA]", sakuraFlightInput);
+            tooltips.ReplacePlaceholder("[EXECUTE]", executeInput);
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source,

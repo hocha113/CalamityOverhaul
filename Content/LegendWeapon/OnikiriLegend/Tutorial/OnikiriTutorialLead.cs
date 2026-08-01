@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             GuideLeadQueue.Register(this);
 
             HudTitle = this.GetLocalization(nameof(HudTitle), () => "气力与架势");
-            HudBody = this.GetLocalization(nameof(HudBody), () => "手持鬼切时，左下角常驻气力笔触与架势鞘。气力供疾走，架势积满可衔出处决");
+            HudBody = this.GetLocalization(nameof(HudBody), () => "手持鬼切时，左下角常驻气力笔触与架势鞘。半架势可双疾走接左键灭世，满架势可用处决键锁敌终结；按住樱流键会先付费疾走再化樱");
             HudPrompt = this.GetLocalization(nameof(HudPrompt), () => "认一下这组读数；按 {0} 或点札可开改铭台");
 
             RegisterTitle = this.GetLocalization(nameof(RegisterTitle), () => "点鬼簿");

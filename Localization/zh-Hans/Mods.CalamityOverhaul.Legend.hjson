@@ -595,8 +595,8 @@ OnikiriText: {
 		VigorValueFormat: "{0} / {1}"
 		StanceTitle: 架势
 		StanceValueFormat: "{0} / {1}"
-		StanceReadyLine: 势已圆满——双疾走穿身可终斩
-		StanceHalfLine: 势已过半——双疾走后可接灭世
+		StanceReadyLine: 势已圆满——{0} 锁敌终斩；双疾走仍可穿身
+		StanceHalfLine: 势已过半——连按 {0} 两次，再按左键可接灭世
 		StanceMeiHint: 点击 开点鬼簿
 		DomainTitle: 鬼域之眼
 		DomainStateClosed: 阖目——领域未展
@@ -609,7 +609,7 @@ OnikiriText: {
 
 	OnikiriTutorialLead: {
 		HudTitle: 气力与架势
-		HudBody: 手持鬼切时，左下角常驻气力笔触与架势鞘。气力供疾走，架势积满可衔出处决
+		HudBody: 手持鬼切时，左下角常驻气力笔触与架势鞘。半架势可双疾走接左键灭世，满架势可用处决键锁敌终结；按住樱流键会先付费疾走再化樱
 		HudPrompt: 认一下这组读数；按 {0} 或点札可开改铭台
 		RegisterTitle: 点鬼簿
 		RegisterBody: 点击架势鞘，可展开点鬼簿——铭鬼名录、驾驭与共鸣都记在这里
@@ -632,9 +632,11 @@ OnikiriOverride: {
 	Tooltip:
 		'''
 		按住左键驱动绯红裂空斩五段连段
-		右键消耗气力施展神威疾走
-		架势值过半时连续两次疾走，可施展处决技
-		满架势穿中目标释放终结乱舞，否则在疾走结束后按左键释放灭世一闪
+		[DASH]消耗气力施展神威疾走
+		表世界中按住[SAKURA]施展樱流
+		半架势的处决疾走后按左键释放灭世一闪
+		满架势双疾走穿中目标释放终结乱舞
+		满架势按[EXECUTE]自动锁敌疾走并直接释放终结乱舞
 		[Lang4]
 		legend_Text
 		'''

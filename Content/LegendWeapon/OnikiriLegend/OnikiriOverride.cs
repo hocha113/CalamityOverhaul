@@ -198,6 +198,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             string text = LegendData.GetLevelTrialPreText(item.CWR(), LegendUpgradeManagerSystem.Text_Lang_0, num);
             tooltips.ReplacePlaceholder("[Lang4]", text, "");
             AppendMeiSummary(item, tooltips);
+            OnikiriItem.ReplaceInputPlaceholders(tooltips);
         }
 
         /// <summary>在铭三槽的短摘要:离开改铭台也看得到赋效/代价(SetTooltip 可能被调两次,按行名去重)</summary>

@@ -289,9 +289,11 @@ OnikiriItem: {
 	/* Tooltip:
 		'''
 		Hold left-click to drive the five-beat Crimson Rend combo
-		[DASH] spends Vigor on Kamui Flash Step; above half Stance, dash again within one second for a free execution dash
-		At full Stance, passing through a target unleashes Finale Slash; otherwise left-click after the dash for Annihilating Flash
-		If neither execution is released, half of your remaining Vigor is lost
+		[DASH] spends Vigor on a normal Kamui Flash Step; at half Stance or above, press [DASH] again within one second for a free execution dash
+		In Omote, hold [SAKURA] to pay for a normal dash; if still held at the endpoint with enough Vigor, it chains into Sakura Flight; release to return
+		After a half-Stance execution dash, left-click for Annihilating Flash; at full Stance, double-dash through a target for Finale Slash
+		At full Stance, press [EXECUTE] to auto-lock, dash, and automatically unleash Finale Slash; with no target, the dash follows the cursor
+		An unfulfilled execution costs no additional Vigor
 		[Lang4]
 		legend_Text
 		''' */

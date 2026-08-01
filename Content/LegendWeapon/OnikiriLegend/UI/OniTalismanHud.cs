@@ -68,6 +68,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static void NotifyStanceDenied() => Instance?.stance.NotifyDenied();
         /// <summary>不动护发动反馈:鞘刀沉重归座+金铁裂响(玩法层调用,本地客户端)</summary>
         public static void NotifyStanceGuard() => Instance?.stance.NotifyGuard();
+        /// <summary>双疾走连携窗开启</summary>
+        public static void NotifyExecutionChainOpen() => Instance?.stance.NotifyExecutionChainOpen();
+        /// <summary>双疾走第二段已受理</summary>
+        public static void NotifyExecutionDashQueued() => Instance?.stance.NotifyExecutionDashQueued();
+        /// <summary>专用处决已锁定目标</summary>
+        public static void NotifyExecutionLocked() => Instance?.stance.NotifyExecutionLocked();
+        /// <summary>专用处决已受理空放路线</summary>
+        public static void NotifyExecutionWhiffQueued() => Instance?.stance.NotifyExecutionWhiffQueued();
         /// <summary>领域命令被拒反馈:鬼眼急促眨动(玩法层调用,本地客户端)</summary>
         public static void NotifyDomainDenied() => Instance?.domainEye.NotifyDenied();
 

@@ -29,6 +29,8 @@ namespace CalamityOverhaul.Common
         public static ModKeybind Halibut_Superposition { get; private set; }
         public static ModKeybind Halibut_SkillWheel { get; private set; }
         public static ModKeybind Onikiri_FlashStep { get; private set; }
+        public static ModKeybind Onikiri_Execute { get; private set; }
+        public static ModKeybind Onikiri_SakuraFlight { get; private set; }
         public static ModKeybind Onikiri_DomainFlip { get; private set; }
         public static ModKeybind WeponSkill_Q { get; private set; }
         public static ModKeybind WeponSkill_R { get; private set; }
@@ -57,6 +59,8 @@ namespace CalamityOverhaul.Common
             Halibut_Superposition = KeybindLoader.RegisterKeybind(mod, nameof(Halibut_Superposition), "F");
             Halibut_SkillWheel = KeybindLoader.RegisterKeybind(mod, nameof(Halibut_SkillWheel), "Tab");
             Onikiri_FlashStep = KeybindLoader.RegisterKeybind(mod, nameof(Onikiri_FlashStep), Keys.None);
+            Onikiri_Execute = KeybindLoader.RegisterKeybind(mod, nameof(Onikiri_Execute), "F");
+            Onikiri_SakuraFlight = KeybindLoader.RegisterKeybind(mod, nameof(Onikiri_SakuraFlight), "C");
             //鬼域翻转，默认 Mouse3
             Onikiri_DomainFlip = KeybindLoader.RegisterKeybind(mod, nameof(Onikiri_DomainFlip), "Mouse3");
             WeponSkill_Q = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_Q), "Q");
@@ -85,6 +89,8 @@ namespace CalamityOverhaul.Common
             QuestLog_Key = null;
             QuestManager_Key = null;
             Onikiri_FlashStep = null;
+            Onikiri_Execute = null;
+            Onikiri_SakuraFlight = null;
             Onikiri_DomainFlip = null;
             Legend_Domain = null;
             Halibut_Clone = null;

@@ -14,6 +14,8 @@ Halibut_Clone.DisplayName: Палтус: Вторжение прошлого в�
 Halibut_Superposition.DisplayName: Палтус: Суперпозиция
 Halibut_SkillWheel.DisplayName: Палтус: удерживайте, чтобы открыть колесо навыков
 // Onikiri_FlashStep.DisplayName: Onikiri: Kamui Flash Step
+// Onikiri_Execute.DisplayName: Onikiri: Execute
+// Onikiri_SakuraFlight.DisplayName: Onikiri: Sakura Flight
 // Onikiri_DomainFlip.DisplayName: Onikiri: Flip Domain (Omote/Ura)
 WeponSkill_Q.DisplayName: Оружие: Левая кнопка навыка
 WeponSkill_R.DisplayName: Оружие: Правая кнопка навыка

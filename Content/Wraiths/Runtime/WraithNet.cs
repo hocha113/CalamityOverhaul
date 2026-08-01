@@ -22,10 +22,6 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         BacklashSpawn,
         /// <summary>服→客，替死触发演出与受害者侵蚀镜像</summary>
         ScapeGhostFx,
-        /// <summary>客→服，替死裁定请求（携带伤害参数）</summary>
-        ScapeGhostRequest,
-        /// <summary>服→受害者，替死无可用代理目标</summary>
-        ScapeGhostFail,
         /// <summary>服→客，规则死亡转发</summary>
         RuleKill,
         /// <summary>服→受害者，预警起拍</summary>
@@ -34,8 +30,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         OmenCancel,
         /// <summary>服→客，据点锚位镜像</summary>
         SiteSync,
-        /// <summary>客→服→全员，复苏进度同步</summary>
-        RevivalSync,
+        /// <summary>服→全员，替死代价状态同步</summary>
+        ScapeStateSync,
     }
 
     /// <summary>
@@ -96,28 +92,9 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             packet.Send();
         }
 
-        /// <summary>客→服，替死裁定请求；服务端收到后执行权威逻辑并回包。</summary>
-        public static void SendScapeGhostRequest(int victimWhoAmI, double damage, int hitDirection) {
-            if (!VaultUtils.isClient || victimWhoAmI < 0 || victimWhoAmI >= Main.maxPlayers) {
-                return;
-            }
-            ModPacket packet = NewPacket(WraithNetOp.ScapeGhostRequest);
-            packet.Write((byte)victimWhoAmI);
-            packet.Write(damage);
-            packet.Write(hitDirection);
-            packet.Send();
-        }
-
-        /// <summary>服→受害者客户端，替死无代理目标。</summary>
-        public static void SendScapeGhostFail(int victimWhoAmI) {
-            if (!VaultUtils.isServer || victimWhoAmI < 0 || victimWhoAmI >= Main.maxPlayers) {
-                return;
-            }
-            NewPacket(WraithNetOp.ScapeGhostFail).Send(victimWhoAmI);
-        }
-
         /// <summary>服→全体客户端，替死血臂；受害者客户端另外镜像侵蚀与回执。</summary>
-        public static void SendScapeGhostFx(Vector2 from, Vector2 to, int victimWhoAmI, string targetName = null) {
+        public static void SendScapeGhostFx(Vector2 from, Vector2 to, int victimWhoAmI
+            , string targetName = null, bool revivalKilled = false) {
             if (!VaultUtils.isServer || victimWhoAmI < 0 || victimWhoAmI >= Main.maxPlayers) {
                 return;
             }
@@ -126,6 +103,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             packet.WriteVector2(to);
             packet.Write((byte)victimWhoAmI);
             packet.Write(targetName ?? string.Empty);
+            packet.Write(revivalKilled);
             packet.Send();
         }
 
@@ -151,15 +129,18 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             packet.Send(playerWhoAmI);
         }
 
-        /// <summary>客→服，复苏进度同步</summary>
-        public static void SendRevivalSync(int victimWhoAmI, float revival) {
-            if (!VaultUtils.isClient || victimWhoAmI < 0 || victimWhoAmI >= Main.maxPlayers) {
+        /// <summary>服→全员，替死代价状态同步</summary>
+        public static void SendScapeStateSync(int victimWhoAmI, float revival, int multiplier, int idleTicks
+            , int toWho = -1, int ignoreWho = -1) {
+            if (!VaultUtils.isServer || victimWhoAmI < 0 || victimWhoAmI >= Main.maxPlayers) {
                 return;
             }
-            ModPacket packet = NewPacket(WraithNetOp.RevivalSync);
+            ModPacket packet = NewPacket(WraithNetOp.ScapeStateSync);
             packet.Write((byte)victimWhoAmI);
             packet.Write(revival);
-            packet.Send();
+            packet.Write((byte)multiplier);
+            packet.Write(idleTicks);
+            packet.Send(toWho, ignoreWho);
         }
 
         /// <summary>服→受害者，预警撤拍</summary>
@@ -184,11 +165,23 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         //====接收====
 
+        private static bool IsClientRequest(WraithNetOp op)
+            => op is WraithNetOp.HaltRequest or WraithNetOp.RiteRequest or WraithNetOp.BacklashSpawn;
+
+        private static bool IsServerMessage(WraithNetOp op)
+            => op is WraithNetOp.RiteConfirm or WraithNetOp.ScapeGhostFx or WraithNetOp.RuleKill
+                or WraithNetOp.OmenStart or WraithNetOp.OmenCancel or WraithNetOp.SiteSync
+                or WraithNetOp.ScapeStateSync;
+
         public static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
             if (type != CWRMessageType.Wraith) {
                 return;
             }
             WraithNetOp op = (WraithNetOp)reader.ReadByte();
+            if (VaultUtils.isServer && !IsClientRequest(op)
+                || VaultUtils.isClient && !IsServerMessage(op)) {
+                return;
+            }
             switch (op) {
                 case WraithNetOp.HaltRequest:
                     HandleHaltRequest(reader, whoAmI);
@@ -213,6 +206,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                     Vector2 to = reader.ReadVector2();
                     int victim = reader.ReadByte();
                     string targetName = reader.ReadString();
+                    bool revivalKilled = reader.ReadBoolean();
                     if (!VaultUtils.isClient || victim < 0 || victim >= Main.maxPlayers) {
                         break;
                     }
@@ -221,11 +215,10 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                         ScapeArmRenderer.Trigger(from, to);
                         break;
                     }
-                    //受害者：通过 ApplyScapeResult 清 pending 并触发本地演出+侵蚀
-                    Main.LocalPlayer.GetModPlayer<WraithPlayer>().AddErosion(0.30f);
+                    //受害者：通过 ApplyScapeResult 匹配请求并清 pending
                     Main.LocalPlayer.TryGetOverride(out PlayerDeath pd);
                     if (pd != null) {
-                        pd.ApplyScapeResult(true, from, to, targetName);
+                        pd.ApplyScapeSuccess(from, to, targetName, revivalKilled);
                     }
                     else {
                         ScapeArmRenderer.Trigger(from, to);
@@ -235,24 +228,14 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                     }
                     break;
                 }
-                case WraithNetOp.ScapeGhostRequest:
-                    HandleScapeGhostRequest(reader, whoAmI);
-                    break;
-                case WraithNetOp.ScapeGhostFail: {
-                    if (!VaultUtils.isClient) {
-                        break;
-                    }
-                    Main.LocalPlayer.TryGetOverride(out PlayerDeath pd);
-                    pd?.ApplyScapeResult(false, default, default, null);
-                    break;
-                }
                 case WraithNetOp.RuleKill: {
                     string key = reader.ReadString();
                     string reasonKey = reader.ReadString();
                     if (!VaultUtils.isClient || !WraithRegistry.TryGet(key, out WraithDefinition definition)) {
                         break;
                     }
-                    WraithLethality.KillLocal(Main.LocalPlayer, definition, WraithLethality.ResolveReason(definition, reasonKey));
+                    Main.LocalPlayer.TryGetOverride(out PlayerDeath playerDeath);
+                    playerDeath?.PrepareRuleDeath();
                     break;
                 }
                 case WraithNetOp.OmenStart: {
@@ -281,25 +264,19 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                     WraithSiteSystem.ApplyClientMirror(key, anchor, anchored);
                     break;
                 }
-                case WraithNetOp.RevivalSync: {
+                case WraithNetOp.ScapeStateSync: {
                     int playerIdx = reader.ReadByte();
                     float revivalVal = reader.ReadSingle();
-                    if (playerIdx < 0 || playerIdx >= Main.maxPlayers) {
+                    int multiplier = reader.ReadByte();
+                    int idleTicks = reader.ReadInt32();
+                    if (!VaultUtils.isClient || playerIdx < 0 || playerIdx >= Main.maxPlayers
+                        || !float.IsFinite(revivalVal)) {
                         break;
                     }
-                    if (VaultUtils.isServer) {
-                        //服务端转发给其他客户端
-                        ModPacket fwd = NewPacket(WraithNetOp.RevivalSync);
-                        fwd.Write((byte)playerIdx);
-                        fwd.Write(revivalVal);
-                        fwd.Send(-1, whoAmI);
-                    }
-                    else if (VaultUtils.isClient && playerIdx != Main.myPlayer) {
-                        //镜像他人复苏值（仅展示用，不触发杀死判定）
-                        Player target = Main.player[playerIdx];
-                        if (target != null && target.active) {
-                            target.GetModPlayer<WraithPlayer>().SetRevivalNoKill(revivalVal);
-                        }
+                    Player target = Main.player[playerIdx];
+                    if (target != null && target.active) {
+                        target.GetModPlayer<WraithPlayer>().ApplyScapeStateMirror(
+                            revivalVal, multiplier, idleTicks);
                     }
                     break;
                 }
@@ -383,24 +360,6 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             if (WraithBacklash.SpawnEscaped(whoAmI, definition)) {
                 backlashLastSpawn[(whoAmI, key)] = now;
             }
-        }
-
-        private static void HandleScapeGhostRequest(BinaryReader reader, int whoAmI) {
-            int victim = reader.ReadByte();
-            double damage = reader.ReadDouble();
-            int hitDirection = reader.ReadInt32();
-            if (!VaultUtils.isServer || victim < 0 || victim >= Main.maxPlayers || victim != whoAmI) {
-                return;
-            }
-            Player player = ResolvePlayer(whoAmI);
-            if (player == null) {
-                return;
-            }
-            bool success = PlayerDeath.ExecuteScapeGhostAuthority(player, damage, hitDirection, null);
-            if (!success) {
-                SendScapeGhostFail(whoAmI);
-            }
-            //成功时 ExecuteScapeGhostAuthority 内部已调 SendScapeGhostFx
         }
 
         //====解析====

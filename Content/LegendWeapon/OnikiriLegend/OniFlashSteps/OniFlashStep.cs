@@ -448,7 +448,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         /// <summary>表世界的樱流衔接、跑满计划距离时疾走输入仍按住</summary>
         private bool TryChainIntoSakura() {
             if (IsExecutionDash || chained || !Projectile.IsOwnedByLocalPlayer()
-                || !OnikiriPlayer.FlashStepInputHeld) {
+                || !OnikiriPlayer.SakuraFlightInputHeld) {
                 return false;
             }
             if (!Owner.GetModPlayer<OnikiriPlayer>().TryChainSakuraFlight(dashDir, Projectile.GetSource_FromAI())) {
@@ -603,11 +603,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             if (executionSelectionOrigin == Vector2.Zero) {
                 executionSelectionOrigin = Owner.Center;
             }
-            executionTarget = SelectExecutionTarget();
+            OnikiriPlayer onikiri = Owner.GetModPlayer<OnikiriPlayer>();
+            executionTarget = onikiri.ExecuteKeyExecutionInFlight
+                ? SelectLockedExecutionTarget(onikiri)
+                : SelectExecutionTarget();
             if (executionTarget != null
-                && Owner.GetModPlayer<OnikiriPlayer>().TryResolveExecutionFinale(executionTarget, dashDir)) {
+                && onikiri.TryResolveExecutionFinale(executionTarget, executionTarget.Center, dashDir)) {
                 executionFinaleTriggered = true;
             }
+        }
+
+        private NPC SelectLockedExecutionTarget(OnikiriPlayer onikiri) {
+            int targetId = onikiri.ExecutionLockedTargetId;
+            if (!executionCandidates.Contains(targetId) || targetId < 0 || targetId >= Main.maxNPCs) {
+                return null;
+            }
+            NPC target = Main.npc[targetId];
+            return target.active && target.type == onikiri.ExecutionLockedTargetType
+                && target.CanBeChasedBy(Projectile)
+                ? target
+                : null;
         }
 
         private NPC SelectExecutionTarget() {

@@ -14,6 +14,8 @@ Halibut_Clone.DisplayName: Heilbutt: Vergangenheits-Ich-Invasion
 Halibut_Superposition.DisplayName: Heilbutt: Superposition
 Halibut_SkillWheel.DisplayName: Heilbutt: Gedrückt halten, um das Fähigkeitsrad zu öffnen
 // Onikiri_FlashStep.DisplayName: Onikiri: Kamui Flash Step
+// Onikiri_Execute.DisplayName: Onikiri: Execute
+// Onikiri_SakuraFlight.DisplayName: Onikiri: Sakura Flight
 // Onikiri_DomainFlip.DisplayName: Onikiri: Flip Domain (Omote/Ura)
 WeponSkill_Q.DisplayName: Waffe: Linke Fähigkeitstaste
 WeponSkill_R.DisplayName: Waffe: Rechte Fähigkeitstaste

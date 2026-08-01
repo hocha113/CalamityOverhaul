@@ -1,9 +1,11 @@
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.GameInput;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
@@ -23,6 +25,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private float releaseFlash;
         private float seatPulse;
         private float denyPulse;
+        private float chainPulse;
+        private float queuedPulse;
+        private float lockPulse;
+        private float whiffPulse;
         private bool wasFull;
         //释放/大幅泄势后等待读数落底,落底瞬间放归座反馈
         private bool seating;
@@ -38,6 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public void Reset() {
             targetFill = -1f;
             releaseFlash = seatPulse = denyPulse = 0f;
+            chainPulse = queuedPulse = lockPulse = whiffPulse = 0f;
             flow = fullGlow = 0f;
             seating = false;
             hoverEase = 0f;
@@ -55,6 +62,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             releaseFlash = Math.Max(releaseFlash, 0.7f);
             seating = true;
             SoundEngine.PlaySound(SoundID.Tink with { Pitch = -0.35f, Volume = 0.5f });
+        }
+
+        public void NotifyExecutionChainOpen() {
+            chainPulse = 1f;
+            queuedPulse = lockPulse = whiffPulse = 0f;
+            SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.25f, Volume = 0.34f });
+        }
+
+        public void NotifyExecutionDashQueued() {
+            queuedPulse = 1f;
+            chainPulse = lockPulse = whiffPulse = 0f;
+            SoundEngine.PlaySound(SoundID.Unlock with { Pitch = 0.18f, Volume = 0.46f });
+        }
+
+        public void NotifyExecutionLocked() {
+            lockPulse = 1f;
+            chainPulse = queuedPulse = whiffPulse = 0f;
+            SoundEngine.PlaySound(SoundID.Tink with { Pitch = 0.52f, Volume = 0.48f });
+        }
+
+        public void NotifyExecutionWhiffQueued() {
+            whiffPulse = 1f;
+            chainPulse = queuedPulse = lockPulse = 0f;
+            SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -0.42f, Volume = 0.36f });
         }
 
         public void Update(Player player, Vector2 anchor, bool interactive, Vector2 mouse) {
@@ -99,6 +130,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             releaseFlash *= 0.88f;
             seatPulse *= 0.86f;
             denyPulse *= 0.87f;
+            chainPulse *= 0.90f;
+            queuedPulse *= 0.84f;
+            lockPulse *= 0.86f;
+            whiffPulse *= 0.88f;
 
             //悬浮:整刀(含后撤余量)的轴对齐外包
             float totalLen = OnikiriUITheme.HudStanceTsukaLen + 3f + OnikiriUITheme.HudStanceBladeW;
@@ -140,9 +175,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (OniStanceBladeDraw.Available) {
                 OniStanceBladeDraw.Draw(sb, quadLC, cant, size, new OniStanceBladeParams {
                     Reveal = displayFill,
-                    Flow = flow,
+                    Flow = MathHelper.Clamp(flow + queuedPulse * 0.9f, -1f, 1f),
                     FullGlow = fullGlow,
-                    ReleaseFlash = releaseFlash,
+                    ReleaseFlash = Math.Max(releaseFlash, lockPulse * 0.85f),
                     Alpha = alpha,
                     Time = time,
                 });
@@ -172,8 +207,54 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     new Vector2(0.5f), new Vector2(13f, 1.6f), SpriteEffects.None, 0f);
             }
 
+
+            DrawExecutionPulses(sb, quadLC, notchPos, dir, perp, cant, alpha);
+
             if (!suppressTag && hoverEase > 0.05f) {
                 DrawHoverTag(sb, alpha * hoverEase);
+            }
+        }
+
+        private void DrawExecutionPulses(SpriteBatch sb, Vector2 bladeRoot, Vector2 notchPos
+            , Vector2 dir, Vector2 perp, float cant, float alpha) {
+            if (chainPulse > 0.02f) {
+                float expand = 5f + (1f - chainPulse) * 10f;
+                Vector2 a = notchPos - dir * expand;
+                Vector2 b = notchPos - perp * expand;
+                Vector2 c = notchPos + dir * expand;
+                Vector2 d = notchPos + perp * expand;
+                Color outer = OnikiriUITheme.Seal * (alpha * chainPulse * 0.65f);
+                OniBrush.DrawGradientLine(sb, a, b, Color.Transparent, outer, 1.2f);
+                OniBrush.DrawGradientLine(sb, b, c, outer, Color.Transparent, 1.2f);
+                OniBrush.DrawGradientLine(sb, c, d, Color.Transparent, outer, 1.2f);
+                OniBrush.DrawGradientLine(sb, d, a, outer, Color.Transparent, 1.2f);
+            }
+
+            if (queuedPulse > 0.02f) {
+                float progress = MathHelper.Clamp((1f - queuedPulse) * 2.6f, 0f, 1f);
+                Vector2 sweep = bladeRoot + dir * (OnikiriUITheme.HudStanceBladeW * progress);
+                OniBrush.DrawSoftStreak(sb, sweep, cant + MathHelper.PiOver2, 22f, 1.5f
+                    , OnikiriUITheme.HotWhite, alpha * queuedPulse * 0.8f);
+            }
+
+            Vector2 tip = bladeRoot + dir * OnikiriUITheme.HudStanceBladeW;
+            if (lockPulse > 0.02f) {
+                OniBrush.DrawSoftStreak(sb, bladeRoot + dir * (OnikiriUITheme.HudStanceBladeW * 0.52f)
+                    , cant, OnikiriUITheme.HudStanceBladeW, 1.6f, OnikiriUITheme.HotWhite
+                    , alpha * lockPulse * 0.50f);
+                OniBrush.DrawSoftStreak(sb, tip, cant, 17f, 1.5f, OnikiriUITheme.HotWhite
+                    , alpha * lockPulse * 0.9f);
+                OniBrush.DrawSoftStreak(sb, tip, cant + MathHelper.PiOver2, 17f, 1.5f
+                    , OnikiriUITheme.Bright, alpha * lockPulse * 0.75f);
+            }
+
+            if (whiffPulse > 0.02f) {
+                float spread = 3f + (1f - whiffPulse) * 8f;
+                Color gold = OnikiriUITheme.GoldInlay;
+                OniBrush.DrawSoftStreak(sb, tip + perp * spread, cant, 19f, 1.2f, gold
+                    , alpha * whiffPulse * 0.72f);
+                OniBrush.DrawSoftStreak(sb, tip - perp * spread, cant, 19f, 1.2f, gold
+                    , alpha * whiffPulse * 0.72f);
             }
         }
 
@@ -242,8 +323,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             string line = string.Format(OniTalismanHud.StanceValueFormat.Value,
                 (int)MathF.Round(snap.Value), (int)MathF.Round(snap.MaxValue));
             //满出终结乱舞,半满提示灭世一闪已可用
-            string readyLine = displayFill >= 0.995f ? OniTalismanHud.StanceReadyLine.Value
-                : displayFill >= 0.5f ? OniTalismanHud.StanceHalfLine.Value : null;
+            InputMode mode = PlayerInput.UsingGamepad ? InputMode.XBoxGamepad : InputMode.Keyboard;
+            string executeInput = CWRKeySystem.GetKeybindText(CWRKeySystem.Onikiri_Execute
+                , CWRKeySystem.Notbound.Value, mode);
+            string dashInput = CWRKeySystem.GetKeybindText(CWRKeySystem.Onikiri_FlashStep
+                , CWRKeySystem.RightClickFallback.Value, mode);
+            string readyLine = displayFill >= 0.995f
+                ? string.Format(OniTalismanHud.StanceReadyLine.Value, executeInput)
+                : displayFill >= 0.5f
+                    ? string.Format(OniTalismanHud.StanceHalfLine.Value, dashInput)
+                    : null;
             string meiHint = OniTalismanHud.StanceMeiHint.Value;
 
             float w = Math.Max(font.MeasureString(title).X * 0.78f, font.MeasureString(line).X * 0.7f);

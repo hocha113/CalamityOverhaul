@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.Wraiths.Core;
 using CalamityOverhaul.Content.Wraiths.Runtime;
@@ -24,33 +26,42 @@ namespace CalamityOverhaul.Content.Players
 
         //联机：客户端挂起等待服务端裁定
         internal bool ScapeGhostPending { get; private set; }
-        private double scapeGhostPendingDamage;
-        private int scapeGhostPendingHitDir;
+        private int scapeGhostPendingTicks;
 
-        //延迟死亡：fail 包到达后在 PostUpdate 执行，避免从包处理器直接调 KillMe
-        private bool scapeGhostKillDeferred;
+        //服务端只消费原版 PlayerHurtV2 产生的一次性致死事件
+        private bool serverLethalHurtPending;
+        private Player.HurtInfo serverLethalHurt;
+
+        //RuleKill 先行包与原版 PlayerDeathV2 之间的短时死亡通行证
+        private int ruleDeathPermitTicks;
+        private const int ScapeGhostRequestTimeout = 60 * 5;
 
         public override void ResetEffects() {
             Doomed = false;
             scapeUsedThisTick = false;
+            if (ruleDeathPermitTicks > 0) {
+                ruleDeathPermitTicks--;
+            }
         }
 
         public override void PostUpdate() {
-            if (!scapeGhostKillDeferred || !VaultUtils.isClient) {
+            if (VaultUtils.isServer) {
+                ProcessServerLethalHurt();
                 return;
             }
-            scapeGhostKillDeferred = false;
-            ScapeGhostPending = false;
-            Doomed = true;
-            //HP 归零后游戏循环会触发 KillMe；直接调 KillMe 以确保立即生效
-            Player.KillMe(
-                PlayerDeathReason.ByCustomReason(NetworkText.FromKey(WraithSystemText.ScapeGhostNoTarget.Key)),
-                scapeGhostPendingDamage, scapeGhostPendingHitDir, false);
+            if (!VaultUtils.isClient || !ScapeGhostPending) {
+                return;
+            }
+            if (++scapeGhostPendingTicks >= ScapeGhostRequestTimeout) {
+                //死亡裁定始终属于服务器；超时只结束本地等待，不能制造两端生死分叉
+                ClearScapeSession();
+                Player.statLife = Math.Max(Player.statLife, 1);
+            }
         }
 
         public override bool? On_PreKill(double damage, int hitDirection, bool pvp,
             ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource) {
-            if (Doomed) {
+            if (Doomed || ruleDeathPermitTicks > 0) {
                 return true;
             }
 
@@ -80,27 +91,66 @@ namespace CalamityOverhaul.Content.Players
         }
 
         private bool TryInvokeScapeGhost(double damage, int hitDirection, PlayerDeathReason damageSource) {
-            if (scapeUsedThisTick) {
+            if (VaultUtils.isClient && Player.whoAmI != Main.myPlayer) {
+                return false;
+            }
+            if (VaultUtils.isClient && ScapeGhostPending) {
+                Player.statLife = Math.Max(Player.statLife, 1);
+                return true;
+            }
+            if (scapeUsedThisTick || !HasScapeGhostContract(Player)) {
                 return false;
             }
             scapeUsedThisTick = true;
 
             if (VaultUtils.isClient) {
-                if (ScapeGhostPending) {
-                    //已发出请求，封锁死亡画面直到服务端回包
-                    Player.statLife = Math.Max(Player.statLife, 1);
-                    return true;
-                }
                 ScapeGhostPending = true;
-                scapeGhostPendingDamage = damage;
-                scapeGhostPendingHitDir = hitDirection;
+                scapeGhostPendingTicks = 0;
                 Player.statLife = Math.Max(Player.statLife, 1);
-                WraithNet.SendScapeGhostRequest(Player.whoAmI, damage, hitDirection);
                 return true;
             }
 
-            //单人或服务端：权威执行
+            //服务端从原版 PlayerHurtV2 记录中执行；不能在 PlayerDeathV2 处理器里取消后仍被原版广播死亡
+            if (VaultUtils.isServer) {
+                return false;
+            }
+
+            //单人直接权威执行
             return ExecuteScapeGhostAuthority(Player, damage, hitDirection, damageSource);
+        }
+
+        /// <summary>服务端在原版 Hurt 扣血前登记一次经原版协议处理的致死事件。</summary>
+        internal void NoteServerLethalHurt(Player.HurtInfo info) {
+            if (!VaultUtils.isServer || serverLethalHurtPending || Player.dead
+                || Player.statLife <= 0 || info.Damage < Player.statLife
+                || !HasScapeGhostContract(Player)) {
+                return;
+            }
+            serverLethalHurt = info;
+            serverLethalHurtPending = true;
+        }
+
+        private void ProcessServerLethalHurt() {
+            if (!serverLethalHurtPending) {
+                return;
+            }
+            Player.HurtInfo info = serverLethalHurt;
+            serverLethalHurtPending = false;
+            serverLethalHurt = default;
+            if (Player.dead) {
+                return;
+            }
+
+            bool escaped = ExecuteScapeGhostAuthority(Player, info.Damage, info.HitDirection
+                , info.DamageSource);
+            if (escaped) {
+                return;
+            }
+
+            WraithRegistry.TryGet("ScapeGhost", out WraithDefinition definition);
+            if (definition != null) {
+                WraithLethality.Kill(Player, definition, WraithSystemText.ScapeGhostNoTarget);
+            }
         }
 
         /// <summary>
@@ -108,6 +158,9 @@ namespace CalamityOverhaul.Content.Players
         /// </summary>
         internal static bool ExecuteScapeGhostAuthority(Player player, double damage, int hitDirection
             , PlayerDeathReason damageSource) {
+            if (VaultUtils.isClient || !HasScapeGhostContract(player)) {
+                return false;
+            }
             var (proxies, isFriendly) = FindScapeTargetsFor(player);
             if (proxies == null) {
                 return false;
@@ -119,8 +172,22 @@ namespace CalamityOverhaul.Content.Players
             string targetName = primary.FullName;
 
             foreach (NPC proxy in proxies) {
+                if (!CanReceiveScapeHit(proxy)) {
+                    return false;
+                }
+            }
+            foreach (NPC proxy in proxies) {
                 NPC.HitInfo hit = BuildTransferredHit(proxy, damage, hitDirection, damageSource);
                 proxy.StrikeNPC(hit);
+                if (VaultUtils.isServer) {
+                    NetMessage.SendStrikeNPC(proxy, hit);
+                }
+            }
+            foreach (NPC proxy in proxies) {
+                //CheckDead/阶段转换可以拒绝死亡；未真正失活就不能提交替死成功
+                if (proxy.active) {
+                    return false;
+                }
             }
             BroadcastScapeDeathMessage(player, primary, damageSource, proxies.Length);
 
@@ -129,21 +196,45 @@ namespace CalamityOverhaul.Content.Players
                 player.GetModPlayer<WraithPlayer>().AdvanceScapeMultiplier();
             }
 
-            player.statLife = Math.Max(player.statLife, Math.Max(1, (int)(player.statLifeMax2 * 0.12f)));
-            player.immune = true;
-            player.immuneTime = Math.Max(player.immuneTime, 75);
-            player.GetModPlayer<WraithPlayer>().AddErosion(0.30f);
-            player.GetModPlayer<WraithPlayer>().AddRevival(0.25f);
-            player.AddBuff(ModContent.BuffType<Wraiths.Buffs.ScapeAfterburn>(), 60 * 12);
+            WraithPlayer wraithPlayer = player.GetModPlayer<WraithPlayer>();
+            bool revivalKilled = wraithPlayer.AddRevival(0.25f);
+            if (!revivalKilled) {
+                player.statLife = Math.Max(player.statLife, Math.Max(1, (int)(player.statLifeMax2 * 0.12f)));
+                player.immune = true;
+                player.immuneTime = Math.Max(player.immuneTime, 75);
+                wraithPlayer.AddErosion(0.30f);
+                int afterburnType = ModContent.BuffType<Wraiths.Buffs.ScapeAfterburn>();
+                const int afterburnTime = 60 * 12;
+                player.AddBuff(afterburnType, afterburnTime);
+                if (VaultUtils.isServer) {
+                    NetMessage.SendData(MessageID.AddPlayerBuff, -1, -1, null, player.whoAmI
+                        , afterburnType, afterburnTime);
+                }
+            }
 
             if (VaultUtils.isServer) {
-                WraithNet.SendScapeGhostFx(from, to, player.whoAmI, targetName);
-                NetMessage.SendData(MessageID.PlayerLifeMana, -1, -1, null, player.whoAmI);
+                WraithNet.SendScapeGhostFx(from, to, player.whoAmI, targetName, revivalKilled);
+                if (!revivalKilled) {
+                    NetMessage.SendData(MessageID.PlayerLifeMana, -1, -1, null, player.whoAmI);
+                }
             }
             else {
                 ScapeArmRenderer.Trigger(from, to);
             }
             return true;
+        }
+
+        private static bool HasScapeGhostContract(Player player) {
+            if (player == null || !player.active) {
+                return false;
+            }
+            //替死鬼是鬼切出厂契约；资格锚定实际物品类型，客户端可写的进度簿不参与服侧裁定
+            foreach (Item item in player.inventory) {
+                if (item != null && !item.IsAir && item.type == OnikiriOverride.ID) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -177,18 +268,31 @@ namespace CalamityOverhaul.Content.Players
         }
 
         /// <summary>
-        /// 客户端收到服务端替死结果包后调用（在 WraithNet 的包处理器中）。<br/>
-        /// 成功时触发本地 FX；失败时挂延迟死亡，在下一帧 PostUpdate 执行。
+        /// 客户端收到服务端替死成功包后调用（在 WraithNet 的包处理器中）。
         /// </summary>
-        internal void ApplyScapeResult(bool success, Vector2 from, Vector2 to, string targetName) {
+        internal void ApplyScapeSuccess(Vector2 from, Vector2 to, string targetName
+            , bool revivalKilled) {
+            ClearScapeSession();
+            if (!revivalKilled) {
+                Player.GetModPlayer<WraithPlayer>().AddErosion(0.30f);
+            }
+            ScapeArmRenderer.Trigger(from, to);
+            string name = string.IsNullOrWhiteSpace(targetName)
+                ? WraithSystemText.ScapeGhostUnknownTarget.Value : targetName;
+            VaultUtils.Text(WraithSystemText.ScapeGhostActivated.Format(name), new Color(178, 34, 44));
+        }
+
+        internal void PrepareRuleDeath() {
+            ClearScapeSession();
+            serverLethalHurtPending = false;
+            serverLethalHurt = default;
+            ruleDeathPermitTicks = 120;
+            Doomed = true;
+        }
+
+        internal void ClearScapeSession() {
             ScapeGhostPending = false;
-            if (success) {
-                ScapeArmRenderer.Trigger(from, to);
-            }
-            else {
-                //服务端未找到代理目标，延迟一帧执行真实死亡
-                scapeGhostKillDeferred = true;
-            }
+            scapeGhostPendingTicks = 0;
         }
 
         /// <summary>
@@ -218,22 +322,20 @@ namespace CalamityOverhaul.Content.Players
         private static NPC[] CollectFriendlyTargets(Player player, int count) {
             float radiusSq = FriendlyScapeRadius * FriendlyScapeRadius;
             //手动收集+排序，避免 LINQ 依赖
-            NPC[] found = new NPC[64];
-            float[] dists = new float[64];
+            NPC[] found = new NPC[Main.maxNPCs];
+            float[] dists = new float[Main.maxNPCs];
             int n = 0;
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
                 if (!CanReceiveScapeHit(npc) || !IsFriendlyScapeTarget(npc)) { continue; }
                 float distSq = Vector2.DistanceSquared(player.Center, npc.Center);
                 if (distSq > radiusSq) { continue; }
-                if (n < found.Length) {
-                    found[n] = npc;
-                    dists[n] = distSq;
-                    n++;
-                }
+                found[n] = npc;
+                dists[n] = distSq;
+                n++;
             }
             if (n < count) { return null; }
-            //插排取前 count 个（count≤32，n≤64，不需要 Array.Sort）
+            //插排取前 count 个（count≤32，n≤Main.maxNPCs，不需要全量排序）
             for (int i = 0; i < count; i++) {
                 int minIdx = i;
                 for (int j = i + 1; j < n; j++) {
@@ -248,7 +350,7 @@ namespace CalamityOverhaul.Content.Players
         }
 
         private static bool IsFriendlyScapeTarget(NPC npc)
-            => npc.townNPC || npc.CountsAsACritter || npc.friendly;
+            => npc.townNPC || npc.CountsAsACritter;
 
         /// <summary>
         /// 距离加权选最近敌怪：score = enemyPriority * EnemyPriorityPx + distance。<br/>
@@ -259,7 +361,8 @@ namespace CalamityOverhaul.Content.Players
             float bestScore = float.MaxValue;
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
-                if (!CanReceiveScapeHit(npc) || IsFriendlyScapeTarget(npc)) { continue; }
+                if (!CanReceiveScapeHit(npc) || npc.friendly || IsFriendlyScapeTarget(npc)
+                    || !npc.CanBeChasedBy(player)) { continue; }
                 float dist = Vector2.Distance(player.Center, npc.Center);
                 float score = GetEnemyPriority(npc) * EnemyPriorityPx + dist;
                 if (score < bestScore) {
@@ -270,15 +373,18 @@ namespace CalamityOverhaul.Content.Players
             return best;
         }
 
-        /// <summary>中性=0, 普通敌=1, boss=2（评分越低越优先）</summary>
+        /// <summary>中性=0, 普通敌=1（Boss 级目标已统一排除）</summary>
         private static int GetEnemyPriority(NPC npc) {
-            if (npc.damage <= 0 && !npc.boss) { return 0; }
-            return npc.boss ? 2 : 1;
+            return npc.damage <= 0 ? 0 : 1;
         }
 
         private static bool CanReceiveScapeHit(NPC npc)
             => npc != null && npc.active && npc.life > 0 && npc.lifeMax > 1
-                && !npc.dontTakeDamage && !npc.immortal && npc.type != NPCID.TargetDummy;
+                && !npc.dontTakeDamage && !npc.immortal && !npc.SpawnedFromStatue
+                && npc.realLife < 0 && npc.type != NPCID.TargetDummy
+                && !NPCID.Sets.ProjectileNPC[npc.type]
+                && !NPCID.Sets.PositiveNPCTypesExcludedFromDeathTally[npc.type]
+                && !NpcGroupHelper.IsBossTier(npc);
 
         /// <summary>
         /// 将 PlayerDeathReason 中仍存活的致因实体投影成 NPC HitInfo。<br/>
@@ -288,7 +394,7 @@ namespace CalamityOverhaul.Content.Players
             , PlayerDeathReason damageSource) {
             int receivedDamage = Math.Max(1, (int)Math.Min(Math.Ceiling(damage), int.MaxValue));
             int sourceDamage = receivedDamage;
-            int transferredDamage = proxy.boss ? receivedDamage : Math.Max(receivedDamage, proxy.life);
+            int transferredDamage = Math.Max(receivedDamage, proxy.life);
             float knockback = 4f;
             int direction = hitDirection == 0 ? (proxy.direction == 0 ? 1 : -proxy.direction) : hitDirection;
             DamageClass damageType = DamageClass.Default;

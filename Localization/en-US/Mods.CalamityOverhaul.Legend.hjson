@@ -595,8 +595,8 @@ OnikiriText: {
 		VigorValueFormat: "{0} / {1}"
 		StanceTitle: Stance
 		StanceValueFormat: "{0} / {1}"
-		StanceReadyLine: Stance complete — chain two dashes through a target
-		StanceHalfLine: Past the half — chain two dashes, then strike
+		StanceReadyLine: Full Stance — {0} auto-locks for Finale; double-dash remains available
+		StanceHalfLine: Half Stance — double-tap {0}, then left-click for Annihilating Flash
 		StanceMeiHint: Click to open the Ghost Register
 		DomainTitle: Eye of the Oni Domain
 		DomainStateClosed: Shut — no domain unfolded
@@ -609,7 +609,7 @@ OnikiriText: {
 
 	OnikiriTutorialLead: {
 		HudTitle: Vigor & Stance
-		HudBody: While holding Onikiri, the vigor stroke and stance sheath stay at the lower left. Vigor fuels Flash Step; full Stance unlocks executions
+		HudBody: While holding Onikiri, the lower-left HUD shows Vigor and Stance. At half Stance, double-dash then left-click for Annihilating Flash; at full Stance, use Execute to auto-lock into Finale. Holding Sakura Flight first pays for a normal dash, then turns you to petals
 		HudPrompt: Learn these readouts; press {0} or click the talisman for the Inscription Stand
 		RegisterTitle: Ghost Register
 		RegisterBody: Click the stance sheath to open the Ghost Register — names, mastery, and attunement live here
@@ -632,9 +632,11 @@ OnikiriOverride: {
 	Tooltip:
 		'''
 		Hold left-click to drive the five-beat Crimson Rend combo
-		[DASH] spends Vigor on Kamui Flash Step; above half Stance, dash again within one second for a free execution dash
-		At full Stance, passing through a target unleashes Finale Slash; otherwise left-click after the dash for Annihilating Flash
-		If neither execution is released, half of your remaining Vigor is lost
+		[DASH] spends Vigor on a normal Kamui Flash Step; at half Stance or above, press [DASH] again within one second for a free execution dash
+		In Omote, hold [SAKURA] to pay for a normal dash; if still held at the endpoint with enough Vigor, it chains into Sakura Flight; release to return
+		After a half-Stance execution dash, left-click for Annihilating Flash; at full Stance, double-dash through a target for Finale Slash
+		At full Stance, press [EXECUTE] to auto-lock, dash, and automatically unleash Finale Slash; with no target, the dash follows the cursor
+		An unfulfilled execution costs no additional Vigor
 		[Lang4]
 		legend_Text
 		'''
