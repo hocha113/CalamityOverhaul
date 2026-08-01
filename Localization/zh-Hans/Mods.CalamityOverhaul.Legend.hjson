@@ -1,4 +1,4 @@
-HalibutOverride: {
+﻿HalibutOverride: {
 	FishByStudied:
 		'''
 		[i:CalamityOverhaul/HalibutItem]:
@@ -632,9 +632,9 @@ OnikiriOverride: {
 	Tooltip:
 		'''
 		按住左键驱动绯红裂空斩五段连段
-		[DASH] 消耗气力施展神威疾走；架势过半时于一秒内再次疾走，可免费衔出处决疾走
-		满架势穿中目标释放终结乱舞；否则在疾走结束后按左键释放灭世一闪
-		两式均未兑现时，失去当前剩余气力的一半
+		右键消耗气力施展神威疾走
+		架势值过半时连续两次疾走，可施展处决技
+		满架势穿中目标释放终结乱舞，否则在疾走结束后按左键释放灭世一闪
 		[Lang4]
 		legend_Text
 		'''
