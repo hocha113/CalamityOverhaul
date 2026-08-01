@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using CalamityOverhaul.Content.Wraiths.Core;
 using System.Collections.Generic;
@@ -27,9 +27,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         /// <summary>出厂铭刻,Bound+驾驭度</summary>
         private static readonly (string Key, float Mastery)[] FactoryEngravings = [
-            ("NoFace", 0.86f),
-            ("LanternBoy", 0.58f),
-            ("CrimsonBride", 0.16f),
+            //("NoFace", 0.86f),
+            //("LanternBoy", 0.58f),
+            //("CrimsonBride", 0.16f),
             (ScapeGhostKey, 0.77f),
             ("HeadlessShade", 0.28f),
             ("GhostHand", 0.45f),
