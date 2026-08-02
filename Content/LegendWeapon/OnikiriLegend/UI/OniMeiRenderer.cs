@@ -873,26 +873,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         /// <summary>切换门悬浮说明:小裱墨牌(跟随光标),题名+移步提示;两屏共用</summary>
-        public static void DrawSwitchHoverTag(SpriteBatch sb, DynamicSpriteFont font, Vector2 mouse,
+        public static void DrawSwitchHoverTag(SpriteBatch sb, Vector2 mouse,
             string title, string hint, float alpha) {
-            if (alpha <= 0.02f) {
-                return;
-            }
-            float w = Math.Max(font.MeasureString(title).X * 0.78f, font.MeasureString(hint).X * 0.7f);
-            Rectangle panel = new((int)mouse.X + 16, (int)mouse.Y - 6, (int)w + 20, 42);
-            //不出屏
-            if (panel.Right > OnikiriUITheme.UIScreenW - 8f) {
-                panel.X = (int)(mouse.X - panel.Width - 12f);
-            }
-            sb.Draw(Pixel, new Rectangle(panel.X + 2, panel.Y + 3, panel.Width, panel.Height), PixelSrc,
-                new Color(8, 2, 5) * (alpha * 0.5f));
-            sb.Draw(Pixel, panel, PixelSrc, OnikiriUITheme.Ink * (alpha * 0.95f));
-            OniBrush.DrawTaperedSlash(sb, new Vector2(panel.X + 4f, panel.Y + 20f),
-                new Vector2(panel.Right - 4f, panel.Y + 19f), 1.3f, 0.7f, alpha * 0.7f);
-            Utils.DrawBorderString(sb, title, new Vector2(panel.X + 9f, panel.Y + 3f),
-                OnikiriUITheme.HotWhite * alpha, 0.78f);
-            Utils.DrawBorderString(sb, hint, new Vector2(panel.X + 9f, panel.Y + 23f),
-                OnikiriUITheme.TextDim * alpha, 0.7f);
+            OniTooltipPanel.Draw(sb, mouse, title, 0.78f, alpha,
+                new OniTooltipLine(hint, OnikiriUITheme.TextDim));
         }
 
         //====================== 仪式工具 ======================

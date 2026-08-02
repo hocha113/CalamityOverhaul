@@ -49,6 +49,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         /// <summary>咎影滞拍余量(extraAI 同步)，>0 时残像静止读秒、无伤害</summary>
         private int delayFrames;
         private int delayTotal;
+        private int trackedRoot = -1;
         private bool fireSoundPlayed;
 
         private float BladeAngle => Projectile.ai[0];
@@ -63,7 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         /// <param name="delayFrames">滞拍帧数(咎影),期间残像静止无伤害</param>
         public static Projectile Fire(Player player, Vector2 center, float bladeAngle, int damage, float knockback,
             float scale = 1f, int flip = 1, IEntitySource source = null,
-            CleaveStyle style = CleaveStyle.Plain, int delayFrames = 0) {
+            CleaveStyle style = CleaveStyle.Plain, int delayFrames = 0, int trackedRoot = -1) {
             source ??= player.GetSource_Misc("CWR_CrimsonRendCleave");
             Projectile proj = Projectile.NewProjectileDirect(source, center, Vector2.Zero
                 , ModContent.ProjectileType<CrimsonRendCleave>(), damage, knockback, player.whoAmI
@@ -71,6 +72,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             if (proj.ModProjectile is CrimsonRendCleave cleave) {
                 cleave.style = style;
                 cleave.delayFrames = cleave.delayTotal = Math.Max(delayFrames, 0);
+                cleave.trackedRoot = trackedRoot;
                 proj.netUpdate = true;
             }
             return proj;
@@ -101,11 +103,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         public override void SendExtraAI(BinaryWriter writer) {
             writer.Write((byte)style);
             writer.Write((byte)Math.Clamp(delayFrames, 0, byte.MaxValue));
+            writer.Write((short)trackedRoot);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader) {
             style = (CleaveStyle)reader.ReadByte();
             int delay = reader.ReadByte();
+            trackedRoot = reader.ReadInt16();
             if (!initialized) {
                 delayFrames = delayTotal = delay;
             }
@@ -193,6 +197,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 Initialize();
                 if (delayFrames <= 0) {
                     PlayFireSound();
+                }
+            }
+
+            if (style == CleaveStyle.PetalPrune && trackedRoot >= 0) {
+                if (trackedRoot >= Main.maxNPCs || !Main.npc[trackedRoot].active) {
+                    Projectile.Kill();
+                    return;
+                }
+                if (timer < 6) {
+                    Projectile.Center = Main.npc[trackedRoot].Center;
                 }
             }
 

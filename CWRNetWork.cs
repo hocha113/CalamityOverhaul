@@ -12,6 +12,7 @@ using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using CalamityOverhaul.Content.Scenarios.Draedon;
 using CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.SignalTower;
 using CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch;
+using CalamityOverhaul.Content.Scenarios.Himayo;
 using CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines;
 using CalamityOverhaul.Content.Scenarios.OldDuke;
 using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
@@ -55,6 +56,7 @@ namespace CalamityOverhaul
         Wraith,
         //保留编号：原鬼切教程练习鬼影通道已删除，客户端不再发送。
         ReservedOnikiriTutorial,
+        HimayoGift,
     }
 
     public static class CWRNetWork
@@ -115,6 +117,9 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.ToriiShrineSync) {
                 ToriiShrine.ReceiveShrineSync(reader);
+            }
+            else if (type == CWRMessageType.HimayoGift) {
+                HimayoStorySync.HandleGiftPacket(reader, whoAmI);
             }
 
             ModifyCrabulon.NetHandle(type, reader, whoAmI);

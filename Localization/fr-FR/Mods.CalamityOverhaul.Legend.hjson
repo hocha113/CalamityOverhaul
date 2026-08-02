@@ -589,7 +589,9 @@ OnikiriText: {
 
 	OniTalismanHud: {
 		// HudTitle: Sealing Talisman
-		// HudHintFormat: "{0} or click the talisman for the Inscription Stand · click the sheath for the Ghost Register"
+		// HudHintFormat: "{0} toggles {1}; click the talisman to open it"
+		// HudMeiName: the Inscription Stand
+		// HudRegisterName: the Ghost Register
 		// HudDangerLine: Ghost-fire under the talisman — something is restless
 		// VigorTitle: Vigor
 		// VigorValueFormat: "{0} / {1}"
@@ -597,7 +599,6 @@ OnikiriText: {
 		// StanceValueFormat: "{0} / {1}"
 		// StanceReadyLine: Full Stance — {0} auto-locks for Finale; double-dash remains available
 		// StanceHalfLine: Half Stance — double-tap {0}, then left-click for Annihilating Flash
-		// StanceMeiHint: Click to open the Ghost Register
 		// DomainTitle: Eye of the Oni Domain
 		// DomainStateClosed: Shut — no domain unfolded
 		// DomainStateOmote: Omote — the yellowed-paper world
@@ -609,14 +610,14 @@ OnikiriText: {
 
 	OnikiriTutorialLead: {
 		// HudTitle: Vigor & Stance
-		// HudBody: While holding Onikiri, the lower-left HUD shows Vigor and Stance. At half Stance, double-dash then left-click for Annihilating Flash; at full Stance, use Execute to auto-lock into Finale. Holding Sakura Flight first pays for a normal dash, then turns you to petals
-		// HudPrompt: Learn these readouts; press {0} or click the talisman for the Inscription Stand
+		// HudBody: While holding Onikiri, the lower-left HUD shows Vigor and Stance as read-only gauges. At half Stance, double-dash then left-click for Annihilating Flash; at full Stance, use Execute to auto-lock into Finale. Holding Sakura Flight first pays for a normal dash, then turns you to petals
+		// HudPrompt: Learn these readouts; the sealing talisman is the HUD's only panel control
 		// RegisterTitle: Ghost Register
-		// RegisterBody: Click the stance sheath to open the Ghost Register — names, mastery, and attunement live here
-		// RegisterPrompt: Click the highlighted sheath, or use the helper button
+		// RegisterBody: The hanging scroll at the upper-left of the Inscription Stand opens the Ghost Register. After switching, the talisman and Legend UI key remember the Register; names, mastery, and attunement live here
+		// RegisterPrompt: Click the highlighted scroll; inspect the register, then close it to continue
 		// MeiTitle: Inscription Stand
-		// MeiBody: Click the talisman, or step over from the Register. Tang, groove, and horimono decide the blade's bestowal
-		// MeiPrompt: Press {0} or click the talisman, glance at the mei seats, then continue
+		// MeiBody: The sealing talisman is the HUD's only panel control and opens the Inscription Stand by default. Tang, groove, and horimono decide the blade's bestowal
+		// MeiPrompt: Press {0} or click the highlighted talisman to open the Inscription Stand
 		// DomainTitle: Eye of the Oni Domain
 		// DomainBody: That eye beside Vigor rules the domain — unfold Omote (yellowed paper), flip to Ura (ink-wash nether), then fold again
 		// DomainPrompt: Left-click unfolds/folds; Right-click or {0} flips Omote/Ura — unfolding once also advances

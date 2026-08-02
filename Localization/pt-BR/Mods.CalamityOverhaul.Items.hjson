@@ -2531,184 +2531,184 @@ WraithDebugTool: {
 
 OniMeiRubbingHigekiri: {
 	// DisplayName: Higekiri
-	// Tooltip: Stronger finishers on low-life targets, kills refund stance; weapon damage -10%
+	Tooltip: Golpes diretos de lâmina ficam mais fortes contra alvos feridos e abates restauram postura; dano da lâmina -2%
 	// Origin: The night of the test cut, the head fell with the beard still clinging to the edge — hence the old name
-	// Power: Beard-Cutter: Zanshin and the World-Razing Flash deal escalating finisher damage to targets below 35% life (up to +50%, +25% vs bosses); finishing a target with either art refunds 10 stance, once per strike
-	// Burden: Weapon damage -10% — against the healthy, this blade bites duller than the original name
+	Power: Corta-Barba: Golpes diretos de lâmina escalam linearmente contra alvos abaixo de 35 % de vida (até +60 %, ou +45 % contra chefes); um abate direto restaura 8 de postura uma vez por ação
+	Burden: Dano da lâmina -2 % — contra alvos saudáveis, este fio é um pouco mais cego que a inscrição original
 }
 
 OniMeiRubbingOnikiri: {
 	// DisplayName: Onikiri
-	// Tooltip: Original inscription: keeps the blade as-is, no boon, no price
+	Tooltip: Inscrição original: mantém a lâmina como está, sem dádiva nem preço
 	// Origin: At Ichijo-Modoribashi, the oni that lost its arm never dared come back for it. The name has been nailed to the tang ever since
-	// Power: The original inscription. The blade stays exactly as it is — nothing granted, nothing taken
-	// Burden: ———
+	Power: A inscrição original. A lâmina permanece exatamente como é — nada concedido, nada tomado
+	Burden: ———
 }
 
 OniMeiRubbingShishinoko: {
 	// DisplayName: Shishi-no-ko
-	// Tooltip: Jaw-waves crown a full five-beat combo; combo 10% slower
+	Tooltip: Duas ondas de mandíbula coroam um combo completo de cinco golpes; intervalo do combo +2%
 	// Origin: Left by the pillow at midnight, the blade roared like a lion. Inlaid in gold, to honor the name
-	// Power: Lion's Roar: complete five combo beats without dash or art interruption and the fifth beat roars — two converging jaw-waves (about 40% of a slash in total)
-	// Burden: Combo beat interval +10% — a roar must be drawn in before it is let out
+	Power: Rugido do Leão: Complete cinco golpes do combo sem interrupção por investida ou arte; o quinto libera duas ondas de mandíbula convergentes, cada uma causando 22 % do dano base da lâmina
+	Burden: Intervalo do combo +2 % — é preciso inspirar antes de soltar um rugido
 }
 
 OniMeiRubbingTomokiri: {
 	// DisplayName: Tomokiri
-	// Tooltip: Dash-cancels leave phantom slashes; +10% damage taken, Guilt taxes dashes
+	Tooltip: Cancelamentos com investida deixam cortes de Culpa atrasados; dano recebido +6%
 	// Origin: Crossed with a friendly blade in trial, it cut the friend in two. A name of blame, chiseled into the tang; the sword has run violent since
-	// Power: Friend-Cutter: cancelling a combo with the Kamui flash step leaves a delayed phantom slash (about 35% power) that bites shut after a beat
-	// Burden: Damage taken +10% while held; each phantom adds a layer of Guilt (max 3), each making the next flash step cost 6 more vigor — repaid on a Zanshin hit
+	Power: Corta-Amigo: Cancelar um combo com Kamui deixa um corte fantasma que morde após 6 ticks e causa 35 % do dano base da lâmina
+	Burden: Dano recebido +6 %; cada fantasma adiciona uma Culpa (máx. 3), aumentando em 4 o vigor da próxima investida — um acerto de Zanshin quita toda a dívida
 }
 
 OniMeiRubbingKazehi: {
 	// DisplayName: Kaze-hi
-	// Tooltip: Cheaper footwork and flight; flash mark damage -25%
+	Tooltip: Custo da investida -15 %, consumo de Sakura -20 %; dano das marcas de tinta -20%
 	// Origin: A groove opened like a wind channel; where the blade passes, only wind is heard, no blade is seen
-	// Power: Wind-Rider: flash step vigor cost -25%, sakura flight drain -30%
-	// Burden: Flash mark damage -25% — the groove was cut for lightness, not slaughter
+	Power: Cavaleiro do Vento: Custo de vigor do Passo Relâmpago -15 %, consumo do Voo Sakura -20 %
+	Burden: Dano das marcas relâmpago -20 % — o sulco foi aberto para leveza, não para carnificina
 }
 
 OniMeiRubbingChihi: {
 	// DisplayName: Chi-hi
-	// Tooltip: Stronger on-hit vigor; natural regen halved
+	Tooltip: Acertos ativos restauram mais vigor; regeneração natural -35%
 	// Origin: This groove is not for lightness, but for letting blood — so said the one who opened the edge
-	// Power: Bloodletting: the first combo hit of each beat restores +2 extra vigor, a Zanshin hit restores +8
-	// Burden: Natural vigor regen halved, regen delay +0.4s after spending — no blood on the edge, no breath returned
+	Power: Sangria: O primeiro acerto de cada golpe do combo restaura +1 de vigor; o primeiro acerto de Zanshin de uma ação restaura +4
+	Burden: Regeneração natural de vigor -35 %, atraso após gastar +0,3 s — sem sangue no fio, pouco fôlego retorna
 }
 
 OniMeiRubbingFudo: {
 	// DisplayName: Fudo
-	// Tooltip: Spend stance to stand through committed strikes; stance gain -20%
+	Tooltip: Gaste postura para amortecer golpes durante ações comprometidas; ganho de postura -15%
 	// Origin: Carved in the brushwork of the seed syllable Kan — the Immovable One sits by the edge, flames at his back
-	// Power: Immovable: when struck during heavy combo beats, Zanshin or executions, spend 20 stance to cut that blow's damage by 40% and ignore its knockback (about 2s cooldown); the dismemberment backlash is never shielded
-	// Burden: Stance gain -20% — the guarding strength is skimmed from your build-up
+	Power: Imóvel: Durante uma ação comprometida, gaste 20 de postura para reduzir dano de contato ou projétil hostil a 65 % e repulsão a 25 % (recarga de 2,5 s); o revide do desmembramento nunca é bloqueado
+	Burden: Ganho de postura -15 % — a força da defesa é retirada do seu acúmulo
 }
 
 OniMeiRubbingKurikara: {
 	// DisplayName: Kurikara
-	// Tooltip: Executions ignite a dragonfire follow-up combo; vigor cap -20
+	Tooltip: Execuções concedem três voltas de fogo dracônico; limite de vigor -10%
 	// Origin: The dragon coils about the sword and would swallow it — an old horimono subject, its scales inlaid in gold
-	// Power: Dragon-Coil: after the World-Razing Flash or the Finale, the carving ignites; finish a five-beat combo within ten seconds and the fifth beat looses a coiling dragonfire slash (about 40% power)
-	// Burden: Vigor cap 100 → 80 — where the dragon coils, breath cannot pass
+	Power: Espiral do Dragão: Uma execução concede três cargas de fogo dracônico por 10 segundos; cada quinto golpe de um combo completo consome uma e libera uma volta com 50 % do dano base da lâmina
+	Burden: Limite de vigor -10 % — onde o dragão se enrola, o fôlego se estreita
 }
 
 OniMeiRubbingTessetsu: {
 	// DisplayName: Tessetsu
-	// Tooltip: Sever steel; dull on flesh
+	Tooltip: O primeiro acerto de cada golpe corta aço; dano da lâmina -10%
 	// Origin: A grand name for a scrap of iron — nailed into the tang as a joke that stuck
-	// Power: Iron-Cut: first combo hit of a beat deals extra damage to steel/armored foes
-	// Burden: Feels like dull iron on flesh — weapon damage -12%
+	Power: Corte de Ferro: O primeiro acerto de cada golpe do combo causa ×1,25 de dano a inimigos de aço ou blindados
+	Burden: Dano da lâmina -10 % — contra carne, parece ferro cego
 }
 
 OniMeiRubbingKyushu: {
 	// DisplayName: Kyushu
-	// Tooltip: Heads only; weak on trash
+	Tooltip: Finalizações profundas em cabeças verdadeiras com pouca vida; dano da lâmina -3%
 	// Origin: The head is still the old one. Cut clean; no need for a scare-name
-	// Power: Head-Hunt: deeper low-life finishers on the body or head
-	// Burden: Cold on trash clears; ordinary targets feel dull
+	Power: Caça-Cabeças: Golpes diretos de lâmina só afetam corpos independentes ou cabeças verdadeiras abaixo de 35 % de vida, escalando até +85 % (+60 % contra chefes)
+	Burden: Dano da lâmina -3 %; segmentos de corpo, cauda e corpo alternativo nunca ativam Caça-Cabeças
 }
 
 OniMeiRubbingIkiai: {
 	// DisplayName: Ikiai
-	// Tooltip: Fifth-beat arc-qi; slightly slower combo
+	Tooltip: O quinto golpe libera um arco de espada de 55 %; intervalo do combo +4%
 	// Origin: The breath you held while staring — then the blades met on the beat
-	// Power: Breath-Wave: the fifth beat of a full combo flings a traveling crimson arc of sword-qi (a flying crescent that pierces each foe once)
-	// Burden: Combo slightly slower
+	Power: Onda de Fôlego: O quinto golpe de um combo completo lança um arco de espada com 55 % do dano base da lâmina; voa por 16 ticks e atravessa no máximo três corpos distintos
+	Burden: Intervalo do combo +4%
 }
 
 OniMeiRubbingKyoko: {
 	// DisplayName: Kyoko
-	// Tooltip: Empty-space pressure; close-range blur
+	Tooltip: O espaço vazio arma um corte próximo e um pulso de pressão; ações próximas rápidas desfocam
 	// Origin: A roar into empty air; the echo finds no place to land
-	// Power: Hollow-Roar: in empty space, periodically roars out a ripple of ink pressure that stalls the footing of foes it touches; the first cut after leaving and returning hits harder
-	// Burden: Dense close-range chopping loses focus and dulls
+	Power: Rugido Oco: 90 ticks sem inimigos armam o próximo golpe direto de lâmina a até 260 px para ×1,25 de dano; enquanto estiver frio, um pulso de pressão de 24 ticks soa a cada 90 ticks
+	Burden: Quatro ações próximas em 36 ticks causam 24 ticks de desfoque com ×0,95 de dano próximo; acertos distantes não consomem o corte armado
 }
 
 OniMeiRubbingKarikiri: {
 	// DisplayName: Karikiri
-	// Tooltip: Decoy eats a hit; true body is more exposed
+	Tooltip: O corpo falso esquiva completamente de um golpe; rearma em 4 segundos
 	// Origin: Learned so well it turned fake. An afterimage enters the tang
-	// Power: False Body: flash-step start leaves a decoy that eats one contact or one projectile hit
-	// Burden: While the decoy lasts you are softer and dashes cost more; after it shatters, a short vacuum window
+	Power: Corpo Falso: O início de um Passo Relâmpago deixa por 90 ticks uma isca de pose congelada que esquiva completamente de um golpe de NPC ou projétil hostil; rearma após 240 ticks
+	Burden: Enquanto a isca vive, dano recebido e custo da investida são ×1,12; após quebrar, dano recebido é ×1,18 por 60 ticks. Expiração natural não cria vácuo
 }
 
 OniMeiRubbingMokukiri: {
 	// DisplayName: Mokukiri
-	// Tooltip: A heavy cut after a dash ends; hard to cash in while chaining dashes
+	Tooltip: O fim natural de uma investida paga arma Morte Silenciosa; investir ou errar a consome
 	// Origin: The air sank. You got used to it. The guilt stayed
-	// Power: Silent-Kill: the next cut during the short window after a flash step naturally ends hits much harder
-	// Burden: Never lights while you flash endlessly
+	Power: Morte Silenciosa: Por 45 ticks após o fim natural de um Passo Relâmpago normal pago, a próxima ação de combo ou Zanshin causa ×1,35 de dano
+	Burden: Outra investida ou um golpe no vazio consome Morte Silenciosa; investidas de execução gratuitas nunca a armam
 }
 
 OniMeiRubbingKogehi: {
 	// DisplayName: Koge-hi
-	// Tooltip: Flash steps leave burning ground; weapon damage -8%
+	Tooltip: Passos Relâmpago queimam todo o percurso; dano da lâmina -4%
 	// Origin: Do not put your foot in the hot shallows. The groove is for stepping clear
-	// Power: Scorch-Trail: the flash-step path leaves brief burning ground
-	// Burden: Weapon damage -8%; make up the loss with burning ground left by movement
+	Power: Trilha Abrasadora: Uma investida deixa até cinco queimaduras distribuídas por igual durante 90 ticks, cada acerto causando 14 % do dano base da lâmina; queimaduras a até 32 px são renovadas
+	Burden: Dano da lâmina -4 %; compense a perda com o chão em chamas deixado pelo movimento
 }
 
 OniMeiRubbingKanhi: {
 	// DisplayName: Kan-hi
-	// Tooltip: Faster out-of-combat regen; dash and sakura costs +12%
+	Tooltip: Regeneração natural em repouso ×2,25; custos de investida e Sakura +8%
 	// Origin: Quiet by the door. Let the ears rest
-	// Power: Quiet-Breath: after a short rest out of contact, vigor regenerates much faster
-	// Burden: Dash and sakura cruise vigor costs +12% — quiet recovery is repaid in motion
+	Power: Fôlego Quieto: Após 120 ticks sem um acerto direto de lâmina, a regeneração natural de vigor é ×2,25
+	Burden: Custos de vigor da investida e do voo Sakura +8 % — a recuperação quieta é paga em movimento
 }
 
 OniMeiRubbingTodohi: {
 	// DisplayName: Todo-hi
-	// Tooltip: Snare foes; dash re-arms slower
+	Tooltip: Acertos prendem por 36 ticks; rearme da investida +6 ticks
 	// Origin: A bit sticky. Keep contact to turn; break off and it stalls
-	// Power: Sticky-Bind: hits ink-snare the target's footing, briefly slowing it (great beasts resist somewhat)
-	// Burden: After a dash, the next dash takes half a beat longer to ready
+	Power: Prisão Pegajosa: Golpes diretos de lâmina prendem alvos por 36 ticks e fixam a mobilidade de inimigos normais/chefes em 0,88/0,96
+	Burden: Rearme da investida +6 ticks; Prisão e Dormência usam apenas a proporção de movimento mais forte
 }
 
 OniMeiRubbingShiorihi: {
 	// DisplayName: Shiori-hi
-	// Tooltip: Finish splash; natural regen -15%, empty Zanshin costs vigor
+	Tooltip: Abates podam um alvo ferido; regeneração natural -10 %, Zanshin vazio custa vigor
 	// Origin: Cut the spent flower to open the edge — not for looks
-	// Power: Petal-Prune: kills and Zanshin finishes splash a small cut toward nearby low life
-	// Burden: Natural vigor regen -15%; an empty Zanshin costs 2 extra vigor
+	Power: Poda de Pétalas: Um abate direto mira outro corpo com até 50 % de vida num raio de 240 px, persegue brevemente e corta por 25 % do dano base da lâmina; sem alvo, a recarga de 45 ticks não começa
+	Burden: Regeneração natural de vigor -10 %; um Zanshin vazio custa 2 de vigor. Lâminas de poda não podem se encadear
 }
 
 OniMeiRubbingShiohi: {
 	// DisplayName: Shio-hi
-	// Tooltip: On-tide reward; off-beat loss
+	Tooltip: Na maré, ganhe vigor ou dano de Zanshin; combos fora do compasso perdem um pouco do fio
 	// Origin: Tide marks overnight. Wet contact feeds the return
-	// Power: Tide-Beat: hits that catch the tide window return more vigor (or sting more)
-	// Burden: Constant off-beat chopping underperforms a bare blade
+	Power: Compasso da Maré: Num ciclo de 48 ticks com meia janela de 6 ticks, um combo na maré restaura +3 de vigor uma vez por ação e um Zanshin na maré causa ×1,08 de dano
+	Burden: Dano de combo fora da maré ×0,97; a fase da maré é capturada quando a ação começa
 }
 
 OniMeiRubbingShibori: {
 	// DisplayName: Shibori
-	// Tooltip: Parry numbs; stance costly
+	Tooltip: Atravessar ou receber contato comprometido causa dormência; ganho de postura -15%
 	// Origin: Guard even with numb hands. The blade hurts too
-	// Power: Numb-Counter: a successful guard or dash-body parry numbs the attacker — numbed limbs move slower and strike softer
-	// Burden: Stance economy is harsher
+	Power: Contra-Ataque Dormente: Uma defesa ao atravessar causa dormência diretamente; contato durante uma ação comprometida pode gastar 15 de postura para reduzir o golpe a 85 % e causar dormência (recarga de 90 ticks). Dura 45 ticks, fixa a mobilidade normal/chefe em 0,90/0,98 e o dano de contato em ×0,90
+	Burden: Ganho de postura -15%
 }
 
 OniMeiRubbingChinmei: {
 	// DisplayName: Chinmei
-	// Tooltip: Anti-projectile stance; weak in brawls
+	Tooltip: Dano de projétil -12 %, repulsão -65 %; ganho de postura -15%
 	// Origin: When the ears buzz, settle first, then move
-	// Power: Quell: stand firmer under projectiles — less knockback, slightly less projectile damage
-	// Burden: Quiet in pure melee; stance gain -15%
+	Power: Aquietar: Dano de projéteis hostis ×0,88 e repulsão ×0,35
+	Burden: Inativo em combate puramente corpo a corpo; ganho de postura -15%
 }
 
 OniMeiRubbingAshidome: {
 	// DisplayName: Ashidome
-	// Tooltip: Plant then finish; no run-cut
+	Tooltip: Fique firme por 45 ticks e cause ×1,25 de dano com a próxima ação comprometida
 	// Origin: Stand still. Guard lives where the feet stop
-	// Power: Planted-Step: after a brief plant, the next committed finisher hits harder
-	// Burden: Running while cutting almost never pays
+	Power: Passo Plantado: Mantenha a velocidade ao quadrado em 2,25 ou menos por 45 ticks; o próximo quinto golpe, Zanshin, Relâmpago Arrasa-Mundos ou ação Final causa ×1,25 de dano
+	Burden: A carga é consumida quando a ação começa, mesmo se errar; movimento apaga o progresso
 }
 
 OniMeiRubbingYoen: {
 	// DisplayName: Yoen
-	// Tooltip: Execute leaves burn; vigor/dash priced
+	Tooltip: Execuções movem um único campo de brasas; limite de vigor -5%
 	// Origin: Oven heat still on the edge. Fire out; burn not gone
-	// Power: Ember-Field: after an execution, lasting burn ground remains — no full combo required
-	// Burden: Slightly tighter vigor; dash costs more while the field lives
+	Power: Campo de Brasas: Uma execução cria ou move seu único campo de brasas; dura 180 ticks e pode causar ao mesmo corpo 16 % do dano base da lâmina a cada 45 ticks
+	Burden: Limite de vigor -5 %; custo da investida ×1,10 enquanto o campo existir
 }

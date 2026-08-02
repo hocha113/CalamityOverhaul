@@ -1,11 +1,9 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
@@ -39,6 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>本帧悬浮在眼上</summary>
         public bool Hovering { get; private set; }
+        public bool TooltipVisible => hoverEase > 0.02f;
 
         /// <summary>挂点微移,眼呼吸传绳结</summary>
         public Vector2 HangSway { get; private set; }
@@ -342,14 +341,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             OniBrush.DrawTaperedSlash(sb, l, r, 1.5f, h + 1f, intensity * 0.7f);
         }
 
-        /// <summary>悬浮说明墨牌,HUD 最后绘保证置顶</summary>
-        public void DrawHoverTag(SpriteBatch sb) {
+        /// <summary>悬浮说明</summary>
+        public void DrawTooltip(SpriteBatch sb) {
             float alpha = lastAlpha * hoverEase;
             if (alpha <= 0.05f) {
                 return;
             }
 
-            DynamicSpriteFont font = FontAssets.MouseText.Value;
             OniDomainPlayer odp = OniDomain.Local;
             OniDomainPhase phase = odp?.Phase ?? OniDomainPhase.Closed;
             string title = OniTalismanHud.DomainTitle.Value;
@@ -364,21 +362,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             string flipHint = string.Format(OniTalismanHud.DomainFlipHintFormat.Value,
                 CWRKeySystem.Onikiri_DomainFlip.ToTooltipString(CWRKeySystem.Notbound.Value));
 
-            float w = MathF.Max(font.MeasureString(title).X * 0.82f, font.MeasureString(stateLine).X * 0.7f);
-            w = MathF.Max(w, font.MeasureString(toggleHint).X * 0.7f);
-            w = MathF.Max(w, font.MeasureString(flipHint).X * 0.7f);
-            Rectangle panel = new((int)lastMouse.X + 18, (int)lastMouse.Y - 8, (int)w + 22, 80);
-            //不出屏
-            if (panel.Right > OnikiriUITheme.UIScreenW - 8f) {
-                panel.X = (int)(lastMouse.X - panel.Width - 14f);
-            }
-
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            Rectangle src = new(0, 0, 1, 1);
-            sb.Draw(pixel, new Rectangle(panel.X + 2, panel.Y + 3, panel.Width, panel.Height), src, new Color(8, 2, 5) * (alpha * 0.5f));
-            sb.Draw(pixel, panel, src, OnikiriUITheme.Ink * (alpha * 0.95f));
-            OniBrush.DrawTaperedSlash(sb, new Vector2(panel.X + 4f, panel.Y + 22f), new Vector2(panel.Right - 4f, panel.Y + 21f), 1.4f, 0.8f, alpha * 0.7f);
-
             //状态行的颜色跟世界走:表朱红,里鬼火青,过渡纸灰
             Color stateCol = phase switch {
                 OniDomainPhase.Omote => OnikiriUITheme.Seal,
@@ -386,10 +369,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniDomainPhase.Closed => OnikiriUITheme.TextDim,
                 _ => OnikiriUITheme.Paper,
             };
-            Utils.DrawBorderString(sb, title, new Vector2(panel.X + 10f, panel.Y + 4f), OnikiriUITheme.HotWhite * alpha, 0.82f);
-            Utils.DrawBorderString(sb, stateLine, new Vector2(panel.X + 10f, panel.Y + 26f), stateCol * alpha, 0.7f);
-            Utils.DrawBorderString(sb, toggleHint, new Vector2(panel.X + 10f, panel.Y + 44f), OnikiriUITheme.TextDim * alpha, 0.7f);
-            Utils.DrawBorderString(sb, flipHint, new Vector2(panel.X + 10f, panel.Y + 62f), OnikiriUITheme.TextDim * alpha, 0.7f);
+            OniTooltipPanel.Draw(sb, lastMouse, title, 0.82f, alpha,
+                new OniTooltipLine(stateLine, stateCol),
+                new OniTooltipLine(toggleHint, OnikiriUITheme.TextDim),
+                new OniTooltipLine(flipHint, OnikiriUITheme.TextDim));
         }
     }
 }

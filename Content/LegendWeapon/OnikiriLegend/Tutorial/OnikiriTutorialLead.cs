@@ -60,16 +60,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             GuideLeadQueue.Register(this);
 
             HudTitle = this.GetLocalization(nameof(HudTitle), () => "气力与架势");
-            HudBody = this.GetLocalization(nameof(HudBody), () => "手持鬼切时，左下角常驻气力笔触与架势鞘。半架势可双疾走接左键灭世，满架势可用处决键锁敌终结；按住樱流键会先付费疾走再化樱");
-            HudPrompt = this.GetLocalization(nameof(HudPrompt), () => "认一下这组读数；按 {0} 或点札可开改铭台");
+            HudBody = this.GetLocalization(nameof(HudBody), () => "手持鬼切时，左下角常驻气力笔触与架势鞘，两者都只显示读数。半架势可双疾走接左键灭世，满架势可用处决键锁敌终结；按住樱流键会先付费疾走再化樱");
+            HudPrompt = this.GetLocalization(nameof(HudPrompt), () => "认一下这组读数；HUD 的界面入口只有封印札");
 
             RegisterTitle = this.GetLocalization(nameof(RegisterTitle), () => "点鬼簿");
-            RegisterBody = this.GetLocalization(nameof(RegisterBody), () => "点击架势鞘，可展开点鬼簿——铭鬼名录、驾驭与共鸣都记在这里");
-            RegisterPrompt = this.GetLocalization(nameof(RegisterPrompt), () => "点高亮的鞘，或按助手钮打开");
+            RegisterBody = this.GetLocalization(nameof(RegisterBody), () => "改铭台左上悬着点鬼簿卷轴。移步后，札与传奇界面键会记住点鬼簿；铭鬼名录、驾驭与共鸣都记在这里");
+            RegisterPrompt = this.GetLocalization(nameof(RegisterPrompt), () => "点高亮卷轴移步；打开后看一眼名录，再收卷继续");
 
             MeiTitle = this.GetLocalization(nameof(MeiTitle), () => "改铭台");
-            MeiBody = this.GetLocalization(nameof(MeiBody), () => "点封印札，或从点鬼簿移步改铭台。茎铭、樋位、雕位决定刀上赋效");
-            MeiPrompt = this.GetLocalization(nameof(MeiPrompt), () => "按 {0} 或点札打开改铭台，看一眼铭位即可");
+            MeiBody = this.GetLocalization(nameof(MeiBody), () => "封印札是 HUD 唯一的界面入口，首次打开进入改铭台。茎铭、樋位、雕位决定刀上赋效");
+            MeiPrompt = this.GetLocalization(nameof(MeiPrompt), () => "按 {0} 或点高亮的札打开改铭台");
 
             DomainTitle = this.GetLocalization(nameof(DomainTitle), () => "鬼域之眼");
             DomainBody = this.GetLocalization(nameof(DomainBody), () => "气力旁那只眼掌管鬼域：展开表世界（泛黄和纸）、翻到里世界（水墨阴间），再可收阖");

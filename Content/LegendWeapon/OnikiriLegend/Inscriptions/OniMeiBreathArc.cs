@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -28,6 +29,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         private static readonly Color InkDeep = new(70, 16, 22);
 
         private const int GhostCapacity = 4;
+        private const int MaxHitRoots = 3;
         private const int ArcCollisionSegments = 18;
         private const float ArcStartU = 0.08f;
         private const float ArcEndU = 0.92f;
@@ -47,6 +49,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         private readonly float[] ghostRot = new float[GhostCapacity];
         private readonly float[] ghostStretch = new float[GhostCapacity];
         private int ghostCount;
+        private readonly HashSet<int> hitRoots = [];
 
         private float AimAngle => Projectile.ai[0];
         private float SizeMul => Projectile.ai[1] > 0.05f ? Projectile.ai[1] : 1f;
@@ -247,6 +250,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         public override bool? CanDamage() => !dissolving && initialized && timer >= def.DamageStart ? null : false;
 
+        public override bool? CanHitNPC(NPC target) {
+            NPC root = OniMeiCombat.ResolveEffectRoot(target);
+            if (root == null || hitRoots.Contains(root.whoAmI)) {
+                return false;
+            }
+            return null;
+        }
+
         private int GetRevealedArcSegments(out float endU) {
             float sweepU = MathHelper.Clamp(CSR.Sweep(in def, timer) * 1.05f, 0f, 1f);
             endU = MathF.Min(ArcEndU, sweepU);
@@ -314,6 +325,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            NPC root = OniMeiCombat.ResolveEffectRoot(target);
+            if (root != null && hitRoots.Add(root.whoAmI) && hitRoots.Count >= MaxHitRoots) {
+                BeginDissolve();
+                Projectile.netUpdate = true;
+            }
+
             bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
             if (!steel) {
                 SoundEngine.PlaySound(CWRSound.KatanaHitB, target.Center);

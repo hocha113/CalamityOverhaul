@@ -61,6 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         private float CutAngle => Projectile.ai[0];
         private float SizeMul => Projectile.ai[1] > 0.05f ? Projectile.ai[1] : 1f;
         private Player Owner => Main.player[Projectile.owner];
+        private OniMeiActionContext ActionContext => OniMeiActionContext.Get(Projectile);
 
         private readonly OniBladePose bladePose = new();
 
@@ -75,15 +76,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         /// <param name="aim">瞄准方向,可未归一化</param>
         /// <param name="source">null 回退 Misc</param>
         public static Projectile Fire(Player player, Vector2 focus, Vector2 aim, int damage, float knockback,
-            float scale = 1f, IEntitySource source = null) {
+            float scale = 1f, IEntitySource source = null, int baseWeaponDamage = 0) {
             if (player.ownedProjectileCounts[ModContent.ProjectileType<OniAnnihilate>()] > 0) {
                 return null;
             }
             source ??= player.GetSource_Misc("CWR_OniAnnihilate");
             float aimAngle = aim.SafeNormalize(Vector2.UnitX * player.direction).ToRotation();
-            return Projectile.NewProjectileDirect(source, focus, Vector2.Zero
+            Projectile projectile = Projectile.NewProjectileDirect(source, focus, Vector2.Zero
                 , ModContent.ProjectileType<OniAnnihilate>(), damage, knockback, player.whoAmI
                 , ai0: MathHelper.WrapAngle(aimAngle), ai1: scale);
+            OniMeiActionContext.Capture(projectile, player, source,
+                baseWeaponDamage > 0 ? baseWeaponDamage : Math.Max(1, damage / 5), OniMeiActionKind.Annihilate);
+            return projectile;
         }
 
         public override void SetStaticDefaults() {
@@ -268,6 +272,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
 
         /// <summary>蠕虫0.25 阿瑞斯节段0.5</summary>
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            OniMeiCombatProfile profile = ActionContext?.HasSnapshot == true
+                ? ActionContext.Profile
+                : OniMeiCombatProfile.Identity;
             if (CWRLoad.WormBodys.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.25f;
             }
@@ -291,11 +298,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
                 modifiers.FinalDamage *= 1.66f;
             }
             //髭切「断首」/旧首「取首」:斩杀线内随已损生命递增的终结倍率(owner 端结算,随命中包同步)
-            if (OniMeiCombat.TryGetExecuteBonus(Owner, target, out float executeMul)) {
-                modifiers.FinalDamage *= executeMul;
-            }
             if (Projectile.IsOwnedByLocalPlayer()) {
-                Owner.GetModPlayer<OnikiriPlayer>().TryConsumePlantedStep(ref modifiers);
+                float meiMul = Owner.GetModPlayer<OnikiriPlayer>().BuildMeiHitMultiplier(
+                    target, in profile, ActionContext?.ActionSerial ?? 0,
+                    allowPlanted: true, allowIron: false, zanshin: false);
+                if (OniMeiCombat.TryGetExecuteBonus(in profile, target, out float executeMul)) {
+                    meiMul *= executeMul;
+                }
+                modifiers.FinalDamage *= OniMeiCombat.ClampConditionalDamage(
+                    meiMul, in profile, target);
             }
             float offsetX = Projectile.To(target.Center).X;
             modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
@@ -385,9 +396,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
 
             //髭切断首:入线命中画断线,了结返势(每闪一次)
             if (Projectile.IsOwnedByLocalPlayer()) {
-                OniMeiCombat.OnExecuteStrikeHit(Owner, target, CutAngle, ref executeRefunded);
+                OniMeiCombatProfile profile = ActionContext?.HasSnapshot == true
+                    ? ActionContext.Profile
+                    : OniMeiCombatProfile.Identity;
+                OniMeiCombat.OnExecuteStrikeHit(Owner, target, CutAngle, ref executeRefunded, in profile);
                 if (!target.active || target.life <= 0) {
-                    Owner.GetModPlayer<OnikiriPlayer>().TryPetalPruneOnKill(target, Projectile.damage, Projectile.knockBack);
+                    Owner.GetModPlayer<OnikiriPlayer>().TryPetalPruneOnKill(target,
+                        ActionContext?.BaseWeaponDamage ?? Math.Max(1, Projectile.damage / 5),
+                        Projectile.knockBack, Projectile, in profile);
                 }
             }
 

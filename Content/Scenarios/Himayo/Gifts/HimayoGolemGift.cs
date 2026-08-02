@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
             n.Say(NarrativeIds.Mayo, L0.Value, Voice[1], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Ruminate))
              .Say(NarrativeIds.Mayo, L1.Value, Voice[2])
              .Say(NarrativeIds.Mayo, L2.Value, Voice[3])
-             .Reward(ModContent.ItemType<OniMeiRubbingShibori>(), title: string.Empty, blocking: false)
+             .GiftReward(GiftKey)
              .Say(NarrativeIds.Mayo, L3.Value, Voice[4], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Forsmile));
         }
 

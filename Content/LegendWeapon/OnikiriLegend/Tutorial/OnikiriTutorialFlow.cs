@@ -11,14 +11,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 {
     /// <summary>
     /// 鬼切教程步骤状态机。<br/>
-    /// 步骤：[0]HUD → [1]点鬼簿 → [2]改铭台 → [3]鬼域之眼 → [4]结束。<br/>
+    /// 步骤：[0]HUD → [1]改铭台 → [2]点鬼簿 → [3]鬼域之眼 → [4]结束。<br/>
     /// 不演示练习鬼影、肢解、五连/疾走/处决等战斗跟做环节。
     /// </summary>
     internal static class OnikiriTutorialFlow
     {
         internal const int Step_HudIntro = 0;
-        internal const int Step_Register = 1;
-        internal const int Step_Mei = 2;
+        internal const int Step_Mei = 1;
+        internal const int Step_Register = 2;
         internal const int Step_Domain = 3;
         internal const int Step_Done = 4;
 
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private static int stepTimer;
         private static bool initialized;
         private static OniMeiSnapshot meiSnapshot;
-        private static bool meiOpenedThisStep;
+        private static bool registerOpenedThisStep;
 
         internal static int CurrentStep => currentStep;
         internal static int StepTimer => stepTimer;
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             currentStep = -1;
             stepTimer = 0;
             initialized = false;
-            meiOpenedThisStep = false;
+            registerOpenedThisStep = false;
             meiSnapshot = null;
             OnikiriTutorialEvents.ClearAll();
         }
@@ -101,7 +101,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             switch (step)
             {
                 case Step_Mei:
-                    meiOpenedThisStep = false;
+                    OniRegisterUI.Instance?.Close();
+                    OniTalismanHud.RememberLedger(OniLedgerView.Mei);
+                    break;
+
+                case Step_Register:
+                    registerOpenedThisStep = false;
+                    break;
+
+                case Step_Domain:
+                    OniMeiUI.Instance?.Close();
+                    OniRegisterUI.Instance?.Close();
                     break;
 
                 case Step_Done:
@@ -127,18 +137,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 return;
             }
 
-            if (currentStep == Step_Register && (OniRegisterUI.Instance?.IsOpen ?? false))
+            if (currentStep == Step_Mei && (OniMeiUI.Instance?.IsOpen ?? false))
             {
                 AdvanceStep();
                 return;
             }
 
-            if (currentStep == Step_Mei)
+            if (currentStep == Step_Register)
             {
-                if (OniMeiUI.Instance?.IsOpen ?? false) {
-                    meiOpenedThisStep = true;
+                if (OniRegisterUI.Instance?.IsOpen ?? false) {
+                    registerOpenedThisStep = true;
                 }
-                else if (meiOpenedThisStep) {
+                else if (registerOpenedThisStep) {
                     AdvanceStep();
                 }
                 return;
@@ -152,7 +162,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 
         private static void AdvanceStep()
         {
-            if (currentStep == Step_Mei) WriteCheckpoint(Checkpoint_Hud);
+            if (currentStep == Step_Register) WriteCheckpoint(Checkpoint_Hud);
 
             currentStep++;
             if (currentStep <= Step_Done) EnterStep(currentStep);

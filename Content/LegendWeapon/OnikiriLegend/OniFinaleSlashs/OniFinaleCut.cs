@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -56,6 +57,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
         private float CutAngle => Projectile.ai[0];
         private float SizeMul => Projectile.ai[1] > 0.05f ? Projectile.ai[1] : 1f;
+        private OniMeiActionContext ActionContext => OniMeiActionContext.Get(Projectile);
         /// <summary>裂屏滑移峰值（像素，两半各滑此值，视觉总豁口为其两倍；略降，错位感保留但不暴力）</summary>
         private float PeakSplitPx => 38f * SizeMul;
 
@@ -334,7 +336,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 modifiers.FinalDamage *= 1.66f;
             }
             if (Projectile.IsOwnedByLocalPlayer()) {
-                Main.player[Projectile.owner].GetModPlayer<OnikiriPlayer>().TryConsumePlantedStep(ref modifiers);
+                OniMeiCombatProfile profile = ActionContext?.HasSnapshot == true
+                    ? ActionContext.Profile
+                    : OniMeiCombatProfile.Identity;
+                Main.player[Projectile.owner].GetModPlayer<OnikiriPlayer>()
+                    .TryConsumePlantedStep(ref modifiers, in profile);
             }
             float offsetX = Projectile.To(target.Center).X;
             modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
@@ -356,8 +362,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.45f, Volume = 0.9f }, target.Center);
 
             if (Projectile.IsOwnedByLocalPlayer() && (!target.active || target.life <= 0)) {
+                OniMeiCombatProfile profile = ActionContext?.HasSnapshot == true
+                    ? ActionContext.Profile
+                    : OniMeiCombatProfile.Identity;
                 Main.player[Projectile.owner].GetModPlayer<OnikiriPlayer>()
-                    .TryPetalPruneOnKill(target, Projectile.damage, Projectile.knockBack);
+                    .TryPetalPruneOnKill(target,
+                        ActionContext?.BaseWeaponDamage ?? Math.Max(1, Projectile.damage / 4),
+                        Projectile.knockBack, Projectile, in profile);
             }
 
             if (Main.dedServ) {

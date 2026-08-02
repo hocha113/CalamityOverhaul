@@ -14,9 +14,16 @@ namespace CalamityOverhaul.Content.Narrative.Data
         /// <summary>本档已有新格式 <c>StoryData</c>；旧档垫片勿覆盖</summary>
         public bool HasNewFormatData { get; private set; }
 
+        internal string HimayoGiftDelayKey { get; set; }
+        internal int HimayoGiftDelayTicks { get; set; }
+        internal int HimayoLastDefeatedBossId { get; set; }
+
         public override void Initialize() {
             StoryData = new DataModuleStore();
             HasNewFormatData = false;
+            HimayoGiftDelayKey = null;
+            HimayoGiftDelayTicks = 0;
+            HimayoLastDefeatedBossId = 0;
         }
 
         public T Get<T>() where T : DataModule, new() => StoryData.Get<T>();
@@ -40,6 +47,9 @@ namespace CalamityOverhaul.Content.Narrative.Data
         public override void LoadData(TagCompound tag) {
             StoryData = new DataModuleStore();
             HasNewFormatData = false;
+            HimayoGiftDelayKey = null;
+            HimayoGiftDelayTicks = 0;
+            HimayoLastDefeatedBossId = 0;
             try {
                 //只读新格式；旧档走 ADVSavePlayer / HalibutSave
                 if (tag.TryGet<TagCompound>("StoryData", out TagCompound storyTag)) {

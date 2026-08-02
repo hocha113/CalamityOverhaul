@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         /// <param name="source">生成源，null 则回退 Misc 源</param>
         public static Projectile Fire(Player player, Vector2 aim, int damage, float knockback,
             float distance, bool executionDash = false, float scale = 1f, bool interruptCombo = false,
-            float interruptRotation = 0f, IEntitySource source = null) {
+            float interruptRotation = 0f, IEntitySource source = null, int baseWeaponDamage = 0) {
             source ??= player.GetSource_Misc("CWR_OniFlashStep");
             Vector2 aimDir = aim.SafeNormalize(Vector2.UnitX * player.direction);
             if (aimDir.Y * player.gravDir > 0f
@@ -183,9 +183,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Vector2 encodedPose = interruptCombo ? interruptRotation.ToRotationVector2() : Vector2.Zero;
             float encodedScale = MathF.Abs(scale) * (interruptCombo ? -1f : 1f);
             float encodedDistance = MathF.Abs(distance) * (executionDash ? -1f : 1f);
-            return Projectile.NewProjectileDirect(source, player.Center, encodedPose
+            Projectile projectile = Projectile.NewProjectileDirect(source, player.Center, encodedPose
                 , ModContent.ProjectileType<OniFlashStep>(), damage, knockback, player.whoAmI
                 , ai0: aimAngle, ai1: encodedDistance, ai2: encodedScale);
+            OniMeiActionContext.Capture(projectile, player, source,
+                baseWeaponDamage > 0 ? baseWeaponDamage : damage, OniMeiActionKind.FlashStep);
+            return projectile;
         }
 
         private static bool IsGrounded(Player player) {
@@ -232,9 +235,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             path.Add(GetCenter());
             if (Owner.whoAmI == Main.myPlayer) {
                 Owner.RemoveAllGrapplingHooks();
-                if (OniMeiCombat.ResolveHeld(Owner).FalseBody) {
-                    OniMeiFalseBody.Fire(Owner, Owner.Center);
-                }
+                OniMeiActionContext context = OniMeiActionContext.Get(Projectile);
+                OniMeiCombatProfile profile = context?.HasSnapshot == true
+                    ? context.Profile
+                    : OniMeiCombatProfile.Identity;
+                Owner.GetModPlayer<OnikiriPlayer>().TryArmFalseBody(Owner.Center,
+                    interruptStartRotation, Owner.direction, in profile);
             }
 
             if (interruptHandoff) {
@@ -419,23 +425,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             if (!Projectile.IsOwnedByLocalPlayer() || scorchSpawned >= OniMeiCombat.ScorchMaxPerDash) {
                 return;
             }
-            OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
-            if (!okp.Mei.ScorchTrail) {
+            OniMeiActionContext context = OniMeiActionContext.Get(Projectile);
+            if (context?.HasSnapshot != true || !context.Profile.ScorchTrail) {
                 return;
             }
             float step = Vector2.Distance(from, to);
             if (step < 0.5f) {
                 return;
             }
-            scorchAccDist += step;
-            while (scorchAccDist >= OniMeiCombat.ScorchSampleDist
+            float spacing = Math.Max(64f, Distance / OniMeiCombat.ScorchMaxPerDash);
+            float walked = 0f;
+            while (scorchAccDist + step - walked >= spacing
                 && scorchSpawned < OniMeiCombat.ScorchMaxPerDash) {
-                scorchAccDist -= OniMeiCombat.ScorchSampleDist;
-                int dmg = Math.Max(1, (int)(Projectile.damage * OniMeiCombat.ScorchDamageMul));
-                OniMeiGroundBurn.TrySpawnOrRefresh(Owner, to, dmg, OniMeiCombat.ScorchLifeTicks
-                    , OniMeiCombat.ScorchScale, OniMeiBurnStyle.Scorch);
-                scorchSpawned++;
+                float needed = spacing - scorchAccDist;
+                walked += needed;
+                scorchAccDist = 0f;
+                Vector2 sample = Vector2.Lerp(from, to, MathHelper.Clamp(walked / step, 0f, 1f));
+                int dmg = Math.Max(1,
+                    (int)(context.BaseWeaponDamage * OniMeiCombat.ScorchDamageMul));
+                if (OniMeiGroundBurn.TrySpawnOrRefresh(Owner, sample, dmg,
+                    OniMeiCombat.ScorchLifeTicks, OniMeiCombat.ScorchScale,
+                    OniMeiBurnStyle.Scorch, Projectile)) {
+                    scorchSpawned++;
+                }
             }
+            scorchAccDist += step - walked;
         }
 
         /// <summary>身前沿冲刺向的自由距离（px，扫描上限盖住 头端+外推 预算）</summary>
@@ -557,12 +571,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     //墨痕走向与本次直线居合方向一致
 
-                    OniFlashMark.Fire(Owner, npc, judgeDelay, Projectile.damage
+                    Projectile mark = OniFlashMark.Fire(Owner, npc, judgeDelay, Projectile.damage
                         , Projectile.knockBack, dashDir.ToRotation(), Projectile.GetSource_FromAI());
+                    OniMeiActionContext.Inherit(Projectile, mark, secondary: false, OniMeiActionKind.FlashMark);
                     //穿身即格挡:每次疾走仅首次穿身蓄势,后续目标仍写入处决记忆
                     bool grantResources = !stanceGranted;
                     stanceGranted = true;
-                    Owner.GetModPlayer<OnikiriPlayer>().OnDashParry(npc, grantResources);
+                    OniMeiActionContext context = OniMeiActionContext.Get(Projectile);
+                    OniMeiCombatProfile profile = context?.HasSnapshot == true
+                        ? context.Profile
+                        : OniMeiCombatProfile.Identity;
+                    Owner.GetModPlayer<OnikiriPlayer>().OnDashParry(
+                        npc, grantResources, in profile);
                     Tutorial.OnikiriTutorialEvents.FireDashSweep(npc);
                 }
 

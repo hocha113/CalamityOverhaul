@@ -1,9 +1,7 @@
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
@@ -40,6 +38,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>本帧悬浮在笔道核心带上(纯读数,不捕获点击)</summary>
         public bool Hovering { get; private set; }
+        public bool TooltipVisible => hoverEase > 0.02f;
 
         /// <summary>朱印中心:笔画起端外侧,视觉锚点</summary>
         private Vector2 SealCenter => quadTopLeft + new Vector2(-4f, OnikiriUITheme.HudVigorQuadH * 0.5f);
@@ -124,11 +123,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 Tutorial.OnikiriTutorialTargets.Publish(Tutorial.OnikiriTutorialTargets.Tag_VigorStroke, core);
         }
 
-        /// <summary>
-        /// 绘墨丝/朱印/墨痕/悬浮读数,stripAttach=札缘挂点,
-        /// suppressTag 为真时不出悬浮读数(让位给札体说明)
-        /// </summary>
-        public void Draw(SpriteBatch sb, float alpha, Vector2 stripAttach, float time, bool suppressTag) {
+        /// <summary>绘墨丝/朱印/墨痕,stripAttach=札缘挂点</summary>
+        public void Draw(SpriteBatch sb, float alpha, Vector2 stripAttach, float time) {
             if (alpha <= 0.01f) {
                 return;
             }
@@ -179,9 +175,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 DrawTideCrest(sb, alpha, denyShake, time);
             }
 
-            if (!suppressTag && hoverEase > 0.05f) {
-                DrawHoverTag(sb, alpha * hoverEase);
-            }
         }
 
         /// <summary>潮头游标:相位三角波沿笔道往返(窗心=最右),合潮时纸白横浪涨亮</summary>
@@ -278,29 +271,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>悬浮读数:小裱墨牌,题名 + 当前/上限</summary>
-        private void DrawHoverTag(SpriteBatch sb, float alpha) {
-            DynamicSpriteFont font = FontAssets.MouseText.Value;
+        /// <summary>悬浮读数</summary>
+        public void DrawTooltip(SpriteBatch sb, float alpha) {
+            alpha *= hoverEase;
+            if (alpha <= 0.02f) {
+                return;
+            }
             string title = OniTalismanHud.VigorTitle.Value;
             string line = string.Format(OniTalismanHud.VigorValueFormat.Value,
                 (int)MathF.Round(snap.Value), (int)MathF.Round(snap.MaxValue));
-
-            float w = Math.Max(font.MeasureString(title).X * 0.78f, font.MeasureString(line).X * 0.7f);
-            Rectangle panel = new((int)lastMouse.X + 16, (int)lastMouse.Y - 6, (int)w + 20, 42);
-            //不出屏
-            if (panel.Right > OnikiriUITheme.UIScreenW - 8f) {
-                panel.X = (int)(lastMouse.X - panel.Width - 12f);
-            }
-
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            Rectangle src = new(0, 0, 1, 1);
-            sb.Draw(pixel, new Rectangle(panel.X + 2, panel.Y + 3, panel.Width, panel.Height), src, new Color(8, 2, 5) * (alpha * 0.5f));
-            sb.Draw(pixel, panel, src, OnikiriUITheme.Ink * (alpha * 0.95f));
-            OniBrush.DrawTaperedSlash(sb, new Vector2(panel.X + 4f, panel.Y + 20f),
-                new Vector2(panel.Right - 4f, panel.Y + 19f), 1.3f, 0.7f, alpha * 0.7f);
-
-            Utils.DrawBorderString(sb, title, new Vector2(panel.X + 9f, panel.Y + 3f), OnikiriUITheme.HotWhite * alpha, 0.78f);
-            Utils.DrawBorderString(sb, line, new Vector2(panel.X + 9f, panel.Y + 23f), OnikiriUITheme.TextDim * alpha, 0.7f);
+            OniTooltipPanel.Draw(sb, lastMouse, title, 0.78f, alpha,
+                new OniTooltipLine(line, OnikiriUITheme.TextDim));
         }
     }
 }

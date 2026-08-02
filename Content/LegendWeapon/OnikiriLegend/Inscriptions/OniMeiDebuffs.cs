@@ -1,6 +1,8 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates;
 using InnoVault.PRT;
+using System;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -69,27 +71,44 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
     /// </summary>
     internal class OniMeiNPCEffects : GlobalNPC
     {
+        public override bool InstancePerEntity => true;
+
+        private Vector2 previousVelocityDelta;
+
+        public override bool PreAI(NPC npc) {
+            if (previousVelocityDelta != Vector2.Zero) {
+                npc.velocity -= previousVelocityDelta;
+                previousVelocityDelta = Vector2.Zero;
+            }
+            return true;
+        }
+
         public override void PostAI(NPC npc) {
-            if (CWRLoad.WormBodys.Contains(npc.type)) {
+            NPC root = OniMeiCombat.ResolveEffectRoot(npc);
+            if (root == null || root.whoAmI != npc.whoAmI) {
                 return;
             }
-            bool bind = npc.HasBuff<OniBindDebuff>();
-            bool numb = npc.HasBuff<OniNumbDebuff>();
+            bool bind = root.HasBuff<OniBindDebuff>();
+            bool numb = root.HasBuff<OniNumbDebuff>();
             if (!bind && !numb) {
                 return;
             }
+            bool boss = NpcGroupHelper.IsBossTier(root);
             float damp = 1f;
             if (bind) {
-                damp *= npc.boss ? OniMeiCombat.BindBossDampMul : OniMeiCombat.BindDampMul;
+                damp = Math.Min(damp, boss ? OniMeiCombat.BindBossDampMul : OniMeiCombat.BindDampMul);
             }
             if (numb) {
-                damp *= npc.boss ? OniMeiCombat.NumbBossDampMul : OniMeiCombat.NumbDampMul;
+                damp = Math.Min(damp, boss ? OniMeiCombat.NumbBossDampMul : OniMeiCombat.NumbDampMul);
             }
-            npc.velocity *= damp;
+            Vector2 before = root.velocity;
+            root.velocity = before * damp;
+            previousVelocityDelta = root.velocity - before;
         }
 
         public override void ModifyHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers) {
-            if (npc.HasBuff<OniNumbDebuff>()) {
+            NPC root = OniMeiCombat.ResolveEffectRoot(npc);
+            if (root?.HasBuff<OniNumbDebuff>() == true) {
                 modifiers.FinalDamage *= OniMeiCombat.NumbContactDamageMul;
             }
         }

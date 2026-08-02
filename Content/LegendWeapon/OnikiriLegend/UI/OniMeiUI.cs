@@ -235,6 +235,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         protected override void OnOpen() {
             Main.playerInventory = false;
+            OniTalismanHud.RememberLedger(OniLedgerView.Mei);
             //姊妹屏互斥:一台开另一卷收;静默收卷,免得开音+关音同帧叠成两声切换
             if (OniRegisterUI.Instance?.IsOpen ?? false) {
                 OniRegisterUI.Instance.SilentSwap = true;
@@ -363,8 +364,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             closeTagRect = new Rectangle((int)(tagTop.X - 16f), (int)tagTop.Y - 2, 32, 48);
 
             //吊挂卷轴:点击预演到帧即移步点鬼簿;簿上有鬼躁动时回声更急
-            if (registerSwitch.Update(registerSwitchAnchor, MousePosition, IsOpen && a > 0.9f && !Rite.Active,
-                ShaderTime, OnikiriUITheme.HangScrollHit, keyLeftPressState, OniRegistry.InDanger)) {
+            bool openRegister = registerSwitch.Update(registerSwitchAnchor, MousePosition,
+                IsOpen && a > 0.9f && !Rite.Active, ShaderTime, OnikiriUITheme.HangScrollHit,
+                keyLeftPressState, OniRegistry.InDanger);
+            if (Tutorial.OnikiriTutorialLead.IsActive) {
+                Tutorial.OnikiriTutorialTargets.Publish(
+                    Tutorial.OnikiriTutorialTargets.Tag_RegisterSwitch, registerSwitch.HitBox);
+            }
+            if (openRegister) {
                 OniRegisterUI.Instance?.Open();
             }
 
@@ -1056,7 +1063,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             //吊挂卷轴的悬浮说明(最后画,压在一切之上)
             if (registerSwitch.HoverEase > 0.05f) {
-                OniMeiRenderer.DrawSwitchHoverTag(spriteBatch, font, MousePosition,
+                OniMeiRenderer.DrawSwitchHoverTag(spriteBatch, MousePosition,
                     RegisterTabText.Value, RegisterTabHint.Value, a * registerSwitch.HoverEase);
             }
         }

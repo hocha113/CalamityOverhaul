@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -83,9 +84,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             float scale = 1f, IEntitySource source = null) {
             source ??= player.GetSource_Misc("CWR_OniFinaleSlash");
             float aimAngle = aim.SafeNormalize(Vector2.UnitX).ToRotation();
-            return Projectile.NewProjectileDirect(source, focus, Vector2.Zero
+            Projectile projectile = Projectile.NewProjectileDirect(source, focus, Vector2.Zero
                 , ModContent.ProjectileType<OniFinaleSlash>(), damage, knockback, player.whoAmI
                 , ai0: aimAngle, ai1: scale);
+            OniMeiActionContext.Capture(projectile, player, source, damage, OniMeiActionKind.Finale);
+            return projectile;
         }
 
         public override void SetStaticDefaults() {
@@ -313,9 +316,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             }
 
             if (timer == CutSpawnFrame) {
-                OniFinaleCut.Fire(Owner, Projectile.Center, Aim
+                Projectile cut = OniFinaleCut.Fire(Owner, Projectile.Center, Aim
                     , (int)(Projectile.damage * 4f), Projectile.knockBack * 2f, SizeMul
                     , Projectile.GetSource_FromAI());
+                OniMeiActionContext.Inherit(Projectile, cut, secondary: false, OniMeiActionKind.FinaleCut);
             }
         }
 

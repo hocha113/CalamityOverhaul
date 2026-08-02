@@ -97,8 +97,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Projectile.timeLeft = detonateFrame + RendFadeFrames + 8;
             seed = Projectile.identity * 0.6180339887f % 1f;
             //铭档随物品同步,各端解析一致
-            if (Projectile.owner >= 0 && Projectile.owner < Main.maxPlayers
-                && OniMeiCombat.ResolveHeld(Main.player[Projectile.owner]).WindGroove) {
+            OniMeiActionContext context = OniMeiActionContext.Get(Projectile);
+            if (context?.HasSnapshot == true && context.Profile.WindGroove) {
                 windSlimMul = 0.85f;
             }
             //痕的走向在冲刺方向上带一点确定性偏斜，敌群里不会全员平行

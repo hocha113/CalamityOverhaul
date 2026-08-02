@@ -127,6 +127,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         protected override void OnOpen() {
             Main.playerInventory = false;
+            OniTalismanHud.RememberLedger(OniLedgerView.Register);
             //姊妹屏互斥:一卷开另一台收;静默收台,免得开音+关音同帧叠成两声切换
             if (OniMeiUI.Instance?.IsOpen ?? false) {
                 OniMeiUI.Instance.SilentSwap = true;
@@ -494,7 +495,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             //吊挂太刀的悬浮说明(最后画,压在一切之上)
             if (meiSwitch.HoverEase > 0.05f) {
-                OniMeiRenderer.DrawSwitchHoverTag(spriteBatch, font, MousePosition,
+                OniMeiRenderer.DrawSwitchHoverTag(spriteBatch, MousePosition,
                     MeiTabText.Value, MeiTabHint.Value, a * meiSwitch.HoverEase);
             }
         }
@@ -547,7 +548,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
     }
 
-    /// <summary>点鬼簿键位开关,持刀时传奇 UI 键开阖</summary>
+    /// <summary>鬼切界面键位开关</summary>
     internal sealed class OniRegisterKeyPlayer : ModPlayer
     {
         public override void PostUpdate() {
@@ -565,11 +566,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return;
             }
             if (CWRKeySystem.Legend_UIControl.JustPressed) {
-                //默认开阖改铭台;点鬼簿开着时键先收簿再开台(OnOpen 亦互斥)
-                if (OniRegisterUI.Instance?.IsOpen ?? false) {
-                    OniRegisterUI.Instance.Close();
-                }
-                OniMeiUI.Instance?.Toggle();
+                OniTalismanHud.ToggleRememberedLedger();
             }
         }
     }

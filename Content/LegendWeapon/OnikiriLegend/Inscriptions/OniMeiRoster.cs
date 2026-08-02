@@ -4,14 +4,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
     //茎铭取髭切一系改名史，Key 沿用保证存档连续。
     //L0 已改型号 U：铁截/滞樋/闲樋/镇鸣；其余扩册暂仍型号 B 待下批。
 
-    /// <summary>髭切，斩首连须的旧名：残血终结增强，面板伤害 -10%</summary>
+    /// <summary>髭切，斩首连须的旧名：残血终结增强，面板伤害 -2%</summary>
     internal sealed class MeiHigekiri : OniMeiDefinition
     {
         public override int SortOrder => 10;
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Nakago;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.DamageMul *= 0.90f;
+            profile.DamageMul *= 0.98f;
             profile.ExecuteLowLifeBonus = true;
         }
     }
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Nakago;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.DamageMul *= 0.88f;
+            profile.DamageMul *= 0.90f;
             profile.IronSever = true;
         }
     }
@@ -42,12 +42,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Nakago;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.DamageMul *= 0.92f;
+            profile.DamageMul *= 0.97f;
             profile.HeadHunt = true;
         }
     }
 
-    /// <summary>狮子之子，夜吼如狮的荣名，金象嵌：完整五连第五拍合颚刃波，连段间隔 +10%</summary>
+    /// <summary>狮子之子，夜吼如狮的荣名，金象嵌：完整五连第五拍合颚刃波，连段间隔 +2%</summary>
     internal sealed class MeiShishinoko : OniMeiDefinition
     {
         public override int SortOrder => 30;
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override bool IsGoldTier => true;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.ComboGapMul *= 1.10f;
+            profile.ComboGapMul *= 1.02f;
             profile.LionRoar = true;
         }
     }
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Nakago;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.ComboGapMul *= 1.08f;
+            profile.ComboGapMul *= 1.04f;
             profile.BreathWave = true;
         }
     }
@@ -83,14 +83,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
     }
 
-    /// <summary>友切，误斩友刀的咎名：疾走取消连段留延迟斩影，承伤 +10% 且积咎耗气</summary>
+    /// <summary>友切，误斩友刀的咎名：疾走取消连段留延迟斩影，承伤 +6% 且积咎耗气</summary>
     internal sealed class MeiTomokiri : OniMeiDefinition
     {
         public override int SortOrder => 40;
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Nakago;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.IncomingDamageMul *= 1.10f;
+            profile.IncomingDamageMul *= 1.06f;
             profile.GuiltEcho = true;
         }
     }
@@ -124,9 +124,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Hi;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.DashVigorCostMul *= 0.75f;
-            profile.SakuraDrainMul *= 0.70f;
-            profile.FlashMarkDamageMul *= 0.75f;
+            profile.DashVigorCostMul *= 0.85f;
+            profile.SakuraDrainMul *= 0.80f;
+            profile.FlashMarkDamageMul *= 0.80f;
             profile.WindGroove = true;
         }
     }
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Hi;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.DamageMul *= 0.92f;
+            profile.DamageMul *= 0.96f;
             profile.ScorchTrail = true;
         }
     }
@@ -150,8 +150,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Hi;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.DashVigorCostMul *= 1.12f;
-            profile.SakuraDrainMul *= 1.12f;
+            profile.DashVigorCostMul *= 1.08f;
+            profile.SakuraDrainMul *= 1.08f;
             profile.QuietBreath = true;
         }
     }
@@ -163,10 +163,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Hi;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.NaturalRegenMul *= 0.50f;
-            profile.ExtraRegenDelayTicks += 24;
-            profile.ComboHitVigorBonus += 2f;
-            profile.ZanshinHitVigorBonus += 8f;
+            profile.NaturalRegenMul *= 0.65f;
+            profile.ExtraRegenDelayTicks += 18;
+            profile.ComboHitVigorBonus += 1f;
+            profile.ZanshinHitVigorBonus += 4f;
             profile.BloodGroove = true;
         }
     }
@@ -189,7 +189,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Hi;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.NaturalRegenMul *= 0.85f;
+            profile.NaturalRegenMul *= 0.90f;
             profile.PetalPrune = true;
         }
     }
@@ -212,7 +212,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Horimono;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.StanceGainMul *= 0.80f;
+            profile.StanceGainMul *= 0.85f;
             profile.StanceGuard = true;
         }
     }
@@ -224,7 +224,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Horimono;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.StanceGainMul *= 0.70f;
+            profile.StanceGainMul *= 0.85f;
             profile.NumbCounter = true;
         }
     }
@@ -252,7 +252,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
     }
 
-    /// <summary>倶利伽罗，缠剑龙雕，金象嵌：处决后点燃龙火连段，气力上限 100→80</summary>
+    /// <summary>倶利伽罗，缠剑龙雕，金象嵌：处决后点燃三次龙火连段，气力上限 100→90</summary>
     internal sealed class MeiKurikara : OniMeiDefinition
     {
         public override int SortOrder => 80;
@@ -260,7 +260,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override bool IsGoldTier => true;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.VigorMaxMul *= 0.80f;
+            profile.VigorMaxMul *= 0.90f;
             profile.DragonfireLoop = true;
         }
     }
@@ -272,7 +272,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Horimono;
 
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
-            profile.VigorMaxMul *= 0.90f;
+            profile.VigorMaxMul *= 0.95f;
             profile.EmberField = true;
         }
     }

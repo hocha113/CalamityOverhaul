@@ -2608,10 +2608,10 @@ WraithDebugTool: {
 
 OniMeiRubbingHigekiri: {
 	DisplayName: Higekiri
-	Tooltip: Stronger finishers on low-life targets, kills refund stance; weapon damage -10%
+	Tooltip: Direct blade hits execute low-life targets and refund stance; blade damage -2%
 	Origin: The night of the test cut, the head fell with the beard still clinging to the edge — hence the old name
-	Power: Beard-Cutter: Zanshin and the World-Razing Flash deal escalating finisher damage to targets below 35% life (up to +50%, +25% vs bosses); finishing a target with either art refunds 10 stance, once per strike
-	Burden: Weapon damage -10% — against the healthy, this blade bites duller than the original name
+	Power: Beard-Cutter: direct blade hits scale against targets below 35% life (up to +60%, or +45% vs bosses); a direct blade kill refunds 8 stance once per action
+	Burden: Blade damage -2% — against healthy targets, this edge is slightly duller than the original name
 }
 
 OniMeiRubbingOnikiri: {
@@ -2624,168 +2624,168 @@ OniMeiRubbingOnikiri: {
 
 OniMeiRubbingShishinoko: {
 	DisplayName: Shishi-no-ko
-	Tooltip: Jaw-waves crown a full five-beat combo; combo 10% slower
+	Tooltip: Two jaw-waves crown a full five-beat combo; beat interval +2%
 	Origin: Left by the pillow at midnight, the blade roared like a lion. Inlaid in gold, to honor the name
-	Power: Lion's Roar: complete five combo beats without dash or art interruption and the fifth beat roars — two converging jaw-waves (about 40% of a slash in total)
-	Burden: Combo beat interval +10% — a roar must be drawn in before it is let out
+	Power: Lion's Roar: complete five combo beats without dash or art interruption and the fifth beat releases two converging jaw-waves, each dealing 22% base blade damage
+	Burden: Combo beat interval +2% — a roar must be drawn in before it is let out
 }
 
 OniMeiRubbingTomokiri: {
 	DisplayName: Tomokiri
-	Tooltip: Dash-cancels leave phantom slashes; +10% damage taken, Guilt taxes dashes
+	Tooltip: Dash-cancels leave delayed Guilt slashes; damage taken +6%
 	Origin: Crossed with a friendly blade in trial, it cut the friend in two. A name of blame, chiseled into the tang; the sword has run violent since
-	Power: Friend-Cutter: cancelling a combo with the Kamui flash step leaves a delayed phantom slash (about 35% power) that bites shut after a beat
-	Burden: Damage taken +10% while held; each phantom adds a layer of Guilt (max 3), each making the next flash step cost 6 more vigor — repaid on a Zanshin hit
+	Power: Friend-Cutter: cancelling a combo with Kamui leaves a phantom slash that bites after 6 ticks for 35% base blade damage
+	Burden: Damage taken +6%; each phantom adds one Guilt (max 3), adding 4 vigor to the next dash per layer — repaid by a Zanshin hit
 }
 
 OniMeiRubbingKazehi: {
 	DisplayName: Kaze-hi
-	Tooltip: Cheaper footwork and flight; flash mark damage -25%
+	Tooltip: Dash cost -15%, sakura drain -20%; flash mark damage -20%
 	Origin: A groove opened like a wind channel; where the blade passes, only wind is heard, no blade is seen
-	Power: Wind-Rider: flash step vigor cost -25%, sakura flight drain -30%
-	Burden: Flash mark damage -25% — the groove was cut for lightness, not slaughter
+	Power: Wind-Rider: flash step vigor cost -15%, sakura flight drain -20%
+	Burden: Flash mark damage -20% — the groove was cut for lightness, not slaughter
 }
 
 OniMeiRubbingChihi: {
 	DisplayName: Chi-hi
-	Tooltip: Stronger on-hit vigor; natural regen halved
+	Tooltip: Active hits restore more vigor; natural regen -35%
 	Origin: This groove is not for lightness, but for letting blood — so said the one who opened the edge
-	Power: Bloodletting: the first combo hit of each beat restores +2 extra vigor, a Zanshin hit restores +8
-	Burden: Natural vigor regen halved, regen delay +0.4s after spending — no blood on the edge, no breath returned
+	Power: Bloodletting: the first combo hit of each beat restores +1 vigor; the first Zanshin hit of an action restores +4
+	Burden: Natural vigor regen -35%, regen delay +0.3s after spending — no blood on the edge, little breath returned
 }
 
 OniMeiRubbingFudo: {
 	DisplayName: Fudo
-	Tooltip: Spend stance to stand through committed strikes; stance gain -20%
+	Tooltip: Spend stance to soften committed hits; stance gain -15%
 	Origin: Carved in the brushwork of the seed syllable Kan — the Immovable One sits by the edge, flames at his back
-	Power: Immovable: when struck during heavy combo beats, Zanshin or executions, spend 20 stance to cut that blow's damage by 40% and ignore its knockback (about 2s cooldown); the dismemberment backlash is never shielded
-	Burden: Stance gain -20% — the guarding strength is skimmed from your build-up
+	Power: Immovable: during a committed action, spend 20 stance to reduce hostile contact or projectile damage to 65% and knockback to 25% (2.5s cooldown); dismemberment backlash is never shielded
+	Burden: Stance gain -15% — the guarding strength is skimmed from your build-up
 }
 
 OniMeiRubbingKurikara: {
 	DisplayName: Kurikara
-	Tooltip: Executions ignite a dragonfire follow-up combo; vigor cap -20
+	Tooltip: Executions grant three dragonfire loops; vigor cap -10%
 	Origin: The dragon coils about the sword and would swallow it — an old horimono subject, its scales inlaid in gold
-	Power: Dragon-Coil: after the World-Razing Flash or the Finale, the carving ignites; finish a five-beat combo within ten seconds and the fifth beat looses a coiling dragonfire slash (about 40% power)
-	Burden: Vigor cap 100 → 80 — where the dragon coils, breath cannot pass
+	Power: Dragon-Coil: an execution grants three dragonfire layers for 10 seconds; each complete fifth combo beat consumes one to release a loop for 50% base blade damage
+	Burden: Vigor cap -10% — where the dragon coils, breath runs narrow
 }
 
 OniMeiRubbingTessetsu: {
 	DisplayName: Tessetsu
-	Tooltip: Sever steel; dull on flesh
+	Tooltip: First hit each beat severs steel; blade damage -10%
 	Origin: A grand name for a scrap of iron — nailed into the tang as a joke that stuck
-	Power: Iron-Cut: first combo hit of a beat deals extra damage to steel/armored foes
-	Burden: Feels like dull iron on flesh — weapon damage -12%
+	Power: Iron-Cut: the first combo hit of each beat deals ×1.25 damage to steel or armored foes
+	Burden: Blade damage -10% — on flesh, it feels like dull iron
 }
 
 OniMeiRubbingKyushu: {
 	DisplayName: Kyushu
-	Tooltip: Heads only; weak on trash
+	Tooltip: Deep low-life finishers on true heads; blade damage -3%
 	Origin: The head is still the old one. Cut clean; no need for a scare-name
-	Power: Head-Hunt: deeper low-life finishers on the body or head
-	Burden: Cold on trash clears; ordinary targets feel dull
+	Power: Head-Hunt: direct blade hits only affect standalone bodies or true heads below 35% life, scaling up to +85% (+60% vs bosses)
+	Burden: Blade damage -3%; body, tail, and alternate body segments never trigger Head-Hunt
 }
 
 OniMeiRubbingIkiai: {
 	DisplayName: Ikiai
-	Tooltip: Fifth-beat arc-qi; slightly slower combo
+	Tooltip: Fifth beat releases a 55% sword arc; beat interval +4%
 	Origin: The breath you held while staring — then the blades met on the beat
-	Power: Breath-Wave: the fifth beat of a full combo flings a traveling crimson arc of sword-qi (a flying crescent that pierces each foe once)
-	Burden: Combo slightly slower
+	Power: Breath-Wave: the fifth beat of a full combo flings a sword arc for 55% base blade damage; it flies for 16 ticks and pierces at most three distinct bodies
+	Burden: Combo beat interval +4%
 }
 
 OniMeiRubbingKyoko: {
 	DisplayName: Kyoko
-	Tooltip: Empty-space pressure; close-range blur
+	Tooltip: Empty space arms a close cut and pressure pulse; rapid close actions blur focus
 	Origin: A roar into empty air; the echo finds no place to land
-	Power: Hollow-Roar: in empty space, periodically roars out a ripple of ink pressure that stalls the footing of foes it touches; the first cut after leaving and returning hits harder
-	Burden: Dense close-range chopping loses focus and dulls
+	Power: Hollow-Roar: 90 enemy-free ticks arm the next direct blade hit within 260px for ×1.25 damage; while cold, a 24-tick pressure pulse sounds every 90 ticks
+	Burden: Four close actions within 36 ticks cause 24 ticks of lost focus at ×0.95 close damage; distant hits do not consume the armed cut
 }
 
 OniMeiRubbingKarikiri: {
 	DisplayName: Karikiri
-	Tooltip: Decoy eats a hit; true body is more exposed
+	Tooltip: The false body truly dodges one hit; re-arms in 4 seconds
 	Origin: Learned so well it turned fake. An afterimage enters the tang
-	Power: False Body: flash-step start leaves a decoy that eats one contact or one projectile hit
-	Burden: While the decoy lasts you are softer and dashes cost more; after it shatters, a short vacuum window
+	Power: False Body: flash-step start leaves a frozen-pose decoy for 90 ticks that completely dodges one hostile NPC or projectile hit; it re-arms after 240 ticks
+	Burden: While the decoy lives, damage taken and dash cost ×1.12; after shattering, damage taken ×1.18 for 60 ticks. Natural expiry causes no vacuum
 }
 
 OniMeiRubbingMokukiri: {
 	DisplayName: Mokukiri
-	Tooltip: A heavy cut after a dash ends; hard to cash in while chaining dashes
+	Tooltip: A paid dash ending arms Silent-Kill; dashing or whiffing consumes it
 	Origin: The air sank. You got used to it. The guilt stayed
-	Power: Silent-Kill: the next cut during the short window after a flash step naturally ends hits much harder
-	Burden: Never lights while you flash endlessly
+	Power: Silent-Kill: for 45 ticks after a paid normal flash step naturally ends, the next combo or Zanshin action deals ×1.35 damage
+	Burden: Another dash or a whiff consumes Silent-Kill; free execution dashes never arm it
 }
 
 OniMeiRubbingKogehi: {
 	DisplayName: Koge-hi
-	Tooltip: Flash steps leave burning ground; weapon damage -8%
+	Tooltip: Flash steps scorch their full path; blade damage -4%
 	Origin: Do not put your foot in the hot shallows. The groove is for stepping clear
-	Power: Scorch-Trail: the flash-step path leaves brief burning ground
-	Burden: Weapon damage -8%; make up the loss with burning ground left by movement
+	Power: Scorch-Trail: a dash leaves up to five evenly spread burns lasting 90 ticks, each hit dealing 14% base blade damage; burns within 32px refresh
+	Burden: Blade damage -4%; make up the loss with burning ground left by movement
 }
 
 OniMeiRubbingKanhi: {
 	DisplayName: Kan-hi
-	Tooltip: Faster out-of-combat regen; dash and sakura costs +12%
+	Tooltip: Cold natural regen ×2.25; dash and sakura costs +8%
 	Origin: Quiet by the door. Let the ears rest
-	Power: Quiet-Breath: after a short rest out of contact, vigor regenerates much faster
-	Burden: Dash and sakura cruise vigor costs +12% — quiet recovery is repaid in motion
+	Power: Quiet-Breath: after 120 ticks without a direct blade hit, natural vigor regeneration ×2.25
+	Burden: Dash and sakura cruise vigor costs +8% — quiet recovery is repaid in motion
 }
 
 OniMeiRubbingTodohi: {
 	DisplayName: Todo-hi
-	Tooltip: Snare foes; dash re-arms slower
+	Tooltip: Hits bind for 36 ticks; dash re-arm +6 ticks
 	Origin: A bit sticky. Keep contact to turn; break off and it stalls
-	Power: Sticky-Bind: hits ink-snare the target's footing, briefly slowing it (great beasts resist somewhat)
-	Burden: After a dash, the next dash takes half a beat longer to ready
+	Power: Sticky-Bind: direct blade hits bind targets for 36 ticks, setting normal/boss movement ratios to 0.88/0.96
+	Burden: Dash re-arm +6 ticks; Bind and Numb use only the stronger movement ratio
 }
 
 OniMeiRubbingShiorihi: {
 	DisplayName: Shiori-hi
-	Tooltip: Finish splash; natural regen -15%, empty Zanshin costs vigor
+	Tooltip: Kills prune a low-life target; natural regen -10%, empty Zanshin costs vigor
 	Origin: Cut the spent flower to open the edge — not for looks
-	Power: Petal-Prune: kills and Zanshin finishes splash a small cut toward nearby low life
-	Burden: Natural vigor regen -15%; an empty Zanshin costs 2 extra vigor
+	Power: Petal-Prune: a direct blade kill targets a different body at or below 50% life within 240px, tracks briefly, then cuts for 25% base blade damage; no target starts no 45-tick cooldown
+	Burden: Natural vigor regen -10%; an empty Zanshin costs 2 vigor. Pruning blades cannot chain
 }
 
 OniMeiRubbingShiohi: {
 	DisplayName: Shio-hi
-	Tooltip: On-tide reward; off-beat loss
+	Tooltip: On-tide vigor or Zanshin damage; off-beat combos are slightly dull
 	Origin: Tide marks overnight. Wet contact feeds the return
-	Power: Tide-Beat: hits that catch the tide window return more vigor (or sting more)
-	Burden: Constant off-beat chopping underperforms a bare blade
+	Power: Tide-Beat: on a 48-tick cycle with a 6-tick half-window, an on-tide combo restores +3 vigor once per action and an on-tide Zanshin deals ×1.08 damage
+	Burden: Off-tide combo damage ×0.97; tide phase is captured when the action begins
 }
 
 OniMeiRubbingShibori: {
 	DisplayName: Shibori
-	Tooltip: Parry numbs; stance costly
+	Tooltip: Dash-parry or committed contact numbs; stance gain -15%
 	Origin: Guard even with numb hands. The blade hurts too
-	Power: Numb-Counter: a successful guard or dash-body parry numbs the attacker — numbed limbs move slower and strike softer
-	Burden: Stance economy is harsher
+	Power: Numb-Counter: a dash-body parry numbs directly; committed contact may spend 15 stance to reduce that hit to 85% and numb (90-tick cooldown). Numb lasts 45 ticks, sets normal/boss movement to 0.90/0.98, and contact damage ×0.90
+	Burden: Stance gain -15%
 }
 
 OniMeiRubbingChinmei: {
 	DisplayName: Chinmei
-	Tooltip: Anti-projectile stance; weak in brawls
+	Tooltip: Projectile damage -12%, knockback -65%; stance gain -15%
 	Origin: When the ears buzz, settle first, then move
-	Power: Quell: stand firmer under projectiles — less knockback, slightly less projectile damage
+	Power: Quell: hostile projectile damage ×0.88 and knockback ×0.35
 	Burden: Quiet in pure melee; stance gain -15%
 }
 
 OniMeiRubbingAshidome: {
 	DisplayName: Ashidome
-	Tooltip: Plant then finish; no run-cut
+	Tooltip: Plant for 45 ticks, then deal ×1.25 with the next committed action
 	Origin: Stand still. Guard lives where the feet stop
-	Power: Planted-Step: after a brief plant, the next committed finisher hits harder
-	Burden: Running while cutting almost never pays
+	Power: Planted-Step: remain at speed-squared 2.25 or lower for 45 ticks; the next fifth beat, Zanshin, World-Razing Flash, or Finale action deals ×1.25 damage
+	Burden: Charge is consumed when the action starts, even on a whiff; movement clears progress
 }
 
 OniMeiRubbingYoen: {
 	DisplayName: Yoen
-	Tooltip: Execute leaves burn; vigor/dash priced
+	Tooltip: Executions move one ember field; vigor cap -5%
 	Origin: Oven heat still on the edge. Fire out; burn not gone
-	Power: Ember-Field: after an execution, lasting burn ground remains — no full combo required
-	Burden: Slightly tighter vigor; dash costs more while the field lives
+	Power: Ember-Field: an execution creates or moves your single ember field; it lasts 180 ticks and can deal 16% base blade damage to the same body every 45 ticks
+	Burden: Vigor cap -5%; dash cost ×1.10 while the field exists
 }

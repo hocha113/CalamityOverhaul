@@ -98,6 +98,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
         /// <summary>与锵同帧释放:纳刀结算已带震屏/白闪,本体反馈减半防同帧过载</summary>
         private bool SyncedJudge => Projectile.ai[2] > 0.5f;
         private Player Owner => Main.player[Projectile.owner];
+        private OniMeiActionContext ActionContext => OniMeiActionContext.Get(Projectile);
 
         /// <summary>甩刀+落定头段硬占刀权:疾走残心与连段就地让位</summary>
         bool IOniBladeOccupant.HardOccupiesBlade => timer <= PoseFrames + 4;
@@ -107,12 +108,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
 
         /// <summary>触发接口、在持有者客户端调用;允许多刀并存(连居合不收掉上一刀)</summary>
         public static Projectile Fire(Player player, Vector2 aim, int damage, float knockback,
-            bool sakura, bool syncedWithJudge, IEntitySource source = null) {
+            bool sakura, bool syncedWithJudge, IEntitySource source = null, int baseWeaponDamage = 0) {
             source ??= player.GetSource_Misc("CWR_OniZanshinSlash");
             float aimAngle = aim.SafeNormalize(Vector2.UnitX * player.direction).ToRotation();
-            return Projectile.NewProjectileDirect(source, player.Center, Vector2.Zero
+            Projectile projectile = Projectile.NewProjectileDirect(source, player.Center, Vector2.Zero
                 , ModContent.ProjectileType<OniZanshinSlash>(), damage, knockback, player.whoAmI
                 , ai0: MathHelper.WrapAngle(aimAngle), ai1: sakura ? 1f : 0f, ai2: syncedWithJudge ? 1f : 0f);
+            OniMeiActionContext.Capture(projectile, player, source,
+                baseWeaponDamage > 0 ? baseWeaponDamage : Math.Max(1, damage / 2), OniMeiActionKind.Zanshin);
+            return projectile;
         }
 
         public override void SetStaticDefaults() {
@@ -340,6 +344,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
 
         /// <summary>巨物减伤(与灭世一闪同表,伤害基数低故略缓):蠕虫节体 0.25,阿瑞斯节段 0.5</summary>
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            OniMeiCombatProfile profile = ActionContext?.HasSnapshot == true
+                ? ActionContext.Profile
+                : OniMeiCombatProfile.Identity;
             if (CWRLoad.WormBodys.Contains(target.type)) {
                 modifiers.FinalDamage *= 0.25f;
             }
@@ -363,13 +370,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
                 modifiers.FinalDamage *= 1.66f;
             }
             //髭切「断首」/旧首「取首」:斩杀线内随已损生命递增的终结倍率(owner 端结算,随命中包同步)
-            if (OniMeiCombat.TryGetExecuteBonus(Owner, target, out float executeMul)) {
-                modifiers.FinalDamage *= executeMul;
-            }
             if (Projectile.IsOwnedByLocalPlayer()) {
                 OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
-                okp.ApplyMeiConsumeMuls(ref modifiers, allowPlanted: true);
-                okp.ApplyHollowRoarHitMuls(ref modifiers);
+                float meiMul = okp.BuildMeiHitMultiplier(target, in profile,
+                    ActionContext?.ActionSerial ?? 0, allowPlanted: true,
+                    allowIron: false, zanshin: true);
+                if (OniMeiCombat.TryGetExecuteBonus(in profile, target, out float executeMul)) {
+                    meiMul *= executeMul;
+                }
+                modifiers.FinalDamage *= OniMeiCombat.ClampConditionalDamage(
+                    meiMul, in profile, target);
             }
             float offsetX = Projectile.To(target.Center).X;
             modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
@@ -458,14 +468,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             SoundEngine.PlaySound(CWRSound.KatanaHit with { Pitch = 0.25f, Volume = 0.85f, MaxInstances = 3 }, target.Center);
 
             if (Projectile.IsOwnedByLocalPlayer()) {
+                OniMeiCombatProfile profile = ActionContext?.HasSnapshot == true
+                    ? ActionContext.Profile
+                    : OniMeiCombatProfile.Identity;
                 bool grantResources = !resourceGranted;
                 resourceGranted = true;
                 OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
-                okp.OnZanshinHit(target, grantResources);
+                okp.OnZanshinHit(target, grantResources, in profile);
                 //髭切断首:入线命中画断线,了结返势(每刀一次)
-                OniMeiCombat.OnExecuteStrikeHit(Owner, target, CutAngle, ref executeRefunded);
+                OniMeiCombat.OnExecuteStrikeHit(Owner, target, CutAngle, ref executeRefunded, in profile);
                 if (!target.active || target.life <= 0) {
-                    okp.TryPetalPruneOnKill(target, Projectile.damage, Projectile.knockBack);
+                    okp.TryPetalPruneOnKill(target,
+                        ActionContext?.BaseWeaponDamage ?? Math.Max(1, Projectile.damage / 2),
+                        Projectile.knockBack, Projectile, in profile);
                 }
             }
 

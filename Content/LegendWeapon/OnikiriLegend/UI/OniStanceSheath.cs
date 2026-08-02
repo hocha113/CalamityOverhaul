@@ -1,10 +1,8 @@
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ID;
 
@@ -39,6 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>本帧悬浮在刀身上(纯读数,不捕获点击)</summary>
         public bool Hovering { get; private set; }
+        public bool TooltipVisible => hoverEase > 0.02f;
 
         /// <summary>隐藏期间调用:清空瞬态,下次出现直接吸附到当前值</summary>
         public void Reset() {
@@ -146,12 +145,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 (int)(Math.Abs(tipY - pommelBase.Y) + 22f));
             Hovering = interactive && box.Contains(mouse.ToPoint());
             hoverEase += ((Hovering ? 1f : 0f) - hoverEase) * (Hovering ? 0.22f : 0.12f);
-            if (Tutorial.OnikiriTutorialLead.IsActive)
-                Tutorial.OnikiriTutorialTargets.Publish(Tutorial.OnikiriTutorialTargets.Tag_StanceSheath, box);
         }
 
-        /// <summary>绘柄/镡/刃鞘/归座/悬浮读数,suppressTag 藏读数</summary>
-        public void Draw(SpriteBatch sb, float alpha, float time, bool suppressTag) {
+        /// <summary>绘柄/镡/刃鞘/归座</summary>
+        public void Draw(SpriteBatch sb, float alpha, float time) {
             if (alpha <= 0.01f) {
                 return;
             }
@@ -210,9 +207,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             DrawExecutionPulses(sb, quadLC, notchPos, dir, perp, cant, alpha);
 
-            if (!suppressTag && hoverEase > 0.05f) {
-                DrawHoverTag(sb, alpha * hoverEase);
-            }
         }
 
         private void DrawExecutionPulses(SpriteBatch sb, Vector2 bladeRoot, Vector2 notchPos
@@ -316,9 +310,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>悬浮读数:小裱墨牌,题名 + 当前/上限 + 开改铭台指引;满架势多题一行"只欠一拔"</summary>
-        private void DrawHoverTag(SpriteBatch sb, float alpha) {
-            DynamicSpriteFont font = FontAssets.MouseText.Value;
+        /// <summary>悬浮读数</summary>
+        public void DrawTooltip(SpriteBatch sb, float alpha) {
+            alpha *= hoverEase;
+            if (alpha <= 0.02f) {
+                return;
+            }
             string title = OniTalismanHud.StanceTitle.Value;
             string line = string.Format(OniTalismanHud.StanceValueFormat.Value,
                 (int)MathF.Round(snap.Value), (int)MathF.Round(snap.MaxValue));
@@ -333,35 +330,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 : displayFill >= 0.5f
                     ? string.Format(OniTalismanHud.StanceHalfLine.Value, dashInput)
                     : null;
-            string meiHint = OniTalismanHud.StanceMeiHint.Value;
-
-            float w = Math.Max(font.MeasureString(title).X * 0.78f, font.MeasureString(line).X * 0.7f);
-            if (readyLine != null) {
-                w = Math.Max(w, font.MeasureString(readyLine).X * 0.7f);
-            }
-            w = Math.Max(w, font.MeasureString(meiHint).X * 0.7f);
-            float h = 60f + (readyLine != null ? 18f : 0f);
-            Rectangle panel = new((int)lastMouse.X + 16, (int)lastMouse.Y - 6, (int)w + 20, (int)h);
-            //不出屏
-            if (panel.Right > OnikiriUITheme.UIScreenW - 8f) {
-                panel.X = (int)(lastMouse.X - panel.Width - 12f);
-            }
-
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            Rectangle src = new(0, 0, 1, 1);
-            sb.Draw(pixel, new Rectangle(panel.X + 2, panel.Y + 3, panel.Width, panel.Height), src, new Color(8, 2, 5) * (alpha * 0.5f));
-            sb.Draw(pixel, panel, src, OnikiriUITheme.Ink * (alpha * 0.95f));
-            OniBrush.DrawTaperedSlash(sb, new Vector2(panel.X + 4f, panel.Y + 20f),
-                new Vector2(panel.Right - 4f, panel.Y + 19f), 1.3f, 0.7f, alpha * 0.7f);
-
-            Utils.DrawBorderString(sb, title, new Vector2(panel.X + 9f, panel.Y + 3f), OnikiriUITheme.HotWhite * alpha, 0.78f);
-            Utils.DrawBorderString(sb, line, new Vector2(panel.X + 9f, panel.Y + 23f), OnikiriUITheme.TextDim * alpha, 0.7f);
-            float y = panel.Y + 41f;
-            if (readyLine != null) {
-                Utils.DrawBorderString(sb, readyLine, new Vector2(panel.X + 9f, y), OnikiriUITheme.Bright * (alpha * 0.95f), 0.7f);
-                y += 18f;
-            }
-            Utils.DrawBorderString(sb, meiHint, new Vector2(panel.X + 9f, y), OnikiriUITheme.GoldInlay * (alpha * 0.85f), 0.7f);
+            OniTooltipPanel.Draw(sb, lastMouse, title, 0.78f, alpha,
+                new OniTooltipLine(line, OnikiriUITheme.TextDim),
+                new OniTooltipLine(readyLine, OnikiriUITheme.Bright * 0.95f));
         }
     }
 }

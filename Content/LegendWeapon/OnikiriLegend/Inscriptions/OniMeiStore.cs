@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
     public sealed class OniMeiStore
     {
         /// <summary>schema 版本，结构变更递增</summary>
-        public const int SchemaVersion = 1;
+        public const int SchemaVersion = 2;
 
         private static readonly OniMeiSlotKind[] slotKinds =
             [OniMeiSlotKind.Nakago, OniMeiSlotKind.Hi, OniMeiSlotKind.Horimono];
@@ -57,13 +57,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         /// <summary>深拷贝，物品克隆链用</summary>
         public void CopyFrom(OniMeiStore source) {
-            slots.Clear();
-            if (source != null) {
-                foreach ((OniMeiSlotKind slot, string key) in source.slots) {
-                    slots[slot] = key;
-                }
-            }
-            BumpVersion();
+            ReplaceWithSanitized(ReadStoreEntries(source));
         }
 
         public void Clear() {
@@ -74,8 +68,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         /// <summary>存入宿主 tag，键带 OniMei 前缀</summary>
         public void SaveData(TagCompound tag) {
             List<TagCompound> list = [];
-            foreach ((OniMeiSlotKind slot, string key) in slots) {
-                if (string.IsNullOrEmpty(key)) {
+            Dictionary<OniMeiSlotKind, string> sanitized = Sanitize(ReadStoreEntries(this));
+            foreach (OniMeiSlotKind slot in slotKinds) {
+                if (!sanitized.TryGetValue(slot, out string key)) {
                     continue;
                 }
                 list.Add(new TagCompound {
@@ -91,48 +86,94 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
 
         public void LoadData(TagCompound tag) {
-            slots.Clear();
-            BumpVersion();
             if (!tag.TryGet("OniMei:Slots", out List<TagCompound> list) || list == null) {
+                ReplaceWithSanitized([]);
                 return;
             }
-            //schema 目前只有 1，读出备迁移
+            // Version 1 used the same entry shape, so valid old data migrates directly.
             tag.TryGet("OniMei:Version", out int _);
-            foreach (TagCompound entry in list) {
-                if (!entry.TryGet("Slot", out byte rawSlot) || !entry.TryGet("Key", out string key)) {
-                    continue;
-                }
-                //消毒：越界铭位/空键/未注册铭（跨版本删档）一律丢弃
-                if (rawSlot > (byte)OniMeiSlotKind.Horimono || string.IsNullOrEmpty(key)
-                    || !OniMeiRegistry.TryGet(key, out _)) {
-                    continue;
-                }
-                slots[(OniMeiSlotKind)rawSlot] = key;
-            }
+            ReplaceWithSanitized(ReadTagEntries(list));
         }
 
         //====联机序列化====
 
         public void NetSend(BinaryWriter writer) {
-            writer.Write((byte)slots.Count);
-            foreach ((OniMeiSlotKind slot, string key) in slots) {
+            Dictionary<OniMeiSlotKind, string> sanitized = Sanitize(ReadStoreEntries(this));
+            writer.Write((byte)sanitized.Count);
+            foreach (OniMeiSlotKind slot in slotKinds) {
+                if (!sanitized.TryGetValue(slot, out string key)) {
+                    continue;
+                }
                 writer.Write((byte)slot);
-                writer.Write(key ?? string.Empty);
+                writer.Write(key);
             }
         }
 
         public void NetReceive(BinaryReader reader) {
-            slots.Clear();
             int count = reader.ReadByte();
+            List<(int RawSlot, string Key)> entries = new(count);
             //CWRItem.NetReceive 链中段，按声明数读弃保流对齐，非法项丢弃
             for (int i = 0; i < count; i++) {
                 byte rawSlot = reader.ReadByte();
                 string key = reader.ReadString();
-                if (rawSlot > (byte)OniMeiSlotKind.Horimono || string.IsNullOrEmpty(key)
-                    || !OniMeiRegistry.TryGet(key, out _)) {
+                entries.Add((rawSlot, key));
+            }
+            ReplaceWithSanitized(entries);
+        }
+
+        private static IEnumerable<(int RawSlot, string Key)> ReadStoreEntries(OniMeiStore store) {
+            if (store == null) {
+                yield break;
+            }
+            foreach (OniMeiSlotKind slot in slotKinds) {
+                if (store.slots.TryGetValue(slot, out string key)) {
+                    yield return ((int)slot, key);
+                }
+            }
+        }
+
+        private static IEnumerable<(int RawSlot, string Key)> ReadTagEntries(List<TagCompound> list) {
+            foreach (TagCompound entry in list) {
+                if (!entry.TryGet("Key", out string key)) {
                     continue;
                 }
-                slots[(OniMeiSlotKind)rawSlot] = key;
+                if (entry.TryGet("Slot", out byte byteSlot)) {
+                    yield return (byteSlot, key);
+                }
+                else if (entry.TryGet("Slot", out int intSlot)) {
+                    yield return (intSlot, key);
+                }
+            }
+        }
+
+        private static Dictionary<OniMeiSlotKind, string> Sanitize(
+            IEnumerable<(int RawSlot, string Key)> entries) {
+            Dictionary<OniMeiSlotKind, string> sanitized = [];
+            foreach ((int rawSlot, string key) in entries) {
+                if (rawSlot < (int)OniMeiSlotKind.Nakago
+                    || rawSlot > (int)OniMeiSlotKind.Horimono
+                    || string.IsNullOrWhiteSpace(key)) {
+                    continue;
+                }
+
+                OniMeiSlotKind slot = (OniMeiSlotKind)rawSlot;
+                if (sanitized.ContainsKey(slot)
+                    || !OniMeiRegistry.TryGet(key, out OniMeiDefinition definition)
+                    || definition.SlotKind != slot) {
+                    continue;
+                }
+                sanitized.Add(slot, key);
+            }
+            return sanitized;
+        }
+
+        private void ReplaceWithSanitized(IEnumerable<(int RawSlot, string Key)> entries) {
+            Dictionary<OniMeiSlotKind, string> sanitized = Sanitize(entries);
+            slots.Clear();
+            foreach (OniMeiSlotKind slot in slotKinds) {
+                if (sanitized.TryGetValue(slot, out string key)) {
+                    slots.Add(slot, key);
+                }
             }
             BumpVersion();
         }

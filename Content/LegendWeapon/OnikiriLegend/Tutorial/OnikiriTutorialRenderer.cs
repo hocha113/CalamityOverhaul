@@ -74,10 +74,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private static HudFocusSnapshot ResolveFocus(int step) {
             string tag = step switch {
                 OnikiriTutorialFlow.Step_HudIntro => OnikiriTutorialTargets.Tag_VigorStroke,
-                OnikiriTutorialFlow.Step_Register => OnikiriTutorialTargets.Tag_StanceSheath,
                 OnikiriTutorialFlow.Step_Mei => OniMeiUI.Instance?.IsOpen == true
                     ? OnikiriTutorialTargets.Tag_MeiSlotNakago
                     : OnikiriTutorialTargets.Tag_TalismanStrip,
+                OnikiriTutorialFlow.Step_Register => OniRegisterUI.Instance?.IsOpen == true
+                    ? OnikiriTutorialTargets.Tag_RegisterEntry
+                    : OniMeiUI.Instance?.IsOpen == true
+                        ? OnikiriTutorialTargets.Tag_RegisterSwitch
+                        : OnikiriTutorialTargets.Tag_TalismanStrip,
                 OnikiriTutorialFlow.Step_Domain => OnikiriTutorialTargets.Tag_DomainEye,
                 _ => null,
             };
@@ -164,34 +168,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             DrawCardPanel(sb, card, a, time);
             DrawCardContent(sb, font, card, title.Value, TitleScale, lines, a);
 
-            //交互钮：认知步给「已知晓」；开簿/改铭给助手钮；卡住后给出跳过
+            //交互钮:认知步给「已知晓」,开簿/改铭给助手钮,卡住后给出跳过
             if (step == OnikiriTutorialFlow.Step_HudIntro) {
                 if (DrawActionButton(sb, font, card, OnikiriTutorialLead.NextBtn.Value, OnikiriUITheme.Bright, time, a)) {
                     OnikiriTutorialFlow.RequestAdvance();
                 }
             }
-            else if (step == OnikiriTutorialFlow.Step_Register) {
-                if (DrawActionButton(sb, font, card, OnikiriTutorialLead.OpenRegisterBtn.Value, OnikiriUITheme.Bright, time, a)) {
-                    OniRegisterUI.Instance?.Open();
+            else if (step == OnikiriTutorialFlow.Step_Mei) {
+                bool meiOpen = OniMeiUI.Instance?.IsOpen ?? false;
+                if (!meiOpen && DrawActionButton(sb, font, card, OnikiriTutorialLead.OpenMeiBtn.Value,
+                    OnikiriUITheme.GoldInlay, time, a)) {
+                    OniMeiUI.Instance?.Open();
                 }
                 else if (OnikiriTutorialFlow.StepTimer > StuckFramesBeforeSkip
                     && DrawSecondaryButton(sb, font, card, OnikiriTutorialLead.SkipBtn.Value, time, a)) {
                     OnikiriTutorialFlow.RequestAdvance();
                 }
             }
-            else if (step == OnikiriTutorialFlow.Step_Mei) {
+            else if (step == OnikiriTutorialFlow.Step_Register) {
+                bool registerOpen = OniRegisterUI.Instance?.IsOpen ?? false;
                 bool meiOpen = OniMeiUI.Instance?.IsOpen ?? false;
-                if (meiOpen) {
-                    if (DrawActionButton(sb, font, card, OnikiriTutorialLead.NextBtn.Value, OnikiriUITheme.GoldInlay, time, a)) {
-                        OnikiriTutorialFlow.RequestAdvance();
-                    }
+                if (registerOpen && DrawActionButton(sb, font, card, OnikiriTutorialLead.NextBtn.Value,
+                    OnikiriUITheme.Bright, time, a)) {
+                    OniRegisterUI.Instance.Close();
+                    OnikiriTutorialFlow.RequestAdvance();
                 }
-                else if (DrawActionButton(sb, font, card, OnikiriTutorialLead.OpenMeiBtn.Value, OnikiriUITheme.GoldInlay, time, a)) {
+                else if (!registerOpen && !meiOpen && DrawActionButton(sb, font, card,
+                    OnikiriTutorialLead.OpenMeiBtn.Value, OnikiriUITheme.GoldInlay, time, a)) {
                     OniMeiUI.Instance?.Open();
                 }
-                else if (OnikiriTutorialFlow.StepTimer > StuckFramesBeforeSkip
-                    && DrawSecondaryButton(sb, font, card, OnikiriTutorialLead.SkipBtn.Value, time, a)) {
-                    OnikiriTutorialFlow.RequestAdvance();
+                else if (!registerOpen && OnikiriTutorialFlow.StepTimer > StuckFramesBeforeSkip
+                    && DrawSecondaryButton(sb, font, card,
+                        OnikiriTutorialLead.OpenRegisterBtn.Value, time, a)) {
+                    OniRegisterUI.Instance?.Open();
                 }
             }
             else if (step == OnikiriTutorialFlow.Step_Domain) {

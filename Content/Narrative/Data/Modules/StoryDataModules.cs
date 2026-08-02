@@ -1,4 +1,7 @@
 using InnoVault.DataModules;
+using CalamityOverhaul.Content.Scenarios.Himayo.Gifts;
+using System.Collections.Generic;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Narrative.Data.Modules
 {
@@ -147,6 +150,8 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
     /// <summary>鬼切试炼节点礼物完成位（双目标试炼共用一位）</summary>
     public sealed class HimayoGiftStoryData : DataModule
     {
+        public override int Version => 2;
+
         public bool EyeOfCthulhuGift;
         public bool EvilBossGift;
         public bool CalamityEvilGift;
@@ -169,6 +174,18 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool ExoMechsGift;
         public bool SupremeCalamitasGift;
         public bool BossRushGift;
+        public List<string> PendingGiftKeys = [];
+
+        public override void SaveData(TagCompound tag) {
+            HimayoGiftCatalog.Sanitize(this);
+            base.SaveData(tag);
+        }
+
+        public override void LoadData(TagCompound tag, int loadedVersion) {
+            base.LoadData(tag, loadedVersion);
+            PendingGiftKeys ??= [];
+            HimayoGiftCatalog.Sanitize(this);
+        }
     }
 
     public sealed class ShepelGiftStoryData : DataModule
@@ -218,7 +235,7 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
     {
         /// <summary>已完成的教程版本；0 = 从未完成</summary>
         public int CompletedVersion;
-        /// <summary>段落检查点：0=未开始,1=HUD段完成,2=核心战斗完成,3=进阶完成(全局结束)</summary>
+        /// <summary>段落检查点:0=HUD/改铭台/点鬼簿未完成,1=从鬼域步骤继续</summary>
         public int Checkpoint;
     }
 }

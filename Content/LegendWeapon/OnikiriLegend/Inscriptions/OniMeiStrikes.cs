@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -20,11 +21,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
     {
         //====副斩倍率(相对本拍武器伤害)====
         /// <summary>狮势合颚:单刃倍率(两刃合计约 0.40)</summary>
-        private const float LionJawDamageMul = 0.20f;
+        private const float LionJawDamageMul = 0.22f;
         /// <summary>咎影延迟斩</summary>
         private const float GuiltEchoDamageMul = 0.35f;
         /// <summary>龙火回环斩</summary>
-        private const float KurikaraLoopDamageMul = 0.40f;
+        private const float KurikaraLoopDamageMul = 0.50f;
         /// <summary>咎影残像滞拍(帧),读得出位置再咬合</summary>
         private const int GuiltEchoDelayFrames = 6;
 
@@ -34,17 +35,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         private static readonly Color LacquerDark = new(30, 14, 16);
         private static readonly Color PaperSteel = new(255, 243, 226);
 
+        private static int ResolveBaseWeaponDamage(IEntitySource source, int fallback) {
+            if (source is EntitySource_Parent { Entity: Projectile parent }) {
+                OniMeiActionContext context = OniMeiActionContext.Get(parent);
+                if (context?.HasSnapshot == true) {
+                    return context.BaseWeaponDamage;
+                }
+            }
+            return Math.Max(1, fallback);
+        }
+
         //==================== 副斩 ====================
 
         /// <summary>狮子之子第五拍:合颚双刃波(上下收窄咬合)+中心暗墨压力波;owner 端</summary>
         public static void FireLionJaw(Player player, Vector2 origin, float aim, int beatDamage,
-            float knockback, float sizeMul) {
-            int damage = Math.Max(1, (int)(beatDamage * LionJawDamageMul));
+            float knockback, float sizeMul, IEntitySource source = null) {
+            int damage = Math.Max(1, (int)(ResolveBaseWeaponDamage(source, beatDamage) * LionJawDamageMul));
             Vector2 aimDir = aim.ToRotationVector2();
             Vector2 center = origin + aimDir * 190f * sizeMul;
             //合颚:比普通 X 更窄的上下夹角,读作"狮口咬合"
             CrimsonRendCleave.FireCross(player, center, aim, 0.42f, damage, knockback * 0.5f
-                , sizeMul * 0.92f, player.GetSource_ItemUse(player.HeldItem), CleaveStyle.LionJaw);
+                , sizeMul * 0.92f, source ?? player.GetSource_ItemUse(player.HeldItem), CleaveStyle.LionJaw);
 
             if (Main.dedServ) {
                 return;
@@ -60,22 +71,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         /// <summary>友切:疾走取消连段的原地延迟斩影(滞拍后咬合);owner 端</summary>
         public static void FireGuiltEcho(Player player, Vector2 center, float aim, int beatDamage,
-            float knockback, float sizeMul) {
-            int damage = Math.Max(1, (int)(beatDamage * GuiltEchoDamageMul));
+            float knockback, float sizeMul, IEntitySource source = null) {
+            int damage = Math.Max(1, (int)(ResolveBaseWeaponDamage(source, beatDamage) * GuiltEchoDamageMul));
             CrimsonRendCleave.Fire(player, center, aim, damage, knockback * 0.4f, sizeMul * 0.9f
-                , flip: Main.rand.NextBool() ? 1 : -1, player.GetSource_ItemUse(player.HeldItem)
+                , flip: Main.rand.NextBool() ? 1 : -1, source ?? player.GetSource_ItemUse(player.HeldItem)
                 , CleaveStyle.GuiltEcho, GuiltEchoDelayFrames);
         }
 
         /// <summary>倶利伽罗:处决点燃后第五拍的龙火回环斩;owner 端</summary>
         public static void FireKurikaraLoop(Player player, Vector2 origin, float aim, int beatDamage,
-            float knockback, float sizeMul) {
-            int damage = Math.Max(1, (int)(beatDamage * KurikaraLoopDamageMul));
+            float knockback, float sizeMul, IEntitySource source = null) {
+            int damage = Math.Max(1, (int)(ResolveBaseWeaponDamage(source, beatDamage) * KurikaraLoopDamageMul));
             Vector2 aimDir = aim.ToRotationVector2();
             //回环:斜跨主斩弧的一道缠刃,与第五拍巨弧交叠成环
             CrimsonRendCleave.Fire(player, origin + aimDir * 150f * sizeMul, aim + 1.15f, damage
                 , knockback * 0.4f, sizeMul * 0.95f, flip: -1
-                , player.GetSource_ItemUse(player.HeldItem), CleaveStyle.KurikaraLoop);
+                , source ?? player.GetSource_ItemUse(player.HeldItem), CleaveStyle.KurikaraLoop);
 
             if (Main.dedServ) {
                 return;
@@ -90,11 +101,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
 
         /// <summary>谢樋剪落:了结点溅一小段邻域剪刃;花瓣仅 PRT;不得再触发剪落</summary>
-        public static void FirePetalPrune(Player player, Vector2 origin, float aim, int weaponDamage, float knockback) {
-            int damage = Math.Max(1, (int)(weaponDamage * OniMeiCombat.PetalPruneDamageMul));
+        public static void FirePetalPrune(Player player, NPC target, Vector2 origin, float aim,
+            int weaponDamage, float knockback, IEntitySource source = null) {
+            int damage = Math.Max(1,
+                (int)(ResolveBaseWeaponDamage(source, weaponDamage) * OniMeiCombat.PetalPruneDamageMul));
             CrimsonRendCleave.Fire(player, origin, aim, damage, knockback * 0.25f, scale: 0.72f
-                , flip: Main.rand.NextBool() ? 1 : -1, player.GetSource_ItemUse(player.HeldItem)
-                , CleaveStyle.PetalPrune);
+                , flip: Main.rand.NextBool() ? 1 : -1, source ?? player.GetSource_ItemUse(player.HeldItem)
+                , CleaveStyle.PetalPrune, trackedRoot: target?.whoAmI ?? -1);
 
             if (Main.dedServ) {
                 return;
@@ -116,6 +129,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             }
             Vector2 center = player.Center;
             float radiusSq = OniMeiCombat.HollowRoarRadius * OniMeiCombat.HollowRoarRadius;
+            System.Collections.Generic.HashSet<int> affectedRoots = [];
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (!npc.CanBeChasedBy() || npc.friendly) {
                     continue;
@@ -123,7 +137,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                 if (npc.DistanceSQ(center) > radiusSq) {
                     continue;
                 }
-                npc.AddBuff(ModContent.BuffType<OniBindDebuff>(), OniMeiCombat.HollowRoarSlowTicks);
+                NPC root = OniMeiCombat.ResolveEffectRoot(npc);
+                if (root != null && affectedRoots.Add(root.whoAmI)) {
+                    root.AddBuff(ModContent.BuffType<OniBindDebuff>(), OniMeiCombat.HollowRoarSlowTicks);
+                }
             }
             SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.55f, Volume = 0.22f }, center);
             if (Main.dedServ) {
@@ -225,17 +242,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         /// 不回调气/架势。origin 应为刃弧中段(由 Slash 爆发帧传入)
         /// </summary>
         public static void FireBreathWave(Player player, Vector2 origin, float aim, int beatDamage,
-            float knockback, float sizeMul = 1f, float flip = 1f) {
+            float knockback, float sizeMul = 1f, float flip = 1f, IEntitySource source = null) {
             if (player == null) {
                 return;
             }
             float arcSize = sizeMul * OniMeiCombat.BreathArcSizeMul;
-            int damage = Math.Max(1, (int)(beatDamage * OniMeiCombat.BreathArcDamageMul));
+            int damage = Math.Max(1,
+                (int)(ResolveBaseWeaponDamage(source, beatDamage) * OniMeiCombat.BreathArcDamageMul));
             Vector2 aimDir = aim.ToRotationVector2();
             //刃上已卡点,只略前送一截读作甩离
             Vector2 muzzle = origin;
             OniMeiBreathArc.Fire(player, muzzle, aim, damage, knockback * 0.55f, arcSize, flip
-                , player.GetSource_ItemUse(player.HeldItem));
+                , source ?? player.GetSource_ItemUse(player.HeldItem));
 
             if (Main.dedServ) {
                 return;

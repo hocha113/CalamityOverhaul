@@ -19,6 +19,25 @@ namespace CalamityOverhaul.Common
             if (rl >= 0 && rl < Main.maxNPCs && Main.npc[rl].active) {
                 return rl;
             }
+            if (npc.type == CWRID.NPC_AquaticScourgeBodyAlt
+                || npc.type == CWRID.NPC_AquaticScourgeBody
+                || npc.type == CWRID.NPC_AquaticScourgeTail) {
+                int nearestHead = -1;
+                float nearestSq = float.MaxValue;
+                foreach (NPC candidate in Main.ActiveNPCs) {
+                    if (candidate.type != CWRID.NPC_AquaticScourgeHead) {
+                        continue;
+                    }
+                    float distanceSq = candidate.DistanceSQ(npc.Center);
+                    if (distanceSq < nearestSq) {
+                        nearestSq = distanceSq;
+                        nearestHead = candidate.whoAmI;
+                    }
+                }
+                if (nearestHead >= 0) {
+                    return nearestHead;
+                }
+            }
             return npc.whoAmI;
         }
 

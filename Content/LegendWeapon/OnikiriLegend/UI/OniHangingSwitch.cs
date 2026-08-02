@@ -36,6 +36,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public float Rot { get; private set; }
         /// <summary>绳末=物件顶挂点</summary>
         public Vector2 End => rope.End;
+        /// <summary>本帧命中区</summary>
+        public Rectangle HitBox { get; private set; }
         /// <summary>预演进度 0~1:半拔白光/弹开一截等小演出的驱动量</summary>
         public float Ceremony01 => ceremony < 0f ? 0f : MathHelper.Clamp(ceremony / CeremonyFrames, 0f, 1f);
         /// <summary>偶发回声 0~1:金光巡鞘/鬼火漏缝这类"对面在喘气"的脉冲</summary>
@@ -48,6 +50,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             wasHovered = false;
             ceremony = -1f;
             fired = false;
+            HitBox = Rectangle.Empty;
         }
 
         /// <summary>绘制挂绳(物件本体由调用方画在 End 之下)</summary>
@@ -87,6 +90,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //命中:物件挂在绳末之下的轴对齐外包(摆角小,不做 OBB)
             Rectangle box = new((int)(End.X - objSize.X * 0.5f - 5f), (int)End.Y - 4,
                 (int)objSize.X + 10, (int)objSize.Y + 10);
+            HitBox = box;
             bool hoverNow = interactive && ceremony < 0f && box.Contains(mouse.ToPoint());
             if (hoverNow && !wasHovered) {
                 rope.Nudge(Main.rand.NextFloat(0.5f, 1.0f) * (Main.rand.NextBool() ? 1f : -1f));

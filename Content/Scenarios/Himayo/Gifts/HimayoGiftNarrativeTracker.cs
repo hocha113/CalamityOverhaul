@@ -1,24 +1,27 @@
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Common;
+using CalamityOverhaul.Content.Narrative.Data;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 {
     internal abstract class HimayoBossGiftNarrative : StoryScenario
     {
-        /// <summary>主 Boss type；多目标请覆写 <see cref="TargetBossIds"/></summary>
         public virtual int TargetBossId => 0;
 
         public virtual int[] TargetBossIds
             => TargetBossId > 0 ? [TargetBossId] : [];
 
-        /// <summary>试炼 021：靠 Boss Rush 完成边沿，不挂 NPC type</summary>
         public virtual bool IsBossRushGift => false;
+
+        public string GiftKey
+            => HimayoGiftCatalog.TryGet(GetType(), out HimayoGiftEntry entry) ? entry.MeiKey : string.Empty;
 
         protected virtual bool CanSpawned() => true;
 
@@ -43,144 +46,140 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 
     internal static class HimayoGiftNarrativeTracker
     {
-        private static readonly Dictionary<HimayoBossGiftNarrative, bool> spawned = [];
-        private static readonly Dictionary<int, List<HimayoBossGiftNarrative>> byBossId = [];
-        private static readonly Dictionary<string, int> pendingTimers = new(StringComparer.Ordinal);
-        private static readonly List<HimayoBossGiftNarrative> bossRushGifts = [];
-        private static bool wasDownedBossRush;
+        private const int WorldReconcileInterval = 60;
+
+        private static readonly Dictionary<string, HimayoBossGiftNarrative> scenariosByGiftKey = new(StringComparer.Ordinal);
+        private static uint observedWorldEntitlements;
+        private static int worldReconcileTimer;
+        private static bool reconcileRequested;
+
+        public static int LastDefeatedBossId {
+            get {
+                Player player = Main.LocalPlayer;
+                return Main.netMode != NetmodeID.Server && player?.active == true
+                    ? player.GetModPlayer<StoryPlayer>().HimayoLastDefeatedBossId
+                    : 0;
+            }
+        }
 
         public static void ResetWorldState() {
-            spawned.Clear();
-            byBossId.Clear();
-            pendingTimers.Clear();
-            bossRushGifts.Clear();
-            wasDownedBossRush = CWRRef.Has && CWRRef.GetDownedBossRush();
+            scenariosByGiftKey.Clear();
+            observedWorldEntitlements = 0;
+            worldReconcileTimer = 0;
+            reconcileRequested = false;
             RegisterAll();
         }
 
         private static void RegisterAll() {
             foreach (NarrativeScenario scenario in NarrativeScenario.All) {
-                if (scenario is not HimayoBossGiftNarrative gift) {
+                if (scenario is not HimayoBossGiftNarrative gift
+                    || !HimayoGiftCatalog.TryGet(gift.GetType(), out HimayoGiftEntry entry)) {
                     continue;
                 }
-
-                spawned[gift] = false;
-
-                if (gift.IsBossRushGift) {
-                    if (!bossRushGifts.Contains(gift)) {
-                        bossRushGifts.Add(gift);
-                    }
-                    continue;
+                if (!scenariosByGiftKey.TryAdd(entry.MeiKey, gift)) {
+                    CWRMod.Instance.Logger.Error($"[HimayoGift] duplicate scenario for Key '{entry.MeiKey}'");
                 }
+            }
 
-                int[] ids = gift.TargetBossIds;
-                for (int i = 0; i < ids.Length; i++) {
-                    int bossId = ids[i];
-                    if (bossId <= 0) {
-                        continue;
-                    }
-
-                    if (!byBossId.TryGetValue(bossId, out List<HimayoBossGiftNarrative> list)) {
-                        list = [];
-                        byBossId[bossId] = list;
-                    }
-
-                    if (!list.Contains(gift)) {
-                        list.Add(gift);
-                    }
-                }
+            if (scenariosByGiftKey.Count != HimayoGiftCatalog.GiftCount) {
+                CWRMod.Instance.Logger.Error(
+                    $"[HimayoGift] catalog/scenario mismatch: {scenariosByGiftKey.Count}/{HimayoGiftCatalog.GiftCount}");
             }
         }
 
         public static void NotifyBossDefeated(int bossId) {
-            if (CWRRef.GetBossRushActive() || !byBossId.TryGetValue(bossId, out List<HimayoBossGiftNarrative> gifts)) {
+            if (CWRRef.GetBossRushActive() || !HimayoGiftCatalog.IsTargetBoss(bossId)) {
+                return;
+            }
+            if (Main.netMode != NetmodeID.Server && Main.LocalPlayer?.active == true) {
+                Main.LocalPlayer.GetModPlayer<StoryPlayer>().HimayoLastDefeatedBossId = bossId;
+            }
+            worldReconcileTimer = 0;
+        }
+
+        public static void Tick() {
+            if (scenariosByGiftKey.Count == 0) {
+                RegisterAll();
+            }
+
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
+                TickWorldEntitlements();
+            }
+            if (Main.netMode == NetmodeID.Server) {
                 return;
             }
 
-            LastDefeatedBossId = bossId;
-
-            for (int i = 0; i < gifts.Count; i++) {
-                HimayoBossGiftNarrative gift = gifts[i];
-                if (gift.ShouldSpawn()) {
-                    spawned[gift] = true;
-                }
+            if (Main.netMode == NetmodeID.MultiplayerClient && !reconcileRequested
+                && Main.LocalPlayer?.active == true) {
+                reconcileRequested = true;
+                HimayoStorySync.RequestGiftReconcile();
             }
+            TickLocalNarrative();
         }
 
-        /// <summary>最近一次触发礼物登记的 Boss type，供双目标场分支台词</summary>
-        public static int LastDefeatedBossId { get; private set; }
+        private static void TickWorldEntitlements() {
+            if (worldReconcileTimer > 0) {
+                worldReconcileTimer--;
+                return;
+            }
+            worldReconcileTimer = WorldReconcileInterval;
 
-        public static void NotifyBossRushCleared() {
             if (CWRRef.GetBossRushActive()) {
                 return;
             }
 
-            for (int i = 0; i < bossRushGifts.Count; i++) {
-                HimayoBossGiftNarrative gift = bossRushGifts[i];
-                if (gift.ShouldSpawn()) {
-                    spawned[gift] = true;
-                }
+            uint current = HimayoGiftCatalog.GetWorldEntitlementMask();
+            uint added = current & ~observedWorldEntitlements;
+            observedWorldEntitlements |= current;
+            if (Main.netMode == NetmodeID.SinglePlayer) {
+                HimayoStorySync.ApplyEntitlements(Main.LocalPlayer, HimayoGiftCatalog.GetWorldEntitlementKeys());
+                return;
             }
-        }
-
-        public static void Tick() {
-            if (spawned.Count == 0) {
-                RegisterAll();
-            }
-
-            TickBossRushEdge();
-
-            Player player = Main.LocalPlayer;
-            if (!player.HasItem(OnikiriOverride.ID) || !HimayoStorySync.PostFirstMetIsComplete) {
+            if (added == 0) {
                 return;
             }
 
+            HimayoStorySync.SendWorldEntitlements();
+        }
+
+        private static void TickLocalNarrative() {
+            Player player = Main.LocalPlayer;
+            if (player == null || !player.active || !player.HasItem(OnikiriOverride.ID)
+                || !HimayoStorySync.PostFirstMetIsComplete) {
+                return;
+            }
             if (CWRWorld.HasBoss || CWRWorld.BossRush || NarrativeTriggerGate.IsBusy) {
                 return;
             }
-
-            foreach (KeyValuePair<HimayoBossGiftNarrative, bool> pair in spawned) {
-                HimayoBossGiftNarrative gift = pair.Key;
-                if (!pair.Value || gift.CheckGiftCompleted() || !gift.MeetsAdditionalConditions(player)) {
-                    continue;
-                }
-
-                if (NarrativeRunner.IsScenarioActiveOrPending(gift.Key)) {
-                    continue;
-                }
-
-                if (!pendingTimers.TryGetValue(gift.Key, out int timer)) {
-                    pendingTimers[gift.Key] = 60 * Main.rand.Next(2, 4);
-                    continue;
-                }
-
-                if (timer > 0) {
-                    pendingTimers[gift.Key] = timer - 1;
-                    continue;
-                }
-
-                if (NarrativeRunner.Begin(gift)) {
-                    gift.CompleteGift();
-                    pendingTimers.Remove(gift.Key);
-                    spawned[gift] = false;
-                }
-                else {
-                    pendingTimers[gift.Key] = 30;
-                }
-            }
-        }
-
-        private static void TickBossRushEdge() {
-            if (!CWRRef.Has) {
+            if (!HimayoStorySync.TryGetNextPending(player, out HimayoGiftEntry entry)
+                || !scenariosByGiftKey.TryGetValue(entry.MeiKey, out HimayoBossGiftNarrative gift)
+                || gift.CheckGiftCompleted() || !gift.MeetsAdditionalConditions(player)
+                || NarrativeRunner.IsScenarioActiveOrPending(gift.Key)) {
                 return;
             }
 
-            bool downed = CWRRef.GetDownedBossRush();
-            if (downed && !wasDownedBossRush) {
-                NotifyBossRushCleared();
+            StoryPlayer storyPlayer = player.GetModPlayer<StoryPlayer>();
+            if (storyPlayer.HimayoGiftDelayKey != entry.MeiKey) {
+                storyPlayer.HimayoGiftDelayKey = entry.MeiKey;
+                storyPlayer.HimayoGiftDelayTicks = 60 * Main.rand.Next(2, 4);
+                return;
+            }
+            if (storyPlayer.HimayoGiftDelayTicks > 0) {
+                storyPlayer.HimayoGiftDelayTicks--;
+                return;
+            }
+            if (!HimayoStorySync.CanReceiveGift(player, entry.MeiKey)) {
+                storyPlayer.HimayoGiftDelayTicks = 30;
+                return;
             }
 
-            wasDownedBossRush = downed;
+            if (NarrativeRunner.Begin(gift)) {
+                storyPlayer.HimayoGiftDelayKey = null;
+                storyPlayer.HimayoGiftDelayTicks = 0;
+            }
+            else {
+                storyPlayer.HimayoGiftDelayTicks = 30;
+            }
         }
     }
 
@@ -189,10 +188,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => true;
 
         public override void OnNPCDeath(NPC npc) {
-            if (Main.dedServ) {
-                return;
-            }
-
             HimayoGiftNarrativeTracker.NotifyBossDefeated(npc.type);
         }
     }

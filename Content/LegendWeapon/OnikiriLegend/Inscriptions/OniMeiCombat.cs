@@ -1,6 +1,8 @@
 ﻿using System;
+using CalamityOverhaul.Common;
 using System.Linq;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
@@ -13,29 +15,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
     public struct OniMeiCombatProfile
     {
         //====通用倍率(恒 1 即无改动)====
-        /// <summary>武器面板伤害倍率(髭切 0.90)</summary>
+        /// <summary>武器面板伤害倍率(髭切 0.98)</summary>
         public float DamageMul;
-        /// <summary>连段排拍间隔倍率(狮子之子 1.10)</summary>
+        /// <summary>连段排拍间隔倍率(狮子之子 1.02)</summary>
         public float ComboGapMul;
-        /// <summary>手持期间所受最终伤害倍率(友切 1.10)；肢解反噬的固定契约除外</summary>
+        /// <summary>手持期间所受最终伤害倍率(友切 1.06)；肢解反噬的固定契约除外</summary>
         public float IncomingDamageMul;
-        /// <summary>疾走气力消耗倍率(风樋 0.75)</summary>
+        /// <summary>疾走气力消耗倍率(风樋 0.85)</summary>
         public float DashVigorCostMul;
-        /// <summary>樱流每帧耗气倍率(风樋 0.70)</summary>
+        /// <summary>樱流每帧耗气倍率(风樋 0.80)</summary>
         public float SakuraDrainMul;
-        /// <summary>疾走墨痕伤害倍率(风樋 0.75)</summary>
+        /// <summary>疾走墨痕伤害倍率(风樋 0.80)</summary>
         public float FlashMarkDamageMul;
-        /// <summary>自然回气倍率(血樋 0.50)</summary>
+        /// <summary>自然回气倍率(血樋 0.65)</summary>
         public float NaturalRegenMul;
-        /// <summary>招式消耗后的额外回气延迟(帧，血樋 +24)</summary>
+        /// <summary>招式消耗后的额外回气延迟(帧，血樋 +18)</summary>
         public int ExtraRegenDelayTicks;
-        /// <summary>连段每拍首次命中的额外回气(血樋 +2)</summary>
+        /// <summary>连段每拍首次命中的额外回气(血樋 +1)</summary>
         public float ComboHitVigorBonus;
-        /// <summary>残心首次命中的额外回气(血樋 +8)</summary>
+        /// <summary>残心首次命中的额外回气(血樋 +4)</summary>
         public float ZanshinHitVigorBonus;
-        /// <summary>常规架势获取倍率(不动 0.80)</summary>
+        /// <summary>常规架势获取倍率(不动/痺雕/镇鸣 0.85)</summary>
         public float StanceGainMul;
-        /// <summary>气力上限倍率(倶利伽罗 0.80)</summary>
+        /// <summary>气力上限倍率(倶利伽罗 0.90，余炎 0.95)</summary>
         public float VigorMaxMul;
 
         //====语义开关(各铭的个性化机制)====
@@ -111,27 +113,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         /// <summary>断首线：目标(蠕虫归主体)生命比低于此值进入终结区间</summary>
         public const float ExecuteThreshold = 0.35f;
         /// <summary>非 boss 目标在斩杀线底端的最大终结加成(1→1.5)</summary>
-        public const float ExecuteMaxBonus = 0.5f;
+        public const float ExecuteMaxBonus = 0.60f;
         /// <summary>boss 目标单独限幅(1→1.25)</summary>
-        public const float ExecuteBossMaxBonus = 0.25f;
+        public const float ExecuteBossMaxBonus = 0.45f;
         /// <summary>断首击杀返还架势(每次招式至多一次)</summary>
-        public const float ExecuteKillStanceRefund = 10f;
+        public const float ExecuteKillStanceRefund = 8f;
 
         //====L0 独特化调参====
         /// <summary>铁截：钢铁体连段首击伤害倍率</summary>
-        public const float IronSeverSteelHitMul = 1.30f;
+        public const float IronSeverSteelHitMul = 1.25f;
         /// <summary>滞樋：命中滞缚时长(帧)</summary>
-        public const int StickyBindTargetSlowTicks = 45;
+        public const int StickyBindTargetSlowTicks = 36;
         /// <summary>滞樋：疾走再触发锁额外帧(自黏负担=节奏税，不糊脚)</summary>
-        public const int StickyBindDashLockTicks = 5;
+        public const int StickyBindDashLockTicks = 6;
         /// <summary>滞缚：非 boss 每帧位移阻尼(香草 Slow 对 NPC 无效，自实现)</summary>
-        public const float BindDampMul = 0.85f;
+        public const float BindDampMul = 0.88f;
         /// <summary>滞缚：boss 每帧位移阻尼(减效)</summary>
-        public const float BindBossDampMul = 0.95f;
+        public const float BindBossDampMul = 0.96f;
         /// <summary>闲樋：无命中记忆刷新视为脱战的窗口(帧)</summary>
-        public const int QuietBreathColdTicks = 180;
+        public const int QuietBreathColdTicks = 120;
         /// <summary>闲樋：脱战时自然回气额外倍率(叠在 NaturalRegenMul 上)</summary>
-        public const float QuietBreathRegenMul = 3f;
+        public const float QuietBreathRegenMul = 2.25f;
         /// <summary>镇鸣：受弹最终伤害倍率</summary>
         public const float QuellProjectileDamageMul = 0.88f;
         /// <summary>镇鸣：受弹击退倍率</summary>
@@ -139,21 +141,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         //====M1 独特化调参====
         /// <summary>旧首：非 boss 头/主体在斩杀线底端的最大加成(1→1.65)</summary>
-        public const float HeadHuntMaxBonus = 0.65f;
+        public const float HeadHuntMaxBonus = 0.85f;
         /// <summary>旧首：boss 头单独限幅(1→1.35)</summary>
-        public const float HeadHuntBossMaxBonus = 0.35f;
+        public const float HeadHuntBossMaxBonus = 0.60f;
         /// <summary>默切：疾走结束后默杀窗(帧)</summary>
         public const int SilentKillWindowTicks = 45;
         /// <summary>默切：窗内下一记加深倍率</summary>
         public const float SilentKillHitMul = 1.35f;
         /// <summary>痺反：来手痺时长(帧)</summary>
-        public const int NumbCounterSlowTicks = 36;
+        public const int NumbCounterSlowTicks = 45;
         /// <summary>痺：非 boss 每帧位移阻尼(轻)</summary>
-        public const float NumbDampMul = 0.92f;
+        public const float NumbDampMul = 0.90f;
         /// <summary>痺：boss 每帧位移阻尼</summary>
-        public const float NumbBossDampMul = 0.97f;
+        public const float NumbBossDampMul = 0.98f;
         /// <summary>痺：麻手接触伤倍率("麻了的手打不疼"，boss 也吃)</summary>
-        public const float NumbContactDamageMul = 0.85f;
+        public const float NumbContactDamageMul = 0.90f;
         /// <summary>止足：低位移累计达此帧数视为立定就绪</summary>
         public const int PlantedChargeNeedTicks = 45;
         /// <summary>止足：速度平方阈(\|v\|≈1.5)</summary>
@@ -163,43 +165,47 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         /// <summary>止足：大招/第五拍加深倍率</summary>
         public const float PlantedStepHitMul = 1.25f;
         /// <summary>默杀×止足同帧叠乘软帽(残心与第五拍同门收口)</summary>
-        public const float SilentPlantedSoftCap = 1.55f;
+        public const float SilentPlantedSoftCap = 1.50f;
 
         //====M2 独特化调参====
         /// <summary>剪落：邻域溅射半径</summary>
-        public const float PetalPruneRadius = 220f;
+        public const float PetalPruneRadius = 240f;
         /// <summary>剪落：断斩相对武器伤害</summary>
-        public const float PetalPruneDamageMul = 0.22f;
+        public const float PetalPruneDamageMul = 0.25f;
         /// <summary>剪落：连环门闩(帧)</summary>
-        public const int PetalPruneCooldownTicks = 36;
+        public const int PetalPruneCooldownTicks = 45;
         /// <summary>剪落：空残心扣气</summary>
         public const float PetalPruneEmptyZanshinVigor = 2f;
         /// <summary>潮拍：潮汐周期(帧)</summary>
-        public const int TidePeriodTicks = 40;
+        public const int TidePeriodTicks = 48;
         /// <summary>潮拍：合潮半宽(帧)</summary>
-        public const int TideWindowHalf = 10;
+        public const int TideWindowHalf = 6;
         /// <summary>潮拍：合潮授权命中回气</summary>
-        public const float TideOnBeatVigor = 4f;
+        public const float TideOnBeatVigor = 3f;
         /// <summary>潮拍：错拍连段授权首击伤</summary>
-        public const float TideOffBeatHitMul = 0.90f;
+        public const float TideOffBeatHitMul = 0.97f;
         /// <summary>空鸣：冷战/空场阈(帧)</summary>
         public const int HollowRoarColdTicks = 90;
         /// <summary>空鸣：威压脉冲间隔(帧)</summary>
-        public const int HollowRoarInterval = 75;
+        public const int HollowRoarInterval = 90;
         /// <summary>空鸣：威压 Slow 半径</summary>
         public const float HollowRoarRadius = 320f;
         /// <summary>空鸣：威压 Slow 时长(帧)</summary>
         public const int HollowRoarSlowTicks = 24;
         /// <summary>空鸣：远离再近一刀加深</summary>
-        public const float HollowApproachHitMul = 1.18f;
+        public const float HollowApproachHitMul = 1.25f;
         /// <summary>空鸣：贴身失焦连砍伤</summary>
-        public const float HollowFocusLossHitMul = 0.88f;
+        public const float HollowFocusLossHitMul = 0.95f;
         /// <summary>空鸣：近距判定半径</summary>
-        public const float HollowNearRadius = 280f;
+        public const float HollowNearRadius = 260f;
         /// <summary>空鸣：短窗内授权命中达此次数视为失焦</summary>
-        public const int HollowFocusLossHitNeed = 3;
+        public const int HollowFocusLossHitNeed = 4;
         /// <summary>空鸣：失焦统计窗(帧)</summary>
-        public const int HollowFocusLossWindowTicks = 48;
+        public const int HollowFocusLossWindowTicks = 36;
+        /// <summary>空鸣：四动作失焦后的惩罚持续帧数</summary>
+        public const int HollowFocusLossDurationTicks = 24;
+        /// <summary>潮拍：合潮残心加深</summary>
+        public const float TideZanshinHitMul = 1.08f;
 
         //====H0 息合吐息弧剑气(第五拍固定甩出)====
         /// <summary>息合：弧剑气相对本拍武器伤害</summary>
@@ -219,33 +225,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         /// <summary>焦痕：视觉规模</summary>
         public const float ScorchScale = 0.85f;
         /// <summary>焦痕：相对武器伤害</summary>
-        public const float ScorchDamageMul = 0.18f;
+        public const float ScorchDamageMul = 0.14f;
         /// <summary>焦痕：路径采样间距</summary>
         public const float ScorchSampleDist = 48f;
         /// <summary>焦痕：单次疾走最多坑数</summary>
-        public const int ScorchMaxPerDash = 6;
+        public const int ScorchMaxPerDash = 5;
         /// <summary>余烬：灼地寿命(帧)</summary>
-        public const int EmberLifeTicks = 240;
+        public const int EmberLifeTicks = 180;
         /// <summary>余烬：视觉规模</summary>
         public const float EmberScale = 1.25f;
         /// <summary>余烬：相对武器伤害</summary>
-        public const float EmberDamageMul = 0.22f;
+        public const float EmberDamageMul = 0.16f;
         /// <summary>余烬场在时疾走耗气倍率</summary>
-        public const float EmberFieldDashCostMul = 1.15f;
+        public const float EmberFieldDashCostMul = 1.10f;
         /// <summary>同点刷新距离阈</summary>
-        public const float BurnRefreshRadius = 48f;
+        public const float BurnRefreshRadius = 32f;
 
         //====H2 假身====
         /// <summary>假身：残影寿命(帧)</summary>
-        public const int FalseBodyLifeTicks = 120;
+        public const int FalseBodyLifeTicks = 90;
         /// <summary>假身在场：承伤额外倍率</summary>
         public const float FalseBodyIncomingMul = 1.12f;
         /// <summary>假身在场：疾走耗气倍率</summary>
         public const float FalseBodyDashCostMul = 1.12f;
         /// <summary>影破真空：持续时间(帧)</summary>
-        public const int FalseBodyVacuumTicks = 45;
+        public const int FalseBodyVacuumTicks = 60;
         /// <summary>影破真空：承伤倍率</summary>
-        public const float FalseBodyVacuumIncomingMul = 1.15f;
+        public const float FalseBodyVacuumIncomingMul = 1.18f;
 
         /// <summary>潮拍：相位是否落在合潮窗(窗心在周期中点)</summary>
         public static bool IsTideOnBeat(int tidePhase) {
@@ -273,24 +279,91 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             return profile;
         }
 
+        /// <summary>从动作快照中的稳定 Key 解析战斗档；非法 Key 或错槽按空铭处理。</summary>
+        public static OniMeiCombatProfile Resolve(string nakagoKey, string hiKey, string horimonoKey) {
+            OniMeiCombatProfile profile = OniMeiCombatProfile.Identity;
+            ApplySnapshotKey(ref profile, nakagoKey, OniMeiSlotKind.Nakago);
+            ApplySnapshotKey(ref profile, hiKey, OniMeiSlotKind.Hi);
+            ApplySnapshotKey(ref profile, horimonoKey, OniMeiSlotKind.Horimono);
+            return profile;
+        }
+
+        private static void ApplySnapshotKey(ref OniMeiCombatProfile profile, string key, OniMeiSlotKind slot) {
+            if (!string.IsNullOrEmpty(key)
+                && OniMeiRegistry.TryGet(key, out OniMeiDefinition definition)
+                && definition.SlotKind == slot) {
+                definition.ModifyCombatProfile(ref profile);
+            }
+        }
+
         /// <summary>按玩家手中物品解析(含鼠标项)；未持刀返回 Identity</summary>
         public static OniMeiCombatProfile ResolveHeld(Player player)
             => player == null ? OniMeiCombatProfile.Identity : Resolve(player.GetItem());
 
-        /// <summary>蠕虫类归主体，生命池共享的节段按头结算</summary>
-        private static NPC RootOf(NPC npc)
-            => npc.realLife >= 0 && npc.realLife < Main.maxNPCs ? Main.npc[npc.realLife] : npc;
+        /// <summary>蠕虫类归主体；灾厄水灾替代体节缺 realLife 时显式回找头部。</summary>
+        public static NPC ResolveEffectRoot(NPC npc) {
+            if (npc == null) {
+                return null;
+            }
+            int anchor = NpcGroupHelper.GetAnchorIndex(npc);
+            if (anchor >= 0 && anchor < Main.maxNPCs && Main.npc[anchor].active) {
+                return Main.npc[anchor];
+            }
+            return npc;
+        }
+
+        private static NPC RootOf(NPC npc) => ResolveEffectRoot(npc);
+
+        /// <summary>旧首只认真正头部或独立主体；虫体、虫尾和替代体节不能冒充头部。</summary>
+        public static bool IsHeadOrStandalone(NPC target) {
+            if (target == null) {
+                return false;
+            }
+            if (target.realLife >= 0 && target.realLife < Main.maxNPCs
+                && target.realLife != target.whoAmI) {
+                return false;
+            }
+            if (IsExplicitNonHeadSegment(target.type)) {
+                return false;
+            }
+            return true;
+        }
+
+        private static bool IsExplicitNonHeadSegment(int type)
+            => type == CWRID.NPC_SepulcherBody || type == CWRID.NPC_SepulcherTail
+            || type == CWRID.NPC_DevourerofGodsBody || type == CWRID.NPC_DevourerofGodsTail
+            || type == CWRID.NPC_AquaticScourgeBody || type == CWRID.NPC_AquaticScourgeBodyAlt
+            || type == CWRID.NPC_AquaticScourgeTail
+            || type == CWRID.NPC_StormWeaverBody || type == CWRID.NPC_StormWeaverTail
+            || type == CWRID.NPC_PrimordialWyrmBody || type == CWRID.NPC_PrimordialWyrmTail
+            || type == CWRID.NPC_PerforatorBodyLarge || type == CWRID.NPC_PerforatorTailLarge
+            || type == CWRID.NPC_PerforatorBodyMedium || type == CWRID.NPC_PerforatorTailMedium
+            || type == CWRID.NPC_PerforatorBodySmall || type == CWRID.NPC_PerforatorTailSmall
+            || type == CWRID.NPC_ThanatosBody1 || type == CWRID.NPC_ThanatosBody2
+            || type == CWRID.NPC_ThanatosTail
+            || type == CWRID.NPC_DesertScourgeBody || type == CWRID.NPC_DesertScourgeTail
+            || type == CWRID.NPC_DesertNuisanceBody || type == CWRID.NPC_DesertNuisanceBodyYoung
+            || type == CWRID.NPC_DesertNuisanceTail
+            || type == CWRID.NPC_AstrumDeusBody || type == CWRID.NPC_AstrumDeusTail
+            || type == CWRID.NPC_EidolonWyrmBody || type == CWRID.NPC_EidolonWyrmBodyAlt
+            || type == CWRID.NPC_EidolonWyrmTail
+            || type == NPCID.EaterofWorldsBody || type == NPCID.EaterofWorldsTail
+            || type == NPCID.TheDestroyerBody || type == NPCID.TheDestroyerTail;
 
         /// <summary>
         /// 髭切「断首」或旧首「取首」终结倍率：目标已入斩杀线时随已损生命递增；
         /// 未装对应铭/未入线/旧首打节体返回 false。残心/灭世的 ModifyHitNPC 调用(owner 端)
         /// </summary>
         public static bool TryGetExecuteBonus(Player owner, NPC target, out float mul) {
+            OniMeiCombatProfile profile = ResolveHeld(owner);
+            return TryGetExecuteBonus(in profile, target, out mul);
+        }
+
+        public static bool TryGetExecuteBonus(in OniMeiCombatProfile profile, NPC target, out float mul) {
             mul = 1f;
             if (target == null) {
                 return false;
             }
-            OniMeiCombatProfile profile = ResolveHeld(owner);
             bool headHunt = profile.HeadHunt;
             bool execute = profile.ExecuteLowLifeBonus;
             if (!execute && !headHunt) {
@@ -308,28 +381,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                 return false;
             }
             float depth = 1f - frac / ExecuteThreshold;
+            bool bossTier = NpcGroupHelper.IsBossTier(root);
             float cap = headHunt
-                ? (root.boss ? HeadHuntBossMaxBonus : HeadHuntMaxBonus)
-                : (root.boss ? ExecuteBossMaxBonus : ExecuteMaxBonus);
+                ? (bossTier ? HeadHuntBossMaxBonus : HeadHuntMaxBonus)
+                : (bossTier ? ExecuteBossMaxBonus : ExecuteMaxBonus);
             mul = 1f + depth * cap;
             return true;
         }
 
         /// <summary>旧首可取首位：命中为 Root 自身，或非蠕虫节体表内类型</summary>
-        private static bool IsHeadHuntTarget(NPC target) {
-            if (target.whoAmI == RootOf(target).whoAmI) {
-                return true;
+        private static bool IsHeadHuntTarget(NPC target) => IsHeadOrStandalone(target);
+
+        public static float ClampConditionalDamage(float multiplier,
+            in OniMeiCombatProfile profile, NPC target) {
+            float cap = 1.50f;
+            NPC root = ResolveEffectRoot(target);
+            bool bossTier = root != null && NpcGroupHelper.IsBossTier(root);
+            if (profile.HeadHunt && IsHeadOrStandalone(target)) {
+                cap = bossTier ? 1.60f : 1.85f;
             }
-            return !CWRLoad.WormBodys.Contains(target.type);
+            else if (profile.ExecuteLowLifeBonus) {
+                cap = 1.60f;
+            }
+            return Math.Min(multiplier, cap);
         }
 
         /// <summary>痺反：对来手叠「痺」(自实现阻尼+接触伤打折)；无源/未装返回 false</summary>
         public static bool TryApplyNumbCounter(Player owner, NPC source) {
-            if (source == null || !source.active || !ResolveHeld(owner).NumbCounter) {
+            OniMeiCombatProfile profile = ResolveHeld(owner);
+            return TryApplyNumbCounter(owner, source, in profile);
+        }
+
+        public static bool TryApplyNumbCounter(Player owner, NPC source,
+            in OniMeiCombatProfile profile) {
+            if (source == null || !source.active || !profile.NumbCounter) {
                 return false;
             }
-            source.AddBuff(ModContent.BuffType<OniNumbDebuff>(), NumbCounterSlowTicks);
-            OniMeiStrikes.SpawnNumbCounterFX(source);
+            NPC root = ResolveEffectRoot(source);
+            root.AddBuff(ModContent.BuffType<OniNumbDebuff>(), NumbCounterSlowTicks);
+            OniMeiStrikes.SpawnNumbCounterFX(root);
             return true;
         }
 
@@ -339,10 +429,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         /// 旧首只有断线(旧钢色)无返势
         /// </summary>
         public static void OnExecuteStrikeHit(Player owner, NPC target, float cutAngle, ref bool refunded) {
+            OniMeiCombatProfile profile = ResolveHeld(owner);
+            OnExecuteStrikeHit(owner, target, cutAngle, ref refunded, in profile);
+        }
+
+        public static void OnExecuteStrikeHit(Player owner, NPC target, float cutAngle, ref bool refunded,
+            in OniMeiCombatProfile profile) {
             if (target == null) {
                 return;
             }
-            OniMeiCombatProfile profile = ResolveHeld(owner);
             bool execute = profile.ExecuteLowLifeBonus;
             bool headHunt = profile.HeadHunt;
             if (!execute && !headHunt) {
@@ -375,7 +470,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         /// 由连段本拍首击门闸调用；未装铁截或非钢体返回 false
         /// </summary>
         public static bool TryApplyIronSever(Player owner, NPC target, ref NPC.HitModifiers modifiers) {
-            if (target == null || !ResolveHeld(owner).IronSever) {
+            OniMeiCombatProfile profile = ResolveHeld(owner);
+            return TryApplyIronSever(in profile, target, ref modifiers);
+        }
+
+        public static bool TryApplyIronSever(in OniMeiCombatProfile profile, NPC target,
+            ref NPC.HitModifiers modifiers) {
+            if (target == null || !profile.IronSever) {
                 return false;
             }
             if (!CWRLoad.NPCValue.ISTheofSteel(target)) {

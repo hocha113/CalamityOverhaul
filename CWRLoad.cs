@@ -139,7 +139,8 @@ namespace CalamityOverhaul
             DevourerofGodsSegments = [CWRID.NPC_DevourerofGodsHead, CWRID.NPC_DevourerofGodsBody, CWRID.NPC_DevourerofGodsTail];
             DesertScourgeSegments = [CWRID.NPC_DesertScourgeHead, CWRID.NPC_DesertScourgeBody, CWRID.NPC_DesertScourgeTail, CWRID.NPC_DesertNuisanceHead, CWRID.NPC_DesertNuisanceBody, CWRID.NPC_DesertNuisanceTail];
             AstrumDeusSegments = [CWRID.NPC_AstrumDeusHead, CWRID.NPC_AstrumDeusBody, CWRID.NPC_AstrumDeusTail];
-            AquaticScourgeSegments = [CWRID.NPC_AquaticScourgeHead, CWRID.NPC_AquaticScourgeBody, CWRID.NPC_AquaticScourgeTail];
+            AquaticScourgeSegments = [CWRID.NPC_AquaticScourgeHead, CWRID.NPC_AquaticScourgeBody,
+                CWRID.NPC_AquaticScourgeBodyAlt, CWRID.NPC_AquaticScourgeTail];
             EidolonWyrmSegments = [CWRID.NPC_EidolonWyrmHead, CWRID.NPC_EidolonWyrmBody, CWRID.NPC_EidolonWyrmBodyAlt, CWRID.NPC_EidolonWyrmTail];
             MoonLordSegments = [NPCID.MoonLordFreeEye, NPCID.MoonLordCore, NPCID.MoonLordHand, NPCID.MoonLordHead, NPCID.MoonLordLeechBlob];
             EaterofWorldsSegments = [NPCID.EaterofWorldsHead, NPCID.EaterofWorldsBody, NPCID.EaterofWorldsTail];
@@ -174,7 +175,7 @@ namespace CalamityOverhaul
             ];
 
             WormBodys = [
-                CWRID.NPC_AquaticScourgeBody, CWRID.NPC_StormWeaverBody,
+                CWRID.NPC_AquaticScourgeBody, CWRID.NPC_AquaticScourgeBodyAlt, CWRID.NPC_StormWeaverBody,
                 CWRID.NPC_DesertScourgeBody, CWRID.NPC_DesertNuisanceBody,
                 CWRID.NPC_DesertNuisanceBodyYoung, CWRID.NPC_PrimordialWyrmBody,
                 CWRID.NPC_ThanatosBody1, CWRID.NPC_ThanatosBody2,

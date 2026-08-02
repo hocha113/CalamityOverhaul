@@ -2535,184 +2535,184 @@ WraithDebugTool: {
 
 OniMeiRubbingHigekiri: {
 	// DisplayName: Higekiri
-	// Tooltip: Stronger finishers on low-life targets, kills refund stance; weapon damage -10%
+	Tooltip: Прямые удары клинком усиливаются по тяжело раненым целям, а убийства восстанавливают стойку; урон клинка -2%
 	// Origin: The night of the test cut, the head fell with the beard still clinging to the edge — hence the old name
-	// Power: Beard-Cutter: Zanshin and the World-Razing Flash deal escalating finisher damage to targets below 35% life (up to +50%, +25% vs bosses); finishing a target with either art refunds 10 stance, once per strike
-	// Burden: Weapon damage -10% — against the healthy, this blade bites duller than the original name
+	Power: Срезатель бороды: Прямые удары клинком линейно усиливаются по целям с менее чем 35 % здоровья (до +60 %, или +45 % против боссов); прямое убийство восстанавливает 8 стойки один раз за действие
+	Burden: Урон клинка -2 % — против здоровых целей это лезвие немного тупее исходной надписи
 }
 
 OniMeiRubbingOnikiri: {
 	// DisplayName: Onikiri
-	// Tooltip: Original inscription: keeps the blade as-is, no boon, no price
+	Tooltip: Исходная надпись: сохраняет клинок как есть, без дара и без цены
 	// Origin: At Ichijo-Modoribashi, the oni that lost its arm never dared come back for it. The name has been nailed to the tang ever since
-	// Power: The original inscription. The blade stays exactly as it is — nothing granted, nothing taken
-	// Burden: ———
+	Power: Исходная надпись. Клинок остаётся в точности таким, каков он есть — ничего не даёт и ничего не отнимает
+	Burden: ———
 }
 
 OniMeiRubbingShishinoko: {
 	// DisplayName: Shishi-no-ko
-	// Tooltip: Jaw-waves crown a full five-beat combo; combo 10% slower
+	Tooltip: Две волны-челюсти завершают полную серию из пяти ударов; интервал серии +2%
 	// Origin: Left by the pillow at midnight, the blade roared like a lion. Inlaid in gold, to honor the name
-	// Power: Lion's Roar: complete five combo beats without dash or art interruption and the fifth beat roars — two converging jaw-waves (about 40% of a slash in total)
-	// Burden: Combo beat interval +10% — a roar must be drawn in before it is let out
+	Power: Львиный рык: Выполните пять ударов серии без прерывания рывком или приёмом; пятый выпускает две сходящиеся волны-челюсти, каждая наносит 22 % базового урона клинка
+	Burden: Интервал серии +2 % — перед рыком нужно набрать воздуха
 }
 
 OniMeiRubbingTomokiri: {
 	// DisplayName: Tomokiri
-	// Tooltip: Dash-cancels leave phantom slashes; +10% damage taken, Guilt taxes dashes
+	Tooltip: Отмена рывком оставляет отложенные разрезы Вины; получаемый урон +6%
 	// Origin: Crossed with a friendly blade in trial, it cut the friend in two. A name of blame, chiseled into the tang; the sword has run violent since
-	// Power: Friend-Cutter: cancelling a combo with the Kamui flash step leaves a delayed phantom slash (about 35% power) that bites shut after a beat
-	// Burden: Damage taken +10% while held; each phantom adds a layer of Guilt (max 3), each making the next flash step cost 6 more vigor — repaid on a Zanshin hit
+	Power: Секущий друзей: Отмена серии с помощью Kamui оставляет призрачный разрез, который срабатывает через 6 тиков и наносит 35 % базового урона клинка
+	Burden: Получаемый урон +6 %; каждый призрак добавляет Вину (до 3), повышающую стоимость следующего рывка на 4 энергии — попадание Zanshin погашает весь долг
 }
 
 OniMeiRubbingKazehi: {
 	// DisplayName: Kaze-hi
-	// Tooltip: Cheaper footwork and flight; flash mark damage -25%
+	Tooltip: Стоимость рывка -15 %, расход Sakura -20 %; урон чернильных меток -20%
 	// Origin: A groove opened like a wind channel; where the blade passes, only wind is heard, no blade is seen
-	// Power: Wind-Rider: flash step vigor cost -25%, sakura flight drain -30%
-	// Burden: Flash mark damage -25% — the groove was cut for lightness, not slaughter
+	Power: Всадник ветра: Стоимость энергии Молниеносного шага -15 %, расход Полёта Сакуры -20 %
+	Burden: Урон молниеносных меток -20 % — дол вырезан ради лёгкости, а не бойни
 }
 
 OniMeiRubbingChihi: {
 	// DisplayName: Chi-hi
-	// Tooltip: Stronger on-hit vigor; natural regen halved
+	Tooltip: Активные попадания восстанавливают больше энергии; естественное восстановление -35%
 	// Origin: This groove is not for lightness, but for letting blood — so said the one who opened the edge
-	// Power: Bloodletting: the first combo hit of each beat restores +2 extra vigor, a Zanshin hit restores +8
-	// Burden: Natural vigor regen halved, regen delay +0.4s after spending — no blood on the edge, no breath returned
+	Power: Кровопускание: Первое попадание каждого удара серии восстанавливает +1 энергии; первое попадание Zanshin за действие восстанавливает +4
+	Burden: Естественное восстановление энергии -35 %, задержка после расхода +0,3 с — без крови на лезвии возвращается мало дыхания
 }
 
 OniMeiRubbingFudo: {
 	// DisplayName: Fudo
-	// Tooltip: Spend stance to stand through committed strikes; stance gain -20%
+	Tooltip: Расходуйте стойку, чтобы смягчать удары во время решающих действий; получение стойки -15%
 	// Origin: Carved in the brushwork of the seed syllable Kan — the Immovable One sits by the edge, flames at his back
-	// Power: Immovable: when struck during heavy combo beats, Zanshin or executions, spend 20 stance to cut that blow's damage by 40% and ignore its knockback (about 2s cooldown); the dismemberment backlash is never shielded
-	// Burden: Stance gain -20% — the guarding strength is skimmed from your build-up
+	Power: Непоколебимость: Во время решающего действия потратьте 20 стойки, чтобы снизить вражеский контактный урон или урон снаряда до 65 %, а отбрасывание до 25 % (перезарядка 2,5 с); отдача от расчленения никогда не блокируется
+	Burden: Получение стойки -15 % — сила защиты берётся из вашего накопления
 }
 
 OniMeiRubbingKurikara: {
 	// DisplayName: Kurikara
-	// Tooltip: Executions ignite a dragonfire follow-up combo; vigor cap -20
+	Tooltip: Казни дают три петли драконьего пламени; предел энергии -10%
 	// Origin: The dragon coils about the sword and would swallow it — an old horimono subject, its scales inlaid in gold
-	// Power: Dragon-Coil: after the World-Razing Flash or the Finale, the carving ignites; finish a five-beat combo within ten seconds and the fifth beat looses a coiling dragonfire slash (about 40% power)
-	// Burden: Vigor cap 100 → 80 — where the dragon coils, breath cannot pass
+	Power: Драконья спираль: Казнь даёт три заряда драконьего пламени на 10 секунд; каждый пятый удар полной серии расходует один заряд и выпускает петлю с 50 % базового урона клинка
+	Burden: Предел энергии -10 % — там, где обвился дракон, дыханию тесно
 }
 
 OniMeiRubbingTessetsu: {
 	// DisplayName: Tessetsu
-	// Tooltip: Sever steel; dull on flesh
+	Tooltip: Первое попадание каждого удара рассекает сталь; урон клинка -10%
 	// Origin: A grand name for a scrap of iron — nailed into the tang as a joke that stuck
-	// Power: Iron-Cut: first combo hit of a beat deals extra damage to steel/armored foes
-	// Burden: Feels like dull iron on flesh — weapon damage -12%
+	Power: Железный разрез: Первое попадание каждого удара серии наносит ×1,25 урона стальным или бронированным врагам
+	Burden: Урон клинка -10 % — по плоти он ощущается как тупое железо
 }
 
 OniMeiRubbingKyushu: {
 	// DisplayName: Kyushu
-	// Tooltip: Heads only; weak on trash
+	Tooltip: Мощные добивания раненых настоящих голов; урон клинка -3%
 	// Origin: The head is still the old one. Cut clean; no need for a scare-name
-	// Power: Head-Hunt: deeper low-life finishers on the body or head
-	// Burden: Cold on trash clears; ordinary targets feel dull
+	Power: Охота за головами: Прямые удары клинком действуют только на самостоятельные тела или настоящие головы с менее чем 35 % здоровья, усиливаясь до +85 % (+60 % против боссов)
+	Burden: Урон клинка -3 %; сегменты тела, хвоста и альтернативного тела никогда не активируют Охоту за головами
 }
 
 OniMeiRubbingIkiai: {
 	// DisplayName: Ikiai
-	// Tooltip: Fifth-beat arc-qi; slightly slower combo
+	Tooltip: Пятый удар выпускает волну меча с 55 % урона; интервал серии +4%
 	// Origin: The breath you held while staring — then the blades met on the beat
-	// Power: Breath-Wave: the fifth beat of a full combo flings a traveling crimson arc of sword-qi (a flying crescent that pierces each foe once)
-	// Burden: Combo slightly slower
+	Power: Волна дыхания: Пятый удар полной серии выпускает волну меча с 55 % базового урона клинка; она летит 16 тиков и пронзает не более трёх разных тел
+	Burden: Интервал серии +4%
 }
 
 OniMeiRubbingKyoko: {
 	// DisplayName: Kyoko
-	// Tooltip: Empty-space pressure; close-range blur
+	Tooltip: Пустое пространство заряжает ближний разрез и волну давления; быстрые ближние действия сбивают фокус
 	// Origin: A roar into empty air; the echo finds no place to land
-	// Power: Hollow-Roar: in empty space, periodically roars out a ripple of ink pressure that stalls the footing of foes it touches; the first cut after leaving and returning hits harder
-	// Burden: Dense close-range chopping loses focus and dulls
+	Power: Пустой рык: 90 тиков без врагов заряжают следующий прямой удар клинком в радиусе 260 пикс. до ×1,25 урона; в покое каждые 90 тиков звучит волна давления длительностью 24 тика
+	Burden: Четыре ближних действия за 36 тиков вызывают потерю фокуса на 24 тика с ×0,95 ближнего урона; дальние попадания не расходуют заряженный разрез
 }
 
 OniMeiRubbingKarikiri: {
 	// DisplayName: Karikiri
-	// Tooltip: Decoy eats a hit; true body is more exposed
+	Tooltip: Ложное тело полностью уклоняется от одного удара; перезаряжается за 4 секунды
 	// Origin: Learned so well it turned fake. An afterimage enters the tang
-	// Power: False Body: flash-step start leaves a decoy that eats one contact or one projectile hit
-	// Burden: While the decoy lasts you are softer and dashes cost more; after it shatters, a short vacuum window
+	Power: Ложное тело: В начале Молниеносного шага на 90 тиков остаётся застывшая приманка, полностью уклоняющаяся от одного удара вражеского НИП или снаряда; повторная готовность через 240 тиков
+	Burden: Пока приманка существует, получаемый урон и стоимость рывка ×1,12; после разрушения получаемый урон ×1,18 на 60 тиков. Естественное исчезновение не создаёт вакуума
 }
 
 OniMeiRubbingMokukiri: {
 	// DisplayName: Mokukiri
-	// Tooltip: A heavy cut after a dash ends; hard to cash in while chaining dashes
+	Tooltip: Естественное завершение платного рывка заряжает Тихую смерть; новый рывок или промах расходует её
 	// Origin: The air sank. You got used to it. The guilt stayed
-	// Power: Silent-Kill: the next cut during the short window after a flash step naturally ends hits much harder
-	// Burden: Never lights while you flash endlessly
+	Power: Тихая смерть: В течение 45 тиков после естественного завершения платного обычного Молниеносного шага следующее действие серии или Zanshin наносит ×1,35 урона
+	Burden: Новый рывок или промах расходует Тихую смерть; бесплатные рывки казни никогда её не заряжают
 }
 
 OniMeiRubbingKogehi: {
 	// DisplayName: Koge-hi
-	// Tooltip: Flash steps leave burning ground; weapon damage -8%
+	Tooltip: Молниеносные шаги выжигают весь свой путь; урон клинка -4%
 	// Origin: Do not put your foot in the hot shallows. The groove is for stepping clear
-	// Power: Scorch-Trail: the flash-step path leaves brief burning ground
-	// Burden: Weapon damage -8%; make up the loss with burning ground left by movement
+	Power: Опаляющий след: Рывок оставляет до пяти равномерно распределённых ожогов на 90 тиков, каждое попадание наносит 14 % базового урона клинка; ожоги в пределах 32 пикс. обновляются
+	Burden: Урон клинка -4 %; компенсируйте потерю горящей землёй, оставленной движением
 }
 
 OniMeiRubbingKanhi: {
 	// DisplayName: Kan-hi
-	// Tooltip: Faster out-of-combat regen; dash and sakura costs +12%
+	Tooltip: Естественное восстановление в покое ×2,25; стоимость рывка и Sakura +8%
 	// Origin: Quiet by the door. Let the ears rest
-	// Power: Quiet-Breath: after a short rest out of contact, vigor regenerates much faster
-	// Burden: Dash and sakura cruise vigor costs +12% — quiet recovery is repaid in motion
+	Power: Тихое дыхание: После 120 тиков без прямого попадания клинком естественное восстановление энергии становится ×2,25
+	Burden: Стоимость энергии рывка и Полёта Сакуры +8 % — спокойное восстановление оплачивается движением
 }
 
 OniMeiRubbingTodohi: {
 	// DisplayName: Todo-hi
-	// Tooltip: Snare foes; dash re-arms slower
+	Tooltip: Попадания связывают на 36 тиков; перезарядка рывка +6 тиков
 	// Origin: A bit sticky. Keep contact to turn; break off and it stalls
-	// Power: Sticky-Bind: hits ink-snare the target's footing, briefly slowing it (great beasts resist somewhat)
-	// Burden: After a dash, the next dash takes half a beat longer to ready
+	Power: Липкие путы: Прямые удары клинком связывают цель на 36 тиков и устанавливают скорость обычных врагов/боссов на 0,88/0,96
+	Burden: Перезарядка рывка +6 тиков; Путы и Онемение используют только более сильный коэффициент движения
 }
 
 OniMeiRubbingShiorihi: {
 	// DisplayName: Shiori-hi
-	// Tooltip: Finish splash; natural regen -15%, empty Zanshin costs vigor
+	Tooltip: Убийства подрезают раненую цель; естественное восстановление -10 %, пустой Zanshin расходует энергию
 	// Origin: Cut the spent flower to open the edge — not for looks
-	// Power: Petal-Prune: kills and Zanshin finishes splash a small cut toward nearby low life
-	// Burden: Natural vigor regen -15%; an empty Zanshin costs 2 extra vigor
+	Power: Обрезка лепестков: Прямое убийство выбирает другое тело с не более чем 50 % здоровья в радиусе 240 пикс., недолго преследует его и режет на 25 % базового урона клинка; без цели перезарядка в 45 тиков не начинается
+	Burden: Естественное восстановление энергии -10 %; пустой Zanshin стоит 2 энергии. Обрезающие клинки не могут срабатывать цепочкой
 }
 
 OniMeiRubbingShiohi: {
 	// DisplayName: Shio-hi
-	// Tooltip: On-tide reward; off-beat loss
+	Tooltip: В прилив даёт энергию или урон Zanshin; серии вне ритма слегка тупеют
 	// Origin: Tide marks overnight. Wet contact feeds the return
-	// Power: Tide-Beat: hits that catch the tide window return more vigor (or sting more)
-	// Burden: Constant off-beat chopping underperforms a bare blade
+	Power: Ритм прилива: В цикле из 48 тиков с полуокном в 6 тиков серия в прилив один раз за действие восстанавливает +3 энергии, а Zanshin в прилив наносит ×1,08 урона
+	Burden: Урон серии вне прилива ×0,97; фаза прилива фиксируется в начале действия
 }
 
 OniMeiRubbingShibori: {
 	// DisplayName: Shibori
-	// Tooltip: Parry numbs; stance costly
+	Tooltip: Сквозное парирование или контакт во время решающего действия вызывает онемение; получение стойки -15%
 	// Origin: Guard even with numb hands. The blade hurts too
-	// Power: Numb-Counter: a successful guard or dash-body parry numbs the attacker — numbed limbs move slower and strike softer
-	// Burden: Stance economy is harsher
+	Power: Ответное онемение: Сквозное парирование сразу вызывает онемение; контакт во время решающего действия может потратить 15 стойки, снизить удар до 85 % и вызвать онемение (перезарядка 90 тиков). Эффект длится 45 тиков, устанавливает скорость обычных врагов/боссов на 0,90/0,98 и контактный урон на ×0,90
+	Burden: Получение стойки -15%
 }
 
 OniMeiRubbingChinmei: {
 	// DisplayName: Chinmei
-	// Tooltip: Anti-projectile stance; weak in brawls
+	Tooltip: Урон снарядов -12 %, отбрасывание -65 %; получение стойки -15%
 	// Origin: When the ears buzz, settle first, then move
-	// Power: Quell: stand firmer under projectiles — less knockback, slightly less projectile damage
-	// Burden: Quiet in pure melee; stance gain -15%
+	Power: Усмирение: Урон вражеских снарядов ×0,88 и отбрасывание ×0,35
+	Burden: Бездействует в чистом ближнем бою; получение стойки -15%
 }
 
 OniMeiRubbingAshidome: {
 	// DisplayName: Ashidome
-	// Tooltip: Plant then finish; no run-cut
+	Tooltip: Стойте неподвижно 45 тиков, затем нанесите ×1,25 урона следующим решающим действием
 	// Origin: Stand still. Guard lives where the feet stop
-	// Power: Planted-Step: after a brief plant, the next committed finisher hits harder
-	// Burden: Running while cutting almost never pays
+	Power: Укоренённый шаг: Удерживайте квадрат скорости не выше 2,25 в течение 45 тиков; следующий пятый удар, Zanshin, Вспышка, разящая мир, или действие Финала наносит ×1,25 урона
+	Burden: Заряд расходуется в начале действия даже при промахе; движение сбрасывает прогресс
 }
 
 OniMeiRubbingYoen: {
 	// DisplayName: Yoen
-	// Tooltip: Execute leaves burn; vigor/dash priced
+	Tooltip: Казни перемещают единственное поле углей; предел энергии -5%
 	// Origin: Oven heat still on the edge. Fire out; burn not gone
-	// Power: Ember-Field: after an execution, lasting burn ground remains — no full combo required
-	// Burden: Slightly tighter vigor; dash costs more while the field lives
+	Power: Поле углей: Казнь создаёт или перемещает ваше единственное поле углей; оно существует 180 тиков и может наносить одному телу 16 % базового урона клинка каждые 45 тиков
+	Burden: Предел энергии -5 %; стоимость рывка ×1,10, пока существует поле
 }

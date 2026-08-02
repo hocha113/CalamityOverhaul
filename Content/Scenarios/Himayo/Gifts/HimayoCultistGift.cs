@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 
         protected override void Build(NarrativeComposer n) {
             n.Say(NarrativeIds.Mayo, L0.Value, Voice[1], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Grin))
-             .Reward(ModContent.ItemType<OniMeiRubbingKanhi>(), title: string.Empty, blocking: false)
+             .GiftReward(GiftKey)
              .Say(NarrativeIds.Mayo, L1.Value, Voice[2], onEnter: PortraitFace(HimayoFullBodyPortrait.Face.Ruminate));
         }
 

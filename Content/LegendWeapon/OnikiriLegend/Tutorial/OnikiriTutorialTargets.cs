@@ -31,10 +31,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 
         //====已知 Tag 常量====
         internal const string Tag_VigorStroke = "vigor";
-        internal const string Tag_StanceSheath = "stance";
         internal const string Tag_DomainEye = "eye";
         internal const string Tag_TalismanStrip = "talisman";
-        internal const string Tag_Register = "register";
+        internal const string Tag_RegisterSwitch = "register_switch";
         internal const string Tag_RegisterEntry = "register_entry";
         internal const string Tag_MeiSlotNakago = "mei_nakago";
         internal const string Tag_MeiSlotHi = "mei_hi";

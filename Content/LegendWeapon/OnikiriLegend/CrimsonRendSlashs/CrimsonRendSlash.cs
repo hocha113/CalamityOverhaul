@@ -178,9 +178,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             float scale = 1f, IEntitySource source = null) {
             source ??= player.GetSource_Misc("CWR_CrimsonRendSlash");
             float aimAngle = aim.SafeNormalize(Vector2.UnitX).ToRotation();
-            return Projectile.NewProjectileDirect(source, origin, Vector2.Zero
+            Projectile projectile = Projectile.NewProjectileDirect(source, origin, Vector2.Zero
                 , ModContent.ProjectileType<CrimsonRendSlash>(), damage, knockback, player.whoAmI
                 , ai0: aimAngle, ai2: scale);
+            OniMeiActionContext.Capture(projectile, player, source, damage, OniMeiActionKind.Combo);
+            return projectile;
         }
 
         public override void SetStaticDefaults() {
@@ -214,7 +216,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             curAim = Projectile.ai[0];
             scheduling = true;
             nextBeatTime = FirstWindupFrames + 1;
-            meiProfile = OniMeiCombat.Resolve(Item);
+            OniMeiActionContext context = OniMeiActionContext.Get(Projectile);
+            meiProfile = context?.HasSnapshot == true ? context.Profile : OniMeiCombat.Resolve(Item);
         }
 
         /// <summary>五段弧形变奏美术参数,Seed 掺入出生帧防循环同噪声<br/>
@@ -373,7 +376,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
         /// <summary>友切「咎影」:被疾走取消的那拍在原地留错位残像,滞拍后由断斩咬合(owner 端)</summary>
         private void TrySpawnGuiltEcho() {
-            if (!OniMeiCombat.Resolve(Item).GuiltEcho) {
+            if (!meiProfile.GuiltEcho) {
                 return;
             }
             //锚在最近活刀光;拍间空窗退回玩家中心+当前瞄准
@@ -388,7 +391,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 center = Projectile.Center;
                 aim = curAim;
             }
-            OniMeiStrikes.FireGuiltEcho(Owner, center, aim, Projectile.damage, Projectile.knockBack, sizeMul);
+            OniMeiStrikes.FireGuiltEcho(Owner, center, aim, Projectile.damage, Projectile.knockBack,
+                sizeMul, Projectile.GetSource_FromAI());
             Owner.GetModPlayer<OnikiriPlayer>().OnGuiltEchoSpawned();
         }
 
@@ -682,7 +686,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     meiLionChain = 0;
                     if (Projectile.IsOwnedByLocalPlayer()) {
                         OniMeiStrikes.FireLionJaw(Owner, Projectile.Center, aim, Projectile.damage
-                            , Projectile.knockBack, sizeMul);
+                            , Projectile.knockBack, sizeMul, Projectile.GetSource_FromAI());
                     }
                 }
             }
@@ -694,7 +698,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
                 if (beat == BeatCount - 1 && okp.TryConsumeKurikara()) {
                     OniMeiStrikes.FireKurikaraLoop(Owner, Projectile.Center, aim, Projectile.damage
-                        , Projectile.knockBack, sizeMul);
+                        , Projectile.knockBack, sizeMul, Projectile.GetSource_FromAI());
                 }
                 else if (okp.KurikaraWindow > 0) {
                     //窗口内前四拍:刀侧火鞘火星(owner 可见,窗口态不进网络)
@@ -980,7 +984,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                         && Projectile.IsOwnedByLocalPlayer()) {
                         Vector2 tip = CSR.PointAt(in a.Def, CenterOf(a), 0.62f, lt);
                         OniMeiStrikes.FireBreathWave(Owner, tip, a.Aim, Projectile.damage
-                            , Projectile.knockBack, sizeMul, a.Def.Flip);
+                            , Projectile.knockBack, sizeMul, a.Def.Flip, Projectile.GetSource_FromAI());
                     }
                 }
 
@@ -1332,12 +1336,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             OnikiriItem.ApplySlashPenetration(target, ref modifiers);
             //与 OnComboHit grantResources 同门：本拍尚未结算资源的首次命中
             if (Projectile.IsOwnedByLocalPlayer() && a != null && !a.ResourceGranted) {
-                OniMeiCombat.TryApplyIronSever(Owner, target, ref modifiers);
                 OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
-                //默杀×止足与残心同门收口(止足只认第五拍),同帧叠乘吃软帽
-                okp.ApplyMeiConsumeMuls(ref modifiers, allowPlanted: a.Beat == BeatCount - 1);
-                okp.TryApplyTideOffBeatHit(ref modifiers);
-                okp.ApplyHollowRoarHitMuls(ref modifiers);
+                OniMeiActionContext context = OniMeiActionContext.Get(Projectile);
+                float meiMul = okp.BuildMeiHitMultiplier(target, in meiProfile,
+                    context?.ActionSerial ?? 0, allowPlanted: a.Beat == BeatCount - 1,
+                    allowIron: true, zanshin: false);
+                modifiers.FinalDamage *= OniMeiCombat.ClampConditionalDamage(
+                    meiMul, in meiProfile, target);
                 if (okp.IsTideOnBeatNow) {
                     bladeScalePulse = Math.Max(bladeScalePulse, 0.07f);
                 }
@@ -1373,12 +1378,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     a.ResourceGranted = true;
                 }
                 OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
-                okp.OnComboHit(target, grantResources);
+                okp.OnComboHit(target, grantResources, in meiProfile);
                 if (grantResources && a != null) {
                     Tutorial.OnikiriTutorialEvents.FireComboBeatHit(a.Beat, target);
                 }
                 if (!target.active || target.life <= 0) {
-                    okp.TryPetalPruneOnKill(target, Projectile.damage, Projectile.knockBack);
+                    OniMeiActionContext context = OniMeiActionContext.Get(Projectile);
+                    okp.TryPetalPruneOnKill(target,
+                        context?.BaseWeaponDamage ?? Projectile.damage, Projectile.knockBack,
+                        Projectile, in meiProfile);
                 }
             }
 

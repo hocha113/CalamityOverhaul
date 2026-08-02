@@ -3,17 +3,22 @@ using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.UIs.HudStack;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
+    internal enum OniLedgerView
+    {
+        Mei = 0,
+        Register = 1,
+    }
+
     /// <summary>
     /// 封印札 HUD,左下角,挂在鬼域之眼下.
     /// 墨批=总驾驭,躁动焦边;点札开簿;眼控领域见 <see cref="OniDomainEye"/>;
@@ -26,6 +31,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         public static LocalizedText HudTitle { get; private set; }
         public static LocalizedText HudHintFormat { get; private set; }
+        public static LocalizedText HudMeiName { get; private set; }
+        public static LocalizedText HudRegisterName { get; private set; }
         public static LocalizedText HudDangerLine { get; private set; }
         public static LocalizedText VigorTitle { get; private set; }
         public static LocalizedText VigorValueFormat { get; private set; }
@@ -33,7 +40,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText StanceValueFormat { get; private set; }
         public static LocalizedText StanceReadyLine { get; private set; }
         public static LocalizedText StanceHalfLine { get; private set; }
-        public static LocalizedText StanceMeiHint { get; private set; }
         public static LocalizedText DomainTitle { get; private set; }
         public static LocalizedText DomainStateClosed { get; private set; }
         public static LocalizedText DomainStateOmote { get; private set; }
@@ -44,7 +50,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         public override void SetStaticDefaults() {
             HudTitle = this.GetLocalization(nameof(HudTitle), () => "封印札");
-            HudHintFormat = this.GetLocalization(nameof(HudHintFormat), () => "{0} 或点击札 开阖改铭台 · 点击鞘开点鬼簿");
+            HudHintFormat = this.GetLocalization(nameof(HudHintFormat), () => "{0} 开阖{1} · 点击札打开");
+            HudMeiName = this.GetLocalization(nameof(HudMeiName), () => "改铭台");
+            HudRegisterName = this.GetLocalization(nameof(HudRegisterName), () => "点鬼簿");
             HudDangerLine = this.GetLocalization(nameof(HudDangerLine), () => "札下起了青焰——有鬼躁动");
             VigorTitle = this.GetLocalization(nameof(VigorTitle), () => "气力");
             VigorValueFormat = this.GetLocalization(nameof(VigorValueFormat), () => "{0} / {1}");
@@ -52,7 +60,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             StanceValueFormat = this.GetLocalization(nameof(StanceValueFormat), () => "{0} / {1}");
             StanceReadyLine = this.GetLocalization(nameof(StanceReadyLine), () => "锋已离鞘——只欠一拔");
             StanceHalfLine = this.GetLocalization(nameof(StanceHalfLine), () => "势已过半——足以一记灭世一闪");
-            StanceMeiHint = this.GetLocalization(nameof(StanceMeiHint), () => "点击 开点鬼簿");
             DomainTitle = this.GetLocalization(nameof(DomainTitle), () => "鬼域之眼");
             DomainStateClosed = this.GetLocalization(nameof(DomainStateClosed), () => "阖目——领域未展");
             DomainStateOmote = this.GetLocalization(nameof(DomainStateOmote), () => "表世界——泛黄和纸");
@@ -91,7 +98,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             OnikiriUITheme.HudStanceOffset.Y + OnikiriUITheme.HudStanceBladeH * 0.5f + 2f);
         #endregion
 
+        private enum TooltipOwner
+        {
+            None,
+            Vigor,
+            Stance,
+            Domain,
+        }
+
         private float appear;
+        private OniLedgerView rememberedLedger;
+        private TooltipOwner tooltipOwner;
         //危态缓动:底墨青斑的渗入渗出不跳变
         private float dangerEase;
         private bool hover;
@@ -132,6 +149,41 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         public override Vector2 MousePosition => OnikiriUITheme.UIMouse;
 
+        internal static void RememberLedger(OniLedgerView view) {
+            if (Instance != null) {
+                Instance.rememberedLedger = view;
+            }
+        }
+
+        internal static void ToggleRememberedLedger() {
+            if (OniMeiUI.Instance?.IsOpen ?? false) {
+                OniMeiUI.Instance.Close();
+                return;
+            }
+            if (OniRegisterUI.Instance?.IsOpen ?? false) {
+                OniRegisterUI.Instance.Close();
+                return;
+            }
+
+            OniLedgerView view = Instance?.rememberedLedger ?? OniLedgerView.Mei;
+            if (view == OniLedgerView.Register) {
+                OniRegisterUI.Instance?.Open();
+            }
+            else {
+                OniMeiUI.Instance?.Open();
+            }
+        }
+
+        public override void SaveUIData(TagCompound tag)
+            => tag[Name + ":rememberedLedger"] = (int)rememberedLedger;
+
+        public override void LoadUIData(TagCompound tag) {
+            rememberedLedger = tag.TryGet(Name + ":rememberedLedger", out int value)
+                && value == (int)OniLedgerView.Register
+                ? OniLedgerView.Register
+                : OniLedgerView.Mei;
+        }
+
         private static bool LocalHolding() {
             if (Main.gameMenu || Main.dedServ) {
                 return false;
@@ -148,7 +200,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public override bool Active => LocalKeepAlive() || appear > 0.01f;
 
         public override void Update() {
-            if (hover || stance.Hovering || domainEye.Hovering) {
+            if (hover || vigor.Hovering || stance.Hovering || domainEye.Hovering) {
                 player.mouseInterface = true;
             }
         }
@@ -272,15 +324,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 player.mouseInterface = true;
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     SoundEngine.PlaySound(CWRSound.ButtonZero with { Volume = 0.6f });
-                    OniMeiUI.Instance?.Toggle();
-                }
-            }
-            //点纸札开改铭台;点鞘刀开点鬼簿
-            else if (stance.Hovering) {
-                player.mouseInterface = true;
-                if (keyLeftPressState == KeyPressState.Pressed) {
-                    SoundEngine.PlaySound(CWRSound.ButtonZero with { Volume = 0.6f });
-                    OniRegisterUI.Instance?.Toggle();
+                    ToggleRememberedLedger();
                 }
             }
 
@@ -358,19 +402,59 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             //气力墨脉:定在锚侧不随札摆,墨丝自札边垂下把两者缝在一起
             Vector2 vigorAttach = stripTop + down * (H * 0.62f) + side * (W * 0.5f - 2f);
-            vigor.Draw(sb, a, vigorAttach, GlobalTimer, hover);
+            vigor.Draw(sb, a, vigorAttach, GlobalTimer);
 
             //架势鞘刀:横悬在墨脉之下,拔刀进度=架势
-            stance.Draw(sb, a, GlobalTimer, hover || vigor.Hovering);
+            stance.Draw(sb, a, GlobalTimer);
 
             particles.Draw(sb, a);
+        }
 
-            //悬浮说明
+        internal void DrawTooltipOverlay(SpriteBatch sb) {
+            if (appear <= 0.01f) {
+                tooltipOwner = TooltipOwner.None;
+                return;
+            }
+            float registerOpen = OniRegisterUI.Instance?.OpenProgress ?? 0f;
+            float meiOpen = OniMeiUI.Instance?.OpenProgress ?? 0f;
+            float a = appear * (1f - Math.Max(registerOpen, meiOpen) * 0.7f);
+            if (a <= 0.01f) {
+                tooltipOwner = TooltipOwner.None;
+                return;
+            }
+
             if (hover) {
+                tooltipOwner = TooltipOwner.None;
                 DrawHoverPanel(sb, a);
             }
-            //鬼域之眼的悬浮说明(自判悬停,最后画保证压在其余元素上)
-            domainEye.DrawHoverTag(sb);
+            else if (vigor.Hovering) {
+                tooltipOwner = TooltipOwner.Vigor;
+                vigor.DrawTooltip(sb, a);
+            }
+            else if (stance.Hovering) {
+                tooltipOwner = TooltipOwner.Stance;
+                stance.DrawTooltip(sb, a);
+            }
+            else if (domainEye.Hovering) {
+                tooltipOwner = TooltipOwner.Domain;
+                domainEye.DrawTooltip(sb);
+            }
+            else {
+                switch (tooltipOwner) {
+                    case TooltipOwner.Vigor when vigor.TooltipVisible:
+                        vigor.DrawTooltip(sb, a);
+                        break;
+                    case TooltipOwner.Stance when stance.TooltipVisible:
+                        stance.DrawTooltip(sb, a);
+                        break;
+                    case TooltipOwner.Domain when domainEye.TooltipVisible:
+                        domainEye.DrawTooltip(sb);
+                        break;
+                    default:
+                        tooltipOwner = TooltipOwner.None;
+                        break;
+                }
+            }
         }
 
         /// <summary>札脚焦边:炭黑参差 + 数簇暖色火焰,跟随摆角</summary>
@@ -400,36 +484,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>悬浮说明:小裱墨牌,题名/开簿键位/危态告警</summary>
         private void DrawHoverPanel(SpriteBatch sb, float a) {
-            DynamicSpriteFont font = FontAssets.MouseText.Value;
             string keyName = CWRKeySystem.Legend_UIControl.ToTooltipString(CWRKeySystem.Notbound.Value);
             string title = HudTitle.Value;
-            string hint = string.Format(HudHintFormat.Value, keyName);
+            string ledgerName = rememberedLedger == OniLedgerView.Register
+                ? HudRegisterName.Value
+                : HudMeiName.Value;
+            string hint = string.Format(HudHintFormat.Value, keyName, ledgerName);
             bool danger = OniRegistry.InDanger;
             string dangerLine = danger ? HudDangerLine.Value : null;
-
-            float w = Math.Max(font.MeasureString(title).X * 0.82f, font.MeasureString(hint).X * 0.7f);
-            if (dangerLine != null) {
-                w = Math.Max(w, font.MeasureString(dangerLine).X * 0.7f);
-            }
-            float h = 44f + (dangerLine != null ? 18f : 0f);
-            Vector2 mouse = MousePosition;
-            Rectangle panel = new((int)mouse.X + 18, (int)mouse.Y - 8, (int)w + 22, (int)h);
-            //不出屏
-            if (panel.Right > OnikiriUITheme.UIScreenW - 8f) {
-                panel.X = (int)(mouse.X - panel.Width - 14f);
-            }
-
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            Rectangle src = new(0, 0, 1, 1);
-            sb.Draw(pixel, new Rectangle(panel.X + 2, panel.Y + 3, panel.Width, panel.Height), src, new Color(8, 2, 5) * (a * 0.5f));
-            sb.Draw(pixel, panel, src, OnikiriUITheme.Ink * (a * 0.95f));
-            OniBrush.DrawTaperedSlash(sb, new Vector2(panel.X + 4f, panel.Y + 22f), new Vector2(panel.Right - 4f, panel.Y + 21f), 1.4f, 0.8f, a * 0.7f);
-
-            Utils.DrawBorderString(sb, title, new Vector2(panel.X + 10f, panel.Y + 4f), OnikiriUITheme.HotWhite * a, 0.82f);
-            Utils.DrawBorderString(sb, hint, new Vector2(panel.X + 10f, panel.Y + 26f), OnikiriUITheme.TextDim * a, 0.7f);
-            if (dangerLine != null) {
-                Utils.DrawBorderString(sb, dangerLine, new Vector2(panel.X + 10f, panel.Y + 44f), OnikiriUITheme.GhostFire * (a * 0.9f), 0.7f);
-            }
+            OniTooltipPanel.Draw(sb, MousePosition, title, 0.82f, a,
+                new OniTooltipLine(hint, OnikiriUITheme.TextDim),
+                new OniTooltipLine(dangerLine, OnikiriUITheme.GhostFire * 0.9f));
         }
     }
 }
