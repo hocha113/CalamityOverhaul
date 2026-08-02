@@ -451,6 +451,8 @@ JusticeUnveiled: {
 
 WeaverGrievances: {
 	DisplayName: Tissu des griefs
+	// RitualInteractHint: "[Right-click] Pull the blade free"
+	// RitualInventoryFullHint: Your inventory is full. Make room before pulling the blade.
 	Tooltip:
 		'''
 		Déchaîne de nombreuses griffes d'esprits du ressentiment avec des effets spéciaux en Enfer et au donjon
@@ -2525,6 +2527,14 @@ OniMeiRubbingHigekiri: {
 	// Origin: The night of the test cut, the head fell with the beard still clinging to the edge — hence the old name
 	Power: Coupe-Barbe : Les coups directs de lame gagnent linéairement en puissance contre les cibles sous 35 % de vie (jusqu'à +60 %, ou +45 % contre les boss) ; une élimination directe rend 8 de posture une fois par action
 	Burden: Dégâts de lame -2 % — contre une cible en bonne santé, ce fil est légèrement plus émoussé que l'inscription d'origine
+}
+
+OniMeiGiftRepairCommand: {
+	// Description: Requeue one completed Onikiri inscription gift for this character.
+	// LocalOnly: This command only repairs the current local character.
+	// Success: Onikiri gift requeued: {0}
+	// NotCompleted: Onikiri gift was never completed: {0}
+	// UnknownKey: Unknown Onikiri gift Key: {0}
 }
 
 OniMeiRubbingOnikiri: {

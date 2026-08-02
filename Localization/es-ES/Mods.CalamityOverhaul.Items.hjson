@@ -456,6 +456,8 @@ JusticeUnveiled: {
 
 WeaverGrievances: {
 	DisplayName: Rencor enredado
+	// RitualInteractHint: "[Right-click] Pull the blade free"
+	// RitualInventoryFullHint: Your inventory is full. Make room before pulling the blade.
 	Tooltip:
 		'''
 		Desata un gran número de garras de espíritus malignos con efectos especiales en el infierno y la mazmorra
@@ -2541,6 +2543,14 @@ OniMeiRubbingHigekiri: {
 	// Origin: The night of the test cut, the head fell with the beard still clinging to the edge — hence the old name
 	Power: Corta-Barbas: Los golpes directos de hoja aumentan de forma lineal contra objetivos con menos del 35 % de vida (hasta +60 %, o +45 % contra jefes); una baja con un golpe directo restaura 8 de postura una vez por acción
 	Burden: Daño de hoja -2 % — contra objetivos sanos, este filo es algo más romo que la inscripción original
+}
+
+OniMeiGiftRepairCommand: {
+	// Description: Requeue one completed Onikiri inscription gift for this character.
+	// LocalOnly: This command only repairs the current local character.
+	// Success: Onikiri gift requeued: {0}
+	// NotCompleted: Onikiri gift was never completed: {0}
+	// UnknownKey: Unknown Onikiri gift Key: {0}
 }
 
 OniMeiRubbingOnikiri: {

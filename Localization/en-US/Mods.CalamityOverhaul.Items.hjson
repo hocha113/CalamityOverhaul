@@ -2619,9 +2619,9 @@ OniMeiRubbingHigekiri: {
 OniMeiGiftRepairCommand: {
 	Description: Requeue one completed Onikiri inscription gift for this character.
 	LocalOnly: This command only repairs the current local character.
-	Success: "Onikiri gift requeued: {0}"
-	NotCompleted: "Onikiri gift was never completed: {0}"
-	UnknownKey: "Unknown Onikiri gift Key: {0}"
+	Success: Onikiri gift requeued: {0}
+	NotCompleted: Onikiri gift was never completed: {0}
+	UnknownKey: Unknown Onikiri gift Key: {0}
 }
 
 OniMeiRubbingOnikiri: {

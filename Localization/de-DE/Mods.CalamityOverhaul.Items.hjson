@@ -449,6 +449,8 @@ JusticeUnveiled: {
 
 WeaverGrievances: {
 	DisplayName: Gewebe der Groll
+	// RitualInteractHint: "[Right-click] Pull the blade free"
+	// RitualInventoryFullHint: Your inventory is full. Make room before pulling the blade.
 	Tooltip:
 		'''
 		Entfesselt zahlreiche Klauen der Grollgeister mit Spezialeffekten in Unterwelt und Kerker
@@ -2517,6 +2519,14 @@ OniMeiRubbingHigekiri: {
 	// Origin: The night of the test cut, the head fell with the beard still clinging to the edge — hence the old name
 	Power: Bartschneider: Direkte Klingentreffer skalieren bei Zielen unter 35 % Leben mit deren Verletzung (bis +60 %, gegen Bosse +45 %); eine Tötung durch einen direkten Klingentreffer erstattet einmal pro Aktion 8 Haltung
 	Burden: Klingenschaden -2 % — gegen gesunde Ziele ist diese Schneide etwas stumpfer als die ursprüngliche Inschrift
+}
+
+OniMeiGiftRepairCommand: {
+	// Description: Requeue one completed Onikiri inscription gift for this character.
+	// LocalOnly: This command only repairs the current local character.
+	// Success: Onikiri gift requeued: {0}
+	// NotCompleted: Onikiri gift was never completed: {0}
+	// UnknownKey: Unknown Onikiri gift Key: {0}
 }
 
 OniMeiRubbingOnikiri: {

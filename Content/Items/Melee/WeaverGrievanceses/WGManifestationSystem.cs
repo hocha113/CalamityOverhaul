@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
         }
 
         internal static void RequestUnlock(Vector2 origin) {
-            if (VaultUtils.isClient || Unlocked || !CWRRef.Has || CWRRef.GetBossRushActive()
+            if (VaultUtils.isClient || Unlocked || CWRRef.GetBossRushActive()
                 || SubWorldRef.AnyActiveSubWorld()) {
                 return;
             }

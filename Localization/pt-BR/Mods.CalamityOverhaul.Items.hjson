@@ -454,6 +454,8 @@ JusticeUnveiled: {
 
 WeaverGrievances: {
 	DisplayName: Rancor Enredado
+	// RitualInteractHint: "[Right-click] Pull the blade free"
+	// RitualInventoryFullHint: Your inventory is full. Make room before pulling the blade.
 	Tooltip:
 		'''
 		Libera muitas garras de espiritos rancorosos; tem efeitos especiais em ambientes infernais e de masmorra
@@ -2535,6 +2537,14 @@ OniMeiRubbingHigekiri: {
 	// Origin: The night of the test cut, the head fell with the beard still clinging to the edge — hence the old name
 	Power: Corta-Barba: Golpes diretos de lâmina escalam linearmente contra alvos abaixo de 35 % de vida (até +60 %, ou +45 % contra chefes); um abate direto restaura 8 de postura uma vez por ação
 	Burden: Dano da lâmina -2 % — contra alvos saudáveis, este fio é um pouco mais cego que a inscrição original
+}
+
+OniMeiGiftRepairCommand: {
+	// Description: Requeue one completed Onikiri inscription gift for this character.
+	// LocalOnly: This command only repairs the current local character.
+	// Success: Onikiri gift requeued: {0}
+	// NotCompleted: Onikiri gift was never completed: {0}
+	// UnknownKey: Unknown Onikiri gift Key: {0}
 }
 
 OniMeiRubbingOnikiri: {

@@ -460,6 +460,8 @@ JusticeUnveiled: {
 
 WeaverGrievances: {
 	DisplayName: Недовольство Ткача
+	// RitualInteractHint: "[Right-click] Pull the blade free"
+	// RitualInventoryFullHint: Your inventory is full. Make room before pulling the blade.
 	Tooltip:
 		'''
 		Выпустите на волю большое количество когтей злых духов и получите особые эффекты в аду и подземельях
@@ -2539,6 +2541,14 @@ OniMeiRubbingHigekiri: {
 	// Origin: The night of the test cut, the head fell with the beard still clinging to the edge — hence the old name
 	Power: Срезатель бороды: Прямые удары клинком линейно усиливаются по целям с менее чем 35 % здоровья (до +60 %, или +45 % против боссов); прямое убийство восстанавливает 8 стойки один раз за действие
 	Burden: Урон клинка -2 % — против здоровых целей это лезвие немного тупее исходной надписи
+}
+
+OniMeiGiftRepairCommand: {
+	// Description: Requeue one completed Onikiri inscription gift for this character.
+	// LocalOnly: This command only repairs the current local character.
+	// Success: Onikiri gift requeued: {0}
+	// NotCompleted: Onikiri gift was never completed: {0}
+	// UnknownKey: Unknown Onikiri gift Key: {0}
 }
 
 OniMeiRubbingOnikiri: {

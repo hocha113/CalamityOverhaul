@@ -2594,9 +2594,9 @@ OniMeiRubbingHigekiri: {
 OniMeiGiftRepairCommand: {
 	Description: 为当前角色重新排入一项已完成的鬼切铭刻赠礼
 	LocalOnly: 此命令只能修复当前本地角色
-	Success: "鬼切赠礼已重新排入：{0}"
-	NotCompleted: "该鬼切赠礼从未完成：{0}"
-	UnknownKey: "未知的鬼切铭刻 Key：{0}"
+	Success: 鬼切赠礼已重新排入：{0}
+	NotCompleted: 该鬼切赠礼从未完成：{0}
+	UnknownKey: 未知的鬼切铭刻 Key：{0}
 }
 
 OniMeiRubbingOnikiri: {
