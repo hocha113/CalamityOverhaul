@@ -19,16 +19,22 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
     {
         Gathering,
         Settling,
-        Plunging,
+        Falling,
         Planted,
     }
+
+    internal readonly record struct WGManifestationResumeState(
+        Vector2 Position,
+        Vector2 Velocity,
+        WeaverGrievancesManifestationPhase Phase,
+        int PhaseTimer);
 
     /// <summary>世界共享Actor，服务端推进阶段，各客户端独立拔刀</summary>
     internal sealed class WGManifestationActor : Actor
     {
         internal const int GatheringFrames = 82;
         internal const int SettlingFrames = 32;
-        internal const int PlungingFrames = 14;
+        internal const int MaximumFallingFrames = 1800;
         internal const int ManifestAftermathFrames = 26;
         internal const int PullChargeFrames = 10;
         internal const int PullDrawFrames = 12;
@@ -38,10 +44,17 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
 
         private const float SwordRotation = 2.42f;
         private const float SwordScale = 0.74f;
-        private const float SwordCenterHeight = 70f;
-        private const float PrePlungeHeight = 118f;
+        internal const float SwordCenterHeight = 70f;
+        private const float FallingGravity = 0.9f;
+        private const float MaximumFallingSpeed = 36f;
+        private const float FallingSubstep = 8f;
+        private const float EmbeddedFallingSubstep = 1f;
+        private const int FallingProbeWidth = 8;
+        private const int FallingProbeHeight = 8;
+        private const int EmergencySearchCooldown = 300;
 
-        private static bool createAsPlanted;
+        private static bool createWithResumeState;
+        private static WGManifestationResumeState createResumeState;
 
         [SyncVar]
         private int phaseRaw = (int)WeaverGrievancesManifestationPhase.Gathering;
@@ -56,6 +69,8 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
         private int localRequestTimer;
         private int localClaimToken;
         private bool localCommitSent;
+        private bool fallingCollisionArmed;
+        private int emergencySearchCooldown;
 
         private enum LocalPullState : byte
         {
@@ -71,6 +86,8 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
 
         internal bool IsPlanted => Phase == WeaverGrievancesManifestationPhase.Planted;
 
+        internal int PhaseTimer => phaseTimer;
+
         internal Vector2 SwordAnchor => Position + new Vector2(0f, -SwordCenterHeight);
 
         internal Vector2 CameraFocusPoint => CurrentSwordCenter;
@@ -83,22 +100,31 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
 
         public override Vector2 Center => SwordAnchor;
 
-        internal static int CreateAt(Vector2 groundAnchor, bool planted) {
+        internal static WGManifestationResumeState CreateInitialState(Vector2 manifestationOrigin)
+            => new(manifestationOrigin + new Vector2(0f, SwordCenterHeight), Vector2.Zero,
+                WeaverGrievancesManifestationPhase.Gathering, 0);
+
+        internal static int CreateAt(Vector2 anchor, bool planted) {
+            WGManifestationResumeState state = new(anchor, Vector2.Zero,
+                planted ? WeaverGrievancesManifestationPhase.Planted
+                    : WeaverGrievancesManifestationPhase.Gathering,
+                planted ? 1 : 0);
+            return CreateAt(state);
+        }
+
+        internal static int CreateAt(WGManifestationResumeState state) {
             if (VaultUtils.isClient) {
                 return -1;
             }
 
-            createAsPlanted = planted;
+            createWithResumeState = true;
+            createResumeState = state;
             try {
-                int slot = ActorLoader.NewActor<WGManifestationActor>(groundAnchor);
-                if (slot >= 0 && planted
-                    && ActorLoader.Actors[slot] is WGManifestationActor actor) {
-                    actor.ForcePlanted();
-                }
-                return slot;
+                return ActorLoader.NewActor<WGManifestationActor>(state.Position, state.Velocity);
             }
             finally {
-                createAsPlanted = false;
+                createWithResumeState = false;
+                createResumeState = default;
             }
         }
 
@@ -107,18 +133,24 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
             Height = 220;
             DrawExtendMode = 650;
             DrawLayer = ActorDrawLayer.AfterTiles;
-            Velocity = Vector2.Zero;
 
-            if (!VaultUtils.isClient && createAsPlanted) {
-                phaseRaw = (int)WeaverGrievancesManifestationPhase.Planted;
+            if (!VaultUtils.isClient && createWithResumeState) {
+                phaseRaw = (int)createResumeState.Phase;
+                phaseTimer = Math.Max(createResumeState.PhaseTimer, 0);
+                Velocity = createResumeState.Velocity;
             }
 
             lastSeenPhase = Phase;
-            phaseTimer = IsPlanted ? 1 : 0;
+            if (!createWithResumeState && !VaultUtils.isClient) {
+                phaseTimer = IsPlanted ? 1 : 0;
+                Velocity = Vector2.Zero;
+            }
             manifestationCutsceneStarted = false;
             manifestationCutsceneEndTimer = 0;
             promptAlpha = 0f;
             localPullState = LocalPullState.None;
+            fallingCollisionArmed = Phase != WeaverGrievancesManifestationPhase.Falling
+                || !ProbeInsideSolid(Position);
         }
 
         public override void SendExtraData(BinaryWriter writer) {
@@ -133,7 +165,11 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
         public override void AI() {
             ObservePhaseChange();
             if (!VaultUtils.isClient) {
+                WGManifestationSystem.CaptureResumeState(GetResumeState());
                 UpdateAuthoritativeManifestation();
+            }
+            else if (Phase == WeaverGrievancesManifestationPhase.Falling && phaseTimer > 0) {
+                UpdateClientFallingPrediction();
             }
 
             if (Main.dedServ) {
@@ -165,12 +201,18 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
                 return;
             }
 
-            WeaverGrievancesManifestationPhase previous = lastSeenPhase;
             lastSeenPhase = Phase;
             phaseTimer = 0;
 
-            if (!Main.dedServ && Phase == WeaverGrievancesManifestationPhase.Planted
-                && previous == WeaverGrievancesManifestationPhase.Plunging) {
+            if (Phase == WeaverGrievancesManifestationPhase.Falling) {
+                fallingCollisionArmed = !ProbeInsideSolid(Position);
+            }
+
+            if (!Main.dedServ && Phase == WeaverGrievancesManifestationPhase.Planted) {
+                if (VaultUtils.isClient && HasNetTarget) {
+                    Position = NetTargetPosition;
+                    Velocity = Vector2.Zero;
+                }
                 manifestationCutsceneEndTimer = ManifestAftermathFrames;
                 PlayPlantImpactFeedback();
             }
@@ -189,16 +231,139 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
                     break;
                 case WeaverGrievancesManifestationPhase.Settling:
                     if (phaseTimer >= SettlingFrames) {
-                        SetPhase(WeaverGrievancesManifestationPhase.Plunging);
+                        Velocity = Vector2.Zero;
+                        fallingCollisionArmed = !ProbeInsideSolid(Position);
+                        SetPhase(WeaverGrievancesManifestationPhase.Falling);
                     }
                     break;
-                case WeaverGrievancesManifestationPhase.Plunging:
-                    if (phaseTimer >= PlungingFrames) {
-                        SetPhase(WeaverGrievancesManifestationPhase.Planted);
-                        WGManifestationSystem.MarkManifestationCompleted();
-                    }
+                case WeaverGrievancesManifestationPhase.Falling:
+                    UpdateAuthoritativeFalling();
                     break;
             }
+        }
+
+        private void UpdateAuthoritativeFalling() {
+            float fallSpeed = Math.Min(Math.Max(Velocity.Y, 0f) + FallingGravity,
+                MaximumFallingSpeed);
+
+            if (TrySweepToGround(fallSpeed, out Vector2 landingAnchor)) {
+                PlantAt(landingAnchor);
+                return;
+            }
+
+            Velocity = new Vector2(0f, fallSpeed);
+            TryFinishEmergencyFall();
+        }
+
+        private void UpdateClientFallingPrediction() {
+            float fallSpeed = Math.Min(Math.Max(Velocity.Y, 0f) + FallingGravity,
+                MaximumFallingSpeed);
+            if (TrySweepToGround(fallSpeed, out Vector2 landingAnchor)) {
+                FreezeClientPrediction(landingAnchor);
+                return;
+            }
+
+            float worldBottom = Math.Max(Main.maxTilesY - 4, 1) * 16f;
+            if (phaseTimer >= MaximumFallingFrames || Position.Y + fallSpeed >= worldBottom) {
+                FreezeClientPrediction(new Vector2(Position.X,
+                    Math.Min(Position.Y, worldBottom)));
+                return;
+            }
+
+            Velocity = new Vector2(0f, fallSpeed);
+        }
+
+        private void FreezeClientPrediction(Vector2 position) {
+            Position = position;
+            Velocity = Vector2.Zero;
+            NetTargetPosition = position;
+            NetTargetVelocity = Vector2.Zero;
+            NetTargetTick = (long)Main.GameUpdateCount;
+        }
+
+        private void TryFinishEmergencyFall() {
+            float worldBottom = Math.Max(Main.maxTilesY - 4, 1) * 16f;
+            if (phaseTimer < MaximumFallingFrames && Position.Y + Velocity.Y < worldBottom) {
+                return;
+            }
+
+            Position = new Vector2(Position.X, Math.Min(Position.Y, worldBottom));
+            Velocity = Vector2.Zero;
+            if (emergencySearchCooldown > 0) {
+                emergencySearchCooldown--;
+                return;
+            }
+            emergencySearchCooldown = EmergencySearchCooldown;
+
+            if (WeaverGrievancesManifestationLocationFinder.TryResolveEmergencyGround(
+                Position, out Vector2 landingAnchor)) {
+                CWRMod.Instance.Logger.Warn(
+                    $"[WeaverGrievancesManifestation] Falling fallback at {landingAnchor}");
+                PlantAt(landingAnchor);
+                return;
+            }
+
+            CWRMod.Instance.Logger.Warn(
+                $"[WeaverGrievancesManifestation] No validated landing near {Position}; retrying");
+        }
+
+        private void PlantAt(Vector2 landingAnchor) {
+            Position = landingAnchor;
+            Velocity = Vector2.Zero;
+            SetPhase(WeaverGrievancesManifestationPhase.Planted);
+            WGManifestationSystem.MarkManifestationCompleted(landingAnchor);
+        }
+
+        private bool TrySweepToGround(float fallSpeed, out Vector2 landingAnchor) {
+            landingAnchor = default;
+            Vector2 probeOffset = new(-FallingProbeWidth * 0.5f, -FallingProbeHeight);
+            Vector2 probe = Position + probeOffset;
+            float remaining = Math.Max(fallSpeed, 0f);
+
+            while (remaining > 0.001f) {
+                float step = Math.Min(remaining, fallingCollisionArmed
+                    ? FallingSubstep : EmbeddedFallingSubstep);
+                Vector2 wanted = new(0f, step);
+                if (!fallingCollisionArmed) {
+                    probe += wanted;
+                    remaining -= step;
+                    fallingCollisionArmed = !ProbeInsideSolid(probe - probeOffset);
+                    continue;
+                }
+
+                Vector2 allowed = Collision.TileCollision(probe, wanted,
+                    FallingProbeWidth, FallingProbeHeight, fallThrough: true,
+                    fall2: true, gravDir: 1);
+                Vector2 moved = probe + allowed;
+                Vector4 slope = Collision.SlopeCollision(moved, allowed,
+                    FallingProbeWidth, FallingProbeHeight, gravity: 0f, fall: true);
+                Vector2 resolved = new(slope.X, slope.Y);
+                bool collided = allowed.Y < step - 0.01f
+                    || resolved.Y < moved.Y - 0.01f;
+
+                if (collided) {
+                    landingAnchor = resolved - probeOffset;
+                    return float.IsFinite(landingAnchor.X) && float.IsFinite(landingAnchor.Y);
+                }
+
+                probe = resolved;
+                remaining -= step;
+            }
+            return false;
+        }
+
+        private static bool ProbeInsideSolid(Vector2 anchor) {
+            Vector2 topLeft = anchor
+                + new Vector2(-FallingProbeWidth * 0.5f, -FallingProbeHeight);
+            for (int x = 0; x < FallingProbeWidth; x++) {
+                for (int y = 0; y < FallingProbeHeight; y++) {
+                    if (Collision.IsWorldPointSolid(
+                        topLeft + new Vector2(x + 0.5f, y + 0.5f), true)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         private void SetPhase(WeaverGrievancesManifestationPhase phase) {
@@ -227,8 +392,12 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
             phaseRaw = (int)WeaverGrievancesManifestationPhase.Planted;
             lastSeenPhase = WeaverGrievancesManifestationPhase.Planted;
             phaseTimer = 1;
+            Velocity = Vector2.Zero;
             NetUpdate = true;
         }
+
+        internal WGManifestationResumeState GetResumeState()
+            => new(Position, Velocity, Phase, phaseTimer);
 
         private float ManifestationProgress {
             get {
@@ -242,19 +411,7 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
             }
         }
 
-        private Vector2 ManifestationSwordCenter {
-            get {
-                if (Phase < WeaverGrievancesManifestationPhase.Plunging) {
-                    return SwordAnchor - new Vector2(0f, PrePlungeHeight);
-                }
-                if (Phase == WeaverGrievancesManifestationPhase.Plunging) {
-                    float t = MathHelper.Clamp(phaseTimer / (float)PlungingFrames, 0f, 1f);
-                    float plunge = t * t * t;
-                    return SwordAnchor - new Vector2(0f, PrePlungeHeight * (1f - plunge));
-                }
-                return SwordAnchor;
-            }
-        }
+        private Vector2 ManifestationSwordCenter => SwordAnchor;
 
         private Vector2 CurrentSwordCenter {
             get {
@@ -309,33 +466,43 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
         }
 
         private void TryStartManifestationCutscene() {
-            if (manifestationCutsceneStarted || Phase > WeaverGrievancesManifestationPhase.Settling
-                || !ShouldShowForLocalPlayer()) {
+            if (IsPlanted || !ShouldShowForLocalPlayer()
+                || Phase == WeaverGrievancesManifestationPhase.Falling
+                    && phaseTimer >= MaximumFallingFrames
+                || IsManifestationCutsceneBoundToThisActor()) {
                 return;
             }
 
             Player player = Main.LocalPlayer;
             if (player == null || !player.active || player.dead
-                || player.Center.DistanceSQ(Position) > 1800f * 1800f) {
+                || player.Center.DistanceSQ(CameraFocusPoint) > 1800f * 1800f) {
                 return;
             }
 
             WeaverGrievancesActorRef subject = new(WhoAmI, Generation);
-            manifestationCutsceneStarted
+            bool restartStaleClip = CutsceneDirector.CurrentClip
+                is WeaverGrievancesManifestCutscene;
+            bool started
                 = CutsceneDirector.Play<WeaverGrievancesManifestCutscene, WeaverGrievancesActorRef>(
-                    subject, player, restartSameClip: false);
-            if (manifestationCutsceneStarted) {
+                    subject, player, restartSameClip: restartStaleClip);
+            if (started && !manifestationCutsceneStarted) {
+                manifestationCutsceneStarted = true;
                 SoundEngine.PlaySound(SoundID.Item4 with { Pitch = -0.42f, Volume = 0.7f }, Position);
             }
         }
 
         private void UpdateManifestationCutscene() {
-            if (CutsceneDirector.CurrentClip is not WeaverGrievancesManifestCutscene) {
+            if (!IsManifestationCutsceneBoundToThisActor()) {
                 return;
             }
 
             Player player = Main.LocalPlayer;
             if (player == null || !player.active || player.dead) {
+                CutsceneDirector.Stop();
+                return;
+            }
+            if (Phase == WeaverGrievancesManifestationPhase.Falling
+                && phaseTimer >= MaximumFallingFrames) {
                 CutsceneDirector.Stop();
                 return;
             }
@@ -352,6 +519,17 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
             else {
                 CutsceneDirector.Stop();
             }
+        }
+
+        private bool IsManifestationCutsceneBoundToThisActor() {
+            if (CutsceneDirector.CurrentClip is not WeaverGrievancesManifestCutscene
+                || CutsceneDirector.CurrentContext == null
+                || !CutsceneDirector.CurrentContext.TryGetSubject(
+                    out WeaverGrievancesActorRef subject)) {
+                return false;
+            }
+
+            return subject.Slot == WhoAmI && subject.Generation == Generation;
         }
 
         private void UpdateLocalInteraction() {
@@ -531,8 +709,9 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
             }
 
             Texture2D sword = TextureAssets.Item[ModContent.ItemType<WeaverGrievancesItem>()].Value;
+            float groundY = IsPlanted ? Position.Y : CurrentSwordCenter.Y + 2000f;
             WGMaterializationRenderer.Draw(spriteBatch, sword, CurrentSwordCenter,
-                CurrentSwordRotation, CurrentSwordScale, ManifestationProgress, Position.Y);
+                CurrentSwordRotation, CurrentSwordScale, ManifestationProgress, groundY);
             return false;
         }
 

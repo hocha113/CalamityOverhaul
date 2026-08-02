@@ -18,31 +18,32 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
                 && Resolve(subject) is WGManifestationActor actor) {
                 return actor.CameraFocusPoint;
             }
+
+            context.Stop();
             return context.PlayerCenter;
         }
     }
 
-    /// <summary>聚魂插地运镜，远端玩家不参与</summary>
+    /// <summary>聚魂坠地运镜，远端玩家不参与</summary>
     internal sealed class WeaverGrievancesManifestCutscene : CutsceneClip<WeaverGrievancesActorRef>
     {
         public override int Priority => 34;
 
         public override bool CanPlay(Player player, WeaverGrievancesActorRef subject)
             => WeaverGrievancesCutsceneTarget.Resolve(subject) is WGManifestationActor actor
-                && player.Center.DistanceSQ(actor.Position) < 1800f * 1800f;
+                && player.Center.DistanceSQ(actor.CameraFocusPoint) < 1800f * 1800f;
 
         protected override void BuildTimeline(CutsceneTimeline timeline) {
             int total = WGManifestationActor.GatheringFrames
                 + WGManifestationActor.SettlingFrames
-                + WGManifestationActor.PlungingFrames
-                + WGManifestationActor.ManifestAftermathFrames;
+                + WGManifestationActor.MaximumFallingFrames
+                + WGManifestationActor.ManifestAftermathFrames + 60;
             timeline.Duration = total;
             timeline
-                .Add(new InputLockTrack(0, total - 12, CutsceneInputLockFlags.All))
-                .Add(CameraFocusTrack.Midpoint(0, total, WeaverGrievancesCutsceneTarget.Focus,
-                    context => context.PlayerCenter, new Vector2(0f, -26f), 0.065f))
-                .Add(new CameraZoomTrack(0, 42, 1f, 1.28f, 0.05f, CutsceneEase.CubicOut))
-                .Add(new CameraZoomTrack(total - 38, 38, 1.28f, 1f, 0.055f, CutsceneEase.CubicOut));
+                .Add(new InputLockTrack(0, total, CutsceneInputLockFlags.All))
+                .Add(CameraFocusTrack.Follow(0, total, WeaverGrievancesCutsceneTarget.Focus,
+                    new Vector2(0f, 24f), 0.24f))
+                .Add(new CameraZoomTrack(0, 42, 1f, 1.28f, 0.05f, CutsceneEase.CubicOut));
         }
     }
 

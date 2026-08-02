@@ -14,23 +14,48 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
     /// <summary>纠缠之怨显现的世界进度与权威Actor维护</summary>
     internal sealed class WGManifestationSystem : ModSystem
     {
+        private const int SaveVersion = 1;
+        private const float LegacyPrePlungeHeight = 118f;
         private const int EnsureInterval = 60;
         private const int SpawnFailureLogCooldown = 300;
+        private const string SaveVersionKey = "WGManifestationVersion";
+        private const string UnlockedKey = "WGManifestationUnlocked";
+        private const string ManifestOriginKey = "WGManifestOrigin";
+        private const string PlantedAnchorKey = "WGPlantedAnchor";
+        private const string CompletedKey = "WGManifestationCompleted";
+        private const string HasResumeStateKey = "WGHasResumeState";
+        private const string ResumePositionKey = "WGResumePosition";
+        private const string ResumeVelocityKey = "WGResumeVelocity";
+        private const string ResumePhaseKey = "WGResumePhase";
+        private const string ResumeTimerKey = "WGResumeTimer";
 
         internal static bool Unlocked { get; private set; }
-        internal static Vector2 Anchor { get; private set; }
+        internal static Vector2 ManifestOrigin { get; private set; }
+        internal static Vector2 PlantedAnchor { get; private set; }
         internal static bool ManifestationCompleted { get; private set; }
 
         private static bool pendingUnlock;
         private static Vector2 pendingOrigin;
-        private static bool restorePlantedOnNextUpdate;
+        private static bool hasResumeState;
+        private static WGManifestationResumeState resumeState;
         private static int ensureTimer;
         private static int spawnFailureLogTimer;
 
         public override void SaveWorldData(TagCompound tag) {
-            tag[nameof(Unlocked)] = Unlocked;
-            tag[nameof(Anchor)] = Anchor;
-            tag[nameof(ManifestationCompleted)] = ManifestationCompleted;
+            RefreshResumeStateFromActor();
+
+            tag[SaveVersionKey] = SaveVersion;
+            tag[UnlockedKey] = Unlocked;
+            tag[ManifestOriginKey] = ManifestOrigin;
+            tag[PlantedAnchorKey] = PlantedAnchor;
+            tag[CompletedKey] = ManifestationCompleted;
+            tag[HasResumeStateKey] = hasResumeState;
+            if (hasResumeState) {
+                tag[ResumePositionKey] = resumeState.Position;
+                tag[ResumeVelocityKey] = resumeState.Velocity;
+                tag[ResumePhaseKey] = (int)resumeState.Phase;
+                tag[ResumeTimerKey] = resumeState.PhaseTimer;
+            }
         }
 
         public override void LoadWorldData(TagCompound tag) {
@@ -38,52 +63,56 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
             ResetTransientState();
 
             try {
-                Unlocked = tag != null && tag.TryGet(nameof(Unlocked), out bool unlocked) && unlocked;
-                Anchor = tag != null && tag.TryGet(nameof(Anchor), out Vector2 anchor)
-                    ? anchor : Vector2.Zero;
-                ManifestationCompleted = Unlocked
-                    && tag != null
-                    && tag.TryGet(nameof(ManifestationCompleted), out bool completed)
-                    && completed;
+                bool currentSave = tag != null && tag.TryGet(SaveVersionKey, out int version)
+                    && version >= SaveVersion;
+                string unlockedKey = currentSave ? UnlockedKey : nameof(Unlocked);
+                Unlocked = tag != null && tag.TryGet(unlockedKey, out bool unlocked) && unlocked;
+                if (Unlocked) {
+                    LoadPersistentState(tag, currentSave);
+                }
             } catch (Exception ex) {
                 CWRMod.Instance.Logger.Error(
                     $"[WeaverGrievancesManifestation:LoadWorldData] Failed to load state: {ex.Message}");
                 ResetPersistentState();
             }
 
-            if (Unlocked && !WeaverGrievancesManifestationLocationFinder.IsValidWorldPosition(Anchor)) {
+            if (Unlocked && !HasValidPersistentPosition()) {
                 CWRMod.Instance.Logger.Warn(
-                    $"[WeaverGrievancesManifestation] Invalid saved anchor {Anchor}; repairing near a player");
-                Anchor = Vector2.Zero;
+                    "[WeaverGrievancesManifestation] Invalid saved position; repairing near a player");
+                ManifestOrigin = Vector2.Zero;
+                PlantedAnchor = Vector2.Zero;
+                hasResumeState = false;
             }
-
-            //Actor不存档，重载恢复插地态
-            restorePlantedOnNextUpdate = Unlocked;
         }
 
         public override void NetSend(BinaryWriter writer) {
             writer.Write(Unlocked);
-            writer.WriteVector2(Anchor);
+            writer.WriteVector2(ManifestOrigin);
+            writer.WriteVector2(PlantedAnchor);
             writer.Write(ManifestationCompleted);
         }
 
         public override void NetReceive(BinaryReader reader) {
             bool unlocked = reader.ReadBoolean();
-            Vector2 anchor = reader.ReadVector2();
+            Vector2 manifestOrigin = reader.ReadVector2();
+            Vector2 plantedAnchor = reader.ReadVector2();
             bool completed = reader.ReadBoolean();
 
-            if (unlocked && !WeaverGrievancesManifestationLocationFinder.IsValidWorldPosition(anchor)) {
+            Vector2 position = completed ? plantedAnchor : manifestOrigin;
+            if (unlocked && !WeaverGrievancesManifestationLocationFinder.IsValidWorldPosition(position)) {
                 CWRMod.Instance.Logger.Warn(
-                    $"[WeaverGrievancesManifestation:NetReceive] Ignoring invalid anchor {anchor}");
+                    $"[WeaverGrievancesManifestation:NetReceive] Ignoring invalid position {position}");
                 unlocked = false;
-                anchor = Vector2.Zero;
+                manifestOrigin = Vector2.Zero;
+                plantedAnchor = Vector2.Zero;
                 completed = false;
             }
 
             Unlocked = unlocked;
-            Anchor = anchor;
+            ManifestOrigin = manifestOrigin;
+            PlantedAnchor = plantedAnchor;
             ManifestationCompleted = unlocked && completed;
-            restorePlantedOnNextUpdate = false;
+            hasResumeState = false;
         }
 
         public override void OnWorldLoad() => ResetTransientState();
@@ -101,21 +130,13 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
                 spawnFailureLogTimer--;
             }
 
-            if (restorePlantedOnNextUpdate && Unlocked) {
-                restorePlantedOnNextUpdate = false;
-                if (!ManifestationCompleted) {
-                    ManifestationCompleted = true;
-                    SyncWorldState();
-                }
-            }
-
             if (!Unlocked) {
                 TryProcessUnlock();
                 return;
             }
 
-            if (!WeaverGrievancesManifestationLocationFinder.IsValidWorldPosition(Anchor)) {
-                if (!TryRepairAnchor()) {
+            if (!HasValidPersistentPosition()) {
+                if (!TryRepairPersistentState()) {
                     return;
                 }
             }
@@ -140,13 +161,32 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
             TryCommitPendingUnlock();
         }
 
-        internal static void MarkManifestationCompleted() {
+        internal static void MarkManifestationCompleted(Vector2 landingAnchor) {
             if (VaultUtils.isClient || !Unlocked || ManifestationCompleted) {
                 return;
             }
 
+            if (!WeaverGrievancesManifestationLocationFinder.IsValidWorldPosition(landingAnchor)) {
+                CWRMod.Instance.Logger.Error(
+                    $"[WeaverGrievancesManifestation] Invalid landing anchor {landingAnchor}");
+                return;
+            }
+
+            PlantedAnchor = landingAnchor;
             ManifestationCompleted = true;
+            hasResumeState = false;
+            resumeState = default;
             SyncWorldState();
+        }
+
+        internal static void CaptureResumeState(WGManifestationResumeState state) {
+            if (VaultUtils.isClient || !Unlocked || ManifestationCompleted
+                || !IsValidResumeState(state)) {
+                return;
+            }
+
+            resumeState = state;
+            hasResumeState = true;
         }
 
         internal static bool TryResolveActor(int slot, ushort generation,
@@ -170,13 +210,18 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
 
         private static bool TryCommitPendingUnlock() {
             if (!pendingUnlock || Unlocked
-                || !WeaverGrievancesManifestationLocationFinder.TryResolveNear(pendingOrigin, out Vector2 anchor)) {
+                || !WeaverGrievancesManifestationLocationFinder.TryCreateAppearanceAnchor(
+                    pendingOrigin, out Vector2 appearanceAnchor)) {
                 return false;
             }
 
-            Anchor = anchor;
+            ManifestOrigin = pendingOrigin;
+            PlantedAnchor = Vector2.Zero;
             Unlocked = true;
             ManifestationCompleted = false;
+            resumeState = WGManifestationActor.CreateInitialState(ManifestOrigin);
+            resumeState = resumeState with { Position = appearanceAnchor };
+            hasResumeState = true;
             pendingUnlock = false;
             pendingOrigin = Vector2.Zero;
             ensureTimer = 0;
@@ -187,22 +232,25 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
             return true;
         }
 
-        private static bool TryRepairAnchor() {
+        private static bool TryRepairPersistentState() {
             if (!TryGetFirstValidPlayer(out Player player)
-                || !WeaverGrievancesManifestationLocationFinder.TryResolveNear(player.Center, out Vector2 anchor)) {
+                || !WeaverGrievancesManifestationLocationFinder.TryCreateAppearanceAnchor(
+                    player.Center, out Vector2 appearanceAnchor)) {
                 return false;
             }
 
-            Anchor = anchor;
-            ManifestationCompleted = true;
-            restorePlantedOnNextUpdate = false;
+            ManifestOrigin = player.Center;
+            PlantedAnchor = Vector2.Zero;
+            ManifestationCompleted = false;
+            resumeState = WGManifestationActor.CreateInitialState(ManifestOrigin);
+            resumeState = resumeState with { Position = appearanceAnchor };
+            hasResumeState = true;
             SyncWorldState();
             return true;
         }
 
         private static bool EnsureSingleActor() {
-            if (VaultUtils.isClient || !Unlocked
-                || !WeaverGrievancesManifestationLocationFinder.IsValidWorldPosition(Anchor)) {
+            if (VaultUtils.isClient || !Unlocked || !HasValidPersistentPosition()) {
                 return false;
             }
 
@@ -210,10 +258,18 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
                 = ActorLoader.GetActiveActors<WGManifestationActor>();
             WGManifestationActor keeper = null;
             float nearestDistanceSq = float.MaxValue;
+            Vector2 expectedPosition = ManifestationCompleted
+                ? PlantedAnchor
+                : hasResumeState ? resumeState.Position : WGManifestationActor
+                    .CreateInitialState(ManifestOrigin).Position;
 
             foreach (WGManifestationActor actor in actors) {
-                float distanceSq = Vector2.DistanceSquared(actor.Position, Anchor);
-                if (keeper == null || distanceSq < nearestDistanceSq) {
+                float distanceSq = Vector2.DistanceSquared(actor.Position, expectedPosition);
+                bool fartherAlong = !ManifestationCompleted && keeper != null
+                    && (actor.Phase > keeper.Phase
+                        || actor.Phase == keeper.Phase && actor.PhaseTimer > keeper.PhaseTimer);
+                if (keeper == null || fartherAlong
+                    || ManifestationCompleted && distanceSq < nearestDistanceSq) {
                     keeper = actor;
                     nearestDistanceSq = distanceSq;
                 }
@@ -230,27 +286,132 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
             }
 
             if (keeper != null) {
-                if (nearestDistanceSq > 0.25f) {
-                    keeper.Position = Anchor;
+                if (ManifestationCompleted && nearestDistanceSq > 0.25f) {
+                    keeper.Position = PlantedAnchor;
+                    keeper.Velocity = Vector2.Zero;
                     keeper.NetUpdate = true;
                 }
                 if (ManifestationCompleted && !keeper.IsPlanted) {
                     keeper.ForcePlanted();
                 }
+                if (!ManifestationCompleted) {
+                    CaptureResumeState(keeper.GetResumeState());
+                }
                 return true;
             }
 
-            int actorIndex = WGManifestationActor.CreateAt(Anchor, ManifestationCompleted);
+            int actorIndex = ManifestationCompleted
+                ? WGManifestationActor.CreateAt(PlantedAnchor, planted: true)
+                : WGManifestationActor.CreateAt(hasResumeState
+                    ? resumeState
+                    : WGManifestationActor.CreateInitialState(ManifestOrigin));
             if (actorIndex >= 0) {
                 return true;
             }
 
             if (spawnFailureLogTimer <= 0) {
                 CWRMod.Instance.Logger.Error(
-                    $"[WeaverGrievancesManifestation] Actor spawn failed at {Anchor}; retrying");
+                    $"[WeaverGrievancesManifestation] Actor spawn failed at {expectedPosition}; retrying");
                 spawnFailureLogTimer = SpawnFailureLogCooldown;
             }
             return false;
+        }
+
+        private static void LoadPersistentState(TagCompound tag, bool currentSave) {
+            if (currentSave) {
+                ManifestOrigin = tag.TryGet(ManifestOriginKey, out Vector2 manifestOrigin)
+                    ? manifestOrigin : Vector2.Zero;
+                PlantedAnchor = tag.TryGet(PlantedAnchorKey, out Vector2 plantedAnchor)
+                    ? plantedAnchor : Vector2.Zero;
+                ManifestationCompleted = tag.TryGet(CompletedKey, out bool completed)
+                    && completed;
+                hasResumeState = !ManifestationCompleted
+                    && tag.TryGet(HasResumeStateKey, out bool hasResume)
+                    && hasResume
+                    && TryReadResumeState(tag, out resumeState);
+                if (!ManifestationCompleted && !hasResumeState
+                    && WeaverGrievancesManifestationLocationFinder.TryCreateAppearanceAnchor(
+                        ManifestOrigin, out Vector2 appearanceAnchor)) {
+                    resumeState = WGManifestationActor.CreateInitialState(ManifestOrigin)
+                        with { Position = appearanceAnchor };
+                    hasResumeState = true;
+                }
+                return;
+            }
+
+            Vector2 legacyAnchor = tag.TryGet("Anchor", out Vector2 anchor)
+                ? anchor : Vector2.Zero;
+            ManifestationCompleted = tag.TryGet(nameof(ManifestationCompleted), out bool legacyCompleted)
+                && legacyCompleted;
+            if (ManifestationCompleted) {
+                PlantedAnchor = legacyAnchor;
+                ManifestOrigin = legacyAnchor - new Vector2(0f,
+                    WGManifestationActor.SwordCenterHeight);
+                return;
+            }
+
+            ManifestOrigin = legacyAnchor - new Vector2(0f,
+                WGManifestationActor.SwordCenterHeight + LegacyPrePlungeHeight);
+            PlantedAnchor = Vector2.Zero;
+            resumeState = WGManifestationActor.CreateInitialState(ManifestOrigin);
+            hasResumeState = IsValidResumeState(resumeState);
+        }
+
+        private static bool TryReadResumeState(TagCompound tag,
+            out WGManifestationResumeState state) {
+            state = default;
+            if (!tag.TryGet(ResumePositionKey, out Vector2 position)
+                || !tag.TryGet(ResumeVelocityKey, out Vector2 velocity)
+                || !tag.TryGet(ResumePhaseKey, out int phaseRaw)
+                || !tag.TryGet(ResumeTimerKey, out int phaseTimer)
+                || phaseRaw < (int)WeaverGrievancesManifestationPhase.Gathering
+                || phaseRaw >= (int)WeaverGrievancesManifestationPhase.Planted) {
+                return false;
+            }
+
+            state = new WGManifestationResumeState(position, velocity,
+                (WeaverGrievancesManifestationPhase)phaseRaw, phaseTimer);
+            return IsValidResumeState(state);
+        }
+
+        private static bool IsValidResumeState(WGManifestationResumeState state)
+            => state.Phase >= WeaverGrievancesManifestationPhase.Gathering
+                && state.Phase < WeaverGrievancesManifestationPhase.Planted
+                && state.PhaseTimer >= 0
+                && WeaverGrievancesManifestationLocationFinder.IsValidWorldPosition(state.Position)
+                && float.IsFinite(state.Velocity.X)
+                && float.IsFinite(state.Velocity.Y);
+
+        private static bool HasValidPersistentPosition() {
+            if (!Unlocked) {
+                return false;
+            }
+            if (ManifestationCompleted) {
+                return WeaverGrievancesManifestationLocationFinder
+                    .IsValidWorldPosition(PlantedAnchor);
+            }
+            return WeaverGrievancesManifestationLocationFinder
+                .IsValidWorldPosition(ManifestOrigin)
+                && (!hasResumeState || IsValidResumeState(resumeState));
+        }
+
+        private static void RefreshResumeStateFromActor() {
+            if (VaultUtils.isClient || !Unlocked || ManifestationCompleted) {
+                return;
+            }
+
+            List<WGManifestationActor> actors
+                = ActorLoader.GetActiveActors<WGManifestationActor>();
+            WGManifestationActor keeper = null;
+            foreach (WGManifestationActor actor in actors) {
+                if (keeper == null || actor.Phase > keeper.Phase
+                    || actor.Phase == keeper.Phase && actor.PhaseTimer > keeper.PhaseTimer) {
+                    keeper = actor;
+                }
+            }
+            if (keeper != null) {
+                CaptureResumeState(keeper.GetResumeState());
+            }
         }
 
         private static bool TryGetFirstValidPlayer(out Player result) {
@@ -274,14 +435,16 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
 
         private static void ResetPersistentState() {
             Unlocked = false;
-            Anchor = Vector2.Zero;
+            ManifestOrigin = Vector2.Zero;
+            PlantedAnchor = Vector2.Zero;
             ManifestationCompleted = false;
+            hasResumeState = false;
+            resumeState = default;
         }
 
         private static void ResetTransientState() {
             pendingUnlock = false;
             pendingOrigin = Vector2.Zero;
-            restorePlantedOnNextUpdate = false;
             ensureTimer = 0;
             spawnFailureLogTimer = 0;
         }
@@ -308,45 +471,18 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
         }
     }
 
-    /// <summary>在触发点下方寻找可插刀地面，并提供出生区兜底</summary>
+    /// <summary>显现原点校验与异常落点兜底</summary>
     internal static class WeaverGrievancesManifestationLocationFinder
     {
-        private const int WorldEdgeMargin = 40;
-        private const int LocalSearchRadius = 48;
-        private const int LocalSearchDepth = 180;
-        private const int RequiredClearance = 18;
-        private const int RequiredHalfWidth = 6;
+        private const int WorldEdgeMargin = 4;
+        private const int EmergencyHorizontalRadius = 24;
 
         private static bool WorldGeometryReady
             => Main.maxTilesX > WorldEdgeMargin * 2 && Main.maxTilesY > WorldEdgeMargin * 2;
 
-        internal static bool TryResolveNear(Vector2 origin, out Vector2 anchor) {
-            anchor = Vector2.Zero;
-            if (!WorldGeometryReady || !float.IsFinite(origin.X) || !float.IsFinite(origin.Y)) {
-                return false;
-            }
-
-            if (TryFindGround(origin, LocalSearchRadius, LocalSearchDepth, RequiredClearance, out anchor)
-                || TryFindGround(origin, LocalSearchRadius, LocalSearchDepth, 2, out anchor)) {
-                return true;
-            }
-
-            Vector2 spawn = new(Main.spawnTileX * 16f + 8f, Main.spawnTileY * 16f);
-            int remainingDepth = Math.Max(Main.maxTilesY - Main.spawnTileY - WorldEdgeMargin, 1);
-            if (TryFindGround(spawn, LocalSearchRadius * 2, remainingDepth, RequiredClearance, out anchor)
-                || TryFindGround(spawn, LocalSearchRadius * 2, remainingDepth, 1, out anchor)) {
-                return true;
-            }
-
-            int centerX = Math.Clamp(Main.maxTilesX / 2, WorldEdgeMargin,
-                Main.maxTilesX - WorldEdgeMargin);
-            int surfaceY = double.IsFinite(Main.worldSurface)
-                ? (int)Math.Round(Main.worldSurface)
-                : Main.maxTilesY / 3;
-            Vector2 surface = new(centerX * 16f + 8f,
-                Math.Clamp(surfaceY, WorldEdgeMargin, Main.maxTilesY - WorldEdgeMargin) * 16f);
-            return TryFindGround(surface, LocalSearchRadius * 2, Main.maxTilesY,
-                1, out anchor);
+        internal static bool TryCreateAppearanceAnchor(Vector2 origin, out Vector2 anchor) {
+            anchor = origin + new Vector2(0f, WGManifestationActor.SwordCenterHeight);
+            return IsValidWorldPosition(origin) && IsValidWorldPosition(anchor);
         }
 
         internal static bool IsValidWorldPosition(Vector2 position) {
@@ -359,70 +495,78 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
                 && position.Y >= margin && position.Y <= Main.maxTilesY * 16f - margin;
         }
 
-        private static bool TryFindGround(Vector2 origin, int horizontalRadius, int maxDrop,
-            int clearance, out Vector2 anchor) {
+        internal static bool TryResolveEmergencyGround(Vector2 origin, out Vector2 anchor) {
             anchor = Vector2.Zero;
-            int originX = Math.Clamp((int)(origin.X / 16f), WorldEdgeMargin,
-                Main.maxTilesX - WorldEdgeMargin);
-            int originY = Math.Clamp((int)(origin.Y / 16f), WorldEdgeMargin,
-                Main.maxTilesY - WorldEdgeMargin);
-            int endY = Math.Min(originY + Math.Max(maxDrop, 1),
-                Main.maxTilesY - WorldEdgeMargin);
-
-            int bestScore = int.MaxValue;
-            int bestX = -1;
-            int bestY = -1;
-            for (int dx = -horizontalRadius; dx <= horizontalRadius; dx++) {
-                int x = originX + dx;
-                if (x < WorldEdgeMargin || x >= Main.maxTilesX - WorldEdgeMargin) {
-                    continue;
-                }
-
-                for (int y = originY; y <= endY; y++) {
-                    if (!IsUsableGround(x, y, clearance)) {
-                        continue;
-                    }
-
-                    int score = Math.Abs(dx) * 3 + y - originY;
-                    if (score < bestScore) {
-                        bestScore = score;
-                        bestX = x;
-                        bestY = y;
-                    }
-                    break;
-                }
-            }
-
-            if (bestX < 0) {
+            if (!WorldGeometryReady || !float.IsFinite(origin.X) || !float.IsFinite(origin.Y)) {
                 return false;
             }
 
-            anchor = new Vector2(bestX * 16f + 8f, bestY * 16f);
-            return IsValidWorldPosition(anchor);
+            int tileX = Math.Clamp((int)(origin.X / 16f), WorldEdgeMargin,
+                Main.maxTilesX - WorldEdgeMargin - 1);
+            int startY = Math.Clamp((int)MathF.Ceiling(origin.Y / 16f), WorldEdgeMargin,
+                Main.maxTilesY - WorldEdgeMargin - 1);
+            if (TryFindGroundColumn(tileX, startY, origin.X, out anchor)
+                || TryFindGroundColumnUp(tileX, startY, origin.X, out anchor)) {
+                return true;
+            }
+
+            for (int radius = 1; radius <= EmergencyHorizontalRadius; radius++) {
+                int left = tileX - radius;
+                if (left >= WorldEdgeMargin
+                    && (TryFindGroundColumn(left, startY, left * 16f + 8f, out anchor)
+                        || TryFindGroundColumnUp(left, startY,
+                            left * 16f + 8f, out anchor))) {
+                    return true;
+                }
+
+                int right = tileX + radius;
+                if (right < Main.maxTilesX - WorldEdgeMargin
+                    && (TryFindGroundColumn(right, startY, right * 16f + 8f, out anchor)
+                        || TryFindGroundColumnUp(right, startY,
+                            right * 16f + 8f, out anchor))) {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
-        private static bool IsUsableGround(int tileX, int tileY, int clearance) {
-            if (!WorldGen.InWorld(tileX, tileY, WorldEdgeMargin)) {
-                return false;
-            }
-
-            Tile ground = Main.tile[tileX, tileY];
-            if (ground == null || !ground.HasSolidTile()) {
-                return false;
-            }
-
-            for (int x = tileX - RequiredHalfWidth; x <= tileX + RequiredHalfWidth; x++) {
-                for (int y = tileY - clearance; y < tileY; y++) {
-                    if (!WorldGen.InWorld(x, y, WorldEdgeMargin)) {
-                        return false;
-                    }
-                    Tile tile = Main.tile[x, y];
-                    if (tile != null && tile.HasSolidTile()) {
-                        return false;
-                    }
+        private static bool TryFindGroundColumn(int tileX, int startY, float worldX,
+            out Vector2 anchor) {
+            anchor = Vector2.Zero;
+            int endY = Main.maxTilesY - WorldEdgeMargin - 1;
+            for (int tileY = startY; tileY <= endY; tileY++) {
+                Tile ground = Main.tile[tileX, tileY];
+                Tile above = Main.tile[tileX, tileY - 1];
+                if (IsFlatGroundTile(ground) && !IsBlockingTile(above)) {
+                    anchor = new Vector2(worldX, tileY * 16f);
+                    return IsValidWorldPosition(anchor);
                 }
             }
-            return true;
+            return false;
         }
+
+        private static bool TryFindGroundColumnUp(int tileX, int startY, float worldX,
+            out Vector2 anchor) {
+            anchor = Vector2.Zero;
+            for (int tileY = startY; tileY >= WorldEdgeMargin; tileY--) {
+                Tile ground = Main.tile[tileX, tileY];
+                Tile above = Main.tile[tileX, tileY - 1];
+                if (IsFlatGroundTile(ground) && !IsBlockingTile(above)) {
+                    anchor = new Vector2(worldX, tileY * 16f);
+                    return IsValidWorldPosition(anchor);
+                }
+            }
+            return false;
+        }
+
+        private static bool IsFlatGroundTile(Tile tile)
+            => IsBlockingTile(tile) && !tile.IsHalfBlock && tile.Slope == SlopeType.Solid;
+
+        private static bool IsBlockingTile(Tile tile)
+            => tile != null && tile.HasUnactuatedTile
+                && tile.TileType < Main.tileSolid.Length
+                && Main.tileSolid[tile.TileType]
+                && !Main.tileSolidTop[tile.TileType];
     }
 }
