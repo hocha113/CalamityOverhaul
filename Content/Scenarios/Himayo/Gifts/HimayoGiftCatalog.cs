@@ -206,38 +206,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
             return false;
         }
 
-        public static bool IsWorldConditionMet(HimayoGiftEntry entry) {
-            if (entry == null) {
-                return false;
-            }
-
-            return entry.MeiKey switch {
-                nameof(MeiHigekiri) => NPC.downedBoss1,
-                nameof(MeiChihi) => NPC.downedBoss2,
-                nameof(MeiKazehi) => CWRRef.GetDownedHiveMind() || CWRRef.GetDownedPerforator(),
-                nameof(MeiTodohi) => CWRRef.GetDownedSlimeGod(),
-                nameof(MeiTomokiri) => NPC.downedBoss3,
-                nameof(MeiFudo) => CWRRef.GetDownedAquaticScourge(),
-                nameof(MeiKogehi) => CWRRef.GetDownedBrimstoneElemental(),
-                nameof(MeiTessetsu) => NPC.downedMechBoss1,
-                nameof(MeiIkiai) => NPC.downedMechBoss2,
-                nameof(MeiKyushu) => NPC.downedMechBoss3,
-                nameof(MeiKarikiri) => CWRRef.GetDownedCalamitasClone(),
-                nameof(MeiShiorihi) => NPC.downedPlantBoss,
-                nameof(MeiShibori) => NPC.downedGolemBoss,
-                nameof(MeiKanhi) => NPC.downedAncientCultist,
-                nameof(MeiShishinoko) => NPC.downedMoonlord,
-                nameof(MeiKurikara) => CWRRef.GetDownedProvidence(),
-                nameof(MeiShiohi) => CWRRef.GetDownedPolterghast(),
-                nameof(MeiKyoko) => CWRRef.GetDownedDoG(),
-                nameof(MeiYoen) => CWRRef.GetDownedYharon(),
-                nameof(MeiChinmei) => CWRRef.GetDownedExoMechs(),
-                nameof(MeiMokukiri) => CWRRef.GetDownedCalamitas(),
-                nameof(MeiAshidome) => CWRRef.GetDownedBossRush(),
-                _ => false,
-            };
-        }
-
         private static HimayoGiftEntry Gift<TScenario, TRubbing>(int order, string meiKey,
             Func<int[]> targetBossIds,
             Func<HimayoGiftStoryData, bool> completed, Action<HimayoGiftStoryData, bool> setCompleted)

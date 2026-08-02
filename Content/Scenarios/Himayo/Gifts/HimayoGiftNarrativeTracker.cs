@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Common;
 using CalamityOverhaul.Content.Narrative.Data;
@@ -45,17 +45,10 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         protected override NarrativePolicy ConfigurePolicy() => null;
     }
 
-    /// <summary>Reconciles persistent world flags into each player's durable pending queue.</summary>
     internal static class HimayoGiftNarrativeTracker
     {
-        private const int ReconcileDelayTicks = 2;
         private static readonly Dictionary<string, HimayoBossGiftNarrative> scenariosByGiftKey = new(StringComparer.Ordinal);
-        private static readonly HashSet<int> serverEntitledPlayers = [];
         private static bool wasDownedBossRush;
-        private static int serverReconcileDelay = -1;
-        private static int localReconcileDelay = -1;
-        private static int serverPendingBossId;
-        private static int localPendingBossId;
 
         public static int LastDefeatedBossId {
             get {
@@ -68,12 +61,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 
         public static void ResetWorldState() {
             scenariosByGiftKey.Clear();
-            serverEntitledPlayers.Clear();
             wasDownedBossRush = CWRRef.Has && CWRRef.GetDownedBossRush();
-            serverReconcileDelay = Main.netMode == NetmodeID.Server ? ReconcileDelayTicks : -1;
-            localReconcileDelay = Main.netMode == NetmodeID.SinglePlayer ? ReconcileDelayTicks : -1;
-            serverPendingBossId = 0;
-            localPendingBossId = 0;
             RegisterAll();
         }
 
@@ -102,18 +90,19 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
                 return;
             }
 
+            List<string> keys = CollectBossKillEntitlements(bossId);
+            if (keys.Count == 0) {
+                return;
+            }
             if (Main.netMode == NetmodeID.Server) {
-                ScheduleServerReconcile(bossId);
+                SendEntitlementsToActivePlayers(keys, bossId);
                 return;
             }
 
             Player player = Main.LocalPlayer;
-            if (player?.active != true) {
-                return;
+            if (player?.active == true) {
+                HimayoStorySync.ReceiveGiftEntitlements(player, keys, bossId);
             }
-
-            localPendingBossId = bossId;
-            localReconcileDelay = Math.Max(localReconcileDelay, ReconcileDelayTicks);
         }
 
         public static void Tick() {
@@ -123,12 +112,10 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 
             if (Main.netMode == NetmodeID.Server) {
                 TickBossRushEdge();
-                TickServerEntitlements();
                 return;
             }
 
             if (Main.netMode == NetmodeID.SinglePlayer) {
-                TickLocalEntitlements();
                 TickBossRushEdge();
             }
             TickLocalNarrative();
@@ -141,95 +128,69 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 
             bool downed = CWRRef.GetDownedBossRush();
             if (downed && !wasDownedBossRush) {
+                List<string> keys = CollectBossRushEntitlements();
                 if (Main.netMode == NetmodeID.Server) {
-                    ScheduleServerReconcile(0);
+                    SendEntitlementsToActivePlayers(keys, 0);
                 }
-                else {
-                    localReconcileDelay = Math.Max(localReconcileDelay, ReconcileDelayTicks);
+                else if (Main.LocalPlayer?.active == true) {
+                    HimayoStorySync.ReceiveGiftEntitlements(Main.LocalPlayer, keys);
                 }
             }
             wasDownedBossRush = downed;
         }
 
-        private static List<string> CollectWorldEntitlements() {
+        private static List<string> CollectBossKillEntitlements(int bossId) {
             List<string> keys = [];
             IReadOnlyList<HimayoGiftEntry> all = HimayoGiftCatalog.All;
             for (int i = 0; i < all.Count; i++) {
                 HimayoGiftEntry entry = all[i];
                 if (!scenariosByGiftKey.TryGetValue(entry.MeiKey, out HimayoBossGiftNarrative gift)
-                    || !gift.ShouldSpawn() || !HimayoGiftCatalog.IsWorldConditionMet(entry)) {
+                    || gift.IsBossRushGift || !gift.ShouldSpawn()) {
                     continue;
                 }
-                keys.Add(entry.MeiKey);
+                int[] targets = entry.TargetBossIds;
+                for (int j = 0; j < targets.Length; j++) {
+                    if (targets[j] == bossId) {
+                        keys.Add(entry.MeiKey);
+                        break;
+                    }
+                }
             }
             return keys;
         }
 
-        private static bool ReceiveLocalEntitlements(int lastDefeatedBossId) {
-            Player player = Main.LocalPlayer;
-            if (player?.active != true) {
-                return false;
+        private static List<string> CollectBossRushEntitlements() {
+            List<string> keys = [];
+            IReadOnlyList<HimayoGiftEntry> all = HimayoGiftCatalog.All;
+            for (int i = 0; i < all.Count; i++) {
+                HimayoGiftEntry entry = all[i];
+                if (scenariosByGiftKey.TryGetValue(entry.MeiKey, out HimayoBossGiftNarrative gift)
+                    && gift.IsBossRushGift && gift.ShouldSpawn()) {
+                    keys.Add(entry.MeiKey);
+                }
             }
-            HimayoStorySync.ReceiveGiftEntitlements(player, CollectWorldEntitlements(), lastDefeatedBossId);
-            return true;
+            return keys;
         }
 
-        private static void TickLocalEntitlements() {
-            if (localReconcileDelay < 0) {
+        private static void SendEntitlementsToActivePlayers(IReadOnlyList<string> keys, int defeatedBossId) {
+            if (keys == null || keys.Count == 0) {
                 return;
             }
-            if (localReconcileDelay > 0) {
-                localReconcileDelay--;
-                return;
-            }
-            if (ReceiveLocalEntitlements(localPendingBossId)) {
-                localPendingBossId = 0;
-                localReconcileDelay = -1;
-            }
-        }
-
-        private static void TickServerEntitlements() {
-            serverEntitledPlayers.RemoveWhere(index => index < 0 || index >= Main.maxPlayers || !Main.player[index].active);
-            if (serverReconcileDelay >= 0) {
-                if (serverReconcileDelay > 0) {
-                    serverReconcileDelay--;
-                    return;
-                }
-                int defeatedBossId = serverPendingBossId;
-                serverPendingBossId = 0;
-                serverReconcileDelay = -1;
-                for (int i = 0; i < Main.maxPlayers; i++) {
-                    if (Main.player[i].active) {
-                        SendEntitlements(Main.player[i], defeatedBossId);
-                        serverEntitledPlayers.Add(i);
-                    }
-                }
-                return;
-            }
-
             for (int i = 0; i < Main.maxPlayers; i++) {
-                if (Main.player[i].active && serverEntitledPlayers.Add(i)) {
-                    SendEntitlements(Main.player[i], 0);
+                if (Main.player[i].active) {
+                    SendEntitlements(Main.player[i], keys, defeatedBossId);
                 }
             }
         }
 
-        private static void ScheduleServerReconcile(int bossId) {
-            serverReconcileDelay = Math.Max(serverReconcileDelay, ReconcileDelayTicks);
-            if (bossId > 0) {
-                serverPendingBossId = bossId;
-            }
-        }
-
-        private static void SendEntitlements(Player player, int lastDefeatedBossId) {
-            if (player?.active != true) {
+        private static void SendEntitlements(Player player, IReadOnlyList<string> keys, int defeatedBossId) {
+            if (player?.active != true || keys == null || keys.Count == 0) {
                 return;
             }
 
-            List<string> keys = CollectWorldEntitlements();
             ModPacket packet = CWRMod.Instance.GetPacket();
             packet.Write((byte)CWRMessageType.HimayoGiftEntitlements);
-            packet.Write(lastDefeatedBossId);
+            packet.Write(defeatedBossId);
             packet.Write((byte)keys.Count);
             for (int i = 0; i < keys.Count; i++) {
                 packet.Write(keys[i]);
