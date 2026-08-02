@@ -5,8 +5,6 @@ using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
 using CalamityOverhaul.Content.Scenarios.Himayo.Gifts;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -28,12 +26,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
     /// </summary>
     internal static class HimayoStorySync
     {
-        private enum GiftPacketKind : byte
-        {
-            ReconcileRequest,
-            EntitlementBatch,
-        }
-
         /// <summary>拔刀后初遇未落幕约90s强制开试炼，叙事忙时不计</summary>
         public const int TrialUnlockSafetyDuration = 60 * 90;
 
@@ -164,17 +156,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
             return true;
         }
 
-        public static void ApplyEntitlements(Player player, IReadOnlyList<string> keys) {
-            if (!IsLocalOwner(player) || keys == null) {
-                return;
-            }
-            int count = Math.Min(keys.Count, HimayoGiftCatalog.GiftCount);
-            for (int i = 0; i < count; i++) {
-                TryEnqueueGift(player, keys[i]);
-            }
-            HimayoGiftCatalog.Sanitize(GetGift(player));
-        }
-
         public static bool TryGetNextPending(Player player, out HimayoGiftEntry entry) {
             HimayoGiftStoryData data = GetGift(player);
             HimayoGiftCatalog.Sanitize(data);
@@ -243,63 +224,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
             data.PendingGiftKeys.Add(entry.MeiKey);
             HimayoGiftCatalog.Sanitize(data);
             return HimayoGiftRepairResult.Success;
-        }
-
-        public static void RequestGiftReconcile() {
-            if (Main.netMode == NetmodeID.SinglePlayer) {
-                ApplyEntitlements(Main.LocalPlayer, HimayoGiftCatalog.GetWorldEntitlementKeys());
-                return;
-            }
-            if (Main.netMode != NetmodeID.MultiplayerClient) {
-                return;
-            }
-
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.HimayoGift);
-            packet.Write((byte)GiftPacketKind.ReconcileRequest);
-            packet.Send();
-        }
-
-        public static void SendWorldEntitlements(int toWho = -1) {
-            if (Main.netMode != NetmodeID.Server) {
-                return;
-            }
-
-            List<string> keys = HimayoGiftCatalog.GetWorldEntitlementKeys();
-            int count = Math.Min(keys.Count, HimayoGiftCatalog.GiftCount);
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.HimayoGift);
-            packet.Write((byte)GiftPacketKind.EntitlementBatch);
-            packet.Write((byte)count);
-            for (int i = 0; i < count; i++) {
-                packet.Write(keys[i]);
-            }
-            packet.Send(toWho);
-        }
-
-        public static void HandleGiftPacket(BinaryReader reader, int whoAmI) {
-            GiftPacketKind kind = (GiftPacketKind)reader.ReadByte();
-            if (kind == GiftPacketKind.ReconcileRequest) {
-                if (Main.netMode == NetmodeID.Server && whoAmI >= 0 && whoAmI < Main.maxPlayers) {
-                    SendWorldEntitlements(whoAmI);
-                }
-                return;
-            }
-
-            if (kind != GiftPacketKind.EntitlementBatch) {
-                return;
-            }
-
-            int declaredCount = reader.ReadByte();
-            if (Main.netMode != NetmodeID.MultiplayerClient || declaredCount > HimayoGiftCatalog.GiftCount) {
-                return;
-            }
-
-            List<string> keys = [];
-            for (int i = 0; i < declaredCount; i++) {
-                keys.Add(reader.ReadString());
-            }
-            ApplyEntitlements(Main.LocalPlayer, keys);
         }
 
         private static bool IsLocalOwner(Player player)
