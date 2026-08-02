@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         public static LocalizedText ScapeGhostActivated { get; private set; }
         /// <summary>没有可承受替死的对象</summary>
         public static LocalizedText ScapeGhostNoTarget { get; private set; }
-        /// <summary>替死公告，{0}=NPC名，{1}=玩家名，{2}=原始致死文本</summary>
+        /// <summary>替死公告，{0}=替死对象名，{1}=获救玩家名，{2}=原始致死文本</summary>
         public static LocalizedText ScapeGhostDeathBroadcast { get; private set; }
         /// <summary>联机包缺失目标名时的占位</summary>
         public static LocalizedText ScapeGhostUnknownTarget { get; private set; }

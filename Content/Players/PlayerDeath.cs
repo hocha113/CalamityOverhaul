@@ -172,45 +172,62 @@ namespace CalamityOverhaul.Content.Players
         }
 
         /// <summary>
-        /// 权威端替死执行。单人直接调用；服务端由 WraithNet.HandleScapeGhostRequest 调用。
+        /// 权威端替死执行。单人直接调用；服务端由致死 Hurt 管线调用。
         /// </summary>
         internal static bool ExecuteScapeGhostAuthority(Player player, double damage, int hitDirection
             , PlayerDeathReason damageSource) {
             if (VaultUtils.isClient || !HasScapeGhostContract(player)) {
                 return false;
             }
-            var (proxies, isFriendly) = FindScapeTargetsFor(player);
-            if (proxies == null) {
+            ScapeTargetPick pick = FindScapeTargetsFor(player);
+            if (!pick.IsValid) {
                 return false;
             }
 
-            NPC primary = proxies[0];
             Vector2 from = player.Center;
-            Vector2 to = primary.Center;
-            string targetName = primary.FullName;
+            Vector2 to;
+            string targetName;
 
-            foreach (NPC proxy in proxies) {
-                if (!CanReceiveScapeHit(proxy)) {
+            if (pick.HasPlayer) {
+                Player proxy = pick.PlayerProxy;
+                if (!CanReceiveScapePlayerHit(proxy, player)) {
+                    return false;
+                }
+                to = proxy.Center;
+                targetName = proxy.name;
+                if (!KillPlayerProxy(proxy, player, damageSource)) {
                     return false;
                 }
             }
-            foreach (NPC proxy in proxies) {
-                NPC.HitInfo hit = BuildTransferredHit(proxy, damage, hitDirection, damageSource);
-                proxy.StrikeNPC(hit);
-                if (VaultUtils.isServer) {
-                    NetMessage.SendStrikeNPC(proxy, hit);
-                }
-            }
-            foreach (NPC proxy in proxies) {
-                //CheckDead/阶段转换可以拒绝死亡；未真正失活就不能提交替死成功
-                if (proxy.active) {
-                    return false;
-                }
-            }
-            BroadcastScapeDeathMessage(player, primary, damageSource, proxies.Length);
+            else {
+                NPC[] proxies = pick.NpcProxies;
+                NPC primary = proxies[0];
+                to = primary.Center;
+                targetName = primary.FullName;
 
-            //友善替死推进倍率；敌怪替死不推进
-            if (isFriendly) {
+                foreach (NPC proxy in proxies) {
+                    if (!CanReceiveScapeHit(proxy)) {
+                        return false;
+                    }
+                }
+                foreach (NPC proxy in proxies) {
+                    NPC.HitInfo hit = BuildTransferredHit(proxy, damage, hitDirection, damageSource);
+                    proxy.StrikeNPC(hit);
+                    if (VaultUtils.isServer) {
+                        NetMessage.SendStrikeNPC(proxy, hit);
+                    }
+                }
+                foreach (NPC proxy in proxies) {
+                    //CheckDead/阶段转换可以拒绝死亡；未真正失活就不能提交替死成功
+                    if (proxy.active) {
+                        return false;
+                    }
+                }
+                BroadcastScapeDeathMessage(player, primary.FullName, damageSource, proxies.Length);
+            }
+
+            //友善替死（队友/城镇生物）推进倍率；其他玩家与敌怪不推进
+            if (pick.IsFriendly) {
                 player.GetModPlayer<WraithPlayer>().AdvanceScapeMultiplier();
             }
 
@@ -242,6 +259,35 @@ namespace CalamityOverhaul.Content.Players
             return true;
         }
 
+        /// <summary>
+        /// 强制让玩家承死。走 PrepareRuleDeath 通行证，禁止对方再触发替死连锁。
+        /// 死亡文案直接复用替死广播键，不再另发 Chat 公告。
+        /// </summary>
+        private static bool KillPlayerProxy(Player proxy, Player beneficiary, PlayerDeathReason damageSource) {
+            NetworkText causeTex = damageSource != null
+                ? damageSource.GetDeathText(proxy.name)
+                : NetworkText.FromLiteral(proxy.name);
+            NetworkText deathText = NetworkText.FromKey(
+                WraithSystemText.ScapeGhostDeathBroadcast.Key,
+                NetworkText.FromLiteral(proxy.name),
+                NetworkText.FromLiteral(beneficiary.name),
+                causeTex);
+            PlayerDeathReason deathReason = PlayerDeathReason.ByCustomReason(deathText);
+            int lethalDamage = Math.Max(proxy.statLifeMax2 * 3, 1000);
+
+            if (proxy.TryGetOverride(out PlayerDeath proxyDeath)) {
+                proxyDeath.PrepareRuleDeath();
+            }
+            proxy.KillMe(deathReason, lethalDamage, 0);
+            if (!proxy.dead) {
+                return false;
+            }
+            if (VaultUtils.isServer) {
+                NetMessage.SendPlayerDeath(proxy.whoAmI, deathReason, lethalDamage, 0, false);
+            }
+            return true;
+        }
+
         private static bool HasScapeGhostContract(Player player) {
             if (player == null || !player.active) {
                 return false;
@@ -257,23 +303,23 @@ namespace CalamityOverhaul.Content.Players
 
         /// <summary>
         /// 全服广播替死公告。单人直接显示；服务端通过 ChatHelper 广播。<br/>
-        /// 复用 PlayerDeathReason.GetDeathText 提取原始致死文本，无死因时退化为仅含 NPC 名。
+        /// 复用 PlayerDeathReason.GetDeathText 提取原始致死文本，无死因时退化为仅含目标名。
         /// </summary>
-        private static void BroadcastScapeDeathMessage(Player player, NPC proxy
+        private static void BroadcastScapeDeathMessage(Player player, string primaryName
             , PlayerDeathReason damageSource, int victimCount = 1) {
             if (Main.dedServ && !VaultUtils.isServer) {
                 return;
             }
             //多于1个受害者时显示首个名称+数量
-            string primaryName = victimCount > 1
-                ? $"{proxy.FullName} 等{victimCount}名生灵"
-                : proxy.FullName;
+            string displayName = victimCount > 1
+                ? $"{primaryName} 等{victimCount}名生灵"
+                : primaryName;
             NetworkText causeTex = damageSource != null
-                ? damageSource.GetDeathText(primaryName)
-                : NetworkText.FromLiteral(primaryName);
+                ? damageSource.GetDeathText(displayName)
+                : NetworkText.FromLiteral(displayName);
             NetworkText msg = NetworkText.FromKey(
                 WraithSystemText.ScapeGhostDeathBroadcast.Key,
-                NetworkText.FromLiteral(primaryName),
+                NetworkText.FromLiteral(displayName),
                 NetworkText.FromLiteral(player.name),
                 causeTex);
             Color broadcast = new Color(200, 42, 52);
@@ -313,29 +359,103 @@ namespace CalamityOverhaul.Content.Players
             localLethalHurtPending = false;
         }
 
+        /// <summary>替死目标选取结果：玩家代理或 NPC 代理二选一。</summary>
+        private readonly struct ScapeTargetPick
+        {
+            public readonly Player PlayerProxy;
+            public readonly NPC[] NpcProxies;
+            /// <summary>是否推进友善倍率（队友/城镇生物为 true）</summary>
+            public readonly bool IsFriendly;
+
+            public bool HasPlayer => PlayerProxy != null;
+            public bool HasNpcs => NpcProxies != null && NpcProxies.Length > 0;
+            public bool IsValid => HasPlayer || HasNpcs;
+
+            public static ScapeTargetPick FromPlayer(Player proxy, bool isFriendly)
+                => new(proxy, null, isFriendly);
+
+            public static ScapeTargetPick FromNpcs(NPC[] proxies, bool isFriendly)
+                => new(null, proxies, isFriendly);
+
+            private ScapeTargetPick(Player playerProxy, NPC[] npcProxies, bool isFriendly) {
+                PlayerProxy = playerProxy;
+                NpcProxies = npcProxies;
+                IsFriendly = isFriendly;
+            }
+        }
+
         /// <summary>
-        /// 两阶段目标选取：<br/>
-        /// 1. 扩展屏幕范围内优先找友善目标（城镇居民/友善生物），需满足当前倍率数量，不足则失败进入第2阶段。<br/>
-        /// 2. 全局查找最近的敌怪，距离可压过优先级差异，单个目标，不推进倍率。<br/>
-        /// 两者都找不到则返回 null（替死失败）。
+        /// 四阶段目标选取：<br/>
+        /// 1. 扩展屏幕范围内最近队友（需已组队，1 人，推进倍率）。<br/>
+        /// 2. 同范围内最近其他玩家（1 人，不推进倍率）。<br/>
+        /// 3. 同范围内友善 NPC（城镇居民/友善生物），需满足当前倍率数量。<br/>
+        /// 4. 全局最近敌怪（距离可压过优先级差异，单个目标，不推进倍率）。<br/>
+        /// 都找不到则返回无效选取（替死失败）。
         /// </summary>
-        private static (NPC[] proxies, bool isFriendly) FindScapeTargetsFor(Player player) {
+        private static ScapeTargetPick FindScapeTargetsFor(Player player) {
+            Player teammate = FindBestPlayerTarget(player, teammatesOnly: true);
+            if (teammate != null) {
+                return ScapeTargetPick.FromPlayer(teammate, isFriendly: true);
+            }
+
+            Player otherPlayer = FindBestPlayerTarget(player, teammatesOnly: false);
+            if (otherPlayer != null) {
+                return ScapeTargetPick.FromPlayer(otherPlayer, isFriendly: false);
+            }
+
             int multiplier = player.GetModPlayer<WraithPlayer>().ScapeMultiplier;
             NPC[] friendly = CollectFriendlyTargets(player, multiplier);
             if (friendly != null) {
-                return (friendly, true);
+                return ScapeTargetPick.FromNpcs(friendly, isFriendly: true);
             }
+
             NPC enemy = FindBestEnemyTarget(player);
             if (enemy != null) {
-                return ([enemy], false);
+                return ScapeTargetPick.FromNpcs([enemy], isFriendly: false);
             }
-            return (null, false);
+
+            return default;
         }
 
         /// <summary>屏幕范围扩大约1.5倍（≈2400px），按距离升序取最近的 count 个友善目标</summary>
         private const float FriendlyScapeRadius = 2400f;
         /// <summary>优先级单位距离权重（px）：各优先级差等价于此距离，越小越偏重距离</summary>
         private const float EnemyPriorityPx = 600f;
+
+        /// <summary>
+        /// 范围内最近可替死玩家。<br/>
+        /// teammatesOnly=true 仅同队（双方 team≠0）；false 则排除队友，取其余玩家。
+        /// </summary>
+        private static Player FindBestPlayerTarget(Player player, bool teammatesOnly) {
+            float radiusSq = FriendlyScapeRadius * FriendlyScapeRadius;
+            Player best = null;
+            float bestDistSq = float.MaxValue;
+            for (int i = 0; i < Main.maxPlayers; i++) {
+                Player other = Main.player[i];
+                if (!CanReceiveScapePlayerHit(other, player)) {
+                    continue;
+                }
+                bool isTeammate = IsScapeTeammate(player, other);
+                if (teammatesOnly ? !isTeammate : isTeammate) {
+                    continue;
+                }
+                float distSq = Vector2.DistanceSquared(player.Center, other.Center);
+                if (distSq > radiusSq || distSq >= bestDistSq) {
+                    continue;
+                }
+                bestDistSq = distSq;
+                best = other;
+            }
+            return best;
+        }
+
+        private static bool IsScapeTeammate(Player a, Player b)
+            => a.team != 0 && a.team == b.team;
+
+        private static bool CanReceiveScapePlayerHit(Player target, Player source)
+            => target != null && target.active && !target.dead && target.statLife > 0
+                && target.whoAmI != source.whoAmI && !target.ghost
+                && !target.creativeGodMode;
 
         private static NPC[] CollectFriendlyTargets(Player player, int count) {
             float radiusSq = FriendlyScapeRadius * FriendlyScapeRadius;
