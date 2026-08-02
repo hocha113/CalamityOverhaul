@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.Industrials;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaidersUIs;
+using InnoVault.Concurrent;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Utilities;
 using System;
@@ -24,6 +25,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
         public override int TargetItem => ModContent.ItemType<OceanRaiders>();
         public override bool ReceivedEnergy => true;
         public override float MaxUEValue => 1200;
+        //音效、PRT与容器交互依赖游戏主线程
+        public override ParallelExecutionKind ParallelKind => ParallelExecutionKind.Serial;
 
         internal const int consumeUE = 8;
         internal const int fishingTime = 12;

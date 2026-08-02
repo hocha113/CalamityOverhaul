@@ -245,6 +245,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         internal static bool SakuraFlightInputHeld => CWRKeySystem.Onikiri_SakuraFlight?.Current == true;
 
         internal bool ExecutionDashQueued => executionDashQueued;
+        internal bool ManualChainExecutionInFlight => executionSourceInFlight == ExecutionTriggerSource.ManualChain;
         internal bool ExecuteKeyExecutionInFlight => executionSourceInFlight == ExecutionTriggerSource.ExecuteKey;
         internal int ExecutionLockedTargetId => executionTargetId;
         internal int ExecutionLockedTargetType => executionTargetType;
@@ -661,7 +662,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         private void TryLaunchQueuedExecutionDash(Item item) {
-            if (!executionDashQueued || normalDashInFlight || dashLock > 0) {
+            if (!executionDashQueued || normalDashInFlight) {
+                return;
+            }
+            bool manualChain = queuedExecutionSource == ExecutionTriggerSource.ManualChain;
+            if (!manualChain && dashLock > 0) {
                 return;
             }
             if (Player.mount?.Active == true || OniSakuraFlight.ControlsOwner(Player.whoAmI)
@@ -672,6 +677,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                     ClearQueuedExecutionRequest();
                 }
                 return;
+            }
+            if (manualChain) {
+                dashLock = 0;
             }
             ExecutionTier tier = queuedExecutionTier;
             TryDash(item, executionDash: true, tier);
@@ -756,7 +764,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             executionTargetId = executionDash ? lockedTargetId : -1;
             executionTargetType = executionDash ? lockedTargetType : -1;
             if (executionDash) {
-                ClearQueuedExecutionRequest();
+                ClearQueuedExecutionRequest(preserveFollowupInput: true);
             }
             return true;
         }
@@ -824,7 +832,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return aim;
         }
 
-        private void ClearQueuedExecutionRequest() {
+        private void ClearQueuedExecutionRequest(bool preserveFollowupInput = false) {
             executionDashQueued = false;
             queuedExecutionTier = ExecutionTier.None;
             queuedExecutionSource = ExecutionTriggerSource.None;
@@ -832,6 +840,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             queuedExecutionTargetId = -1;
             queuedExecutionTargetType = -1;
             executionChainWindow = 0;
+            if (!preserveFollowupInput) {
+                executionAnnihilatePending = false;
+                executionAnnihilateHandoffCountdown = 0;
+                executionBufferedMouseScreen = Vector2.Zero;
+            }
         }
 
         private void UpdateExecutionPreview() {
@@ -1190,9 +1203,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         /// <summary>疾走路径命中的提前结算入口；焦点由调用方明确给出，可为空目标</summary>
         internal bool TryResolveExecutionFinale(NPC target, Vector2 focus, Vector2 direction) {
-            if (Player.whoAmI != Main.myPlayer || executionTierInFlight != ExecutionTier.Full
-                || (executionSourceInFlight == ExecutionTriggerSource.ManualChain
-                    && target?.active != true)) {
+            if (Player.whoAmI != Main.myPlayer) {
+                return false;
+            }
+            if (executionSourceInFlight == ExecutionTriggerSource.ManualChain
+                && executionTierInFlight == ExecutionTier.Half
+                && ResolveExecutionTier() == ExecutionTier.Full) {
+                executionTierInFlight = ExecutionTier.Full;
+            }
+            if (executionTierInFlight != ExecutionTier.Full) {
                 return false;
             }
             executionHandoffDirection = direction.SafeNormalize(Vector2.UnitX * Player.direction);
@@ -1257,6 +1276,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (!executionDash) {
                 normalDashInFlight = false;
                 executionChainWindow = 0;
+                if (queuedExecutionSource == ExecutionTriggerSource.ManualChain) {
+                    ClearQueuedExecutionRequest();
+                }
                 return;
             }
             if (Player.dead) {
@@ -1344,6 +1366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 , (int)(state.WeaponDamage * AnnihilateDamageMul), state.WeaponKnockback
                 , source: Player.GetSource_ItemUse(item));
             if (annihilate == null) {
+                FailExecutionFollowup();
                 return false;
             }
 

@@ -51,11 +51,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         /// <summary>向地碰撞允许沿表面掠行的最大角度,约 25°</summary>
         private const float GroundGrazeMaxSin = 0.42f;
 
-        private const float SweepLead = 44f;        //扫掠前导:冲刺终点脸前的目标不漏标
-
         private const float SweepBackPad = 24f;     //扫掠后补:起手贴脸的目标不漏标
 
         private const float MarkSweepWidth = 140f;  //扫掠走廊宽(对齐墨绸视觉宽度,玩家"明明穿过了"的判断依据是那条彩带)
+
+        private const float HeadWallInset = 6f;
+        private const float HeadMinOffset = 8f;
+        private const float HeadFollowThrough = 22f;
+        private const float HeadFollowThroughInset = 4f;
 
         /// <summary>A/B、冲刺期隐藏本地玩家（"人化作一道神威"的完全体），默认关</summary>
         public static bool HidePlayerDuringDash => true;
@@ -64,7 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         private readonly List<Vector2> path = new(16);
         private readonly HashSet<int> marked = new(16);
-        private readonly HashSet<int> executionCandidates = new(16);
+        private readonly Dictionary<int, int> executionCandidates = new(16);
         private bool stanceGranted;
         private NPC executionTarget;
         private Vector2 executionSelectionOrigin;
@@ -334,20 +337,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Owner.GivePlayerImmuneState(30);
             HoldPose();
 
-            //扫掠锚定身体并带前导/后补、起手贴脸与终点脸前的目标都不漏
-            Vector2 sweepEnd = blocked ? Owner.Center : Owner.Center + dashDir * SweepLead;
+            bool reachingEnd = traveled >= Distance - 1f;
+            // Open-space contact follows the ribbon head; a collision stop never projects through the wall.
+            Vector2 sweepEnd = blocked
+                ? Owner.Center
+                : Owner.Center + dashDir
+                    * ResolveVisibleHeadLead(Owner.Center, includeFollowThrough: reachingEnd);
             MarkSweep(fromBody - dashDir * SweepBackPad, sweepEnd);
 
-            if (IsExecutionDash && !blocked && timer >= ExecutionResolveFrame) {
+            if (IsExecutionDash && !blocked && timer >= ExecutionResolveFrame
+                && Owner.GetModPlayer<OnikiriPlayer>().ExecuteKeyExecutionInFlight) {
                 CollectExecutionLookaheadCandidates();
                 ResolveExecutionTargetAndTryFinale();
             }
 
             if (blocked) {
-                FinishDash();
+                FinishDash(collisionStopped: true);
             }
-            else if (traveled >= Distance - 1f) {
-                headOffset = MathF.Min(headOffset, MathF.Max(FreeAheadBudget() - 6f, 8f));
+            else if (reachingEnd) {
                 if (!TryChainIntoSakura()) {
                     FinishDash();
                 }
@@ -432,17 +439,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         }
 
         /// <summary>身前沿冲刺向的自由距离（px，扫描上限盖住 头端+外推 预算）</summary>
-        private float FreeAheadBudget() {
+        private float FreeAheadBudget() => FreeAheadBudget(Owner.Center);
+
+        private float FreeAheadBudget(Vector2 bodyCenter) {
             const float MaxScan = 132f;
             float d = 8f;
             while (d < MaxScan) {
-                Vector2 probe = Owner.Center + dashDir * d;
+                Vector2 probe = bodyCenter + dashDir * d;
                 if (Collision.SolidCollision(probe - new Vector2(2f, 2f), 4, 4)) {
                     return d;
                 }
                 d += 8f;
             }
             return MaxScan;
+        }
+
+        private float ResolveVisibleHeadLead(Vector2 bodyCenter, bool includeFollowThrough) {
+            float freeAhead = FreeAheadBudget(bodyCenter);
+            float visibleOffset = MathF.Min(headOffset
+                , MathF.Max(freeAhead - HeadWallInset, HeadMinOffset));
+            if (!includeFollowThrough) {
+                return visibleOffset;
+            }
+            float extension = MathF.Min(HeadFollowThrough * sizeMul
+                , MathF.Max(freeAhead - visibleOffset - HeadFollowThroughInset, 0f));
+            return visibleOffset + extension;
+        }
+
+        private void ResolveStopHeadGeometry() {
+            float freeAhead = FreeAheadBudget();
+            headOffset = MathF.Min(headOffset, MathF.Max(freeAhead - HeadWallInset, HeadMinOffset));
+            headExt = MathF.Min(HeadFollowThrough * sizeMul
+                , MathF.Max(freeAhead - headOffset - HeadFollowThroughInset, 0f));
         }
 
         /// <summary>表世界的樱流衔接、跑满计划距离时疾走输入仍按住</summary>
@@ -458,18 +486,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             finishReported = true;
             Owner.GetModPlayer<OnikiriPlayer>().OnFlashStepAborted(executionDash: false);
             stopFrame = timer;
-            headExt = MathF.Min(22f * sizeMul, MathF.Max(FreeAheadBudget() - headOffset - 4f, 0f));
+            ResolveStopHeadGeometry();
             return true;
         }
 
         /// <summary>自然抵达目标距离，原地结束位移并进入残心排拍</summary>
-        private void FinishDash() {
+        private void FinishDash(bool collisionStopped = false) {
             if (IsExecutionDash && !executionFinaleTriggered) {
-                ResolveExecutionTargetAndTryFinale(forceRefresh: !executionTargetResolved || executionTarget == null);
+                ResolveExecutionTargetAndTryFinale(
+                    forceRefresh: !executionTargetResolved || executionTarget == null,
+                    forceStopFocus: collisionStopped);
             }
             stopFrame = timer;
-            headOffset = MathF.Min(headOffset, MathF.Max(FreeAheadBudget() - 6f, 8f));
-            headExt = MathF.Min(22f * sizeMul, MathF.Max(FreeAheadBudget() - headOffset - 4f, 0f));
+            ResolveStopHeadGeometry();
             Owner.CWR().GetScreenShake(2.2f);
 
             if (Projectile.IsOwnedByLocalPlayer()) {
@@ -574,14 +603,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             bool blocked = clippedX || (clippedY && !groundGraze);
             Vector2 projectedBody = Owner.Center + resolved;
             executionSelectionOrigin = projectedBody;
-            Vector2 sweepEnd = blocked ? projectedBody : projectedBody + dashDir * SweepLead;
+            Vector2 sweepEnd = blocked
+                ? projectedBody
+                : projectedBody + dashDir
+                    * ResolveVisibleHeadLead(projectedBody, includeFollowThrough: true);
             CollectExecutionCandidates(Owner.Center - dashDir * SweepBackPad, sweepEnd);
         }
 
         private void CollectExecutionCandidates(Vector2 from, Vector2 to) {
             float sweepWidth = MarkSweepWidth * sizeMul;
+            bool manualContact = Owner.GetModPlayer<OnikiriPlayer>().ManualChainExecutionInFlight;
             foreach (NPC npc in Main.ActiveNPCs) {
-                if (executionCandidates.Contains(npc.whoAmI) || !npc.CanBeChasedBy(Projectile)) {
+                if (executionCandidates.ContainsKey(npc.whoAmI)
+                    || (manualContact
+                        ? !IsManualExecutionContactEligible(npc)
+                        : !npc.CanBeChasedBy(Projectile))) {
                     continue;
                 }
                 float cp = 0f;
@@ -589,12 +625,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                     , from, to, sweepWidth, ref cp)) {
                     continue;
                 }
-                executionCandidates.Add(npc.whoAmI);
+                executionCandidates.Add(npc.whoAmI, npc.type);
             }
         }
 
+        private static bool IsManualExecutionContactEligible(NPC npc) {
+            if (!npc.active) {
+                return false;
+            }
+            if (npc.type == NPCID.TargetDummy) {
+                return true;
+            }
+            return !npc.friendly && !NPCID.Sets.CountsAsCritter[npc.type];
+        }
+
         /// <summary>汇总本次扫掠命中的全部实例，再一次性决定乱舞中心</summary>
-        private void ResolveExecutionTargetAndTryFinale(bool forceRefresh = false) {
+        private void ResolveExecutionTargetAndTryFinale(bool forceRefresh = false, bool forceStopFocus = false) {
             if (!IsExecutionDash || !Projectile.IsOwnedByLocalPlayer() || executionFinaleTriggered
                 || (executionTargetResolved && !forceRefresh)) {
                 return;
@@ -604,35 +650,50 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 executionSelectionOrigin = Owner.Center;
             }
             OnikiriPlayer onikiri = Owner.GetModPlayer<OnikiriPlayer>();
-            executionTarget = onikiri.ExecuteKeyExecutionInFlight
-                ? SelectLockedExecutionTarget(onikiri)
-                : SelectExecutionTarget();
-            if (executionTarget != null
-                && onikiri.TryResolveExecutionFinale(executionTarget, executionTarget.Center, dashDir)) {
+            bool executeKey = onikiri.ExecuteKeyExecutionInFlight;
+            executionTarget = executeKey ? SelectLockedExecutionTarget(onikiri) : SelectExecutionTarget();
+            if (forceStopFocus) {
+                if (!executeKey && executionCandidates.Count == 0) {
+                    return;
+                }
+                executionTarget = null;
+            }
+            else {
+                if (executeKey && executionTarget == null) {
+                    return;
+                }
+                if (!executeKey && executionCandidates.Count == 0) {
+                    return;
+                }
+            }
+            Vector2 focus = executionTarget?.Center ?? Owner.Center;
+            if (onikiri.TryResolveExecutionFinale(executionTarget, focus, dashDir)) {
                 executionFinaleTriggered = true;
             }
         }
 
         private NPC SelectLockedExecutionTarget(OnikiriPlayer onikiri) {
             int targetId = onikiri.ExecutionLockedTargetId;
-            if (!executionCandidates.Contains(targetId) || targetId < 0 || targetId >= Main.maxNPCs) {
+            if (targetId < 0 || targetId >= Main.maxNPCs
+                || !executionCandidates.TryGetValue(targetId, out int contactedType)
+                || contactedType != onikiri.ExecutionLockedTargetType) {
                 return null;
             }
             NPC target = Main.npc[targetId];
-            return target.active && target.type == onikiri.ExecutionLockedTargetType
-                && target.CanBeChasedBy(Projectile)
+            return target.active && target.type == contactedType
                 ? target
                 : null;
         }
 
         private NPC SelectExecutionTarget() {
             NPC best = null;
-            foreach (int npcId in executionCandidates) {
+            foreach (KeyValuePair<int, int> contact in executionCandidates) {
+                int npcId = contact.Key;
                 if (npcId < 0 || npcId >= Main.maxNPCs) {
                     continue;
                 }
                 NPC candidate = Main.npc[npcId];
-                if (!candidate.active || !candidate.CanBeChasedBy(Projectile)) {
+                if (!candidate.active || candidate.type != contact.Value) {
                     continue;
                 }
                 if (IsBetterExecutionTarget(candidate, best)) {
