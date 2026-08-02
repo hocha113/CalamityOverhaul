@@ -161,21 +161,10 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
         }
 
         private static void TryProcessUnlock() {
-            if (!CWRRef.Has || CWRRef.GetBossRushActive()) {
+            if (!pendingUnlock || !CWRRef.Has || CWRRef.GetBossRushActive()) {
                 return;
             }
 
-            if (pendingUnlock) {
-                TryCommitPendingUnlock();
-                return;
-            }
-
-            if (!CWRRef.GetDownedPolterghast() || !TryGetFirstValidPlayer(out Player player)) {
-                return;
-            }
-
-            pendingUnlock = true;
-            pendingOrigin = player.Center;
             TryCommitPendingUnlock();
         }
 
