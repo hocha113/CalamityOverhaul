@@ -45,6 +45,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         protected override NarrativePolicy ConfigurePolicy() => null;
     }
 
+    /// <summary>仅由本次首领击杀事件写入持久赠礼队列</summary>
     internal static class HimayoGiftNarrativeTracker
     {
         private static readonly Dictionary<string, HimayoBossGiftNarrative> scenariosByGiftKey = new(StringComparer.Ordinal);
