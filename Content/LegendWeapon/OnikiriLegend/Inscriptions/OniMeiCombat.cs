@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public float VigorMaxMul;
 
         //====语义开关(各铭的个性化机制)====
-        /// <summary>髭切「断首」：残心/灭世对斩杀线内目标终结增益，击杀返势</summary>
+        /// <summary>髭切「断首」：直接刀击对斩杀线内目标终结增益，击杀返势</summary>
         public bool ExecuteLowLifeBonus;
         /// <summary>狮子之子「狮势」：完整五拍逐拍蓄势，第五拍合颚副斩</summary>
         public bool LionRoar;
@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public bool QuietBreath;
         /// <summary>镇鸣「镇弹」：受弹伤/击退削弱</summary>
         public bool QuellProjectiles;
-        /// <summary>旧首「取首」：残心/灭世仅对头/非蠕虫节残血加深（无返势）</summary>
+        /// <summary>旧首「取首」：直接刀击仅对真头或独立主体的残血目标加深</summary>
         public bool HeadHunt;
         /// <summary>默切「默杀」：疾走结束后短窗内下一记普连/残心加深</summary>
         public bool SilentKill;
@@ -112,9 +112,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         //====髭切「断首」调参====
         /// <summary>断首线：目标(蠕虫归主体)生命比低于此值进入终结区间</summary>
         public const float ExecuteThreshold = 0.35f;
-        /// <summary>非 boss 目标在斩杀线底端的最大终结加成(1→1.5)</summary>
+        /// <summary>非 boss 目标在斩杀线底端的最大终结加成(1→1.60)</summary>
         public const float ExecuteMaxBonus = 0.60f;
-        /// <summary>boss 目标单独限幅(1→1.25)</summary>
+        /// <summary>boss 目标单独限幅(1→1.45)</summary>
         public const float ExecuteBossMaxBonus = 0.45f;
         /// <summary>断首击杀返还架势(每次招式至多一次)</summary>
         public const float ExecuteKillStanceRefund = 8f;
@@ -140,9 +140,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public const float QuellProjectileKnockbackMul = 0.35f;
 
         //====M1 独特化调参====
-        /// <summary>旧首：非 boss 头/主体在斩杀线底端的最大加成(1→1.65)</summary>
+        /// <summary>旧首：非 boss 真头在斩杀线底端的最大加成(1→1.85)</summary>
         public const float HeadHuntMaxBonus = 0.85f;
-        /// <summary>旧首：boss 头单独限幅(1→1.35)</summary>
+        /// <summary>旧首：boss 真头单独限幅(1→1.60)</summary>
         public const float HeadHuntBossMaxBonus = 0.60f;
         /// <summary>默切：疾走结束后默杀窗(帧)</summary>
         public const int SilentKillWindowTicks = 45;
@@ -226,8 +226,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public const float ScorchScale = 0.85f;
         /// <summary>焦痕：相对武器伤害</summary>
         public const float ScorchDamageMul = 0.14f;
-        /// <summary>焦痕：路径采样间距</summary>
-        public const float ScorchSampleDist = 48f;
         /// <summary>焦痕：单次疾走最多坑数</summary>
         public const int ScorchMaxPerDash = 5;
         /// <summary>余烬：灼地寿命(帧)</summary>
@@ -238,9 +236,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public const float EmberDamageMul = 0.16f;
         /// <summary>余烬场在时疾走耗气倍率</summary>
         public const float EmberFieldDashCostMul = 1.10f;
-        /// <summary>同点刷新距离阈</summary>
-        public const float BurnRefreshRadius = 32f;
-
         //====H2 假身====
         /// <summary>假身：残影寿命(帧)</summary>
         public const int FalseBodyLifeTicks = 90;
@@ -352,13 +347,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         /// <summary>
         /// 髭切「断首」或旧首「取首」终结倍率：目标已入斩杀线时随已损生命递增；
-        /// 未装对应铭/未入线/旧首打节体返回 false。残心/灭世的 ModifyHitNPC 调用(owner 端)
+        /// 未装对应铭/未入线/旧首打节体返回 false。由主伤动作的 ModifyHitNPC 在 owner 端调用
         /// </summary>
-        public static bool TryGetExecuteBonus(Player owner, NPC target, out float mul) {
-            OniMeiCombatProfile profile = ResolveHeld(owner);
-            return TryGetExecuteBonus(in profile, target, out mul);
-        }
-
         public static bool TryGetExecuteBonus(in OniMeiCombatProfile profile, NPC target, out float mul) {
             mul = 1f;
             if (target == null) {
@@ -407,11 +397,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
 
         /// <summary>痺反：对来手叠「痺」(自实现阻尼+接触伤打折)；无源/未装返回 false</summary>
-        public static bool TryApplyNumbCounter(Player owner, NPC source) {
-            OniMeiCombatProfile profile = ResolveHeld(owner);
-            return TryApplyNumbCounter(owner, source, in profile);
-        }
-
         public static bool TryApplyNumbCounter(Player owner, NPC source,
             in OniMeiCombatProfile profile) {
             if (source == null || !source.active || !profile.NumbCounter) {
@@ -428,13 +413,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         /// 髭切由本招式了结目标时返还架势(refunded 保证每次招式至多一次)，
         /// 旧首只有断线(旧钢色)无返势
         /// </summary>
-        public static void OnExecuteStrikeHit(Player owner, NPC target, float cutAngle, ref bool refunded) {
-            OniMeiCombatProfile profile = ResolveHeld(owner);
-            OnExecuteStrikeHit(owner, target, cutAngle, ref refunded, in profile);
-        }
-
         public static void OnExecuteStrikeHit(Player owner, NPC target, float cutAngle, ref bool refunded,
-            in OniMeiCombatProfile profile) {
+            in OniMeiCombatProfile profile, uint actionSerial = 0) {
             if (target == null) {
                 return;
             }
@@ -459,6 +439,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             if (killed && !refunded) {
                 refunded = true;
                 if (owner.TryGetModPlayer(out OnikiriPlayer okp)) {
+                    if (!okp.TryClaimExecuteRefund(actionSerial)) {
+                        return;
+                    }
                     okp.GrantExecuteRefund();
                 }
                 OniMeiStrikes.SpawnExecuteRefundFleck(owner, target.Center);
@@ -469,11 +452,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         /// 铁截「截金」：钢铁/装甲体加深，触发时旧金钢屑+金属脆响。
         /// 由连段本拍首击门闸调用；未装铁截或非钢体返回 false
         /// </summary>
-        public static bool TryApplyIronSever(Player owner, NPC target, ref NPC.HitModifiers modifiers) {
-            OniMeiCombatProfile profile = ResolveHeld(owner);
-            return TryApplyIronSever(in profile, target, ref modifiers);
-        }
-
         public static bool TryApplyIronSever(in OniMeiCombatProfile profile, NPC target,
             ref NPC.HitModifiers modifiers) {
             if (target == null || !profile.IronSever) {

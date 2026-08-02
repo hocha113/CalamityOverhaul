@@ -6,6 +6,7 @@ using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
@@ -110,12 +111,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
         public static Projectile Fire(Player player, Vector2 aim, int damage, float knockback,
             bool sakura, bool syncedWithJudge, IEntitySource source = null, int baseWeaponDamage = 0) {
             source ??= player.GetSource_Misc("CWR_OniZanshinSlash");
+            Item item = source is EntitySource_ItemUse itemUse && itemUse.Item != null
+                ? itemUse.Item
+                : player.GetItem();
+            float bladeScale = item?.type == OnikiriOverride.ID
+                ? OnikiriOverride.GetBladeScale(item)
+                : 1f;
             float aimAngle = aim.SafeNormalize(Vector2.UnitX * player.direction).ToRotation();
             Projectile projectile = Projectile.NewProjectileDirect(source, player.Center, Vector2.Zero
                 , ModContent.ProjectileType<OniZanshinSlash>(), damage, knockback, player.whoAmI
                 , ai0: MathHelper.WrapAngle(aimAngle), ai1: sakura ? 1f : 0f, ai2: syncedWithJudge ? 1f : 0f);
+            if (projectile.ModProjectile is OniZanshinSlash slash) {
+                slash.bladeScale = Math.Max(0.1f, bladeScale);
+            }
             OniMeiActionContext.Capture(projectile, player, source,
                 baseWeaponDamage > 0 ? baseWeaponDamage : Math.Max(1, damage / 2), OniMeiActionKind.Zanshin);
+            OniMeiActionContext.ArmConditions(projectile, player,
+                allowSilent: true, allowPlanted: true);
             return projectile;
         }
 
@@ -143,6 +155,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
 
         private float bladeScale = 1f;
 
+        public override void SendExtraAI(BinaryWriter writer) {
+            writer.Write(bladeScale);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            bladeScale = Math.Max(0.1f, reader.ReadSingle());
+        }
+
         private void Initialize() {
             initialized = true;
             float seed = Projectile.identity * 0.6180339887f % 1f;
@@ -150,12 +170,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
             facing = MathF.Abs(cos) < 0.05f ? Owner.direction : MathF.Sign(cos);
             Owner.ChangeDir(facing);
 
-            //ai[2] 已被锵同帧占用、成长尺寸从持有物品读取
-
-            Item held = Owner.GetItem();
-            bladeScale = held.type == OnikiriOverride.ID
-                ? OnikiriOverride.GetBladeScale(held)
-                : 1f;
             bladePose.Scale = 0.9f * (0.1f + bladeScale * 0.6f);
 
             //反拔起手继承交接刀角,无交接退回身后预备位
@@ -206,7 +220,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
 
         public override void OnKill(int timeLeft) {
             if (Projectile.IsOwnedByLocalPlayer() && !resourceGranted) {
-                Owner.GetModPlayer<OnikiriPlayer>().NotifyEmptyZanshin();
+                OniMeiCombatProfile profile = ActionContext?.HasSnapshot == true
+                    ? ActionContext.Profile
+                    : OniMeiCombatProfile.Identity;
+                Owner.GetModPlayer<OnikiriPlayer>().NotifyEmptyZanshin(in profile);
             }
         }
 
@@ -374,7 +391,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
                 OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
                 float meiMul = okp.BuildMeiHitMultiplier(target, in profile,
                     ActionContext?.ActionSerial ?? 0, allowPlanted: true,
-                    allowIron: false, zanshin: true);
+                    allowIron: false, zanshin: true,
+                    armedConditionMul: ActionContext?.ArmedConditionMul ?? 1f,
+                    tideOnBeatSnapshot: ActionContext?.TideOnBeat == true);
                 if (OniMeiCombat.TryGetExecuteBonus(in profile, target, out float executeMul)) {
                     meiMul *= executeMul;
                 }
@@ -476,7 +495,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
                 OnikiriPlayer okp = Owner.GetModPlayer<OnikiriPlayer>();
                 okp.OnZanshinHit(target, grantResources, in profile);
                 //髭切断首:入线命中画断线,了结返势(每刀一次)
-                OniMeiCombat.OnExecuteStrikeHit(Owner, target, CutAngle, ref executeRefunded, in profile);
+                OniMeiCombat.OnExecuteStrikeHit(Owner, target, CutAngle, ref executeRefunded,
+                    in profile, ActionContext?.ActionSerial ?? 0);
                 if (!target.active || target.life <= 0) {
                     okp.TryPetalPruneOnKill(target,
                         ActionContext?.BaseWeaponDamage ?? Math.Max(1, Projectile.damage / 2),

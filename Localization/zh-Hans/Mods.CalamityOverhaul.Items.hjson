@@ -449,6 +449,8 @@ JusticeUnveiled: {
 
 WeaverGrievances: {
 	DisplayName: 纠缠之怨
+	RitualInteractHint: "[右键] 拔出这把刀"
+	RitualInventoryFullHint: 背包已满，腾出一个空位后再拔刀
 	Tooltip:
 		'''
 		释放大量怨灵之爪，在地狱、地牢环境中拥有特殊效果
@@ -2587,6 +2589,14 @@ OniMeiRubbingHigekiri: {
 	Origin: 试斩那夜首级落地，颔下须髯犹连刃上。旧名由此而来
 	Power: 「断首」直接刀击对生命低于35%的目标随伤势线性增强（普通敌人至多+60%，首领+45%）；以直接刀击了结目标时，每个动作返还8点架势
 	Burden: 刀击伤害 -2%。目标健壮时，这把刀比原铭略钝
+}
+
+OniMeiGiftRepairCommand: {
+	Description: 为当前角色重新排入一项已完成的鬼切铭刻赠礼
+	LocalOnly: 此命令只能修复当前本地角色
+	Success: "鬼切赠礼已重新排入：{0}"
+	NotCompleted: "该鬼切赠礼从未完成：{0}"
+	UnknownKey: "未知的鬼切铭刻 Key：{0}"
 }
 
 OniMeiRubbingOnikiri: {

@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
             VaultUtils.ApplyWeaponDamageScaling(item, GetOnDamage(item), GetStartDamage, ref damage);
-            //铭刻负担:面板伤害倍率(髭切 0.90);铭数据在物品上,面板各端一致
+            //铭刻负担:面板伤害倍率(髭切 0.98);铭数据在物品上,面板各端一致
             float meiMul = OniMeiCombat.Resolve(item).DamageMul;
             if (meiMul != 1f) {
                 damage *= meiMul;

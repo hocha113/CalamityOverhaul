@@ -180,6 +180,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private uint hollowLastActionSerial;
         /// <summary>空鸣：失焦生效余量</summary>
         private int hollowFocusLossTicks;
+        private readonly Dictionary<uint, float> hollowActionMultipliers = [];
+        private readonly Queue<uint> hollowActionOrder = [];
+        private readonly HashSet<uint> executeRefundedActions = [];
+        private readonly Queue<uint> executeRefundOrder = [];
+        /// <summary>闲樋/虚吼只看直接刀击，不把疾走穿身计作交战。</summary>
+        private int lastDirectBladeHitTick = 1;
         /// <summary>假身：影破真空余量(帧)</summary>
         private int falseBodyVacuumTicks;
         private int falseBodyRearmTicks;
@@ -344,6 +350,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             hollowDenseWindowStart = 0;
             hollowLastActionSerial = 0;
             hollowFocusLossTicks = 0;
+            hollowActionMultipliers.Clear();
+            hollowActionOrder.Clear();
+            executeRefundedActions.Clear();
+            executeRefundOrder.Clear();
+            lastDirectBladeHitTick = scaledTime;
             falseBodyVacuumTicks = 0;
             falseBodyRearmTicks = 0;
         }
@@ -368,10 +379,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 hollowDenseWindowStart = 0;
                 hollowFocusLossTicks = 0;
                 hollowLastActionSerial = 0;
+                hollowActionMultipliers.Clear();
+                hollowActionOrder.Clear();
             }
             if (previous.DragonfireLoop && !current.DragonfireLoop) {
                 KurikaraWindow = 0;
                 kurikaraCharges = 0;
+            }
+            if (previous.FalseBody && !current.FalseBody) {
+                OniMeiFalseBody.DismissOwned(Player);
             }
         }
 
@@ -1220,13 +1236,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         /// <summary>追斩接触:每刀仅首次命中回架势,所有目标都记入命中记忆;血樋补气,咎在此偿清</summary>
-        internal void OnZanshinHit(NPC target, bool grantResources) {
-            OniMeiCombatProfile profile = Mei;
-            OnZanshinHit(target, grantResources, in profile);
-        }
-
         internal void OnZanshinHit(NPC target, bool grantResources, in OniMeiCombatProfile profile) {
-            RecordHit(target);
+            OnPrimaryBladeHit(target, in profile);
             if (GuiltLayers > 0) {
                 GuiltLayers = 0;
             }
@@ -1241,7 +1252,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                     OniMeiStrikes.SpawnBloodBackflow(Player, target);
                 }
             }
-            TryApplyStickyBind(target, in profile);
         }
 
         //==================== 处决疾走 ====================
@@ -1637,13 +1647,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         //==================== 资源增益(玩法挂点调用,owner 端) ====================
 
         /// <summary>连段接触:每拍仅首次命中回气蓄势,所有目标都记入命中记忆;血樋在此补气(禁多目标套利)</summary>
-        internal void OnComboHit(NPC target, bool grantResources) {
-            OniMeiCombatProfile profile = Mei;
-            OnComboHit(target, grantResources, in profile);
-        }
-
-        internal void OnComboHit(NPC target, bool grantResources, in OniMeiCombatProfile profile) {
-            RecordHit(target);
+        internal void OnComboHit(NPC target, bool grantResources,
+            in OniMeiCombatProfile profile, bool tideOnBeat) {
+            OnPrimaryBladeHit(target, in profile);
             if (!grantResources) {
                 return;
             }
@@ -1652,29 +1658,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (profile.BloodGroove && profile.ComboHitVigorBonus > 0f) {
                 OniMeiStrikes.SpawnBloodBackflow(Player, target);
             }
+            TryApplyTideOnComboHit(grantResources, in profile, tideOnBeat);
+        }
+
+        /// <summary>所有 Primary 直接刀击共用的主体命中、脱战与滞缚入口。</summary>
+        internal void OnPrimaryBladeHit(NPC target, in OniMeiCombatProfile profile) {
+            RecordHit(target);
+            lastDirectBladeHitTick = scaledTime;
             TryApplyStickyBind(target, in profile);
-            TryApplyTideOnComboHit(grantResources, in profile);
         }
 
         /// <summary>疾走穿身即格挡:每次疾走仅首次格挡固定蓄势,所有目标都记入命中记忆</summary>
-        internal void OnDashParry(NPC npc, bool grantResources) {
-            OniMeiCombatProfile profile = Mei;
-            OnDashParry(npc, grantResources, in profile);
-        }
-
         internal void OnDashParry(NPC npc, bool grantResources, in OniMeiCombatProfile profile) {
             RecordHit(npc);
             if (grantResources) {
                 Stance = Math.Min(StanceMax, Stance + StancePerDashParry * profile.StanceGainMul);
-                if (profile.NumbCounter) {
-                    OniMeiCombat.TryApplyNumbCounter(Player, npc, in profile);
-                }
+            }
+            if (profile.NumbCounter) {
+                OniMeiCombat.TryApplyNumbCounter(Player, npc, in profile);
             }
         }
 
         /// <summary>疾走自然结束：武装默切默杀窗。开窗一声低吟+身周墨纱罩下</summary>
-        internal void ArmSilentKillFromDash() {
-            if (Player.whoAmI != Main.myPlayer || !Mei.SilentKill) {
+        internal void ArmSilentKillFromDash(in OniMeiCombatProfile profile) {
+            if (Player.whoAmI != Main.myPlayer || !profile.SilentKill) {
                 return;
             }
             silentKillWindow = OniMeiCombat.SilentKillWindowTicks;
@@ -1686,6 +1693,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 PRTLoader.NewParticle<PRT_CrimsonSmoke>(Player.Center + Main.rand.NextVector2Circular(16f, 22f)
                     , -Vector2.UnitY * Main.rand.NextFloat(0.2f, 0.6f), Color.White, 0.05f)
                     ?.Configure(Main.rand.Next(12, 18), new Color(46, 16, 22), new Color(14, 8, 12));
+            }
+        }
+
+        internal void ConsumeSilentKillOnDashStart(in OniMeiCombatProfile profile) {
+            if (Player.whoAmI == Main.myPlayer && profile.SilentKill && silentKillWindow > 0) {
+                ConsumeSilentCore();
             }
         }
 
@@ -1776,85 +1789,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (allowPlanted && profile.PlantedStep && ConsumePlantedCore()) {
                 multiplier *= OniMeiCombat.PlantedStepHitMul;
             }
-            return multiplier;
-        }
-
-        /// <summary>灭世/终结乱舞：消费止足立定加深(单独路径,无叠乘)</summary>
-        internal bool TryConsumePlantedStep(ref NPC.HitModifiers modifiers) {
-            OniMeiCombatProfile profile = Mei;
-            return TryConsumePlantedStep(ref modifiers, in profile);
-        }
-
-        internal bool TryConsumePlantedStep(ref NPC.HitModifiers modifiers,
-            in OniMeiCombatProfile profile) {
-            if (!profile.PlantedStep || !ConsumePlantedCore()) {
-                return false;
-            }
-            modifiers.FinalDamage *= OniMeiCombat.PlantedStepHitMul;
-            return true;
-        }
-
-        /// <summary>
-        /// 默杀×止足统一消费收口：可同帧叠乘,软帽限幅;
-        /// 残心(allowPlanted=true)与连段(第五拍才 allowPlanted)同门,不再有绕帽路径
-        /// </summary>
-        internal void ApplyMeiConsumeMuls(ref NPC.HitModifiers modifiers, bool allowPlanted) {
-            OniMeiCombatProfile profile = Mei;
-            ApplyMeiConsumeMuls(ref modifiers, allowPlanted, in profile);
-        }
-
-        internal void ApplyMeiConsumeMuls(ref NPC.HitModifiers modifiers, bool allowPlanted,
-            in OniMeiCombatProfile profile) {
-            float product = 1f;
-            if (profile.SilentKill && ConsumeSilentCore()) {
-                product *= OniMeiCombat.SilentKillHitMul;
-            }
-            if (allowPlanted && profile.PlantedStep && ConsumePlantedCore()) {
-                product *= OniMeiCombat.PlantedStepHitMul;
-            }
-            if (product > 1.001f) {
-                modifiers.FinalDamage *= Math.Min(product, OniMeiCombat.SilentPlantedSoftCap);
-            }
+            return Math.Min(multiplier, OniMeiCombat.SilentPlantedSoftCap);
         }
 
         /// <summary>谢樋：击杀了结溅剪落（门闩防连环；cleave 杀不调此）</summary>
-        internal void TryPetalPruneOnKill(NPC killed, int weaponDamage, float knockback) {
-            OniMeiCombatProfile profile = Mei;
-            TryPetalPruneOnKill(killed, weaponDamage, knockback, null, in profile);
-        }
-
         internal void TryPetalPruneOnKill(NPC killed, int weaponDamage, float knockback,
             Projectile sourceProjectile, in OniMeiCombatProfile profile) {
             if (!profile.PetalPrune || petalPruneCooldown > 0 || killed == null) {
                 return;
             }
-            NPC root = OniMeiCombat.ResolveEffectRoot(killed);
-            if (root == null || root.lifeMax <= 0
-                || root.active && root.life / (float)root.lifeMax > 0.50f) {
-                return;
-            }
+            NPC killedRoot = OniMeiCombat.ResolveEffectRoot(killed) ?? killed;
+            int killedRootId = killedRoot.whoAmI;
+            Vector2 origin = killed.Center;
             float radius = OniMeiCombat.PetalPruneRadius;
             float radiusSq = radius * radius;
-            NPC pruneTarget = root.Center.FindClosestNPC(radius, chasedByNPC: npc => {
-                if (npc.friendly) {
-                    return false;
-                }
+            NPC pruneTarget = null;
+            float bestLifeRatio = float.MaxValue;
+            float bestDistanceSq = float.MaxValue;
+            HashSet<int> visitedRoots = [];
+            foreach (NPC npc in Main.ActiveNPCs) {
                 NPC candidate = OniMeiCombat.ResolveEffectRoot(npc);
-                return candidate != null && candidate.active
-                    && candidate.whoAmI != root.whoAmI
-                    && candidate.lifeMax > 0
-                    && candidate.life / (float)candidate.lifeMax <= 0.50f
-                    && candidate.DistanceSQ(root.Center) <= radiusSq;
-            });
+                if (candidate == null || !candidate.active || candidate.friendly
+                    || !candidate.CanBeChasedBy() || candidate.whoAmI == killedRootId
+                    || candidate.lifeMax <= 0 || !visitedRoots.Add(candidate.whoAmI)) {
+                    continue;
+                }
+                float distanceSq = candidate.DistanceSQ(origin);
+                float lifeRatio = candidate.life / (float)candidate.lifeMax;
+                if (distanceSq > radiusSq || lifeRatio > 0.50f) {
+                    continue;
+                }
+                bool better = pruneTarget == null
+                    || lifeRatio < bestLifeRatio - 0.0001f
+                    || Math.Abs(lifeRatio - bestLifeRatio) <= 0.0001f
+                        && (distanceSq < bestDistanceSq - 0.01f
+                            || Math.Abs(distanceSq - bestDistanceSq) <= 0.01f
+                                && candidate.whoAmI < pruneTarget.whoAmI);
+                if (!better) {
+                    continue;
+                }
+                pruneTarget = candidate;
+                bestLifeRatio = lifeRatio;
+                bestDistanceSq = distanceSq;
+            }
             if (pruneTarget == null) {
                 return;
             }
-            pruneTarget = OniMeiCombat.ResolveEffectRoot(pruneTarget);
-            if (pruneTarget == null || !pruneTarget.active) {
-                return;
-            }
             petalPruneCooldown = OniMeiCombat.PetalPruneCooldownTicks;
-            Vector2 origin = root.Center;
             float aim = (pruneTarget.Center - origin).ToRotation();
             if (float.IsNaN(aim)) {
                 aim = Player.direction > 0 ? 0f : MathHelper.Pi;
@@ -1865,8 +1846,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         /// <summary>谢樋：空残心微扣气</summary>
-        internal void NotifyEmptyZanshin() {
-            if (!Mei.PetalPrune) {
+        internal void NotifyEmptyZanshin(in OniMeiCombatProfile profile) {
+            if (!profile.PetalPrune) {
                 return;
             }
             Vigor = Math.Max(0f, Vigor - OniMeiCombat.PetalPruneEmptyZanshinVigor);
@@ -1891,86 +1872,61 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         /// <summary>潮拍：授权命中合潮奖气</summary>
-        internal void TryApplyTideOnComboHit(bool grantResources) {
-            OniMeiCombatProfile profile = Mei;
-            TryApplyTideOnComboHit(grantResources, in profile);
-        }
-
-        internal void TryApplyTideOnComboHit(bool grantResources, in OniMeiCombatProfile profile) {
-            if (!profile.TideBeat || !grantResources || !OniMeiCombat.IsTideOnBeat(tidePhase)) {
+        internal void TryApplyTideOnComboHit(bool grantResources,
+            in OniMeiCombatProfile profile, bool tideOnBeat) {
+            if (!profile.TideBeat || !grantResources || !tideOnBeat) {
                 return;
             }
             Vigor = Math.Min(VigorMaxCurrent, Vigor + OniMeiCombat.TideOnBeatVigor);
         }
 
-        /// <summary>潮拍：错拍连段授权首击略亏</summary>
-        internal bool TryApplyTideOffBeatHit(ref NPC.HitModifiers modifiers) {
-            OniMeiCombatProfile profile = Mei;
-            return TryApplyTideOffBeatHit(ref modifiers, in profile);
-        }
-
-        internal bool TryApplyTideOffBeatHit(ref NPC.HitModifiers modifiers,
-            in OniMeiCombatProfile profile) {
-            if (!profile.TideBeat || OniMeiCombat.IsTideOnBeat(tidePhase)) {
-                return false;
-            }
-            modifiers.FinalDamage *= OniMeiCombat.TideOffBeatHitMul;
-            return true;
-        }
-
-        /// <summary>空鸣：授权命中接近加成 / 失焦惩罚（先失焦）</summary>
-        internal void ApplyHollowRoarHitMuls(ref NPC.HitModifiers modifiers) {
-            OniMeiCombatProfile profile = Mei;
-            ApplyHollowRoarHitMuls(null, ref modifiers, in profile, 0);
-        }
-
-        internal void ApplyHollowRoarHitMuls(NPC target, ref NPC.HitModifiers modifiers,
-            in OniMeiCombatProfile profile, uint actionSerial) {
-            if (!profile.HollowRoar) {
-                return;
-            }
-            RecordHollowDenseAction(actionSerial);
-            if (hollowFocusLossTicks > 0) {
-                modifiers.FinalDamage *= OniMeiCombat.HollowFocusLossHitMul;
-                return;
-            }
-            if (hollowApproachArmed && target != null
-                && target.DistanceSQ(Player.Center)
-                    <= OniMeiCombat.HollowNearRadius * OniMeiCombat.HollowNearRadius) {
-                hollowApproachArmed = false;
-                modifiers.FinalDamage *= OniMeiCombat.HollowApproachHitMul;
-            }
-        }
-
         internal float BuildMeiHitMultiplier(NPC target, in OniMeiCombatProfile profile,
             uint actionSerial, bool allowPlanted, bool allowIron, bool zanshin,
-            float armedConditionMul = 1f, bool? tideOnBeatSnapshot = null) {
+            float armedConditionMul = 1f, bool tideOnBeatSnapshot = false,
+            bool combo = false) {
             float multiplier = Math.Max(1f, armedConditionMul);
             if (allowIron && profile.IronSever && CWRLoad.NPCValue.ISTheofSteel(target)) {
                 multiplier *= OniMeiCombat.IronSeverSteelHitMul;
                 OniMeiStrikes.SpawnIronSeverFX(target);
             }
             if (profile.HollowRoar) {
-                bool near = target != null && target.DistanceSQ(Player.Center)
-                    <= OniMeiCombat.HollowNearRadius * OniMeiCombat.HollowNearRadius;
-                if (near) {
-                    RecordHollowDenseAction(actionSerial);
-                    if (hollowFocusLossTicks > 0) {
-                        multiplier *= OniMeiCombat.HollowFocusLossHitMul;
-                    }
-                    else if (hollowApproachArmed) {
-                        hollowApproachArmed = false;
-                        multiplier *= OniMeiCombat.HollowApproachHitMul;
-                    }
-                }
+                multiplier *= ResolveHollowActionMultiplier(target, actionSerial);
             }
             if (profile.TideBeat) {
-                bool onBeat = tideOnBeatSnapshot ?? OniMeiCombat.IsTideOnBeat(tidePhase);
-                if (zanshin && onBeat) {
+                if (zanshin && tideOnBeatSnapshot) {
                     multiplier *= OniMeiCombat.TideZanshinHitMul;
                 }
-                else if (!zanshin && allowIron && !onBeat) {
+                else if (combo && !tideOnBeatSnapshot) {
                     multiplier *= OniMeiCombat.TideOffBeatHitMul;
+                }
+            }
+            return multiplier;
+        }
+
+        private float ResolveHollowActionMultiplier(NPC target, uint actionSerial) {
+            if (target == null || target.DistanceSQ(Player.Center)
+                > OniMeiCombat.HollowNearRadius * OniMeiCombat.HollowNearRadius) {
+                return 1f;
+            }
+            if (actionSerial != 0
+                && hollowActionMultipliers.TryGetValue(actionSerial, out float cached)) {
+                return cached;
+            }
+
+            RecordHollowDenseAction(actionSerial);
+            float multiplier = 1f;
+            if (hollowFocusLossTicks > 0) {
+                multiplier = OniMeiCombat.HollowFocusLossHitMul;
+            }
+            else if (hollowApproachArmed) {
+                hollowApproachArmed = false;
+                multiplier = OniMeiCombat.HollowApproachHitMul;
+            }
+            if (actionSerial != 0) {
+                hollowActionMultipliers[actionSerial] = multiplier;
+                hollowActionOrder.Enqueue(actionSerial);
+                while (hollowActionOrder.Count > 64) {
+                    hollowActionMultipliers.Remove(hollowActionOrder.Dequeue());
                 }
             }
             return multiplier;
@@ -2013,14 +1969,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         private bool IsCombatColdForHollow() {
-            int now = scaledTime;
-            for (int i = 0; i < hitMemory.Length; i++) {
-                int tick = hitMemory[i].Tick;
-                if (tick > 0 && now - tick <= OniMeiCombat.HollowRoarColdTicks) {
-                    return false;
-                }
-            }
-            return true;
+            return scaledTime - lastDirectBladeHitTick > OniMeiCombat.HollowRoarColdTicks;
         }
 
         private bool HasNearbyHostile() {
@@ -2104,6 +2053,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             Stance = Math.Min(StanceMax, Stance + OniMeiCombat.ExecuteKillStanceRefund);
         }
 
+        internal bool TryClaimExecuteRefund(uint actionSerial) {
+            if (actionSerial == 0) {
+                return true;
+            }
+            if (!executeRefundedActions.Add(actionSerial)) {
+                return false;
+            }
+            executeRefundOrder.Enqueue(actionSerial);
+            while (executeRefundOrder.Count > 64) {
+                executeRefundedActions.Remove(executeRefundOrder.Dequeue());
+            }
+            return true;
+        }
+
         /// <summary>不动护窗口:连段后两重拍/残心/处决演出中</summary>
         private bool IsInCommittedAction() {
             if (Player.ownedProjectileCounts[ModContent.ProjectileType<OniZanshinSlash>()] > 0
@@ -2114,18 +2077,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return CrimsonRendSlash.FindController(Player)?.InCommittedBeats ?? false;
         }
 
-        public override bool FreeDodge(Player.HurtInfo info) {
-            if (Main.dedServ || Player.whoAmI != Main.myPlayer || !Mei.FalseBody
-                || OniPlayerDismember.SelfHurtResolving
-                || !info.DamageSource.TryGetCausingEntity(out Entity causing)) {
+        private static bool TryGetHostileDamageSource(PlayerDeathReason damageSource,
+            out Entity causing) {
+            causing = null;
+            if (!damageSource.TryGetCausingEntity(out Entity resolved)) {
                 return false;
             }
-            bool hostileSource = causing switch {
+            bool hostile = resolved switch {
                 Projectile projectile => projectile.active && projectile.hostile && projectile.damage > 0,
                 NPC npc => npc.active && !npc.friendly && npc.damage > 0,
                 _ => false,
             };
-            return hostileSource && OniMeiFalseBody.TryConsumeOwned(Player);
+            if (hostile) {
+                causing = resolved;
+            }
+            return hostile;
+        }
+
+        public override bool FreeDodge(Player.HurtInfo info) {
+            if (Main.dedServ || Player.whoAmI != Main.myPlayer || !Mei.FalseBody
+                || OniPlayerDismember.SelfHurtResolving
+                || !TryGetHostileDamageSource(info.DamageSource, out _)) {
+                return false;
+            }
+            return OniMeiFalseBody.TryConsumeOwned(Player);
         }
 
         /// <summary>
@@ -2146,10 +2121,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (falseBodyVacuumTicks > 0) {
                 modifiers.FinalDamage *= OniMeiCombat.FalseBodyVacuumIncomingMul;
             }
+            bool hostileSource = TryGetHostileDamageSource(modifiers.DamageSource, out Entity causing);
+            bool falseBodyWillDodge = hostileSource && Mei.FalseBody
+                && OniMeiFalseBody.AnyOwned(Player);
             if (Mei.StanceGuard && fudoGuardCooldown <= 0
                 && Stance >= FudoGuardStanceCost - 0.01f
                 && !OniPlayerDismember.IsLocked(Player)
-                && IsInCommittedAction()) {
+                && IsInCommittedAction() && hostileSource && !falseBodyWillDodge) {
                 Stance -= FudoGuardStanceCost;
                 fudoGuardCooldown = FudoGuardCooldownTicks;
                 modifiers.FinalDamage *= 1f - FudoGuardDamageCut;
@@ -2159,12 +2137,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             if (Mei.NumbCounter && numbGuardCooldown <= 0
                 && Stance >= NumbGuardStanceCost - 0.01f
-                && modifiers.DamageSource.TryGetCausingEntity(out Entity numbCausing)
-                && numbCausing is NPC numbSource && numbSource.active && !numbSource.friendly) {
+                && IsInCommittedAction() && !falseBodyWillDodge
+                && causing is NPC numbSource && numbSource.active && !numbSource.friendly) {
                 Stance -= NumbGuardStanceCost;
                 numbGuardCooldown = NumbGuardCooldownTicks;
                 modifiers.FinalDamage *= 1f - NumbGuardDamageCut;
-                OniMeiCombat.TryApplyNumbCounter(Player, numbSource);
+                OniMeiCombat.TryApplyNumbCounter(Player, numbSource, in Mei);
             }
             if (Mei.PlantedStep) {
                 plantedKnockbackGrace = OniMeiCombat.PlantedKnockbackGraceTicks;
@@ -2204,11 +2182,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         /// <summary>滞樋：授权命中叠「滞缚」(自实现墨锚阻尼，boss 减效)</summary>
-        private void TryApplyStickyBind(NPC target) {
-            OniMeiCombatProfile profile = Mei;
-            TryApplyStickyBind(target, in profile);
-        }
-
         private void TryApplyStickyBind(NPC target, in OniMeiCombatProfile profile) {
             if (!profile.StickyBind || target == null || !target.active) {
                 return;
@@ -2219,14 +2192,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         /// <summary>闲樋：命中记忆在冷战窗口内无刷新则视为脱战</summary>
         private bool IsCombatCold() {
-            int now = scaledTime;
-            for (int i = 0; i < hitMemory.Length; i++) {
-                int tick = hitMemory[i].Tick;
-                if (tick > 0 && now - tick <= OniMeiCombat.QuietBreathColdTicks) {
-                    return false;
-                }
-            }
-            return true;
+            return scaledTime - lastDirectBladeHitTick > OniMeiCombat.QuietBreathColdTicks;
         }
 
         /// <summary>满架势身周绯焰提示</summary>

@@ -15,7 +15,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Melee
+namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
 {
     /// 怨念编织者，三段+右键冲刺
     internal class WeaverGrievances : ModItem
@@ -107,23 +107,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             return false;
         }
 
-        public override void AddRecipes() {
-            if (CWRID.Item_TerrorBlade > 0 && CWRID.Item_Necroplasm > 0 && CWRID.Item_RuinousSoul > 0) {
-                CreateRecipe()
-                .AddIngredient(CWRID.Item_TerrorBlade)
-                .AddIngredient(CWRID.Item_BansheeHook)
-                .AddIngredient(CWRID.Item_GhoulishGouger)
-                .AddIngredient(CWRID.Item_FatesReveal)
-                .AddIngredient(CWRID.Item_GhastlyVisage)
-                .AddIngredient(CWRID.Item_DaemonsFlame)
-                .AddIngredient(CWRID.Item_EtherealSubjugator)
-                .AddIngredient(CWRID.Item_Affliction)
-                .AddIngredient(CWRID.Item_Necroplasm, 5)
-                .AddIngredient(CWRID.Item_RuinousSoul, 5)
-                .AddTile(TileID.LunarCraftingStation)
-                .Register();
-            }
-        }
     }
 
     /// 怨念编织者手持，WeaverSlashTrail+怨灵之爪

@@ -1,8 +1,6 @@
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 {
-    //铭文名册：每铭=一个可感知赋效+一项明确负担，数值全走 OniMeiCombatProfile 叠算；
-    //茎铭取髭切一系改名史，Key 沿用保证存档连续。
-    //L0 已改型号 U：铁截/滞樋/闲樋/镇鸣；其余扩册暂仍型号 B 待下批。
+    //铭文名册：每铭=一个可感知赋效+一项明确负担，稳定 Key 保持存档连续
 
     /// <summary>髭切，斩首连须的旧名：残血终结增强，面板伤害 -2%</summary>
     internal sealed class MeiHigekiri : OniMeiDefinition
@@ -117,7 +115,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
     }
 
-    /// <summary>风樋，轻身之槽：疾走/樱流省气，墨痕伤害 -25%</summary>
+    /// <summary>风樋，轻身之槽：疾走/樱流省气，墨痕伤害 -20%</summary>
     internal sealed class MeiKazehi : OniMeiDefinition
     {
         public override int SortOrder => 50;
@@ -156,7 +154,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
     }
 
-    /// <summary>血樋，放血之槽：命中回气增强，自然回气减半且回气延迟加长</summary>
+    /// <summary>血樋，放血之槽：命中回气增强，自然回气 -35% 且回气延迟加长</summary>
     internal sealed class MeiChihi : OniMeiDefinition
     {
         public override int SortOrder => 60;
@@ -205,7 +203,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
     }
 
-    /// <summary>不动，梵字カーン笔意的护身雕：承诺动作中耗架势挡伤，架势获取 -20%</summary>
+    /// <summary>不动，梵字カーン笔意的护身雕：承诺动作中耗架势挡伤，架势获取 -15%</summary>
     internal sealed class MeiFudo : OniMeiDefinition
     {
         public override int SortOrder => 70;

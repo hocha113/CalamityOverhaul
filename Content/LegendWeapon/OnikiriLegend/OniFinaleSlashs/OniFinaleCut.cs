@@ -53,6 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         private bool initialized;
         private bool detonatedFx;
         private bool hitVfxBurst;
+        private bool executeRefunded;
         private int timer;
 
         private float CutAngle => Projectile.ai[0];
@@ -339,8 +340,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 OniMeiCombatProfile profile = ActionContext?.HasSnapshot == true
                     ? ActionContext.Profile
                     : OniMeiCombatProfile.Identity;
-                Main.player[Projectile.owner].GetModPlayer<OnikiriPlayer>()
-                    .TryConsumePlantedStep(ref modifiers, in profile);
+                OnikiriPlayer onikiri = Main.player[Projectile.owner].GetModPlayer<OnikiriPlayer>();
+                float meiMul = onikiri.BuildMeiHitMultiplier(target, in profile,
+                    ActionContext?.ActionSerial ?? 0, allowPlanted: true,
+                    allowIron: false, zanshin: false,
+                    armedConditionMul: ActionContext?.ArmedConditionMul ?? 1f,
+                    tideOnBeatSnapshot: ActionContext?.TideOnBeat == true);
+                if (OniMeiCombat.TryGetExecuteBonus(in profile, target, out float executeMul)) {
+                    meiMul *= executeMul;
+                }
+                modifiers.FinalDamage *= OniMeiCombat.ClampConditionalDamage(
+                    meiMul, in profile, target);
             }
             float offsetX = Projectile.To(target.Center).X;
             modifiers.HitDirectionOverride = MathF.Abs(offsetX) > 0.01f
@@ -361,14 +371,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.45f, Volume = 0.9f }, target.Center);
 
-            if (Projectile.IsOwnedByLocalPlayer() && (!target.active || target.life <= 0)) {
+            if (Projectile.IsOwnedByLocalPlayer()) {
                 OniMeiCombatProfile profile = ActionContext?.HasSnapshot == true
                     ? ActionContext.Profile
                     : OniMeiCombatProfile.Identity;
-                Main.player[Projectile.owner].GetModPlayer<OnikiriPlayer>()
-                    .TryPetalPruneOnKill(target,
+                Player owner = Main.player[Projectile.owner];
+                OnikiriPlayer onikiri = owner.GetModPlayer<OnikiriPlayer>();
+                onikiri.OnPrimaryBladeHit(target, in profile);
+                OniMeiCombat.OnExecuteStrikeHit(owner, target, CutAngle, ref executeRefunded,
+                    in profile, ActionContext?.ActionSerial ?? 0);
+                if (!target.active || target.life <= 0) {
+                    onikiri.TryPetalPruneOnKill(target,
                         ActionContext?.BaseWeaponDamage ?? Math.Max(1, Projectile.damage / 4),
                         Projectile.knockBack, Projectile, in profile);
+                }
             }
 
             if (Main.dedServ) {

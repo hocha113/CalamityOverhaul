@@ -140,6 +140,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         public static bool AnyOwned(Player player) => TryGetOwned(player) != null;
 
+        /// <summary>Removing the inscription dismisses the live shadow without creating vacuum debt.</summary>
+        public static void DismissOwned(Player player) {
+            if (player == null || player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            int type = ModContent.ProjectileType<OniMeiFalseBody>();
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile projectile = Main.projectile[i];
+                if (projectile.active && projectile.owner == player.whoAmI
+                    && projectile.type == type) {
+                    projectile.Kill();
+                }
+            }
+        }
+
         public static OniMeiFalseBody TryGetOwned(Player player) {
             if (player == null) {
                 return null;

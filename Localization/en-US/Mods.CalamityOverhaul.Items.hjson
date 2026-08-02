@@ -458,6 +458,8 @@ JusticeUnveiled: {
 
 WeaverGrievances: {
 	DisplayName: Weaver Grievances
+	RitualInteractHint: "[Right-click] Pull the blade free"
+	RitualInventoryFullHint: Your inventory is full. Make room before pulling the blade.
 	Tooltip:
 		'''
 		Unleash a large number of claws of Evil spirits and have special effects in hell and dungeon environments
@@ -2612,6 +2614,14 @@ OniMeiRubbingHigekiri: {
 	Origin: The night of the test cut, the head fell with the beard still clinging to the edge — hence the old name
 	Power: Beard-Cutter: direct blade hits scale against targets below 35% life (up to +60%, or +45% vs bosses); a direct blade kill refunds 8 stance once per action
 	Burden: Blade damage -2% — against healthy targets, this edge is slightly duller than the original name
+}
+
+OniMeiGiftRepairCommand: {
+	Description: Requeue one completed Onikiri inscription gift for this character.
+	LocalOnly: This command only repairs the current local character.
+	Success: "Onikiri gift requeued: {0}"
+	NotCompleted: "Onikiri gift was never completed: {0}"
+	UnknownKey: "Unknown Onikiri gift Key: {0}"
 }
 
 OniMeiRubbingOnikiri: {

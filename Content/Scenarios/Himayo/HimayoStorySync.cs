@@ -5,6 +5,8 @@ using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
 using CalamityOverhaul.Content.Scenarios.Himayo.Gifts;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -152,8 +154,49 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
                 return false;
             }
             data.PendingGiftKeys.Add(entry.MeiKey);
+            if (entry.ScenarioType == typeof(HimayoEvilBossGift)) {
+                data.EvilBossGiftBossId = GetWorldEvilBossId();
+            }
             HimayoGiftCatalog.Sanitize(data);
             return true;
+        }
+
+        public static void ReceiveGiftEntitlements(BinaryReader reader) {
+            int lastDefeatedBossId = reader.ReadInt32();
+            int count = reader.ReadByte();
+            List<string> keys = new(count);
+            for (int i = 0; i < count; i++) {
+                keys.Add(reader.ReadString());
+            }
+
+            ReceiveGiftEntitlements(Main.LocalPlayer, keys, lastDefeatedBossId);
+        }
+
+        public static void ReceiveGiftEntitlements(Player player, IEnumerable<string> keys,
+            int lastDefeatedBossId = 0) {
+            if (!IsLocalOwner(player) || keys == null) {
+                return;
+            }
+
+            HimayoGiftStoryData data = GetGift(player);
+            if (data == null) {
+                return;
+            }
+
+            HimayoGiftCatalog.Sanitize(data);
+            foreach (string key in keys) {
+                if (HimayoGiftCatalog.TryGet(key, out HimayoGiftEntry entry)
+                    && !entry.IsCompleted(data)
+                    && !data.PendingGiftKeys.Contains(entry.MeiKey)) {
+                    data.PendingGiftKeys.Add(entry.MeiKey);
+                    if (entry.ScenarioType == typeof(HimayoEvilBossGift)) {
+                        data.EvilBossGiftBossId = MatchesTargetBoss(entry, lastDefeatedBossId)
+                            ? lastDefeatedBossId
+                            : GetWorldEvilBossId();
+                    }
+                }
+            }
+            HimayoGiftCatalog.Sanitize(data);
         }
 
         public static bool TryGetNextPending(Player player, out HimayoGiftEntry entry) {
@@ -222,13 +265,39 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
             entry.SetCompleted(data, false);
             data.PendingGiftKeys.RemoveAll(pending => pending == entry.MeiKey);
             data.PendingGiftKeys.Add(entry.MeiKey);
+            if (entry.ScenarioType == typeof(HimayoEvilBossGift)) {
+                data.EvilBossGiftBossId = GetWorldEvilBossId();
+            }
             HimayoGiftCatalog.Sanitize(data);
             return HimayoGiftRepairResult.Success;
         }
 
+        internal static int GetEvilBossGiftBossId(Player player) {
+            int bossId = GetGift(player)?.EvilBossGiftBossId ?? 0;
+            return bossId == NPCID.EaterofWorldsHead || bossId == NPCID.BrainofCthulhu
+                ? bossId
+                : GetWorldEvilBossId();
+        }
+
+        private static int GetWorldEvilBossId()
+            => WorldGen.crimson ? NPCID.BrainofCthulhu : NPCID.EaterofWorldsHead;
+
         private static bool IsLocalOwner(Player player)
             => player != null && player.active && Main.netMode != NetmodeID.Server
             && player.whoAmI == Main.myPlayer;
+
+        private static bool MatchesTargetBoss(HimayoGiftEntry entry, int bossId) {
+            if (entry == null || bossId <= 0) {
+                return false;
+            }
+            int[] targets = entry.TargetBossIds;
+            for (int i = 0; i < targets.Length; i++) {
+                if (targets[i] == bossId) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public static bool ReadGift(Func<HimayoGiftStoryData, bool> story, Func<HimayoGiftStoryData, bool> legacy) {
             if (story(GiftStory)) {

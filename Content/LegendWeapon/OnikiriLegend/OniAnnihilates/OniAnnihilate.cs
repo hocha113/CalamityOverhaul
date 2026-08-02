@@ -87,6 +87,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
                 , ai0: MathHelper.WrapAngle(aimAngle), ai1: scale);
             OniMeiActionContext.Capture(projectile, player, source,
                 baseWeaponDamage > 0 ? baseWeaponDamage : Math.Max(1, damage / 5), OniMeiActionKind.Annihilate);
+            OniMeiActionContext.ArmConditions(projectile, player,
+                allowSilent: false, allowPlanted: true);
             return projectile;
         }
 
@@ -301,7 +303,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             if (Projectile.IsOwnedByLocalPlayer()) {
                 float meiMul = Owner.GetModPlayer<OnikiriPlayer>().BuildMeiHitMultiplier(
                     target, in profile, ActionContext?.ActionSerial ?? 0,
-                    allowPlanted: true, allowIron: false, zanshin: false);
+                    allowPlanted: true, allowIron: false, zanshin: false,
+                    armedConditionMul: ActionContext?.ArmedConditionMul ?? 1f,
+                    tideOnBeatSnapshot: ActionContext?.TideOnBeat == true);
                 if (OniMeiCombat.TryGetExecuteBonus(in profile, target, out float executeMul)) {
                     meiMul *= executeMul;
                 }
@@ -399,9 +403,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
                 OniMeiCombatProfile profile = ActionContext?.HasSnapshot == true
                     ? ActionContext.Profile
                     : OniMeiCombatProfile.Identity;
-                OniMeiCombat.OnExecuteStrikeHit(Owner, target, CutAngle, ref executeRefunded, in profile);
+                OnikiriPlayer onikiri = Owner.GetModPlayer<OnikiriPlayer>();
+                onikiri.OnPrimaryBladeHit(target, in profile);
+                OniMeiCombat.OnExecuteStrikeHit(Owner, target, CutAngle, ref executeRefunded,
+                    in profile, ActionContext?.ActionSerial ?? 0);
                 if (!target.active || target.life <= 0) {
-                    Owner.GetModPlayer<OnikiriPlayer>().TryPetalPruneOnKill(target,
+                    onikiri.TryPetalPruneOnKill(target,
                         ActionContext?.BaseWeaponDamage ?? Math.Max(1, Projectile.damage / 5),
                         Projectile.knockBack, Projectile, in profile);
                 }

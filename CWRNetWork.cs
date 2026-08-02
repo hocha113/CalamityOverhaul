@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content;
+﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
@@ -12,6 +12,7 @@ using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using CalamityOverhaul.Content.Scenarios.Draedon;
 using CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.SignalTower;
 using CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch;
+using CalamityOverhaul.Content.Scenarios.Himayo;
 using CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines;
 using CalamityOverhaul.Content.Scenarios.OldDuke;
 using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
@@ -19,6 +20,7 @@ using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
 using CalamityOverhaul.Content.Wraiths.Runtime;
 using System.IO;
 using Terraria.ModLoader;
+using CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses;
 
 namespace CalamityOverhaul
 {
@@ -55,6 +57,8 @@ namespace CalamityOverhaul
         Wraith,
         //保留编号：原鬼切教程练习鬼影通道已删除，客户端不再发送。
         ReservedOnikiriTutorial,
+        HimayoGiftEntitlements,
+        WeaverGrievancesManifestation,
     }
 
     public static class CWRNetWork
@@ -116,6 +120,9 @@ namespace CalamityOverhaul
             else if (type == CWRMessageType.ToriiShrineSync) {
                 ToriiShrine.ReceiveShrineSync(reader);
             }
+            else if (type == CWRMessageType.HimayoGiftEntitlements) {
+                HimayoStorySync.ReceiveGiftEntitlements(reader);
+            }
 
             ModifyCrabulon.NetHandle(type, reader, whoAmI);
             DraedonEffect.NetHandle(type, reader, whoAmI);
@@ -124,6 +131,7 @@ namespace CalamityOverhaul
             OldDukeEffect.NetHandle(type, reader, whoAmI);
             MachineEffect.NetHandle(type, reader, whoAmI);
             WraithNet.NetHandle(type, reader, whoAmI);
+            WGManifestationNet.NetHandle(type, reader, whoAmI);
         }
     }
 }

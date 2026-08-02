@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Common
     {
         /// <summary>群组锚点索引（头/主体）</summary>
         public static int GetAnchorIndex(NPC npc) {
-            if (npc == null || !npc.active) {
+            if (npc == null) {
                 return -1;
             }
             int rl = npc.realLife;

@@ -88,6 +88,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 , ModContent.ProjectileType<OniFinaleSlash>(), damage, knockback, player.whoAmI
                 , ai0: aimAngle, ai1: scale);
             OniMeiActionContext.Capture(projectile, player, source, damage, OniMeiActionKind.Finale);
+            OniMeiActionContext.ArmConditions(projectile, player,
+                allowSilent: false, allowPlanted: true);
             return projectile;
         }
 
@@ -287,8 +289,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
         /// <summary>排拍生成（仅持有者客户端，tML 同步到各端）</summary>
         private void RunSpawnTimeline() {
-            int ringDamage = (int)(Projectile.damage * 0.45f);
-            int scarDamage = (int)(Projectile.damage * 0.35f);
+            OniMeiActionContext context = OniMeiActionContext.Get(Projectile);
+            int baseWeaponDamage = context?.HasSnapshot == true
+                ? context.BaseWeaponDamage
+                : Projectile.damage;
+            int ringDamage = (int)(baseWeaponDamage * 0.45f);
+            int scarDamage = (int)(baseWeaponDamage * 0.35f);
 
             for (int i = 0; i < RingBeats.Length; i++) {
                 if (timer != RingBeats[i].Frame) {
@@ -317,7 +323,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
 
             if (timer == CutSpawnFrame) {
                 Projectile cut = OniFinaleCut.Fire(Owner, Projectile.Center, Aim
-                    , (int)(Projectile.damage * 4f), Projectile.knockBack * 2f, SizeMul
+                    , (int)(baseWeaponDamage * 4f), Projectile.knockBack * 2f, SizeMul
                     , Projectile.GetSource_FromAI());
                 OniMeiActionContext.Inherit(Projectile, cut, secondary: false, OniMeiActionKind.FinaleCut);
             }

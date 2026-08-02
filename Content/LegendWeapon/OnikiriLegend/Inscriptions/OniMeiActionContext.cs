@@ -30,8 +30,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         private readonly record struct SecondaryHitKey(
             int Owner, uint ActionSerial, int ProjectileIdentity, int RootWhoAmI);
 
+        private readonly record struct SecondaryBudgetKey(
+            int Owner, uint ActionSerial, int RootWhoAmI);
+
         private static uint[] nextSerial = new uint[Main.maxPlayers];
         private static readonly Dictionary<SecondaryHitKey, ulong> secondaryHits = [];
+        private static readonly Dictionary<SecondaryBudgetKey, (float Used, ulong Tick)> secondaryBudgets = [];
         private static ulong lastLedgerSweep;
 
         public override bool InstancePerEntity => true;
@@ -104,24 +108,90 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public static uint AllocateActionSerial(Player owner)
             => owner == null ? 0 : NextActionSerial(owner.whoAmI);
 
+        /// <summary>
+        /// The combo controller persists across all five beats. Each fired beat receives a fresh
+        /// action serial while retaining the controller's immutable inscription and damage snapshot.
+        /// </summary>
+        public static void BeginSubAction(Projectile projectile, Player owner,
+            OniMeiActionKind actionKind) {
+            OniMeiActionContext context = Get(projectile);
+            if (context?.HasSnapshot != true || owner == null) {
+                return;
+            }
+            context.IsSecondary = false;
+            context.ActionSerial = NextActionSerial(owner.whoAmI);
+            context.ActionKind = actionKind;
+            context.ArmedConditionMul = 1f;
+            context.TideOnBeat = false;
+            projectile.netUpdate = true;
+        }
+
+        /// <summary>Consumes action-start conditions once, including attacks that later miss.</summary>
+        public static void ArmConditions(Projectile projectile, Player owner,
+            bool allowSilent, bool allowPlanted) {
+            OniMeiActionContext context = Get(projectile);
+            if (context?.HasSnapshot != true || owner == null || owner.whoAmI != Main.myPlayer) {
+                return;
+            }
+            OnikiriPlayer onikiri = owner.GetModPlayer<OnikiriPlayer>();
+            OniMeiCombatProfile profile = context.Profile;
+            float multiplier = onikiri.ArmMeiAction(
+                in profile, allowSilent, allowPlanted);
+            bool tideOnBeat = profile.TideBeat
+                && OniMeiCombat.IsTideOnBeat(onikiri.TidePhaseTicks);
+            context.ArmCondition(multiplier, tideOnBeat);
+            projectile.netUpdate = true;
+        }
+
         public void ArmCondition(float multiplier, bool tideOnBeat) {
             ArmedConditionMul = Math.Max(1f, multiplier);
             TideOnBeat = tideOnBeat;
         }
 
         public override bool? CanHitNPC(Projectile projectile, NPC target) {
-            if (!HasSnapshot || !IsSecondary || target == null) {
+            if (!HasSnapshot || !IsSecondary || target == null || UsesOwnHitLedger(projectile)) {
                 return null;
             }
-            int root = OniMeiCombat.ResolveEffectRoot(target).whoAmI;
+            NPC resolved = OniMeiCombat.ResolveEffectRoot(target);
+            if (resolved == null) {
+                return null;
+            }
+            int root = resolved.whoAmI;
+            if (secondaryBudgets.TryGetValue(
+                new SecondaryBudgetKey(projectile.owner, ActionSerial, root), out var budget)
+                && budget.Used >= 0.9999f) {
+                return false;
+            }
             return secondaryHits.ContainsKey(new SecondaryHitKey(
                 projectile.owner, ActionSerial, projectile.identity, root))
                 ? false
                 : null;
         }
 
+        public override void ModifyHitNPC(Projectile projectile, NPC target,
+            ref NPC.HitModifiers modifiers) {
+            if (!HasSnapshot || !IsSecondary || target == null || BaseWeaponDamage <= 0
+                || UsesOwnHitLedger(projectile)) {
+                return;
+            }
+            NPC resolved = OniMeiCombat.ResolveEffectRoot(target);
+            if (resolved == null) {
+                return;
+            }
+
+            SecondaryBudgetKey key = new(projectile.owner, ActionSerial, resolved.whoAmI);
+            float used = secondaryBudgets.TryGetValue(key, out var entry) ? entry.Used : 0f;
+            float requested = Math.Max(projectile.damage / (float)BaseWeaponDamage, 0f);
+            float allowed = Math.Min(requested, Math.Max(0f, 1f - used));
+            if (requested > 0.0001f && allowed < requested) {
+                modifiers.FinalDamage *= allowed / requested;
+            }
+            secondaryBudgets[key] = (Math.Min(1f, used + allowed), Main.GameUpdateCount);
+            SweepLedger();
+        }
+
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
-            if (!HasSnapshot || !IsSecondary || target == null) {
+            if (!HasSnapshot || !IsSecondary || target == null || UsesOwnHitLedger(projectile)) {
                 return;
             }
             int root = OniMeiCombat.ResolveEffectRoot(target).whoAmI;
@@ -167,6 +237,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override void Unload() {
             nextSerial = null;
             secondaryHits.Clear();
+            secondaryBudgets.Clear();
             lastLedgerSweep = 0;
         }
 
@@ -220,6 +291,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         private static string EmptyToNull(string value)
             => string.IsNullOrEmpty(value) ? null : value;
 
+        private static bool UsesOwnHitLedger(Projectile projectile)
+            => projectile?.ModProjectile is OniMeiGroundBurn;
+
         private static void SweepLedger() {
             ulong now = Main.GameUpdateCount;
             if (now - lastLedgerSweep < 120) {
@@ -229,6 +303,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             foreach (SecondaryHitKey key in new List<SecondaryHitKey>(secondaryHits.Keys)) {
                 if (now - secondaryHits[key] > 600) {
                     secondaryHits.Remove(key);
+                }
+            }
+            foreach (SecondaryBudgetKey key in new List<SecondaryBudgetKey>(secondaryBudgets.Keys)) {
+                if (now - secondaryBudgets[key].Tick > 600) {
+                    secondaryBudgets.Remove(key);
                 }
             }
         }

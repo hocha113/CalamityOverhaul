@@ -239,7 +239,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 OniMeiCombatProfile profile = context?.HasSnapshot == true
                     ? context.Profile
                     : OniMeiCombatProfile.Identity;
-                Owner.GetModPlayer<OnikiriPlayer>().TryArmFalseBody(Owner.Center,
+                OnikiriPlayer onikiri = Owner.GetModPlayer<OnikiriPlayer>();
+                onikiri.ConsumeSilentKillOnDashStart(in profile);
+                onikiri.TryArmFalseBody(Owner.Center,
                     interruptStartRotation, Owner.direction, in profile);
             }
 
@@ -522,7 +524,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 if (!IsExecutionDash && !onikiri.ExecutionDashQueued) {
                     onikiri.OpenZanshinWindow(JudgmentFrame - timer, marked.Count, dashDir);
                 }
-                onikiri.ArmSilentKillFromDash();
+                if (!IsExecutionDash) {
+                    OniMeiActionContext context = OniMeiActionContext.Get(Projectile);
+                    OniMeiCombatProfile profile = context?.HasSnapshot == true
+                        ? context.Profile
+                        : OniMeiCombatProfile.Identity;
+                    onikiri.ArmSilentKillFromDash(in profile);
+                }
             }
 
             if (!Main.dedServ) {
@@ -557,7 +565,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             int judgeDelay = JudgmentFrame - timer;
 
             foreach (NPC npc in Main.ActiveNPCs) {
-                if (marked.Contains(npc.whoAmI) || !npc.CanBeChasedBy(Projectile)) {
+                if (!npc.CanBeChasedBy(Projectile)) {
+                    continue;
+                }
+                NPC effectRoot = OniMeiCombat.ResolveEffectRoot(npc) ?? npc;
+                if (marked.Contains(effectRoot.whoAmI)) {
                     continue;
                 }
                 float cp = 0f;
@@ -566,7 +578,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                     continue;
                 }
 
-                marked.Add(npc.whoAmI);
+                marked.Add(effectRoot.whoAmI);
 
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     //墨痕走向与本次直线居合方向一致
@@ -1006,7 +1018,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             }
             float s = sizeMul * MathHelper.Clamp(totalLen / 320f, 0.4f, 1f);
             //风樋:主流带更窄、流速更快,纸风质感(铭档随物品同步,纯表现不改判定)
-            bool wind = OniMeiCombat.Resolve(Item).WindGroove;
+            OniMeiActionContext context = OniMeiActionContext.Get(Projectile);
+            bool wind = context?.HasSnapshot == true && context.Profile.WindGroove;
             float slim = wind ? 0.82f : 1f;
             float flowUp = wind ? 1.14f : 1f;
             Span<OKF.RibbonDef> defs = [

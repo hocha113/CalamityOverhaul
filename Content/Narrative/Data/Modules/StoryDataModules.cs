@@ -175,6 +175,7 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool SupremeCalamitasGift;
         public bool BossRushGift;
         public List<string> PendingGiftKeys = [];
+        public int EvilBossGiftBossId;
 
         public override void SaveData(TagCompound tag) {
             HimayoGiftCatalog.Sanitize(this);
