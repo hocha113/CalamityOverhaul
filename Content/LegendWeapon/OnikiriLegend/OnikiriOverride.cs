@@ -20,9 +20,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private static Dictionary<int, int> CritDictionary = [];
         private static Dictionary<int, float> BladeScaleDictionary = [];
         private static Dictionary<int, float> FinaleScaleDictionary = [];
+        private static Dictionary<int, float> FlashStepRangeDictionary = [];
 
         /// <summary>词缀叠乘后刀刃尺寸上限</summary>
         public const float MaxCompositeBladeScale = 1.45f;
+
+        /// <summary>神威疾走最远距离上限(px)，与成长表 L22 对齐</summary>
+        public const float MaxFlashStepRange = 1500f;
 
         public static int GetStartDamage => DamageDictionary[0];
 
@@ -46,6 +50,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         /// <summary>终结乱舞弱缩放(0.95→1.08),灭世恒 1.0</summary>
         public static float GetFinaleScale(Item item) => FinaleScaleDictionary[GetLevel(item)];
+
+        /// <summary>神威疾走最远距离(px,600→1500),光标超出则钳在此半径</summary>
+        public static float GetFlashStepMaxDistance(Item item) => FlashStepRangeDictionary[GetLevel(item)];
 
         public static void LoadWeaponData() {
             //锚点 0/4/9/14/17/20/22,中间线性插值
@@ -148,6 +155,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 {20, 1.07f},
                 {21, 1.075f},
                 {22, 1.08f},
+            };
+            //锚点 0/4/9/14/17/20/22 → 600→1500
+            FlashStepRangeDictionary = new Dictionary<int, float> {
+                {0, 600f},
+                {1, 640f},
+                {2, 680f},
+                {3, 720f},
+                {4, 760f},
+                {5, 800f},
+                {6, 840f},
+                {7, 880f},
+                {8, 920f},
+                {9, 960f},
+                {10, 1000f},
+                {11, 1040f},
+                {12, 1080f},
+                {13, 1120f},
+                {14, 1160f},
+                {15, 1200f},
+                {16, 1260f},
+                {17, 1320f},
+                {18, 1360f},
+                {19, 1400f},
+                {20, 1440f},
+                {21, 1470f},
+                {22, MaxFlashStepRange},
             };
         }
 

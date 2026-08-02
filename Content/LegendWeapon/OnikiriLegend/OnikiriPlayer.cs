@@ -96,8 +96,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private const int ExecutionAnnihilateWindowTicks = 90;
         /// <summary>灭世一闪预输入沿用残心的短举刀交接</summary>
         private const int ExecutionAnnihilateHandoffFrames = ZanshinAutoHandoffFrames;
-        /// <summary>专用处决的智能锁敌与空放最远距离</summary>
-        private const float ExecutionFocusMaxDistance = 800f;
         /// <summary>光标点名目标的碰撞箱磁吸半径</summary>
         private const float ExecutionCursorMagnetRadius = 200f;
         /// <summary>明确点名时允许目标中心略超锁敌距离</summary>
@@ -671,7 +669,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             queuedExecutionTier = tier;
             queuedExecutionSource = ExecutionTriggerSource.ManualChain;
             executionDashQueued = true;
-            queuedExecutionAim = CaptureRelativeCursorAim(clampToExecutionRange: false);
+            queuedExecutionAim = CaptureRelativeCursorAim(clampToMaxRange: true);
             queuedExecutionTargetId = -1;
             queuedExecutionTargetType = -1;
             if (!normalDashInFlight) {
@@ -695,7 +693,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             queuedExecutionTier = ExecutionTier.Full;
             queuedExecutionSource = ExecutionTriggerSource.ExecuteKey;
             executionDashQueued = true;
-            queuedExecutionAim = CaptureRelativeCursorAim(clampToExecutionRange: true);
+            queuedExecutionAim = CaptureRelativeCursorAim(clampToMaxRange: true);
             queuedExecutionTargetId = target?.whoAmI ?? -1;
             queuedExecutionTargetType = target?.type ?? -1;
             executionChainWindow = 0;
@@ -766,7 +764,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             ExecutionTriggerSource triggerSource = executionDash
                 ? queuedExecutionSource
                 : ExecutionTriggerSource.None;
+            float maxDash = OnikiriOverride.GetFlashStepMaxDistance(item);
             Vector2 aim = Main.MouseWorld - Player.Center;
+            ClampAimToMax(ref aim, maxDash);
             float distance = aim.Length() + DashCursorOvershoot;
             int lockedTargetId = -1;
             int lockedTargetType = -1;
@@ -823,6 +823,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             targetId = -1;
             targetType = -1;
             aim = queuedExecutionAim;
+            float maxDash = FlashStepMaxDistance;
+            ClampAimToMax(ref aim, maxDash);
             distance = aim.Length() + DashCursorOvershoot;
             if (source != ExecutionTriggerSource.ExecuteKey) {
                 return;
@@ -869,16 +871,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             aim = direction * distance;
         }
 
-        private Vector2 CaptureRelativeCursorAim(bool clampToExecutionRange) {
+        private Vector2 CaptureRelativeCursorAim(bool clampToMaxRange) {
             Vector2 aim = Main.MouseWorld - Player.Center;
-            float distance = aim.Length();
-            if (clampToExecutionRange && distance > ExecutionFocusMaxDistance) {
-                aim *= ExecutionFocusMaxDistance / distance;
+            if (clampToMaxRange) {
+                ClampAimToMax(ref aim, FlashStepMaxDistance);
             }
             if (aim.LengthSquared() < 1f) {
                 aim = Vector2.UnitX * Player.direction;
             }
             return aim;
+        }
+
+        private float FlashStepMaxDistance
+            => OnikiriOverride.GetFlashStepMaxDistance(Player.GetItem());
+
+        private static void ClampAimToMax(ref Vector2 aim, float maxDistance) {
+            float length = aim.Length();
+            if (length > maxDistance && maxDistance > 0f) {
+                aim *= maxDistance / length;
+            }
         }
 
         private void ClearQueuedExecutionRequest(bool preserveFollowupInput = false) {
@@ -934,7 +945,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 float cursorDistance = DistanceToHitbox(npc, cursor);
                 if (cursorDistance > ExecutionCursorMagnetRadius
                     || Vector2.Distance(Player.Center, npc.Center)
-                        > ExecutionFocusMaxDistance + ExecutionCursorRangeSlack) {
+                        > FlashStepMaxDistance + ExecutionCursorRangeSlack) {
                     continue;
                 }
                 NPC root = RootOf(npc);
@@ -964,7 +975,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                     continue;
                 }
                 NPC npc = GetExecutionTarget(memory.NpcId, memory.NpcType);
-                if (npc == null || DistanceToHitbox(npc, Player.Center) > ExecutionFocusMaxDistance) {
+                if (npc == null || DistanceToHitbox(npc, Player.Center) > FlashStepMaxDistance) {
                     continue;
                 }
                 NPC root = RootOf(npc);
@@ -984,7 +995,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             float bestDistance = float.MaxValue;
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (!npc.CanBeChasedBy() || !RootOf(npc).boss
-                    || DistanceToHitbox(npc, Player.Center) > ExecutionFocusMaxDistance) {
+                    || DistanceToHitbox(npc, Player.Center) > FlashStepMaxDistance) {
                     continue;
                 }
                 float cursorDistance = DistanceToHitbox(npc, cursor);
