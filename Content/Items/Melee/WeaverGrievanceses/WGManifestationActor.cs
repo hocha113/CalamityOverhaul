@@ -1,4 +1,5 @@
-﻿using InnoVault.Actors;
+﻿using CalamityOverhaul.Common;
+using InnoVault.Actors;
 using InnoVault.Cinematics;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -485,7 +486,7 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
                     subject, player, restartSameClip: restartStaleClip);
             if (started && !manifestationCutsceneStarted) {
                 manifestationCutsceneStarted = true;
-                SoundEngine.PlaySound(SoundID.Item4 with { Pitch = -0.42f, Volume = 0.7f }, Position);
+                SoundEngine.PlaySound(CWRSound.SoulConnection);
             }
         }
 

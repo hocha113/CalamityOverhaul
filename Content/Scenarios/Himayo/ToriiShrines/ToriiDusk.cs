@@ -22,28 +22,37 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         /// <summary>在场强度0~1</summary>
         public static float Intensity { get; private set; }
 
+        internal static float VisualIntensity { get; private set; }
+
         /// <summary>仍需在场(含渐出尾巴)</summary>
-        public static bool Visible => Intensity > 0.004f;
+        public static bool Visible => VisualIntensity > 0.004f;
 
         //教程活跃时每帧调用 SetTutorialLease() 维持黄昏；停止调用后自动过期（90 帧渐出）
         private static bool tutorialLease;
+        private static bool tutorialVisualSuppressed;
 
         /// <summary>教程活跃帧调用；下一帧未续租即自动失效</summary>
         public static void SetTutorialLease() => tutorialLease = true;
 
-        internal static void ReleaseTutorialLease() => tutorialLease = false;
+        internal static void SuppressTutorialVisuals() => tutorialVisualSuppressed = true;
 
         internal static void Update() {
             bool lease = tutorialLease;
+            bool suppressVisuals = tutorialVisualSuppressed;
             tutorialLease = false;           //自动过期，教程必须每帧续租
+            tutorialVisualSuppressed = false;
             bool hold = Hold() || lease;
             Intensity = MathHelper.Clamp(
                 Intensity + (hold ? FadeInPerTick : -FadeOutPerTick), 0f, 1f);
+            VisualIntensity = MathHelper.Clamp(VisualIntensity
+                + (hold && !suppressVisuals ? FadeInPerTick : -FadeOutPerTick), 0f, 1f);
         }
 
         internal static void Reset() {
             Intensity = 0f;
+            VisualIntensity = 0f;
             tutorialLease = false;
+            tutorialVisualSuppressed = false;
         }
 
         /// <summary>退场中或初见在播则保持，鬼域激活时让位</summary>
@@ -80,7 +89,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
         //日光向暖金收拢
         public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor) {
-            float dusk = ToriiDusk.Intensity;
+            float dusk = ToriiDusk.VisualIntensity;
             if (dusk <= 0.001f) {
                 return;
             }
@@ -104,7 +113,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
     /// <summary>
     /// 逢魔黄昏天空，复用 <see cref="EffectLoader.OniSky"/> 表世界调色板(uUraBlend=0)，全覆盖(uSpreadMode=0)<br/>
-    /// 强度由 <see cref="ToriiDusk.Intensity"/> 驱动
+    /// 强度由 <see cref="ToriiDusk.VisualIntensity"/> 驱动
     /// </summary>
     internal class ToriiDuskSky : CustomSky, ICWRLoader
     {
@@ -135,7 +144,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         public override void Reset() => active = false;
 
         public override void Update(GameTime gameTime) {
-            Filters.Scene[Name]?.GetShader()?.UseOpacity(0.10f * ToriiDusk.Intensity);
+            Filters.Scene[Name]?.GetShader()?.UseOpacity(0.10f * ToriiDusk.VisualIntensity);
         }
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth) {
@@ -143,7 +152,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             if (maxDepth < 0f || minDepth >= 0f) {
                 return;
             }
-            float presence = ToriiDusk.Intensity;
+            float presence = ToriiDusk.VisualIntensity;
             if (presence <= 0.004f) {
                 return;
             }
