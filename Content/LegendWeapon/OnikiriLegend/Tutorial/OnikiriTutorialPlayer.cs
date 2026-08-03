@@ -5,6 +5,7 @@ using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
+using CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines;
 using CalamityOverhaul.Content.Wraiths.Core;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -424,6 +425,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 else if (phase is OniDomainPhase.Opening or OniDomainPhase.Omote or OniDomainPhase.Ura) {
                     TryInternalToggle();
                 }
+                return;
+            }
+            if (ToriiDusk.Visible) {
                 return;
             }
 

@@ -31,6 +31,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         /// <summary>教程活跃帧调用；下一帧未续租即自动失效</summary>
         public static void SetTutorialLease() => tutorialLease = true;
 
+        internal static void ReleaseTutorialLease() => tutorialLease = false;
+
         internal static void Update() {
             bool lease = tutorialLease;
             tutorialLease = false;           //自动过期，教程必须每帧续租

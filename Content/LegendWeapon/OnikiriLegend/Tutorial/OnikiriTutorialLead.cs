@@ -167,8 +167,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 return;
             }
 
-            ToriiDusk.SetTutorialLease();
             OnikiriTutorialFlow.Tick(gameTime);
+            if (OnikiriTutorialFlow.CurrentStep >= 0
+                && OnikiriTutorialFlow.CurrentStep < OnikiriTutorialFlow.Step_Prepare) {
+                ToriiDusk.SetTutorialLease();
+            }
+            else {
+                ToriiDusk.ReleaseTutorialLease();
+            }
             OnikiriTutorialRenderer.UpdateInput();
         }
 
