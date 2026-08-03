@@ -195,8 +195,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
 
             int cardHeight = MeasureCardHeight(font, lines, contentWidth);
-            Rectangle card = PlaceCard(focus, cardHeight, alpha);
-            if (focus != null) {
+            Rectangle card = PlaceCard(step, focus, cardHeight, alpha);
+            if (focus != null && !UsesPeripheralPracticeCard(step)) {
                 DrawConnector(spriteBatch, card, focus.Rect.Center.ToVector2(), alpha, time);
             }
             DrawCardPanel(spriteBatch, card, alpha, time);
@@ -414,14 +414,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private static Rectangle PlaceCard(HudFocusSnapshot focus, int cardHeight, float alpha) {
+        private static bool UsesPeripheralPracticeCard(int step)
+            => step is OnikiriTutorialFlow.Step_Prepare
+                or OnikiriTutorialFlow.Step_OpenOmote
+                or OnikiriTutorialFlow.Step_FlipUra
+                or OnikiriTutorialFlow.Step_Dismember
+                or OnikiriTutorialFlow.Step_Backlash;
+
+        private static Rectangle PlaceCard(int step, HudFocusSnapshot focus, int cardHeight, float alpha) {
             float ease = VaultUtils.EaseOutCubic(alpha);
             float slide = (1f - ease) * 28f;
             float screenWidth = OnikiriUITheme.UIScreenW;
             float screenHeight = OnikiriUITheme.UIScreenH;
             float x;
             float y;
-            if (focus != null) {
+            if (UsesPeripheralPracticeCard(step)) {
+                x = screenWidth - CardWidth - 24f + slide;
+                y = screenHeight - cardHeight - 24f;
+            }
+            else if (focus != null) {
                 x = focus.Rect.Right + 18f - slide;
                 if (x + CardWidth > screenWidth - 16f) {
                     x = focus.Rect.Left - CardWidth - 18f + slide;
@@ -484,7 +495,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private static float DrawBody(SpriteBatch spriteBatch, DynamicSpriteFont font,
             string text, float x, float y, float wrapWidth, float scale, Color color, float alpha) {
             if (string.IsNullOrEmpty(text)) return y;
-            string[] wrapped = CWRUtils.WrapTextArray(text, font,
+            string[] wrapped = VaultUtils.WrapTextArray(text, font,
                 Math.Max(8, (int)(wrapWidth / scale)), 99, out _);
             float lineHeight = font.MeasureString("A").Y * scale + 3f;
             foreach (string line in wrapped) {
@@ -501,7 +512,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             List<GuideLine> lines, float contentWidth) {
             float height = ContentPadTop + font.MeasureString("A").Y * TitleScale + 16f;
             foreach (GuideLine line in lines) {
-                int count = CWRUtils.WrapTextArray(line.Text, font,
+                int count = VaultUtils.WrapTextArray(line.Text, font,
                     Math.Max(8, (int)(contentWidth / line.Scale)), 99, out _)
                     .Count(value => !string.IsNullOrEmpty(value));
                 height += Math.Max(count, 1) * (font.MeasureString("A").Y * line.Scale + 3f) + 4f;

@@ -410,14 +410,6 @@ namespace CalamityOverhaul
 
         #endregion
 
-        #region TextLayout
-
-        public static string[] WrapTextArray(string text, DynamicSpriteFont font,
-            int maxWidth, int maxLines, out int lineCount)
-            => VaultUtils.WrapTextArray(text, font, maxWidth, maxLines, out lineCount);
-
-        #endregion
-
         #region MathUtils
         /// <summary>EaseOutElastic</summary>
         public static float EaseOutElastic(float t) {
