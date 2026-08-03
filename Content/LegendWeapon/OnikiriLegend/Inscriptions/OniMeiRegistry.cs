@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.Wraiths.Core;
+using System;
 using System.Collections.Generic;
 using Terraria;
 
@@ -6,18 +7,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 {
     /// <summary>
     /// 铭文定义目录（Mod.Load 反射注册，键冲突注册期报错）+ 改铭台数据缝：<br/>
-    /// 展示读取缓存上一份（未持刀不跳零），写入仅认手中刀并推 <see cref="WraithVessels.SyncSlot"/>
+    /// 展示读取缓存上一份（未持刀不跳零），写入仅认手中刀并走字段级确认
     /// </summary>
     internal sealed class OniMeiRegistry : ICWRLoader
     {
         private static readonly List<OniMeiDefinition> all = [];
         private static readonly Dictionary<string, OniMeiDefinition> byKey = [];
+        private static readonly Dictionary<string, ushort> networkIdByKey = [];
 
         /// <summary>全部定义，SortOrder 再 Key</summary>
         public static IReadOnlyList<OniMeiDefinition> All => all;
 
         public static bool TryGet(string key, out OniMeiDefinition definition)
             => byKey.TryGetValue(key, out definition);
+
+        internal static bool TryGetNetworkId(string key, out ushort id) {
+            if (networkIdByKey.TryGetValue(key, out id)) {
+                return true;
+            }
+            id = ushort.MaxValue;
+            return false;
+        }
+
+        internal static bool TryGetByNetworkId(ushort id, out OniMeiDefinition definition) {
+            if (id < all.Count) {
+                definition = all[id];
+                return true;
+            }
+            definition = null;
+            return false;
+        }
 
         /// <summary>某铭位的候选名册（保持 SortOrder 序）</summary>
         public static List<OniMeiDefinition> GetBySlot(OniMeiSlotKind slot) {
@@ -46,8 +65,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                     CWRMod.Instance.Logger.Error($"[OniMeiRegistry] duplicate Key '{definition.Key}' from {definition.GetType().FullName}, skipped");
                     continue;
                 }
+                if (all.Count >= ushort.MaxValue) {
+                    CWRMod.Instance.Logger.Error("[OniMeiRegistry] network id space exhausted, definition skipped");
+                    continue;
+                }
+                ushort networkId = (ushort)all.Count;
                 all.Add(definition);
                 byKey[definition.Key] = definition;
+                networkIdByKey[definition.Key] = networkId;
                 OniMeiRubbingItem.TryBindLocalization(definition);
             }
         }
@@ -65,6 +90,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         void ICWRLoader.UnLoadData() {
             all.Clear();
             byKey.Clear();
+            networkIdByKey.Clear();
             displayStore = null;
         }
 
@@ -110,30 +136,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         //====写入（仅认手中刀）====
 
         /// <summary>凿铭/改铭手中刀，成功推物品同步；须所持</summary>
-        public static bool EngraveHeld(OniMeiSlotKind slot, string key) {
+        public static bool EngraveHeld(OniMeiSlotKind slot, string key, Action<bool> completed = null) {
             Player player = Main.LocalPlayer;
-            if (!OniMeiOwned.Owns(player, key)) {
-                return false;
-            }
             Item item = player?.GetItem();
-            OnikiriData data = OnikiriData.TryGet(item);
-            if (data == null || !data.Mei.Engrave(slot, key)) {
-                return false;
-            }
-            WraithVessels.SyncSlot(player, item);
-            return true;
+            return OnikiriNet.TryChangeMei(player, item, slot, key, completed);
         }
 
         /// <summary>除铭手中刀，成功推物品同步</summary>
-        public static bool EraseHeld(OniMeiSlotKind slot) {
+        public static bool EraseHeld(OniMeiSlotKind slot, Action<bool> completed = null) {
             Player player = Main.LocalPlayer;
             Item item = player?.GetItem();
-            OnikiriData data = OnikiriData.TryGet(item);
-            if (data == null || !data.Mei.Erase(slot)) {
-                return false;
-            }
-            WraithVessels.SyncSlot(player, item);
-            return true;
+            return OnikiriNet.TryChangeMei(player, item, slot, null, completed);
         }
     }
 }

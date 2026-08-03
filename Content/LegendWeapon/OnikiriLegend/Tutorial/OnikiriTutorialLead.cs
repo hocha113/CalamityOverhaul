@@ -14,19 +14,13 @@ using Terraria.UI;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 {
-    /// <summary>
-    /// 鬼切教程引导队列入口（<see cref="IGuideLead"/> 优先级 5）。<br/>
-    /// SHPC 子世界教程 = 0 → 本教程 = 5 → Halibut = 10 → 委托引导 = 20。<br/>
-    /// 持有展示权期间：每帧续租 <see cref="ToriiDusk"/>，驱动 <see cref="OnikiriTutorialFlow"/>，注入渲染层。
-    /// </summary>
+    /// <summary>鬼切教程引导队列入口</summary>
     internal sealed class OnikiriTutorialLead : ModSystem, ILocalizedModType, IGuideLead
     {
-        /// <summary>当前教程版本；<see cref="OnikiriGuideData.CompletedVersion"/> 须达到此值才视为完成</summary>
-        internal const int TutorialVersion = 3;
+        internal const int TutorialVersion = 4;
 
         public string LocalizationCategory => "Legend.OnikiriText";
 
-        //====本地化（结构对齐 HalibutHudLead）====
         public static LocalizedText HudTitle { get; private set; }
         public static LocalizedText HudBody { get; private set; }
         public static LocalizedText HudPrompt { get; private set; }
@@ -39,134 +33,203 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         public static LocalizedText DomainTitle { get; private set; }
         public static LocalizedText DomainBody { get; private set; }
         public static LocalizedText DomainPrompt { get; private set; }
+        public static LocalizedText PrepareTitle { get; private set; }
+        public static LocalizedText PrepareBody { get; private set; }
+        public static LocalizedText PreparePrompt { get; private set; }
+        public static LocalizedText OpenDomainTitle { get; private set; }
+        public static LocalizedText OpenDomainBody { get; private set; }
+        public static LocalizedText OpenDomainPrompt { get; private set; }
+        public static LocalizedText FlipDomainTitle { get; private set; }
+        public static LocalizedText FlipDomainBody { get; private set; }
+        public static LocalizedText FlipDomainPrompt { get; private set; }
+        public static LocalizedText DismemberTitle { get; private set; }
+        public static LocalizedText DismemberBody { get; private set; }
+        public static LocalizedText DismemberPrompt { get; private set; }
+        public static LocalizedText BacklashTitle { get; private set; }
+        public static LocalizedText BacklashBody { get; private set; }
+        public static LocalizedText BacklashPrompt { get; private set; }
+        public static LocalizedText CloseDomainTitle { get; private set; }
+        public static LocalizedText CloseDomainBody { get; private set; }
+        public static LocalizedText CloseDomainPrompt { get; private set; }
+        public static LocalizedText DomainUnboundHint { get; private set; }
+        public static LocalizedText FlipUnboundHint { get; private set; }
+        public static LocalizedText WaitingFeedback { get; private set; }
+        public static LocalizedText BusyFeedback { get; private set; }
+        public static LocalizedText RetryFeedback { get; private set; }
+        public static LocalizedText AssistBtn { get; private set; }
+        public static LocalizedText RetryBtn { get; private set; }
         public static LocalizedText NextBtn { get; private set; }
         public static LocalizedText OpenRegisterBtn { get; private set; }
         public static LocalizedText OpenMeiBtn { get; private set; }
         public static LocalizedText SkipBtn { get; private set; }
 
-        //====单例引用====
-        private static OnikiriTutorialLead _instance;
+        private static OnikiriTutorialLead instance;
 
-        /// <summary>教程当前持有引导队列展示权</summary>
-        internal static bool IsActive => _instance != null && GuideLeadQueue.IsHolder(_instance);
+        internal static bool IsActive => instance != null && HasDisplayLease;
 
-        public override void Load() => _instance = this;
-        public override void Unload() => _instance = null;
+        private static bool HasDisplayLease {
+            get {
+                if (instance == null || Main.dedServ || Main.gameMenu) {
+                    return false;
+                }
+                OnikiriTutorialPlayer tutorial = Main.LocalPlayer?.GetModPlayer<OnikiriTutorialPlayer>();
+                return tutorial?.DebugForce == true || GuideLeadQueue.IsHolder(instance);
+            }
+        }
 
-        //====IGuideLead 注册====
+        public override void Load() => instance = this;
+        public override void Unload()
+        {
+            OnikiriTutorialRenderer.Reset();
+            instance = null;
+        }
 
         public override void SetStaticDefaults()
         {
             GuideLeadQueue.Register(this);
 
             HudTitle = this.GetLocalization(nameof(HudTitle), () => "气力与架势");
-            HudBody = this.GetLocalization(nameof(HudBody), () => "手持鬼切时，左下角常驻气力笔触与架势鞘，两者都只显示读数。半架势可双疾走接左键灭世，满架势可用处决键锁敌终结；按住樱流键会先付费疾走再化樱");
-            HudPrompt = this.GetLocalization(nameof(HudPrompt), () => "认一下这组读数；HUD 的界面入口只有封印札");
-
+            HudBody = this.GetLocalization(nameof(HudBody), () => "手持鬼切时，左下角常驻气力笔触与架势鞘");
+            HudPrompt = this.GetLocalization(nameof(HudPrompt), () => "认一下这组读数");
             RegisterTitle = this.GetLocalization(nameof(RegisterTitle), () => "点鬼簿");
-            RegisterBody = this.GetLocalization(nameof(RegisterBody), () => "改铭台左上悬着点鬼簿卷轴。移步后，札与传奇界面键会记住点鬼簿；铭鬼名录、驾驭与共鸣都记在这里");
-            RegisterPrompt = this.GetLocalization(nameof(RegisterPrompt), () => "点高亮卷轴移步；打开后看一眼名录，再收卷继续");
-
+            RegisterBody = this.GetLocalization(nameof(RegisterBody), () => "改铭台左上悬着点鬼簿卷轴");
+            RegisterPrompt = this.GetLocalization(nameof(RegisterPrompt), () => "打开名录后再收卷继续");
             MeiTitle = this.GetLocalization(nameof(MeiTitle), () => "改铭台");
-            MeiBody = this.GetLocalization(nameof(MeiBody), () => "封印札是 HUD 唯一的界面入口，首次打开进入改铭台。茎铭、樋位、雕位决定刀上赋效");
-            MeiPrompt = this.GetLocalization(nameof(MeiPrompt), () => "按 {0} 或点高亮的札打开改铭台");
-
+            MeiBody = this.GetLocalization(nameof(MeiBody), () => "封印札是 HUD 的界面入口");
+            MeiPrompt = this.GetLocalization(nameof(MeiPrompt), () => "按 {0} 或点封印札打开改铭台");
             DomainTitle = this.GetLocalization(nameof(DomainTitle), () => "鬼域之眼");
-            DomainBody = this.GetLocalization(nameof(DomainBody), () => "气力旁那只眼掌管鬼域：展开表世界（泛黄和纸）、翻到里世界（水墨阴间），再可收阖");
-            DomainPrompt = this.GetLocalization(nameof(DomainPrompt), () => "左键展/收域，右键或 {0} 翻转表里；展一次也可推进");
+            DomainBody = this.GetLocalization(nameof(DomainBody), () => "鬼眼掌管领域的展收与表里翻转");
+            DomainPrompt = this.GetLocalization(nameof(DomainPrompt), () => "右键或 {0} 翻转表里");
 
+            PrepareTitle = this.GetLocalization(nameof(PrepareTitle), () => "实操准备");
+            PrepareBody = this.GetLocalization(nameof(PrepareBody), () => "先让鬼域与界面恢复到可演练状态");
+            PreparePrompt = this.GetLocalization(nameof(PreparePrompt), () => "手持鬼切，等待状态安定");
+            OpenDomainTitle = this.GetLocalization(nameof(OpenDomainTitle), () => "展开表世界");
+            OpenDomainBody = this.GetLocalization(nameof(OpenDomainBody), () => "按领域键展开浅层表世界");
+            OpenDomainPrompt = this.GetLocalization(nameof(OpenDomainPrompt), () => "按 {0} 亲手展开领域");
+            FlipDomainTitle = this.GetLocalization(nameof(FlipDomainTitle), () => "翻入里世界");
+            FlipDomainBody = this.GetLocalization(nameof(FlipDomainBody), () => "在表世界按翻转键进入深层里世界");
+            FlipDomainPrompt = this.GetLocalization(nameof(FlipDomainPrompt), () => "按 {0} 翻转领域");
+            DismemberTitle = this.GetLocalization(nameof(DismemberTitle), () => "肢解演练");
+            DismemberBody = this.GetLocalization(nameof(DismemberBody), () => "瞄准高亮的圣诞坦克并左键肢解真身");
+            DismemberPrompt = this.GetLocalization(nameof(DismemberPrompt), () => "松开再新按一次左键");
+            BacklashTitle = this.GetLocalization(nameof(BacklashTitle), () => "承受反噬");
+            BacklashBody = this.GetLocalization(nameof(BacklashBody), () => "肢解会造成真实的四分之一最大生命反噬");
+            BacklashPrompt = this.GetLocalization(nameof(BacklashPrompt), () => "等待演出与恢复结束");
+            CloseDomainTitle = this.GetLocalization(nameof(CloseDomainTitle), () => "从鬼眼收域");
+            CloseDomainBody = this.GetLocalization(nameof(CloseDomainBody), () => "最后左键点击鬼眼收阖领域");
+            CloseDomainPrompt = this.GetLocalization(nameof(CloseDomainPrompt), () => "左键点击高亮鬼眼");
+            DomainUnboundHint = this.GetLocalization(nameof(DomainUnboundHint), () => "领域键未绑定，本次可按 Q");
+            FlipUnboundHint = this.GetLocalization(nameof(FlipUnboundHint), () => "翻转键未绑定，本次可按 Mouse3");
+            WaitingFeedback = this.GetLocalization(nameof(WaitingFeedback), () => "正在等待结果落定");
+            BusyFeedback = this.GetLocalization(nameof(BusyFeedback), () => "鬼域仍在变相，请稍候");
+            RetryFeedback = this.GetLocalization(nameof(RetryFeedback), () => "这次没有生效，请重试");
+            AssistBtn = this.GetLocalization(nameof(AssistBtn), () => "替我演示");
+            RetryBtn = this.GetLocalization(nameof(RetryBtn), () => "重试");
             NextBtn = this.GetLocalization(nameof(NextBtn), () => "已知晓");
             OpenRegisterBtn = this.GetLocalization(nameof(OpenRegisterBtn), () => "开点鬼簿");
             OpenMeiBtn = this.GetLocalization(nameof(OpenMeiBtn), () => "开改铭台");
             SkipBtn = this.GetLocalization(nameof(SkipBtn), () => "跳过");
         }
 
-        //====IGuideLead 实现====
-
         int IGuideLead.GuidePriority => 5;
         bool IGuideLead.GuideReserving => Reserving;
         bool IGuideLead.GuideReady => Ready;
+        void IGuideLead.OnGuideAbandoned() => OnikiriTutorialFlow.DeferAfterQueueAbandon();
 
-        /// <summary>3 分钟饥饿保底触发时强制跳过教程</summary>
-        void IGuideLead.OnGuideAbandoned() => MarkComplete();
-
-        private static bool Reserving
-        {
-            get
-            {
+        private static bool Reserving {
+            get {
                 if (Main.dedServ || Main.gameMenu) return false;
-                Player p = Main.LocalPlayer;
-                if (p == null || !p.active) return false;
-                var guide = p.GetModPlayer<StoryPlayer>().Get<OnikiriGuideData>();
+                Player player = Main.LocalPlayer;
+                if (player?.active != true) return false;
+                OnikiriTutorialPlayer tutorial = player.GetModPlayer<OnikiriTutorialPlayer>();
+                if (tutorial.DebugForce) return true;
+                if (tutorial.ReservationDeferred) return false;
+                OnikiriGuideData guide = player.GetModPlayer<StoryPlayer>().Get<OnikiriGuideData>();
                 if (guide.CompletedVersion >= TutorialVersion) return false;
-                if (!p.HasItem(OnikiriOverride.ID)) return false;
+                if (!player.HasItem(OnikiriOverride.ID)) return false;
                 return HimayoStorySync.PostFirstMetIsComplete;
             }
         }
 
         private static bool Ready
-        {
-            get
-            {
-                if (!Reserving) return false;
-                return !NarrativeTriggerGate.IsBusy && !CutsceneDirector.IsPlaying;
-            }
-        }
-
-        //====生命周期====
+            => Reserving && !NarrativeTriggerGate.IsBusy && !CutsceneDirector.IsPlaying;
 
         public override void OnWorldUnload()
         {
             OnikiriTutorialFlow.Reset();
             OnikiriTutorialTargets.Clear();
+            OnikiriTutorialRenderer.Reset();
+            OnikiriTutorialEvents.ClearAll();
         }
 
         public override void UpdateUI(GameTime gameTime)
         {
             if (Main.dedServ || Main.gameMenu) return;
-
-            if (!GuideLeadQueue.IsHolder(this))
-            {
+            if (!HasDisplayLease) {
                 OnikiriTutorialFlow.ResetIfHolderLost();
+                OnikiriTutorialRenderer.Reset();
                 return;
             }
 
-            //每帧续租黄昏场景与音乐
             ToriiDusk.SetTutorialLease();
-
-            //推进教程步骤状态机
             OnikiriTutorialFlow.Tick(gameTime);
+            OnikiriTutorialRenderer.UpdateInput();
         }
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
         {
-            if (!GuideLeadQueue.IsHolder(this)) return;
-            if (!OnikiriTutorialFlow.IsRunning) return;
-            //插在原版鼠标文本前，盖过 UIHandle（与 HalibutHudLead 同层）
-            int idx = layers.FindIndex(l => l.Name == "Vanilla: Mouse Text");
-            if (idx < 0) {
-                idx = layers.FindIndex(l => l.Name == "Vanilla: Cursor");
+            if (!HasDisplayLease || !OnikiriTutorialFlow.IsRunning) return;
+            int index = layers.FindIndex(layer => layer.Name == "Vanilla: Mouse Text");
+            if (index < 0) {
+                index = layers.FindIndex(layer => layer.Name == "Vanilla: Cursor");
             }
-            if (idx >= 0)
-            {
-                layers.Insert(idx, new LegacyGameInterfaceLayer(
+            if (index >= 0) {
+                layers.Insert(index, new LegacyGameInterfaceLayer(
                     "CalamityOverhaul: OnikiriTutorial",
                     static () => { OnikiriTutorialRenderer.Draw(); return true; },
                     InterfaceScaleType.UI));
             }
         }
 
-        //====教程完成====
-
-        /// <summary>标记教程完成（写存档版本，释放引导队列占位）</summary>
         internal static void MarkComplete()
         {
             if (Main.dedServ) return;
-            Player p = Main.LocalPlayer;
-            if (p == null || !p.active) return;
-            var guide = p.GetModPlayer<StoryPlayer>().Get<OnikiriGuideData>();
+            Player player = Main.LocalPlayer;
+            if (player?.active != true) return;
+            OnikiriGuideData guide = player.GetModPlayer<StoryPlayer>().Get<OnikiriGuideData>();
             guide.CompletedVersion = TutorialVersion;
             guide.Checkpoint = OnikiriTutorialFlow.Checkpoint_Hud;
+            guide.PracticeCheckpoint = (int)OnikiriPracticeCheckpoint.Closed;
+            player.GetModPlayer<OnikiriTutorialPlayer>().ClearDebugForce();
+        }
+
+        internal static void DebugStartPractice(Player player)
+        {
+            if (Main.dedServ || player?.whoAmI != Main.myPlayer) return;
+            OnikiriTutorialPlayer tutorial = player.GetModPlayer<OnikiriTutorialPlayer>();
+            if (tutorial.DebugForce && tutorial.IsRunning) return;
+            if (!player.HasItem(OnikiriOverride.ID)) {
+                player.QuickSpawnItem(player.GetSource_Misc("CWR_OnikiriTutorialDebug"), OnikiriOverride.ID);
+            }
+            OnikiriGuideData guide = player.GetModPlayer<StoryPlayer>().Get<OnikiriGuideData>();
+            guide.CompletedVersion = 3;
+            guide.Checkpoint = OnikiriTutorialFlow.Checkpoint_Hud;
+            guide.PracticeCheckpoint = (int)OnikiriPracticeCheckpoint.None;
+            tutorial.ForceStartPractice();
+        }
+
+        internal static void DebugReset(Player player)
+        {
+            if (Main.dedServ || player?.whoAmI != Main.myPlayer) return;
+            OnikiriGuideData guide = player.GetModPlayer<StoryPlayer>().Get<OnikiriGuideData>();
+            guide.CompletedVersion = 0;
+            guide.Checkpoint = 0;
+            guide.PracticeCheckpoint = 0;
+            player.GetModPlayer<OnikiriTutorialPlayer>().ResetAllRuntime();
+            if (OniDomains.OniDomain.GetPhase(player) != OniDomains.OniDomainPhase.Closed) {
+                OniDomains.OniDomain.Close(player);
+            }
         }
     }
 }

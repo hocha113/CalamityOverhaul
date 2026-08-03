@@ -238,5 +238,7 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public int CompletedVersion;
         /// <summary>段落检查点:0=HUD/改铭台/点鬼簿未完成,1=从鬼域步骤继续</summary>
         public int Checkpoint;
+        /// <summary>实操检查点:0=未开始,1=表世界,2=里世界,3=已肢解,4=已收域</summary>
+        public int PracticeCheckpoint;
     }
 }

@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
     }
 
     /// 怨念编织者手持，WeaverSlashTrail+怨灵之爪
-    internal class WeaverGrievancesHeld : BaseHeldProj, IPrimitiveDrawable
+    internal class WeaverGrievancesHeld : BaseHeldProj, IPrimitiveDrawable, IOverlayDrawable
     {
         public override string Texture => CWRConstant.Item_Melee + "WeaverGrievances";
         public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<WeaverGrievances>()).DisplayName;
@@ -298,6 +298,7 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
                 float guardAngle = baseAngle + swingSign * (IsFinisher ? 1.05f : 0.82f);
                 currentRotation = MathHelper.Lerp(endAngle, guardAngle, returnT);
                 trailFade = 1f - SmoothStep01(t);
+                TrimTrailToCurrentRotation();
             }
 
             UpdatePlayerPose();
@@ -352,6 +353,7 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
             //终结斩跨过 PI，保留未包裹角度
             float delta = currentRotation - lastRotation;
             if (delta * swingSign <= 0.0001f) {
+                TrimTrailToCurrentRotation();
                 return;
             }
 
@@ -370,6 +372,31 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
             if (appendStart && trailCount < TrailMax) {
                 trailRot[trailCount++] = lastRotation;
             }
+        }
+
+        private void TrimTrailToCurrentRotation() {
+            if (trailCount == 0) {
+                return;
+            }
+
+            const float angleEpsilon = 0.0001f;
+            int firstRetained = 0;
+            while (firstRetained < trailCount
+                && (trailRot[firstRetained] - currentRotation) * swingSign > angleEpsilon) {
+                firstRetained++;
+            }
+
+            int retained = trailCount - firstRetained;
+            bool headAlreadySampled = retained > 0
+                && MathF.Abs(trailRot[firstRetained] - currentRotation) <= angleEpsilon;
+            int targetOffset = headAlreadySampled ? 0 : 1;
+            int copied = Math.Min(retained, TrailMax - targetOffset);
+            if (copied > 0 && (firstRetained != targetOffset || firstRetained > 0)) {
+                Array.Copy(trailRot, firstRetained, trailRot, targetOffset, copied);
+            }
+
+            trailRot[0] = currentRotation;
+            trailCount = copied + targetOffset;
         }
 
         private void FireWraiths() {
@@ -418,36 +445,50 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
         public override void OnHitPlayer(Player target, Player.HurtInfo info) => target.AddBuff(ModContent.BuffType<SoulBurning>(), 300);
 
         public override bool PreDraw(ref Color lightColor) {
+            if (!slashVisualActive) {
+                return false;
+            }
+
             Texture2D tex = TextureValue;
             Vector2 origin = tex.Size() / 2f;
             Vector2 hand = Owner.GetPlayerStabilityCenter();
             float dist = BladeReach * 0.5f * Projectile.scale;
-
-            SpriteEffects effect = lockedDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
-            //贴图刀尖指向右上(-PiOver4)，垂直翻转后指向右下(+PiOver4)
-            float rotOffset = lockedDirection == -1 ? -MathHelper.PiOver4 : MathHelper.PiOver4;
+            GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset);
 
             //挥砍残影
-            if (slashVisualActive) {
-                float angleDelta = MathF.Abs(currentRotation - lastRotation);
-                float strength = MathHelper.Clamp((angleDelta - 0.04f) / 0.75f, 0f, 1f);
-                int smearCount = Math.Min(5, Math.Max(1, (int)MathF.Ceiling(angleDelta / 0.22f)));
-                for (int i = 1; i <= smearCount && strength > 0f; i++) {
-                    float amount = i / (float)(smearCount + 1);
-                    float rot = MathHelper.Lerp(currentRotation, lastRotation, amount);
-                    Vector2 pos = hand + rot.ToRotationVector2() * dist - Main.screenPosition;
-                    Color trailColor = WeaverBeam.sloudColor2 * (0.42f * strength * (1f - amount));
-                    trailColor.A = 0;
-                    Main.EntitySpriteDraw(tex, pos, null, trailColor, rot + rotOffset, origin
-                        , Projectile.scale, effect, 0);
-                }
+            float angleDelta = MathF.Abs(currentRotation - lastRotation);
+            float strength = MathHelper.Clamp((angleDelta - 0.04f) / 0.75f, 0f, 1f);
+            int smearCount = Math.Min(5, Math.Max(1, (int)MathF.Ceiling(angleDelta / 0.22f)));
+            for (int i = 1; i <= smearCount && strength > 0f; i++) {
+                float amount = i / (float)(smearCount + 1);
+                float rot = MathHelper.Lerp(currentRotation, lastRotation, amount);
+                Vector2 pos = hand + rot.ToRotationVector2() * dist - Main.screenPosition;
+                Color trailColor = WeaverBeam.sloudColor2 * (0.42f * strength * (1f - amount));
+                trailColor.A = 0;
+                Main.EntitySpriteDraw(tex, pos, null, trailColor, rot + rotOffset, origin
+                    , Projectile.scale, effect, 0);
             }
+            return false;
+        }
 
-            //刀身本体
+        private void GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset) {
+            bool edgeFlip = swingSign * lockedDirection < 0;
+            bool flipVertically = (lockedDirection < 0) != edgeFlip;
+            effect = flipVertically ? SpriteEffects.FlipVertically : SpriteEffects.None;
+            rotOffset = flipVertically ? -MathHelper.PiOver4 : MathHelper.PiOver4;
+        }
+
+        void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
+            Texture2D tex = TextureValue;
+            Vector2 origin = tex.Size() / 2f;
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            float dist = BladeReach * 0.5f * Projectile.scale;
+            GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset);
+
+            Color lightColor = Lighting.GetColor((int)(hand.X / 16f), (int)(hand.Y / 16f));
             Vector2 drawPos = hand + currentRotation.ToRotationVector2() * dist - Main.screenPosition;
             Main.EntitySpriteDraw(tex, drawPos, null, lightColor, currentRotation + rotOffset, origin
                 , Projectile.scale, effect, 0);
-            return false;
         }
 
         void IPrimitiveDrawable.DrawPrimitives() {

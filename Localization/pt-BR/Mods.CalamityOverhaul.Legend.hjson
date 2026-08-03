@@ -621,6 +621,31 @@ OnikiriText: {
 		// DomainTitle: Eye of the Oni Domain
 		// DomainBody: That eye beside Vigor rules the domain — unfold Omote (yellowed paper), flip to Ura (ink-wash nether), then fold again
 		// DomainPrompt: Left-click unfolds/folds; Right-click or {0} flips Omote/Ura — unfolding once also advances
+		// PrepareTitle: Prepare for Practice
+		// PrepareBody: Close the Inscription Stand and Ghost Register, then hold Onikiri. If the domain is open, I will fold it through the normal command first; after an interruption, I will also restore the state needed for your next step
+		// PreparePrompt: Keep Onikiri in hand and wait for the eye and panels to settle
+		// OpenDomainTitle: Unfold Omote
+		// OpenDomainBody: Press the domain key (Q by default) to unfold the Oni Domain. From a shut eye, the first opening enters shallow Omote and covers the world in yellowed paper
+		// OpenDomainPrompt: Press {0} yourself, then wait until the domain settles in Omote
+		// FlipDomainTitle: Flip into Ura
+		// FlipDomainBody: While in Omote, press the flip key (Mouse3, the middle mouse button, by default) to turn the shallow domain into deep Ura
+		// FlipDomainPrompt: Press {0} to enter Ura, then wait for the ink to settle before drawing the blade
+		// DismemberTitle: Dismemberment Practice
+		// DismemberBody: Put the cursor over the highlighted Santa-NK1 body and make a fresh left-click. Onikiri will dismember the body directly; Omokage paper can also serve as a medium, but this lesson does not require it
+		// DismemberPrompt: Aim at the tank body, release left-click, then press it once
+		// BacklashTitle: Endure the Backlash
+		// BacklashBody: Directly dismembering a body deals a real 25% of maximum life to the wielder and locks movement during the sheathing rite. Watch the full sequence; I will restore you afterward
+		// BacklashPrompt: Stop input and wait for the backlash, sheathing, and recovery to finish
+		// CloseDomainTitle: Fold the Domain from the Eye
+		// CloseDomainBody: Finish by left-clicking the HUD eye yourself to fold the domain. Right-clicking the eye can also flip Omote and Ura, but this step only accepts a left-click fold
+		// CloseDomainPrompt: Left-click the highlighted HUD eye and wait until it shuts completely
+		// DomainUnboundHint: No domain key is bound. For this lesson, press Q as the temporary default
+		// FlipUnboundHint: No flip key is bound. For this lesson, press Mouse3 (middle mouse) as the temporary default
+		// WaitingFeedback: Waiting for this step's result to settle
+		// BusyFeedback: The domain is still shifting. Wait until it settles before trying again
+		// RetryFeedback: That was not the action required for this step. The state will recover; retry or let me demonstrate
+		// AssistBtn: Demonstrate
+		// RetryBtn: Retry
 		// NextBtn: Understood
 		// OpenRegisterBtn: Open Register
 		// OpenMeiBtn: Open Stand

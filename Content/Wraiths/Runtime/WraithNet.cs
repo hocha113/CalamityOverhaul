@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.Players;
 using CalamityOverhaul.Content.Wraiths.Core;
 using CalamityOverhaul.Content.Wraiths.VFX;
@@ -73,13 +74,19 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         }
 
         /// <summary>客→服，仪式请求</summary>
-        public static void SendRiteRequest(WraithActor wraith) {
-            if (!VaultUtils.isClient || wraith == null) {
+        public static void SendRiteRequest(Player player, WraithActor wraith, WraithVesselHandle vessel) {
+            if (!VaultUtils.isClient || player == null || player.whoAmI != Main.myPlayer
+                || wraith == null || !vessel.IsValid
+                || !TryResolveHeldInventorySlot(player, vessel.Item, out byte inventorySlot)
+                || OnikiriData.TryGet(vessel.Item) is not OnikiriData data) {
                 return;
             }
             ModPacket packet = NewPacket(WraithNetOp.RiteRequest);
             packet.Write((ushort)wraith.WhoAmI);
             packet.Write(wraith.Generation);
+            packet.Write(inventorySlot);
+            packet.Write(data.InstanceId);
+            packet.Write(data.EditRevision);
             packet.Send();
         }
 
@@ -190,12 +197,19 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                     HandleRiteRequest(reader, whoAmI);
                     break;
                 case WraithNetOp.RiteConfirm: {
+                    int inventorySlot = reader.ReadByte();
+                    long instanceId = reader.ReadInt64();
+                    uint editRevision = reader.ReadUInt32();
                     string key = reader.ReadString();
                     WraithRiteKind kind = (WraithRiteKind)reader.ReadByte();
-                    if (!VaultUtils.isClient || kind > WraithRiteKind.Resubdue) {
+                    if (!VaultUtils.isClient || kind > WraithRiteKind.Resubdue
+                        || !TryResolveRiteVessel(Main.LocalPlayer, inventorySlot, instanceId,
+                            out WraithVesselHandle vessel, out OnikiriData data)
+                        || editRevision < data.EditRevision) {
                         break;
                     }
-                    WraithRites.ApplyConfirmed(Main.LocalPlayer, key, kind);
+                    WraithRites.ApplyConfirmed(Main.LocalPlayer, vessel, key, kind);
+                    data.ApplyEditRevision(editRevision);
                     break;
                 }
                 case WraithNetOp.BacklashSpawn:
@@ -318,17 +332,29 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         private static void HandleRiteRequest(BinaryReader reader, int whoAmI) {
             int slot = reader.ReadUInt16();
             ushort generation = reader.ReadUInt16();
+            int inventorySlot = reader.ReadByte();
+            long instanceId = reader.ReadInt64();
+            uint editRevision = reader.ReadUInt32();
             if (!VaultUtils.isServer) {
                 return;
             }
             Player requester = ResolvePlayer(whoAmI);
             WraithActor target = ResolveActor(slot, generation);
             if (requester == null || target == null
-                || !WraithRites.TryServerPerform(requester, target, out WraithRiteKind kind)) {
+                || requester.selectedItem != inventorySlot
+                || !TryResolveRiteVessel(requester, inventorySlot, instanceId,
+                    out WraithVesselHandle vessel, out OnikiriData data)
+                || data.EditRevision != editRevision
+                || !WraithRites.TryServerPerform(requester, target, vessel, out WraithRiteKind kind)) {
                 return;
             }
+            data.AdvanceEditRevision();
+            OnikiriNet.RecordAuthoritativeState(requester, data);
             //复核通过，回执落簿
             ModPacket packet = NewPacket(WraithNetOp.RiteConfirm);
+            packet.Write((byte)inventorySlot);
+            packet.Write(data.InstanceId);
+            packet.Write(data.EditRevision);
             packet.Write(target.Definition.Key);
             packet.Write((byte)kind);
             packet.Send(whoAmI);
@@ -363,6 +389,33 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         }
 
         //====解析====
+
+        private static bool TryResolveHeldInventorySlot(Player player, Item item, out byte inventorySlot) {
+            inventorySlot = 0;
+            int selectedItem = player?.selectedItem ?? -1;
+            if (selectedItem < 0 || selectedItem >= player.inventory.Length
+                || selectedItem > byte.MaxValue || !ReferenceEquals(player.inventory[selectedItem], item)) {
+                return false;
+            }
+            inventorySlot = (byte)selectedItem;
+            return true;
+        }
+
+        private static bool TryResolveRiteVessel(Player player, int inventorySlot, long instanceId,
+            out WraithVesselHandle vessel, out OnikiriData data) {
+            vessel = default;
+            data = null;
+            if (player == null || inventorySlot < 0 || inventorySlot >= player.inventory.Length) {
+                return false;
+            }
+            Item item = player.inventory[inventorySlot];
+            data = OnikiriData.TryGet(item);
+            if (data == null || instanceId == 0 || data.InstanceId != instanceId) {
+                return false;
+            }
+            vessel = new WraithVesselHandle(item, data.Wraiths);
+            return vessel.IsValid;
+        }
 
         private static Player ResolvePlayer(int whoAmI) {
             if (whoAmI < 0 || whoAmI >= Main.maxPlayers) {

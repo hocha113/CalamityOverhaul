@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
+using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -375,29 +376,6 @@ namespace CalamityOverhaul
             }
         }
 
-        public static void SplashDust(Projectile Projectile, int mode, int dustID1, int dustID2, float speed, Color dustColor, ArmorShaderData shader = null) {
-            for (int i = 4; i < mode; i++) {
-                Vector2 vector = Projectile.velocity.UnitVector() * speed;
-                float oldXPos = vector.X * (30f / i);
-                float oldYPos = vector.Y * (30f / i);
-                int killDust = Dust.NewDust(new Vector2(Projectile.oldPosition.X - oldXPos, Projectile.oldPosition.Y - oldYPos), 2, 2
-                    , dustID1, vector.X, vector.Y, 100, default, 1.8f);
-                Main.dust[killDust].noGravity = true;
-                Dust dust2 = Main.dust[killDust];
-                dust2.velocity *= 0.5f;
-                dust2.color = dustColor;
-                if (shader != null) {
-                    dust2.shader = shader;
-                    dust2.shader.UseColor(dust2.color);
-                }
-                killDust = Dust.NewDust(new Vector2(Projectile.oldPosition.X - oldXPos, Projectile.oldPosition.Y - oldYPos), 2, 2
-                    , dustID2, vector.X, vector.Y, 100, default, 1.4f);
-                dust2 = Main.dust[killDust];
-                dust2.velocity *= 0.05f;
-                dust2.noGravity = true;
-            }
-        }
-
         public static void SpanCycleDust(Projectile Projectile, int dustID1, int dustID2) {
             for (int i = 0; i < 1; i++) {
                 if (Main.rand.NextBool()) {
@@ -430,6 +408,14 @@ namespace CalamityOverhaul
                 }
             }
         }
+
+        #endregion
+
+        #region TextLayout
+
+        public static string[] WrapTextArray(string text, DynamicSpriteFont font,
+            int maxWidth, int maxLines, out int lineCount)
+            => VaultUtils.WrapTextArray(text, font, maxWidth, maxLines, out lineCount);
 
         #endregion
 

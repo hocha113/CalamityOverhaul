@@ -221,7 +221,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             }
 
             created.Configure(ground, gravity, damage, life, scale, burnStyle);
-            OniMeiActionContext.Inherit(parent, spawned, secondary: true);
             return true;
         }
 

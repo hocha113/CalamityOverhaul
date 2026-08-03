@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.ModLoader.IO;
@@ -15,6 +16,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         private static readonly OniMeiSlotKind[] slotKinds =
             [OniMeiSlotKind.Nakago, OniMeiSlotKind.Hi, OniMeiSlotKind.Horimono];
+
+        private const int MaxKeyBytes = 256;
 
         private readonly Dictionary<OniMeiSlotKind, string> slots = [];
 
@@ -105,17 +108,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                     continue;
                 }
                 writer.Write((byte)slot);
-                writer.Write(key);
+                CWRNetGuard.WriteString(writer, key, MaxKeyBytes);
             }
         }
 
         public void NetReceive(BinaryReader reader) {
             int count = reader.ReadByte();
+            if (count > slotKinds.Length) {
+                throw new IOException($"OniMei.Slots count {count} exceeds 0..{slotKinds.Length}");
+            }
             List<(int RawSlot, string Key)> entries = new(count);
-            //CWRItem.NetReceive 链中段，按声明数读弃保流对齐，非法项丢弃
             for (int i = 0; i < count; i++) {
                 byte rawSlot = reader.ReadByte();
-                string key = reader.ReadString();
+                string key = CWRNetGuard.ReadString(reader, MaxKeyBytes, "OniMei.Key");
                 entries.Add((rawSlot, key));
             }
             ReplaceWithSanitized(entries);

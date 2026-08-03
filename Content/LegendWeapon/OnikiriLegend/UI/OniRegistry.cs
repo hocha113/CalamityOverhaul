@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     {
         IReadOnlyList<OniGhostEntry> Entries { get; }
         string AttunedKey { get; }
-        bool TryAttune(string key);
+        bool TryAttune(string key, Action<bool> completed);
     }
 
     /// <summary>点鬼簿入口,只读聚合,未挂接为空簿</summary>
@@ -61,7 +61,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         public static string AttunedKey => source?.AttunedKey ?? string.Empty;
 
-        public static bool TryAttune(string key) => source?.TryAttune(key) == true;
+        public static bool TryAttune(string key, Action<bool> completed = null)
+            => source?.TryAttune(key, completed) == true;
 
         /// <summary>总驾驭度,已铭刻均值,空簿 0</summary>
         public static float TotalMastery {

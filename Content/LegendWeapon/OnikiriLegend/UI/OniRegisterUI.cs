@@ -79,6 +79,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>姊妹屏互斥收卷时置位:抑制本屏关闭音,切换只响新屏开音一声</summary>
         internal bool SilentSwap;
+        private bool keepMouseSlot;
+        private bool inventoryWasOpen;
+        private long mouseSlotInstanceId;
+        private int interactionSession;
 
         //====交互状态====
         private int selectedIndex;
@@ -126,7 +130,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         protected override void OnOpen() {
-            Main.playerInventory = false;
+            interactionSession++;
+            inventoryWasOpen = Main.playerInventory;
+            OnikiriData mouseData = OnikiriData.TryGet(Main.mouseItem);
+            keepMouseSlot = mouseData != null;
+            mouseSlotInstanceId = mouseData?.InstanceId ?? 0;
+            Main.playerInventory = keepMouseSlot;
             OniTalismanHud.RememberLedger(OniLedgerView.Register);
             //姊妹屏互斥:一卷开另一台收;静默收台,免得开音+关音同帧叠成两声切换
             if (OniMeiUI.Instance?.IsOpen ?? false) {
@@ -151,6 +160,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         protected override void OnClose() {
+            interactionSession++;
+            if (keepMouseSlot) {
+                Main.playerInventory = inventoryWasOpen;
+            }
+            keepMouseSlot = false;
+            mouseSlotInstanceId = 0;
             if (VaultUtils.isSinglePlayer) {
                 WorldFreezeSystem.Deactivate(FreezeReason);
             }
@@ -203,12 +218,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         public override void Update() {
             if (IsOpen) {
+                if (!MaintainMouseSlot()) {
+                    return;
+                }
                 player.mouseInterface = true;
             }
         }
 
         public override void LogicUpdate() {
             if (IsOpen) {
+                if (!MaintainMouseSlot()) {
+                    return;
+                }
                 player.mouseInterface = true;
                 UIInputGuard.SuppressWeaponSwitch();
                 if (!player.active || player.dead) {
@@ -334,10 +355,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     OniGhostEntry entry = entries[hoverIndex];
                     bool wasAttuned = IsAttuned(entry);
                     SelectEntry(hoverIndex);
-                    if (!wasAttuned && entry.CanAttune && OniRegistry.TryAttune(entry.Key)) {
-                        SoundEngine.PlaySound(SoundID.Item29 with { Pitch = -0.72f, Volume = 0.46f });
-                        VaultUtils.Text(AttuneChanged.Format(entry.Name?.Invoke() ?? entry.Key)
-                            , OnikiriUITheme.Bright);
+                    if (!wasAttuned && entry.CanAttune) {
+                        int session = interactionSession;
+                        string displayName = entry.Name?.Invoke() ?? entry.Key;
+                        if (!OniRegistry.TryAttune(entry.Key, success =>
+                            CompleteAttunement(session, success, displayName))) {
+                            DenyFeedback();
+                        }
                     }
                     return;
                 }
@@ -348,6 +372,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     Close();
                 }
             }
+        }
+
+        private void CompleteAttunement(int session, bool success, string displayName) {
+            if (!IsOpen || session != interactionSession) {
+                return;
+            }
+            if (!success) {
+                DenyFeedback();
+                return;
+            }
+            SoundEngine.PlaySound(SoundID.Item29 with { Pitch = -0.72f, Volume = 0.46f });
+            VaultUtils.Text(AttuneChanged.Format(displayName), OnikiriUITheme.Bright);
+        }
+
+        private static void DenyFeedback()
+            => SoundEngine.PlaySound(SoundID.Unlock with { Pitch = -0.62f, Volume = 0.38f });
+
+        private bool MaintainMouseSlot() {
+            if (!keepMouseSlot) {
+                return true;
+            }
+            if (OnikiriData.TryGet(Main.mouseItem)?.InstanceId != mouseSlotInstanceId) {
+                Close();
+                return false;
+            }
+            Main.playerInventory = true;
+            return true;
         }
 
         private void UpdateAmbient(float a) {

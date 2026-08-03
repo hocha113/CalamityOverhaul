@@ -4,6 +4,22 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 {
+    internal enum OnikiriDomainCommandKind : byte
+    {
+        Toggle,
+        Flip,
+    }
+
+    internal enum OnikiriDomainCommandSource : byte
+    {
+        Keybind,
+        HudLeft,
+        HudRight,
+        HudMiddle,
+        TutorialFallback,
+        TutorialAssist,
+    }
+
     /// <summary>
     /// 鬼切教程轻量语义事件总线。
     /// 由招式模块在正式成功结算点调用 Fire*，教程状态机订阅消费；正式战斗逻辑不反向依赖本类。
@@ -37,11 +53,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         /// <summary>终结乱舞弹幕成功触发（FireExecutionFinale 返回 true）</summary>
         internal static event Action<NPC> OnExecutionFinale;
 
-        /// <summary>鬼域相位稳态落定（Phase 从 Opening/Flipping 变为 Omote/Ura）</summary>
-        internal static event Action<OniDomainPhase> OnDomainPhaseSettled;
+        /// <summary>鬼域命令已被正式状态机受理</summary>
+        internal static event Action<Player, OnikiriDomainCommandKind, OnikiriDomainCommandSource> OnDomainCommandAccepted;
+
+        /// <summary>鬼域相位稳态落定</summary>
+        internal static event Action<Player, OniDomainPhase> OnDomainPhaseSettled;
 
         /// <summary>肢解落刀成功（OniSeverStrike.StrikeFrame 且 struck && !whiffed）</summary>
-        internal static event Action<NPC> OnDismemberLanded;
+        internal static event Action<Player, NPC> OnDismemberLanded;
 
         //====触发器（供招式模块调用）====
 
@@ -69,11 +88,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         internal static void FireExecutionFinale(NPC target)
             => OnExecutionFinale?.Invoke(target);
 
-        internal static void FireDomainPhaseSettled(OniDomainPhase phase)
-            => OnDomainPhaseSettled?.Invoke(phase);
+        internal static void FireDomainCommandAccepted(Player player, OnikiriDomainCommandKind kind,
+            OnikiriDomainCommandSource source)
+            => OnDomainCommandAccepted?.Invoke(player, kind, source);
 
-        internal static void FireDismemberLanded(NPC target)
-            => OnDismemberLanded?.Invoke(target);
+        internal static void FireDomainPhaseSettled(Player player, OniDomainPhase phase)
+            => OnDomainPhaseSettled?.Invoke(player, phase);
+
+        internal static void FireDomainPhaseSettled(OniDomainPhase phase) {
+            if (!Main.dedServ && Main.LocalPlayer?.active == true) {
+                FireDomainPhaseSettled(Main.LocalPlayer, phase);
+            }
+        }
+
+        internal static void FireDismemberLanded(Player player, NPC target)
+            => OnDismemberLanded?.Invoke(player, target);
+
+        internal static void FireDismemberLanded(NPC target) {
+            if (!Main.dedServ && Main.LocalPlayer?.active == true) {
+                FireDismemberLanded(Main.LocalPlayer, target);
+            }
+        }
 
         //====清理====
 
@@ -88,6 +123,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             OnZanshinHit = null;
             OnExecutionAnnihilate = null;
             OnExecutionFinale = null;
+            OnDomainCommandAccepted = null;
             OnDomainPhaseSettled = null;
             OnDismemberLanded = null;
         }

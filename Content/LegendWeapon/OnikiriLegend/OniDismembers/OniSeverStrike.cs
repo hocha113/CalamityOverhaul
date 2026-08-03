@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -42,6 +43,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         private int timer;
         /// <summary>首帧捕获的目标类型，槽位复用校验</summary>
         private int targetType = -1;
+        private int tutorialTargetOwner = -1;
+        private int tutorialTargetSession;
+        private uint tutorialTargetToken;
         /// <summary>落刀已执行（冻结+刀线已触发）</summary>
         private bool struck;
         /// <summary>落刀帧目标已失效、转空挥收势</summary>
@@ -74,9 +78,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         public static Projectile Fire(Player player, NPC target, float cutAngle, int damage, float knockback,
             float scale = 1f, IEntitySource source = null) {
             source ??= player.GetSource_Misc("CWR_OniSeverStrike");
-            return Projectile.NewProjectileDirect(source, target?.Center ?? player.Center, Vector2.Zero
+            int tutorialOwner = -1;
+            int tutorialSession = 0;
+            uint tutorialToken = 0;
+            bool tutorialTarget = target != null
+                && Tutorial.OnikiriTutorialTargetGlobal.TryGetTutorialIdentity(target,
+                    out tutorialOwner, out tutorialSession, out tutorialToken);
+            if (tutorialTarget) {
+                damage = 0;
+            }
+            Projectile projectile = Projectile.NewProjectileDirect(source,
+                target?.Center ?? player.Center, Vector2.Zero
                 , ModContent.ProjectileType<OniSeverStrike>(), damage, knockback, player.whoAmI
                 , ai0: target?.whoAmI ?? -1, ai1: MathHelper.WrapAngle(cutAngle), ai2: scale);
+            if (tutorialTarget && projectile.ModProjectile is OniSeverStrike strike) {
+                strike.tutorialTargetOwner = tutorialOwner;
+                strike.tutorialTargetSession = tutorialSession;
+                strike.tutorialTargetToken = tutorialToken;
+                projectile.netUpdate = true;
+            }
+            return projectile;
         }
 
         /// <summary>触发接口（点锚模式）</summary>
@@ -114,13 +135,71 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
         public override bool ShouldUpdatePosition() => false;
 
+        public override void SendExtraAI(BinaryWriter writer) {
+            writer.Write(tutorialTargetToken != 0);
+            if (tutorialTargetToken == 0) {
+                return;
+            }
+            writer.Write((byte)tutorialTargetOwner);
+            writer.Write(tutorialTargetSession);
+            writer.Write(tutorialTargetToken);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            if (!reader.ReadBoolean()) {
+                tutorialTargetOwner = -1;
+                tutorialTargetSession = 0;
+                tutorialTargetToken = 0;
+                return;
+            }
+            tutorialTargetOwner = reader.ReadByte();
+            tutorialTargetSession = reader.ReadInt32();
+            tutorialTargetToken = reader.ReadUInt32();
+        }
+
+        internal static void CancelPendingTutorialStrikes(Player player, int session) {
+            if (player == null || session <= 0) {
+                return;
+            }
+            for (int i = Main.maxProjectiles - 1; i >= 0; i--) {
+                Projectile projectile = Main.projectile[i];
+                if (!projectile.active || projectile.owner != player.whoAmI
+                    || projectile.ModProjectile is not OniSeverStrike strike
+                    || strike.struck || strike.tutorialTargetOwner != player.whoAmI
+                    || strike.tutorialTargetSession != session || strike.tutorialTargetToken == 0) {
+                    continue;
+                }
+                projectile.Kill();
+            }
+        }
+
         /// <summary>绑定目标的存活实例，死亡/槽位复用返回 null</summary>
         private NPC ValidTarget() {
             if (TargetIndex < 0 || TargetIndex >= Main.maxNPCs) {
                 return null;
             }
             NPC npc = Main.npc[TargetIndex];
-            return npc.active && npc.type == targetType ? npc : null;
+            if (!npc.active || npc.type != targetType) {
+                return null;
+            }
+            bool currentTutorial = Tutorial.OnikiriTutorialTargetGlobal.TryGetTutorialIdentity(npc,
+                out int actualOwner, out int actualSession, out uint actualToken);
+            if (tutorialTargetToken == 0) {
+                return currentTutorial ? null : npc;
+            }
+            if (!currentTutorial || actualOwner != Projectile.owner
+                || actualOwner != tutorialTargetOwner || actualSession != tutorialTargetSession
+                || actualToken != tutorialTargetToken) {
+                return null;
+            }
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
+                Tutorial.OnikiriTutorialNetPlayer state = Main.player[actualOwner]
+                    .GetModPlayer<Tutorial.OnikiriTutorialNetPlayer>();
+                if (state.ServerSession != actualSession || state.ServerTargetIndex != npc.whoAmI) {
+                    return null;
+                }
+            }
+            return npc;
         }
 
         public override void AI() {
@@ -169,8 +248,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 }
                 else if (target != null) {
                     struck = true;
+                    if (Tutorial.OnikiriTutorialTargetGlobal.IsTutorialTarget(target, out _, out _)) {
+                        Projectile.damage = 0;
+                    }
                     if (Projectile.owner == Main.myPlayer)
-                        Tutorial.OnikiriTutorialEvents.FireDismemberLanded(target);
+                        Tutorial.OnikiriTutorialEvents.FireDismemberLanded(Owner, target);
                     //全组停止；只有终斩视觉刃线实际经过的体节捕获快照并裂开
                     DismemberStroke stroke = new(target.Center, CutAngle,
                         OniFinaleCut.VisualHalfLength * SizeMul, OniFinaleCut.VisualPathWidth * SizeMul);

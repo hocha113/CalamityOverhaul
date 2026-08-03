@@ -44,7 +44,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                 return false;
             }
             EnsureSeed(okp);
-            return okp.OwnedMeiKeys.Add(key);
+            bool added = okp.OwnedMeiKeys.Add(key);
+            if (added) {
+                OnikiriNet.SendOwnedMeiSnapshot(player);
+            }
+            return added;
+        }
+
+        internal static void ApplyNetworkSnapshot(Player player, IEnumerable<string> keys) {
+            if (player == null || !player.TryGetModPlayer(out OnikiriPlayer okp)) {
+                return;
+            }
+            okp.OwnedMeiKeys = [];
+            if (keys != null) {
+                foreach (string key in keys) {
+                    if (OniMeiRegistry.TryGet(key, out _)) {
+                        okp.OwnedMeiKeys.Add(key);
+                    }
+                }
+            }
+            EnsureSeed(okp);
         }
 
         public static void EnsureSeed(OnikiriPlayer okp) {

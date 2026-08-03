@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -66,9 +67,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.75f, Volume = 0.38f });
         }
 
-        /// <summary>推进动画与交互,clickToggle/clickFlip 为本帧按下沿</summary>
+        /// <summary>推进动画与交互，点击参数均为本帧按下沿</summary>
         public void Update(Player player, Vector2 knot, bool interactive, Vector2 mouse, float time,
-            bool clickToggle, bool clickFlip) {
+            bool clickToggle, bool clickRightFlip, bool clickMiddleFlip) {
             lastMouse = mouse;
 
             //呼吸浮动:离巢时空窝定住不动
@@ -144,15 +145,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             //左键开阖;右键翻转(阖着先展到表);中键与翻转键同义,悬停时在这里受理
             if (clickToggle) {
-                if (OniDomain.TryToggle(player, out bool busy)) {
+                if (OniDomain.TryToggle(player, out bool busy, OnikiriDomainCommandSource.HudLeft)) {
                     SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.45f, Pitch = -0.15f });
                 }
                 else if (busy) {
                     NotifyDenied();
                 }
             }
-            else if (clickFlip) {
-                if (OniDomain.TryFlip(player, out bool busy)) {
+            else if (clickRightFlip || clickMiddleFlip) {
+                OnikiriDomainCommandSource source = clickRightFlip
+                    ? OnikiriDomainCommandSource.HudRight
+                    : OnikiriDomainCommandSource.HudMiddle;
+                if (OniDomain.TryFlip(player, out bool busy, source)) {
                     SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.45f, Pitch = 0.1f });
                 }
                 else if (busy) {

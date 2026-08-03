@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -73,6 +74,8 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         /// <summary>联机反序列化记录上限</summary>
         private const int NetRecordCap = 512;
 
+        private const int MaxKeyBytes = 256;
+
         private readonly Dictionary<string, WraithProgressRecord> records = [];
 
         public IReadOnlyDictionary<string, WraithProgressRecord> Records => records;
@@ -100,6 +103,16 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             AttunedKey = key;
             BumpVersion();
             return true;
+        }
+
+        internal void ApplyAttunedKey(string key) {
+            string next = key ?? string.Empty;
+            if (AttunedKey == next) {
+                return;
+            }
+            AttunedKey = next;
+            SanitizeAttunedKey();
+            BumpVersion();
         }
 
         /// <summary>旧定义改名迁移；新键已有非默认进度时保留新键。</summary>
@@ -239,39 +252,52 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         //====联机序列化====
 
         public void NetSend(BinaryWriter writer) {
-            writer.Write(records.Count);
+            List<(string Key, WraithProgressRecord Record)> outgoing = [];
             foreach ((string key, WraithProgressRecord record) in records) {
-                writer.Write(key);
+                if (outgoing.Count >= NetRecordCap) {
+                    break;
+                }
+                if (!string.IsNullOrEmpty(key) && WraithRegistry.TryGet(key, out _)) {
+                    outgoing.Add((key, record));
+                }
+            }
+            writer.Write(outgoing.Count);
+            foreach ((string key, WraithProgressRecord record) in outgoing) {
+                CWRNetGuard.WriteString(writer, key, MaxKeyBytes);
                 writer.Write((byte)record.State);
                 writer.Write(SanitizeMastery(record.Mastery));
                 writer.Write(Math.Max(record.EncounterCount, 0));
                 writer.Write(record.PactRenewed);
             }
-            writer.Write(AttunedKey ?? string.Empty);
+            CWRNetGuard.WriteString(writer, AttunedKey, MaxKeyBytes);
         }
 
         public void NetReceive(BinaryReader reader) {
-            records.Clear();
-            AttunedKey = string.Empty;
-            int count = reader.ReadInt32();
-            //CWRItem.NetReceive 链中段，按声明数读弃保流对齐，超上限丢弃
+            int count = CWRNetGuard.ReadCount(reader, NetRecordCap, "WraithProgress.Records");
+            Dictionary<string, WraithProgressRecord> incomingRecords = new(count);
             for (int i = 0; i < count; i++) {
-                string key = reader.ReadString();
+                string key = CWRNetGuard.ReadString(reader, MaxKeyBytes, "WraithProgress.Key");
                 WraithBindState state = SanitizeState(reader.ReadByte());
                 float mastery = SanitizeMastery(reader.ReadSingle());
                 int encounters = Math.Max(reader.ReadInt32(), 0);
                 bool renewed = reader.ReadBoolean();
-                if (i >= NetRecordCap || string.IsNullOrEmpty(key) || records.ContainsKey(key)) {
+                if (string.IsNullOrEmpty(key) || incomingRecords.ContainsKey(key)) {
                     continue;
                 }
-                records[key] = new WraithProgressRecord {
+                incomingRecords[key] = new WraithProgressRecord {
                     State = state,
                     Mastery = mastery,
                     EncounterCount = encounters,
                     PactRenewed = renewed,
                 };
             }
-            AttunedKey = reader.ReadString();
+            string attunedKey = CWRNetGuard.ReadString(reader, MaxKeyBytes, "WraithProgress.AttunedKey");
+
+            records.Clear();
+            foreach ((string key, WraithProgressRecord record) in incomingRecords) {
+                records.Add(key, record);
+            }
+            AttunedKey = attunedKey;
             SanitizeAttunedKey();
             BumpVersion();
         }

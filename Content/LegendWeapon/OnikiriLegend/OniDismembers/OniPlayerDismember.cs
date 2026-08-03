@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 return;
             }
 
-            //必定伤害、无视防御（穿透系数 1）、不可闪避，清无敌帧保证这一刀永远落下；
+            //最终化 HurtInfo 直接结算固定伤害，不经过防御、减伤与闪避；
 
             //刀无善恶，残血强行肢解即自尽
 
@@ -101,11 +101,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 int selfDamage = Math.Max((int)(player.statLifeMax2 * SelfHurtFraction), 1);
                 player.immune = false;
                 player.immuneTime = 0;
+                PlayerDeathReason deathReason = PlayerDeathReason.ByCustomReason(
+                    OniPlayerDismemberSystem.SelfHurtDeathReason.ToNetworkText(player.name));
+                Player.HurtInfo hurtInfo = new() {
+                    DamageSource = deathReason,
+                    SourceDamage = selfDamage,
+                    Damage = selfDamage,
+                    HitDirection = 0,
+                    Knockback = 0f,
+                    Dodgeable = false,
+                    PvP = false,
+                    CooldownCounter = -1,
+                };
                 SelfHurtResolving = true;
                 try {
-                    player.Hurt(PlayerDeathReason.ByCustomReason(
-                        OniPlayerDismemberSystem.SelfHurtDeathReason.ToNetworkText(player.name))
-                        , selfDamage, 0, dodgeable: false, scalingArmorPenetration: 1f, knockback: 0f);
+                    player.Hurt(hurtInfo);
                 } finally {
                     SelfHurtResolving = false;
                 }

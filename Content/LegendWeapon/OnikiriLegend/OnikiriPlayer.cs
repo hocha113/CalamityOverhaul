@@ -264,6 +264,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         internal int ExecutionPreviewTargetId => executionPreviewTargetId;
 
         public override void OnEnterWorld() {
+            OnikiriNet.ResetPlayerSession(Player);
             Vigor = VigorMax;
             Stance = 0f;
             timeAdvanceCarry = 0f;
@@ -277,6 +278,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             ResetExecutionState();
             ResetMeiTransient();
             OniMeiOwned.EnsureSeed(this);
+            OnikiriNet.SendOwnedMeiSnapshot(Player);
         }
 
         public override void SaveData(TagCompound tag) {
@@ -308,6 +310,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinAutoHandoffCountdown = 0;
             ResetExecutionState();
             ResetMeiTransient();
+        }
+
+        public override void PreUpdate() {
+            OnikiriNet.UpdatePending(Player);
+            OnikiriNet.ReconcileAuthoritativeState(Player);
         }
 
         private void ResetExecutionState() {
@@ -564,13 +571,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
 
             if (holding && CWRKeySystem.Legend_Domain.JustPressed) {
-                if (!OniDomain.TryToggle(Player, out bool busy) && busy) {
+                if (!OniDomain.TryToggle(Player, out bool busy,
+                    Tutorial.OnikiriDomainCommandSource.Keybind) && busy) {
                     OniTalismanHud.NotifyDomainDenied();
                 }
             }
             //中键默认绑定:悬停在鬼眼上时 mouseInterface 为真,让位给眼的点击受理,防同帧双发
             if ((holding || domain.AnyActive) && CWRKeySystem.Onikiri_DomainFlip.JustPressed && !Player.mouseInterface) {
-                if (!OniDomain.TryFlip(Player, out bool busy) && busy) {
+                if (!OniDomain.TryFlip(Player, out bool busy,
+                    Tutorial.OnikiriDomainCommandSource.Keybind) && busy) {
                     OniTalismanHud.NotifyDomainDenied();
                 }
             }
@@ -1400,7 +1409,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         /// <summary>灭世后续左键入口；处决后续优先于残心和普通连段</summary>
         internal bool TryExecutionAnnihilate(Item item, bool edgeVerified) {
-            if (Player.whoAmI != Main.myPlayer || executionAnnihilateWindow <= 0) {
+            if (Player.whoAmI != Main.myPlayer
+                || Tutorial.OnikiriTutorialFlow.TryGetRequiredDismemberTarget(Player, out _)
+                || executionAnnihilateWindow <= 0) {
                 return false;
             }
             if (!edgeVerified && (!Main.mouseLeft || prevMouseLeft)) {
@@ -1417,6 +1428,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         private void ReleaseExecutionAnnihilatePending(Item item) {
+            if (Tutorial.OnikiriTutorialFlow.TryGetRequiredDismemberTarget(Player, out _)) {
+                executionAnnihilatePending = false;
+                return;
+            }
             if (!executionAnnihilatePending || executionAnnihilateWindow <= 0
                 || executionAnnihilateHandoffCountdown > 0
                 || OniBladeOccupancy.AnyHardOccupant(Player)) {
@@ -1513,47 +1528,115 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (Player.whoAmI != Main.myPlayer) {
                 return false;
             }
+            bool tutorialPractice = Tutorial.OnikiriTutorialFlow.TryGetRequiredDismemberTarget(
+                Player, out NPC requiredTarget);
             //演出或反噬僵直中不受理:裂成两半的人拔不了刀
             if (Player.ownedProjectileCounts[ModContent.ProjectileType<OniSeverStrike>()] > 0
                 || OniPlayerDismember.IsLocked(Player)) {
-                return false;
+                return tutorialPractice;
+            }
+            if (tutorialPractice && !Tutorial.OnikiriTutorialFlow.TryConsumeDismemberInput(Player)) {
+                return true;
             }
             //肢解只在里世界成立;表世界左键就是普攻
             OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
             if (domain.Phase != OniDomainPhase.Ura || !domain.WorldIsUra) {
+                if (tutorialPractice) {
+                    Tutorial.OnikiriTutorialFlow.NotifyDismemberMiss(Player);
+                    return true;
+                }
                 return false;
             }
 
-            ShootState state = Player.GetShootState();
-            int damage = (int)(state.WeaponDamage * DismemberDamageMul);
             Vector2 mouse = Main.MouseWorld;
+            IEntitySource source = Player.GetSource_ItemUse(item);
+
+            if (tutorialPractice) {
+                if (requiredTarget?.active == true
+                    && DistanceToHitbox(requiredTarget, mouse) <= DirectPickPad
+                    && TryDirectDismember(item, requiredTarget, source)) {
+                    return true;
+                }
+                Tutorial.OnikiriTutorialFlow.NotifyDismemberMiss(Player);
+                return true;
+            }
 
             //一层:点在真身碰撞箱上 → 直接肢解,反噬上身
             NPC target = PickDismemberTarget(mouse, DirectPickPad);
-            if (target != null) {
-                OniSeverStrike.Fire(Player, target, AimAngleFrom(target.Center), damage
-                    , state.WeaponKnockback, scale: OnikiriOverride.GetBladeScale(item)
-                    , source: Player.GetSource_ItemUse(item));
-                CancelExecutionIntent(settleFollowup: false, force: true);
+            if (target != null && TryDirectDismember(item, target, source)) {
                 return true;
             }
 
             //二层:点在媒介纸面上 → 点锚斩纸(落刀成功同样反噬上身)
             OmokageEntry paper = OniOmokage.PickEntryNear(mouse, PaperMagnetPad);
             if (paper != null && Vector2.Distance(Player.Center, paper.AnchorCenter) <= DismemberRange) {
+                GetDismemberStats(item, out int damage, out float knockback);
                 //落刀点收拢进纸面有效范围,拔刀方向=玩家→落刀点
                 Vector2 local = mouse - paper.AnchorCenter;
                 local.X = MathHelper.Clamp(local.X, -paper.PaperHalf.X * 0.4f, paper.PaperHalf.X * 0.4f);
                 local.Y = MathHelper.Clamp(local.Y, -paper.PaperHalf.Y * 0.4f, paper.PaperHalf.Y * 0.4f);
                 Vector2 cutPoint = paper.AnchorCenter + local;
                 OniSeverStrike.FireAtPoint(Player, cutPoint, AimAngleFrom(cutPoint), damage
-                    , state.WeaponKnockback, scale: OnikiriOverride.GetBladeScale(item)
-                    , source: Player.GetSource_ItemUse(item));
+                    , knockback, scale: OnikiriOverride.GetBladeScale(item), source: source);
                 CancelExecutionIntent(settleFollowup: false, force: true);
                 return true;
             }
 
             return false;
+        }
+
+        /// <summary>显式目标的真身肢解入口</summary>
+        internal bool TryDirectDismember(Item item, NPC target, IEntitySource source) {
+            bool tutorialTarget = Tutorial.OnikiriTutorialTargetGlobal.IsTutorialTarget(
+                target, out _, out _);
+            if (Player.whoAmI != Main.myPlayer || item == null || !item.Alives()
+                || item.type != ModContent.ItemType<OnikiriItem>() || !Player.HasItem(item.type)
+                || target?.active != true || target.life <= 0
+                || (!tutorialTarget && !target.CanBeChasedBy())
+                || Player.ownedProjectileCounts[ModContent.ProjectileType<OniSeverStrike>()] > 0
+                || OniPlayerDismember.IsLocked(Player)) {
+                return false;
+            }
+            OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
+            if (domain.Phase != OniDomainPhase.Ura || !domain.WorldIsUra
+                || DistanceToHitbox(target, Player.Center) > DismemberRange
+                || !Tutorial.OnikiriTutorialTargetGlobal.CanPlayerDismember(target, Player)) {
+                return false;
+            }
+
+            GetDismemberStats(item, out int damage, out float knockback);
+            Projectile strike = OniSeverStrike.Fire(Player, target, AimAngleFrom(target.Center), damage,
+                knockback, OnikiriOverride.GetBladeScale(item), source);
+            if (strike?.active != true) {
+                return false;
+            }
+            CancelExecutionIntent(settleFollowup: false, force: true);
+            return true;
+        }
+
+        /// <summary>教程助手从背包取刀并演示真身肢解</summary>
+        internal bool TryTutorialDismember(NPC target) {
+            if (!Tutorial.OnikiriTutorialTargetGlobal.IsTutorialTarget(target,
+                out int owner, out _) || owner != Player.whoAmI
+                || CrimsonRendSlash.FindController(Player) != null
+                || OniBladeOccupancy.AnyHardOccupant(Player)
+                || OniBladeOccupancy.BladeReserved(Player)) {
+                return false;
+            }
+            Item item = Player.inventory.FirstOrDefault(candidate
+                => candidate?.type == ModContent.ItemType<OnikiriItem>() && candidate.Alives());
+            return item != null && TryDirectDismember(item, target, Player.GetSource_ItemUse(item));
+        }
+
+        private void GetDismemberStats(Item item, out int damage, out float knockback) {
+            if (ReferenceEquals(item, Player.GetItem())) {
+                ShootState state = Player.GetShootState();
+                damage = (int)(state.WeaponDamage * DismemberDamageMul);
+                knockback = state.WeaponKnockback;
+                return;
+            }
+            damage = (int)(Player.GetWeaponDamage(item) * DismemberDamageMul);
+            knockback = Player.GetWeaponKnockback(item);
         }
 
         /// <summary>拔刀方向:玩家→落点;重合时退回鼠标方向,再退回朝向</summary>
@@ -1579,6 +1662,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 bool canPick = npc.CanBeChasedBy()
                     || (root != npc && root.CanBeChasedBy());
                 if (!canPick) {
+                    continue;
+                }
+                if (!Tutorial.OnikiriTutorialTargetGlobal.CanPlayerDismember(npc, Player)) {
                     continue;
                 }
                 float d = DistanceToHitbox(npc, cursor);

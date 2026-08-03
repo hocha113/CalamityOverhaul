@@ -321,6 +321,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
         }
 
+        /// <summary>立刻清掉指定 NPC 槽的冻结、分裂与快照</summary>
+        internal static void ClearTarget(NPC npc) {
+            if (npc == null) {
+                return;
+            }
+            int npcIndex = npc.whoAmI;
+            Entries.RemoveAll(entry => entry.NpcIndex == npcIndex);
+            lockEntries.RemoveAll(entry => entry.NpcIndex == npcIndex);
+            if (SnapRTs.Remove(npcIndex, out RenderTarget2D snapshot)) {
+                snapshot?.Dispose();
+            }
+        }
+
         public static bool IsDismembered(int npcIndex) => GetEntry(npcIndex) != null;
 
         public static bool IsLocked(int npcIndex) => GetLockEntry(npcIndex) != null;

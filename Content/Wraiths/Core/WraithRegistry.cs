@@ -9,6 +9,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
     {
         private static readonly List<WraithDefinition> all = [];
         private static readonly Dictionary<string, WraithDefinition> byKey = [];
+        private static readonly Dictionary<string, ushort> networkIdByKey = [];
         private static readonly Dictionary<Type, WraithDefinition> byActorType = [];
 
         /// <summary>全部定义，SortOrder 再 Key</summary>
@@ -18,6 +19,23 @@ namespace CalamityOverhaul.Content.Wraiths.Core
 
         public static bool TryGet(string key, out WraithDefinition definition)
             => byKey.TryGetValue(key, out definition);
+
+        internal static bool TryGetNetworkId(string key, out ushort id) {
+            if (networkIdByKey.TryGetValue(key, out id)) {
+                return true;
+            }
+            id = ushort.MaxValue;
+            return false;
+        }
+
+        internal static bool TryGetByNetworkId(ushort id, out WraithDefinition definition) {
+            if (id < all.Count) {
+                definition = all[id];
+                return true;
+            }
+            definition = null;
+            return false;
+        }
 
         /// <summary>实体类型反查定义</summary>
         public static WraithDefinition FindByActorType(Type actorType)
@@ -39,6 +57,10 @@ namespace CalamityOverhaul.Content.Wraiths.Core
                     CWRMod.Instance.Logger.Error($"[WraithRegistry] duplicate Key '{definition.Key}' from {definition.GetType().FullName}, skipped");
                     continue;
                 }
+                if (all.Count >= ushort.MaxValue) {
+                    CWRMod.Instance.Logger.Error("[WraithRegistry] network id space exhausted, definition skipped");
+                    continue;
+                }
                 if (definition.ActorType != null) {
                     if (!typeof(WraithActor).IsAssignableFrom(definition.ActorType)) {
                         CWRMod.Instance.Logger.Error($"[WraithRegistry] '{definition.Key}' ActorType {definition.ActorType.Name} is not a WraithActor, skipped");
@@ -52,14 +74,17 @@ namespace CalamityOverhaul.Content.Wraiths.Core
                 }
 
                 definition.LoadLocalization();
+                ushort networkId = (ushort)all.Count;
                 all.Add(definition);
                 byKey[definition.Key] = definition;
+                networkIdByKey[definition.Key] = networkId;
             }
         }
 
         void ICWRLoader.UnLoadData() {
             all.Clear();
             byKey.Clear();
+            networkIdByKey.Clear();
             byActorType.Clear();
         }
     }

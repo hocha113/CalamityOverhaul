@@ -2,6 +2,8 @@
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze;
@@ -59,6 +61,8 @@ namespace CalamityOverhaul
         ReservedOnikiriTutorial,
         HimayoGiftEntitlements,
         WeaverGrievancesManifestation,
+        OnikiriTutorialTarget,
+        OnikiriItemOperation,
     }
 
     public static class CWRNetWork
@@ -132,6 +136,8 @@ namespace CalamityOverhaul
             MachineEffect.NetHandle(type, reader, whoAmI);
             WraithNet.NetHandle(type, reader, whoAmI);
             WGManifestationNet.NetHandle(type, reader, whoAmI);
+            OnikiriTutorialNet.NetHandle(type, reader, whoAmI);
+            OnikiriNet.NetHandle(type, reader, whoAmI);
         }
     }
 }

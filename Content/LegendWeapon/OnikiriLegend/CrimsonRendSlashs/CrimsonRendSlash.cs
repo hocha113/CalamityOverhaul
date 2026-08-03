@@ -31,6 +31,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
+        public override bool CanFire => !firstBeatFired
+            || scheduling && hasHandoff && timer < nextBeatTime;
+
         //==== 节拍常量 ====
         private const int BeatCount = 5;
         private const int BurstFadeFrames = 16;

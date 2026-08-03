@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
@@ -40,6 +42,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         public override bool InstancePerEntity => true;
 
+        public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
+            => lateInstantiation && (entity.friendly
+                || entity.ModProjectile is OniFlashStep or OniFinaleSlash);
+
         public bool HasSnapshot { get; private set; }
         public bool IsSecondary { get; private set; }
         public bool IsPrimary => HasSnapshot && !IsSecondary;
@@ -53,8 +59,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public float ArmedConditionMul { get; private set; } = 1f;
         public bool TideOnBeat { get; private set; }
 
-        public static OniMeiActionContext Get(Projectile projectile)
-            => projectile?.GetGlobalProjectile<OniMeiActionContext>();
+        public static OniMeiActionContext Get(Projectile projectile) {
+            return projectile != null
+                && projectile.TryGetGlobalProjectile(out OniMeiActionContext context)
+                ? context
+                : null;
+        }
 
         public override void OnSpawn(Projectile projectile, IEntitySource source) {
             if (source is EntitySource_Parent { Entity: Projectile parent }) {
@@ -67,10 +77,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         public static void Capture(Projectile projectile, Player owner, Item item, int baseWeaponDamage,
             OniMeiActionKind actionKind) {
-            if (projectile == null || owner == null) {
+            if (projectile == null || owner == null
+                || !projectile.TryGetGlobalProjectile(out OniMeiActionContext context)) {
                 return;
             }
-            OniMeiActionContext context = Get(projectile);
             context.HasSnapshot = true;
             context.IsSecondary = false;
             context.BaseWeaponDamage = Math.Max(1, baseWeaponDamage);
@@ -93,14 +103,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         public static void Inherit(Projectile parent, Projectile child, bool secondary,
             OniMeiActionKind actionKind = OniMeiActionKind.None) {
-            if (parent == null || child == null) {
+            if (parent == null || child == null
+                || !parent.TryGetGlobalProjectile(out OniMeiActionContext parentContext)
+                || parentContext.HasSnapshot != true
+                || !child.TryGetGlobalProjectile(out OniMeiActionContext childContext)) {
                 return;
             }
-            OniMeiActionContext parentContext = Get(parent);
-            if (parentContext?.HasSnapshot != true) {
-                return;
-            }
-            Get(child).CopyFrom(parentContext, secondary,
+            childContext.CopyFrom(parentContext, secondary,
                 actionKind == OniMeiActionKind.None ? parentContext.ActionKind : actionKind);
             child.netUpdate = true;
         }
@@ -207,13 +216,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             }
             bitWriter.WriteBit(IsSecondary);
             bitWriter.WriteBit(TideOnBeat);
-            binaryWriter.Write((byte)ActionKind);
             binaryWriter.Write(ActionSerial);
             binaryWriter.Write(BaseWeaponDamage);
             binaryWriter.Write(ArmedConditionMul);
-            binaryWriter.Write(NakagoKey ?? string.Empty);
-            binaryWriter.Write(HiKey ?? string.Empty);
-            binaryWriter.Write(HorimonoKey ?? string.Empty);
+            binaryWriter.Write(GetNetworkId(NakagoKey, OniMeiSlotKind.Nakago));
+            binaryWriter.Write(GetNetworkId(HiKey, OniMeiSlotKind.Hi));
+            binaryWriter.Write(GetNetworkId(HorimonoKey, OniMeiSlotKind.Horimono));
         }
 
         public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader) {
@@ -224,13 +232,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             }
             IsSecondary = bitReader.ReadBit();
             TideOnBeat = bitReader.ReadBit();
-            ActionKind = (OniMeiActionKind)binaryReader.ReadByte();
             ActionSerial = binaryReader.ReadUInt32();
             BaseWeaponDamage = Math.Max(1, binaryReader.ReadInt32());
             ArmedConditionMul = Math.Max(1f, binaryReader.ReadSingle());
-            NakagoKey = EmptyToNull(binaryReader.ReadString());
-            HiKey = EmptyToNull(binaryReader.ReadString());
-            HorimonoKey = EmptyToNull(binaryReader.ReadString());
+            NakagoKey = ReadNetworkKey(binaryReader, OniMeiSlotKind.Nakago);
+            HiKey = ReadNetworkKey(binaryReader, OniMeiSlotKind.Hi);
+            HorimonoKey = ReadNetworkKey(binaryReader, OniMeiSlotKind.Horimono);
             RebuildProfile();
         }
 
@@ -288,8 +295,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             return serial;
         }
 
-        private static string EmptyToNull(string value)
-            => string.IsNullOrEmpty(value) ? null : value;
+        private static ushort GetNetworkId(string key, OniMeiSlotKind slot) {
+            if (!string.IsNullOrEmpty(key)
+                && OniMeiRegistry.TryGetNetworkId(key, out ushort id)
+                && OniMeiRegistry.TryGetByNetworkId(id, out OniMeiDefinition definition)
+                && definition.SlotKind == slot) {
+                return id;
+            }
+            return ushort.MaxValue;
+        }
+
+        private static string ReadNetworkKey(BinaryReader reader, OniMeiSlotKind slot) {
+            ushort id = reader.ReadUInt16();
+            return id != ushort.MaxValue
+                && OniMeiRegistry.TryGetByNetworkId(id, out OniMeiDefinition definition)
+                && definition.SlotKind == slot
+                ? definition.Key
+                : null;
+        }
 
         private static bool UsesOwnHitLedger(Projectile projectile)
             => projectile?.ModProjectile is OniMeiGroundBurn;

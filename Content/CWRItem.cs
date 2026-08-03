@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.Items.Modifys;
 using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -151,13 +152,28 @@ namespace CalamityOverhaul.Content
         }
 
         public override void NetReceive(Item item, BinaryReader reader) {
-            LegendData?.NetReceive(item, reader);
+            LegendData receivedLegend = LegendData?.Clone(item);
+            receivedLegend?.NetReceive(item, reader);
+            if (LegendData is OnikiriData currentOnikiri
+                && receivedLegend is OnikiriData receivedOnikiri
+                && currentOnikiri.InstanceId == receivedOnikiri.InstanceId
+                && receivedOnikiri.EditRevision < currentOnikiri.EditRevision) {
+                receivedOnikiri.PreserveEditedStateFrom(currentOnikiri);
+            }
+            if (item.type == OnikiriOverride.ID && receivedLegend != null) {
+                receivedLegend.Level = OnikiriOverride.ClampLevel(receivedLegend.Level);
+            }
 
-            DyeItemID = reader.ReadInt32();
-            StorageUE = reader.ReadBoolean();
-            UEValue = reader.ReadSingle();
+            int receivedDyeItemID = reader.ReadInt32();
+            bool receivedStorageUE = reader.ReadBoolean();
+            float receivedUEValue = reader.ReadSingle();
+            int receivedTargetByCollector = reader.ReadInt32();
 
-            TargetByCollector = reader.ReadInt32();
+            LegendData = receivedLegend;
+            DyeItemID = receivedDyeItemID;
+            StorageUE = receivedStorageUE;
+            UEValue = receivedUEValue;
+            TargetByCollector = receivedTargetByCollector;
         }
         #endregion
 

@@ -22,6 +22,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
+        public override bool CanFire => false;
+
         /// <summary>巡航速度(px/帧)，距离在出手时由光标位置一次性确定；
         /// 逐帧实际步长由 <see cref="StepWeight"/> 赋形：首帧冲量→巡航→末两帧缓出</summary>
         private const float DashSpeed = 170f;

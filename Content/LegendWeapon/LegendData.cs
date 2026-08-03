@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.GameSystem;
@@ -30,6 +31,14 @@ namespace CalamityOverhaul.Content.LegendWeapon
     {
         /// <summary>信任世界上限</summary>
         private const int MaxTrustedWorlds = 32;
+
+        /// <summary>已完成试炼键联机上限</summary>
+        private const int MaxCompletedTrialKeys = 64;
+
+        private const int MaxWorldNameBytes = 1024;
+        private const int MaxWorldFullNameBytes = 4096;
+        private const int MaxTrialKeyBytes = 256;
+        private const int MaxTrialRouteSignatureBytes = MaxCompletedTrialKeys * MaxTrialKeyBytes;
 
         /// <summary>成长等级</summary>
         public int Level = 0;
@@ -80,58 +89,61 @@ namespace CalamityOverhaul.Content.LegendWeapon
 
         public void NetSend(Item item, BinaryWriter writer) {
             writer.Write(Level);
-            writer.Write(UpgradeWorldName ?? string.Empty);
-            writer.Write(UpgradeWorldFullName ?? string.Empty);
-            writer.Write(SkipUpgradeWorldFullName ?? string.Empty);
+            CWRNetGuard.WriteString(writer, UpgradeWorldName, MaxWorldNameBytes);
+            CWRNetGuard.WriteString(writer, UpgradeWorldFullName, MaxWorldFullNameBytes);
+            CWRNetGuard.WriteString(writer, SkipUpgradeWorldFullName, MaxWorldFullNameBytes);
             //可信世界，长度前缀+字符串
-            TrustedWorldFullNames ??= new List<string>();
-            writer.Write(TrustedWorldFullNames.Count);
-            foreach (var w in TrustedWorldFullNames) {
-                writer.Write(w ?? string.Empty);
+            List<string> trustedWorlds = TrustedWorldFullNames ?? [];
+            int trustedCount = Math.Min(trustedWorlds.Count, MaxTrustedWorlds);
+            int trustedStart = trustedWorlds.Count - trustedCount;
+            writer.Write(trustedCount);
+            for (int i = 0; i < trustedCount; i++) {
+                CWRNetGuard.WriteString(writer, trustedWorlds[trustedStart + i], MaxWorldFullNameBytes);
             }
             writer.Write(TrialSchemaVersion);
-            writer.Write(TrialRouteSignature ?? string.Empty);
-            CompletedTrialKeys ??= new List<string>();
-            writer.Write(CompletedTrialKeys.Count);
-            foreach (string key in CompletedTrialKeys) {
-                writer.Write(key ?? string.Empty);
+            CWRNetGuard.WriteString(writer, TrialRouteSignature, MaxTrialRouteSignatureBytes);
+            List<string> completedTrials = CompletedTrialKeys ?? [];
+            int completedCount = Math.Min(completedTrials.Count, MaxCompletedTrialKeys);
+            writer.Write(completedCount);
+            for (int i = 0; i < completedCount; i++) {
+                CWRNetGuard.WriteString(writer, completedTrials[i], MaxTrialKeyBytes);
             }
             SendLegend(item, writer);
         }
 
         public void NetReceive(Item item, BinaryReader reader) {
-            Level = reader.ReadInt32();
-            UpgradeWorldName = reader.ReadString();
-            UpgradeWorldFullName = reader.ReadString();
-            SkipUpgradeWorldFullName = reader.ReadString();
-            int trustedCount = reader.ReadInt32();
-            if (trustedCount < 0 || trustedCount > 256) {
-                CWRMod.Instance.Logger.Warn($"[LegendData:NetReceive] trustedCount out of range ({trustedCount}), skipping");
-                TrustedWorldFullNames = new List<string>();
-                ReceiveLegend(item, reader);
-                return;
-            }
-            TrustedWorldFullNames = new List<string>(trustedCount);
+            int level = Math.Max(reader.ReadInt32(), 0);
+            string upgradeWorldName = CWRNetGuard.ReadString(reader, MaxWorldNameBytes, "LegendData.UpgradeWorldName");
+            string upgradeWorldFullName = CWRNetGuard.ReadString(reader, MaxWorldFullNameBytes, "LegendData.UpgradeWorldFullName");
+            string skipUpgradeWorldFullName = CWRNetGuard.ReadString(reader, MaxWorldFullNameBytes, "LegendData.SkipUpgradeWorldFullName");
+            int trustedCount = CWRNetGuard.ReadCount(reader, MaxTrustedWorlds, "LegendData.TrustedWorlds");
+            List<string> trustedWorlds = new(trustedCount);
             for (int i = 0; i < trustedCount; i++) {
-                TrustedWorldFullNames.Add(reader.ReadString());
+                string world = CWRNetGuard.ReadString(reader, MaxWorldFullNameBytes, "LegendData.TrustedWorld");
+                if (!string.IsNullOrEmpty(world) && !trustedWorlds.Contains(world)) {
+                    trustedWorlds.Add(world);
+                }
             }
-            TrialSchemaVersion = reader.ReadInt32();
-            TrialRouteSignature = reader.ReadString();
-            int completedCount = reader.ReadInt32();
-            if (completedCount < 0 || completedCount > 1024) {
-                CWRMod.Instance.Logger.Warn($"[LegendData:NetReceive] completedCount out of range ({completedCount}), skipping");
-                CompletedTrialKeys = new List<string>();
-                ReceiveLegend(item, reader);
-                return;
-            }
-            CompletedTrialKeys = new List<string>(completedCount);
+            int trialSchemaVersion = Math.Max(reader.ReadInt32(), 0);
+            string trialRouteSignature = CWRNetGuard.ReadString(reader, MaxTrialRouteSignatureBytes, "LegendData.TrialRouteSignature");
+            int completedCount = CWRNetGuard.ReadCount(reader, MaxCompletedTrialKeys, "LegendData.CompletedTrialKeys");
+            List<string> completedTrials = new(completedCount);
             for (int i = 0; i < completedCount; i++) {
-                string key = reader.ReadString();
-                if (!string.IsNullOrEmpty(key) && !CompletedTrialKeys.Contains(key)) {
-                    CompletedTrialKeys.Add(key);
+                string key = CWRNetGuard.ReadString(reader, MaxTrialKeyBytes, "LegendData.CompletedTrialKey");
+                if (!string.IsNullOrEmpty(key) && !completedTrials.Contains(key)) {
+                    completedTrials.Add(key);
                 }
             }
             ReceiveLegend(item, reader);
+
+            Level = level;
+            UpgradeWorldName = upgradeWorldName;
+            UpgradeWorldFullName = upgradeWorldFullName;
+            SkipUpgradeWorldFullName = skipUpgradeWorldFullName;
+            TrustedWorldFullNames = trustedWorlds;
+            TrialSchemaVersion = trialSchemaVersion;
+            TrialRouteSignature = trialRouteSignature;
+            CompletedTrialKeys = completedTrials;
         }
 
         public virtual void SendLegend(Item item, BinaryWriter writer) { }

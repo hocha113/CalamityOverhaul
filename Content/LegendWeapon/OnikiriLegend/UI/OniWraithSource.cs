@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.Wraiths.Core;
 using CalamityOverhaul.Content.Wraiths.Runtime;
+using System;
 using System.Collections.Generic;
 using Terraria;
 
@@ -35,14 +36,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        public bool TryAttune(string key) {
-            OnikiriData data = ResolveLocalData();
-            if (data == null || !data.Wraiths.TryAttune(key)) {
-                return false;
-            }
-            WraithVessels.SyncSlot(Main.LocalPlayer, Main.LocalPlayer.GetItem());
-            TryRefresh();
-            return true;
+        public bool TryAttune(string key, Action<bool> completed) {
+            Player player = Main.LocalPlayer;
+            return OnikiriNet.TryAttune(player, player?.GetItem(), key, success => {
+                TryRefresh();
+                completed?.Invoke(success);
+            });
         }
 
         void ICWRLoader.SetupData() {
@@ -87,11 +86,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         /// <summary>读刚落簿记录交铭刻弹窗</summary>
-        private static void PresentRite(WraithDefinition definition, WraithRiteKind kind) {
-            WraithVesselHandle vessel = WraithVessels.ResolveHeld(Main.LocalPlayer);
-            if (!vessel.IsValid) {
-                vessel = WraithVessels.ResolveCarried(Main.LocalPlayer);
-            }
+        private static void PresentRite(WraithDefinition definition, WraithRiteKind kind,
+            WraithVesselHandle vessel) {
             if (!vessel.IsValid || !vessel.Store.TryGet(definition.Key, out WraithProgressRecord record)) {
                 return;
             }

@@ -1,5 +1,7 @@
 ﻿using Terraria;
 
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial;
+
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 {
     /// <summary>鬼域阶段</summary>
@@ -87,48 +89,70 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         public static OniDomainPhase GetPhase(Player player) => player.GetModPlayer<OniDomainPlayer>().Phase;
 
         /// <summary>开阖命令。返回是否受理；<paramref name="busy"/></summary>
-        internal static bool TryToggle(Player player, out bool busy) {
+        internal static bool TryToggle(Player player, out bool busy,
+            OnikiriDomainCommandSource source = OnikiriDomainCommandSource.Keybind) {
             busy = false;
             OniDomainPlayer odp = player.GetModPlayer<OniDomainPlayer>();
+            bool accepted;
             switch (odp.Phase) {
                 case OniDomainPhase.Closed:
-                    return odp.OpenDomain();
+                    accepted = odp.OpenDomain();
+                    break;
                 case OniDomainPhase.Flipping:
                     //翻转仪式不可打断
 
                     busy = true;
-                    return false;
+                    accepted = false;
+                    break;
                 case OniDomainPhase.Closing:
                     //收到一半再按=反悔续开
 
-                    return odp.OpenDomain();
+                    accepted = odp.OpenDomain();
+                    break;
                 default:
                     //Opening/Omote/Ura 均可收，开到一半收=原路吸回
 
-                    return odp.CloseDomain();
+                    accepted = odp.CloseDomain();
+                    break;
             }
+            if (accepted) {
+                OnikiriTutorialEvents.FireDomainCommandAccepted(player,
+                    OnikiriDomainCommandKind.Toggle, source);
+            }
+            return accepted;
         }
 
         /// <summary>表里翻转命令。阖着时先展开到表世界(保证一键到位的手感)； <paramref</summary>
-        internal static bool TryFlip(Player player, out bool busy) {
+        internal static bool TryFlip(Player player, out bool busy,
+            OnikiriDomainCommandSource source = OnikiriDomainCommandSource.Keybind) {
             busy = false;
             OniDomainPlayer odp = player.GetModPlayer<OniDomainPlayer>();
+            bool accepted;
             switch (odp.Phase) {
                 case OniDomainPhase.Closed:
-                    return odp.OpenDomain();
+                    accepted = odp.OpenDomain();
+                    break;
                 case OniDomainPhase.Omote:
                 case OniDomainPhase.Ura:
-                    return odp.FlipDomain();
+                    accepted = odp.FlipDomain();
+                    break;
                 case OniDomainPhase.Flipping:
                     //已在翻,静默
 
-                    return false;
+                    accepted = false;
+                    break;
                 default:
                     //开域/收域仪式中,翻不动
 
                     busy = true;
-                    return false;
+                    accepted = false;
+                    break;
             }
+            if (accepted) {
+                OnikiriTutorialEvents.FireDomainCommandAccepted(player,
+                    OnikiriDomainCommandKind.Flip, source);
+            }
+            return accepted;
         }
     }
 }

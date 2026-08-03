@@ -621,6 +621,31 @@ OnikiriText: {
 		DomainTitle: 鬼域之眼
 		DomainBody: 气力旁那只眼掌管鬼域：展开表世界（泛黄和纸）、翻到里世界（水墨阴间），再可收阖
 		DomainPrompt: 左键展/收域，右键或 {0} 翻转表里；展一次也可推进
+		PrepareTitle: 实操准备
+		PrepareBody: 收好改铭台与点鬼簿，手持鬼切。若鬼域已展开，我会先按正式方式收域；从中断处回来时，也会先恢复到下一步所需的状态
+		PreparePrompt: 保持手持鬼切，等待鬼眼与界面安定
+		OpenDomainTitle: 展开表世界
+		OpenDomainBody: 按领域键（默认 Q）展开鬼域。阖目时第一次展开会进入浅层的表世界，泛黄和纸将覆盖天地
+		OpenDomainPrompt: 按 {0} 亲手展开领域，并等它稳定在表世界
+		FlipDomainTitle: 翻入里世界
+		FlipDomainBody: 在表世界按翻转键（默认 Mouse3，鼠标中键），把浅层领域翻入深层的里世界
+		FlipDomainPrompt: 按 {0} 翻到里世界，等墨色稳定后再动刀
+		DismemberTitle: 肢解演练
+		DismemberBody: 把光标放在高亮的圣诞坦克机体上，新按一次左键。鬼切会直接肢解真身；面影纸片也能作为肢解媒介，但本次不要求它
+		DismemberPrompt: 瞄准坦克机体，松开再按一次左键
+		BacklashTitle: 承受反噬
+		BacklashBody: 直接肢解真身会让持刀者承受真实的 25% 最大生命伤害，并在纳刀期间失去行动。看完整段演出，结束后我会替你恢复
+		BacklashPrompt: 暂停操作，等待反噬、纳刀与伤口复原
+		CloseDomainTitle: 从鬼眼收域
+		CloseDomainBody: 最后亲手左键点击 HUD 的鬼眼收阖领域。右键点击鬼眼也能翻转表里，但这一步只认左键收域
+		CloseDomainPrompt: 左键点击高亮鬼眼，并等待它完全闭合
+		DomainUnboundHint: 领域键未绑定。本次教程可直接按 Q，作为临时默认键
+		FlipUnboundHint: 翻转键未绑定。本次教程可直接按 Mouse3（鼠标中键），作为临时默认键
+		WaitingFeedback: 正在等待这一步的结果落定
+		BusyFeedback: 鬼域仍在变相，等它稳定后再操作
+		RetryFeedback: 这不是本步骤要求的有效操作。状态会自动恢复，请按提示重试或让我演示
+		AssistBtn: 替我演示
+		RetryBtn: 重试
 		NextBtn: 已知晓
 		OpenRegisterBtn: 开点鬼簿
 		OpenMeiBtn: 开改铭台

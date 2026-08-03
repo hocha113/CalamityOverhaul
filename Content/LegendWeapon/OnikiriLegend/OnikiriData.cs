@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using CalamityOverhaul.Content.Wraiths.Core;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
@@ -22,6 +23,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         //InitTag 区分已存档与功能前老刀;无标吃出厂表
         //曾用 Init1,升位 Init2 使测试刀重播出厂
         private const string InitTag = "OnikiriWraiths:Init2";
+        private const string InstanceIdTag = "Onikiri:InstanceId";
+        private const string EditRevisionTag = "Onikiri:EditRevision";
         private const string ScapeGhostKey = "ScapeGhost";
         private const string LegacyStandInKey = "StandIn";
 
@@ -44,7 +47,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// <summary>本刀的铭位表(表现层数据缝,效果层后补)</summary>
         public OniMeiStore Mei { get; private set; } = new();
 
+        /// <summary>实例身份用于拒绝在途请求误写同槽的另一把刀</summary>
+        internal long InstanceId { get; private set; }
+
+        /// <summary>字段编辑修订，用于拒绝乱序或重复请求</summary>
+        internal uint EditRevision { get; private set; }
+
         public OnikiriData() {
+            InstanceId = CreateInstanceId();
             SeedFactoryState();
         }
 
@@ -92,6 +102,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         public override void SaveData(Item item, TagCompound tag) {
             base.SaveData(item, tag);
+            tag[InstanceIdTag] = InstanceId;
+            tag[EditRevisionTag] = (long)EditRevision;
             tag[InitTag] = true;
             Wraiths.SaveData(tag);
             tag[MeiInitTag] = true;
@@ -100,6 +112,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         public override void LoadData(Item item, TagCompound tag) {
             base.LoadData(item, tag);
+            if (tag.TryGet(InstanceIdTag, out long instanceId) && instanceId != 0) {
+                InstanceId = instanceId;
+            }
+            else {
+                InstanceId = CreateInstanceId();
+            }
+            EditRevision = tag.TryGet(EditRevisionTag, out long revision)
+                && revision >= 0 && revision <= uint.MaxValue
+                ? (uint)revision : 0u;
             if (tag.ContainsKey(InitTag)) {
                 Wraiths.LoadData(tag);
                 Wraiths.MigrateKey(LegacyStandInKey, ScapeGhostKey);
@@ -120,13 +141,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         public override void SendLegend(Item item, BinaryWriter writer) {
+            writer.Write(InstanceId);
+            writer.Write(EditRevision);
             Wraiths.NetSend(writer);
             Mei.NetSend(writer);
         }
 
         public override void ReceiveLegend(Item item, BinaryReader reader) {
+            long instanceId = reader.ReadInt64();
+            uint editRevision = reader.ReadUInt32();
+            if (instanceId == 0) {
+                throw new IOException("Onikiri instance id cannot be zero");
+            }
             Wraiths.NetReceive(reader);
             Mei.NetReceive(reader);
+            InstanceId = instanceId;
+            EditRevision = editRevision;
+        }
+
+        internal void AdvanceEditRevision() => EditRevision++;
+
+        internal void ApplyEditRevision(uint editRevision) => EditRevision = editRevision;
+
+        internal void PreserveEditedStateFrom(OnikiriData source) {
+            if (source == null || source.InstanceId != InstanceId) {
+                return;
+            }
+            ApplyEditedState(source.Wraiths, source.Mei, source.EditRevision);
+        }
+
+        internal void ApplyEditedState(WraithProgressStore wraiths, OniMeiStore mei,
+            uint editRevision) {
+            Wraiths.CopyFrom(wraiths);
+            Mei.CopyFrom(mei);
+            EditRevision = editRevision;
+        }
+
+        private static long CreateInstanceId() {
+            long value = BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 0);
+            return value != 0 ? value : 1;
         }
     }
 }

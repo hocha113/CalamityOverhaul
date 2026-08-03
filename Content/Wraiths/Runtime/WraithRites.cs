@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.Wraiths.Core;
 using InnoVault.Actors;
 using System;
@@ -42,7 +43,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         public const float ServerRangeSlack = 1.5f;
 
         /// <summary>演出呈现缝，载体 SetupData 挂接</summary>
-        public static Action<WraithDefinition, WraithRiteKind> RitePresenter;
+        public static Action<WraithDefinition, WraithRiteKind, WraithVesselHandle> RitePresenter;
 
         /// <summary>owner 端受理；无死机目标返回 false；预检拒则吞键播回执</summary>
         public static bool TryPerform(Player player, WraithVesselHandle vessel) {
@@ -63,12 +64,13 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
             if (VaultUtils.isClient) {
                 //先请求，回执才落簿
-                WraithNet.SendRiteRequest(target);
+                WraithNet.SendRiteRequest(player, target, vessel);
             }
             else {
                 //单人直办
                 ConsumeHalted(target);
-                ApplyConfirmed(player, target.Definition.Key, kind);
+                ApplyConfirmed(player, vessel, target.Definition.Key, kind);
+                OnikiriData.TryGet(vessel.Item)?.AdvanceEditRevision();
             }
             return true;
         }
@@ -117,43 +119,52 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         }
 
         /// <summary>服复核仪式请求，资格不过返回 false</summary>
-        internal static bool TryServerPerform(Player requester, WraithActor target, out WraithRiteKind kind) {
+        internal static bool TryServerPerform(Player requester, WraithActor target,
+            WraithVesselHandle vessel, out WraithRiteKind kind) {
             kind = WraithRiteKind.FirstBind;
             if (VaultUtils.isClient
                 || requester == null || !requester.active || requester.dead
-                || target == null || !target.Active || !target.IsHalted || target.Definition == null) {
+                || target == null || !target.Active || !target.IsHalted || target.Definition == null
+                || !vessel.IsValid) {
                 return false;
             }
             float range = RiteRange * ServerRangeSlack;
             if (Vector2.DistanceSquared(requester.Center, target.Center) > range * range) {
                 return false;
             }
-            WraithVesselHandle vessel = WraithVessels.ResolveHeld(requester);
-            if (!vessel.IsValid) {
-                return false;
-            }
             if (Classify(requester, vessel.Store, target, out kind) != WraithRiteDenial.None) {
                 return false;
             }
+            ApplyRiteResult(vessel.Store, target.Definition, ref kind);
             ConsumeHalted(target);
             return true;
         }
 
-        /// <summary>确认落簿，单人/多人回执共用；在途换刀走随身兜底</summary>
-        internal static void ApplyConfirmed(Player player, string key, WraithRiteKind kind) {
+        /// <summary>确认落簿，单人/多人回执都只写入请求时的载体</summary>
+        internal static void ApplyConfirmed(Player player, WraithVesselHandle vessel,
+            string key, WraithRiteKind kind) {
             if (player == null || player.whoAmI != Main.myPlayer
+                || !vessel.IsValid
                 || !WraithRegistry.TryGet(key, out WraithDefinition definition)) {
                 return;
             }
-            WraithVesselHandle vessel = WraithVessels.ResolveHeld(player);
-            if (!vessel.IsValid) {
-                vessel = WraithVessels.ResolveCarried(player);
-            }
-            if (!vessel.IsValid) {
-                return;
-            }
 
-            WraithProgressRecord record = vessel.Store.GetOrCreate(key);
+            ApplyRiteResult(vessel.Store, definition, ref kind);
+
+            LocalizedText feedback = kind switch {
+                WraithRiteKind.FirstBind => WraithSystemText.RiteFirstBind,
+                WraithRiteKind.RenewPact => WraithSystemText.RiteRenewPact,
+                _ => WraithSystemText.RiteResubdue,
+            };
+            VaultUtils.Text(feedback.Format(definition.DisplayName.Value), definition.EyeColor);
+            SoundEngine.PlaySound(SoundID.Item29 with { Pitch = -0.5f, Volume = 0.5f }, player.Center);
+
+            RitePresenter?.Invoke(definition, kind, vessel);
+        }
+
+        private static void ApplyRiteResult(WraithProgressStore store, WraithDefinition definition,
+            ref WraithRiteKind kind) {
+            WraithProgressRecord record = store.GetOrCreate(definition.Key);
             //在途换刀，已 Bound 则 FirstBind 升格 RenewPact，驾驭只升不降
             if (kind == WraithRiteKind.FirstBind && record.State == WraithBindState.Bound) {
                 kind = WraithRiteKind.RenewPact;
@@ -176,18 +187,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                     record.Mastery = MathHelper.Clamp(Math.Max(record.Mastery, WraithDefinition.RestlessThreshold + 0.05f), 0f, 1f);
                     break;
             }
-            vessel.Store.BumpVersion();
-            WraithVessels.SyncSlot(player, vessel.Item);
-
-            LocalizedText feedback = kind switch {
-                WraithRiteKind.FirstBind => WraithSystemText.RiteFirstBind,
-                WraithRiteKind.RenewPact => WraithSystemText.RiteRenewPact,
-                _ => WraithSystemText.RiteResubdue,
-            };
-            VaultUtils.Text(feedback.Format(definition.DisplayName.Value), definition.EyeColor);
-            SoundEngine.PlaySound(SoundID.Item29 with { Pitch = -0.5f, Volume = 0.5f }, player.Center);
-
-            RitePresenter?.Invoke(definition, kind);
+            store.BumpVersion();
         }
 
         private static void PlayDenial(WraithRiteDenial denial) {

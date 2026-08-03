@@ -28,6 +28,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// <summary>神威疾走最远距离上限(px)，与成长表 L22 对齐</summary>
         public const float MaxFlashStepRange = 1500f;
 
+        /// <summary>鬼切成长等级上限</summary>
+        public const int MaxLevel = 22;
+
         public static int GetStartDamage => DamageDictionary[0];
 
         public static int GetLevel(Item item) {
@@ -38,8 +41,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (cwrItem?.LegendData == null) {
                 return 0;
             }
-            return cwrItem.LegendData.Level;
+            return ClampLevel(cwrItem.LegendData.Level);
         }
+
+        internal static int ClampLevel(int level) => System.Math.Clamp(level, 0, MaxLevel);
 
         public static int GetOnDamage(Item item) => DamageDictionary[GetLevel(item)];
 

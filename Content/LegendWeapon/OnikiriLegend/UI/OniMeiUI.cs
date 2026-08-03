@@ -133,6 +133,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>姊妹屏互斥收台时置位:抑制本屏关闭音,切换只响新屏开音一声</summary>
         internal bool SilentSwap;
+        private bool keepMouseSlot;
+        private bool inventoryWasOpen;
+        private long mouseSlotInstanceId;
+        private int interactionSession;
 
         //====布局(每帧 UI 空间重算)====
         /// <summary>台账主板(题头+三铭位牌+脚注)</summary>
@@ -234,7 +238,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         protected override void OnOpen() {
-            Main.playerInventory = false;
+            interactionSession++;
+            inventoryWasOpen = Main.playerInventory;
+            OnikiriData mouseData = OnikiriData.TryGet(Main.mouseItem);
+            keepMouseSlot = mouseData != null;
+            mouseSlotInstanceId = mouseData?.InstanceId ?? 0;
+            Main.playerInventory = keepMouseSlot;
             OniTalismanHud.RememberLedger(OniLedgerView.Mei);
             //姊妹屏互斥:一台开另一卷收;静默收卷,免得开音+关音同帧叠成两声切换
             if (OniRegisterUI.Instance?.IsOpen ?? false) {
@@ -273,6 +282,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         protected override void OnClose() {
+            interactionSession++;
+            if (keepMouseSlot) {
+                Main.playerInventory = inventoryWasOpen;
+            }
+            keepMouseSlot = false;
+            mouseSlotInstanceId = 0;
             //收台时未完的鏨仪式直接定格,重开不再续播半场
             if (Rite.Active) {
                 Rite.Skip();
@@ -294,12 +309,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         public override void Update() {
             if (IsOpen) {
+                if (!MaintainMouseSlot()) {
+                    return;
+                }
                 player.mouseInterface = true;
             }
         }
 
         public override void LogicUpdate() {
             if (IsOpen) {
+                if (!MaintainMouseSlot()) {
+                    return;
+                }
                 player.mouseInterface = true;
                 UIInputGuard.SuppressWeaponSwitch();
                 if (!player.active || player.dead) {
@@ -767,14 +788,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private void HandleRibClick(int index) {
             OniMeiSlotKind slot = SlotOf(selectedSlot);
             string oldKey = OniMeiRegistry.DisplayStore?.Get(slot);
+            int session = interactionSession;
 
             if (IsEraseRib(index)) {
-                if (OniMeiRegistry.EraseHeld(slot)) {
-                    RebuildTray();
-                    Rite.Start(OniMeiRiteKind.Erase, slot, oldKey, null);
-                    SelectSlotSilently(-1);
-                }
-                else {
+                if (!OniMeiRegistry.EraseHeld(slot, success => CompleteMeiChange(
+                    session, success, OniMeiRiteKind.Erase, slot, oldKey, null))) {
                     DenyFeedback();
                 }
                 return;
@@ -786,11 +804,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 SelectSlot(-1);
                 return;
             }
-            if (OniMeiRegistry.EngraveHeld(slot, def.Key)) {
-                Rite.Start(oldKey != null ? OniMeiRiteKind.Rename : OniMeiRiteKind.Engrave, slot, oldKey, def.Key);
-                SelectSlotSilently(-1);
-            }
-            else {
+            OniMeiRiteKind kind = oldKey != null ? OniMeiRiteKind.Rename : OniMeiRiteKind.Engrave;
+            if (!OniMeiRegistry.EngraveHeld(slot, def.Key, success => CompleteMeiChange(
+                session, success, kind, slot, oldKey, def.Key))) {
                 DenyFeedback();
             }
         }
@@ -806,6 +822,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             OniMeiTrayEntry entry = tray[abs];
             OniMeiSlotKind slot = SlotOf(selectedSlot);
             string oldKey = OniMeiRegistry.DisplayStore?.Get(slot);
+            int session = interactionSession;
 
             if (entry.Key == oldKey) {
                 SelectSlot(-1);
@@ -820,18 +837,46 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
 
             OniMeiOwned.Unlock(player, entry.Key);
-            if (!OniMeiRegistry.EngraveHeld(slot, entry.Key)) {
+            OniMeiRiteKind kind = oldKey != null ? OniMeiRiteKind.Rename : OniMeiRiteKind.Engrave;
+            if (!OniMeiRegistry.EngraveHeld(slot, entry.Key, success => CompleteMeiChange(
+                session, success, kind, slot, oldKey, entry.Key))) {
                 DenyFeedback();
                 RebuildTray();
                 return;
             }
-
-            RebuildTray();
-            Rite.Start(oldKey != null ? OniMeiRiteKind.Rename : OniMeiRiteKind.Engrave, slot, oldKey, entry.Key);
-            SelectSlotSilently(-1);
         }
 
         /// <summary>收扇不响声(仪式开演自带音)</summary>
+        private void CompleteMeiChange(int session, bool success, OniMeiRiteKind kind,
+            OniMeiSlotKind slot, string oldKey, string newKey) {
+            if (!IsOpen || session != interactionSession) {
+                return;
+            }
+            if (!success) {
+                if (selectedSlot >= 0) {
+                    RebuildRibs();
+                    RebuildTray();
+                }
+                DenyFeedback();
+                return;
+            }
+            RebuildTray();
+            Rite.Start(kind, slot, oldKey, newKey);
+            SelectSlotSilently(-1);
+        }
+
+        private bool MaintainMouseSlot() {
+            if (!keepMouseSlot) {
+                return true;
+            }
+            if (OnikiriData.TryGet(Main.mouseItem)?.InstanceId != mouseSlotInstanceId) {
+                Close();
+                return false;
+            }
+            Main.playerInventory = true;
+            return true;
+        }
+
         private void SelectSlotSilently(int index) {
             selectedSlot = index;
             hoverRib = -1;

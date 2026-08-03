@@ -232,7 +232,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Vector2 knot = Anchor;
             domainEye.Update(player, knot, !uiCovered && appear > 0.5f, MousePosition, logicTime,
                 keyLeftPressState == KeyPressState.Pressed,
-                keyRightPressState == KeyPressState.Pressed || keyMiddlePressState == KeyPressState.Pressed);
+                keyRightPressState == KeyPressState.Pressed,
+                keyMiddlePressState == KeyPressState.Pressed);
 
             //挂绳推进:危态风更烈;悬停视为被手捏住,风息、阻尼加重,偶发拽动也止住
             //风幅与阻尼取"檐下无风时微微息动"的档位,大幅甩摆只留给悬停初捏与危态拽动

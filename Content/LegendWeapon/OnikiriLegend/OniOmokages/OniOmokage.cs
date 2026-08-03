@@ -1,6 +1,7 @@
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -178,6 +179,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             if (Main.dedServ || npc == null || !npc.active || npc.life <= 0) {
                 return false;
             }
+            if (OnikiriTutorialTargetGlobal.IsTutorialTarget(npc, out _, out _)) {
+                return false;
+            }
 
             //同目标近距离已有面影则不重复挂
 
@@ -331,6 +335,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             Entries.Clear();
             Pulses.Clear();
             reimprintTimers.Clear();
+        }
+
+        /// <summary>清掉指定 NPC 槽的面影、脉冲与快照</summary>
+        internal static void ReleaseTarget(NPC npc) {
+            if (npc == null) {
+                return;
+            }
+            int npcIndex = npc.whoAmI;
+            Entries.RemoveAll(entry => entry.NpcIndex == npcIndex);
+            Pulses.RemoveAll(pulse => pulse.NpcIndex == npcIndex);
+            reimprintTimers.Remove(npcIndex);
+            if (Snaps.Remove(npcIndex, out OmokageSnap snap)) {
+                snap.RT?.Dispose();
+            }
         }
 
         /// <summary>离开里世界（翻回表/收域）、全部面影快速烧散</summary>
