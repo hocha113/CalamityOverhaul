@@ -1,5 +1,5 @@
+﻿using CalamityOverhaul.Content.Scenarios.Himayo.Gifts;
 using InnoVault.DataModules;
-using CalamityOverhaul.Content.Scenarios.Himayo.Gifts;
 using System.Collections.Generic;
 using Terraria.ModLoader.IO;
 

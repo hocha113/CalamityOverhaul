@@ -1,8 +1,8 @@
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;

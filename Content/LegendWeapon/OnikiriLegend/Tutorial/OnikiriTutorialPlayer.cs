@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
@@ -77,8 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 ? OnikiriTutorialNet.GetLocalTarget(Player.whoAmI, targetSession)
                 : null;
 
-        internal void TickTutorial()
-        {
+        internal void TickTutorial() {
             if (!initialized) {
                 if (Player.dead || !Player.active) {
                     return;
@@ -109,8 +108,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             AdvanceIfReady();
         }
 
-        internal void HandlePrimaryAction()
-        {
+        internal void HandlePrimaryAction() {
             switch (CurrentStep) {
                 case OnikiriTutorialFlow.Step_HudIntro:
                     AdvanceExplanatoryStep();
@@ -140,8 +138,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        internal void HandleSecondaryAction()
-        {
+        internal void HandleSecondaryAction() {
             switch (CurrentStep) {
                 case OnikiriTutorialFlow.Step_Mei:
                     AdvanceExplanatoryStep();
@@ -160,15 +157,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        internal void NotifyDismemberMiss()
-        {
+        internal void NotifyDismemberMiss() {
             if (CurrentStep == OnikiriTutorialFlow.Step_Dismember) {
                 SetFeedback(OnikiriTutorialFeedback.Retry, 150);
             }
         }
 
-        internal bool TryConsumeDismemberInput()
-        {
+        internal bool TryConsumeDismemberInput() {
             if (CurrentStep != OnikiriTutorialFlow.Step_Dismember || !dismemberInputArmed) {
                 return false;
             }
@@ -176,35 +171,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             return true;
         }
 
-        internal bool PollTutorialUiClick(bool mouseDown)
-        {
+        internal bool PollTutorialUiClick(bool mouseDown) {
             bool clicked = mouseDown && !previousTutorialUiLeft;
             previousTutorialUiLeft = mouseDown;
             return clicked;
         }
 
-        internal void DeferAfterQueueAbandon()
-        {
+        internal void DeferAfterQueueAbandon() {
             ReservationDeferredUntil = Main.GameUpdateCount + 60;
             Suspend(releaseTarget: true);
         }
 
-        internal void ForceStartPractice()
-        {
+        internal void ForceStartPractice() {
             DebugForce = true;
             ReservationDeferredUntil = 0;
             Suspend(releaseTarget: true);
             InitializeTutorial(forcePracticeStart: true);
         }
 
-        internal void ClearDebugForce()
-        {
+        internal void ClearDebugForce() {
             DebugForce = false;
             ReservationDeferredUntil = 0;
         }
 
-        internal void Suspend(bool releaseTarget)
-        {
+        internal void Suspend(bool releaseTarget) {
             if (!initialized && !subscribed && targetSession <= 0) {
                 return;
             }
@@ -236,8 +226,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             previousTutorialUiLeft = Main.mouseLeft;
         }
 
-        internal void ResetAllRuntime()
-        {
+        internal void ResetAllRuntime() {
             Suspend(releaseTarget: true);
             ClearDebugForce();
         }
@@ -245,8 +234,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         internal void BeginMeiTransaction(Inscriptions.OniMeiStore current)
             => meiSnapshot = new OniMeiSnapshot(current);
 
-        internal void RestoreMeiSnapshotIfNeeded()
-        {
+        internal void RestoreMeiSnapshotIfNeeded() {
             if (meiSnapshot == null) {
                 return;
             }
@@ -258,8 +246,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             meiSnapshot = null;
         }
 
-        public override void ModifyHurt(ref Player.HurtModifiers modifiers)
-        {
+        public override void ModifyHurt(ref Player.HurtModifiers modifiers) {
             if (!healthGuardActive || OniPlayerDismember.SelfHurtResolving) {
                 return;
             }
@@ -273,8 +260,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         public override bool PreKill(double damage, int hitDirection, bool pvp,
-            ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
-        {
+            ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource) {
             if (!healthGuardActive) {
                 return true;
             }
@@ -284,8 +270,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             return false;
         }
 
-        public override void PostUpdate()
-        {
+        public override void PostUpdate() {
             if (healthGuardActive) {
                 SetPlayerLifeAtLeast(GetTutorialLifeFloor(), showEffect: false);
             }
@@ -303,8 +288,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private void InitializeTutorial(bool forcePracticeStart = false)
-        {
+        private void InitializeTutorial(bool forcePracticeStart = false) {
             initialized = true;
             Subscribe();
 
@@ -331,8 +315,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private OnikiriGuideData GuideData
             => Player.GetModPlayer<StoryPlayer>().Get<OnikiriGuideData>();
 
-        private void Subscribe()
-        {
+        private void Subscribe() {
             if (subscribed) {
                 return;
             }
@@ -342,8 +325,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             subscribed = true;
         }
 
-        private void Unsubscribe()
-        {
+        private void Unsubscribe() {
             if (!subscribed) {
                 return;
             }
@@ -353,8 +335,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             subscribed = false;
         }
 
-        private void SetStep(int step)
-        {
+        private void SetStep(int step) {
             CurrentStep = step;
             StepTimer = 0;
             expectedCommandAccepted = false;
@@ -389,8 +370,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private void AdvanceIfReady()
-        {
+        private void AdvanceIfReady() {
             switch (CurrentStep) {
                 case OnikiriTutorialFlow.Step_HudIntro:
                     if (StepTimer > 60 * 20) {
@@ -426,8 +406,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private void TickRegisterStep()
-        {
+        private void TickRegisterStep() {
             if (OniRegisterUI.Instance?.IsOpen ?? false) {
                 registerOpenedThisStep = true;
             }
@@ -436,8 +415,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private void TickPrepareStep()
-        {
+        private void TickPrepareStep() {
             OniDomainPhase phase = Domain.Phase;
             if (!prepareReachedClosed) {
                 if (phase == OniDomainPhase.Closed) {
@@ -464,8 +442,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private void TickOpenStep()
-        {
+        private void TickOpenStep() {
             if (expectedCommandAccepted) {
                 if (IsStableOmote) {
                     CompleteOpenStep();
@@ -480,8 +457,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private void TickFlipStep()
-        {
+        private void TickFlipStep() {
             EnsureTutorialTarget();
             if (expectedCommandAccepted) {
                 if (IsStableUra) {
@@ -495,8 +471,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             EnsureStableOmote();
         }
 
-        private void TickBacklashStep()
-        {
+        private void TickBacklashStep() {
             NPC target = TutorialTarget;
             bool splitVisible = target != null && OniDismember.IsDismembered(target.whoAmI);
             if (splitVisible) {
@@ -536,8 +511,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             SetStep(OnikiriTutorialFlow.Step_CloseEye);
         }
 
-        private void TickCloseStep()
-        {
+        private void TickCloseStep() {
             if (expectedCommandAccepted) {
                 if (Domain.Phase == OniDomainPhase.Closed) {
                     WritePracticeCheckpoint(OnikiriPracticeCheckpoint.Closed);
@@ -552,8 +526,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             EnsureStableUra();
         }
 
-        private void AdvanceExplanatoryStep()
-        {
+        private void AdvanceExplanatoryStep() {
             if (CurrentStep == OnikiriTutorialFlow.Step_Register) {
                 GuideData.Checkpoint = Math.Max(GuideData.Checkpoint, OnikiriTutorialFlow.Checkpoint_Hud);
                 SetStep(OnikiriTutorialFlow.Step_Prepare);
@@ -566,8 +539,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private void PerformAssistedAction()
-        {
+        private void PerformAssistedAction() {
             if (!CanAcceptTutorialInput()) {
                 SetFeedback(OnikiriTutorialFeedback.Busy, 120);
                 return;
@@ -626,8 +598,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private void RetryCurrentStep()
-        {
+        private void RetryCurrentStep() {
             StepTimer = 0;
             expectedCommandAccepted = false;
             Feedback = OnikiriTutorialFeedback.None;
@@ -638,8 +609,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private void HandleUnboundFallbackInput()
-        {
+        private void HandleUnboundFallbackInput() {
             bool middleDown = Mouse.GetState().MiddleButton == ButtonState.Pressed;
             bool middlePressed = middleDown && !previousMiddleDown;
             previousMiddleDown = middleDown;
@@ -674,15 +644,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 && !(OniEngraveRiteUI.Instance?.Active ?? false)
                 && !Main.editSign && !Main.editChest && !Main.drawingPlayerChat;
 
-        private bool IsHoldingOnikiri()
-        {
+        private bool IsHoldingOnikiri() {
             Item held = Player.GetItem();
             return held != null && !held.IsAir && held.type == ModContent.ItemType<OnikiriItem>();
         }
 
         private void HandleDomainCommandAccepted(Player player, OnikiriDomainCommandKind kind,
-            OnikiriDomainCommandSource source)
-        {
+            OnikiriDomainCommandSource source) {
             if (player != Player || suppressCommandEvent) {
                 return;
             }
@@ -726,8 +694,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private void HandleDomainPhaseSettled(Player player, OniDomainPhase phase)
-        {
+        private void HandleDomainPhaseSettled(Player player, OniDomainPhase phase) {
             if (player != Player) {
                 return;
             }
@@ -746,8 +713,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private void HandleDismemberLanded(Player player, NPC target)
-        {
+        private void HandleDismemberLanded(Player player, NPC target) {
             if (player != Player || CurrentStep != OnikiriTutorialFlow.Step_Dismember
                 || target == null
                 || !OnikiriTutorialTargetGlobal.IsTutorialTarget(target, out int owner, out int session)
@@ -766,8 +732,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             SetStep(OnikiriTutorialFlow.Step_Backlash);
         }
 
-        private void CompleteOpenStep()
-        {
+        private void CompleteOpenStep() {
             if (CurrentStep != OnikiriTutorialFlow.Step_OpenOmote) {
                 return;
             }
@@ -775,8 +740,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             SetStep(OnikiriTutorialFlow.Step_FlipUra);
         }
 
-        private void CompleteFlipStep()
-        {
+        private void CompleteFlipStep() {
             if (CurrentStep != OnikiriTutorialFlow.Step_FlipUra) {
                 return;
             }
@@ -784,8 +748,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             SetStep(OnikiriTutorialFlow.Step_Dismember);
         }
 
-        private void WritePracticeCheckpoint(OnikiriPracticeCheckpoint checkpoint)
-        {
+        private void WritePracticeCheckpoint(OnikiriPracticeCheckpoint checkpoint) {
             GuideData.PracticeCheckpoint = Math.Max(GuideData.PracticeCheckpoint, (int)checkpoint);
         }
 
@@ -793,16 +756,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private bool IsStableOmote => Domain.Phase == OniDomainPhase.Omote && !Domain.WorldIsUra;
         private bool IsStableUra => Domain.Phase == OniDomainPhase.Ura && Domain.WorldIsUra;
 
-        private void NormalizeClosed()
-        {
+        private void NormalizeClosed() {
             OniDomainPhase phase = Domain.Phase;
             if (phase is OniDomainPhase.Opening or OniDomainPhase.Omote or OniDomainPhase.Ura) {
                 TryInternalToggle();
             }
         }
 
-        private bool EnsureStableOmote()
-        {
+        private bool EnsureStableOmote() {
             if (IsStableOmote) {
                 return true;
             }
@@ -815,8 +776,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             return false;
         }
 
-        private bool EnsureStableUra()
-        {
+        private bool EnsureStableUra() {
             if (IsStableUra) {
                 return true;
             }
@@ -829,30 +789,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             return false;
         }
 
-        private void TryInternalToggle()
-        {
+        private void TryInternalToggle() {
             suppressCommandEvent = true;
             try {
                 OniDomain.TryToggle(Player, out _, OnikiriDomainCommandSource.TutorialAssist);
-            }
-            finally {
+            } finally {
                 suppressCommandEvent = false;
             }
         }
 
-        private void TryInternalFlip()
-        {
+        private void TryInternalFlip() {
             suppressCommandEvent = true;
             try {
                 OniDomain.TryFlip(Player, out _, OnikiriDomainCommandSource.TutorialAssist);
-            }
-            finally {
+            } finally {
                 suppressCommandEvent = false;
             }
         }
 
-        private void MaintainTutorialTarget()
-        {
+        private void MaintainTutorialTarget() {
             if (CurrentStep < OnikiriTutorialFlow.Step_FlipUra
                 || CurrentStep > OnikiriTutorialFlow.Step_Backlash
                 || CurrentStep == OnikiriTutorialFlow.Step_Backlash && sawSelfCutLock) {
@@ -868,8 +823,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private void EnsureTutorialTarget(bool force = false)
-        {
+        private void EnsureTutorialTarget(bool force = false) {
             if (targetSession <= 0) {
                 targetSession = Main.rand.Next(1, int.MaxValue);
                 force = true;
@@ -879,8 +833,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private void ReleaseTutorialTarget()
-        {
+        private void ReleaseTutorialTarget() {
             if (targetSession > 0) {
                 OnikiriTutorialNet.RequestReleaseTarget(targetSession);
             }
@@ -888,14 +841,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             targetRetryTimer = 0;
         }
 
-        private void SetFeedback(OnikiriTutorialFeedback feedback, int frames)
-        {
+        private void SetFeedback(OnikiriTutorialFeedback feedback, int frames) {
             Feedback = feedback;
             feedbackTimer = Math.Max(frames, 1);
         }
 
-        private void SetPlayerLifeAtLeast(int target, bool showEffect)
-        {
+        private void SetPlayerLifeAtLeast(int target, bool showEffect) {
             int clamped = Math.Clamp(target, 1, Player.statLifeMax2);
             if (Player.statLife >= clamped) {
                 return;
@@ -910,8 +861,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private int GetTutorialLifeFloor()
-        {
+        private int GetTutorialLifeFloor() {
             bool backlashStarted = sawSelfCutLock || detachedSafetySawLock
                 || OniPlayerDismember.IsLocked(Player);
             if (backlashStarted) {
@@ -922,8 +872,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             return Math.Min(Player.statLifeMax2, selfDamage + 1);
         }
 
-        private void RestoreTutorialHealth()
-        {
+        private void RestoreTutorialHealth() {
             healthGuardActive = false;
             if (healthRecovered || guardedLife <= 0) {
                 return;
@@ -934,8 +883,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             lifeBeforeDemonstration = 0;
         }
 
-        private void FinishTutorial()
-        {
+        private void FinishTutorial() {
             RestoreMeiSnapshotIfNeeded();
             RestoreTutorialHealth();
             ReleaseTutorialTarget();

@@ -1,6 +1,5 @@
-﻿using System;
-using CalamityOverhaul.Common;
-using System.Linq;
+﻿using CalamityOverhaul.Common;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

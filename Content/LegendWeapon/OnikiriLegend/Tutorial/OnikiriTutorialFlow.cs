@@ -1,5 +1,4 @@
-using Microsoft.Xna.Framework;
-using Terraria;
+﻿using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 {
@@ -52,8 +51,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         internal static void DeferAfterQueueAbandon()
             => Local?.DeferAfterQueueAbandon();
 
-        internal static bool TryGetRequiredDismemberTarget(Player player, out NPC target)
-        {
+        internal static bool TryGetRequiredDismemberTarget(Player player, out NPC target) {
             target = null;
             if (player == null || player.whoAmI != Main.myPlayer
                 || CurrentStep != Step_Dismember) {
@@ -63,8 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             return true;
         }
 
-        internal static void NotifyDismemberMiss(Player player)
-        {
+        internal static void NotifyDismemberMiss(Player player) {
             if (player?.whoAmI == Main.myPlayer) {
                 Local?.NotifyDismemberMiss();
             }

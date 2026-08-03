@@ -1,5 +1,4 @@
-﻿using InnoVault.Actors;
-using System.IO;
+﻿using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

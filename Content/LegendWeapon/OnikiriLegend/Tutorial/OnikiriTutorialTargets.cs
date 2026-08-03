@@ -1,5 +1,4 @@
-using Microsoft.Xna.Framework;
-using Terraria;
+﻿using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 {
@@ -41,10 +40,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         internal const string Tag_MeiFan = "mei_fan";
 
         /// <summary>HUD 控件每帧调用，发布当前命中区</summary>
-        internal static void Publish(string tag, Rectangle rect)
-        {
-            if (!_snapshots.TryGetValue(tag, out HudFocusSnapshot snap))
-            {
+        internal static void Publish(string tag, Rectangle rect) {
+            if (!_snapshots.TryGetValue(tag, out HudFocusSnapshot snap)) {
                 snap = new HudFocusSnapshot { Tag = tag };
                 _snapshots[tag] = snap;
             }

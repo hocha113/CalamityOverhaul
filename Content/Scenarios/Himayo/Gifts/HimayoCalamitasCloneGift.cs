@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
-using CalamityOverhaul.Content.Narrative;
+﻿using CalamityOverhaul.Content.Narrative;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using Terraria.Localization;

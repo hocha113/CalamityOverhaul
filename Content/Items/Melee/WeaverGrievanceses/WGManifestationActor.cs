@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using InnoVault.Actors;
+﻿using InnoVault.Actors;
 using InnoVault.Cinematics;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -121,8 +120,7 @@ namespace CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses
             createResumeState = state;
             try {
                 return ActorLoader.NewActor<WGManifestationActor>(state.Position, state.Velocity);
-            }
-            finally {
+            } finally {
                 createWithResumeState = false;
                 createResumeState = default;
             }

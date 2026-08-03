@@ -2,7 +2,6 @@
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.Common;
 using CalamityOverhaul.Content.UIs.UIEffect;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -43,8 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private static ButtonAction primaryAction;
         private static ButtonAction secondaryAction;
 
-        internal static void Reset()
-        {
+        internal static void Reset() {
             cardAnimation = 0f;
             shaderTime = 0f;
             lastStep = -1;
@@ -58,16 +56,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             internal readonly float Scale;
             internal readonly Color Color;
 
-            internal GuideLine(string text, float scale, Color color)
-            {
+            internal GuideLine(string text, float scale, Color color) {
                 Text = text;
                 Scale = scale;
                 Color = color;
             }
         }
 
-        internal static void UpdateInput()
-        {
+        internal static void UpdateInput() {
             bool mouseDown = Main.mouseLeft;
             bool clicked = OnikiriTutorialFlow.PollTutorialUiClick(mouseDown);
 
@@ -97,8 +93,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        internal static void Draw()
-        {
+        internal static void Draw() {
             if (!OnikiriTutorialFlow.IsRunning) {
                 cardAnimation = 0f;
                 lastStep = -1;
@@ -128,8 +123,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             DrawStepCard(spriteBatch, step, focus, time, cardAnimation);
         }
 
-        private static HudFocusSnapshot ResolveFocus(int step)
-        {
+        private static HudFocusSnapshot ResolveFocus(int step) {
             string tag = step switch {
                 OnikiriTutorialFlow.Step_HudIntro => OnikiriTutorialTargets.Tag_VigorStroke,
                 OnikiriTutorialFlow.Step_Mei => OniMeiUI.Instance?.IsOpen == true
@@ -152,8 +146,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             return null;
         }
 
-        private static HudFocusSnapshot GetWorldTargetFocus(NPC target)
-        {
+        private static HudFocusSnapshot GetWorldTargetFocus(NPC target) {
             if (target?.active != true) {
                 return null;
             }
@@ -178,8 +171,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static void DrawStepCard(SpriteBatch spriteBatch, int step, HudFocusSnapshot focus,
-            float time, float alpha)
-        {
+            float time, float alpha) {
             if (!TryGetStepCopy(step, out LocalizedText title, out LocalizedText body,
                 out LocalizedText prompt)) {
                 ClearHitboxes();
@@ -216,8 +208,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static bool TryGetStepCopy(int step, out LocalizedText title,
-            out LocalizedText body, out LocalizedText prompt)
-        {
+            out LocalizedText body, out LocalizedText prompt) {
             title = body = prompt = null;
             switch (step) {
                 case OnikiriTutorialFlow.Step_HudIntro:
@@ -269,8 +260,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             return title != null && body != null;
         }
 
-        private static string FormatPrompt(int step, LocalizedText prompt)
-        {
+        private static string FormatPrompt(int step, LocalizedText prompt) {
             if (prompt == null || string.IsNullOrEmpty(prompt.Value)) {
                 return null;
             }
@@ -288,8 +278,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 : prompt.Value;
         }
 
-        private static string GetContextHint(int step)
-        {
+        private static string GetContextHint(int step) {
             string feedback = OnikiriTutorialFlow.Feedback switch {
                 OnikiriTutorialFeedback.Waiting => OnikiriTutorialLead.WaitingFeedback.Value,
                 OnikiriTutorialFeedback.Busy => OnikiriTutorialLead.BusyFeedback.Value,
@@ -314,8 +303,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static void BuildAndDrawButtons(SpriteBatch spriteBatch, DynamicSpriteFont font,
-            Rectangle card, int step, float time, float alpha)
-        {
+            Rectangle card, int step, float time, float alpha) {
             primaryRect = secondaryRect = Rectangle.Empty;
             primaryAction = secondaryAction = ButtonAction.None;
 
@@ -373,8 +361,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static Rectangle MakeButtonRect(DynamicSpriteFont font, Rectangle card, string text,
-            bool rightAligned, int height, float textScale)
-        {
+            bool rightAligned, int height, float textScale) {
             int width = Math.Max(rightAligned ? 98 : 84,
                 (int)(font.MeasureString(text).X * textScale) + 24);
             int x = rightAligned ? card.Right - width - 12 : card.X + 12;
@@ -382,8 +369,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static void DrawHighlightRect(SpriteBatch spriteBatch, Rectangle rect,
-            float time, float alpha)
-        {
+            float time, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2?.Value;
             if (pixel == null) return;
             float pulse = 0.55f + 0.45f * (0.5f + 0.5f * MathF.Sin(time * 2.4f));
@@ -398,8 +384,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static void DrawDashedBorder(SpriteBatch spriteBatch, Texture2D pixel,
-            Rectangle rect, Color color, float dash, float gap, float flow)
-        {
+            Rectangle rect, Color color, float dash, float gap, float flow) {
             DrawDashedSegment(spriteBatch, pixel, new Vector2(rect.Left, rect.Top),
                 new Vector2(rect.Right, rect.Top), color, dash, gap, flow);
             DrawDashedSegment(spriteBatch, pixel, new Vector2(rect.Right, rect.Top),
@@ -411,8 +396,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static void DrawDashedSegment(SpriteBatch spriteBatch, Texture2D pixel,
-            Vector2 from, Vector2 to, Color color, float dash, float gap, float flow)
-        {
+            Vector2 from, Vector2 to, Color color, float dash, float gap, float flow) {
             Vector2 edge = to - from;
             float length = edge.Length();
             if (length < 1f) return;
@@ -430,8 +414,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private static Rectangle PlaceCard(HudFocusSnapshot focus, int cardHeight, float alpha)
-        {
+        private static Rectangle PlaceCard(HudFocusSnapshot focus, int cardHeight, float alpha) {
             float ease = VaultUtils.EaseOutCubic(alpha);
             float slide = (1f - ease) * 28f;
             float screenWidth = OnikiriUITheme.UIScreenW;
@@ -455,8 +438,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static void DrawCardPanel(SpriteBatch spriteBatch, Rectangle card,
-            float alpha, float time)
-        {
+            float alpha, float time) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             OniBrush.DrawPanelDropShadow(spriteBatch, card.Center.ToVector2(),
                 new Vector2(card.Width, card.Height), alpha);
@@ -480,8 +462,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static void DrawCardContent(SpriteBatch spriteBatch, DynamicSpriteFont font,
-            Rectangle card, string title, List<GuideLine> lines, float alpha)
-        {
+            Rectangle card, string title, List<GuideLine> lines, float alpha) {
             float x = card.X + ContentPadX;
             float y = card.Y + ContentPadTop;
             float wrap = card.Width - ContentPadX * 2f;
@@ -501,8 +482,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static float DrawBody(SpriteBatch spriteBatch, DynamicSpriteFont font,
-            string text, float x, float y, float wrapWidth, float scale, Color color, float alpha)
-        {
+            string text, float x, float y, float wrapWidth, float scale, Color color, float alpha) {
             if (string.IsNullOrEmpty(text)) return y;
             string[] wrapped = CWRUtils.WrapTextArray(text, font,
                 Math.Max(8, (int)(wrapWidth / scale)), 99, out _);
@@ -518,8 +498,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static int MeasureCardHeight(DynamicSpriteFont font,
-            List<GuideLine> lines, float contentWidth)
-        {
+            List<GuideLine> lines, float contentWidth) {
             float height = ContentPadTop + font.MeasureString("A").Y * TitleScale + 16f;
             foreach (GuideLine line in lines) {
                 int count = CWRUtils.WrapTextArray(line.Text, font,
@@ -531,8 +510,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static void DrawConnector(SpriteBatch spriteBatch, Rectangle card,
-            Vector2 target, float alpha, float time)
-        {
+            Vector2 target, float alpha, float time) {
             Vector2 from = card.Center.X < target.X
                 ? new Vector2(card.Right - 4f, card.Center.Y)
                 : new Vector2(card.X + 4f, card.Center.Y);
@@ -547,8 +525,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static void DrawPaperButton(SpriteBatch spriteBatch, DynamicSpriteFont font,
-            Rectangle rect, string text, Color accent, float time, float alpha, float textScale)
-        {
+            Rectangle rect, string text, Color accent, float time, float alpha, float textScale) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             bool hovered = rect.Contains(OnikiriUITheme.UIMouse.ToPoint());
             float highlight = hovered ? 1f : 0f;
@@ -572,8 +549,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 textScale);
         }
 
-        private static void ClearHitboxes()
-        {
+        private static void ClearHitboxes() {
             cardRect = primaryRect = secondaryRect = Rectangle.Empty;
             primaryAction = secondaryAction = ButtonAction.None;
             layoutStep = -1;

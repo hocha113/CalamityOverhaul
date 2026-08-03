@@ -1,5 +1,5 @@
+﻿using CalamityOverhaul.Content.Players;
 using CalamityOverhaul.Content.Wraiths.Core;
-using CalamityOverhaul.Content.Players;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Localization;

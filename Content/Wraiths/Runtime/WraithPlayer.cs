@@ -1,6 +1,6 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.Players;
+using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Wraiths.Core;
-using CalamityOverhaul.Content.Players;
 using InnoVault.PRT;
 using System;
 using System.Collections.Generic;

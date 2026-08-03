@@ -4,7 +4,6 @@ using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Wraiths.Attunements;
 using CalamityOverhaul.Content.Wraiths.Core;
-using InnoVault;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -847,8 +846,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
                 float stretch = State == ShadeState.Dashing ? 1.30f : 1f;
                 DrawShade(device, effect, Projectile.Center, drawOpacity, dissolveSmooth, phaseSmooth, stretch);
-            }
-            finally {
+            } finally {
                 device.BlendState = previousBlend;
                 device.RasterizerState = previousRasterizer;
                 device.DepthStencilState = previousDepth;

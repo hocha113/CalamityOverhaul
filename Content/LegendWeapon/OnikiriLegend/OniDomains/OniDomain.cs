@@ -1,6 +1,5 @@
-﻿using Terraria;
-
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial;
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial;
+using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 {

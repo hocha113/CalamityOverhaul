@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using System;
 using Terraria;
 
@@ -113,8 +113,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         //====清理====
 
         /// <summary>世界切换/卸载时清空所有订阅，防跨存档事件泄漏</summary>
-        internal static void ClearAll()
-        {
+        internal static void ClearAll() {
             OnComboBeatHit = null;
             OnDashSweep = null;
             OnDashJudged = null;

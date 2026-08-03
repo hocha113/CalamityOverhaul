@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.Wraiths.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Terraria;
 

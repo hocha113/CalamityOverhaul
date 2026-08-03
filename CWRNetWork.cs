@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.HackTimes;
+using CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
@@ -22,7 +23,6 @@ using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
 using CalamityOverhaul.Content.Wraiths.Runtime;
 using System.IO;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses;
 
 namespace CalamityOverhaul
 {

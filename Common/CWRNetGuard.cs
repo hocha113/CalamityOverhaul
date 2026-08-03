@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 
@@ -31,8 +31,7 @@ namespace CalamityOverhaul.Common
             int byteLength;
             try {
                 byteLength = reader.Read7BitEncodedInt();
-            }
-            catch (System.FormatException ex) {
+            } catch (System.FormatException ex) {
                 throw new IOException($"{fieldName} has an invalid length prefix", ex);
             }
             if (byteLength < 0 || byteLength > maxByteLength) {

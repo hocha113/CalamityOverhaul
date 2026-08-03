@@ -1,11 +1,10 @@
-using CalamityOverhaul.Content.Narrative;
+﻿using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
 using CalamityOverhaul.Content.Narrative.Guides;
 using CalamityOverhaul.Content.Scenarios.Himayo;
 using CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines;
 using InnoVault.Cinematics;
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
@@ -78,14 +77,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         public override void Load() => instance = this;
-        public override void Unload()
-        {
+        public override void Unload() {
             OnikiriTutorialRenderer.Reset();
             instance = null;
         }
 
-        public override void SetStaticDefaults()
-        {
+        public override void SetStaticDefaults() {
             GuideLeadQueue.Register(this);
 
             HudTitle = this.GetLocalization(nameof(HudTitle), () => "气力与架势");
@@ -155,16 +152,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private static bool Ready
             => Reserving && !NarrativeTriggerGate.IsBusy && !CutsceneDirector.IsPlaying;
 
-        public override void OnWorldUnload()
-        {
+        public override void OnWorldUnload() {
             OnikiriTutorialFlow.Reset();
             OnikiriTutorialTargets.Clear();
             OnikiriTutorialRenderer.Reset();
             OnikiriTutorialEvents.ClearAll();
         }
 
-        public override void UpdateUI(GameTime gameTime)
-        {
+        public override void UpdateUI(GameTime gameTime) {
             if (Main.dedServ || Main.gameMenu) return;
             if (!HasDisplayLease) {
                 OnikiriTutorialFlow.ResetIfHolderLost();
@@ -177,8 +172,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             OnikiriTutorialRenderer.UpdateInput();
         }
 
-        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
-        {
+        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
             if (!HasDisplayLease || !OnikiriTutorialFlow.IsRunning) return;
             int index = layers.FindIndex(layer => layer.Name == "Vanilla: Mouse Text");
             if (index < 0) {
@@ -192,8 +186,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        internal static void MarkComplete()
-        {
+        internal static void MarkComplete() {
             if (Main.dedServ) return;
             Player player = Main.LocalPlayer;
             if (player?.active != true) return;
@@ -204,8 +197,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             player.GetModPlayer<OnikiriTutorialPlayer>().ClearDebugForce();
         }
 
-        internal static void DebugStartPractice(Player player)
-        {
+        internal static void DebugStartPractice(Player player) {
             if (Main.dedServ || player?.whoAmI != Main.myPlayer) return;
             OnikiriTutorialPlayer tutorial = player.GetModPlayer<OnikiriTutorialPlayer>();
             if (tutorial.DebugForce && tutorial.IsRunning) return;
@@ -219,8 +211,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             tutorial.ForceStartPractice();
         }
 
-        internal static void DebugReset(Player player)
-        {
+        internal static void DebugReset(Player player) {
             if (Main.dedServ || player?.whoAmI != Main.myPlayer) return;
             OnikiriGuideData guide = player.GetModPlayer<StoryPlayer>().Get<OnikiriGuideData>();
             guide.CompletedVersion = 0;
