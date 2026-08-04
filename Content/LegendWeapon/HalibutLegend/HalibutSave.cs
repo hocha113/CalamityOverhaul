@@ -1,7 +1,7 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
+using CalamityOverhaul.Content.MainMenus.Characters;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
-using CalamityOverhaul.Content.UIs.MainMenuCharacters;
 using System;
 using System.Collections.Generic;
 using Terraria;

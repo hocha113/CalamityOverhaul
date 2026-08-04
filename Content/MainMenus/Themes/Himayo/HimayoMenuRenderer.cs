@@ -9,7 +9,7 @@ using Terraria.GameInput;
 using Terraria.ModLoader;
 using Terraria.UI.Gamepad;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
+namespace CalamityOverhaul.Content.MainMenus.Themes.Himayo
 {
     internal sealed class HimayoMenuRenderer
     {

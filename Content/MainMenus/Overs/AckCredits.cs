@@ -1,4 +1,4 @@
-﻿namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
+﻿namespace CalamityOverhaul.Content.MainMenus.Overs
 {
     /// <summary>致谢贡献类别，定分节标题与强调色</summary>
     internal enum CreditRole

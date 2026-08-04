@@ -1,5 +1,5 @@
-﻿using CalamityOverhaul.Content.Narrative.Data.Modules;
-using CalamityOverhaul.Content.UIs.MainMenuCharacters;
+﻿using CalamityOverhaul.Content.MainMenus.Characters;
+using CalamityOverhaul.Content.Narrative.Data.Modules;
 using InnoVault.DataModules;
 using System;
 using Terraria.ModLoader;

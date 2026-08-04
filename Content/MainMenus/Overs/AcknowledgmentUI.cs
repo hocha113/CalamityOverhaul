@@ -10,7 +10,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
+namespace CalamityOverhaul.Content.MainMenus.Overs
 {
     /// <summary>
     /// 致谢 ED，Title→Roll→Finale；背景 AckBackdrop/AckFinale，缺则 CPU 回退

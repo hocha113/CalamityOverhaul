@@ -2,7 +2,7 @@
 using System;
 using Terraria.Localization;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
+namespace CalamityOverhaul.Content.MainMenus.Themes.Himayo
 {
     internal readonly struct HimayoMenuButtonLayout
     {

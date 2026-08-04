@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using Terraria;
 using Terraria.GameInput;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
+namespace CalamityOverhaul.Content.MainMenus.Overs
 {
     /// <summary>致谢 ED 色板/版式；坐标走 UI 空间，勿直接读 Main.screen*</summary>
     internal static class AckTheme

@@ -1,12 +1,12 @@
-﻿using CalamityOverhaul.Content.UIs.MainMenuCharacters;
-using CalamityOverhaul.Content.UIs.MainMenuOverUIs;
+﻿using CalamityOverhaul.Content.MainMenus.Characters;
+using CalamityOverhaul.Content.MainMenus.Overs;
 using CalamityOverhaul.Content.UIs.OverhaulSettings;
 using System;
 using System.Reflection;
 using Terraria;
 using Terraria.GameInput;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
+namespace CalamityOverhaul.Content.MainMenus.Themes.Himayo
 {
     internal static class HimayoMenuInput
     {

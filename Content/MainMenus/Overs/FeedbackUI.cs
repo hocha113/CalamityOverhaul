@@ -7,7 +7,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
+namespace CalamityOverhaul.Content.MainMenus.Overs
 {
     internal class FeedbackUI : UIHandle
     {

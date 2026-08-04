@@ -1,7 +1,7 @@
 ﻿using InnoVault.GameSystem;
 using Terraria;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
+namespace CalamityOverhaul.Content.MainMenus.Characters
 {
     internal class HoverHook : MenuOverride
     {

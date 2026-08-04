@@ -1,8 +1,8 @@
-using InnoVault.GameSystem;
+﻿using InnoVault.GameSystem;
 using Terraria;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
+namespace CalamityOverhaul.Content.MainMenus.Characters
 {
     /// <summary>主菜单立绘存档</summary>
     internal class MenuSave : SaveMod

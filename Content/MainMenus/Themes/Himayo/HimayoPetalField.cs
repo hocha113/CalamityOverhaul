@@ -1,9 +1,9 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
+namespace CalamityOverhaul.Content.MainMenus.Themes.Himayo
 {
     internal sealed class HimayoPetalField
     {

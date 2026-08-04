@@ -6,7 +6,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.Localization;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
+namespace CalamityOverhaul.Content.MainMenus.Overs
 {
     internal class BulletinBoardElement : UIHandle
     {

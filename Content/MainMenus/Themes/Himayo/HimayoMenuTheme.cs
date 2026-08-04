@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using ReLogic.Graphics;
 using System;
@@ -8,7 +8,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
+namespace CalamityOverhaul.Content.MainMenus.Themes.Himayo
 {
     internal static class HimayoMenuTheme
     {

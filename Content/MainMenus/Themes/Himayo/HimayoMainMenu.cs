@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
+namespace CalamityOverhaul.Content.MainMenus.Themes.Himayo
 {
     [Autoload(Side = ModSide.Client)]
     internal sealed class HimayoMainMenu : ModMenu

@@ -1,11 +1,11 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
+namespace CalamityOverhaul.Content.MainMenus.Overs
 {
     /// <summary>致谢 ED 矢量绘制；背景 Ack*.fx，缺则 CPU</summary>
     internal static class AckRenderer

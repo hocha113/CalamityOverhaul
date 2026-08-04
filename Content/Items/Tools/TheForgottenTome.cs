@@ -1,6 +1,6 @@
+﻿using CalamityOverhaul.Content.MainMenus.Characters;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
-using CalamityOverhaul.Content.UIs.MainMenuCharacters;
 using InnoVault.Narrative.Runtime;
 using Microsoft.Xna.Framework.Graphics;
 using System;

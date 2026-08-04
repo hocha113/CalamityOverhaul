@@ -11,7 +11,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
+namespace CalamityOverhaul.Content.MainMenus.Themes.Himayo
 {
     internal enum HimayoMenuAction
     {
@@ -282,14 +282,14 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
             ILCursor edit = new(il);
             edit.Goto(afterFirstLabel, MoveType.Before);
             edit.Emit(OpCodes.Ldarg_0);
-            edit.EmitDelegate<Action<Main>>(PrepareNativeAction);
+            edit.EmitDelegate(PrepareNativeAction);
 
             edit.Goto(afterAddButtons, MoveType.Before);
             edit.Emit(OpCodes.Ldarg_0);
             edit.Emit(OpCodes.Ldloc, buttonIndexLocal);
-            edit.EmitDelegate<Action<Main, int>>(ResolveTailAction);
+            edit.EmitDelegate(ResolveTailAction);
             edit.Emit(OpCodes.Ldloc, numButtonsLocal);
-            edit.EmitDelegate<Func<int, int>>(SuppressNativeButtonCount);
+            edit.EmitDelegate(SuppressNativeButtonCount);
             edit.Emit(OpCodes.Stloc, numButtonsLocal);
 
             EmitCallSkip(il, socialCall);
@@ -322,7 +322,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
 
             ILCursor cursor = new(il);
             cursor.Goto(switchTextAnchor, MoveType.AfterLabel);
-            cursor.EmitDelegate<Func<bool>>(ShouldSuppressNativeTitleUi);
+            cursor.EmitDelegate(ShouldSuppressNativeTitleUi);
             cursor.Emit(OpCodes.Brtrue, returnInstruction);
             modMenuPatchReady = true;
         }
@@ -356,7 +356,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
         private static void EmitCallSkip(ILContext il, Instruction call) {
             ILCursor cursor = new(il);
             cursor.Goto(call.Previous.Previous, MoveType.Before);
-            cursor.EmitDelegate<Func<bool>>(ShouldSuppressNativeTitleUi);
+            cursor.EmitDelegate(ShouldSuppressNativeTitleUi);
             cursor.Emit(OpCodes.Brtrue, call.Next);
         }
 

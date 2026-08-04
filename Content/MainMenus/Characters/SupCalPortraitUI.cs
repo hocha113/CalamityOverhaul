@@ -11,7 +11,7 @@ using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
+namespace CalamityOverhaul.Content.MainMenus.Characters
 {
     /// <summary>女巫主菜单立绘 UI</summary>
     internal class SupCalPortraitUI : BasePortraitUI

@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 #if DEBUG
 #endif
 
-namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
+namespace CalamityOverhaul.Content.MainMenus.Overs
 {
     //老实说，这样的完全不利于扩展，如果想加入一条新的词条会非常麻烦，更别说如果想更换词条之间的顺序，更好的选择是将每个词条抽象成类实例管理 -hocah113 2024/6/28
     //Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes 就是这样，这样才是优雅的 -hocah113 2025/2/1
