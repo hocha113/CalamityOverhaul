@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.RAMSystems;
+﻿using CalamityOverhaul.Content.RAMSystems;
 using System.IO;
 using Terraria;
 using Terraria.ID;
@@ -79,10 +79,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
                 else if (kind == PacketKind.State) {
                     HandleState(reader);
                 }
-            }
-            catch (EndOfStreamException) {
-            }
-            catch (IOException) {
+            } catch (EndOfStreamException) {
+            } catch (IOException) {
             }
         }
 

@@ -1,9 +1,8 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.Wraiths.Abilities;
 using CalamityOverhaul.Content.Wraiths.Core;
-using CalamityOverhaul.Content.Wraiths.Runtime;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;

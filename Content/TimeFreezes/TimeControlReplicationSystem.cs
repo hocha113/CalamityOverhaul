@@ -1,9 +1,9 @@
+﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -183,15 +183,12 @@ namespace CalamityOverhaul.Content.TimeFreezes
                         using BinaryReader sectionReader = new(stream,
                             Encoding.UTF8, leaveOpen: false);
                         section.Read(sectionReader);
-                    }
-                    catch (Exception exception) {
+                    } catch (Exception exception) {
                         LogSnapshotFailure(section.Name, exception);
                     }
                 }
-            }
-            catch (EndOfStreamException) {
-            }
-            catch (IOException) {
+            } catch (EndOfStreamException) {
+            } catch (IOException) {
             }
         }
 
@@ -220,8 +217,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 }
                 try {
                     pending.Apply(npc);
-                }
-                catch (Exception exception) {
+                } catch (Exception exception) {
                     CWRMod.Instance?.Logger.Warn(
                         $"Time control NPC apply failed [{key.SourceType.Name}:{key.ActivationId}] {key.Identity}: {exception}");
                 }
@@ -251,8 +247,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 }
                 try {
                     pending.Apply(projectile);
-                }
-                catch (Exception exception) {
+                } catch (Exception exception) {
                     CWRMod.Instance?.Logger.Warn(
                         $"Time control projectile apply failed [{key.SourceType.Name}:{key.ActivationId}] {key.Identity}: {exception}");
                 }
@@ -304,8 +299,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
                     success = section.Write(sectionWriter);
                     sectionWriter.Flush();
                 }
-            }
-            catch (Exception exception) {
+            } catch (Exception exception) {
                 LogSnapshotFailure(section.Name, exception);
             }
 

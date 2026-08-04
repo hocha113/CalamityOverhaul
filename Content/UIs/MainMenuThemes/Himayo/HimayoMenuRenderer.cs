@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using ReLogic.Graphics;
@@ -81,8 +81,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
                     spriteBatch.Draw(texture, new Rectangle(0, 0, RenderWidth, RenderHeight), Color.White);
                 });
                 return true;
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 backgroundShaderDisabled = true;
                 LogBackgroundFallback(ex);
                 return false;
@@ -123,8 +122,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
             try {
                 DrawIdentity(spriteBatch, effect, () =>
                     state.Petals.DrawFarAndMiddle(spriteBatch, effect, titlePage, state.Interpolation));
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 DisablePetals(ex);
             }
         }
@@ -137,8 +135,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
             try {
                 DrawIdentity(spriteBatch, effect, () =>
                     state.Petals.DrawNear(spriteBatch, effect, true, state.Interpolation));
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 DisablePetals(ex);
             }
         }
@@ -154,8 +151,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
                 effect.CurrentTechnique = RequireTechnique(effect, "TechMenuPetal");
                 _ = RequireParameter(effect, "uPetalSoftness");
                 return true;
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 DisablePetals(ex);
                 return false;
             }
@@ -274,8 +270,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
                     DepthStencilState.None, Main.Rasterizer, effect, Matrix.Identity);
                 identityBatchBegun = true;
                 drawAction();
-            }
-            finally {
+            } finally {
                 if (identityBatchBegun) {
                     spriteBatch.End();
                 }

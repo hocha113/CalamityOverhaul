@@ -1,6 +1,5 @@
-using ReLogic.Graphics;
+﻿using ReLogic.Graphics;
 using System;
-using Terraria;
 using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.UIs.MainMenuCharacters;
+﻿using CalamityOverhaul.Content.UIs.MainMenuCharacters;
 using CalamityOverhaul.Content.UIs.MainMenuOverUIs;
 using CalamityOverhaul.Content.UIs.OverhaulSettings;
 using System;
@@ -123,8 +123,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
                     value = typed;
                     return true;
                 }
-            }
-            catch {
+            } catch {
             }
 
             value = default;

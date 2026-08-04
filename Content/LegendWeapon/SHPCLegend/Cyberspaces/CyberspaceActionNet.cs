@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RAMSystems;
 using System;
 using System.IO;
@@ -88,10 +88,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                         HandleRestartState(reader);
                     }
                 }
-            }
-            catch (EndOfStreamException) {
-            }
-            catch (IOException) {
+            } catch (EndOfStreamException) {
+            } catch (IOException) {
             }
         }
 

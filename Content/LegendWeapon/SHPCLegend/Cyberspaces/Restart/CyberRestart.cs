@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.RAMSystems;
 using CalamityOverhaul.Content.TimeFreezes;
@@ -23,7 +23,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
         public const int PhaseBurstEnd = 92;
         public const int TotalFrames = PhaseBurstEnd;
 
-        internal sealed class Runtime {
+        internal sealed class Runtime
+        {
             internal int ProgressTimer;
             internal float ProgressCarry;
             internal int AnchorLayer;

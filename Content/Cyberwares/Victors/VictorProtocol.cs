@@ -1,4 +1,4 @@
-namespace CalamityOverhaul.Content.Cyberwares.Victors
+﻿namespace CalamityOverhaul.Content.Cyberwares.Victors
 {
     internal enum VictorRequestKind : byte
     {
@@ -36,7 +36,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
     internal readonly record struct VictorRequestToken(
         uint SessionGeneration,
         uint RequestId,
-        uint LoadoutRevision) {
+        uint LoadoutRevision)
+    {
         internal bool IsValid => SessionGeneration != 0 && RequestId != 0
             && LoadoutRevision != 0;
     }
@@ -46,7 +47,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
         uint RequestId,
         VictorRequestKind Kind,
         VictorResultCode Code,
-        uint AuthorityLoadoutRevision) {
+        uint AuthorityLoadoutRevision)
+    {
         internal bool IsValid => RequestSessionGeneration != 0 && RequestId != 0
             && AuthorityLoadoutRevision != 0
             && VictorProtocol.IsValidKind(Kind)

@@ -1,4 +1,7 @@
 ﻿using CalamityOverhaul.Content;
+using CalamityOverhaul.Content.Cyberwares;
+using CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans;
+using CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses;
 using CalamityOverhaul.Content.Items.Tools;
@@ -13,9 +16,6 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Modifys;
 using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using CalamityOverhaul.Content.RAMSystems;
-using CalamityOverhaul.Content.Cyberwares;
-using CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans;
-using CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals;
 using CalamityOverhaul.Content.Scenarios.Draedon;
 using CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.SignalTower;
 using CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch;

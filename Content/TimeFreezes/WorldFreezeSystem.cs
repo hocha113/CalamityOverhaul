@@ -146,19 +146,16 @@ namespace CalamityOverhaul.Content.TimeFreezes
             TimeGear.Unregister<WorldFreezeSystem>();
             try {
                 TimeFreezeSystem.EndWorldFreeze();
-            }
-            catch (Exception exception) {
+            } catch (Exception exception) {
                 CWRMod.Instance?.Logger.Error(
                     $"World freeze thaw failed: {exception}");
                 try {
                     TimeFreezeSystem.RollbackWorldFreeze();
-                }
-                catch (Exception rollbackException) {
+                } catch (Exception rollbackException) {
                     CWRMod.Instance?.Logger.Error(
                         $"World freeze thaw rollback failed: {rollbackException}");
                 }
-            }
-            finally {
+            } finally {
                 IsThawing = false;
                 TimeGear.Unregister<WorldFreezeSystem>();
                 if (activeReasons.Count > 0 && !TryBeginFreezeSession()) {
@@ -173,17 +170,14 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 TimeGear.Register<WorldFreezeSystem>(0f);
                 TimeFreezeSystem.BeginWorldFreeze();
                 return true;
-            }
-            catch (Exception exception) {
+            } catch (Exception exception) {
                 IsActive = false;
                 try {
                     TimeFreezeSystem.RollbackWorldFreeze();
-                }
-                catch (Exception rollbackException) {
+                } catch (Exception rollbackException) {
                     CWRMod.Instance?.Logger.Error(
                         $"World freeze activation rollback failed: {rollbackException}");
-                }
-                finally {
+                } finally {
                     TimeGear.Unregister<WorldFreezeSystem>();
                 }
                 CWRMod.Instance?.Logger.Error(

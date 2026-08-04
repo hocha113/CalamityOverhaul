@@ -977,8 +977,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
                         projectile.active = false;
                     }
                 }
-            }
-            finally {
+            } finally {
                 ClearWorldFreezeProjectileBaseline();
             }
         }
@@ -998,8 +997,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
                             .CancelWorldFreeze(projectile);
                     }
                 }
-            }
-            finally {
+            } finally {
                 ClearWorldFreezeProjectileBaseline();
             }
         }
@@ -1058,8 +1056,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
         private static void SafeKillDuringWorldThaw(Projectile projectile) {
             try {
                 projectile.Kill();
-            }
-            catch (Exception exception) {
+            } catch (Exception exception) {
                 projectile.active = false;
                 CWRMod.Instance?.Logger.Error(
                     $"World freeze projectile cleanup failed: {exception}");

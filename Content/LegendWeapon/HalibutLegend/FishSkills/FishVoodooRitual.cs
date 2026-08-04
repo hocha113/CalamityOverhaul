@@ -1,5 +1,5 @@
+﻿using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
-using CalamityOverhaul.Content.TimeFreezes;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;

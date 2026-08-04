@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content.RAMSystems;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.CstmVisualEyes
 {

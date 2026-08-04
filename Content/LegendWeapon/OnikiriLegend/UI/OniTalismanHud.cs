@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.UIs.HudStack;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;

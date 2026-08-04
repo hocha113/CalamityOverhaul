@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.HackTimes.Scannables;
+﻿using CalamityOverhaul.Content.HackTimes.Scannables;
 using CalamityOverhaul.Content.RAMSystems;
 using CalamityOverhaul.Content.TimeFreezes;
 using System;
@@ -200,10 +200,8 @@ namespace CalamityOverhaul.Content.HackTimes
                         HandleEffectRemove(reader);
                         break;
                 }
-            }
-            catch (EndOfStreamException) {
-            }
-            catch (IOException) {
+            } catch (EndOfStreamException) {
+            } catch (IOException) {
             }
         }
 
@@ -664,11 +662,9 @@ namespace CalamityOverhaul.Content.HackTimes
                 for (int i = 0; i < effects.Count; i++)
                     ApplyReplicatedEffectRecord(effects[i]);
                 return true;
-            }
-            catch (EndOfStreamException) {
+            } catch (EndOfStreamException) {
                 return false;
-            }
-            catch (IOException) {
+            } catch (IOException) {
                 return false;
             }
         }

@@ -1,9 +1,8 @@
-using CalamityOverhaul.Content.Cyberwares.Victors;
+﻿using CalamityOverhaul.Content.Cyberwares.Victors;
 using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -14,7 +13,8 @@ namespace CalamityOverhaul.Content.Cyberwares
         int PlayerIndex,
         uint SessionGeneration,
         uint LoadoutRevision,
-        int[] ItemTypes) {
+        int[] ItemTypes)
+    {
         internal bool IsStructurallyValid {
             get {
                 if (PlayerIndex < 0 || PlayerIndex >= Main.maxPlayers
@@ -212,10 +212,8 @@ namespace CalamityOverhaul.Content.Cyberwares
                         HandleRequestResult(reader);
                         break;
                 }
-            }
-            catch (EndOfStreamException) {
-            }
-            catch (IOException) {
+            } catch (EndOfStreamException) {
+            } catch (IOException) {
             }
         }
 
@@ -585,8 +583,7 @@ namespace CalamityOverhaul.Content.Cyberwares
             bool paid;
             try {
                 paid = player.BuyItem(entry.Price);
-            }
-            catch {
+            } catch {
                 RestoreWallet(walletSnapshot);
                 return VictorResultCode.InvalidPayload;
             }

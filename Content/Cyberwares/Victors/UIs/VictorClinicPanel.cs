@@ -1,6 +1,4 @@
-using CalamityOverhaul.Content.Cyberwares;
-using CalamityOverhaul.Content.Cyberwares.UIs;
-using CalamityOverhaul.Content.Cyberwares.Victors;
+﻿using CalamityOverhaul.Content.Cyberwares.UIs;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -10,7 +8,6 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 {

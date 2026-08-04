@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.TimeFreezes;
+﻿using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -188,10 +188,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                         ApplySnapshot(in snapshot);
                     }
                 }
-            }
-            catch (EndOfStreamException) {
-            }
-            catch (IOException) {
+            } catch (EndOfStreamException) {
+            } catch (IOException) {
             }
         }
 

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.RAMSystems;
+﻿using CalamityOverhaul.Content.RAMSystems;
 using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using System.Collections.Generic;
@@ -99,12 +99,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                         HandleAdvanceNPC(reader);
                         break;
                 }
-            }
-            catch (EndOfStreamException) {
-            }
-            catch (IOException) {
-            }
-            catch (ObjectDisposedException) {
+            } catch (EndOfStreamException) {
+            } catch (IOException) {
+            } catch (ObjectDisposedException) {
             }
         }
 
@@ -733,11 +730,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     WriteSnapshotEntry(writer, projectileEntries[i]);
                 }
                 return true;
-            }
-            catch (IOException) {
+            } catch (IOException) {
                 return false;
-            }
-            catch (ObjectDisposedException) {
+            } catch (ObjectDisposedException) {
                 return false;
             }
         }
@@ -803,14 +798,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                         record.Elapsed, record.Duration, out _, out _);
                 }
                 return true;
-            }
-            catch (EndOfStreamException) {
+            } catch (EndOfStreamException) {
                 return false;
-            }
-            catch (IOException) {
+            } catch (IOException) {
                 return false;
-            }
-            catch (ObjectDisposedException) {
+            } catch (ObjectDisposedException) {
                 return false;
             }
         }

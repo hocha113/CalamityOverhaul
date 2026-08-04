@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.TimeFreezes;
+﻿using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -45,10 +45,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                         ApplyExecutionRelease(reader.ReadInt64());
                         break;
                 }
-            }
-            catch (EndOfStreamException) {
-            }
-            catch (IOException) {
+            } catch (EndOfStreamException) {
+            } catch (IOException) {
             }
         }
 
@@ -177,11 +175,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                     WriteExecution(writer, serializable[i]);
                 }
                 return true;
-            }
-            catch (IOException) {
+            } catch (IOException) {
                 return false;
-            }
-            catch (ObjectDisposedException) {
+            } catch (ObjectDisposedException) {
                 return false;
             }
         }
@@ -217,11 +213,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                     ApplyReplicatedExecution(records[i]);
                 }
                 return true;
-            }
-            catch (EndOfStreamException) {
+            } catch (EndOfStreamException) {
                 return false;
-            }
-            catch (IOException) {
+            } catch (IOException) {
                 return false;
             }
         }

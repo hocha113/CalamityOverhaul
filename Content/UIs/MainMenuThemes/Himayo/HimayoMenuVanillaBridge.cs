@@ -1,5 +1,4 @@
-using InnoVault.GameSystem;
-using Microsoft.Xna.Framework;
+﻿using InnoVault.GameSystem;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
@@ -106,8 +105,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
                 offsetModMenuMethod.Invoke(null, [offset > 0 ? 1 : -1]);
                 SoundEngine.PlaySound(SoundID.MenuTick);
                 return true;
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 DisableBridge("主题切换调用失效", ex);
                 return false;
             }
@@ -146,8 +144,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
                 }
 
                 bridgeOperational = true;
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 bridgeOperational = false;
                 DisposeHooks();
                 LogFailure("Himayo 菜单桥已回退到原版菜单", ex);
@@ -178,8 +175,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
             foreach (Action<GameTime> callback in callbacks) {
                 try {
                     callback(gameTime);
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     LogFailure("Himayo 菜单帧更新异常", ex);
                 }
             }
@@ -226,8 +222,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
         private static void SetSelectedMenu(Main main, int selected) {
             try {
                 selectedMenuField.SetValue(main, selected);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 DisableBridge("Main.selectedMenu 写入失效", ex);
             }
         }
@@ -392,21 +387,18 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
 
             try {
                 ModLoader.GetMod("CalamityOverhaul")?.Logger.Warn($"{message}: {ex}");
-            }
-            catch {
+            } catch {
             }
         }
 
         private static void DisposeHooks() {
             try {
                 modMenuInnerHook?.Dispose();
-            }
-            catch {
+            } catch {
             }
             try {
                 mainDrawMenuHook?.Dispose();
-            }
-            catch {
+            } catch {
             }
             modMenuInnerHook = null;
             mainDrawMenuHook = null;

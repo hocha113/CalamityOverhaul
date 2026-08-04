@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Cyberwares;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using System.Collections.Generic;

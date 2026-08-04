@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -71,8 +71,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 identity = new NetworkNPCIdentity(reader.ReadUInt16(),
                     reader.ReadInt32(), reader.ReadUInt64());
                 return identity.IsValid;
-            }
-            catch (EndOfStreamException) {
+            } catch (EndOfStreamException) {
                 identity = default;
                 return false;
             }
@@ -150,8 +149,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 identity = new NetworkProjectileIdentity(reader.ReadByte(),
                     reader.ReadInt32(), reader.ReadInt32());
                 return identity.IsValid;
-            }
-            catch (EndOfStreamException) {
+            } catch (EndOfStreamException) {
                 identity = default;
                 return false;
             }

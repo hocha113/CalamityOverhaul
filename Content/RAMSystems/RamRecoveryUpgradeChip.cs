@@ -1,6 +1,4 @@
-﻿using Terraria;
-
-namespace CalamityOverhaul.Content.RAMSystems
+﻿namespace CalamityOverhaul.Content.RAMSystems
 {
     internal class RamRecoveryUpgradeChip : BaseRamUpgradeChip
     {

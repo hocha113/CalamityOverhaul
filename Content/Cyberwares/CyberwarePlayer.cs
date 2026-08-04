@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Cyberwares.Victors;
+﻿using CalamityOverhaul.Content.Cyberwares.Victors;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -342,8 +342,7 @@ namespace CalamityOverhaul.Content.Cyberwares
                         tag[$"Cyber_{i}"] = ItemIO.Save(item);
                     }
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 CWRMod.Instance.Logger.Error($"CyberwarePlayer.SaveData Error: {ex.Message}");
             }
         }
@@ -360,8 +359,7 @@ namespace CalamityOverhaul.Content.Cyberwares
                     Item item;
                     try {
                         item = ItemIO.Load(itemTag);
-                    }
-                    catch {
+                    } catch {
                         continue;
                     }
                     if (!TryGetValidCyberware(item, i, out BaseCyberware cyber)
@@ -372,8 +370,7 @@ namespace CalamityOverhaul.Content.Cyberwares
                     loaded[i] = item;
                     used += cyber.CapacityCost;
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 CWRMod.Instance.Logger.Error($"CyberwarePlayer.LoadData Error: {ex.Message}");
             }
             EquippedCyberwares = loaded;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using Terraria;
 using Terraria.ID;
@@ -33,7 +33,8 @@ namespace CalamityOverhaul.Content.RAMSystems
         ExpiredRequest,
     }
 
-    internal readonly record struct RamRequestToken(uint SessionId, uint RequestId) {
+    internal readonly record struct RamRequestToken(uint SessionId, uint RequestId)
+    {
         public bool IsValid => SessionId != 0 && RequestId != 0;
     }
 
@@ -43,7 +44,8 @@ namespace CalamityOverhaul.Content.RAMSystems
         ushort OperationId,
         byte ResultCode,
         float AppliedAmount,
-        uint StateRevision) {
+        uint StateRevision)
+    {
         public bool IsValid => SessionId != 0 && RequestId != 0 && OperationId != 0
             && StateRevision != 0 && float.IsFinite(AppliedAmount)
             && MathF.Abs(AppliedAmount) <= RamSystem.MaxMutationAmount;
@@ -60,7 +62,8 @@ namespace CalamityOverhaul.Content.RAMSystems
         float RecoveryRate,
         float RecoveryCooldown,
         int LockRemain,
-        int LockTotal) {
+        int LockTotal)
+    {
         public bool IsValid => PlayerIndex >= 0 && PlayerIndex < Main.maxPlayers
             && SessionId != 0 && Revision != 0
             && CapacityChips >= 0 && CapacityChips <= RamSystem.MaxCapacityUpgradeChips
@@ -207,10 +210,8 @@ namespace CalamityOverhaul.Content.RAMSystems
                         HandleUpgradeRequest(reader, whoAmI);
                         break;
                 }
-            }
-            catch (EndOfStreamException) {
-            }
-            catch (IOException) {
+            } catch (EndOfStreamException) {
+            } catch (IOException) {
             }
         }
 

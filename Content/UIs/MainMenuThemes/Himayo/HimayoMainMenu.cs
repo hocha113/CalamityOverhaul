@@ -1,6 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
-using Terraria;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo

@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.ID;
@@ -18,7 +17,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         float ConsumptionRate,
         float RecoveryRate,
         float SlowFactor,
-        int RecoveryDelay) {
+        int RecoveryDelay)
+    {
 
         internal bool IsValid {
             get {
@@ -145,10 +145,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                         HandleAggregateSnapshot(reader);
                         break;
                 }
-            }
-            catch (EndOfStreamException) {
-            }
-            catch (IOException) {
+            } catch (EndOfStreamException) {
+            } catch (IOException) {
             }
         }
 

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.HackTimes;
+﻿using CalamityOverhaul.Content.HackTimes;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -261,8 +261,7 @@ namespace CalamityOverhaul.Content.RAMSystems
                         MaxEffectiveRecoveryRate)
                     : 0f;
                 return true;
-            }
-            catch (Exception exception) {
+            } catch (Exception exception) {
                 Type type = provider.GetType();
                 if (failedProviderTypes.Add(type)) {
                     CWRMod.Instance?.Logger.Warn($"[RAM] Provider {type.FullName} failed: {exception.Message}");

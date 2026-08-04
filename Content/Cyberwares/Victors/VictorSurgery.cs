@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Cyberwares;
 using CalamityOverhaul.Content.Cyberwares.Victors.UIs;
 using InnoVault.Cinematics;
 using Microsoft.Xna.Framework.Graphics;
