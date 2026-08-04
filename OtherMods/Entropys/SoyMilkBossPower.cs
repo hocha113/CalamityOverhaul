@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -281,7 +282,7 @@ namespace CalamityOverhaul.OtherMods.Entropys
         }
 
         public override void DrawEffects(NPC npc, ref Color drawColor) {
-            SoyMilkBossPowerGlobalNPC visualState = GetVisualState(npc);
+            SoyMilkBossPowerGlobalNPC visualState = GetPowerState(npc);
             if (visualState.visualTimer == 0) {
                 return;
             }
@@ -347,6 +348,13 @@ namespace CalamityOverhaul.OtherMods.Entropys
                 pulsePending = true;
             }
             npc.netUpdate = true;
+        }
+
+        internal static bool HasActivePower(NPC npc) {
+            if (npc?.active != true) {
+                return false;
+            }
+            return GetPowerState(npc).visualTimer > 0;
         }
 
         private void UpdateHealing(NPC npc) {
@@ -502,13 +510,13 @@ namespace CalamityOverhaul.OtherMods.Entropys
             return new HitSnapshot(target.whoAmI, target.type, target.life, actorIndex, sourceIndex);
         }
 
-        private SoyMilkBossPowerGlobalNPC GetVisualState(NPC npc) {
+        private static SoyMilkBossPowerGlobalNPC GetPowerState(NPC npc) {
             int anchorIndex = NpcGroupHelper.GetAnchorIndex(npc);
             if (anchorIndex >= 0 && anchorIndex < Main.maxNPCs && anchorIndex != npc.whoAmI
                 && Main.npc[anchorIndex].active) {
                 return Main.npc[anchorIndex].GetGlobalNPC<SoyMilkBossPowerGlobalNPC>();
             }
-            return this;
+            return npc.GetGlobalNPC<SoyMilkBossPowerGlobalNPC>();
         }
 
         private static void CommitSnapshot(Player player, HitSnapshot snapshot,
@@ -561,6 +569,84 @@ namespace CalamityOverhaul.OtherMods.Entropys
                 ActorIndex = actorIndex;
                 SourceIndex = sourceIndex;
             }
+        }
+    }
+
+    internal sealed class SoyMilkBossPowerGlobalProjectile : GlobalProjectile
+    {
+        private const int UpdateSpeedMultiplier = 2;
+
+        private bool empoweredSource;
+        private bool updateMultiplierApplied;
+        private int baseMaxUpdates;
+
+        public override bool InstancePerEntity => true;
+
+        public override void OnSpawn(Projectile projectile, IEntitySource source) {
+            empoweredSource = false;
+            updateMultiplierApplied = false;
+            baseMaxUpdates = 0;
+
+            if (source is not EntitySource_Parent parentSource) {
+                return;
+            }
+
+            if (parentSource.Entity is NPC npc) {
+                empoweredSource = SoyMilkBossPowerGlobalNPC.HasActivePower(npc);
+            }
+            else if (parentSource.Entity is Projectile parentProjectile) {
+                empoweredSource = parentProjectile
+                    .GetGlobalProjectile<SoyMilkBossPowerGlobalProjectile>().empoweredSource;
+            }
+        }
+
+        public override bool PreAI(Projectile projectile) {
+            ApplyUpdateMultiplier(projectile);
+            return true;
+        }
+
+        public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter) {
+            bitWriter.WriteBit(empoweredSource);
+            if (!empoweredSource) {
+                return;
+            }
+
+            if (baseMaxUpdates <= 0) {
+                baseMaxUpdates = Math.Max(projectile.MaxUpdates, 1);
+            }
+            binaryWriter.Write(baseMaxUpdates);
+        }
+
+        public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader) {
+            empoweredSource = bitReader.ReadBit();
+            if (!empoweredSource) {
+                baseMaxUpdates = 0;
+                return;
+            }
+
+            baseMaxUpdates = Math.Max(binaryReader.ReadInt32(), 1);
+            if (updateMultiplierApplied) {
+                projectile.MaxUpdates = GetMultipliedUpdateCount(baseMaxUpdates);
+                return;
+            }
+            ApplyUpdateMultiplier(projectile);
+        }
+
+        private void ApplyUpdateMultiplier(Projectile projectile) {
+            if (!empoweredSource || updateMultiplierApplied || !projectile.hostile) {
+                return;
+            }
+
+            if (baseMaxUpdates <= 0) {
+                baseMaxUpdates = Math.Max(projectile.MaxUpdates, 1);
+            }
+            projectile.MaxUpdates = GetMultipliedUpdateCount(baseMaxUpdates);
+            updateMultiplierApplied = true;
+        }
+
+        private static int GetMultipliedUpdateCount(int maxUpdates) {
+            long multipliedUpdates = Math.Max(maxUpdates, 1) * (long)UpdateSpeedMultiplier;
+            return (int)Math.Min(multipliedUpdates, int.MaxValue);
         }
     }
 }
