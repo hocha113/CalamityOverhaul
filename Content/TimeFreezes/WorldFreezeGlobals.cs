@@ -250,8 +250,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
         public override bool PreAI(Projectile projectile)
             => !TimeFreezeSystem.FreezeProjectilePreAI(projectile);
 
-        public override bool ShouldUpdatePosition(Projectile projectile)
-            => !IsFrozen && !HasVelocityScale;
+        public override bool ShouldUpdatePosition(Projectile projectile) => !IsFrozen;
 
         internal void SyncTransientSources(Projectile projectile, TimeFreezeSource sources) {
             bool wasFrozen = IsFrozen;
@@ -361,7 +360,6 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 return false;
             }
             Vector2 velocity = EffectiveResumeVelocity;
-            projectile.position += velocity;
             projectile.velocity = velocity;
             if (projectile.timeLeft < int.MaxValue) {
                 projectile.timeLeft++;

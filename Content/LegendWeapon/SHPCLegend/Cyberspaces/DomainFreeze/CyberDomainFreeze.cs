@@ -252,9 +252,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     EntityIndex = idx,
                     Timer = 0,
                     Duration = DefaultFreezeDuration,
-                    FreezePosition = target.Center,
                     Seed = target.Seed,
-                    FreezeVelocity = lease.ResumeVelocity,
                     FreezeLease = lease,
                     OwnerWho = ownerWho,
                 });
@@ -282,9 +280,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     EntityIndex = idx,
                     Timer = 0,
                     Duration = DefaultFreezeDuration,
-                    FreezePosition = target.Center,
                     Seed = target.Seed,
-                    FreezeVelocity = lease.ResumeVelocity,
                     FreezeLease = lease,
                     OwnerWho = ownerWho,
                 });
@@ -400,7 +396,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     continue;
                 }
                 TimeFreezeSystem.ReleaseNPC(npc, entry.FreezeLease,
-                    entry.FreezeVelocity * 0.5f, TimeFreezeResumePriority.Domain);
+                    entry.FreezeLease.ResumeVelocity * 0.5f,
+                    TimeFreezeResumePriority.Domain);
                 FrozenNPCs.RemoveAt(i);
             }
             return !alreadyApplied;
@@ -420,7 +417,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     continue;
                 }
                 TimeFreezeSystem.ReleaseProjectile(projectile, entry.FreezeLease,
-                    entry.FreezeVelocity, TimeFreezeResumePriority.Domain);
+                    entry.FreezeLease.ResumeVelocity, TimeFreezeResumePriority.Domain);
                 FrozenProjectiles.RemoveAt(i);
             }
             return !alreadyApplied;
@@ -488,7 +485,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 //到期解冻
                 if (entry.Timer >= entry.Duration) {
                     TimeFreezeSystem.ReleaseNPC(npc, entry.FreezeLease,
-                        entry.FreezeVelocity * 0.5f, TimeFreezeResumePriority.Domain);
+                        entry.FreezeLease.ResumeVelocity * 0.5f,
+                        TimeFreezeResumePriority.Domain);
                     if (!Main.dedServ) {
                         CyberDomainFreezeParticles.SpawnThawBurst(npc.Center);
                     }
@@ -523,7 +521,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 //到期解冻
                 if (entry.Timer >= entry.Duration) {
                     TimeFreezeSystem.ReleaseProjectile(proj, entry.FreezeLease,
-                        entry.FreezeVelocity, TimeFreezeResumePriority.Domain);
+                        entry.FreezeLease.ResumeVelocity, TimeFreezeResumePriority.Domain);
                     FrozenProjectiles.RemoveAt(i);
                 }
             }
@@ -534,14 +532,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 if (entry.EntityIndex >= 0 && entry.EntityIndex < Main.maxNPCs) {
                     NPC npc = Main.npc[entry.EntityIndex];
                     TimeFreezeSystem.ReleaseNPC(npc, entry.FreezeLease,
-                        entry.FreezeVelocity, TimeFreezeResumePriority.Domain);
+                        entry.FreezeLease.ResumeVelocity, TimeFreezeResumePriority.Domain);
                 }
             }
             foreach (FreezeProjEntry entry in FrozenProjectiles) {
                 if (entry.EntityIndex >= 0 && entry.EntityIndex < Main.maxProjectiles) {
                     Projectile projectile = Main.projectile[entry.EntityIndex];
                     TimeFreezeSystem.ReleaseProjectile(projectile, entry.FreezeLease,
-                        entry.FreezeVelocity, TimeFreezeResumePriority.Domain);
+                        entry.FreezeLease.ResumeVelocity, TimeFreezeResumePriority.Domain);
                 }
             }
             FrozenNPCs.Clear();
@@ -573,8 +571,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         public int Timer;
         internal float TimerCarry;
         public int Duration;
-        public Vector2 FreezePosition;
-        public Vector2 FreezeVelocity;
         internal TimeFreezeLease FreezeLease;
         public float Seed;
         /// <summary>发起者 whoAmI，域外快速解冻判定</summary>
@@ -590,8 +586,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         public int Timer;
         internal float TimerCarry;
         public int Duration;
-        public Vector2 FreezePosition;
-        public Vector2 FreezeVelocity;
         internal TimeFreezeLease FreezeLease;
         public float Seed;
         /// <summary>发起者 whoAmI</summary>
