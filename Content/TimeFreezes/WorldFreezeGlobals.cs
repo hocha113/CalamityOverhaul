@@ -2,6 +2,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
 using InnoVault.GameSystem;
 using InnoVault.TileProcessors;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
 using Terraria;
@@ -51,6 +52,8 @@ namespace CalamityOverhaul.Content.TimeFreezes
         private double logicalFrameCounter;
         private Rectangle logicalFrame;
         private float logicalRotation;
+        private Vector2 renderPosition;
+        private bool renderPositionApplied;
 
         public override bool InstancePerEntity => true;
 
@@ -168,6 +171,9 @@ namespace CalamityOverhaul.Content.TimeFreezes
             return cleared;
         }
 
+        internal bool TryGetRenderPosition(NPC npc, out Vector2 position)
+            => freezeState.TryGetRenderPosition(npc, out position);
+
         internal void FreezeFrame(NPC npc) {
             freezeState.BlockHardFrame(npc);
             ApplyFrozenPose(npc);
@@ -212,6 +218,30 @@ namespace CalamityOverhaul.Content.TimeFreezes
                     npc.oldPosition = npc.position;
                     break;
             }
+        }
+
+        public override bool PreDraw(NPC npc, SpriteBatch spriteBatch,
+            Vector2 screenPos, Color drawColor) {
+            if (renderPositionApplied) {
+                npc.position = renderPosition;
+                renderPositionApplied = false;
+            }
+            if (TimeFreezeSystem.TryGetRenderPosition(npc,
+                out Vector2 interpolatedPosition)) {
+                renderPosition = npc.position;
+                npc.position = interpolatedPosition;
+                renderPositionApplied = true;
+            }
+            return true;
+        }
+
+        public override void PostDraw(NPC npc, SpriteBatch spriteBatch,
+            Vector2 screenPos, Color drawColor) {
+            if (!renderPositionApplied) {
+                return;
+            }
+            npc.position = renderPosition;
+            renderPositionApplied = false;
         }
 
         internal void ResetFreezeState() {
@@ -316,6 +346,8 @@ namespace CalamityOverhaul.Content.TimeFreezes
         private int logicalFrame;
         private int logicalSpriteDirection;
         private float logicalRotation;
+        private Vector2 renderPosition;
+        private bool renderPositionApplied;
 
         public override bool InstancePerEntity => true;
 
@@ -439,6 +471,9 @@ namespace CalamityOverhaul.Content.TimeFreezes
             return cleared;
         }
 
+        internal bool TryGetRenderPosition(Projectile projectile, out Vector2 position)
+            => freezeState.TryGetRenderPosition(projectile, out position);
+
         internal void FreezeFrame(Projectile projectile) {
             freezeState.BlockHardFrame(projectile);
             ApplyFrozenPose(projectile);
@@ -483,6 +518,28 @@ namespace CalamityOverhaul.Content.TimeFreezes
                     projectile.oldPosition = projectile.position;
                     break;
             }
+        }
+
+        public override bool PreDraw(Projectile projectile, ref Color lightColor) {
+            if (renderPositionApplied) {
+                projectile.position = renderPosition;
+                renderPositionApplied = false;
+            }
+            if (TimeFreezeSystem.TryGetRenderPosition(projectile,
+                out Vector2 interpolatedPosition)) {
+                renderPosition = projectile.position;
+                projectile.position = interpolatedPosition;
+                renderPositionApplied = true;
+            }
+            return true;
+        }
+
+        public override void PostDraw(Projectile projectile, Color lightColor) {
+            if (!renderPositionApplied) {
+                return;
+            }
+            projectile.position = renderPosition;
+            renderPositionApplied = false;
         }
 
         internal void ResetFreezeState() {

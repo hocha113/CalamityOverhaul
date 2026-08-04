@@ -20,8 +20,14 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
             .GetField("_portraitAlpha", InstanceMembers);
         private static readonly FieldInfo ExpressionAlphaField = typeof(SupCalPortraitUI)
             .GetField("_expressionButtonAlpha", InstanceMembers);
+        private static readonly FieldInfo DraggingLeftField = typeof(SupCalPortraitUI)
+            .GetField("_draggingLeftPortrait", InstanceMembers);
+        private static readonly FieldInfo DraggingRightField = typeof(SupCalPortraitUI)
+            .GetField("_draggingRightPortrait", InstanceMembers);
         private static readonly PropertyInfo LeftPortraitHitBoxProperty = typeof(SupCalPortraitUI)
             .GetProperty("LeftPortraitHitBox", InstanceMembers);
+        private static readonly PropertyInfo RightPortraitHitBoxProperty = typeof(SupCalPortraitUI)
+            .GetProperty("RightPortraitHitBox", InstanceMembers);
         private static readonly PropertyInfo ExpressionHitBoxProperty = typeof(SupCalPortraitUI)
             .GetProperty("ExpressionButtonHitBox", InstanceMembers);
 
@@ -84,9 +90,16 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
                 || !TryRead(IconHitBoxProperty, portrait, out Rectangle iconHitBox)
                 || !TryRead(PortraitAlphaField, portrait, out float portraitAlpha)
                 || !TryRead(ExpressionAlphaField, portrait, out float expressionAlpha)
+                || !TryRead(DraggingLeftField, portrait, out bool draggingLeft)
+                || !TryRead(DraggingRightField, portrait, out bool draggingRight)
                 || !TryRead(LeftPortraitHitBoxProperty, portrait, out Rectangle portraitHitBox)
+                || !TryRead(RightPortraitHitBoxProperty, portrait, out Rectangle rightPortraitHitBox)
                 || !TryRead(ExpressionHitBoxProperty, portrait, out Rectangle expressionHitBox)) {
                 return portrait.CapturesMenuInput(point);
+            }
+
+            if (draggingLeft || draggingRight) {
+                return true;
             }
 
             if (iconAlpha > 0.01f) {
@@ -96,13 +109,10 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
                 }
             }
 
-            if (portraitAlpha > 0.01f && !portraitHitBox.IsEmpty) {
-                portraitHitBox.Width = (int)MathF.Ceiling(portraitHitBox.Width * (1.6f / 1.8f));
-                portraitHitBox.Height = (int)MathF.Ceiling(portraitHitBox.Height * (1.6f / 1.8f));
-                portraitHitBox.Inflate(8, 8);
-                if (portraitHitBox.Contains(point)) {
-                    return true;
-                }
+            if (portraitAlpha > 0.01f
+                && (ContainsPortraitHitBox(portraitHitBox, point)
+                    || ContainsPortraitHitBox(rightPortraitHitBox, point))) {
+                return true;
             }
 
             if (iconAlpha > 0.01f && expressionAlpha > 0.01f) {
@@ -110,6 +120,17 @@ namespace CalamityOverhaul.Content.UIs.MainMenuThemes.Himayo
                 return expressionHitBox.Contains(point);
             }
             return false;
+        }
+
+        private static bool ContainsPortraitHitBox(Rectangle hitBox, Point point) {
+            if (hitBox.IsEmpty) {
+                return false;
+            }
+
+            hitBox.Width = (int)MathF.Ceiling(hitBox.Width * (1.6f / 1.8f));
+            hitBox.Height = (int)MathF.Ceiling(hitBox.Height * (1.6f / 1.8f));
+            hitBox.Inflate(8, 8);
+            return hitBox.Contains(point);
         }
 
         private static bool TryRead<T>(MemberInfo member, object instance, out T value) {

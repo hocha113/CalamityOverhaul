@@ -129,14 +129,22 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
         }
 
         internal override bool CapturesMenuInput(Point point) {
-            if (!Active || !ShouldShowIcon()) {
+            if (!Active || !ShouldShowIcon() || _iconAlpha <= 0.01f) {
                 return false;
             }
 
-            return base.CapturesMenuInput(point)
-                || _showFullPortrait && _portraitAlpha > 0.01f && (ExpressionButtonHitBox.Contains(point)
-                    || LeftPortraitHitBox.Contains(point)
-                    || RightPortraitHitBox.Contains(point));
+            if (_draggingLeftPortrait || _draggingRightPortrait) {
+                return true;
+            }
+
+            if (IconHitBox.Contains(point)) {
+                return true;
+            }
+
+            return _showFullPortrait && (_expressionButtonAlpha > 0.01f
+                && ExpressionButtonHitBox.Contains(point)
+                || _portraitAlpha > 0.01f
+                && (LeftPortraitHitBox.Contains(point) || RightPortraitHitBox.Contains(point)));
         }
         #endregion
 

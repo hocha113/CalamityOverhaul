@@ -1,4 +1,5 @@
 ﻿using Terraria;
+using System;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -106,13 +107,27 @@ namespace CalamityOverhaul.Common
                 return;
             }
 
-            int shader = ContentSamples.CommonlyUsedContentSamples.ColorOnlyShaderIndex;
             for (int i = 0; i < drawInfo.DrawDataCache.Count; i++) {
                 DrawData data = drawInfo.DrawDataCache[i];
-                data.color = tint;
-                data.shader = shader;
+                Color source = data.color;
+                Color filter = new(
+                    BlendChannel(255, tint.R, 0.65f),
+                    BlendChannel(255, tint.G, 0.65f),
+                    BlendChannel(255, tint.B, 0.65f),
+                    255);
+                data.color = new Color(
+                    MultiplyChannel(source.R, filter.R),
+                    MultiplyChannel(source.G, filter.G),
+                    MultiplyChannel(source.B, filter.B),
+                    MultiplyChannel(source.A, tint.A));
                 drawInfo.DrawDataCache[i] = data;
             }
         }
+
+        private static byte BlendChannel(byte source, byte tint, float amount)
+            => (byte)Math.Clamp(source + (tint - source) * amount, 0f, 255f);
+
+        private static byte MultiplyChannel(byte left, byte right)
+            => (byte)(left * right / 255);
     }
 }

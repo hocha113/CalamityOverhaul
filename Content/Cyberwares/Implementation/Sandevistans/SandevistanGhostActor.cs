@@ -115,10 +115,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 
         //固定快照姿态，不跟当前动作
         private static void DrawGhost(SandevistanGhostActor ghost) {
-            //蓝→青绿，A 随生命淡出
-            float fadeProgress = 1f - ghost.Alpha;
-            Color tint = Color.Lerp(new Color(0, 180, 255, 255), new Color(0, 255, 200, 255), fadeProgress);
-            tint.A = (byte)(255 * ghost.Alpha);
+            float fade = Math.Clamp(ghost.Alpha, 0f, 1f);
+            float fadeProgress = 1f - fade;
+            float fadeCurve = fade * fade * (3f - 2f * fade);
+            Color tint = Color.Lerp(new Color(64, 235, 255, 255),
+                new Color(8, 100, 235, 255), fadeProgress);
+            tint.A = (byte)(255f * fadeCurve);
 
             PlayerCloneRenderer.DrawPrepared(ghost.SnapshotPosition, tint, ghost.SnapshotDirection,
                 ghost.SnapshotBodyFrame, ghost.SnapshotLegFrame,

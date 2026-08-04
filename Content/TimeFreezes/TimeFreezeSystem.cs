@@ -270,6 +270,26 @@ namespace CalamityOverhaul.Content.TimeFreezes
             return advancesOnDecisionFrame;
         }
 
+        internal bool TryGetRenderPosition(Entity entity, out Vector2 position) {
+            position = Vector2.Zero;
+            if (!HasTimeScale || IsFrozen || !motionSnapshotCaptured
+                || !IsFinite(entity.position) || !IsFinite(latestLogicalVelocity)) {
+                return false;
+            }
+
+            float fraction = (float)Math.Clamp(timeAccumulator, 0d, 0.999999d);
+            if (fraction <= TimeStepEpsilon) {
+                return false;
+            }
+
+            Vector2 predicted = entity.position + latestLogicalVelocity * fraction;
+            if (!IsFinite(predicted)) {
+                return false;
+            }
+            position = predicted;
+            return true;
+        }
+
         internal void BlockHardFrame(Entity entity) {
             blockedFrame = Main.GameUpdateCount;
             hardBlockedOnFrame = true;
@@ -819,6 +839,25 @@ namespace CalamityOverhaul.Content.TimeFreezes
             }
             return projectile.GetGlobalProjectile<TimeFreezeProjectile>()
                 .EffectiveTimeScale;
+        }
+
+        internal static bool TryGetRenderPosition(NPC npc, out Vector2 position) {
+            position = Vector2.Zero;
+            if (npc?.active != true) {
+                return false;
+            }
+            return npc.GetGlobalNPC<TimeFreezeNPC>()
+                .TryGetRenderPosition(npc, out position);
+        }
+
+        internal static bool TryGetRenderPosition(Projectile projectile,
+            out Vector2 position) {
+            position = Vector2.Zero;
+            if (projectile?.active != true) {
+                return false;
+            }
+            return projectile.GetGlobalProjectile<TimeFreezeProjectile>()
+                .TryGetRenderPosition(projectile, out position);
         }
 
         internal static Vector2 GetEffectiveResumeVelocity(NPC npc) {
