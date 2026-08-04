@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles;
+using CalamityOverhaul.Content.TimeFreezes;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -376,7 +377,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             npc.Center = Projectile.Center;
             npc.rotation = Projectile.ai[2];
             npc.CWR().IceParclose = true;
-            npc.CWR().TimeFrozenTick = 2;
+            TimeFreezeSystem.RefreshNPC<AvalancheM60>(npc, 2);
         }
 
         public override void OnKill(int timeLeft) {

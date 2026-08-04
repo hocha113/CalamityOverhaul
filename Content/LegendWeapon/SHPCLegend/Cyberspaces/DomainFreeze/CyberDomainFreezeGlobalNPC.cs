@@ -96,28 +96,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        public static bool? PreAIByOverNPC(NPC npc) {
-            if (!CyberDomainFreeze.IsNPCFrozen(npc.whoAmI)) return null;
-
-            //冻结位快照
-            for (int i = 0; i < CyberDomainFreeze.FrozenNPCs.Count; i++) {
-                if (CyberDomainFreeze.FrozenNPCs[i].EntityIndex == npc.whoAmI) {
-                    npc.Center = CyberDomainFreeze.FrozenNPCs[i].FreezePosition;
-                    break;
-                }
-            }
-
-            npc.velocity = Vector2.Zero;
-            npc.frameCounter = 0;
-            npc.timeLeft++;
-            return false;
-        }
-
-        public override bool PreAI(NPC npc) {
-            //PreAIByOverNPC 停滞
-            return true;
-        }
-
         private static bool ShouldApplyEffect(NPC npc) {
             if (!CyberDomainFreeze.IsNPCFrozen(npc.whoAmI)) return false;
             //放逐中不叠冻结 shader

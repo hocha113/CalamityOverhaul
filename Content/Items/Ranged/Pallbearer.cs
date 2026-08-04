@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.Items.Stones;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Scenarios.Helen;
 using CalamityOverhaul.Content.Scenarios.SupCal.SupCalDisplayTexts;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using InnoVault.Trails;
@@ -702,7 +703,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             //收殓标记（原版buff包同步）
             target.AddBuff(ModContent.BuffType<PallbearerShrouded>(), PallbearerShrouded.MarkDuration);
-            target.CWR().TimeFrozenTick = 3; //轻顿帧
+            TimeFreezeSystem.RefreshNPC<Pallbearer>(target, 3); //轻顿帧
 
             //命中咬肉减速
             if (State == BoomerangState.Throwing) {
@@ -883,7 +884,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             bool marked = target.HasBuff(ModContent.BuffType<PallbearerShrouded>());
 
             //打击链
-            target.CWR().TimeFrozenTick = 4; //hit-stop
+            TimeFreezeSystem.RefreshNPC<Pallbearer>(target, 4); //hit-stop
             PallbearerVFX.NailThunk(Projectile.Center, marked);
             PallbearerVFX.Punch(Projectile.Center, Projectile.velocity, marked ? 4.5f : 3.4f, 8f, 8, 620f);
             PallbearerVFX.BloodBurst(Projectile.Center, Projectile.velocity
@@ -1097,7 +1098,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
             //死寂段顿帧
             if (Timer >= RiseEnd && Timer < SlamFrame && target != null) {
-                target.CWR().TimeFrozenTick = 2;
+                TimeFreezeSystem.RefreshNPC<Pallbearer>(target, 2);
             }
 
             //合盖帧
@@ -1146,7 +1147,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             PallbearerVFX.Punch(pos, Vector2.UnitY, 10f, 12f, 16, 950f);
 
             if (target != null) {
-                target.CWR().TimeFrozenTick = 12; //合盖顿帧
+                TimeFreezeSystem.RefreshNPC<Pallbearer>(target, 12); //合盖顿帧
             }
 
             if (!Main.dedServ) {

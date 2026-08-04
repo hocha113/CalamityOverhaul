@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -180,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             bool splitting = generation == 0 && Projectile.numHits == 0;
             if (splitting) {
                 //白光在体内展开的一瞬，短顿帧
-                target.CWR().TimeFrozenTick = 3;
+                TimeFreezeSystem.RefreshNPC<FishPrismite>(target, 3);
             }
             SplitOnImpact(Projectile.Center, Projectile.velocity);
             SpawnPierceGlints(!splitting);

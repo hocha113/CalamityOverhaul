@@ -69,6 +69,10 @@ namespace CalamityOverhaul.Common
             return true;
         }
         public override void PostAI() {
+            ClearUpdateContext();
+        }
+
+        internal static void ClearUpdateContext() {
             IsDyeDustEffectActive = IsUpdate = false;
             DyeShaderData = null;
         }

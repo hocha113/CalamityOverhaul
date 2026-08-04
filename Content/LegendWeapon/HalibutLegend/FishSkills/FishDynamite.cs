@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -412,7 +413,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             //对敌人施加火焰debuff，爆压给一记短顿帧
             target.AddBuff(BuffID.OnFire3, 180);
-            target.CWR().TimeFrozenTick = 4;
+            TimeFreezeSystem.RefreshNPC<FishDynamite>(target, 4);
         }
 
         public override bool PreDraw(ref Color lightColor) {

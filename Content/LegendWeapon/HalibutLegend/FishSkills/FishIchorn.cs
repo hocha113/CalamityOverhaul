@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
@@ -244,7 +245,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //击中NPC-迸溅+顿帧
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             //液流重击的短顿帧
-            target.CWR().TimeFrozenTick = 3;
+            TimeFreezeSystem.RefreshNPC<FishIchorn>(target, 3);
             FishIchornVFX.SplashBurst(Projectile.Center, Projectile.velocity, onTile: false);
 
             //附加灵液效果

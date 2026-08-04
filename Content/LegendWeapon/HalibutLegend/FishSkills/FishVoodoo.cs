@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -110,7 +111,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     }
                 }
                 else {
-                    npc.CWR().TimeFrozenTick = 4;
+                    TimeFreezeSystem.RefreshNPC<FishVoodoo>(npc, 4);
                     SpawnMarkProjectile(npc);
                 }
             }

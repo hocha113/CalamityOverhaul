@@ -84,11 +84,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         #region 主要AI行为
         public override bool AI() {
-            if (CWRWorld.CanTimeFrozen()) {
-                CWRNpc.DoTimeFrozen(npc);
-                return false;
-            }
-
             //延迟初始化
             if (stateContext == null || stateMachine == null) {
                 InitializeStateContext();

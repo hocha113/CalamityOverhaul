@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+using CalamityOverhaul.Content.TimeFreezes;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -67,7 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             npc.Center = Projectile.Center;
             npc.rotation = Projectile.ai[2];
             npc.CWR().IceParclose = true;
-            npc.CWR().TimeFrozenTick = 2;
+            TimeFreezeSystem.RefreshNPC<CryoCoreModule>(npc, 2);
         }
 
         public override void OnKill(int timeLeft) {

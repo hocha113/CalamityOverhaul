@@ -1,4 +1,5 @@
 ﻿using Terraria;
+using CalamityOverhaul.Content.TimeFreezes;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
@@ -14,11 +15,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 return true;
             }
 
-            //缓速期间首次出现或槽位被复用时按需重新抓取原速度
-            SandevistanTimeSlow.EnsureNPCSnapshot(npc);
-
-            int id = npc.whoAmI;
-            Vector2 slowVel = SandevistanTimeSlow.NPCCachedVelocities[id] * SandevistanTimeSlow.SlowFactor;
+            SandevistanTimeSlow.EnsureNPCSource(npc);
+            Vector2 slowVel = TimeFreezeSystem.GetEffectiveResumeVelocity(npc);
 
             //保活+冻动画
             npc.timeLeft++;

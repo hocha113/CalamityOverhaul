@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
+using CalamityOverhaul.Content.TimeFreezes;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -8,8 +9,6 @@ namespace CalamityOverhaul.Content
 {
     internal class CWRWorld : ModSystem
     {
-        /// <summary>&gt;0 冻结世界活动，每帧减 1</summary>
-        public static int TimeFrozenTick;
         /// <summary>世界有 Boss</summary>
         public static bool HasBoss;
 
@@ -85,21 +84,10 @@ namespace CalamityOverhaul.Content
             if (Main.gameMenu) {
                 return false;
             }
-            if (TimeFreezes.WorldFreezeSystem.IsActive) {
-                return true;
-            }
-            if (Main.LocalPlayer != null && Main.LocalPlayer.active
-                && TimeFrozenTick > 0) {
-                return true;
-            }
-            return false;
+            return TimeFreezeSystem.IsAnyGlobalFreezeActive;
         }
 
         public override void PostUpdateEverything() {
-            if (TimeFrozenTick > 0) {
-                TimeFrozenTick--;
-            }
-
             ChekPrimeArm();
 
             HasBoss = BossRush;

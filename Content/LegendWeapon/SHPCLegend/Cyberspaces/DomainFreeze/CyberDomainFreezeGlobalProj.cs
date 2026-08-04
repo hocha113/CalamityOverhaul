@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze
 {
-    /// <summary>冻结弹幕 PreDraw 着色器+PreAI 钉位</summary>
+    /// <summary>冻结弹幕 PreDraw 着色器</summary>
     internal class CyberDomainFreezeGlobalProj : GlobalProjectile
     {
         private static bool _shaderActive;
@@ -71,21 +71,5 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             }
         }
 
-        public override bool PreAI(Projectile proj) {
-            if (!CyberDomainFreeze.IsProjectileFrozen(proj.whoAmI)) return true;
-
-            //冻结位快照
-            for (int i = 0; i < CyberDomainFreeze.FrozenProjectiles.Count; i++) {
-                if (CyberDomainFreeze.FrozenProjectiles[i].EntityIndex == proj.whoAmI) {
-                    proj.Center = CyberDomainFreeze.FrozenProjectiles[i].FreezePosition;
-                    break;
-                }
-            }
-
-            //冻结钉位
-            proj.velocity = Vector2.Zero;
-            proj.timeLeft++;
-            return false;
-        }
     }
 }

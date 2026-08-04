@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Stones;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
@@ -329,7 +330,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             //穿体轻顿帧 + 沿冲刺方向的水珠锥
-            target.CWR().TimeFrozenTick = 2;
+            TimeFreezeSystem.RefreshNPC<FishTropicalBarracuda>(target, 2);
             float ke = MathHelper.Clamp(Projectile.velocity.Length() / MaxSpeed, 0.4f, 1f);
             FishBarracudaVFX.ImpactSpray(Projectile.Center, Projectile.velocity, StripeColor, ke);
 

@@ -6,7 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.TimeFreezes
 {
-    /// <summary>世界冻结 reason 计数，<see cref="Activate"/>/<see cref="Deactivate"/> 配对，与 <c>CWRWorld.TimeFrozenTick</c> 可叠加</summary>
+    /// <summary>完整世界冻结的 reason 所有权与玩家/世界钩子</summary>
     internal class WorldFreezeSystem : ICWRLoader
     {
         //Liquid.UpdateLiquid 拦截委托
@@ -23,63 +23,15 @@ namespace CalamityOverhaul.Content.TimeFreezes
         //TimeGear 注册名，仅作内部时间速率叠加用
         private const string TimeGearKey = "WorldFreezeSystem";
 
-        void ICWRLoader.UnLoadData() {
-            IsActive = false;
-            activeReasons?.Clear();
-            NPCFrozenPositions = null;
-            NPCFrozenVelocities = null;
-            NPCSnapshotCaptured = null;
-            NPCSnapshotTypes = null;
-            ProjFrozenPositions = null;
-            ProjFrozenVelocities = null;
-            ProjSnapshotCaptured = null;
-            ProjSpawnedDuringFreeze = null;
-            ProjSnapshotTypes = null;
-            ProjSnapshotOwners = null;
-            ProjSnapshotIdentities = null;
-        }
+        void ICWRLoader.UnLoadData() => ResetSession();
 
         public static bool IsActive { get; private set; }
+        internal static bool IsThawing { get; private set; }
 
         public static IReadOnlyCollection<string> ActiveReasons => activeReasons;
 
-        //reason 计数，重复 Activate 不叠入
+        //同 reason 重复 Activate 幂等
         private static readonly HashSet<string> activeReasons = [];
-
-        //NPC 冻结位置快照
-        internal static Vector2[] NPCFrozenPositions;
-        //NPC 冻结速度快照
-        internal static Vector2[] NPCFrozenVelocities;
-        //NPC 快照是否有效
-        internal static bool[] NPCSnapshotCaptured;
-        //NPC快照类型，防槽位复用套旧数据
-        internal static int[] NPCSnapshotTypes;
-        //弹幕冻结位置快照
-        internal static Vector2[] ProjFrozenPositions;
-        //弹幕冻结速度快照
-        internal static Vector2[] ProjFrozenVelocities;
-        //弹幕快照是否有效
-        internal static bool[] ProjSnapshotCaptured;
-        //标记该弹幕是否在冻结期间新生成，解冻时需清理避免造成爆发伤害
-        internal static bool[] ProjSpawnedDuringFreeze;
-        //弹幕快照对应类型/归属/身份，避免复用槽位时套用旧快照
-        internal static int[] ProjSnapshotTypes;
-        internal static int[] ProjSnapshotOwners;
-        internal static int[] ProjSnapshotIdentities;
-
-        void ICWRLoader.LoadData() {
-            NPCFrozenPositions = new Vector2[Main.maxNPCs];
-            NPCFrozenVelocities = new Vector2[Main.maxNPCs];
-            NPCSnapshotCaptured = new bool[Main.maxNPCs];
-            NPCSnapshotTypes = new int[Main.maxNPCs];
-            ProjFrozenPositions = new Vector2[Main.maxProjectiles];
-            ProjFrozenVelocities = new Vector2[Main.maxProjectiles];
-            ProjSnapshotCaptured = new bool[Main.maxProjectiles];
-            ProjSpawnedDuringFreeze = new bool[Main.maxProjectiles];
-            ProjSnapshotTypes = new int[Main.maxProjectiles];
-            ProjSnapshotOwners = new int[Main.maxProjectiles];
-            ProjSnapshotIdentities = new int[Main.maxProjectiles];
-        }
 
         void ICWRLoader.SetupData() {
             //拦截液体更新，使水流在冻结期间不再传播
@@ -161,7 +113,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             if (wasInactive) {
                 IsActive = true;
                 TimeGear.Register(TimeGearKey, 0f);
-                SnapshotPositions();
+                TimeFreezeSystem.BeginWorldFreeze();
             }
         }
 
@@ -193,109 +145,24 @@ namespace CalamityOverhaul.Content.TimeFreezes
             => !string.IsNullOrEmpty(reason) && activeReasons.Contains(reason);
 
         private static void FinalizeDeactivate() {
-            RestoreSnapshots();
-            KillProjectilesSpawnedDuringFreeze();
-            ClearSnapshots();
             IsActive = false;
+            IsThawing = true;
             TimeGear.Unregister(TimeGearKey);
-        }
-
-        private static void SnapshotPositions() {
-            ClearSnapshots();
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (npc.active) {
-                    CaptureNPC(npc);
-                }
+            try {
+                TimeFreezeSystem.EndWorldFreeze();
             }
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                Projectile proj = Main.projectile[i];
-                if (proj.active) {
-                    //冻结开始前已存在的弹幕不算"冻结期间新生成"
-                    CaptureProjectile(proj, spawnedDuringFreeze: false);
-                }
+            finally {
+                IsThawing = false;
+                TimeGear.Unregister(TimeGearKey);
             }
         }
 
-        internal static void EnsureNPCSnapshot(NPC npc) {
-            int id = npc.whoAmI;
-            if (!NPCSnapshotCaptured[id] || NPCSnapshotTypes[id] != npc.type) {
-                CaptureNPC(npc);
-            }
-        }
-
-        internal static void EnsureProjectileSnapshot(Projectile proj) {
-            int id = proj.whoAmI;
-            if (!ProjSnapshotCaptured[id]
-                || ProjSnapshotTypes[id] != proj.type
-                || ProjSnapshotOwners[id] != proj.owner
-                || ProjSnapshotIdentities[id] != proj.identity) {
-                //首次出现且当前处于冻结状态，说明是冻结期间被生成
-                CaptureProjectile(proj, spawnedDuringFreeze: IsActive);
-            }
-        }
-
-        private static void CaptureNPC(NPC npc) {
-            int id = npc.whoAmI;
-            NPCFrozenPositions[id] = npc.position;
-            NPCFrozenVelocities[id] = npc.velocity;
-            NPCSnapshotCaptured[id] = true;
-            NPCSnapshotTypes[id] = npc.type;
-        }
-
-        private static void CaptureProjectile(Projectile proj, bool spawnedDuringFreeze) {
-            int id = proj.whoAmI;
-            ProjFrozenPositions[id] = proj.position;
-            ProjFrozenVelocities[id] = proj.velocity;
-            ProjSnapshotCaptured[id] = true;
-            ProjSpawnedDuringFreeze[id] = spawnedDuringFreeze;
-            ProjSnapshotTypes[id] = proj.type;
-            ProjSnapshotOwners[id] = proj.owner;
-            ProjSnapshotIdentities[id] = proj.identity;
-        }
-
-        private static void RestoreSnapshots() {
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (!npc.active || !NPCSnapshotCaptured[i] || NPCSnapshotTypes[i] != npc.type) continue;
-                npc.velocity = NPCFrozenVelocities[i];
-            }
-
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                Projectile proj = Main.projectile[i];
-                if (!proj.active || !ProjSnapshotCaptured[i]) continue;
-                if (ProjSnapshotTypes[i] != proj.type
-                    || ProjSnapshotOwners[i] != proj.owner
-                    || ProjSnapshotIdentities[i] != proj.identity) {
-                    continue;
-                }
-                proj.velocity = ProjFrozenVelocities[i];
-            }
-        }
-
-        private static void KillProjectilesSpawnedDuringFreeze() {
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                if (!ProjSpawnedDuringFreeze[i]) continue;
-                Projectile proj = Main.projectile[i];
-                if (!proj.active) continue;
-                //校验槽位未被复用
-                if (ProjSnapshotTypes[i] != proj.type
-                    || ProjSnapshotOwners[i] != proj.owner
-                    || ProjSnapshotIdentities[i] != proj.identity) {
-                    continue;
-                }
-                proj.Kill();
-            }
-        }
-
-        private static void ClearSnapshots() {
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPCSnapshotCaptured[i] = false;
-            }
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                ProjSnapshotCaptured[i] = false;
-                ProjSpawnedDuringFreeze[i] = false;
-            }
+        internal static void ResetSession() {
+            activeReasons.Clear();
+            IsActive = false;
+            IsThawing = false;
+            TimeGear.Unregister(TimeGearKey);
+            TimeFreezeSystem.ResetSession();
         }
 
         /// <summary>NPC 冻结，现一律 true</summary>

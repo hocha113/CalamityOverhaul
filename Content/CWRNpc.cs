@@ -22,8 +22,6 @@ namespace CalamityOverhaul.Content
     {
         #region Data
         public override bool InstancePerEntity => true;
-        /// <summary>&gt;0 冻结活动</summary>
-        public int TimeFrozenTick;
         /// <summary>朗基努斯目标标记</summary>
         public bool LonginusSign;
         /// <summary>极寒神性屏障</summary>
@@ -38,23 +36,13 @@ namespace CalamityOverhaul.Content
         public int DyeItemID;
         /// <summary>&gt;0 虚弱中</summary>
         public int IsWeakTime;
-        private bool timeFreezeSnapshotCaptured;
-        private int timeFreezeSnapshotType = NPCID.None;
-        private Vector2 timeFreezePosition;
-        private Vector2 timeFreezeVelocity;
         #endregion
 
         public override GlobalNPC Clone(NPC from, NPC to) => CloneCWRNpc((CWRNpc)base.Clone(from, to));
         public CWRNpc CloneCWRNpc(CWRNpc cwr) {
             cwr.LonginusSign = LonginusSign;
             cwr.IceParclose = IceParclose;
-            cwr.ClearTimeFreezeSnapshot();
             return cwr;
-        }
-
-        public override void SetDefaults(NPC npc) {
-            TimeFrozenTick = 0;
-            ClearTimeFreezeSnapshot();
         }
 
         /// <summary>接收 NPC 基本数据</summary>
@@ -104,60 +92,6 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        private static bool IsFinite(Vector2 value)
-            => float.IsFinite(value.X) && float.IsFinite(value.Y);
-
-        private void ClearTimeFreezeSnapshot() {
-            timeFreezeSnapshotCaptured = false;
-            timeFreezeSnapshotType = NPCID.None;
-            timeFreezePosition = Vector2.Zero;
-            timeFreezeVelocity = Vector2.Zero;
-        }
-
-        private void CaptureTimeFreezeSnapshot(NPC npc) {
-            if (timeFreezeSnapshotCaptured && timeFreezeSnapshotType == npc.type) {
-                return;
-            }
-
-            ClearTimeFreezeSnapshot();
-            timeFreezeSnapshotCaptured = true;
-            timeFreezeSnapshotType = npc.type;
-            timeFreezePosition = IsFinite(npc.position)
-                ? npc.position
-                : IsFinite(npc.oldPosition) ? npc.oldPosition : Vector2.Zero;
-            timeFreezeVelocity = IsFinite(npc.velocity) ? npc.velocity : Vector2.Zero;
-        }
-
-        internal void ApplyTimeFreeze(NPC npc) {
-            CaptureTimeFreezeSnapshot(npc);
-            npc.timeLeft++;
-            npc.aiAction = 0;
-            npc.frameCounter = 0;
-            npc.velocity = Vector2.Zero;
-            npc.position = timeFreezePosition;
-            npc.direction = npc.oldDirection;
-        }
-
-        internal void RestoreTimeFreeze(NPC npc) {
-            if (!timeFreezeSnapshotCaptured) {
-                return;
-            }
-
-            if (timeFreezeSnapshotType == npc.type) {
-                if (!IsFinite(npc.position) && IsFinite(timeFreezePosition)) {
-                    npc.position = timeFreezePosition;
-                }
-                npc.velocity = IsFinite(timeFreezeVelocity) ? timeFreezeVelocity : Vector2.Zero;
-                if (Main.netMode != NetmodeID.MultiplayerClient) {
-                    npc.netUpdate = true;
-                }
-            }
-
-            ClearTimeFreezeSnapshot();
-        }
-
-        public static void DoTimeFrozen(NPC npc) => npc.CWR().ApplyTimeFreeze(npc);
-
         public override bool PreAI(NPC npc) {
             if (IsWeakTime > 0) {
                 IsWeakTime--;
@@ -181,7 +115,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override void OnKill(NPC npc) {
-            ClearTimeFreezeSnapshot();
             if (VaultUtils.isClient) {
                 return;
             }

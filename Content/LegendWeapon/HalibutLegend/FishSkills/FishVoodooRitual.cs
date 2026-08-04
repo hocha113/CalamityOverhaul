@@ -1,4 +1,5 @@
 using InnoVault.PRT;
+using CalamityOverhaul.Content.TimeFreezes;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -569,7 +570,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 totalLen += Vector2.Distance(pts[i - 1], pts[i]);
             }
             if (t != null) {
-                t.CWR().TimeFrozenTick = 4; //针刺定帧
+                TimeFreezeSystem.RefreshNPC<FishVoodooRitual>(t, 4); //针刺定帧
                 SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.3f, Pitch = 0.6f, MaxInstances = 3 }, t.Center);
                 //刺点断纤+一片余温灰
                 for (int i = 0; i < 2; i++) {

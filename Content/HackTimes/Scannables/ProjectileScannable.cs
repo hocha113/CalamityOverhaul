@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.HackTimes.Targets;
+using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -52,8 +53,8 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             colors[2] = projectile.damage > 0 ? HackTheme.Uploading : HackTheme.TextDim;
 
             labels[3] = HackTime.ProjectileScanSpeed.Value;
-            Vector2 displayVel = TimeFreezes.WorldFreezeSystem.IsActive && TimeFreezes.WorldFreezeSystem.ProjSnapshotCaptured[ProjectileIndex]
-                ? TimeFreezes.WorldFreezeSystem.ProjFrozenVelocities[ProjectileIndex]
+            Vector2 displayVel = TimeFreezeSystem.TryGetResumeVelocity(projectile, out Vector2 resumeVelocity)
+                ? resumeVelocity
                 : projectile.velocity;
             values[3] = $"{displayVel.Length():F1} px/f";
             colors[3] = HackTheme.Accent;

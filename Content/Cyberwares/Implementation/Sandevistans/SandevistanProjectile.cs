@@ -1,4 +1,5 @@
 ﻿using Terraria;
+using CalamityOverhaul.Content.TimeFreezes;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
@@ -14,11 +15,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 return true;
             }
 
-            //缓速期间首次出现或槽位被复用（type/owner/identity 错配）时按需重新抓取原速度
-            SandevistanTimeSlow.EnsureProjectileSnapshot(projectile);
-
-            int idx = projectile.whoAmI;
-            Vector2 slowVel = SandevistanTimeSlow.ProjCachedVelocities[idx] * SandevistanTimeSlow.SlowFactor;
+            SandevistanTimeSlow.EnsureProjectileSource(projectile);
+            Vector2 slowVel = TimeFreezeSystem.GetEffectiveResumeVelocity(projectile);
 
             //回滚位移后按缩放速度推进
             projectile.position = projectile.oldPosition + slowVel;

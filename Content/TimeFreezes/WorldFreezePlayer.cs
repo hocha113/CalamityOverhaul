@@ -10,6 +10,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
     {
         //位置快照
         private Vector2 frozenPosition;
+        private Vector2 frozenVelocity;
         private bool positionCaptured;
         //朝向快照
         private int frozenDirection;
@@ -102,6 +103,9 @@ namespace CalamityOverhaul.Content.TimeFreezes
                     Main.playerInventory = snapshotInventoryOpen;
                     Player.wingTime = frozenWingTime;
                     Player.rocketTime = frozenRocketTime;
+                    Player.velocity = EntityFreezeState.IsFinite(frozenVelocity)
+                        ? frozenVelocity
+                        : Vector2.Zero;
                 }
                 positionCaptured = false;
                 return;
@@ -110,6 +114,9 @@ namespace CalamityOverhaul.Content.TimeFreezes
             //首次冻结快照
             if (!positionCaptured) {
                 frozenPosition = Player.position;
+                frozenVelocity = EntityFreezeState.IsFinite(Player.velocity)
+                    ? Player.velocity
+                    : Vector2.Zero;
                 frozenDirection = Player.direction;
                 frozenBodyFrame = Player.bodyFrame;
                 frozenLegFrame = Player.legFrame;

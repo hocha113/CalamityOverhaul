@@ -28,11 +28,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             NPCID.Sets.TrailCacheLength[npc.type] = 16;
         }
         public override bool AI() {
-            if (CWRWorld.CanTimeFrozen()) {
-                CWRNpc.DoTimeFrozen(npc);
-                return false;
-            }
-
             //阵列态，ProbeMatrix接管
             if (npc.ai[3] == -1f) {
                 npc.timeLeft = 600;

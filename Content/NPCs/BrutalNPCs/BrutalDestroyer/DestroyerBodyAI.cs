@@ -103,11 +103,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override bool AI() {
-            if (CWRWorld.CanTimeFrozen()) {
-                CWRNpc.DoTimeFrozen(npc);
-                return false;
-            }
-
             //死亡演出保活+冻姿态，跳跟随
             if (HeadInDeathPerformance()) {
                 HandleDeathPerformanceSegment();

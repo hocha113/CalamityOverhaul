@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
@@ -18,7 +19,7 @@ namespace CalamityOverhaul.Content.Buffs
 
         public override void Update(NPC npc, ref int buffIndex) {
             //WorldFreezeOverNPC 拦截AI
-            npc.CWR().TimeFrozenTick = 2;
+            TimeFreezeSystem.RefreshNPC<TemporalStasis>(npc, 2);
 
             if (!VaultUtils.isServer && Main.rand.NextBool(4)) {
                 Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.6f, npc.height * 0.6f);

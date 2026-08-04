@@ -34,7 +34,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         /// <summary>NPC 是否冻结中</summary>
         public static bool IsNPCFrozen(int npcIndex) {
             for (int i = 0; i < FrozenNPCs.Count; i++) {
-                if (FrozenNPCs[i].EntityIndex == npcIndex)
+                if (FrozenNPCs[i].EntityIndex == npcIndex
+                    && IsEntryActive(FrozenNPCs[i]))
                     return true;
             }
             return false;
@@ -43,7 +44,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         /// <summary>弹幕是否冻结中</summary>
         public static bool IsProjectileFrozen(int projIndex) {
             for (int i = 0; i < FrozenProjectiles.Count; i++) {
-                if (FrozenProjectiles[i].EntityIndex == projIndex)
+                if (FrozenProjectiles[i].EntityIndex == projIndex
+                    && IsEntryActive(FrozenProjectiles[i]))
                     return true;
             }
             return false;
@@ -52,7 +54,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         /// <summary>NPC 冻结进度 0~1，未冻结 -1</summary>
         public static float GetNPCFreezeProgress(int npcIndex) {
             for (int i = 0; i < FrozenNPCs.Count; i++) {
-                if (FrozenNPCs[i].EntityIndex == npcIndex)
+                if (FrozenNPCs[i].EntityIndex == npcIndex
+                    && IsEntryActive(FrozenNPCs[i]))
                     return FrozenNPCs[i].Progress;
             }
             return -1f;
@@ -61,7 +64,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         /// <summary>弹幕冻结进度</summary>
         public static float GetProjectileFreezeProgress(int projIndex) {
             for (int i = 0; i < FrozenProjectiles.Count; i++) {
-                if (FrozenProjectiles[i].EntityIndex == projIndex)
+                if (FrozenProjectiles[i].EntityIndex == projIndex
+                    && IsEntryActive(FrozenProjectiles[i]))
                     return FrozenProjectiles[i].Progress;
             }
             return -1f;
@@ -70,7 +74,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         /// <summary>NPC 冻结种子</summary>
         public static float GetNPCSeed(int npcIndex) {
             for (int i = 0; i < FrozenNPCs.Count; i++) {
-                if (FrozenNPCs[i].EntityIndex == npcIndex)
+                if (FrozenNPCs[i].EntityIndex == npcIndex
+                    && IsEntryActive(FrozenNPCs[i]))
                     return FrozenNPCs[i].Seed;
             }
             return 0f;
@@ -172,16 +177,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 NPC npc = Main.npc[idx];
                 if (!npc.active) continue;
                 if (IsNPCFrozen(idx) || CyberBanish.IsBanishing(idx)) continue;
+                TimeFreezeLease lease = TimeFreezeSystem.AcquireNPC<CyberDomainFreeze>(
+                    npc, npcEntries[i].center, ownerWho,
+                    TimeFreezeAnchorPriority.Authoritative);
                 FrozenNPCs.Add(new FreezeEntry {
                     EntityIndex = idx,
                     Timer = 0,
                     Duration = DefaultFreezeDuration,
                     FreezePosition = npcEntries[i].center,
                     Seed = npcEntries[i].seed,
-                    FreezeVelocity = npc.velocity,
+                    FreezeVelocity = lease.ResumeVelocity,
+                    FreezeLease = lease,
                     OwnerWho = ownerWho,
                 });
-                npc.velocity = Vector2.Zero;
             }
             for (int i = 0; i < projEntries.Count; i++) {
                 int idx = projEntries[i].idx;
@@ -189,16 +197,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 Projectile proj = Main.projectile[idx];
                 if (!proj.active) continue;
                 if (IsProjectileFrozen(idx)) continue;
+                TimeFreezeLease lease = TimeFreezeSystem.AcquireProjectile<CyberDomainFreeze>(
+                    proj, projEntries[i].center, ownerWho,
+                    TimeFreezeAnchorPriority.Authoritative);
                 FrozenProjectiles.Add(new FreezeProjEntry {
                     EntityIndex = idx,
                     Timer = 0,
                     Duration = DefaultFreezeDuration,
                     FreezePosition = projEntries[i].center,
                     Seed = projEntries[i].seed,
-                    FreezeVelocity = proj.velocity,
+                    FreezeVelocity = lease.ResumeVelocity,
+                    FreezeLease = lease,
                     OwnerWho = ownerWho,
                 });
-                proj.velocity = Vector2.Zero;
             }
         }
 
@@ -287,13 +298,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 entry.Timer += TimeGear.PullFrameAdvance(ref entry.TimerCarry);
 
                 NPC npc = Main.npc[entry.EntityIndex];
-                if (!npc.active) {
+                if (!npc.active || !TimeFreezeSystem.IsLeaseActive(npc, entry.FreezeLease)) {
                     FrozenNPCs.RemoveAt(i);
                     continue;
-                }
-
-                if (entry.Timer > 0) {
-                    npc.CWR().TimeFrozenTick = 2;
                 }
 
                 //整组离发起者域则快进解冻
@@ -329,8 +336,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
 
                 //到期解冻
                 if (entry.Timer >= entry.Duration) {
-                    npc.velocity = entry.FreezeVelocity * 0.5f;
-                    npc.CWR().TimeFrozenTick = 0;
+                    TimeFreezeSystem.ReleaseNPC(npc, entry.FreezeLease,
+                        entry.FreezeVelocity * 0.5f, TimeFreezeResumePriority.Domain);
                     if (!Main.dedServ) {
                         CyberDomainFreezeParticles.SpawnThawBurst(npc.Center);
                     }
@@ -357,27 +364,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 entry.Timer += TimeGear.PullFrameAdvance(ref entry.TimerCarry);
 
                 Projectile proj = Main.projectile[entry.EntityIndex];
-                if (!proj.active) {
+                if (!proj.active || !TimeFreezeSystem.IsLeaseActive(proj, entry.FreezeLease)) {
                     FrozenProjectiles.RemoveAt(i);
                     continue;
                 }
 
-                if (entry.Timer > 0) {
-                    proj.CWR().TimeFrozenTick = 2;
-                }
-
                 //到期解冻
                 if (entry.Timer >= entry.Duration) {
-                    proj.velocity = entry.FreezeVelocity;
-                    proj.CWR().TimeFrozenTick = 0;
+                    TimeFreezeSystem.ReleaseProjectile(proj, entry.FreezeLease,
+                        entry.FreezeVelocity, TimeFreezeResumePriority.Domain);
                     FrozenProjectiles.RemoveAt(i);
                 }
             }
         }
 
         public static void Reset() {
+            foreach (FreezeEntry entry in FrozenNPCs) {
+                if (entry.EntityIndex >= 0 && entry.EntityIndex < Main.maxNPCs) {
+                    NPC npc = Main.npc[entry.EntityIndex];
+                    TimeFreezeSystem.ReleaseNPC(npc, entry.FreezeLease,
+                        entry.FreezeVelocity, TimeFreezeResumePriority.Domain);
+                }
+            }
+            foreach (FreezeProjEntry entry in FrozenProjectiles) {
+                if (entry.EntityIndex >= 0 && entry.EntityIndex < Main.maxProjectiles) {
+                    Projectile projectile = Main.projectile[entry.EntityIndex];
+                    TimeFreezeSystem.ReleaseProjectile(projectile, entry.FreezeLease,
+                        entry.FreezeVelocity, TimeFreezeResumePriority.Domain);
+                }
+            }
             FrozenNPCs.Clear();
             FrozenProjectiles.Clear();
+        }
+
+        private static bool IsEntryActive(FreezeEntry entry) {
+            if (entry.EntityIndex < 0 || entry.EntityIndex >= Main.maxNPCs) {
+                return false;
+            }
+            NPC npc = Main.npc[entry.EntityIndex];
+            return TimeFreezeSystem.IsLeaseActive(npc, entry.FreezeLease);
+        }
+
+        private static bool IsEntryActive(FreezeProjEntry entry) {
+            if (entry.EntityIndex < 0 || entry.EntityIndex >= Main.maxProjectiles) {
+                return false;
+            }
+            Projectile projectile = Main.projectile[entry.EntityIndex];
+            return TimeFreezeSystem.IsLeaseActive(projectile, entry.FreezeLease);
         }
     }
 
@@ -390,6 +423,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         public int Duration;
         public Vector2 FreezePosition;
         public Vector2 FreezeVelocity;
+        internal TimeFreezeLease FreezeLease;
         public float Seed;
         /// <summary>发起者 whoAmI，域外快速解冻判定</summary>
         public int OwnerWho;
@@ -406,6 +440,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         public int Duration;
         public Vector2 FreezePosition;
         public Vector2 FreezeVelocity;
+        internal TimeFreezeLease FreezeLease;
         public float Seed;
         /// <summary>发起者 whoAmI</summary>
         public int OwnerWho;

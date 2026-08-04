@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+using CalamityOverhaul.Content.TimeFreezes;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -113,7 +114,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         public override bool ShouldUpdatePosition() => false;
 
         public override void AI() {
-            timer++;
+            int syncedTimer = TotalDuration - Projectile.timeLeft + 1;
+            timer = Math.Clamp(Math.Max(timer + 1, syncedTimer), 1, TotalDuration);
 
             ShatterFlowAngle = Aim;
             ShatterFlowActive = true;
@@ -121,7 +123,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             //时停、纳刀帧前每帧刷新，之后停止、tick 自然衰减，世界恰在终斩落下时苏醒
 
             if (timer <= DetonateFrame) {
-                CWRWorld.TimeFrozenTick = 2;
+                TimeFreezeSystem.RefreshCinematic<OniFinaleSlash>(2);
             }
 
             PushDimEnvelope();

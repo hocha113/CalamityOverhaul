@@ -42,11 +42,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override bool AI() {
-            if (CWRWorld.CanTimeFrozen()) {
-                CWRNpc.DoTimeFrozen(npc);
-                return false;
-            }
-
             //Mechdusa交还原版AI
             if (NPC.IsMechQueenUp) {
                 return true;

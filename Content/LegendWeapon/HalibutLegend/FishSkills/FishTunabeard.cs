@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -312,11 +313,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 0.9f, Pitch = -0.4f }, target.Center);
             SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.65f, Pitch = -0.25f }, target.Center);
 
-            //穿身微滞，世界不停，只有被穿者顿一拍
-            target.CWR().TimeFrozenTick = 3;
-
             //击退增强（旧版机制保留）
             target.velocity += Projectile.velocity.SafeNormalize(Vector2.Zero) * 12f;
+
+            //穿身微滞，世界不停，只有被穿者顿一拍
+            TimeFreezeSystem.RefreshNPC<FishTunabeard>(target, 3);
 
             if (!Main.dedServ) {
                 FishTunabeardVFX.TearSpray(target.Center, dashDir);

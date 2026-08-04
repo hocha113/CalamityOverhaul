@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
@@ -308,7 +309,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             //咬合微滞
-            target.CWR().TimeFrozenTick = 2;
+            TimeFreezeSystem.RefreshNPC<FishDoubleCod>(target, 2);
 
             //咬合减速
             speed *= 0.86f;

@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -98,6 +99,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             public int Timer;
             public int Duration;
             public Vector2 AnchorCenter;
+            public TimeFreezeLease FreezeLease;
         }
 
         /// <summary>默认最大切口数</summary>
@@ -146,9 +148,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         internal static readonly Dictionary<int, RenderTarget2D> SnapRTs = [];
 
         void ICWRLoader.UnLoadData() {
-            Entries.Clear();
-            lockEntries.Clear();
-            groupScratch.Clear();
+            Clear();
             MaxCuts = DefaultMaxCuts;
             MaxPieces = DefaultMaxPieces;
             Main.QueueMainThreadAction(DisposeAllSnapshots);
@@ -329,6 +329,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
             int npcIndex = npc.whoAmI;
             Entries.RemoveAll(entry => entry.NpcIndex == npcIndex);
+            DismemberLockEntry lockEntry = GetLockEntry(npcIndex);
+            if (lockEntry != null) {
+                TimeFreezeSystem.ReleaseNPC(npc, lockEntry.FreezeLease);
+            }
             lockEntries.RemoveAll(entry => entry.NpcIndex == npcIndex);
             if (SnapRTs.Remove(npcIndex, out RenderTarget2D snapshot)) {
                 snapshot?.Dispose();
@@ -337,10 +341,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
         public static bool IsDismembered(int npcIndex) => GetEntry(npcIndex) != null;
 
-        public static bool IsLocked(int npcIndex) => GetLockEntry(npcIndex) != null;
+        public static bool IsLocked(int npcIndex) {
+            DismemberLockEntry entry = GetLockEntry(npcIndex);
+            if (entry == null || npcIndex < 0 || npcIndex >= Main.maxNPCs) {
+                return false;
+            }
+            NPC npc = Main.npc[npcIndex];
+            return npc.active && npc.type == entry.NpcType
+                && TimeFreezeSystem.IsLeaseActive(npc, entry.FreezeLease);
+        }
 
         /// <summary>立刻清空全部肢解状态（世界卸载兜底）</summary>
         public static void Clear() {
+            foreach (DismemberLockEntry entry in lockEntries) {
+                ReleaseLock(entry);
+            }
             Entries.Clear();
             lockEntries.Clear();
             groupScratch.Clear();
@@ -366,7 +381,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
         private static DismemberLockEntry ApplyLock(NPC npc, int duration) {
             DismemberLockEntry entry = GetLockEntry(npc.whoAmI);
-            if (entry == null || entry.NpcType != npc.type) {
+            if (entry == null || entry.NpcType != npc.type
+                || !TimeFreezeSystem.IsLeaseActive(npc, entry.FreezeLease)) {
                 if (entry != null) {
                     lockEntries.Remove(entry);
                 }
@@ -376,15 +392,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                     Duration = Math.Max(duration, FadeFrames),
                     AnchorCenter = npc.Center,
                 };
+                entry.FreezeLease = TimeFreezeSystem.AcquireNPC<OniDismember>(npc,
+                    entry.AnchorCenter, npc.whoAmI, TimeFreezeAnchorPriority.Effect);
                 lockEntries.Add(entry);
             }
             else {
                 entry.Duration = Math.Max(entry.Duration, entry.Timer + duration);
             }
 
-            npc.CWR().TimeFrozenTick = 2;
-            npc.Center = entry.AnchorCenter;
-            npc.velocity = Vector2.Zero;
             return entry;
         }
 
@@ -682,20 +697,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             for (int i = lockEntries.Count - 1; i >= 0; i--) {
                 DismemberLockEntry entry = lockEntries[i];
                 NPC npc = Main.npc[entry.NpcIndex];
-                if (!npc.active || npc.type != entry.NpcType) {
+                if (!npc.active || npc.type != entry.NpcType
+                    || !TimeFreezeSystem.IsLeaseActive(npc, entry.FreezeLease)) {
                     lockEntries.RemoveAt(i);
                     continue;
                 }
 
                 entry.Timer++;
                 if (entry.Timer >= entry.Duration) {
+                    TimeFreezeSystem.ReleaseNPC(npc, entry.FreezeLease);
                     lockEntries.RemoveAt(i);
                     continue;
                 }
-
-                npc.CWR().TimeFrozenTick = 2;
-                npc.Center = entry.AnchorCenter;
-                npc.velocity = Vector2.Zero;
             }
 
             for (int i = Entries.Count - 1; i >= 0; i--) {
@@ -722,6 +735,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                         }
                     }
                 }
+            }
+        }
+
+        private static void ReleaseLock(DismemberLockEntry entry) {
+            if (entry.NpcIndex < 0 || entry.NpcIndex >= Main.maxNPCs) {
+                return;
+            }
+            NPC npc = Main.npc[entry.NpcIndex];
+            if (npc.active && npc.type == entry.NpcType) {
+                TimeFreezeSystem.ReleaseNPC(npc, entry.FreezeLease);
             }
         }
 

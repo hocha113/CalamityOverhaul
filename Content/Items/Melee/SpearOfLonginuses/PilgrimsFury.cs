@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;
@@ -33,7 +34,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             }
 
             Projectile.Center = Target.Center;
-            Target.CWR().TimeFrozenTick = 2;
+            TimeFreezeSystem.RefreshNPC<PilgrimsFury>(Target, 2);
 
             if (Time % 30 == 0) {
                 SoundStyle belCanto = new("CalamityOverhaul/Assets/Sounds/BelCanto") { Volume = 1f + Time * 0.05f, Pitch = -0.2f + Time * 0.007f };

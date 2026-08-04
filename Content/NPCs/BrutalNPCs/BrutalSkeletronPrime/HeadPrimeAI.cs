@@ -169,11 +169,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         #region 主AI
         public override bool AI() {
-            if (CWRWorld.CanTimeFrozen()) {
-                CWRNpc.DoTimeFrozen(npc);
-                return false;
-            }
-
             //Mechdusa交还原版AI
             if (IsMechdusa(npc)) {
                 NPC.mechQueen = npc.whoAmI;

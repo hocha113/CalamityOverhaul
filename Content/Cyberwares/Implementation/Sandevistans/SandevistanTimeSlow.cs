@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.TimeFreezes;
-using System;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -7,7 +6,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 {
     /// <summary>
     /// 时缓数据管理，TimeGear 缩放实体漂移
-    /// <br/>快照/槽位校验/还原参考 <see cref="WorldFreezeSystem"/>，保留 SlowFactor 缩放与 friendly 豁免语义
+    /// <br/>实体运动快照由 <see cref="TimeFreezeSystem"/> 统一持有，保留 SlowFactor 缩放与 friendly 豁免语义
     /// <br/>NPC/弹幕拦截见 <see cref="SandevistanNPC"/>、<see cref="SandevistanProjectile"/>
     /// </summary>
     internal class SandevistanTimeSlow : ModSystem
@@ -20,41 +19,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         //速度缩放，0.08≈原速 8%
         public static float SlowFactor = 0.08f;
 
-        //激活瞬间抓取的 NPC 原速度
-        internal static Vector2[] NPCCachedVelocities;
-        internal static bool[] NPCHasCache;
-        //NPC 类型校验，防槽位复用套旧数据
-        internal static int[] NPCSnapshotTypes;
-
-        //弹幕速度快照
-        internal static Vector2[] ProjCachedVelocities;
-        internal static bool[] ProjHasCache;
-        //弹幕 type/owner/identity 校验，防槽位复用套旧数据
-        internal static int[] ProjSnapshotTypes;
-        internal static int[] ProjSnapshotOwners;
-        internal static int[] ProjSnapshotIdentities;
-
-        public override void Load() {
-            NPCCachedVelocities = new Vector2[Main.maxNPCs];
-            NPCHasCache = new bool[Main.maxNPCs];
-            NPCSnapshotTypes = new int[Main.maxNPCs];
-            ProjCachedVelocities = new Vector2[Main.maxProjectiles];
-            ProjHasCache = new bool[Main.maxProjectiles];
-            ProjSnapshotTypes = new int[Main.maxProjectiles];
-            ProjSnapshotOwners = new int[Main.maxProjectiles];
-            ProjSnapshotIdentities = new int[Main.maxProjectiles];
-        }
-
         public override void Unload() {
-            NPCCachedVelocities = null;
-            NPCHasCache = null;
-            NPCSnapshotTypes = null;
-            ProjCachedVelocities = null;
-            ProjHasCache = null;
-            ProjSnapshotTypes = null;
-            ProjSnapshotOwners = null;
-            ProjSnapshotIdentities = null;
+            Deactivate();
+            SlowFactor = 0.08f;
         }
+
+        public override void OnWorldUnload() => Deactivate();
 
         //开，TimeGear 注册+快照速度
         public static void Activate() {
@@ -63,103 +33,62 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             }
             IsActive = true;
             TimeGear.Register(TimeGearKey, SlowFactor);
-            SnapshotAllEntities();
+            AcquireAllEntities();
         }
 
-        //关，注销+restore+清缓存；不 restore 弹幕会卡在 SlowFactor 倍速
+        //关，释放统一运动租约
         public static void Deactivate() {
             if (!IsActive) {
+                TimeGear.Unregister(TimeGearKey);
                 return;
             }
             IsActive = false;
-            RestoreSnapshots();
-            ClearAllCache();
-            TimeGear.Unregister(TimeGearKey);
+            try {
+                ReleaseAllEntities();
+            }
+            finally {
+                TimeGear.Unregister(TimeGearKey);
+            }
         }
 
-        private static void SnapshotAllEntities() {
+        private static void AcquireAllEntities() {
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (ShouldAffectNPC(npc)) {
-                    CaptureNPC(npc);
+                    EnsureNPCSource(npc);
                 }
             }
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile proj = Main.projectile[i];
                 if (proj.active && ShouldAffectProjectile(proj)) {
-                    CaptureProjectile(proj);
+                    EnsureProjectileSource(proj);
                 }
             }
         }
 
-        /// <summary>PreAI 兜底，首次出现或槽位复用时重抓</summary>
-        internal static void EnsureNPCSnapshot(NPC npc) {
-            int id = npc.whoAmI;
-            if (!NPCHasCache[id] || NPCSnapshotTypes[id] != npc.type) {
-                CaptureNPC(npc);
+        private static void ReleaseAllEntities() {
+            if (Main.npc != null) {
+                foreach (NPC npc in Main.ActiveNPCs) {
+                    TimeFreezeSystem.ReleaseVelocityScaleNPC<SandevistanTimeSlow>(npc);
+                }
+            }
+            if (Main.projectile != null) {
+                for (int i = 0; i < Main.maxProjectiles; i++) {
+                    Projectile projectile = Main.projectile[i];
+                    if (projectile?.active == true) {
+                        TimeFreezeSystem.ReleaseVelocityScaleProjectile<SandevistanTimeSlow>(
+                            projectile);
+                    }
+                }
             }
         }
 
-        /// <summary>PreAI 兜底，首次出现或槽位复用时重抓</summary>
-        internal static void EnsureProjectileSnapshot(Projectile proj) {
-            int id = proj.whoAmI;
-            if (!ProjHasCache[id]
-                || ProjSnapshotTypes[id] != proj.type
-                || ProjSnapshotOwners[id] != proj.owner
-                || ProjSnapshotIdentities[id] != proj.identity) {
-                CaptureProjectile(proj);
-            }
-        }
+        internal static void EnsureNPCSource(NPC npc)
+            => TimeFreezeSystem.AcquireVelocityScaleNPC<SandevistanTimeSlow>(
+                npc, SlowFactor);
 
-        private static void CaptureNPC(NPC npc) {
-            int id = npc.whoAmI;
-            NPCCachedVelocities[id] = npc.velocity;
-            NPCHasCache[id] = true;
-            NPCSnapshotTypes[id] = npc.type;
-        }
-
-        private static void CaptureProjectile(Projectile proj) {
-            int id = proj.whoAmI;
-            ProjCachedVelocities[id] = proj.velocity;
-            ProjHasCache[id] = true;
-            ProjSnapshotTypes[id] = proj.type;
-            ProjSnapshotOwners[id] = proj.owner;
-            ProjSnapshotIdentities[id] = proj.identity;
-        }
-
-        //还原 PreAI 改写的 velocity，校验槽位
-        private static void RestoreSnapshots() {
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                if (!NPCHasCache[i]) {
-                    continue;
-                }
-                NPC npc = Main.npc[i];
-                if (!npc.active || NPCSnapshotTypes[i] != npc.type) {
-                    continue;
-                }
-                npc.velocity = NPCCachedVelocities[i];
-            }
-
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                if (!ProjHasCache[i]) {
-                    continue;
-                }
-                Projectile proj = Main.projectile[i];
-                if (!proj.active) {
-                    continue;
-                }
-                if (ProjSnapshotTypes[i] != proj.type
-                    || ProjSnapshotOwners[i] != proj.owner
-                    || ProjSnapshotIdentities[i] != proj.identity) {
-                    continue;
-                }
-                proj.velocity = ProjCachedVelocities[i];
-            }
-        }
-
-        private static void ClearAllCache() {
-            Array.Clear(NPCHasCache);
-            Array.Clear(ProjHasCache);
-        }
+        internal static void EnsureProjectileSource(Projectile projectile)
+            => TimeFreezeSystem.AcquireVelocityScaleProjectile<SandevistanTimeSlow>(
+                projectile, SlowFactor);
 
         internal static bool ShouldAffectNPC(NPC npc) => npc.active;
 

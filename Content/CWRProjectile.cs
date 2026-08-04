@@ -35,8 +35,6 @@ namespace CalamityOverhaul.Content
         public bool PierceResist;
         /// <summary>发射源类型</summary>
         public byte SpanTypes;
-        /// <summary>&gt;0 冻结大部分活动</summary>
-        public int TimeFrozenTick;
         /// <summary>&gt;0 时 Timer 达到即 Kill</summary>
         public int TimeToDeath;
         /// <summary>计时器</summary>

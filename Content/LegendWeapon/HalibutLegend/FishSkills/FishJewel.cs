@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Stones;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
@@ -285,7 +286,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //重音拍命中
             if (accent) {
-                target.CWR().TimeFrozenTick = 2;
+                TimeFreezeSystem.RefreshNPC<FishJewel>(target, 2);
                 FishJewelVFX.Punch(Projectile.Center, Projectile.velocity, 2.2f, 9f, 6);
             }
         }

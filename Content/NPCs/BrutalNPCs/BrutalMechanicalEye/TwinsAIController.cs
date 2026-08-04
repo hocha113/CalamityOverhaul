@@ -253,11 +253,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         #region AI核心
 
         public override bool AI() {
-            if (CWRWorld.CanTimeFrozen()) {
-                CWRNpc.DoTimeFrozen(npc);
-                return false;
-            }
-
             // 天顶世界 Mechdusa 模式：交还原版 AI 以维持三王合体行为
             if (NPC.IsMechQueenUp) {
                 return true;
