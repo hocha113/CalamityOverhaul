@@ -110,6 +110,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private float appear;
         private OniLedgerView rememberedLedger;
         private TooltipOwner tooltipOwner;
+        private const float RestingBurn = 0.09f;
+        private const float MaximumBurn = 0.24f;
+        private float burnVisual = RestingBurn;
         private bool hover;
         private bool wasHovered;
         private readonly OniUIParticlePool particles = new(40);
@@ -210,6 +213,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (appear <= 0.01f) {
                 hover = wasHovered = false;
                 hoverOffTicks = Math.Min(hoverOffTicks + 1, 600);
+                burnVisual = RestingBurn;
+                emberTimer = 0;
                 vigor.Reset();
                 stance.Reset();
                 domainEye.Reset();
@@ -218,6 +223,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             particles.Update();
 
             bool danger = OniRegistry.IsEquippedDormant;
+            float targetBurn = ResolveBurnTarget(OniRegistry.EquippedEntry);
+            burnVisual += (targetBurn - burnVisual) * 0.06f;
+            float burnStrength = MathHelper.Clamp(
+                (burnVisual - RestingBurn) / (MaximumBurn - RestingBurn), 0f, 1f);
 
             float registerOpen = OniRegisterUI.Instance?.OpenProgress ?? 0f;
             float meiOpen = OniMeiUI.Instance?.OpenProgress ?? 0f;
@@ -230,10 +239,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 keyRightPressState == KeyPressState.Pressed,
                 keyMiddlePressState == KeyPressState.Pressed);
 
-            //挂绳推进:危态风更烈;悬停视为被手捏住,风息、阻尼加重,偶发拽动也止住
-            //风幅与阻尼取"檐下无风时微微息动"的档位,大幅甩摆只留给悬停初捏与危态拽动
+            //挂绳推进:常态保持风息,烧蚀越重风势越强;悬停视为被手捏住,风息、阻尼加重
+            //大幅甩摆只留给悬停初捏与休眠拽动
             //绳结随眼呼吸微移
-            float windAmp = danger ? 0.11f : 0.05f;
+            float windAmp = MathHelper.Lerp(0.08f, 0.13f, burnStrength);
             if (hover) {
                 windAmp *= 0.2f;
             }
@@ -324,15 +333,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 }
             }
 
-            //危态:札脚剥落鬼火余烬
-            if (danger) {
-                emberTimer++;
-                if (emberTimer >= 26) {
-                    emberTimer = 0;
-                    Vector2 stripBottom = stripTopNow + (MathHelper.PiOver2 + stripRotNow).ToRotationVector2()
-                        * OnikiriUITheme.HudTalismanH;
-                    particles.SpawnEmber(stripBottom + Main.rand.NextVector2Circular(OnikiriUITheme.HudTalismanW * 0.4f, 2f));
-                }
+            //札脚常有零星余烬,驾驭耗竭时密度随烧蚀升高
+            emberTimer++;
+            int emberInterval = (int)MathHelper.Lerp(58f, 24f, burnStrength);
+            if (emberTimer >= emberInterval) {
+                emberTimer = 0;
+                Vector2 stripBottom = stripTopNow + (MathHelper.PiOver2 + stripRotNow).ToRotationVector2()
+                    * OnikiriUITheme.HudTalismanH;
+                particles.SpawnEmber(stripBottom + Main.rand.NextVector2Circular(OnikiriUITheme.HudTalismanW * 0.4f, 2f));
             }
         }
 
@@ -367,19 +375,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //鬼域之眼(画在系带之上,盖住带头)
             domainEye.Draw(sb, a, GlobalTimer);
 
-            //札体:纸条质感(三段明暗/折角/压边/缓移光泽),危态时改走焚烧 shader
+            //札体:焚烧 shader 是常态和纸材质,驾驭状态只调节下缘烧蚀强度
             Vector2 side = rot.ToRotationVector2();
             OniGhostEntry equipped = OniRegistry.EquippedEntry;
             float mastery = equipped == null ? 0f : MathHelper.Clamp(equipped.Mastery, 0f, 1f);
-            bool danger = equipped?.IsDormant == true;
-            bool paperByShader = danger && OniPaperBurnDraw.Available;
+            float burnStrength = MathHelper.Clamp(
+                (burnVisual - RestingBurn) / (MaximumBurn - RestingBurn), 0f, 1f);
+            bool paperByShader = OniPaperBurnDraw.Available;
             if (paperByShader) {
-                //焚烧量随当前役鬼驾驭降低升高,只舔下缘
-                float burn = MathHelper.Clamp(0.09f + (1f - mastery) * 0.17f, 0f, 0.30f);
-                OniPaperBurnDraw.Draw(sb, stripTop, rot, new Vector2(W, H), a * (hover ? 1.05f : 0.96f), burn, GlobalTimer);
+                OniPaperBurnDraw.Draw(sb, stripTop, rot, new Vector2(W, H),
+                    a * (hover ? 1.05f : 0.96f), burnVisual, GlobalTimer);
             }
             else {
                 OniBrush.DrawPaperStrip(sb, stripTop, rot, new Vector2(W, H), a * (hover ? 1.05f : 0.96f), GlobalTimer * 0.11f);
+                DrawCharredHem(sb, stripTop, down, side, W, H, a, burnStrength);
             }
 
             //方章与完整淡墨笔势属于封印札本体,役鬼只负责写实驾驭进度
@@ -394,11 +403,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 if (mastery > 0.02f) {
                     Vector2 strokeEnd = stripTop + down * (29f + (H - 42f) * mastery);
                     OniBrush.DrawTaperedSlash(sb, strokeStart, strokeEnd, 3.8f, 0.9f, a * 0.92f);
-                }
-
-                //危态:焚烧 shader 缺席时退回逐列手绘焦边
-                if (danger && !paperByShader) {
-                    DrawCharredHem(sb, stripTop, down, side, W, H, a);
                 }
             }
 
@@ -421,6 +425,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             OniBrush.DrawGradientLine(sb, center - side * 5f + down * offset,
                 center + side * 5f - down * offset, OnikiriUITheme.Bright * (alpha * 0.76f),
                 OnikiriUITheme.Deep * (alpha * 0.34f), 1f);
+        }
+
+        private static float ResolveBurnTarget(OniGhostEntry equipped) {
+            if (equipped == null) {
+                return RestingBurn;
+            }
+
+            float mastery = MathHelper.Clamp(equipped.Mastery, 0f, 1f);
+            float depletion = (1f - mastery) * 0.04f;
+            float dormantHeat = equipped.IsDormant ? 0.10f : 0f;
+            return MathHelper.Clamp(RestingBurn + depletion + dormantHeat, RestingBurn, MaximumBurn);
         }
 
         internal void DrawTooltipOverlay(SpriteBatch sb) {
@@ -470,27 +485,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>札脚焦边:炭黑参差 + 数簇暖色火焰,跟随摆角</summary>
-        private void DrawCharredHem(SpriteBatch sb, Vector2 stripTop, Vector2 down, Vector2 side, float w, float h, float a) {
+        /// <summary>札脚焦边:shader 缺席时按烧蚀强度退回手绘炭痕与暖焰</summary>
+        private void DrawCharredHem(SpriteBatch sb, Vector2 stripTop, Vector2 down, Vector2 side,
+            float w, float h, float a, float burnStrength) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle src = new(0, 0, 1, 1);
             float rot = stripRotNow;
+            burnStrength = MathHelper.Clamp(burnStrength, 0f, 1f);
             const int Cols = 10;
             float step = w / Cols;
             for (int i = 0; i < Cols; i++) {
                 float x = -w * 0.5f + (i + 0.5f) * step;
                 float hash = OniBrush.Hash01(i * 97 + 11);
-                float charH = 3f + hash * 5f;
+                float charH = MathHelper.Lerp(2f + hash * 2f, 3f + hash * 5f, burnStrength);
                 Vector2 pos = stripTop + down * (h - charH * 0.5f) + side * x;
                 sb.Draw(pixel, pos, src, OnikiriUITheme.Ink * (a * 0.92f), rot, new Vector2(0.5f), new Vector2(step + 0.6f, charH), SpriteEffects.None, 0f);
-                sb.Draw(pixel, pos - down * (charH * 0.5f + 1f), src, OnikiriUITheme.Dark * (a * 0.7f), rot, new Vector2(0.5f), new Vector2(step + 0.6f, 2f), SpriteEffects.None, 0f);
+                float scorchH = MathHelper.Lerp(1.2f, 2f, burnStrength);
+                sb.Draw(pixel, pos - down * (charH * 0.5f + scorchH * 0.5f), src,
+                    OnikiriUITheme.Dark * (a * MathHelper.Lerp(0.48f, 0.7f, burnStrength)), rot,
+                    new Vector2(0.5f), new Vector2(step + 0.6f, scorchH), SpriteEffects.None, 0f);
 
-                if (hash > 0.55f) {
+                if (hash > MathHelper.Lerp(0.72f, 0.52f, burnStrength)) {
                     float flick = (float)Math.Sin(GlobalTimer * (3.1f + hash * 2.6f) + i * 1.9f) * 0.5f + 0.5f;
-                    float flameH = (3f + hash * 4.5f) * (0.4f + flick * 0.6f);
+                    float flameH = MathHelper.Lerp(2f + hash * 2.5f, 3f + hash * 4.5f, burnStrength)
+                        * (0.4f + flick * 0.6f);
+                    float flameAlpha = MathHelper.Lerp(0.52f, 1f, burnStrength);
                     Vector2 flamePos = stripTop + down * (h - charH) + side * x;
-                    sb.Draw(pixel, flamePos, src, OnikiriUITheme.BurnDim * (a * 0.55f * flick), rot, new Vector2(0.5f, 1f), new Vector2(step - 0.5f, flameH), SpriteEffects.None, 0f);
-                    sb.Draw(pixel, flamePos, src, OnikiriUITheme.BurnHot * (a * 0.72f * flick), rot, new Vector2(0.5f, 1f), new Vector2(1.4f, flameH * 0.6f), SpriteEffects.None, 0f);
+                    sb.Draw(pixel, flamePos, src, OnikiriUITheme.BurnDim * (a * 0.55f * flick * flameAlpha), rot,
+                        new Vector2(0.5f, 1f), new Vector2(step - 0.5f, flameH), SpriteEffects.None, 0f);
+                    sb.Draw(pixel, flamePos, src, OnikiriUITheme.BurnHot * (a * 0.72f * flick * flameAlpha), rot,
+                        new Vector2(0.5f, 1f), new Vector2(1.4f, flameH * 0.6f), SpriteEffects.None, 0f);
                 }
             }
         }
