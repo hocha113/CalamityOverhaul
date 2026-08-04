@@ -1,33 +1,25 @@
-﻿using Terraria;
-using CalamityOverhaul.Content.TimeFreezes;
+using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 {
-    /// <summary>GlobalNPC 时缓，不侵入 CWRNpc</summary>
+    /// <summary>GlobalNPC 时缓来源登记</summary>
     internal class SandevistanNPC : GlobalNPC
     {
+        public override void OnSpawn(NPC npc, IEntitySource source) {
+            if (SandevistanTimeSlow.IsActive
+                && SandevistanTimeSlow.ShouldAffectNPC(npc)) {
+                SandevistanTimeSlow.EnsureNPCSource(npc);
+            }
+        }
+
         public override bool PreAI(NPC npc) {
-            if (!SandevistanTimeSlow.IsActive) {
-                return true;
+            if (SandevistanTimeSlow.IsActive
+                && SandevistanTimeSlow.ShouldAffectNPC(npc)) {
+                SandevistanTimeSlow.EnsureNPCSource(npc);
             }
-            if (!SandevistanTimeSlow.ShouldAffectNPC(npc)) {
-                return true;
-            }
-
-            SandevistanTimeSlow.EnsureNPCSource(npc);
-            Vector2 slowVel = TimeFreezeSystem.GetEffectiveResumeVelocity(npc);
-
-            //保活+冻动画
-            npc.timeLeft++;
-            npc.aiAction = 0;
-            npc.frameCounter = 0;
-            //回滚本帧位移，按缓存速度缩放重设
-            npc.position = npc.oldPosition + slowVel;
-            npc.velocity = slowVel;
-            npc.direction = npc.oldDirection;
-
-            return false;
+            return true;
         }
     }
 }

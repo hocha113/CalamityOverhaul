@@ -1,29 +1,25 @@
-﻿using Terraria;
-using CalamityOverhaul.Content.TimeFreezes;
+using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 {
-    /// <summary>GlobalProjectile 时缓，不侵入 CWRProjectile</summary>
+    /// <summary>GlobalProjectile 时缓来源登记</summary>
     internal class SandevistanProjectile : GlobalProjectile
     {
+        public override void OnSpawn(Projectile projectile, IEntitySource source) {
+            if (SandevistanTimeSlow.IsActive
+                && SandevistanTimeSlow.ShouldAffectProjectile(projectile)) {
+                SandevistanTimeSlow.EnsureProjectileSource(projectile);
+            }
+        }
+
         public override bool PreAI(Projectile projectile) {
-            if (!SandevistanTimeSlow.IsActive) {
-                return true;
+            if (SandevistanTimeSlow.IsActive
+                && SandevistanTimeSlow.ShouldAffectProjectile(projectile)) {
+                SandevistanTimeSlow.EnsureProjectileSource(projectile);
             }
-            if (!SandevistanTimeSlow.ShouldAffectProjectile(projectile)) {
-                return true;
-            }
-
-            SandevistanTimeSlow.EnsureProjectileSource(projectile);
-            Vector2 slowVel = TimeFreezeSystem.GetEffectiveResumeVelocity(projectile);
-
-            //回滚位移后按缩放速度推进
-            projectile.position = projectile.oldPosition + slowVel;
-            projectile.velocity = slowVel;
-            projectile.timeLeft++;
-
-            return false;
+            return true;
         }
     }
 }

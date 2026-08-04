@@ -108,12 +108,11 @@ namespace CalamityOverhaul.Content.TimeFreezes
             if (string.IsNullOrEmpty(reason)) {
                 return;
             }
-            bool wasInactive = !IsActive;
-            activeReasons.Add(reason);
-            if (wasInactive) {
-                IsActive = true;
-                TimeGear.Register(TimeGearKey, 0f);
-                TimeFreezeSystem.BeginWorldFreeze();
+            if (!activeReasons.Add(reason) || IsActive || IsThawing) {
+                return;
+            }
+            if (!TryBeginFreezeSession()) {
+                activeReasons.Clear();
             }
         }
 
@@ -151,9 +150,48 @@ namespace CalamityOverhaul.Content.TimeFreezes
             try {
                 TimeFreezeSystem.EndWorldFreeze();
             }
+            catch (Exception exception) {
+                CWRMod.Instance?.Logger.Error(
+                    $"World freeze thaw failed: {exception}");
+                try {
+                    TimeFreezeSystem.RollbackWorldFreeze();
+                }
+                catch (Exception rollbackException) {
+                    CWRMod.Instance?.Logger.Error(
+                        $"World freeze thaw rollback failed: {rollbackException}");
+                }
+            }
             finally {
                 IsThawing = false;
                 TimeGear.Unregister(TimeGearKey);
+                if (activeReasons.Count > 0 && !TryBeginFreezeSession()) {
+                    activeReasons.Clear();
+                }
+            }
+        }
+
+        private static bool TryBeginFreezeSession() {
+            IsActive = true;
+            try {
+                TimeGear.Register(TimeGearKey, 0f);
+                TimeFreezeSystem.BeginWorldFreeze();
+                return true;
+            }
+            catch (Exception exception) {
+                IsActive = false;
+                try {
+                    TimeFreezeSystem.RollbackWorldFreeze();
+                }
+                catch (Exception rollbackException) {
+                    CWRMod.Instance?.Logger.Error(
+                        $"World freeze activation rollback failed: {rollbackException}");
+                }
+                finally {
+                    TimeGear.Unregister(TimeGearKey);
+                }
+                CWRMod.Instance?.Logger.Error(
+                    $"World freeze activation failed: {exception}");
+                return false;
             }
         }
 

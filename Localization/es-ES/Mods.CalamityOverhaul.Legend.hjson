@@ -530,9 +530,9 @@ MoldProcessingUI: {
 OnikiriText: {
 	OniRegisterUI: {
 		// TitleText: GHOST REGISTER
-		// StatusFormat: "Bound {0} · Mastery {1}% · Erosion {2}%"
+		// StatusFormat: Bound {0} · Mastery {1}% · Erosion {2}%
 		// MasteryFormat: Mastery {0}%
-		// AbilityCostFormat: "On use: Mastery -{0}% · Erosion +{1}%"
+		// AbilityCostFormat: On use: Mastery -{0}% · Erosion +{1}%
 		// OriginLabel: Origin
 		// PowerLabel: Bestowal
 		// StateReady: Ready to bind
@@ -588,7 +588,7 @@ OnikiriText: {
 		// HudMeiName: the Inscription Stand
 		// HudRegisterName: the Ghost Register
 		// HudDangerLine: Mastery exhausted; the bound ability is dormant
-		// HudWraithFormat: "Bound {0} · Mastery {1}%"
+		// HudWraithFormat: Bound {0} · Mastery {1}%
 		// VigorTitle: Vigor
 		// VigorValueFormat: "{0} / {1}"
 		// StanceTitle: Stance

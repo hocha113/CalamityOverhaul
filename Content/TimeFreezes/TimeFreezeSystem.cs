@@ -33,13 +33,16 @@ namespace CalamityOverhaul.Content.TimeFreezes
     {
         internal FreezeSourceKey Source { get; }
         internal ulong EntityGeneration { get; }
+        internal ulong LeaseEpoch { get; }
         internal Vector2 ResumeVelocity { get; }
-        internal bool IsValid => Source.SourceType != null && EntityGeneration != 0;
+        internal bool IsValid => Source.SourceType != null && EntityGeneration != 0
+            && LeaseEpoch != 0;
 
         internal TimeFreezeLease(FreezeSourceKey source, ulong entityGeneration,
-            Vector2 resumeVelocity) {
+            ulong leaseEpoch, Vector2 resumeVelocity) {
             Source = source;
             EntityGeneration = entityGeneration;
+            LeaseEpoch = leaseEpoch;
             ResumeVelocity = resumeVelocity;
         }
     }
@@ -51,6 +54,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
         {
             internal Vector2? AnchorPosition;
             internal int AnchorPriority;
+            internal ulong LeaseEpoch;
         }
 
         private readonly record struct ResumePolicy(Vector2 Velocity, int Priority);
@@ -68,7 +72,8 @@ namespace CalamityOverhaul.Content.TimeFreezes
 
         internal bool IsFrozen => transientSources != TimeFreezeSource.None
             || timedSources?.Count > 0 || heldSources?.Count > 0;
-        internal bool HasTimeControl => IsFrozen || velocityScales?.Count > 0;
+        internal bool HasVelocityScale => velocityScales?.Count > 0;
+        internal bool HasTimeControl => IsFrozen || HasVelocityScale;
         internal TimeFreezeSource TransientSources => transientSources;
         internal Vector2 ResumeVelocity => motionSnapshotCaptured
             ? ResolveResumeVelocity()
@@ -131,7 +136,9 @@ namespace CalamityOverhaul.Content.TimeFreezes
             RemoveExpiredTimedSources();
             heldSources ??= new Dictionary<FreezeSourceKey, HeldSource>();
             if (!heldSources.TryGetValue(source, out HeldSource held)) {
-                held = new HeldSource();
+                held = new HeldSource {
+                    LeaseEpoch = TimeFreezeSystem.AllocateLeaseEpoch(),
+                };
                 heldSources[source] = held;
             }
             held.AnchorPosition = anchorPosition.HasValue && IsFinite(anchorPosition.Value)
@@ -140,20 +147,25 @@ namespace CalamityOverhaul.Content.TimeFreezes
             held.AnchorPriority = anchorPriority;
             resumePolicies?.Remove(source);
             UpdateState(entity, fallbackPosition, wasFrozen, hadTimeControl);
-            return new TimeFreezeLease(source, entityGeneration, ResumeVelocity);
+            return new TimeFreezeLease(source, entityGeneration, held.LeaseEpoch,
+                ResumeVelocity);
         }
 
-        internal bool Release(Entity entity, FreezeSourceKey source, Vector2 fallbackPosition,
+        internal bool Release(Entity entity, TimeFreezeLease lease, Vector2 fallbackPosition,
             Vector2? releaseVelocity, int resumePriority) {
-            if (source.SourceType == null || heldSources == null || !heldSources.Remove(source)) {
+            if (!lease.IsValid || heldSources == null
+                || !heldSources.TryGetValue(lease.Source, out HeldSource held)
+                || held.LeaseEpoch != lease.LeaseEpoch) {
                 return false;
             }
+            heldSources.Remove(lease.Source);
 
             bool wasFrozen = true;
             bool hadTimeControl = true;
             if (releaseVelocity.HasValue && IsFinite(releaseVelocity.Value)) {
                 resumePolicies ??= new Dictionary<FreezeSourceKey, ResumePolicy>();
-                resumePolicies[source] = new ResumePolicy(releaseVelocity.Value, resumePriority);
+                resumePolicies[lease.Source] = new ResumePolicy(releaseVelocity.Value,
+                    resumePriority);
             }
             bool restored = UpdateState(entity, fallbackPosition, wasFrozen, hadTimeControl);
             if (IsFrozen) {
@@ -162,8 +174,10 @@ namespace CalamityOverhaul.Content.TimeFreezes
             return restored;
         }
 
-        internal bool IsHeld(FreezeSourceKey source)
-            => heldSources?.ContainsKey(source) == true;
+        internal bool IsHeld(TimeFreezeLease lease)
+            => lease.IsValid && heldSources != null
+            && heldSources.TryGetValue(lease.Source, out HeldSource held)
+            && held.LeaseEpoch == lease.LeaseEpoch;
 
         internal void AcquireVelocityScale(Entity entity, FreezeSourceKey source,
             float scale, Vector2 fallbackPosition) {
@@ -374,8 +388,14 @@ namespace CalamityOverhaul.Content.TimeFreezes
     /// <summary>所有实体时停来源的统一入口</summary>
     internal static class TimeFreezeSystem
     {
+        private readonly record struct ProjectileIdentity(ulong EntityGeneration,
+            int Type, int Owner, int Identity);
+
         private static readonly Dictionary<Type, ulong> cinematicSources = new();
         private static ulong nextEntityGeneration;
+        private static ulong nextLeaseEpoch;
+        private static ProjectileIdentity[] worldFreezeProjectileBaseline;
+        private static bool worldFreezeProjectileBaselineValid;
 
         internal static ulong AllocateEntityGeneration() {
             nextEntityGeneration++;
@@ -383,6 +403,14 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 nextEntityGeneration++;
             }
             return nextEntityGeneration;
+        }
+
+        internal static ulong AllocateLeaseEpoch() {
+            nextLeaseEpoch++;
+            if (nextLeaseEpoch == 0) {
+                nextLeaseEpoch++;
+            }
+            return nextLeaseEpoch;
         }
 
         internal static bool IsCinematicFreezeActive {
@@ -557,21 +585,21 @@ namespace CalamityOverhaul.Content.TimeFreezes
         internal static bool FreezeNPCPreAI(NPC npc) {
             TimeFreezeNPC freeze = npc.GetGlobalNPC<TimeFreezeNPC>();
             freeze.SyncTransientSources(npc, GetTransientSources(npc));
-            if (!freeze.IsFrozen) {
-                return false;
+            if (freeze.IsFrozen) {
+                freeze.FreezeFrame(npc);
+                return true;
             }
-            freeze.FreezeFrame(npc);
-            return true;
+            return freeze.ApplyVelocityScaleFrame(npc);
         }
 
         internal static bool FreezeProjectilePreAI(Projectile projectile) {
             TimeFreezeProjectile freeze = projectile.GetGlobalProjectile<TimeFreezeProjectile>();
             freeze.SyncTransientSources(projectile, GetTransientSources(projectile));
-            if (!freeze.IsFrozen) {
-                return false;
+            if (freeze.IsFrozen) {
+                freeze.FreezeFrame(projectile);
+                return true;
             }
-            freeze.FreezeFrame(projectile);
-            return true;
+            return freeze.ApplyVelocityScaleFrame(projectile);
         }
 
         internal static void SynchronizeEntitySources() {
@@ -595,7 +623,27 @@ namespace CalamityOverhaul.Content.TimeFreezes
             }
         }
 
+        internal static void RelockFrozenNPCs() {
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+                if (npc?.active == true) {
+                    npc.GetGlobalNPC<TimeFreezeNPC>().RelockFrozenFrame(npc);
+                }
+            }
+        }
+
+        internal static void RelockFrozenProjectiles() {
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile projectile = Main.projectile[i];
+                if (projectile?.active == true) {
+                    projectile.GetGlobalProjectile<TimeFreezeProjectile>()
+                        .RelockFrozenFrame(projectile);
+                }
+            }
+        }
+
         internal static void BeginWorldFreeze() {
+            CaptureWorldFreezeProjectileBaseline();
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
                 if (npc.active && WorldFreezeSystem.ShouldFreezeNPC(npc)) {
@@ -612,16 +660,36 @@ namespace CalamityOverhaul.Content.TimeFreezes
         }
 
         internal static void EndWorldFreeze() {
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (npc.active) {
-                    npc.GetGlobalNPC<TimeFreezeNPC>().EndWorldFreeze(npc);
+            try {
+                for (int i = 0; i < Main.maxNPCs; i++) {
+                    NPC npc = Main.npc[i];
+                    if (npc.active) {
+                        npc.GetGlobalNPC<TimeFreezeNPC>().EndWorldFreeze(npc);
+                    }
                 }
-            }
 
-            const int maxThawPasses = 8;
-            for (int pass = 0; pass < maxThawPasses; pass++) {
-                bool foundSpawnedProjectile = false;
+                const int maxThawPasses = 8;
+                for (int pass = 0; pass < maxThawPasses; pass++) {
+                    bool foundSpawnedProjectile = false;
+                    for (int i = 0; i < Main.maxProjectiles; i++) {
+                        Projectile projectile = Main.projectile[i];
+                        if (!projectile.active) {
+                            continue;
+                        }
+                        TimeFreezeProjectile freeze = projectile
+                            .GetGlobalProjectile<TimeFreezeProjectile>();
+                        if (!freeze.PrepareWorldThaw(projectile,
+                            WasSpawnedDuringWorldFreeze(projectile, freeze))) {
+                            continue;
+                        }
+                        foundSpawnedProjectile = true;
+                        SafeKillDuringWorldThaw(projectile);
+                    }
+                    if (!foundSpawnedProjectile) {
+                        return;
+                    }
+                }
+
                 for (int i = 0; i < Main.maxProjectiles; i++) {
                     Projectile projectile = Main.projectile[i];
                     if (!projectile.active) {
@@ -629,32 +697,41 @@ namespace CalamityOverhaul.Content.TimeFreezes
                     }
                     TimeFreezeProjectile freeze = projectile
                         .GetGlobalProjectile<TimeFreezeProjectile>();
-                    if (!freeze.PrepareWorldThaw(projectile)) {
-                        continue;
+                    if (freeze.PrepareWorldThaw(projectile,
+                        WasSpawnedDuringWorldFreeze(projectile, freeze))) {
+                        projectile.active = false;
                     }
-                    foundSpawnedProjectile = true;
-                    SafeKillDuringWorldThaw(projectile);
-                }
-                if (!foundSpawnedProjectile) {
-                    return;
                 }
             }
+            finally {
+                ClearWorldFreezeProjectileBaseline();
+            }
+        }
 
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                Projectile projectile = Main.projectile[i];
-                if (!projectile.active) {
-                    continue;
+        internal static void RollbackWorldFreeze() {
+            try {
+                for (int i = 0; i < Main.maxNPCs; i++) {
+                    NPC npc = Main.npc[i];
+                    if (npc.active) {
+                        npc.GetGlobalNPC<TimeFreezeNPC>().EndWorldFreeze(npc);
+                    }
                 }
-                TimeFreezeProjectile freeze = projectile
-                    .GetGlobalProjectile<TimeFreezeProjectile>();
-                if (freeze.PrepareWorldThaw(projectile)) {
-                    projectile.active = false;
+                for (int i = 0; i < Main.maxProjectiles; i++) {
+                    Projectile projectile = Main.projectile[i];
+                    if (projectile.active) {
+                        projectile.GetGlobalProjectile<TimeFreezeProjectile>()
+                            .CancelWorldFreeze(projectile);
+                    }
                 }
+            }
+            finally {
+                ClearWorldFreezeProjectileBaseline();
             }
         }
 
         internal static void ResetSession() {
             cinematicSources.Clear();
+            ClearWorldFreezeProjectileBaseline();
             if (Main.npc != null) {
                 for (int i = 0; i < Main.maxNPCs; i++) {
                     NPC npc = Main.npc[i];
@@ -713,6 +790,53 @@ namespace CalamityOverhaul.Content.TimeFreezes
             }
         }
 
+        private static void CaptureWorldFreezeProjectileBaseline() {
+            if (worldFreezeProjectileBaseline == null
+                || worldFreezeProjectileBaseline.Length != Main.maxProjectiles) {
+                worldFreezeProjectileBaseline = new ProjectileIdentity[Main.maxProjectiles];
+            }
+            else {
+                Array.Clear(worldFreezeProjectileBaseline, 0,
+                    worldFreezeProjectileBaseline.Length);
+            }
+
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile projectile = Main.projectile[i];
+                if (!projectile.active) {
+                    continue;
+                }
+                TimeFreezeProjectile freeze = projectile
+                    .GetGlobalProjectile<TimeFreezeProjectile>();
+                worldFreezeProjectileBaseline[i] = new ProjectileIdentity(
+                    freeze.EntityGeneration, projectile.type, projectile.owner,
+                    projectile.identity);
+            }
+            worldFreezeProjectileBaselineValid = true;
+        }
+
+        private static bool WasSpawnedDuringWorldFreeze(Projectile projectile,
+            TimeFreezeProjectile freeze) {
+            if (!worldFreezeProjectileBaselineValid
+                || projectile.whoAmI < 0
+                || projectile.whoAmI >= worldFreezeProjectileBaseline.Length) {
+                return false;
+            }
+            ProjectileIdentity baseline = worldFreezeProjectileBaseline[projectile.whoAmI];
+            return baseline.EntityGeneration == 0
+                || baseline.EntityGeneration != freeze.EntityGeneration
+                || baseline.Type != projectile.type
+                || baseline.Owner != projectile.owner
+                || baseline.Identity != projectile.identity;
+        }
+
+        private static void ClearWorldFreezeProjectileBaseline() {
+            worldFreezeProjectileBaselineValid = false;
+            if (worldFreezeProjectileBaseline != null) {
+                Array.Clear(worldFreezeProjectileBaseline, 0,
+                    worldFreezeProjectileBaseline.Length);
+            }
+        }
+
         internal static void PruneExpiredCinematicSources() {
             if (cinematicSources.Count == 0) {
                 return;
@@ -746,5 +870,11 @@ namespace CalamityOverhaul.Content.TimeFreezes
             TimeFreezeSystem.PruneExpiredCinematicSources();
             TimeFreezeSystem.SynchronizeEntitySources();
         }
+
+        public override void PostUpdateNPCs()
+            => TimeFreezeSystem.RelockFrozenNPCs();
+
+        public override void PostUpdateProjectiles()
+            => TimeFreezeSystem.RelockFrozenProjectiles();
     }
 }

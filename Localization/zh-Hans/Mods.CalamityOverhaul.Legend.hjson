@@ -1,4 +1,4 @@
-﻿HalibutOverride: {
+HalibutOverride: {
 	FishByStudied:
 		'''
 		[i:CalamityOverhaul/HalibutItem]:
@@ -530,9 +530,9 @@ MoldProcessingUI: {
 OnikiriText: {
 	OniRegisterUI: {
 		TitleText: 点 鬼 簿
-		StatusFormat: "役鬼 {0} · 驾驭 {1}% · 侵蚀 {2}%"
+		StatusFormat: 役鬼 {0} · 驾驭 {1}% · 侵蚀 {2}%
 		MasteryFormat: 驾驭 {0}%
-		AbilityCostFormat: "发动耗竭 驾驭 {0}% · 侵蚀 +{1}%"
+		AbilityCostFormat: 发动耗竭 驾驭 {0}% · 侵蚀 +{1}%
 		OriginLabel: 来历
 		PowerLabel: 赋力
 		StateReady: 可役使
@@ -588,7 +588,7 @@ OnikiriText: {
 		HudMeiName: 改铭台
 		HudRegisterName: 点鬼簿
 		HudDangerLine: 驾驭耗竭，役鬼能力正在休眠
-		HudWraithFormat: "役鬼 {0} · 驾驭 {1}%"
+		HudWraithFormat: 役鬼 {0} · 驾驭 {1}%
 		VigorTitle: 气力
 		VigorValueFormat: "{0} / {1}"
 		StanceTitle: 架势

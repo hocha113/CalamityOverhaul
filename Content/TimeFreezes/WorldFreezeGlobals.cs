@@ -37,12 +37,16 @@ namespace CalamityOverhaul.Content.TimeFreezes
         private EntityFreezeState freezeState = new();
         private ulong entityGeneration;
         private int frozenDirection;
+        private int frozenSpriteDirection;
         private int frozenAIAction;
         private double frozenFrameCounter;
+        private Rectangle frozenFrame;
+        private float frozenRotation;
 
         public override bool InstancePerEntity => true;
 
         internal bool IsFrozen => freezeState.IsFrozen;
+        internal bool HasVelocityScale => freezeState.HasVelocityScale;
         internal bool HasTimeControl => freezeState.HasTimeControl;
         internal Vector2 ResumeVelocity => freezeState.ResumeVelocity;
         internal Vector2 EffectiveResumeVelocity => freezeState.EffectiveResumeVelocity;
@@ -106,14 +110,14 @@ namespace CalamityOverhaul.Content.TimeFreezes
             if (lease.EntityGeneration != entityGeneration) {
                 return;
             }
-            bool restored = freezeState.Release(npc, lease.Source, npc.oldPosition,
+            bool restored = freezeState.Release(npc, lease, npc.oldPosition,
                 releaseVelocity, resumePriority);
             MarkNetUpdateOnRestore(npc, restored);
         }
 
         internal bool IsLeaseActive(TimeFreezeLease lease)
             => lease.EntityGeneration == entityGeneration
-            && freezeState.IsHeld(lease.Source);
+            && freezeState.IsHeld(lease);
 
         internal void AcquireVelocityScale(NPC npc, FreezeSourceKey source, float scale)
             => freezeState.AcquireVelocityScale(npc, source, scale, npc.oldPosition);
@@ -127,9 +131,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
 
         internal void FreezeFrame(NPC npc) {
             freezeState.HoldPosition(npc);
-            npc.direction = frozenDirection;
-            npc.aiAction = frozenAIAction;
-            npc.frameCounter = frozenFrameCounter;
+            ApplyFrozenPose(npc);
             if (npc.timeLeft < int.MaxValue) {
                 npc.timeLeft++;
             }
@@ -137,17 +139,42 @@ namespace CalamityOverhaul.Content.TimeFreezes
 
         internal void FreezeImmediately(NPC npc) {
             freezeState.HoldPosition(npc);
-            npc.direction = frozenDirection;
-            npc.aiAction = frozenAIAction;
-            npc.frameCounter = frozenFrameCounter;
+            ApplyFrozenPose(npc);
+        }
+
+        internal void RelockFrozenFrame(NPC npc) {
+            if (!IsFrozen) {
+                return;
+            }
+            freezeState.HoldPosition(npc);
+            npc.oldPosition = npc.position;
+            ApplyFrozenPose(npc);
+        }
+
+        internal bool ApplyVelocityScaleFrame(NPC npc) {
+            if (IsFrozen || !HasVelocityScale) {
+                return false;
+            }
+            Vector2 velocity = EffectiveResumeVelocity;
+            npc.velocity = velocity;
+            npc.direction = npc.oldDirection;
+            npc.aiAction = 0;
+            npc.frameCounter = 0d;
+            if (npc.timeLeft < int.MaxValue) {
+                npc.timeLeft++;
+            }
+            return true;
         }
 
         internal void ResetFreezeState() {
             freezeState.Reset();
             entityGeneration = TimeFreezeSystem.AllocateEntityGeneration();
             frozenDirection = 0;
+            frozenSpriteDirection = 0;
             frozenAIAction = 0;
             frozenFrameCounter = 0d;
+            frozenFrame = Rectangle.Empty;
+            frozenRotation = 0f;
         }
 
         private void CapturePoseOnEnter(NPC npc, bool wasFrozen) {
@@ -155,8 +182,20 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 return;
             }
             frozenDirection = npc.direction;
+            frozenSpriteDirection = npc.spriteDirection;
             frozenAIAction = npc.aiAction;
             frozenFrameCounter = npc.frameCounter;
+            frozenFrame = npc.frame;
+            frozenRotation = npc.rotation;
+        }
+
+        private void ApplyFrozenPose(NPC npc) {
+            npc.direction = frozenDirection;
+            npc.spriteDirection = frozenSpriteDirection;
+            npc.aiAction = frozenAIAction;
+            npc.frameCounter = frozenFrameCounter;
+            npc.frame = frozenFrame;
+            npc.rotation = frozenRotation;
         }
 
         private static void MarkNetUpdateOnRestore(NPC npc, bool restored) {
@@ -178,13 +217,19 @@ namespace CalamityOverhaul.Content.TimeFreezes
         private EntityFreezeState freezeState = new();
         private ulong entityGeneration;
         private bool spawnedDuringWorldFreeze;
+        private bool beingKilledDuringWorldThaw;
+        private int frozenFrame;
+        private int frozenSpriteDirection;
+        private float frozenRotation;
 
         public override bool InstancePerEntity => true;
 
-        internal bool IsFrozen => freezeState.IsFrozen;
+        internal bool IsFrozen => beingKilledDuringWorldThaw || freezeState.IsFrozen;
+        internal bool HasVelocityScale => freezeState.HasVelocityScale;
         internal bool HasTimeControl => freezeState.HasTimeControl;
         internal Vector2 ResumeVelocity => freezeState.ResumeVelocity;
         internal Vector2 EffectiveResumeVelocity => freezeState.EffectiveResumeVelocity;
+        internal ulong EntityGeneration => entityGeneration;
 
         public override GlobalProjectile Clone(Projectile from, Projectile to) {
             TimeFreezeProjectile clone = (TimeFreezeProjectile)base.Clone(from, to);
@@ -205,27 +250,37 @@ namespace CalamityOverhaul.Content.TimeFreezes
         public override bool PreAI(Projectile projectile)
             => !TimeFreezeSystem.FreezeProjectilePreAI(projectile);
 
-        public override bool ShouldUpdatePosition(Projectile projectile) => !IsFrozen;
+        public override bool ShouldUpdatePosition(Projectile projectile)
+            => !IsFrozen && !HasVelocityScale;
 
         internal void SyncTransientSources(Projectile projectile, TimeFreezeSource sources) {
+            bool wasFrozen = IsFrozen;
             bool restored = freezeState.SyncTransientSources(projectile, sources,
                 projectile.oldPosition);
+            CapturePoseOnEnter(projectile, wasFrozen);
             MarkNetUpdateOnRestore(projectile, restored);
         }
 
         internal void RefreshTimedSource(Projectile projectile, Type source, int ticks) {
+            bool wasFrozen = IsFrozen;
             freezeState.RefreshTimedSource(projectile, source, ticks, projectile.oldPosition);
+            CapturePoseOnEnter(projectile, wasFrozen);
         }
 
         internal void BeginWorldFreeze(Projectile projectile, bool spawnedDuringFreeze) {
+            bool wasFrozen = IsFrozen;
             freezeState.AddTransientSource(projectile, TimeFreezeSource.World,
                 projectile.oldPosition);
+            CapturePoseOnEnter(projectile, wasFrozen);
             spawnedDuringWorldFreeze |= spawnedDuringFreeze;
         }
 
-        internal bool PrepareWorldThaw(Projectile projectile) {
-            if (spawnedDuringWorldFreeze) {
-                ResetFreezeState();
+        internal bool PrepareWorldThaw(Projectile projectile, bool spawnedAfterFreezeStart) {
+            if (spawnedDuringWorldFreeze || spawnedAfterFreezeStart) {
+                beingKilledDuringWorldThaw = true;
+                freezeState.AddTransientSource(projectile, TimeFreezeSource.World,
+                    projectile.oldPosition);
+                freezeState.HoldPosition(projectile);
                 return true;
             }
             bool restored = freezeState.RemoveTransientSource(projectile,
@@ -234,13 +289,24 @@ namespace CalamityOverhaul.Content.TimeFreezes
             return false;
         }
 
+        internal void CancelWorldFreeze(Projectile projectile) {
+            bool restored = freezeState.RemoveTransientSource(projectile,
+                TimeFreezeSource.World, projectile.oldPosition);
+            spawnedDuringWorldFreeze = false;
+            beingKilledDuringWorldThaw = false;
+            MarkNetUpdateOnRestore(projectile, restored);
+        }
+
         internal TimeFreezeLease Acquire(Projectile projectile, FreezeSourceKey source,
             Vector2? anchorCenter, int anchorPriority) {
+            bool wasFrozen = IsFrozen;
             Vector2? anchorPosition = anchorCenter.HasValue
                 ? anchorCenter.Value - new Vector2(projectile.width, projectile.height) * 0.5f
                 : null;
-            return freezeState.Acquire(projectile, source, entityGeneration,
+            TimeFreezeLease lease = freezeState.Acquire(projectile, source, entityGeneration,
                 projectile.oldPosition, anchorPosition, anchorPriority);
+            CapturePoseOnEnter(projectile, wasFrozen);
+            return lease;
         }
 
         internal void Release(Projectile projectile, TimeFreezeLease lease,
@@ -248,14 +314,14 @@ namespace CalamityOverhaul.Content.TimeFreezes
             if (lease.EntityGeneration != entityGeneration) {
                 return;
             }
-            bool restored = freezeState.Release(projectile, lease.Source,
+            bool restored = freezeState.Release(projectile, lease,
                 projectile.oldPosition, releaseVelocity, resumePriority);
             MarkNetUpdateOnRestore(projectile, restored);
         }
 
         internal bool IsLeaseActive(TimeFreezeLease lease)
             => lease.EntityGeneration == entityGeneration
-            && freezeState.IsHeld(lease.Source);
+            && freezeState.IsHeld(lease);
 
         internal void AcquireVelocityScale(Projectile projectile, FreezeSourceKey source,
             float scale)
@@ -270,18 +336,62 @@ namespace CalamityOverhaul.Content.TimeFreezes
 
         internal void FreezeFrame(Projectile projectile) {
             freezeState.HoldPosition(projectile);
+            ApplyFrozenPose(projectile);
             if (projectile.timeLeft < int.MaxValue) {
                 projectile.timeLeft++;
             }
         }
 
-        internal void FreezeImmediately(Projectile projectile)
-            => freezeState.HoldPosition(projectile);
+        internal void FreezeImmediately(Projectile projectile) {
+            freezeState.HoldPosition(projectile);
+            ApplyFrozenPose(projectile);
+        }
+
+        internal void RelockFrozenFrame(Projectile projectile) {
+            if (!IsFrozen) {
+                return;
+            }
+            freezeState.HoldPosition(projectile);
+            projectile.oldPosition = projectile.position;
+            ApplyFrozenPose(projectile);
+        }
+
+        internal bool ApplyVelocityScaleFrame(Projectile projectile) {
+            if (IsFrozen || !HasVelocityScale) {
+                return false;
+            }
+            Vector2 velocity = EffectiveResumeVelocity;
+            projectile.position += velocity;
+            projectile.velocity = velocity;
+            if (projectile.timeLeft < int.MaxValue) {
+                projectile.timeLeft++;
+            }
+            return true;
+        }
 
         internal void ResetFreezeState() {
             freezeState.Reset();
             entityGeneration = TimeFreezeSystem.AllocateEntityGeneration();
             spawnedDuringWorldFreeze = false;
+            beingKilledDuringWorldThaw = false;
+            frozenFrame = 0;
+            frozenSpriteDirection = 0;
+            frozenRotation = 0f;
+        }
+
+        private void CapturePoseOnEnter(Projectile projectile, bool wasFrozen) {
+            if (wasFrozen || !IsFrozen) {
+                return;
+            }
+            frozenFrame = projectile.frame;
+            frozenSpriteDirection = projectile.spriteDirection;
+            frozenRotation = projectile.rotation;
+        }
+
+        private void ApplyFrozenPose(Projectile projectile) {
+            projectile.frame = frozenFrame;
+            projectile.spriteDirection = frozenSpriteDirection;
+            projectile.rotation = frozenRotation;
         }
 
         private static void MarkNetUpdateOnRestore(Projectile projectile, bool restored) {
@@ -292,6 +402,9 @@ namespace CalamityOverhaul.Content.TimeFreezes
         }
 
         public override bool? CanHitNPC(Projectile projectile, NPC target)
+            => IsFrozen ? false : null;
+
+        public override bool? CanDamage(Projectile projectile)
             => IsFrozen ? false : null;
 
         public override bool CanHitPlayer(Projectile projectile, Player target)

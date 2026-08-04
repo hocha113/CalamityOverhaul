@@ -17,6 +17,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
     /// <summary>领域冻结，NPC/弹幕独立计时，net 锚点</summary>
     internal class CyberDomainFreeze : ICWRLoader
     {
+        private enum FreezePacketKind : byte
+        {
+            Request,
+            Apply,
+        }
+
+        private readonly record struct NPCFreezeTarget(int Index, int Type,
+            float Seed, Vector2 Center);
+
+        private readonly record struct ProjectileFreezeTarget(int Index, byte Owner,
+            int Identity, int Type, float Seed, Vector2 Center);
+
+        private static long nextActivationId;
+
         void ICWRLoader.UnLoadData() => Reset();
 
         /// <summary>默认冻结时长帧数（600=10秒）</summary>
@@ -101,52 +115,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 RamSystem.TryConsume(RamCost);
             }
 
-            Vector2 domainCenter = owner.Center;
-            float effectiveRadius = cp.Radius * cp.ExpandProgress;
-            float radiusSq = effectiveRadius * effectiveRadius;
-
-            //先算名单/种子/锚点，再应用+广播
-            //锚点随包广播，解冻不跳变
-            //同组一并冻
-            List<(int idx, float seed, Vector2 center)> npcEntries = new();
-            HashSet<int> processedGroups = new HashSet<int>();
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (!npc.active) continue;
-                if (IsNPCFrozen(i)) continue;
-                if (CyberBanish.IsBanishing(i)) continue;
-
-                float dx = npc.Center.X - domainCenter.X;
-                float dy = npc.Center.Y - domainCenter.Y;
-                if (dx * dx + dy * dy > radiusSq) continue;
-
-                int anchor = NpcGroupHelper.GetAnchorIndex(npc);
-                if (!processedGroups.Add(anchor)) continue;
-
-                NpcGroupHelper.ForEachGroupMember(npc, member => {
-                    int idx = member.whoAmI;
-                    if (IsNPCFrozen(idx) || CyberBanish.IsBanishing(idx)) return;
-                    npcEntries.Add((idx, Main.rand.NextFloat(), member.Center));
-                });
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                SendFreezeRequest();
             }
-
-            List<(int idx, float seed, Vector2 center)> projEntries = new();
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                Projectile proj = Main.projectile[i];
-                if (!proj.active) continue;
-                if (proj.friendly) continue;
-                if (Main.projPet[proj.type] || proj.minion || Main.projHook[proj.type]) continue;
-                if (IsProjectileFrozen(i)) continue;
-
-                float dx = proj.Center.X - domainCenter.X;
-                float dy = proj.Center.Y - domainCenter.Y;
-                if (dx * dx + dy * dy > radiusSq) continue;
-
-                projEntries.Add((i, Main.rand.NextFloat(), proj.Center));
+            else {
+                ExecuteAuthoritativeFreeze(owner);
             }
-
-            //本机先入 list，再广播
-            ApplyFreezeBatch(owner.whoAmI, npcEntries, projEntries);
 
             //冻结能量波
             if (Main.myPlayer == owner.whoAmI) {
@@ -154,95 +128,211 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 Projectile.NewProjectile(source, owner.Center, Vector2.Zero,
                     ModContent.ProjectileType<CyberFreezeWaveProj>(), 0, 0, owner.whoAmI);
             }
+        }
 
-            //广播
-            //弹幕用 owner+identity
-            if (Main.netMode != NetmodeID.SinglePlayer) {
-                List<(byte projOwner, int projIdentity, float seed, Vector2 center)> projPairs = new(projEntries.Count);
-                for (int i = 0; i < projEntries.Count; i++) {
-                    Projectile proj = Main.projectile[projEntries[i].idx];
-                    projPairs.Add(((byte)proj.owner, proj.identity, projEntries[i].seed, projEntries[i].center));
-                }
-                BroadcastStart(owner.whoAmI, npcEntries, projPairs, ignoreClient: -1);
+        private static void ExecuteAuthoritativeFreeze(Player owner) {
+            if (!CanExecuteAuthoritativeFreeze(owner)) {
+                return;
+            }
+
+            CollectFreezeTargets(owner, out List<NPCFreezeTarget> npcTargets,
+                out List<ProjectileFreezeTarget> projectileTargets);
+            long activationId = AllocateActivationId();
+            ApplyFreezeBatch(owner.whoAmI, activationId, npcTargets, projectileTargets,
+                replaceExisting: false,
+                out List<NPCFreezeTarget> acceptedNPCs,
+                out List<ProjectileFreezeTarget> acceptedProjectiles);
+
+            if (Main.netMode == NetmodeID.Server) {
+                BroadcastApply(owner.whoAmI, activationId, acceptedNPCs,
+                    acceptedProjectiles);
             }
         }
 
-        /// <summary>写入 Frozen 列表并冻住速度，锚点坐标 net 统一</summary>
-        private static void ApplyFreezeBatch(int ownerWho,
-            List<(int idx, float seed, Vector2 center)> npcEntries,
-            List<(int idx, float seed, Vector2 center)> projEntries) {
+        private static bool CanExecuteAuthoritativeFreeze(Player owner) {
+            if (owner?.active != true || owner.dead) {
+                return false;
+            }
+            CyberspacePlayer cp = Cyberspace.For(owner);
+            return cp != null && cp.Active && cp.Intensity >= 0.5f
+                && cp.CurrentLayer >= Cyberspace.MaxLayerCount;
+        }
+
+        private static void CollectFreezeTargets(Player owner,
+            out List<NPCFreezeTarget> npcTargets,
+            out List<ProjectileFreezeTarget> projectileTargets) {
+            List<NPCFreezeTarget> collectedNPCs = [];
+            List<ProjectileFreezeTarget> collectedProjectiles = [];
+            CyberspacePlayer cp = Cyberspace.For(owner);
+            Vector2 domainCenter = owner.Center;
+            float effectiveRadius = cp.Radius * cp.ExpandProgress;
+            if (!IsFinite(domainCenter) || !float.IsFinite(effectiveRadius)
+                || effectiveRadius <= 0f) {
+                npcTargets = collectedNPCs;
+                projectileTargets = collectedProjectiles;
+                return;
+            }
+            float radiusSq = effectiveRadius * effectiveRadius;
+
+            HashSet<int> processedGroups = [];
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+                if (!npc.active || IsNPCFrozen(i) || CyberBanish.IsBanishing(i)) {
+                    continue;
+                }
+
+                Vector2 offset = npc.Center - domainCenter;
+                if (offset.LengthSquared() > radiusSq) {
+                    continue;
+                }
+
+                int anchor = NpcGroupHelper.GetAnchorIndex(npc);
+                if (!processedGroups.Add(anchor)) {
+                    continue;
+                }
+
+                NpcGroupHelper.ForEachGroupMember(npc, member => {
+                    int index = member.whoAmI;
+                    if (!member.active || IsNPCFrozen(index)
+                        || CyberBanish.IsBanishing(index)) {
+                        return;
+                    }
+                    collectedNPCs.Add(new NPCFreezeTarget(index, member.type,
+                        Main.rand.NextFloat(), member.Center));
+                });
+            }
+
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile projectile = Main.projectile[i];
+                if (!projectile.active || projectile.friendly
+                    || Main.projPet[projectile.type] || projectile.minion
+                    || Main.projHook[projectile.type] || IsProjectileFrozen(i)) {
+                    continue;
+                }
+
+                Vector2 offset = projectile.Center - domainCenter;
+                if (offset.LengthSquared() > radiusSq) {
+                    continue;
+                }
+
+                collectedProjectiles.Add(new ProjectileFreezeTarget(i,
+                    (byte)projectile.owner, projectile.identity, projectile.type,
+                    Main.rand.NextFloat(), projectile.Center));
+            }
+            npcTargets = collectedNPCs;
+            projectileTargets = collectedProjectiles;
+        }
+
+        /// <summary>写入服务端接受的冻结名单</summary>
+        private static void ApplyFreezeBatch(int ownerWho, long activationId,
+            List<NPCFreezeTarget> npcEntries,
+            List<ProjectileFreezeTarget> projectileEntries,
+            bool replaceExisting,
+            out List<NPCFreezeTarget> acceptedNPCs,
+            out List<ProjectileFreezeTarget> acceptedProjectiles) {
+            acceptedNPCs = new List<NPCFreezeTarget>(npcEntries.Count);
+            acceptedProjectiles = new List<ProjectileFreezeTarget>(projectileEntries.Count);
             for (int i = 0; i < npcEntries.Count; i++) {
-                int idx = npcEntries[i].idx;
+                NPCFreezeTarget target = npcEntries[i];
+                int idx = target.Index;
                 if (idx < 0 || idx >= Main.maxNPCs) continue;
+                if (!IsFinite(target.Center) || !float.IsFinite(target.Seed)) continue;
                 NPC npc = Main.npc[idx];
-                if (!npc.active) continue;
-                if (IsNPCFrozen(idx) || CyberBanish.IsBanishing(idx)) continue;
+                if (!npc.active || npc.type != target.Type) continue;
+                if (replaceExisting && !PrepareAuthoritativeNPCSlot(npc, activationId)) {
+                    continue;
+                }
+                if (IsNPCFrozen(idx)
+                    || !replaceExisting && CyberBanish.IsBanishing(idx)) continue;
                 TimeFreezeLease lease = TimeFreezeSystem.AcquireNPC<CyberDomainFreeze>(
-                    npc, npcEntries[i].center, ownerWho,
+                    npc, target.Center, activationId,
                     TimeFreezeAnchorPriority.Authoritative);
+                if (!lease.IsValid) continue;
                 FrozenNPCs.Add(new FreezeEntry {
                     EntityIndex = idx,
                     Timer = 0,
                     Duration = DefaultFreezeDuration,
-                    FreezePosition = npcEntries[i].center,
-                    Seed = npcEntries[i].seed,
+                    FreezePosition = target.Center,
+                    Seed = target.Seed,
                     FreezeVelocity = lease.ResumeVelocity,
                     FreezeLease = lease,
                     OwnerWho = ownerWho,
                 });
+                acceptedNPCs.Add(target);
             }
-            for (int i = 0; i < projEntries.Count; i++) {
-                int idx = projEntries[i].idx;
+            for (int i = 0; i < projectileEntries.Count; i++) {
+                ProjectileFreezeTarget target = projectileEntries[i];
+                int idx = target.Index;
                 if (idx < 0 || idx >= Main.maxProjectiles) continue;
-                Projectile proj = Main.projectile[idx];
-                if (!proj.active) continue;
+                if (!IsFinite(target.Center) || !float.IsFinite(target.Seed)) continue;
+                Projectile projectile = Main.projectile[idx];
+                if (!projectile.active || projectile.type != target.Type
+                    || projectile.owner != target.Owner
+                    || projectile.identity != target.Identity) continue;
+                if (replaceExisting
+                    && !PrepareAuthoritativeProjectileSlot(projectile, activationId)) {
+                    continue;
+                }
                 if (IsProjectileFrozen(idx)) continue;
                 TimeFreezeLease lease = TimeFreezeSystem.AcquireProjectile<CyberDomainFreeze>(
-                    proj, projEntries[i].center, ownerWho,
+                    projectile, target.Center, activationId,
                     TimeFreezeAnchorPriority.Authoritative);
+                if (!lease.IsValid) continue;
                 FrozenProjectiles.Add(new FreezeProjEntry {
                     EntityIndex = idx,
                     Timer = 0,
                     Duration = DefaultFreezeDuration,
-                    FreezePosition = projEntries[i].center,
-                    Seed = projEntries[i].seed,
+                    FreezePosition = target.Center,
+                    Seed = target.Seed,
                     FreezeVelocity = lease.ResumeVelocity,
                     FreezeLease = lease,
                     OwnerWho = ownerWho,
                 });
+                acceptedProjectiles.Add(target);
             }
         }
 
-        private static void BroadcastStart(int ownerWho,
-            List<(int idx, float seed, Vector2 center)> npcEntries,
-            List<(byte projOwner, int projIdentity, float seed, Vector2 center)> projPairs,
-            int ignoreClient) {
+        private static void SendFreezeRequest() {
             ModPacket packet = CWRMod.Instance.GetPacket();
             packet.Write((byte)CWRMessageType.CyberDomainFreezeStart);
+            packet.Write((byte)FreezePacketKind.Request);
+            packet.Send();
+        }
+
+        private static void BroadcastApply(int ownerWho, long activationId,
+            List<NPCFreezeTarget> npcEntries,
+            List<ProjectileFreezeTarget> projectileEntries) {
+            ModPacket packet = CWRMod.Instance.GetPacket();
+            packet.Write((byte)CWRMessageType.CyberDomainFreezeStart);
+            packet.Write((byte)FreezePacketKind.Apply);
             packet.Write((byte)ownerWho);
+            packet.Write(activationId);
             packet.Write((ushort)npcEntries.Count);
             for (int i = 0; i < npcEntries.Count; i++) {
-                packet.Write((ushort)npcEntries[i].idx);
-                packet.Write(npcEntries[i].seed);
-                packet.Write(npcEntries[i].center.X);
-                packet.Write(npcEntries[i].center.Y);
+                packet.Write((ushort)npcEntries[i].Index);
+                packet.Write(npcEntries[i].Type);
+                packet.Write(npcEntries[i].Seed);
+                packet.Write(npcEntries[i].Center.X);
+                packet.Write(npcEntries[i].Center.Y);
             }
-            packet.Write((ushort)projPairs.Count);
-            for (int i = 0; i < projPairs.Count; i++) {
-                packet.Write(projPairs[i].projOwner);
-                packet.Write(projPairs[i].projIdentity);
-                packet.Write(projPairs[i].seed);
-                packet.Write(projPairs[i].center.X);
-                packet.Write(projPairs[i].center.Y);
+            packet.Write((ushort)projectileEntries.Count);
+            for (int i = 0; i < projectileEntries.Count; i++) {
+                packet.Write(projectileEntries[i].Owner);
+                packet.Write(projectileEntries[i].Identity);
+                packet.Write(projectileEntries[i].Type);
+                packet.Write(projectileEntries[i].Seed);
+                packet.Write(projectileEntries[i].Center.X);
+                packet.Write(projectileEntries[i].Center.Y);
             }
-            packet.Send(-1, ignoreClient);
+            packet.Send();
         }
 
         /// <summary>按 owner+identity 解析弹幕索引</summary>
-        private static int FindProjectileIndex(int projOwner, int projIdentity) {
+        private static int FindProjectileIndex(int projOwner, int projIdentity, int projType) {
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile proj = Main.projectile[i];
-                if (proj.active && proj.owner == projOwner && proj.identity == projIdentity) {
+                if (proj.active && proj.owner == projOwner && proj.identity == projIdentity
+                    && proj.type == projType) {
                     return i;
                 }
             }
@@ -251,40 +341,101 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
 
         /// <summary>远端冻结广播入队</summary>
         internal static void HandleNetStart(BinaryReader reader, int whoAmI) {
+            FreezePacketKind packetKind = (FreezePacketKind)reader.ReadByte();
+            if (VaultUtils.isServer) {
+                if (packetKind != FreezePacketKind.Request
+                    || whoAmI < 0 || whoAmI >= Main.maxPlayers) {
+                    return;
+                }
+                ExecuteAuthoritativeFreeze(Main.player[whoAmI]);
+                return;
+            }
+            if (packetKind != FreezePacketKind.Apply) {
+                return;
+            }
+
             int ownerWho = reader.ReadByte();
+            long activationId = reader.ReadInt64();
+            if (ownerWho < 0 || ownerWho >= Main.maxPlayers || activationId == 0) {
+                return;
+            }
             int npcCount = reader.ReadUInt16();
-            List<(int idx, float seed, Vector2 center)> npcEntries = new(npcCount);
+            List<NPCFreezeTarget> npcEntries = new(npcCount);
             for (int i = 0; i < npcCount; i++) {
                 int idx = reader.ReadUInt16();
+                int type = reader.ReadInt32();
                 float seed = reader.ReadSingle();
                 Vector2 center = new(reader.ReadSingle(), reader.ReadSingle());
-                npcEntries.Add((idx, seed, center));
+                npcEntries.Add(new NPCFreezeTarget(idx, type, seed, center));
             }
             int projCount = reader.ReadUInt16();
-            List<(byte projOwner, int projIdentity, float seed, Vector2 center)> projPairs = new(projCount);
+            List<ProjectileFreezeTarget> projectileEntries = new(projCount);
             for (int i = 0; i < projCount; i++) {
                 byte projOwner = reader.ReadByte();
                 int projIdentity = reader.ReadInt32();
+                int projType = reader.ReadInt32();
                 float seed = reader.ReadSingle();
                 Vector2 center = new(reader.ReadSingle(), reader.ReadSingle());
-                projPairs.Add((projOwner, projIdentity, seed, center));
-            }
-
-            //owner+identity 解析，未同步则跳过
-            List<(int idx, float seed, Vector2 center)> projEntries = new(projPairs.Count);
-            for (int i = 0; i < projPairs.Count; i++) {
-                int idx = FindProjectileIndex(projPairs[i].projOwner, projPairs[i].projIdentity);
+                int idx = FindProjectileIndex(projOwner, projIdentity, projType);
                 if (idx < 0) continue;
-                projEntries.Add((idx, projPairs[i].seed, projPairs[i].center));
+                projectileEntries.Add(new ProjectileFreezeTarget(idx, projOwner,
+                    projIdentity, projType, seed, center));
             }
 
-            ApplyFreezeBatch(ownerWho, npcEntries, projEntries);
-
-            //服务端转发，保留原始 owner+identity
-            if (VaultUtils.isServer) {
-                BroadcastStart(ownerWho, npcEntries, projPairs, ignoreClient: whoAmI);
-            }
+            ApplyFreezeBatch(ownerWho, activationId, npcEntries, projectileEntries,
+                replaceExisting: true,
+                out _, out _);
         }
+
+        private static bool PrepareAuthoritativeNPCSlot(NPC npc, long activationId) {
+            bool alreadyApplied = false;
+            for (int i = FrozenNPCs.Count - 1; i >= 0; i--) {
+                FreezeEntry entry = FrozenNPCs[i];
+                if (entry.EntityIndex != npc.whoAmI) {
+                    continue;
+                }
+                if (TimeFreezeSystem.IsLeaseActive(npc, entry.FreezeLease)
+                    && entry.FreezeLease.Source.InstanceId == activationId) {
+                    alreadyApplied = true;
+                    continue;
+                }
+                TimeFreezeSystem.ReleaseNPC(npc, entry.FreezeLease,
+                    entry.FreezeVelocity * 0.5f, TimeFreezeResumePriority.Domain);
+                FrozenNPCs.RemoveAt(i);
+            }
+            return !alreadyApplied;
+        }
+
+        private static bool PrepareAuthoritativeProjectileSlot(Projectile projectile,
+            long activationId) {
+            bool alreadyApplied = false;
+            for (int i = FrozenProjectiles.Count - 1; i >= 0; i--) {
+                FreezeProjEntry entry = FrozenProjectiles[i];
+                if (entry.EntityIndex != projectile.whoAmI) {
+                    continue;
+                }
+                if (TimeFreezeSystem.IsLeaseActive(projectile, entry.FreezeLease)
+                    && entry.FreezeLease.Source.InstanceId == activationId) {
+                    alreadyApplied = true;
+                    continue;
+                }
+                TimeFreezeSystem.ReleaseProjectile(projectile, entry.FreezeLease,
+                    entry.FreezeVelocity, TimeFreezeResumePriority.Domain);
+                FrozenProjectiles.RemoveAt(i);
+            }
+            return !alreadyApplied;
+        }
+
+        private static long AllocateActivationId() {
+            nextActivationId++;
+            if (nextActivationId == 0) {
+                nextActivationId++;
+            }
+            return nextActivationId;
+        }
+
+        private static bool IsFinite(Vector2 value)
+            => float.IsFinite(value.X) && float.IsFinite(value.Y);
 
         /// <summary>每帧更新冻结实体</summary>
         public static void Update() {
@@ -395,6 +546,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             }
             FrozenNPCs.Clear();
             FrozenProjectiles.Clear();
+            nextActivationId = 0;
         }
 
         private static bool IsEntryActive(FreezeEntry entry) {

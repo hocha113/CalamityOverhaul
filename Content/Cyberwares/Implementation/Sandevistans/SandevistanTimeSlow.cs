@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
     /// <summary>
     /// 时缓数据管理，TimeGear 缩放实体漂移
     /// <br/>实体运动快照由 <see cref="TimeFreezeSystem"/> 统一持有，保留 SlowFactor 缩放与 friendly 豁免语义
-    /// <br/>NPC/弹幕拦截见 <see cref="SandevistanNPC"/>、<see cref="SandevistanProjectile"/>
+    /// <br/>NPC/弹幕来源登记见 <see cref="SandevistanNPC"/>、<see cref="SandevistanProjectile"/>
     /// </summary>
     internal class SandevistanTimeSlow : ModSystem
     {
@@ -32,8 +32,21 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 return;
             }
             IsActive = true;
-            TimeGear.Register(TimeGearKey, SlowFactor);
-            AcquireAllEntities();
+            try {
+                TimeGear.Register(TimeGearKey, SlowFactor);
+                AcquireAllEntities();
+            }
+            catch (System.Exception exception) {
+                IsActive = false;
+                try {
+                    ReleaseAllEntities();
+                }
+                finally {
+                    TimeGear.Unregister(TimeGearKey);
+                }
+                CWRMod.Instance?.Logger.Error(
+                    $"Sandevistan activation failed: {exception}");
+            }
         }
 
         //关，释放统一运动租约
