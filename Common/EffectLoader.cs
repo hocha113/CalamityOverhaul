@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 
 namespace CalamityOverhaul.Common
@@ -182,7 +182,6 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniPaperPeel { get; set; }
         public static Asset<Effect> OniSky { get; set; }
         public static Asset<Effect> OniDomainDeco { get; set; }
-        public static Asset<Effect> HimayoMainMenu { get; set; }
         public static Asset<Effect> HimayoPortraitAssembly { get; set; }
         public static Asset<Effect> ToriiDissolve { get; set; }
         public static Asset<Effect> OniEye { get; set; }
