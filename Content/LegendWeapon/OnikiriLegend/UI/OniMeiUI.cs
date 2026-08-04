@@ -433,6 +433,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             for (int i = 0; i < 3; i++) {
                 slotPos[i] = new Vector2(panelRect.Right - 64f, contentTop + contentH * (0.18f + 0.32f * i));
                 anchorPx[i] = OniMeiBladeDraw.SpinePx(SlotU(i));
+                if ((OniMeiSlotKind)i == OniMeiSlotKind.Nakago) {
+                    anchorPx[i] += OnikiriUITheme.MeiNakagoMarkOffsetPx;
+                }
             }
 
             //陈列心:台账右侧展刀区;底缘向錾样匣行让位。

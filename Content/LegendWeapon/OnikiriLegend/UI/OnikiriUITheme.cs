@@ -93,6 +93,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public const float MeiSlotUHorimono = 0.54f;
         /// <summary>茎铭归一位置(柄中藏茎)</summary>
         public const float MeiSlotUNakago = 0.87f;
+        /// <summary>茎铭相对轮廓中线的贴图内校准(陈列 2x 时左移 10 UI px)</summary>
+        public static readonly Vector2 MeiNakagoMarkOffsetPx = new(-5f, 0f);
         /// <summary>刀上微缩刻痕字径(贴图 px,乘当前缩放;检分镜头下即凿刻字径)</summary>
         public const float MeiBladeMarkPx = 13f;
         /// <summary>鏨盘扇骨长(轴心到纹章心;骨少时的基准)</summary>
