@@ -382,13 +382,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniBrush.DrawPaperStrip(sb, stripTop, rot, new Vector2(W, H), a * (hover ? 1.05f : 0.96f), GlobalTimer * 0.11f);
             }
 
-            if (equipped != null) {
-                //役鬼位非空时才落役鬼印
-                DrawWraithSeal(sb, stripTop + down * 16f, rot, equipped.Key, a);
+            //方章与完整淡墨笔势属于封印札本体,役鬼只负责写实驾驭进度
+            DrawTalismanSeal(sb, stripTop + down * 16f, rot, equipped?.Key, a);
+            Vector2 strokeStart = stripTop + down * 29f;
+            Vector2 strokeFullEnd = stripTop + down * (H - 13f);
+            float guideAlpha = equipped == null ? 0.30f : 0.18f;
+            OniBrush.DrawTaperedSlash(sb, strokeStart, strokeFullEnd, 3.2f, 0.9f, a * guideAlpha);
 
+            if (equipped != null) {
                 //墨批:自印下垂书一笔,长度=当前役鬼驾驭度
                 if (mastery > 0.02f) {
-                    Vector2 strokeStart = stripTop + down * 29f;
                     Vector2 strokeEnd = stripTop + down * (29f + (H - 42f) * mastery);
                     OniBrush.DrawTaperedSlash(sb, strokeStart, strokeEnd, 3.8f, 0.9f, a * 0.92f);
                 }
@@ -397,9 +400,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 if (danger && !paperByShader) {
                     DrawCharredHem(sb, stripTop, down, side, W, H, a);
                 }
-            }
-            else {
-                DrawVacantSeal(sb, stripTop, down, side, a, GlobalTimer);
             }
 
             //气力墨脉:定在锚侧不随札摆,墨丝自札边垂下把两者缝在一起
@@ -412,8 +412,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             particles.Draw(sb, a);
         }
 
-        private static void DrawWraithSeal(SpriteBatch sb, Vector2 center, float rot, string key, float alpha) {
-            float seed = OniGhostShadowDraw.SeedFromKey(key);
+        private static void DrawTalismanSeal(SpriteBatch sb, Vector2 center, float rot, string key, float alpha) {
+            float seed = string.IsNullOrEmpty(key) ? 0.5f : OniGhostShadowDraw.SeedFromKey(key);
             OniBrush.DrawSealGlyph(sb, center, 9.5f, alpha * 0.95f, rot + (seed - 0.5f) * 0.18f);
             Vector2 side = rot.ToRotationVector2();
             Vector2 down = (rot + MathHelper.PiOver2).ToRotationVector2();
@@ -421,42 +421,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             OniBrush.DrawGradientLine(sb, center - side * 5f + down * offset,
                 center + side * 5f - down * offset, OnikiriUITheme.Bright * (alpha * 0.76f),
                 OnikiriUITheme.Deep * (alpha * 0.34f), 1f);
-        }
-
-        /// <summary>空役鬼位的镇札符纹:保留札面重心,空心菱印与断笔表明尚未役使</summary>
-        private static void DrawVacantSeal(SpriteBatch sb, Vector2 top, Vector2 down, Vector2 side,
-            float alpha, float time) {
-            float breath = 0.86f + (float)Math.Sin(time * 1.35f) * 0.07f;
-            Color inkTop = Color.Lerp(OnikiriUITheme.Disabled, OnikiriUITheme.Seal, 0.42f)
-                * (alpha * breath * 0.78f);
-            Color inkBottom = OnikiriUITheme.Deep * (alpha * breath * 0.38f);
-
-            Vector2 At(float x, float y) => top + side * x + down * y;
-            void Stroke(Vector2 start, Vector2 end, float width = 1.15f)
-                => OniBrush.DrawGradientLine(sb, start, end, inkTop, inkBottom, width);
-
-            //上部镇笔与两侧收锋
-            Stroke(At(-7.5f, 15f), At(7.5f, 15f), 1.35f);
-            Stroke(At(0f, 12f), At(0f, 35f), 1.3f);
-            Stroke(At(-5.5f, 26f), At(5.5f, 26f));
-            Stroke(At(0f, 30f), At(-6.5f, 35f));
-            Stroke(At(0f, 30f), At(6.5f, 35f));
-
-            //中央留白的菱印代表役鬼位空置
-            Vector2 diamondTop = At(0f, 38f);
-            Vector2 diamondRight = At(7.5f, 47f);
-            Vector2 diamondBottom = At(0f, 56f);
-            Vector2 diamondLeft = At(-7.5f, 47f);
-            Stroke(diamondTop, diamondRight, 1.3f);
-            Stroke(diamondRight, diamondBottom, 1.3f);
-            Stroke(diamondBottom, diamondLeft, 1.3f);
-            Stroke(diamondLeft, diamondTop, 1.3f);
-
-            //下部断开于菱印,避免读成任一役鬼的连续驾驭墨批
-            Stroke(At(0f, 60f), At(0f, 84f), 1.3f);
-            Stroke(At(-5f, 70f), At(5f, 70f));
-            Stroke(At(0f, 78f), At(-7f, 89f));
-            Stroke(At(0f, 78f), At(7f, 89f));
         }
 
         internal void DrawTooltipOverlay(SpriteBatch sb) {
