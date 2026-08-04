@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
 using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
@@ -501,7 +501,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
 
             if ((width <= 0f || height <= 0f) && !Main.dedServ
-                && npc.type >= 0 && npc.type < TextureAssets.Npc.Length) {
+                && npc.type >= NPCID.None && npc.type < TextureAssets.Npc.Length) {
                 Main.instance.LoadNPC(npc.type);
                 Texture2D texture = TextureAssets.Npc[npc.type].Value;
                 int frames = Math.Max(Main.npcFrameCount[npc.type], 1);

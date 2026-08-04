@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TimeFreezes
@@ -577,7 +578,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             if (Main.npc != null) {
                 for (int i = 0; i < Main.maxNPCs; i++) {
                     NPC npc = Main.npc[i];
-                    if (npc?.active == true && npc.type > 0) {
+                    if (npc?.active == true && npc.type > NPCID.None) {
                         npc.GetGlobalNPC<TimeFreezeNPC>()
                             .SyncTransientSources(npc, GetTransientSources(npc));
                     }
@@ -586,7 +587,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             if (Main.projectile != null) {
                 for (int i = 0; i < Main.maxProjectiles; i++) {
                     Projectile projectile = Main.projectile[i];
-                    if (projectile?.active == true && projectile.type > 0) {
+                    if (projectile?.active == true && projectile.type > ProjectileID.None) {
                         projectile.GetGlobalProjectile<TimeFreezeProjectile>()
                             .SyncTransientSources(projectile, GetTransientSources(projectile));
                     }
@@ -657,7 +658,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             if (Main.npc != null) {
                 for (int i = 0; i < Main.maxNPCs; i++) {
                     NPC npc = Main.npc[i];
-                    if (npc?.active == true && npc.type > 0) {
+                    if (npc?.active == true && npc.type > NPCID.None) {
                         npc.GetGlobalNPC<TimeFreezeNPC>().ResetFreezeState();
                     }
                 }
@@ -665,7 +666,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             if (Main.projectile != null) {
                 for (int i = 0; i < Main.maxProjectiles; i++) {
                     Projectile projectile = Main.projectile[i];
-                    if (projectile?.active == true && projectile.type > 0) {
+                    if (projectile?.active == true && projectile.type > ProjectileID.None) {
                         projectile.GetGlobalProjectile<TimeFreezeProjectile>().ResetFreezeState();
                     }
                 }
