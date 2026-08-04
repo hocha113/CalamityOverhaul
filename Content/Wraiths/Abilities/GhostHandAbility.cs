@@ -3,31 +3,28 @@ using CalamityOverhaul.Content.Wraiths.Projectiles;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Wraiths.Attunements
+namespace CalamityOverhaul.Content.Wraiths.Abilities
 {
-    /// <summary>维持玩家背后的焦黑枯手；抓取循环由弹体自己管理。</summary>
-    internal sealed class GhostHandAttunement : WraithAttunement
+    internal sealed class GhostHandAbility : WraithPassiveAbility
     {
         internal const string Key = "GhostHand";
         internal const float GrabRange = 300f;
 
         internal static bool CanGrab(NPC npc, Vector2 center)
-            => npc.CanBeChasedBy() && !npc.boss
-               && Vector2.DistanceSquared(npc.Center, center) < GrabRange * GrabRange;
+            => npc.CanBeChasedBy() && !npc.boss && !npc.HasBuff<Buffs.GhostGripDebuff>()
+                && Vector2.DistanceSquared(npc.Center, center) < GrabRange * GrabRange;
 
-        public override void Update(in WraithAttunementContext context) {
+        public override void Update(in WraithAbilityContext context) {
             Player player = context.Player;
             if (player == null || player.whoAmI != Main.myPlayer || !player.active || player.dead) {
                 return;
             }
-
             int projectileType = ModContent.ProjectileType<GhostHandProj>();
             if (player.ownedProjectileCounts[projectileType] > 0) {
                 return;
             }
-
             Projectile.NewProjectile(
-                player.GetSource_Misc("CWRWraith_GhostHandAttunement"),
+                player.GetSource_Misc("CWRWraith_GhostHandAbility"),
                 player.Center,
                 Vector2.Zero,
                 projectileType,

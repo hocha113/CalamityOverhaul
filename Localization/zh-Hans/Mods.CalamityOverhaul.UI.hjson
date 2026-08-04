@@ -651,20 +651,6 @@ HackTime: {
 	WaterScanStatusStill: 静止
 	WaterScanStatusFlowing: 流动中
 	CatParanormal: 灵异
-	WraithScanName: 标识
-	WraithScanNameValue: 未知厉鬼
-	WraithScanType: 灵异对象
-	WraithScanThreat: 无法评估 ERR://-∞
-	WraithScanStatus: 状态
-	WraithScanStatusStalking: 潜行追猎
-	WraithScanStatusWatched: 被凝视中
-	WraithScanStatusHalt: 死机
-	WraithScanStatusMemory: 记忆错乱
-	WraithScanStatusDismember: 灵异裂解中
-	WraithScanIntegrity: 数据完整性
-	WraithScanIntegrityValue: 0x??%  损坏
-	WraithScanOrigin: 来源
-	WraithScanOriginValue: 查无此档
 	TurretScanName: 代号
 	TurretScanLaserName: 虚空·主炮阵列
 	TurretScanGatlinName: 虚空·速射塔

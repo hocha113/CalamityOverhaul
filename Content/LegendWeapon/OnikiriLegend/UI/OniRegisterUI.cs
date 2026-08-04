@@ -25,48 +25,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText TitleText { get; private set; }
         public static LocalizedText StatusFormat { get; private set; }
         public static LocalizedText MasteryFormat { get; private set; }
+        public static LocalizedText AbilityCostFormat { get; private set; }
         public static LocalizedText OriginLabel { get; private set; }
         public static LocalizedText PowerLabel { get; private set; }
-        public static LocalizedText StateEngraved { get; private set; }
-        public static LocalizedText StateRestless { get; private set; }
-        public static LocalizedText StateSealed { get; private set; }
-        public static LocalizedText StateUnknown { get; private set; }
-        public static LocalizedText UnknownName { get; private set; }
-        public static LocalizedText UnknownHint { get; private set; }
-        public static LocalizedText SealedOriginHint { get; private set; }
-        public static LocalizedText SealedPowerHint { get; private set; }
-        public static LocalizedText UnrenewedOriginHint { get; private set; }
-        public static LocalizedText UnrenewedPowerHint { get; private set; }
+        public static LocalizedText StateReady { get; private set; }
+        public static LocalizedText StateDormant { get; private set; }
+        public static LocalizedText StateArchive { get; private set; }
+        public static LocalizedText StateSealedArchive { get; private set; }
+        public static LocalizedText EmptySlotName { get; private set; }
+        public static LocalizedText EmptySlotHint { get; private set; }
+        public static LocalizedText UsableSection { get; private set; }
+        public static LocalizedText ArchiveSection { get; private set; }
         public static LocalizedText CloseTagText { get; private set; }
         public static LocalizedText CloseHintFormat { get; private set; }
         public static LocalizedText MeiTabText { get; private set; }
         public static LocalizedText MeiTabHint { get; private set; }
-        public static LocalizedText AttuneChanged { get; private set; }
-        public static LocalizedText AttuneActive { get; private set; }
+        public static LocalizedText EquipAction { get; private set; }
+        public static LocalizedText UnequipAction { get; private set; }
+        public static LocalizedText EquipPending { get; private set; }
+        public static LocalizedText EquipChanged { get; private set; }
+        public static LocalizedText Unequipped { get; private set; }
+        public static LocalizedText EquippedActive { get; private set; }
 
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "点 鬼 簿");
-            StatusFormat = this.GetLocalization(nameof(StatusFormat), () => "铭鬼 {0} 缕 · 总驾驭 {1}%");
+            StatusFormat = this.GetLocalization(nameof(StatusFormat), () => "役鬼 {0} · 驾驭 {1}% · 侵蚀 {2}%");
             MasteryFormat = this.GetLocalization(nameof(MasteryFormat), () => "驾驭 {0}%");
+            AbilityCostFormat = this.GetLocalization(nameof(AbilityCostFormat), () => "发动耗竭 驾驭 {0}% · 侵蚀 +{1}%");
             OriginLabel = this.GetLocalization(nameof(OriginLabel), () => "来历");
             PowerLabel = this.GetLocalization(nameof(PowerLabel), () => "赋力");
-            StateEngraved = this.GetLocalization(nameof(StateEngraved), () => "铭刻 · 稳固");
-            StateRestless = this.GetLocalization(nameof(StateRestless), () => "铭刻 · 躁动");
-            StateSealed = this.GetLocalization(nameof(StateSealed), () => "封印中");
-            StateUnknown = this.GetLocalization(nameof(StateUnknown), () => "铭位空悬");
-            UnknownName = this.GetLocalization(nameof(UnknownName), () => "（留白）");
-            UnknownHint = this.GetLocalization(nameof(UnknownHint), () => "簿上留白。夜还长，总会有名字自己走上来");
-            SealedOriginHint = this.GetLocalization(nameof(SealedOriginHint), () => "封印未解。莫揭，莫应，莫回头");
-            SealedPowerHint = this.GetLocalization(nameof(SealedPowerHint), () => "———");
-            //残页门控文案键(现不挡簿面)
-            UnrenewedOriginHint = this.GetLocalization(nameof(UnrenewedOriginHint), () => "旧契认刀，不认这只手。去它被收伏之地，重续名字");
-            UnrenewedPowerHint = this.GetLocalization(nameof(UnrenewedPowerHint), () => "———");
+            StateReady = this.GetLocalization(nameof(StateReady), () => "可役使");
+            StateDormant = this.GetLocalization(nameof(StateDormant), () => "耗竭 · 休眠");
+            StateArchive = this.GetLocalization(nameof(StateArchive), () => "残卷 · 不可役使");
+            StateSealedArchive = this.GetLocalization(nameof(StateSealedArchive), () => "封印残卷");
+            EmptySlotName = this.GetLocalization(nameof(EmptySlotName), () => "役鬼位空");
+            EmptySlotHint = this.GetLocalization(nameof(EmptySlotHint), () => "从名录中选中一只厉鬼查看详情，再以役使印将其纳入役鬼位。空位不会启用任何厉鬼能力");
+            UsableSection = this.GetLocalization(nameof(UsableSection), () => "役 鬼");
+            ArchiveSection = this.GetLocalization(nameof(ArchiveSection), () => "残 卷");
             CloseTagText = this.GetLocalization(nameof(CloseTagText), () => "收卷");
             CloseHintFormat = this.GetLocalization(nameof(CloseHintFormat), () => "ESC · {0} · 点击卷外 收卷");
             MeiTabText = this.GetLocalization(nameof(MeiTabText), () => "改铭台");
             MeiTabHint = this.GetLocalization(nameof(MeiTabHint), () => "点击 移步");
-            AttuneChanged = this.GetLocalization(nameof(AttuneChanged), () => "「{0}」应声——共鸣已定");
-            AttuneActive = this.GetLocalization(nameof(AttuneActive), () => "共鸣中");
+            EquipAction = this.GetLocalization(nameof(EquipAction), () => "役 使");
+            UnequipAction = this.GetLocalization(nameof(UnequipAction), () => "卸 下");
+            EquipPending = this.GetLocalization(nameof(EquipPending), () => "候 令");
+            EquipChanged = this.GetLocalization(nameof(EquipChanged), () => "「{0}」已纳入役鬼位");
+            Unequipped = this.GetLocalization(nameof(Unequipped), () => "役鬼位已清空");
+            EquippedActive = this.GetLocalization(nameof(EquippedActive), () => "役使中");
         }
         #endregion
 
@@ -79,18 +84,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>姊妹屏互斥收卷时置位:抑制本屏关闭音,切换只响新屏开音一声</summary>
         internal bool SilentSwap;
-        private bool keepMouseSlot;
-        private bool inventoryWasOpen;
-        private long mouseSlotInstanceId;
         private int interactionSession;
+        private int sourceInventorySlot = -1;
+        private long sourceInstanceId;
+        private bool loadoutPending;
 
         //====交互状态====
-        private int selectedIndex;
+        private int selectedIndex = -1;
         private int hoverIndex = -1;
         private readonly float[] hoverEase = new float[16];
         private float selectEase;
         private Rectangle scrollRect;
         private Rectangle detailRect;
+        private Rectangle loadoutSlotRect;
+        private Rectangle actionRect;
+        private float usableSectionY;
+        private float archiveSectionY;
+        private float loadoutSlotHover;
+        private float actionHover;
         //收卷木牌,点击关闭,牌绳 Verlet
         private Rectangle closeTagRect;
         private float closeTagHover;
@@ -131,11 +142,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         protected override void OnOpen() {
             interactionSession++;
-            inventoryWasOpen = Main.playerInventory;
-            OnikiriData mouseData = OnikiriData.TryGet(Main.mouseItem);
-            keepMouseSlot = mouseData != null;
-            mouseSlotInstanceId = mouseData?.InstanceId ?? 0;
-            Main.playerInventory = keepMouseSlot;
+            CaptureSourceItem();
+            Main.playerInventory = false;
             OniTalismanHud.RememberLedger(OniLedgerView.Register);
             //姊妹屏互斥:一卷开另一台收;静默收台,免得开音+关音同帧叠成两声切换
             if (OniMeiUI.Instance?.IsOpen ?? false) {
@@ -147,7 +155,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             SwayTimer = 0f;
             petalTimer = 0;
             particles.Clear();
-            SelectEntry(FindFirstVisible(), silent: true);
+            selectedIndex = -1;
+            int equippedIndex = FindEquipped();
+            if (equippedIndex >= 0) {
+                SelectEntry(equippedIndex, silent: true);
+            }
             idleTimer = 0;
             glanceStrength = 0f;
             pupilOpen = 0f;
@@ -161,32 +173,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         protected override void OnClose() {
             interactionSession++;
-            if (keepMouseSlot) {
-                Main.playerInventory = inventoryWasOpen;
-            }
-            keepMouseSlot = false;
-            mouseSlotInstanceId = 0;
+            sourceInventorySlot = -1;
+            sourceInstanceId = 0;
+            loadoutPending = false;
             if (VaultUtils.isSinglePlayer) {
                 WorldFreezeSystem.Deactivate(FreezeReason);
             }
         }
 
-        private static int FindFirstVisible() {
+        private static int FindEquipped() {
             var entries = OniRegistry.Entries;
-            string attunedKey = OniRegistry.AttunedKey;
-            if (!string.IsNullOrEmpty(attunedKey)) {
+            string equippedKey = OniRegistry.EquippedKey;
+            if (!string.IsNullOrEmpty(equippedKey)) {
                 for (int i = 0; i < entries.Count; i++) {
-                    if (entries[i].Key == attunedKey) {
+                    if (entries[i].Key == equippedKey) {
                         return i;
                     }
                 }
             }
-            for (int i = 0; i < entries.Count; i++) {
-                if (entries[i].State != OniGhostState.Unknown) {
-                    return i;
-                }
-            }
-            return entries.Count > 0 ? 0 : -1;
+            return -1;
         }
 
         private void SelectEntry(int index, bool silent = false) {
@@ -213,12 +218,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        internal bool IsAttuned(OniGhostEntry entry)
-            => entry != null && entry.Key == OniRegistry.AttunedKey;
+        internal bool IsEquipped(OniGhostEntry entry)
+            => entry != null && entry.Key == OniRegistry.EquippedKey;
+
+        internal Rectangle ActionRect => actionRect;
+        internal float ActionHover => actionHover;
+        internal bool LoadoutPending => loadoutPending;
+        internal string LoadoutActionText => loadoutPending
+            ? EquipPending.Value
+            : IsEquipped(SelectedEntry) ? UnequipAction.Value : EquipAction.Value;
 
         public override void Update() {
             if (IsOpen) {
-                if (!MaintainMouseSlot()) {
+                if (!MaintainSourceItem()) {
                     return;
                 }
                 player.mouseInterface = true;
@@ -227,7 +239,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         public override void LogicUpdate() {
             if (IsOpen) {
-                if (!MaintainMouseSlot()) {
+                if (!MaintainSourceItem()) {
                     return;
                 }
                 player.mouseInterface = true;
@@ -259,8 +271,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             closeTagRect = new Rectangle((int)(tagTop.X - 16f), (int)tagTop.Y - 2, 32, 48);
 
             //吊挂太刀:点击预演到帧即移步改铭台
-            bool meiRiteBusy = OniEngraveRiteUI.Instance?.Active ?? false;
-            if (meiSwitch.Update(meiSwitchAnchor, MousePosition, IsOpen && a > 0.9f && !meiRiteBusy,
+            if (meiSwitch.Update(meiSwitchAnchor, MousePosition, IsOpen && a > 0.9f,
                 ShaderTime, OnikiriUITheme.HangTachiHit, keyLeftPressState)) {
                 OniMeiUI.Instance?.Open();
             }
@@ -277,16 +288,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             var entries = OniRegistry.Entries;
 
             float scrollW = Math.Min(OnikiriUITheme.ScrollMaxWidth, sw * OnikiriUITheme.ScrollWidthRatio);
-            //列数决定的最小宽度,防止小屏挤压
-            float needW = entries.Count * (OnikiriUITheme.EntryColumnW + OnikiriUITheme.EntryColumnGap) + 70f;
-            scrollW = Math.Max(scrollW, Math.Min(needW, sw * 0.5f));
-            float scrollH = sh * 0.84f;
+            scrollW = Math.Max(scrollW, Math.Min(340f, sw * 0.5f));
+            float heightEase = MathHelper.Clamp((sh - 480f) / 420f, 0f, 1f);
+            float scrollRatio = MathHelper.Lerp(0.94f, 0.84f, heightEase);
+            float scrollH = Math.Min(sh - 28f, sh * scrollRatio);
             Vector2 scrollCenter = new(sw * OnikiriUITheme.ScrollCenterXRatio, sh * 0.5f + 6f);
             scrollRect = new Rectangle((int)(scrollCenter.X - scrollW * 0.5f), (int)(scrollCenter.Y - scrollH * 0.5f), (int)scrollW, (int)scrollH);
 
             float detailX = scrollRect.Right + 38f;
             float detailW = Math.Min(430f, sw - detailX - 44f);
-            detailRect = new Rectangle((int)detailX, (int)(sh * 0.5f - 216f), (int)detailW, 432);
+            float detailH = Math.Min(520f, sh - 92f);
+            detailRect = new Rectangle((int)detailX, (int)(sh * 0.5f - detailH * 0.5f), (int)detailW, (int)detailH);
+
+            Vector2 slotSize = OnikiriUITheme.WraithSlotSize;
+            loadoutSlotRect = new Rectangle((int)(scrollRect.Center.X - slotSize.X * 0.5f), scrollRect.Y + 78,
+                (int)slotSize.X, (int)slotSize.Y);
+            Vector2 actionSize = OnikiriUITheme.WraithActionSize;
+            actionRect = new Rectangle((int)(detailRect.Center.X - actionSize.X * 0.5f),
+                detailRect.Bottom - (int)actionSize.Y - 15, (int)actionSize.X, (int)actionSize.Y);
 
             //收卷木牌绳锚:顶部轴杆右端帽,牌体位置由 Verlet 绳每帧决定
             closeTagAnchor = new Vector2(scrollRect.Right + 17f, scrollRect.Y - 7f);
@@ -294,22 +313,58 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //吊挂太刀锚:卷轴左肩外的梁下,与右肩收卷牌对称成"一梁两挂"
             meiSwitchAnchor = new Vector2(scrollRect.X - 78f, scrollRect.Y - 12f);
 
-            //名录竖列,右起左行(旧式名册自右向左)
+            Array.Clear(entryRects, 0, entryRects.Length);
             Rectangle inner = scrollRect;
             inner.Inflate(-30, -36);
-            float colX = inner.Right - OnikiriUITheme.EntryColumnW;
-            int colTop = inner.Y + 58;
-            int colH = Math.Min(inner.Height - 96, 300);
+            int usableCount = 0;
+            int archiveCount = 0;
+            foreach (OniGhostEntry entry in entries) {
+                if (entry.CanEquip) {
+                    usableCount++;
+                }
+                else {
+                    archiveCount++;
+                }
+            }
+
+            float mainTotalW = usableCount * OnikiriUITheme.EntryColumnW
+                + Math.Max(0, usableCount - 1) * OnikiriUITheme.EntryColumnGap;
+            float mainX = inner.Center.X + mainTotalW * 0.5f - OnikiriUITheme.EntryColumnW;
+            int mainGap = (int)MathF.Round(MathHelper.Lerp(32f, 42f, heightEase));
+            int archiveGap = (int)MathF.Round(MathHelper.Lerp(28f, 48f, heightEase));
+            int archiveMinH = (int)MathF.Round(MathHelper.Lerp(64f, 76f, heightEase));
+            int mainMaxH = (int)MathF.Round(MathHelper.Lerp(170f, 250f, heightEase));
+            const int bottomReserve = 32;
+            int mainTop = loadoutSlotRect.Bottom + mainGap;
+            int mainAvailable = inner.Bottom - mainTop - archiveGap - archiveMinH - bottomReserve;
+            int mainH = Math.Max(96, Math.Min(mainMaxH, mainAvailable));
+            usableSectionY = mainTop - 27f;
+
+            float archiveTotalW = archiveCount * OnikiriUITheme.ArchiveColumnW
+                + Math.Max(0, archiveCount - 1) * OnikiriUITheme.ArchiveColumnGap;
+            float archiveX = inner.Center.X + archiveTotalW * 0.5f - OnikiriUITheme.ArchiveColumnW;
+            int archiveTop = mainTop + mainH + archiveGap;
+            int archiveH = Math.Max(archiveMinH, inner.Bottom - archiveTop - bottomReserve);
+            archiveSectionY = archiveTop - 25f;
+
+            int usableIndex = 0;
+            int archiveIndex = 0;
             for (int i = 0; i < entries.Count && i < entryRects.Length; i++) {
-                entryRects[i] = new Rectangle((int)colX, colTop, (int)OnikiriUITheme.EntryColumnW, colH);
-                colX -= OnikiriUITheme.EntryColumnW + OnikiriUITheme.EntryColumnGap;
+                if (entries[i].CanEquip) {
+                    float x = mainX - usableIndex * (OnikiriUITheme.EntryColumnW + OnikiriUITheme.EntryColumnGap);
+                    entryRects[i] = new Rectangle((int)x, mainTop, (int)OnikiriUITheme.EntryColumnW, mainH);
+                    usableIndex++;
+                }
+                else {
+                    float x = archiveX - archiveIndex * (OnikiriUITheme.ArchiveColumnW + OnikiriUITheme.ArchiveColumnGap);
+                    entryRects[i] = new Rectangle((int)x, archiveTop, (int)OnikiriUITheme.ArchiveColumnW, archiveH);
+                    archiveIndex++;
+                }
             }
         }
 
         private void UpdateInteraction(float a) {
-            //铭刻仪式压在簿面之上时,簿面不受理点击
-            bool riteActive = OniEngraveRiteUI.Instance?.Active ?? false;
-            bool inputAvailable = IsOpen && a > 0.9f && !riteActive;
+            bool inputAvailable = IsOpen && a > 0.9f;
             Vector2 mouse = MousePosition;
             Point mp = mouse.ToPoint();
             var entries = OniRegistry.Entries;
@@ -346,23 +401,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             closeTagWasHovered = tagHovered;
 
+            bool slotHovered = inputAvailable && loadoutSlotRect.Contains(mp);
+            bool actionHovered = inputAvailable && SelectedEntry?.CanEquip == true && actionRect.Contains(mp);
+            loadoutSlotHover += ((slotHovered ? 1f : 0f) - loadoutSlotHover) * 0.2f;
+            actionHover += ((actionHovered ? 1f : 0f) - actionHover) * 0.2f;
+
             if (inputAvailable && keyLeftPressState == KeyPressState.Pressed) {
                 if (tagHovered) {
                     Close();
                     return;
                 }
+                if (slotHovered && OniRegistry.EquippedEntry != null) {
+                    BeginLoadoutChange(null, OniRegistry.EquippedEntry.Name?.Invoke());
+                    return;
+                }
+                if (actionHovered) {
+                    OniGhostEntry selected = SelectedEntry;
+                    string nextKey = IsEquipped(selected) ? null : selected.Key;
+                    BeginLoadoutChange(nextKey, selected.Name?.Invoke());
+                    return;
+                }
                 if (hoverIndex >= 0) {
-                    OniGhostEntry entry = entries[hoverIndex];
-                    bool wasAttuned = IsAttuned(entry);
                     SelectEntry(hoverIndex);
-                    if (!wasAttuned && entry.CanAttune) {
-                        int session = interactionSession;
-                        string displayName = entry.Name?.Invoke() ?? entry.Key;
-                        if (!OniRegistry.TryAttune(entry.Key, success =>
-                            CompleteAttunement(session, success, displayName))) {
-                            DenyFeedback();
-                        }
-                    }
                     return;
                 }
                 //点击卷外压暗区收卷:卷轴(含外扩边)、细节板、收卷牌、吊挂太刀之外都算"外"
@@ -374,30 +434,68 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        private void CompleteAttunement(int session, bool success, string displayName) {
+        private void BeginLoadoutChange(string key, string displayName) {
+            if (loadoutPending || !MaintainSourceItem()) {
+                return;
+            }
+            int session = interactionSession;
+            loadoutPending = true;
+            if (!OniRegistry.TrySetEquipped(SourceItem(), key, success =>
+                CompleteLoadoutChange(session, success, key, displayName))) {
+                loadoutPending = false;
+                DenyFeedback();
+            }
+        }
+
+        private void CompleteLoadoutChange(int session, bool success, string key, string displayName) {
             if (!IsOpen || session != interactionSession) {
                 return;
             }
+            loadoutPending = false;
             if (!success) {
                 DenyFeedback();
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item29 with { Pitch = -0.72f, Volume = 0.46f });
-            VaultUtils.Text(AttuneChanged.Format(displayName), OnikiriUITheme.Bright);
+            VaultUtils.Text(string.IsNullOrEmpty(key)
+                ? Unequipped.Value
+                : EquipChanged.Format(displayName ?? key), OnikiriUITheme.Bright);
         }
 
         private static void DenyFeedback()
             => SoundEngine.PlaySound(SoundID.Unlock with { Pitch = -0.62f, Volume = 0.38f });
 
-        private bool MaintainMouseSlot() {
-            if (!keepMouseSlot) {
-                return true;
+        private void CaptureSourceItem() {
+            Player local = Main.LocalPlayer;
+            sourceInventorySlot = local?.selectedItem ?? -1;
+            Item item = SourceItem();
+            sourceInstanceId = OnikiriData.TryGet(item)?.InstanceId ?? 0;
+            if (sourceInstanceId == 0) {
+                sourceInventorySlot = -1;
             }
-            if (OnikiriData.TryGet(Main.mouseItem)?.InstanceId != mouseSlotInstanceId) {
+        }
+
+        private Item SourceItem() {
+            Player local = Main.LocalPlayer;
+            if (local == null || sourceInventorySlot < 0
+                || sourceInventorySlot >= PlayerItemSlotID.InventoryMouseItem
+                || sourceInventorySlot >= local.inventory.Length) {
+                return null;
+            }
+            return local.inventory[sourceInventorySlot];
+        }
+
+        private bool MaintainSourceItem() {
+            Player local = Main.LocalPlayer;
+            Item item = SourceItem();
+            if (local == null || !local.active || local.dead
+                || local.selectedItem != sourceInventorySlot
+                || !ReferenceEquals(local.HeldItem, item)
+                || sourceInstanceId == 0
+                || OnikiriData.TryGet(item)?.InstanceId != sourceInstanceId) {
                 Close();
                 return false;
             }
-            Main.playerInventory = true;
             return true;
         }
 
@@ -418,7 +516,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             //线香落灰
             OniGhostEntry sel = SelectedEntry;
-            if (sel != null && sel.HasName && sel.State != OniGhostState.Sealed) {
+            if (sel?.CanEquip == true) {
                 ashTimer++;
                 if (ashTimer >= 34) {
                     ashTimer = 0;
@@ -442,7 +540,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         /// <summary>线香立杆矩形(细节板右下,文案区右缘让位于它)</summary>
-        internal Rectangle IncenseRect() => new(detailRect.Right - 56, detailRect.Bottom - 132, 4, 84);
+        internal Rectangle IncenseRect() => new(detailRect.Right - 56, detailRect.Bottom - 188, 4, 84);
 
         private void UpdateAnomalies() {
             //闲置计时:光标位移超过阈值即重置
@@ -466,8 +564,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 idleTimer = 60; //不立即重看,留一段安静
             }
 
-            //绯月竖瞳,危态低频,睁约 1.6s
-            if (OniRegistry.InDanger) {
+            //休眠役鬼只以低频竖瞳示警
+            if (OniRegistry.IsEquippedDormant) {
                 pupilCooldown--;
                 bool pupilActive = pupilCooldown <= 0;
                 if (pupilCooldown < -96) {
@@ -531,6 +629,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             float contentA = MathHelper.Clamp((a - 0.45f) / 0.55f, 0f, 1f);
             if (contentA > 0.01f) {
                 DrawHeader(spriteBatch, font, contentA);
+                OniRegisterRenderer.DrawLoadoutSlot(spriteBatch, font, loadoutSlotRect,
+                    OniRegistry.EquippedEntry, contentA, loadoutSlotHover, GlobalTimer);
                 DrawEntries(spriteBatch, font, contentA, entries);
                 OniRegisterRenderer.DrawDetail(spriteBatch, this, detailRect, contentA);
                 OniRegisterRenderer.DrawCloseTag(spriteBatch, font, closeTagRope, contentA, closeTagHover, GlobalTimer);
@@ -564,14 +664,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 new Vector2(scrollRect.X + 34f, tPos.Y + tSize.Y + 7f),
                 new Vector2(scrollRect.Right - 34f, tPos.Y + tSize.Y + 5f), 2.2f, 1.8f, a * 0.9f);
 
-            //状态行:铭鬼数 + 总驾驭,置于卷底绫带上方
-            int engraved = 0;
-            foreach (OniGhostEntry e in OniRegistry.Entries) {
-                if (e.State == OniGhostState.Engraved || e.State == OniGhostState.Restless) {
-                    engraved++;
-                }
-            }
-            string status = string.Format(StatusFormat.Value, engraved, (int)(OniRegistry.TotalMastery * 100f));
+            DrawSectionLabel(sb, font, UsableSection.Value, usableSectionY, a);
+            DrawSectionLabel(sb, font, ArchiveSection.Value, archiveSectionY, a * 0.72f);
+
+            OniGhostEntry equipped = OniRegistry.EquippedEntry;
+            string equippedName = equipped?.Name?.Invoke() ?? EmptySlotName.Value;
+            int mastery = (int)MathF.Round((equipped?.Mastery ?? 0f) * 100f);
+            int erosion = (int)MathF.Round(OniRegistry.Erosion * 100f);
+            string status = string.Format(StatusFormat.Value, equippedName, mastery, erosion);
             Vector2 sSize = font.MeasureString(status) * 0.7f;
             Utils.DrawBorderString(sb, status,
                 new Vector2(scrollRect.Center.X - sSize.X * 0.5f, scrollRect.Bottom - 44f),
@@ -583,8 +683,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 float hover = i < hoverEase.Length ? hoverEase[i] : 0f;
                 bool selected = i == selectedIndex;
                 OniRegisterRenderer.DrawEntryColumn(sb, font, entries[i], entryRects[i], a, hover,
-                    selected, IsAttuned(entries[i]), selected ? selectEase : 0f, GlobalTimer, i);
+                    selected, IsEquipped(entries[i]), selected ? selectEase : 0f, GlobalTimer, i);
             }
+        }
+
+        private void DrawSectionLabel(SpriteBatch sb, DynamicSpriteFont font, string text, float y, float a) {
+            const float Scale = 0.65f;
+            Vector2 size = font.MeasureString(text) * Scale;
+            float x = scrollRect.Center.X - size.X * 0.5f;
+            Utils.DrawBorderString(sb, text, new Vector2(x, y), OnikiriUITheme.Deep * a, Scale);
+            float lineY = y + size.Y * 0.5f;
+            OniBrush.DrawGradientLine(sb, new Vector2(scrollRect.Center.X - 118f, lineY),
+                new Vector2(x - 10f, lineY), OnikiriUITheme.Deep * 0f,
+                OnikiriUITheme.Deep * (a * 0.7f), 1f);
+            OniBrush.DrawGradientLine(sb, new Vector2(x + size.X + 10f, lineY),
+                new Vector2(scrollRect.Center.X + 118f, lineY), OnikiriUITheme.Deep * (a * 0.7f),
+                OnikiriUITheme.Deep * 0f, 1f);
         }
 
         /// <summary>卷底常驻关闭提示:ESC/键位/点卷外</summary>
@@ -606,14 +720,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (Main.dedServ || Player.whoAmI != Main.myPlayer) {
                 return;
             }
-            Item item = Player.GetItem();
+            Item item = Player.HeldItem;
             bool holding = item.Alives()
                 && (item.type == ModContent.ItemType<OnikiriItem>());
             if (!holding) {
                 return;
             }
-            //仪式演出中不响应开阖,避免两层演出叠打(铭刻窗与鏨仪式同理)
-            if ((OniEngraveRiteUI.Instance?.Active ?? false) || (OniMeiUI.Instance?.Rite.Active ?? false)) {
+            if (OniMeiUI.Instance?.Rite.Active ?? false) {
                 return;
             }
             if (CWRKeySystem.Legend_UIControl.JustPressed) {

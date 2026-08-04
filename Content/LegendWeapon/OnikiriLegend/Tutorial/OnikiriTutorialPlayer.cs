@@ -6,7 +6,6 @@ using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
 using CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines;
-using CalamityOverhaul.Content.Wraiths.Core;
 using Microsoft.Xna.Framework.Input;
 using System;
 using Terraria;
@@ -242,7 +241,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             OnikiriData data = OnikiriData.TryGet(Player?.GetItem());
             if (data != null) {
                 data.Mei.CopyFrom(meiSnapshot.Store);
-                WraithVessels.SyncSlot(Player, Player.GetItem());
+                OnikiriNet.SyncLocalItem(Player, Player.GetItem());
             }
             meiSnapshot = null;
         }
@@ -645,7 +644,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private bool CanAcceptTutorialInput()
             => !Player.dead && !HackTime.Active && !OniPlayerDismember.IsLocked(Player)
                 && !(OniRegisterUI.Instance?.IsOpen ?? false)
-                && !(OniEngraveRiteUI.Instance?.Active ?? false)
                 && !Main.editSign && !Main.editChest && !Main.drawingPlayerChat;
 
         private bool IsHoldingOnikiri() {

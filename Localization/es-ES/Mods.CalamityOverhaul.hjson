@@ -147,7 +147,6 @@ HackTargetType: {
 	TileTargetType.DisplayName: Objetivo: bloque
 	TurretTargetType.DisplayName: Objetivo: torreta
 	WaterTargetType.DisplayName: Objetivo: líquido
-	WraithTargetType.DisplayName: Objetivo: espectro
 }
 
 TileNameFallback: {

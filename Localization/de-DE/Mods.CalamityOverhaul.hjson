@@ -147,7 +147,6 @@ HackTargetType: {
 	TileTargetType.DisplayName: Block-Ziel
 	TurretTargetType.DisplayName: Geschütz-Ziel
 	WaterTargetType.DisplayName: Flüssigkeits-Ziel
-	WraithTargetType.DisplayName: Geister-Ziel
 }
 
 TileNameFallback: {

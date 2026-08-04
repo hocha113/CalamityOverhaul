@@ -651,20 +651,6 @@ HackTime: {
 	WaterScanStatusStill: IMMOBILE
 	WaterScanStatusFlowing: EN COURS
 	CatParanormal: PARANORMAL
-	WraithScanName: Désignation
-	WraithScanNameValue: Spectre inconnu
-	WraithScanType: Entité paranormale
-	WraithScanThreat: Inévaluable ERR://-∞
-	WraithScanStatus: Statut
-	WraithScanStatusStalking: Traque furtive
-	WraithScanStatusWatched: Sous surveillance
-	WraithScanStatusHalt: Arrêt
-	WraithScanStatusMemory: Corruption mémorielle
-	WraithScanStatusDismember: Désintégration spectrale
-	WraithScanIntegrity: Intégrité des données
-	WraithScanIntegrityValue: 0x??% corrompu
-	WraithScanOrigin: Origine
-	WraithScanOriginValue: Aucun enregistrement
 	TurretScanName: Nom de code
 	TurretScanLaserName: Vide · Batterie de canons principaux
 	TurretScanGatlinName: Vide · Tourelle Gatling

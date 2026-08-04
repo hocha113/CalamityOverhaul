@@ -265,6 +265,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         public override void OnEnterWorld() {
             OnikiriNet.ResetPlayerSession(Player);
+            OnikiriNet.RepairDuplicateIdentities(Player);
             Vigor = VigorMax;
             Stance = 0f;
             timeAdvanceCarry = 0f;
@@ -313,6 +314,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         public override void PreUpdate() {
+            OnikiriNet.RepairDuplicateIdentities(Player);
             OnikiriNet.UpdatePending(Player);
             OnikiriNet.ReconcileAuthoritativeState(Player);
         }
@@ -524,8 +526,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 }
                 return;
             }
-            //点鬼簿/铭刻仪式演出中不受理招式输入
-            if ((OniRegisterUI.Instance?.IsOpen ?? false) || (OniEngraveRiteUI.Instance?.Active ?? false)) {
+            //点鬼簿打开时不受理招式输入
+            if (OniRegisterUI.Instance?.IsOpen ?? false) {
                 if (queuedExecutionSource == ExecutionTriggerSource.ExecuteKey) {
                     ClearQueuedExecutionRequest();
                 }
@@ -556,7 +558,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// <summary>
         /// 领域键 <see cref="CWRKeySystem.Legend_Domain"/> 开阖(持刀);
         /// <see cref="CWRKeySystem.Onikiri_DomainFlip"/> 翻转,域开时不持刀也受理;
-        /// 骇客时停/点鬼簿/铭刻中不受理
+        /// 骇客时停或点鬼簿打开时不受理
         /// </summary>
         private void HandleDomainInput(bool holding) {
             if (Player.dead) {
@@ -566,7 +568,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (HackTime.Active) {
                 return;
             }
-            if ((OniRegisterUI.Instance?.IsOpen ?? false) || (OniEngraveRiteUI.Instance?.Active ?? false)) {
+            if (OniRegisterUI.Instance?.IsOpen ?? false) {
                 return;
             }
 

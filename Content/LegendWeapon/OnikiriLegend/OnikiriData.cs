@@ -1,6 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
-using CalamityOverhaul.Content.Wraiths.Core;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,66 +8,38 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 {
-    /// <summary>
-    /// 鬼切传奇数据,每刀一份 <see cref="WraithProgressStore"/>;
-    /// 试炼进度驱动 <see cref="LegendData.Level"/>
-    /// </summary>
+    /// <summary>鬼切传奇成长与改铭数据。</summary>
     internal class OnikiriData : LegendData
     {
+        private const string InstanceIdTag = "Onikiri:InstanceId";
+        private const string EditRevisionTag = "Onikiri:EditRevision";
+        private const string MeiInitTag = "OnikiriMei:Init1";
+
         internal override IReadOnlyList<LegendTrialDefinition> TrialDefinitions
             => LegendTrialRouteCatalog.OnikiriProgression;
 
         public override int TargetLevel => GetVersionedTrialTargetLevel();
 
-        //InitTag 区分已存档与功能前老刀;无标吃出厂表
-        //曾用 Init1,升位 Init2 使测试刀重播出厂
-        private const string InitTag = "OnikiriWraiths:Init2";
-        private const string InstanceIdTag = "Onikiri:InstanceId";
-        private const string EditRevisionTag = "Onikiri:EditRevision";
-        private const string ScapeGhostKey = "ScapeGhost";
-        private const string LegacyStandInKey = "StandIn";
-
-        /// <summary>出厂铭刻,Bound+驾驭度</summary>
-        private static readonly (string Key, float Mastery)[] FactoryEngravings = [
-            //("NoFace", 0.86f),
-            //("LanternBoy", 0.58f),
-            //("CrimsonBride", 0.16f),
-            (ScapeGhostKey, 0.77f),
-            ("HeadlessShade", 0.28f),
-            ("GhostHand", 0.45f),
-        ];
-
-        //铭位表独立 InitTag:老刀存档无铭数据时重播出厂铭
-        private const string MeiInitTag = "OnikiriMei:Init1";
-
-        /// <summary>本刀的厉鬼绑定进度</summary>
-        public WraithProgressStore Wraiths { get; private set; } = new();
-
-        /// <summary>本刀的铭位表(表现层数据缝,效果层后补)</summary>
         public OniMeiStore Mei { get; private set; } = new();
 
-        /// <summary>实例身份用于拒绝在途请求误写同槽的另一把刀</summary>
+        /// <summary>物品编辑会话的实例身份。</summary>
         internal long InstanceId { get; private set; }
 
-        /// <summary>字段编辑修订，用于拒绝乱序或重复请求</summary>
+        /// <summary>改铭字段修订。</summary>
         internal uint EditRevision { get; private set; }
 
         public OnikiriData() {
             InstanceId = CreateInstanceId();
-            SeedFactoryState();
+            SeedFactoryMei();
         }
 
-        /// <summary>深拷,每刀各持一份簿</summary>
         public override LegendData Clone(Item item) {
             OnikiriData clone = (OnikiriData)base.Clone(item);
-            clone.Wraiths = new WraithProgressStore();
-            clone.Wraiths.CopyFrom(Wraiths);
             clone.Mei = new OniMeiStore();
             clone.Mei.CopyFrom(Mei);
             return clone;
         }
 
-        /// <summary>取鬼切数据,非鬼切/空则 null</summary>
         public static OnikiriData TryGet(Item item) {
             if (item == null || item.IsAir) {
                 return null;
@@ -76,25 +47,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return item.CWR()?.LegendData as OnikiriData;
         }
 
-        /// <summary>出厂态,先 InitialBindState 再盖 Bound+驾驭</summary>
-        private void SeedFactoryState() {
-            Wraiths.Clear();
-            foreach (WraithDefinition definition in WraithRegistry.All) {
-                if (definition.HiddenFromCatalog) {
-                    continue;
-                }
-                Wraiths.GetOrCreate(definition.Key).State = definition.InitialBindState;
-            }
-            foreach ((string key, float mastery) in FactoryEngravings) {
-                WraithProgressRecord record = Wraiths.GetOrCreate(key);
-                record.State = WraithBindState.Bound;
-                record.Mastery = mastery;
-            }
-            Wraiths.BumpVersion();
-            SeedFactoryMei();
-        }
-
-        /// <summary>出厂铭:茎上默认铭「鬼切」,余位空悬</summary>
         private void SeedFactoryMei() {
             Mei.Clear();
             Mei.Engrave(OniMeiSlotKind.Nakago, nameof(MeiOnikiri));
@@ -104,34 +56,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             base.SaveData(item, tag);
             tag[InstanceIdTag] = InstanceId;
             tag[EditRevisionTag] = (long)EditRevision;
-            tag[InitTag] = true;
-            Wraiths.SaveData(tag);
             tag[MeiInitTag] = true;
             Mei.SaveData(tag);
         }
 
         public override void LoadData(Item item, TagCompound tag) {
             base.LoadData(item, tag);
-            if (tag.TryGet(InstanceIdTag, out long instanceId) && instanceId != 0) {
-                InstanceId = instanceId;
-            }
-            else {
-                InstanceId = CreateInstanceId();
-            }
+            InstanceId = tag.TryGet(InstanceIdTag, out long instanceId) && instanceId != 0
+                ? instanceId : CreateInstanceId();
             EditRevision = tag.TryGet(EditRevisionTag, out long revision)
                 && revision >= 0 && revision <= uint.MaxValue
                 ? (uint)revision : 0u;
-            if (tag.ContainsKey(InitTag)) {
-                Wraiths.LoadData(tag);
-                Wraiths.MigrateKey(LegacyStandInKey, ScapeGhostKey);
-                //补种老档缺失的定义初始态(只补缺失绝不覆盖):存档后新加的鬼、
-                //以及生来封印者(井中鸣)在旧刀上也封得住
-                Wraiths.SeedMissingStates();
-            }
-            else {
-                SeedFactoryState();
-            }
-            //铭位表独立门控:功能前老刀重播出厂铭
             if (tag.ContainsKey(MeiInitTag)) {
                 Mei.LoadData(tag);
             }
@@ -143,7 +78,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         public override void SendLegend(Item item, BinaryWriter writer) {
             writer.Write(InstanceId);
             writer.Write(EditRevision);
-            Wraiths.NetSend(writer);
             Mei.NetSend(writer);
         }
 
@@ -153,7 +87,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (instanceId == 0) {
                 throw new IOException("Onikiri instance id cannot be zero");
             }
-            Wraiths.NetReceive(reader);
             Mei.NetReceive(reader);
             InstanceId = instanceId;
             EditRevision = editRevision;
@@ -163,16 +96,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         internal void ApplyEditRevision(uint editRevision) => EditRevision = editRevision;
 
+        internal void RenewIdentity() {
+            InstanceId = CreateInstanceId();
+            EditRevision = 0;
+        }
+
         internal void PreserveEditedStateFrom(OnikiriData source) {
             if (source == null || source.InstanceId != InstanceId) {
                 return;
             }
-            ApplyEditedState(source.Wraiths, source.Mei, source.EditRevision);
+            ApplyEditedState(source.Mei, source.EditRevision);
         }
 
-        internal void ApplyEditedState(WraithProgressStore wraiths, OniMeiStore mei,
-            uint editRevision) {
-            Wraiths.CopyFrom(wraiths);
+        internal void ApplyEditedState(OniMeiStore mei, uint editRevision) {
             Mei.CopyFrom(mei);
             EditRevision = editRevision;
         }

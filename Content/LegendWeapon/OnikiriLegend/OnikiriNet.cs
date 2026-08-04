@@ -1,5 +1,4 @@
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
-using CalamityOverhaul.Content.Wraiths.Core;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,26 +10,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 {
     internal enum OnikiriNetOp : byte
     {
-        OwnedMeiSnapshot,
-        MeiRequest,
-        MeiResult,
-        AttuneRequest,
-        AttuneResult,
+        OwnedMeiSnapshot = 0,
+        MeiRequest = 1,
+        MeiResult = 2,
+        ReservedAttuneRequest = 3,
+        ReservedAttuneResult = 4,
     }
 
     internal enum OnikiriNetResult : byte
     {
-        Success,
-        InvalidItem,
-        IdentityMismatch,
-        StaleRevision,
-        InvalidDefinition,
-        NotOwned,
-        NotEligible,
-        RateLimited,
+        Success = 0,
+        InvalidItem = 1,
+        IdentityMismatch = 2,
+        StaleRevision = 3,
+        InvalidDefinition = 4,
+        NotOwned = 5,
+        NotEligible = 6,
+        RateLimited = 7,
+        DuplicateIdentity = 8,
     }
 
-    /// <summary>鬼切铭刻与共鸣的字段级权威同步</summary>
+    /// <summary>鬼切改铭字段的物品级权威同步。</summary>
     internal static class OnikiriNet
     {
         private const ushort NoDefinition = ushort.MaxValue;
@@ -42,30 +42,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         private sealed class PendingOperation
         {
-            public OnikiriNetOp Operation;
-            public byte InventorySlot;
-            public byte Field;
-            public long InstanceId;
-            public uint ExpectedRevision;
-            public ulong CreatedAt;
-            public Action<bool> Completion;
+            internal byte InventorySlot;
+            internal byte Field;
+            internal long InstanceId;
+            internal uint ExpectedRevision;
+            internal ulong CreatedAt;
+            internal Action<bool> Completion;
         }
 
         private struct RequestWindow
         {
-            public ulong StartedAt;
-            public int Count;
+            internal ulong StartedAt;
+            internal int Count;
         }
 
         private sealed class AuthoritativeEditState
         {
-            public readonly WraithProgressStore Wraiths = new();
-            public readonly OniMeiStore Mei = new();
-            public uint Revision;
-            public ulong CapturedAt;
+            internal readonly OniMeiStore Mei = new();
+            internal uint Revision;
+            internal ulong CapturedAt;
 
-            public void Capture(OnikiriData data) {
-                Wraiths.CopyFrom(data.Wraiths);
+            internal void Capture(OnikiriData data) {
                 Mei.CopyFrom(data.Mei);
                 Revision = data.EditRevision;
                 CapturedAt = Main.GameUpdateCount;
@@ -84,7 +81,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
 
             OnikiriNetOp op = (OnikiriNetOp)reader.ReadByte();
-            if (VaultUtils.isServer) {
+            if (Main.netMode == NetmodeID.Server) {
                 switch (op) {
                     case OnikiriNetOp.OwnedMeiSnapshot:
                         ReceiveOwnedMeiSnapshot(reader, whoAmI);
@@ -92,31 +89,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                     case OnikiriNetOp.MeiRequest:
                         ReceiveMeiRequest(reader, whoAmI);
                         break;
-                    case OnikiriNetOp.AttuneRequest:
-                        ReceiveAttuneRequest(reader, whoAmI);
-                        break;
                 }
                 return;
             }
-
-            if (!VaultUtils.isClient) {
-                return;
-            }
-            switch (op) {
-                case OnikiriNetOp.MeiResult:
-                    ReceiveMeiResult(reader);
-                    break;
-                case OnikiriNetOp.AttuneResult:
-                    ReceiveAttuneResult(reader);
-                    break;
+            if (Main.netMode == NetmodeID.MultiplayerClient
+                && op == OnikiriNetOp.MeiResult) {
+                ReceiveMeiResult(reader);
             }
         }
 
         public static bool TryChangeMei(Player player, Item item, OniMeiSlotKind slot, string key,
             Action<bool> completed = null) {
+            if (player == null || player.whoAmI != Main.myPlayer
+                || slot < OniMeiSlotKind.Nakago || slot > OniMeiSlotKind.Horimono) {
+                return false;
+            }
+            RepairDuplicateIdentities(player);
             OnikiriData data = OnikiriData.TryGet(item);
-            if (player == null || player.whoAmI != Main.myPlayer || data == null
-                || slot < OniMeiSlotKind.Nakago || slot > OniMeiSlotKind.Horimono
+            if (data == null || HasDuplicateInstanceId(player, data.InstanceId)
                 || !TryResolveLocalSlot(player, item, out byte inventorySlot)) {
                 return false;
             }
@@ -134,7 +124,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return false;
             }
 
-            if (!VaultUtils.isClient) {
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
                 if (!ApplyMeiState(item, slot, key)) {
                     return false;
                 }
@@ -143,8 +133,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return true;
             }
 
-            if (!TryTrackPending(OnikiriNetOp.MeiRequest, inventorySlot, (byte)slot,
-                data.InstanceId, data.EditRevision, completed, out ushort requestId)) {
+            if (!TryTrackPending(inventorySlot, (byte)slot, data.InstanceId,
+                data.EditRevision, completed, out ushort requestId)) {
                 return false;
             }
             ModPacket packet = NewPacket(OnikiriNetOp.MeiRequest);
@@ -158,43 +148,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return true;
         }
 
-        public static bool TryAttune(Player player, Item item, string key,
-            Action<bool> completed = null) {
-            OnikiriData data = OnikiriData.TryGet(item);
-            if (player == null || player.whoAmI != Main.myPlayer || data == null
-                || !WraithRegistry.TryGet(key, out WraithDefinition definition)
-                || !WraithRegistry.TryGetNetworkId(key, out ushort definitionId)
-                || !CanAttune(data.Wraiths, definition)
-                || data.Wraiths.AttunedKey == key
-                || !TryResolveLocalSlot(player, item, out byte inventorySlot)) {
-                return false;
-            }
-
-            if (!VaultUtils.isClient) {
-                if (!data.Wraiths.TryAttune(key)) {
-                    return false;
-                }
-                data.AdvanceEditRevision();
-                completed?.Invoke(true);
-                return true;
-            }
-
-            if (!TryTrackPending(OnikiriNetOp.AttuneRequest, inventorySlot, 0,
-                data.InstanceId, data.EditRevision, completed, out ushort requestId)) {
-                return false;
-            }
-            ModPacket packet = NewPacket(OnikiriNetOp.AttuneRequest);
-            packet.Write(requestId);
-            packet.Write(inventorySlot);
-            packet.Write(data.InstanceId);
-            packet.Write(data.EditRevision);
-            packet.Write(definitionId);
-            packet.Send();
-            return true;
-        }
-
         public static void SendOwnedMeiSnapshot(Player player) {
-            if (!VaultUtils.isClient || player == null || player.whoAmI != Main.myPlayer
+            if (Main.netMode != NetmodeID.MultiplayerClient || player == null
+                || player.whoAmI != Main.myPlayer
                 || !player.TryGetModPlayer(out OnikiriPlayer onikiri)) {
                 return;
             }
@@ -224,7 +180,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             List<string> keys = new(count);
             for (int i = 0; i < count; i++) {
-                if (OniMeiRegistry.TryGetByNetworkId(reader.ReadUInt16(), out OniMeiDefinition definition)) {
+                if (OniMeiRegistry.TryGetByNetworkId(reader.ReadUInt16(),
+                    out OniMeiDefinition definition)) {
                     keys.Add(definition.Key);
                 }
             }
@@ -253,8 +210,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                     OniMeiSlotKind slot = (OniMeiSlotKind)rawSlot;
                     string key = null;
                     if (definitionId != NoDefinition) {
-                        if (!OniMeiRegistry.TryGetByNetworkId(definitionId, out OniMeiDefinition definition)
-                            || definition.SlotKind != slot) {
+                        if (!OniMeiRegistry.TryGetByNetworkId(definitionId,
+                            out OniMeiDefinition definition) || definition.SlotKind != slot) {
                             result = OnikiriNetResult.InvalidDefinition;
                         }
                         else if (!OniMeiOwned.Owns(player, definition.Key)) {
@@ -297,23 +254,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (operation == null) {
                 return;
             }
-            if (operation.Operation != OnikiriNetOp.MeiRequest
-                || operation.InventorySlot != inventorySlot
-                || operation.Field != rawSlot || rawSlot > (byte)OniMeiSlotKind.Horimono
-                || result > OnikiriNetResult.RateLimited
+            if (operation.InventorySlot != inventorySlot || operation.Field != rawSlot
+                || rawSlot > (byte)OniMeiSlotKind.Horimono
+                || result > OnikiriNetResult.DuplicateIdentity
                 || authoritativeRevision < operation.ExpectedRevision
-                || result is OnikiriNetResult.InvalidItem or OnikiriNetResult.IdentityMismatch) {
-                CompletePending(operation, false);
-                return;
-            }
-            if (operation.InstanceId != instanceId) {
+                || result is OnikiriNetResult.InvalidItem
+                    or OnikiriNetResult.IdentityMismatch
+                    or OnikiriNetResult.DuplicateIdentity
+                || operation.InstanceId != instanceId) {
                 CompletePending(operation, false);
                 return;
             }
 
             string key = null;
             if (definitionId != NoDefinition) {
-                if (!OniMeiRegistry.TryGetByNetworkId(definitionId, out OniMeiDefinition definition)
+                if (!OniMeiRegistry.TryGetByNetworkId(definitionId,
+                    out OniMeiDefinition definition)
                     || definition.SlotKind != (OniMeiSlotKind)rawSlot) {
                     CompletePending(operation, false);
                     return;
@@ -325,80 +281,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             CompletePending(operation, result == OnikiriNetResult.Success && applied);
         }
 
-        private static void ReceiveAttuneRequest(BinaryReader reader, int whoAmI) {
-            ushort requestId = reader.ReadUInt16();
-            byte inventorySlot = reader.ReadByte();
-            long requestedInstanceId = reader.ReadInt64();
-            uint expectedRevision = reader.ReadUInt32();
-            ushort definitionId = reader.ReadUInt16();
-
-            Player player = ResolveSender(whoAmI);
-            Item item = ResolveServerTarget(player, inventorySlot);
-            OnikiriData data = OnikiriData.TryGet(item);
-            OnikiriNetResult result = ValidateTarget(player, data, requestedInstanceId,
-                expectedRevision, whoAmI);
-            if (result == OnikiriNetResult.Success) {
-                if (!WraithRegistry.TryGetByNetworkId(definitionId, out WraithDefinition definition)) {
-                    result = OnikiriNetResult.InvalidDefinition;
-                }
-                else if (!CanAttune(data.Wraiths, definition)) {
-                    result = OnikiriNetResult.NotEligible;
-                }
-                else if (data.Wraiths.AttunedKey != definition.Key) {
-                    if (!data.Wraiths.TryAttune(definition.Key)) {
-                        result = OnikiriNetResult.NotEligible;
-                    }
-                    else {
-                        data.AdvanceEditRevision();
-                    }
-                }
-            }
-            string currentKey = data != null && data.InstanceId == requestedInstanceId
-                ? data.Wraiths.AttunedKey : null;
-            if (result == OnikiriNetResult.Success) {
-                RecordAuthoritativeState(player, data);
-            }
-            SendAttuneResult(whoAmI, requestId, result, inventorySlot, data,
-                requestedInstanceId, expectedRevision, currentKey);
-        }
-
-        private static void ReceiveAttuneResult(BinaryReader reader) {
-            ushort requestId = reader.ReadUInt16();
-            OnikiriNetResult result = (OnikiriNetResult)reader.ReadByte();
-            byte inventorySlot = reader.ReadByte();
-            long instanceId = reader.ReadInt64();
-            uint authoritativeRevision = reader.ReadUInt32();
-            ushort definitionId = reader.ReadUInt16();
-            PendingOperation operation = TakePending(requestId);
-            if (operation == null) {
-                return;
-            }
-            if (operation.Operation != OnikiriNetOp.AttuneRequest
-                || operation.InventorySlot != inventorySlot
-                || result > OnikiriNetResult.RateLimited
-                || authoritativeRevision < operation.ExpectedRevision
-                || result is OnikiriNetResult.InvalidItem or OnikiriNetResult.IdentityMismatch) {
-                CompletePending(operation, false);
-                return;
-            }
-            if (operation.InstanceId != instanceId) {
-                CompletePending(operation, false);
-                return;
-            }
-
-            string key = null;
-            if (definitionId != NoDefinition) {
-                if (!WraithRegistry.TryGetByNetworkId(definitionId, out WraithDefinition definition)) {
-                    CompletePending(operation, false);
-                    return;
-                }
-                key = definition.Key;
-            }
-            bool applied = ApplyAuthoritativeAttunement(Main.LocalPlayer, inventorySlot, instanceId,
-                authoritativeRevision, key);
-            CompletePending(operation, result == OnikiriNetResult.Success && applied);
-        }
-
         private static OnikiriNetResult ValidateTarget(Player player, OnikiriData data,
             long instanceId, uint expectedRevision, int whoAmI) {
             if (player == null || data == null) {
@@ -406,6 +288,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             if (data.InstanceId != instanceId) {
                 return OnikiriNetResult.IdentityMismatch;
+            }
+            if (HasDuplicateInstanceId(player, instanceId)) {
+                return OnikiriNetResult.DuplicateIdentity;
             }
             if (!AllowMutationRequest(whoAmI)) {
                 return OnikiriNetResult.RateLimited;
@@ -415,8 +300,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         private static void SendMeiResult(int toWho, ushort requestId, OnikiriNetResult result,
-            byte inventorySlot, OnikiriData data, long requestedInstanceId, uint expectedRevision,
-            byte rawSlot, string key) {
+            byte inventorySlot, OnikiriData data, long requestedInstanceId,
+            uint expectedRevision, byte rawSlot, string key) {
             ushort definitionId = NoDefinition;
             if (key != null) {
                 OniMeiRegistry.TryGetNetworkId(key, out definitionId);
@@ -428,23 +313,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             packet.Write(data?.InstanceId ?? requestedInstanceId);
             packet.Write(data?.EditRevision ?? expectedRevision);
             packet.Write(rawSlot);
-            packet.Write(definitionId);
-            packet.Send(toWho);
-        }
-
-        private static void SendAttuneResult(int toWho, ushort requestId, OnikiriNetResult result,
-            byte inventorySlot, OnikiriData data, long requestedInstanceId, uint expectedRevision,
-            string key) {
-            ushort definitionId = NoDefinition;
-            if (key != null) {
-                WraithRegistry.TryGetNetworkId(key, out definitionId);
-            }
-            ModPacket packet = NewPacket(OnikiriNetOp.AttuneResult);
-            packet.Write(requestId);
-            packet.Write((byte)result);
-            packet.Write(inventorySlot);
-            packet.Write(data?.InstanceId ?? requestedInstanceId);
-            packet.Write(data?.EditRevision ?? expectedRevision);
             packet.Write(definitionId);
             packet.Send(toWho);
         }
@@ -464,7 +332,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             int selected = player.selectedItem;
             if (selected >= 0 && selected < PlayerItemSlotID.InventoryMouseItem
-                && selected < player.inventory.Length && ReferenceEquals(player.inventory[selected], item)) {
+                && selected < player.inventory.Length
+                && ReferenceEquals(player.inventory[selected], item)) {
                 slot = (byte)selected;
                 return true;
             }
@@ -496,7 +365,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (HasInstance(preferred, instanceId)) {
                 return preferred;
             }
-            for (int i = 0; i <= PlayerItemSlotID.InventoryMouseItem && i < player.inventory.Length; i++) {
+            for (int i = 0; i <= PlayerItemSlotID.InventoryMouseItem
+                && i < player.inventory.Length; i++) {
                 if (HasInstance(player.inventory[i], instanceId)) {
                     return player.inventory[i];
                 }
@@ -505,16 +375,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         private static bool HasInstance(Item item, long instanceId)
-            => OnikiriData.TryGet(item)?.InstanceId == instanceId;
+            => instanceId != 0 && OnikiriData.TryGet(item)?.InstanceId == instanceId;
 
-        private static bool ApplyAuthoritativeMei(Player player, byte preferredSlot, long instanceId,
-            uint revision, OniMeiSlotKind slot, string key) {
+        private static bool ApplyAuthoritativeMei(Player player, byte preferredSlot,
+            long instanceId, uint revision, OniMeiSlotKind slot, string key) {
             Item item = FindLocalIdentity(player, preferredSlot, instanceId);
             OnikiriData data = OnikiriData.TryGet(item);
-            if (data == null || data.EditRevision > revision) {
-                return false;
-            }
-            if (!ApplyMeiState(item, slot, key)) {
+            if (data == null || data.EditRevision > revision || !ApplyMeiState(item, slot, key)) {
                 return false;
             }
             data.ApplyEditRevision(revision);
@@ -522,20 +389,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return true;
         }
 
-        private static bool ApplyAuthoritativeAttunement(Player player, byte preferredSlot,
-            long instanceId, uint revision, string key) {
-            Item item = FindLocalIdentity(player, preferredSlot, instanceId);
-            OnikiriData data = OnikiriData.TryGet(item);
-            if (data == null || data.EditRevision > revision) {
-                return false;
-            }
-            data.Wraiths.ApplyAttunedKey(key);
-            data.ApplyEditRevision(revision);
-            SyncMouseMirror(instanceId, target => ApplyAttunedState(target, key), revision);
-            return true;
-        }
-
-        private static void SyncMouseMirror(long instanceId, System.Action<Item> apply, uint revision) {
+        private static void SyncMouseMirror(long instanceId, Action<Item> apply, uint revision) {
             Item mouse = Main.mouseItem;
             Item mirror = Main.LocalPlayer?.inventory.Length > PlayerItemSlotID.InventoryMouseItem
                 ? Main.LocalPlayer.inventory[PlayerItemSlotID.InventoryMouseItem] : null;
@@ -561,18 +415,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return key == null ? data.Mei.Erase(slot) : data.Mei.Engrave(slot, key);
         }
 
-        private static void ApplyAttunedState(Item item, string key) {
-            OnikiriData.TryGet(item)?.Wraiths.ApplyAttunedKey(key);
-        }
-
-        private static bool CanAttune(WraithProgressStore store, WraithDefinition definition) {
-            return store != null && definition?.CanAttune == true
-                && store.TryGet(definition.Key, out WraithProgressRecord record)
-                && record.State == WraithBindState.Bound;
-        }
-
         internal static void RecordAuthoritativeState(Player player, OnikiriData data) {
-            if (!VaultUtils.isServer || player == null || data == null || data.InstanceId == 0) {
+            if (Main.netMode != NetmodeID.Server || player == null || data == null
+                || data.InstanceId == 0) {
                 return;
             }
             var key = (player.whoAmI, data.InstanceId);
@@ -584,7 +429,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         internal static void ReconcileAuthoritativeState(Player player) {
-            if (!VaultUtils.isServer || player?.active != true) {
+            if (Main.netMode != NetmodeID.Server || player?.active != true) {
                 return;
             }
             ulong now = Main.GameUpdateCount;
@@ -597,11 +442,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                     authoritativeEdits.Remove(key);
                     continue;
                 }
+                if (HasDuplicateInstanceId(player, key.InstanceId)) {
+                    continue;
+                }
                 for (int slot = 0; slot <= PlayerItemSlotID.InventoryMouseItem
                     && slot < player.inventory.Length; slot++) {
                     OnikiriData data = OnikiriData.TryGet(player.inventory[slot]);
                     if (data?.InstanceId == key.InstanceId && data.EditRevision < state.Revision) {
-                        data.ApplyEditedState(state.Wraiths, state.Mei, state.Revision);
+                        data.ApplyEditedState(state.Mei, state.Revision);
                     }
                 }
             }
@@ -628,13 +476,94 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         internal static void UpdatePending(Player player) {
-            if (VaultUtils.isClient && player?.whoAmI == Main.myPlayer) {
+            if (Main.netMode == NetmodeID.MultiplayerClient
+                && player?.whoAmI == Main.myPlayer) {
                 SweepPending();
             }
         }
 
-        private static bool TryTrackPending(OnikiriNetOp operation, byte inventorySlot, byte field,
-            long instanceId, uint expectedRevision, Action<bool> completed, out ushort requestId) {
+        internal static bool RepairDuplicateIdentities(Player player) {
+            if (player == null || player.whoAmI != Main.myPlayer
+                || Main.netMode == NetmodeID.Server) {
+                return false;
+            }
+
+            bool repaired = false;
+            HashSet<long> identities = [];
+            HashSet<Item> entities = [];
+            int lastSlot = Math.Min(PlayerItemSlotID.InventoryMouseItem,
+                player.inventory.Length - 1);
+            for (int slot = 0; slot <= lastSlot; slot++) {
+                Item item = player.inventory[slot];
+                OnikiriData data = OnikiriData.TryGet(item);
+                if (data == null || !entities.Add(item)) {
+                    continue;
+                }
+                if (data.InstanceId != 0 && identities.Add(data.InstanceId)) {
+                    continue;
+                }
+                do {
+                    data.RenewIdentity();
+                }
+                while (!identities.Add(data.InstanceId));
+                repaired = true;
+                if (Main.netMode == NetmodeID.MultiplayerClient) {
+                    int slotId = slot == PlayerItemSlotID.InventoryMouseItem
+                        ? PlayerItemSlotID.InventoryMouseItem
+                        : PlayerItemSlotID.Inventory0 + slot;
+                    NetMessage.SendData(MessageID.SyncEquipment, -1, -1, null,
+                        player.whoAmI, slotId, item.prefix);
+                }
+            }
+            return repaired;
+        }
+
+        internal static void SyncLocalItem(Player player, Item item) {
+            if (Main.netMode != NetmodeID.MultiplayerClient || player == null
+                || player.whoAmI != Main.myPlayer || item == null || item.IsAir) {
+                return;
+            }
+            int slotId = -1;
+            if (ReferenceEquals(item, Main.mouseItem)) {
+                slotId = PlayerItemSlotID.InventoryMouseItem;
+            }
+            else {
+                for (int slot = 0; slot < player.inventory.Length; slot++) {
+                    if (ReferenceEquals(player.inventory[slot], item)) {
+                        slotId = PlayerItemSlotID.Inventory0 + slot;
+                        break;
+                    }
+                }
+            }
+            if (slotId >= 0) {
+                NetMessage.SendData(MessageID.SyncEquipment, -1, -1, null,
+                    player.whoAmI, slotId, item.prefix);
+            }
+        }
+
+        internal static bool HasDuplicateInstanceId(Player player, long instanceId) {
+            if (player == null || instanceId == 0) {
+                return true;
+            }
+            HashSet<Item> entities = [];
+            int matches = 0;
+            int lastSlot = Math.Min(PlayerItemSlotID.InventoryMouseItem,
+                player.inventory.Length - 1);
+            for (int slot = 0; slot <= lastSlot; slot++) {
+                Item item = player.inventory[slot];
+                if (!entities.Add(item)) {
+                    continue;
+                }
+                if (OnikiriData.TryGet(item)?.InstanceId == instanceId && ++matches > 1) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static bool TryTrackPending(byte inventorySlot, byte field,
+            long instanceId, uint expectedRevision, Action<bool> completed,
+            out ushort requestId) {
             SweepPending();
             requestId = 0;
             if (pending.Count >= MaxPendingOperations) {
@@ -650,7 +579,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             while (requestId == 0 || pending.ContainsKey(requestId));
             pending[requestId] = new PendingOperation {
-                Operation = operation,
                 InventorySlot = inventorySlot,
                 Field = field,
                 InstanceId = instanceId,
@@ -695,7 +623,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             ulong now = Main.GameUpdateCount;
             if (!requestWindows.TryGetValue(whoAmI, out RequestWindow window)
                 || now - window.StartedAt >= RequestWindowTicks) {
-                requestWindows[whoAmI] = new RequestWindow { StartedAt = now, Count = 1 };
+                requestWindows[whoAmI] = new RequestWindow {
+                    StartedAt = now,
+                    Count = 1,
+                };
                 return true;
             }
             if (window.Count >= MaxRequestsPerWindow) {

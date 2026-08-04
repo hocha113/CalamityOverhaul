@@ -317,9 +317,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         //====================== 名录竖列 ======================
 
-        /// <summary>名录竖列,四状态</summary>
+        /// <summary>名录竖列。</summary>
         public static void DrawEntryColumn(SpriteBatch sb, DynamicSpriteFont font, OniGhostEntry entry,
-            Rectangle rect, float alpha, float hover, bool selected, bool attuned, float selectEase, float time, int index) {
+            Rectangle rect, float alpha, float hover, bool selected, bool equipped, float selectEase, float time, int index) {
             //界栏:名册的竖行朱丝栏
             sb.Draw(Pixel, new Rectangle(rect.Right + (int)(OnikiriUITheme.EntryColumnGap * 0.5f), rect.Y - 8, 1, rect.Height + 16), PixelSrc,
                 OnikiriUITheme.Deep * (alpha * 0.20f));
@@ -337,7 +337,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     new Vector2(rect.X - 5f, rect.Y - 2f), new Vector2(rect.X - 5f, rect.Bottom + 2f),
                     2.0f, 1.4f, alpha * 0.9f, selectEase);
             }
-            if (attuned) {
+            if (equipped) {
                 Vector2 mark = new(rect.Center.X, rect.Y - 17f);
                 OniBrush.DrawSealGlyph(sb, mark, 8f, alpha * 0.95f, time * 0.018f);
                 OniBrush.DrawGradientLine(sb, mark + new Vector2(0f, 7f), new Vector2(rect.Center.X, rect.Y + 7f)
@@ -345,14 +345,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
 
             switch (entry.State) {
-                case OniGhostState.Unknown:
-                    DrawUnknownColumn(sb, rect, alpha, index);
-                    return;
-                case OniGhostState.Sealed:
+                case OniGhostState.SealedArchive:
                     DrawNameColumn(sb, font, entry.Name(), rect, OnikiriUITheme.Paper * (alpha * 0.22f), alpha, 0f, time, index);
                     DrawSealTalisman(sb, rect, alpha, time, index);
                     return;
-                case OniGhostState.Restless: {
+                case OniGhostState.Archive:
+                    DrawNameColumn(sb, font, entry.Name(), rect,
+                        OnikiriUITheme.TextDim * (alpha * (0.42f + hover * 0.18f)), alpha, 0f, time, index);
+                    OniBrush.DrawSealGlyph(sb, new Vector2(rect.Center.X, rect.Bottom + 12f), 7f,
+                        alpha * (0.35f + hover * 0.22f), 0.02f);
+                    return;
+                case OniGhostState.Dormant: {
                     float lift = hover * 0.25f + (selected ? 0.15f : 0f);
                     DrawNameColumn(sb, font, entry.Name(), rect, Color.Lerp(OnikiriUITheme.Paper, OnikiriUITheme.Bright, 0.16f) * (alpha * (0.75f + lift)), alpha, 1f, time, index);
                     OniBrush.DrawSealGlyph(sb, new Vector2(rect.Center.X, rect.Bottom + 16f), 10f, alpha * 0.9f, 0.04f,
@@ -431,20 +434,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             sb.Draw(Pixel, center + new Vector2(0f, -size.Y * 0.10f).RotatedBy(rot), PixelSrc, strokeCol * 0.85f, rot, half, new Vector2(size.X * 0.44f, 1.6f), SpriteEffects.None, 0f);
         }
 
-        /// <summary>未知铭位墨涂</summary>
-        private static void DrawUnknownColumn(SpriteBatch sb, Rectangle rect, float alpha, int index) {
-            int blobs = 4;
-            float y = rect.Y + 10f;
-            float step = (rect.Height - 40f) / blobs;
-            for (int i = 0; i < blobs; i++) {
-                float seed = Hash01(index * 53 + i * 17);
-                float w = 12f + seed * 9f;
-                float h = step * (0.55f + seed * 0.3f);
-                float x = rect.Center.X + (seed - 0.5f) * 5f;
-                sb.Draw(Pixel, new Vector2(x, y + step * i + h * 0.5f), PixelSrc,
-                    OnikiriUITheme.Ink * (alpha * (0.65f + seed * 0.25f)),
-                    (seed - 0.5f) * 0.16f, new Vector2(0.5f), new Vector2(w, h), SpriteEffects.None, 0f);
+        public static void DrawLoadoutSlot(SpriteBatch sb, DynamicSpriteFont font, Rectangle rect,
+            OniGhostEntry equipped, float alpha, float hover, float time) {
+            float pulse = 0.84f + 0.16f * (float)Math.Sin(time * 1.7f);
+            sb.Draw(Pixel, rect, PixelSrc, OnikiriUITheme.Dark * (alpha * (0.34f + hover * 0.18f)));
+            sb.Draw(Pixel, new Rectangle(rect.X, rect.Y, rect.Width, 1), PixelSrc,
+                OnikiriUITheme.Deep * (alpha * (0.55f + hover * 0.28f)));
+            sb.Draw(Pixel, new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1), PixelSrc,
+                OnikiriUITheme.Deep * (alpha * 0.28f));
+
+            Vector2 seal = new(rect.X + 27f, rect.Center.Y);
+            OniBrush.DrawSealGlyph(sb, seal, 12f, alpha * (equipped == null ? 0.35f : 0.92f * pulse),
+                equipped == null ? 0f : OniGhostShadowDraw.SeedFromKey(equipped.Key) * 0.1f);
+
+            string name = equipped?.Name?.Invoke() ?? OniRegisterUI.EmptySlotName.Value;
+            Color nameColor = equipped == null ? OnikiriUITheme.Disabled
+                : equipped.IsDormant ? OnikiriUITheme.Bright : OnikiriUITheme.Paper;
+            Utils.DrawBorderString(sb, name, new Vector2(rect.X + 51f, rect.Y + 7f), nameColor * alpha, 0.76f);
+
+            string state = equipped == null
+                ? OniRegisterUI.EmptySlotHint.Value
+                : string.Format(OniRegisterUI.MasteryFormat.Value, (int)MathF.Round(equipped.Mastery * 100f));
+            if (equipped?.IsDormant == true) {
+                state = OniRegisterUI.StateDormant.Value + " · " + state;
             }
+            string line = VaultUtils.WrapTextJoin(state, font, rect.Width - 61f, 0.54f, 1, ellipsis: true);
+            Utils.DrawBorderString(sb, line, new Vector2(rect.X + 51f, rect.Y + 26f),
+                (equipped?.IsDormant == true ? OnikiriUITheme.Bright : OnikiriUITheme.TextDim) * (alpha * 0.78f), 0.54f);
         }
 
         //====================== 影绘细节板 ======================
@@ -452,7 +468,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         /// <summary>右侧细节板</summary>
         public static void DrawDetail(SpriteBatch sb, OniRegisterUI ui, Rectangle rect, float alpha) {
             OniGhostEntry entry = ui.SelectedEntry;
-            if (entry == null || rect.Width < 100) {
+            if (rect.Width < 100) {
                 return;
             }
             DynamicSpriteFont font = FontAssets.MouseText.Value;
@@ -466,25 +482,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             DrawRectBorder(sb, inner, OnikiriUITheme.Dark * (alpha * 0.8f), 1);
 
             //背光:纸后一盏暖灯,影绘的光源
-            Vector2 lightCenter = new(rect.Center.X, rect.Y + rect.Height * 0.34f);
+            Vector2 lightCenter = new(rect.Center.X, rect.Y + rect.Height * 0.28f);
             OniBrush.DrawBacklight(sb, lightCenter, rect.Width * 0.42f, new Color(226, 160, 108), alpha * 0.5f);
+
+            if (entry == null) {
+                DrawEmptyDetail(sb, font, rect, lightCenter, alpha);
+                return;
+            }
 
             //影绘鬼形 + 眼
             DrawDetailShadow(sb, ui, entry, rect, lightCenter, alpha);
 
             //====文案区(右缘给线香让位)====
-            float textTop = rect.Y + rect.Height * 0.56f;
+            float textTop = rect.Y + rect.Height * 0.48f;
             float textLeft = rect.X + 24f;
             float headerRight = rect.Right - 24f;
-            bool hasIncense = entry.HasName && entry.State != OniGhostState.Sealed;
+            bool hasIncense = entry.CanEquip;
             float textRight = hasIncense ? rect.Right - 88f : headerRight;
 
             //名讳 + 状态签
-            string name = entry.HasName ? entry.Name() : OniRegisterUI.UnknownName.Value;
+            string name = entry.Name?.Invoke() ?? entry.Key;
             Utils.DrawBorderString(sb, name, new Vector2(textLeft, textTop), OnikiriUITheme.HotWhite * alpha, 1.02f);
             (string stateText, Color stateCol) = StateLabel(entry);
-            if (ui.IsAttuned(entry)) {
-                stateText = OniRegisterUI.AttuneActive.Value + " · " + stateText;
+            if (ui.IsEquipped(entry)) {
+                stateText = OniRegisterUI.EquippedActive.Value + " · " + stateText;
                 stateCol = OnikiriUITheme.Bright;
             }
             Vector2 stSize = font.MeasureString(stateText) * 0.68f;
@@ -492,40 +513,70 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             OniBrush.DrawTaperedSlash(sb, new Vector2(textLeft - 4f, textTop + 26f), new Vector2(headerRight + 4f, textTop + 24f), 1.8f, 1.2f, alpha * 0.8f);
 
             //来历(打字机+湿墨) 与 赋力,各带一枚小签
-            string origin = entry.State == OniGhostState.Unknown ? OniRegisterUI.UnknownHint.Value : entry.Origin?.Invoke() ?? string.Empty;
-            string power = entry.State == OniGhostState.Unknown ? string.Empty : entry.Power?.Invoke() ?? string.Empty;
+            string origin = entry.Origin?.Invoke() ?? string.Empty;
+            string power = entry.Power?.Invoke() ?? string.Empty;
             float y = textTop + 34f;
-            if (entry.State != OniGhostState.Unknown) {
-                Utils.DrawBorderString(sb, OniRegisterUI.OriginLabel.Value, new Vector2(textLeft, y), OnikiriUITheme.Deep * (alpha * 1.2f), 0.62f);
-                y += 16f;
-            }
+            Utils.DrawBorderString(sb, OniRegisterUI.OriginLabel.Value, new Vector2(textLeft, y), OnikiriUITheme.Deep * (alpha * 1.2f), 0.62f);
+            y += 16f;
             y = DrawTypedWrapped(sb, font, origin, new Vector2(textLeft, y), textRight - textLeft,
-                OnikiriUITheme.TextDim, 0.74f, alpha, ui.DetailVisibleChars, ui.DetailInkStrength);
+                OnikiriUITheme.TextDim, 0.74f, alpha, ui.DetailVisibleChars, ui.DetailInkStrength,
+                maxLines: 3, ellipsis: true);
             if (power.Length > 0 && ui.DetailVisibleChars > origin.Length) {
                 y += 8f;
                 Utils.DrawBorderString(sb, OniRegisterUI.PowerLabel.Value, new Vector2(textLeft, y), OnikiriUITheme.Deep * (alpha * 1.2f), 0.62f);
                 y += 16f;
                 DrawTypedWrapped(sb, font, power, new Vector2(textLeft, y), textRight - textLeft,
                     Color.Lerp(OnikiriUITheme.Paper, OnikiriUITheme.Bright, 0.28f), 0.74f, alpha,
-                    ui.DetailVisibleChars - origin.Length, ui.DetailInkStrength);
+                    ui.DetailVisibleChars - origin.Length, ui.DetailInkStrength,
+                    maxLines: 3, ellipsis: true);
             }
 
             //线香驾驭度计
-            if (entry.HasName && entry.State != OniGhostState.Sealed) {
+            if (entry.CanEquip) {
                 DrawIncense(sb, ui, entry, alpha, font);
+                string cost = string.Format(OniRegisterUI.AbilityCostFormat.Value,
+                    (int)MathF.Round(entry.MasteryCost * 100f), (int)MathF.Round(entry.ErosionCost * 100f));
+                string costLine = VaultUtils.WrapTextJoin(cost, font, rect.Width - 48f, 0.62f, 1, ellipsis: true);
+                Utils.DrawBorderString(sb, costLine, new Vector2(rect.X + 24f, ui.ActionRect.Y - 23f),
+                    OnikiriUITheme.TextDim * (alpha * 0.82f), 0.62f);
+                DrawLoadoutAction(sb, font, ui, alpha);
             }
+        }
+
+        private static void DrawEmptyDetail(SpriteBatch sb, DynamicSpriteFont font, Rectangle rect,
+            Vector2 lightCenter, float alpha) {
+            OniBrush.DrawSealGlyph(sb, lightCenter, 28f, alpha * 0.22f);
+            float textTop = rect.Y + rect.Height * 0.49f;
+            Utils.DrawBorderString(sb, OniRegisterUI.EmptySlotName.Value,
+                new Vector2(rect.X + 24f, textTop), OnikiriUITheme.Disabled * alpha, 1f);
+            OniBrush.DrawTaperedSlash(sb, new Vector2(rect.X + 20f, textTop + 29f),
+                new Vector2(rect.Right - 20f, textTop + 27f), 1.7f, 1f, alpha * 0.45f);
+            string hint = VaultUtils.WrapTextJoin(OniRegisterUI.EmptySlotHint.Value, font,
+                rect.Width - 48f, 0.74f, 5, ellipsis: true);
+            Utils.DrawBorderString(sb, hint, new Vector2(rect.X + 24f, textTop + 43f),
+                OnikiriUITheme.TextDim * (alpha * 0.8f), 0.74f);
+        }
+
+        private static void DrawLoadoutAction(SpriteBatch sb, DynamicSpriteFont font, OniRegisterUI ui, float alpha) {
+            Rectangle rect = ui.ActionRect;
+            float activeAlpha = ui.LoadoutPending ? 0.42f : 1f;
+            float hover = ui.ActionHover;
+            OniBrush.DrawBacklight(sb, rect.Center.ToVector2(), rect.Width * 0.42f,
+                OnikiriUITheme.Deep, alpha * hover * 0.42f);
+            sb.Draw(Pixel, new Rectangle(rect.X, rect.Center.Y, rect.Width, 1), PixelSrc,
+                OnikiriUITheme.Deep * (alpha * (0.48f + hover * 0.38f) * activeAlpha));
+            OniBrush.DrawSealGlyph(sb, new Vector2(rect.X + 18f, rect.Center.Y), 9f,
+                alpha * (0.65f + hover * 0.3f) * activeAlpha);
+            string text = ui.LoadoutActionText;
+            Vector2 size = font.MeasureString(text) * 0.78f;
+            Utils.DrawBorderString(sb, text,
+                new Vector2(rect.Center.X - size.X * 0.5f + 8f, rect.Center.Y - size.Y * 0.5f),
+                OnikiriUITheme.Paper * (alpha * activeAlpha), 0.78f);
         }
 
         /// <summary>影绘,闲置眼跟光标</summary>
         private static void DrawDetailShadow(SpriteBatch sb, OniRegisterUI ui, OniGhostEntry entry,
             Rectangle rect, Vector2 lightCenter, float alpha) {
-            if (entry.State == OniGhostState.Unknown) {
-                //未知:纸上只有一团淡淡的、说不清的痕
-                sb.Draw(Pixel, lightCenter, PixelSrc, OnikiriUITheme.Dark * (alpha * 0.35f), 0.2f,
-                    new Vector2(0.5f), new Vector2(52f, 34f), SpriteEffects.None, 0f);
-                return;
-            }
-
             if (OniGhostShadowDraw.Available) {
                 DrawDetailShadowShader(sb, ui, entry, rect, lightCenter, alpha);
                 return;
@@ -535,12 +586,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             int frameSize = smoke.Width / 2;
             Vector2 origin = new(frameSize * 0.5f);
             float time = ui.GlobalTimer;
-            //封印:影不动;其余:缓慢扭动
-            float writhe = entry.State == OniGhostState.Sealed ? 0.15f : 1f;
+            //封印与休眠的影近乎不动
+            float writhe = entry.State == OniGhostState.SealedArchive ? 0.15f
+                : entry.IsDormant ? 0.24f : entry.IsArchive ? 0.42f : 1f;
             Vector2 basePos = lightCenter + new Vector2(0f, 12f);
 
             for (int i = 0; i < 3; i++) {
-                int frame = entry.State == OniGhostState.Sealed ? i % 4 : (int)(time * 3.4f + i * 1.7f) % 4;
+                int frame = entry.State == OniGhostState.SealedArchive ? i % 4 : (int)(time * 3.4f + i * 1.7f) % 4;
                 Rectangle srcRect = new(frame % 2 * frameSize, frame / 2 * frameSize, frameSize, frameSize);
                 float phase = i * 2.1f;
                 Vector2 offset = new((float)Math.Sin(time * (0.6f + i * 0.22f) + phase) * 6f * writhe,
@@ -553,7 +605,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
 
             //封印态:影上横一条裹尸布似的纸带 + 小封字印
-            if (entry.State == OniGhostState.Sealed) {
+            if (entry.State == OniGhostState.SealedArchive) {
                 sb.Draw(Pixel, basePos + new Vector2(0f, -8f), PixelSrc, OnikiriUITheme.Paper * (alpha * 0.4f),
                     0.06f, new Vector2(0.5f), new Vector2(96f, 12f), SpriteEffects.None, 0f);
                 OniBrush.DrawSealGlyph(sb, basePos + new Vector2(30f, -8f), 8f, alpha * 0.8f, 0.06f);
@@ -588,9 +640,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Rectangle quad = new((int)(basePos.X - w * 0.5f), (int)(basePos.Y - h * 0.52f), w, h);
 
             float writhe = entry.State switch {
-                OniGhostState.Sealed => 0.06f,
-                OniGhostState.Restless => 1f,
-                _ => 0.5f,
+                OniGhostState.SealedArchive => 0.06f,
+                OniGhostState.Dormant => 0.16f,
+                OniGhostState.Archive => 0.32f,
+                _ => 0.62f,
             };
             float seed = OniGhostShadowDraw.SeedFromKey(entry.Key);
             //凝视:瞳位向光标方向压 UV 偏移(只转眼,不动身)
@@ -627,7 +680,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             });
 
             //封印:影上横一条裹尸布似的纸带 + 小封字印
-            if (entry.State == OniGhostState.Sealed) {
+            if (entry.State == OniGhostState.SealedArchive) {
                 sb.Draw(Pixel, basePos + new Vector2(0f, -8f), PixelSrc, OnikiriUITheme.Paper * (alpha * 0.4f),
                     0.06f, new Vector2(0.5f), new Vector2(96f, 12f), SpriteEffects.None, 0f);
                 OniBrush.DrawSealGlyph(sb, basePos + new Vector2(30f, -8f), 8f, alpha * 0.8f, 0.06f);
@@ -668,31 +721,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             //驾驭读数:居中吊在香座之下
             string mastery = string.Format(OniRegisterUI.MasteryFormat.Value, (int)(entry.Mastery * 100f));
-            Color masteryCol = entry.State == OniGhostState.Restless ? OnikiriUITheme.Bright : OnikiriUITheme.TextDim;
+            Color masteryCol = entry.IsDormant ? OnikiriUITheme.Bright : OnikiriUITheme.TextDim;
             Vector2 mSize = font.MeasureString(mastery) * 0.66f;
             Utils.DrawBorderString(sb, mastery, new Vector2(stick.Center.X - mSize.X * 0.5f, stick.Bottom + 12f), masteryCol * alpha, 0.66f);
 
-            //躁动之鬼:香脚焦边起青焰
-            if (entry.State == OniGhostState.Restless) {
+            //休眠时香脚焦边起青焰
+            if (entry.IsDormant) {
                 OniBrush.DrawCharredEdge(sb, new Rectangle(stick.X - 4, stick.Bottom - 8, stick.Width + 8, 8), 0.8f, time, alpha * 0.9f);
             }
         }
 
         private static (string, Color) StateLabel(OniGhostEntry entry) => entry.State switch {
-            OniGhostState.Engraved => (OniRegisterUI.StateEngraved.Value, OnikiriUITheme.TextDim),
-            OniGhostState.Restless => (OniRegisterUI.StateRestless.Value, OnikiriUITheme.Bright),
-            OniGhostState.Sealed => (OniRegisterUI.StateSealed.Value, OnikiriUITheme.TextDim),
-            _ => (OniRegisterUI.StateUnknown.Value, OnikiriUITheme.Disabled),
+            OniGhostState.Ready => (OniRegisterUI.StateReady.Value, OnikiriUITheme.TextDim),
+            OniGhostState.Dormant => (OniRegisterUI.StateDormant.Value, OnikiriUITheme.Bright),
+            OniGhostState.SealedArchive => (OniRegisterUI.StateSealedArchive.Value, OnikiriUITheme.TextDim),
+            _ => (OniRegisterUI.StateArchive.Value, OnikiriUITheme.Disabled),
         };
 
         /// <summary>逐字换行+打字机+湿墨,返回块底 Y;freshColor 缺省湿墨绯红(改铭台传灼橙作烙印)</summary>
         internal static float DrawTypedWrapped(SpriteBatch sb, DynamicSpriteFont font, string text, Vector2 pos,
             float maxWidth, Color color, float scale, float alpha, int visibleChars, float inkStrength,
-            Color? freshColor = null) {
+            Color? freshColor = null, int maxLines = int.MaxValue, bool ellipsis = false) {
             if (string.IsNullOrEmpty(text)) {
                 return pos.Y;
             }
-            List<string> lines = WrapText(font, text, maxWidth, scale);
+            List<string> lines = VaultUtils.WrapText(text, font, maxWidth, scale, maxLines, ellipsis);
             float lineH = font.MeasureString("字").Y * scale + 2f;
             int remaining = visibleChars;
             float y = pos.Y;
@@ -726,34 +779,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return 0f;
             }
             float lineH = font.MeasureString("字").Y * scale + 2f;
-            return WrapText(font, text, maxWidth, scale).Count * lineH;
-        }
-
-        /// <summary>逐字累宽换行,无空格的 CJK 文本也能断行</summary>
-        private static List<string> WrapText(DynamicSpriteFont font, string text, float maxWidth, float scale) {
-            List<string> lines = [];
-            System.Text.StringBuilder current = new();
-            float width = 0f;
-            foreach (char c in text) {
-                if (c == '\n') {
-                    lines.Add(current.ToString());
-                    current.Clear();
-                    width = 0f;
-                    continue;
-                }
-                float w = font.MeasureString(c.ToString()).X * scale;
-                if (width + w > maxWidth && current.Length > 0) {
-                    lines.Add(current.ToString());
-                    current.Clear();
-                    width = 0f;
-                }
-                current.Append(c);
-                width += w;
-            }
-            if (current.Length > 0) {
-                lines.Add(current.ToString());
-            }
-            return lines;
+            return VaultUtils.WrapText(text, font, maxWidth, scale).Count * lineH;
         }
 
         private static void DrawRectBorder(SpriteBatch sb, Rectangle rect, Color color, int thickness) {

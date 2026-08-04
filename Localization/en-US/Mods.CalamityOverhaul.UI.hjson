@@ -653,20 +653,6 @@ HackTime: {
 	WaterScanStatusStill: STILL
 	WaterScanStatusFlowing: FLOWING
 	CatParanormal: Paranormal
-	WraithScanName: Designation
-	WraithScanNameValue: Unknown Wraith
-	WraithScanType: Paranormal Entity
-	WraithScanThreat: Unassessable ERR://-∞
-	WraithScanStatus: Status
-	WraithScanStatusStalking: Stealth Stalking
-	WraithScanStatusWatched: Being Watched
-	WraithScanStatusHalt: Halted
-	WraithScanStatusMemory: Memory Corruption
-	WraithScanStatusDismember: Spectral Disintegration
-	WraithScanIntegrity: Data Integrity
-	WraithScanIntegrityValue: 0x??% Corrupted
-	WraithScanOrigin: Origin
-	WraithScanOriginValue: Record Not Found
 	TurretScanName: Codename
 	TurretScanLaserName: Void Main Cannon Array
 	TurretScanGatlinName: Void Gatling Turret

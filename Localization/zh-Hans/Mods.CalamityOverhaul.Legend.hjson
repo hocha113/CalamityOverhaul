@@ -530,26 +530,29 @@ MoldProcessingUI: {
 OnikiriText: {
 	OniRegisterUI: {
 		TitleText: 点 鬼 簿
-		StatusFormat: 铭鬼 {0} 缕 · 总驾驭 {1}%
+		StatusFormat: "役鬼 {0} · 驾驭 {1}% · 侵蚀 {2}%"
 		MasteryFormat: 驾驭 {0}%
+		AbilityCostFormat: "发动耗竭 驾驭 {0}% · 侵蚀 +{1}%"
 		OriginLabel: 来历
 		PowerLabel: 赋力
-		StateEngraved: 铭刻 · 稳固
-		StateRestless: 铭刻 · 躁动
-		StateSealed: 封印中
-		StateUnknown: 铭位空悬
-		UnknownName: （留白）
-		UnknownHint: 簿上留白
-		SealedOriginHint: 封印未解
-		SealedPowerHint: ———
-		UnrenewedOriginHint: 旧契认刀，不认这只手。去它被收伏之地，重续名字
-		UnrenewedPowerHint: ———
+		StateReady: 可役使
+		StateDormant: 耗竭 · 休眠
+		StateArchive: 残卷 · 不可役使
+		StateSealedArchive: 封印残卷
+		EmptySlotName: 役鬼位空
+		EmptySlotHint: 从名录中选中一只厉鬼查看详情，再以役使印将其纳入役鬼位。空位不会启用任何厉鬼能力
+		UsableSection: 役 鬼
+		ArchiveSection: 残 卷
 		CloseTagText: 收卷
 		CloseHintFormat: ESC · {0} · 点击卷外 收卷
 		MeiTabText: 改铭台
 		MeiTabHint: 点击 移步
-		AttuneChanged: 「{0}」应声——共鸣已定
-		AttuneActive: 共鸣中
+		EquipAction: 役 使
+		UnequipAction: 卸 下
+		EquipPending: 候 令
+		EquipChanged: 「{0}」已纳入役鬼位
+		Unequipped: 役鬼位已清空
+		EquippedActive: 役使中
 	}
 
 	OniMeiUI: {
@@ -577,14 +580,6 @@ OnikiriText: {
 		TrayEmpty: 行囊无此位錾样。扇上所持仍可先凿
 	}
 
-	OniEngraveRiteUI: {
-		RiteTitle: 铭 刻
-		RiteTitleRenew: 续 契
-		RiteTitleResubdue: 收 伏
-		RiteHint: 落笔 · 归卷
-		RiteHintResubdue: 押 回 · 缄 卷
-	}
-
 	OniPlayerDismemberSystem.SelfHurtDeathReason: "{0}被自己的一刀斩作了两段"
 
 	OniTalismanHud: {
@@ -592,7 +587,8 @@ OnikiriText: {
 		HudHintFormat: "{0} 开阖{1} · 点击札打开"
 		HudMeiName: 改铭台
 		HudRegisterName: 点鬼簿
-		HudDangerLine: 札下起了青焰
+		HudDangerLine: 驾驭耗竭，役鬼能力正在休眠
+		HudWraithFormat: "役鬼 {0} · 驾驭 {1}%"
 		VigorTitle: 气力
 		VigorValueFormat: "{0} / {1}"
 		StanceTitle: 架势
@@ -613,8 +609,8 @@ OnikiriText: {
 		HudBody: 手持鬼切时，左下角常驻气力笔触与架势鞘，两者都只显示读数。半架势可双疾走接左键灭世，满架势可用处决键锁敌终结；按住樱流键会先付费疾走再化樱
 		HudPrompt: 认一下这组读数；HUD 的界面入口只有封印札
 		RegisterTitle: 点鬼簿
-		RegisterBody: 改铭台左上悬着点鬼簿卷轴。移步后，札与传奇界面键会记住点鬼簿；铭鬼名录、驾驭与共鸣都记在这里
-		RegisterPrompt: 点高亮卷轴移步；打开后看一眼名录，再收卷继续
+		RegisterBody: 改铭台左上悬着点鬼簿卷轴。名录分为可役使厉鬼与残卷；点击条目只浏览，役使印才会装备，卸下后全部厉鬼能力关闭
+		RegisterPrompt: 点高亮卷轴移步；打开后浏览名录与役鬼位，再收卷继续
 		MeiTitle: 改铭台
 		MeiBody: 封印札是 HUD 唯一的界面入口，首次打开进入改铭台。茎铭、樋位、雕位决定刀上赋效
 		MeiPrompt: 按 {0} 或点高亮的札打开改铭台

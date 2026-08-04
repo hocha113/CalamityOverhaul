@@ -147,7 +147,6 @@ HackTargetType: {
 	TileTargetType.DisplayName: 物块目标
 	TurretTargetType.DisplayName: 炮台目标
 	WaterTargetType.DisplayName: 液体目标
-	WraithTargetType.DisplayName: 幽灵目标
 }
 
 TileNameFallback: {

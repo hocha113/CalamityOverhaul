@@ -157,10 +157,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public const float ScrollWidthRatio = 0.42f;
         /// <summary>卷轴中心 X 占屏比(偏左，右侧留给影绘细节板)</summary>
         public const float ScrollCenterXRatio = 0.32f;
-        /// <summary>名录竖列宽度</summary>
+        /// <summary>名录竖列宽度。</summary>
         public const float EntryColumnW = 46f;
-        /// <summary>名录竖列间距</summary>
+        /// <summary>名录竖列间距。</summary>
         public const float EntryColumnGap = 16f;
+        /// <summary>残卷竖列宽度。</summary>
+        public const float ArchiveColumnW = 34f;
+        /// <summary>残卷竖列间距。</summary>
+        public const float ArchiveColumnGap = 12f;
+        /// <summary>中央役鬼位尺寸。</summary>
+        public static readonly Vector2 WraithSlotSize = new(228f, 46f);
+        /// <summary>役使操作命中尺寸。</summary>
+        public static readonly Vector2 WraithActionSize = new(156f, 34f);
         #endregion
 
         #region 封印札 HUD 几何

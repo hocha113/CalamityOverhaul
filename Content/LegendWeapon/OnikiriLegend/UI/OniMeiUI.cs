@@ -384,10 +384,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Vector2 tagTop = closeTagRope.End;
             closeTagRect = new Rectangle((int)(tagTop.X - 16f), (int)tagTop.Y - 2, 32, 48);
 
-            //吊挂卷轴:点击预演到帧即移步点鬼簿;簿上有鬼躁动时回声更急
+            //吊挂卷轴:点击预演到帧即移步点鬼簿;役鬼休眠时回声更急
             bool openRegister = registerSwitch.Update(registerSwitchAnchor, MousePosition,
                 IsOpen && a > 0.9f && !Rite.Active, ShaderTime, OnikiriUITheme.HangScrollHit,
-                keyLeftPressState, OniRegistry.InDanger);
+                keyLeftPressState, OniRegistry.IsEquippedDormant);
             if (Tutorial.OnikiriTutorialLead.IsActive) {
                 Tutorial.OnikiriTutorialTargets.Publish(
                     Tutorial.OnikiriTutorialTargets.Tag_RegisterSwitch, registerSwitch.HitBox);
@@ -1099,7 +1099,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniRegisterRenderer.DrawCloseTag(spriteBatch, font, closeTagRope, chromeA, closeTagHover,
                     GlobalTimer, CloseTagText.Value);
                 OniMeiRenderer.DrawHangingScroll(spriteBatch, registerSwitch, chromeA, GlobalTimer,
-                    OniRegistry.InDanger);
+                    OniRegistry.IsEquippedDormant);
             }
 
             //====錾样匣====

@@ -12,9 +12,6 @@ namespace CalamityOverhaul.Content.HackTimes
         public static Effect HackTimeNPCHighlight { get; private set; }
 
         [VaultLoaden(CWRConstant.Effects)]
-        public static Effect HackWraithHighlight { get; private set; }
-
-        [VaultLoaden(CWRConstant.Effects)]
         public static Effect HackTurretCircuitFault { get; private set; }
     }
 }

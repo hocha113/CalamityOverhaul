@@ -651,20 +651,6 @@ HackTime: {
 	WaterScanStatusStill: Неподвижно
 	WaterScanStatusFlowing: В движении
 	CatParanormal: Паранормальное
-	WraithScanName: Обозначение
-	WraithScanNameValue: Неизвестный Призрак
-	WraithScanType: Паранормальная сущность
-	WraithScanThreat: Оценка невозможна ERR://-∞
-	WraithScanStatus: Статус
-	WraithScanStatusStalking: Скрытое преследование
-	WraithScanStatusWatched: За вами наблюдают
-	WraithScanStatusHalt: Зависание
-	WraithScanStatusMemory: Повреждение памяти
-	WraithScanStatusDismember: Спектральная дезинтеграция
-	WraithScanIntegrity: Целостность данных
-	WraithScanIntegrityValue: 0x??%  Повреждено
-	WraithScanOrigin: Происхождение
-	WraithScanOriginValue: Запись не найдена
 	TurretScanName: Кодовое имя
 	TurretScanLaserName: Массив Главных Орудий Пустоты
 	TurretScanGatlinName: Скорострельная Турель Пустоты

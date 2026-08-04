@@ -1,27 +1,37 @@
-using CalamityOverhaul.Content.Wraiths.Runtime;
-using System;
 using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.Wraiths.Core
 {
-    /// <summary>定义目录，Mod.Load 反射注册；键冲突与实体类复用在注册期报错</summary>
+    /// <summary>稳定厉鬼目录与网络编号。</summary>
     internal sealed class WraithRegistry : ICWRLoader
     {
         private static readonly List<WraithDefinition> all = [];
+        private static readonly List<WraithDefinition> usable = [];
         private static readonly Dictionary<string, WraithDefinition> byKey = [];
         private static readonly Dictionary<string, ushort> networkIdByKey = [];
-        private static readonly Dictionary<Type, WraithDefinition> byActorType = [];
+        private static readonly Dictionary<ushort, WraithDefinition> byNetworkId = [];
 
-        /// <summary>全部定义，SortOrder 再 Key</summary>
         public static IReadOnlyList<WraithDefinition> All => all;
+        public static IReadOnlyList<WraithDefinition> Usable => usable;
 
-        public static int Count => all.Count;
+        public static bool TryGet(string key, out WraithDefinition definition) {
+            if (!string.IsNullOrEmpty(key) && byKey.TryGetValue(key, out definition)) {
+                return true;
+            }
+            definition = null;
+            return false;
+        }
 
-        public static bool TryGet(string key, out WraithDefinition definition)
-            => byKey.TryGetValue(key, out definition);
+        internal static bool TryGetUsable(string key, out WraithDefinition definition) {
+            if (TryGet(key, out definition) && definition.CanEquip) {
+                return true;
+            }
+            definition = null;
+            return false;
+        }
 
         internal static bool TryGetNetworkId(string key, out ushort id) {
-            if (networkIdByKey.TryGetValue(key, out id)) {
+            if (!string.IsNullOrEmpty(key) && networkIdByKey.TryGetValue(key, out id)) {
                 return true;
             }
             id = ushort.MaxValue;
@@ -29,17 +39,8 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         }
 
         internal static bool TryGetByNetworkId(ushort id, out WraithDefinition definition) {
-            if (id < all.Count) {
-                definition = all[id];
-                return true;
-            }
-            definition = null;
-            return false;
+            return byNetworkId.TryGetValue(id, out definition);
         }
-
-        /// <summary>实体类型反查定义</summary>
-        public static WraithDefinition FindByActorType(Type actorType)
-            => byActorType.TryGetValue(actorType, out WraithDefinition definition) ? definition : null;
 
         void ICWRLoader.LoadData() {
             List<WraithDefinition> found = VaultUtils.GetDerivedInstances<WraithDefinition>();
@@ -49,43 +50,30 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             });
 
             foreach (WraithDefinition definition in found) {
-                if (string.IsNullOrWhiteSpace(definition.Key)) {
-                    CWRMod.Instance.Logger.Error($"[WraithRegistry] {definition.GetType().FullName} has an empty Key, skipped");
+                if (string.IsNullOrWhiteSpace(definition.Key) || byKey.ContainsKey(definition.Key)
+                    || definition.NetworkId == ushort.MaxValue
+                    || byNetworkId.ContainsKey(definition.NetworkId)) {
+                    CWRMod.Instance.Logger.Error(
+                        $"[WraithRegistry] invalid or duplicate identity '{definition.Key}'/{definition.NetworkId}");
                     continue;
                 }
-                if (byKey.ContainsKey(definition.Key)) {
-                    CWRMod.Instance.Logger.Error($"[WraithRegistry] duplicate Key '{definition.Key}' from {definition.GetType().FullName}, skipped");
-                    continue;
-                }
-                if (all.Count >= ushort.MaxValue) {
-                    CWRMod.Instance.Logger.Error("[WraithRegistry] network id space exhausted, definition skipped");
-                    continue;
-                }
-                if (definition.ActorType != null) {
-                    if (!typeof(WraithActor).IsAssignableFrom(definition.ActorType)) {
-                        CWRMod.Instance.Logger.Error($"[WraithRegistry] '{definition.Key}' ActorType {definition.ActorType.Name} is not a WraithActor, skipped");
-                        continue;
-                    }
-                    if (byActorType.ContainsKey(definition.ActorType)) {
-                        CWRMod.Instance.Logger.Error($"[WraithRegistry] actor type {definition.ActorType.Name} reused by '{definition.Key}', skipped");
-                        continue;
-                    }
-                    byActorType[definition.ActorType] = definition;
-                }
-
                 definition.LoadLocalization();
-                ushort networkId = (ushort)all.Count;
                 all.Add(definition);
                 byKey[definition.Key] = definition;
-                networkIdByKey[definition.Key] = networkId;
+                networkIdByKey[definition.Key] = definition.NetworkId;
+                byNetworkId[definition.NetworkId] = definition;
+                if (definition.CanEquip) {
+                    usable.Add(definition);
+                }
             }
         }
 
         void ICWRLoader.UnLoadData() {
             all.Clear();
+            usable.Clear();
             byKey.Clear();
             networkIdByKey.Clear();
-            byActorType.Clear();
+            byNetworkId.Clear();
         }
     }
 }

@@ -530,26 +530,29 @@ MoldProcessingUI: {
 OnikiriText: {
 	OniRegisterUI: {
 		TitleText: GHOST REGISTER
-		StatusFormat: "{0} ghosts engraved · Total mastery {1}%"
+		StatusFormat: "Bound {0} · Mastery {1}% · Erosion {2}%"
 		MasteryFormat: Mastery {0}%
+		AbilityCostFormat: "On use: Mastery -{0}% · Erosion +{1}%"
 		OriginLabel: Origin
 		PowerLabel: Bestowal
-		StateEngraved: Engraved · Steady
-		StateRestless: Engraved · Restless
-		StateSealed: Sealed
-		StateUnknown: Vacant
-		UnknownName: (blank)
-		UnknownHint: A blank on the register. The night is long — a name will walk up here on its own
-		SealedOriginHint: The seal holds. Do not lift it, do not answer it, do not look back
-		SealedPowerHint: ———
-		UnrenewedOriginHint: The old pact knows the blade, not this hand. Go to where it was first subdued, and renew the name
-		UnrenewedPowerHint: ———
+		StateReady: Ready to bind
+		StateDormant: Exhausted · Dormant
+		StateArchive: Fragment · Cannot bind
+		StateSealedArchive: Sealed fragment
+		EmptySlotName: No bound wraith
+		EmptySlotHint: Select a wraith to inspect it, then use the bind seal to place it in the single wraith slot. An empty slot enables no wraith ability
+		UsableSection: WRAITHS
+		ArchiveSection: FRAGMENTS
 		CloseTagText: ROLL
 		CloseHintFormat: ESC · {0} · click outside to roll up
 		MeiTabText: Inscription Stand
 		MeiTabHint: Click to step over
-		AttuneChanged: 「{0}」answers — the attunement is set
-		AttuneActive: Attuned
+		EquipAction: BIND
+		UnequipAction: RELEASE
+		EquipPending: AWAITING
+		EquipChanged: "{0} is now bound"
+		Unequipped: The wraith slot is empty
+		EquippedActive: Bound
 	}
 
 	OniMeiUI: {
@@ -577,14 +580,6 @@ OnikiriText: {
 		TrayEmpty: No rubbing for this seat in your satchel. Fan ribs of owned mei still carve
 	}
 
-	OniEngraveRiteUI: {
-		RiteTitle: ENGRAVE
-		RiteTitleRenew: RENEW THE PACT
-		RiteTitleResubdue: SUBDUE
-		RiteHint: Set down the brush · Roll the scroll
-		RiteHintResubdue: Force it back · Seal the scroll
-	}
-
 	OniPlayerDismemberSystem.SelfHurtDeathReason: "{0} was severed by their own blade"
 
 	OniTalismanHud: {
@@ -592,7 +587,8 @@ OnikiriText: {
 		HudHintFormat: "{0} toggles {1}; click the talisman to open it"
 		HudMeiName: the Inscription Stand
 		HudRegisterName: the Ghost Register
-		HudDangerLine: Ghost-fire under the talisman — something is restless
+		HudDangerLine: Mastery exhausted; the bound ability is dormant
+		HudWraithFormat: "Bound {0} · Mastery {1}%"
 		VigorTitle: Vigor
 		VigorValueFormat: "{0} / {1}"
 		StanceTitle: Stance
@@ -613,8 +609,8 @@ OnikiriText: {
 		HudBody: While holding Onikiri, the lower-left HUD shows Vigor and Stance as read-only gauges. At half Stance, double-dash then left-click for Annihilating Flash; at full Stance, use Execute to auto-lock into Finale. Holding Sakura Flight first pays for a normal dash, then turns you to petals
 		HudPrompt: Learn these readouts; the sealing talisman is the HUD's only panel control
 		RegisterTitle: Ghost Register
-		RegisterBody: The hanging scroll at the upper-left of the Inscription Stand opens the Ghost Register. After switching, the talisman and Legend UI key remember the Register; names, mastery, and attunement live here
-		RegisterPrompt: Click the highlighted scroll; inspect the register, then close it to continue
+		RegisterBody: The hanging scroll at the upper-left of the Inscription Stand opens the Ghost Register. Usable wraiths and archival fragments are separate; clicking only inspects, while the bind seal equips and release disables every wraith ability
+		RegisterPrompt: Click the highlighted scroll; inspect the register and wraith slot, then close it to continue
 		MeiTitle: Inscription Stand
 		MeiBody: The sealing talisman is the HUD's only panel control and opens the Inscription Stand by default. Tang, groove, and horimono decide the blade's bestowal
 		MeiPrompt: Press {0} or click the highlighted talisman to open the Inscription Stand

@@ -12,8 +12,8 @@ namespace CalamityOverhaul.Content.HackTimes
         Npc = 1,
         //物块目标
         Tile = 2,
-        //灵异 Actor
-        Wraith = 4,
+        //保留原灵异目标位，避免其余 Flags 改号
+        ReservedWraith = 4,
         //可骇入炮台 Actor
         Turret = 8,
         //信号塔 Actor

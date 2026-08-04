@@ -403,7 +403,6 @@ namespace CalamityOverhaul.Content.HackTimes
 
         private static string KindGlyph(HackTargetKind kind) => kind switch {
             HackTargetKind.Tile => "▣",
-            HackTargetKind.Wraith => "☠",
             HackTargetKind.Turret => "◇",
             HackTargetKind.SignalTower => "◎",
             HackTargetKind.Projectile => "»",

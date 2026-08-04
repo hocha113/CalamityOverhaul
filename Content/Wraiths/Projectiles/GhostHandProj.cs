@@ -1,8 +1,9 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.Wraiths.Attunements;
+using CalamityOverhaul.Content.Wraiths.Abilities;
 using CalamityOverhaul.Content.Wraiths.Buffs;
 using CalamityOverhaul.Content.Wraiths.Core;
+using CalamityOverhaul.Content.Wraiths.Runtime;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -18,7 +19,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 {
     /// <summary>
     /// 鬼手本体，纯顶点绘制无贴图。常驻循环：背后待机 → 扑抓 → 攥握压制 → 回位；<br/>
-    /// 仅在失去手持共鸣资格时退场。ai[0]=状态 ai[1]=计时 ai[2]=驾驭度；
+    /// 失去当前役鬼资格后无害退场。ai[0]=状态 ai[1]=计时 ai[2]=驾驭度；
     /// 目标与朝向走 SendExtraAI，索敌和退场由 owner 决策后同步
     /// </summary>
     internal sealed class GhostHandProj : ModProjectile
@@ -48,7 +49,14 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
         //==== 同步数据 ====
         private int targetNPCID = -1;
+        private int targetNPCType = -1;
         private int ownerDirection = 1;
+        private ushort gripSerial;
+        private ushort lastSeenGripSerial;
+        private bool gripCommitAttempted;
+        private bool gripAuthorized;
+        private bool authorityGripCommitted;
+        private ulong lastAuthorityGripTick;
 
         //==== IK 手臂 ====
         private const int ArmSegmentCount = 6;
@@ -71,6 +79,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         private const int LungeDuration = 20;
         private const int ReturnDuration = 20;
         private const int DismissDuration = 18;
+        private const int MinimumAuthorityGripInterval = ReacquireDelay + LungeDuration + ReturnDuration;
         private int GripDuration => (int)MathHelper.Lerp(60f, 120f, MathHelper.Clamp(Mastery, 0f, 1f));
 
         //==== 视觉状态（本地平滑）====
@@ -130,13 +139,20 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
         public override void SendExtraAI(BinaryWriter writer) {
             writer.Write((short)targetNPCID);
+            writer.Write(targetNPCType);
             writer.Write((sbyte)ownerDirection);
+            writer.Write(gripSerial);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader) {
             targetNPCID = reader.ReadInt16();
+            targetNPCType = reader.ReadInt32();
             ownerDirection = reader.ReadSByte();
+            gripSerial = reader.ReadUInt16();
         }
+
+        private static bool IsNewerGrip(ushort incoming, ushort current)
+            => incoming != current && (ushort)(incoming - current) < 0x8000;
 
         //==== 主循环 ====
 
@@ -147,8 +163,14 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             }
 
             Projectile.timeLeft = 2;
+            bool finishingGrip = State is HandState.Gripping or HandState.Returning;
+            bool channelValid = WraithAbilityService.HasAbilityChannel(Owner, GhostHandAbility.Key);
+            if (!channelValid) {
+                //休眠可以完成已结算的抓取；收刀、换鬼或死亡则立即停止权威续期。
+                gripAuthorized = false;
+            }
             if (Projectile.IsOwnedByLocalPlayer() && State != HandState.Dismissing
-                && (Owner.dead || !HasValidAttunement())) {
+                && (!channelValid || !finishingGrip && !HasValidAbility())) {
                 Transition(HandState.Dismissing);
             }
 
@@ -174,13 +196,8 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             UpdateVisuals();
         }
 
-        private bool HasValidAttunement() {
-            WraithVesselHandle vessel = WraithVessels.ResolveHeld(Owner);
-            return vessel.IsValid
-                && vessel.Store.AttunedKey == GhostHandAttunement.Key
-                && vessel.Store.TryGet(GhostHandAttunement.Key, out WraithProgressRecord record)
-                && record.State == WraithBindState.Bound;
-        }
+        private bool HasValidAbility()
+            => WraithAbilityService.TryResolve(Owner, GhostHandAbility.Key, out _);
 
         private void UpdateShoulderPosition() {
             if (State is HandState.Idle or HandState.Returning or HandState.Dismissing) {
@@ -221,10 +238,17 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             if (!Projectile.IsOwnedByLocalPlayer() || StateTimer < InitialScanDelay || (int)StateTimer % 6 != 0) {
                 return;
             }
+            if (!WraithAbilityService.TryResolve(Owner, GhostHandAbility.Key,
+                out WraithAbilityContext context)) {
+                Transition(HandState.Dismissing);
+                return;
+            }
 
             NPC target = FindGrabTarget();
             if (target != null) {
+                Mastery = context.Mastery;
                 targetNPCID = target.whoAmI;
+                targetNPCType = target.type;
                 Transition(HandState.Lunging);
             }
         }
@@ -233,7 +257,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             NPC best = null;
             float bestSq = float.MaxValue;
             foreach (NPC npc in Main.ActiveNPCs) {
-                if (!GhostHandAttunement.CanGrab(npc, Owner.Center)) {
+                if (!GhostHandAbility.CanGrab(npc, Owner.Center)) {
                     continue;
                 }
                 float distSq = Vector2.DistanceSquared(npc.Center, Owner.Center);
@@ -296,8 +320,14 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             Projectile.velocity = pin - Projectile.Center;
             Projectile.Center = pin;
 
+            if (!gripCommitAttempted && Projectile.IsOwnedByLocalPlayer()) {
+                gripCommitAttempted = true;
+                WraithNet.RequestGhostHandGrip(Projectile, gripSerial,
+                    targetNPCID, targetNPCType);
+            }
+
             //权威端滚动续期，8 帧短债松手即断
-            if (!VaultUtils.isClient) {
+            if (!VaultUtils.isClient && gripAuthorized) {
                 target.AddBuff(ModContent.BuffType<GhostGripDebuff>(), 8);
             }
 
@@ -360,6 +390,11 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         private void OnStateChanged(HandState next) {
             switch (next) {
                 case HandState.Lunging:
+                    gripCommitAttempted = false;
+                    gripAuthorized = false;
+                    if (Projectile.IsOwnedByLocalPlayer()) {
+                        gripSerial++;
+                    }
                     lungeStart = Projectile.Center;
                     if (!VaultUtils.isServer) {
                         SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.5f, Pitch = -0.5f }, Projectile.Center);
@@ -380,9 +415,11 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                     break;
                 case HandState.Idle:
                     targetNPCID = -1;
+                    targetNPCType = -1;
                     break;
                 case HandState.Dismissing:
                     targetNPCID = -1;
+                    targetNPCType = -1;
                     dismissStart = Projectile.Center;
                     if (!VaultUtils.isServer) {
                         SoundEngine.PlaySound(SoundID.NPCDeath6 with { Volume = 0.28f, Pitch = -0.9f }, Projectile.Center);
@@ -534,7 +571,49 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                 return false;
             }
             NPC target = Main.npc[targetNPCID];
-            return target.active && target.CanBeChasedBy() && !target.boss;
+            return target.active && target.type == targetNPCType
+                && target.CanBeChasedBy() && !target.boss;
+        }
+
+        internal bool TryApplyAuthorityGrip(ushort serial, int targetId, int targetType) {
+            if (Main.netMode == NetmodeID.MultiplayerClient || !Projectile.active
+                || State != HandState.Gripping || serial != gripSerial
+                || !IsNewerGrip(serial, lastSeenGripSerial)
+                || targetId != targetNPCID || targetType != targetNPCType
+                || targetId < 0 || targetId >= Main.maxNPCs
+                || authorityGripCommitted
+                    && Main.GameUpdateCount - lastAuthorityGripTick < MinimumAuthorityGripInterval) {
+                return false;
+            }
+            lastSeenGripSerial = serial;
+
+            NPC target = Main.npc[targetId];
+            const float handTolerance = 96f;
+            int buffType = ModContent.BuffType<GhostGripDebuff>();
+            if (!target.active || target.type != targetType || target.buffImmune[buffType]
+                || !GhostHandAbility.CanGrab(target, Owner.Center)
+                || Vector2.DistanceSquared(Projectile.Center, target.Center)
+                    > handTolerance * handTolerance
+                || !WraithAbilityService.TryResolve(Owner, GhostHandAbility.Key,
+                    out WraithAbilityContext context)) {
+                return false;
+            }
+
+            target.AddBuff(buffType, 8);
+            int buffIndex = target.FindBuffIndex(buffType);
+            if (buffIndex < 0) {
+                return false;
+            }
+            Mastery = context.Mastery;
+            if (!WraithAbilityService.TryCommitUse(in context)) {
+                target.DelBuff(buffIndex);
+                return false;
+            }
+
+            authorityGripCommitted = true;
+            lastAuthorityGripTick = Main.GameUpdateCount;
+            gripAuthorized = true;
+            return true;
         }
 
         public override void OnKill(int timeLeft) {

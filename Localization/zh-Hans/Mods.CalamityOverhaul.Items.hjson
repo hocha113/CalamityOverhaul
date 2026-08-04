@@ -2545,44 +2545,6 @@ TestItem: {
 	// Tooltip: ""
 }
 
-WraithDebugTool: {
-	DisplayName: 厉鬼调试器
-	Tooltip:
-		'''
-		右键轮换模式，左键执行
-		模式覆盖：显形 / 死机 / 据点 / 绑定 / 反噬 / 侵蚀 / 必死 / 闹鬼 / 读簿
-		走不了权威通道的模式在多人下明示不受理
-		厉鬼框架开发调试用
-		'''
-	HauntOn: 调试闹鬼已开启（试件临时上目录）
-	HauntOff: 调试闹鬼已关闭（试件恢复隐藏）
-	ModePrefix: 模式：{0}
-	ModeMaterialize: 显形（左键在光标处显形试件）
-	ModeHalt: 死机（左键点鬼逼入死机，再点解除）
-	ModeSite: 据点（左键落锚，Shift+左键拔锚，Ctrl+左键开关武装闸）
-	ModeBind: 绑定（左键低驾驭上簿，Shift+左键高驾驭+续契）
-	ModeBacklash: 反噬（左键强制簿上试件挣脱，须躁动）
-	ModeErosion: 侵蚀（左键+0.2，Shift+左键清零）
-	ModeOmen: 必死（左键对自己起三息预警拍）
-	ModeHaunt: 闹鬼（左键翻转环境自动闹鬼闸门）
-	ModeRegister: 读簿（左键打印随身簿面进度）
-	HaltNoTarget: 光标下没有鬼
-	SitePlanted: 调试据点已落锚——走近它等它显形
-	SiteCleared: 调试据点已拔锚
-	SiteArmed: 据点武装闸已开——动态锚定与活化条件放行
-	SiteDisarmed: 据点武装闸已关——它不会应门
-	BindDone: 试件已上簿，驾驭度 {0}，续签 {1}
-	BacklashNeedBound: 簿上没有试件——先用绑定模式请它上簿
-	BacklashNeedRestless: 试件不躁动，挣不出来——先低驾驭上簿
-	EncounterBusy: 遭遇进行中——同屏只容一鬼
-	ErosionValue: 侵蚀 {0}
-	OmenStarted: 三息之后，命数当尽
-	MultiplayerDenied: 该调试操作多人下不受理
-	RegisterHeader: —— 随身簿面 ——
-	RegisterLine: "{0}：{1}，驾驭 {2}，续签 {3}，遭遇 {4}"
-	RegisterEmpty: 随身没有载体
-}
-
 OniMeiRubbingHigekiri: {
 	DisplayName: 髭切
 	Tooltip: 直接刀击强化残血目标，斩杀返势；刀击伤害 -2%

@@ -147,7 +147,6 @@ HackTargetType: {
 	TileTargetType.DisplayName: Цель: Блок
 	TurretTargetType.DisplayName: Цель: Турель
 	WaterTargetType.DisplayName: Цель: Жидкость
-	WraithTargetType.DisplayName: Цель: Призрак
 }
 
 TileNameFallback: {

@@ -2,7 +2,6 @@
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.Wraiths.Core;
 using CalamityOverhaul.Content.Wraiths.Runtime;
 using CalamityOverhaul.Content.Wraiths.VFX;
@@ -165,9 +164,19 @@ namespace CalamityOverhaul.Content.Players
                 return;
             }
 
-            WraithRegistry.TryGet("ScapeGhost", out WraithDefinition definition);
-            if (definition != null) {
-                WraithLethality.Kill(Player, definition, WraithSystemText.ScapeGhostNoTarget);
+            int lethalDamage = Math.Max(info.Damage, Math.Max(Player.statLife, 1));
+            if (Player.TryGetOverride(out PlayerDeath playerDeath)) {
+                playerDeath.PrepareRuleDeath();
+            }
+            Player.KillMe(info.DamageSource, lethalDamage, info.HitDirection);
+            if (Player.dead) {
+                WraithRegistry.TryGet(WraithPlayer.ScapeGhostKey,
+                    out WraithDefinition definition);
+                if (definition != null) {
+                    WraithNet.SendRuleKill(Player.whoAmI, definition);
+                }
+                NetMessage.SendPlayerDeath(Player.whoAmI, info.DamageSource,
+                    lethalDamage, info.HitDirection, false);
             }
         }
 
@@ -176,7 +185,8 @@ namespace CalamityOverhaul.Content.Players
         /// </summary>
         internal static bool ExecuteScapeGhostAuthority(Player player, double damage, int hitDirection
             , PlayerDeathReason damageSource) {
-            if (VaultUtils.isClient || !HasScapeGhostContract(player)) {
+            if (VaultUtils.isClient || !WraithAbilityService.TryResolve(player,
+                WraithPlayer.ScapeGhostKey, out WraithAbilityContext abilityContext)) {
                 return false;
             }
             ScapeTargetPick pick = FindScapeTargetsFor(player);
@@ -187,6 +197,9 @@ namespace CalamityOverhaul.Content.Players
             Vector2 from = player.Center;
             Vector2 to;
             string targetName;
+            string npcDeathName = null;
+            Vector2 npcDeathCenter = default;
+            int npcDeathCount = 0;
 
             if (pick.HasPlayer) {
                 Player proxy = pick.PlayerProxy;
@@ -201,9 +214,6 @@ namespace CalamityOverhaul.Content.Players
             }
             else {
                 NPC[] proxies = pick.NpcProxies;
-                NPC primary = proxies[0];
-                to = primary.Center;
-                targetName = primary.FullName;
 
                 foreach (NPC proxy in proxies) {
                     if (!CanReceiveScapeHit(proxy)) {
@@ -218,26 +228,34 @@ namespace CalamityOverhaul.Content.Players
                     }
                 }
                 foreach (NPC proxy in proxies) {
-                    //CheckDead/阶段转换可以拒绝死亡；未真正失活就不能提交替死成功
-                    if (proxy.active) {
-                        return false;
+                    //多目标死亡不可回滚；只按确实失活的替身结算和播报。
+                    if (!proxy.active) {
+                        if (npcDeathCount == 0) {
+                            npcDeathName = proxy.FullName;
+                            npcDeathCenter = proxy.Center;
+                        }
+                        npcDeathCount++;
                     }
                 }
-                BroadcastScapeDeathMessage(player, primary.FullName, damageSource, proxies.Length);
-            }
-
-            //友善替死（队友/城镇生物）推进倍率；其他玩家与敌怪不推进
-            if (pick.IsFriendly) {
-                player.GetModPlayer<WraithPlayer>().AdvanceScapeMultiplier();
+                if (npcDeathCount <= 0) {
+                    return false;
+                }
+                to = npcDeathCenter;
+                targetName = npcDeathName;
             }
 
             WraithPlayer wraithPlayer = player.GetModPlayer<WraithPlayer>();
-            bool revivalKilled = wraithPlayer.AddRevival(0.25f);
+            if (!wraithPlayer.TryCommitScapeAuthority(in abilityContext,
+                pick.IsFriendly, out bool revivalKilled)) {
+                return false;
+            }
+            if (npcDeathCount > 0) {
+                BroadcastScapeDeathMessage(player, npcDeathName, damageSource, npcDeathCount);
+            }
             if (!revivalKilled) {
                 player.statLife = Math.Max(player.statLife, Math.Max(1, (int)(player.statLifeMax2 * 0.12f)));
                 player.immune = true;
                 player.immuneTime = Math.Max(player.immuneTime, 75);
-                wraithPlayer.AddErosion(0.30f);
                 int afterburnType = ModContent.BuffType<Wraiths.Buffs.ScapeAfterburn>();
                 const int afterburnTime = 60 * 12;
                 player.AddBuff(afterburnType, afterburnTime);
@@ -283,22 +301,17 @@ namespace CalamityOverhaul.Content.Players
                 return false;
             }
             if (VaultUtils.isServer) {
+                if (WraithRegistry.TryGet(WraithPlayer.ScapeGhostKey,
+                    out WraithDefinition definition)) {
+                    WraithNet.SendRuleKill(proxy.whoAmI, definition);
+                }
                 NetMessage.SendPlayerDeath(proxy.whoAmI, deathReason, lethalDamage, 0, false);
             }
             return true;
         }
 
         private static bool HasScapeGhostContract(Player player) {
-            if (player == null || !player.active) {
-                return false;
-            }
-            //替死鬼是鬼切出厂契约；资格锚定实际物品类型，客户端可写的进度簿不参与服侧裁定
-            foreach (Item item in player.inventory) {
-                if (item != null && !item.IsAir && item.type == OnikiriOverride.ID) {
-                    return true;
-                }
-            }
-            return false;
+            return WraithAbilityService.TryResolve(player, WraithPlayer.ScapeGhostKey, out _);
         }
 
         /// <summary>
@@ -337,9 +350,6 @@ namespace CalamityOverhaul.Content.Players
         internal void ApplyScapeSuccess(Vector2 from, Vector2 to, string targetName
             , bool revivalKilled) {
             ClearScapeSession();
-            if (!revivalKilled) {
-                Player.GetModPlayer<WraithPlayer>().AddErosion(0.30f);
-            }
             ScapeArmRenderer.Trigger(from, to);
             string name = string.IsNullOrWhiteSpace(targetName)
                 ? WraithSystemText.ScapeGhostUnknownTarget.Value : targetName;

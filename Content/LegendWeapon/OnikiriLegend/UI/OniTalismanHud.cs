@@ -20,9 +20,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     }
 
     /// <summary>
-    /// 封印札 HUD,左下角,挂在鬼域之眼下.
-    /// 墨批=总驾驭,躁动焦边;点札开簿;眼控领域见 <see cref="OniDomainEye"/>;
-    /// 域开时不随收刀撤走
+    /// 封印札 HUD,左下角,挂在鬼域之眼下
+    /// 墨批读取当前役鬼驾驭,休眠时显焦边;点札开簿;眼控领域见 <see cref="OniDomainEye"/>
     /// </summary>
     internal sealed class OniTalismanHud : UIHandle, ILocalizedModType, IBottomLeftHud
     {
@@ -34,6 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText HudMeiName { get; private set; }
         public static LocalizedText HudRegisterName { get; private set; }
         public static LocalizedText HudDangerLine { get; private set; }
+        public static LocalizedText HudWraithFormat { get; private set; }
         public static LocalizedText VigorTitle { get; private set; }
         public static LocalizedText VigorValueFormat { get; private set; }
         public static LocalizedText StanceTitle { get; private set; }
@@ -53,7 +53,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             HudHintFormat = this.GetLocalization(nameof(HudHintFormat), () => "{0} 开阖{1} · 点击札打开");
             HudMeiName = this.GetLocalization(nameof(HudMeiName), () => "改铭台");
             HudRegisterName = this.GetLocalization(nameof(HudRegisterName), () => "点鬼簿");
-            HudDangerLine = this.GetLocalization(nameof(HudDangerLine), () => "札下起了青焰——有鬼躁动");
+            HudDangerLine = this.GetLocalization(nameof(HudDangerLine), () => "驾驭耗竭，役鬼能力正在休眠");
+            HudWraithFormat = this.GetLocalization(nameof(HudWraithFormat), () => "役鬼 {0} · 驾驭 {1}%");
             VigorTitle = this.GetLocalization(nameof(VigorTitle), () => "气力");
             VigorValueFormat = this.GetLocalization(nameof(VigorValueFormat), () => "{0} / {1}");
             StanceTitle = this.GetLocalization(nameof(StanceTitle), () => "架势");
@@ -109,8 +110,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private float appear;
         private OniLedgerView rememberedLedger;
         private TooltipOwner tooltipOwner;
-        //危态缓动:底墨青斑的渗入渗出不跳变
-        private float dangerEase;
         private bool hover;
         private bool wasHovered;
         private readonly OniUIParticlePool particles = new(40);
@@ -188,14 +187,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (Main.gameMenu || Main.dedServ) {
                 return false;
             }
-            Item item = Main.LocalPlayer?.GetItem();
+            Item item = Main.LocalPlayer?.HeldItem;
             return item != null && item.Alives()
                 && (item.type == ModContent.ItemType<OnikiriItem>());
         }
 
-        /// <summary>手持鬼切,或领域仍开着(收了刀控制面也不弃守,眼还睁着就得有人管它)</summary>
         private static bool LocalKeepAlive()
-            => LocalHolding() || (OniDomain.Local?.AnyActive ?? false);
+            => LocalHolding() && OniRegistry.EquippedEntry != null;
 
         public override bool Active => LocalKeepAlive() || appear > 0.01f;
 
@@ -207,12 +205,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         public override void LogicUpdate() {
             bool keepAlive = LocalKeepAlive();
-            appear = MathHelper.Clamp(appear + (keepAlive ? 0.07f : -0.09f), 0f, 1f);
+            appear = keepAlive ? MathHelper.Clamp(appear + 0.07f, 0f, 1f) : 0f;
             logicTime += 1f / 60f;
             if (appear <= 0.01f) {
                 hover = wasHovered = false;
                 hoverOffTicks = Math.Min(hoverOffTicks + 1, 600);
-                dangerEase = 0f;
                 vigor.Reset();
                 stance.Reset();
                 domainEye.Reset();
@@ -220,13 +217,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             particles.Update();
 
-            bool danger = OniRegistry.InDanger;
-            dangerEase += ((danger ? 1f : 0f) - dangerEase) * 0.05f;
+            bool danger = OniRegistry.IsEquippedDormant;
 
             float registerOpen = OniRegisterUI.Instance?.OpenProgress ?? 0f;
-            float riteOpen = OniEngraveRiteUI.Instance?.OpenProgress ?? 0f;
             float meiOpen = OniMeiUI.Instance?.OpenProgress ?? 0f;
-            bool uiCovered = registerOpen > 0.4f || riteOpen > 0.4f || meiOpen > 0.4f;
+            bool uiCovered = registerOpen > 0.4f || meiOpen > 0.4f;
 
             //鬼域之眼:先推进眼(它是整簇的挂点),左键开阖、右键/中键翻转
             Vector2 knot = Anchor;
@@ -374,11 +369,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             //札体:纸条质感(三段明暗/折角/压边/缓移光泽),危态时改走焚烧 shader
             Vector2 side = rot.ToRotationVector2();
-            float mastery = MathHelper.Clamp(OniRegistry.TotalMastery, 0f, 1f);
-            bool danger = OniRegistry.InDanger;
+            OniGhostEntry equipped = OniRegistry.EquippedEntry;
+            if (equipped == null) {
+                return;
+            }
+            float mastery = MathHelper.Clamp(equipped.Mastery, 0f, 1f);
+            bool danger = equipped.IsDormant;
             bool paperByShader = danger && OniPaperBurnDraw.Available;
             if (paperByShader) {
-                //焚烧量随总驾驭降低升高,只舔下缘
+                //焚烧量随当前役鬼驾驭降低升高,只舔下缘
                 float burn = MathHelper.Clamp(0.09f + (1f - mastery) * 0.17f, 0f, 0.30f);
                 OniPaperBurnDraw.Draw(sb, stripTop, rot, new Vector2(W, H), a * (hover ? 1.05f : 0.96f), burn, GlobalTimer);
             }
@@ -386,10 +385,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniBrush.DrawPaperStrip(sb, stripTop, rot, new Vector2(W, H), a * (hover ? 1.05f : 0.96f), GlobalTimer * 0.11f);
             }
 
-            //札首小朱印
-            OniBrush.DrawSealGlyph(sb, stripTop + down * 16f, 9.5f, a * 0.95f, rot);
+            //役鬼位非空时才落役鬼印
+            DrawWraithSeal(sb, stripTop + down * 16f, rot, equipped.Key, a);
 
-            //墨批:自印下垂书一笔,长度=总驾驭度
+            //墨批:自印下垂书一笔,长度=当前役鬼驾驭度
             if (mastery > 0.02f) {
                 Vector2 strokeStart = stripTop + down * 29f;
                 Vector2 strokeEnd = stripTop + down * (29f + (H - 42f) * mastery);
@@ -409,6 +408,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             stance.Draw(sb, a, GlobalTimer);
 
             particles.Draw(sb, a);
+        }
+
+        private static void DrawWraithSeal(SpriteBatch sb, Vector2 center, float rot, string key, float alpha) {
+            float seed = OniGhostShadowDraw.SeedFromKey(key);
+            OniBrush.DrawSealGlyph(sb, center, 9.5f, alpha * 0.95f, rot + (seed - 0.5f) * 0.18f);
+            Vector2 side = rot.ToRotationVector2();
+            Vector2 down = (rot + MathHelper.PiOver2).ToRotationVector2();
+            float offset = (seed - 0.5f) * 3f;
+            OniBrush.DrawGradientLine(sb, center - side * 5f + down * offset,
+                center + side * 5f - down * offset, OnikiriUITheme.Bright * (alpha * 0.76f),
+                OnikiriUITheme.Deep * (alpha * 0.34f), 1f);
         }
 
         internal void DrawTooltipOverlay(SpriteBatch sb) {
@@ -491,10 +501,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 ? HudRegisterName.Value
                 : HudMeiName.Value;
             string hint = string.Format(HudHintFormat.Value, keyName, ledgerName);
-            bool danger = OniRegistry.InDanger;
+            OniGhostEntry equipped = OniRegistry.EquippedEntry;
+            if (equipped == null) {
+                return;
+            }
+            bool danger = equipped.IsDormant;
+            string wraithLine = HudWraithFormat.Format(equipped.Name?.Invoke() ?? equipped.Key,
+                (int)MathF.Round(equipped.Mastery * 100f));
             string dangerLine = danger ? HudDangerLine.Value : null;
             OniTooltipPanel.Draw(sb, MousePosition, title, 0.82f, a,
                 new OniTooltipLine(hint, OnikiriUITheme.TextDim),
+                new OniTooltipLine(wraithLine, OnikiriUITheme.Paper),
                 new OniTooltipLine(dangerLine, OnikiriUITheme.GhostFire * 0.9f));
         }
     }

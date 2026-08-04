@@ -12,8 +12,10 @@ namespace CalamityOverhaul.Content.TimeFreezes
     {
         public override int TargetID => -1;
         public override bool AI() {
+            CWRNpc cwrNpc = npc.CWR();
             if (WorldFreezeSystem.IsActive) {
                 if (!WorldFreezeSystem.ShouldFreezeNPC(npc)) {
+                    cwrNpc.RestoreTimeFreeze(npc);
                     return true;
                 }
                 int id = npc.whoAmI;
@@ -25,17 +27,22 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 npc.timeLeft++;
                 return false;
             }
+
             if (CWRWorld.TimeFrozenTick > 0) {
-                CWRNpc.DoTimeFrozen(npc);
+                cwrNpc.ApplyTimeFreeze(npc);
                 return false;
             }
             if (npc.Alives()) {
-                if (npc.CWR().TimeFrozenTick > 0) {
-                    npc.CWR().TimeFrozenTick--;
-                    CWRNpc.DoTimeFrozen(npc);
+                if (cwrNpc.TimeFrozenTick > 0) {
+                    cwrNpc.TimeFrozenTick--;
+                    cwrNpc.ApplyTimeFreeze(npc);
                     return false;
                 }
+            }
 
+            cwrNpc.RestoreTimeFreeze(npc);
+
+            if (npc.Alives()) {
                 bool? result = npc.GetGlobalNPC<HackEffectNPC>().PreAIByOverNPC(npc);
                 if (result.HasValue) {
                     return result.Value;

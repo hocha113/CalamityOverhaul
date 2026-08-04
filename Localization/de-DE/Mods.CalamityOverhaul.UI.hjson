@@ -651,20 +651,6 @@ HackTime: {
 	WaterScanStatusStill: RUHIG
 	WaterScanStatusFlowing: FLIEßEND
 	CatParanormal: PARANORMAL
-	WraithScanName: BEZEICHNUNG
-	WraithScanNameValue: Unbekannter Geist
-	WraithScanType: Paranormale Entität
-	WraithScanThreat: Nicht bewertbar ERR://-∞
-	WraithScanStatus: STATUS
-	WraithScanStatusStalking: Heimliche Jagd
-	WraithScanStatusWatched: Beobachtet
-	WraithScanStatusHalt: Angehalten
-	WraithScanStatusMemory: Gedächtniskorruption
-	WraithScanStatusDismember: Spektrale Zersetzung
-	WraithScanIntegrity: Datenintegrität
-	WraithScanIntegrityValue: 0x??% beschädigt
-	WraithScanOrigin: Herkunft
-	WraithScanOriginValue: Eintrag nicht gefunden
 	TurretScanName: DECKNAME
 	TurretScanLaserName: Leere · Hauptgeschütz-Array
 	TurretScanGatlinName: Leere · Gatling-Turm

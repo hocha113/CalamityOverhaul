@@ -2483,44 +2483,6 @@ TestItem: {
 	// Tooltip: ""
 }
 
-WraithDebugTool: {
-	// DisplayName: Wraith Debug Tool
-	/* Tooltip:
-		'''
-		Right click to cycle modes, left click to execute
-		Modes: materialize / halt / site / bind / backlash / erosion / omen / haunt / register
-		Modes that cannot reach the authority channel refuse honestly in multiplayer
-		Development tool for the wraith framework
-		''' */
-	// HauntOn: Debug haunting enabled (specimen temporarily enters the catalog)
-	// HauntOff: Debug haunting disabled (specimen hidden again)
-	// ModePrefix: Mode: {0}
-	// ModeMaterialize: Materialize (left click manifests the specimen at the cursor)
-	// ModeHalt: Halt (left click a wraith to force the halt window, click again to release)
-	// ModeSite: Site (left click plants the anchor, Shift+left unanchors, Ctrl+left toggles the arming gate)
-	// ModeBind: Bind (left click binds at low mastery, Shift+left at high mastery with pact renewed)
-	// ModeBacklash: Backlash (left click forces the bound specimen to tear free; must be restless)
-	// ModeErosion: Erosion (left click +0.2, Shift+left resets to zero)
-	// ModeOmen: Omen (left click starts a three-breath death omen on yourself)
-	// ModeHaunt: Haunt (left click toggles the ambient debug haunting gate)
-	// ModeRegister: Register (left click prints the carried register's progress)
-	// HaltNoTarget: No wraith under the cursor
-	// SitePlanted: Debug site planted — approach it and wait for the manifestation
-	// SiteCleared: Debug site unanchored
-	// SiteArmed: Site arming gate open — dynamic anchoring and activation may pass
-	// SiteDisarmed: Site arming gate closed — it will not answer the door
-	// BindDone: Specimen set upon the register, mastery {0}, pact renewed {1}
-	// BacklashNeedBound: No specimen on the register — use Bind mode first
-	// BacklashNeedRestless: The specimen is not restless and cannot tear free — bind it at low mastery first
-	// EncounterBusy: An encounter is underway — one wraith to a screen
-	// ErosionValue: Erosion {0}
-	// OmenStarted: Three breaths from now, the thread runs out
-	// MultiplayerDenied: This debug action is not accepted in multiplayer
-	// RegisterHeader: —— Carried Register ——
-	// RegisterLine: "{0}: {1}, mastery {2}, renewed {3}, encounters {4}"
-	// RegisterEmpty: No vessel on your person
-}
-
 OniMeiRubbingHigekiri: {
 	// DisplayName: Higekiri
 	Tooltip: Les coups directs de lame se renforcent contre les cibles blessées et les éliminations rendent de la posture ; dégâts de lame -2%

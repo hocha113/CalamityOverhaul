@@ -1,54 +1,98 @@
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.Players;
 using CalamityOverhaul.Content.Wraiths.Core;
+using CalamityOverhaul.Content.Wraiths.Projectiles;
 using CalamityOverhaul.Content.Wraiths.VFX;
-using InnoVault.Actors;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Wraiths.Runtime
 {
-    /// <summary>通道子 op，Wraith 消息第二字节</summary>
     internal enum WraithNetOp : byte
     {
-        /// <summary>客→服，死机开/关</summary>
-        HaltRequest,
-        /// <summary>客→服，仪式请求</summary>
-        RiteRequest,
-        /// <summary>服→发起者，仪式确认</summary>
-        RiteConfirm,
-        /// <summary>客→服，反噬生成</summary>
-        BacklashSpawn,
-        /// <summary>服→客，替死触发演出与受害者侵蚀镜像</summary>
-        ScapeGhostFx,
-        /// <summary>服→客，规则死亡转发</summary>
-        RuleKill,
-        /// <summary>服→受害者，预警起拍</summary>
-        OmenStart,
-        /// <summary>服→受害者，预警撤拍</summary>
-        OmenCancel,
-        /// <summary>服→客，据点锚位镜像</summary>
-        SiteSync,
-        /// <summary>服→全员，替死代价状态同步</summary>
-        ScapeStateSync,
+        ReservedHaltRequest = 0,
+        ReservedRiteRequest = 1,
+        ReservedRiteConfirm = 2,
+        ReservedBacklashSpawn = 3,
+        ScapeGhostFx = 4,
+        RuleKill = 5,
+        ReservedOmenStart = 6,
+        ReservedOmenCancel = 7,
+        ReservedSiteSync = 8,
+        ReservedScapeStateSync = 9,
+        InitialState = 10,
+        StateSync = 11,
+        EquipRequest = 12,
+        EquipResult = 13,
+        HeadlessImpactRequest = 14,
+        GhostHandGripRequest = 15,
     }
 
-    /// <summary>
-    /// 联机通道，挂 CWRNetWork 链尾。客→服一律服复核；身份走 Key；实体带 generation
-    /// </summary>
+    internal enum WraithEquipResult : byte
+    {
+        Success,
+        InvalidPlayer,
+        InvalidItem,
+        IdentityMismatch,
+        DuplicateIdentity,
+        StaleRevision,
+        InvalidWraith,
+        RateLimited,
+        SessionNotReady,
+    }
+
+    /// <summary>玩家役鬼状态、资源事件与替死演出的权威网络通道。</summary>
     internal static class WraithNet
     {
-        /// <summary>死机请求判距，宽于仪式半径</summary>
-        private const float HaltRequestRange = WraithRites.RiteRange * 4f;
+        private const ushort NoWraith = ushort.MaxValue;
+        private const int MaxPendingEquipRequests = 16;
+        private const ulong PendingLifetimeTicks = 600;
+        private const ulong RequestWindowTicks = 60;
+        private const int MaxRequestsPerWindow = 12;
 
-        //服会话态，反噬冷却；换世界清零
-        private static readonly Dictionary<(int player, string key), long> backlashLastSpawn = [];
+        private sealed class PendingEquipRequest
+        {
+            internal ushort RequestId;
+            internal uint SessionToken;
+            internal byte InventorySlot;
+            internal long InstanceId;
+            internal uint ExpectedRevision;
+            internal ushort RequestedWraithId;
+            internal ulong CreatedAt;
+            internal Action<bool> Completion;
+        }
 
-        /// <summary>清服会话态</summary>
+        private struct RequestWindow
+        {
+            internal ulong StartedAt;
+            internal int Count;
+        }
+
+        private static readonly Dictionary<ushort, PendingEquipRequest> pendingEquip = [];
+        private static readonly Dictionary<int, RequestWindow> equipRequestWindows = [];
+        private static ushort nextRequestId;
+        private static uint nextSessionToken;
+
         internal static void ClearSession() {
-            backlashLastSpawn.Clear();
+            List<PendingEquipRequest> abandoned = [.. pendingEquip.Values];
+            pendingEquip.Clear();
+            equipRequestWindows.Clear();
+            nextRequestId = 0;
+            nextSessionToken = 0;
+            foreach (PendingEquipRequest request in abandoned) {
+                CompletePending(request, false);
+            }
+        }
+
+        internal static void UpdatePending(Player player) {
+            if (Main.netMode == NetmodeID.MultiplayerClient
+                && player?.whoAmI == Main.myPlayer) {
+                SweepPending();
+            }
         }
 
         private static ModPacket NewPacket(WraithNetOp op) {
@@ -58,51 +102,126 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             return packet;
         }
 
-        //====发送====
+        public static bool RequestEquippedWraith(Player player, Item sourceItem, string key,
+            Action<bool> completed = null) {
+            WraithPlayer state = player?.GetModPlayer<WraithPlayer>();
+            OnikiriData data = OnikiriData.TryGet(sourceItem);
+            if (player == null || player.whoAmI != Main.myPlayer || state == null
+                || !state.SessionInitialized || data == null
+                || !TryResolveSelectedSword(player, sourceItem, out byte inventorySlot)
+                || OnikiriNet.HasDuplicateInstanceId(player, data.InstanceId)) {
+                return false;
+            }
 
-        /// <summary>客→服，死机开/关；duration≤0 取定义默认</summary>
-        public static void SendHaltRequest(WraithActor wraith, bool halt, int durationTicks = -1) {
-            if (!VaultUtils.isClient || wraith == null) {
+            ushort wraithId = NoWraith;
+            string normalizedKey = string.IsNullOrEmpty(key) ? string.Empty : key;
+            if (!string.IsNullOrEmpty(normalizedKey)
+                && (!WraithRegistry.TryGetUsable(normalizedKey, out _)
+                    || !WraithRegistry.TryGetNetworkId(normalizedKey, out wraithId))) {
+                return false;
+            }
+            if (state.EquippedWraithKey == normalizedKey) {
+                return false;
+            }
+
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
+                bool success = state.TrySetEquippedAuthority(normalizedKey, state.LoadoutRevision);
+                completed?.Invoke(success);
+                return success;
+            }
+
+            if (!TryTrackEquip(inventorySlot, data.InstanceId, state.LoadoutRevision,
+                wraithId, completed, out PendingEquipRequest pending)) {
+                return false;
+            }
+
+            ModPacket packet = NewPacket(WraithNetOp.EquipRequest);
+            packet.Write(pending.RequestId);
+            packet.Write(pending.SessionToken);
+            packet.Write(pending.InventorySlot);
+            packet.Write(pending.InstanceId);
+            packet.Write(pending.ExpectedRevision);
+            packet.Write(pending.RequestedWraithId);
+            packet.Send();
+            return true;
+        }
+
+        internal static void SendInitialState(WraithPlayer state) {
+            if (Main.netMode != NetmodeID.MultiplayerClient || state?.Player == null
+                || state.Player.whoAmI != Main.myPlayer) {
                 return;
             }
-            ModPacket packet = NewPacket(WraithNetOp.HaltRequest);
-            packet.Write((ushort)wraith.WhoAmI);
-            packet.Write(wraith.Generation);
-            packet.Write(halt);
-            packet.Write(durationTicks);
+            ClearLocalPending();
+            ModPacket packet = NewPacket(WraithNetOp.InitialState);
+            WriteSavedState(packet, state);
             packet.Send();
         }
 
-        /// <summary>客→服，仪式请求</summary>
-        public static void SendRiteRequest(Player player, WraithActor wraith, WraithVesselHandle vessel) {
-            if (!VaultUtils.isClient || player == null || player.whoAmI != Main.myPlayer
-                || wraith == null || !vessel.IsValid
-                || !TryResolveHeldInventorySlot(player, vessel.Item, out byte inventorySlot)
-                || OnikiriData.TryGet(vessel.Item) is not OnikiriData data) {
+        internal static void SendStateSync(int playerWhoAmI, int toWho = -1) {
+            if (Main.netMode != NetmodeID.Server || playerWhoAmI < 0
+                || playerWhoAmI >= Main.maxPlayers) {
                 return;
             }
-            ModPacket packet = NewPacket(WraithNetOp.RiteRequest);
-            packet.Write((ushort)wraith.WhoAmI);
-            packet.Write(wraith.Generation);
-            packet.Write(inventorySlot);
-            packet.Write(data.InstanceId);
-            packet.Write(data.EditRevision);
+            Player player = Main.player[playerWhoAmI];
+            WraithPlayer state = player?.GetModPlayer<WraithPlayer>();
+            if (player?.active != true || state == null || !state.SessionInitialized) {
+                return;
+            }
+            ModPacket packet = NewPacket(WraithNetOp.StateSync);
+            packet.Write((byte)playerWhoAmI);
+            WriteStateSync(packet, state);
+            packet.Send(toWho);
+        }
+
+        public static void RequestHeadlessImpact(Projectile projectile, ushort serial,
+            int targetId, int targetType, Vector2 impact) {
+            if (projectile?.active != true
+                || projectile.ModProjectile is not HeadlessShadeProj shade
+                || projectile.owner < 0 || projectile.owner >= Main.maxPlayers) {
+                return;
+            }
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
+                shade.TryApplyAuthorityImpact(serial, targetId, targetType, impact);
+                return;
+            }
+            if (projectile.owner != Main.myPlayer) {
+                return;
+            }
+            ModPacket packet = NewPacket(WraithNetOp.HeadlessImpactRequest);
+            packet.Write(projectile.identity);
+            packet.Write(serial);
+            packet.Write(targetId);
+            packet.Write(targetType);
+            packet.WriteVector2(impact);
             packet.Send();
         }
 
-        public static void SendBacklashSpawn(WraithDefinition definition) {
-            if (!VaultUtils.isClient || definition == null) {
+        public static void RequestGhostHandGrip(Projectile projectile, ushort serial,
+            int targetId, int targetType) {
+            if (projectile?.active != true
+                || projectile.ModProjectile is not GhostHandProj hand
+                || projectile.owner < 0 || projectile.owner >= Main.maxPlayers) {
                 return;
             }
-            ModPacket packet = NewPacket(WraithNetOp.BacklashSpawn);
-            packet.Write(definition.Key);
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
+                hand.TryApplyAuthorityGrip(serial, targetId, targetType);
+                return;
+            }
+            if (projectile.owner != Main.myPlayer) {
+                return;
+            }
+            ModPacket packet = NewPacket(WraithNetOp.GhostHandGripRequest);
+            packet.Write(projectile.identity);
+            packet.Write(serial);
+            packet.Write(targetId);
+            packet.Write(targetType);
             packet.Send();
         }
 
-        /// <summary>服→全体客户端，替死血臂；受害者客户端另外镜像侵蚀与回执。</summary>
-        public static void SendScapeGhostFx(Vector2 from, Vector2 to, int victimWhoAmI
-            , string targetName = null, bool revivalKilled = false) {
-            if (!VaultUtils.isServer || victimWhoAmI < 0 || victimWhoAmI >= Main.maxPlayers) {
+        internal static void SendScapeGhostFx(Vector2 from, Vector2 to, int victimWhoAmI,
+            string targetName = null, bool revivalKilled = false) {
+            if (Main.netMode != NetmodeID.Server || victimWhoAmI < 0
+                || victimWhoAmI >= Main.maxPlayers) {
                 return;
             }
             ModPacket packet = NewPacket(WraithNetOp.ScapeGhostFx);
@@ -114,324 +233,512 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             packet.Send();
         }
 
-        /// <summary>服→受害者，规则死亡；reasonKey 空走兜底</summary>
-        public static void SendRuleKill(int playerWhoAmI, WraithDefinition definition, string reasonKey = null) {
-            if (!VaultUtils.isServer || definition == null) {
+        internal static void SendRuleKill(int playerWhoAmI, WraithDefinition definition,
+            string reasonKey = null) {
+            if (Main.netMode != NetmodeID.Server || definition == null
+                || playerWhoAmI < 0 || playerWhoAmI >= Main.maxPlayers) {
                 return;
             }
             ModPacket packet = NewPacket(WraithNetOp.RuleKill);
+            packet.Write((byte)playerWhoAmI);
             packet.Write(definition.Key);
             packet.Write(reasonKey ?? string.Empty);
-            packet.Send(playerWhoAmI);
+            packet.Send();
         }
-
-        /// <summary>服→受害者，预警起拍</summary>
-        public static void SendOmenStart(int playerWhoAmI, WraithDefinition definition, int ticks) {
-            if (!VaultUtils.isServer || definition == null) {
-                return;
-            }
-            ModPacket packet = NewPacket(WraithNetOp.OmenStart);
-            packet.Write(definition.Key);
-            packet.Write(ticks);
-            packet.Send(playerWhoAmI);
-        }
-
-        /// <summary>服→全员，替死代价状态同步</summary>
-        public static void SendScapeStateSync(int victimWhoAmI, float revival, int multiplier, int idleTicks
-            , int toWho = -1, int ignoreWho = -1) {
-            if (!VaultUtils.isServer || victimWhoAmI < 0 || victimWhoAmI >= Main.maxPlayers) {
-                return;
-            }
-            ModPacket packet = NewPacket(WraithNetOp.ScapeStateSync);
-            packet.Write((byte)victimWhoAmI);
-            packet.Write(revival);
-            packet.Write((byte)multiplier);
-            packet.Write(idleTicks);
-            packet.Send(toWho, ignoreWho);
-        }
-
-        /// <summary>服→受害者，预警撤拍</summary>
-        public static void SendOmenCancel(int playerWhoAmI) {
-            if (!VaultUtils.isServer) {
-                return;
-            }
-            NewPacket(WraithNetOp.OmenCancel).Send(playerWhoAmI);
-        }
-
-        /// <summary>服→客，据点锚位；toWho=-1 广播</summary>
-        public static void SendSiteSync(string key, Vector2 anchor, bool anchored, int toWho = -1) {
-            if (!VaultUtils.isServer || string.IsNullOrEmpty(key)) {
-                return;
-            }
-            ModPacket packet = NewPacket(WraithNetOp.SiteSync);
-            packet.Write(key);
-            packet.WriteVector2(anchor);
-            packet.Write(anchored);
-            packet.Send(toWho);
-        }
-
-        //====接收====
-
-        private static bool IsClientRequest(WraithNetOp op)
-            => op is WraithNetOp.HaltRequest or WraithNetOp.RiteRequest or WraithNetOp.BacklashSpawn;
-
-        private static bool IsServerMessage(WraithNetOp op)
-            => op is WraithNetOp.RiteConfirm or WraithNetOp.ScapeGhostFx or WraithNetOp.RuleKill
-                or WraithNetOp.OmenStart or WraithNetOp.OmenCancel or WraithNetOp.SiteSync
-                or WraithNetOp.ScapeStateSync;
 
         public static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) {
             if (type != CWRMessageType.Wraith) {
                 return;
             }
             WraithNetOp op = (WraithNetOp)reader.ReadByte();
-            if (VaultUtils.isServer && !IsClientRequest(op)
-                || VaultUtils.isClient && !IsServerMessage(op)) {
+            if (Main.netMode == NetmodeID.Server) {
+                switch (op) {
+                    case WraithNetOp.InitialState:
+                        HandleInitialState(reader, whoAmI);
+                        break;
+                    case WraithNetOp.EquipRequest:
+                        HandleEquipRequest(reader, whoAmI);
+                        break;
+                    case WraithNetOp.HeadlessImpactRequest:
+                        HandleHeadlessImpact(reader, whoAmI);
+                        break;
+                    case WraithNetOp.GhostHandGripRequest:
+                        HandleGhostHandGrip(reader, whoAmI);
+                        break;
+                }
+                return;
+            }
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
                 return;
             }
             switch (op) {
-                case WraithNetOp.HaltRequest:
-                    HandleHaltRequest(reader, whoAmI);
+                case WraithNetOp.ScapeGhostFx:
+                    HandleScapeGhostFx(reader);
                     break;
-                case WraithNetOp.RiteRequest:
-                    HandleRiteRequest(reader, whoAmI);
+                case WraithNetOp.RuleKill:
+                    HandleRuleKill(reader);
                     break;
-                case WraithNetOp.RiteConfirm: {
-                    int inventorySlot = reader.ReadByte();
-                    long instanceId = reader.ReadInt64();
-                    uint editRevision = reader.ReadUInt32();
-                    string key = reader.ReadString();
-                    WraithRiteKind kind = (WraithRiteKind)reader.ReadByte();
-                    if (!VaultUtils.isClient || kind > WraithRiteKind.Resubdue
-                        || !TryResolveRiteVessel(Main.LocalPlayer, inventorySlot, instanceId,
-                            out WraithVesselHandle vessel, out OnikiriData data)
-                        || editRevision < data.EditRevision) {
-                        break;
-                    }
-                    WraithRites.ApplyConfirmed(Main.LocalPlayer, vessel, key, kind);
-                    data.ApplyEditRevision(editRevision);
+                case WraithNetOp.StateSync:
+                    HandleStateSync(reader);
                     break;
-                }
-                case WraithNetOp.BacklashSpawn:
-                    HandleBacklashSpawn(reader, whoAmI);
+                case WraithNetOp.EquipResult:
+                    HandleEquipResult(reader);
                     break;
-                case WraithNetOp.ScapeGhostFx: {
-                    Vector2 from = reader.ReadVector2();
-                    Vector2 to = reader.ReadVector2();
-                    int victim = reader.ReadByte();
-                    string targetName = reader.ReadString();
-                    bool revivalKilled = reader.ReadBoolean();
-                    if (!VaultUtils.isClient || victim < 0 || victim >= Main.maxPlayers) {
-                        break;
-                    }
-                    //非受害者：只播血臂演出
-                    if (victim != Main.myPlayer) {
-                        ScapeArmRenderer.Trigger(from, to);
-                        break;
-                    }
-                    //受害者：通过 ApplyScapeResult 匹配请求并清 pending
-                    Main.LocalPlayer.TryGetOverride(out PlayerDeath pd);
-                    if (pd != null) {
-                        pd.ApplyScapeSuccess(from, to, targetName, revivalKilled);
-                    }
-                    else {
-                        ScapeArmRenderer.Trigger(from, to);
-                        string name = string.IsNullOrWhiteSpace(targetName)
-                            ? WraithSystemText.ScapeGhostUnknownTarget.Value : targetName;
-                        VaultUtils.Text(WraithSystemText.ScapeGhostActivated.Format(name), new Color(178, 34, 44));
-                    }
-                    break;
-                }
-                case WraithNetOp.RuleKill: {
-                    string key = reader.ReadString();
-                    string reasonKey = reader.ReadString();
-                    if (!VaultUtils.isClient || !WraithRegistry.TryGet(key, out WraithDefinition definition)) {
-                        break;
-                    }
-                    Main.LocalPlayer.TryGetOverride(out PlayerDeath playerDeath);
-                    playerDeath?.PrepareRuleDeath();
-                    break;
-                }
-                case WraithNetOp.OmenStart: {
-                    string key = reader.ReadString();
-                    int ticks = reader.ReadInt32();
-                    if (!VaultUtils.isClient || ticks <= 0 || !WraithRegistry.TryGet(key, out WraithDefinition definition)) {
-                        break;
-                    }
-                    Main.LocalPlayer.GetModPlayer<WraithPlayer>().BeginOmenMirror(definition, ticks);
-                    break;
-                }
-                case WraithNetOp.OmenCancel: {
-                    if (VaultUtils.isClient) {
-                        Main.LocalPlayer.GetModPlayer<WraithPlayer>().ClearOmenMirror();
-                    }
-                    break;
-                }
-                case WraithNetOp.SiteSync: {
-                    //先读满再校验，保流对齐
-                    string key = reader.ReadString();
-                    Vector2 anchor = reader.ReadVector2();
-                    bool anchored = reader.ReadBoolean();
-                    if (!VaultUtils.isClient || string.IsNullOrEmpty(key)) {
-                        break;
-                    }
-                    WraithSiteSystem.ApplyClientMirror(key, anchor, anchored);
-                    break;
-                }
-                case WraithNetOp.ScapeStateSync: {
-                    int playerIdx = reader.ReadByte();
-                    float revivalVal = reader.ReadSingle();
-                    int multiplier = reader.ReadByte();
-                    int idleTicks = reader.ReadInt32();
-                    if (!VaultUtils.isClient || playerIdx < 0 || playerIdx >= Main.maxPlayers
-                        || !float.IsFinite(revivalVal)) {
-                        break;
-                    }
-                    Player target = Main.player[playerIdx];
-                    if (target != null && target.active) {
-                        target.GetModPlayer<WraithPlayer>().ApplyScapeStateMirror(
-                            revivalVal, multiplier, idleTicks);
-                    }
-                    break;
-                }
             }
         }
 
-        //====服务器受理====
-
-        private static void HandleHaltRequest(BinaryReader reader, int whoAmI) {
-            int slot = reader.ReadUInt16();
-            ushort generation = reader.ReadUInt16();
-            bool halt = reader.ReadBoolean();
-            int duration = reader.ReadInt32();
-            if (!VaultUtils.isServer) {
+        private static void HandleInitialState(BinaryReader reader, int whoAmI) {
+            ReadSavedState(reader, out string equipped,
+                out float scapeMastery, out bool scapeDormant,
+                out float shadeMastery, out bool shadeDormant,
+                out float handMastery, out bool handDormant,
+                out float erosion, out float revival, out int multiplier,
+                out int erosionIdle, out int revivalIdle);
+            Player player = ResolvePlayer(whoAmI, requireAlive: false);
+            WraithPlayer state = player?.GetModPlayer<WraithPlayer>();
+            if (state == null || !state.AcceptInitialState(equipped,
+                scapeMastery, scapeDormant, shadeMastery, shadeDormant,
+                handMastery, handDormant, erosion, revival, multiplier,
+                erosionIdle, revivalIdle)) {
                 return;
             }
-            Player requester = ResolvePlayer(whoAmI);
-            WraithActor wraith = ResolveActor(slot, generation);
-            //活人+随身载体+判距；仅 AllowExternalHaltRequest 受理
-            if (requester == null || wraith == null || wraith.Definition == null
-                || !wraith.Definition.AllowExternalHaltRequest
-                || !WraithVessels.ResolveCarried(requester).IsValid
-                || Vector2.DistanceSquared(requester.Center, wraith.Center) > HaltRequestRange * HaltRequestRange) {
-                return;
-            }
-            if (halt) {
-                //时长钳制，非法/超限回落定义窗口
-                int windowLimit = System.Math.Max(wraith.Definition.HaltWindowTicks, 1) * 4;
-                if (duration <= 0 || duration > windowLimit) {
-                    duration = -1;
-                }
-                wraith.BeginHalt(duration);
-            }
-            else {
-                wraith.EndHalt();
-            }
+            SendStateSync(whoAmI);
         }
 
-        private static void HandleRiteRequest(BinaryReader reader, int whoAmI) {
-            int slot = reader.ReadUInt16();
-            ushort generation = reader.ReadUInt16();
-            int inventorySlot = reader.ReadByte();
+        private static void HandleStateSync(BinaryReader reader) {
+            int playerIndex = reader.ReadByte();
+            ReadStateSync(reader, out string equipped, out uint loadoutRevision,
+                out uint resourceRevision,
+                out float scapeMastery, out bool scapeDormant,
+                out float shadeMastery, out bool shadeDormant,
+                out float handMastery, out bool handDormant,
+                out float erosion, out float revival, out int multiplier,
+                out int erosionIdle, out int revivalIdle);
+            if (playerIndex < 0 || playerIndex >= Main.maxPlayers) {
+                return;
+            }
+            Player player = Main.player[playerIndex];
+            WraithPlayer state = player?.GetModPlayer<WraithPlayer>();
+            if (player?.active != true || state == null) {
+                return;
+            }
+            state.ApplyNetworkState(equipped, loadoutRevision, resourceRevision,
+                scapeMastery, scapeDormant, shadeMastery, shadeDormant,
+                handMastery, handDormant, erosion, revival, multiplier,
+                erosionIdle, revivalIdle, force: !state.SessionInitialized);
+        }
+
+        private static void HandleEquipRequest(BinaryReader reader, int whoAmI) {
+            ushort requestId = reader.ReadUInt16();
+            uint sessionToken = reader.ReadUInt32();
+            byte inventorySlot = reader.ReadByte();
             long instanceId = reader.ReadInt64();
-            uint editRevision = reader.ReadUInt32();
-            if (!VaultUtils.isServer) {
-                return;
+            uint expectedRevision = reader.ReadUInt32();
+            ushort requestedWraithId = reader.ReadUInt16();
+
+            Player player = ResolvePlayer(whoAmI, requireAlive: true);
+            WraithPlayer state = player?.GetModPlayer<WraithPlayer>();
+            WraithEquipResult result = ValidateEquipSource(player, state, inventorySlot,
+                instanceId, expectedRevision, whoAmI);
+            string requestedKey = string.Empty;
+            if (result == WraithEquipResult.Success && requestedWraithId != NoWraith) {
+                if (!WraithRegistry.TryGetByNetworkId(requestedWraithId,
+                    out WraithDefinition definition) || !definition.CanEquip) {
+                    result = WraithEquipResult.InvalidWraith;
+                }
+                else {
+                    requestedKey = definition.Key;
+                }
             }
-            Player requester = ResolvePlayer(whoAmI);
-            WraithActor target = ResolveActor(slot, generation);
-            if (requester == null || target == null
-                || requester.selectedItem != inventorySlot
-                || !TryResolveRiteVessel(requester, inventorySlot, instanceId,
-                    out WraithVesselHandle vessel, out OnikiriData data)
-                || data.EditRevision != editRevision
-                || !WraithRites.TryServerPerform(requester, target, vessel, out WraithRiteKind kind)) {
-                return;
+            if (result == WraithEquipResult.Success
+                && !state.TrySetEquippedAuthority(requestedKey, expectedRevision)) {
+                result = WraithEquipResult.StaleRevision;
             }
-            data.AdvanceEditRevision();
-            OnikiriNet.RecordAuthoritativeState(requester, data);
-            //复核通过，回执落簿
-            ModPacket packet = NewPacket(WraithNetOp.RiteConfirm);
-            packet.Write((byte)inventorySlot);
-            packet.Write(data.InstanceId);
-            packet.Write(data.EditRevision);
-            packet.Write(target.Definition.Key);
-            packet.Write((byte)kind);
+
+            SendStateSync(whoAmI, whoAmI);
+            ModPacket packet = NewPacket(WraithNetOp.EquipResult);
+            packet.Write(requestId);
+            packet.Write(sessionToken);
+            packet.Write((byte)result);
+            packet.Write(inventorySlot);
+            packet.Write(instanceId);
+            packet.Write(state?.LoadoutRevision ?? expectedRevision);
+            packet.Write(GetWraithNetworkId(state?.EquippedWraithKey));
             packet.Send(whoAmI);
         }
 
-        private static void HandleBacklashSpawn(BinaryReader reader, int whoAmI) {
-            string key = reader.ReadString();
-            if (!VaultUtils.isServer || !WraithRegistry.TryGet(key, out WraithDefinition definition)) {
+        private static WraithEquipResult ValidateEquipSource(Player player, WraithPlayer state,
+            byte inventorySlot, long instanceId, uint expectedRevision, int whoAmI) {
+            if (player == null || state == null) {
+                return WraithEquipResult.InvalidPlayer;
+            }
+            if (!state.SessionInitialized) {
+                return WraithEquipResult.SessionNotReady;
+            }
+            if (!AllowEquipRequest(whoAmI)) {
+                return WraithEquipResult.RateLimited;
+            }
+            if (inventorySlot != player.selectedItem || inventorySlot >= player.inventory.Length) {
+                return WraithEquipResult.InvalidItem;
+            }
+            Item item = player.inventory[inventorySlot];
+            OnikiriData data = OnikiriData.TryGet(item);
+            if (item == null || item.IsAir || item.type != OnikiriOverride.ID || data == null) {
+                return WraithEquipResult.InvalidItem;
+            }
+            if (instanceId == 0 || data.InstanceId != instanceId) {
+                return WraithEquipResult.IdentityMismatch;
+            }
+            if (OnikiriNet.HasDuplicateInstanceId(player, instanceId)) {
+                return WraithEquipResult.DuplicateIdentity;
+            }
+            return state.LoadoutRevision == expectedRevision
+                ? WraithEquipResult.Success : WraithEquipResult.StaleRevision;
+        }
+
+        private static void HandleEquipResult(BinaryReader reader) {
+            ushort requestId = reader.ReadUInt16();
+            uint sessionToken = reader.ReadUInt32();
+            WraithEquipResult result = (WraithEquipResult)reader.ReadByte();
+            byte inventorySlot = reader.ReadByte();
+            long instanceId = reader.ReadInt64();
+            uint revision = reader.ReadUInt32();
+            ushort equippedWraithId = reader.ReadUInt16();
+            PendingEquipRequest pending = TakePending(requestId);
+            if (pending == null) {
                 return;
             }
-            Player owner = ResolvePlayer(whoAmI);
+
+            bool valid = pending.SessionToken == sessionToken
+                && pending.InventorySlot == inventorySlot
+                && pending.InstanceId == instanceId
+                && result <= WraithEquipResult.SessionNotReady
+                && revision >= pending.ExpectedRevision;
+            if (valid && result == WraithEquipResult.Success) {
+                valid = equippedWraithId == pending.RequestedWraithId;
+            }
+            CompletePending(pending, valid && result == WraithEquipResult.Success);
+        }
+
+        private static void HandleHeadlessImpact(BinaryReader reader, int whoAmI) {
+            int projectileIdentity = reader.ReadInt32();
+            ushort serial = reader.ReadUInt16();
+            int targetId = reader.ReadInt32();
+            int targetType = reader.ReadInt32();
+            Vector2 impact = reader.ReadVector2();
+            Player owner = ResolvePlayer(whoAmI, requireAlive: true);
+            if (owner == null || !float.IsFinite(impact.X) || !float.IsFinite(impact.Y)) {
+                return;
+            }
+
+            Projectile projectile = ResolveOwnedProjectile(whoAmI, projectileIdentity,
+                ModContent.ProjectileType<HeadlessShadeProj>());
+            if (projectile?.ModProjectile is not HeadlessShadeProj shade) {
+                return;
+            }
+            shade.TryApplyAuthorityImpact(serial, targetId, targetType, impact);
+        }
+
+        private static void HandleGhostHandGrip(BinaryReader reader, int whoAmI) {
+            int projectileIdentity = reader.ReadInt32();
+            ushort serial = reader.ReadUInt16();
+            int targetId = reader.ReadInt32();
+            int targetType = reader.ReadInt32();
+            Player owner = ResolvePlayer(whoAmI, requireAlive: true);
             if (owner == null) {
                 return;
             }
-            //随身 Bound 且躁动
-            WraithVesselHandle vessel = WraithVessels.ResolveCarried(owner);
-            if (!vessel.IsValid || !vessel.Store.TryGet(key, out WraithProgressRecord record)
-                || record.State != WraithBindState.Bound
-                || record.Mastery >= WraithDefinition.RestlessThreshold) {
+
+            Projectile projectile = ResolveOwnedProjectile(whoAmI, projectileIdentity,
+                ModContent.ProjectileType<GhostHandProj>());
+            if (projectile?.ModProjectile is not GhostHandProj hand) {
                 return;
             }
-            //服侧同键冷却
-            long now = (long)Main.GameUpdateCount;
-            if (backlashLastSpawn.TryGetValue((whoAmI, key), out long last)
-                && now - last < WraithBacklash.KeyCooldownTicks) {
-                return;
-            }
-            //生成落地才记冷却
-            if (WraithBacklash.SpawnEscaped(whoAmI, definition)) {
-                backlashLastSpawn[(whoAmI, key)] = now;
-            }
+            hand.TryApplyAuthorityGrip(serial, targetId, targetType);
         }
 
-        //====解析====
+        private static void HandleScapeGhostFx(BinaryReader reader) {
+            Vector2 from = reader.ReadVector2();
+            Vector2 to = reader.ReadVector2();
+            int victim = reader.ReadByte();
+            string targetName = reader.ReadString();
+            bool revivalKilled = reader.ReadBoolean();
+            if (victim < 0 || victim >= Main.maxPlayers) {
+                return;
+            }
+            if (victim != Main.myPlayer) {
+                ScapeArmRenderer.Trigger(from, to);
+                return;
+            }
+            Main.LocalPlayer.TryGetOverride(out PlayerDeath playerDeath);
+            if (playerDeath != null) {
+                playerDeath.ApplyScapeSuccess(from, to, targetName, revivalKilled);
+                return;
+            }
+            ScapeArmRenderer.Trigger(from, to);
+            string name = string.IsNullOrWhiteSpace(targetName)
+                ? WraithSystemText.ScapeGhostUnknownTarget.Value : targetName;
+            VaultUtils.Text(WraithSystemText.ScapeGhostActivated.Format(name),
+                new Color(178, 34, 44));
+        }
 
-        private static bool TryResolveHeldInventorySlot(Player player, Item item, out byte inventorySlot) {
+        private static void HandleRuleKill(BinaryReader reader) {
+            int victim = reader.ReadByte();
+            string key = reader.ReadString();
+            _ = reader.ReadString();
+            if (victim < 0 || victim >= Main.maxPlayers
+                || !WraithRegistry.TryGet(key, out _)) {
+                return;
+            }
+            Main.player[victim].TryGetOverride(out PlayerDeath playerDeath);
+            playerDeath?.PrepareRuleDeath();
+        }
+
+        private static void WriteSavedState(BinaryWriter writer, WraithPlayer state) {
+            state.ExportSnapshot(out string equipped, out _, out _,
+                out float scapeMastery, out bool scapeDormant,
+                out float shadeMastery, out bool shadeDormant,
+                out float handMastery, out bool handDormant,
+                out float erosion, out float revival, out int multiplier,
+                out int erosionIdle, out int revivalIdle);
+            writer.Write(GetWraithNetworkId(equipped));
+            WriteResources(writer, scapeMastery, scapeDormant,
+                shadeMastery, shadeDormant, handMastery, handDormant,
+                erosion, revival, multiplier, erosionIdle, revivalIdle);
+        }
+
+        private static void ReadSavedState(BinaryReader reader, out string equipped,
+            out float scapeMastery, out bool scapeDormant,
+            out float shadeMastery, out bool shadeDormant,
+            out float handMastery, out bool handDormant,
+            out float erosion, out float revival, out int multiplier,
+            out int erosionIdle, out int revivalIdle) {
+            equipped = ResolveUsableKey(reader.ReadUInt16());
+            ReadResources(reader, out scapeMastery, out scapeDormant,
+                out shadeMastery, out shadeDormant, out handMastery, out handDormant,
+                out erosion, out revival, out multiplier, out erosionIdle, out revivalIdle);
+        }
+
+        private static void WriteStateSync(BinaryWriter writer, WraithPlayer state) {
+            state.ExportSnapshot(out string equipped, out uint loadoutRevision,
+                out uint resourceRevision,
+                out float scapeMastery, out bool scapeDormant,
+                out float shadeMastery, out bool shadeDormant,
+                out float handMastery, out bool handDormant,
+                out float erosion, out float revival, out int multiplier,
+                out int erosionIdle, out int revivalIdle);
+            writer.Write(GetWraithNetworkId(equipped));
+            writer.Write(loadoutRevision);
+            writer.Write(resourceRevision);
+            WriteResources(writer, scapeMastery, scapeDormant,
+                shadeMastery, shadeDormant, handMastery, handDormant,
+                erosion, revival, multiplier, erosionIdle, revivalIdle);
+        }
+
+        private static void ReadStateSync(BinaryReader reader, out string equipped,
+            out uint loadoutRevision, out uint resourceRevision,
+            out float scapeMastery, out bool scapeDormant,
+            out float shadeMastery, out bool shadeDormant,
+            out float handMastery, out bool handDormant,
+            out float erosion, out float revival, out int multiplier,
+            out int erosionIdle, out int revivalIdle) {
+            equipped = ResolveUsableKey(reader.ReadUInt16());
+            loadoutRevision = reader.ReadUInt32();
+            resourceRevision = reader.ReadUInt32();
+            ReadResources(reader, out scapeMastery, out scapeDormant,
+                out shadeMastery, out shadeDormant, out handMastery, out handDormant,
+                out erosion, out revival, out multiplier, out erosionIdle, out revivalIdle);
+        }
+
+        private static void WriteResources(BinaryWriter writer,
+            float scapeMastery, bool scapeDormant,
+            float shadeMastery, bool shadeDormant,
+            float handMastery, bool handDormant,
+            float erosion, float revival, int multiplier,
+            int erosionIdle, int revivalIdle) {
+            writer.Write(scapeMastery);
+            writer.Write(scapeDormant);
+            writer.Write(shadeMastery);
+            writer.Write(shadeDormant);
+            writer.Write(handMastery);
+            writer.Write(handDormant);
+            writer.Write(erosion);
+            writer.Write(revival);
+            writer.Write((byte)WraithPlayer.SanitizeScapeMultiplier(multiplier));
+            writer.Write(erosionIdle);
+            writer.Write(revivalIdle);
+        }
+
+        private static void ReadResources(BinaryReader reader,
+            out float scapeMastery, out bool scapeDormant,
+            out float shadeMastery, out bool shadeDormant,
+            out float handMastery, out bool handDormant,
+            out float erosion, out float revival, out int multiplier,
+            out int erosionIdle, out int revivalIdle) {
+            scapeMastery = reader.ReadSingle();
+            scapeDormant = reader.ReadBoolean();
+            shadeMastery = reader.ReadSingle();
+            shadeDormant = reader.ReadBoolean();
+            handMastery = reader.ReadSingle();
+            handDormant = reader.ReadBoolean();
+            erosion = reader.ReadSingle();
+            revival = reader.ReadSingle();
+            multiplier = reader.ReadByte();
+            erosionIdle = reader.ReadInt32();
+            revivalIdle = reader.ReadInt32();
+        }
+
+        private static ushort GetWraithNetworkId(string key) {
+            if (!string.IsNullOrEmpty(key)
+                && WraithRegistry.TryGetNetworkId(key, out ushort id)) {
+                return id;
+            }
+            return NoWraith;
+        }
+
+        private static string ResolveUsableKey(ushort id) {
+            if (id != NoWraith && WraithRegistry.TryGetByNetworkId(id,
+                out WraithDefinition definition) && definition.CanEquip) {
+                return definition.Key;
+            }
+            return string.Empty;
+        }
+
+        private static bool TryResolveSelectedSword(Player player, Item source,
+            out byte inventorySlot) {
             inventorySlot = 0;
-            int selectedItem = player?.selectedItem ?? -1;
-            if (selectedItem < 0 || selectedItem >= player.inventory.Length
-                || selectedItem > byte.MaxValue || !ReferenceEquals(player.inventory[selectedItem], item)) {
+            int selected = player?.selectedItem ?? -1;
+            if (selected < 0 || selected >= player.inventory.Length
+                || selected > byte.MaxValue || !ReferenceEquals(player.inventory[selected], source)
+                || source.type != OnikiriOverride.ID || !ReferenceEquals(player.HeldItem, source)) {
                 return false;
             }
-            inventorySlot = (byte)selectedItem;
+            inventorySlot = (byte)selected;
             return true;
         }
 
-        private static bool TryResolveRiteVessel(Player player, int inventorySlot, long instanceId,
-            out WraithVesselHandle vessel, out OnikiriData data) {
-            vessel = default;
-            data = null;
-            if (player == null || inventorySlot < 0 || inventorySlot >= player.inventory.Length) {
+        private static bool TryTrackEquip(byte inventorySlot, long instanceId,
+            uint expectedRevision, ushort requestedWraithId, Action<bool> completed,
+            out PendingEquipRequest request) {
+            SweepPending();
+            request = null;
+            if (pendingEquip.Count >= MaxPendingEquipRequests) {
                 return false;
             }
-            Item item = player.inventory[inventorySlot];
-            data = OnikiriData.TryGet(item);
-            if (data == null || instanceId == 0 || data.InstanceId != instanceId) {
-                return false;
+            foreach (PendingEquipRequest active in pendingEquip.Values) {
+                if (active.InstanceId == instanceId) {
+                    return false;
+                }
             }
-            vessel = new WraithVesselHandle(item, data.Wraiths);
-            return vessel.IsValid;
+            ushort requestId;
+            do {
+                requestId = ++nextRequestId;
+            }
+            while (requestId == 0 || pendingEquip.ContainsKey(requestId));
+            uint sessionToken = ++nextSessionToken;
+            if (sessionToken == 0) {
+                sessionToken = ++nextSessionToken;
+            }
+            request = new PendingEquipRequest {
+                RequestId = requestId,
+                SessionToken = sessionToken,
+                InventorySlot = inventorySlot,
+                InstanceId = instanceId,
+                ExpectedRevision = expectedRevision,
+                RequestedWraithId = requestedWraithId,
+                CreatedAt = Main.GameUpdateCount,
+                Completion = completed,
+            };
+            pendingEquip.Add(requestId, request);
+            return true;
         }
 
-        private static Player ResolvePlayer(int whoAmI) {
+        private static PendingEquipRequest TakePending(ushort requestId) {
+            SweepPending();
+            return pendingEquip.Remove(requestId, out PendingEquipRequest request)
+                ? request : null;
+        }
+
+        private static void SweepPending() {
+            if (pendingEquip.Count == 0) {
+                return;
+            }
+            ulong now = Main.GameUpdateCount;
+            List<PendingEquipRequest> expired = [];
+            foreach (ushort id in new List<ushort>(pendingEquip.Keys)) {
+                if (now - pendingEquip[id].CreatedAt > PendingLifetimeTicks) {
+                    expired.Add(pendingEquip[id]);
+                    pendingEquip.Remove(id);
+                }
+            }
+            foreach (PendingEquipRequest request in expired) {
+                CompletePending(request, false);
+            }
+        }
+
+        private static void ClearLocalPending() {
+            List<PendingEquipRequest> abandoned = [.. pendingEquip.Values];
+            pendingEquip.Clear();
+            nextRequestId = 0;
+            nextSessionToken = 0;
+            foreach (PendingEquipRequest request in abandoned) {
+                CompletePending(request, false);
+            }
+        }
+
+        private static void CompletePending(PendingEquipRequest request, bool success) {
+            Action<bool> completion = request?.Completion;
+            if (request != null) {
+                request.Completion = null;
+            }
+            completion?.Invoke(success);
+        }
+
+        private static bool AllowEquipRequest(int whoAmI) {
+            ulong now = Main.GameUpdateCount;
+            if (!equipRequestWindows.TryGetValue(whoAmI, out RequestWindow window)
+                || now - window.StartedAt >= RequestWindowTicks) {
+                equipRequestWindows[whoAmI] = new RequestWindow {
+                    StartedAt = now,
+                    Count = 1,
+                };
+                return true;
+            }
+            if (window.Count >= MaxRequestsPerWindow) {
+                return false;
+            }
+            window.Count++;
+            equipRequestWindows[whoAmI] = window;
+            return true;
+        }
+
+        private static Projectile ResolveOwnedProjectile(int owner, int identity, int expectedType) {
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile projectile = Main.projectile[i];
+                if (projectile.active && projectile.owner == owner
+                    && projectile.identity == identity && projectile.type == expectedType) {
+                    return projectile;
+                }
+            }
+            return null;
+        }
+
+        private static Player ResolvePlayer(int whoAmI, bool requireAlive) {
             if (whoAmI < 0 || whoAmI >= Main.maxPlayers) {
                 return null;
             }
             Player player = Main.player[whoAmI];
-            return player != null && player.active && !player.dead ? player : null;
-        }
-
-        /// <summary>槽位+代校验，无效/过期返回 null</summary>
-        private static WraithActor ResolveActor(int slot, ushort generation) {
-            if (slot < 0 || slot >= ActorLoader.MaxActorCount) {
+            if (player?.active != true || requireAlive && player.dead) {
                 return null;
             }
-            Actor actor = ActorLoader.Actors[slot];
-            return actor is WraithActor wraith && wraith.Active && wraith.Generation == generation ? wraith : null;
+            return player;
         }
+    }
+
+    internal sealed class WraithNetSessionSystem : ModSystem
+    {
+        public override void OnWorldLoad() => WraithNet.ClearSession();
+
+        public override void OnWorldUnload() => WraithNet.ClearSession();
     }
 }

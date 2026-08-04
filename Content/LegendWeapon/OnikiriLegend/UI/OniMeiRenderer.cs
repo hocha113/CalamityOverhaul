@@ -814,7 +814,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     Sz(1.6f, 1.6f), SpriteEffects.None, 0f);
             }
 
-            //====纸垂两条:挂在天杆上,簿上有鬼躁动时抖得更急====
+            //====纸垂两条：挂在天杆上，危险状态时抖得更急====
             Rectangle shideRect = new((int)(rodTopC.X - 13f * s), (int)(rodTopC.Y + 1f * s), (int)(26f * s), (int)(6f * s));
             float shideTime = time * (danger ? 1.7f : 1f);
             OniBrush.DrawSingleShide(sb, shideRect, 0.10f, 12f * s, a * 0.95f, shideTime, 0.4f);

@@ -6,21 +6,12 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
-    /// <summary>
-    /// 点鬼簿适配器+厉鬼接线.
-    /// 簿面映 <see cref="OnikiriData"/>;(引用,版本)脏检;
-    /// 注册 <see cref="WraithVessels"/> / <see cref="WraithRites"/> 演出
-    /// </summary>
     internal sealed class OniWraithSource : IOniGhostSource, ICWRLoader
     {
-        //空悬铭位数量:簿面留白,等新鬼上簿
-        private const int VacantSlots = 2;
-
         private static readonly List<OniGhostEntry> entries = [];
-        private static OnikiriData cachedData;
-        private static int cachedVersion = -1;
-        //目录组成随调试闹鬼闸变(试件临时上目录),纳入脏检查
-        private static bool cachedDebugVisible;
+        private static int cachedPlayer = -1;
+        private static uint cachedLoadoutRevision = uint.MaxValue;
+        private static uint cachedResourceRevision = uint.MaxValue;
 
         public IReadOnlyList<OniGhostEntry> Entries {
             get {
@@ -29,138 +20,109 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        public string AttunedKey {
+        public string EquippedKey {
             get {
-                TryRefresh();
-                return cachedData?.Wraiths.AttunedKey ?? string.Empty;
+                return TryResolvePlayer(out WraithPlayer wraithPlayer)
+                    ? wraithPlayer.EquippedWraithKey
+                    : string.Empty;
             }
         }
 
-        public bool TryAttune(string key, Action<bool> completed) {
+        public float Erosion {
+            get {
+                return TryResolvePlayer(out WraithPlayer wraithPlayer)
+                    ? wraithPlayer.Erosion
+                    : 0f;
+            }
+        }
+
+        public bool TrySetEquipped(Item sourceItem, string key, Action<bool> completed) {
             Player player = Main.LocalPlayer;
-            return OnikiriNet.TryAttune(player, player?.GetItem(), key, success => {
+            if (player == null || sourceItem == null || OnikiriData.TryGet(sourceItem) == null) {
+                return false;
+            }
+            if (!string.IsNullOrEmpty(key)
+                && (!WraithRegistry.TryGet(key, out WraithDefinition definition) || !definition.CanEquip)) {
+                return false;
+            }
+            return WraithNet.RequestEquippedWraith(player, sourceItem, key, success => {
+                Invalidate();
                 TryRefresh();
                 completed?.Invoke(success);
             });
         }
 
-        void ICWRLoader.SetupData() {
-            OniRegistry.SetSource(this);
-            //载体解析缝:手持=仪式与共鸣资格,随身=反噬判定(刀在身上,鬼就在身边)
-            WraithVessels.Register(ResolveHeldVessel, ResolveCarriedVessel);
-            //数据已由 WraithRites 落簿，这里只负责确认后的铭刻演出
-            WraithRites.RitePresenter = PresentRite;
-        }
+        void ICWRLoader.SetupData() => OniRegistry.SetSource(this);
 
         void ICWRLoader.UnLoadData() {
             OniRegistry.SetSource(null);
-            WraithVessels.Clear();
-            WraithRites.RitePresenter = null;
             entries.Clear();
-            cachedData = null;
-            cachedVersion = -1;
+            Invalidate();
         }
 
-        //====载体解析与仪式演出====
-
-        /// <summary>手持解析,本地含鼠标项</summary>
-        private static WraithVesselHandle ResolveHeldVessel(Player player) {
-            Item item = player.HeldItem;
-            OnikiriData data = OnikiriData.TryGet(item);
-            return data == null ? default : new WraithVesselHandle(item, data.Wraiths);
-        }
-
-        /// <summary>随身解析,手中优先背包兜底</summary>
-        private static WraithVesselHandle ResolveCarriedVessel(Player player) {
-            WraithVesselHandle held = ResolveHeldVessel(player);
-            if (held.IsValid) {
-                return held;
+        private static bool TryResolvePlayer(out WraithPlayer wraithPlayer) {
+            wraithPlayer = null;
+            if (Main.dedServ || Main.gameMenu || Main.LocalPlayer == null || !Main.LocalPlayer.active) {
+                return false;
             }
-            foreach (Item item in player.inventory) {
-                OnikiriData data = OnikiriData.TryGet(item);
-                if (data != null) {
-                    return new WraithVesselHandle(item, data.Wraiths);
-                }
-            }
-            return default;
-        }
-
-        /// <summary>读刚落簿记录交铭刻弹窗</summary>
-        private static void PresentRite(WraithDefinition definition, WraithRiteKind kind,
-            WraithVesselHandle vessel) {
-            if (!vessel.IsValid || !vessel.Store.TryGet(definition.Key, out WraithProgressRecord record)) {
-                return;
-            }
-            OniEngraveRiteUI.Play(BuildEntry(definition, record), kind);
-        }
-
-        /// <summary>本地持刀数据,服务器/菜单/未持 null</summary>
-        private static OnikiriData ResolveLocalData() {
-            if (Main.dedServ || Main.gameMenu) {
-                return null;
-            }
-            return OnikiriData.TryGet(Main.LocalPlayer?.GetItem());
+            return Main.LocalPlayer.TryGetModPlayer(out wraithPlayer);
         }
 
         private static void TryRefresh() {
-            OnikiriData data = ResolveLocalData();
-            if (data == null) {
-                //未持刀时保留上一份名录:封印札淡出期间读数不跳零
+            if (!TryResolvePlayer(out WraithPlayer wraithPlayer)) {
+                entries.Clear();
+                Invalidate();
                 return;
             }
-            int version = data.Wraiths.Version;
-            bool debugVisible = WraithDirector.DebugHauntEnabled;
-            if (ReferenceEquals(data, cachedData) && version == cachedVersion && debugVisible == cachedDebugVisible) {
+            if (cachedPlayer == wraithPlayer.Player.whoAmI
+                && cachedLoadoutRevision == wraithPlayer.LoadoutRevision
+                && cachedResourceRevision == wraithPlayer.ResourceRevision
+                && entries.Count == WraithRegistry.All.Count) {
                 return;
             }
-            cachedData = data;
-            cachedVersion = version;
-            cachedDebugVisible = debugVisible;
-            Rebuild(data.Wraiths);
+
+            cachedPlayer = wraithPlayer.Player.whoAmI;
+            cachedLoadoutRevision = wraithPlayer.LoadoutRevision;
+            cachedResourceRevision = wraithPlayer.ResourceRevision;
+            Rebuild(wraithPlayer);
         }
 
-        private static void Rebuild(WraithProgressStore store) {
+        private static void Rebuild(WraithPlayer wraithPlayer) {
             entries.Clear();
-            foreach (WraithDefinition definition in WraithRegistry.All) {
-                if (definition.HiddenFromCatalog) {
-                    continue;
-                }
-                store.TryGet(definition.Key, out WraithProgressRecord record);
-                entries.Add(BuildEntry(definition, record));
+            foreach (WraithDefinition definition in WraithRegistry.Usable) {
+                entries.Add(BuildEntry(definition, wraithPlayer));
             }
-            for (int i = 0; i < VacantSlots; i++) {
-                entries.Add(new OniGhostEntry { Key = $"Vacant{i}", State = OniGhostState.Unknown });
+            foreach (WraithDefinition definition in WraithRegistry.All) {
+                if (!definition.CanEquip) {
+                    entries.Add(BuildEntry(definition, wraithPlayer));
+                }
             }
         }
 
-        private static OniGhostEntry BuildEntry(WraithDefinition definition, WraithProgressRecord record) {
-            OniGhostEntry entry = new() {
+        private static OniGhostEntry BuildEntry(WraithDefinition definition, WraithPlayer wraithPlayer) {
+            bool canEquip = definition.CanEquip;
+            bool dormant = canEquip && wraithPlayer.IsDormant(definition.Key);
+            return new OniGhostEntry {
                 Key = definition.Key,
                 Name = () => definition.DisplayName.Value,
+                Origin = () => definition.Origin.Value,
+                Power = () => definition.Power.Value,
+                Mastery = canEquip ? wraithPlayer.GetMastery(definition.Key) : 0f,
+                MasteryCost = definition.MasteryCost,
+                ErosionCost = definition.ErosionCost,
+                State = canEquip
+                    ? dormant ? OniGhostState.Dormant : OniGhostState.Ready
+                    : definition.CatalogState == WraithCatalogState.SealedArchive
+                        ? OniGhostState.SealedArchive
+                        : OniGhostState.Archive,
+                CanEquip = canEquip,
             };
+        }
 
-            switch (record?.State ?? WraithBindState.Unknown) {
-                case WraithBindState.Sealed:
-                    //封印:名讳可见,来历赋力糊住;文案走簿面的封印提示而非定义本体
-                    entry.State = OniGhostState.Sealed;
-                    entry.Origin = () => OniRegisterUI.SealedOriginHint.Value;
-                    entry.Power = () => OniRegisterUI.SealedPowerHint.Value;
-                    break;
-                case WraithBindState.Bound:
-                    //躁动由驾驭度推导,不做独立存储;阈值与反噬判定同源
-                    entry.State = record.Mastery < WraithDefinition.RestlessThreshold ? OniGhostState.Restless : OniGhostState.Engraved;
-                    entry.Mastery = record.Mastery;
-                    entry.CanAttune = definition.CanAttune;
-                    //Bound 即见来历赋力;PactRenewed 仍落档但不挡簿面
-                    entry.Origin = () => definition.Origin.Value;
-                    entry.Power = () => definition.Power.Value;
-                    break;
-                default:
-                    //Unknown 与 Discovered:簿面暂无"已发现未铭刻"的视觉,先按空悬呈现
-                    entry.State = OniGhostState.Unknown;
-                    break;
-            }
-            return entry;
+        private static void Invalidate() {
+            cachedPlayer = -1;
+            cachedLoadoutRevision = uint.MaxValue;
+            cachedResourceRevision = uint.MaxValue;
         }
     }
 }

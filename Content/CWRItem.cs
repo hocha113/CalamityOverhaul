@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -95,6 +96,13 @@ namespace CalamityOverhaul.Content
             cwr.LegendData = LegendData?.Clone(to);
             cwr.DyeItemID = DyeItemID;
             return cwr;
+        }
+
+        public override void OnCreated(Item item, ItemCreationContext context) {
+            if (context is JourneyDuplicationItemCreationContext
+                && OnikiriData.TryGet(item) is OnikiriData data) {
+                data.RenewIdentity();
+            }
         }
 
         internal static void SmiperItemSet(Item item) {

@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 if (npc.townNPC || npc.friendly || npc.CountsAsACritter) return false;
                 return npc.damage > 0 || npc.lifeMax > 5000;
             }
-            return target is WraithScannable || target is IHackableTurret;
+            return target is IHackableTurret;
         }
 
         #endregion

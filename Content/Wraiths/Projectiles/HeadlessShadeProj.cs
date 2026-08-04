@@ -2,8 +2,9 @@
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.Wraiths.Attunements;
+using CalamityOverhaul.Content.Wraiths.Abilities;
 using CalamityOverhaul.Content.Wraiths.Core;
+using CalamityOverhaul.Content.Wraiths.Runtime;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -18,8 +19,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Wraiths.Projectiles
 {
     /// <summary>
-    /// 无头鬼影共鸣体。ai[0]=状态，ai[1]=状态计时，ai[2]=驾驭度；
-    /// 目标、锁定点与冲刺路径通过 ExtraAI 同步，伤害仅由拥有者结算。
+    /// 无头鬼影役鬼体。ai[0]=状态，ai[1]=状态计时，ai[2]=驾驭度；
+    /// 目标、锁定点与冲刺路径通过 ExtraAI 同步，命中由权威端复核结算。
     /// </summary>
     internal sealed class HeadlessShadeProj : ModProjectile
     {
@@ -73,9 +74,11 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         private int wakePointCount;
         private ushort impactSerial;
         private ushort processedImpactSerial;
+        private ushort lastSeenImpactSerial;
         private bool impactEventPending;
         private bool pendingDamage;
         private bool strikeResolved;
+        private bool strikeInvalidated;
         private bool wakeAnchoredToImpact;
 
         private ShadeState previousState = ShadeState.Idle;
@@ -188,9 +191,19 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             }
 
             Projectile.timeLeft = 2;
-            if (State != ShadeState.Dismissing
-                && (Owner.dead || Projectile.IsOwnedByLocalPlayer() && !HasValidAttunement())) {
+            bool finishingStrike = State is ShadeState.DashCharge
+                or ShadeState.Dashing or ShadeState.Recovering;
+            if (State != ShadeState.Dismissing && Owner.dead) {
                 Transition(ShadeState.Dismissing);
+            }
+            else if (State != ShadeState.Dismissing && Projectile.IsOwnedByLocalPlayer()
+                && !HasValidAbility()) {
+                if (finishingStrike) {
+                    strikeInvalidated = true;
+                }
+                else {
+                    Transition(ShadeState.Dismissing);
+                }
             }
 
             visualAge++;
@@ -229,13 +242,8 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             UpdateVisuals();
         }
 
-        private bool HasValidAttunement() {
-            WraithVesselHandle vessel = WraithVessels.ResolveHeld(Owner);
-            return vessel.IsValid
-                && vessel.Store.AttunedKey == HeadlessShadeAttunement.Key
-                && vessel.Store.TryGet(HeadlessShadeAttunement.Key, out WraithProgressRecord record)
-                && record.State == WraithBindState.Bound;
-        }
+        private bool HasValidAbility()
+            => WraithAbilityService.TryResolve(Owner, HeadlessShadeAbility.Key, out _);
 
         private void Transition(ShadeState next) {
             if (State == next) {
@@ -268,12 +276,19 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             if (!Projectile.IsOwnedByLocalPlayer() || StateTimer < InitialScanDelay || (int)StateTimer % 6 != 0) {
                 return;
             }
+            if (!WraithAbilityService.TryResolve(Owner, HeadlessShadeAbility.Key,
+                out WraithAbilityContext context)) {
+                Transition(ShadeState.Dismissing);
+                return;
+            }
 
             NPC target = FindTarget();
             if (target == null) {
                 return;
             }
 
+            Mastery = context.Mastery;
+            strikeInvalidated = false;
             targetNPCID = target.whoAmI;
             targetNPCType = target.type;
             Transition(ShadeState.Stalking);
@@ -423,7 +438,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                 return;
             }
             pendingDamage = false;
-            if (!Projectile.IsOwnedByLocalPlayer()) {
+            if (!Projectile.IsOwnedByLocalPlayer() || strikeInvalidated) {
                 return;
             }
 
@@ -432,11 +447,82 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                 return;
             }
 
-            int hitDirection = dashDirection.X >= 0f ? 1 : -1;
-            bool crit = Projectile.CritChance > 0 && Main.rand.Next(100) < Projectile.CritChance;
-            Owner.ApplyDamageToNPC(target, Projectile.damage, Projectile.knockBack,
-                hitDirection, crit, Projectile.DamageType);
+            WraithNet.RequestHeadlessImpact(Projectile, impactSerial,
+                targetNPCID, targetNPCType, impactCenter);
         }
+
+        internal bool TryApplyAuthorityImpact(ushort serial, int targetId, int targetType,
+            Vector2 impact) {
+            if (Main.netMode == NetmodeID.MultiplayerClient || !Projectile.active
+                || State is not (ShadeState.Dashing or ShadeState.Recovering)
+                || serial != impactSerial || !IsNewerImpact(serial, lastSeenImpactSerial)
+                || targetId != targetNPCID || targetType != targetNPCType
+                || !float.IsFinite(impact.X) || !float.IsFinite(impact.Y)
+                || targetId < 0 || targetId >= Main.maxNPCs) {
+                return false;
+            }
+            lastSeenImpactSerial = serial;
+
+            NPC target = Main.npc[targetId];
+            if (!target.active || target.type != targetType || !target.CanBeChasedBy()
+                || Vector2.DistanceSquared(Owner.Center, target.Center)
+                    > HeadlessShadeAbility.HuntRange * HeadlessShadeAbility.HuntRange * 2.25f
+                || !IsFinite(dashOrigin) || !IsFinite(dashEnd) || !IsFinite(dashDirection)
+                || Vector2.DistanceSquared(Owner.Center, dashOrigin)
+                    > HeadlessShadeAbility.HuntRange * HeadlessShadeAbility.HuntRange * 2.25f
+                || !PathTouchesTarget(target, dashOrigin, dashEnd, out Vector2 verifiedImpact)) {
+                return false;
+            }
+
+            float impactTolerance = Math.Max(80f,
+                target.Size.Length() * 0.75f + ImpactRadiusPadding);
+            float directionLengthSq = dashDirection.LengthSquared();
+            if (directionLengthSq < 0.81f || directionLengthSq > 1.21f) {
+                return false;
+            }
+            Vector2 verifiedDirection = dashDirection / MathF.Sqrt(directionLengthSq);
+            Vector2 originToTarget = target.Center - dashOrigin;
+            if (originToTarget.LengthSquared() < 1f
+                || Vector2.Dot(originToTarget.SafeNormalize(Vector2.UnitX), verifiedDirection) < 0.85f) {
+                return false;
+            }
+            Vector2 overrun = dashEnd - target.Center;
+            float projectedOverrun = Vector2.Dot(overrun, verifiedDirection);
+            float lateralOverrun = MathF.Abs(overrun.X * verifiedDirection.Y
+                - overrun.Y * verifiedDirection.X);
+            if (projectedOverrun < 70f || projectedOverrun > 300f
+                || lateralOverrun > impactTolerance) {
+                return false;
+            }
+            if (Vector2.DistanceSquared(impact, target.Center) > impactTolerance * impactTolerance
+                || Vector2.DistanceSquared(impact, verifiedImpact) > impactTolerance * impactTolerance) {
+                return false;
+            }
+
+            if (!WraithAbilityService.TryResolve(Owner, HeadlessShadeAbility.Key,
+                out WraithAbilityContext context)) {
+                return false;
+            }
+
+            float mastery = MathHelper.Clamp(context.Mastery, 0f, 1f);
+            int weaponDamage = Math.Max(Owner.GetWeaponDamage(context.VesselItem), 1);
+            int damage = Math.Max((int)(weaponDamage * MathHelper.Lerp(0.55f, 0.90f, mastery)), 1);
+            float knockback = Owner.GetWeaponKnockback(context.VesselItem)
+                * MathHelper.Lerp(0.65f, 1f, mastery);
+            int critChance = Math.Max(Owner.GetWeaponCrit(context.VesselItem), 0);
+            bool crit = critChance > 0 && Main.rand.Next(100) < critChance;
+            int hitDirection = dashDirection.X >= 0f ? 1 : -1;
+            int lifeBefore = target.life;
+            Owner.ApplyDamageToNPC(target, damage, knockback,
+                hitDirection, crit, Projectile.DamageType);
+            if (target.life >= lifeBefore) {
+                return false;
+            }
+            return WraithAbilityService.TryCommitUse(in context);
+        }
+
+        private static bool IsFinite(Vector2 value)
+            => float.IsFinite(value.X) && float.IsFinite(value.Y);
 
         private void RecoveringBehavior() {
             ownerDirection = Owner.direction;
@@ -528,14 +614,14 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         private NPC FindTarget() {
             Vector2 origin = Owner.Center;
             NPC boss = origin.FindClosestNPC(
-                HeadlessShadeAttunement.HuntRange,
+                HeadlessShadeAbility.HuntRange,
                 ignoreTiles: true,
-                chasedByNPC: npc => HeadlessShadeAttunement.CanHunt(npc)
+                chasedByNPC: npc => HeadlessShadeAbility.CanHunt(npc)
                     && NpcGroupHelper.IsBossTier(npc));
             return boss ?? origin.FindClosestNPC(
-                HeadlessShadeAttunement.HuntRange,
+                HeadlessShadeAbility.HuntRange,
                 ignoreTiles: true,
-                chasedByNPC: HeadlessShadeAttunement.CanHunt);
+                chasedByNPC: HeadlessShadeAbility.CanHunt);
         }
 
         private NPC GetTarget(bool requireHuntRange) {
@@ -549,7 +635,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             }
             if (requireHuntRange
                 && Vector2.DistanceSquared(target.Center, Owner.Center)
-                    > HeadlessShadeAttunement.HuntRange * HeadlessShadeAttunement.HuntRange * 1.44f) {
+                    > HeadlessShadeAbility.HuntRange * HeadlessShadeAbility.HuntRange * 1.44f) {
                 return null;
             }
             return target;

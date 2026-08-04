@@ -147,7 +147,6 @@ HackTargetType: {
 	TileTargetType.DisplayName: Cible : bloc
 	TurretTargetType.DisplayName: Cible : tourelle
 	WaterTargetType.DisplayName: Cible : liquide
-	WraithTargetType.DisplayName: Cible : spectre
 }
 
 TileNameFallback: {

@@ -147,7 +147,6 @@ HackTargetType: {
 	TileTargetType.DisplayName: Alvo de Bloco
 	TurretTargetType.DisplayName: Alvo de Torre
 	WaterTargetType.DisplayName: Alvo de Liquido
-	WraithTargetType.DisplayName: Alvo de Espectro
 }
 
 TileNameFallback: {

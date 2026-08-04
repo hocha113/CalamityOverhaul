@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Wraiths.Core;
 using CalamityOverhaul.Content.Wraiths.Runtime;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -31,16 +32,20 @@ namespace CalamityOverhaul.Content.Wraiths.UI
             }
         }
 
+        private static bool CanShow(WraithPlayer state)
+            => state != null && WraithAbilityService.IsOnikiriHeld(Main.LocalPlayer)
+                && state.EquippedWraithKey == WraithPlayer.ScapeGhostKey;
+
         public override bool Active {
             get {
                 WraithPlayer wp = LocalWraith;
-                return wp != null && (wp.Revival > 0.005f || appear > 0.01f);
+                return CanShow(wp) && (wp.Revival > 0.005f || appear > 0.01f);
             }
         }
 
         public override void Update() {
             WraithPlayer wp = LocalWraith;
-            if (wp == null) {
+            if (!CanShow(wp)) {
                 appear = 0f;
                 return;
             }

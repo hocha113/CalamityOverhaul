@@ -147,7 +147,6 @@ HackTargetType: {
 	TileTargetType.DisplayName: Tile Target
 	TurretTargetType.DisplayName: Turret Target
 	WaterTargetType.DisplayName: Liquid Target
-	WraithTargetType.DisplayName: Wraith Target
 }
 
 TileNameFallback: {

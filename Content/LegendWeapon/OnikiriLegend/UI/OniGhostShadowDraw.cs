@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     /// <summary>鬼影 shader 一次调用的全部参数</summary>
     internal struct OniGhostShadowParams
     {
-        /// <summary>0~1 扭动量(封印≈0,躁动=1)</summary>
+        /// <summary>0~1 鬼影扰动强度。</summary>
         public float Writhe;
         /// <summary>0~1 碎裂溶解</summary>
         public float Break;
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public float Time;
     }
 
-    /// <summary>鬼影 shader(OniGhostShadow.fx),失败走 CPU 烟团,仪式与细节板共用</summary>
+    /// <summary>点鬼簿鬼影 shader(OniGhostShadow.fx)，不可用时由调用方回退表现。</summary>
     internal static class OniGhostShadowDraw
     {
         public static bool Available => EffectLoader.OniGhostShadow?.Value != null;

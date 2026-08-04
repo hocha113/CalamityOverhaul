@@ -651,20 +651,6 @@ HackTime: {
 	WaterScanStatusStill: QUIETO
 	WaterScanStatusFlowing: FLUYENDO
 	CatParanormal: PARANORMAL
-	WraithScanName: Designación
-	WraithScanNameValue: Espectro desconocido
-	WraithScanType: Entidad paranormal
-	WraithScanThreat: Inevaluable ERR://-∞
-	WraithScanStatus: Estado
-	WraithScanStatusStalking: Acecho sigiloso
-	WraithScanStatusWatched: Bajo vigilancia
-	WraithScanStatusHalt: Detenido
-	WraithScanStatusMemory: Corrupción de memoria
-	WraithScanStatusDismember: Desintegración espectral
-	WraithScanIntegrity: Integridad de datos
-	WraithScanIntegrityValue: 0x??% corrupto
-	WraithScanOrigin: Origen
-	WraithScanOriginValue: Registro no encontrado
 	TurretScanName: Nombre en clave
 	TurretScanLaserName: Vacío · Batería principal
 	TurretScanGatlinName: Vacío · Torreta Gatling
