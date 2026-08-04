@@ -77,6 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         public int SnapHeight;
         /// <summary>渲染端完成快照捕获后置位，此前本体照常绘制</summary>
         public bool Captured;
+        public int CaptureFailures;
         public float DriftMax;
         public readonly List<DismemberCut> Cuts = [];
         public readonly List<DismemberPiece> Pieces = [];
@@ -414,19 +415,99 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             return entry;
         }
 
-        /// <summary>估算能兜住 NPC 完整外观的快照 RT 尺寸（客户端调用），面影系统共用</summary>
-        internal static void ComputeSnapSize(NPC npc, out int width, out int height) {
-            Main.instance.LoadNPC(npc.type);
-            Texture2D tex = TextureAssets.Npc[npc.type].Value;
-            int frames = Math.Max(Main.npcFrameCount[npc.type], 1);
-            float fw = MathF.Max(tex.Width, npc.width);
-            float fh = MathF.Max(tex.Height / (float)frames, npc.height);
-            //1.9 倍余量兜住发光层/超帧绘制；上限防巨型贴图撑爆显存
+        private const float CapturePaddingRatio = 0.25f;
+        private const float MinCapturePadding = 24f;
+        private const float MaxCapturePadding = 160f;
+        private const int MinCaptureDimension = 64;
+        private const int MaxCaptureDimension = 1600;
 
-            int w = (int)MathF.Ceiling(fw * npc.scale * 1.9f);
-            int h = (int)MathF.Ceiling(fh * npc.scale * 1.9f);
-            width = Math.Clamp(w & ~1, 64, 1600);
-            height = Math.Clamp(h & ~1, 64, 1600);
+        /// <summary>当前姿态的可视身体轴对齐尺寸，不含捕获留白</summary>
+        internal static Vector2 ComputeBodySize(NPC npc) {
+            if (npc == null) {
+                return Vector2.Zero;
+            }
+
+            Vector2 hitboxSize = new(MathF.Max(npc.width, 0f), MathF.Max(npc.height, 0f));
+            Vector2 frameSize = ResolveCurrentFrameSize(npc, hitboxSize);
+
+            float scale = MathF.Abs(npc.scale);
+            if (!float.IsFinite(scale)) {
+                scale = 1f;
+            }
+            float spriteWidth = frameSize.X * scale;
+            float spriteHeight = frameSize.Y * scale;
+
+            float rotation = float.IsFinite(npc.rotation) ? npc.rotation : 0f;
+            float cos = MathF.Abs(MathF.Cos(rotation));
+            float sin = MathF.Abs(MathF.Sin(rotation));
+            float rotatedWidth = spriteWidth * cos + spriteHeight * sin;
+            float rotatedHeight = spriteWidth * sin + spriteHeight * cos;
+
+            float width = MathF.Max(rotatedWidth, hitboxSize.X);
+            float height = MathF.Max(rotatedHeight, hitboxSize.Y);
+            if (!float.IsFinite(width)) {
+                width = hitboxSize.X;
+            }
+            if (!float.IsFinite(height)) {
+                height = hitboxSize.Y;
+            }
+            return new Vector2(MathF.Max(width, 1f), MathF.Max(height, 1f));
+        }
+
+        /// <summary>当前姿态的保守捕获 RT 尺寸</summary>
+        internal static void ComputeSnapSize(NPC npc, out int width, out int height) {
+            Vector2 bodySize = ComputeBodySize(npc);
+            float padX = MathHelper.Clamp(bodySize.X * CapturePaddingRatio,
+                MinCapturePadding, MaxCapturePadding);
+
+            float drawOffsetY = npc?.gfxOffY ?? 0f;
+            if (npc?.ModNPC != null) {
+                drawOffsetY += npc.ModNPC.DrawOffsetY;
+            }
+            if (!float.IsFinite(drawOffsetY)) {
+                drawOffsetY = 0f;
+            }
+            float padY = MathHelper.Clamp(bodySize.Y * CapturePaddingRatio + MathF.Abs(drawOffsetY),
+                MinCapturePadding, MaxCapturePadding);
+
+            width = ClampCaptureDimension(bodySize.X + padX * 2f);
+            height = ClampCaptureDimension(bodySize.Y + padY * 2f);
+        }
+
+        private static Vector2 ResolveCurrentFrameSize(NPC npc, Vector2 hitboxSize) {
+            float width = MathF.Max(npc.frame.Width, 0f);
+            float height = MathF.Max(npc.frame.Height, 0f);
+
+            if (width <= 0f) {
+                width = hitboxSize.X;
+            }
+            if (height <= 0f) {
+                height = hitboxSize.Y;
+            }
+
+            if ((width <= 0f || height <= 0f) && !Main.dedServ
+                && npc.type >= 0 && npc.type < TextureAssets.Npc.Length) {
+                Main.instance.LoadNPC(npc.type);
+                Texture2D texture = TextureAssets.Npc[npc.type].Value;
+                int frames = Math.Max(Main.npcFrameCount[npc.type], 1);
+                if (width <= 0f) {
+                    width = texture.Width;
+                }
+                if (height <= 0f) {
+                    height = texture.Height / (float)frames;
+                }
+            }
+
+            return new Vector2(MathF.Max(width, 1f), MathF.Max(height, 1f));
+        }
+
+        private static int ClampCaptureDimension(float size) {
+            if (!float.IsFinite(size)) {
+                return MaxCaptureDimension;
+            }
+            int pixels = (int)MathF.Ceiling(MathF.Max(size, MinCaptureDimension));
+            pixels = (pixels + 1) & ~1;
+            return Math.Clamp(pixels, MinCaptureDimension, MaxCaptureDimension);
         }
 
         private static void AddCut(DismemberEntry entry, Vector2 cutPointWorld, float cutAngle,

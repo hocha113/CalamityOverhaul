@@ -9,41 +9,73 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 {
+    internal enum OmokageState : byte
+    {
+        PendingCapture,
+        Separating,
+        Armed,
+        Cutting,
+        Burning,
+    }
+
     /// <summary>单个 NPC 的共享快照、同一目标的多幅面影共用一张 RT</summary>
     internal class OmokageSnap
     {
         public int NpcType;          //槽位复用校验
+        public uint NpcSpawnToken;
 
         public int Width;
         public int Height;
+        public float PaperWidth;
+        public float PaperHeight;
         /// <summary>渲染端完成捕获后置位，此前纸面走无快照回退绘制</summary>
         public bool Captured;
+        public bool CaptureUnavailable;
+        public int CaptureFailures;
         public RenderTarget2D RT;
+        public Rectangle SourceFrame;
+        public float SourceScale;
+        public float SourceRotation;
+        public float SourceDrawOffsetY;
+        public SpriteEffects SourceEffects;
     }
 
-    /// <summary>单幅面影、挂在过去位置上的水墨留影挂轴</summary>
+    /// <summary>单幅面影、留在过去位置的水墨纸人</summary>
     internal class OmokageEntry
     {
+        public int Id;
         public int NpcIndex;
         public int NpcType;          //槽位复用校验
+        public uint NpcSpawnToken;
 
-        /// <summary>悬挂锚点（留影时刻的 npc.Center）</summary>
+        /// <summary>完成剥离后的稳定锚点</summary>
         public Vector2 AnchorCenter;
+        public Vector2 RenderCenter;
+        public Vector2 CaptureCenter;
+        public Vector2 SeparationStart;
         public int SnapWidth;
         public int SnapHeight;
-        /// <summary>挂轴尺寸（px），基于身形贴合计算而非快照 RT（RT 带 1.9 倍捕获余量）</summary>
+        /// <summary>纸人显示与交互尺寸（px），和捕获 RT 尺寸分离</summary>
         public float PaperWidth;
         public float PaperHeight;
         public int Timer;
         public int Lifetime;
         public float Seed;
         public float SwayPhase;
+        public OmokageState State;
+        public int StateTimer;
+        public int SeparationDuration;
+        public float SeparationRevealStart;
+        public float SeparationDevelopStart;
+        public float Reveal;
+        public float Develop;
 
         public bool Cut;
         /// <summary>落刀点（纸面中心局部像素，与身体局部 1:1 对应）</summary>
@@ -68,14 +100,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
         public bool Burning;
         public int BurnTimer;
 
-        /// <summary>挂轴半尺寸</summary>
+        /// <summary>纸人显示与交互半尺寸</summary>
         public Vector2 PaperHalf => new(PaperWidth * 0.5f, PaperHeight * 0.5f);
+        public bool IsArmed => State == OmokageState.Armed;
+        public bool IsLive => State is OmokageState.PendingCapture or OmokageState.Separating or OmokageState.Armed;
 
         /// <summary>综合可见度、寿命尾段淡出 × 烧散 × 斩纸消散</summary>
         public float Alpha {
             get {
-                float a = 1f - MathHelper.Clamp(
-                    (Timer - (Lifetime - OniOmokage.FadeFrames)) / (float)OniOmokage.FadeFrames, 0f, 1f);
+                float a = Reveal * (1f - MathHelper.Clamp(
+                    (Timer - (Lifetime - OniOmokage.FadeFrames)) / (float)OniOmokage.FadeFrames, 0f, 1f));
                 if (Burning) {
                     a *= 1f - MathHelper.Clamp(BurnTimer / (float)OniOmokage.BurnFrames, 0f, 1f);
                 }
@@ -104,6 +138,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
     {
         public int NpcIndex;
         public int NpcType;
+        public uint NpcSpawnToken;
         /// <summary>落刀点相对 npc.Center 的偏移（到达时以当时位置重算）</summary>
         public Vector2 BodyLocal;
         public float CutAngle;
@@ -121,14 +156,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
     /// <summary>面影. 领域印记位水墨残影</summary>
     internal class OniOmokage : ICWRLoader
     {
-        /// <summary>挂轴左右留白（px）</summary>
-        public const float PaperSidePad = 8f;
-        /// <summary>天地装裱带高度（上下各一段，px），含轴棒；着色器同步使用</summary>
-        public const float PaperMountPad = 22f;
-        /// <summary>本纸内身影上下呼吸留白（px）</summary>
-        public const float PaperBreathPad = 10f;
-        /// <summary>挂轴整体缩放（调试可改）</summary>
-        public static float PaperScale = 1f;
         /// <summary>寿命尾段淡出帧数</summary>
         public const int FadeFrames = 30;
         /// <summary>离里/收域/断链的快速烧散帧数</summary>
@@ -154,6 +181,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
         public static int ReimprintCooldown = 120;
         /// <summary>挂新影失败（间距/容量）后的重试间隔（帧）</summary>
         private const int ReimprintRetry = 30;
+        internal const int MaxCaptureFailures = 2;
+        private const float SourceClearance = 24f;
+        private const float PlacementGap = 2f;
+        private const int SeparateMinFrames = 10;
+        private const int SeparateMaxFrames = 18;
+        private const float PaperFringePadding = 6f;
 
         /// <summary>所有活跃面影</summary>
         internal static readonly List<OmokageEntry> Entries = [];
@@ -167,6 +200,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
         //再生成计时器的周期性剔除暂存
 
         private static readonly List<int> reimprintPrune = [];
+        private static int nextEntryId = 1;
 
         void ICWRLoader.UnLoadData() {
             Entries.Clear();
@@ -182,16 +216,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             if (OnikiriTutorialTargetGlobal.IsTutorialTarget(npc, out _, out _)) {
                 return false;
             }
+            uint spawnToken = OniOmokageIdentity.GetToken(npc);
 
             //同目标近距离已有面影则不重复挂
 
             int perNpc = 0;
             OmokageEntry oldestOfNpc = null;
             foreach (OmokageEntry e in Entries) {
-                if (e.NpcIndex != npc.whoAmI || e.NpcType != npc.type) {
+                if (e.NpcIndex != npc.whoAmI || e.NpcType != npc.type
+                    || e.NpcSpawnToken != spawnToken) {
                     continue;
                 }
-                if (!e.Cut && !e.Burning && Vector2.DistanceSquared(e.AnchorCenter, npc.Center) < MinImprintGap * MinImprintGap) {
+                if (e.IsLive && Vector2.DistanceSquared(e.CaptureCenter, npc.Center) < MinImprintGap * MinImprintGap) {
                     return false;
                 }
                 perNpc++;
@@ -211,32 +247,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
                 return false;
             }
 
-            ComputePaperSize(npc, out float paperW, out float paperH);
+            Vector2 center = npc.Center;
             Entries.Add(new OmokageEntry {
+                Id = AllocateEntryId(),
                 NpcIndex = npc.whoAmI,
                 NpcType = npc.type,
-                AnchorCenter = npc.Center,
+                NpcSpawnToken = spawnToken,
+                AnchorCenter = center,
+                RenderCenter = center,
+                CaptureCenter = center,
                 SnapWidth = snap.Width,
                 SnapHeight = snap.Height,
-                PaperWidth = paperW,
-                PaperHeight = paperH,
+                PaperWidth = snap.PaperWidth,
+                PaperHeight = snap.PaperHeight,
                 Lifetime = Math.Max(Lifetime, FadeFrames + 10),
                 Seed = Main.rand.NextFloat(),
                 SwayPhase = Main.rand.NextFloat(MathHelper.TwoPi),
+                State = OmokageState.PendingCapture,
             });
             return true;
         }
 
-        /// <summary>挂轴尺寸、贴合 NPC 可见身形（贴图帧 × 1.08）而非快照 RT</summary>
+        /// <summary>纸人显示与交互尺寸、直接取当前 NPC 身形 AABB</summary>
         private static void ComputePaperSize(NPC npc, out float width, out float height) {
-            Main.instance.LoadNPC(npc.type);
-            Texture2D tex = TextureAssets.Npc[npc.type].Value;
-            int frames = Math.Max(Main.npcFrameCount[npc.type], 1);
-            float fw = MathF.Max(tex.Width, npc.width);
-            float fh = MathF.Max(tex.Height / (float)frames, npc.height);
-            width = MathHelper.Clamp(fw * npc.scale * 1.08f * PaperScale + PaperSidePad * 2f, 44f, 1400f);
-            height = MathHelper.Clamp(fh * npc.scale * 1.08f * PaperScale + PaperBreathPad * 2f + PaperMountPad * 2f,
-                72f, 1400f);
+            Vector2 bodySize = OniDismember.ComputeBodySize(npc);
+            float drawOffsetY = GetDrawOffsetY(npc);
+            width = MathF.Max(bodySize.X + PaperFringePadding * 2f, 1f);
+            height = MathF.Max(bodySize.Y + (PaperFringePadding + MathF.Abs(drawOffsetY)) * 2f, 1f);
+        }
+
+        private static float GetDrawOffsetY(NPC npc) {
+            float offset = npc?.gfxOffY ?? 0f;
+            if (npc?.ModNPC != null) {
+                offset += npc.ModNPC.DrawOffsetY;
+            }
+            return float.IsFinite(offset) ? offset : 0f;
+        }
+
+        private static int AllocateEntryId() {
+            int id = nextEntryId++;
+            if (id == 0) {
+                id = nextEntryId++;
+            }
+            return id;
+        }
+
+        internal static void ForgetReimprintTimer(int npcIndex) {
+            reimprintTimers.Remove(npcIndex);
         }
 
         /// <summary>快门、屏内（含 200px 余量）全部存活 NPC 各挂一幅（不分敌我），返回成功数量</summary>
@@ -271,7 +328,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 
             bool anyCut = false;
             foreach (OmokageEntry entry in Entries) {
-                if (entry.Cut || entry.Burning || entry.Alpha < 0.35f) {
+                if (!entry.IsArmed || entry.Alpha < 0.35f) {
                     continue;
                 }
                 if (!SegmentIntersectsRect(start, end, entry.AnchorCenter, entry.PaperHalf, out Vector2 hitPoint)) {
@@ -305,12 +362,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             return true;
         }
 
+        internal static bool SeverEntry(Player player, int entryId, Vector2 worldPoint,
+            float cutAngle, int damage, float knockback) {
+            if (Main.dedServ || player == null || entryId == 0) {
+                return false;
+            }
+            foreach (OmokageEntry entry in Entries) {
+                if (entry.Id != entryId || !entry.IsArmed || entry.Alpha < 0.35f) {
+                    continue;
+                }
+                CutEntry(player, entry, worldPoint, cutAngle, damage, knockback, leadFx: true);
+                return true;
+            }
+            return false;
+        }
+
         /// <summary>离 point 最近的可斩纸面（点到纸面矩形距离 ≤ pad）</summary>
         public static OmokageEntry PickEntryNear(Vector2 point, float pad) {
             OmokageEntry best = null;
             float bestD = float.MaxValue;
             foreach (OmokageEntry entry in Entries) {
-                if (entry.Cut || entry.Burning || entry.Alpha < 0.35f) {
+                if (!entry.IsArmed || entry.Alpha < 0.35f) {
                     continue;
                 }
                 float d = DistanceToRect(point, entry.AnchorCenter, entry.PaperHalf);
@@ -330,11 +402,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             return Vector2.Distance(d, clamped);
         }
 
-        /// <summary>清空全部面影与脉冲（快照 RT 由渲染端孤儿清理回收）</summary>
+        /// <summary>清空全部面影、脉冲与快照</summary>
         public static void Clear() {
             Entries.Clear();
             Pulses.Clear();
             reimprintTimers.Clear();
+            DisposeAllSnaps();
         }
 
         /// <summary>清掉指定 NPC 槽的面影、脉冲与快照</summary>
@@ -362,6 +435,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             if (!entry.Burning) {
                 entry.Burning = true;
                 entry.BurnTimer = 0;
+                entry.State = OmokageState.Burning;
+                entry.StateTimer = 0;
             }
         }
 
@@ -382,6 +457,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
         private static void CutEntry(Player player, OmokageEntry entry, Vector2 hitWorld,
             float cutAngle, int damage, float knockback, bool leadFx) {
 
+            if (!entry.IsArmed) {
+                return;
+            }
+
             //落刀点收拢进纸面有效范围，保证裁剪线穿过纸张
 
             Vector2 half = entry.PaperHalf;
@@ -390,6 +469,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             local.Y = MathHelper.Clamp(local.Y, -half.Y * 0.4f, half.Y * 0.4f);
 
             entry.Cut = true;
+            entry.State = OmokageState.Cutting;
+            entry.StateTimer = 0;
             entry.CutLocal = local;
             entry.CutAngle = cutAngle;
             entry.CutAge = 0;
@@ -421,7 +502,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 
             //赤线脉冲、距离越远飞得越久，clamp 6~14 帧
 
-            NPC npc = ValidTarget(entry.NpcIndex, entry.NpcType);
+            NPC npc = ValidTarget(entry.NpcIndex, entry.NpcType, entry.NpcSpawnToken);
             if (npc == null || entry.PendingPlayer < 0) {
                 return;   //因果已断、纸裂而无处传导
 
@@ -430,6 +511,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             Pulses.Add(new OmokagePulse {
                 NpcIndex = entry.NpcIndex,
                 NpcType = entry.NpcType,
+                NpcSpawnToken = entry.NpcSpawnToken,
                 BodyLocal = entry.CutLocal,
                 CutAngle = entry.CutAngle,
                 Travel = (int)MathHelper.Clamp(dist / 24f, 6f, 14f),
@@ -519,6 +601,146 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             }
         }
 
+        private static void UpdateAppearanceState(OmokageEntry entry, NPC npc) {
+            if (entry.State == OmokageState.PendingCapture) {
+                entry.StateTimer++;
+                if (npc != null && Snaps.TryGetValue(entry.NpcIndex, out OmokageSnap snap)
+                    && snap.NpcType == entry.NpcType && snap.NpcSpawnToken == entry.NpcSpawnToken
+                    && snap.Captured) {
+                    BeginSeparation(entry, npc);
+                }
+                return;
+            }
+
+            if (entry.State == OmokageState.Armed) {
+                if (npc != null && OverlapsSource(entry, npc, entry.RenderCenter)) {
+                    BeginSeparation(entry, npc);
+                }
+                return;
+            }
+
+            if (entry.State != OmokageState.Separating) {
+                return;
+            }
+
+            entry.StateTimer++;
+            float progress = MathHelper.Clamp(entry.StateTimer / (float)Math.Max(entry.SeparationDuration, 1), 0f, 1f);
+            float eased = OniFinaleRenderer.EaseOutCubic(progress);
+            entry.RenderCenter = Vector2.Lerp(entry.SeparationStart, entry.AnchorCenter, eased);
+            entry.Reveal = MathHelper.Lerp(entry.SeparationRevealStart, 1f, eased);
+            float developEase = MathHelper.Clamp((progress - 0.15f) / 0.85f, 0f, 1f);
+            entry.Develop = MathHelper.Lerp(entry.SeparationDevelopStart, 1f, developEase);
+            if (progress < 1f) {
+                return;
+            }
+
+            entry.RenderCenter = entry.AnchorCenter;
+            entry.Reveal = 1f;
+            entry.Develop = 1f;
+            if (npc == null) {
+                StartBurn(entry);
+                return;
+            }
+            if (OverlapsSource(entry, npc, entry.RenderCenter)) {
+                BeginSeparation(entry, npc);
+                return;
+            }
+
+            entry.State = OmokageState.Armed;
+            entry.StateTimer = 0;
+        }
+
+        private static void BeginSeparation(OmokageEntry entry, NPC npc) {
+            Vector2 destination = entry.CaptureCenter;
+            if (OverlapsSource(entry, npc, destination)) {
+                destination = PickSeparatedCenter(entry, npc);
+            }
+
+            entry.State = OmokageState.Separating;
+            entry.StateTimer = 0;
+            entry.SeparationStart = entry.RenderCenter;
+            entry.AnchorCenter = destination;
+            float distance = Vector2.Distance(entry.SeparationStart, destination);
+            entry.SeparationDuration = Math.Clamp((int)MathF.Ceiling(distance / 12f), SeparateMinFrames, SeparateMaxFrames);
+            entry.SeparationRevealStart = entry.Reveal;
+            entry.SeparationDevelopStart = entry.Develop;
+        }
+
+        private static Vector2 PickSeparatedCenter(OmokageEntry entry, NPC npc) {
+            Rectangle sourceBounds = npc.Hitbox;
+            sourceBounds.Inflate((int)SourceClearance, (int)SourceClearance);
+            Vector2 sourceCenter = new(sourceBounds.Center.X, sourceBounds.Center.Y);
+            float sideDistance = sourceBounds.Width * 0.5f + entry.PaperHalf.X + PlacementGap;
+            float topDistance = sourceBounds.Height * 0.5f + entry.PaperHalf.Y + PlacementGap;
+            Span<Vector2> candidates = stackalloc Vector2[3] {
+                sourceCenter - Vector2.UnitX * sideDistance,
+                sourceCenter + Vector2.UnitX * sideDistance,
+                sourceCenter - Vector2.UnitY * topDistance,
+            };
+
+            Vector2 best = candidates[0];
+            float bestScore = float.MinValue;
+            for (int i = 0; i < candidates.Length; i++) {
+                float score = ScoreSeparatedCenter(entry, npc, candidates[i], sourceBounds);
+                if (score > bestScore) {
+                    bestScore = score;
+                    best = candidates[i];
+                }
+            }
+            return best;
+        }
+
+        private static float ScoreSeparatedCenter(OmokageEntry entry, NPC npc, Vector2 candidate,
+            Rectangle sourceBounds) {
+            Rectangle bounds = GetPaperBounds(candidate, entry.PaperHalf);
+            if (bounds.Intersects(sourceBounds)) {
+                return float.MinValue;
+            }
+
+            Rectangle view = new((int)Main.screenPosition.X, (int)Main.screenPosition.Y,
+                Main.screenWidth, Main.screenHeight);
+            Rectangle visible = Rectangle.Intersect(bounds, view);
+            float area = Math.Max((float)bounds.Width * bounds.Height, 1f);
+            float visibleArea = Math.Max((float)visible.Width * visible.Height, 0f);
+            float score = visibleArea / area * 1000f;
+            if (view.Left <= bounds.Left && view.Right >= bounds.Right
+                && view.Top <= bounds.Top && view.Bottom >= bounds.Bottom) {
+                score += 300f;
+            }
+
+            foreach (OmokageEntry other in Entries) {
+                if (ReferenceEquals(entry, other)) {
+                    continue;
+                }
+                Vector2 otherCenter = other.State == OmokageState.Separating
+                    ? other.AnchorCenter : other.RenderCenter;
+                Rectangle otherBounds = GetPaperBounds(otherCenter, other.PaperHalf);
+                otherBounds.Inflate(12, 12);
+                Rectangle overlap = Rectangle.Intersect(bounds, otherBounds);
+                score -= (float)overlap.Width * overlap.Height / area * 1800f;
+            }
+
+            float away = MathF.Sign(npc.Center.X - Main.LocalPlayer.Center.X);
+            if (away != 0f && MathF.Sign(candidate.X - npc.Center.X) == away) {
+                score += 40f;
+            }
+            return score;
+        }
+
+        private static bool OverlapsSource(OmokageEntry entry, NPC npc, Vector2 center) {
+            Rectangle sourceBounds = npc.Hitbox;
+            sourceBounds.Inflate((int)SourceClearance, (int)SourceClearance);
+            return GetPaperBounds(center, entry.PaperHalf).Intersects(sourceBounds);
+        }
+
+        private static Rectangle GetPaperBounds(Vector2 center, Vector2 half) {
+            int left = (int)MathF.Floor(center.X - half.X);
+            int top = (int)MathF.Floor(center.Y - half.Y);
+            int right = (int)MathF.Ceiling(center.X + half.X);
+            int bottom = (int)MathF.Ceiling(center.Y + half.Y);
+            return new Rectangle(left, top, Math.Max(right - left, 1), Math.Max(bottom - top, 1));
+        }
+
         /// <summary>逐帧(客户端)、挂 PostUpdateEverything</summary>
         internal static void Update() {
             UpdatePulses();
@@ -526,12 +748,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 
             for (int i = Entries.Count - 1; i >= 0; i--) {
                 OmokageEntry entry = Entries[i];
-                entry.Timer++;
-
-                //真身失效、线断影散
-
-                if (!entry.Burning && ValidTarget(entry.NpcIndex, entry.NpcType) == null) {
+                NPC npc = ValidTarget(entry.NpcIndex, entry.NpcType, entry.NpcSpawnToken);
+                if (!entry.Burning && npc == null) {
                     StartBurn(entry);
+                }
+                UpdateAppearanceState(entry, npc);
+                if (entry.State != OmokageState.PendingCapture) {
+                    entry.Timer++;
                 }
 
                 if (entry.Cut) {
@@ -622,7 +845,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
         private static bool HasLivePaper(NPC npc) {
             foreach (OmokageEntry entry in Entries) {
                 if (entry.NpcIndex == npc.whoAmI && entry.NpcType == npc.type
-                    && !entry.Cut && !entry.Burning) {
+                    && entry.NpcSpawnToken == OniOmokageIdentity.GetToken(npc)
+                    && entry.IsLive) {
                     return true;
                 }
             }
@@ -638,7 +862,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
                 }
                 Pulses.RemoveAt(i);
 
-                NPC npc = ValidTarget(pulse.NpcIndex, pulse.NpcType);
+                NPC npc = ValidTarget(pulse.NpcIndex, pulse.NpcType, pulse.NpcSpawnToken);
                 if (npc == null) {
                     continue;   //因果落空，脉冲无声消散
 
@@ -668,28 +892,89 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
         }
 
         /// <summary>绑定目标的存活实例，死亡/槽位复用返回 null</summary>
-        internal static NPC ValidTarget(int npcIndex, int npcType) {
+        internal static NPC ValidTarget(int npcIndex, int npcType, uint spawnToken) {
             if (npcIndex < 0 || npcIndex >= Main.maxNPCs) {
                 return null;
             }
             NPC npc = Main.npc[npcIndex];
-            return npc.active && npc.type == npcType ? npc : null;
+            return npc.active && npc.type == npcType
+                && OniOmokageIdentity.GetToken(npc) == spawnToken ? npc : null;
         }
 
         private static OmokageSnap EnsureSnap(NPC npc) {
-            if (Snaps.TryGetValue(npc.whoAmI, out OmokageSnap snap) && snap.NpcType == npc.type) {
+            uint spawnToken = OniOmokageIdentity.GetToken(npc);
+            if (Snaps.TryGetValue(npc.whoAmI, out OmokageSnap snap)
+                && snap.NpcType == npc.type && snap.NpcSpawnToken == spawnToken) {
                 return snap;
             }
-            //槽位复用、旧快照作废（RT 由渲染端孤儿清理回收）
+            snap?.RT?.Dispose();
 
-            OniDismember.ComputeSnapSize(npc, out int w, out int h);
             snap = new OmokageSnap {
                 NpcType = npc.type,
-                Width = w,
-                Height = h,
+                NpcSpawnToken = spawnToken,
             };
+            UpdateSnapAppearance(npc, snap);
             Snaps[npc.whoAmI] = snap;
             return snap;
+        }
+
+        internal static void RefreshSnapForCapture(NPC npc, OmokageSnap snap) {
+            if (npc == null || snap == null || snap.Captured || snap.NpcType != npc.type
+                || snap.NpcSpawnToken != OniOmokageIdentity.GetToken(npc)) {
+                return;
+            }
+            UpdateSnapAppearance(npc, snap);
+            foreach (OmokageEntry entry in Entries) {
+                if (entry.NpcIndex != npc.whoAmI || entry.NpcType != npc.type
+                    || entry.NpcSpawnToken != snap.NpcSpawnToken) {
+                    continue;
+                }
+                entry.SnapWidth = snap.Width;
+                entry.SnapHeight = snap.Height;
+                entry.PaperWidth = snap.PaperWidth;
+                entry.PaperHeight = snap.PaperHeight;
+            }
+        }
+
+        private static void UpdateSnapAppearance(NPC npc, OmokageSnap snap) {
+            OniDismember.ComputeSnapSize(npc, out snap.Width, out snap.Height);
+            ComputePaperSize(npc, out snap.PaperWidth, out snap.PaperHeight);
+            snap.SourceFrame = GetSourceFrame(npc);
+            float sourceScale = MathF.Abs(npc.scale);
+            if (!float.IsFinite(sourceScale) || sourceScale <= 0.001f) {
+                sourceScale = 1f;
+            }
+            snap.SourceScale = sourceScale;
+            snap.SourceRotation = float.IsFinite(npc.rotation) ? npc.rotation : 0f;
+            snap.SourceDrawOffsetY = GetDrawOffsetY(npc);
+            snap.SourceEffects = npc.spriteDirection == -1
+                ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+        }
+
+        private static Rectangle GetSourceFrame(NPC npc) {
+            Main.instance.LoadNPC(npc.type);
+            Texture2D texture = TextureAssets.Npc[npc.type].Value;
+            Rectangle frame = npc.frame;
+            if (frame.Width > 0 && frame.Height > 0 && frame.Left >= 0 && frame.Top >= 0
+                && frame.Width <= texture.Width && frame.Height <= texture.Height
+                && frame.Left <= texture.Width - frame.Width
+                && frame.Top <= texture.Height - frame.Height) {
+                return frame;
+            }
+
+            int frames = Math.Max(Main.npcFrameCount[npc.type], 1);
+            float scale = MathF.Abs(npc.scale);
+            if (!float.IsFinite(scale) || scale <= 0.001f) {
+                scale = 1f;
+            }
+            int frameHeight = Math.Max(texture.Height / frames, 1);
+            float conservativeWidth = MathF.Min(MathF.Max(npc.width / scale, 1f) * 2f, texture.Width);
+            float conservativeHeight = MathF.Min(MathF.Max(npc.height / scale, 1f) * 2f, frameHeight);
+            int width = Math.Clamp((int)MathF.Ceiling(conservativeWidth), 1, texture.Width);
+            int height = Math.Clamp((int)MathF.Ceiling(conservativeHeight), 1, texture.Height);
+            int left = Math.Clamp(frame.Left, 0, Math.Max(texture.Width - width, 0));
+            int top = Math.Clamp(frame.Top, 0, Math.Max(texture.Height - height, 0));
+            return new Rectangle(left, top, width, height);
         }
 
         internal static void DisposeAllSnaps() {
@@ -735,6 +1020,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 
             hitPoint = start + d * ((t0 + t1) * 0.5f);
             return true;
+        }
+    }
+
+    internal sealed class OniOmokageIdentity : GlobalNPC
+    {
+        private static uint nextSpawnToken = 1;
+
+        internal uint SpawnToken;
+
+        public override bool InstancePerEntity => true;
+
+        public override void OnSpawn(NPC npc, IEntitySource source) {
+            SpawnToken = AllocateSpawnToken();
+            OniOmokage.ForgetReimprintTimer(npc.whoAmI);
+        }
+
+        internal static uint GetToken(NPC npc) {
+            if (npc == null) {
+                return 0;
+            }
+            OniOmokageIdentity identity = npc.GetGlobalNPC<OniOmokageIdentity>();
+            if (identity.SpawnToken == 0) {
+                identity.SpawnToken = AllocateSpawnToken();
+            }
+            return identity.SpawnToken;
+        }
+
+        private static uint AllocateSpawnToken() {
+            uint token = nextSpawnToken++;
+            if (token == 0) {
+                token = nextSpawnToken++;
+            }
+            return token;
         }
     }
 

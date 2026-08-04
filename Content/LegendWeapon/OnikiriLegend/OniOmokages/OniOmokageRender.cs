@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 {
@@ -14,9 +15,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
     {
         public override float Weight => 1.3f;
 
+        private const int MaxCapturesPerFrame = 2;
+        private const long MaxCapturePixelsPerFrame = 1024L * 1024L;
+
         //复用缓冲，避免逐帧分配
 
         private static readonly List<VertexPositionColorTexture> vertexScratch = new(64);
+        private static VertexPositionColorTexture[] vertexBuffer = new VertexPositionColorTexture[64];
         private static readonly List<int> pruneScratch = [];
         private static readonly List<OmokageEntry> fallbackScratch = [];
 
@@ -25,7 +30,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 
             if (Main.gameMenu && (OniOmokage.Entries.Count > 0 || OniOmokage.Snaps.Count > 0)) {
                 OniOmokage.Clear();
-                OniOmokage.DisposeAllSnaps();
             }
         }
 
@@ -50,7 +54,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             if (OniOmokage.Entries.Count == 0 && OniOmokage.Pulses.Count == 0) {
                 return;
             }
-            DrawFallbackPapers(spriteBatch);
+            DrawFallbackDolls(spriteBatch);
             DrawThreadsAndPulses(spriteBatch);
         }
 
@@ -59,18 +63,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
                 return;
             }
 
-            //低质量光照/RT 异常时放弃捕获、面影走素纸回退
+            //低质量光照或 RT 异常时改走基础帧纸偶
 
             if (RenderQualitySafety.ScreenTargetUnavailable()) {
+                CompletePendingAsFallback();
                 return;
             }
             if (screenSwap == null || screenSwap.IsDisposed) {
+                CompletePendingAsFallback();
                 return;
             }
             if (Main.screenTarget == null || Main.screenTarget.IsDisposed) {
+                CompletePendingAsFallback();
                 return;
             }
             if (!RenderQualitySafety.IsScreenTargetActive(graphicsDevice)) {
+                CompletePendingAsFallback();
                 return;
             }
 
@@ -84,20 +92,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
 
+            int captures = 0;
+            long capturePixels = 0;
             foreach (KeyValuePair<int, OmokageSnap> pair in OniOmokage.Snaps) {
+                if (captures >= MaxCapturesPerFrame) {
+                    break;
+                }
                 OmokageSnap snap = pair.Value;
                 if (snap.Captured) {
                     continue;
                 }
-                NPC npc = OniOmokage.ValidTarget(pair.Key, snap.NpcType);
+                NPC npc = OniOmokage.ValidTarget(pair.Key, snap.NpcType, snap.NpcSpawnToken);
                 if (npc == null) {
                     continue;
                 }
-                if (!EnsureSnapRT(graphicsDevice, snap)) {
+                OniOmokage.RefreshSnapForCapture(npc, snap);
+                long pixelCost = (long)snap.Width * snap.Height;
+                if (captures > 0 && capturePixels + pixelCost > MaxCapturePixelsPerFrame) {
                     continue;
                 }
-                OniDismemberRender.CaptureNpcAppearance(spriteBatch, graphicsDevice, npc, snap.RT, npc.Center, npc.behindTiles);
-                snap.Captured = true;
+                captures++;
+                capturePixels += pixelCost;
+                if (!EnsureSnapRT(graphicsDevice, snap)) {
+                    RegisterCaptureFailure(snap);
+                    continue;
+                }
+                if (OniDismemberRender.CaptureNpcAppearance(spriteBatch,
+                    graphicsDevice, npc, snap.RT, npc.Center, npc.behindTiles)) {
+                    snap.Captured = true;
+                    snap.CaptureUnavailable = false;
+                }
+                else {
+                    RegisterCaptureFailure(snap);
+                }
             }
 
             //还屏
@@ -125,6 +152,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             return false;
         }
 
+        private static void RegisterCaptureFailure(OmokageSnap snap) {
+            snap.CaptureFailures++;
+            if (snap.CaptureFailures < OniOmokage.MaxCaptureFailures) {
+                return;
+            }
+            snap.RT?.Dispose();
+            snap.RT = null;
+            snap.Captured = true;
+            snap.CaptureUnavailable = true;
+        }
+
+        private static void CompletePendingAsFallback() {
+            foreach (KeyValuePair<int, OmokageSnap> pair in OniOmokage.Snaps) {
+                OmokageSnap snap = pair.Value;
+                if (snap.Captured) {
+                    continue;
+                }
+                NPC npc = OniOmokage.ValidTarget(pair.Key, snap.NpcType, snap.NpcSpawnToken);
+                if (npc != null) {
+                    OniOmokage.RefreshSnapForCapture(npc, snap);
+                }
+                snap.RT?.Dispose();
+                snap.RT = null;
+                snap.CaptureFailures = OniOmokage.MaxCaptureFailures;
+                snap.Captured = true;
+                snap.CaptureUnavailable = true;
+            }
+        }
+
         private static bool EnsureSnapRT(GraphicsDevice gd, OmokageSnap snap) {
             if (snap.RT != null && !snap.RT.IsDisposed
                 && snap.RT.Width == snap.Width && snap.RT.Height == snap.Height) {
@@ -148,9 +204,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             }
             pruneScratch.Clear();
             foreach (int npcIndex in OniOmokage.Snaps.Keys) {
+                OmokageSnap snap = OniOmokage.Snaps[npcIndex];
                 bool referenced = false;
                 foreach (OmokageEntry entry in OniOmokage.Entries) {
-                    if (entry.NpcIndex == npcIndex) {
+                    if (entry.NpcIndex == npcIndex
+                        && entry.NpcSpawnToken == snap.NpcSpawnToken) {
                         referenced = true;
                         break;
                     }
@@ -189,7 +247,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
                     continue;
                 }
 
-                //快照不可用（未捕获/低质量降级/显存异常）→ 素纸回退
+                //快照不可用时改画基础帧纸偶
 
                 if (fx == null || noise == null || !TryGetSnapRT(entry, out RenderTarget2D rt)) {
                     fallbackScratch.Add(entry);
@@ -202,10 +260,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
                     continue;
                 }
 
-                VertexPositionColorTexture[] verts = [.. vertexScratch];
+                if (vertexBuffer.Length < vertexScratch.Count) {
+                    Array.Resize(ref vertexBuffer, vertexScratch.Count);
+                }
+                vertexScratch.CopyTo(vertexBuffer);
                 foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
                     pass.Apply();
-                    gd.DrawUserPrimitives(PrimitiveType.TriangleList, verts, 0, verts.Length / 3);
+                    gd.DrawUserPrimitives(PrimitiveType.TriangleList, vertexBuffer, 0, vertexScratch.Count / 3);
                 }
             }
 
@@ -219,7 +280,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             if (!OniOmokage.Snaps.TryGetValue(entry.NpcIndex, out OmokageSnap snap)) {
                 return false;
             }
-            if (snap.NpcType != entry.NpcType || !snap.Captured || snap.RT == null || snap.RT.IsDisposed) {
+            if (snap.NpcType != entry.NpcType || snap.NpcSpawnToken != entry.NpcSpawnToken
+                || !snap.Captured || snap.CaptureUnavailable
+                || snap.RT == null || snap.RT.IsDisposed) {
                 return false;
             }
             if (snap.Width != entry.SnapWidth || snap.Height != entry.SnapHeight) {
@@ -235,13 +298,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             //斩纸头 3 帧裂口白闪
 
             float cutFlash = entry.Cut && entry.CutAge <= 3 ? 1f - entry.CutAge / 4f : 0f;
-            //显影、挂出后墨迹 12 帧内浮现
-
-            float develop = MathHelper.Clamp((entry.Timer - 1) / 12f, 0f, 1f);
+            float develop = entry.Develop;
             //朱印呼吸，玩家靠近增亮（无字教学、这张纸可以斩）
 
             float sealGlow = 0.72f + 0.22f * MathF.Sin(time * 2.3f + entry.SwayPhase);
-            float playerDist = Vector2.Distance(Main.LocalPlayer.Center, entry.AnchorCenter);
+            float playerDist = Vector2.Distance(Main.LocalPlayer.Center, entry.RenderCenter);
             sealGlow += 0.45f * (1f - MathHelper.Clamp(playerDist / 220f, 0f, 1f));
             //烧散前沿红烬；斩开的纸余温
 
@@ -249,7 +310,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 
             fx.Parameters["uSnapSize"]?.SetValue(new Vector2(entry.SnapWidth, entry.SnapHeight));
             fx.Parameters["uPaperSize"]?.SetValue(paperSize);
-            fx.Parameters["uMountPad"]?.SetValue(OniOmokage.PaperMountPad);
             fx.Parameters["uDissolve"]?.SetValue(entry.Dissolve);
             fx.Parameters["uDevelop"]?.SetValue(develop);
             fx.Parameters["uCutFlash"]?.SetValue(cutFlash);
@@ -259,7 +319,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             fx.Parameters["uSnapTex"]?.SetValue(rt);
         }
 
-        /// <summary>整纸或裂开两半 → 三角扇顶点（世界坐标）；uv 恒为纸面归一坐标</summary>
+        /// <summary>完整纸偶或裂片转为三角扇顶点，uv 保持纸面归一坐标</summary>
         private static void BuildEntryVertices(OmokageEntry entry, float time, float alpha) {
             vertexScratch.Clear();
             Color tint = Color.White * alpha;
@@ -271,20 +331,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             float cutEase = entry.Cut
                 ? OniFinaleRenderer.EaseOutCubic(MathHelper.Clamp(entry.SplitAge / (float)OniOmokage.CutSlideFrames, 0f, 1f))
                 : 0f;
-            //挂轴轻摆，斩开后大幅收敛（死纸不再摇）
+            //纸偶轻摆，斩开后大幅收敛
 
             float sway = MathF.Sin(time * 0.8f + entry.SwayPhase) * 0.03f * (1f - cutEase * 0.7f);
             float swaySin = MathF.Sin(sway);
             float swayCos = MathF.Cos(sway);
+            float unfold = OniFinaleRenderer.EaseOutCubic(entry.Reveal);
+            float foldX = MathHelper.Lerp(0.08f, 1f, unfold)
+                * (0.988f + MathF.Sin(time * 1.3f + entry.SwayPhase) * 0.012f);
 
             Vector2 cutDir = entry.CutAngle.ToRotationVector2();
             Vector2 cutNormal = new(-cutDir.Y, cutDir.X);
             float slideDist = (10f + MathF.Min(paperHalf.X, paperHalf.Y) * 0.10f) * cutEase;
 
             if (!entry.Cut || entry.Halves.Count == 0) {
-                Vector2[] quad = [new(-paperHalf.X, -paperHalf.Y), new(paperHalf.X, -paperHalf.Y),
-                    new(paperHalf.X, paperHalf.Y), new(-paperHalf.X, paperHalf.Y)];
-                AppendPolygon(entry, quad, Vector2.Zero, 0f, swaySin, swayCos, paperSize, tint);
+                Span<Vector2> quad = stackalloc Vector2[4] {
+                    new(-paperHalf.X, -paperHalf.Y), new(paperHalf.X, -paperHalf.Y),
+                    new(paperHalf.X, paperHalf.Y), new(-paperHalf.X, paperHalf.Y),
+                };
+                AppendPolygon(entry, quad, Vector2.Zero, 0f, swaySin, swayCos, foldX, paperSize, tint);
                 return;
             }
 
@@ -292,12 +357,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
                 sbyte side = entry.HalfSides[i];
                 Vector2 offset = cutNormal * (side * slideDist);
                 float halfRot = side * 0.028f * cutEase;
-                AppendPolygon(entry, entry.Halves[i], offset, halfRot, swaySin, swayCos, paperSize, tint);
+                AppendPolygon(entry, entry.Halves[i], offset, halfRot, swaySin, swayCos, foldX, paperSize, tint);
             }
         }
 
-        private static void AppendPolygon(OmokageEntry entry, Vector2[] poly, Vector2 slideOffset,
-            float halfRot, float swaySin, float swayCos, Vector2 paperSize, Color tint) {
+        private static void AppendPolygon(OmokageEntry entry, ReadOnlySpan<Vector2> poly, Vector2 slideOffset,
+            float halfRot, float swaySin, float swayCos, float foldX, Vector2 paperSize, Color tint) {
 
             if (poly.Length < 3) {
                 return;
@@ -315,13 +380,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 
             Span<Vector2> world = stackalloc Vector2[poly.Length];
             for (int i = 0; i < poly.Length; i++) {
-                //绕裂片质心微转 → 滑开位移 → 整纸摇摆（绕纸中心）→ 锚点定位
+                //绕裂片质心微转 → 滑开位移 → 纸偶摇摆 → 锚点定位
 
                 Vector2 rel = poly[i] - centroid;
                 Vector2 spun = new(rel.X * rCos - rel.Y * rSin, rel.X * rSin + rel.Y * rCos);
                 Vector2 local = centroid + spun + slideOffset;
+                local.X *= foldX;
                 Vector2 swayed = new(local.X * swayCos - local.Y * swaySin, local.X * swaySin + local.Y * swayCos);
-                world[i] = entry.AnchorCenter + swayed;
+                world[i] = entry.RenderCenter + swayed;
             }
 
             for (int i = 1; i < poly.Length - 1; i++) {
@@ -338,12 +404,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             vertexScratch.Add(new VertexPositionColorTexture(worldPos.ToVector3(), tint, uv));
         }
 
-        private static void DrawFallbackPapers(SpriteBatch spriteBatch) {
+        private static void DrawFallbackDolls(SpriteBatch spriteBatch) {
             if (fallbackScratch.Count == 0) {
-                return;
-            }
-            Texture2D white = VaultAsset.placeholder2?.Value;
-            if (white == null) {
                 return;
             }
 
@@ -352,24 +414,167 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
                 null, Main.GameViewMatrix.TransformationMatrix);
 
             float time = (float)Main.timeForVisualEffects * 0.016f;
-            Vector2 origin = white.Size() * 0.5f;
             foreach (OmokageEntry entry in fallbackScratch) {
-                float alpha = entry.Alpha;
-                Vector2 size = entry.PaperHalf * 2f;
-                float sway = MathF.Sin(time * 0.8f + entry.SwayPhase) * 0.03f;
-                Vector2 pos = entry.AnchorCenter - Main.screenPosition;
+                if (!OniOmokage.Snaps.TryGetValue(entry.NpcIndex, out OmokageSnap snap)
+                    || snap.NpcType != entry.NpcType || snap.NpcSpawnToken != entry.NpcSpawnToken
+                    || snap.SourceFrame.Width <= 0 || snap.SourceFrame.Height <= 0) {
+                    continue;
+                }
 
-                spriteBatch.Draw(white, pos, null, new Color(233, 224, 202) * (0.85f * alpha),
-                    sway, origin, size / white.Size(), SpriteEffects.None, 0f);
-                //朱印占位、本纸右上角红点
+                Main.instance.LoadNPC(snap.NpcType);
+                Texture2D texture = TextureAssets.Npc[snap.NpcType].Value;
+                Rectangle frame = Rectangle.Intersect(new Rectangle(0, 0, texture.Width, texture.Height), snap.SourceFrame);
+                if (frame.Width <= 0 || frame.Height <= 0) {
+                    continue;
+                }
 
-                Vector2 sealPos = pos + new Vector2(size.X * 0.5f - 15f,
-                    -size.Y * 0.5f + OniOmokage.PaperMountPad + 16f).RotatedBy(sway);
-                spriteBatch.Draw(white, sealPos, null, new Color(184, 26, 26) * alpha,
-                    sway, origin, new Vector2(10f) / white.Size(), SpriteEffects.None, 0f);
+                float dissolveFade = 1f - MathHelper.Clamp((entry.Dissolve - 0.55f) / 0.45f, 0f, 1f) * 0.35f;
+                float alpha = entry.Alpha * entry.Develop * dissolveFade;
+                if (alpha <= 0.01f) {
+                    continue;
+                }
+                float unfold = OniFinaleRenderer.EaseOutCubic(entry.Reveal);
+                float foldX = MathHelper.Lerp(0.08f, 1f, unfold)
+                    * (0.988f + MathF.Sin(time * 1.3f + entry.SwayPhase) * 0.012f);
+                float sway = MathF.Sin(time * 0.8f + entry.SwayPhase) * 0.025f;
+                float rotation = snap.SourceRotation + sway;
+                Vector2 drawOffset = Vector2.UnitY * snap.SourceDrawOffsetY;
+                Vector2 pos = entry.RenderCenter + drawOffset - Main.screenPosition;
+                Vector2 scale = new(snap.SourceScale * foldX, snap.SourceScale);
+                Color edge = new Color(40, 24, 28) * (alpha * 0.82f);
+                Color paper = new Color(218, 201, 164) * alpha;
+                float cutFlash = entry.Cut && entry.CutAge <= 3 ? 1f - entry.CutAge / 4f : 0f;
+                paper = Color.Lerp(paper, new Color(255, 230, 194) * alpha, cutFlash * 0.78f);
+
+                if (entry.Cut && entry.SplitAge >= 0) {
+                    DrawFallbackSplit(spriteBatch, texture, frame, snap, entry, pos, drawOffset,
+                        scale, rotation, edge, paper);
+                }
+                else {
+                    DrawFallbackPiece(spriteBatch, texture, frame, frame, pos, Vector2.Zero,
+                        scale, rotation, snap.SourceEffects, edge, paper);
+                }
+
             }
 
             spriteBatch.End();
+        }
+
+        private static void DrawFallbackSplit(SpriteBatch spriteBatch, Texture2D texture, Rectangle frame,
+            OmokageSnap snap, OmokageEntry entry, Vector2 pos, Vector2 drawOffset, Vector2 scale,
+            float rotation, Color edge, Color paper) {
+
+            if (frame.Width < 2 || frame.Height < 2) {
+                DrawFallbackPiece(spriteBatch, texture, frame, frame, pos, Vector2.Zero,
+                    scale, rotation, snap.SourceEffects, edge, paper);
+                return;
+            }
+
+            Vector2 cutNormal = new(-MathF.Sin(entry.CutAngle), MathF.Cos(entry.CutAngle));
+            Vector2 localCutWorld = (entry.CutLocal - drawOffset).RotatedBy(-rotation);
+            Vector2 localNormal = cutNormal.RotatedBy(-rotation);
+            float flipX = (snap.SourceEffects & SpriteEffects.FlipHorizontally) != 0 ? -1f : 1f;
+            Vector2 sourceCut = new(localCutWorld.X / MathF.Max(scale.X, 0.001f) * flipX,
+                localCutWorld.Y / MathF.Max(scale.Y, 0.001f));
+            sourceCut += frame.Size() * 0.5f;
+            sourceCut.X = MathHelper.Clamp(sourceCut.X, frame.Width * 0.2f, frame.Width * 0.8f);
+            sourceCut.Y = MathHelper.Clamp(sourceCut.Y, frame.Height * 0.2f, frame.Height * 0.8f);
+            Vector2 sourceNormal = new(localNormal.X * scale.X * flipX, localNormal.Y * scale.Y);
+
+            float cutEase = OniFinaleRenderer.EaseOutCubic(MathHelper.Clamp(
+                entry.SplitAge / (float)OniOmokage.CutSlideFrames, 0f, 1f));
+            float slideDistance = (10f + MathF.Min(entry.PaperHalf.X, entry.PaperHalf.Y) * 0.10f) * cutEase;
+            const int maxSlices = 12;
+
+            if (MathF.Abs(sourceNormal.Y) >= MathF.Abs(sourceNormal.X)) {
+                int slices = Math.Min(maxSlices, frame.Width);
+                for (int i = 0; i < slices; i++) {
+                    int left = frame.Left + frame.Width * i / slices;
+                    int right = frame.Left + frame.Width * (i + 1) / slices;
+                    float x = (left + right) * 0.5f - frame.Left;
+                    float cutY = sourceCut.Y - sourceNormal.X / sourceNormal.Y * (x - sourceCut.X);
+                    int split = frame.Top + (int)MathF.Round(MathHelper.Clamp(cutY, 0f, frame.Height));
+                    DrawFallbackSlice(spriteBatch, texture, frame,
+                        new Rectangle(left, frame.Top, right - left, split - frame.Top), snap, entry,
+                        pos, drawOffset, scale, rotation, cutNormal, slideDistance, edge, paper, -1f);
+                    DrawFallbackSlice(spriteBatch, texture, frame,
+                        new Rectangle(left, split, right - left, frame.Bottom - split), snap, entry,
+                        pos, drawOffset, scale, rotation, cutNormal, slideDistance, edge, paper, 1f);
+                }
+            }
+            else {
+                int slices = Math.Min(maxSlices, frame.Height);
+                for (int i = 0; i < slices; i++) {
+                    int top = frame.Top + frame.Height * i / slices;
+                    int bottom = frame.Top + frame.Height * (i + 1) / slices;
+                    float y = (top + bottom) * 0.5f - frame.Top;
+                    float cutX = sourceCut.X - sourceNormal.Y / sourceNormal.X * (y - sourceCut.Y);
+                    int split = frame.Left + (int)MathF.Round(MathHelper.Clamp(cutX, 0f, frame.Width));
+                    DrawFallbackSlice(spriteBatch, texture, frame,
+                        new Rectangle(frame.Left, top, split - frame.Left, bottom - top), snap, entry,
+                        pos, drawOffset, scale, rotation, cutNormal, slideDistance, edge, paper, -1f);
+                    DrawFallbackSlice(spriteBatch, texture, frame,
+                        new Rectangle(split, top, frame.Right - split, bottom - top), snap, entry,
+                        pos, drawOffset, scale, rotation, cutNormal, slideDistance, edge, paper, 1f);
+                }
+            }
+        }
+
+        private static void DrawFallbackSlice(SpriteBatch spriteBatch, Texture2D texture,
+            Rectangle fullFrame, Rectangle pieceFrame, OmokageSnap snap, OmokageEntry entry,
+            Vector2 pos, Vector2 drawOffset, Vector2 scale, float rotation, Vector2 cutNormal,
+            float slideDistance, Color edge, Color paper, float fallbackSide) {
+
+            if (pieceFrame.Width <= 0 || pieceFrame.Height <= 0) {
+                return;
+            }
+            Vector2 pieceOffset = GetFallbackPieceOffset(fullFrame, pieceFrame, scale,
+                rotation, snap.SourceEffects);
+            Vector2 relativeToCut = drawOffset + pieceOffset - entry.CutLocal;
+            float side = MathF.Sign(Vector2.Dot(relativeToCut, cutNormal));
+            if (side == 0f) {
+                side = fallbackSide;
+            }
+            DrawFallbackPiece(spriteBatch, texture, fullFrame, pieceFrame, pos,
+                cutNormal * (side * slideDistance), scale, rotation, snap.SourceEffects, edge, paper,
+                drawEdge: false);
+        }
+
+        private static void DrawFallbackPiece(SpriteBatch spriteBatch, Texture2D texture,
+            Rectangle fullFrame, Rectangle pieceFrame, Vector2 pos, Vector2 slideOffset,
+            Vector2 scale, float rotation, SpriteEffects effects, Color edge, Color paper,
+            bool drawEdge = true) {
+
+            Vector2 pieceOffset = GetFallbackPieceOffset(fullFrame, pieceFrame, scale, rotation, effects);
+            Vector2 piecePos = pos + pieceOffset + slideOffset;
+            Vector2 origin = pieceFrame.Size() * 0.5f;
+            if (drawEdge) {
+                const float edgeOffset = 1.35f;
+                spriteBatch.Draw(texture, piecePos - Vector2.UnitX * edgeOffset, pieceFrame, edge,
+                    rotation, origin, scale, effects, 0f);
+                spriteBatch.Draw(texture, piecePos + Vector2.UnitX * edgeOffset, pieceFrame, edge,
+                    rotation, origin, scale, effects, 0f);
+                spriteBatch.Draw(texture, piecePos - Vector2.UnitY * edgeOffset, pieceFrame, edge,
+                    rotation, origin, scale, effects, 0f);
+                spriteBatch.Draw(texture, piecePos + Vector2.UnitY * edgeOffset, pieceFrame, edge,
+                    rotation, origin, scale, effects, 0f);
+            }
+            spriteBatch.Draw(texture, piecePos, pieceFrame, paper, rotation, origin, scale, effects, 0f);
+        }
+
+        private static Vector2 GetFallbackPieceOffset(Rectangle fullFrame, Rectangle pieceFrame,
+            Vector2 scale, float rotation, SpriteEffects effects) {
+
+            Vector2 fullCenter = new(fullFrame.Left + fullFrame.Width * 0.5f,
+                fullFrame.Top + fullFrame.Height * 0.5f);
+            Vector2 pieceCenter = new(pieceFrame.Left + pieceFrame.Width * 0.5f,
+                pieceFrame.Top + pieceFrame.Height * 0.5f);
+            Vector2 offset = pieceCenter - fullCenter;
+            if ((effects & SpriteEffects.FlipHorizontally) != 0) {
+                offset.X = -offset.X;
+            }
+            offset *= scale;
+            return offset.RotatedBy(rotation);
         }
 
         private static void DrawThreadsAndPulses(SpriteBatch spriteBatch) {
@@ -398,33 +603,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
                     continue;
                 }
 
-                //吊绳、挂轴顶端一小段向上的赤绳，与因果线同语言（"过去被挂在这里"）
-
-                float sway = MathF.Sin(time * 0.8f + entry.SwayPhase) * 0.03f;
-                Vector2 top = entry.AnchorCenter + new Vector2(0f, -entry.PaperHalf.Y).RotatedBy(sway);
-                Vector2 hook = entry.AnchorCenter + new Vector2(0f, -entry.PaperHalf.Y - 16f);
-                DrawLine(spriteBatch, white, hook, top, new Color(0.72f, 0.10f, 0.09f, 0f) * (0.5f * alpha), 1.1f);
-                spriteBatch.Draw(glow, hook - Main.screenPosition, null,
-                    new Color(0.9f, 0.16f, 0.12f, 0f) * (0.5f * alpha), 0f,
-                    glow.Size() * 0.5f, 7f / glow.Width, SpriteEffects.None, 0f);
-
-                NPC npc = OniOmokage.ValidTarget(entry.NpcIndex, entry.NpcType);
+                NPC npc = OniOmokage.ValidTarget(entry.NpcIndex, entry.NpcType, entry.NpcSpawnToken);
                 if (npc == null) {
                     continue;
                 }
                 //真身贴着面影时线没有存在感，跳过
 
-                float dist = Vector2.Distance(entry.AnchorCenter, npc.Center);
+                float dist = Vector2.Distance(entry.RenderCenter, npc.Center);
                 if (dist < 40f) {
                     continue;
                 }
 
                 float breath = 0.12f + 0.07f * MathF.Sin(time * 2.1f + entry.SwayPhase);
                 float proximity = 1f - MathHelper.Clamp(
-                    Vector2.Distance(Main.LocalPlayer.Center, entry.AnchorCenter) / 220f, 0f, 1f);
+                    Vector2.Distance(Main.LocalPlayer.Center, entry.RenderCenter) / 220f, 0f, 1f);
                 float strength = (breath + proximity * 0.30f) * alpha;
 
-                DrawLine(spriteBatch, white, entry.AnchorCenter, npc.Center,
+                DrawLine(spriteBatch, white, entry.RenderCenter, npc.Center,
                     new Color(0.86f, 0.12f, 0.10f, 0f) * strength, 1.2f);
             }
 
@@ -439,7 +634,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             //脉冲、赤点沿线疾驰，缓入加速 + 短残尾
 
             foreach (OmokagePulse pulse in OniOmokage.Pulses) {
-                NPC npc = OniOmokage.ValidTarget(pulse.NpcIndex, pulse.NpcType);
+                NPC npc = OniOmokage.ValidTarget(pulse.NpcIndex, pulse.NpcType, pulse.NpcSpawnToken);
                 if (npc == null) {
                     continue;
                 }
@@ -496,7 +691,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
                 return;
             }
             float chord = (t1 - t0) * 1.25f;
-            Vector2 cutWorld = entry.AnchorCenter + entry.CutLocal;
+            Vector2 cutWorld = entry.RenderCenter + entry.CutLocal;
             Vector2 mid = cutWorld + dir * ((t0 + t1) * 0.5f);
             int age = entry.CutAge;
 

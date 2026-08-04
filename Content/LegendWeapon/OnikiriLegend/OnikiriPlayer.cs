@@ -1577,7 +1577,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 local.Y = MathHelper.Clamp(local.Y, -paper.PaperHalf.Y * 0.4f, paper.PaperHalf.Y * 0.4f);
                 Vector2 cutPoint = paper.AnchorCenter + local;
                 OniSeverStrike.FireAtPoint(Player, cutPoint, AimAngleFrom(cutPoint), damage
-                    , knockback, scale: OnikiriOverride.GetBladeScale(item), source: source);
+                    , knockback, scale: OnikiriOverride.GetBladeScale(item), source: source,
+                    omokageEntryId: paper.Id);
                 CancelExecutionIntent(settleFollowup: false, force: true);
                 return true;
             }

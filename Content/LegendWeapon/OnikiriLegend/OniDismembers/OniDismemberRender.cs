@@ -14,6 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         //Entries 按到落刀点的距离序排列，先捕获的恰是玩家眼前的
 
         private const int MaxCapturesPerFrame = 24;
+        private const int MaxCaptureFailures = 2;
         //孤儿 RT 清理暂存
 
         private static readonly List<int> pruneScratch = [];
@@ -100,42 +101,66 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             RenderTarget2D rt = OniDismember.EnsureSnapshotRT(gd, entry);
             if (rt == null) {
                 entry.SnapWidth = 0;    //显存不足等异常、永久降级为仅定身
+                entry.SnapHeight = 0;
 
                 return;
             }
 
-            CaptureNpcAppearance(sb, gd, npc, rt, entry.AnchorCenter, entry.BehindTiles);
-            entry.Captured = true;
+            if (CaptureNpcAppearance(sb, gd, npc, rt, entry.AnchorCenter, entry.BehindTiles)) {
+                entry.Captured = true;
+                entry.CaptureFailures = 0;
+                return;
+            }
+
+            entry.CaptureFailures++;
+            if (entry.CaptureFailures >= MaxCaptureFailures) {
+                entry.SnapWidth = 0;
+                entry.SnapHeight = 0;
+                if (OniDismember.SnapRTs.Remove(entry.NpcIndex, out RenderTarget2D failedRT)) {
+                    failedRT?.Dispose();
+                }
+            }
         }
 
-        /// <summary>把 NPC 完整外观（含 glowmask 等全部绘制层）画进给定 RT</summary>
-        internal static void CaptureNpcAppearance(SpriteBatch sb, GraphicsDevice gd, NPC npc,
+        /// <summary>把 NPC 完整外观画进给定 RT，批次恢复成功才返回 true</summary>
+        internal static bool CaptureNpcAppearance(SpriteBatch sb, GraphicsDevice gd, NPC npc,
             RenderTarget2D rt, Vector2 anchorCenter, bool behindTiles) {
 
-            gd.SetRenderTarget(rt);
-            gd.Clear(Color.Transparent);
+            if (sb == null || gd == null || npc == null || rt == null || rt.IsDisposed) {
+                return false;
+            }
 
             Vector2 fakeScreenPos = anchorCenter - new Vector2(rt.Width, rt.Height) * 0.5f;
             Vector2 realScreenPos = Main.screenPosition;
-            //部分模组 NPC 的 PreDraw 直接读
-            Main.screenPosition = fakeScreenPos;
-
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
-                DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
+            bool batchBegan = false;
+            bool drawSucceeded = false;
+            bool batchEnded = false;
             try {
+                gd.SetRenderTarget(rt);
+                gd.Clear(Color.Transparent);
+                //部分模组 NPC 的 PreDraw 直接读 Main.screenPosition
+                Main.screenPosition = fakeScreenPos;
+                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                    DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
+                batchBegan = true;
                 Main.instance.DrawNPCDirect(sb, npc, behindTiles, fakeScreenPos);
+                drawSucceeded = true;
             } catch {
                 //单个 NPC 绘制钩子异常不拖垮捕获管线
 
             } finally {
                 Main.screenPosition = realScreenPos;
-                try {
-                    sb.End();
-                } catch {
-                    //绘制钩子把 spriteBatch 留在非活跃状态时兜底
+                if (batchBegan) {
+                    try {
+                        sb.End();
+                        batchEnded = true;
+                    } catch {
+                        //绘制钩子破坏批次状态时判定捕获失败
 
+                    }
                 }
             }
+            return drawSucceeded && batchEnded;
         }
 
         private static bool AnyPendingCapture() {

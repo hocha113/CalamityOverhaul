@@ -21,6 +21,7 @@ using CalamityOverhaul.Content.Scenarios.OldDuke;
 using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
 using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
 using CalamityOverhaul.Content.Wraiths.Runtime;
+using CalamityOverhaul.OtherMods.Entropys;
 using System.IO;
 using Terraria.ModLoader;
 
@@ -63,6 +64,7 @@ namespace CalamityOverhaul
         WeaverGrievancesManifestation,
         OnikiriTutorialTarget,
         OnikiriItemOperation,
+        SoyMilkBossPowerDamageReport,
     }
 
     public static class CWRNetWork
@@ -138,6 +140,7 @@ namespace CalamityOverhaul
             WGManifestationNet.NetHandle(type, reader, whoAmI);
             OnikiriTutorialNet.NetHandle(type, reader, whoAmI);
             OnikiriNet.NetHandle(type, reader, whoAmI);
+            SoyMilkBossPowerPlayer.NetHandle(type, reader, whoAmI);
         }
     }
 }

@@ -43,6 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         private int timer;
         /// <summary>首帧捕获的目标类型，槽位复用校验</summary>
         private int targetType = -1;
+        private int omokageEntryId;
         private int tutorialTargetOwner = -1;
         private int tutorialTargetSession;
         private uint tutorialTargetToken;
@@ -108,12 +109,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         /// <param name="knockback">击退</param>
         /// <param name="scale">尺寸倍率</param>
         /// <param name="source">生成源，null 则回退 Misc 源</param>
+        /// <param name="omokageEntryId">点击时绑定的面影 ID</param>
         public static Projectile FireAtPoint(Player player, Vector2 point, float cutAngle, int damage, float knockback,
-            float scale = 1f, IEntitySource source = null) {
+            float scale = 1f, IEntitySource source = null, int omokageEntryId = 0) {
             source ??= player.GetSource_Misc("CWR_OniSeverStrike");
-            return Projectile.NewProjectileDirect(source, point, Vector2.Zero
+            Projectile projectile = Projectile.NewProjectileDirect(source, point, Vector2.Zero
                 , ModContent.ProjectileType<OniSeverStrike>(), damage, knockback, player.whoAmI
                 , ai0: PointModeMarker, ai1: MathHelper.WrapAngle(cutAngle), ai2: scale);
+            if (projectile.ModProjectile is OniSeverStrike strike) {
+                strike.omokageEntryId = omokageEntryId;
+            }
+            return projectile;
         }
 
         public override void SetStaticDefaults() {
@@ -240,8 +246,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
                     struck = true;
                     if (Projectile.owner == Main.myPlayer
-                        && !OniOmokage.SeverAt(Owner, Projectile.Center, CutAngle
-                            , Projectile.damage, Projectile.knockBack)) {
+                        && !(omokageEntryId != 0
+                            ? OniOmokage.SeverEntry(Owner, omokageEntryId, Projectile.Center, CutAngle,
+                                Projectile.damage, Projectile.knockBack)
+                            : OniOmokage.SeverAt(Owner, Projectile.Center, CutAngle,
+                                Projectile.damage, Projectile.knockBack))) {
                         BeginWhiff();   //纸已烧散、空挥（仅 owner 端可知，远端照常收势）
 
                     }
