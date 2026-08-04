@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         private static bool LocalKeepAlive()
-            => LocalHolding() && OniRegistry.EquippedEntry != null;
+            => LocalHolding();
 
         public override bool Active => LocalKeepAlive() || appear > 0.01f;
 
@@ -370,11 +370,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //札体:纸条质感(三段明暗/折角/压边/缓移光泽),危态时改走焚烧 shader
             Vector2 side = rot.ToRotationVector2();
             OniGhostEntry equipped = OniRegistry.EquippedEntry;
-            if (equipped == null) {
-                return;
-            }
-            float mastery = MathHelper.Clamp(equipped.Mastery, 0f, 1f);
-            bool danger = equipped.IsDormant;
+            float mastery = equipped == null ? 0f : MathHelper.Clamp(equipped.Mastery, 0f, 1f);
+            bool danger = equipped?.IsDormant == true;
             bool paperByShader = danger && OniPaperBurnDraw.Available;
             if (paperByShader) {
                 //焚烧量随当前役鬼驾驭降低升高,只舔下缘
@@ -385,19 +382,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniBrush.DrawPaperStrip(sb, stripTop, rot, new Vector2(W, H), a * (hover ? 1.05f : 0.96f), GlobalTimer * 0.11f);
             }
 
-            //役鬼位非空时才落役鬼印
-            DrawWraithSeal(sb, stripTop + down * 16f, rot, equipped.Key, a);
+            if (equipped != null) {
+                //役鬼位非空时才落役鬼印
+                DrawWraithSeal(sb, stripTop + down * 16f, rot, equipped.Key, a);
 
-            //墨批:自印下垂书一笔,长度=当前役鬼驾驭度
-            if (mastery > 0.02f) {
-                Vector2 strokeStart = stripTop + down * 29f;
-                Vector2 strokeEnd = stripTop + down * (29f + (H - 42f) * mastery);
-                OniBrush.DrawTaperedSlash(sb, strokeStart, strokeEnd, 3.8f, 0.9f, a * 0.92f);
-            }
+                //墨批:自印下垂书一笔,长度=当前役鬼驾驭度
+                if (mastery > 0.02f) {
+                    Vector2 strokeStart = stripTop + down * 29f;
+                    Vector2 strokeEnd = stripTop + down * (29f + (H - 42f) * mastery);
+                    OniBrush.DrawTaperedSlash(sb, strokeStart, strokeEnd, 3.8f, 0.9f, a * 0.92f);
+                }
 
-            //危态:焚烧 shader 缺席时退回逐列手绘焦边
-            if (danger && !paperByShader) {
-                DrawCharredHem(sb, stripTop, down, side, W, H, a);
+                //危态:焚烧 shader 缺席时退回逐列手绘焦边
+                if (danger && !paperByShader) {
+                    DrawCharredHem(sb, stripTop, down, side, W, H, a);
+                }
             }
 
             //气力墨脉:定在锚侧不随札摆,墨丝自札边垂下把两者缝在一起
@@ -503,6 +502,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             string hint = string.Format(HudHintFormat.Value, keyName, ledgerName);
             OniGhostEntry equipped = OniRegistry.EquippedEntry;
             if (equipped == null) {
+                OniTooltipPanel.Draw(sb, MousePosition, title, 0.82f, a,
+                    new OniTooltipLine(hint, OnikiriUITheme.TextDim));
                 return;
             }
             bool danger = equipped.IsDormant;
