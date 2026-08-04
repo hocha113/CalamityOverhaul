@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     }
 
     /// 毁灭者手持基类，三段+DestroyerSlash+Beam
-    internal abstract class DestroyersBladeHeldBase : BaseHeldProj, IPrimitiveDrawable
+    internal abstract class DestroyersBladeHeldBase : BaseHeldProj, IPrimitiveDrawable, IOverlayDrawable
     {
         /// 对应物品ID
         protected abstract int TargetItemID { get; }
@@ -142,8 +142,8 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         //阶段时长(逻辑帧，攻速缩放)
         private float WindupTime => (IsFinisher ? 8f : 5f) - (IsEX ? 1f : 0f);
-        private float SlashTime => (IsFinisher ? 14f : 11f) - (IsEX ? 2f : 0f);
-        private float RecoverTime => (IsFinisher ? 10f : 8f) - (IsEX ? 1f : 0f);
+        private float SlashTime => (IsFinisher ? 9f : 7f) - (IsEX ? 1f : 0f);
+        private float RecoverTime => (IsFinisher ? 15f : 12f) - (IsEX ? 2f : 0f);
         private float TotalTime => WindupTime + SlashTime + RecoverTime;
         //挥砍弧度
         private float SwingArc => IsFinisher ? 5.5f : 3.4f;
@@ -162,13 +162,17 @@ namespace CalamityOverhaul.Content.Items.Melee
         private float endAngle;
         private float currentRotation;
         private float lastRotation;
+        private float sweepCollisionStart;
+        private float sweepCollisionEnd;
+        private bool slashVisualActive;
+        private bool sweepDamageActive;
         private bool slashSoundPlayed;
         private bool beamsFired;
         private float trailFade;
 
-        //刀光轨迹缓存
-        private const int TrailMax = 64;
-        private const int TrailSubdiv = 4;
+        //刀光按外缘弧长补点
+        private const int TrailMax = 96;
+        private const float TrailSampleSpacing = 18f;
         private readonly float[] trailRot = new float[TrailMax];
         private int trailCount;
 
@@ -187,17 +191,25 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool ShouldUpdatePosition() => false;
 
-        public override bool? CanDamage() => elapsed >= WindupTime && elapsed <= WindupTime + SlashTime + 1f;
+        public override bool? CanDamage() => sweepDamageActive;
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             if (CanDamage() != true) {
                 return false;
             }
             Vector2 hand = Owner.GetPlayerStabilityCenter();
-            Vector2 tip = hand + currentRotation.ToRotationVector2() * BladeReach * Projectile.scale;
-            float collisionPoint = 0f;
-            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
-                , hand, tip, 54f, ref collisionPoint);
+            float reach = BladeReach * Projectile.scale;
+            int steps = GetAngularSteps(sweepCollisionEnd - sweepCollisionStart, reach, 24f, 64);
+            for (int i = 0; i <= steps; i++) {
+                float rotation = MathHelper.Lerp(sweepCollisionStart, sweepCollisionEnd, i / (float)steps);
+                Vector2 tip = hand + rotation.ToRotationVector2() * reach;
+                float collisionPoint = 0f;
+                if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
+                    , hand, tip, 54f, ref collisionPoint)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public override void Initialize() {
@@ -221,6 +233,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             startAngle = baseAngle - swingSign * SwingArc * 0.5f;
             endAngle = baseAngle + swingSign * SwingArc * 0.5f;
             currentRotation = lastRotation = startAngle;
+            sweepCollisionStart = sweepCollisionEnd = startAngle;
 
             if (IsFinisher) {
                 Projectile.damage = (int)(Projectile.damage * 1.35f);
@@ -236,6 +249,9 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void AI() {
+            slashVisualActive = false;
+            sweepDamageActive = false;
+            sweepCollisionStart = sweepCollisionEnd = currentRotation;
             if (Item.type != TargetItemID) {
                 Projectile.Kill();
                 return;
@@ -246,22 +262,28 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             lastRotation = currentRotation;
+            float frameEnd = MathF.Min(elapsed + speedMul, TotalTime);
             float slashEnd = WindupTime + SlashTime;
+            float slashFromTime = MathF.Max(elapsed, WindupTime);
+            float slashToTime = MathF.Min(frameEnd, slashEnd);
 
-            if (elapsed < WindupTime) {
-                //蓄力回拉
-                float t = elapsed / WindupTime;
-                currentRotation = startAngle - swingSign * 0.25f * MathF.Sin(t * MathHelper.PiOver2);
-                trailFade = 0f;
-            }
-            else if (elapsed < slashEnd) {
-                //液压驱动般的 ease-out 重斩
-                float t = (elapsed - WindupTime) / SlashTime;
-                float eased = 1f - MathF.Pow(1f - t, IsFinisher ? 4.4f : 3.5f);
-                currentRotation = MathHelper.Lerp(startAngle, endAngle, eased);
-                trailFade = 1f;
+            if (slashToTime > slashFromTime) {
+                //消费本帧与挥砍阶段的交集，避免高攻速跨阶段时漏刀。
+                slashVisualActive = true;
+                float fromT = (slashFromTime - WindupTime) / SlashTime;
+                float toT = (slashToTime - WindupTime) / SlashTime;
+                float progress = GetSwingProgress(toT);
+                float slashRotation = GetSwingRotation(progress);
 
-                if (!slashSoundPlayed) {
+                float damageFrom = MathF.Max(fromT, SwingGatherEnd);
+                float damageTo = MathF.Min(toT, SwingBurstEnd);
+                if (damageTo > damageFrom) {
+                    sweepDamageActive = true;
+                    sweepCollisionStart = GetSwingRotation(GetSwingProgress(damageFrom));
+                    sweepCollisionEnd = GetSwingRotation(GetSwingProgress(damageTo));
+                }
+
+                if (!slashSoundPlayed && toT >= SwingGatherEnd) {
                     slashSoundPlayed = true;
                     if (!VaultUtils.isServer) {
                         SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -0.5f }, Owner.Center);
@@ -271,57 +293,164 @@ namespace CalamityOverhaul.Content.Items.Melee
                     }
                 }
 
-                PushTrailSamples();
+                PushTrailInterval(fromT, toT);
 
-                if (!beamsFired && t >= 0.36f) {
+                if (!beamsFired && progress >= 0.70f) {
                     beamsFired = true;
-                    FireBeams();
+                    FireBeams(slashRotation);
                 }
 
                 //刀刃熔渣火花
                 if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
                     Vector2 along = Owner.GetPlayerStabilityCenter()
-                        + currentRotation.ToRotationVector2() * Main.rand.NextFloat(BladeReach * 0.5f, BladeReach);
-                    Vector2 tangent = currentRotation.ToRotationVector2().RotatedBy(swingSign * MathHelper.PiOver2);
+                        + slashRotation.ToRotationVector2() * Main.rand.NextFloat(BladeReach * 0.5f, BladeReach);
+                    Vector2 tangent = slashRotation.ToRotationVector2().RotatedBy(swingSign * MathHelper.PiOver2);
                     PRTLoader.NewParticle<PRT_Spark>(along, tangent * Main.rand.NextFloat(3f, 6f)
                         , Color.Lerp(Color.Red, Color.OrangeRed, Main.rand.NextFloat())
                         , Main.rand.NextFloat(0.6f, 1f)).Configure(false, 9);
                 }
             }
+
+            if (frameEnd <= WindupTime) {
+                //蓄力回拉
+                float t = frameEnd / WindupTime;
+                currentRotation = MathHelper.Lerp(startAngle, ChamberAngle, EaseOutCubic(t));
+                trailFade = 0f;
+            }
+            else if (frameEnd <= slashEnd) {
+                //液压缓推后瞬间泄压，末端过冲回坐
+                float t = (frameEnd - WindupTime) / SlashTime;
+                currentRotation = GetSwingRotation(GetSwingProgress(t));
+                trailFade = 1f;
+            }
             else {
                 //收势
-                float t = (elapsed - slashEnd) / RecoverTime;
-                currentRotation = endAngle;
-                trailFade = 1f - t;
-                PushTrailSamples();
+                float t = (frameEnd - slashEnd) / RecoverTime;
+                float hold = (IsFinisher ? 0.22f : 0.18f) - (IsEX ? 0.03f : 0f);
+                float returnT = SmoothStep01((t - hold) / (1f - hold));
+                float baseAngle = (startAngle + endAngle) * 0.5f;
+                float guardAngle = baseAngle + swingSign * (IsFinisher ? 1.08f : 0.86f);
+                currentRotation = MathHelper.Lerp(endAngle, guardAngle, returnT);
+                trailFade = 1f - SmoothStep01(t);
+                TrimTrailToRotation(currentRotation);
             }
 
             UpdatePlayerPose();
             Lighting.AddLight(Owner.GetPlayerStabilityCenter() + currentRotation.ToRotationVector2() * BladeReach * 0.7f
                 , new Vector3(1f, 0.2f, 0.1f) * 0.7f);
-            elapsed += speedMul;
+            elapsed = frameEnd;
         }
 
-        private void PushTrailSamples() {
-            for (int s = TrailSubdiv - 1; s >= 0; s--) {
-                float rot = MathHelper.Lerp(currentRotation, lastRotation, s / (float)TrailSubdiv);
-                for (int i = Math.Min(trailCount, TrailMax - 1); i > 0; i--) {
-                    trailRot[i] = trailRot[i - 1];
-                }
-                trailRot[0] = rot;
-                if (trailCount < TrailMax) {
-                    trailCount++;
-                }
+        private float PullbackAngle => IsFinisher ? 0.62f : 0.45f;
+
+        private float ChamberAngle => startAngle - swingSign * PullbackAngle;
+
+        private float SwingGatherEnd => (IsFinisher ? 0.32f : 0.25f) - (IsEX ? 0.03f : 0f);
+
+        private float SwingBurstEnd => IsFinisher ? 0.60f : 0.52f;
+
+        private float GetSwingProgress(float t) {
+            float gatherEnd = SwingGatherEnd;
+            float creep = IsFinisher ? 0.12f : 0.05f;
+            float burstEnd = SwingBurstEnd;
+            float path = SwingArc + PullbackAngle;
+            float overshoot = 1f + (IsFinisher ? 0.14f : 0.10f) / path;
+            if (t < gatherEnd) {
+                return creep * SmoothStep01(t / gatherEnd);
+            }
+            if (t < burstEnd) {
+                float burstT = (t - gatherEnd) / (burstEnd - gatherEnd);
+                return MathHelper.Lerp(creep, overshoot, SmoothStep01(burstT));
+            }
+            return MathHelper.Lerp(overshoot, 1f, SmoothStep01((t - burstEnd) / (1f - burstEnd)));
+        }
+
+        private float GetSwingRotation(float progress)
+            => MathHelper.Lerp(ChamberAngle, endAngle, progress);
+
+        private static float EaseOutCubic(float value) {
+            value = MathHelper.Clamp(value, 0f, 1f);
+            return 1f - MathF.Pow(1f - value, 3f);
+        }
+
+        private static float SmoothStep01(float value) {
+            value = MathHelper.Clamp(value, 0f, 1f);
+            return value * value * (3f - 2f * value);
+        }
+
+        private static int GetAngularSteps(float delta, float radius, float targetSpacing, int maxSteps) {
+            float arcLength = MathF.Abs(delta) * MathF.Max(radius, 1f);
+            return Math.Clamp((int)MathF.Ceiling(arcLength / targetSpacing), 1, maxSteps);
+        }
+
+        private void PushTrailInterval(float fromT, float toT) {
+            float forwardTo = MathF.Min(toT, SwingBurstEnd);
+            if (forwardTo > fromT) {
+                PushTrailSamples(GetSwingRotation(GetSwingProgress(fromT))
+                    , GetSwingRotation(GetSwingProgress(forwardTo)));
+            }
+            if (toT > SwingBurstEnd) {
+                TrimTrailToRotation(GetSwingRotation(GetSwingProgress(toT)));
             }
         }
 
-        private void FireBeams() {
+        private void PushTrailSamples(float fromRotation, float toRotation) {
+            //终结斩跨过 PI，保留未包裹角度
+            float delta = toRotation - fromRotation;
+            if (delta * swingSign <= 0.0001f) {
+                TrimTrailToRotation(toRotation);
+                return;
+            }
+
+            float outerRadius = (BladeReach + 12f) * Projectile.scale;
+            bool appendStart = trailCount == 0;
+            int steps = GetAngularSteps(delta, outerRadius, TrailSampleSpacing, TrailMax - 1);
+            int retained = Math.Min(trailCount, TrailMax - steps);
+            if (retained > 0) {
+                Array.Copy(trailRot, 0, trailRot, steps, retained);
+            }
+            for (int i = 0; i < steps; i++) {
+                float amount = 1f - i / (float)steps;
+                trailRot[i] = MathHelper.Lerp(fromRotation, toRotation, amount);
+            }
+            trailCount = steps + retained;
+            if (appendStart && trailCount < TrailMax) {
+                trailRot[trailCount++] = fromRotation;
+            }
+        }
+
+        private void TrimTrailToRotation(float rotation) {
+            if (trailCount == 0) {
+                return;
+            }
+
+            const float angleEpsilon = 0.0001f;
+            int firstRetained = 0;
+            while (firstRetained < trailCount
+                && (trailRot[firstRetained] - rotation) * swingSign > angleEpsilon) {
+                firstRetained++;
+            }
+
+            int retained = trailCount - firstRetained;
+            bool headAlreadySampled = retained > 0
+                && MathF.Abs(trailRot[firstRetained] - rotation) <= angleEpsilon;
+            int targetOffset = headAlreadySampled ? 0 : 1;
+            int copied = Math.Min(retained, TrailMax - targetOffset);
+            if (copied > 0 && (firstRetained != targetOffset || firstRetained > 0)) {
+                Array.Copy(trailRot, firstRetained, trailRot, targetOffset, copied);
+            }
+
+            trailRot[0] = rotation;
+            trailCount = copied + targetOffset;
+        }
+
+        private void FireBeams(float slashRotation) {
             if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
             int count = BeamCount;
             float spread = count > 1 ? 0.46f : 0f;
-            Vector2 spawnPos = Owner.GetPlayerStabilityCenter() + currentRotation.ToRotationVector2() * BladeReach * 0.5f;
+            Vector2 spawnPos = Owner.GetPlayerStabilityCenter() + slashRotation.ToRotationVector2() * BladeReach * 0.5f;
             for (int i = 0; i < count; i++) {
                 float offset = count > 1 ? MathHelper.Lerp(-spread, spread, i / (float)(count - 1)) : 0f;
                 Vector2 velocity = UnitToMouseV * Item.shootSpeed;
@@ -365,34 +494,53 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            if (!slashVisualActive) {
+                return false;
+            }
+
             Texture2D tex = TextureValue;
             Vector2 origin = tex.Size() / 2f;
             Vector2 hand = Owner.GetPlayerStabilityCenter();
             float dist = BladeReach * 0.5f * Projectile.scale;
-
-            SpriteEffects effect = lockedDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
-            //贴图刀尖指向右上(-PiOver4)，垂直翻转后指向右下(+PiOver4)
-            float rotOffset = lockedDirection == -1 ? -MathHelper.PiOver4 : MathHelper.PiOver4;
+            GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset);
 
             //挥砍残影
-            if (elapsed >= WindupTime && elapsed <= WindupTime + SlashTime + 1f) {
-                for (int i = 1; i <= 3; i++) {
-                    float rot = MathHelper.Lerp(currentRotation, lastRotation, i / 4f);
-                    Vector2 pos = hand + rot.ToRotationVector2() * dist - Main.screenPosition;
-                    Color trailColor = new Color(255, 60, 30) * (0.32f * (1f - i / 4f));
-                    trailColor.A = 0;
-                    Main.EntitySpriteDraw(tex, pos, null, trailColor, rot + rotOffset, origin
-                        , Projectile.scale, effect, 0);
-                }
+            float angleDelta = MathF.Abs(currentRotation - lastRotation);
+            float strength = MathHelper.Clamp((angleDelta - 0.04f) / 0.72f, 0f, 1f);
+            int smearCount = Math.Min(5, Math.Max(1, (int)MathF.Ceiling(angleDelta / 0.20f)));
+            for (int i = 1; i <= smearCount && strength > 0f; i++) {
+                float amount = i / (float)(smearCount + 1);
+                float rot = MathHelper.Lerp(currentRotation, lastRotation, amount);
+                Vector2 pos = hand + rot.ToRotationVector2() * dist - Main.screenPosition;
+                Color trailColor = new Color(255, 60, 30) * (0.40f * strength * (1f - amount));
+                trailColor.A = 0;
+                Main.EntitySpriteDraw(tex, pos, null, trailColor, rot + rotOffset, origin
+                    , Projectile.scale, effect, 0);
             }
+            return false;
+        }
+
+        private void GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset) {
+            bool edgeFlip = swingSign * lockedDirection < 0;
+            bool flipVertically = (lockedDirection < 0) != edgeFlip;
+            effect = flipVertically ? SpriteEffects.FlipVertically : SpriteEffects.None;
+            rotOffset = flipVertically ? -MathHelper.PiOver4 : MathHelper.PiOver4;
+        }
+
+        void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
+            Texture2D tex = TextureValue;
+            Vector2 origin = tex.Size() / 2f;
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            float dist = BladeReach * 0.5f * Projectile.scale;
+            GetBladeDrawOrientation(out SpriteEffects effect, out float rotOffset);
 
             //刀身本体 + 辉光层
+            Color lightColor = Lighting.GetColor((int)(hand.X / 16f), (int)(hand.Y / 16f));
             Vector2 drawPos = hand + currentRotation.ToRotationVector2() * dist - Main.screenPosition;
             Main.EntitySpriteDraw(tex, drawPos, null, lightColor, currentRotation + rotOffset, origin
                 , Projectile.scale, effect, 0);
             Main.EntitySpriteDraw(GlowTex, drawPos, null, Color.White, currentRotation + rotOffset, GlowTex.Size() / 2f
                 , Projectile.scale, effect, 0);
-            return false;
         }
 
         void IPrimitiveDrawable.DrawPrimitives() {
@@ -409,8 +557,18 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 center = Owner.GetPlayerStabilityCenter();
             float outer = (BladeReach + 12f) * Projectile.scale;
             float inner = BladeReach * 0.26f;
+            float totalArc = 0f;
+            for (int i = 1; i < trailCount; i++) {
+                totalArc += MathF.Abs(trailRot[i - 1] - trailRot[i]);
+            }
+            float traveledArc = 0f;
             for (int i = 0; i < trailCount; i++) {
-                float factor = 1f - i / (float)trailCount;
+                if (i > 0) {
+                    traveledArc += MathF.Abs(trailRot[i - 1] - trailRot[i]);
+                }
+                float factor = totalArc > 0.0001f
+                    ? 1f - traveledArc / totalArc
+                    : 1f - i / (float)Math.Max(trailCount - 1, 1);
                 Vector2 dir = trailRot[i].ToRotationVector2();
                 bars[i * 2] = new VertexPositionColorTexture((center + dir * outer).ToVector3()
                     , Color.White, new Vector2(factor, 0f));
