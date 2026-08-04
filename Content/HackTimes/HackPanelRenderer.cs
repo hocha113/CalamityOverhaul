@@ -235,10 +235,9 @@ namespace CalamityOverhaul.Content.HackTimes
             int actualCost = HackCostEvaluator.GetActualCost(hack, target);
             if (!RamSystem.CanAfford(actualCost)) return;
 
-            bool enqueued = Queue.Enqueue(hack, globalIdx, target, actualCost);
-            if (enqueued) {
-                RamSystem.TryConsume(actualCost);
-            }
+            if (!HackTimeNetSync.TryRequestQueue(hack, target,
+                out uint sessionId, out uint requestId)) return;
+            Queue.Enqueue(hack, globalIdx, target, actualCost, sessionId, requestId);
         }
 
         public bool ContainsMouse() {

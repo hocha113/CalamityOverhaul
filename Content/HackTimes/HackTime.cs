@@ -429,6 +429,9 @@ namespace CalamityOverhaul.Content.HackTimes
 
         //无限骇入，无限袭击终态用
         public static bool InfiniteHack { get; set; }
+        internal static bool InfiniteHackAuthority
+            => Main.netMode != Terraria.ID.NetmodeID.MultiplayerClient
+                && InfiniteHack;
 
         private static float targetIntensity;
         //运镜目标世界坐标
@@ -532,7 +535,8 @@ namespace CalamityOverhaul.Content.HackTimes
         /// <summary>世界更新，RAM/效果/队列</summary>
         public override void PostUpdateEverything() {
             RamSystem.Update();
-            //效果与队列，退出后仍推进
+            HackTimeNetSync.UpdateAuthority();
+            //效果与本地队列表现，退出后仍推进
             HackEffectTracker.Update();
             HackEffectTracker.UpdateTileEffects();
             var queue = HackTimeUI.Instance?.Queue;
@@ -632,7 +636,7 @@ namespace CalamityOverhaul.Content.HackTimes
             WorldFreezeSystem.Deactivate(FreezeReason);
             HackTimeUI.Instance?.Queue?.Clear();
             HackEffectTracker.Reset();
-            RamSystem.Reset();
+            HackTimeNetSync.Reset();
         }
     }
 }

@@ -29,6 +29,14 @@ namespace CalamityOverhaul.Content.TimeFreezes
 
     internal readonly record struct FreezeSourceKey(Type SourceType, long InstanceId);
 
+    internal enum TimeControlFrameAction
+    {
+        None,
+        CaptureLogicalPose,
+        HoldLogicalPose,
+        HoldFrozenPose,
+    }
+
     internal readonly struct TimeFreezeLease
     {
         internal FreezeSourceKey Source { get; }
@@ -50,6 +58,8 @@ namespace CalamityOverhaul.Content.TimeFreezes
     /// <summary>NPC / 弹幕共享的冻结来源与运动快照</summary>
     internal sealed class EntityFreezeState
     {
+        private const double TimeStepEpsilon = 0.000001d;
+
         private sealed class HeldSource
         {
             internal Vector2? AnchorPosition;
@@ -63,24 +73,35 @@ namespace CalamityOverhaul.Content.TimeFreezes
         private Dictionary<Type, ulong> timedSources;
         private Dictionary<FreezeSourceKey, HeldSource> heldSources;
         private Dictionary<FreezeSourceKey, ResumePolicy> resumePolicies;
-        private Dictionary<FreezeSourceKey, float> velocityScales;
+        private Dictionary<FreezeSourceKey, float> timeScales;
         private bool motionSnapshotCaptured;
-        private Vector2 capturedVelocity;
+        private Vector2 latestLogicalVelocity;
+        private Vector2 latestLogicalPosition;
         private bool hardPositionCaptured;
         private Vector2 baseFrozenPosition;
         private Vector2 frozenPosition;
+        private double timeAccumulator;
+        private ulong timeStepDecisionFrame = ulong.MaxValue;
+        private bool advancesOnDecisionFrame = true;
+        private ulong blockedFrame = ulong.MaxValue;
+        private bool hardBlockedOnFrame;
+        private ulong lifetimeCompensationFrame = ulong.MaxValue;
+        private bool velocitySuppressed;
+        private bool pendingMotionRestore;
 
         internal bool IsFrozen => transientSources != TimeFreezeSource.None
             || timedSources?.Count > 0 || heldSources?.Count > 0;
-        internal bool HasVelocityScale => velocityScales?.Count > 0;
-        internal bool HasTimeControl => IsFrozen || HasVelocityScale;
+        internal bool HasTimeScale => timeScales?.Count > 0;
+        internal bool HasTimeControl => IsFrozen || HasTimeScale;
+        internal bool BlocksInteraction => IsFrozen || IsBlockedThisFrame;
         internal TimeFreezeSource TransientSources => transientSources;
         internal Vector2 ResumeVelocity => motionSnapshotCaptured
             ? ResolveResumeVelocity()
             : Vector2.Zero;
-        internal Vector2 EffectiveResumeVelocity => motionSnapshotCaptured
-            ? ResolveResumeVelocity() * ResolveVelocityScale()
-            : Vector2.Zero;
+        internal Vector2 EffectiveResumeVelocity => ResumeVelocity;
+        internal float EffectiveTimeScale => IsFrozen ? 0f : ResolveTimeScale();
+        private bool IsBlockedThisFrame => blockedFrame == Main.GameUpdateCount;
+        private bool IsHardBlockedThisFrame => IsBlockedThisFrame && hardBlockedOnFrame;
 
         internal bool SyncTransientSources(Entity entity, TimeFreezeSource sources, Vector2 fallbackPosition) {
             bool wasFrozen = IsFrozen;
@@ -179,39 +200,153 @@ namespace CalamityOverhaul.Content.TimeFreezes
             && heldSources.TryGetValue(lease.Source, out HeldSource held)
             && held.LeaseEpoch == lease.LeaseEpoch;
 
-        internal void AcquireVelocityScale(Entity entity, FreezeSourceKey source,
+        internal bool SetTimeScale(Entity entity, FreezeSourceKey source,
             float scale, Vector2 fallbackPosition) {
-            if (source.SourceType == null || !float.IsFinite(scale)) {
-                return;
+            if (source.SourceType == null || !float.IsFinite(scale)
+                || scale <= 0f || scale > 1f) {
+                return false;
             }
 
             bool wasFrozen = IsFrozen;
             bool hadTimeControl = HasTimeControl;
             RemoveExpiredTimedSources();
-            velocityScales ??= new Dictionary<FreezeSourceKey, float>();
-            velocityScales[source] = Math.Clamp(scale, 0f, 1f);
+            timeScales ??= new Dictionary<FreezeSourceKey, float>();
+            bool changed = !timeScales.TryGetValue(source, out float oldScale)
+                || oldScale != scale;
+            timeScales[source] = scale;
             UpdateState(entity, fallbackPosition, wasFrozen, hadTimeControl);
+            return changed;
         }
 
-        internal bool ReleaseVelocityScale(Entity entity, FreezeSourceKey source,
+        internal bool ClearTimeScale(Entity entity, FreezeSourceKey source,
             Vector2 fallbackPosition) {
-            if (source.SourceType == null || velocityScales == null
-                || !velocityScales.Remove(source)) {
+            if (source.SourceType == null || timeScales == null
+                || !timeScales.Remove(source)) {
                 return false;
             }
 
             bool wasFrozen = IsFrozen;
             bool hadTimeControl = true;
             UpdateState(entity, fallbackPosition, wasFrozen, hadTimeControl);
+            if (!HasTimeScale) {
+                timeAccumulator = 0d;
+            }
             return true;
         }
 
+        internal bool ShouldAdvanceTimeStep(Entity entity) {
+            if (pendingMotionRestore && !IsFrozen && !IsBlockedThisFrame) {
+                RestoreMotion(entity);
+                pendingMotionRestore = false;
+                if (!HasTimeControl) {
+                    ClearMotionSnapshot();
+                }
+            }
+            if (IsFrozen || IsBlockedThisFrame) {
+                return false;
+            }
+
+            ulong now = Main.GameUpdateCount;
+            if (!HasTimeScale) {
+                timeStepDecisionFrame = now;
+                advancesOnDecisionFrame = true;
+                return true;
+            }
+            if (timeStepDecisionFrame != now) {
+                timeStepDecisionFrame = now;
+                timeAccumulator += ResolveTimeScale();
+                advancesOnDecisionFrame = timeAccumulator >= 1d - TimeStepEpsilon;
+                if (advancesOnDecisionFrame) {
+                    timeAccumulator -= 1d;
+                    if (Math.Abs(timeAccumulator) < TimeStepEpsilon) {
+                        timeAccumulator = 0d;
+                    }
+                }
+            }
+
+            if (advancesOnDecisionFrame) {
+                RestoreSuppressedVelocity(entity);
+            }
+            return advancesOnDecisionFrame;
+        }
+
+        internal void BlockHardFrame(Entity entity) {
+            blockedFrame = Main.GameUpdateCount;
+            hardBlockedOnFrame = true;
+            HoldPosition(entity);
+            velocitySuppressed = true;
+        }
+
+        internal bool BlockTimeStepFrame(Entity entity) {
+            bool alreadyHardBlocked = blockedFrame == Main.GameUpdateCount
+                && hardBlockedOnFrame;
+            blockedFrame = Main.GameUpdateCount;
+            hardBlockedOnFrame = alreadyHardBlocked;
+            if (alreadyHardBlocked) {
+                HoldPosition(entity);
+            }
+            else {
+                HoldLogicalPosition(entity);
+            }
+            velocitySuppressed = true;
+            return alreadyHardBlocked;
+        }
+
+        internal bool TryCompensateLifetime() {
+            ulong now = Main.GameUpdateCount;
+            if (lifetimeCompensationFrame == now) {
+                return false;
+            }
+            lifetimeCompensationFrame = now;
+            return true;
+        }
+
+        internal TimeControlFrameAction CompleteFrame(Entity entity) {
+            if (!HasTimeControl && !IsBlockedThisFrame && !pendingMotionRestore) {
+                return TimeControlFrameAction.None;
+            }
+
+            bool blocked = IsBlockedThisFrame;
+            bool holdFrozen = IsFrozen || blocked && IsHardBlockedThisFrame;
+            TimeControlFrameAction action = TimeControlFrameAction.None;
+
+            if (holdFrozen) {
+                HoldPosition(entity);
+                velocitySuppressed = true;
+                action = TimeControlFrameAction.HoldFrozenPose;
+            }
+            else if (blocked) {
+                HoldLogicalPosition(entity);
+                velocitySuppressed = true;
+                action = TimeControlFrameAction.HoldLogicalPose;
+            }
+            else if (HasTimeScale) {
+                CaptureLogicalMotion(entity);
+                action = TimeControlFrameAction.CaptureLogicalPose;
+            }
+
+            if (!IsFrozen && pendingMotionRestore) {
+                RestoreMotion(entity);
+                pendingMotionRestore = false;
+            }
+            if (!IsFrozen) {
+                hardPositionCaptured = false;
+                baseFrozenPosition = Vector2.Zero;
+                frozenPosition = Vector2.Zero;
+            }
+            if (!HasTimeControl && !pendingMotionRestore) {
+                ClearMotionSnapshot();
+            }
+            return action;
+        }
+
         internal void HoldPosition(Entity entity) {
-            if (!hardPositionCaptured || !IsFrozen) {
+            if (!hardPositionCaptured) {
                 return;
             }
             entity.position = frozenPosition;
             entity.velocity = Vector2.Zero;
+            velocitySuppressed = true;
         }
 
         internal void Reset() {
@@ -219,12 +354,21 @@ namespace CalamityOverhaul.Content.TimeFreezes
             timedSources?.Clear();
             heldSources?.Clear();
             resumePolicies?.Clear();
-            velocityScales?.Clear();
+            timeScales?.Clear();
             motionSnapshotCaptured = false;
-            capturedVelocity = Vector2.Zero;
+            latestLogicalVelocity = Vector2.Zero;
+            latestLogicalPosition = Vector2.Zero;
             hardPositionCaptured = false;
             baseFrozenPosition = Vector2.Zero;
             frozenPosition = Vector2.Zero;
+            timeAccumulator = 0d;
+            timeStepDecisionFrame = ulong.MaxValue;
+            advancesOnDecisionFrame = true;
+            blockedFrame = ulong.MaxValue;
+            hardBlockedOnFrame = false;
+            lifetimeCompensationFrame = ulong.MaxValue;
+            velocitySuppressed = false;
+            pendingMotionRestore = false;
         }
 
         private bool UpdateState(Entity entity, Vector2 fallbackPosition,
@@ -232,8 +376,8 @@ namespace CalamityOverhaul.Content.TimeFreezes
             bool isFrozen = IsFrozen;
             bool hasTimeControl = HasTimeControl;
 
-            if (!hadTimeControl && hasTimeControl) {
-                CaptureMotion(entity);
+            if (!hadTimeControl && hasTimeControl && !motionSnapshotCaptured) {
+                CaptureMotion(entity, fallbackPosition);
             }
             if (!wasFrozen && isFrozen) {
                 CaptureHardPosition(entity, fallbackPosition);
@@ -243,26 +387,82 @@ namespace CalamityOverhaul.Content.TimeFreezes
             }
 
             bool hardFreezeEnded = wasFrozen && !isFrozen;
-            if (hardFreezeEnded || (!isFrozen && hadTimeControl && !hasTimeControl)) {
-                RestoreMotion(entity);
-            }
             if (hardFreezeEnded) {
-                hardPositionCaptured = false;
-                baseFrozenPosition = Vector2.Zero;
-                frozenPosition = Vector2.Zero;
+                if (IsBlockedThisFrame) {
+                    pendingMotionRestore = true;
+                }
+                else {
+                    RestoreMotion(entity);
+                    hardPositionCaptured = false;
+                    baseFrozenPosition = Vector2.Zero;
+                    frozenPosition = Vector2.Zero;
+                }
             }
             if (hadTimeControl && !hasTimeControl) {
-                ClearMotionSnapshot();
+                if (IsBlockedThisFrame) {
+                    pendingMotionRestore = true;
+                }
+                else {
+                    if (!hardFreezeEnded && (velocitySuppressed
+                        || !IsFinite(entity.velocity))) {
+                        RestoreMotion(entity);
+                    }
+                    ClearMotionSnapshot();
+                }
             }
             return hardFreezeEnded;
         }
 
-        private void CaptureMotion(Entity entity) {
-            capturedVelocity = IsFinite(entity.velocity) ? entity.velocity : Vector2.Zero;
+        private void CaptureMotion(Entity entity, Vector2? fallbackPosition = null) {
+            bool velocityValid = IsFinite(entity.velocity);
+            bool positionValid = IsFinite(entity.position);
+            if (!velocityValid || !positionValid) {
+                TimeFreezeSystem.ReportInvalidMotion(entity,
+                    IsFrozen ? "hard-freeze" : "time-scale");
+            }
+            latestLogicalVelocity = velocityValid ? entity.velocity : Vector2.Zero;
+            latestLogicalPosition = positionValid
+                ? entity.position
+                : fallbackPosition.HasValue && IsFinite(fallbackPosition.Value)
+                    ? fallbackPosition.Value
+                    : Vector2.Zero;
+            if (!velocityValid) {
+                entity.velocity = latestLogicalVelocity;
+            }
+            if (!positionValid) {
+                entity.position = latestLogicalPosition;
+            }
             motionSnapshotCaptured = true;
         }
 
+        private void CaptureLogicalMotion(Entity entity) {
+            if (!IsFinite(entity.velocity) || !IsFinite(entity.position)) {
+                TimeFreezeSystem.ReportInvalidMotion(entity, "time-scale");
+            }
+            if (IsFinite(entity.velocity)) {
+                latestLogicalVelocity = entity.velocity;
+            }
+            else {
+                entity.velocity = IsFinite(latestLogicalVelocity)
+                    ? latestLogicalVelocity
+                    : Vector2.Zero;
+            }
+            if (IsFinite(entity.position)) {
+                latestLogicalPosition = entity.position;
+            }
+            else {
+                entity.position = IsFinite(latestLogicalPosition)
+                    ? latestLogicalPosition
+                    : Vector2.Zero;
+            }
+            velocitySuppressed = false;
+            resumePolicies?.Clear();
+        }
+
         private void CaptureHardPosition(Entity entity, Vector2 fallbackPosition) {
+            if (!IsFinite(entity.position)) {
+                TimeFreezeSystem.ReportInvalidMotion(entity, "hard-freeze");
+            }
             baseFrozenPosition = IsFinite(entity.position)
                 ? entity.position
                 : IsFinite(fallbackPosition) ? fallbackPosition : Vector2.Zero;
@@ -299,7 +499,9 @@ namespace CalamityOverhaul.Content.TimeFreezes
         }
 
         private Vector2 ResolveResumeVelocity() {
-            Vector2 resolved = IsFinite(capturedVelocity) ? capturedVelocity : Vector2.Zero;
+            Vector2 resolved = IsFinite(latestLogicalVelocity)
+                ? latestLogicalVelocity
+                : Vector2.Zero;
             int bestPriority = int.MinValue;
             FreezeSourceKey bestSource = default;
             bool hasPolicy = false;
@@ -322,34 +524,61 @@ namespace CalamityOverhaul.Content.TimeFreezes
             return resolved;
         }
 
-        private float ResolveVelocityScale() {
+        private float ResolveTimeScale() {
             float scale = 1f;
-            if (velocityScales == null) {
+            if (timeScales == null) {
                 return scale;
             }
-            foreach (float value in velocityScales.Values) {
-                if (float.IsFinite(value)) {
-                    scale = Math.Min(scale, Math.Clamp(value, 0f, 1f));
+            foreach (float value in timeScales.Values) {
+                if (float.IsFinite(value) && value > 0f && value <= 1f) {
+                    scale = Math.Min(scale, value);
                 }
             }
             return scale;
+        }
+
+        private void HoldLogicalPosition(Entity entity) {
+            if (!motionSnapshotCaptured) {
+                CaptureMotion(entity);
+            }
+            entity.position = IsFinite(latestLogicalPosition)
+                ? latestLogicalPosition
+                : Vector2.Zero;
+            entity.velocity = Vector2.Zero;
+        }
+
+        private void RestoreSuppressedVelocity(Entity entity) {
+            if (velocitySuppressed) {
+                RestoreMotion(entity);
+            }
         }
 
         private void RestoreMotion(Entity entity) {
             if (!motionSnapshotCaptured) {
                 return;
             }
-            if (!IsFinite(entity.position) && hardPositionCaptured) {
-                entity.position = frozenPosition;
+            if (!IsFinite(entity.velocity) || !IsFinite(entity.position)) {
+                TimeFreezeSystem.ReportInvalidMotion(entity,
+                    IsFrozen ? "hard-freeze" : "time-scale");
+            }
+            if (!IsFinite(entity.position)) {
+                entity.position = hardPositionCaptured && IsFinite(frozenPosition)
+                    ? frozenPosition
+                    : IsFinite(latestLogicalPosition)
+                        ? latestLogicalPosition
+                        : Vector2.Zero;
             }
             Vector2 velocity = EffectiveResumeVelocity;
             entity.velocity = IsFinite(velocity) ? velocity : Vector2.Zero;
+            velocitySuppressed = false;
         }
 
         private void ClearMotionSnapshot() {
             motionSnapshotCaptured = false;
-            capturedVelocity = Vector2.Zero;
+            latestLogicalVelocity = Vector2.Zero;
+            latestLogicalPosition = Vector2.Zero;
             resumePolicies?.Clear();
+            velocitySuppressed = false;
         }
 
         private void RemoveExpiredTimedSources() {
@@ -393,7 +622,9 @@ namespace CalamityOverhaul.Content.TimeFreezes
 
         private static readonly Dictionary<Type, ulong> cinematicSources = new();
         private static ulong nextEntityGeneration;
+        private static ulong nextNetworkGeneration;
         private static ulong nextLeaseEpoch;
+        private static ulong nextInvalidMotionLogFrame;
         private static ProjectileIdentity[] worldFreezeProjectileBaseline;
         private static bool worldFreezeProjectileBaselineValid;
 
@@ -411,6 +642,31 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 nextLeaseEpoch++;
             }
             return nextLeaseEpoch;
+        }
+
+        internal static ulong AllocateNetworkGeneration() {
+            nextNetworkGeneration++;
+            if (nextNetworkGeneration == 0) {
+                nextNetworkGeneration++;
+            }
+            return nextNetworkGeneration;
+        }
+
+        internal static void ReportInvalidMotion(Entity entity, string source) {
+            ulong now = Main.GameUpdateCount;
+            if (now < nextInvalidMotionLogFrame) {
+                return;
+            }
+            nextInvalidMotionLogFrame = now + 300UL;
+
+            string identity = entity switch {
+                NPC npc => $"NPC[{npc.whoAmI}:{npc.type}]",
+                Projectile projectile =>
+                    $"Projectile[{projectile.owner}:{projectile.identity}:{projectile.type}]",
+                _ => entity?.GetType().Name ?? "Entity",
+            };
+            CWRMod.Instance?.Logger.Warn(
+                $"Time control repaired non-finite motion [{source}] {identity}");
         }
 
         internal static bool IsCinematicFreezeActive {
@@ -512,38 +768,57 @@ namespace CalamityOverhaul.Content.TimeFreezes
             => projectile?.active == true
             && projectile.GetGlobalProjectile<TimeFreezeProjectile>().IsFrozen;
 
-        internal static void AcquireVelocityScaleNPC<TSource>(NPC npc, float scale,
+        internal static bool SetNPCTimeScale<TSource>(NPC npc, float scale,
             long sourceInstance = 0) {
-            if (npc?.active == true) {
-                npc.GetGlobalNPC<TimeFreezeNPC>().AcquireVelocityScale(npc,
-                    new FreezeSourceKey(typeof(TSource), sourceInstance), scale);
+            if (npc?.active != true) {
+                return false;
             }
+            return npc.GetGlobalNPC<TimeFreezeNPC>().SetTimeScale(npc,
+                new FreezeSourceKey(typeof(TSource), sourceInstance), scale);
         }
 
-        internal static void AcquireVelocityScaleProjectile<TSource>(Projectile projectile,
+        internal static bool SetProjectileTimeScale<TSource>(Projectile projectile,
             float scale, long sourceInstance = 0) {
-            if (projectile?.active == true) {
-                projectile.GetGlobalProjectile<TimeFreezeProjectile>()
-                    .AcquireVelocityScale(projectile,
-                        new FreezeSourceKey(typeof(TSource), sourceInstance), scale);
+            if (projectile?.active != true) {
+                return false;
             }
+            return projectile.GetGlobalProjectile<TimeFreezeProjectile>()
+                .SetTimeScale(projectile,
+                    new FreezeSourceKey(typeof(TSource), sourceInstance), scale);
         }
 
-        internal static void ReleaseVelocityScaleNPC<TSource>(NPC npc,
+        internal static bool ClearNPCTimeScale<TSource>(NPC npc,
             long sourceInstance = 0) {
-            if (npc?.active == true) {
-                npc.GetGlobalNPC<TimeFreezeNPC>().ReleaseVelocityScale(npc,
+            if (npc?.active != true) {
+                return false;
+            }
+            return npc.GetGlobalNPC<TimeFreezeNPC>().ClearTimeScale(npc,
+                new FreezeSourceKey(typeof(TSource), sourceInstance));
+        }
+
+        internal static bool ClearProjectileTimeScale<TSource>(Projectile projectile,
+            long sourceInstance = 0) {
+            if (projectile?.active != true) {
+                return false;
+            }
+            return projectile.GetGlobalProjectile<TimeFreezeProjectile>()
+                .ClearTimeScale(projectile,
                     new FreezeSourceKey(typeof(TSource), sourceInstance));
-            }
         }
 
-        internal static void ReleaseVelocityScaleProjectile<TSource>(Projectile projectile,
-            long sourceInstance = 0) {
-            if (projectile?.active == true) {
-                projectile.GetGlobalProjectile<TimeFreezeProjectile>()
-                    .ReleaseVelocityScale(projectile,
-                        new FreezeSourceKey(typeof(TSource), sourceInstance));
+        internal static float GetEffectiveTimeScale(NPC npc) {
+            if (npc?.active != true) {
+                return 1f;
             }
+            return npc.GetGlobalNPC<TimeFreezeNPC>().EffectiveTimeScale;
+        }
+
+        internal static float GetEffectiveTimeScale(Projectile projectile) {
+            if (projectile?.active != true) {
+                return 1f;
+            }
+            return projectile.GetGlobalProjectile<TimeFreezeProjectile>()
+                .EffectiveTimeScale;
         }
 
         internal static Vector2 GetEffectiveResumeVelocity(NPC npc) {
@@ -589,7 +864,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 freeze.FreezeFrame(npc);
                 return true;
             }
-            return freeze.ApplyVelocityScaleFrame(npc);
+            return freeze.ApplyTimeScaleFrame(npc);
         }
 
         internal static bool FreezeProjectilePreAI(Projectile projectile) {
@@ -599,7 +874,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 freeze.FreezeFrame(projectile);
                 return true;
             }
-            return freeze.ApplyVelocityScaleFrame(projectile);
+            return freeze.ApplyTimeScaleFrame(projectile);
         }
 
         internal static void SynchronizeEntitySources() {
@@ -623,21 +898,21 @@ namespace CalamityOverhaul.Content.TimeFreezes
             }
         }
 
-        internal static void RelockFrozenNPCs() {
+        internal static void CompleteNPCFrames() {
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
                 if (npc?.active == true) {
-                    npc.GetGlobalNPC<TimeFreezeNPC>().RelockFrozenFrame(npc);
+                    npc.GetGlobalNPC<TimeFreezeNPC>().CompleteFrame(npc);
                 }
             }
         }
 
-        internal static void RelockFrozenProjectiles() {
+        internal static void CompleteProjectileFrames() {
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile projectile = Main.projectile[i];
                 if (projectile?.active == true) {
                     projectile.GetGlobalProjectile<TimeFreezeProjectile>()
-                        .RelockFrozenFrame(projectile);
+                        .CompleteFrame(projectile);
                 }
             }
         }
@@ -731,6 +1006,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
 
         internal static void ResetSession() {
             cinematicSources.Clear();
+            nextInvalidMotionLogFrame = 0;
             ClearWorldFreezeProjectileBaseline();
             if (Main.npc != null) {
                 for (int i = 0; i < Main.maxNPCs; i++) {
@@ -872,9 +1148,9 @@ namespace CalamityOverhaul.Content.TimeFreezes
         }
 
         public override void PostUpdateNPCs()
-            => TimeFreezeSystem.RelockFrozenNPCs();
+            => TimeFreezeSystem.CompleteNPCFrames();
 
         public override void PostUpdateProjectiles()
-            => TimeFreezeSystem.RelockFrozenProjectiles();
+            => TimeFreezeSystem.CompleteProjectileFrames();
     }
 }

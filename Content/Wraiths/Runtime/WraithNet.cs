@@ -30,6 +30,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         EquipResult = 13,
         HeadlessImpactRequest = 14,
         GhostHandGripRequest = 15,
+        LanternImpactRequest = 16,
     }
 
     internal enum WraithEquipResult : byte
@@ -218,6 +219,35 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             packet.Send();
         }
 
+        public static void RequestLanternImpact(Projectile parentProjectile,
+            Projectile slashProjectile, ushort roundSerial, byte lanternSlot,
+            int targetId, int targetType) {
+            if (parentProjectile?.active != true || slashProjectile?.active != true
+                || parentProjectile.ModProjectile is not LanternBoyProj parent
+                || slashProjectile.ModProjectile is not LanternBoySlashProj slash
+                || parentProjectile.owner < 0 || parentProjectile.owner >= Main.maxPlayers
+                || slashProjectile.owner != parentProjectile.owner
+                || slash.ParentIdentity != parentProjectile.identity) {
+                return;
+            }
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
+                parent.TryApplyAuthorityImpact(slash, roundSerial, lanternSlot,
+                    targetId, targetType);
+                return;
+            }
+            if (parentProjectile.owner != Main.myPlayer) {
+                return;
+            }
+            ModPacket packet = NewPacket(WraithNetOp.LanternImpactRequest);
+            packet.Write(parentProjectile.identity);
+            packet.Write(slashProjectile.identity);
+            packet.Write(roundSerial);
+            packet.Write(lanternSlot);
+            packet.Write(targetId);
+            packet.Write(targetType);
+            packet.Send();
+        }
+
         internal static void SendScapeGhostFx(Vector2 from, Vector2 to, int victimWhoAmI,
             string targetName = null, bool revivalKilled = false) {
             if (Main.netMode != NetmodeID.Server || victimWhoAmI < 0
@@ -265,6 +295,9 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                     case WraithNetOp.GhostHandGripRequest:
                         HandleGhostHandGrip(reader, whoAmI);
                         break;
+                    case WraithNetOp.LanternImpactRequest:
+                        HandleLanternImpact(reader, whoAmI);
+                        break;
                 }
                 return;
             }
@@ -292,13 +325,15 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 out float scapeMastery, out bool scapeDormant,
                 out float shadeMastery, out bool shadeDormant,
                 out float handMastery, out bool handDormant,
+                out float lanternMastery, out bool lanternDormant,
                 out float erosion, out float revival, out int multiplier,
                 out int erosionIdle, out int revivalIdle);
             Player player = ResolvePlayer(whoAmI, requireAlive: false);
             WraithPlayer state = player?.GetModPlayer<WraithPlayer>();
             if (state == null || !state.AcceptInitialState(equipped,
                 scapeMastery, scapeDormant, shadeMastery, shadeDormant,
-                handMastery, handDormant, erosion, revival, multiplier,
+                handMastery, handDormant, lanternMastery, lanternDormant,
+                erosion, revival, multiplier,
                 erosionIdle, revivalIdle)) {
                 return;
             }
@@ -312,6 +347,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 out float scapeMastery, out bool scapeDormant,
                 out float shadeMastery, out bool shadeDormant,
                 out float handMastery, out bool handDormant,
+                out float lanternMastery, out bool lanternDormant,
                 out float erosion, out float revival, out int multiplier,
                 out int erosionIdle, out int revivalIdle);
             if (playerIndex < 0 || playerIndex >= Main.maxPlayers) {
@@ -324,7 +360,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             }
             state.ApplyNetworkState(equipped, loadoutRevision, resourceRevision,
                 scapeMastery, scapeDormant, shadeMastery, shadeDormant,
-                handMastery, handDormant, erosion, revival, multiplier,
+                handMastery, handDormant, lanternMastery, lanternDormant,
+                erosion, revival, multiplier,
                 erosionIdle, revivalIdle, force: !state.SessionInitialized);
         }
 
@@ -457,6 +494,30 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             hand.TryApplyAuthorityGrip(serial, targetId, targetType);
         }
 
+        private static void HandleLanternImpact(BinaryReader reader, int whoAmI) {
+            int parentIdentity = reader.ReadInt32();
+            int slashIdentity = reader.ReadInt32();
+            ushort roundSerial = reader.ReadUInt16();
+            byte lanternSlot = reader.ReadByte();
+            int targetId = reader.ReadInt32();
+            int targetType = reader.ReadInt32();
+            Player owner = ResolvePlayer(whoAmI, requireAlive: true);
+            if (owner == null) {
+                return;
+            }
+
+            Projectile parentProjectile = ResolveOwnedProjectile(whoAmI, parentIdentity,
+                ModContent.ProjectileType<LanternBoyProj>());
+            Projectile slashProjectile = ResolveOwnedProjectile(whoAmI, slashIdentity,
+                ModContent.ProjectileType<LanternBoySlashProj>());
+            if (parentProjectile?.ModProjectile is not LanternBoyProj parent
+                || slashProjectile?.ModProjectile is not LanternBoySlashProj slash) {
+                return;
+            }
+            parent.TryApplyAuthorityImpact(slash, roundSerial, lanternSlot,
+                targetId, targetType);
+        }
+
         private static void HandleScapeGhostFx(BinaryReader reader) {
             Vector2 from = reader.ReadVector2();
             Vector2 to = reader.ReadVector2();
@@ -499,11 +560,13 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 out float scapeMastery, out bool scapeDormant,
                 out float shadeMastery, out bool shadeDormant,
                 out float handMastery, out bool handDormant,
+                out float lanternMastery, out bool lanternDormant,
                 out float erosion, out float revival, out int multiplier,
                 out int erosionIdle, out int revivalIdle);
             writer.Write(GetWraithNetworkId(equipped));
             WriteResources(writer, scapeMastery, scapeDormant,
                 shadeMastery, shadeDormant, handMastery, handDormant,
+                lanternMastery, lanternDormant,
                 erosion, revival, multiplier, erosionIdle, revivalIdle);
         }
 
@@ -511,11 +574,13 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             out float scapeMastery, out bool scapeDormant,
             out float shadeMastery, out bool shadeDormant,
             out float handMastery, out bool handDormant,
+            out float lanternMastery, out bool lanternDormant,
             out float erosion, out float revival, out int multiplier,
             out int erosionIdle, out int revivalIdle) {
             equipped = ResolveUsableKey(reader.ReadUInt16());
             ReadResources(reader, out scapeMastery, out scapeDormant,
                 out shadeMastery, out shadeDormant, out handMastery, out handDormant,
+                out lanternMastery, out lanternDormant,
                 out erosion, out revival, out multiplier, out erosionIdle, out revivalIdle);
         }
 
@@ -525,6 +590,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 out float scapeMastery, out bool scapeDormant,
                 out float shadeMastery, out bool shadeDormant,
                 out float handMastery, out bool handDormant,
+                out float lanternMastery, out bool lanternDormant,
                 out float erosion, out float revival, out int multiplier,
                 out int erosionIdle, out int revivalIdle);
             writer.Write(GetWraithNetworkId(equipped));
@@ -532,6 +598,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             writer.Write(resourceRevision);
             WriteResources(writer, scapeMastery, scapeDormant,
                 shadeMastery, shadeDormant, handMastery, handDormant,
+                lanternMastery, lanternDormant,
                 erosion, revival, multiplier, erosionIdle, revivalIdle);
         }
 
@@ -540,6 +607,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             out float scapeMastery, out bool scapeDormant,
             out float shadeMastery, out bool shadeDormant,
             out float handMastery, out bool handDormant,
+            out float lanternMastery, out bool lanternDormant,
             out float erosion, out float revival, out int multiplier,
             out int erosionIdle, out int revivalIdle) {
             equipped = ResolveUsableKey(reader.ReadUInt16());
@@ -547,6 +615,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             resourceRevision = reader.ReadUInt32();
             ReadResources(reader, out scapeMastery, out scapeDormant,
                 out shadeMastery, out shadeDormant, out handMastery, out handDormant,
+                out lanternMastery, out lanternDormant,
                 out erosion, out revival, out multiplier, out erosionIdle, out revivalIdle);
         }
 
@@ -554,6 +623,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             float scapeMastery, bool scapeDormant,
             float shadeMastery, bool shadeDormant,
             float handMastery, bool handDormant,
+            float lanternMastery, bool lanternDormant,
             float erosion, float revival, int multiplier,
             int erosionIdle, int revivalIdle) {
             writer.Write(scapeMastery);
@@ -567,12 +637,15 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             writer.Write((byte)WraithPlayer.SanitizeScapeMultiplier(multiplier));
             writer.Write(erosionIdle);
             writer.Write(revivalIdle);
+            writer.Write(lanternMastery);
+            writer.Write(lanternDormant);
         }
 
         private static void ReadResources(BinaryReader reader,
             out float scapeMastery, out bool scapeDormant,
             out float shadeMastery, out bool shadeDormant,
             out float handMastery, out bool handDormant,
+            out float lanternMastery, out bool lanternDormant,
             out float erosion, out float revival, out int multiplier,
             out int erosionIdle, out int revivalIdle) {
             scapeMastery = reader.ReadSingle();
@@ -586,6 +659,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             multiplier = reader.ReadByte();
             erosionIdle = reader.ReadInt32();
             revivalIdle = reader.ReadInt32();
+            lanternMastery = reader.ReadSingle();
+            lanternDormant = reader.ReadBoolean();
         }
 
         private static ushort GetWraithNetworkId(string key) {

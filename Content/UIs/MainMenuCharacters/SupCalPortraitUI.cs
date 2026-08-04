@@ -127,6 +127,17 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
                 return new Rectangle((int)rightPos.X, (int)rightPos.Y, (int)size.X, (int)size.Y);
             }
         }
+
+        internal override bool CapturesMenuInput(Point point) {
+            if (!Active || !ShouldShowIcon()) {
+                return false;
+            }
+
+            return base.CapturesMenuInput(point)
+                || _showFullPortrait && _portraitAlpha > 0.01f && (ExpressionButtonHitBox.Contains(point)
+                    || LeftPortraitHitBox.Contains(point)
+                    || RightPortraitHitBox.Contains(point));
+        }
         #endregion
 
         #region 生命周期

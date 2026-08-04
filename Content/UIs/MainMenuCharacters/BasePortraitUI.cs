@@ -61,6 +61,10 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
                    !AcknowledgmentUI.OnActive();
         }
 
+        internal virtual bool CapturesMenuInput(Point point) {
+            return Active && _iconAlpha > 0.01f && ShouldShowIcon() && IconHitBox.Contains(point);
+        }
+
         protected void MarkNeedsSave() {
             _needsSave = true;
             _autoSaveTimer = 0;

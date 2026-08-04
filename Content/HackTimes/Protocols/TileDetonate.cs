@@ -85,13 +85,21 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         }
 
         public override bool CanApplyTo(IHackTarget target) {
+            return CanApplyToPlayer(target, Main.LocalPlayer);
+        }
+
+        public override bool CanApplyTo(IHackTarget target, Player caster) {
+            return CanApplyToPlayer(target, caster);
+        }
+
+        private bool CanApplyToPlayer(IHackTarget target, Player caster) {
             if (!base.CanApplyTo(target)) return false;
             if (target is not TileScannable s) return false;
             Tile tile = Main.tile[s.TileCoordX, s.TileCoordY];
             if (tile.TileType == TileID.LihzahrdBrick || tile.TileType == TileID.LihzahrdAltar) {
                 return false;
             }
-            int pickPower = GetEffectivePickPower(Main.LocalPlayer);
+            int pickPower = GetEffectivePickPower(caster);
             return pickPower >= GetTileMinPick(s.TileCoordX, s.TileCoordY);
         }
 
@@ -101,8 +109,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             int tileY = s.TileCoordY;
             Vector2 center = new(tileX * 16f + 8f, tileY * 16f + 8f);
 
-            //本端破坏+SendTileSquare，远端仅视觉
-            if (!HackTimeNetSync.IsRemoteApply) {
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
                 int pickPower = GetEffectivePickPower(caster);
 
                 for (int dx = -BlastRadius; dx <= BlastRadius; dx++) {
@@ -121,6 +128,21 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 }
             }
 
+            if (Main.netMode != NetmodeID.Server) EmitVisual(center);
+
+            return true;
+        }
+
+        public override void OnReplicatedApply(IHackTarget target, int elapsed) {
+            if (target is not TileScannable s) return;
+            int tileX = s.TileCoordX;
+            int tileY = s.TileCoordY;
+            if (tileX < 0 || tileX >= Main.maxTilesX
+                || tileY < 0 || tileY >= Main.maxTilesY) return;
+            EmitVisual(new Vector2(tileX * 16f + 8f, tileY * 16f + 8f));
+        }
+
+        private static void EmitVisual(Vector2 center) {
             for (int i = 0; i < 16; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(6f, 6f);
                 Color c = Color.Lerp(new Color(255, 150, 50), new Color(255, 80, 30), Main.rand.NextFloat());
@@ -137,7 +159,6 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.6f, Pitch = -0.2f }, center);
             }
 
-            return true;
         }
     }
 }

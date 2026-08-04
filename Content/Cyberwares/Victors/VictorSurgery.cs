@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Cyberwares;
 using CalamityOverhaul.Content.Cyberwares.Victors.UIs;
 using InnoVault.Cinematics;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,7 +14,7 @@ using Terraria.UI;
 namespace CalamityOverhaul.Content.Cyberwares.Victors
 {
     /// <summary>
-    /// 手术流程 诊所关→过场→眼睑→帧86换装→重开诊所；兼眼睑全屏
+    /// 手术流程 诊所关→过场→眼睑→帧86请求→重开诊所；兼眼睑全屏
     /// </summary>
     internal class VictorSurgery : ModSystem
     {
@@ -34,14 +35,19 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
         private static int pendingKind;
         private static int pendingInvIndex;
         private static int pendingSlot;
+        private static int pendingVictorWho = -1;
         private static bool applied;
+        private static bool awaitingAuthority;
+        private static uint operationSerial;
         private static int reopenSlot = -1;
+
+        public static bool Busy => Active || awaitingAuthority;
 
         #region 对外触发
 
         /// <summary>安装/更换，invIndex→slot</summary>
         public static void BeginInstall(int invIndex, int slot) {
-            if (Active) {
+            if (Busy) {
                 return;
             }
             pendingKind = KindInstall;
@@ -52,7 +58,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
 
         /// <summary>卸载 slot</summary>
         public static void BeginUninstall(int slot) {
-            if (Active) {
+            if (Busy) {
                 return;
             }
             pendingKind = KindUninstall;
@@ -62,9 +68,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
 
         private static void Start() {
             applied = false;
+            awaitingAuthority = false;
+            pendingVictorWho = VictorSession.BoundWhoAmI;
             reopenSlot = pendingSlot;
 
-            int who = VictorSession.BoundWhoAmI;
+            int who = pendingVictorWho;
             bool victorOk = who >= 0 && who < Main.maxNPCs && Main.npc[who].active
                 && Main.npc[who].type == ModContent.NPCType<Victor>();
 
@@ -77,10 +85,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                 Active = true;
             }
             else {
-                //Victor 失效时即时换装兜底
                 ApplyPendingOp();
-                pendingKind = KindNone;
-                VictorClinicUI.Instance.OpenAtSlot(reopenSlot);
+                if (!awaitingAuthority && pendingKind != KindNone) {
+                    pendingKind = KindNone;
+                    VictorClinicUI.Instance.OpenAtSlot(reopenSlot);
+                }
             }
         }
 
@@ -88,37 +97,48 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
 
         #region 过场回调
 
-        /// <summary>过场全黑关键帧执行换装</summary>
+        /// <summary>过场全黑关键帧提交请求</summary>
         public static void ApplyPendingOp() {
             if (applied || pendingKind == KindNone) {
                 return;
             }
             applied = true;
 
-            Player p = Main.LocalPlayer;
-            CyberwarePlayer cp = p.GetModPlayer<CyberwarePlayer>();
-
-            if (pendingKind == KindInstall) {
-                Item item = pendingInvIndex >= 0 && pendingInvIndex < p.inventory.Length ? p.inventory[pendingInvIndex] : null;
-                if (item != null && !item.IsAir && cp.CanEquip(item, pendingSlot)) {
-                    Item old = cp.Unequip(pendingSlot);
-                    if (old != null && !old.IsAir) {
-                        p.QuickSpawnItem(p.GetSource_Misc("CyberwareUnequip"), old, old.stack);
-                    }
-                    cp.Equip(item, pendingSlot);
-                    item.TurnToAir();
-                }
+            Player player = Main.LocalPlayer;
+            uint serial = ++operationSerial;
+            awaitingAuthority = true;
+            VictorRequestKind kind = pendingKind == KindInstall
+                ? VictorRequestKind.Install
+                : VictorRequestKind.Uninstall;
+            int inventorySlot = kind == VictorRequestKind.Install
+                ? pendingInvIndex
+                : -1;
+            bool sent = CyberwareNet.SendSurgeryRequest(player,
+                pendingVictorWho, kind, inventorySlot, pendingSlot,
+                result => HandleAuthorityResult(serial, result));
+            if (!sent) {
+                awaitingAuthority = false;
+                HandleAuthorityResult(serial, default);
             }
-            else if (pendingKind == KindUninstall) {
-                Item old = cp.Unequip(pendingSlot);
-                if (old != null && !old.IsAir) {
-                    p.QuickSpawnItem(p.GetSource_Misc("CyberwareUnequip"), old, old.stack);
-                }
-            }
+        }
 
-            if (!VaultUtils.isServer) {
-                //CWRSound.ChipSet 植入音
-                SoundEngine.PlaySound(CWRSound.ChipSet, p.Center);
+        private static void HandleAuthorityResult(uint serial,
+            VictorRequestResult result) {
+            if (serial != operationSerial) {
+                return;
+            }
+            awaitingAuthority = false;
+            bool success = result.IsSuccess;
+            if (success && !VaultUtils.isServer) {
+                SoundEngine.PlaySound(CWRSound.ChipSet, Main.LocalPlayer.Center);
+            }
+            if (!Active && pendingKind != KindNone) {
+                pendingKind = KindNone;
+                VictorClinicUI.Instance.OpenAtSlot(reopenSlot);
+                reopenSlot = -1;
+            }
+            else if (success && !Active) {
+                pendingKind = KindNone;
             }
         }
 
@@ -164,7 +184,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             }
 
             //UI/手术都结束→Clear VictorSession
-            if (!VictorSession.IsUIActive && !Active && VictorSession.BoundWhoAmI != -1) {
+            if (!VictorSession.IsUIActive && !Busy && VictorSession.BoundWhoAmI != -1) {
                 VictorSession.Clear();
             }
         }
@@ -173,6 +193,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             Active = false;
             pendingKind = KindNone;
             applied = false;
+            awaitingAuthority = false;
+            pendingVictorWho = -1;
+            operationSerial++;
             reopenSlot = -1;
             EyelidValue = EyelidTarget = GlowValue = 0f;
             VictorSession.Clear();

@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
@@ -19,12 +20,20 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
         public override bool OnApply(IHackTarget target, Player caster) {
             if (target is not IHackableTurret turret) return false;
-            //权威状态仅施法端
-            if (!HackTimeNetSync.IsRemoteApply) {
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
                 turret.ApplyShortCircuit(DisableFrames, caster);
             }
             Vector2 center = turret.WorldCenter;
 
+            if (Main.netMode != NetmodeID.Server) EmitVisual(center);
+            return true;
+        }
+
+        public override void OnReplicatedApply(IHackTarget target, int elapsed) {
+            if (target is IHackableTurret turret) EmitVisual(turret.WorldCenter);
+        }
+
+        private static void EmitVisual(Vector2 center) {
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < 22; i++) {
                     Vector2 vel = Main.rand.NextVector2CircularEdge(6f, 6f);
@@ -37,7 +46,6 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                     PRTLoader.NewParticle<PRT_Spark>(center + dir * 24f, dir * 3.5f, new Color(90, 180, 255, 120), 0.55f).Configure(false, 22);
                 }
             }
-            return true;
         }
     }
 }

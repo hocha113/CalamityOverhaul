@@ -12,6 +12,10 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Modifys;
 using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
+using CalamityOverhaul.Content.RAMSystems;
+using CalamityOverhaul.Content.Cyberwares;
+using CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans;
+using CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals;
 using CalamityOverhaul.Content.Scenarios.Draedon;
 using CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.SignalTower;
 using CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch;
@@ -65,6 +69,11 @@ namespace CalamityOverhaul
         OnikiriTutorialTarget,
         OnikiriItemOperation,
         SoyMilkBossPowerDamageReport,
+        Ram,
+        Cyberware,
+        Sandevistan,
+        SelfHackCrystal,
+        CyberspaceAction,
     }
 
     public static class CWRNetWork
@@ -141,6 +150,11 @@ namespace CalamityOverhaul
             OnikiriTutorialNet.NetHandle(type, reader, whoAmI);
             OnikiriNet.NetHandle(type, reader, whoAmI);
             SoyMilkBossPowerPlayer.NetHandle(type, reader, whoAmI);
+            RamNet.NetHandle(type, reader, whoAmI);
+            CyberwareNet.NetHandle(type, reader, whoAmI);
+            SandevistanNet.NetHandle(type, reader, whoAmI);
+            SelfHackCrystalNet.NetHandle(type, reader, whoAmI);
+            CyberspaceActionNet.NetHandle(type, reader, whoAmI);
         }
     }
 }

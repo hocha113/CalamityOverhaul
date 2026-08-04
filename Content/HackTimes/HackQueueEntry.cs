@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.HackTimes.Scannables;
+using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes
@@ -34,12 +35,32 @@ namespace CalamityOverhaul.Content.HackTimes
         public float GlitchSeed;
         //入队时锁定的 RAM 成本
         public int ComputedRamCost;
+        //请求幂等键
+        public uint SessionId;
+        public uint RequestId;
+        //服务端激活号
+        public long ActivationId;
+        public bool AuthorityAccepted;
 
         public HackQueueEntry(QuickHackDef hack, int slotIndex, IHackTarget target, int computedRamCost) {
+            Initialize(hack, slotIndex, target, computedRamCost, 0, 0);
+        }
+
+        public HackQueueEntry(QuickHackDef hack, int slotIndex, IHackTarget target,
+            int computedRamCost, uint sessionId, uint requestId) {
+            Initialize(hack, slotIndex, target, computedRamCost, sessionId, requestId);
+        }
+
+        private void Initialize(QuickHackDef hack, int slotIndex, IHackTarget target,
+            int computedRamCost, uint sessionId, uint requestId) {
             Hack = hack;
             SlotIndex = slotIndex;
             Target = target;
-            ComputedRamCost = computedRamCost;
+            ComputedRamCost = Math.Clamp(computedRamCost, 0, 1024);
+            SessionId = sessionId;
+            RequestId = requestId;
+            ActivationId = 0;
+            AuthorityAccepted = sessionId == 0 || requestId == 0;
             State = HackQueueState.Waiting;
             UploadProgress = 0f;
             FlyIn = 0f;

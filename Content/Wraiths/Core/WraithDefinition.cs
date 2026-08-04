@@ -16,6 +16,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         ScapeGhost,
         HeadlessShade,
         GhostHand,
+        LanternBoy,
     }
 
     /// <summary>点鬼簿静态目录项。</summary>

@@ -1,20 +1,26 @@
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
     /// <summary>SHPC 命中附加效果，数据侵蚀/时相减速等</summary>
     internal class SHPCNPCEffects : GlobalNPC
     {
+        private const int MaxChronalSlowTime = 120;
+
         public override bool InstancePerEntity => true;
 
         /// <summary>数据侵蚀剩余帧数</summary>
@@ -40,6 +46,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         public int PheromoneOwner = Main.maxPlayers;
 
         private static bool _shaderActive;
+        private ulong _lastChronalTick = ulong.MaxValue;
+        private bool _chronalScaleApplied;
 
         /// <summary>施加数据侵蚀效果，新时长仅在大于当前剩余时才刷新</summary>
         public void ApplyDataErosion(int duration, int tickDmg) {
@@ -47,9 +55,87 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             DataErosionTickDmg = Math.Max(DataErosionTickDmg, tickDmg);
         }
 
-        /// <summary>施加时相减速效果，新时长仅在大于当前剩余时才刷新</summary>
-        public void ApplyChronalSlow(int duration) {
-            ChronalSlowTime = Math.Max(ChronalSlowTime, duration);
+        /// <summary>服务端施加时相减速</summary>
+        public void ApplyChronalSlow(NPC npc, int duration) {
+            if (Main.netMode == NetmodeID.MultiplayerClient || npc?.active != true
+                || npc.boss || duration <= 0) {
+                return;
+            }
+
+            int newTime = Math.Max(ChronalSlowTime,
+                Math.Clamp(duration, 1, MaxChronalSlowTime));
+            if (newTime == ChronalSlowTime) {
+                return;
+            }
+
+            ChronalSlowTime = newTime;
+            ApplyChronalScale(npc);
+            if (Main.netMode == NetmodeID.Server) {
+                npc.netUpdate = true;
+            }
+        }
+
+        public override void SetDefaults(NPC npc) {
+            ChronalSlowTime = 0;
+            _lastChronalTick = ulong.MaxValue;
+            _chronalScaleApplied = false;
+        }
+
+        public override void ResetEffects(NPC npc) {
+            ulong update = Main.GameUpdateCount;
+            if (_lastChronalTick == update) {
+                return;
+            }
+            _lastChronalTick = update;
+
+            if (ChronalSlowTime <= 0 || npc.boss) {
+                bool notify = ChronalSlowTime > 0 && npc.boss;
+                ClearChronalSlow(npc, notify);
+                return;
+            }
+
+            if (!_chronalScaleApplied) {
+                ApplyChronalScale(npc);
+            }
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
+                ChronalSlowTime--;
+                if (ChronalSlowTime == 0 && Main.netMode == NetmodeID.Server) {
+                    npc.netUpdate = true;
+                }
+            }
+
+            if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(2)) {
+                Vector2 pos = npc.Center
+                    + Main.rand.NextVector2Circular(npc.width * 0.4f, npc.height * 0.4f);
+                Vector2 vel = Main.rand.NextVector2CircularEdge(1.5f, 1.5f);
+                PRTLoader.NewParticle<PRT_CyberSquare>(pos, vel,
+                    new Color(120, 80, 255), Main.rand.NextFloat(0.5f, 1.2f))
+                    .Configure(new Color(60, 30, 180), Main.rand.Next(10, 20));
+            }
+        }
+
+        public override void SendExtraAI(NPC npc, BitWriter bitWriter,
+            BinaryWriter binaryWriter) {
+            bool active = ChronalSlowTime > 0 && !npc.boss;
+            bitWriter.WriteBit(active);
+            if (active) {
+                binaryWriter.Write((byte)Math.Clamp((int)ChronalSlowTime, 1,
+                    MaxChronalSlowTime));
+            }
+        }
+
+        public override void ReceiveExtraAI(NPC npc, BitReader bitReader,
+            BinaryReader binaryReader) {
+            ChronalSlowTime = bitReader.ReadBit()
+                ? Math.Clamp((int)binaryReader.ReadByte(), 1, MaxChronalSlowTime)
+                : 0;
+            _lastChronalTick = Main.GameUpdateCount;
+            if (ChronalSlowTime > 0 && !npc.boss) {
+                ApplyChronalScale(npc);
+            }
+            else {
+                ClearChronalSlow(npc, false);
+            }
         }
 
         public void ApplyObsidianCrack(NPC npc, int duration, int owner, int damage) {
@@ -134,18 +220,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         public override bool PreAI(NPC npc) {
-            if (ChronalSlowTime > 0) {
-                ChronalSlowTime--;
-                if (!npc.boss) {
-                    npc.position -= npc.velocity * 0.5f;
-                }
-                if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(2)) {
-                    Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.4f, npc.height * 0.4f);
-                    Vector2 vel = Main.rand.NextVector2CircularEdge(1.5f, 1.5f);
-                    PRTLoader.NewParticle<PRT_CyberSquare>(pos, vel, new Color(120, 80, 255), Main.rand.NextFloat(0.5f, 1.2f)).Configure(new Color(60, 30, 180), Main.rand.Next(10, 20));
-                }
-            }
-
             if (DataErosionTime > 0) {
                 DataErosionTime--;
                 int elapsed = (int)(Main.GameUpdateCount);
@@ -200,10 +274,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         public override void OnKill(NPC npc) {
+            ClearChronalSlow(npc, false);
             if (LifebloomTime <= 0 || LifebloomOwner < 0 || LifebloomOwner >= Main.maxPlayers) return;
             NPC target = npc.Center.FindClosestNPC(520f, false, true, new List<NPC> { npc });
             if (target == null || !target.TryGetGlobalNPC(out SHPCNPCEffects eff)) return;
             eff.ApplyLifebloom(Math.Max(LifebloomTime / 2, 90), Math.Max(LifebloomTickDmg, 1), LifebloomOwner);
+        }
+
+        private void ApplyChronalScale(NPC npc) {
+            TimeFreezeSystem.SetNPCTimeScale<ChronalGripModule>(npc, 0.5f);
+            _chronalScaleApplied = true;
+        }
+
+        private void ClearChronalSlow(NPC npc, bool notify) {
+            ChronalSlowTime = 0;
+            if (_chronalScaleApplied) {
+                TimeFreezeSystem.ClearNPCTimeScale<ChronalGripModule>(npc);
+                _chronalScaleApplied = false;
+            }
+            if (notify && Main.netMode == NetmodeID.Server) {
+                npc.netUpdate = true;
+            }
         }
 
         private void TryHealLifebloomOwner(NPC npc, int amount) {

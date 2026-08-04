@@ -8,9 +8,7 @@ namespace CalamityOverhaul.Content.RAMSystems
 {
     internal abstract class BaseRamUpgradeChip : ModItem
     {
-        protected abstract bool CanApplyUpgrade { get; }
-
-        protected abstract void ApplyUpgrade(Player player);
+        protected abstract RamUpgradeKind UpgradeKind { get; }
 
         public override void SetDefaults() {
             Item.width = 28;
@@ -26,12 +24,42 @@ namespace CalamityOverhaul.Content.RAMSystems
             Item.autoReuse = true;
         }
 
-        public override bool CanUseItem(Player player) => CanApplyUpgrade;
+        public override bool CanUseItem(Player player)
+            => RamSystem.CanUseUpgrade(player, UpgradeKind);
 
         public override bool? UseItem(Player player) {
-            ApplyUpgrade(player);
+            if (player.whoAmI != Main.myPlayer || Main.netMode == NetmodeID.Server) {
+                return false;
+            }
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                return RamNet.SendUpgradeRequest(player, UpgradeKind);
+            }
+            if (!RamSystem.TryUseUpgrade(player, UpgradeKind)) {
+                return false;
+            }
             SoundEngine.PlaySound(SoundID.ResearchComplete, player.Center);
             return true;
+        }
+
+        public override bool ConsumeItem(Player player)
+            => Main.netMode == NetmodeID.SinglePlayer;
+
+        internal static void HandleRequestResult(Player player,
+            in RamRequestResult result) {
+            if (player == null || player.whoAmI != Main.myPlayer
+                || result.OperationId is not (RamNet.CapacityUpgradeOperation
+                    or RamNet.RecoveryUpgradeOperation)) {
+                return;
+            }
+            if (result.ResultCode == (byte)RamUpgradeResultCode.Success) {
+                SoundEngine.PlaySound(SoundID.ResearchComplete, player.Center);
+                return;
+            }
+            RamSystem.NotifyInsufficient();
+            SoundEngine.PlaySound(SoundID.MenuTick with {
+                Pitch = -0.5f,
+                Volume = 0.5f,
+            }, player.Center);
         }
     }
 }

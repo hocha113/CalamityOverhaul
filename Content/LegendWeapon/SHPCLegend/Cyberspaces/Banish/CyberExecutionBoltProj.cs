@@ -1,16 +1,19 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ModLoader;
+using Terraria.Utilities;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
 {
-    /// <summary>Boss 执行天雷，ai0 角度 ai1 延迟 ai2 目标 NPC</summary>
+    /// <summary>Boss 执行天雷，目标身份经 ExtraAI 同步</summary>
     internal class CyberExecutionBoltProj : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -34,11 +37,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
         private float visibleStart;
         private float visibleEnd;
         private float fadeAlpha;
+        private NetworkNPCIdentity targetIdentity;
+        private int pathSeed;
         //fork 终点 localAI[1]/[2]
         private Vector2 forkEndOverride;
         private bool hasForkEnd;
 
         private bool IsFork => Projectile.localAI[0] > 0.5f;
+
+        internal void InitializeTarget(NetworkNPCIdentity identity, int seed) {
+            if (identity.IsValid && seed > 0) {
+                targetIdentity = identity;
+                pathSeed = seed;
+            }
+        }
+
+        public override void SendExtraAI(BinaryWriter writer) {
+            targetIdentity.Write(writer);
+            writer.Write(pathSeed);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            NetworkNPCIdentity.TryRead(reader, out targetIdentity);
+            int receivedSeed = reader.ReadInt32();
+            pathSeed = receivedSeed > 0 ? receivedSeed : 1;
+        }
 
         public override void SetDefaults() {
             Projectile.width = 2;
@@ -68,8 +91,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                     forkEndOverride = new Vector2(Projectile.localAI[1], Projectile.localAI[2]);
                     hasForkEnd = true;
                 }
+                if (pathSeed <= 0) {
+                    pathSeed = Main.rand.Next(1, int.MaxValue);
+                }
                 GeneratePath();
-                glitchSeed = Main.rand.NextFloat();
                 pathReady = true;
                 ResizeToBounds();
                 if (!IsFork && !VaultUtils.isServer) {
@@ -86,7 +111,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             ComputeAnimation(t);
 
             //主干在延伸到一半左右时分裂出fork，仅生成一次
-            if (!IsFork && !forksSpawned && t > 0.22f && t < 0.5f) {
+            if (!IsFork && !forksSpawned && t > 0.22f && t < 0.5f
+                && Main.netMode != Terraria.ID.NetmodeID.Server) {
                 SpawnForks();
                 forksSpawned = true;
             }
@@ -156,9 +182,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
 
         private void GeneratePath() {
             //主轴+垂偏，避漫步折叠
+            UnifiedRandom random = new(pathSeed);
+            glitchSeed = random.NextFloat();
             Vector2 start = Projectile.Center;
             Vector2 end;
-            if (!ResolveEndPoint(out end)) {
+            if (!ResolveEndPoint(random, out end)) {
                 //Fallback 沿入射延伸
                 float defaultLen = IsFork ? 240f : 900f;
                 end = start + Projectile.ai[0].ToRotationVector2() * defaultLen;
@@ -176,8 +204,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             Vector2 perp = new Vector2(-axisUnit.Y, axisUnit.X);
 
             int keyCount = IsFork
-                ? Main.rand.Next(ForkKeyCountMin, ForkKeyCountMax)
-                : Main.rand.Next(MainKeyCountMin, MainKeyCountMax);
+                ? random.Next(ForkKeyCountMin, ForkKeyCountMax)
+                : random.Next(MainKeyCountMin, MainKeyCountMax);
             //至少保留4个关键点供Catmull-Rom插值
             if (keyCount < 4) keyCount = 4;
 
@@ -198,11 +226,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                 Vector2 onAxis = Vector2.Lerp(start, end, t);
                 float envelope = MathF.Sin(t * MathF.PI);
                 //惯性格偏移插值
-                float target = Main.rand.NextFloat(-1f, 1f) * baseAmp * envelope;
+                float target = random.NextFloat(-1f, 1f) * baseAmp * envelope;
                 float offset = MathHelper.Lerp(prevOffset, target, 0.65f);
                 prevOffset = offset;
                 //再叠加一层小幅高频噪声制造电流颤动观感
-                float jitter = Main.rand.NextFloat(-1f, 1f) * baseAmp * 0.18f * envelope;
+                float jitter = random.NextFloat(-1f, 1f) * baseAmp * 0.18f * envelope;
                 keys[i] = onAxis + perp * (offset + jitter);
             }
 
@@ -225,8 +253,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             points[writeIdx] = keys[keyCount - 1];
         }
 
-        /// <summary>终点，主干 ai2 NPC，fork localAI</summary>
-        private bool ResolveEndPoint(out Vector2 end) {
+        /// <summary>主干严格身份终点，分叉使用 localAI</summary>
+        private bool ResolveEndPoint(UnifiedRandom random, out Vector2 end) {
             if (IsFork) {
                 if (hasForkEnd) {
                     end = forkEndOverride;
@@ -235,17 +263,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                 end = default;
                 return false;
             }
-            int targetIdx = (int)Projectile.ai[2];
-            if (targetIdx >= 0 && targetIdx < Main.maxNPCs) {
-                NPC npc = Main.npc[targetIdx];
-                if (npc.active) {
-                    //命中点微抖
-                    end = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.3f, npc.height * 0.3f);
-                    return true;
-                }
+            if (targetIdentity.TryResolve(out NPC npc)) {
+                //命中点微抖
+                end = npc.Center + NextVector2Circular(random,
+                    npc.width * 0.3f, npc.height * 0.3f);
+                return true;
             }
             end = default;
             return false;
+        }
+
+        private static Vector2 NextVector2Circular(UnifiedRandom random,
+            float radiusX, float radiusY) {
+            float angle = random.NextFloat(MathHelper.TwoPi);
+            float radius = MathF.Sqrt(random.NextFloat());
+            return new Vector2(MathF.Cos(angle) * radiusX,
+                MathF.Sin(angle) * radiusY) * radius;
         }
 
         private static Vector2 CatmullRom(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t) {
@@ -299,7 +332,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                 int idx = Projectile.NewProjectile(Projectile.GetSource_FromAI(),
                     origin, Vector2.Zero,
                     Type, 0, 0f,
-                    Projectile.owner,
+                    Main.maxPlayers,
                     ai0: forkAngle,
                     ai1: 0f,
                     ai2: -1f);
@@ -308,9 +341,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                     fork.localAI[0] = 1f;
                     fork.localAI[1] = forkEnd.X;
                     fork.localAI[2] = forkEnd.Y;
+                    fork.damage = 0;
+                    fork.friendly = false;
+                    fork.hostile = false;
+                    fork.netUpdate = false;
                 }
             }
         }
+
+        public override bool? CanDamage() => IsFork ? false : null;
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             if (!pathReady || points == null || Projectile.ai[1] > 0) return false;

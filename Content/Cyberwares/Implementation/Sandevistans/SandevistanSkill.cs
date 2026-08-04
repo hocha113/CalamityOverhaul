@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 {
     /// <summary>
     /// 斯安威斯坦雷达描述符，Toggle 切换时缓
-    /// <br/>运行时状态在 Sandevistan，本类仅桥接
+    /// <br/>运行时状态在 SandevistanPlayer，本类仅桥接
     /// </summary>
     internal sealed class SandevistanSkill : CyberwareSkillBase
     {
@@ -36,12 +36,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         public override int IconItemType => ModContent.ItemType<SandevistansItem>();
 
         public override void OnToggleTrigger(Player player) {
-            if (Sandevistan.IsActive) {
-                Sandevistan.ForceDeactivate();
+            SandevistanPlayer state = Sandevistan.GetState(player);
+            if (state?.IsActive == true) {
+                state.RequestToggle(false);
                 return;
             }
-            if (Sandevistan.CurrentCooldown > 0f) {
-                Sandevistan.TryActivate();
+            if (state?.CurrentCooldown > 0f) {
+                state.RequestToggle(true);
             }
         }
     }

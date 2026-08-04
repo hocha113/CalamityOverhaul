@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.TimeFreezes;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
@@ -8,18 +9,21 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
     internal class SandevistanProjectile : GlobalProjectile
     {
         public override void OnSpawn(Projectile projectile, IEntitySource source) {
-            if (SandevistanTimeSlow.IsActive
-                && SandevistanTimeSlow.ShouldAffectProjectile(projectile)) {
-                SandevistanTimeSlow.EnsureProjectileSource(projectile);
-            }
+            SandevistanTimeSlow.ReconcileProjectile(projectile);
         }
 
         public override bool PreAI(Projectile projectile) {
-            if (SandevistanTimeSlow.IsActive
-                && SandevistanTimeSlow.ShouldAffectProjectile(projectile)) {
-                SandevistanTimeSlow.EnsureProjectileSource(projectile);
-            }
+            SandevistanTimeSlow.ReconcileProjectile(projectile);
             return true;
+        }
+
+        public override void PostAI(Projectile projectile) {
+            SandevistanTimeSlow.ReconcileProjectile(projectile);
+        }
+
+        public override void OnKill(Projectile projectile, int timeLeft) {
+            TimeFreezeSystem.ClearProjectileTimeScale<SandevistanTimeSlow>(
+                projectile);
         }
     }
 }

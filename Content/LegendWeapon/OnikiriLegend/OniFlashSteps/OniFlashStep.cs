@@ -1,10 +1,11 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -288,6 +289,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 ReleaseHide();
                 Projectile.Kill();
                 return;
+            }
+
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                UIInputGuard.SuppressWeaponSwitch();
             }
 
             if (Dashing && !InterruptHandoffActive) {

@@ -135,18 +135,29 @@ namespace CalamityOverhaul.Content.HackTimes
 
         /// <summary>目标 RAM 成本，含倍率，至少 1</summary>
         public static int GetActualCost(QuickHackDef hack, IHackTarget target) {
-            float multiplier = GetMultiplier(target);
+            return GetActualCost(hack, target, Main.LocalPlayer);
+        }
+
+        public static int GetActualCost(QuickHackDef hack, IHackTarget target,
+            Player caster) {
+            if (hack == null) return 0;
+            float multiplier = GetMultiplier(target, caster);
             return Math.Max(1, (int)(hack.RamCost * multiplier + 0.5f));
         }
 
         /// <summary>成本倍率 1.0x~3.0x</summary>
         public static float GetMultiplier(IHackTarget target) {
+            return GetMultiplier(target, Main.LocalPlayer);
+        }
+
+        public static float GetMultiplier(IHackTarget target, Player caster) {
             if (target is not NpcScannable npcScan) return 1.0f;
             int idx = npcScan.NpcIndex;
             if (idx < 0 || idx >= Main.maxNPCs) return 1.0f;
             NPC npc = Main.npc[idx];
             if (!npc.active) return 1.0f;
-            return npc.boss ? EvaluateBossMultiplier(npc) : EvaluateRegularNpcMultiplier(npc);
+            return npc.boss ? EvaluateBossMultiplier(npc)
+                : EvaluateRegularNpcMultiplier(npc, caster);
         }
 
         #endregion
@@ -176,13 +187,13 @@ namespace CalamityOverhaul.Content.HackTimes
             return 1.5f;
         }
 
-        private static float EvaluateRegularNpcMultiplier(NPC npc) {
-            Player local = Main.LocalPlayer;
-            if (local == null) return 1.0f;
-            float playerDR = Math.Clamp(local.endurance, 0f, 0.99f);
-            float effectiveDmg = Math.Max(1f, npc.damage - local.statDefense * 0.5f) * (1f - playerDR);
-            float hitImpact = effectiveDmg / Math.Max(local.statLifeMax, 1);
-            float hpRatio = (float)npc.lifeMax / Math.Max(local.statLifeMax, 1);
+        private static float EvaluateRegularNpcMultiplier(NPC npc, Player caster) {
+            if (caster == null || !caster.active) return 1.0f;
+            float playerDR = Math.Clamp(caster.endurance, 0f, 0.99f);
+            float effectiveDmg = Math.Max(1f,
+                npc.damage - caster.statDefense * 0.5f) * (1f - playerDR);
+            float hitImpact = effectiveDmg / Math.Max(caster.statLifeMax, 1);
+            float hpRatio = (float)npc.lifeMax / Math.Max(caster.statLifeMax, 1);
             float durabilityIndex = MathF.Log2(1f + hpRatio);
             float defenseIndex = npc.defense / 50f;
             float threat = hitImpact * 50f + durabilityIndex * 5f + defenseIndex * 5f;

@@ -13,18 +13,26 @@ namespace CalamityOverhaul.Content.TimeFreezes
 
         public static bool IsTimeSlowed => TimeScale < 1f;
 
-        private static readonly Dictionary<string, float> scaleSources = new();
+        private static readonly Dictionary<FreezeSourceKey, float> scaleSources = new();
 
-        /// <summary>注册缩放源，同 key 覆盖；0冻 1正常</summary>
-        public static void Register(string key, float scale) {
-            scaleSources[key] = MathHelper.Clamp(scale, 0f, 1f);
+        /// <summary>注册全局缩放源，同来源覆盖；0 冻结，1 正常</summary>
+        public static bool Register<TSource>(float scale, long sourceInstance = 0) {
+            if (!float.IsFinite(scale)) {
+                return false;
+            }
+
+            scaleSources[new FreezeSourceKey(typeof(TSource), sourceInstance)]
+                = MathHelper.Clamp(scale, 0f, 1f);
             Recalculate();
+            return true;
         }
 
-        public static void Unregister(string key) {
-            if (scaleSources.Remove(key)) {
+        public static bool Unregister<TSource>(long sourceInstance = 0) {
+            if (scaleSources.Remove(new FreezeSourceKey(typeof(TSource), sourceInstance))) {
                 Recalculate();
+                return true;
             }
+            return false;
         }
 
         private static void Recalculate() {
@@ -35,11 +43,12 @@ namespace CalamityOverhaul.Content.TimeFreezes
             TimeScale = min;
         }
 
-        /// <summary>排除指定源后的因子，源自身免疫己缩放</summary>
-        public static float TimeScaleExcluding(string excludeKey) {
+        /// <summary>排除指定来源类型后的因子</summary>
+        public static float TimeScaleExcluding<TSource>() {
+            Type excludedType = typeof(TSource);
             float min = 1f;
             foreach (var pair in scaleSources) {
-                if (pair.Key == excludeKey) {
+                if (pair.Key.SourceType == excludedType) {
                     continue;
                 }
                 if (pair.Value < min) min = pair.Value;

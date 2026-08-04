@@ -1,9 +1,8 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
 using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -12,158 +11,151 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
 {
-    /// <summary>Boss 执行会话，分波召唤 CyberExecutionBoltProj</summary>
-    internal class CyberBossExecution : ICWRLoader
+    /// <summary>Boss 放逐后的权威雷击会话</summary>
+    internal partial class CyberBossExecution : ICWRLoader
     {
-        void ICWRLoader.UnLoadData() => Reset();
-
-        /// <summary>总时长帧</summary>
         public const int ExecutionDuration = 150;
-
-        /// <summary>单次 RAM</summary>
         public const int RamCostPerCast = 12;
 
-        /// <summary>主雷数，最多5</summary>
         private const int TargetBoltCount = 5;
-
-        /// <summary>伤害倍率，面板×改件后再放大</summary>
         private const float DamageMultiplier = 6f;
+        private const int MaxExecutionDamage = 10_000_000;
 
         public static readonly List<ExecutionEntry> ActiveExecutions = [];
 
+        void ICWRLoader.UnLoadData() => Reset();
+
         public static bool IsExecuting(int npcIndex) {
             for (int i = 0; i < ActiveExecutions.Count; i++) {
-                if (ActiveExecutions[i].NpcIndex == npcIndex) return true;
-            }
-            return false;
-        }
-
-        /// <summary>判定 Boss 级目标，含群组 realLife</summary>
-        public static bool IsBossTier(NPC npc) {
-            if (npc == null || !npc.active) return false;
-            if (npc.boss) return true;
-            if (NPCID.Sets.ShouldBeCountedAsBoss[npc.type]) return true;
-            //群组看 realLife.boss
-            int rl = npc.realLife;
-            if (rl >= 0 && rl < Main.maxNPCs) {
-                NPC anchor = Main.npc[rl];
-                if (anchor.active && (anchor.boss || NPCID.Sets.ShouldBeCountedAsBoss[anchor.type])) {
+                ExecutionEntry entry = ActiveExecutions[i];
+                if (entry.NpcIndex == npcIndex && IsEntryResolved(entry)) {
                     return true;
                 }
             }
             return false;
         }
 
-        /// <summary>启动 Boss 执行打击</summary>
-        public static void StartExecution(int npcIndex, Player owner) {
-            if (npcIndex < 0 || npcIndex >= Main.maxNPCs) return;
-            if (IsExecuting(npcIndex)) return;
-
-            NPC npc = Main.npc[npcIndex];
-            if (!npc.active) return;
-
-            int damage = ResolveExecutionDamage(owner);
-
-            ActiveExecutions.Add(new ExecutionEntry {
-                NpcIndex = npcIndex,
-                Timer = 0,
-                Damage = damage,
-                OwnerWho = owner?.whoAmI ?? 255,
-                Seed = Main.rand.NextFloat(),
-            });
-
-            if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(CWRSound.Thunder with {
-                    Volume = 0.7f,
-                    Pitch = -0.4f,
-                }, npc.Center);
-                SoundEngine.PlaySound(CWRSound.Fault with {
-                    Volume = 0.6f,
-                    Pitch = 0.2f,
-                }, npc.Center);
+        internal static bool IsExecuting(NetworkNPCIdentity identity) {
+            for (int i = 0; i < ActiveExecutions.Count; i++) {
+                ExecutionEntry entry = ActiveExecutions[i];
+                if (entry.Identity == identity && IsEntryResolved(entry)) {
+                    return true;
+                }
             }
+            return false;
         }
 
-        /// <summary>单发伤，最高级面板×改件×倍率</summary>
-        private static int ResolveExecutionDamage(Player owner) {
-            int baseDamage = SHPCOverride.GetStartDamage;
-            if (owner != null) {
-                Item bestItem = null;
-                int bestLevel = -1;
-                for (int i = 0; i < owner.inventory.Length; i++) {
-                    Item it = owner.inventory[i];
-                    if (it == null || it.IsAir) continue;
-                    if (it.type != SHPCOverride.ID) continue;
-                    int lv = SHPCOverride.GetLevel(it);
-                    if (lv > bestLevel) {
-                        bestLevel = lv;
-                        bestItem = it;
-                    }
-                }
-                if (bestItem != null) {
-                    baseDamage = SHPCOverride.GetOnDamage(bestItem);
-                }
+        public static bool IsBossTier(NPC npc)
+            => NpcGroupHelper.IsBossTier(npc);
+
+        internal static bool StartExecution(long activationId,
+            NetworkNPCIdentity identity, Player owner) {
+            if (Main.netMode == NetmodeID.MultiplayerClient
+                || activationId <= 0 || owner?.active != true || owner.dead
+                || !identity.TryResolve(out NPC npc) || !IsBossTier(npc)) {
+                return false;
+            }
+            ExecutionEntry existing = FindExecution(activationId);
+            if (existing != null) {
+                return existing.Identity == identity;
+            }
+            if (IsExecuting(identity)) {
+                return false;
             }
 
-            ShootContext ctx = SHPCModificationSystem.Resolve(owner);
-            float scaled = baseDamage * Math.Max(ctx.DamageMul, 0.1f) * DamageMultiplier;
-            int final = (int)scaled;
-            if (final < 1) final = 1;
-            return final;
+            ExecutionEntry entry = new() {
+                ActivationId = activationId,
+                Identity = identity,
+                Timer = 0,
+                Damage = ResolveExecutionDamage(owner),
+                OwnerWho = owner.whoAmI,
+                Seed = Main.rand.NextFloat(),
+                Authoritative = true,
+                Resolved = true,
+            };
+            ActiveExecutions.Add(entry);
+            PlayExecutionStart(npc);
+            if (Main.netMode == NetmodeID.Server) {
+                SendExecutionApply(entry);
+            }
+            return true;
+        }
+
+        private static int ResolveExecutionDamage(Player owner) {
+            int baseDamage = Math.Clamp(SHPCOverride.GetStartDamage,
+                1, MaxExecutionDamage);
+            Item bestItem = null;
+            int bestLevel = -1;
+            if (owner != null) {
+                for (int i = 0; i < owner.inventory.Length; i++) {
+                    Item item = owner.inventory[i];
+                    if (item == null || item.IsAir
+                        || item.type != SHPCOverride.ID) {
+                        continue;
+                    }
+                    int level = SHPCOverride.GetLevel(item);
+                    if (level > bestLevel) {
+                        bestLevel = level;
+                        bestItem = item;
+                    }
+                }
+            }
+            if (bestItem != null) {
+                baseDamage = Math.Clamp(SHPCOverride.GetOnDamage(bestItem),
+                    1, MaxExecutionDamage);
+            }
+
+            ShootContext context = SHPCModificationSystem.Resolve(owner);
+            float multiplier = float.IsFinite(context.DamageMul)
+                ? MathHelper.Clamp(context.DamageMul, 0.1f, 100f)
+                : 1f;
+            double scaled = baseDamage * (double)multiplier * DamageMultiplier;
+            return (int)Math.Clamp(scaled, 1d, MaxExecutionDamage);
         }
 
         public static void Update() {
+            PruneReleasedExecutions();
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                UpdateClientPresentation();
+                return;
+            }
+
             for (int i = ActiveExecutions.Count - 1; i >= 0; i--) {
                 ExecutionEntry entry = ActiveExecutions[i];
-                NPC npc = Main.npc[entry.NpcIndex];
-                if (!npc.active) {
-                    ActiveExecutions.RemoveAt(i);
+                if (!IsValidOwner(entry.OwnerWho)
+                    || Main.player[entry.OwnerWho]?.active != true
+                    || Main.player[entry.OwnerWho].dead
+                    || !entry.Identity.TryResolve(out NPC npc)) {
+                    RemoveExecution(entry,
+                        broadcast: Main.netMode == NetmodeID.Server);
                     continue;
                 }
 
-                //仅发起者客户端 spawn 雷
-                //其它端只推 Timer/IsExecuting
-                bool authoritative = Main.netMode == NetmodeID.SinglePlayer
-                    || entry.OwnerWho == Main.myPlayer;
-                if (authoritative) {
-                    TickSpawnBolts(entry, npc);
-                }
-
-                entry.Timer += TimeGear.PullFrameAdvance(ref entry.TimerCarry);
+                TickSpawnBolts(entry, npc);
+                entry.Timer = Math.Min(ExecutionDuration,
+                    entry.Timer
+                    + TimeGear.PullFrameAdvance(ref entry.TimerCarry));
                 if (entry.Timer >= ExecutionDuration) {
-                    ActiveExecutions.RemoveAt(i);
+                    RemoveExecution(entry,
+                        broadcast: Main.netMode == NetmodeID.Server);
                 }
             }
         }
 
-        /// <summary>远端 Boss 执行广播同步 ActiveExecutions</summary>
-        internal static void HandleNetStart(BinaryReader reader, int whoAmI) {
-            int npcIdx = reader.ReadUInt16();
-            int ownerWho = reader.ReadByte();
-            int damage = reader.ReadInt32();
-            float seed = reader.ReadSingle();
-            if (npcIdx < 0 || npcIdx >= Main.maxNPCs) return;
-            if (IsExecuting(npcIdx)) return;
-            ActiveExecutions.Add(new ExecutionEntry {
-                NpcIndex = npcIdx,
-                Timer = 0,
-                Damage = damage,
-                OwnerWho = ownerWho,
-                Seed = seed,
-            });
+        private static void UpdateClientPresentation() {
+            for (int i = 0; i < ActiveExecutions.Count; i++) {
+                ExecutionEntry entry = ActiveExecutions[i];
+                entry.Timer = Math.Min(ExecutionDuration - 1,
+                    entry.Timer
+                    + TimeGear.PullFrameAdvance(ref entry.TimerCarry));
+            }
         }
 
-        /// <summary>按时间计划召唤天雷，带随机抖动</summary>
         private static void TickSpawnBolts(ExecutionEntry entry, NPC npc) {
-            if (npc.realLife > 0) {
-                return;//排除子实体
-            }
-            //按进度补雷，每帧最多2
-            float progress = (float)entry.Timer / ExecutionDuration;
-            //前95%打完，尾段收尾
-            int expected = (int)(progress / 0.92f * TargetBoltCount);
-            if (expected > TargetBoltCount) expected = TargetBoltCount;
-
+            float progress = entry.Timer / (float)ExecutionDuration;
+            int expected = Math.Clamp(
+                (int)(progress / 0.92f * TargetBoltCount),
+                0, TargetBoltCount);
             int spawnedThisFrame = 0;
             while (entry.SpawnedCount < expected && spawnedThisFrame < 2) {
                 SpawnSingleBolt(entry, npc);
@@ -173,47 +165,98 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
         }
 
         private static void SpawnSingleBolt(ExecutionEntry entry, NPC npc) {
-            //外起点距 Boss 600~1100
             float incomingAngle = Main.rand.NextFloat(MathHelper.TwoPi);
-            float startDist = Main.rand.NextFloat(600f, 1100f);
-            //路径自外围朝 Boss
-            Vector2 startPos = npc.Center + incomingAngle.ToRotationVector2() * startDist;
-            //起点微抖
-            startPos += Main.rand.NextVector2Circular(60f, 60f);
-            float pathAngle = (npc.Center - startPos).ToRotation();
-            //角微摆
-            pathAngle += Main.rand.NextFloat(-0.18f, 0.18f);
-
-            //短延迟错开
+            float startDistance = Main.rand.NextFloat(600f, 1100f);
+            Vector2 startPosition = npc.Center
+                + incomingAngle.ToRotationVector2() * startDistance
+                + Main.rand.NextVector2Circular(60f, 60f);
+            float pathAngle = (npc.Center - startPosition).ToRotation()
+                + Main.rand.NextFloat(-0.18f, 0.18f);
             int delay = Main.rand.Next(0, 5);
 
-            EntitySource_Misc source = new EntitySource_Misc("CyberBossExecution");
-            int idx = Projectile.NewProjectile(source, startPos, Vector2.Zero,
+            IEntitySource source = new EntitySource_Misc("CyberBossExecution");
+            int index = Projectile.NewProjectile(source, startPosition,
+                Vector2.Zero,
                 ModContent.ProjectileType<CyberExecutionBoltProj>(),
                 entry.Damage, 4f, entry.OwnerWho,
-                ai0: pathAngle,
-                ai1: delay,
-                ai2: entry.NpcIndex);
-            if (idx >= 0 && idx < Main.maxProjectiles) {
-                Main.projectile[idx].localAI[0] = 0f;
+                ai0: pathAngle, ai1: delay, ai2: entry.Identity.Index);
+            if (index < 0 || index >= Main.maxProjectiles) {
+                return;
             }
+            Projectile projectile = Main.projectile[index];
+            if (projectile.ModProjectile is CyberExecutionBoltProj bolt) {
+                bolt.InitializeTarget(entry.Identity,
+                    Main.rand.Next(1, int.MaxValue));
+            }
+            projectile.netUpdate = Main.netMode == NetmodeID.Server;
+        }
+
+        private static void PlayExecutionStart(NPC npc) {
+            if (Main.dedServ || npc?.active != true) {
+                return;
+            }
+            SoundEngine.PlaySound(CWRSound.Thunder with {
+                Volume = 0.7f,
+                Pitch = -0.4f,
+            }, npc.Center);
+            SoundEngine.PlaySound(CWRSound.Fault with {
+                Volume = 0.6f,
+                Pitch = 0.2f,
+            }, npc.Center);
+        }
+
+        private static bool IsEntryResolved(ExecutionEntry entry)
+            => entry != null && entry.Resolved
+            && entry.Identity.TryResolve(out _);
+
+        private static ExecutionEntry FindExecution(long activationId) {
+            for (int i = 0; i < ActiveExecutions.Count; i++) {
+                if (ActiveExecutions[i].ActivationId == activationId) {
+                    return ActiveExecutions[i];
+                }
+            }
+            return null;
+        }
+
+        private static void RemoveExecution(ExecutionEntry entry,
+            bool broadcast) {
+            if (entry == null) {
+                return;
+            }
+            if (broadcast) {
+                SendExecutionRelease(entry.ActivationId);
+            }
+            TimeControlReplicationSystem.Cancel<CyberBossExecution>(
+                entry.ActivationId);
+            ActiveExecutions.Remove(entry);
+            RememberReleasedExecution(entry.ActivationId);
         }
 
         public static void Reset() {
+            for (int i = ActiveExecutions.Count - 1; i >= 0; i--) {
+                RemoveExecution(ActiveExecutions[i], broadcast: false);
+            }
             ActiveExecutions.Clear();
+            TimeControlReplicationSystem.CancelAll<CyberBossExecution>();
+            ClearReleasedExecutions();
         }
     }
 
-    internal class ExecutionEntry
+    internal sealed class ExecutionEntry
     {
-        public int NpcIndex;
+        internal long ActivationId;
+        internal NetworkNPCIdentity Identity;
         public int Timer;
         internal float TimerCarry;
         public int SpawnedCount;
         public int Damage;
         public int OwnerWho;
         public float Seed;
+        internal bool Authoritative;
+        internal bool Resolved;
 
-        public float Progress => (float)Timer / CyberBossExecution.ExecutionDuration;
+        public int NpcIndex => Identity.Index;
+        public float Progress => MathHelper.Clamp(
+            Timer / (float)CyberBossExecution.ExecutionDuration, 0f, 1f);
     }
 }

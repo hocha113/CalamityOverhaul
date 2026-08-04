@@ -8,14 +8,14 @@ NoFace: {
 LanternBoy: {
 	DisplayName: The Lantern Boy
 	Origin: A lamp at the end of the mountain road, no one beneath it; look again, and you are the one inside the lamp
-	Power: 「Guiding Light」Shadows cast by the lantern mirror the bearer's actions, wielding six-tenths of their strength
+	Power: 「Guiding Light」Three Ghost Lanterns orbit the bearer, their shadows echoing Onikiri's normal slashes off-beat for a combined sixty percent of its power.
 	DeathReason: "{0} touched what must never be touched"
 }
 
 CrimsonBride: {
 	DisplayName: The Crimson Bride
 	Origin: The bridal palanquin waited at the gate for seven nights
-	Power: 「The Procession」The final piece of the set; allows Ghost Lanterns to be stacked upon yourself
+	Power: 「The Procession」A bridal palanquin follows the trail of blood, carrying the dying into an empty wedding hall.
 	DeathReason: "{0} touched what must never be touched"
 }
 

@@ -17,13 +17,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
             if (target.TryGetGlobalNPC(out SHPCNPCEffects eff)) {
-                eff.ApplyChronalSlow(120);
+                eff.ApplyChronalSlow(target, 120);
             }
         }
 
         public override void OnLaserHitNPC(CyberPrismLaserProj laser, NPC target, NPC.HitInfo hit, int damageDone) {
             if (target.TryGetGlobalNPC(out SHPCNPCEffects eff)) {
-                eff.ApplyChronalSlow(60);
+                eff.ApplyChronalSlow(target, 60);
             }
         }
     }

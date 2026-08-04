@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
     public class CyberspacePlayer : ModPlayer
     {
         public bool Active { get; internal set; }
+        internal uint AuthorityRevision { get; private set; } = 1;
 
         //强度原值，对外 Intensity
         internal float intensityRaw;
@@ -138,18 +139,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         /// <summary>RAM 余量能否维持指定层最低秒数</summary>
         public bool CanAffordLayer(int layer) {
-            if (HackTime.InfiniteHack) {
+            if (HackTime.InfiniteHackAuthority
+                || Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient
+                    && HackTime.InfiniteHack) {
                 return true;
             }
             if (layer < 1 || layer > Cyberspace.MaxLayerCount) {
                 return false;
             }
             float required = Cyberspace.LayerRamDrainPerSecond[layer - 1] * Cyberspace.MinSustainSeconds;
-            return RamSystem.CurrentRam >= required;
+            return RamSystem.CanAfford(Player, required);
         }
 
         /// <summary>同帧防重入手动切换</summary>
         public bool Toggle() {
+            if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient
+                && Player.whoAmI == Main.myPlayer) {
+                return CyberspaceActionNet.SendDomainRequest(Player,
+                    CyberspaceActionKind.Toggle, 0, Vector2.Zero);
+            }
             long frame = (long)Main.GameUpdateCount;
             if (lastManualToggleFrame == frame) {
                 return false;
@@ -169,6 +177,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         /// <summary>激活第一层或恢复上次层数</summary>
         public void Activate() {
+            if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient
+                && Player.whoAmI == Main.myPlayer) {
+                CyberspaceActionNet.SendDomainRequest(Player,
+                    CyberspaceActionKind.Activate, 0, Vector2.Zero);
+                return;
+            }
+            ActivateAuthority();
+        }
+
+        internal void ActivateAuthority() {
             //崩溃锁定拒
             if (crashLockoutTimer > 0) {
                 if (!VaultUtils.isServer) {
@@ -179,7 +197,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
             int resumeLayer = Math.Clamp(lastLayer, 1, Cyberspace.MaxLayerCount);
 
-            if (!HackTime.InfiniteHack) {
+            if (!HackTime.InfiniteHackAuthority) {
                 while (resumeLayer >= 1 && !CanAffordLayer(resumeLayer)) {
                     resumeLayer--;
                 }
@@ -213,13 +231,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     SoundEngine.PlaySound(CWRSound.Faultrelease, Player.Center);
                 }
             }
+            CommitAuthorityState();
         }
 
         /// <summary>升降层</summary>
-        public void SetLayer(int layer) {
+        public bool SetLayer(int layer) {
+            if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient
+                && Player.whoAmI == Main.myPlayer) {
+                return CyberspaceActionNet.SendDomainRequest(Player,
+                    CyberspaceActionKind.SetLayer, Math.Clamp(layer, 1,
+                        Cyberspace.MaxLayerCount), Vector2.Zero);
+            }
+            return SetLayerAuthority(layer);
+        }
+
+        internal bool SetLayerAuthority(int layer) {
             layer = Math.Clamp(layer, 1, Cyberspace.MaxLayerCount);
-            if (!Active) return;
-            if (layer == CurrentLayer) return;
+            if (!Active) return false;
+            if (layer == CurrentLayer) return true;
 
             if (layer > CurrentLayer && !CanAffordLayer(layer)) {
                 if (!VaultUtils.isServer) {
@@ -228,7 +257,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     Color denyColor = new(255, 90, 80);
                     CombatText.NewText(Player.Hitbox, denyColor, $"// L{layer} - LOW RAM", true);
                 }
-                return;
+                return false;
             }
 
             int oldLayer = CurrentLayer;
@@ -240,10 +269,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 }
                 SpawnLayerVFX(oldLayer, layer);
             }
+            CommitAuthorityState();
+            return true;
         }
 
         /// <summary>关闭领域；silent 跳过关闭音效</summary>
         public void Deactivate(bool silent = false) {
+            if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient
+                && Player.whoAmI == Main.myPlayer) {
+                CyberspaceActionNet.SendDomainRequest(Player,
+                    CyberspaceActionKind.Deactivate, 0, Vector2.Zero);
+                return;
+            }
+            DeactivateAuthority(silent);
+        }
+
+        internal void DeactivateAuthority(bool silent = false) {
+            bool changed = Active || CurrentLayer > 0;
             Active = false;
             targetIntensity = 0f;
             if (CurrentLayer > 0) {
@@ -257,15 +299,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (!silent && !VaultUtils.isServer && Player.whoAmI == Main.myPlayer) {
                 SoundEngine.PlaySound(CWRSound.Faultrelease, Player.Center);
             }
+            if (changed) {
+                CommitAuthorityState();
+            }
         }
 
         /// <summary>RAM 耗尽系统崩溃</summary>
         public void TriggerSystemCrash() {
+            if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient
+                && Player.whoAmI == Main.myPlayer) {
+                return;
+            }
+            TriggerSystemCrashAuthority();
+        }
+
+        internal void TriggerSystemCrashAuthority() {
             if (!Active && CurrentLayer == 0 && crashLockoutTimer > 0) {
                 return;
             }
 
-            Deactivate();
+            DeactivateAuthority();
             crashLockoutTimer = Cyberspace.CrashLockoutFrames;
             crashLockoutCarry = 0f;
 
@@ -275,12 +328,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 SoundEngine.PlaySound(CWRSound.FailureCurrent with { Volume = 0.85f, Pitch = -0.3f }, Player.Center);
                 SoundEngine.PlaySound(CWRSound.Faultrelease with { Volume = 0.7f, Pitch = -0.5f }, Player.Center);
             }
+            CommitAuthorityState();
         }
 
         /// <summary>主更新；远端仅视觉插值</summary>
         public void Update() {
-            //远端仅视觉插值
-            if (Player.whoAmI != Main.myPlayer) {
+            if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient) {
                 UpdateRemoteVisuals();
                 return;
             }
@@ -292,12 +345,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 bool silentClose = swapSilenceTimer > 0;
                 autoSuspendedBySwap = true;
                 swapSilenceTimer = SwapSilenceFrames;
-                Deactivate(silentClose);
+                DeactivateAuthority(silentClose);
             }
             else if (!Active && holdingShpc && autoSuspendedBySwap && crashLockoutTimer == 0) {
                 //切回恢复挂起层，不足由 Activate 兜底
                 autoSuspendedBySwap = false;
-                Activate();
+                ActivateAuthority();
             }
 
             if (swapSilenceTimer > 0) {
@@ -310,11 +363,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
             UpdateDomainCenter();
 
-            if (Active && CurrentLayer >= 1 && !HackTime.InfiniteHack) {
+            if (Active && CurrentLayer >= 1
+                && !HackTime.InfiniteHackAuthority) {
                 float drain = Cyberspace.LayerRamDrainPerSecond[CurrentLayer - 1] * TimeGear.TimeScale;
-                RamSystem.ConsumeOverTime(drain);
-                if (RamSystem.CurrentRam <= 0f) {
-                    TriggerSystemCrash();
+                RamSystem.TryConsumeOverTime(Player, drain, out _);
+                if (Player.GetModPlayer<RAMPlayer>().CurrentRam <= 0f) {
+                    TriggerSystemCrashAuthority();
                 }
             }
 
@@ -399,6 +453,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             crashLockoutCarry = 0f;
             DomainCenter = Vector2.Zero;
             domainEaseTimer = 0;
+            AuthorityRevision = 1;
             for (int i = 0; i < Cyberspace.MaxLayerCount; i++) {
                 layerExpand[i] = 0f;
                 layerBurstTimer[i] = 0;
@@ -570,9 +625,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (MotionFade < 0.001f) MotionFade = 0f;
         }
 
-        //写入远端权威状态
-        internal void ApplyRemoteState(bool active, int currentLayer, float restartCollapse) {
+        internal void ApplyRemoteState(uint revision, bool active,
+            int currentLayer, float restartCollapse, int crashLockout) {
+            if (revision == 0 || currentLayer < 0
+                || currentLayer > Cyberspace.MaxLayerCount
+                || active != currentLayer > 0
+                || !float.IsFinite(restartCollapse)
+                || restartCollapse < 0f || restartCollapse > 1f
+                || crashLockout < 0
+                || crashLockout > Cyberspace.CrashLockoutFrames
+                || !IsRevisionAtLeast(revision, AuthorityRevision)) {
+                return;
+            }
             int prevLayer = CurrentLayer;
+            AuthorityRevision = revision;
             Active = active;
             //远端升层播爆发
             if (currentLayer > prevLayer) {
@@ -582,75 +648,74 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
             CurrentLayer = currentLayer;
             RestartCollapse = restartCollapse;
+            crashLockoutTimer = crashLockout;
+            crashLockoutCarry = 0f;
             targetIntensity = active && currentLayer > 0 ? 1f : 0f;
-        }
-
-        //快照，CopyClientState 对比
-        private bool _snapActive;
-        private int _snapCurrentLayer;
-        private float _snapRestartCollapse;
-
-        public override void CopyClientState(ModPlayer targetCopy) {
-            CyberspacePlayer copy = (CyberspacePlayer)targetCopy;
-            copy._snapActive = Active;
-            copy._snapCurrentLayer = CurrentLayer;
-            copy._snapRestartCollapse = RestartCollapse;
         }
 
         /// <summary>加入/重连全量同步</summary>
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.CyberspaceStateSync);
-            packet.Write((byte)Player.whoAmI);
-            packet.Write(Active);
-            packet.Write((byte)CurrentLayer);
-            packet.Write(RestartCollapse);
-            packet.Send(toWho, fromWho);
+            if (Main.netMode == Terraria.ID.NetmodeID.Server) {
+                SendAuthorityState(toWho);
+            }
         }
 
-        public override void SendClientChanges(ModPlayer clientPlayer) {
-            if (VaultUtils.isSinglePlayer) return;
-
-            CyberspacePlayer snap = (CyberspacePlayer)clientPlayer;
-
-            bool changed = snap._snapActive != Active
-                || snap._snapCurrentLayer != CurrentLayer
-                || MathF.Abs(snap._snapRestartCollapse - RestartCollapse) > 0.04f;
-
-            if (!changed) return;
-
+        internal void SendAuthorityState(int toWho = -1) {
+            if (Main.netMode != Terraria.ID.NetmodeID.Server
+                || Player?.active != true) {
+                return;
+            }
             ModPacket packet = CWRMod.Instance.GetPacket();
             packet.Write((byte)CWRMessageType.CyberspaceStateSync);
             packet.Write((byte)Player.whoAmI);
+            packet.Write(AuthorityRevision);
             packet.Write(Active);
             packet.Write((byte)CurrentLayer);
-            packet.Write(RestartCollapse);
-            packet.Send();
+            packet.Write(MathHelper.Clamp(RestartCollapse, 0f, 1f));
+            packet.Write((ushort)Math.Clamp(crashLockoutTimer, 0,
+                Cyberspace.CrashLockoutFrames));
+            packet.Send(toWho);
         }
 
         internal static void HandleNetSync(BinaryReader reader, int whoAmI) {
-            int playerIndex = reader.ReadByte();
-            bool active = reader.ReadBoolean();
-            int currentLayer = reader.ReadByte();
-            float restartCollapse = reader.ReadSingle();
-
-            if (playerIndex >= 0 && playerIndex < Main.maxPlayers) {
-                Player p = Main.player[playerIndex];
-                if (p != null && p.active) {
-                    p.GetModPlayer<CyberspacePlayer>().ApplyRemoteState(active, currentLayer, restartCollapse);
+            if (reader == null
+                || Main.netMode != Terraria.ID.NetmodeID.MultiplayerClient) {
+                return;
+            }
+            try {
+                int playerIndex = reader.ReadByte();
+                uint revision = reader.ReadUInt32();
+                bool active = reader.ReadBoolean();
+                int currentLayer = reader.ReadByte();
+                float restartCollapse = reader.ReadSingle();
+                int crashLockout = reader.ReadUInt16();
+                if (playerIndex >= 0 && playerIndex < Main.maxPlayers) {
+                    Player player = Main.player[playerIndex];
+                    if (player?.active == true) {
+                        player.GetModPlayer<CyberspacePlayer>()
+                            .ApplyRemoteState(revision, active, currentLayer,
+                                restartCollapse, crashLockout);
+                    }
                 }
             }
-
-            //服务端转发
-            if (VaultUtils.isServer) {
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.CyberspaceStateSync);
-                packet.Write((byte)playerIndex);
-                packet.Write(active);
-                packet.Write((byte)currentLayer);
-                packet.Write(restartCollapse);
-                packet.Send(-1, whoAmI);
+            catch (EndOfStreamException) {
+            }
+            catch (IOException) {
             }
         }
+
+        private void CommitAuthorityState() {
+            if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient) {
+                return;
+            }
+            AuthorityRevision++;
+            if (AuthorityRevision == 0) {
+                AuthorityRevision = 1;
+            }
+            SendAuthorityState();
+        }
+
+        private static bool IsRevisionAtLeast(uint candidate, uint baseline)
+            => candidate == baseline || unchecked((int)(candidate - baseline)) > 0;
     }
 }

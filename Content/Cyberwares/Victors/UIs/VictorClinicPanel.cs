@@ -1,13 +1,6 @@
-using CalamityOverhaul.Content.Cyberwares.Implementation.CstmVisualEyes;
-using CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrains;
-using CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots;
-using CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms;
-using CalamityOverhaul.Content.Cyberwares.Implementation.PrimePlasamas;
-using CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans;
-using CalamityOverhaul.Content.Cyberwares.Implementation.SCCA32CRPs;
-using CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals;
-using CalamityOverhaul.Content.Cyberwares.Implementation.SelfHealingSkelents;
+using CalamityOverhaul.Content.Cyberwares;
 using CalamityOverhaul.Content.Cyberwares.UIs;
+using CalamityOverhaul.Content.Cyberwares.Victors;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -45,50 +38,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 
         #endregion
 
-        #region 商店静态数据（按槽位分组）
-
-        private static int[] allShopTypes;
-        private static Dictionary<int, List<int>> shopBySlot;
-
-        private static void EnsureShopData() {
-            if (allShopTypes != null) {
-                return;
-            }
-            allShopTypes = [
-                ModContent.ItemType<MimicPerchedAuxBrain>(),
-                ModContent.ItemType<CstmVisualEye>(),
-                ModContent.ItemType<SCCA32CRP>(),
-                ModContent.ItemType<PlowSteelClampArm>(),
-                ModContent.ItemType<OmniElectricFoot>(),
-                ModContent.ItemType<SelfHackCrystal>(),
-                ModContent.ItemType<SandevistansItem>(),
-                ModContent.ItemType<PrimePlasama>(),
-                ModContent.ItemType<SelfHealingSkelent>(),
-            ];
-            shopBySlot = [];
-            foreach (int t in allShopTypes) {
-                if (ContentSamples.ItemsByType.TryGetValue(t, out Item it) && it.ModItem is BaseCyberware bc) {
-                    int slot = (int)bc.SlotCategory;
-                    if (!shopBySlot.TryGetValue(slot, out List<int> list)) {
-                        list = [];
-                        shopBySlot[slot] = list;
-                    }
-                    list.Add(t);
-                }
-            }
-        }
-
-        /// <summary>售价 = 基础价值 × 此倍率</summary>
-        private const int PriceMultiplier = 3;
-
-        private static long PriceOf(int type) {
-            long baseValue = ContentSamples.ItemsByType.TryGetValue(type, out Item it) && it.value > 0
-                ? it.value : Item.buyPrice(0, 5);
-            return baseValue * PriceMultiplier;
-        }
-
-        #endregion
-
         #region 状态
 
         private readonly struct Row(int kind, int value)
@@ -112,6 +61,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
         private int hoveredEntryKey = int.MinValue;
         private int lastHoverKey = int.MinValue;
         private float hoverAnim;
+        private bool purchasePending;
+        private bool feedbackPending;
+        private uint purchaseSerial;
 
         public bool ActionThisFrame { get; private set; }
         public bool IsVisible => boundSlot >= 0 || openProgress > 0.01f;
@@ -133,13 +85,15 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
         public void Unbind() {
             boundSlot = -1;
             hasEquippedItem = false;
+            purchasePending = false;
+            feedbackPending = false;
+            purchaseSerial++;
             rows.Clear();
             lastOwnedCount = -1;
             lastEquippedType = -1;
         }
 
         public void RefreshItems(CyberwarePlayer cp) {
-            EnsureShopData();
             rows.Clear();
             hasEquippedItem = false;
             cyberPlayer = cp;
@@ -163,13 +117,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             }
 
             rows.Add(new Row(KindLabel, LabelShop));
-            if (shopBySlot.TryGetValue(boundSlot, out List<int> shopTypes)) {
-                foreach (int t in shopTypes) {
-                    if (t == installedType || ownedTypes.Contains(t)) {
-                        continue;
-                    }
-                    rows.Add(new Row(KindShop, t));
+            foreach (int t in VictorCatalog.GetTypesForSlot(boundSlot)) {
+                if (t == installedType || ownedTypes.Contains(t)) {
+                    continue;
                 }
+                rows.Add(new Row(KindShop, t));
             }
 
             lastOwnedCount = owned.Count;
@@ -181,7 +133,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
         #region 更新
 
         public void Update(Rectangle mainPanelRect, int selectedSlot, CyberwarePlayer cp) {
-            ActionThisFrame = false;
+            ActionThisFrame = feedbackPending;
+            feedbackPending = false;
             cyberPlayer = cp;
 
             if (selectedSlot != boundSlot) {
@@ -194,13 +147,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             }
             else if (boundSlot >= 0 && cp != null) {
                 int equippedType = cp.EquippedCyberwares[boundSlot]?.type ?? 0;
-                int ownedCount = 0;
-                for (int i = 0; i < Main.InventorySlotsTotal; i++) {
-                    Item inv = Main.LocalPlayer.inventory[i];
-                    if (inv != null && !inv.IsAir && inv.ModItem is BaseCyberware bc && (int)bc.SlotCategory == boundSlot) {
-                        ownedCount++;
-                    }
-                }
+                int ownedCount = cp.GetCompatibleItems(boundSlot).Count;
                 if (ownedCount != lastOwnedCount || equippedType != lastEquippedType) {
                     RefreshItems(cp);
                 }
@@ -294,7 +241,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 
         private void DoInstall(int invIndex) {
             Player player = Main.LocalPlayer;
-            if (invIndex < 0 || invIndex >= player.inventory.Length) {
+            if (VictorSurgery.Busy || purchasePending || invIndex < 0
+                || invIndex >= player.inventory.Length) {
                 return;
             }
             Item item = player.inventory[invIndex];
@@ -303,13 +251,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 return;
             }
 
-            //帧86换装
+            //帧86提交权威请求
             ActionThisFrame = true;
             VictorSurgery.BeginInstall(invIndex, boundSlot);
         }
 
         private void DoUnequip() {
-            if (!hasEquippedItem) {
+            if (VictorSurgery.Busy || purchasePending || !hasEquippedItem) {
                 return;
             }
             ActionThisFrame = true;
@@ -317,14 +265,34 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
         }
 
         private void DoBuy(int type) {
-            Player player = Main.LocalPlayer;
-            long price = PriceOf(type);
-            if (price <= 0 || player.BuyItem(price)) {
-                player.QuickSpawnItem(player.GetSource_Misc("VictorClinicShop"), type, 1);
+            if (VictorSurgery.Busy || purchasePending
+                || !VictorCatalog.TryGetEntry(type, out _)) {
+                SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.5f });
+                return;
+            }
+
+            purchasePending = true;
+            uint serial = ++purchaseSerial;
+            bool sent = CyberwareNet.SendPurchaseRequest(Main.LocalPlayer,
+                VictorSession.BoundWhoAmI, boundSlot, type,
+                result => HandlePurchaseResult(serial, result));
+            if (!sent) {
+                purchasePending = false;
+                SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.5f });
+            }
+        }
+
+        private void HandlePurchaseResult(uint serial,
+            VictorRequestResult result) {
+            if (serial != purchaseSerial) {
+                return;
+            }
+            purchasePending = false;
+            feedbackPending = true;
+            if (result.IsSuccess) {
                 SoundEngine.PlaySound(SoundID.Coins);
                 SoundEngine.PlaySound(SoundID.Grab with { Pitch = 0.1f });
                 RefreshItems(cyberPlayer);
-                ActionThisFrame = true;
             }
             else {
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.5f });
@@ -537,7 +505,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
         }
 
         private void DrawShopRow(SpriteBatch sb, Rectangle rect, int type, float hv, float alpha, long balance) {
-            long price = PriceOf(type);
+            long price = VictorCatalog.GetPrice(type);
             bool affordable = price <= 0 || balance >= price;
             Color accent = CyberwareTheme.AccentGold;
             int slide = VictorUIStyle.DrawCommandRow(sb, rect, accent, hv, alpha);

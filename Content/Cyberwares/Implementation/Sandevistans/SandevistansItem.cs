@@ -24,18 +24,20 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         /// <summary>停用每帧恢复</summary>
         public virtual float RecoveryPerFrame => 0.4f;
 
+        /// <summary>敌对实体逻辑时间比例</summary>
+        public virtual float SlowFactor => SandevistanPlayer.DefaultSlowFactor;
+
         public override void SetDefaults() {
             base.SetDefaults();
             Item.value = Item.sellPrice(0, 15, 0, 0);
         }
 
         public override void OnEquip(Player player) {
-            Sandevistan.CurrentCooldown = MaxCooldownTime;
+            Sandevistan.GetState(player)?.ResetForEquipmentChange();
         }
 
         public override void OnUnequip(Player player) {
-            Sandevistan.ForceDeactivate();
-            Sandevistan.CurrentCooldown = 0;
+            Sandevistan.GetState(player)?.ResetForEquipmentChange();
         }
     }
 }

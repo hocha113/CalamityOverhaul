@@ -35,8 +35,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
             Vector2 center = machine.CenterInWorld;
 
-            //本端清电能+伤害+TileSquare，远端仅视觉
-            if (!HackTimeNetSync.IsRemoteApply) {
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
                 machine.MachineData.UEvalue = 0;
 
                 if (!VaultUtils.isClient) {
@@ -60,6 +59,19 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 }
             }
 
+            if (Main.netMode != NetmodeID.Server) EmitVisual(center);
+
+            return true;
+        }
+
+        public override void OnReplicatedApply(IHackTarget target, int elapsed) {
+            if (target is not TileScannable s
+                || !TryGetMachine(s.TileCoordX, s.TileCoordY,
+                    out MachineTP machine)) return;
+            EmitVisual(machine.CenterInWorld);
+        }
+
+        private static void EmitVisual(Vector2 center) {
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < 20; i++) {
                     Vector2 vel = Main.rand.NextVector2CircularEdge(7f, 7f);
@@ -75,7 +87,6 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 SoundEngine.PlaySound(SoundID.Item93 with { Volume = 0.7f, Pitch = -0.3f }, center);
             }
 
-            return true;
         }
 
         private static bool TryGetMachine(int tileX, int tileY, out MachineTP machine) {

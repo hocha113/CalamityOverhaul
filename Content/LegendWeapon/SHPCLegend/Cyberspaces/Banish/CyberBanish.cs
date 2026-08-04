@@ -4,299 +4,729 @@ using CalamityOverhaul.Content.RAMSystems;
 using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
 {
-    /// <summary>领域放逐，故障滤镜→抹除，net 同步</summary>
-    internal class CyberBanish : ICWRLoader
+    /// <summary>赛博放逐的权威状态与冻结租约</summary>
+    internal partial class CyberBanish : ICWRLoader
     {
-        void ICWRLoader.UnLoadData() => Reset();
-
-        /// <summary>放逐总帧，约1.8s</summary>
         public const int BanishDuration = 108;
-
-        /// <summary>单次 RAM</summary>
         public const int RamCostPerCast = 5;
 
-        /// <summary>放逐中 NPC</summary>
+        private const float BossExecutionThreshold = 0.7f;
+        private static readonly List<NPC> groupBuffer = [];
+        private static readonly List<BanishActivation> activeActivations = [];
+        private static long nextActivationId;
+
         public static readonly List<BanishEntry> ActiveBanishments = [];
 
-        /// <summary>是否放逐中</summary>
-        public static bool IsBanishing(int npcIndex) {
+        void ICWRLoader.UnLoadData() => Reset();
+
+        public static bool IsBanishing(int npcIndex)
+            => TryGetEntry(npcIndex, out _);
+
+        internal static bool IsBanishing(NetworkNPCIdentity identity) {
             for (int i = 0; i < ActiveBanishments.Count; i++) {
-                if (ActiveBanishments[i].NpcIndex == npcIndex)
+                BanishEntry entry = ActiveBanishments[i];
+                if (entry.Identity == identity && IsEntryActive(entry)) {
                     return true;
+                }
             }
             return false;
         }
 
-        /// <summary>放逐进度 0..1，无则 -1</summary>
-        public static float GetProgress(int npcIndex) {
-            for (int i = 0; i < ActiveBanishments.Count; i++) {
-                if (ActiveBanishments[i].NpcIndex == npcIndex)
-                    return ActiveBanishments[i].Progress;
+        internal static bool TryGetEntry(int npcIndex, out BanishEntry result) {
+            result = null;
+            if (npcIndex < 0 || npcIndex >= Main.maxNPCs) {
+                return false;
             }
-            return -1f;
+            for (int i = 0; i < ActiveBanishments.Count; i++) {
+                BanishEntry entry = ActiveBanishments[i];
+                if (entry.NpcIndex == npcIndex && IsEntryActive(entry)) {
+                    result = entry;
+                    return true;
+                }
+            }
+            return false;
         }
 
-        /// <summary>光标下放逐，myPlayer</summary>
+        public static float GetProgress(int npcIndex)
+            => TryGetEntry(npcIndex, out BanishEntry entry) ? entry.Progress : -1f;
+
         public static void BanishAtCursor() {
-            CyberspacePlayer cp = Cyberspace.Local;
-            if (cp == null) return;
-            if (!cp.Active || cp.Intensity < 0.5f || cp.CurrentLayer < 2) return;
-
-            //目标，Boss/普怪分 RAM
-            int hitIndex = FindCursorTarget(cp);
-            if (hitIndex < 0) return;
-
-            NPC hitNpc = Main.npc[hitIndex];
-            bool boss = CyberBossExecution.IsBossTier(hitNpc);
-            int ramCost = boss ? CyberBossExecution.RamCostPerCast : RamCostPerCast;
-
-            //RAM 不足则 HUD 闪
-            if (!HackTime.InfiniteHack && (RamSystem.IsLocked || !RamSystem.CanAfford(ramCost))) {
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(CWRSound.FailureCurrent with {
-                        Volume = 0.4f,
-                        Pitch = -0.3f,
-                    }, Main.LocalPlayer.Center);
-                    RamSystem.NotifyInsufficient();
-                    Terraria.CombatText.NewText(Main.LocalPlayer.Hitbox, new Microsoft.Xna.Framework.Color(255, 90, 80), "// LOW RAM", true);
-                }
+            Player owner = Main.LocalPlayer;
+            CyberspacePlayer cyberspace = Cyberspace.For(owner);
+            if (owner?.active != true || owner.dead || cyberspace == null
+                || !cyberspace.Active || cyberspace.Intensity < 0.5f
+                || cyberspace.CurrentLayer < 2) {
                 return;
             }
 
-            //耗 RAM
-            if (!HackTime.InfiniteHack) {
-                RamSystem.TryConsume(ramCost);
+            int targetIndex = FindCursorTarget(cyberspace);
+            if (targetIndex < 0) {
+                return;
+            }
+            NPC target = Main.npc[targetIndex];
+            if (!NetworkNPCIdentity.TryCapture(target,
+                out NetworkNPCIdentity identity)) {
+                return;
             }
 
-            //目标+同组索引，共用种子
-            //锚点随包广播
-            List<(int idx, float seed, Vector2 center)> entries = new();
-            entries.Add((hitIndex, Main.rand.NextFloat(), hitNpc.Center));
-            NPC root = Main.npc[hitIndex];
-            NpcGroupHelper.CollectGroupIndices(root, banishGroupBuffer);
-            for (int i = 0; i < banishGroupBuffer.Count; i++) {
-                int memberIdx = banishGroupBuffer[i];
-                if (memberIdx == hitIndex) continue;
-                if (IsBanishing(memberIdx)) continue;
-                entries.Add((memberIdx, Main.rand.NextFloat(), Main.npc[memberIdx].Center));
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                if (!RamSystem.TryAllocateRequest(owner,
+                    out RamRequestToken request)) {
+                    PlayRequestFailure(owner);
+                    return;
+                }
+                SendBanishRequest(request, identity);
+                return;
             }
-            banishGroupBuffer.Clear();
 
-            int ownerWho = Main.myPlayer;
-
-            //本机先应用
-            ApplyBanishBatch(ownerWho, boss, entries);
-
-            //广播
-            if (Main.netMode != NetmodeID.SinglePlayer) {
-                BroadcastStart(ownerWho, boss, entries, ignoreClient: -1);
-            }
+            ExecuteAuthoritativeBanish(owner, default, identity, -1);
         }
 
-        /// <summary>域内光标最近未放逐 NPC，无则 -1</summary>
-        private static int FindCursorTarget(CyberspacePlayer cp) {
+        private static int FindCursorTarget(CyberspacePlayer cyberspace) {
             Vector2 mouse = Main.MouseWorld;
-            Vector2 domainCenter = cp.DomainCenter;
-            float effectiveRadius = cp.Radius * cp.ExpandProgress;
-
+            Vector2 center = cyberspace.DomainCenter;
+            float radius = cyberspace.Radius * cyberspace.ExpandProgress;
+            if (!IsValidCenter(center) || !float.IsFinite(radius) || radius <= 0f) {
+                return -1;
+            }
+            float radiusSquared = radius * radius;
             int bestIndex = -1;
-            float bestDistSq = float.MaxValue;
+            float bestDistanceSquared = float.MaxValue;
 
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
-                if (!npc.active || npc.friendly || npc.townNPC) continue;
-
-                float dx = npc.Center.X - domainCenter.X;
-                float dy = npc.Center.Y - domainCenter.Y;
-                if (dx * dx + dy * dy > effectiveRadius * effectiveRadius) continue;
-
-                if (IsBanishing(i)) continue;
-                if (CyberBossExecution.IsExecuting(i)) continue;
-
+                if (!IsHostileTarget(npc) || IsBanishing(i)
+                    || CyberBossExecution.IsExecuting(i)
+                    || Vector2.DistanceSquared(npc.Center, center) > radiusSquared) {
+                    continue;
+                }
                 Rectangle hitbox = npc.Hitbox;
                 hitbox.Inflate(8, 8);
-                if (!hitbox.Contains(mouse.ToPoint())) continue;
-
-                float distSq = Vector2.DistanceSquared(npc.Center, mouse);
-                if (distSq < bestDistSq) {
-                    bestDistSq = distSq;
+                if (!hitbox.Contains(mouse.ToPoint())) {
+                    continue;
+                }
+                float distanceSquared = Vector2.DistanceSquared(npc.Center, mouse);
+                if (distanceSquared < bestDistanceSquared) {
+                    bestDistanceSquared = distanceSquared;
                     bestIndex = i;
                 }
             }
             return bestIndex;
         }
 
-        //群组放逐复用缓冲
-        private static readonly List<int> banishGroupBuffer = [];
+        private static void ExecuteAuthoritativeBanish(Player owner,
+            RamRequestToken request, NetworkNPCIdentity requestedIdentity,
+            int responseClient) {
+            BanishResultCode validation = ValidateAuthoritativeRequest(owner,
+                requestedIdentity, out NPC requestedTarget,
+                out NPC primaryTarget, out bool isBoss);
+            if (validation != BanishResultCode.Success) {
+                CompleteRamRequest(owner, request, validation, 0f, responseClient);
+                return;
+            }
 
-        /// <summary>入 ActiveBanishments，冻速+起手音，锚点随包统一</summary>
-        private static void ApplyBanishBatch(int ownerWho, bool isBoss, List<(int idx, float seed, Vector2 center)> entries) {
-            for (int i = 0; i < entries.Count; i++) {
-                int idx = entries[i].idx;
-                if (idx < 0 || idx >= Main.maxNPCs) continue;
-                NPC npc = Main.npc[idx];
-                if (!npc.active) continue;
-                if (IsBanishing(idx)) continue;
+            List<BanishTargetRecord> targets = CollectAuthoritativeTargets(
+                requestedTarget, primaryTarget);
+            if (targets.Count == 0
+                || !ContainsIdentity(targets,
+                    NetworkNPCIdentity.Capture(primaryTarget))) {
+                CompleteRamRequest(owner, request, BanishResultCode.InvalidTarget,
+                    0f, responseClient);
+                return;
+            }
 
-                ActiveBanishments.Add(new BanishEntry {
-                    NpcIndex = idx,
-                    Timer = 0,
-                    OriginalScale = npc.scale,
-                    FreezePosition = entries[i].center,
-                    Seed = entries[i].seed,
-                    IsBoss = isBoss,
-                    OwnerWho = ownerWho,
-                    ExecutionTriggered = false,
-                });
+            int cost = isBoss ? CyberBossExecution.RamCostPerCast : RamCostPerCast;
+            float paid = 0f;
+            if (!HackTime.InfiniteHackAuthority
+                && !RamSystem.TryConsume(owner, cost, out paid)) {
+                CompleteRamRequest(owner, request,
+                    BanishResultCode.InsufficientRam, 0f, responseClient);
+                if (Main.netMode == NetmodeID.SinglePlayer) {
+                    PlayRequestFailure(owner);
+                }
+                return;
+            }
 
-                npc.velocity = Vector2.Zero;
+            long activationId = AllocateActivationId();
+            NetworkNPCIdentity primaryIdentity = NetworkNPCIdentity.Capture(primaryTarget);
+            if (!TryApplyAuthoritativeActivation(owner.whoAmI, activationId,
+                isBoss, primaryIdentity, targets, request,
+                out BanishActivation activation)) {
+                if (paid > 0f) {
+                    RamSystem.Restore(owner, paid, out _);
+                }
+                CompleteRamRequest(owner, request, BanishResultCode.TargetBusy,
+                    0f, responseClient);
+                return;
+            }
 
-                //音效钉 NPC 中心
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(CWRSound.Fault, npc.Center);
+            if (Main.netMode == NetmodeID.Server) {
+                SendApply(activation);
+            }
+            CompleteRamRequest(owner, request, BanishResultCode.Success,
+                paid, responseClient);
+        }
+
+        private static BanishResultCode ValidateAuthoritativeRequest(Player owner,
+            NetworkNPCIdentity requestedIdentity, out NPC requestedTarget,
+            out NPC primaryTarget, out bool isBoss) {
+            requestedTarget = null;
+            primaryTarget = null;
+            isBoss = false;
+            if (owner?.active != true || owner.dead) {
+                return BanishResultCode.InvalidPlayer;
+            }
+            CyberspacePlayer cyberspace = Cyberspace.For(owner);
+            if (cyberspace == null || !cyberspace.Active
+                || cyberspace.Intensity < 0.5f || cyberspace.CurrentLayer < 2) {
+                return BanishResultCode.InvalidState;
+            }
+            if (!requestedIdentity.TryResolve(out requestedTarget)
+                || !IsHostileTarget(requestedTarget)) {
+                return BanishResultCode.InvalidTarget;
+            }
+
+            Vector2 domainCenter = owner.Center;
+            float radius = cyberspace.Radius * cyberspace.ExpandProgress;
+            float radiusSquared = radius * radius;
+            if (!IsValidCenter(domainCenter) || !float.IsFinite(radius)
+                || radius <= 0f || !float.IsFinite(radiusSquared)
+                || !IsValidCenter(requestedTarget.Center)
+                || Vector2.DistanceSquared(requestedTarget.Center, domainCenter)
+                    > radiusSquared) {
+                return BanishResultCode.OutsideDomain;
+            }
+            if (IsBanishing(requestedIdentity)
+                || CyberBossExecution.IsExecuting(requestedIdentity)) {
+                return BanishResultCode.TargetBusy;
+            }
+
+            int primaryIndex = NpcGroupHelper.GetAnchorIndex(requestedTarget);
+            primaryTarget = primaryIndex >= 0 && primaryIndex < Main.maxNPCs
+                && Main.npc[primaryIndex].active
+                ? Main.npc[primaryIndex]
+                : requestedTarget;
+            if (!NetworkNPCIdentity.TryCapture(primaryTarget, out _)) {
+                return BanishResultCode.InvalidTarget;
+            }
+            isBoss = CyberBossExecution.IsBossTier(requestedTarget);
+            return BanishResultCode.Success;
+        }
+
+        private static List<BanishTargetRecord> CollectAuthoritativeTargets(
+            NPC requestedTarget, NPC primaryTarget) {
+            List<BanishTargetRecord> targets = [];
+            HashSet<NetworkNPCIdentity> identities = [];
+            NpcGroupHelper.CollectGroup(requestedTarget, groupBuffer);
+            AddAuthoritativeTarget(primaryTarget, true, identities, targets);
+            for (int i = 0; i < groupBuffer.Count; i++) {
+                NPC member = groupBuffer[i];
+                AddAuthoritativeTarget(member, member == primaryTarget,
+                    identities, targets);
+            }
+            groupBuffer.Clear();
+            return targets;
+        }
+
+        private static void AddAuthoritativeTarget(NPC npc, bool isPrimary,
+            HashSet<NetworkNPCIdentity> identities,
+            List<BanishTargetRecord> targets) {
+            if (npc?.active != true || !IsValidCenter(npc.Center)
+                || IsBanishing(npc.whoAmI)
+                || CyberBossExecution.IsExecuting(npc.whoAmI)
+                || !NetworkNPCIdentity.TryCapture(npc,
+                    out NetworkNPCIdentity identity)
+                || !identities.Add(identity)) {
+                return;
+            }
+            Vector2 resumeVelocity = SanitizeVelocity(
+                TimeFreezeSystem.GetEffectiveResumeVelocity(npc));
+            targets.Add(new BanishTargetRecord(identity, Main.rand.NextFloat(),
+                npc.Center, resumeVelocity, isPrimary));
+        }
+
+        private static bool TryApplyAuthoritativeActivation(int ownerWho,
+            long activationId, bool isBoss, NetworkNPCIdentity primaryIdentity,
+            List<BanishTargetRecord> targets, RamRequestToken request,
+            out BanishActivation activation) {
+            activation = null;
+            if (!IsValidActivation(ownerWho, activationId, 0,
+                BanishDuration, isBoss, primaryIdentity, targets)) {
+                return false;
+            }
+
+            activation = new BanishActivation(ownerWho, activationId, isBoss,
+                primaryIdentity, 0, false, true, request, targets);
+            activeActivations.Add(activation);
+            List<BanishTargetRecord> accepted = [];
+            for (int i = 0; i < targets.Count; i++) {
+                BanishTargetRecord target = targets[i];
+                if (target.Identity.TryResolve(out NPC npc)
+                    && TryAttachTarget(activation, target, npc,
+                        replaceConflicts: false)) {
+                    accepted.Add(target);
+                }
+            }
+            activation.Targets.Clear();
+            activation.Targets.AddRange(accepted);
+            if (!ContainsIdentity(accepted, primaryIdentity)) {
+                EndActivation(activation, broadcast: false, spawnBurst: false);
+                activation = null;
+                return false;
+            }
+            return true;
+        }
+
+        private static bool ApplyReplicatedActivation(int ownerWho,
+            long activationId, bool isBoss, NetworkNPCIdentity primaryIdentity,
+            int elapsed, bool executionTriggered,
+            List<BanishTargetRecord> targets) {
+            if (WasReleased(activationId)
+                || !IsValidActivation(ownerWho, activationId, elapsed,
+                    BanishDuration, isBoss, primaryIdentity, targets)) {
+                return false;
+            }
+
+            BanishActivation activation = FindActivation(activationId);
+            if (activation == null) {
+                activation = new BanishActivation(ownerWho, activationId, isBoss,
+                    primaryIdentity, elapsed, executionTriggered, false,
+                    default, []);
+                activeActivations.Add(activation);
+            }
+            else if (activation.OwnerWho != ownerWho
+                || activation.IsBoss != isBoss
+                || activation.PrimaryIdentity != primaryIdentity) {
+                return false;
+            }
+            activation.Timer = Math.Max(activation.Timer, elapsed);
+            activation.ExecutionTriggered |= executionTriggered;
+
+            for (int i = 0; i < targets.Count; i++) {
+                BanishTargetRecord target = targets[i];
+                if (!TryMergeTarget(activation, target)) {
+                    continue;
+                }
+                PrepareIncomingIdentity(activationId, target.Identity);
+                int remaining = BanishDuration - activation.Timer;
+                TimeControlReplicationSystem.ResolveOrQueueNPC<CyberBanish>(
+                    activationId, target.Identity, remaining,
+                    npc => TryAttachPendingTarget(activationId, target, npc));
+            }
+            return activation.Targets.Count > 0;
+        }
+
+        private static bool TryMergeTarget(BanishActivation activation,
+            BanishTargetRecord target) {
+            for (int i = 0; i < activation.Targets.Count; i++) {
+                BanishTargetRecord existing = activation.Targets[i];
+                if (existing.Identity.Index == target.Identity.Index
+                    && existing.Identity != target.Identity) {
+                    return false;
+                }
+                if (existing.Identity != target.Identity) {
+                    continue;
+                }
+                return existing == target;
+            }
+            activation.Targets.Add(target);
+            return true;
+        }
+
+        private static void TryAttachPendingTarget(long activationId,
+            BanishTargetRecord target, NPC npc) {
+            BanishActivation activation = FindActivation(activationId);
+            if (activation == null || WasReleased(activationId)
+                || !activation.Targets.Contains(target)) {
+                return;
+            }
+            TryAttachTarget(activation, target, npc, replaceConflicts: true);
+        }
+
+        private static bool TryAttachTarget(BanishActivation activation,
+            BanishTargetRecord target, NPC npc, bool replaceConflicts) {
+            if (activation == null || npc?.active != true
+                || !target.Identity.TryResolve(out NPC resolved)
+                || resolved != npc) {
+                return false;
+            }
+            for (int i = 0; i < activation.Entries.Count; i++) {
+                if (activation.Entries[i].Identity == target.Identity) {
+                    return true;
+                }
+            }
+            if (replaceConflicts) {
+                RemoveConflictingEntries(activation.ActivationId,
+                    target.Identity);
+            }
+            else if (IsBanishing(npc.whoAmI)) {
+                return false;
+            }
+
+            TimeFreezeLease lease = TimeFreezeSystem.AcquireNPC<CyberBanish>(
+                npc, target.Center, activation.ActivationId,
+                TimeFreezeAnchorPriority.Authoritative);
+            if (!lease.IsValid) {
+                return false;
+            }
+
+            BanishEntry entry = new() {
+                NpcIndex = npc.whoAmI,
+                OriginalScale = npc.scale,
+                Seed = target.Seed,
+                ActivationId = activation.ActivationId,
+                Identity = target.Identity,
+                FreezeCenter = target.Center,
+                ResumeVelocity = target.ResumeVelocity,
+                FreezeLease = lease,
+                Activation = activation,
+            };
+            activation.Entries.Add(entry);
+            ActiveBanishments.Add(entry);
+            if (!Main.dedServ) {
+                SoundEngine.PlaySound(CWRSound.Fault, npc.Center);
+            }
+            return true;
+        }
+
+        public static void Update() {
+            PruneReleasedActivations();
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                UpdateClientPresentation();
+                return;
+            }
+            UpdateAuthoritativeActivations();
+        }
+
+        private static void UpdateAuthoritativeActivations() {
+            for (int i = activeActivations.Count - 1; i >= 0; i--) {
+                BanishActivation activation = activeActivations[i];
+                if (!IsValidOwner(activation.OwnerWho)
+                    || Main.player[activation.OwnerWho]?.active != true
+                    || Main.player[activation.OwnerWho].dead) {
+                    EndActivation(activation,
+                        broadcast: Main.netMode == NetmodeID.Server,
+                        spawnBurst: false);
+                    continue;
+                }
+
+                PruneInvalidTargets(activation);
+                if (activation.Targets.Count == 0
+                    || activation.IsBoss
+                    && !activation.PrimaryIdentity.TryResolve(out _)) {
+                    EndActivation(activation,
+                        broadcast: Main.netMode == NetmodeID.Server,
+                        spawnBurst: false);
+                    continue;
+                }
+
+                activation.Timer = Math.Min(BanishDuration,
+                    activation.Timer
+                    + TimeGear.PullFrameAdvance(ref activation.TimerCarry));
+                SpawnPresentationParticles(activation);
+
+                if (activation.IsBoss && !activation.ExecutionTriggered
+                    && activation.Progress >= BossExecutionThreshold
+                    && activation.PrimaryIdentity.TryResolve(out NPC boss)) {
+                    activation.ExecutionTriggered = true;
+                    CyberBossExecution.StartExecution(activation.ActivationId,
+                        activation.PrimaryIdentity,
+                        Main.player[activation.OwnerWho]);
+                }
+
+                if (activation.Timer >= BanishDuration) {
+                    CompleteActivation(activation);
                 }
             }
         }
 
-        private static void BroadcastStart(int ownerWho, bool isBoss,
-            List<(int idx, float seed, Vector2 center)> entries, int ignoreClient) {
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.CyberBanishStart);
-            packet.Write((byte)ownerWho);
-            packet.Write(isBoss);
-            packet.Write((ushort)entries.Count);
-            for (int i = 0; i < entries.Count; i++) {
-                packet.Write((ushort)entries[i].idx);
-                packet.Write(entries[i].seed);
-                packet.Write(entries[i].center.X);
-                packet.Write(entries[i].center.Y);
-            }
-            packet.Send(-1, ignoreClient);
-        }
-
-        /// <summary>远端广播入本机名单</summary>
-        internal static void HandleNetStart(BinaryReader reader, int whoAmI) {
-            int ownerWho = reader.ReadByte();
-            bool isBoss = reader.ReadBoolean();
-            int count = reader.ReadUInt16();
-            List<(int idx, float seed, Vector2 center)> entries = new(count);
-            for (int i = 0; i < count; i++) {
-                int idx = reader.ReadUInt16();
-                float seed = reader.ReadSingle();
-                Vector2 center = new(reader.ReadSingle(), reader.ReadSingle());
-                entries.Add((idx, seed, center));
-            }
-
-            ApplyBanishBatch(ownerWho, isBoss, entries);
-
-            //服务端转发
-            if (VaultUtils.isServer) {
-                BroadcastStart(ownerWho, isBoss, entries, ignoreClient: whoAmI);
+        private static void UpdateClientPresentation() {
+            for (int i = 0; i < activeActivations.Count; i++) {
+                BanishActivation activation = activeActivations[i];
+                activation.Timer = Math.Min(BanishDuration - 1,
+                    activation.Timer
+                    + TimeGear.PullFrameAdvance(ref activation.TimerCarry));
+                SpawnPresentationParticles(activation);
             }
         }
 
-        /// <summary>每帧更新放逐</summary>
-        public static void Update() {
+        private static void SpawnPresentationParticles(BanishActivation activation) {
+            if (Main.dedServ) {
+                return;
+            }
+            for (int i = 0; i < activation.Entries.Count; i++) {
+                BanishEntry entry = activation.Entries[i];
+                if (entry.Identity.TryResolve(out NPC npc)
+                    && TimeFreezeSystem.IsLeaseActive(npc, entry.FreezeLease)) {
+                    CyberBanishParticles.SpawnBanishParticles(npc,
+                        activation.Progress, entry.Seed);
+                }
+            }
+        }
+
+        private static void CompleteActivation(BanishActivation activation) {
+            List<NPC> removedTargets = [];
+            if (!activation.IsBoss) {
+                for (int i = 0; i < activation.Targets.Count; i++) {
+                    if (activation.Targets[i].Identity.TryResolve(out NPC npc)) {
+                        removedTargets.Add(npc);
+                    }
+                }
+            }
+
+            EndActivation(activation,
+                broadcast: Main.netMode == NetmodeID.Server,
+                spawnBurst: !activation.IsBoss);
+            for (int i = 0; i < removedTargets.Count; i++) {
+                NPC npc = removedTargets[i];
+                if (!npc.active) {
+                    continue;
+                }
+                npc.life = 0;
+                npc.active = false;
+                if (Main.netMode == NetmodeID.Server) {
+                    NetMessage.SendData(MessageID.SyncNPC, -1, -1, null,
+                        npc.whoAmI);
+                }
+            }
+        }
+
+        private static void EndActivation(BanishActivation activation,
+            bool broadcast, bool spawnBurst) {
+            if (activation == null) {
+                return;
+            }
+            if (broadcast) {
+                SendRelease(activation.ActivationId);
+            }
+            for (int i = activation.Targets.Count - 1; i >= 0; i--) {
+                TimeControlReplicationSystem.CancelNPC<CyberBanish>(
+                    activation.ActivationId, activation.Targets[i].Identity);
+            }
+            for (int i = activation.Entries.Count - 1; i >= 0; i--) {
+                ReleaseEntry(activation.Entries[i], spawnBurst);
+            }
+            activeActivations.Remove(activation);
+            RememberReleased(activation.ActivationId);
+        }
+
+        private static void ReleaseEntry(BanishEntry entry, bool spawnBurst) {
+            if (entry == null) {
+                return;
+            }
+            NPC npc = null;
+            if (entry.Identity.TryResolve(out NPC resolved)) {
+                npc = resolved;
+                TimeFreezeSystem.ReleaseNPC(npc, entry.FreezeLease,
+                    entry.ResumeVelocity);
+            }
+            if (spawnBurst && !Main.dedServ) {
+                CyberBanishParticles.SpawnFinalBurst(
+                    npc?.Center ?? entry.FreezeCenter, entry.OriginalScale);
+            }
+            entry.Activation?.Entries.Remove(entry);
+            ActiveBanishments.Remove(entry);
+        }
+
+        private static void PruneInvalidTargets(BanishActivation activation) {
+            for (int i = activation.Targets.Count - 1; i >= 0; i--) {
+                BanishTargetRecord target = activation.Targets[i];
+                if (target.Identity.TryResolve(out _)
+                    && HasActiveEntry(activation, target.Identity)) {
+                    continue;
+                }
+                TimeControlReplicationSystem.CancelNPC<CyberBanish>(
+                    activation.ActivationId, target.Identity);
+                for (int j = activation.Entries.Count - 1; j >= 0; j--) {
+                    if (activation.Entries[j].Identity == target.Identity) {
+                        ReleaseEntry(activation.Entries[j], spawnBurst: false);
+                    }
+                }
+                activation.Targets.RemoveAt(i);
+            }
+        }
+
+        private static bool HasActiveEntry(BanishActivation activation,
+            NetworkNPCIdentity identity) {
+            for (int i = 0; i < activation.Entries.Count; i++) {
+                BanishEntry entry = activation.Entries[i];
+                if (entry.Identity == identity && IsEntryActive(entry)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static void PrepareIncomingIdentity(long activationId,
+            NetworkNPCIdentity identity) {
+            RemoveConflictingEntries(activationId, identity);
+            for (int i = activeActivations.Count - 1; i >= 0; i--) {
+                BanishActivation other = activeActivations[i];
+                if (other.ActivationId == activationId) {
+                    continue;
+                }
+                for (int j = other.Targets.Count - 1; j >= 0; j--) {
+                    BanishTargetRecord target = other.Targets[j];
+                    if (target.Identity.Index != identity.Index) {
+                        continue;
+                    }
+                    TimeControlReplicationSystem.CancelNPC<CyberBanish>(
+                        other.ActivationId, target.Identity);
+                    other.Targets.RemoveAt(j);
+                }
+                if (other.Targets.Count == 0) {
+                    activeActivations.RemoveAt(i);
+                    RememberReleased(other.ActivationId);
+                }
+            }
+        }
+
+        private static void RemoveConflictingEntries(long activationId,
+            NetworkNPCIdentity identity) {
             for (int i = ActiveBanishments.Count - 1; i >= 0; i--) {
                 BanishEntry entry = ActiveBanishments[i];
-                entry.Timer += TimeGear.PullFrameAdvance(ref entry.TimerCarry);
-
-                NPC npc = Main.npc[entry.NpcIndex];
-                if (!npc.active) {
-                    ActiveBanishments.RemoveAt(i);
-                    continue;
-                }
-
-                float progress = entry.Progress;
-
-                //冻位
-                npc.Center = entry.FreezePosition;
-                npc.velocity = Vector2.Zero;
-
-                if (entry.IsBoss) {
-                    //Boss 不缩小不抹除，末段雷击后滤镜留到尾
-                    if (!Main.dedServ) {
-                        CyberBanishParticles.SpawnBanishParticles(npc, progress, entry.Seed);
-                    }
-
-                    if (!entry.ExecutionTriggered && progress >= 0.7f) {
-                        entry.ExecutionTriggered = true;
-                        Player owner = entry.OwnerWho >= 0 && entry.OwnerWho < Main.maxPlayers ? Main.player[entry.OwnerWho] : Main.LocalPlayer;
-                        CyberBossExecution.StartExecution(entry.NpcIndex, owner);
-                    }
-
-                    if (entry.Timer >= BanishDuration) {
-                        ActiveBanishments.RemoveAt(i);
-                    }
-                    continue;
-                }
-
-                //阶段一 0~0.5 强闪，原大小
-                //阶段二 0.5~0.85 缩小
-                //阶段三 0.85~1 急缩闪白
-                if (progress > 0.5f) {
-                    float shrinkPhase = (progress - 0.5f) / 0.5f;
-                    float shrink = 1f - MathF.Pow(shrinkPhase, 2.2f);
-                    npc.scale = entry.OriginalScale * Math.Max(shrink, 0.02f);
-                }
-
-                //故障粒子，仅客户端
-                if (!Main.dedServ) {
-                    CyberBanishParticles.SpawnBanishParticles(npc, progress, entry.Seed);
-                }
-
-                //完毕抹除，仅发起者/服务端
-                if (entry.Timer >= BanishDuration) {
-                    bool authoritative = Main.netMode == NetmodeID.SinglePlayer
-                        || VaultUtils.isServer
-                        || entry.OwnerWho == Main.myPlayer;
-                    if (authoritative) {
-                        npc.active = false;
-                        npc.life = 0;
-                        if (Main.netMode == NetmodeID.Server) {
-                            //服务端抹除同步 active
-                            NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc.whoAmI);
-                        }
-                    }
-                    //最终爆发，仅客户端
-                    if (!Main.dedServ) {
-                        CyberBanishParticles.SpawnFinalBurst(npc.Center, entry.OriginalScale);
-                    }
-                    ActiveBanishments.RemoveAt(i);
+                if (entry.NpcIndex == identity.Index
+                    && (entry.ActivationId != activationId
+                        || entry.Identity != identity)) {
+                    ReleaseEntry(entry, spawnBurst: false);
                 }
             }
+        }
+
+        private static BanishActivation FindActivation(long activationId) {
+            for (int i = 0; i < activeActivations.Count; i++) {
+                if (activeActivations[i].ActivationId == activationId) {
+                    return activeActivations[i];
+                }
+            }
+            return null;
+        }
+
+        private static bool ContainsIdentity(
+            IReadOnlyList<BanishTargetRecord> targets,
+            NetworkNPCIdentity identity) {
+            for (int i = 0; i < targets.Count; i++) {
+                if (targets[i].Identity == identity) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static bool IsEntryActive(BanishEntry entry)
+            => entry != null && entry.Identity.TryResolve(out NPC npc)
+            && npc.whoAmI == entry.NpcIndex
+            && TimeFreezeSystem.IsLeaseActive(npc, entry.FreezeLease);
+
+        private static bool IsHostileTarget(NPC npc)
+            => npc?.active == true && !npc.friendly && !npc.townNPC
+            && npc.lifeMax > 0;
+
+        private static long AllocateActivationId() {
+            nextActivationId = nextActivationId >= long.MaxValue
+                ? 1 : nextActivationId + 1;
+            return nextActivationId;
+        }
+
+        private static Vector2 SanitizeVelocity(Vector2 velocity) {
+            if (!float.IsFinite(velocity.X) || !float.IsFinite(velocity.Y)) {
+                return Vector2.Zero;
+            }
+            const float maxComponent = 4096f;
+            return new Vector2(
+                MathHelper.Clamp(velocity.X, -maxComponent, maxComponent),
+                MathHelper.Clamp(velocity.Y, -maxComponent, maxComponent));
+        }
+
+        private static void PlayRequestFailure(Player owner) {
+            if (Main.dedServ || owner?.active != true
+                || owner.whoAmI != Main.myPlayer) {
+                return;
+            }
+            SoundEngine.PlaySound(CWRSound.FailureCurrent with {
+                Volume = 0.4f,
+                Pitch = -0.3f,
+            }, owner.Center);
+            RamSystem.NotifyInsufficient();
+            CombatText.NewText(owner.Hitbox, new Color(255, 90, 80),
+                "// LOW RAM", true);
         }
 
         public static void Reset() {
+            for (int i = activeActivations.Count - 1; i >= 0; i--) {
+                EndActivation(activeActivations[i], broadcast: false,
+                    spawnBurst: false);
+            }
+            activeActivations.Clear();
             ActiveBanishments.Clear();
+            TimeControlReplicationSystem.CancelAll<CyberBanish>();
+            ClearReleasedActivations();
+            groupBuffer.Clear();
         }
     }
 
-    /// <summary>单 NPC 放逐条目</summary>
-    internal class BanishEntry
+    internal readonly record struct BanishTargetRecord(
+        NetworkNPCIdentity Identity,
+        float Seed,
+        Vector2 Center,
+        Vector2 ResumeVelocity,
+        bool IsPrimary);
+
+    internal sealed class BanishActivation
+    {
+        internal int OwnerWho;
+        internal long ActivationId;
+        internal bool IsBoss;
+        internal NetworkNPCIdentity PrimaryIdentity;
+        internal int Timer;
+        internal float TimerCarry;
+        internal bool ExecutionTriggered;
+        internal bool Authoritative;
+        internal RamRequestToken Request;
+        internal readonly List<BanishTargetRecord> Targets;
+        internal readonly List<BanishEntry> Entries = [];
+
+        internal float Progress => MathHelper.Clamp(
+            Timer / (float)CyberBanish.BanishDuration, 0f, 1f);
+
+        internal BanishActivation(int ownerWho, long activationId, bool isBoss,
+            NetworkNPCIdentity primaryIdentity, int timer,
+            bool executionTriggered, bool authoritative,
+            RamRequestToken request, List<BanishTargetRecord> targets) {
+            OwnerWho = ownerWho;
+            ActivationId = activationId;
+            IsBoss = isBoss;
+            PrimaryIdentity = primaryIdentity;
+            Timer = timer;
+            ExecutionTriggered = executionTriggered;
+            Authoritative = authoritative;
+            Request = request;
+            Targets = targets;
+        }
+    }
+
+    internal sealed class BanishEntry
     {
         public int NpcIndex;
-        public int Timer;
-        internal float TimerCarry;
         public float OriginalScale;
-        public Vector2 FreezePosition;
         public float Seed;
-        /// <summary>Boss 演出，不缩小不抹除，末段 <see cref="CyberBossExecution"/></summary>
-        public bool IsBoss;
-        /// <summary>发起者 whoAmI，Boss 雷伤读其 SHPC</summary>
-        public int OwnerWho;
-        /// <summary>Boss 雷击已触发</summary>
-        public bool ExecutionTriggered;
+        internal long ActivationId;
+        internal NetworkNPCIdentity Identity;
+        internal Vector2 FreezeCenter;
+        internal Vector2 ResumeVelocity;
+        internal TimeFreezeLease FreezeLease;
+        internal BanishActivation Activation;
 
-        /// <summary>进度 0→1</summary>
-        public float Progress => (float)Timer / CyberBanish.BanishDuration;
+        public int Timer => Activation?.Timer ?? 0;
+        public bool IsBoss => Activation?.IsBoss == true;
+        public int OwnerWho => Activation?.OwnerWho ?? -1;
+        public bool ExecutionTriggered => Activation?.ExecutionTriggered == true;
+        public float Progress => Activation?.Progress ?? 0f;
     }
 }

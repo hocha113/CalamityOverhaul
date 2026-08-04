@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                 return;
             }
 
-            Player local = Main.LocalPlayer;
+            Player local = NPC.Center.FindClosestPlayer();
             if (!local.Alives()) {
                 if (VictorTalkUI.Instance.IsOpen) {
                     VictorTalkUI.Instance.Close();
@@ -168,11 +168,17 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             local.cursorItemIconID = ItemID.None;
             local.cursorItemIconText = Language.GetTextValue("Mods.CalamityOverhaul.NPCs.Victor.TalkHint");
 
-            if (Main.mouseRight && Main.mouseRightRelease && !VictorTalkUI.Instance.IsOpen
-                && !VictorClinicUI.Instance.IsOpen && !VictorSurgery.Active) {
+            if (Main.mouseRight && Main.mouseRightRelease) {
                 Main.mouseRightRelease = false;
-                VictorSession.Bind(NPC.whoAmI);
-                VictorTalkUI.Instance.Open();//OpenSound 已播，勿叠
+                if (!VictorClinicUI.Instance.IsOpen && !VictorSurgery.Active) {
+                    VictorSession.Bind(NPC.whoAmI);
+                    if (VictorTalkUI.Instance.IsOpen) {
+                        VictorTalkUI.Instance.Close();//OpenSound 已播，勿叠
+                    }
+                    else {
+                        VictorTalkUI.Instance.Open();//OpenSound 已播，勿叠
+                    }
+                }
             }
         }
 

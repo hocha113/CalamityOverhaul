@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.TimeFreezes;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
@@ -8,18 +9,20 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
     internal class SandevistanNPC : GlobalNPC
     {
         public override void OnSpawn(NPC npc, IEntitySource source) {
-            if (SandevistanTimeSlow.IsActive
-                && SandevistanTimeSlow.ShouldAffectNPC(npc)) {
-                SandevistanTimeSlow.EnsureNPCSource(npc);
-            }
+            SandevistanTimeSlow.ReconcileNPC(npc);
         }
 
         public override bool PreAI(NPC npc) {
-            if (SandevistanTimeSlow.IsActive
-                && SandevistanTimeSlow.ShouldAffectNPC(npc)) {
-                SandevistanTimeSlow.EnsureNPCSource(npc);
-            }
+            SandevistanTimeSlow.ReconcileNPC(npc);
             return true;
+        }
+
+        public override void PostAI(NPC npc) {
+            SandevistanTimeSlow.ReconcileNPC(npc);
+        }
+
+        public override void OnKill(NPC npc) {
+            TimeFreezeSystem.ClearNPCTimeScale<SandevistanTimeSlow>(npc);
         }
     }
 }

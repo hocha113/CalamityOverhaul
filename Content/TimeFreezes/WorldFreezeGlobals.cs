@@ -3,10 +3,12 @@ using CalamityOverhaul.Content.HackTimes;
 using InnoVault.GameSystem;
 using InnoVault.TileProcessors;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.TimeFreezes
 {
@@ -36,20 +38,29 @@ namespace CalamityOverhaul.Content.TimeFreezes
     {
         private EntityFreezeState freezeState = new();
         private ulong entityGeneration;
+        private ulong networkGeneration;
         private int frozenDirection;
         private int frozenSpriteDirection;
         private int frozenAIAction;
         private double frozenFrameCounter;
         private Rectangle frozenFrame;
         private float frozenRotation;
+        private int logicalDirection;
+        private int logicalSpriteDirection;
+        private int logicalAIAction;
+        private double logicalFrameCounter;
+        private Rectangle logicalFrame;
+        private float logicalRotation;
 
         public override bool InstancePerEntity => true;
 
         internal bool IsFrozen => freezeState.IsFrozen;
-        internal bool HasVelocityScale => freezeState.HasVelocityScale;
+        internal bool HasTimeScale => freezeState.HasTimeScale;
         internal bool HasTimeControl => freezeState.HasTimeControl;
         internal Vector2 ResumeVelocity => freezeState.ResumeVelocity;
         internal Vector2 EffectiveResumeVelocity => freezeState.EffectiveResumeVelocity;
+        internal float EffectiveTimeScale => freezeState.EffectiveTimeScale;
+        internal ulong NetworkGeneration => networkGeneration;
 
         public override GlobalNPC Clone(NPC from, NPC to) {
             TimeFreezeNPC clone = (TimeFreezeNPC)base.Clone(from, to);
@@ -61,9 +72,29 @@ namespace CalamityOverhaul.Content.TimeFreezes
         public override void SetDefaults(NPC npc) => ResetFreezeState();
 
         public override void OnSpawn(NPC npc, IEntitySource source) {
+            EnsureNetworkGeneration(npc);
             if (WorldFreezeSystem.IsActive && WorldFreezeSystem.ShouldFreezeNPC(npc)) {
                 BeginWorldFreeze(npc);
             }
+        }
+
+        public override void SendExtraAI(NPC npc, BitWriter bitWriter,
+            BinaryWriter binaryWriter) {
+            EnsureNetworkGeneration(npc);
+            binaryWriter.Write(networkGeneration);
+        }
+
+        public override void ReceiveExtraAI(NPC npc, BitReader bitReader,
+            BinaryReader binaryReader) {
+            ulong receivedGeneration = binaryReader.ReadUInt64();
+            if (Main.netMode != NetmodeID.MultiplayerClient
+                || receivedGeneration == 0
+                || receivedGeneration == networkGeneration) {
+                return;
+            }
+
+            ResetLocalControlState();
+            networkGeneration = receivedGeneration;
         }
 
         internal void SyncTransientSources(NPC npc, TimeFreezeSource sources) {
@@ -119,20 +150,28 @@ namespace CalamityOverhaul.Content.TimeFreezes
             => lease.EntityGeneration == entityGeneration
             && freezeState.IsHeld(lease);
 
-        internal void AcquireVelocityScale(NPC npc, FreezeSourceKey source, float scale)
-            => freezeState.AcquireVelocityScale(npc, source, scale, npc.oldPosition);
+        internal bool SetTimeScale(NPC npc, FreezeSourceKey source, float scale) {
+            bool hadTimeScale = HasTimeScale;
+            bool changed = freezeState.SetTimeScale(npc, source, scale, npc.oldPosition);
+            if (!hadTimeScale && HasTimeScale) {
+                CaptureLogicalPose(npc);
+            }
+            return changed;
+        }
 
-        internal void ReleaseVelocityScale(NPC npc, FreezeSourceKey source) {
-            if (freezeState.ReleaseVelocityScale(npc, source, npc.oldPosition)
+        internal bool ClearTimeScale(NPC npc, FreezeSourceKey source) {
+            bool cleared = freezeState.ClearTimeScale(npc, source, npc.oldPosition);
+            if (cleared
                 && Main.netMode != NetmodeID.MultiplayerClient) {
                 npc.netUpdate = true;
             }
+            return cleared;
         }
 
         internal void FreezeFrame(NPC npc) {
-            freezeState.HoldPosition(npc);
+            freezeState.BlockHardFrame(npc);
             ApplyFrozenPose(npc);
-            if (npc.timeLeft < int.MaxValue) {
+            if (freezeState.TryCompensateLifetime() && npc.timeLeft < int.MaxValue) {
                 npc.timeLeft++;
             }
         }
@@ -142,31 +181,45 @@ namespace CalamityOverhaul.Content.TimeFreezes
             ApplyFrozenPose(npc);
         }
 
-        internal void RelockFrozenFrame(NPC npc) {
-            if (!IsFrozen) {
-                return;
-            }
-            freezeState.HoldPosition(npc);
-            npc.oldPosition = npc.position;
-            ApplyFrozenPose(npc);
-        }
-
-        internal bool ApplyVelocityScaleFrame(NPC npc) {
-            if (IsFrozen || !HasVelocityScale) {
+        internal bool ApplyTimeScaleFrame(NPC npc) {
+            if (IsFrozen || freezeState.ShouldAdvanceTimeStep(npc)) {
                 return false;
             }
-            Vector2 velocity = EffectiveResumeVelocity;
-            npc.velocity = velocity;
-            npc.direction = npc.oldDirection;
-            npc.aiAction = 0;
-            npc.frameCounter = 0d;
-            if (npc.timeLeft < int.MaxValue) {
+            bool holdFrozenPose = freezeState.BlockTimeStepFrame(npc);
+            if (holdFrozenPose) {
+                ApplyFrozenPose(npc);
+            }
+            else {
+                ApplyLogicalPose(npc);
+            }
+            if (freezeState.TryCompensateLifetime() && npc.timeLeft < int.MaxValue) {
                 npc.timeLeft++;
             }
             return true;
         }
 
+        internal void CompleteFrame(NPC npc) {
+            switch (freezeState.CompleteFrame(npc)) {
+                case TimeControlFrameAction.CaptureLogicalPose:
+                    CaptureLogicalPose(npc);
+                    break;
+                case TimeControlFrameAction.HoldLogicalPose:
+                    ApplyLogicalPose(npc);
+                    npc.oldPosition = npc.position;
+                    break;
+                case TimeControlFrameAction.HoldFrozenPose:
+                    ApplyFrozenPose(npc);
+                    npc.oldPosition = npc.position;
+                    break;
+            }
+        }
+
         internal void ResetFreezeState() {
+            ResetLocalControlState();
+            networkGeneration = 0;
+        }
+
+        private void ResetLocalControlState() {
             freezeState.Reset();
             entityGeneration = TimeFreezeSystem.AllocateEntityGeneration();
             frozenDirection = 0;
@@ -175,6 +228,12 @@ namespace CalamityOverhaul.Content.TimeFreezes
             frozenFrameCounter = 0d;
             frozenFrame = Rectangle.Empty;
             frozenRotation = 0f;
+            logicalDirection = 0;
+            logicalSpriteDirection = 0;
+            logicalAIAction = 0;
+            logicalFrameCounter = 0d;
+            logicalFrame = Rectangle.Empty;
+            logicalRotation = 0f;
         }
 
         private void CapturePoseOnEnter(NPC npc, bool wasFrozen) {
@@ -184,9 +243,11 @@ namespace CalamityOverhaul.Content.TimeFreezes
             frozenDirection = npc.direction;
             frozenSpriteDirection = npc.spriteDirection;
             frozenAIAction = npc.aiAction;
-            frozenFrameCounter = npc.frameCounter;
+            frozenFrameCounter = double.IsFinite(npc.frameCounter)
+                ? npc.frameCounter
+                : 0d;
             frozenFrame = npc.frame;
-            frozenRotation = npc.rotation;
+            frozenRotation = float.IsFinite(npc.rotation) ? npc.rotation : 0f;
         }
 
         private void ApplyFrozenPose(NPC npc) {
@@ -198,6 +259,37 @@ namespace CalamityOverhaul.Content.TimeFreezes
             npc.rotation = frozenRotation;
         }
 
+        private void CaptureLogicalPose(NPC npc) {
+            logicalDirection = npc.direction;
+            logicalSpriteDirection = npc.spriteDirection;
+            logicalAIAction = npc.aiAction;
+            logicalFrameCounter = double.IsFinite(npc.frameCounter)
+                ? npc.frameCounter
+                : 0d;
+            logicalFrame = npc.frame;
+            logicalRotation = float.IsFinite(npc.rotation) ? npc.rotation : 0f;
+        }
+
+        private void ApplyLogicalPose(NPC npc) {
+            npc.direction = logicalDirection;
+            npc.spriteDirection = logicalSpriteDirection;
+            npc.aiAction = logicalAIAction;
+            npc.frameCounter = logicalFrameCounter;
+            npc.frame = logicalFrame;
+            npc.rotation = logicalRotation;
+        }
+
+        internal ulong EnsureNetworkGeneration(NPC npc = null) {
+            if (networkGeneration == 0
+                && Main.netMode != NetmodeID.MultiplayerClient) {
+                networkGeneration = TimeFreezeSystem.AllocateNetworkGeneration();
+                if (Main.netMode == NetmodeID.Server && npc?.active == true) {
+                    npc.netUpdate = true;
+                }
+            }
+            return networkGeneration;
+        }
+
         private static void MarkNetUpdateOnRestore(NPC npc, bool restored) {
             if (restored && Main.netMode != NetmodeID.MultiplayerClient) {
                 npc.netUpdate = true;
@@ -205,10 +297,10 @@ namespace CalamityOverhaul.Content.TimeFreezes
         }
 
         public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
-            => !IsFrozen;
+            => !freezeState.BlocksInteraction;
 
         public override bool CanHitNPC(NPC npc, NPC target)
-            => !IsFrozen;
+            => !freezeState.BlocksInteraction;
     }
 
     /// <summary>弹幕逐实体冻结快照与 AI 拦截</summary>
@@ -221,15 +313,21 @@ namespace CalamityOverhaul.Content.TimeFreezes
         private int frozenFrame;
         private int frozenSpriteDirection;
         private float frozenRotation;
+        private int logicalFrame;
+        private int logicalSpriteDirection;
+        private float logicalRotation;
 
         public override bool InstancePerEntity => true;
 
         internal bool IsFrozen => beingKilledDuringWorldThaw || freezeState.IsFrozen;
-        internal bool HasVelocityScale => freezeState.HasVelocityScale;
+        internal bool HasTimeScale => freezeState.HasTimeScale;
         internal bool HasTimeControl => freezeState.HasTimeControl;
         internal Vector2 ResumeVelocity => freezeState.ResumeVelocity;
         internal Vector2 EffectiveResumeVelocity => freezeState.EffectiveResumeVelocity;
+        internal float EffectiveTimeScale => freezeState.EffectiveTimeScale;
         internal ulong EntityGeneration => entityGeneration;
+        private bool BlocksInteraction => beingKilledDuringWorldThaw
+            || freezeState.BlocksInteraction;
 
         public override GlobalProjectile Clone(Projectile from, Projectile to) {
             TimeFreezeProjectile clone = (TimeFreezeProjectile)base.Clone(from, to);
@@ -250,7 +348,8 @@ namespace CalamityOverhaul.Content.TimeFreezes
         public override bool PreAI(Projectile projectile)
             => !TimeFreezeSystem.FreezeProjectilePreAI(projectile);
 
-        public override bool ShouldUpdatePosition(Projectile projectile) => !IsFrozen;
+        public override bool ShouldUpdatePosition(Projectile projectile)
+            => !BlocksInteraction;
 
         internal void SyncTransientSources(Projectile projectile, TimeFreezeSource sources) {
             bool wasFrozen = IsFrozen;
@@ -322,22 +421,29 @@ namespace CalamityOverhaul.Content.TimeFreezes
             => lease.EntityGeneration == entityGeneration
             && freezeState.IsHeld(lease);
 
-        internal void AcquireVelocityScale(Projectile projectile, FreezeSourceKey source,
-            float scale)
-            => freezeState.AcquireVelocityScale(projectile, source, scale,
+        internal bool SetTimeScale(Projectile projectile, FreezeSourceKey source,
+            float scale) {
+            bool hadTimeScale = HasTimeScale;
+            bool changed = freezeState.SetTimeScale(projectile, source, scale,
                 projectile.oldPosition);
+            if (!hadTimeScale && HasTimeScale) {
+                CaptureLogicalPose(projectile);
+            }
+            return changed;
+        }
 
-        internal void ReleaseVelocityScale(Projectile projectile, FreezeSourceKey source) {
-            bool restored = freezeState.ReleaseVelocityScale(projectile, source,
+        internal bool ClearTimeScale(Projectile projectile, FreezeSourceKey source) {
+            bool cleared = freezeState.ClearTimeScale(projectile, source,
                 projectile.oldPosition);
-            MarkNetUpdateOnRestore(projectile, restored);
+            MarkNetUpdateOnRestore(projectile, cleared);
+            return cleared;
         }
 
         internal void FreezeFrame(Projectile projectile) {
-            freezeState.HoldPosition(projectile);
+            freezeState.BlockHardFrame(projectile);
             ApplyFrozenPose(projectile);
-            if (projectile.timeLeft < int.MaxValue) {
-                projectile.timeLeft++;
+            if (freezeState.TryCompensateLifetime()) {
+                CompensateLifetime(projectile);
             }
         }
 
@@ -346,25 +452,37 @@ namespace CalamityOverhaul.Content.TimeFreezes
             ApplyFrozenPose(projectile);
         }
 
-        internal void RelockFrozenFrame(Projectile projectile) {
-            if (!IsFrozen) {
-                return;
-            }
-            freezeState.HoldPosition(projectile);
-            projectile.oldPosition = projectile.position;
-            ApplyFrozenPose(projectile);
-        }
-
-        internal bool ApplyVelocityScaleFrame(Projectile projectile) {
-            if (IsFrozen || !HasVelocityScale) {
+        internal bool ApplyTimeScaleFrame(Projectile projectile) {
+            if (IsFrozen || freezeState.ShouldAdvanceTimeStep(projectile)) {
                 return false;
             }
-            Vector2 velocity = EffectiveResumeVelocity;
-            projectile.velocity = velocity;
-            if (projectile.timeLeft < int.MaxValue) {
-                projectile.timeLeft++;
+            bool holdFrozenPose = freezeState.BlockTimeStepFrame(projectile);
+            if (holdFrozenPose) {
+                ApplyFrozenPose(projectile);
+            }
+            else {
+                ApplyLogicalPose(projectile);
+            }
+            if (freezeState.TryCompensateLifetime()) {
+                CompensateLifetime(projectile);
             }
             return true;
+        }
+
+        internal void CompleteFrame(Projectile projectile) {
+            switch (freezeState.CompleteFrame(projectile)) {
+                case TimeControlFrameAction.CaptureLogicalPose:
+                    CaptureLogicalPose(projectile);
+                    break;
+                case TimeControlFrameAction.HoldLogicalPose:
+                    ApplyLogicalPose(projectile);
+                    projectile.oldPosition = projectile.position;
+                    break;
+                case TimeControlFrameAction.HoldFrozenPose:
+                    ApplyFrozenPose(projectile);
+                    projectile.oldPosition = projectile.position;
+                    break;
+            }
         }
 
         internal void ResetFreezeState() {
@@ -375,6 +493,9 @@ namespace CalamityOverhaul.Content.TimeFreezes
             frozenFrame = 0;
             frozenSpriteDirection = 0;
             frozenRotation = 0f;
+            logicalFrame = 0;
+            logicalSpriteDirection = 0;
+            logicalRotation = 0f;
         }
 
         private void CapturePoseOnEnter(Projectile projectile, bool wasFrozen) {
@@ -383,13 +504,36 @@ namespace CalamityOverhaul.Content.TimeFreezes
             }
             frozenFrame = projectile.frame;
             frozenSpriteDirection = projectile.spriteDirection;
-            frozenRotation = projectile.rotation;
+            frozenRotation = float.IsFinite(projectile.rotation)
+                ? projectile.rotation
+                : 0f;
         }
 
         private void ApplyFrozenPose(Projectile projectile) {
             projectile.frame = frozenFrame;
             projectile.spriteDirection = frozenSpriteDirection;
             projectile.rotation = frozenRotation;
+        }
+
+        private void CaptureLogicalPose(Projectile projectile) {
+            logicalFrame = projectile.frame;
+            logicalSpriteDirection = projectile.spriteDirection;
+            logicalRotation = float.IsFinite(projectile.rotation)
+                ? projectile.rotation
+                : 0f;
+        }
+
+        private void ApplyLogicalPose(Projectile projectile) {
+            projectile.frame = logicalFrame;
+            projectile.spriteDirection = logicalSpriteDirection;
+            projectile.rotation = logicalRotation;
+        }
+
+        private static void CompensateLifetime(Projectile projectile) {
+            long updates = Math.Clamp((long)projectile.extraUpdates + 1L,
+                1L, int.MaxValue);
+            projectile.timeLeft = (int)Math.Min((long)int.MaxValue,
+                (long)projectile.timeLeft + updates);
         }
 
         private static void MarkNetUpdateOnRestore(Projectile projectile, bool restored) {
@@ -400,16 +544,16 @@ namespace CalamityOverhaul.Content.TimeFreezes
         }
 
         public override bool? CanHitNPC(Projectile projectile, NPC target)
-            => IsFrozen ? false : null;
+            => BlocksInteraction ? false : null;
 
         public override bool? CanDamage(Projectile projectile)
-            => IsFrozen ? false : null;
+            => BlocksInteraction ? false : null;
 
         public override bool CanHitPlayer(Projectile projectile, Player target)
-            => !IsFrozen;
+            => !BlocksInteraction;
 
         public override bool CanHitPvp(Projectile projectile, Player target)
-            => !IsFrozen;
+            => !BlocksInteraction;
     }
 
     internal class WorldFreezeTileProcessor : GlobalTileProcessor

@@ -6,189 +6,296 @@ using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
 {
-    /// <summary>领域瞬移，光标 clamp 域内，隐藏+裂缝；层≥1</summary>
+    /// <summary>领域瞬移</summary>
     internal class CyberTeleport : ICWRLoader
     {
-        void ICWRLoader.UnLoadData() => Reset();
-
-        /// <summary>最低层数</summary>
         public const int RequiredLayer = 1;
-
-        /// <summary>单次 RAM（<see cref="HackTime.InfiniteHack"/> 免耗）</summary>
         public const float RamCostPerCast = 2f;
-
-        /// <summary>冷却帧，约0.5s</summary>
         public const int CooldownFrames = 30;
-
-        /// <summary>裂缝隐藏帧，PlayerOverride 去绘制</summary>
         public const int HideDuration = 22;
 
-        /// <summary>Teleport 风格占位</summary>
         private const int TeleportStyle = 999;
 
-        //本地计时
-        private static int cooldownTimer;
-        private static float cooldownTimerCarry;
-        private static int hideTimer;
-        private static float hideTimerCarry;
+        void ICWRLoader.UnLoadData() => Reset();
 
-        /// <summary>演出隐藏期，PlayerOverride 移除绘制</summary>
-        public static bool IsLocalPlayerHidden => hideTimer > 0;
+        private static CyberTeleportPlayer LocalState {
+            get {
+                if (Main.netMode == NetmodeID.Server || Main.myPlayer < 0
+                    || Main.myPlayer >= Main.maxPlayers) {
+                    return null;
+                }
+                Player player = Main.player[Main.myPlayer];
+                return player?.active == true
+                    ? player.GetModPlayer<CyberTeleportPlayer>()
+                    : null;
+            }
+        }
 
-        /// <summary>剩余冷却帧</summary>
-        public static int CooldownRemain => cooldownTimer;
+        public static bool IsLocalPlayerHidden
+            => (LocalState?.HideTimer ?? 0) > 0;
 
-        /// <summary>冷却中</summary>
-        public static bool OnCooldown => cooldownTimer > 0;
+        public static int CooldownRemain => LocalState?.CooldownTimer ?? 0;
 
-        /// <summary>光标夹到域内边缘</summary>
+        public static bool OnCooldown => CooldownRemain > 0;
+
         public static Vector2 ClampToDomain(Player owner, Vector2 mouseWorld) {
-            if (owner == null) return mouseWorld;
-
-            float effectiveR = Cyberspace.EffectiveOuterRadius;
-            if (effectiveR <= 1f) {
+            if (owner == null) {
+                return mouseWorld;
+            }
+            CyberspacePlayer domain = Cyberspace.For(owner);
+            float effectiveRadius = domain?.EffectiveOuterRadius ?? 0f;
+            if (effectiveRadius <= 1f) {
                 return owner.Center;
             }
 
-            //边界内留 8px
-            float maxR = Math.Max(0f, effectiveR - 8f);
-            Vector2 toMouse = mouseWorld - owner.Center;
-            float dist = toMouse.Length();
-            if (dist <= maxR) return mouseWorld;
-            if (dist <= 1f) return owner.Center;
-            return owner.Center + toMouse * (maxR / dist);
+            float maxRadius = Math.Max(0f, effectiveRadius - 8f);
+            Vector2 offset = mouseWorld - owner.Center;
+            float distance = offset.Length();
+            if (distance <= maxRadius) {
+                return mouseWorld;
+            }
+            if (distance <= 1f) {
+                return owner.Center;
+            }
+            return owner.Center + offset * (maxRadius / distance);
         }
 
-        /// <summary>校验后触发瞬移</summary>
         public static void TryTeleport(Player owner) {
-            if (owner == null || !owner.Alives()) return;
+            if (owner == null || !owner.Alives()) {
+                return;
+            }
+            CyberspacePlayer domain = Cyberspace.For(owner);
+            if (domain == null || !domain.Active || domain.Intensity < 0.5f
+                || domain.CurrentLayer < RequiredLayer) {
+                return;
+            }
+            CyberTeleportPlayer state = owner.GetModPlayer<CyberTeleportPlayer>();
+            if (state.CooldownTimer > 0) {
+                PlayFailure(owner);
+                return;
+            }
+            if (!HackTime.InfiniteHack
+                && (RamSystem.IsLocked
+                    || RamSystem.CurrentRam < RamCostPerCast)) {
+                PlayFailure(owner);
+                return;
+            }
 
-            //域激活、强度、层
-            if (!Cyberspace.Active) return;
-            if (Cyberspace.Intensity < 0.5f) return;
-            if (Cyberspace.CurrentLayer < RequiredLayer) return;
-
-            //冷却中拒
-            if (cooldownTimer > 0) {
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(CWRSound.FailureCurrent with {
-                        Volume = 0.35f,
-                        Pitch = -0.4f,
-                    }, owner.Center);
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                if (!CyberspaceActionNet.SendActionRequest(owner,
+                    CyberspaceActionKind.Teleport, Main.MouseWorld)) {
+                    PlayFailure(owner);
                 }
                 return;
             }
 
-            //RAM 不足则 HUD 闪
-            if (!HackTime.InfiniteHack && (RamSystem.IsLocked || RamSystem.CurrentRam < RamCostPerCast)) {
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(CWRSound.FailureCurrent with {
-                        Volume = 0.4f,
-                        Pitch = -0.3f,
-                    }, owner.Center);
-                    RamSystem.NotifyInsufficient();
-                    Color denyColor = new(255, 90, 80);
-                    CombatText.NewText(owner.Hitbox, denyColor, "// LOW RAM", true);
-                }
-                return;
+            CyberspaceActionResultCode result = ExecuteAuthority(owner,
+                Main.MouseWorld, out _);
+            if (result != CyberspaceActionResultCode.Success) {
+                PlayFailure(owner);
             }
-
-            Activate(owner);
         }
 
-        /// <summary>耗 RAM、演出弹幕、瞬移、计时</summary>
-        private static void Activate(Player owner) {
+        internal static CyberspaceActionResultCode ExecuteAuthority(Player owner,
+            Vector2 requestedTarget, out float paid) {
+            paid = 0f;
+            if (Main.netMode == NetmodeID.MultiplayerClient
+                || owner?.active != true || !owner.Alives()) {
+                return CyberspaceActionResultCode.InvalidPlayer;
+            }
+            CyberspacePlayer domain = Cyberspace.For(owner);
+            if (domain == null || !domain.Active || domain.Intensity < 0.5f
+                || domain.CurrentLayer < RequiredLayer
+                || owner.HeldItem.type != SHPCOverride.ID) {
+                return CyberspaceActionResultCode.InvalidState;
+            }
+            CyberTeleportPlayer state = owner.GetModPlayer<CyberTeleportPlayer>();
+            if (state.CooldownTimer > 0) {
+                return CyberspaceActionResultCode.Cooldown;
+            }
+
             Vector2 origin = owner.Center;
-            Vector2 target = ClampToDomain(owner, Main.MouseWorld);
-
-            //过近无效
-            if (Vector2.DistanceSquared(origin, target) < 64f * 64f) {
-                if (!VaultUtils.isServer && Main.myPlayer == owner.whoAmI) {
-                    SoundEngine.PlaySound(CWRSound.FailureCurrent with {
-                        Volume = 0.35f,
-                        Pitch = -0.2f,
-                    }, owner.Center);
-                }
-                return;
+            Vector2 target = ClampToDomain(owner, requestedTarget);
+            if (!float.IsFinite(target.X) || !float.IsFinite(target.Y)
+                || Vector2.DistanceSquared(origin, target) < 64f * 64f) {
+                return CyberspaceActionResultCode.InvalidPayload;
+            }
+            if (!HackTime.InfiniteHackAuthority
+                && !RamSystem.TryConsume(owner, RamCostPerCast, out paid)) {
+                return CyberspaceActionResultCode.InsufficientRam;
             }
 
-            //耗 RAM
-            if (!HackTime.InfiniteHack) {
-                RamSystem.TryConsume((int)Math.Ceiling(RamCostPerCast));
-            }
-
-            cooldownTimer = CooldownFrames;
-            cooldownTimerCarry = 0f;
-            //仅 myPlayer 隐藏绘制
-            if (Main.myPlayer == owner.whoAmI) {
-                hideTimer = HideDuration;
-                hideTimerCarry = 0f;
-            }
-
-            //演出弹幕
-            if (Main.myPlayer == owner.whoAmI) {
-                IEntitySource source = owner.GetSource_FromThis();
-
-                //起点解构
-                Projectile.NewProjectile(source, origin, Vector2.Zero,
-                    ModContent.ProjectileType<CyberPixelDecomposeProj>(), 0, 0, owner.whoAmI);
-
-                //走廊，ai0/ai1=目标
-                Projectile.NewProjectile(source, origin, Vector2.Zero,
-                    ModContent.ProjectileType<CyberRiftSlashProj>(), 0, 0, owner.whoAmI,
-                    ai0: target.X, ai1: target.Y);
-
-                //终点重组
-                Projectile.NewProjectile(source, target, Vector2.Zero,
-                    ModContent.ProjectileType<CyberReformProj>(), 0, 0, owner.whoAmI);
-            }
-
-            //hitbox 中心对齐
-            Vector2 newPos = target - new Vector2(owner.width * 0.5f, owner.height * 0.5f);
-            //领域中心暂留起点，慢追
-            //仅 myPlayer 播追赶
-            if (Main.myPlayer == owner.whoAmI) {
-                Cyberspace.NotifyTeleport(origin);
-            }
-            owner.Teleport(newPos, TeleportStyle);
-            //降速留惯性
+            state.BeginAuthority();
+            Vector2 newPosition = target
+                - new Vector2(owner.width * 0.5f, owner.height * 0.5f);
+            domain.NotifyTeleport(origin);
+            owner.Teleport(newPosition, TeleportStyle);
             owner.velocity *= 0.25f;
-            //短暂无敌
             owner.immune = true;
             owner.immuneTime = Math.Max(owner.immuneTime, 18);
 
-            if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(CWRSound.FaultOccurred with {
-                    Volume = 0.65f,
-                    Pitch = 0.35f,
-                }, origin);
-                SoundEngine.PlaySound(CWRSound.Faultrelease with {
-                    Volume = 0.7f,
-                    Pitch = 0.15f,
-                }, target);
-                SoundEngine.PlaySound(CWRSound.FaultTransition with {
-                    Volume = 0.45f,
-                    Pitch = 0.5f,
-                }, target);
+            if (Main.netMode == NetmodeID.Server) {
+                NetMessage.SendData(MessageID.TeleportEntity, -1, -1, null,
+                    0, owner.whoAmI, newPosition.X, newPosition.Y,
+                    TeleportStyle);
+                CyberspaceActionNet.SendTeleportState(owner, origin, target,
+                    playVisual: true);
+            }
+            else {
+                PlayActivationVisuals(owner, origin, target);
+            }
+            return CyberspaceActionResultCode.Success;
+        }
+
+        public static void Update() {
+            for (int i = 0; i < Main.maxPlayers; i++) {
+                Player player = Main.player[i];
+                if (player?.active == true) {
+                    player.GetModPlayer<CyberTeleportPlayer>().Tick();
+                }
             }
         }
 
-        /// <summary>本地计时滴答</summary>
-        public static void Update() {
-            TimeGear.ConsumeFrames(ref cooldownTimer, ref cooldownTimerCarry);
-            TimeGear.ConsumeFrames(ref hideTimer, ref hideTimerCarry);
+        public static void Reset() {
+            for (int i = 0; i < Main.maxPlayers; i++) {
+                Player player = Main.player[i];
+                if (player?.active == true) {
+                    player.GetModPlayer<CyberTeleportPlayer>().ResetState();
+                }
+            }
         }
 
-        /// <summary>清计时</summary>
-        public static void Reset() {
-            cooldownTimer = 0;
-            cooldownTimerCarry = 0f;
-            hideTimer = 0;
-            hideTimerCarry = 0f;
+        internal static void PlayActivationVisuals(Player owner, Vector2 origin,
+            Vector2 target) {
+            if (Main.dedServ || owner?.active != true
+                || owner.whoAmI != Main.myPlayer) {
+                return;
+            }
+            IEntitySource source = owner.GetSource_FromThis();
+            Projectile.NewProjectile(source, origin, Vector2.Zero,
+                ModContent.ProjectileType<CyberPixelDecomposeProj>(), 0, 0,
+                owner.whoAmI);
+            Projectile.NewProjectile(source, origin, Vector2.Zero,
+                ModContent.ProjectileType<CyberRiftSlashProj>(), 0, 0,
+                owner.whoAmI, ai0: target.X, ai1: target.Y);
+            Projectile.NewProjectile(source, target, Vector2.Zero,
+                ModContent.ProjectileType<CyberReformProj>(), 0, 0,
+                owner.whoAmI);
+            SoundEngine.PlaySound(CWRSound.FaultOccurred with {
+                Volume = 0.65f,
+                Pitch = 0.35f,
+            }, origin);
+            SoundEngine.PlaySound(CWRSound.Faultrelease with {
+                Volume = 0.7f,
+                Pitch = 0.15f,
+            }, target);
+            SoundEngine.PlaySound(CWRSound.FaultTransition with {
+                Volume = 0.45f,
+                Pitch = 0.5f,
+            }, target);
         }
+
+        private static void PlayFailure(Player owner) {
+            if (Main.dedServ || owner?.active != true
+                || owner.whoAmI != Main.myPlayer) {
+                return;
+            }
+            RamSystem.NotifyInsufficient();
+            SoundEngine.PlaySound(CWRSound.FailureCurrent with {
+                Volume = 0.4f,
+                Pitch = -0.3f,
+            }, owner.Center);
+        }
+    }
+
+    internal sealed class CyberTeleportPlayer : ModPlayer
+    {
+        internal int CooldownTimer { get; private set; }
+        internal int HideTimer { get; private set; }
+        internal uint StateRevision { get; private set; } = 1;
+
+        private float cooldownCarry;
+        private float hideCarry;
+
+        internal void BeginAuthority() {
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                return;
+            }
+            CooldownTimer = CyberTeleport.CooldownFrames;
+            HideTimer = CyberTeleport.HideDuration;
+            cooldownCarry = 0f;
+            hideCarry = 0f;
+            AdvanceRevision();
+        }
+
+        internal void Tick() {
+            int before = CooldownTimer;
+            int cooldown = CooldownTimer;
+            int hide = HideTimer;
+            TimeGear.ConsumeFrames(ref cooldown, ref cooldownCarry);
+            TimeGear.ConsumeFrames(ref hide, ref hideCarry);
+            CooldownTimer = cooldown;
+            HideTimer = hide;
+            if (before > 0 && cooldown == 0
+                && Main.netMode == NetmodeID.Server) {
+                AdvanceRevision();
+                CyberspaceActionNet.SendTeleportState(Player, Vector2.Zero,
+                    Vector2.Zero, playVisual: false);
+            }
+        }
+
+        internal bool ApplyReplicatedState(uint revision, int cooldown,
+            int hide, bool playVisual, Vector2 origin, Vector2 target) {
+            if (revision == 0 || cooldown < 0
+                || cooldown > CyberTeleport.CooldownFrames || hide < 0
+                || hide > CyberTeleport.HideDuration
+                || !IsRevisionAtLeast(revision, StateRevision)) {
+                return false;
+            }
+            bool shouldPlay = playVisual && cooldown > 0
+                && revision != StateRevision;
+            StateRevision = revision;
+            CooldownTimer = cooldown;
+            HideTimer = hide;
+            cooldownCarry = 0f;
+            hideCarry = 0f;
+            if (shouldPlay) {
+                CyberTeleport.PlayActivationVisuals(Player, origin, target);
+                Player.GetModPlayer<CyberspacePlayer>().NotifyTeleport(origin);
+            }
+            return true;
+        }
+
+        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer) {
+            if (Main.netMode == NetmodeID.Server) {
+                CyberspaceActionNet.SendTeleportState(Player, Vector2.Zero,
+                    Vector2.Zero, playVisual: false, toWho: toWho);
+            }
+        }
+
+        public override void PlayerDisconnect() => ResetState();
+
+        internal void ResetState() {
+            CooldownTimer = 0;
+            HideTimer = 0;
+            cooldownCarry = 0f;
+            hideCarry = 0f;
+            StateRevision = 1;
+        }
+
+        private void AdvanceRevision() {
+            StateRevision++;
+            if (StateRevision == 0) {
+                StateRevision = 1;
+            }
+        }
+
+        private static bool IsRevisionAtLeast(uint candidate, uint baseline)
+            => candidate == baseline || unchecked((int)(candidate - baseline)) > 0;
     }
 }

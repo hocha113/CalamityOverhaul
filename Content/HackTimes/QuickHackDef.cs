@@ -102,14 +102,27 @@ namespace CalamityOverhaul.Content.HackTimes
         /// <summary>上传完成时施加效果</summary>
         public virtual bool OnApply(IHackTarget target, Player caster) => false;
 
+        /// <summary>远端施加表现</summary>
+        public virtual void OnReplicatedApply(IHackTarget target, int elapsed) { }
+
         /// <summary>持续帧 Tick，追踪器调用</summary>
         public virtual bool OnTick(IHackTarget target, int elapsed) => true;
+
+        /// <summary>远端持续表现</summary>
+        public virtual void OnReplicatedTick(IHackTarget target, int elapsed) { }
 
         /// <summary>效果移除或到期时清理</summary>
         public virtual void OnRemove(IHackTarget target) { }
 
+        /// <summary>远端移除表现</summary>
+        public virtual void OnReplicatedRemove(IHackTarget target) { }
+
         /// <summary>是否可对目标使用</summary>
         public virtual bool CanApplyTo(IHackTarget target) => target != null && target.IsValid;
+
+        /// <summary>带施法者的服务端目标校验</summary>
+        public virtual bool CanApplyTo(IHackTarget target, Player caster)
+            => CanApplyTo(target);
 
         /// <summary>持续帧数，0 为即时</summary>
         public virtual int GetDuration() => 0;

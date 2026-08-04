@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
@@ -22,11 +23,21 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override bool OnApply(IHackTarget target, Player caster) {
             if (target is not NpcScannable s) return false;
             NPC npc = Main.npc[s.NpcIndex];
+            if (Main.netMode != NetmodeID.Server) EmitApplyVisual(npc);
+            return true;
+        }
+
+        public override void OnReplicatedApply(IHackTarget target, int elapsed) {
+            if (target is NpcScannable s && s.NpcIndex >= 0
+                && s.NpcIndex < Main.maxNPCs && Main.npc[s.NpcIndex].active)
+                EmitApplyVisual(Main.npc[s.NpcIndex]);
+        }
+
+        private static void EmitApplyVisual(NPC npc) {
             for (int i = 0; i < 8; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3f, 3f);
                 PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(30, 220, 60), 1.0f).Configure(false, 25);
             }
-            return true;
         }
 
         public override bool OnTick(IHackTarget target, int elapsed) {
@@ -36,13 +47,24 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             if (elapsed % 20 == 0) {
                 npc.SimpleStrikeNPC(15, 0, false, 0f, null, false, 0f, true);
             }
+            if (Main.netMode != NetmodeID.Server) EmitTickVisual(npc, elapsed);
+            return true;
+        }
+
+        public override void OnReplicatedTick(IHackTarget target, int elapsed) {
+            if (target is not NpcScannable s || s.NpcIndex < 0
+                || s.NpcIndex >= Main.maxNPCs) return;
+            NPC npc = Main.npc[s.NpcIndex];
+            if (npc.active) EmitTickVisual(npc, elapsed);
+        }
+
+        private static void EmitTickVisual(NPC npc, int elapsed) {
             if (elapsed % 6 == 0) {
                 Vector2 pos = npc.Center + Main.rand.NextVector2Circular(
                     npc.width * 0.3f, npc.height * 0.3f);
                 Vector2 vel = new(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-1.5f, 0f));
                 PRTLoader.NewParticle<PRT_Spark>(pos, vel, new Color(50, 255, 80), 0.6f).Configure(false, 20);
             }
-            return true;
         }
 
         public override void OnRemove(IHackTarget target) {
@@ -68,13 +90,30 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                     newEff.Generation = 1; //二代
                 }
 
-                for (int j = 0; j < 6; j++) {
-                    float t = j / 6f;
-                    Vector2 pos = Vector2.Lerp(npc.Center, other.Center, t);
-                    PRTLoader.NewParticle<PRT_Spark>(pos, Main.rand.NextVector2Circular(1f, 1f), new Color(60, 255, 90), 0.5f).Configure(false, 20);
-                }
+                if (Main.netMode != NetmodeID.Server)
+                    EmitSpreadVisual(npc.Center, other.Center);
             }
 
+            if (Main.netMode != NetmodeID.Server) EmitRemoveVisual(npc);
+        }
+
+        public override void OnReplicatedRemove(IHackTarget target) {
+            if (target is NpcScannable s && s.NpcIndex >= 0
+                && s.NpcIndex < Main.maxNPCs && Main.npc[s.NpcIndex].active)
+                EmitRemoveVisual(Main.npc[s.NpcIndex]);
+        }
+
+        private static void EmitSpreadVisual(Vector2 from, Vector2 to) {
+            for (int i = 0; i < 6; i++) {
+                float t = i / 6f;
+                Vector2 pos = Vector2.Lerp(from, to, t);
+                PRTLoader.NewParticle<PRT_Spark>(pos,
+                    Main.rand.NextVector2Circular(1f, 1f),
+                    new Color(60, 255, 90), 0.5f).Configure(false, 20);
+            }
+        }
+
+        private static void EmitRemoveVisual(NPC npc) {
             for (int i = 0; i < 6; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(4f, 4f);
                 PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(80, 255, 120), 0.8f).Configure(false, 20);

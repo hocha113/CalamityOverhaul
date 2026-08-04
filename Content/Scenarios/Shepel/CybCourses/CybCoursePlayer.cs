@@ -32,6 +32,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 
         public override void PostUpdateEquips() {
             if (!CybCourseWorld.Active) return;
+            CalamityOverhaul.Content.HackTimes.HackTime.InfiniteHack = true;
             Player.statLife = Player.statLifeMax2;
             RamSystem.Refill();
         }

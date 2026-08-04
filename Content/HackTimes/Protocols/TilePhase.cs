@@ -52,8 +52,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 originY = tileY - offY;
             }
 
-            //本端致动，远端靠 TileSquare
-            if (!HackTimeNetSync.IsRemoteApply) {
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
                 for (int dx = 0; dx < w; dx++) {
                     for (int dy = 0; dy < h; dy++) {
                         int tx = originX + dx;
@@ -71,6 +70,24 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 }
             }
 
+            if (Main.netMode != NetmodeID.Server)
+                EmitApplyVisual(tileX, tileY, w, h);
+
+            return true;
+        }
+
+        public override void OnReplicatedApply(IHackTarget target, int elapsed) {
+            if (target is not TileScannable s) return;
+            int tileX = s.TileCoordX;
+            int tileY = s.TileCoordY;
+            if (tileX < 0 || tileX >= Main.maxTilesX
+                || tileY < 0 || tileY >= Main.maxTilesY) return;
+            TileObjectData data = TileObjectData.GetTileData(
+                Main.tile[tileX, tileY].TileType, 0);
+            EmitApplyVisual(tileX, tileY, data?.Width ?? 1, data?.Height ?? 1);
+        }
+
+        private static void EmitApplyVisual(int tileX, int tileY, int w, int h) {
             Vector2 center = new(tileX * 16f + 8f, tileY * 16f + 8f);
             for (int i = 0; i < 12; i++) {
                 Vector2 pos = center + Main.rand.NextVector2Circular(w * 8f, h * 8f);
@@ -81,20 +98,27 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(CWRSound.Hacker with { Volume = 0.4f, Pitch = 0.6f }, center);
             }
-
-            return true;
         }
 
         public override bool OnTick(IHackTarget target, int elapsed) {
             if (target is not TileScannable s) return true;
             int tileX = s.TileCoordX;
             int tileY = s.TileCoordY;
+            if (Main.netMode != NetmodeID.Server) EmitTickVisual(tileX, tileY, elapsed);
+            return true;
+        }
+
+        public override void OnReplicatedTick(IHackTarget target, int elapsed) {
+            if (target is TileScannable s)
+                EmitTickVisual(s.TileCoordX, s.TileCoordY, elapsed);
+        }
+
+        private static void EmitTickVisual(int tileX, int tileY, int elapsed) {
             if (elapsed % 30 == 0) {
                 Vector2 center = new(tileX * 16f + 8f, tileY * 16f + 8f);
                 Vector2 vel = new(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(-1f, 0f));
                 PRTLoader.NewParticle<PRT_Spark>(center, vel, new Color(100, 180, 255, 80), 0.5f).Configure(false, 20);
             }
-            return true;
         }
 
         public override void OnRemove(IHackTarget target) {
@@ -129,15 +153,26 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 }
             }
 
+            if (Main.netMode != NetmodeID.Server)
+                EmitRemoveVisual(tileX, tileY);
+
+            if (Main.netMode != NetmodeID.SinglePlayer) {
+                NetMessage.SendTileSquare(-1, originX, originY, w, h);
+            }
+        }
+
+        public override void OnReplicatedRemove(IHackTarget target) {
+            if (target is TileScannable s)
+                EmitRemoveVisual(s.TileCoordX, s.TileCoordY);
+        }
+
+        private static void EmitRemoveVisual(int tileX, int tileY) {
             Vector2 center = new(tileX * 16f + 8f, tileY * 16f + 8f);
             for (int i = 0; i < 8; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3f, 3f);
                 PRTLoader.NewParticle<PRT_Spark>(center, vel, new Color(80, 200, 255), 1.0f).Configure(false, 25);
             }
 
-            if (Main.netMode != NetmodeID.SinglePlayer) {
-                NetMessage.SendTileSquare(-1, originX, originY, w, h);
-            }
         }
     }
 }

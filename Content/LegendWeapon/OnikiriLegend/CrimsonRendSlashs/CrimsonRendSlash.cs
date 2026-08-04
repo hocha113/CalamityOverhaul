@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates;
+using CalamityOverhaul.Content.Wraiths.Core;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -694,6 +695,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 TideOnBeat = context?.TideOnBeat == true,
             };
             actives.Add(active);
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                WraithComboBeatEvent wraithBeat = new(active.Beat, active.Aim, active.Facing,
+                    active.BaseWeaponDamage, Projectile.knockBack, sizeMul,
+                    active.Def.DamageStart, active.ActionSerial);
+                WraithAbilityService.PublishComboBeat(Owner, in wraithBeat);
+            }
             PlayBeatFireSound(beat);
 
             float speedFactor = MathHelper.Clamp(1f / Owner.GetWeaponAttackSpeed(Item), 0.5f, 1.6f);

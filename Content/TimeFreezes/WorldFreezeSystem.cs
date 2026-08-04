@@ -20,9 +20,6 @@ namespace CalamityOverhaul.Content.TimeFreezes
         //Player.QuickBuff/QuickHeal/QuickMana/QuickMount 拦截委托
         private delegate void Hook_QuickAction(Action<Player> orig, Player self);
 
-        //TimeGear 注册名，仅作内部时间速率叠加用
-        private const string TimeGearKey = "WorldFreezeSystem";
-
         void ICWRLoader.UnLoadData() => ResetSession();
 
         public static bool IsActive { get; private set; }
@@ -146,7 +143,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
         private static void FinalizeDeactivate() {
             IsActive = false;
             IsThawing = true;
-            TimeGear.Unregister(TimeGearKey);
+            TimeGear.Unregister<WorldFreezeSystem>();
             try {
                 TimeFreezeSystem.EndWorldFreeze();
             }
@@ -163,7 +160,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             }
             finally {
                 IsThawing = false;
-                TimeGear.Unregister(TimeGearKey);
+                TimeGear.Unregister<WorldFreezeSystem>();
                 if (activeReasons.Count > 0 && !TryBeginFreezeSession()) {
                     activeReasons.Clear();
                 }
@@ -173,7 +170,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
         private static bool TryBeginFreezeSession() {
             IsActive = true;
             try {
-                TimeGear.Register(TimeGearKey, 0f);
+                TimeGear.Register<WorldFreezeSystem>(0f);
                 TimeFreezeSystem.BeginWorldFreeze();
                 return true;
             }
@@ -187,7 +184,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
                         $"World freeze activation rollback failed: {rollbackException}");
                 }
                 finally {
-                    TimeGear.Unregister(TimeGearKey);
+                    TimeGear.Unregister<WorldFreezeSystem>();
                 }
                 CWRMod.Instance?.Logger.Error(
                     $"World freeze activation failed: {exception}");
@@ -199,7 +196,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             activeReasons.Clear();
             IsActive = false;
             IsThawing = false;
-            TimeGear.Unregister(TimeGearKey);
+            TimeGear.Unregister<WorldFreezeSystem>();
             TimeFreezeSystem.ResetSession();
         }
 

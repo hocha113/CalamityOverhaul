@@ -25,11 +25,20 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override bool OnApply(IHackTarget target, Player caster) {
             if (target is not IHackableSignalTower tower) return false;
             //仅施法端，远端靠 Actor 同步
-            if (!HackTimeNetSync.IsRemoteApply) {
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
                 tower.BeginVirusBroadcast(BroadcastRadiusPx, TurretDisableFrames, caster);
             }
             Vector2 center = tower.WorldCenter;
 
+            if (Main.netMode != NetmodeID.Server) EmitVisual(center);
+            return true;
+        }
+
+        public override void OnReplicatedApply(IHackTarget target, int elapsed) {
+            if (target is IHackableSignalTower tower) EmitVisual(tower.WorldCenter);
+        }
+
+        private static void EmitVisual(Vector2 center) {
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < 28; i++) {
                     Vector2 vel = Main.rand.NextVector2CircularEdge(5f, 5f);
@@ -43,7 +52,6 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 }
                 SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.8f, Pitch = 0.1f }, center);
             }
-            return true;
         }
     }
 }

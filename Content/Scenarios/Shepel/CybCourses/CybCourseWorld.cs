@@ -59,6 +59,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         }
 
         public override void OnLoad() {
+            HackTime.InfiniteHack = true;
             Main.dayTime = false;
             Main.time = 0;
             //worldSurface/rockLayer放走廊下,避地下/地狱/天空

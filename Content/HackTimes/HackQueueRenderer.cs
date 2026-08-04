@@ -34,12 +34,20 @@ namespace CalamityOverhaul.Content.HackTimes
 
         /// <summary>入队，同目标同 slot 不重复</summary>
         public bool Enqueue(QuickHackDef hack, int slotIndex, IHackTarget target, int computedRamCost) {
+            return Enqueue(hack, slotIndex, target, computedRamCost, 0, 0);
+        }
+
+        public bool Enqueue(QuickHackDef hack, int slotIndex, IHackTarget target,
+            int computedRamCost, uint sessionId, uint requestId) {
             if (target == null) return false;
             for (int i = 0; i < queue.Count; i++) {
                 if (queue[i].SlotIndex != slotIndex) continue;
+                if (requestId != 0 && queue[i].RequestId == requestId
+                    && queue[i].SessionId == sessionId) return false;
                 if (queue[i].Target != null && queue[i].Target.TargetEquals(target)) return false;
             }
-            queue.Add(new HackQueueEntry(hack, slotIndex, target, computedRamCost));
+            queue.Add(new HackQueueEntry(hack, slotIndex, target, computedRamCost,
+                sessionId, requestId));
             return true;
         }
 
@@ -68,7 +76,7 @@ namespace CalamityOverhaul.Content.HackTimes
             queue.Clear();
         }
 
-        //全局消费完成条，不依赖 UI Active
+        //清理本地预测完成条，不施加权威逻辑
         public void ConsumeAndApplyAll() {
             for (int i = queue.Count - 1; i >= 0; i--) {
                 var entry = queue[i];
@@ -76,13 +84,40 @@ namespace CalamityOverhaul.Content.HackTimes
                     queue.RemoveAt(i);
                     continue;
                 }
-                //完成且闪烁结束 → 目标分派协议
+                //完成条只用于表现，效果由服务端包驱动
                 if (entry.State == HackQueueState.Completed && entry.CompletedTimer <= 0f) {
-                    entry.Target.ApplyHack(entry.Hack, Main.LocalPlayer);
-                    //多人广播视觉复刻
-                    HackTimeNetSync.SendApplyPacket(entry.Hack, entry.Target, Main.myPlayer);
                     queue.RemoveAt(i);
                 }
+            }
+        }
+
+        public void RemoveRequest(uint sessionId, uint requestId) {
+            if (requestId == 0) return;
+            for (int i = queue.Count - 1; i >= 0; i--) {
+                if (queue[i].SessionId == sessionId && queue[i].RequestId == requestId) {
+                    queue.RemoveAt(i);
+                }
+            }
+        }
+
+        public void ApplyAuthorityState(uint sessionId, uint requestId, int slotIndex,
+            HackQueueState state, float progress, long activationId, bool accepted) {
+            if (requestId == 0) return;
+            progress = float.IsFinite(progress) ? MathHelper.Clamp(progress, 0f, 1f) : 0f;
+            for (int i = 0; i < queue.Count; i++) {
+                HackQueueEntry entry = queue[i];
+                if (entry.SessionId != sessionId || entry.RequestId != requestId) continue;
+                if (!accepted) {
+                    queue.RemoveAt(i);
+                    return;
+                }
+                entry.AuthorityAccepted = true;
+                entry.State = state;
+                entry.UploadProgress = progress;
+                entry.ActivationId = activationId;
+                if (state == HackQueueState.Completed && entry.CompletedTimer <= 0f)
+                    entry.CompletedTimer = CompletedDuration;
+                return;
             }
         }
 
@@ -296,15 +331,12 @@ namespace CalamityOverhaul.Content.HackTimes
 
                     case HackQueueState.Uploading:
                         hasUploading = true;
-                        //世界冻结时暂停上传，多人模式实时推进
-                        if (!TimeFreezes.WorldFreezeSystem.IsActive) {
-                            if (entry.Hack.UploadTime > 0)
-                                entry.UploadProgress += 1f / entry.Hack.UploadTime;
-                            if (entry.UploadProgress >= 1f) {
-                                entry.UploadProgress = 1f;
-                                entry.State = HackQueueState.Completed;
-                                entry.CompletedTimer = CompletedDuration;
-                            }
+                        if (entry.Hack.UploadTime > 0)
+                            entry.UploadProgress += 1f / entry.Hack.UploadTime;
+                        if (entry.UploadProgress >= 1f) {
+                            entry.UploadProgress = 1f;
+                            entry.State = HackQueueState.Completed;
+                            entry.CompletedTimer = CompletedDuration;
                         }
                         break;
 

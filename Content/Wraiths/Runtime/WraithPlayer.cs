@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         internal const string ScapeGhostKey = "ScapeGhost";
         internal const string HeadlessShadeKey = "HeadlessShade";
         internal const string GhostHandKey = "GhostHand";
+        internal const string LanternBoyKey = "LanternBoy";
         internal const int RevivalDecayDelay = 60 * 8;
 
         private const int SchemaVersion = 1;
@@ -32,6 +33,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             ScapeGhostKey,
             HeadlessShadeKey,
             GhostHandKey,
+            LanternBoyKey,
         ];
 
         private sealed class MasteryState
@@ -403,6 +405,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             out float scapeMastery, out bool scapeDormant,
             out float shadeMastery, out bool shadeDormant,
             out float handMastery, out bool handDormant,
+            out float lanternMastery, out bool lanternDormant,
             out float erosionValue, out float revivalValue, out int multiplier,
             out int erosionIdle, out int revivalIdle) {
             equipped = equippedWraithKey;
@@ -414,6 +417,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             shadeDormant = IsDormant(HeadlessShadeKey);
             handMastery = GetMastery(GhostHandKey);
             handDormant = IsDormant(GhostHandKey);
+            lanternMastery = GetMastery(LanternBoyKey);
+            lanternDormant = IsDormant(LanternBoyKey);
             erosionValue = erosion;
             revivalValue = revival;
             multiplier = scapeMultiplier;
@@ -425,6 +430,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             float scapeMastery, bool scapeDormant,
             float shadeMastery, bool shadeDormant,
             float handMastery, bool handDormant,
+            float lanternMastery, bool lanternDormant,
             float erosionValue, float revivalValue, int multiplier,
             int erosionIdle, int revivalIdle) {
             if (Main.netMode != NetmodeID.Server || sessionInitialized) {
@@ -434,6 +440,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             ApplyMastery(ScapeGhostKey, scapeMastery, scapeDormant);
             ApplyMastery(HeadlessShadeKey, shadeMastery, shadeDormant);
             ApplyMastery(GhostHandKey, handMastery, handDormant);
+            ApplyMastery(LanternBoyKey, lanternMastery, lanternDormant);
             erosion = SanitizeUnit(erosionValue);
             revival = SanitizeUnit(revivalValue);
             scapeMultiplier = SanitizeScapeMultiplier(multiplier);
@@ -449,6 +456,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             float scapeMastery, bool scapeDormant,
             float shadeMastery, bool shadeDormant,
             float handMastery, bool handDormant,
+            float lanternMastery, bool lanternDormant,
             float erosionValue, float revivalValue, int multiplier,
             int erosionIdle, int revivalIdle, bool force) {
             if (Main.netMode != NetmodeID.MultiplayerClient) {
@@ -466,10 +474,12 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             bool scapeWoke = IsDormant(ScapeGhostKey) && !scapeDormant;
             bool shadeWoke = IsDormant(HeadlessShadeKey) && !shadeDormant;
             bool handWoke = IsDormant(GhostHandKey) && !handDormant;
+            bool lanternWoke = IsDormant(LanternBoyKey) && !lanternDormant;
             int previousTier = ErosionTier;
             ApplyMastery(ScapeGhostKey, scapeMastery, scapeDormant);
             ApplyMastery(HeadlessShadeKey, shadeMastery, shadeDormant);
             ApplyMastery(GhostHandKey, handMastery, handDormant);
+            ApplyMastery(LanternBoyKey, lanternMastery, lanternDormant);
             erosion = SanitizeUnit(erosionValue);
             revival = SanitizeUnit(revivalValue);
             scapeMultiplier = SanitizeScapeMultiplier(multiplier);
@@ -480,7 +490,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             if (ErosionTier > previousTier && Player.whoAmI == Main.myPlayer) {
                 PlayTierCue(ErosionTier);
             }
-            if ((scapeWoke || shadeWoke || handWoke) && Player.whoAmI == Main.myPlayer) {
+            if ((scapeWoke || shadeWoke || handWoke || lanternWoke)
+                && Player.whoAmI == Main.myPlayer) {
                 PlayWakeCue();
             }
         }

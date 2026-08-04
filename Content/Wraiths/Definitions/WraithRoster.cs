@@ -13,6 +13,11 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
     {
         public override int SortOrder => 20;
         internal override ushort NetworkId => 1;
+        internal override WraithCatalogState CatalogState => WraithCatalogState.Usable;
+        internal override WraithAbilityKind AbilityKind => WraithAbilityKind.LanternBoy;
+        internal override float MasteryCost => 0.05f;
+        internal override float ErosionCost => 0.01f;
+        internal override WraithPassiveAbility CreateAbility() => new LanternBoyAbility();
     }
 
     internal sealed class CrimsonBride : WraithDefinition

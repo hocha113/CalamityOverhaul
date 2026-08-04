@@ -1,7 +1,9 @@
 ﻿using CalamityOverhaul.Content.HackTimes.Scannables;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
 using Terraria;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
@@ -19,14 +21,25 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override bool OnApply(IHackTarget target, Player caster) {
             if (target is not NpcScannable s) return false;
             NPC npc = Main.npc[s.NpcIndex];
-            EmitApplyParticles(npc);
-            CombatText.NewText(npc.Hitbox, new Color(40, 150, 255), HackTime.Rebooting.Value, true);
-            //群组扩散仅施法端
-            if (!HackTimeNetSync.IsRemoteApply) {
+            if (Main.netMode != NetmodeID.Server) EmitApplyVisual(npc);
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
                 HackEffectTracker.PropagateNpcEffectToGroup(this, s.NpcIndex,
-                    caster?.whoAmI ?? Main.myPlayer, EmitApplyParticles);
+                    caster?.whoAmI ?? Main.myPlayer,
+                    Main.netMode == NetmodeID.Server ? null : EmitApplyParticles);
             }
             return true;
+        }
+
+        public override void OnReplicatedApply(IHackTarget target, int elapsed) {
+            if (target is NpcScannable s && s.NpcIndex >= 0
+                && s.NpcIndex < Main.maxNPCs && Main.npc[s.NpcIndex].active)
+                EmitApplyVisual(Main.npc[s.NpcIndex]);
+        }
+
+        private static void EmitApplyVisual(NPC npc) {
+            EmitApplyParticles(npc);
+            CombatText.NewText(npc.Hitbox, new Color(40, 150, 255),
+                HackTime.Rebooting.Value, true);
         }
 
         //群组成员复用
@@ -38,8 +51,20 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         }
 
         public override bool OnTick(IHackTarget target, int elapsed) {
-            if (target is not NpcScannable s) return true;
-            NPC npc = Main.npc[s.NpcIndex];
+            if (!TryRefreshFreeze(target, out NPC npc)) return true;
+            if (Main.netMode != NetmodeID.Server) {
+                EmitTickParticles(npc, elapsed);
+            }
+            return true;
+        }
+
+        public override void OnReplicatedTick(IHackTarget target, int elapsed) {
+            if (TryRefreshFreeze(target, out NPC npc)) {
+                EmitTickParticles(npc, elapsed);
+            }
+        }
+
+        private static void EmitTickParticles(NPC npc, int elapsed) {
             if (elapsed % 8 == 0) {
                 Vector2 pos = new(
                     npc.Center.X + Main.rand.NextFloat(-npc.width * 0.4f, npc.width * 0.4f),
@@ -50,12 +75,35 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             if (elapsed % 30 == 0) {
                 PRTLoader.NewParticle<PRT_Spark>(npc.Center + Main.rand.NextVector2Circular(npc.width * 0.3f, npc.height * 0.3f), Vector2.Zero, new Color(80, 160, 255), 1.2f).Configure(false, 10);
             }
+        }
+
+        private static bool TryRefreshFreeze(IHackTarget target, out NPC npc) {
+            npc = null;
+            if (target is not NpcScannable s || s.NpcIndex < 0
+                || s.NpcIndex >= Main.maxNPCs) {
+                return false;
+            }
+            npc = Main.npc[s.NpcIndex];
+            if (!npc.active) {
+                return false;
+            }
+            TimeFreezeSystem.RefreshNPC<SystemReset>(npc, 2);
             return true;
         }
 
         public override void OnRemove(IHackTarget target) {
             if (target is not NpcScannable s) return;
             NPC npc = Main.npc[s.NpcIndex];
+            if (Main.netMode != NetmodeID.Server) EmitRemoveVisual(npc);
+        }
+
+        public override void OnReplicatedRemove(IHackTarget target) {
+            if (target is NpcScannable s && s.NpcIndex >= 0
+                && s.NpcIndex < Main.maxNPCs && Main.npc[s.NpcIndex].active)
+                EmitRemoveVisual(Main.npc[s.NpcIndex]);
+        }
+
+        private static void EmitRemoveVisual(NPC npc) {
             for (int i = 0; i < 6; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(2.5f, 2.5f);
                 PRTLoader.NewParticle<PRT_Spark>(npc.Center, vel, new Color(100, 200, 255), 0.8f).Configure(false, 12);

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.HackTimes
@@ -17,6 +18,7 @@ namespace CalamityOverhaul.Content.HackTimes
         private int _cyberDamageCooldown;
 
         public bool? PreAIByOverNPC(NPC npc) {
+            if (Main.netMode == NetmodeID.MultiplayerClient) return null;
             //时停不干预
             if (TimeFreezes.WorldFreezeSystem.IsActive) return null;
             HackEffectTracker.GetEffects(npc.whoAmI, effectsCache);
@@ -26,10 +28,6 @@ namespace CalamityOverhaul.Content.HackTimes
             for (int i = 0; i < effectsCache.Count; i++) {
                 var eff = effectsCache[i];
                 switch (eff.Hack) {
-                    case SystemReset://阻 AI
-                        npc.velocity = Vector2.Zero;
-                        allowAI = false;
-                        break;
                     case Cyberpsychosis://重定向
                         RedirectAI(npc, eff, ref _cyberDamageCooldown);
                         allowAI = false;
@@ -58,6 +56,7 @@ namespace CalamityOverhaul.Content.HackTimes
         }
 
         public override void ModifyHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers) {
+            if (Main.netMode == NetmodeID.MultiplayerClient) return;
             //赛博精神病不伤玩家
             if (HackEffectTracker.HasEffect<Cyberpsychosis>(npc.whoAmI)) {
                 modifiers.FinalDamage *= 0f;
@@ -65,22 +64,22 @@ namespace CalamityOverhaul.Content.HackTimes
         }
 
         public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone) {
+            if (Main.netMode == NetmodeID.MultiplayerClient) return;
             //记忆清除受击恢复
             if (HackEffectTracker.HasEffect<MemoryWipe>(npc.whoAmI)) {
                 var eff = HackEffectTracker.GetEffect<MemoryWipe>(npc.whoAmI);
                 if (eff != null) {
-                    eff.Hack.OnRemove(eff.Target);
-                    eff.Active = false;
+                    HackEffectTracker.RemoveAuthorityEffect(eff.ActivationId);
                 }
             }
         }
 
         public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone) {
+            if (Main.netMode == NetmodeID.MultiplayerClient) return;
             if (HackEffectTracker.HasEffect<MemoryWipe>(npc.whoAmI)) {
                 var eff = HackEffectTracker.GetEffect<MemoryWipe>(npc.whoAmI);
                 if (eff != null) {
-                    eff.Hack.OnRemove(eff.Target);
-                    eff.Active = false;
+                    HackEffectTracker.RemoveAuthorityEffect(eff.ActivationId);
                 }
             }
         }

@@ -16,10 +16,34 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         public float Mastery { get; } = mastery;
     }
 
+    /// <summary>鬼切普通五连段实际出刀时冻结的役鬼节拍</summary>
+    internal readonly struct WraithComboBeatEvent(
+        int beat,
+        float aim,
+        int facing,
+        int baseWeaponDamage,
+        float knockback,
+        float bladeScale,
+        int damageStart,
+        uint actionSerial)
+    {
+        public int Beat { get; } = beat;
+        public float Aim { get; } = aim;
+        public int Facing { get; } = facing;
+        public int BaseWeaponDamage { get; } = baseWeaponDamage;
+        public float Knockback { get; } = knockback;
+        public float BladeScale { get; } = bladeScale;
+        public int DamageStart { get; } = damageStart;
+        public uint ActionSerial { get; } = actionSerial;
+    }
+
     internal abstract class WraithPassiveAbility
     {
         public WraithDefinition Definition { get; internal set; }
         public abstract void Update(in WraithAbilityContext context);
+
+        public virtual void OnComboBeat(in WraithAbilityContext context,
+            in WraithComboBeatEvent beat) { }
     }
 
     /// <summary>役鬼资格与资源结算的唯一入口</summary>
@@ -83,6 +107,17 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             return context.Player.GetModPlayer<Runtime.WraithPlayer>()
                 .TryConsumeAuthority(context.Definition.Key,
                     context.Definition.MasteryCost, context.Definition.ErosionCost);
+        }
+
+        internal static void PublishComboBeat(Player player, in WraithComboBeatEvent beat) {
+            if (Main.dedServ || player == null || player.whoAmI != Main.myPlayer
+                || !player.TryGetModPlayer(out Runtime.WraithPlayer wraithPlayer)
+                || string.IsNullOrEmpty(wraithPlayer.EquippedWraithKey)
+                || !TryResolve(player, wraithPlayer.EquippedWraithKey,
+                    out WraithAbilityContext context)) {
+                return;
+            }
+            context.Definition.Ability?.OnComboBeat(in context, in beat);
         }
     }
 }
