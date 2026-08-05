@@ -870,6 +870,8 @@ BulletinBoardUI: {
 	AcknowledgmentLabel: Dankeschön-Liste
 }
 
+// HimayoMenu.ThemeName: Sakura Night
+
 AcknowledgmentUI: {
 	ArtistRole: Künstler
 	CodeAssistanceRole: Code-Hilfe
