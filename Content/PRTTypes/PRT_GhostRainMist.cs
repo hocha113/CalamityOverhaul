@@ -6,16 +6,15 @@ using Terraria;
 namespace CalamityOverhaul.Content.PRTTypes
 {
     /// <summary>
-    /// 鬼雨贴地潮雾：慢、横移、低对比，非加色（SmokeSheet01 白RGB+Alpha）。
+    /// 鬼雨贴地潮雾：慢、横移、低对比；Masking/Fog 真 alpha，AlphaBlend 直绘。
     /// </summary>
     internal class PRT_GhostRainMist : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool CanPool => true;
-        public override int InGame_World_MaxCount => 40;
+        public override int InGame_World_MaxCount => 120;
 
         private Color initialColor;
-        private int frameIndex;
         private float drift;
 
         public PRT_GhostRainMist Configure(int lifetime) {
@@ -27,13 +26,11 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override void Reset() {
             base.Reset();
             initialColor = default;
-            frameIndex = 0;
             drift = 0f;
         }
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
-            frameIndex = Main.rand.Next(4);
             drift = Main.rand.NextFloat(-0.006f, 0.006f);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             if (Lifetime <= 0) {
@@ -58,12 +55,9 @@ namespace CalamityOverhaul.Content.PRTTypes
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            //2×2 序列帧，帧边长按贴图实际尺寸取
-            int frameSize = tex.Width / 2;
-            Rectangle frame = new(frameIndex % 2 * frameSize, frameIndex / 2 * frameSize,
-                frameSize, frameSize);
-            spriteBatch.Draw(tex, Position - Main.screenPosition, frame, Color, Rotation,
-                frame.Size() * 0.5f, Scale, SpriteEffects.None, 0f);
+            Vector2 origin = tex.Size() * 0.5f;
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color, Rotation,
+                origin, Scale, SpriteEffects.None, 0f);
             return false;
         }
     }

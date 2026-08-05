@@ -36,7 +36,7 @@ GhostHand: {
 GhostRain: {
 	DisplayName: The Ghost Rain
 	Origin: That is not a sky — it is faces, pressing down layer upon layer
-	Power: 「Summon Rain」Press the Self-Restart key: the gloom stacks and the ghost rain pours down; living things caught in the veil are slowly eaten away, or dragged up into the rain
+	Power: 「Ghost Rain」While equipped and Onikiri is held, the gloom stays and the ghost rain pours; living things caught in the veil are slowly eaten away, or dragged up into the rain
 	DeathReason: "{0} was claimed by the rain"
 }
 

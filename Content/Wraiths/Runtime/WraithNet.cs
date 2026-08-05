@@ -34,8 +34,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         LanternImpactRequest = 16,
         CrimsonBrideRiteRequest = 17,
         CrimsonBrideRiteState = 18,
-        GhostRainRiteRequest = 19,
-        GhostRainStormState = 20,
+        GhostRainRiteRequest = 19, //退役：曾为召雨按键请求，现鬼雨为常驻，保留编号防旧包错位
+        GhostRainStormState = 20, //退役：曾为风暴 ModPlayer 快照，现由 GhostRainProj 同步
         GhostRainYankFx = 21,
     }
 
@@ -262,33 +262,11 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             NewPacket(WraithNetOp.CrimsonBrideRiteRequest).Send();
         }
 
-        /// <summary>鬼雨召雨请求，仅多人客户端发出；身份取自发包者。</summary>
-        internal static void SendGhostRainRiteRequest() {
-            if (Main.netMode != NetmodeID.MultiplayerClient) {
-                return;
-            }
-            NewPacket(WraithNetOp.GhostRainRiteRequest).Send();
-        }
+        /// <summary>退役接口：鬼雨已改为常驻控制器，不再发包。</summary>
+        internal static void SendGhostRainRiteRequest() { }
 
-        /// <summary>服务器广播鬼雨风暴状态快照（开始/入雨/中止/结束）。</summary>
-        internal static void SendGhostRainStormState(int playerWhoAmI, int toWho = -1) {
-            if (Main.netMode != NetmodeID.Server || playerWhoAmI < 0
-                || playerWhoAmI >= Main.maxPlayers) {
-                return;
-            }
-            Player player = Main.player[playerWhoAmI];
-            if (player?.active != true
-                || !player.TryGetModPlayer(out Abilities.GhostRains.GhostRainStormPlayer storm)) {
-                return;
-            }
-            ModPacket packet = NewPacket(WraithNetOp.GhostRainStormState);
-            packet.Write((byte)playerWhoAmI);
-            packet.Write(storm.StormRevision);
-            packet.Write((short)storm.StormTimer);
-            packet.Write(storm.Paid);
-            packet.Write(storm.StormSeed);
-            packet.Send(toWho);
-        }
+        /// <summary>退役接口：风暴状态改由 GhostRainProj 同步，不再发包。</summary>
+        internal static void SendGhostRainStormState(int playerWhoAmI, int toWho = -1) { }
 
         /// <summary>服务器广播雨喉拽入表现（目标与喉点）。</summary>
         internal static void SendGhostRainYankFx(int npcWhoAmI, Vector2 throat) {
@@ -433,28 +411,15 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 player, revision, timer, restoreFired, seed);
         }
 
-        private static void HandleGhostRainRiteRequest(int whoAmI) {
-            Player player = ResolvePlayer(whoAmI, requireAlive: true);
-            if (player != null) {
-                Abilities.GhostRains.GhostRainStorm.ExecuteAuthority(player);
-            }
-        }
+        //退役 op：读尽载荷后丢弃，防止旧客户端包打乱后续解析
+        private static void HandleGhostRainRiteRequest(int whoAmI) { }
 
         private static void HandleGhostRainStormState(BinaryReader reader) {
-            int playerIndex = reader.ReadByte();
-            uint revision = reader.ReadUInt32();
-            int timer = reader.ReadInt16();
-            bool paid = reader.ReadBoolean();
-            byte seed = reader.ReadByte();
-            if (playerIndex < 0 || playerIndex >= Main.maxPlayers) {
-                return;
-            }
-            Player player = Main.player[playerIndex];
-            if (player?.active != true) {
-                return;
-            }
-            Abilities.GhostRains.GhostRainStorm.ApplyReplicatedState(
-                player, revision, timer, paid, seed);
+            _ = reader.ReadByte();
+            _ = reader.ReadUInt32();
+            _ = reader.ReadInt16();
+            _ = reader.ReadBoolean();
+            _ = reader.ReadByte();
         }
 
         private static void HandleGhostRainYankFx(BinaryReader reader) {

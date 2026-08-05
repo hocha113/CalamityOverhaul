@@ -65,5 +65,6 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         internal override WraithAbilityKind AbilityKind => WraithAbilityKind.GhostRain;
         internal override float MasteryCost => 0.35f;
         internal override float ErosionCost => 0.18f;
+        internal override WraithPassiveAbility CreateAbility() => new GhostRainAbility();
     }
 }

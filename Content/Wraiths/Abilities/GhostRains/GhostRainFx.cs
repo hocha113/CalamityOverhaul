@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Wraiths.Projectiles;
 using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
 {
     /// <summary>
     /// 鬼雨的本地演出宿主：雨滴/潮雾/脸痕的生成节拍、相位音效与雨喉拽入表现。<br/>
-    /// 纯表现层，不保存、不参与判定；权威状态在 <see cref="GhostRainStormPlayer"/>。
+    /// 纯表现层，不保存、不参与判定；权威状态在 <see cref="GhostRainProj"/>。
     /// </summary>
     internal static class GhostRainFx
     {
@@ -43,10 +44,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
             }
             List<int> stale = null;
             foreach (int who in fxByPlayer.Keys) {
-                Player player = who >= 0 && who < Main.maxPlayers ? Main.player[who] : null;
-                if (player?.active != true
-                    || !player.TryGetModPlayer(out GhostRainStormPlayer storm)
-                    || storm.StormTimer <= 0) {
+                if (GhostRainProj.Find(who) == null) {
                     (stale ??= []).Add(who);
                 }
             }
@@ -57,106 +55,117 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
             }
         }
 
-        /// <summary>由风暴推进逐帧调用（仅图形端）：音效节拍与粒子。</summary>
-        internal static void OnStormTick(Player owner, GhostRainStormPlayer storm) {
-            if (Main.dedServ || owner == null || storm.StormTimer <= 0) {
+        /// <summary>由雨幕控制器逐帧调用（仅图形端）：音效节拍与粒子。</summary>
+        internal static void OnControllerTick(Player owner, GhostRainProj rain) {
+            if (Main.dedServ || owner == null || rain == null) {
                 return;
             }
-            RainFxState fx = EnsureFx(owner, storm);
-            int t = storm.StormTimer;
+            RainFxState fx = EnsureFx(owner, rain);
+            int t = rain.StormAge;
             bool freshBeat = t > fx.LastBeat;
             fx.LastBeat = Math.Max(fx.LastBeat, t);
 
-            if (freshBeat) {
+            if (freshBeat && !rain.Fading) {
                 PlayBeatCues(owner, t);
             }
 
-            //未入雨的风暴只有前兆雨丝；中止散场时随尾段排干
-            float density = GhostRainStorm.RainDensity(t);
-            if (!storm.Paid && t > GhostRainStorm.GloomEnd) {
-                float k = MathHelper.Clamp(
-                    (t - GhostRainStorm.LingerEnd)
-                    / (float)(GhostRainStorm.TotalFrames - GhostRainStorm.LingerEnd), 0f, 1f);
-                density = 0.12f * (1f - k);
+            float density = GhostRainStorm.RainDensity(t, rain.Paid);
+            if (rain.Fading) {
+                //散场随 Presence 排干，避免收刀瞬间雨幕硬切
+                density *= MathHelper.Clamp(rain.Presence / 0.7f, 0f, 1f);
             }
 
             if (density > 0.01f) {
-                SpawnRainBand(owner, fx, density, storm.StormSeed);
+                SpawnRainBand(owner, fx, density, rain.StormSeed);
             }
-            if (density > 0.25f && t % 12 == 0) {
+            if (density > 0.2f && t % 4 == 0) {
                 SpawnMist(owner);
+                if (density > 0.55f) {
+                    SpawnMist(owner);
+                }
             }
-            //雨峰稀有脸痕，宁少勿滥
-            if (storm.Paid && t > GhostRainStorm.RainfallEnd && t <= GhostRainStorm.PeakEnd
-                && Main.rand.NextBool(90)) {
+            //稳态雨幕偶发脸痕，仍宁少勿滥
+            if (rain.Paid && !rain.Fading && t > GhostRainStorm.RainfallEnd
+                && Main.rand.NextBool(55)) {
                 SpawnFaceStreak(owner);
             }
             //雨里的活物挂水珠
-            if (density > 0.4f && t % 6 == 0) {
+            if (density > 0.35f && t % 4 == 0) {
                 SpawnWetNpcDrips(owner);
             }
         }
 
-        private static RainFxState EnsureFx(Player owner, GhostRainStormPlayer storm) {
+        private static RainFxState EnsureFx(Player owner, GhostRainProj rain) {
             if (!fxByPlayer.TryGetValue(owner.whoAmI, out RainFxState fx)
-                || fx.Revision != storm.StormRevision) {
+                || fx.Revision != rain.PresenceRevision) {
+                //同一弹体身份跃迁（入雨/散场）保留 LastBeat，避免闷雷重播；换弹体重置
+                bool sameIdentity = fx != null
+                    && (fx.Revision >> 2) == (rain.PresenceRevision >> 2);
                 fx = new RainFxState {
-                    Revision = storm.StormRevision,
+                    Revision = rain.PresenceRevision,
+                    LastBeat = sameIdentity ? fx.LastBeat : 0,
+                    DropCarry = sameIdentity ? fx.DropCarry : 0f,
                 };
                 fxByPlayer[owner.whoAmI] = fx;
             }
             return fx;
         }
 
-        /// <summary>主雨：屏幕可视带与域水平范围的交集内自天而落。</summary>
+        /// <summary>主雨：优先铺满屏幕，再与域水平范围取交；密度按可视像素宽度配额。</summary>
         private static void SpawnRainBand(Player owner, RainFxState fx, float density, byte seed) {
+            //屏幕外缘再扩一截，避免边缘露馅；域只裁掉真正域外的部分
             float left = Math.Max(owner.Center.X - GhostRainStorm.Radius,
-                Main.screenPosition.X - 80f);
+                Main.screenPosition.X - 160f);
             float right = Math.Min(owner.Center.X + GhostRainStorm.Radius,
-                Main.screenPosition.X + Main.screenWidth + 80f);
+                Main.screenPosition.X + Main.screenWidth + 160f);
             if (right <= left) {
                 return;
             }
 
-            //生成率随密度与可视带宽折算，小数配额累积
-            fx.DropCarry += density * 2.6f * (right - left) / (GhostRainStorm.Radius * 2f);
-            int count = (int)fx.DropCarry;
+            //约 0.02 滴/像素宽/帧 @密度1 → 1920 宽约 38 滴/帧，铺满竖帘
+            fx.DropCarry += density * 0.02f * (right - left);
+            int count = Math.Min((int)fx.DropCarry, 56);
             fx.DropCarry -= count;
             if (count <= 0) {
                 return;
             }
 
             //风向按种子定相，整场稳定
-            float wind = MathF.Sin(seed * 0.37f) * 1.7f * density;
+            float wind = MathF.Sin(seed * 0.37f) * 2.2f * density;
             for (int i = 0; i < count; i++) {
                 Vector2 pos = new(Main.rand.NextFloat(left, right),
-                    Main.screenPosition.Y - Main.rand.NextFloat(20f, 140f));
-                Vector2 vel = new(wind + Main.rand.NextFloat(-0.2f, 0.2f),
-                    Main.rand.NextFloat(10f, 14f));
+                    Main.screenPosition.Y - Main.rand.NextFloat(10f, 220f));
+                Vector2 vel = new(wind + Main.rand.NextFloat(-0.35f, 0.35f),
+                    Main.rand.NextFloat(11f, 17f));
                 Color color = (Main.rand.NextBool(7) ? RainCorpse : RainPale)
-                    * Main.rand.NextFloat(0.42f, 0.6f);
+                    * Main.rand.NextFloat(0.42f, 0.65f);
                 PRTLoader.NewParticle<PRT_GhostRainDrop>(pos, vel, color,
-                    Main.rand.NextFloat(0.75f, 1.1f))
-                    ?.Configure(Main.rand.Next(80, 120), vel.X);
+                    Main.rand.NextFloat(0.8f, 1.25f))
+                    ?.Configure(Main.rand.Next(70, 110), vel.X);
             }
         }
 
-        /// <summary>贴地潮雾：探到地面才生，雨越大越沉。</summary>
+        /// <summary>贴地潮雾：探到地面才生，雨越大越沉；贴图用 Masking/Fog。</summary>
         private static void SpawnMist(Player owner) {
-            float x = owner.Center.X
-                + Main.rand.NextFloat(-GhostRainStorm.Radius * 0.9f, GhostRainStorm.Radius * 0.9f);
+            float span = Math.Min(GhostRainStorm.Radius * 0.95f, Main.screenWidth * 0.55f + 200f);
+            float x = owner.Center.X + Main.rand.NextFloat(-span, span);
+            //只在屏幕附近生雾，远处浪费配额
+            if (x < Main.screenPosition.X - 120f
+                || x > Main.screenPosition.X + Main.screenWidth + 120f) {
+                return;
+            }
             if (!TryFindGround(x, owner.Center.Y - 60f, out float groundY)) {
                 return;
             }
-            Vector2 pos = new(x, groundY - Main.rand.NextFloat(6f, 30f));
-            Vector2 vel = new(Main.rand.NextFloat(-0.25f, 0.25f), Main.rand.NextFloat(-0.05f, 0f));
+            Vector2 pos = new(x, groundY - Main.rand.NextFloat(6f, 40f));
+            Vector2 vel = new(Main.rand.NextFloat(-0.35f, 0.35f), Main.rand.NextFloat(-0.08f, 0f));
             PRTLoader.NewParticle<PRT_GhostRainMist>(pos, vel,
-                MistDamp * Main.rand.NextFloat(0.8f, 1f),
-                Main.rand.NextFloat(0.7f, 1.15f))
-                ?.Configure(Main.rand.Next(90, 150));
+                MistDamp * Main.rand.NextFloat(0.75f, 1f),
+                Main.rand.NextFloat(0.7f, 1.25f))
+                ?.Configure(Main.rand.Next(90, 160));
         }
 
-        /// <summary>雨峰稀有的脸痕竖丝。</summary>
+        /// <summary>雨幕稀有的脸痕竖丝。</summary>
         private static void SpawnFaceStreak(Player owner) {
             float left = Math.Max(owner.Center.X - GhostRainStorm.Radius * 0.8f,
                 Main.screenPosition.X + 60f);
@@ -175,7 +184,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
 
         /// <summary>域内活物身上偶发挂珠，雨是落在东西上的。</summary>
         private static void SpawnWetNpcDrips(Player owner) {
-            int budget = 3;
+            int budget = 6;
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (budget <= 0) {
                     break;
@@ -248,7 +257,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
                     Pitch = -0.7f, Volume = 0.45f, MaxInstances = 3,
                 }, owner.Center);
             }
-            //雨峰：更沉的第二声闷雷
+            //雨幕爬满：更沉的第二声闷雷
             else if (t == GhostRainStorm.RainfallEnd + 1) {
                 SoundEngine.PlaySound(SoundID.Thunder with {
                     Pitch = -0.95f, Volume = 0.3f, MaxInstances = 3,

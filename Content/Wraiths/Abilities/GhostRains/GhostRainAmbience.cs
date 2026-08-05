@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Wraiths.Projectiles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -9,8 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
 {
     /// <summary>
-    /// 阴幕强度控制器：取本地视野内所有鬼雨风暴的包络峰值，纯本地演出量。<br/>
-    /// 相位包络由风暴计时直接给出，中止跳段时用平滑收拢避免跳变。
+    /// 阴幕强度控制器：取本地视野内所有鬼雨控制器的包络峰值，纯本地演出量。
     /// </summary>
     internal static class GhostRainAmbience
     {
@@ -26,21 +26,24 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
                 return;
             }
             float target = 0f;
-            for (int i = 0; i < Main.maxPlayers; i++) {
-                Player player = Main.player[i];
-                if (player?.active != true
-                    || !player.TryGetModPlayer(out GhostRainStormPlayer storm)
-                    || storm.StormTimer <= 0) {
+            int type = ModContent.ProjectileType<GhostRainProj>();
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile projectile = Main.projectile[i];
+                if (!projectile.active || projectile.type != type
+                    || projectile.ModProjectile is not GhostRainProj rain) {
                     continue;
                 }
-                float envelope = GhostRainStorm.Envelope(storm.StormTimer);
+                Player owner = Main.player[projectile.owner];
+                if (owner?.active != true) {
+                    continue;
+                }
+                float envelope = rain.Presence;
                 //远处别人的鬼雨不压暗本地屏幕
-                float distance = Vector2.Distance(player.Center, Main.LocalPlayer.Center);
+                float distance = Vector2.Distance(owner.Center, Main.LocalPlayer.Center);
                 float near = 1f - MathHelper.Clamp(
                     (distance - (GhostRainStorm.Radius + 300f)) / 900f, 0f, 1f);
                 target = Math.Max(target, envelope * near);
             }
-            //中止跳段的强度落差走平滑，正常相位包络本身已连续
             Intensity = Math.Abs(target - Intensity) < 0.01f
                 ? target : MathHelper.Lerp(Intensity, target, 0.22f);
         }

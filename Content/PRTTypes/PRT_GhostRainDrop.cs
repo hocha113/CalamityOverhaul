@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.PRTTypes
     {
         public override string Texture => CWRConstant.Masking + "Extra_98";
         public override bool CanPool => true;
-        public override int InGame_World_MaxCount => 160;
+        public override int InGame_World_MaxCount => 720;
 
         private Color initialColor;
         private float windX;
