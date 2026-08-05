@@ -1,6 +1,4 @@
-using Microsoft.Xna.Framework;
-
-namespace CalamityOverhaul.Content.MainMenus.Himayo
+﻿namespace CalamityOverhaul.Content.MainMenus.Himayo
 {
     /// <summary>夜樱主菜单调色板与布局常量；菜单绘制路径内 screenWidth/mouse 已是 UI 空间，直接取用</summary>
     internal static class HimayoMenuTheme

@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Wraiths.Abilities;
+﻿using CalamityOverhaul.Content.Wraiths.Abilities;
 using CalamityOverhaul.Content.Wraiths.Abilities.GhostRains;
 using CalamityOverhaul.Content.Wraiths.Core;
 using CalamityOverhaul.Content.Wraiths.Runtime;

@@ -1,5 +1,4 @@
-using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content.MainMenus.Himayo

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Wraiths.Projectiles;
 using InnoVault.PRT;
 using System;
@@ -248,19 +248,25 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
             //阴叠起：远处一声闷雷，不带闪电
             if (t == 2) {
                 SoundEngine.PlaySound(SoundID.Thunder with {
-                    Pitch = -0.85f, Volume = 0.38f, MaxInstances = 3,
+                    Pitch = -0.85f,
+                    Volume = 0.38f,
+                    MaxInstances = 3,
                 }, owner.Center);
             }
             //入雨：一记压低的闷锣
             else if (t == GhostRainStorm.CommitFrame + 1) {
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                    Pitch = -0.7f, Volume = 0.45f, MaxInstances = 3,
+                    Pitch = -0.7f,
+                    Volume = 0.45f,
+                    MaxInstances = 3,
                 }, owner.Center);
             }
             //雨幕爬满：更沉的第二声闷雷
             else if (t == GhostRainStorm.RainfallEnd + 1) {
                 SoundEngine.PlaySound(SoundID.Thunder with {
-                    Pitch = -0.95f, Volume = 0.3f, MaxInstances = 3,
+                    Pitch = -0.95f,
+                    Volume = 0.3f,
+                    MaxInstances = 3,
                 }, owner.Center);
             }
         }

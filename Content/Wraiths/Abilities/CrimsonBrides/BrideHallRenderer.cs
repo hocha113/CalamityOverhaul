@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -154,34 +154,46 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.CrimsonBrides
             //木轿吱呀出发
             if (t == 2) {
                 SoundEngine.PlaySound(SoundID.DoorOpen with {
-                    Pitch = -0.78f, Volume = 0.5f, MaxInstances = 3,
+                    Pitch = -0.78f,
+                    Volume = 0.5f,
+                    MaxInstances = 3,
                 }, fx.From);
             }
             //轿落座
             else if (t == CrimsonBrideRestart.PhaseArriveEnd) {
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                    Pitch = -0.8f, Volume = 0.35f, MaxInstances = 3,
+                    Pitch = -0.8f,
+                    Volume = 0.35f,
+                    MaxInstances = 3,
                 }, player.Center);
             }
             //帘幕合拢
             else if (t == CrimsonBrideRestart.HideStart + 1) {
                 SoundEngine.PlaySound(SoundID.DoorClosed with {
-                    Pitch = -0.66f, Volume = 0.5f, MaxInstances = 3,
+                    Pitch = -0.66f,
+                    Volume = 0.5f,
+                    MaxInstances = 3,
                 }, player.Center);
             }
             //合卺：一声闷锣，远处极轻一记铃
             else if (t == CrimsonBrideRestart.RestoreFrame) {
                 SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                    Pitch = -0.55f, Volume = 0.55f, MaxInstances = 3,
+                    Pitch = -0.55f,
+                    Volume = 0.55f,
+                    MaxInstances = 3,
                 }, player.Center);
                 SoundEngine.PlaySound(SoundID.Item35 with {
-                    Pitch = -0.85f, Volume = 0.2f, MaxInstances = 3,
+                    Pitch = -0.85f,
+                    Volume = 0.2f,
+                    MaxInstances = 3,
                 }, player.Center);
             }
             //开帘散场
             else if (t == CrimsonBrideRestart.HideEnd) {
                 SoundEngine.PlaySound(SoundID.DoorOpen with {
-                    Pitch = -0.5f, Volume = 0.42f, MaxInstances = 3,
+                    Pitch = -0.5f,
+                    Volume = 0.42f,
+                    MaxInstances = 3,
                 }, player.Center);
             }
         }

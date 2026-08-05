@@ -1,9 +1,8 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.MainMenus.Characters;
 using CalamityOverhaul.Content.MainMenus.Overs;
 using CalamityOverhaul.Content.UIs.OverhaulSettings;
 using InnoVault.GameSystem;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
