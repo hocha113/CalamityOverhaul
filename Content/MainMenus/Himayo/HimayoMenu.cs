@@ -25,11 +25,10 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
 
         public override void OnDeselected() => HimayoMenuOverride.OnThemeDeselected();
 
-        //标题帧被整帧接管时本钩子不会执行；其余 menuMode（角色选择/设置/多人等）原版路径行至 logo 段，
-        //在此垫全景底图并隐藏 tML logo，保证子菜单与标题页视觉连续
+        //标题帧已在 DrawMenu 入口画过全景；子页面同样由 DrawMenu 入口铺氛围。
+        //此处只隐藏 tML logo，避免与入口全景双重绘制
         public override bool PreDrawLogo(SpriteBatch spriteBatch, ref Vector2 logoDrawCenter,
             ref float logoRotation, ref float logoScale, ref Color drawColor) {
-            HimayoMenuOverride.DrawPanoramaBackdrop(spriteBatch);
             return false;
         }
     }

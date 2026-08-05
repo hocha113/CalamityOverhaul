@@ -15,7 +15,7 @@ LanternBoy: {
 CrimsonBride: {
 	DisplayName: 绯嫁
 	Origin: 花轿在门前停了七夜
-	Power: 「迎亲」花轿循着血迹而来，将垂死之人迎入无人的喜堂。
+	Power: 「迎亲」按下「重启自身」键，花轿便循着血迹而来，将持刀人迎入无人的喜堂；合卺之刻，伤势与诸般状态尽数重启。
 	DeathReason: "{0}触犯了不可触犯之物"
 }
 
@@ -55,4 +55,5 @@ System: {
 	ErosionStain: 指尖泛起尸斑的青
 	ErosionMirror: 镜子里的东西不太像你
 	RevivalKillReason: "{0}死于厉鬼复苏"
+	BrideRiteText: 「迎亲」
 }

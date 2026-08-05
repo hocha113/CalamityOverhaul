@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.Players;
+using CalamityOverhaul.Content.Wraiths.Abilities.CrimsonBrides;
 using CalamityOverhaul.Content.Wraiths.Core;
 using CalamityOverhaul.Content.Wraiths.Projectiles;
 using CalamityOverhaul.Content.Wraiths.VFX;
@@ -31,6 +32,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         HeadlessImpactRequest = 14,
         GhostHandGripRequest = 15,
         LanternImpactRequest = 16,
+        CrimsonBrideRiteRequest = 17,
+        CrimsonBrideRiteState = 18,
     }
 
     internal enum WraithEquipResult : byte
@@ -248,6 +251,34 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             packet.Send();
         }
 
+        /// <summary>绯嫁迎亲请求，仅多人客户端发出；身份取自发包者。</summary>
+        internal static void SendBrideRiteRequest() {
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
+                return;
+            }
+            NewPacket(WraithNetOp.CrimsonBrideRiteRequest).Send();
+        }
+
+        /// <summary>服务器广播绯嫁迎亲仪式状态快照（开始/合卺/中止/结束）。</summary>
+        internal static void SendBrideRiteState(int playerWhoAmI, int toWho = -1) {
+            if (Main.netMode != NetmodeID.Server || playerWhoAmI < 0
+                || playerWhoAmI >= Main.maxPlayers) {
+                return;
+            }
+            Player player = Main.player[playerWhoAmI];
+            if (player?.active != true
+                || !player.TryGetModPlayer(out CrimsonBrideRitePlayer rite)) {
+                return;
+            }
+            ModPacket packet = NewPacket(WraithNetOp.CrimsonBrideRiteState);
+            packet.Write((byte)playerWhoAmI);
+            packet.Write(rite.RiteRevision);
+            packet.Write((short)rite.RiteTimer);
+            packet.Write(rite.RestoreFired);
+            packet.Write(rite.RiteSeed);
+            packet.Send(toWho);
+        }
+
         internal static void SendScapeGhostFx(Vector2 from, Vector2 to, int victimWhoAmI,
             string targetName = null, bool revivalKilled = false) {
             if (Main.netMode != NetmodeID.Server || victimWhoAmI < 0
@@ -298,6 +329,9 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                     case WraithNetOp.LanternImpactRequest:
                         HandleLanternImpact(reader, whoAmI);
                         break;
+                    case WraithNetOp.CrimsonBrideRiteRequest:
+                        HandleBrideRiteRequest(whoAmI);
+                        break;
                 }
                 return;
             }
@@ -317,7 +351,34 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 case WraithNetOp.EquipResult:
                     HandleEquipResult(reader);
                     break;
+                case WraithNetOp.CrimsonBrideRiteState:
+                    HandleBrideRiteState(reader);
+                    break;
             }
+        }
+
+        private static void HandleBrideRiteRequest(int whoAmI) {
+            Player player = ResolvePlayer(whoAmI, requireAlive: true);
+            if (player != null) {
+                Abilities.CrimsonBrides.CrimsonBrideRestart.ExecuteAuthority(player);
+            }
+        }
+
+        private static void HandleBrideRiteState(BinaryReader reader) {
+            int playerIndex = reader.ReadByte();
+            uint revision = reader.ReadUInt32();
+            int timer = reader.ReadInt16();
+            bool restoreFired = reader.ReadBoolean();
+            byte seed = reader.ReadByte();
+            if (playerIndex < 0 || playerIndex >= Main.maxPlayers) {
+                return;
+            }
+            Player player = Main.player[playerIndex];
+            if (player?.active != true) {
+                return;
+            }
+            Abilities.CrimsonBrides.CrimsonBrideRestart.ApplyReplicatedState(
+                player, revision, timer, restoreFired, seed);
         }
 
         private static void HandleInitialState(BinaryReader reader, int whoAmI) {
@@ -326,6 +387,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 out float shadeMastery, out bool shadeDormant,
                 out float handMastery, out bool handDormant,
                 out float lanternMastery, out bool lanternDormant,
+                out float brideMastery, out bool brideDormant,
                 out float erosion, out float revival, out int multiplier,
                 out int erosionIdle, out int revivalIdle);
             Player player = ResolvePlayer(whoAmI, requireAlive: false);
@@ -333,6 +395,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             if (state == null || !state.AcceptInitialState(equipped,
                 scapeMastery, scapeDormant, shadeMastery, shadeDormant,
                 handMastery, handDormant, lanternMastery, lanternDormant,
+                brideMastery, brideDormant,
                 erosion, revival, multiplier,
                 erosionIdle, revivalIdle)) {
                 return;
@@ -348,6 +411,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 out float shadeMastery, out bool shadeDormant,
                 out float handMastery, out bool handDormant,
                 out float lanternMastery, out bool lanternDormant,
+                out float brideMastery, out bool brideDormant,
                 out float erosion, out float revival, out int multiplier,
                 out int erosionIdle, out int revivalIdle);
             if (playerIndex < 0 || playerIndex >= Main.maxPlayers) {
@@ -361,6 +425,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             state.ApplyNetworkState(equipped, loadoutRevision, resourceRevision,
                 scapeMastery, scapeDormant, shadeMastery, shadeDormant,
                 handMastery, handDormant, lanternMastery, lanternDormant,
+                brideMastery, brideDormant,
                 erosion, revival, multiplier,
                 erosionIdle, revivalIdle, force: !state.SessionInitialized);
         }
@@ -561,12 +626,13 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 out float shadeMastery, out bool shadeDormant,
                 out float handMastery, out bool handDormant,
                 out float lanternMastery, out bool lanternDormant,
+                out float brideMastery, out bool brideDormant,
                 out float erosion, out float revival, out int multiplier,
                 out int erosionIdle, out int revivalIdle);
             writer.Write(GetWraithNetworkId(equipped));
             WriteResources(writer, scapeMastery, scapeDormant,
                 shadeMastery, shadeDormant, handMastery, handDormant,
-                lanternMastery, lanternDormant,
+                lanternMastery, lanternDormant, brideMastery, brideDormant,
                 erosion, revival, multiplier, erosionIdle, revivalIdle);
         }
 
@@ -575,12 +641,13 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             out float shadeMastery, out bool shadeDormant,
             out float handMastery, out bool handDormant,
             out float lanternMastery, out bool lanternDormant,
+            out float brideMastery, out bool brideDormant,
             out float erosion, out float revival, out int multiplier,
             out int erosionIdle, out int revivalIdle) {
             equipped = ResolveUsableKey(reader.ReadUInt16());
             ReadResources(reader, out scapeMastery, out scapeDormant,
                 out shadeMastery, out shadeDormant, out handMastery, out handDormant,
-                out lanternMastery, out lanternDormant,
+                out lanternMastery, out lanternDormant, out brideMastery, out brideDormant,
                 out erosion, out revival, out multiplier, out erosionIdle, out revivalIdle);
         }
 
@@ -591,6 +658,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 out float shadeMastery, out bool shadeDormant,
                 out float handMastery, out bool handDormant,
                 out float lanternMastery, out bool lanternDormant,
+                out float brideMastery, out bool brideDormant,
                 out float erosion, out float revival, out int multiplier,
                 out int erosionIdle, out int revivalIdle);
             writer.Write(GetWraithNetworkId(equipped));
@@ -598,7 +666,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             writer.Write(resourceRevision);
             WriteResources(writer, scapeMastery, scapeDormant,
                 shadeMastery, shadeDormant, handMastery, handDormant,
-                lanternMastery, lanternDormant,
+                lanternMastery, lanternDormant, brideMastery, brideDormant,
                 erosion, revival, multiplier, erosionIdle, revivalIdle);
         }
 
@@ -608,6 +676,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             out float shadeMastery, out bool shadeDormant,
             out float handMastery, out bool handDormant,
             out float lanternMastery, out bool lanternDormant,
+            out float brideMastery, out bool brideDormant,
             out float erosion, out float revival, out int multiplier,
             out int erosionIdle, out int revivalIdle) {
             equipped = ResolveUsableKey(reader.ReadUInt16());
@@ -615,7 +684,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             resourceRevision = reader.ReadUInt32();
             ReadResources(reader, out scapeMastery, out scapeDormant,
                 out shadeMastery, out shadeDormant, out handMastery, out handDormant,
-                out lanternMastery, out lanternDormant,
+                out lanternMastery, out lanternDormant, out brideMastery, out brideDormant,
                 out erosion, out revival, out multiplier, out erosionIdle, out revivalIdle);
         }
 
@@ -624,6 +693,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             float shadeMastery, bool shadeDormant,
             float handMastery, bool handDormant,
             float lanternMastery, bool lanternDormant,
+            float brideMastery, bool brideDormant,
             float erosion, float revival, int multiplier,
             int erosionIdle, int revivalIdle) {
             writer.Write(scapeMastery);
@@ -639,6 +709,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             writer.Write(revivalIdle);
             writer.Write(lanternMastery);
             writer.Write(lanternDormant);
+            writer.Write(brideMastery);
+            writer.Write(brideDormant);
         }
 
         private static void ReadResources(BinaryReader reader,
@@ -646,6 +718,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             out float shadeMastery, out bool shadeDormant,
             out float handMastery, out bool handDormant,
             out float lanternMastery, out bool lanternDormant,
+            out float brideMastery, out bool brideDormant,
             out float erosion, out float revival, out int multiplier,
             out int erosionIdle, out int revivalIdle) {
             scapeMastery = reader.ReadSingle();
@@ -661,6 +734,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             revivalIdle = reader.ReadInt32();
             lanternMastery = reader.ReadSingle();
             lanternDormant = reader.ReadBoolean();
+            brideMastery = reader.ReadSingle();
+            brideDormant = reader.ReadBoolean();
         }
 
         private static ushort GetWraithNetworkId(string key) {

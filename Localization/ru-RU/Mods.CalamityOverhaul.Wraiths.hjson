@@ -15,7 +15,7 @@ LanternBoy: {
 CrimsonBride: {
 	// DisplayName: The Crimson Bride
 	// Origin: The bridal palanquin waited at the gate for seven nights
-	// Power: 「The Procession」A bridal palanquin follows the trail of blood, carrying the dying into an empty wedding hall.
+	// Power: 「The Procession」Press the Self-Restart key and the palanquin comes following your trail of blood, carrying the blade-bearer into an empty wedding hall; at the nuptial toast, wounds and afflictions alike are restarted.
 	// DeathReason: "{0} touched what must never be touched"
 }
 
@@ -55,4 +55,5 @@ System: {
 	// ErosionStain: A corpse-blue tinge creeps up the fingertips
 	// ErosionMirror: The thing in the mirror does not quite look like you
 	// RevivalKillReason: "{0} was wholly claimed by the returning wraith"
+	// BrideRiteText: 「The Procession」
 }

@@ -85,8 +85,9 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
                 entries[hoverIndex].Action();
             }
 
-            //主题切换文字：位置与交互复刻原版（左键下一款、右键上一款）
-            bool switchHover = inputFree && ThemeSwitchRect().Contains(mouse);
+            //主题切换文字：位置与交互复刻原版（左键下一款、右键上一款）；落地反射缺失时仅展示不可点
+            bool switchHover = inputFree && HimayoMenuActions.ThemeSwitchReady
+                && ThemeSwitchRect().Contains(mouse);
             themeSwitchHover += ((switchHover ? 1f : 0f) - themeSwitchHover) * 0.25f;
             if (switchHover) {
                 if (leftClick) {
@@ -193,9 +194,11 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
 
         private static void DrawThemeSwitch(SpriteBatch spriteBatch, float fade) {
             Rectangle r = ThemeSwitchRect();
-            Color c = Color.Lerp(new Color(126, 116, 130), Main.OurFavoriteColor, themeSwitchHover) * fade;
+            Color baseCol = HimayoMenuActions.ThemeSwitchReady
+                ? Color.Lerp(new Color(126, 116, 130), Main.OurFavoriteColor, themeSwitchHover)
+                : new Color(90, 84, 96);
             Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, ThemeSwitchText,
-                r.X, r.Y, c, Color.Black * (0.6f * fade), Vector2.Zero, 1f);
+                r.X, r.Y, baseCol * fade, Color.Black * (0.6f * fade), Vector2.Zero, 1f);
         }
     }
 }

@@ -17,6 +17,9 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
         /// <summary>核心反射是否齐备，决定 <see cref="HimayoMenuOverride.CanOverride"/></summary>
         public static bool Ready { get; private set; }
 
+        /// <summary>主题切换落地反射是否可用；失败时切换钮降级，不影响标题接管</summary>
+        public static bool ThemeSwitchReady { get; private set; }
+
         //InnoVault UIHandleLoader.MenuLoadDraw：驱动 Mod_MenuLoad 层（公告栏/反馈等），内部自管批次与 60tick 逻辑
         private static Action<SpriteBatch> driveMenuLoadUIs;
         //MenuLoader.OffsetModMenu：主题循环切换
@@ -27,8 +30,14 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
         private static Action clearVisualPostProcess;
         //Interface.pendingErrorMessages：tML 延迟错误弹窗队列（存档失败等），非核心
         private static FieldInfo pendingErrorMessagesField;
+        //标题接管跳过 UpdateAndDrawModMenu，须自行落地 switchToMenu → currentMenu
+        private static FieldInfo switchToMenuField;
+        private static FieldInfo currentMenuField;
+        private static FieldInfo lastSelectedModMenuField;
+        private static FieldInfo menuLoadingField;
 
         private static bool initialized;
+        private static bool themeSwitchFaultLogged;
 
         public static void Initialize(Mod mod) {
             if (initialized) {
@@ -51,12 +60,23 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
                 pendingErrorMessagesField = typeof(Main).Assembly
                     .GetType("Terraria.ModLoader.UI.Interface")
                     ?.GetField("pendingErrorMessages", BindingFlags.NonPublic | BindingFlags.Static);
+
+                BindingFlags menuFlags = BindingFlags.NonPublic | BindingFlags.Static;
+                switchToMenuField = typeof(MenuLoader).GetField("switchToMenu", menuFlags);
+                currentMenuField = typeof(MenuLoader).GetField("currentMenu", menuFlags);
+                lastSelectedModMenuField = typeof(MenuLoader).GetField("LastSelectedModMenu",
+                    BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
+                menuLoadingField = typeof(MenuLoader).GetField("loading", menuFlags);
             } catch (Exception ex) {
                 mod.Logger.Warn($"[HimayoMenu] 反射解析异常，夜樱主菜单退回原版: {ex}");
             }
             Ready = driveMenuLoadUIs != null && offsetModMenu != null && prepareSingleplayer != null;
+            ThemeSwitchReady = offsetModMenu != null && switchToMenuField != null && currentMenuField != null;
             if (!Ready) {
                 mod.Logger.Warn("[HimayoMenu] 核心反射项缺失，夜樱主菜单接管停用，原版菜单可正常使用");
+            }
+            else if (!ThemeSwitchReady) {
+                mod.Logger.Warn("[HimayoMenu] 主题切换落地反射缺失，切换钮不可用，标题接管仍可用");
             }
         }
 
@@ -136,10 +156,42 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
             Main.WeGameRequireExitGame();
         }
 
-        /// <summary>循环切换菜单主题，dir=±1；复刻原版切换文字的音效行为</summary>
+        /// <summary>循环切换菜单主题，dir=±1；OffsetModMenu 只排队，须立刻落地（标题帧跳过了 UpdateAndDrawModMenu）</summary>
         public static void SwitchTheme(int dir) {
+            if (!ThemeSwitchReady) {
+                return;
+            }
             SoundEngine.PlaySound(SoundID.MenuTick);
-            offsetModMenu?.Invoke(dir);
+            offsetModMenu.Invoke(dir);
+            ApplyPendingMenuSwitch();
+        }
+
+        /// <summary>复刻 MenuLoader.UpdateAndDrawModMenuInner 的切换段：交换 currentMenu、触发 OnSelected、持久化</summary>
+        private static void ApplyPendingMenuSwitch() {
+            try {
+                ModMenu pending = switchToMenuField.GetValue(null) as ModMenu;
+                ModMenu current = currentMenuField.GetValue(null) as ModMenu;
+                if (pending == null || pending == current) {
+                    return;
+                }
+
+                current?.OnDeselected();
+                currentMenuField.SetValue(null, pending);
+                pending.OnSelected();
+                switchToMenuField.SetValue(null, null);
+
+                bool loading = menuLoadingField?.GetValue(null) as bool? ?? false;
+                if (!loading && lastSelectedModMenuField != null && pending.FullName != (string)lastSelectedModMenuField.GetValue(null)) {
+                    lastSelectedModMenuField.SetValue(null, pending.FullName);
+                    Main.SaveSettings();
+                }
+            } catch (Exception ex) {
+                ThemeSwitchReady = false;
+                if (!themeSwitchFaultLogged) {
+                    themeSwitchFaultLogged = true;
+                    CWRMod.Instance?.Logger.Warn($"[HimayoMenu] 主题切换落地失败，切换钮停用: {ex}");
+                }
+            }
         }
     }
 }

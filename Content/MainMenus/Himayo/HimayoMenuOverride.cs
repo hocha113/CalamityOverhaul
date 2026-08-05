@@ -22,6 +22,8 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
 
         //帧首锁存的接管决策：DrawMenu 定夺、PostDrawMenu 消费，防 menuMode 帧中变化引起原版按钮闪帧
         private static bool takeoverLatch;
+        //本帧对子页面放行了原版 DrawMenu；若 orig 中途把 menuMode 改回 0，帧末会闪出社交/版本号，须在 PostDrawMenu 盖回
+        private static bool yieldedToVanilla;
         //入场淡入 0~1
         private static float fade;
         //运行期绘制异常一次即永久停用（fail-open）
@@ -112,9 +114,7 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
 
         public override bool? DrawMenu(GameTime gameTime) {
             takeoverLatch = false;
-            if (Main.menuMode != 0) {
-                return null;
-            }
+            yieldedToVanilla = false;
             if (PanoramaTex?.Value == null) {
                 return null;
             }
@@ -122,21 +122,50 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
             if (HimayoMenuActions.HasPendingErrorMessages) {
                 return null;
             }
-            takeoverLatch = true;
+
             try {
-                DrawTakeoverFrame();
+                //任意 menuMode 先铺氛围层，盖住 DoDraw 的原版天空；标题帧继续自绘 chrome，子页面放行原版 UI 叠上
+                DrawAtmosphereLayer();
+
+                if (Main.menuMode != 0) {
+                    //放行 orig：若本帧点「返回」把 menuMode 改成 0，原版帧末会画社交/版本号——PostDrawMenu 用 yielded 标记盖回
+                    yieldedToVanilla = true;
+                    return null;
+                }
+
+                takeoverLatch = true;
+                DrawTitleChrome();
             } catch (Exception ex) {
                 //一次异常即永久回退原版，恢复批次保住本帧
                 runtimeFault = true;
                 takeoverLatch = false;
+                yieldedToVanilla = false;
                 CWRMod.Instance.Logger.Error($"[HimayoMenu] 接管绘制异常，永久回退原版菜单: {ex}");
                 EnsureMenuBatch(Main.spriteBatch);
             }
-            //即使出错也跳过原版本帧（批次已恢复），下一帧起 CanOverride=false 走原版
-            return false;
+            //标题帧即使出错也跳过原版本帧（批次已恢复），下一帧起 CanOverride=false 走原版
+            return Main.menuMode == 0 ? false : null;
         }
 
         public override void PostDrawMenu(GameTime gameTime) {
+            //子页面 orig 中途回到标题：同帧盖回氛围+chrome，抹掉社交按钮/版本号闪帧
+            if (yieldedToVanilla && Main.menuMode == 0 && PanoramaTex?.Value != null
+                && !HimayoMenuActions.HasPendingErrorMessages && !runtimeFault) {
+                yieldedToVanilla = false;
+                try {
+                    //框架已开启 UIScale 批次；氛围层会 End→绘制→Begin，chrome 接续
+                    DrawAtmosphereLayer();
+                    DrawTitleChrome();
+                    Main.DrawCursor(Main.DrawThickCursor());
+                } catch (Exception ex) {
+                    runtimeFault = true;
+                    CWRMod.Instance.Logger.Error($"[HimayoMenu] 返回标题盖帧异常，永久回退原版菜单: {ex}");
+                    EnsureMenuBatch(Main.spriteBatch);
+                }
+                return;
+            }
+            yieldedToVanilla = false;
+
             if (!takeoverLatch) {
                 return;
             }
@@ -157,22 +186,24 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
             return MathHelper.Clamp(alpha, 0f, 1f);
         }
 
-        //接管帧绘制管线；入口批次由 DoDraw 开启（Deferred/UIScale），返回前必须交还一个已开启批次
-        private static void DrawTakeoverFrame() {
+        //氛围层：全景 + 三层花瓣；入口批次须已开启，返回前交还已开启批次
+        private static void DrawAtmosphereLayer() {
+            SpriteBatch sb = Main.spriteBatch;
+            float alpha = DrawAlpha();
+            sb.End();
+            DrawPanoramaCore(sb, alpha);
+            HimayoPetalField.DrawBack(sb, alpha, fade);
+            HimayoPetalField.DrawFront(sb, alpha, fade);
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
+        }
+
+        //标题 chrome：按钮/公告栏/立绘；近景花瓣再盖顶（接瓣交互只在标题）
+        private static void DrawTitleChrome() {
             SpriteBatch sb = Main.spriteBatch;
             float alpha = DrawAlpha();
 
-            sb.End();
-
-            //全景底
-            DrawPanoramaCore(sb, alpha);
-
-            //远、中景花瓣（自管批次）
-            HimayoPetalField.DrawBack(sb, alpha, fade);
-
-            //标题簇与按钮列
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
+            //标题簇与按钮列（氛围层已交还开启批次）
             HimayoMenuButtons.Draw(sb, fade);
             sb.End();
 
@@ -185,7 +216,7 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
             DrivePortraits(sb);
             sb.End();
 
-            //近景花瓣盖顶（自管批次）
+            //近景花瓣盖在 chrome 之上（氛围层已画过一轮；此处再画一次保证压住按钮/立绘）
             HimayoPetalField.DrawFront(sb, alpha, fade);
 
             //交还开启批次，框架随后 End
@@ -205,18 +236,6 @@ namespace CalamityOverhaul.Content.MainMenus.Himayo
                 HelenPortraitUI.Instance.Update();
                 HelenPortraitUI.Instance.Draw(sb);
             }
-        }
-
-        /// <summary>子菜单垫底：PreDrawLogo 处调用（原版菜单批次内），画完负责恢复原版菜单批次</summary>
-        public static void DrawPanoramaBackdrop(SpriteBatch spriteBatch) {
-            if (Main.dedServ || PanoramaTex?.Value == null) {
-                return;
-            }
-            spriteBatch.End();
-            DrawPanoramaCore(spriteBatch, DrawAlpha());
-            //恢复为 DoDraw 开给 DrawMenu 的同款批次参数
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
         }
 
         //全景绘制核心：着色器路径按视线方向采样 equirect；着色器或噪声缺席时退化为静态 cover 铺满

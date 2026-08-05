@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         HeadlessShade,
         GhostHand,
         LanternBoy,
+        CrimsonBride,
     }
 
     /// <summary>点鬼簿静态目录项。</summary>

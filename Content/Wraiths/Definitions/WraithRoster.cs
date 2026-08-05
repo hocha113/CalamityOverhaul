@@ -24,6 +24,10 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
     {
         public override int SortOrder => 30;
         internal override ushort NetworkId => 2;
+        internal override WraithCatalogState CatalogState => WraithCatalogState.Usable;
+        internal override WraithAbilityKind AbilityKind => WraithAbilityKind.CrimsonBride;
+        internal override float MasteryCost => 0.40f;
+        internal override float ErosionCost => 0.22f;
     }
 
     internal sealed class ScapeGhost : WraithDefinition

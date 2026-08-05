@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         public static LocalizedText ErosionCrawl { get; private set; }
         public static LocalizedText ErosionStain { get; private set; }
         public static LocalizedText ErosionMirror { get; private set; }
+        public static LocalizedText BrideRiteText { get; private set; }
 
         void ICWRLoader.LoadData() {
             ScapeGhostActivated = this.GetLocalization(nameof(ScapeGhostActivated),
@@ -34,6 +35,8 @@ namespace CalamityOverhaul.Content.Wraiths.Core
                 () => "指尖泛起尸斑的青");
             ErosionMirror = this.GetLocalization(nameof(ErosionMirror),
                 () => "镜子里的东西不太像你");
+            BrideRiteText = this.GetLocalization(nameof(BrideRiteText),
+                () => "「迎亲」");
         }
 
         void ICWRLoader.UnLoadData() {
@@ -44,6 +47,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             ErosionCrawl = null;
             ErosionStain = null;
             ErosionMirror = null;
+            BrideRiteText = null;
         }
     }
 }
