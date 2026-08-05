@@ -7,7 +7,6 @@ namespace CalamityOverhaul.Content.Wraiths.Core
     {
         Usable,
         Archive,
-        SealedArchive,
     }
 
     internal enum WraithAbilityKind : byte
@@ -18,6 +17,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         GhostHand,
         LanternBoy,
         CrimsonBride,
+        GhostRain,
     }
 
     /// <summary>点鬼簿静态目录项。</summary>

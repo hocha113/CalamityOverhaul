@@ -1,11 +1,4 @@
-﻿NoFace: {
-	DisplayName: 无面女
-	Origin: 雨夜桥头，她借走了你的脸
-	Power: 「借颜」窃取目标的相貌，短暂复制其能力
-	DeathReason: "{0}触犯了不可触犯之物"
-}
-
-LanternBoy: {
+﻿LanternBoy: {
 	DisplayName: 提灯童子
 	Origin: 山道尽头有灯，灯下无人，再看已是灯中人
 	Power: 「引路」三盏鬼灯环绕持有者，灯影会错拍复刻鬼切的普通斩击，合计拥有六成威力。
@@ -40,11 +33,11 @@ GhostHand: {
 	DeathReason: "{0}被攥进了墙里"
 }
 
-WellThing: {
-	DisplayName: 井中鸣
-	Origin: ———
-	Power: ———
-	DeathReason: "{0}触犯了不可触犯之物"
+GhostRain: {
+	DisplayName: 鬼雨
+	Origin: 天不是天，是一层一层压下来的脸
+	Power: 「召雨」按下「重启自身」键，阴幕叠起，鬼雨倾落；雨幕中的活物会被慢慢蚀尽，或被拽进雨里
+	DeathReason: "{0}被雨认领了"
 }
 
 System: {
@@ -56,4 +49,5 @@ System: {
 	ErosionMirror: 镜子里的东西不太像你
 	RevivalKillReason: "{0}死于厉鬼复苏"
 	BrideRiteText: 「迎亲」
+	GhostRainRiteText: 「召雨」
 }

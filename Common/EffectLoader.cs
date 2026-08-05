@@ -74,6 +74,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> HeadlessShadeBody { get; set; }
         public static Asset<Effect> WraithLantern { get; set; }
         public static Asset<Effect> BrideCurtain { get; set; }
+        public static Asset<Effect> GhostRain { get; set; }
         public static Asset<Effect> OniPaperBurn { get; set; }
         public static Asset<Effect> OniVigorInk { get; set; }
         public static Asset<Effect> OniStanceBlade { get; set; }

@@ -345,10 +345,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
 
             switch (entry.State) {
-                case OniGhostState.SealedArchive:
-                    DrawNameColumn(sb, font, entry.Name(), rect, OnikiriUITheme.Paper * (alpha * 0.22f), alpha, 0f, time, index);
-                    DrawSealTalisman(sb, rect, alpha, time, index);
-                    return;
                 case OniGhostState.Archive:
                     DrawNameColumn(sb, font, entry.Name(), rect,
                         OnikiriUITheme.TextDim * (alpha * (0.42f + hover * 0.18f)), alpha, 0f, time, index);
@@ -411,27 +407,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     break;
                 }
             }
-        }
-
-        /// <summary>封印札覆名讳</summary>
-        private static void DrawSealTalisman(SpriteBatch sb, Rectangle rect, float alpha, float time, int index) {
-            //偶发轻颤:长周期正弦越过阈值的窄窗内高频抖动
-            float gate = (float)Math.Sin(time * 0.21f + index * 2.63f);
-            float tremble = gate > 0.965f ? (float)Math.Sin(time * 34f) * 0.05f : 0f;
-
-            Vector2 center = new(rect.Center.X, rect.Y + rect.Height * 0.42f);
-            float rot = 0.03f + tremble;
-            Vector2 size = new(20f, rect.Height * 0.7f);
-            Vector2 half = new(0.5f);
-            Vector2 top = center - (MathHelper.PiOver2 + rot).ToRotationVector2() * (size.Y * 0.5f);
-
-            OniBrush.DrawPaperStrip(sb, top, rot, size, alpha * 0.94f, time * 0.07f + index * 0.4f);
-
-            //朱纹:一长竖两短横,似符非字
-            Color strokeCol = OnikiriUITheme.Seal * (alpha * 0.85f);
-            sb.Draw(Pixel, center + new Vector2(0f, 4f).RotatedBy(rot), PixelSrc, strokeCol, rot, half, new Vector2(2.2f, size.Y * 0.52f), SpriteEffects.None, 0f);
-            sb.Draw(Pixel, center + new Vector2(0f, -size.Y * 0.24f).RotatedBy(rot), PixelSrc, strokeCol, rot, half, new Vector2(size.X * 0.6f, 2f), SpriteEffects.None, 0f);
-            sb.Draw(Pixel, center + new Vector2(0f, -size.Y * 0.10f).RotatedBy(rot), PixelSrc, strokeCol * 0.85f, rot, half, new Vector2(size.X * 0.44f, 1.6f), SpriteEffects.None, 0f);
         }
 
         public static void DrawLoadoutSlot(SpriteBatch sb, DynamicSpriteFont font, Rectangle rect,
@@ -586,13 +561,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             int frameSize = smoke.Width / 2;
             Vector2 origin = new(frameSize * 0.5f);
             float time = ui.GlobalTimer;
-            //封印与休眠的影近乎不动
-            float writhe = entry.State == OniGhostState.SealedArchive ? 0.15f
-                : entry.IsDormant ? 0.24f : entry.IsArchive ? 0.42f : 1f;
+            //休眠的影近乎不动
+            float writhe = entry.IsDormant ? 0.24f : entry.IsArchive ? 0.42f : 1f;
             Vector2 basePos = lightCenter + new Vector2(0f, 12f);
 
             for (int i = 0; i < 3; i++) {
-                int frame = entry.State == OniGhostState.SealedArchive ? i % 4 : (int)(time * 3.4f + i * 1.7f) % 4;
+                int frame = (int)(time * 3.4f + i * 1.7f) % 4;
                 Rectangle srcRect = new(frame % 2 * frameSize, frame / 2 * frameSize, frameSize, frameSize);
                 float phase = i * 2.1f;
                 Vector2 offset = new((float)Math.Sin(time * (0.6f + i * 0.22f) + phase) * 6f * writhe,
@@ -602,14 +576,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 //影是"光被挡住":纯墨色,越靠光心越实
                 sb.Draw(smoke, basePos + offset, srcRect, OnikiriUITheme.Ink * (alpha * (0.72f - i * 0.12f)),
                     rot, origin, scale, SpriteEffects.None, 0f);
-            }
-
-            //封印态:影上横一条裹尸布似的纸带 + 小封字印
-            if (entry.State == OniGhostState.SealedArchive) {
-                sb.Draw(Pixel, basePos + new Vector2(0f, -8f), PixelSrc, OnikiriUITheme.Paper * (alpha * 0.4f),
-                    0.06f, new Vector2(0.5f), new Vector2(96f, 12f), SpriteEffects.None, 0f);
-                OniBrush.DrawSealGlyph(sb, basePos + new Vector2(30f, -8f), 8f, alpha * 0.8f, 0.06f);
-                return;
             }
 
             //鬼火之眼:闲置凝视时瞳位缓缓压向光标方向(只转眼,不动身)
@@ -640,7 +606,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Rectangle quad = new((int)(basePos.X - w * 0.5f), (int)(basePos.Y - h * 0.52f), w, h);
 
             float writhe = entry.State switch {
-                OniGhostState.SealedArchive => 0.06f,
                 OniGhostState.Dormant => 0.16f,
                 OniGhostState.Archive => 0.32f,
                 _ => 0.62f,
@@ -678,13 +643,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 Alpha = alpha * 0.92f,
                 Time = ui.GlobalTimer,
             });
-
-            //封印:影上横一条裹尸布似的纸带 + 小封字印
-            if (entry.State == OniGhostState.SealedArchive) {
-                sb.Draw(Pixel, basePos + new Vector2(0f, -8f), PixelSrc, OnikiriUITheme.Paper * (alpha * 0.4f),
-                    0.06f, new Vector2(0.5f), new Vector2(96f, 12f), SpriteEffects.None, 0f);
-                OniBrush.DrawSealGlyph(sb, basePos + new Vector2(30f, -8f), 8f, alpha * 0.8f, 0.06f);
-            }
         }
 
         /// <summary>线香,燃去比=驾驭度</summary>
@@ -734,7 +692,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private static (string, Color) StateLabel(OniGhostEntry entry) => entry.State switch {
             OniGhostState.Ready => (OniRegisterUI.StateReady.Value, OnikiriUITheme.TextDim),
             OniGhostState.Dormant => (OniRegisterUI.StateDormant.Value, OnikiriUITheme.Bright),
-            OniGhostState.SealedArchive => (OniRegisterUI.StateSealedArchive.Value, OnikiriUITheme.TextDim),
             _ => (OniRegisterUI.StateArchive.Value, OnikiriUITheme.Disabled),
         };
 

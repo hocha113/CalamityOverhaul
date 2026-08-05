@@ -112,9 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 ErosionCost = definition.ErosionCost,
                 State = canEquip
                     ? dormant ? OniGhostState.Dormant : OniGhostState.Ready
-                    : definition.CatalogState == WraithCatalogState.SealedArchive
-                        ? OniGhostState.SealedArchive
-                        : OniGhostState.Archive,
+                    : OniGhostState.Archive,
                 CanEquip = canEquip,
             };
         }

@@ -1,10 +1,3 @@
-NoFace: {
-	DisplayName: The Faceless Woman
-	Origin: On a rain-soaked bridge, she borrowed your face
-	Power: 「Borrowed Face」Steals a target's visage and briefly copies their abilities
-	DeathReason: "{0} touched what must never be touched"
-}
-
 LanternBoy: {
 	DisplayName: The Lantern Boy
 	Origin: A lamp at the end of the mountain road, no one beneath it; look again, and you are the one inside the lamp
@@ -40,11 +33,11 @@ GhostHand: {
 	DeathReason: "{0} was dragged into the wall"
 }
 
-WellThing: {
-	DisplayName: The Ringing in the Well
-	Origin: ———
-	Power: ———
-	DeathReason: "{0} touched what must never be touched"
+GhostRain: {
+	DisplayName: The Ghost Rain
+	Origin: That is not a sky — it is faces, pressing down layer upon layer
+	Power: 「Summon Rain」Press the Self-Restart key: the gloom stacks and the ghost rain pours down; living things caught in the veil are slowly eaten away, or dragged up into the rain
+	DeathReason: "{0} was claimed by the rain"
 }
 
 System: {
@@ -56,4 +49,5 @@ System: {
 	ErosionMirror: The thing in the mirror does not quite look like you
 	RevivalKillReason: "{0} was wholly claimed by the returning wraith"
 	BrideRiteText: 「The Procession」
+	GhostRainRiteText: 「Summon Rain」
 }

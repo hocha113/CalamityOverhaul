@@ -9,7 +9,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         Ready,
         Dormant,
         Archive,
-        SealedArchive,
     }
 
     internal sealed class OniGhostEntry
@@ -26,7 +25,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         public bool HasName => Name != null;
         public bool IsDormant => State == OniGhostState.Dormant;
-        public bool IsArchive => State == OniGhostState.Archive || State == OniGhostState.SealedArchive;
+        public bool IsArchive => State == OniGhostState.Archive;
         public bool HasEyes => CanEquip && !IsDormant;
     }
 

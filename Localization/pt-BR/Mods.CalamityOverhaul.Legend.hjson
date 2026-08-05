@@ -538,11 +538,9 @@ OnikiriText: {
 		// StateReady: Ready to bind
 		// StateDormant: Exhausted · Dormant
 		// StateArchive: Fragment · Cannot bind
-		// StateSealedArchive: Sealed fragment
 		// EmptySlotName: No bound wraith
 		// EmptySlotHint: Select a wraith to inspect it, then use the bind seal to place it in the single wraith slot. An empty slot enables no wraith ability
 		// UsableSection: WRAITHS
-		// ArchiveSection: FRAGMENTS
 		// CloseTagText: ROLL
 		// CloseHintFormat: ESC · {0} · click outside to roll up
 		// MeiTabText: Inscription Stand

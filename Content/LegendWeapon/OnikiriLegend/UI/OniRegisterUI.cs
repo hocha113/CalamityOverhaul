@@ -31,11 +31,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText StateReady { get; private set; }
         public static LocalizedText StateDormant { get; private set; }
         public static LocalizedText StateArchive { get; private set; }
-        public static LocalizedText StateSealedArchive { get; private set; }
         public static LocalizedText EmptySlotName { get; private set; }
         public static LocalizedText EmptySlotHint { get; private set; }
         public static LocalizedText UsableSection { get; private set; }
-        public static LocalizedText ArchiveSection { get; private set; }
         public static LocalizedText CloseTagText { get; private set; }
         public static LocalizedText CloseHintFormat { get; private set; }
         public static LocalizedText MeiTabText { get; private set; }
@@ -57,11 +55,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             StateReady = this.GetLocalization(nameof(StateReady), () => "可役使");
             StateDormant = this.GetLocalization(nameof(StateDormant), () => "耗竭 · 休眠");
             StateArchive = this.GetLocalization(nameof(StateArchive), () => "残卷 · 不可役使");
-            StateSealedArchive = this.GetLocalization(nameof(StateSealedArchive), () => "封印残卷");
             EmptySlotName = this.GetLocalization(nameof(EmptySlotName), () => "役鬼位空");
             EmptySlotHint = this.GetLocalization(nameof(EmptySlotHint), () => "从名录中选中一只厉鬼查看详情，再以役使印将其纳入役鬼位。空位不会启用任何厉鬼能力");
             UsableSection = this.GetLocalization(nameof(UsableSection), () => "役 鬼");
-            ArchiveSection = this.GetLocalization(nameof(ArchiveSection), () => "残 卷");
             CloseTagText = this.GetLocalization(nameof(CloseTagText), () => "收卷");
             CloseHintFormat = this.GetLocalization(nameof(CloseHintFormat), () => "ESC · {0} · 点击卷外 收卷");
             MeiTabText = this.GetLocalization(nameof(MeiTabText), () => "改铭台");
@@ -99,7 +95,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private Rectangle loadoutSlotRect;
         private Rectangle actionRect;
         private float usableSectionY;
-        private float archiveSectionY;
         private float loadoutSlotHover;
         private float actionHover;
         //收卷木牌,点击关闭,牌绳 Verlet
@@ -317,49 +312,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Rectangle inner = scrollRect;
             inner.Inflate(-30, -36);
             int usableCount = 0;
-            int archiveCount = 0;
             foreach (OniGhostEntry entry in entries) {
                 if (entry.CanEquip) {
                     usableCount++;
                 }
-                else {
-                    archiveCount++;
-                }
             }
 
+            //残卷区已删，六成品单排占满纸面
             float mainTotalW = usableCount * OnikiriUITheme.EntryColumnW
                 + Math.Max(0, usableCount - 1) * OnikiriUITheme.EntryColumnGap;
             float mainX = inner.Center.X + mainTotalW * 0.5f - OnikiriUITheme.EntryColumnW;
             int mainGap = (int)MathF.Round(MathHelper.Lerp(32f, 42f, heightEase));
-            int archiveGap = (int)MathF.Round(MathHelper.Lerp(28f, 48f, heightEase));
-            int archiveMinH = (int)MathF.Round(MathHelper.Lerp(64f, 76f, heightEase));
-            int mainMaxH = (int)MathF.Round(MathHelper.Lerp(170f, 250f, heightEase));
+            int mainMaxH = (int)MathF.Round(MathHelper.Lerp(200f, 288f, heightEase));
             const int bottomReserve = 32;
             int mainTop = loadoutSlotRect.Bottom + mainGap;
-            int mainAvailable = inner.Bottom - mainTop - archiveGap - archiveMinH - bottomReserve;
-            int mainH = Math.Max(96, Math.Min(mainMaxH, mainAvailable));
+            int mainH = Math.Max(96, Math.Min(mainMaxH, inner.Bottom - mainTop - bottomReserve));
             usableSectionY = mainTop - 27f;
 
-            float archiveTotalW = archiveCount * OnikiriUITheme.ArchiveColumnW
-                + Math.Max(0, archiveCount - 1) * OnikiriUITheme.ArchiveColumnGap;
-            float archiveX = inner.Center.X + archiveTotalW * 0.5f - OnikiriUITheme.ArchiveColumnW;
-            int archiveTop = mainTop + mainH + archiveGap;
-            int archiveH = Math.Max(archiveMinH, inner.Bottom - archiveTop - bottomReserve);
-            archiveSectionY = archiveTop - 25f;
-
             int usableIndex = 0;
-            int archiveIndex = 0;
             for (int i = 0; i < entries.Count && i < entryRects.Length; i++) {
-                if (entries[i].CanEquip) {
-                    float x = mainX - usableIndex * (OnikiriUITheme.EntryColumnW + OnikiriUITheme.EntryColumnGap);
-                    entryRects[i] = new Rectangle((int)x, mainTop, (int)OnikiriUITheme.EntryColumnW, mainH);
-                    usableIndex++;
+                if (!entries[i].CanEquip) {
+                    continue;
                 }
-                else {
-                    float x = archiveX - archiveIndex * (OnikiriUITheme.ArchiveColumnW + OnikiriUITheme.ArchiveColumnGap);
-                    entryRects[i] = new Rectangle((int)x, archiveTop, (int)OnikiriUITheme.ArchiveColumnW, archiveH);
-                    archiveIndex++;
-                }
+                float x = mainX - usableIndex * (OnikiriUITheme.EntryColumnW + OnikiriUITheme.EntryColumnGap);
+                entryRects[i] = new Rectangle((int)x, mainTop, (int)OnikiriUITheme.EntryColumnW, mainH);
+                usableIndex++;
             }
         }
 
@@ -665,7 +642,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 new Vector2(scrollRect.Right - 34f, tPos.Y + tSize.Y + 5f), 2.2f, 1.8f, a * 0.9f);
 
             DrawSectionLabel(sb, font, UsableSection.Value, usableSectionY, a);
-            DrawSectionLabel(sb, font, ArchiveSection.Value, archiveSectionY, a * 0.72f);
 
             OniGhostEntry equipped = OniRegistry.EquippedEntry;
             string equippedName = equipped?.Name?.Invoke() ?? EmptySlotName.Value;

@@ -3,12 +3,6 @@ using CalamityOverhaul.Content.Wraiths.Core;
 
 namespace CalamityOverhaul.Content.Wraiths.Definitions
 {
-    internal sealed class NoFace : WraithDefinition
-    {
-        public override int SortOrder => 10;
-        internal override ushort NetworkId => 0;
-    }
-
     internal sealed class LanternBoy : WraithDefinition
     {
         public override int SortOrder => 20;
@@ -62,10 +56,14 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         internal override WraithPassiveAbility CreateAbility() => new GhostHandAbility();
     }
 
-    internal sealed class WellThing : WraithDefinition
+    //网络编号 0 沿用原无面女残卷腾出的位；6 为井中鸣退役占位，不再复用
+    internal sealed class GhostRain : WraithDefinition
     {
         public override int SortOrder => 70;
-        internal override ushort NetworkId => 6;
-        internal override WraithCatalogState CatalogState => WraithCatalogState.SealedArchive;
+        internal override ushort NetworkId => 0;
+        internal override WraithCatalogState CatalogState => WraithCatalogState.Usable;
+        internal override WraithAbilityKind AbilityKind => WraithAbilityKind.GhostRain;
+        internal override float MasteryCost => 0.35f;
+        internal override float ErosionCost => 0.18f;
     }
 }

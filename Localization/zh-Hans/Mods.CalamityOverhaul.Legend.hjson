@@ -538,11 +538,9 @@ OnikiriText: {
 		StateReady: 可役使
 		StateDormant: 耗竭 · 休眠
 		StateArchive: 残卷 · 不可役使
-		StateSealedArchive: 封印残卷
 		EmptySlotName: 役鬼位空
 		EmptySlotHint: 从名录中选中一只厉鬼查看详情，再以役使印将其纳入役鬼位。空位不会启用任何厉鬼能力
 		UsableSection: 役 鬼
-		ArchiveSection: 残 卷
 		CloseTagText: 收卷
 		CloseHintFormat: ESC · {0} · 点击卷外 收卷
 		MeiTabText: 改铭台
