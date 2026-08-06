@@ -29,7 +29,7 @@ HeadlessShade: {
 GhostHand: {
 	DisplayName: 焦黑枯手
 	Origin: 一截焦黑枯瘦的恐怖手臂
-	Power: 「攥」被掐住的目标会被压制，并限制其行动
+	Power: 「攥」枯手自背后探出，掐住猎物压制行动、反复碾轧；猎物成群时会探出更多只手，纵是庞然巨物也难逃五指
 	DeathReason: "{0}被攥进了墙里"
 }
 

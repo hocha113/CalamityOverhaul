@@ -89,6 +89,6 @@ ScapeAfterburn: {
 }
 
 GhostGripDebuff: {
-	DisplayName: Ghost Grip Debuff
-	Description: Mods.CalamityOverhaul.Buffs.GhostGripDebuff.Description
+	DisplayName: Withered Grip
+	Description: Seized by the charred hand — there is no moving
 }

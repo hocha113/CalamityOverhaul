@@ -89,6 +89,6 @@ ScapeAfterburn: {
 }
 
 GhostGripDebuff: {
-	// DisplayName: Ghost Grip Debuff
-	// Description: Mods.CalamityOverhaul.Buffs.GhostGripDebuff.Description
+	DisplayName: 枯手攥握
+	Description: 被焦黑枯手掐住，动弹不得
 }
