@@ -4,6 +4,12 @@
 * text=auto
 
 ###############################################################################
+# C#：与 .editorconfig 的 end_of_line=crlf 对齐。
+# 仓库内统一存 LF；检出到工作区强制 CRLF，避免混合行尾与幽灵改动。
+###############################################################################
+*.cs text eol=crlf
+
+###############################################################################
 # Set default behavior for command prompt diff.
 #
 # This is need for earlier builds of msysgit that does not have it on by
