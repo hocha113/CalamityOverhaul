@@ -1,5 +1,6 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates;
 using CalamityOverhaul.Content.Wraiths.Core;
 using InnoVault.GameContent.BaseEntity;
@@ -678,6 +679,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             meiProfile = context?.HasSnapshot == true
                 ? context.Profile
                 : OniMeiCombatProfile.Identity;
+            float beatSpeedFactor = MathHelper.Clamp(1f / Owner.GetWeaponAttackSpeed(Item), 0.5f, 1.6f);
+
+            //鵺切:离地够高的第五拍整拍换成扑击,本拍不再甩常规巨弧(狮势链同时断)
+            if (beat == BeatCount - 1 && meiProfile.NueDive && Projectile.IsOwnedByLocalPlayer()
+                && Owner.GetModPlayer<OnikiriPlayer>().TryNueDive(in meiProfile,
+                    context?.BaseWeaponDamage ?? Projectile.damage, sizeMul, Projectile)) {
+                meiLionChain = 0;
+                comboIndex = 0;
+                lastBeatFire = timer;
+                nextBeatTime = timer + Math.Max(4,
+                    (int)MathF.Round(BeatGap[beat] * beatSpeedFactor * meiProfile.ComboGapMul));
+                return;
+            }
 
             ActiveSlash active = new() {
                 Def = BuildBeatDef(beat, aim, flip, sizeMul),
@@ -703,12 +717,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
             PlayBeatFireSound(beat);
 
-            float speedFactor = MathHelper.Clamp(1f / Owner.GetWeaponAttackSpeed(Item), 0.5f, 1.6f);
-            Projectile.localNPCHitCooldown = Math.Max(5, (int)(BaseHitCooldown * speedFactor));
+            Projectile.localNPCHitCooldown = Math.Max(5, (int)(BaseHitCooldown * beatSpeedFactor));
             comboIndex = (comboIndex + 1) % BeatCount;
             lastBeatFire = timer;
             nextBeatTime = timer + Math.Max(4
-                , (int)MathF.Round(BeatGap[beat] * speedFactor * meiProfile.ComboGapMul));
+                , (int)MathF.Round(BeatGap[beat] * beatSpeedFactor * meiProfile.ComboGapMul));
 
             UpdateMeiOnBeatFired(active);
         }
@@ -1434,10 +1447,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 if (grantResources && a != null) {
                     Tutorial.OnikiriTutorialEvents.FireComboBeatHit(a.Beat, target);
                 }
+                //雷切:雷暴天连第五拍都引得下雷来;晴天只有大招落
+                if (a != null && a.Beat == BeatCount - 1 && profile.ThunderCall
+                    && Main.raining && MathF.Abs(Main.windSpeedCurrent) >= 0.4f) {
+                    okp.TryCallThunder(target, in profile, a.BaseWeaponDamage,
+                        Projectile.knockBack, Projectile);
+                }
                 if (!target.active || target.life <= 0) {
                     okp.TryPetalPruneOnKill(target,
                         a?.BaseWeaponDamage ?? Projectile.damage, Projectile.knockBack,
                         Projectile, in profile);
+                    OniMeiDeedEvents.NotifyKill(Owner, target, OniMeiDeedKillSource.Combo);
                 }
             }
 
@@ -1574,6 +1594,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 Color body = Color.Lerp(lightColor, Color.White, 0.12f)
                     * (bladeOpacity * farW * DepthDim(bladeDepth) * (1f - 0.62f * bladeSpeedFade));
                 DrawBladeSprite(sb, bladeRotation, bladeFacing, scale, body, default, bladeEdgeFlip);
+                DrawEngrave(sb, scale, bladeOpacity * farW * DepthDim(bladeDepth)
+                    * (1f - 0.62f * bladeSpeedFade));
             }
             sb.End();
         }
@@ -1599,6 +1621,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
             Color body = Color.Lerp(lightColor, Color.White, 0.24f) * (bladeOpacity * nearW * speedThin);
             DrawBladeSprite(sb, bladeRotation, bladeFacing, scale, body, default, bladeEdgeFlip);
+            DrawEngrave(sb, scale, bladeOpacity * nearW * speedThin);
+        }
+
+        /// <summary>刀身铭刻层：只叠在刀体本身上，残影不带铭；铭档取本拍已同步的动作快照</summary>
+        private void DrawEngrave(SpriteBatch sb, float scale, float alpha) {
+            OniMeiEngraveState state = OniMeiBladeEngrave.Resolve(Projectile, Owner);
+            if (!state.AnyEngraved) {
+                return;
+            }
+            //狮势链归控制器所有，各端自行推进，故远端刀也看得见蓄势
+            state.LionChain = meiLionChain / (float)BeatCount;
+            OniBladeProfile.BladeXform xform = OniBladeProfile.BuildXform(bladeHandWorld,
+                bladeRotation, bladeFacing, scale, bladeEdgeFlip, BladeHiltUV, BladeTipUV);
+            OniMeiBladeEngrave.Draw(sb, in xform, in state, alpha);
         }
 
         void IPrimitiveDrawable.DrawPrimitives() {

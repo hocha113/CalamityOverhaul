@@ -24,6 +24,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             nameof(MeiKurikara),
         ];
 
+        /// <summary>是否出厂所持；刀縁注册期据此挡住"给白名单铭又配縁"的设计错</summary>
+        internal static bool IsDefaultOwned(string key) {
+            if (string.IsNullOrEmpty(key)) {
+                return false;
+            }
+            foreach (string owned in DefaultOwnedKeys) {
+                if (owned == key) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public static bool Owns(Player player, string key) {
             if (player == null || string.IsNullOrEmpty(key)) {
                 return false;
@@ -83,6 +96,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                 if (Owns(player, definition.Key)) {
                     list.Add(definition);
                 }
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 某槽扇骨候选（含未凿位）：已持在前保持 SortOrder，之后接尚有刀縁可循的未凿铭。<br/>
+        /// 无縁又未持的铭（如 Boss 赠礼未领）不上扇，免得挂一根点不动的死骨
+        /// </summary>
+        public static List<(OniMeiDefinition Definition, bool Owned)> GetBySlotWithLocked(
+            OniMeiSlotKind slot, Player player) {
+            List<(OniMeiDefinition, bool)> list = [];
+            List<OniMeiDefinition> locked = [];
+            foreach (OniMeiDefinition definition in OniMeiRegistry.GetBySlot(slot)) {
+                if (Owns(player, definition.Key)) {
+                    list.Add((definition, true));
+                }
+                else if (Deeds.OniMeiDeedRegistry.TryGetByMei(definition.Key, out _)) {
+                    locked.Add(definition);
+                }
+            }
+            foreach (OniMeiDefinition definition in locked) {
+                list.Add((definition, false));
             }
             return list;
         }

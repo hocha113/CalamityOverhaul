@@ -13,9 +13,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         public override string StateName => "SpazmatismPhase2Dashing";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismPhase2Dashing;
 
-        private const int FullSpeedTime = 24;
+        private const int FullSpeedTime = 16;
         private const int BrakeTime = 10;
-        private const int DashDuration = FullSpeedTime + BrakeTime;
+
+        /// <summary>段间复位喘息，无伤，给玩家读招间隔</summary>
+        private const int SettleTime = 8;
+
+        private const int DashDuration = FullSpeedTime + BrakeTime + SettleTime;
 
         private int currentDashCount;
         private int maxDashCount;
@@ -32,8 +36,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
-            //冲刺状态启用碰撞伤害
-            EnableContactDamage(context.Npc);
+            //冲刺状态启用碰撞伤害，低速自动关
+            EnableContactDamageIfFast(context.Npc);
             //冲刺启动帧天空闪雷
             MachineEffect.TriggerSkyFlash(context.Npc.Center, 0.6f);
         }
@@ -53,6 +57,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                 //全速微弧
                 float speed = npc.velocity.Length();
                 TwinsMotion.CurveChase(npc, player.Center, speed, 0.016f);
+                EnableContactDamageIfFast(npc);
                 FaceVelocity(npc);
                 context.PushDashVisuals(1f, 1f);
 
@@ -63,11 +68,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                         -npc.velocity * 0.18f, Color.White, Main.rand.NextFloat(1.1f, 1.8f))?.Configure(15, 1);
                 }
             }
-            else {
+            else if (Timer <= FullSpeedTime + BrakeTime) {
                 //急停甩头
                 DisableContactDamage(npc);
                 TwinsMotion.BrakeAndWhip(npc, player.Center, 0.76f, 0.34f);
                 context.PushDashVisuals(0.35f, 0.65f);
+            }
+            else {
+                //复位喘息，飘回侧上方再攻位
+                DisableContactDamage(npc);
+                Vector2 resetPos = player.Center
+                    + new Vector2(npc.Center.X < player.Center.X ? -360 : 360, -240);
+                TwinsMotion.SpringHover(npc, resetPos, 0.014f, 0.1f, 20f);
+                FaceTarget(npc, player.Center);
+
+                //排气余烬
+                if (!VaultUtils.isServer && Timer % 3 == 0) {
+                    PRTLoader.NewParticle<PRT_TwinsSpark>(npc.Center + Main.rand.NextVector2Circular(20, 20),
+                        new Vector2(0, -2f), Color.White, Main.rand.NextFloat(0.8f, 1.2f))?.Configure(14, 1);
+                }
             }
 
             //冲刺结束

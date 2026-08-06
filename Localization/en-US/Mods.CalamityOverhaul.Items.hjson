@@ -285,6 +285,19 @@ HalibutItem: {
 	Tooltip: ""
 }
 
+HalibutPilotChart: {
+	DisplayName: Pilot Chart
+	Tooltip:
+		'''
+		Use it to open the Halibut guide from the beginning, or use it again mid-guide to put the guide away
+		Left with you when the opening guide is declined; the chart is not consumed and may be used again
+		'''
+	NeedFish: The Halibut is not in your bag, so the chart has nothing to pilot
+	HoldFish: The chart is unrolled; hold the Halibut and the guide begins
+	Closed: The guide is put away; use the chart again to reopen
+	NotNow: Something else holds the stage right now
+}
+
 OnikiriItem: {
 	DisplayName: Onikiri
 	Tooltip:
@@ -2578,6 +2591,18 @@ OniMeiRubbingHigekiri: {
 	Burden: Blade damage -2% — against healthy targets, this edge is slightly duller than the original name
 }
 
+OniKeikoRune: {
+	DisplayName: Keiko Rune
+	Tooltip:
+		'''
+		Use it to open the Onikiri lesson from the beginning, or use it again mid-lesson to put the lesson away
+		Left with you when the opening lesson is declined; the rune is not consumed and may be used again
+		'''
+	NeedBlade: Onikiri is not in your bag, so the rune has no lesson to open
+	Closed: The lesson is put away; use the rune again to reopen
+	NotNow: Something else holds the stage right now
+}
+
 OniMeiGiftRepairCommand: {
 	Description: Requeue one completed Onikiri inscription gift for this character.
 	LocalOnly: This command only repairs the current local character.
@@ -2688,6 +2713,15 @@ OniMeiRubbingMokukiri: {
 	Origin: The air sank. You got used to it. The guilt stayed
 	Power: Silent-Kill: for 45 ticks after a paid normal flash step naturally ends, the next combo or Zanshin action deals ×1.35 damage
 	Burden: Another dash or a whiff consumes Silent-Kill; free execution dashes never arm it
+}
+
+OniMeiRubbingKumokiri: {
+	DisplayName: Kumo-kiri
+	Tooltip: Blade hits pin silk anchors; three close the web; regen -25% while weaving
+	Origin: The earth-spider nested in the rafters. What was cut was not the spider, but the threads it hung from
+	Power: Ink-Silk: a direct blade hit pins a silk anchor at the cut point for 4 seconds (no re-anchor on the same body within 0.4s, anchors must sit over 90px apart); the third anchor strings an ink-silk triangle that sags for 0.33s then snaps inward toward its centroid, cutting every body it sweeps for 90% base blade damage and binding it for 1 second. The web can be rewoven 1.5s after it closes
+	Burden: Natural vigor regen -25% while any anchor stands; an expired anchor is a wasted cut. An unfinished web is only a lapse in focus
+	DeedHint: Cut down thirty of the things that nest in the rafters, and the blade will learn that smell
 }
 
 OniMeiRubbingKogehi: {

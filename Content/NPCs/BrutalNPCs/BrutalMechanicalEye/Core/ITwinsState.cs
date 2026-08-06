@@ -112,6 +112,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
             npc.damage = npc.defDamage;
         }
 
+        /// <summary>仅高速时开接触伤，低于阈值自动关，伤害窗口对齐视觉冲刺</summary>
+        protected void EnableContactDamageIfFast(NPC npc, float minSpeed = 18f) {
+            npc.damage = npc.velocity.Length() >= minSpeed ? npc.defDamage : 0;
+        }
+
         /// <summary>关接触伤</summary>
         protected void DisableContactDamage(NPC npc) {
             npc.damage = 0;

@@ -11,7 +11,9 @@ using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -29,6 +31,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private enum Phase
         {
             Inactive,
+            /// <summary>开场询问，只在从未答复过的存档上出现</summary>
+            Ask,
             HudIntro,
             Research,
             Equip,
@@ -37,6 +41,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         #region 本地化
+        //阶段0、开场询问
+        public static LocalizedText AskTitle { get; private set; }
+        public static LocalizedText AskBody { get; private set; }
+        public static LocalizedText AskPrompt { get; private set; }
+        public static LocalizedText AcceptBtn { get; private set; }
+        public static LocalizedText DeclineBtn { get; private set; }
+        public static LocalizedText DeclineNotice { get; private set; }
         //阶段1、深渊之眼HUD
         public static LocalizedText HudTitle { get; private set; }
         public static LocalizedText HudBody { get; private set; }
@@ -59,6 +70,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         public override void SetStaticDefaults() {
             GuideLeadQueue.Register(this);
+
+            AskTitle = this.GetLocalization(nameof(AskTitle), () => "要不要先带你认一遍");
+            AskBody = this.GetLocalization(nameof(AskBody), () => "图鉴、祭坛、装备栏与转盘各有门道");
+            AskPrompt = this.GetLocalization(nameof(AskPrompt), () => "现在就认，或收下引航海图改日再来");
+            AcceptBtn = this.GetLocalization(nameof(AcceptBtn), () => "带我认");
+            DeclineBtn = this.GetLocalization(nameof(DeclineBtn), () => "不必了");
+            DeclineNotice = this.GetLocalization(nameof(DeclineNotice), () => "引航海图已留给你，使用它可随时开讲");
 
             HudTitle = this.GetLocalization(nameof(HudTitle), () => "深渊之眼");
             HudBody = this.GetLocalization(nameof(HudBody), () => "手持大比目鱼时它常驻屏幕左下角，显示当前技能、深渊复苏与领域层数");
@@ -87,25 +105,44 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private static int phaseTimer;
         //装备栏停留帧、解锁演完再进转盘
         private static int holdTimer;
+        //引航海图开的一次性会话，越过“已看过/已婉拒”的占位前提；只活在本次进世界期间
+        private static bool forcedSession;
         private const float AnimSpeed = 0.12f;
         //约9秒卡住才出低调跳过，平时靠行动推进
         private const int StuckFramesBeforeSkip = 60 * 9;
         //入栏后约2.2秒，等图鉴解锁演完
         private const int EquipHoldFrames = 130;
+        //抉择不可撤回，等卡片浮定再上按钮，免得弹出瞬间被连点的鼠标替玩家答了
+        private const int AskArmFrames = 24;
 
         public override void OnWorldUnload() {
             currentPhase = Phase.Inactive;
             animProgress = 0f;
             phaseTimer = 0;
             holdTimer = 0;
+            forcedSession = false;
         }
 
         #region 引导排队协议
         int IGuideLead.GuidePriority => 10;//先于委托引导
         bool IGuideLead.GuideReserving => Reserving;
         bool IGuideLead.GuideReady => Ready;
-        //保底被放弃时直接收尾，停止占位
-        void IGuideLead.OnGuideAbandoned() => MarkSeen();
+        //保底被放弃时停止占位。分三种收法，否则玩家的选择会被静默吞掉
+        void IGuideLead.OnGuideAbandoned() {
+            if (forcedSession) {
+                //海图开的会话，只退会话不记看过，玩家还能再铺一次图
+                forcedSession = false;
+                currentPhase = Phase.Inactive;
+                animProgress = 0f;
+                return;
+            }
+            if (!Guide.AskAnswered) {
+                //从未答复就被放弃，按婉拒处理，至少把海图留给玩家
+                DeclineGuide();
+                return;
+            }
+            MarkSeen();
+        }
 
         /// <summary>
         /// 占位、有鱼+已FirstMet（OnTriggered即置）+未看过
@@ -117,7 +154,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 if (p == null || !p.active) {
                     return false;
                 }
-                if (HasSeen) {
+                //海图会话越过已看过/已婉拒，其余前提照旧走 Ready
+                if (!forcedSession && (HasSeen || Guide.Declined)) {
                     return false;
                 }
                 if (!p.TryGetOverride<HalibutPlayer>(out var hp) || !hp.HasHalubut) {
@@ -146,8 +184,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
         #endregion
 
-        private static bool HasSeen
-            => Main.LocalPlayer.GetModPlayer<StoryPlayer>().Get<HalibutGuideData>().GuideSeen;
+        private static HalibutGuideData Guide
+            => Main.LocalPlayer.GetModPlayer<StoryPlayer>().Get<HalibutGuideData>();
+
+        private static bool HasSeen => Guide.GuideSeen;
 
         //手持比目鱼且存活，HUD 在场，引导才有意义
         private static bool StillActive() {
@@ -159,7 +199,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private static HalibutSave Save => Main.LocalPlayer.GetModPlayer<HalibutSave>();
 
         private static void MarkSeen() {
-            Main.LocalPlayer.GetModPlayer<StoryPlayer>().Get<HalibutGuideData>().GuideSeen = true;
+            HalibutGuideData guide = Guide;
+            guide.GuideSeen = true;
+            guide.AskAnswered = true;
+            guide.Declined = false;
+            forcedSession = false;
             currentPhase = Phase.Complete;
             //收尾，避免遗留打开的图鉴
             HalibutAtlas.Instance?.Close();
@@ -186,9 +230,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 return;
             }
 
-            //轮到本引导（就绪才授）、未开始则起步
+            //轮到本引导（就绪才授）、未开始则起步；从未答复过先问一次
             if (currentPhase == Phase.Inactive) {
-                SetPhase(Phase.HudIntro);
+                SetPhase(!forcedSession && !Guide.AskAnswered ? Phase.Ask : Phase.HudIntro);
             }
             //未手持/已死时暂停推进与绘制，不重置
             if (!StillActive()) {
@@ -197,6 +241,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             phaseTimer++;
             switch (currentPhase) {
+                case Phase.Ask:
+                    //只等按钮，没有自动推进
+                    break;
                 case Phase.HudIntro:
                     UpdateHudIntro();
                     break;
@@ -275,6 +322,70 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
+        private static void AcceptGuide() {
+            HalibutGuideData guide = Guide;
+            guide.AskAnswered = true;
+            guide.Declined = false;
+            SoundEngine.PlaySound(SoundID.MenuOpen with { Pitch = -0.2f, Volume = 0.5f });
+            SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = 0.3f, Volume = 0.45f });
+            SetPhase(Phase.HudIntro);
+        }
+
+        private static void DeclineGuide() {
+            HalibutGuideData guide = Guide;
+            guide.AskAnswered = true;
+            guide.Declined = true;
+            forcedSession = false;
+            SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.15f, Volume = 0.45f });
+            HalibutPilotChart.GrantTo(Main.LocalPlayer);
+            //Reserving 随即为假，队列同刻释放展示权
+            currentPhase = Phase.Inactive;
+            animProgress = 0f;
+        }
+
+        /// <summary>对话或过场占用中，海图不该把引导卡盖上去</summary>
+        internal static bool ChartStartBlocked
+            => NarrativeTriggerGate.IsBusy || InnoVault.Cinematics.CutsceneDirector.IsPlaying;
+
+        /// <summary>
+        /// 引航海图启动：只借 <see cref="forcedSession"/> 开一次会话，不动存档进度，
+        /// 中途退出不会把自动引导重新打开
+        /// </summary>
+        internal static bool StartFromChart(Player player) {
+            if (Main.dedServ || player?.whoAmI != Main.myPlayer) {
+                return false;
+            }
+            if (currentPhase != Phase.Inactive && currentPhase != Phase.Complete) {
+                return false;
+            }
+            Guide.AskAnswered = true;
+            forcedSession = true;
+            currentPhase = Phase.Inactive;
+            animProgress = 0f;
+            return true;
+        }
+
+        /// <summary>
+        /// 引航海图收起进行中的引导。同时置 <see cref="HalibutGuideData.Declined"/>，
+        /// 否则排队会在下一帧把自动引导原样接回来
+        /// </summary>
+        internal static bool StopFromChart(Player player) {
+            if (Main.dedServ || player?.whoAmI != Main.myPlayer) {
+                return false;
+            }
+            if (currentPhase == Phase.Inactive || currentPhase == Phase.Complete) {
+                return false;
+            }
+            HalibutGuideData guide = Guide;
+            guide.AskAnswered = true;
+            guide.Declined = true;
+            forcedSession = false;
+            HalibutAtlas.Instance?.Close();
+            currentPhase = Phase.Inactive;
+            animProgress = 0f;
+            return true;
+        }
+
         private static void OpenAtlasAndAdvance() {
             HalibutAtlas atlas = HalibutAtlas.Instance;
             if (atlas == null) {
@@ -316,6 +427,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private static void DrawCurrent(SpriteBatch sb) {
             float time = Main.GlobalTimeWrappedHourly;
             switch (currentPhase) {
+                case Phase.Ask:
+                    DrawAsk(sb, time);
+                    break;
                 case Phase.HudIntro:
                     DrawHudIntro(sb, time);
                     break;
@@ -330,6 +444,51 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     break;
             }
         }
+
+        #region 阶段0：开场询问
+        //海图纹章半径，与右侧留白同源
+        private const float AskSigilRadius = 34f;
+
+        private static void DrawAsk(SpriteBatch sb, float time) {
+            float a = animProgress;
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            const int cardW = 434;
+            //右侧让出纹章位
+            float contentW = cardW - 32f - (AskSigilRadius * 2f + 24f);
+            GLine[] body = {
+                new(AskBody.Value, 0.74f, HalibutTheme.TextDim),
+                new(AskPrompt.Value, 0.78f, HalibutTheme.GlowHi),
+            };
+            int cardH = Math.Max(MeasureCardH(font, 0.94f, body, contentW),
+                (int)(AskSigilRadius * 2f) + 76);
+
+            float slide = (1f - VaultUtils.EaseOutCubic(a)) * 28f;
+            float x = MathHelper.Clamp((HalibutTheme.UIScreenW - cardW) * 0.5f,
+                16f, MathF.Max(16f, HalibutTheme.UIScreenW - cardW - 16f));
+            float y = MathHelper.Clamp(HalibutTheme.UIScreenH * 0.36f - cardH * 0.5f + slide,
+                16f, MathF.Max(16f, HalibutTheme.UIScreenH - cardH - 16f));
+            var card = new Rectangle((int)x, (int)y, cardW, cardH);
+
+            DrawCard(sb, card, HalibutTheme.Accent, 0.62f);
+            DrawCardContent(sb, font, card, AskTitle.Value, 0.94f,
+                HalibutTheme.Accent, HalibutTheme.Accent, body, a, contentW);
+            HalibutPilotChartSigil.Draw(sb,
+                new Vector2(card.Right - 16f - AskSigilRadius, card.Y + (cardH - 44f) * 0.5f),
+                AskSigilRadius, a, time);
+
+            if (phaseTimer < AskArmFrames) {
+                return;
+            }
+            //高度压在 MeasureCardH 给按钮预留的 40px 之内
+            if (DrawActionButton(sb, card, AcceptBtn.Value, HalibutTheme.GlowHi, time, true, 116, 27)) {
+                AcceptGuide();
+                return;
+            }
+            if (DrawActionButton(sb, card, DeclineBtn.Value, HalibutTheme.TextDim, time, false, 116, 27)) {
+                DeclineGuide();
+            }
+        }
+        #endregion
 
         #region 阶段1：深渊之眼
         private static void DrawHudIntro(SpriteBatch sb, float time) {
@@ -569,21 +728,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         //绘制卡片标题 + 分割线 + 正文（与 MeasureCardH 对齐）
         private static void DrawCardContent(SpriteBatch sb, DynamicSpriteFont font, Rectangle card,
-            string title, float titleScale, Color titleColor, Color accent, GLine[] body, float a) {
-            float px = card.X + 16f, py = card.Y + 13f, wrap = card.Width - 32f;
+            string title, float titleScale, Color titleColor, Color accent, GLine[] body, float a,
+            float wrapPx = -1f) {
+            float px = card.X + 16f, py = card.Y + 13f;
+            float wrap = wrapPx > 0f ? wrapPx : card.Width - 32f;
             HalibutRenderer.DrawGlowText(sb, title, new Vector2(px, py), titleColor * a, accent * (0.4f * a), titleScale);
             py += font.MeasureString("A").Y * titleScale + 8f;
-            DrawDivider(sb, px, py, card.Width - 32, accent, a);
+            DrawDivider(sb, px, py, wrap, accent, a);
             py += 8f;
             foreach (GLine gl in body) {
                 py = DrawBody(sb, font, gl.Text, px, py, wrap, gl.Scale, gl.Color, a) + 4f;
             }
         }
 
-        //右下角小按钮（助手/跳过），返回是否被点击
-        private static bool DrawActionButton(SpriteBatch sb, Rectangle card, string text, Color accent, float time) {
-            const int btnW = 98, btnH = 24;
-            var rect = new Rectangle(card.Right - btnW - 12, card.Bottom - btnH - 11, btnW, btnH);
+        //卡片底缘小按钮（助手/跳过/抉择），返回是否被点击
+        private static bool DrawActionButton(SpriteBatch sb, Rectangle card, string text, Color accent, float time,
+            bool rightAligned = true, int btnW = 98, int btnH = 24) {
+            var rect = new Rectangle(rightAligned ? card.Right - btnW - 12 : card.X + 12,
+                card.Bottom - btnH - 11, btnW, btnH);
             bool hovered = rect.Contains(HalibutTheme.UIMouse.ToPoint());
             HalibutRenderer.DrawCapsuleButton(sb, rect, text, accent, hovered, false, animProgress, time);
             if (hovered) {

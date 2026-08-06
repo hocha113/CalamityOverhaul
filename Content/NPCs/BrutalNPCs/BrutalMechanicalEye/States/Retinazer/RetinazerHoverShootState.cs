@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
 
             //弹簧悬停在玩家上方，带呼吸浮动
-            Vector2 hoverTarget = player.Center + new Vector2(0, -350) + TwinsMotion.BreathingOffset(seed: 4.2f);
+            Vector2 hoverTarget = player.Center + new Vector2(0, -400) + TwinsMotion.BreathingOffset(seed: 4.2f);
             TwinsMotion.SpringHover(npc, hoverTarget, 0.012f, 0.078f);
             FaceTarget(npc, player.Center);
 

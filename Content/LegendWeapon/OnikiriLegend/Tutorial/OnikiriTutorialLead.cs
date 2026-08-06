@@ -20,6 +20,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 
         public string LocalizationCategory => "Legend.OnikiriText";
 
+        public static LocalizedText AskTitle { get; private set; }
+        public static LocalizedText AskBody { get; private set; }
+        public static LocalizedText AskPrompt { get; private set; }
+        public static LocalizedText AcceptBtn { get; private set; }
+        public static LocalizedText DeclineBtn { get; private set; }
+        public static LocalizedText DeclineNotice { get; private set; }
         public static LocalizedText HudTitle { get; private set; }
         public static LocalizedText HudBody { get; private set; }
         public static LocalizedText HudPrompt { get; private set; }
@@ -72,7 +78,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                     return false;
                 }
                 OnikiriTutorialPlayer tutorial = Main.LocalPlayer?.GetModPlayer<OnikiriTutorialPlayer>();
-                return tutorial?.DebugForce == true || GuideLeadQueue.IsHolder(instance);
+                return tutorial?.Forced == true || GuideLeadQueue.IsHolder(instance);
             }
         }
 
@@ -85,6 +91,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         public override void SetStaticDefaults() {
             GuideLeadQueue.Register(this);
 
+            AskTitle = this.GetLocalization(nameof(AskTitle), () => "要不要先受一遍教习");
+            AskBody = this.GetLocalization(nameof(AskBody), () => "鬼切的气力、鬼域与肢解都有讲究");
+            AskPrompt = this.GetLocalization(nameof(AskPrompt), () => "现在受教，或收下稽古符改日再来");
+            AcceptBtn = this.GetLocalization(nameof(AcceptBtn), () => "受教");
+            DeclineBtn = this.GetLocalization(nameof(DeclineBtn), () => "不必了");
+            DeclineNotice = this.GetLocalization(nameof(DeclineNotice), () => "稽古符已留给你，使用它可随时开讲");
             HudTitle = this.GetLocalization(nameof(HudTitle), () => "气力与架势");
             HudBody = this.GetLocalization(nameof(HudBody), () => "手持鬼切时，左下角常驻气力笔触与架势鞘");
             HudPrompt = this.GetLocalization(nameof(HudPrompt), () => "认一下这组读数");
@@ -140,10 +152,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 Player player = Main.LocalPlayer;
                 if (player?.active != true) return false;
                 OnikiriTutorialPlayer tutorial = player.GetModPlayer<OnikiriTutorialPlayer>();
-                if (tutorial.DebugForce) return true;
+                if (tutorial.Forced) return true;
                 if (tutorial.ReservationDeferred) return false;
                 OnikiriGuideData guide = player.GetModPlayer<StoryPlayer>().Get<OnikiriGuideData>();
-                if (guide.CompletedVersion >= TutorialVersion) return false;
+                if (guide.Declined || guide.CompletedVersion >= TutorialVersion) return false;
                 if (!player.HasItem(OnikiriOverride.ID)) return false;
                 return HimayoStorySync.PostFirstMetIsComplete;
             }
@@ -197,13 +209,49 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             guide.CompletedVersion = TutorialVersion;
             guide.Checkpoint = OnikiriTutorialFlow.Checkpoint_Hud;
             guide.PracticeCheckpoint = (int)OnikiriPracticeCheckpoint.Closed;
-            player.GetModPlayer<OnikiriTutorialPlayer>().ClearDebugForce();
+            guide.AskAnswered = true;
+            guide.Declined = false;
+            player.GetModPlayer<OnikiriTutorialPlayer>().ClearForced();
+        }
+
+        /// <summary>对话或过场占用中,符不该把教学卡盖上去</summary>
+        internal static bool RuneStartBlocked
+            => NarrativeTriggerGate.IsBusy || CutsceneDirector.IsPlaying;
+
+        /// <summary>
+        /// 稽古符启动:整段会话只靠 <see cref="OnikiriTutorialPlayer.Forced"/> 撑着,
+        /// 不动存档进度,中途退出不会把自动教程重新打开
+        /// </summary>
+        internal static bool StartFromRune(Player player) {
+            if (Main.dedServ || player?.whoAmI != Main.myPlayer) return false;
+            OnikiriTutorialPlayer tutorial = player.GetModPlayer<OnikiriTutorialPlayer>();
+            if (tutorial.IsRunning) return false;
+
+            player.GetModPlayer<StoryPlayer>().Get<OnikiriGuideData>().AskAnswered = true;
+            tutorial.ForceStartFull();
+            return true;
+        }
+
+        /// <summary>
+        /// 稽古符收起进行中的教习。同时置 <see cref="OnikiriGuideData.Declined"/>,
+        /// 否则排队会在下一帧把自动教程原样接回来
+        /// </summary>
+        internal static bool StopFromRune(Player player) {
+            if (Main.dedServ || player?.whoAmI != Main.myPlayer) return false;
+            OnikiriTutorialPlayer tutorial = player.GetModPlayer<OnikiriTutorialPlayer>();
+            if (!tutorial.IsRunning) return false;
+
+            OnikiriGuideData guide = player.GetModPlayer<StoryPlayer>().Get<OnikiriGuideData>();
+            guide.AskAnswered = true;
+            guide.Declined = true;
+            tutorial.ResetAllRuntime();
+            return true;
         }
 
         internal static void DebugStartPractice(Player player) {
             if (Main.dedServ || player?.whoAmI != Main.myPlayer) return;
             OnikiriTutorialPlayer tutorial = player.GetModPlayer<OnikiriTutorialPlayer>();
-            if (tutorial.DebugForce && tutorial.IsRunning) return;
+            if (tutorial.Forced && tutorial.IsRunning) return;
             if (!player.HasItem(OnikiriOverride.ID)) {
                 player.QuickSpawnItem(player.GetSource_Misc("CWR_OnikiriTutorialDebug"), OnikiriOverride.ID);
             }
@@ -220,6 +268,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             guide.CompletedVersion = 0;
             guide.Checkpoint = 0;
             guide.PracticeCheckpoint = 0;
+            guide.AskAnswered = false;
+            guide.Declined = false;
             player.GetModPlayer<OnikiriTutorialPlayer>().ResetAllRuntime();
             if (OniDomains.OniDomain.GetPhase(player) != OniDomains.OniDomainPhase.Closed) {
                 OniDomains.OniDomain.Close(player);

@@ -38,6 +38,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private float sweepAngle;
         private bool hasPlayedModeSound;
 
+        /// <summary>换招连接节拍剩余帧，让段落间隔被看见</summary>
+        private int modeTransitionTimer;
+
+        private int ModeTransitionTime => Context.IsDeathMode ? 14 : 18;
+
         private int LaserStormFireRate => Context.IsDeathMode ? 6 : 8;
         private int LaserStormDuration => Context.IsDeathMode ? 90 : 75;
         private float LaserSpeed => Context.IsDeathMode ? 16f : 14f;
@@ -56,6 +61,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             totalAttacks = 0;
             sweepAngle = 0f;
             hasPlayedModeSound = false;
+            modeTransitionTimer = 0;
             matrixPoints = new Vector2[MatrixPointCount];
 
             context.SoloRageJustTriggered = false;
@@ -79,6 +85,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             Player player = context.Target;
 
             Timer++;
+
+            //换招连接节拍，减速对视再起手
+            if (modeTransitionTimer > 0) {
+                modeTransitionTimer--;
+                npc.velocity *= 0.88f;
+                FaceTarget(npc, player.Center);
+                Context.ResetChargeState();
+
+                if (!VaultUtils.isServer && modeTransitionTimer % 4 == 0) {
+                    PRTLoader.NewParticle<PRT_Smoke>(npc.Center + Main.rand.NextVector2Circular(22, 22),
+                        new Vector2(0, -1.6f) + Main.rand.NextVector2Circular(0.7f, 0.7f),
+                        TwinsMotion.RetinColor * 0.5f, Main.rand.NextFloat(0.6f, 1f))?
+                        .Configure(30, 0.5f, 0.02f, false, 0f);
+                }
+                return null;
+            }
+
             modeTimer++;
 
             switch (currentMode) {
@@ -123,6 +146,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             attackCount = 0;
             hasPlayedModeSound = false;
             sweepAngle = 0f;
+            modeTransitionTimer = ModeTransitionTime;
+
+            if (!VaultUtils.isServer) {
+                SoundEngine.PlaySound(SoundID.Item74 with { Pitch = -0.35f, Volume = 0.9f }, Context.Npc.Center);
+            }
 
             currentMode = RageComboSequence[totalAttacks % RageComboSequence.Length];
 
@@ -141,9 +169,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 }
             }
 
-            //弹簧游走保持在玩家侧面
+            //弹簧游走保持在玩家侧面，密集连射需要足够的飞行距离
             Vector2 hoverPos = player.Center
-                + new Vector2(npc.Center.X < player.Center.X ? -350 : 350, -150)
+                + new Vector2(npc.Center.X < player.Center.X ? -420 : 420, -190)
                 + TwinsMotion.BreathingOffset(seed: 5.3f, 12f);
             TwinsMotion.SpringHover(npc, hoverPos, 0.016f, 0.09f);
             FaceTarget(npc, player.Center);

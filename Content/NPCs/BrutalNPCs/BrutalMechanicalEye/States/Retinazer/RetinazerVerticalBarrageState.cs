@@ -17,13 +17,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerVerticalBarrage;
 
         /// <summary>二阶段套路；合击节点 1/3/5，见 ComboSequence*</summary>
+        /// <remarks>第 2 步走定点矩阵、第 4 步才放追踪死光，避开魔焰残影连冲的双 striker 撞车</remarks>
         private static readonly string[] ComboSequenceWithPartner =
         [
             "PrecisionSniper",
             "TetherSweep",
-            "FocusedBeam",
-            "Supernova",
             "LaserMatrix",
+            "Supernova",
+            "FocusedBeam",
             "Ultimate"
         ];
 

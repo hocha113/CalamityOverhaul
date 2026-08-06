@@ -40,6 +40,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public LocalizedText Burden { get; private set; }
         /// <summary>物品悬浮短摘要（赋效;代价）</summary>
         public LocalizedText Summary { get; private set; }
+        /// <summary>刀縁残句：未凿位在改铭台木牌上给出的去处提示；无縁的铭为空</summary>
+        public LocalizedText DeedHint { get; private set; }
 
         internal bool HasLocalization
             => DisplayName != null && Origin != null && Power != null && Burden != null && Summary != null;
@@ -51,6 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             Power = rubbing.Power;
             Burden = rubbing.Burden;
             Summary = rubbing.Tooltip;
+            DeedHint = rubbing.DeedHint;
         }
 
         //====效果====

@@ -9,6 +9,7 @@ using CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines;
 using Microsoft.Xna.Framework.Input;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -32,6 +33,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         Retry,
     }
 
+    /// <summary>本次进入教程的方式</summary>
+    internal enum OnikiriTutorialEntry : byte
+    {
+        /// <summary>常规排队进入,按存档决定询问/讲解/续练</summary>
+        Auto,
+        /// <summary>稽古符启动,从头讲解,不再询问</summary>
+        ForceFull,
+        /// <summary>调试直入实操段</summary>
+        ForcePractice,
+    }
+
     /// <summary>鬼切教程的本地玩家运行态</summary>
     internal sealed class OnikiriTutorialPlayer : ModPlayer
     {
@@ -42,7 +54,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         internal int CurrentStep { get; private set; } = -1;
         internal int StepTimer { get; private set; }
         internal bool IsRunning => CurrentStep >= 0 && CurrentStep < OnikiriTutorialFlow.Step_Done;
-        internal bool DebugForce { get; private set; }
+        /// <summary>越过排队前提的强制会话(稽古符或调试)</summary>
+        internal bool Forced { get; private set; }
         internal uint ReservationDeferredUntil { get; private set; }
         internal OnikiriTutorialFeedback Feedback { get; private set; }
 
@@ -82,7 +95,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 if (Player.dead || !Player.active) {
                     return;
                 }
-                if (!DebugForce && GuideData.CompletedVersion >= OnikiriTutorialLead.TutorialVersion) {
+                OnikiriGuideData guide = GuideData;
+                if (!Forced && (guide.Declined
+                    || guide.CompletedVersion >= OnikiriTutorialLead.TutorialVersion)) {
                     return;
                 }
                 InitializeTutorial();
@@ -110,6 +125,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 
         internal void HandlePrimaryAction() {
             switch (CurrentStep) {
+                case OnikiriTutorialFlow.Step_Ask:
+                    AcceptTutorial();
+                    break;
                 case OnikiriTutorialFlow.Step_HudIntro:
                     AdvanceExplanatoryStep();
                     break;
@@ -140,6 +158,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 
         internal void HandleSecondaryAction() {
             switch (CurrentStep) {
+                case OnikiriTutorialFlow.Step_Ask:
+                    DeclineTutorial();
+                    break;
                 case OnikiriTutorialFlow.Step_Mei:
                     AdvanceExplanatoryStep();
                     break;
@@ -182,15 +203,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             Suspend(releaseTarget: true);
         }
 
-        internal void ForceStartPractice() {
-            DebugForce = true;
+        internal void ForceStartPractice() => ForceStart(OnikiriTutorialEntry.ForcePractice);
+
+        /// <summary>稽古符启动:越过排队前提,从讲解第一步重走</summary>
+        internal void ForceStartFull() => ForceStart(OnikiriTutorialEntry.ForceFull);
+
+        private void ForceStart(OnikiriTutorialEntry entry) {
+            Forced = true;
             ReservationDeferredUntil = 0;
             Suspend(releaseTarget: true);
-            InitializeTutorial(forcePracticeStart: true);
+            InitializeTutorial(entry);
         }
 
-        internal void ClearDebugForce() {
-            DebugForce = false;
+        internal void ClearForced() {
+            Forced = false;
             ReservationDeferredUntil = 0;
         }
 
@@ -228,7 +254,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 
         internal void ResetAllRuntime() {
             Suspend(releaseTarget: true);
-            ClearDebugForce();
+            ClearForced();
         }
 
         internal void BeginMeiTransaction(Inscriptions.OniMeiStore current)
@@ -288,15 +314,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
-        private void InitializeTutorial(bool forcePracticeStart = false) {
+        private void InitializeTutorial(OnikiriTutorialEntry entry = OnikiriTutorialEntry.Auto) {
             initialized = true;
             Subscribe();
 
+            if (entry == OnikiriTutorialEntry.ForceFull) {
+                SetStep(OnikiriTutorialFlow.Step_HudIntro);
+                return;
+            }
+
             OnikiriGuideData guide = GuideData;
-            bool introDone = forcePracticeStart || guide.Checkpoint >= OnikiriTutorialFlow.Checkpoint_Hud
+            bool introDone = entry == OnikiriTutorialEntry.ForcePractice
+                || guide.Checkpoint >= OnikiriTutorialFlow.Checkpoint_Hud
                 || guide.CompletedVersion >= 3;
             if (!introDone) {
-                SetStep(OnikiriTutorialFlow.Step_HudIntro);
+                SetStep(guide.AskAnswered
+                    ? OnikiriTutorialFlow.Step_HudIntro
+                    : OnikiriTutorialFlow.Step_Ask);
                 return;
             }
 
@@ -527,6 +561,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 return;
             }
             EnsureStableUra();
+        }
+
+        private void AcceptTutorial() {
+            if (CurrentStep != OnikiriTutorialFlow.Step_Ask) {
+                return;
+            }
+            OnikiriGuideData guide = GuideData;
+            guide.AskAnswered = true;
+            guide.Declined = false;
+            SoundEngine.PlaySound(SoundID.Unlock with { Pitch = 0.25f, Volume = 0.45f });
+            SetStep(OnikiriTutorialFlow.Step_HudIntro);
+        }
+
+        private void DeclineTutorial() {
+            if (CurrentStep != OnikiriTutorialFlow.Step_Ask) {
+                return;
+            }
+            OnikiriGuideData guide = GuideData;
+            guide.AskAnswered = true;
+            guide.Declined = true;
+            SoundEngine.PlaySound(SoundID.Item29 with { Pitch = -0.7f, Volume = 0.32f });
+            OniKeikoRune.GrantTo(Player);
+            Suspend(releaseTarget: true);
         }
 
         private void AdvanceExplanatoryStep() {

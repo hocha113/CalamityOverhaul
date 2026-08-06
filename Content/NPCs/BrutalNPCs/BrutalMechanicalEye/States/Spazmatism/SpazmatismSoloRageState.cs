@@ -34,10 +34,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         private float vortexAngle;
         private bool hasPlayedModeSound;
 
-        private float DashSpeed => Context.IsDeathMode ? 36f : 33f;
+        /// <summary>换招连接节拍剩余帧，让段落间隔被看见</summary>
+        private int modeTransitionTimer;
+
+        private int ModeTransitionTime => Context.IsDeathMode ? 14 : 18;
+
+        private float DashSpeed => Context.IsDeathMode ? 42f : 38f;
         private int MaxDashCount => Context.IsDeathMode ? 5 : 4;
-        private int DashPrepareTime => Context.IsDeathMode ? 22 : 26;
-        private int DashDuration => 25;
+        private int DashPrepareTime => Context.IsDeathMode ? 26 : 30;
+        private int DashDuration => 16;
+
+        /// <summary>每次冲刺后的复位喘息，无伤</summary>
+        private int DashRecoverTime => Context.IsDeathMode ? 10 : 12;
         private float VortexSpeed => Context.IsDeathMode ? 0.1f : 0.08f;
         private int BurstFireRate => Context.IsDeathMode ? 7 : 8;
         private int BurstCount => Context.IsDeathMode ? 12 : 10;
@@ -54,6 +62,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             totalAttacks = 0;
             vortexAngle = 0f;
             hasPlayedModeSound = false;
+            modeTransitionTimer = 0;
 
             context.SoloRageJustTriggered = false;
 
@@ -76,6 +85,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             Player player = context.Target;
 
             Timer++;
+
+            //换招连接节拍，减速对视再起手
+            if (modeTransitionTimer > 0) {
+                modeTransitionTimer--;
+                DisableContactDamage(npc);
+                npc.velocity *= 0.88f;
+                FaceTarget(npc, player.Center);
+                Context.ResetChargeState();
+
+                if (!VaultUtils.isServer && modeTransitionTimer % 4 == 0) {
+                    PRTLoader.NewParticle<PRT_Smoke>(npc.Center + Main.rand.NextVector2Circular(22, 22),
+                        new Vector2(0, -1.6f) + Main.rand.NextVector2Circular(0.7f, 0.7f),
+                        TwinsMotion.SpazColor * 0.5f, Main.rand.NextFloat(0.6f, 1f))?
+                        .Configure(30, 0.5f, 0.02f, false, 0f);
+                }
+                return null;
+            }
+
             modeTimer++;
 
             switch (currentMode) {
@@ -118,7 +145,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             modeTimer = 0;
             attackCount = 0;
             hasPlayedModeSound = false;
+            modeTransitionTimer = ModeTransitionTime;
             DisableContactDamage(Context.Npc);
+
+            if (!VaultUtils.isServer) {
+                SoundEngine.PlaySound(SoundID.Item74 with { Pitch = -0.5f, Volume = 0.9f }, Context.Npc.Center);
+            }
 
             currentMode = RageComboSequence[totalAttacks % RageComboSequence.Length];
         }
@@ -127,7 +159,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         private void ExecuteFrenziedDash(NPC npc, Player player) {
             int prepareTime = DashPrepareTime;
             int dashTime = DashDuration;
-            int cycleTime = prepareTime + dashTime;
+            int recoverTime = DashRecoverTime;
+            int cycleTime = prepareTime + dashTime + recoverTime;
             int phaseInCycle = modeTimer % cycleTime;
 
             if (phaseInCycle < prepareTime) {
@@ -154,8 +187,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                     Context.ResetChargeState();
                 }
             }
-            else {
-                EnableContactDamage(npc);
+            else if (phaseInCycle < prepareTime + dashTime) {
+                EnableContactDamageIfFast(npc);
 
                 //起步爆发+音爆
                 if (phaseInCycle == prepareTime) {
@@ -173,16 +206,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                         npc.Center - npc.velocity.SafeNormalize(Vector2.Zero) * 30f + Main.rand.NextVector2Circular(14, 14),
                         -npc.velocity * 0.15f, Color.White, Main.rand.NextFloat(1.1f, 1.7f))?.Configure(15, 1);
                 }
+            }
+            else {
+                //急停甩头后复位喘息，本段计入次数
+                DisableContactDamage(npc);
 
-                //急停甩头
-                if (phaseInCycle == cycleTime - 1) {
+                if (phaseInCycle == prepareTime + dashTime) {
                     TwinsMotion.BrakeAndWhip(npc, player.Center, 0.4f, 0.5f);
                     attackCount++;
-                    DisableContactDamage(npc);
+                }
+                else {
+                    Vector2 resetPos = player.Center
+                        + new Vector2(npc.Center.X < player.Center.X ? -340 : 340, -200);
+                    TwinsMotion.SpringHover(npc, resetPos, 0.016f, 0.1f, 22f);
+                    FaceTarget(npc, player.Center);
+                }
+                Context.PushDashVisuals(0.35f, 0.6f);
 
-                    if (attackCount >= MaxDashCount) {
-                        SwitchToNextMode();
-                    }
+                if (phaseInCycle == cycleTime - 1 && attackCount >= MaxDashCount) {
+                    SwitchToNextMode();
                 }
             }
         }

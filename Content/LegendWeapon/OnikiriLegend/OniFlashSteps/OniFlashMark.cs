@@ -1,6 +1,7 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -101,7 +102,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             //铭档随物品同步,各端解析一致
             OniMeiActionContext context = OniMeiActionContext.Get(Projectile);
             if (context?.HasSnapshot == true && context.Profile.WindGroove) {
-                windSlimMul = 0.85f;
+                windSlimMul = 0.68f;
             }
             //痕的走向在冲刺方向上带一点确定性偏斜，敌群里不会全员平行
 
@@ -161,6 +162,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         /// <summary>引爆、伤害窗开启 + 墨裂过曝白闪 + 碎晶垂直喷出（视觉沿冲刺方向定向蒸发）</summary>
         private void Detonate() {
             detonated = true;
+
+            //綴樋：把落点报给资源层，同一次疾走的墨痕攒齐后连缀成串
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                OniMeiCombatProfile stitchProfile = ActionContext?.HasSnapshot == true
+                    ? ActionContext.Profile
+                    : OniMeiCombatProfile.Identity;
+                if (stitchProfile.MarkStitch) {
+                    Main.player[Projectile.owner].GetModPlayer<OnikiriPlayer>()
+                        .NotifyMarkDetonated(lastCenter,
+                            ActionContext?.BaseWeaponDamage ?? Projectile.damage, in stitchProfile);
+                }
+            }
 
             SoundEngine.PlaySound(CWRSound.MeatySlash with {
                 Pitch = 0.12f + seed * 0.3f,
@@ -261,6 +274,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                     onikiri.TryPetalPruneOnKill(target,
                         ActionContext?.BaseWeaponDamage ?? Projectile.damage,
                         Projectile.knockBack, Projectile, in profile);
+                    OniMeiDeedEvents.NotifyKill(owner, target, OniMeiDeedKillSource.FlashMark);
                 }
             }
 

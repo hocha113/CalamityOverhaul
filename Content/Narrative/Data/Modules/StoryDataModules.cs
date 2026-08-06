@@ -229,6 +229,10 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
     public sealed class HalibutGuideData : DataModule
     {
         public bool GuideSeen;
+        /// <summary>是否已答复过开场询问；答复过就不再弹</summary>
+        public bool AskAnswered;
+        /// <summary>婉拒过引导；只能由引航海图再启动</summary>
+        public bool Declined;
     }
 
     /// <summary>鬼切教程进度；随玩家存档</summary>
@@ -240,5 +244,9 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public int Checkpoint;
         /// <summary>实操检查点:0=未开始,1=表世界,2=里世界,3=已肢解,4=已收域</summary>
         public int PracticeCheckpoint;
+        /// <summary>是否已答复过开场询问；答复过就不再弹</summary>
+        public bool AskAnswered;
+        /// <summary>婉拒过教程；只能由稽古符再启动</summary>
+        public bool Declined;
     }
 }

@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
@@ -189,9 +190,60 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// <summary>假身：影破真空余量(帧)</summary>
         private int falseBodyVacuumTicks;
         private int falseBodyRearmTicks;
+        /// <summary>墨丝：在场丝锚(世界锚点+余寿)，满三枚即闭网</summary>
+        private readonly List<SilkAnchor> silkAnchors = [];
+        /// <summary>墨丝：闭网门闩(帧)</summary>
+        private int silkSnareCooldown;
+        /// <summary>墨丝：上一枚锚落在哪个主体上，及其冷却</summary>
+        private int silkLastRootId = -1;
+        private int silkLastRootCooldown;
+        /// <summary>鬼丸：站定累计(帧)，够 SelfCutArmTicks 即进自斩待机</summary>
+        private int selfCutStillTicks;
+        /// <summary>鬼丸：下一次放刀的倒计时(帧)</summary>
+        private int selfCutInterval;
+        /// <summary>雷切：落雷门闩(帧)，防一记多段命中刷成雷幕</summary>
+        private int thunderCooldown;
+        /// <summary>鵺切：落地收势期禁疾走(帧)</summary>
+        private int nueDiveRecover;
+        /// <summary>空樋：离地后尚未用掉的那次额外疾走</summary>
+        private bool airDashCharge;
+        /// <summary>空樋：落地沉底，回气归零(帧)</summary>
+        private int airGrooveDryTicks;
+        /// <summary>空樋：空中疾走收尾的滞空余量(帧)</summary>
+        private int airGrooveHover;
+        /// <summary>綴樋：本次墨痕引爆的落点收集</summary>
+        private readonly List<Vector2> stitchPoints = [];
+        /// <summary>綴樋：收集窗余量，归零即结算</summary>
+        private int stitchGather;
+        private int stitchDamage;
+        /// <summary>梵鐘：满架势后的自鸣蓄势(帧)，满即撞钟</summary>
+        private int bellCharge;
+        /// <summary>般若：鬼面期命中计数，每三次浮一张咬合</summary>
+        private int hannyaHitCount;
+        /// <summary>般若：上一帧是不是鬼面，用来在翻面那一帧给演出</summary>
+        private bool hannyaWasMasked;
+        /// <summary>枯山水：立定耙纹累计(帧)</summary>
+        private int sandRakeTicks;
+
+        //====在世刀身铭刻层的活仪表(owner 端自治，远端刀只画静态材质)====
+        /// <summary>樋内充盈 0~1，各樋语义不同(血位/潮位/烬量/息量)</summary>
+        private float engraveHiFill;
+        /// <summary>樋内一次性冲击 0~1，逐帧衰减</summary>
+        private float engraveHiPulse;
+        /// <summary>樋内循环相位 0~1(气丝跑动/烬点爬行/墨珠滑落)，潮樋改读潮相</summary>
+        private float engraveHiPhase;
+        /// <summary>雕纹点亮 0~1，向条件就绪值缓动</summary>
+        private float engraveHoriLit;
+        /// <summary>闲樋上一帧的脱战态，用于在窗口开合的那一帧给进出演出</summary>
+        private bool engraveQuietCold;
 
         /// <summary>所持铭 Key 集合(改铭台扇骨门闩);种子含鬼切</summary>
         internal HashSet<string> OwnedMeiKeys = [];
+
+        /// <summary>刀縁进度(跟玩家存档,与所持铭并列)</summary>
+        internal OniMeiDeedProgress Deeds { get; } = new();
+        /// <summary>刀縁连续态账本(owner 端自治,不进存档不进网络)</summary>
+        internal OniMeiDeedTracker DeedTracker { get; } = new();
 
         /// <summary>当前气力上限(倶利伽罗压缩至 80)</summary>
         internal float VigorMaxCurrent => VigorMax * Mei.VigorMaxMul;
@@ -242,6 +294,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private Vector2 executionHandoffDirection = Vector2.UnitX;
         private Vector2 executionBufferedMouseScreen;
 
+        //====墨丝丝锚:世界锚点,不跟目标走(丝钉在落刀那一刻的位置)====
+        private struct SilkAnchor
+        {
+            public Vector2 Position;
+            public int Life;
+        }
+
         //====命中记忆:脱战与铭刻判定====
         private struct HitMemory
         {
@@ -278,14 +337,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinAutoHandoffCountdown = 0;
             ResetExecutionState();
             ResetMeiTransient();
+            DeedTracker.Reset();
             OniMeiOwned.EnsureSeed(this);
             OnikiriNet.SendOwnedMeiSnapshot(Player);
+            OnikiriNet.SendDeedSnapshot(Player);
         }
 
         public override void SaveData(TagCompound tag) {
             OniMeiOwned.EnsureSeed(this);
             List<string> keys = OwnedMeiKeys.Where(k => !string.IsNullOrEmpty(k)).Distinct().OrderBy(k => k).ToList();
             tag["OniMeiOwned"] = keys;
+            Deeds.Save(tag);
         }
 
         public override void LoadData(TagCompound tag) {
@@ -298,6 +360,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 }
             }
             OniMeiOwned.EnsureSeed(this);
+            Deeds.Load(tag);
         }
 
         public override void OnRespawn() {
@@ -311,6 +374,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinAutoHandoffCountdown = 0;
             ResetExecutionState();
             ResetMeiTransient();
+            DeedTracker.Reset();
         }
 
         public override void PreUpdate() {
@@ -366,6 +430,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             lastDirectBladeHitTick = scaledTime;
             falseBodyVacuumTicks = 0;
             falseBodyRearmTicks = 0;
+            silkAnchors.Clear();
+            silkSnareCooldown = 0;
+            silkLastRootId = -1;
+            silkLastRootCooldown = 0;
+            selfCutStillTicks = 0;
+            selfCutInterval = 0;
+            thunderCooldown = 0;
+            nueDiveRecover = 0;
+            airDashCharge = false;
+            airGrooveDryTicks = 0;
+            airGrooveHover = 0;
+            stitchPoints.Clear();
+            stitchGather = 0;
+            stitchDamage = 0;
+            bellCharge = 0;
+            hannyaHitCount = 0;
+            hannyaWasMasked = false;
+            sandRakeTicks = 0;
         }
 
         private void ClearRemovedMeiTransient(in OniMeiCombatProfile previous,
@@ -397,6 +479,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             if (previous.FalseBody && !current.FalseBody) {
                 OniMeiFalseBody.DismissOwned(Player);
+            }
+            if (previous.SilkSnare && !current.SilkSnare) {
+                silkAnchors.Clear();
+                silkSnareCooldown = 0;
+                silkLastRootId = -1;
+                silkLastRootCooldown = 0;
+            }
+            if (previous.SelfCut && !current.SelfCut) {
+                selfCutStillTicks = 0;
+                selfCutInterval = 0;
             }
         }
 
@@ -435,6 +527,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                     float regenMul = Mei.NaturalRegenMul;
                     if (Mei.QuietBreath && IsCombatCold()) {
                         regenMul *= OniMeiCombat.QuietBreathRegenMul;
+                    }
+                    //墨丝：网在织就分心，气回得慢；网一闭或锚过期即恢复
+                    if (Mei.SilkSnare && silkAnchors.Count > 0) {
+                        regenMul *= OniMeiCombat.SilkWeavingRegenMul;
+                    }
+                    //空樋：离地回气快，落地沉底那几十帧一点不回
+                    if (Mei.AirGroove) {
+                        if (airGrooveDryTicks > 0) {
+                            regenMul = 0f;
+                        }
+                        else if (Player.velocity.Y != 0f && !Player.sliding) {
+                            regenMul *= OniMeiCombat.AirGrooveAirRegenMul;
+                        }
                     }
                     Vigor = Math.Min(VigorMaxCurrent, Vigor + VigorRegenPerTick * regenMul);
                 }
@@ -477,10 +582,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 if (Mei.TideBeat) {
                     tidePhase++;
                 }
+                if (thunderCooldown > 0) {
+                    thunderCooldown--;
+                }
+                if (nueDiveRecover > 0) {
+                    nueDiveRecover--;
+                }
                 TickPlantedStep();
                 TickHollowRoar();
+                TickSilkAnchors();
+                TickSelfCut();
+                TickAirGroove();
+                TickMarkStitch();
+                TickBellToll();
+                TickHannyaMask();
+                TickSandGarden();
                 TickZanshinWindow();
                 TickExecutionFlow();
+                TickEngraveGauges();
             }
 
             ModKeybind flashStepKey = CWRKeySystem.Onikiri_FlashStep;
@@ -501,6 +620,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
             Item item = Player.GetItem();
             bool holding = item != null && item.Alives() && item.type == ModContent.ItemType<OnikiriItem>();
+            if (advanceTime) {
+                OniMeiDeedEvents.NotifyHeldTick(Player, holding);
+            }
             if (holding && Main.mouseLeft
                 && (executionDashQueued || executionTierInFlight != ExecutionTier.None
                     || executionAnnihilateWindow > 0)) {
@@ -760,10 +882,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         private bool TryDash(Item item, bool executionDash, ExecutionTier executionTier) {
-            //再触发锁内静默(是节拍不是资源问题);骑乘时位移权在坐骑;樱流握有本体时不受理
-            if (dashLock > 0 || Player.mount?.Active == true
-                || OniSakuraFlight.ControlsOwner(Player.whoAmI)) {
+            //骑乘时位移权在坐骑;樱流握有本体时不受理
+            if (Player.mount?.Active == true || OniSakuraFlight.ControlsOwner(Player.whoAmI)) {
                 return false;
+            }
+            //空樋：离地那一次额外疾走可以踏过再触发锁；地面照常吃锁
+            bool airDash = false;
+            if (dashLock > 0) {
+                if (executionDash || !TryConsumeAirDash()) {
+                    return false;
+                }
+                airDash = true;
+                dashLock = 0;
+            }
+            else {
+                airDash = !executionDash && TryConsumeAirDash();
             }
 
             if (!executionDash) {
@@ -775,8 +908,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 if (Mei.FalseBody && OniMeiFalseBody.AnyOwned(Player)) {
                     dashCost *= OniMeiCombat.FalseBodyDashCostMul;
                 }
+                if (Mei.PaperEffigy && OniMeiPaperEffigy.AnyOwned(Player)) {
+                    dashCost *= OniMeiCombat.PaperEffigyDashCostMul;
+                }
                 if (Vigor < dashCost - 0.01f) {
                     OniTalismanHud.NotifyVigorDenied();
+                    //气不够就把刚吃掉的空中额度还回去，别让玩家白丢一次
+                    if (airDash) {
+                        airDashCharge = true;
+                    }
                     return false;
                 }
                 Vigor -= dashCost;
@@ -819,6 +959,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (Mei.StickyBind) {
                 //滞樋自黏负担:再触发锁加帧(节奏税),不再用落地半速的泥地感
                 dashLock += OniMeiCombat.StickyBindDashLockTicks;
+                OniMeiStrikes.SpawnStickyDashDrag(Player, aim);
+            }
+            if (Mei.WindGroove) {
+                OniMeiStrikes.SpawnWindGrooveDash(Player, aim);
             }
 
             Projectile dash = OniFlashStep.Fire(Player, aim
@@ -828,6 +972,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 , source: Player.GetSource_ItemUse(item), baseWeaponDamage: state.WeaponDamage);
             if (dash == null) {
                 dashLock = 0;
+                if (airDash) {
+                    airDashCharge = true;
+                }
                 if (executionDash) {
                     ClearQueuedExecutionRequest();
                 }
@@ -1093,6 +1240,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// </summary>
         private void ManageSakuraFlight(bool advanceTime) {
             if (!OniSakuraFlight.IsTraveling(Player.whoAmI)) {
+                //任何收尾（松手/气尽/离表/自然到程）都在此断掉雨程连续计数
+                DeedTracker.EndSakuraFlight();
                 return;
             }
             vigorRegenDelay = Math.Max(vigorRegenDelay, VigorRegenDelayTicks + Mei.ExtraRegenDelayTicks);
@@ -1102,9 +1251,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 OniSakuraFlight.RequestStop(Player);
                 return;
             }
-            if (advanceTime) {
-                Vigor = Math.Max(0f, Vigor - SakuraDrainPerTick * Mei.SakuraDrainMul);
+            if (!advanceTime) {
+                return;
             }
+            Vigor = Math.Max(0f, Vigor - SakuraDrainPerTick * Mei.SakuraDrainMul);
+            OniMeiDeedEvents.NotifySakuraTick(Player);
+            TryDripInkRain();
+        }
+
+        /// <summary>雨樋：樱流沿途甩墨——航线走过哪儿，雨就下在哪儿</summary>
+        private void TryDripInkRain() {
+            if (!Mei.InkRain || Player.whoAmI != Main.myPlayer
+                || scaledTime % OniMeiCombat.InkRainDripInterval != 0) {
+                return;
+            }
+            ShootState state = Player.GetShootState();
+            int damage = Math.Max(1, (int)(state.WeaponDamage * OniMeiCombat.InkRainDamageMul));
+            OniMeiInkRain.Drip(Player, Player.Center, Player.velocity, damage,
+                Player.GetSource_ItemUse(Player.GetItem()));
         }
 
         //==================== 残心追斩 ====================
@@ -1256,11 +1420,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return;
             }
             Tutorial.OnikiriTutorialEvents.FireZanshinHit(target);
-            Stance = Math.Min(StanceMax, Stance + StancePerZanshinSlash * profile.StanceGainMul);
+            Stance = Math.Min(StanceMax,
+                Stance + StancePerZanshinSlash * profile.StanceGainMul * ResolveSandGardenStanceMul(in profile));
             if (profile.ZanshinHitVigorBonus > 0f) {
                 Vigor = Math.Min(VigorMaxCurrent, Vigor + profile.ZanshinHitVigorBonus);
                 if (profile.BloodGroove) {
                     OniMeiStrikes.SpawnBloodBackflow(Player, target);
+                    NotifyBloodBackflow();
                 }
             }
         }
@@ -1394,6 +1560,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             ClearZanshinIntent();
             IgniteKurikara();
             TrySpawnEmberField(focus, state.WeaponDamage, finale);
+            //千手：定格期多浮六手同斩；代价是气清零并久不能疾走
+            if (Mei.SenjuArms) {
+                OniMeiSenjuArm.FireVolley(Player, state.WeaponDamage, finale.GetSource_FromAI());
+                Vigor = 0f;
+                vigorRegenDelay = Math.Max(vigorRegenDelay, OniMeiCombat.SenjuRecoverTicks);
+                dashLock = Math.Max(dashLock, OniMeiCombat.SenjuRecoverTicks);
+            }
+            OniMeiDeedEvents.NotifyExecutionSpent(Player);
             Tutorial.OnikiriTutorialEvents.FireExecutionFinale(target);
             return true;
         }
@@ -1465,6 +1639,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             Stance = Math.Max(0f, Stance - AnnihilateCost);
             ClearExecutionFollowup();
             CrimsonRendSlash.FindController(Player)?.ConsumeZanshinInput();
+            OniMeiDeedEvents.NotifyExecutionSpent(Player);
             IgniteKurikara();
             Vector2 emberAt = Player.Center + aim * 120f;
             TrySpawnEmberField(emberAt, state.WeaponDamage, annihilate);
@@ -1743,9 +1918,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return;
             }
             Vigor = Math.Min(VigorMaxCurrent, Vigor + VigorPerComboBeat + profile.ComboHitVigorBonus);
-            Stance = Math.Min(StanceMax, Stance + StancePerComboBeat * profile.StanceGainMul);
+            Stance = Math.Min(StanceMax,
+                Stance + StancePerComboBeat * profile.StanceGainMul * ResolveSandGardenStanceMul(in profile));
             if (profile.BloodGroove && profile.ComboHitVigorBonus > 0f) {
                 OniMeiStrikes.SpawnBloodBackflow(Player, target);
+                NotifyBloodBackflow();
             }
             TryApplyTideOnComboHit(grantResources, in profile, tideOnBeat);
         }
@@ -1755,6 +1932,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             RecordHit(target);
             lastDirectBladeHitTick = scaledTime;
             TryApplyStickyBind(target, in profile);
+            TryPlantSilkAnchor(target, in profile);
+            TryMirrorEcho(target, in profile);
+            TryHannyaOnHit(target, in profile, null, Player.GetWeaponDamage(Player.GetItem()));
+            OniMeiDeedEvents.NotifyBladeHit(Player);
+        }
+
+        /// <summary>鏡樋：你这一刀落下了，镜子跟着落一刀，随后碎</summary>
+        private void TryMirrorEcho(NPC target, in OniMeiCombatProfile profile) {
+            if (!profile.MirrorEcho || Player.whoAmI != Main.myPlayer || target == null) {
+                return;
+            }
+            float aim = (target.Center - Player.Center).ToRotation();
+            if (float.IsNaN(aim)) {
+                aim = Player.direction > 0 ? 0f : MathHelper.Pi;
+            }
+            OniMeiMirrorStand.TryEcho(Player, aim, Player.GetWeaponKnockback(Player.GetItem()), 1f);
         }
 
         /// <summary>疾走穿身即格挡:每次疾走仅首次格挡固定蓄势,所有目标都记入命中记忆</summary>
@@ -1932,6 +2125,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             OniMeiStrikes.FirePetalPrune(Player, pruneTarget, origin, aim,
                 Math.Max(1, weaponDamage), knockback,
                 sourceProjectile?.GetSource_FromAI());
+            NotifyPetalPruneEngraved();
         }
 
         /// <summary>谢樋：空残心微扣气</summary>
@@ -1967,6 +2161,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return;
             }
             Vigor = Math.Min(VigorMaxCurrent, Vigor + OniMeiCombat.TideOnBeatVigor);
+            engraveHiPulse = 1f;
+            OniMeiStrikes.SpawnTideBeatRipple(Player);
         }
 
         internal float BuildMeiHitMultiplier(NPC target, in OniMeiCombatProfile profile,
@@ -1976,7 +2172,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             float multiplier = Math.Max(1f, armedConditionMul);
             if (allowIron && profile.IronSever && CWRLoad.NPCValue.ISTheofSteel(target)) {
                 multiplier *= OniMeiCombat.IronSeverSteelHitMul;
-                OniMeiStrikes.SpawnIronSeverFX(target);
+                //刮擦方向取出刀方向,火舌与卷屑才顺着刃走
+                OniMeiStrikes.SpawnIronSeverFX(target, target.Center - Player.Center);
             }
             if (profile.HollowRoar) {
                 multiplier *= ResolveHollowActionMultiplier(target, actionSerial);
@@ -1988,6 +2185,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 else if (combo && !tideOnBeatSnapshot) {
                     multiplier *= OniMeiCombat.TideOffBeatHitMul;
                 }
+            }
+            //表影受创：斩过纸的那一段，这个目标挨刀更疼
+            multiplier *= OniMeiCombat.BuildPaperBrandMul(target);
+            //般若：翻成鬼面的那段刀更重，加深走命中侧而不是面板
+            if (profile.HannyaMask && HannyaMasked) {
+                multiplier *= OniMeiCombat.HannyaHitMul;
             }
             return multiplier;
         }
@@ -2204,6 +2407,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (Math.Abs(Mei.IncomingDamageMul - 1f) > 0.001f) {
                 modifiers.FinalDamage *= Mei.IncomingDamageMul;
             }
+            //般若：鬼面越勇越脆，这一档只在翻面期收
+            if (Mei.HannyaMask && HannyaMasked) {
+                modifiers.FinalDamage *= OniMeiCombat.HannyaIncomingMul;
+            }
             if (Mei.FalseBody && OniMeiFalseBody.AnyOwned(Player)) {
                 modifiers.FinalDamage *= OniMeiCombat.FalseBodyIncomingMul;
             }
@@ -2252,6 +2459,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             modifiers.FinalDamage *= OniMeiCombat.QuellProjectileDamageMul;
             modifiers.Knockback *= OniMeiCombat.QuellProjectileKnockbackMul;
+            //离散的「镇」:折扣是连续的,演出必须是一次事件,否则玩家永远看不见这个铭
+            Vector2 incoming = proj.velocity.LengthSquared() > 0.01f
+                ? proj.velocity
+                : Player.Center - proj.Center;
+            Vector2 contact = Vector2.Lerp(proj.Center, Player.Center, 0.55f);
+            NotifyQuellEngraved();
+            OniMeiStrikes.SpawnQuellStruck(Player, contact, incoming);
+        }
+
+        /// <summary>刀縁账本：挨了一记就断掉静止与立定两条连续条件（肢解反噬不算敌手打的）</summary>
+        public override void OnHurt(Player.HurtInfo info) {
+            if (!OniPlayerDismember.SelfHurtResolving) {
+                OniMeiDeedEvents.NotifyHurt(Player);
+            }
         }
 
         /// <summary>假身碎裂回调：开真空窗</summary>
@@ -2270,6 +2491,520 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return true;
         }
 
+        //==================== 蜘蛛切 墨丝 ====================
+
+        /// <summary>丝锚余寿推进：过期即掉一枚(网织不成就白费一记)</summary>
+        private void TickSilkAnchors() {
+            if (silkSnareCooldown > 0) {
+                silkSnareCooldown--;
+            }
+            if (silkLastRootCooldown > 0 && --silkLastRootCooldown <= 0) {
+                silkLastRootId = -1;
+            }
+            if (!Mei.SilkSnare) {
+                silkAnchors.Clear();
+                return;
+            }
+            for (int i = silkAnchors.Count - 1; i >= 0; i--) {
+                SilkAnchor anchor = silkAnchors[i];
+                if (--anchor.Life <= 0) {
+                    silkAnchors.RemoveAt(i);
+                    SpawnSilkAnchorExpire(anchor.Position);
+                    continue;
+                }
+                silkAnchors[i] = anchor;
+                if (!Main.dedServ && anchor.Life % 7 == 0) {
+                    //锚在世：一小簇湿墨钉在原地，读得出"网还差几枚"
+                    PRTLoader.NewParticle<PRT_OniInkDrop>(
+                        anchor.Position + Main.rand.NextVector2Circular(6f, 6f),
+                        Vector2.UnitY * Main.rand.NextFloat(0.3f, 0.9f),
+                        new Color(52, 14, 20), Main.rand.NextFloat(0.12f, 0.20f))
+                        ?.Configure(Main.rand.Next(14, 22));
+                }
+            }
+        }
+
+        /// <summary>在场丝锚数(刀身层读数用)</summary>
+        internal int SilkAnchorCount => silkAnchors.Count;
+
+        /// <summary>
+        /// 墨丝：直接刀击钉一枚丝锚。同一主体短冷却、与已有锚过近都不算新锚；
+        /// 满三枚即当场闭网并清空。owner 端调用
+        /// </summary>
+        private void TryPlantSilkAnchor(NPC target, in OniMeiCombatProfile profile) {
+            if (!profile.SilkSnare || Player.whoAmI != Main.myPlayer
+                || target == null || !target.active || silkSnareCooldown > 0) {
+                return;
+            }
+            NPC root = OniMeiCombat.ResolveEffectRoot(target) ?? target;
+            if (root.whoAmI == silkLastRootId) {
+                return;
+            }
+            Vector2 at = target.Center;
+            float minSpacingSq = OniMeiCombat.SilkAnchorMinSpacing * OniMeiCombat.SilkAnchorMinSpacing;
+            foreach (SilkAnchor existing in silkAnchors) {
+                if (Vector2.DistanceSquared(existing.Position, at) < minSpacingSq) {
+                    return;
+                }
+            }
+
+            silkAnchors.Add(new SilkAnchor { Position = at, Life = OniMeiCombat.SilkAnchorLifeTicks });
+            silkLastRootId = root.whoAmI;
+            silkLastRootCooldown = OniMeiCombat.SilkAnchorSameRootCooldown;
+            OniMeiStrikes.SpawnSilkAnchor(at, silkAnchors.Count);
+            if (silkAnchors.Count < OniMeiCombat.SilkSnareAnchorNeed) {
+                return;
+            }
+            CloseSilkSnare();
+        }
+
+        /// <summary>三锚闭网：一枚弹幕持整张三角网，收紧扫过即割</summary>
+        private void CloseSilkSnare() {
+            List<Vector2> points = new(silkAnchors.Count);
+            foreach (SilkAnchor anchor in silkAnchors) {
+                points.Add(anchor.Position);
+            }
+            silkAnchors.Clear();
+            silkSnareCooldown = OniMeiCombat.SilkSnareCooldownTicks;
+            silkLastRootId = -1;
+            silkLastRootCooldown = 0;
+            ShootState state = Player.GetShootState();
+            OniMeiStrikes.FireSilkSnare(Player, points, state.WeaponDamage, state.WeaponKnockback);
+        }
+
+        /// <summary>丝锚白费：墨点无声散开，让"没织成"也有个交代</summary>
+        private static void SpawnSilkAnchorExpire(Vector2 at) {
+            if (Main.dedServ) {
+                return;
+            }
+            for (int i = 0; i < 3; i++) {
+                PRTLoader.NewParticle<PRT_OniInkDrop>(at + Main.rand.NextVector2Circular(8f, 8f),
+                    Main.rand.NextVector2Circular(0.8f, 0.5f) + Vector2.UnitY * 0.8f,
+                    new Color(40, 12, 16), Main.rand.NextFloat(0.12f, 0.22f))
+                    ?.Configure(Main.rand.Next(16, 24));
+            }
+        }
+
+        //==================== 鬼丸 自斩 ====================
+
+        /// <summary>
+        /// 站定累计够久，刀就自己开始动。<br/>
+        /// 判据与止足同口径（速度平方阈），但要求"手上确有刀"——刀飞出去的那段不再累计，
+        /// 也不再放下一把，所以永远只有一把在外面
+        /// </summary>
+        private void TickSelfCut() {
+            if (!Mei.SelfCut) {
+                selfCutStillTicks = 0;
+                selfCutInterval = 0;
+                return;
+            }
+            if (Player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            //刀不在手：既不累计也不再放，等它回来
+            if (OniMeiSelfCut.AnyOwned(Player)) {
+                return;
+            }
+            //动了就散：这是"站着不动"的铭，不是自动炮台
+            if (Player.velocity.LengthSquared() > OniMeiCombat.PlantedSpeedSq
+                || OniBladeOccupancy.AnyHardOccupant(Player)) {
+                if (selfCutStillTicks >= OniMeiCombat.SelfCutArmTicks) {
+                    SpawnSelfCutDisarmCue();
+                }
+                selfCutStillTicks = 0;
+                selfCutInterval = 0;
+                return;
+            }
+
+            if (selfCutStillTicks < OniMeiCombat.SelfCutArmTicks) {
+                selfCutStillTicks++;
+                if (selfCutStillTicks >= OniMeiCombat.SelfCutArmTicks) {
+                    //待机就绪：刀在手里自己震一下，这是"它要动了"的预告
+                    SpawnSelfCutArmCue();
+                    selfCutInterval = OniMeiCombat.SelfCutIntervalTicks / 2;
+                }
+                return;
+            }
+            if (selfCutInterval > 0) {
+                selfCutInterval--;
+                //待机呼吸：刀缘一线白光沿刃爬
+                if (!Main.dedServ && selfCutInterval % 18 == 0) {
+                    PRTLoader.NewParticle<PRT_CrimsonSpark>(
+                        Player.Center + Main.rand.NextVector2Circular(18f, 22f),
+                        -Vector2.UnitY * Main.rand.NextFloat(0.4f, 1.1f),
+                        new Color(255, 243, 226), Main.rand.NextFloat(0.12f, 0.20f))
+                        ?.Configure(Main.rand.Next(14, 22), affectedByGravity: false);
+                }
+                return;
+            }
+            TryFireSelfCut();
+        }
+
+        /// <summary>放刀：气不够就只是空等，不静默扣账</summary>
+        private void TryFireSelfCut() {
+            if (Vigor < OniMeiCombat.SelfCutVigorCost - 0.01f) {
+                return;
+            }
+            NPC target = FindSelfCutTarget();
+            if (target == null) {
+                return;
+            }
+            Item item = Player.GetItem();
+            if (item == null || item.type != ModContent.ItemType<OnikiriItem>()) {
+                return;
+            }
+            ShootState state = Player.GetShootState();
+            if (OniMeiSelfCut.Fire(Player, target, state.WeaponDamage,
+                Player.GetSource_ItemUse(item)) == null) {
+                return;
+            }
+            Vigor -= OniMeiCombat.SelfCutVigorCost;
+            selfCutInterval = OniMeiCombat.SelfCutIntervalTicks;
+        }
+
+        /// <summary>自斩索敌：范围内最近的可击目标，蠕虫归主体</summary>
+        private NPC FindSelfCutTarget() {
+            NPC best = null;
+            float bestSq = OniMeiCombat.SelfCutRange * OniMeiCombat.SelfCutRange;
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (npc.friendly || !npc.CanBeChasedBy()) {
+                    continue;
+                }
+                float distanceSq = npc.DistanceSQ(Player.Center);
+                if (distanceSq < bestSq) {
+                    bestSq = distanceSq;
+                    best = npc;
+                }
+            }
+            return best;
+        }
+
+        private void SpawnSelfCutArmCue() {
+            if (Main.dedServ) {
+                return;
+            }
+            SoundEngine.PlaySound(SoundID.Item35 with { Pitch = 0.65f, Volume = 0.30f }, Player.Center);
+            for (int i = 0; i < 5; i++) {
+                PRTLoader.NewParticle<PRT_CrimsonSpark>(
+                    Player.Center + Main.rand.NextVector2Circular(20f, 24f),
+                    Main.rand.NextVector2Circular(1.2f, 1.2f), new Color(232, 186, 110),
+                    Main.rand.NextFloat(0.16f, 0.26f))
+                    ?.Configure(Main.rand.Next(12, 18), affectedByGravity: false);
+            }
+        }
+
+        /// <summary>待机被打断：刀"歇下去"的一声，让玩家知道刚才那档没了</summary>
+        private void SpawnSelfCutDisarmCue() {
+            if (Main.dedServ) {
+                return;
+            }
+            SoundEngine.PlaySound(SoundID.Item35 with { Pitch = -0.45f, Volume = 0.22f }, Player.Center);
+        }
+
+        //==================== 空樋 浮身 ====================
+
+        /// <summary>
+        /// 离地就攒一次额外疾走，落地即还并沉底。<br/>
+        /// 滞空是空中疾走的收尾拍：短暂悬住，给玩家一个"再打一拍"的落点
+        /// </summary>
+        private void TickAirGroove() {
+            if (!Mei.AirGroove) {
+                airDashCharge = false;
+                airGrooveDryTicks = 0;
+                airGrooveHover = 0;
+                return;
+            }
+            bool grounded = Player.velocity.Y == 0f || Player.sliding
+                || Player.mount?.Active == true;
+            if (grounded) {
+                if (airDashCharge || airGrooveHover > 0) {
+                    //落地：把额外那次还回去，同时沉底一段不回气
+                    airGrooveDryTicks = OniMeiCombat.AirGrooveLandingDryTicks;
+                }
+                airDashCharge = true;
+                airGrooveHover = 0;
+            }
+            if (airGrooveDryTicks > 0) {
+                airGrooveDryTicks--;
+            }
+            if (airGrooveHover > 0) {
+                airGrooveHover--;
+                //滞空：纵向速度按住，脚下浮一枚纸白环
+                Player.velocity.Y *= 0.28f;
+                Player.gravity = 0f;
+                if (!Main.dedServ && airGrooveHover % 5 == 0) {
+                    float ang = Main.rand.NextFloat(MathHelper.TwoPi);
+                    PRTLoader.NewParticle<PRT_CrimsonSpark>(
+                        Player.Bottom + ang.ToRotationVector2() * new Vector2(20f, 6f),
+                        ang.ToRotationVector2() * 0.6f, new Color(255, 243, 226),
+                        Main.rand.NextFloat(0.12f, 0.20f))
+                        ?.Configure(12, affectedByGravity: false);
+                }
+            }
+        }
+
+        /// <summary>空樋：这次疾走能不能吃掉那枚空中额度（吃掉即无视再触发锁）</summary>
+        private bool TryConsumeAirDash() {
+            if (!Mei.AirGroove || !airDashCharge) {
+                return false;
+            }
+            bool grounded = Player.velocity.Y == 0f || Player.sliding;
+            if (grounded) {
+                return false;
+            }
+            airDashCharge = false;
+            return true;
+        }
+
+        /// <summary>空樋：空中疾走收尾即滞空</summary>
+        internal void OpenAirGrooveHover() {
+            if (Mei.AirGroove && Player.velocity.Y != 0f) {
+                airGrooveHover = OniMeiCombat.AirGrooveHoverTicks;
+            }
+        }
+
+        //==================== 綴樋 缀痕 ====================
+
+        /// <summary>墨痕引爆时报一个落点；同一次疾走的墨痕会落在同几帧里，攒齐再连缀</summary>
+        internal void NotifyMarkDetonated(Vector2 at, int baseWeaponDamage,
+            in OniMeiCombatProfile profile) {
+            if (!profile.MarkStitch || Player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            if (stitchPoints.Count < OniMeiInkThread.MaxAnchors) {
+                stitchPoints.Add(at);
+            }
+            stitchDamage = Math.Max(stitchDamage, baseWeaponDamage);
+            stitchGather = OniMeiCombat.MarkStitchGatherTicks;
+        }
+
+        /// <summary>收集窗一到期就连缀：两枚以上才成串，单枚只是白亏了那 30%</summary>
+        private void TickMarkStitch() {
+            if (stitchGather <= 0) {
+                return;
+            }
+            if (--stitchGather > 0) {
+                return;
+            }
+            if (stitchPoints.Count >= 2) {
+                //按 X 排一遍，连出来的串不会自己打结
+                stitchPoints.Sort((a, b) => a.X.CompareTo(b.X));
+                int damage = Math.Max(1, (int)(stitchDamage * OniMeiCombat.MarkStitchDamageMul));
+                OniMeiInkThread.Fire(Player, stitchPoints, OniMeiThreadStyle.Stitch,
+                    damage, 2f, Player.GetSource_ItemUse(Player.GetItem()));
+            }
+            stitchPoints.Clear();
+            stitchDamage = 0;
+        }
+
+        //==================== 梵鐘 一撞 ====================
+
+        /// <summary>
+        /// 满架势起自鸣，三秒不放终结就自己撞钟。<br/>
+        /// 这三秒是玩家的选择窗：想留着终结就现在放，想换一圈控场就憋着
+        /// </summary>
+        private void TickBellToll() {
+            if (!Mei.BellToll) {
+                bellCharge = 0;
+                return;
+            }
+            if (Stance < StanceMax - 0.01f) {
+                bellCharge = 0;
+                return;
+            }
+            if (++bellCharge < OniMeiCombat.BellChargeTicks) {
+                //自鸣：越接近撞钟嗡得越紧，给个听得见的倒计时
+                if (!Main.dedServ && bellCharge % 20 == 0) {
+                    float t = bellCharge / (float)OniMeiCombat.BellChargeTicks;
+                    SoundEngine.PlaySound(SoundID.Item52 with {
+                        Pitch = -0.9f + t * 0.35f,
+                        Volume = 0.10f + t * 0.14f,
+                    }, Player.Center);
+                }
+                return;
+            }
+            bellCharge = 0;
+            Toll();
+        }
+
+        /// <summary>撞钟：架势砍到一半，换一圈钟波</summary>
+        private void Toll() {
+            if (Player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            Item item = Player.GetItem();
+            if (item == null || item.type != ModContent.ItemType<OnikiriItem>()) {
+                return;
+            }
+            ShootState state = Player.GetShootState();
+            int damage = Math.Max(1, (int)(state.WeaponDamage * OniMeiCombat.BellWaveDamageMul));
+            if (OniMeiBellWave.Fire(Player, Player.Center, damage, state.WeaponKnockback,
+                Player.GetSource_ItemUse(item)) == null) {
+                return;
+            }
+            Stance = Math.Min(Stance, OniMeiCombat.BellTollStanceLeft);
+        }
+
+        /// <summary>梵鐘自鸣进度 0..1，供刀身层与 HUD 读；未装或未满势为 0</summary>
+        internal float BellChargeRatio => Mei.BellToll && OniMeiCombat.BellChargeTicks > 0
+            ? MathHelper.Clamp(bellCharge / (float)OniMeiCombat.BellChargeTicks, 0f, 1f)
+            : 0f;
+
+        //==================== 般若 面变 ====================
+
+        /// <summary>当前是否鬼面（生命跌破线）</summary>
+        internal bool HannyaMasked => Mei.HannyaMask && Player.statLifeMax2 > 0
+            && Player.statLife / (float)Player.statLifeMax2 <= OniMeiCombat.HannyaMaskThreshold;
+
+        /// <summary>翻面那一帧给一记演出，别让"变强了"只写在数字里</summary>
+        private void TickHannyaMask() {
+            if (!Mei.HannyaMask) {
+                hannyaWasMasked = false;
+                hannyaHitCount = 0;
+                return;
+            }
+            bool masked = HannyaMasked;
+            if (masked != hannyaWasMasked) {
+                hannyaWasMasked = masked;
+                hannyaHitCount = 0;
+                OniMeiStrikes.SpawnHannyaShift(Player, masked);
+            }
+            //鬼面期常态：面颊侧偶尔浮一缕血黑，读得出"现在是鬼"
+            if (masked && !Main.dedServ && scaledTime % 11 == 0) {
+                PRTLoader.NewParticle<PRT_CrimsonSmoke>(
+                    Player.Center + Main.rand.NextVector2Circular(16f, 22f),
+                    -Vector2.UnitY * Main.rand.NextFloat(0.3f, 0.8f), Color.White, 0.05f)
+                    ?.Configure(Main.rand.Next(14, 22), new Color(96, 12, 20), new Color(16, 6, 10));
+            }
+        }
+
+        /// <summary>鬼面命中：吸血 + 每三次浮一张咬合</summary>
+        private void TryHannyaOnHit(NPC target, in OniMeiCombatProfile profile,
+            Projectile sourceProjectile, int baseWeaponDamage) {
+            if (!profile.HannyaMask || Player.whoAmI != Main.myPlayer
+                || target == null || !HannyaMasked) {
+                return;
+            }
+            int heal = Math.Max(1, (int)(Player.statLifeMax2 * OniMeiCombat.HannyaLifestealRatio));
+            if (Player.statLife < Player.statLifeMax2) {
+                Player.statLife = Math.Min(Player.statLifeMax2, Player.statLife + heal);
+                Player.HealEffect(heal, false);
+            }
+            if (++hannyaHitCount < OniMeiCombat.HannyaBiteEvery) {
+                return;
+            }
+            hannyaHitCount = 0;
+            float aim = (target.Center - Player.Center).ToRotation();
+            if (float.IsNaN(aim)) {
+                aim = Player.direction > 0 ? 0f : MathHelper.Pi;
+            }
+            OniMeiStrikes.FireHannyaBite(Player, target.Center, aim, baseWeaponDamage,
+                Player.GetWeaponKnockback(Player.GetItem()), sourceProjectile?.GetSource_FromAI());
+        }
+
+        //==================== 枯山水 砂纹 ====================
+
+        /// <summary>站在自己耙的场里，架势涨得更快——守着它是有回报的</summary>
+        private float ResolveSandGardenStanceMul(in OniMeiCombatProfile profile)
+            => profile.SandGarden && OniMeiSandGarden.StandingInOwnGarden(Player)
+                ? OniMeiCombat.SandGardenStanceBonus
+                : 1f;
+
+        /// <summary>立定就耙；耙成一场后走开也留在原地，同时只有一场</summary>
+        private void TickSandGarden() {
+            if (!Mei.SandGarden || Player.whoAmI != Main.myPlayer) {
+                sandRakeTicks = 0;
+                return;
+            }
+            if (Player.velocity.LengthSquared() > OniMeiCombat.PlantedSpeedSq) {
+                sandRakeTicks = 0;
+                return;
+            }
+            //场还在就不重复耙：省得站着不动一直刷新
+            if (OniMeiSandGarden.StandingInOwnGarden(Player)) {
+                sandRakeTicks = 0;
+                return;
+            }
+            if (++sandRakeTicks < OniMeiCombat.SandGardenRakeTicks) {
+                //耙纹将成：足边砂粒被推开
+                if (!Main.dedServ && sandRakeTicks % 12 == 0) {
+                    float side = Main.rand.NextBool() ? 1f : -1f;
+                    PRTLoader.NewParticle<PRT_CrimsonSpark>(
+                        Player.Bottom + Vector2.UnitX * side * Main.rand.NextFloat(6f, 22f),
+                        Vector2.UnitX * side * Main.rand.NextFloat(0.4f, 1.1f),
+                        new Color(214, 204, 188), Main.rand.NextFloat(0.08f, 0.14f))
+                        ?.Configure(Main.rand.Next(14, 22), affectedByGravity: false);
+                }
+                return;
+            }
+            sandRakeTicks = 0;
+            Item item = Player.GetItem();
+            if (item == null || item.type != ModContent.ItemType<OnikiriItem>()) {
+                return;
+            }
+            ShootState state = Player.GetShootState();
+            OniMeiSandGarden.Rake_(Player, Player.Bottom,
+                Math.Max(1, (int)(state.WeaponDamage * OniMeiCombat.SandGardenDamageMul)),
+                Player.GetSource_ItemUse(item));
+        }
+
+        //==================== 雷切 斩雷 ====================
+
+        /// <summary>
+        /// 大招命中即引雷。雷暴天多落两道并加宽；晴天只落一道。<br/>
+        /// 头顶有遮挡就落不下来——这条硬限制在弹幕侧探顶，玩家能从"没落雷"读出自己在洞里
+        /// </summary>
+        internal void TryCallThunder(NPC target, in OniMeiCombatProfile profile,
+            int baseWeaponDamage, float knockback, Projectile sourceProjectile) {
+            if (!profile.ThunderCall || Player.whoAmI != Main.myPlayer
+                || target == null || thunderCooldown > 0) {
+                return;
+            }
+            thunderCooldown = OniMeiCombat.ThunderCooldownTicks;
+            bool storming = Main.raining && Math.Abs(Main.windSpeedCurrent) >= 0.4f;
+            int bolts = storming ? OniMeiCombat.ThunderStormBolts : 1;
+            int damage = Math.Max(1, (int)(baseWeaponDamage * OniMeiCombat.ThunderDamageMul));
+            IEntitySource source = sourceProjectile?.GetSource_FromAI()
+                ?? Player.GetSource_ItemUse(Player.GetItem());
+
+            bool anyLanded = false;
+            for (int i = 0; i < bolts; i++) {
+                //多道时左右散开，读作"一片雷"而不是同一根画三遍
+                float spread = bolts <= 1 ? 0f : (i - (bolts - 1) * 0.5f) * 86f;
+                Vector2 at = target.Center + Vector2.UnitX * spread;
+                if (OniMeiThunderColumn.TryStrike(Player, at, damage, knockback,
+                    storming ? 1.25f : 1f, source)) {
+                    anyLanded = true;
+                }
+            }
+            if (!anyLanded) {
+                //落不下来也要有交代：刃上憋着的那点电噼一声散掉
+                OniMeiStrikes.SpawnThunderChoke(Player);
+            }
+        }
+
+        //==================== 鵺切 落鵺 ====================
+
+        /// <summary>落鵺收势：砸完这段时间不能疾走</summary>
+        internal void LockDashForNueDive(int ticks) {
+            nueDiveRecover = Math.Max(nueDiveRecover, ticks);
+            dashLock = Math.Max(dashLock, ticks);
+        }
+
+        /// <summary>
+        /// 空中第五拍改扑击：离地够高才成立，落地前不再有横甩巨弧。<br/>
+        /// 由 <see cref="CrimsonRendSlash"/> 在第五拍出手前问一句，接管成功则本拍不走常规弧
+        /// </summary>
+        internal bool TryNueDive(in OniMeiCombatProfile profile, int baseWeaponDamage,
+            float sizeMul, Projectile sourceProjectile) {
+            if (!profile.NueDive || Player.whoAmI != Main.myPlayer
+                || nueDiveRecover > 0 || !OniMeiNueDive.HasDiveRoom(Player)) {
+                return false;
+            }
+            return OniMeiNueDive.Fire(Player, baseWeaponDamage, sizeMul,
+                sourceProjectile?.GetSource_FromAI()) != null;
+        }
+
         /// <summary>滞樋：授权命中叠「滞缚」(自实现墨锚阻尼，boss 减效)</summary>
         private void TryApplyStickyBind(NPC target, in OniMeiCombatProfile profile) {
             if (!profile.StickyBind || target == null || !target.active) {
@@ -2277,11 +3012,172 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             NPC root = OniMeiCombat.ResolveEffectRoot(target);
             root?.AddBuff(ModContent.BuffType<OniBindDebuff>(), OniMeiCombat.StickyBindTargetSlowTicks);
+            NotifyStickyBindEngraved();
         }
 
         /// <summary>闲樋：命中记忆在冷战窗口内无刷新则视为脱战</summary>
         private bool IsCombatCold() {
             return scaledTime - lastDirectBladeHitTick > OniMeiCombat.QuietBreathColdTicks;
+        }
+
+        //==================== 在世刀身铭刻层的活仪表 ====================
+
+        /// <summary>刀身铭刻读数推进(owner 端，随缩放帧走)</summary>
+        private void TickEngraveGauges() {
+            engraveHiPulse *= 0.90f;
+            if (engraveHiPulse < 0.01f) {
+                engraveHiPulse = 0f;
+            }
+            engraveHiFill = MathHelper.Lerp(engraveHiFill, ResolveEngraveHiTarget(out float rate), rate);
+            if (engraveHiFill < 0.004f) {
+                engraveHiFill = 0f;
+            }
+            engraveHiPhase += ResolveEngraveHiPhaseStep();
+            engraveHiPhase -= MathF.Floor(engraveHiPhase);
+            engraveHoriLit = MathHelper.Lerp(engraveHoriLit, ResolveEngraveHoriLit(), 0.14f);
+            TickQuietBreathShift();
+        }
+
+        /// <summary>正在居合疾走(风樋气势与焦樋起烬都跟这个走)</summary>
+        private bool IsDashing()
+            => Player.ownedProjectileCounts[ModContent.ProjectileType<OniFlashStep>()] > 0;
+
+        /// <summary>
+        /// 闲樋:脱战窗的开合各给一记进出演出。未装闲樋时只静默跟踪,
+        /// 免得刚凿上闲樋就凭空吐一口息
+        /// </summary>
+        private void TickQuietBreathShift() {
+            bool cold = IsCombatCold();
+            if (!Mei.QuietBreath) {
+                engraveQuietCold = cold;
+                return;
+            }
+            if (cold == engraveQuietCold) {
+                return;
+            }
+            engraveQuietCold = cold;
+            engraveHiPulse = 1f;
+            OniMeiStrikes.SpawnQuietBreathShift(Player, cold);
+        }
+
+        /// <summary>各樋位的槽内充盈目标与趋近速率；未装樋位排空</summary>
+        private float ResolveEngraveHiTarget(out float rate) {
+            //血樋：命中把血位顶满(NotifyBloodBackflow)，此后顺槽慢慢排空
+            if (Mei.BloodGroove) {
+                rate = 0.018f;
+                return 0f;
+            }
+            //风樋：常态就有气流，疾走时吃满
+            if (Mei.WindGroove) {
+                rate = 0.12f;
+                return IsDashing() ? 1f : 0.35f;
+            }
+            //焦樋：疾走点起余烬，停下后慢慢烧完
+            if (Mei.ScorchTrail) {
+                rate = IsDashing() ? 0.20f : 0.020f;
+                return IsDashing() ? 1f : 0f;
+            }
+            //闲樋：脱战窗接上才起息，被自己一刀打断就压回去
+            if (Mei.QuietBreath) {
+                bool cold = IsCombatCold();
+                rate = cold ? 0.025f : 0.16f;
+                return cold ? 1f : 0f;
+            }
+            //滞樋：命中挂珠(NotifyStickyBindHit)，无命中则慢慢滴干
+            if (Mei.StickyBind) {
+                rate = 0.012f;
+                return 0f;
+            }
+            //谢樋：击杀积瓣(NotifyPetalPrune)，久不了结则褪去
+            if (Mei.PetalPrune) {
+                rate = 0.010f;
+                return 0f;
+            }
+            rate = 0.08f;
+            return 0f;
+        }
+
+        /// <summary>樋内循环相位步进：各介质自有的流速</summary>
+        private float ResolveEngraveHiPhaseStep() {
+            if (Mei.WindGroove) {
+                return IsDashing() ? 0.085f : 0.048f;
+            }
+            if (Mei.ScorchTrail) {
+                return 0.009f;
+            }
+            if (Mei.StickyBind) {
+                return 0.0055f;
+            }
+            return 0.012f;
+        }
+
+        /// <summary>樋位条件是否成立(供刀身层做"接上了/没接上"的读法)</summary>
+        private bool ResolveEngraveHiArmed() {
+            if (Mei.QuietBreath) {
+                return IsCombatCold();
+            }
+            return Mei.TideBeat && IsTideOnBeatNow;
+        }
+
+        /// <summary>雕位条件就绪度：亮=这一刻雕纹的赋效可以兑现</summary>
+        private float ResolveEngraveHoriLit() {
+            //不动：架势够且不在内冷，下一记承诺动作里的受击就能挡
+            if (Mei.StanceGuard) {
+                return fudoGuardCooldown <= 0 && Stance >= FudoGuardStanceCost - 0.01f ? 1f : 0f;
+            }
+            //痺雕：同为承诺动作里的架势反手
+            if (Mei.NumbCounter) {
+                return numbGuardCooldown <= 0 && Stance >= NumbGuardStanceCost - 0.01f ? 1f : 0f;
+            }
+            //止足：立定充能本身就是读数，充到满再亮满
+            if (Mei.PlantedStep) {
+                return plantedReady
+                    ? 1f
+                    : MathHelper.Clamp(plantedCharge / (float)OniMeiCombat.PlantedChargeNeedTicks, 0f, 0.85f);
+            }
+            //倶利伽罗：龙火窗内龙雕持续烧着
+            if (Mei.DragonfireLoop) {
+                return KurikaraWindow > 0 ? 1f : 0f;
+            }
+            //余炎：场还在就亮着
+            if (Mei.EmberField) {
+                return OniMeiGroundBurn.AnyOwnedStyle(Player, OniMeiBurnStyle.Ember) ? 1f : 0f;
+            }
+            //镇鸣无常态条件，靠 NotifyQuellStruck 打一记脉冲后自行回落
+            return 0f;
+        }
+
+        /// <summary>血樋回流：命中顶满血位，槽内随后排空</summary>
+        private void NotifyBloodBackflow() {
+            engraveHiFill = 1f;
+            engraveHiPulse = 1f;
+        }
+
+        /// <summary>滞樋：授权命中在槽里多挂一批墨珠</summary>
+        private void NotifyStickyBindEngraved() {
+            engraveHiFill = Math.Min(1f, engraveHiFill + 0.45f);
+            engraveHiPulse = 1f;
+        }
+
+        /// <summary>谢樋：了结一个便在槽里多压一片瓣痕</summary>
+        private void NotifyPetalPruneEngraved() {
+            engraveHiFill = Math.Min(1f, engraveHiFill + 0.5f);
+            engraveHiPulse = 1f;
+        }
+
+        /// <summary>镇鸣：镇下一发弹，雕纹当场一响再自行回落</summary>
+        private void NotifyQuellEngraved() => engraveHoriLit = 1f;
+
+        /// <summary>刀身铭刻层取活读数(仅本地玩家有效)</summary>
+        internal void FillEngraveGauges(ref OniMeiEngraveState state) {
+            state.HiFill = engraveHiFill;
+            state.HiPulse = engraveHiPulse;
+            //潮樋的相位就是潮相本身，不另起自由相位
+            state.HiPhase = Mei.TideBeat ? MathF.Max(TidePhase01, 0f) : engraveHiPhase;
+            state.HiArmed = ResolveEngraveHiArmed();
+            state.HoriLit = engraveHoriLit;
+            //铁截的钝刃直接由茎铭 Key 判定(各端都有)，此处只给需要活读数的咎层
+            state.BladeCrack = GuiltLayers / (float)GuiltMaxLayers;
         }
 
         /// <summary>满架势身周绯焰提示</summary>

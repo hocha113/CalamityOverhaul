@@ -26,6 +26,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public LocalizedText Power { get; private set; }
         /// <summary>铭的实际负担说明，由物品本地化域统一注册</summary>
         public LocalizedText Burden { get; private set; }
+        /// <summary>刀縁残句：未凿位在改铭台上的去处提示；靠刀縁得来的铭才需要</summary>
+        public LocalizedText DeedHint { get; private set; }
 
         public override string Texture => CWRConstant.VaultPlaceholder2;
 
@@ -44,6 +46,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             Origin = null;
             Power = null;
             Burden = null;
+            DeedHint = null;
             keyToType.Clear();
             keyToItem.Clear();
         }
@@ -61,6 +64,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             Origin ??= this.GetLocalization(nameof(Origin), () => "...");
             Power ??= this.GetLocalization(nameof(Power), () => "...");
             Burden ??= this.GetLocalization(nameof(Burden), () => "———");
+            //只有靠刀縁得来的铭才注册残句，免得给赠礼铭平白多出一条空词条
+            if (Deeds.OniMeiDeedRegistry.TryGetByMei(MeiKey, out _)) {
+                DeedHint ??= this.GetLocalization(nameof(DeedHint), () => "...");
+            }
             Item.width = 32;
             Item.height = 32;
             Item.maxStack = 1;
@@ -180,6 +187,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override string MeiKey => nameof(MeiMokukiri);
     }
 
+    internal sealed class OniMeiRubbingKumokiri : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiKumokiri);
+    }
+
     internal sealed class OniMeiRubbingKazehi : OniMeiRubbingItem
     {
         public override string MeiKey => nameof(MeiKazehi);
@@ -243,5 +255,65 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
     internal sealed class OniMeiRubbingYoen : OniMeiRubbingItem
     {
         public override string MeiKey => nameof(MeiYoen);
+    }
+
+    internal sealed class OniMeiRubbingOnimaru : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiOnimaru);
+    }
+
+    internal sealed class OniMeiRubbingRaikiri : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiRaikiri);
+    }
+
+    internal sealed class OniMeiRubbingNuekiri : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiNuekiri);
+    }
+
+    internal sealed class OniMeiRubbingKamihi : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiKamihi);
+    }
+
+    internal sealed class OniMeiRubbingSorahi : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiSorahi);
+    }
+
+    internal sealed class OniMeiRubbingKagamihi : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiKagamihi);
+    }
+
+    internal sealed class OniMeiRubbingAmahi : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiAmahi);
+    }
+
+    internal sealed class OniMeiRubbingTsuzurihi : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiTsuzurihi);
+    }
+
+    internal sealed class OniMeiRubbingBonsho : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiBonsho);
+    }
+
+    internal sealed class OniMeiRubbingHannya : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiHannya);
+    }
+
+    internal sealed class OniMeiRubbingKaresansui : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiKaresansui);
+    }
+
+    internal sealed class OniMeiRubbingSenju : OniMeiRubbingItem
+    {
+        public override string MeiKey => nameof(MeiSenju);
     }
 }

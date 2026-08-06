@@ -31,9 +31,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private int FireInterval => Context.IsDeathMode ? 6 : 7;
         private float LaserSpeed => Context.IsDeathMode ? 13f : 11f;
 
+        /// <summary>扫射站位，逼近到此距离即刹停，保证扇形有展开空间</summary>
+        private float SweepStandoff => Context.IsDeathMode ? 380f : 440f;
+
+        /// <summary>蓄力进度过此值即锁死瞄准，不再跟踪玩家(公平阀)</summary>
+        private const float AimLockProgress = 0.75f;
+
         private TwinsStateContext Context;
         private Vector2 sweepStartDir;
         private bool hasFiredWarningShot;
+        private bool aimLocked;
         private int comboStep;
 
         public RetinazerLaserSweepState() : this(0) {
@@ -47,6 +54,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             base.OnEnter(context);
             Context = context;
             hasFiredWarningShot = false;
+            aimLocked = false;
         }
 
         public override ITwinsState OnUpdate(TwinsStateContext context) {
@@ -76,9 +84,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             return null;
         }
 
-        /// <summary>进入位置阶段</summary>
+        /// <summary>进入位置阶段，先升到站位之外，蓄力期的压近才读得出来</summary>
         private void ExecutePositioningPhase(NPC npc, Player player) {
-            Vector2 targetPos = player.Center + new Vector2(0, -400);
+            Vector2 targetPos = player.Center + new Vector2(0, -560);
             MoveTo(npc, targetPos, MoveSpeed * 0.8f, 0.12f);
             FaceTarget(npc, player.Center);
 
@@ -98,11 +106,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             int phaseTimer = Timer - PositioningPhase;
             float progress = phaseTimer / (float)ChargePhase;
 
-            npc.velocity = npc.To(player.Center).UnitVector() * MoveSpeed;
+            //压近到射击站位就刹住，末段静止即开火前那一拍；玩家贴上来则被推开
+            Vector2 toPlayer = player.Center - npc.Center;
+            Vector2 approachDir = toPlayer.SafeNormalize(Vector2.UnitY);
+            float approach = MathHelper.Clamp((toPlayer.Length() - SweepStandoff) / 150f, -0.5f, 1f);
+            npc.velocity = approachDir * MoveSpeed * approach;
 
-            //记录扫射起始方向
-            sweepStartDir = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
-            FaceTarget(npc, player.Center);
+            //末 1/4 锁死扇形轴线，给玩家离开中心的窗口
+            if (progress <= AimLockProgress) {
+                sweepStartDir = approachDir;
+                FaceTarget(npc, player.Center);
+            }
+            else {
+                if (!aimLocked) {
+                    aimLocked = true;
+                    if (!VaultUtils.isServer) {
+                        SoundEngine.PlaySound(SoundID.Item15 with { Pitch = 0.55f, Volume = 0.8f }, npc.Center);
+                    }
+                }
+                npc.rotation = sweepStartDir.ToRotation() - MathHelper.PiOver2;
+            }
 
             context.SetChargeState(4, 0.2f + progress * 0.8f);
 
@@ -171,8 +194,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             Vector2 currentDir = sweepStartDir.RotatedBy(sweepAngle);
             npc.rotation = currentDir.ToRotation() - MathHelper.PiOver2;
 
-            //保持位置稳定
+            //锁位稳住，玩家逼近则被推开，扇形始终有展开距离
             npc.velocity *= 0.95f;
+            Vector2 fromPlayer = npc.Center - player.Center;
+            float distToPlayer = fromPlayer.Length();
+            if (distToPlayer < SweepStandoff) {
+                npc.velocity += fromPlayer.SafeNormalize(Vector2.UnitY) * ((SweepStandoff - distToPlayer) * 0.02f);
+            }
 
             if (phaseTimer % FireInterval == 0 && !VaultUtils.isClient) {
                 Projectile.NewProjectile(

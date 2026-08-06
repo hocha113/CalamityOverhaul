@@ -84,6 +84,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public bool EmberField;
         /// <summary>假切「假身」：疾走起步残影替真身吸一击</summary>
         public bool FalseBody;
+        /// <summary>蜘蛛切「墨丝」：直接刀击钉丝锚，三锚闭合成网并向内收紧</summary>
+        public bool SilkSnare;
+        /// <summary>鬼丸「自斩」：站定不动够久，刀自行脱手飞斩最近敌手</summary>
+        public bool SelfCut;
+        /// <summary>雷切「斩雷」：大招命中时自天顶落雷柱贯穿目标（须露天）</summary>
+        public bool ThunderCall;
+        /// <summary>鵺切「落鵺」：离地时的第五拍改为俯冲砸地</summary>
+        public bool NueDive;
+        /// <summary>紙樋「表影」：疾走穿身在表世界挂纸型，斩纸传导到本体</summary>
+        public bool PaperEffigy;
+        /// <summary>空樋「浮身」：离地可再疾走一次，落点滞空</summary>
+        public bool AirGroove;
+        /// <summary>鏡樋「镜写」：疾走终点留纸镜立像，复刻你的下一刀</summary>
+        public bool MirrorEcho;
+        /// <summary>雨樋「落雨」：樱流沿途滴落墨雨，落地成滞缚洼</summary>
+        public bool InkRain;
+        /// <summary>綴樋「缀痕」：墨痕引爆时相邻两枚之间连缀切开</summary>
+        public bool MarkStitch;
+        /// <summary>梵鐘「一撞」：满架势憋住不放终结，刀自鸣满即撞钟</summary>
+        public bool BellToll;
+        /// <summary>般若「面变」：残血翻鬼面，刀更重更狠也更脆</summary>
+        public bool HannyaMask;
+        /// <summary>枯山水「砂纹」：立定耙出砂纹场，场内持续割并涨架势</summary>
+        public bool SandGarden;
+        /// <summary>千手「千手」：终结定格期多浮六只持刀鬼手同斩</summary>
+        public bool SenjuArms;
 
         /// <summary>严格基准档：所有倍率恒等，所有开关关闭</summary>
         public static OniMeiCombatProfile Identity => new() {
@@ -247,6 +273,169 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         /// <summary>影破真空：承伤倍率</summary>
         public const float FalseBodyVacuumIncomingMul = 1.18f;
 
+        //====蜘蛛切 墨丝====
+        /// <summary>墨丝：闭网所需的丝锚数</summary>
+        public const int SilkSnareAnchorNeed = 3;
+        /// <summary>墨丝：单枚丝锚寿命(帧)</summary>
+        public const int SilkAnchorLifeTicks = 240;
+        /// <summary>墨丝：同一主体的补锚间隔(帧)，防一拍在同个目标上钉满三锚</summary>
+        public const int SilkAnchorSameRootCooldown = 24;
+        /// <summary>墨丝：两锚过近则不算新锚(px)，否则网退化成一条线</summary>
+        public const float SilkAnchorMinSpacing = 90f;
+        /// <summary>墨丝：收网相对基础刀伤</summary>
+        public const float SilkSnareDamageMul = 0.90f;
+        /// <summary>墨丝：收网命中的滞缚时长(帧)</summary>
+        public const int SilkSnareBindTicks = 60;
+        /// <summary>墨丝：有锚在场时的自然回气倍率(结网的代价)</summary>
+        public const float SilkWeavingRegenMul = 0.75f;
+        /// <summary>墨丝：闭网后的门闩(帧)，防连段一直挂网</summary>
+        public const int SilkSnareCooldownTicks = 90;
+
+        //====鬼丸 自斩====
+        /// <summary>自斩：站定多久后刀开始自己动(帧)</summary>
+        public const int SelfCutArmTicks = 60;
+        /// <summary>自斩：待机期每几帧放一次刀</summary>
+        public const int SelfCutIntervalTicks = 90;
+        /// <summary>自斩：索敌半径(px)</summary>
+        public const float SelfCutRange = 640f;
+        /// <summary>自斩：相对基础刀伤</summary>
+        public const float SelfCutDamageMul = 1.40f;
+        /// <summary>自斩：每次脱手的气力开销</summary>
+        public const float SelfCutVigorCost = 10f;
+
+        //====雷切 斩雷====
+        /// <summary>斩雷：雷柱相对基础刀伤</summary>
+        public const float ThunderDamageMul = 0.70f;
+        /// <summary>斩雷：同一记招式内至多落几道(雷暴天上限)</summary>
+        public const int ThunderStormBolts = 3;
+        /// <summary>斩雷：晴天大招前摇倍率(蓄雷的代价)</summary>
+        public const float ThunderClearSkyWindupMul = 1.06f;
+        /// <summary>斩雷：落雷门闩(帧)，防一记多段命中刷成雷幕</summary>
+        public const int ThunderCooldownTicks = 24;
+        /// <summary>斩雷：向上探顶的最大格数，探得到天才落</summary>
+        public const int ThunderSkyProbeTiles = 64;
+
+        //====鵺切 落鵺====
+        /// <summary>落鵺：起跳门槛，离地不足此高度(px)照常走第五拍</summary>
+        public const float NueDiveMinHeight = 48f;
+        /// <summary>落鵺：俯冲速度(px/帧)</summary>
+        public const float NueDiveSpeed = 34f;
+        /// <summary>落鵺：俯冲最长帧数，超时也强制落地</summary>
+        public const int NueDiveMaxFrames = 40;
+        /// <summary>落鵺：落点冲击半径(px)</summary>
+        public const float NueDiveRadius = 200f;
+        /// <summary>落鵺：落点相对基础刀伤</summary>
+        public const float NueDiveDamageMul = 1.20f;
+        /// <summary>落鵺：落地后禁疾走(帧)</summary>
+        public const int NueDiveRecoverTicks = 40;
+        /// <summary>落鵺：把周围敌人拽向落点的每帧强度</summary>
+        public const float NueDivePullStrength = 2.6f;
+
+        //====紙樋 表影====
+        /// <summary>表影：纸型寿命(帧)</summary>
+        public const int PaperEffigyLifeTicks = 420;
+        /// <summary>表影：同时在场上限</summary>
+        public const int PaperEffigyMaxCount = 2;
+        /// <summary>表影：斩纸传导到本体的相对基础刀伤</summary>
+        public const float PaperEffigyDamageMul = 0.80f;
+        /// <summary>表影：本体被斩纸后的受创窗(帧)</summary>
+        public const int PaperEffigyBrandTicks = 90;
+        /// <summary>表影：受创窗内挨刀的加深</summary>
+        public const float PaperEffigyBrandHitMul = 1.12f;
+        /// <summary>表影：有纸在场时疾走耗气倍率</summary>
+        public const float PaperEffigyDashCostMul = 1.12f;
+
+        //====空樋 浮身====
+        /// <summary>浮身：离地时自然回气倍率</summary>
+        public const float AirGrooveAirRegenMul = 2.0f;
+        /// <summary>浮身：落地后回气归零的帧数(沉底)</summary>
+        public const int AirGrooveLandingDryTicks = 45;
+        /// <summary>浮身：空中疾走结束后的滞空帧数</summary>
+        public const int AirGrooveHoverTicks = 30;
+
+        //====鏡樋 镜写====
+        /// <summary>镜写：立像寿命(帧)</summary>
+        public const int MirrorStandLifeTicks = 120;
+        /// <summary>镜写：复刻斩的相对基础刀伤</summary>
+        public const float MirrorEchoDamageMul = 0.45f;
+
+        //====雨樋 落雨====
+        /// <summary>落雨：樱流每几帧滴一枚</summary>
+        public const int InkRainDripInterval = 6;
+        /// <summary>落雨：单枚墨滴的相对基础刀伤</summary>
+        public const float InkRainDamageMul = 0.12f;
+        /// <summary>落雨：落地水洼的滞缚时长(帧)</summary>
+        public const int InkRainPuddleBindTicks = 30;
+        /// <summary>落雨：樱流耗气倍率(带着一路雨飞更费)</summary>
+        public const float InkRainSakuraDrainMul = 1.15f;
+
+        //====綴樋 缀痕====
+        /// <summary>缀痕：连缀段的相对基础刀伤</summary>
+        public const float MarkStitchDamageMul = 0.35f;
+        /// <summary>缀痕：单枚墨痕伤害倍率(不成串就亏)</summary>
+        public const float MarkStitchSoloMarkMul = 0.70f;
+        /// <summary>缀痕：墨痕引爆位置的收集窗(帧)，同一次疾走的墨痕同帧炸</summary>
+        public const int MarkStitchGatherTicks = 3;
+
+        //====梵鐘 一撞====
+        /// <summary>一撞：满架势后自鸣到撞钟所需帧数（这段是玩家的选择窗）</summary>
+        public const int BellChargeTicks = 180;
+        /// <summary>一撞：钟波半径</summary>
+        public const float BellWaveRadius = 480f;
+        /// <summary>一撞：钟波相对基础刀伤</summary>
+        public const float BellWaveDamageMul = 0.60f;
+        /// <summary>一撞：钟波滞缚时长(帧)</summary>
+        public const int BellWaveBindTicks = 90;
+        /// <summary>一撞：撞钟后架势落到此值（等于放弃这一次终结）</summary>
+        public const float BellTollStanceLeft = 50f;
+
+        //====般若 面变====
+        /// <summary>面变：翻鬼面的生命线</summary>
+        public const float HannyaMaskThreshold = 0.35f;
+        /// <summary>面变：鬼面期刀击加深</summary>
+        public const float HannyaHitMul = 1.20f;
+        /// <summary>面变：鬼面期每次命中回复的最大生命比</summary>
+        public const float HannyaLifestealRatio = 0.005f;
+        /// <summary>面变：鬼面期承伤倍率</summary>
+        public const float HannyaIncomingMul = 1.15f;
+        /// <summary>面变：每几次命中浮一张鬼面咬合</summary>
+        public const int HannyaBiteEvery = 3;
+        /// <summary>面变：鬼面咬合的相对基础刀伤</summary>
+        public const float HannyaBiteDamageMul = 0.50f;
+
+        //====枯山水 砂纹====
+        /// <summary>砂纹：立定多少帧耙成一场</summary>
+        public const int SandGardenRakeTicks = 90;
+        /// <summary>砂纹：场半径</summary>
+        public const float SandGardenRadius = 320f;
+        /// <summary>砂纹：场寿命(帧)</summary>
+        public const int SandGardenLifeTicks = 300;
+        /// <summary>砂纹：每几帧割一次</summary>
+        public const int SandGardenCutInterval = 30;
+        /// <summary>砂纹：单次割的相对基础刀伤</summary>
+        public const float SandGardenDamageMul = 0.18f;
+        /// <summary>砂纹：站在自己场内的架势获取加成</summary>
+        public const float SandGardenStanceBonus = 1.30f;
+
+        //====千手====
+        /// <summary>千手：终结定格期额外浮出的鬼手数</summary>
+        public const int SenjuArmCount = 6;
+        /// <summary>千手：单手断斩的相对基础刀伤</summary>
+        public const float SenjuArmDamageMul = 0.30f;
+        /// <summary>千手：终结后禁疾走(帧)</summary>
+        public const int SenjuRecoverTicks = 180;
+
+        /// <summary>
+        /// 表影：目标身上还挂着受创就加深。与铭是否在手无关——纸已经斩过了，
+        /// 这一档欠的是那张纸，不是当下这把刀
+        /// </summary>
+        public static float BuildPaperBrandMul(NPC target) {
+            NPC root = ResolveEffectRoot(target);
+            return root?.HasBuff<OniPaperBrandDebuff>() == true
+                ? PaperEffigyBrandHitMul
+                : 1f;
+        }
+
         /// <summary>潮拍：相位是否落在合潮窗(窗心在周期中点)</summary>
         public static bool IsTideOnBeat(int tidePhase) {
             int period = TidePeriodTicks;
@@ -403,7 +592,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             }
             NPC root = ResolveEffectRoot(source);
             root.AddBuff(ModContent.BuffType<OniNumbDebuff>(), NumbCounterSlowTicks);
-            OniMeiStrikes.SpawnNumbCounterFX(root);
+            //反击方向=把来手顶离玩家,火花据此成束
+            Vector2 knockDir = owner == null
+                ? Vector2.UnitX * root.direction
+                : root.Center - owner.Center;
+            OniMeiStrikes.SpawnNumbCounterFX(root, knockDir);
             return true;
         }
 
@@ -431,7 +624,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             if (!killed && frac >= ExecuteThreshold) {
                 return;
             }
-            OniMeiStrikes.SpawnSeverLine(target, cutAngle, aged: !execute);
+            OniMeiStrikes.SpawnSeverLine(target, cutAngle, aged: !execute, killed: killed);
             if (!execute) {
                 return;
             }
@@ -460,7 +653,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                 return false;
             }
             modifiers.FinalDamage *= IronSeverSteelHitMul;
-            OniMeiStrikes.SpawnIronSeverFX(target);
+            OniMeiStrikes.SpawnIronSeverFX(target, Vector2.UnitX * target.direction);
             return true;
         }
     }

@@ -5,16 +5,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
     /// <summary>鬼切教程状态机的本地玩家门面</summary>
     internal static class OnikiriTutorialFlow
     {
-        internal const int Step_HudIntro = 0;
-        internal const int Step_Mei = 1;
-        internal const int Step_Register = 2;
-        internal const int Step_Prepare = 3;
-        internal const int Step_OpenOmote = 4;
-        internal const int Step_FlipUra = 5;
-        internal const int Step_Dismember = 6;
-        internal const int Step_Backlash = 7;
-        internal const int Step_CloseEye = 8;
-        internal const int Step_Done = 9;
+        /// <summary>开场询问,只在从未答复过的存档上出现</summary>
+        internal const int Step_Ask = 0;
+        internal const int Step_HudIntro = 1;
+        internal const int Step_Mei = 2;
+        internal const int Step_Register = 3;
+        internal const int Step_Prepare = 4;
+        internal const int Step_OpenOmote = 5;
+        internal const int Step_FlipUra = 6;
+        internal const int Step_Dismember = 7;
+        internal const int Step_Backlash = 8;
+        internal const int Step_CloseEye = 9;
+        internal const int Step_Done = 10;
 
         internal const int Checkpoint_Hud = 1;
         internal const int AssistDelayFrames = 60 * 12;

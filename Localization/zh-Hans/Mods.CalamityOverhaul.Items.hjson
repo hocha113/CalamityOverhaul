@@ -279,6 +279,19 @@ HalibutItem: {
 	Tooltip: ""
 }
 
+HalibutPilotChart: {
+	DisplayName: 引航海图
+	Tooltip:
+		'''
+		使用后从头开讲大比目鱼引导，引导进行中再用一次则收起
+		婉拒开场引导时留下的凭证，海图不消耗，可反复开讲
+		'''
+	NeedFish: 行囊里没有大比目鱼，海图无处可引
+	HoldFish: 海图已展开，握起大比目鱼便开讲
+	Closed: 引导已收起，再用此图可重开
+	NotNow: 此刻另有要事，海图铺不开
+}
+
 OnikiriItem: {
 	DisplayName: 鬼切
 	Tooltip:
@@ -2553,6 +2566,18 @@ OniMeiRubbingHigekiri: {
 	Burden: 刀击伤害 -2%。目标健壮时，这把刀比原铭略钝
 }
 
+OniKeikoRune: {
+	DisplayName: 稽古符
+	Tooltip:
+		'''
+		使用后从头开讲鬼切教习，教习进行中再用一次则收起
+		婉拒开场教习时留下的凭证，符不消耗，可反复开讲
+		'''
+	NeedBlade: 行囊里没有鬼切，符引不出教习
+	Closed: 教习已收起，再用此符可重开
+	NotNow: 此刻另有要事，符压不住场
+}
+
 OniMeiGiftRepairCommand: {
 	Description: 为当前角色重新排入一项已完成的鬼切铭刻赠礼
 	LocalOnly: 此命令只能修复当前本地角色
@@ -2663,6 +2688,15 @@ OniMeiRubbingMokukiri: {
 	Origin: 空气沉下去了。习惯了，咎还在
 	Power: 「默杀」付费普通疾走自然结束后45帧内，下一次普连或残心动作伤害 ×1.35
 	Burden: 再次疾走或动作挥空也会消费默杀；免费处决疾走不予武装
+}
+
+OniMeiRubbingKumokiri: {
+	DisplayName: 蜘蛛切
+	Tooltip: 刀击钉丝锚，三锚闭网收紧；结网期回气 -25%
+	Origin: 土蜘蛛的巢在梁上，砍断的不是它，是它挂着的那几根丝
+	Power: 「墨丝」直接刀击在落刀点钉一枚存续4秒的丝锚（同一主体0.4秒内不补锚，两锚相距须过90像素）；集满三枚即拉出墨丝三角，垂坠0.33秒后向重心猛收，扫过的每个主体受90%基础刀伤并滞缚1秒。闭网后1.5秒方可再织
+	Burden: 有锚在场时自然回气 -25%；锚过期即白费一记。网织不成，就只是分了心
+	DeedHint: 梁上结巢的东西，斩够三十只，刀就认得那股腥气了
 }
 
 OniMeiRubbingKogehi: {

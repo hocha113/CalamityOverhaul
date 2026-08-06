@@ -1,6 +1,7 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -407,10 +408,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
                 onikiri.OnPrimaryBladeHit(target, in profile);
                 OniMeiCombat.OnExecuteStrikeHit(Owner, target, CutAngle, ref executeRefunded,
                     in profile, ActionContext?.ActionSerial ?? 0);
+                onikiri.TryCallThunder(target, in profile,
+                    ActionContext?.BaseWeaponDamage ?? Math.Max(1, Projectile.damage / 5),
+                    Projectile.knockBack, Projectile);
                 if (!target.active || target.life <= 0) {
                     onikiri.TryPetalPruneOnKill(target,
                         ActionContext?.BaseWeaponDamage ?? Math.Max(1, Projectile.damage / 5),
                         Projectile.knockBack, Projectile, in profile);
+                    OniMeiDeedEvents.NotifyKill(Owner, target, OniMeiDeedKillSource.Annihilate);
                 }
             }
 

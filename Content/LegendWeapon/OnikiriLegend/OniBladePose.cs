@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -212,6 +213,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             DrawBladeSprite(sb, Rotation, Facing, Scale * 1.018f, shadow, new Vector2(Facing, 1f));
             Color body = Color.Lerp(lightColor, Color.White, 0.24f) * Opacity;
             DrawBladeSprite(sb, Rotation, Facing, Scale, body);
+            DrawEngrave(sb, owner);
+        }
+
+        /// <summary>刀身铭刻层：只叠在刀体本身上，残影不带铭</summary>
+        private void DrawEngrave(SpriteBatch sb, Player owner) {
+            OniMeiEngraveState state = OniMeiBladeEngrave.Resolve(null, owner);
+            if (!state.AnyEngraved) {
+                return;
+            }
+            OniBladeProfile.BladeXform xform = OniBladeProfile.BuildXform(handWorld, Rotation,
+                Facing, Scale, edgeFlip: false, HiltUV, TipUV);
+            OniMeiBladeEngrave.Draw(sb, in xform, in state, Opacity);
         }
 
         /// <summary>实体刀单帧精灵:护手钉手心、刀尖严格指向 rotation;太刀朝左垂直翻转并镜像支点(与连段同一套数学)</summary>

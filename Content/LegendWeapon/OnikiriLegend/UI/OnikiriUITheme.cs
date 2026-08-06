@@ -146,6 +146,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static readonly Vector2 HangScrollHit = new(76f, 207f);
         /// <summary>改铭台屏上挂刀命中外包</summary>
         public static readonly Vector2 HangTachiHit = new(68f, 225f);
+        /// <summary>梁上双钩名义间距(卷轴钩→太刀钩;点鬼簿屏受卷纸左缘夹持)</summary>
+        public const float BeamHookGap = 96f;
+        /// <summary>驿牌尺寸(钉在梁上的横书名板)</summary>
+        public static readonly Vector2 BeamBoardSize = new(66f, 20f);
         #endregion
 
         #region 点鬼簿几何

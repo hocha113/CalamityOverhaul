@@ -487,6 +487,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             if (leadFx && player.whoAmI == Main.myPlayer) {
                 OniFinaleCut.Fire(player, entry.AnchorCenter + local, cutAngle, 0, 0f);
             }
+            Inscriptions.Deeds.OniMeiDeedEvents.NotifyOmokageSever(player);
 
             if (entry.CutDelay <= 0) {
                 OnPaperSplit(entry);

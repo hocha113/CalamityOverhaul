@@ -1,6 +1,7 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -497,10 +498,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
                 //髭切断首:入线命中画断线,了结返势(每刀一次)
                 OniMeiCombat.OnExecuteStrikeHit(Owner, target, CutAngle, ref executeRefunded,
                     in profile, ActionContext?.ActionSerial ?? 0);
+                okp.TryCallThunder(target, in profile,
+                    ActionContext?.BaseWeaponDamage ?? Math.Max(1, Projectile.damage / 2),
+                    Projectile.knockBack, Projectile);
                 if (!target.active || target.life <= 0) {
                     okp.TryPetalPruneOnKill(target,
                         ActionContext?.BaseWeaponDamage ?? Math.Max(1, Projectile.damage / 2),
                         Projectile.knockBack, Projectile, in profile);
+                    OniMeiDeedEvents.NotifyKill(Owner, target, OniMeiDeedKillSource.Zanshin);
                 }
             }
 

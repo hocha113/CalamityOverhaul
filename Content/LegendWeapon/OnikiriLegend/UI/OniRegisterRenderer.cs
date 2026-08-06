@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
+using CalamityOverhaul.Content.UIs.UIEffect;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;

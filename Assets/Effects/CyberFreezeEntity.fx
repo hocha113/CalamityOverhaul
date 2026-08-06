@@ -214,11 +214,13 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     //=
     //全局透明度控制
     //=
+    //intensity 只调制上面的特效层(freezeStr/hexOverlayStr)，不参与最终颜色：
+    //乘进 alpha 会让领域强度为 0 的视角(队友、领域收起后)整个实体消失
     float globalFlicker = 0.85 + 0.15 * sin(uTime * 5.0 + seed * 20.0);
-    color.a *= globalFlicker;
+    color.a *= lerp(1.0, globalFlicker, intensity);
 
     color.rgb = saturate(filtered);
-    return color * intensity;
+    return color;
 }
 
 technique Technique1

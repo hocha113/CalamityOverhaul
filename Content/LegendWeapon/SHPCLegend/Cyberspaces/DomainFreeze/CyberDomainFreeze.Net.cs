@@ -57,6 +57,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         private static readonly Dictionary<ProjectileReleaseRecord, ulong>
             releasedProjectiles = [];
 
+        //解冻/推进广播按帧攒批：线格式本来就带 count，一次领域解冻不该发几百个包。
+        //客户端遇到重复记录会整包丢弃，所以入队时必须去重。
+        private static readonly List<NPCReleaseRecord> pendingNPCReleases = [];
+        private static readonly HashSet<NPCReleaseRecord> pendingNPCReleaseKeys = [];
+        private static readonly List<ProjectileReleaseRecord>
+            pendingProjectileReleases = [];
+        private static readonly HashSet<ProjectileReleaseRecord>
+            pendingProjectileReleaseKeys = [];
+        private static readonly List<NPCAdvanceRecord> pendingNPCAdvances = [];
+        private static readonly HashSet<NPCReleaseRecord> pendingNPCAdvanceKeys = [];
+
         private static void SendFreezeRequest(RamRequestToken request) {
             if (Main.netMode != NetmodeID.MultiplayerClient || !request.IsValid) {
                 return;
@@ -194,11 +205,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 || !identity.IsValid) {
                 return;
             }
-            ModPacket packet = NewPacket(FreezePacketKind.ReleaseNPC);
-            packet.Write((ushort)1);
-            packet.Write(activationId);
-            identity.Write(packet);
-            packet.Send();
+            NPCReleaseRecord record = new(activationId, identity);
+            if (pendingNPCReleaseKeys.Add(record)) {
+                pendingNPCReleases.Add(record);
+            }
         }
 
         private static void BroadcastReleaseProjectile(long activationId,
@@ -207,11 +217,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 || !identity.IsValid) {
                 return;
             }
-            ModPacket packet = NewPacket(FreezePacketKind.ReleaseProjectile);
-            packet.Write((ushort)1);
-            packet.Write(activationId);
-            identity.Write(packet);
-            packet.Send();
+            ProjectileReleaseRecord record = new(activationId, identity);
+            if (pendingProjectileReleaseKeys.Add(record)) {
+                pendingProjectileReleases.Add(record);
+            }
         }
 
         private static void BroadcastAdvanceNPC(FreezeEntry entry) {
@@ -220,13 +229,71 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 || !IsValidTiming(entry.Timer, entry.Duration)) {
                 return;
             }
-            ModPacket packet = NewPacket(FreezePacketKind.AdvanceNPC);
-            packet.Write((ushort)1);
-            packet.Write(entry.ActivationId);
-            entry.Identity.Write(packet);
-            packet.Write((ushort)entry.Timer);
-            packet.Write((ushort)entry.Duration);
-            packet.Send();
+            if (pendingNPCAdvanceKeys.Add(new NPCReleaseRecord(entry.ActivationId,
+                entry.Identity))) {
+                pendingNPCAdvances.Add(new NPCAdvanceRecord(entry.ActivationId,
+                    entry.Identity, entry.Timer, entry.Duration));
+            }
+        }
+
+        /// <summary>把本帧攒下的解冻/推进记录各发一包</summary>
+        private static void FlushBroadcasts() {
+            if (Main.netMode != NetmodeID.Server) {
+                ClearPendingBroadcasts();
+                return;
+            }
+            //分片上限对齐接收端的 count 校验，超限的批次整包会被丢弃
+            for (int start = 0; start < pendingNPCReleases.Count;
+                start += Main.maxNPCs) {
+                int count = Math.Min(Main.maxNPCs,
+                    pendingNPCReleases.Count - start);
+                ModPacket packet = NewPacket(FreezePacketKind.ReleaseNPC);
+                packet.Write((ushort)count);
+                for (int i = start; i < start + count; i++) {
+                    NPCReleaseRecord record = pendingNPCReleases[i];
+                    packet.Write(record.ActivationId);
+                    record.Identity.Write(packet);
+                }
+                packet.Send();
+            }
+            for (int start = 0; start < pendingProjectileReleases.Count;
+                start += Main.maxProjectiles) {
+                int count = Math.Min(Main.maxProjectiles,
+                    pendingProjectileReleases.Count - start);
+                ModPacket packet = NewPacket(FreezePacketKind.ReleaseProjectile);
+                packet.Write((ushort)count);
+                for (int i = start; i < start + count; i++) {
+                    ProjectileReleaseRecord record = pendingProjectileReleases[i];
+                    packet.Write(record.ActivationId);
+                    record.Identity.Write(packet);
+                }
+                packet.Send();
+            }
+            for (int start = 0; start < pendingNPCAdvances.Count;
+                start += Main.maxNPCs) {
+                int count = Math.Min(Main.maxNPCs,
+                    pendingNPCAdvances.Count - start);
+                ModPacket packet = NewPacket(FreezePacketKind.AdvanceNPC);
+                packet.Write((ushort)count);
+                for (int i = start; i < start + count; i++) {
+                    NPCAdvanceRecord record = pendingNPCAdvances[i];
+                    packet.Write(record.ActivationId);
+                    record.Identity.Write(packet);
+                    packet.Write((ushort)record.Elapsed);
+                    packet.Write((ushort)record.Duration);
+                }
+                packet.Send();
+            }
+            ClearPendingBroadcasts();
+        }
+
+        private static void ClearPendingBroadcasts() {
+            pendingNPCReleases.Clear();
+            pendingNPCReleaseKeys.Clear();
+            pendingProjectileReleases.Clear();
+            pendingProjectileReleaseKeys.Clear();
+            pendingNPCAdvances.Clear();
+            pendingNPCAdvanceKeys.Clear();
         }
 
         private static void HandleApply(BinaryReader reader) {

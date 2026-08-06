@@ -27,6 +27,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         KurikaraLoop,
         /// <summary>谢樋「剪落」：了结溅花小剪刃（不得再触发剪落）</summary>
         PetalPrune,
+        /// <summary>鏡樋「镜写」：镜中那一刀，冷白玻璃质感，无墨色</summary>
+        MirrorEcho,
+        /// <summary>般若「面变」：鬼面咬合，血黑近墨、白牙一线</summary>
+        HannyaBite,
     }
 
     /// <summary>
@@ -163,6 +167,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     def.HalfX = 160f * s;
                     def.HalfY = 90f * s;
                     break;
+                case CleaveStyle.MirrorEcho:
+                    //镜写:玻璃质感——墨全退,只留冷白薄刃与一记硬白闪
+                    def.Ink = 0f;
+                    def.FeiBai = 0f;
+                    def.Bleed = 0f;
+                    def.SplitTail = 0.25f;
+                    def.FrontGlow = 3.4f;
+                    def.FlashPower = 1f;
+                    def.Opacity = 0.78f;
+                    def.Thick = 0.26f;
+                    break;
+                case CleaveStyle.HannyaBite:
+                    //面变:血黑近墨,咬合窄而深,白牙只在前缘一线
+                    def.Ink = 0.85f;
+                    def.Bleed = 0.55f;
+                    def.FeiBai = 0.20f;
+                    def.SplitTail = 0.40f;
+                    def.FrontGlow = 2.0f;
+                    def.Opacity = 0.95f;
+                    def.Span = 1.15f;
+                    def.Thick = 0.46f;
+                    def.HalfX = 150f * s;
+                    def.HalfY = 132f * s;
+                    break;
             }
         }
 
@@ -185,6 +213,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     break;
                 case CleaveStyle.PetalPrune:
                     SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.45f, Volume = 0.32f }, Projectile.Center);
+                    break;
+                case CleaveStyle.MirrorEcho:
+                    //镜写:玻璃脆响压在挥砍之上,一听就知道"不是你砍的那一刀"
+                    SoundEngine.PlaySound(SoundID.Item27 with { Pitch = 0.60f, Volume = 0.40f }, Projectile.Center);
+                    SoundEngine.PlaySound(CWRSound.KatanaSwing with { Pitch = 0.85f, Volume = 0.35f }, Projectile.Center);
+                    break;
+                case CleaveStyle.HannyaBite:
+                    SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.85f, Volume = 0.30f }, Projectile.Center);
+                    SoundEngine.PlaySound(CWRSound.KatanaHitB with { Pitch = -0.30f, Volume = 0.55f }, Projectile.Center);
                     break;
                 default:
                     SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.5f, Volume = 0.5f }, Projectile.Center);

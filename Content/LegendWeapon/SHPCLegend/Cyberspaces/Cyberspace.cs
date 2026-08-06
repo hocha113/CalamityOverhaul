@@ -50,6 +50,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         /// <summary>场景压暗强度</summary>
         public static float DimStrength = 0.85f;
 
+        /// <summary>受术实体特效强度下限，见 <see cref="EffectIntensityOf"/></summary>
+        public const float MinEffectIntensity = 0.6f;
+
         //====== 玩家访问器 ======
 
         /// <summary>指定玩家领域状态，未就绪 null</summary>
@@ -150,6 +153,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         public static bool IsInsideDomainOf(int ownerWho, Vector2 worldPos) {
             CyberspacePlayer cp = For(ownerWho);
             return cp != null && cp.IsInsideDomain(worldPos);
+        }
+
+        /// <summary>
+        /// 施术者领域强度，供受术实体的特效着色器使用。
+        /// <br/>不能取 <see cref="Intensity"/>：那是本地玩家的领域，队友视角恒为 0。
+        /// <br/>下限保证领域中途收起时特效只是变淡，不会把实体本身调没。
+        /// </summary>
+        public static float EffectIntensityOf(int ownerWho) {
+            float intensity = For(ownerWho)?.Intensity ?? 0f;
+            if (!float.IsFinite(intensity)) {
+                intensity = 0f;
+            }
+            return MathHelper.Clamp(intensity, MinEffectIntensity, 1f);
         }
 
         /// <summary>任意玩家领域是否覆盖 worldPos</summary>

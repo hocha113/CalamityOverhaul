@@ -15,6 +15,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
         private static float _originalScale;
 
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            //PreDraw 链后段返回 false 时本实体的 PostDraw 不会被调用，缩放与批次都得靠下一个实体自愈
+            RestoreLeakedScale(npc.whoAmI);
+            RestoreLeakedBatch(spriteBatch);
+
             if (!CyberBanish.TryGetEntry(npc.whoAmI, out BanishEntry entry)) return true;
 
             float progress = entry.Progress;
@@ -36,7 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             shader.Parameters["texelSize"]?.SetValue(new Vector2(1f / tex.Width, 1f / tex.Height));
             shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             shader.Parameters["progress"]?.SetValue(progress);
-            shader.Parameters["intensity"]?.SetValue(Cyberspace.Intensity);
+            shader.Parameters["intensity"]?.SetValue(Cyberspace.EffectIntensityOf(entry.OwnerWho));
             shader.Parameters["seed"]?.SetValue(entry.Seed);
 
             spriteBatch.End();
@@ -55,7 +59,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                 _scaleModified = false;
                 _scaledNpcIndex = -1;
             }
-            if (!_shaderActive) return;
+            EndShaderBatch(spriteBatch);
+        }
+
+        private static void RestoreLeakedScale(int currentNpcIndex) {
+            if (!_scaleModified || _scaledNpcIndex == currentNpcIndex) {
+                return;
+            }
+            if (_scaledNpcIndex >= 0 && _scaledNpcIndex < Main.maxNPCs
+                && Main.npc[_scaledNpcIndex]?.active == true) {
+                Main.npc[_scaledNpcIndex].scale = _originalScale;
+            }
+            _scaleModified = false;
+            _scaledNpcIndex = -1;
+        }
+
+        private static void RestoreLeakedBatch(SpriteBatch spriteBatch) {
+            if (_shaderActive) {
+                EndShaderBatch(spriteBatch);
+            }
+        }
+
+        private static void EndShaderBatch(SpriteBatch spriteBatch) {
+            if (!_shaderActive) {
+                return;
+            }
             _shaderActive = false;
 
             spriteBatch.End();

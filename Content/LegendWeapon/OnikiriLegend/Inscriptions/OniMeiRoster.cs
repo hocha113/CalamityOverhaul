@@ -115,6 +115,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
     }
 
+    /// <summary>蜘蛛切，斩土蜘蛛的源氏旧名：刀击钉丝锚，三锚闭网内收；结网期回气变慢</summary>
+    internal sealed class MeiKumokiri : OniMeiDefinition
+    {
+        public override int SortOrder => 47;
+        public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Nakago;
+
+        public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
+            profile.SilkSnare = true;
+        }
+    }
+
+    /// <summary>鬼丸，天下五剑自行断鬼足的旧名：站定够久刀自己出手；脱手期间无刀可用</summary>
+    internal sealed class MeiOnimaru : OniMeiDefinition
+    {
+        public override int SortOrder => 22;
+        public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Nakago;
+        public override bool IsGoldTier => true;
+
+        public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
+            profile.SelfCut = true;
+        }
+    }
+
+    /// <summary>雷切，立花道雪雨中斩雷神：大招引雷贯敌；晴天蓄雷更慢，洞里不落</summary>
+    internal sealed class MeiRaikiri : OniMeiDefinition
+    {
+        public override int SortOrder => 33;
+        public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Nakago;
+
+        public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
+            //蓄雷的代价压在排拍上：晴天也一样慢，别让玩家只在雷暴天才觉得亏
+            profile.ComboGapMul *= OniMeiCombat.ThunderClearSkyWindupMul;
+            profile.ThunderCall = true;
+        }
+    }
+
+    /// <summary>鵺切，源赖政射落鵺：空中第五拍改俯冲砸地；落地收势不能疾走</summary>
+    internal sealed class MeiNuekiri : OniMeiDefinition
+    {
+        public override int SortOrder => 44;
+        public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Nakago;
+
+        public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
+            profile.NueDive = true;
+        }
+    }
+
     /// <summary>风樋，轻身之槽：疾走/樱流省气，墨痕伤害 -20%</summary>
     internal sealed class MeiKazehi : OniMeiDefinition
     {
@@ -203,6 +250,65 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
     }
 
+    /// <summary>紙樋，把面影带到表世界：疾走穿身挂纸型，斩纸传导本体；有纸在场疾走更费</summary>
+    internal sealed class MeiKamihi : OniMeiDefinition
+    {
+        public override int SortOrder => 57;
+        public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Hi;
+
+        public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
+            profile.PaperEffigy = true;
+        }
+    }
+
+    /// <summary>空樋，浮身：离地多一次疾走并滞空；落地沉底回气归零，地面疾走略贵</summary>
+    internal sealed class MeiSorahi : OniMeiDefinition
+    {
+        public override int SortOrder => 58;
+        public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Hi;
+
+        public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
+            profile.DashVigorCostMul *= 1.10f;
+            profile.AirGroove = true;
+        }
+    }
+
+    /// <summary>鏡樋，镜写：疾走终点留纸镜立像复刻下一刀；分神令面板伤害 -5%</summary>
+    internal sealed class MeiKagamihi : OniMeiDefinition
+    {
+        public override int SortOrder => 59;
+        public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Hi;
+
+        public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
+            profile.DamageMul *= 0.95f;
+            profile.MirrorEcho = true;
+        }
+    }
+
+    /// <summary>雨樋，落雨：樱流沿途滴墨成洼；樱流耗气 +15%</summary>
+    internal sealed class MeiAmahi : OniMeiDefinition
+    {
+        public override int SortOrder => 66;
+        public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Hi;
+
+        public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
+            profile.SakuraDrainMul *= OniMeiCombat.InkRainSakuraDrainMul;
+            profile.InkRain = true;
+        }
+    }
+
+    /// <summary>綴樋，缀痕：墨痕之间连缀切开；单枚墨痕伤害 -30%</summary>
+    internal sealed class MeiTsuzurihi : OniMeiDefinition
+    {
+        public override int SortOrder => 67;
+        public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Hi;
+
+        public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
+            profile.FlashMarkDamageMul *= OniMeiCombat.MarkStitchSoloMarkMul;
+            profile.MarkStitch = true;
+        }
+    }
+
     /// <summary>不动，梵字カーン笔意的护身雕：承诺动作中耗架势挡伤，架势获取 -15%</summary>
     internal sealed class MeiFudo : OniMeiDefinition
     {
@@ -260,6 +366,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
             profile.VigorMaxMul *= 0.90f;
             profile.DragonfireLoop = true;
+        }
+    }
+
+    /// <summary>梵鐘，一撞：满架势憋住不放终结即自鸣撞钟，架势砍半换一圈控场</summary>
+    internal sealed class MeiBonsho : OniMeiDefinition
+    {
+        public override int SortOrder => 76;
+        public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Horimono;
+
+        public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
+            profile.BellToll = true;
+        }
+    }
+
+    /// <summary>般若，面变：残血翻鬼面，刀更重更狠还吸血；鬼面期更脆，女面期略钝</summary>
+    internal sealed class MeiHannya : OniMeiDefinition
+    {
+        public override int SortOrder => 77;
+        public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Horimono;
+
+        public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
+            //女面期的钝压在面板上；鬼面的加深走命中侧，翻面才有得赚
+            profile.DamageMul *= 0.96f;
+            profile.HannyaMask = true;
+        }
+    }
+
+    /// <summary>枯山水，砂纹：立定耙出留在原地的砂纹场，场内持续割并涨架势</summary>
+    internal sealed class MeiKaresansui : OniMeiDefinition
+    {
+        public override int SortOrder => 79;
+        public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Horimono;
+
+        public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
+            profile.SandGarden = true;
+        }
+    }
+
+    /// <summary>千手，金象嵌：终结定格多浮六手同斩；终结后气清零且久不能疾走</summary>
+    internal sealed class MeiSenju : OniMeiDefinition
+    {
+        public override int SortOrder => 88;
+        public override OniMeiSlotKind SlotKind => OniMeiSlotKind.Horimono;
+        public override bool IsGoldTier => true;
+
+        public override void ModifyCombatProfile(ref OniMeiCombatProfile profile) {
+            profile.SenjuArms = true;
         }
     }
 

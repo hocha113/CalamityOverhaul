@@ -58,34 +58,40 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             return false;
         }
 
-        public static float GetNPCFreezeProgress(int npcIndex) {
+        /// <summary>取 NPC 冻结表现参数，ownerWho 用于按施术者取领域强度</summary>
+        public static bool TryGetNPCVisual(int npcIndex, out float progress,
+            out float seed, out int ownerWho) {
             for (int i = 0; i < FrozenNPCs.Count; i++) {
                 FreezeEntry entry = FrozenNPCs[i];
                 if (entry.EntityIndex == npcIndex && IsEntryActive(entry)) {
-                    return entry.Progress;
+                    progress = entry.Progress;
+                    seed = entry.Seed;
+                    ownerWho = entry.OwnerWho;
+                    return true;
                 }
             }
-            return -1f;
+            progress = -1f;
+            seed = 0f;
+            ownerWho = -1;
+            return false;
         }
 
-        public static float GetProjectileFreezeProgress(int projectileIndex) {
+        /// <summary>取弹幕冻结表现参数，ownerWho 用于按施术者取领域强度</summary>
+        public static bool TryGetProjectileVisual(int projectileIndex,
+            out float progress, out float seed, out int ownerWho) {
             for (int i = 0; i < FrozenProjectiles.Count; i++) {
                 FreezeProjEntry entry = FrozenProjectiles[i];
                 if (entry.EntityIndex == projectileIndex && IsEntryActive(entry)) {
-                    return entry.Progress;
+                    progress = entry.Progress;
+                    seed = entry.Seed;
+                    ownerWho = entry.OwnerWho;
+                    return true;
                 }
             }
-            return -1f;
-        }
-
-        public static float GetNPCSeed(int npcIndex) {
-            for (int i = 0; i < FrozenNPCs.Count; i++) {
-                FreezeEntry entry = FrozenNPCs[i];
-                if (entry.EntityIndex == npcIndex && IsEntryActive(entry)) {
-                    return entry.Seed;
-                }
-            }
-            return 0f;
+            progress = -1f;
+            seed = 0f;
+            ownerWho = -1;
+            return false;
         }
 
         public static void TriggerFreeze(Player owner) {
@@ -502,6 +508,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             }
             UpdateAuthoritativeNPCs();
             UpdateAuthoritativeProjectiles();
+            FlushBroadcasts();
         }
 
         private static void UpdateAuthoritativeNPCs() {
@@ -716,6 +723,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             nextActivationId = 0;
             ClearRememberedActivations();
             ClearReleasedTargets();
+            ClearPendingBroadcasts();
         }
 
         private static void ClearEntries() {

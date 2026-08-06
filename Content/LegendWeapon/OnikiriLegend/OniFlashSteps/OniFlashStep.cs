@@ -1,6 +1,7 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights;
 using InnoVault.GameContent.BaseEntity;
@@ -528,6 +529,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 finishReported = true;
                 OnikiriPlayer onikiri = Owner.GetModPlayer<OnikiriPlayer>();
                 onikiri.OnFlashStepFinished(IsExecutionDash, executionTarget, dashDir);
+                //一次疾走的穿身总数在此定稿，刀縁只认整段不认逐个
+                OniMeiDeedEvents.NotifyDashPierce(Owner, marked.Count);
                 if (!IsExecutionDash && !onikiri.ExecutionDashQueued) {
                     onikiri.OpenZanshinWindow(JudgmentFrame - timer, marked.Count, dashDir);
                 }
@@ -537,6 +540,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                         ? context.Profile
                         : OniMeiCombatProfile.Identity;
                     onikiri.ArmSilentKillFromDash(in profile);
+                    //空樋：空中收尾即滞空，给下一拍一个落点
+                    onikiri.OpenAirGrooveHover();
+                    //鏡樋：终点立一枚纸镜，复刻你接下来第一记刀
+                    if (profile.MirrorEcho) {
+                        OniMeiMirrorStand.TryPlace(Owner, GetCenter(), Owner.direction,
+                            context?.BaseWeaponDamage ?? Projectile.damage,
+                            Projectile.GetSource_FromAI());
+                    }
                 }
             }
 
@@ -602,6 +613,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                         : OniMeiCombatProfile.Identity;
                     Owner.GetModPlayer<OnikiriPlayer>().OnDashParry(
                         npc, grantResources, in profile);
+                    //紙樋：穿身的同时把这一位的面影拓到表世界，挂在落点等你回头斩
+                    if (profile.PaperEffigy) {
+                        OniMeiPaperEffigy.TryImprint(Owner, npc,
+                            context?.BaseWeaponDamage ?? Projectile.damage,
+                            Projectile.GetSource_FromAI());
+                    }
                     Tutorial.OnikiriTutorialEvents.FireDashSweep(npc);
                 }
 
@@ -1024,11 +1041,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 totalLen += Vector2.Distance(pts[i - 1], pts[i]);
             }
             float s = sizeMul * MathHelper.Clamp(totalLen / 320f, 0.4f, 1f);
-            //风樋:主流带更窄、流速更快,纸风质感(铭档随物品同步,纯表现不改判定)
+            //风樋:主流带收到明显更窄、流速明显更快,纸风质感(铭档随物品同步,纯表现不改判定)
+            //旧值 0.82/1.14 是亚感知量级,与"顺风"这个身份不相称
             OniMeiActionContext context = OniMeiActionContext.Get(Projectile);
             bool wind = context?.HasSnapshot == true && context.Profile.WindGroove;
-            float slim = wind ? 0.82f : 1f;
-            float flowUp = wind ? 1.14f : 1f;
+            float slim = wind ? 0.62f : 1f;
+            float flowUp = wind ? 1.38f : 1f;
             Span<OKF.RibbonDef> defs = [
                 //白热主脊、窄、快、几乎不撕裂，头段发光的骨架
 

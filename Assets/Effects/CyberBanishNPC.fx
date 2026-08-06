@@ -144,12 +144,14 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     //=
     //全局透明度闪烁（故障性质的整体明灭）
     //=
+    //intensity 只调制上面的特效层，不参与最终颜色：
+    //乘进 alpha 会让领域强度为 0 的视角(队友、领域收起后)整个实体消失
     float globalFlicker = 0.7 + 0.3 * sin(uTime * 8.0 + seed * 30.0);
     float blockFlicker = step(0.15, hash11(timeHash * 0.31 + seed)) > 0.0 ? 1.0 : 0.4;
-    color.a *= globalFlicker * lerp(1.0, blockFlicker, progress);
+    color.a *= lerp(1.0, globalFlicker * lerp(1.0, blockFlicker, progress), intensity);
 
     color.rgb = saturate(filtered);
-    return color * intensity;
+    return color;
 }
 
 technique Technique1

@@ -309,9 +309,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
             //检查另一只眼睛是否存活
             NPC partner = TwinsStateContext.GetPartnerNpc(npc.type);
-            bool partnerDead = partner == null || !partner.active;
-            if (stateContext.IsDeathMode && partner.Alives()) {
-                partnerDead = (partner.life / (float)partner.lifeMax) < 0.15f;
+            bool partnerDead = !partner.Alives();
+
+            //死亡模式允许搭档濒死即提前狂暴，但名额只有一个，避免双眼同时进无限狂暴
+            if (!partnerDead && stateContext.IsDeathMode
+                && (partner.life / (float)partner.lifeMax) < 0.15f) {
+                partnerDead = TwinsStateContext.TryClaimEarlyRage(npc.type);
             }
 
             if (partnerDead) {

@@ -11,24 +11,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
     internal class CyberDomainFreezeGlobalNPC : GlobalNPC
     {
         private static bool _shaderActive;
+        //记住是谁开的批次：PreDraw 链后段返回 false 时 PostDraw 不会被调用，得让下一个实体自愈
+        private static int _shaderNpcIndex = -1;
 
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            RestoreLeakedBatch(spriteBatch);
+
             if (!ShouldApplyEffect(npc)) return true;
 
             Effect shader = CyberDomainFreezeAssets.CyberFreezeEntity;
             if (shader == null) return true;
 
-            float progress = CyberDomainFreeze.GetNPCFreezeProgress(npc.whoAmI);
-            if (progress < 0f) return true;
+            if (!CyberDomainFreeze.TryGetNPCVisual(npc.whoAmI, out float progress,
+                out float seed, out int ownerWho)) {
+                return true;
+            }
 
             Texture2D tex = TextureAssets.Npc[npc.type].Value;
-
-            float seed = CyberDomainFreeze.GetNPCSeed(npc.whoAmI);
 
             shader.Parameters["texelSize"]?.SetValue(new Vector2(1f / tex.Width, 1f / tex.Height));
             shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             shader.Parameters["progress"]?.SetValue(progress);
-            shader.Parameters["intensity"]?.SetValue(Cyberspace.Intensity);
+            shader.Parameters["intensity"]?.SetValue(Cyberspace.EffectIntensityOf(ownerWho));
             shader.Parameters["seed"]?.SetValue(seed);
 
             spriteBatch.End();
@@ -38,26 +42,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             shader.CurrentTechnique.Passes[0].Apply();
 
             _shaderActive = true;
+            _shaderNpcIndex = npc.whoAmI;
             return true;
         }
 
         public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            bool wasFrozen = _shaderActive;
-            if (_shaderActive) {
-                _shaderActive = false;
-
-                spriteBatch.End();
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
-                    Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
-                    null, Main.GameViewMatrix.TransformationMatrix);
-            }
+            bool wasFrozen = _shaderActive && _shaderNpcIndex == npc.whoAmI;
+            EndShaderBatch(spriteBatch);
 
             //六角能量罩
-            if (wasFrozen) {
-                float progress = CyberDomainFreeze.GetNPCFreezeProgress(npc.whoAmI);
-                float seed = CyberDomainFreeze.GetNPCSeed(npc.whoAmI);
+            if (wasFrozen && CyberDomainFreeze.TryGetNPCVisual(npc.whoAmI,
+                out float progress, out float seed, out _)) {
                 DrawCageOverlay(spriteBatch, npc.Center, screenPos, progress, seed, npc.width, npc.height);
             }
+        }
+
+        private static void RestoreLeakedBatch(SpriteBatch spriteBatch) {
+            if (_shaderActive) {
+                EndShaderBatch(spriteBatch);
+            }
+        }
+
+        private static void EndShaderBatch(SpriteBatch spriteBatch) {
+            if (!_shaderActive) {
+                return;
+            }
+            _shaderActive = false;
+            _shaderNpcIndex = -1;
+
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
+                null, Main.GameViewMatrix.TransformationMatrix);
         }
 
         /// <summary>冻结实体六角能量罩覆盖</summary>

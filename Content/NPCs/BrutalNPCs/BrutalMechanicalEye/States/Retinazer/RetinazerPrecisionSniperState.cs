@@ -24,6 +24,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private float SpreadAngle => Context.IsDeathMode ? 60f : 50f;
         private float BaseSpeed => Context.IsDeathMode ? 7f : 5f;
 
+        /// <summary>狙击站位，距离不足则蓄力期退开，扇形齐射才有展开空间</summary>
+        private float SniperStandoff => Context.IsDeathMode ? 420f : 480f;
+
         private TwinsStateContext Context;
         private int sniperCount;
         private int comboStep;
@@ -45,8 +48,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             NPC npc = context.Npc;
             Player player = context.Target;
 
-            //减速
+            //减速稳住；距离不足则退到狙击站位，绝不贴脸开扇形
             npc.velocity *= 0.9f;
+            Vector2 fromPlayer = npc.Center - player.Center;
+            float distToPlayer = fromPlayer.Length();
+            if (distToPlayer < SniperStandoff) {
+                npc.velocity += fromPlayer.SafeNormalize(Vector2.UnitY) * ((SniperStandoff - distToPlayer) * 0.016f);
+            }
             npc.EntityToRot((player.Center - npc.Center).ToRotation() - MathHelper.PiOver2, 0.16f);
 
             context.SetChargeState(2, Math.Min(Timer / (float)ChargeTime, 1f));

@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds;
 using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -171,7 +172,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private readonly float[] slotSelect = new float[3];
         private int selectedSlot = -1;      //-1 未选;0~2 = OniMeiSlotKind
         private float fanEase;
-        private readonly List<OniMeiDefinition> ribs = [];
+        /// <summary>扇骨候选:已凿在前,尚有刀縁可循的未凿铭接在其后(暗刻,点不动)</summary>
+        private readonly List<(OniMeiDefinition Definition, bool Owned)> ribs = [];
         private bool ribsHasErase;
         private int hoverRib = -1;
         /// <summary>骨悬停缓动,随 <see cref="RebuildRibs"/> 按骨数扩容</summary>
@@ -705,7 +707,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         private void RebuildRibs() {
             ribs.Clear();
-            ribs.AddRange(OniMeiOwned.GetBySlotOwned(SlotOf(selectedSlot), Main.LocalPlayer));
+            ribs.AddRange(OniMeiOwned.GetBySlotWithLocked(SlotOf(selectedSlot), Main.LocalPlayer));
             ribsHasErase = EngravedAt(selectedSlot) != null;
             //扩册免疫:骨数超出缓动数组时扩容(新数组自带清零)
             if (RibCount() > ribEase.Length) {
@@ -801,7 +803,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return;
             }
 
-            OniMeiDefinition def = ribs[index];
+            (OniMeiDefinition def, bool owned) = ribs[index];
+            if (!owned) {
+                //未凿位只作预告:牌上已给出刀縁与进度,点它不该有任何写入
+                DenyFeedback();
+                return;
+            }
             if (def.Key == oldKey) {
                 //已是现铭,合扇即可
                 SelectSlot(-1);
@@ -942,7 +949,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     return ("erase", EraseName.Value, SlotLabel(SlotOf(selectedSlot)), EraseHint.Value,
                         "———", "———", false, true);
                 }
-                OniMeiDefinition def = ribs[hoverRib];
+                (OniMeiDefinition def, bool owned) = ribs[hoverRib];
+                if (!owned) {
+                    return ResolveLockedTag(def);
+                }
                 return ($"def:{def.Key}", def.DisplayName.Value, SlotLabel(def.SlotKind),
                     def.Origin.Value, def.Power.Value, def.Burden.Value, def.IsGoldTier, false);
             }
@@ -972,6 +982,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     name.Origin.Value, name.Power.Value, name.Burden.Value, name.IsGoldTier, false);
             }
             return ("none", "", "", "", "", "", false, false);
+        }
+
+        /// <summary>
+        /// 未凿位的木牌:题名照给(铭名本身就是线索),类目盖「未凿」,
+        /// 出处栏换成刀縁残句,赋效栏换成实时进度,代价留空。
+        /// 戳里带进度值,读数一变打字机就重烙一次
+        /// </summary>
+        private static (string stamp, string title, string kind, string origin, string power,
+            string burden, bool gold, bool erase) ResolveLockedTag(OniMeiDefinition def) {
+            string hint = def.DeedHint?.Value ?? "";
+            string progress = OniMeiDeedText.LockedUnknown?.Value ?? "———";
+            int value = 0;
+            if (OniMeiDeedRegistry.TryGetByMei(def.Key, out OniMeiDeed deed)) {
+                value = Main.LocalPlayer.TryGetModPlayer(out OnikiriPlayer okp)
+                    ? okp.Deeds.Get(deed.Key) : 0;
+                progress = OniMeiDeedText.DescribeProgress(deed, value);
+            }
+            return ($"locked:{def.Key}:{value}", def.DisplayName.Value,
+                OniMeiDeedText.LockedKind.Value, hint, progress, "———", false, false);
         }
 
         internal static string SlotLabel(OniMeiSlotKind slot) => slot switch {
@@ -1151,10 +1180,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     Color.Lerp(OnikiriUITheme.TextDim, OnikiriUITheme.Paper, slotHover[i]) * (a * 0.9f), 0.8f);
             }
 
-            //悬停扇骨:粉笔稿投影到选中牌位(试铭)
-            if (selectedSlot >= 0 && hoverRib >= 0 && !IsEraseRib(hoverRib)) {
+            //悬停扇骨:粉笔稿投影到选中牌位(试铭);未凿位不试铭,不给"马上能凿"的错觉
+            if (selectedSlot >= 0 && hoverRib >= 0 && !IsEraseRib(hoverRib) && ribs[hoverRib].Owned) {
                 float pulse = 0.75f + 0.25f * (float)Math.Sin(ShaderTime * 4f);
-                OniMeiGlyph.DrawChalk(sb, ribs[hoverRib].Key, slotPos[selectedSlot],
+                OniMeiGlyph.DrawChalk(sb, ribs[hoverRib].Definition.Key, slotPos[selectedSlot],
                     OnikiriUITheme.MeiMedallionGlyph, a * pulse * ribEase[Math.Min(hoverRib, ribEase.Length - 1)]);
             }
             //悬停匣格:粉笔稿试铭
@@ -1244,10 +1273,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                         fanLayout.GlyphSize);
                     continue;
                 }
-                OniMeiDefinition def = ribs[i];
-                bool isCurrent = engraved != null && engraved.Key == def.Key;
-                OniMeiRenderer.DrawFanRib(sb, fanPivot, pos, def.Key, def.IsGoldTier, isCurrent,
-                    vis, hov, a, ShaderTime, fanLayout.GlyphSize);
+                (OniMeiDefinition def, bool owned) = ribs[i];
+                bool isCurrent = owned && engraved != null && engraved.Key == def.Key;
+                OniMeiRenderer.DrawFanRib(sb, fanPivot, pos, def.Key, def.IsGoldTier && owned, isCurrent,
+                    vis, hov, a, ShaderTime, fanLayout.GlyphSize, locked: !owned);
             }
             //枢钉
             Texture2D pixel = VaultAsset.placeholder2.Value;

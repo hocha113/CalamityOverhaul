@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,6 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         MeiResult = 2,
         ReservedAttuneRequest = 3,
         ReservedAttuneResult = 4,
+        DeedSnapshot = 5,
     }
 
     internal enum OnikiriNetResult : byte
@@ -88,6 +90,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                         break;
                     case OnikiriNetOp.MeiRequest:
                         ReceiveMeiRequest(reader, whoAmI);
+                        break;
+                    case OnikiriNetOp.DeedSnapshot:
+                        ReceiveDeedSnapshot(reader, whoAmI);
                         break;
                 }
                 return;
@@ -173,19 +178,44 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         private static void ReceiveOwnedMeiSnapshot(BinaryReader reader, int whoAmI) {
-            Player player = ResolveSender(whoAmI);
+            //先把负载读干净再做守卫：提前 return 会在 HandlePacket 留下未读字节，
+            //既刷 Read underflow 又把这次拥有铭同步整份丢掉
             int count = reader.ReadUInt16();
-            if (player == null || count > OniMeiRegistry.All.Count) {
-                return;
-            }
-            List<string> keys = new(count);
+            List<string> keys = new(Math.Min(count, OniMeiRegistry.All.Count));
             for (int i = 0; i < count; i++) {
                 if (OniMeiRegistry.TryGetByNetworkId(reader.ReadUInt16(),
                     out OniMeiDefinition definition)) {
                     keys.Add(definition.Key);
                 }
             }
+            //拥有铭是纯存档状态，进世界那帧玩家还没落地，不能按存活筛
+            Player player = ResolveSender(whoAmI, requireAlive: false);
+            if (player == null || count > OniMeiRegistry.All.Count) {
+                return;
+            }
             OniMeiOwned.ApplyNetworkSnapshot(player, keys);
+        }
+
+        /// <summary>刀縁进度推给服务器，让服务端那份 ModPlayer 与本机读数一致</summary>
+        public static void SendDeedSnapshot(Player player) {
+            if (Main.netMode != NetmodeID.MultiplayerClient || player == null
+                || player.whoAmI != Main.myPlayer
+                || !player.TryGetModPlayer(out OnikiriPlayer onikiri)) {
+                return;
+            }
+            ModPacket packet = NewPacket(OnikiriNetOp.DeedSnapshot);
+            onikiri.Deeds.Write(packet);
+            packet.Send();
+        }
+
+        private static void ReceiveDeedSnapshot(BinaryReader reader, int whoAmI) {
+            //同拥有铭：刀縁是存档进度，进世界那帧不能按存活筛
+            Player player = ResolveSender(whoAmI, requireAlive: false);
+            if (player == null || !player.TryGetModPlayer(out OnikiriPlayer onikiri)) {
+                OniMeiDeedProgress.Skip(reader);
+                return;
+            }
+            onikiri.Deeds.Read(reader);
         }
 
         private static void ReceiveMeiRequest(BinaryReader reader, int whoAmI) {
@@ -637,12 +667,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return true;
         }
 
-        private static Player ResolveSender(int whoAmI) {
+        private static Player ResolveSender(int whoAmI, bool requireAlive = true) {
             if (whoAmI < 0 || whoAmI >= Main.maxPlayers) {
                 return null;
             }
             Player player = Main.player[whoAmI];
-            return player?.active == true && !player.dead ? player : null;
+            return player?.active == true && (!requireAlive || !player.dead)
+                ? player
+                : null;
         }
     }
 }

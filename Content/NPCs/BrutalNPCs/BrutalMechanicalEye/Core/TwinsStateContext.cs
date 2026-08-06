@@ -15,6 +15,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
         /// <summary>二阶段转换计时</summary>
         public static int Phase2TransitionTimer { get; set; }
 
+        /// <summary>提前狂暴名额占用者(NPC type)，0=未占用</summary>
+        public static int EarlyRageClaimedBy { get; set; }
+
         /// <summary>重置静态同步</summary>
         public static void ResetSyncData() {
             Phase2Triggered = false;
@@ -23,6 +26,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
             ComboSignal = -1;
             ComboSharedStep = 0;
             ComboReadyMask = 0;
+            EarlyRageClaimedBy = 0;
+        }
+
+        /// <summary>抢占提前狂暴名额，只有一只眼能在搭档濒死时提前狂暴</summary>
+        public static bool TryClaimEarlyRage(int myType) {
+            if (EarlyRageClaimedBy == 0) {
+                EarlyRageClaimedBy = myType;
+                return true;
+            }
+            return EarlyRageClaimedBy == myType;
         }
 
         /// <summary>合击索引(TwinsStateIndex)，-1=无</summary>

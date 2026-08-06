@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectiles;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -14,7 +16,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         public override string StateName => "RetinazerHorizontalBarrage";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerHorizontalBarrage;
 
-        private const int Duration = 140;
+        /// <summary>入场瞄准预警，开火前给出可读起手</summary>
+        private const int AimPhase = 20;
+
+        private const int Duration = 160;
         private int RapidFireRate => 18;
 
         private TwinsStateContext Context;
@@ -49,8 +54,33 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             Timer++;
 
+            //入场瞄准，蓄力光+瞄准线，不开火
+            if (Timer <= AimPhase) {
+                float aimProgress = Timer / (float)AimPhase;
+                context.SetChargeState(4, aimProgress);
+
+                if (Timer == 1 && !VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item15 with { Pitch = 0.4f, Volume = 0.7f }, npc.Center);
+                }
+                if (!VaultUtils.isServer && Timer % 2 == 0) {
+                    TwinsMotion.ChargeGatherFX(npc.Center, false, aimProgress, 80f);
+                }
+                if (!VaultUtils.isServer && Timer % 6 == 0) {
+                    Vector2 aimDir = (npc.rotation + MathHelper.PiOver2).ToRotationVector2();
+                    for (int i = 0; i < 8; i++) {
+                        PRTLoader.NewParticle<PRT_TwinsSpark>(npc.Center + aimDir * (55 + i * 42),
+                            aimDir * 1.5f, Color.White, 0.85f)?.Configure(14, 0);
+                    }
+                }
+                return null;
+            }
+
+            if (Timer == AimPhase + 1) {
+                context.ResetChargeState();
+            }
+
             //发射预判激光
-            if (Timer % RapidFireRate == 0) {
+            if ((Timer - AimPhase) % RapidFireRate == 0) {
                 Vector2 predicted = TwinsMotion.PredictTarget(player, npc.Center, 48f, 0.45f);
                 Vector2 shootDir = (predicted - npc.Center).SafeNormalize(Vector2.UnitY);
                 if (!VaultUtils.isClient) {

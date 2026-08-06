@@ -24,6 +24,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private const int CardWidth = 352;
+        //询问是一次性抉择,给宽一点并让开右侧的符纹章
+        private const int AskCardWidth = 430;
+        private const float AskSigilRadius = 34f;
+        //询问卡浮定前不受理点击
+        private const int AskArmFrames = 24;
         private const int EdgePad = 10;
         private const float TitleScale = 0.9f;
         private const float BodyScale = 0.78f;
@@ -73,7 +78,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
 
             Point mouse = OnikiriUITheme.UIMouse.ToPoint();
-            bool overCard = cardRect.Contains(mouse);
+            //询问卡横在屏心,只让两枚按钮吃输入,卡面本身不挡挥刀
+            bool overCard = OnikiriTutorialFlow.CurrentStep != OnikiriTutorialFlow.Step_Ask
+                && cardRect.Contains(mouse);
             bool overPrimary = primaryAction != ButtonAction.None && primaryRect.Contains(mouse);
             bool overSecondary = secondaryAction != ButtonAction.None && secondaryRect.Contains(mouse);
             if (overCard || overPrimary || overSecondary) {
@@ -178,8 +185,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 return;
             }
 
+            bool asking = step == OnikiriTutorialFlow.Step_Ask;
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            float contentWidth = CardWidth - ContentPadX * 2f;
+            int cardWidth = asking ? AskCardWidth : CardWidth;
+            //询问卡右侧留出符纹章的位置
+            float sigilGutter = asking ? AskSigilRadius * 2f + 24f : 0f;
+            float contentWidth = cardWidth - ContentPadX * 2f - sigilGutter;
             List<GuideLine> lines = [
                 new(body.Value, BodyScale, OnikiriUITheme.TextDim),
             ];
@@ -195,12 +206,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
 
             int cardHeight = MeasureCardHeight(font, lines, contentWidth);
-            Rectangle card = PlaceCard(step, focus, cardHeight, alpha);
+            if (asking) {
+                cardHeight = Math.Max(cardHeight, (int)(AskSigilRadius * 2f) + 76);
+            }
+            Rectangle card = PlaceCard(step, focus, cardWidth, cardHeight, alpha);
             if (focus != null && !UsesPeripheralPracticeCard(step)) {
                 DrawConnector(spriteBatch, card, focus.Rect.Center.ToVector2(), alpha, time);
             }
             DrawCardPanel(spriteBatch, card, alpha, time);
-            DrawCardContent(spriteBatch, font, card, title.Value, lines, alpha);
+            DrawCardContent(spriteBatch, font, card, title.Value, lines, contentWidth, alpha);
+            if (asking) {
+                OniKeikoRuneSigil.Draw(spriteBatch,
+                    new Vector2(card.Right - ContentPadX - AskSigilRadius,
+                        card.Y + (cardHeight - 44f) * 0.5f), AskSigilRadius, alpha, time);
+            }
             BuildAndDrawButtons(spriteBatch, font, card, step, time, alpha);
 
             cardRect = card;
@@ -211,6 +230,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             out LocalizedText body, out LocalizedText prompt) {
             title = body = prompt = null;
             switch (step) {
+                case OnikiriTutorialFlow.Step_Ask:
+                    title = OnikiriTutorialLead.AskTitle;
+                    body = OnikiriTutorialLead.AskBody;
+                    prompt = OnikiriTutorialLead.AskPrompt;
+                    break;
                 case OnikiriTutorialFlow.Step_HudIntro:
                     title = OnikiriTutorialLead.HudTitle;
                     body = OnikiriTutorialLead.HudBody;
@@ -309,7 +333,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 
             string primaryText = null;
             string secondaryText = null;
-            if (step == OnikiriTutorialFlow.Step_HudIntro) {
+            //抉择不可撤回,等卡片浮定再上按钮,免得弹出瞬间被连点的鼠标替玩家答了
+            bool asking = step == OnikiriTutorialFlow.Step_Ask
+                && OnikiriTutorialFlow.StepTimer >= AskArmFrames;
+            if (asking) {
+                primaryText = OnikiriTutorialLead.AcceptBtn.Value;
+                secondaryText = OnikiriTutorialLead.DeclineBtn.Value;
+            }
+            else if (step == OnikiriTutorialFlow.Step_HudIntro) {
                 primaryText = OnikiriTutorialLead.NextBtn.Value;
             }
             else if (step == OnikiriTutorialFlow.Step_Mei) {
@@ -346,17 +377,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 }
             }
 
+            float mainScale = asking ? 0.86f : 0.76f;
+            float subScale = asking ? 0.86f : 0.7f;
             if (!string.IsNullOrEmpty(primaryText)) {
-                primaryRect = MakeButtonRect(font, card, primaryText, rightAligned: true, 24, 0.76f);
+                primaryRect = MakeButtonRect(font, card, primaryText, rightAligned: true,
+                    asking ? 29 : 24, mainScale);
                 primaryAction = ButtonAction.Primary;
                 DrawPaperButton(spriteBatch, font, primaryRect, primaryText,
-                    OnikiriUITheme.Bright, time, alpha, 0.76f);
+                    OnikiriUITheme.Bright, time, alpha, mainScale);
             }
             if (!string.IsNullOrEmpty(secondaryText)) {
-                secondaryRect = MakeButtonRect(font, card, secondaryText, rightAligned: false, 22, 0.7f);
+                secondaryRect = MakeButtonRect(font, card, secondaryText, rightAligned: false,
+                    asking ? 29 : 22, subScale);
                 secondaryAction = ButtonAction.Secondary;
                 DrawPaperButton(spriteBatch, font, secondaryRect, secondaryText,
-                    OnikiriUITheme.GhostFire, time, alpha * 0.92f, 0.7f);
+                    OnikiriUITheme.GhostFire, time, alpha * 0.92f, subScale);
             }
         }
 
@@ -421,31 +456,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 or OnikiriTutorialFlow.Step_Dismember
                 or OnikiriTutorialFlow.Step_Backlash;
 
-        private static Rectangle PlaceCard(int step, HudFocusSnapshot focus, int cardHeight, float alpha) {
+        private static Rectangle PlaceCard(int step, HudFocusSnapshot focus, int cardWidth,
+            int cardHeight, float alpha) {
             float ease = VaultUtils.EaseOutCubic(alpha);
             float slide = (1f - ease) * 28f;
             float screenWidth = OnikiriUITheme.UIScreenW;
             float screenHeight = OnikiriUITheme.UIScreenH;
             float x;
             float y;
-            if (UsesPeripheralPracticeCard(step)) {
-                x = screenWidth - CardWidth - 24f + slide;
+            if (step == OnikiriTutorialFlow.Step_Ask) {
+                //一次性抉择,居中偏上,自下方浮起
+                x = (screenWidth - cardWidth) * 0.5f;
+                y = screenHeight * 0.36f - cardHeight * 0.5f + slide;
+            }
+            else if (UsesPeripheralPracticeCard(step)) {
+                x = screenWidth - cardWidth - 24f + slide;
                 y = screenHeight - cardHeight - 24f;
             }
             else if (focus != null) {
                 x = focus.Rect.Right + 18f - slide;
-                if (x + CardWidth > screenWidth - 16f) {
-                    x = focus.Rect.Left - CardWidth - 18f + slide;
+                if (x + cardWidth > screenWidth - 16f) {
+                    x = focus.Rect.Left - cardWidth - 18f + slide;
                 }
                 y = focus.Rect.Center.Y - cardHeight * 0.5f;
             }
             else {
-                x = screenWidth - CardWidth - 24f;
+                x = screenWidth - cardWidth - 24f;
                 y = screenHeight * 0.32f;
             }
-            x = MathHelper.Clamp(x, 16f, screenWidth - CardWidth - 16f);
-            y = MathHelper.Clamp(y, 16f, screenHeight - cardHeight - 16f);
-            return new Rectangle((int)x, (int)y, CardWidth, cardHeight);
+            x = MathHelper.Clamp(x, 16f, MathF.Max(16f, screenWidth - cardWidth - 16f));
+            y = MathHelper.Clamp(y, 16f, MathF.Max(16f, screenHeight - cardHeight - 16f));
+            return new Rectangle((int)x, (int)y, cardWidth, cardHeight);
         }
 
         private static void DrawCardPanel(SpriteBatch spriteBatch, Rectangle card,
@@ -473,10 +514,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static void DrawCardContent(SpriteBatch spriteBatch, DynamicSpriteFont font,
-            Rectangle card, string title, List<GuideLine> lines, float alpha) {
+            Rectangle card, string title, List<GuideLine> lines, float wrap, float alpha) {
             float x = card.X + ContentPadX;
             float y = card.Y + ContentPadTop;
-            float wrap = card.Width - ContentPadX * 2f;
             float titleX = x + 20f;
             Utils.DrawBorderString(spriteBatch, title, new Vector2(titleX + 1f, y + 1f),
                 Color.Black * (0.45f * alpha), TitleScale);
@@ -484,7 +524,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 OnikiriUITheme.HotWhite * alpha, TitleScale);
             y += font.MeasureString("A").Y * TitleScale + 8f;
             OniBrush.DrawTaperedSlash(spriteBatch, new Vector2(x, y),
-                new Vector2(card.Right - ContentPadX, y - 1f), 1.6f, 0.9f, alpha * 0.85f);
+                new Vector2(x + wrap, y - 1f), 1.6f, 0.9f, alpha * 0.85f);
             y += 8f;
             foreach (GuideLine line in lines) {
                 y = DrawBody(spriteBatch, font, line.Text, x, y, wrap,
