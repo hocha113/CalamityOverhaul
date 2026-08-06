@@ -33,6 +33,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         Waiting,
         Busy,
         Retry,
+        /// <summary>行囊无鬼切,硬闸挂起依赖手持的步骤</summary>
+        NeedBlade,
     }
 
     /// <summary>本次进入教程的方式</summary>
@@ -191,8 +193,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                     break;
                 case OnikiriTutorialFlow.Step_Mei:
                     if (!(OniMeiUI.Instance?.IsOpen ?? false)) {
-                        EnsureHoldingOnikiri();
-                        OniMeiUI.Instance?.Open();
+                        if (!TryBeginLedgerOpen(() => OniMeiUI.Instance?.Open())) {
+                            break;
+                        }
                     }
                     break;
                 case OnikiriTutorialFlow.Step_Register:
@@ -201,8 +204,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                         AdvanceExplanatoryStep();
                     }
                     else if (!(OniMeiUI.Instance?.IsOpen ?? false)) {
-                        EnsureHoldingOnikiri();
-                        OniMeiUI.Instance?.Open();
+                        TryBeginLedgerOpen(() => OniMeiUI.Instance?.Open());
                     }
                     break;
                 case OnikiriTutorialFlow.Step_OpenOmote:
@@ -226,8 +228,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                     break;
                 case OnikiriTutorialFlow.Step_Register:
                     if (!(OniRegisterUI.Instance?.IsOpen ?? false)) {
-                        EnsureHoldingOnikiri();
-                        OniRegisterUI.Instance?.Open();
+                        TryBeginLedgerOpen(() => OniRegisterUI.Instance?.Open());
                     }
                     break;
                 case OnikiriTutorialFlow.Step_OpenOmote:
@@ -454,6 +455,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private void AdvanceIfReady() {
+            //无刀硬闸:依赖手持的步骤不推进、不开台
+            if (NeedsOnikiriHold(CurrentStep) && !HasOnikiriAnywhere()) {
+                return;
+            }
             switch (CurrentStep) {
                 case OnikiriTutorialFlow.Step_HudIntro:
                     if (StepTimer > 60 * 20) {
@@ -636,6 +641,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private void AdvanceExplanatoryStep() {
+            if (NeedsOnikiriHold(CurrentStep) && !HasOnikiriAnywhere()) {
+                NotifyNeedBlade();
+                return;
+            }
             if (CurrentStep == OnikiriTutorialFlow.Step_Register) {
                 GuideData.Checkpoint = Math.Max(GuideData.Checkpoint, OnikiriTutorialFlow.Checkpoint_Hud);
                 SetStep(OnikiriTutorialFlow.Step_Prepare);
@@ -761,13 +770,57 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private static bool NeedsOnikiriHold(int step)
             => step is >= OnikiriTutorialFlow.Step_HudIntro and < OnikiriTutorialFlow.Step_Done;
 
-        /// <summary>每帧:找到鬼切并锁在快捷栏,同步世界冻结的手持快照</summary>
+        /// <summary>行囊或鼠标上是否还有鬼切</summary>
+        private bool HasOnikiriAnywhere() {
+            int type = ModContent.ItemType<OnikiriItem>();
+            if (Player.HasItem(type)) {
+                return true;
+            }
+            Item mouse = Main.mouseItem;
+            return mouse != null && !mouse.IsAir && mouse.type == type;
+        }
+
+        /// <summary>每帧:有刀则锁持;无刀则硬闸关台并提示</summary>
         private void MaintainOnikiriHoldLock() {
             if (!NeedsOnikiriHold(CurrentStep)) {
                 lockedOnikiriSlot = -1;
                 return;
             }
+            if (!HasOnikiriAnywhere()) {
+                lockedOnikiriSlot = -1;
+                if (OniMeiUI.Instance?.IsOpen == true) {
+                    OniMeiUI.Instance.Close();
+                }
+                if (OniRegisterUI.Instance?.IsOpen == true) {
+                    OniRegisterUI.Instance.Close();
+                }
+                NotifyNeedBlade();
+                return;
+            }
+            if (Feedback == OnikiriTutorialFeedback.NeedBlade) {
+                Feedback = OnikiriTutorialFeedback.None;
+                feedbackTimer = 0;
+            }
             EnsureHoldingOnikiri();
+        }
+
+        /// <summary>开台账前先确认有刀并选中;失败则提示且不开</summary>
+        private bool TryBeginLedgerOpen(Action open) {
+            if (!HasOnikiriAnywhere() || !EnsureHoldingOnikiri()) {
+                NotifyNeedBlade();
+                return false;
+            }
+            open?.Invoke();
+            return true;
+        }
+
+        private void NotifyNeedBlade() {
+            bool first = Feedback != OnikiriTutorialFeedback.NeedBlade;
+            SetFeedback(OnikiriTutorialFeedback.NeedBlade, 180);
+            if (first) {
+                VaultUtils.Text(OnikiriTutorialLead.NeedBladeHold.Value, OnikiriUITheme.Seal);
+                SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.4f, Volume = 0.35f });
+            }
         }
 
         /// <summary>

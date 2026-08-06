@@ -658,6 +658,7 @@ OnikiriText: {
 		WaitingFeedback: Waiting for this step's result to settle
 		BusyFeedback: The domain is still shifting. Wait until it settles before trying again
 		RetryFeedback: That was not the action required for this step. The state will recover; retry or let me demonstrate
+		NeedBladeHold: You don't have Onikiri. Retrieve it before continuing
 		AssistBtn: Demonstrate
 		RetryBtn: Retry
 		NextBtn: Understood

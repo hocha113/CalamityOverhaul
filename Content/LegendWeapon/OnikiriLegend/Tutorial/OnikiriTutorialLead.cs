@@ -61,6 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         public static LocalizedText WaitingFeedback { get; private set; }
         public static LocalizedText BusyFeedback { get; private set; }
         public static LocalizedText RetryFeedback { get; private set; }
+        public static LocalizedText NeedBladeHold { get; private set; }
         public static LocalizedText AssistBtn { get; private set; }
         public static LocalizedText RetryBtn { get; private set; }
         public static LocalizedText NextBtn { get; private set; }
@@ -133,6 +134,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             WaitingFeedback = this.GetLocalization(nameof(WaitingFeedback), () => "正在等待结果落定");
             BusyFeedback = this.GetLocalization(nameof(BusyFeedback), () => "鬼域仍在变相，请稍候");
             RetryFeedback = this.GetLocalization(nameof(RetryFeedback), () => "这次没有生效，请重试");
+            NeedBladeHold = this.GetLocalization(nameof(NeedBladeHold), () => "行囊里没有鬼切，先把它拿回来再继续");
             AssistBtn = this.GetLocalization(nameof(AssistBtn), () => "替我演示");
             RetryBtn = this.GetLocalization(nameof(RetryBtn), () => "重试");
             NextBtn = this.GetLocalization(nameof(NextBtn), () => "已知晓");

@@ -658,6 +658,7 @@ OnikiriText: {
 		WaitingFeedback: 正在等待这一步的结果落定
 		BusyFeedback: 鬼域仍在变相，等它稳定后再操作
 		RetryFeedback: 这不是本步骤要求的有效操作。状态会自动恢复，请按提示重试或让我演示
+		NeedBladeHold: 行囊里没有鬼切，先把它拿回来再继续
 		AssistBtn: 替我演示
 		RetryBtn: 重试
 		NextBtn: 已知晓

@@ -307,6 +307,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 OnikiriTutorialFeedback.Waiting => OnikiriTutorialLead.WaitingFeedback.Value,
                 OnikiriTutorialFeedback.Busy => OnikiriTutorialLead.BusyFeedback.Value,
                 OnikiriTutorialFeedback.Retry => OnikiriTutorialLead.RetryFeedback.Value,
+                OnikiriTutorialFeedback.NeedBlade => OnikiriTutorialLead.NeedBladeHold.Value,
                 _ => null,
             };
             if (!string.IsNullOrEmpty(feedback)) {
