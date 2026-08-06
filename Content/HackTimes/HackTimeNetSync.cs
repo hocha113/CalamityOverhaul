@@ -894,16 +894,17 @@ namespace CalamityOverhaul.Content.HackTimes
             return packet;
         }
 
+        /// <summary>
+        /// 仅清理静态同步态。玩家上传队列由 <see cref="HackTimeAuthorityPlayer"/>
+        /// 在 Initialize / PlayerDisconnect 中自清，勿在 OnWorldUnload 等时机
+        /// 遍历 GetModPlayer（此时 modPlayers 可能已失效）。
+        /// </summary>
         internal static void Reset() {
             nextActivationId = 0;
             lastAuthorityUpdateFrame = ulong.MaxValue;
             pendingProgress.Clear();
             TimeControlReplicationSystem.CancelAll<HackQueuePendingSource>();
             TimeControlReplicationSystem.CancelAll<HackEffectPendingSource>();
-            for (int i = 0; i < Main.maxPlayers; i++) {
-                Main.player[i]?.GetModPlayer<HackTimeAuthorityPlayer>()
-                    ?.ClearAuthorityState();
-            }
         }
 
         private static bool IsValidPlayerIndex(int index)
