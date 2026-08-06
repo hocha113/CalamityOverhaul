@@ -386,16 +386,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Vector2 tagTop = closeTagRope.End;
             closeTagRect = new Rectangle((int)(tagTop.X - 16f), (int)tagTop.Y - 2, 32, 48);
 
-            //吊挂卷轴:点击预演到帧即移步点鬼簿;役鬼休眠时回声更急
+            //吊挂卷轴:点击预演到帧即发起换乘;役鬼休眠时回声更急;换乘中挂起交互
+            bool doorOk = IsOpen && a > 0.9f && !Rite.Active && !OniLedgerSwapFX.Running;
             bool openRegister = registerSwitch.Update(registerSwitchAnchor, MousePosition,
-                IsOpen && a > 0.9f && !Rite.Active, ShaderTime, OnikiriUITheme.HangScrollHit,
+                doorOk, ShaderTime, OnikiriUITheme.HangScrollHit,
                 keyLeftPressState, OniRegistry.IsEquippedDormant);
             if (Tutorial.OnikiriTutorialLead.IsActive) {
                 Tutorial.OnikiriTutorialTargets.Publish(
                     Tutorial.OnikiriTutorialTargets.Tag_RegisterSwitch, registerSwitch.HitBox);
             }
             if (openRegister) {
-                OniRegisterUI.Instance?.Open();
+                OniLedgerSwapFX.Begin(OniLedgerView.Register);
             }
 
             //鏨仪式推进:期间吞交互,点击可跳;锚=检分镜头不动点的屏幕位
@@ -503,9 +504,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             trayOrigin = new Vector2(trayRect.Center.X, trayRect.Y + 72f);
 
             nameColTop = new Vector2(sw * OnikiriUITheme.MeiNameColXRatio, sh * 0.16f);
-            //顶梁两挂:卷轴左、纳刀牌右,绳自屏顶垂下,与居中题字同带成"一梁两挂一题"
-            registerSwitchAnchor = new Vector2(sw * OnikiriUITheme.MeiHangLeftXRatio, -4f);
+            //顶梁门钩:卷轴挂在梁左钩;纳刀牌仍在右肩
+            registerSwitchAnchor = OniLedgerBeam.DoorAnchor(OniLedgerView.Mei);
             closeTagAnchor = new Vector2(sw * OnikiriUITheme.MeiHangRightXRatio, -6f);
+
+            //换乘横滑:主体随行进方向让位,顶梁/门挂物不加
+            float slide = OniLedgerSwapFX.SlideOf(OniLedgerView.Mei);
+            if (Math.Abs(slide) > 0.01f) {
+                Vector2 off = new(slide, 0f);
+                panelRect.Offset((int)slide, 0);
+                exhibitCenter += off;
+                xformPos += off;
+                exhibitRect.Offset((int)slide, 0);
+                for (int i = 0; i < 3; i++) {
+                    slotPos[i] += off;
+                    pinScreen[i] += off;
+                    lineStart[i] += off;
+                }
+                fanPivot += off;
+                tagRect.Offset((int)slide, 0);
+                trayRect.Offset((int)slide, 0);
+                trayOrigin += off;
+                nameColTop += off;
+            }
         }
 
         /// <summary>铭位 index 的轴向归一位</summary>
@@ -546,8 +567,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         private void UpdateInteraction(float a) {
-            //检分镜头收尾余波里先不接交互,拉回陈列后再放开
-            bool inputAvailable = IsOpen && a > 0.9f && zoomEase < 0.25f;
+            //检分镜头收尾余波里先不接交互,拉回陈列后再放开;换乘中挂起
+            bool inputAvailable = IsOpen && a > 0.9f && zoomEase < 0.25f && !OniLedgerSwapFX.Running;
             Vector2 mouse = MousePosition;
             Point mp = mouse.ToPoint();
 
@@ -1055,6 +1076,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //检分镜头里外场退后:台账/牌/线让位给特写(烙印木牌保持可读,写着正凿的铭)
             float zoomK = zoomEase * zoomEase * (3f - 2f * zoomEase);
             float chromeA = contentA * (1f - zoomK * 0.85f);
+
+            //====顶梁(同一夜屋的持续骨架,不随换乘滑移)====
+            OniLedgerBeam.Draw(spriteBatch, a, ShaderTime, OniLedgerView.Mei, registerSwitch.HoverEase);
 
             //====台账主板(题字入题头,状态行入脚注)====
             OniMeiRenderer.DrawLedgerPanel(spriteBatch, font, panelRect, TitleText.Value,

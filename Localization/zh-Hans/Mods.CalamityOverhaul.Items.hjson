@@ -2699,6 +2699,114 @@ OniMeiRubbingKumokiri: {
 	DeedHint: 梁上结巢的东西，斩够三十只，刀就认得那股腥气了
 }
 
+OniMeiRubbingOnimaru: {
+	DisplayName: 鬼丸
+	Tooltip: 站定够久刀自己出手；脱手期间无刀可用
+	Origin: 天下五剑里那一把会自己断鬼足。站着不动，它也会动
+	Power: 「自斩」速度平方不高于2.25时累计60帧后进入待机；每90帧消耗10点气力，640像素内索敌飞出斩击(140%基础刀伤)再回鞘
+	Burden: 刀飞出去的全段硬占用刀身——不能普连、不能疾走、不能樱流；没目标也不放
+	DeedHint: 站着挨了一记还站着，十秒不动——刀就替你动那一次
+}
+
+OniMeiRubbingRaikiri: {
+	DisplayName: 雷切
+	Tooltip: 大招引雷贯敌；连段略慢，洞里不落
+	Origin: 立花道雪在雨里劈雷。刃要先认得那口雷
+	Power: 「斩雷」第五拍、残心、灭世、终结的直接刀击在露天可探顶时引落雷柱(70%基础刀伤)；雷暴天同一记至多三道，晴天亦可落但连段间隔 ×1.06
+	Burden: 非露天或探不到天顶时不落雷；蓄雷的慢写在连段间隔上，晴天也一样
+	DeedHint: 雷暴天露天斩下一个首领，刃才认得那口雷
+}
+
+OniMeiRubbingNuekiri: {
+	DisplayName: 鵺切
+	Tooltip: 空中第五拍改俯冲砸地；落地收势不能疾走
+	Origin: 源赖政射落鵺的那一刀，是从高处砸下来的
+	Power: 「落鵺」离地48像素以上时完整五连第五拍改为俯冲(120%基础刀伤、200像素冲击圈并拽敌)；落地后40帧禁疾走
+	Burden: 收势期不能疾走；贴地时仍是普通第五拍
+	DeedHint: 夜里从高处斩落一只飞的，刀就认得那口俯冲
+}
+
+OniMeiRubbingKamihi: {
+	DisplayName: 紙樋
+	Tooltip: 疾走穿身挂纸型，斩纸传导本体；有纸在场疾走更费
+	Origin: 里世界的面影被裁到表世界。纸还在，刀就还照着它砍
+	Power: 「表影」疾走穿身时在落点挂一张该敌手的纸型(存续7秒，同时在场至多2张)；直接刀击纸型对本体造成80%基础刀伤并挂90帧受创窗(窗内挨刀 ×1.12)
+	Burden: 有纸在场时疾走耗气 ×1.12
+	DeedHint: 在里世界斩够二十张面影纸型，手才知道纸该怎么裁
+}
+
+OniMeiRubbingSorahi: {
+	DisplayName: 空樋
+	Tooltip: 离地多一次疾走并滞空；落地沉底回气归零，地面疾走略贵
+	Origin: 脚不着地，气才浮起来。一落到底，就沉了
+	Power: 「浮身」离地时自然回气 ×2；空中疾走结束后滞空30帧；离地期间额外获得一次疾走
+	Burden: 落地后45帧自然回气归零；地面疾走耗气 +10%
+	DeedHint: 连续十五秒不落地，其间还砍着——樋才认得浮身
+}
+
+OniMeiRubbingKagamihi: {
+	DisplayName: 鏡樋
+	Tooltip: 疾走终点留纸镜复刻下一刀；分神令面板伤害 -5%
+	Origin: 镜里那一刀，是迟你半拍落下的
+	Power: 「镜写」疾走终点立一枚纸镜(存续2秒)；你之后的第一记直接刀击时，立像同步复刻同一记斩击(45%基础刀伤)后碎裂
+	Burden: 面板伤害 -5%；复刻落点由立像位置决定
+	DeedHint: 用残心了结一只学人样的东西，镜才写得出来
+}
+
+OniMeiRubbingAmahi: {
+	DisplayName: 雨樋
+	Tooltip: 樱流沿途滴墨成洼；樱流耗气 +15%
+	Origin: 樱瓣沾透了，才留得住水
+	Power: 「落雨」樱流巡航每6帧甩下一枚墨滴(12%基础刀伤)；落地摊成墨洼并滞缚30帧
+	Burden: 樱流耗气 ×1.15
+	DeedHint: 雨里连着飞满十秒，樱瓣沾透了才留得住水
+}
+
+OniMeiRubbingTsuzurihi: {
+	DisplayName: 綴樋
+	Tooltip: 墨痕之间连缀切开；单枚墨痕伤害 -30%
+	Origin: 痕要串起来，才成一条线
+	Power: 「缀痕」一次疾走内引爆的墨痕同帧连缀切开(35%基础刀伤/枚)；收集窗3帧
+	Burden: 单枚墨痕伤害 ×0.70；不成串就只是亏
+	DeedHint: 一次疾走串起六个不同主体，痕才缀得起来
+}
+
+OniMeiRubbingBonsho: {
+	DisplayName: 梵鐘
+	Tooltip: 满架势憋住不放终结即自鸣撞钟，架势砍半换一圈控场
+	Origin: 钟不等人敲。势满了，它自己响
+	Power: 「一撞」满架势后180帧内不终结则自鸣；钟波480像素、60%基础刀伤并滞缚90帧，架势落到50
+	Burden: 撞钟即放弃这一次终结；满势后必须做选择
+	DeedHint: 整场首领战一次终结都没用，就这么把它敲下来
+}
+
+OniMeiRubbingHannya: {
+	DisplayName: 般若
+	Tooltip: 残血翻鬼面，刀更重更狠还吸血；鬼面期更脆，女面期略钝
+	Origin: 面翻过来，就不是同一张脸了
+	Power: 「面变」生命低于35%翻鬼面：刀击 ×1.20、每次命中回复0.5%最大生命，每三击浮鬼面咬合(50%基础刀伤)
+	Burden: 鬼面期承伤 ×1.15；女面期面板伤害 -4%
+	DeedHint: 自己只剩一口气时把首领斩了，面才翻得过来
+}
+
+OniMeiRubbingKaresansui: {
+	DisplayName: 枯山水
+	Tooltip: 立定耙出留在原地的砂纹场，场内持续割并涨架势
+	Origin: 砂纹留在原地。你站进去，刀才跟着耙
+	Power: 「砂纹」速度平方不高于2.25时累计90帧在原地点耙出砂纹场(存续5秒、320像素)；每30帧割一次(18%基础刀伤)，站在自己场内架势获取 ×1.30
+	Burden: 须先立定耙成场；移动会清空累计
+	DeedHint: 钉在一处打满三十秒且一下没挨着，砂才耙得出来
+}
+
+OniMeiRubbingSenju: {
+	DisplayName: 千手
+	Tooltip: 终结定格多浮六手同斩；终结后气清零且久不能疾走
+	Origin: 一手一位。终结送走的，都要记名
+	Power: 「千手」终结定格期额外浮出六只鬼手同斩(各30%基础刀伤)
+	Burden: 终结后气力清零且180帧禁疾走
+	DeedHint: 用终结送走八种不同的首领，一手一位
+}
+
 OniMeiRubbingKogehi: {
 	DisplayName: 焦樋
 	Tooltip: 疾走沿全程留下焦痕；刀击伤害 -4%

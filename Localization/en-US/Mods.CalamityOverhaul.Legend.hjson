@@ -589,7 +589,7 @@ OnikiriText: {
 		LockedCount: Bond {0} / {1}
 		LockedFeat: The bond is not yet met
 		LockedUnknown: This mei answers to no bond
-		Settle: "The blade's bond is sealed — the rubbing of \"{0}\" falls at your feet"
+		Settle: The blade's bond is sealed — the rubbing of "{0}" falls at your feet
 	}
 
 	OniPlayerDismemberSystem.SelfHurtDeathReason: "{0} was severed by their own blade"

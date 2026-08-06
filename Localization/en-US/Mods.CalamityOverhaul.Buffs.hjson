@@ -92,3 +92,8 @@ GhostGripDebuff: {
 	DisplayName: Withered Grip
 	Description: Seized by the charred hand — there is no moving
 }
+
+OniPaperBrandDebuff: {
+	DisplayName: Oni Paper Brand Debuff
+	Description: Mods.CalamityOverhaul.Buffs.OniPaperBrandDebuff.Description
+}

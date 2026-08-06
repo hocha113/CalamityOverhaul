@@ -63,6 +63,12 @@ HalibutText: {
 	}
 
 	HalibutHudLead: {
+		// AskTitle: Shall I Walk You Through It?
+		// AskBody: The Abyssal Atlas, the Research Altar, the loadout and the wheel form one chain, and the two middle links are easy to miss on your own. You will only be asked this once
+		// AskPrompt: Walk through it now, or accept the Pilot Chart and unroll it yourself later
+		// AcceptBtn: Walk Me Through
+		// DeclineBtn: Not Now
+		// DeclineNotice: The Pilot Chart has been left with you; use it to open the guide any time
 		HudTitle: Ojo del abismo
 		HudBody: Mientras sostengas el Halibut gigante, este ojo permanece abajo a la izquierda y muestra habilidad, resurrección y capas del dominio
 		HudPrompt: Haz clic izquierdo en el ojo, o pulsa {0} para abrir el Atlas abisal
@@ -578,6 +584,14 @@ OnikiriText: {
 		// TrayEmpty: No rubbing for this seat in your satchel. Fan ribs of owned mei still carve
 	}
 
+	OniMeiDeedText: {
+		// LockedKind: Uncarved
+		// LockedCount: Bond {0} / {1}
+		// LockedFeat: The bond is not yet met
+		// LockedUnknown: This mei answers to no bond
+		// Settle: The blade's bond is sealed — the rubbing of "{0}" falls at your feet
+	}
+
 	// OniPlayerDismemberSystem.SelfHurtDeathReason: "{0} was severed by their own blade"
 
 	OniTalismanHud: {
@@ -603,6 +617,12 @@ OnikiriText: {
 	}
 
 	OnikiriTutorialLead: {
+		// AskTitle: Take the Lesson First?
+		// AskBody: Vigor and Stance, the Omote and Ura of the domain, the backlash of dismemberment. These three are hard to work out alone without hearing them once. You will only be asked this once
+		// AskPrompt: Take the lesson now, or accept the Keiko Rune and open it yourself later
+		// AcceptBtn: Teach Me
+		// DeclineBtn: Not Now
+		// DeclineNotice: The Keiko Rune has been left with you; use it to open the lesson any time
 		// HudTitle: Vigor & Stance
 		// HudBody: While holding Onikiri, the lower-left HUD shows Vigor and Stance as read-only gauges. At half Stance, double-dash then left-click for Annihilating Flash; at full Stance, use Execute to auto-lock into Finale. Holding Sakura Flight first pays for a normal dash, then turns you to petals
 		// HudPrompt: Learn these readouts; the sealing talisman is the HUD's only panel control

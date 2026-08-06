@@ -280,6 +280,19 @@ HalibutItem: {
 	Tooltip: ""
 }
 
+HalibutPilotChart: {
+	// DisplayName: Pilot Chart
+	/* Tooltip:
+		'''
+		Use it to open the Halibut guide from the beginning, or use it again mid-guide to put the guide away
+		Left with you when the opening guide is declined; the chart is not consumed and may be used again
+		''' */
+	// NeedFish: The Halibut is not in your bag, so the chart has nothing to pilot
+	// HoldFish: The chart is unrolled; hold the Halibut and the guide begins
+	// Closed: The guide is put away; use the chart again to reopen
+	// NotNow: Something else holds the stage right now
+}
+
 OnikiriItem: {
 	// DisplayName: Onikiri
 	/* Tooltip:
@@ -2483,6 +2496,18 @@ OniMeiRubbingHigekiri: {
 	Burden: Klingenschaden -2 % — gegen gesunde Ziele ist diese Schneide etwas stumpfer als die ursprüngliche Inschrift
 }
 
+OniKeikoRune: {
+	// DisplayName: Keiko Rune
+	/* Tooltip:
+		'''
+		Use it to open the Onikiri lesson from the beginning, or use it again mid-lesson to put the lesson away
+		Left with you when the opening lesson is declined; the rune is not consumed and may be used again
+		''' */
+	// NeedBlade: Onikiri is not in your bag, so the rune has no lesson to open
+	// Closed: The lesson is put away; use the rune again to reopen
+	// NotNow: Something else holds the stage right now
+}
+
 OniMeiGiftRepairCommand: {
 	// Description: Requeue one completed Onikiri inscription gift for this character.
 	// LocalOnly: This command only repairs the current local character.
@@ -2593,6 +2618,123 @@ OniMeiRubbingMokukiri: {
 	// Origin: The air sank. You got used to it. The guilt stayed
 	Power: Stiller Schnitt: Für 45 Ticks nach dem natürlichen Ende eines bezahlten normalen Blitzschritts verursacht die nächste Kombo- oder Zanshin-Aktion ×1,35 Schaden
 	Burden: Ein weiterer Spurt oder ein Fehlschlag verbraucht den Stillen Schnitt; kostenlose Hinrichtungsspurts laden ihn nie auf
+}
+
+OniMeiRubbingKumokiri: {
+	// DisplayName: Kumo-kiri
+	// Tooltip: Blade hits pin silk anchors; three close the web; regen -25% while weaving
+	// Origin: The earth-spider nested in the rafters. What was cut was not the spider, but the threads it hung from
+	// Power: Ink-Silk: a direct blade hit pins a silk anchor at the cut point for 4 seconds (no re-anchor on the same body within 0.4s, anchors must sit over 90px apart); the third anchor strings an ink-silk triangle that sags for 0.33s then snaps inward toward its centroid, cutting every body it sweeps for 90% base blade damage and binding it for 1 second. The web can be rewoven 1.5s after it closes
+	// Burden: Natural vigor regen -25% while any anchor stands; an expired anchor is a wasted cut. An unfinished web is only a lapse in focus
+	// DeedHint: Cut down thirty of the things that nest in the rafters, and the blade will learn that smell
+}
+
+OniMeiRubbingOnimaru: {
+	// DisplayName: Oni-maru
+	// Tooltip: Stand still long enough and the blade moves on its own; no blade in hand while it flies
+	// Origin: One of the Five Great Swords that cut its own demon's leg off. Stand still — it still moves
+	// Power: Self-Cut: after 60 ticks at speed-squared 2.25 or lower, the blade enters standby; every 90 ticks it spends 10 vigor to fly at a target within 640px (140% base blade damage), cut, and return
+	// Burden: The entire flight hard-occupies the blade — no combo, flash step, or sakura cruise; no target means no launch
+	// DeedHint: Take a hit while standing still for ten seconds without moving — the blade moves for you once
+}
+
+OniMeiRubbingRaikiri: {
+	// DisplayName: Rai-kiri
+	// Tooltip: Big actions call lightning down; combos slightly slower; no bolts indoors
+	// Origin: Hosokawa Tadaoki cut thunder in the rain. The edge must learn that bolt first
+	// Power: Thunder-Call: a direct blade hit on the fifth beat, Zanshin, World-Razing Flash, or Finale under open sky spawns a vertical bolt (70% base blade damage); up to three bolts per action in a storm; clear skies still work but combo gap ×1.06
+	// Burden: No bolt without open sky above the target; the wind-up cost is baked into combo gap even on sunny days
+	// DeedHint: Slay a boss-tier foe in a storm under open sky, and the edge learns the bolt
+}
+
+OniMeiRubbingNuekiri: {
+	// DisplayName: Nue-kiri
+	// Tooltip: The airborne fifth beat becomes a dive slam; landing recovery blocks flash steps
+	// Origin: Minamoto no Yorimasa's shot came from above — the cut fell out of the sky
+	// Power: Nue-Dive: when over 48px off the ground, the full combo's fifth beat becomes a dive (120% base blade damage, 200px shock ring with pull); 40 ticks of dash lock after landing
+	// Burden: Recovery forbids flash steps; near the ground it stays a normal fifth beat
+	// DeedHint: At night, cut down a flyer from great height — the blade learns that plunge
+}
+
+OniMeiRubbingKamihi: {
+	// DisplayName: Kami-hi
+	// Tooltip: Dash-pierce leaves a paper effigy; cutting the paper hits the body; dashes cost more while paper stands
+	// Origin: Omokage silhouettes cut out for the surface world. While the paper stands, the blade keeps cutting it
+	// Power: Paper-Effigy: a dash pierce leaves a paper cutout of that foe (7s life, max 2); a direct blade hit on the paper deals 80% base blade damage to the body and brands it for 90 ticks (hits in the window ×1.12)
+	// Burden: Dash vigor cost ×1.12 while any effigy stands
+	// DeedHint: Sever twenty omokage papers in Ura — then the hand knows how to cut paper
+}
+
+OniMeiRubbingSorahi: {
+	// DisplayName: Sora-hi
+	// Tooltip: One extra air dash and a hover beat; landing zeroes regen; ground dashes cost more
+	// Origin: With no ground underfoot, breath floats. Touch down and it sinks away
+	// Power: Air-Groove: natural regen ×2 while airborne; 30 ticks of hover after an air dash ends; one bonus dash while off the ground
+	// Burden: Natural regen zeroes for 45 ticks after landing; ground dash vigor cost +10%
+	// DeedHint: Stay airborne for fifteen seconds while still cutting — only then does the groove learn to float
+}
+
+OniMeiRubbingKagamihi: {
+	// DisplayName: Kagami-hi
+	// Tooltip: Dash end leaves a mirror stand that echoes your next cut; panel damage -5%
+	// Origin: The cut in the mirror lands half a beat late
+	// Power: Mirror-Echo: a dash end spawns a paper mirror (2s life); your next direct blade hit makes the stand replay that cut (45% base blade damage), then shatter
+	// Burden: Panel damage -5%; the echo lands where the stand stands
+	// DeedHint: Finish a mimic with Zanshin — only then can the mirror write it back
+}
+
+OniMeiRubbingAmahi: {
+	// DisplayName: Ama-hi
+	// Tooltip: Sakura cruise drips ink puddles; sakura drain +15%
+	// Origin: Petals must soak through before water will stay
+	// Power: Ink-Rain: every 6 ticks of sakura cruise drops an ink bead (12% base blade damage); landing puddles bind for 30 ticks
+	// Burden: Sakura cruise vigor drain ×1.15
+	// DeedHint: Fly in the rain for ten straight seconds with petals soaked through
+}
+
+OniMeiRubbingTsuzurihi: {
+	// DisplayName: Tsuzuri-hi
+	// Tooltip: Flash marks detonate together in one dash; solo mark damage -30%
+	// Origin: Marks must string together before they become a line
+	// Power: Mark-Stitch: flash marks detonated in one dash slice together on the same frame (35% base blade damage each); 3-tick gather window
+	// Burden: Solo mark damage ×0.70; an unstrung mark is just a loss
+	// DeedHint: Pierce six different bodies in one dash — only then do the marks stitch
+}
+
+OniMeiRubbingBonsho: {
+	// DisplayName: Bonsho
+	// Tooltip: Hold full stance without executing and the bell tolls; half stance for a control ring
+	// Origin: The bell does not wait to be struck. When stance is full, it rings itself
+	// Power: Bell-Toll: if full stance is held 180 ticks without a Finale, the bell auto-tolls; wave radius 480px, 60% base blade damage, 90-tick bind, stance drops to 50
+	// Burden: Tolling gives up this Finale window — full stance becomes a choice
+	// DeedHint: Win a whole boss fight without a single execution — then knock the bell down
+}
+
+OniMeiRubbingHannya: {
+	// DisplayName: Hannya
+	// Tooltip: Low life flips a demon mask — heavier hits and steal life; demon form is fragile, maiden form is duller
+	// Origin: When the face turns, it is not the same face anymore
+	// Power: Mask-Shift: below 35% life, demon mask: blade hits ×1.20, each hit restores 0.5% max life, every third hit spawns a demon bite (50% base blade damage)
+	// Burden: Demon mask incoming damage ×1.15; maiden mask panel damage -4%
+	// DeedHint: Slay a boss while you yourself have only a breath left — then the mask can turn
+}
+
+OniMeiRubbingKaresansui: {
+	// DisplayName: Karesansui
+	// Tooltip: Plant to rake a sand garden that keeps cutting; stance gain bonus while you stand in your own field
+	// Origin: The rake pattern stays where you made it. Step in, and the blade follows
+	// Power: Sand-Garden: 90 ticks at speed-squared 2.25 or lower rakes a field at your feet (5s life, 320px); cuts every 30 ticks (18% base blade damage); standing in your own field multiplies stance gain ×1.30
+	// Burden: Must plant to rake; movement clears progress
+	// DeedHint: Hold one spot for thirty seconds of combat without taking a hit — only then can the sand be raked
+}
+
+OniMeiRubbingSenju: {
+	// DisplayName: Senju
+	// Tooltip: Finale freeze spawns six ghost arms; after Finale, vigor zeroes and dash is locked for a long beat
+	// Origin: One hand, one name. Every boss sent off by Finale must be counted
+	// Power: Thousand-Arms: during Finale freeze, six ghost arms each cut once (30% base blade damage)
+	// Burden: After Finale, vigor zeroes and flash step is locked for 180 ticks
+	// DeedHint: Send off eight different bosses with Finale — one hand for each name
 }
 
 OniMeiRubbingKogehi: {

@@ -29,7 +29,7 @@ HeadlessShade: {
 GhostHand: {
 	// DisplayName: The Charred Hand
 	// Origin: A charred, withered, horrifying arm
-	// Power: 「Grip」Seized targets are suppressed and their movement is restricted
+	// Power: 「Grip」A withered hand lashes out from behind to seize prey, pinning it down and crushing it over and over; when prey abounds, more hands reach out — even colossal beings cannot slip its fingers
 	// DeathReason: "{0} was dragged into the wall"
 }
 

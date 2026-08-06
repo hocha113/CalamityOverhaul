@@ -360,9 +360,19 @@ OniZanshinSlash.DisplayName: 残心斩
 // FishScorpioSandnado.DisplayName: Fish Scorpio Sandnado
 // FishVoodooRitual.DisplayName: Fish Voodoo Ritual
 // FishVoodooThread.DisplayName: Fish Voodoo Thread
-// OniMeiGroundBurn.DisplayName: Oni Mei Ground Burn
-// OniMeiFalseBody.DisplayName: Oni Mei False Body
-// OniMeiBreathArc.DisplayName: Oni Mei Breath Arc
+OniMeiGroundBurn.DisplayName: 焦痕
+OniMeiFalseBody.DisplayName: 假身
+OniMeiBreathArc.DisplayName: 息合剑气
+OniMeiInkThread.DisplayName: 墨丝
+OniMeiSelfCut.DisplayName: 自斩
+OniMeiThunderColumn.DisplayName: 斩雷
+OniMeiNueDive.DisplayName: 落鵺
+OniMeiPaperEffigy.DisplayName: 表影
+OniMeiMirrorStand.DisplayName: 纸镜
+OniMeiInkRain.DisplayName: 落雨
+OniMeiBellWave.DisplayName: 梵钟波
+OniMeiSandGarden.DisplayName: 砂纹
+OniMeiSenjuArm.DisplayName: 千手
 // GhostHandProj.DisplayName: Ghost Hand Proj
 // HeadlessShadeProj.DisplayName: Headless Shade Proj
 // LanternBoyProj.DisplayName: Lantern Boy Proj

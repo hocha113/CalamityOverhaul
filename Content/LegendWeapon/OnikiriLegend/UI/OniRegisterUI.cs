@@ -265,10 +265,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Vector2 tagTop = closeTagRope.End;
             closeTagRect = new Rectangle((int)(tagTop.X - 16f), (int)tagTop.Y - 2, 32, 48);
 
-            //吊挂太刀:点击预演到帧即移步改铭台
-            if (meiSwitch.Update(meiSwitchAnchor, MousePosition, IsOpen && a > 0.9f,
+            //吊挂太刀:点击预演到帧即发起换乘;换乘中挂起交互
+            if (meiSwitch.Update(meiSwitchAnchor, MousePosition,
+                IsOpen && a > 0.9f && !OniLedgerSwapFX.Running,
                 ShaderTime, OnikiriUITheme.HangTachiHit, keyLeftPressState)) {
-                OniMeiUI.Instance?.Open();
+                OniLedgerSwapFX.Begin(OniLedgerView.Mei);
             }
 
             UpdateInteraction(a);
@@ -305,8 +306,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //收卷木牌绳锚:顶部轴杆右端帽,牌体位置由 Verlet 绳每帧决定
             closeTagAnchor = new Vector2(scrollRect.Right + 17f, scrollRect.Y - 7f);
 
-            //吊挂太刀锚:卷轴左肩外的梁下,与右肩收卷牌对称成"一梁两挂"
-            meiSwitchAnchor = new Vector2(scrollRect.X - 78f, scrollRect.Y - 12f);
+            //顶梁门钩:太刀挂在梁右钩(卷轴钩留给本屏空钩)
+            meiSwitchAnchor = OniLedgerBeam.DoorAnchor(OniLedgerView.Register);
+
+            //换乘横滑:卷轴/细节板随行进让位,顶梁/门挂物不加;名录随后从已滑卷轴重建
+            float slide = OniLedgerSwapFX.SlideOf(OniLedgerView.Register);
+            if (Math.Abs(slide) > 0.01f) {
+                scrollRect.Offset((int)slide, 0);
+                detailRect.Offset((int)slide, 0);
+                loadoutSlotRect.Offset((int)slide, 0);
+                actionRect.Offset((int)slide, 0);
+                closeTagAnchor.X += slide;
+            }
 
             Array.Clear(entryRects, 0, entryRects.Length);
             Rectangle inner = scrollRect;
@@ -341,7 +352,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         private void UpdateInteraction(float a) {
-            bool inputAvailable = IsOpen && a > 0.9f;
+            bool inputAvailable = IsOpen && a > 0.9f && !OniLedgerSwapFX.Running;
             Vector2 mouse = MousePosition;
             Point mp = mouse.ToPoint();
             var entries = OniRegistry.Entries;
@@ -592,6 +603,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             spriteBatch.Draw(pixel, full, src, Color.Black * (a * 0.66f));
             Vector2 parallax = (OnikiriUITheme.UIMouse - OnikiriUITheme.UIScreenSize * 0.5f) * -0.016f;
             OniRegisterRenderer.DrawMoon(spriteBatch, new Vector2(OnikiriUITheme.UIScreenW * 0.84f, 118f) + parallax, a, ShaderTime, pupilOpen);
+
+            //====顶梁(同一夜屋的持续骨架,不随换乘滑移)====
+            OniLedgerBeam.Draw(spriteBatch, a, ShaderTime, OniLedgerView.Register, meiSwitch.HoverEase);
 
             //====卷轴纸体(shader / CPU 降级) + 轴杆 + 挂件====
             float reveal = a;
