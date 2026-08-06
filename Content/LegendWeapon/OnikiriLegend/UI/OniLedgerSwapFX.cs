@@ -51,6 +51,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             SoundEngine.PlaySound(SoundID.Item35 with { Pitch = -0.15f, Volume = 0.3f, MaxInstances = 1 });
         }
 
+        private static void OpenTarget() {
+            opened = true;
+            UIHandle incoming = target == OniLedgerView.Mei
+                ? OniMeiUI.Instance
+                : OniRegisterUI.Instance;
+            incoming?.Open();
+        }
+
         /// <summary>
         /// 本帧 view 屏的内容横滑量:去屏向行进反向让开,来屏自行进方向滑入落位。
         /// 各屏在 LayoutCompute 里把它加进主体坐标(顶梁/门挂物不加)
@@ -74,13 +82,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             progress += 1f / TotalFrames;
             if (!opened && progress >= OpenAt) {
-                opened = true;
-                UIHandle incoming = target == OniLedgerView.Mei
-                    ? OniMeiUI.Instance
-                    : OniRegisterUI.Instance;
-                incoming?.Open();
+                OpenTarget();
             }
             if (progress >= 1f) {
+                //兜底:万一 OpenAt 窗口因异常跳过,结束前确保目的屏已开
+                if (!opened) {
+                    OpenTarget();
+                }
                 running = false;
                 progress = 0f;
             }

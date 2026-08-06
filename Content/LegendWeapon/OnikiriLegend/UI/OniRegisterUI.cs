@@ -265,10 +265,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Vector2 tagTop = closeTagRope.End;
             closeTagRect = new Rectangle((int)(tagTop.X - 16f), (int)tagTop.Y - 2, 32, 48);
 
-            //吊挂太刀:点击预演到帧即发起换乘;换乘中挂起交互
+            //吊挂太刀:点击预演到帧即发起换乘;换乘中挂起交互;驿牌并入命中
             if (meiSwitch.Update(meiSwitchAnchor, MousePosition,
                 IsOpen && a > 0.9f && !OniLedgerSwapFX.Running,
-                ShaderTime, OnikiriUITheme.HangTachiHit, keyLeftPressState)) {
+                ShaderTime, OnikiriUITheme.HangTachiHit, keyLeftPressState,
+                echoBoost: false, OniLedgerBeam.DoorBoardHit(OniLedgerView.Register))) {
                 OniLedgerSwapFX.Begin(OniLedgerView.Mei);
             }
 

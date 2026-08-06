@@ -50,6 +50,20 @@ namespace CalamityOverhaul.Content.TimeFreezes
         //手持栏快照
         private int frozenSelectedItem;
 
+        /// <summary>
+        /// 教程等外部系统在冻结期间改选手持时同步快照,
+        /// 否则 Pre/PostUpdate 会把 selectedItem 掰回开冻时的旧槽
+        /// </summary>
+        internal void RetargetFrozenHotbar(int slot) {
+            if (slot < 0 || slot >= 10) {
+                return;
+            }
+            frozenSelectedItem = slot;
+            Player.selectedItem = slot;
+            Player.HotbarOffset = 0;
+            Player.changeItem = -1;
+        }
+
         //ProcessTriggers 在 CopyInto 尾，control/QuickBuff 已消费，
         //数字键/滚轮/径向轮盘在其后读，这里清掉才对本帧有效
         public override void ProcessTriggers(TriggersSet triggersSet) {

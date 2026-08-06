@@ -59,11 +59,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         /// <summary>
-        /// 推进一帧;objSize=物件命中尺寸(顶挂点之下);echoBoost=对面有事(回声更频);
-        /// 返回 true 的那一帧执行切换
+        /// 推进一帧;objSize=物件命中尺寸(顶挂点之下);extraHit=梁上驿牌等并入命中(可空);
+        /// echoBoost=对面有事(回声更频);返回 true 的那一帧执行切换
         /// </summary>
         public bool Update(Vector2 anchor, Vector2 mouse, bool interactive, float time,
-            Vector2 objSize, KeyPressState leftPress, bool echoBoost = false) {
+            Vector2 objSize, KeyPressState leftPress, bool echoBoost = false,
+            Rectangle? extraHit = null) {
             //绳:悬停视为被手扶住,风息阻尼加重
             float windAmp = Hovering ? 0.015f : 0.055f;
             rope.Update(anchor, null, time, windAmp, endWeight: 0.55f, damping: Hovering ? 0.80f : 0.85f);
@@ -87,9 +88,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 echoRun = 0f;
             }
 
-            //命中:物件挂在绳末之下的轴对齐外包(摆角小,不做 OBB)
+            //命中:物件挂在绳末之下的轴对齐外包(摆角小,不做 OBB);驿牌并入同一热区
             Rectangle box = new((int)(End.X - objSize.X * 0.5f - 5f), (int)End.Y - 4,
                 (int)objSize.X + 10, (int)objSize.Y + 10);
+            if (extraHit is Rectangle extra && extra.Width > 0 && extra.Height > 0) {
+                box = Rectangle.Union(box, extra);
+            }
             HitBox = box;
             bool hoverNow = interactive && ceremony < 0f && box.Contains(mouse.ToPoint());
             if (hoverNow && !wasHovered) {

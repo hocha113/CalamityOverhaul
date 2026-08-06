@@ -387,10 +387,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             closeTagRect = new Rectangle((int)(tagTop.X - 16f), (int)tagTop.Y - 2, 32, 48);
 
             //吊挂卷轴:点击预演到帧即发起换乘;役鬼休眠时回声更急;换乘中挂起交互
+            //驿牌并入命中——梁重做后点「点鬼簿」牌文是自然手势
             bool doorOk = IsOpen && a > 0.9f && !Rite.Active && !OniLedgerSwapFX.Running;
             bool openRegister = registerSwitch.Update(registerSwitchAnchor, MousePosition,
                 doorOk, ShaderTime, OnikiriUITheme.HangScrollHit,
-                keyLeftPressState, OniRegistry.IsEquippedDormant);
+                keyLeftPressState, OniRegistry.IsEquippedDormant,
+                OniLedgerBeam.DoorBoardHit(OniLedgerView.Mei));
             if (Tutorial.OnikiriTutorialLead.IsActive) {
                 Tutorial.OnikiriTutorialTargets.Publish(
                     Tutorial.OnikiriTutorialTargets.Tag_RegisterSwitch, registerSwitch.HitBox);

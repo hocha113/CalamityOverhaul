@@ -627,8 +627,8 @@ OnikiriText: {
 		// HudBody: While holding Onikiri, the lower-left HUD shows Vigor and Stance as read-only gauges. At half Stance, double-dash then left-click for Annihilating Flash; at full Stance, use Execute to auto-lock into Finale. Holding Sakura Flight first pays for a normal dash, then turns you to petals
 		// HudPrompt: Learn these readouts; the sealing talisman is the HUD's only panel control
 		// RegisterTitle: Ghost Register
-		// RegisterBody: The hanging scroll at the upper-left of the Inscription Stand opens the Ghost Register. Usable wraiths and archival fragments are separate; clicking only inspects, while the bind seal equips and release disables every wraith ability
-		// RegisterPrompt: Click the highlighted scroll; inspect the register and wraith slot, then close it to continue
+		// RegisterBody: The beam plaque "Ghost Register" and its hanging scroll on the left of the Inscription Stand open the ledger. Usable wraiths and archival fragments are separate; clicking only inspects, while the bind seal equips and release disables every wraith ability
+		// RegisterPrompt: Click the highlighted plaque or scroll; inspect the register and wraith slot, then close it to continue
 		// MeiTitle: Inscription Stand
 		// MeiBody: The sealing talisman is the HUD's only panel control and opens the Inscription Stand by default. Tang, groove, and horimono decide the blade's bestowal
 		// MeiPrompt: Press {0} or click the highlighted talisman to open the Inscription Stand

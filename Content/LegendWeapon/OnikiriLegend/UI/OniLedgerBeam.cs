@@ -58,6 +58,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             => HookTip(current == OniLedgerView.Mei ? TachiHookX : ScrollHookX);
 
         /// <summary>
+        /// 门侧驿牌(+钩颈)命中区。梁上牌文与垂挂器物同属一扇门,并进热区
+        /// </summary>
+        public static Rectangle DoorBoardHit(OniLedgerView current) {
+            float x = current == OniLedgerView.Mei ? ScrollHookX : TachiHookX;
+            Vector2 size = OnikiriUITheme.BeamBoardSize;
+            float top = BoardCenterY - size.Y * 0.5f - 2f;
+            float bottom = HookTipY + 6f;
+            return new Rectangle(
+                (int)(x - size.X * 0.5f - 6f),
+                (int)top,
+                (int)(size.X + 12f),
+                Math.Max(1, (int)(bottom - top)));
+        }
+
+        /// <summary>
         /// 画整根梁+两块驿牌+双钩;current 的钩空置(收绳圈+现驻朱点),
         /// 对面钩由调用方把门挂物画在 <see cref="DoorAnchor"/> 之下
         /// </summary>

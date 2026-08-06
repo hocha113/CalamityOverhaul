@@ -101,8 +101,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             HudBody = this.GetLocalization(nameof(HudBody), () => "手持鬼切时，左下角常驻气力笔触与架势鞘");
             HudPrompt = this.GetLocalization(nameof(HudPrompt), () => "认一下这组读数");
             RegisterTitle = this.GetLocalization(nameof(RegisterTitle), () => "点鬼簿");
-            RegisterBody = this.GetLocalization(nameof(RegisterBody), () => "改铭台左上悬着点鬼簿卷轴");
-            RegisterPrompt = this.GetLocalization(nameof(RegisterPrompt), () => "打开名录后再收卷继续");
+            RegisterBody = this.GetLocalization(nameof(RegisterBody), () => "改铭台顶梁左侧钉着「点鬼簿」驿牌,牌下悬卷");
+            RegisterPrompt = this.GetLocalization(nameof(RegisterPrompt), () => "点高亮驿牌或卷轴移步后再收卷继续");
             MeiTitle = this.GetLocalization(nameof(MeiTitle), () => "改铭台");
             MeiBody = this.GetLocalization(nameof(MeiBody), () => "封印札是 HUD 的界面入口");
             MeiPrompt = this.GetLocalization(nameof(MeiPrompt), () => "按 {0} 或点封印札打开改铭台");

@@ -6,11 +6,13 @@ using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
 using CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines;
+using CalamityOverhaul.Content.TimeFreezes;
 using Microsoft.Xna.Framework.Input;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -81,6 +83,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private int guardedLife;
         private int lifeBeforeDemonstration;
         private OniMeiSnapshot meiSnapshot;
+        /// <summary>教程锁刀槽(-1 未锁)。HUD/改铭台/点鬼簿都要求手持鬼切</summary>
+        private int lockedOnikiriSlot = -1;
 
         internal bool ReservationDeferred
             => Main.GameUpdateCount < ReservationDeferredUntil;
@@ -118,9 +122,63 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 Feedback = OnikiriTutorialFeedback.None;
             }
 
+            //讲解与实操都依赖鬼切 HUD/台账:每帧确保手持并锁槽,避免切刀后点鬼簿闪关
+            MaintainOnikiriHoldLock();
+
             HandleUnboundFallbackInput();
             MaintainTutorialTarget();
             AdvanceIfReady();
+        }
+
+        public override void ProcessTriggers(TriggersSet triggersSet) {
+            if (!IsRunning || lockedOnikiriSlot < 0) {
+                return;
+            }
+            //冻结未开时也要吞快捷栏,否则锁刀会被数字键拆掉
+            if (WorldFreezeSystem.IsActive) {
+                return;
+            }
+            triggersSet.Hotbar1 = false;
+            triggersSet.Hotbar2 = false;
+            triggersSet.Hotbar3 = false;
+            triggersSet.Hotbar4 = false;
+            triggersSet.Hotbar5 = false;
+            triggersSet.Hotbar6 = false;
+            triggersSet.Hotbar7 = false;
+            triggersSet.Hotbar8 = false;
+            triggersSet.Hotbar9 = false;
+            triggersSet.Hotbar10 = false;
+            triggersSet.HotbarPlus = false;
+            triggersSet.HotbarMinus = false;
+            triggersSet.RadialHotbar = false;
+            triggersSet.RadialQuickbar = false;
+        }
+
+        public override void PreUpdate() {
+            if (IsRunning) {
+                MaintainOnikiriHoldLock();
+            }
+        }
+
+        public override void PostUpdate() {
+            if (IsRunning) {
+                MaintainOnikiriHoldLock();
+            }
+            if (healthGuardActive) {
+                SetPlayerLifeAtLeast(GetTutorialLifeFloor(), showEffect: false);
+            }
+            if (detachedSafetyTimer <= 0) {
+                return;
+            }
+            bool locked = OniPlayerDismember.IsLocked(Player);
+            if (locked) {
+                detachedSafetySawLock = true;
+            }
+            if ((detachedSafetySawLock && !locked) || --detachedSafetyTimer <= 0) {
+                detachedSafetyTimer = 0;
+                detachedSafetySawLock = false;
+                RestoreTutorialHealth();
+            }
         }
 
         internal void HandlePrimaryAction() {
@@ -133,6 +191,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                     break;
                 case OnikiriTutorialFlow.Step_Mei:
                     if (!(OniMeiUI.Instance?.IsOpen ?? false)) {
+                        EnsureHoldingOnikiri();
                         OniMeiUI.Instance?.Open();
                     }
                     break;
@@ -142,6 +201,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                         AdvanceExplanatoryStep();
                     }
                     else if (!(OniMeiUI.Instance?.IsOpen ?? false)) {
+                        EnsureHoldingOnikiri();
                         OniMeiUI.Instance?.Open();
                     }
                     break;
@@ -166,6 +226,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                     break;
                 case OnikiriTutorialFlow.Step_Register:
                     if (!(OniRegisterUI.Instance?.IsOpen ?? false)) {
+                        EnsureHoldingOnikiri();
                         OniRegisterUI.Instance?.Open();
                     }
                     break;
@@ -246,6 +307,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             expectedCommandAccepted = false;
             prepareReachedClosed = false;
             dismemberInputArmed = false;
+            lockedOnikiriSlot = -1;
             Feedback = OnikiriTutorialFeedback.None;
             feedbackTimer = 0;
             previousMiddleDown = Mouse.GetState().MiddleButton == ButtonState.Pressed;
@@ -294,24 +356,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             genGore = false;
             SetPlayerLifeAtLeast(GetTutorialLifeFloor(), showEffect: false);
             return false;
-        }
-
-        public override void PostUpdate() {
-            if (healthGuardActive) {
-                SetPlayerLifeAtLeast(GetTutorialLifeFloor(), showEffect: false);
-            }
-            if (detachedSafetyTimer <= 0) {
-                return;
-            }
-            bool locked = OniPlayerDismember.IsLocked(Player);
-            if (locked) {
-                detachedSafetySawLock = true;
-            }
-            if ((detachedSafetySawLock && !locked) || --detachedSafetyTimer <= 0) {
-                detachedSafetyTimer = 0;
-                detachedSafetySawLock = false;
-                RestoreTutorialHealth();
-            }
         }
 
         private void InitializeTutorial(OnikiriTutorialEntry entry = OnikiriTutorialEntry.Auto) {
@@ -382,11 +426,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 
             switch (step) {
                 case OnikiriTutorialFlow.Step_Mei:
+                    EnsureHoldingOnikiri();
                     OniRegisterUI.Instance?.Close();
                     OniTalismanHud.RememberLedger(OniLedgerView.Mei);
                     break;
                 case OnikiriTutorialFlow.Step_Register:
+                    EnsureHoldingOnikiri();
                     registerOpenedThisStep = false;
+                    break;
+                case OnikiriTutorialFlow.Step_HudIntro:
+                    EnsureHoldingOnikiri();
                     break;
                 case OnikiriTutorialFlow.Step_Prepare:
                     OniMeiUI.Instance?.Close();
@@ -706,6 +755,89 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private bool IsHoldingOnikiri() {
             Item held = Player.GetItem();
             return held != null && !held.IsAir && held.type == ModContent.ItemType<OnikiriItem>();
+        }
+
+        /// <summary>询问之后的步骤都需要鬼切在手(HUD/台账/域)</summary>
+        private static bool NeedsOnikiriHold(int step)
+            => step is >= OnikiriTutorialFlow.Step_HudIntro and < OnikiriTutorialFlow.Step_Done;
+
+        /// <summary>每帧:找到鬼切并锁在快捷栏,同步世界冻结的手持快照</summary>
+        private void MaintainOnikiriHoldLock() {
+            if (!NeedsOnikiriHold(CurrentStep)) {
+                lockedOnikiriSlot = -1;
+                return;
+            }
+            EnsureHoldingOnikiri();
+        }
+
+        /// <summary>
+        /// 确保鬼切在快捷栏并被选中。优先已选手持→快捷栏→鼠标→背包(换入空快捷栏或当前槽)。
+        /// 背包里没有鬼切时放弃(无法凭空造刀)
+        /// </summary>
+        private bool EnsureHoldingOnikiri() {
+            int type = ModContent.ItemType<OnikiriItem>();
+            if (IsHoldingOnikiri()) {
+                ApplyOnikiriLock(Player.selectedItem);
+                return true;
+            }
+
+            for (int i = 0; i < 10; i++) {
+                Item hot = Player.inventory[i];
+                if (hot != null && !hot.IsAir && hot.type == type) {
+                    ApplyOnikiriLock(i);
+                    return true;
+                }
+            }
+
+            if (Main.mouseItem != null && !Main.mouseItem.IsAir && Main.mouseItem.type == type) {
+                int dest = FindEmptyHotbarSlot();
+                if (dest < 0) {
+                    dest = Math.Clamp(Player.selectedItem, 0, 9);
+                }
+                Item swap = Player.inventory[dest];
+                Player.inventory[dest] = Main.mouseItem;
+                Main.mouseItem = swap ?? new Item();
+                ApplyOnikiriLock(dest);
+                return true;
+            }
+
+            for (int i = 10; i < Player.inventory.Length; i++) {
+                Item bag = Player.inventory[i];
+                if (bag == null || bag.IsAir || bag.type != type) {
+                    continue;
+                }
+                int dest = FindEmptyHotbarSlot();
+                if (dest < 0) {
+                    dest = Math.Clamp(Player.selectedItem, 0, 9);
+                }
+                Utils.Swap(ref Player.inventory[dest], ref Player.inventory[i]);
+                ApplyOnikiriLock(dest);
+                return true;
+            }
+
+            lockedOnikiriSlot = -1;
+            return false;
+        }
+
+        private int FindEmptyHotbarSlot() {
+            for (int i = 0; i < 10; i++) {
+                Item item = Player.inventory[i];
+                if (item == null || item.IsAir) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private void ApplyOnikiriLock(int slot) {
+            slot = Math.Clamp(slot, 0, 9);
+            lockedOnikiriSlot = slot;
+            Player.selectedItem = slot;
+            Player.HotbarOffset = 0;
+            Player.changeItem = -1;
+            if (WorldFreezeSystem.IsActive) {
+                Player.GetModPlayer<WorldFreezePlayer>().RetargetFrozenHotbar(slot);
+            }
         }
 
         private void HandleDomainCommandAccepted(Player player, OnikiriDomainCommandKind kind,
