@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         /// <summary>台账板下那本线装册子的尺寸（改铭台上的入口道具）</summary>
         public static readonly Vector2 CodexBookletSize = new(96f, 62f);
         /// <summary>册子与台账板下缘的间距</summary>
-        public const float CodexBookletGap = 18f;
+        public const float CodexBookletGap = 28f;
         /// <summary>摊开册子的宽上限</summary>
         public const float CodexBookMaxW = 1060f;
         /// <summary>摊开册子的高上限</summary>
@@ -155,9 +155,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         /// <summary>页缘留白（封面到纸面）</summary>
         public const float CodexPagePad = 28f;
         /// <summary>页签带高（骑在左页顶缘之上）</summary>
-        public const float CodexTabH = 28f;
+        public const float CodexTabH = 32f;
         /// <summary>左页顶部收集度墨记带高</summary>
-        public const float CodexTallyH = 54f;
+        public const float CodexTallyH = 58f;
         /// <summary>左页底部翻页角标带高</summary>
         public const float CodexArrowH = 30f;
         /// <summary>名录格列数</summary>
@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         /// <summary>名录格里的字形尺寸</summary>
         public const float CodexCellGlyphSize = 42f;
         /// <summary>右页详情的大字形尺寸</summary>
-        public const float CodexDetailGlyphSize = 148f;
+        public const float CodexDetailGlyphSize = 112f;
         #endregion
 
         #region 吊挂切换门

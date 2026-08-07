@@ -66,6 +66,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
+        //和纸正文 / 次级 / 未凿灰：比主题 Ink+黑描边、TextDim 更耐读，且只画一次
+        private static readonly Color PaperBody = new(38, 26, 24);
+        private static readonly Color PaperMute = new(86, 64, 54);
+        private static readonly Color PaperAsh = new(122, 106, 96);
+        private static readonly Color PaperBurden = new(148, 48, 40);
+
+        /// <summary>
+        /// 和纸墨字：单次绘制。禁止 DrawBorderString——四向黑描边叠在深墨上会糊成一团
+        /// </summary>
+        internal static void DrawPaperInk(SpriteBatch sb, DynamicSpriteFont font, string text,
+            Vector2 pos, Color color, float scale, float alpha = 1f,
+            float originX = 0f, float originY = 0f) {
+            if (string.IsNullOrEmpty(text) || alpha <= 0.01f) {
+                return;
+            }
+            Vector2 size = font.MeasureString(text) * scale;
+            Vector2 origin = new(size.X * originX / scale, size.Y * originY / scale);
+            sb.DrawString(font, text, pos, color * alpha, 0f, origin, scale, SpriteEffects.None, 0f);
+        }
+
         //====================== 册子本体 ======================
 
         /// <summary>
@@ -131,15 +151,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         /// <summary>一页和纸：底色 + 纤维横纹 + 页缘吃暗 + 朱丝栏</summary>
         private static void DrawPaper(SpriteBatch sb, Rectangle page, float alpha, float time, int seed) {
-            sb.Draw(Pixel, page, PixelSrc, new Color(226, 214, 190) * (alpha * 0.97f));
-            //纤维：几十道极淡的横纹，只调明度不改形
-            for (int i = 0; i < 26; i++) {
+            sb.Draw(Pixel, page, PixelSrc, new Color(232, 222, 202) * (alpha * 0.98f));
+            //纤维：极淡横纹，勿抢正文（过浓会与墨字糊在一起）
+            for (int i = 0; i < 18; i++) {
                 float u = Hash01(i * 71 + seed * 313);
                 float y = page.Y + page.Height * u;
                 float len = page.Width * (0.35f + Hash01(i * 37 + seed * 91) * 0.6f);
                 float x = page.X + (page.Width - len) * Hash01(i * 53 + seed * 17);
                 sb.Draw(Pixel, new Vector2(x, y), PixelSrc,
-                    new Color(196, 182, 158) * (alpha * 0.22f),
+                    new Color(196, 182, 158) * (alpha * 0.08f),
                     0f, Vector2.Zero, new Vector2(len, 1f), SpriteEffects.None, 0f);
             }
             //页缘吃暗：纸摊在木板上，边上总是暗的
@@ -171,22 +191,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OnikiriUITheme.Deep, 1.5f, alpha * 0.55f);
 
             string head = OniMeiCodexUI.TallyFormat.Format(all.Owned, all.Total);
-            Vector2 size = font.MeasureString(head) * 0.92f;
-            Utils.DrawBorderString(sb, head, center - size * 0.5f,
-                OnikiriUITheme.Ink * alpha, 0.92f);
+            const float headScale = 1.05f;
+            Vector2 size = font.MeasureString(head) * headScale;
+            DrawPaperInk(sb, font, head, center - size * 0.5f, PaperBody, headScale, alpha);
 
             //分槽：一行三段，满卷者标金
-            float y = page.Y + 40f;
+            float y = page.Y + 42f;
             for (int i = 0; i < 3; i++) {
                 OniMeiSlotKind slot = (OniMeiSlotKind)i;
                 OniMeiCodexTally tally = OniMeiCodexData.Tally(player, slot);
                 string label = OniMeiCodexUI.TallySlotFormat.Format(
                     OniMeiCodexUI.TabLabel(i + 1), tally.Owned, tally.Total);
                 float x = page.X + page.Width * (0.2f + i * 0.3f);
-                Vector2 textSize = font.MeasureString(label) * 0.68f;
+                const float slotScale = 0.84f;
+                Vector2 textSize = font.MeasureString(label) * slotScale;
                 bool full = tally.Owned >= tally.Total && tally.Total > 0;
-                Utils.DrawBorderString(sb, label, new Vector2(x - textSize.X * 0.5f, y),
-                    (full ? OnikiriUITheme.GoldDeep : OnikiriUITheme.TextDim) * alpha, 0.68f);
+                DrawPaperInk(sb, font, label, new Vector2(x - textSize.X * 0.5f, y),
+                    full ? OnikiriUITheme.GoldDeep : PaperMute, slotScale, alpha);
             }
         }
 
@@ -218,9 +239,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 active ? OnikiriUITheme.GoldInlay : OnikiriUITheme.TextDim,
                 1.3f, alpha * (active ? 0.95f : 0.6f));
 
-            Color ink = active ? OnikiriUITheme.Paper : OnikiriUITheme.TextDim;
+            Color ink = active ? OnikiriUITheme.Paper : Color.Lerp(OnikiriUITheme.TextDim, OnikiriUITheme.Paper, 0.35f);
+            //木牌字：浅色填在深木上，可用描边；字号抬到可读
             Utils.DrawBorderString(sb, label,
-                new Vector2(body.X + 26f, body.Y + lift + 4f), ink * alpha, 0.72f);
+                new Vector2(body.X + 26f, body.Y + lift + 3f), ink * alpha, 0.88f);
         }
 
         //====================== 名录格 ======================
@@ -234,43 +256,43 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             float a = alpha;
             bool locked = !row.Owned;
 
-            //选中：一枚压在纸上的浅色卡台 + 朱框
+            //选中与悬停互斥，避免叠两层浅色卡
             if (selected) {
                 Rectangle card = Inflate(rect, -4);
-                sb.Draw(Pixel, card, PixelSrc, new Color(246, 238, 222) * (a * 0.85f));
+                sb.Draw(Pixel, card, PixelSrc, new Color(246, 238, 222) * (a * 0.55f));
                 DrawFrame(sb, card, OnikiriUITheme.Seal * (a * 0.55f), 1f);
             }
             else if (hover > 0.01f) {
                 Rectangle card = Inflate(rect, -6);
-                sb.Draw(Pixel, card, PixelSrc, new Color(240, 230, 212) * (a * hover * 0.6f));
+                sb.Draw(Pixel, card, PixelSrc, new Color(240, 230, 212) * (a * hover * 0.45f));
             }
 
-            Vector2 glyphAt = new(rect.Center.X, rect.Y + rect.Height * 0.40f);
+            Vector2 glyphAt = new(rect.Center.X, rect.Y + rect.Height * 0.36f);
             float size = OnikiriUITheme.CodexCellGlyphSize * (1f + hover * 0.06f);
 
             OniMeiGlyphStyle style = OniMeiGlyphStyle.Engraved(a * (locked ? 0.5f : 1f));
             style.Time = time;
             style.Inlay = row.Gold && !locked ? 1f : 0f;
             style.Accent = locked
-                ? OnikiriUITheme.Disabled
+                ? PaperAsh
                 : row.Gold ? OnikiriUITheme.GoldInlay : OnikiriUITheme.Bright;
             style.Lit = locked ? 0.02f : 0.10f + hover * 0.45f;
             OniMeiGlyph.Draw(sb, row.Key, glyphAt, size, style);
 
             //铭名：未得也照给——铭名本身就是线索
             string name = row.Name;
-            float scale = 0.66f;
+            float scale = 0.86f;
             Vector2 textSize = font.MeasureString(name) * scale;
-            if (textSize.X > rect.Width - 8f) {
-                scale *= (rect.Width - 8f) / Math.Max(1f, textSize.X);
+            if (textSize.X > rect.Width - 10f) {
+                scale *= (rect.Width - 10f) / Math.Max(1f, textSize.X);
                 textSize = font.MeasureString(name) * scale;
             }
             Color nameColor = locked
-                ? OnikiriUITheme.Disabled
-                : row.Gold ? OnikiriUITheme.GoldDeep : OnikiriUITheme.Ink;
-            Utils.DrawBorderString(sb, name,
-                new Vector2(rect.Center.X - textSize.X * 0.5f, rect.Bottom - textSize.Y - 8f),
-                nameColor * a, scale);
+                ? PaperAsh
+                : row.Gold ? OnikiriUITheme.GoldDeep : PaperBody;
+            DrawPaperInk(sb, font, name,
+                new Vector2(rect.Center.X - textSize.X * 0.5f, rect.Bottom - textSize.Y - 6f),
+                nameColor, scale, a);
 
             //现铭：右上一枚朱点
             if (row.Engraved) {
@@ -284,12 +306,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     MathHelper.PiOver4, new Vector2(0.5f), new Vector2(4.6f),
                     SpriteEffects.None, 0f);
             }
-            //未得：底下一道未凿的凿口短线
-            if (locked) {
-                sb.Draw(Pixel, new Vector2(rect.Center.X - 9f, rect.Bottom - 5f), PixelSrc,
-                    OnikiriUITheme.Disabled * (a * 0.55f), 0f, Vector2.Zero,
-                    new Vector2(18f, 1f), SpriteEffects.None, 0f);
-            }
+            //未得：名下不再叠凿口短线（会与铭名重叠糊掉）
         }
 
         //====================== 翻页 ======================
@@ -308,32 +325,77 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     hoverArrow > 0 ? OnikiriUITheme.Bright : OnikiriUITheme.Deep,
                     1.8f, alpha * (hoverArrow > 0 ? 1f : 0.65f));
             }
-            Vector2 size = font.MeasureString(label) * 0.66f;
-            Utils.DrawBorderString(sb, label,
+            const float pageScale = 0.82f;
+            Vector2 size = font.MeasureString(label) * pageScale;
+            DrawPaperInk(sb, font, label,
                 new Vector2((prev.Center.X + next.Center.X) * 0.5f - size.X * 0.5f,
                     prev.Center.Y - size.Y * 0.5f),
-                OnikiriUITheme.TextDim * alpha, 0.66f);
+                PaperMute, pageScale, alpha);
         }
+
 
         //====================== 右页详情 ======================
 
+        private const float DetailNameScale = 1.22f;
+        private const float DetailSectionLabelScale = 0.84f;
+        private const float DetailSectionBodyScale = 0.90f;
+        private const float DetailBodyBottomPad = 16f;
+
+        /// <summary>页眉底边 Y（朱线下方正文区起点）</summary>
+        internal static float DetailHeaderEndY(DynamicSpriteFont font, Rectangle page, in OniMeiCodexRow row) {
+            float y = page.Y + 20f;
+            y += OnikiriUITheme.CodexDetailGlyphSize + 10f;
+            y += font.MeasureString(row.Name ?? "").Y * DetailNameScale + 6f;
+            y += 26f; //徽记行
+            y += 14f; //朱线后留白
+            return y;
+        }
+
+        /// <summary>正文裁剪矩形：页眉之下到页底内边</summary>
+        internal static Rectangle DetailBodyRect(DynamicSpriteFont font, Rectangle page, in OniMeiCodexRow row) {
+            int top = (int)DetailHeaderEndY(font, page, in row);
+            int bottom = page.Bottom - (int)DetailBodyBottomPad;
+            int height = Math.Max(0, bottom - top);
+            return new Rectangle(page.X + 22, top, page.Width - 44, height);
+        }
+
+        /// <summary>正文总高度（与 DrawDetailBody 同口径）</summary>
+        internal static float MeasureDetailBody(DynamicSpriteFont font, float wrapW, in OniMeiCodexRow row) {
+            float y = 0f;
+            if (!row.Owned) {
+                y = MeasureSection(font, wrapW, OniMeiCodexUI.SectionAcquire.Value,
+                    OniMeiCodexData.AcquireLine(in row), y);
+                y = MeasureProgress(in row, y);
+                y = MeasureSection(font, wrapW, OniMeiCodexUI.SectionSource.Value,
+                    OniMeiCodexData.SourceLine(in row), y);
+                y = MeasureSection(font, wrapW, "", OniMeiCodexUI.HiddenBody.Value, y);
+                return y;
+            }
+            y = MeasureSection(font, wrapW, OniMeiUI.OriginLabel?.Value ?? "",
+                row.Definition?.Origin?.Value ?? "", y);
+            y = MeasureSection(font, wrapW, OniMeiUI.PowerLabel?.Value ?? "",
+                row.Definition?.Power?.Value ?? "", y);
+            y = MeasureSection(font, wrapW, OniMeiUI.BurdenLabel?.Value ?? "",
+                row.Definition?.Burden?.Value ?? "", y);
+            y = MeasureSection(font, wrapW, OniMeiCodexUI.SectionSource.Value,
+                OniMeiCodexData.SourceLine(in row), y);
+            return y;
+        }
+
         /// <summary>
-        /// 详情页：大字形（换选时按笔序重凿一遍）→ 铭名与徽记 → 分栏正文。<br/>
-        /// 已得展全文，未得只给线索与縁分
+        /// 详情页：固定页眉 + Scissor 裁剪的可滚正文。<br/>
+        /// 返回正文内容总高，供 UI 计算 MaxScroll
         /// </summary>
-        public static void DrawDetail(SpriteBatch sb, DynamicSpriteFont font, Rectangle page,
-            in OniMeiCodexRow row, float reveal, float alpha, float time) {
+        public static float DrawDetail(SpriteBatch sb, DynamicSpriteFont font, Rectangle page,
+            in OniMeiCodexRow row, float reveal, float scroll, float alpha, float time) {
             bool locked = !row.Owned;
             float y = page.Y + 20f;
 
-            //大字形：衬一枚暗底章，字形压在上头
+            //固定页眉
             Vector2 glyphAt = new(page.Center.X, y + OnikiriUITheme.CodexDetailGlyphSize * 0.5f);
             float g = OnikiriUITheme.CodexDetailGlyphSize;
-            sb.Draw(Pixel, glyphAt, PixelSrc, OnikiriUITheme.Ink * (alpha * (locked ? 0.55f : 0.92f)),
+            sb.Draw(Pixel, glyphAt, PixelSrc, OnikiriUITheme.Ink * (alpha * (locked ? 0.42f : 0.72f)),
                 MathHelper.PiOver4, new Vector2(0.5f), new Vector2(g * 0.86f),
-                SpriteEffects.None, 0f);
-            sb.Draw(Pixel, glyphAt, PixelSrc, OnikiriUITheme.Paper * (alpha * 0.10f),
-                MathHelper.PiOver4, new Vector2(0.5f), new Vector2(g * 0.74f),
                 SpriteEffects.None, 0f);
 
             OniMeiGlyphStyle style = OniMeiGlyphStyle.Engraved(alpha * (locked ? 0.62f : 1f));
@@ -341,80 +403,120 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             style.ChiselReveal = reveal;
             style.Inlay = row.Gold && !locked ? 1f : 0f;
             style.Accent = locked
-                ? OnikiriUITheme.TextDim
+                ? PaperMute
                 : row.Gold ? OnikiriUITheme.GoldInlay : OnikiriUITheme.Bright;
             style.Lit = locked ? 0.05f : 0.28f;
             OniMeiGlyph.Draw(sb, row.Key, glyphAt, g * 0.62f, style);
             y += g + 10f;
 
-            //铭名
             string name = row.Name;
-            Vector2 nameSize = font.MeasureString(name) * 1.18f;
-            Utils.DrawBorderString(sb, name, new Vector2(page.Center.X - nameSize.X * 0.5f, y),
-                (locked ? OnikiriUITheme.Disabled : OnikiriUITheme.Ink) * alpha, 1.18f);
-            y += nameSize.Y + 4f;
+            Vector2 nameSize = font.MeasureString(name) * DetailNameScale;
+            DrawPaperInk(sb, font, name, new Vector2(page.Center.X - nameSize.X * 0.5f, y),
+                locked ? PaperAsh : PaperBody, DetailNameScale, alpha);
+            y += nameSize.Y + 6f;
 
-            //徽记行：槽位 / 金象嵌 / 未凿 / 此刻在刀
             List<(string text, Color color)> badges = [
-                (OniMeiCodexUI.TabLabel((int)row.Slot + 1), OnikiriUITheme.TextDim),
+                (OniMeiCodexUI.TabLabel((int)row.Slot + 1), PaperMute),
             ];
             if (row.Gold) {
                 badges.Add((OniMeiUI.GoldMark?.Value ?? "", OnikiriUITheme.GoldDeep));
             }
             if (locked) {
-                badges.Add((OniMeiCodexUI.LockedTitle.Value, OnikiriUITheme.Disabled));
+                badges.Add((OniMeiCodexUI.LockedTitle.Value, PaperAsh));
             }
             if (row.Engraved) {
                 badges.Add((OniMeiCodexUI.EngravedMark.Value, OnikiriUITheme.Seal));
             }
             DrawBadgeRow(sb, font, page.Center.X, y, badges, alpha);
-            y += 22f;
+            y += 26f;
 
-            //分界朱线
             sb.Draw(Pixel, new Rectangle(page.X + 26, (int)y, page.Width - 52, 1), PixelSrc,
                 OnikiriUITheme.Seal * (alpha * 0.45f));
-            y += 12f;
+            y += 14f;
 
-            float wrapW = page.Width - 52f;
-            float bodyX = page.X + 26f;
-            if (locked) {
-                y = DrawSection(sb, font, bodyX, y, wrapW, OniMeiCodexUI.SectionAcquire.Value,
-                    OniMeiCodexData.AcquireLine(in row), OnikiriUITheme.Ink, alpha);
-                y = DrawProgress(sb, font, bodyX, y, wrapW, in row, alpha);
-                y = DrawSection(sb, font, bodyX, y, wrapW, OniMeiCodexUI.SectionSource.Value,
-                    OniMeiCodexData.SourceLine(in row), OnikiriUITheme.TextDim, alpha);
-                DrawSection(sb, font, bodyX, y, wrapW, "", OniMeiCodexUI.HiddenBody.Value,
-                    OnikiriUITheme.Disabled, alpha * 0.85f);
-                return;
+            Rectangle bodyRect = new(page.X + 22, (int)y, page.Width - 44,
+                Math.Max(0, page.Bottom - (int)DetailBodyBottomPad - (int)y));
+            float wrapW = bodyRect.Width - 8f;
+            float contentH = MeasureDetailBody(font, wrapW, in row);
+            float maxScroll = Math.Max(0f, contentH - bodyRect.Height);
+            float scrollClamped = Math.Clamp(scroll, 0f, maxScroll);
+
+            if (bodyRect.Height <= 0) {
+                return contentH;
             }
 
-            y = DrawSection(sb, font, bodyX, y, wrapW, OniMeiUI.OriginLabel?.Value ?? "",
-                row.Definition?.Origin?.Value ?? "", OnikiriUITheme.TextDim, alpha);
-            y = DrawSection(sb, font, bodyX, y, wrapW, OniMeiUI.PowerLabel?.Value ?? "",
-                row.Definition?.Power?.Value ?? "", OnikiriUITheme.Ink, alpha);
-            y = DrawSection(sb, font, bodyX, y, wrapW, OniMeiUI.BurdenLabel?.Value ?? "",
-                row.Definition?.Burden?.Value ?? "", new Color(126, 46, 40), alpha);
-            DrawSection(sb, font, bodyX, y, wrapW, OniMeiCodexUI.SectionSource.Value,
-                OniMeiCodexData.SourceLine(in row), OnikiriUITheme.TextDim, alpha * 0.9f);
+            //Scissor 正文（对齐 OverhaulSettingsUI）
+            sb.End();
+            Rectangle prevScissor = sb.GraphicsDevice.ScissorRectangle;
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.None, new RasterizerState { ScissorTestEnable = true }, null, Main.UIScaleMatrix);
+            sb.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(sb, bodyRect);
+
+            float bodyY = bodyRect.Y - scrollClamped;
+            DrawDetailBody(sb, font, bodyRect.X + 4f, bodyY, wrapW, in row, alpha);
+
+            sb.End();
+            sb.GraphicsDevice.ScissorRectangle = prevScissor;
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+            //溢出：右缘细朱迹随滚动走（非现代滑块）
+            if (maxScroll > 0.5f) {
+                float ratio = scrollClamped / maxScroll;
+                float trackH = bodyRect.Height - 12f;
+                float markH = Math.Max(10f, trackH * (bodyRect.Height / Math.Max(bodyRect.Height, contentH)));
+                float markY = bodyRect.Y + 6f + ratio * (trackH - markH);
+                sb.Draw(Pixel, new Rectangle(bodyRect.Right - 3, (int)markY, 2, (int)markH), PixelSrc,
+                    OnikiriUITheme.Seal * (alpha * 0.55f));
+            }
+
+            return contentH;
         }
 
-        /// <summary>一行小徽记，居中铺开</summary>
+        /// <summary>可滚正文各段</summary>
+        private static void DrawDetailBody(SpriteBatch sb, DynamicSpriteFont font, float x, float y,
+            float wrapW, in OniMeiCodexRow row, float alpha) {
+            if (!row.Owned) {
+                y = DrawSection(sb, font, x, y, wrapW, OniMeiCodexUI.SectionAcquire.Value,
+                    OniMeiCodexData.AcquireLine(in row), PaperBody, alpha);
+                y = DrawProgress(sb, font, x, y, wrapW, in row, alpha);
+                y = DrawSection(sb, font, x, y, wrapW, OniMeiCodexUI.SectionSource.Value,
+                    OniMeiCodexData.SourceLine(in row), PaperMute, alpha);
+                DrawSection(sb, font, x, y, wrapW, "", OniMeiCodexUI.HiddenBody.Value, PaperAsh, alpha);
+                return;
+            }
+            y = DrawSection(sb, font, x, y, wrapW, OniMeiUI.OriginLabel?.Value ?? "",
+                row.Definition?.Origin?.Value ?? "", PaperMute, alpha);
+            y = DrawSection(sb, font, x, y, wrapW, OniMeiUI.PowerLabel?.Value ?? "",
+                row.Definition?.Power?.Value ?? "", PaperBody, alpha);
+            y = DrawSection(sb, font, x, y, wrapW, OniMeiUI.BurdenLabel?.Value ?? "",
+                row.Definition?.Burden?.Value ?? "", PaperBurden, alpha);
+            DrawSection(sb, font, x, y, wrapW, OniMeiCodexUI.SectionSource.Value,
+                OniMeiCodexData.SourceLine(in row), PaperMute, alpha);
+        }
+
+        /// <summary>一行徽记：纯字 + 间隔点，不画底色框</summary>
         private static void DrawBadgeRow(SpriteBatch sb, DynamicSpriteFont font, float centerX,
             float y, List<(string text, Color color)> badges, float alpha) {
-            const float scale = 0.66f;
-            const float gap = 10f;
+            const float scale = 0.82f;
+            const float gap = 14f;
             float total = 0f;
-            foreach ((string text, _) in badges) {
-                total += font.MeasureString(text).X * scale + gap + 12f;
+            for (int i = 0; i < badges.Count; i++) {
+                total += font.MeasureString(badges[i].text).X * scale;
+                if (i < badges.Count - 1) {
+                    total += gap;
+                }
             }
             float x = centerX - total * 0.5f;
-            foreach ((string text, Color color) in badges) {
-                float w = font.MeasureString(text).X * scale + 12f;
-                Rectangle box = new((int)x, (int)y, (int)w, 18);
-                sb.Draw(Pixel, box, PixelSrc, color * (alpha * 0.14f));
-                DrawFrame(sb, box, color * (alpha * 0.45f), 1f);
-                Utils.DrawBorderString(sb, text, new Vector2(x + 6f, y + 1f), color * alpha, scale);
-                x += w + gap;
+            for (int i = 0; i < badges.Count; i++) {
+                (string text, Color color) = badges[i];
+                float w = font.MeasureString(text).X * scale;
+                DrawPaperInk(sb, font, text, new Vector2(x, y), color, scale, alpha);
+                x += w;
+                if (i < badges.Count - 1) {
+                    DrawPaperInk(sb, font, "·", new Vector2(x + gap * 0.28f, y), PaperAsh, scale, alpha * 0.7f);
+                    x += gap;
+                }
             }
         }
 
@@ -425,33 +527,50 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return y;
             }
             if (!string.IsNullOrEmpty(label)) {
-                Utils.DrawBorderString(sb, label, new Vector2(x, y),
-                    OnikiriUITheme.Seal * (alpha * 0.85f), 0.68f);
-                y += 17f;
+                DrawPaperInk(sb, font, label, new Vector2(x, y), OnikiriUITheme.Seal, DetailSectionLabelScale, alpha);
+                y += 20f;
             }
-            const float scale = 0.72f;
-            List<string> lines = VaultUtils.WrapText(body, font, wrapW, scale);
+            List<string> lines = VaultUtils.WrapText(body, font, wrapW, DetailSectionBodyScale);
+            float lineH = font.MeasureString("A").Y * DetailSectionBodyScale + 3f;
             foreach (string line in lines) {
                 string text = line.TrimEnd();
                 if (text.Length == 0) {
                     continue;
                 }
-                Utils.DrawBorderString(sb, text, new Vector2(x + 6f, y), bodyColor * alpha, scale);
-                y += font.MeasureString("A").Y * scale + 2f;
+                DrawPaperInk(sb, font, text, new Vector2(x + 4f, y), bodyColor, DetailSectionBodyScale, alpha);
+                y += lineH;
             }
-            return y + 8f;
+            return y + 10f;
         }
 
-        /// <summary>縁分：一条凿槽式进度条 + 读数（不可计数的縁只出读数）</summary>
+        private static float MeasureSection(DynamicSpriteFont font, float wrapW, string label, string body, float y) {
+            if (string.IsNullOrWhiteSpace(body)) {
+                return y;
+            }
+            if (!string.IsNullOrEmpty(label)) {
+                y += 20f;
+            }
+            List<string> lines = VaultUtils.WrapText(body, font, wrapW, DetailSectionBodyScale);
+            float lineH = font.MeasureString("A").Y * DetailSectionBodyScale + 3f;
+            foreach (string line in lines) {
+                if (line.TrimEnd().Length == 0) {
+                    continue;
+                }
+                y += lineH;
+            }
+            return y + 10f;
+        }
+
+        /// <summary>縁分：凿槽式进度条 + 读数</summary>
         private static float DrawProgress(SpriteBatch sb, DynamicSpriteFont font, float x, float y,
             float wrapW, in OniMeiCodexRow row, float alpha) {
-            Utils.DrawBorderString(sb, OniMeiCodexUI.SectionProgress.Value, new Vector2(x, y),
-                OnikiriUITheme.Seal * (alpha * 0.85f), 0.68f);
-            y += 17f;
+            DrawPaperInk(sb, font, OniMeiCodexUI.SectionProgress.Value, new Vector2(x, y),
+                OnikiriUITheme.Seal, DetailSectionLabelScale, alpha);
+            y += 20f;
 
             string text = OniMeiCodexData.ProgressLine(in row);
             if (row.DeedCountable) {
-                Rectangle groove = new((int)(x + 6f), (int)y + 4, (int)(wrapW - 90f), 7);
+                Rectangle groove = new((int)(x + 4f), (int)y + 5, (int)(wrapW - 110f), 8);
                 sb.Draw(Pixel, groove, PixelSrc, new Color(178, 164, 140) * (alpha * 0.75f));
                 sb.Draw(Pixel, new Rectangle(groove.X, groove.Y, groove.Width, 1), PixelSrc,
                     new Color(120, 106, 88) * (alpha * 0.7f));
@@ -462,15 +581,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     OniBrush.DrawSoftDot(sb, new Vector2(groove.X + fill, groove.Center.Y), 4f,
                         OnikiriUITheme.Bright, alpha * 0.6f);
                 }
-                Vector2 size = font.MeasureString(text) * 0.68f;
-                Utils.DrawBorderString(sb, text,
-                    new Vector2(groove.Right + 10f, groove.Y - size.Y * 0.25f),
-                    OnikiriUITheme.Ink * alpha, 0.68f);
-                return y + 20f;
+                const float readScale = 0.84f;
+                Vector2 size = font.MeasureString(text) * readScale;
+                DrawPaperInk(sb, font, text,
+                    new Vector2(groove.Right + 10f, groove.Y - size.Y * 0.2f),
+                    PaperBody, readScale, alpha);
+                return y + 24f;
             }
-            Utils.DrawBorderString(sb, text, new Vector2(x + 6f, y),
-                OnikiriUITheme.Ink * alpha, 0.72f);
-            return y + 24f;
+            DrawPaperInk(sb, font, text, new Vector2(x + 4f, y), PaperBody, DetailSectionBodyScale, alpha);
+            return y + 26f;
+        }
+
+        private static float MeasureProgress(in OniMeiCodexRow row, float y) {
+            y += 20f;
+            if (row.DeedCountable) {
+                return y + 24f;
+            }
+            return y + 26f;
         }
 
         //====================== 合卷牌 ======================
@@ -481,10 +608,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Color face = Color.Lerp(new Color(62, 38, 28), new Color(104, 62, 42), hover);
             sb.Draw(Pixel, rect, PixelSrc, face * (alpha * 0.95f));
             DrawFrame(sb, rect, OnikiriUITheme.GoldDeep * (alpha * (0.35f + hover * 0.4f)), 1f);
-            Vector2 size = font.MeasureString(text) * 0.72f;
+            const float scale = 0.88f;
+            Vector2 size = font.MeasureString(text) * scale;
             Utils.DrawBorderString(sb, text,
                 new Vector2(rect.Center.X - size.X * 0.5f, rect.Center.Y - size.Y * 0.5f),
-                Color.Lerp(OnikiriUITheme.TextDim, OnikiriUITheme.Paper, hover) * alpha, 0.72f);
+                Color.Lerp(OnikiriUITheme.Paper, OnikiriUITheme.HotWhite, hover) * alpha, scale);
         }
 
         //====================== 小工具 ======================

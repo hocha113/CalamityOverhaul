@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.UIHandles;
@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public override bool CloseOnEscape => true;
         /// <summary>压在改铭台之上（改铭台为 2f）</summary>
         public override float RenderPriority => 2.1f;
-        public override SoundStyle? OpenSound => SoundID.Item59 with { Pitch = -0.25f, Volume = 0.45f };
+        public override SoundStyle? OpenSound => CWRSound.ButtonZero with { Pitch = -0.25f, Volume = 0.45f };
         /// <summary>合卷不出声，交接的唯一一声留给改铭台的开台音</summary>
         public override SoundStyle? CloseSound => null;
         public override Vector2 MousePosition => OnikiriUITheme.UIMouse;
@@ -107,6 +107,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         /// <summary>&lt;0 完成态；0~1 按笔序凿现</summary>
         private float detailReveal = -1f;
         private string revealedKey = "";
+        /// <summary>右页正文滚动量</summary>
+        private float detailScroll;
+        private float detailMaxScroll;
 
         private readonly List<OniMeiCodexRow> rows = [];
         private readonly float[] cellEase = new float[OnikiriUITheme.CodexPageCells];
@@ -157,6 +160,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             closeTagHover = 0f;
             detailReveal = 0f;
             revealedKey = "";
+            detailScroll = 0f;
+            detailMaxScroll = 0f;
             Array.Clear(cellEase, 0, cellEase.Length);
             Array.Clear(tabEase, 0, tabEase.Length);
             //取书即收台：静默收，切换只响开册这一声
@@ -174,6 +179,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         protected override void OnClose() {
             rows.Clear();
+            detailScroll = 0f;
+            detailMaxScroll = 0f;
             if (VaultUtils.isSinglePlayer) {
                 WorldFreezeSystem.Deactivate(FreezeReason);
             }
@@ -234,7 +241,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 RefreshRows();
             }
             TickReveal();
+            UpdateDetailScrollMetrics();
             UpdateInteraction(a);
+        }
+
+        /// <summary>按当前右页测正文高度，钳制滚动</summary>
+        private void UpdateDetailScrollMetrics() {
+            if (selected < 0 || selected >= rows.Count) {
+                detailMaxScroll = 0f;
+                detailScroll = 0f;
+                return;
+            }
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            Rectangle body = OniMeiCodexRenderer.DetailBodyRect(font, rightPage, rows[selected]);
+            float wrapW = Math.Max(32f, body.Width - 8f);
+            float contentH = OniMeiCodexRenderer.MeasureDetailBody(font, wrapW, rows[selected]);
+            detailMaxScroll = Math.Max(0f, contentH - body.Height);
+            detailScroll = Math.Clamp(detailScroll, 0f, detailMaxScroll);
         }
 
         /// <summary>就地刷新行的读数，不重排也不动选中</summary>
@@ -252,6 +275,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (key != revealedKey) {
                 revealedKey = key;
                 detailReveal = key.Length > 0 ? 0f : -1f;
+                detailScroll = 0f;
             }
             if (detailReveal >= 0f) {
                 detailReveal += 1f / DetailRevealFrames;
@@ -349,11 +373,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             bool closeHover = live && closeTagRect.Contains(mp.ToPoint());
             closeTagHover = MathHelper.Lerp(closeTagHover, closeHover ? 1f : 0f, 0.2f);
 
-            //滚轮翻页
-            if (live && PageCount > 1) {
+            //滚轮：悬停右页且正文溢出 → 滚详情；否则左页翻页
+            if (live) {
                 int delta = PlayerInput.ScrollWheelDeltaForUI;
                 if (delta != 0) {
-                    TurnPage(delta > 0 ? -1 : 1);
+                    bool hoverDetail = rightPage.Contains(mp.ToPoint());
+                    if (hoverDetail && detailMaxScroll > 0.5f) {
+                        detailScroll = Math.Clamp(detailScroll - delta * 0.3f, 0f, detailMaxScroll);
+                        PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/OniMeiCodex");
+                    }
+                    else if (PageCount > 1 && !hoverDetail) {
+                        TurnPage(delta > 0 ? -1 : 1);
+                    }
                 }
             }
 
@@ -404,6 +435,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             filterSlot = slot;
             page = 0;
+            detailScroll = 0f;
             Array.Clear(cellEase, 0, cellEase.Length);
             Rebuild();
             SoundEngine.PlaySound(SoundID.Item55 with { Pitch = 0.2f, Volume = 0.32f });
@@ -446,9 +478,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             //名录格
             if (rows.Count == 0) {
-                Utils.DrawBorderString(spriteBatch, EmptyPage.Value,
+                OniMeiCodexRenderer.DrawPaperInk(spriteBatch, font, EmptyPage.Value,
                     new Vector2(leftPage.Center.X, leftPage.Center.Y),
-                    OnikiriUITheme.Disabled * contentA, 0.85f, 0.5f, 0.5f);
+                    new Color(122, 106, 96), 0.95f, contentA, 0.5f, 0.5f);
             }
             for (int i = 0; i < cellRects.Length; i++) {
                 int index = PageStart + i;
@@ -466,18 +498,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     hoverArrow, contentA);
             }
 
-            //右页详情
+            //右页详情（Scissor 正文 + 滚轮偏移）
             if (selected >= 0 && selected < rows.Count) {
-                OniMeiCodexRenderer.DrawDetail(spriteBatch, font, rightPage, rows[selected],
-                    detailReveal, contentA, shaderTime);
+                float contentH = OniMeiCodexRenderer.DrawDetail(spriteBatch, font, rightPage, rows[selected],
+                    detailReveal, detailScroll, contentA, shaderTime);
+                Rectangle body = OniMeiCodexRenderer.DetailBodyRect(font, rightPage, rows[selected]);
+                detailMaxScroll = Math.Max(0f, contentH - body.Height);
+                detailScroll = Math.Clamp(detailScroll, 0f, detailMaxScroll);
             }
 
             //合卷牌与提示
             OniMeiCodexRenderer.DrawCloseTag(spriteBatch, font, closeTagRect, CloseTagText.Value,
                 closeTagHover, contentA);
-            Utils.DrawBorderString(spriteBatch, CloseHintFormat.Format(CloseTagText.Value.Replace(" ", "")),
+            string hint = CloseHintFormat.Format(CloseTagText.Value.Replace(" ", ""));
+            OniMeiCodexRenderer.DrawPaperInk(spriteBatch, font, hint,
                 new Vector2(bookRect.Center.X, bookRect.Bottom + 26f),
-                OnikiriUITheme.TextDim * (contentA * 0.75f), 0.72f, 0.5f, 0.5f);
+                OnikiriUITheme.Paper, 0.86f, contentA * 0.9f, 0.5f, 0.5f);
         }
     }
 }

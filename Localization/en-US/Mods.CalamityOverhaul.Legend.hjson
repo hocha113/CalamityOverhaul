@@ -582,8 +582,8 @@ OnikiriText: {
 		RegisterTabHint: Click to step over
 		TrayTitle: Satchel Rubbings
 		TrayEmpty: No rubbing for this seat in your satchel. Fan ribs of owned mei still carve
-		CodexTabText: 铭谱
-		CodexTabHint: 点击 展读
+		CodexTabText: Mei Codex
+		CodexTabHint: Click to open
 	}
 
 	OniMeiDeedText: {
@@ -670,28 +670,28 @@ OnikiriText: {
 	}
 
 	OniMeiCodexUI: {
-		TitleText: 铭 谱
-		CloseTagText: 合 卷
-		CloseHintFormat: ESC · {0} · 点击册外 归台
-		TabAll: 全册
-		TallyFormat: 已得 {0} / {1}
+		TitleText: Mei Codex
+		CloseTagText: Close
+		CloseHintFormat: ESC · {0} · click outside to return
+		TabAll: All
+		TallyFormat: Found {0} / {1}
 		TallySlotFormat: "{0} {1}/{2}"
 		PageFormat: "{0} / {1}"
-		EmptyPage: 此卷无铭
-		LockedTitle: 未 凿
-		SectionAcquire: 所寻
-		SectionProgress: 縁分
-		SectionSource: 来路
-		HiddenBody: 未凿之铭，赋效与代价皆不载于谱。先得其铭，再读其文
-		EngravedMark: 此刻在刀
-		SourceFactory: 自鸟居下拔出时便在刀上
-		SourceGiftFormat: 斩落「{0}」之后，绯真夜会把拓本递来
-		SourceGiftUnknown: 绯真夜会在某一夜把拓本递来
-		SourceGiftJoin: 」或「
-		SourceDeed: 无人相赠。此铭须持刀自证
-		SourceUnknown: 来历不详，谱上无载
-		ProgressSettled: 縁分已结
-		ProgressWaiting: 尚待其时
+		EmptyPage: No mei in this volume
+		LockedTitle: Uncarved
+		SectionAcquire: How to find
+		SectionProgress: Bond
+		SectionSource: Provenance
+		HiddenBody: Uncarved mei keep power and burden off this ledger. Carve first, then read
+		EngravedMark: On the blade
+		SourceFactory: Already on the blade when drawn from under the torii
+		SourceGiftFormat: After you cut down "{0}", Hiiro will bring the rubbing
+		SourceGiftUnknown: Hiiro will bring the rubbing on some night
+		SourceGiftJoin: " or "
+		SourceDeed: No one gifts this. Prove it with the blade yourself
+		SourceUnknown: Provenance unknown; the ledger is silent
+		ProgressSettled: Bond sealed
+		ProgressWaiting: Not yet
 	}
 }
 

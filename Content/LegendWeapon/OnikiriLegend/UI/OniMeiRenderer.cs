@@ -549,12 +549,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 new Vector2(body.Right - 22f, body.Bottom - 16f), 8f, time * 0.05f,
                 OnikiriUITheme.GoldDeep, 1.3f, a * (0.55f + hover * 0.35f));
 
-            //签上题字:竖不开就横写，字小一号压在签面
+            //签上题字:竖不开就横写；单次墨字，勿黑描边
             if (!string.IsNullOrEmpty(label)) {
-                Vector2 size = font.MeasureString(label) * 0.6f;
-                Utils.DrawBorderString(sb, label,
+                const float labelScale = 0.78f;
+                Vector2 size = font.MeasureString(label) * labelScale;
+                sb.DrawString(font, label,
                     new Vector2(labelAt.X - size.X * 0.5f, labelAt.Y - size.Y * 0.5f),
-                    Color.Lerp(OnikiriUITheme.Ink, OnikiriUITheme.Deep, 0.35f) * a, 0.6f);
+                    Color.Lerp(OnikiriUITheme.Ink, OnikiriUITheme.Deep, 0.35f) * a,
+                    0f, Vector2.Zero, labelScale, SpriteEffects.None, 0f);
             }
 
             //悬停:册角掀起一片纸 + 一点暖光,示意可翻
