@@ -58,11 +58,11 @@ namespace CalamityOverhaul
         CyberBossExecutionStart,
         HackProtocolApply,
         CrabulonRecall,
-        //保留已发布的协议编号，客户端不再发送该请求。
+        //保留已发布的协议编号，客户端不再发送该请求
         ReservedToriiShrineGenerationRequest,
         ToriiShrineSync,
         Wraith,
-        //保留编号：原鬼切教程练习鬼影通道已删除，客户端不再发送。
+        //保留编号：原鬼切教程练习鬼影通道已删除，客户端不再发送
         ReservedOnikiriTutorial,
         HimayoGiftEntitlements,
         WeaverGrievancesManifestation,
@@ -149,7 +149,6 @@ namespace CalamityOverhaul
             WGManifestationNet.NetHandle(type, reader, whoAmI);
             OnikiriTutorialNet.NetHandle(type, reader, whoAmI);
             OnikiriNet.NetHandle(type, reader, whoAmI);
-            SoyMilkBossPowerPlayer.NetHandle(type, reader, whoAmI);
             RamNet.NetHandle(type, reader, whoAmI);
             CyberwareNet.NetHandle(type, reader, whoAmI);
             SandevistanNet.NetHandle(type, reader, whoAmI);
