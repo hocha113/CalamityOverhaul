@@ -106,9 +106,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         //吊挂太刀:去改铭台的门(对面器物的微缩,挂在卷轴左肩的梁下)
         private readonly OniHangingSwitch meiSwitch = new(SoundID.Unlock with { Pitch = 0.3f, Volume = 0.35f });
         private Vector2 meiSwitchAnchor;
-        //翻页待出的帘角:屏东缘常掀一线,缝里是改铭台——第二扇同向门
-        private readonly OniLedgerPeek meiPeek = new(OniLedgerView.Mei, 1f);
-        private Rectangle peekArea;
         private readonly Rectangle[] entryRects = new Rectangle[16];
 
         //====动画状态====
@@ -150,7 +147,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniMeiUI.Instance.SilentSwap = false;
             }
             meiSwitch.Reset();
-            meiPeek.Reset();
             SwayTimer = 0f;
             petalTimer = 0;
             particles.Clear();
@@ -270,14 +266,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             closeTagRect = new Rectangle((int)(tagTop.X - 16f), (int)tagTop.Y - 2, 32, 48);
 
             //吊挂太刀:点击预演到帧即发起换乘;换乘中挂起交互;驿牌并入命中
-            bool doorOk = IsOpen && a > 0.9f && !OniLedgerSwapFX.Running;
-            if (meiSwitch.Update(meiSwitchAnchor, MousePosition, doorOk,
+            if (meiSwitch.Update(meiSwitchAnchor, MousePosition,
+                IsOpen && a > 0.9f && !OniLedgerSwapFX.Running,
                 ShaderTime, OnikiriUITheme.HangTachiHit, keyLeftPressState,
                 echoBoost: false, OniLedgerBeam.DoorBoardHit(OniLedgerView.Register))) {
-                OniLedgerSwapFX.Begin(OniLedgerView.Mei);
-            }
-            //帘角:第二扇同向门,点击即换乘(墨扫恰自东缘扫入,帘被整个掀开)
-            if (meiPeek.Update(peekArea, MousePosition, doorOk, keyLeftPressState)) {
                 OniLedgerSwapFX.Begin(OniLedgerView.Mei);
             }
 
@@ -317,14 +309,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             //顶梁门钩:太刀挂在梁右钩(卷轴钩留给本屏空钩)
             meiSwitchAnchor = OniLedgerBeam.DoorAnchor(OniLedgerView.Register);
-
-            //帘角带:屏东缘(台在东),上让绯月,下让卷底提示;小屏摆不下就不出
-            float peekTop = Math.Max(sh * 0.40f, 336f);
-            float peekBottom = sh - 150f;
-            peekArea = peekBottom - peekTop < 100f
-                ? Rectangle.Empty
-                : new Rectangle((int)(sw - OniLedgerPeek.QuadW), (int)peekTop,
-                    (int)OniLedgerPeek.QuadW, (int)(peekBottom - peekTop));
 
             //换乘横滑:卷轴/细节板随行进让位,顶梁/门挂物不加;名录随后从已滑卷轴重建
             float slide = OniLedgerSwapFX.SlideOf(OniLedgerView.Register);
@@ -433,8 +417,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 //点击卷外压暗区收卷:卷轴(含外扩边)、细节板、收卷牌、吊挂太刀之外都算"外"
                 Rectangle scrollHit = scrollRect;
                 scrollHit.Inflate(OnikiriUITheme.ScrollEdgePad + 22, OnikiriUITheme.ScrollEdgePad + 22);
-                if (!scrollHit.Contains(mp) && !detailRect.Contains(mp) && !meiSwitch.Hovering
-                    && !meiPeek.Hovering) {
+                if (!scrollHit.Contains(mp) && !detailRect.Contains(mp) && !meiSwitch.Hovering) {
                     Close();
                 }
             }
@@ -648,21 +631,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 string bladeName = Inscriptions.OniMeiRegistry.CurrentBladeName(
                     Inscriptions.OniMeiRegistry.DisplayStore)?.DisplayName.Value ?? "";
                 OniRegisterRenderer.DrawHangingTachi(spriteBatch, font, meiSwitch, contentA, GlobalTimer, bladeName);
-                //帘角翻页待出:前幕层,压在卷面之上(缝里的改铭台随光标半速视差)
-                meiPeek.Draw(spriteBatch, contentA, ShaderTime, 8.9f, parallax, meiSwitch.Echo01);
             }
 
             //====两翼落花====
             particles.Draw(spriteBatch, a);
 
-            //吊挂太刀/帘角的悬浮说明(最后画,压在一切之上;两门同名同注)
+            //吊挂太刀的悬浮说明(最后画,压在一切之上)
             if (meiSwitch.HoverEase > 0.05f) {
                 OniMeiRenderer.DrawSwitchHoverTag(spriteBatch, MousePosition,
                     MeiTabText.Value, MeiTabHint.Value, a * meiSwitch.HoverEase);
-            }
-            else if (meiPeek.HoverEase > 0.05f) {
-                OniMeiRenderer.DrawSwitchHoverTag(spriteBatch, MousePosition,
-                    MeiTabText.Value, MeiTabHint.Value, a * meiPeek.HoverEase);
             }
         }
 

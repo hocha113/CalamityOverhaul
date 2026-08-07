@@ -195,9 +195,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         //吊挂卷轴:回点鬼簿的门(对面器物的微缩,挂在布左上的梁下)
         private readonly OniHangingSwitch registerSwitch = new(SoundID.MenuTick with { Pitch = -0.2f, Volume = 0.45f });
         private Vector2 registerSwitchAnchor;
-        //翻页待出的帘角:屏西缘常掀一线,缝里是点鬼簿——第二扇同向门
-        private readonly OniLedgerPeek registerPeek = new(OniLedgerView.Register, -1f);
-        private Rectangle peekArea;
 
         //====动画状态====
         internal float ShaderTime;
@@ -276,7 +273,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             tagHeightEase = 0f;
             postRiteNameEase = 1f;
             registerSwitch.Reset();
-            registerPeek.Reset();
             songCooldown = Main.rand.Next(700, 1400);
             songRun = -1f;
             particles.Clear();
@@ -404,10 +400,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (openRegister) {
                 OniLedgerSwapFX.Begin(OniLedgerView.Register);
             }
-            //帘角:第二扇同向门,点击即换乘(墨扫恰自西缘扫入,帘被整个掀开)
-            if (registerPeek.Update(peekArea, MousePosition, doorOk, keyLeftPressState)) {
-                OniLedgerSwapFX.Begin(OniLedgerView.Register);
-            }
 
             //鏨仪式推进:期间吞交互,点击可跳;锚=检分镜头不动点的屏幕位
             if (Rite.Active) {
@@ -517,13 +509,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //顶梁门钩:卷轴挂在梁左钩;纳刀牌系在梁下缘右肩(绳结绕梁,不再没入屏顶)
             registerSwitchAnchor = OniLedgerBeam.DoorAnchor(OniLedgerView.Mei);
             closeTagAnchor = new Vector2(sw * OnikiriUITheme.MeiHangRightXRatio, OniLedgerBeam.Height - 2f);
-
-            //帘角带:屏西缘(簿在西),上让梁下门挂物,下让底行;小屏摆不下就不出
-            float peekTop = Math.Max(sh * 0.40f, 336f);
-            float peekBottom = sh - 168f;
-            peekArea = peekBottom - peekTop < 100f
-                ? Rectangle.Empty
-                : new Rectangle(0, (int)peekTop, (int)OniLedgerPeek.QuadW, (int)(peekBottom - peekTop));
 
             //换乘横滑:主体随行进方向让位,顶梁/门挂物不加
             float slide = OniLedgerSwapFX.SlideOf(OniLedgerView.Mei);
@@ -720,7 +705,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 (int)(OnikiriUITheme.UIScreenH * 0.6f));
             bool trayHit = selectedSlot >= 0 && fanEase > 0.25f && trayRect.Contains(mp);
             if (!stand.Contains(mp) && !tagRect.Contains(mp) && !trayHit && !nameHit.Contains(mp)
-                && !registerSwitch.Hovering && !registerPeek.Hovering) {
+                && !registerSwitch.Hovering) {
                 Close();
             }
         }
@@ -1170,9 +1155,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     GlobalTimer, CloseTagText.Value);
                 OniMeiRenderer.DrawHangingScroll(spriteBatch, registerSwitch, chromeA, GlobalTimer,
                     OniRegistry.IsEquippedDormant);
-                //帘角翻页待出:前幕层,压在屋内一切之上(缝里的点鬼簿随光标半速视差)
-                registerPeek.Draw(spriteBatch, chromeA, ShaderTime,
-                    OnikiriUITheme.MeiBladeSeed + 4.3f, parallax, registerSwitch.Echo01);
             }
 
             //====錾样匣====
@@ -1182,14 +1164,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             particles.Draw(spriteBatch, a);
 
-            //吊挂卷轴/帘角的悬浮说明(最后画,压在一切之上;两门同名同注)
+            //吊挂卷轴的悬浮说明(最后画,压在一切之上)
             if (registerSwitch.HoverEase > 0.05f) {
                 OniMeiRenderer.DrawSwitchHoverTag(spriteBatch, MousePosition,
                     RegisterTabText.Value, RegisterTabHint.Value, a * registerSwitch.HoverEase);
-            }
-            else if (registerPeek.HoverEase > 0.05f) {
-                OniMeiRenderer.DrawSwitchHoverTag(spriteBatch, MousePosition,
-                    RegisterTabText.Value, RegisterTabHint.Value, a * registerPeek.HoverEase);
             }
         }
 
