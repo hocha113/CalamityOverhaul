@@ -203,6 +203,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniFinalePost { get; set; }
         public static Asset<Effect> OniFinaleWound { get; set; }
         public static Asset<Effect> OniKamuiFlow { get; set; }
+        public static Asset<Effect> OniSakuraFlow { get; set; }
         public static Asset<Effect> OniDismember { get; set; }
         public static Asset<Effect> OniAnnihilateArc { get; set; }
         public static Asset<Effect> OniInkThread { get; set; }

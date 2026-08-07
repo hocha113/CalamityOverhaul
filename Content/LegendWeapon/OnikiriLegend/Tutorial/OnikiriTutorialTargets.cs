@@ -38,6 +38,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         internal const string Tag_MeiSlotHi = "mei_hi";
         internal const string Tag_MeiSlotHorimono = "mei_horimono";
         internal const string Tag_MeiFan = "mei_fan";
+        /// <summary>改铭台台账板底那一格书棚(铭谱插在格里)</summary>
+        internal const string Tag_MeiCodex = "mei_codex";
+        /// <summary>铭谱左页页眉的收集度</summary>
+        internal const string Tag_CodexTally = "codex_tally";
 
         /// <summary>HUD 控件每帧调用，发布当前命中区</summary>
         internal static void Publish(string tag, Rectangle rect) {

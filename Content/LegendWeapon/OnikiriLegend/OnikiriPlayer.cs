@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
     /// <summary>
     /// 鬼切资源层,气力+架势 owner 端自治不进网络/存档;
     /// 所持铭库(<see cref="OwnedMeiKeys"/>)例外,跟玩家存档.
-    /// 疾走键未绑定时回退右键;表世界可衔樱流;交还帧开追斩窗;
+    /// 疾走键未绑定时回退右键;表世界按樱流键直接化樱(疾走中按住亦可衔接);交还帧开追斩窗;
     /// 架势过半时可短窗双疾走处决,满势穿身乱舞,否则左键灭世;
     /// 里世界左键点选肢解.
     /// HUD 经 <see cref="OnikiriResourceSource"/> 只读
@@ -72,11 +72,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// <summary>冲刺基础再触发锁(帧)，长距离时会自动延长到覆盖完整位移</summary>
         private const int DashRefireLockTicks = 14;
 
-        /// <summary>樱流化身每帧耗气(疾走衔接的持续飞行,气尽自动回卷);冲刺后余量约可飞满程(~3s)且只抽十余点气</summary>
+        /// <summary>樱流化身每帧耗气(按住持续飞行,松手或气尽自动回卷);满程 180 帧约抽 27 点气</summary>
         private const float SakuraDrainPerTick = 0.15f;
-        /// <summary>樱流入飞门槛:低于此气力不衔接,疾走照常收势</summary>
+        /// <summary>樱流入飞门槛:低于此气力不受理(樱流键直接起飞与疾走衔接同门槛)</summary>
         private const float SakuraMinVigor = 10f;
-        /// <summary>樱流巡航速度(px/帧),模块钳制上限 48;从疾走高速骤降到此,是"化形"的减速拍</summary>
+        /// <summary>樱流巡航速度(px/帧),模块钳制上限 48;疾走衔接时从高速骤降到此,是"化形"的减速拍</summary>
         private const float SakuraFlightSpeed = 40f;
 
         /// <summary>追斩资格时长(帧),交还操控后保留 1.5 秒</summary>
@@ -790,17 +790,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             TryDash(item, executionDash: false, ExecutionTier.None);
         }
 
-        /// <summary>C 的按下沿只负责启动一次普通付费疾走；疾走中按住即为樱流武装</summary>
+        /// <summary>
+        /// 樱流键的按下沿:表世界稳态下当场化樱起飞,不代偿一段疾走;
+        /// 领域或气力不足即原地拒绝并给读数提示
+        /// </summary>
         private void HandleSakuraFlightInput(Item item) {
             if (normalDashInFlight || executionDashQueued
                 || executionTierInFlight != ExecutionTier.None
-                || OniSakuraFlight.ControlsOwner(Player.whoAmI)) {
+                || Player.mount?.Active == true
+                || OniSakuraFlight.AnyFor(Player.whoAmI)) {
+                return;
+            }
+            if (!StableOmote) {
+                OniTalismanHud.NotifyDomainDenied();
+                return;
+            }
+            if (Vigor < SakuraMinVigor - 0.01f) {
+                OniTalismanHud.NotifyVigorDenied();
+                return;
+            }
+            if (!StartSakuraFlight(CaptureRelativeCursorAim(clampToMaxRange: false),
+                Player.GetSource_ItemUse(item), seamless: false)) {
                 return;
             }
             if (executionAnnihilateWindow > 0) {
                 FailExecutionFollowup();
             }
-            TryDash(item, executionDash: false, ExecutionTier.None);
+            executionChainWindow = 0;
+            //化樱接过刀权:清掉普攻的补发与排拍,别让连段在花瓣里继续挥
+            OniBladeOccupancy.FindComboController(Player)?.ConsumeZanshinInput();
         }
 
         private ExecutionTier ResolveExecutionTier() {
@@ -1199,9 +1217,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         //==================== 樱流化身 ====================
 
+        /// <summary>樱流成立的世界条件:领域稳定在表世界(开域中、翻面中、里世界都不算)</summary>
+        private bool StableOmote {
+            get {
+                OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
+                return domain.Phase == OniDomainPhase.Omote && !domain.WorldIsUra;
+            }
+        }
+
         /// <summary>
         /// 疾走衔樱流,<see cref="OniFlashStep"/> 停止帧(owner);
-        /// 需表世界+最低气力,失败静默
+        /// 需表世界+最低气力,失败静默(疾走照常收势)
         /// </summary>
         internal bool TryChainSakuraFlight(Vector2 direction, IEntitySource source) {
             if (Player.whoAmI != Main.myPlayer || Player.mount?.Active == true
@@ -1209,23 +1235,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 || executionDashQueued || executionTierInFlight != ExecutionTier.None) {
                 return false;
             }
-            //上一次飞行的控制器(含余晖期)未消亡则拒绝:模块每玩家仅一个,拿旧实例不算衔接成功
+            if (!StableOmote || Vigor < SakuraMinVigor - 0.01f) {
+                return false;
+            }
+            return StartSakuraFlight(direction, source, seamless: true);
+        }
+
+        /// <summary>
+        /// 化樱起飞的共用发起路径(owner):气力换航时,余气越足航程越长;
+        /// 起飞即作废旧追斩窗,落地(<see cref="OniSakuraFlight"/> 交还帧)会开新窗
+        /// </summary>
+        private bool StartSakuraFlight(Vector2 direction, IEntitySource source, bool seamless) {
+            //上一次飞行的控制器(含余晖期)未消亡则拒绝:模块每玩家仅一个,拿旧实例不算起飞成功
             if (OniSakuraFlight.AnyFor(Player.whoAmI)) {
-                return false;
-            }
-            OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
-            if (domain.Phase != OniDomainPhase.Omote || domain.WorldIsUra) {
-                return false;
-            }
-            if (Vigor < SakuraMinVigor - 0.01f) {
                 return false;
             }
             int flightFrames = (int)(Vigor / (SakuraDrainPerTick * Mei.SakuraDrainMul));
             if (OniSakuraFlight.Fire(Player, direction, SakuraFlightSpeed,
-                flightFrames, source, seamless: true) == null) {
+                flightFrames, source, seamless) == null) {
                 return false;
             }
-            //化樱起飞,疾走的旧窗作废;落地(ReleaseOwner)会开新窗
             Tutorial.OnikiriTutorialEvents.FireSakuraStarted();
             zanshinWindow = 0;
             zanshinPending = false;
@@ -1245,9 +1274,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return;
             }
             vigorRegenDelay = Math.Max(vigorRegenDelay, VigorRegenDelayTicks + Mei.ExtraRegenDelayTicks);
-            OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
-            if (!SakuraFlightInputHeld || Vigor <= 0.01f
-                || domain.Phase != OniDomainPhase.Omote || domain.WorldIsUra) {
+            if (!SakuraFlightInputHeld || Vigor <= 0.01f || !StableOmote) {
                 OniSakuraFlight.RequestStop(Player);
                 return;
             }
@@ -1385,8 +1412,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             zanshinAutoHandoffCountdown = 0;
             CancelExecutionIntent(settleFollowup: false);
             ShootState state = Player.GetShootState();
-            OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
-            bool sakura = domain.Phase == OniDomainPhase.Omote && !domain.WorldIsUra;
+            bool sakura = StableOmote;
             bool synced = zanshinHasMarks && zanshinJudgeCountdown <= 0
                 && zanshinJudgeCountdown >= -ZanshinSyncSlackTicks;
             Projectile zanshin = OniZanshinSlash.Fire(Player, aim

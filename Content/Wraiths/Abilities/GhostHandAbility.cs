@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities
                     player.whoAmI,
                     0f,
                     0f,
-                    context.Mastery);
+                    context.Revival);
                 if (index >= 0 && index < Main.maxProjectiles
                     && Main.projectile[index].ModProjectile is GhostHandProj spawned) {
                     spawned.AssignHandSlot(slot);

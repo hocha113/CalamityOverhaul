@@ -2,26 +2,26 @@ QuestNode: {
 	FirstQuest: {
 		DisplayName: Welcome to the World of Calamity!
 		Description: The Beginning of the Journey
-		DetailedDescription: Every legend begins from humble origins. Claim your starter gear and prepare to face a world filled with gods and monsters.
+		DetailedDescription: Claim your starter gear. This world has gods in it, and monsters, and right now you have nothing.
 		QuestObjective.Description: Click to claim starter items
 	}
 
 	MiningQuest: {
 		DisplayName: Mining Basics
 		Description: Obtain 10 {0}
-		DetailedDescription: The underground holds infinite wealth. First, we need some basic metals to craft tools.
+		DetailedDescription: Tools need metal first. Ore veins do not come up to meet you. You dig.
 	}
 
 	MiningQuestII: {
 		DisplayName: Iron Age
 		Description: Collect 50 {0}
-		DetailedDescription: Copper is too soft; we need harder metals to arm ourselves. Delve deeper underground to find Iron veins.
+		DetailedDescription: Copper is too soft; two swings and it dulls. Iron sits deeper down.
 	}
 
 	MiningQuestIII: {
 		DisplayName: Gold Rush
 		Description: Collect 100 {0}
-		DetailedDescription: Gold is not just currency; it possesses excellent magical conductivity and ductility. Although softer than Iron, it is a crucial material for crafting advanced gear.
+		DetailedDescription: Gold is softer than iron, but it conducts magic better and takes more shaping. Advanced gear needs it.
 	}
 
 	BrimstoneElementalQuest: {
@@ -33,7 +33,7 @@ QuestNode: {
 	CalamitasCloneQuest: {
 		DisplayName: Calamitas Clone
 		Description: Defeat the Calamitas Clone
-		DetailedDescription: A clone filled with hatred and a desire for destruction. Defeat it to prove you are worthy of facing the true Witch.
+		DetailedDescription: A clone filled with hatred and a desire for destruction. Lose to the shadow and you will never meet the woman herself.
 	}
 
 	CrabulonQuest: {
@@ -45,7 +45,7 @@ QuestNode: {
 	CryogenQuest: {
 		DisplayName: Cryogen
 		Description: Defeat Cryogen
-		DetailedDescription: The former Archmage of the cosmos is sealed within this eternal prison of ice. Release and defeat it to unleash the power of the arctic.
+		DetailedDescription: Once the Archmage of the cosmos, now sealed inside a block of ice. Break it open and it wakes up wearing crystals.
 	}
 
 	DesertScourgeQuest: {
@@ -64,7 +64,7 @@ QuestNode: {
 	EyeofCthulhuQuest: {
 		DisplayName: Eye of Cthulhu
 		Description: Defeat the Eye of Cthulhu
-		DetailedDescription: As long as you feel that evil gaze, it will appear. This is the first true test of your strength.
+		DetailedDescription: As long as you feel that evil gaze, it will appear. At night, coming down out of the sky.
 	}
 
 	GolemQuest: {
@@ -77,7 +77,7 @@ QuestNode: {
 		DisplayName: The Hive Mind / The Perforators
 		Description: Defeat the true god of the evil biome
 		QuestObjective.Description: Defeat The Hive Mind or The Perforators
-		DetailedDescription: They are the physical manifestations of the Corruption and Crimson's consciousness. If not destroyed, this land will never know peace.
+		DetailedDescription: The Corruption and the Crimson each have a brain. Leave it in place and the spread never stops.
 	}
 
 	KingSlimeQuest: {
@@ -96,19 +96,19 @@ QuestNode: {
 		DisplayName: Mechanical Bosses
 		Description: Defeat all Mechanical Bosses
 		QuestObjective.Description: Defeat all Mechanical Bosses
-		DetailedDescription: Early creations of Draedon, mimicking parts of Cthulhu. Only by defeating them will the world be revitalized.
+		DetailedDescription: Early creations of Draedon, copied from parts of Cthulhu. A pair of eyes, a skull, and a long worm.
 	}
 
 	MoonLordQuest: {
 		DisplayName: Moon Lord
 		Description: Defeat the Moon Lord
-		DetailedDescription: The mastermind behind it all, the terror from the dark side of the moon. End this long nightmare.
+		DetailedDescription: The mastermind behind it all, the terror from the far side of the moon. Its eyes are not where eyes belong.
 	}
 
 	PlaguebringerGoliathQuest: {
 		DisplayName: The Plaguebringer Goliath
 		Description: Defeat The Plaguebringer Goliath
-		DetailedDescription: A Queen Bee modified by nano-virus machinery. It is not only deadly but also carries a dangerous plague.
+		DetailedDescription: A Queen Bee rebuilt by nanomachine virus. It carries plague, and a sting keeps draining you after it lands.
 	}
 
 	PlanteraQuest: {
@@ -156,7 +156,7 @@ QuestNode: {
 	ExoMechsQuest: {
 		DisplayName: Exo Mechs
 		Description: Defeat the Exo Mechs
-		DetailedDescription: Draedon's ultimate masterpieces, representing the pinnacle of Terrarian technology. Survive this perfect performance.
+		DetailedDescription: The best things Draedon ever built. All three at once, with him standing off to the side watching.
 	}
 
 	OldDukeQuest: {
@@ -204,13 +204,13 @@ QuestNode: {
 	SupremeCalamitasQuest: {
 		DisplayName: Supreme Witch, Calamitas
 		Description: Defeat Supreme Witch, Calamitas
-		DetailedDescription: The legendary Brimstone Witch. This is the end of your journey, or perhaps a new beginning? Prepare yourself for true bullet hell.
+		DetailedDescription: The Brimstone Witch herself. Those clones were things she made without thinking. The screen will fill up.
 	}
 
 	YharonQuest: {
 		DisplayName: Yharon, Dragon of Rebirth
 		Description: Defeat Yharon
-		DetailedDescription: The loyal comrade of the Tyrant, a dragon possessing the phoenix's ability of rebirth. This is a trial of the soul.
+		DetailedDescription: The Tyrant's loyal comrade, a dragon that rises again like a phoenix. Knocking it down once does not finish it.
 	}
 
 	BatteryQuest: {
@@ -222,13 +222,13 @@ QuestNode: {
 	HydroelectricQuest: {
 		DisplayName: Clean Energy
 		Description: Craft a Hydroelectric Generator
-		DetailedDescription: Harness the power of flowing water to generate electricity. A clean and sustainable way to obtain energy.
+		DetailedDescription: Generates power from running water. Burns no fuel; as long as the water keeps moving, it keeps turning.
 	}
 
 	IndustrialStartQuest: {
 		DisplayName: Industrial Revolution
 		Description: Craft a Wind Generator
-		DetailedDescription: The first step towards automation. Use wind energy to drive your machines and free your hands.
+		DetailedDescription: Drives machines with wind. The first machine you do not have to stand next to.
 	}
 
 	ItemFilterQuest: {
@@ -240,13 +240,13 @@ QuestNode: {
 	MiningMachineQuest: {
 		DisplayName: Automated Excavation
 		Description: Craft a Mining Machine
-		DetailedDescription: Say goodbye to tedious manual mining. This machine devours ore veins with astonishing efficiency.
+		DetailedDescription: No more digging by hand. Set it on an ore vein and it keeps chewing downward.
 	}
 
 	MiningMachineIIQuest: {
 		DisplayName: Deep Core Drilling
 		Description: Craft a Mining Machine MK2
-		DetailedDescription: Its reinforced power core offers unparalleled speed.
+		DetailedDescription: New power core, faster drill.
 	}
 
 	PipelineQuest: {
@@ -258,7 +258,7 @@ QuestNode: {
 	TeslaTowerQuest: {
 		DisplayName: Magnetic Storm Tower
 		Description: Craft a Tesla Tower
-		DetailedDescription: The crystallization of Draedon's technology. This tower allows for wireless power transmission, completely revolutionizing your wiring layout.
+		DetailedDescription: Draedon's technology, copied. The tower transmits power wirelessly and saves you most of the wiring.
 	}
 
 	ThermalPowerQuest: {
@@ -270,7 +270,7 @@ QuestNode: {
 	AnnihilatingUniverseQuest: {
 		DisplayName: Annihilating Universe
 		Description: Obtain "Annihilating Universe"
-		DetailedDescription: Compress the power of galaxies onto a bowstring. This weapon possesses the power to destroy universal dimensions, the ultimate proof for a ranger.
+		DetailedDescription: A galaxy compressed onto a bowstring. At full draw, the bow is more dangerous than the arrow.
 	}
 
 	AriaofTheCosmosQuest: {
@@ -318,25 +318,25 @@ QuestNode: {
 	PandemoniumQuest: {
 		DisplayName: Pandemonium
 		Description: Obtain "Pandemonium"
-		DetailedDescription: The ultimate weapon fusing countless souls and Calamitous power. Holding it, you hold the keys to Hell and the Abyss.
+		DetailedDescription: A weapon forged from countless souls melted together. Hold it long enough and you can hear them still talking.
 	}
 
 	RockQuest: {
 		DisplayName: Ancient Eternal Stone
 		Description: Obtain Ancient Eternal Stone
-		DetailedDescription: A seemingly ordinary stone, yet it has witnessed the cycle of countless Boss Rushes. It is a symbol of eternal perseverance.
+		DetailedDescription: A stone that looks completely ordinary, left over from the last Boss Rush.
 	}
 
 	TerminusQuest: {
 		DisplayName: Terminus
 		Description: Obtain Terminus
-		DetailedDescription: The key to starting the Boss Rush. Gaze into this stone and prepare to face a continuous trial against the world's strongest beings.
+		DetailedDescription: The key that starts the Boss Rush. Crush it and the strongest things in the world line up to come at you.
 	}
 
 	SpearOfLonginusQuest: {
 		DisplayName: Spear of Longinus
 		Description: Obtain Spear of Longinus
-		DetailedDescription: The legendary holy lance that pierced a deity, possessing the power to penetrate all fields and absolute barriers. When thrown, even the laws of causality make way for it.
+		DetailedDescription: The holy lance that once pierced a god. It does not recognize force fields, shields, or absolute barriers.
 	}
 
 	DragonsWordQuest: {
@@ -355,14 +355,14 @@ QuestNode: {
 		DisplayName: Adventurer
 		Description: The world is mine to roam!
 		QuestObjective.Description: Click to Claim
-		DetailedDescription: A journey of a thousand miles begins with a single step. Put on these boots and measure this vast world.
+		DetailedDescription: Put on these boots. The world is large and walking speed matters.
 	}
 
 	ExploreDungeon: {
 		DisplayName: Gloomy Dungeon
 		Description: Discover the Dungeon entrance
 		QuestObjective.Description: Reach the Dungeon
-		DetailedDescription: Endless secrets and dangers hide behind the cursed walls. Only the bravest explorers dare to set foot in this realm of the dead.
+		DetailedDescription: Behind the cursed brickwork waits the Dungeon Guardian. People who walk in before beating Skeletron do not usually walk out.
 	}
 
 	ExploreHell: {
@@ -374,7 +374,7 @@ QuestNode: {
 
 	ExploreJungle: {
 		DisplayName: Jungle Expedition
-		Description: Delve into the Jungle biome
+		Description: Head deep into the Jungle biome
 		QuestObjective.Description: Reach the Jungle
 		DetailedDescription: A vibrant yet perilous green maze. The dense vegetation conceals ancient temples and deadly swarms of bees.
 	}
@@ -390,7 +390,7 @@ QuestNode: {
 		DisplayName: Frozen Wasteland
 		Description: Explore the Snow biome
 		QuestObjective.Description: Reach the Snow biome
-		DetailedDescription: Eternal permafrost. The biting wind covers everything in ice and snow. Here, life exists in a much more resilient form.
+		DetailedDescription: Frozen year round, with wind strong enough to knock you off your feet. Penguins live here and so do wolves; only one of them is harmless.
 	}
 
 	ExploreSpace: {
@@ -411,7 +411,7 @@ QuestNode: {
 		DisplayName: Polar Code
 		Description: Find the Encrypted Schematic in the Snow Draedon Lab
 		QuestObjective.Description: Obtain Ice Schematic
-		DetailedDescription: The low temperatures here are perfect for preserving precision instruments. Delve into the lab beneath the ice to find that sealed polar technology.
+		DetailedDescription: The low temperatures here are perfect for preserving precision instruments. Get into the lab beneath the ice and find that sealed polar technology.
 	}
 
 	JungleLabSchematic: {
@@ -444,7 +444,7 @@ QuestNode: {
 	QueenSlimeQuest: {
 		DisplayName: Queen Slime
 		Description: Defeat Queen Slime
-		DetailedDescription: The crystal empress of the Hallow, ruling over all sanctified gelatinous creatures. Compared to her spouse, she is far more agile and deadly. Prepare for a magnificent barrage.
+		DetailedDescription: The crystal empress of the Hallow, ruling every sanctified gelatinous creature. Faster and deadlier than her spouse, and she flies.
 	}
 
 	BuildHouse: {
@@ -500,7 +500,7 @@ QuestNode: {
 		DisplayName: Deep Explorer
 		Description: Explore all major biomes
 		QuestObjective.Description: Complete all exploration quests
-		DetailedDescription: You have traversed every corner of the world, from the highest clouds to the deepest hell. The map you have drawn is proof of your courage. Now, the entire world lies at your feet.
+		DetailedDescription: You have been to every corner of the world, from the highest clouds to the deepest hell. There is no blank space left on the map.
 	}
 
 	ExploreCaverns: {
@@ -528,7 +528,7 @@ QuestNode: {
 		DisplayName: Floating Islands
 		Description: Find Floating Islands in the sky
 		QuestObjective.Description: Reach a Floating Island
-		DetailedDescription: Legends say that above the clouds lie treasure vaults left by an ancient civilization. Look for gravitational anomalies or build a tower to the heavens to find out.
+		DetailedDescription: A few islands drift above the clouds, holding vaults left by an ancient civilization. Find where gravity goes wrong, or build your own tower up.
 	}
 
 	ExploreGlowingMushroom: {
@@ -540,9 +540,9 @@ QuestNode: {
 
 	ExploreUnderground: {
 		DisplayName: Underground Exploration
-		Description: Delve into the underground caves
+		Description: Head deep into the underground caves
 		QuestObjective.Description: Reach the Underground
-		DetailedDescription: Simply scraping the surface dirt is not enough. True adventure begins below the surface. Bring your torches; the first layer of rock is just the beginning.
+		DetailedDescription: Below the dirt layer is the rock layer. Bring enough torches; there are many more layers under that.
 	}
 
 	FindLifeCrystal: {
@@ -582,7 +582,7 @@ QuestNode: {
 	CollectorQuest: {
 		DisplayName: Collection Assistant
 		Description: Obtain the Collector
-		DetailedDescription: Tired of bending over to pick up loot everywhere? This device automatically collects nearby dropped items. It is a core component for building automated logistics and sorting systems, completely freeing your hands.
+		DetailedDescription: This device picks up nearby drops on its own. It is where automated logistics starts. No more collecting things off the ground one at a time.
 	}
 
 	LumberjackQuest: {
@@ -606,7 +606,7 @@ QuestNode: {
 	ItemPipelineQuest: {
 		DisplayName: Logistics System
 		Description: Craft an Item Pipeline
-		DetailedDescription: Still running between chests like a primitive? These pipes are the veins of industry. Connect them between machines and containers, and watch items automatically flow to where they belong. Build an automated assembly line and enjoy the pleasure of reaping rewards without the labor.
+		DetailedDescription: Pipes are the veins of industry. Run them between machines and containers and items walk themselves to where they belong, so you stop running between chests.
 	}
 
 	ThrowerQuest: {

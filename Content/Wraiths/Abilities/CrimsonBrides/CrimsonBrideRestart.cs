@@ -101,10 +101,6 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.CrimsonBrides
             owner.immune = true;
             owner.immuneTime = Math.Max(owner.immuneTime, 60);
             owner.fallStart = (int)(owner.position.Y / 16f);
-            if (!VaultUtils.isServer && owner.whoAmI == Main.myPlayer) {
-                CombatText.NewText(owner.Hitbox, new Color(206, 84, 74),
-                    WraithSystemText.BrideRiteText.Value, true);
-            }
         }
 
         private static void PlayFailureCue(Player owner) {

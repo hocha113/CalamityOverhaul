@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         /// <summary>流带头端超前身体的距离（px），停止时按身前自由空间 clamp、墨最多亲到墙面，永不入墙</summary>
         private float headOffset = 100f;
-        /// <summary>已衔接樱流(表世界跑满仍按住右键)，跳过残心纳刀并当帧移交操控</summary>
+        /// <summary>已衔接樱流(表世界跑满仍按住樱流键)，跳过残心纳刀并当帧移交操控</summary>
         private bool chained;
 
         /// <summary>衔接视觉分支的判据、owner 端看 chained</summary>
@@ -497,7 +497,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 , MathF.Max(freeAhead - headOffset - HeadFollowThroughInset, 0f));
         }
 
-        /// <summary>表世界的樱流衔接、跑满计划距离时疾走输入仍按住</summary>
+        /// <summary>表世界的樱流衔接、跑满计划距离时樱流键仍按住</summary>
         private bool TryChainIntoSakura() {
             if (IsExecutionDash || chained || !Projectile.IsOwnedByLocalPlayer()
                 || !OnikiriPlayer.SakuraFlightInputHeld) {

@@ -293,10 +293,6 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                         Pitch = -0.9f, Volume = 0.4f, MaxInstances = 3,
                     }, player.Center);
                     break;
-                case RollEnd + 12:
-                    //落定后再弹字，翻转中段的世界文本会被镜像采样翻转
-                    OniRainWorldState.ShowEnterText(player);
-                    break;
             }
         }
 

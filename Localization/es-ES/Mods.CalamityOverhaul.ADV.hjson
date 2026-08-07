@@ -1016,6 +1016,5 @@ EternalBlazingNowNoHelen: {
 OniRainWorld: {
 	OniRainWorldSystem: {
 		// InteractHint: "[Right Click] Step beneath the umbrella"
-		// EnterText: Ghost Rain World
 	}
 }

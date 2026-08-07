@@ -146,6 +146,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         //====布局(每帧 UI 空间重算)====
         /// <summary>台账主板(题头+三铭位牌+脚注)</summary>
         private Rectangle panelRect;
+        /// <summary>板全体=台账区+底部书棚带;漆板 quad 与收台判定按这个走(一块板一个轮廓)</summary>
+        private Rectangle boardRect;
         /// <summary>铭位牌心(台账右列)</summary>
         private readonly Vector2[] slotPos = new Vector2[3];
         /// <summary>铭位刀身锚(贴图 px,剪影中线;检分镜头的不动点候选)</summary>
@@ -187,7 +189,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private float closeTagHover;
         private bool closeTagWasHovered;
         private readonly OniRope closeTagRope = new(5, 22f);
-        //铭谱:台账板下压着的那本线装册子,点开翻看名录(只读,不在此处凿铭)
+        //铭谱:台账板底那一格书棚里插着的线装册,取出即翻看名录(只读,不在此处凿铭)
+        private Rectangle codexNicheRect;
         private Rectangle codexBookRect;
         private float codexHover;
         private bool codexWasHovered;
@@ -291,6 +294,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (VaultUtils.isSinglePlayer) {
                 WorldFreezeSystem.Activate(FreezeReason);
             }
+            //教程临时刻铭事务：开台留档，与 OnClose 的回滚成对
+            Tutorial.OnikiriTutorialFlow.BeginMeiTransactionOnOpen();
         }
 
         protected override void OnClose() {
@@ -401,11 +406,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             bool doorOk = IsOpen && a > 0.9f && !Rite.Active && !OniLedgerSwapFX.Running;
             bool openRegister = registerSwitch.Update(registerSwitchAnchor, MousePosition,
                 doorOk, ShaderTime, OnikiriUITheme.HangScrollHit,
-                keyLeftPressState, OniRegistry.IsEquippedDormant,
+                keyLeftPressState, OniRegistry.IsEquippedInDanger,
                 OniLedgerBeam.DoorBoardHit(OniLedgerView.Mei));
             if (Tutorial.OnikiriTutorialLead.IsActive) {
                 Tutorial.OnikiriTutorialTargets.Publish(
                     Tutorial.OnikiriTutorialTargets.Tag_RegisterSwitch, registerSwitch.HitBox);
+                Tutorial.OnikiriTutorialTargets.Publish(
+                    Tutorial.OnikiriTutorialTargets.Tag_MeiCodex, codexNicheRect);
             }
             if (openRegister) {
                 OniLedgerSwapFX.Begin(OniLedgerView.Register);
@@ -436,11 +443,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             float sw = OnikiriUITheme.UIScreenW;
             float sh = OnikiriUITheme.UIScreenH;
 
-            //台账主板:左列;小屏收高给底行(木牌/匣)让位
+            //宽屏木牌居中列,刀再靠右;窄屏(单行摆不下)木牌回落屏左下,与台账板同列
+            bool narrow = sw < 1200f;
+
+            //台账主板:左列;小屏收高给底行(木牌/匣)让位,让位量含板底的书棚带
             float panelY = sh * OnikiriUITheme.MeiPanelYRatio;
-            float panelH = Math.Min(OnikiriUITheme.MeiPanelH, sh - panelY - 292f);
+            float panelH = Math.Min(OnikiriUITheme.MeiPanelH,
+                sh - panelY - 292f - OnikiriUITheme.CodexNicheH);
+            if (narrow) {
+                //木牌回落到板正下方那一列:板底再让出牌全高,宁可压矮台账也不叠到牌上
+                panelH = Math.Min(panelH, sh - OnikiriUITheme.MeiTrayBottomMargin
+                    - OnikiriUITheme.MeiTagSize.Y - 12f - panelY - OnikiriUITheme.CodexNicheH);
+            }
+            panelH = Math.Max(panelH, 200f);
             panelRect = new Rectangle((int)(sw * OnikiriUITheme.MeiPanelXRatio), (int)panelY,
                 (int)OnikiriUITheme.MeiPanelW, (int)panelH);
+            //板体一路画到棚带底:同一块漆板,金压线只在真顶缘,烛染只在真底缘
+            boardRect = new Rectangle(panelRect.X, panelRect.Y, panelRect.Width,
+                panelRect.Height + (int)OnikiriUITheme.CodexNicheH);
 
             //铭位牌:题头下三行沿内容带均布,牌身靠右缘(引线自右顶点出板)
             float contentTop = panelRect.Y + OnikiriUITheme.MeiPanelHeaderH;
@@ -453,9 +473,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 }
             }
 
-            //陈列心:台账右侧展刀区;底缘向錾样匣行让位。
-            //宽屏时木牌居中列,刀再靠右;窄屏(单行摆不下)木牌回落屏左下,刀左移并硬夹在屏内
-            bool narrow = sw < 1200f;
+            //陈列心:台账右侧展刀区;底缘向錾样匣行让位。窄屏时刀左移并硬夹在屏内
             float trayTop = sh - OnikiriUITheme.MeiTrayBottomMargin - OnikiriUITheme.MeiTrayPanelSize.Y;
             float exY = Math.Min(sh * OnikiriUITheme.MeiExhibitYRatio,
                 trayTop - OniMeiBladeDraw.SpriteSize.Y * OnikiriUITheme.MeiExhibitScale * 0.5f - 14f);
@@ -515,11 +533,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //格心行:题头朱线下方
             trayOrigin = new Vector2(trayRect.Center.X, trayRect.Y + 72f);
 
-            //铭谱册子:压在台账板下缘,与板同左缘;板若被小屏压矮也跟着上移
+            //铭谱:板底棚带左侧凿一格,册子插在格里,下缘被书唇压住(格随板走,永不脱开)
+            codexNicheRect = new Rectangle(panelRect.X + 18, panelRect.Bottom + 8,
+                (int)OnikiriUITheme.CodexNicheW, (int)OnikiriUITheme.CodexNicheH - 18);
+            //册顶留出抽书行程,抽起来也不顶穿格楣
             Vector2 bookletSize = OnikiriUITheme.CodexBookletSize;
-            codexBookRect = new Rectangle(
-                panelRect.X + 10,
-                panelRect.Bottom + (int)OnikiriUITheme.CodexBookletGap,
+            codexBookRect = new Rectangle(codexNicheRect.X + 10, codexNicheRect.Y + 10,
                 (int)bookletSize.X, (int)bookletSize.Y);
 
             nameColTop = new Vector2(sw * OnikiriUITheme.MeiNameColXRatio, sh * 0.16f);
@@ -532,6 +551,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (Math.Abs(slide) > 0.01f) {
                 Vector2 off = new(slide, 0f);
                 panelRect.Offset((int)slide, 0);
+                boardRect.Offset((int)slide, 0);
                 exhibitCenter += off;
                 xformPos += off;
                 exhibitRect.Offset((int)slide, 0);
@@ -545,6 +565,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 trayRect.Offset((int)slide, 0);
                 trayOrigin += off;
                 nameColTop += off;
+                codexNicheRect.Offset((int)slide, 0);
                 codexBookRect.Offset((int)slide, 0);
             }
         }
@@ -672,8 +693,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             closeTagWasHovered = tagHovered;
 
-            //铭谱册子悬停:仪式中不许翻书,免得凿到一半人跑去看名录
-            bool codexHovered = inputAvailable && !Rite.Active && codexBookRect.Contains(mp);
+            //铭谱悬停:整格都算取书(手伸进格子而不是精确点到册面);仪式中不许翻书,免得凿到一半人跑去看名录
+            bool codexHovered = inputAvailable && !Rite.Active && codexNicheRect.Contains(mp);
             codexHover += ((codexHovered ? 1f : 0f) - codexHover) * 0.2f;
             if (codexHovered && !codexWasHovered) {
                 SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.1f, Volume = 0.32f });
@@ -728,14 +749,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 SelectSlot(-1);
                 return;
             }
-            //点台外收台:台账/陈列刀域(含余量)/木牌/名字列/吊挂卷轴/铭谱册子之外
-            Rectangle stand = Rectangle.Union(panelRect, exhibitRect);
+            //点台外收台:台账板全体(含棚带)/陈列刀域(含余量)/木牌/名字列/吊挂卷轴之外
+            Rectangle stand = Rectangle.Union(boardRect, exhibitRect);
             stand.Inflate(30, 40);
             Rectangle nameHit = new((int)(nameColTop.X - 46f), (int)(nameColTop.Y - 20f), 92,
                 (int)(OnikiriUITheme.UIScreenH * 0.6f));
             bool trayHit = selectedSlot >= 0 && fanEase > 0.25f && trayRect.Contains(mp);
             if (!stand.Contains(mp) && !tagRect.Contains(mp) && !trayHit && !nameHit.Contains(mp)
-                && !registerSwitch.Hovering && !codexBookRect.Contains(mp)) {
+                && !registerSwitch.Hovering) {
                 Close();
             }
         }
@@ -1112,9 +1133,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //====顶梁(同一夜屋的持续骨架,不随换乘滑移)====
             OniLedgerBeam.Draw(spriteBatch, a, ShaderTime, OniLedgerView.Mei, registerSwitch.HoverEase);
 
-            //====台账主板(题字入题头,状态行入脚注)====
-            OniMeiRenderer.DrawLedgerPanel(spriteBatch, font, panelRect, TitleText.Value,
+            //====台账主板(题字入题头,状态行入脚注,板底带一格书棚)====
+            OniMeiRenderer.DrawLedgerPanel(spriteBatch, font, boardRect, panelRect, TitleText.Value,
                 a * (1f - zoomK * 0.85f), a, ShaderTime);
+
+            //====铭谱书棚(板的一部分,紧跟板画;册子自格里抽起来是唯一的悬停语言)====
+            if (chromeA > 0.01f) {
+                OniMeiRenderer.DrawCodexNiche(spriteBatch, font, codexNicheRect, codexBookRect,
+                    CodexTabText.Value, codexHover, chromeA, a, ShaderTime);
+            }
 
             //====注记墨线(牌→刀身搭点)====
             if (chromeA > 0.01f) {
@@ -1184,9 +1211,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 OniRegisterRenderer.DrawCloseTag(spriteBatch, font, closeTagRope, chromeA, closeTagHover,
                     GlobalTimer, CloseTagText.Value);
                 OniMeiRenderer.DrawHangingScroll(spriteBatch, registerSwitch, chromeA, GlobalTimer,
-                    OniRegistry.IsEquippedDormant);
-                OniMeiRenderer.DrawCodexBooklet(spriteBatch, font, codexBookRect, CodexTabText.Value,
-                    codexHover, chromeA, ShaderTime);
+                    OniRegistry.IsEquippedInDanger);
             }
 
             //====錾样匣====
@@ -1471,11 +1496,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             string keyName = CWRKeySystem.Legend_UIControl.ToTooltipString(CWRKeySystem.Notbound.Value);
             string hint = string.Format(CloseHintFormat.Value, keyName);
             Vector2 size = font.MeasureString(hint) * 0.7f;
-            //收台提示贴台账板下,一行收束
-            float y = Math.Min(panelRect.Bottom + 10f, OnikiriUITheme.UIScreenH - 26f);
-            Utils.DrawBorderString(sb, hint,
-                new Vector2(panelRect.Center.X - size.X * 0.5f, y),
-                OnikiriUITheme.TextDim * (a * 0.6f), 0.7f);
+            //收台提示:棚带右侧素漆面上一行小字;那块地方摆不下就退到板真底缘之下
+            float railW = boardRect.Right - 14f - (codexNicheRect.Right + 14f);
+            Vector2 at = size.X <= railW
+                ? new Vector2(codexNicheRect.Right + 14f + (railW - size.X) * 0.5f,
+                    codexNicheRect.Center.Y - size.Y * 0.5f)
+                : new Vector2(boardRect.Center.X - size.X * 0.5f,
+                    Math.Min(boardRect.Bottom + 10f, OnikiriUITheme.UIScreenH - 26f));
+            Utils.DrawBorderString(sb, hint, at, OnikiriUITheme.TextDim * (a * 0.6f), 0.7f);
         }
     }
 }

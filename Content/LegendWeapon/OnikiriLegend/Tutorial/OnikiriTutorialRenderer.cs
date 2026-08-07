@@ -23,6 +23,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             Secondary,
         }
 
+        /// <summary>收起纸片的文字缩放</summary>
+        private const float AbortScale = 0.62f;
+
         private const int CardWidth = 352;
         //询问是一次性抉择,给宽一点并让开右侧的符纹章
         private const int AskCardWidth = 430;
@@ -44,6 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private static Rectangle cardRect = Rectangle.Empty;
         private static Rectangle primaryRect = Rectangle.Empty;
         private static Rectangle secondaryRect = Rectangle.Empty;
+        private static Rectangle abortRect = Rectangle.Empty;
         private static ButtonAction primaryAction;
         private static ButtonAction secondaryAction;
 
@@ -78,21 +82,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
 
             Point mouse = OnikiriUITheme.UIMouse.ToPoint();
-            //询问卡横在屏心,只让两枚按钮吃输入,卡面本身不挡挥刀
-            bool overCard = OnikiriTutorialFlow.CurrentStep != OnikiriTutorialFlow.Step_Ask
-                && cardRect.Contains(mouse);
+            //询问卡横在屏心、实操卡贴在坦克可能站的那一侧:两者的卡面都不吃输入,只有纸片吃,免得吞掉挥刀
+            int step = OnikiriTutorialFlow.CurrentStep;
+            bool cardBlocks = step != OnikiriTutorialFlow.Step_Ask
+                && !OnikiriTutorialFlow.IsPracticeStep(step);
+            bool overCard = cardBlocks && cardRect.Contains(mouse);
             bool overPrimary = primaryAction != ButtonAction.None && primaryRect.Contains(mouse);
             bool overSecondary = secondaryAction != ButtonAction.None && secondaryRect.Contains(mouse);
-            if (overCard || overPrimary || overSecondary) {
+            bool overAbort = !abortRect.IsEmpty && abortRect.Contains(mouse);
+            if (overCard || overPrimary || overSecondary || overAbort) {
                 Main.LocalPlayer.mouseInterface = true;
             }
-            if (!clicked || !overCard && !overPrimary && !overSecondary) {
+            if (!clicked || !overCard && !overPrimary && !overSecondary && !overAbort) {
                 return;
             }
 
             Main.mouseLeft = false;
             Main.mouseLeftRelease = false;
-            if (overPrimary) {
+            if (overAbort) {
+                OnikiriTutorialFlow.HandleAbortAction();
+            }
+            else if (overPrimary) {
                 OnikiriTutorialFlow.HandlePrimaryAction();
             }
             else if (overSecondary) {
@@ -136,11 +146,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 OnikiriTutorialFlow.Step_Mei => OniMeiUI.Instance?.IsOpen == true
                     ? OnikiriTutorialTargets.Tag_MeiSlotNakago
                     : OnikiriTutorialTargets.Tag_TalismanStrip,
+                OnikiriTutorialFlow.Step_Codex => OniMeiCodexUI.Instance?.IsOpen == true
+                    ? OnikiriTutorialTargets.Tag_CodexTally
+                    : OniMeiUI.Instance?.IsOpen == true
+                        ? OnikiriTutorialTargets.Tag_MeiCodex
+                        : OnikiriTutorialTargets.Tag_TalismanStrip,
                 OnikiriTutorialFlow.Step_Register => OniRegisterUI.Instance?.IsOpen == true
                     ? OnikiriTutorialTargets.Tag_RegisterEntry
                     : OniMeiUI.Instance?.IsOpen == true
                         ? OnikiriTutorialTargets.Tag_RegisterSwitch
                         : OnikiriTutorialTargets.Tag_TalismanStrip,
+                OnikiriTutorialFlow.Step_Domain => OnikiriTutorialTargets.Tag_DomainEye,
                 OnikiriTutorialFlow.Step_CloseEye => OnikiriTutorialTargets.Tag_DomainEye,
                 _ => null,
             };
@@ -187,7 +203,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 
             bool asking = step == OnikiriTutorialFlow.Step_Ask;
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            int cardWidth = asking ? AskCardWidth : CardWidth;
+            //高 UI 缩放下卡比屏还宽时,右下角的按钮会被挤出屏外点不到
+            int cardWidth = Math.Min(asking ? AskCardWidth : CardWidth,
+                Math.Max(220, (int)OnikiriUITheme.UIScreenW - 32));
             //询问卡右侧留出符纹章的位置
             float sigilGutter = asking ? AskSigilRadius * 2f + 24f : 0f;
             float contentWidth = cardWidth - ContentPadX * 2f - sigilGutter;
@@ -214,7 +232,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 DrawConnector(spriteBatch, card, focus.Rect.Center.ToVector2(), alpha, time);
             }
             DrawCardPanel(spriteBatch, card, alpha, time);
-            DrawCardContent(spriteBatch, font, card, title.Value, lines, contentWidth, alpha);
+            //纸片先落位,标题按剩下的横向空间收缩,长译名不会压上去
+            DrawAbortTag(spriteBatch, font, card, step, alpha);
+            DrawCardContent(spriteBatch, font, card, title.Value, lines, contentWidth, alpha,
+                abortRect.IsEmpty ? card.Right - ContentPadX : abortRect.X);
             if (asking) {
                 OniKeikoRuneSigil.Draw(spriteBatch,
                     new Vector2(card.Right - ContentPadX - AskSigilRadius,
@@ -231,9 +252,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             title = body = prompt = null;
             switch (step) {
                 case OnikiriTutorialFlow.Step_Ask:
-                    title = OnikiriTutorialLead.AskTitle;
-                    body = OnikiriTutorialLead.AskBody;
-                    prompt = OnikiriTutorialLead.AskPrompt;
+                    bool refresher = OnikiriTutorialFlow.IsRefresherAsk;
+                    title = refresher ? OnikiriTutorialLead.RefreshAskTitle : OnikiriTutorialLead.AskTitle;
+                    body = refresher ? OnikiriTutorialLead.RefreshAskBody : OnikiriTutorialLead.AskBody;
+                    prompt = refresher ? OnikiriTutorialLead.RefreshAskPrompt : OnikiriTutorialLead.AskPrompt;
                     break;
                 case OnikiriTutorialFlow.Step_HudIntro:
                     title = OnikiriTutorialLead.HudTitle;
@@ -244,6 +266,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                     title = OnikiriTutorialLead.MeiTitle;
                     body = OnikiriTutorialLead.MeiBody;
                     prompt = OnikiriTutorialLead.MeiPrompt;
+                    break;
+                case OnikiriTutorialFlow.Step_Codex:
+                    title = OnikiriTutorialLead.CodexTitle;
+                    body = OnikiriTutorialLead.CodexBody;
+                    prompt = OnikiriTutorialLead.CodexPrompt;
+                    break;
+                case OnikiriTutorialFlow.Step_Domain:
+                    title = OnikiriTutorialLead.DomainTitle;
+                    body = OnikiriTutorialLead.DomainBody;
+                    prompt = OnikiriTutorialLead.DomainPrompt;
                     break;
                 case OnikiriTutorialFlow.Step_Register:
                     title = OnikiriTutorialLead.RegisterTitle;
@@ -291,10 +323,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             string key = step switch {
                 OnikiriTutorialFlow.Step_Mei => CWRKeySystem.GetKeybindText(
                     CWRKeySystem.Legend_UIControl, CWRKeySystem.Notbound.Value),
+                OnikiriTutorialFlow.Step_Domain or OnikiriTutorialFlow.Step_FlipUra
+                    => CWRKeySystem.GetKeybindText(CWRKeySystem.Onikiri_DomainFlip, "Mouse3"),
                 OnikiriTutorialFlow.Step_OpenOmote => CWRKeySystem.GetKeybindText(
                     CWRKeySystem.Legend_Domain, "Q"),
-                OnikiriTutorialFlow.Step_FlipUra => CWRKeySystem.GetKeybindText(
-                    CWRKeySystem.Onikiri_DomainFlip, "Mouse3"),
                 _ => null,
             };
             return key != null && prompt.Value.Contains("{0}")
@@ -321,10 +353,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 && CWRKeySystem.IsKeybindUnbound(CWRKeySystem.Onikiri_DomainFlip)) {
                 return OnikiriTutorialLead.FlipUnboundHint.Value;
             }
-            return step == OnikiriTutorialFlow.Step_Dismember
-                && OnikiriTutorialFlow.TutorialTarget == null
-                ? OnikiriTutorialLead.WaitingFeedback.Value
-                : null;
+            if (step != OnikiriTutorialFlow.Step_Dismember
+                || OnikiriTutorialFlow.TutorialTarget != null) {
+                return null;
+            }
+            //几秒钟没落位就不是网络往返的问题了,说清楚为什么靶不来
+            return OnikiriTutorialFlow.StepTimer > 60 * 5
+                ? OnikiriTutorialLead.TargetStalledHint.Value
+                : OnikiriTutorialLead.WaitingFeedback.Value;
         }
 
         private static void BuildAndDrawButtons(SpriteBatch spriteBatch, DynamicSpriteFont font,
@@ -337,19 +373,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             //抉择不可撤回,等卡片浮定再上按钮,免得弹出瞬间被连点的鼠标替玩家答了
             bool asking = step == OnikiriTutorialFlow.Step_Ask
                 && OnikiriTutorialFlow.StepTimer >= AskArmFrames;
+            bool skipArmed = OnikiriTutorialFlow.StepTimer >= OnikiriTutorialFlow.LegacySkipDelayFrames;
             if (asking) {
                 primaryText = OnikiriTutorialLead.AcceptBtn.Value;
                 secondaryText = OnikiriTutorialLead.DeclineBtn.Value;
             }
-            else if (step == OnikiriTutorialFlow.Step_HudIntro) {
+            else if (step is OnikiriTutorialFlow.Step_HudIntro or OnikiriTutorialFlow.Step_Domain) {
                 primaryText = OnikiriTutorialLead.NextBtn.Value;
             }
             else if (step == OnikiriTutorialFlow.Step_Mei) {
-                if (!(OniMeiUI.Instance?.IsOpen ?? false)) {
+                //台开着=已经看见三处铭位了,让玩家自己决定读多久
+                primaryText = OniMeiUI.Instance?.IsOpen ?? false
+                    ? OnikiriTutorialLead.NextBtn.Value
+                    : OnikiriTutorialLead.OpenMeiBtn.Value;
+                if (skipArmed) {
+                    secondaryText = OnikiriTutorialLead.SkipBtn.Value;
+                }
+            }
+            else if (step == OnikiriTutorialFlow.Step_Codex) {
+                bool codexOpen = OniMeiCodexUI.Instance?.IsOpen ?? false;
+                if (codexOpen) {
+                    primaryText = OnikiriTutorialLead.NextBtn.Value;
+                }
+                else if (!(OniMeiUI.Instance?.IsOpen ?? false)) {
                     primaryText = OnikiriTutorialLead.OpenMeiBtn.Value;
                 }
-                if (OnikiriTutorialFlow.StepTimer >= OnikiriTutorialFlow.LegacySkipDelayFrames) {
-                    secondaryText = OnikiriTutorialLead.SkipBtn.Value;
+                if (!codexOpen && skipArmed) {
+                    secondaryText = OnikiriTutorialLead.OpenCodexBtn.Value;
                 }
             }
             else if (step == OnikiriTutorialFlow.Step_Register) {
@@ -361,17 +411,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 else if (!meiOpen) {
                     primaryText = OnikiriTutorialLead.OpenMeiBtn.Value;
                 }
-                if (!registerOpen && OnikiriTutorialFlow.StepTimer >= OnikiriTutorialFlow.LegacySkipDelayFrames) {
+                if (!registerOpen && skipArmed) {
                     secondaryText = OnikiriTutorialLead.OpenRegisterBtn.Value;
                 }
             }
-            else if ((step is OnikiriTutorialFlow.Step_OpenOmote
+            else if (step == OnikiriTutorialFlow.Step_Prepare) {
+                //复位本该是一瞬的事;等太久说明有别的东西压着,给一条直通实操的路
+                if (skipArmed) {
+                    secondaryText = OnikiriTutorialLead.SkipBtn.Value;
+                }
+            }
+            else if (step is OnikiriTutorialFlow.Step_OpenOmote
                 or OnikiriTutorialFlow.Step_FlipUra
                 or OnikiriTutorialFlow.Step_Dismember
-                or OnikiriTutorialFlow.Step_CloseEye)
-                ) {
+                or OnikiriTutorialFlow.Step_CloseEye) {
                 if (OnikiriTutorialFlow.Feedback == OnikiriTutorialFeedback.Retry) {
                     primaryText = OnikiriTutorialLead.RetryBtn.Value;
+                }
+                else if (OnikiriTutorialFlow.CanSkipPracticeStep) {
+                    primaryText = OnikiriTutorialLead.SkipStepBtn.Value;
                 }
                 if (OnikiriTutorialFlow.StepTimer >= OnikiriTutorialFlow.AssistDelayFrames) {
                     secondaryText = OnikiriTutorialLead.AssistBtn.Value;
@@ -394,6 +452,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 DrawPaperButton(spriteBatch, font, secondaryRect, secondaryText,
                     OnikiriUITheme.GhostFire, time, alpha * 0.92f, subScale);
             }
+        }
+
+        /// <summary>
+        /// 卡头右肩的收起纸片。询问步已有「不必」,其余每一步都靠这枚纸片保证有路可退——
+        /// 收起会补一枚稽古符,不至于把人锁在教习里
+        /// </summary>
+        private static void DrawAbortTag(SpriteBatch spriteBatch, DynamicSpriteFont font,
+            Rectangle card, int step, float alpha) {
+            abortRect = Rectangle.Empty;
+            if (step == OnikiriTutorialFlow.Step_Ask) {
+                return;
+            }
+            string text = OnikiriTutorialLead.AbortBtn.Value;
+            int width = (int)(font.MeasureString(text).X * AbortScale) + 14;
+            abortRect = new Rectangle(card.Right - width - 8, card.Y + 6, width, 19);
+
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            bool hovered = abortRect.Contains(OnikiriUITheme.UIMouse.ToPoint());
+            float highlight = hovered ? 1f : 0f;
+            spriteBatch.Draw(pixel, abortRect, new Rectangle(0, 0, 1, 1),
+                OnikiriUITheme.Dark * (alpha * (0.40f + highlight * 0.30f)));
+            SkinDrawUtil.DrawRectBorder(spriteBatch, abortRect,
+                OnikiriUITheme.Deep * ((0.42f + highlight * 0.38f) * alpha), 1);
+            Vector2 size = font.MeasureString(text) * AbortScale;
+            Utils.DrawBorderString(spriteBatch, text,
+                abortRect.Center.ToVector2() - size * 0.5f + new Vector2(0f, -1f),
+                Color.Lerp(OnikiriUITheme.TextDim, OnikiriUITheme.Seal, 0.2f + highlight * 0.5f) * alpha,
+                AbortScale);
         }
 
         private static Rectangle MakeButtonRect(DynamicSpriteFont font, Rectangle card, string text,
@@ -450,12 +536,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
+        //收域步要指着鬼眼,仍走引线;其余实操步退到右下角
         private static bool UsesPeripheralPracticeCard(int step)
-            => step is OnikiriTutorialFlow.Step_Prepare
-                or OnikiriTutorialFlow.Step_OpenOmote
-                or OnikiriTutorialFlow.Step_FlipUra
-                or OnikiriTutorialFlow.Step_Dismember
-                or OnikiriTutorialFlow.Step_Backlash;
+            => OnikiriTutorialFlow.IsPracticeStep(step)
+                && step != OnikiriTutorialFlow.Step_CloseEye;
 
         private static Rectangle PlaceCard(int step, HudFocusSnapshot focus, int cardWidth,
             int cardHeight, float alpha) {
@@ -515,14 +599,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static void DrawCardContent(SpriteBatch spriteBatch, DynamicSpriteFont font,
-            Rectangle card, string title, List<GuideLine> lines, float wrap, float alpha) {
+            Rectangle card, string title, List<GuideLine> lines, float wrap, float alpha,
+            float titleLimit) {
             float x = card.X + ContentPadX;
             float y = card.Y + ContentPadTop;
             float titleX = x + 20f;
+            float titleScale = TitleScale;
+            float titleRoom = titleLimit - titleX - 6f;
+            float titleWidth = font.MeasureString(title).X * titleScale;
+            if (titleRoom > 24f && titleWidth > titleRoom) {
+                titleScale *= titleRoom / titleWidth;
+            }
             Utils.DrawBorderString(spriteBatch, title, new Vector2(titleX + 1f, y + 1f),
-                Color.Black * (0.45f * alpha), TitleScale);
+                Color.Black * (0.45f * alpha), titleScale);
             Utils.DrawBorderString(spriteBatch, title, new Vector2(titleX, y),
-                OnikiriUITheme.HotWhite * alpha, TitleScale);
+                OnikiriUITheme.HotWhite * alpha, titleScale);
             y += font.MeasureString("A").Y * TitleScale + 8f;
             OniBrush.DrawTaperedSlash(spriteBatch, new Vector2(x, y),
                 new Vector2(x + wrap, y - 1f), 1.6f, 0.9f, alpha * 0.85f);
@@ -602,7 +693,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private static void ClearHitboxes() {
-            cardRect = primaryRect = secondaryRect = Rectangle.Empty;
+            cardRect = primaryRect = secondaryRect = abortRect = Rectangle.Empty;
             primaryAction = secondaryAction = ButtonAction.None;
             layoutStep = -1;
         }

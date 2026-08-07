@@ -27,6 +27,10 @@ namespace CalamityOverhaul.Content.Items.Magic.NeutronWands
         internal const int GlitchFrames = 150;
         private const float BeamLength = 560f;
         private const float BeamHitRadius = 17f;
+        /// <summary>锥横向占 quad 半宽的比例，留够余量让掩码在矩形边界前关死</summary>
+        private const float BeamSpread = 0.86f;
+        /// <summary>着色器撕口窗口的上沿，判定长度跟着它收，免得打到看不见的地方</summary>
+        private const float BeamVisibleFrac = 0.86f;
         private const float BodyQuad = 260f;
         /// <summary>每帧速度衰减率</summary>
         private const float BrakeDecay = 0.885f;
@@ -310,7 +314,7 @@ namespace CalamityOverhaul.Content.Items.Magic.NeutronWands
                 return core;
             }
 
-            float len = BeamLength * BeamReach;
+            float len = BeamLength * BeamReach * BeamVisibleFrac;
             float rad = BeamHitRadius * (Glitching ? 2.2f : 1f);
             Vector2 axis = MagAxis.ToRotationVector2();
             float point = 0f;
@@ -425,7 +429,7 @@ namespace CalamityOverhaul.Content.Items.Magic.NeutronWands
             effect.Parameters["uPhase"]?.SetValue(BeamPhase);
             effect.Parameters["uGlitch"]?.SetValue(Glitch01);
             //锥形只由着色器负责，顶点保持等宽画布，否则两次收缩会把光束勒成细线
-            effect.Parameters["uSpread"]?.SetValue(0.92f);
+            effect.Parameters["uSpread"]?.SetValue(BeamSpread);
             effect.Parameters["uColHot"]?.SetValue(ColHot);
             effect.Parameters["uColBeam"]?.SetValue(ColBeam);
             effect.Parameters["uColMain"]?.SetValue(ColMain);

@@ -264,12 +264,14 @@ namespace CalamityOverhaul.Content.Players
                         , afterburnType, afterburnTime);
                 }
             }
+            else {
+                //复苏满格：替身已死但不给恢复，只保底 1 血让玩家活到夺身处决帧
+                player.statLife = Math.Max(player.statLife, 1);
+            }
 
             if (VaultUtils.isServer) {
                 WraithNet.SendScapeGhostFx(from, to, player.whoAmI, targetName, revivalKilled);
-                if (!revivalKilled) {
-                    NetMessage.SendData(MessageID.PlayerLifeMana, -1, -1, null, player.whoAmI);
-                }
+                NetMessage.SendData(MessageID.PlayerLifeMana, -1, -1, null, player.whoAmI);
             }
             else {
                 ScapeArmRenderer.Trigger(from, to);

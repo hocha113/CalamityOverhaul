@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
     /// <summary>
     /// 封印札 HUD,左下角,挂在鬼域之眼下
-    /// 墨批读取当前役鬼驾驭,休眠时显焦边;点札开簿;眼控领域见 <see cref="OniDomainEye"/>
+    /// 墨批读取当前役鬼复苏进度,临近满格显焦边;点札开簿;眼控领域见 <see cref="OniDomainEye"/>
     /// </summary>
     internal sealed class OniTalismanHud : UIHandle, ILocalizedModType, IBottomLeftHud
     {
@@ -52,8 +52,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             HudHintFormat = this.GetLocalization(nameof(HudHintFormat), () => "{0} 开阖{1} · 点击札打开");
             HudMeiName = this.GetLocalization(nameof(HudMeiName), () => "改铭台");
             HudRegisterName = this.GetLocalization(nameof(HudRegisterName), () => "点鬼簿");
-            HudDangerLine = this.GetLocalization(nameof(HudDangerLine), () => "驾驭耗竭，役鬼能力正在休眠");
-            HudWraithFormat = this.GetLocalization(nameof(HudWraithFormat), () => "役鬼 {0} · 驾驭 {1}%");
+            HudDangerLine = this.GetLocalization(nameof(HudDangerLine), () => "复苏将满——再役使就要按不住了");
+            HudWraithFormat = this.GetLocalization(nameof(HudWraithFormat), () => "役鬼 {0} · 复苏 {1}%");
             VigorTitle = this.GetLocalization(nameof(VigorTitle), () => "气力");
             VigorValueFormat = this.GetLocalization(nameof(VigorValueFormat), () => "{0} / {1}");
             StanceTitle = this.GetLocalization(nameof(StanceTitle), () => "架势");
@@ -221,7 +221,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             particles.Update();
 
-            bool danger = OniRegistry.IsEquippedDormant;
+            bool danger = OniRegistry.IsEquippedInDanger;
             float targetBurn = ResolveBurnTarget(OniRegistry.EquippedEntry);
             burnVisual += (targetBurn - burnVisual) * 0.06f;
             float burnStrength = MathHelper.Clamp(
@@ -332,7 +332,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 }
             }
 
-            //札脚常有零星余烬,驾驭耗竭时密度随烧蚀升高
+            //札脚常有零星余烬,复苏临近时密度随烧蚀升高
             emberTimer++;
             int emberInterval = (int)MathHelper.Lerp(58f, 24f, burnStrength);
             if (emberTimer >= emberInterval) {
@@ -377,7 +377,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //札体:焚烧 shader 是常态和纸材质,驾驭状态只调节下缘烧蚀强度
             Vector2 side = rot.ToRotationVector2();
             OniGhostEntry equipped = OniRegistry.EquippedEntry;
-            float mastery = equipped == null ? 0f : MathHelper.Clamp(equipped.Mastery, 0f, 1f);
+            float revival = equipped == null ? 0f : MathHelper.Clamp(equipped.Revival, 0f, 1f);
             float burnStrength = MathHelper.Clamp(
                 (burnVisual - RestingBurn) / (MaximumBurn - RestingBurn), 0f, 1f);
             bool paperByShader = OniPaperBurnDraw.Available;
@@ -390,7 +390,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 DrawCharredHem(sb, stripTop, down, side, W, H, a, burnStrength);
             }
 
-            //方章与完整淡墨笔势属于封印札本体,役鬼只负责写实驾驭进度
+            //方章与完整淡墨笔势属于封印札本体,役鬼只负责写实复苏进度
             DrawTalismanSeal(sb, stripTop + down * 16f, rot, equipped?.Key, a);
             Vector2 strokeStart = stripTop + down * 29f;
             Vector2 strokeFullEnd = stripTop + down * (H - 13f);
@@ -398,9 +398,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             OniBrush.DrawTaperedSlash(sb, strokeStart, strokeFullEnd, 3.2f, 0.9f, a * guideAlpha);
 
             if (equipped != null) {
-                //墨批:自印下垂书一笔,长度=当前役鬼驾驭度
-                if (mastery > 0.02f) {
-                    Vector2 strokeEnd = stripTop + down * (29f + (H - 42f) * mastery);
+                //墨批:自印下垂书一笔,长度=当前役鬼复苏进度,写满即夺身
+                if (revival > 0.02f) {
+                    Vector2 strokeEnd = stripTop + down * (29f + (H - 42f) * revival);
                     OniBrush.DrawTaperedSlash(sb, strokeStart, strokeEnd, 3.8f, 0.9f, a * 0.92f);
                 }
             }
@@ -431,10 +431,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return RestingBurn;
             }
 
-            float mastery = MathHelper.Clamp(equipped.Mastery, 0f, 1f);
-            float depletion = (1f - mastery) * 0.04f;
-            float dormantHeat = equipped.IsDormant ? 0.10f : 0f;
-            return MathHelper.Clamp(RestingBurn + depletion + dormantHeat, RestingBurn, MaximumBurn);
+            //复苏越深札烧得越凶,临近满格时焦边全开
+            float revival = MathHelper.Clamp(equipped.Revival, 0f, 1f);
+            float heat = revival * 0.05f + (equipped.InDanger ? 0.09f : 0f);
+            return MathHelper.Clamp(RestingBurn + heat, RestingBurn, MaximumBurn);
         }
 
         internal void DrawTooltipOverlay(SpriteBatch sb) {
@@ -532,9 +532,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     new OniTooltipLine(hint, OnikiriUITheme.TextDim));
                 return;
             }
-            bool danger = equipped.IsDormant;
+            bool danger = equipped.InDanger;
             string wraithLine = HudWraithFormat.Format(equipped.Name?.Invoke() ?? equipped.Key,
-                (int)MathF.Round(equipped.Mastery * 100f));
+                (int)MathF.Round(equipped.Revival * 100f));
             string dangerLine = danger ? HudDangerLine.Value : null;
             OniTooltipPanel.Draw(sb, MousePosition, title, 0.82f, a,
                 new OniTooltipLine(hint, OnikiriUITheme.TextDim),

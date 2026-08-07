@@ -65,14 +65,6 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             player.GetModPlayer<OniRainWorldPlayer>().InOniRainWorld = false;
         }
 
-        /// <summary>入雨确认文本，仅本地显示</summary>
-        internal static void ShowEnterText(Player player) {
-            if (!VaultUtils.isServer && player?.whoAmI == Main.myPlayer) {
-                CombatText.NewText(player.Hitbox, new Color(150, 170, 175),
-                    OniRainWorldSystem.EnterText.Value, true);
-            }
-        }
-
         /// <summary>调试出口：D3 直接退雨，氛围沿控制器包络自行排干</summary>
         internal static void DebugExit() {
             Player player = Main.LocalPlayer;
@@ -216,11 +208,9 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         public string LocalizationCategory => "OniRainWorld";
 
         public static LocalizedText InteractHint { get; private set; }
-        public static LocalizedText EnterText { get; private set; }
 
         public override void SetStaticDefaults() {
             InteractHint = this.GetLocalization(nameof(InteractHint), () => "[右键] 撑伞入雨");
-            EnterText = this.GetLocalization(nameof(EnterText), () => "鬼雨世界");
         }
 
         public override void PostUpdateEverything() {

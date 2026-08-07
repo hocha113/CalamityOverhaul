@@ -150,8 +150,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         /// <summary>剔除阈值(px)、短于此的段其切向已是噪声，垂直挤出必然自折</summary>
         private const float MinSeg = 10f;
 
-        /// <summary>路径整形三步、极端情况（向脚下急停的顶点簇、转向/台阶造成的弯折）的破损兜底</summary>
-        private static List<Vector2> ShapePath(IReadOnlyList<Vector2> raw) {
+        /// <summary>路径整形三步、极端情况（向脚下急停的顶点簇、转向/台阶造成的弯折）的破损兜底。与材质无关，樱流带共用</summary>
+        public static List<Vector2> ShapePath(IReadOnlyList<Vector2> raw) {
             //1. 剔短段（末点承载头端语义、距离不足时顶替前点而不是丢弃）
 
             List<Vector2> culled = new(raw.Count);

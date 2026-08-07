@@ -65,8 +65,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         /// <param name="selected">是否为当前选用技能</param>
         /// <param name="alpha">整体透明度</param>
         /// <param name="time">动画时间</param>
+        /// <param name="showLabel">是否在节点上方浮出技能名，光标已有信息面板时关掉避免重名</param>
         public void Draw(SpriteBatch sb, Vector2 pos, bool unlocked, bool equipped, bool selected,
-            float alpha, float time) {
+            float alpha, float time, bool showLabel = true) {
             Texture2D icon = Skill.Icon;
             if (icon == null) {
                 return;
@@ -122,7 +123,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             }
 
             //悬停时显示技能名
-            if (Hover > 0.25f && unlocked) {
+            if (showLabel && Hover > 0.25f && unlocked) {
                 HalibutRenderer.DrawGlowTextCentered(sb, Skill.DisplayName?.Value ?? Skill.Name,
                     pos + new Vector2(0f, -32f), HalibutTheme.Text * (Hover * alpha),
                     tierCol * (Hover * 0.4f * alpha), 0.8f);

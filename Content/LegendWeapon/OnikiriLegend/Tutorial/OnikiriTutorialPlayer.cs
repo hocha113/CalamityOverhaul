@@ -66,9 +66,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private bool initialized;
         private bool subscribed;
         private bool registerOpenedThisStep;
-        private bool expectedCommandAccepted;
+        private bool codexOpenedThisStep;
         private bool suppressCommandEvent;
         private bool prepareReachedClosed;
+        /// <summary>本实操步已见过它的起始相位,达标才算玩家亲手做到</summary>
+        private bool practicePrimed;
+        private int needBladeTimer;
         private int resumeStep;
         private int feedbackTimer;
         private int targetRetryTimer;
@@ -115,6 +118,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 Suspend(releaseTarget: true);
                 return;
             }
+            //暂停时不走表:否则挂机回来会发现讲解卡自己翻过去了
+            if (Main.gamePaused) {
+                return;
+            }
 
             StepTimer++;
             if (CurrentStep == OnikiriTutorialFlow.Step_Dismember && !Main.mouseLeft) {
@@ -126,6 +133,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 
             //讲解与实操都依赖鬼切 HUD/台账:每帧确保手持并锁槽,避免切刀后点鬼簿闪关
             MaintainOnikiriHoldLock();
+            if (TickNeedBladeAbort()) {
+                return;
+            }
 
             HandleUnboundFallbackInput();
             MaintainTutorialTarget();
@@ -189,13 +199,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                     AcceptTutorial();
                     break;
                 case OnikiriTutorialFlow.Step_HudIntro:
+                case OnikiriTutorialFlow.Step_Domain:
                     AdvanceExplanatoryStep();
                     break;
                 case OnikiriTutorialFlow.Step_Mei:
-                    if (!(OniMeiUI.Instance?.IsOpen ?? false)) {
-                        if (!TryBeginLedgerOpen(() => OniMeiUI.Instance?.Open())) {
-                            break;
-                        }
+                    //台开着=读完了,点已知晓走人;台没开就先开台
+                    if (OniMeiUI.Instance?.IsOpen ?? false) {
+                        AdvanceExplanatoryStep();
+                    }
+                    else {
+                        TryBeginLedgerOpen(() => OniMeiUI.Instance?.Open());
+                    }
+                    break;
+                case OnikiriTutorialFlow.Step_Codex:
+                    if (OniMeiCodexUI.Instance?.IsOpen ?? false) {
+                        OniMeiCodexUI.Instance.Close();
+                        AdvanceExplanatoryStep();
+                    }
+                    else if (!(OniMeiUI.Instance?.IsOpen ?? false)) {
+                        TryBeginLedgerOpen(() => OniMeiUI.Instance?.Open());
                     }
                     break;
                 case OnikiriTutorialFlow.Step_Register:
@@ -214,6 +236,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                     if (Feedback == OnikiriTutorialFeedback.Retry) {
                         RetryCurrentStep();
                     }
+                    else if (CanSkipPracticeStep) {
+                        SkipPracticeStep();
+                    }
                     break;
             }
         }
@@ -223,19 +248,88 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 case OnikiriTutorialFlow.Step_Ask:
                     DeclineTutorial();
                     break;
+                case OnikiriTutorialFlow.Step_HudIntro:
                 case OnikiriTutorialFlow.Step_Mei:
+                case OnikiriTutorialFlow.Step_Domain:
                     AdvanceExplanatoryStep();
+                    break;
+                case OnikiriTutorialFlow.Step_Codex:
+                    if (!(OniMeiCodexUI.Instance?.IsOpen ?? false)) {
+                        TryBeginLedgerOpen(OniMeiCodexUI.OpenFromStand);
+                    }
                     break;
                 case OnikiriTutorialFlow.Step_Register:
                     if (!(OniRegisterUI.Instance?.IsOpen ?? false)) {
                         TryBeginLedgerOpen(() => OniRegisterUI.Instance?.Open());
                     }
                     break;
+                case OnikiriTutorialFlow.Step_Prepare:
+                    //准备段只是复位,等不动就直接进下一步,后续步骤自己会归位
+                    EnterResumeStep();
+                    break;
                 case OnikiriTutorialFlow.Step_OpenOmote:
                 case OnikiriTutorialFlow.Step_FlipUra:
                 case OnikiriTutorialFlow.Step_Dismember:
                 case OnikiriTutorialFlow.Step_CloseEye:
                     PerformAssistedAction();
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 询问步之外都有的收起入口:补符、记为婉拒,排队不会下一帧再接回来。
+        /// 这条是玩家主动点的,才允许改存档
+        /// </summary>
+        internal void AbortTutorial() {
+            if (!IsRunning || CurrentStep == OnikiriTutorialFlow.Step_Ask) {
+                return;
+            }
+            OnikiriGuideData guide = GuideData;
+            guide.AskAnswered = true;
+            guide.Declined = true;
+            SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.4f, Volume = 0.35f });
+            OniKeikoRune.GrantTo(Player);
+            ResetAllRuntime();
+        }
+
+        /// <summary>
+        /// 无刀收摊。不写 Declined——这不是玩家的决定,而且补符万一落地丢了就再也开不起来。
+        /// 只把排队推远一分钟,刀回到行囊后自己会重新找上门,讲解也从存档的落点接着走
+        /// </summary>
+        private void SuspendForMissingBlade() {
+            Suspend(releaseTarget: true);
+            ClearForced();
+            ReservationDeferredUntil = Main.GameUpdateCount + 60 * 60;
+        }
+
+        /// <summary>实操步久攻不下后开放的硬跳过</summary>
+        internal bool CanSkipPracticeStep
+            => StepTimer >= OnikiriTutorialFlow.PracticeSkipDelayFrames
+                && CurrentStep is OnikiriTutorialFlow.Step_OpenOmote
+                    or OnikiriTutorialFlow.Step_FlipUra
+                    or OnikiriTutorialFlow.Step_Dismember
+                    or OnikiriTutorialFlow.Step_CloseEye;
+
+        private void SkipPracticeStep() {
+            switch (CurrentStep) {
+                case OnikiriTutorialFlow.Step_OpenOmote:
+                    WritePracticeCheckpoint(OnikiriPracticeCheckpoint.Omote);
+                    SetStep(OnikiriTutorialFlow.Step_FlipUra);
+                    break;
+                case OnikiriTutorialFlow.Step_FlipUra:
+                    WritePracticeCheckpoint(OnikiriPracticeCheckpoint.Ura);
+                    SetStep(OnikiriTutorialFlow.Step_Dismember);
+                    break;
+                case OnikiriTutorialFlow.Step_Dismember:
+                    WritePracticeCheckpoint(OnikiriPracticeCheckpoint.Dismembered);
+                    ReleaseTutorialTarget();
+                    SetStep(OnikiriTutorialFlow.Step_CloseEye);
+                    break;
+                case OnikiriTutorialFlow.Step_CloseEye:
+                    //跳过收域不能把人留在里世界:他正是还没学会怎么出来才跳的
+                    NormalizeClosed();
+                    WritePracticeCheckpoint(OnikiriPracticeCheckpoint.Closed);
+                    SetStep(OnikiriTutorialFlow.Step_Done);
                     break;
             }
         }
@@ -267,8 +361,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 
         internal void ForceStartPractice() => ForceStart(OnikiriTutorialEntry.ForcePractice);
 
-        /// <summary>稽古符启动:越过排队前提,从讲解第一步重走</summary>
-        internal void ForceStartFull() => ForceStart(OnikiriTutorialEntry.ForceFull);
+        /// <summary>稽古符启动:越过排队前提,讲解与实操都从头重走</summary>
+        internal void ForceStartFull() {
+            GuideData.PracticeCheckpoint = 0;
+            ForceStart(OnikiriTutorialEntry.ForceFull);
+        }
 
         private void ForceStart(OnikiriTutorialEntry entry) {
             Forced = true;
@@ -305,8 +402,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             CurrentStep = -1;
             StepTimer = 0;
             initialized = false;
-            expectedCommandAccepted = false;
             prepareReachedClosed = false;
+            practicePrimed = false;
+            codexOpenedThisStep = false;
+            needBladeTimer = 0;
             dismemberInputArmed = false;
             lockedOnikiriSlot = -1;
             Feedback = OnikiriTutorialFeedback.None;
@@ -320,19 +419,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             ClearForced();
         }
 
-        internal void BeginMeiTransaction(Inscriptions.OniMeiStore current)
-            => meiSnapshot = new OniMeiSnapshot(current);
+        /// <summary>
+        /// 讲解段打开改铭台时留档,关台即回滚,教程里试刻的铭不进存档。
+        /// 只认手持那把刀自己的铭库,不接受外部传入,免得把展示缓存当成刀上真值存下来
+        /// </summary>
+        internal void BeginMeiTransaction() {
+            if (meiSnapshot != null || CurrentStep is not (OnikiriTutorialFlow.Step_Mei
+                or OnikiriTutorialFlow.Step_Register)) {
+                return;
+            }
+            OnikiriData data = OnikiriData.TryGet(Player?.GetItem());
+            if (data != null) {
+                meiSnapshot = new OniMeiSnapshot(data);
+            }
+        }
 
         internal void RestoreMeiSnapshotIfNeeded() {
             if (meiSnapshot == null) {
                 return;
             }
-            OnikiriData data = OnikiriData.TryGet(Player?.GetItem());
-            if (data != null) {
-                data.Mei.CopyFrom(meiSnapshot.Store);
-                OnikiriNet.SyncLocalItem(Player, Player.GetItem());
-            }
+            OniMeiSnapshot snapshot = meiSnapshot;
             meiSnapshot = null;
+
+            Item held = Player?.GetItem();
+            OnikiriData data = OnikiriData.TryGet(held);
+            //中途换刀则快照已不对应这把,宁可放弃回滚也不能把铭盖到别的刀上
+            if (data == null || data.InstanceId != snapshot.InstanceId) {
+                return;
+            }
+            data.Mei.CopyFrom(snapshot.Store);
+            //修订必须前进一格,否则服务端 ReconcileAuthoritativeState 会把教程那次改铭再按回来
+            data.AdvanceEditRevision();
+            OnikiriNet.SyncLocalItem(Player, held);
         }
 
         public override void ModifyHurt(ref Player.HurtModifiers modifiers) {
@@ -370,25 +488,48 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
 
             OnikiriGuideData guide = GuideData;
             bool introDone = entry == OnikiriTutorialEntry.ForcePractice
-                || guide.Checkpoint >= OnikiriTutorialFlow.Checkpoint_Hud
-                || guide.CompletedVersion >= 3;
+                || guide.Checkpoint >= OnikiriTutorialFlow.Checkpoint_ExplainDone;
             if (!introDone) {
-                SetStep(guide.AskAnswered
-                    ? OnikiriTutorialFlow.Step_HudIntro
-                    : OnikiriTutorialFlow.Step_Ask);
+                //没答复过 → 首次询问;通关过旧版本 → 补讲询问;其余接着上次被打断的卡讲
+                SetStep(!guide.AskAnswered || IsRefresherAsk
+                    ? OnikiriTutorialFlow.Step_Ask
+                    : ResolveExplainStep());
                 return;
             }
 
+            resumeStep = ResolveResumeStep();
+            SetStep(OnikiriTutorialFlow.Step_Prepare);
+        }
+
+        /// <summary>
+        /// 本次询问是"旧版通关者的补讲",不是首次开场询问。
+        /// 按版本记账,以后再加内容还能再问一次
+        /// </summary>
+        internal bool IsRefresherAsk {
+            get {
+                OnikiriGuideData guide = GuideData;
+                return guide.CompletedVersion > 0
+                    && guide.CompletedVersion < OnikiriTutorialLead.TutorialVersion
+                    && guide.RefresherAskedVersion < OnikiriTutorialLead.TutorialVersion;
+            }
+        }
+
+        /// <summary>接着被打断的那张卡的下一张讲。旧档的 1 正好是"讲完 HUD",语义天然对齐</summary>
+        private int ResolveExplainStep()
+            => Math.Clamp(GuideData.Checkpoint + 1,
+                OnikiriTutorialFlow.Step_HudIntro, OnikiriTutorialFlow.Step_Domain);
+
+        /// <summary>按存档的实操检查点算出续练落点;已练完则直接收尾</summary>
+        private int ResolveResumeStep() {
             OnikiriPracticeCheckpoint checkpoint = (OnikiriPracticeCheckpoint)Math.Clamp(
-                guide.PracticeCheckpoint, 0, (int)OnikiriPracticeCheckpoint.Closed);
-            resumeStep = checkpoint switch {
+                GuideData.PracticeCheckpoint, 0, (int)OnikiriPracticeCheckpoint.Closed);
+            return checkpoint switch {
                 OnikiriPracticeCheckpoint.None => OnikiriTutorialFlow.Step_OpenOmote,
                 OnikiriPracticeCheckpoint.Omote => OnikiriTutorialFlow.Step_FlipUra,
                 OnikiriPracticeCheckpoint.Ura => OnikiriTutorialFlow.Step_Dismember,
                 OnikiriPracticeCheckpoint.Dismembered => OnikiriTutorialFlow.Step_CloseEye,
                 _ => OnikiriTutorialFlow.Step_Done,
             };
-            SetStep(OnikiriTutorialFlow.Step_Prepare);
         }
 
         private OnikiriGuideData GuideData
@@ -417,8 +558,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         private void SetStep(int step) {
             CurrentStep = step;
             StepTimer = 0;
-            expectedCommandAccepted = false;
             dismemberInputArmed = false;
+            practicePrimed = false;
             if (step == OnikiriTutorialFlow.Step_Dismember) {
                 sawTargetSplit = false;
             }
@@ -431,6 +572,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                     OniRegisterUI.Instance?.Close();
                     OniTalismanHud.RememberLedger(OniLedgerView.Mei);
                     break;
+                case OnikiriTutorialFlow.Step_Codex:
+                    EnsureHoldingOnikiri();
+                    codexOpenedThisStep = false;
+                    break;
                 case OnikiriTutorialFlow.Step_Register:
                     EnsureHoldingOnikiri();
                     registerOpenedThisStep = false;
@@ -438,9 +583,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 case OnikiriTutorialFlow.Step_HudIntro:
                     EnsureHoldingOnikiri();
                     break;
+                case OnikiriTutorialFlow.Step_Domain:
+                    //讲鬼眼要看得见鬼眼:三块屏全收
+                    EnsureHoldingOnikiri();
+                    CloseAllLedgers();
+                    break;
                 case OnikiriTutorialFlow.Step_Prepare:
-                    OniMeiUI.Instance?.Close();
-                    OniRegisterUI.Instance?.Close();
+                    CloseAllLedgers();
                     prepareReachedClosed = false;
                     ReleaseTutorialTarget();
                     break;
@@ -454,21 +603,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
+        private static void CloseAllLedgers() {
+            if (OniMeiCodexUI.Instance?.IsOpen == true) {
+                OniMeiCodexUI.Instance.Close();
+            }
+            if (OniMeiUI.Instance?.IsOpen == true) {
+                OniMeiUI.Instance.Close();
+            }
+            if (OniRegisterUI.Instance?.IsOpen == true) {
+                OniRegisterUI.Instance.Close();
+            }
+        }
+
         private void AdvanceIfReady() {
             //无刀硬闸:依赖手持的步骤不推进、不开台
             if (NeedsOnikiriHold(CurrentStep) && !HasOnikiriAnywhere()) {
                 return;
             }
+            //讲解步的终极兜底:读不懂提示的玩家也不会永远停在同一张卡上
+            if (OnikiriTutorialFlow.IsExplanatoryStep(CurrentStep)
+                && StepTimer > OnikiriTutorialFlow.ExplainAutoAdvanceFrames) {
+                AdvanceExplanatoryStep();
+                return;
+            }
+
             switch (CurrentStep) {
                 case OnikiriTutorialFlow.Step_HudIntro:
                     if (StepTimer > 60 * 20) {
                         AdvanceExplanatoryStep();
                     }
                     break;
-                case OnikiriTutorialFlow.Step_Mei:
-                    if (OniMeiUI.Instance?.IsOpen ?? false) {
-                        AdvanceExplanatoryStep();
-                    }
+                case OnikiriTutorialFlow.Step_Codex:
+                    TickCodexStep();
                     break;
                 case OnikiriTutorialFlow.Step_Register:
                     TickRegisterStep();
@@ -494,6 +660,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
+        private void TickCodexStep() {
+            if (OniMeiCodexUI.Instance?.IsOpen ?? false) {
+                codexOpenedThisStep = true;
+            }
+            else if (codexOpenedThisStep) {
+                AdvanceExplanatoryStep();
+            }
+        }
+
         private void TickRegisterStep() {
             if (OniRegisterUI.Instance?.IsOpen ?? false) {
                 registerOpenedThisStep = true;
@@ -504,6 +679,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private void TickPrepareStep() {
+            //复位超时:相位或黄昏赖着不走也不能把玩家钉死在准备卡上
+            bool overdue = StepTimer > OnikiriTutorialFlow.PrepareTimeoutFrames;
             OniDomainPhase phase = Domain.Phase;
             if (!prepareReachedClosed) {
                 if (phase == OniDomainPhase.Closed) {
@@ -512,54 +689,70 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 else if (phase is OniDomainPhase.Opening or OniDomainPhase.Omote or OniDomainPhase.Ura) {
                     TryInternalToggle();
                 }
-                return;
+                if (!overdue) {
+                    return;
+                }
             }
-            if (ToriiDusk.Visible) {
+            if (ToriiDusk.Visible && !overdue) {
                 return;
             }
 
-            if (resumeStep == OnikiriTutorialFlow.Step_Done) {
-                SetStep(OnikiriTutorialFlow.Step_Done);
-            }
-            else if (resumeStep == OnikiriTutorialFlow.Step_OpenOmote) {
-                SetStep(resumeStep);
+            if (resumeStep == OnikiriTutorialFlow.Step_OpenOmote || overdue) {
+                //超时进后续步骤不预铺相位,各步的归位逻辑会自己接手
+                EnterResumeStep();
             }
             else if (resumeStep == OnikiriTutorialFlow.Step_FlipUra && EnsureStableOmote()) {
-                SetStep(resumeStep);
+                EnterResumeStep();
             }
             else if (resumeStep is OnikiriTutorialFlow.Step_Dismember or OnikiriTutorialFlow.Step_CloseEye
                 && EnsureStableUra()) {
-                SetStep(resumeStep);
+                EnterResumeStep();
+            }
+            else if (resumeStep == OnikiriTutorialFlow.Step_Done) {
+                SetStep(OnikiriTutorialFlow.Step_Done);
             }
         }
 
+        /// <summary>进入本次续练的落点;落点不成立就直接收尾,不把玩家留在准备卡上</summary>
+        private void EnterResumeStep() {
+            SetStep(resumeStep is OnikiriTutorialFlow.Step_OpenOmote
+                or OnikiriTutorialFlow.Step_FlipUra
+                or OnikiriTutorialFlow.Step_Dismember
+                or OnikiriTutorialFlow.Step_CloseEye
+                ? resumeStep
+                : OnikiriTutorialFlow.Step_Done);
+        }
+
+        /// <summary>
+        /// 开域步按结果收货:玩家用键位、鬼眼还是别的路子展开都算数。
+        /// 只在"进步骤时域就开着"这一种情况下先收回来,让他亲手开一次;超时则按现状认账
+        /// </summary>
         private void TickOpenStep() {
-            if (expectedCommandAccepted) {
-                if (IsStableOmote) {
-                    CompleteOpenStep();
-                }
-                else if (Domain.Phase == OniDomainPhase.Closed) {
-                    expectedCommandAccepted = false;
-                }
+            if (Domain.Phase == OniDomainPhase.Closed) {
+                practicePrimed = true;
                 return;
             }
-            if (Domain.Phase != OniDomainPhase.Closed) {
-                NormalizeClosed();
+            if (!IsStableOmote && !IsStableUra) {
+                return;
             }
+            if (practicePrimed || StepTimer > OnikiriTutorialFlow.PracticePrimeGraceFrames) {
+                CompleteOpenStep();
+                return;
+            }
+            NormalizeClosed();
         }
 
+        /// <summary>翻转步同样看结果:已经在里世界就过,绝不把玩家翻回表世界</summary>
         private void TickFlipStep() {
             EnsureTutorialTarget();
-            if (expectedCommandAccepted) {
-                if (IsStableUra) {
-                    CompleteFlipStep();
-                }
-                else if (IsStableOmote) {
-                    expectedCommandAccepted = false;
-                }
+            if (IsStableUra) {
+                CompleteFlipStep();
                 return;
             }
-            EnsureStableOmote();
+            //只有域被整个收了才补开,否则静静等翻转仪式走完
+            if (Domain.Phase == OniDomainPhase.Closed) {
+                EnsureStableOmote();
+            }
         }
 
         private void TickBacklashStep() {
@@ -602,16 +795,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             SetStep(OnikiriTutorialFlow.Step_CloseEye);
         }
 
+        /// <summary>收域步看结果:域阖上就算过。进步骤时若已阖,先补开一次再收,免得白送</summary>
         private void TickCloseStep() {
-            if (expectedCommandAccepted) {
-                if (Domain.Phase == OniDomainPhase.Closed) {
-                    WritePracticeCheckpoint(OnikiriPracticeCheckpoint.Closed);
-                    SetStep(OnikiriTutorialFlow.Step_Done);
-                }
-                else if (Domain.Phase != OniDomainPhase.Closing) {
-                    expectedCommandAccepted = false;
-                    SetFeedback(OnikiriTutorialFeedback.Retry, 150);
-                }
+            if (Domain.Phase != OniDomainPhase.Closed) {
+                practicePrimed = true;
+                return;
+            }
+            if (practicePrimed || StepTimer > OnikiriTutorialFlow.PracticePrimeGraceFrames) {
+                WritePracticeCheckpoint(OnikiriPracticeCheckpoint.Closed);
+                SetStep(OnikiriTutorialFlow.Step_Done);
                 return;
             }
             EnsureStableUra();
@@ -621,23 +813,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             if (CurrentStep != OnikiriTutorialFlow.Step_Ask) {
                 return;
             }
+            bool refresher = IsRefresherAsk;
             OnikiriGuideData guide = GuideData;
             guide.AskAnswered = true;
             guide.Declined = false;
+            guide.RefresherAskedVersion = OnikiriTutorialLead.TutorialVersion;
             SoundEngine.PlaySound(SoundID.Unlock with { Pitch = 0.25f, Volume = 0.45f });
-            SetStep(OnikiriTutorialFlow.Step_HudIntro);
+            //补讲只接上旧档读到的地方,不把已经会的再讲一遍
+            SetStep(refresher ? ResolveExplainStep() : OnikiriTutorialFlow.Step_HudIntro);
         }
 
         private void DeclineTutorial() {
             if (CurrentStep != OnikiriTutorialFlow.Step_Ask) {
                 return;
             }
+            bool refresher = IsRefresherAsk;
             OnikiriGuideData guide = GuideData;
             guide.AskAnswered = true;
-            guide.Declined = true;
+            guide.RefresherAskedVersion = OnikiriTutorialLead.TutorialVersion;
+            if (refresher) {
+                //旧档回绝补讲 = 就当这一版也学过了,别再拦路;想看仍可用符
+                guide.CompletedVersion = OnikiriTutorialLead.TutorialVersion;
+            }
+            else {
+                guide.Declined = true;
+            }
             SoundEngine.PlaySound(SoundID.Item29 with { Pitch = -0.7f, Volume = 0.32f });
             OniKeikoRune.GrantTo(Player);
-            Suspend(releaseTarget: true);
+            //Forced 会盖过婉拒;不一并清掉的话强制会话下一帧就把卡接回来了
+            ResetAllRuntime();
         }
 
         private void AdvanceExplanatoryStep() {
@@ -645,14 +849,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 NotifyNeedBlade();
                 return;
             }
-            if (CurrentStep == OnikiriTutorialFlow.Step_Register) {
-                GuideData.Checkpoint = Math.Max(GuideData.Checkpoint, OnikiriTutorialFlow.Checkpoint_Hud);
+            //每读完一张就落点,下次被打断从这里的下一张接着讲
+            GuideData.Checkpoint = Math.Max(GuideData.Checkpoint, CurrentStep);
+            if (CurrentStep == OnikiriTutorialFlow.Step_Domain) {
+                //补讲版讲解段走完后不再从头练一遍:落点仍按存档的实操进度算
+                resumeStep = ResolveResumeStep();
                 SetStep(OnikiriTutorialFlow.Step_Prepare);
-                resumeStep = OnikiriTutorialFlow.Step_OpenOmote;
                 return;
             }
             if (CurrentStep >= OnikiriTutorialFlow.Step_HudIntro
-                && CurrentStep < OnikiriTutorialFlow.Step_Register) {
+                && CurrentStep < OnikiriTutorialFlow.Step_Domain) {
                 SetStep(CurrentStep + 1);
             }
         }
@@ -717,8 +923,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         }
 
         private void RetryCurrentStep() {
-            StepTimer = 0;
-            expectedCommandAccepted = false;
+            //StepTimer 不清零:它是「替我演示」「跳过本步」的解锁计时,
+            //重试若把它推回去,反复失手的玩家反而永远够不到兜底按钮
             Feedback = OnikiriTutorialFeedback.None;
             feedbackTimer = 0;
             if (CurrentStep == OnikiriTutorialFlow.Step_Dismember) {
@@ -788,12 +994,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
             if (!HasOnikiriAnywhere()) {
                 lockedOnikiriSlot = -1;
-                if (OniMeiUI.Instance?.IsOpen == true) {
-                    OniMeiUI.Instance.Close();
-                }
-                if (OniRegisterUI.Instance?.IsOpen == true) {
-                    OniRegisterUI.Instance.Close();
-                }
+                CloseAllLedgers();
                 NotifyNeedBlade();
                 return;
             }
@@ -802,6 +1003,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 feedbackTimer = 0;
             }
             EnsureHoldingOnikiri();
+        }
+
+        /// <summary>
+        /// 无刀硬闸的出口:刀进了箱子又不打算取回来时,教习自己收摊,
+        /// 而不是把一张永远提示"没有鬼切"的卡片钉在屏幕上。返回真表示本帧已经收摊
+        /// </summary>
+        private bool TickNeedBladeAbort() {
+            if (!NeedsOnikiriHold(CurrentStep) || HasOnikiriAnywhere()) {
+                needBladeTimer = 0;
+                return false;
+            }
+            if (++needBladeTimer < OnikiriTutorialFlow.NeedBladeAbortFrames) {
+                return false;
+            }
+            needBladeTimer = 0;
+            SuspendForMissingBlade();
+            return true;
         }
 
         /// <summary>开台账前先确认有刀并选中;失败则提示且不开</summary>
@@ -893,6 +1111,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
         }
 
+        /// <summary>
+        /// 命令受理只用来切"正在等待"的反馈,不判对错也不认来源:
+        /// 键位、鬼眼、教程代按都是同一件事,推进与否一律由各步的结果判定说了算
+        /// </summary>
         private void HandleDomainCommandAccepted(Player player, OnikiriDomainCommandKind kind,
             OnikiriDomainCommandSource source) {
             if (player != Player || suppressCommandEvent) {
@@ -900,60 +1122,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
 
             OniDomainPlayer domain = Domain;
-            if (CurrentStep == OnikiriTutorialFlow.Step_OpenOmote
-                && kind == OnikiriDomainCommandKind.Toggle
-                && source is OnikiriDomainCommandSource.Keybind
-                    or OnikiriDomainCommandSource.TutorialFallback
-                    or OnikiriDomainCommandSource.TutorialAssist
-                && domain.Phase == OniDomainPhase.Opening) {
-                expectedCommandAccepted = true;
-                SetFeedback(OnikiriTutorialFeedback.Waiting, 90);
-                return;
-            }
-            if (CurrentStep == OnikiriTutorialFlow.Step_FlipUra
-                && kind == OnikiriDomainCommandKind.Flip
-                && source is OnikiriDomainCommandSource.Keybind
-                    or OnikiriDomainCommandSource.TutorialFallback
-                    or OnikiriDomainCommandSource.TutorialAssist
-                && domain.Phase == OniDomainPhase.Flipping && domain.FlipToUra) {
-                expectedCommandAccepted = true;
+            bool onTrack = CurrentStep switch {
+                OnikiriTutorialFlow.Step_OpenOmote => kind == OnikiriDomainCommandKind.Toggle
+                    && domain.Phase == OniDomainPhase.Opening,
+                OnikiriTutorialFlow.Step_FlipUra => kind == OnikiriDomainCommandKind.Flip
+                    && domain.Phase == OniDomainPhase.Flipping && domain.FlipToUra,
+                OnikiriTutorialFlow.Step_CloseEye => kind == OnikiriDomainCommandKind.Toggle
+                    && domain.Phase == OniDomainPhase.Closing,
+                _ => false,
+            };
+            if (onTrack) {
                 SetFeedback(OnikiriTutorialFeedback.Waiting, 150);
-                return;
-            }
-            if (CurrentStep == OnikiriTutorialFlow.Step_CloseEye
-                && kind == OnikiriDomainCommandKind.Toggle
-                && source is OnikiriDomainCommandSource.HudLeft
-                    or OnikiriDomainCommandSource.TutorialAssist
-                && domain.Phase == OniDomainPhase.Closing && domain.WorldIsUra) {
-                expectedCommandAccepted = true;
-                SetFeedback(OnikiriTutorialFeedback.Waiting, 100);
-                return;
-            }
-            if (CurrentStep is OnikiriTutorialFlow.Step_OpenOmote
-                or OnikiriTutorialFlow.Step_FlipUra
-                or OnikiriTutorialFlow.Step_Dismember
-                or OnikiriTutorialFlow.Step_CloseEye) {
-                expectedCommandAccepted = false;
-                SetFeedback(OnikiriTutorialFeedback.Retry, 240);
             }
         }
 
         private void HandleDomainPhaseSettled(Player player, OniDomainPhase phase) {
-            if (player != Player) {
-                return;
-            }
-            if (CurrentStep == OnikiriTutorialFlow.Step_OpenOmote
-                && expectedCommandAccepted && phase == OniDomainPhase.Omote) {
-                CompleteOpenStep();
-            }
-            else if (CurrentStep == OnikiriTutorialFlow.Step_FlipUra
-                && expectedCommandAccepted && phase == OniDomainPhase.Ura) {
-                CompleteFlipStep();
-            }
-            else if (CurrentStep == OnikiriTutorialFlow.Step_CloseEye
-                && expectedCommandAccepted && phase == OniDomainPhase.Closed) {
-                WritePracticeCheckpoint(OnikiriPracticeCheckpoint.Closed);
-                SetStep(OnikiriTutorialFlow.Step_Done);
+            //落定的推进交给逐帧结果判定,这里只收掉已经过期的"正在等待"
+            if (player == Player && Feedback == OnikiriTutorialFeedback.Waiting) {
+                Feedback = OnikiriTutorialFeedback.None;
+                feedbackTimer = 0;
             }
         }
 
@@ -1139,9 +1326,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         internal sealed class OniMeiSnapshot
         {
             internal readonly Inscriptions.OniMeiStore Store = new();
+            /// <summary>留档时那把刀的身份,回滚前据此确认没换刀</summary>
+            internal readonly long InstanceId;
 
-            internal OniMeiSnapshot(Inscriptions.OniMeiStore source)
-                => Store.CopyFrom(source);
+            internal OniMeiSnapshot(OnikiriData source) {
+                Store.CopyFrom(source.Mei);
+                InstanceId = source.InstanceId;
+            }
         }
     }
 }

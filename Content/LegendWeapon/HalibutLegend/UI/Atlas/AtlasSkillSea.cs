@@ -47,6 +47,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         private const float DragStartDist = 6f;
         private int dockHoverIndex = -1;
         private float loadoutFullFlash;
+        //拖拽落点是否落在装备坞判定带内（Update算，Draw用）
+        private bool dragOverDock;
+
+        //双击判定，窗口内对同一技能的第二次轻点＝快捷装备
+        private const int DoubleClickWindow = 26;
+        private FishSkill lastClickSkill;
+        private int doubleClickTimer;
+
+        //悬停变化的提示音去抖
+        private AtlasSkillNode lastHoverNode;
+        private int lastDockHover = -1;
+        //由装备坞悬停反查出的海域节点，用于坞↔海域双向高亮
+        private AtlasSkillNode linkedNode;
+
+        //装备栏刚变动，短暂强制展开装备坞让玩家看见结果
+        private int dockRevealTimer;
+        //各槽位的落位弹动量 1→0
+        private readonly float[] slotLand = new float[HalibutTheme.DockSlotCount];
+        //拖拽中装备坞的整体上浮量 0–1
+        private float dragLift;
 
         //详情卡按钮命中区（Update计算，Draw使用）
         private Rectangle detailRect;
@@ -54,6 +74,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         private Rectangle selectBtnRect;
         private bool equipBtnHover;
         private bool selectBtnHover;
+        //详情卡上被按下的按钮，0装备 1选用，松手时结算
+        private int pressedDetailBtn = -1;
 
         public readonly AtlasStudyAltar Altar = new();
         private readonly HalibutUIParticlePool particles = new(140);
@@ -130,6 +152,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             }
             selectedNode = null;
             draggingSkill = null;
+            linkedNode = null;
+            lastHoverNode = null;
+            lastDockHover = -1;
+            lastClickSkill = null;
+            doubleClickTimer = 0;
+            Array.Clear(slotLand);
             ClearPress();
         }
 
@@ -182,7 +210,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             if (inputAvailable && !Altar.PanelOpen && contentArea.Contains(Main.MouseScreen.ToPoint())) {
                 int delta = PlayerInput.ScrollWheelDeltaForUI;
                 if (delta != 0) {
-                    scrollTarget -= MathF.Sign(delta) * 96f;
+                    //按滚动量成比例推进，快滚不丢档
+                    float notches = MathHelper.Clamp(delta / 120f, -4f, 4f);
+                    if (MathF.Abs(notches) < 0.01f) {
+                        notches = MathF.Sign(delta);
+                    }
+                    scrollTarget -= notches * 96f;
                     UIInputGuard.SuppressWeaponSwitch(5);
                     scrollIdleTimer = 0;
                 }
@@ -199,10 +232,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 scrollIdleTimer++;
             }
             bool wantHide = scrollIdleTimer < 26;
+            if (dockRevealTimer > 0) {
+                dockRevealTimer--;
+                wantHide = false;//装备栏刚变动，先让玩家看清结果
+            }
             if (draggingSkill != null || Main.MouseScreen.Y > contentArea.Bottom - 150f) {
                 wantHide = false;//拖拽中或光标靠近底部 = 玩家需要装备坞
             }
             chromeHide = MathHelper.Lerp(chromeHide, wantHide ? 1f : 0f, 0.10f);
+            //拖拽时装备坞整体上浮一点，做出迎接落点的磁吸感
+            dragLift = MathHelper.Lerp(dragLift, draggingSkill != null ? 1f : 0f, 0.18f);
+            if (doubleClickTimer > 0) {
+                doubleClickTimer--;
+            }
+            for (int i = 0; i < slotLand.Length; i++) {
+                if (slotLand[i] > 0f) {
+                    slotLand[i] = MathF.Max(slotLand[i] - 0.045f, 0f);
+                }
+            }
 
             //祭坛（含次级选鱼面板）
             Altar.ScreenCenter = new Vector2(HalibutTheme.UIScreenW * 0.5f, contentArea.Y + AltarLayoutY - scroll);
@@ -258,10 +305,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                     }
                 }
             }
-            foreach (var node in nodes) {
-                node.UpdateState(node == hoveredNode);
-            }
-
             //装备坞命中（收起时不可交互）
             dockHoverIndex = -1;
             if (chromeHide < 0.5f && !Altar.PanelOpen) {
@@ -269,6 +312,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                     if (Vector2.Distance(mouse, DockSlotPos(contentArea, i)) < HalibutTheme.DockSlotR + 4f) {
                         dockHoverIndex = i;
                     }
+                }
+            }
+            dragOverDock = dockHoverIndex >= 0
+                || mouse.Y > contentArea.Bottom - DockHeight - 44f + DockHideOffset;
+
+            //悬停槽位反查海域节点，两端一起亮，指明"这条鱼在海里的哪儿"
+            linkedNode = null;
+            if (hoveredNode == null && dockHoverIndex >= 0 && dockHoverIndex < save.loadout.Count) {
+                FishSkill slotSkill = save.loadout[dockHoverIndex];
+                linkedNode = nodes.Find(n => n.Skill == slotSkill);
+            }
+            foreach (var node in nodes) {
+                node.UpdateState(node == hoveredNode || node == linkedNode);
+            }
+
+            //悬停切换的轻提示音
+            if (hoveredNode != lastHoverNode) {
+                lastHoverNode = hoveredNode;
+                if (hoveredNode != null) {
+                    SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.5f, Volume = 0.22f });
+                }
+            }
+            if (dockHoverIndex != lastDockHover) {
+                lastDockHover = dockHoverIndex;
+                if (dockHoverIndex >= 0 && dockHoverIndex < save.loadout.Count) {
+                    SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.32f, Volume = 0.22f });
                 }
             }
 
@@ -285,15 +354,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 if (draggingSkill == null) {
                     ClearPress();
                 }
+                pressedDetailBtn = -1;
                 return;
             }
 
-            //详情卡按钮即时响应，右缘不与节点重叠
-            if (selectedNode != null && Main.mouseLeft && Main.mouseLeftRelease
-                && detailRect.Contains(mouse.ToPoint())) {
-                Main.mouseLeftRelease = false;
-                HandleDetailButtons(save, mouse);
+            //右键、快捷装备/卸下
+            if (Main.mouseRight && Main.mouseRightRelease) {
+                Main.mouseRightRelease = false;
+                HandleRightClick(save, mouse);
                 return;
+            }
+
+            //详情卡吃掉卡面上的按压，按钮松手时才结算（滑出按钮＝取消）
+            if (selectedNode != null && detailRect.Contains(mouse.ToPoint())) {
+                if (Main.mouseLeft && Main.mouseLeftRelease) {
+                    Main.mouseLeftRelease = false;
+                    ClearPress();
+                    pressedDetailBtn = equipBtnRect.Contains(mouse.ToPoint()) ? 0
+                        : selectBtnRect.Contains(mouse.ToPoint()) ? 1 : -1;
+                    return;
+                }
+                if (!Main.mouseLeft && pressedDetailBtn >= 0) {
+                    HandleDetailButtons(save, mouse);
+                    pressedDetailBtn = -1;
+                    return;
+                }
+            }
+            if (!Main.mouseLeft) {
+                pressedDetailBtn = -1;
             }
 
             //按下只登记拖拽候选，不即时开详情
@@ -342,44 +430,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         /// 拖拽落点、入坞装备/移，拖出卸下
         /// </summary>
         private void ReleaseDrag(Rectangle contentArea, HalibutSave save, Vector2 mouse) {
-            bool overDockArea = mouse.Y > contentArea.Bottom - DockHeight - 44f;
-            if (dockHoverIndex >= 0 || overDockArea) {
+            if (dragOverDock) {
                 int targetSlot = dockHoverIndex >= 0 ? dockHoverIndex : save.loadout.Count;
                 if (save.loadout.Contains(draggingSkill)) {
-                    save.MoveLoadout(save.loadout.IndexOf(draggingSkill), Math.Min(targetSlot, save.loadout.Count - 1));
+                    int to = Math.Min(targetSlot, save.loadout.Count - 1);
+                    save.MoveLoadout(save.loadout.IndexOf(draggingSkill), to);
+                    slotLand[Math.Clamp(to, 0, slotLand.Length - 1)] = 1f;
                     SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.4f });
                 }
-                else if (save.EquipSkill(draggingSkill, targetSlot)) {
-                    SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = -0.1f });
-                    particles.SpawnRingPulse(DockSlotPos(contentArea,
-                        Math.Min(targetSlot, save.loadout.Count - 1)), HalibutTheme.GlowHi, 38f, 3f);
-                }
                 else {
-                    //装备失败（已满）
-                    loadoutFullFlash = 1f;
-                    SoundEngine.PlaySound(CWRSound.ButtonZero);
+                    TryEquip(save, draggingSkill, mouse, targetSlot);
                 }
             }
             else if (dragFromDock) {
                 //从装备坞拖出 = 卸下
-                save.UnequipSkill(draggingSkill);
-                SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = 0.3f });
+                DoUnequip(save, draggingSkill);
             }
             draggingSkill = null;
         }
 
         /// <summary>
-        /// 轻点、坞槽选用/节点开详情/空白关
+        /// 轻点、坞槽选用/节点开详情/空白关；窗口内的第二次轻点＝快捷装备
         /// </summary>
         private void HandleClick(HalibutSave save, Vector2 mouse) {
             //装备坞轻点 = 选用该技能
             if (pressFromDock && pressDockIndex >= 0 && pressDockIndex < save.loadout.Count) {
-                SkillWheel.HalibutWheelController.LocalInstance?.SelectSkill(save.loadout[pressDockIndex]);
+                FishSkill slotSkill = save.loadout[pressDockIndex];
+                SkillWheel.HalibutWheelController.LocalInstance?.SelectSkill(slotSkill);
+                RegisterClick(slotSkill);
                 return;
             }
-            //节点轻点 = 打开详情
+            //节点轻点 = 打开详情，双击 = 直接装备
             if (pressNode != null) {
+                bool second = doubleClickTimer > 0 && lastClickSkill == pressNode.Skill;
+                RegisterClick(pressNode.Skill);
                 selectedNode = pressNode;
+                if (second && save.IsUnlocked(pressNode.Skill)) {
+                    QuickEquip(save, pressNode);
+                    return;
+                }
                 SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.2f });
                 return;
             }
@@ -390,28 +479,145 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         }
 
         /// <summary>
-        /// 详情卡按钮命中（装备/卸下、选用）
+        /// 右键、装备坞卸下 / 节点装备切换 / 拖拽撤销 / 收起详情卡
+        /// </summary>
+        private void HandleRightClick(HalibutSave save, Vector2 mouse) {
+            if (draggingSkill != null) {
+                draggingSkill = null;
+                ClearPress();
+                SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = 0.3f, Volume = 0.4f });
+                return;
+            }
+            if (dockHoverIndex >= 0 && dockHoverIndex < save.loadout.Count) {
+                DoUnequip(save, save.loadout[dockHoverIndex]);
+                return;
+            }
+            if (hoveredNode != null && save.IsUnlocked(hoveredNode.Skill)) {
+                if (save.loadout.Contains(hoveredNode.Skill)) {
+                    DoUnequip(save, hoveredNode.Skill);
+                }
+                else {
+                    TryEquip(save, hoveredNode.Skill, NodeScreenPos(hoveredNode));
+                }
+                return;
+            }
+            if (selectedNode != null) {
+                selectedNode = null;
+                SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = 0.25f, Volume = 0.4f });
+            }
+        }
+
+        /// <summary>
+        /// 详情卡按钮结算（装备/卸下、选用），仅认按下时锁定的那颗按钮
         /// </summary>
         private void HandleDetailButtons(HalibutSave save, Vector2 mouse) {
             if (selectedNode == null || !save.IsUnlocked(selectedNode.Skill)) {
                 return;
             }
-            if (equipBtnRect.Contains(mouse.ToPoint())) {
-                if (save.loadout.Contains(selectedNode.Skill)) {
-                    save.UnequipSkill(selectedNode.Skill);
-                    SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = 0.3f });
-                }
-                else if (save.EquipSkill(selectedNode.Skill)) {
-                    SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = -0.1f });
-                }
-                else {
-                    loadoutFullFlash = 1f;
-                    SoundEngine.PlaySound(CWRSound.ButtonZero);
-                }
+            Rectangle target = pressedDetailBtn switch {
+                0 => equipBtnRect,
+                1 => selectBtnRect,
+                _ => Rectangle.Empty,
+            };
+            if (target.Width <= 0 || !target.Contains(mouse.ToPoint())) {
+                return;
             }
-            else if (selectBtnRect.Contains(mouse.ToPoint())) {
+            if (pressedDetailBtn == 1) {
                 SkillWheel.HalibutWheelController.LocalInstance?.SelectSkill(selectedNode.Skill);
+                return;
             }
+            if (save.loadout.Contains(selectedNode.Skill)) {
+                DoUnequip(save, selectedNode.Skill);
+            }
+            else {
+                //从卡面图标起飞，节点可能已滚出屏幕
+                TryEquip(save, selectedNode.Skill, detailRect.Location.ToVector2() + new Vector2(41f, 41f));
+            }
+        }
+
+        /// <summary>
+        /// 双击节点的快捷装备；已在装备栏里则不改动，改为闪一下它所在的槽位
+        /// </summary>
+        private void QuickEquip(HalibutSave save, AtlasSkillNode node) {
+            int index = save.loadout.IndexOf(node.Skill);
+            if (index < 0) {
+                TryEquip(save, node.Skill, NodeScreenPos(node));
+                return;
+            }
+            RevealDock();
+            slotLand[Math.Clamp(index, 0, slotLand.Length - 1)] = 1f;
+            particles.SpawnRingPulse(DockSlotAnchor(index), HalibutTheme.Accent, 34f, 2.4f);
+            SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.45f, Volume = 0.5f });
+        }
+
+        /// <summary>
+        /// 统一的装备入口；槽位当帧就填上，另飞一枚图标当连线指明它去了哪
+        /// </summary>
+        private bool TryEquip(HalibutSave save, FishSkill skill, Vector2 fromScreen, int slot = -1) {
+            if (skill == null) {
+                return false;
+            }
+            if (!save.EquipSkill(skill, slot)) {
+                RejectEquip(fromScreen);
+                return false;
+            }
+            RevealDock();
+            int index = Math.Clamp(save.loadout.IndexOf(skill), 0, HalibutTheme.DockSlotCount - 1);
+            Vector2 target = DockSlotAnchor(index);
+            slotLand[Math.Clamp(index, 0, slotLand.Length - 1)] = 1f;
+            particles.SpawnRingPulse(target, HalibutTheme.GlowHi, 38f, 3f);
+            //拖到坞口松手时来源与落点几乎重合，再飞一趟只会打架
+            if (Vector2.DistanceSquared(fromScreen, target) > 80f * 80f) {
+                particles.SpawnFlyingIcon(skill.Icon, fromScreen, target);
+            }
+            SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = -0.1f });
+            return true;
+        }
+
+        /// <summary>
+        /// 统一的卸下入口，在原槽位散开一小簇光粒
+        /// </summary>
+        private void DoUnequip(HalibutSave save, FishSkill skill) {
+            if (skill == null) {
+                return;
+            }
+            int index = save.loadout.IndexOf(skill);
+            Vector2 at = index >= 0 ? DockSlotAnchor(index) : Main.MouseScreen;
+            save.UnequipSkill(skill);
+            RevealDock();
+            particles.SpawnRingPulse(at, HalibutTheme.Teal, 30f, 2f);
+            particles.SpawnBurst(at, HalibutTheme.Glow, 9, 2.4f);
+            SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = 0.3f });
+        }
+
+        /// <summary>
+        /// 装备失败（栏位已满），在光标处红闪并展开装备坞指出原因
+        /// </summary>
+        private void RejectEquip(Vector2 at) {
+            loadoutFullFlash = 1f;
+            RevealDock();
+            particles.SpawnRingPulse(at, HalibutTheme.Danger, 26f, 2f);
+            SoundEngine.PlaySound(CWRSound.ButtonZero);
+        }
+
+        /// <summary>
+        /// 装备栏刚变动，短暂压住滚动避让，保证玩家能看见结果
+        /// </summary>
+        private void RevealDock() => dockRevealTimer = 90;
+
+        /// <summary>
+        /// 记录本次轻点，供双击窗口判定
+        /// </summary>
+        private void RegisterClick(FishSkill skill) {
+            lastClickSkill = skill;
+            doubleClickTimer = DoubleClickWindow;
+        }
+
+        /// <summary>
+        /// 节点当前帧的屏幕位置
+        /// </summary>
+        private Vector2 NodeScreenPos(AtlasSkillNode node) {
+            return node.ScreenPos(scroll - lastContentArea.Y, Main.GlobalTimeWrappedHourly);
         }
 
         /// <summary>
@@ -451,7 +657,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             float t = index / (float)(HalibutTheme.DockSlotCount - 1);
             float sag = MathF.Sin(t * MathHelper.Pi) * 7f;
             return new Vector2(startX + index * spacing,
-                contentArea.Bottom - DockHeight * 0.5f - 16f + sag + DockHideOffset);
+                contentArea.Bottom - DockHeight * 0.5f - 16f + sag + DockHideOffset - DragLiftOffset);
+        }
+
+        /// <summary>
+        /// 拖拽中装备坞的整体上浮像素
+        /// </summary>
+        private float DragLiftOffset => VaultUtils.EaseOutCubic(dragLift) * 6f;
+
+        /// <summary>
+        /// 槽位的静止锚点，用作飞行落点，不含收起下沉与拖拽上浮
+        /// </summary>
+        private Vector2 DockSlotAnchor(int index) {
+            return DockSlotPos(lastContentArea, index) - new Vector2(0f, DockHideOffset - DragLiftOffset);
         }
 
         public void Draw(SpriteBatch sb, Rectangle contentArea, HalibutSave save, float alpha) {
@@ -491,7 +709,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 if (pos.Y > dockTop) {
                     nodeAlpha *= MathHelper.Clamp(1f - (pos.Y - dockTop) / 50f, 0f, 1f);
                 }
-                node.Draw(sb, pos, unlocked, equipped, selected, nodeAlpha, time);
+                //正被光标指着的节点由光标面板报名字，不再在头顶重复一遍
+                node.Draw(sb, pos, unlocked, equipped, selected, nodeAlpha, time,
+                    node != hoveredNode || draggingSkill != null);
             }
 
             //祭坛（海面）
@@ -512,26 +732,89 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 DrawDetailCard(sb, save, alpha, time);
             }
 
-            //拖拽幽灵
-            if (draggingSkill?.Icon != null) {
-                Texture2D icon = draggingSkill.Icon;
-                float scale = 36f / MathF.Max(icon.Width, icon.Height);
-                Vector2 mouse = Main.MouseScreen;
-                sb.Draw(icon, mouse, null, HalibutTheme.Glow with { A = 0 } * (0.55f * alpha),
-                    0f, icon.Size() * 0.5f, scale * 1.3f, SpriteEffects.None, 0f);
-                sb.Draw(icon, mouse, null, Color.White * alpha, 0f, icon.Size() * 0.5f,
-                    scale * 1.1f, SpriteEffects.None, 0f);
+            //拖拽幽灵，从坞里拖到坞外时转危险色预告卸下
+            if (draggingSkill != null) {
+                DrawDragGhost(sb, alpha);
             }
-
-            //节点悬浮提示（锁定节点显示解锁来源）
-            if (hoveredNode != null && draggingSkill == null && !save.IsUnlocked(hoveredNode.Skill)) {
-                string fishName = Lang.GetItemNameValue(hoveredNode.Skill.UnlockFishID);
-                HalibutRenderer.DrawCursorPanel(sb, Main.MouseScreen, HalibutAtlas.LockedNodeName.Value,
-                    HalibutTheme.TextDim, string.Format(HalibutAtlas.LockedNodeHint.Value, fishName), alpha);
+            else {
+                DrawHoverInfo(sb, save, alpha);
             }
 
             //次级选鱼面板（最上层，含全屏遮罩）
             Altar.DrawPanel(sb, contentArea, save, alpha, time);
+        }
+
+        /// <summary>
+        /// 跟随光标的拖拽幽灵；从装备坞拖到坞外时转危险色，预告松手即卸下
+        /// </summary>
+        private void DrawDragGhost(SpriteBatch sb, float alpha) {
+            Vector2 mouse = Main.MouseScreen;
+            bool willRemove = dragFromDock && !dragOverDock;
+            if (draggingSkill.Icon != null) {
+                Texture2D icon = draggingSkill.Icon;
+                float scale = 36f / MathF.Max(icon.Width, icon.Height);
+                Color halo = (willRemove ? HalibutTheme.Danger : HalibutTheme.Glow) with { A = 0 };
+                sb.Draw(icon, mouse, null, halo * (0.55f * alpha),
+                    0f, icon.Size() * 0.5f, scale * 1.3f, SpriteEffects.None, 0f);
+                sb.Draw(icon, mouse, null,
+                    (willRemove ? Color.Lerp(Color.White, HalibutTheme.Danger, 0.45f) : Color.White) * alpha,
+                    0f, icon.Size() * 0.5f, scale * 1.1f, SpriteEffects.None, 0f);
+            }
+            string hint = willRemove ? HalibutAtlas.DockRemoveHint.Value
+                : dragOverDock ? HalibutAtlas.DockDropHint.Value : null;
+            if (hint != null) {
+                Color hintCol = willRemove ? HalibutTheme.Danger : HalibutTheme.GlowHi;
+                HalibutRenderer.DrawGlowTextCentered(sb, hint, mouse + new Vector2(0f, 30f),
+                    hintCol * alpha, HalibutTheme.Deep * (0.5f * alpha), 0.72f);
+            }
+        }
+
+        /// <summary>
+        /// 光标信息面板，海域节点与装备坞槽位共用，附带该状态下可做的操作
+        /// </summary>
+        private void DrawHoverInfo(SpriteBatch sb, HalibutSave save, float alpha) {
+            Vector2 mouse = Main.MouseScreen;
+            if (hoveredNode != null) {
+                FishSkill skill = hoveredNode.Skill;
+                if (!save.IsUnlocked(skill)) {
+                    string fishName = Lang.GetItemNameValue(skill.UnlockFishID);
+                    HalibutRenderer.DrawCursorPanel(sb, mouse, HalibutAtlas.LockedNodeName.Value,
+                        HalibutTheme.TextDim, string.Format(HalibutAtlas.LockedNodeHint.Value, fishName), alpha);
+                    return;
+                }
+                bool equipped = save.loadout.Contains(skill);
+                string body = skill.Tooltip?.Value;
+                string hint = equipped ? HalibutAtlas.NodeUnequipHint.Value : HalibutAtlas.NodeEquipHint.Value;
+                body = string.IsNullOrEmpty(body) ? hint : body + "\n" + hint;
+                GetStateTag(save, skill, out string tag, out Color tagCol);
+                HalibutRenderer.DrawCursorPanel(sb, mouse, skill.DisplayName?.Value ?? skill.Name,
+                    HalibutTheme.GlowHi, body, alpha, tag, tagCol);
+                return;
+            }
+            if (dockHoverIndex >= 0 && dockHoverIndex < save.loadout.Count) {
+                FishSkill skill = save.loadout[dockHoverIndex];
+                GetStateTag(save, skill, out string tag, out Color tagCol);
+                HalibutRenderer.DrawCursorPanel(sb, mouse, skill.DisplayName?.Value ?? skill.Name,
+                    HalibutTheme.GlowHi, HalibutAtlas.DockSlotHint.Value, alpha, tag, tagCol);
+            }
+        }
+
+        /// <summary>
+        /// 技能当前的装备状态标签
+        /// </summary>
+        private static void GetStateTag(HalibutSave save, FishSkill skill, out string tag, out Color color) {
+            if (save.FishSkill == skill) {
+                tag = HalibutAtlas.SelectedTag.Value;
+                color = HalibutTheme.Accent;
+                return;
+            }
+            if (save.loadout.Contains(skill)) {
+                tag = HalibutAtlas.EquippedTag.Value;
+                color = HalibutTheme.GlowHi;
+                return;
+            }
+            tag = null;
+            color = HalibutTheme.TextDim;
         }
 
         private void DrawDepthRuler(SpriteBatch sb, Rectangle contentArea, float alpha) {
@@ -576,26 +859,56 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 new Vector2(contentArea.Center.X, labelY),
                 labelCol * alpha, HalibutTheme.Deep * (0.4f * alpha), 0.74f);
 
+            //拖拽落点槽位、悬停槽优先，否则指向即将追加的位置；装不下时不给指示
+            int dropSlot = -1;
+            bool dropValid = draggingSkill != null
+                && (save.loadout.Contains(draggingSkill) || save.loadout.Count < HalibutSave.LoadoutCap);
+            if (dropValid && dragOverDock) {
+                dropSlot = dockHoverIndex >= 0
+                    ? dockHoverIndex
+                    : Math.Min(save.loadout.Count, HalibutTheme.DockSlotCount - 1);
+            }
+
             //槽位
             for (int i = 0; i < HalibutTheme.DockSlotCount; i++) {
                 Vector2 pos = DockSlotPos(contentArea, i);
                 bool occupied = i < save.loadout.Count;
-                bool hovered = dockHoverIndex == i;
                 FishSkill skill = occupied ? save.loadout[i] : null;
+                //悬停高亮；悬停海域中已装备的鱼时，它的槽位一并亮起
+                bool hovered = dockHoverIndex == i
+                    || (skill != null && hoveredNode != null && hoveredNode.Skill == skill);
                 bool isCurrent = skill != null && skill == save.FishSkill;
+                bool isDrop = i == dropSlot;
+                float land = slotLand[i];
 
                 //槽底
                 HalibutRenderer.DrawDisc(sb, pos, HalibutTheme.DockSlotR - 3f, 3f,
                     HalibutTheme.Deep * ((occupied ? 0.92f : 0.6f) * alpha));
-                Color ringCol = isCurrent ? HalibutTheme.Accent
+                Color ringCol = isDrop ? HalibutTheme.Caustic
+                    : isCurrent ? HalibutTheme.Accent
                     : hovered ? HalibutTheme.GlowHi
                     : occupied ? HalibutTheme.Glow : HalibutTheme.Disabled;
-                float ringA = occupied ? 0.8f : 0.4f;
-                HalibutRenderer.DrawRing(sb, pos, HalibutTheme.DockSlotR, 1.3f, ringCol * (ringA * alpha));
+                float ringA = isDrop ? 1f : occupied ? 0.8f : 0.4f;
+                HalibutRenderer.DrawRing(sb, pos, HalibutTheme.DockSlotR + land * 3f,
+                    1.3f + land * 0.9f, ringCol * (ringA * alpha));
+
+                //落点槽、外圈缓转虚线环点明"松手落在这里"
+                if (isDrop) {
+                    float spin = time * 1.5f;
+                    for (int d = 0; d < 4; d++) {
+                        float a0 = spin + d * MathHelper.PiOver2;
+                        HalibutRenderer.DrawArcStroke(sb, pos, HalibutTheme.DockSlotR + 6f,
+                            a0, a0 + 0.55f, 1.4f, HalibutTheme.Caustic * (0.75f * alpha));
+                    }
+                    if (!occupied) {
+                        HalibutRenderer.DrawDisc(sb, pos, HalibutTheme.DockSlotR - 7f, 3f,
+                            HalibutTheme.Glow * (0.3f * alpha));
+                    }
+                }
 
                 if (skill?.Icon != null && skill != draggingSkill) {
                     float scale = (HalibutTheme.DockSlotR * 2f - 10f) / MathF.Max(skill.Icon.Width, skill.Icon.Height);
-                    scale *= 1f + (hovered ? 0.12f : 0f);
+                    scale *= 1f + (hovered ? 0.12f : 0f) + land * 0.35f;
                     sb.Draw(skill.Icon, pos, null, Color.White * alpha, 0f,
                         skill.Icon.Size() * 0.5f, scale, SpriteEffects.None, 0f);
                     if (skill.CooldownRatio > 0.01f) {
@@ -608,11 +921,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                             HalibutTheme.Accent * ((0.5f + pulse * 0.3f) * alpha));
                     }
                 }
-                else if (!occupied && draggingSkill != null && hovered) {
-                    //拖拽悬停的空槽位高亮
-                    HalibutRenderer.DrawDisc(sb, pos, HalibutTheme.DockSlotR - 6f, 3f,
-                        HalibutTheme.Glow * (0.3f * alpha));
-                }
             }
         }
 
@@ -621,6 +929,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             bool unlocked = save.IsUnlocked(skill);
             Color tierCol = HalibutTheme.TierColor(selectedNode.Tier);
 
+            DrawDetailLeader(sb, tierCol, alpha);
             HalibutRenderer.DrawSeaPanel(sb, detailRect, alpha, 0.45f + selectedNode.Tier * 0.15f, 0f, 0.55f);
             HalibutRenderer.DrawOrnateFrame(sb, detailRect,
                 Color.Lerp(tierCol, HalibutTheme.Glow, 0.35f), alpha * 0.9f, time, 13f);
@@ -702,17 +1011,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 selectBtnHover = selectBtnRect.Contains(mouse.ToPoint());
 
                 bool equipped = save.loadout.Contains(skill);
-                HalibutRenderer.DrawCapsuleButton(sb, equipBtnRect,
+                HalibutRenderer.DrawCapsuleButton(sb, PressInset(equipBtnRect, 0),
                     equipped ? HalibutAtlas.UnequipBtn.Value : HalibutAtlas.EquipBtn.Value,
                     equipped ? HalibutTheme.TextDim : HalibutTheme.Glow, equipBtnHover, equipped, alpha, time);
                 bool isCurrent = save.FishSkill == skill;
-                HalibutRenderer.DrawCapsuleButton(sb, selectBtnRect,
+                HalibutRenderer.DrawCapsuleButton(sb, PressInset(selectBtnRect, 1),
                     isCurrent ? HalibutAtlas.SelectedTag.Value : HalibutAtlas.SelectBtn.Value,
                     isCurrent ? HalibutTheme.Accent : HalibutTheme.GlowHi, selectBtnHover && !isCurrent, isCurrent, alpha, time);
             }
             else {
                 equipBtnRect = selectBtnRect = Rectangle.Empty;
             }
+        }
+
+        /// <summary>
+        /// 按下中的按钮微微内收，给出按压反馈
+        /// </summary>
+        private Rectangle PressInset(Rectangle rect, int index) {
+            if (pressedDetailBtn != index) {
+                return rect;
+            }
+            return new Rectangle(rect.X + 1, rect.Y + 2, rect.Width - 2, rect.Height - 2);
+        }
+
+        /// <summary>
+        /// 详情卡与被选节点之间的引线，指明这张卡在说谁
+        /// </summary>
+        private void DrawDetailLeader(SpriteBatch sb, Color tierCol, float alpha) {
+            Vector2 nodePos = NodeScreenPos(selectedNode);
+            //节点滚出视野或已被卡片盖住时不画
+            if (nodePos.Y < lastContentArea.Y || nodePos.Y > lastContentArea.Bottom
+                || nodePos.X > detailRect.X - 40f) {
+                return;
+            }
+            Vector2 anchor = new(detailRect.X, detailRect.Center.Y);
+            float midX = (nodePos.X + anchor.X) * 0.5f;
+            HalibutRenderer.DrawBezierGlow(sb, nodePos, new Vector2(midX, nodePos.Y),
+                new Vector2(midX, anchor.Y), anchor, 1.1f, tierCol * (0.4f * alpha), 26);
+            HalibutRenderer.DrawRing(sb, nodePos, 29f, 1f, tierCol * (0.55f * alpha));
+            HalibutRenderer.DrawPearl(sb, anchor, 1.9f, HalibutTheme.Caustic, 0.75f * alpha);
         }
     }
 }

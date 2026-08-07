@@ -1158,7 +1158,6 @@ OniMachete: {
 		Swings and hits stoke the brimstone suppression; every strike the six oni hands make burns it away
 		When the flame gutters out the hands grow restless: they fight harder, and may turn back to squeeze your throat
 		''' */
-	// RestlessWarn: The brimstone flame is out — grip the handle tight!
 }
 
 Pandemonium: {

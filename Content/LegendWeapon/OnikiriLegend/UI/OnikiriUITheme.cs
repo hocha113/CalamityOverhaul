@@ -140,10 +140,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         #endregion
 
         #region 铭谱（图鉴）几何
-        /// <summary>台账板下那本线装册子的尺寸（改铭台上的入口道具）</summary>
-        public static readonly Vector2 CodexBookletSize = new(96f, 62f);
-        /// <summary>册子与台账板下缘的间距</summary>
-        public const float CodexBookletGap = 28f;
+        /// <summary>台账板底多出的一段书棚带高（同一块板画长，不是另摆一块板）</summary>
+        public const float CodexNicheH = 118f;
+        /// <summary>棚格宽（只容一册的格子，右侧留素漆板面）</summary>
+        public const float CodexNicheW = 86f;
+        /// <summary>书唇（挡在册子下缘的前板）高</summary>
+        public const float CodexLipH = 26f;
+        /// <summary>插在棚格里的线装册尺寸（下缘被书唇压住一截）</summary>
+        public static readonly Vector2 CodexBookletSize = new(66f, 88f);
+        /// <summary>悬停抽书行程（册子自格里升起一截）</summary>
+        public const float CodexBookPull = 7f;
         /// <summary>摊开册子的宽上限</summary>
         public const float CodexBookMaxW = 1060f;
         /// <summary>摊开册子的高上限</summary>

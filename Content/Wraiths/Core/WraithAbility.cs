@@ -8,12 +8,13 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         Player player,
         Item vesselItem,
         WraithDefinition definition,
-        float mastery)
+        float revival)
     {
         public Player Player { get; } = player;
         public Item VesselItem { get; } = vesselItem;
         public WraithDefinition Definition { get; } = definition;
-        public float Mastery { get; } = mastery;
+        /// <summary>该鬼当前复苏值 0..1；越接近复苏，能力越凶。</summary>
+        public float Revival { get; } = revival;
     }
 
     /// <summary>鬼切普通五连段实际出刀时冻结的役鬼节拍</summary>
@@ -49,16 +50,11 @@ namespace CalamityOverhaul.Content.Wraiths.Core
     /// <summary>役鬼资格与资源结算的唯一入口</summary>
     internal static class WraithAbilityService
     {
-        internal const float DormantThreshold = 0.20f;
-        internal const float WakeThreshold = 0.65f;
-        internal const int RecoveryDelayTicks = 60 * 3;
-        internal const float RecoveryPerSecond = 0.025f;
-
         internal static bool IsOnikiriHeld(Player player)
             => player != null && player.active && player.HeldItem != null
                 && !player.HeldItem.IsAir && player.HeldItem.type == OnikiriOverride.ID;
 
-        /// <summary>只检查役鬼是否仍由当前手持鬼切维持，不检查本轮后的资源与休眠。</summary>
+        /// <summary>只检查役鬼是否仍由当前手持鬼切维持，不检查夺身状态。</summary>
         internal static bool HasAbilityChannel(Player player, string requiredKey)
             => TryResolveChannel(player, requiredKey, out _, out _);
 
@@ -67,15 +63,11 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             context = default;
             if (!TryResolveChannel(player, requiredKey,
                     out Runtime.WraithPlayer wraithPlayer, out WraithDefinition definition)
-                || wraithPlayer.IsDormant(requiredKey)) {
+                || Deaths.WraithRevivalDeath.IsSeized(player)) {
                 return false;
             }
-
-            float mastery = wraithPlayer.GetMastery(requiredKey);
-            if (mastery + 0.0001f < definition.MasteryCost) {
-                return false;
-            }
-            context = new WraithAbilityContext(player, player.HeldItem, definition, mastery);
+            context = new WraithAbilityContext(player, player.HeldItem, definition,
+                wraithPlayer.GetRevival(requiredKey));
             return true;
         }
 
@@ -98,15 +90,15 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             return TryCommitUse(in context);
         }
 
-        /// <summary>结算已经由权威端确认生效的事件，不因命中回调改变手持物而丢失代价。</summary>
+        /// <summary>结算已经由权威端确认生效的事件：涨该鬼复苏并加侵蚀；满格触发夺身。</summary>
         internal static bool TryCommitUse(in WraithAbilityContext context) {
             if (Main.netMode == NetmodeID.MultiplayerClient || context.Player == null
                 || context.Definition == null) {
                 return false;
             }
             return context.Player.GetModPlayer<Runtime.WraithPlayer>()
-                .TryConsumeAuthority(context.Definition.Key,
-                    context.Definition.MasteryCost, context.Definition.ErosionCost);
+                .TryChargeAuthority(context.Definition.Key,
+                    context.Definition.RevivalCost, context.Definition.ErosionCost);
         }
 
         internal static void PublishComboBeat(Player player, in WraithComboBeatEvent beat) {

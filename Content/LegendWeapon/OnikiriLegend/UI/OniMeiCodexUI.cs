@@ -338,6 +338,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             bool live = IsOpen && a > 0.9f;
             Vector2 mp = MousePosition;
 
+            //教程焦点:页眉收集度那一行,展读时的落眼处
+            if (Tutorial.OnikiriTutorialLead.IsActive) {
+                Tutorial.OnikiriTutorialTargets.Publish(Tutorial.OnikiriTutorialTargets.Tag_CodexTally,
+                    new Rectangle(leftPage.X, leftPage.Y - (int)OnikiriUITheme.CodexTabH,
+                        leftPage.Width, (int)(OnikiriUITheme.CodexTabH + OnikiriUITheme.CodexTallyH)));
+            }
+
             //页签
             hoverTab = -1;
             for (int i = 0; i < TabCount; i++) {

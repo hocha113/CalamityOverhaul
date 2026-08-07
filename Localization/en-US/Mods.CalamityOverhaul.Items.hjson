@@ -304,7 +304,7 @@ OnikiriItem: {
 		'''
 		Hold left-click to drive the five-beat Crimson Rend combo
 		[DASH] spends Vigor on a normal Kamui Flash Step; at half Stance or above, press [DASH] again within one second for a free execution dash
-		In Omote, hold [SAKURA] to pay for a normal dash; if still held at the endpoint with enough Vigor, it chains into Sakura Flight; release to return
+		In Omote, hold [SAKURA] to scatter into Sakura Flight on the spot; release or run dry to reform; holding it through a dash chains into the flight too
 		After a half-Stance execution dash, left-click for Annihilating Flash; at full Stance, double-dash through a target for Finale Slash
 		At full Stance, press [EXECUTE] to auto-lock, dash, and automatically unleash Finale Slash; with no target, the dash follows the cursor
 		An unfulfilled execution costs no additional Vigor
@@ -1181,7 +1181,6 @@ OniMachete: {
 		Swings and hits stoke the brimstone suppression; every strike the six oni hands make burns it away
 		When the flame gutters out the hands grow restless: they fight harder, and may turn back to squeeze your throat
 		'''
-	RestlessWarn: The brimstone flame is out — grip the handle tight!
 }
 
 Pandemonium: {

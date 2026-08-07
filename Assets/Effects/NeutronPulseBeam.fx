@@ -57,9 +57,11 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float along = input.TexCoords.x;
     float cross_ = (input.TexCoords.y - 0.5) * 2.0;
 
-    //远端噪声撕口，收成参差锥尖而非平切
+    //远端噪声撕口，收成参差锥尖而非平切。
+    //窗口须在 along=1 之前关死：turb*0.20 最低把 x 抬到 0.90，故上沿取 0.86 留余量，
+    //否则 quad 末端仍有残值，加色下就是一条横的亮边。
     float turb = tex2D(noiseSamp, float2(along * 2.9 - uTime * 1.9, cross_ * 0.55 + uSeed)).r - 0.5;
-    float tip = smoothstep(1.0, 0.62, along + turb * 0.22);
+    float tip = smoothstep(0.86, 0.46, along + turb * 0.20);
 
     //锥张开：根部收束在极冠上，越远越张
     float coneHalf = lerp(0.10, uSpread, pow(saturate(along), 0.68));

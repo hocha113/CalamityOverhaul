@@ -1,4 +1,5 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
 {
-    /// <summary>樱流飞行. 冲刺后表世界衔接</summary>
-    internal sealed class OniSakuraFlight : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
+    /// <summary>樱流飞行. 表世界化樱巡航(樱流键直起 或 疾走衔接)</summary>
+    internal sealed class OniSakuraFlight : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable, IWarpDrawable
     {
         private enum PetalRole : byte
         {
@@ -74,8 +75,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
         private const int HideStartFrame = 3;
         private const int ReformFrames = 12;
         private const int AfterglowFrames = 22;
-        private const int CorePetalCount = 20;
-        private const int BraidPetalCount = 48;
+        //核瓣压密成可读的一团(而非稀疏环绕)，总量守恒:从编织带匀过来，不涨 draw call
+        private const int CorePetalCount = 34;
+        private const int BraidPetalCount = 42;
         private const int MaxPetalCount = 164;
         private const int MaxLoosePetals = MaxPetalCount - CorePetalCount - BraidPetalCount;
         private const float PathSpacing = 10f;
@@ -88,9 +90,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
         /// <summary>贴光标死区(px²):过近不改向,避免绕着光标原地抖转</summary>
         private const float AimDeadzoneSq = 576f;
 
+        /// <summary>
+        /// 四股流带静态档:瓣白主脊 + 主流带 + 上下两侧股(三种流速造层间视差).
+        /// 幅宽/偏移在绘制时按航线长与速度再缩
+        /// </summary>
+        private static readonly OniSakuraFlowRenderer.StreamDef[] StreamDefs =
+        [
+            new() { HalfWidth = 13f, PerpOffset = 0f, Seed = 0.71f
+                , FlowMul = 1.55f, GrainAmp = 0.30f, HeadBoost = 1.50f, OpacityMul = 0.70f },
+            new() { HalfWidth = 42f, PerpOffset = 0f, Seed = 0.05f
+                , FlowMul = 1.00f, GrainAmp = 0.95f, HeadBoost = 0.50f, OpacityMul = 0.95f },
+            new() { HalfWidth = 21f, PerpOffset = 32f, Seed = 0.37f
+                , FlowMul = 1.42f, GrainAmp = 1.25f, HeadBoost = 0.22f, OpacityMul = 0.78f },
+            new() { HalfWidth = 17f, PerpOffset = -37f, Seed = 0.89f
+                , FlowMul = 0.76f, GrainAmp = 1.40f, HeadBoost = 0.20f, OpacityMul = 0.66f },
+        ];
+
         private readonly List<Vector2> path = new(MaxPathPoints);
         private readonly List<Petal> petals = new(MaxPetalCount);
         private readonly List<Petal> drawBuffer = new(MaxPetalCount);
+        /// <summary>流带顶点用的尾→头点列(path + 当前头端)，每帧重填不重新分配</summary>
+        private readonly List<Vector2> streamPoints = new(MaxPathPoints + 2);
 
         private bool initialized;
         private bool reformStarted;
@@ -104,6 +124,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
         private float availablePathLength;
         private float looseSpawnCarry;
         private float visualSpeedRatio;
+        /// <summary>平滑后的转向侧倾(-1..1)，供涡核偏摆与瓣盘倾角共用</summary>
+        private float turnBank;
+        private Vector2 lastBankDirection;
 
         public override string Texture => CWRConstant.VaultPlaceholder;
 
@@ -121,6 +144,40 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
 
         /// <summary>该控制器当前是否应取代持有者本体绘制</summary>
         internal bool ShouldHideOwner => Timer >= HideStartFrame && Timer < ReappearFrame;
+
+        /// <summary>流带召回进度:飞行段恒 0，回卷段自尾端擦到头</summary>
+        private float StreamRetract => Timer <= FlightEndFrame
+            ? 0f
+            : MathHelper.Clamp((Timer - FlightEndFrame) / (float)ReformFrames, 0f, 1f);
+
+        /// <summary>过曝拍:散瓣起飞的头几帧 + 合拢那一下</summary>
+        private float StreamFlash {
+            get {
+                if (Timer <= DissolveFrames) {
+                    return MathHelper.Clamp(1f - Timer / (float)DissolveFrames, 0f, 1f);
+                }
+                int sinceStop = Timer - FlightEndFrame;
+                return sinceStop >= 0 && sinceStop <= 3
+                    ? 0.70f * (1f - sinceStop / 3f)
+                    : 0f;
+            }
+        }
+
+        /// <summary>花核在场强度:成形→满→回卷时交还本体</summary>
+        private float CoreEnvelope {
+            get {
+                if (Timer < HideStartFrame) {
+                    return 0f;
+                }
+                if (Timer <= DissolveFrames + 2) {
+                    return MathHelper.Clamp(
+                        (Timer - HideStartFrame) / (float)(DissolveFrames + 2 - HideStartFrame), 0f, 1f);
+                }
+                return Timer < FlightEndFrame
+                    ? 1f
+                    : MathHelper.Clamp(1f - (Timer - FlightEndFrame) / (ReformFrames * 0.70f), 0f, 1f);
+            }
+        }
 
         /// <summary>在持有者客户端启动樱流飞行。巡航段跟随光标平滑转向</summary>
         public static Projectile Fire(Player player, Vector2 aim, float speed = 32f,
@@ -213,6 +270,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
             flightSpeed = MathHelper.Clamp(Projectile.velocity.Length(), MinFlightSpeed, MaxFlightSpeed);
             moveDirection = Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction);
             lastVisualDirection = moveDirection;
+            lastBankDirection = moveDirection;
             Projectile.velocity = moveDirection * flightSpeed;
             Projectile.timeLeft = KillFrame + 12;
 
@@ -229,6 +287,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                     Pitch = 0.12f,
                     Volume = 0.48f
                 }, Owner.Center);
+                if (OnLocalScreen()) {
+                    CrimsonImpactFX.PushImpact(Owner.Center, 0.34f);
+                }
             }
 
             if (Projectile.IsOwnedByLocalPlayer()) {
@@ -270,6 +331,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
             Projectile.Center = currentCenter;
             visualSpeedRatio = MathHelper.Clamp(frameTravel / Math.Max(flightSpeed, 1f), 0f, 1.35f);
 
+            //转向侧倾:方向叉积平滑到 -1..1，系数取满转角(≈0.31rad/帧)刚好打满
+            float turnCross = lastBankDirection.X * moveDirection.Y - lastBankDirection.Y * moveDirection.X;
+            turnBank = MathHelper.Lerp(turnBank, MathHelper.Clamp(turnCross * 3.2f, -1f, 1f), 0.22f);
+            lastBankDirection = moveDirection;
+
             if (!reformStarted && Timer >= FlightEndFrame) {
                 BeginReform();
             }
@@ -282,6 +348,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
 
             if (!Main.dedServ) {
                 UpdatePetals(frameTravel);
+                PushScreenState();
                 float pulse = 0.72f + 0.18f * MathF.Sin(Timer * 0.22f);
                 Lighting.AddLight(Owner.Center, new Vector3(0.82f, 0.24f, 0.34f) * pulse);
             }
@@ -352,6 +419,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                 Timer = FlightEndFrame;
                 Projectile.netUpdate = true;
             }
+        }
+
+        /// <summary>是否在可见范围内。远端玩家的樱流不该给本地屏幕加辉光</summary>
+        private bool OnLocalScreen() {
+            Rectangle view = new((int)Main.screenPosition.X - 260, (int)Main.screenPosition.Y - 260
+                , Main.screenWidth + 520, Main.screenHeight + 520);
+            return view.Contains(Owner.Center.ToPoint());
+        }
+
+        /// <summary>屏幕级包络:巡航恒亮 Bloom，回卷回落(复用绯红裂空 Bloom 管线)</summary>
+        private void PushScreenState() {
+            if (!OnLocalScreen()) {
+                return;
+            }
+            float envelope = Timer <= FlightEndFrame ? 1f : 1f - StreamRetract;
+            if (envelope <= 0.02f) {
+                return;
+            }
+            CrimsonImpactFX.PushAmbience(Owner.Center
+                , (0.16f + 0.14f * MathHelper.Clamp(visualSpeedRatio, 0f, 1f)) * envelope);
         }
 
         private void HoldOwner() {
@@ -480,8 +567,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
             float baseDistance = role == PetalRole.Braid
                 ? (index + 0.5f) / count * MaxTrailLength + Main.rand.NextFloat(-15f, 15f)
                 : Main.rand.NextFloat(0f, 24f);
+            //核瓣放大到剪影能互相咬合，编织瓣保持细碎——两层不同空间频率
             float baseScale = role == PetalRole.Core
-                ? Main.rand.NextFloat(0.72f, 1.16f)
+                ? Main.rand.NextFloat(0.95f, 1.45f)
                 : Main.rand.NextFloat(0.46f, 0.94f);
 
             return new Petal {
@@ -492,7 +580,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                 Phase = Main.rand.NextFloat(MathHelper.TwoPi),
                 Spin = Main.rand.NextFloat(0.050f, 0.135f),
                 Radius = role == PetalRole.Core
-                    ? Main.rand.NextFloat(17f, 36f)
+                    ? Main.rand.NextFloat(8f, 20f)
                     : Main.rand.NextFloat(38f, 78f),
                 BaseTrailDistance = baseDistance,
                 BaseScale = baseScale,
@@ -585,13 +673,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
 
             petal.Depth = depth;
             petal.Flip = MathHelper.Lerp(0.18f, 1f, MathF.Abs(depth));
-            petal.Stretch = MathHelper.Lerp(0.96f, 1.16f, MathHelper.Clamp(visualSpeedRatio, 0f, 1f));
+            //满速抹成流线,不是"一个旋转的贴图在平移"
+            petal.Stretch = MathHelper.Lerp(1f, 2.05f, MathHelper.Clamp(visualSpeedRatio, 0f, 1f));
             petal.Rotation = moveDirection.ToRotation() - MathHelper.PiOver2
                 + MathF.Sin(theta * 0.57f + petal.Seed) * 0.72f;
 
             return Owner.Center
                 - moveDirection * (petal.BaseTrailDistance + MathF.Abs(driftWave) * 8f)
-                + normal * sideWave * radius
+                //转向时涡核整体甩向外侧
+                + normal * (sideWave * radius + turnBank * (radius * 0.85f + 9f))
                 + moveDirection * depth * 4f;
         }
 
@@ -634,7 +724,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
 
             petal.Depth = depth;
             petal.Flip = MathHelper.Lerp(0.14f, 1f, MathF.Abs(depth));
-            petal.Stretch = MathHelper.Lerp(0.94f, 1.24f,
+            petal.Stretch = MathHelper.Lerp(0.98f, 1.85f,
                 MathHelper.Clamp(visualSpeedRatio, 0f, 1f))
                 * MathHelper.Lerp(0.90f, 1.08f, (depth + 1f) * 0.5f);
             petal.Rotation = frame.Tangent.ToRotation() - MathHelper.PiOver2
@@ -765,6 +855,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                     Pitch = 0.42f,
                     Volume = 0.42f
                 }, Owner.Center);
+                if (OnLocalScreen()) {
+                    CrimsonImpactFX.PushImpact(Owner.Center, 0.28f);
+                }
             }
         }
 
@@ -818,7 +911,80 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
         public override bool PreDraw(ref Color lightColor) => false;
 
         void IPrimitiveDrawable.DrawPrimitives() {
-            if (Main.dedServ || petals.Count == 0
+            if (Main.dedServ) {
+                return;
+            }
+            //先垫底:流带与花核走顶点层(自管设备状态)，再让离散花瓣压在上面
+            DrawFlowLayer();
+            DrawPetalLayer();
+        }
+
+        /// <summary>四股樱流带 + 三重花核瓣盘。顶点绘制，无 SpriteBatch</summary>
+        private void DrawFlowLayer() {
+            if (Timer > ReformEndFrame) {
+                return;
+            }
+
+            GraphicsDevice device = Main.instance.GraphicsDevice;
+            if (!OniSakuraFlowRenderer.BeginDraw(device, out Effect fx
+                , out BlendState prevBlend, out RasterizerState prevRaster, out DepthStencilState prevDepth)) {
+                return;
+            }
+
+            float retract = StreamRetract;
+            float flash = StreamFlash;
+            float speed01 = MathHelper.Clamp(visualSpeedRatio, 0f, 1f);
+
+            streamPoints.Clear();
+            streamPoints.AddRange(path);
+            streamPoints.Add(Owner.Center);
+            //起飞后几帧才把带铺满，避免第一帧一条硬边突然出现
+            float streamOpacity = MathHelper.Clamp((Timer - HideStartFrame + 1f) / 5f, 0f, 1f);
+
+            if (streamOpacity > 0.01f) {
+                //航线还短时整条收窄,别让起飞那两帧甩出一截齐头粗带
+                float sizeMul = MathHelper.Clamp(availablePathLength / 300f, 0.35f, 1f);
+                for (int i = 0; i < StreamDefs.Length; i++) {
+                    OniSakuraFlowRenderer.StreamDef def = StreamDefs[i];
+                    def.HalfWidth *= sizeMul;
+                    def.PerpOffset *= sizeMul;
+                    def.Seed += Seed * 6.28f;
+                    //流速与瓣粒分明度都挂速度:飞得越快，粒被抹得越长、孔越少
+                    def.FlowMul *= MathHelper.Lerp(0.72f, 1.24f, speed01);
+                    def.GrainAmp *= MathHelper.Lerp(1.18f, 0.82f, speed01);
+                    OniSakuraFlowRenderer.DrawStream(device, fx, streamPoints, def
+                        , retract, flash, streamOpacity);
+                }
+            }
+
+            float core = CoreEnvelope;
+            if (core > 0.01f) {
+                float stretch = 1f + speed01 * 1.05f;
+                float radius = (26f + 5f * MathF.Sin(Timer * 0.15f + Seed * 5f)) * (0.55f + core * 0.45f);
+                float spin = Timer * 0.042f + Seed * MathHelper.TwoPi + turnBank * 0.55f;
+                float bloom = 0.85f + flash * 0.6f;
+                //瓣盘着色器自行预乘输出，淡入淡出只走 opacity 参数，顶点色不再压暗 RGB
+                //拖影:沿航线往后挪一截、更扁更暗，读作"核刚从那儿过来"
+                OniSakuraFlowRenderer.DrawCore(device, fx
+                    , Owner.Center - moveDirection * (14f + speed01 * 26f)
+                    , radius * 0.92f, moveDirection, stretch * 1.35f, -spin * 0.70f
+                    , new Color(198, 62, 96), 0.32f, 0.20f, core * 0.34f);
+                //外盘:深绯，逆转
+                OniSakuraFlowRenderer.DrawCore(device, fx, Owner.Center
+                    , radius * 1.24f, moveDirection, stretch, -spin * 0.62f
+                    , new Color(229, 90, 119), bloom * 0.75f, 0.35f, core * 0.86f);
+                //内盘:近瓣白，顺转，热心在此
+                OniSakuraFlowRenderer.DrawCore(device, fx, Owner.Center
+                    , radius * 0.78f, moveDirection, stretch * 0.88f, spin
+                    , new Color(255, 226, 233), bloom, 0.95f + flash * 0.5f, core);
+            }
+
+            OniSakuraFlowRenderer.EndDraw(device, prevBlend, prevRaster, prevDepth);
+        }
+
+        /// <summary>离散花瓣群(OniDomainDeco.TechPetal)，压在流带与花核之上</summary>
+        private void DrawPetalLayer() {
+            if (petals.Count == 0
                 || VaultAsset.placeholder2?.Value is not Texture2D white
                 || EffectLoader.OniDomainDeco?.Value is not Effect effect) {
                 return;

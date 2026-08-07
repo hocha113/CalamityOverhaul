@@ -16,47 +16,20 @@ namespace CalamityOverhaul.Content.HackTimes
         /// <summary>悬停协议预扣 RAM，0 无预览，HackTimeUI 写入</summary>
         public int PreviewCost;
 
-        //弧线几何
-        private const float InnerR = 560f;
-        private const float ArcThick = 24f;
-        private const float OuterR = InnerR + ArcThick;
-        //弧顶距屏顶
-        private const float TopY = 76f;
-        private const float CellGap = 0.007f;
-        //单格基准角，8 格≈旧 400px
-        //BaseCellAngle ≈ (asin(200/572)*2 - 7*CellGap)/8 ≈ 0.0826 rad
-        private const float BaseCellAngle = 0.0826f;
-        //最大扫掠，防顶端溢出；≈π/2，约 16 格
-        private const float MaxTotalSweep = MathHelper.PiOver2;
-
-        private const float DecoGap = 6f;
-        private const float DecoR = OuterR + DecoGap;
-        private const float InnerDecoGap = 5f;
-        private const float InnerDecoR = InnerR - InnerDecoGap;
+        //弧线几何在 HackRamArcLayout 定义，此处只做局部别名
+        private const float InnerR = HackRamArcLayout.InnerR;
+        private const float OuterR = HackRamArcLayout.OuterR;
+        private const float CellGap = HackRamArcLayout.CellGap;
+        private const float DecoGap = HackRamArcLayout.DecoGap;
+        private const float DecoR = HackRamArcLayout.DecoR;
+        private const float InnerDecoGap = HackRamArcLayout.InnerDecoGap;
+        private const float InnerDecoR = HackRamArcLayout.InnerDecoR;
 
         //中文/关键读数不低于 0.55
         private const float FTitle = 0.60f;
         private const float FValue = 0.74f;
         private const float FWarn = 0.58f;
         private const float FHex = 0.50f;
-
-        /// <summary>按 maxRam 推导弧线几何，超软上限收紧单格</summary>
-        private static void ComputeArcGeom(int maxRam,
-            out float halfSweep, out float cellAngle, out float arcSpanPx) {
-            float targetSweep = BaseCellAngle * maxRam + (maxRam - 1) * CellGap;
-            float totalSweep;
-            if (targetSweep <= MaxTotalSweep) {
-                cellAngle = BaseCellAngle;
-                totalSweep = targetSweep;
-            }
-            else {
-                totalSweep = MaxTotalSweep;
-                cellAngle = (MaxTotalSweep - (maxRam - 1) * CellGap) / maxRam;
-            }
-            halfSweep = totalSweep * 0.5f;
-            //ArcSpanPx 由半扫掠角与中径反算
-            arcSpanPx = 2f * (InnerR + ArcThick * 0.5f) * MathF.Sin(halfSweep);
-        }
 
         public void Update() {
             timer += 0.016f;
@@ -81,17 +54,16 @@ namespace CalamityOverhaul.Content.HackTimes
             int maxRam = RamSystem.MaxRam;
             if (maxRam <= 0) return;
 
-            //弧线参数
-            ComputeArcGeom(maxRam, out float halfSweep, out float cellAngle, out float arcSpanPx);
+            //弧线参数，几何取自布局真源
+            HackRamArcLayout.Compute(maxRam, out Vector2 settled,
+                out float halfSweep, out float cellAngle, out float arcSpanPx);
             float midAngle = -MathHelper.PiOver2; //正上方
             float aStart = midAngle - halfSweep;
             float totalSweep = halfSweep * 2f;
 
-            //弧线中心
-            float cx = Main.screenWidth * 0.5f;
+            //入场偏移只作用于绘制，布局查询仍用落位几何
             float flyOff = (1f - EaseOutCubic(flyInProgress)) * -50f;
-            float cy = TopY + InnerR + flyOff;
-            Vector2 center = new(cx, cy);
+            Vector2 center = new(settled.X, settled.Y + flyOff);
 
             //阴影层
             DrawShadow(sb, px, center, aStart, totalSweep, alpha);

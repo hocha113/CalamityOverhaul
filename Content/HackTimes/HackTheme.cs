@@ -4,12 +4,28 @@ using ReLogic.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.GameInput;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
     /// <summary>骇客时间主题，红青双主色 + 共享几何</summary>
     internal static class HackTheme
     {
+        #region 屏幕尺度
+
+        /// <summary>UI 空间屏宽</summary>
+        public static float UIScreenW => PlayerInput.RealScreenWidth / Main.UIScale;
+        /// <summary>UI 空间屏高</summary>
+        public static float UIScreenH => PlayerInput.RealScreenHeight / Main.UIScale;
+        /// <summary>左右共用边距，两侧对称，随屏宽推导</summary>
+        public static float SideMargin => MathHelper.Clamp(UIScreenW * 0.022f, 30f, 64f);
+        /// <summary>顶部安全线，弧不覆盖时的兜底</summary>
+        public const float TopSafe = 84f;
+        /// <summary>底部安全线</summary>
+        public const float BottomSafe = 40f;
+
+        #endregion
+
         #region 深色基底（不随敌我切换）
 
         public static readonly Color BgDarkest = new(6, 8, 12);

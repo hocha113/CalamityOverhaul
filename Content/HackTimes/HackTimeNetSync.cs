@@ -209,9 +209,12 @@ namespace CalamityOverhaul.Content.HackTimes
             uint sessionId = reader.ReadUInt32();
             uint requestId = reader.ReadUInt32();
             int slotIndex = reader.ReadUInt16();
-            if (!TryReadTarget(reader, out HackNetworkTarget identity)) return;
+            //先把负载读干净再做守卫：CWRNetWork 让所有 NetHandle 串行共用同一个 reader，
+            //目标非法就提前 return 会把这 8 字节留在流里，同包后续分支全部错位
+            bool targetValid = TryReadTarget(reader, out HackNetworkTarget identity);
             Vector2 claimedCenter = new(reader.ReadSingle(), reader.ReadSingle());
-            if (Main.netMode != NetmodeID.Server || !IsValidPlayerIndex(whoAmI))
+            if (!targetValid || Main.netMode != NetmodeID.Server
+                || !IsValidPlayerIndex(whoAmI))
                 return;
             Player player = Main.player[whoAmI];
             if (player?.active != true || requestId == 0) {

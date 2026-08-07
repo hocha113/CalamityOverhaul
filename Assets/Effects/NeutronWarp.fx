@@ -25,12 +25,13 @@ float QuadFeather(float2 centered)
     return e.x * e.y;
 }
 
-//强度为零处一并抹掉方向，免得 WarpShader 的 any() 空跑一遍采样
+//阈下四通道一起归零：让 WarpShader 的 any() 真能短路，
+//也避免预乘混合下拿 alpha 擦掉别的扭曲源已写入的位移
 float4 PackWarp(float direction, float magnitude, float alpha)
 {
     magnitude = saturate(magnitude);
     float live = step(0.0008, magnitude);
-    return float4(direction * live, magnitude, 0, saturate(alpha));
+    return float4(direction * live, magnitude * live, 0, saturate(alpha) * live);
 }
 
 //哈希

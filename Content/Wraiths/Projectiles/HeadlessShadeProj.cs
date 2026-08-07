@@ -18,7 +18,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Wraiths.Projectiles
 {
     /// <summary>
-    /// 无头鬼影役鬼体。ai[0]=状态，ai[1]=状态计时，ai[2]=驾驭度；
+    /// 无头鬼影役鬼体。ai[0]=状态，ai[1]=状态计时，ai[2]=复苏值；
     /// 目标、锁定点与冲刺路径通过 ExtraAI 同步，命中由权威端复核结算。
     /// 表现层是"影"：本体走骨架条带 + 地面投影，穿体时本体熄灭、由斩痕承担行程。
     /// </summary>
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
         private ref float StateRaw => ref Projectile.ai[0];
         private ref float StateTimer => ref Projectile.ai[1];
-        private ref float Mastery => ref Projectile.ai[2];
+        private ref float Revival => ref Projectile.ai[2];
 
         private ShadeState State {
             get => (ShadeState)StateRaw;
@@ -117,8 +117,8 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         private HeadlessShadeRig rig;
 
         private float Seed => Projectile.identity * 0.173f % 1f;
-        private float BodyScale => MathHelper.Lerp(0.92f, 1.08f, MathHelper.Clamp(Mastery, 0f, 1f));
-        private int ReacquireDelay => (int)MathHelper.Lerp(105f, 72f, MathHelper.Clamp(Mastery, 0f, 1f));
+        private float BodyScale => MathHelper.Lerp(0.92f, 1.08f, MathHelper.Clamp(Revival, 0f, 1f));
+        private int ReacquireDelay => (int)MathHelper.Lerp(105f, 72f, MathHelper.Clamp(Revival, 0f, 1f));
 
         public override void SetStaticDefaults()
             => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 620;
@@ -325,7 +325,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                 return;
             }
 
-            Mastery = context.Mastery;
+            Revival = context.Revival;
             strikeInvalidated = false;
             targetNPCID = target.whoAmI;
             targetNPCType = target.type;
@@ -462,7 +462,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             else {
                 float halfLength = MathHelper.Clamp(target.Size.Length() * 1.25f, 96f, 280f);
                 DismemberStroke stroke = new(impactCenter, cutAngle, halfLength, 52f);
-                int duration = (int)MathHelper.Lerp(78f, 114f, MathHelper.Clamp(Mastery, 0f, 1f));
+                int duration = (int)MathHelper.Lerp(78f, 114f, MathHelper.Clamp(Revival, 0f, 1f));
                 OniDismember.TriggerGroup(target, in stroke, duration, ImpactHoldFrames);
             }
             ScheduleCrossCuts(cutAngle);
@@ -505,7 +505,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             }
             else {
                 OniDismember.Trigger(target, point, angle,
-                    (int)MathHelper.Lerp(78f, 114f, MathHelper.Clamp(Mastery, 0f, 1f)), hold);
+                    (int)MathHelper.Lerp(78f, 114f, MathHelper.Clamp(Revival, 0f, 1f)), hold);
             }
 
             crossCutStep--;
@@ -583,11 +583,11 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                 return false;
             }
 
-            float mastery = MathHelper.Clamp(context.Mastery, 0f, 1f);
+            float revival = MathHelper.Clamp(context.Revival, 0f, 1f);
             int weaponDamage = Math.Max(Owner.GetWeaponDamage(context.VesselItem), 1);
-            int damage = Math.Max((int)(weaponDamage * MathHelper.Lerp(0.55f, 0.90f, mastery)), 1);
+            int damage = Math.Max((int)(weaponDamage * MathHelper.Lerp(0.55f, 0.90f, revival)), 1);
             float knockback = Owner.GetWeaponKnockback(context.VesselItem)
-                * MathHelper.Lerp(0.65f, 1f, mastery);
+                * MathHelper.Lerp(0.65f, 1f, revival);
             int critChance = Math.Max(Owner.GetWeaponCrit(context.VesselItem), 0);
             bool crit = critChance > 0 && Main.rand.Next(100) < critChance;
             int hitDirection = dashDirection.X >= 0f ? 1 : -1;

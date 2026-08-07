@@ -34,6 +34,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         public static LocalizedText UnequipBtn { get; private set; }
         public static LocalizedText SelectBtn { get; private set; }
         public static LocalizedText SelectedTag { get; private set; }
+        public static LocalizedText EquippedTag { get; private set; }
+        public static LocalizedText NodeEquipHint { get; private set; }
+        public static LocalizedText NodeUnequipHint { get; private set; }
+        public static LocalizedText DockSlotHint { get; private set; }
+        public static LocalizedText DockDropHint { get; private set; }
+        public static LocalizedText DockRemoveHint { get; private set; }
         public static LocalizedText LoadoutFullHint { get; private set; }
         public static LocalizedText UnlockFishLine { get; private set; }
         public static LocalizedText AltarTitle { get; private set; }
@@ -62,13 +68,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             tierNames[1] = this.GetLocalization("TierName1", () => "远洋 · 微光层");
             tierNames[2] = this.GetLocalization("TierName2", () => "深海 · 弱光层");
             tierNames[3] = this.GetLocalization("TierName3", () => "深渊 · 无光层");
-            DockLabel = this.GetLocalization(nameof(DockLabel), () => "装备栏 {0} / {1} · 点击选用");
+            DockLabel = this.GetLocalization(nameof(DockLabel), () => "装备栏 {0} / {1} · 左键选用 右键卸下");
             LockedNodeName = this.GetLocalization(nameof(LockedNodeName), () => "未知的鱼影");
             LockedNodeHint = this.GetLocalization(nameof(LockedNodeHint), () => "在研究祭坛中研究 {0} 后点亮此技能");
             EquipBtn = this.GetLocalization(nameof(EquipBtn), () => "装 备");
             UnequipBtn = this.GetLocalization(nameof(UnequipBtn), () => "卸 下");
             SelectBtn = this.GetLocalization(nameof(SelectBtn), () => "选 用");
             SelectedTag = this.GetLocalization(nameof(SelectedTag), () => "当 前");
+            EquippedTag = this.GetLocalization(nameof(EquippedTag), () => "已装备");
+            NodeEquipHint = this.GetLocalization(nameof(NodeEquipHint), () => "双击装备 · 右键也行 · 也可拖进装备栏");
+            NodeUnequipHint = this.GetLocalization(nameof(NodeUnequipHint), () => "已在装备栏中 · 右键卸下");
+            DockSlotHint = this.GetLocalization(nameof(DockSlotHint), () => "左键选用 · 右键卸下 · 拖动可换位");
+            DockDropHint = this.GetLocalization(nameof(DockDropHint), () => "松手放入");
+            DockRemoveHint = this.GetLocalization(nameof(DockRemoveHint), () => "松手卸下");
             LoadoutFullHint = this.GetLocalization(nameof(LoadoutFullHint), () => "装备栏已满");
             UnlockFishLine = this.GetLocalization(nameof(UnlockFishLine), () => "研究来源：{0}");
             AltarTitle = this.GetLocalization(nameof(AltarTitle), () => "研究祭坛");
@@ -80,7 +92,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             StudyPlaceHint = this.GetLocalization(nameof(StudyPlaceHint), () => "点击投入研究祭坛");
             StudyingFormat = this.GetLocalization(nameof(StudyingFormat), () => "正在研究：{0}");
             StudyReclaim = this.GetLocalization(nameof(StudyReclaim), () => "取 回");
-            DragHint = this.GetLocalization(nameof(DragHint), () => "按住拖动技能到装备栏 · 滚轮下潜");
+            DragHint = this.GetLocalization(nameof(DragHint), () => "双击鱼装备 · 拖动可换位 · 滚轮下潜");
             LayerStateFormat = this.GetLocalization(nameof(LayerStateFormat), () => "领域 {0} 层");
             UnlockCountFormat = this.GetLocalization(nameof(UnlockCountFormat), () => "已点亮 {0} / {1}");
 

@@ -101,18 +101,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         private static OniGhostEntry BuildEntry(WraithDefinition definition, WraithPlayer wraithPlayer) {
             bool canEquip = definition.CanEquip;
-            bool dormant = canEquip && wraithPlayer.IsDormant(definition.Key);
             return new OniGhostEntry {
                 Key = definition.Key,
                 Name = () => definition.DisplayName.Value,
                 Origin = () => definition.Origin.Value,
                 Power = () => definition.Power.Value,
-                Mastery = canEquip ? wraithPlayer.GetMastery(definition.Key) : 0f,
-                MasteryCost = definition.MasteryCost,
+                Revival = canEquip ? wraithPlayer.GetRevival(definition.Key) : 0f,
+                RevivalCost = definition.RevivalCost,
                 ErosionCost = definition.ErosionCost,
-                State = canEquip
-                    ? dormant ? OniGhostState.Dormant : OniGhostState.Ready
-                    : OniGhostState.Archive,
+                State = canEquip ? OniGhostState.Ready : OniGhostState.Archive,
                 CanEquip = canEquip,
             };
         }

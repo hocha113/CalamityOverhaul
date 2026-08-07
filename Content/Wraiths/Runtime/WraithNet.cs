@@ -37,6 +37,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         GhostRainRiteRequest = 19, //退役：曾为召雨按键请求，现鬼雨为常驻，保留编号防旧包错位
         GhostRainStormState = 20, //退役：曾为风暴 ModPlayer 快照，现由 GhostRainProj 同步
         GhostRainYankFx = 21,
+        RevivalDeathState = 22,
     }
 
     internal enum WraithEquipResult : byte
@@ -50,6 +51,37 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         InvalidWraith,
         RateLimited,
         SessionNotReady,
+    }
+
+    /// <summary>役鬼资源快照：六鬼复苏（按 <see cref="WraithPlayer.UsableKeys"/> 顺序）+ 侵蚀 + 倍率。</summary>
+    internal struct WraithResourceSnapshot
+    {
+        public float[] Revival;
+        public float Erosion;
+        public int Multiplier;
+        public int ErosionIdle;
+
+        public static WraithResourceSnapshot Read(BinaryReader reader) {
+            WraithResourceSnapshot snapshot = new() {
+                Revival = new float[WraithPlayer.UsableKeys.Length],
+            };
+            for (int i = 0; i < snapshot.Revival.Length; i++) {
+                snapshot.Revival[i] = reader.ReadSingle();
+            }
+            snapshot.Erosion = reader.ReadSingle();
+            snapshot.Multiplier = reader.ReadByte();
+            snapshot.ErosionIdle = reader.ReadInt32();
+            return snapshot;
+        }
+
+        public readonly void Write(BinaryWriter writer) {
+            for (int i = 0; i < WraithPlayer.UsableKeys.Length; i++) {
+                writer.Write(Revival != null && i < Revival.Length ? Revival[i] : 0f);
+            }
+            writer.Write(Erosion);
+            writer.Write((byte)WraithPlayer.SanitizeScapeMultiplier(Multiplier));
+            writer.Write(ErosionIdle);
+        }
     }
 
     /// <summary>玩家役鬼状态、资源事件与替死演出的权威网络通道。</summary>
@@ -315,6 +347,27 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             packet.Send();
         }
 
+        /// <summary>服务器广播夺身死亡演出状态快照（开始/处决/结束）。</summary>
+        internal static void SendRevivalDeathState(int playerWhoAmI, int toWho = -1) {
+            if (Main.netMode != NetmodeID.Server || playerWhoAmI < 0
+                || playerWhoAmI >= Main.maxPlayers) {
+                return;
+            }
+            Player player = Main.player[playerWhoAmI];
+            if (player?.active != true
+                || !player.TryGetModPlayer(out Deaths.WraithRevivalDeathPlayer seizure)) {
+                return;
+            }
+            ModPacket packet = NewPacket(WraithNetOp.RevivalDeathState);
+            packet.Write((byte)playerWhoAmI);
+            packet.Write(seizure.SeizeRevision);
+            packet.Write((short)seizure.SeizeTimer);
+            packet.Write(GetWraithNetworkId(seizure.ActiveKey));
+            packet.Write(seizure.SeizeSeed);
+            packet.Write(seizure.Executed);
+            packet.Send(toWho);
+        }
+
         internal static void SendRuleKill(int playerWhoAmI, WraithDefinition definition,
             string reasonKey = null) {
             if (Main.netMode != NetmodeID.Server || definition == null
@@ -384,7 +437,30 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 case WraithNetOp.GhostRainYankFx:
                     HandleGhostRainYankFx(reader);
                     break;
+                case WraithNetOp.RevivalDeathState:
+                    HandleRevivalDeathState(reader);
+                    break;
             }
+        }
+
+        private static void HandleRevivalDeathState(BinaryReader reader) {
+            int playerIndex = reader.ReadByte();
+            uint revision = reader.ReadUInt32();
+            int timer = reader.ReadInt16();
+            ushort wraithId = reader.ReadUInt16();
+            byte seed = reader.ReadByte();
+            bool executed = reader.ReadBoolean();
+            if (playerIndex < 0 || playerIndex >= Main.maxPlayers) {
+                return;
+            }
+            Player player = Main.player[playerIndex];
+            if (player?.active != true
+                || !player.TryGetModPlayer(out Deaths.WraithRevivalDeathPlayer seizure)) {
+                return;
+            }
+            //wraithId 为 NoWraith 时 key 解析为空串，视作结束快照
+            string key = wraithId == NoWraith ? string.Empty : ResolveUsableKey(wraithId);
+            seizure.ApplyReplicated(revision, timer, key, seed, executed);
         }
 
         private static void HandleBrideRiteRequest(int whoAmI) {
@@ -437,23 +513,11 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         }
 
         private static void HandleInitialState(BinaryReader reader, int whoAmI) {
-            ReadSavedState(reader, out string equipped,
-                out float scapeMastery, out bool scapeDormant,
-                out float shadeMastery, out bool shadeDormant,
-                out float handMastery, out bool handDormant,
-                out float lanternMastery, out bool lanternDormant,
-                out float brideMastery, out bool brideDormant,
-                out float rainMastery, out bool rainDormant,
-                out float erosion, out float revival, out int multiplier,
-                out int erosionIdle, out int revivalIdle);
+            string equipped = ResolveUsableKey(reader.ReadUInt16());
+            WraithResourceSnapshot snapshot = WraithResourceSnapshot.Read(reader);
             Player player = ResolvePlayer(whoAmI, requireAlive: false);
             WraithPlayer state = player?.GetModPlayer<WraithPlayer>();
-            if (state == null || !state.AcceptInitialState(equipped,
-                scapeMastery, scapeDormant, shadeMastery, shadeDormant,
-                handMastery, handDormant, lanternMastery, lanternDormant,
-                brideMastery, brideDormant, rainMastery, rainDormant,
-                erosion, revival, multiplier,
-                erosionIdle, revivalIdle)) {
+            if (state == null || !state.AcceptInitialState(equipped, in snapshot)) {
                 return;
             }
             SendStateSync(whoAmI);
@@ -461,16 +525,10 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         private static void HandleStateSync(BinaryReader reader) {
             int playerIndex = reader.ReadByte();
-            ReadStateSync(reader, out string equipped, out uint loadoutRevision,
-                out uint resourceRevision,
-                out float scapeMastery, out bool scapeDormant,
-                out float shadeMastery, out bool shadeDormant,
-                out float handMastery, out bool handDormant,
-                out float lanternMastery, out bool lanternDormant,
-                out float brideMastery, out bool brideDormant,
-                out float rainMastery, out bool rainDormant,
-                out float erosion, out float revival, out int multiplier,
-                out int erosionIdle, out int revivalIdle);
+            string equipped = ResolveUsableKey(reader.ReadUInt16());
+            uint loadoutRevision = reader.ReadUInt32();
+            uint resourceRevision = reader.ReadUInt32();
+            WraithResourceSnapshot snapshot = WraithResourceSnapshot.Read(reader);
             if (playerIndex < 0 || playerIndex >= Main.maxPlayers) {
                 return;
             }
@@ -480,11 +538,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 return;
             }
             state.ApplyNetworkState(equipped, loadoutRevision, resourceRevision,
-                scapeMastery, scapeDormant, shadeMastery, shadeDormant,
-                handMastery, handDormant, lanternMastery, lanternDormant,
-                brideMastery, brideDormant, rainMastery, rainDormant,
-                erosion, revival, multiplier,
-                erosionIdle, revivalIdle, force: !state.SessionInitialized);
+                in snapshot, force: !state.SessionInitialized);
         }
 
         private static void HandleEquipRequest(BinaryReader reader, int whoAmI) {
@@ -678,135 +732,15 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         }
 
         private static void WriteSavedState(BinaryWriter writer, WraithPlayer state) {
-            state.ExportSnapshot(out string equipped, out _, out _,
-                out float scapeMastery, out bool scapeDormant,
-                out float shadeMastery, out bool shadeDormant,
-                out float handMastery, out bool handDormant,
-                out float lanternMastery, out bool lanternDormant,
-                out float brideMastery, out bool brideDormant,
-                out float rainMastery, out bool rainDormant,
-                out float erosion, out float revival, out int multiplier,
-                out int erosionIdle, out int revivalIdle);
-            writer.Write(GetWraithNetworkId(equipped));
-            WriteResources(writer, scapeMastery, scapeDormant,
-                shadeMastery, shadeDormant, handMastery, handDormant,
-                lanternMastery, lanternDormant, brideMastery, brideDormant,
-                rainMastery, rainDormant,
-                erosion, revival, multiplier, erosionIdle, revivalIdle);
-        }
-
-        private static void ReadSavedState(BinaryReader reader, out string equipped,
-            out float scapeMastery, out bool scapeDormant,
-            out float shadeMastery, out bool shadeDormant,
-            out float handMastery, out bool handDormant,
-            out float lanternMastery, out bool lanternDormant,
-            out float brideMastery, out bool brideDormant,
-            out float rainMastery, out bool rainDormant,
-            out float erosion, out float revival, out int multiplier,
-            out int erosionIdle, out int revivalIdle) {
-            equipped = ResolveUsableKey(reader.ReadUInt16());
-            ReadResources(reader, out scapeMastery, out scapeDormant,
-                out shadeMastery, out shadeDormant, out handMastery, out handDormant,
-                out lanternMastery, out lanternDormant, out brideMastery, out brideDormant,
-                out rainMastery, out rainDormant,
-                out erosion, out revival, out multiplier, out erosionIdle, out revivalIdle);
+            writer.Write(GetWraithNetworkId(state.EquippedWraithKey));
+            state.ExportResourceSnapshot().Write(writer);
         }
 
         private static void WriteStateSync(BinaryWriter writer, WraithPlayer state) {
-            state.ExportSnapshot(out string equipped, out uint loadoutRevision,
-                out uint resourceRevision,
-                out float scapeMastery, out bool scapeDormant,
-                out float shadeMastery, out bool shadeDormant,
-                out float handMastery, out bool handDormant,
-                out float lanternMastery, out bool lanternDormant,
-                out float brideMastery, out bool brideDormant,
-                out float rainMastery, out bool rainDormant,
-                out float erosion, out float revival, out int multiplier,
-                out int erosionIdle, out int revivalIdle);
-            writer.Write(GetWraithNetworkId(equipped));
-            writer.Write(loadoutRevision);
-            writer.Write(resourceRevision);
-            WriteResources(writer, scapeMastery, scapeDormant,
-                shadeMastery, shadeDormant, handMastery, handDormant,
-                lanternMastery, lanternDormant, brideMastery, brideDormant,
-                rainMastery, rainDormant,
-                erosion, revival, multiplier, erosionIdle, revivalIdle);
-        }
-
-        private static void ReadStateSync(BinaryReader reader, out string equipped,
-            out uint loadoutRevision, out uint resourceRevision,
-            out float scapeMastery, out bool scapeDormant,
-            out float shadeMastery, out bool shadeDormant,
-            out float handMastery, out bool handDormant,
-            out float lanternMastery, out bool lanternDormant,
-            out float brideMastery, out bool brideDormant,
-            out float rainMastery, out bool rainDormant,
-            out float erosion, out float revival, out int multiplier,
-            out int erosionIdle, out int revivalIdle) {
-            equipped = ResolveUsableKey(reader.ReadUInt16());
-            loadoutRevision = reader.ReadUInt32();
-            resourceRevision = reader.ReadUInt32();
-            ReadResources(reader, out scapeMastery, out scapeDormant,
-                out shadeMastery, out shadeDormant, out handMastery, out handDormant,
-                out lanternMastery, out lanternDormant, out brideMastery, out brideDormant,
-                out rainMastery, out rainDormant,
-                out erosion, out revival, out multiplier, out erosionIdle, out revivalIdle);
-        }
-
-        private static void WriteResources(BinaryWriter writer,
-            float scapeMastery, bool scapeDormant,
-            float shadeMastery, bool shadeDormant,
-            float handMastery, bool handDormant,
-            float lanternMastery, bool lanternDormant,
-            float brideMastery, bool brideDormant,
-            float rainMastery, bool rainDormant,
-            float erosion, float revival, int multiplier,
-            int erosionIdle, int revivalIdle) {
-            writer.Write(scapeMastery);
-            writer.Write(scapeDormant);
-            writer.Write(shadeMastery);
-            writer.Write(shadeDormant);
-            writer.Write(handMastery);
-            writer.Write(handDormant);
-            writer.Write(erosion);
-            writer.Write(revival);
-            writer.Write((byte)WraithPlayer.SanitizeScapeMultiplier(multiplier));
-            writer.Write(erosionIdle);
-            writer.Write(revivalIdle);
-            writer.Write(lanternMastery);
-            writer.Write(lanternDormant);
-            writer.Write(brideMastery);
-            writer.Write(brideDormant);
-            writer.Write(rainMastery);
-            writer.Write(rainDormant);
-        }
-
-        private static void ReadResources(BinaryReader reader,
-            out float scapeMastery, out bool scapeDormant,
-            out float shadeMastery, out bool shadeDormant,
-            out float handMastery, out bool handDormant,
-            out float lanternMastery, out bool lanternDormant,
-            out float brideMastery, out bool brideDormant,
-            out float rainMastery, out bool rainDormant,
-            out float erosion, out float revival, out int multiplier,
-            out int erosionIdle, out int revivalIdle) {
-            scapeMastery = reader.ReadSingle();
-            scapeDormant = reader.ReadBoolean();
-            shadeMastery = reader.ReadSingle();
-            shadeDormant = reader.ReadBoolean();
-            handMastery = reader.ReadSingle();
-            handDormant = reader.ReadBoolean();
-            erosion = reader.ReadSingle();
-            revival = reader.ReadSingle();
-            multiplier = reader.ReadByte();
-            erosionIdle = reader.ReadInt32();
-            revivalIdle = reader.ReadInt32();
-            lanternMastery = reader.ReadSingle();
-            lanternDormant = reader.ReadBoolean();
-            brideMastery = reader.ReadSingle();
-            brideDormant = reader.ReadBoolean();
-            rainMastery = reader.ReadSingle();
-            rainDormant = reader.ReadBoolean();
+            writer.Write(GetWraithNetworkId(state.EquippedWraithKey));
+            writer.Write(state.LoadoutRevision);
+            writer.Write(state.ResourceRevision);
+            state.ExportResourceSnapshot().Write(writer);
         }
 
         private static ushort GetWraithNetworkId(string key) {

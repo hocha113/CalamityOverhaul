@@ -429,17 +429,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     OniBrush.DrawSealGlyph(sb, new Vector2(rect.Center.X, rect.Bottom + 12f), 7f,
                         alpha * (0.35f + hover * 0.22f), 0.02f);
                     return;
-                case OniGhostState.Dormant: {
-                    float lift = hover * 0.25f + (selected ? 0.15f : 0f);
-                    DrawNameColumn(sb, font, entry.Name(), rect, Color.Lerp(OnikiriUITheme.Paper, OnikiriUITheme.Bright, 0.16f) * (alpha * (0.75f + lift)), alpha, 1f, time, index);
-                    OniBrush.DrawSealGlyph(sb, new Vector2(rect.Center.X, rect.Bottom + 16f), 10f, alpha * 0.9f, 0.04f,
-                        MathHelper.Clamp(entry.Mastery + 0.3f, 0f, 1f));
-                    return;
-                }
                 default: {
                     float lift = hover * 0.25f + (selected ? 0.15f : 0f);
-                    DrawNameColumn(sb, font, entry.Name(), rect, OnikiriUITheme.Paper * (alpha * (0.78f + lift)), alpha, 0f, time, index);
-                    OniBrush.DrawSealGlyph(sb, new Vector2(rect.Center.X, rect.Bottom + 16f), 10f, alpha * 0.9f, -0.03f);
+                    //复苏临近时名讳向血色偏移并洇血，越接近满格越明显
+                    float danger = MathHelper.Clamp(
+                        (entry.Revival - Content.Wraiths.Runtime.WraithPlayer.RevivalDangerLine)
+                        / (1f - Content.Wraiths.Runtime.WraithPlayer.RevivalDangerLine), 0f, 1f);
+                    Color nameColor = Color.Lerp(OnikiriUITheme.Paper, OnikiriUITheme.Bright,
+                        danger * 0.35f) * (alpha * (0.78f + lift));
+                    DrawNameColumn(sb, font, entry.Name(), rect, nameColor, alpha,
+                        entry.InDanger ? MathHelper.Lerp(0.4f, 1f, danger) : 0f, time, index);
+                    OniBrush.DrawSealGlyph(sb, new Vector2(rect.Center.X, rect.Bottom + 16f), 10f,
+                        alpha * 0.9f, -0.03f + danger * 0.07f);
+                    //印下小字复苏读数，未沾复苏的鬼保持素净
+                    if (entry.Revival > 0.004f) {
+                        string pct = $"{(int)MathF.Round(entry.Revival * 100f)}%";
+                        Color pctColor = entry.InDanger ? OnikiriUITheme.Bright : OnikiriUITheme.TextDim;
+                        Vector2 pctSize = font.MeasureString(pct) * 0.52f;
+                        Utils.DrawBorderString(sb, pct,
+                            new Vector2(rect.Center.X - pctSize.X * 0.5f, rect.Bottom + 27f),
+                            pctColor * (alpha * (0.55f + danger * 0.4f)), 0.52f);
+                    }
                     return;
                 }
             }
@@ -502,18 +512,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             string name = equipped?.Name?.Invoke() ?? OniRegisterUI.EmptySlotName.Value;
             Color nameColor = equipped == null ? OnikiriUITheme.Disabled
-                : equipped.IsDormant ? OnikiriUITheme.Bright : OnikiriUITheme.Paper;
+                : equipped.InDanger ? OnikiriUITheme.Bright : OnikiriUITheme.Paper;
             Utils.DrawBorderString(sb, name, new Vector2(rect.X + 51f, rect.Y + 7f), nameColor * alpha, 0.76f);
 
             string state = equipped == null
                 ? OniRegisterUI.EmptySlotHint.Value
-                : string.Format(OniRegisterUI.MasteryFormat.Value, (int)MathF.Round(equipped.Mastery * 100f));
-            if (equipped?.IsDormant == true) {
-                state = OniRegisterUI.StateDormant.Value + " · " + state;
+                : string.Format(OniRegisterUI.RevivalFormat.Value, (int)MathF.Round(equipped.Revival * 100f));
+            if (equipped?.InDanger == true) {
+                state = OniRegisterUI.StateDanger.Value + " · " + state;
             }
             string line = VaultUtils.WrapTextJoin(state, font, rect.Width - 61f, 0.54f, 1, ellipsis: true);
             Utils.DrawBorderString(sb, line, new Vector2(rect.X + 51f, rect.Y + 26f),
-                (equipped?.IsDormant == true ? OnikiriUITheme.Bright : OnikiriUITheme.TextDim) * (alpha * 0.78f), 0.54f);
+                (equipped?.InDanger == true ? OnikiriUITheme.Bright : OnikiriUITheme.TextDim) * (alpha * 0.78f), 0.54f);
         }
 
         //====================== 影绘细节板 ======================
@@ -586,11 +596,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     maxLines: 3, ellipsis: true);
             }
 
-            //线香驾驭度计
+            //线香复苏计
             if (entry.CanEquip) {
                 DrawIncense(sb, ui, entry, alpha, font);
                 string cost = string.Format(OniRegisterUI.AbilityCostFormat.Value,
-                    (int)MathF.Round(entry.MasteryCost * 100f), (int)MathF.Round(entry.ErosionCost * 100f));
+                    (int)MathF.Round(entry.RevivalCost * 100f), (int)MathF.Round(entry.ErosionCost * 100f));
                 string costLine = VaultUtils.WrapTextJoin(cost, font, rect.Width - 48f, 0.62f, 1, ellipsis: true);
                 Utils.DrawBorderString(sb, costLine, new Vector2(rect.X + 24f, ui.ActionRect.Y - 23f),
                     OnikiriUITheme.TextDim * (alpha * 0.82f), 0.62f);
@@ -655,8 +665,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             int frameSize = smoke.Width / 2;
             Vector2 origin = new(frameSize * 0.5f);
             float time = ui.GlobalTimer;
-            //休眠的影近乎不动
-            float writhe = entry.IsDormant ? 0.24f : entry.IsArchive ? 0.42f : 1f;
+            //影的躁动随复苏加深
+            float writhe = entry.IsArchive ? 0.42f
+                : MathHelper.Lerp(0.75f, 1.25f, MathHelper.Clamp(entry.Revival, 0f, 1f));
             Vector2 basePos = lightCenter + new Vector2(0f, 12f);
 
             for (int i = 0; i < 3; i++) {
@@ -699,11 +710,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             int h = (int)(rect.Height * 0.46f);
             Rectangle quad = new((int)(basePos.X - w * 0.5f), (int)(basePos.Y - h * 0.52f), w, h);
 
-            float writhe = entry.State switch {
-                OniGhostState.Dormant => 0.16f,
-                OniGhostState.Archive => 0.32f,
-                _ => 0.62f,
-            };
+            float writhe = entry.IsArchive ? 0.32f
+                : MathHelper.Lerp(0.5f, 0.85f, MathHelper.Clamp(entry.Revival, 0f, 1f));
             float seed = OniGhostShadowDraw.SeedFromKey(entry.Key);
             //凝视:瞳位向光标方向压 UV 偏移(只转眼,不动身)
             Vector2 glance = Vector2.Zero;
@@ -739,7 +747,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             });
         }
 
-        /// <summary>线香,燃去比=驾驭度</summary>
+        /// <summary>线香,燃去比=复苏进度</summary>
         private static void DrawIncense(SpriteBatch sb, OniRegisterUI ui, OniGhostEntry entry, float alpha, DynamicSpriteFont font) {
             Rectangle stick = ui.IncenseRect();
             Vector2 ember = ui.IncenseEmberPos();
@@ -771,21 +779,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             OniBrush.DrawGradientLine(sb, ember - new Vector2(0f, 4f), ember - new Vector2(-wispSway, 30f),
                 OnikiriUITheme.TextDim * (alpha * 0.4f), OnikiriUITheme.TextDim * 0f, 1.2f);
 
-            //驾驭读数:居中吊在香座之下
-            string mastery = string.Format(OniRegisterUI.MasteryFormat.Value, (int)(entry.Mastery * 100f));
-            Color masteryCol = entry.IsDormant ? OnikiriUITheme.Bright : OnikiriUITheme.TextDim;
-            Vector2 mSize = font.MeasureString(mastery) * 0.66f;
-            Utils.DrawBorderString(sb, mastery, new Vector2(stick.Center.X - mSize.X * 0.5f, stick.Bottom + 12f), masteryCol * alpha, 0.66f);
+            //复苏读数:居中吊在香座之下
+            string revival = string.Format(OniRegisterUI.RevivalFormat.Value, (int)(entry.Revival * 100f));
+            Color revivalCol = entry.InDanger ? OnikiriUITheme.Bright : OnikiriUITheme.TextDim;
+            Vector2 mSize = font.MeasureString(revival) * 0.66f;
+            Utils.DrawBorderString(sb, revival, new Vector2(stick.Center.X - mSize.X * 0.5f, stick.Bottom + 12f), revivalCol * alpha, 0.66f);
 
-            //休眠时香脚焦边起青焰
-            if (entry.IsDormant) {
+            //复苏临近时香脚焦边起青焰
+            if (entry.InDanger) {
                 OniBrush.DrawCharredEdge(sb, new Rectangle(stick.X - 4, stick.Bottom - 8, stick.Width + 8, 8), 0.8f, time, alpha * 0.9f);
             }
         }
 
         private static (string, Color) StateLabel(OniGhostEntry entry) => entry.State switch {
+            OniGhostState.Ready when entry.InDanger => (OniRegisterUI.StateDanger.Value, OnikiriUITheme.Bright),
             OniGhostState.Ready => (OniRegisterUI.StateReady.Value, OnikiriUITheme.TextDim),
-            OniGhostState.Dormant => (OniRegisterUI.StateDormant.Value, OnikiriUITheme.Bright),
             _ => (OniRegisterUI.StateArchive.Value, OnikiriUITheme.Disabled),
         };
 

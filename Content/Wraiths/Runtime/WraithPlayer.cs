@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.Players;
 using CalamityOverhaul.Content.Wraiths.Core;
+using CalamityOverhaul.Content.Wraiths.Deaths;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -18,18 +19,29 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         internal const string LanternBoyKey = "LanternBoy";
         internal const string CrimsonBrideKey = "CrimsonBride";
         internal const string GhostRainKey = "GhostRain";
-        internal const int RevivalDecayDelay = 60 * 8;
 
-        private const int SchemaVersion = 1;
+        private const int SchemaVersion = 2;
         private const string SaveKey = "OnikiriWraithLoadout";
         private const float ErosionDecayPerTick = 1f / (60f * 240f);
         private const int ErosionDecayDelay = 60 * 6;
-        private const float RevivalDecayPerTick = 1f / (60f * 480f);
+        //持刀怠速衰减：该鬼 6 秒未涨复苏后开始，满→零约 240 秒
+        internal const int HeldIdleDelayTicks = 60 * 6;
+        private const float HeldDecayPerTick = 1f / (60f * 240f);
+        //休息衰减：役鬼位空或未持鬼切持续 3 秒后开始，满→零约 48 秒
+        internal const int RestDelayTicks = 60 * 3;
+        private const float RestDecayPerTick = 1f / (60f * 48f);
         private const int ResourceSyncInterval = 15;
 
         public const float TierCrawl = 0.35f;
         public const float TierStain = 0.70f;
         public const float TierMirror = 0.95f;
+
+        //复苏低语阈值：初动 / 将醒 / 临界
+        public const float RevivalStirLine = 0.50f;
+        public const float RevivalRiseLine = 0.80f;
+        public const float RevivalBrinkLine = 0.95f;
+        //复苏危险区：HUD 常显与危态反馈从这里开始
+        public const float RevivalDangerLine = 0.70f;
 
         internal static readonly string[] UsableKeys = [
             ScapeGhostKey,
@@ -40,23 +52,22 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             GhostRainKey,
         ];
 
-        private sealed class MasteryState
+        private sealed class RevivalState
         {
-            internal float Value = 1f;
-            internal bool Dormant;
+            internal float Value;
+            internal int IdleTicks = int.MaxValue / 2;
         }
 
-        private readonly Dictionary<string, MasteryState> mastery = [];
+        private readonly Dictionary<string, RevivalState> revival = [];
         private string equippedWraithKey = string.Empty;
         private float erosion;
-        private float revival;
         private int scapeMultiplier = 2;
         private int restTicks;
         private int erosionIdleTicks;
-        private int revivalIdleTicks;
         private int revivalChangedTicks;
         private int resourceSyncTicks;
         private int lastCueTier;
+        private int lastRevivalCueTier;
         private bool resourceDirty;
         private bool sessionInitialized;
 
@@ -65,40 +76,41 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         internal string EquippedWraithKey => equippedWraithKey;
         internal bool SessionInitialized => sessionInitialized;
         public float Erosion => erosion;
-        public float Revival => revival;
         public int RevivalChangedTimer => revivalChangedTicks;
         public int ScapeMultiplier => scapeMultiplier;
         public int ErosionTier => erosion >= TierMirror ? 3
             : erosion >= TierStain ? 2 : erosion >= TierCrawl ? 1 : 0;
 
+        /// <summary>当前役鬼的复苏值；空役鬼位为 0。</summary>
+        public float EquippedRevival => GetRevival(equippedWraithKey);
+
         public override void Initialize() => ResetState();
 
         private void ResetState() {
-            mastery.Clear();
+            revival.Clear();
             foreach (string key in UsableKeys) {
-                mastery[key] = new MasteryState();
+                revival[key] = new RevivalState();
             }
             equippedWraithKey = string.Empty;
             erosion = 0f;
-            revival = 0f;
             scapeMultiplier = 2;
             restTicks = 0;
             erosionIdleTicks = 0;
-            revivalIdleTicks = 0;
             revivalChangedTicks = int.MaxValue / 2;
             resourceSyncTicks = 0;
             lastCueTier = 0;
+            lastRevivalCueTier = 0;
             resourceDirty = false;
             sessionInitialized = false;
             LoadoutRevision = 0;
             ResourceRevision = 0;
         }
 
-        internal float GetMastery(string key)
-            => key != null && mastery.TryGetValue(key, out MasteryState state) ? state.Value : 0f;
+        internal float GetRevival(string key)
+            => key != null && revival.TryGetValue(key, out RevivalState state) ? state.Value : 0f;
 
-        internal bool IsDormant(string key)
-            => key != null && mastery.TryGetValue(key, out MasteryState state) && state.Dormant;
+        public static int GetRevivalTier(float value) => value >= RevivalBrinkLine ? 3
+            : value >= RevivalRiseLine ? 2 : value >= RevivalStirLine ? 1 : 0;
 
         internal bool TrySetEquippedAuthority(string key, uint expectedRevision = uint.MaxValue) {
             if (Main.netMode == NetmodeID.MultiplayerClient || !sessionInitialized
@@ -114,6 +126,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             }
             equippedWraithKey = next;
             restTicks = 0;
+            //换鬼后按新鬼当前进度重置低语阶，避免装备瞬间补播
+            lastRevivalCueTier = GetRevivalTier(GetRevival(next));
             LoadoutRevision++;
             if (Main.netMode == NetmodeID.Server) {
                 WraithNet.SendStateSync(Player.whoAmI);
@@ -121,11 +135,14 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             return true;
         }
 
-        internal bool TryConsumeAuthority(string key, float masteryCost, float erosionCost) {
-            if (!TryConsumeCore(key, masteryCost, erosionCost)) {
+        internal bool TryChargeAuthority(string key, float revivalGain, float erosionCost) {
+            if (!TryChargeCore(key, revivalGain, erosionCost, out bool revivalFull)) {
                 return false;
             }
             MarkResourceChanged(immediate: true);
+            if (revivalFull) {
+                BeginRevivalSeizure(key);
+            }
             return true;
         }
 
@@ -133,39 +150,56 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             bool friendly, out bool revivalKilled) {
             revivalKilled = false;
             if (context.Player != Player || context.Definition?.Key != ScapeGhostKey
-                || !TryConsumeCore(context.Definition.Key,
-                    context.Definition.MasteryCost, context.Definition.ErosionCost)) {
+                || !TryChargeCore(ScapeGhostKey, context.Definition.RevivalCost,
+                    context.Definition.ErosionCost, out revivalKilled)) {
                 return false;
             }
             if (friendly) {
                 scapeMultiplier = Math.Min(scapeMultiplier * 2, 32);
             }
-            revival = MathHelper.Clamp(revival + 0.25f, 0f, 1f);
-            revivalIdleTicks = 0;
-            revivalChangedTicks = 0;
-            revivalKilled = revival >= 1f;
-            if (revivalKilled) {
-                revival = 0f;
-            }
             MarkResourceChanged(immediate: true);
-            if (revivalKilled && WraithRegistry.TryGet(ScapeGhostKey, out WraithDefinition definition)) {
-                WraithLethality.Kill(Player, definition, WraithSystemText.RevivalKillReason);
+            if (revivalKilled) {
+                BeginRevivalSeizure(ScapeGhostKey);
             }
             return true;
         }
 
-        private bool TryConsumeCore(string key, float masteryCost, float erosionCost) {
+        private bool TryChargeCore(string key, float revivalGain, float erosionCost,
+            out bool revivalFull) {
+            revivalFull = false;
             if (Main.netMode == NetmodeID.MultiplayerClient || !sessionInitialized
-                || !mastery.TryGetValue(key, out MasteryState state) || state.Dormant
-                || masteryCost <= 0f || state.Value + 0.0001f < masteryCost) {
+                || revivalGain <= 0f || !revival.TryGetValue(key, out RevivalState state)
+                || WraithRevivalDeath.IsSeized(Player)) {
                 return false;
             }
-            state.Value = MathHelper.Clamp(state.Value - masteryCost, 0f, 1f);
-            if (state.Value <= WraithAbilityService.DormantThreshold) {
-                state.Dormant = true;
+            state.Value = MathHelper.Clamp(state.Value + revivalGain, 0f, 1f);
+            state.IdleTicks = 0;
+            if (key == equippedWraithKey) {
+                revivalChangedTicks = 0;
+                int tier = GetRevivalTier(state.Value);
+                if (tier > lastRevivalCueTier && Main.netMode != NetmodeID.Server
+                    && Player.whoAmI == Main.myPlayer) {
+                    PlayRevivalCue(tier);
+                }
+                lastRevivalCueTier = Math.Max(lastRevivalCueTier, tier);
             }
             AddErosionInternal(erosionCost);
+            revivalFull = state.Value >= 1f;
             return true;
+        }
+
+        /// <summary>复苏满格：厉鬼夺身。槽先归零，随后交由夺身演出走向死亡。</summary>
+        private void BeginRevivalSeizure(string key) {
+            if (!revival.TryGetValue(key, out RevivalState state)) {
+                return;
+            }
+            state.Value = 0f;
+            state.IdleTicks = 0;
+            if (key == equippedWraithKey) {
+                lastRevivalCueTier = 0;
+            }
+            MarkResourceChanged(immediate: true);
+            WraithRevivalDeath.StartSeizure(Player, key);
         }
 
         private void AddErosionInternal(float amount) {
@@ -210,29 +244,28 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             bool immediateSync = false;
             bool resting = string.IsNullOrEmpty(equippedWraithKey)
                 || !WraithAbilityService.IsOnikiriHeld(Player);
-            if (resting) {
-                restTicks = Math.Min(restTicks + 1, WraithAbilityService.RecoveryDelayTicks);
-                if (restTicks >= WraithAbilityService.RecoveryDelayTicks) {
-                    float erosionFactor = MathHelper.Lerp(1f, 0.5f, erosion);
-                    float amount = WraithAbilityService.RecoveryPerSecond * erosionFactor / 60f;
-                    foreach (MasteryState state in mastery.Values) {
-                        if (state.Value >= 1f) {
-                            continue;
-                        }
-                        state.Value = Math.Min(state.Value + amount, 1f);
-                        if (state.Dormant && state.Value >= WraithAbilityService.WakeThreshold) {
-                            state.Dormant = false;
-                            immediateSync = true;
-                            if (Main.netMode != NetmodeID.Server && Player.whoAmI == Main.myPlayer) {
-                                PlayWakeCue();
-                            }
-                        }
-                        changed = true;
-                    }
+            restTicks = resting ? Math.Min(restTicks + 1, RestDelayTicks) : 0;
+
+            //侵蚀减缓复苏衰减：满侵蚀时衰减速度是无侵蚀时的一半
+            float erosionFactor = MathHelper.Lerp(1f, 0.5f, erosion);
+            bool restDecay = resting && restTicks >= RestDelayTicks;
+            foreach (RevivalState state in revival.Values) {
+                state.IdleTicks = Math.Min(state.IdleTicks + 1, int.MaxValue - 1);
+                if (state.Value <= 0f) {
+                    continue;
                 }
+                float rate = restDecay ? RestDecayPerTick
+                    : !resting && state.IdleTicks >= HeldIdleDelayTicks ? HeldDecayPerTick : 0f;
+                if (rate <= 0f) {
+                    continue;
+                }
+                state.Value = Math.Max(state.Value - rate * erosionFactor, 0f);
+                changed = true;
             }
-            else {
-                restTicks = 0;
+            if (changed) {
+                //衰减跌出阈值后允许低语再次触发
+                lastRevivalCueTier = Math.Min(lastRevivalCueTier,
+                    GetRevivalTier(GetRevival(equippedWraithKey)));
             }
 
             if (erosionIdleTicks < ErosionDecayDelay) {
@@ -243,14 +276,6 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 erosion = Math.Max(erosion - ErosionDecayPerTick, 0f);
                 immediateSync |= ErosionTier != previousTier;
                 lastCueTier = Math.Min(lastCueTier, ErosionTier);
-                changed = true;
-            }
-
-            if (revivalIdleTicks < RevivalDecayDelay) {
-                revivalIdleTicks++;
-            }
-            else if (revival > 0f) {
-                revival = Math.Max(revival - RevivalDecayPerTick, 0f);
                 changed = true;
             }
 
@@ -321,6 +346,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             resourceSyncTicks = 0;
             resourceDirty = false;
             lastCueTier = ErosionTier;
+            lastRevivalCueTier = GetRevivalTier(EquippedRevival);
             Player.TryGetOverride(out PlayerDeath playerDeath);
             playerDeath?.ClearScapeSession();
             playerDeath?.ClearLethalHurt();
@@ -349,18 +375,15 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         public override void SaveData(TagCompound tag) {
             List<TagCompound> records = [];
             foreach (string key in UsableKeys) {
-                MasteryState state = mastery[key];
                 records.Add(new TagCompound {
                     ["Key"] = key,
-                    ["Mastery"] = state.Value,
-                    ["Dormant"] = state.Dormant,
+                    ["Revival"] = revival[key].Value,
                 });
             }
             TagCompound stateTag = new() {
                 ["Version"] = SchemaVersion,
                 ["Records"] = records,
                 ["Erosion"] = erosion,
-                ["Revival"] = revival,
                 ["ScapeMultiplier"] = scapeMultiplier,
             };
             if (!string.IsNullOrEmpty(equippedWraithKey)) {
@@ -371,8 +394,11 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         public override void LoadData(TagCompound tag) {
             ResetState();
-            if (!tag.TryGet(SaveKey, out TagCompound stateTag)
-                || stateTag == null || stateTag.GetInt("Version") != SchemaVersion) {
+            if (!tag.TryGet(SaveKey, out TagCompound stateTag) || stateTag == null) {
+                return;
+            }
+            int version = stateTag.GetInt("Version");
+            if (version != SchemaVersion && version != 1) {
                 return;
             }
 
@@ -381,85 +407,60 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 equipped = stateTag.GetString("Equipped");
             }
             equippedWraithKey = WraithRegistry.TryGetUsable(equipped, out _) ? equipped : string.Empty;
-            if (stateTag.TryGet("Records", out List<TagCompound> records) && records != null) {
+            if (version == 1) {
+                //v1 迁移：驾驭度/休眠废弃，六鬼复苏从零开始；旧共享复苏归入替死鬼
+                revival[ScapeGhostKey].Value = ReadUnitFloat(stateTag, "Revival");
+            }
+            else if (stateTag.TryGet("Records", out List<TagCompound> records) && records != null) {
                 HashSet<string> seen = [];
                 foreach (TagCompound record in records) {
                     string key = record.GetString("Key");
-                    if (!seen.Add(key) || !mastery.TryGetValue(key, out MasteryState entry)) {
+                    if (!seen.Add(key) || !revival.TryGetValue(key, out RevivalState entry)) {
                         continue;
                     }
-                    float value = record.TryGet("Mastery", out float stored) && float.IsFinite(stored)
-                        ? MathHelper.Clamp(stored, 0f, 1f) : 1f;
-                    entry.Value = value;
-                    entry.Dormant = value <= WraithAbilityService.DormantThreshold
-                        || record.GetBool("Dormant") && value < WraithAbilityService.WakeThreshold;
+                    entry.Value = record.TryGet("Revival", out float stored) && float.IsFinite(stored)
+                        ? MathHelper.Clamp(stored, 0f, 1f) : 0f;
                 }
             }
             erosion = ReadUnitFloat(stateTag, "Erosion");
-            revival = ReadUnitFloat(stateTag, "Revival");
             scapeMultiplier = SanitizeScapeMultiplier(stateTag.GetInt("ScapeMultiplier"));
             lastCueTier = ErosionTier;
+            lastRevivalCueTier = GetRevivalTier(EquippedRevival);
         }
 
         private static float ReadUnitFloat(TagCompound tag, string key)
             => tag.TryGet(key, out float value) && float.IsFinite(value)
                 ? MathHelper.Clamp(value, 0f, 1f) : 0f;
 
-        internal void ExportSnapshot(out string equipped, out uint loadoutRev, out uint resourceRev,
-            out float scapeMastery, out bool scapeDormant,
-            out float shadeMastery, out bool shadeDormant,
-            out float handMastery, out bool handDormant,
-            out float lanternMastery, out bool lanternDormant,
-            out float brideMastery, out bool brideDormant,
-            out float rainMastery, out bool rainDormant,
-            out float erosionValue, out float revivalValue, out int multiplier,
-            out int erosionIdle, out int revivalIdle) {
-            equipped = equippedWraithKey;
-            loadoutRev = LoadoutRevision;
-            resourceRev = ResourceRevision;
-            scapeMastery = GetMastery(ScapeGhostKey);
-            scapeDormant = IsDormant(ScapeGhostKey);
-            shadeMastery = GetMastery(HeadlessShadeKey);
-            shadeDormant = IsDormant(HeadlessShadeKey);
-            handMastery = GetMastery(GhostHandKey);
-            handDormant = IsDormant(GhostHandKey);
-            lanternMastery = GetMastery(LanternBoyKey);
-            lanternDormant = IsDormant(LanternBoyKey);
-            brideMastery = GetMastery(CrimsonBrideKey);
-            brideDormant = IsDormant(CrimsonBrideKey);
-            rainMastery = GetMastery(GhostRainKey);
-            rainDormant = IsDormant(GhostRainKey);
-            erosionValue = erosion;
-            revivalValue = revival;
-            multiplier = scapeMultiplier;
-            erosionIdle = erosionIdleTicks;
-            revivalIdle = revivalIdleTicks;
+        internal WraithResourceSnapshot ExportResourceSnapshot() {
+            WraithResourceSnapshot snapshot = new() {
+                Revival = new float[UsableKeys.Length],
+                Erosion = erosion,
+                Multiplier = scapeMultiplier,
+                ErosionIdle = erosionIdleTicks,
+            };
+            for (int i = 0; i < UsableKeys.Length; i++) {
+                snapshot.Revival[i] = revival[UsableKeys[i]].Value;
+            }
+            return snapshot;
         }
 
-        internal bool AcceptInitialState(string equipped,
-            float scapeMastery, bool scapeDormant,
-            float shadeMastery, bool shadeDormant,
-            float handMastery, bool handDormant,
-            float lanternMastery, bool lanternDormant,
-            float brideMastery, bool brideDormant,
-            float rainMastery, bool rainDormant,
-            float erosionValue, float revivalValue, int multiplier,
-            int erosionIdle, int revivalIdle) {
+        private void ApplySnapshotValues(in WraithResourceSnapshot snapshot) {
+            for (int i = 0; i < UsableKeys.Length; i++) {
+                revival[UsableKeys[i]].Value = SanitizeUnit(snapshot.Revival[i]);
+            }
+            erosion = SanitizeUnit(snapshot.Erosion);
+            scapeMultiplier = SanitizeScapeMultiplier(snapshot.Multiplier);
+            erosionIdleTicks = Math.Clamp(snapshot.ErosionIdle, 0, ErosionDecayDelay);
+        }
+
+        internal bool AcceptInitialState(string equipped, in WraithResourceSnapshot snapshot) {
             if (Main.netMode != NetmodeID.Server || sessionInitialized) {
                 return false;
             }
             equippedWraithKey = WraithRegistry.TryGetUsable(equipped, out _) ? equipped : string.Empty;
-            ApplyMastery(ScapeGhostKey, scapeMastery, scapeDormant);
-            ApplyMastery(HeadlessShadeKey, shadeMastery, shadeDormant);
-            ApplyMastery(GhostHandKey, handMastery, handDormant);
-            ApplyMastery(LanternBoyKey, lanternMastery, lanternDormant);
-            ApplyMastery(CrimsonBrideKey, brideMastery, brideDormant);
-            ApplyMastery(GhostRainKey, rainMastery, rainDormant);
-            erosion = SanitizeUnit(erosionValue);
-            revival = SanitizeUnit(revivalValue);
-            scapeMultiplier = SanitizeScapeMultiplier(multiplier);
-            erosionIdleTicks = Math.Clamp(erosionIdle, 0, ErosionDecayDelay);
-            revivalIdleTicks = Math.Clamp(revivalIdle, 0, RevivalDecayDelay);
+            ApplySnapshotValues(in snapshot);
+            lastRevivalCueTier = GetRevivalTier(EquippedRevival);
             LoadoutRevision = 0;
             ResourceRevision = 0;
             sessionInitialized = true;
@@ -467,14 +468,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         }
 
         internal void ApplyNetworkState(string equipped, uint loadoutRev, uint resourceRev,
-            float scapeMastery, bool scapeDormant,
-            float shadeMastery, bool shadeDormant,
-            float handMastery, bool handDormant,
-            float lanternMastery, bool lanternDormant,
-            float brideMastery, bool brideDormant,
-            float rainMastery, bool rainDormant,
-            float erosionValue, float revivalValue, int multiplier,
-            int erosionIdle, int revivalIdle, bool force) {
+            in WraithResourceSnapshot snapshot, bool force) {
             if (Main.netMode != NetmodeID.MultiplayerClient) {
                 return;
             }
@@ -487,40 +481,27 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 return;
             }
 
-            bool scapeWoke = IsDormant(ScapeGhostKey) && !scapeDormant;
-            bool shadeWoke = IsDormant(HeadlessShadeKey) && !shadeDormant;
-            bool handWoke = IsDormant(GhostHandKey) && !handDormant;
-            bool lanternWoke = IsDormant(LanternBoyKey) && !lanternDormant;
-            bool brideWoke = IsDormant(CrimsonBrideKey) && !brideDormant;
-            bool rainWoke = IsDormant(GhostRainKey) && !rainDormant;
-            int previousTier = ErosionTier;
-            ApplyMastery(ScapeGhostKey, scapeMastery, scapeDormant);
-            ApplyMastery(HeadlessShadeKey, shadeMastery, shadeDormant);
-            ApplyMastery(GhostHandKey, handMastery, handDormant);
-            ApplyMastery(LanternBoyKey, lanternMastery, lanternDormant);
-            ApplyMastery(CrimsonBrideKey, brideMastery, brideDormant);
-            ApplyMastery(GhostRainKey, rainMastery, rainDormant);
-            erosion = SanitizeUnit(erosionValue);
-            revival = SanitizeUnit(revivalValue);
-            scapeMultiplier = SanitizeScapeMultiplier(multiplier);
-            erosionIdleTicks = Math.Clamp(erosionIdle, 0, ErosionDecayDelay);
-            revivalIdleTicks = Math.Clamp(revivalIdle, 0, RevivalDecayDelay);
+            int previousErosionTier = ErosionTier;
+            float previousEquipped = EquippedRevival;
+            int previousRevivalTier = GetRevivalTier(previousEquipped);
+            ApplySnapshotValues(in snapshot);
             ResourceRevision = resourceRev;
             sessionInitialized = true;
-            if (ErosionTier > previousTier && Player.whoAmI == Main.myPlayer) {
+            if (Player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            if (ErosionTier > previousErosionTier) {
                 PlayTierCue(ErosionTier);
             }
-            if ((scapeWoke || shadeWoke || handWoke || lanternWoke || brideWoke || rainWoke)
-                && Player.whoAmI == Main.myPlayer) {
-                PlayWakeCue();
+            float current = EquippedRevival;
+            if (current > previousEquipped + 0.0001f) {
+                revivalChangedTicks = 0;
             }
-        }
-
-        private void ApplyMastery(string key, float value, bool dormant) {
-            MasteryState state = mastery[key];
-            state.Value = SanitizeUnit(value);
-            state.Dormant = state.Value <= WraithAbilityService.DormantThreshold
-                || dormant && state.Value < WraithAbilityService.WakeThreshold;
+            int tier = GetRevivalTier(current);
+            if (!force && tier > previousRevivalTier) {
+                PlayRevivalCue(tier);
+            }
+            lastRevivalCueTier = tier;
         }
 
         private static float SanitizeUnit(float value)
@@ -540,7 +521,22 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             Player.CWR()?.GetScreenShake(1.5f + tier);
         }
 
-        private static void PlayWakeCue()
-            => SoundEngine.PlaySound(SoundID.Item4 with { Pitch = -0.45f, Volume = 0.35f });
+        /// <summary>复苏低语：只在向上跨越阈值时短促播放一次。</summary>
+        private void PlayRevivalCue(int tier) {
+            var line = tier switch {
+                1 => WraithSystemText.RevivalStir,
+                2 => WraithSystemText.RevivalRise,
+                _ => WraithSystemText.RevivalBrink,
+            };
+            VaultUtils.Text(line.Value, new Color(158, 44, 54));
+            SoundEngine.PlaySound(SoundID.Zombie103 with {
+                Pitch = -0.75f + tier * 0.12f,
+                Volume = 0.32f,
+                MaxInstances = 1,
+            });
+            if (tier >= 3) {
+                Player.CWR()?.GetScreenShake(2.5f);
+            }
+        }
     }
 }

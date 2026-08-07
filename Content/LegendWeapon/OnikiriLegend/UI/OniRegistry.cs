@@ -7,7 +7,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     internal enum OniGhostState : byte
     {
         Ready,
-        Dormant,
         Archive,
     }
 
@@ -17,16 +16,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public Func<string> Name;
         public Func<string> Origin;
         public Func<string> Power;
-        public float Mastery;
-        public float MasteryCost;
+        /// <summary>该鬼复苏槽 0..1，满格即夺身</summary>
+        public float Revival;
+        /// <summary>单次役使推进的复苏量</summary>
+        public float RevivalCost;
         public float ErosionCost;
         public OniGhostState State;
         public bool CanEquip;
 
         public bool HasName => Name != null;
-        public bool IsDormant => State == OniGhostState.Dormant;
         public bool IsArchive => State == OniGhostState.Archive;
-        public bool HasEyes => CanEquip && !IsDormant;
+        public bool HasEyes => CanEquip;
+        /// <summary>复苏危险区（≥0.7）：UI 危态反馈统一读这里</summary>
+        public bool InDanger => CanEquip
+            && Revival >= Content.Wraiths.Runtime.WraithPlayer.RevivalDangerLine;
+        /// <summary>再役使一次即满格夺身</summary>
+        public bool NextUseFills => CanEquip && RevivalCost > 0f
+            && Revival + RevivalCost >= 1f - 0.0001f;
     }
 
     internal interface IOniGhostSource
@@ -62,7 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        public static bool IsEquippedDormant => EquippedEntry?.IsDormant == true;
+        public static bool IsEquippedInDanger => EquippedEntry?.InDanger == true;
 
         public static bool TrySetEquipped(Item sourceItem, string key, Action<bool> completed = null)
             => source?.TrySetEquipped(sourceItem, key, completed) == true;

@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
         private ref float AgeRaw => ref Projectile.ai[0];
         private ref float PaidRaw => ref Projectile.ai[1];
-        private ref float Mastery => ref Projectile.ai[2];
+        private ref float Revival => ref Projectile.ai[2];
 
         private int Age {
             get => (int)AgeRaw;
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
         private int fadeAge = -1;
         private byte stormSeed;
-        private float masterySnapshot;
+        private float revivalSnapshot;
         private int weaponDamageSnapshot;
         private bool seedRolled;
 
@@ -94,14 +94,14 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         public override void SendExtraAI(BinaryWriter writer) {
             writer.Write(stormSeed);
             writer.Write((short)Math.Clamp(fadeAge, -1, short.MaxValue));
-            writer.Write(masterySnapshot);
+            writer.Write(revivalSnapshot);
             writer.Write(weaponDamageSnapshot);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader) {
             stormSeed = reader.ReadByte();
             fadeAge = reader.ReadInt16();
-            masterySnapshot = reader.ReadSingle();
+            revivalSnapshot = reader.ReadSingle();
             weaponDamageSnapshot = reader.ReadInt32();
             seedRolled = true;
         }
@@ -145,11 +145,10 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                         out WraithAbilityContext context)
                     && WraithAbilityService.TryCommitUse(in context)) {
                     Paid = true;
-                    masterySnapshot = MathHelper.Clamp(context.Mastery, 0f, 1f);
-                    Mastery = masterySnapshot;
+                    revivalSnapshot = MathHelper.Clamp(context.Revival, 0f, 1f);
+                    Revival = revivalSnapshot;
                     weaponDamageSnapshot = Math.Max(
                         Owner.GetWeaponDamage(context.VesselItem), 1);
-                    GhostRainStorm.ShowRainText(Owner);
                     Projectile.netUpdate = true;
                 }
                 else {
@@ -198,7 +197,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
             if (t % GhostRainStorm.ErodeInterval == 0) {
                 int damage = Math.Max(1, (int)(weaponDamageSnapshot
-                    * MathHelper.Lerp(0.10f, 0.18f, masterySnapshot)));
+                    * MathHelper.Lerp(0.10f, 0.18f, revivalSnapshot)));
                 foreach (NPC npc in Main.ActiveNPCs) {
                     if (!IsErodable(npc)) {
                         continue;
@@ -233,7 +232,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             }
 
             int bonus = Math.Max(1, (int)(weaponDamageSnapshot
-                * MathHelper.Lerp(0.10f, 0.18f, masterySnapshot)));
+                * MathHelper.Lerp(0.10f, 0.18f, revivalSnapshot)));
             if (picked.boss || picked.knockBackResist <= 0f) {
                 int direction = picked.Center.X >= Owner.Center.X ? 1 : -1;
                 Owner.ApplyDamageToNPC(picked, bonus * 2, 0f, direction, false,

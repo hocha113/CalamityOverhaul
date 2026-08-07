@@ -48,12 +48,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         public static Texture2D OniHand = null;
 
         public static LocalizedText SuppressTip { get; private set; }
-        public static LocalizedText RestlessWarn { get; private set; }
 
         public override void SetStaticDefaults() {
             SuppressTip = this.GetLocalization(nameof(SuppressTip)
                 , () => "挥砍与命中积累硫火压制，六只鬼手的每次出击都在消耗它\n压制熄灭时鬼手躁动：它们打得更凶，也随时会回头掐住你的脖子");
-            RestlessWarn = this.GetLocalization(nameof(RestlessWarn), () => "硫磺火熄灭了，握紧刀柄！");
         }
 
         public override void SetDefaults() {
@@ -264,7 +262,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (Player.whoAmI == Main.myPlayer) {
                 SoundEngine.PlaySound(SoundID.NPCDeath52 with { Volume = 0.7f, Pitch = -0.45f }, Player.Center);
                 SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.8f, Pitch = -0.7f }, Player.Center);
-                CombatText.NewText(Player.Hitbox, new Color(255, 120, 40), OniMachete.RestlessWarn.Value, true);
             }
         }
     }

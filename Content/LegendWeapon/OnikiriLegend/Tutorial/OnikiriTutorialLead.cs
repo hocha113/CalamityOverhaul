@@ -16,13 +16,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
     /// <summary>鬼切教程引导队列入口</summary>
     internal sealed class OnikiriTutorialLead : ModSystem, ILocalizedModType, IGuideLead
     {
-        internal const int TutorialVersion = 4;
+        internal const int TutorialVersion = 5;
 
         public string LocalizationCategory => "Legend.OnikiriText";
 
         public static LocalizedText AskTitle { get; private set; }
         public static LocalizedText AskBody { get; private set; }
         public static LocalizedText AskPrompt { get; private set; }
+        public static LocalizedText RefreshAskTitle { get; private set; }
+        public static LocalizedText RefreshAskBody { get; private set; }
+        public static LocalizedText RefreshAskPrompt { get; private set; }
         public static LocalizedText AcceptBtn { get; private set; }
         public static LocalizedText DeclineBtn { get; private set; }
         public static LocalizedText DeclineNotice { get; private set; }
@@ -35,6 +38,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         public static LocalizedText MeiTitle { get; private set; }
         public static LocalizedText MeiBody { get; private set; }
         public static LocalizedText MeiPrompt { get; private set; }
+        public static LocalizedText CodexTitle { get; private set; }
+        public static LocalizedText CodexBody { get; private set; }
+        public static LocalizedText CodexPrompt { get; private set; }
         public static LocalizedText DomainTitle { get; private set; }
         public static LocalizedText DomainBody { get; private set; }
         public static LocalizedText DomainPrompt { get; private set; }
@@ -62,12 +68,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
         public static LocalizedText BusyFeedback { get; private set; }
         public static LocalizedText RetryFeedback { get; private set; }
         public static LocalizedText NeedBladeHold { get; private set; }
+        public static LocalizedText TargetStalledHint { get; private set; }
         public static LocalizedText AssistBtn { get; private set; }
         public static LocalizedText RetryBtn { get; private set; }
         public static LocalizedText NextBtn { get; private set; }
         public static LocalizedText OpenRegisterBtn { get; private set; }
         public static LocalizedText OpenMeiBtn { get; private set; }
+        public static LocalizedText OpenCodexBtn { get; private set; }
         public static LocalizedText SkipBtn { get; private set; }
+        public static LocalizedText SkipStepBtn { get; private set; }
+        public static LocalizedText AbortBtn { get; private set; }
 
         private static OnikiriTutorialLead instance;
 
@@ -95,6 +105,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             AskTitle = this.GetLocalization(nameof(AskTitle), () => "要不要先受一遍教习");
             AskBody = this.GetLocalization(nameof(AskBody), () => "鬼切的气力、鬼域与肢解都有讲究");
             AskPrompt = this.GetLocalization(nameof(AskPrompt), () => "现在受教，或收下稽古符改日再来");
+            RefreshAskTitle = this.GetLocalization(nameof(RefreshAskTitle), () => "补一段新的");
+            RefreshAskBody = this.GetLocalization(nameof(RefreshAskBody),
+                () => "这一版多了两段讲解:改铭台旁那本铭谱怎么查,以及鬼域之眼在动手前该认的东西");
+            RefreshAskPrompt = this.GetLocalization(nameof(RefreshAskPrompt),
+                () => "现在补讲;或收下稽古符,改日自己开讲");
             AcceptBtn = this.GetLocalization(nameof(AcceptBtn), () => "受教");
             DeclineBtn = this.GetLocalization(nameof(DeclineBtn), () => "不必了");
             DeclineNotice = this.GetLocalization(nameof(DeclineNotice), () => "稽古符已留给你，使用它可随时开讲");
@@ -107,6 +122,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             MeiTitle = this.GetLocalization(nameof(MeiTitle), () => "改铭台");
             MeiBody = this.GetLocalization(nameof(MeiBody), () => "封印札是 HUD 的界面入口");
             MeiPrompt = this.GetLocalization(nameof(MeiPrompt), () => "按 {0} 或点封印札打开改铭台");
+            CodexTitle = this.GetLocalization(nameof(CodexTitle), () => "铭谱");
+            CodexBody = this.GetLocalization(nameof(CodexBody),
+                () => "台账板下压着一本线装册子,里面记着每一枚铭的赋效、代价与来路");
+            CodexPrompt = this.GetLocalization(nameof(CodexPrompt), () => "点高亮的册子展读,合卷后继续");
             DomainTitle = this.GetLocalization(nameof(DomainTitle), () => "鬼域之眼");
             DomainBody = this.GetLocalization(nameof(DomainBody), () => "鬼眼掌管领域的展收与表里翻转");
             DomainPrompt = this.GetLocalization(nameof(DomainPrompt), () => "右键或 {0} 翻转表里");
@@ -135,12 +154,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             BusyFeedback = this.GetLocalization(nameof(BusyFeedback), () => "鬼域仍在变相，请稍候");
             RetryFeedback = this.GetLocalization(nameof(RetryFeedback), () => "这次没有生效，请重试");
             NeedBladeHold = this.GetLocalization(nameof(NeedBladeHold), () => "行囊里没有鬼切，先把它拿回来再继续");
+            TargetStalledHint = this.GetLocalization(nameof(TargetStalledHint),
+                () => "演练靶还没落位。附近生灵太挤时它排不上号，换个开阔处站定");
             AssistBtn = this.GetLocalization(nameof(AssistBtn), () => "替我演示");
             RetryBtn = this.GetLocalization(nameof(RetryBtn), () => "重试");
             NextBtn = this.GetLocalization(nameof(NextBtn), () => "已知晓");
             OpenRegisterBtn = this.GetLocalization(nameof(OpenRegisterBtn), () => "开点鬼簿");
             OpenMeiBtn = this.GetLocalization(nameof(OpenMeiBtn), () => "开改铭台");
+            OpenCodexBtn = this.GetLocalization(nameof(OpenCodexBtn), () => "展读铭谱");
             SkipBtn = this.GetLocalization(nameof(SkipBtn), () => "跳过");
+            SkipStepBtn = this.GetLocalization(nameof(SkipStepBtn), () => "跳过本步");
+            AbortBtn = this.GetLocalization(nameof(AbortBtn), () => "收起教习");
         }
 
         int IGuideLead.GuidePriority => 5;
@@ -209,10 +233,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             if (player?.active != true) return;
             OnikiriGuideData guide = player.GetModPlayer<StoryPlayer>().Get<OnikiriGuideData>();
             guide.CompletedVersion = TutorialVersion;
-            guide.Checkpoint = OnikiriTutorialFlow.Checkpoint_Hud;
+            guide.Checkpoint = OnikiriTutorialFlow.Checkpoint_ExplainDone;
             guide.PracticeCheckpoint = (int)OnikiriPracticeCheckpoint.Closed;
             guide.AskAnswered = true;
             guide.Declined = false;
+            guide.RefresherAskedVersion = TutorialVersion;
             player.GetModPlayer<OnikiriTutorialPlayer>().ClearForced();
         }
 
@@ -258,8 +283,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
                 player.QuickSpawnItem(player.GetSource_Misc("CWR_OnikiriTutorialDebug"), OnikiriOverride.ID);
             }
             OnikiriGuideData guide = player.GetModPlayer<StoryPlayer>().Get<OnikiriGuideData>();
-            guide.CompletedVersion = 3;
-            guide.Checkpoint = OnikiriTutorialFlow.Checkpoint_Hud;
+            guide.CompletedVersion = TutorialVersion - 1;
+            guide.Checkpoint = OnikiriTutorialFlow.Checkpoint_ExplainDone;
             guide.PracticeCheckpoint = (int)OnikiriPracticeCheckpoint.None;
             tutorial.ForceStartPractice();
         }
@@ -272,6 +297,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             guide.PracticeCheckpoint = 0;
             guide.AskAnswered = false;
             guide.Declined = false;
+            guide.RefresherAskedVersion = 0;
             player.GetModPlayer<OnikiriTutorialPlayer>().ResetAllRuntime();
             if (OniDomains.OniDomain.GetPhase(player) != OniDomains.OniDomainPhase.Closed) {
                 OniDomains.OniDomain.Close(player);

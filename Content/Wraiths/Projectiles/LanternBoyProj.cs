@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
         private ref float StateRaw => ref Projectile.ai[0];
         private ref float StateTimer => ref Projectile.ai[1];
-        private ref float Mastery => ref Projectile.ai[2];
+        private ref float Revival => ref Projectile.ai[2];
 
         private LanternState State {
             get => (LanternState)StateRaw;
@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             }
             if (State is LanternState.Appearing or LanternState.Active) {
                 if (resolved) {
-                    Mastery = context.Mastery;
+                    Revival = context.Revival;
                     if (State == LanternState.Appearing && StateTimer >= AppearFrames) {
                         Transition(LanternState.Active);
                     }

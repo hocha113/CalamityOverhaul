@@ -33,7 +33,8 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         internal virtual ushort NetworkId => ushort.MaxValue;
         internal virtual WraithCatalogState CatalogState => WraithCatalogState.Archive;
         internal virtual WraithAbilityKind AbilityKind => WraithAbilityKind.None;
-        internal virtual float MasteryCost => 0f;
+        /// <summary>每次有效结算推进的复苏量；满格即厉鬼夺身。</summary>
+        internal virtual float RevivalCost => 0f;
         internal virtual float ErosionCost => 0f;
         internal bool CanEquip => CatalogState == WraithCatalogState.Usable;
 
@@ -59,6 +60,9 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         }
 
         internal virtual WraithPassiveAbility CreateAbility() => null;
+
+        /// <summary>该鬼的夺身死亡演出；返回 null 时使用通用兜底演出。每次夺身新建实例。</summary>
+        internal virtual Deaths.WraithDeathPerformance CreateDeathPerformance() => null;
 
         internal void LoadLocalization() {
             DisplayName = this.GetLocalization("DisplayName", () => "???");

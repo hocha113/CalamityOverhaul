@@ -35,30 +35,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         //====================== 台账主板 ======================
 
+        /// <summary>开台落板的纵向让位:板与棚内器物共用,免得开屏那一下册子脱出格外</summary>
+        public static int PanelRevealOffset(float reveal)
+            => (int)((1f - VaultUtils.EaseOutCubic(MathHelper.Clamp(reveal / 0.42f, 0f, 1f))) * 14f);
+
         /// <summary>
         /// 改铭台账主板:黑漆卡面(shader TechLacquer 优先,缺席退回 CPU 简笔)+
-        /// 题头(朱印+题字+烙痕线)+脚注界线;reveal 驱动卡面自下浮上
+        /// 题头(朱印+题字+烙痕线)+脚注界线;reveal 驱动卡面自下浮上。<br/>
+        /// board 是板全体(台账区 + 底部书棚带),rect 只是台账区——板必须一个 quad 画完,
+        /// 拆成两块会在接缝处各长一条上缘金压线
         /// </summary>
-        public static void DrawLedgerPanel(SpriteBatch sb, DynamicSpriteFont font, Rectangle rect,
-            string title, float alpha, float reveal, float time) {
+        public static void DrawLedgerPanel(SpriteBatch sb, DynamicSpriteFont font, Rectangle board,
+            Rectangle rect, string title, float alpha, float reveal, float time) {
             float ease = VaultUtils.EaseOutCubic(MathHelper.Clamp(reveal / 0.42f, 0f, 1f));
             if (ease <= 0.01f || alpha <= 0.01f) {
                 return;
             }
             float a = alpha * ease;
+            int drop = PanelRevealOffset(reveal);
+            Rectangle shownBoard = board;
+            shownBoard.Y += drop;
             Rectangle shown = rect;
-            shown.Y += (int)((1f - ease) * 14f);
+            shown.Y += drop;
 
             //板影:紧贴落影(大面板禁止同心扩层羽化,否则叠出方块黑层)
-            OniBrush.DrawPanelDropShadow(sb, shown.Center.ToVector2(),
-                new Vector2(shown.Width, shown.Height * 0.98f), a * a * 0.9f,
+            OniBrush.DrawPanelDropShadow(sb, shownBoard.Center.ToVector2(),
+                new Vector2(shownBoard.Width, shownBoard.Height * 0.98f), a * a * 0.9f,
                 new Vector2(5f, 8f));
 
             if (OniMeiStandDraw.Available) {
-                OniMeiStandDraw.DrawLacquerBoard(sb, shown, a, time);
+                OniMeiStandDraw.DrawLacquerBoard(sb, shownBoard, a, time);
             }
             else {
-                DrawPanelFallback(sb, shown, a);
+                DrawPanelFallback(sb, shownBoard, a);
             }
 
             //题头:朱印+题字,下一笔烙痕线
@@ -76,6 +85,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             OniBrush.DrawGradientLine(sb, new Vector2(shown.X + 18f, footY),
                 new Vector2(shown.Right - 18f, footY),
                 OnikiriUITheme.Deep * (a * 0.42f), OnikiriUITheme.Deep * (a * 0.2f), 1.1f);
+
+            //棚带横木:台账到书棚的分界,金细线衬一线绯——与题头同一套规矩,读作同板异格
+            float railY = shown.Bottom;
+            OniBrush.DrawGradientLine(sb, new Vector2(shownBoard.X + 12f, railY),
+                new Vector2(shownBoard.Right - 12f, railY),
+                OnikiriUITheme.GoldDeep * (a * 0.55f), OnikiriUITheme.GoldDeep * (a * 0.22f), 1.5f);
+            OniBrush.DrawGradientLine(sb, new Vector2(shownBoard.X + 12f, railY + 3f),
+                new Vector2(shownBoard.Right - 12f, railY + 3f),
+                OnikiriUITheme.Deep * (a * 0.30f), OnikiriUITheme.Deep * (a * 0.12f), 1f);
         }
 
         /// <summary>CPU 简笔黑漆卡面(shader 降级):漆黑纵深+上缘金压线衬绯线+侧缘沉色+漆下木理</summary>
@@ -479,7 +497,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        //====================== 铭谱册子(台上入口道具) ======================
+        //====================== 铭谱书棚(台账板底的一格) ======================
 
         /// <summary>册面纹章:外圆内菱,与图鉴封面同纹</summary>
         private const string CodexMonD =
@@ -487,87 +505,222 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             + " C -0.5523,1 -1,0.5523 -1,0 C -1,-0.5523 -0.5523,-1 0,-1 Z"
             + " M 0,-0.52 L 0.52,0 L 0,0.52 L -0.52,0 Z";
 
-        /// <summary>题签:册面左上贴的一条竖签</summary>
-        private const string CodexLabelD = "M -1,-1 L 1,-1 L 1,1 L -1,1 Z";
+        /// <summary>题签:手贴的短册,四边不平行、裁口略歪(纵向,x 已按签宽收窄)</summary>
+        private const string CodexLabelD =
+            "M -0.44,-1 L 0.46,-0.96 C 0.5,-0.95 0.52,-0.9 0.51,-0.82"
+            + " L 0.47,0.88 C 0.46,0.96 0.42,1 0.35,0.99"
+            + " L -0.47,0.93 C -0.52,0.92 -0.53,0.86 -0.52,0.78 Z";
+
+        /// <summary>书口:纸叠外缘微鼓的一条弧(册子最不像方盒的一边;鼓度按纸厚,别当成弓背)</summary>
+        private const string CodexForeEdgeD = "M 0,-1 C 0.09,-0.62 0.10,0.6 0,1";
+
+        /// <summary>四目缀じ:三段走线,孔处断开(孔另点)</summary>
+        private const string CodexStitchD =
+            "M 0,-0.9 L 0,-0.46 M 0,-0.2 L 0,0.24 M 0,0.5 L 0,0.92";
+
+        /// <summary>栞:压在封面上的一条,尾端剪燕尾(与摊开册同款)</summary>
+        private const string CodexBookmarkD =
+            "M -0.26,-1 L 0.26,-1 L 0.26,0.62 L 0,0.2 L -0.26,0.62 Z";
 
         /// <summary>
-        /// 台账板下压着的线装册子:合着的册身 + 侧面书口层 + 四目缀じ的线脚 + 题签与纹章。<br/>
-        /// 悬停时册身抬起一线并翻开一角,读作"这本可以拿起来"
+        /// 台账板底那一格书棚:格内暗 → 插着的柿渋褐木线装册 → 压住册子下缘的书唇。<br/>
+        /// 悬停不是"图标变亮",是册子自格里被抽起一截(书口散开、栞滑出、金压线受光)
         /// </summary>
-        public static void DrawCodexBooklet(SpriteBatch sb, DynamicSpriteFont font, Rectangle rect,
-            string label, float hover, float alpha, float time) {
+        public static void DrawCodexNiche(SpriteBatch sb, DynamicSpriteFont font, Rectangle nicheIn,
+            Rectangle bookIn, string label, float hover, float alpha, float reveal, float time) {
             if (alpha <= 0.01f) {
                 return;
             }
-            float lift = hover * 4f;
-            Rectangle body = new(rect.X, rect.Y - (int)lift, rect.Width, rect.Height);
-            float a = alpha;
+            //与板共用落板让位,否则开屏那一下册子会脱出格外
+            int drop = PanelRevealOffset(reveal);
+            Rectangle niche = nicheIn;
+            niche.Y += drop;
+            Rectangle book = bookIn;
+            book.Y += drop - (int)(hover * OnikiriUITheme.CodexBookPull);
+            //烛在屏下,格口下缘先亮;摇曳与台面烛光同源
+            float flick = 0.88f + 0.09f * MathF.Sin(time * 2.1f) + 0.03f * MathF.Sin(time * 7.3f + 1.7f);
+            //开台自画:线稿按弧长描出,与两扇门同一套揭示
+            float ink = VaultUtils.EaseOutCubic(MathHelper.Clamp((reveal - 0.5f) / 0.42f, 0f, 1f));
 
-            //台面投影:册子压在板上,抬起时影子散开
-            OniBrush.DrawPanelDropShadow(sb, body.Center.ToVector2() + new Vector2(2f, 4f + lift),
-                new Vector2(body.Width, body.Height), a * (0.55f - hover * 0.15f));
+            DrawNicheHollow(sb, niche, alpha, flick);
+            DrawCodexBook(sb, font, book, label, hover, alpha, ink, time);
+            DrawNicheLip(sb, niche, alpha, hover, flick);
 
-            //书口:右缘露出的纸叠,一层层错开
-            for (int i = 0; i < 5; i++) {
-                int inset = i * 2;
-                sb.Draw(Pixel, new Rectangle(body.Right - 7 + i, body.Y + 3 + inset,
-                    2, body.Height - 6 - inset * 2), PixelSrc,
-                    Color.Lerp(new Color(214, 200, 174), new Color(168, 152, 126), i / 4f) * (a * 0.9f));
-            }
-
-            //册身:靛蓝染的封面(与台面木色分得开),上亮下沉
-            Color coverTop = Color.Lerp(new Color(46, 40, 58), new Color(66, 56, 80), hover * 0.6f);
-            Color coverLow = Color.Lerp(new Color(26, 22, 34), new Color(40, 32, 50), hover * 0.6f);
-            int halfH = body.Height / 2;
-            sb.Draw(Pixel, new Rectangle(body.X, body.Y, body.Width - 6, halfH), PixelSrc, coverTop * (a * 0.97f));
-            sb.Draw(Pixel, new Rectangle(body.X, body.Y + halfH, body.Width - 6, body.Height - halfH),
-                PixelSrc, coverLow * (a * 0.97f));
-            //封面上缘一线受光
-            sb.Draw(Pixel, new Rectangle(body.X, body.Y, body.Width - 6, 1), PixelSrc,
-                OnikiriUITheme.Paper * (a * (0.10f + hover * 0.14f)));
-
-            //四目缀じ:左缘四枚线脚,线在孔间走一段
-            float stitchX = body.X + 7f;
-            for (int i = 0; i < 4; i++) {
-                float t = (i + 1) / 5f;
-                Vector2 hole = new(stitchX, body.Y + body.Height * t);
-                sb.Draw(Pixel, hole, PixelSrc, new Color(8, 3, 5) * (a * 0.85f),
-                    0f, new Vector2(0.5f), new Vector2(2.2f, 3.4f), SpriteEffects.None, 0f);
-                if (i < 3) {
-                    Vector2 next = new(stitchX, body.Y + body.Height * ((i + 2) / 5f));
-                    OniBrush.DrawGradientLine(sb, hole, next,
-                        OnikiriUITheme.Deep * (a * 0.55f), OnikiriUITheme.Dark * (a * 0.55f), 1.2f);
-                }
-            }
-
-            //题签 + 纹章:签在左，纹章压右下角
-            Vector2 labelAt = new(body.X + 26f, body.Center.Y);
-            SvgPathPen.Stroke(sb, SvgPathPen.Path(CodexLabelD), labelAt,
-                new Vector2(9f, body.Height * 0.34f).Length() * 0.62f, 0f,
-                new Color(226, 214, 188), 1.4f, a * 0.75f);
-            SvgPathPen.Stroke(sb, SvgPathPen.Path(CodexMonD),
-                new Vector2(body.Right - 22f, body.Bottom - 16f), 8f, time * 0.05f,
-                OnikiriUITheme.GoldDeep, 1.3f, a * (0.55f + hover * 0.35f));
-
-            //签上题字:竖不开就横写；单次墨字，勿黑描边
-            if (!string.IsNullOrEmpty(label)) {
-                const float labelScale = 0.78f;
-                Vector2 size = font.MeasureString(label) * labelScale;
-                sb.DrawString(font, label,
-                    new Vector2(labelAt.X - size.X * 0.5f, labelAt.Y - size.Y * 0.5f),
-                    Color.Lerp(OnikiriUITheme.Ink, OnikiriUITheme.Deep, 0.35f) * a,
-                    0f, Vector2.Zero, labelScale, SpriteEffects.None, 0f);
-            }
-
-            //悬停:册角掀起一片纸 + 一点暖光,示意可翻
+            //取书示意:格口漫出一点烛暖(随烛摇,不是常亮的按钮辉)
             if (hover > 0.02f) {
-                Vector2 corner = new(body.Right - 10f, body.Y + 8f);
-                sb.Draw(Pixel, corner, PixelSrc, new Color(236, 226, 202) * (a * hover * 0.9f),
-                    -0.5f + hover * 0.25f, new Vector2(0.5f),
-                    new Vector2(13f * hover, 9f * hover), SpriteEffects.None, 0f);
-                OniBrush.DrawBacklight(sb, body.Center.ToVector2(), 46f,
-                    OnikiriUITheme.CandleWarm, a * hover * 0.30f);
+                OniBrush.DrawBacklight(sb, new Vector2(niche.Center.X, niche.Bottom - 10f), 54f,
+                    OnikiriUITheme.CandleWarm, alpha * hover * 0.26f * flick);
             }
+        }
+
+        /// <summary>棚格:板上凿进去的一格,里壁越上越深(灯在下),格底吃到一线烛光</summary>
+        private static void DrawNicheHollow(SpriteBatch sb, Rectangle niche, float a, float flick) {
+            sb.Draw(Pixel, niche, PixelSrc, new Color(9, 4, 6) * (a * 0.90f));
+            sb.Draw(Pixel, new Rectangle(niche.X, niche.Y, niche.Width, 5), PixelSrc,
+                Color.Black * (a * 0.55f));
+            sb.Draw(Pixel, new Rectangle(niche.X, niche.Y, 3, niche.Height), PixelSrc,
+                Color.Black * (a * 0.34f));
+            sb.Draw(Pixel, new Rectangle(niche.Right - 3, niche.Y, 3, niche.Height), PixelSrc,
+                Color.Black * (a * 0.34f));
+            //格口上楣:板面到格内那道断口压一线金
+            OniBrush.DrawGradientLine(sb, new Vector2(niche.X + 2f, niche.Y - 1f),
+                new Vector2(niche.Right - 2f, niche.Y - 1f),
+                OnikiriUITheme.GoldDeep * (a * 0.42f), OnikiriUITheme.GoldDeep * (a * 0.18f), 1.2f);
+            sb.Draw(Pixel, new Rectangle(niche.X + 2, niche.Bottom - 1, niche.Width - 4, 1), PixelSrc,
+                OnikiriUITheme.CandleWarm * (a * 0.16f * flick));
+        }
+
+        /// <summary>
+        /// 插在格里的线装册:书口纸叠 → 柿渋褐木封面(与摊开的册子同料) → 金压线衬绯 →
+        /// 四目缀じ → 题签题字 → 纹章 → 栞
+        /// </summary>
+        private static void DrawCodexBook(SpriteBatch sb, DynamicSpriteFont font, Rectangle book,
+            string label, float hover, float a, float ink, float time) {
+            //册影落在格内壁上(紧贴错位,不扩层)
+            OniBrush.DrawPanelDropShadow(sb, book.Center.ToVector2(),
+                new Vector2(book.Width, book.Height), a * 0.85f, new Vector2(3f, 4f));
+
+            //====书口:露在封面右侧的一叠纸边,自外向内收暗;抽书时散开一点====
+            SvgPath fore = SvgPathPen.Path(CodexForeEdgeD);
+            Vector2 foreAt = new(book.Right - 1f + hover * 2f, book.Center.Y);
+            float foreScale = book.Height * 0.47f;
+            float step = 1.05f + hover * 0.35f;
+            for (int i = 0; i < 6; i++) {
+                float t = i / 5f;
+                SvgPathPen.Stroke(sb, fore, foreAt - new Vector2(i * step, 0f), foreScale, 0f,
+                    Color.Lerp(new Color(232, 222, 202), new Color(140, 122, 100), t), 1.7f,
+                    a * (0.94f - t * 0.22f));
+            }
+
+            //====封面:柿渋褐木。烛在屏下,故上暗下暖,与台面同一个光向====
+            Rectangle cover = new(book.X, book.Y, book.Width - 6, book.Height);
+            Color woodShade = Color.Lerp(new Color(38, 22, 17), new Color(52, 31, 23), hover * 0.5f);
+            Color woodLit = Color.Lerp(new Color(84, 51, 36), new Color(110, 67, 45), hover * 0.5f);
+            const int bands = 3;
+            for (int i = 0; i < bands; i++) {
+                int y0 = cover.Y + cover.Height * i / bands;
+                int y1 = cover.Y + cover.Height * (i + 1) / bands;
+                sb.Draw(Pixel, new Rectangle(cover.X, y0, cover.Width, y1 - y0), PixelSrc,
+                    Color.Lerp(woodShade, woodLit, (i + 0.5f) / bands) * (a * 0.97f));
+            }
+            //木理:两三道纵纹
+            for (int i = 0; i < 3; i++) {
+                float u = 0.2f + Hash01(i * 61 + 5) * 0.58f;
+                sb.Draw(Pixel, new Vector2(cover.X + cover.Width * u, cover.Center.Y), PixelSrc,
+                    new Color(26, 14, 10) * (a * 0.26f), 0f, new Vector2(0.5f),
+                    new Vector2(1f, cover.Height * 0.9f), SpriteEffects.None, 0f);
+            }
+            //顶缘吃格楣的影(书立在格里,上头是板不是光)
+            sb.Draw(Pixel, new Rectangle(cover.X, cover.Y, cover.Width, 2), PixelSrc,
+                new Color(14, 7, 6) * (a * 0.5f));
+            //====金压线 + 内衬一线绯:与顶梁/台账/摊开的册子同语====
+            DrawThinFrame(sb, cover, OnikiriUITheme.GoldDeep * (a * (0.52f + hover * 0.34f)), 2);
+            Rectangle liner = cover;
+            liner.Inflate(-3, -3);
+            DrawThinFrame(sb, liner, OnikiriUITheme.Deep * (a * 0.28f), 1);
+            //上两角磨钝:压在金线之后,连金边一起吃掉尺规角(下缘藏在书唇后,不必切)
+            Color chamfer = new(9, 4, 6);
+            DrawChamfer(sb, cover.X, cover.Y, 1, 1, 3, chamfer, a * 0.9f);
+            DrawChamfer(sb, cover.Right - 1, cover.Y, -1, 1, 3, chamfer, a * 0.9f);
+
+            //====四目缀じ:一条走线带亮芯,孔另点====
+            float stitchX = cover.X + 8f;
+            SvgPathPen.Stroke(sb, SvgPathPen.Path(CodexStitchD), new Vector2(stitchX, cover.Center.Y),
+                cover.Height * 0.46f, 0f, OnikiriUITheme.Deep, 1.3f, a * 0.8f, 0f, ink,
+                OnikiriUITheme.CandleWarm);
+            for (int i = 0; i < 4; i++) {
+                Vector2 hole = new(stitchX, cover.Y + cover.Height * ((i + 1) / 5f));
+                sb.Draw(Pixel, hole, PixelSrc, new Color(8, 3, 5) * (a * 0.85f),
+                    0f, new Vector2(0.5f), new Vector2(2.2f, 3.2f), SpriteEffects.None, 0f);
+            }
+
+            //====题签:偏左贴的一枚短册(让开缀线),签面题字====
+            Vector2 labelAt = new(cover.X + cover.Width * 0.44f, cover.Y + cover.Height * 0.38f);
+            float labelScale = cover.Height * 0.26f;
+            sb.Draw(Pixel, labelAt, PixelSrc, new Color(238, 230, 212) * (a * 0.93f), 0f,
+                new Vector2(0.5f), new Vector2(labelScale * 0.94f, labelScale * 1.96f),
+                SpriteEffects.None, 0f);
+            SvgPathPen.Stroke(sb, SvgPathPen.Path(CodexLabelD), labelAt, labelScale, 0f,
+                new Color(168, 152, 126), 1.1f, a * 0.7f, 0f, ink);
+            DrawLabelInk(sb, font, label, labelAt, labelScale, a * ink);
+
+            //====纹章:压在封面右下,不自转(桌上的书不会转)====
+            SvgPathPen.Stroke(sb, SvgPathPen.Path(CodexMonD),
+                new Vector2(cover.Right - 15f, cover.Bottom - 17f), 8.5f, 0f,
+                OnikiriUITheme.GoldDeep, 1.4f, a * (0.5f + hover * 0.4f), 0f, ink,
+                OnikiriUITheme.GoldInlay);
+
+            //====栞:自册顶垂下压在封面上,抽书时多滑出一截====
+            float markLen = 26f + hover * 9f;
+            SvgPathPen.Stroke(sb, SvgPathPen.Path(CodexBookmarkD),
+                new Vector2(cover.Right - 13f, cover.Y + markLen * 0.5f - 4f), markLen * 0.5f,
+                MathF.Sin(time * 0.7f) * 0.03f, OnikiriUITheme.Deep, 2f, a * 0.88f, 0f, 1f,
+                OnikiriUITheme.Bright);
+        }
+
+        /// <summary>签面题字:两三字竖排,长名/西文写不下就退回三记墨迹(签只有二十来像素宽)</summary>
+        private static void DrawLabelInk(SpriteBatch sb, DynamicSpriteFont font, string label,
+            Vector2 center, float labelScale, float a) {
+            Color inkCol = Color.Lerp(new Color(38, 26, 24), OnikiriUITheme.Deep, 0.28f) * a;
+            if (!string.IsNullOrEmpty(label) && OniBrush.ContainsCJK(label) && label.Length <= 3) {
+                const float scale = 0.55f;
+                float lineH = font.MeasureString("铭").Y * scale * 0.86f;
+                float top = center.Y - lineH * label.Length * 0.5f;
+                for (int i = 0; i < label.Length; i++) {
+                    string ch = label[i].ToString();
+                    Vector2 size = font.MeasureString(ch) * scale;
+                    //和纸浅字单次落笔,四向描边会在这个字号糊成一团
+                    sb.DrawString(font, ch, new Vector2(center.X - size.X * 0.5f, top + lineH * i),
+                        inkCol, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                }
+                return;
+            }
+            for (int i = 0; i < 3; i++) {
+                sb.Draw(Pixel, new Vector2(center.X, center.Y + (i - 1) * labelScale * 0.5f), PixelSrc,
+                    inkCol * 0.85f, 0f, new Vector2(0.5f),
+                    new Vector2(labelScale * (0.5f - i * 0.06f), 1.6f), SpriteEffects.None, 0f);
+            }
+        }
+
+        /// <summary>直角切角:逐行退让 size 像素,拿格内暗色吃掉尺规角</summary>
+        private static void DrawChamfer(SpriteBatch sb, int x, int y, int sx, int sy, int size,
+            Color color, float a) {
+            for (int i = 0; i < size; i++) {
+                int w = size - i;
+                sb.Draw(Pixel, new Rectangle(sx > 0 ? x : x - w + 1, sy > 0 ? y + i : y - i, w, 1),
+                    PixelSrc, color * a);
+            }
+        }
+
+        /// <summary>四边描一圈线框(册面金压线)</summary>
+        private static void DrawThinFrame(SpriteBatch sb, Rectangle rect, Color color, int thick) {
+            sb.Draw(Pixel, new Rectangle(rect.X, rect.Y, rect.Width, thick), PixelSrc, color);
+            sb.Draw(Pixel, new Rectangle(rect.X, rect.Bottom - thick, rect.Width, thick), PixelSrc, color);
+            sb.Draw(Pixel, new Rectangle(rect.X, rect.Y, thick, rect.Height), PixelSrc, color);
+            sb.Draw(Pixel, new Rectangle(rect.Right - thick, rect.Y, thick, rect.Height), PixelSrc, color);
+        }
+
+        /// <summary>书唇:挡在册子下缘的前板,顶棱吃一线烛光——这条光是"册子插在格里"的成立点</summary>
+        private static void DrawNicheLip(SpriteBatch sb, Rectangle niche, float a, float hover, float flick) {
+            int h = (int)OnikiriUITheme.CodexLipH;
+            Rectangle lip = new(niche.X - 4, niche.Bottom - h, niche.Width + 8, h);
+            //唇影压在册面下缘
+            sb.Draw(Pixel, new Rectangle(lip.X, lip.Y - 4, lip.Width, 4), PixelSrc,
+                new Color(8, 3, 5) * (a * 0.5f));
+            int mid = h / 2;
+            sb.Draw(Pixel, new Rectangle(lip.X, lip.Y, lip.Width, mid), PixelSrc,
+                new Color(46, 26, 20) * (a * 0.98f));
+            sb.Draw(Pixel, new Rectangle(lip.X, lip.Y + mid, lip.Width, h - mid), PixelSrc,
+                new Color(28, 15, 12) * (a * 0.98f));
+            //顶棱受光 + 一线金
+            sb.Draw(Pixel, new Rectangle(lip.X, lip.Y, lip.Width, 1), PixelSrc,
+                OnikiriUITheme.CandleWarm * (a * (0.30f + hover * 0.18f) * flick));
+            OniBrush.DrawGradientLine(sb, new Vector2(lip.X + 3f, lip.Y + 2.5f),
+                new Vector2(lip.Right - 3f, lip.Y + 2.5f),
+                OnikiriUITheme.GoldDeep * (a * 0.40f), OnikiriUITheme.GoldDeep * (a * 0.16f), 1.1f);
+            //两端木口沉色:唇是插进板里的一截,不是浮在板上的条
+            sb.Draw(Pixel, new Rectangle(lip.X, lip.Y, 3, h), PixelSrc, Color.Black * (a * 0.35f));
+            sb.Draw(Pixel, new Rectangle(lip.Right - 3, lip.Y, 3, h), PixelSrc, Color.Black * (a * 0.35f));
         }
 
         /// <summary>匣底一截淡墨轨;页点为朱印软点</summary>

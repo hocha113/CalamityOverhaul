@@ -24,11 +24,11 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities
             if (player.ownedProjectileCounts[projectileType] > 0) {
                 return;
             }
-            float mastery = MathHelper.Clamp(context.Mastery, 0f, 1f);
+            float revival = MathHelper.Clamp(context.Revival, 0f, 1f);
             int weaponDamage = Math.Max(player.GetWeaponDamage(context.VesselItem), 1);
-            int damage = Math.Max((int)(weaponDamage * MathHelper.Lerp(0.55f, 0.90f, mastery)), 1);
+            int damage = Math.Max((int)(weaponDamage * MathHelper.Lerp(0.55f, 0.90f, revival)), 1);
             float knockback = player.GetWeaponKnockback(context.VesselItem)
-                * MathHelper.Lerp(0.65f, 1f, mastery);
+                * MathHelper.Lerp(0.65f, 1f, revival);
             Projectile.NewProjectile(
                 player.GetSource_ItemUse(context.VesselItem),
                 player.Center,
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities
                 player.whoAmI,
                 0f,
                 0f,
-                mastery);
+                revival);
         }
     }
 }

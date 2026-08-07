@@ -1,6 +1,4 @@
-using CalamityOverhaul.Content.Wraiths.Core;
 using System;
-using Terraria;
 
 namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
 {
@@ -60,14 +58,6 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
                     (age - GloomEnd) / (float)(RainfallEnd - GloomEnd));
             }
             return 1f;
-        }
-
-        /// <summary>入雨确认时的雨批文字，仅雨幕主的客户端显示。</summary>
-        internal static void ShowRainText(Player owner) {
-            if (!VaultUtils.isServer && owner?.whoAmI == Main.myPlayer) {
-                CombatText.NewText(owner.Hitbox, new Color(150, 170, 175),
-                    WraithSystemText.GhostRainRiteText.Value, true);
-            }
         }
     }
 }

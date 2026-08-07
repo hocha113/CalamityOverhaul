@@ -135,6 +135,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds
         }
 
         //====联机快照（客户端→服务器，与所持铭快照同口径）====
+        //条目数必须按写入端声明值读满:CWRNetWork 让所有 NetHandle 串行共用同一个 reader,
+        //这里少读一个字节,同包后续分支就会全部错位。越界 ID 交给 TryGetByNetworkId 丢弃,不靠夹取条目数
 
         internal void Write(BinaryWriter writer) {
             List<(ushort Id, int Value)> entries = [];
@@ -152,7 +154,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds
         }
 
         internal void Read(BinaryReader reader) {
-            int count = ReadEntryCount(reader);
+            int count = reader.ReadUInt16();
             Clear();
             for (int i = 0; i < count; i++) {
                 ushort id = reader.ReadUInt16();
@@ -165,15 +167,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds
 
         /// <summary>无处安放时把本段读干净，否则同包后续分支会错位</summary>
         internal static void Skip(BinaryReader reader) {
-            int count = ReadEntryCount(reader);
+            int count = reader.ReadUInt16();
             for (int i = 0; i < count; i++) {
                 reader.ReadUInt16();
                 reader.ReadUInt16();
             }
         }
-
-        /// <summary>条目数一律按注册表容量封顶，脏包不至于读穿</summary>
-        private static int ReadEntryCount(BinaryReader reader)
-            => Math.Min(reader.ReadUInt16(), OniMeiDeedRegistry.All.Count);
     }
 }

@@ -24,12 +24,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         #region 本地化
         public static LocalizedText TitleText { get; private set; }
         public static LocalizedText StatusFormat { get; private set; }
-        public static LocalizedText MasteryFormat { get; private set; }
+        public static LocalizedText RevivalFormat { get; private set; }
         public static LocalizedText AbilityCostFormat { get; private set; }
         public static LocalizedText OriginLabel { get; private set; }
         public static LocalizedText PowerLabel { get; private set; }
         public static LocalizedText StateReady { get; private set; }
-        public static LocalizedText StateDormant { get; private set; }
+        public static LocalizedText StateDanger { get; private set; }
         public static LocalizedText StateArchive { get; private set; }
         public static LocalizedText EmptySlotName { get; private set; }
         public static LocalizedText EmptySlotHint { get; private set; }
@@ -47,13 +47,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "点 鬼 簿");
-            StatusFormat = this.GetLocalization(nameof(StatusFormat), () => "役鬼 {0} · 驾驭 {1}% · 侵蚀 {2}%");
-            MasteryFormat = this.GetLocalization(nameof(MasteryFormat), () => "驾驭 {0}%");
-            AbilityCostFormat = this.GetLocalization(nameof(AbilityCostFormat), () => "发动耗竭 驾驭 {0}% · 侵蚀 +{1}%");
+            StatusFormat = this.GetLocalization(nameof(StatusFormat), () => "役鬼 {0} · 复苏 {1}% · 侵蚀 {2}%");
+            RevivalFormat = this.GetLocalization(nameof(RevivalFormat), () => "复苏 {0}%");
+            AbilityCostFormat = this.GetLocalization(nameof(AbilityCostFormat), () => "每次役使 复苏 +{0}% · 侵蚀 +{1}%");
             OriginLabel = this.GetLocalization(nameof(OriginLabel), () => "来历");
             PowerLabel = this.GetLocalization(nameof(PowerLabel), () => "赋力");
             StateReady = this.GetLocalization(nameof(StateReady), () => "可役使");
-            StateDormant = this.GetLocalization(nameof(StateDormant), () => "耗竭 · 休眠");
+            StateDanger = this.GetLocalization(nameof(StateDanger), () => "将醒 · 慎役");
             StateArchive = this.GetLocalization(nameof(StateArchive), () => "残卷 · 不可役使");
             EmptySlotName = this.GetLocalization(nameof(EmptySlotName), () => "役鬼位空");
             EmptySlotHint = this.GetLocalization(nameof(EmptySlotHint), () => "从名录中选中一只厉鬼查看详情，再以役使印将其纳入役鬼位。空位不会启用任何厉鬼能力");
@@ -520,12 +520,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>线香燃点,燃去比=驾驭度</summary>
+        /// <summary>线香燃点,燃去比=复苏进度——香烧到底,鬼就该醒了</summary>
         internal Vector2 IncenseEmberPos() {
             OniGhostEntry sel = SelectedEntry;
-            float mastery = MathHelper.Clamp(sel?.Mastery ?? 0f, 0f, 1f);
+            float revival = MathHelper.Clamp(sel?.Revival ?? 0f, 0f, 1f);
             Rectangle rect = IncenseRect();
-            return new Vector2(rect.Center.X, rect.Y + rect.Height * mastery);
+            return new Vector2(rect.Center.X, rect.Y + rect.Height * revival);
         }
 
         /// <summary>线香立杆矩形(细节板右下,文案区右缘让位于它)</summary>
@@ -553,8 +553,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 idleTimer = 60; //不立即重看,留一段安静
             }
 
-            //休眠役鬼只以低频竖瞳示警
-            if (OniRegistry.IsEquippedDormant) {
+            //复苏将满的役鬼只以低频竖瞳示警
+            if (OniRegistry.IsEquippedInDanger) {
                 pupilCooldown--;
                 bool pupilActive = pupilCooldown <= 0;
                 if (pupilCooldown < -96) {
@@ -660,9 +660,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             OniGhostEntry equipped = OniRegistry.EquippedEntry;
             string equippedName = equipped?.Name?.Invoke() ?? EmptySlotName.Value;
-            int mastery = (int)MathF.Round((equipped?.Mastery ?? 0f) * 100f);
+            int revival = (int)MathF.Round((equipped?.Revival ?? 0f) * 100f);
             int erosion = (int)MathF.Round(OniRegistry.Erosion * 100f);
-            string status = string.Format(StatusFormat.Value, equippedName, mastery, erosion);
+            string status = string.Format(StatusFormat.Value, equippedName, revival, erosion);
             Vector2 sSize = font.MeasureString(status) * 0.7f;
             Utils.DrawBorderString(sb, status,
                 new Vector2(scrollRect.Center.X - sSize.X * 0.5f, scrollRect.Bottom - 44f),

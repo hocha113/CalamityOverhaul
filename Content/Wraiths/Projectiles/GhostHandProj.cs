@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
     /// 焦黑枯手本体，纯顶点绘制无贴图：焦炭枯尸手，常驻近实心，龟裂缝透血烬。<br/>
     /// 常驻循环：背后待机（揉捏/痉挛/窥伺）→ 扑抓 → 攥握碾轧（脉冲+松手碾碎伤害）→ 回位；<br/>
     /// boss 亦可被攥住；猎物多时由 <see cref="GhostHandAbility"/> 生成至多三只手（扇形手位）。<br/>
-    /// 失去当前役鬼资格后无害退场。ai[0]=状态 ai[1]=计时 ai[2]=驾驭度；<br/>
+    /// 失去当前役鬼资格后无害退场。ai[0]=状态 ai[1]=计时 ai[2]=复苏值；<br/>
     /// 目标/朝向/手位走 SendExtraAI，索敌和退场由 owner 决策后同步
     /// </summary>
     internal sealed class GhostHandProj : ModProjectile
@@ -43,8 +43,8 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
         private ref float StateRaw => ref Projectile.ai[0];
         private ref float StateTimer => ref Projectile.ai[1];
-        /// <summary>驾驭度 0~1，生成时传入，攥握时长与伤害插值</summary>
-        private ref float Mastery => ref Projectile.ai[2];
+        /// <summary>复苏值 0~1，生成时传入，攥握时长与伤害插值——越接近复苏越凶</summary>
+        private ref float Revival => ref Projectile.ai[2];
 
         private HandState State {
             get => (HandState)StateRaw;
@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         /// <summary>副手无猎物自动退场的滞留帧数</summary>
         private const int ExtraHandLingerTicks = 150;
         private const int MinimumAuthorityGripInterval = ReacquireDelay + LungeDuration + ReturnDuration;
-        private int GripDuration => (int)MathHelper.Lerp(60f, 120f, MathHelper.Clamp(Mastery, 0f, 1f));
+        private int GripDuration => (int)MathHelper.Lerp(60f, 120f, MathHelper.Clamp(Revival, 0f, 1f));
 
         //==== 视觉状态（本地平滑）====
         private HandState prevState = HandState.Idle;
@@ -313,7 +313,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             NPC target = FindGrabTarget();
             if (target != null) {
                 noPreyTicks = 0;
-                Mastery = context.Mastery;
+                Revival = context.Revival;
                 targetNPCID = target.whoAmI;
                 targetNPCType = target.type;
                 Transition(HandState.Lunging);
@@ -498,10 +498,10 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             }
         }
 
-        /// <summary>权威端碾轧伤害：抓取结算帧的武器伤害快照 × 驾驭度插值，真近战无击退</summary>
+        /// <summary>权威端碾轧伤害：抓取结算帧的武器伤害快照 × 复苏插值，真近战无击退</summary>
         private void ApplyGripDamage(NPC target, float minFraction, float maxFraction) {
             int damage = Math.Max(1, (int)(weaponDamageSnapshot
-                * MathHelper.Lerp(minFraction, maxFraction, MathHelper.Clamp(Mastery, 0f, 1f))));
+                * MathHelper.Lerp(minFraction, maxFraction, MathHelper.Clamp(Revival, 0f, 1f))));
             int direction = target.Center.X >= Owner.Center.X ? 1 : -1;
             Owner.ApplyDamageToNPC(target, damage, 0f, direction, false,
                 CWRRef.GetTrueMeleeDamageClass());
@@ -902,7 +902,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             if (buffIndex < 0) {
                 return false;
             }
-            Mastery = context.Mastery;
+            Revival = context.Revival;
             if (!WraithAbilityService.TryCommitUse(in context)) {
                 target.DelBuff(buffIndex);
                 return false;

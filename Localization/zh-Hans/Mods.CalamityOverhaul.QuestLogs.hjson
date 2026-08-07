@@ -2,26 +2,26 @@ QuestNode: {
 	FirstQuest: {
 		DisplayName: 欢迎来到灾厄世界!
 		Description: 旅途的起点
-		DetailedDescription: 每一个传奇都始于微末。领取你的初始物资，准备迎接这个充满了神明与怪物的世界吧。
+		DetailedDescription: 领取你的初始物资。这个世界有神明，也有怪物，而你现在两手空空。
 		QuestObjective.Description: 点击领取初始道具
 	}
 
 	MiningQuest: {
 		DisplayName: 挖掘起步
 		Description: 获得十块{0}
-		DetailedDescription: 地下蕴藏着无限的财富。首先，我们需要一些基础金属来打造工具。
+		DetailedDescription: 工具得先有金属。地下的矿脉不会自己冒出来，得挖。
 	}
 
 	MiningQuestII: {
 		DisplayName: 铁器时代
 		Description: 收集五十块{0}
-		DetailedDescription: 铜矿太过柔软，我们需要更坚硬的金属来武装自己。深入地下寻找铁矿脉吧。
+		DetailedDescription: 铜太软，砍两下就钝。铁矿埋得更深一些。
 	}
 
 	MiningQuestIII: {
 		DisplayName: 黄金狂潮
 		Description: 收集一百块{0}
-		DetailedDescription: 黄金不仅仅是货币，它具有良好的导魔性和延展性。虽然它不如铁坚硬，但它是制作高级装备的重要材料。
+		DetailedDescription: 黄金比铁软，但导魔性更好，延展性也更强。高级装备离不开它。
 	}
 
 	BrimstoneElementalQuest: {
@@ -33,7 +33,7 @@ QuestNode: {
 	CalamitasCloneQuest: {
 		DisplayName: 灾厄之影
 		Description: 击败灾厄之影
-		DetailedDescription: 一个充满了仇恨与毁灭欲望的克隆体。击败它，证明你拥有直面真正魔女的资格。
+		DetailedDescription: 一个充满了仇恨与毁灭欲望的克隆体。连影子都打不过，就别想见到本人。
 	}
 
 	CrabulonQuest: {
@@ -45,7 +45,7 @@ QuestNode: {
 	CryogenQuest: {
 		DisplayName: 极地冰灵
 		Description: 击败极地冰灵
-		DetailedDescription: 这位曾经的御宇寒冰法师被封印在永恒的寒冰监狱中。释放并击败它，解放极地的寒冷力量。
+		DetailedDescription: 曾经的御宇寒冰法师，被封在一块冰里。砸开它，它会带着一身冰晶醒过来。
 	}
 
 	DesertScourgeQuest: {
@@ -64,7 +64,7 @@ QuestNode: {
 	EyeofCthulhuQuest: {
 		DisplayName: 克苏鲁之眼
 		Description: 击败克苏鲁之眼
-		DetailedDescription: 只要你感到那股邪恶的注视，它就会出现。这是对你实力的第一次真正考验。
+		DetailedDescription: 只要你感到那股邪恶的注视，它就会出现。在夜里，从天上下来。
 	}
 
 	GolemQuest: {
@@ -77,7 +77,7 @@ QuestNode: {
 		DisplayName: 腐巢意志/血肉宿主
 		Description: 击败邪恶生物群落的真神
 		QuestObjective.Description: 击败腐巢意志或血肉宿主
-		DetailedDescription: 它们是腐化与猩红意识的具象化。如果不消灭它们，这片土地将永无宁日。
+		DetailedDescription: 腐化和猩红各有一个脑子。不拔掉，蔓延就不会停。
 	}
 
 	KingSlimeQuest: {
@@ -96,19 +96,19 @@ QuestNode: {
 		DisplayName: 机械三王
 		Description: 击败所有机械Boss
 		QuestObjective.Description: 击败所有机械Boss
-		DetailedDescription: 嘉登的早期造物，模仿了克苏鲁的部分器官。只有击败它们，世界才会焕发新生。
+		DetailedDescription: 嘉登的早期造物，模仿了克苏鲁的部分器官。一对眼睛、一颗头骨、一条长虫。
 	}
 
 	MoonLordQuest: {
 		DisplayName: 月球领主
 		Description: 击败月球领主
-		DetailedDescription: 这一切背后的幕后黑手，月球背面的恐怖。终结这场漫长的梦魇吧。
+		DetailedDescription: 这一切背后的幕后黑手，月球背面的恐怖。它的眼睛不长在该长的地方。
 	}
 
 	PlaguebringerGoliathQuest: {
 		DisplayName: 瘟疫使者歌莉娅
 		Description: 击败瘟疫使者歌莉娅
-		DetailedDescription: 一只被纳米机械病毒改造的蜂后。它不仅致命，还携带这危险的瘟疫。
+		DetailedDescription: 一只被纳米机械病毒改造的蜂后。它身上带着瘟疫，被蛰过之后还会继续掉血。
 	}
 
 	PlanteraQuest: {
@@ -156,7 +156,7 @@ QuestNode: {
 	ExoMechsQuest: {
 		DisplayName: 星流巨械
 		Description: 击败星流巨械
-		DetailedDescription: 嘉登的终极杰作，代表了泰拉瑞亚科技的巅峰。在这场完美的演出中活下来。
+		DetailedDescription: 嘉登造过的最好的东西。三台一起上，他自己站在旁边看。
 	}
 
 	OldDukeQuest: {
@@ -204,13 +204,13 @@ QuestNode: {
 	SupremeCalamitasQuest: {
 		DisplayName: 至尊灾厄
 		Description: 击败至尊灾厄
-		DetailedDescription: 传说中的硫火女巫。这是你旅途的终点，亦或是新的开始？准备好迎接真正的弹幕地狱吧。
+		DetailedDescription: 硫火女巫本人。前面那些克隆体是她随手捏的。屏幕会被填满。
 	}
 
 	YharonQuest: {
 		DisplayName: 丛林龙,犽戎
 		Description: 击败丛林龙,犽戎
-		DetailedDescription: 魔君的忠诚战友，拥有凤凰般重生能力的巨龙。这是一场关乎灵魂的试炼。
+		DetailedDescription: 魔君的忠诚战友，拥有凤凰般重生能力的巨龙。打倒它一次不算完。
 	}
 
 	BatteryQuest: {
@@ -222,13 +222,13 @@ QuestNode: {
 	HydroelectricQuest: {
 		DisplayName: 清洁能源
 		Description: 制作一台水力发电机
-		DetailedDescription: 利用流水的力量产生电力。这是一种清洁且可持续的能源获取方式。
+		DetailedDescription: 用流水发电。不烧燃料，只要水一直流，它就一直转。
 	}
 
 	IndustrialStartQuest: {
 		DisplayName: 工业革命
 		Description: 制作一台风力发电机
-		DetailedDescription: 迈向自动化的第一步。利用风能驱动你的机器，解放你的双手。
+		DetailedDescription: 用风力驱动机器。这是第一台不用你守着的机器。
 	}
 
 	ItemFilterQuest: {
@@ -240,13 +240,13 @@ QuestNode: {
 	MiningMachineQuest: {
 		DisplayName: 自动化挖掘
 		Description: 制作一台采矿机
-		DetailedDescription: 告别繁琐的手工挖掘。这台机器能以惊人的效率吞噬矿脉。
+		DetailedDescription: 不用再自己挖了。把它放在矿脉上，它会一直往下啃。
 	}
 
 	MiningMachineIIQuest: {
 		DisplayName: 深层钻探
 		Description: 制作一台采矿机MK2
-		DetailedDescription: 强化的动力核心带来了无与伦比的挖掘速度。
+		DetailedDescription: 动力核心换了，钻头转得更快。
 	}
 
 	PipelineQuest: {
@@ -258,7 +258,7 @@ QuestNode: {
 	TeslaTowerQuest: {
 		DisplayName: 磁暴高塔
 		Description: 制作一座特斯拉电磁塔
-		DetailedDescription: 嘉登科技的结晶。这座塔能进行无线输电，彻底改变你的布线布局。
+		DetailedDescription: 抄的嘉登技术。这座塔能无线输电，省掉一大半线。
 	}
 
 	ThermalPowerQuest: {
@@ -270,7 +270,7 @@ QuestNode: {
 	AnnihilatingUniverseQuest: {
 		DisplayName: 寰宇湮灭
 		Description: 获得“寰宇湮灭”
-		DetailedDescription: 将星系的力量压缩在弓弦之上。这把武器拥有毁灭宇宙维度的力量，是射手极致的证明。
+		DetailedDescription: 把一个星系压在弓弦上。拉满的时候，弓比箭更危险。
 	}
 
 	AriaofTheCosmosQuest: {
@@ -318,25 +318,25 @@ QuestNode: {
 	PandemoniumQuest: {
 		DisplayName: 万魔殿
 		Description: 获得“万魔殿”
-		DetailedDescription: 融合了无数灵魂与灾厄力量的终极武器。握着它，你就握住了通往地狱与深渊的钥匙。
+		DetailedDescription: 无数灵魂熔在一起铸成的武器。握久了，能听见它们还在说话。
 	}
 
 	RockQuest: {
 		DisplayName: 古恒石
 		Description: 获得古恒石
-		DetailedDescription: 一块看似普通的石头，却见证了无数次终末的轮回。它是永恒毅力的象征。
+		DetailedDescription: 一块看起来很普通的石头，从上一个终末里剩下来的。
 	}
 
 	TerminusQuest: {
 		DisplayName: 终末石
 		Description: 获得终末石
-		DetailedDescription: 开启终末挑战的钥匙。凝视这块石头，准备迎接来自整个世界最强生物的连续审判。
+		DetailedDescription: 开启终末挑战的钥匙。捏碎它，世界上最强的东西会排着队来找你。
 	}
 
 	SpearOfLonginusQuest: {
 		DisplayName: 朗基努斯
 		Description: 获得朗基努斯
-		DetailedDescription: 传说中刺穿神明的圣枪，拥有贯穿一切力场与绝对领域的权能。当它被投掷出时，就连因果律也会为其让路。
+		DetailedDescription: 刺穿过神明的圣枪。力场、护盾、绝对领域，它一概不认。
 	}
 
 	DragonsWordQuest: {
@@ -355,14 +355,14 @@ QuestNode: {
 		DisplayName: 冒险家
 		Description: 世界任我走！
 		QuestObjective.Description: 点击领取
-		DetailedDescription: 千里之行始于足下。穿上这双靴子，去丈量这个广阔的世界吧。
+		DetailedDescription: 穿上这双靴子。世界很大，脚程要紧。
 	}
 
 	ExploreDungeon: {
 		DisplayName: 阴森地牢
 		Description: 发现地牢入口
 		QuestObjective.Description: 到达地牢
-		DetailedDescription: 被诅咒的墙壁后隐藏着无尽的秘密与危险。只有最勇敢的探险家敢于踏足这片亡者的领地。
+		DetailedDescription: 被诅咒的砖墙后面关着地牢的守卫。没打过骷髅王就进去的人，一般出不来。
 	}
 
 	ExploreHell: {
@@ -390,7 +390,7 @@ QuestNode: {
 		DisplayName: 极寒之地
 		Description: 探索雪原生物群落
 		QuestObjective.Description: 到达雪原
-		DetailedDescription: 永恒的冻土。寒风凛冽，冰雪覆盖了一切。在这里，生命以一种更坚韧的方式存在。
+		DetailedDescription: 常年冻着的地方，风大得站不稳。企鹅和狼都住在这儿，前者无害，后者不是。
 	}
 
 	ExploreSpace: {
@@ -444,7 +444,7 @@ QuestNode: {
 	QueenSlimeQuest: {
 		DisplayName: 史莱姆皇后
 		Description: 击败史莱姆皇后
-		DetailedDescription: 神圣之地的水晶女皇，统御着所有圣洁的凝胶生物。比起她的配偶，她更加敏捷且致命。准备好迎接一场华丽的弹幕洗礼吧。
+		DetailedDescription: 神圣之地的水晶女皇，统御着所有圣洁的凝胶生物。比起她的配偶，她更加敏捷致命，而且会飞。
 	}
 
 	BuildHouse: {
@@ -500,7 +500,7 @@ QuestNode: {
 		DisplayName: 深渊探索者
 		Description: 探索所有主要生物群落
 		QuestObjective.Description: 完成所有探索任务
-		DetailedDescription: 你已经走遍了世界的每一个角落，从最高的云端到最深的地狱。你绘制的地图证明了你的勇气。现在，整个世界都在你的脚下。
+		DetailedDescription: 你已经走遍了世界的每一个角落，从最高的云端到最深的地狱。地图上再没有空白了。
 	}
 
 	ExploreCaverns: {
@@ -528,7 +528,7 @@ QuestNode: {
 		DisplayName: 浮空岛屿
 		Description: 找到天空中的浮空岛
 		QuestObjective.Description: 到达浮空岛
-		DetailedDescription: 传说在云层之上，有古代文明留下的宝库。寻找重力的反常之处，或者搭建通天的高塔，去一探究竟吧。
+		DetailedDescription: 云层之上飘着几座岛，上面有古代文明留下的宝库。找到重力反常的地方，或者自己搭塔上去。
 	}
 
 	ExploreGlowingMushroom: {
@@ -542,7 +542,7 @@ QuestNode: {
 		DisplayName: 地下探险
 		Description: 深入地下洞穴
 		QuestObjective.Description: 到达地下洞穴
-		DetailedDescription: 仅仅是铲除地表的泥土是不够的。真正的冒险始于地表之下。带上你的火把，第一层岩石只是个开始。
+		DetailedDescription: 泥土层下面是石头层。带够火把，往下还有很多层。
 	}
 
 	FindLifeCrystal: {
@@ -582,7 +582,7 @@ QuestNode: {
 	CollectorQuest: {
 		DisplayName: 收集助手
 		Description: 获得收集者
-		DetailedDescription: 厌倦了弯腰拾取满地的战利品？这个装置能自动拾取周围的掉落物。它是构建自动化物流与整理系统的核心组件，彻底解放你的双手。
+		DetailedDescription: 这个装置能自动拾取周围的掉落物，是自动化物流的入口。地上的东西不用再一件件捡。
 	}
 
 	LumberjackQuest: {
@@ -606,7 +606,7 @@ QuestNode: {
 	ItemPipelineQuest: {
 		DisplayName: 物流系统
 		Description: 制作一个物品管道
-		DetailedDescription: 还在像个原始人一样在箱子之间跑来跑去吗？这些管道是工业的血管。将它们连接在机器与容器之间，看着物品自动流向它们该去的地方。建立一条自动化的流水线。
+		DetailedDescription: 管道是工业的血管。接在机器和容器之间，物品会自己走到该去的地方，不用你再在箱子之间跑来跑去。
 	}
 
 	ThrowerQuest: {

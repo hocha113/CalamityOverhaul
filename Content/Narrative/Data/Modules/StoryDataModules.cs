@@ -248,5 +248,10 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool AskAnswered;
         /// <summary>婉拒过教程；只能由稽古符再启动</summary>
         public bool Declined;
+        /// <summary>
+        /// 最近一次「本版新增了内容，要不要补讲」问的是哪个教程版本。
+        /// 小于当前版本 = 还没就这一版问过；旧档缺此字段读作 0
+        /// </summary>
+        public int RefresherAskedVersion;
     }
 }

@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities
                 player.whoAmI,
                 0f,
                 0f,
-                context.Mastery);
+                context.Revival);
             LanternBoyProj created = whoAmI >= 0 && whoAmI < Main.maxProjectiles
                 ? Main.projectile[whoAmI].ModProjectile as LanternBoyProj
                 : null;

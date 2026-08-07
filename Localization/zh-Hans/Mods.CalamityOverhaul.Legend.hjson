@@ -27,13 +27,19 @@ HalibutText: {
 		TierName1: 远洋 · 微光层
 		TierName2: 深海 · 弱光层
 		TierName3: 深渊 · 无光层
-		DockLabel: 装备栏 {0} / {1} · 点击选用
+		DockLabel: 装备栏 {0} / {1} · 左键选用 右键卸下
 		LockedNodeName: 未知的鱼影
 		LockedNodeHint: 在研究祭坛中研究 {0} 后点亮此技能
 		EquipBtn: 装 备
 		UnequipBtn: 卸 下
 		SelectBtn: 选 用
 		SelectedTag: 当 前
+		EquippedTag: 已装备
+		NodeEquipHint: 双击装备 · 右键也行 · 也可拖进装备栏
+		NodeUnequipHint: 已在装备栏中 · 右键卸下
+		DockSlotHint: 左键选用 · 右键卸下 · 拖动可换位
+		DockDropHint: 松手放入
+		DockRemoveHint: 松手卸下
 		LoadoutFullHint: 装备栏已满
 		UnlockFishLine: 研究来源：{0}
 		AltarTitle: 研究祭坛
@@ -45,7 +51,7 @@ HalibutText: {
 		StudyPlaceHint: 点击投入研究祭坛
 		StudyingFormat: 正在研究：{0}
 		StudyReclaim: 取 回
-		DragHint: 按住拖动技能到装备栏 · 滚轮下潜
+		DragHint: 双击鱼装备 · 拖动可换位 · 滚轮下潜
 		LayerStateFormat: 领域 {0} 层
 		UnlockCountFormat: 已点亮 {0} / {1}
 	}
@@ -622,24 +628,30 @@ OnikiriText: {
 		AskTitle: 要不要先受一遍教习
 		AskBody: 气力与架势、鬼域的表里、肢解的反噬，这三样不讲一遍很难自己摸清。这句话只问这一次
 		AskPrompt: 现在受教；或收下稽古符，改日自己开讲
+		RefreshAskTitle: 补一段新的
+		RefreshAskBody: 这一版多了两段讲解：改铭台旁那本铭谱怎么查，以及鬼域之眼在动手前该认的东西。实操你已经练过，这次不重练
+		RefreshAskPrompt: 现在补讲；或收下稽古符，改日自己开讲
 		AcceptBtn: 受 教
 		DeclineBtn: 不 必
 		DeclineNotice: 稽古符已留给你，使用它可随时开讲
 		HudTitle: 气力与架势
-		HudBody: 手持鬼切时，左下角常驻气力笔触与架势鞘，两者都只显示读数。半架势可双疾走接左键灭世，满架势可用处决键锁敌终结；按住樱流键会先付费疾走再化樱
+		HudBody: 手持鬼切时，左下角常驻气力笔触与架势鞘，两者都只显示读数。半架势可双疾走接左键灭世，满架势可用处决键锁敌终结；表世界中按住樱流键当场化樱
 		HudPrompt: 认一下这组读数；HUD 的界面入口只有封印札
 		RegisterTitle: 点鬼簿
 		RegisterBody: 改铭台顶梁左侧钉着「点鬼簿」驿牌,牌下悬着点鬼簿卷轴。名录分为可役使厉鬼与残卷；点击条目只浏览，役使印才会装备，卸下后全部厉鬼能力关闭
 		RegisterPrompt: 点高亮驿牌或卷轴移步；打开后浏览名录与役鬼位，再收卷继续
 		MeiTitle: 改铭台
-		MeiBody: 封印札是 HUD 唯一的界面入口，首次打开进入改铭台。茎铭、樋位、雕位决定刀上赋效
-		MeiPrompt: 按 {0} 或点高亮的札打开改铭台
+		MeiBody: 封印札是 HUD 唯一的界面入口，首次打开进入改铭台。刀上茎铭、樋位、雕位三处可凿，每一枚铭带一份赋效和一份代价。点铭位展开扇骨挑錾样，行囊里现有的錾样列在下方木匣
+		MeiPrompt: 按 {0} 或点高亮的札打开改铭台，认一下这三处铭位
+		CodexTitle: 铭谱
+		CodexBody: 改铭台台账板下压着一本线装册子，就是铭谱。左页按茎铭、樋位、雕位分卷列出全部铭，右页写赋效、代价与来路；未凿的只露縁分进度。此处只读，凿铭仍在台上做
+		CodexPrompt: 点高亮的册子展读，合卷后自动回台
 		DomainTitle: 鬼域之眼
-		DomainBody: 气力旁那只眼掌管鬼域：展开表世界（泛黄和纸）、翻到里世界（水墨阴间），再可收阖
-		DomainPrompt: 左键展/收域，右键或 {0} 翻转表里；展一次也可推进
+		DomainBody: 气力旁那只眼掌管鬼域：展开表世界（泛黄和纸）、翻到里世界（水墨阴间），再可收阖。肢解只在里世界成立
+		DomainPrompt: 左键点眼展开或收阖，右键或 {0} 翻转表里
 		PrepareTitle: 实操准备
 		PrepareBody: 收好改铭台与点鬼簿，手持鬼切。若鬼域已展开，我会先按正式方式收域；从中断处回来时，也会先恢复到下一步所需的状态
-		PreparePrompt: 保持手持鬼切，等待鬼眼与界面安定
+		PreparePrompt: 保持手持鬼切，等待鬼眼与界面安定；等不动就点「跳过」直接进实操
 		OpenDomainTitle: 展开表世界
 		OpenDomainBody: 按领域键（默认 Q）展开鬼域。阖目时第一次展开会进入浅层的表世界，泛黄和纸将覆盖天地
 		OpenDomainPrompt: 按 {0} 亲手展开领域，并等它稳定在表世界
@@ -653,20 +665,24 @@ OnikiriText: {
 		BacklashBody: 直接肢解真身会让持刀者承受真实的 25% 最大生命伤害，并在纳刀期间失去行动。看完整段演出，结束后我会替你恢复
 		BacklashPrompt: 暂停操作，等待反噬、纳刀与伤口复原
 		CloseDomainTitle: 从鬼眼收域
-		CloseDomainBody: 最后亲手左键点击 HUD 的鬼眼收阖领域。右键点击鬼眼也能翻转表里，但这一步只认左键收域
+		CloseDomainBody: 最后亲手收阖领域。左键点 HUD 上的鬼眼是最短的一手；用领域键收也算数，右键点眼则是翻转表里
 		CloseDomainPrompt: 左键点击高亮鬼眼，并等待它完全闭合
 		DomainUnboundHint: 领域键未绑定。本次教程可直接按 Q，作为临时默认键
 		FlipUnboundHint: 翻转键未绑定。本次教程可直接按 Mouse3（鼠标中键），作为临时默认键
 		WaitingFeedback: 正在等待这一步的结果落定
 		BusyFeedback: 鬼域仍在变相，等它稳定后再操作
-		RetryFeedback: 这不是本步骤要求的有效操作。状态会自动恢复，请按提示重试或让我演示
+		RetryFeedback: 这一下没落到实处。照提示再来一次，或让我替你演示
 		NeedBladeHold: 行囊里没有鬼切，先把它拿回来再继续
+		TargetStalledHint: 演练靶还没落位。周围生灵太挤时它排不上号，换个开阔处站定再等等
 		AssistBtn: 替我演示
 		RetryBtn: 重试
 		NextBtn: 已知晓
 		OpenRegisterBtn: 开点鬼簿
 		OpenMeiBtn: 开改铭台
+		OpenCodexBtn: 展读铭谱
 		SkipBtn: 跳过
+		SkipStepBtn: 跳过本步
+		AbortBtn: 收起教习
 	}
 
 	OniMeiCodexUI: {

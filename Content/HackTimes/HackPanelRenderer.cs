@@ -41,25 +41,28 @@ namespace CalamityOverhaul.Content.HackTimes
         #region 排版常量
 
         private const float RowWidth = 340f;
-        private const float RowHeight = 48f;
-        private const float RowGap = 5f;
+        //基准行高与间距，纵向空间不足时按比例压缩
+        private const float RowHeightBase = 48f;
+        private const float RowGapBase = 5f;
         //分组标题额外占高
-        private const float GroupGap = 24f;
-        private const float RightMargin = 36f;
+        private const float GroupGapBase = 24f;
+        //行高压缩下限，再低装不下名称加徽章两行
+        private const float RowHeightMin = 40f;
+        private const float MinLayoutScale = 0.62f;
         //旗标左端斜切宽（尖端指向屏幕中心）
         private const float TaperWidth = 12f;
         //成本大格宽
         private const float CostCellWidth = 46f;
         //电路树主干左偏移
         private const float TrunkOffsetX = 44f;
+        //行尾顶线与出头刻度的最大悬挑，右缘预留这段才不越过边距
+        private const float EdgeOverhang = 6f;
+        //末行到页脚基线
+        private const float FooterTopGap = 14f;
         //首条目前延迟（秒）
         private const float BaseEntryDelay = 0.2f;
         //条目飞入间隔（秒）
         private const float EntryStagger = 0.06f;
-        //列表下移，避让 RAM HUD
-        private const float TopPadding = 60f;
-        //详情页脚高度
-        private const float FooterHeight = 92f;
         //MouseText 中文不低于 0.5，否则糊
         private static float FontName => 0.80f;
         private static float FontCost => 0.88f;
@@ -67,9 +70,23 @@ namespace CalamityOverhaul.Content.HackTimes
         private static float FontTime => 0.56f;
         private static float FontMicro => 0.50f;
         private static float FontGroup => 0.58f;
+        private static float FontMeta => 0.56f;
+        private static float FontHint => 0.72f;
 
         //解码乱码字符池
         private const string ScrambleChars = "0123456789ABCDEF#$%&";
+
+        #endregion
+
+        #region 每帧解算的排版
+
+        private float rowHeight = RowHeightBase;
+        private float rowGap = RowGapBase;
+        private float groupGap = GroupGapBase;
+        private float listStartY;
+        private float listHeight;
+        //只含无悬停态，见 MeasureStatusFooterHeight
+        private float footerHeight;
 
         #endregion
 

@@ -27,13 +27,19 @@ HalibutText: {
 		TierName1: Open Sea · Twilight Zone
 		TierName2: Deep Sea · Midnight Zone
 		TierName3: Abyss · Lightless Zone
-		DockLabel: Loadout {0} / {1} · Click to select
+		DockLabel: Loadout {0} / {1} · Left-click to select, right-click to remove
 		LockedNodeName: Unknown Silhouette
 		LockedNodeHint: Research {0} at the Research Altar to light up this skill
 		EquipBtn: Equip
 		UnequipBtn: Remove
 		SelectBtn: Select
 		SelectedTag: Active
+		EquippedTag: Equipped
+		NodeEquipHint: Double-click to equip · Right-click works too · Or drag it into the loadout
+		NodeUnequipHint: Already in the loadout · Right-click to remove
+		DockSlotHint: Left-click to select · Right-click to remove · Drag to reorder
+		DockDropHint: Release to slot it in
+		DockRemoveHint: Release to remove
 		LoadoutFullHint: Loadout is full
 		UnlockFishLine: Research source: {0}
 		AltarTitle: Research Altar
@@ -45,7 +51,7 @@ HalibutText: {
 		StudyPlaceHint: Click to place into the Research Altar
 		StudyingFormat: Researching: {0}
 		StudyReclaim: Reclaim
-		DragHint: Hold and drag skills into the loadout · Scroll to dive
+		DragHint: Double-click a fish to equip · Drag to reorder · Scroll to dive
 		LayerStateFormat: Domain Layer {0}
 		UnlockCountFormat: Lit {0} / {1}
 	}
@@ -622,24 +628,30 @@ OnikiriText: {
 		AskTitle: Take the Lesson First?
 		AskBody: Vigor and Stance, the Omote and Ura of the domain, the backlash of dismemberment. These three are hard to work out alone without hearing them once. You will only be asked this once
 		AskPrompt: Take the lesson now, or accept the Keiko Rune and open it yourself later
+		RefreshAskTitle: A Couple of New Pages
+		RefreshAskBody: This version adds two lessons: how to read the codex beside the Inscription Stand, and what to know about the Eye of the Oni Domain before you act. You have already done the practice, so it won't be repeated
+		RefreshAskPrompt: Take the additions now, or accept the Keiko Rune and open them later
 		AcceptBtn: Teach Me
 		DeclineBtn: Not Now
 		DeclineNotice: The Keiko Rune has been left with you; use it to open the lesson any time
 		HudTitle: Vigor & Stance
-		HudBody: While holding Onikiri, the lower-left HUD shows Vigor and Stance as read-only gauges. At half Stance, double-dash then left-click for Annihilating Flash; at full Stance, use Execute to auto-lock into Finale. Holding Sakura Flight first pays for a normal dash, then turns you to petals
+		HudBody: While holding Onikiri, the lower-left HUD shows Vigor and Stance as read-only gauges. At half Stance, double-dash then left-click for Annihilating Flash; at full Stance, use Execute to auto-lock into Finale. In Omote, holding Sakura Flight turns you to petals on the spot
 		HudPrompt: Learn these readouts; the sealing talisman is the HUD's only panel control
 		RegisterTitle: Ghost Register
 		RegisterBody: The beam plaque "Ghost Register" and its hanging scroll on the left of the Inscription Stand open the ledger. Usable wraiths and archival fragments are separate; clicking only inspects, while the bind seal equips and release disables every wraith ability
 		RegisterPrompt: Click the highlighted plaque or scroll; inspect the register and wraith slot, then close it to continue
 		MeiTitle: Inscription Stand
-		MeiBody: The sealing talisman is the HUD's only panel control and opens the Inscription Stand by default. Tang, groove, and horimono decide the blade's bestowal
-		MeiPrompt: Press {0} or click the highlighted talisman to open the Inscription Stand
+		MeiBody: The sealing talisman is the HUD's only panel control and opens the Inscription Stand by default. The blade takes an inscription at three places — tang, groove, and horimono — and each one carries a bestowal and a price. Click a slot to fan out the chisel ribs; the chisels already in your pack sit in the tray below
+		MeiPrompt: Press {0} or click the highlighted talisman to open the stand, then learn the three slots
+		CodexTitle: Mei Codex
+		CodexBody: A stitched booklet sits under the ledger board of the Inscription Stand — that is the codex. The left page lists every inscription by tang, groove, and horimono; the right page gives its bestowal, price, and where it comes from, while unearned ones show only affinity progress. Read-only; chiselling still happens on the stand
+		CodexPrompt: Click the highlighted booklet to read; closing it returns you to the stand
 		DomainTitle: Eye of the Oni Domain
-		DomainBody: That eye beside Vigor rules the domain — unfold Omote (yellowed paper), flip to Ura (ink-wash nether), then fold again
-		DomainPrompt: Left-click unfolds/folds; Right-click or {0} flips Omote/Ura — unfolding once also advances
+		DomainBody: That eye beside Vigor rules the domain — unfold Omote (yellowed paper), flip to Ura (ink-wash nether), then fold again. Dismemberment only works in Ura
+		DomainPrompt: Left-click the eye to unfold or fold; Right-click or {0} flips Omote/Ura
 		PrepareTitle: Prepare for Practice
 		PrepareBody: Close the Inscription Stand and Ghost Register, then hold Onikiri. If the domain is open, I will fold it through the normal command first; after an interruption, I will also restore the state needed for your next step
-		PreparePrompt: Keep Onikiri in hand and wait for the eye and panels to settle
+		PreparePrompt: Keep Onikiri in hand and wait for the eye and panels to settle; if it stalls, hit Skip to go straight to practice
 		OpenDomainTitle: Unfold Omote
 		OpenDomainBody: Press the domain key (Q by default) to unfold the Oni Domain. From a shut eye, the first opening enters shallow Omote and covers the world in yellowed paper
 		OpenDomainPrompt: Press {0} yourself, then wait until the domain settles in Omote
@@ -653,20 +665,24 @@ OnikiriText: {
 		BacklashBody: Directly dismembering a body deals a real 25% of maximum life to the wielder and locks movement during the sheathing rite. Watch the full sequence; I will restore you afterward
 		BacklashPrompt: Stop input and wait for the backlash, sheathing, and recovery to finish
 		CloseDomainTitle: Fold the Domain from the Eye
-		CloseDomainBody: Finish by left-clicking the HUD eye yourself to fold the domain. Right-clicking the eye can also flip Omote and Ura, but this step only accepts a left-click fold
+		CloseDomainBody: Finish by folding the domain yourself. Left-clicking the HUD eye is the shortest way; the domain key counts too, while right-clicking the eye flips Omote and Ura instead
 		CloseDomainPrompt: Left-click the highlighted HUD eye and wait until it shuts completely
 		DomainUnboundHint: No domain key is bound. For this lesson, press Q as the temporary default
 		FlipUnboundHint: No flip key is bound. For this lesson, press Mouse3 (middle mouse) as the temporary default
 		WaitingFeedback: Waiting for this step's result to settle
 		BusyFeedback: The domain is still shifting. Wait until it settles before trying again
-		RetryFeedback: That was not the action required for this step. The state will recover; retry or let me demonstrate
+		RetryFeedback: That one didn't land. Follow the prompt and try again, or let me demonstrate
 		NeedBladeHold: You don't have Onikiri. Retrieve it before continuing
+		TargetStalledHint: The practice dummy hasn't arrived. It can't get a slot when the area is crowded — move somewhere open and wait
 		AssistBtn: Demonstrate
 		RetryBtn: Retry
 		NextBtn: Understood
 		OpenRegisterBtn: Open Register
 		OpenMeiBtn: Open Stand
+		OpenCodexBtn: Read Codex
 		SkipBtn: Skip
+		SkipStepBtn: Skip Step
+		AbortBtn: Dismiss
 	}
 
 	OniMeiCodexUI: {
@@ -701,7 +717,7 @@ OnikiriOverride: {
 		'''
 		Hold left-click to drive the five-beat Crimson Rend combo
 		[DASH] spends Vigor on a normal Kamui Flash Step; at half Stance or above, press [DASH] again within one second for a free execution dash
-		In Omote, hold [SAKURA] to pay for a normal dash; if still held at the endpoint with enough Vigor, it chains into Sakura Flight; release to return
+		In Omote, hold [SAKURA] to scatter into Sakura Flight on the spot; release or run dry to reform; holding it through a dash chains into the flight too
 		After a half-Stance execution dash, left-click for Annihilating Flash; at full Stance, double-dash through a target for Finale Slash
 		At full Stance, press [EXECUTE] to auto-lock, dash, and automatically unleash Finale Slash; with no target, the dash follows the cursor
 		An unfulfilled execution costs no additional Vigor
