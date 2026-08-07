@@ -224,14 +224,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             fx.Parameters["uColCut"]?.SetValue(ColorCut);
             fx.CurrentTechnique = fx.Techniques["GardenTech"];
 
-            //着色器里已按 2.15 竖压做透视，这里给正方形 quad 即可
+            //着色器里已按 1/GroundSquash 竖压做透视，这里必须给正方形 quad：
+            //再乘一次压扁比会让画出来的场只有 Contains 判定的一半高
             Vector2 center = Projectile.Center - Main.screenPosition;
             float half = Radius;
             VertexPositionColorTexture[] verts = [
-                new((center + new Vector2(-half, -half * GroundSquash)).ToVector3(), Color.White, new Vector2(0f, 0f)),
-                new((center + new Vector2(half, -half * GroundSquash)).ToVector3(), Color.White, new Vector2(1f, 0f)),
-                new((center + new Vector2(-half, half * GroundSquash)).ToVector3(), Color.White, new Vector2(0f, 1f)),
-                new((center + new Vector2(half, half * GroundSquash)).ToVector3(), Color.White, new Vector2(1f, 1f)),
+                new((center + new Vector2(-half, -half)).ToVector3(), Color.White, new Vector2(0f, 0f)),
+                new((center + new Vector2(half, -half)).ToVector3(), Color.White, new Vector2(1f, 0f)),
+                new((center + new Vector2(-half, half)).ToVector3(), Color.White, new Vector2(0f, 1f)),
+                new((center + new Vector2(half, half)).ToVector3(), Color.White, new Vector2(1f, 1f)),
             ];
             foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
                 pass.Apply();

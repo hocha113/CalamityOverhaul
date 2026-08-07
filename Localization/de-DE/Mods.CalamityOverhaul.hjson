@@ -277,3 +277,10 @@ TileNameFallback: {
 	Tile187: Unkraut
 	Tile352: Dornen
 }
+
+OniRainWorld: {
+	OniRainWorldSystem: {
+		// InteractHint: "[右键] 撑伞入雨"
+		// EnterText: 鬼雨世界
+	}
+}

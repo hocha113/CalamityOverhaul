@@ -277,3 +277,10 @@ TileNameFallback: {
 	Tile187: Malas hierbas
 	Tile352: Espinas
 }
+
+OniRainWorld: {
+	OniRainWorldSystem: {
+		// InteractHint: "[右键] 撑伞入雨"
+		// EnterText: 鬼雨世界
+	}
+}

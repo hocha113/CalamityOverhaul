@@ -81,6 +81,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniMeiStand { get; set; }
         public static Asset<Effect> OniInkWipe { get; set; }
         public static Asset<Effect> OniMoon { get; set; }
+        public static Asset<Effect> OniLedgerPeek { get; set; }
         public static Asset<Effect> HalibutHudEye { get; set; }
         public static Asset<Effect> HalibutHudGauge { get; set; }
         public static Asset<Effect> EncyclopediaKnowledge { get; set; }
@@ -196,6 +197,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniCrimsonSlash { get; set; }
         public static Asset<Effect> OniCrimsonImpactPost { get; set; }
         public static Asset<Effect> OniCrimsonBloom { get; set; }
+        public static Asset<Effect> OniGateRift { get; set; }
         public static Asset<Effect> OniFinaleBlade { get; set; }
         public static Asset<Effect> OniFinalePost { get; set; }
         public static Asset<Effect> OniFinaleWound { get; set; }
@@ -206,6 +208,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniRaikiri { get; set; }
         public static Asset<Effect> OniBellWave { get; set; }
         public static Asset<Effect> OniSandGarden { get; set; }
+        public static Asset<Effect> OniSenjuArm { get; set; }
+        public static Asset<Effect> OniPaperMirror { get; set; }
         public static Asset<Effect> SHPCModStormField { get; set; }
         public static Asset<Effect> SHPCModStormBolt { get; set; }
         public static Asset<Effect> SHPCModRecycleCell { get; set; }

@@ -9,6 +9,7 @@ using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -40,6 +41,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         private int cutTimer;
         private float cutAngle;
         private float swayPhase;
+        /// <summary>拓下来的那一帧：源矩形、收进卡面的缩放与朝向，纯本地表现</summary>
+        private Rectangle sourceFrame;
+        private float sourceScale = 1f;
+        private SpriteEffects sourceEffects = SpriteEffects.None;
+        private bool appearanceResolved;
 
         private int SourceId => (int)Projectile.ai[0];
         private int SourceType => (int)Projectile.ai[1];
@@ -213,14 +219,58 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             cutAngle = reader.ReadSingle();
         }
 
+        /// <summary>
+        /// 纸型拓的是这个敌手本身：取它的贴图与挂纸那一刻的帧，按纸片尺寸收进卡面。<br/>
+        /// 纯客户端表现，不同机器上帧号差一两格无所谓，所以不进网络
+        /// </summary>
+        private void ResolveAppearance() {
+            appearanceResolved = true;
+            int type = SourceType;
+            if (type <= 0 || type >= TextureAssets.Npc.Length) {
+                return;
+            }
+            Main.instance.LoadNPC(type);
+            Texture2D texture = TextureAssets.Npc[type]?.Value;
+            if (texture == null || texture.Width <= 0 || texture.Height <= 0) {
+                return;
+            }
+
+            NPC live = ResolveSource();
+            Rectangle frame = live?.frame ?? default;
+            //真身已经不在、或帧越界，就退回第一帧的定姿——纸型本来就是静的
+            if (frame.Width <= 0 || frame.Height <= 0 || frame.X < 0 || frame.Y < 0
+                || frame.Right > texture.Width || frame.Bottom > texture.Height) {
+                int frames = Math.Max(1, Main.npcFrameCount[type]);
+                frame = new Rectangle(0, 0, texture.Width, texture.Height / frames);
+            }
+            if (frame.Width <= 0 || frame.Height <= 0) {
+                return;
+            }
+
+            sourceFrame = frame;
+            //收进卡面：大小敌手都裁成同一号纸，判定框才对得上看到的东西
+            float fit = MathF.Min(PaperHalfWidth * 1.7f / frame.Width,
+                PaperHalfHeight * 1.7f / frame.Height);
+            sourceScale = MathHelper.Clamp(fit, 0.25f, 1.15f);
+            sourceEffects = live?.spriteDirection == 1
+                ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+        }
+
         public override bool PreDraw(ref Color lightColor) {
             if (Main.dedServ) {
                 return false;
             }
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            Rectangle src = new(0, 0, 1, 1);
-            Vector2 half = new(0.5f);
-            Vector2 center = Projectile.Center - Main.screenPosition;
+            if (!appearanceResolved) {
+                ResolveAppearance();
+            }
+            if (sourceFrame.Width <= 0 || sourceFrame.Height <= 0) {
+                return false;
+            }
+            Texture2D texture = TextureAssets.Npc[SourceType]?.Value;
+            if (texture == null) {
+                return false;
+            }
+
             float fade = MathHelper.Clamp(timer / 8f, 0f, 1f)
                 * MathHelper.Clamp(Projectile.timeLeft / 40f, 0f, 1f);
             if (cut) {
@@ -230,31 +280,73 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                 return false;
             }
 
-            //挂着的纸会晃：一点点摆动就能把"这是张纸"和"这是个贴图"分开
+            //挂着的纸会晃；贴出来那几帧还带一道"从侧面翻正"的展开
             float sway = MathF.Sin(swayPhase) * 0.05f;
-            float split = cut ? cutTimer / (float)SplitFrames : 0f;
-            Vector2 cutDir = cutAngle.ToRotationVector2();
-            Vector2 apart = cutDir.RotatedBy(MathHelper.PiOver2) * split * 22f;
+            float unfold = MathHelper.Clamp(timer / 10f, 0f, 1f);
+            unfold = 1f - (1f - unfold) * (1f - unfold);
+            Vector2 scale = new(sourceScale * MathHelper.Lerp(0.12f, 1f, unfold), sourceScale);
+            Vector2 center = Projectile.Center - Main.screenPosition;
+
+            Color paper = PaperBody * (fade * 0.95f);
+            Color edge = OnikiriUITheme.Ink * (fade * 0.85f);
+            //落刀那两帧纸面吃一记闪白，斩纸才有"响"
+            if (cut && cutTimer <= 3) {
+                paper = Color.Lerp(paper, new Color(255, 232, 198) * fade, 1f - cutTimer / 4f);
+            }
+
+            if (!cut) {
+                DrawSheet(texture, sourceFrame, center, sway, scale, edge, paper);
+                return false;
+            }
+
+            //斩纸：沿刀口把源矩形切成两片，各自朝法线滑开并微微翻转
+            float split = cutTimer / (float)SplitFrames;
+            Vector2 dir = cutAngle.ToRotationVector2();
+            Vector2 normal = dir.RotatedBy(MathHelper.PiOver2);
+            bool acrossRows = MathF.Abs(dir.X) >= MathF.Abs(dir.Y);
+            float flipX = (sourceEffects & SpriteEffects.FlipHorizontally) != 0 ? -1f : 1f;
 
             for (int piece = 0; piece < 2; piece++) {
                 float side = piece == 0 ? 1f : -1f;
-                Vector2 pos = center + apart * side;
-                float rot = sway + split * side * 0.35f;
-                //纸背影：先压一层暗底立住轮廓，再铺纸面
-                sb_Draw(pixel, src, pos + new Vector2(2f, 3f), rot, InkDeep * (fade * 0.55f), half);
-                sb_Draw(pixel, src, pos, rot, PaperBody * (fade * 0.88f), half);
-                //面影：纸上那团墨色剪影，是被拓下来的"谁"
-                Main.EntitySpriteDraw(pixel, pos, src,
-                    OnikiriUITheme.Ink * (fade * 0.72f), rot, half,
-                    new Vector2(PaperHalfWidth * 1.1f, PaperHalfHeight * 1.1f), SpriteEffects.None);
+                Rectangle sub = sourceFrame;
+                Vector2 local;
+                if (acrossRows) {
+                    int h = sourceFrame.Height / 2;
+                    sub.Height = h;
+                    sub.Y += piece == 0 ? 0 : sourceFrame.Height - h;
+                    local = new Vector2(0f, (piece == 0 ? -1f : 1f) * h * 0.5f * scale.Y);
+                }
+                else {
+                    int w = sourceFrame.Width / 2;
+                    sub.Width = w;
+                    sub.X += piece == 0 ? 0 : sourceFrame.Width - w;
+                    local = new Vector2((piece == 0 ? -1f : 1f) * flipX * w * 0.5f * scale.X, 0f);
+                }
+                if (sub.Width <= 0 || sub.Height <= 0) {
+                    continue;
+                }
+                float rot = sway + split * side * 0.30f;
+                Vector2 pos = center + local.RotatedBy(rot) + normal * (split * 20f * side)
+                    + Vector2.UnitY * (split * split * 10f);
+                DrawSheet(texture, sub, pos, rot, scale, edge, paper);
             }
             return false;
         }
 
-        private static void sb_Draw(Texture2D pixel, Rectangle src, Vector2 pos, float rot,
-            Color color, Vector2 origin) {
-            Main.EntitySpriteDraw(pixel, pos, src, color, rot, origin,
-                new Vector2(PaperHalfWidth * 1.35f, PaperHalfHeight * 1.35f), SpriteEffects.None);
+        /// <summary>一片纸：先四向偏移压出墨边，再铺和纸色的本体</summary>
+        private void DrawSheet(Texture2D texture, Rectangle frame, Vector2 pos, float rotation,
+            Vector2 scale, Color edge, Color paper) {
+            Vector2 origin = frame.Size() * 0.5f;
+            const float edgeOffset = 1.35f;
+            Main.EntitySpriteDraw(texture, pos - Vector2.UnitX * edgeOffset, frame, edge,
+                rotation, origin, scale, sourceEffects);
+            Main.EntitySpriteDraw(texture, pos + Vector2.UnitX * edgeOffset, frame, edge,
+                rotation, origin, scale, sourceEffects);
+            Main.EntitySpriteDraw(texture, pos - Vector2.UnitY * edgeOffset, frame, edge,
+                rotation, origin, scale, sourceEffects);
+            Main.EntitySpriteDraw(texture, pos + Vector2.UnitY * edgeOffset, frame, edge,
+                rotation, origin, scale, sourceEffects);
+            Main.EntitySpriteDraw(texture, pos, frame, paper, rotation, origin, scale, sourceEffects);
         }
     }
 

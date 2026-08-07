@@ -951,7 +951,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
 
             float interruptRotation = 0f;
-            CrimsonRendSlash combo = CrimsonRendSlash.FindController(Player);
+            IOniComboController combo = OniBladeOccupancy.FindComboController(Player);
             bool interruptCombo = combo != null
                 && combo.BeginFlashStepInterrupt(aim, out interruptRotation);
             dashLock = Math.Max(DashRefireLockTicks
@@ -1395,7 +1395,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (zanshin == null) {
                 return false;
             }
-            CrimsonRendSlash.FindController(Player)?.ConsumeZanshinInput();
+            OniBladeOccupancy.FindComboController(Player)?.ConsumeZanshinInput();
             return true;
         }
 
@@ -1638,7 +1638,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
             Stance = Math.Max(0f, Stance - AnnihilateCost);
             ClearExecutionFollowup();
-            CrimsonRendSlash.FindController(Player)?.ConsumeZanshinInput();
+            OniBladeOccupancy.FindComboController(Player)?.ConsumeZanshinInput();
             OniMeiDeedEvents.NotifyExecutionSpent(Player);
             IgniteKurikara();
             Vector2 emberAt = Player.Center + aim * 120f;
@@ -1796,7 +1796,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         internal bool TryTutorialDismember(NPC target) {
             if (!Tutorial.OnikiriTutorialTargetGlobal.IsTutorialTarget(target,
                 out int owner, out _) || owner != Player.whoAmI
-                || CrimsonRendSlash.FindController(Player) != null
+                || OniBladeOccupancy.FindComboController(Player) != null
                 || OniBladeOccupancy.AnyHardOccupant(Player)
                 || OniBladeOccupancy.BladeReserved(Player)) {
                 return false;
@@ -2366,7 +2366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 || Player.ownedProjectileCounts[ModContent.ProjectileType<OniFinaleSlash>()] > 0) {
                 return true;
             }
-            return CrimsonRendSlash.FindController(Player)?.InCommittedBeats ?? false;
+            return OniBladeOccupancy.FindComboController(Player)?.InCommittedBeats ?? false;
         }
 
         private static bool TryGetHostileDamageSource(PlayerDeathReason damageSource,

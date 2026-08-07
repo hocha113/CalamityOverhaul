@@ -167,19 +167,40 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         //====================== 吊挂太刀(去改铭台的门) ======================
 
-        //太刀微缩 SVG:归一 [-1,1],y 向下,旧单位 0..100 除以 50;粗笔当体、细笔作线
+        //太刀微缩 SVG:归一 [-1,1],y 向下,旧单位 0..100 除以 50;粗笔当体、细笔作线。
+        //反り是身份:鞘脊中段外弓 0.062(约 1/32 反り比),锋尾回收;柄随弧续曲,菱巻连笔缠出捻巻
         private const float TachiN = 50f;
-        private const string TachiTsukaD = "M 0 -0.90 L 0 -0.36";
-        private const string TachiKashiraD = "M -0.085 -0.92 L 0.085 -0.92";
-        private const string TachiTsukaEdgeD = "M -0.055 -0.88 L -0.055 -0.38 M 0.055 -0.88 L 0.055 -0.38";
-        private const string TachiSameD =
-            "M -0.03 -0.78 L 0.03 -0.70 M 0.03 -0.66 L -0.03 -0.58 M -0.03 -0.54 L 0.03 -0.46 M 0.03 -0.42 L -0.03 -0.36";
-        private const string TachiTsubaD = "M -0.15 -0.32 L 0.15 -0.32";
-        private const string TachiSayaD = "M 0 -0.28 C 0.012 0.05 0.018 0.45 0.01 0.86";
-        private const string TachiSayaEdgeD = "M -0.055 -0.28 C -0.043 0.05 -0.037 0.45 -0.045 0.86";
-        private const string TachiSageoD = "M -0.10 -0.08 L 0.10 -0.08 M -0.10 0.08 L 0.10 0.08";
-        private const string TachiKojiriD = "M -0.07 0.90 L 0.07 0.90";
-        private const string TachiSteelD = "M 0 -0.30 L 0 -0.12";
+        /// <summary>柄脊(承鞘弧向上续微曲)</summary>
+        private const string TachiTsukaD = "M -0.016 -0.94 C 0.004 -0.82 0.02 -0.62 0.03 -0.38";
+        /// <summary>柄头卡缘(顺柄顶切向)</summary>
+        private const string TachiKashiraD = "M -0.066 -0.945 L 0.036 -0.935";
+        /// <summary>菱巻两笔交缠(沿柄脊取样,振幅 ±0.048)</summary>
+        private const string TachiMakiD =
+            "M -0.056 -0.88 L 0.048 -0.805 L -0.04 -0.73 L 0.063 -0.655 L -0.027 -0.58 L 0.074 -0.505 L -0.019 -0.43";
+        private const string TachiMakiD2 =
+            "M 0.04 -0.88 L -0.048 -0.805 L 0.056 -0.73 L -0.033 -0.655 L 0.069 -0.58 L -0.022 -0.505 L 0.077 -0.43";
+        /// <summary>縁金具(柄尻与镡之间一匝金)</summary>
+        private const string TachiFuchiD = "M -0.025 -0.365 L 0.085 -0.357";
+        /// <summary>镡(近垂血刀轴)</summary>
+        private const string TachiTsubaD = "M -0.148 -0.326 L 0.152 -0.314";
+        /// <summary>鞘口</summary>
+        private const string TachiKoiguchiD = "M -0.052 -0.262 L 0.12 -0.252";
+        /// <summary>鞘脊:中段外弓再回收的反り</summary>
+        private const string TachiSayaD =
+            "M 0.034 -0.26 C 0.058 -0.02 0.062 0.3 0.03 0.58 C 0.01 0.74 -0.006 0.82 -0.024 0.9";
+        /// <summary>鞘缘承光线(鞘脊平移向背光缘,住在漆体内侧)</summary>
+        private const string TachiSayaEdgeD =
+            "M -0.028 -0.26 C -0.004 -0.02 0 0.3 -0.032 0.58 C -0.052 0.74 -0.068 0.82 -0.086 0.9";
+        /// <summary>下绪:自栗形垂下的绦绳,两匝松圈再收尾</summary>
+        private const string TachiSageoD =
+            "M 0.15 0.1 C 0.26 0.16 0.28 0.3 0.16 0.36 C 0.3 0.4 0.26 0.54 0.13 0.52 C 0.07 0.51 0.06 0.44 0.1 0.41";
+        /// <summary>下绪贴鞘的一匝底缠</summary>
+        private const string TachiSageoWrapD = "M -0.05 0.076 L 0.15 0.084";
+        /// <summary>鞘尾金(石突,顺锋尾切向)</summary>
+        private const string TachiKojiriD = "M -0.062 0.895 L 0.02 0.905";
+        private const string TachiKojiriLineD = "M -0.056 0.873 L 0.014 0.882";
+        /// <summary>半拔钢:自鞘口向上生长(to=拔程)</summary>
+        private const string TachiSteelD = "M 0.033 -0.262 L 0.028 -0.44";
 
         /// <summary>
         /// 悬挂的鞘中太刀微缩:对面屏(改铭台)的器物本体挂在梁钩下作切换门。
@@ -209,82 +230,102 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             SvgPath tsuka = SvgPathPen.Path(TachiTsukaD);
             SvgPath kashira = SvgPathPen.Path(TachiKashiraD);
-            SvgPath tsukaEdge = SvgPathPen.Path(TachiTsukaEdgeD);
-            SvgPath same = SvgPathPen.Path(TachiSameD);
+            SvgPath maki = SvgPathPen.Path(TachiMakiD);
+            SvgPath maki2 = SvgPathPen.Path(TachiMakiD2);
+            SvgPath fuchi = SvgPathPen.Path(TachiFuchiD);
             SvgPath tsuba = SvgPathPen.Path(TachiTsubaD);
+            SvgPath koiguchi = SvgPathPen.Path(TachiKoiguchiD);
             SvgPath saya = SvgPathPen.Path(TachiSayaD);
             SvgPath sayaEdge = SvgPathPen.Path(TachiSayaEdgeD);
             SvgPath sageo = SvgPathPen.Path(TachiSageoD);
+            SvgPath sageoWrap = SvgPathPen.Path(TachiSageoWrapD);
             SvgPath kojiri = SvgPathPen.Path(TachiKojiriD);
+            SvgPath kojiriLine = SvgPathPen.Path(TachiKojiriLineD);
             SvgPath steel = SvgPathPen.Path(TachiSteelD);
 
             //挂绪结
             sb.Draw(Pixel, top, PixelSrc, OnikiriUITheme.Seal * a, MathHelper.PiOver4 + rot * 0.4f,
                 half, Sz(4.2f, 4.2f), SpriteEffects.None, 0f);
 
-            //预演半拔:柄镡整体上提,镡下露一线钢
+            //预演半拔:柄镡整体上提,鞘口露出一段钢
             float c = sw.Ceremony01;
             float cEase = c * (2f - c);
             float drawOff = -cEase * 9f;
             Vector2 gripC = center + down * (drawOff * s);
+            //悬停微涨:全器绕心同涨,骨肉不散
+            float scaleLift = scale * lift;
 
             //整刀淡影(曲线实体的错位深笔)
             Vector2 shadowOff = new(1.5f * s, 2.2f * s);
-            SvgPathPen.Stroke(sb, saya, center + shadowOff, scale, rot,
+            SvgPathPen.Stroke(sb, saya, center + shadowOff, scaleLift, rot,
                 new Color(8, 2, 5), 10f * s, a * 0.40f, 0f, reveal);
-            SvgPathPen.Stroke(sb, tsuka, gripC + shadowOff, scale, rot,
+            SvgPathPen.Stroke(sb, tsuka, gripC + shadowOff, scaleLift, rot,
                 new Color(8, 2, 5), 8f * s, a * 0.35f, 0f, reveal);
 
-            //====柄:漆木粗笔+柄头+缘线+菱巻====
+            //====柄:漆木粗笔续着鞘弧,菱巻两笔交缠出捻巻,柄头卡缘,縁金一匝====
             Color lacq = Color.Lerp(OnikiriUITheme.Ink, OnikiriUITheme.Deep, 0.12f);
-            SvgPathPen.Stroke(sb, tsuka, gripC, scale * lift, rot,
+            SvgPathPen.Stroke(sb, tsuka, gripC, scaleLift, rot,
                 OnikiriUITheme.Dark, 7.2f * s, a * 0.96f, 0f, reveal);
-            SvgPathPen.Stroke(sb, kashira, gripC, scale, rot,
-                OnikiriUITheme.Deep, 4f * s, a * 0.95f, 0f, reveal);
-            SvgPathPen.Stroke(sb, tsukaEdge, gripC, scale, rot,
-                OnikiriUITheme.Deep, 1.1f * s, a * 0.55f, 0f, reveal);
-            SvgPathPen.Stroke(sb, same, gripC, scale, rot,
-                OnikiriUITheme.Deep, 2.2f * s, a * 0.85f, 0f, reveal);
+            SvgPathPen.Stroke(sb, maki, gripC, scaleLift, rot,
+                OnikiriUITheme.Deep, 1.3f * s, a * 0.8f, 0f, reveal);
+            SvgPathPen.Stroke(sb, maki2, gripC, scaleLift, rot,
+                Color.Lerp(OnikiriUITheme.Deep, OnikiriUITheme.Ink, 0.4f), 1.3f * s, a * 0.7f, 0f, reveal);
+            SvgPathPen.Stroke(sb, kashira, gripC, scaleLift, rot,
+                OnikiriUITheme.Deep, 4.5f * s, a * 0.95f, 0f, reveal);
+            SvgPathPen.Stroke(sb, fuchi, gripC, scaleLift, rot,
+                OnikiriUITheme.GoldDeep, 2f * s, a * 0.8f, 0f, reveal);
 
-            //====镡====
-            SvgPathPen.Stroke(sb, tsuba, gripC, scale, rot,
+            //====镡:墨铁粗笔压深红内缘====
+            SvgPathPen.Stroke(sb, tsuba, gripC, scaleLift, rot,
                 OnikiriUITheme.Ink, 3.6f * s, a * 0.98f, 0f, reveal);
-            SvgPathPen.Stroke(sb, tsuba, gripC, scale * 0.72f, rot,
-                OnikiriUITheme.Deep, 2.2f * s, a * 0.8f, 0f, reveal);
+            SvgPathPen.Stroke(sb, tsuba, gripC, scaleLift * 0.72f, rot,
+                OnikiriUITheme.Deep, 2f * s, a * 0.8f, 0f, reveal);
 
-            //半拔露出的钢
+            //半拔露出的钢:自鞘口向上生长,刃侧压一线白热
             if (cEase > 0.03f) {
-                Vector2 steelC = gripC + down * (cEase * 4.5f * s);
-                SvgPathPen.Stroke(sb, steel, steelC, scale, rot,
-                    OnikiriUITheme.Paper, 5.2f * s, a * 0.9f * cEase);
-                SvgPathPen.Stroke(sb, steel, steelC - side * (2f * s), scale, rot,
-                    OnikiriUITheme.HotWhite, 1.2f * s, a * cEase);
+                SvgPathPen.Stroke(sb, steel, center, scaleLift, rot,
+                    OnikiriUITheme.Paper, 5f * s, a * 0.92f, 0f, cEase);
+                SvgPathPen.Stroke(sb, steel, center - side * (1.8f * s), scaleLift, rot,
+                    OnikiriUITheme.HotWhite, 1.2f * s, a * cEase, 0f, cEase);
             }
 
-            //====鞘:反り曲线粗笔+缘光+下绪+鞘尾金====
-            SvgPathPen.Stroke(sb, saya, center, scale * lift, rot,
+            //====鞘:反り粗笔中段外弓锋尾回收,承光缘线,鞘口一匝====
+            SvgPathPen.Stroke(sb, saya, center, scaleLift, rot,
                 lacq, 8.6f * s, a * 0.97f, 0f, reveal);
-            SvgPathPen.Stroke(sb, sayaEdge, center, scale, rot,
+            SvgPathPen.Stroke(sb, sayaEdge, center, scaleLift, rot,
                 OnikiriUITheme.Paper, 1.2f * s, a * 0.22f, 0f, reveal);
+            SvgPathPen.Stroke(sb, koiguchi, center, scaleLift, rot,
+                OnikiriUITheme.Deep, 2.2f * s, a * 0.85f, 0f, reveal);
             //缓移漆光:亮芯沿鞘脊巡行
             float sheenT = time * 0.09f - MathF.Floor(time * 0.09f);
-            SvgPathPen.StrokeRunner(sb, saya, center, scale, rot,
+            SvgPathPen.StrokeRunner(sb, saya, center, scaleLift, rot,
                 OnikiriUITheme.Paper, 3.2f * s, a * 0.18f * MathF.Sin(sheenT * MathHelper.Pi),
                 sheenT, 0.12f, OnikiriUITheme.HotWhite);
-            SvgPathPen.Stroke(sb, sageo, center, scale, rot,
-                OnikiriUITheme.Deep, 2.4f * s, a * 0.9f, 0f, reveal);
-            sb.Draw(Pixel, P(58f, 6f), PixelSrc, OnikiriUITheme.Deep * (a * 0.85f), rot + MathHelper.PiOver4,
-                half, Sz(3f, 3f), SpriteEffects.None, 0f);
-            SvgPathPen.Stroke(sb, kojiri, center, scale, rot,
-                OnikiriUITheme.GoldDeep, 4.2f * s, a * 0.95f, 0f, reveal);
-            SvgPathPen.Stroke(sb, kojiri, center - down * (2.2f * s), scale, rot,
+
+            //====下绪:栗形一粒,贴鞘底缠一匝,绦绳垂成两匝松圈,梢尾坠一点朱====
+            sb.Draw(Pixel, P(55f, 7.3f), PixelSrc, OnikiriUITheme.Deep * (a * 0.9f), rot + MathHelper.PiOver4,
+                half, Sz(2.8f, 2.8f), SpriteEffects.None, 0f);
+            SvgPathPen.Stroke(sb, sageoWrap, center, scaleLift, rot,
+                OnikiriUITheme.Deep, 2.4f * s, a * 0.85f, 0f, reveal);
+            SvgPathPen.Stroke(sb, sageo, center, scaleLift, rot,
+                OnikiriUITheme.Deep, 1.7f * s, a * 0.9f, 0f, reveal,
+                Color.Lerp(OnikiriUITheme.Deep, OnikiriUITheme.Bright, 0.35f));
+            if (reveal > 0.98f) {
+                Vector2 sageoTip = center + new Vector2(0.1f, 0.41f).RotatedBy(rot) * scaleLift;
+                OniBrush.DrawSoftDot(sb, sageoTip, 2.2f * s, OnikiriUITheme.Seal, a * 0.5f);
+            }
+
+            //====鞘尾金:石突粗笔+金象嵌细线====
+            SvgPathPen.Stroke(sb, kojiri, center, scaleLift, rot,
+                OnikiriUITheme.GoldDeep, 4.5f * s, a * 0.95f, 0f, reveal);
+            SvgPathPen.Stroke(sb, kojiriLine, center, scaleLift, rot,
                 OnikiriUITheme.GoldInlay, 1.2f * s, a * 0.7f, 0f, reveal);
 
             //====回声:金光巡鞘====
             float echo = sw.Echo01;
             if (echo > 0.01f) {
                 float pulse = MathF.Sin(echo * MathHelper.Pi);
-                SvgPathPen.StrokeRunner(sb, saya, center, scale, rot,
+                SvgPathPen.StrokeRunner(sb, saya, center, scaleLift, rot,
                     OnikiriUITheme.GoldInlay, 2.4f * s, a * 0.7f * pulse,
                     echo, 0.10f, OnikiriUITheme.HotWhite);
             }
@@ -292,7 +333,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //====预演白闪:沿鞘一线====
             if (c > 0.02f && c < 0.999f) {
                 float flash = MathF.Sin(c * MathHelper.Pi);
-                SvgPathPen.Stroke(sb, sayaEdge, center, scale, rot,
+                SvgPathPen.Stroke(sb, sayaEdge, center, scaleLift, rot,
                     OnikiriUITheme.HotWhite, 1.6f * s, a * 0.55f * flash);
             }
 
@@ -327,9 +368,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         //====================== 绯月 ======================
 
-        /// <summary>绯月:shader 优先,缺则 SoftGlow + 矩形竖瞳降级</summary>
+        /// <summary>绯月:shader 优先(垫一层加法辉光作大气泛光),缺则 SoftGlow + 矩形竖瞳降级</summary>
         public static void DrawMoon(SpriteBatch sb, Vector2 center, float alpha, float time, float pupilOpen) {
             if (OniMoonDraw.Available) {
+                //shader 走 AlphaBlend,自己加不亮夜空;泛光由 CPU 加法层垫底,与 shader 内呼吸同频
+                float glowBreath = (float)Math.Sin(time * 0.5f) * 0.5f + 0.5f;
+                OniBrush.DrawBacklight(sb, center, 112f + glowBreath * 10f,
+                    OnikiriUITheme.Deep, alpha * 0.42f);
                 OniMoonDraw.Draw(sb, center, alpha, time, pupilOpen);
                 return;
             }

@@ -4,8 +4,9 @@
 //WaveTech：钟声是空气被推出去，不是一个亮圈在放大。
 //  1) 同心多环：主波之后跟两道更弱的余波（驻波读法），各自以不同速度外扩，
 //     波间距随 uAge 拉开——听得见的"嗡"在画面上就是这几道追不上彼此的环；
-//  2) 空气折射：环缘处对背景做一次法线偏移采样(uBackdrop)，让环推过去的地方
-//     有轻微的挤压位移，而不是叠一层半透明白；
+//  2) 压缩带：主波正前方压一道暗铜窄环，读作"空气被推挤到发暗"。
+//     此处刻意不做取屏折射——世界层拿不到干净的后备缓冲，
+//     拿噪声冒充折射只会把波峰洗灰，宁可用明暗差把挤压画出来；
 //  3) 环体本身极窄且带钝边：铜钟的声压是"闷"的，禁高频锐边与纯白；
 //  4) 边缘吃暗：外缘压一线暗铜，避免整圈发光读成"能量护罩"。
 //
@@ -37,16 +38,6 @@ sampler noiseSamp = sampler_state
     mipfilter = LINEAR;
     AddressU = wrap;
     AddressV = wrap;
-};
-
-texture uBackdrop;
-sampler backSamp = sampler_state
-{
-    texture = <uBackdrop>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    AddressU = clamp;
-    AddressV = clamp;
 };
 
 #define PI 3.14159265
@@ -104,22 +95,22 @@ float4 WavePS(PSInput input) : COLOR0
     float w1 = Ring(rr, lead - 0.22 - uAge * 0.10, 0.055);
     float w2 = Ring(rr, lead - 0.42 - uAge * 0.16, 0.035);
 
+    //压缩带：主波正前方那一圈被推挤的空气，只靠吃暗表达，不取屏
+    float squeeze = Ring(rr, lead + 0.058, 0.042);
+
     float fade = 1.0 - smoothstep(0.72, 1.0, uAge);
     float body = saturate(w0 + w1 * 0.55 + w2 * 0.30) * fade;
-    if (body <= 0.004)
+    float total = saturate(body + squeeze * 0.55 * fade);
+    if (total <= 0.004)
         return float4(0, 0, 0, 0);
-
-    //空气折射：环推过去的地方对背景做一次法线偏移
-    float2 push = dir * w0 * 0.020 * fade;
-    float3 warped = tex2D(backSamp, input.TexCoords + push).rgb;
 
     //色：暗铜底 + 旧铜体，白热只留在主波最窄的那一线
     float3 col = lerp(uColDark, uColBright, saturate(body * 1.25));
     col = lerp(col, uColHot, saturate(pow(w0, 3.0) * 0.85));
-    //把折射进来的背景掺一点，读作"空气被挤过去"而不是贴了一层膜
-    col = lerp(col, warped, 0.28 * saturate(w0));
+    //压缩带压到暗铜以下：波前是一道暗，不是又一道亮
+    col = lerp(col, uColDark * 0.55, saturate(squeeze * (1.0 - body) * 1.30));
 
-    float alpha = body * uOpacity * 0.92;
+    float alpha = total * uOpacity * 0.92;
     return float4(col * alpha, alpha);
 }
 

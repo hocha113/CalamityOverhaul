@@ -277,3 +277,10 @@ TileNameFallback: {
 	Tile187: 杂草
 	Tile352: 荆棘
 }
+
+OniRainWorld: {
+	OniRainWorldSystem: {
+		// InteractHint: "[右键] 撑伞入雨"
+		// EnterText: 鬼雨世界
+	}
+}

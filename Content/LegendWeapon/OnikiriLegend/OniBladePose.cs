@@ -22,9 +22,42 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         bool ReservesBlade => false;
     }
 
+    /// <summary>
+    /// 普攻连段控制器契约,绯红裂空斩与鬼门开缝共用;
+    /// 外部系统(疾走/残心/肢解/不动护)按此接口查询,不关心具体控制器类型
+    /// </summary>
+    internal interface IOniComboController
+    {
+        /// <summary>本帧是否持刀权(排拍/活刀光/实体刀未收完)</summary>
+        bool ClaimsBlade { get; }
+
+        /// <summary>不动护窗口:重拍活刀光尚在伤害窗附近</summary>
+        bool InCommittedBeats { get; }
+
+        /// <summary>实体刀当前姿态(肢解居合继承用);不可见返回 false</summary>
+        bool TryGetBladePose(out float rotation, out int facing);
+
+        /// <summary>持续左键→疾走的刀权交接,返回当前刀角</summary>
+        bool BeginFlashStepInterrupt(Vector2 dashAim, out float startRotation);
+
+        /// <summary>残心接管本次左键,清掉普攻补发</summary>
+        void ConsumeZanshinInput();
+    }
+
     /// <summary>刀权查询,本地从在场弹幕推导</summary>
     internal static class OniBladeOccupancy
     {
+        /// <summary>查找该玩家在场的普攻连段控制器,无则 null</summary>
+        public static IOniComboController FindComboController(Player player) {
+            foreach (Projectile proj in Main.ActiveProjectiles) {
+                if (proj.owner == player.whoAmI
+                    && proj.ModProjectile is IOniComboController controller) {
+                    return controller;
+                }
+            }
+            return null;
+        }
+
         /// <summary>该玩家是否有硬占刀权的技能弹幕在场(except 排除查询者自身;
         /// ignoreType≥0 时跳过该弹幕类型,供连残心斩互不挡)</summary>
         public static bool AnyHardOccupant(Player player, Projectile except = null, int ignoreType = -1) {
@@ -57,7 +90,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         /// <summary>连段是否持刀权</summary>
         public static bool ComboClaims(Player player)
-            => CrimsonRendSlash.FindController(player)?.ClaimsBlade ?? false;
+            => FindComboController(player)?.ClaimsBlade ?? false;
     }
 
     /// <summary>

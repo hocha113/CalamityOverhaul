@@ -1,6 +1,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using InnoVault.PRT;
+using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
@@ -165,8 +166,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             for (int i = 0; i < 3; i++) {
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
                 Vector2 dir = ang.ToRotationVector2();
-                //贴地椭圆：竖向压扁，读作地面上的一圈而不是空中球壳
-                Vector2 at = Projectile.Center + new Vector2(dir.X, dir.Y * 0.45f) * front;
+                //与判定和柱面同一个正圆，尘才落在环上
+                Vector2 at = Projectile.Center + dir * front;
                 PRTLoader.NewParticle<PRT_CrimsonSmoke>(at, dir * Main.rand.NextFloat(1.2f, 3f),
                     Color.White, Main.rand.NextFloat(0.05f, 0.09f))
                     ?.Configure(Main.rand.Next(16, 26), new Color(122, 86, 40), new Color(24, 16, 12));
@@ -208,22 +209,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             fx.Parameters["uCharge"]?.SetValue(0f);
             fx.Parameters["uOpacity"]?.SetValue(1f);
             fx.Parameters["uNoiseTex"]?.SetValue(noise);
-            //背景折射源：屏幕后备缓冲不可直接取，退回噪声只做位移扰动的载体
-            fx.Parameters["uBackdrop"]?.SetValue(noise);
             fx.Parameters["uColHot"]?.SetValue(ColorHot);
             fx.Parameters["uColBright"]?.SetValue(ColorBright);
             fx.Parameters["uColDark"]?.SetValue(ColorDark);
             fx.CurrentTechnique = fx.Techniques["WaveTech"];
 
-            //贴地椭圆：地面上的一圈声压，不是空中球壳
+            //正圆：判定用的是真实距离（Colliding/BindAtFront 都按 Distance 算），
+            //所以画面也必须是正圆——压成贴地椭圆会让头顶的敌人在"环还没扫到"时就挨打
             Vector2 center = Projectile.Center - Main.screenPosition;
-            float halfX = Radius;
-            float halfY = Radius * 0.46f;
+            float half = Radius;
             VertexPositionColorTexture[] verts = [
-                new((center + new Vector2(-halfX, -halfY)).ToVector3(), Color.White, new Vector2(0f, 0f)),
-                new((center + new Vector2(halfX, -halfY)).ToVector3(), Color.White, new Vector2(1f, 0f)),
-                new((center + new Vector2(-halfX, halfY)).ToVector3(), Color.White, new Vector2(0f, 1f)),
-                new((center + new Vector2(halfX, halfY)).ToVector3(), Color.White, new Vector2(1f, 1f)),
+                new((center + new Vector2(-half, -half)).ToVector3(), Color.White, new Vector2(0f, 0f)),
+                new((center + new Vector2(half, -half)).ToVector3(), Color.White, new Vector2(1f, 0f)),
+                new((center + new Vector2(-half, half)).ToVector3(), Color.White, new Vector2(0f, 1f)),
+                new((center + new Vector2(half, half)).ToVector3(), Color.White, new Vector2(1f, 1f)),
             ];
             foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
                 pass.Apply();
@@ -233,6 +232,83 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             device.BlendState = prevBlend;
             device.RasterizerState = prevRaster;
             device.DepthStencilState = prevDepth;
+        }
+
+        internal static readonly Vector3 RimHot = ColorHot;
+        internal static readonly Vector3 RimBright = ColorBright;
+        internal static readonly Vector3 RimDark = ColorDark;
+    }
+
+    /// <summary>
+    /// 梵鐘自鸣环：满架势起算的那三秒，在脚下画一圈逐渐咬合的钟纹。<br/>
+    /// 这一圈就是「现在放终结，还是让钟自己响」的决策窗——没有它，
+    /// 玩家只能靠听那记越来越紧的嗡声猜还剩多久。<br/>
+    /// 只画本地玩家：自鸣计数与架势一样是本机自治的，远端读不到真值
+    /// </summary>
+    internal sealed class OniMeiBellRimRender : RenderHandle
+    {
+        /// <summary>与面影同层，压在地表之上、实体之下</summary>
+        public override float Weight => 1.28f;
+
+        /// <summary>环半径随蓄势略微收紧，读作"钟正在被拉满"</summary>
+        private const float RimRadius = 92f;
+
+        public override void DrawNPCsOverTiles(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice,
+            RenderTarget2D screenSwap) {
+            if (Main.gameMenu || Main.dedServ) {
+                return;
+            }
+            Player player = Main.LocalPlayer;
+            if (player == null || !player.active || player.dead) {
+                return;
+            }
+            float charge = player.GetModPlayer<OnikiriPlayer>().BellChargeRatio;
+            if (charge <= 0.001f) {
+                return;
+            }
+            Effect fx = EffectLoader.OniBellWave?.Value;
+            Texture2D noise = CWRAsset.NoiseSoft01?.Value;
+            if (fx == null || noise == null) {
+                return;
+            }
+
+            BlendState prevBlend = graphicsDevice.BlendState;
+            RasterizerState prevRaster = graphicsDevice.RasterizerState;
+            DepthStencilState prevDepth = graphicsDevice.DepthStencilState;
+            graphicsDevice.BlendState = BlendState.AlphaBlend;
+            graphicsDevice.RasterizerState = RasterizerState.CullNone;
+            graphicsDevice.DepthStencilState = DepthStencilState.None;
+
+            fx.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            fx.Parameters["uSeed"]?.SetValue(0.31f);
+            fx.Parameters["uAge"]?.SetValue(0f);
+            fx.Parameters["uCharge"]?.SetValue(charge);
+            fx.Parameters["uOpacity"]?.SetValue(1f);
+            fx.Parameters["uNoiseTex"]?.SetValue(noise);
+            fx.Parameters["uColHot"]?.SetValue(OniMeiBellWave.RimHot);
+            fx.Parameters["uColBright"]?.SetValue(OniMeiBellWave.RimBright);
+            fx.Parameters["uColDark"]?.SetValue(OniMeiBellWave.RimDark);
+            fx.CurrentTechnique = fx.Techniques["RimTech"];
+
+            //贴在脚下：环是绕着人转的一圈钟口，压扁读作地面上的圈
+            Vector2 center = player.Bottom - Main.screenPosition - Vector2.UnitY * 6f;
+            float halfX = RimRadius;
+            float halfY = RimRadius * 0.42f;
+            VertexPositionColorTexture[] verts = [
+                new((center + new Vector2(-halfX, -halfY)).ToVector3(), Color.White, new Vector2(0f, 0f)),
+                new((center + new Vector2(halfX, -halfY)).ToVector3(), Color.White, new Vector2(1f, 0f)),
+                new((center + new Vector2(-halfX, halfY)).ToVector3(), Color.White, new Vector2(0f, 1f)),
+                new((center + new Vector2(halfX, halfY)).ToVector3(), Color.White, new Vector2(1f, 1f)),
+            ];
+            foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
+                pass.Apply();
+                graphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);
+            }
+
+            graphicsDevice.BlendState = prevBlend;
+            graphicsDevice.RasterizerState = prevRaster;
+            graphicsDevice.DepthStencilState = prevDepth;
         }
     }
 }

@@ -1,6 +1,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;
@@ -17,6 +18,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
     /// </summary>
     internal class OnikiriItem : ModItem
     {
+        /// <summary>普攻控制器切换,真=鬼门开缝(OniSlash) 假=绯红裂空斩;A/B 对比用,双方外部接口一致</summary>
+        internal static bool UseOniSlash = true;
+
         public override void SetStaticDefaults() {
             ItemOverride.ItemMeleePrefixDic[Type] = true;
         }
@@ -34,7 +38,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             Item.autoReuse = true;
             Item.channel = true;   //控制器按住循环,物品只触发首拍
             Item.UseSound = null;
-            Item.shoot = ModContent.ProjectileType<CrimsonRendSlash>();
+            Item.shoot = UseOniSlash
+                ? ModContent.ProjectileType<OniSlash>()
+                : ModContent.ProjectileType<CrimsonRendSlash>();
             Item.shootSpeed = 1f;
             Item.rare = CWRID.Rarity_BurnishedAuric > 0 ? CWRID.Rarity_BurnishedAuric : ItemRarityID.Purple;
             Item.value = Item.buyPrice(0, 25, 0, 0);
@@ -50,9 +56,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
         }
 
-        /// <summary>连段/肢解在场时封锁再用</summary>
+        /// <summary>连段/肢解在场时封锁再用(新旧控制器都查,切换开关时不双开)</summary>
         public override bool CanUseItem(Player player)
             => player.ownedProjectileCounts[ModContent.ProjectileType<CrimsonRendSlash>()] == 0
+            && player.ownedProjectileCounts[ModContent.ProjectileType<OniSlash>()] == 0
             && player.ownedProjectileCounts[ModContent.ProjectileType<OniSeverStrike>()] == 0;
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
@@ -90,7 +97,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             okp.CancelExecutionIntent(settleFollowup: true);
             float bladeScale = OnikiriOverride.GetBladeScale(Item);
-            CrimsonRendSlash.Fire(player, player.Center, velocity, damage, knockback, scale: bladeScale, source);
+            if (UseOniSlash) {
+                OniSlash.Fire(player, player.Center, velocity, damage, knockback, scale: bladeScale, source);
+            }
+            else {
+                CrimsonRendSlash.Fire(player, player.Center, velocity, damage, knockback, scale: bladeScale, source);
+            }
             return false;
         }
     }

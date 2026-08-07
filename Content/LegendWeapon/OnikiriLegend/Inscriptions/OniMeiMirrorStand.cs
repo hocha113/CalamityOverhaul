@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
     /// 复刻是"再来一刀"，落点由立像所在决定——所以疾走停在哪、面朝哪，是有讲究的。<br/>
     /// ai[0]=立像朝向(±1) ai[1]=基础武器伤害
     /// </summary>
-    internal class OniMeiMirrorStand : ModProjectile
+    internal class OniMeiMirrorStand : ModProjectile, IPrimitiveDrawable, IOverlayDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
@@ -29,13 +29,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         private const float StandHalfWidth = 22f;
         private const float StandHalfHeight = 34f;
 
+        /// <summary>镜中人相对镜心下沉的量，让人落在镜面里而不是浮在框外</summary>
+        private const float MirrorCloneDrop = 4f;
+
         private static readonly Color GlassBody = new(206, 208, 214);
         private static readonly Color GlassRim = new(255, 240, 226);
+        private static readonly Vector3 PaperV = new(0.86f, 0.80f, 0.68f);
+        private static readonly Vector3 GlassV = new(0.79f, 0.81f, 0.85f);
+        private static readonly Vector3 DeepV = new(0.07f, 0.05f, 0.08f);
+        private static readonly Vector3 RimV = new(0.78f, 0.15f, 0.13f);
 
         private int timer;
         private bool shattered;
         private int shatterTimer;
         private float swayPhase;
+        /// <summary>立镜那一刻的持刀者姿态：镜里照的是当时的你，不是现在的你</summary>
+        private bool poseCaptured;
+        private int snapshotDirection = 1;
+        private float snapshotGravDir = 1f;
+        private Rectangle snapshotBodyFrame;
+        private Rectangle snapshotLegFrame;
 
         private int Facing => Projectile.ai[0] >= 0f ? 1 : -1;
         private int BaseWeaponDamage => Math.Max(1, (int)Projectile.ai[1]);
@@ -117,6 +130,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
 
         public override void AI() {
+            if (!poseCaptured) {
+                CapturePose();
+            }
             timer++;
             swayPhase += 0.06f;
             if (shattered && ++shatterTimer >= ShatterFrames) {
@@ -159,45 +175,160 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             shatterTimer = reader.ReadInt16();
         }
 
-        public override bool PreDraw(ref Color lightColor) {
+        /// <summary>
+        /// 拓下立镜那一刻的持刀者姿态。<br/>
+        /// 纯表现用，各机器上帧号差一格无所谓，所以不进网络；
+        /// 真身之后怎么动都不影响镜里那一下
+        /// </summary>
+        private void CapturePose() {
+            poseCaptured = true;
+            Player owner = Owner;
+            if (owner == null || !owner.active) {
+                return;
+            }
+            snapshotDirection = owner.direction >= 0 ? 1 : -1;
+            snapshotGravDir = owner.gravDir >= 0f ? 1f : -1f;
+            snapshotBodyFrame = owner.bodyFrame;
+            snapshotLegFrame = owner.legFrame;
+        }
+
+        /// <summary>本帧的透明度、立起进度、碎裂进度；三处绘制共用一份</summary>
+        private bool TryPose(out float fade, out float rise, out float shatter) {
+            fade = 0f;
+            rise = 0f;
+            shatter = 0f;
             if (Main.dedServ) {
                 return false;
             }
-            float fade = MathHelper.Clamp(timer / (float)RiseFrames, 0f, 1f)
-                * MathHelper.Clamp(Projectile.timeLeft / 24f, 0f, 1f);
-            if (shattered) {
-                fade *= 1f - shatterTimer / (float)ShatterFrames;
+            rise = MathHelper.Clamp(timer / (float)RiseFrames, 0f, 1f);
+            shatter = shattered ? MathHelper.Clamp(shatterTimer / (float)ShatterFrames, 0f, 1f) : 0f;
+            fade = rise * MathHelper.Clamp(Projectile.timeLeft / 24f, 0f, 1f) * (1f - shatter * 0.35f);
+            return fade > 0.01f;
+        }
+
+        /// <summary>立起时从地里顶出来的那一小段位移</summary>
+        private Vector2 DrawCenter(float rise)
+            => Projectile.Center - Main.screenPosition + Vector2.UnitY * ((1f - rise) * 14f);
+
+        public override bool PreDraw(ref Color lightColor) => false;
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (!TryPose(out float fade, out float rise, out float shatter)) {
+                return;
             }
-            if (fade <= 0.01f) {
-                return false;
+            Effect fx = EffectLoader.OniPaperMirror?.Value;
+            Texture2D noise = CWRAsset.NoiseSoft01?.Value;
+            if (fx == null || noise == null) {
+                return;
             }
 
-            Vector2 center = Projectile.Center - Main.screenPosition;
-            float rise = (1f - MathHelper.Clamp(timer / (float)RiseFrames, 0f, 1f)) * 14f;
-            center.Y += rise;
+            GraphicsDevice device = Main.instance.GraphicsDevice;
+            BlendState prevBlend = device.BlendState;
+            RasterizerState prevRaster = device.RasterizerState;
+            DepthStencilState prevDepth = device.DepthStencilState;
+            device.BlendState = BlendState.AlphaBlend;
+            device.RasterizerState = RasterizerState.CullNone;
+            device.DepthStencilState = DepthStencilState.None;
+
+            fx.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            fx.Parameters["uSeed"]?.SetValue(Projectile.identity * 0.6180339887f % 1f);
+            fx.Parameters["uRise"]?.SetValue(rise);
+            fx.Parameters["uShatter"]?.SetValue(shatter);
+            fx.Parameters["uSheen"]?.SetValue(shatter);
+            fx.Parameters["uOpacity"]?.SetValue(1f);
+            fx.Parameters["uNoiseTex"]?.SetValue(noise);
+            fx.Parameters["uColPaper"]?.SetValue(PaperV);
+            fx.Parameters["uColGlass"]?.SetValue(GlassV);
+            fx.Parameters["uColDeep"]?.SetValue(DeepV);
+            fx.Parameters["uColRim"]?.SetValue(RimV);
+
+            //碎裂期 quad 要放大，碎片崩出原框也得画得下
+            float grow = 1f + shatter * 1.2f;
+            Vector2 center = DrawCenter(rise);
             float sway = MathF.Sin(swayPhase) * 0.035f;
+            Color tint = Color.White * fade;
 
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            Rectangle src = new(0, 0, 1, 1);
-            Vector2 half = new(0.5f);
-            //镜身：暗底 + 冷白面 + 一道斜掠高光
-            Main.EntitySpriteDraw(pixel, center + new Vector2(2f, 3f), src,
-                new Color(14, 10, 16) * (fade * 0.6f), sway, half,
-                new Vector2(StandHalfWidth * 2.1f, StandHalfHeight * 2.1f), SpriteEffects.None);
-            Main.EntitySpriteDraw(pixel, center, src, GlassBody * (fade * 0.72f), sway, half,
-                new Vector2(StandHalfWidth * 2f, StandHalfHeight * 2f), SpriteEffects.None);
-            Main.EntitySpriteDraw(pixel, center, src, GlassRim * (fade * 0.42f),
-                sway + 0.7f, half, new Vector2(StandHalfWidth * 0.5f, StandHalfHeight * 2.4f),
-                SpriteEffects.None);
+            fx.CurrentTechnique = fx.Techniques["MirrorTech"];
+            DrawCard(device, fx, center, sway, StandHalfWidth * 1.35f * grow,
+                StandHalfHeight * 1.30f * grow, tint);
 
-            //镜中人：玩家自己的刀影，朝向与立像一致
+            if (shatter > 0.001f) {
+                fx.CurrentTechnique = fx.Techniques["SheenTech"];
+                DrawCard(device, fx, center, sway, StandHalfWidth * 1.35f,
+                    StandHalfHeight * 1.30f, tint);
+            }
+
+            device.BlendState = prevBlend;
+            device.RasterizerState = prevRaster;
+            device.DepthStencilState = prevDepth;
+        }
+
+        private static void DrawCard(GraphicsDevice device, Effect fx, Vector2 center, float rotation,
+            float halfX, float halfY, Color tint) {
+            Vector2 right = new Vector2(halfX, 0f).RotatedBy(rotation);
+            Vector2 down = new Vector2(0f, halfY).RotatedBy(rotation);
+            VertexPositionColorTexture[] verts = [
+                new((center - right - down).ToVector3(), tint, new Vector2(0f, 0f)),
+                new((center + right - down).ToVector3(), tint, new Vector2(1f, 0f)),
+                new((center - right + down).ToVector3(), tint, new Vector2(0f, 1f)),
+                new((center + right + down).ToVector3(), tint, new Vector2(1f, 1f)),
+            ];
+            foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);
+            }
+        }
+
+        /// <summary>
+        /// 镜中人走遮挡层：镜面是图元层画的，会盖住 PreDraw，所以剪影必须更晚。<br/>
+        /// 姿态取自立镜那一刻的持刀者快照，左右按立像朝向翻——照的是你自己
+        /// </summary>
+        void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
+            if (!TryPose(out float fade, out float rise, out float shatter) || !poseCaptured) {
+                return;
+            }
+            Player owner = Owner;
+            if (owner == null || !owner.active) {
+                return;
+            }
+            float alpha = fade * (1f - shatter);
+            if (alpha <= 0.01f) {
+                return;
+            }
+
+            //镜里的人比镜框小一号，且随碎裂一起散
+            Vector2 center = DrawCenter(rise) + Main.screenPosition;
+            Vector2 topLeft = center - owner.Size * 0.5f + Vector2.UnitY * MirrorCloneDrop;
+            int mirrored = -snapshotDirection * Facing;
+
+            PlayerCloneRenderer.Prepare(owner);
+            Color outline = new Color(112, 12, 25, 185) * (alpha * 0.72f);
+            Color ink = new Color(10, 6, 12, 225) * (alpha * 0.80f);
+            const float outlineWidth = 1.6f;
+            DrawClone(topLeft + new Vector2(outlineWidth, 0f), outline, mirrored);
+            DrawClone(topLeft - new Vector2(outlineWidth, 0f), outline, mirrored);
+            DrawClone(topLeft + new Vector2(0f, outlineWidth), outline, mirrored);
+            DrawClone(topLeft - new Vector2(0f, outlineWidth), outline, mirrored);
+            DrawClone(topLeft, ink, mirrored);
+
+            //镜中那把刀：朝向跟着立像，读作"镜里的人正对着你举刀"
             Texture2D blade = TextureAssets.Item[ModContent.ItemType<OnikiriItem>()].Value;
             Vector2 size = blade.Size();
             Vector2 origin = size * OniBladePose.HiltUV;
-            Main.EntitySpriteDraw(blade, center, null, new Color(40, 26, 34) * (fade * 0.75f),
-                Facing > 0 ? -0.9f : 0.9f, origin, 0.55f,
-                Facing > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
-            return false;
+            SpriteEffects effects = SpriteEffects.None;
+            if (Facing < 0) {
+                effects = SpriteEffects.FlipVertically;
+                origin.Y = size.Y - origin.Y;
+            }
+            spriteBatch.Draw(blade, DrawCenter(rise), null,
+                new Color(44, 28, 36) * (alpha * 0.85f),
+                Facing > 0 ? -0.9f : 0.9f, origin, 0.55f, effects, 0f);
+        }
+
+        private void DrawClone(Vector2 position, Color color, int direction) {
+            PlayerCloneRenderer.DrawPrepared(position, color, direction,
+                snapshotBodyFrame, snapshotLegFrame, 0f, Vector2.Zero, snapshotGravDir);
         }
     }
 }

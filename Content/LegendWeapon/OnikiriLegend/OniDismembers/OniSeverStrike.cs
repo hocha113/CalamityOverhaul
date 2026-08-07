@@ -913,7 +913,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 inheritRot = 0f;
                 return;
             }
-            CrimsonRendSlash combo = CrimsonRendSlash.FindController(owner);
+            IOniComboController combo = OniBladeOccupancy.FindComboController(owner);
             inheritPose = combo != null
                 && combo.TryGetBladePose(out inheritRot, out _)
                 || OniBladeHandoff.TryPeek(owner, out inheritRot, out _);
