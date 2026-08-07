@@ -130,7 +130,18 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             v.direction = v.spriteDirection = Facing >= 0f ? 1 : -1;
             v.velocity = Vector2.Zero;
             v.Bottom = new Vector2(Projectile.Center.X, groundY);
+            //NewNPC 默认 homeless=false + homeTile=-1，会把家钉死在落点；
+            //置 true 交给原版分房流程搬进玩家房屋
+            v.homeless = true;
             v.netUpdate = true;
+
+            //首次登场后转正常城镇 NPC，死后由原版住房系统重生
+            if (!VictorWorldState.HasArrived) {
+                VictorWorldState.HasArrived = true;
+                if (Main.netMode == NetmodeID.Server) {
+                    NetMessage.SendData(MessageID.WorldData);
+                }
+            }
 
             BoundVictorWhoAmI = index;
             Projectile.netUpdate = true;

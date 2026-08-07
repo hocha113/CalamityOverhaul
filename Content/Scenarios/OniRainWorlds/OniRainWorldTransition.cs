@@ -1,4 +1,6 @@
-﻿using InnoVault.Cinematics;
+﻿using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.Cinematics;
+using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -42,12 +44,22 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         public static float Flash { get; private set; }
         public static float SeamGlow { get; private set; }
 
+        /// <summary>翻转角速度（弧度/帧），旋转拖影用</summary>
+        public static float RollVelocity { get; private set; }
+        /// <summary>鬼影涟漪环的扩散进度 0-1</summary>
+        public static float GlimpseRingProgress { get; private set; }
+        /// <summary>伞的躁动包络：压镜段起颤，浮现段拉满</summary>
+        public static float UmbrellaAgitation { get; private set; }
+        /// <summary>结算前真实世界的前兆稀雨密度，结算后由世界状态接管</summary>
+        public static float PreRainDensity { get; private set; }
+
         /// <summary>渲染合成是否需要介入</summary>
         public static bool RenderActive => Active
             && (Reveal > 0.0005f || RollAngle > 0.0005f || Flash > 0.0005f);
 
-        /// <summary>结算前的预压顶：镜面浮现期给真实世界一点阴叠，结算后由世界状态接管</summary>
-        public static float AmbientPreGloom => Active && Timer < CommitFrame ? Reveal * 0.25f : 0f;
+        /// <summary>结算前的预压顶：压镜段微弱起步，镜面浮现期加深，结算后由世界状态接管</summary>
+        public static float AmbientPreGloom => Active && Timer < CommitFrame
+            ? MathF.Max(Reveal * 0.25f, Smooth01(Timer / (float)ApproachEnd) * 0.08f) : 0f;
 
         /// <summary>开始入雨演出，仅本地玩家生效；重复调用无效</summary>
         public static void Begin(Player player, Vector2 umbrellaGround) {
@@ -83,6 +95,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 
             Timer++;
             AdvanceEnvelopes();
+            SpawnStageFx(player);
             PlayBeats(player);
 
             if (Timer == CommitFrame) {
@@ -95,14 +108,25 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 
         private static void AdvanceEnvelopes() {
             int t = Timer;
+            float prevRoll = RollAngle;
 
             //镜面从伞下扩散
             Reveal = t <= ApproachEnd ? 0f
                 : Smooth01((t - ApproachEnd) / (float)(RevealEnd - ApproachEnd));
 
-            //翻转角 0→π，先慢后快再慢
-            RollAngle = t <= DwellEnd ? 0f
-                : MathHelper.Pi * CubicInOut((t - DwellEnd) / (float)(RollEnd - DwellEnd));
+            //翻转角：先反向蓄势一小口（预备动作），再 0→π 先慢后快再慢
+            if (t <= DwellEnd) {
+                RollAngle = 0f;
+            }
+            else {
+                float p = (t - DwellEnd) / (float)(RollEnd - DwellEnd);
+                const float antic = 0.10f;
+                RollAngle = p < antic
+                    ? -0.03f * MathHelper.Pi * Smooth01(p / antic)
+                    : MathHelper.Lerp(-0.03f * MathHelper.Pi, MathHelper.Pi,
+                        CubicInOut((p - antic) / (1f - antic)));
+            }
+            RollVelocity = RollAngle - prevRoll;
 
             //结算后镜面向上吞没旧世界半屏，θ=π 时全屏皆镜、画面自动对上真实渲染
             Swallow = t < CommitFrame ? 0f : Smooth01((t - CommitFrame) / 37f);
@@ -129,6 +153,94 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             float settleFade = t <= RollEnd ? 1f
                 : 1f - Smooth01((t - RollEnd) / (float)(TotalFrames - RollEnd));
             SeamGlow = Math.Min(Reveal, settleFade);
+
+            //鬼影涟漪环：随异样脉冲从伞荡开一圈
+            GlimpseRingProgress = t >= GlimpseStart && t < GlimpseStart + GlimpseFrames + 14
+                ? MathHelper.Clamp((t - GlimpseStart) / (float)(GlimpseFrames + 14), 0f, 1f) : 0f;
+
+            //伞的躁动：压镜段起颤到 0.5，浮现段拉满
+            UmbrellaAgitation = t <= ApproachEnd
+                ? Smooth01(t / (float)ApproachEnd) * 0.5f
+                : 0.5f + Reveal * 0.5f;
+
+            //前兆稀雨：浮现段零星几根丝，翻转段渐密，结算后交给世界状态
+            if (t <= ApproachEnd || t >= CommitFrame) {
+                PreRainDensity = 0f;
+            }
+            else if (t <= DwellEnd) {
+                PreRainDensity = MathF.Min(Reveal * 0.07f, 0.08f);
+            }
+            else {
+                PreRainDensity = MathHelper.Lerp(0.08f, 0.2f,
+                    (t - DwellEnd) / (float)(CommitFrame - DwellEnd));
+            }
+        }
+
+        /// <summary>相位粒子：波前水花、脚下涟漪、落定溅圈</summary>
+        private static void SpawnStageFx(Player player) {
+            //湿墨色板，与鬼雨体系一致
+            Color pale = new(170, 185, 190);
+            Color damp = new(58, 66, 70);
+
+            //波前推进的两侧水花：镜面漫开时缝线上被"顶开"的小水珠
+            if (Timer > ApproachEnd && Reveal > 0.02f && Reveal < 0.99f && Timer % 3 == 0) {
+                float zoom = MathF.Max(Main.GameViewMatrix.Zoom.X, 0.5f);
+                float halfSpan = Reveal * (Main.screenWidth * 0.55f + 160f) / zoom;
+                for (int side = -1; side <= 1; side += 2) {
+                    Vector2 pos = new(UmbrellaWorld.X + side * halfSpan,
+                        FocusWorld.Y + Main.rand.NextFloat(-2f, 4f));
+                    Vector2 vel = new(side * Main.rand.NextFloat(0.2f, 0.8f),
+                        -Main.rand.NextFloat(1.8f, 3.6f));
+                    PRTLoader.NewParticle<PRT_GhostRainDrop>(pos, vel,
+                        pale * Main.rand.NextFloat(0.4f, 0.6f),
+                        Main.rand.NextFloat(0.5f, 0.8f))
+                        ?.Configure(Main.rand.Next(22, 36), vel.X);
+
+                    if (Main.rand.NextBool(5)) {
+                        PRTLoader.NewParticle<PRT_GhostRainMist>(pos,
+                            new Vector2(side * 0.3f, -0.06f),
+                            damp * Main.rand.NextFloat(0.5f, 0.8f),
+                            Main.rand.NextFloat(0.5f, 0.9f))
+                            ?.Configure(Main.rand.Next(70, 110));
+                    }
+                }
+            }
+
+            //镜面成形后，脚下水膜周期性荡出小水花
+            if (Reveal > 0.5f && Timer < DwellEnd && Timer % 18 == 0) {
+                for (int i = 0; i < 4; i++) {
+                    float vx = Main.rand.NextFloat(-1.4f, 1.4f);
+                    Vector2 pos = new(player.Center.X + Main.rand.NextFloat(-14f, 14f),
+                        FocusWorld.Y + 2f);
+                    PRTLoader.NewParticle<PRT_GhostRainDrop>(pos,
+                        new Vector2(vx, -Main.rand.NextFloat(1.2f, 2.6f)),
+                        pale * Main.rand.NextFloat(0.35f, 0.5f),
+                        Main.rand.NextFloat(0.4f, 0.6f))
+                        ?.Configure(Main.rand.Next(16, 28), vx);
+                }
+            }
+
+            //落定确认拍：脚下水花溅开一圈，人是"落"进雨里的
+            if (Timer == RollEnd) {
+                for (int i = 0; i < 16; i++) {
+                    float angle = -MathHelper.Pi * (0.15f + 0.7f * i / 15f);
+                    Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(2.5f, 5.5f);
+                    PRTLoader.NewParticle<PRT_GhostRainDrop>(
+                        player.Bottom + new Vector2(Main.rand.NextFloat(-10f, 10f), -2f),
+                        vel, pale * Main.rand.NextFloat(0.45f, 0.65f),
+                        Main.rand.NextFloat(0.5f, 0.85f))
+                        ?.Configure(Main.rand.Next(20, 34), vel.X);
+                }
+                for (int i = 0; i < 3; i++) {
+                    PRTLoader.NewParticle<PRT_GhostRainMist>(
+                        player.Bottom + new Vector2(Main.rand.NextFloat(-30f, 30f), -4f),
+                        new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), -0.08f),
+                        damp * Main.rand.NextFloat(0.6f, 0.9f),
+                        Main.rand.NextFloat(0.7f, 1.1f))
+                        ?.Configure(Main.rand.Next(80, 130));
+                }
+                player.CWR()?.GetScreenShake(4f);
+            }
         }
 
         private static void PlayBeats(Player player) {
@@ -163,13 +275,26 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                         Pitch = -0.7f, Volume = 0.5f, MaxInstances = 3,
                     }, FocusWorld);
                     break;
+                case 208:
+                    //翻转中段，世界滚动的极低闷响
+                    SoundEngine.PlaySound(SoundID.Thunder with {
+                        Pitch = -1f, Volume = 0.34f, MaxInstances = 3,
+                    }, player.Center);
+                    break;
+                case 255:
+                    //新世界的雨开始砸下来
+                    SoundEngine.PlaySound(SoundID.SplashWeak with {
+                        Pitch = -0.35f, Volume = 0.55f, MaxInstances = 3,
+                    }, player.Center);
+                    break;
                 case RollEnd:
                     //落定一记压低的闷锣，雨声由常驻雨幕接管
                     SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
                         Pitch = -0.9f, Volume = 0.4f, MaxInstances = 3,
                     }, player.Center);
                     break;
-                case CommitFrame + 26:
+                case RollEnd + 12:
+                    //落定后再弹字，翻转中段的世界文本会被镜像采样翻转
                     OniRainWorldState.ShowEnterText(player);
                     break;
             }
@@ -212,6 +337,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 
         private static void ZeroEnvelopes() {
             Reveal = RollAngle = Swallow = Glimpse = Flash = SeamGlow = 0f;
+            RollVelocity = GlimpseRingProgress = UmbrellaAgitation = PreRainDensity = 0f;
             Grade = 1f;
         }
 

@@ -5,13 +5,21 @@ Victor: {
 	Name0: Victor
 
 	TownNPCMood: {
-		Content: I am content.
-		NoHome: I hate not having a home.
-		FarFromHome: I am too far from home.
-		LoveSpace: I love having so much space.
-		DislikeCrowded: I don't like it being so crowded.
-		HateCrowded: I hate it being so crowded.
-		LikeNPC_Princess: I like {NPCName}.
-		Princess_LovesNPC: I like {NPCName}.
+		Content: All systems nominal. Like a freshly calibrated servo.
+		NoHome: No clinic, no business. My operating table is still strapped to my back.
+		FarFromHome: Too far from my clinic. None of my tools are within reach.
+		LoveSpace: Spacious. Room for three operating tables. I like it.
+		DislikeCrowded: Too many people. Forget about keeping anything sterile here.
+		HateCrowded: Packed like this, someone will knock over my tray sooner or later.
+		LoveBiome: I love {BiomeName}. Quiet, stable temperature - perfect for precision work.
+		LikeBiome: "{BiomeName} is decent. My stock does not spoil here."
+		DislikeBiome: The damp of {BiomeName} is crawling into my circuits. Terrible.
+		HateBiome: "{BiomeName}? That place chews the finest chrome down to rust. Don't get me started."
+		LoveNPC: "{NPCName} understands machines. A rare quality these days."
+		LikeNPC: "{NPCName} is a decent neighbor, and a steady source of spare parts."
+		DislikeNPC: "{NPCName} calls my surgery 'back-alley work'. Hmph. Results speak for themselves."
+		HateNPC: Keep {NPCName} away from me. I'd rather not reassemble blast victims every other day.
+		LikeNPC_Princess: Who could hate {NPCName}? Besides, her bone structure is of considerable research value.
+		Princess_LovesNPC: I love {NPCName}! He always puts everyone back together good as new!
 	}
 }

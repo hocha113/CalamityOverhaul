@@ -32,27 +32,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
         public static LocalizedText ClinicButtonText { get; private set; }
         public static LocalizedText ChatButtonText { get; private set; }
         public static LocalizedText LeaveButtonText { get; private set; }
-        private static LocalizedText[] greetings;
 
         public override void SetStaticDefaults() {
             SpeakerName = this.GetLocalization(nameof(SpeakerName), () => "VICTOR");
             ClinicButtonText = this.GetLocalization(nameof(ClinicButtonText), () => "Cyberware Clinic");
             ChatButtonText = this.GetLocalization(nameof(ChatButtonText), () => "Small Talk");
             LeaveButtonText = this.GetLocalization(nameof(LeaveButtonText), () => "Leave");
-            greetings = [
-                this.GetLocalization("Greet0",  () => "Another customer? Come in, before the draft scatters your spare parts."),
-                this.GetLocalization("Greet1",  () => "Want a stronger body? Steel never betrays you - only your wallet does."),
-                this.GetLocalization("Greet2",  () => "Brain, eyes, limbs - if the price is right, there is nothing I cannot replace."),
-                this.GetLocalization("Greet3",  () => "Sit on the table. Let me see what flesh of yours is still worth keeping."),
-                this.GetLocalization("Greet4",  () => "You still have both original eyes. Interesting. Most people fix that first."),
-                this.GetLocalization("Greet5",  () => "Don't touch anything on that tray. Half of it is sterile. The other half is worse."),
-                this.GetLocalization("Greet6",  () => "I don't ask where you got the damage. I just make sure it does not happen the same way twice."),
-                this.GetLocalization("Greet7",  () => "Last customer came in missing an arm. Left with two better ones. That is progress."),
-                this.GetLocalization("Greet8",  () => "Flesh rots. The right chrome does not. Keep that in mind before you walk out of here unchanged."),
-                this.GetLocalization("Greet9",  () => "Time is money. Mine, specifically. Tell me what you need and skip the small talk."),
-                this.GetLocalization("Greet10", () => "New parts need breaking in. Try not to take heavy fire for a few days."),
-                this.GetLocalization("Greet11", () => "The body is just a tool. Yours looks like it has skipped maintenance for a while."),
-            ];
+            //台词池（含旧 Greet 键）统一由 VictorDialogue 注册与分桶
+            VictorDialogue.Register(this);
         }
 
         #endregion
@@ -75,26 +62,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 
         private readonly CyberPanelRenderer panelRenderer = new();
 
-        //轮转洗牌队列，保证一轮内不重复
-        private int[] shuffleQueue;
-        private int shufflePos;
-
         protected override void OnOpen() => PickDialogue();
 
         private void PickDialogue() {
-            if (greetings == null || greetings.Length == 0) {
+            string line = VictorDialogue.Pick();
+            if (string.IsNullOrEmpty(line)) {
                 return;
             }
-            if (shuffleQueue == null || shufflePos >= shuffleQueue.Length) {
-                shuffleQueue = new int[greetings.Length];
-                for (int i = 0; i < shuffleQueue.Length; i++) shuffleQueue[i] = i;
-                for (int i = shuffleQueue.Length - 1; i > 0; i--) {
-                    int j = Main.rand.Next(i + 1);
-                    (shuffleQueue[i], shuffleQueue[j]) = (shuffleQueue[j], shuffleQueue[i]);
-                }
-                shufflePos = 0;
-            }
-            currentDialogue = greetings[shuffleQueue[shufflePos++]].Value;
+            currentDialogue = line;
             revealed = 0f;
         }
 
@@ -242,8 +217,47 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             float nameY = textRect.Y + 2f;
             sb.Draw(px, new Rectangle(textRect.X, (int)nameY + 3, 4, (int)nameSize.Y - 4), CyberwareTheme.Accent * alpha);
             Utils.DrawBorderString(sb, name, new Vector2(textRect.X + 12, nameY), CyberwareTheme.Accent * alpha, nameScale);
+
+            //名字行右侧：幸福度价格系数徽标
+            double factor = VictorMood.PriceAdjustment;
+            string factorText = VictorClinicUI.PriceFactorText.Format(factor.ToString("0.00"));
+            float factorScale = 0.5f * CyberwareTheme.FontScale;
+            Vector2 factorSize = FontAssets.MouseText.Value.MeasureString(factorText) * factorScale;
+            Color factorColor = factor < 0.995 ? CyberwareTheme.AccentCyan
+                : factor > 1.005 ? CyberwareTheme.Accent : CyberwareTheme.TextDim;
+            Utils.DrawBorderString(sb, factorText,
+                new Vector2(textRect.Right - factorSize.X, nameY + (nameSize.Y - factorSize.Y) * 0.5f),
+                factorColor * alpha, factorScale);
+
             int divY = (int)(nameY + nameSize.Y + 6f);
             VictorUIStyle.DrawHDivider(sb, textRect.X, textRect.Right, divY, CyberwareTheme.Accent * (alpha * 0.5f));
+
+            //底部心情条：报告最多两行，台词区在其上方截断
+            float moodTop = textRect.Bottom;
+            string report = VictorMood.Report;
+            if (!string.IsNullOrEmpty(report)) {
+                float moodScale = 0.5f * CyberwareTheme.FontScale;
+                string[] moodLines = VaultUtils.WrapTextArray(report, FontAssets.MouseText.Value, (int)(textRect.Width / moodScale), 2, out _);
+                float moodLineH = FontAssets.MouseText.Value.MeasureString("A").Y * moodScale + 4f;
+                int moodCount = 0;
+                foreach (string l in moodLines) {
+                    if (!string.IsNullOrEmpty(l)) {
+                        moodCount++;
+                    }
+                }
+                if (moodCount > 0) {
+                    moodTop = textRect.Bottom - moodCount * moodLineH - 6f;
+                    VictorUIStyle.DrawHDivider(sb, textRect.X, textRect.Right, (int)moodTop, CyberwareTheme.Accent * (alpha * 0.25f));
+                    float moodY = moodTop + 5f;
+                    foreach (string line in moodLines) {
+                        if (string.IsNullOrEmpty(line)) {
+                            continue;
+                        }
+                        Utils.DrawBorderString(sb, line, new Vector2(textRect.X, moodY), CyberwareTheme.TextDim * (alpha * 0.85f), moodScale);
+                        moodY += moodLineH;
+                    }
+                }
+            }
 
             if (string.IsNullOrEmpty(currentDialogue)) {
                 totalChars = 0;
@@ -273,6 +287,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                     continue;
                 }
                 if (budget <= 0) {
+                    break;
+                }
+                //不侵入底部心情条
+                if (y + lineH > moodTop - 3f) {
                     break;
                 }
                 int take = Math.Min(budget, line.Length);

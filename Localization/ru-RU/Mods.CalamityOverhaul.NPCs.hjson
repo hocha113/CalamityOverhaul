@@ -11,6 +11,14 @@ Victor: {
 		LoveSpace: Мне очень нравится столько пространства.
 		DislikeCrowded: Мне не нравится такая теснота.
 		HateCrowded: Я ненавижу такую тесноту.
+		// LoveBiome: I love {BiomeName}. Quiet, stable temperature - perfect for precision work.
+		// LikeBiome: "{BiomeName} is decent. My stock does not spoil here."
+		// DislikeBiome: The damp of {BiomeName} is crawling into my circuits. Terrible.
+		// HateBiome: "{BiomeName}? That place chews the finest chrome down to rust. Don't get me started."
+		// LoveNPC: "{NPCName} understands machines. A rare quality these days."
+		// LikeNPC: "{NPCName} is a decent neighbor, and a steady source of spare parts."
+		// DislikeNPC: "{NPCName} calls my surgery 'back-alley work'. Hmph. Results speak for themselves."
+		// HateNPC: Keep {NPCName} away from me. I'd rather not reassemble blast victims every other day.
 		LikeNPC_Princess: Мне нравится {NPCName}.
 		Princess_LovesNPC: Мне нравится {NPCName}.
 	}

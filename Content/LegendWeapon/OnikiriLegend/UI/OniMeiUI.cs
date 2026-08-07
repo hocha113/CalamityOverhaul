@@ -96,6 +96,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText GoldMark { get; private set; }
         public static LocalizedText RegisterTabText { get; private set; }
         public static LocalizedText RegisterTabHint { get; private set; }
+        public static LocalizedText CodexTabText { get; private set; }
+        public static LocalizedText CodexTabHint { get; private set; }
         public static LocalizedText TrayTitle { get; private set; }
         public static LocalizedText TrayEmpty { get; private set; }
 
@@ -120,6 +122,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             GoldMark = this.GetLocalization(nameof(GoldMark), () => "金象嵌");
             RegisterTabText = this.GetLocalization(nameof(RegisterTabText), () => "点鬼簿");
             RegisterTabHint = this.GetLocalization(nameof(RegisterTabHint), () => "点击 移步");
+            CodexTabText = this.GetLocalization(nameof(CodexTabText), () => "铭谱");
+            CodexTabHint = this.GetLocalization(nameof(CodexTabHint), () => "点击 展读");
             TrayTitle = this.GetLocalization(nameof(TrayTitle), () => "行囊錾样");
             TrayEmpty = this.GetLocalization(nameof(TrayEmpty), () => "行囊无此位錾样。扇上所持仍可先凿");
         }
@@ -183,6 +187,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private float closeTagHover;
         private bool closeTagWasHovered;
         private readonly OniRope closeTagRope = new(5, 22f);
+        //铭谱:台账板下压着的那本线装册子,点开翻看名录(只读,不在此处凿铭)
+        private Rectangle codexBookRect;
+        private float codexHover;
+        private bool codexWasHovered;
         //錾样匣:与烙印木牌同底边的行囊木板
         private readonly List<OniMeiTrayEntry> tray = [];
         private int hoverTray = -1;
@@ -273,6 +281,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             tagHeightEase = 0f;
             postRiteNameEase = 1f;
             registerSwitch.Reset();
+            codexHover = 0f;
+            codexWasHovered = false;
             songCooldown = Main.rand.Next(700, 1400);
             songRun = -1f;
             particles.Clear();
@@ -505,6 +515,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //格心行:题头朱线下方
             trayOrigin = new Vector2(trayRect.Center.X, trayRect.Y + 72f);
 
+            //铭谱册子:压在台账板下缘,与板同左缘;板若被小屏压矮也跟着上移
+            Vector2 bookletSize = OnikiriUITheme.CodexBookletSize;
+            codexBookRect = new Rectangle(
+                panelRect.X + 10,
+                panelRect.Bottom + (int)OnikiriUITheme.CodexBookletGap,
+                (int)bookletSize.X, (int)bookletSize.Y);
+
             nameColTop = new Vector2(sw * OnikiriUITheme.MeiNameColXRatio, sh * 0.16f);
             //顶梁门钩:卷轴挂在梁左钩;纳刀牌系在梁下缘右肩(绳结绕梁,不再没入屏顶)
             registerSwitchAnchor = OniLedgerBeam.DoorAnchor(OniLedgerView.Mei);
@@ -528,6 +545,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 trayRect.Offset((int)slide, 0);
                 trayOrigin += off;
                 nameColTop += off;
+                codexBookRect.Offset((int)slide, 0);
             }
         }
 
@@ -654,6 +672,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             closeTagWasHovered = tagHovered;
 
+            //铭谱册子悬停:仪式中不许翻书,免得凿到一半人跑去看名录
+            bool codexHovered = inputAvailable && !Rite.Active && codexBookRect.Contains(mp);
+            codexHover += ((codexHovered ? 1f : 0f) - codexHover) * 0.2f;
+            if (codexHovered && !codexWasHovered) {
+                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.1f, Volume = 0.32f });
+            }
+            codexWasHovered = codexHovered;
+
             EaseArrays();
 
             if (!inputAvailable || keyLeftPressState != KeyPressState.Pressed) {
@@ -663,6 +689,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //====点击====
             if (tagHovered) {
                 Close();
+                return;
+            }
+            if (codexHovered) {
+                OniMeiCodexUI.OpenFromStand();
                 return;
             }
             if (hoverSlot >= 0) {
@@ -698,14 +728,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 SelectSlot(-1);
                 return;
             }
-            //点台外收台:台账/陈列刀域(含余量)/木牌/名字列/吊挂卷轴之外
+            //点台外收台:台账/陈列刀域(含余量)/木牌/名字列/吊挂卷轴/铭谱册子之外
             Rectangle stand = Rectangle.Union(panelRect, exhibitRect);
             stand.Inflate(30, 40);
             Rectangle nameHit = new((int)(nameColTop.X - 46f), (int)(nameColTop.Y - 20f), 92,
                 (int)(OnikiriUITheme.UIScreenH * 0.6f));
             bool trayHit = selectedSlot >= 0 && fanEase > 0.25f && trayRect.Contains(mp);
             if (!stand.Contains(mp) && !tagRect.Contains(mp) && !trayHit && !nameHit.Contains(mp)
-                && !registerSwitch.Hovering) {
+                && !registerSwitch.Hovering && !codexBookRect.Contains(mp)) {
                 Close();
             }
         }
@@ -1155,6 +1185,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     GlobalTimer, CloseTagText.Value);
                 OniMeiRenderer.DrawHangingScroll(spriteBatch, registerSwitch, chromeA, GlobalTimer,
                     OniRegistry.IsEquippedDormant);
+                OniMeiRenderer.DrawCodexBooklet(spriteBatch, font, codexBookRect, CodexTabText.Value,
+                    codexHover, chromeA, ShaderTime);
             }
 
             //====錾样匣====
@@ -1168,6 +1200,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (registerSwitch.HoverEase > 0.05f) {
                 OniMeiRenderer.DrawSwitchHoverTag(spriteBatch, MousePosition,
                     RegisterTabText.Value, RegisterTabHint.Value, a * registerSwitch.HoverEase);
+            }
+            else if (codexHover > 0.05f) {
+                OniMeiRenderer.DrawSwitchHoverTag(spriteBatch, MousePosition,
+                    CodexTabText.Value, CodexTabHint.Value, a * codexHover);
             }
         }
 

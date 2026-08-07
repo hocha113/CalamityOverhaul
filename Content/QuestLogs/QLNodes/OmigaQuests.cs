@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses;
+using CalamityOverhaul.Content.Items.Magic.NeutronWands;
 using CalamityOverhaul.Content.Items.Magic.Pandemoniums;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee;

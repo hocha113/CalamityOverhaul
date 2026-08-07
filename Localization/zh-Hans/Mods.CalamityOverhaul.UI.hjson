@@ -485,6 +485,47 @@ VictorTalkUI: {
 	Greet9: 时间就是金钱，尤其是我的，直说你需要什么，省去那些废话
 	Greet10: 新零件需要磨合期，尽量几天内别中太多子弹
 	Greet11: 身体只是工具，你这具看起来已经很久没保养了
+	TalkFirstMeet0: 生面孔，让我猜猜——你不是来找医生的，是来找奇迹的，坐吧，两样我都卖
+	TalkFirstMeet1: 欢迎光临，客人，记住三条规矩：不赊账，不问来路，不对我的手艺指手画脚
+	TalkPostSurgery0: 缝合线还热着，二十四小时内别拿新零件去挡刀
+	TalkPostSurgery1: 手术很成功，当然，我的手术从来都很成功
+	TalkPostSurgery2: 感觉如何？有异响、漏电、幻肢痛就随时回来——维修另收费
+	TalkMoodHomeless0: 在你们给我腾出一间诊室之前，报价里都得算上露天营业的风险费
+	TalkMoodHomeless1: 手术台扛在背上可做不了精细活，给我找间屋子，价格好商量
+	TalkMoodHappy0: 今天心情不错，报价给你抹了个零头，别声张
+	TalkMoodHappy1: 这地方我待得挺舒服，舒服到愿意给你打折
+	TalkMoodGrumpy0: 别嫌贵，把我搬到住得顺心的地方去，价格自然会降
+	TalkMoodGrumpy1: 心情不好，手术刀就不稳，账单里含了风险费——这都得怪你们
+	TalkNoChrome0: 全原装的身体……稀罕，像一台从没刷过固件的老机器
+	TalkNoChrome1: 一件义体都没装？你是来参观的，还是来怀旧的
+	TalkFullChrome0: 你身上的铬件比血肉还多，走路的动静都像我的收银机
+	TalkFullChrome1: 容量快满了，客人，再装下去你得先升级供电
+	TalkLowHealth0: 你在流血，先坐下，客人死在门口对生意影响很坏
+	TalkLowHealth1: 这血压低得报警了，先处理伤口，账单稍后再谈
+	TalkRich0: 我闻到铂金币的味道了，今天想换点什么？换全套也行
+	TalkPoor0: 口袋比无菌托盘还干净？先去挣点钱，义体不打白条
+	TalkPoor1: 没钱也别灰心，去卖点战利品再回来，我这儿通宵营业
+	TalkSandevistan0: 桑德维斯坦运转还顺畅吗？别贪快，神经烧了可要按整套重建收费
+	TalkPreHardmode0: 这个世界的技术还停留在木头和石头，幸好我自带了全套工具
+	TalkPreHardmode1: 趁灾祸还没升级，先把身体升级了，这句忠告不收费
+	TalkHardmode0: 世界裂开之后我的生意翻了三倍，圣光和邪祟啃起血肉来一视同仁
+	TalkHardmode1: 外面那些新怪物撕人很快，你的反应跟得上吗？跟不上的话，我有货
+	TalkPostMoonlord0: 连月亮领主都倒下了，看来我的客人里真有几个怪物
+	TalkPostMoonlord1: 神明的残骸是极好的材料，要是捡到了，记得给我留一份
+	TalkPostSupCal0: 击败了灾厄本人还留着这一身血肉，我开始怀疑义体对你只是首饰
+	TalkBloodMoon0: 血月？对我来说只是加班夜，待会儿门口会排起断肢的队
+	TalkBloodMoon1: 今晚别站在门口，血月底下连兔子都想咬你一块肉
+	TalkEclipse0: 日食天还敢出门的都是狠角色，你要么装备齐全，要么跑得够快
+	TalkRain0: 雨天记得给外露的关节上油，锈死的肘部我修过太多了
+	TalkRain1: 下雨了，湿气对电路不友好，对生意倒是不错
+	TalkDeepNight0: 这个点还不睡？也对，义眼不需要闭上
+	TalkDeepNight1: 深夜是我最喜欢的营业时段，安静，而且客人们都很急
+	TalkUnderground0: 地下好，恒温恒湿，信号屏蔽，没人打扰手术
+	TalkUnderground1: 我的第一间诊所就开在地下，那时的客人和现在一样怕光
+	TalkSnow0: 冷点好，零件不容易过热，尸体……我是说库存，也保存得更久
+	TalkJungle0: 丛林的湿气三天就能钻进密封舱，离开之后记得来做保养
+	TalkBeach0: 海边？盐雾是义体的头号杀手，我劝你别在这儿定居
+	TalkEvil0: 这片土地在腐蚀你的零件，也在腐蚀你，两样里我只修得好一样
 	ClinicButtonText: 义体诊所
 	ChatButtonText: 闲聊
 	LeaveButtonText: 离开
@@ -498,7 +539,11 @@ VictorClinicUI: {
 	LabelForSale: 在售
 	EmptyOwned: （背包中没有）
 	EmptyShop: （没有更多可售）
+	PriceFactorText: 价格系数 ×{0}
+	SlotFallbackText: 义体
 }
+
+VictorSurgery.SurgeryInProgressText: 手术进行中
 
 EntrustManagerNotification: {
 	LabelNewQuest: 新委托

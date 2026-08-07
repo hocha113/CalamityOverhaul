@@ -1,38 +1,41 @@
 // ============================================================================
-//OniGateRift.fx 鬼门开缝刀痕(条带几何,band-local UV,无任何极角输入)
-//uv.x=uc 沿缝 0起笔..1收笔  uv.y=v 横越 0/1两唇缘 0.5缝心
-//顶点色 R=归一化z(0.5=屏面),远近分层与纵深压暗由它驱动,无方向启发式
+//OniGateRift.fx 鬼门开缝斩痕(主流扫掠光刃,环带几何,band-local UV,无极角输入)
+//uv.x=uc 沿刃 0起笔..1收笔  uv.y=v 径向 0=内缘(软融) 1=外缘(刀尖轨迹,锐利)
+//顶点色 R=归一化z(0.5=屏面) A=预留逐切片衰减,远近分层与纵深压暗由R驱动
 //
-//材质:撕开的世界膜——
-//  缝内=异界虚空(近黑暗体,低频冻结纹理,不沿路径流动)
-//  缝心=门缝幽光(冷青,像从深处透出,闭合期熄灭)
-//  膜缘=绷白细线(结构性白:撕开1~3帧毛刺增亮,常态淡红白)
-//  世界侧=灼红燃边(承接鬼切系列绯红色板)
-//撕开由几何整形一次出现,本shader不做揭开wipe;闭合=张口收窄(几何侧)+幽光熄灭
-//宏观通道吃uSeed(出生冻结),细节通道吃uDetailSeed(S2破碎步进重掷)
+//语法=可见的快速扫掠(鸣潮/原神系):
+//  uHead 刃头揭开位置,刃带着光走,头前0.05软羽+白热刃头线(uLead)
+//  uFlash 落位满形闪(money frame,1~2帧速落)
+//  uErode 定向消散,尾端先蚀向刃头,亮度沉降
+//横截面=阔剑三层:外缘锐利+发丝暗边压形(亮天空立形),白热核心贴外缘,
+//  饱和绯红体被沿刃拉丝承载,内缘软融沉深红——径向亮度单调,单边锋利
+//uGateT 鬼门大开(仅终结拍定格期):外缘豁开黑缝+冷魂火,消散初段闭合
+//宏观通道吃uSeed(出生冻结),细节通道吃uDetailSeed(定格步进重掷),无uTime滚动
 //预乘alpha输出,配BlendState.AlphaBlend;直线算术+tex2D,无分支属性/无tex2Dlod
 //ps_3_0 / vs_3_0
 // ============================================================================
 
 float4x4 transformMatrix;
 float uSeed;         //宏观噪声相位,出生冻结
-float uDetailSeed;   //细节通道相位,S2步进重掷,S3冻结
-float uBurr;         //0..1撕开毛刺白包络
-float uGlowIn;       //0..1门缝幽光强度
-float uGapeT;        //0..1张口保持度(1开0闭)
+float uDetailSeed;   //细节通道相位,定格步进重掷,消散冻结
+float uHead;         //刃头揭开位置(0..1沿uc)
+float uLead;         //刃头亮线强度(扫掠期1,定格速落)
+float uFlash;        //满形定格闪(落位帧起速落)
+float uErode;        //定向消散进度(尾→头)
+float uGateT;        //鬼门大开程度(仅终结拍)
 float uOpacity;      //整体不透明度
 float uFarSel;       //远近分层:0=整体 +1=仅近半 -1=仅远半(玩家身后层)
 float uFarDim;       //远半侧压暗地板(0=不分层)
-float uU0;           //可见窗起(uc,端部捏合)
+float uU0;           //可见窗起(uc)
 float uU1;           //可见窗止
 float uEmber;        //0..1魂火密度(终结拍)
 float uTelegraph;    //应力线强度(TelegraphTech)
 
-float3 uColVoid;     //缝内近黑
-float3 uColGlow;     //门缝幽光冷青
-float3 uColRim;      //膜缘绷白
-float3 uColBurn;     //世界侧灼红
-float3 uColDeep;     //深红过渡
+float3 uColHot;      //白热核心
+float3 uColBurn;     //亮绯红
+float3 uColDeep;     //深红
+float3 uColVoid;     //近黑沉边
+float3 uColGlow;     //冷渗光(仅终结拍鬼门缝)
 
 texture uNoiseTex;
 sampler noiseSamp = sampler_state
@@ -43,6 +46,17 @@ sampler noiseSamp = sampler_state
     mipfilter = LINEAR;
     AddressU = wrap;
     AddressV = wrap;
+};
+
+texture uBrushTex;
+sampler brushSamp = sampler_state
+{
+    texture = <uBrushTex>;
+    magfilter = LINEAR;
+    minfilter = LINEAR;
+    mipfilter = LINEAR;
+    AddressU = wrap;
+    AddressV = clamp;
 };
 
 struct VSInput
@@ -77,8 +91,7 @@ float WindowFeather(float uc)
 float4 PSRift(PSInput input) : COLOR0
 {
     float uc = input.TexCoords.x;
-    float v = input.TexCoords.y;
-    float dCtr = abs(v - 0.5) * 2.0;          //0缝心 1唇缘
+    float v = input.TexCoords.y;              //0内缘 1外缘(刀尖轨迹)
     float zN = input.Color.r * 2.0 - 1.0;     //-1..1,+朝观者
 
     //远近半侧分层,身后半侧交玩家背后层;连续纵深压暗(FarDim=0时不压)
@@ -95,48 +108,60 @@ float4 PSRift(PSInput input) : COLOR0
     if (passMul * wf < 0.005)
         return float4(0, 0, 0, 0);
 
-    //唇缘扰动:宏观撕痕形(seed冻结) + 细节毛口(步进通道,撕开期加剧)
-    float jagM = tex2D(noiseSamp, float2(uc * 2.8 + uSeed * 5.13, 0.21 + uSeed * 0.37)).r - 0.5;
-    float jagD = tex2D(noiseSamp, float2(uc * 8.7 + uDetailSeed * 9.71, 0.63)).r - 0.5;
-    float lip = 1.0 + jagM * 0.14 + jagD * (0.05 + uBurr * 0.10);
-    float dd = dCtr / max(lip, 0.3);
-
-    //主体裁切 + 世界侧灼边余量
-    float body = 1.0 - smoothstep(0.965, 1.03, dd);
-    float burnBand = smoothstep(0.92, 1.005, dd) * (1.0 - smoothstep(1.03, 1.16, dd));
-    if (body + burnBand < 0.006)
+    //扫掠揭开:刃头之后不存在,头前软羽;刃头白热亮线(刀所在处)
+    float reveal = smoothstep(uHead + 0.012, uHead - 0.055, uc);
+    float lead = exp(-pow((uc - uHead) / 0.032, 2.0)) * uLead;
+    if (reveal + lead < 0.006)
         return float4(0, 0, 0, 0);
 
-    //缝内虚空:暗底+低频异界纹,出生冻结不流动
-    float marble = tex2D(noiseSamp, float2(uc * 2.3 + uSeed * 3.71, dd * 1.15 + uSeed * 0.53)).r;
-    float marble2 = tex2D(noiseSamp, float2(uc * 5.4 - uSeed * 7.19, dd * 2.6 + 0.31)).r;
-    float depthField = marble * 0.62 + marble2 * 0.38;
-    float3 col = lerp(uColVoid, uColDeep * 0.40, depthField * depthField * 0.55);
+    //定向消散:尾端(uc小)先蚀,噪声撕出缺口推向刃头
+    float eN = tex2D(noiseSamp, float2(uc * 3.0 + uSeed * 4.7, v * 1.5 + uDetailSeed * 3.1)).r;
+    float survive = smoothstep(-0.04, 0.10, uc * 0.95 + eN * 0.30 - uErode * 1.35);
 
-    //门缝幽光:缝心细条,冷,读作从深处透出的光
-    float glow = exp(-dd * dd * 16.0);
-    col += uColGlow * glow * (0.10 + 0.46 * uGlowIn);
+    //各向异性拉丝:双八度沿刃,出生冻结不滚动
+    float4 b1 = tex2D(brushSamp, float2(uc * 1.60 + uSeed * 5.13, v * 0.90));
+    float4 b2 = tex2D(brushSamp, float2(uc * 3.40 - uSeed * 7.31 + 0.37, v * 0.55 + 0.21));
+    float streak = b1.r * b1.a * 0.85 + b2.r * b2.a * 0.55;
 
-    //魂火:缝内稀疏亮点,细节通道驱动(步进闪烁,不漂移)
-    float emberN = tex2D(noiseSamp, float2(uc * 6.5 + uDetailSeed * 13.7, dd * 2.1 + uDetailSeed * 0.77)).r;
-    float ember = smoothstep(0.80, 0.94, emberN) * (1.0 - smoothstep(0.0, 0.75, dd)) * uEmber;
-    col += uColGlow * ember * 1.7;
+    //阔剑横截面:内缘软融→体→外缘锐利;白热核心贴外缘
+    float innerFade = smoothstep(0.0, 0.30, v);
+    float outerCut = 1.0 - smoothstep(0.965, 1.0, v);
+    float core = exp(-pow((v - 0.90) / 0.062, 2.0));
 
-    //膜缘绷白:唇缘内侧细线,撕开毛刺期增亮外扩,常态淡红白
-    float rim = smoothstep(0.80, 0.955, dd) * (1.0 - smoothstep(0.985, 1.04, dd));
-    float burrN = tex2D(noiseSamp, float2(uc * 13.0 + uDetailSeed * 15.3, 0.83)).r;
-    float burr = smoothstep(0.46, 0.60, burrN) * uBurr;
-    float3 rimCol = lerp(uColRim * 0.34 + uColBurn * 0.28, uColRim * 1.45, saturate(uBurr * 1.2));
-    col += rimCol * rim * (0.85 + burr * 1.7);
+    //体量:拉丝承载,满形闪抬透密下限
+    float bodyA = innerFade * outerCut * (0.42 + streak * 0.38 + uFlash * 0.18);
 
-    //世界侧灼红燃边
-    col += uColBurn * burnBand * (0.55 + uBurr * 0.70);
+    //色带:内沉深红→亮绯红→白热核心,单调升温
+    float3 col = lerp(uColDeep, uColBurn, smoothstep(0.10, 0.80, v));
+    col = lerp(uColVoid * 2.2, col, innerFade);
+    col += uColBurn * streak * 0.45 * innerFade;
+    col += uColHot * core * (0.85 + uFlash * 0.95);
+
+    //外缘发丝暗边,亮天空下立形(阔剑黑边)
+    float rimDark = smoothstep(0.978, 1.0, v);
+    col = lerp(col, uColVoid * 1.3, rimDark * 0.60);
+
+    //刃头亮线(刀正在这里)+满形闪整体提亮一档
+    col += uColHot * lead * 1.65;
+    col += uColHot * uFlash * 0.30 * (0.35 + core * 0.65);
+
+    //消散期色沉(能量冷却)
+    col = lerp(col, uColDeep * 0.55, uErode * 0.55);
+
+    //鬼门大开(仅终结拍定格):外缘豁开黑缝+冷渗光+魂火,消散初段闭合
+    float gateOn = saturate(uGateT * 8.0);
+    float seamW = 0.15 * uGateT;
+    float seam = smoothstep(1.0 - seamW * 1.9, 1.0 - seamW * 0.55, v) * gateOn;
+    col = lerp(col, uColVoid * 0.55, seam * 0.85);
+    float glintN = tex2D(noiseSamp, float2(uc * 9.0 + uDetailSeed * 12.1, 0.5 + uSeed * 0.37)).r;
+    col += uColGlow * smoothstep(0.72, 0.88, glintN) * seam * 1.1;
+    float emberN = tex2D(noiseSamp, float2(uc * 5.5 + uDetailSeed * 9.7, 0.83)).r;
+    col += uColGlow * smoothstep(0.78, 0.92, emberN) * seam * uEmber * 1.5;
 
     col *= depthDim;
 
-    //alpha:虚空暗体近实(亮天空下立得住),灼边低alpha羽化;顶点alpha=逐切片衰减通道
-    float aVoid = body * (0.80 + depthField * 0.12 + glow * 0.08);
-    float alpha = saturate(aVoid + burnBand * 0.42 + rim * 0.28 * uBurr);
+    //alpha:体×揭开×存活 + 刃头线;预乘输出
+    float alpha = saturate(bodyA * reveal * survive + lead * 0.60 * innerFade);
     alpha *= wf * passMul * uOpacity * input.Color.a;
 
     return float4(col * alpha, alpha);
@@ -149,12 +174,11 @@ float4 PSTelegraph(PSInput input) : COLOR0
     float dCtr = abs(v - 0.5) * 2.0;
 
     float wf = WindowFeather(uc);
-    //绷紧应力线:世界膜被压出的暗红细线,静止微颤(seed驱动,不流动)
-    //兼作刀路条带材质,顶点alpha=逐切片年龄衰减
+    //绷紧应力线:蓄势期沿未来刀尖轨迹的暗红发丝,静止微颤(seed驱动,不流动)
     float stress = tex2D(noiseSamp, float2(uc * 4.1 + uSeed * 6.3, 0.5)).r;
-    float lineBand = 1.0 - smoothstep(0.0, 0.9, dCtr);
-    float3 col = uColDeep * (0.55 + stress * 0.40) + uColBurn * 0.25 * lineBand;
-    float alpha = lineBand * uTelegraph * (0.30 + stress * 0.25) * wf * uOpacity * input.Color.a;
+    float lineBand = 1.0 - smoothstep(0.0, 0.62, dCtr);
+    float3 col = uColDeep * (0.55 + stress * 0.40) + uColBurn * 0.30 * lineBand;
+    float alpha = lineBand * uTelegraph * (0.32 + stress * 0.25) * wf * uOpacity * input.Color.a;
 
     return float4(col * alpha, alpha);
 }

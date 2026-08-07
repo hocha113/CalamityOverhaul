@@ -13,6 +13,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -23,9 +24,9 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Item_Melee + "NeutronGlaive";
 
-        /// <summary>?????????????????</summary>
+        /// <summary>连段计数，取模三拍</summary>
         private int comboCounter;
-        /// <summary>???????????????????</summary>
+        /// <summary>连段重置倒计时，断手后回到第一拍</summary>
         private int comboResetTimer;
 
         public override void SetStaticDefaults() {
@@ -52,7 +53,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.crit = 8;
             Item.shoot = ModContent.ProjectileType<NeutronGlaiveHeld>();
             Item.shootSpeed = 18f;
-            //noMelee ????????????
+            //noMelee 会丢近战词缀，这里强行标回
             ItemOverride.ItemMeleePrefixDic[Type] = true;
         }
 
@@ -86,7 +87,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
                 Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<NeutronGlaiveHeldAlt>(), damage, knockback, player.whoAmI);
-                comboCounter = 0;//????????
+                comboCounter = 0;//右键打断连段
                 return false;
             }
 
@@ -100,10 +101,109 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
+    /// <summary>黑域斩切单拍的形状与节奏，出手时冻结</summary>
+    internal struct NeutronSwingBeat
+    {
+        public float Span;              //弧跨度（弧度）
+        public float Squash;            //短轴/长轴，0.53~0.62 读作倾斜圆而非压扁贴纸
+        public float OffsetAlongAim;    //弧心沿瞄准偏移，正=推离身体，负=拉回身后
+        public float Radius;            //长半轴，刃尖轨迹
+        public float Thick;             //厚度峰值，占投影半径比
+        public float ForcePoint;        //厚度峰值位置 0~1，越小越偏入刀侧
+        public float Depth;             //伪 z 权重，0=平面
+        public float Pullback;          //蓄势回拉，占弧长比
+        public int Gather;              //蓄势帧
+        public int Hold;                //死寂滞帧
+        public int Burst;               //爆发帧
+        public int Recover;             //收势帧
+        public float Lean;              //爆发峰值身体前倾（弧度）
+        public float DamageScale;
+        public float BladeScale;
+        public int HitStop;             //命中停驻帧
+
+        public readonly int Total => Gather + Hold + Burst + Recover;
+        public readonly int BurstStart => Gather + Hold;
+        public readonly int BurstStop => Gather + Hold + Burst;
+    }
+
     /// <summary>
-    /// ?????????
-    /// <br/>????: ?? ? ???? ? ??????????????????????????
-    /// <br/>??? NeutronSlashTrail.fx ????????????
+    /// 黑域斩切的挥砍投影：把刀光椭圆当成一个倾斜的圆来算。<br/>
+    /// 刀身缩放、缎带半宽、碰撞线、引力透镜采样全部从这里出，
+    /// 单一投影源，从根上避免"刀比刀光大"那类各算各的错位
+    /// </summary>
+    internal static class NeutronSwingArc
+    {
+        /// <summary>透视参考距离基准（px）</summary>
+        private const float BaseViewZ = 900f;
+        /// <summary>远半侧压暗上限</summary>
+        private const float FarDimAmount = 0.55f;
+
+        public static float Saturate(float x) => MathHelper.Clamp(x, 0f, 1f);
+
+        public static float SmoothStep01(float x) {
+            x = Saturate(x);
+            return x * x * (3f - 2f * x);
+        }
+
+        /// <summary>缓入，起手几乎察觉不到、末段才把刀收紧</summary>
+        public static float EaseInCubic(float x) {
+            x = Saturate(x);
+            return x * x * x;
+        }
+
+        /// <summary>大弧要抬高参考距离，否则透视除会炸开</summary>
+        public static float ViewZFor(float radius) => MathF.Max(BaseViewZ, radius * 4.4f);
+
+        /// <summary>透视缩放，z 朝观者(+)放大、沉入画面(-)缩小</summary>
+        public static float PerspectiveK(float z, float viewZ)
+            => viewZ / MathF.Max(viewZ - z, viewZ * 0.26f);
+
+        /// <summary>伪 z 幅度，由长短轴差导出；正圆没有深度</summary>
+        public static float DepthAmp(in NeutronSwingBeat beat, float radius) {
+            float hy = radius * beat.Squash;
+            return MathF.Sqrt(MathF.Max(radius * radius - hy * hy, 0f));
+        }
+
+        /// <summary>
+        /// 刃尖相对弧心的投影偏移。位置相位带 flip（挥动方向镜像），
+        /// 深度相位不带——深度剖面沿笔画固定：起笔沉在身后、收笔迎向镜头
+        /// </summary>
+        public static Vector2 TipOffset(in NeutronSwingBeat beat, float radius, float uc, float flip
+            , Vector2 axisX, out float projRadius, out float depth) {
+            Vector2 axisY = new(-axisX.Y, axisX.X);
+            float hy = radius * beat.Squash;
+            float phiPos = flip * (uc - 0.5f) * beat.Span;
+            depth = MathF.Sin((uc - 0.5f) * beat.Span) * DepthAmp(in beat, radius) * 0.9f * beat.Depth;
+            float k = PerspectiveK(depth, ViewZFor(radius));
+            Vector2 local = ((axisX * MathF.Cos(phiPos) * radius) + (axisY * MathF.Sin(phiPos) * hy)) * k;
+            projRadius = local.Length();
+            return local;
+        }
+
+        /// <summary>远半侧压暗系数，1=近侧全亮</summary>
+        public static float DepthDim(in NeutronSwingBeat beat, float radius, float depth) {
+            float amp = DepthAmp(in beat, radius);
+            if (amp <= 1f) {
+                return 1f;
+            }
+            return 1f - (FarDimAmount * Saturate(-depth / amp));
+        }
+
+        /// <summary>带受力点的厚度包络：薄锐入刀 → 峰值偏置 → 撕裂厚出</summary>
+        public static float ThickEnvelope(in NeutronSwingBeat beat, float uc) {
+            float fp = MathHelper.Clamp(beat.ForcePoint, 0.1f, 0.9f);
+            float side = uc < fp ? uc / fp : (1f - uc) / (1f - fp);
+            float sharp = uc < fp ? 1.7f : 0.72f;
+            return beat.Thick * MathF.Pow(Saturate(side), sharp);
+        }
+    }
+
+    /// <summary>
+    /// 黑域斩切主挥砍。三拍形状递进：两记推离身体的定向切 → 一记拉回身后的巨型月牙。<br/>
+    /// 时间线 蓄势(缓入回拉+呼吸震颤) → 死寂滞帧 → 爆发(近匀速跨弧+过冲+半径弹开) → 几何冻结，
+    /// 力量来自蓄爆比与身体甩动，不靠缓动曲线。<br/>
+    /// 刀身、缎带、碰撞、引力透镜共用 <see cref="NeutronSwingArc"/> 一个投影源；
+    /// 刀光走 NeutronSlashTrail.fx，背景扭曲走 NeutronWarp 的 GravitationalLens
     /// </summary>
     internal class NeutronGlaiveHeld : BaseHeldProj, IWarpDrawable, IPrimitiveDrawable
     {
@@ -111,23 +211,42 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<NeutronGlaive>();
 
         private const int FrameCount = 16;
+        /// <summary>爆发末端过冲量，回坐两帧后冻结</summary>
+        private const float Overshoot = 1.06f;
 
-        /// <summary>????: 0=?? 1=???? 2=????</summary>
+        /// <summary>
+        /// 三拍形状表。轻拍是推出去的定向切（两记互为镜像画 X），
+        /// 终结是唯一一记拉回身后的巨型月牙——形状升级才让终结显得贵
+        /// </summary>
+        private static readonly NeutronSwingBeat[] Beats = [
+            new NeutronSwingBeat {
+                Span = 2.5f, Squash = 0.58f, OffsetAlongAim = 38f, Radius = 168f,
+                Thick = 0.17f, ForcePoint = 0.36f, Depth = 1f, Pullback = 0.13f,
+                Gather = 12, Hold = 1, Burst = 3, Recover = 12,
+                Lean = 0.07f, DamageScale = 1f, BladeScale = 1.42f, HitStop = 1,
+            },
+            new NeutronSwingBeat {
+                Span = 2.5f, Squash = 0.56f, OffsetAlongAim = 44f, Radius = 174f,
+                Thick = 0.18f, ForcePoint = 0.64f, Depth = 1f, Pullback = 0.13f,
+                Gather = 12, Hold = 1, Burst = 3, Recover = 12,
+                Lean = 0.07f, DamageScale = 1f, BladeScale = 1.45f, HitStop = 1,
+            },
+            new NeutronSwingBeat {
+                Span = 3.5f, Squash = 0.55f, OffsetAlongAim = -30f, Radius = 208f,
+                Thick = 0.23f, ForcePoint = 0.55f, Depth = 1f, Pullback = 0.15f,
+                Gather = 16, Hold = 2, Burst = 4, Recover = 14,
+                Lean = 0.3f, DamageScale = 1.35f, BladeScale = 1.58f, HitStop = 2,
+            },
+        ];
+
+        /// <summary>连段拍号 0/1=定向切 2=巨型月牙</summary>
         private ref float ComboIndex => ref Projectile.ai[0];
-        /// <summary>?????? ?1</summary>
+        /// <summary>挥动方向 ±1</summary>
         private ref float SwingDirAi => ref Projectile.ai[1];
 
-        private bool IsFinisher => ComboIndex >= 2f;
-
-        //???????????????
-        private float WindupTime => IsFinisher ? 10f : 7f;
-        private float SlashTime => IsFinisher ? 18f : 13f;
-        private float RecoverTime => 8f;
-        private float TotalTime => WindupTime + SlashTime + RecoverTime;
-        //????????????????
-        private float SwingArc => IsFinisher ? 5.9f : 3.6f;
-        //??????????
-        private float BladeReach => IsFinisher ? 180f : 165f;
+        private int BeatIndex => Math.Clamp((int)ComboIndex, 0, Beats.Length - 1);
+        private ref readonly NeutronSwingBeat Beat => ref Beats[BeatIndex];
+        private bool IsFinisher => BeatIndex >= 2;
 
         private static readonly Color NeutronViolet = new(138, 80, 255);
         private static readonly Color NeutronBlue = new(120, 180, 255);
@@ -136,20 +255,53 @@ namespace CalamityOverhaul.Content.Items.Melee
         private float speedMul = 1f;
         private int lockedDirection = 1;
         private int swingSign = 1;
-        private float startAngle;
-        private float endAngle;
+        private float aimAngle;
         private float currentRotation;
         private float lastRotation;
         private bool slashSoundPlayed;
         private bool beamFired;
-        private float trailFade;
+        private float trailFade = 1f;
+
+        //本帧由投影解算，绘制与碰撞共享
+        private float sweepUc;
+        private float radiusMul = 0.82f;
+        private Vector2 arcCenter;
+        private Vector2 tipWorld;
+        private float bladeReachNow = 1f;
+        private float bladeForeshorten = 1f;
+        private float bladeDepth;
+
+        //命中反馈
+        private int impactHoldFrames;
+        /// <summary>已被停驻吃掉的帧，从收势尾巴里等量扣回，保证顿帧对 DPS 中性</summary>
+        private int hitStopSpent;
         private readonly HashSet<int> hitNPCs = [];
 
-        //??????????????????????
-        private const int TrailMax = 64;
-        private const int TrailSubdiv = 4;
-        private readonly float[] trailRot = new float[TrailMax];
+        //伤害窗用闩锁而非区间判断，见 UpdateDamageWindow
+        private bool damageArmed;
+        private bool damageWindowClosed;
+
+        //身体演出，写者仲裁靠比对上帧自己写进去的值
+        private float leanAmount;
+        private float appliedLean;
+        private bool leanOwned;
+
+        //刀光缎带：只在爆发段追加，尾端靠 trailTail 蒸发，全程 O(1)
+        private const int TrailMax = 96;
+        private readonly TrailNode[] trail = new TrailNode[TrailMax];
         private int trailCount;
+        private int trailTail;
+        private float lastPushedUc;
+
+        /// <summary>缎带上一个采样点，位置与半宽都已经过投影</summary>
+        private struct TrailNode
+        {
+            public float Uc;        //弧参数，决定厚度包络
+            public Vector2 Tip;     //世界刃尖
+            public Vector2 Radial;  //弧心指向刃尖的单位向量，缎带沿此展宽
+            public float HalfWidth;
+            public float Dim;       //远半侧压暗
+        }
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 66;
@@ -169,17 +321,49 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool ShouldUpdatePosition() => false;
 
-        public override bool? CanDamage() => elapsed >= WindupTime && elapsed <= WindupTime + SlashTime + 1f;
+        public override bool? CanDamage() => damageArmed;
+
+        /// <summary>
+        /// 伤害窗贴着爆发帧，前后各留一帧余量吃贴脸与擦边。
+        /// 用闩锁而不是区间判断：高攻速下 speedMul 一帧能跨过整段窗口，
+        /// 区间写法会让这一刀彻底空掉
+        /// </summary>
+        private void UpdateDamageWindow() {
+            if (damageWindowClosed) {
+                return;
+            }
+            if (elapsed >= Beat.BurstStart - 1f) {
+                damageArmed = true;
+            }
+            if (damageArmed && elapsed > Beat.BurstStop + 2f) {
+                damageArmed = false;
+                damageWindowClosed = true;
+            }
+        }
+
+        /// <summary>停驻吃掉的帧从收势尾巴扣回，但不许啃进回坐的两帧</summary>
+        private float EffectiveTotal
+            => Beat.Total - Math.Min(hitStopSpent, Math.Max(Beat.Recover - 4, 0));
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             if (CanDamage() != true) {
                 return false;
             }
             Vector2 hand = Owner.GetPlayerStabilityCenter();
-            Vector2 tip = hand + currentRotation.ToRotationVector2() * BladeReach;
+            //贴身段单独兜一次，避免近身空洞——画面重叠了却打不到最伤玩家信任
+            if (targetHitbox.Distance(hand) <= 46f) {
+                return true;
+            }
+            Vector2 tip = hand + (currentRotation.ToRotationVector2() * (bladeReachNow + 12f));
             float collisionPoint = 0f;
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
-                , hand, tip, 52f, ref collisionPoint);
+                , hand, tip, 56f, ref collisionPoint);
+        }
+
+        public override void CutTiles() {
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            Vector2 tip = hand + (currentRotation.ToRotationVector2() * (bladeReachNow + 12f));
+            Utils.PlotTileLine(hand, tip, 46f, DelegateMethods.CutTiles);
         }
 
         public override void Initialize() {
@@ -199,99 +383,207 @@ namespace CalamityOverhaul.Content.Items.Melee
                 speedMul = 1f;
             }
 
-            float baseAngle = Projectile.velocity.ToRotation();
-            startAngle = baseAngle - swingSign * SwingArc * 0.5f;
-            endAngle = baseAngle + swingSign * SwingArc * 0.5f;
-            currentRotation = lastRotation = startAngle;
-
-            if (IsFinisher) {
-                Projectile.damage = (int)(Projectile.damage * 1.35f);
-                Projectile.scale = 1.55f;
+            aimAngle = Projectile.velocity.ToRotation();
+            Projectile.scale = Beat.BladeScale;
+            if (Beat.DamageScale != 1f) {
+                Projectile.damage = (int)(Projectile.damage * Beat.DamageScale);
             }
+
+            UpdateSwingState();
+            UpdateBladeTransform();
+            lastRotation = currentRotation;
         }
 
         public override void AI() {
-            if (Item.type != ModContent.ItemType<NeutronGlaive>()) {
+            if (Item.type != ModContent.ItemType<NeutronGlaive>() || Owner.dead || !Owner.active) {
+                ReleaseBodyLean();
                 Projectile.Kill();
                 return;
             }
-            if (elapsed >= TotalTime) {
+            if (elapsed >= EffectiveTotal) {
+                ReleaseBodyLean();
                 Projectile.Kill();
                 return;
             }
 
             lastRotation = currentRotation;
-            float slashEnd = WindupTime + SlashTime;
+            UpdateSwingState();
+            UpdateBladeTransform();
+            UpdateDamageWindow();
+            HandlePhaseEvents();
+            UpdatePlayerPose();
 
-            if (elapsed < WindupTime) {
-                //????????????
-                float t = elapsed / WindupTime;
-                currentRotation = startAngle - swingSign * 0.3f * MathF.Sin(t * MathHelper.PiOver2);
-                trailFade = 0f;
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, FrameCount - 1);
+            Lighting.AddLight(Vector2.Lerp(Owner.GetPlayerStabilityCenter(), tipWorld, 0.7f)
+                , NeutronViolet.ToVector3() * 0.7f);
+
+            //命中停驻：只要不推进 elapsed，刀角、揭开进度、前倾就一起冻住。
+            //冻掉的帧记账，由 EffectiveTotal 从收势尾巴扣回——顿帧不许偷走 DPS
+            if (impactHoldFrames > 0) {
+                impactHoldFrames--;
+                hitStopSpent++;
             }
-            else if (elapsed < slashEnd) {
-                //ease-out ??
-                float t = (elapsed - WindupTime) / SlashTime;
-                float eased = 1f - MathF.Pow(1f - t, IsFinisher ? 4.4f : 3.6f);
-                currentRotation = MathHelper.Lerp(startAngle, endAngle, eased);
-                trailFade = 1f;
-                PushTrailSamples();
+            else {
+                elapsed += speedMul;
+            }
+        }
 
+        /// <summary>由 elapsed 解算揭开进度、半径弹开与身体前倾</summary>
+        private void UpdateSwingState() {
+            ref readonly NeutronSwingBeat beat = ref Beat;
+            float gatherEnd = MathF.Max(beat.Gather, 1f);
+            float holdEnd = beat.BurstStart;
+            float burstEnd = beat.BurstStop;
+            float chamber = -beat.Pullback;
+            float leanBack = -beat.Lean * 0.55f;
+
+            if (elapsed < gatherEnd) {
+                //蓄势：缓入回拉，前段几乎不动、末段才把刀收紧，叠一层呼吸震颤
+                float eased = NeutronSwingArc.EaseInCubic(elapsed / gatherEnd);
+                sweepUc = (chamber * eased) + (MathF.Sin(elapsed * 2.3f) * 0.015f * (1f - eased));
+                radiusMul = MathHelper.Lerp(0.86f, 0.76f, eased);
+                leanAmount = leanBack * eased;
+                trailFade = 1f;
+            }
+            else if (elapsed < holdEnd) {
+                //死寂滞帧：完全不动，这段静默买的是下一帧的爆炸
+                sweepUc = chamber;
+                radiusMul = 0.76f;
+                leanAmount = leanBack;
+                trailFade = 1f;
+            }
+            else if (elapsed < burstEnd) {
+                //爆发：近匀速跨弧，力量来自蓄爆比与身体甩动而非缓动曲线
+                float t = (elapsed - holdEnd) / beat.Burst;
+                sweepUc = MathHelper.Lerp(chamber, Overshoot, t);
+                //半径在头一帧内弹开，力从地起
+                radiusMul = MathHelper.Lerp(0.76f, 1.07f, NeutronSwingArc.Saturate(t * 2.4f));
+                leanAmount = MathHelper.Lerp(leanBack, beat.Lean, NeutronSwingArc.Saturate(t * 1.7f));
+                trailFade = 1f;
+            }
+            else {
+                //收势：两帧过冲回坐后几何冻结，之后只有材质继续消散
+                float t = (elapsed - burstEnd) / beat.Recover;
+                float settle = NeutronSwingArc.SmoothStep01((elapsed - burstEnd) / 2f);
+                sweepUc = MathHelper.Lerp(Overshoot, 1f, settle);
+                radiusMul = MathHelper.Lerp(1.07f, 1.0f, settle);
+                leanAmount = beat.Lean * (1f - NeutronSwingArc.SmoothStep01(t));
+                trailFade = 1f - NeutronSwingArc.SmoothStep01((t - 0.35f) / 0.65f);
+            }
+        }
+
+        /// <summary>刃尖投影 → 刀角 / 手到刃尖距离 / 刀身轴向前缩短</summary>
+        private void UpdateBladeTransform() {
+            ref readonly NeutronSwingBeat beat = ref Beat;
+            Vector2 axisX = aimAngle.ToRotationVector2();
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            float radius = beat.Radius * radiusMul;
+            arcCenter = hand + (axisX * beat.OffsetAlongAim * radiusMul);
+            Vector2 tipLocal = NeutronSwingArc.TipOffset(in beat, radius, sweepUc, swingSign
+                , axisX, out _, out bladeDepth);
+            tipWorld = arcCenter + tipLocal;
+
+            Vector2 fromHand = tipWorld - hand;
+            bladeReachNow = MathF.Max(fromHand.Length(), 28f);
+            currentRotation = fromHand.ToRotation();
+            //刀身与刀光同源：手到刃尖塌缩多少，刀就画多短。
+            //轴向前缩短是最强的深度线索，读作"刀转向画面深处"而不是"刀变小了"
+            float nominalReach = beat.Radius + (MathF.Abs(beat.OffsetAlongAim) * 0.5f);
+            bladeForeshorten = MathHelper.Clamp(bladeReachNow / nominalReach, 0.62f, 1.18f);
+        }
+
+        /// <summary>分相事件：爆发帧起音、发剑气、采缎带；收势期只蒸发不追加</summary>
+        private void HandlePhaseEvents() {
+            ref readonly NeutronSwingBeat beat = ref Beat;
+            bool bursting = elapsed >= beat.BurstStart && elapsed < beat.BurstStop + 2f;
+
+            if (elapsed >= beat.BurstStart) {
+                //挥砍声与剑气都坐在爆发帧上，压在起手会听成脱拍
                 if (!slashSoundPlayed) {
                     slashSoundPlayed = true;
-                    if (!VaultUtils.isServer && IsFinisher) {
-                        SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.85f, Pitch = -0.3f }, Owner.Center);
+                    if (!VaultUtils.isServer) {
+                        SoundStyle style = IsFinisher
+                            ? SoundID.Item71 with { Volume = 0.9f, Pitch = -0.35f }
+                            : SoundID.Item71 with { Volume = 0.6f, Pitch = 0.15f };
+                        SoundEngine.PlaySound(style, Owner.Center);
                     }
                 }
-
-                if (!beamFired && t >= 0.3f) {
+                if (!beamFired) {
                     beamFired = true;
                     FireBeam();
                 }
-
-                //????
-                if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
-                    Vector2 along = Owner.GetPlayerStabilityCenter()
-                        + currentRotation.ToRotationVector2() * Main.rand.NextFloat(BladeReach * 0.55f, BladeReach);
-                    Vector2 tangent = currentRotation.ToRotationVector2().RotatedBy(swingSign * MathHelper.PiOver2);
-                    PRTLoader.NewParticle<PRT_HeavenfallStar>(along, tangent * Main.rand.NextFloat(1.5f, 4f)
-                        , Color.Lerp(NeutronViolet, NeutronBlue, Main.rand.NextFloat()), Main.rand.NextFloat(0.25f, 0.4f)).Configure(false, 14);
-                }
             }
-            else {
-                //?????????????
-                float t = (elapsed - slashEnd) / RecoverTime;
-                currentRotation = endAngle;
-                trailFade = 1f - t;
+
+            if (bursting) {
                 PushTrailSamples();
+                SpawnSweepMotes();
             }
-
-            UpdatePlayerPose();
-            VaultUtils.ClockFrame(ref Projectile.frame, 5, FrameCount - 1);
-            Lighting.AddLight(Owner.GetPlayerStabilityCenter() + currentRotation.ToRotationVector2() * BladeReach * 0.7f
-                , NeutronViolet.ToVector3() * 0.7f);
-            elapsed += speedMul;
+            else if (elapsed >= beat.BurstStop + 2f && trailCount > 0) {
+                //尾端蒸发，起笔端先散，避免刀光赖在场上叠成笼子
+                float t = NeutronSwingArc.Saturate((elapsed - beat.BurstStop - 2f) / MathF.Max(beat.Recover - 2f, 1f));
+                int eroded = (int)(trailCount * t * 0.85f);
+                trailTail = Math.Clamp(Math.Max(trailTail, eroded), 0, Math.Max(trailCount - 2, 0));
+            }
         }
 
+        /// <summary>按弧长增量决定细分数，追加式写入，没有整表搬移</summary>
         private void PushTrailSamples() {
-            for (int s = TrailSubdiv - 1; s >= 0; s--) {
-                float rot = MathHelper.Lerp(currentRotation, lastRotation, s / (float)TrailSubdiv);
-                for (int i = Math.Min(trailCount, TrailMax - 1); i > 0; i--) {
-                    trailRot[i] = trailRot[i - 1];
+            if (VaultUtils.isServer) {
+                return;
+            }
+            ref readonly NeutronSwingBeat beat = ref Beat;
+            //连续性用未夹取的原始 uc，节点里存的是夹取值，不能拿来算增量
+            float lastUc = trailCount > 0 ? lastPushedUc : sweepUc;
+            float delta = sweepUc - lastUc;
+            if (trailCount > 0 && MathF.Abs(delta) < 0.0005f) {
+                return;
+            }
+
+            Vector2 axisX = aimAngle.ToRotationVector2();
+            float radius = beat.Radius * radiusMul;
+            //一帧能跨掉大半条弧，按弧长补够中间点，否则缎带是折线
+            int steps = Math.Clamp((int)MathF.Ceiling(MathF.Abs(delta) * beat.Span * radius / 14f), 1, 14);
+            for (int i = 1; i <= steps; i++) {
+                if (trailCount >= TrailMax) {
+                    break;
                 }
-                trailRot[0] = rot;
-                if (trailCount < TrailMax) {
-                    trailCount++;
-                }
+                float uc = MathHelper.Lerp(lastUc, sweepUc, i / (float)steps);
+                float ucClamped = NeutronSwingArc.Saturate(uc);
+                Vector2 local = NeutronSwingArc.TipOffset(in beat, radius, uc, swingSign
+                    , axisX, out float projRadius, out float depth);
+                Vector2 tip = arcCenter + local;
+                trail[trailCount++] = new TrailNode {
+                    Uc = ucClamped,
+                    Tip = tip,
+                    Radial = local.SafeNormalize(axisX),
+                    HalfWidth = MathF.Max(NeutronSwingArc.ThickEnvelope(in beat, ucClamped) * projRadius, 2f),
+                    Dim = NeutronSwingArc.DepthDim(in beat, radius, depth),
+                };
+                lastPushedUc = uc;
             }
         }
 
+        /// <summary>刃口星屑，沿切线甩出</summary>
+        private void SpawnSweepMotes() {
+            if (VaultUtils.isServer || !Main.rand.NextBool(2)) {
+                return;
+            }
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            Vector2 along = Vector2.Lerp(hand, tipWorld, Main.rand.NextFloat(0.6f, 1.02f));
+            Vector2 tangent = currentRotation.ToRotationVector2().RotatedBy(swingSign * MathHelper.PiOver2);
+            PRTLoader.NewParticle<PRT_HeavenfallStar>(along, tangent * Main.rand.NextFloat(1.5f, 4f)
+                , Color.Lerp(NeutronViolet, NeutronBlue, Main.rand.NextFloat())
+                , Main.rand.NextFloat(0.25f, 0.4f)).Configure(false, 14);
+        }
+
+        /// <summary>剑气沿这一刀的实际刀锋出去，不再读实时鼠标</summary>
         private void FireBeam() {
             if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
-            Vector2 spawnPos = Owner.GetPlayerStabilityCenter() + UnitToMouseV * BladeReach * 0.5f;
-            Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), spawnPos, UnitToMouseV * Item.shootSpeed
+            Vector2 dir = currentRotation.ToRotationVector2();
+            Vector2 spawnPos = Owner.GetPlayerStabilityCenter() + (dir * bladeReachNow * 0.6f);
+            Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), spawnPos, dir * Item.shootSpeed
                 , ModContent.ProjectileType<NeutronGlaiveBeam>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
         }
 
@@ -301,9 +593,45 @@ namespace CalamityOverhaul.Content.Items.Melee
             Owner.itemTime = Owner.itemAnimation = 2;
             Owner.itemRotation = currentRotation;
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, currentRotation - MathHelper.PiOver2);
-            Projectile.Center = Owner.GetPlayerStabilityCenter() + currentRotation.ToRotationVector2() * BladeReach * 0.5f;
+            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters
+                , currentRotation - MathHelper.PiOver2 + (0.22f * lockedDirection));
+            ApplyBodyLean();
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + (currentRotation.ToRotationVector2() * bladeReachNow * 0.5f);
             Projectile.timeLeft = 90;
         }
+
+        /// <summary>
+        /// 身体压枪，支点钉在脚下。别的系统（冲刺、坐骑）也写 fullRotation，
+        /// 这里比对上帧自己写进去的值来仲裁，一旦被抢走就彻底让位
+        /// </summary>
+        private void ApplyBodyLean() {
+            if (leanOwned && MathF.Abs(Owner.fullRotation - appliedLean) > 0.0001f) {
+                //上帧的值被别人改了，说明刀权已让出，之后不再碰
+                leanOwned = false;
+                return;
+            }
+            if (!leanOwned && MathF.Abs(Owner.fullRotation) > 0.0001f) {
+                return;
+            }
+            appliedLean = leanAmount * lockedDirection;
+            Owner.fullRotation = appliedLean;
+            Owner.fullRotationOrigin = new Vector2(Owner.width * 0.5f, Owner.height);
+            leanOwned = true;
+        }
+
+        /// <summary>每一条退出路径都要复位，卡住的前倾比没有前倾更糟</summary>
+        private void ReleaseBodyLean() {
+            if (!leanOwned) {
+                return;
+            }
+            if (MathF.Abs(Owner.fullRotation - appliedLean) <= 0.0001f) {
+                Owner.fullRotation = 0f;
+                Owner.fullRotationOrigin = Vector2.Zero;
+            }
+            leanOwned = false;
+        }
+
+        public override void OnKill(int timeLeft) => ReleaseBodyLean();
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             modifiers.HitDirectionOverride = currentRotation.ToRotationVector2().X > 0 ? 1 : -1;
@@ -313,12 +641,14 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //?????????????????????
+            //本次挥砍对同一目标只转发一次外部命中钩子
             if (hitNPCs.Add(target.whoAmI)) {
                 ItemLoader.OnHitNPC(Item, Owner, target, hit, damageDone);
                 NPCLoader.OnHitByItem(target, Owner, Item, hit, damageDone);
                 PlayerLoader.OnHitNPC(Owner, target, hit, damageDone);
             }
+
+            ApplyImpactFeedback(target.Center);
 
             if (Projectile.numHits == 0 && Projectile.IsOwnedByLocalPlayer()) {
                 Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), target.Center, Vector2.Zero
@@ -327,53 +657,97 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
+            ApplyImpactFeedback(target.Center);
             if (Projectile.numHits == 0 && Projectile.IsOwnedByLocalPlayer()) {
                 Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), target.Center, Vector2.Zero
                     , ModContent.ProjectileType<NeutronExplode>(), Projectile.damage / 2, 0, Owner.whoAmI);
             }
         }
 
+        /// <summary>分级停驻 + 沿切线的镜头冲击，轻拍也要有回应</summary>
+        private void ApplyImpactFeedback(Vector2 hitPos) {
+            //停驻总预算有限：一刀扫过一群怪也不能把这一拍拖长
+            if (hitStopSpent < Math.Max(Beat.Recover - 4, 0)) {
+                impactHoldFrames = Math.Max(impactHoldFrames, Beat.HitStop);
+            }
+            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+                return;
+            }
+            Vector2 tangent = currentRotation.ToRotationVector2().RotatedBy(swingSign * MathHelper.PiOver2);
+            float power = IsFinisher ? 5.5f : 2.6f;
+            var modifier = new PunchCameraModifier(hitPos, tangent, power
+                , IsFinisher ? 6f : 3.5f, IsFinisher ? 10 : 6, 900f, FullName);
+            Main.instance.CameraModifiers.Add(modifier);
+        }
+
+        /// <summary>刀身残影，画在 DrawCustom 的实体刀之下</summary>
         public override bool PreDraw(ref Color lightColor) {
-            //??? DrawCustom ?????????????????
-            if (CanDamage() != true) {
+            if (trailCount - trailTail < 2) {
                 return false;
             }
             Texture2D tex = TextureValue;
             Rectangle rect = tex.GetRectangle(Projectile.frame, FrameCount);
             Vector2 origin = rect.Size() / 2f;
-            Vector2 hand = Owner.GetPlayerStabilityCenter();
-            float dist = BladeReach * 0.5f;
-            SpriteEffects effect = lockedDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
-            float rotOffset = lockedDirection == -1 ? -MathHelper.PiOver4 : MathHelper.PiOver4;
+            GetBladeDraw(out SpriteEffects effect, out float rotOffset);
 
-            for (int i = 1; i <= 3; i++) {
-                float rot = MathHelper.Lerp(currentRotation, lastRotation, i / 4f);
-                Vector2 pos = hand + rot.ToRotationVector2() * dist - Main.screenPosition;
-                Color trailColor = NeutronViolet * (0.32f * (1f - i / 4f));
-                trailColor.A = 0;
-                Main.EntitySpriteDraw(tex, pos, rect, trailColor, rot + rotOffset, origin
-                    , Projectile.scale, effect, 0);
+            float angleDelta = MathF.Abs(MathHelper.WrapAngle(currentRotation - lastRotation));
+            float strength = NeutronSwingArc.Saturate((angleDelta - 0.05f) / 0.8f);
+            int smears = Math.Clamp((int)MathF.Ceiling(angleDelta / 0.2f), 1, 5);
+            for (int i = 1; i <= smears && strength > 0f; i++) {
+                float amount = i / (float)(smears + 1);
+                float rot = MathHelper.Lerp(currentRotation, lastRotation, amount);
+                Vector2 pos = Owner.GetPlayerStabilityCenter()
+                    + (rot.ToRotationVector2() * bladeReachNow * 0.46f) - Main.screenPosition;
+                Color smearColor = NeutronViolet * (0.34f * strength * (1f - amount));
+                smearColor.A = 0;
+                Main.EntitySpriteDraw(tex, pos, rect, smearColor, rot + rotOffset, origin
+                    , Projectile.scale * bladeForeshorten, effect, 0);
             }
             return false;
+        }
+
+        private void GetBladeDraw(out SpriteEffects effect, out float rotOffset) {
+            bool flip = lockedDirection == -1;
+            effect = flip ? SpriteEffects.FlipVertically : SpriteEffects.None;
+            rotOffset = flip ? -MathHelper.PiOver4 : MathHelper.PiOver4;
         }
 
         bool IWarpDrawable.CanDrawCustom() => true;
 
         bool IWarpDrawable.DontUseBlueshiftEffect() => true;
 
+        /// <summary>
+        /// 引力透镜：这一刀不是发光，是把背后的空间掰弯。
+        /// 只在爆发帧沿弧采样几处，强度跟着爆发进度走
+        /// </summary>
         void IWarpDrawable.Warp() {
-            //??????????????
-            if (CanDamage() != true) {
+            ref readonly NeutronSwingBeat beat = ref Beat;
+            if (elapsed < beat.BurstStart || elapsed > beat.BurstStop + 3f) {
                 return;
             }
-            Texture2D warpTex = CWRAsset.DiffusionCircle.Value;
-            Vector2 hand = Owner.GetPlayerStabilityCenter();
-            Color warpColor = new Color(45, 45, 45) * 0.5f;
-            for (int i = 0; i < 4; i++) {
-                float rot = MathHelper.Lerp(currentRotation, lastRotation, i / 4f);
-                Vector2 pos = hand + rot.ToRotationVector2() * BladeReach * 0.75f - Main.screenPosition;
-                Main.spriteBatch.Draw(warpTex, pos, null, warpColor, rot
-                    , warpTex.Size() / 2, 0.32f, SpriteEffects.None, 0f);
+            float burstT = NeutronSwingArc.Saturate((elapsed - beat.BurstStart) / MathF.Max(beat.Burst, 1f));
+            float decay = 1f - NeutronSwingArc.Saturate((elapsed - beat.BurstStop) / 3f);
+            float power = NeutronSwingArc.SmoothStep01(burstT * 2.4f) * decay;
+            if (power <= 0.02f) {
+                return;
+            }
+
+            Vector2 axisX = aimAngle.ToRotationVector2();
+            float radius = beat.Radius * radiusMul;
+            int samples = IsFinisher ? 3 : 2;
+            for (int i = 0; i < samples; i++) {
+                float uc = MathHelper.Lerp(0.22f, NeutronSwingArc.Saturate(sweepUc), (i + 0.5f) / samples);
+                Vector2 local = NeutronSwingArc.TipOffset(in beat, radius, uc, swingSign
+                    , axisX, out float projRadius, out float depth);
+                float dim = NeutronSwingArc.DepthDim(in beat, radius, depth);
+                float span = projRadius * (0.85f + (beat.Thick * 3.2f));
+                NeutronWarpHelper.DrawWarp(arcCenter + local
+                    , screenWidth: span, screenHeight: span
+                    , intensity: power * dim * (IsFinisher ? 0.62f : 0.4f)
+                    , progress: burstT
+                    , rotation: currentRotation
+                    , technique: "GravitationalLens"
+                    , radius: 0.42f);
             }
         }
 
@@ -381,26 +755,28 @@ namespace CalamityOverhaul.Content.Items.Melee
             Texture2D tex = TextureValue;
             Rectangle rect = tex.GetRectangle(Projectile.frame, FrameCount);
             Vector2 origin = rect.Size() / 2f;
-            Vector2 hand = Owner.GetPlayerStabilityCenter();
-            float dist = BladeReach * 0.5f;
-            SpriteEffects effect = lockedDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
-            float rotOffset = lockedDirection == -1 ? -MathHelper.PiOver4 : MathHelper.PiOver4;
+            GetBladeDraw(out SpriteEffects effect, out float rotOffset);
 
-            Vector2 drawPos = hand + currentRotation.ToRotationVector2() * dist - Main.screenPosition;
-            spriteBatch.Draw(tex, drawPos, rect, Color.White, currentRotation + rotOffset, origin
-                , Projectile.scale, effect, 0);
+            //停在弧腹而非刃尖，任何刀长都不至于捅出刀光
+            Vector2 drawPos = Owner.GetPlayerStabilityCenter()
+                + (currentRotation.ToRotationVector2() * bladeReachNow * 0.46f) - Main.screenPosition;
+            float scale = Projectile.scale * bladeForeshorten;
+            //沉入身后的半侧压暗，与刀光远近分层同一个 z
+            float dim = NeutronSwingArc.DepthDim(in Beat, Beat.Radius * radiusMul, bladeDepth);
+            spriteBatch.Draw(tex, drawPos, rect, Color.White * dim, currentRotation + rotOffset, origin
+                , scale, effect, 0);
 
-            //??????????
-            if (IsFinisher && CanDamage() == true) {
-                Color glow = NeutronBlue * 0.4f;
+            if (IsFinisher) {
+                Color glow = NeutronBlue * (0.4f * dim);
                 glow.A = 0;
                 spriteBatch.Draw(tex, drawPos, rect, glow, currentRotation + rotOffset, origin
-                    , Projectile.scale * 1.04f, effect, 0);
+                    , scale * 1.04f, effect, 0);
             }
         }
 
         void IPrimitiveDrawable.DrawPrimitives() {
-            if (trailCount < 3 || trailFade <= 0.02f) {
+            int live = trailCount - trailTail;
+            if (live < 3 || trailFade <= 0.02f) {
                 return;
             }
             Effect effect = EffectLoader.NeutronSlashTrail?.Value;
@@ -409,17 +785,17 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            var bars = new VertexPositionColorTexture[trailCount * 2];
-            Vector2 center = Owner.GetPlayerStabilityCenter();
-            float outer = BladeReach + 14f;
-            float inner = BladeReach * 0.28f;
-            for (int i = 0; i < trailCount; i++) {
-                float factor = 1f - i / (float)trailCount;
-                Vector2 dir = trailRot[i].ToRotationVector2();
-                bars[i * 2] = new VertexPositionColorTexture((center + dir * outer).ToVector3()
-                    , Color.White, new Vector2(factor, 0f));
-                bars[i * 2 + 1] = new VertexPositionColorTexture((center + dir * inner).ToVector3()
-                    , Color.White, new Vector2(factor, 1f));
+            var bars = new VertexPositionColorTexture[live * 2];
+            for (int i = 0; i < live; i++) {
+                ref TrailNode node = ref trail[trailTail + i];
+                //沿笔画 0=起笔（最老，先蒸发） 1=收笔（最新，最亮）
+                float along = i / (float)(live - 1);
+                Vector2 outward = node.Radial * node.HalfWidth;
+                Color vertexColor = Color.White * node.Dim;
+                bars[i * 2] = new VertexPositionColorTexture((node.Tip + outward).ToVector3()
+                    , vertexColor, new Vector2(along, 0f));
+                bars[(i * 2) + 1] = new VertexPositionColorTexture((node.Tip - outward).ToVector3()
+                    , vertexColor, new Vector2(along, 1f));
             }
 
             GraphicsDevice device = Main.graphics.GraphicsDevice;
@@ -432,6 +808,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             effect.Parameters["uFade"]?.SetValue(trailFade);
             effect.Parameters["uHeat"]?.SetValue(IsFinisher ? 1f : 0.4f);
+            effect.Parameters["uForcePoint"]?.SetValue(Beat.ForcePoint);
             effect.Parameters["uNoiseTex"]?.SetValue(noise);
             foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
                 pass.Apply();

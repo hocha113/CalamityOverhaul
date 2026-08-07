@@ -5,13 +5,21 @@ Victor: {
 	Name0: 维克托
 
 	TownNPCMood: {
-		Content: 我很满足。
-		NoHome: 我讨厌没有家。
-		FarFromHome: 我离家太远了。
-		LoveSpace: 我非常喜欢有这么大的空间。
-		DislikeCrowded: 我不喜欢这么拥挤。
-		HateCrowded: 我讨厌这么拥挤。
-		LikeNPC_Princess: 我喜欢 {NPCName}。
-		Princess_LovesNPC: 我喜欢 {NPCName}。
+		Content: 一切正常，就像校准过的伺服电机
+		NoHome: 没有诊室就没法开工，我的手术台还扛在背上
+		FarFromHome: 离我的诊室太远了，工具都不在手边
+		LoveSpace: 宽敞，够摆三张手术台，我喜欢
+		DislikeCrowded: 人太多了，无菌环境根本无从谈起
+		HateCrowded: 挤成这样，迟早有人碰翻我的托盘
+		LoveBiome: 我喜欢{BiomeName}，安静，恒温，适合精细活
+		LikeBiome: "{BiomeName}不错，存货在这儿不容易变质"
+		DislikeBiome: "{BiomeName}的潮气正在爬进我的电路，糟透了"
+		HateBiome: "{BiomeName}？那地方能把最好的义体啃得只剩锈渣，别提了"
+		LoveNPC: "{NPCName}懂机械，这年头是稀罕的优点"
+		LikeNPC: "{NPCName}是个不错的邻居，偶尔还能给我供点零件"
+		DislikeNPC: "{NPCName}管我的手术叫「野路子」，哼，疗效会说话"
+		HateNPC: 让{NPCName}离我远点，我可不想天天把被炸碎的客人重新拼起来
+		LikeNPC_Princess: 谁能讨厌{NPCName}呢？再说她的骨骼结构很有研究价值
+		Princess_LovesNPC: 我最喜欢{NPCName}了！他总能把大家修得好好的！
 	}
 }

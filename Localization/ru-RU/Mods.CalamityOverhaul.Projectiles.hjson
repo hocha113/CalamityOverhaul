@@ -114,8 +114,8 @@ SpwanTextProj.DisplayName: Слово проявления
 DragonsWordCut.DisplayName: Клинок драконьего слова: Разрез
 DragonsWordMouse.DisplayName: Клинок драконьего слова
 DragonsWordProj.DisplayName: Клинок драконьего слова
-NeutronMagchStar.DisplayName: Нейтронная звезда
-NeutronWandExplode.DisplayName: Нейтронный взрыв
+// NeutronPulsar.DisplayName: Pulsar
+// NeutronStarquake.DisplayName: Starquake
 DivineSourceWaveProjectile.DisplayName: Полумесячная волна божественного истока
 DivineSourceHitFXProjectile.DisplayName: Удар божественного истока
 DragonsScaleGreatswordBeam.DisplayName: Луч клинка драконьих водорослей

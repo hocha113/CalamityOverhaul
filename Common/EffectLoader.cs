@@ -9,7 +9,8 @@ namespace CalamityOverhaul.Common
     {
         public static Asset<Effect> PowerSFShader { get; set; }
         public static Asset<Effect> WarpShader { get; set; }
-        public static Asset<Effect> NeutronRing { get; set; }
+        public static Asset<Effect> NeutronPulsar { get; set; }
+        public static Asset<Effect> NeutronPulseBeam { get; set; }
         public static Asset<Effect> NeutronWarp { get; set; }
         public static Asset<Effect> PrimeHalo { get; set; }
         public static Asset<Effect> PrimeTelegraph { get; set; }
@@ -72,6 +73,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> WraithRevivalHud { get; set; }
         public static Asset<Effect> GhostHandSheath { get; set; }
         public static Asset<Effect> HeadlessShadeBody { get; set; }
+        public static Asset<Effect> HeadlessShadeCut { get; set; }
         public static Asset<Effect> WraithLantern { get; set; }
         public static Asset<Effect> BrideCurtain { get; set; }
         public static Asset<Effect> GhostRain { get; set; }
@@ -81,7 +83,6 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniMeiStand { get; set; }
         public static Asset<Effect> OniInkWipe { get; set; }
         public static Asset<Effect> OniMoon { get; set; }
-        public static Asset<Effect> OniLedgerPeek { get; set; }
         public static Asset<Effect> HalibutHudEye { get; set; }
         public static Asset<Effect> HalibutHudGauge { get; set; }
         public static Asset<Effect> EncyclopediaKnowledge { get; set; }
@@ -207,6 +208,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniInkThread { get; set; }
         public static Asset<Effect> OniRaikiri { get; set; }
         public static Asset<Effect> OniBellWave { get; set; }
+        public static Asset<Effect> OniRainWorld { get; set; }
         public static Asset<Effect> OniSandGarden { get; set; }
         public static Asset<Effect> OniSenjuArm { get; set; }
         public static Asset<Effect> OniPaperMirror { get; set; }

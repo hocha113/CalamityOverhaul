@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -15,8 +16,17 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
     /// <summary>
     /// 手术流程 诊所关→过场→眼睑→帧86请求→重开诊所；兼眼睑全屏
     /// </summary>
-    internal class VictorSurgery : ModSystem
+    internal class VictorSurgery : ModSystem, ILocalizedModType
     {
+        public string LocalizationCategory => "UI";
+
+        /// <summary>眼睑全黑时居中的提示文字</summary>
+        public static LocalizedText SurgeryInProgressText { get; private set; }
+
+        public override void SetStaticDefaults() {
+            SurgeryInProgressText = this.GetLocalization(nameof(SurgeryInProgressText), () => "SURGERY IN PROGRESS");
+        }
+
         /// <summary>过场进行中</summary>
         public static bool Active { get; private set; }
 
@@ -130,6 +140,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             bool success = result.IsSuccess;
             if (success && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(CWRSound.ChipSet, Main.LocalPlayer.Center);
+                //下次开对话时优先吐一句术后台词
+                VictorDialogue.NoteSurgeryDone();
             }
             if (!Active && pendingKind != KindNone) {
                 pendingKind = KindNone;
@@ -198,6 +210,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             reopenSlot = -1;
             EyelidValue = EyelidTarget = GlowValue = 0f;
             VictorSession.Clear();
+            VictorDialogue.ResetSession();
+            VictorMood.Invalidate();
         }
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
@@ -254,7 +268,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
             if (close > 0.9f) {
-                const string txt = "SURGERY IN PROGRESS";
+                string txt = SurgeryInProgressText.Value;
                 const float scale = 1f;
                 Vector2 size = FontAssets.MouseText.Value.MeasureString(txt) * scale;
                 float pulse = 0.5f + 0.5f * (float)Math.Sin(Main.GameUpdateCount * 0.12);

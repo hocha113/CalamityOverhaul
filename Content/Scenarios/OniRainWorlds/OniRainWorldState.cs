@@ -85,14 +85,25 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             }, player.Center);
         }
 
-        /// <summary>常驻表现：满幕雨帘 + 贴地潮雾 + 稀有脸痕 + 远雷，密度吃氛围强度</summary>
+        /// <summary>
+        /// 常驻表现：满幕雨帘 + 贴地潮雾 + 稀有脸痕 + 远雷，密度吃氛围强度。<br/>
+        /// 演出结算前也承担前兆稀雨——两个世界开始互相渗透的零星雨丝。
+        /// </summary>
         internal static void UpdateFx() {
-            if (Main.dedServ || Main.gameMenu || !LocalIn) {
+            if (Main.dedServ || Main.gameMenu) {
                 return;
             }
+            bool inWorld = LocalIn;
+            float preRain = OniRainWorldTransition.PreRainDensity;
+            if (!inWorld && preRain <= 0f) {
+                return;
+            }
+
             Player player = Main.LocalPlayer;
-            float density = Content.Wraiths.Abilities.GhostRains.GhostRainAmbience.Intensity;
-            if (density < 0.05f) {
+            float density = inWorld
+                ? Content.Wraiths.Abilities.GhostRains.GhostRainAmbience.Intensity
+                : preRain;
+            if (density < 0.02f) {
                 return;
             }
 
@@ -109,8 +120,8 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 SpawnFaceStreak();
             }
 
-            //远雷，稳态下的低频心跳
-            if (--thunderTimer <= 0) {
+            //远雷，稳态下的低频心跳；前兆雨阶段不抢演出节拍的雷声
+            if (inWorld && --thunderTimer <= 0) {
                 thunderTimer = Main.rand.Next(480, 960);
                 SoundEngine.PlaySound(SoundID.Thunder with {
                     Pitch = Main.rand.NextFloat(-1f, -0.75f),

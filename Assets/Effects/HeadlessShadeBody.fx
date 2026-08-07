@@ -1,5 +1,12 @@
-// 无头鬼影本体：Shutter Alpha 提供无头人形，噪声只负责边缘剥落与内部阴影流动。
-// 输出为预乘 Alpha，配合 BlendState.AlphaBlend 形成吸光黑影，而不是发光叠层。
+// ============================================================================
+//HeadlessShadeBody.fx 无头鬼影本体
+//材质是"影"：投影而非实体，所以硬剪影 + 极窄半影，永远没有辉光核心；
+//  预乘 alpha 输出配 BlendState.AlphaBlend，是吸光暗体而不是发光叠层。
+//配色无彩黑，紫只在毛口留一点；骨白冷青只作结构细线（uRimFlash 的短促撕口）。
+//TechBody 画贴 Shutter 剪影的分段躯干条带（也用于地面投影拷贝）；
+//TechLimb 画不吃剪影的程序化锥形条带（双臂、断颈漏影）。
+//ps_3_0 / vs_3_0
+// ============================================================================
 
 float4x4 transformMatrix;
 float uTime;
@@ -7,6 +14,9 @@ float uOpacity;
 float uDissolve;
 float uPhase;
 float uSeed;
+float uRimFlash;    //0..1 骨白撕口短闪，本体与斩痕共用同一套材质语言
+float uTipSolid;    //1=末端实/根部散（臂） 0=根部实/末端散（颈口漏影）
+float uFray;        //肢体毛口强度
 
 texture uShutterTex;
 sampler shutterSamp = sampler_state
@@ -29,6 +39,13 @@ sampler noiseSamp = sampler_state
     AddressU = wrap;
     AddressV = wrap;
 };
+
+//无彩影调；edgeDormant 是全套配色里唯一留紫的地方
+static const float3 ShadowCore = float3(0.006, 0.006, 0.009);
+static const float3 ShadowGrain = float3(0.026, 0.026, 0.033);
+static const float3 EdgeDormant = float3(0.055, 0.049, 0.074);
+static const float3 EdgeStriking = float3(0.212, 0.232, 0.262);
+static const float3 RimBone = float3(0.72, 0.80, 0.85);
 
 struct VSInput
 {
@@ -75,26 +92,71 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float grain = saturate((noise - 0.30) * 1.45) * body;
     float phaseBeat = saturate(uPhase);
 
-    float3 shadowCore = float3(0.010, 0.008, 0.018);
-    float3 shadowGrain = float3(0.036, 0.030, 0.070);
-    float3 edgeDormant = float3(0.075, 0.060, 0.135);
-    float3 edgeStriking = float3(0.175, 0.105, 0.255);
-    float3 edgeColor = lerp(edgeDormant, edgeStriking, phaseBeat);
-
-    float3 color = shadowCore;
-    color = lerp(color, shadowGrain, grain * 0.30);
+    float3 edgeColor = lerp(EdgeDormant, EdgeStriking, phaseBeat);
+    float3 color = ShadowCore;
+    color = lerp(color, ShadowGrain, grain * 0.30);
     color += edgeColor * tornEdge * (0.42 + phaseBeat * 0.58);
+    //撕口短闪：白只落在剪影轮廓线上，同时本体压暗
+    color *= 1.0 - uRimFlash * 0.30;
+    color += RimBone * tornEdge * uRimFlash * 0.85;
 
     float opacity = saturate(uOpacity * input.Color.a);
     float alpha = saturate(body * opacity * (0.74 + grain * 0.18));
-    return float4(color * alpha, alpha);
+    float glowBoost = tornEdge * uRimFlash * 0.16 * opacity;
+    return float4(color * alpha + RimBone * glowBoost * 0.7, saturate(alpha + glowBoost));
 }
 
-technique Technique1
+//锥形条带：u 沿肢体 0=根 1=末，v 横向；顶点色 a 携带逐段衰减
+float4 LimbShaderFunction(PSInput input) : COLOR0
+{
+    float u = input.TexCoords.x;
+    float side = input.TexCoords.y * 2.0 - 1.0;
+
+    float n0 = tex2D(noiseSamp, float2(u * 3.30 + uSeed, side * 0.62 - uTime * 0.09)).r;
+    float n1 = tex2D(noiseSamp, float2(u * 6.90 - uSeed * 1.9, side * 1.45 + uTime * 0.05)).r;
+    float noise = n0 * 0.64 + n1 * 0.36;
+
+    //毛口：一端撕散一端收实，由 uTipSolid 决定朝向
+    float frayRamp = lerp(u, 1.0 - u, uTipSolid);
+    float edge = 0.84 - uFray * (0.16 + 0.40 * noise) * frayRamp;
+    float bodyMask = 1.0 - smoothstep(edge - 0.13, edge, abs(side));
+
+    //两端收口，不留平切的硬头：臂的根塞进剪影底下、末端收实；颈口反过来根实末散
+    float rootFade = lerp(1.0, smoothstep(0.0, 0.18, u), uTipSolid);
+    float tipFade = lerp(1.0 - smoothstep(0.55, 1.0, u), 1.0 - smoothstep(0.92, 1.0, u), uTipSolid);
+
+    float mask = bodyMask * rootFade * tipFade;
+    float tornEdge = saturate(mask - smoothstep(0.0, 0.55, mask * mask));
+    float phaseBeat = saturate(uPhase);
+
+    //顶点色 R 携带逐条骨白量，影屑里只有少数几片带新鲜撕口
+    float rimAmt = max(uRimFlash, input.Color.r);
+    float3 edgeColor = lerp(EdgeDormant, EdgeStriking, phaseBeat);
+    float3 color = lerp(ShadowCore, ShadowGrain, saturate((noise - 0.34) * 1.5) * 0.45);
+    color += edgeColor * tornEdge * (0.50 + phaseBeat * 0.50);
+    color *= 1.0 - rimAmt * 0.30;
+    color += RimBone * tornEdge * rimAmt * 0.85;
+
+    float opacity = saturate(uOpacity * input.Color.a);
+    float alpha = saturate(mask * opacity * (0.72 + noise * 0.22));
+    float glowBoost = tornEdge * rimAmt * 0.14 * opacity;
+    return float4(color * alpha + RimBone * glowBoost * 0.7, saturate(alpha + glowBoost));
+}
+
+technique TechBody
 {
     pass P0
     {
         VertexShader = compile vs_3_0 VertexShaderFunction();
         PixelShader = compile ps_3_0 PixelShaderFunction();
+    }
+}
+
+technique TechLimb
+{
+    pass P0
+    {
+        VertexShader = compile vs_3_0 VertexShaderFunction();
+        PixelShader = compile ps_3_0 LimbShaderFunction();
     }
 }

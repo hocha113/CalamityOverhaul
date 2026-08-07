@@ -1017,3 +1017,10 @@ EternalBlazingNowNoHelen: {
 	Line9: Uma vez que minha consciencia se dissipe completamente, o mundo inteiro sera reduzido a cinzas.
 	Line10: Alem disso, se voce pretende dar fim a esta era, um invólucro mortal e muito frágil.
 }
+
+OniRainWorld: {
+	OniRainWorldSystem: {
+		// InteractHint: "[Right Click] Step beneath the umbrella"
+		// EnterText: Ghost Rain World
+	}
+}

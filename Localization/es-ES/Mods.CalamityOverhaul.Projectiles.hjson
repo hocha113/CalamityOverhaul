@@ -114,8 +114,8 @@ SpwanTextProj.DisplayName: Palabra manifestada
 DragonsWordCut.DisplayName: Corte de la palabra del dragón
 DragonsWordMouse.DisplayName: Palabra del dragón
 DragonsWordProj.DisplayName: Palabra del dragón
-NeutronMagchStar.DisplayName: Estrella de neutrones
-NeutronWandExplode.DisplayName: Explosión de varita de neutrones
+// NeutronPulsar.DisplayName: Pulsar
+// NeutronStarquake.DisplayName: Starquake
 DivineSourceWaveProjectile.DisplayName: Onda creciente de fuente divina
 DivineSourceHitFXProjectile.DisplayName: Impacto de fuente divina
 DragonsScaleGreatswordBeam.DisplayName: Rayo de gran hoja de alga dracónica

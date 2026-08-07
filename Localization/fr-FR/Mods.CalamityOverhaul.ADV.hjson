@@ -1017,3 +1017,10 @@ EternalBlazingNowNoHelen: {
 	Line9: Quand ma conscience disparaîtra entièrement, le monde entier sera réduit en cendres.
 	Line10: D'ailleurs — pour finir cette ère, un réceptacle mortel est bien trop fragile.
 }
+
+OniRainWorld: {
+	OniRainWorldSystem: {
+		// InteractHint: "[Right Click] Step beneath the umbrella"
+		// EnterText: Ghost Rain World
+	}
+}

@@ -43,6 +43,7 @@ namespace CalamityOverhaul.Content.Cyberwares
             SurgeryRequest = 3,
             PurchaseRequest = 4,
             RequestResult = 5,
+            BestiaryChat = 6,
         }
 
         private sealed class PendingVictorRequest
@@ -187,6 +188,21 @@ namespace CalamityOverhaul.Content.Cyberwares
             return true;
         }
 
+        /// <summary>
+        /// 客户端请求服务端登记图鉴交谈记录；服务端登记后写世界存档并经原版
+        /// NetBestiaryModule 广播给所有客户端
+        /// </summary>
+        internal static void SendBestiaryChat(NPC victor) {
+            if (Main.netMode != NetmodeID.MultiplayerClient
+                || !TryCaptureVictor(victor?.whoAmI ?? -1,
+                    out NetworkNPCIdentity identity)) {
+                return;
+            }
+            ModPacket packet = NewPacket(CyberwareNetOp.BestiaryChat);
+            identity.Write(packet);
+            packet.Send();
+        }
+
         internal static void NetHandle(CWRMessageType type, BinaryReader reader,
             int whoAmI) {
             if (type != CWRMessageType.Cyberware) {
@@ -210,6 +226,9 @@ namespace CalamityOverhaul.Content.Cyberwares
                         break;
                     case CyberwareNetOp.RequestResult:
                         HandleRequestResult(reader);
+                        break;
+                    case CyberwareNetOp.BestiaryChat:
+                        HandleBestiaryChat(reader);
                         break;
                 }
             } catch (EndOfStreamException) {
@@ -344,6 +363,17 @@ namespace CalamityOverhaul.Content.Cyberwares
                 whoAmI);
         }
 
+        private static void HandleBestiaryChat(BinaryReader reader) {
+            NetworkNPCIdentity.TryRead(reader,
+                out NetworkNPCIdentity victorIdentity);
+            if (Main.netMode != NetmodeID.Server) {
+                return;
+            }
+            if (TryResolveVictor(victorIdentity, out NPC victor)) {
+                Main.BestiaryTracker.Chats.RegisterChatStartWith(victor);
+            }
+        }
+
         private static void HandleRequestResult(BinaryReader reader) {
             VictorRequestResult result = ReadResult(reader);
             CyberwareLoadoutSnapshot snapshot = ReadSnapshot(reader);
@@ -389,7 +419,7 @@ namespace CalamityOverhaul.Content.Cyberwares
             }
             else {
                 code = ValidateCommon(player, state, expectedRevision,
-                    victorIdentity);
+                    victorIdentity, out _);
                 if (code == VictorResultCode.Success) {
                     code = ExecuteSurgery(player, state, kind, loadoutSlot,
                         inventorySlot, out loadoutChanged);
@@ -422,9 +452,10 @@ namespace CalamityOverhaul.Content.Cyberwares
             }
             else {
                 code = ValidateCommon(player, state, expectedRevision,
-                    victorIdentity);
+                    victorIdentity, out NPC victor);
                 if (code == VictorResultCode.Success) {
-                    code = ExecutePurchase(player, loadoutSlot, itemType);
+                    code = ExecutePurchase(player, loadoutSlot, itemType,
+                        victor);
                 }
             }
 
@@ -478,7 +509,8 @@ namespace CalamityOverhaul.Content.Cyberwares
 
         private static VictorResultCode ValidateCommon(Player player,
             CyberwarePlayer state, uint expectedRevision,
-            in NetworkNPCIdentity victorIdentity) {
+            in NetworkNPCIdentity victorIdentity, out NPC victor) {
+            victor = null;
             if (player?.active != true || player.dead || player.ghost) {
                 return VictorResultCode.InvalidPlayer;
             }
@@ -486,10 +518,11 @@ namespace CalamityOverhaul.Content.Cyberwares
                 || expectedRevision != state.LoadoutRevision) {
                 return VictorResultCode.StaleLoadout;
             }
-            if (!TryResolveVictor(victorIdentity, out NPC victor)
+            if (!TryResolveVictor(victorIdentity, out victor)
                 || !IsFinite(player.Center) || !IsFinite(victor.Center)
                 || Vector2.DistanceSquared(player.Center, victor.Center)
                     > MaxVictorDistance * MaxVictorDistance) {
+                victor = null;
                 return VictorResultCode.InvalidVictor;
             }
             return VictorResultCode.Success;
@@ -556,7 +589,7 @@ namespace CalamityOverhaul.Content.Cyberwares
         }
 
         private static VictorResultCode ExecutePurchase(Player player,
-            int loadoutSlot, int itemType) {
+            int loadoutSlot, int itemType, NPC victor) {
             if (loadoutSlot < 0 || loadoutSlot >= CyberwarePlayer.SlotCount
                 || !VictorCatalog.TryGetEntry(itemType,
                     out VictorCatalogEntry entry)
@@ -564,11 +597,17 @@ namespace CalamityOverhaul.Content.Cyberwares
                 return VictorResultCode.InvalidPayload;
             }
 
+            //幸福度权威取价；客户端只展示估算，偶发不一致以此处扣款为准
+            long price = VictorCatalog.GetAuthorityPrice(itemType, player, victor);
+            if (price <= 0L) {
+                return VictorResultCode.InvalidPayload;
+            }
+
             int destination = FindEmptyMainInventorySlot(player);
             if (destination < 0) {
                 return VictorResultCode.InventoryFull;
             }
-            if (!player.CanAfford(entry.Price)) {
+            if (!player.CanAfford(price)) {
                 return VictorResultCode.InsufficientFunds;
             }
 
@@ -582,7 +621,7 @@ namespace CalamityOverhaul.Content.Cyberwares
             player.inventory[destination] = purchased;
             bool paid;
             try {
-                paid = player.BuyItem(entry.Price);
+                paid = player.BuyItem(price);
             } catch {
                 RestoreWallet(walletSnapshot);
                 return VictorResultCode.InvalidPayload;

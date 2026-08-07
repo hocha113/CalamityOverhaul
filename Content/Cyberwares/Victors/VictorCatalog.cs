@@ -7,6 +7,7 @@ using CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans;
 using CalamityOverhaul.Content.Cyberwares.Implementation.SCCA32CRPs;
 using CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals;
 using CalamityOverhaul.Content.Cyberwares.Implementation.SelfHealingSkelents;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -48,6 +49,29 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             => TryGetEntry(itemType, out VictorCatalogEntry entry)
                 ? entry.Price
                 : 0L;
+
+        /// <summary>基础价 × 幸福度系数（原版已 clamp 0.75~1.5），双端同式换算</summary>
+        internal static long ApplyMoodAdjustment(long basePrice, double adjustment) {
+            if (basePrice <= 0L) {
+                return basePrice;
+            }
+            long adjusted = (long)Math.Round(basePrice * adjustment);
+            return Math.Clamp(adjusted, 1L, MaxPrice);
+        }
+
+        /// <summary>权威端取价（服务端/单机），按请求玩家与被交互 Victor 的实时心情换算</summary>
+        internal static long GetAuthorityPrice(int itemType, Player player, NPC victor) {
+            long basePrice = GetPrice(itemType);
+            if (basePrice <= 0L || player?.active != true || victor?.active != true) {
+                return basePrice;
+            }
+            return ApplyMoodAdjustment(basePrice,
+                Main.ShopHelper.GetShoppingSettings(player, victor).PriceAdjustment);
+        }
+
+        /// <summary>本地展示价，走 <see cref="VictorMood"/> 缓存；与权威价偶发不一致时以服务端扣款为准</summary>
+        internal static long GetDisplayPrice(int itemType)
+            => ApplyMoodAdjustment(GetPrice(itemType), VictorMood.PriceAdjustment);
 
         internal static void Reset() {
             entriesByType = null;

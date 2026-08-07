@@ -10,7 +10,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
 {
     /// <summary>
-    /// 阴幕强度控制器：取本地视野内所有鬼雨控制器的包络峰值，纯本地演出量。
+    /// 阴幕强度控制器：取本地视野内所有鬼雨控制器的包络峰值，纯本地演出量。<br/>
+    /// 鬼雨世界（<see cref="Scenarios.OniRainWorlds.OniRainWorldState"/>）也从这里喂强度，复用同一套天幕/滤镜/压顶。
     /// </summary>
     internal static class GhostRainAmbience
     {
@@ -25,7 +26,7 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
                 Intensity = 0f;
                 return;
             }
-            float target = 0f;
+            float target = Scenarios.OniRainWorlds.OniRainWorldState.GlobalAmbientTarget;
             int type = ModContent.ProjectileType<GhostRainProj>();
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile projectile = Main.projectile[i];

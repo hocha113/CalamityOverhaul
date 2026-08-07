@@ -37,6 +37,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
         public static LocalizedText TitleText { get; private set; }
         public static LocalizedText StatusText { get; private set; }
         public static LocalizedText GuideText { get; private set; }
+        public static LocalizedText PriceFactorText { get; private set; }
+        public static LocalizedText SlotFallbackText { get; private set; }
         private static LocalizedText slotSelectedText;
         private static LocalizedText slotEmptyText;
         private static LocalizedText[] slotLabels;
@@ -46,6 +48,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             TitleText = this.GetLocalization(nameof(TitleText), () => "VICTOR'S CLINIC");
             StatusText = this.GetLocalization(nameof(StatusText), () => "RIPPERDOC ONLINE - SELECT A LIMB");
             GuideText = this.GetLocalization(nameof(GuideText), () => "Select a body part to view, swap and buy its cyberware.");
+            PriceFactorText = this.GetLocalization(nameof(PriceFactorText), () => "MOOD PRICE x{0}");
+            SlotFallbackText = this.GetLocalization(nameof(SlotFallbackText), () => "CYBERWARE");
 
             //槽位文案复用 CyberwareUI 翻译
             slotSelectedText = Language.GetText("Mods.CalamityOverhaul.UI.CyberwareUI.SlotSelectedText");
@@ -70,7 +74,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             if (slotIndex >= 0 && slotIndex < slotLabelCache.Length && slotLabelCache[slotIndex] != null) {
                 return slotLabelCache[slotIndex];
             }
-            return "CYBERWARE";
+            //淡出阶段 boundSlot 已解绑时的兜底标题
+            return SlotFallbackText?.Value ?? "CYBERWARE";
         }
 
         #endregion

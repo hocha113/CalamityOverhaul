@@ -1012,3 +1012,10 @@ EternalBlazingNowNoHelen: {
 	Line9: Cuando mi conciencia se disipe, el mundo entero arderá.
 	Line10: Además, si quieres acabar con esta era, un cuerpo mortal es demasiado frágil.
 }
+
+OniRainWorld: {
+	OniRainWorldSystem: {
+		// InteractHint: "[Right Click] Step beneath the umbrella"
+		// EnterText: Ghost Rain World
+	}
+}

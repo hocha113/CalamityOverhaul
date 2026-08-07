@@ -48,6 +48,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
 
         /// <summary>成功生成传送门返回 true（进长冷却）</summary>
         public bool TryScheduleSpawn() {
+            //传送门只负责首次登场，之后重生交给原版住房系统
+            if (VictorWorldState.HasArrived) return false;
             if (Main.dayTime) return false;
             if (CWRWorld.HasBoss) return false;
             int victorType = ModContent.NPCType<Victor>();

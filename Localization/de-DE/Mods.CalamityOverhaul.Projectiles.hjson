@@ -114,8 +114,8 @@ SpwanTextProj.DisplayName: Manifestierender Text
 DragonsWordCut.DisplayName: Drachenwort-Schnitt
 DragonsWordMouse.DisplayName: Drachenwort
 DragonsWordProj.DisplayName: Drachenwort
-NeutronMagchStar.DisplayName: Neutronenstern
-NeutronWandExplode.DisplayName: Neutronenstab-Explosion
+// NeutronPulsar.DisplayName: Pulsar
+// NeutronStarquake.DisplayName: Starquake
 DivineSourceWaveProjectile.DisplayName: Göttliche Quellsichelwelle
 DivineSourceHitFXProjectile.DisplayName: Göttlicher Quelltreffer
 DragonsScaleGreatswordBeam.DisplayName: Drachentang-Großklingenstrahl

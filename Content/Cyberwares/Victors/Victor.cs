@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.Personalities;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -41,6 +42,23 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                 Direction = 1,
             };
             NPCID.Sets.NPCBestiaryDrawOffset.TryAdd(Type, drawModifiers);
+
+            //好感度：地下黑诊所出身，低温利于存件；潮气与盐雾锈蚀电路
+            NPC.Happiness
+                .SetBiomeAffection<UndergroundBiome>(AffectionLevel.Love)
+                .SetBiomeAffection<SnowBiome>(AffectionLevel.Like)
+                .SetBiomeAffection<JungleBiome>(AffectionLevel.Dislike)
+                .SetBiomeAffection<OceanBiome>(AffectionLevel.Hate)
+                //机械师是同好，蒸汽朋克人供零件；护士是同行竞争，爆破专家毁他的精细活
+                .SetNPCAffection(NPCID.Mechanic, AffectionLevel.Love)
+                .SetNPCAffection(NPCID.Steampunker, AffectionLevel.Like)
+                .SetNPCAffection(NPCID.Nurse, AffectionLevel.Dislike)
+                .SetNPCAffection(NPCID.Demolitionist, AffectionLevel.Hate);
+
+            //反向注册，让镇民也对他有态度（赛博格视他为再造恩人）
+            NPCHappiness.Get(NPCID.Cyborg).SetNPCAffection<Victor>(AffectionLevel.Love);
+            NPCHappiness.Get(NPCID.Mechanic).SetNPCAffection<Victor>(AffectionLevel.Like);
+            NPCHappiness.Get(NPCID.Nurse).SetNPCAffection<Victor>(AffectionLevel.Dislike);
         }
 
         public override void SetDefaults() {
@@ -64,8 +82,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             ]);
         }
 
-        /// <summary>禁用原版 spawn，改走 <see cref="VictorPortalSpawner"/></summary>
-        public override bool CanTownNPCSpawn(int numTownNPCs) => false;
+        /// <summary>
+        /// 首次登场走 <see cref="VictorPortalSpawner"/> 的传送门；
+        /// 登场过后视作正常城镇 NPC，死后由原版住房系统重生
+        /// </summary>
+        public override bool CanTownNPCSpawn(int numTownNPCs) => VictorWorldState.HasArrived;
 
         public override List<string> SetNPCNameList() => [
             Language.GetTextValue("Mods.CalamityOverhaul.NPCs.Victor.Name0"),
@@ -137,7 +158,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                 return;
             }
 
-            Player local = NPC.Center.FindClosestPlayer();
+            //交互判定只关心本地玩家；FindClosestPlayer 在多人下会拿到别人的状态
+            Player local = Main.LocalPlayer;
             if (!local.Alives()) {
                 if (VictorTalkUI.Instance.IsOpen) {
                     VictorTalkUI.Instance.Close();
@@ -172,6 +194,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                 Main.mouseRightRelease = false;
                 if (!VictorClinicUI.Instance.IsOpen && !VictorSurgery.Active) {
                     VictorSession.Bind(NPC.whoAmI);
+                    //城镇 NPC 图鉴只认交谈记录，登记前先记下是否初见供台词分桶
+                    VictorDialogue.NoteFirstMeet(!VictorBestiary.HasMet(NPC));
+                    VictorBestiary.RegisterMet(NPC);
                     if (VictorTalkUI.Instance.IsOpen) {
                         VictorTalkUI.Instance.Close();//OpenSound 已播，勿叠
                     }

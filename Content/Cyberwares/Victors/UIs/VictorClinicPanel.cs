@@ -384,6 +384,16 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             Utils.DrawBorderString(sb, title, new Microsoft.Xna.Framework.Vector2(panelRect.X + PanelPadding + 12, panelRect.Y + 8),
                 CyberwareTheme.Accent * alpha, 0.72f * CyberwareTheme.FontScale);
 
+            //幸福度价格系数徽标，低于 1 青色、高于 1 红色
+            double factor = VictorMood.PriceAdjustment;
+            string factorText = VictorClinicUI.PriceFactorText.Format(factor.ToString("0.00"));
+            Color factorColor = factor < 0.995 ? CyberwareTheme.AccentCyan
+                : factor > 1.005 ? CyberwareTheme.Accent : CyberwareTheme.TextDim;
+            float factorScale = 0.42f * CyberwareTheme.FontScale;
+            float factorW = FontAssets.MouseText.Value.MeasureString(factorText).X * factorScale;
+            Utils.DrawBorderString(sb, factorText, new Microsoft.Xna.Framework.Vector2(panelRect.Right - PanelPadding - factorW, panelRect.Y + 10),
+                factorColor * alpha, factorScale);
+
             VictorUIStyle.DrawPrice(sb, new Microsoft.Xna.Framework.Vector2(panelRect.Right - PanelPadding, panelRect.Y + 32),
                 VictorUIStyle.CountCoins(Main.LocalPlayer), alpha, 0.44f * CyberwareTheme.FontScale, rightAlign: true);
         }
@@ -502,7 +512,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
         }
 
         private void DrawShopRow(SpriteBatch sb, Rectangle rect, int type, float hv, float alpha, long balance) {
-            long price = VictorCatalog.GetPrice(type);
+            //展示价含幸福度系数，实际扣款以权威端换算为准
+            long price = VictorCatalog.GetDisplayPrice(type);
             bool affordable = price <= 0 || balance >= price;
             Color accent = CyberwareTheme.AccentGold;
             int slide = VictorUIStyle.DrawCommandRow(sb, rect, accent, hv, alpha);

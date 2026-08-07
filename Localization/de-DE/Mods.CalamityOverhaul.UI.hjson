@@ -485,6 +485,47 @@ VictorTalkUI: {
 	Greet9: Zeit ist Geld. Meins, genauer gesagt. Sag mir, was du brauchst, und spare dir das Geplauder.
 	Greet10: Neue Teile brauchen eine Einfahrzeit. Versuche, ein paar Tage keinem schweren Beschuss ausgesetzt zu sein.
 	Greet11: Der Körper ist nur ein Werkzeug. Deiner sieht aus, als hätte er lange keine Wartung mehr gehabt.
+	// TalkFirstMeet0: A new face. Let me guess - you're not here for a doctor, you're here for a miracle. Sit down, I sell both.
+	// TalkFirstMeet1: Welcome, customer. Three house rules: no credit, no questions about your past, and no critiquing my work.
+	// TalkPostSurgery0: The sutures are still warm. Don't block any blades with the new parts for twenty-four hours.
+	// TalkPostSurgery1: The surgery went perfectly. Of course, mine always do.
+	// TalkPostSurgery2: How does it feel? Any rattling, current leaks or phantom pain, come straight back - repairs cost extra.
+	// TalkMoodHomeless0: Until you people clear out a clinic room for me, the prices include an open-air operating fee.
+	// TalkMoodHomeless1: I can't do precision work with the table strapped to my back. Get me a house and we can talk prices.
+	// TalkMoodHappy0: I'm in a good mood today, so I rounded your quote down. Keep it to yourself.
+	// TalkMoodHappy1: I like this place. Enough to give you a discount, even.
+	// TalkMoodGrumpy0: Don't complain about the prices. Move me somewhere agreeable and they'll drop on their own.
+	// TalkMoodGrumpy1: Bad mood, unsteady scalpel. The risk surcharge is in the bill - and it's your fault.
+	// TalkNoChrome0: A fully original body... rare. Like an old machine that has never had a firmware update.
+	// TalkNoChrome1: Not a single implant? Are you here to browse, or to feel nostalgic?
+	// TalkFullChrome0: There's more chrome than flesh on you. Even your footsteps sound like my cash register.
+	// TalkFullChrome1: Your capacity is almost full, customer. Install any more and you'll need a power upgrade first.
+	// TalkLowHealth0: You're bleeding. Sit down first - customers dying in my doorway is bad for business.
+	// TalkLowHealth1: That blood pressure is setting off alarms. Wounds first, invoice later.
+	// TalkRich0: I smell platinum. What are we replacing today? A full set works too.
+	// TalkPoor0: Pockets cleaner than my sterile tray? Go earn some coin first - cyberware doesn't come on credit.
+	// TalkPoor1: No money? No matter. Sell some loot and come back - we're open all night.
+	// TalkSandevistan0: Is the Sandevistan running smooth? Don't get greedy with it - fried nerves bill as a full rebuild.
+	// TalkPreHardmode0: This world's technology is still wood and stone. Good thing I brought my own tools.
+	// TalkPreHardmode1: Upgrade the body before the calamity upgrades itself. That advice was free.
+	// TalkHardmode0: Business tripled since the world cracked open. Light and blight chew through flesh all the same.
+	// TalkHardmode1: The new monsters out there tear people apart fast. Can your reflexes keep up? If not, I have stock.
+	// TalkPostMoonlord0: Even the Moon Lord went down. Seems some of my customers really are monsters.
+	// TalkPostMoonlord1: A god's remains make excellent material. If you picked any up, save me a share.
+	// TalkPostSupCal0: You beat the Calamity herself and still keep this much flesh. I'm starting to think my chrome is just jewelry to you.
+	// TalkBloodMoon0: A blood moon? Just an overtime shift for me. There'll be a queue of severed limbs at the door soon.
+	// TalkBloodMoon1: Stay away from the doorway tonight. Under a blood moon even the rabbits want a bite of you.
+	// TalkEclipse0: Only hard cases go out during an eclipse. Be well-equipped or be fast.
+	// TalkRain0: Oil your exposed joints in the rain. I've fixed too many rusted elbows.
+	// TalkRain1: Rain. Humidity is bad for circuits and good for business.
+	// TalkDeepNight0: Still awake at this hour? Fair enough - cybereyes don't need to close.
+	// TalkDeepNight1: Deep night is my favorite business hour. Quiet, and the customers are always in a hurry.
+	// TalkUnderground0: The underground is good. Stable temperature, stable humidity, no signal, no interruptions mid-surgery.
+	// TalkUnderground1: My first clinic was underground too. The customers feared daylight just like these ones.
+	// TalkSnow0: Cold is good. Parts don't overheat, and the bodies - I mean the stock - keep longer.
+	// TalkJungle0: Jungle damp gets into sealed casings within three days. Book a maintenance check when you leave.
+	// TalkBeach0: The coast? Salt spray is the number one killer of cyberware. I'd advise against settling here.
+	// TalkEvil0: This land is corroding your parts and you alike. I can only fix one of the two.
 	ClinicButtonText: Cyberware-Klinik
 	ChatButtonText: Plaudern
 	LeaveButtonText: Verlassen
@@ -498,7 +539,11 @@ VictorClinicUI: {
 	LabelForSale: ZUM VERKAUF
 	EmptyOwned: ( nichts im Rucksack )
 	EmptyShop: ( nichts mehr im Angebot )
+	// PriceFactorText: MOOD PRICE x{0}
+	// SlotFallbackText: CYBERWARE
 }
+
+// VictorSurgery.SurgeryInProgressText: SURGERY IN PROGRESS
 
 EntrustManagerNotification: {
 	LabelNewQuest: Neuer Auftrag
