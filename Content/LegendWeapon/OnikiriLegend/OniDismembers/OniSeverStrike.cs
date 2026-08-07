@@ -92,6 +92,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         private float authorityCutAngle;
         private float authorityScale = 1f;
         private int authorityPointTravel;
+        //原版同步包把 Projectile.damage 截成 short，比对得用自己留的完整值，否则大数伤害必然误判
+        private int authorityDamage;
+        private float authorityKnockback;
         private int pointResolveAt = int.MaxValue;
         private int groupActivationTimer;
         private int receivedGroupElapsed;
@@ -400,7 +403,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 return;
             }
             if (!authorityAccepted) {
-                bladePose.Opacity = 0f;
+                UpdatePendingPresentation();
                 return;
             }
 
@@ -412,6 +415,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 UpdateAuthority();
             }
             ApplyReplicatedStages();
+            UpdatePresentationSounds();
+            UpdatePose();
+        }
+
+        /// <summary>
+        /// 批复要跑一个来回，持有者本地先把蓄势与拔刀闪演出来，停在落刀帧等回信；
+        /// 批复落地时 timer 取两端较大值，姿态不会倒退。其余端在批复前不该有任何表现。
+        /// </summary>
+        private void UpdatePendingPresentation() {
+            if (Main.netMode != NetmodeID.MultiplayerClient
+                || Projectile.owner != Main.myPlayer || !requestInitialized) {
+                bladePose.Opacity = 0f;
+                return;
+            }
+
+            timer = Math.Min(timer + 1, StrikeFrame);
+            InitializePresentation();
             UpdatePresentationSounds();
             UpdatePose();
         }
@@ -441,6 +461,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             float knockback = Owner.GetWeaponKnockback(weapon);
             Projectile.knockBack = float.IsFinite(knockback)
                 ? MathHelper.Clamp(knockback, 0f, MaxKnockback) : 0f;
+            authorityDamage = Projectile.damage;
+            authorityKnockback = Projectile.knockBack;
             if (requestPointMode) {
                 float distance = Vector2.Distance(authorityAnchorCenter,
                     target.Center);
@@ -597,8 +619,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
             struck = true;
             RegisterGroupActivation(in stroke, OniFinaleCut.HoldFrames);
-            OniFinaleCut.Fire(Owner, target.Center, CutAngle, Projectile.damage,
-                Projectile.knockBack, SizeMul, Projectile.GetSource_FromAI());
+            SyncFromServer(OniFinaleCut.Fire(Owner, target.Center, CutAngle,
+                Projectile.damage, Projectile.knockBack, SizeMul,
+                Projectile.GetSource_FromAI()));
             if (Main.netMode == NetmodeID.SinglePlayer) {
                 FireTutorialEvent(target);
             }
@@ -853,8 +876,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                     || MathF.Abs(MathHelper.WrapAngle(angle
                         - authorityCutAngle)) > 1e-5f
                     || MathF.Abs(scale - authorityScale) > 1e-5f
-                    || damage != Projectile.damage
-                    || MathF.Abs(knockback - Projectile.knockBack) > 1e-5f
+                    || damage != authorityDamage
+                    || MathF.Abs(knockback - authorityKnockback) > 1e-5f
                     || pointTravel != authorityPointTravel
                     || groupActivated
                         && (groupElapsed < receivedGroupElapsed
@@ -887,6 +910,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             authorityCutAngle = MathHelper.WrapAngle(angle);
             authorityScale = scale;
             authorityPointTravel = pointTravel;
+            authorityDamage = damage;
+            authorityKnockback = knockback;
             receivedGroupElapsed = groupElapsed;
             timer = Math.Max(timer, incomingTimer);
             struck = incomingStruck;
@@ -953,6 +978,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 : authorityTargetIdentity.Index;
             Projectile.ai[1] = authorityCutAngle;
             Projectile.ai[2] = authorityScale;
+            //每个同步包都会把伤害截回 short，逐帧按权威值复原，两端才对得上
+            Projectile.damage = authorityDamage;
+            Projectile.knockBack = authorityKnockback;
             if (PointMode) {
                 Projectile.Center = authorityAnchorCenter;
             }
@@ -997,8 +1025,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             if (authorityRevision == 0) {
                 authorityRevision = 1;
             }
-            if (Main.netMode == NetmodeID.Server) {
-                Projectile.netUpdate = true;
+            SyncFromServer(Projectile);
+        }
+
+        /// <summary>
+        /// 服务器不是这颗弹幕的持有者，原版只让 owner == Main.myPlayer 的一端消费 netUpdate，
+        /// 服务端置位等于石沉大海（同理，服务端代持有者生成的弹幕也不会自动下发）。
+        /// 权威推进与代生成都得自己补发同步包，否则客户端永远停在"未批复"。
+        /// </summary>
+        private static void SyncFromServer(Projectile projectile) {
+            if (Main.netMode == NetmodeID.Server && projectile?.active == true) {
+                NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null,
+                    projectile.whoAmI);
             }
         }
 

@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
@@ -202,11 +203,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
         private static readonly List<int> reimprintPrune = [];
         private static int nextEntryId = 1;
 
-        void ICWRLoader.UnLoadData() {
-            Entries.Clear();
-            Pulses.Clear();
-            Main.QueueMainThreadAction(DisposeAllSnaps);
-        }
+        void ICWRLoader.UnLoadData() => Clear();
 
         /// <summary>在 npc 当前位置挂一幅面影（快照捕获由渲染线程随后完成）；任意存活 NPC 均可，不分敌我</summary>
         public static bool Imprint(NPC npc) {
@@ -420,7 +417,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             Pulses.RemoveAll(pulse => pulse.NpcIndex == npcIndex);
             reimprintTimers.Remove(npcIndex);
             if (Snaps.Remove(npcIndex, out OmokageSnap snap)) {
-                snap.RT?.Dispose();
+                snap.RT.SafeDispose();
             }
         }
 
@@ -908,7 +905,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
                 && snap.NpcType == npc.type && snap.NpcSpawnToken == spawnToken) {
                 return snap;
             }
-            snap?.RT?.Dispose();
+            snap?.RT.SafeDispose();
 
             snap = new OmokageSnap {
                 NpcType = npc.type,
@@ -980,7 +977,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 
         internal static void DisposeAllSnaps() {
             foreach (OmokageSnap snap in Snaps.Values) {
-                snap.RT?.Dispose();
+                snap.RT.SafeDispose();
             }
             Snaps.Clear();
         }

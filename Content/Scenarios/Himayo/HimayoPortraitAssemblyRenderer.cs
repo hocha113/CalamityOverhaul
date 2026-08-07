@@ -614,9 +614,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
         }
 
         private void DisposeTargets() {
-            portraitTarget?.Dispose();
-            maskTargetA?.Dispose();
-            maskTargetB?.Dispose();
+            portraitTarget.SafeDispose();
+            maskTargetA.SafeDispose();
+            maskTargetB.SafeDispose();
             portraitTarget = null;
             maskTargetA = null;
             maskTargetB = null;

@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
         void ICWRLoader.UnLoadData() {
             Entries.Clear();
-            Main.QueueMainThreadAction(DisposeAllSnapshots);
+            DisposeAllSnapshots();
         }
 
         /// <summary>该玩家是否处于反噬僵直（锁操控、隐本体、禁再肢解）</summary>
@@ -319,7 +319,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
         internal static void DisposeAllSnapshots() {
             foreach (RenderTarget2D rt in SnapRTs.Values) {
-                rt?.Dispose();
+                rt.SafeDispose();
             }
             SnapRTs.Clear();
         }

@@ -429,6 +429,22 @@ namespace CalamityOverhaul
                 , immediateLoad ? AssetRequestMode.ImmediateLoad : AssetRequestMode.AsyncLoad);
         }
 
+        /// <summary>
+        /// 释放显存资源。FNA3D 只接受主线程销毁 GPU 对象，而 <see cref="Terraria.ModLoader.ModSystem.ClearWorld"/>、
+        /// <see cref="Terraria.ModLoader.ModSystem.OnWorldUnload"/> 与模组卸载都可能跑在别的线程上，
+        /// 那些路径直接 Dispose 会抛 ThreadStateException 把创建世界打断。非主线程时推迟到下一帧主线程执行
+        /// </summary>
+        public static void SafeDispose(this GraphicsResource resource) {
+            if (resource == null || resource.IsDisposed) {
+                return;
+            }
+            if (Program.IsMainThread) {
+                resource.Dispose();
+                return;
+            }
+            Main.QueueMainThreadAction(resource.Dispose);
+        }
+
         #endregion
     }
 }

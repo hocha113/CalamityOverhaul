@@ -151,7 +151,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             Clear();
             MaxCuts = DefaultMaxCuts;
             MaxPieces = DefaultMaxPieces;
-            Main.QueueMainThreadAction(DisposeAllSnapshots);
         }
 
         /// <summary>肢解目标、切线过 npc.Center，角度为世界空间弧度</summary>
@@ -335,7 +334,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
             lockEntries.RemoveAll(entry => entry.NpcIndex == npcIndex);
             if (SnapRTs.Remove(npcIndex, out RenderTarget2D snapshot)) {
-                snapshot?.Dispose();
+                snapshot.SafeDispose();
             }
         }
 
@@ -359,6 +358,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             Entries.Clear();
             lockEntries.Clear();
             groupScratch.Clear();
+            DisposeAllSnapshots();
         }
 
         internal static DismemberEntry GetEntry(int npcIndex) {
@@ -793,7 +793,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
         internal static void DisposeAllSnapshots() {
             foreach (RenderTarget2D rt in SnapRTs.Values) {
-                rt?.Dispose();
+                rt.SafeDispose();
             }
             SnapRTs.Clear();
         }
