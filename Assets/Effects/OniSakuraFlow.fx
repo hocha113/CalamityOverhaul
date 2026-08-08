@@ -1,22 +1,24 @@
 // ============================================================================
-//OniSakuraFlow.fx 鬼切樱流（花吹雪的流路 + 花核瓣盘）
+//OniSakuraFlow.fx 鬼切樱流（花吹雪的流路 + 螺旋花涡）
 //
 //TechStream 航线三角带：uv.x=u 沿航线 0=尾 1=头(花核)，uv.y 横向 0..1
 //  与神威流带(OniKamuiFlow)的分野：那条是墨绸——连续绸面、撕裂舌、暗涡压近黑、
-//  蒸发烧蚀橙边。这条是"很多瓣挤在同一条流里"，四条签名行为：
+//  蒸发烧蚀橙边。这条是"很多瓣挤在同一条流里"，五条签名行为：
 //   1) 带内是瓣粒密度场：高频噪声过阈值切成离散团块，沿流向低频横向高频
 //      → 团块被速度抹成条，团块之间留孔，读得出"粒"不是"绸"；
-//   2) 边界不撕裂，是瓣粒剥落：近边处直接乘密度场，尾段咬到断成分离小块；
-//   3) 稀薄处压透明而非压黑（瓣是半透的，墨才是黑的）；
-//   4) uRetract 回卷自尾端推进，前沿是褪色发白的边（瓣被召回，不是被烧掉）。
+//   2) 花瓣是一阵一阵的：沿带低频 gust 涌动把密度攒成团──不是匀质软管；
+//   3) 边界不撕裂，是瓣粒剥落：近边处直接乘密度场，尾段咬到断成分离小块；
+//   4) 稀薄处压透明而非压黑；亮来自密度与稀疏瓣面反光斑，不来自白热
+//      （尾暗→白热的能量拖尾腔是刀/激光的语法，瓣不发热）；
+//   5) uRetract 回卷自尾端推进，前沿是褪色发白的边（瓣被召回，不是被烧掉）。
 //
-//TechCoreBloom 花核 quad：五瓣樱 rosette = 五枚瓣面 SDF 绕心 72° 取并集。
-//  瓣面形体复刻 OniDomainDeco.PSPetal（同族的瓣，不另发明形状）。
-//  刻意不走极角：五瓣靠笛卡尔旋转排布，无 atan2 消费链。
-//  uAxis/uStretch 沿运动轴拉长形体（各向异性），拖影由 C# 多画一遍偏移 quad 承担，
-//  不在着色器里叠第二次 rosette——省指令槽，也避免 FNA3D 翻译过深内联。
+//TechCoreBloom 花核 quad：螺旋花涡——被攥紧的一团花吹雪，不是盖章的樱花图案。
+//  三条螺旋臂向心卷入，臂身由瓣粒组成（瓣粒噪声走刚体旋转坐标，双速率视差），
+//  心口攥成近实的樱色，外缘被瓣粒咬开。
+//  极角审计：theta 的唯一消费是 sin(3θ - k·logR + spin)，3∈ℤ 跨 ±π 连续（安全表
+//  "sin(armN·m·φ), m∈ℤ"行）；logR 单调连续；噪声全走 Rot(t)·(x,y) 刚体旋转，无缝。
+//  uAxis/uStretch 沿运动轴拉长形体，拖影由 C# 多画一遍偏移 quad 承担。
 //
-//两技术的噪声坐标全由 (s, cy) / (x, y) 笛卡尔构成——极角审计合规。
 //直线算术 + 纯 tex2D，无动态分支、无 tex2Dlod。预乘输出，配 AlphaBlend。
 //ps_3_0 / vs_3_0
 // ============================================================================
@@ -129,64 +131,51 @@ float4 PSStream(PSInput input) : COLOR0
     //---- 尾端羽化（头端交给收束尖，不平切）----
     float capA = smoothstep(0.0, 0.050, u);
 
-    //---- alpha：稀薄处压透明，不压黑 ----
+    //---- gust 涌动：花瓣一阵一阵地来，头段豁免（插核那截要稳） ----
+    //波长约 170px(s 系数 9)，相位随时间缓移；各股共享 s，仅 uSeed 差出松散感
+    float gust = 0.70 + 0.40 * sin(s * 9.0 - uTime * 5.0 + uSeed * 0.9);
+    gust = lerp(saturate(gust), 1.0, smoothstep(0.72, 0.94, u));
+
+    //---- alpha：稀薄处压透明，不压黑；亮度交给密度 ----
     float body = saturate(0.18 + flow * 0.92);
-    float alpha = aEdge * capA * survive * body * grainMask;
+    float alpha = aEdge * capA * survive * body * grainMask * gust;
     alpha = saturate(alpha * lerp(1.0, 1.30, saturate(uFlash))) * uOpacity;
     if (alpha < 0.004 && recall < 0.05)
         return float4(0, 0, 0, 0);
 
-    //---- 色带：尾 墨绯 → 深绯 → 亮樱 → 头 瓣白 ----
+    //---- 色带：尾 墨绯 → 深绯 → 亮樱 → 头微微泛白。终端白化压到 0.45：
+    //瓣不发热，头端的"亮"主要由密度(alpha)与花核自己扛 ----
     float heat = saturate(pow(u, 1.45));
     float3 col = lerp(uColDark, uColDeep, smoothstep(0.0, 0.42, heat));
     col = lerp(col, uColBright, smoothstep(0.42, 0.84, heat));
-    col = lerp(col, uColHot, smoothstep(0.84, 1.0, heat) * 0.90);
+    col = lerp(col, uColHot, smoothstep(0.84, 1.0, heat) * 0.45);
 
     //中段注一点和纸黄，别让整条都是纯樱（表世界的底色透出来）
     float washiBand = smoothstep(0.08, 0.42, u) * (1.0 - smoothstep(0.60, 0.94, u));
     col = lerp(col, col * uColWashi, washiBand * (0.18 + 0.28 * n1));
 
-    //瓣缘亮丝：团块高值边拉出白粉细线
-    float rim = smoothstep(0.62, 0.96, grain) * clump;
-    col += uColHot * rim * (0.28 + heat * 0.52) * 0.55;
+    //瓣面反光斑：只挑噪声峰值，稀疏的亮斑在流里闪——不是整片 sheen
+    float glint = smoothstep(0.78, 0.96, grain) * clump;
+    col += uColHot * glint * (0.34 + heat * 0.46) * 0.75;
 
-    //头端瓣白中脊：只属头段，宽度随收束聚拢——流路插进花核的那一截
+    //头端中脊压暗压窄：只作"流路插进花核"的一点余温，白热常驻是能量腔
     float coreW = 0.26 * max(taper, 0.08);
     float ridge = exp(-pow(cy / coreW, 2.0)) * smoothstep(0.42, 0.95, u) * uHeadBoost;
     ridge *= 1.0 + (1.0 - taper) * 0.70;
-    col += uColHot * ridge * 1.25;
+    col += (uColHot * 0.55 + uColBright * 0.45) * ridge * 0.62;
 
     //召回前沿：褪色发白
     col += uColHot * recall * 1.55;
     //全形白闪：提亮一拍而非擦掉重画
     col = lerp(col, col + uColHot * 0.50, saturate(uFlash));
 
-    //预乘输出 + 中脊/白闪的加色余量
-    float3 extra = uColHot * (ridge * 0.30 + saturate(uFlash) * 0.10) * capA * survive * uOpacity;
+    //预乘输出 + 白闪的加色余量（中脊的加色份额压到 0.12，防头部亮度堆积）
+    float3 extra = uColHot * (ridge * 0.12 + saturate(uFlash) * 0.10) * capA * survive * uOpacity;
     return float4(col * alpha + extra, alpha);
 }
 
-//单枚瓣面：竖轴泪滴 + 顶端凹口。x=覆盖 y=内芯（内芯用于取瓣缘环，省一次求值）
-float2 PetalField(float2 p, float aa)
-{
-    float tp = 1.0 - smoothstep(0.0, 1.0, -p.y) * 0.34;
-    float body = (p.x * p.x) / (0.46 * 0.46 * tp * tp) + (p.y * p.y) / (0.94 * 0.94);
-    float2 dn = p - float2(0.0, 1.00);
-    float notch = smoothstep(0.22, 0.31, length(dn));
-    float cov = (1.0 - smoothstep(1.0 - aa, 1.0 + aa, body)) * notch;
-    float inner = (1.0 - smoothstep(0.50, 0.82, body)) * notch;
-    return float2(cov, inner);
-}
-
-//把 p 转到第 i 枚瓣的局部系：绕心旋转 → 横向压窄 → 根收进心、尖朝外
-float2 RosLocal(float2 p, float ang)
-{
-    float c = cos(ang);
-    float sn = sin(ang);
-    float2 q = float2(p.x * c - p.y * sn, p.x * sn + p.y * c);
-    return float2(q.x * 1.30, q.y * 1.72 - 0.75);
-}
-
+//螺旋花涡：三条瓣粒臂向心卷入 + 近实心口 + 瓣粒咬边。
+//"被攥紧的一团花吹雪"——不对称、有进动，不是居中自转的樱花图案
 float4 PSCoreBloom(PSInput input) : COLOR0
 {
     float2 p = (input.TexCoords - 0.5) * 2.0;
@@ -197,35 +186,47 @@ float4 PSCoreBloom(PSInput input) : COLOR0
     float along = dot(p, ax);
     float across = dot(p, nx) * uStretch;
     float2 ps = ax * along + nx * across;
+    float r = length(ps);
 
-    float aa = 0.09;
-    float2 f = PetalField(RosLocal(ps, uSpin), aa);
-    f = max(f, PetalField(RosLocal(ps, uSpin + 1.2566371), aa));
-    f = max(f, PetalField(RosLocal(ps, uSpin + 2.5132741), aa));
-    f = max(f, PetalField(RosLocal(ps, uSpin + 3.7699112), aa));
-    f = max(f, PetalField(RosLocal(ps, uSpin + 5.0265482), aa));
+    //瓣粒噪声：刚体旋转坐标（无缝），双速率两层 → 涡内自带视差
+    float ca = cos(uSpin);
+    float sa = sin(uSpin);
+    float2 pr1 = float2(ps.x * ca + ps.y * sa, -ps.x * sa + ps.y * ca);
+    float cb = cos(uSpin * 0.55);
+    float sb = sin(uSpin * 0.55);
+    float2 pr2 = float2(ps.x * cb + ps.y * sb, -ps.x * sb + ps.y * cb);
+    float g1 = tex2D(noiseSamp, pr1 * 0.60 + uSeed).r;
+    float g2 = tex2D(noiseSamp, pr2 * 1.30 + uSeed * 1.7 + 0.31).r;
+    float grain = g1 * 0.58 + g2 * 0.42;
+    float clump = smoothstep(0.34, 0.66, grain);
 
-    float cov = f.x;
-    float alpha = cov * input.Color.a * uOpacity;
+    //螺旋臂：theta 只进 sin(3θ-…)，3∈ℤ 跨 ±π 连续；臂随 uSpin 进动
+    float theta = atan2(ps.y, ps.x);
+    float logR = log(r * 2.6 + 1.0);
+    float arm = 0.5 + 0.5 * sin(3.0 * theta - logR * 5.2 + uSpin * 2.4);
+    float armMask = smoothstep(0.18, 0.80, arm);
+
+    //心口近实、外缘被瓣粒咬开
+    float heart = smoothstep(0.34, 0.10, r);
+    float edgeR = 0.96 - 0.16 * grain;
+    float bodyA = smoothstep(edgeR, edgeR - 0.34, r);
+    float density = saturate(heart * (0.72 + 0.28 * clump)
+        + bodyA * armMask * (0.28 + 0.72 * clump) * (1.0 - heart));
+
+    float alpha = density * input.Color.a * uOpacity;
     if (alpha < 0.004)
         return float4(0, 0, 0, 0);
 
-    //瓣缘环：覆盖减内芯 → 每枚瓣的外沿一圈亮白
-    float rimRing = saturate(cov - f.y);
-    //瓣心：五瓣交叠处的热点，只在形体内部生效（不是裸光球）
-    float heart = exp(-dot(ps, ps) * 2.30) * f.y;
-    //瓣面呼吸：低频明暗让盘面不是死板一片
-    float breathe = 0.90 + 0.10 * sin(uTime * 3.10 + uSpin * 1.7);
+    //色由密度驱动：疏处深绯 → 密处樱 → 心口淡樱白；不做白热常驻，
+    //核的"亮"靠与流带/拖影的对比读出来，不靠把 RGB 顶到 1
+    float3 col = lerp(uColDeep, input.Color.rgb, saturate(density * 1.15));
+    col = lerp(col, float3(1.0, 0.93, 0.95), heart * uHeartHeat * 0.42);
+    //稀疏瓣面反光斑，涡身里的碎闪
+    float glint = smoothstep(0.80, 0.96, grain) * bodyA;
+    col += uColHot * glint * uBloom * 0.35;
 
-    float3 col = input.Color.rgb * breathe;
-    //瓣心只向淡樱白偏一点，不做加色提亮——暖材质禁常驻纯白心，
-    //核的"亮"靠与外盘/流带的对比读出来，不靠把 RGB 顶到 1
-    col = lerp(col, float3(1.0, 0.95, 0.96), saturate(heart * uHeartHeat * 0.35));
-    //瓣缘细环才用白热加色：那是线不是体，过曝一瞬可接受
-    col += uColHot * rimRing * uBloom * 0.55;
-
-    //加色余量只给瓣缘细环；瓣心的加色项会把中心顶回常驻白，禁
-    float3 extra = uColHot * rimRing * uBloom * 0.10 * input.Color.a * uOpacity;
+    //加色余量只给反光斑（点不是体）
+    float3 extra = uColHot * glint * uBloom * 0.08 * input.Color.a * uOpacity;
     return float4(col * alpha + extra, alpha);
 }
 

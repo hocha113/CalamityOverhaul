@@ -61,6 +61,8 @@ namespace CalamityOverhaul.Content.HackTimes
         private static readonly Queue<long> replicatedTombstoneOrder = [];
         private static bool updatingEffects;
         private static ulong lastUpdateFrame = ulong.MaxValue;
+        //时停/时缓闸门的跨帧累加器
+        private static float timeScaleCarry;
 
         void ICWRLoader.UnLoadData() => Reset();
 
@@ -267,6 +269,14 @@ namespace CalamityOverhaul.Content.HackTimes
             ulong frame = Main.GameUpdateCount;
             if (lastUpdateFrame == frame) return;
             lastUpdateFrame = frame;
+
+            //时停/时缓统一闸门：本帧无推进量则整表冻结，
+            //不 OnApply、不 OnTick、不推进计时、不结算到期。
+            //上传队列刻意不冻结，冻结中完成上传的效果挂起在此，
+            //解冻后第一个推进帧统一结算
+            if (TimeGear.PullFrameAdvance(ref timeScaleCarry) <= 0) {
+                return;
+            }
 
             if (Main.netMode == NetmodeID.MultiplayerClient) {
                 UpdateReplicatedList(activeEffects);
@@ -530,6 +540,7 @@ namespace CalamityOverhaul.Content.HackTimes
             replicatedTombstoneOrder.Clear();
             updatingEffects = false;
             lastUpdateFrame = ulong.MaxValue;
+            timeScaleCarry = 0f;
         }
 
         private static void AddEffect(ActiveHackEffect effect) {

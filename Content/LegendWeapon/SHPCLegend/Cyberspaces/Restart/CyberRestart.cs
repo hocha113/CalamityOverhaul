@@ -187,18 +187,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
                         ApplyRestoreEffects(owner);
                     }
                 }
-                if (state.ProgressTimer == PhaseSingularityEnd + 1
-                    && Main.netMode != NetmodeID.MultiplayerClient) {
-                    if (Main.netMode == NetmodeID.Server) {
-                        CyberspaceActionNet.SendRestartState(owner, state, true);
-                    }
-                    else {
-                        SpawnBurstVFX(owner, state.AnchorLayer);
-                    }
-                }
-
                 int advance = TimeGear.PullFrameAdvance(ref state.ProgressCarry);
+                int previousTimer = state.ProgressTimer;
                 state.ProgressTimer += advance;
+                //奇点爆发按本地计时跨越触发（SpawnBurstVFX 自带 myPlayer 门）。
+                //原先的服务器奇点广播是空包：revision 未变，收包侧不触发任何演出，
+                //反而让多人下施法者的爆发特效整体缺失
+                if (previousTimer <= PhaseSingularityEnd
+                    && state.ProgressTimer > PhaseSingularityEnd
+                    && Main.netMode != NetmodeID.Server) {
+                    SpawnBurstVFX(owner, state.AnchorLayer);
+                }
                 if (state.ProgressTimer > TotalFrames) {
                     state.ProgressTimer = 0;
                     state.ProgressCarry = 0f;

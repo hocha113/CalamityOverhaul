@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             if (moduleHover == SHPCModuleSelectPanel.HitKind.Unequip) {
                 Item taken = sp.TakeModule(pinnedModuleSlot);
                 if (taken != null && !taken.IsAir) {
-                    owner.QuickSpawnItem(owner.GetSource_Misc("SHPCModule"), taken, taken.stack);
+                    owner.GiveItem(owner.GetSource_Misc("SHPCModule"), taken);
                 }
                 return;
             }
@@ -267,7 +267,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                     }
                 }
                 if (swapped != null && !swapped.IsAir) {
-                    owner.QuickSpawnItem(owner.GetSource_Misc("SHPCModule"), swapped, swapped.stack);
+                    owner.GiveItem(owner.GetSource_Misc("SHPCModule"), swapped);
                 }
                 return;
             }

@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.RAMSystems
     {
         private static readonly List<IRamModifierProvider> providers = [];
         private static readonly HashSet<Type> failedProviderTypes = [];
+        private static ulong lastAuthorityUpdateFrame = ulong.MaxValue;
 
         public const int DefaultBaseMaxRam = 8;
         public const float DefaultBaseRecoveryRate = 0.1f;
@@ -270,15 +271,39 @@ namespace CalamityOverhaul.Content.RAMSystems
             }
         }
 
+        /// <summary>
+        /// 权威循环：驱动全部玩家的恢复/锁定/快照发送。
+        /// 由 <see cref="HackTime.PostUpdateEverything"/> 每帧调用，
+        /// 不挂在 ModPlayer.PostUpdate 上——死亡玩家的 Player.Update
+        /// 提前返回，会把恢复与锁倒计时一并冻住。
+        /// </summary>
         public static void Update() {
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                return;
+            }
+            ulong frame = Main.GameUpdateCount;
+            if (lastAuthorityUpdateFrame == frame) {
+                return;
+            }
+            lastAuthorityUpdateFrame = frame;
+
+            for (int i = 0; i < Main.maxPlayers; i++) {
+                Player player = Main.player[i];
+                if (player?.active != true) {
+                    continue;
+                }
+                player.GetModPlayer<RAMPlayer>().UpdateAuthorityTick();
+            }
         }
 
         public static void Reset() {
+            lastAuthorityUpdateFrame = ulong.MaxValue;
         }
 
         public static void UnloadReset() {
             providers.Clear();
             failedProviderTypes.Clear();
+            lastAuthorityUpdateFrame = ulong.MaxValue;
             RamNet.Reset();
         }
 

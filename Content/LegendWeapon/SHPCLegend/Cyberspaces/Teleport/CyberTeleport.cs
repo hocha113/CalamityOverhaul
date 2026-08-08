@@ -143,8 +143,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
                 NetMessage.SendData(MessageID.TeleportEntity, -1, -1, null,
                     0, owner.whoAmI, newPosition.X, newPosition.Y,
                     TeleportStyle);
+                //视觉坐标只对施法者有意义（收包侧 myPlayer 门控），
+                //旁观者只收冷却/隐身状态
                 CyberspaceActionNet.SendTeleportState(owner, origin, target,
-                    playVisual: true);
+                    playVisual: true, toWho: owner.whoAmI);
+                CyberspaceActionNet.SendTeleportState(owner, Vector2.Zero,
+                    Vector2.Zero, playVisual: false,
+                    ignoreClient: owner.whoAmI);
             }
             else {
                 PlayActivationVisuals(owner, origin, target);

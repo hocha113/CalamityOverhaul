@@ -38,7 +38,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
         public static readonly Vector3 ColHot = new(1.55f, 1.30f, 1.34f);
         public static readonly Vector3 ColBright = new(1.28f, 0.42f, 0.58f);
         public static readonly Vector3 ColDeep = new(0.62f, 0.14f, 0.24f);
-        public static readonly Vector3 ColDark = new(0.16f, 0.04f, 0.07f);
+        //尾色不沉到近黑:瓣的尾迹靠透明变稀，墨才靠压黑
+        public static readonly Vector3 ColDark = new(0.24f, 0.065f, 0.105f);
         public static readonly Vector3 ColWashi = new(0.95f, 0.82f, 0.56f);
 
         /// <summary>沿带噪声瓦片长度(px)、uLenScale = 航线长/此值，瓣纹钉在世界空间</summary>
@@ -158,11 +159,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
         }
 
         /// <summary>
-        /// 花核瓣盘一枚。quad 轴对齐不旋转，拉长在 shader 内沿 axis 做,
-        /// 故两轴半幅都给 radius*stretch，横向由 shader 压回
+        /// 螺旋花涡一枚。quad 轴对齐不旋转，拉长在 shader 内沿 axis 做,
+        /// 故两轴半幅都给 radius*stretch，横向由 shader 压回;
+        /// seed 喂涡内瓣粒噪声的相位，不同层错开
         /// </summary>
         public static void DrawCore(GraphicsDevice device, Effect fx, Vector2 center
-            , float radius, Vector2 axis, float stretch, float spin
+            , float radius, Vector2 axis, float stretch, float spin, float seed
             , Color color, float bloom, float heartHeat, float opacity) {
             if (radius <= 1f || opacity <= 0.004f) {
                 return;
@@ -176,6 +178,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
             fx.Parameters["uSpin"]?.SetValue(spin);
             fx.Parameters["uStretch"]?.SetValue(stretch);
             fx.Parameters["uAxis"]?.SetValue(axis);
+            fx.Parameters["uSeed"]?.SetValue(seed);
             fx.Parameters["uBloom"]?.SetValue(bloom);
             fx.Parameters["uHeartHeat"]?.SetValue(heartHeat);
 

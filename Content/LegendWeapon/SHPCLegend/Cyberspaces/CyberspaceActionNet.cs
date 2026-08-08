@@ -257,7 +257,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         internal static void SendTeleportState(Player player, Vector2 origin,
-            Vector2 target, bool playVisual, int toWho = -1) {
+            Vector2 target, bool playVisual, int toWho = -1,
+            int ignoreClient = -1) {
             if (Main.netMode != NetmodeID.Server || player?.active != true
                 || toWho >= Main.maxPlayers
                 || playVisual
@@ -277,7 +278,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             packet.Write(origin.Y);
             packet.Write(target.X);
             packet.Write(target.Y);
-            packet.Send(toWho);
+            packet.Send(toWho, ignoreClient);
         }
 
         private static void HandleResult(BinaryReader reader) {

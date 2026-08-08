@@ -170,6 +170,14 @@ namespace CalamityOverhaul.Content.HackTimes
             packet.Write(target.WorldCenter.X);
             packet.Write(target.WorldCenter.Y);
             packet.Send();
+            //本地预扣显示，与服务器同式估算成本；收到回执或超时后对账
+            if (!HackTime.InfiniteHack) {
+                int predictedCost = Math.Clamp(
+                    HackCostEvaluator.GetActualCost(hack, target, player),
+                    1, (int)RamSystem.MaxMutationAmount);
+                player.GetModPlayer<RAMPlayer>()
+                    .RegisterPredictedDebit(token.RequestId, predictedCost);
+            }
             return true;
         }
 

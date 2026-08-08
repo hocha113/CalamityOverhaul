@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
             int type = ModContent.ItemType<HalibutPilotChart>();
             if (!player.HasItem(type)) {
-                player.QuickSpawnItem(player.GetSource_Misc("CWR_HalibutPilotChart"), type);
+                player.GiveItem(player.GetSource_Misc("CWR_HalibutPilotChart"), type);
             }
             VaultUtils.Text(HalibutHudLead.DeclineNotice.Value, HalibutTheme.Accent);
         }

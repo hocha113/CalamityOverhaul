@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
     internal static class HimayoGiftComposerExtensions
     {
         /// <summary>
-        /// 递拓本：走框架自带的奖励弹窗与发放服务（QuickSpawnItem，背包满则落地），<br/>
+        /// 递拓本：走框架自带的奖励弹窗与发放服务（优先进背包，装不下才落地），<br/>
         /// 不做成败判定——拓本能否进包与"这场戏演过了"无关
         /// </summary>
         public static NarrativeComposer GiftReward(this NarrativeComposer composer, string giftKey)

@@ -248,7 +248,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
                 }
             }
 
-            player.QuickSpawnItem(player.GetSource_OpenItem(shopItem.itemType), shopItem.itemType, shopItem.stack);
+            player.GiveItem(player.GetSource_OpenItem(shopItem.itemType), shopItem.itemType, shopItem.stack);
             SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.72f, Pitch = -0.05f - ConsecutivePurchaseCount * 0.02f });
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.48f, Pitch = 0.15f + ConsecutivePurchaseCount * 0.03f });
             return true;

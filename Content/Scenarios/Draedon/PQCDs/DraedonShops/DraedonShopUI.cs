@@ -268,7 +268,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
             }
             ShopItem si = shopItems[index];
             if (player.BuyItem(si.price)) {
-                player.QuickSpawnItem(player.GetSource_OpenItem(si.itemType), si.itemType, si.stack);
+                player.GiveItem(player.GetSource_OpenItem(si.itemType), si.itemType, si.stack);
                 SoundEngine.PlaySound(SoundID.Coins);
                 SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.6f, Pitch = 0.3f });
             }

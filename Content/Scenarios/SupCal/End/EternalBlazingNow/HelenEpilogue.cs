@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
                 return;
             }
 
-            player.QuickSpawnItem(player.GetSource_GiftOrReward(), HalibutOverride.ID);
+            player.GiveItem(player.GetSource_GiftOrReward(), HalibutOverride.ID);
         }
     }
 }

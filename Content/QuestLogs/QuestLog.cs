@@ -445,7 +445,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             Player player = Main.LocalPlayer;
             foreach (var reward in node.Rewards) {
                 if (!reward.Claimed) {
-                    player.QuickSpawnItem(player.GetSource_GiftOrReward(), reward.ItemType, reward.Amount);
+                    player.GiveItem(player.GetSource_GiftOrReward(), reward.ItemType, reward.Amount);
                     reward.Claimed = true;
                 }
             }

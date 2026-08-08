@@ -2,10 +2,15 @@
 //NeutronWarp.fx 中子星扭曲位移图
 //输出 R方向 G强度 A混合；ps_3_0
 //
-//硬约束：强度(G)必须在 quad 矩形边界之前归零。
+//硬约束一：强度(G)必须在 quad 矩形边界之前归零。
 //WarpShader 只读 R/G，不读 A；而 RT 用的 AlphaBlend 是预乘式(One,InvSrcAlpha)，
 //A 既不参与消费也不会衰减已写入的 R/G。所以边缘羽化只能做在 G 上，
 //否则位移场会满值写到 quad 边界被硬切，再被 shift*28 的蓝移放大成矩形亮边。
+//
+//硬约束二：G 里不许出现 atan2 角的不连续。angle 在 -x 半轴跳 2pi，
+//喂进 valueNoise/fbm 就会在爆心朝左的水平射线上撕出一条硬切线，
+//再被同一条蓝移放大成亮线。角度只能经整数倍角(sin/cos(k*angle), k∈Z)
+//或旋转后的单位方向向量消费。R 通道例外：它以 frac 打包、解码回 cos/sin，0 与 1 同相。
 // ============================================================================
 
 float uTime;
@@ -16,6 +21,14 @@ float uRotation;
 
 #define PI  3.14159265
 #define TAU 6.28318530
+
+//绕原点旋转；把极角换成连续的方向向量喂噪声，也用来让方位图案自转
+float2 Rot(float2 v, float a)
+{
+    float s = sin(a);
+    float c = cos(a);
+    return float2(v.x * c - v.y * s, v.x * s + v.y * c);
+}
 
 //逐轴羽化：对径向场和细长喷流都成立，四角自然归零
 float QuadFeather(float2 centered)
@@ -149,8 +162,10 @@ float4 ShockwaveRingPS(float2 uv : TEXCOORD0) : COLOR0
     //高频环波纹
     float ripple = 0.65 + 0.35 * sin(normDist * 28.0 - uTime * 7.0);
 
-    //方位角噪声扰动
-    float edgeNoise = valueNoise(float2(angle * 3.0 / TAU + uTime * 0.3, normDist * 4.0));
+    //方位角噪声扰动：喂绕时间自转的单位方向向量，跨 -x 半轴天然连续
+    //(旧版直接喂 angle，2pi 跳变被 valueNoise 自带的 floor 显影成一条向左的水平硬切线)
+    float2 azimuth = Rot(centered / max(dist, 0.0001), uTime * 0.63);
+    float edgeNoise = valueNoise(azimuth * 0.95 + normDist * 4.0);
     float noiseMod = 0.7 + edgeNoise * 0.6;
 
     //位移方向: 径向向外

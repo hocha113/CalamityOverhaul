@@ -41,7 +41,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
         private const int BeatCount = 5;
         private const int BurstFadeFrames = 16;
         private const int AfterglowEnd = 46;   //命中余韵最晚结束帧(相对 lastImpactFrame)
-        private const int BaseHitCooldown = 10;
+        /// <summary>引擎级本地免疫只兜同帧重入;一拍一目标一次伤害由 <see cref="ActiveRift.HitTargets"/> 裁定</summary>
+        private const int EngineHitCooldown = 2;
         private const int BladeReleaseRecoveryFrames = 12;
         /// <summary>疾走接管时旧斩缝保留的极速褪去帧数</summary>
         private const int FlashStepInterruptFadeFrames = 6;
@@ -87,6 +88,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
             public float ArmedConditionMul;
             public bool TideOnBeat;
             public bool ExecuteRefunded;
+            /// <summary>本拍已出过伤的目标 whoAmI,一拍对同一目标只结算一次</summary>
+            public readonly List<int> HitTargets = [];
         }
 
         /// <summary>停手超过该帧后再按从第一拍重启,短停续接拍序</summary>
@@ -197,7 +200,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
             Projectile.ignoreWater = true;
             Projectile.netImportant = true;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = BaseHitCooldown;   //随攻速在 FireBeat 重设
+            Projectile.localNPCHitCooldown = EngineHitCooldown;
             Projectile.CWR().PierceResist = true;
         }
 
@@ -537,7 +540,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
                 pressBuffer--;
             }
             if (justPressed) {
-                pressBuffer = PressBufferFrames;
+                //只抬不压:补间排队中的点击已把缓冲撑长,新点击不该反而缩短它
+                pressBuffer = Math.Max(pressBuffer, PressBufferFrames);
             }
             bool holding = (DownLeft || pressBuffer > 0) && canContinue && !yielding;
 
@@ -593,12 +597,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
                     Owner.GetModPlayer<OnikiriPlayer>().CancelExecutionIntent(settleFollowup: true);
                 }
                 scheduling = true;
-                if (timer - lastBeatFire > ComboResetFrames) {
+                //收势超时才算新一轮:从第一拍重启并当帧出刀
+                bool comboExpired = timer - lastBeatFire > ComboResetFrames;
+                if (comboExpired) {
                     comboIndex = 0;
                 }
                 //模组交接吃 RestartWindupFrames 微前摇;普通点按当帧出刀
                 hasHandoff = OniBladeHandoff.TryPeek(Owner, out handoffRot, out _);
-                nextBeatTime = timer + (hasHandoff ? RestartWindupFrames : 0);
+                int earliest = timer + (hasHandoff ? RestartWindupFrames : 0);
+                //连点不得快过长按:未超时的续接必须补齐上一拍欠的基准间隔
+                nextBeatTime = comboExpired ? earliest : Math.Max(nextBeatTime, earliest);
+                //补间期把这次点击留住,别让轻点缓冲先于拍到期把输入吞了
+                pressBuffer = Math.Max(pressBuffer, nextBeatTime - timer + 1);
             }
             if (timer >= nextBeatTime) {
                 FireBeat();
@@ -662,7 +672,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
             }
             PlayBeatFireSound(beat);
 
-            Projectile.localNPCHitCooldown = Math.Max(5, (int)(BaseHitCooldown * beatSpeedFactor));
             comboIndex = (comboIndex + 1) % BeatCount;
             lastBeatFire = timer;
             nextBeatTime = timer + Math.Max(4
@@ -1127,16 +1136,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
 
         //==================== 判定 ====================
 
-        /// <summary>当前伤害窗内斩缝(同帧多窗取最新一拍)</summary>
-        private ActiveRift FindDamagingRift() {
+        /// <summary>为该目标裁定出伤的斩缝:同帧多窗取最新一拍,已打过它的拍跳过;全打过则本次不出伤</summary>
+        private ActiveRift FindDamagingRift(NPC target) {
             for (int i = actives.Count - 1; i >= 0; i--) {
-                int lt = timer - actives[i].Birth;
-                if (lt >= actives[i].Def.DamageStart && lt <= actives[i].Def.DamageEnd) {
-                    return actives[i];
+                ActiveRift a = actives[i];
+                int lt = timer - a.Birth;
+                if (lt < a.Def.DamageStart || lt > a.Def.DamageEnd) {
+                    continue;
                 }
+                if (a.HitTargets.Contains(target.whoAmI)) {
+                    continue;
+                }
+                return a;
             }
             return null;
         }
+
+        /// <summary>
+        /// 一拍对同一目标只出一次伤害。伤害窗有数帧宽而引擎冷却随攻速缩短,
+        /// 靠冷却计时挡不住同一拍内的二次结算,故改由每拍自己的命中登记裁定
+        /// </summary>
+        public override bool? CanHitNPC(NPC target) => FindDamagingRift(target) == null ? false : null;
 
         /// <summary>擦边宽恕(px),目标箱外扩</summary>
         private const int GrazePad = 12;
@@ -1226,7 +1246,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
 
         /// <summary>重击拍伤害加成,快斩×1 重斩×1.3 终结×1.6</summary>
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            ActiveRift a = FindDamagingRift();
+            ActiveRift a = FindDamagingRift(target);
             if (a != null && a.Beat >= 3) {
                 modifiers.SourceDamage *= a.Beat == BeatCount - 1 ? 1.6f : 1.3f;
             }
@@ -1273,7 +1293,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
-            ActiveRift a = FindDamagingRift();
+            ActiveRift a = FindDamagingRift(target);
+            //本拍对该目标的份额就此用掉,后续帧只能由下一拍再出伤
+            a?.HitTargets.Add(target.whoAmI);
 
             //伤害逐敌结算,资源按拍结算;同拍后续目标仍进入处决命中记忆
             if (Projectile.IsOwnedByLocalPlayer()) {

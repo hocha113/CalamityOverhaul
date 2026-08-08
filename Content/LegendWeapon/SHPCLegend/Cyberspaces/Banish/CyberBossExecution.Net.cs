@@ -16,14 +16,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             Release,
         }
 
+        //只同步会话身份与计时：客户端不刷雷，Damage/SpawnedCount 是权威端
+        //内部状态，伤害经由弹幕自身同步
         private readonly record struct ExecutionRecord(
             long ActivationId,
             NetworkNPCIdentity Identity,
             int OwnerWho,
-            int Elapsed,
-            int SpawnedCount,
-            int Damage,
-            float Seed);
+            int Elapsed);
 
         private const byte SnapshotVersion = 1;
         private const int ReleasedRetentionFrames = 120;
@@ -83,24 +82,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                     ActivationId = record.ActivationId,
                     Identity = record.Identity,
                     Timer = record.Elapsed,
-                    SpawnedCount = record.SpawnedCount,
-                    Damage = record.Damage,
                     OwnerWho = record.OwnerWho,
-                    Seed = record.Seed,
                     Authoritative = false,
                     Resolved = false,
                 };
                 ActiveExecutions.Add(entry);
             }
             else if (entry.Identity != record.Identity
-                || entry.OwnerWho != record.OwnerWho
-                || entry.Damage != record.Damage
-                || entry.Seed != record.Seed) {
+                || entry.OwnerWho != record.OwnerWho) {
                 return false;
             }
             entry.Timer = Math.Max(entry.Timer, record.Elapsed);
-            entry.SpawnedCount = Math.Max(entry.SpawnedCount,
-                record.SpawnedCount);
 
             EntityResolutionResult resolution = TimeControlReplicationSystem
                 .ResolveOrQueueNPC<CyberBossExecution>(record.ActivationId,
@@ -236,9 +228,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             writer.Write((byte)entry.OwnerWho);
             writer.Write((ushort)entry.Timer);
             writer.Write((ushort)(ExecutionDuration - entry.Timer));
-            writer.Write((byte)entry.SpawnedCount);
-            writer.Write(entry.Damage);
-            writer.Write(entry.Seed);
         }
 
         private static bool TryReadExecution(BinaryReader reader,
@@ -252,15 +241,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             int ownerWho = reader.ReadByte();
             int elapsed = reader.ReadUInt16();
             int remaining = reader.ReadUInt16();
-            int spawnedCount = reader.ReadByte();
-            int damage = reader.ReadInt32();
-            float seed = reader.ReadSingle();
             if (remaining <= 0 || elapsed < 0
                 || elapsed + remaining != ExecutionDuration) {
                 return false;
             }
             record = new ExecutionRecord(activationId, identity, ownerWho,
-                elapsed, spawnedCount, damage, seed);
+                elapsed);
             return IsValidExecution(record);
         }
 
@@ -269,19 +255,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                 return false;
             }
             return IsValidExecution(new ExecutionRecord(entry.ActivationId,
-                entry.Identity, entry.OwnerWho, entry.Timer,
-                entry.SpawnedCount, entry.Damage, entry.Seed));
+                entry.Identity, entry.OwnerWho, entry.Timer));
         }
 
         private static bool IsValidExecution(ExecutionRecord record)
             => record.ActivationId > 0 && record.Identity.IsValid
             && IsValidOwner(record.OwnerWho)
-            && record.Elapsed >= 0 && record.Elapsed < ExecutionDuration
-            && record.SpawnedCount >= 0
-            && record.SpawnedCount <= TargetBoltCount
-            && record.Damage >= 1 && record.Damage <= MaxExecutionDamage
-            && float.IsFinite(record.Seed)
-            && record.Seed >= 0f && record.Seed <= 1f;
+            && record.Elapsed >= 0 && record.Elapsed < ExecutionDuration;
 
         private static ModPacket NewExecutionPacket(ExecutionPacketKind kind) {
             ModPacket packet = CWRMod.Instance.GetPacket();

@@ -8,6 +8,7 @@ using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze;
@@ -75,6 +76,7 @@ namespace CalamityOverhaul
         Sandevistan,
         SelfHackCrystal,
         CyberspaceAction,
+        SHPCModuleSync,
     }
 
     public static class CWRNetWork
@@ -152,6 +154,7 @@ namespace CalamityOverhaul
             SandevistanNet.NetHandle(type, reader, whoAmI);
             SelfHackCrystalNet.NetHandle(type, reader, whoAmI);
             CyberspaceActionNet.NetHandle(type, reader, whoAmI);
+            SHPCModuleNet.NetHandle(type, reader, whoAmI);
         }
     }
 }

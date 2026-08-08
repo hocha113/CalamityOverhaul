@@ -15,9 +15,16 @@ namespace CalamityOverhaul.Content.RAMSystems
         private const string SaveKey_BaseRecover = "CWRRam_BaseRecover";
         private const int SnapshotInterval = 15;
         private const int ProfileRetryInterval = 120;
+        //保底快照间隔（帧）：即使无脏标记也定期发送，杜绝客户端永久滞留过期状态
+        private const int KeepaliveInterval = 120;
+        //预扣超时（帧），超时未收到回执则回滚本地显示
+        private const int PredictionTimeoutFrames = 120;
 
         private readonly Dictionary<uint, RamRequestResult> recentRequestResults = [];
         private readonly Queue<uint> recentRequestOrder = [];
+        //客户端未决预扣：requestId → (金额, 过期帧)，仅本地显示用
+        private readonly Dictionary<uint, (float Amount, ulong ExpireFrame)> pendingDebits = [];
+        private float pendingDebitTotal;
 
         private int usedCapacityUpgradeChips;
         private int usedRecoveryUpgradeChips;
@@ -30,6 +37,7 @@ namespace CalamityOverhaul.Content.RAMSystems
         private int flashTimer;
         private int profileRetryTimer;
         private int dirtySyncTimer;
+        private int keepaliveTimer;
         private uint nextRequestId;
         private uint highestCompletedRequestId;
         private bool stateDirty;
@@ -42,7 +50,10 @@ namespace CalamityOverhaul.Content.RAMSystems
             + usedRecoveryUpgradeChips * RamSystem.RecoveryUpgradeChipBonus;
         public int MaxRam => maxRam;
         public float RecoveryRate => recoveryRate;
-        public float CurrentRam => currentRam;
+        /// <summary>对外呈现值 = 权威值 − 客户端未决预扣（权威端预扣恒为 0）</summary>
+        public float CurrentRam => pendingDebitTotal > 0f
+            ? MathHelper.Clamp(currentRam - pendingDebitTotal, 0f, maxRam)
+            : currentRam;
         public float RecoveryCooldown => recoveryCooldown;
         public int LockRemain => lockTimer;
         public int LockTotal => lockTotalFrames;
@@ -51,13 +62,11 @@ namespace CalamityOverhaul.Content.RAMSystems
         public bool ProfileInitialized { get; private set; }
         public uint SessionId { get; private set; }
         public uint Revision { get; private set; }
-        public int DisplayCurrent => (int)currentRam;
-        public float Ratio => maxRam > 0 ? MathHelper.Clamp(currentRam / maxRam, 0f, 1f) : 0f;
+        public int DisplayCurrent => (int)CurrentRam;
+        public float Ratio => maxRam > 0 ? MathHelper.Clamp(CurrentRam / maxRam, 0f, 1f) : 0f;
         public float LockRemainRatio => lockTimer > 0 && lockTotalFrames > 0
             ? MathHelper.Clamp(lockTimer / (float)lockTotalFrames, 0f, 1f)
             : 0f;
-
-        internal event Action OnDepleted;
 
         public override void Initialize() {
             usedCapacityUpgradeChips = 0;
@@ -116,15 +125,33 @@ namespace CalamityOverhaul.Content.RAMSystems
                 && flashTimer > 0) {
                 flashTimer--;
             }
-
+            //权威 tick 在 RamSystem.Update（PostUpdateEverything）驱动，
+            //不挂 PostUpdate：死亡时 Player.Update 提前返回会冻住恢复与锁倒计时
             if (Main.netMode == NetmodeID.MultiplayerClient) {
-                RetryInitialProfile();
-                return;
+                ClientUpkeep();
             }
-            if (!ProfileInitialized) {
-                return;
-            }
+        }
 
+        /// <summary>死亡期间 PostUpdate 不会执行，客户端握手重试/预扣清理仍需推进</summary>
+        public override void UpdateDead() {
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                ClientUpkeep();
+            }
+        }
+
+        private void ClientUpkeep() {
+            if (Player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            PurgeExpiredPredictedDebits();
+            RetryInitialProfile();
+        }
+
+        /// <summary>服务器/单人权威推进，由 <see cref="RamSystem.Update"/> 每帧驱动（含死亡玩家）</summary>
+        internal void UpdateAuthorityTick() {
+            if (Main.netMode == NetmodeID.MultiplayerClient || !ProfileInitialized) {
+                return;
+            }
             UpdateAuthorityState();
             FlushDirtySnapshot();
         }
@@ -172,15 +199,13 @@ namespace CalamityOverhaul.Content.RAMSystems
             if (!snapshot.IsValid || snapshot.PlayerIndex != Player.whoAmI) {
                 return false;
             }
-            if (ProfileInitialized && snapshot.SessionId != SessionId) {
-                return false;
-            }
+            //同会话内旧版本丢弃；会话不同则直接收养——自身快照只可能来自
+            //服务器权威，硬拒会在会话漂移后永久卡死本地显示
             if (ProfileInitialized && snapshot.SessionId == SessionId
                 && !IsRevisionAtLeast(snapshot.Revision, Revision)) {
                 return false;
             }
 
-            bool depleted = currentRam > 0f && snapshot.CurrentRam <= 0f;
             bool newSession = !ProfileInitialized || snapshot.SessionId != SessionId;
             ProfileInitialized = true;
             SessionId = snapshot.SessionId;
@@ -202,15 +227,14 @@ namespace CalamityOverhaul.Content.RAMSystems
                 highestCompletedRequestId = 0;
                 recentRequestResults.Clear();
                 recentRequestOrder.Clear();
-            }
-            if (depleted) {
-                OnDepleted?.Invoke();
+                ClearPredictedDebits();
             }
             return true;
         }
 
         internal bool CanAfford(float amount) {
-            return IsValidMutationAmount(amount) && !IsLocked && currentRam >= amount;
+            //用呈现值判断，客户端把未决预扣也计入，防止 RTT 窗口内超发
+            return IsValidMutationAmount(amount) && !IsLocked && CurrentRam >= amount;
         }
 
         internal bool TryConsumeAuthority(float amount, out float paid) {
@@ -227,9 +251,6 @@ namespace CalamityOverhaul.Content.RAMSystems
             recoveryCooldown = RamSystem.RecoveryDelay;
             paid = before - currentRam;
             CommitStateChange(immediate: true);
-            if (before > 0f && currentRam <= 0f) {
-                OnDepleted?.Invoke();
-            }
             return true;
         }
 
@@ -250,9 +271,6 @@ namespace CalamityOverhaul.Content.RAMSystems
 
             bool depleted = before > 0f && currentRam <= 0f;
             CommitStateChange(immediate: depleted);
-            if (depleted) {
-                OnDepleted?.Invoke();
-            }
             return true;
         }
 
@@ -291,15 +309,11 @@ namespace CalamityOverhaul.Content.RAMSystems
                 return false;
             }
 
-            bool depleted = currentRam > 0f;
             lockTimer = frames;
             lockTotalFrames = frames;
             currentRam = 0f;
             recoveryCooldown = 0f;
             CommitStateChange(immediate: true);
-            if (depleted) {
-                OnDepleted?.Invoke();
-            }
             return true;
         }
 
@@ -346,6 +360,61 @@ namespace CalamityOverhaul.Content.RAMSystems
             }
             CommitStateChange(immediate: true);
             return true;
+        }
+
+        /// <summary>客户端登记一笔预扣，回执或超时后对账</summary>
+        internal void RegisterPredictedDebit(uint requestId, float amount) {
+            if (Main.netMode != NetmodeID.MultiplayerClient
+                || Player.whoAmI != Main.myPlayer || requestId == 0
+                || !float.IsFinite(amount) || amount <= 0f) {
+                return;
+            }
+            pendingDebits[requestId] = (Math.Min(amount, RamSystem.MaxMutationAmount),
+                Main.GameUpdateCount + PredictionTimeoutFrames);
+            RecomputePendingDebitTotal();
+        }
+
+        /// <summary>收到该请求的权威回执，撤销对应预扣</summary>
+        internal void SettlePredictedDebit(uint requestId) {
+            if (pendingDebits.Remove(requestId)) {
+                RecomputePendingDebitTotal();
+            }
+        }
+
+        private void ClearPredictedDebits() {
+            if (pendingDebits.Count == 0 && pendingDebitTotal == 0f) {
+                return;
+            }
+            pendingDebits.Clear();
+            pendingDebitTotal = 0f;
+        }
+
+        private void PurgeExpiredPredictedDebits() {
+            if (pendingDebits.Count == 0) {
+                return;
+            }
+            ulong now = Main.GameUpdateCount;
+            List<uint> expired = null;
+            foreach (KeyValuePair<uint, (float Amount, ulong ExpireFrame)> pair in pendingDebits) {
+                if (now >= pair.Value.ExpireFrame) {
+                    (expired ??= []).Add(pair.Key);
+                }
+            }
+            if (expired == null) {
+                return;
+            }
+            for (int i = 0; i < expired.Count; i++) {
+                pendingDebits.Remove(expired[i]);
+            }
+            RecomputePendingDebitTotal();
+        }
+
+        private void RecomputePendingDebitTotal() {
+            float total = 0f;
+            foreach (KeyValuePair<uint, (float Amount, ulong ExpireFrame)> pair in pendingDebits) {
+                total += pair.Value.Amount;
+            }
+            pendingDebitTotal = MathHelper.Clamp(total, 0f, RamSystem.MaxMutationAmount);
         }
 
         internal void NotifyInsufficient() => flashTimer = RamSystem.InsufficientFlashFrames;
@@ -416,6 +485,7 @@ namespace CalamityOverhaul.Content.RAMSystems
         internal void MarkSnapshotSent() {
             stateDirty = false;
             dirtySyncTimer = 0;
+            keepaliveTimer = 0;
         }
 
         private void UpdateAuthorityState() {
@@ -490,10 +560,12 @@ namespace CalamityOverhaul.Content.RAMSystems
         }
 
         private void FlushDirtySnapshot() {
-            if (!stateDirty || Main.netMode != NetmodeID.Server) {
+            if (Main.netMode != NetmodeID.Server) {
                 return;
             }
-            if (++dirtySyncTimer >= SnapshotInterval) {
+            keepaliveTimer++;
+            bool dirtyDue = stateDirty && ++dirtySyncTimer >= SnapshotInterval;
+            if (dirtyDue || keepaliveTimer >= KeepaliveInterval) {
                 RamNet.SendStateSnapshot(Player, Player.whoAmI);
             }
         }
@@ -524,6 +596,7 @@ namespace CalamityOverhaul.Content.RAMSystems
             dirtySyncTimer = 0;
             stateDirty = false;
             currentRam = maxRam;
+            ClearPredictedDebits();
         }
 
         private static int SanitizeCapacityChipCount(int value)

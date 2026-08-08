@@ -69,7 +69,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                 Timer = 0,
                 Damage = ResolveExecutionDamage(owner),
                 OwnerWho = owner.whoAmI,
-                Seed = Main.rand.NextFloat(),
                 Authoritative = true,
                 Resolved = true,
             };
@@ -251,7 +250,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
         public int SpawnedCount;
         public int Damage;
         public int OwnerWho;
-        public float Seed;
         internal bool Authoritative;
         internal bool Resolved;
 

@@ -265,6 +265,8 @@ namespace CalamityOverhaul.Content.RAMSystems
             if (state == null || !state.ApplySnapshot(snapshot)) {
                 return;
             }
+            //快照已含该笔扣费的权威结果，撤销本地预扣
+            state.SettlePredictedDebit(result.RequestId);
             state.StoreRequestResult(result);
             RequestResultReceived?.Invoke(player, result);
             BaseRamUpgradeChip.HandleRequestResult(player, result);

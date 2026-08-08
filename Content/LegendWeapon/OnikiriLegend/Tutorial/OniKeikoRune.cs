@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial
             }
             int type = ModContent.ItemType<OniKeikoRune>();
             if (!player.HasItem(type)) {
-                player.QuickSpawnItem(player.GetSource_Misc("CWR_OnikiriKeikoRune"), type);
+                player.GiveItem(player.GetSource_Misc("CWR_OnikiriKeikoRune"), type);
             }
             VaultUtils.Text(OnikiriTutorialLead.DeclineNotice.Value, OnikiriUITheme.GoldInlay);
         }

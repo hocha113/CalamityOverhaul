@@ -131,6 +131,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             RamRequestDisposition disposition = RamSystem.ClassifyRequest(owner,
                 sessionId, requestId, RamOperationId, out RamRequestResult previous);
             if (disposition == RamRequestDisposition.Replay) {
+                //重放意味着客户端大概率没收到原始回执/Apply，
+                //补发该玩家全部存活冻结，只发给请求者
+                ResendActiveFreezes(owner, whoAmI);
                 RamNet.SendRequestResult(owner, previous, whoAmI);
                 return;
             }
@@ -151,10 +154,80 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 new RamRequestToken(sessionId, requestId), whoAmI);
         }
 
+        /// <summary>按 activation 重建 Apply 并补发给指定客户端，重放/丢包恢复用</summary>
+        private static void ResendActiveFreezes(Player owner, int toWho) {
+            if (Main.netMode != NetmodeID.Server || owner?.active != true
+                || toWho < 0 || toWho >= Main.maxPlayers) {
+                return;
+            }
+            HashSet<long> activationIds = [];
+            for (int i = 0; i < FrozenNPCs.Count; i++) {
+                FreezeEntry entry = FrozenNPCs[i];
+                if (entry.OwnerWho == owner.whoAmI && entry.ActivationId > 0) {
+                    activationIds.Add(entry.ActivationId);
+                }
+            }
+            for (int i = 0; i < FrozenProjectiles.Count; i++) {
+                FreezeProjEntry entry = FrozenProjectiles[i];
+                if (entry.OwnerWho == owner.whoAmI && entry.ActivationId > 0) {
+                    activationIds.Add(entry.ActivationId);
+                }
+            }
+            foreach (long activationId in activationIds) {
+                ResendActivation(owner.whoAmI, activationId, toWho);
+            }
+        }
+
+        private static void ResendActivation(int ownerWho, long activationId,
+            int toWho) {
+            List<NPCFreezeTarget> npcTargets = [];
+            List<ProjectileFreezeTarget> projectileTargets = [];
+            HashSet<NetworkNPCIdentity> npcIdentities = [];
+            HashSet<NetworkProjectileIdentity> projectileIdentities = [];
+            int elapsed = int.MaxValue;
+            int duration = 0;
+            for (int i = 0; i < FrozenNPCs.Count; i++) {
+                FreezeEntry entry = FrozenNPCs[i];
+                if (entry.ActivationId != activationId
+                    || entry.OwnerWho != ownerWho
+                    || !IsSnapshotEntryValid(entry) || !IsEntryActive(entry)
+                    || !npcIdentities.Add(entry.Identity)) {
+                    continue;
+                }
+                npcTargets.Add(new NPCFreezeTarget(entry.Identity, entry.Seed,
+                    entry.FreezeCenter));
+                elapsed = Math.Min(elapsed, entry.Timer);
+                duration = entry.Duration;
+            }
+            for (int i = 0; i < FrozenProjectiles.Count; i++) {
+                FreezeProjEntry entry = FrozenProjectiles[i];
+                if (entry.ActivationId != activationId
+                    || entry.OwnerWho != ownerWho
+                    || !IsSnapshotEntryValid(entry) || !IsEntryActive(entry)
+                    || !projectileIdentities.Add(entry.Identity)) {
+                    continue;
+                }
+                projectileTargets.Add(new ProjectileFreezeTarget(entry.Identity,
+                    entry.Seed, entry.FreezeCenter));
+                elapsed = Math.Min(elapsed, entry.Timer);
+                duration = entry.Duration;
+            }
+            if (npcTargets.Count == 0 && projectileTargets.Count == 0
+                || duration <= 0) {
+                return;
+            }
+            //各条目计时可能已被出域加速推开，取最小值保守补发，
+            //剩余偏差由 AdvanceNPC 攒批纠正
+            elapsed = Math.Clamp(elapsed == int.MaxValue ? 0 : elapsed,
+                0, duration - 1);
+            BroadcastApply(ownerWho, activationId, npcTargets,
+                projectileTargets, elapsed, duration, toWho);
+        }
+
         private static void BroadcastApply(int ownerWho, long activationId,
             IReadOnlyList<NPCFreezeTarget> npcTargets,
             IReadOnlyList<ProjectileFreezeTarget> projectileTargets,
-            int elapsed, int duration) {
+            int elapsed, int duration, int toWho = -1) {
             if (Main.netMode != NetmodeID.Server || !IsValidOwner(ownerWho)
                 || activationId <= 0 || !IsValidTiming(elapsed, duration)
                 || npcTargets == null || projectileTargets == null
@@ -196,7 +269,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             for (int i = 0; i < projectileTargets.Count; i++) {
                 WriteTarget(packet, projectileTargets[i]);
             }
-            packet.Send();
+            packet.Send(toWho);
         }
 
         private static void BroadcastReleaseNPC(long activationId,

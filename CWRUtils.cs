@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.Localization;
@@ -229,6 +230,46 @@ namespace CalamityOverhaul
                 num += player.bank4.item.InquireItem(itemTypes);
             }
             return num;
+        }
+
+        /// <summary>
+        /// 送东西给玩家：优先塞进背包，塞不下的那份才落地。仅对本地玩家生效<br/>
+        /// 别用 <see cref="Player.QuickSpawnItem(IEntitySource, int, int)"/> 代替：它造的是掉落物。
+        /// 单人下 <see cref="Item.NewItem"/> 会立刻把掉落物预定给本人，看着像直接给；多人客户端没有这一步，
+        /// 实际只是请求服务端造个普通掉落物，归属由服务端 FindOwner 按"最近的可拾取者"重算，
+        /// 于是拾取范围更大的队友、水火、掉落物槽位回收都可能把这份东西吃掉
+        /// </summary>
+        /// <returns>有任何一份落到地上则为 <see langword="true"/></returns>
+        internal static bool GiveItem(this Player player, IEntitySource source, int itemType, int stack = 1) {
+            if (itemType <= 0 || player == null || !player.active || player.whoAmI != Main.myPlayer) {
+                return false;
+            }
+
+            bool dropped = false;
+            int remaining = stack <= 0 ? 1 : stack;
+            while (remaining > 0) {
+                Item gift = new(itemType);
+                gift.stack = Math.Min(remaining, Math.Max(1, gift.maxStack));
+                remaining -= gift.stack;
+                dropped |= player.GiveItem(source, gift);
+            }
+            return dropped;
+        }
+
+        /// <summary>送一件已配好数据的物品，语义同上；<paramref name="gift"/> 会被直接放进背包，调用方不要再复用</summary>
+        internal static bool GiveItem(this Player player, IEntitySource source, Item gift) {
+            if (player == null || !player.active || player.whoAmI != Main.myPlayer || gift == null || gift.IsAir) {
+                return false;
+            }
+
+            gift.position = player.Center;
+            Item overflow = player.GetItem(player.whoAmI, gift, GetItemSettings.NPCEntityToPlayerInventorySettings);
+            if (overflow.IsAir || overflow.stack <= 0) {
+                return false;
+            }
+
+            player.QuickSpawnItem(source, overflow, overflow.stack);
+            return true;
         }
 
         /// <summary>取 HalibutPlayer</summary>

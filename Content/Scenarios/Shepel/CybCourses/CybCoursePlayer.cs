@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             if (CybCourseWorld.Active) return;
             if (CybCourse.TryConsumeGrantMewtwo()) {
                 if (!Player.HasItem(ModContent.ItemType<Mewtwo>())) {
-                    Player.QuickSpawnItem(Player.GetSource_GiftOrReward(), ModContent.ItemType<Mewtwo>(), 1);
+                    Player.GiveItem(Player.GetSource_GiftOrReward(), ModContent.ItemType<Mewtwo>(), 1);
                 }
             }
             CybCourseWorldGuard.RestoreOnReturn();

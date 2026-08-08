@@ -34,6 +34,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         //钉选固定重铸目标，-1=随机
         public int[] PinnedReforgeTarget;
 
+        //配装脏标：本帧有变更则 PostUpdate 攒帧同步一次（一次拖拽只发一包）
+        private bool loadoutSyncDirty;
+
         public static SHPCPlayer Get(Player player) => player.GetModPlayer<SHPCPlayer>();
 
         public override void Initialize() {
@@ -115,6 +118,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             Presets[ActivePreset] = CloneModules(SafeModules());
             ActivePreset = newIdx;
             Modules = CloneModules(Presets[ActivePreset]);
+            MarkLoadoutDirty();
         }
 
         private Item[] SafeModules() {
@@ -137,7 +141,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             Item[] modules = SafeModules();
             Item old = modules[slotIdx];
             modules[slotIdx] = new Item();
-            return old == null || old.IsAir ? null : old;
+            if (old != null && !old.IsAir) {
+                MarkLoadoutDirty();
+                return old;
+            }
+            return null;
         }
 
         public Item PutModule(int slotIdx, Item module) {
@@ -149,7 +157,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             Item cloned = module.Clone();
             cloned.stack = 1;
             modules[slotIdx] = cloned;
+            MarkLoadoutDirty();
             return old == null || old.IsAir ? null : old;
+        }
+
+        /// <summary>网络镜像写入，不打脏标不回传</summary>
+        internal void ApplyReplicatedLoadout(Item[] items) {
+            if (items == null || items.Length != SHPCData.SlotCount) {
+                return;
+            }
+            Modules = items;
+        }
+
+        private void MarkLoadoutDirty() {
+            if (Main.netMode == NetmodeID.SinglePlayer) {
+                return;
+            }
+            loadoutSyncDirty = true;
+        }
+
+        private void FlushLoadoutSync() {
+            if (!loadoutSyncDirty) {
+                return;
+            }
+            loadoutSyncDirty = false;
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                if (Player.whoAmI == Main.myPlayer) {
+                    SHPCModuleNet.SendLoadout(this);
+                }
+            }
+            else if (Main.netMode == NetmodeID.Server) {
+                SHPCModuleNet.BroadcastLoadout(this, -1, -1);
+            }
+        }
+
+        /// <summary>进服上报本地配装，服务器侧才有正确的模块数据参与结算</summary>
+        public override void OnEnterWorld() {
+            if (Main.netMode == NetmodeID.MultiplayerClient
+                && Player.whoAmI == Main.myPlayer) {
+                loadoutSyncDirty = true;
+            }
+        }
+
+        /// <summary>入局/重连时把已知玩家的配装镜像补发给新客户端</summary>
+        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer) {
+            if (Main.netMode == NetmodeID.Server) {
+                SHPCModuleNet.BroadcastLoadout(this, toWho, -1);
+            }
         }
 
         public int EquippedCount() {
@@ -165,6 +219,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         public override void PostUpdate() {
             SHPCModificationSystem.ForEachModule(Player, mod => mod.OnPlayerUpdate(Player));
             UpdateOverkillStacks();
+            FlushLoadoutSync();
         }
 
         //超杀衰减放ModPlayer，卸机匣后钩子停否则层数冻结

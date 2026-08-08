@@ -102,10 +102,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
         /// </summary>
         private static readonly OniSakuraFlowRenderer.StreamDef[] StreamDefs =
         [
+            //中脊档位整体压低:瓣流的亮来自密度，白热常驻是能量拖尾的腔
             new() { HalfWidth = 13f, PerpOffset = 0f, Seed = 0.71f
-                , FlowMul = 1.55f, GrainAmp = 0.30f, HeadBoost = 1.50f, OpacityMul = 0.70f },
+                , FlowMul = 1.55f, GrainAmp = 0.30f, HeadBoost = 1.00f, OpacityMul = 0.70f },
             new() { HalfWidth = 42f, PerpOffset = 0f, Seed = 0.05f
-                , FlowMul = 1.00f, GrainAmp = 0.95f, HeadBoost = 0.50f, OpacityMul = 0.95f },
+                , FlowMul = 1.00f, GrainAmp = 0.95f, HeadBoost = 0.35f, OpacityMul = 0.95f },
             new() { HalfWidth = 21f, PerpOffset = 32f, Seed = 0.37f
                 , FlowMul = 1.42f, GrainAmp = 1.25f, HeadBoost = 0.22f, OpacityMul = 0.78f },
             new() { HalfWidth = 17f, PerpOffset = -37f, Seed = 0.89f
@@ -298,6 +299,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                 }, Owner.Center);
                 if (OnLocalScreen()) {
                     CrimsonImpactFX.PushImpact(Owner.Center, 0.34f);
+                }
+                //散瓣那口气:少量活瓣向外炸开，与向后汇入流路的类内瓣一收一放
+                for (int i = 0; i < 9; i++) {
+                    Vector2 burstVel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.6f, 4.4f)
+                        + moveDirection * Main.rand.NextFloat(0.5f, 1.6f);
+                    Color burstTint = Main.rand.NextBool(4)
+                        ? new Color(214, 76, 108)
+                        : new Color(255, 206, 220);
+                    PRTLoader.NewParticle<PRT_OniSakuraDrift>(
+                        Owner.Center + Main.rand.NextVector2Circular(10f, 16f), burstVel, burstTint
+                        , Main.rand.NextFloat(0.65f, 1.05f))
+                        ?.Configure(Main.rand.Next(45, 75), Main.rand.NextFloat(0.40f, 0.55f));
                 }
             }
 
@@ -745,8 +758,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
 
             petal.Depth = depth;
             petal.Flip = MathHelper.Lerp(0.18f, 1f, MathF.Abs(depth));
-            //满速抹成流线,不是"一个旋转的贴图在平移"
-            petal.Stretch = MathHelper.Lerp(1f, 2.05f, MathHelper.Clamp(visualSpeedRatio, 0f, 1f));
+            //满速抹成流线,不是"一个旋转的贴图在平移"(2.05 有糊成条的风险，收到 1.75)
+            petal.Stretch = MathHelper.Lerp(1f, 1.75f, MathHelper.Clamp(visualSpeedRatio, 0f, 1f));
             petal.Rotation = moveDirection.ToRotation() - MathHelper.PiOver2
                 + MathF.Sin(theta * 0.57f + petal.Seed) * 0.72f;
 
@@ -1024,7 +1037,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                 for (int i = 0; i < StreamDefs.Length; i++) {
                     OniSakuraFlowRenderer.StreamDef def = StreamDefs[i];
                     def.HalfWidth *= sizeMul;
-                    def.PerpOffset *= sizeMul;
+                    //侧股缓慢编织摆动，四股不再钉死在固定平行线上
+                    def.PerpOffset *= sizeMul * (0.82f + 0.30f * MathF.Sin(Timer * 0.045f + i * 2.4f));
                     def.Seed += Seed * 6.28f;
                     //流速与瓣粒分明度都挂速度:飞得越快，粒被抹得越长、孔越少
                     def.FlowMul *= MathHelper.Lerp(0.72f, 1.24f, speed01);
@@ -1036,25 +1050,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
 
             float core = CoreEnvelope;
             if (core > 0.01f) {
-                float stretch = 1f + speed01 * 1.05f;
-                float radius = (26f + 5f * MathF.Sin(Timer * 0.15f + Seed * 5f)) * (0.55f + core * 0.45f);
-                float spin = Timer * 0.042f + Seed * MathHelper.TwoPi + turnBank * 0.55f;
+                float stretch = 1f + speed01 * 0.85f;
+                float radius = (31f + 5f * MathF.Sin(Timer * 0.13f + Seed * 5f)) * (0.55f + core * 0.45f);
+                float spin = Timer * 0.048f + Seed * MathHelper.TwoPi + turnBank * 0.55f;
                 float bloom = 0.85f + flash * 0.6f;
-                //瓣盘着色器自行预乘输出，淡入淡出只走 opacity 参数，顶点色不再压暗 RGB
-                //拖影:沿航线往后挪一截、更扁更暗，读作"核刚从那儿过来"
+                //涡着色器自行预乘输出，淡入淡出只走 opacity 参数，顶点色不压暗 RGB。
+                //两层就够:主涡 + 拖影(沿航线拖后、更扁更暗、臂相反向错开)，
+                //旧的三盘同心叠加是同形堆叠，只加亮不加信息
                 OniSakuraFlowRenderer.DrawCore(device, fx
-                    , Owner.Center - moveDirection * (14f + speed01 * 26f)
-                    , radius * 0.92f, moveDirection, stretch * 1.35f, -spin * 0.70f
-                    , new Color(198, 62, 96), 0.32f, 0.20f, core * 0.34f);
-                //外盘:深绯，逆转
+                    , Owner.Center - moveDirection * (16f + speed01 * 28f)
+                    , radius * 0.90f, moveDirection, stretch * 1.40f, -spin * 0.66f
+                    , Seed * 6.28f + 2.1f, new Color(198, 62, 96), 0.30f, 0.16f, core * 0.36f);
                 OniSakuraFlowRenderer.DrawCore(device, fx, Owner.Center
-                    , radius * 1.24f, moveDirection, stretch, -spin * 0.62f
-                    , new Color(229, 90, 119), bloom * 0.75f, 0.35f, core * 0.86f);
-                //内盘:饱和樱，顺转，瓣心在此。刻意不用近白底色——
-                //核靠"内盘亮 / 外盘深 / 流带更深"的对比读出来，不靠把 RGB 顶到白
-                OniSakuraFlowRenderer.DrawCore(device, fx, Owner.Center
-                    , radius * 0.78f, moveDirection, stretch * 0.88f, spin
-                    , new Color(255, 196, 213), bloom, 0.90f + flash * 0.5f, core);
+                    , radius, moveDirection, stretch, spin, Seed * 6.28f
+                    , new Color(244, 157, 183), bloom, 0.90f + flash * 0.5f, core);
             }
 
             OniSakuraFlowRenderer.EndDraw(device, prevBlend, prevRaster, prevDepth);
@@ -1154,6 +1163,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
             }
 
             DrawWindStreaks(spriteBatch);
+            DrawBurstFlares(spriteBatch);
+        }
+
+        /// <summary>
+        /// 起飞与合拢的爆点:镜像疾走原点爆闪的语法，换樱色。
+        /// 起飞锚在航线起点(人已飞远它也留在原地)，合拢锚在人身上
+        /// </summary>
+        private void DrawBurstFlares(SpriteBatch spriteBatch) {
+            Vector2 launchAt = (path.Count > 0 ? path[0] : Owner.Center) - Main.screenPosition;
+            if (Timer <= 9 && CWRAsset.TearSpread01?.Value is Texture2D tear) {
+                float t = Timer / 9f;
+                float tA = MathF.Pow(1f - t, 1.7f) * 0.80f;
+                float tS = 0.85f + CrimsonSlashRenderer.EaseOutCubic(t) * 0.50f;
+                spriteBatch.Draw(tear, launchAt, null, new Color(255, 178, 199) * tA, Seed * 6f
+                    , tear.Size() * 0.5f, tS, SpriteEffects.None, 0);
+                spriteBatch.Draw(tear, launchAt, null, new Color(229, 90, 119) * (tA * 0.75f)
+                    , Seed * 6f + 0.45f, tear.Size() * 0.5f, tS * 0.72f, SpriteEffects.FlipVertically, 0);
+            }
+            if (Timer <= 4 && CWRAsset.StarFlare02?.Value is Texture2D flare) {
+                float fA = 1f - Timer / 4f;
+                spriteBatch.Draw(flare, launchAt, null, new Color(255, 232, 240) * (fA * 0.80f)
+                    , Seed * 6f, flare.Size() * 0.5f, 0.65f + fA * 0.30f, SpriteEffects.None, 0);
+            }
+            int sinceStop = Timer - FlightEndFrame;
+            if (sinceStop >= 0 && sinceStop <= 7 && CWRAsset.StarFlare02?.Value is Texture2D snap) {
+                float t = sinceStop / 7f;
+                float fA = MathF.Pow(1f - t, 1.5f) * 0.70f;
+                spriteBatch.Draw(snap, Owner.Center - Main.screenPosition, null
+                    , new Color(255, 214, 226) * fA, Seed * 9f + t * 0.6f
+                    , snap.Size() * 0.5f, 0.55f + t * 0.45f, SpriteEffects.None, 0);
+            }
         }
 
         /// <summary>

@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Content.Scenarios.Helen
 
         private static void ReturnHeartcarverToPlayer() {
             Player player = Main.LocalPlayer;
-            player.QuickSpawnItem(player.GetSource_Misc("HelensInterference"), ModContent.ItemType<Heartcarver>(), 1);
+            player.GiveItem(player.GetSource_Misc("HelensInterference"), ModContent.ItemType<Heartcarver>(), 1);
             SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.7f, Pitch = 0.2f }, player.Center);
             HalibutStorySync.WriteSupCal(
                 d => d.HelenInterferenceContinue = true,

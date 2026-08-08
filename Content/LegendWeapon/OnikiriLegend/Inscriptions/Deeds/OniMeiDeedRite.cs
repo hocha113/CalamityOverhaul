@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions.Deeds
             if (type <= 0) {
                 return;
             }
-            player.QuickSpawnItem(player.GetSource_Misc("CWR_OniMeiDeed"), type);
+            player.GiveItem(player.GetSource_Misc("CWR_OniMeiDeed"), type);
         }
 
         private static void AnnounceSettle(OniMeiDeed deed) {

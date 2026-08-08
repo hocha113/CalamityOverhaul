@@ -138,11 +138,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables
                 return;
             }
             SHPCPlayer.Get(player)?.RegisterDiscovered(type);
-            Item newItem = new();
-            newItem.SetDefaults(type);
-            newItem.stack = 1;
-            //maxStack=1，QuickSpawnItem入包或掉落
-            player.QuickSpawnItem(player.GetSource_Misc("SHPCModuleReforge"), newItem, 1);
+            player.GiveItem(player.GetSource_Misc("SHPCModuleReforge"), type);
         }
     }
 }

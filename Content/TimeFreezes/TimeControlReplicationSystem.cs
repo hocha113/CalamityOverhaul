@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
+﻿using CalamityOverhaul.Content.HackTimes;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze;
 using System;
 using System.Collections.Generic;
@@ -287,6 +288,9 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 CyberBanish.ReadSnapshot),
             new(3, "CyberBossExecution", CyberBossExecution.WriteSnapshot,
                 CyberBossExecution.ReadSnapshot),
+            //中途加入者的骇入队列/效果全量同步
+            new(4, "HackEffects", HackTimeNetSync.WriteSnapshot,
+                HackTimeNetSync.ReadSnapshot),
         ];
 
         private static void WriteSnapshotSection(BinaryWriter writer,

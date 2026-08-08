@@ -392,7 +392,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             }
 
             HimayoStorySync.MarkToriiSwordTaken();
-            player.QuickSpawnItem(player.GetSource_Misc("ToriiShrine"), ModContent.ItemType<OnikiriItem>());
+            player.GiveItem(player.GetSource_Misc("ToriiShrine"), ModContent.ItemType<OnikiriItem>());
             SoundEngine.PlaySound(SoundID.Dig with { Pitch = 0.45f, Volume = 0.5f }, player.Center);
         }
 
@@ -406,7 +406,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             }
 
             HimayoStorySync.MarkToriiSwordTaken();
-            player.QuickSpawnItem(player.GetSource_Misc("ToriiShrine"), ModContent.ItemType<OnikiriItem>());
+            player.GiveItem(player.GetSource_Misc("ToriiShrine"), ModContent.ItemType<OnikiriItem>());
 
             player.CWR().GetScreenShake(10f);
             SoundEngine.PlaySound(SoundID.Dig with { Pitch = 0.45f, Volume = 0.5f }, ShrinePosition);
