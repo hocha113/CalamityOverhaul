@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             if (Main.gameMenu) {
                 return;
             }
-            OniDomainPlayer odp = OniDomain.Local;
+            OniDomainPlayer odp = OniDomain.Viewed;
             if (odp == null || !odp.GradeVisible) {
                 return;
             }
@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             if (Main.gameMenu) {
                 return;
             }
-            OniDomainPlayer odp = OniDomain.Local;
+            OniDomainPlayer odp = OniDomain.Viewed;
             if (odp == null || !odp.GradeVisible) {
                 return;
             }

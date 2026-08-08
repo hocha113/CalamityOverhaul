@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         }
 
         public override void Update(GameTime gameTime) {
-            OniDomainPlayer odp = OniDomain.Local;
+            OniDomainPlayer odp = OniDomain.Viewed;
 
             float uraTarget = 0f;
             if (odp != null && odp.AnyActive) {
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         }
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth) {
-            OniDomainPlayer odp = OniDomain.Local;
+            OniDomainPlayer odp = OniDomain.Viewed;
             if (odp == null || !odp.AnyActive) {
                 Filters.Scene[Name]?.GetShader()?.UseOpacity(0f);
                 return;

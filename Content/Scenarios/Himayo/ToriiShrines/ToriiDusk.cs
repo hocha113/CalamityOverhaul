@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.Narrative;
 using Microsoft.Xna.Framework.Graphics;
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             if (Main.dedServ || Main.gameMenu) {
                 return false;
             }
-            if (OniDomain.Local?.AnyActive ?? false) {
+            if (OniDomain.Viewed?.AnyActive ?? false) {
                 return false;
             }
             return ToriiShrineActor.DepartureHoldingStage

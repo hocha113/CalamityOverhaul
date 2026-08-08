@@ -25,6 +25,10 @@ namespace CalamityOverhaul.Content.RAMSystems
         //客户端未决预扣：requestId → (金额, 过期帧)，仅本地显示用
         private readonly Dictionary<uint, (float Amount, ulong ExpireFrame)> pendingDebits = [];
         private float pendingDebitTotal;
+        //客户端未兑现的芯片扣除：等权威端放行后才动背包，同一时刻只允许一笔在途
+        private uint pendingUpgradeRequestId;
+        private int pendingUpgradeSlot = -1;
+        private ulong pendingUpgradeExpireFrame;
 
         private int usedCapacityUpgradeChips;
         private int usedRecoveryUpgradeChips;
@@ -59,6 +63,7 @@ namespace CalamityOverhaul.Content.RAMSystems
         public int LockTotal => lockTotalFrames;
         public bool IsLocked => lockTimer > 0;
         public bool IsFlashing => flashTimer > 0;
+        public bool HasPendingUpgrade => pendingUpgradeRequestId != 0;
         public bool ProfileInitialized { get; private set; }
         public uint SessionId { get; private set; }
         public uint Revision { get; private set; }
@@ -144,6 +149,7 @@ namespace CalamityOverhaul.Content.RAMSystems
                 return;
             }
             PurgeExpiredPredictedDebits();
+            PurgeExpiredPendingUpgrade();
             RetryInitialProfile();
         }
 
@@ -228,6 +234,7 @@ namespace CalamityOverhaul.Content.RAMSystems
                 recentRequestResults.Clear();
                 recentRequestOrder.Clear();
                 ClearPredictedDebits();
+                ClearPendingUpgrade();
             }
             return true;
         }
@@ -360,6 +367,46 @@ namespace CalamityOverhaul.Content.RAMSystems
             }
             CommitStateChange(immediate: true);
             return true;
+        }
+
+        /// <summary>
+        /// 登记一笔待兑现的芯片扣除。非 ServerSideCharacter 的联机里背包归本机管，
+        /// 服务端发来的自身槽位同步会被原版丢弃，所以芯片只能等权威端放行后由本机扣，
+        /// 改完的槽位由原版每帧的 TrySyncingMyPlayer 回灌服务端
+        /// </summary>
+        internal void RegisterPendingUpgrade(uint requestId, int inventorySlot) {
+            if (Main.netMode != NetmodeID.MultiplayerClient
+                || Player.whoAmI != Main.myPlayer || requestId == 0) {
+                return;
+            }
+            pendingUpgradeRequestId = requestId;
+            pendingUpgradeSlot = inventorySlot;
+            pendingUpgradeExpireFrame = Main.GameUpdateCount + PredictionTimeoutFrames;
+        }
+
+        /// <summary>取走该请求登记的槽位，超时清理过的回执只会拿到 -1 兜底</summary>
+        internal bool TryTakePendingUpgrade(uint requestId, out int inventorySlot) {
+            inventorySlot = -1;
+            if (pendingUpgradeRequestId == 0 || pendingUpgradeRequestId != requestId) {
+                return false;
+            }
+            inventorySlot = pendingUpgradeSlot;
+            ClearPendingUpgrade();
+            return true;
+        }
+
+        private void ClearPendingUpgrade() {
+            pendingUpgradeRequestId = 0;
+            pendingUpgradeSlot = -1;
+            pendingUpgradeExpireFrame = 0;
+        }
+
+        /// <summary>超时只解开连点门，回执迟到时仍按操作类型兜底扣除</summary>
+        private void PurgeExpiredPendingUpgrade() {
+            if (pendingUpgradeRequestId != 0
+                && Main.GameUpdateCount >= pendingUpgradeExpireFrame) {
+                ClearPendingUpgrade();
+            }
         }
 
         /// <summary>客户端登记一笔预扣，回执或超时后对账</summary>
@@ -597,6 +644,7 @@ namespace CalamityOverhaul.Content.RAMSystems
             stateDirty = false;
             currentRam = maxRam;
             ClearPredictedDebits();
+            ClearPendingUpgrade();
         }
 
         private static int SanitizeCapacityChipCount(int value)

@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         }
 
         public static void Update() {
-            OniDomainPlayer odp = OniDomain.Local;
+            OniDomainPlayer odp = OniDomain.Viewed;
             if (odp == null) {
                 if (petals.Count > 0 || lanterns.Count > 0 || ashes.Count > 0) {
                     Clear();

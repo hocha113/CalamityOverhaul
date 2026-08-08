@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial;
+using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
@@ -66,8 +67,75 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             }
         }
 
-        /// <summary>本地里世界平滑系数 0~1，驱动光照/天空/装饰</summary>
-        public static float LocalUraSmooth => Local?.UraSmooth ?? 0f;
+        /// <summary>
+        /// 本机屏幕上正在生效的那个域：自己的优先，否则取范围内最近的他人领域。
+        /// 世界级表现（天空/调色/光照/装饰/音效）一律读它，HUD 与面影仍读 <see cref="Local"/>
+        /// </summary>
+        public static OniDomainPlayer Viewed { get; private set; }
+
+        /// <summary>观看半径。域是屏幕级效果，施术者进了视野一圈才把人卷进去</summary>
+        private static float ViewRange
+            => MathF.Max(Main.screenWidth, Main.screenHeight) * 0.75f + 480f;
+
+        /// <summary>已在观看的那份放宽半径，人在边界来回走不会闪断</summary>
+        private const float ViewRangeHysteresis = 1.35f;
+
+        private static int viewedIndex = -1;
+
+        /// <summary>观看域平滑系数 0~1，驱动光照/天空/装饰</summary>
+        public static float ViewedUraSmooth => Viewed?.UraSmooth ?? 0f;
+
+        /// <summary>逐帧重选主导域，须在推进各玩家状态机之前调用</summary>
+        internal static void RefreshViewed() {
+            Viewed = null;
+            Player local = Main.dedServ || Main.gameMenu ? null : Main.LocalPlayer;
+            if (local?.active != true) {
+                viewedIndex = -1;
+                return;
+            }
+
+            OniDomainPlayer own = local.GetModPlayer<OniDomainPlayer>();
+            if (own.AnyActive) {
+                Viewed = own;
+                viewedIndex = local.whoAmI;
+                return;
+            }
+
+            float range = ViewRange;
+            float nearest = float.MaxValue;
+            int nearestIndex = -1;
+            for (int i = 0; i < Main.maxPlayers; i++) {
+                Player other = Main.player[i];
+                if (i == local.whoAmI || other?.active != true
+                    || !other.TryGetModPlayer(out OniDomainPlayer domain)
+                    || !domain.AnyActive) {
+                    continue;
+                }
+                float limit = i == viewedIndex ? range * ViewRangeHysteresis : range;
+                float distance = Vector2.Distance(other.Center, local.Center);
+                if (distance > limit || distance >= nearest) {
+                    continue;
+                }
+                nearest = distance;
+                nearestIndex = i;
+                Viewed = domain;
+            }
+            viewedIndex = nearestIndex;
+        }
+
+        /// <summary>各端逐帧推进全体活跃玩家的域，远端形态由施术者的转播兜住</summary>
+        internal static void UpdateAll() {
+            if (Main.dedServ) {
+                return;
+            }
+            for (int i = 0; i < Main.maxPlayers; i++) {
+                Player player = Main.player[i];
+                if (player?.active == true
+                    && player.TryGetModPlayer(out OniDomainPlayer domain)) {
+                    domain.UpdateLocal();
+                }
+            }
+        }
 
         /// <summary>开域。Closed 全新开域，Closing 中途反悔从当前覆盖续开</summary>
         public static bool Open(Player player) => player.GetModPlayer<OniDomainPlayer>().OpenDomain();

@@ -3,8 +3,9 @@
 //材质是"影"：投影而非实体，所以硬剪影 + 极窄半影，永远没有辉光核心；
 //  预乘 alpha 输出配 BlendState.AlphaBlend，是吸光暗体而不是发光叠层。
 //配色无彩黑，紫只在毛口留一点；骨白冷青只作结构细线（uRimFlash 的短促撕口）。
-//TechBody 画贴 Shutter 剪影的分段躯干条带（也用于地面投影拷贝）；
-//TechLimb 画不吃剪影的程序化锥形条带（双臂、断颈漏影）。
+//TechBody 画贴 Shutter 剪影的分段躯干条带（也用于地面投影拷贝），
+//  自带 UV 边缘护栏（防条带边界直线切口）与断颈口骨白细线（无头是身份）；
+//TechLimb 画不吃剪影的程序化锥形条带（双臂、影屑）。
 //ps_3_0 / vs_3_0
 // ============================================================================
 
@@ -73,7 +74,11 @@ PSInput VertexShaderFunction(VSInput input)
 float4 PixelShaderFunction(PSInput input) : COLOR0
 {
     float2 uv = input.TexCoords;
-    float shape = tex2D(shutterSamp, uv).a;
+    //UV 边缘护栏：贴图裙摆渐隐一直延伸到贴图底边，若不强制归零，
+    //  低侵蚀状态（蓄力/冲刺）会在条带边界露出一条直线切口
+    float edgeGuard = smoothstep(1.0, 0.86, uv.y) * smoothstep(0.0, 0.02, uv.y)
+        * smoothstep(0.0, 0.04, uv.x) * smoothstep(1.0, 0.96, uv.x);
+    float shape = tex2D(shutterSamp, uv).a * edgeGuard;
 
     float n0 = tex2D(noiseSamp, float2(uv.x * 2.10 + uSeed, uv.y * 1.55 - uTime * 0.10)).r;
     float n1 = tex2D(noiseSamp, float2(uv.x * 4.70 - uTime * 0.16 + uSeed * 2.73,
@@ -100,9 +105,16 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     color *= 1.0 - uRimFlash * 0.30;
     color += RimBone * tornEdge * uRimFlash * 0.85;
 
+    //断颈口骨白细线：只咬剪影上缘中段的撕口线，缓慢明灭、蓄力/扑出时燃亮。
+    //  无头是身份——颈口给一线白，比堆几何更能说"这上面没有头"
+    float neckBand = smoothstep(0.30, 0.12, uv.y) * exp(-pow((uv.x - 0.5) * 3.2, 2.0));
+    float neckStir = 0.55 + 0.45 * sin(uTime * 2.1 + uSeed * 3.7);
+    float neckRim = tornEdge * neckBand * (0.14 + 0.22 * neckStir + 0.50 * phaseBeat);
+    color += RimBone * neckRim;
+
     float opacity = saturate(uOpacity * input.Color.a);
     float alpha = saturate(body * opacity * (0.74 + grain * 0.18));
-    float glowBoost = tornEdge * uRimFlash * 0.16 * opacity;
+    float glowBoost = (tornEdge * uRimFlash * 0.16 + neckRim * 0.10) * opacity;
     return float4(color * alpha + RimBone * glowBoost * 0.7, saturate(alpha + glowBoost));
 }
 

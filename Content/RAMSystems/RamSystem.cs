@@ -159,6 +159,10 @@ namespace CalamityOverhaul.Content.RAMSystems
         public static bool CanUseUpgrade(Player player, RamUpgradeKind kind)
             => GetState(player)?.CanUseUpgrade(kind) ?? false;
 
+        /// <summary>本机是否还有等回执兑现的芯片扣除</summary>
+        public static bool HasPendingUpgrade(Player player)
+            => GetState(player)?.HasPendingUpgrade ?? false;
+
         public static bool TryUseCapacityUpgradeChip()
             => TryUseUpgrade(LocalOwner, RamUpgradeKind.Capacity);
 

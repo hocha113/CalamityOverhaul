@@ -125,6 +125,8 @@ namespace CalamityOverhaul.Content.RAMSystems
                 || !player.active || player.whoAmI != Main.myPlayer
                 || kind != RamUpgradeKind.Capacity && kind != RamUpgradeKind.Recovery
                 || player.selectedItem < 0 || player.selectedItem >= player.inventory.Length
+                //扣除要等回执，未结算期间不再发新请求，否则一张芯片能换到多次升级
+                || RamSystem.HasPendingUpgrade(player)
                 || !RamSystem.TryAllocateRequest(player, out RamRequestToken token)) {
                 return false;
             }
@@ -135,6 +137,8 @@ namespace CalamityOverhaul.Content.RAMSystems
             packet.Write((byte)kind);
             packet.Write((byte)player.selectedItem);
             packet.Send();
+            player.GetModPlayer<RAMPlayer>()
+                .RegisterPendingUpgrade(token.RequestId, player.selectedItem);
             return true;
         }
 
@@ -318,17 +322,11 @@ namespace CalamityOverhaul.Content.RAMSystems
                     resultCode = RamUpgradeResultCode.UpgradeLimit;
                 }
                 else {
-                    Item item = player.inventory[inventorySlot];
-                    item.stack--;
-                    if (item.stack <= 0) {
-                        item.TurnToAir();
-                    }
+                    //芯片只校验不扣除：非 ServerSideCharacter 的联机里背包归本机管，
+                    //服务端发给玩家自身的槽位同步会被原版丢弃，扣除交给请求方收到回执后执行
                     appliedAmount = kind == RamUpgradeKind.Capacity
                         ? RamSystem.CapacityUpgradeChipBonus
                         : RamSystem.RecoveryUpgradeChipBonus;
-                    NetMessage.SendData(MessageID.SyncEquipment, -1, -1, null,
-                        player.whoAmI, PlayerItemSlotID.Inventory0 + inventorySlot,
-                        item.prefix);
                 }
             }
 
@@ -351,9 +349,7 @@ namespace CalamityOverhaul.Content.RAMSystems
                 return RamUpgradeResultCode.InvalidItem;
             }
             Item item = player.inventory[inventorySlot];
-            int expectedType = kind == RamUpgradeKind.Capacity
-                ? ModContent.ItemType<RamCapacityUpgradeChip>()
-                : ModContent.ItemType<RamRecoveryUpgradeChip>();
+            int expectedType = GetUpgradeChipType(kind);
             return item != null && !item.IsAir && item.type == expectedType && item.stack > 0
                 ? RamUpgradeResultCode.Success
                 : RamUpgradeResultCode.InvalidItem;
@@ -365,6 +361,29 @@ namespace CalamityOverhaul.Content.RAMSystems
                 RamUpgradeKind.Recovery => RecoveryUpgradeOperation,
                 _ => 0,
             };
+        }
+
+        /// <summary>芯片类型的唯一映射，权威端校验与本机扣除共用</summary>
+        internal static int GetUpgradeChipType(RamUpgradeKind kind) {
+            return kind switch {
+                RamUpgradeKind.Capacity => ModContent.ItemType<RamCapacityUpgradeChip>(),
+                RamUpgradeKind.Recovery => ModContent.ItemType<RamRecoveryUpgradeChip>(),
+                _ => ItemID.None,
+            };
+        }
+
+        internal static bool TryGetUpgradeKind(ushort operationId, out RamUpgradeKind kind) {
+            switch (operationId) {
+                case CapacityUpgradeOperation:
+                    kind = RamUpgradeKind.Capacity;
+                    return true;
+                case RecoveryUpgradeOperation:
+                    kind = RamUpgradeKind.Recovery;
+                    return true;
+                default:
+                    kind = default;
+                    return false;
+            }
         }
 
         private static ModPacket NewPacket(RamNetOp operation) {

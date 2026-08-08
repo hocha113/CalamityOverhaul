@@ -1,7 +1,8 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages;
 using CalamityOverhaul.Content.TimeFreezes;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -85,6 +86,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         private int flipStageTimer;
         private int preSilenceDuration;
         private long lastCommandFrame = -1;
+        private int resyncTimer;
 
         //WorldFreezeSystem reason 标签
 
@@ -109,6 +111,99 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         /// <summary>调色是否需要执行</summary>
         public bool GradeVisible => AnyActive;
 
+        /// <summary>
+        /// 领域形态。只含施术者掷过骰、别处推不出来的量；
+        /// 其余（勾玉惯性、错位帧、屏息包络）各端本地自算，不占带宽
+        /// </summary>
+        internal void WriteNetworkState(BinaryWriter writer) {
+            writer.Write((byte)Phase);
+            writer.Write((ushort)Math.Clamp(PhaseTimer, 0, ushort.MaxValue));
+            writer.Write(WorldIsUra);
+            writer.Write(SpreadProgress);
+            writer.Write(EyeWorldPos.X);
+            writer.Write(EyeWorldPos.Y);
+            writer.Write(EyeIntensity);
+            writer.Write(EyeOpenAmount);
+            writer.Write(EyeSpin);
+            writer.Write(EyeDissolve);
+            writer.Write((byte)FlipStage);
+            writer.Write((ushort)Math.Clamp(flipStageTimer, 0, ushort.MaxValue));
+            writer.Write((ushort)Math.Clamp(preSilenceDuration, 0, ushort.MaxValue));
+            writer.Write(FlipToUra);
+            writer.Write(FlipSlashAngle);
+            writer.Write(PeelBias);
+        }
+
+        /// <summary>先读满整份负载再校验，脏包只做丢弃，不留半套状态</summary>
+        internal void ReadNetworkState(BinaryReader reader) {
+            byte phase = reader.ReadByte();
+            int phaseTimer = reader.ReadUInt16();
+            bool worldIsUra = reader.ReadBoolean();
+            float spread = reader.ReadSingle();
+            Vector2 eyePos = new(reader.ReadSingle(), reader.ReadSingle());
+            float eyeIntensity = reader.ReadSingle();
+            float eyeOpen = reader.ReadSingle();
+            float eyeSpin = reader.ReadSingle();
+            float eyeDissolve = reader.ReadSingle();
+            byte flipStage = reader.ReadByte();
+            int stageTimer = reader.ReadUInt16();
+            int silence = reader.ReadUInt16();
+            bool flipToUra = reader.ReadBoolean();
+            float slashAngle = reader.ReadSingle();
+            float peelBias = reader.ReadSingle();
+
+            if (phase > (byte)OniDomainPhase.Closing
+                || flipStage > (byte)OniFlipStage.Settle
+                || !float.IsFinite(spread) || !float.IsFinite(eyePos.X)
+                || !float.IsFinite(eyePos.Y) || !float.IsFinite(eyeIntensity)
+                || !float.IsFinite(eyeOpen) || !float.IsFinite(eyeSpin)
+                || !float.IsFinite(eyeDissolve) || !float.IsFinite(slashAngle)
+                || !float.IsFinite(peelBias)) {
+                return;
+            }
+
+            OniDomainPhase incoming = (OniDomainPhase)phase;
+            OniFlipStage incomingStage = (OniFlipStage)flipStage;
+            if (IsLocalVisual) {
+                //在看这个域时，远端的收域与起翻要把本机装饰带到同一拍
+                if (Phase != OniDomainPhase.Closed && incoming == OniDomainPhase.Closed) {
+                    OniDomainDeco.NotifyClosing();
+                }
+                else if (FlipStage == OniFlipStage.None
+                    && incomingStage == OniFlipStage.PreSilence) {
+                    OniDomainDeco.NotifyFreeze();
+                }
+            }
+            Phase = incoming;
+            PhaseTimer = phaseTimer;
+            WorldIsUra = worldIsUra;
+            SpreadProgress = MathHelper.Clamp(spread, 0f, 1f);
+            EyeWorldPos = eyePos;
+            EyeIntensity = MathHelper.Clamp(eyeIntensity, 0f, 1f);
+            EyeOpenAmount = MathHelper.Clamp(eyeOpen, 0f, 1f);
+            EyeSpin = eyeSpin;
+            EyeDissolve = MathHelper.Clamp(eyeDissolve, 0f, 1f);
+            FlipStage = incomingStage;
+            flipStageTimer = stageTimer;
+            preSilenceDuration = silence;
+            FlipToUra = flipToUra;
+            FlipSlashAngle = slashAngle;
+            PeelBias = MathHelper.Clamp(peelBias, 0.32f, 0.68f);
+            if (Phase == OniDomainPhase.Closed) {
+                PaperValid = false;
+                PendingPaperCapture = false;
+            }
+        }
+
+        /// <summary>命令被本机受理后立刻转播一份，让同场的人跟上同一拍</summary>
+        private void BroadcastCommand() {
+            if (Player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            resyncTimer = OniDomainNet.ResyncInterval;
+            OniDomainNet.SendSnapshot(Player);
+        }
+
         internal bool OpenDomain() {
             //收域中途反悔，原地续开
 
@@ -117,6 +212,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                     return false;
                 }
                 ResumeOpenFromClosing();
+                BroadcastCommand();
                 return true;
             }
             if (Phase != OniDomainPhase.Closed || !ConsumeCommandGate()) {
@@ -134,11 +230,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             EyeDissolve = 0f;
             anomalyTimer = SetAnomalyInterval();
             ambienceTimer = 600;
-
-            if (IsLocalVisual) {
-                //低鸣，有什么东西在头顶成形
-                //SoundEngine.PlaySound(CWRSound.OutburstCC);
-            }
+            BroadcastCommand();
             return true;
         }
 
@@ -157,9 +249,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
             if (p < 0.997f) {
                 EyeFlash = MathF.Max(EyeFlash, 0.45f);
-            }
-            if (IsLocalVisual) {
-                //SoundEngine.PlaySound(CWRSound.OutburstCC);
             }
         }
 
@@ -202,14 +291,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 EyeOpenAmount = 1f;
                 EyeDissolve = 0f;
             }
-            OniDomainDeco.NotifyClosing();
-            //收域、过去归还给过去
-
-            OniOmokage.BurnAll();
-
             if (IsLocalVisual) {
-                //SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.35f, Pitch = -0.7f, MaxInstances = 1 }, Player.Center);
+                OniDomainDeco.NotifyClosing();
             }
+            //收域、过去归还给过去。面影是本机自己的过去，只有自己收域才烧
+
+            if (Player.whoAmI == Main.myPlayer) {
+                OniOmokage.BurnAll();
+            }
+            BroadcastCommand();
             return true;
         }
 
@@ -235,7 +325,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             //两半不对称滑移
 
             PeelBias = Main.rand.NextFloat(0.32f, 0.68f);
-            OniDomainDeco.NotifyFreeze();
+            if (IsLocalVisual) {
+                OniDomainDeco.NotifyFreeze();
+            }
 
             //翻转仪式全程时停、世界屏息，纸层揭开后恢复。多人下静态快照体系会失同步，单人才挂
 
@@ -250,6 +342,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                     freezePlayer.frozenRocketTime = Main.LocalPlayer.rocketTime;
                 }
             }
+            BroadcastCommand();
             return true;
         }
 
@@ -272,7 +365,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             return true;
         }
 
-        private bool IsLocalVisual => !Main.dedServ && Player.whoAmI == Main.myPlayer;
+        /// <summary>本机此刻身处的是不是这个域。自己开的恒为真，队友的域进了范围也算</summary>
+        private bool IsLocalVisual => !Main.dedServ && ReferenceEquals(OniDomain.Viewed, this);
+
+        /// <summary>屏震落在观看者身上而非施术者：队友开的域，震的是在场的人</summary>
+        private static void ShakeViewer(float amount)
+            => Main.LocalPlayer?.CWR()?.GetScreenShake(amount);
 
         internal void UpdateLocal() {
             if (Phase == OniDomainPhase.Closed) {
@@ -285,6 +383,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
             EffectTime += 1f / 60f;
             PhaseTimer++;
+
+            //稳态每两秒重播一份形态，中途加入、丢包与漂移都靠它自愈
+            if (Player.whoAmI == Main.myPlayer
+                && Main.netMode == NetmodeID.MultiplayerClient
+                && --resyncTimer <= 0) {
+                resyncTimer = OniDomainNet.ResyncInterval;
+                OniDomainNet.SendSnapshot(Player);
+            }
 
             switch (Phase) {
                 case OniDomainPhase.Opening: UpdateOpening(); break;
@@ -355,7 +461,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 if (t == OniDomain.EyeEmergeFrames + 1 && IsLocalVisual) {
                     SoundEngine.PlaySound(CWRSound.OutburstCC);
                     SoundEngine.PlaySound(CWRSound.OutburstRelease);
-                    Player.CWR().GetScreenShake(3f);
+                    ShakeViewer(3f);
                 }
                 return;
             }
@@ -375,7 +481,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                         SoundEngine.PlaySound(CWRSound.Thunder with { Volume = 0.55f, Pitch = -0.25f, MaxInstances = 1 }, Player.Center);
                         SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.9f, Pitch = -0.7f, MaxInstances = 1 }, Player.Center);
                         SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.6f, Pitch = -0.7f, MaxInstances = 1 }, Player.Center);
-                        Player.CWR().GetScreenShake(7f);
+                        ShakeViewer(7f);
                     }
                 }
                 return;
@@ -398,7 +504,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
             if (st == (int)(OniDomain.OpenSpreadFrames * 0.55f) && IsLocalVisual) {
                 SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.55f, Pitch = -0.55f, MaxInstances = 1 }, Player.Center);
-                Player.CWR().GetScreenShake(4f);
+                ShakeViewer(4f);
             }
 
             if (raw >= 1f) {
@@ -458,7 +564,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
                             SoundEngine.PlaySound(CWRSound.SwiftSlice with { Volume = 0.75f, Pitch = -0.1f, MaxInstances = 1 }, Player.Center);
                             SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.85f, Pitch = -0.7f, MaxInstances = 1 }, Player.Center);
-                            Player.CWR().GetScreenShake(6f);
+                            ShakeViewer(6f);
                         }
                     }
                     break;
@@ -468,26 +574,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                     if (flipStageTimer >= OniDomain.FlashFrames) {
                         //捕获旧世界画面作纸层，随后调色切至新世界
 
-                        PendingPaperCapture = true;
                         WorldIsUra = FlipToUra;
                         FlipStage = OniFlipStage.Peel;
                         flipStageTimer = 0;
                         PeelProgress = 0f;
-                        OniDomainDeco.NotifyPeelStart(FlipToUra);
-                        //快门、入里瞬间把屏内敌人的"过去"钉成面影；回表则全部烧散
+                        //纸层与装饰是本机屏幕的东西，不在场的域不该动它们
 
-                        if (FlipToUra) {
-                            if (OniOmokage.AutoShutterOnFlip) {
-                                OniOmokage.ImprintVisible();
-                            }
-                        }
-                        else {
-                            OniOmokage.BurnAll();
-                        }
                         if (IsLocalVisual) {
+                            PendingPaperCapture = true;
+                            OniDomainDeco.NotifyPeelStart(FlipToUra);
                             //纸帛撕裂感
 
                             SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.8f, Pitch = -0.75f, MaxInstances = 1 }, Player.Center);
+                        }
+                        //快门、入里瞬间把屏内敌人的"过去"钉成面影；回表则全部烧散。
+                        //面影是本机玩家自己的过去，队友翻转不动我的纸
+
+                        if (Player.whoAmI == Main.myPlayer) {
+                            if (FlipToUra) {
+                                if (OniOmokage.AutoShutterOnFlip) {
+                                    OniOmokage.ImprintVisible();
+                                }
+                            }
+                            else {
+                                OniOmokage.BurnAll();
+                            }
                         }
                     }
                     break;
@@ -582,7 +693,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 EyeFlash = 1f;
                 if (IsLocalVisual) {
                     SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.7f, Pitch = -0.6f, MaxInstances = 1 }, Player.Center);
-                    Player.CWR().GetScreenShake(5f);
+                    ShakeViewer(5f);
                     OniDomainDeco.SpawnEyeScatter(EyeWorldPos, 8);
                 }
             }
@@ -746,9 +857,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
         private static int SetAnomalyInterval() => Main.rand.Next(420, 900);
 
+        /// <summary>掉线的人不该在别人屏幕上留一片里世界</summary>
+        public override void PlayerDisconnect() => ResetDomain();
+
         internal void ResetDomain() {
             ReleaseFlipFreeze();
-            OniOmokage.Clear();
+            if (Player.whoAmI == Main.myPlayer) {
+                OniOmokage.Clear();
+            }
             Phase = OniDomainPhase.Closed;
             PhaseTimer = 0;
             WorldIsUra = false;

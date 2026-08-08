@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,9 +13,15 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
 {
-    internal class LonginusHeld : BaseHeldProj
+    internal class LonginusHeld : BaseHeldProj, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Item + "Melee/Longinus";
+
+        private NPC markNPC;
+        private float markReveal;
+        private float levelFlash;
+        private bool fullCharge;
+
         public override void SetDefaults() {
             Projectile.width = 46;
             Projectile.height = 46;
@@ -39,28 +46,31 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
                 return;
             }
             Projectile.velocity = Projectile.rotation.ToRotationVector2();
+            fullCharge = Owner.HeldItem?.ModItem is SpearOfLonginus held && held.ChargeGrade >= SpearOfLonginus.MaxChargeGrade;
             if (Projectile.IsOwnedByLocalPlayer()) {
                 StickToOwner();
                 Charge();
                 SpawnHolyCross();
             }
             NPC npc = Projectile.Center.FindClosestNPC(1900);
-            float slp = Projectile.ai[0];
-            if (slp > 600)
-                slp = 600;
             if (npc != null) {
-                if (Projectile.ai[0] % 30 == 0) {
-                    Vector2 vr = new Vector2(0, 13);
-                    PRTLoader.NewParticle<PRT_LonginusWave>(npc.Center + new Vector2(0, -360), vr, Color.Red, 0.32f).Configure(new Vector2(1.2f, 3f) * 0.6f, vr.ToRotation(), 0.82f + slp * 0.001f, 180, npc);
-                    Vector2 vr2 = new Vector2(0, -13);
-                    PRTLoader.NewParticle<PRT_LonginusWave>(npc.Center + new Vector2(0, 360), vr2, Color.Red, 0.32f).Configure(new Vector2(1.2f, 3f) * 0.6f, vr2.ToRotation(), 0.82f + slp * 0.001f, 180, npc);
-                }
                 npc.CWR().LonginusSign = true;
                 foreach (NPC overNPC in Main.npc) {
                     if (overNPC.whoAmI != npc.whoAmI && overNPC.type != NPCID.None) {
                         overNPC.CWR().LonginusSign = false;
                     }
                 }
+            }
+            //标记光轮显隐，换目标重新显现
+            if (npc != markNPC) {
+                markNPC = npc;
+                markReveal = 0f;
+            }
+            if (markNPC != null && markNPC.active) {
+                markReveal = MathHelper.Clamp(markReveal + 0.06f, 0f, 1f);
+            }
+            if (levelFlash > 0f) {
+                levelFlash -= 0.04f;
             }
             Projectile.ai[0]++;
         }
@@ -79,10 +89,10 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             //每帧累积一次能量；玩家持枪不动时也会涨
             longinus.HolyEnergy++;
 
-            //充能粒子效果
+            //充能星屑向枪尖汇聚
             if (Main.rand.NextBool(2)) {
-                Vector2 spanStarPos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(33) + Projectile.velocity * 55;
-                Vector2 vr = spanStarPos.To(Projectile.velocity * 198 + Projectile.Center).UnitVector() * 3;
+                Vector2 spanStarPos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(26) + Projectile.velocity * 55;
+                Vector2 vr = spanStarPos.To(Projectile.velocity * 66 + Projectile.Center).UnitVector() * 4.6f;
                 PRTLoader.NewParticle<PRT_LonginusStar>(spanStarPos, vr, Color.Gold, Main.rand.NextFloat(0.9f, 1.1f)).Configure(false, Main.rand.Next(17, 25), Projectile);
             }
 
@@ -99,9 +109,8 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
                 SoundEngine.PlaySound(lightningStrikeSound, Projectile.Center);
                 SoundEngine.PlaySound("CalamityMod/Sounds/Item/HeavenlyGaleFire".GetSound(), Projectile.Center);
 
-                for (int i = 0; i < longinus.ChargeGrade; i++) {
-                    PRTLoader.NewParticle<PRT_LonginusWave>(Projectile.Center + Projectile.velocity * (-0.52f + i * 23), Projectile.velocity / 1.5f, Color.Red, 0.82f).Configure(new Vector2(1.5f, 3f) * (0.8f - i * 0.1f), Projectile.velocity.ToRotation(), 0.32f, 60, Projectile);
-                }
+                //升层演出：枪前展开一层AT力场薄膜
+                levelFlash = 1f;
             }
         }
 
@@ -122,7 +131,34 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
 
             Projectile.Center = Owner.GetPlayerStabilityCenter() + UnitToMouseV * 70;
+            //满层微震颤
+            if (fullCharge) {
+                Projectile.Center += Main.rand.NextVector2Circular(1.3f, 1.3f);
+            }
             Projectile.timeLeft = 2;
+        }
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            //标记目标头顶的倾斜光轮
+            if (markNPC != null && markNPC.active && markReveal > 0.01f) {
+                float haloR = MathHelper.Clamp(markNPC.width * 0.5f + 26f, 34f, 120f);
+                Vector2 haloPos = markNPC.Top + new Vector2(0, -30f - haloR * 0.18f);
+                float breathe = 0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3.1f);
+                LonginusVFX.DrawHalo(haloPos, haloR, 0.30f, markReveal, breathe * 0.5f, 0.75f);
+            }
+            //升层立场薄膜闪现
+            if (levelFlash > 0.01f && Owner.HeldItem?.ModItem is SpearOfLonginus longinus) {
+                float t = 1f - levelFlash;
+                LonginusVFX.DrawATField(Projectile.Center + Projectile.velocity * 60f, Projectile.velocity
+                    , 110f + longinus.ChargeGrade * 10f, MathHelper.Clamp(t * 2.6f, 0f, 1f), 0f
+                    , levelFlash * 0.65f, 1, Projectile.whoAmI * 0.211f, 0.55f);
+            }
+            //满层枪尖小光轮
+            if (fullCharge) {
+                Vector2 tip = Projectile.Center + Projectile.velocity * 66f;
+                float breathe = 0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5.3f);
+                LonginusVFX.DrawHalo(tip, 24f, 0.85f, 1f, breathe, 0.8f, LonginusVFX.HolyGold);
+            }
         }
 
         public override bool PreDraw(ref Color lightColor) {

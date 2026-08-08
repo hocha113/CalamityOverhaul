@@ -7,6 +7,7 @@ using CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
@@ -75,6 +76,7 @@ namespace CalamityOverhaul
         SelfHackCrystal,
         CyberspaceAction,
         SHPCModuleSync,
+        OnikiriDomain,
     }
 
     public static class CWRNetWork
@@ -147,6 +149,7 @@ namespace CalamityOverhaul
             WGManifestationNet.NetHandle(type, reader, whoAmI);
             OnikiriTutorialNet.NetHandle(type, reader, whoAmI);
             OnikiriNet.NetHandle(type, reader, whoAmI);
+            OniDomainNet.NetHandle(type, reader, whoAmI);
             RamNet.NetHandle(type, reader, whoAmI);
             CyberwareNet.NetHandle(type, reader, whoAmI);
             SandevistanNet.NetHandle(type, reader, whoAmI);

@@ -39,10 +39,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         private const int WhiffSheatheFrames = 8;
         /// <summary>点锚模式的 ai[0] 标记</summary>
         private const int PointModeMarker = -2;
-        private const byte NetworkVersion = 1;
+        private const byte NetworkVersion = 2;
         private const float DismemberRange = 800f;
         private const float DismemberDamageMultiplier = 2.5f;
         private const int MaxAuthorityWaitFrames = 120;
+        /// <summary>
+        /// 请求负载的最长等待帧数。生成包在 <see cref="Projectile.NewProjectile"/> 内部就发出去了，
+        /// 那一刻请求字段还没赋值，真正的请求在持有者随后补发的同步包里，落地前不能判死
+        /// </summary>
+        private const int MaxRequestWaitFrames = 45;
+        /// <summary>批复落地前持有者重发请求的间隔帧</summary>
+        private const int RequestResendInterval = 8;
         private const int MaxDamage = 10_000_000;
         private const float MaxKnockback = 100f;
 
@@ -67,10 +74,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             PointMode = 1 << 7,
         }
 
+        /// <summary>一份客户端请求。批复之前服务端只认这一份，字段一次读齐再校验</summary>
+        private readonly record struct RequestPayload(
+            bool Initialized,
+            bool PointMode,
+            NetworkNPCIdentity Target,
+            int TargetIndex,
+            int TargetType,
+            Vector2 BodyLocal,
+            int OmokageEntryId,
+            int TutorialOwner,
+            int TutorialSession,
+            uint TutorialToken,
+            PointResolution Resolution)
+        {
+            /// <summary>代次可能缺席（客户端没收过该 NPC 的同步包），槽位+类型是兜底寻址</summary>
+            internal bool HasTarget => Target.IsValid
+                || TargetIndex >= 0 && TargetIndex < Main.maxNPCs
+                    && TargetType > NPCID.None && TargetType < NPCLoader.NPCCount;
+        }
+
         private int timer;
         private bool requestInitialized;
         private bool requestPointMode;
         private NetworkNPCIdentity requestTargetIdentity;
+        /// <summary>目标槽位与类型。客户端未必持有该 NPC 的网络代次，这两个字段是兜底寻址</summary>
+        private int requestTargetIndex = -1;
+        private int requestTargetType;
+        private int requestWaitTicks;
+        private int requestResendTicks;
         private Vector2 requestPointBodyLocal;
         private int omokageEntryId;
         private int tutorialTargetOwner = -1;
@@ -159,7 +191,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             if (projectile.ModProjectile is OniSeverStrike strike) {
                 strike.requestInitialized = true;
                 strike.requestPointMode = false;
-                strike.requestTargetIdentity = NetworkNPCIdentity.Capture(target);
+                strike.SetRequestTarget(target);
                 if (tutorialTarget) {
                     strike.tutorialTargetOwner = tutorialOwner;
                     strike.tutorialTargetSession = tutorialSession;
@@ -194,9 +226,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 strike.omokageEntryId = omokageEntryId;
                 if (boundEntry != null) {
                     strike.requestPointBodyLocal = safePoint - boundEntry.AnchorCenter;
-                    NPC target = OniOmokage.ValidTarget(boundEntry.NpcIndex,
-                        boundEntry.NpcType, boundEntry.NpcSpawnToken);
-                    strike.requestTargetIdentity = NetworkNPCIdentity.Capture(target);
+                    strike.SetRequestTarget(OniOmokage.ValidTarget(boundEntry.NpcIndex,
+                        boundEntry.NpcType, boundEntry.NpcSpawnToken));
                 }
                 projectile.Center = safePoint;
                 projectile.netUpdate = true;
@@ -223,11 +254,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
         public override bool ShouldUpdatePosition() => false;
 
+        /// <summary>记下目标身份，代次取不到时至少留住槽位与类型</summary>
+        private void SetRequestTarget(NPC target) {
+            requestTargetIdentity = NetworkNPCIdentity.Capture(target);
+            requestTargetIndex = target?.active == true ? target.whoAmI : -1;
+            requestTargetType = target?.active == true ? target.type : NPCID.None;
+        }
+
         public override void SendExtraAI(BinaryWriter writer) {
             writer.Write(NetworkVersion);
             writer.Write(requestInitialized);
             writer.Write(requestPointMode);
             requestTargetIdentity.Write(writer);
+            writer.Write((ushort)(requestTargetIndex >= 0 && requestTargetIndex < Main.maxNPCs
+                ? requestTargetIndex : ushort.MaxValue));
+            writer.Write(requestTargetType);
             writer.Write(requestPointBodyLocal.X);
             writer.Write(requestPointBodyLocal.Y);
             writer.Write(omokageEntryId);
@@ -276,38 +317,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                     return;
                 }
 
-                bool incomingRequestInitialized = reader.ReadBoolean();
-                bool incomingPointMode = reader.ReadBoolean();
-                bool incomingTargetValid = NetworkNPCIdentity.TryRead(reader,
-                    out NetworkNPCIdentity incomingTarget);
-                Vector2 incomingBodyLocal = new(reader.ReadSingle(),
-                    reader.ReadSingle());
-                int incomingEntryId = reader.ReadInt32();
-                int incomingTutorialOwner = -1;
-                int incomingTutorialSession = 0;
-                uint incomingTutorialToken = 0;
-                if (reader.ReadBoolean()) {
-                    incomingTutorialOwner = reader.ReadByte();
-                    incomingTutorialSession = reader.ReadInt32();
-                    incomingTutorialToken = reader.ReadUInt32();
-                }
-                PointResolution incomingPointResolution =
-                    (PointResolution)reader.ReadByte();
+                RequestPayload payload = ReadRequest(reader);
 
                 bool hasAuthority = reader.ReadBoolean();
                 if (Main.netMode == NetmodeID.Server) {
-                    AcceptIncomingRequest(incomingRequestInitialized,
-                        incomingPointMode, incomingTargetValid, incomingTarget,
-                        incomingBodyLocal, incomingEntryId,
-                        incomingTutorialOwner, incomingTutorialSession,
-                        incomingTutorialToken, incomingPointResolution);
+                    AcceptIncomingRequest(in payload);
                 }
                 else if (Main.netMode == NetmodeID.MultiplayerClient) {
-                    AcceptReplicatedRequest(incomingRequestInitialized,
-                        incomingPointMode, incomingTargetValid, incomingTarget,
-                        incomingBodyLocal, incomingEntryId,
-                        incomingTutorialOwner, incomingTutorialSession,
-                        incomingTutorialToken, incomingPointResolution);
+                    AcceptReplicatedRequest(in payload);
                 }
 
                 if (!hasAuthority) {
@@ -349,6 +366,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
         }
 
+        private static RequestPayload ReadRequest(BinaryReader reader) {
+            bool initialized = reader.ReadBoolean();
+            bool pointMode = reader.ReadBoolean();
+            NetworkNPCIdentity.TryRead(reader, out NetworkNPCIdentity target);
+            int targetIndex = reader.ReadUInt16();
+            if (targetIndex >= Main.maxNPCs) {
+                targetIndex = -1;
+            }
+            int targetType = reader.ReadInt32();
+            Vector2 bodyLocal = new(reader.ReadSingle(), reader.ReadSingle());
+            int entryId = reader.ReadInt32();
+            int tutorialOwner = -1;
+            int tutorialSession = 0;
+            uint tutorialToken = 0;
+            if (reader.ReadBoolean()) {
+                tutorialOwner = reader.ReadByte();
+                tutorialSession = reader.ReadInt32();
+                tutorialToken = reader.ReadUInt32();
+            }
+            PointResolution resolution = (PointResolution)reader.ReadByte();
+            return new RequestPayload(initialized, pointMode, target, targetIndex,
+                targetType, bodyLocal, entryId, tutorialOwner, tutorialSession,
+                tutorialToken, resolution);
+        }
+
         internal static void CancelPendingTutorialStrikes(Player player, int session) {
             if (player == null || session <= 0) {
                 return;
@@ -365,11 +407,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
         }
 
+        /// <summary>
+        /// 请求侧寻址。代次在手就严格按代次解（槽位复用挡在外面）；
+        /// 客户端没收过该 NPC 的同步包时代次为 0，退回槽位+类型，其余条件由服务端复核兜住
+        /// </summary>
+        private bool TryResolveRequestTarget(out NPC target) {
+            if (requestTargetIdentity.IsValid) {
+                return requestTargetIdentity.TryResolve(out target);
+            }
+            target = null;
+            if (requestTargetIndex < 0 || requestTargetIndex >= Main.maxNPCs) {
+                return false;
+            }
+            NPC candidate = Main.npc[requestTargetIndex];
+            if (candidate?.active != true || candidate.type != requestTargetType) {
+                return false;
+            }
+            target = candidate;
+            return true;
+        }
+
         /// <summary>绑定目标的存活实例，死亡或网络代次不匹配返回 null。</summary>
         private NPC ValidTarget() {
-            NetworkNPCIdentity identity = authorityAccepted
-                ? authorityTargetIdentity : requestTargetIdentity;
-            if (!identity.TryResolve(out NPC npc) || npc.life <= 0) {
+            NPC npc;
+            if (authorityAccepted
+                ? !authorityTargetIdentity.TryResolve(out npc)
+                : !TryResolveRequestTarget(out npc)) {
+                return null;
+            }
+            if (npc.life <= 0) {
                 return null;
             }
             bool currentTutorial = Tutorial.OnikiriTutorialTargetGlobal.TryGetTutorialIdentity(npc,
@@ -429,6 +495,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 return;
             }
 
+            //生成包里没有请求，服务端只能等持有者补发的那一包。丢一次就永远批不下来，按节奏重发
+            requestResendTicks++;
+            if (requestResendTicks <= MaxRequestWaitFrames
+                && requestResendTicks % RequestResendInterval == 0) {
+                Projectile.netUpdate = true;
+            }
+
             timer = Math.Min(timer + 1, StrikeFrame);
             InitializePresentation();
             UpdatePresentationSounds();
@@ -436,14 +509,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         }
 
         private void TryAuthorizeRequest() {
-            if (!ValidateRequest(out NPC target, out Item weapon)) {
-                RejectAuthority();
+            //生成包在 NewProjectile 内部就发出去了，那一刻请求字段还没赋值。
+            //真正的请求在持有者补发的同步包里，落地前判死等于联机下永远批不出去
+            if (!requestInitialized) {
+                if (Main.netMode == NetmodeID.Server
+                    && ++requestWaitTicks <= MaxRequestWaitFrames) {
+                    return;
+                }
+                RejectAuthority("request payload never arrived");
+                return;
+            }
+            if (!ValidateRequest(out NPC target, out Item weapon,
+                out string failure)) {
+                RejectAuthority(failure);
+                return;
+            }
+            //代次以服务端这份为准，客户端可能压根没拿到过
+            NetworkNPCIdentity identity = NetworkNPCIdentity.Capture(target);
+            if (!identity.IsValid) {
+                RejectAuthority("target identity unavailable");
                 return;
             }
 
             authorityAccepted = true;
             activationId = OniSeverReplicationSystem.AllocateActivationId();
-            authorityTargetIdentity = requestTargetIdentity;
+            authorityTargetIdentity = identity;
             authorityAnchorCenter = requestPointMode ? Projectile.Center : target.Center;
             authorityCutAngle = SanitizeAngle(Projectile.ai[1]);
             authorityScale = SanitizeScale(OnikiriOverride.GetBladeScale(weapon));
@@ -473,39 +563,67 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             AdvanceAuthorityRevision();
         }
 
-        private bool ValidateRequest(out NPC target, out Item weapon) {
+        /// <summary>服务端复核。<paramref name="failure"/> 只用于日志，不参与判定</summary>
+        private bool ValidateRequest(out NPC target, out Item weapon,
+            out string failure) {
             target = null;
             weapon = null;
             Player owner = Owner;
-            if (!requestInitialized || owner?.active != true || owner.dead
-                || activationId != 0 || requestPointMode != ((int)Projectile.ai[0] == PointModeMarker)
-                || !requestTargetIdentity.IsValid
-                || !requestTargetIdentity.TryResolve(out target)
-                || target.life <= 0
-                || !OniSeverReplicationSystem.IsValidWorldPosition(
-                    Projectile.Center)
-                || !float.IsFinite(Projectile.ai[1])
-                || !float.IsFinite(Projectile.ai[2])
+            failure = null;
+            if (owner?.active != true || owner.dead) {
+                failure = "owner unavailable";
+            }
+            else if (activationId != 0) {
+                failure = "activation already allocated";
+            }
+            else if (requestPointMode != ((int)Projectile.ai[0] == PointModeMarker)) {
+                failure = "mode marker mismatch";
+            }
+            else if (!TryResolveRequestTarget(out target) || target.life <= 0) {
+                failure = "target unresolved";
+            }
+            else if (!OniSeverReplicationSystem.IsValidWorldPosition(Projectile.Center)) {
+                failure = "anchor out of world";
+            }
+            else if (!float.IsFinite(Projectile.ai[1]) || !float.IsFinite(Projectile.ai[2])
                 || Projectile.ai[2] < OniSeverReplicationSystem.MinScale
-                || Projectile.ai[2] > OniSeverReplicationSystem.MaxScale
-                || DistanceToHitbox(target, owner.Center) > DismemberRange
-                || !ValidateTutorialIdentity(target)
-                || (!Tutorial.OnikiriTutorialTargetGlobal.IsTutorialTarget(target,
-                    out _, out _) && !target.CanBeChasedBy())
-                || HasCompetingAuthority()) {
+                || Projectile.ai[2] > OniSeverReplicationSystem.MaxScale) {
+                failure = "ai payload out of range";
+            }
+            else if (DistanceToHitbox(target, owner.Center) > DismemberRange) {
+                failure = "target out of range";
+            }
+            else if (!ValidateTutorialIdentity(target)) {
+                failure = "tutorial identity mismatch";
+            }
+            else if (!Tutorial.OnikiriTutorialTargetGlobal.IsTutorialTarget(target,
+                out _, out _) && !target.CanBeChasedBy()) {
+                failure = "target not chaseable";
+            }
+            else if (HasCompetingAuthority()) {
+                failure = "competing strike active";
+            }
+            if (failure != null) {
+                target = null;
                 return false;
             }
 
             weapon = FindOnikiri(owner);
             if (weapon == null) {
+                failure = "onikiri not held";
                 return false;
             }
             if (!requestPointMode) {
-                return (int)Projectile.ai[0] == target.whoAmI;
+                if ((int)Projectile.ai[0] == target.whoAmI) {
+                    return true;
+                }
+                failure = "target slot mismatch";
+                return false;
             }
             if (omokageEntryId <= 0 || tutorialTargetToken != 0
                 || !IsFinite(requestPointBodyLocal)
                 || Vector2.Distance(owner.Center, Projectile.Center) > DismemberRange) {
+                failure = "paper anchor invalid";
                 return false;
             }
 
@@ -513,8 +631,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 + new Vector2(96f);
             body.X = MathHelper.Clamp(body.X, 96f, 2048f);
             body.Y = MathHelper.Clamp(body.Y, 96f, 2048f);
-            return MathF.Abs(requestPointBodyLocal.X) <= body.X
-                && MathF.Abs(requestPointBodyLocal.Y) <= body.Y;
+            if (MathF.Abs(requestPointBodyLocal.X) <= body.X
+                && MathF.Abs(requestPointBodyLocal.Y) <= body.Y) {
+                return true;
+            }
+            failure = "paper cut point outside body";
+            return false;
         }
 
         private void UpdateAuthority() {
@@ -744,66 +866,64 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             return flags;
         }
 
-        private void AcceptIncomingRequest(bool initialized, bool pointMode,
-            bool targetValid, NetworkNPCIdentity target, Vector2 bodyLocal,
-            int entryId, int tutorialOwner, int tutorialSession,
-            uint tutorialToken, PointResolution resolution) {
-            if (!initialized || !targetValid || resolution > PointResolution.Failed
-                || !IsFinite(bodyLocal)) {
+        private void AcceptIncomingRequest(in RequestPayload payload) {
+            if (!payload.Initialized || !payload.HasTarget
+                || payload.Resolution > PointResolution.Failed
+                || !IsFinite(payload.BodyLocal)) {
                 return;
             }
             if (!requestInitialized) {
-                requestInitialized = true;
-                requestPointMode = pointMode;
-                requestTargetIdentity = target;
-                requestPointBodyLocal = bodyLocal;
-                omokageEntryId = entryId;
-                tutorialTargetOwner = tutorialOwner;
-                tutorialTargetSession = tutorialSession;
-                tutorialTargetToken = tutorialToken;
+                ApplyRequestPayload(in payload);
                 //批准请求前不接受客户端声称的斩纸结果
                 pointResolution = PointResolution.Pending;
                 return;
             }
 
-            bool sameRequest = requestPointMode == pointMode
-                && requestTargetIdentity == target
-                && requestPointBodyLocal == bodyLocal
-                && omokageEntryId == entryId
-                && tutorialTargetOwner == tutorialOwner
-                && tutorialTargetSession == tutorialSession
-                && tutorialTargetToken == tutorialToken;
+            bool sameRequest = requestPointMode == payload.PointMode
+                && requestTargetIdentity == payload.Target
+                && requestTargetIndex == payload.TargetIndex
+                && requestTargetType == payload.TargetType
+                && requestPointBodyLocal == payload.BodyLocal
+                && omokageEntryId == payload.OmokageEntryId
+                && tutorialTargetOwner == payload.TutorialOwner
+                && tutorialTargetSession == payload.TutorialSession
+                && tutorialTargetToken == payload.TutorialToken;
             if (!sameRequest || !authorityAccepted || !PointMode
                 || pointResolution != PointResolution.Pending
-                || resolution == PointResolution.Pending) {
+                || payload.Resolution == PointResolution.Pending) {
                 return;
             }
-            pointResolution = resolution;
+            pointResolution = payload.Resolution;
         }
 
-        private void AcceptReplicatedRequest(bool initialized, bool pointMode,
-            bool targetValid, NetworkNPCIdentity target, Vector2 bodyLocal,
-            int entryId, int tutorialOwner, int tutorialSession,
-            uint tutorialToken, PointResolution resolution) {
-            if (!initialized || !targetValid || resolution > PointResolution.Failed
-                || !IsFinite(bodyLocal)) {
+        private void AcceptReplicatedRequest(in RequestPayload payload) {
+            if (!payload.Initialized || !payload.HasTarget
+                || payload.Resolution > PointResolution.Failed
+                || !IsFinite(payload.BodyLocal)) {
                 return;
             }
             if (!requestInitialized) {
-                requestInitialized = true;
-                requestPointMode = pointMode;
-                requestTargetIdentity = target;
-                requestPointBodyLocal = bodyLocal;
-                omokageEntryId = entryId;
-                tutorialTargetOwner = tutorialOwner;
-                tutorialTargetSession = tutorialSession;
-                tutorialTargetToken = tutorialToken;
+                ApplyRequestPayload(in payload);
             }
-            if (requestPointMode == pointMode && requestTargetIdentity == target
+            if (requestPointMode == payload.PointMode
+                && requestTargetIdentity == payload.Target
                 && pointResolution == PointResolution.Pending
-                && resolution != PointResolution.Pending) {
-                pointResolution = resolution;
+                && payload.Resolution != PointResolution.Pending) {
+                pointResolution = payload.Resolution;
             }
+        }
+
+        private void ApplyRequestPayload(in RequestPayload payload) {
+            requestInitialized = true;
+            requestPointMode = payload.PointMode;
+            requestTargetIdentity = payload.Target;
+            requestTargetIndex = payload.TargetIndex;
+            requestTargetType = payload.TargetType;
+            requestPointBodyLocal = payload.BodyLocal;
+            omokageEntryId = payload.OmokageEntryId;
+            tutorialTargetOwner = payload.TutorialOwner;
+            tutorialTargetSession = payload.TutorialSession;
+            tutorialTargetToken = payload.TutorialToken;
         }
 
         private void AcceptAuthoritySnapshot(AuthorityFlags flags,
@@ -1009,7 +1129,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             Tutorial.OnikiriTutorialEvents.FireDismemberLanded(Owner, target);
         }
 
-        private void RejectAuthority() {
+        private void RejectAuthority(string reason) {
+            //否决在正常游玩里极少发生，记一行足够把联机故障定位到具体条款
+            if (Main.netMode == NetmodeID.Server) {
+                CWRMod.Instance?.Logger.Info(
+                    $"OniSeverStrike request rejected (owner {Projectile.owner}): {reason}");
+            }
             authorityRejected = true;
             authorityAccepted = false;
             activationId = 0;

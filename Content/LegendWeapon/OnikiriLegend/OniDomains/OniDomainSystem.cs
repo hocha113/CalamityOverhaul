@@ -11,7 +11,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             if (Main.dedServ) {
                 return;
             }
-            OniDomain.Local?.UpdateLocal();
+            //先定主导域再推进：本帧的表现闸门按上一帧的相位选，差一帧看不出来
+            OniDomain.RefreshViewed();
+            OniDomain.UpdateAll();
             UpdateSkyActivation();
             OniDomainDeco.Update();
         }
@@ -25,7 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             if (sky == null) {
                 return;
             }
-            bool active = OniDomain.Local?.AnyActive ?? false;
+            bool active = OniDomain.Viewed?.AnyActive ?? false;
             if (active) {
                 SkyManager.Instance.Activate(OniDomainSky.Name);
                 if (!Filters.Scene[OniDomainSky.Name].IsActive()) {
@@ -46,21 +48,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             if (Main.dedServ) {
                 return;
             }
-            OniDomain.Local?.ResetDomain();
+            for (int i = 0; i < Main.maxPlayers; i++) {
+                if (Main.player[i]?.TryGetModPlayer(out OniDomainPlayer domain) == true) {
+                    domain.ResetDomain();
+                }
+            }
+            OniDomain.RefreshViewed();
             OniDomainDeco.Clear();
         }
 
         //里世界压光、氛围级而非致盲级，剪影可读性靠淡色雾空反衬
 
         public override void ModifyLightingBrightness(ref float scale) {
-            float ura = OniDomain.LocalUraSmooth;
+            float ura = OniDomain.ViewedUraSmooth;
             if (ura > 0.001f) {
                 scale *= 1f - 0.35f * ura;
             }
         }
 
         public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor) {
-            OniDomainPlayer domain = OniDomain.Local;
+            OniDomainPlayer domain = OniDomain.Viewed;
             float ura = domain?.UraSmooth ?? 0f;
             float omote = 0f;
             if (domain != null && domain.AnyActive && !domain.WorldIsUra) {
