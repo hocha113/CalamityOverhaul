@@ -41,8 +41,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
     {
 #if DEBUG
         /// <summary>Debug 矩阵测试架势；负值保持原有自动满势行为</summary>
-        internal static float DebugStanceOverride = -1f;
-        internal static bool DebugAutoRefill = true;
+        internal static float DebugStanceOverride => -1f;
+        internal static bool DebugAutoRefill => true;
 #endif
         //====调参常量====
         public const float VigorMax = 100f;
