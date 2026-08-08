@@ -20,13 +20,11 @@ using CalamityOverhaul.Content.RAMSystems;
 using CalamityOverhaul.Content.Scenarios.Draedon;
 using CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.SignalTower;
 using CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch;
-using CalamityOverhaul.Content.Scenarios.Himayo;
 using CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines;
 using CalamityOverhaul.Content.Scenarios.OldDuke;
 using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
 using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
 using CalamityOverhaul.Content.Wraiths.Runtime;
-using CalamityOverhaul.OtherMods.Entropys;
 using System.IO;
 using Terraria.ModLoader;
 

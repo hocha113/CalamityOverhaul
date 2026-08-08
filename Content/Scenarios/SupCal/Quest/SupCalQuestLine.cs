@@ -1,4 +1,4 @@
-﻿﻿using CalamityOverhaul.Content.EntrustManager;
+﻿using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.Scenarios.Helen;
 using CalamityOverhaul.Content.Scenarios.SupCal.Quest.DoGQuest;
 using CalamityOverhaul.Content.Scenarios.SupCal.Quest.PallbearerQuest;

@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.Cinematics;
 using InnoVault.PRT;
 using System;
 using Terraria;
@@ -248,49 +247,65 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 case 6:
                     //远处一声闷雷，预兆
                     SoundEngine.PlaySound(SoundID.Thunder with {
-                        Pitch = -0.85f, Volume = 0.38f, MaxInstances = 3,
+                        Pitch = -0.85f,
+                        Volume = 0.38f,
+                        MaxInstances = 3,
                     }, player.Center);
                     break;
                 case ApproachEnd:
                     //镜面起：水膜漫开
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
-                        Pitch = -0.6f, Volume = 0.85f, MaxInstances = 3,
+                        Pitch = -0.6f,
+                        Volume = 0.85f,
+                        MaxInstances = 3,
                     }, FocusWorld);
                     break;
                 case 104:
                     //第二声更沉的闷雷
                     SoundEngine.PlaySound(SoundID.Thunder with {
-                        Pitch = -0.95f, Volume = 0.3f, MaxInstances = 3,
+                        Pitch = -0.95f,
+                        Volume = 0.3f,
+                        MaxInstances = 3,
                     }, player.Center);
                     break;
                 case GlimpseStart + 4:
                     //镜中异样：布被扯紧的闷吸声
                     SoundEngine.PlaySound(SoundID.DD2_BookStaffCast with {
-                        Pitch = -0.9f, Volume = 0.42f, MaxInstances = 3,
+                        Pitch = -0.9f,
+                        Volume = 0.42f,
+                        MaxInstances = 3,
                     }, FocusWorld);
                     break;
                 case DwellEnd:
                     //翻转起势
                     SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with {
-                        Pitch = -0.7f, Volume = 0.5f, MaxInstances = 3,
+                        Pitch = -0.7f,
+                        Volume = 0.5f,
+                        MaxInstances = 3,
                     }, FocusWorld);
                     break;
                 case 208:
                     //翻转中段，世界滚动的极低闷响
                     SoundEngine.PlaySound(SoundID.Thunder with {
-                        Pitch = -1f, Volume = 0.34f, MaxInstances = 3,
+                        Pitch = -1f,
+                        Volume = 0.34f,
+                        MaxInstances = 3,
                     }, player.Center);
                     break;
                 case 255:
                     //新世界的雨开始砸下来
                     SoundEngine.PlaySound(SoundID.SplashWeak with {
-                        Pitch = -0.35f, Volume = 0.55f, MaxInstances = 3,
+                        Pitch = -0.35f,
+                        Volume = 0.55f,
+                        MaxInstances = 3,
                     }, player.Center);
                     break;
                 case RollEnd:
                     //落定一记压低的闷锣，雨声由常驻雨幕接管
                     SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                        Pitch = -0.9f, Volume = 0.4f, MaxInstances = 3,
+                        Pitch = -0.9f,
+                        Volume = 0.4f,
+                        MaxInstances = 3,
                     }, player.Center);
                     break;
             }
@@ -299,10 +314,14 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         /// <summary>结算：白闪掩护下切入鬼雨世界状态，真实渲染从此带鬼雨调色</summary>
         private static void Commit(Player player) {
             SoundEngine.PlaySound(SoundID.Thunder with {
-                Pitch = -0.6f, Volume = 0.85f, MaxInstances = 3,
+                Pitch = -0.6f,
+                Volume = 0.85f,
+                MaxInstances = 3,
             }, player.Center);
             SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
-                Pitch = -0.7f, Volume = 0.6f, MaxInstances = 3,
+                Pitch = -0.7f,
+                Volume = 0.6f,
+                MaxInstances = 3,
             }, player.Center);
             player.CWR()?.GetScreenShake(9f);
             OniRainWorldState.EnterLocal(player);

@@ -1,11 +1,10 @@
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.UIs.UIEffect;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {

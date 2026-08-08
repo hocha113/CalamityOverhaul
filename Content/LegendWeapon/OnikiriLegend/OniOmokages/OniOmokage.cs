@@ -1,5 +1,4 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial;

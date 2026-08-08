@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.Actors;
 using InnoVault.Cinematics;
 using InnoVault.PRT;
@@ -115,10 +115,14 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             //触发确认帧：伞骨绷响 + 猛颤 + 伞沿甩出一圈水珠
             triggerKick = 26;
             SoundEngine.PlaySound(SoundID.Dig with {
-                Pitch = 0.3f, Volume = 0.55f, MaxInstances = 3,
+                Pitch = 0.3f,
+                Volume = 0.55f,
+                MaxInstances = 3,
             }, CanopyAnchor);
             SoundEngine.PlaySound(SoundID.SplashWeak with {
-                Pitch = -0.2f, Volume = 0.5f, MaxInstances = 3,
+                Pitch = -0.2f,
+                Volume = 0.5f,
+                MaxInstances = 3,
             }, CanopyAnchor);
 
             for (int i = 0; i < 9; i++) {

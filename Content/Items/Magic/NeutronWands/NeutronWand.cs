@@ -1,15 +1,12 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 

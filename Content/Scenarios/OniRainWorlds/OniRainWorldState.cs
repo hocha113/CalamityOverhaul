@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using Terraria;
@@ -73,7 +73,9 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             }
             ExitLocal(player);
             SoundEngine.PlaySound(SoundID.SplashWeak with {
-                Pitch = -0.4f, Volume = 0.7f, MaxInstances = 3,
+                Pitch = -0.4f,
+                Volume = 0.7f,
+                MaxInstances = 3,
             }, player.Center);
         }
 

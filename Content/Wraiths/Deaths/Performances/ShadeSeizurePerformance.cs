@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Wraiths.Projectiles;
 using InnoVault.PRT;
@@ -249,8 +249,7 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths.Performances
             try {
                 field.DrawCuts(device, cutEffect, noise);
                 field.DrawShards(device, bodyEffect, noise, 1f);
-            }
-            finally {
+            } finally {
                 device.BlendState = previousBlend;
                 device.RasterizerState = previousRasterizer;
                 device.DepthStencilState = previousDepth;
