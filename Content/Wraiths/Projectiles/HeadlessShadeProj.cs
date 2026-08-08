@@ -105,12 +105,15 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         private float opacitySmooth;
         private float dissolveSmooth = 1f;
         private float phaseSmooth;
-        private float stretchSmooth;
+        /// <summary>蓄力下压量与扑出前倾量：姿态信号，取代旧的贴图轴向缩放</summary>
+        private float crouchSmooth;
+        private float lungeSmooth;
         private float drawOpacity;
         private float bodyVeil = 1f;
         private float rimFlash;
         private int twitchCountdown;
         private int twitchHold;
+        private int directionHoldTimer;
         private Vector2 twitchOffset;
 
         private ShadeStrikeField strikeField;
@@ -288,12 +291,13 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             return Owner.Center + new Vector2(-ownerDirection * 48f, -48f) + bob + twitchOffset;
         }
 
-        /// <summary>影子的抽动：偶尔错开一小段再收回，而不是匀速漂浮</summary>
+        /// <summary>影子的抽动：偶尔错开一小段再收回，而不是匀速漂浮；抽动那一下颈口骨白随之一悸</summary>
         private void UpdateTwitch() {
             if (--twitchCountdown <= 0) {
                 twitchCountdown = Main.rand.Next(72, 165);
                 twitchOffset = Main.rand.NextVector2Circular(10f, 6f);
                 twitchHold = 3;
+                rimFlash = MathF.Max(rimFlash, 0.35f);
             }
             if (twitchHold > 0) {
                 twitchHold--;
@@ -302,8 +306,20 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             twitchOffset = Vector2.Lerp(twitchOffset, Vector2.Zero, 0.22f);
         }
 
+        /// <summary>朝向死区：主人短促回头不牵动鬼影，稳定一段时间才换边</summary>
+        private void UpdateOwnerFacing() {
+            if (Owner.direction == ownerDirection || Owner.direction == 0) {
+                directionHoldTimer = 0;
+                return;
+            }
+            if (++directionHoldTimer >= 18) {
+                directionHoldTimer = 0;
+                ownerDirection = Owner.direction;
+            }
+        }
+
         private void IdleBehavior() {
-            ownerDirection = Owner.direction;
+            UpdateOwnerFacing();
             UpdateTwitch();
             MoveToward(IdleHoverPosition(), 0.12f, 12f);
 
@@ -604,7 +620,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             => float.IsFinite(value.X) && float.IsFinite(value.Y);
 
         private void RecoveringBehavior() {
-            ownerDirection = Owner.direction;
+            UpdateOwnerFacing();
             UpdateTwitch();
             float progress = MathHelper.Clamp(StateTimer / RecoverDuration, 0f, 1f);
             Vector2 next = Vector2.Lerp(recoverStart, IdleHoverPosition(), VaultUtils.EaseOutCubic(progress));
@@ -616,7 +632,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         }
 
         private void DismissingBehavior() {
-            ownerDirection = Owner.direction;
+            UpdateOwnerFacing();
             float progress = MathHelper.Clamp(StateTimer / DismissDuration, 0f, 1f);
             Vector2 sink = Owner.Center + new Vector2(-ownerDirection * 20f, 12f);
             SetCenter(Vector2.Lerp(dismissStart, sink, VaultUtils.EaseOutCubic(progress)));
@@ -645,6 +661,8 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                     break;
                 case ShadeState.Dashing:
                     strikeResolved = false;
+                    //扑出只有 8 帧，前倾姿态直接到位，不等插值爬坡
+                    lungeSmooth = 1f;
                     if (!Main.dedServ) {
                         SoundEngine.PlaySound(SoundID.Item71 with {
                             Volume = 0.72f,
@@ -722,33 +740,37 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         }
 
         private void UpdateVisuals() {
+            //常态就是实体：影不靠半透明装鬼，存在感全程拉满，状态差异写进侵蚀毛边与姿态
             float opacityTarget = State switch {
-                ShadeState.Idle => 0.30f,
-                ShadeState.Stalking => 0.52f,
-                ShadeState.DashCharge => MathHelper.Lerp(0.58f, 0.98f,
-                    MathHelper.Clamp(StateTimer / ChargeDuration, 0f, 1f)),
+                ShadeState.Idle => 0.92f,
+                ShadeState.Stalking => 0.98f,
+                ShadeState.DashCharge => 1f,
                 ShadeState.Dashing => 1f,
-                ShadeState.Recovering => 0.48f,
+                ShadeState.Recovering => 0.90f,
                 _ => 0f,
             };
+            //侵蚀只咬裙摆毛口：常态微散，蓄力收拢到緻密，只有退场才整体溶解
             float dissolveTarget = State switch {
-                ShadeState.Idle => 0.72f,
-                ShadeState.Stalking => 0.48f,
-                ShadeState.DashCharge => MathHelper.Lerp(0.42f, 0.04f,
+                ShadeState.Idle => 0.26f,
+                ShadeState.Stalking => 0.14f,
+                ShadeState.DashCharge => MathHelper.Lerp(0.12f, 0.03f,
                     MathHelper.Clamp(StateTimer / ChargeDuration, 0f, 1f)),
                 ShadeState.Dashing => 0.02f,
-                ShadeState.Recovering => 0.58f,
+                ShadeState.Recovering => 0.30f,
                 _ => 1f,
             };
             float phaseTarget = State is ShadeState.DashCharge or ShadeState.Dashing ? 1f : 0f;
-            float stretchTarget = State == ShadeState.DashCharge
+            float crouchTarget = State == ShadeState.DashCharge
                 ? MathHelper.Clamp(StateTimer / ChargeDuration, 0f, 1f)
-                : State == ShadeState.Dashing ? 1f : 0f;
+                : 0f;
 
             opacitySmooth = MathHelper.Lerp(opacitySmooth, opacityTarget, State == ShadeState.Dashing ? 0.45f : 0.14f);
             dissolveSmooth = MathHelper.Lerp(dissolveSmooth, dissolveTarget, 0.16f);
             phaseSmooth = MathHelper.Lerp(phaseSmooth, phaseTarget, 0.20f);
-            stretchSmooth = MathHelper.Lerp(stretchSmooth, stretchTarget, 0.24f);
+            crouchSmooth = MathHelper.Lerp(crouchSmooth, crouchTarget, 0.30f);
+            lungeSmooth = MathHelper.Lerp(lungeSmooth,
+                State == ShadeState.Dashing ? 1f : 0f,
+                State == ShadeState.Dashing ? 0.60f : 0.16f);
             float appear = MathHelper.Clamp(visualAge / 18f, 0f, 1f);
             drawOpacity = MathHelper.Clamp(opacitySmooth * appear, 0f, 1f);
 
@@ -766,11 +788,29 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
             if (++wispTimer >= (State == ShadeState.Dashing ? 2 : 9)) {
                 wispTimer = 0;
-                Vector2 pos = Projectile.Center + new Vector2(
-                    Main.rand.NextFloat(-30f, 30f), Main.rand.NextFloat(8f, 58f));
-                Vector2 velocity = State == ShadeState.Dashing
-                    ? -dashDirection * Main.rand.NextFloat(1.4f, 3.4f) + Main.rand.NextVector2Circular(0.8f, 0.8f)
-                    : new Vector2(Main.rand.NextFloat(-0.35f, 0.35f), Main.rand.NextFloat(-0.9f, -0.2f));
+                Vector2 pos;
+                Vector2 velocity;
+                if (State == ShadeState.Dashing) {
+                    pos = Projectile.Center + new Vector2(
+                        Main.rand.NextFloat(-30f, 30f), Main.rand.NextFloat(8f, 58f));
+                    velocity = -dashDirection * Main.rand.NextFloat(1.4f, 3.4f)
+                        + Main.rand.NextVector2Circular(0.8f, 0.8f);
+                }
+                else if (Main.rand.NextBool(3)) {
+                    //断颈口漏影：翻过肩线往身后往下淌，绝不向上聚出一颗"头"
+                    float neckRise = BodyDrawSize * BodyScale * 0.5f * 0.74f;
+                    pos = Projectile.Center - Vector2.UnitY * neckRise
+                        + new Vector2(Main.rand.NextFloat(-9f, 9f), Main.rand.NextFloat(0f, 6f));
+                    velocity = new Vector2(-ownerDirection * Main.rand.NextFloat(0.25f, 0.75f),
+                        Main.rand.NextFloat(0.20f, 0.60f));
+                }
+                else {
+                    //裙摆坠影：影比烟沉，往下渗不往上飘
+                    pos = Projectile.Center + new Vector2(
+                        Main.rand.NextFloat(-28f, 28f), Main.rand.NextFloat(26f, 64f));
+                    velocity = new Vector2(Main.rand.NextFloat(-0.30f, 0.30f),
+                        Main.rand.NextFloat(0.30f, 0.85f));
+                }
                 PRTLoader.NewParticle<PRT_Smoke>(pos, velocity, new Color(20, 19, 25) * drawOpacity,
                     Main.rand.NextFloat(0.07f, 0.12f))
                     ?.Configure(Main.rand.Next(18, 31), 0.30f * drawOpacity,
@@ -805,13 +845,12 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                 rig.SetSeed(Seed);
             }
             float baseHalf = BodyDrawSize * BodyScale * 0.5f;
-            Vector2 lead = State is ShadeState.DashCharge or ShadeState.Dashing
+            //回位阶段保留冲线方向，让前倾姿态随 lunge 衰减自然直起来
+            Vector2 lead = State is ShadeState.DashCharge or ShadeState.Dashing or ShadeState.Recovering
                 ? dashDirection
                 : Vector2.Zero;
-            rig.Update(Projectile.Center,
-                baseHalf * (1f + stretchSmooth * 0.18f),
-                baseHalf * (1f - stretchSmooth * 0.20f),
-                ownerDirection, lead, stretchSmooth, Main.GlobalTimeWrappedHourly);
+            rig.Update(Projectile.Center, baseHalf, baseHalf, ownerDirection, lead,
+                crouchSmooth, lungeSmooth, Main.GlobalTimeWrappedHourly);
         }
 
         private void PlayChargeFx() {
@@ -937,8 +976,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                 rig.DrawGroundCast(device, effect, bodyOpacity, dissolveSmooth, seed);
                 strikeField?.DrawCuts(device, cutEffect, noise);
 
-                //三明治：漏影与后侧臂压在剪影底下，近侧臂盖在上面
-                rig.DrawNeckSpill(device, effect, bodyOpacity, phaseSmooth, rimFlash, seed);
+                //三明治：后侧臂压在剪影底下，近侧臂盖在上面
                 rig.DrawFarArm(device, effect, bodyOpacity, phaseSmooth, rimFlash, seed);
                 rig.DrawBody(device, effect, bodyOpacity, dissolveSmooth, phaseSmooth, rimFlash, seed);
                 rig.DrawNearArm(device, effect, bodyOpacity, phaseSmooth, rimFlash, seed);
@@ -956,17 +994,16 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         }
 
         private void DrawFallback(Texture2D shutter) {
+            //兜底同样只用倾斜写姿态，不做轴向压扁
             float lean = State == ShadeState.Dashing
                 ? dashDirection.X * 0.22f
-                : MathHelper.Clamp(Projectile.velocity.X * 0.008f, -0.12f, 0.12f);
+                : MathHelper.Clamp(Projectile.velocity.X * 0.008f, -0.12f, 0.12f)
+                    + crouchSmooth * -0.08f * ownerDirection;
             float scale = BodyDrawSize * BodyScale / shutter.Width;
-            Vector2 directionalScale = new(
-                scale * (1f - stretchSmooth * 0.20f),
-                scale * (1f + stretchSmooth * 0.18f));
             Color color = new Color(7, 7, 10) * (drawOpacity * bodyVeil);
             SpriteEffects effects = ownerDirection >= 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             Main.EntitySpriteDraw(shutter, Projectile.Center - Main.screenPosition, null, color, lean,
-                shutter.Size() * 0.5f, directionalScale, effects, 0f);
+                shutter.Size() * 0.5f, new Vector2(scale), effects, 0f);
         }
     }
 }

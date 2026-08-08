@@ -6,13 +6,14 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 {
     /// <summary>
     /// 无头鬼影的本体骨架，纯客户端。躯干是贴 Shutter 剪影的分段条带（能弯能拖），
-    /// 双臂、断颈漏影走程序化锥形条带，另有一份压扁剪切的地面投影——它是影子，不是漂浮贴图。
+    /// 双臂走程序化锥形条带，另有一份压扁剪切的地面投影——它是影子，不是漂浮贴图。
+    /// 断颈之上不许有任何几何：无头是身份，颈口只由着色器给一线骨白。
+    /// 蓄力/扑出全部写进姿态斜率（重心下压、上身抢线），不做贴图轴向缩放。
     /// </summary>
     internal sealed class HeadlessShadeRig
     {
         private const int SpineNodes = 7;
         private const int ArmNodes = 4;
-        private const int SpillNodes = 5;
         private const int MaxStripNodes = 8;
         /// <summary>地面探测上限</summary>
         private const float GroundProbe = 224f;
@@ -24,7 +25,6 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         private readonly Vector2[] spine = new Vector2[SpineNodes];
         private readonly Vector2[] farArm = new Vector2[ArmNodes];
         private readonly Vector2[] nearArm = new Vector2[ArmNodes];
-        private readonly Vector2[] spill = new Vector2[SpillNodes];
         private readonly VertexPositionColorTexture[] stripVertices
             = new VertexPositionColorTexture[MaxStripNodes * 2];
 
@@ -33,6 +33,8 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         private float seedPhase;
         private float groundY = float.NaN;
         private int facing = 1;
+        /// <summary>朝向的连续量：转身时双臂扫过身前，而不是一帧镜像跳变</summary>
+        private float facingSmooth = 1f;
         private float halfWidth = 92f;
 
         internal void SetSeed(float seed) => seedPhase = seed * MathHelper.TwoPi;
@@ -41,43 +43,51 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
         internal void Snap() => primed = false;
 
         internal void Update(Vector2 center, float halfHeight, float bodyHalfWidth, int direction,
-            Vector2 lead, float phase, float time) {
+            Vector2 lead, float crouch, float lunge, float time) {
             facing = direction >= 0 ? 1 : -1;
+            facingSmooth = MathHelper.Lerp(facingSmooth, facing, 0.20f);
             halfWidth = bodyHalfWidth;
-            float segLen = halfHeight * 2f / (SpineNodes - 1);
-            Vector2 anchor = center - Vector2.UnitY * halfHeight;
+
+            //姿态而非缩放：蓄力压低拉回重心，扑出时上身抢进冲线、体长顺势微延
+            float effHalf = halfHeight * (1f - crouch * 0.14f + lunge * 0.08f);
+            float segLen = effHalf * 2f / (SpineNodes - 1);
+            Vector2 anchor = center - Vector2.UnitY * effHalf
+                + lead * effHalf * (lunge * 0.42f - crouch * 0.16f)
+                + Vector2.UnitY * (crouch * effHalf * 0.10f);
+
             //瞬移级位移直接重钉，否则链条会被拉成一条面条
             if (!primed || Vector2.DistanceSquared(anchor, lastAnchor) > TeleportSnapSq) {
-                Prime(anchor, segLen);
+                Prime(anchor, segLen, lead, lunge);
                 primed = true;
             }
             lastAnchor = anchor;
 
-            UpdateSpine(anchor, segLen, lead, phase, time);
-            UpdateArms(segLen, lead, phase, time);
-            UpdateSpill(segLen, time);
+            UpdateSpine(anchor, segLen, lead, crouch, lunge, time);
+            float swing = MathHelper.Clamp(MathF.Max(lunge, crouch * 0.5f), 0f, 1f);
+            UpdateArms(segLen, lead, swing, time);
             groundY = ProbeGround(spine[SpineNodes - 1]);
         }
 
-        private void Prime(Vector2 anchor, float segLen) {
+        private void Prime(Vector2 anchor, float segLen, Vector2 lead, float lunge) {
+            //重钉常发生在穿体重亮的一瞬：直接按扑姿钉链，避免先立正再倒下去
+            Vector2 down = (Vector2.UnitY + lead * (lunge * 0.85f)).SafeNormalize(Vector2.UnitY);
+            facingSmooth = facing;
             for (int i = 0; i < SpineNodes; i++) {
-                spine[i] = anchor + Vector2.UnitY * (segLen * i);
+                spine[i] = anchor + down * (segLen * i);
             }
             Vector2 shoulder = Vector2.Lerp(spine[2], spine[3], 0.10f);
             float armSpan = halfWidth * 0.40f;
             for (int i = 0; i < ArmNodes; i++) {
-                Vector2 drop = Vector2.UnitY * (segLen * 0.70f * i);
+                Vector2 drop = down * (segLen * 0.70f * i);
                 farArm[i] = shoulder - new Vector2(armSpan * facing, 0f) + drop;
                 nearArm[i] = shoulder + new Vector2(armSpan * facing, 0f) + drop;
             }
-            Vector2 neck = Vector2.Lerp(spine[0], spine[1], 0.80f);
-            for (int i = 0; i < SpillNodes; i++) {
-                spill[i] = neck - Vector2.UnitY * (segLen * 0.30f * i);
-            }
         }
 
-        private void UpdateSpine(Vector2 anchor, float segLen, Vector2 lead, float phase, float time) {
+        private void UpdateSpine(Vector2 anchor, float segLen, Vector2 lead, float crouch,
+            float lunge, float time) {
             spine[0] = anchor;
+            float drag = crouch * 8f + lunge * 26f;
             for (int i = 1; i < SpineNodes; i++) {
                 float depth = i / (SpineNodes - 1f);
                 //越靠下摆跟得越慢，位移时下摆自然被拖在身后
@@ -85,28 +95,28 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                 float sway = MathF.Sin(time * 1.55f + i * 0.72f + seedPhase) * 2.6f * depth;
                 Vector2 desired = spine[i - 1] + Vector2.UnitY * segLen
                     + new Vector2(sway, 0f)
-                    - lead * (phase * 17f * depth);
+                    - lead * (drag * depth);
                 spine[i] = Vector2.Lerp(spine[i], desired, follow);
                 Vector2 delta = spine[i] - spine[i - 1];
                 spine[i] = spine[i - 1] + delta.SafeNormalize(Vector2.UnitY) * segLen;
             }
         }
 
-        private void UpdateArms(float segLen, Vector2 lead, float phase, float time) {
+        private void UpdateArms(float segLen, Vector2 lead, float swing, float time) {
             //袖口在剪影 V≈0.35 处收住，前臂从那里接出去，正好补上贴图没有的部分
             Vector2 spineDir = (spine[3] - spine[2]).SafeNormalize(Vector2.UnitY);
             Vector2 shoulderNormal = spineDir.RotatedBy(MathHelper.PiOver2);
             Vector2 shoulderCenter = Vector2.Lerp(spine[2], spine[3], 0.10f);
             float armSpan = halfWidth * 0.40f;
-            Vector2 farShoulder = shoulderCenter + shoulderNormal * (armSpan * facing);
-            Vector2 nearShoulder = shoulderCenter - shoulderNormal * (armSpan * facing);
+            Vector2 farShoulder = shoulderCenter + shoulderNormal * (armSpan * facingSmooth);
+            Vector2 nearShoulder = shoulderCenter - shoulderNormal * (armSpan * facingSmooth);
 
-            //扑杀时双臂由垂挂甩向目标，"扑"要靠这一下读出来
-            Vector2 restFar = new Vector2(-0.45f * facing, 1f).SafeNormalize(Vector2.UnitY);
-            Vector2 restNear = new Vector2(0.50f * facing, 1f).SafeNormalize(Vector2.UnitY);
-            float swing = MathHelper.Clamp(phase, 0f, 1f);
-            UpdateArm(farArm, farShoulder, restFar, lead, swing, segLen * 0.66f, time, 0.7f);
-            UpdateArm(nearArm, nearShoulder, restNear, lead, swing, segLen * 0.72f, time, 1.9f);
+            //扑杀时双臂由垂挂甩向目标，"扑"要靠这一下读出来；扑出瞬间臂链顺势探长
+            Vector2 restFar = new Vector2(-0.45f * facingSmooth, 1f).SafeNormalize(Vector2.UnitY);
+            Vector2 restNear = new Vector2(0.50f * facingSmooth, 1f).SafeNormalize(Vector2.UnitY);
+            float reach = 1f + swing * 0.22f;
+            UpdateArm(farArm, farShoulder, restFar, lead, swing, segLen * 0.66f * reach, time, 0.7f);
+            UpdateArm(nearArm, nearShoulder, restNear, lead, swing, segLen * 0.72f * reach, time, 1.9f);
         }
 
         private void UpdateArm(Vector2[] arm, Vector2 shoulder, Vector2 rest, Vector2 lead,
@@ -119,28 +129,12 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
                 float depth = i / (ArmNodes - 1f);
                 float follow = MathHelper.Lerp(0.42f, 0.20f, depth);
                 float droop = (1f - swing) * 0.22f * depth;
-                Vector2 bend = aim.RotatedBy(droop * facing);
+                Vector2 bend = aim.RotatedBy(droop * facingSmooth);
                 float idle = MathF.Sin(time * 1.9f + phaseOffset + seedPhase) * 1.8f * depth * (1f - swing);
                 Vector2 desired = arm[i - 1] + bend * segLen + new Vector2(idle, 0f);
                 arm[i] = Vector2.Lerp(arm[i], desired, follow);
                 Vector2 delta = arm[i] - arm[i - 1];
                 arm[i] = arm[i - 1] + delta.SafeNormalize(bend) * segLen;
-            }
-        }
-
-        private void UpdateSpill(float segLen, float time) {
-            //断颈漏影：先往上冒，再翻过去往下淌——太沉的烟。根钉在剪影的颈口而不是 quad 顶边
-            spill[0] = Vector2.Lerp(spine[0], spine[1], 0.80f);
-            float spillSeg = segLen * 0.30f;
-            for (int i = 1; i < SpillNodes; i++) {
-                float depth = i / (SpillNodes - 1f);
-                Vector2 drift = Vector2.Lerp(-Vector2.UnitY, new Vector2(-0.55f * facing, 0.62f), depth)
-                    .SafeNormalize(-Vector2.UnitY);
-                float wobble = MathF.Sin(time * 2.4f + i * 1.1f + seedPhase * 1.7f) * 1.9f * depth;
-                Vector2 desired = spill[i - 1] + drift * spillSeg + new Vector2(wobble, 0f);
-                spill[i] = Vector2.Lerp(spill[i], desired, MathHelper.Lerp(0.34f, 0.16f, depth));
-                Vector2 delta = spill[i] - spill[i - 1];
-                spill[i] = spill[i - 1] + delta.SafeNormalize(drift) * spillSeg;
             }
         }
 
@@ -199,7 +193,7 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
 
             //投影压在几何上而不是骨架上：先建常规剪影条带，再逐顶点压到地面线
             BuildChainStrip(spine, SpineNodes, halfWidth, halfWidth, flipU: facing < 0, alongV: true);
-            float shear = -0.62f * facing;
+            float shear = -0.62f * facingSmooth;
             for (int i = 0; i < SpineNodes * 2; i++) {
                 Vector3 point = stripVertices[i].Position;
                 float rise = groundY - point.Y;
@@ -219,12 +213,6 @@ namespace CalamityOverhaul.Content.Wraiths.Projectiles
             float rimFlash, float seed)
             => DrawLimb(device, effect, nearArm, ArmNodes, halfWidth * 0.175f, halfWidth * 0.060f,
                 opacity, phase, rimFlash, seed, tipSolid: 1f, fray: 0.92f);
-
-        /// <summary>断颈漏影，根实末散</summary>
-        internal void DrawNeckSpill(GraphicsDevice device, Effect effect, float opacity, float phase,
-            float rimFlash, float seed)
-            => DrawLimb(device, effect, spill, SpillNodes, halfWidth * 0.20f, halfWidth * 0.085f,
-                opacity * 0.90f, phase, rimFlash, seed, tipSolid: 0f, fray: 1.25f);
 
         private void DrawLimb(GraphicsDevice device, Effect effect, Vector2[] nodes, int count,
             float rootHalf, float tipHalf, float opacity, float phase, float rimFlash, float seed,
