@@ -218,10 +218,14 @@ float4 PSCoreBloom(PSInput input) : COLOR0
     float breathe = 0.90 + 0.10 * sin(uTime * 3.10 + uSpin * 1.7);
 
     float3 col = input.Color.rgb * breathe;
-    col += uColHot * rimRing * uBloom * 0.85;
-    col += uColHot * heart * uHeartHeat;
+    //瓣心只向淡樱白偏一点，不做加色提亮——暖材质禁常驻纯白心，
+    //核的"亮"靠与外盘/流带的对比读出来，不靠把 RGB 顶到 1
+    col = lerp(col, float3(1.0, 0.95, 0.96), saturate(heart * uHeartHeat * 0.35));
+    //瓣缘细环才用白热加色：那是线不是体，过曝一瞬可接受
+    col += uColHot * rimRing * uBloom * 0.55;
 
-    float3 extra = uColHot * (heart * 0.22 + rimRing * uBloom * 0.10) * input.Color.a * uOpacity;
+    //加色余量只给瓣缘细环；瓣心的加色项会把中心顶回常驻白，禁
+    float3 extra = uColHot * rimRing * uBloom * 0.10 * input.Color.a * uOpacity;
     return float4(col * alpha + extra, alpha);
 }
 

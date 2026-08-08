@@ -1018,8 +1018,4 @@ EternalBlazingNowNoHelen: {
 	Line10: D'ailleurs — pour finir cette ère, un réceptacle mortel est bien trop fragile.
 }
 
-OniRainWorld: {
-	OniRainWorldSystem: {
-		// InteractHint: "[Right Click] Step beneath the umbrella"
-	}
-}
+// OniRainWorld.OniRainWorldSystem.InteractHint: "[Right Click] Step beneath the umbrella"

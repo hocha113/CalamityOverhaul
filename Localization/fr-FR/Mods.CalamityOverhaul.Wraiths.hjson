@@ -2,28 +2,28 @@ LanternBoy: {
 	// DisplayName: The Lantern Boy
 	// Origin: A lamp at the end of the mountain road, no one beneath it; look again, and you are the one inside the lamp
 	// Power: 「Guiding Light」Three Ghost Lanterns orbit the bearer, their shadows echoing Onikiri's normal slashes off-beat for a combined sixty percent of its power.
-	// DeathReason: "{0} touched what must never be touched"
+	// DeathReason: "{0} became the one inside the fourth lantern"
 }
 
 CrimsonBride: {
 	// DisplayName: The Crimson Bride
 	// Origin: The bridal palanquin waited at the gate for seven nights
 	// Power: 「The Procession」Press the Self-Restart key and the palanquin comes following your trail of blood, carrying the blade-bearer into an empty wedding hall; at the nuptial toast, wounds and afflictions alike are restarted.
-	// DeathReason: "{0} touched what must never be touched"
+	// DeathReason: "{0} boarded that palanquin"
 }
 
 ScapeGhost: {
 	// DisplayName: The Scapegoat Wraith
 	// Origin: It had no name in life, only the memory of dying in another's place again and again. When the register turns, its birth date is written beside yours
 	// Power: 「Death's Stand-In」At the instant death arrives, it seizes a life from afar and forces your death into that body
-	// DeathReason: "{0} touched what must never be touched"
+	// DeathReason: "{0} died in its place, this once"
 }
 
 HeadlessShade: {
 	// DisplayName: The Headless Shade
 	// Origin: The shadow at your feet twitches; on nights when the lamplight sways, there is nothing above its shoulders
 	// Power: 「Dismember」It lurks behind you, then rushes anything living and tears its body into pieces
-	// DeathReason: "{0} touched what must never be touched"
+	// DeathReason: "{0} was torn into pieces by their own shadow"
 }
 
 GhostHand: {
@@ -47,5 +47,8 @@ System: {
 	// ErosionCrawl: Something is crawling beneath the skin
 	// ErosionStain: A corpse-blue tinge creeps up the fingertips
 	// ErosionMirror: The thing in the mirror does not quite look like you
-	// RevivalKillReason: "{0} was wholly claimed by the returning wraith"
+	// RevivalStir: The name on the talisman shifted
+	// RevivalRise: It is watching you through the paper
+	// RevivalBrink: The talisman is too hot to hold
+	// RevivalHudBrink: One more use and it wakes
 }

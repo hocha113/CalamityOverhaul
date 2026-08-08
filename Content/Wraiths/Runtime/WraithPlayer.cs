@@ -109,6 +109,24 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         internal float GetRevival(string key)
             => key != null && revival.TryGetValue(key, out RevivalState state) ? state.Value : 0f;
 
+#if DEBUG
+        /// <summary>调试：把该鬼复苏推到"再役使一次就满"，用于验收 HUD 预警态。</summary>
+        internal void DebugPrimeRevival(string key) {
+            if (Main.netMode == NetmodeID.MultiplayerClient
+                || !revival.TryGetValue(key, out RevivalState state)
+                || !WraithRegistry.TryGetUsable(key, out WraithDefinition definition)) {
+                return;
+            }
+            state.Value = MathHelper.Clamp(1f - definition.RevivalCost * 0.5f, 0f, 0.999f);
+            state.IdleTicks = 0;
+            if (key == equippedWraithKey) {
+                revivalChangedTicks = 0;
+                lastRevivalCueTier = GetRevivalTier(state.Value);
+            }
+            MarkResourceChanged(immediate: true);
+        }
+#endif
+
         public static int GetRevivalTier(float value) => value >= RevivalBrinkLine ? 3
             : value >= RevivalRiseLine ? 2 : value >= RevivalStirLine ? 1 : 0;
 

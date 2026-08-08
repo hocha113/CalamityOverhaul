@@ -64,7 +64,8 @@ namespace CalamityOverhaul
         Wraith,
         //保留编号：原鬼切教程练习鬼影通道已删除，客户端不再发送
         ReservedOnikiriTutorial,
-        HimayoGiftEntitlements,
+        //保留编号：原真夜赠礼资格下发通道已删除，赠礼登记全程本地
+        ReservedHimayoGiftEntitlements,
         WeaverGrievancesManifestation,
         OnikiriTutorialTarget,
         OnikiriItemOperation,
@@ -134,9 +135,6 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.ToriiShrineSync) {
                 ToriiShrine.ReceiveShrineSync(reader);
-            }
-            else if (type == CWRMessageType.HimayoGiftEntitlements) {
-                HimayoStorySync.ReceiveGiftEntitlements(reader);
             }
 
             ModifyCrabulon.NetHandle(type, reader, whoAmI);

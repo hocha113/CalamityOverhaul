@@ -2,28 +2,28 @@
 	DisplayName: 提灯童子
 	Origin: 山道尽头有灯，灯下无人，再看已是灯中人
 	Power: 「引路」三盏鬼灯环绕持有者，灯影会错拍复刻鬼切的普通斩击，合计拥有六成威力。
-	DeathReason: "{0}触犯了不可触犯之物"
+	DeathReason: "{0}成了第四盏灯里的人"
 }
 
 CrimsonBride: {
 	DisplayName: 绯嫁
 	Origin: 花轿在门前停了七夜
 	Power: 「迎亲」按下「重启自身」键，花轿便循着血迹而来，将持刀人迎入无人的喜堂；合卺之刻，伤势与诸般状态尽数重启。
-	DeathReason: "{0}触犯了不可触犯之物"
+	DeathReason: "{0}上了那顶花轿"
 }
 
 ScapeGhost: {
 	DisplayName: 替死鬼
 	Origin: 它生前没有名字，只记得替别人死过很多次。簿页翻动时，它的生辰与你写在一处
 	Power: 「替死」死亡降临的瞬间，它会从远处攥来一条活命，把你的死按进那副躯壳
-	DeathReason: "{0}触犯了不可触犯之物"
+	DeathReason: "{0}替它死了一次"
 }
 
 HeadlessShade: {
 	DisplayName: 无头鬼影
 	Origin: 你脚下的黑影抽动着，在灯火摇晃的夜里，影子的肩膀以上空无一物
 	Power: 「肢解」它潜伏在你的身后，嗅到活物便扑杀而出，将其躯体撕成数段
-	DeathReason: "{0}触犯了不可触犯之物"
+	DeathReason: "{0}被自己的影子撕成了数段"
 }
 
 GhostHand: {
@@ -47,5 +47,8 @@ System: {
 	ErosionCrawl: 皮肤下有什么在爬
 	ErosionStain: 指尖泛起尸斑的青
 	ErosionMirror: 镜子里的东西不太像你
-	RevivalKillReason: "{0}死于厉鬼复苏"
+	RevivalStir: 札上的名字动了一下
+	RevivalRise: 它隔着纸在看你
+	RevivalBrink: 封印札烫得握不住了
+	RevivalHudBrink: 再役使一次，它就会醒
 }

@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             HudHintFormat = this.GetLocalization(nameof(HudHintFormat), () => "{0} 开阖{1} · 点击札打开");
             HudMeiName = this.GetLocalization(nameof(HudMeiName), () => "改铭台");
             HudRegisterName = this.GetLocalization(nameof(HudRegisterName), () => "点鬼簿");
-            HudDangerLine = this.GetLocalization(nameof(HudDangerLine), () => "复苏将满——再役使就要按不住了");
+            HudDangerLine = this.GetLocalization(nameof(HudDangerLine), () => "复苏将满，再役使它就会醒");
             HudWraithFormat = this.GetLocalization(nameof(HudWraithFormat), () => "役鬼 {0} · 复苏 {1}%");
             VigorTitle = this.GetLocalization(nameof(VigorTitle), () => "气力");
             VigorValueFormat = this.GetLocalization(nameof(VigorValueFormat), () => "{0} / {1}");

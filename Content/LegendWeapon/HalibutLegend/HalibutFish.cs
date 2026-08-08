@@ -13,7 +13,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 return;
             }
 
-            if (HelenEpilogue.SpawnPending) {
+            //尾声待兑现且手上确实没鱼时才必出，否则会顶掉全部渔获并能刷出重复的鱼
+            if (HelenEpilogue.IsPending(Player) && !Player.HasHalibut()) {
                 itemDrop = HalibutOverride.ID;
                 return;
             }

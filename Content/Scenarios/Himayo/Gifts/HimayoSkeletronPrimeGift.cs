@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.Narrative;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -17,7 +16,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static LocalizedText L2 { get; private set; }
 
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
-        public override int TargetBossId => NPCID.SkeletronPrime;
 
         public override void SetStaticDefaults() {
             L0 = this.GetLocalization(nameof(L0), () => "头还是旧的，身子倒换了新铁");

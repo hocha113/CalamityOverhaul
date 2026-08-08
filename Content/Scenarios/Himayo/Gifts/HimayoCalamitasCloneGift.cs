@@ -16,7 +16,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static LocalizedText L2 { get; private set; }
 
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
-        public override int TargetBossId => CWRID.NPC_CalamitasClone;
 
         public override void SetStaticDefaults() {
             L0 = this.GetLocalization(nameof(L0), () => "学走路学得那么像，烦");

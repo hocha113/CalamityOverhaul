@@ -17,7 +17,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static LocalizedText L3 { get; private set; }
 
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
-        public override int TargetBossId => CWRID.NPC_AquaticScourgeHead;
 
         public override void SetStaticDefaults() {
             L0 = this.GetLocalization(nameof(L0), () => "等等。刃上这一股……");

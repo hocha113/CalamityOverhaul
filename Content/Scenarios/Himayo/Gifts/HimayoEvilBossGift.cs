@@ -19,8 +19,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
-        public override int[] TargetBossIds => [NPCID.EaterofWorldsHead, NPCID.BrainofCthulhu];
-
         public override void SetStaticDefaults() {
             L0Worm = this.GetLocalization(nameof(L0Worm), () => "恶心……一截一截挤在土里");
             L1Worm = this.GetLocalization(nameof(L1Worm), () => "腥得像刚翻开的泥沟。够了，我不想再闻");

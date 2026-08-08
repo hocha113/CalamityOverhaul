@@ -51,16 +51,10 @@ namespace CalamityOverhaul.Content.Cyberwares
             internal uint SessionGeneration;
             internal VictorRequestKind Kind;
             internal ulong CreatedAt;
+            internal VictorLocalPlan Plan;
             internal Action<VictorRequestResult> Completion;
         }
 
-        private readonly record struct WalletSlotSnapshot(
-            Item[] Container,
-            int Index,
-            int NetworkSlot,
-            Item Item);
-
-        private const int MainInventorySlotCount = 50;
         private const int MaxPendingRequests = 16;
         private const ulong PendingLifetimeFrames = 600;
         private const float MaxVictorDistance = 320f;
@@ -118,8 +112,7 @@ namespace CalamityOverhaul.Content.Cyberwares
             }
 
             CyberwarePlayer state = player.GetModPlayer<CyberwarePlayer>();
-            if (!state.TryAllocateVictorRequest(kind, out VictorRequestToken token)
-                || !TryRegisterPending(token, kind, completion)) {
+            if (!state.TryAllocateVictorRequest(kind, out VictorRequestToken token)) {
                 return false;
             }
 
@@ -128,7 +121,16 @@ namespace CalamityOverhaul.Content.Cyberwares
                 : byte.MaxValue;
             if (kind == VictorRequestKind.Install
                 && (wireInventorySlot < 0 || wireInventorySlot >= player.inventory.Length)) {
-                CancelPending(token.RequestId);
+                return false;
+            }
+
+            //放行后要落的本机改动在发包前定下：等结果回来时装配表已被快照覆盖
+            int sourceType = kind == VictorRequestKind.Install
+                ? player.inventory[inventorySlot]?.type ?? ItemID.None
+                : ItemID.None;
+            VictorLocalPlan plan = new(loadoutSlot, inventorySlot, sourceType,
+                state.EquippedCyberwares[loadoutSlot]?.type ?? ItemID.None);
+            if (!TryRegisterPending(token, kind, plan, completion)) {
                 return false;
             }
 
@@ -165,8 +167,9 @@ namespace CalamityOverhaul.Content.Cyberwares
 
             CyberwarePlayer state = player.GetModPlayer<CyberwarePlayer>();
             const VictorRequestKind kind = VictorRequestKind.Purchase;
+            VictorLocalPlan plan = new(loadoutSlot, -1, itemType, ItemID.None);
             if (!state.TryAllocateVictorRequest(kind, out VictorRequestToken token)
-                || !TryRegisterPending(token, kind, completion)) {
+                || !TryRegisterPending(token, kind, plan, completion)) {
                 return false;
             }
 
@@ -447,6 +450,7 @@ namespace CalamityOverhaul.Content.Cyberwares
             }
 
             VictorResultCode code;
+            long price = 0L;
             if (!state.AllowVictorRequest()) {
                 code = VictorResultCode.RateLimited;
             }
@@ -455,12 +459,12 @@ namespace CalamityOverhaul.Content.Cyberwares
                     victorIdentity, out NPC victor);
                 if (code == VictorResultCode.Success) {
                     code = ExecutePurchase(player, loadoutSlot, itemType,
-                        victor);
+                        victor, out price);
                 }
             }
 
             VictorRequestResult result = new(sessionGeneration, requestId, kind,
-                code, state.LoadoutRevision);
+                code, state.LoadoutRevision, price);
             state.StoreVictorRequestResult(result);
             FinishAuthorityRequest(player, result, replyTo,
                 broadcastLoadout: false);
@@ -553,14 +557,10 @@ namespace CalamityOverhaul.Content.Cyberwares
                     return VictorResultCode.CapacityExceeded;
                 }
 
-                if (!state.TryInstallAuthority(source, loadoutSlot,
-                    out Item previous)) {
+                //背包取件与旧件回收由请求方本机结算，权威端只动装配表
+                if (!state.TryInstallAuthority(source, loadoutSlot, out _)) {
                     return VictorResultCode.InvalidPayload;
                 }
-                player.inventory[inventorySlot] = previous == null || previous.IsAir
-                    ? new Item()
-                    : previous;
-                SyncInventorySlot(player, inventorySlot);
                 loadoutChanged = true;
                 return VictorResultCode.Success;
             }
@@ -570,17 +570,13 @@ namespace CalamityOverhaul.Content.Cyberwares
                 if (equipped == null || equipped.IsAir) {
                     return VictorResultCode.InvalidInventoryItem;
                 }
-                int destination = FindEmptyMainInventorySlot(player);
-                if (destination < 0) {
+                if (CyberwareLocalSettlement.FindEmptyMainSlot(player) < 0) {
                     return VictorResultCode.InventoryFull;
                 }
 
-                if (!state.TryUninstallAuthority(loadoutSlot,
-                    out Item previous)) {
+                if (!state.TryUninstallAuthority(loadoutSlot, out _)) {
                     return VictorResultCode.InvalidPayload;
                 }
-                player.inventory[destination] = previous;
-                SyncInventorySlot(player, destination);
                 loadoutChanged = true;
                 return VictorResultCode.Success;
             }
@@ -588,27 +584,18 @@ namespace CalamityOverhaul.Content.Cyberwares
             return VictorResultCode.InvalidPayload;
         }
 
+        /// <summary>
+        /// 购买只在权威端过审并定价，钱货两清由请求方本机结算
+        /// （<see cref="CyberwareLocalSettlement"/>）
+        /// </summary>
         private static VictorResultCode ExecutePurchase(Player player,
-            int loadoutSlot, int itemType, NPC victor) {
+            int loadoutSlot, int itemType, NPC victor, out long price) {
+            price = 0L;
             if (loadoutSlot < 0 || loadoutSlot >= CyberwarePlayer.SlotCount
                 || !VictorCatalog.TryGetEntry(itemType,
                     out VictorCatalogEntry entry)
                 || entry.SlotIndex != loadoutSlot || entry.Price <= 0L) {
                 return VictorResultCode.InvalidPayload;
-            }
-
-            //幸福度权威取价；客户端只展示估算，偶发不一致以此处扣款为准
-            long price = VictorCatalog.GetAuthorityPrice(itemType, player, victor);
-            if (price <= 0L) {
-                return VictorResultCode.InvalidPayload;
-            }
-
-            int destination = FindEmptyMainInventorySlot(player);
-            if (destination < 0) {
-                return VictorResultCode.InventoryFull;
-            }
-            if (!player.CanAfford(price)) {
-                return VictorResultCode.InsufficientFunds;
             }
 
             Item purchased = new(itemType);
@@ -617,20 +604,20 @@ namespace CalamityOverhaul.Content.Cyberwares
                 return VictorResultCode.InvalidPayload;
             }
 
-            List<WalletSlotSnapshot> walletSnapshot = CaptureWallet(player);
-            player.inventory[destination] = purchased;
-            bool paid;
-            try {
-                paid = player.BuyItem(price);
-            } catch {
-                RestoreWallet(walletSnapshot);
+            //幸福度权威取价；客户端展示价只是估算，回传这个价让本机照此扣款
+            long authorityPrice = VictorCatalog.GetAuthorityPrice(itemType, player,
+                victor);
+            if (authorityPrice <= 0L) {
                 return VictorResultCode.InvalidPayload;
             }
-            if (!paid) {
-                RestoreWallet(walletSnapshot);
+            if (CyberwareLocalSettlement.FindEmptyMainSlot(player) < 0) {
+                return VictorResultCode.InventoryFull;
+            }
+            if (!player.CanAfford(authorityPrice)) {
                 return VictorResultCode.InsufficientFunds;
             }
-            SyncWalletChanges(player, walletSnapshot);
+
+            price = authorityPrice;
             return VictorResultCode.Success;
         }
 
@@ -711,90 +698,9 @@ namespace CalamityOverhaul.Content.Cyberwares
             return true;
         }
 
-        private static int FindEmptyMainInventorySlot(Player player) {
-            int count = Math.Min(MainInventorySlotCount, player.inventory.Length);
-            for (int i = 0; i < count; i++) {
-                if (player.inventory[i] == null || player.inventory[i].IsAir) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        private static void SyncInventorySlot(Player player, int inventorySlot) {
-            if (Main.netMode != NetmodeID.Server || inventorySlot < 0
-                || inventorySlot >= player.inventory.Length) {
-                return;
-            }
-            Item item = player.inventory[inventorySlot] ?? new Item();
-            NetMessage.SendData(MessageID.SyncEquipment, -1, -1, null,
-                player.whoAmI, PlayerItemSlotID.Inventory0 + inventorySlot,
-                item.prefix);
-        }
-
-        private static List<WalletSlotSnapshot> CaptureWallet(Player player) {
-            List<WalletSlotSnapshot> snapshot = [];
-            CaptureContainer(player.inventory, PlayerItemSlotID.Inventory0,
-                snapshot);
-            CaptureContainer(player.bank?.item, PlayerItemSlotID.Bank1_0,
-                snapshot);
-            CaptureContainer(player.bank2?.item, PlayerItemSlotID.Bank2_0,
-                snapshot);
-            CaptureContainer(player.bank3?.item, PlayerItemSlotID.Bank3_0,
-                snapshot);
-            CaptureContainer(player.bank4?.item, PlayerItemSlotID.Bank4_0,
-                snapshot);
-            return snapshot;
-        }
-
-        private static void CaptureContainer(Item[] container, int networkBase,
-            List<WalletSlotSnapshot> snapshot) {
-            if (container == null) {
-                return;
-            }
-            for (int i = 0; i < container.Length; i++) {
-                Item item = container[i] ?? new Item();
-                snapshot.Add(new WalletSlotSnapshot(container, i,
-                    networkBase + i, item.Clone()));
-            }
-        }
-
-        private static void RestoreWallet(
-            List<WalletSlotSnapshot> snapshot) {
-            for (int i = 0; i < snapshot.Count; i++) {
-                WalletSlotSnapshot slot = snapshot[i];
-                if (!SameItemState(slot.Container[slot.Index], slot.Item)) {
-                    slot.Container[slot.Index] = slot.Item.Clone();
-                }
-            }
-        }
-
-        private static void SyncWalletChanges(Player player,
-            List<WalletSlotSnapshot> snapshot) {
-            if (Main.netMode != NetmodeID.Server) {
-                return;
-            }
-            for (int i = 0; i < snapshot.Count; i++) {
-                WalletSlotSnapshot slot = snapshot[i];
-                Item current = slot.Container[slot.Index] ?? new Item();
-                if (SameItemState(current, slot.Item)) {
-                    continue;
-                }
-                int toWho = slot.NetworkSlot >= PlayerItemSlotID.Bank1_0
-                    ? player.whoAmI
-                    : -1;
-                NetMessage.SendData(MessageID.SyncEquipment, toWho, -1, null,
-                    player.whoAmI, slot.NetworkSlot, current.prefix);
-            }
-        }
-
-        private static bool SameItemState(Item current, Item previous)
-            => (current?.type ?? ItemID.None) == (previous?.type ?? ItemID.None)
-                && (current?.stack ?? 0) == (previous?.stack ?? 0)
-                && (current?.prefix ?? 0) == (previous?.prefix ?? 0);
-
         private static bool TryRegisterPending(in VictorRequestToken token,
-            VictorRequestKind kind, Action<VictorRequestResult> completion) {
+            VictorRequestKind kind, in VictorLocalPlan plan,
+            Action<VictorRequestResult> completion) {
             UpdatePendingRequests();
             if (!token.IsValid || pendingRequests.Count >= MaxPendingRequests
                 || pendingRequests.ContainsKey(token.RequestId)) {
@@ -804,13 +710,11 @@ namespace CalamityOverhaul.Content.Cyberwares
                 SessionGeneration = token.SessionGeneration,
                 Kind = kind,
                 CreatedAt = Main.GameUpdateCount,
+                Plan = plan,
                 Completion = completion,
             };
             return true;
         }
-
-        private static void CancelPending(uint requestId)
-            => pendingRequests.Remove(requestId);
 
         private static void CompletePending(in VictorRequestResult result) {
             if (!result.IsValid
@@ -821,7 +725,12 @@ namespace CalamityOverhaul.Content.Cyberwares
                 return;
             }
             pendingRequests.Remove(result.RequestId);
-            pending.Completion?.Invoke(result);
+            //放行后才动本机背包；本机兑现不了会把裁决码降级成失败
+            VictorRequestResult settled = result.IsSuccess
+                ? CyberwareLocalSettlement.Settle(pending.Kind, pending.Plan,
+                    result)
+                : result;
+            pending.Completion?.Invoke(settled);
         }
 
         private static CyberwareLoadoutSnapshot CaptureSnapshot(Player player,
@@ -869,12 +778,14 @@ namespace CalamityOverhaul.Content.Cyberwares
             writer.Write((byte)result.Kind);
             writer.Write((byte)result.Code);
             writer.Write(result.AuthorityLoadoutRevision);
+            writer.Write(result.AuthorityPrice);
         }
 
         private static VictorRequestResult ReadResult(BinaryReader reader)
             => new(reader.ReadUInt32(), reader.ReadUInt32(),
                 (VictorRequestKind)reader.ReadByte(),
-                (VictorResultCode)reader.ReadByte(), reader.ReadUInt32());
+                (VictorResultCode)reader.ReadByte(), reader.ReadUInt32(),
+                reader.ReadInt64());
 
         private static bool IsRevisionAtLeast(uint candidate, uint baseline)
             => candidate == baseline

@@ -278,8 +278,4 @@ TileNameFallback: {
 	Tile352: 荆棘
 }
 
-OniRainWorld: {
-	OniRainWorldSystem: {
-		// InteractHint: "[右键] 撑伞入雨"
-	}
-}
+// OniRainWorld.OniRainWorldSystem.InteractHint: "[右键] 撑伞入雨"

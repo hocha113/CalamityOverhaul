@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.Narrative;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -16,7 +15,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static LocalizedText L1 { get; private set; }
 
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
-        public override int TargetBossId => NPCID.CultistBoss;
 
         public override void SetStaticDefaults() {
             L0 = this.GetLocalization(nameof(L0), () => "门口总算清静了");

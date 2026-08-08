@@ -1,25 +1,12 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
-using CalamityOverhaul.Content.Scenarios.Himayo.Gifts;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using Terraria;
-using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Scenarios.Himayo
 {
-    internal enum HimayoGiftRepairResult
-    {
-        Success,
-        InvalidPlayer,
-        UnknownKey,
-        NotCompleted,
-    }
-
     /// <summary>
     /// 真夜进度同步与试炼发放门禁<br/>
     /// 正常 FirstMetHimayo.OnCompleted → PostFirstMetIsComplete<br/>
@@ -132,171 +119,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
 
         public static HimayoGiftStoryData GetGift(Player player)
             => player?.GetModPlayer<StoryPlayer>().Get<HimayoGiftStoryData>();
-
-        public static bool IsGiftCompleted(Player player, string key) {
-            HimayoGiftStoryData data = GetGift(player);
-            return HimayoGiftCatalog.TryGet(key, out HimayoGiftEntry entry) && entry.IsCompleted(data);
-        }
-
-        public static bool TryEnqueueGift(Player player, string key) {
-            if (!IsLocalOwner(player)) {
-                return false;
-            }
-
-            HimayoGiftStoryData data = GetGift(player);
-            if (data == null || !HimayoGiftCatalog.TryGet(key, out HimayoGiftEntry entry) || entry.IsCompleted(data)) {
-                return false;
-            }
-
-            HimayoGiftCatalog.Sanitize(data);
-            if (data.PendingGiftKeys.Contains(entry.MeiKey)) {
-                return false;
-            }
-            data.PendingGiftKeys.Add(entry.MeiKey);
-            if (entry.ScenarioType == typeof(HimayoEvilBossGift)) {
-                data.EvilBossGiftBossId = GetWorldEvilBossId();
-            }
-            HimayoGiftCatalog.Sanitize(data);
-            return true;
-        }
-
-        public static void ReceiveGiftEntitlements(BinaryReader reader) {
-            int lastDefeatedBossId = reader.ReadInt32();
-            int count = reader.ReadByte();
-            List<string> keys = new(count);
-            for (int i = 0; i < count; i++) {
-                keys.Add(reader.ReadString());
-            }
-
-            ReceiveGiftEntitlements(Main.LocalPlayer, keys, lastDefeatedBossId);
-        }
-
-        public static void ReceiveGiftEntitlements(Player player, IEnumerable<string> keys,
-            int lastDefeatedBossId = 0) {
-            if (!IsLocalOwner(player) || keys == null) {
-                return;
-            }
-
-            HimayoGiftStoryData data = GetGift(player);
-            if (data == null) {
-                return;
-            }
-
-            HimayoGiftCatalog.Sanitize(data);
-            foreach (string key in keys) {
-                if (HimayoGiftCatalog.TryGet(key, out HimayoGiftEntry entry)
-                    && !entry.IsCompleted(data)
-                    && !data.PendingGiftKeys.Contains(entry.MeiKey)) {
-                    data.PendingGiftKeys.Add(entry.MeiKey);
-                    if (entry.ScenarioType == typeof(HimayoEvilBossGift)) {
-                        data.EvilBossGiftBossId = MatchesTargetBoss(entry, lastDefeatedBossId)
-                            ? lastDefeatedBossId
-                            : GetWorldEvilBossId();
-                    }
-                }
-            }
-            HimayoGiftCatalog.Sanitize(data);
-        }
-
-        public static bool TryGetNextPending(Player player, out HimayoGiftEntry entry) {
-            HimayoGiftStoryData data = GetGift(player);
-            HimayoGiftCatalog.Sanitize(data);
-            if (data?.PendingGiftKeys != null && data.PendingGiftKeys.Count > 0) {
-                return HimayoGiftCatalog.TryGet(data.PendingGiftKeys[0], out entry);
-            }
-            entry = null;
-            return false;
-        }
-
-        public static bool CanReceiveGift(Player player, string key) {
-            if (!IsLocalOwner(player) || !HimayoGiftCatalog.TryGet(key, out HimayoGiftEntry entry)) {
-                return false;
-            }
-            int itemType = entry.RubbingItemType;
-            if (itemType <= ItemID.None) {
-                return false;
-            }
-            Item rubbing = new(itemType);
-            return player.ItemSpace(rubbing).CanTakeItemToPersonalInventory;
-        }
-
-        public static bool TryClaimGift(Player player, string key) {
-            if (!IsLocalOwner(player) || !HimayoGiftCatalog.TryGet(key, out HimayoGiftEntry entry)) {
-                return false;
-            }
-
-            HimayoGiftStoryData data = GetGift(player);
-            HimayoGiftCatalog.Sanitize(data);
-            if (data == null || entry.IsCompleted(data) || !data.PendingGiftKeys.Contains(entry.MeiKey)
-                || !CanReceiveGift(player, entry.MeiKey)) {
-                return false;
-            }
-
-            Item rubbing = new(entry.RubbingItemType);
-            Item overflow = player.GetItem(player.whoAmI, rubbing,
-                GetItemSettings.ItemCreatedFromItemUsage);
-            if (!overflow.IsAir) {
-                return false;
-            }
-
-            OniMeiOwned.Unlock(player, entry.MeiKey);
-            entry.SetCompleted(data, true);
-            data.PendingGiftKeys.RemoveAll(pending => pending == entry.MeiKey);
-            HimayoGiftCatalog.Sanitize(data);
-            return true;
-        }
-
-        public static HimayoGiftRepairResult RepairGift(Player player, string key, out string canonicalKey) {
-            canonicalKey = null;
-            if (!IsLocalOwner(player)) {
-                return HimayoGiftRepairResult.InvalidPlayer;
-            }
-            if (!HimayoGiftCatalog.TryResolveKey(key, out HimayoGiftEntry entry)) {
-                return HimayoGiftRepairResult.UnknownKey;
-            }
-
-            HimayoGiftStoryData data = GetGift(player);
-            canonicalKey = entry.MeiKey;
-            if (data == null || !entry.IsCompleted(data)) {
-                return HimayoGiftRepairResult.NotCompleted;
-            }
-
-            entry.SetCompleted(data, false);
-            data.PendingGiftKeys.RemoveAll(pending => pending == entry.MeiKey);
-            data.PendingGiftKeys.Add(entry.MeiKey);
-            if (entry.ScenarioType == typeof(HimayoEvilBossGift)) {
-                data.EvilBossGiftBossId = GetWorldEvilBossId();
-            }
-            HimayoGiftCatalog.Sanitize(data);
-            return HimayoGiftRepairResult.Success;
-        }
-
-        internal static int GetEvilBossGiftBossId(Player player) {
-            int bossId = GetGift(player)?.EvilBossGiftBossId ?? 0;
-            return bossId == NPCID.EaterofWorldsHead || bossId == NPCID.BrainofCthulhu
-                ? bossId
-                : GetWorldEvilBossId();
-        }
-
-        private static int GetWorldEvilBossId()
-            => WorldGen.crimson ? NPCID.BrainofCthulhu : NPCID.EaterofWorldsHead;
-
-        private static bool IsLocalOwner(Player player)
-            => player != null && player.active && Main.netMode != NetmodeID.Server
-            && player.whoAmI == Main.myPlayer;
-
-        private static bool MatchesTargetBoss(HimayoGiftEntry entry, int bossId) {
-            if (entry == null || bossId <= 0) {
-                return false;
-            }
-            int[] targets = entry.TargetBossIds;
-            for (int i = 0; i < targets.Length; i++) {
-                if (targets[i] == bossId) {
-                    return true;
-                }
-            }
-            return false;
-        }
 
         public static bool ReadGift(Func<HimayoGiftStoryData, bool> story, Func<HimayoGiftStoryData, bool> legacy) {
             if (story(GiftStory)) {

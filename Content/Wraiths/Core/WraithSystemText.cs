@@ -14,7 +14,6 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         public static LocalizedText ScapeGhostActivated { get; private set; }
         public static LocalizedText ScapeGhostDeathBroadcast { get; private set; }
         public static LocalizedText ScapeGhostUnknownTarget { get; private set; }
-        public static LocalizedText RevivalKillReason { get; private set; }
         public static LocalizedText RevivalStir { get; private set; }
         public static LocalizedText RevivalRise { get; private set; }
         public static LocalizedText RevivalBrink { get; private set; }
@@ -30,8 +29,6 @@ namespace CalamityOverhaul.Content.Wraiths.Core
                 () => "{0}成为了{1}的替死鬼，{2}");
             ScapeGhostUnknownTarget = this.GetLocalization(nameof(ScapeGhostUnknownTarget),
                 () => "某个活物");
-            RevivalKillReason = this.GetLocalization(nameof(RevivalKillReason),
-                () => "{0}死于厉鬼复苏");
             RevivalStir = this.GetLocalization(nameof(RevivalStir),
                 () => "札上的名字动了一下");
             RevivalRise = this.GetLocalization(nameof(RevivalRise),
@@ -52,7 +49,6 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             ScapeGhostActivated = null;
             ScapeGhostDeathBroadcast = null;
             ScapeGhostUnknownTarget = null;
-            RevivalKillReason = null;
             RevivalStir = null;
             RevivalRise = null;
             RevivalBrink = null;

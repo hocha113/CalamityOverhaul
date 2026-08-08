@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes.Scannables;
+using CalamityOverhaul.Content.RAMSystems;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -26,8 +27,11 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 布局参数
 
-        private const float LeftMargin = 36f;
+        //与右侧协议列共用边距，两侧对称
+        private static float LeftMargin => HackTheme.SideMargin;
         private const float PanelWidth = 340f;
+        //顶线向右悬挑出面板的长度，查弧占位时算进去
+        private const float TopRailOverhang = 14f;
         private const float RowHeight = 23f;
         private const float TabRowHeight = 22f;
         private const float TitleHeight = 30f;
@@ -165,9 +169,9 @@ namespace CalamityOverhaul.Content.HackTimes
                 + sideBlockH + (belowRows > 0 ? 4f + belowRows * RowHeight : 0f)
                 + SepHeight + StatusHeight + BottomPad;
 
-            //左侧垂直居中
+            //左侧垂直居中，再按 RAM 弧的实际占位下压
             float baseX = LeftMargin;
-            float panelTop = (Main.screenHeight - panelH) * 0.5f;
+            float panelTop = ResolvePanelTop(baseX, panelH);
 
             //飞入偏移（自左）
             float flyOffset = (1f - HackTheme.EaseOutCubic(flyInProgress)) * -300f;
@@ -261,6 +265,25 @@ namespace CalamityOverhaul.Content.HackTimes
 
             DrawScanLineOverlay(sb, px, panelRect, alpha);
             DrawOuterGlow(sb, panelRect, alpha);
+        }
+
+        #endregion
+
+        #region 布局计算
+
+        //居中后夹进 [弧底, 屏底安全线]；弧够不着时退回顶部安全线
+        private static float ResolvePanelTop(float baseX, float panelH) {
+            float screenH = HackTheme.UIScreenH;
+            float arcBottom = HackRamArcLayout.BottomInBand(RamSystem.MaxRam,
+                baseX, baseX + PanelWidth + TopRailOverhang);
+            float minY = arcBottom > float.MinValue
+                ? arcBottom + HackRamArcLayout.ClearGap
+                : HackTheme.TopSafe;
+            float centered = (screenH - panelH) * 0.5f;
+            float maxTop = screenH - HackTheme.BottomSafe - panelH;
+            //装不下时避让线退让，宁可与弧重叠也不把面板推出屏外
+            float minTop = MathF.Min(minY, MathF.Max(maxTop, 0f));
+            return MathHelper.Clamp(centered, minTop, MathF.Max(minTop, maxTop));
         }
 
         #endregion

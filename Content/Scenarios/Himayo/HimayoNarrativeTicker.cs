@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
         }
 
         public override void PreUpdatePlayers() {
-            if (Main.gameMenu) {
+            if (Main.dedServ || Main.gameMenu) {
                 return;
             }
 

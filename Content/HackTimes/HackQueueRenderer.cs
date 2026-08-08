@@ -11,7 +11,8 @@ namespace CalamityOverhaul.Content.HackTimes
     {
         #region 布局常量
 
-        private const float LeftMargin = 36f;
+        //与档案面板共用左边距，竖轨才对齐
+        private static float LeftMargin => HackTheme.SideMargin;
         private const float ItemWidth = 250f;
         private const float ItemHeight = 25f;
         private const float ItemGap = 6f;
@@ -505,7 +506,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         private float GetStartY() {
             float totalH = queue.Count * (ItemHeight + ItemGap) - ItemGap;
-            return Main.screenHeight - BottomMargin - totalH;
+            return HackTheme.UIScreenH - BottomMargin - totalH;
         }
 
         #endregion

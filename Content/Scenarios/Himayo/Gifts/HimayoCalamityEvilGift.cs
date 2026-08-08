@@ -19,8 +19,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
-        public override int[] TargetBossIds => [CWRID.NPC_HiveMind, CWRID.NPC_PerforatorHive];
-
         public override void SetStaticDefaults() {
             L0 = this.GetLocalization(nameof(L0), () => "先别站着发呆了。喘两口气也好啊");
             L1 = this.GetLocalization(nameof(L1), () => "刚才那摊抱成一团的……你有没有觉得，特别像坏掉的豆沙");

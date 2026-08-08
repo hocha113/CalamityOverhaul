@@ -17,13 +17,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
 
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
-        public override int[] TargetBossIds => [
-            CWRID.NPC_AresBody,
-            CWRID.NPC_Apollo,
-            CWRID.NPC_Artemis,
-            CWRID.NPC_ThanatosHead,
-        ];
-
         public override void SetStaticDefaults() {
             L0 = this.GetLocalization(nameof(L0), () => "轰完了，耳朵里还在嗡");
             L1 = this.GetLocalization(nameof(L1), () => "像有人拿小锤子在里头敲。烦人");

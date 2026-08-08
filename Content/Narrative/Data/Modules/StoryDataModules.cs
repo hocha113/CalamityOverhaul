@@ -1,7 +1,4 @@
-﻿using CalamityOverhaul.Content.Scenarios.Himayo.Gifts;
-using InnoVault.DataModules;
-using System.Collections.Generic;
-using Terraria.ModLoader.IO;
+﻿using InnoVault.DataModules;
 
 namespace CalamityOverhaul.Content.Narrative.Data.Modules
 {
@@ -41,6 +38,10 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool EternalBlazingNowChoice2;
         public bool GiveBlazingBud;
         public bool EternalBlazingNow;
+        /// <summary>女巫告别带走了比目鱼，海伦尾声待兑现；旧档缺此字段读作 false</summary>
+        public bool HelenEpiloguePending;
+        /// <summary>海伦尾声已播完，防重播</summary>
+        public bool HelenEpilogueSeen;
         public bool HelenInterferenceTriggered;
         public bool HelenInterferenceContinue;
         public bool HelenInterferenceStop;
@@ -174,19 +175,6 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool ExoMechsGift;
         public bool SupremeCalamitasGift;
         public bool BossRushGift;
-        public List<string> PendingGiftKeys = [];
-        public int EvilBossGiftBossId;
-
-        public override void SaveData(TagCompound tag) {
-            HimayoGiftCatalog.Sanitize(this);
-            base.SaveData(tag);
-        }
-
-        public override void LoadData(TagCompound tag, int loadedVersion) {
-            base.LoadData(tag, loadedVersion);
-            PendingGiftKeys ??= [];
-            HimayoGiftCatalog.Sanitize(this);
-        }
     }
 
     public sealed class ShepelGiftStoryData : DataModule

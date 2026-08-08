@@ -542,13 +542,13 @@ MoldProcessingUI: {
 OnikiriText: {
 	OniRegisterUI: {
 		TitleText: 点 鬼 簿
-		StatusFormat: 役鬼 {0} · 驾驭 {1}% · 侵蚀 {2}%
-		MasteryFormat: 驾驭 {0}%
-		AbilityCostFormat: 发动耗竭 驾驭 {0}% · 侵蚀 +{1}%
+		StatusFormat: 役鬼 {0} · 复苏 {1}% · 侵蚀 {2}%
+		RevivalFormat: 复苏 {0}%
+		AbilityCostFormat: 每次役使 复苏 +{0}% · 侵蚀 +{1}%
 		OriginLabel: 来历
 		PowerLabel: 赋力
 		StateReady: 可役使
-		StateDormant: 耗竭 · 休眠
+		StateDanger: 将醒 · 慎役
 		StateArchive: 残卷 · 不可役使
 		EmptySlotName: 役鬼位空
 		EmptySlotHint: 从名录中选中一只厉鬼查看详情，再以役使印将其纳入役鬼位。空位不会启用任何厉鬼能力
@@ -607,8 +607,8 @@ OnikiriText: {
 		HudHintFormat: "{0} 开阖{1} · 点击札打开"
 		HudMeiName: 改铭台
 		HudRegisterName: 点鬼簿
-		HudDangerLine: 驾驭耗竭，役鬼能力正在休眠
-		HudWraithFormat: 役鬼 {0} · 驾驭 {1}%
+		HudDangerLine: 复苏将满，再役使它就会醒
+		HudWraithFormat: 役鬼 {0} · 复苏 {1}%
 		VigorTitle: 气力
 		VigorValueFormat: "{0} / {1}"
 		StanceTitle: 架势

@@ -26,6 +26,8 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         internal override WraithAbilityKind AbilityKind => WraithAbilityKind.CrimsonBride;
         internal override float RevivalCost => 0.25f;
         internal override float ErosionCost => 0.22f;
+        internal override WraithDeathPerformance CreateDeathPerformance()
+            => new BrideSeizurePerformance();
     }
 
     internal sealed class ScapeGhost : WraithDefinition
@@ -76,5 +78,7 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
         internal override float RevivalCost => 0.25f;
         internal override float ErosionCost => 0.18f;
         internal override WraithPassiveAbility CreateAbility() => new GhostRainAbility();
+        internal override WraithDeathPerformance CreateDeathPerformance()
+            => new RainSeizurePerformance();
     }
 }

@@ -1013,8 +1013,4 @@ EternalBlazingNowNoHelen: {
 	Line10: Además, si quieres acabar con esta era, un cuerpo mortal es demasiado frágil.
 }
 
-OniRainWorld: {
-	OniRainWorldSystem: {
-		// InteractHint: "[Right Click] Step beneath the umbrella"
-	}
-}
+// OniRainWorld.OniRainWorldSystem.InteractHint: "[Right Click] Step beneath the umbrella"

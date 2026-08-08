@@ -26,7 +26,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal
             SupCalQuestRewardTracker.ResetWorldState();
             SCalAltarScenario.ResetWorldState();
             WitchFarewell.ResetWorldState();
-            HelenEpilogue.ResetWorldState();
         }
 
         public override void PreUpdatePlayers() {
@@ -192,18 +191,17 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal
         }
 
         private static void TickHelenEpilogue() {
-            if (!HelenEpilogue.SpawnPending || CWRWorld.HasBoss || NarrativeRunner.IsBusy) {
+            Player player = Main.LocalPlayer;
+            if (!HelenEpilogue.IsPending(player) || CWRWorld.HasBoss || NarrativeRunner.IsBusy) {
                 return;
             }
 
-            Player player = Main.LocalPlayer;
             if (!player.TryGetOverride(out HalibutPlayer halibutPlayer) || !halibutPlayer.HasHalubut) {
                 return;
             }
 
-            if (NarrativeRouter.Begin<HelenEpilogue>()) {
-                HelenEpilogue.SpawnPending = false;
-            }
+            //待兑现位由场景播完后自清，此处不清，中途退出还能重来
+            NarrativeRouter.Begin<HelenEpilogue>();
         }
     }
 

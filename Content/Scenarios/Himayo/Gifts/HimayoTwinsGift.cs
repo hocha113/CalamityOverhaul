@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.Narrative;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -18,8 +17,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static LocalizedText L3 { get; private set; }
 
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
-
-        public override int[] TargetBossIds => [NPCID.Retinazer, NPCID.Spazmatism];
 
         public override void SetStaticDefaults() {
             L0 = this.GetLocalization(nameof(L0), () => "两个人对视太久，会忍不住笑");

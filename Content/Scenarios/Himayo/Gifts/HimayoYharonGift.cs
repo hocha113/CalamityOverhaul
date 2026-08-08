@@ -17,7 +17,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static LocalizedText L3 { get; private set; }
 
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
-        public override int TargetBossId => CWRID.NPC_Yharon;
 
         public override void SetStaticDefaults() {
             L0 = this.GetLocalization(nameof(L0), () => "刃还烫。我这边也热得慌");

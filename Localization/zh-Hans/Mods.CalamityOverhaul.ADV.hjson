@@ -1013,8 +1013,4 @@ EternalBlazingNowNoHelen: {
 	Line10: 况且，如果你想终结这个时代，凡人的躯壳太过脆弱
 }
 
-OniRainWorld: {
-	OniRainWorldSystem: {
-		InteractHint: "[右键] 撑伞入雨"
-	}
-}
+OniRainWorld.OniRainWorldSystem.InteractHint: "[右键] 撑伞入雨"

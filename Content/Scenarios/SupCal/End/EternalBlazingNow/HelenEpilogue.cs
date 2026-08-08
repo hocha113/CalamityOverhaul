@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.Narrative.Common;
+using CalamityOverhaul.Content.Narrative.Data;
+using CalamityOverhaul.Content.Narrative.Data.Modules;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using Terraria;
@@ -10,8 +12,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
 {
     internal sealed class HelenEpilogue : NarrativeScenario, ILocalizedModType
     {
-        public static bool SpawnPending;
-
         public string LocalizationCategory => "ADV.EternalBlazingNow";
 
         public static LocalizedText EpilogueLine1 { get; private set; }
@@ -32,62 +32,71 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
              .Say("Helen", EpilogueLine3.Value);
         }
 
-        public static void RequestSpawn() => SpawnPending = true;
+        protected override void OnCompleted() => MarkSeen(Main.LocalPlayer);
 
-        public static void ResetWorldState() => SpawnPending = false;
+        /// <summary>
+        /// 尾声待兑现。是每玩家剧情债务，随玩家存档，跨存档仍然有效
+        /// </summary>
+        public static bool IsPending(Player player) {
+            if (player?.active != true) {
+                return false;
+            }
+
+            SupCalStoryData data = GetData(player);
+            return data.HelenEpiloguePending && !data.HelenEpilogueSeen;
+        }
+
+        /// <summary>比目鱼被带走时武装；已播过则不再武装</summary>
+        public static void RequestSpawn(Player player) {
+            if (player?.active != true) {
+                return;
+            }
+
+            SupCalStoryData data = GetData(player);
+            if (data.HelenEpilogueSeen) {
+                return;
+            }
+
+            data.HelenEpiloguePending = true;
+        }
+
+        /// <summary>播完才落位，中途退出仍会重来</summary>
+        private static void MarkSeen(Player player) {
+            if (player?.active != true) {
+                return;
+            }
+
+            SupCalStoryData data = GetData(player);
+            data.HelenEpiloguePending = false;
+            data.HelenEpilogueSeen = true;
+        }
+
+        private static SupCalStoryData GetData(Player player) => player.GetModPlayer<StoryPlayer>().Get<SupCalStoryData>();
     }
 
     internal sealed class HelenEpilogueNPC : DeathTrackingNPC
     {
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == CWRID.NPC_PrimordialWyrmHead;
+
         public override void OnNPCDeath(NPC npc) {
-            if (npc.type != CWRID.NPC_PrimordialWyrmHead || !HelenEpilogue.SpawnPending) {
+            //HitEffect 各端都跑，本地进度自行挡服务端
+            if (Main.dedServ || npc.type != CWRID.NPC_PrimordialWyrmHead) {
                 return;
             }
 
             Player player = Main.LocalPlayer;
-            if (player.HasItem(HalibutOverride.ID)) {
+            if (!HelenEpilogue.IsPending(player) || player.HasItem(HalibutOverride.ID)) {
                 return;
             }
 
-            int insertIdx = player.selectedItem is >= 0 and < 10 ? player.selectedItem : 0;
-            const int inventoryEnd = 50;
-
-            int emptyIdx = -1;
-            for (int i = insertIdx; i < inventoryEnd; i++) {
-                if (player.inventory[i].IsAir) {
-                    emptyIdx = i;
-                    break;
-                }
+            //选中槽空着就直接塞进去，便于立刻握在手里
+            int slot = player.selectedItem is >= 0 and < 10 ? player.selectedItem : 0;
+            if (player.inventory[slot].IsAir) {
+                player.inventory[slot].SetDefaults(HalibutOverride.ID);
+                return;
             }
 
-            if (emptyIdx == -1) {
-                int dropIdx = -1;
-                int lowestValue = int.MaxValue;
-                for (int i = insertIdx; i < inventoryEnd; i++) {
-                    if (!player.inventory[i].IsAir && player.inventory[i].value <= lowestValue) {
-                        lowestValue = player.inventory[i].value;
-                        dropIdx = i;
-                    }
-                }
-
-                if (dropIdx == -1) {
-                    return;
-                }
-
-                int droppedType = player.inventory[dropIdx].type;
-                int droppedStack = player.inventory[dropIdx].stack;
-                int droppedPrefix = player.inventory[dropIdx].prefix;
-                player.inventory[dropIdx].TurnToAir();
-                Item.NewItem(player.GetSource_DropAsItem(), player.Hitbox, droppedType, droppedStack, false, droppedPrefix);
-                emptyIdx = dropIdx;
-            }
-
-            for (int i = emptyIdx; i > insertIdx; i--) {
-                player.inventory[i] = player.inventory[i - 1];
-            }
-
-            player.inventory[insertIdx] = new Item();
-            player.inventory[insertIdx].SetDefaults(HalibutOverride.ID);
+            player.QuickSpawnItem(player.GetSource_GiftOrReward(), HalibutOverride.ID);
         }
     }
 }

@@ -268,6 +268,10 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths
         /// <summary>供运镜片段读取的当前演出；未激活时为 null。</summary>
         internal WraithDeathPerformance CurrentPerformance => Active ? performance : null;
 
+        /// <summary>本帧演出是否要求隐藏玩家本体。</summary>
+        internal bool HidesPlayerNow => Active && presentationStarted
+            && performance?.HidesPlayer == true;
+
         public override void OnRespawn() => EndSeizure(broadcast: true);
 
         public override void OnEnterWorld() => EndSeizure(broadcast: false);

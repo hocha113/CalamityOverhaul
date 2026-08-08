@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.HackTimes
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
-            //脱离 UIScaleMatrix，原始像素坐标
+            //本层是 InterfaceScaleType.UI，坐标即 UI 空间；几何走 HackTheme / HackRamArcLayout
             Ram.Draw(spriteBatch);
             ScanInfo.Draw(spriteBatch);
             Panel.Draw(spriteBatch);

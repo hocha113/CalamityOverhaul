@@ -1015,8 +1015,4 @@ EternalBlazingNowNoHelen: {
 	Line10: К тому же... если ты намерен положить конец этой эпохе, оболочка смертного слишком хрупка.
 }
 
-OniRainWorld: {
-	OniRainWorldSystem: {
-		// InteractHint: "[Right Click] Step beneath the umbrella"
-	}
-}
+// OniRainWorld.OniRainWorldSystem.InteractHint: "[Right Click] Step beneath the umbrella"

@@ -298,6 +298,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             int ringDamage = (int)(baseWeaponDamage * 0.45f);
             int scarDamage = (int)(baseWeaponDamage * 0.35f);
 
+            //环斩/直痕是本招式编排好的主体伤害，不是铭刻附属：出生后立刻回填主伤身份，
+            //否则 OnSpawn 的父源继承默认把它们记作副伤，被"同目标副伤总量 100% 预算"拦停——
+            //表现为乱舞只有头两刀有伤、其余斩击与撕裂拍全部空刀
+
             for (int i = 0; i < RingBeats.Length; i++) {
                 if (timer != RingBeats[i].Frame) {
                     continue;
@@ -305,9 +309,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 float escalate = i / (float)(RingBeats.Length - 1) * 0.85f;
                 Vector2 center = Projectile.Center + Main.rand.NextVector2Circular(70f, 55f);
                 float roll = Aim + RingBeats[i].RollOff + Main.rand.NextFloat(-0.15f, 0.15f);
-                OniFinaleRing.Fire(Owner, center, roll, escalate, RingBeats[i].Flip
+                Projectile ring = OniFinaleRing.Fire(Owner, center, roll, escalate, RingBeats[i].Flip
                     , ringDamage, Projectile.knockBack, SizeMul * (1f + 0.18f * escalate) * 1.12f
                     , Projectile.GetSource_FromAI());
+                OniMeiActionContext.Inherit(Projectile, ring, secondary: false, OniMeiActionKind.Finale);
             }
 
             for (int i = 0; i < ScarBeats.Length; i++) {
@@ -319,8 +324,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 //引爆延迟对齐纳刀帧，i%3 错帧让刀痕网连锁碎裂而非同帧齐爆
 
                 int detonateDelay = DetonateFrame - ScarBeats[i].Frame + i % 3;
-                OniFinaleScar.Fire(Owner, center, angle, detonateDelay
+                Projectile scar = OniFinaleScar.Fire(Owner, center, angle, detonateDelay
                     , scarDamage, Projectile.knockBack * 0.5f, SizeMul, Projectile.GetSource_FromAI());
+                OniMeiActionContext.Inherit(Projectile, scar, secondary: false, OniMeiActionKind.Finale);
             }
 
             if (timer == CutSpawnFrame) {

@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.Narrative;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -19,7 +18,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.Gifts
         public static LocalizedText L4 { get; private set; }
 
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
-        public override int TargetBossId => NPCID.EyeofCthulhu;
 
         public override void SetStaticDefaults() {
             L0 = this.GetLocalization(nameof(L0), () => "对了，我们那儿以前有个人，睡觉的时候眼睛合不上");

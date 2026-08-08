@@ -303,7 +303,7 @@ OnikiriItem: {
 		'''
 		Hold left-click to drive the five-beat Crimson Rend combo
 		[DASH] spends Vigor on a normal Kamui Flash Step; at half Stance or above, press [DASH] again within one second for a free execution dash
-		In Omote, hold [SAKURA] to pay for a normal dash; if still held at the endpoint with enough Vigor, it chains into Sakura Flight; release to return
+		In Omote, hold [SAKURA] to scatter into Sakura Flight on the spot; release or run dry to reform; holding it through a dash chains into the flight too
 		After a half-Stance execution dash, left-click for Annihilating Flash; at full Stance, double-dash through a target for Finale Slash
 		At full Stance, press [EXECUTE] to auto-lock, dash, and automatically unleash Finale Slash; with no target, the dash follows the cursor
 		An unfulfilled execution costs no additional Vigor
@@ -2527,14 +2527,6 @@ OniKeikoRune: {
 	// NeedBlade: Onikiri is not in your bag, so the rune has no lesson to open
 	// Closed: The lesson is put away; use the rune again to reopen
 	// NotNow: Something else holds the stage right now
-}
-
-OniMeiGiftRepairCommand: {
-	// Description: Requeue one completed Onikiri inscription gift for this character.
-	// LocalOnly: This command only repairs the current local character.
-	// Success: Onikiri gift requeued: {0}
-	// NotCompleted: Onikiri gift was never completed: {0}
-	// UnknownKey: Unknown Onikiri gift Key: {0}
 }
 
 OniMeiRubbingOnikiri: {

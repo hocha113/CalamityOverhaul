@@ -29,8 +29,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         public static LocalizedText FarewellLine10 { get; private set; }
         public static LocalizedText FarewellLine11 { get; private set; }
 
-        private static bool removedHalibut;
-
         public override StyleId DefaultStyle => "Brimstone";
 
         public override void SetStaticDefaults() {
@@ -63,16 +61,14 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
 
         public static void RequestSpawn() => SpawnPending = true;
 
-        public static void ResetWorldState() {
-            SpawnPending = false;
-            removedHalibut = false;
-        }
+        public static void ResetWorldState() => SpawnPending = false;
 
         protected override void OnStarted() {
             EbnEffect.StartContraction();
             if (Main.LocalPlayer.HasHalibut()) {
                 RemoveHalibutFromPlayer();
-                removedHalibut = true;
+                //鱼被带走的这一刻就欠下尾声，不等对白播完，中途退出也不丢
+                HelenEpilogue.RequestSpawn(Main.LocalPlayer);
             }
 
             DialoguePanelView.Instance?.ShowFullBodyPortrait<SupCalFullBodyPortrait>();
@@ -83,10 +79,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
             EbnEffect.IsActive = false;
             EbnEffect.ResetEffects();
             EbnEffect.StartEpilogueFadeIn();
-            if (removedHalibut) {
-                HelenEpilogue.RequestSpawn();
-                removedHalibut = false;
-            }
         }
 
         private static void RemoveHalibutFromPlayer() {

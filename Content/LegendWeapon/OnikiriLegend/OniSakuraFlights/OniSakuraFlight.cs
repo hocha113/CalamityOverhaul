@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -84,7 +86,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
         private const float MaxTrailLength = 420f;
         private const int MaxPathPoints = 52;
         private const float MinFlightSpeed = 14f;
-        private const float MaxFlightSpeed = 48f;
+        //上限抬到能容下巡航加速的终值(40 × CruiseGain)，否则加速被钳制掉
+        private const float MaxFlightSpeed = 56f;
+        /// <summary>巡航加速的爬升帧数与终值倍率:硬规禁匀速直线，速度全程在演化</summary>
+        private const int CruiseRampFrames = 40;
+        private const float CruiseGain = 1.30f;
         private const int MinFlightFrames = 12;
         private const int MaxFlightFrames = 180;
         /// <summary>贴光标死区(px²):过近不改向,避免绕着光标原地抖转</summary>
@@ -120,6 +126,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
         private Vector2 lastObservedCenter;
         private Vector2 lastVisualDirection;
         private float flightSpeed;
+        /// <summary>起飞时的基准速度，巡航包络在此之上做增益</summary>
+        private float baseFlightSpeed;
         private float pathCarry;
         private float availablePathLength;
         private float looseSpawnCarry;
@@ -268,6 +276,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
         private void Initialize() {
             initialized = true;
             flightSpeed = MathHelper.Clamp(Projectile.velocity.Length(), MinFlightSpeed, MaxFlightSpeed);
+            baseFlightSpeed = flightSpeed;
             moveDirection = Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction);
             lastVisualDirection = moveDirection;
             lastBankDirection = moveDirection;
@@ -312,6 +321,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
             }
 
             Timer++;
+            //纯 Timer 的确定性函数，各端算得一样，远端的 visualSpeedRatio 才不会飘
+            UpdateFlightSpeed();
 
             if (Projectile.IsOwnedByLocalPlayer()) {
                 UpdateOwnerMovement();
@@ -358,9 +369,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
             }
         }
 
+        /// <summary>
+        /// 巡航速度包络:起飞速度 → 复合加速到 <see cref="CruiseGain"/> 倍 → 极缓地沉回一点.
+        /// 全程有量在演化，不是一条匀速直线
+        /// </summary>
+        private void UpdateFlightSpeed() {
+            int travel = Timer - HideStartFrame;
+            if (travel < 0 || baseFlightSpeed <= 0f) {
+                return;
+            }
+            float ramp = MathHelper.Clamp(travel / (float)CruiseRampFrames, 0f, 1f);
+            float gain = MathHelper.Lerp(1f, CruiseGain, ramp * (2f - ramp))
+                - 0.06f * MathHelper.Clamp((travel - CruiseRampFrames) / 90f, 0f, 1f);
+            flightSpeed = MathHelper.Clamp(baseFlightSpeed * gain, MinFlightSpeed, MaxFlightSpeed);
+        }
+
         private void UpdateOwnerMovement() {
             if (Timer < HideStartFrame) {
                 HoldOwner();
+                PullbackWindup();
                 return;
             }
 
@@ -389,10 +416,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                 Projectile.netUpdate = true;
             }
 
-            float launch = MathHelper.SmoothStep(0.34f, 1f,
-                MathHelper.Clamp((Timer - HideStartFrame) / 5f, 0f, 1f));
-            float braking = MathHelper.SmoothStep(0.30f, 1f,
-                MathHelper.Clamp((FlightEndFrame - Timer) / 6f, 0f, 1f));
+            //起飞过冲:两帧 1.35× 再落回 1(旧的 0.34→1 平滑爬升读不出"被吸走"那一顿)
+            int sinceLaunch = Timer - HideStartFrame;
+            float launch = sinceLaunch <= 1
+                ? 1.35f
+                : MathHelper.Lerp(1.35f, 1f, MathHelper.Clamp((sinceLaunch - 1f) / 4f, 0f, 1f));
+            //刹停:只在最后三帧急收(旧的 6 帧 smoothstep 是滑行)
+            float braking = MathHelper.Clamp((FlightEndFrame - Timer) / 3f, 0f, 1f);
+            braking = 0.06f + 0.94f * braking * braking;
             Vector2 desiredMove = moveDirection * flightSpeed * launch * braking;
             Vector2 allowedMove = Collision.TileCollision(Owner.position, desiredMove,
                 Owner.width, Owner.height, fallThrough: true, fall2: true, (int)Owner.gravDir);
@@ -414,8 +445,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                 Owner.ChangeDir(moveDirection.X > 0f ? 1 : -1);
             }
 
-            float desiredLength = desiredMove.Length();
-            if (desiredLength > 3f && allowedMove.Length() < desiredLength * 0.28f) {
+            //撞墙判据用未加过冲/刹停的基准步长:表现层倍率不该改变撞墙灵敏度
+            //(刹停帧 refLength < 3 自动停判，本来也在收尾)
+            float refLength = flightSpeed * braking;
+            if (refLength > 3f && allowedMove.Length() < refLength * 0.28f) {
                 Timer = FlightEndFrame;
                 Projectile.netUpdate = true;
             }
@@ -441,6 +474,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                 , (0.16f + 0.14f * MathHelper.Clamp(visualSpeedRatio, 0f, 1f)) * envelope);
         }
 
+        /// <summary>
+        /// 散瓣那几帧的反向预备:身子先被往后拽一小段(逐帧加速，末帧最明显)，
+        /// 紧接着的过冲才有对比。总位移约 8px，走碰撞不入墙
+        /// </summary>
+        private void PullbackWindup() {
+            float t = (Timer + 1f) / HideStartFrame;
+            NudgeOwner(-moveDirection * MathHelper.Lerp(1.6f, 4.4f, t * t));
+        }
+
+        /// <summary>过碰撞的一次性位移，供预备与后坐用</summary>
+        private void NudgeOwner(Vector2 offset) {
+            Owner.position += Collision.TileCollision(Owner.position, offset
+                , Owner.width, Owner.height, fallThrough: true, fall2: true, (int)Owner.gravDir);
+            Owner.fallStart = (int)(Owner.position.Y / 16f);
+        }
+
         private void HoldOwner() {
             Owner.velocity = Vector2.Zero;
             Owner.fallStart = (int)(Owner.position.Y / 16f);
@@ -452,6 +501,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
 
         private void ReleaseOwner() {
             ownerReleased = true;
+            if (!Main.dedServ) {
+                SpawnDriftPetals();
+            }
             if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
@@ -462,6 +514,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
 
             Owner.GetModPlayer<OnikiriPlayer>().OpenZanshinWindow(0, 0, moveDirection);
             Tutorial.OnikiriTutorialEvents.FireSakuraReleased();
+        }
+
+        /// <summary>
+        /// 交还操控时撒一把生樱瓣。类内花瓣到 KillFrame 就全没了，
+        /// 这批走 PRT 活得比弹幕久——落地之后现场还有东西在飘
+        /// </summary>
+        private void SpawnDriftPetals() {
+            Vector2 normal = new(-moveDirection.Y, moveDirection.X);
+            for (int i = 0; i < 16; i++) {
+                Vector2 at = Owner.Center + Main.rand.NextVector2Circular(22f, 30f);
+                Vector2 velocity = -moveDirection * Main.rand.NextFloat(0.4f, 2.6f)
+                    + normal * Main.rand.NextFloat(-2.2f, 2.2f)
+                    - Vector2.UnitY * Main.rand.NextFloat(0.2f, 1.5f);
+                Color tint = Main.rand.NextBool(4)
+                    ? new Color(214, 76, 108)
+                    : new Color(255, 206, 220);
+                PRTLoader.NewParticle<PRT_OniSakuraDrift>(at, velocity, tint
+                    , Main.rand.NextFloat(0.85f, 1.35f))
+                    ?.Configure(Main.rand.Next(90, 150), Main.rand.NextFloat(0.34f, 0.52f));
+            }
         }
 
         private void RecordPath(Vector2 currentCenter) {
@@ -680,8 +752,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
 
             return Owner.Center
                 - moveDirection * (petal.BaseTrailDistance + MathF.Abs(driftWave) * 8f)
-                //转向时涡核整体甩向外侧
-                + normal * (sideWave * radius + turnBank * (radius * 0.85f + 9f))
+                //转向时涡核甩向弯道外侧(离心)。y 向下的屏幕系里
+                //normal 指向转入侧，故取负号
+                + normal * (sideWave * radius - turnBank * (radius * 0.85f + 9f))
                 + moveDirection * depth * 4f;
         }
 
@@ -830,6 +903,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
 
         private void BeginReform() {
             reformStarted = true;
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                //刹停后坐:合拢那一帧往回坠一下，力有去处
+                NudgeOwner(-moveDirection * 6.5f);
+            }
             Vector2 normal = new(-moveDirection.Y, moveDirection.X);
             foreach (Petal petal in petals) {
                 if (petal.Role == PetalRole.Loose) {
@@ -973,10 +1050,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                 OniSakuraFlowRenderer.DrawCore(device, fx, Owner.Center
                     , radius * 1.24f, moveDirection, stretch, -spin * 0.62f
                     , new Color(229, 90, 119), bloom * 0.75f, 0.35f, core * 0.86f);
-                //内盘:近瓣白，顺转，热心在此
+                //内盘:饱和樱，顺转，瓣心在此。刻意不用近白底色——
+                //核靠"内盘亮 / 外盘深 / 流带更深"的对比读出来，不靠把 RGB 顶到白
                 OniSakuraFlowRenderer.DrawCore(device, fx, Owner.Center
                     , radius * 0.78f, moveDirection, stretch * 0.88f, spin
-                    , new Color(255, 226, 233), bloom, 0.95f + flash * 0.5f, core);
+                    , new Color(255, 196, 213), bloom, 0.90f + flash * 0.5f, core);
             }
 
             OniSakuraFlowRenderer.EndDraw(device, prevBlend, prevRaster, prevDepth);
@@ -1052,8 +1130,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                 phaseEnvelope = 0.11f;
             }
 
+            //这条批是真 Additive(源因子=SourceAlpha):tint 的 A=0 等于不画。
+            //旧代码全用 A=0 染色，所以樱流的加色层此前从未显示过——沿疾走/残心的
+            //写法让 A 随强度走(new Color(rgb) * x)，强度数值本身不放大
             if (phaseEnvelope > 0.01f) {
-                Color coreColor = new Color(1f, 0.30f, 0.46f, 0f) * (0.26f * phaseEnvelope);
+                Color coreColor = new Color(1f, 0.30f, 0.46f) * (0.26f * phaseEnvelope);
                 float coreScale = (92f + phaseEnvelope * 54f) / glow.Width;
                 spriteBatch.Draw(glow, Owner.Center - Main.screenPosition, null, coreColor,
                     0f, glowOrigin, coreScale, SpriteEffects.None, 0f);
@@ -1066,11 +1147,96 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                 }
 
                 float alpha = petal.Alpha * (petal.Depth - 0.45f) / 0.55f * 0.12f;
-                Color color = new Color(1f, 0.34f, 0.50f, 0f) * alpha;
+                Color color = new Color(1f, 0.34f, 0.50f) * alpha;
                 float scale = 34f * petal.RenderScale / glow.Width;
                 spriteBatch.Draw(glow, petal.Position - Main.screenPosition, null, color,
                     0f, glowOrigin, scale, SpriteEffects.None, 0f);
             }
+
+            DrawWindStreaks(spriteBatch);
         }
+
+        /// <summary>
+        /// 沿航线跑的风线:拉丝条纹，与花瓣不是同一介质也不是同一空间频率;
+        /// 位置沿 path 采样故随航线弯曲，长度与亮度全挂速度
+        /// </summary>
+        private void DrawWindStreaks(SpriteBatch spriteBatch) {
+            if (Timer <= DissolveFrames || Timer > FlightEndFrame + 4
+                || CWRAsset.SlashStreak01?.Value is not Texture2D streak) {
+                return;
+            }
+            float speed01 = MathHelper.Clamp(visualSpeedRatio, 0f, 1f);
+            if (speed01 <= 0.18f) {
+                return;
+            }
+
+            Vector2 origin = streak.Size() * 0.5f;
+            for (int i = 0; i < 5; i++) {
+                float phase = (Timer * (0.052f + i * 0.009f) + i * 0.37f + Seed) % 1f;
+                PathFrame frame = SamplePathFrame(phase * MathHelper.Lerp(120f, 260f, speed01));
+                float lateral = MathF.Sin(i * 2.1f + Seed * 9f) * (12f + i * 7f);
+                float envelope = MathF.Sin(phase * MathHelper.Pi);
+                float alpha = envelope * speed01 * 0.42f;
+                float length = (78f + speed01 * 132f) * (0.60f + envelope * 0.40f);
+                float thick = 4.5f + i % 2 * 2f;
+                //Additive 批源乘 srcAlpha，A 必须随强度走，A=0 = 不画
+                spriteBatch.Draw(streak, frame.Position + frame.Normal * lateral - Main.screenPosition
+                    , null, new Color(255, 214, 226) * alpha
+                    , frame.Tangent.ToRotation(), origin
+                    , new Vector2(length / streak.Width, thick / streak.Height)
+                    , SpriteEffects.None, 0f);
+            }
+        }
+
+        /// <summary>
+        /// 沿航向的空气拉扯(KamuiLine 位移场)，与疾走同一条语汇。
+        /// 尾锚只取最近一段航线，否则急转后轴向会指到反方向
+        /// </summary>
+        void IWarpDrawable.Warp() {
+            if (path.Count < 2 || EffectLoader.NeutronWarp?.Value is not Effect warpFx
+                || VaultAsset.placeholder2?.Value is not Texture2D px) {
+                return;
+            }
+            float envelope = (Timer <= FlightEndFrame ? 1f : 1f - StreamRetract)
+                * MathHelper.Clamp(visualSpeedRatio * 1.4f, 0f, 1f);
+            if (envelope <= 0.03f) {
+                return;
+            }
+
+            Vector2 tail = SamplePath(180f);
+            float length = Vector2.Distance(tail, Owner.Center);
+            if (length < 60f) {
+                return;
+            }
+            float angle = moveDirection.ToRotation();
+
+            warpFx.Parameters["uTime"]?.SetValue((float)Main.GameUpdateCount * 0.05f);
+            warpFx.Parameters["uIntensity"]?.SetValue(0.16f);
+            warpFx.Parameters["uProgress"]?.SetValue(envelope);
+            warpFx.Parameters["uRotation"]?.SetValue(angle);
+            warpFx.CurrentTechnique = warpFx.Techniques["KamuiLine"];
+
+            SpriteBatch sb = Main.spriteBatch;
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState
+                , DepthStencilState.None, RasterizerState.CullNone, warpFx
+                , Main.GameViewMatrix.TransformationMatrix);
+            warpFx.CurrentTechnique.Passes[0].Apply();
+
+            //长度余量喂给 shader 两端羽化；局部 +Y 旋到航向
+            Vector2 mid = (tail + Owner.Center) * 0.5f - Main.screenPosition;
+            Vector2 quad = new(250f, length * 1.5f + 120f);
+            sb.Draw(px, mid, new Rectangle(0, 0, 1, 1), Color.White
+                , angle - MathHelper.PiOver2, new Vector2(0.5f), quad, SpriteEffects.None, 0);
+
+            sb.End();
+            sb.Begin(0, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None
+                , RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        /// <summary>樱的空气拉扯要中性色差，蓝移是中子星语言</summary>
+        public bool DontUseBlueshiftEffect() => true;
+
+        public void DrawCustom(SpriteBatch spriteBatch) { }
     }
 }

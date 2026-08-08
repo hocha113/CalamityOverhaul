@@ -42,15 +42,19 @@
             && LoadoutRevision != 0;
     }
 
+    /// <summary>
+    /// 权威端裁决结果；<see cref="AuthorityPrice"/> 仅购买有效，请求方本机据此扣款
+    /// </summary>
     internal readonly record struct VictorRequestResult(
         uint RequestSessionGeneration,
         uint RequestId,
         VictorRequestKind Kind,
         VictorResultCode Code,
-        uint AuthorityLoadoutRevision)
+        uint AuthorityLoadoutRevision,
+        long AuthorityPrice = 0L)
     {
         internal bool IsValid => RequestSessionGeneration != 0 && RequestId != 0
-            && AuthorityLoadoutRevision != 0
+            && AuthorityLoadoutRevision != 0 && AuthorityPrice >= 0L
             && VictorProtocol.IsValidKind(Kind)
             && VictorProtocol.IsValidResultCode(Code);
 

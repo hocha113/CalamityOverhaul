@@ -542,13 +542,13 @@ MoldProcessingUI: {
 OnikiriText: {
 	OniRegisterUI: {
 		TitleText: GHOST REGISTER
-		StatusFormat: Bound {0} · Mastery {1}% · Erosion {2}%
-		MasteryFormat: Mastery {0}%
-		AbilityCostFormat: On use: Mastery -{0}% · Erosion +{1}%
+		StatusFormat: Bound {0} · Revival {1}% · Erosion {2}%
+		RevivalFormat: Revival {0}%
+		AbilityCostFormat: Per use: Revival +{0}% · Erosion +{1}%
 		OriginLabel: Origin
 		PowerLabel: Bestowal
 		StateReady: Ready to bind
-		StateDormant: Exhausted · Dormant
+		StateDanger: Waking · Use with care
 		StateArchive: Fragment · Cannot bind
 		EmptySlotName: No bound wraith
 		EmptySlotHint: Select a wraith to inspect it, then use the bind seal to place it in the single wraith slot. An empty slot enables no wraith ability
@@ -607,8 +607,8 @@ OnikiriText: {
 		HudHintFormat: "{0} toggles {1}; click the talisman to open it"
 		HudMeiName: the Inscription Stand
 		HudRegisterName: the Ghost Register
-		HudDangerLine: Mastery exhausted; the bound ability is dormant
-		HudWraithFormat: Bound {0} · Mastery {1}%
+		HudDangerLine: Revival nearly full; one more use and it wakes
+		HudWraithFormat: Bound {0} · Revival {1}%
 		VigorTitle: Vigor
 		VigorValueFormat: "{0} / {1}"
 		StanceTitle: Stance

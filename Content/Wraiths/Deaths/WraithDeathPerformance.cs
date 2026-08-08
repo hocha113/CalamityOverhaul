@@ -57,6 +57,9 @@ namespace CalamityOverhaul.Content.Wraiths.Deaths
         /// </summary>
         public virtual void DrawPrimitive(GraphicsDevice device) { }
 
+        /// <summary>本帧是否隐藏玩家本体（被帘罩住、被吞入雨中一类）。</summary>
+        public virtual bool HidesPlayer => false;
+
         //---- 运镜（仅死者本机被读取）----
         public virtual Vector2 CameraFocus
             => Phase == WraithSeizePhase.Linger ? DeathAnchor : Player?.Center ?? DeathAnchor;
