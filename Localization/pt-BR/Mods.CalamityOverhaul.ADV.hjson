@@ -1018,4 +1018,9 @@ EternalBlazingNowNoHelen: {
 	Line10: Alem disso, se voce pretende dar fim a esta era, um invólucro mortal e muito frágil.
 }
 
-// OniRainWorld.OniRainWorldSystem.InteractHint: "[Right Click] Step beneath the umbrella"
+OniRainWorld: {
+	OniRainWorldSystem: {
+		// InteractHint: "[Right Click] Step beneath the umbrella"
+		// DescendHint: "[Right Click] Step deeper into the rain"
+	}
+}

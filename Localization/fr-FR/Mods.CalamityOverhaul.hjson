@@ -278,4 +278,9 @@ TileNameFallback: {
 	Tile352: Épines
 }
 
-// OniRainWorld.OniRainWorldSystem.InteractHint: "[右键] 撑伞入雨"
+OniRainWorld: {
+	OniRainWorldSystem: {
+		// InteractHint: "[右键] 撑伞入雨"
+		// DescendHint: "[右键] 撑伞入深雨"
+	}
+}

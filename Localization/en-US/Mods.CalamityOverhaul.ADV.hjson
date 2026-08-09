@@ -1018,5 +1018,9 @@ EternalBlazingNowNoHelen: {
 	Line10: Besides, if you intend to bring an end to this era, a mortal shell is far too fragile.
 }
 
-OniRainWorld.OniRainWorldSystem.InteractHint: "[Right Click] Step beneath the umbrella"
-OniRainWorld.OniRainWorldSystem.DescendHint: "[Right Click] Step deeper into the rain"
+OniRainWorld: {
+	OniRainWorldSystem: {
+		InteractHint: "[Right Click] Step beneath the umbrella"
+		DescendHint: "[Right Click] Step deeper into the rain"
+	}
+}
