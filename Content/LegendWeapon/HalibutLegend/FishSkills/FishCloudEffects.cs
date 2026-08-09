@@ -16,12 +16,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>云絮</summary>
     internal class PRT_FishCloudWisp : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool CanPool => true;
 
         private float spin;
         private float growRate;
-        private int frameIndex;
 
         //SetProperty 先于 Configure 执行，缺省参数不覆盖已随机化的默认值
         public PRT_FishCloudWisp Configure(int lifetime, float spinSpeed = 0f, float grow = 0f) {
@@ -39,12 +38,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             base.Reset();
             spin = 0f;
             growRate = 1.004f;
-            frameIndex = 0;
         }
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AlphaBlend; //漫反射碎云，禁加色
-            frameIndex = Main.rand.Next(4);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             if (Lifetime <= 0) {
                 Lifetime = Main.rand.Next(40, 65);
@@ -69,13 +66,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            int half = tex.Width / 2;
-            Rectangle frame = new Rectangle(frameIndex % 2 * half, frameIndex / 2 * half, half, half);
             Vector2 pos = Position - Main.screenPosition;
-            Vector2 origin = frame.Size() / 2f;
+            Vector2 origin = tex.Size() / 2f;
             //外圈虚影 + 主体，错转错缩做柔边（AlphaBlend 不叠亮）
-            spriteBatch.Draw(tex, pos, frame, Color * (Opacity * 0.32f), Rotation - 0.6f, origin, Scale * 1.35f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(tex, pos, frame, Color * Opacity, Rotation, origin, Scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, pos, null, Color * (Opacity * 0.32f), Rotation - 0.6f, origin, Scale * 0.81f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, pos, null, Color * Opacity, Rotation, origin, Scale * 0.6f, SpriteEffects.None, 0f);
             return false;
         }
     }

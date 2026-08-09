@@ -187,6 +187,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
+        /// <summary>直角括弧,自角点沿两向各拉一段渐隐短线(锁敌/点选框角)</summary>
+        public static void DrawCornerBracket(SpriteBatch spriteBatch, Vector2 corner, Vector2 horizontal
+            , Vector2 vertical, float arm, Color edge, Color fade, float thickness = 1.4f) {
+            DrawGradientLine(spriteBatch, corner, corner + horizontal * arm, edge, fade, thickness);
+            DrawGradientLine(spriteBatch, corner, corner + vertical * arm, edge, fade, thickness);
+        }
+
         /// <summary>焦边,intensity 0~1 炭化高与火苗密度</summary>
         public static void DrawCharredEdge(SpriteBatch sb, Rectangle rect, float intensity, float time, float alpha) {
             if (intensity <= 0.01f || alpha <= 0.01f) {

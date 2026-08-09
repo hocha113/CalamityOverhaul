@@ -643,11 +643,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //核心
             if (age <= 10) {
                 float ct = age / 10f;
-                if (CWRAsset.SmokeSheet01?.Value is Texture2D cloud) {
-                    int frameSize = cloud.Width / 2;
-                    Rectangle frame = new(0, 0, frameSize, frameSize);
-                    sb.Draw(cloud, center, frame, new Color(30, 26, 24) * (0.5f * (1f - ct)), burstSeed
-                        , frame.Size() / 2f, 0.5f + ct * 0.4f, SpriteEffects.None, 0f);
+                if (CWRAsset.Fog?.Value is Texture2D cloud) {
+                    sb.Draw(cloud, center, null, new Color(30, 26, 24) * (0.5f * (1f - ct)), burstSeed
+                        , cloud.Size() / 2f, 0.3f + ct * 0.24f, SpriteEffects.None, 0f);
                 }
                 if (CWRAsset.SoftGlow?.Value is Texture2D glow) {
                     //柔光只作底层

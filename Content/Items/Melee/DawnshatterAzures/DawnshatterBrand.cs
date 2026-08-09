@@ -49,6 +49,16 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
 
         public override bool ShouldUpdatePosition() => false;
 
+        /// <summary>重击留痕,只在 owner 端调用;弹幕自带生成包同步到各端</summary>
+        internal static void Strike(Player owner, NPC target, Vector2 slashVec) {
+            if (owner == null || target == null || Main.myPlayer != owner.whoAmI) {
+                return;
+            }
+            Projectile.NewProjectile(owner.GetSource_Misc("CWR_DawnshatterBrand"), target.Center, Vector2.Zero
+                , ModContent.ProjectileType<DawnshatterBrand>(), 0, 0f, owner.whoAmI
+                , ai0: target.whoAmI, ai1: slashVec.SafeNormalize(Vector2.UnitX).ToRotation());
+        }
+
         public override void AI() {
             int idx = (int)Projectile.ai[0];
             if (idx >= 0 && idx < Main.maxNPCs) {
@@ -110,7 +120,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             Vector2 lineDir = Projectile.ai[1].ToRotationVector2();
             float tipK = MathF.Pow(birth, 2.2f) * fade;
             Color tip = new Color(255, 240, 200) with { A = 0 } * (0.8f * tipK);
-            foreach (float side in stackalloc float[] { -1f, 1f }) {
+            for (int side = -1; side <= 1; side += 2) {
                 Main.EntitySpriteDraw(glow, pos + lineDir * side * lineLen * 0.5f, null, tip
                     , 0f, glow.Size() * 0.5f, 0.14f, SpriteEffects.None, 0);
             }

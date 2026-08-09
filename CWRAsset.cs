@@ -36,7 +36,7 @@ namespace CalamityOverhaul
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> Fire = null;//512 火焰帧序列，Additive 粒子
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> Fog = null;//256 团状烟雾灰度
+        public static Asset<Texture2D> Fog = null;//256 单帧烟羽，白RGB+真alpha，AlphaBlend 可直接染色；烟团统一用它
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> PerlinNoise = null;//512×512 Perlin灰度，Shader扭曲/溶解
         [VaultLoaden(CWRConstant.Masking)]
@@ -94,9 +94,7 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> TearSpread01 = null;//冲击扩散尖刺形（Alpha型）
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> Ring01 = null;//扩散环（白RGB+Alpha形状）
-        //---- 烟雾(白RGB+Alpha，AlphaBlend) ----
-        [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> SmokeSheet01 = null;//烟团序列帧 2×2（帧边长 = Width/2）
+        //---- 烟雾(烟团见上方 Fog) ----
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> SmokeWisp01 = null;//拉丝烟缕（亮度型）
         //---- 噪声 ----

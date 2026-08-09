@@ -340,11 +340,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
     /// <summary>
     /// 激流余韵水雾，AlphaBlend 灰蓝雾团，悬浮后缓慢下落、微涨、快进慢出
-    /// 活得比水绸带久（余韵主角），SmokeSheet01 为白RGB+真alpha，可安全染色直绘
+    /// 活得比水绸带久（余韵主角），Fog 为白RGB+真alpha，可安全染色直绘
     /// </summary>
     internal class PRT_FishTunaMist : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool CanPool => true;
 
         private float fall;
@@ -367,7 +367,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
-            ai[0] = Main.rand.Next(4);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             spin = Main.rand.NextFloat(0.004f, 0.012f) * (Main.rand.NextBool() ? 1f : -1f);
             if (Lifetime <= 0) {
@@ -400,11 +399,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            int index = (int)ai[0];
-            int frameSize = tex.Width / 2;
-            Rectangle frame = new(index % 2 * frameSize, index / 2 * frameSize, frameSize, frameSize);
-            spriteBatch.Draw(tex, Position - Main.screenPosition, frame, Color * Opacity, Rotation
-                , frame.Size() * 0.5f, Scale * 0.5f, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * Opacity, Rotation
+                , tex.Size() * 0.5f, Scale * 0.3f, SpriteEffects.None, 0);
             return false;
         }
     }

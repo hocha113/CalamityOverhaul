@@ -41,6 +41,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         private const int PointModeMarker = -2;
         private const byte NetworkVersion = 2;
         private const float DismemberRange = 800f;
+        /// <summary>
+        /// 服务端复核射程的余量。请求要跑一个来回，这期间玩家与目标都在动，
+        /// 客户端点下时刚好卡在射程内的合法请求不该在服务端被判死
+        /// </summary>
+        private const float DismemberRangeSlack = 192f;
         private const float DismemberDamageMultiplier = 2.5f;
         private const int MaxAuthorityWaitFrames = 120;
         /// <summary>
@@ -590,15 +595,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 || Projectile.ai[2] > OniSeverReplicationSystem.MaxScale) {
                 failure = "ai payload out of range";
             }
-            else if (DistanceToHitbox(target, owner.Center) > DismemberRange) {
+            else if (DistanceToHitbox(target, owner.Center)
+                > DismemberRange + DismemberRangeSlack) {
                 failure = "target out of range";
             }
             else if (!ValidateTutorialIdentity(target)) {
                 failure = "tutorial identity mismatch";
             }
-            else if (!Tutorial.OnikiriTutorialTargetGlobal.IsTutorialTarget(target,
-                out _, out _) && !target.CanBeChasedBy()) {
-                failure = "target not chaseable";
+            //与客户端点选同一条资格判定，两端口径分家就会出现"点得到但斩不了"
+            else if (!OniDismember.CanBeSevered(target)) {
+                failure = "target not severable";
             }
             else if (HasCompetingAuthority()) {
                 failure = "competing strike active";
@@ -622,7 +628,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
             if (omokageEntryId <= 0 || tutorialTargetToken != 0
                 || !IsFinite(requestPointBodyLocal)
-                || Vector2.Distance(owner.Center, Projectile.Center) > DismemberRange) {
+                || Vector2.Distance(owner.Center, Projectile.Center)
+                    > DismemberRange + DismemberRangeSlack) {
                 failure = "paper anchor invalid";
                 return false;
             }

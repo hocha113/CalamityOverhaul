@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// </summary>
     internal class PRT_FishPengSnow : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool CanPool => true;
 
         private float peak;
@@ -227,7 +227,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
-            ai[0] = Main.rand.Next(4);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
         }
 
@@ -252,11 +251,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            int index = (int)ai[0];
-            int frameSize = tex.Width / 2;
-            Rectangle frame = new(index % 2 * frameSize, index / 2 * frameSize, frameSize, frameSize);
-            spriteBatch.Draw(tex, Position - Main.screenPosition, frame, Color * Opacity, Rotation
-                , frame.Size() * 0.5f, Scale * 0.5f * squish, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * Opacity, Rotation
+                , tex.Size() * 0.5f, Scale * 0.3f * squish, SpriteEffects.None, 0);
             return false;
         }
     }

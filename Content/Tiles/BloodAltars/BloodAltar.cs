@@ -1,4 +1,3 @@
-﻿using CalamityOverhaul.Content.TileProcessors;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -10,7 +9,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace CalamityOverhaul.Content.Tiles
+namespace CalamityOverhaul.Content.Tiles.BloodAltars
 {
     internal class BloodAltar : ModTile
     {
@@ -20,10 +19,16 @@ namespace CalamityOverhaul.Content.Tiles
         public const int OriginOffsetX = 1;
         public const int OriginOffsetY = 1;
         public const int SheetSquare = 18;
+        /// <summary>贴图竖排 4 帧，每帧高 Height * SheetSquare</summary>
+        public const int FrameCount = 4;
+        public const int FrameHeight = Height * SheetSquare;
+
         [VaultLoaden(CWRConstant.Asset + "Tiles/" + "BloodAltar")]
         private static Asset<Texture2D> tileAsset = null;
+        //描边贴图只有 1 帧（72×54），故取的是未加帧偏移的原始 frameY
         [VaultLoaden(CWRConstant.Asset + "Tiles/" + "BloodAltarGlow")]
         private static Asset<Texture2D> tileGlowAsset = null;
+
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileNoAttach[Type] = true;
@@ -31,7 +36,7 @@ namespace CalamityOverhaul.Content.Tiles
             Main.tileWaterDeath[Type] = false;
             Main.tileFrameImportant[Type] = true;
             AddMapEntry(Color.Red, VaultUtils.GetLocalizedItemName<Items.Placeable.BloodAltar>());
-            AnimationFrameHeight = 54;
+            AnimationFrameHeight = FrameHeight;
             AdjTiles = [TileID.DemonAltar];
             TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
             TileObjectData.newTile.Width = Width;
@@ -62,48 +67,43 @@ namespace CalamityOverhaul.Content.Tiles
             }
         }
 
-        public override bool RightClick(int i, int j) {
-            if (VaultUtils.SafeGetTopLeft(i, j, out var point)) {
-                if (TileProcessorLoader.ByPositionGetTP(point, out BloodAltarTP module) && BloodAltarTP.UseInPlayerBloodOrb(Main.LocalPlayer)) {
-                    BloodAltarTP.targetFuncsWhoAmi = module.WhoAmI;
-                    BloodAltarTP.startPlayerWhoAmI = Main.LocalPlayer.whoAmI;
-                    BloodAltarTP.OnBoolMoon = !BloodAltarTP.OnBoolMoon;
-                    module.SendData();
-                }
-            }
-            return true;
-        }
+        //交互逻辑在 BloodAltarTP.RightClick：InnoVault 会把那个钩子派发到服务端与其他客户端，
+        //而这里只跑在点击者本地，拿不到权威端
+        public override bool RightClick(int i, int j) => true;
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             Tile t = Main.tile[i, j];
             int frameXPos = t.TileFrameX;
             int frameYPos = t.TileFrameY;
 
-            if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
-                return false;
+            BloodAltarTP module = null;
+            if (VaultUtils.SafeGetTopLeft(i, j, out var point)) {
+                TileProcessorLoader.ByPositionGetTP(point, out module);
             }
-            if (!TileProcessorLoader.ByPositionGetTP(point, out BloodAltarTP module)) {
-                return false;
+            if (module != null) {
+                frameYPos += module.FrameIndex % FrameCount * FrameHeight;
             }
 
-            frameYPos += module.frameIndex % 4 * (Height * SheetSquare);
             Texture2D tex = tileAsset.Value;
-            Texture2D glow = tileGlowAsset.Value;
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
             Color drawColor = Lighting.GetColor(i, j);
 
-            if (!t.IsHalfBlock && t.Slope == 0) {
-                spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
-                    , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-                if (module.drawGlow) {
-                    spriteBatch.Draw(glow, drawOffset, new Rectangle(frameXPos, t.TileFrameY, 16, 16)
-                    , module.gloaColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-                }
-            }
-            else if (t.IsHalfBlock) {
+            if (t.IsHalfBlock) {
                 spriteBatch.Draw(tex, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16)
                     , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+                return false;
+            }
+            if (t.Slope != 0) {
+                return false;
+            }
+
+            spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
+                , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+
+            if (module != null && module.HoverGlow) {
+                spriteBatch.Draw(tileGlowAsset.Value, drawOffset, new Rectangle(frameXPos, t.TileFrameY, 16, 16)
+                    , module.HoverGlowColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
             }
             return false;
         }

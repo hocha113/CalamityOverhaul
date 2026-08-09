@@ -1,12 +1,14 @@
 //OniRainWorld.fx 入雨演出的镜面世界合成
-//TechMirror: 阴冷的水从屏幕下方涨起，水下即绕枢轴点反射的世界镜像（点反射而非
-//            垂直镜像，翻转180°后与真实渲染恒等）+ 鬼雨湿墨调色 + 水下深度雾 +
-//            水面泡沫线/浮渣 + 屏幕空间雨丝 + 近水涟漪扰动；
+//TechMirror: 阴冷的水从屏幕下方涨起，水下是真正的水面倒影（垂直镜像，涨水/驻留期
+//            所见即倒影直觉）；翻转期镜像 x 随 uRollProgress 收敛为点反射，
+//            180°翻转∘点反射=恒等，与真实渲染零跳变交接
+//            + 鬼雨湿墨调色 + 水下深度雾 + 水面泡沫线/浮渣 + 屏幕空间雨丝 + 近水涟漪扰动；
 //            水位锁定缝线后 uSwallow 把边界向上吞满全屏。
 //直线算术+平 tex2D，无分支；s0=屏幕帧 s1=PerlinNoise
 
 float uTime;      //秒
 float uPivotY;    //缝线枢轴 uv.y，翻转期间收敛到 0.5
+float uRollProgress; //0-1 翻转进度：镜像 x 从垂直镜像收敛为点反射，θ=π 恒等
 float uOriginU;   //伞的 uv.x（水从伞底先漫出，兼异样涟漪环圆心）
 float uAspect;    //宽/高
 float uFront;     //泡沫辉光横向展开半径（等距空间），C#侧按宽高比算好铺满全屏的上限
@@ -40,8 +42,11 @@ float4 PSMirror(float2 coords : TEXCOORD0) : COLOR0
     float below = uv.y - waterY;
     float mask = saturate(below * 320.0);
 
-    //镜像采样：绕(0.5, uPivotY)点反射——枢轴恒等契约，与水位无关
-    float2 muv = float2(1.0 - uv.x, 2.0 * uPivotY - uv.y);
+    //镜像采样：涨水/驻留期为真垂直镜像（水面倒影直觉）；翻转期 x 向点反射收敛，
+    //θ=π 时 180°翻转∘点反射=恒等。收敛用 smoothstep 陡化，rp≈0.5 的横向坍缩
+    //窗口压进峰值角速度+旋转拖影+结算白闪的遮蔽区
+    float flip = uRollProgress * uRollProgress * (3.0 - 2.0 * uRollProgress);
+    float2 muv = float2(lerp(uv.x, 1.0 - uv.x, flip), 2.0 * uPivotY - uv.y);
 
     //近水面涟漪扰动，离水面越近越强
     float seamProx = exp2(-abs(below) * 24.0);

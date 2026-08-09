@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
     /// <summary>泼墨墨滴,AlphaBlend 暗色(加色画不了黑)</summary>
     internal class PRT_OniInkDrop : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool CanPool => true;
 
         private Color initialColor;
@@ -26,7 +26,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
-            ai[0] = Main.rand.Next(4);
+            //朝向由速度锁死,只能靠随机镜像避免墨滴同形
+            ai[0] = Main.rand.Next(2);
             if (Lifetime <= 0) {
                 Lifetime = 26;
             }
@@ -51,14 +52,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            int index = (int)ai[0];
-            int frameSize = tex.Width / 2;
-            Rectangle frame = new(index % 2 * frameSize, index / 2 * frameSize, frameSize, frameSize);
             //沿速度微拉长
             float stretch = MathHelper.Clamp(Velocity.Length() * 0.05f, 1f, 1.7f);
-            Vector2 scale = new Vector2(0.80f, stretch) * Scale * 0.16f;
-            spriteBatch.Draw(tex, Position - Main.screenPosition, frame, Color * Opacity, Rotation
-                , frame.Size() * 0.5f, scale, SpriteEffects.None, 0);
+            Vector2 scale = new Vector2(0.80f, stretch) * Scale * 0.096f;
+            SpriteEffects flip = ai[0] == 0f ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * Opacity, Rotation
+                , tex.Size() * 0.5f, scale, flip, 0);
             return false;
         }
     }

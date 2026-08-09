@@ -113,10 +113,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private const float DismemberDamageMul = 2.5f;
         /// <summary>肢解射程(与处决同量级)</summary>
         private const float DismemberRange = 800f;
-        /// <summary>点名真身的贴身容差(碰撞箱边距):点在身上=明确要斩真身,压过挂在它身上的纸</summary>
-        private const float DirectPickPad = 16f;
         /// <summary>媒介点选的光标容差(点到纸面矩形距离)</summary>
         private const float PaperMagnetPad = 60f;
+        /// <summary>
+        /// 真身点选落空后的吸附容差(在 <see cref="OniDismember.SelectionPad"/> 之外再放宽)。
+        /// 让位于纸面,只兜"擦着身边点空了"这一类;放太大会把里世界的普攻全吃成肢解(代价是反噬)
+        /// </summary>
+        private const float DismemberMagnetPad = 48f;
 
         //====铭刻效果层调参(机制常量在此,倍率在 OniMeiCombatProfile)====
         /// <summary>友切:每层「咎」的疾走额外气力(残心命中偿清)</summary>
@@ -288,6 +291,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private int executionTargetId = -1;
         private int executionTargetType = -1;
         private int executionPreviewTargetId = -1;
+        private int dismemberPreviewTargetId = -1;
         private int executionAnnihilateWindow;
         private bool executionAnnihilatePending;
         private int executionAnnihilateHandoffCountdown;
@@ -321,6 +325,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         internal int ExecutionLockedTargetId => executionTargetId;
         internal int ExecutionLockedTargetType => executionTargetType;
         internal int ExecutionPreviewTargetId => executionPreviewTargetId;
+        /// <summary>里世界左键这一刀会斩到谁，本地预览用</summary>
+        internal int DismemberPreviewTargetId => dismemberPreviewTargetId;
 
         public override void OnEnterWorld() {
             OnikiriNet.ResetPlayerSession(Player);
@@ -505,6 +511,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return;
             }
             executionPreviewTargetId = -1;
+            dismemberPreviewTargetId = -1;
 
             //试炼门禁硬倒计时,与招式无关,反噬僵直也推进
             HimayoStorySync.TickTrialUnlockSafety(Player);
@@ -670,6 +677,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             ReleaseExecutionAnnihilatePending(item);
             ReleaseZanshinPending(item);
             UpdateExecutionPreview();
+            UpdateDismemberPreview();
             if (advanceTime) {
                 ReadyCue();
             }
@@ -1756,7 +1764,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
             if (tutorialPractice) {
                 if (requiredTarget?.active == true
-                    && DistanceToHitbox(requiredTarget, mouse) <= DirectPickPad
+                    && OniDismember.DistanceToSelection(requiredTarget, mouse) <= DismemberMagnetPad
                     && TryDirectDismember(item, requiredTarget, source)) {
                     return true;
                 }
@@ -1764,8 +1772,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return true;
             }
 
-            //一层:点在真身碰撞箱上 → 直接肢解,反噬上身
-            NPC target = PickDismemberTarget(mouse, DirectPickPad);
+            //一层:点在真身判定框上 → 直接肢解,反噬上身
+            NPC target = PickDismemberTarget(mouse);
             if (target != null && TryDirectDismember(item, target, source)) {
                 return true;
             }
@@ -1786,17 +1794,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return true;
             }
 
-            return false;
+            //三层:身边没纸也没点准 → 吸附到最近的可斩真身,擦着边的一刀不白挥
+            target = PickDismemberTarget(mouse, DismemberMagnetPad);
+            return target != null && TryDirectDismember(item, target, source);
         }
 
         /// <summary>显式目标的真身肢解入口</summary>
         internal bool TryDirectDismember(Item item, NPC target, IEntitySource source) {
-            bool tutorialTarget = Tutorial.OnikiriTutorialTargetGlobal.IsTutorialTarget(
-                target, out _, out _);
             if (Player.whoAmI != Main.myPlayer || item == null || !item.Alives()
                 || item.type != ModContent.ItemType<OnikiriItem>() || !Player.HasItem(item.type)
-                || target?.active != true || target.life <= 0
-                || (!tutorialTarget && !target.CanBeChasedBy())
+                || !OniDismember.CanBeSevered(target)
                 || Player.ownedProjectileCounts[ModContent.ProjectileType<OniSeverStrike>()] > 0
                 || OniPlayerDismember.IsLocked(Player)) {
                 return false;
@@ -1855,35 +1862,60 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             return aim.ToRotation();
         }
 
-        /// <summary>肢解目标点选，蠕虫任意体节均可作为落刀锚点</summary>
-        private NPC PickDismemberTarget(Vector2 cursor, float pad) {
+        /// <summary>里世界落点预览、走 <see cref="TryClickDismember"/> 的同一套分层，所见即所斩</summary>
+        private void UpdateDismemberPreview() {
+            OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
+            if (domain.Phase != OniDomainPhase.Ura || !domain.WorldIsUra
+                || OniPlayerDismember.IsLocked(Player)
+                || Player.ownedProjectileCounts[ModContent.ProjectileType<OniSeverStrike>()] > 0) {
+                return;
+            }
+
+            Vector2 mouse = Main.MouseWorld;
+            NPC target = PickDismemberTarget(mouse);
+            //纸压过"擦着边的身"，层序与落刀时一致
+            if (target == null && OniOmokage.PickEntryNear(mouse, PaperMagnetPad) == null) {
+                target = PickDismemberTarget(mouse, DismemberMagnetPad);
+            }
+            dismemberPreviewTargetId = target?.whoAmI ?? -1;
+        }
+
+        /// <summary>
+        /// 肢解目标点选，蠕虫任意体节均可作为落刀锚点。
+        /// 判定框取 <see cref="OniDismember.DistanceToSelection"/> 的按体型外扩箱(贴图普遍大于碰撞箱);
+        /// 点进碰撞箱本体的目标优先于只沾到外扩边的,大 Boss 的外扩箱不至于抢走怀里的小怪
+        /// </summary>
+        /// <param name="cursor">光标世界坐标</param>
+        /// <param name="extraPad">判定框之外再放宽的吸附容差，0=只认判定框</param>
+        private NPC PickDismemberTarget(Vector2 cursor, float extraPad = 0f) {
             NPC best = null;
+            bool bestInside = false;
             bool bestBoss = false;
             float bestLife = 0f;
             float bestD = float.MaxValue;
             foreach (NPC npc in Main.ActiveNPCs) {
-                NPC root = RootOf(npc);
-                bool canPick = npc.CanBeChasedBy()
-                    || (root != npc && root.CanBeChasedBy());
-                if (!canPick) {
+                if (!OniDismember.CanBeSevered(npc)
+                    || !Tutorial.OnikiriTutorialTargetGlobal.CanPlayerDismember(npc, Player)) {
                     continue;
                 }
-                if (!Tutorial.OnikiriTutorialTargetGlobal.CanPlayerDismember(npc, Player)) {
-                    continue;
-                }
-                float d = DistanceToHitbox(npc, cursor);
-                if (d > pad) {
+                float d = OniDismember.DistanceToSelection(npc, cursor);
+                if (d > extraPad) {
                     continue;
                 }
                 if (DistanceToHitbox(npc, Player.Center) > DismemberRange) {
                     continue;
                 }
+                NPC root = RootOf(npc);
+                bool inside = OniDismember.ContainsBody(npc, cursor);
                 bool better = best == null
-                    || (root.boss != bestBoss
-                        ? root.boss
-                        : Math.Abs(root.lifeMax - bestLife) > 1f ? root.lifeMax > bestLife : d < bestD);
+                    || (inside != bestInside
+                        ? inside
+                        : root.boss != bestBoss
+                            ? root.boss
+                            : Math.Abs(root.lifeMax - bestLife) > 1f ? root.lifeMax > bestLife : d < bestD);
                 if (better) {
                     best = npc;
+                    bestInside = inside;
                     bestBoss = root.boss;
                     bestLife = root.lifeMax;
                     bestD = d;

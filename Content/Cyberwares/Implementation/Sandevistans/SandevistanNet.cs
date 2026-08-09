@@ -55,6 +55,20 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         }
     }
 
+    /// <summary>权威端拒绝开关请求的具体子句，回执给请求方用于反馈与排查</summary>
+    internal enum SandevistanDenyReason : byte
+    {
+        None = 0,
+        NotReady,
+        Malformed,
+        SessionMismatch,
+        DuplicateRequest,
+        StaleRequest,
+        NoEquipment,
+        PlayerDead,
+        NoCharge,
+    }
+
     internal static class SandevistanNet
     {
         private enum NetOperation : byte
@@ -62,6 +76,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             ToggleRequest = 1,
             StateSnapshot = 2,
             AggregateSnapshot = 3,
+            ToggleDenied = 4,
         }
 
         private readonly record struct PendingSnapshot(
@@ -108,6 +123,19 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             packet.Send(toWho, ignoreClient);
         }
 
+        internal static void SendToggleDenied(SandevistanPlayer state, int toWho,
+            SandevistanDenyReason reason) {
+            if (Main.netMode != NetmodeID.Server || state == null
+                || reason == SandevistanDenyReason.None
+                || toWho < 0 || toWho >= Main.maxPlayers) {
+                return;
+            }
+
+            ModPacket packet = NewPacket(NetOperation.ToggleDenied);
+            packet.Write((byte)reason);
+            packet.Send(toWho);
+        }
+
         internal static void SendAggregate(int toWho = -1,
             int ignoreClient = -1) {
             if (Main.netMode != NetmodeID.Server || toWho < -1
@@ -144,9 +172,23 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                     case NetOperation.AggregateSnapshot:
                         HandleAggregateSnapshot(reader);
                         break;
+                    case NetOperation.ToggleDenied:
+                        HandleToggleDenied(reader);
+                        break;
+                    default:
+                        //没排空的负载会让同一个 reader 上后续的链式处理器全部错位，
+                        //只能在此留证，正常情况下只有版本不一致才会走到这里
+                        CWRMod.Instance?.Logger.Warn(
+                            $"[Sandevistan] unknown net operation {(byte)operation}, "
+                            + "downstream handlers may misread this packet");
+                        break;
                 }
-            } catch (EndOfStreamException) {
-            } catch (IOException) {
+            } catch (EndOfStreamException ex) {
+                CWRMod.Instance?.Logger.Warn(
+                    "[Sandevistan] packet underflow: " + ex.Message);
+            } catch (IOException ex) {
+                CWRMod.Instance?.Logger.Warn(
+                    "[Sandevistan] packet read failed: " + ex.Message);
             }
         }
 
@@ -230,6 +272,22 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 pendingSnapshots[snapshot.PlayerIndex] = new PendingSnapshot(
                     snapshot, Main.GameUpdateCount + PendingLifetimeFrames);
             }
+        }
+
+        private static void HandleToggleDenied(BinaryReader reader) {
+            SandevistanDenyReason reason = (SandevistanDenyReason)reader.ReadByte();
+            if (Main.netMode != NetmodeID.MultiplayerClient
+                || reason == SandevistanDenyReason.None) {
+                return;
+            }
+
+            Player player = Main.LocalPlayer;
+            if (player?.active != true) {
+                return;
+            }
+            CWRMod.Instance?.Logger.Info(
+                "[Sandevistan] toggle denied by server: " + reason);
+            player.GetModPlayer<SandevistanPlayer>().OnToggleDenied();
         }
 
         private static void HandleAggregateSnapshot(BinaryReader reader) {

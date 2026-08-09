@@ -339,7 +339,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Main.dedServ || pathPos.Count < 2) {
                 return false;
             }
-            Texture2D smoke = CWRAsset.SmokeSheet01?.Value;
+            Texture2D smoke = CWRAsset.Fog?.Value;
             if (smoke == null) {
                 return false;
             }
@@ -349,17 +349,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return false;
             }
             float rot = dashDir.ToRotation();
-            int frameSize = smoke.Width / 2;
+            Vector2 origin = smoke.Size() * 0.5f;
             for (int k = 0; k < 3; k++) {
                 int idx = pathPos.Count - 1 - k * 2;
                 if (idx < 0) {
                     break;
                 }
-                Rectangle frame = new(k % 2 * frameSize, k / 2 % 2 * frameSize, frameSize, frameSize);
+                //三层同朝向，镜像交替免得叠成一张
+                SpriteEffects flip = k % 2 == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
                 Vector2 pos = pathPos[idx] + Vector2.UnitY * Sag(DashTimer - pathBirth[idx]) - Main.screenPosition;
-                Vector2 scale = new Vector2(1.9f - k * 0.25f, 0.62f - k * 0.06f) * 0.5f * swell;
-                Main.EntitySpriteDraw(smoke, pos, frame, FishTunabeardVFX.Deep * ((0.30f - k * 0.05f) * env)
-                    , rot, frame.Size() * 0.5f, scale, SpriteEffects.None, 0);
+                Vector2 scale = new Vector2(1.9f - k * 0.25f, 0.62f - k * 0.06f) * 0.3f * swell;
+                Main.EntitySpriteDraw(smoke, pos, null, FishTunabeardVFX.Deep * ((0.30f - k * 0.05f) * env)
+                    , rot, origin, scale, flip, 0);
             }
             return false;
         }

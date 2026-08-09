@@ -231,10 +231,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             CyberspacePlayer ownerCp = OwnerCp();
             float ownerEffR = ownerCp?.EffectiveOuterRadius ?? Cyberspace.BaseRadius;
             float baseLen = MathHelper.Clamp(ownerEffR * 0.85f, 240f, 720f);
-            //收缩前用原半径
+            //收缩前用原半径；L3 撤墙后钳到屏幕量级防巨环失形
             if (t <= CyberRestart.PhaseTearEnd) {
                 float rawR = ownerCp?.Radius ?? Cyberspace.BaseRadius;
                 if (rawR > baseLen) baseLen = rawR * 0.85f;
+                float screenCap = new Vector2(Main.screenWidth, Main.screenHeight).Length() * 0.62f;
+                if (baseLen > screenCap) baseLen = screenCap;
             }
 
             for (int i = 0; i < CrackCount; i++) {

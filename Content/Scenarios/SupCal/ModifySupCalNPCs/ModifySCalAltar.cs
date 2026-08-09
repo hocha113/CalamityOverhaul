@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
-using CalamityOverhaul.Content.TileProcessors;
+using CalamityOverhaul.Content.Tiles.BloodAltars;
 using InnoVault.GameSystem;
 using Terraria;
 using Terraria.Audio;

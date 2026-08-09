@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// </summary>
     internal class PRT_FishLardSmoke : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool CanPool => true;
 
         private float spin;
@@ -120,7 +120,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
-            ai[0] = Main.rand.Next(4);
             spin = Main.rand.NextFloat(-0.012f, 0.012f);
             driftSeed = Main.rand.NextFloat(MathHelper.TwoPi);
             if (Lifetime <= 0) {
@@ -144,15 +143,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            int idx = (int)ai[0];
-            int frameSize = tex.Width / 2;
-            Rectangle frame = new(idx % 2 * frameSize, idx / 2 * frameSize, frameSize, frameSize);
             Vector2 pos = Position - Main.screenPosition;
-            //双层同帧异径
-            spriteBatch.Draw(tex, pos, frame, FishLardPalette.SmokeDark * (Opacity * 0.42f)
-                , Rotation * 0.7f, frame.Size() / 2f, Scale * 1.35f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(tex, pos, frame, new Color(52, 44, 34) * (Opacity * 0.6f)
-                , Rotation, frame.Size() / 2f, Scale, SpriteEffects.None, 0f);
+            Vector2 origin = tex.Size() / 2f;
+            //双层异径
+            spriteBatch.Draw(tex, pos, null, FishLardPalette.SmokeDark * (Opacity * 0.42f)
+                , Rotation * 0.7f, origin, Scale * 0.81f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, pos, null, new Color(52, 44, 34) * (Opacity * 0.6f)
+                , Rotation, origin, Scale * 0.6f, SpriteEffects.None, 0f);
             return false;
         }
     }

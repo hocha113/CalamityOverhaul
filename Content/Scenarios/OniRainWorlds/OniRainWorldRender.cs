@@ -7,9 +7,10 @@ using Terraria;
 namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 {
     /// <summary>
-    /// 入雨演出的全屏合成：拷屏→镜像着色（水位线以下是绕枢轴点反射的鬼雨镜像，
+    /// 入雨演出的全屏合成：拷屏→镜像着色（水位线以下是真正的垂直镜像倒影，
     /// 水位线从屏底涨到缝线后锁定）→绕屏幕中心旋转写回。<br/>
-    /// 镜像取点反射而非纯垂直镜像，翻转 180° 后与真实渲染恒等，交接零跳变；
+    /// 翻转期镜像 x 随 rollProgress 收敛为点反射，θ=π 时 180°翻转∘点反射=恒等、
+    /// 与真实渲染零跳变交接；收敛中段的横向坍缩被峰值角速度+拖影+结算白闪遮蔽。<br/>
     /// 结算后 uSwallow 把水面向上吞满全屏，θ=π 时输出即输入，直接停用。
     /// </summary>
     internal sealed class OniRainWorldRender : RenderHandle
@@ -107,12 +108,14 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             float relX = MathF.Max(MathF.Abs(originU), MathF.Abs(1f - originU)) * (w / h);
             float frontMax = MathF.Sqrt(relX * relX + 0.75f * 0.75f) + 0.15f;
 
-            //镜中人影站在玩家倒影旁一步，中心压到缝下足够深，倒悬躯干不被缝线裁剪
+            //镜中人影站在玩家倒影旁一步（垂直镜像下倒影就在玩家同列正对面），
+            //中心压到缝下足够深，倒悬躯干不被缝线裁剪；异样只在驻留段闪现，
+            //彼时 rollProgress=0，无需跟随翻转期的 x 收敛
             Player player = Main.LocalPlayer;
             Vector2 ghostUv = new(0.55f, pivotY + 0.2f);
             if (player?.active == true) {
                 Vector2 pUv = WorldToScreen(player.Center) / new Vector2(w, h);
-                ghostUv = new Vector2(1f - pUv.X + 0.055f,
+                ghostUv = new Vector2(pUv.X + 0.055f,
                     MathF.Max(2f * pivotY - pUv.Y, pivotY + 0.16f));
             }
 
@@ -122,6 +125,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 
             fx.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.016f);
             fx.Parameters["uPivotY"]?.SetValue(pivotY);
+            fx.Parameters["uRollProgress"]?.SetValue(rollProgress);
             fx.Parameters["uOriginU"]?.SetValue(originU);
             fx.Parameters["uAspect"]?.SetValue(w / h);
             fx.Parameters["uFront"]?.SetValue(OniRainWorldTransition.Reveal * frontMax);

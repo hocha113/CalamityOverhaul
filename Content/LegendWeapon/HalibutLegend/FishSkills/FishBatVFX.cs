@@ -317,7 +317,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>化形暗烟</summary>
     internal class PRT_FishBatSmoke : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool CanPool => true;
 
         private float spin;
@@ -340,7 +340,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
-            ai[0] = Main.rand.Next(4);
             spin = Main.rand.NextFloat(-0.03f, 0.03f);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             if (Lifetime <= 0) {
@@ -363,11 +362,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            int index = (int)ai[0];
-            int frameSize = tex.Width / 2;
-            Rectangle frame = new Rectangle(index % 2 * frameSize, index / 2 * frameSize, frameSize, frameSize);
-            spriteBatch.Draw(tex, Position - Main.screenPosition, frame, Color * Opacity, Rotation
-                , frame.Size() / 2f, Scale / 6f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * Opacity, Rotation
+                , tex.Size() / 2f, Scale * 0.1f, SpriteEffects.None, 0f);
             return false;
         }
     }

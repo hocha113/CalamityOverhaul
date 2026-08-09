@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>兔鱼绒毛簇，哑光三瓣蓬毛</summary>
     internal class PRT_FishBunnyFluff : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool CanPool => true;
 
         private float swaySeed;
@@ -40,7 +40,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
-            ai[0] = Main.rand.Next(4);
             swaySeed = Main.rand.NextFloat(MathHelper.TwoPi);
             spin = Main.rand.NextFloat(-0.045f, 0.045f);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -72,34 +71,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            int index = (int)ai[0];
             Vector2 pos = Position - Main.screenPosition;
 
             //哑光吃环境光
             Color env = Lighting.GetColor(Position.ToTileCoordinates());
             Color lit = Color.Lerp(baseColor.MultiplyRGB(env), baseColor, 0.30f) * Opacity;
 
-            //三瓣蓬毛
-            DrawLobe(spriteBatch, tex, index, pos, lit, Rotation, Scale);
+            //三瓣蓬毛，各瓣镜像错开，免得三团同形
+            DrawLobe(spriteBatch, tex, pos, lit, Rotation, Scale, SpriteEffects.None);
             Vector2 off1 = (Rotation + 0.7f).ToRotationVector2() * (Scale * 185f);
-            DrawLobe(spriteBatch, tex, index + 1, pos + off1, lit * 0.85f, Rotation + 0.9f, Scale * 0.62f);
+            DrawLobe(spriteBatch, tex, pos + off1, lit * 0.85f, Rotation + 0.9f, Scale * 0.62f, SpriteEffects.FlipHorizontally);
             Vector2 off2 = (Rotation - 2.3f).ToRotationVector2() * (Scale * 150f);
-            DrawLobe(spriteBatch, tex, index + 2, pos + off2, lit * 0.78f, Rotation - 1.2f, Scale * 0.52f);
+            DrawLobe(spriteBatch, tex, pos + off2, lit * 0.78f, Rotation - 1.2f, Scale * 0.52f, SpriteEffects.FlipVertically);
             return false;
         }
 
-        private static void DrawLobe(SpriteBatch sb, Texture2D tex, int index, Vector2 pos, Color color, float rot, float scale) {
-            index %= 4;
-            int frameSize = tex.Width / 2;
-            Rectangle frame = new(index % 2 * frameSize, index / 2 * frameSize, frameSize, frameSize);
-            sb.Draw(tex, pos, frame, color, rot, frame.Size() * 0.5f, scale, SpriteEffects.None, 0f);
+        private static void DrawLobe(SpriteBatch sb, Texture2D tex, Vector2 pos, Color color, float rot, float scale, SpriteEffects flip) {
+            sb.Draw(tex, pos, null, color, rot, tex.Size() * 0.5f, scale * 0.6f, flip, 0f);
         }
     }
 
     /// <summary>兔鱼尘烟团</summary>
     internal class PRT_FishBunnySmoke : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool CanPool => true;
 
         private float spin;
@@ -127,7 +122,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
-            ai[0] = Main.rand.Next(4);
             spin = Main.rand.NextFloat(0.008f, 0.02f) * (Main.rand.NextBool() ? 1f : -1f);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             if (Lifetime <= 0) {
@@ -152,11 +146,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            int index = (int)ai[0];
-            int frameSize = tex.Width / 2;
-            Rectangle frame = new(index % 2 * frameSize, index / 2 * frameSize, frameSize, frameSize);
-            spriteBatch.Draw(tex, Position - Main.screenPosition, frame, Color * Opacity, Rotation
-                , frame.Size() * 0.5f, Scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * Opacity, Rotation
+                , tex.Size() * 0.5f, Scale * 0.6f, SpriteEffects.None, 0f);
             return false;
         }
     }

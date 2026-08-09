@@ -67,8 +67,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             return list;
         }
 
-        /// <summary>整屏后处理主导域，本地优先否则最近</summary>
+        /// <summary>整屏后处理主导域：优先取 Viewed（与天空/光照同源），否则本地优先/最近兜底</summary>
         private static CyberspacePlayer SelectPrimaryDomain(List<CyberspacePlayer> domains) {
+            CyberspacePlayer viewed = Cyberspace.Viewed;
+            if (viewed != null && viewed.Intensity > 0.001f) {
+                return viewed;
+            }
+
             int localWho = Main.myPlayer;
 
             CyberspacePlayer localOwn = null;
@@ -133,15 +138,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Vector2 worldViewOrigin = Main.screenPosition
                 + screenPixels * (Vector2.One - Vector2.One / zoom) * 0.5f;
 
+            //L3 撤墙：边界半径随撤墙进度增幅飞出屏幕
+            float wallDep = primary.WallDeparture;
+            float wallMul = 1f + wallDep * wallDep * 6f;
+
             shader.Parameters["uTime"]?.SetValue(primary.EffectTime);
-            shader.Parameters["radius"]?.SetValue(primary.Radius);
+            shader.Parameters["radius"]?.SetValue(primary.Radius * wallMul);
             shader.Parameters["intensity"]?.SetValue(primary.Intensity);
             shader.Parameters["expandProgress"]?.SetValue(primary.ExpandProgress);
             shader.Parameters["dimStrength"]?.SetValue(Cyberspace.DimStrength);
             shader.Parameters["motionFade"]?.SetValue(primary.MotionFade);
             shader.Parameters["tierWeights"]?.SetValue(primary.TierWeights);
+            shader.Parameters["uTakeover"]?.SetValue(primary.TakeoverProgress);
+            shader.Parameters["uSpread"]?.SetValue(primary.TakeoverSpread);
+            shader.Parameters["uSpreadOrigin"]?.SetValue(primary.TakeoverOrigin);
+            shader.Parameters["uFlash"]?.SetValue(primary.TakeoverFlash);
+            shader.Parameters["uBandSpin"]?.SetValue(primary.BandSpin);
             Vector2 domainCenter = primary.DomainCenter;
-            float effectiveRadius = primary.Radius * primary.ExpandProgress;
+            float effectiveRadius = primary.Radius * primary.ExpandProgress * wallMul;
             shader.Parameters["setPoint"]?.SetValue(domainCenter);
             shader.Parameters["screenPosition"]?.SetValue(worldViewOrigin);
             shader.Parameters["worldViewSize"]?.SetValue(worldViewSize);
@@ -175,21 +189,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Texture2D pixel = VaultAsset.placeholder2?.Value;
             if (pixel == null) return;
 
-            //压暗取最强 intensity
+            //压暗取最强 intensity；L3 接管强度取最大值加深全屏暗场
             float maxAlpha = 0f;
             float maxMotion = 0f;
+            float maxTakeover = 0f;
             foreach (CyberspacePlayer cp in Cyberspace.EnumerateRenderable()) {
                 float a = MathHelper.Clamp(cp.Intensity, 0f, 1f);
                 if (a > maxAlpha) {
                     maxAlpha = a;
                     maxMotion = MathHelper.Clamp(cp.MotionFade, 0f, 1f);
                 }
+                float t = cp.TakeoverProgress * a;
+                if (t > maxTakeover) {
+                    maxTakeover = t;
+                }
             }
             if (maxAlpha <= 0f) return;
 
             float baseMul = 1f - maxMotion * 0.50f;
 
-            Color dimColor = new Color(22, 0, 0) * (maxAlpha * Cyberspace.DimStrength * 0.68f * baseMul);
+            //撤墙后回退层没有圈内圈外之分，暗场即全世界接管的主要氛围
+            float dimMul = 0.68f + 0.24f * maxTakeover;
+            Color dimColor = new Color(22, 0, 0) * (maxAlpha * Cyberspace.DimStrength * dimMul * baseMul);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone);
@@ -213,7 +234,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             spriteBatch.End();
         }
 
-        /// <summary>回退栅格按层几何换形：L1 正交线 / L2 三角格+蜂巢点阵 / L3 极化阵列</summary>
+        /// <summary>回退栅格按层几何换形：L1 正交线 / L2 三角格+蜂巢点阵；
+        /// L3 撤墙无圈裁剪结构（负空间），氛围由全屏暗场+光照压暗+数据尘承担</summary>
         private static void DrawLowQualityFieldGrid(SpriteBatch spriteBatch, Texture2D pixel,
             CyberspacePlayer cp, float alpha, float baseMul, float detailMul) {
 
@@ -222,18 +244,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             float gridSize = Cyberspace.GridSize;
             if (radius < gridSize * 2f) return;
 
+            //撤墙飞行期圈状结构随墙一起退场
+            float takeoverFade = 1f - cp.TakeoverProgress;
+            if (takeoverFade <= 0.02f) return;
+
             Vector3 w = cp.TierWeights;
             if (w.X > 0.02f) {
                 DrawFallbackSquareGrid(spriteBatch, pixel, center, radius, gridSize,
-                    alpha * w.X, baseMul, detailMul);
+                    alpha * w.X * takeoverFade, baseMul, detailMul);
             }
             if (w.Y > 0.02f) {
                 DrawFallbackTriLattice(spriteBatch, pixel, center, radius, gridSize,
-                    alpha * w.Y, baseMul, detailMul);
-            }
-            if (w.Z > 0.02f) {
-                DrawFallbackPolarArray(spriteBatch, pixel, center, radius, gridSize,
-                    cp.EffectTime, alpha * w.Z, baseMul, detailMul);
+                    alpha * w.Y * takeoverFade, baseMul, detailMul);
             }
         }
 
@@ -335,52 +357,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>L3 回退：极化阵列（24 辐条 + 主刻度环点圈，与 shader 版同构）</summary>
-        private static void DrawFallbackPolarArray(SpriteBatch spriteBatch, Texture2D pixel,
-            Vector2 center, float radius, float gridSize, float time, float alpha, float baseMul, float detailMul) {
-            Color spokeColor = new Color(235, 50, 24) * (alpha * 0.15f * baseMul);
-            Color ringColor = GetTierGlowColor(3f, alpha * 0.34f * detailMul);
-
-            //24 辐条，近心留空
-            float innerHole = gridSize * 4f;
-            float spokeLen = radius - innerHole;
-            if (spokeLen > 0f) {
-                for (int k = 0; k < 24; k++) {
-                    float ang = MathHelper.TwoPi * k / 24f;
-                    Vector2 dirV = ang.ToRotationVector2();
-                    float bright = 0.62f + 0.38f * StaticHash(k, 53);
-                    Vector2 mid = center + dirV * (innerHole + spokeLen * 0.5f) - Main.screenPosition;
-                    spriteBatch.Draw(pixel, mid, null, spokeColor * bright, ang,
-                        new Vector2(pixel.Width * 0.5f, pixel.Height * 0.5f),
-                        new Vector2(spokeLen / pixel.Width, 1.2f / pixel.Height),
-                        SpriteEffects.None, 0f);
-                }
-            }
-
-            //主刻度环（每4环）用点圈勾出
-            float ringStep = gridSize * 2.4f;
-            int ringCount = (int)(radius / ringStep);
-            for (int rI = 4; rI <= ringCount; rI += 4) {
-                float r = rI * ringStep;
-                int dots = Math.Clamp((int)(MathHelper.TwoPi * r / 42f), 24, 140);
-                for (int d = 0; d < dots; d++) {
-                    float a = MathHelper.TwoPi * d / dots;
-                    Vector2 world = center + a.ToRotationVector2() * r;
-                    if (Vector2.DistanceSquared(world, center) > radius * radius) continue;
-
-                    float bright = 0.60f + 0.40f * StaticHash(rI, d);
-                    Vector2 screen = world - Main.screenPosition;
-                    spriteBatch.Draw(pixel, new Rectangle((int)screen.X - 1, (int)screen.Y - 1, 2, 2), ringColor * bright);
-                }
-            }
-        }
-
         private static void DrawEdgeGlowRing(SpriteBatch spriteBatch, CyberspacePlayer cp) {
             Texture2D glowTex = softGlow?.Value;
             if (glowTex == null || cp.Intensity < 0.01f) return;
 
+            //L3 撤墙：光晕格随墙飞出，离屏后不再画
+            float wallDep = cp.WallDeparture;
+            if (wallDep > 0.85f) return;
+            float wallMul = 1f + wallDep * wallDep * 6f;
+
             //单环光晕格，贴最外层
-            DrawSingleEdgeGlowRing(spriteBatch, glowTex, cp, cp.EffectiveOuterRadius);
+            DrawSingleEdgeGlowRing(spriteBatch, glowTex, cp, cp.EffectiveOuterRadius * wallMul);
         }
 
         private static void DrawSingleEdgeGlowRing(SpriteBatch spriteBatch, Texture2D glowTex,
@@ -432,9 +419,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     screenY < -margin || screenY > screenH + margin) continue;
 
                 float cellHash = MathF.Abs(MathF.Sin(snapX * 0.137f + snapY * 0.251f));
-                //超慢低幅起伏，相位按格错开：常驻边界不再闪烁
+                //超慢低幅起伏，相位按格错开：常驻边界不再闪烁；撤墙飞行期渐隐
                 float pulse = 0.74f + 0.16f * MathF.Sin(time * 0.45f + cellHash * MathF.PI * 2f);
-                float alpha = pulse * effectIntensity * 0.34f * tierMult * glowMotionMul;
+                float alpha = pulse * effectIntensity * 0.34f * tierMult * glowMotionMul
+                    * (1f - cp.TakeoverProgress);
 
                 Color glowColor = GetTierGlowColor(tier, alpha);
 
@@ -454,7 +442,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             return new Color(c.X * alpha, c.Y * alpha, c.Z * alpha, 0f);
         }
 
-        /// <summary>边界环，CyberBoundaryRing.fx</summary>
+        /// <summary>边界环，CyberBoundaryRing.fx；L3 撤墙期随墙飞出屏幕并渐隐</summary>
         private static void DrawBoundaryShockwaveRing(SpriteBatch spriteBatch, CyberspacePlayer cp) {
             Effect shader = EffectLoader.CyberBoundaryRing?.Value;
             if (shader == null) return;
@@ -462,14 +450,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (CWRAsset.Extra_193?.Value == null) return;
             if (cp.Intensity < 0.02f) return;
 
-            float effectiveRadius = cp.EffectiveOuterRadius;
+            //撤墙飞行：环骑在增幅半径上，离屏后跳过（巨 quad 全屏白算填充率）
+            float wallDep = cp.WallDeparture;
+            if (wallDep > 0.85f) return;
+            float wallMul = 1f + wallDep * wallDep * 6f;
+
+            float effectiveRadius = cp.EffectiveOuterRadius * wallMul;
             if (effectiveRadius < Cyberspace.GridSize * 4f) return;
 
             Texture2D canvas = VaultAsset.placeholder2.Value;
             Texture2D noise = CWRAsset.Extra_193.Value;
             Vector2 drawPos = cp.DomainCenter - Main.screenPosition;
-            //边界环随动中淡
-            float ringMotionMul = 1f - MathHelper.Clamp(cp.MotionFade, 0f, 1f) * 0.38f;
+            //边界环随动中淡，撤墙期叠加渐隐
+            float ringMotionMul = (1f - MathHelper.Clamp(cp.MotionFade, 0f, 1f) * 0.38f)
+                * (1f - cp.TakeoverProgress);
 
             float tier = cp.VisualTier;
             float tierFrac = (tier - 1f) / (Cyberspace.MaxLayerCount - 1f);

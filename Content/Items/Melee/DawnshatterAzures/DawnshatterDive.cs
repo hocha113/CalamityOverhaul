@@ -206,7 +206,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             landed = true;
             phase = DivePhase.Impact;
             phaseTimer = -1;
-            stopHold = 5;
             landPoint = Owner.Bottom + FallDir * 12f;
             Owner.velocity = Vector2.Zero;
             Owner.CWR().ScreenShakeValue = 11f;
@@ -257,10 +256,11 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         //==== 落地驻留 ====
 
         private void UpdateImpact() {
-            //落地演出闩:本地切相位与远端收包共用,谁先看到 Impact 谁播一次
+            //落地演出闩:本地切相位与远端收包共用,谁先看到 Impact 谁播一次;顿帧也在这儿给,远端同样吃到
             if (!impactFxDone && landed) {
                 impactFxDone = true;
                 flashPulse = 1f;
+                stopHold = 5;
                 PlayImpactFX();
             }
 
@@ -365,6 +365,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             PlayerLoader.OnHitNPC(Owner, target, hit, damageDone);
 
             flashPulse = 1f;
+            //斩线横过目标:下砸是竖着落的,痕迹要横着切
+            DawnshatterBrand.Strike(Owner, target, FallDir.RotatedBy(MathHelper.PiOver2));
             target.AddBuff(BuffID.OnFire3, 600);
             target.AddBuff(BuffID.Daybreak, 480);
             target.velocity += FallDir * 6f * target.knockBackResist;

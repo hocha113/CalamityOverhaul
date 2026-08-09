@@ -6,12 +6,12 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
     /// <summary>
-    /// 岩鱼锤石尘团，SmokeSheet01 染哑光暖灰的实体尘（AlphaBlend 非光效）<br/>
+    /// 岩鱼锤石尘团，Fog 染哑光暖灰的实体尘（AlphaBlend 非光效）<br/>
     /// front 模式作砸点尘环波前，贴地压扁、强水平初速快速衰减、拖两级残影
     /// </summary>
     internal class PRT_FishRockDust : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool CanPool => true;
 
         private bool groundFront;
@@ -45,7 +45,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
-            ai[0] = Main.rand.Next(4);//SmokeSheet01 2×2 帧
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             //防漏 Configure 兜底
             if (Lifetime <= 0) {
@@ -78,10 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return false;
             }
             Texture2D tex = TexValue;
-            int index = (int)ai[0];
-            int frameSize = tex.Width / 2;
-            Rectangle frame = new(index % 2 * frameSize, index / 2 * frameSize, frameSize, frameSize);
-            Vector2 origin = frame.Size() / 2f;
+            Vector2 origin = tex.Size() / 2f;
             Vector2 pos = Position - Main.screenPosition;
             //哑光暖灰随生命偏冷偏暗，乘环境光贴地面明度
             Color body = Color.Lerp(new Color(126, 114, 98), new Color(84, 78, 70), LifetimeCompletion);
@@ -91,11 +87,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (groundFront) {
                 //横扫残影
                 for (int i = 2; i >= 1; i--) {
-                    spriteBatch.Draw(tex, pos - Velocity * (i * 2.2f), frame, body * (Opacity * (0.34f - i * 0.11f))
-                        , Rotation, origin, Scale * squish * (1f - i * 0.08f), SpriteEffects.None, 0f);
+                    spriteBatch.Draw(tex, pos - Velocity * (i * 2.2f), null, body * (Opacity * (0.34f - i * 0.11f))
+                        , Rotation, origin, Scale * 0.6f * squish * (1f - i * 0.08f), SpriteEffects.None, 0f);
                 }
             }
-            spriteBatch.Draw(tex, pos, frame, body * Opacity, Rotation, origin, Scale * squish, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, pos, null, body * Opacity, Rotation, origin, Scale * 0.6f * squish, SpriteEffects.None, 0f);
             return false;
         }
     }

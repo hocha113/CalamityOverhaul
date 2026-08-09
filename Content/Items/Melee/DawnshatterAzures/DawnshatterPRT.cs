@@ -143,7 +143,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         }
 
         public override void AI() {
-            Position += Velocity;
             Velocity *= 0.92f;
             radius = MathF.Max(radius + expandSpeed, 10f);
             //扩张软着陆;合拢保持速率,收干脆

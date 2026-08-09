@@ -562,21 +562,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             //第3层
-            Texture2D smokeSheet = CWRAsset.SmokeSheet01?.Value;
-            if (smokeSheet != null) {
-                int frameSize = smokeSheet.Width / 2;
-                int f1 = Projectile.whoAmI % 4;
-                int f2 = (Projectile.whoAmI + 2) % 4;
-                Rectangle r1 = new(f1 % 2 * frameSize, f1 / 2 * frameSize, frameSize, frameSize);
-                Rectangle r2 = new(f2 % 2 * frameSize, f2 / 2 * frameSize, frameSize, frameSize);
-                Vector2 origin = new(frameSize * 0.5f);
+            Texture2D smoke = CWRAsset.Fog?.Value;
+            if (smoke != null) {
+                Vector2 origin = smoke.Size() * 0.5f;
                 float wob = (float)Math.Sin(time * 5f + Projectile.whoAmI) * 3f * scale;
-                sb.Draw(smokeSheet, center + new Vector2(wob, -wob * 0.5f), r1,
+                sb.Draw(smoke, center + new Vector2(wob, -wob * 0.5f), null,
                     new Color(30, 12, 13, 235), Projectile.rotation,
-                    origin, 0.22f * scale, SpriteEffects.None, 0f);
-                sb.Draw(smokeSheet, center - new Vector2(wob * 0.7f, wob * 0.4f), r2,
+                    origin, 0.132f * scale, SpriteEffects.None, 0f);
+                //第二团镜像，两层不至于是同一张贴纸
+                sb.Draw(smoke, center - new Vector2(wob * 0.7f, wob * 0.4f), null,
                     new Color(46, 17, 15, 205), -Projectile.rotation * 0.6f,
-                    origin, 0.17f * scale, SpriteEffects.None, 0f);
+                    origin, 0.102f * scale, SpriteEffects.FlipHorizontally, 0f);
             }
 
             //第4层
@@ -783,11 +779,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>地狱黑烟</summary>
     internal class PRT_FishDemonicHellSmoke : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool CanPool => true;
 
         private float spin;
-        private int frame;
 
         public PRT_FishDemonicHellSmoke Configure(int lifetime, float rotSpeed) {
             Lifetime = lifetime;
@@ -798,12 +793,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void Reset() {
             base.Reset();
             spin = 0f;
-            frame = 0;
         }
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
-            frame = Main.rand.Next(4);
+            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             if (Lifetime <= 0) {
                 Lifetime = Main.rand.Next(40, 60);
             }
@@ -829,10 +823,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            int frameSize = tex.Width / 2;
-            Rectangle rect = new(frame % 2 * frameSize, frame / 2 * frameSize, frameSize, frameSize);
-            spriteBatch.Draw(tex, Position - Main.screenPosition, rect, Color * Opacity,
-                Rotation, rect.Size() * 0.5f, Scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * Opacity,
+                Rotation, tex.Size() * 0.5f, Scale * 0.6f, SpriteEffects.None, 0f);
             return false;
         }
     }

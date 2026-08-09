@@ -137,6 +137,78 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
+        //====== L3 全世界接管（纯视觉，各端由已同步的 CurrentLayer 本地推导，不进网络） ======
+
+        //线性接管进度 0~1，升约90帧、降约35帧
+        private float takeoverRaw;
+        //入场闪变剩余帧
+        private int takeoverFlashTimer;
+        //上一帧是否处于 L3，捕捉升层瞬间
+        private bool wasTakeover;
+
+        internal const int TakeoverEnterFrames = 90;
+        internal const int TakeoverExitFrames = 35;
+        internal const int TakeoverFlashFrames = 8;
+
+        /// <summary>L3 接管进度 0~1（smoothstep 缓动），驱动天空/调色/世界建模层</summary>
+        public float TakeoverProgress => takeoverRaw * takeoverRaw * (3f - 2f * takeoverRaw);
+
+        /// <summary>撤墙进度 0~1：入场前半程 easeOut 把边界推出屏幕，退出反演</summary>
+        public float WallDeparture {
+            get {
+                float t = MathHelper.Clamp(takeoverRaw / 0.5f, 0f, 1f);
+                float inv = 1f - t;
+                return 1f - inv * inv * inv;
+            }
+        }
+
+        /// <summary>入场扫描前沿进度 0~1（入场第5~75帧走完），从 <see cref="TakeoverOrigin"/> 向外点亮</summary>
+        public float TakeoverSpread {
+            get {
+                float t = MathHelper.Clamp((takeoverRaw * TakeoverEnterFrames - 5f) / 70f, 0f, 1f);
+                return t * t * (3f - 2f * t);
+            }
+        }
+
+        /// <summary>入场闪变包络 0~1，升入 L3 后前几帧非零</summary>
+        public float TakeoverFlash => takeoverFlashTimer / (float)TakeoverFlashFrames;
+
+        /// <summary>接管扫描原点（升层瞬间的玩家位置）</summary>
+        public Vector2 TakeoverOrigin { get; private set; }
+
+        /// <summary>权限环带累计相位（弧度，已回绕 2π），入场 4 倍速衰减到常速约 75s/圈</summary>
+        public float BandSpin { get; private set; }
+
+        //各端共用的接管推进，Update 与 UpdateRemoteVisuals 都要调
+        private void UpdateTakeover() {
+            bool inL3 = Active && CurrentLayer >= Cyberspace.MaxLayerCount;
+            if (inL3) {
+                if (!wasTakeover) {
+                    TakeoverOrigin = Player.Center;
+                    takeoverFlashTimer = TakeoverFlashFrames;
+                }
+                takeoverRaw = MathF.Min(takeoverRaw
+                    + TimeGear.TimeScale / TakeoverEnterFrames, 1f);
+            }
+            else {
+                takeoverRaw = MathF.Max(takeoverRaw
+                    - TimeGear.TimeScale / TakeoverExitFrames, 0f);
+            }
+            wasTakeover = inL3;
+            if (takeoverFlashTimer > 0) {
+                takeoverFlashTimer--;
+            }
+
+            if (takeoverRaw > 0.001f) {
+                float spinBoost = 1f + 3f * (1f - TakeoverProgress);
+                BandSpin += 0.084f / 60f * spinBoost * TimeGear.TimeScale;
+                //按整 2π 回绕：shader 内环带分段对 2π 跳变保持连续
+                if (BandSpin > MathHelper.TwoPi) {
+                    BandSpin -= MathHelper.TwoPi;
+                }
+            }
+        }
+
         /// <summary>着色器累计时间</summary>
         public float EffectTime { get; private set; }
 
@@ -400,6 +472,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             EffectTime += dt * TimeGear.TimeScale;
 
             UpdateMotionFade();
+            UpdateTakeover();
 
             float intensityLerp;
             if (Active && CurrentLayer > 0) {
@@ -460,6 +533,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             RestartCollapse = 0f;
             EffectTime = 0f;
             MotionFade = 0f;
+            takeoverRaw = 0f;
+            takeoverFlashTimer = 0;
+            wasTakeover = false;
+            TakeoverOrigin = Vector2.Zero;
             CurrentLayer = 0;
             lastLayer = 1;
             lastManualToggleFrame = -1;
@@ -486,6 +563,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         public bool IsInsideDomain(Vector2 worldPos) {
             if (Intensity < 0.01f) return false;
+            //L3 撤墙：全世界接管，范围无上限
+            if (Active && CurrentLayer >= Cyberspace.MaxLayerCount) return true;
             float dx = worldPos.X - DomainCenter.X;
             float dy = worldPos.Y - DomainCenter.Y;
             return dx * dx + dy * dy <= EffectiveOuterRadius * EffectiveOuterRadius;
@@ -713,6 +792,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             float motionLerp = motionTarget > MotionFade ? 0.18f : 0.06f;
             MotionFade = MathHelper.Lerp(MotionFade, motionTarget, motionLerp);
             if (MotionFade < 0.001f) MotionFade = 0f;
+
+            UpdateTakeover();
         }
 
         internal void ApplyRemoteState(uint revision, bool active,

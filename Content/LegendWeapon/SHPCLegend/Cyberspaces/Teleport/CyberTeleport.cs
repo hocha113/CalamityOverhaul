@@ -48,6 +48,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
                 return mouseWorld;
             }
             CyberspacePlayer domain = Cyberspace.For(owner);
+            //L3 撤墙：全世界接管，传送不再受域半径钳制
+            if (domain != null && domain.Active
+                && domain.CurrentLayer >= Cyberspace.MaxLayerCount) {
+                return mouseWorld;
+            }
             float effectiveRadius = domain?.EffectiveOuterRadius ?? 0f;
             if (effectiveRadius <= 1f) {
                 return owner.Center;

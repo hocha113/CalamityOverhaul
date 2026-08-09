@@ -806,7 +806,7 @@ SHPCUI: {
 	Cyber_Skill_Banish_Name: CYBER BANISH
 	Cyber_Skill_Banish_Desc: Send the foe under the cursor into deep cyberspace.
 	Cyber_Skill_Freeze_Name: DOMAIN FREEZE
-	Cyber_Skill_Freeze_Desc: Lock every hostile entity inside the domain in place.
+	Cyber_Skill_Freeze_Desc: The third layer is the world itself — locks every hostile entity in it.
 	Cyber_DrainHeader: RAM DRAIN
 	Cyber_DrainPerSec: -{0}/s
 	Cyber_SustainTime: SUSTAIN ~{0}s

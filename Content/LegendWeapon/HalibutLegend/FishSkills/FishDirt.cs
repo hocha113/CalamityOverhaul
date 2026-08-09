@@ -978,22 +978,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             , float ballSize, Vector2 deform, float rot, float alpha) {
             Main.instance.LoadItem(ItemID.Dirtfish);
             Texture2D fishTex = TextureAssets.Item[ItemID.Dirtfish].Value;
-            Texture2D lumpTex = CWRAsset.SmokeSheet01?.Value;
+            Texture2D lumpTex = CWRAsset.Fog?.Value;
             Texture2D chipTex = CWRAsset.Extra_98?.Value;
             int fishToDraw = (int)Math.Min(FishCount, 15);
 
             //底层土体:三片噪形烟团随球转动拼出哑光团块剪影,画在鱼层之下(夹心)
             if (lumpTex != null) {
-                int frameSize = lumpTex.Width / 2;
-                Vector2 origin = new(frameSize * 0.5f);
+                Vector2 origin = lumpTex.Size() * 0.5f;
                 for (int k = 0; k < 3; k++) {
-                    Rectangle frame = new(k % 2 * frameSize, k / 2 * frameSize, frameSize, frameSize);
+                    //三片各自镜像，免得同一张烟团盖出三个同形块
+                    SpriteEffects flip = k switch {
+                        0 => SpriteEffects.None,
+                        1 => SpriteEffects.FlipHorizontally,
+                        _ => SpriteEffects.FlipVertically,
+                    };
                     float phase = k * 2.1f;
                     Vector2 off = (rot * 0.9f + phase).ToRotationVector2() * (k * 6f * ballSize) * deform;
                     Color c = (k == 0 ? FishDirtVFX.SoilDark : FishDirtVFX.SoilDeep).MultiplyRGB(lightColor);
-                    float s = (0.16f - k * 0.022f) * ballSize;
-                    sb.Draw(lumpTex, drawPos + off, frame, c * ((k == 0 ? 0.92f : 0.78f) * alpha),
-                        rot + phase, origin, new Vector2(s) * deform, SpriteEffects.None, 0);
+                    float s = (0.096f - k * 0.0132f) * ballSize;
+                    sb.Draw(lumpTex, drawPos + off, null, c * ((k == 0 ? 0.92f : 0.78f) * alpha),
+                        rot + phase, origin, new Vector2(s) * deform, flip, 0);
                 }
             }
 

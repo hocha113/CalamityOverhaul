@@ -487,6 +487,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             ApplyDisplacement(in d, from, to);
             UpdateFireState(in d, to);
             SpawnBladeFire(in d);
+            SmashTilesAtTip(in d);
 
             UpdatePlayerPose();
             Lighting.AddLight(Owner.GetPlayerStabilityCenter() + mainVec * 0.75f
@@ -808,6 +809,20 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             }
         }
 
+        /// <summary>
+        /// 刺击枪尖凿进岩壁的碎屑,只在刺击拍出;姿态各端已同步,各自判定即可,不靠 owner 广播<br/>
+        /// 撞墙截断发生在 owner 的 LungeStep 里,但墙就在那儿,远端按同样的枪尖位置也能看见
+        /// </summary>
+        private void SmashTilesAtTip(in BeatDef d) {
+            if (VaultUtils.isServer || d.Kind == 1 || Main.GameUpdateCount % 3 != 0) {
+                return;
+            }
+            Vector2 tip = Owner.GetPlayerStabilityCenter() + mainVec;
+            if (Collision.SolidCollision(tip, 1, 1)) {
+                Collision.HitTiles(tip, mainVec.SafeNormalize(Vector2.UnitX) * 12f, 16, 16);
+            }
+        }
+
         private void PlaySwingSound(bool second) {
             if (VaultUtils.isServer) {
                 return;
@@ -947,6 +962,11 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             //命中顿帧,终结拍更重
             hitstopTimer = Math.Max(hitstopTimer, IsFinisher(beatIndex) ? 4 : 2);
             flashPulse = 1f;
+
+            //破晓斩痕只给终结拍,普通拍不留痕以免连段刷屏
+            if (IsFinisher(beatIndex)) {
+                DawnshatterBrand.Strike(Owner, target, mainVec);
+            }
 
             if (!VaultUtils.isServer) {
                 bool steel = CWRLoad.NPCValue.ISTheofSteel(target);

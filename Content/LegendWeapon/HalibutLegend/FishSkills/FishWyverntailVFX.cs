@@ -13,12 +13,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 云蛟蜕落的云絮，SmokeSheet01 随机帧 AlphaBlend 染色，珍珠白亮絮与灰蓝暗絮双色
+    /// 云蛟蜕落的云絮，Fog 随机取向 AlphaBlend 染色，珍珠白亮絮与灰蓝暗絮双色
     /// 微升力慢散、快进慢出，召唤云涡/出膛破云/飞行蜕鳞/命中云爆共用
     /// </summary>
     internal class PRT_FishWyverntailFluff : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool CanPool => true;
 
         private float spin;
@@ -47,7 +47,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
-            ai[0] = Main.rand.Next(4);//SmokeSheet01 2×2 帧
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             spin = Main.rand.NextFloat(-0.03f, 0.03f);
             //防漏 Configure 兜底
@@ -75,11 +74,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            int fi = (int)ai[0];
-            int wd = tex.Width / 2;
-            Rectangle frame = new(fi % 2 * wd, fi / 2 * wd, wd, wd);
-            spriteBatch.Draw(tex, Position - Main.screenPosition, frame, baseColor * Opacity,
-                Rotation, frame.Size() / 2f, Scale * 0.22f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, baseColor * Opacity,
+                Rotation, tex.Size() / 2f, Scale * 0.132f, SpriteEffects.None, 0f);
             return false;
         }
     }

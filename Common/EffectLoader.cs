@@ -53,6 +53,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> CyberDetonation { get; set; }
         public static Asset<Effect> CyberDataArc { get; set; }
         public static Asset<Effect> CyberspaceField { get; set; }
+        public static Asset<Effect> CyberDomainSky { get; set; }
         public static Asset<Effect> CyberPanel { get; set; }
         public static Asset<Effect> CyberDomainPanel { get; set; }
         public static Asset<Effect> SHPCModPanel { get; set; }
@@ -169,8 +170,6 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> WeaverMaterialize { get; set; }
         public static Asset<Effect> EnergySlashTrail { get; set; }
         public static Asset<Effect> RebelSlashTrail { get; set; }
-        public static Asset<Effect> NeutronSlashTrail { get; set; }
-        public static Asset<Effect> NeutronWaveFront { get; set; }
         public static Asset<Effect> StormSlashTrail { get; set; }
         public static Asset<Effect> DragonSlashTrail { get; set; }
         public static Asset<Effect> DawnshatterSlash { get; set; }
@@ -227,5 +226,6 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> SHPCModSteadyVolt { get; set; }
         public static Asset<Effect> GraniteArc { get; set; }
         public static Asset<Effect> MarbleSlash { get; set; }
+        public static Asset<Effect> BloodAltarRite { get; set; }
     }
 }

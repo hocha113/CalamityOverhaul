@@ -21,6 +21,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         private const int MaxRecentRequests = 32;
         private const int RequestWindowFrames = 60;
         private const int MaxRequestsPerWindow = 12;
+        private const int ToggleReplyTimeoutFrames = 120;
 
         private readonly Dictionary<uint, bool> recentRequests = [];
         private readonly Queue<uint> recentRequestOrder = [];
@@ -29,6 +30,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         private int spawnTimer;
         private int snapshotTimer;
         private int requestWindowCount;
+        private int pendingToggleFrames;
+        private bool pendingToggleDesired;
         private bool stateDirty;
         private bool wasActive;
         private uint nextRequestId;
@@ -68,11 +71,19 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         }
 
         public override void UpdateDead() {
-            if (Main.netMode != NetmodeID.MultiplayerClient) {
-                SetAuthorityActive(false);
-            }
-            else {
+            pendingToggleFrames = 0;
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
                 IsActive = false;
+                return;
+            }
+
+            SetAuthorityActive(false);
+            //玩家死亡期间 Player.Update 提前返回，PostUpdate 那条发包路径整段不跑，
+            //这里不补发的话修订号已经涨了却没人知道，复活前客户端一直停在旧号上
+            if (Main.netMode == NetmodeID.Server && stateDirty && ProfileReady()) {
+                stateDirty = false;
+                snapshotTimer = 0;
+                SandevistanNet.SendState(this);
             }
         }
 
@@ -84,6 +95,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             }
 
             UpdateVisuals();
+            UpdatePendingToggle();
 
             if (Main.netMode == NetmodeID.Server && ProfileReady()) {
                 snapshotTimer++;
@@ -116,8 +128,39 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             }
 
             uint requestId = AllocateRequestId();
-            return requestId != 0 && SandevistanNet.SendToggleRequest(this,
-                desiredActive, requestId);
+            if (requestId == 0 || !SandevistanNet.SendToggleRequest(this,
+                desiredActive, requestId)) {
+                return false;
+            }
+            pendingToggleDesired = desiredActive;
+            pendingToggleFrames = ToggleReplyTimeoutFrames;
+            return true;
+        }
+
+        /// <summary>权威端否决了开关请求，给按键一个明确的回音</summary>
+        internal void OnToggleDenied() {
+            pendingToggleFrames = 0;
+            if (Main.dedServ || Player?.whoAmI != Main.myPlayer) {
+                return;
+            }
+            SoundEngine.PlaySound(SoundID.MenuTick with {
+                Pitch = -0.6f,
+                Volume = 0.5f,
+            }, Player.Center);
+        }
+
+        //请求既没被批准也没等到回执，超时按否决处理，避免读成"按了没反应"
+        private void UpdatePendingToggle() {
+            if (pendingToggleFrames <= 0) {
+                return;
+            }
+            if (IsActive == pendingToggleDesired) {
+                pendingToggleFrames = 0;
+                return;
+            }
+            if (--pendingToggleFrames <= 0) {
+                OnToggleDenied();
+            }
         }
 
         internal uint AllocateRequestId() {
@@ -128,45 +171,62 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             return nextRequestId;
         }
 
+        /// <summary>
+        /// 权威端裁决开关请求
+        /// <br/>请求带的是绝对目标态而不是翻转，所以不再要求客户端的
+        /// <see cref="StateRevision"/> 与权威端相等：视图过期最多让请求变成一次无变化的重复
+        /// 设置，权威端各项前置条件本来就会重新校验一遍
+        /// </summary>
         internal bool HandleAuthorityRequest(uint sessionGeneration,
             uint requestId, uint expectedRevision, bool desiredActive, int replyTo) {
             SyncSessionAndEquipment();
-            if (Main.netMode == NetmodeID.MultiplayerClient || !ProfileReady()
-                || requestId == 0 || sessionGeneration == 0
-                || sessionGeneration != SessionGeneration) {
-                SandevistanNet.SendState(this, replyTo);
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
                 return false;
             }
-
-            if (recentRequests.ContainsKey(requestId)) {
-                SandevistanNet.SendState(this, replyTo);
+            //频率闸放在最前：后面每条否决都要回包并记一行日志，不能让客户端按帧放大
+            if (!AllowAuthorityRequest()) {
                 return false;
+            }
+            if (!ProfileReady()) {
+                return DenyRequest(SandevistanDenyReason.NotReady, replyTo);
+            }
+            if (requestId == 0 || sessionGeneration == 0 || expectedRevision == 0) {
+                return DenyRequest(SandevistanDenyReason.Malformed, replyTo);
+            }
+            if (sessionGeneration != SessionGeneration) {
+                return DenyRequest(SandevistanDenyReason.SessionMismatch, replyTo);
+            }
+            if (recentRequests.ContainsKey(requestId)) {
+                return DenyRequest(SandevistanDenyReason.DuplicateRequest, replyTo);
             }
             if (highestRequestId != 0
                 && !CyberwarePlayer.IsRevisionNewer(requestId, highestRequestId)) {
-                SandevistanNet.SendState(this, replyTo);
-                return false;
+                return DenyRequest(SandevistanDenyReason.StaleRequest, replyTo);
             }
             RememberRequest(requestId, desiredActive);
-            if (!AllowAuthorityRequest()) {
-                SandevistanNet.SendState(this, replyTo);
-                return false;
-            }
 
-            if (expectedRevision == 0 || expectedRevision != StateRevision
-                || !HasValidEquipment || Player.dead || Player.ghost) {
-                SandevistanNet.SendState(this, replyTo);
-                return false;
+            if (!HasValidEquipment) {
+                return DenyRequest(SandevistanDenyReason.NoEquipment, replyTo);
             }
-
+            if (Player.dead || Player.ghost) {
+                return DenyRequest(SandevistanDenyReason.PlayerDead, replyTo);
+            }
             if (desiredActive && CurrentCooldown <= 0f) {
-                SandevistanNet.SendState(this, replyTo);
-                return false;
+                return DenyRequest(SandevistanDenyReason.NoCharge, replyTo);
             }
 
             bool changed = SetAuthorityActive(desiredActive);
             SandevistanNet.SendState(this);
             return changed;
+        }
+
+        //拒绝要说出是哪一条不过，否则客户端只看到"按了没反应"，日志里也什么都查不到
+        private bool DenyRequest(SandevistanDenyReason reason, int replyTo) {
+            CWRMod.Instance?.Logger.Info(
+                $"[Sandevistan] toggle denied for player {Player?.whoAmI}: {reason}");
+            SandevistanNet.SendState(this, replyTo);
+            SandevistanNet.SendToggleDenied(this, replyTo, reason);
+            return false;
         }
 
         internal void ApplySnapshot(uint sessionGeneration, uint revision,
@@ -392,7 +452,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             }
             wasActive = active;
 
-            if (Main.dedServ || Player.whoAmI != Main.myPlayer || !active) {
+            //残影是本机视觉，每台机器为所有激活玩家各自采样，队友之间才互相可见
+            if (Main.dedServ || !active) {
                 spawnTimer = 0;
                 return;
             }
@@ -462,6 +523,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             spawnTimer = 0;
             snapshotTimer = 0;
             requestWindowCount = 0;
+            pendingToggleFrames = 0;
+            pendingToggleDesired = false;
             stateDirty = false;
             wasActive = false;
             nextRequestId = 0;

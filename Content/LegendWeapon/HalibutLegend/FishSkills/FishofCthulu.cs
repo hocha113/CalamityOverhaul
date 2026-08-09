@@ -880,7 +880,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         /// <summary>虚空雾丝，贴体公转的暗紫雾带，under 画体下两条、体上一条低透明</summary>
         private void DrawVoidWisps(Vector2 drawPos, float fade, float matT, bool underLayer) {
-            Texture2D smoke = CWRAsset.SmokeSheet01?.Value;
+            Texture2D smoke = CWRAsset.Fog?.Value;
             if (smoke == null || fade <= 0.01f || matT <= 0.05f) {
                 return;
             }
@@ -895,18 +895,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (isDashing) {
                     off = off * 0.5f - Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f;
                 }
-                int frameIdx = (Projectile.whoAmI + idx * 7) % 4;
-                int frameSize = smoke.Width / 2;
-                Rectangle fr = new(frameIdx % 2 * frameSize, frameIdx / 2 * frameSize, frameSize, frameSize);
-                Vector2 fo = fr.Size() / 2f;
+                //各条雾丝镜像错开，取代原来的随机帧
+                SpriteEffects flip = (Projectile.whoAmI + idx) % 2 == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+                Vector2 fo = smoke.Size() / 2f;
                 float alpha = (underLayer ? 0.35f : 0.20f) * fade * matT;
                 float rot = phase * 0.5f + t * 0.25f;
-                float scl = (0.16f + MathF.Sin(t * 1.1f + idx) * 0.02f) * Projectile.scale;
+                float scl = (0.096f + MathF.Sin(t * 1.1f + idx) * 0.012f) * Projectile.scale;
                 //外圈更暗更大 + 中层
-                Main.EntitySpriteDraw(smoke, drawPos + off, fr, FishCthuluVFX.VoidDark * (alpha * 0.7f)
-                    , rot * 0.9f, fo, scl * 1.3f, SpriteEffects.None, 0);
-                Main.EntitySpriteDraw(smoke, drawPos + off, fr, FishCthuluVFX.VoidMist * alpha
-                    , rot, fo, scl, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(smoke, drawPos + off, null, FishCthuluVFX.VoidDark * (alpha * 0.7f)
+                    , rot * 0.9f, fo, scl * 1.3f, flip, 0);
+                Main.EntitySpriteDraw(smoke, drawPos + off, null, FishCthuluVFX.VoidMist * alpha
+                    , rot, fo, scl, flip, 0);
             }
         }
 

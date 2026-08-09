@@ -120,17 +120,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// </summary>
     internal class PRT_FishCthuluMist : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool CanPool => true;
 
-        private int frameIndex;
         private float spin;
         private float wanderSeed;
         private Color baseColor;
 
         public PRT_FishCthuluMist Configure(int lifetime) {
             Lifetime = lifetime;
-            frameIndex = Main.rand.Next(4);
             spin = Main.rand.NextFloat(-0.012f, 0.012f);
             wanderSeed = Main.rand.NextFloat(MathHelper.TwoPi);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -140,7 +138,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void Reset() {
             base.Reset();
-            frameIndex = 0;
             spin = 0f;
             wanderSeed = 0f;
             baseColor = default;
@@ -172,16 +169,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            int frameSize = tex.Width / 2;
-            Rectangle frame = new(frameIndex % 2 * frameSize, frameIndex / 2 * frameSize, frameSize, frameSize);
-            Vector2 origin = frame.Size() * 0.5f;
+            Vector2 origin = tex.Size() * 0.5f;
             Vector2 pos = Position - Main.screenPosition;
 
             //外圈更暗更大 + 中层主体
-            spriteBatch.Draw(tex, pos, frame, FishCthuluVFX.VoidDark * (Opacity * 0.7f)
-                , Rotation * 0.8f, origin, Scale * 0.30f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(tex, pos, frame, (baseColor == default ? FishCthuluVFX.VoidMist : baseColor) * Opacity
-                , Rotation, origin, Scale * 0.23f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, pos, null, FishCthuluVFX.VoidDark * (Opacity * 0.7f)
+                , Rotation * 0.8f, origin, Scale * 0.18f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, pos, null, (baseColor == default ? FishCthuluVFX.VoidMist : baseColor) * Opacity
+                , Rotation, origin, Scale * 0.138f, SpriteEffects.None, 0f);
             return false;
         }
     }

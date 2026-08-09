@@ -1634,30 +1634,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSlashs
         }
 
         /// <summary>负片收缩,爆闪第2~8帧暗核压加色星爆<br/>
-        /// AlphaBlend 压暗须用带 alpha 形状贴图(SmokeSheet01),黑底不透明亮度贴会糊成暗方框</summary>
+        /// AlphaBlend 压暗须用带 alpha 形状贴图(Fog),黑底不透明亮度贴会糊成暗方框</summary>
         private void DrawCollapseCore() {
             float bt = timer - lastImpactFrame;
             if (lastImpactFrame < 0 || bt < 2f || bt > 8f) {
                 return;
             }
-            Texture2D cloud = CWRAsset.SmokeSheet01?.Value;
+            Texture2D cloud = CWRAsset.Fog?.Value;
             if (cloud == null) {
                 return;
             }
 
             float t = (bt - 2f) / 6f;   //0..1
             //峰值~0.36,收缩至约 1/3
-            float coreS = MathHelper.Lerp(0.36f, 0.12f, t * t) * sizeMul;
+            float coreS = MathHelper.Lerp(0.216f, 0.072f, t * t) * sizeMul;
             float coreA = MathF.Sin(t * MathF.PI) * 0.78f;
-            int frameSize = cloud.Width / 2;
-            Rectangle frame = new(Projectile.whoAmI % 2 * frameSize, Projectile.whoAmI / 2 % 2 * frameSize, frameSize, frameSize);
 
             SpriteBatch sb = Main.spriteBatch;
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp
                 , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-            sb.Draw(cloud, lastImpactPos - Main.screenPosition, frame
+            sb.Draw(cloud, lastImpactPos - Main.screenPosition, null
                 , new Color(16, 4, 9) * coreA, Projectile.whoAmI * 1.37f
-                , frame.Size() * 0.5f, coreS, SpriteEffects.None, 0);
+                , cloud.Size() * 0.5f, coreS, SpriteEffects.None, 0);
             sb.End();
         }
     }

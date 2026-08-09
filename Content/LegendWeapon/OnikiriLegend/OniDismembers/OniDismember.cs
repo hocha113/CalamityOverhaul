@@ -350,6 +350,61 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 && TimeFreezeSystem.IsLeaseActive(npc, entry.FreezeLease);
         }
 
+        //==================== 目标资格与点选判定 ====================
+
+        /// <summary>点选判定框相对数值碰撞箱的外扩比例，贴图普遍大于碰撞箱，按体型给容差</summary>
+        private const float SelectionPadRatio = 0.35f;
+        /// <summary>点选外扩的下限，小体型也得点得住</summary>
+        private const float MinSelectionPad = 26f;
+        /// <summary>点选外扩的上限，巨型 Boss 的判定框不至于罩住半个屏幕</summary>
+        private const float MaxSelectionPad = 168f;
+
+        /// <summary>
+        /// 肢解资格。刻意比 <see cref="NPC.CanBeChasedBy"/> 宽：免伤、无敌、不可锁定、
+        /// 低血上限的目标一律放行（这些状态只说明它打不动，不说明它斩不开），只挡友方与镇民。
+        /// 点选、落刀与服务端复核共用这一条，三处口径不一致就会出现"点得到但斩不了"
+        /// </summary>
+        internal static bool CanBeSevered(NPC npc)
+            => npc?.active == true && npc.life > 0 && !npc.friendly && !npc.isLikeATownNPC;
+
+        /// <summary>
+        /// 点选判定框的外扩量。只取 <see cref="NPC.width"/>/<see cref="NPC.height"/> 这类
+        /// 服务端同样持有的数值，不读 <see cref="NPC.frame"/>：帧尺寸在服务端为空，
+        /// 且多帧贴图的裁剪高度并不等于可见身体
+        /// </summary>
+        internal static float SelectionPad(NPC npc) {
+            if (npc == null) {
+                return 0f;
+            }
+            float span = MathF.Max(npc.width, npc.height);
+            if (!float.IsFinite(span)) {
+                return MinSelectionPad;
+            }
+            return MathHelper.Clamp(span * SelectionPadRatio, MinSelectionPad, MaxSelectionPad);
+        }
+
+        /// <summary>点到点选判定框的距离，框内为 0</summary>
+        internal static float DistanceToSelection(NPC npc, Vector2 point) {
+            if (npc == null) {
+                return float.MaxValue;
+            }
+            float pad = SelectionPad(npc);
+            Rectangle box = npc.Hitbox;
+            Vector2 nearest = new(MathHelper.Clamp(point.X, box.Left - pad, box.Right + pad),
+                MathHelper.Clamp(point.Y, box.Top - pad, box.Bottom + pad));
+            return Vector2.Distance(point, nearest);
+        }
+
+        /// <summary>点是否落在数值碰撞箱本体内，用于"点准了"优先于"只沾到外扩边"</summary>
+        internal static bool ContainsBody(NPC npc, Vector2 point) {
+            if (npc == null) {
+                return false;
+            }
+            Rectangle box = npc.Hitbox;
+            return point.X >= box.Left && point.X <= box.Right
+                && point.Y >= box.Top && point.Y <= box.Bottom;
+        }
+
         /// <summary>立刻清空全部肢解状态（世界卸载兜底）</summary>
         public static void Clear() {
             foreach (DismemberLockEntry entry in lockEntries) {

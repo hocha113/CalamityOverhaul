@@ -804,7 +804,7 @@ SHPCUI: {
 	Cyber_Skill_Banish_Name: 赛博放逐
 	Cyber_Skill_Banish_Desc: 将光标下的敌人送入深层赛博空间
 	Cyber_Skill_Freeze_Name: 领域冻结
-	Cyber_Skill_Freeze_Desc: 锁定领域内所有敌对实体的运动
+	Cyber_Skill_Freeze_Desc: 第三层领域即整个世界——锁定世界上所有敌对实体的运动
 	Cyber_DrainHeader: RAM 消耗
 	Cyber_DrainPerSec: -{0}/秒
 	Cyber_SustainTime: 可维持 ~{0} 秒

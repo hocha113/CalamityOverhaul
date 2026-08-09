@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>暗血雾团</summary>
     internal class PRT_FishBloodyManowarMist : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool CanPool => true;
 
         private float baseOpacity;
@@ -149,7 +149,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
-            ai[0] = Main.rand.Next(4);
             spin = Main.rand.NextFloat(-0.012f, 0.012f);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
         }
@@ -176,11 +175,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            int index = (int)ai[0];
-            int frameSize = tex.Width / 2;
-            Rectangle frame = new(index % 2 * frameSize, index / 2 * frameSize, frameSize, frameSize);
-            spriteBatch.Draw(tex, Position - Main.screenPosition, frame, Color * Opacity
-                , Rotation, frame.Size() * 0.5f, Scale * 0.2f / 6f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * Opacity
+                , Rotation, tex.Size() * 0.5f, Scale * 0.02f, SpriteEffects.None, 0f);
             return false;
         }
     }

@@ -49,6 +49,10 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         private int phaseTimer;
         private int stopHold;
         private bool hitAny;
+        /// 本次收势是否带撞击(命中或撞墙),owner 判定后同步,各端据此播爆点
+        private bool stopImpactful;
+        /// 收势演出闩,本地切相位与远端收包共用,谁先看到 Stopping 谁播一次
+        private bool stopFxDone;
         private float chargeProgress;
         private float heat;
         private float flashPulse;
@@ -82,12 +86,14 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
 
         public override void NetHeldSend(BinaryWriter writer) {
             writer.Write((byte)phase);
+            writer.Write(stopImpactful);
             writer.WriteVector2(dashDir);
             writer.WriteVector2(dashStart);
         }
 
         public override void NetHeldReceive(BinaryReader reader) {
             phase = (DashPhase)reader.ReadByte();
+            stopImpactful = reader.ReadBoolean();
             dashDir = reader.ReadVector2();
             dashStart = reader.ReadVector2();
         }
@@ -248,6 +254,11 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
                         , Vector2.Zero, default, Main.rand.NextFloat(0.6f, 0.9f))
                         .Configure(outward, Main.rand.NextFloat(0.5f, 0.85f), Main.rand.Next(3, 5));
                 }
+                //沿途气浪环:垂直冲刺向,原地留在轨迹上被穿过去
+                if (phaseTimer % 5 == 0) {
+                    PRTLoader.NewParticle<PRT_DawnRing>(Owner.Center + dashDir * 30f, Vector2.Zero, default, 1f)
+                        .Configure(dashDir, 28f, 7f, 0.3f, 14);
+                }
             }
 
             if (phaseTimer >= DashTicks) {
@@ -258,29 +269,50 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         private void EnterStopping(bool wallSlam) {
             phase = DashPhase.Stopping;
             phaseTimer = -1;
-            stopHold = hitAny || wallSlam ? 4 : 0;
+            stopImpactful = hitAny || wallSlam;
+            stopHold = stopImpactful ? 4 : 0;
             Projectile.netUpdate = true;
 
             if (Projectile.IsOwnedByLocalPlayer()) {
                 //末段一寸滑步,之后交还操控
                 Owner.velocity = dashDir * 4f;
-                if (hitAny || wallSlam) {
+                if (stopImpactful) {
                     Owner.CWR().ScreenShakeValue = 8f;
                 }
             }
-            if (!VaultUtils.isServer && (hitAny || wallSlam)) {
-                flashPulse = 1f;
-                SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 0.55f, Pitch = 0.15f }, Owner.Center);
-                Vector2 tip = Owner.Center + dashDir * DashReach * 0.8f;
-                for (int i = 0; i < 10; i++) {
-                    PRTLoader.NewParticle<PRT_DawnEmber>(tip + Main.rand.NextVector2Circular(20f, 20f)
-                        , dashDir.RotatedByRandom(0.8f) * Main.rand.NextFloat(3f, 10f)
-                        , default, Main.rand.NextFloat(1f, 1.6f)).Configure(Main.rand.Next(18, 30));
+        }
+
+        /// <summary>收势爆点,各端自播:过曝+爆音+枪尖余烬迸发,撞墙再沿枪身凿碎砖</summary>
+        private void PlayStopFX() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            flashPulse = 1f;
+            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 0.55f, Pitch = 0.15f }, Owner.Center);
+            Vector2 tip = Owner.Center + dashDir * DashReach * 0.8f;
+            for (int i = 0; i < 10; i++) {
+                PRTLoader.NewParticle<PRT_DawnEmber>(tip + Main.rand.NextVector2Circular(20f, 20f)
+                    , dashDir.RotatedByRandom(0.8f) * Main.rand.NextFloat(3f, 10f)
+                    , default, Main.rand.NextFloat(1f, 1.6f)).Configure(Main.rand.Next(18, 30));
+            }
+            //沿枪身逐点敲,只敲实心格:枪尖凿进岩壁而不是空中放烟花
+            for (int i = 2; i <= 8; i++) {
+                Vector2 at = Owner.Center + dashDir * (i * 30f);
+                if (Collision.SolidCollision(at, 1, 1)) {
+                    Collision.HitTiles(at, dashDir * 12f, 16, 16);
                 }
             }
         }
 
         private void UpdateStopping() {
+            //收势演出闩:本地切相位与远端收包共用,谁先看到 Stopping 谁播一次
+            if (!stopFxDone) {
+                stopFxDone = true;
+                if (stopImpactful) {
+                    PlayStopFX();
+                }
+            }
+
             //顿帧驻留,姿态钉住
             if (stopHold > 0) {
                 stopHold--;
@@ -342,6 +374,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
 
             hitAny = true;
             flashPulse = 1f;
+            DawnshatterBrand.Strike(Owner, target, dashDir);
             target.AddBuff(BuffID.OnFire3, 600);
             target.AddBuff(BuffID.Daybreak, 480);
             target.AddBuff(BuffID.Ichor, 360);

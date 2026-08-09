@@ -265,10 +265,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     /// <summary>墨绿暗烟</summary>
     internal class PRT_FishCursedSmog : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool CanPool => true;
 
-        private int frame;
         private float spin;
         private float baseOpacity;
 
@@ -281,14 +280,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void Reset() {
             base.Reset();
-            frame = 0;
             spin = 0f;
             baseOpacity = 0f;
         }
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
-            frame = Main.rand.Next(4);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             if (Lifetime <= 0) {
                 Lifetime = Main.rand.Next(26, 40);
@@ -311,12 +308,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = TexValue;
-            int w = tex.Width / 2;
-            int h = tex.Height / 2;
-            Rectangle rect = new(w * (frame % 2), h * (frame / 2), w, h);
-            //×0.5 对齐直觉烟团尺寸（帧边长随贴图半宽变化）
-            spriteBatch.Draw(tex, Position - Main.screenPosition, rect, Color * Opacity
-                , Rotation, rect.Size() / 2f, Scale * 0.5f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * Opacity
+                , Rotation, tex.Size() / 2f, Scale * 0.3f, SpriteEffects.None, 0f);
             return false;
         }
     }

@@ -1,4 +1,3 @@
-using InnoVault.Actors;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -180,12 +179,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             if (Main.dedServ || player?.active != true) {
                 return;
             }
-
-            int index = ActorLoader.NewActor<SandevistanGhostActor>(
-                player.Center, Vector2.Zero);
-            if (index >= 0) {
-                ActorLoader.Actors[index].OnSpawn(player);
-            }
+            SandevistanGhostVisual.Capture(player);
         }
     }
 }

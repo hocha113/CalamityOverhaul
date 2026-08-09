@@ -661,9 +661,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return;
             }
 
-            Texture2D smoke = CWRAsset.SmokeSheet01.Value;
-            int frameSize = smoke.Width / 2;
-            Vector2 origin = new(frameSize * 0.5f);
+            Texture2D smoke = CWRAsset.Fog.Value;
+            Vector2 origin = smoke.Size() * 0.5f;
             float time = ui.GlobalTimer;
             //影的躁动随复苏加深
             float writhe = entry.IsArchive ? 0.42f
@@ -671,16 +670,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Vector2 basePos = lightCenter + new Vector2(0f, 12f);
 
             for (int i = 0; i < 3; i++) {
-                int frame = (int)(time * 3.4f + i * 1.7f) % 4;
-                Rectangle srcRect = new(frame % 2 * frameSize, frame / 2 * frameSize, frameSize, frameSize);
+                //原本靠切帧抖动,单帧贴图改用镜像翻转保住同样的躁动节奏
+                SpriteEffects flip = (int)(time * 3.4f + i * 1.7f) % 2 == 0
+                    ? SpriteEffects.None
+                    : SpriteEffects.FlipHorizontally;
                 float phase = i * 2.1f;
                 Vector2 offset = new((float)Math.Sin(time * (0.6f + i * 0.22f) + phase) * 6f * writhe,
                     -16f + i * 15f + (float)Math.Cos(time * 0.5f + phase) * 3f * writhe);
-                float scale = 0.24f + i * 0.05f;
+                float scale = 0.144f + i * 0.03f;
                 float rot = (float)Math.Sin(time * 0.3f + phase) * 0.14f * writhe;
                 //影是"光被挡住":纯墨色,越靠光心越实
-                sb.Draw(smoke, basePos + offset, srcRect, OnikiriUITheme.Ink * (alpha * (0.72f - i * 0.12f)),
-                    rot, origin, scale, SpriteEffects.None, 0f);
+                sb.Draw(smoke, basePos + offset, null, OnikiriUITheme.Ink * (alpha * (0.72f - i * 0.12f)),
+                    rot, origin, scale, flip, 0f);
             }
 
             //鬼火之眼:闲置凝视时瞳位缓缓压向光标方向(只转眼,不动身)

@@ -233,12 +233,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 溺尸浊雾团，SmokeSheet01 序列帧 AlphaBlend 染色的哑光雾
+    /// 溺尸浊雾团，Fog 随机取向 AlphaBlend 染色的哑光雾
     /// 浊气（上飘）与水雾（下沉）靠 Configure 的浮力符号分身
     /// </summary>
     internal class PRT_FishZombieMurk : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool CanPool => true;
 
         private float spin;
@@ -265,7 +265,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void SetProperty() {
-            ai[0] = Main.rand.Next(4);
             spin = Main.rand.NextFloat(0.006f, 0.016f) * (Main.rand.NextBool() ? 1f : -1f);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             if (Lifetime <= 0) {
@@ -290,15 +289,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            int index = (int)ai[0];
-            int frameSize = tex.Width / 2;
-            Rectangle frame = new(index % 2 * frameSize, index / 2 * frameSize, frameSize, frameSize);
-
             Color env = Lighting.GetColor(Position.ToTileCoordinates());
             Color lit = Color.Lerp(Color.MultiplyRGB(env), Color, 0.30f) * Opacity;
 
-            spriteBatch.Draw(tex, Position - Main.screenPosition, frame, lit, Rotation
-                , frame.Size() * 0.5f, Scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, lit, Rotation
+                , tex.Size() * 0.5f, Scale * 0.6f, SpriteEffects.None, 0f);
             return false;
         }
     }

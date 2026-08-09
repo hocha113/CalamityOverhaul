@@ -216,6 +216,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             CyberspacePlayer cyberspace = Cyberspace.For(owner);
             Vector2 domainCenter = owner.Center;
             float effectiveRadius = cyberspace.Radius * cyberspace.ExpandProgress;
+            //L3 撤墙：时停即全世界时停，收集不再按半径筛选（取远超世界尺寸的有限值）
+            if (cyberspace.Active
+                && cyberspace.CurrentLayer >= Cyberspace.MaxLayerCount) {
+                effectiveRadius = 1_000_000f;
+            }
             if (!IsValidCenter(domainCenter) || !float.IsFinite(effectiveRadius)
                 || effectiveRadius <= 0f) {
                 return;

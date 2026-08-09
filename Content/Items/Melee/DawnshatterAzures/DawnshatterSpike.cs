@@ -3,7 +3,6 @@ using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.ID;
@@ -131,11 +130,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         public override void SendExtraAI(BinaryWriter writer) => writer.Write((short)timer);
 
         public override void ReceiveExtraAI(BinaryReader reader) => timer = reader.ReadInt16();
-
-        public override void DrawBehind(int index, List<int> behindNPCsAndTiles
-            , List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) {
-            behindNPCsAndTiles.Add(index);
-        }
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D flame = FlameTex?.Value;

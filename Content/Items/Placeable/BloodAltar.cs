@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
             Item.useAnimation = Item.useTime = 15;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.createTile = ModContent.TileType<Tiles.BloodAltar>();
+            Item.createTile = ModContent.TileType<Tiles.BloodAltars.BloodAltar>();
             Item.rare = ItemRarityID.Cyan;
             Item.value = Terraria.Item.buyPrice(gold: 16);
         }

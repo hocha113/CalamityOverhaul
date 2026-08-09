@@ -196,10 +196,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
     internal class PRT_FishFrostMinnowMist : BasePRT
     {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "Fog";
         public override bool CanPool => true;
 
-        private int frameIdx;
         private float baseOpacity;
         private float sinkAccel;
         private float spin;
@@ -213,7 +212,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void Reset() {
             base.Reset();
-            frameIdx = 0;
             baseOpacity = 0f;
             sinkAccel = 0f;
             spin = 0f;
@@ -221,7 +219,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
-            frameIdx = Main.rand.Next(4);
             spin = Main.rand.NextFloat(-0.012f, 0.012f);
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             if (Lifetime <= 0) {
@@ -248,12 +245,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = TexValue;
-            int frameSize = tex.Width / 2;
-            int fx = frameIdx % 2;
-            int fy = frameIdx / 2;
-            Rectangle frame = new(fx * frameSize, fy * frameSize, frameSize, frameSize);
-            spriteBatch.Draw(tex, Position - Main.screenPosition, frame, Color * Opacity, Rotation
-                , frame.Size() / 2f, Scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * Opacity, Rotation
+                , tex.Size() / 2f, Scale * 0.6f, SpriteEffects.None, 0);
             return false;
         }
     }

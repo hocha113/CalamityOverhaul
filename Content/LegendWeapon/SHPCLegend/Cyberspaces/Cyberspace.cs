@@ -74,6 +74,68 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         /// <summary>本地玩家领域状态，未就绪 null</summary>
         internal static CyberspacePlayer Local => For(Main.LocalPlayer);
 
+        /// <summary>
+        /// 本机屏幕上正在生效的那个域：自己的优先，否则取范围内最近的他人领域。
+        /// 世界级表现（天空/光照/全屏后处理/装饰）一律读它，HUD 仍读 <see cref="Local"/>
+        /// </summary>
+        public static CyberspacePlayer Viewed { get; private set; }
+
+        //观看半径：域是屏幕级效果，施术者进视野一圈才卷进来
+        private static float ViewRange
+            => MathF.Max(Main.screenWidth, Main.screenHeight) * 0.75f + 480f;
+
+        //已在观看的那份放宽半径，边界来回走不闪断
+        private const float ViewRangeHysteresis = 1.35f;
+
+        private static int viewedIndex = -1;
+
+        /// <summary>观看域的 L3 接管强度 0~1，天空/光照/日光读它</summary>
+        public static float ViewedTakeover {
+            get {
+                CyberspacePlayer cp = Viewed;
+                if (cp == null) return 0f;
+                return cp.TakeoverProgress * MathHelper.Clamp(cp.Intensity, 0f, 1f);
+            }
+        }
+
+        /// <summary>逐帧重选主导域，须在推进各玩家状态之前调用</summary>
+        internal static void RefreshViewed() {
+            Viewed = null;
+            Player local = Main.dedServ || Main.gameMenu ? null : Main.LocalPlayer;
+            if (local?.active != true) {
+                viewedIndex = -1;
+                return;
+            }
+
+            CyberspacePlayer own = local.GetModPlayer<CyberspacePlayer>();
+            if (own.Intensity > 0.001f) {
+                Viewed = own;
+                viewedIndex = local.whoAmI;
+                return;
+            }
+
+            float range = ViewRange;
+            float nearest = float.MaxValue;
+            int nearestIndex = -1;
+            for (int i = 0; i < Main.maxPlayers; i++) {
+                Player other = Main.player[i];
+                if (i == local.whoAmI || other?.active != true
+                    || !other.TryGetModPlayer(out CyberspacePlayer domain)
+                    || domain.Intensity <= 0.001f) {
+                    continue;
+                }
+                float limit = i == viewedIndex ? range * ViewRangeHysteresis : range;
+                float distance = Vector2.Distance(other.Center, local.Center);
+                if (distance > limit || distance >= nearest) {
+                    continue;
+                }
+                nearest = distance;
+                nearestIndex = i;
+                Viewed = domain;
+            }
+            viewedIndex = nearestIndex;
+        }
+
         /// <summary>枚举视觉仍活跃的玩家领域</summary>
         internal static IEnumerable<CyberspacePlayer> EnumerateRenderable() {
             for (int i = 0; i < Main.maxPlayers; i++) {
@@ -217,6 +279,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         /// <summary>重置在线玩家领域状态</summary>
         public static void Reset() {
+            Viewed = null;
+            viewedIndex = -1;
             for (int i = 0; i < Main.maxPlayers; i++) {
                 Player p = Main.player[i];
                 if (p == null || !p.active) continue;
