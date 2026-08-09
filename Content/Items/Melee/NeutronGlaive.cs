@@ -873,13 +873,25 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
-        /// <summary>横宽比，月牙宽度约等于前凸的 2.6 倍</summary>
-        private const float WaveSquash = 2.6f;
+        /// <summary>横宽比，月牙宽度约等于前凸的 2.9 倍</summary>
+        private const float WaveSquash = 2.9f;
         /// <summary>月牙跨度，半圈：从一侧翼尖穿过波峰到另一侧翼尖</summary>
         private const float WaveSpan = MathHelper.Pi;
-        private const int WaveLife = 48;
+        private const int WaveLife = 52;
         /// <summary>寿命末的弧面扩张倍率</summary>
-        private const float GrowthEnd = 1.45f;
+        private const float GrowthEnd = 1.55f;
+        /// <summary>波带落在锋面之前的比例，其余全部铺在身后当尾迹</summary>
+        private const float FrontBias = 0.22f;
+        /// <summary>出生压缩闪持续的生命比例</summary>
+        private const float BirthFlashSpan = 0.1f;
+        private const int ArcSegments = 46;
+
+        /// <summary>三股异质条带：焦暗衬 / 主波面 / 焦散锋线，宽度倍率与股序标记</summary>
+        private static readonly (float Width, float Bias, float Strand, float Alpha, int Lag)[] Strands = [
+            (1.38f, 1.05f, 0f, 0.85f, 2),   //衬带更宽、稍滞后，只负责剪影
+            (1f, 1f, 0.5f, 1f, 0),          //主波面，涟漪列与星丝都在这股
+            (0.22f, 0.26f, 1f, 1f, 0),      //焦散锋线，紧贴波前
+        ];
 
         /// <summary>挥动方向 ±1，只影响深度相位，与母刀光同源</summary>
         private ref float Flip => ref Projectile.ai[0];
@@ -893,6 +905,15 @@ namespace CalamityOverhaul.Content.Items.Melee
         private static readonly Color WaveBlue = new(120, 180, 255);
 
         private bool payloadSpawned;
+
+        //弧采样与顶点缓冲常驻，三股共用一次采样，绘制期零分配
+        private readonly Vector2[] arcMid = new Vector2[ArcSegments + 1];
+        private readonly Vector2[] arcOut = new Vector2[ArcSegments + 1];
+        private readonly float[] arcHalf = new float[ArcSegments + 1];
+        private readonly float[] arcDim = new float[ArcSegments + 1];
+        private readonly float[] arcLen = new float[ArcSegments + 1];
+        private readonly VertexPositionColorTexture[] strandVerts
+            = new VertexPositionColorTexture[(ArcSegments + 1) * 2];
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 60;
@@ -911,10 +932,11 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// <summary>本帧月牙几何，碰撞/绘制/扭曲共用一份，避免三处各算各的</summary>
         private NeutronSwingBeat BuildWave(out float bulge, out Vector2 axisX, out float bandRef) {
             float grow = MathHelper.Lerp(1f, GrowthEnd, NeutronSwingArc.SmoothStep01(LifeT));
-            bulge = (IsHeavy ? 56f : 40f) * grow;
+            //终局武器的常规表现别做小：终结拍展开后横宽逼近 700px
+            bulge = (IsHeavy ? 78f : 58f) * grow;
             axisX = Projectile.velocity.SafeNormalize(Vector2.UnitX);
-            //振幅随扩张衰减：波面越大越薄，这是"波"而不是"贴纸"的关键
-            bandRef = bulge * WaveSquash * (IsHeavy ? 0.24f : 0.21f) * (1f - (0.5f * LifeT));
+            //波带随扩张变薄，振幅随距离衰减——这是"波"而不是"贴纸"的关键
+            bandRef = bulge * WaveSquash * (IsHeavy ? 0.27f : 0.24f) * (1f - (0.42f * LifeT));
             return new NeutronSwingBeat {
                 Span = WaveSpan,
                 Squash = WaveSquash,
@@ -923,6 +945,33 @@ namespace CalamityOverhaul.Content.Items.Melee
                 ForcePoint = 0.5f,
                 Radius = bulge,
             };
+        }
+
+        /// <summary>出生头几帧的压缩过曝，时间包络放在消费端而不是常驻 shader 里</summary>
+        private float BirthFlash => 1f - NeutronSwingArc.Saturate(LifeT / BirthFlashSpan);
+
+        /// <summary>
+        /// 发射相位：波面撑开之前先有一次空间压缩。
+        /// 粒子朝波面收拢而不是炸开——先压缩再释放，这一刀才有起点
+        /// </summary>
+        public override void OnSpawn(IEntitySource source) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            NeutronSwingBeat wave = BuildWave(out float bulge, out Vector2 axisX, out _);
+            //只有终结拍加这层低频闷响，轻拍不叠第二个音免得和挥砍声糊在一起
+            if (IsHeavy) {
+                SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.42f, Pitch = -0.8f }, Projectile.Center);
+            }
+            for (int i = 0; i <= 12; i++) {
+                float u = i / 12f;
+                Vector2 local = NeutronSwingArc.TipOffset(in wave, bulge, u, Flip, axisX, out _, out _);
+                Vector2 from = Projectile.Center + (local * 1.6f);
+                PRTLoader.NewParticle<PRT_HeavenfallStar>(from
+                    , -local.SafeNormalize(axisX) * Main.rand.NextFloat(2.4f, 5.2f)
+                    , Color.Lerp(WaveBlue, WaveViolet, u), Main.rand.NextFloat(0.34f, 0.55f))
+                    .Configure(false, 12);
+            }
         }
 
         /// <summary>波峰最厚、双翼收尖，包络与母刀光同一条曲线</summary>
@@ -1025,31 +1074,57 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
+        /// <summary>沿弧采一次样，三股共用；返回累计弧长总量</summary>
+        private float SampleArc(in NeutronSwingBeat wave, float bulge, Vector2 axisX, float bandRef) {
+            float total = 0f;
+            for (int i = 0; i <= ArcSegments; i++) {
+                float u = i / (float)ArcSegments;
+                Vector2 local = NeutronSwingArc.TipOffset(in wave, bulge, u, Flip
+                    , axisX, out _, out float depth);
+                arcMid[i] = Projectile.Center + local;
+                arcOut[i] = local.SafeNormalize(axisX);
+                arcHalf[i] = BandHalfWidth(in wave, u, bandRef);
+                arcDim[i] = NeutronSwingArc.DepthDim(in wave, bulge, depth);
+                if (i > 0) {
+                    total += (arcMid[i] - arcMid[i - 1]).Length();
+                }
+                arcLen[i] = total;
+            }
+            return MathF.Max(total, 1f);
+        }
+
+        /// <summary>
+        /// 把一股写进共用顶点缓冲。锋面钉在刃迹上、带体绝大部分铺在身后，
+        /// 读作"波前 + 尾迹"而不是一条对称缎带；
+        /// UV.x 按累计弧长归一，角度采样不均时纹理不会被拉长
+        /// </summary>
+        private void FillStrand(float total
+            , in (float Width, float Bias, float Strand, float Alpha, int Lag) strand) {
+            float amp = IsHeavy ? 1f : 0.82f;
+            float bias = FrontBias * strand.Bias;
+            for (int i = 0; i <= ArcSegments; i++) {
+                //衬带沿弧滞后几个采样，三股不再完全重合才有厚度
+                int si = Math.Clamp(i + strand.Lag, 0, ArcSegments);
+                Vector2 center = arcMid[si];
+                Vector2 dir = arcOut[si];
+                float w = arcHalf[si] * strand.Width;
+                var pack = new Color(arcDim[si], amp, strand.Strand, strand.Alpha);
+                float railU = arcLen[i] / total;
+                strandVerts[i * 2] = new VertexPositionColorTexture(
+                    (center + (dir * w * bias)).ToVector3(), pack, new Vector2(railU, 0f));
+                strandVerts[(i * 2) + 1] = new VertexPositionColorTexture(
+                    (center - (dir * w * (2f - bias))).ToVector3(), pack, new Vector2(railU, 1f));
+            }
+        }
+
         void IPrimitiveDrawable.DrawPrimitives() {
-            Effect effect = EffectLoader.NeutronSlashTrail?.Value;
+            Effect effect = EffectLoader.NeutronWaveFront?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
             if (effect == null || noise == null) {
                 return;
             }
             NeutronSwingBeat wave = BuildWave(out float bulge, out Vector2 axisX, out float bandRef);
-
-            const int Segments = 40;
-            var bars = new VertexPositionColorTexture[(Segments + 1) * 2];
-            for (int i = 0; i <= Segments; i++) {
-                float u = i / (float)Segments;
-                Vector2 local = NeutronSwingArc.TipOffset(in wave, bulge, u, Flip
-                    , axisX, out _, out float depth);
-                Vector2 center = Projectile.Center + local;
-                Vector2 outward = local.SafeNormalize(axisX) * BandHalfWidth(in wave, u, bandRef);
-                //uv.x 映成 sin(pi*u)：波峰给 1、双翼给 0，
-                //于是着色器里那条按"新旧"淡出的曲线正好把两个翼尖一起收掉
-                float rail = MathF.Sin(MathHelper.Pi * u);
-                Color tint = Color.White * NeutronSwingArc.DepthDim(in wave, bulge, depth);
-                bars[i * 2] = new VertexPositionColorTexture((center + outward).ToVector3()
-                    , tint, new Vector2(rail, 0f));
-                bars[(i * 2) + 1] = new VertexPositionColorTexture((center - outward).ToVector3()
-                    , tint, new Vector2(rail, 1f));
-            }
+            float total = SampleArc(in wave, bulge, axisX, bandRef);
 
             GraphicsDevice device = Main.graphics.GraphicsDevice;
             BlendState origBlend = device.BlendState;
@@ -1059,13 +1134,19 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-            effect.Parameters["uFade"]?.SetValue(1f - NeutronSwingArc.SmoothStep01((LifeT - 0.55f) / 0.45f));
-            effect.Parameters["uHeat"]?.SetValue(IsHeavy ? 1f : 0.45f);
-            effect.Parameters["uForcePoint"]?.SetValue(0.5f);
+            effect.Parameters["uFade"]?.SetValue(1f - NeutronSwingArc.SmoothStep01((LifeT - 0.58f) / 0.42f));
+            effect.Parameters["uPower"]?.SetValue(IsHeavy ? 1f : 0.42f);
+            effect.Parameters["uLife"]?.SetValue(LifeT);
+            effect.Parameters["uBirth"]?.SetValue(BirthFlash);
             effect.Parameters["uNoiseTex"]?.SetValue(noise);
             foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
                 pass.Apply();
-                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars, 0, bars.Length - 2);
+                //焦暗衬 → 主波面 → 焦散锋线，顺序即层次；共用缓冲，画完再写下一股
+                foreach ((float Width, float Bias, float Strand, float Alpha, int Lag) strand in Strands) {
+                    FillStrand(total, in strand);
+                    device.DrawUserPrimitives(PrimitiveType.TriangleStrip
+                        , strandVerts, 0, strandVerts.Length - 2);
+                }
             }
 
             device.BlendState = origBlend;

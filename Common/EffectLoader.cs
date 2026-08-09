@@ -170,6 +170,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> EnergySlashTrail { get; set; }
         public static Asset<Effect> RebelSlashTrail { get; set; }
         public static Asset<Effect> NeutronSlashTrail { get; set; }
+        public static Asset<Effect> NeutronWaveFront { get; set; }
         public static Asset<Effect> StormSlashTrail { get; set; }
         public static Asset<Effect> DragonSlashTrail { get; set; }
         public static Asset<Effect> DawnshatterSlash { get; set; }

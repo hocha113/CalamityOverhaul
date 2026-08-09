@@ -7,27 +7,25 @@ using Terraria;
 namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
 {
     /// <summary>
-    /// 苍穹破晓条带渲染,一次挥砍三股异质条带(焦暗衬/主焰/焰芯)共用 DawnshatterSlash.fx<br/>
+    /// 苍穹破晓条带渲染,一次挥砍两股异质条带(焦暗衬/主焰)共用 DawnshatterSlash.fx,焰芯由 shader 沿撕裂外缘生成<br/>
     /// 顶点色通道 R=z(0远~1近) G=热度 B=股序 A=不透明度;UV.x 按累计弧长归一,不按采样序
     /// </summary>
     internal static class DawnshatterRenderer
     {
         /// 焦暗衬带宽度倍率
         private const float BackWidth = 1.10f;
-        /// 焰芯宽度倍率
-        private const float CoreWidth = 0.17f;
         /// 焦暗衬带沿挥向滞后
         private const float BackLag = 7f;
         private const int SpindleSamples = 16;
         /// 枪身视觉长度区间,与刺距解耦:枪本身几乎不变形,伸缩靠枪在手中前后滑动表达
-        private const float SpearVisualMin = 265f;
-        private const float SpearVisualMax = 330f;
+        private const float SpearVisualMin = 285f;
+        private const float SpearVisualMax = 320f;
         /// 枪尾允许越到手前方的上限,超出即接长,防脱手
-        private const float SpearRootAhead = 10f;
+        private const float SpearRootAhead = 20f;
 
-        /// <summary>枪身视觉长度,随刺距轻微增长但强钳制</summary>
+        /// <summary>枪身视觉长度,随刺距只涨一成多并强钳制</summary>
         internal static float SpearVisualLength(float reach)
-            => MathF.Max(MathHelper.Clamp(reach * 0.35f + 215f, SpearVisualMin, SpearVisualMax)
+            => MathF.Max(MathHelper.Clamp(reach * 0.25f + 235f, SpearVisualMin, SpearVisualMax)
                 , reach - SpearRootAhead);
 
         /// <summary>
@@ -43,8 +41,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             }
             Vector2 unit = mainVec / len;
             float diag = MathF.Sqrt(frame.Width * frame.Width + frame.Height * frame.Height);
-            //轴向长度呼吸是最强的立体线索,但只许 ±12%,超过就成了橡皮枪
-            float visLen = SpearVisualLength(len) * MathHelper.Clamp(depthScale, 0.88f, 1.12f);
+            //轴向长度呼吸是最强的立体线索,但只许 ±7%,超过就成了橡皮枪
+            float visLen = SpearVisualLength(len) * MathHelper.Clamp(depthScale, 0.93f, 1.07f);
             float scale = visLen / diag;
             Vector2 rootPos = hand + mainVec - unit * visLen;
             float rotation = mainVec.ToRotation() + (dir > 0 ? MathHelper.PiOver4 : MathHelper.PiOver4 * 3f);
@@ -76,7 +74,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             return verts;
         }
 
-        /// <summary>刺击梭形,三股×上下两半共 6 份条带</summary>
+        /// <summary>刺击梭形,两股×上下两半共 4 份条带,焰芯由 shader 沿中脊生成</summary>
         internal static void CollectThrustStrips(List<VertexPositionColorTexture[]> sink
             , Vector2 hand, Vector2 unit, float rear, float tip, float halfWidth, float heat, float opacity) {
             for (int s = -1; s <= 1; s += 2) {
@@ -85,12 +83,9 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             for (int s = -1; s <= 1; s += 2) {
                 sink.Add(BuildSpindleHalf(hand, unit, rear, tip, halfWidth, s, heat, opacity, 0.5f, 0f));
             }
-            for (int s = -1; s <= 1; s += 2) {
-                sink.Add(BuildSpindleHalf(hand, unit, rear, tip, halfWidth * CoreWidth, s, heat, opacity, 1f, 0f));
-            }
         }
 
-        /// <summary>弧光扫击,由采样环生成三股条带;samples 头在 index0,pos=枪尖向量,z 随行</summary>
+        /// <summary>弧光扫击,由采样环生成两股条带;samples 头在 index0,pos=枪尖向量,z 随行</summary>
         internal static void CollectArcStrips(List<VertexPositionColorTexture[]> sink
             , Vector2 hand, IReadOnlyList<ArcSample> samples, float innerFrac, float heat, float opacity) {
             if (samples.Count < 3) {
@@ -98,7 +93,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             }
             sink.Add(BuildArcStrip(hand, samples, innerFrac, 1.06f, heat, opacity * 0.9f, 0f, 2));
             sink.Add(BuildArcStrip(hand, samples, innerFrac, 1f, heat, opacity, 0.5f, 0));
-            sink.Add(BuildArcStrip(hand, samples, innerFrac + (1f - innerFrac) * 0.72f, 1f, heat, opacity, 1f, 0));
         }
 
         internal struct ArcSample
@@ -128,22 +122,24 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
                 total = 1f;
             }
 
-            for (int i = 0; i < count; i++) {
+            //顶点从尾往头排:同条带内后画的三角形压先画的,终结拍自交叠一圈半时新火压旧衬而不是被旧衬盖暗
+            for (int k = 0; k < count; k++) {
+                int i = count - 1 - k;
                 int si = Math.Min(i + lagSteps, count - 1);
                 ArcSample s = samples[si];
                 float u = 1f - arc[i] / total;
                 var pack = new Color(s.Z, MathF.Min(s.Heat, heat), layerB, opacity);
                 Vector2 outer = hand + s.Tip * outerMul;
                 Vector2 inner = hand + s.Tip * innerFrac;
-                verts[i * 2] = new VertexPositionColorTexture(outer.ToVector3(), pack, new Vector2(u, 0f));
-                verts[i * 2 + 1] = new VertexPositionColorTexture(inner.ToVector3(), pack, new Vector2(u, 1f));
+                verts[k * 2] = new VertexPositionColorTexture(outer.ToVector3(), pack, new Vector2(u, 0f));
+                verts[k * 2 + 1] = new VertexPositionColorTexture(inner.ToVector3(), pack, new Vector2(u, 1f));
             }
             return verts;
         }
 
-        /// <summary>统一提交,预乘输出走 AlphaBlend,绘制后恢复设备状态</summary>
+        /// <summary>统一提交,预乘输出走 AlphaBlend,绘制后恢复设备状态;strokeLen=笔画弧长(px),噪声按像素尺度采样</summary>
         internal static void DrawStrips(bool arcMode, float fade, float heat, float flash
-            , List<VertexPositionColorTexture[]> strips) {
+            , float strokeLen, List<VertexPositionColorTexture[]> strips) {
             if (strips.Count == 0 || fade <= 0.02f) {
                 return;
             }
@@ -165,6 +161,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             effect.Parameters["uFade"]?.SetValue(fade);
             effect.Parameters["uHeat"]?.SetValue(heat);
             effect.Parameters["uFlash"]?.SetValue(flash);
+            effect.Parameters["uStrokeLen"]?.SetValue(strokeLen);
             effect.Parameters["uNoiseTex"]?.SetValue(noise);
 
             foreach (EffectPass pass in effect.CurrentTechnique.Passes) {

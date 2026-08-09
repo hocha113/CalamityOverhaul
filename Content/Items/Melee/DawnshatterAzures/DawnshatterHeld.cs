@@ -106,6 +106,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         /// 采样间距(px),角速度再快也按这个密度补点
         private const float ArcSampleSpacing = 16f;
         private readonly List<DawnshatterRenderer.ArcSample> arcSamples = [];
+        /// 本拍弧带弧长(px),shader 按像素尺度采样噪声用
+        private float arcStrokeLen = 600f;
         private bool endPopFired;
         /// 终结拍旋转中的分段呼啸,已播到第几声
         private int spinWhooshStage;
@@ -140,7 +142,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             //B1 升龙撩,倾角在挥动中扫过(轴向前缩线索),随撩升空
             1 => new BeatDef {
                 Kind = 1, Windup = 8f, Active = 13f, Recover = 11f, DamageMul = 1.05f,
-                Radius0 = 250f, Radius1 = 290f, ArcStart = 1.55f, ArcEnd = -1.60f,
+                Radius0 = 250f, Radius1 = 280f, ArcStart = 1.55f, ArcEnd = -1.60f,
                 Tilt0 = 1.0f, Tilt1 = 0.3f, Roll = 0.15f,
             },
             //B2 贯穿突刺,位置步进 ~800px,人枪弹性
@@ -150,13 +152,13 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             //B3 横扫回旋,贯穿平面,收-爆:缓推三成后一口气抽完,爆发帧小跳
             3 => new BeatDef {
                 Kind = 1, Windup = 8f, Active = 16f, Recover = 8f, DamageMul = 1.15f,
-                Radius0 = 280f, Radius1 = 310f, ArcStart = -2.3f, ArcEnd = 2.3f,
+                Radius0 = 270f, Radius1 = 300f, ArcStart = -2.3f, ArcEnd = 2.3f,
                 Tilt0 = 0.55f, Tilt1 = 0.55f, Roll = -0.2f,
             },
             //B4 日冕终结,悬空加速回旋1.5圈,半径长出
             _ => new BeatDef {
                 Kind = 1, Windup = 10f, Active = 17f, Recover = 12f, DamageMul = 1.6f,
-                Radius0 = 300f, Radius1 = 360f, ArcStart = -0.6f, ArcEnd = -0.6f + MathHelper.Pi * 3f,
+                Radius0 = 290f, Radius1 = 340f, ArcStart = -0.6f, ArcEnd = -0.6f + MathHelper.Pi * 3f,
                 Tilt0 = 0.45f, Tilt1 = 0.45f, Roll = -0.2f,
             },
         };
@@ -645,6 +647,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             }
 
             int count = Math.Clamp((int)MathF.Ceiling(arcLen / ArcSampleSpacing), 8, ArcSampleMax);
+            arcStrokeLen = MathF.Max(arcLen, 60f);
             float headHeat = MathF.Max(heat, 0.3f);
             for (int i = 0; i < count; i++) {
                 float u = i / (count - 1f);
@@ -970,7 +973,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
                     return;
                 }
                 DawnshatterRenderer.CollectArcStrips(stripSink, hand, arcSamples, 0.30f, heat, trailFade);
-                DawnshatterRenderer.DrawStrips(true, trailFade, heat, flashPulse, stripSink);
+                DawnshatterRenderer.DrawStrips(true, trailFade, heat, flashPulse, arcStrokeLen, stripSink);
                 return;
             }
 
@@ -985,7 +988,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
                 }
                 DawnshatterRenderer.CollectThrustStrips(stripSink, lungeAnchor, unit
                     , 0f, tipDist + 14f, halfWidth, heat, trailFade);
-                DawnshatterRenderer.DrawStrips(false, trailFade, heat, flashPulse, stripSink);
+                //刺击条带本就在噪声原作刻度附近,传中性 600 保持既有观感
+                DawnshatterRenderer.DrawStrips(false, trailFade, heat, flashPulse, 600f, stripSink);
                 return;
             }
 
@@ -995,7 +999,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             }
             DawnshatterRenderer.CollectThrustStrips(stripSink, hand, unit
                 , pulseRear, maxTip + 14f, halfWidth, heat, trailFade);
-            DawnshatterRenderer.DrawStrips(false, trailFade, heat, flashPulse, stripSink);
+            DawnshatterRenderer.DrawStrips(false, trailFade, heat, flashPulse, 600f, stripSink);
         }
     }
 }
