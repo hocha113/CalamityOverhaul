@@ -3,14 +3,16 @@
 //采样 s0 + s1；全屏世界坐标映射，gridSize 栅格单元(世界像素)
 //
 //三层几何语汇(tierWeights 加权混合，C#端归一化)：
-//  L1 正交栅格·坐标系(静态，无时间项)
-//  L2 六边形蜂巢·可寻址单元(per-cell 静态亮度 + 超慢驻留起伏)
-//  L3 流场解体·空间被读出(屏幕相对数据流 + 字节块 + 噪声侵蚀的残余蜂巢)
+//  L1 正交栅格·坐标系(静态，无时间项，平移对称)
+//  L2 六边形蜂巢·可寻址单元(per-cell 静态亮度 + 超慢驻留起伏，密铺对称)
+//  L3 极化阵列·空间以域心重新编排(同心刻度环 + 24 辐条 + 灯塔慢扫掠，旋转对称)
 //
 //常驻舒适约定：禁止全局同相 sin 呼吸，亮度变化一律空间 hash 或超慢漂移；
-//压暗/红染收敛为氛围而非洗屏；加法层合成前过软限幅。
+//压暗保持"黑墙"实体感但高光端压缩防刺眼；加法层合成前过带趾软限幅
+//(趾部以下原样通过，只压尖峰——存在感优先，见 2026-08"50%透明度"返工)。
 //分层选择只用权重乘，不新增动态分支(直线算术 + 普通 tex2D)。
-//极角约束：全部结构走笛卡尔/屏幕相对坐标，实体环的 atan2 只与整数倍角组合。
+//极角约束：theta 消费者只有整数倍角 frac 与差值 frac(Δ/2π)，hash 输入用回绕后的
+//辐条索引；蜂巢/方格全走笛卡尔坐标。
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -22,7 +24,7 @@ float intensity;        //0~1 效果强度(淡入淡出)
 float expandProgress;   //0~1 展开进度
 float dimStrength;      //压暗强度 0不压暗 1最大
 float motionFade;       //0~1 玩家运动淡化装饰层
-float3 tierWeights;     //三层几何权重(方格/蜂巢/流场)，恒和为1
+float3 tierWeights;     //三层几何权重(方格/蜂巢/极阵)，恒和为1
 float2 setPoint;        //领域中心(世界坐标)
 float2 screenPosition;  //屏幕左上角(世界坐标)
 float2 worldViewSize;   //缩放修正后世界可视范围
@@ -79,7 +81,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     bool inside = cellDist < edgeBound;
 
     //=
-    //域外溢出光晕（收敛版：轻压暗+微红氛围）
+    //域外溢出光晕
     //=
     if (!inside)
     {
@@ -99,14 +101,14 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
         original.rgb = lerp(original.rgb, warpedOuter, outerGlow * 0.30);
 
         //压暗+红色氛围
-        original.rgb *= lerp(1.0, 0.82, outerGlow);
-        original.rgb += float3(0.16, 0.018, 0.025) * outerGlow * 0.32;
+        original.rgb *= lerp(1.0, 0.78, outerGlow);
+        original.rgb += float3(0.16, 0.018, 0.025) * outerGlow * 0.40;
 
         //外部栅格微光
         float2 outerCell = frac(relPos / gridSize);
         float ob = min(min(outerCell.x, 1.0 - outerCell.x), min(outerCell.y, 1.0 - outerCell.y));
         float outerGrid = 1.0 - smoothstep(0.0, 0.04, ob);
-        original.rgb += float3(0.28, 0.025, 0.035) * outerGrid * outerGlow * 0.22;
+        original.rgb += float3(0.28, 0.025, 0.035) * outerGrid * outerGlow * 0.28;
 
         return float4(original.rgb, original.a);
     }
@@ -153,27 +155,27 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     original.b = tex2D(uImage0, warpedCoords - caOffset * 0.7).b;
 
     //=
-    //第三层：调色（黑墙压暗保留，红染降为氛围重点色，高光端压缩防刺眼）
+    //第三层：调色（黑墙实体感恢复，高光端仍压缩防刺眼）
     //=
-    float targetDim = lerp(0.62, 0.52, centerFactor * 0.3);
+    float targetDim = lerp(0.55, 0.42, centerFactor * 0.3);
     float dimFactor = lerp(1.0, targetDim, intensity * dimStrength * baseMul);
     float3 processed = original.rgb * dimFactor;
 
     float lum = dot(processed, float3(0.299, 0.587, 0.114));
     float3 gray = float3(lum, lum, lum);
-    processed = lerp(processed, gray, 0.26 * intensity * baseMul);
+    processed = lerp(processed, gray, 0.33 * intensity * baseMul);
 
-    //三阶映射：深渊酒红→血红→压缩后的暖橙(不再推到炽亮)
+    //三阶映射：深渊酒红→血红→压缩暖橙
     float3 shadowRed  = float3(0.14, 0.02, 0.05);
     float3 midRed     = float3(0.62, 0.07, 0.06);
-    float3 highRed    = float3(0.72, 0.28, 0.15);
+    float3 highRed    = float3(0.82, 0.30, 0.16);
     float loT = saturate(lum / 0.3);
     float hiT = saturate((lum - 0.3) / 0.7);
     float hiPick = step(0.3, lum);
     float3 redMap = lerp(lerp(shadowRed, midRed, loT), lerp(midRed, highRed, hiT), hiPick);
-    processed = lerp(processed, redMap * (lum * 0.65 + 0.35), 0.20 * intensity * baseMul);
+    processed = lerp(processed, redMap * (lum * 0.65 + 0.35), 0.30 * intensity * baseMul);
 
-    //距离色温偏移：中心偏冷暗红，边缘偏热橙红（减半）
+    //距离色温偏移：中心偏冷暗红，边缘偏热橙红
     float3 distTint = lerp(float3(0.0, -0.010, 0.007), float3(0.05, 0.02, -0.012), edgeFactor);
     processed += distTint * intensity * lum * baseMul;
 
@@ -192,10 +194,10 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     float rowB = 0.55 + 0.45 * hash21(float2(cellIdx.y, 3.7));
     float colB = 0.55 + 0.45 * hash21(float2(cellIdx.x, 8.1));
     float sqTrace = lerp(colB, rowB, step(sby, sbx));
-    //内部退到底噪，只有边界一圈保持可读
-    float sqOpacity = lerp(0.16, 1.0, edgeFactor) * sqTrace;
+    //内部保持可读的底亮，边界一圈全亮
+    float sqOpacity = lerp(0.30, 1.0, edgeFactor) * sqTrace;
     float sqNode = (1.0 - smoothstep(0.0, 0.08, sbx)) * (1.0 - smoothstep(0.0, 0.08, sby));
-    float sqNodeB = lerp(0.10, 0.55, edgeFactor) * (0.6 + 0.4 * cellRand);
+    float sqNodeB = lerp(0.18, 0.75, edgeFactor) * (0.6 + 0.4 * cellRand);
 
     //=
     //结构层 L2：六边形蜂巢（无分支双 lattice 取近者）
@@ -215,49 +217,59 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 
     float hexCellRand = hash21(hexId * 3.173 + 11.71);
     float hexLine = 1.0 - smoothstep(0.0, 0.055, hexEdgeDist);
-    float hexLineB = lerp(0.35, 1.0, edgeFactor) * (0.70 + 0.30 * hash21(hexId * 5.19));
+    float hexLineB = lerp(0.55, 1.0, edgeFactor) * (0.70 + 0.30 * hash21(hexId * 5.19));
     //数据驻留单元：每格独立超慢起伏(周期约90s，相位 hash 去同相)
     float resident = 0.5 + 0.5 * sin(hexCellRand * 6.28318 + uTime * 0.07);
     float lit = smoothstep(0.72, 0.95, hexCellRand * 0.65 + resident * 0.35);
-    float hexFill = smoothstep(0.03, 0.16, hexEdgeDist) * lit * (0.35 + 0.25 * hexCellRand);
+    float hexFill = smoothstep(0.03, 0.16, hexEdgeDist) * lit * (0.50 + 0.30 * hexCellRand);
 
     //=
-    //结构层 L3：流场解体（屏幕相对上行数据流 + 字节块 + 残余蜂巢骨架）
+    //结构层 L3：极化阵列（同心刻度环 + 24 辐条 + 交点节点 + 灯塔慢扫掠）
+    //空间不再沿世界坐标排布，以域心为原点重新编排——最高权限的宣言
     //=
-    float colW = gridSize * 1.6;
-    float colIdx = floor(screenUV.x / colW);
-    float colLocal = frac(screenUV.x / colW);
-    float colRand = hash21(float2(colIdx, 7.77));
-    float colActive = step(0.30, colRand);
-    float colSpeed = 0.05 + colRand * 0.09;
-    float colPhase = frac(screenUV.y * (0.0015 + colRand * 0.0009) + uTime * colSpeed + colRand * 9.7);
-    float streamHead = smoothstep(0.0, 0.05, colPhase) * smoothstep(0.30, 0.07, colPhase);
-    float streamTail = pow(saturate(1.0 - colPhase / 0.55), 2.5) * 0.30;
-    float colProfile = smoothstep(0.0, 0.35, colLocal) * smoothstep(1.0, 0.65, colLocal);
-    float stream = (streamHead + streamTail) * colActive * colProfile;
+    float pDist = length(relPos);
+    float theta = atan2(relPos.y, relPos.x);
 
-    //字节块：列内量化行块，随噪声缓慢迁移
-    float rowH = gridSize * 0.9;
-    float rowIdx = floor(screenUV.y / rowH);
-    float rowLocal = frac(screenUV.y / rowH);
-    float byteN = tex2D(noiseTex, frac(float2(colIdx * 0.0313, rowIdx * 0.0217) + float2(0.0, -uTime * 0.012))).g;
-    float byteProfile = smoothstep(0.0, 0.15, rowLocal) * smoothstep(1.0, 0.85, rowLocal)
-                      * smoothstep(0.0, 0.18, colLocal) * smoothstep(1.0, 0.82, colLocal);
-    float byteBlock = smoothstep(0.80, 0.92, byteN) * colActive * byteProfile;
+    //同心环：整数倍步距，环亮度按环号 hash 静态错开，每4环为主刻度环
+    float ringStep = gridSize * 2.4;
+    float ringOff = abs(frac(pDist / ringStep + 0.5) - 0.5) * ringStep;
+    float ringLine = 1.0 - smoothstep(0.0, 1.7, ringOff);
+    float ringIdx = floor(pDist / ringStep + 0.5);
+    float ringB = 0.55 + 0.45 * hash21(float2(ringIdx, 4.3));
+    float majorRing = step(frac(ringIdx * 0.25 + 0.02), 0.045);
+    float ringLineWide = 1.0 - smoothstep(0.0, 3.4, ringOff);
+    float polarRings = ringLine * ringB * 0.75 + ringLineWide * majorRing * 0.55;
 
-    //残余蜂巢骨架：per-cell 噪声侵蚀，读作单元逐块剥离
-    float erode = tex2D(noiseTex, frac(hexId * 0.113 + float2(uTime * 0.006, uTime * 0.004))).b;
-    float residual = hexLine * smoothstep(0.30, 0.72, erode) * 0.45;
+    //24 辐条：整数倍角 frac，宽度按弧长换算保持像素级恒定，近心留空
+    float spokeCoord = theta * 3.8197186;   //24/(2π)，跨 ±π 跳变为整数 24
+    float spokeOff = abs(frac(spokeCoord + 0.5) - 0.5);
+    float spokeArc = spokeOff * 0.2617994 * pDist;   //(2π/24)·r = 弧长px
+    float spokeLine = 1.0 - smoothstep(0.0, 1.7, spokeArc);
+    float spokeCore = smoothstep(gridSize * 1.6, gridSize * 5.0, pDist);
+    //辐条索引回绕：±12 归并为同一根，接缝两侧 hash 一致
+    float spokeIdxRaw = floor(spokeCoord + 0.5);
+    float spokeIdx = spokeIdxRaw - 24.0 * floor(spokeIdxRaw / 24.0);
+    float spokeB = 0.55 + 0.45 * hash21(float2(spokeIdx, 9.1));
+    float polarSpokes = spokeLine * spokeCore * spokeB;
+
+    //环×辐条交点节点
+    float polarNode = (1.0 - smoothstep(0.0, 3.4, ringOff))
+                    * (1.0 - smoothstep(0.0, 3.4, spokeArc)) * spokeCore;
+
+    //灯塔扫掠：单束慢旋(约15s一圈)，局部提亮骨架并带极淡雾扇
+    float sweepDiff = abs(frac((theta - uTime * 0.42) / 6.28318 + 0.5) - 0.5) * 2.0;
+    float sweep = smoothstep(0.18, 0.0, sweepDiff);
+    float sweepGlow = sweep * (polarRings * 0.9 + polarSpokes * 0.9 + 0.045);
 
     //=
-    //边界带（基础辉光静态化，裂纹保留慢漂移）
+    //边界带（基础辉光静态，裂纹慢漂移）
     //=
     float edgeGlow = smoothstep(0.80, 1.0, normDist);
     float2 crackUV = frac(screenUV * 0.0018 + float2(uTime * 0.020, uTime * -0.016));
     float crackNoise = tex2D(noiseTex, crackUV).r;
     float crack = smoothstep(0.38, 0.47, crackNoise) * smoothstep(0.60, 0.50, crackNoise);
-    float edgeCrack = crack * edgeGlow * 1.1;
-    float edgeBase = edgeGlow * 0.42;
+    float edgeCrack = crack * edgeGlow * 1.25;
+    float edgeBase = edgeGlow * 0.55;
     float edgeTotal = edgeBase * skeletonMul + edgeCrack * detailMul;
 
     //=
@@ -317,30 +329,32 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     float3 cGridLine  = float3(0.52, 0.055, 0.06);
     float3 cGridNode  = float3(0.85, 0.16, 0.11);
     float3 cHexLine   = float3(0.72, 0.08, 0.07);
-    float3 cHexFill   = float3(0.34, 0.035, 0.045);
-    float3 cFlowHead  = float3(1.0, 0.34, 0.16);
-    float3 cFlowByte  = float3(0.60, 0.10, 0.07);
+    float3 cHexFill   = float3(0.42, 0.045, 0.05);
+    float3 cPolarRing = float3(0.95, 0.22, 0.10);
+    float3 cPolarSpoke= float3(0.85, 0.16, 0.08);
+    float3 cPolarNode = float3(1.0, 0.45, 0.22);
+    float3 cSweep     = float3(1.0, 0.40, 0.18);
     float3 cCrackGlow = float3(1.0, 0.22, 0.12);
     float3 cRing      = float3(1.0, 0.15, 0.10);
     float3 cScan      = float3(1.0, 0.60, 0.48);
     float3 cExtract   = float3(1.0, 0.42, 0.20);
 
     //=
-    //合成加法层（每层三路结构 + 边界 + 实体，过软限幅）
+    //合成加法层
     //=
     float3 additive = float3(0, 0, 0);
-    additive += (cGridLine * sqLine * sqOpacity * 0.80 + cGridNode * sqNode * sqNodeB) * w1 * skeletonMul;
-    additive += (cHexLine * hexLine * hexLineB * 0.55 + cHexFill * hexFill) * w2 * skeletonMul;
-    additive += (cFlowHead * stream * 0.55 + cFlowByte * byteBlock * 0.50) * w3 * detailMul;
-    additive += cHexLine * residual * 0.35 * w3 * skeletonMul;
+    additive += (cGridLine * sqLine * sqOpacity * 1.10 + cGridNode * sqNode * sqNodeB) * w1 * skeletonMul;
+    additive += (cHexLine * hexLine * hexLineB * 0.85 + cHexFill * hexFill) * w2 * skeletonMul;
+    additive += (cPolarRing * polarRings * 0.85 + cPolarSpoke * polarSpokes * 0.75) * w3 * skeletonMul;
+    additive += (cPolarNode * polarNode * 0.65 + cSweep * sweepGlow * 0.60) * w3 * detailMul;
     additive += cCrackGlow * edgeTotal;
     additive += cRing * entityRingTotal * entityMul;
     additive += cScan * entityScanTotal * 0.50 * entityMul;
     additive += cExtract * extractTotal * entityMul;
 
-    //软限幅：常驻画面任何像素不过曝
+    //带趾软限幅：常规结构亮度原样通过，只压高亮尖峰
     float addLum = dot(additive, float3(0.299, 0.587, 0.114));
-    additive *= 1.0 / (1.0 + addLum * 0.85);
+    additive *= 1.0 / (1.0 + max(addLum - 0.28, 0.0) * 0.75);
 
     float globalAddMul = lerp(1.0, 0.70, mFade);
     float3 finalColor = processed + additive * intensity * globalAddMul;

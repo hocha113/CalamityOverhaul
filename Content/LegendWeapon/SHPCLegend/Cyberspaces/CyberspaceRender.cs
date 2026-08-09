@@ -189,7 +189,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
             float baseMul = 1f - maxMotion * 0.50f;
 
-            Color dimColor = new Color(22, 0, 0) * (maxAlpha * Cyberspace.DimStrength * 0.55f * baseMul);
+            Color dimColor = new Color(22, 0, 0) * (maxAlpha * Cyberspace.DimStrength * 0.68f * baseMul);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone);
@@ -213,7 +213,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             spriteBatch.End();
         }
 
-        /// <summary>回退栅格按层几何换形：L1 正交线 / L2 三角格+蜂巢点阵 / L3 竖向数据流</summary>
+        /// <summary>回退栅格按层几何换形：L1 正交线 / L2 三角格+蜂巢点阵 / L3 极化阵列</summary>
         private static void DrawLowQualityFieldGrid(SpriteBatch spriteBatch, Texture2D pixel,
             CyberspacePlayer cp, float alpha, float baseMul, float detailMul) {
 
@@ -232,7 +232,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     alpha * w.Y, baseMul, detailMul);
             }
             if (w.Z > 0.02f) {
-                DrawFallbackFlowStreams(spriteBatch, pixel, center, radius, gridSize,
+                DrawFallbackPolarArray(spriteBatch, pixel, center, radius, gridSize,
                     cp.EffectTime, alpha * w.Z, baseMul, detailMul);
             }
         }
@@ -244,8 +244,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         /// <summary>L1 回退：正交栅格线 + 静态明暗节点</summary>
         private static void DrawFallbackSquareGrid(SpriteBatch spriteBatch, Texture2D pixel,
             Vector2 center, float radius, float gridSize, float alpha, float baseMul, float detailMul) {
-            Color lineColor = new Color(220, 35, 22) * (alpha * 0.13f * 0.65f * baseMul);
-            Color nodeColor = GetTierGlowColor(1f, alpha * 0.28f * 0.65f * detailMul);
+            Color lineColor = new Color(220, 35, 22) * (alpha * 0.17f * 0.65f * baseMul);
+            Color nodeColor = GetTierGlowColor(1f, alpha * 0.34f * 0.65f * detailMul);
 
             int minX = (int)MathF.Floor((center.X - radius) / gridSize);
             int maxX = (int)MathF.Ceiling((center.X + radius) / gridSize);
@@ -291,8 +291,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Vector2 center, float radius, float gridSize, float alpha, float baseMul, float detailMul) {
             float hexScale = gridSize * 1.7f;
             float spacing = hexScale * 0.866f;
-            Color lineColor = new Color(230, 45, 24) * (alpha * 0.115f * baseMul);
-            Color nodeColor = GetTierGlowColor(2f, alpha * 0.30f * detailMul);
+            Color lineColor = new Color(230, 45, 24) * (alpha * 0.15f * baseMul);
+            Color nodeColor = GetTierGlowColor(2f, alpha * 0.36f * detailMul);
 
             int n = (int)MathF.Ceiling(radius / spacing);
             for (int fam = 0; fam < 3; fam++) {
@@ -335,33 +335,43 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>L3 回退：稀疏竖向数据流（暗弦 + 上行亮段）</summary>
-        private static void DrawFallbackFlowStreams(SpriteBatch spriteBatch, Texture2D pixel,
+        /// <summary>L3 回退：极化阵列（24 辐条 + 主刻度环点圈，与 shader 版同构）</summary>
+        private static void DrawFallbackPolarArray(SpriteBatch spriteBatch, Texture2D pixel,
             Vector2 center, float radius, float gridSize, float time, float alpha, float baseMul, float detailMul) {
-            float colSpacing = gridSize * 3.2f;
-            Color chordColor = new Color(150, 22, 16) * (alpha * 0.10f * baseMul);
-            Color segColor = GetTierGlowColor(3f, alpha * 0.34f * detailMul);
+            Color spokeColor = new Color(235, 50, 24) * (alpha * 0.15f * baseMul);
+            Color ringColor = GetTierGlowColor(3f, alpha * 0.34f * detailMul);
 
-            int n = (int)MathF.Ceiling(radius / colSpacing);
-            for (int k = -n; k <= n; k++) {
-                float hash = StaticHash(k, 917);
-                float worldX = center.X + k * colSpacing + (hash - 0.5f) * colSpacing * 0.6f;
-                float dx = worldX - center.X;
-                float half = MathF.Sqrt(MathF.Max(radius * radius - dx * dx, 0f));
-                if (half <= gridSize) continue;
+            //24 辐条，近心留空
+            float innerHole = gridSize * 4f;
+            float spokeLen = radius - innerHole;
+            if (spokeLen > 0f) {
+                for (int k = 0; k < 24; k++) {
+                    float ang = MathHelper.TwoPi * k / 24f;
+                    Vector2 dirV = ang.ToRotationVector2();
+                    float bright = 0.62f + 0.38f * StaticHash(k, 53);
+                    Vector2 mid = center + dirV * (innerHole + spokeLen * 0.5f) - Main.screenPosition;
+                    spriteBatch.Draw(pixel, mid, null, spokeColor * bright, ang,
+                        new Vector2(pixel.Width * 0.5f, pixel.Height * 0.5f),
+                        new Vector2(spokeLen / pixel.Width, 1.2f / pixel.Height),
+                        SpriteEffects.None, 0f);
+                }
+            }
 
-                float topY = center.Y - half;
-                float lenY = half * 2f;
-                Vector2 pos = new(worldX - Main.screenPosition.X, topY - Main.screenPosition.Y);
-                spriteBatch.Draw(pixel, new Rectangle((int)pos.X, (int)pos.Y, 1, (int)lenY), chordColor);
+            //主刻度环（每4环）用点圈勾出
+            float ringStep = gridSize * 2.4f;
+            int ringCount = (int)(radius / ringStep);
+            for (int rI = 4; rI <= ringCount; rI += 4) {
+                float r = rI * ringStep;
+                int dots = Math.Clamp((int)(MathHelper.TwoPi * r / 42f), 24, 140);
+                for (int d = 0; d < dots; d++) {
+                    float a = MathHelper.TwoPi * d / dots;
+                    Vector2 world = center + a.ToRotationVector2() * r;
+                    if (Vector2.DistanceSquared(world, center) > radius * radius) continue;
 
-                //上行亮段（相位由列 hash 错开）
-                float speed = 60f + hash * 90f;
-                float segLen = MathF.Min(42f + hash * 40f, lenY * 0.5f);
-                float phase = (time * speed / lenY + hash * 7.31f) % 1f;
-                float segY = topY + (1f - phase) * (lenY - segLen);
-                Vector2 segPos = new(worldX - Main.screenPosition.X, segY - Main.screenPosition.Y);
-                spriteBatch.Draw(pixel, new Rectangle((int)segPos.X, (int)segPos.Y, 2, (int)segLen), segColor);
+                    float bright = 0.60f + 0.40f * StaticHash(rI, d);
+                    Vector2 screen = world - Main.screenPosition;
+                    spriteBatch.Draw(pixel, new Rectangle((int)screen.X - 1, (int)screen.Y - 1, 2, 2), ringColor * bright);
+                }
             }
         }
 
@@ -423,8 +433,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
                 float cellHash = MathF.Abs(MathF.Sin(snapX * 0.137f + snapY * 0.251f));
                 //超慢低幅起伏，相位按格错开：常驻边界不再闪烁
-                float pulse = 0.62f + 0.18f * MathF.Sin(time * 0.45f + cellHash * MathF.PI * 2f);
-                float alpha = pulse * effectIntensity * 0.26f * tierMult * glowMotionMul;
+                float pulse = 0.74f + 0.16f * MathF.Sin(time * 0.45f + cellHash * MathF.PI * 2f);
+                float alpha = pulse * effectIntensity * 0.34f * tierMult * glowMotionMul;
 
                 Color glowColor = GetTierGlowColor(tier, alpha);
 
