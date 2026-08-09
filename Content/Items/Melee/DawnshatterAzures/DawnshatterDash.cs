@@ -410,7 +410,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             //火线世界锚定,rear=起点,驻留在冲刺轨迹上
             float halfWidth = 30f + heat * 8f;
             DawnshatterRenderer.CollectThrustStrips(stripSink, dashStart, dashDir, 0f, tip, halfWidth, heat, trailFade);
-            DawnshatterRenderer.DrawStrips(false, trailFade, heat, flashPulse, 600f, stripSink);
+            DawnshatterRenderer.DrawStrips(false, trailFade, heat, flashPulse, 600f, 0f, stripSink);
         }
 
         /// <summary>沿冲刺线的空气拉扯,复用 NeutronWarp.KamuiLine;helper 只画轴对齐四边形,手动旋转对齐线轴</summary>

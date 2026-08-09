@@ -137,9 +137,12 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             return verts;
         }
 
-        /// <summary>统一提交,预乘输出走 AlphaBlend,绘制后恢复设备状态;strokeLen=笔画弧长(px),噪声按像素尺度采样</summary>
+        /// <summary>
+        /// 统一提交,预乘输出走 AlphaBlend,绘制后恢复设备状态<br/>
+        /// strokeLen=保留段弧长(px)供噪声像素尺度采样;strokeOff=尾侧已裁弧长(px),裁尾推进时噪声相位不滑动
+        /// </summary>
         internal static void DrawStrips(bool arcMode, float fade, float heat, float flash
-            , float strokeLen, List<VertexPositionColorTexture[]> strips) {
+            , float strokeLen, float strokeOff, List<VertexPositionColorTexture[]> strips) {
             if (strips.Count == 0 || fade <= 0.02f) {
                 return;
             }
@@ -162,6 +165,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             effect.Parameters["uHeat"]?.SetValue(heat);
             effect.Parameters["uFlash"]?.SetValue(flash);
             effect.Parameters["uStrokeLen"]?.SetValue(strokeLen);
+            effect.Parameters["uStrokeOff"]?.SetValue(strokeOff);
             effect.Parameters["uNoiseTex"]?.SetValue(noise);
 
             foreach (EffectPass pass in effect.CurrentTechnique.Passes) {

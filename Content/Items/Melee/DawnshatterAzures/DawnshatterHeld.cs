@@ -105,9 +105,14 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         private const int ArcSampleMax = 160;
         /// 采样间距(px),角速度再快也按这个密度补点
         private const float ArcSampleSpacing = 16f;
+        /// 弧带驻留弧长预算(px),≈终结拍250°;超出即裁尾,尾巴追着头走
+        /// 终结拍一圈半若全程驻留会自叠成环,焦暗端在天空上摊成大片幕布,把背景里每条硬边都显影成"断口"
+        private const float TrailArcBudget = 1500f;
         private readonly List<DawnshatterRenderer.ArcSample> arcSamples = [];
-        /// 本拍弧带弧长(px),shader 按像素尺度采样噪声用
+        /// 本拍弧带保留段弧长(px),shader 按像素尺度采样噪声用
         private float arcStrokeLen = 600f;
+        /// 尾侧已裁掉的弧长(px),作为噪声相位偏移,裁尾时纹理不滑动
+        private float arcStrokeOff;
         private bool endPopFired;
         /// 终结拍旋转中的分段呼啸,已播到第几声
         private int spinWhooshStage;
@@ -631,23 +636,41 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         private void BuildArcSamples(in BeatDef d) {
             arcSamples.Clear();
             float headT = MathF.Min(elapsed, d.Windup + d.Active);
-            float tailT = d.Windup;
-            if (headT - tailT < 0.05f) {
+            float windupTail = d.Windup;
+            if (headT - windupTail < 0.05f) {
                 return;
             }
 
-            //粗测弧长定采样密度
-            const int probe = 12;
+            //粗测弧长定采样密度,折线同时用于裁尾定位
+            const int probe = 16;
+            Span<float> probeArc = stackalloc float[probe + 1];
             float arcLen = 0f;
-            Vector2 prev = MotionAt(beatIndex, tailT, out _);
+            Vector2 prev = MotionAt(beatIndex, windupTail, out _);
+            probeArc[0] = 0f;
             for (int i = 1; i <= probe; i++) {
-                Vector2 p = MotionAt(beatIndex, MathHelper.Lerp(tailT, headT, i / (float)probe), out _);
+                Vector2 p = MotionAt(beatIndex, MathHelper.Lerp(windupTail, headT, i / (float)probe), out _);
                 arcLen += (p - prev).Length();
+                probeArc[i] = arcLen;
                 prev = p;
             }
 
-            int count = Math.Clamp((int)MathF.Ceiling(arcLen / ArcSampleSpacing), 8, ArcSampleMax);
-            arcStrokeLen = MathF.Max(arcLen, 60f);
+            //弧长预算裁尾:尾巴追头成彗尾,自叠环与焦暗幕布不复存在;短弧拍(B1/B3)不受影响
+            float tailT = windupTail;
+            float cut = MathF.Max(arcLen - TrailArcBudget, 0f);
+            if (cut > 0f) {
+                for (int i = 1; i <= probe; i++) {
+                    if (probeArc[i] >= cut) {
+                        float f = (cut - probeArc[i - 1]) / MathF.Max(probeArc[i] - probeArc[i - 1], 0.001f);
+                        tailT = MathHelper.Lerp(windupTail, headT, (i - 1 + f) / probe);
+                        break;
+                    }
+                }
+            }
+            arcStrokeOff = cut;
+            float retained = arcLen - cut;
+            arcStrokeLen = MathF.Max(retained, 60f);
+
+            int count = Math.Clamp((int)MathF.Ceiling(retained / ArcSampleSpacing), 8, ArcSampleMax);
             float headHeat = MathF.Max(heat, 0.3f);
             for (int i = 0; i < count; i++) {
                 float u = i / (count - 1f);
@@ -973,7 +996,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
                     return;
                 }
                 DawnshatterRenderer.CollectArcStrips(stripSink, hand, arcSamples, 0.30f, heat, trailFade);
-                DawnshatterRenderer.DrawStrips(true, trailFade, heat, flashPulse, arcStrokeLen, stripSink);
+                DawnshatterRenderer.DrawStrips(true, trailFade, heat, flashPulse, arcStrokeLen, arcStrokeOff, stripSink);
                 return;
             }
 
@@ -989,7 +1012,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
                 DawnshatterRenderer.CollectThrustStrips(stripSink, lungeAnchor, unit
                     , 0f, tipDist + 14f, halfWidth, heat, trailFade);
                 //刺击条带本就在噪声原作刻度附近,传中性 600 保持既有观感
-                DawnshatterRenderer.DrawStrips(false, trailFade, heat, flashPulse, 600f, stripSink);
+                DawnshatterRenderer.DrawStrips(false, trailFade, heat, flashPulse, 600f, 0f, stripSink);
                 return;
             }
 
@@ -999,7 +1022,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             }
             DawnshatterRenderer.CollectThrustStrips(stripSink, hand, unit
                 , pulseRear, maxTip + 14f, halfWidth, heat, trailFade);
-            DawnshatterRenderer.DrawStrips(false, trailFade, heat, flashPulse, 600f, stripSink);
+            DawnshatterRenderer.DrawStrips(false, trailFade, heat, flashPulse, 600f, 0f, stripSink);
         }
     }
 }

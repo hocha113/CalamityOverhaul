@@ -12,7 +12,8 @@ float uTime;
 float uFade;    //整体透明度 0~1
 float uHeat;    //点燃度 0~1,爆发帧后升满
 float uFlash;   //过曝脉冲 0~1,命中/爆发,≤2帧
-float uStrokeLen; //本笔画弧长(px),噪声按像素尺度采样;600=中性刻度
+float uStrokeLen; //本笔画保留段弧长(px),噪声按像素尺度采样;600=中性刻度
+float uStrokeOff; //尾侧已裁弧长(px),相位锚定笔画起点,裁尾推进时纹理不滑动
 
 texture uNoiseTex;
 sampler noiseSamp = sampler_state
@@ -53,9 +54,9 @@ float4 CorePS(PSInput input, float arcMode)
     float2 uv = input.TexCoords;
     float age = uv.x; //1=头 最热
 
-    //噪声横坐标换算到弧长像素尺度:UV 按全弧归一,长弧(终结拍~3000px)会把噪声拉伸十几倍,
-    //一切侵蚀边都被抻成光滑缎带(平滑断口病根);锚在尾端,条带增长时既有部分相位不滑动
-    float sx = uv.x * (max(uStrokeLen, 60.0) / 600.0);
+    //噪声横坐标换算到弧长像素尺度:UV 按保留段归一,直接采样会把噪声拉伸十几倍,
+    //一切侵蚀边都被抻成光滑缎带(平滑断口病根);相位锚定笔画起点,增长或裁尾都不滑动
+    float sx = (uStrokeOff + uv.x * max(uStrokeLen, 60.0)) / 600.0;
 
     //双层滚动噪声,火体沿笔画向尾平流
     float n1 = tex2D(noiseSamp, float2(sx * 1.6 - uTime * 1.15, uv.y * 0.85 + uTime * 0.12)).r;
