@@ -123,7 +123,7 @@ DragonSoulSerpent.DisplayName: Verdant Dragon Soul
 SporeCloud.DisplayName: Spore Cloud
 EXNeutronExplode.DisplayName: Neutron Explosion EX
 NeutronExplode.DisplayName: Neutron Explosion
-NeutronGlaiveBeam.DisplayName: Neutron Glaive
+NeutronGravityWave.DisplayName: Gravitational Wave Slash
 NeutronGlaiveHeldAlt.DisplayName: Neutron Glaive - Alternate
 NeutronsOrb.DisplayName: Neutron's Orb
 StormArc.DisplayName: Storm Arc
@@ -225,7 +225,6 @@ AriaRSkill.DisplayName: Aria R Skill
 AriaRSkillBeam.DisplayName: Aria R Skill Beam
 AriaQSkillMiniDisk.DisplayName: Aria Q Skill Mini Disk
 SulfuricacidExplosion.DisplayName: Sulfuricacid Explosion
-DawnshatterFireball.DisplayName: Dawnshatter Fireball
 TransferItemProj.DisplayName: Items In Transit
 Crystal.DisplayName: Crystal
 WGGLumberjackSaw.DisplayName: Lumberjack Saw

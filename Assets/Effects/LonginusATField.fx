@@ -75,7 +75,10 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float slide = uShatter * uShatter * (0.40 + fh * 0.30);
     float2 ps = p - fdir * slide;
 
-    float r = 0.90;
+    //画布边界保险，滑移碎面与边缘辉光皆不触边
+    float guardEdge = 1.0 - smoothstep(0.93, 1.0, max(abs(p.x), abs(p.y)));
+
+    float r = 0.82;
     float d = sdOctagon(ps, r);
     float dN = saturate(1.0 + d / r); //0=中心 1=边缘
 
@@ -119,7 +122,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     color += cHot * (frontGlow * 0.95 + crack * crackEnv);
 
     float alpha = saturate(aBody + aRing + aFring + rim * 0.6 + frontGlow * 0.55 + crack * crackEnv * 0.85);
-    float gate = vis * facetFade * saturate(uSpread * 8.0);
+    float gate = vis * facetFade * saturate(uSpread * 8.0) * guardEdge;
     alpha *= gate;
     color *= gate;
 

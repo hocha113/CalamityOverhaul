@@ -172,6 +172,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> NeutronSlashTrail { get; set; }
         public static Asset<Effect> StormSlashTrail { get; set; }
         public static Asset<Effect> DragonSlashTrail { get; set; }
+        public static Asset<Effect> DawnshatterSlash { get; set; }
         public static Asset<Effect> DragonSoulSerpent { get; set; }
         public static Asset<Effect> DragonSporeBeam { get; set; }
         public static Asset<Effect> BarrenPulse { get; set; }
@@ -210,6 +211,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniRaikiri { get; set; }
         public static Asset<Effect> OniBellWave { get; set; }
         public static Asset<Effect> OniRainWorld { get; set; }
+        public static Asset<Effect> OniRainSky { get; set; }
         public static Asset<Effect> OniSandGarden { get; set; }
         public static Asset<Effect> OniSenjuArm { get; set; }
         public static Asset<Effect> OniPaperMirror { get; set; }

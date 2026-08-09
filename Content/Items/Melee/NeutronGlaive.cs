@@ -161,20 +161,23 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// <summary>伪 z 幅度，由长短轴差导出；正圆没有深度</summary>
         public static float DepthAmp(in NeutronSwingBeat beat, float radius) {
             float hy = radius * beat.Squash;
-            return MathF.Sqrt(MathF.Max(radius * radius - hy * hy, 0f));
+            return MathF.Sqrt(MathF.Abs(radius * radius - hy * hy));
         }
 
         /// <summary>
         /// 刃尖相对弧心的投影偏移。位置相位带 flip（挥动方向镜像），
-        /// 深度相位不带——深度剖面沿笔画固定：起笔沉在身后、收笔迎向镜头
+        /// 深度相位不带——深度剖面沿笔画固定：起笔沉在身后、收笔迎向镜头。
+        /// Squash&gt;1（横宽月牙，引力波剑气用）时压缩换到另一根轴，z 相位随之切换
         /// </summary>
         public static Vector2 TipOffset(in NeutronSwingBeat beat, float radius, float uc, float flip
             , Vector2 axisX, out float projRadius, out float depth) {
             Vector2 axisY = new(-axisX.Y, axisX.X);
             float hy = radius * beat.Squash;
             float phiPos = flip * (uc - 0.5f) * beat.Span;
-            depth = MathF.Sin((uc - 0.5f) * beat.Span) * DepthAmp(in beat, radius) * 0.9f * beat.Depth;
-            float k = PerspectiveK(depth, ViewZFor(radius));
+            float phiZ = (uc - 0.5f) * beat.Span;
+            float zPhase = radius >= hy ? MathF.Sin(phiZ) : MathF.Cos(phiZ);
+            depth = zPhase * DepthAmp(in beat, radius) * 0.9f * beat.Depth;
+            float k = PerspectiveK(depth, ViewZFor(MathF.Max(radius, hy)));
             Vector2 local = ((axisX * MathF.Cos(phiPos) * radius) + (axisY * MathF.Sin(phiPos) * hy)) * k;
             projRadius = local.Length();
             return local;
@@ -213,29 +216,43 @@ namespace CalamityOverhaul.Content.Items.Melee
         private const int FrameCount = 16;
         /// <summary>爆发末端过冲量，回坐两帧后冻结</summary>
         private const float Overshoot = 1.06f;
+        /// <summary>刀身贴图中心停在手→刃尖的几成处，刀柄因此落在手上略后（长柄该有的配重）</summary>
+        private const float BladePark = 0.5f;
+        /// <summary>
+        /// 刀尖顶到手→刃尖的几成。略微过 1 是故意的：
+        /// 刀尖要压在刀光带的外缘上，让刀成为画面主体而不是被色片盖住的配角
+        /// </summary>
+        private const float BladeTipFill = 1.06f;
 
         /// <summary>
         /// 三拍形状表。轻拍是推出去的定向切（两记互为镜像画 X），
-        /// 终结是唯一一记拉回身后的巨型月牙——形状升级才让终结显得贵
+        /// 终结是唯一一记拉回身后的巨型月牙——形状升级才让终结显得贵。
+        /// <br/>帧预算按"输入到打击"优化：总帧维持 28/28/36（出手频率与 DPS 不动），
+        /// 但蓄势砍到 6/6/8，省下的帧全丢进收势——静止谷留在斩完之后，
+        /// 而不是压在玩家按下左键之后，否则读作慢速刀。
+        /// <br/><see cref="BladeScale"/> 现在只是细调倍率，刀身实际大小由
+        /// <see cref="GetBladeDrawScale"/> 从刀光半径反推。
+        /// <br/><see cref="NeutronSwingBeat.Thick"/> 刻意压薄：厚带会让观众的主体
+        /// 变成一张大色片而不是刀，光带该是刃口而不是床单
         /// </summary>
         private static readonly NeutronSwingBeat[] Beats = [
             new NeutronSwingBeat {
                 Span = 2.5f, Squash = 0.58f, OffsetAlongAim = 38f, Radius = 168f,
-                Thick = 0.17f, ForcePoint = 0.36f, Depth = 1f, Pullback = 0.13f,
-                Gather = 12, Hold = 1, Burst = 3, Recover = 12,
-                Lean = 0.07f, DamageScale = 1f, BladeScale = 1.42f, HitStop = 1,
+                Thick = 0.115f, ForcePoint = 0.36f, Depth = 1f, Pullback = 0.13f,
+                Gather = 6, Hold = 1, Burst = 3, Recover = 18,
+                Lean = 0.07f, DamageScale = 1f, BladeScale = 1f, HitStop = 1,
             },
             new NeutronSwingBeat {
                 Span = 2.5f, Squash = 0.56f, OffsetAlongAim = 44f, Radius = 174f,
-                Thick = 0.18f, ForcePoint = 0.64f, Depth = 1f, Pullback = 0.13f,
-                Gather = 12, Hold = 1, Burst = 3, Recover = 12,
-                Lean = 0.07f, DamageScale = 1f, BladeScale = 1.45f, HitStop = 1,
+                Thick = 0.12f, ForcePoint = 0.64f, Depth = 1f, Pullback = 0.13f,
+                Gather = 6, Hold = 1, Burst = 3, Recover = 18,
+                Lean = 0.07f, DamageScale = 1f, BladeScale = 1f, HitStop = 1,
             },
             new NeutronSwingBeat {
                 Span = 3.5f, Squash = 0.55f, OffsetAlongAim = -30f, Radius = 208f,
-                Thick = 0.23f, ForcePoint = 0.55f, Depth = 1f, Pullback = 0.15f,
-                Gather = 16, Hold = 2, Burst = 4, Recover = 14,
-                Lean = 0.3f, DamageScale = 1.35f, BladeScale = 1.58f, HitStop = 2,
+                Thick = 0.155f, ForcePoint = 0.55f, Depth = 1f, Pullback = 0.15f,
+                Gather = 8, Hold = 2, Burst = 4, Recover = 22,
+                Lean = 0.3f, DamageScale = 1.35f, BladeScale = 1.14f, HitStop = 2,
             },
         ];
 
@@ -259,7 +276,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private float currentRotation;
         private float lastRotation;
         private bool slashSoundPlayed;
-        private bool beamFired;
+        private bool waveFired;
         private float trailFade = 1f;
 
         //本帧由投影解算，绘制与碰撞共享
@@ -268,7 +285,6 @@ namespace CalamityOverhaul.Content.Items.Melee
         private Vector2 arcCenter;
         private Vector2 tipWorld;
         private float bladeReachNow = 1f;
-        private float bladeForeshorten = 1f;
         private float bladeDepth;
 
         //命中反馈
@@ -486,10 +502,19 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 fromHand = tipWorld - hand;
             bladeReachNow = MathF.Max(fromHand.Length(), 28f);
             currentRotation = fromHand.ToRotation();
-            //刀身与刀光同源：手到刃尖塌缩多少，刀就画多短。
-            //轴向前缩短是最强的深度线索，读作"刀转向画面深处"而不是"刀变小了"
-            float nominalReach = beat.Radius + (MathF.Abs(beat.OffsetAlongAim) * 0.5f);
-            bladeForeshorten = MathHelper.Clamp(bladeReachNow / nominalReach, 0.62f, 1.18f);
+        }
+
+        /// <summary>
+        /// 刀身画多大由刀光决定：让刀恒定横跨手→刃尖的 <see cref="BladePark"/>±，
+        /// 刀柄落在手上、刀尖顶到 <see cref="BladeTipFill"/>。
+        /// 贴图每帧只有 78x82（<c>Item.width=154</c> 只是物品显示尺寸），
+        /// 用固定 scale 会让刀只剩刀光的四成，读作"小气"；
+        /// 反推之后投影前缩短自动继承——刀光塌缩多少，刀就短多少
+        /// </summary>
+        private float GetBladeDrawScale(Rectangle rect) {
+            //刀刃在贴图里沿帧对角走（绘制时补了 ±PiOver4），所以对角长就是刃轴长
+            float spriteAxis = MathF.Max(new Vector2(rect.Width, rect.Height).Length(), 1f);
+            return bladeReachNow * (BladeTipFill - BladePark) * 2f / spriteAxis * Beat.BladeScale;
         }
 
         /// <summary>分相事件：爆发帧起音、发剑气、采缎带；收势期只蒸发不追加</summary>
@@ -508,9 +533,9 @@ namespace CalamityOverhaul.Content.Items.Melee
                         SoundEngine.PlaySound(style, Owner.Center);
                     }
                 }
-                if (!beamFired) {
-                    beamFired = true;
-                    FireBeam();
+                if (!waveFired) {
+                    waveFired = true;
+                    FireGravityWave();
                 }
             }
 
@@ -556,7 +581,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                     Uc = ucClamped,
                     Tip = tip,
                     Radial = local.SafeNormalize(axisX),
-                    HalfWidth = MathF.Max(NeutronSwingArc.ThickEnvelope(in beat, ucClamped) * projRadius, 2f),
+                    //保底半宽，免得月牙两端收成一根头发、被刀身整个盖过
+                    HalfWidth = MathF.Max(NeutronSwingArc.ThickEnvelope(in beat, ucClamped) * projRadius, 6f),
                     Dim = NeutronSwingArc.DepthDim(in beat, radius, depth),
                 };
                 lastPushedUc = uc;
@@ -576,15 +602,21 @@ namespace CalamityOverhaul.Content.Items.Melee
                 , Main.rand.NextFloat(0.25f, 0.4f)).Configure(false, 14);
         }
 
-        /// <summary>剑气沿这一刀的实际刀锋出去，不再读实时鼠标</summary>
-        private void FireBeam() {
+        /// <summary>
+        /// 引力波剑气沿这一刀的实际刀锋甩出去。<br/>
+        /// 用横宽月牙而非直线飞弹：直线弹要靠高攻速刷出数量才好看，
+        /// 而这套挥砍是重型节奏，一刀就得给出一记看得见的波
+        /// </summary>
+        private void FireGravityWave() {
             if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
             Vector2 dir = currentRotation.ToRotationVector2();
-            Vector2 spawnPos = Owner.GetPlayerStabilityCenter() + (dir * bladeReachNow * 0.6f);
-            Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), spawnPos, dir * Item.shootSpeed
-                , ModContent.ProjectileType<NeutronGlaiveBeam>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+            Vector2 spawnPos = Owner.GetPlayerStabilityCenter() + (dir * bladeReachNow * 0.72f);
+            Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), spawnPos
+                , dir * (IsFinisher ? 17f : 15f)
+                , ModContent.ProjectileType<NeutronGravityWave>(), Projectile.damage
+                , Projectile.knockBack, Owner.whoAmI, swingSign, IsFinisher ? 1f : 0f);
         }
 
         private void UpdatePlayerPose() {
@@ -690,6 +722,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 origin = rect.Size() / 2f;
             GetBladeDraw(out SpriteEffects effect, out float rotOffset);
 
+            float scale = GetBladeDrawScale(rect);
             float angleDelta = MathF.Abs(MathHelper.WrapAngle(currentRotation - lastRotation));
             float strength = NeutronSwingArc.Saturate((angleDelta - 0.05f) / 0.8f);
             int smears = Math.Clamp((int)MathF.Ceiling(angleDelta / 0.2f), 1, 5);
@@ -697,11 +730,11 @@ namespace CalamityOverhaul.Content.Items.Melee
                 float amount = i / (float)(smears + 1);
                 float rot = MathHelper.Lerp(currentRotation, lastRotation, amount);
                 Vector2 pos = Owner.GetPlayerStabilityCenter()
-                    + (rot.ToRotationVector2() * bladeReachNow * 0.46f) - Main.screenPosition;
+                    + (rot.ToRotationVector2() * bladeReachNow * BladePark) - Main.screenPosition;
                 Color smearColor = NeutronViolet * (0.34f * strength * (1f - amount));
                 smearColor.A = 0;
                 Main.EntitySpriteDraw(tex, pos, rect, smearColor, rot + rotOffset, origin
-                    , Projectile.scale * bladeForeshorten, effect, 0);
+                    , scale, effect, 0);
             }
             return false;
         }
@@ -757,10 +790,10 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 origin = rect.Size() / 2f;
             GetBladeDraw(out SpriteEffects effect, out float rotOffset);
 
-            //停在弧腹而非刃尖，任何刀长都不至于捅出刀光
+            //贴图中心停在半程，刀柄落手上、刀尖顶到弧带内侧
             Vector2 drawPos = Owner.GetPlayerStabilityCenter()
-                + (currentRotation.ToRotationVector2() * bladeReachNow * 0.46f) - Main.screenPosition;
-            float scale = Projectile.scale * bladeForeshorten;
+                + (currentRotation.ToRotationVector2() * bladeReachNow * BladePark) - Main.screenPosition;
+            float scale = GetBladeDrawScale(rect);
             //沉入身后的半侧压暗，与刀光远近分层同一个 z
             float dim = NeutronSwingArc.DepthDim(in Beat, Beat.Radius * radiusMul, bladeDepth);
             spriteBatch.Draw(tex, drawPos, rect, Color.White * dim, currentRotation + rotOffset, origin
@@ -820,121 +853,214 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class NeutronGlaiveBeam : ModProjectile, IWarpDrawable, ICWRLoader
+    /// <summary>
+    /// 引力波剑气：挥砍甩出去的一道弧形时空涟漪，物品说明里的"引力波剑气"本体。<br/>
+    /// 复用 <see cref="NeutronSwingArc"/> 的倾斜圆投影，和母刀光同一套几何血统，
+    /// 只是把长轴放在横向（Squash&gt;1）做成横宽月牙，波峰朝前。<br/>
+    /// 飞行中弧面扩张、带宽变薄——引力波振幅随距离衰减，
+    /// 沿途背景被 GravitationalLens 掰弯，死后留一层比弹幕活得更久的余痕
+    /// </summary>
+    internal class NeutronGravityWave : ModProjectile, IWarpDrawable, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Projectile_Melee + "NeutronGlaiveBeam";
+        public override string Texture => CWRConstant.VaultPlaceholder;
+
+        /// <summary>横宽比，月牙宽度约等于前凸的 2.6 倍</summary>
+        private const float WaveSquash = 2.6f;
+        /// <summary>月牙跨度，半圈：从一侧翼尖穿过波峰到另一侧翼尖</summary>
+        private const float WaveSpan = MathHelper.Pi;
+        private const int WaveLife = 48;
+        /// <summary>寿命末的弧面扩张倍率</summary>
+        private const float GrowthEnd = 1.45f;
+
+        /// <summary>挥动方向 ±1，只影响深度相位，与母刀光同源</summary>
+        private ref float Flip => ref Projectile.ai[0];
+        /// <summary>0=轻拍 1=终结</summary>
+        private ref float Tier => ref Projectile.ai[1];
+
+        private bool IsHeavy => Tier >= 1f;
+        private float LifeT => NeutronSwingArc.Saturate(1f - (Projectile.timeLeft / (float)WaveLife));
+
+        private static readonly Color WaveViolet = new(138, 80, 255);
+        private static readonly Color WaveBlue = new(120, 180, 255);
+
+        private bool payloadSpawned;
 
         public override void SetDefaults() {
-            Projectile.width = Projectile.height = 32;
+            Projectile.width = Projectile.height = 60;
             Projectile.friendly = true;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
             Projectile.DamageType = DamageClass.Melee;
-            Projectile.timeLeft = 120;
-            Projectile.MaxUpdates = 3;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
+            //穿透但每个目标只吃一次，扩张的波面不许变成多段刮伤
+            Projectile.penetrate = -1;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = -1;
+            Projectile.timeLeft = WaveLife;
+            Projectile.CWR().NotSubjectToSpecialEffects = true;
         }
+
+        /// <summary>本帧月牙几何，碰撞/绘制/扭曲共用一份，避免三处各算各的</summary>
+        private NeutronSwingBeat BuildWave(out float bulge, out Vector2 axisX, out float bandRef) {
+            float grow = MathHelper.Lerp(1f, GrowthEnd, NeutronSwingArc.SmoothStep01(LifeT));
+            bulge = (IsHeavy ? 56f : 40f) * grow;
+            axisX = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            //振幅随扩张衰减：波面越大越薄，这是"波"而不是"贴纸"的关键
+            bandRef = bulge * WaveSquash * (IsHeavy ? 0.24f : 0.21f) * (1f - (0.5f * LifeT));
+            return new NeutronSwingBeat {
+                Span = WaveSpan,
+                Squash = WaveSquash,
+                Depth = 1f,
+                Thick = 1f,
+                ForcePoint = 0.5f,
+                Radius = bulge,
+            };
+        }
+
+        /// <summary>波峰最厚、双翼收尖，包络与母刀光同一条曲线</summary>
+        private static float BandHalfWidth(in NeutronSwingBeat wave, float u, float bandRef)
+            => MathF.Max(NeutronSwingArc.ThickEnvelope(in wave, u) * bandRef, 4f);
 
         public override void AI() {
-            Lighting.AddLight(Projectile.Center, Color.White.ToVector3() * 0.3f);
+            NeutronSwingBeat wave = BuildWave(out float bulge, out Vector2 axisX, out _);
+            //波在扩张中散失能量，速度持续衰减，不是匀速平移的贴图
+            Projectile.velocity *= 0.985f;
+            Projectile.rotation = axisX.ToRotation();
 
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-
-            Projectile.ai[0] += 0.05f;
-            if (Projectile.ai[0] > 0.3f) {
-                Projectile.ai[0] = 0.3f;
-            }
-            if (Projectile.timeLeft > 15) {
-                Projectile.localAI[0] += 0.15f;
-                if (Projectile.localAI[0] > 0.3f) {
-                    Projectile.localAI[0] = 0.3f;
-                }
-                Projectile.ai[1] += 0.2f;
-                if (Projectile.ai[1] > 0.3f) {
-                    Projectile.ai[1] = 0.3f;
-                }
-            }
-            else {
-                Projectile.localAI[0] -= 0.03f;
-                Projectile.ai[1] -= 0.066f;
-            }
-
-            Projectile.localAI[1] += 0.07f;
-
-            float rot = Main.rand.NextFloat(6.282f);
-            for (int i = 0; i < 2; i++) {
-                Vector2 dir = rot.ToRotationVector2();
-                Vector2 vel = dir.RotatedBy(1.57f) * Main.rand.NextFloat(1.3f, 2.5f) + Projectile.velocity;
-                Dust dust = Dust.NewDustPerfect(Projectile.Center + dir * Main.rand.Next(3, 10)
-                    , DustID.Granite, vel, Scale: Main.rand.NextFloat(1.4f, 1.6f));
-                dust.noGravity = true;
-
-                rot = Main.rand.NextFloat(MathHelper.TwoPi);
-            }
-
-            if (++Projectile.localAI[2] > 2) {
-                for (int i = 0; i < 4; i++) {
-                    float rot1 = MathHelper.PiOver2 * i;
-                    Vector2 vr = rot1.ToRotationVector2();
-                    for (int j = 0; j < 3; j++) {
-                        PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center, vr * (0.1f + i * 0.14f), Color.BlueViolet, Main.rand.NextFloat(0.2f, 0.3f)).Configure(false, 17);
-                    }
-                }
-                Projectile.localAI[2] = 0;
-            }
-        }
-
-        public override void OnKill(int timeLeft) {
-            Projectile.Explode(300, SoundID.Item14 with { Pitch = 0.45f });
-            if (!Projectile.IsOwnedByLocalPlayer()) {
+            if (VaultUtils.isServer) {
                 return;
             }
-            Vector2 randpos = VaultUtils.RandVr(64);
-            Projectile.Center += randpos;
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero
-                , ModContent.ProjectileType<NeutronExplode>(), Projectile.damage, 0);
+            Lighting.AddLight(Projectile.Center + (axisX * bulge * 0.6f)
+                , WaveViolet.ToVector3() * (0.85f * (1f - (0.4f * LifeT))));
+
+            //波前星屑，沿弧面法向渗出
+            if (Main.rand.NextBool(2)) {
+                float u = Main.rand.NextFloat();
+                Vector2 local = NeutronSwingArc.TipOffset(in wave, bulge, u, Flip, axisX, out _, out _);
+                Vector2 outward = local.SafeNormalize(axisX);
+                PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center + local
+                    , outward * Main.rand.NextFloat(0.6f, 2.2f) + (Projectile.velocity * 0.25f)
+                    , Color.Lerp(WaveViolet, WaveBlue, Main.rand.NextFloat())
+                    , Main.rand.NextFloat(0.24f, 0.42f)).Configure(false, 16);
+            }
         }
 
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            Projectile.velocity = oldVelocity * -0.6f;
-            for (int j = 0; j < 73; j++) {
-                PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center + oldVelocity, oldVelocity.RotatedByRandom(0.3f) * -Main.rand.NextFloat(0.3f, 1.1f), Color.LightBlue, Main.rand.NextFloat(0.5f, 0.7f)).Configure(false, 7);
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
+            NeutronSwingBeat wave = BuildWave(out float bulge, out Vector2 axisX, out float bandRef);
+            for (int i = 0; i <= 12; i++) {
+                float u = i / 12f;
+                Vector2 point = Projectile.Center
+                    + NeutronSwingArc.TipOffset(in wave, bulge, u, Flip, axisX, out _, out _);
+                //擦边算中，波面看着盖住了就该打到
+                if (targetHitbox.Distance(point) <= BandHalfWidth(in wave, u, bandRef) + 14f) {
+                    return true;
+                }
             }
             return false;
         }
 
-        public override bool PreDraw(ref Color lightColor) => false;
-        bool IWarpDrawable.CanDrawCustom() => true;
-        void IWarpDrawable.Warp() {
-            float scale = System.Math.Max(Projectile.localAI[0], 0.01f);
-            NeutronWarpHelper.DrawWarp(
-                Projectile.Center,
-                screenWidth: 200f * scale,
-                screenHeight: 200f * scale,
-                intensity: Projectile.ai[1] * 0.65f,
-                progress: Projectile.ai[1],
-                rotation: Projectile.ai[0],
-                technique: "GravitationalLens",
-                radius: 0.4f
-            );
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (payloadSpawned || !Projectile.IsOwnedByLocalPlayer()) {
+                return;
+            }
+            //沿用原剑气的载荷：命中后落一次中子星爆炸，对应物品说明
+            payloadSpawned = true;
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero
+                , ModContent.ProjectileType<NeutronExplode>(), Projectile.damage / 2, 0, Projectile.owner);
         }
 
-        public void DrawCustom(SpriteBatch spriteBatch) {
-            Texture2D mainValue = TextureAssets.Projectile[Type].Value;
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            Rectangle rectangle = mainValue.GetRectangle();
-            Vector2 orig = rectangle.Size() / 2;
-            float rot = Projectile.rotation;
+        /// <summary>余痕：波散之后仍在原地慢慢消的引力残留</summary>
+        public override void OnKill(int timeLeft) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            NeutronSwingBeat wave = BuildWave(out float bulge, out Vector2 axisX, out _);
+            SoundEngine.PlaySound(SoundID.Item10 with { Volume = 0.35f, Pitch = -0.6f }, Projectile.Center);
+            for (int i = 0; i <= 14; i++) {
+                float u = i / 14f;
+                Vector2 local = NeutronSwingArc.TipOffset(in wave, bulge, u, Flip, axisX, out _, out _);
+                Vector2 drift = local.SafeNormalize(axisX) * Main.rand.NextFloat(0.15f, 0.7f);
+                PRTLoader.NewParticle<PRT_HeavenfallStar>(Projectile.Center + local, drift
+                    , Color.Lerp(WaveViolet, WaveBlue, u), Main.rand.NextFloat(0.3f, 0.5f))
+                    .Configure(false, 34);
+            }
+        }
 
-            for (int k = 0; k < Projectile.oldPos.Length; k++) {
-                Vector2 offsetPos = Projectile.oldPos[k].To(Projectile.position);
-                Vector2 drawPos2 = drawPos - offsetPos;
-                Color color = Projectile.GetAlpha(Color.Pink) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
-                Main.EntitySpriteDraw(mainValue, drawPos2, rectangle, color, rot, orig, Projectile.scale, SpriteEffects.None, 0);
+        public override bool PreDraw(ref Color lightColor) => false;
+
+        bool IWarpDrawable.CanDrawCustom() => false;
+
+        bool IWarpDrawable.DontUseBlueshiftEffect() => true;
+
+        void IWarpDrawable.DrawCustom(SpriteBatch spriteBatch) { }
+
+        /// <summary>波面沿途把背景掰弯，强度随振幅一起衰减</summary>
+        void IWarpDrawable.Warp() {
+            NeutronSwingBeat wave = BuildWave(out float bulge, out Vector2 axisX, out float bandRef);
+            float amp = (1f - NeutronSwingArc.SmoothStep01(LifeT)) * (IsHeavy ? 0.7f : 0.46f);
+            if (amp <= 0.02f) {
+                return;
+            }
+            int samples = IsHeavy ? 3 : 2;
+            for (int i = 0; i < samples; i++) {
+                float u = (i + 0.5f) / samples;
+                Vector2 local = NeutronSwingArc.TipOffset(in wave, bulge, u, Flip
+                    , axisX, out float projRadius, out float depth);
+                float span = MathF.Max(projRadius * 1.1f, bandRef * 5f);
+                NeutronWarpHelper.DrawWarp(Projectile.Center + local
+                    , screenWidth: span, screenHeight: span
+                    , intensity: amp * NeutronSwingArc.DepthDim(in wave, bulge, depth)
+                    , progress: LifeT
+                    , rotation: Projectile.rotation
+                    , technique: "GravitationalLens"
+                    , radius: 0.4f);
+            }
+        }
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            Effect effect = EffectLoader.NeutronSlashTrail?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (effect == null || noise == null) {
+                return;
+            }
+            NeutronSwingBeat wave = BuildWave(out float bulge, out Vector2 axisX, out float bandRef);
+
+            const int Segments = 40;
+            var bars = new VertexPositionColorTexture[(Segments + 1) * 2];
+            for (int i = 0; i <= Segments; i++) {
+                float u = i / (float)Segments;
+                Vector2 local = NeutronSwingArc.TipOffset(in wave, bulge, u, Flip
+                    , axisX, out _, out float depth);
+                Vector2 center = Projectile.Center + local;
+                Vector2 outward = local.SafeNormalize(axisX) * BandHalfWidth(in wave, u, bandRef);
+                //uv.x 映成 sin(pi*u)：波峰给 1、双翼给 0，
+                //于是着色器里那条按"新旧"淡出的曲线正好把两个翼尖一起收掉
+                float rail = MathF.Sin(MathHelper.Pi * u);
+                Color tint = Color.White * NeutronSwingArc.DepthDim(in wave, bulge, depth);
+                bars[i * 2] = new VertexPositionColorTexture((center + outward).ToVector3()
+                    , tint, new Vector2(rail, 0f));
+                bars[(i * 2) + 1] = new VertexPositionColorTexture((center - outward).ToVector3()
+                    , tint, new Vector2(rail, 1f));
             }
 
-            VaultUtils.DrawRotatingMarginEffect(Main.spriteBatch, mainValue, Projectile.timeLeft, drawPos, rectangle, Color.Blue, rot, orig, Projectile.scale, 0);
-            Main.EntitySpriteDraw(mainValue, Projectile.Center - Main.screenPosition, rectangle
-                , Color.White, Projectile.rotation, orig, Projectile.scale, SpriteEffects.None, 0);
+            GraphicsDevice device = Main.graphics.GraphicsDevice;
+            BlendState origBlend = device.BlendState;
+            RasterizerState origRaster = device.RasterizerState;
+            device.BlendState = BlendState.AlphaBlend;
+            device.RasterizerState = RasterizerState.CullNone;
+
+            effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uFade"]?.SetValue(1f - NeutronSwingArc.SmoothStep01((LifeT - 0.55f) / 0.45f));
+            effect.Parameters["uHeat"]?.SetValue(IsHeavy ? 1f : 0.45f);
+            effect.Parameters["uForcePoint"]?.SetValue(0.5f);
+            effect.Parameters["uNoiseTex"]?.SetValue(noise);
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars, 0, bars.Length - 2);
+            }
+
+            device.BlendState = origBlend;
+            device.RasterizerState = origRaster;
         }
     }
 

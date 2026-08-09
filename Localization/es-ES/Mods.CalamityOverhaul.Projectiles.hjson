@@ -123,7 +123,7 @@ DragonSoulSerpent.DisplayName: Alma del dragón verdigris
 SporeCloud.DisplayName: Nube esporal
 EXNeutronExplode.DisplayName: Explosión de neutrones EX
 NeutronExplode.DisplayName: Explosión de neutrones
-NeutronGlaiveBeam.DisplayName: Guja de neutrones
+// NeutronGravityWave.DisplayName: Gravitational Wave Slash
 NeutronGlaiveHeldAlt.DisplayName: Guja de neutrones · Derivación
 NeutronsOrb.DisplayName: Orbe de neutrones
 StormArc.DisplayName: Arco de tormenta
@@ -225,7 +225,6 @@ AriaRSkill.DisplayName: Guardián del anillo estelar
 AriaRSkillBeam.DisplayName: Rayo gamma azul
 AriaQSkillMiniDisk.DisplayName: Guardián del anillo estelar
 SulfuricacidExplosion.DisplayName: Explosión de ácido sulfúrico
-DawnshatterFireball.DisplayName: Fuego del alba
 TransferItemProj.DisplayName: Objeto en tránsito
 Crystal.DisplayName: Cristal
 WGGLumberjackSaw.DisplayName: Motosierra oxidada

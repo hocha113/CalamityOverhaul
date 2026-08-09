@@ -81,13 +81,14 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
         }
     }
 
-    //阴幕在场期间启用天空替换
+    //阴幕在场期间启用天空替换；鬼雨世界内让位给专属天空 OniRainWorldSky
     internal class GhostRainSceneEffect : ModSceneEffect
     {
         public override int Music => -1;
         public override SceneEffectPriority Priority => SceneEffectPriority.Event;
         public override bool IsSceneEffectActive(Player player) =>
-            player.whoAmI == Main.myPlayer && GhostRainAmbience.Visible;
+            player.whoAmI == Main.myPlayer && GhostRainAmbience.Visible
+            && !Scenarios.OniRainWorlds.OniRainWorldState.LocalIn;
         public override void SpecialVisuals(Player player, bool isActive) =>
             player.ManageSpecialBiomeVisuals(GhostRainSky.Name, isActive);
     }

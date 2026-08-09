@@ -301,6 +301,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     Volume = 0.4f,
                     Pitch = -0.35f,
                 }, player.Center);
+                //拒绝理由只有服务端知道，不回显的话玩家只听见一声响，不知道是缺 RAM
+                if (code == CyberspaceActionResultCode.InsufficientRam) {
+                    Color denyColor = new(255, 90, 80);
+                    CombatText.NewText(player.Hitbox, denyColor, "// LOW RAM", true);
+                }
             }
         }
 

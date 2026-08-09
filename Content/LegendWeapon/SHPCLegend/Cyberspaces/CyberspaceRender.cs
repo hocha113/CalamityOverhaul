@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             shader.Parameters["expandProgress"]?.SetValue(primary.ExpandProgress);
             shader.Parameters["dimStrength"]?.SetValue(Cyberspace.DimStrength);
             shader.Parameters["motionFade"]?.SetValue(primary.MotionFade);
-            shader.Parameters["layerTier"]?.SetValue(primary.VisualTier);
+            shader.Parameters["tierWeights"]?.SetValue(primary.TierWeights);
             Vector2 domainCenter = primary.DomainCenter;
             float effectiveRadius = primary.Radius * primary.ExpandProgress;
             shader.Parameters["setPoint"]?.SetValue(domainCenter);
@@ -377,15 +377,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             //quad 外留45%，环贴有效边界
             float quadHalf = effectiveRadius * 1.45f;
             float ringPos = effectiveRadius / quadHalf;
-            float thickness = 0.085f + tierFrac * 0.022f + 0.007f * MathF.Sin(time * 0.7f + 1.2f);
+            //厚度静态化：常驻边界不再随时间涨缩
+            float thickness = 0.085f + tierFrac * 0.022f;
 
-            //owner 偏移错开呼吸
+            //owner 偏移错开噪声相位
             float ownerPhase = cp.Player.whoAmI * 1.37f;
             shader.Parameters["uTime"]?.SetValue(time + ownerPhase);
             shader.Parameters["ringProgress"]?.SetValue(ringPos);
             shader.Parameters["ringThickness"]?.SetValue(thickness);
             shader.Parameters["fadeAlpha"]?.SetValue(cp.Intensity * ringMotionMul);
-            shader.Parameters["layerTier"]?.SetValue(tier);
+            shader.Parameters["tierWeights"]?.SetValue(cp.TierWeights);
             shader.CurrentTechnique.Passes[0].Apply();
 
             float drawDiameter = quadHalf * 2f;

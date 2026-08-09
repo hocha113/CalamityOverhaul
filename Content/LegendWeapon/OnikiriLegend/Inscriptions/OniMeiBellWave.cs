@@ -216,7 +216,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
             //正圆：判定用的是真实距离（Colliding/BindAtFront 都按 Distance 算），
             //所以画面也必须是正圆——压成贴地椭圆会让头顶的敌人在"环还没扫到"时就挨打
-            Vector2 center = Projectile.Center - Main.screenPosition;
+            //顶点收世界坐标：GetTransfromMatrix 自带 -screenPosition
+            Vector2 center = Projectile.Center;
             float half = Radius;
             VertexPositionColorTexture[] verts = [
                 new((center + new Vector2(-half, -half)).ToVector3(), Color.White, new Vector2(0f, 0f)),
@@ -292,7 +293,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             fx.CurrentTechnique = fx.Techniques["RimTech"];
 
             //贴在脚下：环是绕着人转的一圈钟口，压扁读作地面上的圈
-            Vector2 center = player.Bottom - Main.screenPosition - Vector2.UnitY * 6f;
+            Vector2 center = player.Bottom - Vector2.UnitY * 6f;
             float halfX = RimRadius;
             float halfY = RimRadius * 0.42f;
             VertexPositionColorTexture[] verts = [

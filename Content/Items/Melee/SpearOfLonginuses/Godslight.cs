@@ -96,13 +96,18 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
                 return;
             }
             float age = 190 - Projectile.timeLeft;
-            float grow = MathHelper.Clamp(age / 16f, 0f, 1f);
+            //八道按 ai[1] 错帧依次拔起，阵列有先后而非同帧糊团
+            float delay = (Projectile.ai[1] - 2f) * 2f;
+            float grow = MathHelper.Clamp((age - delay) / 15f, 0f, 1f);
             float dissolve = Projectile.timeLeft < 45 ? MathHelper.Clamp((45 - Projectile.timeLeft) / 45f, 0f, 1f) : 0f;
             Vector2 upDir = -Projectile.rotation.ToRotationVector2();
-            //粗细随 ai[1](2~9) 分层，细柱更热
-            float widthUnits = 0.045f + Projectile.ai[1] * 0.021f;
-            float hot = Projectile.ai[1] < 4f ? 0.65f : 0.2f;
-            LonginusVFX.DrawCross(Projectile.Center, upDir, 3000f, 1150f, grow, dissolve, 0.55f, widthUnits, hot);
+            //粗细随 ai[1](2~9) 分层
+            float widthUnits = 0.022f + Projectile.ai[1] * 0.011f;
+            //完成瞬间过曝后指数退潮，细柱余温略高
+            float sinceDone = age - delay - 15f;
+            float hot = sinceDone > 0 ? 1.25f * (float)System.Math.Exp(-sinceDone * 0.11f) : 0f;
+            hot += Projectile.ai[1] < 4f ? 0.22f : 0.08f;
+            LonginusVFX.DrawCross(Projectile.Center, upDir, 3000f, 1150f, grow, dissolve, 0.42f, widthUnits, hot);
         }
     }
 }

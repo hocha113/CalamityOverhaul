@@ -1,7 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
-using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Linq;
@@ -20,7 +18,9 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
         private NPC markNPC;
         private float markReveal;
         private float levelFlash;
+        private float sheathSpin;
         private bool fullCharge;
+        private Vector2[] shaftPoints;
 
         public override void SetDefaults() {
             Projectile.width = 46;
@@ -72,6 +72,10 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             if (levelFlash > 0f) {
                 levelFlash -= 0.04f;
             }
+            //能量鞘缠绕滚动，充能越高越快
+            float gradeProg = Owner.HeldItem?.ModItem is SpearOfLonginus sol
+                ? sol.ChargeGrade / (float)SpearOfLonginus.MaxChargeGrade : 0f;
+            sheathSpin += 0.14f + gradeProg * 0.12f;
             Projectile.ai[0]++;
         }
 
@@ -87,14 +91,9 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             }
 
             //每帧累积一次能量；玩家持枪不动时也会涨
-            longinus.HolyEnergy++;
+            //充能可视化走 LonginusCharge 吸入场，不再喷星屑粒子
 
-            //充能星屑向枪尖汇聚
-            if (Main.rand.NextBool(2)) {
-                Vector2 spanStarPos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(26) + Projectile.velocity * 55;
-                Vector2 vr = spanStarPos.To(Projectile.velocity * 66 + Projectile.Center).UnitVector() * 4.6f;
-                PRTLoader.NewParticle<PRT_LonginusStar>(spanStarPos, vr, Color.Gold, Main.rand.NextFloat(0.9f, 1.1f)).Configure(false, Main.rand.Next(17, 25), Projectile);
-            }
+            longinus.HolyEnergy++;
 
             //能量满升层
             if (longinus.HolyEnergy >= SpearOfLonginus.HolyEnergyMax) {
@@ -139,6 +138,27 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
         }
 
         void IPrimitiveDrawable.DrawPrimitives() {
+            //枪身双螺旋能量鞘 + 枪尖吸入场，随充能进度增强
+            if (Owner.HeldItem?.ModItem is SpearOfLonginus sp) {
+                float fillProg = sp.ChargeGrade >= SpearOfLonginus.MaxChargeGrade
+                    ? 1f : sp.HolyEnergy / (float)SpearOfLonginus.HolyEnergyMax;
+                float gradeProg = sp.ChargeGrade / (float)SpearOfLonginus.MaxChargeGrade;
+
+                shaftPoints ??= new Vector2[14];
+                Vector2 tip = Projectile.Center + Projectile.velocity * 66f;
+                Vector2 tail = Projectile.Center - Projectile.velocity * 38f;
+                for (int i = 0; i < shaftPoints.Length; i++) {
+                    shaftPoints[i] = Vector2.Lerp(tip, tail, i / (shaftPoints.Length - 1f));
+                }
+                LonginusVFX.DrawHelixTrail(shaftPoints, shaftPoints.Length, 4.5f + gradeProg * 2.5f
+                    , 7f + gradeProg * 3f, sheathSpin, 0f, 0.30f + gradeProg * 0.45f
+                    , 0.15f + gradeProg * 0.45f, 3.1f);
+
+                LonginusVFX.DrawChargeIntake(tip, 54f + gradeProg * 16f
+                    , fullCharge ? 1f : 0.30f + fillProg * 0.70f, fullCharge ? 1f : 0f
+                    , 0.85f, Projectile.whoAmI * 0.137f);
+            }
+
             //标记目标头顶的倾斜光轮
             if (markNPC != null && markNPC.active && markReveal > 0.01f) {
                 float haloR = MathHelper.Clamp(markNPC.width * 0.5f + 26f, 34f, 120f);

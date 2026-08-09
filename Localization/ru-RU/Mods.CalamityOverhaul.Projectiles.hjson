@@ -123,7 +123,7 @@ DragonSoulSerpent.DisplayName: Душа изумрудного дракона
 SporeCloud.DisplayName: Споровое облако
 EXNeutronExplode.DisplayName: Нейтронный взрыв EX
 NeutronExplode.DisplayName: Нейтронный взрыв
-NeutronGlaiveBeam.DisplayName: Нейтронная глефа
+// NeutronGravityWave.DisplayName: Gravitational Wave Slash
 NeutronGlaiveHeldAlt.DisplayName: Нейтронная глефа (Вар.)
 NeutronsOrb.DisplayName: Нейтронная сфера
 StormArc.DisplayName: Дуга шторма
@@ -225,7 +225,6 @@ AriaRSkill.DisplayName: Страж звездного кольца
 AriaRSkillBeam.DisplayName: Синий гамма-луч
 AriaQSkillMiniDisk.DisplayName: Страж звездного кольца
 SulfuricacidExplosion.DisplayName: Взрыв серной кислоты
-DawnshatterFireball.DisplayName: Огонь рассвета
 TransferItemProj.DisplayName: Перемещаемый предмет
 Crystal.DisplayName: Кристалл
 WGGLumberjackSaw.DisplayName: Ржавая цепная пила

@@ -35,14 +35,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         private static readonly Vector3 ColorDeep = new(0.88f, 0.16f, 0.14f);
 
         private int timer;
-        private bool initialized;
+        /// <summary>柱心已就位。本机 AI 首帧自置，网络绝不置位——否则远端跳过锚定，柱子低半屏</summary>
+        private bool anchored;
         private float seed;
 
         private float ColumnHeight => Projectile.ai[0] > 8f ? Projectile.ai[0] : 320f;
         private float ColumnWidth => Projectile.ai[1] > 4f ? Projectile.ai[1] : DefaultWidth;
         private float Age => MathHelper.Clamp(timer / (float)LifeFrames, 0f, 1f);
-        /// <summary>落点：弹幕心即目标位置</summary>
-        private Vector2 Impact => Projectile.Center;
 
         public override void SetDefaults() {
             Projectile.width = (int)DefaultWidth;
@@ -103,15 +102,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         }
 
         public override void AI() {
-            if (!initialized) {
-                initialized = true;
+            if (!anchored) {
+                anchored = true;
                 seed = Projectile.identity * 0.6180339887f % 1f;
                 //碰撞箱贴合柱体：只有柱子扫到的那一条竖带才吃伤害
                 Projectile.width = (int)Math.Max(16f, ColumnWidth * 0.55f);
                 Projectile.height = (int)ColumnHeight;
-                Vector2 impact = Projectile.Center;
-                Projectile.Center = impact - Vector2.UnitY * (ColumnHeight * 0.5f);
-                PlayStrikeCue(impact);
+                //timer>0 = 中途收到的同步，位置早已是柱心：不能再上移一次，也不该重放落雷
+                if (timer == 0) {
+                    Vector2 impact = Projectile.Center;
+                    Projectile.Center = impact - Vector2.UnitY * (ColumnHeight * 0.5f);
+                    PlayStrikeCue(impact);
+                }
             }
             timer++;
             if (timer >= LifeFrames) {
@@ -178,14 +180,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         public override void ReceiveExtraAI(BinaryReader reader) {
             timer = reader.ReadInt16();
-            initialized = true;
             seed = Projectile.identity * 0.6180339887f % 1f;
         }
 
         public override bool PreDraw(ref Color lightColor) => false;
 
         void IPrimitiveDrawable.DrawPrimitives() {
-            if (Main.dedServ || !initialized) {
+            if (Main.dedServ || !anchored) {
                 return;
             }
             Effect fx = EffectLoader.OniRaikiri?.Value;
@@ -235,14 +236,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
             device.DepthStencilState = prevDepth;
         }
 
+        /// <summary>顶点收世界坐标：GetTransfromMatrix 自带 -screenPosition，再减一次雷就画到屏幕外了</summary>
         private static void DrawQuad(GraphicsDevice device, Effect fx,
             Vector2 topLeft, Vector2 topRight, Vector2 bottomLeft, Vector2 bottomRight) {
-            Vector2 screen = -Main.screenPosition;
             VertexPositionColorTexture[] verts = [
-                new((topLeft + screen).ToVector3(), Color.White, new Vector2(0f, 0f)),
-                new((topRight + screen).ToVector3(), Color.White, new Vector2(1f, 0f)),
-                new((bottomLeft + screen).ToVector3(), Color.White, new Vector2(0f, 1f)),
-                new((bottomRight + screen).ToVector3(), Color.White, new Vector2(1f, 1f)),
+                new(topLeft.ToVector3(), Color.White, new Vector2(0f, 0f)),
+                new(topRight.ToVector3(), Color.White, new Vector2(1f, 0f)),
+                new(bottomLeft.ToVector3(), Color.White, new Vector2(0f, 1f)),
+                new(bottomRight.ToVector3(), Color.White, new Vector2(1f, 1f)),
             ];
             foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
                 pass.Apply();

@@ -123,7 +123,7 @@ DragonSoulSerpent.DisplayName: 翠龙之魂
 SporeCloud.DisplayName: 孢子云
 EXNeutronExplode.DisplayName: 中子爆破EX
 NeutronExplode.DisplayName: 中子爆破
-NeutronGlaiveBeam.DisplayName: 中子战刃
+NeutronGravityWave.DisplayName: 引力波剑气
 NeutronGlaiveHeldAlt.DisplayName: 中子战刃·派生
 NeutronsOrb.DisplayName: 中子球
 StormArc.DisplayName: 风暴电弧
@@ -225,7 +225,6 @@ AriaRSkill.DisplayName: 星环护卫
 AriaRSkillBeam.DisplayName: 蓝色伽马射线
 AriaQSkillMiniDisk.DisplayName: 星环护卫
 SulfuricacidExplosion.DisplayName: 硫酸爆炸
-DawnshatterFireball.DisplayName: 黎明之火
 TransferItemProj.DisplayName: 转移中的物品
 Crystal.DisplayName: 水晶
 WGGLumberjackSaw.DisplayName: 生锈动力锯

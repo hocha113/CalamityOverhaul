@@ -7,9 +7,10 @@ using Terraria;
 namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 {
     /// <summary>
-    /// 入雨演出的全屏合成：拷屏→镜像着色（缝下是绕枢轴点反射的鬼雨镜像）→绕屏幕中心旋转写回。<br/>
+    /// 入雨演出的全屏合成：拷屏→镜像着色（水位线以下是绕枢轴点反射的鬼雨镜像，
+    /// 水位线从屏底涨到缝线后锁定）→绕屏幕中心旋转写回。<br/>
     /// 镜像取点反射而非纯垂直镜像，翻转 180° 后与真实渲染恒等，交接零跳变；
-    /// 结算后 uSwallow 把镜面向上吞满全屏，θ=π 时输出即输入，直接停用。
+    /// 结算后 uSwallow 把水面向上吞满全屏，θ=π 时输出即输入，直接停用。
     /// </summary>
     internal sealed class OniRainWorldRender : RenderHandle
     {
@@ -115,11 +116,18 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                     MathF.Max(2f * pivotY - pUv.Y, pivotY + 0.16f));
             }
 
+            //水位线：从屏下 1.15 涨到枢轴；翻转期 rise=1，水位跟随枢轴向 0.5 收敛
+            float waterLevel = MathHelper.Lerp(1.15f, pivotY,
+                OniRainWorldTransition.RiseProgress);
+
             fx.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.016f);
             fx.Parameters["uPivotY"]?.SetValue(pivotY);
             fx.Parameters["uOriginU"]?.SetValue(originU);
             fx.Parameters["uAspect"]?.SetValue(w / h);
             fx.Parameters["uFront"]?.SetValue(OniRainWorldTransition.Reveal * frontMax);
+            fx.Parameters["uWaterLevel"]?.SetValue(waterLevel);
+            fx.Parameters["uWaterWobble"]?.SetValue(OniRainWorldTransition.WaterWobble);
+            fx.Parameters["uFoamBoost"]?.SetValue(OniRainWorldTransition.FoamBoost);
             fx.Parameters["uSwallow"]?.SetValue(OniRainWorldTransition.Swallow);
             fx.Parameters["uGrade"]?.SetValue(OniRainWorldTransition.Grade);
             fx.Parameters["uGlimpse"]?.SetValue(OniRainWorldTransition.Glimpse);
@@ -204,7 +212,8 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 return;
             }
 
-            float dim = OniRainWorldTransition.Reveal * 0.28f
+            //压暗跟涨水进度走，与主路径的水位上涨同节奏
+            float dim = OniRainWorldTransition.RiseProgress * 0.28f
                 + OniRainWorldTransition.Swallow * 0.20f;
             Rectangle full = new(0, 0, Main.screenWidth, Main.screenHeight);
 

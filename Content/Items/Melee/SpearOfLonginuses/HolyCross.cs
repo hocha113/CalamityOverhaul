@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
 
             //光十字计量，自下而上点亮
             LonginusVFX.DrawCross(Projectile.Center, up, 40f, 22f, appear, 0f, 0.8f
-                , 0.15f, fill >= 1f ? 0.65f : 0.15f, fill);
+                , 0.12f, fill >= 1f ? 0.35f * breathe : 0.08f, fill);
 
             //层数刻度：座环上的小光环
             int grade = longinus.ChargeGrade;

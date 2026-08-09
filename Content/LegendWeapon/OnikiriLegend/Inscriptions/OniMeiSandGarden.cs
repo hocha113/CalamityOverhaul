@@ -226,7 +226,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
             //着色器里已按 1/GroundSquash 竖压做透视，这里必须给正方形 quad：
             //再乘一次压扁比会让画出来的场只有 Contains 判定的一半高
-            Vector2 center = Projectile.Center - Main.screenPosition;
+            //顶点收世界坐标：GetTransfromMatrix 自带 -screenPosition
+            Vector2 center = Projectile.Center;
             float half = Radius;
             VertexPositionColorTexture[] verts = [
                 new((center + new Vector2(-half, -half)).ToVector3(), Color.White, new Vector2(0f, 0f)),

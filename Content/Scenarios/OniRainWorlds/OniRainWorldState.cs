@@ -39,6 +39,8 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 
         private static float dropCarry;
         private static int thunderTimer;
+        //雷声相对闪光的延迟帧数，光先于声的距离感
+        private static int thunderSoundDelay;
 
         /// <summary>本地玩家是否身处鬼雨世界</summary>
         public static bool LocalIn => !Main.dedServ && !Main.gameMenu
@@ -114,9 +116,14 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 SpawnFaceStreak();
             }
 
-            //远雷，稳态下的低频心跳；前兆雨阶段不抢演出节拍的雷声
+            //远雷，稳态下的低频心跳：天幕云底先闪惨白，雷声隔十几到四十帧才到；
+            //前兆雨阶段不抢演出节拍的雷声
             if (inWorld && --thunderTimer <= 0) {
                 thunderTimer = Main.rand.Next(480, 960);
+                OniRainWorldSky.NotifyThunder();
+                thunderSoundDelay = Main.rand.Next(15, 40);
+            }
+            if (inWorld && thunderSoundDelay > 0 && --thunderSoundDelay == 0) {
                 SoundEngine.PlaySound(SoundID.Thunder with {
                     Pitch = Main.rand.NextFloat(-1f, -0.75f),
                     Volume = Main.rand.NextFloat(0.22f, 0.4f),
@@ -128,6 +135,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         internal static void ResetLocal() {
             dropCarry = 0f;
             thunderTimer = 0;
+            thunderSoundDelay = 0;
         }
 
         /// <summary>满幕雨帘：约 0.02 滴/像素宽/帧 @密度1，风向按世界种子定相</summary>

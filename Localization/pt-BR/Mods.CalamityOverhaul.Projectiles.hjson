@@ -123,7 +123,7 @@ DragonSoulSerpent.DisplayName: Alma do Dragao Verdejante
 SporeCloud.DisplayName: Nuvem de Esporos
 EXNeutronExplode.DisplayName: Explosao de Neutrons EX
 NeutronExplode.DisplayName: Explosao de Neutrons
-NeutronGlaiveBeam.DisplayName: Glaive de Neutrons
+// NeutronGravityWave.DisplayName: Gravitational Wave Slash
 NeutronGlaiveHeldAlt.DisplayName: Glaive de Neutrons - Alternativo
 NeutronsOrb.DisplayName: Orbe de Neutrons
 StormArc.DisplayName: Arco da Tempestade
@@ -225,7 +225,6 @@ AriaRSkill.DisplayName: Habilidade R da Aria
 AriaRSkillBeam.DisplayName: Raio da Habilidade R da Aria
 AriaQSkillMiniDisk.DisplayName: Mini Disco da Habilidade Q da Aria
 SulfuricacidExplosion.DisplayName: Explosao de Acido Sulfurico
-DawnshatterFireball.DisplayName: Bola de Fogo do Amanhecer Estilhaçado
 TransferItemProj.DisplayName: Itens em Transito
 Crystal.DisplayName: Cristal
 WGGLumberjackSaw.DisplayName: Serra do Lenhador

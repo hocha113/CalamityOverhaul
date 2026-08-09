@@ -123,7 +123,7 @@ DragonSoulSerpent.DisplayName: Jadegrüne Drachenseele
 SporeCloud.DisplayName: Sporenwolke
 EXNeutronExplode.DisplayName: Neutronenexplosion EX
 NeutronExplode.DisplayName: Neutronenexplosion
-NeutronGlaiveBeam.DisplayName: Neutronengleve
+// NeutronGravityWave.DisplayName: Gravitational Wave Slash
 NeutronGlaiveHeldAlt.DisplayName: Neutronengleve · Ableitung
 NeutronsOrb.DisplayName: Neutronenkugel
 StormArc.DisplayName: Sturmbogen
@@ -225,7 +225,6 @@ AriaRSkill.DisplayName: Sternenring-Wächter
 AriaRSkillBeam.DisplayName: Blauer Gammastrahl
 AriaQSkillMiniDisk.DisplayName: Sternenring-Wächter
 SulfuricacidExplosion.DisplayName: Schwefelsäure-Explosion
-DawnshatterFireball.DisplayName: Morgendämmerungsfeuer
 TransferItemProj.DisplayName: Items in Übertragung
 Crystal.DisplayName: Kristall
 WGGLumberjackSaw.DisplayName: Rostige Motorsäge

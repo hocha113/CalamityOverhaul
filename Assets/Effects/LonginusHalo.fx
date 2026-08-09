@@ -70,11 +70,14 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float farDim = 1.0 - far * 0.42;
     float pulse = 1.0 + uPulse * 0.55;
 
+    //画布边界保险
+    float guardEdge = 1.0 - smoothstep(0.93, 1.0, max(abs(p.x), abs(p.y)));
+
     float3 cCore = float3(1.18, 1.00, 0.62);
     float3 cGlow = float3(0.95, 0.62, 0.22);
 
     float3 color = cCore * ring * flow + cGlow * glow * 0.55;
-    float alpha = saturate(ring * 0.95 + glow * 0.4) * farDim * uReveal * pulse;
+    float alpha = saturate(ring * 0.95 + glow * 0.4) * farDim * uReveal * pulse * guardEdge;
 
     return float4(color * alpha * farDim * pulse, alpha) * input.Color;
 }

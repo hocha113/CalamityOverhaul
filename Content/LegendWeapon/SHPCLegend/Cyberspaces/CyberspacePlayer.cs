@@ -11,6 +11,20 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
+    /// <summary>
+    /// 领域演出提示。多人下开关领域跑在服务端，音效与特效在那边发不出来，
+    /// 只能随权威状态包告诉各客户端"这一次是真的变了"。
+    /// <br/>重同步快照（入世、补发、回放）必须留 <see cref="None"/>，否则演出会被反复重播
+    /// </summary>
+    internal enum CyberspaceCue : byte
+    {
+        None,
+        Activate,
+        Deactivate,
+        LayerUp,
+        Crash,
+    }
+
     /// <summary>赛博领域每玩家状态承载</summary>
     public class CyberspacePlayer : ModPlayer
     {
@@ -104,6 +118,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     prev = cur;
                 }
                 return Cyberspace.MaxLayerCount;
+            }
+        }
+
+        /// <summary>
+        /// 三层几何权重(方格/蜂巢/流场)，由 <see cref="VisualTier"/> 平滑推导，恒和为 1。
+        /// <br/>着色器内三套几何全算后按此加权混合，规避全屏 effect 的动态分支禁令
+        /// </summary>
+        public Vector3 TierWeights {
+            get {
+                float tier = VisualTier;
+                float t2 = MathHelper.Clamp(tier - 1f, 0f, 1f);
+                float t3 = MathHelper.Clamp(tier - 2f, 0f, 1f);
+                t2 = t2 * t2 * (3f - 2f * t2);
+                t3 = t3 * t3 * (3f - 2f * t3);
+                //t3>0 时必有 t2==1，故三项恒和为 1
+                return new Vector3(1f - t2, t2 * (1f - t3), t3);
             }
         }
 
@@ -225,13 +255,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 for (int i = 0; i < resumeLayer; i++) {
                     layerBurstTimer[i] = Cyberspace.BurstDurations[i];
                 }
-                SpawnActivationVFX();
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(CWRSound.FailureCurrent, Player.Center);
-                    SoundEngine.PlaySound(CWRSound.Faultrelease, Player.Center);
-                }
+                PlayActivateCue();
             }
-            CommitAuthorityState();
+            CommitAuthorityState(silent ? CyberspaceCue.None : CyberspaceCue.Activate);
         }
 
         /// <summary>升降层</summary>
@@ -263,13 +289,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             int oldLayer = CurrentLayer;
             CurrentLayer = layer;
 
-            if (layer > oldLayer) {
+            bool raised = layer > oldLayer;
+            if (raised) {
                 for (int i = oldLayer; i < layer; i++) {
                     layerBurstTimer[i] = Cyberspace.BurstDurations[i];
                 }
                 SpawnLayerVFX(oldLayer, layer);
             }
-            CommitAuthorityState();
+            CommitAuthorityState(raised ? CyberspaceCue.LayerUp : CyberspaceCue.None);
             return true;
         }
 
@@ -296,12 +323,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 layerBurstTimer[i] = 0;
             }
 
-            if (!silent && !VaultUtils.isServer && Player.whoAmI == Main.myPlayer) {
-                SoundEngine.PlaySound(CWRSound.Faultrelease, Player.Center);
+            //本来就没开就不必演出，也不占一次状态广播
+            if (!changed) {
+                return;
             }
-            if (changed) {
-                CommitAuthorityState();
+            if (!silent) {
+                PlayDeactivateCue();
             }
+            CommitAuthorityState(silent ? CyberspaceCue.None : CyberspaceCue.Deactivate);
         }
 
         /// <summary>RAM 耗尽系统崩溃</summary>
@@ -322,13 +351,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             crashLockoutTimer = Cyberspace.CrashLockoutFrames;
             crashLockoutCarry = 0f;
 
-            if (!VaultUtils.isServer && Player.whoAmI == Main.myPlayer) {
-                Color crashColor = new(255, 70, 70);
-                CombatText.NewText(Player.Hitbox, crashColor, "// SYSTEM CRASH", true);
-                SoundEngine.PlaySound(CWRSound.FailureCurrent with { Volume = 0.85f, Pitch = -0.3f }, Player.Center);
-                SoundEngine.PlaySound(CWRSound.Faultrelease with { Volume = 0.7f, Pitch = -0.5f }, Player.Center);
-            }
-            CommitAuthorityState();
+            PlayCrashCue();
+            CommitAuthorityState(CyberspaceCue.Crash);
         }
 
         /// <summary>主更新；远端仅视觉插值</summary>
@@ -411,13 +435,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     layerExpand[i] = 0f;
             }
 
-            if (CurrentLayer >= 2 && intensityRaw > 0.5f && RestartCollapse < 0.2f) {
-                ambientBoltTimer--;
-                if (ambientBoltTimer <= 0) {
-                    SpawnAmbientBolts();
-                    ambientBoltTimer = 40 + Main.rand.Next(-8, 12);
-                }
-            }
+            UpdateAmbientBolts();
 
             if (!Active && CurrentLayer == 0) {
                 bool allCollapsed = true;
@@ -516,6 +534,59 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
+        /// <summary>
+        /// 展开演出。声音按施术者位置播，本机自带距离衰减，所以同场的人都能听见近处开域；
+        /// 投射物只由 owner 端生成，靠 <see cref="Projectile.NewProjectile"/> 自己的同步包铺给其他人
+        /// </summary>
+        private void PlayActivateCue() {
+            if (Main.dedServ) {
+                return;
+            }
+            SpawnActivationVFX();
+            SoundEngine.PlaySound(CWRSound.FailureCurrent, Player.Center);
+            SoundEngine.PlaySound(CWRSound.Faultrelease, Player.Center);
+        }
+
+        private void PlayDeactivateCue() {
+            if (Main.dedServ) {
+                return;
+            }
+            SoundEngine.PlaySound(CWRSound.Faultrelease, Player.Center);
+        }
+
+        private void PlayCrashCue() {
+            if (Main.dedServ) {
+                return;
+            }
+            //崩溃提示是自己的状态播报，只给本人
+            if (Player.whoAmI == Main.myPlayer) {
+                Color crashColor = new(255, 70, 70);
+                CombatText.NewText(Player.Hitbox, crashColor, "// SYSTEM CRASH", true);
+            }
+            SoundEngine.PlaySound(CWRSound.FailureCurrent with { Volume = 0.85f, Pitch = -0.3f }, Player.Center);
+            SoundEngine.PlaySound(CWRSound.Faultrelease with { Volume = 0.7f, Pitch = -0.5f }, Player.Center);
+        }
+
+        //收到权威变更时补演出，权威端自己已经放过的那一次不会再走到这里
+        private void PlayCue(CyberspaceCue cue, int prevLayer) {
+            switch (cue) {
+                case CyberspaceCue.Activate:
+                    PlayActivateCue();
+                    break;
+                case CyberspaceCue.Deactivate:
+                    PlayDeactivateCue();
+                    break;
+                case CyberspaceCue.LayerUp:
+                    if (CurrentLayer > prevLayer) {
+                        SpawnLayerVFX(prevLayer, CurrentLayer);
+                    }
+                    break;
+                case CyberspaceCue.Crash:
+                    PlayCrashCue();
+                    break;
+            }
+        }
+
         private void SpawnActivationVFX() {
             if (Main.myPlayer != Player.whoAmI) return;
 
@@ -561,6 +632,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 Projectile.NewProjectile(source, center, Vector2.Zero,
                     ModContent.ProjectileType<CyberGlitchBoltProj>(), 0, 0, Player.whoAmI,
                     ai0: angle, ai1: delay);
+            }
+        }
+
+        /// <summary>
+        /// 环境故障雷。多人下权威在服务端，那边生成不了也发不出同步包，
+        /// 所以改由 owner 端按同步来的层数自己推进，非 owner 直接退出，不空转随机数
+        /// </summary>
+        private void UpdateAmbientBolts() {
+            if (Main.dedServ || Player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            if (CurrentLayer >= 2 && intensityRaw > 0.5f && RestartCollapse < 0.2f) {
+                ambientBoltTimer--;
+                if (ambientBoltTimer <= 0) {
+                    SpawnAmbientBolts();
+                    ambientBoltTimer = 40 + Main.rand.Next(-8, 12);
+                }
             }
         }
 
@@ -615,6 +703,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 if (target <= 0f && layerExpand[i] < 0.005f) layerExpand[i] = 0f;
             }
 
+            UpdateAmbientBolts();
+
             float motionTarget = 0f;
             if (Intensity > 0.001f && Player != null && Player.active && !Player.dead) {
                 float speed = Player.velocity.Length();
@@ -626,7 +716,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         internal void ApplyRemoteState(uint revision, bool active,
-            int currentLayer, float restartCollapse, int crashLockout) {
+            int currentLayer, float restartCollapse, int crashLockout,
+            CyberspaceCue cue) {
             if (revision == 0 || currentLayer < 0
                 || currentLayer > Cyberspace.MaxLayerCount
                 || active != currentLayer > 0
@@ -638,6 +729,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 return;
             }
             int prevLayer = CurrentLayer;
+            //同版本重发只更新状态：补发的包哪怕带着提示也不再演一遍
+            bool advanced = revision != AuthorityRevision;
             AuthorityRevision = revision;
             Active = active;
             //远端升层播爆发
@@ -651,6 +744,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             crashLockoutTimer = crashLockout;
             crashLockoutCarry = 0f;
             targetIntensity = active && currentLayer > 0 ? 1f : 0f;
+            //演出放在状态落地之后：冲击波要按新的层半径取扫掠范围
+            PlayCue(advanced ? cue : CyberspaceCue.None, prevLayer);
         }
 
         /// <summary>加入/重连全量同步</summary>
@@ -660,7 +755,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        internal void SendAuthorityState(int toWho = -1) {
+        /// <summary>
+        /// 下发权威状态。<paramref name="cue"/> 只由真实状态变更填写，
+        /// 入世补发与请求回放一律留空，否则收包端会把同一次开域重播一遍
+        /// </summary>
+        internal void SendAuthorityState(int toWho = -1,
+            CyberspaceCue cue = CyberspaceCue.None) {
             if (Main.netMode != Terraria.ID.NetmodeID.Server
                 || Player?.active != true) {
                 return;
@@ -674,6 +774,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             packet.Write(MathHelper.Clamp(RestartCollapse, 0f, 1f));
             packet.Write((ushort)Math.Clamp(crashLockoutTimer, 0,
                 Cyberspace.CrashLockoutFrames));
+            packet.Write((byte)cue);
             packet.Send(toWho);
         }
 
@@ -689,12 +790,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 int currentLayer = reader.ReadByte();
                 float restartCollapse = reader.ReadSingle();
                 int crashLockout = reader.ReadUInt16();
+                //越界的提示当没有：不能因为一个演出字节丢掉整包状态
+                CyberspaceCue cue = (CyberspaceCue)reader.ReadByte();
+                if (cue > CyberspaceCue.Crash) {
+                    cue = CyberspaceCue.None;
+                }
                 if (playerIndex >= 0 && playerIndex < Main.maxPlayers) {
                     Player player = Main.player[playerIndex];
                     if (player?.active == true) {
                         player.GetModPlayer<CyberspacePlayer>()
                             .ApplyRemoteState(revision, active, currentLayer,
-                                restartCollapse, crashLockout);
+                                restartCollapse, crashLockout, cue);
                     }
                 }
             } catch (EndOfStreamException) {
@@ -702,7 +808,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        private void CommitAuthorityState() {
+        private void CommitAuthorityState(CyberspaceCue cue = CyberspaceCue.None) {
             if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient) {
                 return;
             }
@@ -710,7 +816,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (AuthorityRevision == 0) {
                 AuthorityRevision = 1;
             }
-            SendAuthorityState();
+            SendAuthorityState(cue: cue);
         }
 
         private static bool IsRevisionAtLeast(uint candidate, uint baseline)

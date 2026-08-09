@@ -123,7 +123,7 @@ DragonSoulSerpent.DisplayName: Âme du dragon verdâtre
 SporeCloud.DisplayName: Nuage de spores
 EXNeutronExplode.DisplayName: Explosion à neutrons EX
 NeutronExplode.DisplayName: Explosion à neutrons
-NeutronGlaiveBeam.DisplayName: Glaive à neutrons
+// NeutronGravityWave.DisplayName: Gravitational Wave Slash
 NeutronGlaiveHeldAlt.DisplayName: Glaive à neutrons · Dérivé
 NeutronsOrb.DisplayName: Orbe à neutrons
 StormArc.DisplayName: Arc de tempête
@@ -225,7 +225,6 @@ AriaRSkill.DisplayName: Garde de l'anneau stellaire
 AriaRSkillBeam.DisplayName: Rayon gamma bleu
 AriaQSkillMiniDisk.DisplayName: Garde de l'anneau stellaire
 SulfuricacidExplosion.DisplayName: Explosion d'acide sulfurique
-DawnshatterFireball.DisplayName: Feu de l'aube
 TransferItemProj.DisplayName: Objets en transit
 Crystal.DisplayName: Cristal
 WGGLumberjackSaw.DisplayName: Scie motorisée rouillée

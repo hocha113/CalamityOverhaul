@@ -102,8 +102,8 @@ DawnshatterAzure: {
 	DisplayName: Dawnshatter Azure
 	Tooltip:
 		'''
-		Fires a shadow of the corona, summoning explosive dragon flames upon hitting enemies.
-		Hold the right mouse button to dash while raising your weapon.
+		Hold the left button to chain a five-beat combo, the final spin igniting a corona
+		Right-click to charge, then lunge toward the cursor
 		"Let the flames purify your soul and utterly plunder your enemies."
 		'''
 }

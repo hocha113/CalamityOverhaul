@@ -490,8 +490,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
             float sag = length * SagRatio * (1f - tension);
             float width = ThreadWidth * MathHelper.Lerp(1f, 0.62f, tension);
-            Vector2 screen = -Main.screenPosition;
 
+            //顶点收世界坐标：GetTransfromMatrix 自带 -screenPosition
             VertexPositionColorTexture[] verts = new VertexPositionColorTexture[(ThreadSegments + 1) * 2];
             for (int i = 0; i <= ThreadSegments; i++) {
                 float t = i / (float)ThreadSegments;
@@ -502,9 +502,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
                 Vector2 perp = (next - prev).SafeNormalize(Vector2.UnitX)
                     .RotatedBy(MathHelper.PiOver2) * width * 0.5f;
                 verts[i * 2] = new VertexPositionColorTexture(
-                    (point - perp + screen).ToVector3(), Color.White, new Vector2(t, 0f));
+                    (point - perp).ToVector3(), Color.White, new Vector2(t, 0f));
                 verts[i * 2 + 1] = new VertexPositionColorTexture(
-                    (point + perp + screen).ToVector3(), Color.White, new Vector2(t, 1f));
+                    (point + perp).ToVector3(), Color.White, new Vector2(t, 1f));
             }
 
             foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
@@ -520,12 +520,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         private void DrawAnchor(GraphicsDevice device, Effect fx, Vector2 at, int index) {
             fx.Parameters["uSeed"]?.SetValue((seed + index * 0.267f) % 1f);
             float half = AnchorSize * 0.5f * MathHelper.Lerp(1f, 1.18f, Tension);
-            Vector2 screen = at - Main.screenPosition;
             VertexPositionColorTexture[] verts = [
-                new((screen + new Vector2(-half, -half)).ToVector3(), Color.White, new Vector2(0f, 0f)),
-                new((screen + new Vector2(half, -half)).ToVector3(), Color.White, new Vector2(1f, 0f)),
-                new((screen + new Vector2(-half, half)).ToVector3(), Color.White, new Vector2(0f, 1f)),
-                new((screen + new Vector2(half, half)).ToVector3(), Color.White, new Vector2(1f, 1f)),
+                new((at + new Vector2(-half, -half)).ToVector3(), Color.White, new Vector2(0f, 0f)),
+                new((at + new Vector2(half, -half)).ToVector3(), Color.White, new Vector2(1f, 0f)),
+                new((at + new Vector2(-half, half)).ToVector3(), Color.White, new Vector2(0f, 1f)),
+                new((at + new Vector2(half, half)).ToVector3(), Color.White, new Vector2(1f, 1f)),
             ];
             foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
                 pass.Apply();

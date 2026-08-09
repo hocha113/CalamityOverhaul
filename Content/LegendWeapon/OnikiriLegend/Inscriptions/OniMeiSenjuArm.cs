@@ -243,8 +243,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
         /// 六只手才不会长成同一根平行棍
         /// </summary>
         private void DrawLimb(GraphicsDevice device, Effect fx, Color tint) {
-            Vector2 shoulder = Owner.Center - Main.screenPosition;
-            Vector2 wrist = Projectile.Center - Main.screenPosition;
+            //顶点收世界坐标：GetTransfromMatrix 自带 -screenPosition
+            Vector2 shoulder = Owner.Center;
+            Vector2 wrist = Projectile.Center;
             Vector2 span = wrist - shoulder;
             float length = span.Length();
             if (length < 6f) {
@@ -276,7 +277,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Inscriptions
 
         /// <summary>手：quad 按刀线转向，着色器的 +x 即握把方向</summary>
         private void DrawHand(GraphicsDevice device, Effect fx, Color tint, float bladeAngle) {
-            Vector2 center = Projectile.Center - Main.screenPosition;
+            Vector2 center = Projectile.Center;
             Vector2 axis = bladeAngle.ToRotationVector2() * HandHalfSize;
             Vector2 side = axis.RotatedBy(MathHelper.PiOver2);
             VertexPositionColorTexture[] verts = [
