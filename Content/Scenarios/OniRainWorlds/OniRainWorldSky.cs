@@ -84,7 +84,9 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 flashStrength = MathHelper.Max(flashStrength, 0.55f);
             }
 
-            Filters.Scene[Name]?.GetShader()?.UseOpacity(0.20f * presence);
+            //滤镜随嵌套深度加深
+            Filters.Scene[Name]?.GetShader()?.UseOpacity(
+                (0.20f + 0.10f * OniRainWorldState.DepthGrade) * presence);
         }
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth) {
@@ -127,13 +129,15 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 shader.Parameters["uCamX"]?.SetValue(camX);
                 shader.Parameters["uFlash"]?.SetValue(flashStrength);
                 shader.Parameters["uFlashSeed"]?.SetValue(flashSeed);
+                shader.Parameters["uDepth"]?.SetValue(OniRainWorldState.DepthGrade);
                 shader.CurrentTechnique = shader.Techniques["TechSky"];
                 shader.CurrentTechnique.Passes[0].Apply();
                 spriteBatch.Draw(white, new Rectangle(0, 0, vpW, vpH), Color.White);
             }
             else {
-                //着色器缺失：单层冷灰青罩底，浓度压低避免死黑块
-                Color tint = new Color(14, 18, 22) * (presence * 0.55f);
+                //着色器缺失：单层冷灰青罩底，浓度压低避免死黑块，深层略沉
+                Color tint = new Color(14, 18, 22)
+                    * (presence * (0.55f + 0.18f * OniRainWorldState.DepthGrade));
                 spriteBatch.Draw(white, new Rectangle(0, 0, vpW, vpH), tint);
             }
 

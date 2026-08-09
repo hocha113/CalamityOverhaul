@@ -28,6 +28,8 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
         private float wingOpen;
         /// <summary>展开瞬间背后 AT 薄膜闪现</summary>
         private float wingFlash;
+        /// <summary>展开瞬间从爆心扩张衰减的大光环</summary>
+        private float unfurlRing;
         private bool lastWingsOn;
 
         public override void SetDefaults() {
@@ -94,51 +96,65 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             Projectile.netUpdate = true;
         }
 
-        /// <summary>各端自行推进展开度；ai[1] 边沿触发音效与 AT 薄膜闪，远端同样可见可闻</summary>
+        /// <summary>各端自行推进展开度；ai[1] 边沿触发音效与展开演出，远端同样可见可闻</summary>
         private void UpdateWings() {
             if (WingsOn != lastWingsOn) {
                 lastWingsOn = WingsOn;
                 if (WingsOn) {
                     wingFlash = 1f;
+                    unfurlRing = 1f;
                     SoundStyle open = "CalamityMod/Sounds/Item/HeavenlyGaleFire".GetSound();
                     open.Volume = 0.55f;
                     open.Pitch = 0.35f;
                     SoundEngine.PlaySound(open, Projectile.Center);
+                    //AT 音轻量版垫底，宗教感主题音
+                    SoundEngine.PlaySound(SpearOfLonginus.AT with { Volume = 0.5f, Pitch = 0.4f }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.6f, Pitch = -0.2f }, Projectile.Center);
                 }
                 else {
                     SoundEngine.PlaySound(SoundID.Item104 with { Volume = 0.4f, Pitch = -0.35f }, Projectile.Center);
                 }
             }
-            //展开 14 帧收回 10 帧，回弹过冲在几何侧 EaseOutBack 做
-            wingOpen = MathHelper.Clamp(wingOpen + (WingsOn ? 1f / 14f : -1f / 10f), 0f, 1f);
+            //展开 13 帧收回 9 帧；窜长→扇开的分段在几何侧由 openT 拆解
+            wingOpen = MathHelper.Clamp(wingOpen + (WingsOn ? 1f / 13f : -1f / 9f), 0f, 1f);
             if (wingFlash > 0f) {
                 wingFlash -= 0.055f;
             }
+            if (unfurlRing > 0f) {
+                unfurlRing -= 0.05f;
+            }
         }
 
-        /// <summary>由 <see cref="LonginusWingsRender"/> 在玩家身后图层调用，画双侧光之翼与背后光核</summary>
+        /// <summary>由 <see cref="LonginusWingsRender"/> 在玩家身后图层调用，画双侧光之翼与爆心涌泉</summary>
         public void DrawWingsLayer() {
             if (wingOpen <= 0.01f) {
                 return;
             }
             float gravDir = Owner.gravDir;
-            Vector2 anchor = Owner.MountedCenter + new Vector2(0, -6f * gravDir);
+            Vector2 anchor = Owner.MountedCenter + new Vector2(0, -8f * gravDir);
 
             //展开瞬间背后闪一层 AT 薄膜呼应主题
             if (wingFlash > 0.01f) {
                 float t = 1f - wingFlash;
-                LonginusVFX.DrawATField(anchor, new Vector2(0, -gravDir), 150f
+                LonginusVFX.DrawATField(anchor, new Vector2(0, -gravDir), 170f
                     , MathHelper.Clamp(t * 2.4f, 0f, 1f), 0f, wingFlash * 0.5f, 1
                     , Projectile.whoAmI * 0.173f, 0.9f);
             }
+            //爆发瞬间扩张衰减的大光环
+            if (unfurlRing > 0.01f) {
+                float rt = 1f - unfurlRing;
+                LonginusVFX.DrawHalo(anchor, 70f + rt * 210f, 0.92f, 1f, 0.2f
+                    , unfurlRing * 0.55f);
+            }
 
-            LonginusWings.Draw(Owner, wingOpen, 235f, 0.9f);
+            LonginusWings.Draw(Owner, wingOpen, 390f, 0.85f);
 
-            //翼根光核
+            //爆心涌泉：向心光丝 + 光轮脉动，撑起"所有光带从这一点涌出"
             float breathe = 0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2.2f);
-            LonginusVFX.DrawHalo(anchor, 16f + wingOpen * 6f, 0.9f, wingOpen, breathe * 0.6f
-                , wingOpen * 0.8f, LonginusVFX.HolyGold);
+            LonginusVFX.DrawChargeIntake(anchor, 88f + wingOpen * 24f, 0.5f + wingOpen * 0.5f
+                , wingOpen >= 0.99f ? 0.7f : 0f, wingOpen * 0.9f, Projectile.whoAmI * 0.293f);
+            LonginusVFX.DrawHalo(anchor, 22f + wingOpen * 10f, 0.9f, wingOpen, breathe
+                , wingOpen * 0.85f, LonginusVFX.HolyGold);
         }
 
         /// 持续注入圣神能量，满条转一次立场充能(最高 <see cref="SpearOfLonginus.MaxChargeGrade"/> 层)

@@ -617,6 +617,9 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
                     spinWhooshStage = 2;
                     SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.8f, Pitch = 0.15f }, Owner.Center);
                     SoundEngine.PlaySound(SoundID.Item34 with { Volume = 0.3f, Pitch = 0.45f }, Owner.Center);
+                    //转满一圈,日冕点燃:枪尖轨迹圈上亮起一圈扩张预兆环
+                    PRTLoader.NewParticle<PRT_DawnRing>(Owner.GetPlayerStabilityCenter(), Vector2.Zero, default, 1f)
+                        .Configure(Vector2.UnitY, mainVec.Length() * 0.7f, 9f, 1f, 12);
                 }
             }
 
@@ -639,6 +642,9 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
                             , dir * Main.rand.NextFloat(5f, 10f), default, Main.rand.NextFloat(1f, 1.6f))
                             .Configure(Main.rand.Next(20, 32));
                     }
+                    //日食环:从轨迹圈外合拢收成一圈金边黑芯,环上贝利珠随收缩走,终帧向外爆散
+                    PRTLoader.NewParticle<PRT_DawnRing>(hand, Vector2.Zero, default, 1f)
+                        .Configure(Vector2.UnitY, 330f, -13f, 1f, 17, eclipseMode: true, beads: 5);
                 }
             }
         }

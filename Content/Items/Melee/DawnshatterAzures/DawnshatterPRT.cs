@@ -83,6 +83,125 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         }
     }
 
+    /// <summary>
+    /// 气浪环:伪3D透视椭圆,法线向压扁读作"被穿过的空气";AlphaBlend 下焦烟暗环(带A遮挡)+金边(A=0加法)双层<br/>
+    /// 日食模式给终结演出用:负扩张速度合拢,环上挂贝利珠亮点,终帧向外爆散余烬
+    /// </summary>
+    internal class PRT_DawnRing : BasePRT
+    {
+        public override string Texture => CWRConstant.Masking + "Ring01";
+        public override bool CanPool => true;
+
+        [VaultLoaden(CWRConstant.Masking + "SoftGlow")]
+        internal static Asset<Texture2D> GlowTex = null;
+
+        private static readonly Color RingGold = new(255, 198, 92);
+        private static readonly Color RingSoot = new(88, 38, 22);
+        private static readonly Color BeadWhite = new(255, 236, 190);
+
+        private Vector2 normal = Vector2.UnitX;
+        private float radius;
+        private float expandSpeed;
+        /// 法线向压扁比,1=屏幕面正圆
+        private float squash;
+        private bool eclipse;
+        private int beadCount;
+        private float beadPhase;
+
+        public PRT_DawnRing Configure(Vector2 normalDir, float radius0, float expand
+            , float squashK, int lifetime, bool eclipseMode = false, int beads = 0) {
+            normal = normalDir == Vector2.Zero ? Vector2.UnitX : Vector2.Normalize(normalDir);
+            radius = radius0;
+            expandSpeed = expand;
+            squash = squashK;
+            Lifetime = lifetime;
+            eclipse = eclipseMode;
+            beadCount = beads;
+            return this;
+        }
+
+        public override void Reset() {
+            base.Reset();
+            normal = Vector2.UnitX;
+            radius = 0f;
+            expandSpeed = 0f;
+            squash = 1f;
+            eclipse = false;
+            beadCount = 0;
+            beadPhase = 0f;
+        }
+
+        public override void SetProperty() {
+            PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
+            beadPhase = Main.rand.NextFloat(MathHelper.TwoPi);
+            if (Lifetime <= 0) {
+                Lifetime = 16;
+            }
+            if (squash <= 0f) {
+                squash = 0.35f;
+            }
+        }
+
+        public override void AI() {
+            Position += Velocity;
+            Velocity *= 0.92f;
+            radius = MathF.Max(radius + expandSpeed, 10f);
+            //扩张软着陆;合拢保持速率,收干脆
+            if (expandSpeed > 0f) {
+                expandSpeed *= 0.93f;
+            }
+
+            float lc = LifetimeCompletion;
+            //扩张环耗散淡出;日食环收缩聚能,越收越亮,终帧爆散接走
+            Opacity = MathF.Min(lc * 6f, 1f) * (eclipse ? 0.55f + 0.45f * lc : MathF.Sqrt(1.001f - lc));
+
+            //日食终帧:贝利珠向外爆散成余烬
+            if (eclipse && Time == Lifetime - 1) {
+                int n = Math.Max(beadCount, 4) * 2;
+                for (int i = 0; i < n; i++) {
+                    Vector2 dir = (MathHelper.TwoPi * i / n + beadPhase).ToRotationVector2();
+                    PRTLoader.NewParticle<PRT_DawnEmber>(Position + OnRing(dir)
+                        , dir * Main.rand.NextFloat(4f, 9f), default, Main.rand.NextFloat(0.9f, 1.5f))
+                        .Configure(Main.rand.Next(18, 28));
+                }
+            }
+        }
+
+        /// <summary>环参数方向→世界偏移,法线向压扁再旋回</summary>
+        private Vector2 OnRing(Vector2 unit) {
+            float rot = normal.ToRotation() - MathHelper.PiOver2;
+            return new Vector2(unit.X, unit.Y * squash).RotatedBy(rot) * radius;
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            Texture2D tex = TexValue;
+            Vector2 pos = Position - Main.screenPosition;
+            float rot = normal.ToRotation() - MathHelper.PiOver2;
+            float sx = radius * 2f / tex.Width;
+            var scale = new Vector2(sx, sx * squash);
+            Vector2 origin = tex.Size() * 0.5f;
+
+            //焦烟暗环带 A 遮挡出实体感,金边 A=0 走加法;日食模式暗层更重更靠内
+            float sootA = eclipse ? 0.72f : 0.4f;
+            spriteBatch.Draw(tex, pos, null, RingSoot * (sootA * Opacity)
+                , rot, origin, scale * (eclipse ? 0.9f : 1.08f), SpriteEffects.None, 0f);
+            Color gold = RingGold with { A = 0 };
+            spriteBatch.Draw(tex, pos, null, gold * (0.85f * Opacity), rot, origin, scale, SpriteEffects.None, 0f);
+
+            //贝利珠沿环均布,随环走
+            Texture2D glow = GlowTex?.Value;
+            if (beadCount > 0 && glow != null) {
+                Color bead = BeadWhite with { A = 0 };
+                for (int i = 0; i < beadCount; i++) {
+                    Vector2 unit = (MathHelper.TwoPi * i / beadCount + beadPhase).ToRotationVector2();
+                    spriteBatch.Draw(glow, pos + OnRing(unit), null, bead * Opacity
+                        , 0f, glow.Size() * 0.5f, 0.16f * Scale, SpriteEffects.None, 0f);
+                }
+            }
+            return false;
+        }
+    }
+
     /// <summary>贴根火舌,锚在刃缘外舔,2~5 帧高频闪变,噪声撕裂端头由贴图承担</summary>
     internal class PRT_DawnTongue : BasePRT
     {

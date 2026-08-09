@@ -10,70 +10,104 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 {
-    /// <summary>是否身处鬼雨世界，按玩家独立存档</summary>
+    /// <summary>身处鬼雨世界的嵌套深度（0=真实世界，最深 <see cref="OniRainWorldState.MaxDepth"/>），按玩家独立存档</summary>
     internal sealed class OniRainWorldPlayer : ModPlayer
     {
-        public bool InOniRainWorld;
+        public int Depth;
 
         public override void SaveData(TagCompound tag) {
-            if (InOniRainWorld) {
-                tag["inOniRainWorld"] = true;
+            if (Depth > 0) {
+                tag["oniRainDepth"] = Depth;
             }
         }
 
         public override void LoadData(TagCompound tag) {
-            InOniRainWorld = tag.ContainsKey("inOniRainWorld");
+            //旧档只有 bool 键，视作第一层
+            int depth = tag.TryGet("oniRainDepth", out int saved) ? saved
+                : tag.ContainsKey("inOniRainWorld") ? 1 : 0;
+            Depth = Math.Clamp(depth, 0, OniRainWorldState.MaxDepth);
         }
     }
 
     /// <summary>
     /// 鬼雨世界的常驻状态：氛围目标喂给 <see cref="Content.Wraiths.Abilities.GhostRains.GhostRainAmbience"/>
-    /// （压顶/天幕/滤镜全套复用），并自带满幕雨帘、潮雾与远雷的本地表现。
+    /// （压顶/天幕/滤镜全套复用），并自带满幕雨帘、潮雾与远雷的本地表现。<br/>
+    /// 世界可多层嵌套（雨下还有雨）：层数越深雨越密、雷越频、脸痕越常见，
+    /// 分层强度经 <see cref="DepthGrade"/> 喂给天空与调色。
     /// </summary>
     internal static class OniRainWorldState
     {
+        /// <summary>嵌套深度上限</summary>
+        public const int MaxDepth = 3;
+
         //沿用鬼雨既定湿墨色板：灰白尸雨/尸斑青/潮雾沉青
         private static readonly Color RainPale = new(170, 185, 190);
         private static readonly Color RainCorpse = new(140, 170, 165);
         private static readonly Color MistDamp = new(58, 66, 70);
+
+        //深度分级表，索引 = 深度-1：雨密度乘数/脸痕稀有度(NextBool 分母)/雷间隔
+        private static readonly float[] rainMultByDepth = [1f, 1.15f, 1.3f];
+        private static readonly int[] faceStreakDenByDepth = [70, 40, 22];
+        private static readonly int[] thunderMinByDepth = [480, 360, 260];
+        private static readonly int[] thunderMaxByDepth = [960, 700, 520];
 
         private static float dropCarry;
         private static int thunderTimer;
         //雷声相对闪光的延迟帧数，光先于声的距离感
         private static int thunderSoundDelay;
 
-        /// <summary>本地玩家是否身处鬼雨世界</summary>
-        public static bool LocalIn => !Main.dedServ && !Main.gameMenu
-            && Main.LocalPlayer?.active == true
-            && Main.LocalPlayer.TryGetModPlayer(out OniRainWorldPlayer orp)
-            && orp.InOniRainWorld;
+        /// <summary>本地玩家所处的嵌套深度，0=真实世界</summary>
+        public static int LocalDepth {
+            get {
+                if (Main.dedServ || Main.gameMenu) {
+                    return 0;
+                }
+                Player player = Main.LocalPlayer;
+                if (player?.active != true
+                    || !player.TryGetModPlayer(out OniRainWorldPlayer orp)) {
+                    return 0;
+                }
+                return orp.Depth;
+            }
+        }
+
+        /// <summary>本地玩家是否身处鬼雨世界（任意深度）</summary>
+        public static bool LocalIn => LocalDepth > 0;
+
+        /// <summary>深度归一化 0~1：第一层 0、最深层 1，喂天空分层与日光附加压暗</summary>
+        public static float DepthGrade => LocalDepth <= 1 ? 0f
+            : (LocalDepth - 1) / (float)(MaxDepth - 1);
 
         /// <summary>给鬼雨氛围控制器的目标强度：在雨世界恒满，演出结算前给预压顶</summary>
         public static float GlobalAmbientTarget
             => LocalIn ? 1f : OniRainWorldTransition.AmbientPreGloom;
 
-        internal static void EnterLocal(Player player) {
+        /// <summary>下潜一层（入雨与深潜共用的结算入口），仅本地玩家生效</summary>
+        internal static void DescendLocal(Player player) {
             if (player == null || player.whoAmI != Main.myPlayer) {
                 return;
             }
-            player.GetModPlayer<OniRainWorldPlayer>().InOniRainWorld = true;
+            OniRainWorldPlayer orp = player.GetModPlayer<OniRainWorldPlayer>();
+            orp.Depth = Math.Min(orp.Depth + 1, MaxDepth);
             thunderTimer = 300;
         }
 
-        internal static void ExitLocal(Player player) {
+        /// <summary>上浮一层，浮出第一层即回到真实世界</summary>
+        internal static void AscendLocal(Player player) {
             if (player == null || player.whoAmI != Main.myPlayer) {
                 return;
             }
-            player.GetModPlayer<OniRainWorldPlayer>().InOniRainWorld = false;
+            OniRainWorldPlayer orp = player.GetModPlayer<OniRainWorldPlayer>();
+            orp.Depth = Math.Max(orp.Depth - 1, 0);
         }
 
-        /// <summary>调试出口：D3 直接退雨，氛围沿控制器包络自行排干</summary>
+        /// <summary>调试出口：D3 上浮一层，氛围沿控制器包络自行排干</summary>
         internal static void DebugExit() {
             Player player = Main.LocalPlayer;
             if (player?.active != true || !LocalIn) {
                 return;
             }
-            ExitLocal(player);
+            AscendLocal(player);
             SoundEngine.PlaySound(SoundID.SplashWeak with {
                 Pitch = -0.4f,
                 Volume = 0.7f,
@@ -82,8 +116,9 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         }
 
         /// <summary>
-        /// 常驻表现：满幕雨帘 + 贴地潮雾 + 稀有脸痕 + 远雷，密度吃氛围强度。<br/>
-        /// 演出结算前也承担前兆稀雨——两个世界开始互相渗透的零星雨丝。
+        /// 常驻表现：满幕雨帘 + 贴地潮雾 + 稀有脸痕 + 远雷，密度吃氛围强度并按深度分级。<br/>
+        /// 演出结算前也承担前兆稀雨——两个世界开始互相渗透的零星雨丝；
+        /// 深潜演出的骤雨增压（<see cref="OniRainDescentTransition.RainSurge"/>）也加在这里。
         /// </summary>
         internal static void UpdateFx() {
             if (Main.dedServ || Main.gameMenu) {
@@ -96,8 +131,10 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             }
 
             Player player = Main.LocalPlayer;
+            int depthIndex = Math.Clamp(LocalDepth, 1, MaxDepth) - 1;
             float density = inWorld
                 ? Content.Wraiths.Abilities.GhostRains.GhostRainAmbience.Intensity
+                    * rainMultByDepth[depthIndex] + OniRainDescentTransition.RainSurge
                 : preRain;
             if (density < 0.02f) {
                 return;
@@ -110,23 +147,28 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 if (density > 0.55f) {
                     SpawnMist(player);
                 }
+                //深层潮雾更浓
+                if (DepthGrade > 0.6f) {
+                    SpawnMist(player);
+                }
             }
 
-            if (density > 0.8f && Main.rand.NextBool(70)) {
+            if (density > 0.8f && Main.rand.NextBool(faceStreakDenByDepth[depthIndex])) {
                 SpawnFaceStreak();
             }
 
             //远雷，稳态下的低频心跳：天幕云底先闪惨白，雷声隔十几到四十帧才到；
-            //前兆雨阶段不抢演出节拍的雷声
+            //前兆雨阶段不抢演出节拍的雷声，越深雷越频、越沉
             if (inWorld && --thunderTimer <= 0) {
-                thunderTimer = Main.rand.Next(480, 960);
+                thunderTimer = Main.rand.Next(
+                    thunderMinByDepth[depthIndex], thunderMaxByDepth[depthIndex]);
                 OniRainWorldSky.NotifyThunder();
                 thunderSoundDelay = Main.rand.Next(15, 40);
             }
             if (inWorld && thunderSoundDelay > 0 && --thunderSoundDelay == 0) {
                 SoundEngine.PlaySound(SoundID.Thunder with {
                     Pitch = Main.rand.NextFloat(-1f, -0.75f),
-                    Volume = Main.rand.NextFloat(0.22f, 0.4f),
+                    Volume = Main.rand.NextFloat(0.22f, 0.4f) * (1f + DepthGrade * 0.3f),
                     MaxInstances = 3,
                 }, player.Center + new Vector2(Main.rand.NextFloat(-900f, 900f), -400f));
             }
@@ -144,8 +186,10 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             float right = Main.screenPosition.X + Main.screenWidth + 160f;
 
             dropCarry += density * 0.02f * (right - left);
-            int count = Math.Min((int)dropCarry, 56);
+            int count = Math.Min((int)dropCarry, 72);
             dropCarry -= count;
+            //进量超帧上限时截断积欠，防深层+骤雨叠加下无限攒债
+            dropCarry = Math.Min(dropCarry, 30f);
             if (count <= 0) {
                 return;
             }
@@ -218,9 +262,11 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         public string LocalizationCategory => "OniRainWorld";
 
         public static LocalizedText InteractHint { get; private set; }
+        public static LocalizedText DescendHint { get; private set; }
 
         public override void SetStaticDefaults() {
             InteractHint = this.GetLocalization(nameof(InteractHint), () => "[右键] 撑伞入雨");
+            DescendHint = this.GetLocalization(nameof(DescendHint), () => "[右键] 撑伞入深雨");
         }
 
         public override void PostUpdateEverything() {
@@ -228,12 +274,14 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 return;
             }
             OniRainWorldTransition.Update();
+            OniRainDescentTransition.Update();
             OniRainWorldState.UpdateFx();
         }
 
         public override void ClearWorld() {
             if (!Main.dedServ) {
                 OniRainWorldTransition.HardReset();
+                OniRainDescentTransition.HardReset();
                 OniRainWorldState.ResetLocal();
             }
         }

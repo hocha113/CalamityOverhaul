@@ -1019,3 +1019,4 @@ EternalBlazingNowNoHelen: {
 }
 
 OniRainWorld.OniRainWorldSystem.InteractHint: "[Right Click] Step beneath the umbrella"
+OniRainWorld.OniRainWorldSystem.DescendHint: "[Right Click] Step deeper into the rain"

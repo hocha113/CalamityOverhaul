@@ -69,9 +69,9 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
         public static float AmbientPreGloom => Active && Timer < CommitFrame
             ? MathF.Max(Reveal * 0.25f, Smooth01(Timer / (float)ApproachEnd) * 0.08f) : 0f;
 
-        /// <summary>开始入雨演出，仅本地玩家生效；重复调用无效</summary>
+        /// <summary>开始入雨演出，仅本地玩家生效；重复调用无效，深潜演出期间不可再入</summary>
         public static void Begin(Player player, Vector2 umbrellaGround) {
-            if (Active || Main.dedServ || player == null
+            if (Active || OniRainDescentTransition.Active || Main.dedServ || player == null
                 || player.whoAmI != Main.myPlayer || !player.Alives()) {
                 return;
             }
@@ -385,7 +385,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 MaxInstances = 3,
             }, player.Center);
             player.CWR()?.GetScreenShake(9f);
-            OniRainWorldState.EnterLocal(player);
+            OniRainWorldState.DescendLocal(player);
         }
 
         private static void Finish() {

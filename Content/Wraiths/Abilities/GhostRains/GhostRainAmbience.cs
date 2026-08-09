@@ -78,6 +78,15 @@ namespace CalamityOverhaul.Content.Wraiths.Abilities.GhostRains
             Color rainBg = new(34, 42, 48);
             tileColor = Color.Lerp(tileColor, rainTile, veil * 0.55f);
             backgroundColor = Color.Lerp(backgroundColor, rainBg, veil * 0.62f);
+
+            //鬼雨世界深层的附加压顶：只随嵌套深度走，役鬼鬼雨不受影响
+            float depth = Scenarios.OniRainWorlds.OniRainWorldState.DepthGrade;
+            if (depth > 0.001f) {
+                Color deepTile = new(30, 38, 44);
+                Color deepBg = new(18, 24, 30);
+                tileColor = Color.Lerp(tileColor, deepTile, depth * 0.45f);
+                backgroundColor = Color.Lerp(backgroundColor, deepBg, depth * 0.5f);
+            }
         }
     }
 

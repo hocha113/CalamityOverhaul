@@ -17,6 +17,7 @@ float2 uScreenSize; //像素
 float uCamX;        //Main.screenPosition.X 像素，视差用
 float uFlash;       //0-1 雷闪包络，快起慢衰
 float uFlashSeed;   //本次雷闪随机种子：剪影位置与是否露剪影
+float uDepth;       //0-1 嵌套深度归一（第一层 0 最深层 1）：溺月下沉/天穹压暗/远山渐没
 
 //====== 湿墨调色板 ======
 static const float3 SKY_TOP = float3(0.026, 0.032, 0.040);      //头顶近黑沉云顶
@@ -83,19 +84,23 @@ float4 PSSky(float2 coords : TEXCOORD0) : COLOR0 {
     float2 uv = coords;
     float aspect = uScreenSize.x / uScreenSize.y;
 
-    //====== 压顶天穹：倒置明度，头顶最黑、地平雾光反亮 ======
+    //====== 压顶天穹：倒置明度，头顶最黑、地平雾光反亮；越深天越沉 ======
     float grad = pow(smoothstep(0.0, 0.92, uv.y), 1.35);
     float wash = fbm2(uv * float2(1.5 * aspect, 1.5) + float2(uTime * 0.004, 0.0));
-    float3 col = lerp(SKY_TOP, SKY_HORIZON, grad) * (0.90 + wash * 0.20);
+    float3 skyTop = SKY_TOP * (1.0 - uDepth * 0.55);
+    float3 skyHor = SKY_HORIZON * (1.0 - uDepth * 0.38);
+    float3 col = lerp(skyTop, skyHor, grad) * (0.90 + wash * 0.20);
 
     //====== 溺月：被雨晕开的惨白光斑，慢呼吸；画在云前，云过即吞 ======
-    float2 moonC = float2(0.63 - uCamX * 0.000012, 0.27);
+    //逐层下沉——第一层挂天上，第二层贴向水面，最深层半沉进地平积水，
+    //越沉晕越大越糊：月位即层数
+    float2 moonC = float2(0.63 - uCamX * 0.000012, 0.27 + uDepth * 0.58);
     float2 dm = (uv - moonC) * float2(aspect, 1.0);
     float mr = length(dm);
     float breathe = 0.72 + 0.28 * sin(uTime * 0.06);
-    float halo = exp(-pow(mr / 0.17, 1.6));
-    float core = exp(-pow(mr / 0.05, 2.0));
-    col += MOON_PALE * (halo * 0.22 + core * 0.55) * breathe;
+    float halo = exp(-pow(mr / (0.17 + uDepth * 0.12), 1.6));
+    float core = exp(-pow(mr / (0.05 + uDepth * 0.045), 2.0));
+    col += MOON_PALE * (halo * (0.22 + uDepth * 0.10) + core * 0.55) * breathe;
 
     //====== 沉云两层：大团慢漂压顶 + 低掠碎云 ======
     float2 cuv1 = float2(uv.x * 1.5 + uCamX * 0.022 / uScreenSize.x + uTime * 0.0022,
@@ -116,24 +121,26 @@ float4 PSSky(float2 coords : TEXCOORD0) : COLOR0 {
     float shaftEnv = smoothstep(0.20, 0.50, uv.y) * (1.0 - smoothstep(0.78, 0.96, uv.y));
     float shafts = shaftBand(uv, 0.05, 1.7, 0.005, 0.13) * 0.6
         + shaftBand(uv, 0.09, 2.6, 0.009, 0.53) * 0.4;
-    col = lerp(col, SHAFT_PALE, shafts * shaftEnv * 0.30);
+    //越深雨幡越密
+    col = lerp(col, SHAFT_PALE, shafts * shaftEnv * (0.30 + uDepth * 0.12));
     //幡内细密下落雨纹
     float fall = noiseTex(float2(uv.x * 4.6 + uv.y * 0.8, uv.y * 0.38 - uTime * 0.5));
     col += SHAFT_PALE * saturate((fall - 0.62) * 5.0) * shafts * shaftEnv * 0.14;
 
-    //====== 低平远山两层：被雨压平的世界 ======
+    //====== 低平远山两层：被雨压平的世界；越深山越低越平，渐没进水里 ======
     float u1 = uv.x + uCamX * 0.040 / uScreenSize.x;
-    float y1 = ridgeY(u1, 4.3, 1.30, 0.045, 0.775);
+    float y1 = ridgeY(u1, 4.3, 1.30, 0.045 * (1.0 - uDepth * 0.5), 0.775 + uDepth * 0.10);
     float m1 = smoothstep(y1 - 0.004, y1 + 0.004, uv.y);
     col = lerp(col, RIDGE_FAR, m1);
 
     float u2 = uv.x + uCamX * 0.100 / uScreenSize.x;
-    float y2 = ridgeY(u2, 9.1, 0.90, 0.060, 0.855);
+    float y2 = ridgeY(u2, 9.1, 0.90, 0.060 * (1.0 - uDepth * 0.5), 0.855 + uDepth * 0.075);
     float m2 = smoothstep(y2 - 0.005, y2 + 0.005, uv.y);
     col = lerp(col, RIDGE_NEAR, m2);
 
     //====== 地平积水：山脚泡进一线反光的死水，呼应入场涨水 ======
-    float wl = 0.925;
+    //积水随深度漫上来，最深层近山几乎没顶、只剩水原
+    float wl = 0.925 - uDepth * 0.045;
     float waterBand = smoothstep(wl - 0.004, wl + 0.010, uv.y);
     float shine = noiseTex(float2(uv.x * 2.6 + uTime * 0.008, 0.71));
     float3 waterCol = RIDGE_NEAR * 0.7 + WATER_SHINE * (0.30 + 0.28 * shine);
@@ -147,8 +154,8 @@ float4 PSSky(float2 coords : TEXCOORD0) : COLOR0 {
     //水面反照一线
     col += FLASH_PALE * flashQ * waterBand * 0.10;
 
-    //极稀有：闪光最亮的一瞬，云中露出巨大伞形剪影
-    float silGate = step(0.72, uFlashSeed) * saturate((uFlash - 0.70) / 0.30);
+    //极稀有：闪光最亮的一瞬，云中露出巨大伞形剪影；越深越常见
+    float silGate = step(0.72 - uDepth * 0.25, uFlashSeed) * saturate((uFlash - 0.70) / 0.30);
     float2 silC = float2(0.25 + frac(uFlashSeed * 7.31) * 0.50, 0.32);
     float2 sp = (uv - silC) * float2(aspect, -1.0) / 0.13;
     col = lerp(col, CLOUD_DARK * 0.6, umbrellaSil(sp) * silGate * 0.85);

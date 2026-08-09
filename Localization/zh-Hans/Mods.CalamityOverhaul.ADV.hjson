@@ -1014,3 +1014,4 @@ EternalBlazingNowNoHelen: {
 }
 
 OniRainWorld.OniRainWorldSystem.InteractHint: "[右键] 撑伞入雨"
+OniRainWorld.OniRainWorldSystem.DescendHint: "[右键] 撑伞入深雨"

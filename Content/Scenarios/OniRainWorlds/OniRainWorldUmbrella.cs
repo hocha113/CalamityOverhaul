@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
     /// <summary>
     /// 插在地上的鬼雨伞，锚点=<see cref="Actor.Position"/>地表中心<br/>
     /// 靠近右键触发入雨演出（<see cref="OniRainWorldTransition"/> + <see cref="OniRainWorldCutscene"/>），交互纯本地。<br/>
+    /// 雨世界里这把伞还在原地——再撑一次即深潜一层（<see cref="OniRainDescentTransition"/> +
+    /// <see cref="OniRainDescentCutscene"/>），直到最深层。<br/>
     /// 贴图暂用原版雨伞占位，待专属美术替换。
     /// </summary>
     internal class OniRainWorldUmbrella : Actor
@@ -63,10 +65,14 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             UpdateInteraction();
         }
 
+        /// <summary>演出躁动包络：入雨与深潜谁在演出谁说了算</summary>
+        private static float CurrentAgitation => MathF.Max(
+            OniRainWorldTransition.Active ? OniRainWorldTransition.UmbrellaAgitation : 0f,
+            OniRainDescentTransition.Active ? OniRainDescentTransition.UmbrellaAgitation : 0f);
+
         //伞下漏雨与潮气，暗示伞底下藏着另一场雨；演出期间随躁动加密
         private void UpdateAmbience() {
-            float agitation = OniRainWorldTransition.Active
-                ? OniRainWorldTransition.UmbrellaAgitation : 0f;
+            float agitation = CurrentAgitation;
             int interval = Math.Max(8, 42 - (int)((agitation + KickAmount) * 30f));
 
             dripTimer++;
@@ -92,9 +98,13 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 
         private void UpdateInteraction() {
             Player player = Main.LocalPlayer;
+            //雨世界外撑伞入雨；雨世界内且未达最深层，再撑一次深潜一层
+            bool depthOpen = !OniRainWorldState.LocalIn
+                || OniRainWorldState.LocalDepth < OniRainWorldState.MaxDepth;
             bool eligible = player != null && player.Alives()
-                && !OniRainWorldState.LocalIn
+                && depthOpen
                 && !OniRainWorldTransition.Active
+                && !OniRainDescentTransition.Active
                 && !CutsceneDirector.IsPlaying;
             bool near = eligible && player.Center.Distance(CanopyAnchor) < InteractDistance;
 
@@ -143,9 +153,15 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                     ?.Configure(Main.rand.Next(70, 110));
             }
 
-            OniRainWorldTransition.Begin(player, Position);
             //运镜失败不致命，演出照走
-            CutsceneDirector.Play<OniRainWorldCutscene>(player);
+            if (OniRainWorldState.LocalIn) {
+                OniRainDescentTransition.Begin(player, Position);
+                CutsceneDirector.Play<OniRainDescentCutscene>(player);
+            }
+            else {
+                OniRainWorldTransition.Begin(player, Position);
+                CutsceneDirector.Play<OniRainWorldCutscene>(player);
+            }
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, ref Color drawColor) {
@@ -153,8 +169,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             Texture2D umbrella = TextureAssets.Item[ItemID.Umbrella].Value;
 
             //演出期伞体颤抖：压镜段起颤、浮现段拉满，触发瞬间猛地一颤
-            float agitation = OniRainWorldTransition.Active
-                ? OniRainWorldTransition.UmbrellaAgitation : 0f;
+            float agitation = CurrentAgitation;
             float shiver = (agitation * 0.05f + KickAmount * 0.09f)
                 * MathF.Sin(Main.GlobalTimeWrappedHourly * 46f);
             float rotation = -0.13f + MathF.Sin(swayTimer) * 0.03f + shiver;
@@ -193,7 +208,10 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
 
             Vector2 textPos = CanopyAnchor - Main.screenPosition + new Vector2(0f, -64f);
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            string hint = OniRainWorldSystem.InteractHint.Value;
+            //雨世界内提示换成深潜口径
+            string hint = OniRainWorldState.LocalIn
+                ? OniRainWorldSystem.DescendHint.Value
+                : OniRainWorldSystem.InteractHint.Value;
             Vector2 textSize = font.MeasureString(hint) * 0.9f;
 
             Texture2D glow = CWRAsset.SoftGlow.Value;
