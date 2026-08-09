@@ -1,10 +1,9 @@
-﻿using CalamityOverhaul.Content.Items.Melee.DawnshatterAzures;
-using Terraria;
+﻿using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Melee
+namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
 {
     /// 苍穹破晓,五拍连段长枪,右键举枪突进;连段状态住在 DawnshatterHeld,物品只做路由
     internal class DawnshatterAzure : ModItem

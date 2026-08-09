@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
