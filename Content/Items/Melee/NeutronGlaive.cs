@@ -533,7 +533,11 @@ namespace CalamityOverhaul.Content.Items.Melee
                         SoundEngine.PlaySound(style, Owner.Center);
                     }
                 }
-                if (!waveFired) {
+                //剑气等刀锋真正扫过瞄准线（uc=0.5）那一刻才脱手。
+                //压在爆发首帧是错的：那一帧 sweepUc 还等于蓄势位，刃尖偏出瞄准线
+                //几十度甚至甩到身后，发射方向会跟着拍号和挥动方向乱跳。
+                //高攻速下一帧可能跨完整段爆发，用爆发末帧兜底保证不漏发
+                if (!waveFired && (sweepUc >= 0.5f || elapsed >= beat.BurstStop)) {
                     waveFired = true;
                     FireGravityWave();
                 }
@@ -603,7 +607,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         /// <summary>
-        /// 引力波剑气沿这一刀的实际刀锋甩出去。<br/>
+        /// 引力波剑气沿出手时锁定的瞄准方向甩出去。<br/>
+        /// 方向取 <see cref="aimAngle"/> 而不是当帧刀角：刀角在整段挥砍里横扫上百度，
+        /// 拿它当发射方向等于让剑气朝哪飞取决于发射时机，玩家没法瞄。
+        /// 在 uc=0.5 脱手时刀锋恰好压在瞄准线上，两者本就重合。<br/>
         /// 用横宽月牙而非直线飞弹：直线弹要靠高攻速刷出数量才好看，
         /// 而这套挥砍是重型节奏，一刀就得给出一记看得见的波
         /// </summary>
@@ -611,7 +618,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
-            Vector2 dir = currentRotation.ToRotationVector2();
+            Vector2 dir = aimAngle.ToRotationVector2();
             Vector2 spawnPos = Owner.GetPlayerStabilityCenter() + (dir * bladeReachNow * 0.72f);
             Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), spawnPos
                 , dir * (IsFinisher ? 17f : 15f)
@@ -666,7 +673,9 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void OnKill(int timeLeft) => ReleaseBodyLean();
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            modifiers.HitDirectionOverride = currentRotation.ToRotationVector2().X > 0 ? 1 : -1;
+            //击退跟出手时锁定的朝向，不跟当帧刀角：伤害窗在爆发前一帧就开，
+            //那时刀还在蓄势位，读刀角会把敌人朝玩家瞄准的反方向推
+            modifiers.HitDirectionOverride = lockedDirection;
             if (target.IsWormBody()) {
                 modifiers.FinalDamage *= 0.425f;
             }

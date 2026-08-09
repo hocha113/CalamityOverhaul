@@ -138,49 +138,4 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         }
     }
 
-    /// <summary>焰屑烟,余烬冷却的去处,AlphaBlend 暗色团,上升膨胀消散</summary>
-    internal class PRT_DawnSoot : BasePRT
-    {
-        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
-        public override bool CanPool => true;
-
-        private static readonly Color SootDark = new(46, 30, 26);
-
-        private int frameIdx;
-        private float spin;
-
-        public override void Reset() {
-            base.Reset();
-            frameIdx = 0;
-            spin = 0f;
-        }
-
-        public override void SetProperty() {
-            PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
-            frameIdx = Main.rand.Next(4);
-            spin = Main.rand.NextFloat(-0.03f, 0.03f);
-            if (Lifetime <= 0) {
-                Lifetime = Main.rand.Next(26, 44);
-            }
-        }
-
-        public override void AI() {
-            Velocity *= 0.93f;
-            Velocity.Y -= 0.028f;
-            Rotation += spin;
-            Scale += 0.014f;
-            float lc = LifetimeCompletion;
-            Opacity = MathF.Min(lc * 5f, 1f) * (1f - lc) * 0.62f;
-        }
-
-        public override bool PreDraw(SpriteBatch spriteBatch) {
-            Texture2D tex = TexValue;
-            //2×2 序列帧,帧边长按贴图实际尺寸推导
-            int fs = tex.Width / 2;
-            var frame = new Rectangle(frameIdx % 2 * fs, frameIdx / 2 * fs, fs, fs);
-            spriteBatch.Draw(tex, Position - Main.screenPosition, frame, SootDark * Opacity
-                , Rotation, frame.Size() * 0.5f, Scale * 0.6f, SpriteEffects.None, 0f);
-            return false;
-        }
-    }
 }

@@ -277,10 +277,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
                         , dashDir.RotatedByRandom(0.8f) * Main.rand.NextFloat(3f, 10f)
                         , default, Main.rand.NextFloat(1f, 1.6f)).Configure(Main.rand.Next(18, 30));
                 }
-                for (int i = 0; i < 3; i++) {
-                    PRTLoader.NewParticle<PRT_DawnSoot>(tip + Main.rand.NextVector2Circular(26f, 26f)
-                        , new Vector2(0f, -Main.rand.NextFloat(0.6f, 1.4f)), default, Main.rand.NextFloat(0.8f, 1.2f));
-                }
             }
         }
 
@@ -298,14 +294,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             //滑步衰减 3t 后不再写速度,操控交还玩家
             if (phaseTimer < 3 && Projectile.IsOwnedByLocalPlayer()) {
                 Owner.velocity *= 0.5f;
-            }
-
-            //火线冷却成烟
-            if (!VaultUtils.isServer && trailFade > 0.12f && Main.rand.NextBool(3)) {
-                float traveled = Vector2.Distance(dashStart, Owner.Center);
-                Vector2 pos = dashStart + dashDir * Main.rand.NextFloat(0f, traveled + 120f);
-                PRTLoader.NewParticle<PRT_DawnSoot>(pos, new Vector2(0f, -Main.rand.NextFloat(0.4f, 1f))
-                    , default, Main.rand.NextFloat(0.7f, 1.1f));
             }
 
             if (phaseTimer >= StopTicks) {
@@ -382,19 +370,19 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         public override bool PreDraw(ref Color lightColor) {
             Texture2D tex = TextureValue;
             Rectangle rect = tex.GetRectangle(Projectile.frame, FrameCount);
-            Vector2 origin = rect.Size() / 2f;
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
             int dir = Owner.direction;
-            float drawRot = dashDir.ToRotation() + (dir > 0 ? MathHelper.PiOver4 : MathHelper.PiOver4 * 3f);
-            SpriteEffects effects = dir > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            //蓄力期枪略收,冲刺期全伸,枪根锚手后方
+            float reach = phase == DashPhase.Charging
+                ? MathHelper.Lerp(180f, 230f, chargeProgress) : DashReach;
+            Vector2 spearVec = dashDir * reach;
 
-            //冲刺残影
+            //冲刺残影,沿轨迹向后铺
             if (phase == DashPhase.Dashing) {
                 for (int i = 1; i <= 3; i++) {
                     Color ghost = new Color(255, 176, 64) * (0.3f * (1f - i / 4f));
                     ghost.A = 0;
-                    Main.EntitySpriteDraw(tex, drawPos - dashDir * (i * 26f), rect, ghost
-                        , drawRot, origin, 0.7f, effects, 0);
+                    DawnshatterRenderer.DrawSpearQuad(tex, rect, hand - dashDir * (i * 30f), spearVec, dir, ghost);
                 }
             }
 
@@ -402,11 +390,10 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             if (heat > 0.1f) {
                 Color glow = new Color(255, 168, 60) * (heat * 0.55f);
                 glow.A = 0;
-                Main.EntitySpriteDraw(tex, drawPos, rect, glow, drawRot, origin, 0.74f, effects, 0);
+                DawnshatterRenderer.DrawSpearQuad(tex, rect, hand, spearVec * 1.03f, dir, glow);
             }
 
-            Main.EntitySpriteDraw(tex, drawPos, rect, Projectile.GetAlpha(lightColor)
-                , drawRot, origin, 0.7f, effects, 0);
+            DawnshatterRenderer.DrawSpearQuad(tex, rect, hand, spearVec, dir, Projectile.GetAlpha(lightColor));
             return false;
         }
 

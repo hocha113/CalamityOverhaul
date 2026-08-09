@@ -19,17 +19,51 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         /// 焦暗衬带沿挥向滞后
         private const float BackLag = 7f;
         private const int SpindleSamples = 16;
+        /// 枪身视觉长度区间,与刺距解耦:枪本身几乎不变形,伸缩靠枪在手中前后滑动表达
+        private const float SpearVisualMin = 265f;
+        private const float SpearVisualMax = 330f;
+        /// 枪尾允许越到手前方的上限,超出即接长,防脱手
+        private const float SpearRootAhead = 10f;
 
-        /// <summary>梭形半条带,perpSign=±1 上下两半,外缘=uv.y0,双端收尖</summary>
+        /// <summary>枪身视觉长度,随刺距轻微增长但强钳制</summary>
+        internal static float SpearVisualLength(float reach)
+            => MathF.Max(MathHelper.Clamp(reach * 0.35f + 215f, SpearVisualMin, SpearVisualMax)
+                , reach - SpearRootAhead);
+
+        /// <summary>
+        /// 枪身四边形拉伸绘制,Everglow DrawVertexByTwoLine 的等价形式<br/>
+        /// 枪尖钉在 mainVec 末端、枪身向后延伸固定视觉长度:刺出时枪在手中前滑而不是整根变大<br/>
+        /// 正方形帧下等价于"枪尾角为原点+对角线缩放"的旋转精灵绘制,朝左时镜像取右下角为尾
+        /// </summary>
+        internal static void DrawSpearQuad(Texture2D tex, Rectangle frame, Vector2 hand
+            , Vector2 mainVec, int dir, Color color, float depthScale = 1f) {
+            float len = mainVec.Length();
+            if (len < 8f) {
+                return;
+            }
+            Vector2 unit = mainVec / len;
+            float diag = MathF.Sqrt(frame.Width * frame.Width + frame.Height * frame.Height);
+            //轴向长度呼吸是最强的立体线索,但只许 ±12%,超过就成了橡皮枪
+            float visLen = SpearVisualLength(len) * MathHelper.Clamp(depthScale, 0.88f, 1.12f);
+            float scale = visLen / diag;
+            Vector2 rootPos = hand + mainVec - unit * visLen;
+            float rotation = mainVec.ToRotation() + (dir > 0 ? MathHelper.PiOver4 : MathHelper.PiOver4 * 3f);
+            Vector2 origin = dir > 0 ? new Vector2(0f, frame.Height) : new Vector2(frame.Width, frame.Height);
+            SpriteEffects fx = dir > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            Main.EntitySpriteDraw(tex, rootPos - Main.screenPosition, frame, color, rotation, origin, scale, fx, 0);
+        }
+
+        /// <summary>梭形半条带,perpSign=±1 上下两半,外缘=uv.y0,双端收尖;采样数随长度,长条带端头不出刻面</summary>
         private static VertexPositionColorTexture[] BuildSpindleHalf(Vector2 hand, Vector2 unit
             , float rear, float tip, float halfWidth, float perpSign
             , float heat, float opacity, float layerB, float lag) {
-            var verts = new VertexPositionColorTexture[SpindleSamples * 2];
+            int samples = Math.Clamp((int)((tip - rear) / 34f), SpindleSamples, 44);
+            var verts = new VertexPositionColorTexture[samples * 2];
             Vector2 perp = unit.RotatedBy(MathHelper.PiOver2) * perpSign;
             Vector2 lagOff = unit * -lag;
             var pack = new Color(0.5f, heat, layerB, opacity);
-            for (int i = 0; i < SpindleSamples; i++) {
-                float u = i / (SpindleSamples - 1f);
+            for (int i = 0; i < samples; i++) {
+                float u = i / (samples - 1f);
                 float dist = MathHelper.Lerp(rear, tip, u);
                 //梭形包络,峰值偏头端
                 float w = MathF.Pow(MathF.Sin(MathF.Pow(u, 0.85f) * MathHelper.Pi), 0.75f) * halfWidth;

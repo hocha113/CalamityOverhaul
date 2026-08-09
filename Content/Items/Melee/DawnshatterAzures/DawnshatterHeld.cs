@@ -32,6 +32,9 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         private const float RestTip = 150f;
         /// 透视参考距离,镜像 CrimsonSlashRenderer.ViewZ 量级
         private const float ViewZ = 900f;
+        /// 贯穿突刺首拍步长(px/tick)与逐拍衰减,十三拍合计约 800px
+        private const float LungeSpeed = 107f;
+        private const float LungeDecay = 0.90f;
 
         /// 拍定义,时长单位 tick(逻辑帧,乘时间膨胀前)
         private struct BeatDef
@@ -73,10 +76,15 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         private float dmgFrom = -1f;
         private float dmgTo = -1f;
         private bool burstSoundPlayed;
-        private bool pulse2Started;
+        /// 上一拍收笔姿态,前摇期从它插值过来,拍间无瞬移
+        private Vector2 handoffVec;
+        /// B2 突进起点(世界坐标),火线锚定在轨迹上
+        private Vector2 lungeAnchor;
+        /// B2 撞墙截断,本帧结算后跳到收势
+        private bool lungeWallCut;
 
         //==== 残影环 ====
-        private const int GhostMax = 4;
+        private const int GhostMax = 7;
         private readonly Vector2[] ghostVecs = new Vector2[GhostMax];
         private int ghostCount;
 
@@ -93,12 +101,11 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         private float maxTip;
         private readonly List<VertexPositionColorTexture[]> stripSink = [];
 
-        //==== 弧带采样环,头在 index0 ====
-        private const int ArcSampleMax = 90;
-        private const float ArcSampleSpacing = 15f;
+        //==== 弧带采样,绘制时按弧长解析重建,头在 index0 ====
+        private const int ArcSampleMax = 160;
+        /// 采样间距(px),角速度再快也按这个密度补点
+        private const float ArcSampleSpacing = 16f;
         private readonly List<DawnshatterRenderer.ArcSample> arcSamples = [];
-        /// 上次采样的 φ,只在推进方向取样,过冲回坐不产生锯齿
-        private float lastSweepPhi = float.NaN;
         private bool endPopFired;
         /// 终结拍旋转中的分段呼啸,已播到第几声
         private int spinWhooshStage;
@@ -130,26 +137,26 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             0 => new BeatDef {
                 Kind = 0, Windup = 3f, Active = 7f, Recover = 9f, DamageMul = 1f,
             },
-            //B1 上撩挑斩,倾角在挥动中扫过(轴向前缩线索)
+            //B1 升龙撩,倾角在挥动中扫过(轴向前缩线索),随撩升空
             1 => new BeatDef {
                 Kind = 1, Windup = 8f, Active = 13f, Recover = 11f, DamageMul = 1.05f,
-                Radius0 = 175f, Radius1 = 205f, ArcStart = 1.15f, ArcEnd = -1.25f,
+                Radius0 = 250f, Radius1 = 290f, ArcStart = 1.55f, ArcEnd = -1.60f,
                 Tilt0 = 1.0f, Tilt1 = 0.3f, Roll = 0.15f,
             },
-            //B2 二连刺,拍内双相位+前倾微冲步
+            //B2 贯穿突刺,位置步进 ~800px,人枪弹性
             2 => new BeatDef {
-                Kind = 2, Windup = 6f, Active = 16f, Recover = 10f, DamageMul = 0.9f,
+                Kind = 2, Windup = 6f, Active = 13f, Recover = 8f, DamageMul = 1.1f,
             },
-            //B3 横扫回旋,贯穿平面,收-爆:缓推三成后一口气抽完
+            //B3 横扫回旋,贯穿平面,收-爆:缓推三成后一口气抽完,爆发帧小跳
             3 => new BeatDef {
                 Kind = 1, Windup = 8f, Active = 16f, Recover = 8f, DamageMul = 1.15f,
-                Radius0 = 175f, Radius1 = 205f, ArcStart = -2.3f, ArcEnd = 2.3f,
+                Radius0 = 280f, Radius1 = 310f, ArcStart = -2.3f, ArcEnd = 2.3f,
                 Tilt0 = 0.55f, Tilt1 = 0.55f, Roll = -0.2f,
             },
-            //B4 日冕终结,加速回旋1.5圈,半径长出
+            //B4 日冕终结,悬空加速回旋1.5圈,半径长出
             _ => new BeatDef {
                 Kind = 1, Windup = 10f, Active = 17f, Recover = 12f, DamageMul = 1.6f,
-                Radius0 = 190f, Radius1 = 260f, ArcStart = -0.6f, ArcEnd = -0.6f + MathHelper.Pi * 3f,
+                Radius0 = 300f, Radius1 = 360f, ArcStart = -0.6f, ArcEnd = -0.6f + MathHelper.Pi * 3f,
                 Tilt0 = 0.45f, Tilt1 = 0.45f, Roll = -0.2f,
             },
         };
@@ -173,16 +180,24 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             return v >= 1f ? 1f : 1f - MathF.Pow(2f, -10f * v);
         }
 
-        /// 收-爆-停挥砍进度,creep 缓推→爆发过冲→回坐
-        private static float SwingCurve(float t, float creepEnd, float burstEnd, float creepAmt, float overshoot) {
+        /// <summary>
+        /// 收-爆-停挥砍进度:近静止蓄势 → 2~3 帧前置爆发并过冲 → 冻结静止谷 → 末段回坐<br/>
+        /// 爆发段用 1−(1−x)³ 而非 SmoothStep,出生即全速;静止谷是衬托爆发的那段"真的不动"
+        /// </summary>
+        private static float SwingCurve(float t, float creepEnd, float burstEnd, float holdEnd
+            , float creepAmt, float overshoot) {
             t = MathHelper.Clamp(t, 0f, 1f);
             if (t < creepEnd) {
                 return creepAmt * SmoothStep01(t / creepEnd);
             }
             if (t < burstEnd) {
-                return MathHelper.Lerp(creepAmt, 1f + overshoot, SmoothStep01((t - creepEnd) / (burstEnd - creepEnd)));
+                float b = (t - creepEnd) / (burstEnd - creepEnd);
+                return MathHelper.Lerp(creepAmt, 1f + overshoot, 1f - MathF.Pow(1f - b, 3f));
             }
-            return MathHelper.Lerp(1f + overshoot, 1f, SmoothStep01((t - burstEnd) / (1f - burstEnd)));
+            if (t < holdEnd) {
+                return 1f + overshoot;
+            }
+            return MathHelper.Lerp(1f + overshoot, 1f, SmoothStep01((t - holdEnd) / (1f - holdEnd)));
         }
 
         //==== 三维运动求值 ====
@@ -209,10 +224,12 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             }
             if (t < d.Windup + d.Active) {
                 float p = beat switch {
-                    1 => SwingCurve(activeT, 0.28f, 0.66f, 0.05f, 0.04f),
-                    //B3 收-爆:缓推压到 8%,爆发段一口气抽完(速度是对比不是连续加速)
-                    3 => SwingCurve(activeT, 0.30f, 0.72f, 0.08f, 0.03f),
-                    _ => activeT * activeT,                  //B4 加速回旋
+                    //蓄势 5.5t → 爆发 2.6t 抽完 → 静止谷 2.3t → 回坐
+                    1 => SwingCurve(activeT, 0.42f, 0.62f, 0.80f, 0.05f, 0.10f),
+                    //蓄势 6.4t → 爆发 3.2t → 静止谷 2.9t(速度是对比,不是连续加速)
+                    3 => SwingCurve(activeT, 0.40f, 0.60f, 0.78f, 0.08f, 0.09f),
+                    //B4 越转越快的回旋,末段最疾
+                    _ => MathF.Pow(activeT, 2.2f),
                 };
                 return MathHelper.Lerp(d.ArcStart, d.ArcEnd, p);
             }
@@ -248,39 +265,30 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
                     return MathHelper.Lerp(RestTip, RestTip - 26f, EaseOutCubic(t / d.Windup));
                 }
                 if (t < d.Windup + d.Active) {
-                    return MathHelper.Lerp(RestTip - 26f, 320f, EaseOutExpo((t - d.Windup) / d.Active));
+                    return MathHelper.Lerp(RestTip - 26f, 305f, EaseOutExpo((t - d.Windup) / d.Active));
                 }
-                return MathHelper.Lerp(320f, RestTip, SmoothStep01((t - d.Windup - d.Active) / d.Recover));
+                return MathHelper.Lerp(305f, RestTip, SmoothStep01((t - d.Windup - d.Active) / d.Recover));
             }
-            //B2 双相位:短刺→回坐→长刺
-            if (t < 6f) {
-                return MathHelper.Lerp(RestTip, 118f, EaseOutCubic(t / 6f));
+            //B2 贯穿突刺:收枪→爆伸并随突进继续前探(人枪弹性)→缓收
+            if (t < d.Windup) {
+                return MathHelper.Lerp(RestTip, 130f, EaseOutCubic(t / d.Windup));
             }
-            if (t < 11f) {
-                return MathHelper.Lerp(118f, 300f, EaseOutExpo((t - 6f) / 5f));
+            if (t < d.Windup + d.Active) {
+                return MathHelper.Lerp(130f, 305f, EaseOutExpo((t - d.Windup) / d.Active));
             }
-            if (t < 15f) {
-                return MathHelper.Lerp(300f, 218f, SmoothStep01((t - 11f) / 4f));
-            }
-            if (t < 22f) {
-                return MathHelper.Lerp(218f, 360f, EaseOutExpo((t - 15f) / 7f));
-            }
-            return MathHelper.Lerp(360f, RestTip, SmoothStep01((t - 22f) / 10f));
+            return MathHelper.Lerp(305f, RestTip, SmoothStep01((t - d.Windup - d.Active) / d.Recover));
         }
 
-        /// <summary>拍的伤害窗(拍内时刻);B2 有两段,w2 无效时 x>y</summary>
-        private static void GetDamageWindows(int beat, in BeatDef d, out Vector2 w1, out Vector2 w2) {
-            w2 = new Vector2(1f, 0f);
+        /// <summary>拍的伤害窗(拍内时刻)</summary>
+        private static void GetDamageWindows(int beat, in BeatDef d, out Vector2 w1) {
             switch (beat) {
                 case 0:
+                case 2:
                     w1 = new Vector2(d.Windup, d.Windup + d.Active);
                     break;
-                case 2:
-                    w1 = new Vector2(6f, 11f);
-                    w2 = new Vector2(15f, 22f);
-                    break;
                 default:
-                    w1 = new Vector2(d.Windup, d.Windup + d.Active * 0.92f);
+                    //扫击判定对齐爆发+静止谷,不在近静止的蓄势段出伤(命中要与看得见的爆发同步)
+                    w1 = new Vector2(d.Windup + d.Active * 0.30f, d.Windup + d.Active * 0.90f);
                     break;
             }
         }
@@ -296,6 +304,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             beatIndex = index;
             elapsed = 0f;
             queuedNext = false;
+            //先取向再重置,首拍 handoffVec 才有正确的瞄准角可用
+            CaptureAim();
             ResetBeatPresentation(index);
 
             speedMul = Owner.GetWeaponAttackSpeed(Item);
@@ -306,7 +316,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             Projectile.damage = (int)(baseDamage * GetBeat(index).DamageMul);
             //一拍一敌一伤,拍首清免疫表
             ResetLocalImmunity();
-            CaptureAim();
             if (!first) {
                 Projectile.netUpdate = true;
             }
@@ -316,18 +325,22 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         private void ResetBeatPresentation(int index) {
             retractTimer = 0f;
             burstSoundPlayed = false;
-            pulse2Started = false;
+            lungeWallCut = false;
             aimFrozen = false;
             ghostCount = 0;
             spinWhooshStage = 0;
 
+            //拍间交接:记住上一拍收笔姿态
+            handoffVec = mainVec == Vector2.Zero
+                ? aimAngle.ToRotationVector2() * RestTip : mainVec;
+            lungeAnchor = Owner.GetPlayerStabilityCenter();
+
             //拍首清尾+火焰状态回落
             trailFade = 0f;
             heat *= 0.3f;
-            pulseRear = index == 0 ? RestTip - 26f : 118f;
+            pulseRear = index == 0 ? RestTip - 26f : 130f;
             maxTip = pulseRear;
             arcSamples.Clear();
-            lastSweepPhi = float.NaN;
             endPopFired = false;
         }
 
@@ -442,20 +455,28 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
 
             ConsumeWindows(in d, from, to);
 
-            PushGhost(mainVec);
+            Vector2 prevVec = mainVec;
             mainVec = MotionAt(beatIndex, to, out depthZ);
+            //拍间交接:前摇期从上一拍收笔姿态插值过来,姿态连续无瞬移
+            if (to < d.Windup) {
+                mainVec = Vector2.Lerp(handoffVec, mainVec, EaseOutCubic(to / d.Windup));
+            }
+            PushGhostTrail(prevVec, mainVec);
 
+            ApplyDisplacement(in d, from, to);
             UpdateFireState(in d, to);
             SpawnBladeFire(in d);
-            if (d.Kind == 1) {
-                SampleArc(in d, from, to);
-            }
 
             UpdatePlayerPose();
             Lighting.AddLight(Owner.GetPlayerStabilityCenter() + mainVec * 0.75f
                 , new Vector3(1.15f, 0.72f, 0.28f) * 0.7f);
 
             elapsed = to;
+            //撞墙截断:突进被墙终止,跳到收势
+            if (lungeWallCut) {
+                lungeWallCut = false;
+                elapsed = MathF.Max(elapsed, d.Windup + d.Active);
+            }
 
             //取消窗:续拍锁存吃掉七成收势,连段不等收势播完;无锁存才走完整收势+退场
             float cancelAt = d.Windup + d.Active + d.Recover * 0.3f;
@@ -464,33 +485,102 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             }
         }
 
-        /// <summary>本帧区间与各窗口求交集消费:伤害窗/爆发音/双刺二段事件,高攻速跨阶段不漏</summary>
+        /// <summary>位移连招,owner 端驱动运动,远端由玩家位置同步重放</summary>
+        private void ApplyDisplacement(in BeatDef d, float from, float to) {
+            if (!Projectile.IsOwnedByLocalPlayer()) {
+                return;
+            }
+            bool inActive = to >= d.Windup && from < d.Windup + d.Active;
+            switch (beatIndex) {
+                case 1:
+                    //升龙撩:随撩升空
+                    if (inActive) {
+                        Owner.velocity.Y = -6.5f * Owner.gravDir;
+                    }
+                    break;
+                case 2:
+                    LungeStep(in d, from, to);
+                    break;
+                case 4:
+                    //悬空回旋:慢坠驻空
+                    if (inActive) {
+                        Owner.velocity.Y *= 0.4f;
+                    }
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 贯穿突刺位置步进:指数缓出,16px 子步防穿墙,无橡皮筋回传<br/>
+        /// 阻挡只看沿冲刺向的推进量——地面托住竖直分量不算撞墙(斜向下突刺曾被误判秒停)
+        /// </summary>
+        private void LungeStep(in BeatDef d, float from, float to) {
+            float u0 = MathF.Max(from - d.Windup, 0f);
+            float u1 = MathF.Min(to - d.Windup, d.Active);
+            if (u1 <= u0) {
+                return;
+            }
+            float stepLen = LungeSpeed * MathF.Pow(LungeDecay, u0) * (u1 - u0);
+            Vector2 dir = aimAngle.ToRotationVector2();
+            int subs = Math.Clamp((int)MathF.Ceiling(stepLen / 16f), 1, 16);
+            float sub = stepLen / subs;
+            for (int i = 0; i < subs; i++) {
+                Vector2 allowed = Collision.TileCollision(Owner.position, dir * sub
+                    , Owner.width, Owner.height, true, false, (int)Owner.gravDir);
+                float gain = Vector2.Dot(allowed, dir);
+                if (gain <= 0.2f) {
+                    lungeWallCut = true;
+                    flashPulse = MathF.Max(flashPulse, 0.6f);
+                    break;
+                }
+                //沿冲刺线推进,不吃地面滑移的横向漂移
+                Owner.position += dir * gain;
+            }
+            Owner.velocity = Vector2.Zero;
+            Owner.fallStart = (int)(Owner.position.Y / 16f);
+            Owner.GivePlayerImmuneState(4, false);
+
+            //末端残滑,干脆刹停后交还操控
+            if (u1 >= d.Active) {
+                Owner.velocity = dir * 4f;
+            }
+        }
+
+        /// <summary>本帧区间与各窗口求交集消费:伤害窗/爆发音/位移冲量事件,高攻速跨阶段不漏</summary>
         private void ConsumeWindows(in BeatDef d, float from, float to) {
-            GetDamageWindows(beatIndex, in d, out Vector2 w1, out Vector2 w2);
+            GetDamageWindows(beatIndex, in d, out Vector2 w1);
 
             dmgFrom = MathF.Max(from, w1.X);
             dmgTo = MathF.Min(to, w1.Y);
-            if (dmgTo <= dmgFrom && w2.X < w2.Y) {
-                dmgFrom = MathF.Max(from, w2.X);
-                dmgTo = MathF.Min(to, w2.Y);
-            }
 
-            //爆发起点:音效+点燃脉冲,每拍一次"破晓"是离散事件不是渐变
-            float burstAt = beatIndex == 2 ? 6f : d.Windup;
-            if (!burstSoundPlayed && to >= burstAt) {
+            //爆发起点:音效+点燃脉冲+一次性位移冲量,每拍一次"破晓"是离散事件不是渐变
+            if (!burstSoundPlayed && to >= d.Windup) {
                 burstSoundPlayed = true;
                 flashPulse = MathF.Max(flashPulse, 0.65f);
                 PlaySwingSound(second: false);
-            }
 
-            //B2 二段:清免疫+补第二声+点燃+前倾冲步
-            if (beatIndex == 2 && !pulse2Started && to >= 15f) {
-                pulse2Started = true;
-                ResetLocalImmunity();
-                flashPulse = MathF.Max(flashPulse, 0.5f);
-                PlaySwingSound(second: true);
+                if (beatIndex == 2) {
+                    //突进起点定桩,火线从这里长出
+                    lungeAnchor = Owner.GetPlayerStabilityCenter();
+                }
                 if (Projectile.IsOwnedByLocalPlayer()) {
-                    Owner.velocity += aimAngle.ToRotationVector2() * 5f;
+                    if (beatIndex == 0) {
+                        //起手滑步
+                        Owner.velocity += aimAngle.ToRotationVector2() * 6f;
+                    }
+                    else if (beatIndex == 3) {
+                        //爆发帧小跳,可空中接
+                        Owner.velocity.Y = -3.5f * Owner.gravDir;
+                    }
+                }
+                if (!VaultUtils.isServer && beatIndex == 1) {
+                    //踏火起跳,余烬向下喷
+                    for (int i = 0; i < 8; i++) {
+                        Vector2 vel = new Vector2(Main.rand.NextFloat(-2.5f, 2.5f)
+                            , Main.rand.NextFloat(3f, 7f) * Owner.gravDir);
+                        PRTLoader.NewParticle<PRT_DawnEmber>(Owner.Bottom + Main.rand.NextVector2Circular(10f, 4f)
+                            , vel, default, Main.rand.NextFloat(0.9f, 1.3f)).Configure(Main.rand.Next(14, 22));
+                    }
                 }
             }
 
@@ -509,12 +599,14 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
                 }
             }
 
-            //终结拍收尾爆点:过曝脉冲+余烬环+烟,震屏仅施术者本地
+            //终结拍收尾爆点:过曝脉冲+余烬环,空中收招附带下坠砸势,震屏仅施术者本地
             if (IsFinisher(beatIndex) && !endPopFired && to >= d.Windup + d.Active) {
                 endPopFired = true;
                 flashPulse = 1f;
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     Owner.CWR().ScreenShakeValue = 6f;
+                    Owner.velocity.Y = 6f * Owner.gravDir;
+                    Owner.noFallDmg = true;
                 }
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.4f, Pitch = 0.35f }, Owner.Center);
@@ -522,47 +614,47 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
                     for (int i = 0; i < 14; i++) {
                         float ang = MathHelper.TwoPi * i / 14f + Main.rand.NextFloat(0.2f);
                         Vector2 dir = ang.ToRotationVector2();
-                        PRTLoader.NewParticle<PRT_DawnEmber>(hand + dir * Main.rand.NextFloat(120f, 190f)
+                        PRTLoader.NewParticle<PRT_DawnEmber>(hand + dir * Main.rand.NextFloat(150f, 250f)
                             , dir * Main.rand.NextFloat(5f, 10f), default, Main.rand.NextFloat(1f, 1.6f))
                             .Configure(Main.rand.Next(20, 32));
-                    }
-                    for (int i = 0; i < 5; i++) {
-                        Vector2 dir = Main.rand.NextVector2Unit();
-                        PRTLoader.NewParticle<PRT_DawnSoot>(hand + dir * Main.rand.NextFloat(90f, 170f)
-                            , dir * Main.rand.NextFloat(1f, 2.5f), default, Main.rand.NextFloat(0.8f, 1.3f));
                     }
                 }
             }
         }
 
-        /// <summary>弧带取样:只在 φ 推进方向取,过冲回坐不产生锯齿;间距按枪尖弧长</summary>
-        private void SampleArc(in BeatDef d, float from, float to) {
-            if (to <= d.Windup || from >= d.Windup + d.Active) {
+        /// <summary>
+        /// 弧带绘制时按弧长解析重建:MotionAt 是纯函数,几何从函数推导而不是从帧历史累积<br/>
+        /// 角速度再快也按 16px 补点,不会退化成多边形(帧历史式采样在爆发段必然稀疏)
+        /// </summary>
+        private void BuildArcSamples(in BeatDef d) {
+            arcSamples.Clear();
+            float headT = MathF.Min(elapsed, d.Windup + d.Active);
+            float tailT = d.Windup;
+            if (headT - tailT < 0.05f) {
                 return;
             }
-            float f = MathF.Max(from, d.Windup);
-            float t = MathF.Min(to, d.Windup + d.Active);
-            float sign = MathF.Sign(d.ArcEnd - d.ArcStart);
-            int sub = Math.Clamp((int)MathF.Ceiling((t - f) * 3f), 1, 12);
-            for (int i = 1; i <= sub; i++) {
-                float ti = MathHelper.Lerp(f, t, i / (float)sub);
-                float phi = SweepPhiAt(beatIndex, in d, ti);
-                if (!float.IsNaN(lastSweepPhi) && (phi - lastSweepPhi) * sign <= 0.0005f) {
-                    continue;
-                }
-                lastSweepPhi = phi;
-                Vector2 tip = MotionAt(beatIndex, ti, out float z);
-                if (arcSamples.Count > 0 && (tip - arcSamples[0].Tip).Length() < ArcSampleSpacing) {
-                    continue;
-                }
-                arcSamples.Insert(0, new DawnshatterRenderer.ArcSample {
+
+            //粗测弧长定采样密度
+            const int probe = 12;
+            float arcLen = 0f;
+            Vector2 prev = MotionAt(beatIndex, tailT, out _);
+            for (int i = 1; i <= probe; i++) {
+                Vector2 p = MotionAt(beatIndex, MathHelper.Lerp(tailT, headT, i / (float)probe), out _);
+                arcLen += (p - prev).Length();
+                prev = p;
+            }
+
+            int count = Math.Clamp((int)MathF.Ceiling(arcLen / ArcSampleSpacing), 8, ArcSampleMax);
+            float headHeat = MathF.Max(heat, 0.3f);
+            for (int i = 0; i < count; i++) {
+                float u = i / (count - 1f);
+                Vector2 tip = MotionAt(beatIndex, MathHelper.Lerp(headT, tailT, u), out float z);
+                arcSamples.Add(new DawnshatterRenderer.ArcSample {
                     Tip = tip,
                     Z = 0.5f + MathHelper.Clamp(z / 220f, -0.5f, 0.5f),
-                    Heat = MathF.Max(heat, 0.3f),
+                    //头热尾冷,沿笔画的温度梯度
+                    Heat = MathHelper.Lerp(headHeat, 0.3f, u),
                 });
-                if (arcSamples.Count > ArcSampleMax) {
-                    arcSamples.RemoveAt(arcSamples.Count - 1);
-                }
             }
         }
 
@@ -582,35 +674,34 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             else {
                 heat *= 0.955f;
                 trailFade *= 0.88f;
-                //余烬冷却成烟,火线上零星冒出
-                if (!VaultUtils.isServer && trailFade > 0.15f && Main.rand.NextBool(4)) {
-                    Vector2 hand = Owner.GetPlayerStabilityCenter();
-                    Vector2 sootPos;
-                    if (d.Kind == 1) {
-                        if (arcSamples.Count == 0) {
-                            return;
-                        }
-                        sootPos = hand + arcSamples[Main.rand.Next(arcSamples.Count)].Tip * Main.rand.NextFloat(0.82f, 1f);
-                    }
-                    else {
-                        sootPos = hand + aimAngle.ToRotationVector2() * Main.rand.NextFloat(pulseRear, maxTip);
-                    }
-                    PRTLoader.NewParticle<PRT_DawnSoot>(sootPos, new Vector2(0f, -Main.rand.NextFloat(0.5f, 1.2f))
-                        , default, Main.rand.NextFloat(0.7f, 1.1f));
-                }
             }
         }
 
-        /// <summary>刃上火:判定窗内余烬喷流+刃缘火舌,粒子密度按攻速补偿;扫击切向甩,刺击顺枪喷</summary>
+        /// <summary>位移拍的粒子承载速度,火花不许被留在原地;B2 用确定性步长公式,各端一致</summary>
+        private Vector2 CarrierVelocity(in BeatDef d) {
+            if (beatIndex == 2) {
+                float u = MathHelper.Clamp(elapsed - d.Windup, 0f, d.Active);
+                return aimAngle.ToRotationVector2() * (LungeSpeed * MathF.Pow(LungeDecay, u)) * 0.4f;
+            }
+            return Owner.velocity * 0.4f;
+        }
+
+        /// <summary>刃上火:判定窗内余烬喷流+刃缘火舌,密度按攻速补偿;位移拍密度×2初速×1.5并继承载体速度</summary>
         private void SpawnBladeFire(in BeatDef d) {
             if (VaultUtils.isServer || dmgTo <= dmgFrom) {
                 return;
             }
             Vector2 hand = Owner.GetPlayerStabilityCenter();
+            bool moveBeat = beatIndex is 1 or 2 or 4;
+            float spdMul = moveBeat ? 1.5f : 1f;
+            Vector2 carry = moveBeat ? CarrierVelocity(in d) : Vector2.Zero;
 
             int times = (int)speedMul;
             if (Main.rand.NextFloat() < speedMul % 1f) {
                 times++;
+            }
+            if (moveBeat) {
+                times *= 2;
             }
 
             if (d.Kind == 1) {
@@ -620,14 +711,15 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
                 Vector2 tangent = tipUnit.RotatedBy(MathHelper.PiOver2) * spin;
                 for (int i = 0; i < times; i++) {
                     Vector2 pos = hand + mainVec * Main.rand.NextFloat(0.72f, 1.02f);
-                    Vector2 vel = tangent * Main.rand.NextFloat(3.5f, 8f) + tipUnit * Main.rand.NextFloat(0.5f, 2.5f);
+                    Vector2 vel = tangent * (Main.rand.NextFloat(3.5f, 8f) * spdMul)
+                        + tipUnit * Main.rand.NextFloat(0.5f, 2.5f) + carry;
                     PRTLoader.NewParticle<PRT_DawnEmber>(pos, vel, default, Main.rand.NextFloat(0.9f, 1.4f))
                         .Configure(Main.rand.Next(18, 30));
 
                     if (Main.rand.NextBool(2)) {
                         Vector2 outward = (tipUnit - tangent * 0.4f).SafeNormalize(Vector2.UnitY);
                         PRTLoader.NewParticle<PRT_DawnTongue>(hand + mainVec * Main.rand.NextFloat(0.5f, 0.95f)
-                            , tangent * 2f, default, Main.rand.NextFloat(0.6f, 1f))
+                            , tangent * 2f + carry, default, Main.rand.NextFloat(0.6f, 1f))
                             .Configure(outward, Main.rand.NextFloat(0.55f, 0.95f), Main.rand.Next(3, 6));
                     }
                 }
@@ -639,7 +731,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             float tip = mainVec.Length();
             for (int i = 0; i < times; i++) {
                 Vector2 pos = hand + unit * (tip - Main.rand.NextFloat(0f, 34f)) + perp * Main.rand.NextFloat(-7f, 7f);
-                Vector2 vel = unit * Main.rand.NextFloat(4f, 9f) + perp * Main.rand.NextFloat(-1.6f, 1.6f);
+                Vector2 vel = unit * (Main.rand.NextFloat(4f, 9f) * spdMul)
+                    + perp * Main.rand.NextFloat(-1.6f, 1.6f) + carry;
                 PRTLoader.NewParticle<PRT_DawnEmber>(pos, vel, default, Main.rand.NextFloat(0.9f, 1.4f))
                     .Configure(Main.rand.Next(18, 30));
 
@@ -647,9 +740,20 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
                     float along = Main.rand.NextFloat(0.45f, 0.9f);
                     float side = Main.rand.NextBool() ? 1f : -1f;
                     Vector2 outward = (perp * side - unit * 0.35f).SafeNormalize(Vector2.UnitY);
-                    PRTLoader.NewParticle<PRT_DawnTongue>(hand + unit * (tip * along), unit * 2f
+                    PRTLoader.NewParticle<PRT_DawnTongue>(hand + unit * (tip * along), unit * 2f + carry
                         , default, Main.rand.NextFloat(0.6f, 1f))
                         .Configure(outward, Main.rand.NextFloat(0.55f, 0.95f), Main.rand.Next(3, 6));
+                }
+            }
+
+            //B2 突进沿途向后甩高速拉丝余烬
+            if (beatIndex == 2) {
+                for (int i = 0; i < 3; i++) {
+                    Vector2 pos = Owner.Center - unit * Main.rand.NextFloat(0f, 50f)
+                        + Main.rand.NextVector2Circular(14f, 14f);
+                    Vector2 vel = carry + (-unit).RotatedByRandom(0.4f) * Main.rand.NextFloat(3f, 8f);
+                    PRTLoader.NewParticle<PRT_DawnEmber>(pos, vel, default, Main.rand.NextFloat(1f, 1.5f))
+                        .Configure(Main.rand.Next(14, 24));
                 }
             }
         }
@@ -669,21 +773,18 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             SoundEngine.PlaySound(SoundID.Item34 with { Volume = 0.3f, Pitch = 0.25f + pitch * 0.5f }, Owner.Center);
         }
 
-        /// <summary>终结拍身体语言:蓄力后仰→爆发前甩→收势归位,其余拍归零</summary>
+        /// <summary>位移拍身体语言:B1 后仰 B2 前倾 B4 随转摆动,钟形两端归零</summary>
         private float BodyLeanTarget() {
-            if (!IsFinisher(beatIndex)) {
-                return 0f;
-            }
             BeatDef d = GetBeat(beatIndex);
-            if (elapsed < d.Windup) {
-                return -0.06f * EaseOutCubic(elapsed / d.Windup);
-            }
-            if (elapsed < d.Windup + d.Active) {
-                float p = MathHelper.Clamp((elapsed - d.Windup) / d.Active, 0f, 1f);
-                return MathHelper.Lerp(-0.06f, 0.09f, SmoothStep01(p * 1.6f));
-            }
-            float r = MathHelper.Clamp((elapsed - d.Windup - d.Active) / d.Recover, 0f, 1f);
-            return MathHelper.Lerp(0.09f, 0f, SmoothStep01(r));
+            float activeT = MathHelper.Clamp((elapsed - d.Windup) / d.Active, 0f, 1f);
+            float bell = MathF.Sin(activeT * MathHelper.Pi);
+            float lean = beatIndex switch {
+                1 => -0.18f * bell,
+                2 => 0.35f * bell,
+                4 => 0.12f * MathF.Sin(activeT * MathHelper.TwoPi),
+                _ => 0f,
+            };
+            return lean * lockedDirection * Owner.gravDir;
         }
 
         private void UpdatePlayerPose() {
@@ -696,23 +797,34 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             Projectile.Center = Owner.GetPlayerStabilityCenter() + mainVec * 0.5f;
             Projectile.rotation = mainVec.ToRotation();
             Projectile.timeLeft = 90;
+            Owner.noFallDmg = true;
 
-            //身体不当木桩,仅终结拍小幅倾身,平滑过渡防跨拍跳变
-            bodyLean = MathHelper.Lerp(bodyLean, BodyLeanTarget() * lockedDirection, 0.3f);
+            //全身编舞四件套:脚底为轴,腿反向补偿,读作"人在发力"而非贴图自转
+            bodyLean = MathHelper.Lerp(bodyLean, BodyLeanTarget(), 0.3f);
             if (MathF.Abs(bodyLean) > 0.002f) {
                 Owner.fullRotation = bodyLean;
-                Owner.fullRotationOrigin = Owner.Size / 2f;
+                Owner.fullRotationOrigin = new Vector2(Owner.Hitbox.Width / 2f
+                    , Owner.gravDir == -1f ? 0f : Owner.Hitbox.Height);
+                Owner.legRotation = -bodyLean;
+                Owner.legPosition = (new Vector2(Owner.Hitbox.Width / 2f, Owner.Hitbox.Height)
+                    - Owner.fullRotationOrigin).RotatedBy(-bodyLean);
                 appliedLean = true;
             }
             else if (appliedLean) {
-                Owner.fullRotation = 0f;
-                appliedLean = false;
+                ClearBodyLean();
             }
+        }
+
+        private void ClearBodyLean() {
+            Owner.fullRotation = 0f;
+            Owner.legRotation = 0f;
+            Owner.legPosition = Vector2.Zero;
+            appliedLean = false;
         }
 
         public override void OnKill(int timeLeft) {
             if (appliedLean) {
-                Owner.fullRotation = 0f;
+                ClearBodyLean();
             }
         }
 
@@ -726,6 +838,18 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             ghostVecs[0] = vec;
             if (ghostCount < GhostMax) {
                 ghostCount++;
+            }
+        }
+
+        /// <summary>枪尖走得越远补越多子帧残影,爆发那两三帧才有连成一片的路径拖影</summary>
+        private void PushGhostTrail(Vector2 prev, Vector2 cur) {
+            if (prev == Vector2.Zero) {
+                PushGhost(cur);
+                return;
+            }
+            int n = Math.Clamp((int)((cur - prev).Length() / 38f), 1, 4);
+            for (int i = 1; i <= n; i++) {
+                PushGhost(Vector2.Lerp(prev, cur, i / (n + 1f)));
             }
         }
 
@@ -803,34 +927,29 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         public override bool PreDraw(ref Color lightColor) {
             Texture2D tex = TextureValue;
             Rectangle rect = tex.GetRectangle(Projectile.frame, FrameCount);
-            Vector2 origin = rect.Size() / 2f;
             Vector2 hand = Owner.GetPlayerStabilityCenter();
-            float rot = mainVec.ToRotation();
-            float drawRot = rot + (lockedDirection > 0 ? MathHelper.PiOver4 : MathHelper.PiOver4 * 3f);
-            SpriteEffects effects = lockedDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            //伪 z 驱动枪身轴向伸缩,最强的立体线索
-            float k = ViewZ / MathF.Max(ViewZ - depthZ * 0.8f, 220f);
-            float scale = 0.7f * MathHelper.Clamp(k, 0.72f, 1.18f);
+            //伪 z 只做 ±12% 的轴向呼吸,立体线索留住、橡皮感去掉
+            float depthScale = ViewZ / MathF.Max(ViewZ - depthZ * 0.8f, 220f);
 
-            //挥砍残影
+            //残影强度随枪尖位移,快才拖得出影——速度感是对比不是常驻虚影
             BeatDef d = GetBeat(beatIndex);
-            bool inActive = elapsed > d.Windup && elapsed < d.Windup + d.Active;
-            if (inActive && ghostCount > 0) {
-                for (int i = 0; i < ghostCount; i++) {
-                    float fade = 0.34f * (1f - (i + 1) / (float)(GhostMax + 1));
-                    Vector2 gv = ghostVecs[i];
-                    float gRot = gv.ToRotation();
-                    float gDrawRot = gRot + (lockedDirection > 0 ? MathHelper.PiOver4 : MathHelper.PiOver4 * 3f);
-                    Color ghostColor = new Color(255, 176, 64) * fade;
-                    ghostColor.A = 0;
-                    Main.EntitySpriteDraw(tex, hand + gv * 0.5f - Main.screenPosition, rect, ghostColor
-                        , gDrawRot, origin, scale, effects, 0);
+            bool inActive = elapsed > d.Windup && elapsed < d.Windup + d.Active + d.Recover * 0.25f;
+            if (inActive && ghostCount > 1) {
+                float smear = MathHelper.Clamp(((mainVec - ghostVecs[0]).Length() - 6f) / 46f, 0f, 1f);
+                if (smear > 0.02f) {
+                    for (int i = 0; i < ghostCount; i++) {
+                        float fade = 0.52f * smear * (1f - (i + 1) / (float)(GhostMax + 1));
+                        Color ghostColor = new Color(255, 176, 64) * fade;
+                        ghostColor.A = 0;
+                        DawnshatterRenderer.DrawSpearQuad(tex, rect, hand, ghostVecs[i]
+                            , lockedDirection, ghostColor, depthScale);
+                    }
                 }
             }
 
-            Main.EntitySpriteDraw(tex, hand + mainVec * 0.5f - Main.screenPosition, rect
-                , Projectile.GetAlpha(lightColor), drawRot, origin, scale, effects, 0);
+            DawnshatterRenderer.DrawSpearQuad(tex, rect, hand, mainVec, lockedDirection
+                , Projectile.GetAlpha(lightColor), depthScale);
             return false;
         }
 
@@ -841,23 +960,39 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             }
             stripSink.Clear();
             Vector2 hand = Owner.GetPlayerStabilityCenter();
+            float halfWidth = 32f + heat * 10f;
+            Vector2 unit = aimAngle.ToRotationVector2();
 
-            //弧光:采样环生成三股蛋形弧带,z 远近分层
+            //弧光:按弧长解析重采样,三股蛋形弧带,z 远近分层
             if (d.Kind == 1) {
+                BuildArcSamples(in d);
                 if (arcSamples.Count < 3) {
                     return;
                 }
-                DawnshatterRenderer.CollectArcStrips(stripSink, hand, arcSamples, 0.34f, heat, trailFade);
+                DawnshatterRenderer.CollectArcStrips(stripSink, hand, arcSamples, 0.30f, heat, trailFade);
                 DawnshatterRenderer.DrawStrips(true, trailFade, heat, flashPulse, stripSink);
                 return;
             }
 
-            //刺击:火线驻留在刺穿的位置,收势期原地熄灭而非随枪回缩
+            //B2 贯穿突刺:火线世界锚定在突进轨迹上,从起点长到当前枪尖
+            if (beatIndex == 2) {
+                if (!burstSoundPlayed) {
+                    return;
+                }
+                float tipDist = Vector2.Distance(lungeAnchor, hand) + mainVec.Length();
+                if (tipDist < 90f) {
+                    return;
+                }
+                DawnshatterRenderer.CollectThrustStrips(stripSink, lungeAnchor, unit
+                    , 0f, tipDist + 14f, halfWidth, heat, trailFade);
+                DawnshatterRenderer.DrawStrips(false, trailFade, heat, flashPulse, stripSink);
+                return;
+            }
+
+            //B0 直刺:火线驻留在刺穿的位置,收势期原地熄灭而非随枪回缩
             if (maxTip <= pulseRear + 14f) {
                 return;
             }
-            Vector2 unit = aimAngle.ToRotationVector2();
-            float halfWidth = 24f + heat * 8f;
             DawnshatterRenderer.CollectThrustStrips(stripSink, hand, unit
                 , pulseRear, maxTip + 14f, halfWidth, heat, trailFade);
             DawnshatterRenderer.DrawStrips(false, trailFade, heat, flashPulse, stripSink);

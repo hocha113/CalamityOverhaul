@@ -206,13 +206,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 float motion = MathHelper.Clamp(cp.MotionFade, 0f, 1f);
                 float perBaseMul = 1f - motion * 0.50f;
                 float perDetailMul = 1f - motion * 0.65f;
-                //单环栅格，仅最外层
+                //按层几何换形，仅最外层半径
                 DrawLowQualityFieldGrid(spriteBatch, pixel, cp, alpha, perBaseMul, perDetailMul);
             }
 
             spriteBatch.End();
         }
 
+        /// <summary>回退栅格按层几何换形：L1 正交线 / L2 三角格+蜂巢点阵 / L3 竖向数据流</summary>
         private static void DrawLowQualityFieldGrid(SpriteBatch spriteBatch, Texture2D pixel,
             CyberspacePlayer cp, float alpha, float baseMul, float detailMul) {
 
@@ -221,12 +222,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             float gridSize = Cyberspace.GridSize;
             if (radius < gridSize * 2f) return;
 
-            float time = cp.EffectTime;
-            float tier = cp.VisualTier;
-            float tierMult = 0.65f + (tier - 1f) * 0.18f;
-            //骨架 baseMul，花纹 detailMul
-            Color lineColor = new Color(220, 35, 22) * (alpha * 0.13f * tierMult * baseMul);
-            Color nodeColor = GetTierGlowColor(tier, alpha * 0.28f * tierMult * detailMul);
+            Vector3 w = cp.TierWeights;
+            if (w.X > 0.02f) {
+                DrawFallbackSquareGrid(spriteBatch, pixel, center, radius, gridSize,
+                    alpha * w.X, baseMul, detailMul);
+            }
+            if (w.Y > 0.02f) {
+                DrawFallbackTriLattice(spriteBatch, pixel, center, radius, gridSize,
+                    alpha * w.Y, baseMul, detailMul);
+            }
+            if (w.Z > 0.02f) {
+                DrawFallbackFlowStreams(spriteBatch, pixel, center, radius, gridSize,
+                    cp.EffectTime, alpha * w.Z, baseMul, detailMul);
+            }
+        }
+
+        /// <summary>静态伪随机，代替时间闪烁（常驻舒适约定）</summary>
+        private static float StaticHash(int gx, int gy)
+            => MathF.Abs(MathF.Sin(gx * 12.9898f + gy * 78.233f));
+
+        /// <summary>L1 回退：正交栅格线 + 静态明暗节点</summary>
+        private static void DrawFallbackSquareGrid(SpriteBatch spriteBatch, Texture2D pixel,
+            Vector2 center, float radius, float gridSize, float alpha, float baseMul, float detailMul) {
+            Color lineColor = new Color(220, 35, 22) * (alpha * 0.13f * 0.65f * baseMul);
+            Color nodeColor = GetTierGlowColor(1f, alpha * 0.28f * 0.65f * detailMul);
 
             int minX = (int)MathF.Floor((center.X - radius) / gridSize);
             int maxX = (int)MathF.Ceiling((center.X + radius) / gridSize);
@@ -260,10 +279,89 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     Vector2 world = new(gx * gridSize, gy * gridSize);
                     if (Vector2.DistanceSquared(world, center) > radius * radius) continue;
 
-                    float flicker = 0.55f + 0.45f * MathF.Sin(time * 3f + gx * 0.37f + gy * 0.19f);
+                    float bright = 0.62f + 0.38f * StaticHash(gx, gy);
                     Vector2 screen = world - Main.screenPosition;
-                    spriteBatch.Draw(pixel, new Rectangle((int)screen.X - 1, (int)screen.Y - 1, 3, 3), nodeColor * flicker);
+                    spriteBatch.Draw(pixel, new Rectangle((int)screen.X - 1, (int)screen.Y - 1, 3, 3), nodeColor * bright);
                 }
+            }
+        }
+
+        /// <summary>L2 回退：三族 60° 弦线三角格 + 蜂巢中心点阵</summary>
+        private static void DrawFallbackTriLattice(SpriteBatch spriteBatch, Texture2D pixel,
+            Vector2 center, float radius, float gridSize, float alpha, float baseMul, float detailMul) {
+            float hexScale = gridSize * 1.7f;
+            float spacing = hexScale * 0.866f;
+            Color lineColor = new Color(230, 45, 24) * (alpha * 0.115f * baseMul);
+            Color nodeColor = GetTierGlowColor(2f, alpha * 0.30f * detailMul);
+
+            int n = (int)MathF.Ceiling(radius / spacing);
+            for (int fam = 0; fam < 3; fam++) {
+                float ang = MathHelper.Pi / 3f * fam;
+                Vector2 dirV = ang.ToRotationVector2();
+                Vector2 perp = new(-dirV.Y, dirV.X);
+                for (int k = -n; k <= n; k++) {
+                    float d = k * spacing;
+                    float half = MathF.Sqrt(MathF.Max(radius * radius - d * d, 0f));
+                    if (half <= 1f) continue;
+
+                    Vector2 mid = center + perp * d - Main.screenPosition;
+                    spriteBatch.Draw(pixel, mid, null, lineColor, ang,
+                        new Vector2(pixel.Width * 0.5f, pixel.Height * 0.5f),
+                        new Vector2(half * 2f / pixel.Width, 1.2f / pixel.Height),
+                        SpriteEffects.None, 0f);
+                }
+            }
+
+            //蜂巢中心点阵：两套子格，隔位取样控制数量
+            float cw = hexScale;
+            float ch = hexScale * 1.7320508f;
+            int nx = (int)MathF.Ceiling(radius / cw);
+            int ny = (int)MathF.Ceiling(radius / ch);
+            for (int sub = 0; sub < 2; sub++) {
+                float ox = sub * cw * 0.5f;
+                float oy = sub * ch * 0.5f;
+                for (int i = -nx; i <= nx; i++) {
+                    for (int j = -ny; j <= ny; j++) {
+                        if (((i + j) & 1) != 0) continue;
+
+                        Vector2 world = center + new Vector2(i * cw + ox, j * ch + oy);
+                        if (Vector2.DistanceSquared(world, center) > radius * radius) continue;
+
+                        float bright = 0.55f + 0.45f * StaticHash(i * 2 + sub, j);
+                        Vector2 screen = world - Main.screenPosition;
+                        spriteBatch.Draw(pixel, new Rectangle((int)screen.X - 1, (int)screen.Y - 1, 3, 3), nodeColor * bright);
+                    }
+                }
+            }
+        }
+
+        /// <summary>L3 回退：稀疏竖向数据流（暗弦 + 上行亮段）</summary>
+        private static void DrawFallbackFlowStreams(SpriteBatch spriteBatch, Texture2D pixel,
+            Vector2 center, float radius, float gridSize, float time, float alpha, float baseMul, float detailMul) {
+            float colSpacing = gridSize * 3.2f;
+            Color chordColor = new Color(150, 22, 16) * (alpha * 0.10f * baseMul);
+            Color segColor = GetTierGlowColor(3f, alpha * 0.34f * detailMul);
+
+            int n = (int)MathF.Ceiling(radius / colSpacing);
+            for (int k = -n; k <= n; k++) {
+                float hash = StaticHash(k, 917);
+                float worldX = center.X + k * colSpacing + (hash - 0.5f) * colSpacing * 0.6f;
+                float dx = worldX - center.X;
+                float half = MathF.Sqrt(MathF.Max(radius * radius - dx * dx, 0f));
+                if (half <= gridSize) continue;
+
+                float topY = center.Y - half;
+                float lenY = half * 2f;
+                Vector2 pos = new(worldX - Main.screenPosition.X, topY - Main.screenPosition.Y);
+                spriteBatch.Draw(pixel, new Rectangle((int)pos.X, (int)pos.Y, 1, (int)lenY), chordColor);
+
+                //上行亮段（相位由列 hash 错开）
+                float speed = 60f + hash * 90f;
+                float segLen = MathF.Min(42f + hash * 40f, lenY * 0.5f);
+                float phase = (time * speed / lenY + hash * 7.31f) % 1f;
+                float segY = topY + (1f - phase) * (lenY - segLen);
+                Vector2 segPos = new(worldX - Main.screenPosition.X, segY - Main.screenPosition.Y);
+                spriteBatch.Draw(pixel, new Rectangle((int)segPos.X, (int)segPos.Y, 2, (int)segLen), segColor);
             }
         }
 
@@ -287,9 +385,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (r < gs * 2) return;
 
             float tier = cp.VisualTier;
-            float tierMult = 1f + (tier - 1f) * 0.25f;
+            float tierMult = 1f + (tier - 1f) * 0.12f;
 
-            int numSteps = Math.Clamp((int)(MathHelper.TwoPi * r / (gs * 0.6f)), 48, 280);
+            int numSteps = Math.Clamp((int)(MathHelper.TwoPi * r / (gs * 0.6f)), 48, 200);
             float prevSnapX = float.NaN;
             float prevSnapY = float.NaN;
             float screenW = Main.screenWidth;
@@ -324,10 +422,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     screenY < -margin || screenY > screenH + margin) continue;
 
                 float cellHash = MathF.Abs(MathF.Sin(snapX * 0.137f + snapY * 0.251f));
-                //脉动略缓
-                float pulse = 0.3f + 0.7f * MathF.Sin(time * 1.5f + cellHash * MathF.PI * 2f);
-                pulse = MathF.Max(pulse, 0f);
-                float alpha = pulse * effectIntensity * 0.4f * tierMult * glowMotionMul;
+                //超慢低幅起伏，相位按格错开：常驻边界不再闪烁
+                float pulse = 0.62f + 0.18f * MathF.Sin(time * 0.45f + cellHash * MathF.PI * 2f);
+                float alpha = pulse * effectIntensity * 0.26f * tierMult * glowMotionMul;
 
                 Color glowColor = GetTierGlowColor(tier, alpha);
 
@@ -336,11 +433,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>边界光晕色，层越高越热</summary>
+        /// <summary>边界光晕色，层越高越热（收敛版：顶端不再推向刺眼橙）</summary>
         private static Color GetTierGlowColor(float tier, float alpha) {
             Vector3 t1 = new(0.80f, 0.05f, 0.04f);
-            Vector3 t2 = new(0.90f, 0.10f, 0.06f);
-            Vector3 t3 = new(1.0f, 0.18f, 0.08f);
+            Vector3 t2 = new(0.88f, 0.11f, 0.06f);
+            Vector3 t3 = new(0.95f, 0.20f, 0.10f);
             Vector3 c = tier <= 2f
                 ? Vector3.Lerp(t1, t2, MathHelper.Clamp(tier - 1f, 0f, 1f))
                 : Vector3.Lerp(t2, t3, MathHelper.Clamp(tier - 2f, 0f, 1f));
@@ -398,11 +495,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             spriteBatch.End();
         }
 
-        /// <summary>边界环染色，层越高越炽</summary>
+        /// <summary>边界环染色，层越高越炽（收敛版：层间只做克制的色温递进）</summary>
         private static Color GetTierRingTint(float tier) {
-            Vector3 t1 = new(1f, 0.82f, 0.68f);
-            Vector3 t2 = new(1f, 0.68f, 0.52f);
-            Vector3 t3 = new(1f, 0.54f, 0.38f);
+            Vector3 t1 = new(1f, 0.86f, 0.76f);
+            Vector3 t2 = new(1f, 0.76f, 0.62f);
+            Vector3 t3 = new(1f, 0.66f, 0.50f);
             Vector3 c = tier <= 2f
                 ? Vector3.Lerp(t1, t2, MathHelper.Clamp(tier - 1f, 0f, 1f))
                 : Vector3.Lerp(t2, t3, MathHelper.Clamp(tier - 2f, 0f, 1f));
