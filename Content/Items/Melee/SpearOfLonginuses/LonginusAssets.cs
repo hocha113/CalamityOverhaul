@@ -27,6 +27,27 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
         /// <summary>充能吸入场</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Asset<Effect> LonginusCharge { get; set; }
+        /// <summary>光之翼翼羽条带</summary>
+        [VaultLoaden(CWRConstant.Effects)]
+        public static Asset<Effect> LonginusWing { get; set; }
+    }
+
+    /// <summary>光之翼玩家身后图层，遍历活跃 <see cref="LonginusHeld"/> 各画各的</summary>
+    internal sealed class LonginusWingsRender : RenderHandle
+    {
+        public override float Weight => 1.12f;
+
+        public override void DrawBeforePlayers(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
+            if (Main.gameMenu) {
+                return;
+            }
+            foreach (Projectile proj in Main.projectile) {
+                if (!proj.active || proj.ModProjectile is not LonginusHeld held) {
+                    continue;
+                }
+                held.DrawWingsLayer();
+            }
+        }
     }
 
     /// <summary>处决终结冲击帧，1~3帧高对比白闪剪影后急退</summary>

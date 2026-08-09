@@ -98,7 +98,23 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             }
         }
 
+        public override bool AltFunctionUse(Player player) => true;
+
+        //右键只是切翼，动作压短别抬 35 帧大枪
+        public override float UseSpeedMultiplier(Player player)
+            => player.altFunctionUse == 2 ? 2.5f : 1f;
+
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            //右键切换光之翼，不掷枪不耗充能
+            if (player.altFunctionUse == 2) {
+                foreach (Projectile proj in Main.projectile) {
+                    if (proj.active && proj.owner == player.whoAmI && proj.ModProjectile is LonginusHeld held) {
+                        held.ToggleWings();
+                        break;
+                    }
+                }
+                return false;
+            }
             if (ChargeGrade > 0) {
                 int proj = Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<LonginusThrow>(), damage, knockback, player.whoAmI);
                 Main.projectile[proj].ai[0] = 1;

@@ -72,8 +72,9 @@ float4 CorePS(PSInput input, float arcMode)
     float innerMask = smoothstep(1.0, 0.40, uv.y);
 
     //端头撕裂场,只随横向位置起伏:同一条端线上不同高度在不同时刻断开,端口才不是平切面
-    float tearA = tex2D(noiseSamp, float2(uv.y * 2.1 + uTime * 0.09, 0.29)).r;
-    float tearB = tex2D(noiseSamp, float2(uv.y * 4.7 - uTime * 0.17, 0.68)).r;
+    //带宽约 200px,取 5/12 个周期得 40px/17px 量级的齿;上版只有 2/5 个周期,端线只有几个大缓坡=仍读作直线
+    float tearA = tex2D(noiseSamp, float2(uv.y * 5.3 + uTime * 0.09, 0.29)).r;
+    float tearB = tex2D(noiseSamp, float2(uv.y * 11.7 - uTime * 0.17, 0.68)).r;
     float tear = tearA * 0.62 + tearB * 0.38;
 
     //尾端老化:淡出阈值随撕裂起伏;撕碎区只许啃尾部三成,伸进弧身正中会咬出平滑豁口(上版病根之一)
@@ -83,9 +84,10 @@ float4 CorePS(PSInput input, float arcMode)
     float shred = smoothstep(0.30, 0.62, flow + (age - tailEdge) * 2.2);
     ageMask *= lerp(shred, 1.0, smoothstep(tailEdge, tailEdge + 0.30, age));
 
-    //头端出生坡:刃线处 alpha 严格归零,各行在离刃线不同深度点燃成火舌
-    //收势拍刃会回撤、断面裸露,只削亮度不归零(上版 headErode)必读成平切面
-    float headMask = 1.0 - smoothstep(0.985 - tear * 0.10 - flow * 0.04, 0.995, age);
+    //头端参差:几何头端已钉在刃上(最新的火最亮,不该淡出),只把端线本身咬碎
+    //归零位置必须逐行不同——上版让斜坡起点起伏却把终点钉死在 0.995,alpha 仍在同一 age 归零,照样是直线
+    float headEnd = 1.0 - tear * 0.05 - ragged * 0.02;
+    float headMask = 1.0 - smoothstep(headEnd - 0.05 - flow * 0.03, headEnd, age);
 
     float body = outerMask * innerMask * ageMask * headMask;
 

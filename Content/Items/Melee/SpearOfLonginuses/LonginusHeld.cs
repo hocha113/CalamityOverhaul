@@ -22,6 +22,14 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
         private bool fullCharge;
         private Vector2[] shaftPoints;
 
+        /// <summary>光之翼开关，走 proj ai 同步给远端</summary>
+        public bool WingsOn => Projectile.ai[1] > 0.5f;
+        /// <summary>本地平滑展开度 0~1，各端由 <see cref="WingsOn"/> 目标自行推进</summary>
+        private float wingOpen;
+        /// <summary>展开瞬间背后 AT 薄膜闪现</summary>
+        private float wingFlash;
+        private bool lastWingsOn;
+
         public override void SetDefaults() {
             Projectile.width = 46;
             Projectile.height = 46;
@@ -72,11 +80,65 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             if (levelFlash > 0f) {
                 levelFlash -= 0.04f;
             }
+            UpdateWings();
             //能量鞘缠绕滚动，充能越高越快
             float gradeProg = Owner.HeldItem?.ModItem is SpearOfLonginus sol
                 ? sol.ChargeGrade / (float)SpearOfLonginus.MaxChargeGrade : 0f;
             sheathSpin += 0.14f + gradeProg * 0.12f;
             Projectile.ai[0]++;
+        }
+
+        /// <summary>右键切换光之翼，仅 owner 端调用，走 ai[1]+netUpdate 同步</summary>
+        public void ToggleWings() {
+            Projectile.ai[1] = WingsOn ? 0f : 1f;
+            Projectile.netUpdate = true;
+        }
+
+        /// <summary>各端自行推进展开度；ai[1] 边沿触发音效与 AT 薄膜闪，远端同样可见可闻</summary>
+        private void UpdateWings() {
+            if (WingsOn != lastWingsOn) {
+                lastWingsOn = WingsOn;
+                if (WingsOn) {
+                    wingFlash = 1f;
+                    SoundStyle open = "CalamityMod/Sounds/Item/HeavenlyGaleFire".GetSound();
+                    open.Volume = 0.55f;
+                    open.Pitch = 0.35f;
+                    SoundEngine.PlaySound(open, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.6f, Pitch = -0.2f }, Projectile.Center);
+                }
+                else {
+                    SoundEngine.PlaySound(SoundID.Item104 with { Volume = 0.4f, Pitch = -0.35f }, Projectile.Center);
+                }
+            }
+            //展开 14 帧收回 10 帧，回弹过冲在几何侧 EaseOutBack 做
+            wingOpen = MathHelper.Clamp(wingOpen + (WingsOn ? 1f / 14f : -1f / 10f), 0f, 1f);
+            if (wingFlash > 0f) {
+                wingFlash -= 0.055f;
+            }
+        }
+
+        /// <summary>由 <see cref="LonginusWingsRender"/> 在玩家身后图层调用，画双侧光之翼与背后光核</summary>
+        public void DrawWingsLayer() {
+            if (wingOpen <= 0.01f) {
+                return;
+            }
+            float gravDir = Owner.gravDir;
+            Vector2 anchor = Owner.MountedCenter + new Vector2(0, -6f * gravDir);
+
+            //展开瞬间背后闪一层 AT 薄膜呼应主题
+            if (wingFlash > 0.01f) {
+                float t = 1f - wingFlash;
+                LonginusVFX.DrawATField(anchor, new Vector2(0, -gravDir), 150f
+                    , MathHelper.Clamp(t * 2.4f, 0f, 1f), 0f, wingFlash * 0.5f, 1
+                    , Projectile.whoAmI * 0.173f, 0.9f);
+            }
+
+            LonginusWings.Draw(Owner, wingOpen, 235f, 0.9f);
+
+            //翼根光核
+            float breathe = 0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2.2f);
+            LonginusVFX.DrawHalo(anchor, 16f + wingOpen * 6f, 0.9f, wingOpen, breathe * 0.6f
+                , wingOpen * 0.8f, LonginusVFX.HolyGold);
         }
 
         /// 持续注入圣神能量，满条转一次立场充能(最高 <see cref="SpearOfLonginus.MaxChargeGrade"/> 层)
@@ -94,6 +156,10 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             //充能可视化走 LonginusCharge 吸入场，不再喷星屑粒子
 
             longinus.HolyEnergy++;
+            //光之翼展开期间力量解放，充能速度翻倍
+            if (WingsOn) {
+                longinus.HolyEnergy++;
+            }
 
             //能量满升层
             if (longinus.HolyEnergy >= SpearOfLonginus.HolyEnergyMax) {

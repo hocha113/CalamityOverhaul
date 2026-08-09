@@ -265,6 +265,20 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             return ProjectTiltedCircle(aimUnit, radius, phi * lockedDirection, tilt, d.Roll * lockedDirection, out z);
         }
 
+        /// <summary>
+        /// 按扫角求值的枪尖向量,半径与倾角取"沿笔画推进比例"而非时间比例<br/>
+        /// 弧带是空间物件:角 φ 处的形状该由刃扫过 φ 时决定,这样重参数化后笔画在角度上严格单调,
+        /// 爆发过冲末段的回坐不再让条带自我折叠
+        /// </summary>
+        private Vector2 MotionAtPhi(in BeatDef d, float phi, out float z) {
+            float span = d.ArcEnd - d.ArcStart;
+            float frac = MathF.Abs(span) < 0.0001f
+                ? 1f : MathHelper.Clamp((phi - d.ArcStart) / span, 0f, 1f);
+            return ProjectTiltedCircle(aimAngle.ToRotationVector2()
+                , MathHelper.Lerp(d.Radius0, d.Radius1, frac), phi * lockedDirection
+                , MathHelper.Lerp(d.Tilt0, d.Tilt1, frac), d.Roll * lockedDirection, out z);
+        }
+
         /// 刺击持距包络(手到枪尖)
         private static float ThrustTipAt(int beat, in BeatDef d, float t) {
             if (beat == 0) {
@@ -630,14 +644,18 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
         }
 
         /// <summary>
-        /// 弧带绘制时按弧长解析重建:MotionAt 是纯函数,几何从函数推导而不是从帧历史累积<br/>
-        /// 角速度再快也按 16px 补点,不会退化成多边形(帧历史式采样在爆发段必然稀疏)
+        /// 弧带按扫角解析重建:几何从纯函数推导而不是帧历史累积,角速度再快也按 16px 补点<br/>
+        /// 头端钉死在刃的当前扫角——收势回撤与过冲回坐都把头吃回来,断面永远压在刀身底下。
+        /// 镜像 WeaverGrievancesHeld.TrimTrailToCurrentRotation:冻结头端而放任刃回撤,
+        /// 会在空中留下一条贯穿整幅带宽的径向切面,任何着色器端遮罩都掩不住
         /// </summary>
         private void BuildArcSamples(in BeatDef d) {
             arcSamples.Clear();
-            float headT = MathF.Min(elapsed, d.Windup + d.Active);
-            float windupTail = d.Windup;
-            if (headT - windupTail < 0.05f) {
+            float sweepSign = MathF.Sign(d.ArcEnd - d.ArcStart);
+            float phiHead = SweepPhiAt(beatIndex, in d, elapsed);
+            float phiStart = d.ArcStart;
+            //刃还在蓄力回拉侧(前摇),或已被吃回起始角:无笔画可画
+            if ((phiHead - phiStart) * sweepSign < 0.02f) {
                 return;
             }
 
@@ -645,23 +663,23 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             const int probe = 16;
             Span<float> probeArc = stackalloc float[probe + 1];
             float arcLen = 0f;
-            Vector2 prev = MotionAt(beatIndex, windupTail, out _);
+            Vector2 prev = MotionAtPhi(in d, phiStart, out _);
             probeArc[0] = 0f;
             for (int i = 1; i <= probe; i++) {
-                Vector2 p = MotionAt(beatIndex, MathHelper.Lerp(windupTail, headT, i / (float)probe), out _);
+                Vector2 p = MotionAtPhi(in d, MathHelper.Lerp(phiStart, phiHead, i / (float)probe), out _);
                 arcLen += (p - prev).Length();
                 probeArc[i] = arcLen;
                 prev = p;
             }
 
             //弧长预算裁尾:尾巴追头成彗尾,自叠环与焦暗幕布不复存在;短弧拍(B1/B3)不受影响
-            float tailT = windupTail;
+            float phiTail = phiStart;
             float cut = MathF.Max(arcLen - TrailArcBudget, 0f);
             if (cut > 0f) {
                 for (int i = 1; i <= probe; i++) {
                     if (probeArc[i] >= cut) {
                         float f = (cut - probeArc[i - 1]) / MathF.Max(probeArc[i] - probeArc[i - 1], 0.001f);
-                        tailT = MathHelper.Lerp(windupTail, headT, (i - 1 + f) / probe);
+                        phiTail = MathHelper.Lerp(phiStart, phiHead, (i - 1 + f) / probe);
                         break;
                     }
                 }
@@ -674,7 +692,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             float headHeat = MathF.Max(heat, 0.3f);
             for (int i = 0; i < count; i++) {
                 float u = i / (count - 1f);
-                Vector2 tip = MotionAt(beatIndex, MathHelper.Lerp(headT, tailT, u), out float z);
+                Vector2 tip = MotionAtPhi(in d, MathHelper.Lerp(phiHead, phiTail, u), out float z);
                 arcSamples.Add(new DawnshatterRenderer.ArcSample {
                     Tip = tip,
                     Z = 0.5f + MathHelper.Clamp(z / 220f, -0.5f, 0.5f),
