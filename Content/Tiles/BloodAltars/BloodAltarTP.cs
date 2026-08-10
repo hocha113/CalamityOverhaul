@@ -2,7 +2,6 @@ using CalamityOverhaul.Common;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.IO;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -55,8 +54,8 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
         public int PhaseTimer { get; private set; }
         public long AliveTime { get; private set; }
         public BloodAltarPhase Phase => (BloodAltarPhase)phaseRaw;
-        /// <summary>碗口中心，血面与血柱的根都落在这里</summary>
-        public Vector2 BowlCenter => CenterInWorld + new Vector2(0f, -6f);
+        /// <summary>腔口中心：血面 quad 与之重合，血柱的根在这之上的液面处</summary>
+        public Vector2 BowlCenter => CenterInWorld + new Vector2(0f, BloodAltarFx.PoolOffsetY);
 
         /// <summary>本座祭坛是否正在压住夜晚</summary>
         public bool HoldsBloodMoon => Phase switch {
@@ -127,8 +126,6 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
             }
         }
 
-        public override void SingleInstanceUpdate() => BloodAltarWorldGuard.Tick();
-
         #region 交互
 
         /// <summary>
@@ -137,7 +134,8 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
         /// 阶段推进仍归权威端，跨端一致性由那条路径保证
         /// </summary>
         public override bool? RightClick(int i, int j, Tile tile, Player player) {
-            if (player == null || !player.active || player.whoAmI != Main.myPlayer) {
+            //服务端与旁观客户端都会收到这次派发，但只有出血的那台机器有资格动手
+            if (VaultUtils.isServer || player == null || !player.active || player.whoAmI != Main.myPlayer) {
                 return true;
             }
             //仪式进行中不吃输入，免得半途重置
@@ -347,16 +345,16 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
 
         #endregion
 
+        //三层都跑在 PostDrawTiles 的同一个批里，即物块贴图之上：
+        //地表血纹压最下，碗内血面在中间，血柱与供奉物在最上
         public override void BackDraw(SpriteBatch spriteBatch) => Rite?.DrawUnderAltar(spriteBatch, this);
+
+        public override void Draw(SpriteBatch spriteBatch) => Rite?.DrawPool(spriteBatch, this);
 
         public override void FrontDraw(SpriteBatch spriteBatch) => Rite?.DrawOverAltar(spriteBatch, this);
 
-        public override void SendData(ModPacket data) {
-            //阶段与召唤者走 [SyncVar]，框架会在本函数之后自动追加，这里无需手写
-        }
-
-        public override void ReceiveData(BinaryReader reader, int whoAmI) {
-        }
+        //阶段与召唤者全走 [SyncVar]：框架在 TileProcessorInstanceDoSendData 里
+        //自动接在 SendData/ReceiveData 之后收发，故这里不需要手写任何字节
     }
 
     /// <summary>
@@ -372,9 +370,7 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
 
         public override void OnWorldUnload() => heldLastTick = false;
 
-        public override void PostUpdateEverything() => Tick();
-
-        internal static void Tick() {
+        public override void PostUpdateEverything() {
             if (VaultUtils.isClient) {
                 return;
             }

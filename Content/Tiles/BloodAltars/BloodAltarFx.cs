@@ -25,10 +25,10 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
                 , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        private static bool BeginShaderPass(SpriteBatch sb, string technique, out Effect effect) {
+        private static bool BeginShaderPass(SpriteBatch sb, BloodAltarRite rite, string technique, out Effect effect) {
             effect = EffectLoader.BloodAltarRite?.Value;
             Texture2D noise = CWRAsset.NoiseSoft01?.Value;
-            if (effect == null || noise == null) {
+            if (effect == null || noise == null || VaultAsset.placeholder2?.Value == null) {
                 effect = null;
                 return false;
             }
@@ -37,7 +37,9 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp
                 , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             effect.Parameters["uNoiseTex"]?.SetValue(noise);
-            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            //时间轴由仪式自己推，蓄势那几帧连噪声一起停住
+            effect.Parameters["uTime"]?.SetValue(rite.FxTime);
+            effect.Parameters["uSeed"]?.SetValue(rite.Seed);
             effect.CurrentTechnique = effect.Techniques[technique];
             return true;
         }
@@ -47,20 +49,19 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
             RestoreTPBatch(sb);
         }
 
-        // ============================ 碗内血面 ============================
+        // ============================ 腔口血面 ============================
 
         public static void DrawPool(SpriteBatch sb, BloodAltarRite rite, Vector2 bowlCenter) {
             if (rite.Fill <= 0.01f) {
                 return;
             }
 
-            Rectangle dest = QuadRect(bowlCenter + new Vector2(0f, PoolHeight * 0.5f - 3f), PoolWidth, PoolHeight);
-            if (!BeginShaderPass(sb, "TechPool", out Effect effect)) {
+            Rectangle dest = QuadRect(bowlCenter, PoolWidth, PoolHeight);
+            if (!BeginShaderPass(sb, rite, "TechPool", out Effect effect)) {
                 DrawPoolFallback(sb, rite, dest);
                 return;
             }
 
-            effect.Parameters["uSeed"]?.SetValue(rite.Seed);
             effect.Parameters["uFill"]?.SetValue(rite.Fill);
             effect.Parameters["uBoil"]?.SetValue(rite.Boil);
             effect.Parameters["uPulse"]?.SetValue(rite.PulseWave);
@@ -101,12 +102,11 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
 
             float length = rite.ColumnLength;
             Rectangle dest = QuadRect(rootPos + new Vector2(0f, -length * 0.5f), rite.ColumnWidth, length);
-            if (!BeginShaderPass(sb, "TechGeyser", out Effect effect)) {
+            if (!BeginShaderPass(sb, rite, "TechGeyser", out Effect effect)) {
                 DrawGeyserFallback(sb, rite, rootPos, length);
                 return;
             }
 
-            effect.Parameters["uSeed"]?.SetValue(rite.Seed);
             effect.Parameters["uRise"]?.SetValue(rite.Rise);
             effect.Parameters["uDrain"]?.SetValue(rite.Drain);
             effect.Parameters["uFlash"]?.SetValue(rite.Flash);
@@ -145,11 +145,10 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
 
             float r = SigilRadius * rite.Sigil;
             Rectangle dest = QuadRect(groundPos, r * 2f, r * 2f * SigilFlatten);
-            if (!BeginShaderPass(sb, "TechSigil", out Effect effect)) {
+            if (!BeginShaderPass(sb, rite, "TechSigil", out Effect effect)) {
                 return;
             }
 
-            effect.Parameters["uSeed"]?.SetValue(rite.Seed);
             effect.Parameters["uOpen"]?.SetValue(rite.SigilOpen);
             effect.Parameters["uPulse"]?.SetValue(rite.PulseWave);
             effect.Parameters["uAspect"]?.SetValue(1f / SigilFlatten);
@@ -160,9 +159,14 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
 
         // ============================== 通用 ==============================
 
-        /// <summary>碗口血面 quad 尺寸（像素）</summary>
-        public const float PoolWidth = 46f;
-        public const float PoolHeight = 22f;
+        //以下几个数值是照着 Assets/Tiles/BloodAltar.png 扫出来的：
+        //贴图 4×3 格里真正画了东西的范围是世界 y 13~47，左右两团发光腔体中间夹一道窄缝，
+        //血面必须落在上半的腔口而不是罩住整块贴图，否则就是一张红矩形贴在祭坛上
+        /// <summary>血面 quad 尺寸（像素），中心与 <see cref="BloodAltarTP.BowlCenter"/> 重合</summary>
+        public const float PoolWidth = 36f;
+        public const float PoolHeight = 18f;
+        /// <summary>血面 quad 中心相对物块中心的纵向偏移</summary>
+        public const float PoolOffsetY = 0f;
         public const float SigilRadius = 104f;
         /// <summary>地面血纹的竖向压扁量，读成"贴在地上"而不是立着的环</summary>
         public const float SigilFlatten = 0.42f;

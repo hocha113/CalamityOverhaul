@@ -77,9 +77,6 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
 
         /// <summary>把一圈涟漪推回池面。世界坐标会换算成池面 quad 的 uv</summary>
         public void PushRipple(Vector2 worldPos, float strength) {
-            if (BloodAltarFx.PoolWidth <= 0f) {
-                return;
-            }
             float u = (worldPos.X - poolTopLeft.X) / BloodAltarFx.PoolWidth;
             float v = (worldPos.Y - poolTopLeft.Y) / BloodAltarFx.PoolHeight;
             ripples[rippleCursor] = new Vector4(MathHelper.Clamp(u, 0f, 1f)
@@ -91,7 +88,7 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
 
         public void Tick(BloodAltarTP tp) {
             Vector2 bowl = tp.BowlCenter;
-            poolTopLeft = bowl + new Vector2(-BloodAltarFx.PoolWidth * 0.5f, -3f);
+            poolTopLeft = bowl - new Vector2(BloodAltarFx.PoolWidth, BloodAltarFx.PoolHeight) * 0.5f;
             poolSurfaceY = poolTopLeft.Y + BloodAltarFx.PoolHeight * (1f - MathF.Max(Fill, 0.05f));
 
             bool frozen = IsAnticipationHold(tp);
@@ -352,6 +349,9 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
                     if (tp.AliveTime % DripInterval == 0) {
                         DripFromRim(bowl);
                     }
+                    if (tp.AliveTime % 9 == 0) {
+                        ShedFromIntakeOrbs(bowl);
+                    }
                     if (tp.AliveTime % 26 == 0) {
                         PRTLoader.NewParticle<PRT_CrimsonSmoke>(bowl + Main.rand.NextVector2Circular(16f, 5f)
                             , new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), -Main.rand.NextFloat(0.2f, 0.6f))
@@ -372,13 +372,14 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
                 MaxInstances = 2,
             }, bowl);
 
+            //提示词照旧发给每台客户端，屏幕反馈才按距离收敛
+            VaultUtils.Text(BloodAltarTP.ApproachingText.Value, Color.DarkRed);
             if (OnLocalScreen(bowl)) {
-                //BloodAltarRender.Trigger(bowl);
+                BloodAltarRender.Trigger(bowl);
                 Main.LocalPlayer.CWR()?.GetScreenShake(7f);
-                VaultUtils.Text(BloodAltarTP.ApproachingText.Value, Color.DarkRed);
             }
 
-            Vector2 tip = bowl - Vector2.UnitY * (ColumnLengthPx * Rise);
+            Vector2 tip = ColumnRoot(bowl) - Vector2.UnitY * (ColumnLengthPx * Rise);
             FishBloodyManowarVFX.DropletSpray(tip, -Vector2.UnitY, 26, 4f, 13f, 0.85f, 0.34f);
             PRTLoader.NewParticle<PRT_HeartcarverPulseRing>(tip, Vector2.Zero
                 , BloodAltarFx.ColWet, 0.9f)?.Configure(0.30f, 2.6f, 28);
@@ -419,7 +420,7 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
                 return;
             }
             float along = Main.rand.NextFloat(MathF.Max(Drain, 0.55f), 1f);
-            Vector2 pos = bowl - Vector2.UnitY * (ColumnLengthPx * Rise * along)
+            Vector2 pos = ColumnRoot(bowl) - Vector2.UnitY * (ColumnLengthPx * Rise * along)
                 + new Vector2(Main.rand.NextFloat(-12f, 12f), 0f);
             Vector2 vel = new(Main.rand.NextFloat(-1.6f, 1.6f), Main.rand.NextFloat(-2.4f, 1.2f));
             PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel
@@ -437,6 +438,27 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
                 ?.Configure(Main.rand.Next(40, 62), 0.34f, 0.99f, stuckLifetime: Main.rand.Next(56, 80));
         }
 
+        /// <summary>被拖过来的血珠一路掉渣，牵引线才不像一根静止的贴图</summary>
+        private void ShedFromIntakeOrbs(Vector2 bowl) {
+            int shed = 0;
+            foreach (Item orb in Main.ActiveItems) {
+                if (orb.type != CWRID.Item_BloodOrb) {
+                    continue;
+                }
+                float dist = Vector2.Distance(orb.Center, bowl);
+                if (dist > 640f || dist < 24f || !Main.rand.NextBool(3)) {
+                    continue;
+                }
+                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(orb.Center
+                    , new Vector2(Main.rand.NextFloat(-0.6f, 0.6f), Main.rand.NextFloat(0.2f, 1.1f))
+                    , BloodAltarFx.ColDeep, Main.rand.NextFloat(0.5f, 0.9f))
+                    ?.Configure(Main.rand.Next(18, 28), 0.26f);
+                if (++shed >= 3) {
+                    return;
+                }
+            }
+        }
+
         private void BurstOrbShells(Vector2 from) {
             for (int i = 0; i < 9; i++) {
                 Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.6f, 4.6f);
@@ -446,6 +468,9 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
                     ?.Configure(Main.rand.Next(26, 42));
             }
         }
+
+        /// <summary>血柱的根长在液面上，不是物块中心</summary>
+        private Vector2 ColumnRoot(Vector2 bowl) => new(bowl.X, poolSurfaceY);
 
         private static Vector2 OfferingSource(BloodAltarTP tp) {
             int who = tp.summonerPlayer;
@@ -462,7 +487,8 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
             if (Main.dedServ) {
                 return;
             }
-            BloodAltarFx.DrawSigil(spriteBatch, this, tp.CenterInWorld + new Vector2(0f, tp.Size.Y * 0.5f - 4f));
+            //贴图底边在物块底，血纹环压到底边之下才像淌在地面上
+            BloodAltarFx.DrawSigil(spriteBatch, this, tp.CenterInWorld + new Vector2(0f, tp.Size.Y * 0.5f + 2f));
         }
 
         /// <summary>碗内血面</summary>
@@ -480,7 +506,7 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
             }
 
             Vector2 bowl = tp.BowlCenter;
-            BloodAltarFx.DrawGeyser(spriteBatch, this, bowl);
+            BloodAltarFx.DrawGeyser(spriteBatch, this, ColumnRoot(bowl));
             DrawIntakeThreads(spriteBatch, tp, bowl);
 
             if (tp.Phase == BloodAltarPhase.Offering) {
@@ -517,12 +543,6 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
 
                 float alpha = MathHelper.Clamp(1f - dist / 640f, 0.15f, 0.9f);
                 FishBloodyManowarVFX.DrawBloodThread(spriteBatch, orb.Center, bowl, 0.7f, alpha, Seed + orb.whoAmI);
-                if (Main.rand.NextBool(14)) {
-                    PRTLoader.NewParticle<PRT_HeartcarverDroplet>(orb.Center
-                        , new Vector2(Main.rand.NextFloat(-0.6f, 0.6f), Main.rand.NextFloat(0.2f, 1.1f))
-                        , BloodAltarFx.ColDeep, Main.rand.NextFloat(0.5f, 0.9f))
-                        ?.Configure(Main.rand.Next(18, 28), 0.26f);
-                }
                 if (++drawn >= 6) {
                     return;
                 }
