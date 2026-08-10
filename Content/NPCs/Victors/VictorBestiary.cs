@@ -1,7 +1,8 @@
+﻿using CalamityOverhaul.Content.Cyberwares;
 using Terraria;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.Cyberwares.Victors
+namespace CalamityOverhaul.Content.NPCs.Victors
 {
     /// <summary>
     /// 图鉴解锁辅助；城镇 NPC 条目只认 <see cref="Main.BestiaryTracker"/> 的交谈记录，

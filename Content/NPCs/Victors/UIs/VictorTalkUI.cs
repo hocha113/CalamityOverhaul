@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.Cyberwares.UIs;
+using CalamityOverhaul.Content.NPCs.Victors;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -10,7 +11,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
+namespace CalamityOverhaul.Content.NPCs.Victors.UIs
 {
     /// <summary>对话条，右键开；底栏 CyberwarePanel + 立绘打字机</summary>
     internal class VictorTalkUI : UIHandle, ILocalizedModType

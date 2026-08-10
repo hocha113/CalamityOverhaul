@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Cyberwares.Victors
+namespace CalamityOverhaul.Content.NPCs.Victors
 {
     /// <summary>
     /// 替代原版 town spawn；主端寻位后生成 <see cref="VictorRiftPortalProj"/>，弹幕中段 NewNPC

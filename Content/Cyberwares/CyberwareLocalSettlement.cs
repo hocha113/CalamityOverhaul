@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Cyberwares.Victors;
+﻿using CalamityOverhaul.Content.NPCs.Victors;
 using System;
 using Terraria;
 using Terraria.ID;

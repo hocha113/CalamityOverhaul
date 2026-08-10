@@ -4,7 +4,7 @@ using System;
 using Terraria;
 using Terraria.GameContent;
 
-namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
+namespace CalamityOverhaul.Content.NPCs.Victors.UIs
 {
     /// <summary>对话/诊所 HUD 原语，开放边无闭合盒</summary>
     internal static class VictorUIStyle

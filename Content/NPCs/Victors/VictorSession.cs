@@ -1,6 +1,6 @@
-using CalamityOverhaul.Content.Cyberwares.Victors.UIs;
+﻿using CalamityOverhaul.Content.NPCs.Victors.UIs;
 
-namespace CalamityOverhaul.Content.Cyberwares.Victors
+namespace CalamityOverhaul.Content.NPCs.Victors
 {
     /// <summary>本地 Victor 交互会话，对话/诊所/手术共享 whoAmI</summary>
     internal static class VictorSession

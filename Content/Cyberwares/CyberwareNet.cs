@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Cyberwares.Victors;
+﻿using CalamityOverhaul.Content.NPCs.Victors;
 using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using System.Collections.Generic;

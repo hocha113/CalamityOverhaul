@@ -1,4 +1,4 @@
-﻿namespace CalamityOverhaul.Content.Cyberwares.Victors
+﻿namespace CalamityOverhaul.Content.NPCs.Victors
 {
     internal enum VictorRequestKind : byte
     {

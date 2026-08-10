@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Cyberwares.UIs;
+﻿using CalamityOverhaul.Content.Cyberwares;
+using CalamityOverhaul.Content.Cyberwares.UIs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -9,7 +10,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
+namespace CalamityOverhaul.Content.NPCs.Victors.UIs
 {
     /// <summary>诊所，人体槽位 + 侧栏查看/更换/购买</summary>
     internal class VictorClinicUI : UIHandle, ILocalizedModType

@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Cyberwares.Victors
+namespace CalamityOverhaul.Content.NPCs.Victors
 {
     /// <summary>
     /// 手术过场；主体 Bound Victor whoAmI；帧86全黑换装

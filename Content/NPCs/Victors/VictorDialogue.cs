@@ -1,11 +1,12 @@
+﻿using CalamityOverhaul.Content.Cyberwares;
 using CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans;
-using CalamityOverhaul.Content.Cyberwares.Victors.UIs;
+using CalamityOverhaul.Content.NPCs.Victors.UIs;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Cyberwares.Victors
+namespace CalamityOverhaul.Content.NPCs.Victors
 {
     /// <summary>
     /// 分桶台词池：一次性语境（初见/术后）绝对优先，其余按当前语境

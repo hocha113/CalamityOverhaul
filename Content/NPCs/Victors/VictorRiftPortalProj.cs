@@ -10,7 +10,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Cyberwares.Victors
+namespace CalamityOverhaul.Content.NPCs.Victors
 {
     /// <summary>
     /// Victor 出场门；<see cref="VictorPortalSpawner"/> 主端生成，StableEnd 主端 NewNPC
@@ -212,7 +212,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                     : Main.rand.NextFloat(0.75f, 1.05f);
                 Vector2 ringPos = new Vector2(MathF.Cos(ang) * halfW, MathF.Sin(ang) * halfH) * radial;
                 Vector2 spawn = Projectile.Center + ringPos;
-                Vector2 outward = (ringPos.SafeNormalize(Vector2.UnitX)) * Main.rand.NextFloat(1.5f, 4.5f);
+                Vector2 outward = ringPos.SafeNormalize(Vector2.UnitX) * Main.rand.NextFloat(1.5f, 4.5f);
 
                 //坍塌反向吸入
                 if (age >= CollapseStart) {

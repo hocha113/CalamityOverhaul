@@ -1,7 +1,7 @@
-using Terraria;
+﻿using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Cyberwares.Victors
+namespace CalamityOverhaul.Content.NPCs.Victors
 {
     /// <summary>
     /// 本地端 Victor 幸福度快照；GetShoppingSettings 每次调用都会分配临时集合，

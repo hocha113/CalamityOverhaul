@@ -1,3 +1,4 @@
+﻿using CalamityOverhaul.Content.Cyberwares;
 using CalamityOverhaul.Content.Cyberwares.Implementation.CstmVisualEyes;
 using CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrains;
 using CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots;
@@ -13,7 +14,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Cyberwares.Victors
+namespace CalamityOverhaul.Content.NPCs.Victors
 {
     internal readonly record struct VictorCatalogEntry(
         int ItemType,

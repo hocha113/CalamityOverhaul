@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Cyberwares.Victors.UIs;
+using CalamityOverhaul.Content.Cyberwares;
+using CalamityOverhaul.Content.NPCs.Victors.UIs;
 using InnoVault.Cinematics;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -11,7 +12,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace CalamityOverhaul.Content.Cyberwares.Victors
+namespace CalamityOverhaul.Content.NPCs.Victors
 {
     /// <summary>
     /// 手术流程 诊所关→过场→眼睑→帧86请求→重开诊所；兼眼睑全屏
@@ -250,7 +251,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             if (shader != null) {
                 shader.Parameters["uClose"]?.SetValue(close);
                 shader.Parameters["uGlow"]?.SetValue(glow);
-                shader.Parameters["uTime"]?.SetValue((float)Main.GameUpdateCount / 60f);
+                shader.Parameters["uTime"]?.SetValue(Main.GameUpdateCount / 60f);
                 shader.Parameters["uResolution"]?.SetValue(new Vector2(w, h));
                 shader.CurrentTechnique.Passes[0].Apply();
                 sb.Draw(px, new Rectangle(0, 0, w, h), Color.White);

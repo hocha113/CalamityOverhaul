@@ -1,9 +1,9 @@
-using System.IO;
+﻿using System.IO;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.Content.Cyberwares.Victors
+namespace CalamityOverhaul.Content.NPCs.Victors
 {
     /// <summary>
     /// Victor 世界级状态；首次从传送门登场后转为正常城镇 NPC，

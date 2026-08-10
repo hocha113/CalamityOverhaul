@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Cyberwares.Victors.UIs;
+﻿using CalamityOverhaul.Content.NPCs.Victors.UIs;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -10,10 +10,10 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Cyberwares.Victors
+namespace CalamityOverhaul.Content.NPCs.Victors
 {
     /// <summary>
-    /// 城镇 Victor；Passive 行走；对话/诊所走 <see cref="VictorTalkUI"/> / <see cref="UIs.VictorClinicUI"/>
+    /// 城镇 Victor；Passive 行走；对话/诊所走 <see cref="VictorTalkUI"/> / <see cref="VictorClinicUI"/>
     /// </summary>
     [AutoloadHead]
     internal class Victor : ModNPC
