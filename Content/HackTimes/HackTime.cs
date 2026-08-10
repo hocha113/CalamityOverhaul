@@ -216,6 +216,15 @@ namespace CalamityOverhaul.Content.HackTimes
         public static LocalizedText AccessDeniedTitle { get; private set; }
         public static LocalizedText AccessDeniedDesc { get; private set; }
 
+        //未持有协议的加密暗格
+        public static LocalizedText ProtocolsOwned { get; private set; }
+        public static LocalizedText ProtocolLockedTitle { get; private set; }
+        public static LocalizedText ProtocolLockedHint { get; private set; }
+
+        //协议芯片词条
+        public static LocalizedText ChipGrants { get; private set; }
+        public static LocalizedText ChipAlreadyOwned { get; private set; }
+
         public override void SetStaticDefaults() {
             Locked = this.GetLocalization(nameof(Locked));
             Done = this.GetLocalization(nameof(Done));
@@ -400,6 +409,13 @@ namespace CalamityOverhaul.Content.HackTimes
 
             AccessDeniedTitle = this.GetLocalization(nameof(AccessDeniedTitle));
             AccessDeniedDesc = this.GetLocalization(nameof(AccessDeniedDesc));
+
+            ProtocolsOwned = this.GetLocalization(nameof(ProtocolsOwned));
+            ProtocolLockedTitle = this.GetLocalization(nameof(ProtocolLockedTitle));
+            ProtocolLockedHint = this.GetLocalization(nameof(ProtocolLockedHint));
+
+            ChipGrants = this.GetLocalization(nameof(ChipGrants));
+            ChipAlreadyOwned = this.GetLocalization(nameof(ChipAlreadyOwned));
         }
 
         #endregion

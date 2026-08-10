@@ -137,6 +137,11 @@ QuickHack: {
 		DisplayName: Diffusion virale
 		Description: Injecte un ver dans la tour de signalisation, provoquant des ondes EMP cybernétiques qui court-circuitent toutes les tourelles à portée longtemps.
 	}
+
+	MeltdownProtocol: {
+		// DisplayName: Meltdown Protocol
+		// Description: Locks the target's heat sinks shut; four seconds later it cooks off, catching nearby enemies.
+	}
 }
 
 HackTargetType: {

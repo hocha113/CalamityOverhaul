@@ -30,6 +30,8 @@ namespace CalamityOverhaul.Content.HackTimes
 
         public static readonly Dictionary<Type, int> TypeToID = [];
         public static readonly Dictionary<int, QuickHackDef> IDToInstance = [];
+        /// <summary>FullName → 实例，持久化用</summary>
+        public static readonly Dictionary<string, QuickHackDef> FullNameToInstance = [];
 
         public static int Count => Instances.Count;
 
@@ -46,6 +48,17 @@ namespace CalamityOverhaul.Content.HackTimes
             if (index >= 0 && index < Instances.Count)
                 return Instances[index];
             return null;
+        }
+
+        /// <summary>
+        /// 按 FullName 取实例。<see cref="SlotIndex"/> 是反射扫描序，插一个协议类就整表位移，
+        /// 所以存档一律认 FullName，只有网络包才用索引
+        /// </summary>
+        public static QuickHackDef GetByFullName(string fullName) {
+            if (string.IsNullOrEmpty(fullName)) {
+                return null;
+            }
+            return FullNameToInstance.TryGetValue(fullName, out var inst) ? inst : null;
         }
 
         #endregion
@@ -69,6 +82,8 @@ namespace CalamityOverhaul.Content.HackTimes
         public QuickHackCategory Category { get; set; } = QuickHackCategory.Lethal;
         /// <summary>支持目标类型，可按位或</summary>
         public HackTargetKind SupportedTargets { get; set; } = HackTargetKind.Npc;
+        /// <summary>出厂即持有；靠芯片解锁的协议在 SetDefaults 里设 false</summary>
+        public bool UnlockedByDefault { get; set; } = true;
 
         #endregion
 
@@ -79,6 +94,7 @@ namespace CalamityOverhaul.Content.HackTimes
             SlotIndex = Instances.Count - 1;
             TypeToID[GetType()] = SlotIndex;
             IDToInstance[SlotIndex] = this;
+            FullNameToInstance[FullName] = this;
         }
 
         public override void VaultSetup() {
@@ -91,6 +107,7 @@ namespace CalamityOverhaul.Content.HackTimes
         public override void Unload() {
             TypeToID.Clear();
             IDToInstance.Clear();
+            FullNameToInstance.Clear();
         }
 
         #endregion

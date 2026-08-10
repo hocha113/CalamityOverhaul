@@ -729,6 +729,11 @@ HackTime: {
 	// FooterCost: COST {0} RAM
 	AccessDeniedTitle: Hack-Time nicht verfügbar
 	AccessDeniedDesc: Verbinde eine intelligente Waffe oder installiere Netrunner-Cyberware, um Hack-Fähigkeiten zu nutzen.
+	// ProtocolsOwned: "[{0}/{1} PROTOCOLS]"
+	// ProtocolLockedTitle: PROTOCOL ENCRYPTED
+	// ProtocolLockedHint: This protocol is not in your daemon library. Use the matching protocol chip to write it in.
+	// ChipGrants: Writes protocol: {0}
+	// ChipAlreadyOwned: Already in your daemon library.
 }
 
 DecryptionStrings: {

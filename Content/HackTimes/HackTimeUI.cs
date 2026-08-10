@@ -1,5 +1,6 @@
 ﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria.GameInput;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
@@ -33,12 +34,22 @@ namespace CalamityOverhaul.Content.HackTimes
 
             bool mouseOnPanel = Panel.ContainsMouse();
             UpdateClickSelection(mouseOnPanel);
+            UpdateScroll();
 
             //面板悬停拦截穿透
             hoverInMainPage = mouseOnPanel;
             if (hoverInMainPage) {
                 player.mouseInterface = true;
             }
+        }
+
+        private void UpdateScroll() {
+            if (!HackTime.Active || !Panel.CanScroll || !Panel.ViewportContainsMouse()) return;
+            int delta = PlayerInput.ScrollWheelDeltaForUI;
+            if (delta == 0) return;
+            Panel.HandleScroll(delta);
+            //不锁的话滚轮会同时翻快捷栏，骇入时快捷栏虽被隐藏但物品仍会换
+            PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/HackTimePanel");
         }
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -71,7 +82,7 @@ namespace CalamityOverhaul.Content.HackTimes
             if (mouseOnPanel) {
                 //无限模式点击协议蓄力
                 if (HackTime.InfiniteHack) {
-                    if (Panel.HasHoveredSlot && !InfiniteHack.IsActive)
+                    if (Panel.HasHoveredSlot && !Panel.HoveredSlotLocked && !InfiniteHack.IsActive)
                         InfiniteHack.BeginCharge();
                 }
                 else {

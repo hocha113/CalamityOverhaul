@@ -1603,6 +1603,11 @@ RamRecoveryUpgradeChip: {
 	Tooltip: Permanently increases base RAM recovery speed by 0.05 per second
 }
 
+MeltdownChip: {
+	DisplayName: Meltdown Protocol Chip
+	Tooltip: One-time write; unusable once the protocol is in your library
+}
+
 Mewtwo: {
 	DisplayName: Superdream Chip
 	Tooltip: Use to enter the Superdream

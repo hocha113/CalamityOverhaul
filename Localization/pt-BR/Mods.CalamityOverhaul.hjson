@@ -137,6 +137,11 @@ QuickHack: {
 		DisplayName: Transmissao de Virus
 		Description: Injeta codigo de worm na torre de sinal, fazendo-a emitir ondas eletromagneticas ciberneticas que causam curto-circuito em todas as torres dentro do alcance de transmissao por uma longa duracao.
 	}
+
+	MeltdownProtocol: {
+		// DisplayName: Meltdown Protocol
+		// Description: Locks the target's heat sinks shut; four seconds later it cooks off, catching nearby enemies.
+	}
 }
 
 HackTargetType: {

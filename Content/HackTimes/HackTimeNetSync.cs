@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.HackTimes
         EffectApply,
         EffectProgress,
         EffectRemove,
+        //新操作一律追加在末尾，已发布的编号是线上格式的一部分
+        OwnedSnapshot,
     }
 
     internal enum HackRequestResultCode : byte
@@ -33,6 +35,7 @@ namespace CalamityOverhaul.Content.HackTimes
         InsufficientRam,
         QueueFull,
         InvalidPayload,
+        ProtocolLocked,
     }
 
     internal readonly record struct HackNetworkTarget(
@@ -145,6 +148,7 @@ namespace CalamityOverhaul.Content.HackTimes
             if (Main.myPlayer < 0 || Main.myPlayer >= Main.maxPlayers) return false;
             Player player = Main.player[Main.myPlayer];
             if (player?.active != true || player.dead
+                || !HackProtocolOwned.Owns(player, hack)
                 || !RamSystem.TryAllocateRequest(player, out RamRequestToken token)) {
                 return false;
             }
@@ -207,11 +211,69 @@ namespace CalamityOverhaul.Content.HackTimes
                     case HackNetOperation.EffectRemove:
                         HandleEffectRemove(reader);
                         break;
+                    case HackNetOperation.OwnedSnapshot:
+                        HandleOwnedSnapshot(reader, whoAmI);
+                        break;
                 }
             } catch (EndOfStreamException) {
             } catch (IOException) {
             }
         }
+
+        #region 协议持有快照
+
+        /// <summary>
+        /// 本机持有集上报权威端。持有集归客户端所有，服务端只是拿到校验输入，
+        /// 所以这里是单向上行，没有回执也没有下发
+        /// </summary>
+        internal static void SendOwnedSnapshot(Player player) {
+            if (Main.netMode != NetmodeID.MultiplayerClient || player == null
+                || player.whoAmI != Main.myPlayer
+                || !player.TryGetModPlayer(out HackTimePlayer htp)) {
+                return;
+            }
+            HackProtocolOwned.EnsureSeed(htp);
+
+            List<int> indices = [];
+            foreach (string fullName in htp.OwnedProtocols) {
+                QuickHackDef hack = QuickHackDef.GetByFullName(fullName);
+                if (hack != null && hack.SlotIndex >= 0 && hack.SlotIndex < QuickHackDef.Count) {
+                    indices.Add(hack.SlotIndex);
+                }
+            }
+
+            ModPacket packet = NewPacket(HackNetOperation.OwnedSnapshot);
+            packet.Write((ushort)indices.Count);
+            for (int i = 0; i < indices.Count; i++) {
+                packet.Write((ushort)indices[i]);
+            }
+            packet.Send();
+        }
+
+        private static void HandleOwnedSnapshot(BinaryReader reader, int whoAmI) {
+            //先把负载读干净再做守卫：CWRNetWork 让所有 NetHandle 串行共用同一个 reader，
+            //提前 return 会把剩余条目留在流里，同包后续分支全部错位
+            int count = reader.ReadUInt16();
+            List<QuickHackDef> hacks = [];
+            for (int i = 0; i < count; i++) {
+                int slotIndex = reader.ReadUInt16();
+                QuickHackDef hack = QuickHackDef.GetByIndex(slotIndex);
+                if (hack != null) {
+                    hacks.Add(hack);
+                }
+            }
+
+            if (Main.netMode != NetmodeID.Server || !IsValidPlayerIndex(whoAmI)) {
+                return;
+            }
+            Player player = Main.player[whoAmI];
+            if (player?.active != true) {
+                return;
+            }
+            HackProtocolOwned.ApplyNetworkSnapshot(player, hacks);
+        }
+
+        #endregion
 
         private static void HandleRequest(BinaryReader reader, int whoAmI) {
             uint sessionId = reader.ReadUInt32();
@@ -362,6 +424,8 @@ namespace CalamityOverhaul.Content.HackTimes
                 || hack.RamCost < 0 || hack.RamCost > RamSystem.MaxMutationAmount) {
                 return HackRequestResultCode.InvalidProtocol;
             }
+            if (!HasProtocolAuthority(player, hack))
+                return HackRequestResultCode.ProtocolLocked;
             if (target == null || !target.IsValid || !target.IsHackable)
                 return HackRequestResultCode.InvalidTarget;
             HackTargetKind kind = target.TargetType?.Kind ?? HackTargetKind.None;
@@ -382,6 +446,22 @@ namespace CalamityOverhaul.Content.HackTimes
             if (!HackTimeAccess.CanUse(player) || !hack.CanApplyTo(target, player))
                 return HackRequestResultCode.Unavailable;
             return HackRequestResultCode.Success;
+        }
+
+        /// <summary>
+        /// 持有校验。服务端在收到该玩家快照前一律放行——进世界时快照与首个请求存在竞态，
+        /// 无脑拒会在联机下全员误杀。持有集本就是客户端自报的，这里不是反作弊面
+        /// </summary>
+        private static bool HasProtocolAuthority(Player player, QuickHackDef hack) {
+            if (hack.UnlockedByDefault) {
+                return true;
+            }
+            if (Main.netMode == NetmodeID.Server
+                && (!player.TryGetModPlayer(out HackTimePlayer htp)
+                    || !htp.OwnedSnapshotReceived)) {
+                return true;
+            }
+            return HackProtocolOwned.Owns(player, hack);
         }
 
         private static bool CompleteRequest(Player player, RamRequestToken request,

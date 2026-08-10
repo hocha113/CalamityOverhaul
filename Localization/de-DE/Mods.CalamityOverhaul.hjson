@@ -137,6 +137,11 @@ QuickHack: {
 		DisplayName: Virus-Broadcast
 		Description: Injiziert Wurmcode in den Signalturm, sodass er Cyber-EMP-Wellen aussendet und alle Geschütze im Sendebereich lange Zeit kurzschließt.
 	}
+
+	MeltdownProtocol: {
+		// DisplayName: Meltdown Protocol
+		// Description: Locks the target's heat sinks shut; four seconds later it cooks off, catching nearby enemies.
+	}
 }
 
 HackTargetType: {

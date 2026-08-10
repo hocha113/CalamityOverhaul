@@ -137,6 +137,11 @@ QuickHack: {
 		DisplayName: Virus Broadcast
 		Description: Injects worm code into the signal tower, causing it to emit cyber EMP waves that short-circuit all turrets within broadcast range for a long duration.
 	}
+
+	MeltdownProtocol: {
+		DisplayName: Meltdown Protocol
+		Description: Locks the target's heat sinks shut; four seconds later it cooks off, catching nearby enemies.
+	}
 }
 
 HackTargetType: {

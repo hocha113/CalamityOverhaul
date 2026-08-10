@@ -1596,6 +1596,11 @@ RamRecoveryUpgradeChip: {
 	Tooltip: Aumenta permanentemente la velocidad base de recuperación de RAM en 0,05 por segundo
 }
 
+MeltdownChip: {
+	// DisplayName: Meltdown Protocol Chip
+	// Tooltip: One-time write; unusable once the protocol is in your library
+}
+
 Mewtwo: {
 	DisplayName: Chip de braindance
 	Tooltip: Úsalo para entrar en un braindance

@@ -1579,6 +1579,11 @@ RamRecoveryUpgradeChip: {
 	Tooltip: 使用后永久增加0.05点每秒基础RAM恢复速度
 }
 
+MeltdownChip: {
+	DisplayName: 熔毁协议芯片
+	Tooltip: 一次性写入，已写入后无法再次使用
+}
+
 Mewtwo: {
 	DisplayName: 超梦芯片
 	Tooltip: 使用后进入超梦

@@ -16,13 +16,18 @@ namespace CalamityOverhaul.Content.HackTimes
         private float[] slotFlyIn;//0..1
         private float[] slotHoverAnim;
         private float[] slotGlitchSeed;
-        //悬停检测用
+        //悬停检测用，已按视口裁剪，滚出去的部分不吃鼠标
         private Rectangle[] slotRects;
         //分组标题造成的纵偏
         private float[] slotYOffset;
         private bool[] slotGroupHead;
+        //未持有协议，显示为加密暗格
+        private bool[] slotLocked;
         private int hoveredSlot = -1;
         public bool HasHoveredSlot => hoveredSlot >= 0;
+        /// <summary>悬停行是否为未持有的加密暗格</summary>
+        public bool HoveredSlotLocked => hoveredSlot >= 0 && slotLocked != null
+            && hoveredSlot < slotLocked.Length && slotLocked[hoveredSlot];
         /// <summary>悬停协议实际 RAM，无悬停为 0，弧预扣用</summary>
         public int HoveredCostPreview { get; private set; }
         private float timer;
@@ -35,6 +40,12 @@ namespace CalamityOverhaul.Content.HackTimes
         //类别分组后显示序 → 全局协议索引
         private readonly List<int> displayIndices = [];
         private int displayCount;
+        //页脚计数用，Show 时快照一次
+        private int ownedCount;
+        //滚动位移，正值表示列表上移
+        private float scrollOffset;
+        private float scrollTarget;
+        private float maxScroll;
 
         #endregion
 
@@ -48,7 +59,15 @@ namespace CalamityOverhaul.Content.HackTimes
         private const float GroupGapBase = 24f;
         //行高压缩下限，再低装不下名称加徽章两行
         private const float RowHeightMin = 40f;
-        private const float MinLayoutScale = 0.62f;
+        //压缩只用来吸收一两行的溢出，再多交给滚动；压到 0.62 那种挤法已被滚动取代
+        private const float MinLayoutScale = 0.85f;
+        //视口上下缘的软化带宽，跨界行按此淡出，替代 scissor
+        private const float ClipFeather = 16f;
+        //滚轮一格走的像素，按行高折算
+        private const float ScrollStepRows = 0.9f;
+        //滚动条轨道相对行右缘的偏移与宽度
+        private const float ScrollBarOffsetX = 12f;
+        private const float ScrollBarWidth = 3f;
         //旗标左端斜切宽（尖端指向屏幕中心）
         private const float TaperWidth = 12f;
         //成本大格宽
@@ -76,6 +95,9 @@ namespace CalamityOverhaul.Content.HackTimes
         //解码乱码字符池
         private const string ScrambleChars = "0123456789ABCDEF#$%&";
 
+        //暗格主色，刻意不用 Danger——那是"RAM 不足"的语义，不是"没这把钥匙"
+        private static readonly Color LockedAccent = new(96, 112, 140);
+
         #endregion
 
         #region 每帧解算的排版
@@ -85,6 +107,9 @@ namespace CalamityOverhaul.Content.HackTimes
         private float groupGap = GroupGapBase;
         private float listStartY;
         private float listHeight;
+        //可见窗口，列表装不下时小于 listHeight，差额即滚动行程
+        private float viewportTop;
+        private float viewportHeight;
         //只含无悬停态，见 MeasureStatusFooterHeight
         private float footerHeight;
 
@@ -97,12 +122,19 @@ namespace CalamityOverhaul.Content.HackTimes
             List<int> filtered = [];
             QuickHackDef.GetFilteredIndices(targetKind, filtered);
 
+            //未持有的协议不剔除，占位成加密暗格；类别内已持有的排前，免得能用的被暗格切碎
+            Player local = Main.LocalPlayer;
             displayIndices.Clear();
             foreach (QuickHackCategory cat in Enum.GetValues<QuickHackCategory>()) {
-                for (int i = 0; i < filtered.Count; i++) {
-                    var hack = QuickHackDef.GetByIndex(filtered[i]);
-                    if (hack != null && hack.Category == cat)
+                for (int pass = 0; pass < 2; pass++) {
+                    bool wantLocked = pass == 1;
+                    for (int i = 0; i < filtered.Count; i++) {
+                        var hack = QuickHackDef.GetByIndex(filtered[i]);
+                        if (hack == null || hack.Category != cat) continue;
+                        bool locked = !HackProtocolOwned.Owns(local, hack);
+                        if (locked != wantLocked) continue;
                         displayIndices.Add(filtered[i]);
+                    }
                 }
             }
             displayCount = displayIndices.Count;
@@ -118,15 +150,18 @@ namespace CalamityOverhaul.Content.HackTimes
                 slotRects = new Rectangle[displayCount];
                 slotYOffset = new float[displayCount];
                 slotGroupHead = new bool[displayCount];
+                slotLocked = new bool[displayCount];
             }
 
-            //标记分组首行，纵偏由 RecomputeLayout 按当前 groupGap 累加
+            //标记分组首行与暗格，纵偏由 RecomputeLayout 按当前 groupGap 累加
             QuickHackCategory? lastCat = null;
             for (int i = 0; i < displayCount; i++) {
                 var hack = QuickHackDef.GetByIndex(displayIndices[i]);
                 slotGroupHead[i] = lastCat == null || hack.Category != lastCat.Value;
+                slotLocked[i] = !HackProtocolOwned.Owns(local, hack);
                 lastCat = hack.Category;
             }
+            ownedCount = HackProtocolOwned.CountOwned(local);
 
             visible = true;
             hoveredSlot = -1;
@@ -134,6 +169,8 @@ namespace CalamityOverhaul.Content.HackTimes
             revealTime = 0f;
             glitchBandY = -100f;
             glitchBandCooldown = 0.5f;
+            scrollOffset = 0f;
+            scrollTarget = 0f;
             Array.Clear(slotFlyIn);
             Array.Clear(slotHoverAnim);
             for (int i = 0; i < slotGlitchSeed.Length; i++)
@@ -188,8 +225,8 @@ namespace CalamityOverhaul.Content.HackTimes
             glitchBandCooldown -= 0.016f;
             if (glitchBandCooldown <= 0f) {
                 glitchBandY += 600f * 0.016f;
-                if (glitchBandY > listStartY + listHeight + 60f) {
-                    glitchBandY = listStartY - 50f;
+                if (glitchBandY > viewportTop + viewportHeight + 60f) {
+                    glitchBandY = viewportTop - 50f;
                     glitchBandCooldown = 2f + Main.rand.NextFloat() * 3f;
                 }
             }
@@ -205,9 +242,14 @@ namespace CalamityOverhaul.Content.HackTimes
             for (int i = 0; i < slotRects.Length; i++) {
                 if (slotFlyIn[i] < 0.8f) continue;
                 if (slotRects[i].Contains(mx, my)) {
-                    //禁用槽位不响应悬停
                     int globalIdx = GetGlobalIndex(i);
                     var hack = QuickHackDef.GetByIndex(globalIdx);
+                    //暗格仍然响应悬停，页脚要出"缺芯片"的提示；但绝不预扣 RAM
+                    if (IsLocked(i)) {
+                        hoveredSlot = i;
+                        break;
+                    }
+                    //禁用槽位不响应悬停
                     var qs = Queue?.GetSlotState(globalIdx, HackTime.CurrentScanTarget) ?? QueueSlotState.None;
                     bool disabled = hack != null && !RamSystem.CanAfford(hack.RamCost)
                         || qs != QueueSlotState.None;
@@ -236,9 +278,15 @@ namespace CalamityOverhaul.Content.HackTimes
             return -1;
         }
 
+        private bool IsLocked(int displaySlot)
+            => slotLocked != null && displaySlot >= 0
+                && displaySlot < slotLocked.Length && slotLocked[displaySlot];
+
         public void HandleClick() {
             if (!visible) return;
             if (hoveredSlot < 0 || Queue == null) return;
+            //暗格点不动，队列与 RAM 一概不碰
+            if (IsLocked(hoveredSlot)) return;
 
             int globalIdx = GetGlobalIndex(hoveredSlot);
             var hack = QuickHackDef.GetByIndex(globalIdx);
@@ -309,6 +357,8 @@ namespace CalamityOverhaul.Content.HackTimes
             if (displayCount <= 0 || slotGroupHead == null) {
                 listHeight = 0f;
                 footerHeight = 0f;
+                viewportHeight = 0f;
+                maxScroll = 0f;
                 return;
             }
 
@@ -339,17 +389,73 @@ namespace CalamityOverhaul.Content.HackTimes
 
             listHeight = MeasureListHeight(rowHeight, rowGap, groupGap);
 
+            //视口取列表高与可用高的较小者，差额就是滚动行程
+            viewportHeight = avail > 0f ? MathF.Min(listHeight, avail) : listHeight;
+            maxScroll = MathF.Max(listHeight - viewportHeight, 0f);
+
             //含页脚整块居中，再夹进 [避让线, 屏底安全线]
-            float centered = (screenH - (listHeight + footerHeight)) * 0.5f;
-            float maxStart = screenH - HackTheme.BottomSafe - listHeight - footerHeight;
-            //纵向压到下限仍装不下时（小屏 + 高 UI 缩放 + 大 MaxRam），避让线退让到刚好装下
+            float centered = (screenH - (viewportHeight + footerHeight)) * 0.5f;
+            float maxStart = screenH - HackTheme.BottomSafe - viewportHeight - footerHeight;
+            //可用高为负时（小屏 + 高 UI 缩放 + 大 MaxRam），避让线退让到刚好装下
             //——宁可与弧的装饰环重叠，也不把可交互的行推出屏外
             float minStart = MathF.Min(minY, MathF.Max(maxStart, 0f));
-            listStartY = MathHelper.Clamp(centered, minStart, MathF.Max(minStart, maxStart));
+            viewportTop = MathHelper.Clamp(centered, minStart, MathF.Max(minStart, maxStart));
+
+            //目标先夹再缓动，行高变化导致行程缩水时不会卡在越界值上
+            scrollTarget = MathHelper.Clamp(scrollTarget, 0f, maxScroll);
+            scrollOffset = MathHelper.Lerp(scrollOffset, scrollTarget, 0.2f);
+            if (MathF.Abs(scrollOffset - scrollTarget) < 0.3f) scrollOffset = scrollTarget;
+            scrollOffset = MathHelper.Clamp(scrollOffset, 0f, maxScroll);
+
+            listStartY = viewportTop - scrollOffset;
         }
 
         private float GetRowY(int i) {
             return listStartY + i * (rowHeight + rowGap) + slotYOffset[i];
+        }
+
+        //行在视口内的可见度，跨界处按 ClipFeather 淡出，替代 scissor
+        private float GetClipFade(float rowY) {
+            if (maxScroll <= 0.5f) return 1f;
+            float enterTop = (rowY + rowHeight - viewportTop) / ClipFeather;
+            float enterBottom = (viewportTop + viewportHeight - rowY) / ClipFeather;
+            return MathHelper.Clamp(MathF.Min(enterTop, enterBottom), 0f, 1f);
+        }
+
+        //电路树干线的纵向跨度，夹在视口内，滚动时干线不会拖到屏外
+        private void GetTrunkSpan(out float top, out float bottom) {
+            float first = GetRowY(0) + rowHeight * 0.5f;
+            float last = GetRowY(displayCount - 1) + rowHeight * 0.5f;
+            float lo = viewportTop + 2f;
+            float hi = viewportTop + MathF.Max(viewportHeight - 2f, 2f);
+            top = MathHelper.Clamp(first, lo, hi);
+            bottom = MathHelper.Clamp(last, lo, hi);
+        }
+
+        #endregion
+
+        #region 滚动
+
+        /// <summary>滚轮推进，delta 为原版 UI 滚轮增量</summary>
+        public void HandleScroll(int delta) {
+            if (!visible || delta == 0 || maxScroll <= 0.5f) return;
+            scrollTarget = MathHelper.Clamp(
+                scrollTarget - Math.Sign(delta) * (rowHeight + rowGap) * ScrollStepRows,
+                0f, maxScroll);
+        }
+
+        /// <summary>列表是否溢出视口，UI 层据此决定要不要吃掉滚轮</summary>
+        public bool CanScroll => visible && maxScroll > 0.5f;
+
+        /// <summary>
+        /// 鼠标是否落在列表视口内。比逐行命中宽松：行与行之间那几像素空隙也算，
+        /// 否则光标停在缝里滚轮就失灵
+        /// </summary>
+        public bool ViewportContainsMouse() {
+            if (!visible || viewportHeight <= 1f) return false;
+            GetColumnBand(out float x0, out float x1);
+            return Main.mouseX >= x0 && Main.mouseX <= x1
+                && Main.mouseY >= viewportTop && Main.mouseY <= viewportTop + viewportHeight;
         }
 
         #endregion
@@ -395,7 +501,9 @@ namespace CalamityOverhaul.Content.HackTimes
             DrawGroupHeaders(sb, alpha, baseX);
 
             DrawGlitchBand(sb, px, alpha, baseX);
-            DrawFooter(sb, px, alpha, baseX, listStartY + listHeight + FooterTopGap);
+            DrawScrollBar(sb, px, alpha, baseX);
+            //页脚锚在视口底，不随滚动上下跑
+            DrawFooter(sb, px, alpha, baseX, viewportTop + viewportHeight + FooterTopGap);
         }
 
         #endregion
@@ -412,7 +520,10 @@ namespace CalamityOverhaul.Content.HackTimes
             public QueueSlotState QueueState;
             public float QueueProgress;
             public bool Disabled;
+            public bool Locked;
             public bool Skip;
+            //视口裁剪可见度，跨上下缘时 <1
+            public float Clip;
             public Color AccentColor;
         }
 
@@ -438,11 +549,23 @@ namespace CalamityOverhaul.Content.HackTimes
                     continue;
                 }
 
+                float y = GetRowY(i);
+                rs.Clip = GetClipFade(y);
+                if (rs.Clip <= 0.004f) {
+                    slotRects[i] = Rectangle.Empty;
+                    rs.Skip = true;
+                    continue;
+                }
+
                 rs.Fly = fly;
                 rs.Hover = slotHoverAnim[i];
+                rs.Locked = IsLocked(i);
                 rs.QueueState = Queue?.GetSlotState(globalIdx, HackTime.CurrentScanTarget) ?? QueueSlotState.None;
                 rs.QueueProgress = Queue?.GetSlotProgress(globalIdx, HackTime.CurrentScanTarget) ?? 0f;
-                rs.Disabled = !RamSystem.CanAfford(rs.Hack.RamCost) || rs.QueueState is QueueSlotState.Uploading or QueueSlotState.Queued;
+                //暗格不参与 RAM 判定，它缺的是钥匙不是内存
+                rs.Disabled = !rs.Locked
+                    && (!RamSystem.CanAfford(rs.Hack.RamCost)
+                        || rs.QueueState is QueueSlotState.Uploading or QueueSlotState.Queued);
                 if (rs.Disabled && rs.QueueState == QueueSlotState.None) rs.Hover = 0f;
 
                 //飞入偏移（弹性过冲）+ 故障抖动
@@ -452,23 +575,39 @@ namespace CalamityOverhaul.Content.HackTimes
                     float seed = slotGlitchSeed[i] + timer * 25f;
                     rs.Glitch = (MathF.Sin(seed) + MathF.Sin(seed * 2.7f) * 0.5f) * (1f - fly);
                 }
+                //暗格常驻轻微抖动，读作信号没解开
+                if (rs.Locked) {
+                    float lockSeed = slotGlitchSeed[i] * 0.7f + timer * 6f;
+                    rs.Glitch += MathF.Sin(lockSeed) * MathF.Sin(lockSeed * 0.31f) * 0.35f;
+                }
 
-                float y = GetRowY(i);
                 //悬停向屏幕中心（左）扩展
                 float hoverExpand = rs.Hover * 14f;
                 float x = baseX + flyOffset + rs.Glitch * 16f - hoverExpand;
                 Rectangle rect = new((int)x, (int)y, (int)(RowWidth + hoverExpand), (int)rowHeight);
-                slotRects[i] = rect;
                 rs.Rect = rect;
+                //命中框按视口纵向裁剪，滚出去的半行不吃鼠标
+                slotRects[i] = ClipHitRect(rect);
 
                 //整行主色由状态决定
                 rs.AccentColor = ResolveRowAccent(in rs, i);
             }
         }
 
+        //只裁纵向：横向在飞入期会远超列带，按列带裁会把入场行的命中框抹掉
+        private Rectangle ClipHitRect(Rectangle rect) {
+            if (maxScroll <= 0.5f) return rect;
+            int top = Math.Max(rect.Y, (int)viewportTop);
+            int bottom = Math.Min(rect.Bottom, (int)(viewportTop + viewportHeight));
+            return bottom > top
+                ? new Rectangle(rect.X, top, rect.Width, bottom - top)
+                : Rectangle.Empty;
+        }
+
         //红不可用、琥珀队列/上传、主题色可用
         private Color ResolveRowAccent(in RowState rs, int index) {
             Color accent;
+            if (rs.Locked) return LockedAccent;
             if (rs.QueueState == QueueSlotState.Uploading) accent = HackTheme.Uploading;
             else if (rs.QueueState == QueueSlotState.Queued) accent = Color.Lerp(HackTheme.Uploading, HackTheme.BgSlotHover, 0.35f);
             else if (rs.QueueState == QueueSlotState.Completed) accent = HackTheme.Accent;
@@ -486,6 +625,10 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #endregion
 
+        //整行不透明度：入场淡入 × 视口裁剪
+        private static float RowAlpha(in RowState rs, float alpha)
+            => alpha * Math.Min(rs.Fly * 2.5f, 1f) * rs.Clip;
+
         #region 行背景
 
         private void DrawRowBackgroundsShader(SpriteBatch sb, Texture2D px, Effect deck, Span<RowState> rows, float alpha) {
@@ -497,7 +640,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 ref RowState rs = ref rows[i];
                 if (rs.Skip) continue;
 
-                float rowAlpha = alpha * Math.Min(rs.Fly * 2.5f, 1f);
+                float rowAlpha = RowAlpha(in rs, alpha);
                 deck.Parameters["uTime"]?.SetValue(timer + slotGlitchSeed[i]);
                 deck.Parameters["uAlpha"]?.SetValue(rowAlpha);
                 deck.Parameters["uResolution"]?.SetValue(new Vector2(rs.Rect.Width, rs.Rect.Height));
@@ -505,7 +648,8 @@ namespace CalamityOverhaul.Content.HackTimes
                 deck.Parameters["uTaperRight"]?.SetValue(0f);
                 deck.Parameters["uAccent"]?.SetValue(rs.AccentColor.ToVector3());
                 deck.Parameters["uHover"]?.SetValue(rs.Hover);
-                deck.Parameters["uDisabled"]?.SetValue(rs.Disabled && rs.QueueState == QueueSlotState.None ? 1f : 0f);
+                deck.Parameters["uDisabled"]?.SetValue(
+                    rs.Locked || rs.Disabled && rs.QueueState == QueueSlotState.None ? 1f : 0f);
                 deck.Parameters["uProgress"]?.SetValue(rs.QueueState == QueueSlotState.Uploading ? rs.QueueProgress : 0f);
                 deck.Parameters["uGlitch"]?.SetValue(Math.Abs(rs.Glitch));
                 deck.CurrentTechnique.Passes[0].Apply();
@@ -521,10 +665,12 @@ namespace CalamityOverhaul.Content.HackTimes
             for (int i = 0; i < displayCount; i++) {
                 ref RowState rs = ref rows[i];
                 if (rs.Skip) continue;
-                float rowAlpha = alpha * Math.Min(rs.Fly * 2.5f, 1f);
+                float rowAlpha = RowAlpha(in rs, alpha);
 
                 Color bg = Color.Lerp(HackTheme.BgSlot, HackTheme.BgSlotHover, rs.Hover * 0.6f);
-                if (rs.Disabled && rs.QueueState == QueueSlotState.None)
+                if (rs.Locked)
+                    bg = Color.Lerp(HackTheme.BgDarkest, HackTheme.BgSection, 0.5f);
+                else if (rs.Disabled && rs.QueueState == QueueSlotState.None)
                     bg = Color.Lerp(HackTheme.BgDarkest, new Color(45, 8, 8), 0.4f);
                 else if (rs.QueueState == QueueSlotState.Uploading)
                     bg = Color.Lerp(bg, HackTheme.Uploading, 0.08f);
@@ -546,8 +692,13 @@ namespace CalamityOverhaul.Content.HackTimes
         #region 行前景
 
         private void DrawRowForeground(SpriteBatch sb, Texture2D px, float alpha, int index, in RowState rs) {
+            if (rs.Locked) {
+                DrawLockedRowForeground(sb, px, alpha, index, in rs);
+                return;
+            }
+
             Rectangle rect = rs.Rect;
-            float rowAlpha = alpha * Math.Min(rs.Fly * 2.5f, 1f);
+            float rowAlpha = RowAlpha(in rs, alpha);
             Color accent = rs.AccentColor;
             bool idleDisabled = rs.Disabled && rs.QueueState == QueueSlotState.None;
 
@@ -717,6 +868,94 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
+        /// <summary>
+        /// 加密暗格：字段一律涂黑，只留类别与轮廓。<br/>
+        /// 数值不是"未知"而是"读不出来"，所以成本位写 ## 而非 0
+        /// </summary>
+        private void DrawLockedRowForeground(SpriteBatch sb, Texture2D px, float alpha, int index, in RowState rs) {
+            Rectangle rect = rs.Rect;
+            float rowAlpha = RowAlpha(in rs, alpha);
+            Color accent = rs.AccentColor;
+            var font = FontAssets.MouseText.Value;
+
+            //---- 成本格：读数被涂黑 ----
+            Rectangle costCell = new(rect.X + (int)TaperWidth, rect.Y, (int)CostCellWidth, rect.Height);
+            sb.Draw(px, new Rectangle(costCell.Right, rect.Y + 4, 1, rect.Height - 8),
+                HackTheme.SrcPixel, accent * (rowAlpha * 0.30f));
+
+            const string RedactedCost = "##";
+            Vector2 costSize = font.MeasureString(RedactedCost) * FontCost;
+            Utils.DrawBorderString(sb, RedactedCost,
+                new Vector2((int)(costCell.Center.X - costSize.X * 0.5f), rect.Y + 4),
+                accent * (rowAlpha * 0.75f), FontCost);
+            Vector2 ramCapSize = font.MeasureString("RAM") * 0.5f;
+            HackTheme.DrawRawText(sb, "RAM",
+                new Vector2(costCell.Center.X - ramCapSize.X * 0.5f, rect.Bottom - 17),
+                accent * (rowAlpha * 0.45f), 0.5f);
+
+            //类别刻痕保留：告诉玩家这是哪一类的钥匙，暗格才有目标感
+            Color catColor = HackTheme.CategoryColor(rs.Hack.Category);
+            HackTheme.DrawLine(sb,
+                new Vector2(costCell.X + 1, rect.Y + 6),
+                new Vector2(costCell.X + 7, rect.Y + 1),
+                1.4f, Color.Lerp(catColor, LockedAccent, 0.55f) * (rowAlpha * 0.8f));
+
+            //---- 协议名：常驻乱码，永不解码 ----
+            float nameX = costCell.Right + 12;
+            float nameY = rect.Y + 5;
+            string scrambled = GetScrambledName(rs.Hack.DisplayName.Value, index);
+            Utils.DrawBorderString(sb, scrambled, new Vector2(nameX, nameY),
+                Color.Lerp(accent, HackTheme.TextNormal, 0.35f) * (rowAlpha * 0.9f), FontName);
+
+            //---- 已锁定徽章 ----
+            HackTheme.DrawBadge(sb, new Vector2(nameX, rect.Bottom - 22),
+                HackTime.Locked.Value, accent, rowAlpha, 0.56f);
+
+            //右下类别标签，与常态同位置
+            string catLabel = HackTheme.CategoryLabel(rs.Hack.Category);
+            Vector2 cls = font.MeasureString(catLabel) * FontMicro;
+            Utils.DrawBorderString(sb, catLabel,
+                new Vector2((int)(rect.Right - cls.X - 10), (int)(rect.Bottom - cls.Y - 4)),
+                Color.Lerp(catColor, LockedAccent, 0.5f) * (rowAlpha * 0.7f), FontMicro);
+
+            //---- 整行剖面纹 ----
+            Rectangle hatchArea = new(costCell.Right + 2, rect.Y + 2,
+                rect.Width - costCell.Width - (int)TaperWidth - 4, rect.Height - 4);
+            HackTheme.DrawHatch(sb, hatchArea, 9f, accent * (rowAlpha * 0.13f));
+
+            //---- 描边：比常态更暗，悬停才提亮 ----
+            Color edge = accent * (rowAlpha * (0.22f + rs.Hover * 0.35f));
+            sb.Draw(px, new Rectangle(rect.X + (int)TaperWidth, rect.Y, rect.Width - (int)TaperWidth + 6, 1),
+                HackTheme.SrcPixel, edge);
+            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1),
+                HackTheme.SrcPixel, edge * 0.5f);
+            sb.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height),
+                HackTheme.SrcPixel, accent * (rowAlpha * (0.32f + rs.Hover * 0.4f)));
+            HackTheme.DrawLine(sb,
+                new Vector2(rect.X + TaperWidth, rect.Y),
+                new Vector2(rect.X, rect.Bottom),
+                1f, edge * 0.9f);
+
+            if (rs.Hover > 0.15f) {
+                Color bracket = accent * (rowAlpha * rs.Hover * 0.6f);
+                HackTheme.DrawCornerBracket(sb, new Vector2(rect.Right - 1, rect.Y), -1, 1, 7, 1f, bracket);
+                HackTheme.DrawCornerBracket(sb, new Vector2(rect.Right - 1, rect.Bottom - 1), -1, -1, 7, 1f, bracket);
+            }
+        }
+
+        //暗格名：按真名长度铺乱码，逐帧翻动
+        private string GetScrambledName(string name, int index) {
+            if (string.IsNullOrEmpty(name)) return string.Empty;
+            int frameSeed = (int)(timer * 12f) * 31 + index * 977;
+            Span<char> buf = stackalloc char[name.Length];
+            for (int c = 0; c < name.Length; c++) {
+                int h = frameSeed + c * 131;
+                h = h * 1103515245 + 12345;
+                buf[c] = ScrambleChars[(h & int.MaxValue) % ScrambleChars.Length];
+            }
+            return new string(buf);
+        }
+
         //入场未完时名称掺十六进制噪声
         private string GetDecodedName(string name, float fly, int index) {
             if (fly >= 0.92f || string.IsNullOrEmpty(name)) return name;
@@ -747,8 +986,15 @@ namespace CalamityOverhaul.Content.HackTimes
                 var hack = QuickHackDef.GetByIndex(GetGlobalIndex(i));
                 if (hack == null) continue;
 
+                float rowY = GetRowY(i);
+                float y = rowY - 20f;
+                //标题跟着自己那一行走：行滚没了就不画。
+                //允许探出视口上缘一点——那上面是 RAM 弧的留白，越界 20px 不碰到东西
+                if (maxScroll > 0.5f
+                    && (GetClipFade(rowY) <= 0.25f || y > viewportTop + viewportHeight - 8f)) {
+                    continue;
+                }
                 float headerAlpha = alpha * Math.Min(slotFlyIn[i] * 2f, 1f) * 0.9f;
-                float y = GetRowY(i) - 20f;
                 Color catColor = HackTheme.CategoryColor(hack.Category);
 
                 string label = HackTheme.CategoryLabel(hack.Category);
@@ -765,6 +1011,37 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #endregion
 
+        #region 滚动条
+
+        //列表溢出视口时才出现，细轨 + 主色滑块，无贴图
+        private void DrawScrollBar(SpriteBatch sb, Texture2D px, float alpha, float baseX) {
+            if (maxScroll <= 0.5f || viewportHeight <= 1f) return;
+
+            int trackX = (int)(baseX + RowWidth + ScrollBarOffsetX);
+            int trackW = (int)ScrollBarWidth;
+            int trackY = (int)viewportTop;
+            int trackH = (int)viewportHeight;
+
+            sb.Draw(px, new Rectangle(trackX, trackY, trackW, trackH),
+                HackTheme.SrcPixel, HackTheme.Border * (alpha * 0.55f));
+
+            float ratio = viewportHeight / MathF.Max(listHeight, 1f);
+            int thumbH = (int)MathF.Max(trackH * ratio, 18f);
+            float travel = MathF.Max(trackH - thumbH, 0f);
+            int thumbY = trackY + (int)(travel * (scrollOffset / MathF.Max(maxScroll, 1f)));
+
+            Color accent = HackTheme.Accent;
+            sb.Draw(px, new Rectangle(trackX, thumbY, trackW, thumbH),
+                HackTheme.SrcPixel, accent * (alpha * 0.75f));
+            //两端小帽，读作机械滑块而不是一条色带
+            sb.Draw(px, new Rectangle(trackX - 1, thumbY, trackW + 2, 1),
+                HackTheme.SrcPixel, accent * (alpha * 0.9f));
+            sb.Draw(px, new Rectangle(trackX - 1, thumbY + thumbH - 1, trackW + 2, 1),
+                HackTheme.SrcPixel, accent * (alpha * 0.9f));
+        }
+
+        #endregion
+
         #region 背景噪波与故障带
 
         //背景水平噪波
@@ -776,14 +1053,14 @@ namespace CalamityOverhaul.Content.HackTimes
             if (!anyVisible) return;
 
             GetColumnBand(out float x0, out float x1);
-            float regionH = listHeight + footerHeight + 20f;
+            float regionH = viewportHeight + footerHeight + 20f;
 
             float noiseAlpha = alpha * 0.022f;
             for (int dy = 0; dy < (int)regionH; dy += 3) {
                 float seed = dy * 0.73f + timer * 8f;
                 float brightness = MathF.Sin(seed) * 0.5f + 0.5f;
                 if (brightness < 0.3f) continue;
-                sb.Draw(px, new Rectangle((int)x0, (int)(listStartY - 10 + dy), (int)(x1 - x0), 1),
+                sb.Draw(px, new Rectangle((int)x0, (int)(viewportTop - 10 + dy), (int)(x1 - x0), 1),
                     HackTheme.SrcPixel, HackTheme.Accent * (noiseAlpha * brightness));
             }
         }
@@ -826,8 +1103,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
             if (wireProgress > 0.3f) {
                 float trunkProg = Math.Clamp((wireProgress - 0.3f) / 0.7f, 0f, 1f);
-                float firstCY = GetRowY(0) + rowHeight * 0.5f;
-                float lastCY = GetRowY(displayCount - 1) + rowHeight * 0.5f;
+                GetTrunkSpan(out float firstCY, out float lastCY);
                 float trunkTop = MathHelper.Lerp(screenCenter.Y, firstCY, trunkProg);
                 float trunkBot = MathHelper.Lerp(screenCenter.Y, lastCY, trunkProg);
                 //垂直干线保持实线（结构件）
@@ -838,6 +1114,8 @@ namespace CalamityOverhaul.Content.HackTimes
                     float fly = slotFlyIn[i];
                     if (fly < 0.05f) continue;
                     float itemCY = GetRowY(i) + rowHeight * 0.5f;
+                    float clip = GetClipFade(GetRowY(i));
+                    if (clip <= 0.004f) continue;
                     float branchEndX = slotRects[i] != Rectangle.Empty ? slotRects[i].X - 2 : baseX - 4;
 
                     int gi = GetGlobalIndex(i);
@@ -849,23 +1127,23 @@ namespace CalamityOverhaul.Content.HackTimes
 
                     if (lit) {
                         Color litColor = qs == QueueSlotState.Uploading
-                            ? HackTheme.Uploading * (wireAlpha * 1.6f)
-                            : HackTheme.Accent * (wireAlpha * 1.8f);
+                            ? HackTheme.Uploading * (wireAlpha * 1.6f * clip)
+                            : HackTheme.Accent * (wireAlpha * 1.8f * clip);
                         HackTheme.DrawLine(sb, p0, p1, 1.4f, litColor);
                         //末端菱形节点
                         HackTheme.DrawDiamond(sb, p1, 5f, litColor * 1.2f);
-                        HackTheme.DrawDiamond(sb, p1, 2.4f, HackTheme.BgDarkest * alpha);
+                        HackTheme.DrawDiamond(sb, p1, 2.4f, HackTheme.BgDarkest * (alpha * clip));
                     }
                     else {
                         Color idleColor = qs == QueueSlotState.Queued
-                            ? HackTheme.Uploading * (wireAlpha * 0.6f)
-                            : wireColor * 0.45f;
+                            ? HackTheme.Uploading * (wireAlpha * 0.6f * clip)
+                            : wireColor * (0.45f * clip);
                         HackTheme.DrawDashedLine(sb, p0, p1, 1f, idleColor, 4f, 6f);
                     }
 
                     //分组首行的主干节点
                     if (slotGroupHead[i]) {
-                        HackTheme.DrawDiamondOutline(sb, new Vector2(trunkX, itemCY), 4f, 1f, wireColor * 0.9f);
+                        HackTheme.DrawDiamondOutline(sb, new Vector2(trunkX, itemCY), 4f, 1f, wireColor * (0.9f * clip));
                     }
                 }
             }
@@ -881,8 +1159,7 @@ namespace CalamityOverhaul.Content.HackTimes
                     }
                     else {
                         float t = (flowT - 0.5f) / 0.5f;
-                        float tTop = GetRowY(0) + rowHeight * 0.5f;
-                        float tBot = GetRowY(displayCount - 1) + rowHeight * 0.5f;
+                        GetTrunkSpan(out float tTop, out float tBot);
                         flowPos = new Vector2(trunkX, MathHelper.Lerp(tTop, tBot, t));
                     }
                     Color dotGlow = HackTheme.Accent * (alpha * 0.28f * (1f - d * 0.3f));
@@ -894,6 +1171,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 for (int i = 0; i < displayCount; i++) {
                     int gi = GetGlobalIndex(i);
                     if (Queue == null || Queue.GetSlotState(gi, HackTime.CurrentScanTarget) != QueueSlotState.Uploading) continue;
+                    if (GetClipFade(GetRowY(i)) <= 0.004f) continue;
                     float itemCY = GetRowY(i) + rowHeight * 0.5f;
                     float branchEndX = slotRects[i] != Rectangle.Empty ? slotRects[i].X - 2 : baseX - 4;
                     float pulseT = timer * 2f % 1f;
@@ -923,7 +1201,12 @@ namespace CalamityOverhaul.Content.HackTimes
             if (hoveredSlot >= 0) {
                 var hack = QuickHackDef.GetByIndex(GetGlobalIndex(hoveredSlot));
                 if (hack != null) {
-                    DrawFooterDetail(sb, px, alpha, baseX, footerY, hack);
+                    if (IsLocked(hoveredSlot)) {
+                        DrawFooterLocked(sb, px, alpha, baseX, footerY, hack);
+                    }
+                    else {
+                        DrawFooterDetail(sb, px, alpha, baseX, footerY, hack);
+                    }
                     return;
                 }
             }
@@ -995,6 +1278,33 @@ namespace CalamityOverhaul.Content.HackTimes
                 HackTheme.TextBright * (alpha * 0.8f), FontMeta);
         }
 
+        //暗格详情：不透露协议本体，只说清缺什么
+        private void DrawFooterLocked(SpriteBatch sb, Texture2D px, float alpha, float baseX, float footerY, QuickHackDef hack) {
+            sb.Draw(px, new Rectangle((int)baseX, (int)footerY + 2, 2, 14), HackTheme.SrcPixel, LockedAccent * (alpha * 0.9f));
+            Utils.DrawBorderString(sb, HackTime.ProtocolLockedTitle.Value,
+                new Vector2((int)(baseX + 8), (int)(footerY - 2)),
+                Color.Lerp(LockedAccent, Color.White, 0.35f) * alpha, 0.66f);
+
+            string[] lines = VaultUtils.WrapTextArray(HackTime.ProtocolLockedHint.Value,
+                FontAssets.MouseText.Value, RowWidth - 16f, FontDesc,
+                ResolveDetailMaxLines(footerY), true);
+            float lineH = DescLineHeight();
+            float curY = footerY + 20f;
+            for (int li = 0; li < lines.Length; li++) {
+                if (string.IsNullOrEmpty(lines[li])) continue;
+                Utils.DrawBorderString(sb, lines[li].TrimEnd('-', ' '),
+                    new Vector2((int)(baseX + 8), (int)(curY + li * lineH)),
+                    HackTheme.TextNormal * (alpha * 0.85f), FontDesc);
+            }
+
+            //只露类别，给玩家一个找芯片的方向
+            float metaY = curY + lines.Length * lineH + 4f;
+            Utils.DrawBorderString(sb, HackTheme.CategoryLabel(hack.Category),
+                new Vector2((int)(baseX + 8), (int)metaY),
+                Color.Lerp(HackTheme.CategoryColor(hack.Category), Color.White, 0.2f) * (alpha * 0.85f),
+                FontMeta);
+        }
+
         //无悬停时的系统状态
         private void DrawFooterStatus(SpriteBatch sb, Texture2D px, float alpha, float baseX, float footerY) {
             float pulse = (MathF.Sin(timer * 3.5f) + 1f) * 0.5f;
@@ -1012,7 +1322,10 @@ namespace CalamityOverhaul.Content.HackTimes
             //伪十六进制 + 协议计数，无描边；按实测右对齐，本地化变长也不会压到状态文字
             var font = FontAssets.MouseText.Value;
             string tag = $"NET::0x{(int)(timer * 100) % 0xFFFF:X4}";
-            string countStr = HackTime.Protocols.Format(displayCount);
+            //有暗格时报"已解锁/总数"，玩家一眼看出还缺几把钥匙
+            string countStr = ownedCount < QuickHackDef.Count
+                ? HackTime.ProtocolsOwned.Format(ownedCount, QuickHackDef.Count)
+                : HackTime.Protocols.Format(displayCount);
             float tagW = font.MeasureString(tag).X * FontMicro;
             float countW = font.MeasureString(countStr).X * FontMicro;
             float microRight = baseX + RowWidth;

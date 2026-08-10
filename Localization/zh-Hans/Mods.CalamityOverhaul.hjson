@@ -137,6 +137,11 @@ QuickHack: {
 		DisplayName: 病毒广播
 		Description: 向信号塔注入蠕虫代码，令其向四周发射赛博电磁冲击波，长时间短路广播范围内的所有炮台
 	}
+
+	MeltdownProtocol: {
+		DisplayName: 熔毁协议
+		Description: 锁死散热回路，四秒后过热炸开并波及近处敌人
+	}
 }
 
 HackTargetType: {

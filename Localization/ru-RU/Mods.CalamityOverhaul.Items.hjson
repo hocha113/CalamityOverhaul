@@ -1595,6 +1595,11 @@ RamRecoveryUpgradeChip: {
 	Tooltip: Использование навсегда увеличивает базовую скорость восстановления ОЗУ на 0.05 ед./сек
 }
 
+MeltdownChip: {
+	// DisplayName: Meltdown Protocol Chip
+	// Tooltip: One-time write; unusable once the protocol is in your library
+}
+
 Mewtwo: {
 	DisplayName: Чип Суперсна
 	Tooltip: После использования погружает в Суперсон

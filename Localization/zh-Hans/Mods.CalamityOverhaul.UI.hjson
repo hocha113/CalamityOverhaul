@@ -729,6 +729,11 @@ HackTime: {
 	FooterCost: 消耗 {0} RAM
 	AccessDeniedTitle: 骇客时间不可用
 	AccessDeniedDesc: 需要连接智能武器或者植入网络义体后才能使用骇客技能
+	ProtocolsOwned: "[{0}/{1} 协议]"
+	ProtocolLockedTitle: 协议已加密
+	ProtocolLockedHint: 该协议不在你的骇入库中，用对应的协议芯片写入后可用
+	ChipGrants: 写入协议：{0}
+	ChipAlreadyOwned: 该协议已在骇入库中
 }
 
 DecryptionStrings: {

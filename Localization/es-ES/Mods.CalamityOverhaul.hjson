@@ -137,6 +137,11 @@ QuickHack: {
 		DisplayName: Difusión viral
 		Description: Inyecta código gusano en la torre de señales, provocando ondas EMP cibernéticas que cortocircuitan todas las torretas a su alcance durante mucho tiempo.
 	}
+
+	MeltdownProtocol: {
+		// DisplayName: Meltdown Protocol
+		// Description: Locks the target's heat sinks shut; four seconds later it cooks off, catching nearby enemies.
+	}
 }
 
 HackTargetType: {

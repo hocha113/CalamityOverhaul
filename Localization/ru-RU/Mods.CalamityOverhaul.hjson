@@ -137,6 +137,11 @@ QuickHack: {
 		DisplayName: Вирусная трансляция
 		Description: Внедряет код червя в сигнальную башню, заставляя ее излучать кибер-электромагнитные импульсы, надолго замыкающие все турели в радиусе действия.
 	}
+
+	MeltdownProtocol: {
+		// DisplayName: Meltdown Protocol
+		// Description: Locks the target's heat sinks shut; four seconds later it cooks off, catching nearby enemies.
+	}
 }
 
 HackTargetType: {

@@ -1573,6 +1573,11 @@ RamRecoveryUpgradeChip: {
 	Tooltip: Erhöht dauerhaft die Basis-RAM-Regeneration um 0,05 pro Sekunde
 }
 
+MeltdownChip: {
+	// DisplayName: Meltdown Protocol Chip
+	// Tooltip: One-time write; unusable once the protocol is in your library
+}
+
 Mewtwo: {
 	DisplayName: Braindance-Chip
 	Tooltip: Nutzen, um eine Braindance zu betreten
