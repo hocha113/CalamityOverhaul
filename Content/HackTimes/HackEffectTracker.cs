@@ -106,6 +106,54 @@ namespace CalamityOverhaul.Content.HackTimes
             int tileY, int casterIndex)
             => ApplyTileEffect(hack, tileX, tileY, casterIndex);
 
+        public static ActiveHackEffect ApplyWaterEffect(QuickHackDef hack, int tileX,
+            int tileY, int casterIndex) {
+            if (Main.netMode == NetmodeID.MultiplayerClient || hack == null
+                || !IsValidLiquid(tileX, tileY)) {
+                return null;
+            }
+            Player caster = ResolvePlayer(casterIndex);
+            var target = new WaterScannable(tileX, tileY);
+            if (caster == null || !hack.CanApplyTo(target, caster)) return null;
+
+            return AddAuthorityEffect(hack, target, default, casterIndex,
+                0, 0, 0f, 0, 1f, 0);
+        }
+
+        public static ActiveHackEffect ApplyProjectileEffect(QuickHackDef hack,
+            int projectileIndex, int casterIndex) {
+            if (Main.netMode == NetmodeID.MultiplayerClient || hack == null
+                || projectileIndex < 0 || projectileIndex >= Main.maxProjectiles) {
+                return null;
+            }
+            Player caster = ResolvePlayer(casterIndex);
+            var target = new ProjectileScannable(projectileIndex);
+            if (caster == null || !target.IsValid
+                || !hack.CanApplyTo(target, caster)) {
+                return null;
+            }
+
+            return AddAuthorityEffect(hack, target, default, casterIndex,
+                0, 0, 0f, 0, 1f, 0);
+        }
+
+        public static ActiveHackEffect ApplyItemEffect(QuickHackDef hack,
+            int itemIndex, int casterIndex) {
+            if (Main.netMode == NetmodeID.MultiplayerClient || hack == null
+                || itemIndex < 0 || itemIndex >= Main.maxItems) {
+                return null;
+            }
+            Player caster = ResolvePlayer(casterIndex);
+            var target = new ItemScannable(itemIndex);
+            if (caster == null || !target.IsValid
+                || !hack.CanApplyTo(target, caster)) {
+                return null;
+            }
+
+            return AddAuthorityEffect(hack, target, default, casterIndex,
+                0, 0, 0f, 0, 1f, 0);
+        }
+
         internal static ActiveHackEffect ApplyAuthorityEffect(QuickHackDef hack,
             IHackTarget target, int casterIndex, uint sessionId, uint requestId,
             float paidRamCost, long activationId) {
@@ -128,6 +176,12 @@ namespace CalamityOverhaul.Content.HackTimes
             }
             else if (target is TileScannable tileTarget) {
                 if (!IsValidTile(tileTarget.TileCoordX, tileTarget.TileCoordY)) return null;
+            }
+            else if (target is WaterScannable waterTarget) {
+                if (!IsValidLiquid(waterTarget.TileCoordX, waterTarget.TileCoordY)) return null;
+            }
+            else if (target is ProjectileScannable or ItemScannable) {
+                if (!target.IsValid) return null;
             }
             else if (Main.netMode == NetmodeID.SinglePlayer
                 && target is IHackableTurret or IHackableSignalTower) {
@@ -175,12 +229,13 @@ namespace CalamityOverhaul.Content.HackTimes
             QuickHackDef hack, IHackTarget target, NetworkNPCIdentity npcIdentity,
             int casterIndex, uint sessionId, uint requestId, int elapsed,
             float effectMult, int generation) {
+            //即时格子协议会把目标本身抹掉（挖穿物块 / 抽干液体），
+            //远端收到包时 IsValid 已经是 false，此时仍要放行才能补上表现。
+            //弹幕与掉落物不在此列：它们没了就取不到落点，硬画会画到世界原点
             bool validInstantTile = hack?.GetDuration() == 0
-                && target is TileScannable tileTarget
-                && tileTarget.TileCoordX >= 0
-                && tileTarget.TileCoordX < Main.maxTilesX
-                && tileTarget.TileCoordY >= 0
-                && tileTarget.TileCoordY < Main.maxTilesY;
+                && GetInstantGridCoords(target, out int instantX, out int instantY)
+                && instantX >= 0 && instantX < Main.maxTilesX
+                && instantY >= 0 && instantY < Main.maxTilesY;
             if (Main.netMode != NetmodeID.MultiplayerClient || activationId <= 0
                 || hack == null || target == null
                 || !target.IsValid && !validInstantTile
@@ -419,6 +474,13 @@ namespace CalamityOverhaul.Content.HackTimes
             if (effect.Target is TileScannable tileTarget) {
                 return IsValidTile(tileTarget.TileCoordX, tileTarget.TileCoordY);
             }
+            if (effect.Target is WaterScannable waterTarget) {
+                return IsValidLiquid(waterTarget.TileCoordX, waterTarget.TileCoordY);
+            }
+            //弹幕与掉落物都是短命实体，消失即视作目标丢失，由 IsValid 兜底
+            if (effect.Target is ProjectileScannable or ItemScannable) {
+                return effect.Target.IsValid;
+            }
             if (Main.netMode == NetmodeID.SinglePlayer
                 && effect.Target is IHackableTurret or IHackableSignalTower) {
                 return effect.Target.IsValid;
@@ -564,6 +626,31 @@ namespace CalamityOverhaul.Content.HackTimes
             return tileX >= 0 && tileX < Main.maxTilesX
                 && tileY >= 0 && tileY < Main.maxTilesY
                 && Main.tile[tileX, tileY].HasTile;
+        }
+
+        //物块格与液体格共用一套座标语义，取出来给即时协议的远端表现兜底
+        private static bool GetInstantGridCoords(IHackTarget target, out int x, out int y) {
+            switch (target) {
+                case TileScannable tile:
+                    x = tile.TileCoordX;
+                    y = tile.TileCoordY;
+                    return true;
+                case WaterScannable water:
+                    x = water.TileCoordX;
+                    y = water.TileCoordY;
+                    return true;
+                default:
+                    x = -1;
+                    y = -1;
+                    return false;
+            }
+        }
+
+        //液体格判的是有没有液体，不是有没有物块
+        private static bool IsValidLiquid(int tileX, int tileY) {
+            return tileX >= 0 && tileX < Main.maxTilesX
+                && tileY >= 0 && tileY < Main.maxTilesY
+                && Main.tile[tileX, tileY].LiquidAmount > 0;
         }
 
         private static Player ResolvePlayer(int index) {

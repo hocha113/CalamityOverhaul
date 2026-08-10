@@ -151,6 +151,12 @@ namespace CalamityOverhaul.Content.HackTimes
         }
 
         public static float GetMultiplier(IHackTarget target, Player caster) {
+            if (target is ProjectileScannable projScan) {
+                return EvaluateProjectileMultiplier(projScan);
+            }
+            if (target is WaterScannable waterScan) {
+                return EvaluateLiquidMultiplier(waterScan);
+            }
             if (target is not NpcScannable npcScan) return 1.0f;
             int idx = npcScan.NpcIndex;
             if (idx < 0 || idx >= Main.maxNPCs) return 1.0f;
@@ -158,6 +164,46 @@ namespace CalamityOverhaul.Content.HackTimes
             if (!npc.active) return 1.0f;
             return npc.boss ? EvaluateBossMultiplier(npc)
                 : EvaluateRegularNpcMultiplier(npc, caster);
+        }
+
+        #endregion
+
+        #region 非 NPC 目标
+
+        //弹幕按威胁度定价：伤害越高、越难缠（穿透/追踪）越贵
+        private static float EvaluateProjectileMultiplier(ProjectileScannable scan) {
+            int idx = scan.ProjectileIndex;
+            if (idx < 0 || idx >= Main.maxProjectiles) return 1.0f;
+            Projectile projectile = Main.projectile[idx];
+            if (!projectile.active) return 1.0f;
+
+            float multiplier = 1.0f;
+            if (projectile.damage >= 300) multiplier += 0.8f;
+            else if (projectile.damage >= 120) multiplier += 0.5f;
+            else if (projectile.damage >= 40) multiplier += 0.2f;
+            //无限穿透的东西改一发影响远大于普通弹
+            if (projectile.penetrate < 0) multiplier += 0.4f;
+            if (projectile.hostile && projectile.timeLeft > 60 * 10) multiplier += 0.2f;
+            return Math.Min(multiplier, 3.0f);
+        }
+
+        //液体按连片规模定价，一格浅水和一池岩浆不该同价
+        private static float EvaluateLiquidMultiplier(WaterScannable scan) {
+            int x = scan.TileCoordX;
+            int y = scan.TileCoordY;
+            if (x < 0 || x >= Main.maxTilesX || y < 0 || y >= Main.maxTilesY) {
+                return 1.0f;
+            }
+            Tile tile = Main.tile[x, y];
+            //岩浆与微光的操作代价高于水
+            float multiplier = tile.LiquidType switch {
+                LiquidID.Lava => 1.6f,
+                LiquidID.Shimmer => 1.8f,
+                LiquidID.Honey => 1.2f,
+                _ => 1.0f,
+            };
+            if (tile.LiquidAmount >= 200) multiplier += 0.2f;
+            return Math.Min(multiplier, 3.0f);
         }
 
         #endregion

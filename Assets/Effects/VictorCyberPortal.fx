@@ -1,22 +1,26 @@
 // ============================================================================
-// VictorCyberPortal.fx Victor 出场专用赛博乱流传送门
-// 椭圆裂口 + 数据格 + 故障切片 + 撕裂能量边 + 中心 SNAP
-// s0 quad 画布 s1 噪声纹理 Additive 预乘 alpha
-// ps_3_0
+// VictorCyberPortal.fx  Victor 出场赛博裂隙门（2026-08 重制）
+// 预乘输出 + AlphaBlend：门内是吸光暗体（真正遮挡地形），发光成分走低 alpha
+// s0 = quad 画布（内容不采样） s1 = PerlinNoise 512 灰度（LinearWrap）
+// 角向采样一律用单位方向向量喂噪声（无 atan2，无极角接缝）
+// 直线算术无动态分支；所有成分在画布 ~93% 内解析归零 + guard 边界保险
 // ============================================================================
 
 sampler uImage0 : register(s0);
 sampler noiseSamp : register(s1);
 
 float uTime;
-float openProgress;     //0=刚撕开 1=完全张开 → 收口时回到 0
-float emergePulse;      //NPC 浮出闪光 0~1
-float collapse;         //关闭/坍缩 0=正常 1=完全坍缩
-float seed;             //本实例随机种子
-float2 portalSize;      //传送门半轴像素 (宽,高)，用于像素均匀采样
-float facing;           //+1 朝右 -1 朝左 控制内部数据流方向
-float quadInnerRadius;  //portal 半径占 quad 半径的比例 [0,1]
-                        //quad 边在 p=±1，portal 边落在 p=±quadInnerRadius；越小则辉光余量越大
+float seed;           //本实例随机种子
+float openProgress;   //门张开度 0~1，允许过冲 ~1.15，弹簧曲线由 C# 驱动
+float slit;           //竖缝亮度 0~1：前兆发丝缝 / 收口余晖共用
+float slitLen;        //竖缝半长占门半高比例
+float flare;          //浮现增辉 0~1
+float collapse;       //收口失稳 0~1：吸入加速 + 边缘失稳 + 数据熄灭
+float uPower;         //供能 0~1，断电闪烁压发光成分（暗体不受影响）
+float uFlash;         //白闪 0~1，仅撕开/收口瞬间 ≤2 帧
+float2 portalSize;    //门椭圆半轴 px
+float2 quadSize;      //quad 半轴 px
+float facing;         //+1 朝右 -1 朝左，翻转内部流向
 
 struct PSInput
 {
@@ -24,15 +28,6 @@ struct PSInput
     float4 Color : COLOR0;
     float2 TexCoords : TEXCOORD0;
 };
-
-//---- 工具 ----
-
-float hash21(float2 p)
-{
-    float3 p3 = frac(float3(p.xyx) * float3(0.1031, 0.1030, 0.0973));
-    p3 += dot(p3, p3.yzx + 33.33);
-    return frac((p3.x + p3.y) * p3.z);
-}
 
 float hash11(float p)
 {
@@ -42,276 +37,189 @@ float hash11(float p)
     return frac(p);
 }
 
-//三层噪声采样，模拟乱流
-float layeredNoise(float2 uv, float t)
+//刚体旋转，笛卡尔连续无接缝
+float2 Rot(float2 v, float a)
 {
-    float n1 = tex2D(noiseSamp, frac(uv * 0.9 + float2(t * 0.13, t * 0.09))).r;
-    float n2 = tex2D(noiseSamp, frac(uv * 2.1 + float2(-t * 0.17, t * 0.21))).g;
-    float n3 = tex2D(noiseSamp, frac(uv * 4.7 + float2(t * 0.31, -t * 0.11))).b;
-    return n1 * 0.5 + n2 * 0.35 + n3 * 0.15;
+    float c = cos(a);
+    float s = sin(a);
+    return float2(v.x * c - v.y * s, v.x * s + v.y * c);
 }
 
-//—————————————————————————————————————————————
+//吸入隧道缩放层：phase 控缩放与淡入淡出窗口，特征随时间向中心收缩
+float TunnelLayer(float2 pe, float phase, float2 off)
+{
+    float w = smoothstep(0.0, 0.30, phase) * (1.0 - smoothstep(0.70, 1.0, phase));
+    float s = exp2(lerp(-1.2, 1.8, phase));
+    return tex2D(noiseSamp, pe * s * 0.42 + off).r * w;
+}
+
+//数据竖列：x=字符像素 y=列头，纯 hash 无取样，笛卡尔像素空间
+float2 DataColumns(float2 px, float t, float cellW, float cellH, float density, float localSeed)
+{
+    float colIdx = floor(px.x / cellW);
+    float colSeed = hash11(colIdx * 0.713 + localSeed * 3.17);
+    float yy = (px.y + t * (26.0 + colSeed * 44.0)) / cellH;
+    float rowIdx = floor(yy);
+    float on = step(1.0 - density, hash11(colIdx * 1.371 + rowIdx * 0.291 + localSeed));
+    float subx = floor(frac(px.x / cellW) * 3.0);
+    float suby = floor(frac(yy) * 4.0);
+    float clock = floor(t * 5.0 + colSeed * 9.0);
+    float pix = step(0.42, hash11(subx * 0.37 + suby * 1.91 + colIdx * 0.11 + rowIdx * 0.17 + clock * 0.313));
+    float head = step(0.82, hash11(rowIdx + colSeed * 17.0)) * (1.0 - smoothstep(0.0, 0.30, frac(yy))) * on;
+    return float2(on * pix, head);
+}
 
 float4 PixelShaderFunction(PSInput input) : COLOR0
 {
-    //居中到 [-1,1]，y 朝上为正
     float2 uv = input.TexCoords;
     float2 p = (uv - 0.5) * 2.0;
-    p.y = -p.y;
+    p.y = -p.y;                       //y 向上
+    float2 pxPos = p * quadSize;      //像素坐标
+    pxPos.x *= facing;                //内部流向随朝向镜像
 
-    //quad 边缘软淡出（按矩形距离，与 portal 形状无关，保证 quad 任何边都不出硬切）
-    //在 rectDist [0.76, 0.99] 内 23% 宽度内平滑淡出，>0.99 一律 0
-    //quadInnerRadius=0.625 时 portal Y 端在 rectDist=0.625，离淡出起点还有 0.13 余量
-    float rectDist = max(abs(input.TexCoords.x - 0.5), abs(input.TexCoords.y - 0.5)) * 2.0;
-    float quadFalloff = 1.0 - smoothstep(0.76, 0.99, rectDist);
-    if (quadFalloff <= 0.001) return float4(0, 0, 0, 0);
+    float tt = uTime;
 
-    //collapse 期把整体往中心拉
-    float collapseSq = collapse * collapse;
-    p /= max(1.0 - collapseSq * 0.85, 0.05);
+    //边界保险：任何成分不许触到画布边
+    float rectN = max(abs(p.x), abs(p.y));
+    float guard = 1.0 - smoothstep(0.93, 0.995, rectN);
 
-    //当前开口因子：撕开瞬间小、张开时接近 1
-    float openSq = saturate(openProgress);
-    //椭圆边形状（竖立门，h > w）；quadInnerRadius 把 portal 主体压在 quad 内侧
-    //X 方向再 ×0.85 收窄，造型偏"撕开的口"
-    float2 ellipNorm = p / float2(
-        max(quadInnerRadius * openSq * 0.85, 0.05),
-        max(quadInnerRadius * openSq, 0.05));
-    float ellipR = length(ellipNorm);
+    //————————————————————————————
+    // 竖缝：门外独立存在（前兆发丝缝 / 收口余晖）
+    //————————————————————————————
+    float slitHalf = max(slitLen, 0.02) * portalSize.y;
+    float lenWin = 1.0 - smoothstep(slitHalf * 0.55, slitHalf, abs(pxPos.y));
+    float stutter = 0.55 + 0.45 * hash11(floor(tt * 21.0) + seed * 7.0);
+    float sCore = exp(-pxPos.x * pxPos.x / 6.0);
+    float sHalo = exp(-pxPos.x * pxPos.x / 170.0);
+    float slitAmt = slit * lenWin * stutter;
+    float3 col = (float3(1.0, 0.90, 0.78) * sCore * 1.35 + float3(1.0, 0.36, 0.15) * sHalo * 0.5) * slitAmt;
+    float a = (sCore * 0.40 + sHalo * 0.08) * slitAmt;
 
-    //——————————————————————————————
-    //门外软衰减遮罩（替代硬截，配合 quadFalloff 让辉光不被画布切掉）
-    //——————————————————————————————
-    float farMask = 1.0 - smoothstep(1.20, 1.70, ellipR);
-    if (farMask <= 0.001) return float4(0, 0, 0, 0);
+    //————————————————————————————
+    // 门几何
+    //————————————————————————————
+    float open = max(openProgress, 0.0);
+    float doorOn = smoothstep(0.02, 0.12, open);
+    float2 axes = portalSize * max(open, 0.03);
+    float2 pe = pxPos / axes;
+    float ellipR = length(pe);
+    float2 dir = pe / max(ellipR, 1e-4);      //单位方向向量：无缝角向载体
 
-    //内部局部时间，统一节奏
-    float tt = uTime * 1.05;
+    //撕裂缘噪声（方向向量采样，笛卡尔连续）
+    float nA = tex2D(noiseSamp, dir * 0.35 + float2(tt * 0.055, -tt * 0.034) + seed * 0.71).r;
+    float nB = tex2D(noiseSamp, dir * 0.83 + float2(-tt * 0.047, tt * 0.062) + seed * 1.37).r;
+    float rimNoise = nA * 0.65 + nB * 0.35 - 0.5;
+    float instability = 0.30 + (1.0 - saturate(open)) * 0.55 + collapse * 0.60;
+    float spike = pow(saturate(nA * nB * 2.6), 5.0);
+    float rimSdf = ellipR - 1.0 - rimNoise * 0.15 * instability - spike * 0.05 * instability;
 
-    //————————————————————————————————————————————
-    //A 撕裂能量边 用噪声扰动半径定义"门口锯齿"
-    //————————————————————————————————————————————
-    float ang = atan2(ellipNorm.y, ellipNorm.x);
-    float aN = (ang + 3.14159) / 6.28318;//[0,1]
+    float insideMask = smoothstep(0.015, -0.055, rimSdf) * doorOn;
+    float depth = saturate(1.0 - ellipR);
 
-    //三层不同频率的边缘噪声合成不规则边沿
-    float rN1 = tex2D(noiseSamp, frac(float2(aN * 3.0 + seed * 0.31, tt * 0.18))).r;
-    float rN2 = tex2D(noiseSamp, frac(float2(aN * 7.0 + seed * 0.77, -tt * 0.22))).g;
-    float rN3 = tex2D(noiseSamp, frac(float2(aN * 17.0 - seed * 0.41, tt * 0.34))).b;
-    float rimNoise = rN1 * 0.55 + rN2 * 0.30 + rN3 * 0.15;
-    rimNoise = rimNoise - 0.5;
+    //供能：断电闪烁只压发光，不动暗体
+    float powerMul = lerp(0.22, 1.0, saturate(uPower));
 
-    //撕开期边缘最不稳，全开后趋稳
-    float instability = (1.0 - openSq) * 0.6 + 0.15 + collapse * 0.5;
-    //rimSdf < 0 = 门内, > 0 = 门外
-    float rimSdf = ellipR - (1.0 + rimNoise * 0.18 * instability);
+    //————————————————————————————
+    // 故障切片：对内部内容做真 UV 错位（不动门形）
+    //————————————————————————————
+    float rowJit = hash11(floor(tt * 1.9) + seed) * 3.0;
+    float sliceRow = floor(uv.y * 9.0 + rowJit);
+    float sliceGate = step(0.74, hash11(sliceRow * 3.71 + floor(tt * 4.3) * 1.13 + seed * 5.1));
+    float sliceMag = (hash11(sliceRow * 7.77 + floor(tt * 4.3) + seed) - 0.5) * sliceGate;
+    float shiftPx = sliceMag * portalSize.x * (0.16 + collapse * 0.35 + (1.0 - saturate(uPower)) * 0.25);
+    float2 pxi = pxPos;
+    pxi.x += shiftPx;
 
-    //门口"咬出"的尖刺裂纹
-    float spike = pow(max(rN1 * rN2 * 2.0, 0.0), 4.0);
-    rimSdf -= spike * 0.07 * instability;
+    //————————————————————————————
+    // 门内暗体 + 吸入隧道
+    //————————————————————————————
+    float bodyA = 0.92 * insideMask;
+    col += float3(0.014, 0.004, 0.007) * (0.55 + depth * 0.85) * bodyA;
+    a += bodyA;
 
-    if (rimSdf > 0.0)
-    {
-        //门外只画边缘辉光，由 farMask + quadFalloff 双重软淡出，避免被 quad 边切
-        float outerGlow = exp(-rimSdf * 4.5);
-        float flick = 0.6 + 0.4 * sin(tt * 18.0 + aN * 47.0 + seed * 13.0);
-        float3 rim = float3(1.0, 0.42, 0.18) * outerGlow * flick;
-        rim += float3(0.92, 0.08, 0.045) * pow(outerGlow, 1.7) * 0.6;
-        float a = saturate(outerGlow * 0.85) * farMask * quadFalloff;
-        return float4(rim * a, a) * input.Color;
-    }
+    float2 pei = pxi / axes;
+    float zt = tt * (0.14 + collapse * 0.60);
+    float2 peR = Rot(pei, tt * 0.12);
+    float tun = TunnelLayer(peR, frac(zt), float2(seed * 0.31, seed * 0.77));
+    tun += TunnelLayer(peR, frac(zt + 0.3333), float2(0.43 + seed * 0.59, 0.19));
+    tun += TunnelLayer(peR, frac(zt + 0.6667), float2(0.87, 0.55 + seed * 0.23));
+    tun *= 1.55;
+    float tunnel = tun * tun;
 
-    //—— 以下都在门内 ——
-    //inside 强度：靠门口=0 中心=1
-    float inside = saturate(-rimSdf * 1.6);
-    float depth = saturate(1.0 - ellipR);//0=门口 1=门中心
-    float depthSq = depth * depth;
+    float annulus = saturate(depth * (1.0 - depth) * 4.0);   //中环亮带，中心留深洞
+    float scan = 0.92 + 0.08 * sin(pxPos.y * 0.55 - tt * 2.3);
+    float3 interior = float3(0.40, 0.045, 0.028) * tunnel * annulus;
+    interior += float3(0.85, 0.16, 0.09) * tunnel * tunnel * annulus * 0.6;
 
-    //背景渐变：深黑→暗红
-    float3 bg = float3(0.012, 0.002, 0.005) * (0.4 + depth * 1.4);
-    bg += float3(0.18, 0.012, 0.008) * pow(depth, 2.5) * 0.8;
+    //————————————————————————————
+    // 数据竖列：双景深层（远小暗慢 + 近大亮快），中心被黑暗吞没
+    //————————————————————————————
+    float colFade = smoothstep(0.02, 0.22, depth) * (1.0 - smoothstep(0.50, 0.92, depth));
+    colFade *= 1.0 - collapse * 0.85;
+    float2 dFar = DataColumns(pxi * 1.55 + float2(37.0, 11.0), tt, 6.0, 10.0, 0.34, seed);
+    float2 dNear = DataColumns(pxi, tt * 1.6, 8.5, 14.0, 0.30, seed + 4.7);
+    float cellCyan = step(0.968, hash11(floor(pxi.x / 8.5) * 2.71 + floor(pxi.y / 14.0) * 0.53 + seed));
+    float3 charColNear = lerp(float3(0.88, 0.11, 0.06), float3(0.18, 0.80, 0.90), cellCyan);
+    interior += float3(0.45, 0.06, 0.04) * dFar.x * 0.5 * colFade;
+    interior += float3(0.95, 0.42, 0.22) * dFar.y * 0.35 * colFade;
+    interior += charColNear * dNear.x * 0.95 * colFade;
+    interior += float3(1.0, 0.55, 0.30) * dNear.y * 0.8 * colFade;
 
-    //————————————————————————————————————————————
-    //B 内部赛博乱流 旋涡 + 视差噪声层
-    //————————————————————————————————————————————
-    float2 polarUV = float2(
-        ang / 6.28318 + tt * 0.06 * facing,
-        depth * 0.8 - tt * 0.18);
-    float swirlN = layeredNoise(polarUV * float2(2.0, 1.5), tt);
-    float swirl = pow(swirlN, 1.8);
+    //切片色偏：错位行上下边缘红/青细线
+    float rowFrac = frac(uv.y * 9.0 + rowJit);
+    float lineTop = smoothstep(0.0, 0.05, rowFrac) * (1.0 - smoothstep(0.05, 0.13, rowFrac));
+    float lineBot = smoothstep(0.87, 0.95, rowFrac) * (1.0 - smoothstep(0.95, 1.0, rowFrac));
+    interior += float3(0.90, 0.10, 0.07) * lineTop * sliceGate * 0.5;
+    interior += float3(0.16, 0.70, 0.85) * lineBot * sliceGate * 0.28;
 
-    //深处暗红色"虚空"
-    float3 voidCol = float3(0.55, 0.06, 0.035) * swirl * depthSq;
-    voidCol += float3(0.92, 0.18, 0.10) * pow(swirl, 3.0) * depthSq * 0.5;
-    bg += voidCol;
+    interior *= scan * insideMask;
 
-    //————————————————————————————————————————————
-    //C 乱码数据格 类似 Matrix 但更密更乱
-    //————————————————————————————————————————————
-    //世界 cell 用像素尺寸归一化，让格子在不同 portal 大小下视觉一致
-    float2 pxPos = p * portalSize;
-    //横长方形格 (字符高瘦感)
-    const float2 cellSize = float2(7.0, 11.0);
-    float2 cellId = floor(pxPos / cellSize);
-    float2 cellFrac = frac(pxPos / cellSize);
+    //————————————————————————————
+    // 裂缘：内侧能量带 + 热芯（暖白不常驻）
+    //————————————————————————————
+    float pxLen = length(pxPos);
+    float sPx = pxLen * (1.0 - 1.0 / max(ellipR, 1e-3));  //近边像素距离，门外为正
+    float rimBandPx = max(-sPx, 0.0);
+    float innerGlow = exp(-rimBandPx / 9.0) * insideMask;
+    float hotCore = exp(-rimBandPx / 2.4) * insideMask;
+    float rimFlick = 0.72 + 0.28 * nB;
+    float3 rimCol = float3(1.0, 0.40, 0.17) * innerGlow * (0.95 + collapse * 0.7);
+    rimCol += float3(1.0, 0.76, 0.52) * hotCore * 0.95;
+    rimCol *= rimFlick;
 
-    //每格独立 hash
-    float cHash = hash21(cellId * 0.137 + seed * 1.7);
+    //————————————————————————————
+    // 门外辉光：analytic 收尾 + guard，杜绝画布硬切
+    //————————————————————————————
+    float availPx = min(quadSize.x - axes.x, quadSize.y - axes.y);
+    float glowWin = 1.0 - smoothstep(availPx * 0.45, availPx * 0.88, sPx);
+    float og = exp(-max(sPx - spike * 14.0, 0.0) / 15.0) * (1.0 - insideMask) * glowWin * doorOn;
+    float3 ogCol = float3(1.0, 0.40, 0.17) * og * (0.55 + 0.30 * rimFlick);
+    ogCol += float3(0.90, 0.09, 0.05) * og * og * 0.55;
 
-    //时间分片：每个格按自己的时钟跳变
-    float cellClock = floor(tt * 4.0 + cHash * 7.0);
-    float cellState = hash21(cellId + cellClock * 0.51);
+    //————————————————————————————
+    // 浮现增辉：中心泛光 + 双轴衰减短十字（每轴都解析归零）
+    //————————————————————————————
+    float bloom = exp(-ellipR * ellipR * 2.6) * doorOn;
+    float crossV = exp(-pxPos.x * pxPos.x / 90.0) * exp(-pow(pxPos.y / (portalSize.y * 0.60), 2.0));
+    float crossH = exp(-pxPos.y * pxPos.y / 60.0) * exp(-pow(pxPos.x / (portalSize.x * 0.55), 2.0));
+    float3 flareCol = (float3(1.0, 0.82, 0.60) * bloom * 1.15
+        + float3(1.0, 0.52, 0.28) * (crossV * 0.85 + crossH * 0.30) * doorOn) * flare;
 
-    //仅一小部分格活跃 (alive)
-    float alive = step(0.55, cellState);
+    //————————————————————————————
+    // 合成（预乘）
+    //————————————————————————————
+    col += (interior + rimCol + ogCol) * powerMul;
+    col += flareCol;
+    col += float3(1.0, 0.94, 0.86) * uFlash * (insideMask * 0.85 + og * 0.45 + slitAmt * 0.5);
 
-    //"代码字符"用格内 4 段水平条 + 边缘
-    //模拟低分辨率字符像素
-    float chy = floor(cellFrac.y * 5.0);
-    float chx = floor(cellFrac.x * 3.0);
-    float pixHash = hash21(float2(chx, chy) + cellId + cellClock * 0.13);
-    float pix = step(0.40, pixHash);
+    a += (innerGlow * 0.20 + hotCore * 0.15) * powerMul;
+    a += og * 0.08 + bloom * flare * 0.30;
+    a = saturate(a);
 
-    //格活跃 才显示该 cell 的字符像素
-    float ch = alive * pix;
+    col *= guard;
+    a *= guard;
 
-    //字符密度跟深度走，深处更密
-    float densityMask = smoothstep(0.05, 0.85, depthSq);
-    ch *= densityMask;
-
-    //每格独立 1Hz 心跳
-    float cellPulse = 0.55 + 0.45 * sin(tt * 6.0 + cHash * 25.0);
-    float charAmt = ch * (0.6 + cellPulse * 0.55);
-
-    //字符颜色 = 鲜红主调 + 少数高亮(数据头部) 偶尔青色变异
-    float isHot = step(0.93, cellState);
-    float isCyan = step(0.97, cellState);
-    float3 charBase = float3(0.92, 0.12, 0.07);
-    float3 charHot = float3(1.0, 0.55, 0.30);
-    float3 charCyan = float3(0.20, 0.85, 0.95);
-    float3 charCol = lerp(charBase, charHot, isHot);
-    charCol = lerp(charCol, charCyan, isCyan);
-
-    //————————————————————————————————————————————
-    //D 数据列下落 像 Matrix 的纵向流，但用 RGB 切片错位制造故障
-    //————————————————————————————————————————————
-    //每列独立流速
-    float colId = cellId.x;
-    float colSeed = hash11(colId * 0.71 + seed * 3.7);
-    float fallSpeed = 0.5 + colSeed * 1.5;
-    float colY = pxPos.y / cellSize.y + tt * fallSpeed * facing;
-    float colCellY = floor(colY);
-    //每个 cell 内位置
-    float colInCell = frac(colY);
-    //头部高亮指针 (字符串头)
-    float headHash = hash11(colCellY + colSeed * 17.0);
-    float head = step(0.78, headHash);
-    //头部光斑：cell顶部 20%
-    float headLit = head * (1.0 - smoothstep(0.0, 0.20, colInCell));
-    headLit *= densityMask;
-
-    //————————————————————————————————————————————
-    //E 横向切片故障 几条扫描线随时间错位，造成 RGB 色差
-    //————————————————————————————————————————————
-    float sliceH = 0.08 + hash11(floor(tt * 2.3)) * 0.10;
-    float sliceI = floor((uv.y) / sliceH);
-    float sliceR = hash11(sliceI + floor(tt * 5.0) * 137.0);
-    //偶尔横向偏移
-    float sliceShift = 0.0;
-    if (sliceR > 0.78)
-        sliceShift = (hash11(sliceI * 7.13 + tt * 1.7) - 0.5) * 0.16 * (0.5 + collapse);
-
-    //带颜色差的红/青色横纹（数据腐烂）
-    float bandH = 0.012 + hash11(floor(tt * 6.0)) * 0.02;
-    float yWrap = frac(uv.y * (1.0 / bandH) - tt * 0.5 + sliceI * 0.137);
-    float band = smoothstep(0.0, 0.10, yWrap) * smoothstep(0.30, 0.10, yWrap);
-    float bandOn = step(0.78, hash11(sliceI + floor(tt * 7.0)));
-    band *= bandOn;
-
-    //————————————————————————————————————————————
-    //F 中央 SNAP 闪光 NPC 浮现时使用
-    //————————————————————————————————————————————
-    //垂直撕裂光带 + 中心圆盘
-    float vertical = exp(-pow(ellipNorm.x * 5.0, 2.0));
-    float horizontal = exp(-pow(ellipNorm.y * 3.5, 2.0));
-    float snapCore = exp(-ellipR * 3.5) * (0.4 + 0.6 * vertical);
-    snapCore += vertical * horizontal * 1.4;
-    float snap = snapCore * emergePulse;
-
-    //短促撕裂光线（多条斜向）
-    float rays = 0.0;
-    for (int i = 0; i < 4; i++)
-    {
-        float rAng = float(i) * 0.785 + seed * 1.7 + tt * 0.15;
-        float2 rDir = float2(cos(rAng), sin(rAng));
-        float along = dot(p, rDir);
-        float side = abs(dot(p, float2(-rDir.y, rDir.x)));
-        rays += exp(-side * 12.0) * smoothstep(1.0, 0.0, abs(along) * 1.2);
-    }
-    rays *= emergePulse * 0.7;
-
-    //————————————————————————————————————————————
-    //G 角度扫描线 一条转动的雷达扫描臂
-    //————————————————————————————————————————————
-    float scanAng = ang + tt * 0.85 * facing;
-    float scanLine = exp(-pow(sin(scanAng * 0.5) * 8.0, 2.0));
-    scanLine *= smoothstep(0.0, 0.6, depth);
-
-    //————————————————————————————————————————————
-    //H 边缘内侧 - 紧贴撕裂边的高亮能量条
-    //————————————————————————————————————————————
-    float innerRim = exp(-pow(-rimSdf * 3.0, 1.4));
-    //撕开期 + 坍塌期更亮
-    float rimEnergy = innerRim * (0.7 + 0.5 * (1.0 - openSq) + 0.5 * collapse);
-
-    //————————————————————————————————————————————
-    //合成 颜色 + alpha (Additive 预乘)
-    //————————————————————————————————————————————
-    float3 col = bg;
-    //字符 / 数据列
-    col += charCol * charAmt * 1.4;
-    col += float3(1.0, 0.55, 0.30) * headLit * 0.9;
-    //横向故障带 (颜色错位)
-    col += float3(0.95, 0.10, 0.08) * band * 0.9;
-    col += float3(0.20, 0.85, 0.95) * band * 0.30;
-    //扫描臂
-    col += float3(0.92, 0.40, 0.20) * scanLine * 0.45 * (0.5 + sin(tt * 5.0) * 0.5);
-    //贴边能量
-    col += float3(1.0, 0.55, 0.30) * rimEnergy * 1.4;
-    col += float3(0.95, 0.10, 0.08) * pow(rimEnergy, 1.8) * 0.6;
-    //SNAP & rays
-    col += float3(1.0, 0.85, 0.65) * snap * 1.5;
-    col += float3(1.0, 0.40, 0.22) * rays * 1.2;
-
-    //sliceShift 横向像素错位 (RGB 色差)
-    //通过对位置做位移再二次乘上颜色饱和加权，简化为对 col 做 R/B 分离
-    float caStr = abs(sliceShift) * 3.5 + 0.04 * collapse;
-    float lum = dot(col, float3(0.299, 0.587, 0.114));
-    col.r += caStr * 0.8 * (col.r - lum * 0.7);
-    col.b -= caStr * 0.5 * (col.b - lum * 0.4);
-
-    //alpha 组合
-    float a = saturate(
-          inside * 0.4
-        + charAmt * 0.45
-        + headLit * 0.55
-        + band * 0.45
-        + scanLine * 0.18
-        + rimEnergy * 0.85
-        + snap * 0.9
-        + rays * 0.75);
-
-    //坍塌期外圈先熄火
-    float collapseMask = 1.0 - smoothstep(0.5 - collapse * 0.5, 1.0 - collapse * 0.5, ellipR);
-    a *= lerp(1.0, collapseMask, collapse);
-    col *= lerp(1.0, collapseMask, collapse);
-
-    //quad 边软淡出 + 椭圆外软衰减，杜绝画布边缘硬切
-    a *= quadFalloff * farMask;
-    col *= quadFalloff * farMask;
-
-    return float4(col * a, a) * input.Color;
+    return float4(col, a) * input.Color;
 }
 
 technique Technique1

@@ -23,3 +23,29 @@ Victor: {
 		Princess_LovesNPC: I love {NPCName}! He always puts everyone back together good as new!
 	}
 }
+
+TBUG: {
+	DisplayName: Exploit Dealer
+	Bestiary: The night Skeletron fell, the world tore open along a seam that never closed properly, and spat her out. She hit the ground hard; the first thing she asked after getting up was the local coin exchange rate. Now she runs a little shop, selling chips of origins best left unexplained.
+	TalkHint: Talk to TBUG
+	Name0: TBUG
+
+	TownNPCMood: {
+		Content: Running normally. No errors, no warnings. Almost boring.
+		NoHome: No house. Strictly speaking, my current coordinates are an illegal value.
+		FarFromHome: Too far from home. The signal attenuation is terrible.
+		LoveSpace: All this space? Room for three monitors. I like it.
+		DislikeCrowded: Too many people. Anyone could peek at my screen. Annoying.
+		HateCrowded: Packed like this, someone will trip over my cables sooner or later.
+		LoveBiome: "{BiomeName} is cool and stable. Smells like a server room."
+		LikeBiome: "{BiomeName} is fine. Low temperatures are good for the hardware."
+		DislikeBiome: The humidity alarm in {BiomeName} never stops.
+		HateBiome: "{BiomeName}? My gear took seawater once. I still keep that repair bill."
+		LoveNPC: "{NPCName} can talk wrenches and circuits both. No need to downclock around her."
+		LikeNPC: "{NPCName} never asks where I came from, only whether I buy secondhand parts. Approved."
+		DislikeNPC: "{NPCName} keeps trying to get me on his table and take me apart. I'm not broken. Don't fix me."
+		HateNPC: "{NPCName}'s ledger is nastier than any virus. Keep him away from my shop."
+		LikeNPC_Princess: "{NPCName}? Fine. Nobody manages to hate her, which is suspicious in itself."
+		Princess_LovesNPC: I love {NPCName}! She knows so many things nobody else does!
+	}
+}

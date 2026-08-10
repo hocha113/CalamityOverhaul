@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Content.PRTTypes
         private Color edgeColor;
         private float flickerPhase;
         private float driftAngle;
+        /// <summary>&gt;0 时坠落，沿速度方向拉伸成烬屑流光</summary>
+        private float gravity;
 
         public override bool CanPool => true;
         public PRT_BanishGlitch() {
@@ -49,6 +51,13 @@ namespace CalamityOverhaul.Content.PRTTypes
             driftAngle = Main.rand.NextFloat(MathHelper.TwoPi);
             return this;
         }
+
+        /// <summary>带重力变体：烬屑坠落，既有调用方不受影响</summary>
+        public PRT_BanishGlitch Configure(int lt, float gravityPull) {
+            Configure(lt);
+            gravity = gravityPull;
+            return this;
+        }
         public override void Reset() {
             base.Reset();
             initialScale = 0f;
@@ -58,6 +67,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             edgeColor = new Color(1f, 0.3f, 0.2f);
             flickerPhase = 0f;
             driftAngle = 0f;
+            gravity = 0f;
         }
 
         public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
@@ -72,7 +82,15 @@ namespace CalamityOverhaul.Content.PRTTypes
             float jitter = MathF.Sin(Time * 0.5f + flickerPhase) * 0.15f;
             Position += new Vector2(MathF.Cos(driftAngle), MathF.Sin(driftAngle)) * jitter;
 
-            Rotation += rotationSpeed * (1f + accelPhase);
+            //坠落模式姿态锁速度方向并拉伸，与自旋互斥
+            if (gravity > 0f) {
+                Velocity = new Vector2(Velocity.X, Velocity.Y + gravity);
+                Rotation = Velocity.ToRotation();
+                aspectRatio = 1f / (1f + Velocity.Length() * 0.22f);
+            }
+            else {
+                Rotation += rotationSpeed * (1f + accelPhase);
+            }
 
             //后40%缩小
             if (life > 0.6f) {

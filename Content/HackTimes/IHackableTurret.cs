@@ -19,5 +19,8 @@ namespace CalamityOverhaul.Content.HackTimes
 
         /// <summary>电路过载，长时间失效</summary>
         void ApplyCircuitOverload(int frames, Player caster);
+
+        /// <summary>劫持敌我判定，期间转为替施法者开火</summary>
+        void ApplyHijack(int frames, Player caster);
     }
 }

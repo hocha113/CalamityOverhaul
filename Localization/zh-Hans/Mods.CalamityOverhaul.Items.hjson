@@ -307,6 +307,16 @@ OnikiriItem: {
 		'''
 }
 
+KikasaItem: {
+	DisplayName: 鬼伞
+	Tooltip:
+		'''
+		手持时按下「领域展开」键撑开血湖领域，再按一次收伞
+		领域中脚下是一面血红的镜湖，头顶是半沉在湖平线下的暗日
+		"伞下无雨，只有水声"
+		'''
+}
+
 SHPCItem: {
 	DisplayName: SHPC
 	Tooltip: ""
@@ -1581,7 +1591,87 @@ RamRecoveryUpgradeChip: {
 
 MeltdownChip: {
 	DisplayName: 熔毁协议芯片
-	Tooltip: 一次性写入，已写入后无法再次使用
+	// Tooltip: ""
+}
+
+ProjectileHijackChip: {
+	DisplayName: 弹道接管芯片
+	// Tooltip: ""
+}
+
+ProjectileFreezeChip: {
+	DisplayName: 弹道冻结芯片
+	// Tooltip: ""
+}
+
+DataPurgeChip: {
+	DisplayName: 数据清除芯片
+	// Tooltip: ""
+}
+
+BallisticOverclockChip: {
+	DisplayName: 弹道超频芯片
+	// Tooltip: ""
+}
+
+ElectrolysisChip: {
+	DisplayName: 电解水域芯片
+	// Tooltip: ""
+}
+
+CryostasisChip: {
+	DisplayName: 冷凝固化芯片
+	// Tooltip: ""
+}
+
+LiquidPurgeChip: {
+	DisplayName: 液体抽排芯片
+	// Tooltip: ""
+}
+
+ItemRecallChip: {
+	DisplayName: 远程回收芯片
+	// Tooltip: ""
+}
+
+ReappraiseChip: {
+	DisplayName: 品质重掷芯片
+	// Tooltip: ""
+}
+
+ArmorParseChip: {
+	DisplayName: 装甲解析芯片
+	// Tooltip: ""
+}
+
+ExorciseChip: {
+	DisplayName: 强制注销芯片
+	// Tooltip: ""
+}
+
+DataLeechChip: {
+	DisplayName: 数据榨取芯片
+	// Tooltip: ""
+}
+
+SwarmLinkChip: {
+	DisplayName: 蜂群链接芯片
+	// Tooltip: ""
+}
+
+TurretHijackChip: {
+	DisplayName: 炮塔劫持芯片
+	// Tooltip: ""
+}
+
+MachineOverclockChip: {
+	DisplayName: 机械超频芯片
+	// Tooltip: ""
+}
+
+GridBlackoutChip: {
+	DisplayName: 电网瘫痪芯片
+	// Tooltip: ""
 }
 
 Mewtwo: {

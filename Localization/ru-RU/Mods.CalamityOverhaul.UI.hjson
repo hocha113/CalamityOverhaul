@@ -545,6 +545,78 @@ VictorClinicUI: {
 
 // VictorSurgery.SurgeryInProgressText: SURGERY IN PROGRESS
 
+TBUGTalkUI: {
+	// SpeakerName: TBUG
+	// Greet0: You're here? Browse away. Don't touch the bundle of cables behind the rig - that's my spine.
+	// Greet1: Your walk cycle has a tiny loop. Repeats every seven steps. Don't worry, most people have one.
+	// Greet2: This world's physics is decently written. The water part was clearly rushed.
+	// Greet3: Everything's on the shelf. I set the prices. Save the haggling breath.
+	// Greet4: Daylight glares all over my screens. Come at night - I'm nicer at night.
+	// Greet5: Don't ask where I'm from. What's the hometown of an error message?
+	// Greet6: Coins are funny. Heavy, waste pocket space - but you all trust them, so I do too.
+	// Greet7: I don't do repairs. I sell. If it breaks, that's a user-side issue.
+	// Greet8: I fell out the night Skeletron died. Not thanking him, but his grip did slip first.
+	// Greet9: You've got empty equipment slots. Empty slots are wasted slots.
+	// Greet10: Sleep is a patch, and a lazy one. I mostly skip it.
+	// Greet11: Make it quick. I've got three processes hanging and waiting for me.
+	// TalkFirstMeet0: New face. I'm TBUG - the one who fell out of that seam. Drop the look. My landing wasn't THAT bad.
+	// TalkFirstMeet1: Oh, it talks. Better than the slimes. Shelf's there if you're buying; talk fast if you're not.
+	// TalkFirstPurchase0: Deal. No receipt - my memory is more reliable than paper.
+	// TalkFirstPurchase1: Hold it tight. If it misbehaves, review your own usage habits first.
+	// TalkMoodHomeless0: I'm sleeping under open sky and my hardware dews up every morning. Get me a room, prices drop a notch.
+	// TalkMoodHomeless1: A shop without a roof is a street stall. I don't enjoy being a street vendor.
+	// TalkMoodHappy0: Good mood today. My hand slipped on the quotes - downward. Keep it quiet.
+	// TalkMoodHappy1: This place grows on me. Your architecture beats your physics engine.
+	// TalkMoodGrumpy0: Don't whine about prices. Move me somewhere decent and they'll fall on their own.
+	// TalkMoodGrumpy1: Bad mood, spiky quotes. That's market dynamics, not my problem.
+	// TalkHackUnlocked0: That rig in your eyes is decent work. Who installed it? Above this world's average.
+	// TalkHackUnlocked1: Customers who can breach are good customers. At least they never ask which end the chip goes in.
+	// TalkHackLocked0: Half my stock is useless to you right now. Get yourself breach-capable first.
+	// TalkLowHealth0: You're dripping. Nurse first - my shelf doesn't stock blood bags.
+	// TalkLowHealth1: Health bars only matter near the bottom. Yours is nearly there.
+	// TalkRich0: I smell platinum. Which shelf are we emptying today?
+	// TalkPoor0: Pockets cleaner than my recycle bin. Go earn something - I don't do credit.
+	// TalkPoor1: No money? Then it's an exhibition. Looking is free. Touching isn't.
+	// TalkPreHardmode0: The world is still early-game. Monster stats are written politely. Stock up while it lasts.
+	// TalkPreHardmode1: That wall of flesh hasn't fallen yet. When it does, you'll be back to clear my shelves.
+	// TalkHardmode0: The world took a major patch. Stronger monsters, better drops. Good for business.
+	// TalkHardmode1: Light and dark are tearing up the map out there. Don't stand next to fresh seams - I fell out of one.
+	// TalkPostMoonlord0: You dismantled the Moon Lord. I'd like a copy of your combat log. For study.
+	// TalkPostMoonlord1: You fight gods and still shop at my little stall. Should I raise prices or be touched?
+	// TalkPostSupCal0: Even the Calamity herself is down. At this point YOU are this world's biggest exploit.
+	// TalkBloodMoon0: Blood moon. Spawn rates doubled tonight - the things at the door are in more of a hurry than you.
+	// TalkBloodMoon1: All red out there tonight. I shrank the door's hitbox a little. Safety first.
+	// TalkEclipse0: An eclipse. Day got louder than night. Hard not to suspect someone flipped a config flag.
+	// TalkRain0: Rain. My gear is bagged. Yours is your call.
+	// TalkRain1: The raindrops fall in perfectly straight lines. Not even a wind term. Lazy.
+	// TalkDeepNight0: Still up at this hour? Fine. Night owls get five percent off - kidding, full price.
+	// TalkDeepNight1: Deep night. Fewer processes running. The world genuinely runs smoother.
+	// TalkUnderground0: Underground is good. Stable temperature, quiet, and the rock blocks all the signal noise.
+	// TalkUnderground1: Smell that? Server-room air. I suspect this world's host machine is buried somewhere down here.
+	// TalkSnow0: The tundra is honestly cold. Hardware lasts two extra years out here.
+	// TalkJungle0: Jungle humidity rides the alarm line all day. My stock wouldn't survive a week here.
+	// TalkBeach0: The coast? My gear took seawater once. That repair bill would've bought three new boards.
+	// TalkEvil0: The corrosion here genuinely chews circuits. Your gear and your skin - it isn't picky.
+	// ShopButtonText: Hack Shop
+	// ChatButtonText: Small Talk
+	// LeaveButtonText: Leave
+	// PriceFactorText: PRICE x{0}
+}
+
+TBUGShopUI: {
+	// TitleText: shop --list
+	// StockHeaderText: STOCK
+	// BalanceText: BALANCE
+	// StatusIdleText: connected · one click buys · no refunds
+	// ResultSuccessText: exit 0 · transaction complete
+	// ResultInvalidText: ERR: bad request
+	// ResultOutOfRangeText: ERR: too far from vendor
+	// ResultNoFundsText: ERR: insufficient funds
+	// ResultNoSpaceText: ERR: inventory full
+	// ResultBusyText: ERR: too many requests, slow down
+	// ResultTimeoutText: ERR: request timed out
+}
+
 EntrustManagerNotification: {
 	LabelNewQuest: Новое поручение
 	LabelTracked: Отслеживается
@@ -733,7 +805,10 @@ HackTime: {
 	// ProtocolLockedTitle: PROTOCOL ENCRYPTED
 	// ProtocolLockedHint: This protocol is not in your daemon library. Use the matching protocol chip to write it in.
 	// ChipGrants: Writes protocol: {0}
+	// ChipTarget: Works on: {0}
+	// ChipOneShot: One-time write; unusable afterwards.
 	// ChipAlreadyOwned: Already in your daemon library.
+	// Erased: DELETED
 }
 
 DecryptionStrings: {

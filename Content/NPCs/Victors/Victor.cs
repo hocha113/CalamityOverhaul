@@ -135,9 +135,25 @@ namespace CalamityOverhaul.Content.NPCs.Victors
             SpriteEffects effects = NPC.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
             Vector2 footPos = NPC.Bottom - screenPos + new Vector2(0f, NPC.gfxOffY + DrawVerticalOffset);
-            Color light = NPC.GetAlpha(drawColor);
+            Color light = ComputeEmergeColor(drawColor);
             spriteBatch.Draw(tex, footPos, source, light, NPC.rotation, origin, NPC.scale, effects, 0f);
             return false;
+        }
+
+        /// <summary>
+        /// 传送门浮现着色：先以近黑剪影整体显形（门内背光），再随走出渐染回受光色；
+        /// alpha 仅在浮现期非 0，由 <see cref="VictorRiftPortalProj.UpdateBoundVictor"/> 驱动
+        /// </summary>
+        private Color ComputeEmergeColor(Color drawColor) {
+            if (NPC.alpha <= 0) {
+                return NPC.GetAlpha(drawColor);
+            }
+            float t = 1f - NPC.alpha / 255f;                     //0=门内 1=完全走出
+            float opacity = MathHelper.Clamp(t / 0.35f, 0f, 1f); //前 35% 行程完成显形
+            float mix = MathHelper.Clamp((t - 0.30f) / 0.55f, 0f, 1f);
+            mix = mix * mix * (3f - 2f * mix);
+            Color silhouette = new(14, 5, 7);
+            return Color.Lerp(silhouette, drawColor, mix) * opacity;
         }
 
         /// <summary>

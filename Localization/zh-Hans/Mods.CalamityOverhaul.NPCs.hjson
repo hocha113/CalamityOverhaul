@@ -23,3 +23,29 @@ Victor: {
 		Princess_LovesNPC: 我最喜欢{NPCName}了！他总能把大家修得好好的！
 	}
 }
+
+TBUG: {
+	DisplayName: 漏洞贩子
+	Bestiary: 骷髅王倒下的那个晚上，世界裂开一道没闭合的缝，把她吐了出来。落地摔得不轻，她爬起来的第一句话是问这里金币怎么换。现在她开了间小铺，卖些来路说不清的芯片。
+	TalkHint: 与TBUG交谈
+	Name0: TBUG
+
+	TownNPCMood: {
+		Content: 运行正常。没报错，没警告，甚至有点无聊
+		NoHome: 没有房子，我现在的坐标严格来说是个非法值
+		FarFromHome: 离家太远了，信号衰减得厉害
+		LoveSpace: 这么大的地方，摆得下三块屏幕，喜欢
+		DislikeCrowded: 人一多，谁都能瞄我的屏幕，烦
+		HateCrowded: 挤成这样，迟早有人踩到我的线
+		LoveBiome: "{BiomeName}又凉又稳，跟机房一个味"
+		LikeBiome: "{BiomeName}还行，低温对硬件好"
+		DislikeBiome: "{BiomeName}的湿度警报就没停过"
+		HateBiome: "{BiomeName}？我的设备进过一次海水，那张维修账单我现在还留着"
+		LoveNPC: "{NPCName}聊扳手和电路都在行，跟她说话不用降频"
+		LikeNPC: "{NPCName}不问我从哪来，只问我收不收二手零件，好评"
+		DislikeNPC: "{NPCName}老想把我抬上手术台拆开看看。我没坏，别修我"
+		HateNPC: "{NPCName}的账本比任何病毒都毒，让他离我的铺子远点"
+		LikeNPC_Princess: "{NPCName}嘛……行吧，没人讨厌得起来，这本身就很可疑"
+		Princess_LovesNPC: 我最喜欢{NPCName}了！她知道好多别人都不知道的事！
+	}
+}

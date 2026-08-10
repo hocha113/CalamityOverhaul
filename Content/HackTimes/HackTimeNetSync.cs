@@ -38,16 +38,28 @@ namespace CalamityOverhaul.Content.HackTimes
         ProtocolLocked,
     }
 
+    /// <summary>
+    /// 目标的跨端身份。新种类一律追加可选参数，别改前四个位置——
+    /// 现有构造点全按位置传参
+    /// </summary>
     internal readonly record struct HackNetworkTarget(
         HackTargetKind Kind,
         NetworkNPCIdentity NpcIdentity,
         int TileX,
-        int TileY)
+        int TileY,
+        NetworkProjectileIdentity ProjIdentity = default,
+        int ItemIndex = -1,
+        int ItemType = ItemID.None)
     {
         internal bool IsSerializable => Kind switch {
             HackTargetKind.Npc => NpcIdentity.IsValid,
-            HackTargetKind.Tile => TileX >= 0 && TileX < Main.maxTilesX
-                && TileY >= 0 && TileY < Main.maxTilesY,
+            //液体格与物块格共用同一对座标
+            HackTargetKind.Tile or HackTargetKind.Water
+                => TileX >= 0 && TileX < Main.maxTilesX
+                    && TileY >= 0 && TileY < Main.maxTilesY,
+            HackTargetKind.Projectile => ProjIdentity.IsValid,
+            HackTargetKind.Item => ItemIndex >= 0 && ItemIndex < Main.maxItems
+                && ItemType > ItemID.None && ItemType < ItemLoader.ItemCount,
             _ => false,
         };
 
@@ -61,6 +73,24 @@ namespace CalamityOverhaul.Content.HackTimes
             }
             if (Kind == HackTargetKind.Tile) {
                 target = new TileScannable(TileX, TileY);
+                return true;
+            }
+            if (Kind == HackTargetKind.Water) {
+                target = new WaterScannable(TileX, TileY);
+                return true;
+            }
+            if (Kind == HackTargetKind.Projectile) {
+                //弹幕槽位各端不同，必须靠 owner+identity 反查本机槽
+                if (!ProjIdentity.TryResolve(out Projectile projectile)) return false;
+                target = new ProjectileScannable(projectile.whoAmI);
+                return true;
+            }
+            if (Kind == HackTargetKind.Item) {
+                Item item = Main.item[ItemIndex];
+                if (item?.active != true || item.IsAir || item.type != ItemType) {
+                    return false;
+                }
+                target = new ItemScannable(ItemIndex);
                 return true;
             }
             return false;
@@ -88,6 +118,39 @@ namespace CalamityOverhaul.Content.HackTimes
                 }
                 identity = new HackNetworkTarget(HackTargetKind.Tile,
                     default, x, y);
+                return true;
+            }
+            if (target is WaterScannable waterTarget) {
+                int x = waterTarget.TileCoordX;
+                int y = waterTarget.TileCoordY;
+                if (x < 0 || x >= Main.maxTilesX || y < 0
+                    || y >= Main.maxTilesY || Main.tile[x, y].LiquidAmount == 0) {
+                    return false;
+                }
+                identity = new HackNetworkTarget(HackTargetKind.Water,
+                    default, x, y);
+                return true;
+            }
+            if (target is ProjectileScannable projTarget) {
+                if (projTarget.ProjectileIndex < 0
+                    || projTarget.ProjectileIndex >= Main.maxProjectiles
+                    || !NetworkProjectileIdentity.TryCapture(
+                        Main.projectile[projTarget.ProjectileIndex],
+                        out NetworkProjectileIdentity projIdentity)) {
+                    return false;
+                }
+                identity = new HackNetworkTarget(HackTargetKind.Projectile,
+                    default, -1, -1, projIdentity);
+                return true;
+            }
+            if (target is ItemScannable itemTarget) {
+                int index = itemTarget.ItemIndex;
+                if (index < 0 || index >= Main.maxItems) return false;
+                Item item = Main.item[index];
+                if (item?.active != true || item.IsAir) return false;
+                //掉落物槽位在联机里是全局同步的，index+type 足够认人
+                identity = new HackNetworkTarget(HackTargetKind.Item,
+                    default, -1, -1, default, index, item.type);
                 return true;
             }
             return false;
@@ -945,15 +1008,26 @@ namespace CalamityOverhaul.Content.HackTimes
             return true;
         }
 
+        /// <summary>
+        /// 目标身份的线上格式：一字节 kind + 该 kind 自己的定长负载。<br/>
+        /// 加新 kind 时读写两侧必须同时改，且读侧要先把负载吃干净再校验
+        /// </summary>
         private static void WriteTarget(BinaryWriter writer,
             in HackNetworkTarget target) {
             writer.Write((byte)target.Kind);
             if (target.Kind == HackTargetKind.Npc) {
                 target.NpcIdentity.Write(writer);
             }
-            else if (target.Kind == HackTargetKind.Tile) {
+            else if (target.Kind is HackTargetKind.Tile or HackTargetKind.Water) {
                 writer.Write(target.TileX);
                 writer.Write(target.TileY);
+            }
+            else if (target.Kind == HackTargetKind.Projectile) {
+                target.ProjIdentity.Write(writer);
+            }
+            else if (target.Kind == HackTargetKind.Item) {
+                writer.Write((short)target.ItemIndex);
+                writer.Write(target.ItemType);
             }
         }
 
@@ -967,12 +1041,29 @@ namespace CalamityOverhaul.Content.HackTimes
                 target = new HackNetworkTarget(kind, identity, -1, -1);
                 return true;
             }
-            if (kind == HackTargetKind.Tile) {
+            if (kind is HackTargetKind.Tile or HackTargetKind.Water) {
                 int tileX = reader.ReadInt32();
                 int tileY = reader.ReadInt32();
                 if (tileX < 0 || tileX >= Main.maxTilesX
                     || tileY < 0 || tileY >= Main.maxTilesY) return false;
                 target = new HackNetworkTarget(kind, default, tileX, tileY);
+                return true;
+            }
+            if (kind == HackTargetKind.Projectile) {
+                if (!NetworkProjectileIdentity.TryRead(reader,
+                    out NetworkProjectileIdentity projIdentity)) return false;
+                target = new HackNetworkTarget(kind, default, -1, -1, projIdentity);
+                return true;
+            }
+            if (kind == HackTargetKind.Item) {
+                //先读满两项再判，提前 return 会把剩下的字节留在共用的流里
+                int itemIndex = reader.ReadInt16();
+                int itemType = reader.ReadInt32();
+                if (itemIndex < 0 || itemIndex >= Main.maxItems
+                    || itemType <= ItemID.None
+                    || itemType >= ItemLoader.ItemCount) return false;
+                target = new HackNetworkTarget(kind, default, -1, -1,
+                    default, itemIndex, itemType);
                 return true;
             }
             return false;

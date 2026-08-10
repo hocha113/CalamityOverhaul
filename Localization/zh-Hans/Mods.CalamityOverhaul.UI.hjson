@@ -545,6 +545,78 @@ VictorClinicUI: {
 
 VictorSurgery.SurgeryInProgressText: 手术进行中
 
+TBUGTalkUI: {
+	SpeakerName: TBUG
+	Greet0: 来了？随便看，别碰主机后面那捆线，那是我的脊椎
+	Greet1: 你的走路姿势有个很小的循环，每七步重复一次，别在意，大多数人都有
+	Greet2: 这个世界的物理写得还行，就是水那部分明显赶工了
+	Greet3: 货都在架上，价格是我定的，讲价的力气可以省下
+	Greet4: 白天太亮，屏幕上全是反光，夜里再来，夜里我脾气好
+	Greet5: 别问我从哪来，一段报错信息你管它叫什么籍贯？
+	Greet6: 金币这东西挺有意思，又重又占口袋，但你们都认它，那我也认
+	Greet7: 我不修东西，我只卖，坏了算你的使用问题
+	Greet8: 骷髅王倒下那晚我掉出来的，不是要谢他，但确实是他先松的手
+	Greet9: 你装备栏还有空位，空位就是浪费
+	Greet10: 睡眠是个补丁，打得很敷衍，我一般跳过
+	Greet11: 有话快说，我那边还挂着三个进程等我回去
+	TalkFirstMeet0: 生面孔，我叫TBUG，从那道缝里摔出来的那个，收起那种表情，我落地的姿势没那么难看
+	TalkFirstMeet1: 哦，会说话的，比史莱姆强多了，买东西看货架，聊天就趁我编译的这会儿
+	TalkFirstPurchase0: 成交，收据没有，我的记性比纸可靠
+	TalkFirstPurchase1: 货拿稳，出了问题先检讨你自己的使用习惯
+	TalkMoodHomeless0: 我天天睡露天，硬件早上全是露水，给我个房间，价格能降一档
+	TalkMoodHomeless1: 没屋顶的商店叫地摊，我不喜欢当地摊主
+	TalkMoodHappy0: 今天心情不错，报价的时候手滑了一下——往下滑的，别声张
+	TalkMoodHappy1: 这地方越住越顺眼，你们的建筑水平比物理引擎强
+	TalkMoodGrumpy0: 别嫌贵，把我搬去个像样的地方，价格自己会掉
+	TalkMoodGrumpy1: 心情差，报价就冲，这是市场规律，不是我的问题
+	TalkHackUnlocked0: 你眼睛里那套东西不错，谁给装的？手艺在这个世界的平均线以上
+	TalkHackUnlocked1: 会骇入的客人是好客人，至少不会问"这芯片插哪头"
+	TalkHackLocked0: 我这些货，一半你现在还用不了，先去弄一套能骇入的行头
+	TalkLowHealth0: 你在滴血，先去找护士，我的货架上不卖血袋
+	TalkLowHealth1: 血条那种东西，快见底才要紧——你这条已经快了
+	TalkRich0: 一股铂金味，今天打算清空哪层货架？
+	TalkPoor0: 口袋比我的回收站还干净，先去赚钱，我不赊账
+	TalkPoor1: 没钱就当逛展览，看可以，别摸
+	TalkPreHardmode0: 世界还在前期，怪的数值都写得客客气气，趁现在多囤点
+	TalkPreHardmode1: 那堵肉墙还没倒，等它倒了，你会回来搬空我的货架的
+	TalkHardmode0: 世界打了个大补丁，怪变强了，掉的东西也值钱了，对生意是好事
+	TalkHardmode1: 光和暗在外面撕地图，别站在新裂开的缝旁边——我就是从那种地方掉出来的
+	TalkPostMoonlord0: 月亮领主都被你拆了，你的战斗日志我想拷一份，学习用
+	TalkPostMoonlord1: 神仙都打完了还来照顾我这小铺子，我该涨价还是该感动？
+	TalkPostSupCal0: 至尊灾厄都倒了，现在这个世界最大的漏洞是你才对
+	TalkBloodMoon0: 血月，刷新率翻倍的夜晚，门口那些东西比你还急
+	TalkBloodMoon1: 今晚外面全是红的，我把店门的判定框调小了点，安全第一
+	TalkEclipse0: 日食，白天比夜里还吵，很难不怀疑是哪个配置写反了
+	TalkRain0: 下雨，我的设备套了袋子，你的装备自己看着办
+	TalkRain1: 雨点全是直线下落，连个风的扰动项都不给，偷懒
+	TalkDeepNight0: 这个点还不睡？行，夜猫子打九五折——开玩笑的，原价
+	TalkDeepNight1: 深夜好，跑的进程少，世界确实比白天流畅
+	TalkUnderground0: 地下好，恒温，安静，石头把信号噪声全挡了
+	TalkUnderground1: 闻到没有，一股机房味，我怀疑这个世界的服务器就埋在下面
+	TalkSnow0: 雪原冷得很实在，硬件在这儿能多撑两年
+	TalkJungle0: 丛林的湿度天天顶着报警线，我的货在这边放不满一周
+	TalkBeach0: 海边？我的东西进过一次海水，那笔维修钱够买三块新板子
+	TalkEvil0: 这片地的腐蚀是真的啃电路，你的装备和你的皮，它不挑
+	ShopButtonText: 黑客商店
+	ChatButtonText: 闲聊
+	LeaveButtonText: 离开
+	PriceFactorText: 价格系数 ×{0}
+}
+
+TBUGShopUI: {
+	TitleText: shop --list
+	StockHeaderText: 在售
+	BalanceText: 余额
+	StatusIdleText: 已连接 · 单击购买 · 概不退换
+	ResultSuccessText: exit 0 · 交易完成
+	ResultInvalidText: ERR：请求无效
+	ResultOutOfRangeText: ERR：离店主太远
+	ResultNoFundsText: ERR：余额不足
+	ResultNoSpaceText: ERR：背包已满
+	ResultBusyText: ERR：请求太频繁，慢点
+	ResultTimeoutText: ERR：请求超时
+}
+
 EntrustManagerNotification: {
 	LabelNewQuest: 新委托
 	LabelTracked: 已关注
@@ -733,7 +805,10 @@ HackTime: {
 	ProtocolLockedTitle: 协议已加密
 	ProtocolLockedHint: 该协议不在你的骇入库中，用对应的协议芯片写入后可用
 	ChipGrants: 写入协议：{0}
+	ChipTarget: 可作用于：{0}
+	ChipOneShot: 一次性写入，写入后无法再用
 	ChipAlreadyOwned: 该协议已在骇入库中
+	Erased: 已注销
 }
 
 DecryptionStrings: {

@@ -10,21 +10,27 @@ namespace CalamityOverhaul.Content.HackTimes.Chips
 {
     /// <summary>
     /// 协议芯片：一次性消耗品，用掉即把绑定协议写进玩家的骇入库。<br/>
-    /// 子类只需给出协议类型，图标由 <see cref="HackChipGlyph"/> 逐帧合成，不占贴图资产。<br/>
+    /// 图标由 <see cref="HackChipGlyph"/> 逐帧合成，不占贴图资产。<br/>
     /// 结算刻意全落在本机：解锁写的是客户端自己的 ModPlayer，
-    /// 不像 RAM 芯片那样要等权威端回执再扣（<see cref="RAMSystems.BaseRamUpgradeChip"/>）
+    /// 不像 RAM 芯片那样要等权威端回执再扣（<see cref="RAMSystems.BaseRamUpgradeChip"/>）。<br/>
+    /// 本类是非泛型的，为的是让获取系统能用
+    /// <c>Mod.GetContent&lt;BaseHackProtocolChip&gt;()</c> 一次枚举全家族；
+    /// 写新芯片请继承泛型的 <see cref="BaseHackProtocolChip{T}"/>
     /// </summary>
-    internal abstract class BaseHackProtocolChip<T> : ModItem, ILocalizedModType where T : QuickHackDef
+    internal abstract class BaseHackProtocolChip : ModItem, ILocalizedModType
     {
         public override string LocalizationCategory => "Items";
 
         public override string Texture => CWRConstant.VaultPlaceholder2;
 
         /// <summary>绑定协议，注册未完成时为 null</summary>
-        protected static QuickHackDef Protocol => QuickHackDef.Get<T>();
+        internal abstract QuickHackDef Protocol { get; }
 
-        /// <summary>晶粒纹登记名，默认取协议类名</summary>
-        protected virtual string DieKey => typeof(T).Name;
+        /// <summary>晶粒纹登记名</summary>
+        protected abstract string DieKey { get; }
+
+        /// <summary>是否进入后续的获取池。获取系统尚未实现，此处只是留好接缝</summary>
+        public virtual bool CanGenerateInLabChest => true;
 
         /// <summary>晶粒纹 SVG d 串；不给则退回通用电路纹</summary>
         protected virtual string DiePath => null;
@@ -94,14 +100,33 @@ namespace CalamityOverhaul.Content.HackTimes.Chips
                 HackTime.ChipGrants.Format(hack.DisplayName.Value)) {
                 OverrideColor = Color.Lerp(catColor, Color.White, 0.4f),
             });
+            tooltips.Add(new TooltipLine(Mod, "HackChipTarget",
+                HackTime.ChipTarget.Format(DescribeTargets(hack.SupportedTargets))) {
+                OverrideColor = HackTheme.AccentAlt,
+            });
             tooltips.Add(new TooltipLine(Mod, "HackChipDesc", hack.Description.Value) {
                 OverrideColor = HackTheme.TextNormal,
+            });
+            //"一次性写入"对每枚芯片都一样，走共用串而不是十七份重复的 Tooltip
+            tooltips.Add(new TooltipLine(Mod, "HackChipOneShot", HackTime.ChipOneShot.Value) {
+                OverrideColor = HackTheme.TextDim,
             });
             if (HackProtocolOwned.Owns(Main.LocalPlayer, hack)) {
                 tooltips.Add(new TooltipLine(Mod, "HackChipOwned", HackTime.ChipAlreadyOwned.Value) {
                     OverrideColor = HackTheme.TextDim,
                 });
             }
+        }
+
+        //协议可作用的目标种类，多选时顿号连写
+        private static string DescribeTargets(HackTargetKind kinds) {
+            List<string> names = [];
+            foreach (HackTargetType type in HackTargetType.Instances) {
+                if ((kinds & type.Kind) != 0) {
+                    names.Add(type.DisplayName.Value);
+                }
+            }
+            return names.Count > 0 ? string.Join('/', names) : "-";
         }
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position
@@ -122,5 +147,13 @@ namespace CalamityOverhaul.Content.HackTimes.Chips
                 rotation, Main.GameUpdateCount * 0.02f);
             return false;
         }
+    }
+
+    /// <summary>按协议类型绑定的芯片，子类通常只需要给一条 <see cref="BaseHackProtocolChip.DiePath"/></summary>
+    internal abstract class BaseHackProtocolChip<T> : BaseHackProtocolChip where T : QuickHackDef
+    {
+        internal sealed override QuickHackDef Protocol => QuickHackDef.Get<T>();
+
+        protected override string DieKey => typeof(T).Name;
     }
 }

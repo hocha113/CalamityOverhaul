@@ -313,6 +313,16 @@ OnikiriItem: {
 		''' */
 }
 
+KikasaItem: {
+	// DisplayName: Kikasa
+	/* Tooltip:
+		'''
+		While held, press the Domain Expansion key to unfurl the Blood Lake domain; press it again to fold the umbrella
+		Within, a blood-red mirror lake lies beneath your feet, and a dark sun sits half-sunken below the waterline
+		"No rain under the umbrella—only the sound of water"
+		''' */
+}
+
 SHPCItem: {
 	DisplayName: SHPC
 	Tooltip: ""
@@ -1592,7 +1602,87 @@ RamRecoveryUpgradeChip: {
 
 MeltdownChip: {
 	// DisplayName: Meltdown Protocol Chip
-	// Tooltip: One-time write; unusable once the protocol is in your library
+	// Tooltip: ""
+}
+
+ProjectileHijackChip: {
+	// DisplayName: Ballistic Takeover Chip
+	// Tooltip: ""
+}
+
+ProjectileFreezeChip: {
+	// DisplayName: Ballistic Freeze Chip
+	// Tooltip: ""
+}
+
+DataPurgeChip: {
+	// DisplayName: Data Purge Chip
+	// Tooltip: ""
+}
+
+BallisticOverclockChip: {
+	// DisplayName: Ballistic Overclock Chip
+	// Tooltip: ""
+}
+
+ElectrolysisChip: {
+	// DisplayName: Electrolysis Chip
+	// Tooltip: ""
+}
+
+CryostasisChip: {
+	// DisplayName: Cryostasis Chip
+	// Tooltip: ""
+}
+
+LiquidPurgeChip: {
+	// DisplayName: Liquid Purge Chip
+	// Tooltip: ""
+}
+
+ItemRecallChip: {
+	// DisplayName: Remote Recall Chip
+	// Tooltip: ""
+}
+
+ReappraiseChip: {
+	// DisplayName: Reappraise Chip
+	// Tooltip: ""
+}
+
+ArmorParseChip: {
+	// DisplayName: Armor Parse Chip
+	// Tooltip: ""
+}
+
+ExorciseChip: {
+	// DisplayName: Forced Deletion Chip
+	// Tooltip: ""
+}
+
+DataLeechChip: {
+	// DisplayName: Data Leech Chip
+	// Tooltip: ""
+}
+
+SwarmLinkChip: {
+	// DisplayName: Swarm Link Chip
+	// Tooltip: ""
+}
+
+TurretHijackChip: {
+	// DisplayName: Turret Hijack Chip
+	// Tooltip: ""
+}
+
+MachineOverclockChip: {
+	// DisplayName: Machine Overclock Chip
+	// Tooltip: ""
+}
+
+GridBlackoutChip: {
+	// DisplayName: Grid Blackout Chip
+	// Tooltip: ""
 }
 
 Mewtwo: {

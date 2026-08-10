@@ -221,8 +221,13 @@ namespace CalamityOverhaul.Content.HackTimes
         public static LocalizedText ProtocolLockedTitle { get; private set; }
         public static LocalizedText ProtocolLockedHint { get; private set; }
 
+        //强制注销的战斗飘字
+        public static LocalizedText Erased { get; private set; }
+
         //协议芯片词条
         public static LocalizedText ChipGrants { get; private set; }
+        public static LocalizedText ChipTarget { get; private set; }
+        public static LocalizedText ChipOneShot { get; private set; }
         public static LocalizedText ChipAlreadyOwned { get; private set; }
 
         public override void SetStaticDefaults() {
@@ -414,7 +419,11 @@ namespace CalamityOverhaul.Content.HackTimes
             ProtocolLockedTitle = this.GetLocalization(nameof(ProtocolLockedTitle));
             ProtocolLockedHint = this.GetLocalization(nameof(ProtocolLockedHint));
 
+            Erased = this.GetLocalization(nameof(Erased));
+
             ChipGrants = this.GetLocalization(nameof(ChipGrants));
+            ChipTarget = this.GetLocalization(nameof(ChipTarget));
+            ChipOneShot = this.GetLocalization(nameof(ChipOneShot));
             ChipAlreadyOwned = this.GetLocalization(nameof(ChipAlreadyOwned));
         }
 

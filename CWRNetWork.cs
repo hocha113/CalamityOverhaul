@@ -6,6 +6,7 @@ using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial;
@@ -17,6 +18,7 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Modifys;
 using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
+using CalamityOverhaul.Content.NPCs.TBUGs;
 using CalamityOverhaul.Content.RAMSystems;
 using CalamityOverhaul.Content.Scenarios.Draedon;
 using CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.SignalTower;
@@ -77,6 +79,8 @@ namespace CalamityOverhaul
         CyberspaceAction,
         SHPCModuleSync,
         OnikiriDomain,
+        KikasaDomain,
+        TBUGShop,
     }
 
     public static class CWRNetWork
@@ -150,12 +154,14 @@ namespace CalamityOverhaul
             OnikiriTutorialNet.NetHandle(type, reader, whoAmI);
             OnikiriNet.NetHandle(type, reader, whoAmI);
             OniDomainNet.NetHandle(type, reader, whoAmI);
+            KikasaDomainNet.NetHandle(type, reader, whoAmI);
             RamNet.NetHandle(type, reader, whoAmI);
             CyberwareNet.NetHandle(type, reader, whoAmI);
             SandevistanNet.NetHandle(type, reader, whoAmI);
             SelfHackCrystalNet.NetHandle(type, reader, whoAmI);
             CyberspaceActionNet.NetHandle(type, reader, whoAmI);
             SHPCModuleNet.NetHandle(type, reader, whoAmI);
+            TBUGShopNet.NetHandle(type, reader, whoAmI);
         }
     }
 }

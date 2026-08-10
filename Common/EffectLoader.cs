@@ -115,6 +115,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> CyberwareBulletTime { get; set; }
         public static Asset<Effect> VictorEyelidTransition { get; set; }
         public static Asset<Effect> VictorCyberPortal { get; set; }
+        public static Asset<Effect> TBUGCorruptRift { get; set; }
+        public static Asset<Effect> TBUGTerminalPanel { get; set; }
         public static Asset<Effect> ThermalPanel { get; set; }
         public static Asset<Effect> ThermalBar { get; set; }
         public static Asset<Effect> ThermalBatteryCore { get; set; }
@@ -185,6 +187,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> DivineSourceCrescent { get; set; }
         public static Asset<Effect> DivineSourceImpact { get; set; }
         public static Asset<Effect> OniWorldGrade { get; set; }
+        public static Asset<Effect> KikasaGrade { get; set; }
+        public static Asset<Effect> KikasaSky { get; set; }
         public static Asset<Effect> OniOmokage { get; set; }
         public static Asset<Effect> OniPaperPeel { get; set; }
         public static Asset<Effect> OniSky { get; set; }

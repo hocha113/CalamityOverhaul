@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             }
         }
 
-        public bool IsHackable => false;
+        public bool IsHackable => IsValid;
 
         public int ScanRowCount => 10;
 
@@ -108,7 +108,10 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return true;
         }
 
-        public bool ApplyHack(QuickHackDef hack, Player caster) => false;
+        public bool ApplyHack(QuickHackDef hack, Player caster) {
+            int casterIndex = caster?.whoAmI ?? Main.myPlayer;
+            return HackEffectTracker.ApplyProjectileEffect(hack, ProjectileIndex, casterIndex) != null;
+        }
 
         public bool TargetEquals(IHackTarget other) {
             return other is ProjectileScannable p && p.ProjectileIndex == ProjectileIndex;

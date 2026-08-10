@@ -142,6 +142,81 @@ QuickHack: {
 		DisplayName: 熔毁协议
 		Description: 锁死散热回路，四秒后过热炸开并波及近处敌人
 	}
+
+	ProjectileHijack: {
+		DisplayName: 弹道接管
+		Description: 改判来袭弹幕的归属，让它掉头打回去
+	}
+
+	ProjectileFreeze: {
+		DisplayName: 弹道冻结
+		Description: 把一发弹幕钉在半空，五秒后放行
+	}
+
+	DataPurge: {
+		DisplayName: 数据清除
+		Description: 抹除目标弹幕，附近的同型弹一并清掉
+	}
+
+	BallisticOverclock: {
+		DisplayName: 弹道超频
+		Description: 给自己的一发弹幕加伤害、加穿透、加飞行时间
+	}
+
+	Electrolysis: {
+		DisplayName: 电解水域
+		Description: 给这片液体通电，泡在里面的敌人持续受伤
+	}
+
+	Cryostasis: {
+		DisplayName: 冷凝固化
+		Description: 把一片液体冻成能踩的薄冰，八秒后化开
+	}
+
+	LiquidPurge: {
+		DisplayName: 液体抽排
+		Description: 抽干周围一片液体，岩浆同样吃
+	}
+
+	ItemRecall: {
+		DisplayName: 远程回收
+		Description: 把掉落物拽到你脚边
+	}
+
+	Reappraise: {
+		DisplayName: 品质重掷
+		Description: 重掷地上这件装备的前缀
+	}
+
+	ArmorParse: {
+		DisplayName: 装甲解析
+		Description: 把目标防御压到零，持续六秒
+	}
+
+	Exorcise: {
+		DisplayName: 强制注销
+		Description: 挂上注销标记，累计挨五次打后触发一次重伤
+	}
+
+	DataLeech: {
+		DisplayName: 数据榨取
+		Description: 期间打这个目标会回复你的RAM
+	}
+
+	SwarmLink: {
+		DisplayName: 蜂群链接
+		Description: 目标受到的伤害分摊三成给它的同群
+	}
+
+	MachineOverclock: {
+		DisplayName: 机械超频
+		Description: 十秒内电量满载不停摆，到期把电烧空
+	}
+
+	GridBlackout: {
+		DisplayName: 电网瘫痪
+		Description: 借信号塔切断大范围内所有机械的供电
+	}
 }
 
 HackTargetType: {

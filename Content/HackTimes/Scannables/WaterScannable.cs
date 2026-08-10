@@ -15,6 +15,10 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             this.tileY = tileY;
         }
 
+        /// <summary>液体格座标，命名对齐 <see cref="TileScannable"/></summary>
+        public int TileCoordX => tileX;
+        public int TileCoordY => tileY;
+
         public Vector2 WorldCenter => new(tileX * 16f + 8f, tileY * 16f + 8f);
 
         public bool IsValid {
@@ -24,7 +28,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             }
         }
 
-        public bool IsHackable => false;
+        public bool IsHackable => IsValid;
 
         public int ScanRowCount => 7;
 
@@ -83,7 +87,10 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return true;
         }
 
-        public bool ApplyHack(QuickHackDef hack, Player caster) => false;
+        public bool ApplyHack(QuickHackDef hack, Player caster) {
+            int casterIndex = caster?.whoAmI ?? Main.myPlayer;
+            return HackEffectTracker.ApplyWaterEffect(hack, tileX, tileY, casterIndex) != null;
+        }
 
         public bool TargetEquals(IHackTarget other) {
             return other is WaterScannable w && w.tileX == tileX && w.tileY == tileY;

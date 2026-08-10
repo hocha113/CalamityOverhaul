@@ -142,6 +142,81 @@ QuickHack: {
 		DisplayName: Meltdown Protocol
 		Description: Locks the target's heat sinks shut; four seconds later it cooks off, catching nearby enemies.
 	}
+
+	ProjectileHijack: {
+		DisplayName: Ballistic Takeover
+		Description: Reassigns an incoming projectile and sends it back the way it came.
+	}
+
+	ProjectileFreeze: {
+		DisplayName: Ballistic Freeze
+		Description: Pins a projectile in midair for five seconds, then lets it go.
+	}
+
+	DataPurge: {
+		DisplayName: Data Purge
+		Description: Erases the target projectile and every nearby one of the same type.
+	}
+
+	BallisticOverclock: {
+		DisplayName: Ballistic Overclock
+		Description: Adds damage, pierce and flight time to one of your own projectiles.
+	}
+
+	Electrolysis: {
+		DisplayName: Electrolysis
+		Description: Runs current through the liquid; enemies soaking in it take damage over time.
+	}
+
+	Cryostasis: {
+		DisplayName: Cryostasis
+		Description: Freezes a patch of liquid into ice you can stand on for eight seconds.
+	}
+
+	LiquidPurge: {
+		DisplayName: Liquid Purge
+		Description: Drains the surrounding liquid. Works on lava too.
+	}
+
+	ItemRecall: {
+		DisplayName: Remote Recall
+		Description: Yanks a dropped item to your feet.
+	}
+
+	Reappraise: {
+		DisplayName: Reappraise
+		Description: Rerolls the prefix on that piece of gear on the ground.
+	}
+
+	ArmorParse: {
+		DisplayName: Armor Parse
+		Description: Drops the target's defense to zero for six seconds.
+	}
+
+	Exorcise: {
+		DisplayName: Forced Deletion
+		Description: Marks the target for deletion; the fifth hit it takes triggers a heavy strike.
+	}
+
+	DataLeech: {
+		DisplayName: Data Leech
+		Description: While active, hitting this target restores your RAM.
+	}
+
+	SwarmLink: {
+		DisplayName: Swarm Link
+		Description: Thirty percent of the damage the target takes is split across its group.
+	}
+
+	MachineOverclock: {
+		DisplayName: Machine Overclock
+		Description: Holds the machine at full charge for ten seconds, then burns the charge to nothing.
+	}
+
+	GridBlackout: {
+		DisplayName: Grid Blackout
+		Description: Uses the signal tower to cut power to every machine in a wide radius.
+	}
 }
 
 HackTargetType: {

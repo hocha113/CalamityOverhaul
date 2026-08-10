@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.NPCs.Victors.UIs
         }
 
         #endregion
-        [VaultLoaden("CalamityOverhaul/Content/Cyberwares/Victors/Victor")]
+        [VaultLoaden("CalamityOverhaul/Content/NPCs/Victors/Victor")]
         private static Asset<Texture2D> portraitAsset = null;
 
         private string currentDialogue = string.Empty;

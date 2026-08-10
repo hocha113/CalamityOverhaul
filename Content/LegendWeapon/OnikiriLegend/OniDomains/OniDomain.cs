@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial;
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial;
 using System;
 using Terraria;
 
@@ -163,6 +164,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             bool accepted;
             switch (odp.Phase) {
                 case OniDomainPhase.Closed:
+                    //两套全屏世界改写不叠加：本人血湖领域活跃时鬼域不开
+
+                    if (player.GetModPlayer<KikasaDomainPlayer>().AnyActive) {
+                        busy = true;
+                        accepted = false;
+                        break;
+                    }
                     accepted = odp.OpenDomain();
                     break;
                 case OniDomainPhase.Flipping:
@@ -197,6 +205,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             bool accepted;
             switch (odp.Phase) {
                 case OniDomainPhase.Closed:
+                    //与血湖领域互斥，同 TryToggle
+
+                    if (player.GetModPlayer<KikasaDomainPlayer>().AnyActive) {
+                        busy = true;
+                        accepted = false;
+                        break;
+                    }
                     accepted = odp.OpenDomain();
                     break;
                 case OniDomainPhase.Omote:
