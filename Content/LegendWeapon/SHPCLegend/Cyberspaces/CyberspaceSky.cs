@@ -90,6 +90,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             shader.Parameters["uPresence"]?.SetValue(presence);
             shader.Parameters["uScreenSize"]?.SetValue(new Vector2(vpW, vpH));
             shader.Parameters["uCamX"]?.SetValue(realScreenPos.X);
+            //纵向视差基准：相机中心相对世界地表的偏移，shader 端 clamp 防极端坐标
+            float camYOff = realScreenPos.Y + vpH * 0.5f - (float)Main.worldSurface * 16f;
+            shader.Parameters["uCamY"]?.SetValue(camYOff);
             shader.CurrentTechnique.Passes[0].Apply();
 
             spriteBatch.Draw(white, new Rectangle(0, 0, vpW, vpH), Color.White);

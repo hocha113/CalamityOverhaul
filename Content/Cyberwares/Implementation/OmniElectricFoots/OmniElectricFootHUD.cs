@@ -29,9 +29,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
                 if (QuestLog.Instance?.visible == true || QuestManagerUI.Instance?.IsOpen == true) {
                     return false;
                 }
-                //蓄力中或残余进度
+                //蓄力中、残余进度或断电红闪
                 OmniElectricFootPlayer fp = p.GetModPlayer<OmniElectricFootPlayer>();
-                return fp.IsCharging || fp.ChargeRatio > 0.005f;
+                return fp.IsCharging || fp.ChargeRatio > 0.005f || fp.BrokenFlash > 0;
             }
         }
 
@@ -40,6 +40,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
         private static readonly Color BarColdHi = new(120, 220, 255);
         private static readonly Color BarHotHi = new(255, 230, 120);
         private static readonly Color BarFrame = new(8, 16, 24);
+        //断电
+        private static readonly Color BarFault = new(255, 90, 70);
+        //头顶限高
+        private static readonly Color BarCeiling = new(255, 176, 64);
 
         #endregion
 
@@ -91,12 +95,61 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
                 barCol = Color.Lerp(barCol, BarHotHi, t);
             }
 
+            OmniElectricFootPlayer fp = player.GetModPlayer<OmniElectricFootPlayer>();
             DrawArcBar(sb, px, anchor, ratio, barCol);
+            //头顶不够高时，标出这次蹬升实际用得上的上限
+            if (fp.IsCharging && fp.MaxUsableRatio < 0.98f) {
+                DrawCeilingLimit(sb, px, anchor, fp.MaxUsableRatio, ratio);
+            }
             DrawElectricBolts(sb, px, anchor, ratio, barCol);
 
             if (fullPulse > 0.02f) {
                 DrawFullPulseRing(sb, px, anchor, fullPulse);
             }
+
+            //断电：整环红闪一下，明确告诉玩家这次蓄力废了
+            float broken = fp.BrokenFlash / 20f;
+            if (broken > 0f) {
+                DrawFaultArc(sb, px, anchor, broken);
+            }
+        }
+
+        /// <summary>
+        /// 限高刻度：净空吃不下的那段染琥珀，刻度线画在可用上限处
+        /// <br/>超过刻度还在蓄就等于白蓄，撞顶不罚冷却但也不会更高
+        /// </summary>
+        private void DrawCeilingLimit(SpriteBatch sb, Texture2D px, Vector2 center
+            , float limit, float ratio) {
+            const float radius = 26f;
+            const float arcStart = MathHelper.Pi + MathHelper.PiOver4 * 0.7f;
+            const float arcEnd = MathHelper.TwoPi - MathHelper.PiOver4 * 0.7f;
+
+            float limitAngle = MathHelper.Lerp(arcStart, arcEnd, MathHelper.Clamp(limit, 0f, 1f));
+            //刻度之后的整段底环染琥珀，一眼看出"再蓄没用"
+            DrawArcSolid(sb, px, center, radius, limitAngle, arcEnd, 5f
+                , BarCeiling * 0.22f, 20);
+            //已经蓄过头的部分加重
+            if (ratio > limit) {
+                float overAngle = MathHelper.Lerp(arcStart, arcEnd, MathHelper.Clamp(ratio, 0f, 1f));
+                float pulse = 0.5f + 0.5f * MathF.Sin(time * 16f);
+                DrawArcSolid(sb, px, center, radius, limitAngle, overAngle, 4.4f
+                    , BarCeiling * (0.35f + 0.35f * pulse), 20);
+            }
+            //径向刻度线
+            Vector2 dir = new(MathF.Cos(limitAngle), MathF.Sin(limitAngle));
+            DrawLine(sb, px, center + dir * (radius - 7f), center + dir * (radius + 7f)
+                , 1.8f, BarCeiling * 0.9f);
+        }
+
+        /// <summary>断电红弧，随剩余帧衰减并高频闪</summary>
+        private void DrawFaultArc(SpriteBatch sb, Texture2D px, Vector2 center, float strength) {
+            const float arcStart = MathHelper.Pi + MathHelper.PiOver4 * 0.7f;
+            const float arcEnd = MathHelper.TwoPi - MathHelper.PiOver4 * 0.7f;
+            float flash = 0.55f + 0.45f * MathF.Sin(time * 40f);
+            Color col = BarFault * (strength * flash);
+            DrawArcSolid(sb, px, center, 26f, arcStart, arcEnd, 5.6f, col * 0.35f, 36);
+            DrawArcSolid(sb, px, center, 26f, arcStart, arcEnd, 2.6f, col, 36);
+            DrawDot(sb, px, center, 8f, col * 0.5f);
         }
 
         /// <summary>弧形蓄力条，底环+进度环+顶端帽</summary>

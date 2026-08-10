@@ -1514,17 +1514,18 @@ OmniElectricFoot: {
 	Tooltip:
 		'''
 		A high-output locomotor cybernetic combining electromagnetic recoil with dense propulsion gel.
-		Grants a mid-air double jump, letting you launch off again after leaving the ground.
-		Hover the Charge Jump slice in the cyberware radial to charge up, then release to launch.
-		A fully charged jump can reach more than twice the height of a normal jump.
+		Grants a mid-air double jump; hold the jump key after kicking off to push further.
+		Hold the skill key to charge at your feet, then release to kick off — a full charge reaches 3x a normal jump.
+		The propulsion gel absorbs its own launches — those descents deal no fall damage.
+		Charging locks your run speed and jump, and leaving the ground cuts the power.
 		'''
-	SkillHint: Hover Charge Jump on the {0} radial to charge
+	SkillHint: Hold {0} to charge, release to kick off
 	SkillName: Charge Jump
 	SkillDesc:
 		'''
 		Electromagnetic-propulsion burst leap.
-		Requires standing on the ground; hover time on the slice IS the charge time.
-		Release the key to launch at up to 2.5x normal jump height when fully charged.
+		Requires standing on the ground; holding the skill key charges it, full in 60 ticks.
+		Release to launch at up to 3x normal jump height, with sharper air control during the propulsion window.
 		'''
 }
 

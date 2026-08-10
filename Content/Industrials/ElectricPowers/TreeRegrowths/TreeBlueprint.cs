@@ -398,10 +398,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
         #endregion
 
         #region 落地校验与写入
+        //主干高度下界，与各生成函数的随机区间对齐(普通树5-16，樱花/柳/灰烬7-12)
+        private const int MinHeightCommon = 5;
+        private const int MinHeightSettings = 7;
+
         /// <summary>权威端滚可用种子，蓝图整体校验过才算(高度可能撞上限)</summary>
         public static bool TryRollSeed(int x, int groundY, int treeTileType, out int seed) {
             //随机高度可能撞上头顶空间上限，多滚几次提高出苗率
-            for (int attempt = 0; attempt < 8; attempt++) {
+            for (int attempt = 0; attempt < 20; attempt++) {
                 seed = Main.rand.Next(int.MaxValue);
                 if (TryGenerate(x, groundY, treeTileType, seed, out TreeBlueprint blueprint) && blueprint.CanPlace()) {
                     return true;
@@ -411,20 +415,43 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
             return false;
         }
 
+        /// <summary>
+        /// 预筛一个地面格能否长树，判定与真正写块的<see cref="CanPlace"/>同一套口径
+        /// <br>头顶只按该树种的最矮主干留余量；草花、藤蔓、树苗一类装饰不算占位(同原版)</br>
+        /// </summary>
+        public static bool CanPlantAt(int x, int groundY, out int treeType) {
+            treeType = 0;
+            if (!WorldGen.InWorld(x, groundY, 32)) {
+                return false;
+            }
+            //正上方压着实心块时直接否掉，省下整条走廊的扫描
+            Tile above = Main.tile[x, groundY - 1];
+            if (above.HasTile && Main.tileSolid[above.TileType]) {
+                return false;
+            }
+            treeType = ResolveTreeType(x, groundY, 0);
+            return treeType switch {
+                TileID.PalmTree => CanPlacePalmAt(x, groundY),
+                TileID.Trees => CanPlaceCommonAt(x, groundY, MinHeightCommon),
+                TileID.VanityTreeSakura or TileID.VanityTreeYellowWillow or TileID.TreeAsh
+                    => CanPlaceWithSettingsAt(x, groundY, treeType, MinHeightSettings),
+                _ => false
+            };
+        }
+
         /// <summary>写块前复检(镜像原版前置；落地前世界可能变)</summary>
         public bool CanPlace() {
             if (!WorldGen.InWorld(TrunkX, GroundY, 32)) {
                 return false;
             }
             return TreeTileType switch {
-                TileID.PalmTree => CanPlacePalm(),
-                TileID.Trees => CanPlaceCommon(),
-                _ => CanPlaceWithSettings()
+                TileID.PalmTree => CanPlacePalmAt(TrunkX, GroundY),
+                TileID.Trees => CanPlaceCommonAt(TrunkX, GroundY, Height),
+                _ => CanPlaceWithSettingsAt(TrunkX, GroundY, TreeTileType, Height)
             };
         }
 
-        private bool CanPlaceCommon() {
-            int i = TrunkX, j = GroundY;
+        private static bool CanPlaceCommonAt(int i, int j, int height) {
             if (Main.tile[i - 1, j - 1].LiquidAmount != 0 || Main.tile[i, j - 1].LiquidAmount != 0 || Main.tile[i + 1, j - 1].LiquidAmount != 0) {
                 return false;
             }
@@ -442,15 +469,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
             if (!leftFit && !rightFit) {
                 return false;
             }
-            int padded = Height + 4;
+            int padded = height + 4;
             if (ground.TileType == TileID.JungleGrass) {
                 padded += 5;
             }
             return WorldGen.EmptyTileCheck(i - 2, i + 2, j - padded, j - 1, TileID.Saplings);
         }
 
-        private bool CanPlaceWithSettings() {
-            int i = TrunkX, j = GroundY;
+        private static bool CanPlaceWithSettingsAt(int i, int j, int treeTileType, int height) {
             if (Main.tile[i - 1, j - 1].LiquidAmount != 0 || Main.tile[i, j - 1].LiquidAmount != 0 || Main.tile[i + 1, j - 1].LiquidAmount != 0) {
                 return false;
             }
@@ -458,29 +484,25 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
             if (!ground.HasUnactuatedTile || ground.IsHalfBlock || ground.Slope != SlopeType.Solid) {
                 return false;
             }
-            bool groundOK = TreeTileType == TileID.TreeAsh
-                ? ground.TileType == TileID.Ash
-                : TileID.Sets.Conversion.Grass[ground.TileType];
-            if (!groundOK) {
+            if (!GroundTestSettings(treeTileType, ground.TileType)) {
                 return false;
             }
             if (!WorldGen.DefaultTreeWallTest(Main.tile[i, j - 1].WallType)) {
                 return false;
             }
-            bool leftFit = Main.tile[i - 1, j].HasTile && GroundTestSettings(Main.tile[i - 1, j].TileType);
-            bool rightFit = Main.tile[i + 1, j].HasTile && GroundTestSettings(Main.tile[i + 1, j].TileType);
+            bool leftFit = Main.tile[i - 1, j].HasTile && GroundTestSettings(treeTileType, Main.tile[i - 1, j].TileType);
+            bool rightFit = Main.tile[i + 1, j].HasTile && GroundTestSettings(treeTileType, Main.tile[i + 1, j].TileType);
             if (!leftFit && !rightFit) {
                 return false;
             }
-            return WorldGen.EmptyTileCheck(i - 2, i + 2, j - (Height + 4), j - 1, TileID.Saplings);
+            return WorldGen.EmptyTileCheck(i - 2, i + 2, j - (height + 4), j - 1, TileID.Saplings);
         }
 
-        private bool GroundTestSettings(int type) {
-            return TreeTileType == TileID.TreeAsh ? type == TileID.Ash : TileID.Sets.Conversion.Grass[type];
+        private static bool GroundTestSettings(int treeTileType, int type) {
+            return treeTileType == TileID.TreeAsh ? type == TileID.Ash : TileID.Sets.Conversion.Grass[type];
         }
 
-        private bool CanPlacePalm() {
-            int i = TrunkX, j = GroundY;
+        private static bool CanPlacePalmAt(int i, int j) {
             Tile ground = Main.tile[i, j];
             if (!ground.HasTile || ground.IsHalfBlock || ground.Slope != SlopeType.Solid || !IsPalmGround(ground.TileType)) {
                 return false;

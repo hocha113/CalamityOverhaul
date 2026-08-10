@@ -65,11 +65,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (t <= 0.001f) {
                 return;
             }
-            //日光换色而非熄灭：暗红冷调，露天区域读作"被系统重新渲染"
+            //日光换色而非熄灭：染色重心在背景——背景沉黑让地形剪影剥出来(纵深线索)，
+            //地砖只轻染，黑墙气质靠"黑场景+红轮廓"的对比而非满屏红罩
             Color cyberTile = new(126, 72, 68);
-            Color cyberBg = new(54, 26, 28);
-            tileColor = Color.Lerp(tileColor, cyberTile, t * 0.55f);
-            backgroundColor = Color.Lerp(backgroundColor, cyberBg, t * 0.62f);
+            Color cyberBg = new(40, 18, 20);
+            tileColor = Color.Lerp(tileColor, cyberTile, t * 0.35f);
+            backgroundColor = Color.Lerp(backgroundColor, cyberBg, t * 0.68f);
         }
 
         public override void ClearWorld() => ResetAll();

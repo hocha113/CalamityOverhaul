@@ -213,6 +213,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniRainWorld { get; set; }
         public static Asset<Effect> OniRainSky { get; set; }
         public static Asset<Effect> OniRainDescent { get; set; }
+        public static Asset<Effect> OniSewage { get; set; }
         public static Asset<Effect> OniSandGarden { get; set; }
         public static Asset<Effect> OniSenjuArm { get; set; }
         public static Asset<Effect> OniPaperMirror { get; set; }

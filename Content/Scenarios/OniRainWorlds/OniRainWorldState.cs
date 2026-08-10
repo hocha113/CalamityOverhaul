@@ -276,6 +276,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
             OniRainWorldTransition.Update();
             OniRainDescentTransition.Update();
             OniRainWorldState.UpdateFx();
+            KasaOnis.KasaOniDirector.Update();
         }
 
         public override void ClearWorld() {
@@ -283,6 +284,7 @@ namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds
                 OniRainWorldTransition.HardReset();
                 OniRainDescentTransition.HardReset();
                 OniRainWorldState.ResetLocal();
+                KasaOnis.KasaOniDirector.ResetLocal();
             }
         }
     }

@@ -163,14 +163,15 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 
     //=
     //第三层：调色（黑墙实体感，高光端压缩防刺眼）
+    //L3 接管转 2077 黑墙语法：世界更黑更素，红雾减半——对比度长在轮廓上不在色罩上
     //=
-    float targetDim = lerp(0.55, 0.42, centerFactor * 0.3);
+    float targetDim = lerp(0.55, 0.42, centerFactor * 0.3) * (1.0 - uTakeover * 0.10);
     float dimFactor = lerp(1.0, targetDim, intensity * dimStrength * baseMul);
     float3 processed = original.rgb * dimFactor;
 
     float lum = dot(processed, float3(0.299, 0.587, 0.114));
     float3 gray = float3(lum, lum, lum);
-    processed = lerp(processed, gray, 0.33 * intensity * baseMul);
+    processed = lerp(processed, gray, (0.33 + uTakeover * 0.12) * intensity * baseMul);
 
     //三阶映射：深渊酒红→血红→压缩暖橙
     float3 shadowRed  = float3(0.14, 0.02, 0.05);
@@ -180,7 +181,8 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     float hiT = saturate((lum - 0.3) / 0.7);
     float hiPick = step(0.3, lum);
     float3 redMap = lerp(lerp(shadowRed, midRed, loT), lerp(midRed, highRed, hiT), hiPick);
-    processed = lerp(processed, redMap * (lum * 0.65 + 0.35), 0.30 * intensity * baseMul);
+    processed = lerp(processed, redMap * (lum * 0.65 + 0.35),
+        0.30 * (1.0 - uTakeover * 0.50) * intensity * baseMul);
 
     //距离色温偏移：中心偏冷暗红，边缘偏热橙红
     float3 distTint = lerp(float3(0.0, -0.010, 0.007), float3(0.05, 0.02, -0.012), edgeFactor);
@@ -370,7 +372,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     float3 additive = float3(0, 0, 0);
     additive += (cGridLine * sqLine * sqOpacity * 1.10 + cGridNode * sqNode * sqNodeB) * w1 * skeletonMul;
     additive += (cHexLine * hexLine * hexLineB * 0.85 + cHexFill * hexFill) * w2 * skeletonMul;
-    additive += cEdgeL3 * edgeGlowL3 * 0.85 * skeletonMul;
+    additive += cEdgeL3 * edgeGlowL3 * 1.0 * skeletonMul;
     additive += cBand * bands * 0.80 * skeletonMul;
     additive += cFront * frontGlow * 0.90;
     additive += cCrackGlow * edgeTotal;

@@ -25,21 +25,21 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
 
         public override int FullChargeTicks => OmniElectricFoot.FullChargeTicks;
 
-        //仅地面可蓄力
+        //仅地面可蓄力；坐骑/抓钩/悬停都由下探探针排除
         public override bool IsReady {
             get {
                 Player p = Main.LocalPlayer;
                 if (p == null || !p.active || p.dead) {
                     return false;
                 }
+                if (OmniElectricFoot.GetEquipped(p) == null) {
+                    return false;
+                }
                 OmniElectricFootPlayer fp = p.GetModPlayer<OmniElectricFootPlayer>();
-                if (!fp.IsOnGround) {
+                if (fp.ReleaseCooldown > 0) {
                     return false;
                 }
-                if (p.mount.Active || p.grappling[0] >= 0) {
-                    return false;
-                }
-                return true;
+                return fp.IsOnGround;
             }
         }
 
