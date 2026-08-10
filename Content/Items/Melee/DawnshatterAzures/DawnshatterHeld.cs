@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.Localization;
@@ -971,7 +970,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             if (!VaultUtils.isServer) {
                 bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
                 SoundEngine.PlaySound((steel ? SoundID.NPCHit4 : SoundID.NPCHit1) with {
-                    Pitch = steel ? 0.05f : -0.15f, Volume = 0.7f
+                    Pitch = steel ? 0.05f : -0.15f,
+                    Volume = 0.7f
                 }, target.Center);
 
                 //命中余烬迸发,钢面更快更亮更散

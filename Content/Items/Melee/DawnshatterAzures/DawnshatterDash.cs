@@ -145,7 +145,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             //音高爬升
             if (!VaultUtils.isServer && phaseTimer % 8 == 0) {
                 SoundEngine.PlaySound(SoundID.DD2_EtherianPortalSpawnEnemy with {
-                    Volume = 0.3f + chargeProgress * 0.2f, Pitch = chargeProgress * 0.6f
+                    Volume = 0.3f + chargeProgress * 0.2f,
+                    Pitch = chargeProgress * 0.6f
                 }, Owner.Center);
             }
 
@@ -383,7 +384,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             if (!VaultUtils.isServer) {
                 bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
                 SoundEngine.PlaySound((steel ? SoundID.NPCHit4 : SoundID.NPCHit1) with {
-                    Pitch = steel ? 0.1f : -0.1f, Volume = 0.75f
+                    Pitch = steel ? 0.1f : -0.1f,
+                    Volume = 0.75f
                 }, target.Center);
                 for (int i = 0; i < 7; i++) {
                     Vector2 vel = dashDir.RotatedByRandom(steel ? 0.9f : 0.5f) * Main.rand.NextFloat(4f, 11f);

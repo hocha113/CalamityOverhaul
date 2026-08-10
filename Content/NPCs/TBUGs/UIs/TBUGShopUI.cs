@@ -1,6 +1,5 @@
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -43,7 +42,7 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs.UIs
             ResultSuccessText = this.GetLocalization(nameof(ResultSuccessText), () => "exit 0 · transaction complete");
             ResultInvalidText = this.GetLocalization(nameof(ResultInvalidText), () => "ERR: bad request");
             ResultOutOfRangeText = this.GetLocalization(nameof(ResultOutOfRangeText), () => "ERR: too far from vendor");
-            ResultNoFundsText = this.GetLocalization(nameof(ResultNoFundsText), () => "ERR: insufficient funds"); 
+            ResultNoFundsText = this.GetLocalization(nameof(ResultNoFundsText), () => "ERR: insufficient funds");
             ResultNoSpaceText = this.GetLocalization(nameof(ResultNoSpaceText), () => "ERR: inventory full");
             ResultBusyText = this.GetLocalization(nameof(ResultBusyText), () => "ERR: too many requests, slow down");
             ResultTimeoutText = this.GetLocalization(nameof(ResultTimeoutText), () => "ERR: request timed out");

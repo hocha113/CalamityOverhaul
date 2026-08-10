@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -164,7 +164,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             }
             Vector2 feet = Feet(player);
             SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with {
-                Pitch = -0.85f, Volume = 0.4f, MaxInstances = 2
+                Pitch = -0.85f,
+                Volume = 0.4f,
+                MaxInstances = 2
             }, feet);
             SoundEngine.PlaySound(SoundID.Tink with { Pitch = -0.5f, Volume = 0.3f, MaxInstances = 2 }, feet);
             for (int i = 0; i < 7; i++) {
@@ -345,7 +347,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             }, feet);
             if (weight > 0.45f) {
                 SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with {
-                    Volume = 0.22f, Pitch = -0.35f, MaxInstances = 2
+                    Volume = 0.22f,
+                    Pitch = -0.35f,
+                    MaxInstances = 2
                 }, feet);
             }
 

@@ -1,5 +1,4 @@
-using InnoVault.Actors;
-using System;
+﻿using InnoVault.Actors;
 using Terraria;
 
 namespace CalamityOverhaul.Content.Scenarios.OniRainWorlds.KasaOnis

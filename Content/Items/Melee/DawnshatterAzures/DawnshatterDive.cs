@@ -374,7 +374,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DawnshatterAzures
             if (!VaultUtils.isServer) {
                 bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
                 SoundEngine.PlaySound((steel ? SoundID.NPCHit4 : SoundID.NPCHit1) with {
-                    Pitch = steel ? 0.1f : -0.1f, Volume = 0.8f
+                    Pitch = steel ? 0.1f : -0.1f,
+                    Volume = 0.8f
                 }, target.Center);
                 for (int i = 0; i < 8; i++) {
                     Vector2 vel = FallDir.RotatedByRandom(steel ? 0.9f : 0.5f) * Main.rand.NextFloat(4f, 11f);

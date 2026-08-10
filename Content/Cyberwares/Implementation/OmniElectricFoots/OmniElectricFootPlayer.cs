@@ -278,7 +278,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
                 chargeFullAnnounced = false;
                 chargeParticleTick = 0;
                 SoundEngine.PlaySound(SoundID.MaxMana with {
-                    Pitch = 0.35f, Volume = 0.4f, MaxInstances = 2
+                    Pitch = 0.35f,
+                    Volume = 0.4f,
+                    MaxInstances = 2
                 }, Player.Center);
             }
             ChargeRatio = ratio;
