@@ -7,6 +7,8 @@ using CalamityOverhaul.Content.Items.Melee.WeaverGrievanceses;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.Tutorial;
@@ -81,6 +83,13 @@ namespace CalamityOverhaul
         OnikiriDomain,
         KikasaDomain,
         TBUGShop,
+        SHPCNPCEffect,
+        KikasaLakeFX,
+        KikasaDrown,
+        //弹药置换的扣弹意图：服务端判定 → 喂弹者本机结算（背包归客户端所有）
+        MunitionSwapConsume,
+        //炮台联网的齐射瞄准：施法者客户端慢节拍上行光标
+        TurretMeshAim,
     }
 
     public static class CWRNetWork
@@ -139,6 +148,12 @@ namespace CalamityOverhaul
             else if (type == CWRMessageType.HackProtocolApply) {
                 HackTimeNetSync.HandleApplyPacket(reader, whoAmI);
             }
+            else if (type == CWRMessageType.MunitionSwapConsume) {
+                Content.HackTimes.Protocols.MunitionSwap.HandleConsume(reader, whoAmI);
+            }
+            else if (type == CWRMessageType.TurretMeshAim) {
+                Content.HackTimes.Protocols.TurretMesh.HandleAim(reader, whoAmI);
+            }
             else if (type == CWRMessageType.ToriiShrineSync) {
                 ToriiShrine.ReceiveShrineSync(reader);
             }
@@ -155,12 +170,15 @@ namespace CalamityOverhaul
             OnikiriNet.NetHandle(type, reader, whoAmI);
             OniDomainNet.NetHandle(type, reader, whoAmI);
             KikasaDomainNet.NetHandle(type, reader, whoAmI);
+            KikasaLakeNet.NetHandle(type, reader, whoAmI);
+            KikasaDrownNet.NetHandle(type, reader, whoAmI);
             RamNet.NetHandle(type, reader, whoAmI);
             CyberwareNet.NetHandle(type, reader, whoAmI);
             SandevistanNet.NetHandle(type, reader, whoAmI);
             SelfHackCrystalNet.NetHandle(type, reader, whoAmI);
             CyberspaceActionNet.NetHandle(type, reader, whoAmI);
             SHPCModuleNet.NetHandle(type, reader, whoAmI);
+            SHPCNPCEffects.NetHandle(type, reader, whoAmI);
             TBUGShopNet.NetHandle(type, reader, whoAmI);
         }
     }

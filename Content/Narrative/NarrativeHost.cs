@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Narrative.Presentation.Skins.Brimstone;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.Draedon;
+using CalamityOverhaul.Content.Narrative.Presentation.Skins.Kikasa;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.Sea;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.SHPC;
@@ -12,6 +13,7 @@ using CalamityOverhaul.Content.Scenarios.Helen;
 using CalamityOverhaul.Content.Scenarios.Himayo;
 using CalamityOverhaul.Content.Scenarios.OldDuke;
 using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
+using CalamityOverhaul.Content.Scenarios.Shenyo;
 using CalamityOverhaul.Content.Scenarios.Shepel;
 using CalamityOverhaul.Content.Scenarios.SupCal;
 using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
@@ -62,6 +64,7 @@ namespace CalamityOverhaul.Content.Narrative
             StyleRegistry.RegisterSet(NarrativeIds.SHPC, new SHPCDialogueSkin(), new SHPCChoiceSkin(), new SHPCPopupSkin());
             StyleRegistry.RegisterSet(NarrativeIds.Tzeentch, new TzeentchDialogueSkin(), new TzeentchChoiceSkin(), new TzeentchPopupSkin());
             StyleRegistry.RegisterSet(NarrativeIds.Onikiri, new OnikiriDialogueSkin(), new OnikiriChoiceSkin(), new OnikiriPopupSkin());
+            StyleRegistry.RegisterSet(NarrativeIds.Kikasa, new KikasaDialogueSkin(), new KikasaChoiceSkin(), new KikasaPopupSkin());
         }
 
         private static void RegisterPortraits() {
@@ -143,6 +146,9 @@ namespace CalamityOverhaul.Content.Narrative
 
             PortraitRegistry.Register(NarrativeIds.Mayo)
                 .Name(() => FirstMetHimayo.SpeakerName.Value);
+
+            PortraitRegistry.Register(NarrativeIds.Shenyo)
+                .Name(() => FirstMetShenyo.ShenyoName.Value);
         }
 
         private static void RegisterBlockers() {

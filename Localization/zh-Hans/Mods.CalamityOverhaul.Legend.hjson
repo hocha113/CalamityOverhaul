@@ -86,7 +86,7 @@ HalibutText: {
 		EquipBody: 屏幕底部这排凹槽就是装备栏，研究好的技能会放入这里，至多 10 个
 		EquipWaiting: 正在研究…完成后技能会自动装入装备栏
 		WheelTitle: 技能转盘
-		WheelBody: 装备技能后，可在战斗中快速切换当前使用的技能
+		WheelBody: 装备技能后，可在战斗中快速切换当前使用的技能。够格的转盘会一起出现，光标离谁近就归谁
 		WheelPrompt: 按住 {0} 呼出技能转盘试一次
 		SkipBtn: 跳过
 	}
@@ -890,4 +890,38 @@ OnikiriTrialQuestLine: {
 		这场会偏长
 		开打前先自己站稳，回来我再啰嗦
 		'''
+}
+
+KikasaText: {
+	LakeNotReady: 湖还没涨到脚边
+	UmbrellaRefuse: 伞沉不进自己撑开的湖
+	VaultFull: 湖底沉不下更多了
+	Title: 湖 藏
+	CountFormat: 沉物 {0} / {1}
+	ExtractHintFormat: 点击取回 {0}
+	IdleHintFormat: 持物按 {0} 沉入 · 点击窗外合上
+	EmptyHint: 湖底空着，只有水声
+	BossRefuse: 湖抱不动它
+	DrownBusy: 湖还在收上一个
+	DrownOutOfGrip: 够不到那么远
+
+	KikasaDrownSystem: {
+		// BossRefuse: 湖抱不动它
+		// DrownBusy: 湖还在收上一个
+		// DrownOutOfGrip: 够不到那么远
+	}
+
+	KikasaVaultPlayer: {
+		// LakeNotReady: 湖还没涨到脚边
+		// UmbrellaRefuse: 伞沉不进自己撑开的湖
+		// VaultFull: 湖底沉不下更多了
+	}
+
+	KikasaVaultUI: {
+		// Title: 湖 藏
+		// CountFormat: 沉物 {0} / {1}
+		// ExtractHintFormat: 点击取回 {0}
+		// IdleHintFormat: 持物按 {0} 沉入 · 点击窗外合上
+		// EmptyHint: 湖底空着，只有水声
+	}
 }

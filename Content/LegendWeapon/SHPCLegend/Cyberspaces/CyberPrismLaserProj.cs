@@ -169,14 +169,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         private void SpawnPulseExplosion() {
             int dmg = Math.Max(Projectile.damage, 1);
-            int idx = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
+            //半径 PulseRadius，ai2 走生成包同步
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(),
                 beamEnd, Vector2.Zero,
                 ModContent.ProjectileType<CyberDetonationProj>(),
                 dmg, 0f, Projectile.owner,
-                ai0: 0.5f, ai1: overdriveAmount);
-            if (idx >= 0 && idx < Main.maxProjectiles) {
-                Main.projectile[idx].localAI[2] = PulseRadius;
-            }
+                ai0: 0.5f, ai1: overdriveAmount, ai2: PulseRadius);
         }
 
         private void SpawnLaserParticles(Vector2 aimDir) {

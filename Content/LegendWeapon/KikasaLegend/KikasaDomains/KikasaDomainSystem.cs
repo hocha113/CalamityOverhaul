@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
@@ -16,6 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             KikasaDomain.UpdateAll();
             UpdateSkyActivation();
             KikasaDomainDeco.Update();
+            KikasaLakeFX.Update();
         }
 
         //领域是玩家主动能力，不进 ModSceneEffect 场景竞争；激活期间每帧重激活，
@@ -54,14 +56,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
             KikasaDomain.RefreshViewed();
             KikasaDomainDeco.Clear();
+            KikasaLakeFX.Clear();
         }
 
-        //血暮压光、氛围级而非致盲级：湖面反光与天空亮红反衬剪影
+        //血暮压光、氛围级而非致盲级：湖面反光与天空亮红反衬剪影；鬼雨异化再压一档
 
         public override void ModifyLightingBrightness(ref float scale) {
             float presence = KikasaDomain.ViewedPresence;
             if (presence > 0.001f) {
-                scale *= 1f - 0.22f * presence;
+                scale *= 1f - (0.22f + 0.10f * KikasaDomain.ViewedRainBlend) * presence;
             }
         }
 
@@ -71,12 +74,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 return;
             }
 
-            //血暮染色：物块留可读性，背景染重些让地形剪影从血空里剥出来
+            //血暮染色：物块留可读性，背景染重些让地形剪影从血空里剥出来；
+            //鬼雨异化转冷雨压顶（湿墨色板），染得更重更沉
 
-            Color duskTile = new(214, 96, 82);
-            Color duskBg = new(126, 34, 32);
-            tileColor = Color.Lerp(tileColor, duskTile, presence * 0.4f);
-            backgroundColor = Color.Lerp(backgroundColor, duskBg, presence * 0.5f);
+            float rain = KikasaDomain.ViewedRainBlend;
+            Color duskTile = Color.Lerp(new(214, 96, 82), new(52, 62, 68), rain);
+            Color duskBg = Color.Lerp(new(126, 34, 32), new(34, 42, 48), rain);
+            tileColor = Color.Lerp(tileColor, duskTile, presence * MathHelper.Lerp(0.4f, 0.55f, rain));
+            backgroundColor = Color.Lerp(backgroundColor, duskBg, presence * MathHelper.Lerp(0.5f, 0.72f, rain));
         }
     }
 }

@@ -18,7 +18,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
             if (target.TryGetGlobalNPC(out SHPCNPCEffects eff)) {
-                eff.ApplyLifebloom(360, System.Math.Max(damageDone / 9, 2), beam.Projectile.owner);
+                eff.ApplyLifebloom(target, 360, System.Math.Max(damageDone / 9, 2),
+                    beam.Projectile.owner);
             }
         }
     }

@@ -891,3 +891,37 @@ OnikiriTrialQuestLine: {
 		Stand steady before you start—I'll nag you about swaying when you're back
 		''' */
 }
+
+KikasaText: {
+	// LakeNotReady: The lake hasn't risen to your feet yet
+	// UmbrellaRefuse: The umbrella won't sink into its own lake
+	// VaultFull: The lakebed can't hold any more
+	// Title: Lake Hoard
+	// CountFormat: Sunken {0} / {1}
+	// ExtractHintFormat: Click to retrieve {0}
+	// IdleHintFormat: Hold an item and press {0} to sink it · Click outside to close
+	// EmptyHint: The lakebed is empty—only the sound of water
+	// BossRefuse: The lake cannot hold something that big
+	// DrownBusy: The lake is still taking the last one
+	// DrownOutOfGrip: Too far for the lake to reach
+
+	KikasaDrownSystem: {
+		// BossRefuse: 湖抱不动它
+		// DrownBusy: 湖还在收上一个
+		// DrownOutOfGrip: 够不到那么远
+	}
+
+	KikasaVaultPlayer: {
+		// LakeNotReady: 湖还没涨到脚边
+		// UmbrellaRefuse: 伞沉不进自己撑开的湖
+		// VaultFull: 湖底沉不下更多了
+	}
+
+	KikasaVaultUI: {
+		// Title: 湖 藏
+		// CountFormat: 沉物 {0} / {1}
+		// ExtractHintFormat: 点击取回 {0}
+		// IdleHintFormat: 持物按 {0} 沉入 · 点击窗外合上
+		// EmptyHint: 湖底空着，只有水声
+	}
+}

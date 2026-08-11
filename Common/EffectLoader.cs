@@ -189,6 +189,11 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniWorldGrade { get; set; }
         public static Asset<Effect> KikasaGrade { get; set; }
         public static Asset<Effect> KikasaSky { get; set; }
+        public static Asset<Effect> KikasaFlip { get; set; }
+        public static Asset<Effect> KikasaItemForm { get; set; }
+        public static Asset<Effect> KikasaVaultPanel { get; set; }
+        public static Asset<Effect> KikasaHand { get; set; }
+        public static Asset<Effect> KikasaNarrativePanel { get; set; }
         public static Asset<Effect> OniOmokage { get; set; }
         public static Asset<Effect> OniPaperPeel { get; set; }
         public static Asset<Effect> OniSky { get; set; }
@@ -232,5 +237,6 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> GraniteArc { get; set; }
         public static Asset<Effect> MarbleSlash { get; set; }
         public static Asset<Effect> BloodAltarRite { get; set; }
+        public static Asset<Effect> UnsungheroChess { get; set; }
     }
 }

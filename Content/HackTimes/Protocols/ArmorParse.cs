@@ -8,7 +8,9 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
     /// <summary>
     /// 装甲解析：把目标的防御压到零。<br/>
     /// 每帧覆写而不是记一次原值——不少 AI 会在自己的帧里改回 defense，
-    /// 只在 OnApply 改一次撑不过一秒
+    /// 只在 OnApply 改一次撑不过一秒。<br/>
+    /// <c>npc.defense</c> 不在 <c>SyncNPC</c> 里，而伤害是由开火的那台客户端算的，
+    /// 所以这份写入必须在每个端都落一遍，权威端单独改等于没改
     /// </summary>
     internal class ArmorParse : QuickHackDef
     {
@@ -47,7 +49,9 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         }
 
         public override void OnReplicatedTick(IHackTarget target, int elapsed) {
-            if (HackTargets.TryNpc(target, out NPC npc)) EmitTick(npc, elapsed);
+            if (!HackTargets.TryNpc(target, out NPC npc)) return;
+            npc.defense = 0;
+            EmitTick(npc, elapsed);
         }
 
         public override void OnRemove(IHackTarget target) {
@@ -57,7 +61,9 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         }
 
         public override void OnReplicatedRemove(IHackTarget target) {
-            if (HackTargets.TryNpc(target, out NPC npc)) EmitRemove(npc);
+            if (!HackTargets.TryNpc(target, out NPC npc)) return;
+            npc.defense = npc.defDefense;
+            EmitRemove(npc);
         }
 
         private static void EmitApply(NPC npc) {

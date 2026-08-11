@@ -27,15 +27,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (_hitCount < HitsPerPulse) return;
             _hitCount = 0;
             int dmg = Math.Max((int)(beam.Projectile.damage * 0.55f), 1);
-            int idx = Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
+            //小环70px，别跟大爆改件混；ai2 走生成包同步
+            Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                 target.Center, Vector2.Zero,
                 ModContent.ProjectileType<CyberDetonationProj>(),
                 dmg, beam.Projectile.knockBack, beam.Projectile.owner,
-                ai0: 0.15f);
-            if (idx >= 0 && idx < Main.maxProjectiles) {
-                //小环70px，别跟大爆改件混
-                Main.projectile[idx].localAI[2] = 70f;
-            }
+                ai0: 0.15f, ai1: 0f, ai2: 70f);
         }
     }
 }

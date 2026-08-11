@@ -62,6 +62,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 
         //Func延迟读键绑,避初始化顺序
         private static readonly Func<ModKeybind>[] WatchedKeys = new Func<ModKeybind>[] {
+            //转盘键是三套快捷盘的唯一入口，未绑定比表里任何一个都严重
+            () => CWRKeySystem.RadialWheel_Key,
             () => CWRKeySystem.HackTime_Toggle,
             () => CWRKeySystem.CyberBanish_Key,
             () => CWRKeySystem.CyberFreeze_Key,

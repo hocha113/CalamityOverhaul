@@ -1,6 +1,7 @@
 // ============================================================================
 // TBUGCorruptRift.fx  TBUG 出场裂缝（黑墙 / 代码错误）
 // 材质："世界渲染漏掉的一块"——不是发光的门，是缺失
+// 配色与 TBUGTheme 同族：黑底 + 终端蓝，品红只作报错，禁绿
 // 预乘输出 + AlphaBlend：黑墙是吸光暗体，真正遮挡地形；发光成分走低 alpha
 // s0 = quad 画布（内容不采样） s1 = PerlinNoise 512 灰度（LinearWrap）
 // 三个签名行为：纯黑内里+坏显存色块 / 报错栈卡顿滚动 / RGB 错位量化撕裂边
@@ -86,9 +87,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float insideMask = smoothstep(-1.0, 1.0, edgePx) * doorOn * rowAlive;
 
     //————————————————————————————
-    // 黑墙主体：吸光暗体，只带最微弱的绿灰底
+    // 黑墙主体：吸光暗体，只带最微弱的蓝灰底
     //————————————————————————————
-    float3 col = float3(0.004, 0.012, 0.006) * insideMask;
+    float3 col = float3(0.004, 0.010, 0.020) * insideMask;
     float a = 0.94 * insideMask;
 
     //————————————————————————————
@@ -127,15 +128,16 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     //文本只在竖向中段 88% 出现
     float textWin = insideMask * (1.0 - smoothstep(0.78, 0.95, abs(yn)));
 
-    float3 termGreen = float3(0.14, 0.92, 0.34);
-    float3 dimGreen = float3(0.05, 0.36, 0.14);
-    float3 errMagenta = float3(0.92, 0.05, 0.40);
+    //调色与 TBUGTheme 对齐：终端蓝主体，行号暗蓝，报错品红
+    float3 termBlue = float3(0.28, 0.62, 1.00);
+    float3 dimBlue = float3(0.09, 0.24, 0.44);
+    float3 errMagenta = float3(1.00, 0.24, 0.46);
 
-    //行号（暗绿稀疏）+ 正文（终端绿）
+    //行号（暗蓝稀疏）+ 正文（终端蓝）
     float gutterPix = chPix * gutter * charOn * textWin;
     float bodyPix = chPix * textZone * charOn * textWin;
-    col += dimGreen * gutterPix * 0.55 * (1.0 - errGate);
-    col += termGreen * bodyPix * 0.85 * (1.0 - errGate);
+    col += dimBlue * gutterPix * 0.55 * (1.0 - errGate);
+    col += termBlue * bodyPix * 0.85 * (1.0 - errGate);
     //反白行：品红底条压满行宽，字反色成近黑（挖掉底条）
     float errBand = errGate * textWin * step(colNorm, 0.16 + lineLen + 0.02);
     col += errMagenta * errBand * 0.55;
@@ -147,7 +149,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     //————————————————————————————
     float2 cellB = floor(pxPos / 14.0);
     float bGate = step(0.992, hash11(cellB.x * 1.37 + cellB.y * 7.13 + floor(tt * 13.0) * 0.71 + seed * 3.0));
-    float3 bCol = lerp(float3(1.0, 0.02, 0.50), float3(0.30, 1.00, 0.40),
+    float3 bCol = lerp(float3(1.00, 0.24, 0.46), float3(0.35, 0.70, 1.00),
         step(0.5, hash11(cellB.x + cellB.y * 3.0 + seed * 17.0)));
     col += bCol * bGate * insideMask * 0.85;
     a += bGate * insideMask * 0.08;
@@ -164,9 +166,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     //部分切片的沿是断的
     float rimBreak = 0.45 + 0.55 * step(0.30, hash11(sliceIdx * 5.1 + tStep * 0.77 + seed * 2.0));
     float rimAmp = doorOn * rowAlive * rimBreak * (0.9 + spitPulse * 2.2);
-    col += float3(0.16, 1.00, 0.42) * rimMain * rimAmp * 0.85;
-    col += float3(1.00, 0.10, 0.28) * rimR * rimAmp * 0.30;
-    col += float3(0.12, 0.45, 1.00) * rimB * rimAmp * 0.22;
+    col += float3(0.28, 0.62, 1.00) * rimMain * rimAmp * 0.85;
+    col += float3(1.00, 0.20, 0.42) * rimR * rimAmp * 0.30;
+    col += float3(0.55, 0.86, 1.00) * rimB * rimAmp * 0.22;
     a += rimMain * rimAmp * 0.12;
 
     //————————————————————————————
@@ -179,12 +181,12 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float streakGate = step(0.84, hash11(streakRow * 2.71 + floor(tt * 6.0) * 1.31 + seed * 11.0));
     float streakLen = 12.0 + 26.0 * hash11(streakRow + seed * 4.0);
     float streak = streakGate * saturate(1.0 - outPx / streakLen) * step(0.001, outPx);
-    col += float3(0.10, 0.70, 0.30) * streak * glowWin * doorOn * 0.30 * (1.0 - collapse);
+    col += float3(0.16, 0.44, 0.82) * streak * glowWin * doorOn * 0.30 * (1.0 - collapse);
 
     //————————————————————————————
     // 吐出白闪：只在 spitPulse 峰值几帧，内容整体过曝
     //————————————————————————————
-    col += float3(0.85, 1.00, 0.90) * spitPulse * spitPulse * insideMask * 0.55;
+    col += float3(0.86, 0.95, 1.00) * spitPulse * spitPulse * insideMask * 0.55;
 
     a = saturate(a);
     col *= guard;

@@ -30,13 +30,16 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         }
 
         public override bool OnApply(IHackTarget target, Player caster) {
-            if (!HackTargets.TryItem(target, out Item item)) return false;
+            if (!HackTargets.TryItem(target, out Item item, out int itemIndex)) return false;
             Vector2 center = item.Center;
 
             if (Main.netMode != NetmodeID.MultiplayerClient) {
+                //必须先清前缀再重掷：Item.Prefix 乘的是当前数值而不是基础值，
+                //少了这一步反复重掷就是连乘，伤害与售价一起滚成天文数字
+                item.ResetPrefix();
                 item.Prefix(-2);
                 if (Main.netMode == NetmodeID.Server) {
-                    NetMessage.SendData(MessageID.SyncItem, number: item.whoAmI);
+                    NetMessage.SendData(MessageID.SyncItem, number: itemIndex);
                 }
             }
             if (Main.netMode != NetmodeID.Server) EmitAppraise(center);

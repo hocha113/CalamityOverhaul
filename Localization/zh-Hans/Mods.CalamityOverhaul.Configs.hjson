@@ -83,4 +83,9 @@ CWRServerConfig: {
 
 	ConfigChangePrefix: 用户
 	ConfigChangeSuffix: 修改了服务端配置
+
+	HackPvP: {
+		// Label: Hack Pv P
+		// Tooltip: ""
+	}
 }

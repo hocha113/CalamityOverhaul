@@ -1,7 +1,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas;
-using CalamityOverhaul.Content.TimeFreezes;
+using CalamityOverhaul.Content.UIs.RadialWheels;
 using InnoVault.UIHandles;
 using System;
 using System.Collections.Generic;
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
     /// 技能轮盘状态机，视觉见 <see cref="HalibutSkillWheel"/>
     /// 按住 Halibut_SkillWheel 开盘 + 子弹时间，松键或左键选定；右键关盘
     /// </summary>
-    internal class HalibutWheelController : ModPlayer
+    internal class HalibutWheelController : ModPlayer, IRadialWheel
     {
         /// <summary>
         /// 本机玩家的轻量单例视图
@@ -52,14 +52,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
         public int HoveredIndex { get; private set; } = -1;
 
         /// <summary>
-        /// 轮盘屏幕锚点（屏幕中央）
+        /// Hub 排布后的轮盘中心，命中与绘制共用
         /// </summary>
         public Vector2 ScreenAnchor { get; private set; }
-
-        /// <summary>
-        /// 由视图Draw阶段写回锚点，避免跨阶段窗口尺寸变化造成错位
-        /// </summary>
-        public void SetScreenAnchor(Vector2 anchor) => ScreenAnchor = anchor;
 
         /// <summary>
         /// 全局动画时间
@@ -72,21 +67,40 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
         public IReadOnlyList<HalibutWheelSector> Sectors => sectors;
 
         private readonly List<HalibutWheelSector> sectors = [];
-        private bool freezeOwned;
-        private const string FreezeReason = "HalibutWheel";
         private const float OpenLerpRate = 0.22f;
         private const float CloseLerpRate = 0.28f;
+
+        #region 转盘契约
+
+        string IRadialWheel.WheelId => "Halibut";
+        bool IRadialWheel.WheelIsOpen => IsOpen;
+        bool IRadialWheel.WheelCanOpen => CanWheelBeShown() && !HackTime.Active;
+        //武器盘排在义体盘之上
+        int IRadialWheel.WheelStackOrder => 10;
+        float IRadialWheel.WheelFootprintRadius => HalibutTheme.WheelOuterR + 12f;
+        void IRadialWheel.WheelSetCenter(Vector2 center) => ScreenAnchor = center;
+        void IRadialWheel.WheelOpen(bool silent) => OpenWheel(silent);
+        void IRadialWheel.WheelClose(bool silent) => CloseWheel(silent);
+
+        /// <summary>松键提交焦点盘的悬停技能</summary>
+        void IRadialWheel.WheelCommitHovered() {
+            if (!IsOpen || HoveredIndex < 0 || HoveredIndex >= sectors.Count) {
+                return;
+            }
+            SelectSkill(sectors[HoveredIndex].Skill);
+        }
+
+        #endregion
 
         public override void PostUpdate() {
             if (Player.whoAmI != Main.myPlayer || Main.dedServ) {
                 return;
             }
             Time += 1f / 60f;
-            //PostUpdate运行在逻辑帧（非UI层），必须使用UI空间换算
-            ScreenAnchor = new Vector2(HalibutTheme.UIScreenW * 0.5f,
-                HalibutTheme.UIScreenH * HalibutTheme.WheelAnchorYRatio);
+            //登记进 Hub 并取回本帧排布中心
+            ScreenAnchor = RadialWheelHub.ResolveCenter(this);
 
-            if (!CanWheelBeShown()) {
+            if (!CanWheelBeShown() || HackTime.Active) {
                 if (IsOpen || OpenProgress > 0.01f) {
                     ForceCloseWheel();
                 }
@@ -94,7 +108,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
                 return;
             }
 
-            HandleWheelKey();
             HandleWheelMouse();
             UpdateOpenProgress();
         }
@@ -127,30 +140,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
             return Save.loadout.Count > 0;
         }
 
-        private void HandleWheelKey() {
-            ModKeybind key = CWRKeySystem.Halibut_SkillWheel;
-            if (key == null) {
-                return;
-            }
-            if (!IsOpen && key.JustPressed) {
-                TryOpenWheel();
-                return;
-            }
-            if (IsOpen && key.JustReleased) {
-                //松键确认、有悬停扇区则选定
-                if (HoveredIndex >= 0 && HoveredIndex < sectors.Count) {
-                    SelectSkill(sectors[HoveredIndex].Skill);
-                }
-                CloseWheel(silentSound: false);
-            }
-        }
-
         private void HandleWheelMouse() {
             if (!IsOpen) {
                 return;
             }
+            //mouseInterface 防穿透，非焦点盘同样要挡，否则点击会漏进世界
             Player.mouseInterface = true;
             UIInputGuard.SuppressWeaponSwitch();
+
+            //光标归了别的盘：清空悬停，不吃点击
+            if (!RadialWheelHub.IsFocused(this)) {
+                HoveredIndex = -1;
+                RefreshSectorStates();
+                return;
+            }
 
             int newHover = HitTest();
             if (newHover != HoveredIndex) {
@@ -167,14 +170,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
                 Main.mouseLeftRelease = false;
             }
 
-            //右键 = 立即关盘不做改动
+            //右键 = 全部收起且不做改动
             if (Main.mouseRight && Main.mouseRightRelease) {
                 Main.mouseRightRelease = false;
-                CloseWheel(silentSound: false);
+                RadialWheelHub.CloseAll(silent: false);
                 return;
             }
 
-            //平滑推进各扇区的过渡量
+            RefreshSectorStates();
+        }
+
+        /// <summary>平滑推进各扇区的过渡量</summary>
+        private void RefreshSectorStates() {
             FishSkill current = Save.FishSkill;
             for (int i = 0; i < sectors.Count; i++) {
                 HalibutWheelSector sec = sectors[i];
@@ -203,12 +210,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
             SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.45f, Volume = 0.6f });
         }
 
-        private void TryOpenWheel() {
-            //骇客时间等更高优先级的子弹时间激活时拒绝开盘
-            if (HackTime.Active) {
-                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.5f, Volume = 0.5f }, Player.Center);
-                return;
-            }
+        private void OpenWheel(bool silent) {
             var save = Save;
             sectors.Clear();
             foreach (FishSkill skill in save.loadout) {
@@ -226,26 +228,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
             }
             IsOpen = true;
             HoveredIndex = -1;
-            AcquireFreezeIfNeeded();
-            SoundEngine.PlaySound(SoundID.MenuOpen with { Pitch = -0.25f, Volume = 0.55f });
-            SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = 0.3f, Volume = 0.5f });
+            if (!silent) {
+                SoundEngine.PlaySound(SoundID.MenuOpen with { Pitch = -0.25f, Volume = 0.55f });
+                SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = 0.3f, Volume = 0.5f });
+            }
         }
 
-        private void CloseWheel(bool silentSound) {
-            ReleaseFreezeIfOwned();
+        private void CloseWheel(bool silent) {
             IsOpen = false;
             HoveredIndex = -1;
-            if (!silentSound) {
+            if (!silent) {
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.1f, Volume = 0.45f });
             }
         }
 
         /// <summary>强制关盘，死亡/换武/全屏UI介入</summary>
-        public void ForceCloseWheel() {
-            ReleaseFreezeIfOwned();
-            IsOpen = false;
-            HoveredIndex = -1;
-        }
+        public void ForceCloseWheel() => CloseWheel(silent: true);
 
         private void UpdateOpenProgress() {
             float target = IsOpen ? 1f : 0f;
@@ -256,70 +254,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
             }
         }
 
-        private void AcquireFreezeIfNeeded() {
-            if (freezeOwned) {
-                return;
-            }
-            if (VaultUtils.isSinglePlayer) {//只在单人模式生效世界冻结
-                WorldFreezeSystem.Activate(FreezeReason);
-            }
-            freezeOwned = true;
-        }
-
-        private void ReleaseFreezeIfOwned() {
-            if (!freezeOwned) {
-                return;
-            }
-            WorldFreezeSystem.Deactivate(FreezeReason);
-            freezeOwned = false;
-        }
-
         /// <summary>
         /// 极坐标命中、扇区索引或-1
         /// </summary>
-        private int HitTest() {
-            if (sectors.Count <= 0) {
-                return -1;
-            }
-            Vector2 offset = HalibutTheme.UIMouse - ScreenAnchor;
-            float dist = offset.Length();
-            if (dist < HalibutTheme.WheelDeadZoneR) {
-                return -1;//死区内 = 不选择
-            }
-            if (sectors.Count == 1) {
-                return 0;
-            }
-            float ang = MathF.Atan2(offset.Y, offset.X);
-            float normalized = ang + MathHelper.PiOver2;
-            while (normalized < 0) {
-                normalized += MathHelper.TwoPi;
-            }
-            while (normalized >= MathHelper.TwoPi) {
-                normalized -= MathHelper.TwoPi;
-            }
-            int count = sectors.Count;
-            float sectorSize = MathHelper.TwoPi / count;
-            float shifted = normalized + sectorSize * 0.5f;
-            if (shifted >= MathHelper.TwoPi) {
-                shifted -= MathHelper.TwoPi;
-            }
-            return Math.Clamp((int)(shifted / sectorSize), 0, count - 1);
-        }
+        private int HitTest()
+            => RadialWheelHub.HitTest(ScreenAnchor, sectors.Count, HalibutTheme.WheelDeadZoneR);
 
         /// <summary>
         /// 给指定扇区索引返回其覆盖的角度区间（首扇区中线朝正上方）
         /// </summary>
-        public void GetSectorAngles(int idx, out float aStart, out float aEnd) {
-            int count = sectors.Count;
-            if (count <= 0) {
-                aStart = 0;
-                aEnd = 0;
-                return;
-            }
-            float sectorSize = MathHelper.TwoPi / count;
-            float mid = -MathHelper.PiOver2 + idx * sectorSize;
-            aStart = mid - sectorSize * 0.5f + HalibutTheme.WheelSectorGap * 0.5f;
-            aEnd = mid + sectorSize * 0.5f - HalibutTheme.WheelSectorGap * 0.5f;
-        }
+        public void GetSectorAngles(int idx, out float aStart, out float aEnd)
+            => RadialWheelHub.GetSectorAngles(idx, sectors.Count
+                , HalibutTheme.WheelSectorGap, out aStart, out aEnd);
     }
 }

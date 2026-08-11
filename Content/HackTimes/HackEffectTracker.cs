@@ -164,6 +164,11 @@ namespace CalamityOverhaul.Content.HackTimes
                 return null;
             }
 
+            //玩家目标（PvP）不进本追踪器：权威端施加通道对它不存在，
+            //防守方客户端才是合法写入者——走 PvP/PlayerHackNet 的 DefenderApply 管线。
+            //这里的硬拒是防后来者顺手接错的闸，正常流程在 UpdatePlayerUploads 就分流了
+            if (target is PlayerScannable) return null;
+
             Player caster = ResolvePlayer(casterIndex);
             if (caster == null || !hack.CanApplyTo(target, caster)) return null;
 
@@ -183,8 +188,21 @@ namespace CalamityOverhaul.Content.HackTimes
             else if (target is ProjectileScannable or ItemScannable) {
                 if (!target.IsValid) return null;
             }
-            else if (Main.netMode == NetmodeID.SinglePlayer
-                && target is IHackableTurret or IHackableSignalTower) {
+            else if (target is ContainerScannable containerTarget) {
+                if (!ContainerScannable.IsContainerAnchorAt(
+                    containerTarget.AnchorX, containerTarget.AnchorY)) {
+                    return null;
+                }
+            }
+            else if (target is WorldScannable) {
+                //世界目标恒有效，kind 本身即身份，无附加校验
+            }
+            else if (target is SelfRigScannable selfRig) {
+                //自体目标只能是施术者本人；SelfRig 效果与其他非 NPC 效果一样进 activeTileEffects
+                if (selfRig.PlayerIndex != casterIndex) return null;
+            }
+            else if (target is IHackableTurret or IHackableSignalTower) {
+                //HACK32：Actor 目标已随 CircuitActorKey 线上身份解除单人限制
             }
             else {
                 return null;
@@ -229,16 +247,17 @@ namespace CalamityOverhaul.Content.HackTimes
             QuickHackDef hack, IHackTarget target, NetworkNPCIdentity npcIdentity,
             int casterIndex, uint sessionId, uint requestId, int elapsed,
             float effectMult, int generation) {
-            //即时格子协议会把目标本身抹掉（挖穿物块 / 抽干液体），
+            //格子协议会把目标本身改掉（挖穿物块 / 抽干液体 / 把水冻成冰），
             //远端收到包时 IsValid 已经是 false，此时仍要放行才能补上表现。
+            //持续协议同样吃这条：冷凝固化整片都是冰，远端否则连冻结与化开都看不到。
             //弹幕与掉落物不在此列：它们没了就取不到落点，硬画会画到世界原点
-            bool validInstantTile = hack?.GetDuration() == 0
-                && GetInstantGridCoords(target, out int instantX, out int instantY)
-                && instantX >= 0 && instantX < Main.maxTilesX
-                && instantY >= 0 && instantY < Main.maxTilesY;
+            bool validGridTarget =
+                GetInstantGridCoords(target, out int gridX, out int gridY)
+                && gridX >= 0 && gridX < Main.maxTilesX
+                && gridY >= 0 && gridY < Main.maxTilesY;
             if (Main.netMode != NetmodeID.MultiplayerClient || activationId <= 0
                 || hack == null || target == null
-                || !target.IsValid && !validInstantTile
+                || !target.IsValid && !validGridTarget
                 || casterIndex < 0 || casterIndex >= Main.maxPlayers
                 || elapsed < 0 || elapsed > MaxEffectDuration
                 || !float.IsFinite(effectMult) || effectMult <= 0f
@@ -481,8 +500,22 @@ namespace CalamityOverhaul.Content.HackTimes
             if (effect.Target is ProjectileScannable or ItemScannable) {
                 return effect.Target.IsValid;
             }
-            if (Main.netMode == NetmodeID.SinglePlayer
-                && effect.Target is IHackableTurret or IHackableSignalTower) {
+            if (effect.Target is ContainerScannable containerTarget) {
+                //箱子被挖走/炸掉即目标丢失，效果自然结束（索引随之失效）
+                return ContainerScannable.IsContainerAnchorAt(
+                    containerTarget.AnchorX, containerTarget.AnchorY);
+            }
+            if (effect.Target is WorldScannable) {
+                return true;
+            }
+            if (effect.Target is SelfRigScannable) {
+                //玩家存活即有效（授权与复制两条更新路径共用这里）；
+                //施术者死亡时授权侧由 ResolvePlayer 的 !dead 闸先行收尾，
+                //役鬼强驱的到期账单不依赖 OnRemove，由 SelfRigPlayer 的倒计时兜底
+                return effect.Target.IsValid;
+            }
+            if (effect.Target is IHackableTurret or IHackableSignalTower) {
+                //Actor 状态字段是 [SyncVar]，各端都能就地判活
                 return effect.Target.IsValid;
             }
             return false;
@@ -544,6 +577,25 @@ namespace CalamityOverhaul.Content.HackTimes
                 onSpread?.Invoke(member);
             }
             groupBuffer.Clear();
+        }
+
+        /// <summary>该液体格上是否仍挂着指定协议；协议侧拆自己的外挂账要靠它对齐</summary>
+        public static bool HasWaterEffect<T>(int tileX, int tileY)
+            where T : QuickHackDef {
+            if (MatchesWaterEffect<T>(activeTileEffects, tileX, tileY)) return true;
+            return MatchesWaterEffect<T>(pendingEffects, tileX, tileY);
+        }
+
+        private static bool MatchesWaterEffect<T>(List<ActiveHackEffect> source,
+            int tileX, int tileY) where T : QuickHackDef {
+            for (int i = 0; i < source.Count; i++) {
+                ActiveHackEffect effect = source[i];
+                if (effect.Active && effect.Hack is T
+                    && effect.Target is WaterScannable water
+                    && water.TileCoordX == tileX
+                    && water.TileCoordY == tileY) return true;
+            }
+            return false;
         }
 
         public static bool HasTileEffect<T>(int tileX, int tileY)
@@ -614,9 +666,19 @@ namespace CalamityOverhaul.Content.HackTimes
         }
 
         private static void RemoveEffect(ActiveHackEffect effect) {
+            //迭代中不能直接改表：按索引遍历时删掉一项会让游标跳过下一个效果，
+            //症状是某个效果莫名少跑一帧。这条路真的会走到——
+            //Electrolysis / SynapseBurn 的 Tick 伤害会进 NPC.HitEffect，
+            //HackEffectNPCCombat 在那里给强制注销结算并回头删效果。
+            //新增效果已经靠 pendingEffects 延后，删除照同一套走 removeBuffer
+            effect.Active = false;
+            pendingEffects.Remove(effect);
+            if (updatingEffects) {
+                if (!removeBuffer.Contains(effect)) removeBuffer.Add(effect);
+                return;
+            }
             activeEffects.Remove(effect);
             activeTileEffects.Remove(effect);
-            pendingEffects.Remove(effect);
         }
 
         private static bool IsNpcEffect(ActiveHackEffect effect)

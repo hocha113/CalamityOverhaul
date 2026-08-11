@@ -17,11 +17,12 @@ namespace CalamityOverhaul.Content.HackTimes.Chips
     /// <summary>机械超频芯片。母线穿过继电器，上方一道过压折线</summary>
     internal class MachineOverclockChip : BaseHackProtocolChip<MachineOverclock>
     {
+        //纹样一律收在 ±0.80 内：切角框在 0.92，再往外就和框线并成一条
         protected override string DiePath =>
-            "M -0.86 0.34 L -0.34 0.34 M 0.34 0.34 L 0.86 0.34 "
+            "M -0.80 0.34 L -0.34 0.34 M 0.34 0.34 L 0.80 0.34 "
             + "M -0.34 0.06 L 0.34 0.06 L 0.34 0.62 L -0.34 0.62 Z "
-            + "M -0.52 -0.24 L -0.16 -0.24 L -0.34 -0.56 L 0.10 -0.56 "
-            + "M 0.10 -0.56 L -0.08 -0.86 L 0.44 -0.86";
+            + "M -0.52 -0.24 L -0.16 -0.24 L -0.34 -0.54 L 0.10 -0.54 "
+            + "M 0.10 -0.54 L -0.08 -0.80 L 0.44 -0.80";
     }
 
     /// <summary>电网瘫痪芯片。塔顶发出的两道弧下面，一排节点熄了三盏</summary>

@@ -234,7 +234,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
         }
 
         private static void ApplyRestoreEffects(Player owner) {
-            if (owner?.active != true) {
+            //死亡时不发恢复：给尸体回血是空操作，还会白播 REBOOT 演出
+            if (owner?.active != true || owner.dead) {
+                return;
+            }
+            // RAM 锁是服务端权威资源，两边都由权威端落；生命/法力/debuff 归本机
+            RamSystem.SystemLock(owner, RamLockFrames);
+            if (Main.netMode == NetmodeID.Server) {
+                CyberspaceActionNet.SendRestartRestore(owner);
+                return;
+            }
+            ApplyLocalRestore(owner);
+        }
+
+        /// <summary>本机兑现重启恢复：回满生命法力、清 debuff、短无敌与提示</summary>
+        internal static void ApplyLocalRestore(Player owner) {
+            //恢复包在途一个 RTT，玩家可能已死亡——不给尸体结算
+            if (owner?.active != true || owner.dead || Main.dedServ) {
                 return;
             }
             owner.statLife = owner.statLifeMax2;
@@ -246,10 +262,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
                     i--;
                 }
             }
-            RamSystem.SystemLock(owner, RamLockFrames);
             owner.immune = true;
             owner.immuneTime = Math.Max(owner.immuneTime, 40);
-            if (!VaultUtils.isServer && owner.whoAmI == Main.myPlayer) {
+            if (Main.netMode == NetmodeID.MultiplayerClient
+                && owner.whoAmI == Main.myPlayer) {
+                NetMessage.SendData(MessageID.PlayerLifeMana, -1, -1, null,
+                    owner.whoAmI);
+                NetMessage.SendData(MessageID.PlayerMana, -1, -1, null,
+                    owner.whoAmI);
+            }
+            if (owner.whoAmI == Main.myPlayer) {
                 SoundEngine.PlaySound(CWRSound.Faultrelease with {
                     Volume = 0.85f,
                     Pitch = 0.25f,

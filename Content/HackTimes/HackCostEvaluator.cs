@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.HackTimes.Protocols;
 using CalamityOverhaul.Content.HackTimes.Scannables;
 using System;
 using System.Collections.Generic;
@@ -142,13 +143,19 @@ namespace CalamityOverhaul.Content.HackTimes
             Player caster) {
             if (hack == null) return 0;
             float multiplier = GetMultiplier(target, caster);
-            return Math.Max(1, (int)(hack.RamCost * multiplier + 0.5f));
+            int cost = Math.Max(1, (int)(hack.RamCost * multiplier + 0.5f));
+            //提权窗口：−1 RAM，下限 1；Boss 倍率照常（不叠优惠，只减一口价）
+            return PrivilegeEscalateState.ApplyCostDiscount(cost, caster);
         }
 
         /// <summary>成本倍率 1.0x~3.0x</summary>
         public static float GetMultiplier(IHackTarget target) {
             return GetMultiplier(target, Main.LocalPlayer);
         }
+
+        /// <summary>PvP 全局费率旋钮（设计 §5.4 的唯一全局阀）：上线后调平衡只动这一个数，
+        /// 不做独立 PvP RAM 池也不做十四张卡的逐条价目</summary>
+        internal const float PvPCostScale = 1.0f;
 
         public static float GetMultiplier(IHackTarget target, Player caster) {
             if (target is ProjectileScannable projScan) {
@@ -157,18 +164,32 @@ namespace CalamityOverhaul.Content.HackTimes
             if (target is WaterScannable waterScan) {
                 return EvaluateLiquidMultiplier(waterScan);
             }
+            if (target is PlayerScannable playerScan) {
+                return EvaluatePlayerMultiplier(playerScan);
+            }
             if (target is not NpcScannable npcScan) return 1.0f;
             int idx = npcScan.NpcIndex;
             if (idx < 0 || idx >= Main.maxNPCs) return 1.0f;
             NPC npc = Main.npc[idx];
             if (!npc.active) return 1.0f;
-            return npc.boss ? EvaluateBossMultiplier(npc)
+            //部件几乎都不带 npc.boss 旗；IsBossTier 经 realLife 锚点查表，
+            //Boss 部件直接继承本体档位，不再按杂兵贱卖
+            return NpcGroupHelper.IsBossTier(npc) ? EvaluateBossMultiplier(npc)
                 : EvaluateRegularNpcMultiplier(npc, caster);
         }
 
         #endregion
 
         #region 非 NPC 目标
+
+        //玩家按防守方进度粗估（血上限档位），再乘统一调参旋钮 PvPCostScale
+        private static float EvaluatePlayerMultiplier(PlayerScannable scan) {
+            Player defender = scan.ResolvePlayer();
+            if (defender == null) return 1.0f * PvPCostScale;
+            float multiplier = defender.statLifeMax < 400 ? 1.0f
+                : defender.statLifeMax <= 500 ? 1.2f : 1.4f;
+            return multiplier * PvPCostScale;
+        }
 
         //弹幕按威胁度定价：伤害越高、越难缠（穿透/追踪）越贵
         private static float EvaluateProjectileMultiplier(ProjectileScannable scan) {

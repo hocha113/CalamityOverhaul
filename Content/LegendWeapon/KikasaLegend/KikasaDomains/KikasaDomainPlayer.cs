@@ -1,5 +1,8 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
+using CalamityOverhaul.Content.Scenarios.OniRainWorlds;
+using InnoVault.Cinematics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.IO;
 using Terraria;
@@ -41,6 +44,50 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         /// <summary>水面泡沫/波动增强 0~1，涨水最烈、静水微澜、退水再起</summary>
         public float FoamBoost { get; private set; }
 
+        //==================== 鬼雨异化 ====================
+
+        /// <summary>当前形态：false=血湖，true=鬼雨异化；翻转结算帧切换，收域归血湖</summary>
+        public bool IsRainForm { get; private set; }
+
+        /// <summary>本次翻转的目标方向</summary>
+        public bool FlipToRain { get; private set; }
+
+        /// <summary>鬼雨异化混合 0~1，驱动全部稳态视觉；结算后在白闪掩护下快速就位</summary>
+        public float RainBlend { get; private set; }
+
+        /// <summary>满幕雨帘密度 0~1：稳态吃 <see cref="RainBlend"/>，翻转期由节拍接管（前兆稀雨/退雨）</summary>
+        public float RainCurtainDensity { get; private set; }
+
+        /// <summary>沸腾强度 0~1，驱动水线搅动/气泡/蒸汽</summary>
+        public float FlipBoil { get; private set; }
+
+        /// <summary>镜面预览向目标形态的靠拢 0~1，方向在消费端按 <see cref="FlipToRain"/> 换算</summary>
+        public float FlipMix { get; private set; }
+
+        /// <summary>倒转角（弧度），反向蓄势后 0→π</summary>
+        public float FlipRollAngle { get; private set; }
+
+        /// <summary>倒转角速度（弧度/帧），旋转拖影用</summary>
+        public float FlipRollVelocity { get; private set; }
+
+        /// <summary>结算后镜面向上吞没旧形态 0~1</summary>
+        public float FlipSwallow { get; private set; }
+
+        /// <summary>镜面调色增益，结算后让位真实异化氛围</summary>
+        public float FlipGrade { get; private set; } = 1f;
+
+        /// <summary>冷镜异样脉冲 0~1</summary>
+        public float FlipGlimpse { get; private set; }
+
+        /// <summary>异样涟漪环扩散 0~1</summary>
+        public float FlipGlimpseRing { get; private set; }
+
+        /// <summary>结算白闪 0~1</summary>
+        public float FlipFlash { get; private set; }
+
+        /// <summary>翻转期缝线辉光 0~1</summary>
+        public float FlipSeamGlow { get; private set; }
+
         /// <summary>涨水观感进度：前快后慢，水逼近脚底时减速（与入雨演出同曲线）</summary>
         public float RiseProgress => 1f - MathF.Pow(1f - RiseT, 1.6f);
 
@@ -55,6 +102,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         //稳态偶发水声计时
 
         private int ambienceTimer;
+        //异化态远雷相对闪光的延迟帧数，光先于声
+
+        private int thunderSoundDelay;
+        //异化键未绑定时的原生中键边沿检测
+
+        private bool previousMiddleDown;
         //触脚确认拍只放一次
 
         private bool contactDone;
@@ -65,12 +118,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         //==================== 输入 ====================
 
-        /// <summary>持鬼伞按 <see cref="CWRKeySystem.Legend_Domain"/> 开阖；骇客时停不受理</summary>
+        /// <summary>
+        /// 持鬼伞按 <see cref="CWRKeySystem.Legend_Domain"/> 开阖；
+        /// <see cref="CWRKeySystem.Kikasa_DomainMutate"/> 鬼雨异化（默认中键，被清空绑定时回退原生中键），
+        /// 域开时不持伞也受理；骇客时停不受理
+        /// </summary>
         public override void PostUpdate() {
             if (Main.dedServ || Player.whoAmI != Main.myPlayer || Player.dead) {
                 return;
             }
-            if (HackTime.Active) {
+            //原生中键边沿逐帧维护，跨过时停/受理窗口也不留陈旧状态
+            bool middleDown = Mouse.GetState().MiddleButton == ButtonState.Pressed;
+            bool middleEdge = middleDown && !previousMiddleDown;
+            previousMiddleDown = middleDown;
+
+            //全屏地图上按键会在地图底下拉起全屏演出；输入被演出锁住时也不受理新命令
+            if (HackTime.Active || Main.mapFullscreen || Main.blockInput) {
                 return;
             }
             Item item = Player.GetItem();
@@ -78,6 +141,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 && item.type == ModContent.ItemType<KikasaItem>();
             if (holding && CWRKeySystem.Legend_Domain.JustPressed) {
                 KikasaDomain.TryToggle(Player, out _);
+            }
+
+            //异化键：默认 Mouse3；被清空绑定时回退原生中键；悬停 UI 让位界面点击
+            bool mutatePressed = CWRKeySystem.Kikasa_DomainMutate.JustPressed
+                || (CWRKeySystem.IsKeybindUnbound(CWRKeySystem.Kikasa_DomainMutate) && middleEdge);
+            if (mutatePressed && (holding || AnyActive) && !Player.mouseInterface) {
+                KikasaDomain.TryMutate(Player, out _);
             }
         }
 
@@ -92,6 +162,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             writer.Write(OriginWorldPos.X);
             writer.Write(OriginWorldPos.Y);
             writer.Write(LakeWorldY);
+            writer.Write(IsRainForm);
+            writer.Write(FlipToRain);
         }
 
         /// <summary>先读满整份负载再校验，脏包只做丢弃，不留半套状态</summary>
@@ -102,8 +174,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             float rise = reader.ReadSingle();
             Vector2 origin = new(reader.ReadSingle(), reader.ReadSingle());
             float lakeY = reader.ReadSingle();
+            bool rainForm = reader.ReadBoolean();
+            bool flipToRain = reader.ReadBoolean();
 
-            if (phase > (byte)KikasaDomainPhase.Closing
+            if (phase > (byte)KikasaDomainPhase.Flipping
                 || !float.IsFinite(spread) || !float.IsFinite(rise)
                 || !float.IsFinite(origin.X) || !float.IsFinite(origin.Y)
                 || !float.IsFinite(lakeY)) {
@@ -116,6 +190,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             RiseT = MathHelper.Clamp(rise, 0f, 1f);
             OriginWorldPos = origin;
             LakeWorldY = lakeY;
+            IsRainForm = rainForm;
+            FlipToRain = flipToRain;
             //触脚拍可从水位推回，中途加入者跨过 1 时照常触发
             contactDone = RiseT >= 0.999f;
             riseBeatNear = RiseT >= 0.75f;
@@ -166,7 +242,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         }
 
         internal bool CloseDomain() {
-            if (Phase == KikasaDomainPhase.Closed || Phase == KikasaDomainPhase.Closing) {
+            if (Phase == KikasaDomainPhase.Closed || Phase == KikasaDomainPhase.Closing
+                || Phase == KikasaDomainPhase.Flipping) {
                 return false;
             }
             if (!ConsumeCommandGate()) {
@@ -183,6 +260,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             if (IsLocalVisual) {
                 SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.55f, Pitch = -0.5f, MaxInstances = 2 }, Player.Center);
                 SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.45f, Pitch = -0.85f, MaxInstances = 2 }, Player.Center);
+            }
+            BroadcastCommand();
+            return true;
+        }
+
+        /// <summary>开始鬼雨异化翻转。仅 Open 稳态且满水位受理；入雨/深潜全屏演出期间不叠加第二套拷屏翻转</summary>
+        internal bool FlipDomain(out bool busy) {
+            busy = false;
+            if (Phase != KikasaDomainPhase.Open) {
+                busy = Phase != KikasaDomainPhase.Closed;
+                return false;
+            }
+            if (RiseT < 0.999f || OniRainWorldTransition.Active || OniRainDescentTransition.Active) {
+                busy = true;
+                return false;
+            }
+            if (!ConsumeCommandGate()) {
+                return false;
+            }
+            Phase = KikasaDomainPhase.Flipping;
+            PhaseTimer = 0;
+            FlipToRain = !IsRainForm;
+            ZeroFlipEnvelopes();
+            //施术者本机才有运镜；运镜失败不致命，演出照走
+            if (!Main.dedServ && Player.whoAmI == Main.myPlayer) {
+                CutsceneDirector.Play<KikasaFlipCutscene>(Player);
             }
             BroadcastCommand();
             return true;
@@ -214,6 +317,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 if (PresenceSmooth < 0.003f) PresenceSmooth = 0f;
                 SoakDim = 0f;
                 FoamBoost = 0f;
+                //域关着不留异化残余，重开总是血湖
+                IsRainForm = false;
+                FlipToRain = false;
+                RainBlend = 0f;
+                RainCurtainDensity = 0f;
+                ZeroFlipEnvelopes();
                 return;
             }
 
@@ -232,8 +341,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 case KikasaDomainPhase.Opening: UpdateOpening(); break;
                 case KikasaDomainPhase.Open: UpdateOpen(); break;
                 case KikasaDomainPhase.Closing: UpdateClosing(); break;
+                case KikasaDomainPhase.Flipping: UpdateFlipping(); break;
             }
 
+            //延迟雷声的公共泵：闪光由 NotifyThunder 先行，这里在任意阶段把声补到
+            if (thunderSoundDelay > 0 && --thunderSoundDelay == 0 && IsLocalVisual) {
+                SoundEngine.PlaySound(SoundID.Thunder with {
+                    Pitch = Main.rand.NextFloat(-1f, -0.75f),
+                    Volume = Main.rand.NextFloat(0.24f, 0.4f),
+                    MaxInstances = 3,
+                }, Player.Center + new Vector2(Main.rand.NextFloat(-900f, 900f), -400f));
+            }
+
+            UpdateRainBlend();
+            UpdateRainCurtain();
             UpdatePresence();
             UpdateMusicCap();
             UpdateFoam();
@@ -309,12 +430,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
             AdvanceRise();
 
-            //死寂血湖里偶尔一声水滴
+            //血湖偶尔一声水滴；异化态换成远雷（天幕先闪、雷声延迟，光先于声）
 
             if (--ambienceTimer <= 0) {
-                ambienceTimer = Main.rand.Next(480, 900);
-                if (IsLocalVisual) {
-                    SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.3f, Pitch = -0.4f, MaxInstances = 2 }, Player.Center);
+                if (RainBlend > 0.5f) {
+                    ambienceTimer = Main.rand.Next(360, 720);
+                    if (IsLocalVisual) {
+                        KikasaDomainSky.NotifyThunder();
+                        thunderSoundDelay = Main.rand.Next(15, 40);
+                    }
+                }
+                else {
+                    ambienceTimer = Main.rand.Next(480, 900);
+                    if (IsLocalVisual) {
+                        SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.3f, Pitch = -0.4f, MaxInstances = 2 }, Player.Center);
+                    }
                 }
             }
         }
@@ -348,6 +478,234 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                     SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.3f, Pitch = -0.95f, MaxInstances = 1 }, Player.Center);
                 }
             }
+        }
+
+        //==================== 鬼雨异化翻转 ====================
+
+        //节拍（60fps）：沸腾骤变 0-90 → 窥影驻留 90-130 → 倒转 130-220 → 落定 220-252
+        //结算帧 175=倒转段时间过半（曲线上 θ≈60°），173-183 的近全白硬闪盖住形态切换；
+        //包络全是 PhaseTimer 的确定性函数，远端从快照 timer 自算同一形状，
+        //快照漂移最多错开一两帧节拍音
+
+        private const int FlipGlimpseStart = 96;
+        private const int FlipGlimpseFrames = 20;
+
+        private void UpdateFlipping() {
+            SpreadProgress = 1f;
+            RiseT = 1f;
+            int t = PhaseTimer;
+            float prevRoll = FlipRollAngle;
+
+            //沸腾：快速拉满，结算后随白闪退场
+            float boilIn = Smooth01(t / 56f);
+            float boilOut = t < KikasaDomain.FlipCommitFrame ? 1f
+                : 1f - Smooth01((t - KikasaDomain.FlipCommitFrame) / 40f);
+            FlipBoil = boilIn * boilOut;
+
+            //镜面预览向目标形态靠拢："猛地变色"——与沸腾同步的 56f 陡坡先撞到 0.78，
+            //沸腾余下的时间与驻留段再慢慢浸到 0.92 后保持
+            FlipMix = t <= KikasaDomain.FlipBoilEnd
+                ? Smooth01(t / 56f) * 0.78f
+                : MathHelper.Lerp(0.78f, 0.92f, Smooth01(
+                    (t - KikasaDomain.FlipBoilEnd)
+                    / (float)(KikasaDomain.FlipDwellEnd - KikasaDomain.FlipBoilEnd)));
+
+            //倒转角：反向蓄势一小口，再 0→π 先慢后快再慢
+            if (t <= KikasaDomain.FlipDwellEnd) {
+                FlipRollAngle = 0f;
+            }
+            else {
+                float p = (t - KikasaDomain.FlipDwellEnd)
+                    / (float)(KikasaDomain.FlipRollEnd - KikasaDomain.FlipDwellEnd);
+                const float antic = 0.10f;
+                FlipRollAngle = p < antic
+                    ? -0.03f * MathHelper.Pi * Smooth01(p / antic)
+                    : MathHelper.Lerp(-0.03f * MathHelper.Pi, MathHelper.Pi,
+                        CubicInOut((p - antic) / (1f - antic)));
+            }
+            FlipRollVelocity = FlipRollAngle - prevRoll;
+
+            //结算后镜面向上吞满全屏；调色让位给已切换的真实氛围
+            FlipSwallow = t < KikasaDomain.FlipCommitFrame ? 0f
+                : Smooth01((t - KikasaDomain.FlipCommitFrame) / 37f);
+            FlipGrade = t < KikasaDomain.FlipCommitFrame ? 1f
+                : 1f - Smooth01((t - KikasaDomain.FlipCommitFrame) / 41f);
+
+            //冷镜异样一闪与荡开的涟漪环
+            FlipGlimpse = t >= FlipGlimpseStart && t < FlipGlimpseStart + FlipGlimpseFrames
+                ? MathF.Sin(MathHelper.Pi * (t - FlipGlimpseStart) / FlipGlimpseFrames) : 0f;
+            FlipGlimpseRing = t >= FlipGlimpseStart && t < FlipGlimpseStart + FlipGlimpseFrames + 14
+                ? MathHelper.Clamp((t - FlipGlimpseStart) / (float)(FlipGlimpseFrames + 14), 0f, 1f) : 0f;
+
+            //结算白闪：短促起势，长尾退潮
+            if (t >= KikasaDomain.FlipCommitFrame - 2 && t < KikasaDomain.FlipCommitFrame) {
+                FlipFlash = (t - (KikasaDomain.FlipCommitFrame - 2)) / 2f;
+            }
+            else if (t >= KikasaDomain.FlipCommitFrame) {
+                FlipFlash = MathHelper.Clamp(1f - (t - KikasaDomain.FlipCommitFrame) / 18f, 0f, 1f);
+            }
+            else {
+                FlipFlash = 0f;
+            }
+
+            //缝线辉光，落定段消隐
+            FlipSeamGlow = t <= KikasaDomain.FlipRollEnd ? 1f
+                : 1f - Smooth01((t - KikasaDomain.FlipRollEnd)
+                    / (float)(KikasaDomain.FlipTotalFrames - KikasaDomain.FlipRollEnd));
+
+            //结算：白闪掩护下切形态（>= 加锁存，快照跳帧也不漏拍）
+            if (t >= KikasaDomain.FlipCommitFrame && IsRainForm != FlipToRain) {
+                IsRainForm = FlipToRain;
+                if (IsLocalVisual) {
+                    SoundEngine.PlaySound(SoundID.Thunder with { Pitch = -0.6f, Volume = 0.85f, MaxInstances = 3 }, Player.Center);
+                    SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Pitch = -0.7f, Volume = 0.6f, MaxInstances = 2 }, Player.Center);
+                    ShakeViewer(9f);
+                }
+            }
+
+            SpawnFlipFx();
+            PlayFlipBeats();
+
+            //玩家中途失效：直接落定到目标形态，域保持打开
+            if (Player.dead) {
+                SettleFlip();
+                return;
+            }
+
+            if (t >= KikasaDomain.FlipTotalFrames) {
+                //θ=π、吞满全屏、调色归零时输出等于输入，落定无跳变
+                SettleFlip();
+            }
+        }
+
+        private void SettleFlip() {
+            IsRainForm = FlipToRain;
+            Phase = KikasaDomainPhase.Open;
+            PhaseTimer = 0;
+            ambienceTimer = Main.rand.Next(240, 480);
+            ZeroFlipEnvelopes();
+        }
+
+        private void ZeroFlipEnvelopes() {
+            FlipBoil = FlipMix = FlipRollAngle = FlipRollVelocity = 0f;
+            FlipSwallow = FlipGlimpse = FlipGlimpseRing = FlipFlash = FlipSeamGlow = 0f;
+            FlipGrade = 1f;
+        }
+
+        /// <summary>翻转期相位粒子：沿水线的沸腾气泡与蒸汽、落定溅圈</summary>
+        private void SpawnFlipFx() {
+            if (!IsLocalVisual) {
+                return;
+            }
+            int t = PhaseTimer;
+            //镜面预览的目标侧混合，气泡颜色跟着先行变
+            float coldMix = FlipToRain ? FlipMix : 1f - FlipMix;
+
+            //沸腾段：沿水线密集气泡，强度随沸腾包络
+            if (t < KikasaDomain.FlipCommitFrame && FlipBoil > 0.05f && t % 2 == 0) {
+                KikasaDomainDeco.BoilBurst(this, FlipBoil, coldMix);
+            }
+            //翻滚的蒸汽潮气
+            if (t < KikasaDomain.FlipCommitFrame && FlipBoil > 0.3f && t % 7 == 0) {
+                KikasaDomainDeco.BoilSteam(this, FlipBoil, coldMix);
+            }
+            //落定确认拍：脚下水花溅开一圈，世界是"落"回湖面的
+            if (t == KikasaDomain.FlipRollEnd) {
+                Vector2 lakeAt = new(Player.Center.X, LakeWorldY);
+                KikasaDomainDeco.SplashAt(lakeAt, 16);
+                KikasaDomainDeco.RippleAt(lakeAt, 1.6f);
+            }
+        }
+
+        /// <summary>翻转节拍音与确认拍，全部落在观看者本机</summary>
+        private void PlayFlipBeats() {
+            if (!IsLocalVisual) {
+                return;
+            }
+            Vector2 lakeAt = new(Player.Center.X, LakeWorldY);
+            switch (PhaseTimer) {
+                case 1:
+                    //受理拍：天幕先无声地闪、湖面荡开第一圈大涟漪，雷声隔十几帧才砸到——凶兆先到
+                    KikasaDomainSky.NotifyThunder();
+                    thunderSoundDelay = Main.rand.Next(12, 22);
+                    SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.9f, Volume = 0.5f, MaxInstances = 2 }, lakeAt);
+                    KikasaDomainDeco.RippleAt(lakeAt, 1.5f);
+                    ShakeViewer(2f);
+                    break;
+                case 18:
+                    //水从湖底翻起来的第一记涌拍
+                    SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.7f, Volume = 0.5f, MaxInstances = 2 }, lakeAt);
+                    break;
+                case 48:
+                    SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.45f, Volume = 0.55f, MaxInstances = 2 }, lakeAt);
+                    KikasaDomainDeco.RippleAt(lakeAt, 1.1f);
+                    ShakeViewer(2.5f);
+                    break;
+                case 78:
+                    //沸腾顶点，整面湖都在滚
+                    SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.15f, Volume = 0.65f, MaxInstances = 2 }, lakeAt);
+                    ShakeViewer(3f);
+                    break;
+                case FlipGlimpseStart + 4:
+                    //冷镜异样：布被扯紧的闷吸声
+                    SoundEngine.PlaySound(SoundID.DD2_BookStaffCast with { Pitch = -0.9f, Volume = 0.42f, MaxInstances = 2 }, lakeAt);
+                    break;
+                case KikasaDomain.FlipDwellEnd:
+                    //倒转起势
+                    SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with { Pitch = -0.7f, Volume = 0.5f, MaxInstances = 2 }, lakeAt);
+                    break;
+                case 165:
+                    //世界滚动的极低闷响
+                    SoundEngine.PlaySound(SoundID.Thunder with { Pitch = -1f, Volume = 0.34f, MaxInstances = 3 }, Player.Center);
+                    break;
+                case 205:
+                    //新形态的水声落下来
+                    SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.35f, Volume = 0.55f, MaxInstances = 2 }, Player.Center);
+                    break;
+                case KikasaDomain.FlipRollEnd:
+                    //落定一记压低的闷锣
+                    SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Pitch = -0.9f, Volume = 0.4f, MaxInstances = 1 }, Player.Center);
+                    ShakeViewer(4f);
+                    break;
+            }
+        }
+
+        //鬼雨混合：朝当前形态收敛；结算后的白闪窗口内快速就位，其余时间缓速
+
+        private void UpdateRainBlend() {
+            float target = IsRainForm ? 1f : 0f;
+            float rate = Phase == KikasaDomainPhase.Flipping
+                && PhaseTimer >= KikasaDomain.FlipCommitFrame ? 0.30f : 0.08f;
+            RainBlend = MathHelper.Lerp(RainBlend, target, rate);
+            if (RainBlend < 0.002f && target <= 0f) RainBlend = 0f;
+            if (RainBlend > 0.998f && target >= 1f) RainBlend = 1f;
+        }
+
+        //雨帘密度：稳态吃 RainBlend；正向翻转给前兆稀雨，逆向翻转沸腾段退雨；收域随撕口合拢退场
+
+        private void UpdateRainCurtain() {
+            float density = RainBlend;
+            if (Phase == KikasaDomainPhase.Closing) {
+                density *= SpreadProgress;
+            }
+            else if (Phase == KikasaDomainPhase.Flipping) {
+                if (FlipToRain) {
+                    float pre = PhaseTimer <= KikasaDomain.FlipBoilEnd
+                        ? FlipBoil * 0.03f
+                        : PhaseTimer <= KikasaDomain.FlipDwellEnd ? 0.06f
+                        : PhaseTimer < KikasaDomain.FlipCommitFrame
+                            ? MathHelper.Lerp(0.06f, 0.2f,
+                                (PhaseTimer - KikasaDomain.FlipDwellEnd)
+                                / (float)(KikasaDomain.FlipCommitFrame - KikasaDomain.FlipDwellEnd))
+                            : 0f;
+                    density = MathF.Max(density, pre);
+                }
+                else {
+                    //血还魂：雨在沸腾里被血气蒸散
+                    density *= 1f - FlipBoil * 0.75f;
+                }
+            }
+            RainCurtainDensity = density;
         }
 
         //血湖上涨与确认拍；Opening/Open 共用（续开时水位可能未满）
@@ -396,7 +754,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         private void UpdateFoam() {
             float target;
-            if (Phase == KikasaDomainPhase.Closing) {
+            if (Phase == KikasaDomainPhase.Flipping) {
+                //沸腾把泡沫顶满
+                target = 0.15f + FlipBoil;
+            }
+            else if (Phase == KikasaDomainPhase.Closing) {
                 target = 0.65f;
             }
             else if (!contactDone && AnyActive) {
@@ -420,6 +782,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 KikasaDomainPhase.Opening => MathHelper.Lerp(1f, 0.5f, SpreadProgress),
                 KikasaDomainPhase.Open => 0.5f,
                 KikasaDomainPhase.Closing => MathHelper.Lerp(1f, 0.5f, SpreadProgress),
+                //倒转期音乐随沸腾压向死寂，雷声与水声接管
+                KikasaDomainPhase.Flipping => MathHelper.Lerp(0.5f, 0.2f, FlipBoil),
                 _ => 1f,
             };
             //boss 在场时音乐让位给战斗曲
@@ -434,6 +798,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             if (music >= 0 && music < Main.musicFade.Length && Main.musicFade[music] > cap) {
                 Main.musicFade[music] = MathHelper.Lerp(Main.musicFade[music], cap, 0.2f);
             }
+        }
+
+        //翻转包络的缓动，与入雨演出同源
+
+        private static float Smooth01(float value) {
+            value = MathHelper.Clamp(value, 0f, 1f);
+            return value * value * (3f - 2f * value);
+        }
+
+        private static float CubicInOut(float t) {
+            t = MathHelper.Clamp(t, 0f, 1f);
+            return t < 0.5f ? 4f * t * t * t : 1f - MathF.Pow(-2f * t + 2f, 3f) / 2f;
         }
 
         //开域撕纸三段：爆冲(0→0.32)→滞行(0.32→0.46、撕口读秒)→吞没(0.46→1 加速离场)
@@ -507,6 +883,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             PresenceSmooth = 0f;
             SoakDim = 0f;
             FoamBoost = 0f;
+            IsRainForm = false;
+            FlipToRain = false;
+            RainBlend = 0f;
+            RainCurtainDensity = 0f;
+            thunderSoundDelay = 0;
+            ZeroFlipEnvelopes();
             contactDone = false;
             riseBeatNear = false;
             riseBeatFar = false;

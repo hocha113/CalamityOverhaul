@@ -40,6 +40,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Result,
             TeleportState,
             RestartState,
+            /// <summary>重启回血/清 debuff 归 owner 本机结算</summary>
+            RestartRestore,
         }
 
         private const ushort ToggleOperationId = RamNet.FirstExternalOperation + 3;
@@ -86,6 +88,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     }
                     else if (kind == PacketKind.RestartState) {
                         HandleRestartState(reader);
+                    }
+                    else if (kind == PacketKind.RestartRestore) {
+                        HandleRestartRestore(reader);
                     }
                 }
             } catch (EndOfStreamException) {
@@ -354,6 +359,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             packet.Send(toWho);
         }
 
+        /// <summary>
+        /// 通知施术者本机兑现重启恢复。生命/法力/debuff 归客户端，服务端写了也会被原版覆盖
+        /// </summary>
+        internal static void SendRestartRestore(Player player) {
+            if (Main.netMode != NetmodeID.Server || player?.active != true) {
+                return;
+            }
+            ModPacket packet = NewPacket(PacketKind.RestartRestore);
+            packet.Write((byte)player.whoAmI);
+            packet.Send(player.whoAmI);
+        }
+
         private static void HandleRestartState(BinaryReader reader) {
             int playerIndex = reader.ReadByte();
             uint revision = reader.ReadUInt32();
@@ -371,6 +388,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (player?.active == true) {
                 Restart.CyberRestart.ApplyReplicatedState(player, revision,
                     progress, anchorLayer, restoreFired, playVisual);
+            }
+        }
+
+        private static void HandleRestartRestore(BinaryReader reader) {
+            int playerIndex = reader.ReadByte();
+            if (playerIndex < 0 || playerIndex >= Main.maxPlayers
+                || playerIndex != Main.myPlayer) {
+                return;
+            }
+            Player player = Main.player[playerIndex];
+            if (player?.active == true) {
+                Restart.CyberRestart.ApplyLocalRestore(player);
             }
         }
 

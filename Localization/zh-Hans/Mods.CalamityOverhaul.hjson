@@ -155,7 +155,7 @@ QuickHack: {
 
 	DataPurge: {
 		DisplayName: 数据清除
-		Description: 抹除目标弹幕，附近的同型弹一并清掉
+		Description: 抹除来袭弹幕，附近的同型弹一并清掉
 	}
 
 	BallisticOverclock: {
@@ -200,33 +200,373 @@ QuickHack: {
 
 	DataLeech: {
 		DisplayName: 数据榨取
-		Description: 期间打这个目标会回复你的RAM
+		Description: 期间打这个目标回流RAM，总量有上限
 	}
 
 	SwarmLink: {
 		DisplayName: 蜂群链接
-		Description: 目标受到的伤害分摊三成给它的同群
+		Description: 打中目标时，附近至多五个敌人同吃三成伤害
 	}
 
 	MachineOverclock: {
 		DisplayName: 机械超频
-		Description: 十秒内电量满载不停摆，到期把电烧空
+		Description: 十秒内用定额电托住机器，到期把电烧空
 	}
 
 	GridBlackout: {
 		DisplayName: 电网瘫痪
 		Description: 借信号塔切断大范围内所有机械的供电
 	}
+
+	PowerTransmute: {
+		DisplayName: 电能折算
+		Description: 把手里东西的存电折成RAM，随即放空
+	}
+
+	NeuralOverclock: {
+		DisplayName: 神经超频
+		Description: 八秒内出手更快，但RAM停止回复且持续掉血
+	}
+
+	WraithForceDrive: {
+		DisplayName: 役鬼强驱
+		Description: 十秒内役鬼出手不花代价，之后侵蚀加深并休眠
+	}
+
+	IndexPreread: {
+		DisplayName: 索引预读
+		Description: 不开箱读完里面的东西，最值钱那件标出来
+	}
+
+	LockBurn: {
+		DisplayName: 锁芯烧穿
+		Description: 不用钥匙开这个箱子，代价是烧掉里面一件
+	}
+
+	DielSkip: {
+		DisplayName: 昼夜跳转
+		Description: 把时间快进到最近的日出或日落
+	}
+
+	StormInject: {
+		DisplayName: 雷暴注入
+		Description: 招来雷暴，落雷只砸身上带骇入效果的敌人
+	}
+
+	GravityInvert: {
+		DisplayName: 重力反转
+		Description: 你周围一片的重力反过来，敌人和掉落物往上掉
+	}
+
+	SegmentDelink: {
+		DisplayName: 节段离网
+		Description: 这一节的伤害只记账，到期折六成算给本体
+	}
+
+	LimbSeizure: {
+		DisplayName: 肢体征收
+		Description: 让这条肢体转过去打它自己的本体，持续八秒
+	}
+
+	CommandLinkCut: {
+		DisplayName: 协同断链
+		Description: 切断它和同伴的联络，十秒内各打各的
+	}
+
+	MunitionSwap: {
+		DisplayName: 弹药置换
+		Description: 炮台改打你背包里的弹药，伤害按你的算
+	}
+
+	TurretMesh: {
+		DisplayName: 炮台联网
+		Description: 附近炮台连成一组齐射你指的地方，共四十发
+	}
+
+	BeaconForge: {
+		DisplayName: 信标伪造
+		Description: 信号塔发出假求救信号，把大片地方的怪招过来
+	}
+
+	PrivilegeEscalate: {
+		DisplayName: 提权
+		Description: 协议变便宜变快且不限距离，期间RAM不回复
+	}
+
+	ItemSalvage: {
+		DisplayName: 拆解
+		Description: 把地上这件东西拆回六成材料
+	}
+
+	DataBrand: {
+		DisplayName: 数据烙印
+		Description: 抄下这件装备的前缀，下次骇入印到另一件上
+		HudTag: 烙印: {0}
+		DenyNoPrefix: 这件东西上没有前缀可抄
+		DenyIncompatible: 记录的前缀贴不上这件东西
+	}
+
+	EntityMasquerade: {
+		DisplayName: 身份伪装
+		Description: 让这件掉落物在敌人眼里像玩家，替你挨三十秒
+	}
+
+	TileConscript: {
+		DisplayName: 物块征用
+		Description: 把这片物块拆成八块护甲绕着你转，到期打出去
+	}
+
+	VeinResonance: {
+		DisplayName: 矿脉共振
+		Description: 同种矿脉透墙可见，挖到双倍掉落但会招来看守
+	}
+
+	StressInvert: {
+		DisplayName: 应力反转
+		Description: 十秒内这片物块不可破坏，撞上去的敌人会受伤
+	}
+
+	PressureSurge: {
+		DisplayName: 增压水域
+		Description: 给这片液体加压，泡在里面的东西被顶上天
+	}
+
+	MirrorSurface: {
+		DisplayName: 镜像水面
+		Description: 液面变镜，穿过它的敌方弹幕复制一份归你
+	}
+
+	DelayFuse: {
+		DisplayName: 延迟引信
+		Description: 这发弹幕不再消失，原地悬停三十秒变成雷
+	}
+
+	ProjectileTithe: {
+		DisplayName: 弹幕征收
+		Description: 这发弹幕会吞掉靠近的敌弹，到期按吞的量炸开
+	}
+
+	ProjectileSample: {
+		DisplayName: 弹幕采样
+		Description: 采下这发弹幕，二十秒内你每十二发复刻它一发
+	}
+
+	CompensationProtocol: {
+		DisplayName: 代偿协议
+		Description: 预支目标一成生命，八秒内没打死就自己还账
+	}
+
+	PayloadRewrite: {
+		DisplayName: 载荷改写
+		Description: 十秒内目标射出的弹幕全部归你，按你的伤害结算
+	}
+
+	PhaseDesync: {
+		DisplayName: 相位偏移
+		Description: 把目标的躯体和判定分开，双方都更难打中
+	}
+
+	LiveCellTap: {
+		DisplayName: 活体电源
+		Description: 目标不能动也免疫伤害，拿自身生命换你的RAM
+	}
+
+	FirmwareRollback: {
+		DisplayName: 固件回滚
+		Description: 让目标退回上一阶段的行为，到期后暴走五秒
+	}
+
+	ShellRequisition: {
+		DisplayName: 躯壳征用
+		Description: 标记期间被打死的目标会站起来替你打十五秒
+	}
+
+	PositionCast: {
+		DisplayName: 坐标广播
+		Description: 十五秒对方位置对你全队透明
+	}
+
+	GaugePollution: {
+		DisplayName: 读数污染
+		Description: 污染对方的界面，血量弹药读数乱跳八秒
+	}
+
+	LinkTraceback: {
+		DisplayName: 链路回溯
+		Description: 掐断瞄着你的上传，烧他并标出他
+	}
+
+	ForceUninstall: {
+		DisplayName: 强制卸载
+		Description: 拔掉你身上一条敌方协议，半分钟内不能再拔
+	}
+
+	MemoryScorch: {
+		DisplayName: 内存烧蚀
+		Description: 烧掉对方三点RAM，十秒内他的回复归零
+		SealTag: RAM回复被封
+	}
+
+	BuffSiphon: {
+		DisplayName: 增益抽取
+		Description: 抽走对方剩余最久的一个增益归你，最长三十秒
+	}
+
+	CombatSiphon: {
+		DisplayName: 战术榨取
+		Description: 十秒内打他造成的伤害按比例回你的RAM
+	}
+
+	BallisticTurncoat: {
+		DisplayName: 弹道倒戈
+		Description: 对方接下来射出的三发弹幕半路调头打回原主，停火即安全
+		HijackCounter: 弹道已劫持 {0}/{1}
+		DeathReason: "{0}射出的弹幕被{1}调头送了回来"
+	}
+
+	MeltdownBrand: {
+		DisplayName: 熔断标记
+		Description: 四秒引信全程可见，烧完炸他八十点，中途拔除可拆弹
+		FuseTag: 熔断 {0}s
+		DeathReason: "{0}被{1}种下的熔断标记炸开了"
+	}
+
+	MapBlackout: {
+		DisplayName: 地图熄灭
+		Description: 对方的地图糊成雪花十五秒，图钉队标一并熄灭
+	}
+
+	ChannelScramble: {
+		DisplayName: 信道乱码
+		Description: 二十秒内对方的聊天变乱码，队友名牌从他屏幕上消失
+	}
+
+	StealthStrip: {
+		DisplayName: 隐身剥离
+		Description: 剥掉对方一切隐身潜行，十秒内积不回来，轮廓全员可见
+	}
+
+	CooldownInject: {
+		DisplayName: 冷却注入
+		Description: 六秒内对方出手慢三成半，进行中的药水冷却再加五秒
+	}
+
+	CyberwareOffline: {
+		DisplayName: 义体离线
+		Description: 八秒内对方全部义体断电离线
+	}
 }
 
 HackTargetType: {
 	ItemTargetType.DisplayName: 掉落物目标
 	NpcTargetType.DisplayName: NPC目标
+	PlayerTargetType.DisplayName: 玩家目标
 	ProjectileTargetType.DisplayName: 弹幕目标
+	SelfRigTargetType.DisplayName: 自体目标
 	SignalTowerTargetType.DisplayName: 信号塔目标
 	TileTargetType.DisplayName: 物块目标
 	TurretTargetType.DisplayName: 炮台目标
 	WaterTargetType.DisplayName: 液体目标
+
+	BossPartTargetType: {
+		DisplayName: 部件目标
+		AnchorLabel: 所属本体
+		RoleLabel: 部件角色
+		PartHpLabel: 部件生命
+		AnchorHpLabel: 本体生命
+		InvulnLabel: 无敌状态
+		LinkLabel: 链路状态
+		RoleSegmentFormat: 体节 · 第{0}/{1}节
+		RoleLimb: 肢体单元
+		SharedLifePool: 与本体同池
+		InvulnYes: 免疫中
+		InvulnNo: 可击破
+		LinkOnline: 协同在线
+		LinkSevered: 协同已断
+		LinkDelinked: 已离网
+		AnchorHpFormat: 本体 {0}%
+		DelinkTallyFormat: 已记账 {0}
+	}
+
+	ContainerTargetType: {
+		DisplayName: 容器目标
+		ScanType: 容器类型
+		ScanLock: 锁状态
+		ScanSlots: 已用槽位
+		ScanValue: 总价值估算
+		ScanTopRare: 最高稀有度
+		ScanTopValue: 最值钱条目
+		ScanCoord: 坐标
+		ScanRest: ……以及其余 {0} 项
+		ScanEmpty: 空
+		LockStateLocked: 已上锁
+		LockStateOpen: 未上锁
+		StateIndexed: 索引已缓存
+	}
+
+	WorldTargetType: {
+		DisplayName: 世界目标
+		ScanWorld: 世界名
+		ScanClock: 当前时刻
+		ScanWeather: 天气风速
+		ScanMoon: 月相
+		ScanBiome: 生物群系
+		ScanEvent: 事件状态
+		ScanBoss: 活跃Boss
+		DayLabel: 昼
+		NightLabel: 夜
+		WeatherClear: 晴
+		WeatherCloudy: 阴
+		WeatherRain: 雨
+		WeatherStorm: 暴雨
+		EventNone: 平稳
+		EventBloodMoon: 血月
+		EventEclipse: 日食
+		EventPumpkinMoon: 南瓜月
+		EventFrostMoon: 霜月
+		EventSlimeRain: 史莱姆雨
+		EventInvasion: 入侵事件
+		BiomeForest: 森林
+		BiomeDesert: 沙漠
+		BiomeSnow: 雪原
+		BiomeJungle: 丛林
+		BiomeCorruption: 腐化之地
+		BiomeCrimson: 猩红之地
+		BiomeHallow: 神圣之地
+		BiomeDungeon: 地牢
+		BiomeMushroom: 发光蘑菇
+		BiomeOcean: 海洋
+		BiomeUnderworld: 地狱
+	}
+}
+
+HackCircuit: {
+	CircuitNodeSpawner: {
+		TurretName: 哨戒炮塔
+		TowerName: 信号塔
+		StatusLabel: 状态
+		IffLabel: 敌我
+		RateLabel: 射速
+		MunitionLabel: 弹种
+		RangeLabel: 火控半径
+		CoverageLabel: 覆盖半径
+		LinkedLabel: 组网节点
+		SourceLabel: 广播源
+		StatusOnline: 在线
+		StatusDisabled: 停摆
+		StatusHijacked: 已策反
+		StatusMunition: 供弹中
+		StatusMeshed: 已组网
+		StatusIdle: 待机
+		StatusVirus: 病毒广播
+		StatusBlackout: 断电场
+		StatusBeacon: 假信标
+		StatusUplink: 提权上行
+		IffHostile: 敌对
+		IffFriendly: 己方
+		MunitionKinetic: 动能弹
+		BeaconCount: 已引来 {0} 只
+	}
 }
 
 TileNameFallback: {

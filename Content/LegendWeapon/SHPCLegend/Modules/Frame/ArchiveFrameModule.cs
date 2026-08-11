@@ -47,13 +47,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             if (owner == null || !owner.active) return;
 
             int dmg = Math.Max((int)(Threshold * 0.25f), 1);
-            int idx = Projectile.NewProjectile(source.GetSource_FromThis(),
+            //半径300px，ai2 走生成包同步
+            Projectile.NewProjectile(source.GetSource_FromThis(),
                 owner.Center, Vector2.Zero,
                 ModContent.ProjectileType<CyberDetonationProj>(),
-                dmg, 0f, source.owner, ai0: 0.7f);
-            if (idx >= 0 && idx < Main.maxProjectiles) {
-                Main.projectile[idx].localAI[2] = 300f;
-            }
+                dmg, 0f, source.owner, ai0: 0.7f, ai1: 0f, ai2: 300f);
             if (source.owner == Main.myPlayer) {
                 CombatText.NewText(owner.getRect(), new Color(255, 200, 60),
                     "// ARCHIVE", true, false);

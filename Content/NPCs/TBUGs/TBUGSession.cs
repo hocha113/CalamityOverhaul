@@ -1,12 +1,24 @@
 using CalamityOverhaul.Content.NPCs.TBUGs.UIs;
+using Terraria;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.TBUGs
 {
     /// <summary>本地 TBUG 交互会话，对话/商店共享 whoAmI</summary>
     internal static class TBUGSession
     {
-        /// <summary>当前交互的 TBUG 的 <see cref="Terraria.NPC.whoAmI"/>，-1 表示无交互</summary>
+        /// <summary>当前交互的 TBUG 的 <see cref="NPC.whoAmI"/>，-1 表示无交互</summary>
         public static int BoundWhoAmI { get; private set; } = -1;
+
+        /// <summary>绑定的 TBUG 是否仍活着；UI 逐帧校验，人没了窗要跟着关</summary>
+        public static bool IsBoundNPCAlive() {
+            int who = BoundWhoAmI;
+            if (who < 0 || who >= Main.maxNPCs) {
+                return false;
+            }
+            NPC npc = Main.npc[who];
+            return npc?.active == true && npc.type == ModContent.NPCType<TBUG>();
+        }
 
         /// <summary>对话或商店界面激活/淡出中</summary>
         public static bool IsUIActive => TBUGTalkUI.Instance.Active || TBUGShopUI.Instance.Active;

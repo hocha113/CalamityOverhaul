@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.UIs.RadialWheels;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -71,13 +72,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
                 return;
             }
 
-            Vector2 center = new(HalibutTheme.UIScreenW * 0.5f, HalibutTheme.UIScreenH * HalibutTheme.WheelAnchorYRatio);
-            ctrl.SetScreenAnchor(center);
+            //中心由 Hub 排布，命中与绘制共用
+            Vector2 center = ctrl.ScreenAnchor;
             float time = ctrl.Time;
             float ease = VaultUtils.EaseOutBack(a);
 
-            //1 全屏暗化
-            DrawWaterVeil(sb, center, a);
+            //1 全屏暗化；多盘并存时只由归属者画一次，否则两层滤镜会叠暗
+            if (RadialWheelHub.OwnsBackdrop(ctrl)) {
+                DrawWaterVeil(sb, center, a);
+            }
 
             //2 底盘与装饰环
             DrawBackplate(sb, center, a, ease, time);
@@ -95,8 +98,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
             //5 粒子
             particles.Draw(sb, a);
 
-            //6 按键提示
-            DrawHints(sb, center, a);
+            //6 按键提示；只由最底那个盘画，否则会糊在下方盘上
+            if (RadialWheelHub.OwnsHint(ctrl)) {
+                DrawHints(sb, center, a);
+            }
         }
 
         private static void DrawWaterVeil(SpriteBatch sb, Vector2 center, float a) {
@@ -233,7 +238,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
         }
 
         private void DrawHints(SpriteBatch sb, Vector2 center, float a) {
-            string keyName = CWRKeySystem.Halibut_SkillWheel.ToTooltipString(CWRKeySystem.Notbound.Value);
+            string keyName = CWRKeySystem.RadialWheel_Key.ToTooltipString(CWRKeySystem.Notbound.Value);
             string hint = string.Format(ReleaseHint.Value, keyName) + "  ·  " + CancelHint.Value;
             HalibutRenderer.DrawGlowTextCentered(sb, hint,
                 center + new Vector2(0f, HalibutTheme.WheelOuterR + 38f),

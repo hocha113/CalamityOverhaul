@@ -23,6 +23,7 @@ float uWaterWobble;     //水位线噪声波动幅度
 float uFoamBoost;       //0~1 涨水期泡沫/浮渣增强
 float uSeamGlow;        //0~1 缝线血沫水膜辉光
 float uAspect;          //宽/高
+float uRain;            //0~1 鬼雨异化混合：血暮↔湿墨浊水，全套色板权重乘混合
 
 #define LUMA_W float3(0.299, 0.587, 0.114)
 
@@ -37,6 +38,15 @@ static const float3 FOAM_COL    = float3(0.965, 0.520, 0.440);  //缝线血沫�
 //====== 湿纸前沿 ======
 static const float3 SOAK_MUL    = float3(0.610, 0.385, 0.305);  //浸水纸乘暗（湿褐）
 static const float3 FIBER_COL   = float3(0.880, 0.795, 0.690);  //湿纤维苍白
+//====== 鬼雨异化色板（湿墨浊水，禁红禁暖） ======
+static const float3 RAIN_SHADOW = float3(0.058, 0.075, 0.086);  //暗部沉入的墨青
+static const float3 RAIN_TINT   = float3(0.855, 0.945, 1.010);  //冷雨轻罩（乘色）
+static const float3 RAIN_LAKE   = float3(0.520, 0.620, 0.640);  //镜像浊水乘色
+static const float3 RAIN_FOG    = float3(0.085, 0.108, 0.126);  //湖底冷雾
+static const float3 RAIN_UNDER  = float3(0.380, 0.460, 0.500);  //水下沉染（冷）
+static const float3 RAIN_FOAM   = float3(0.620, 0.700, 0.720);  //缝线冷沫
+static const float3 RAIN_SOAK   = float3(0.470, 0.520, 0.545);  //浸水纸乘暗（冷灰）
+static const float3 RAIN_FIBER  = float3(0.720, 0.790, 0.810);  //湿纤维冷白
 
 float noiseTex(float2 uv) {
     return tex2D(uImage1, uv).r;
@@ -75,17 +85,18 @@ float3 paperFront(float2 coords, float sd) {
 }
 
 //血暮环境调色：红是领域的colour保真，其余轻去饱和；暗部沉深绯
+//鬼雨异化（uRain）后不再保红、去饱和加重、罩色与暗部全套转冷
 float3 GradeDusk(float3 src, float d) {
     float luma = dot(src, LUMA_W);
     float redness = src.r - max(src.g, src.b);
-    float redMask = smoothstep(0.05, 0.30, redness);
-    float3 c = lerp(src, luma.xxx, 0.22 * (1.0 - redMask));
-    c *= DUSK_TINT;
+    float redMask = smoothstep(0.05, 0.30, redness) * (1.0 - uRain);
+    float3 c = lerp(src, luma.xxx, (0.22 + 0.16 * uRain) * (1.0 - redMask));
+    c *= lerp(DUSK_TINT, RAIN_TINT, uRain);
     float shadowAmt = (1.0 - smoothstep(0.08, 0.50, luma)) * 0.44;
-    c = lerp(c, DUSK_SHADOW * (0.5 + luma * 1.2), shadowAmt);
-    //氛围级暗角
+    c = lerp(c, lerp(DUSK_SHADOW, RAIN_SHADOW, uRain) * (0.5 + luma * 1.2), shadowAmt);
+    //氛围级暗角，冷雨里略沉
     float vig = smoothstep(0.52, 1.05, d);
-    c *= 1.0 - vig * 0.20;
+    c *= 1.0 - vig * (0.20 + 0.05 * uRain);
     return c;
 }
 
@@ -101,7 +112,7 @@ float4 PSGrade(float2 coords : TEXCOORD0) : COLOR0 {
     //前沿浸润带压在旧世界侧：纸吸了水，先暗一圈再撕
     float3 fl = paperFront(coords, mf.y);
     float frontGate = step(0.5, uSpreadMode) * uFrontFade;
-    final = lerp(final, final * SOAK_MUL, fl.x * 0.42 * frontGate);
+    final = lerp(final, final * lerp(SOAK_MUL, RAIN_SOAK, uRain), fl.x * 0.42 * frontGate);
 
     return float4(final, 1.0);
 }
@@ -115,12 +126,12 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     float mask = mf.x;
     float sd = mf.y;
 
-    //域内全帧轻罩：微量去饱和 + 轻血染，实体色相/轮廓仍清晰
+    //域内全帧轻罩：微量去饱和 + 轻血染，实体色相/轮廓仍清晰；异化后转冷罩不保红
     float luma = dot(src, LUMA_W);
     float redness = src.r - max(src.g, src.b);
-    float redMask = smoothstep(0.05, 0.30, redness);
-    float3 tone = lerp(src, luma.xxx, 0.14 * (1.0 - redMask));
-    tone *= float3(1.030, 0.905, 0.885);
+    float redMask = smoothstep(0.05, 0.30, redness) * (1.0 - uRain);
+    float3 tone = lerp(src, luma.xxx, (0.14 + 0.10 * uRain) * (1.0 - redMask));
+    tone *= lerp(float3(1.030, 0.905, 0.885), float3(0.900, 0.965, 1.005), uRain);
 
     //水位线：稳定枢轴 + 噪声波动（波动只动遮罩边界，不动镜像几何）
     float n0 = noiseTex(float2(uv.x * 2.6 + uTime * 0.020, uTime * 0.011));
@@ -139,42 +150,52 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     float3 mcol = tex2D(uImage0, cuv).rgb;
     float srcOk = saturate(muv.y * 16.0) * saturate((1.0 - muv.y) * 16.0);
 
-    //镜像血染：去饱和→血红乘色→深度压暗→沉入血雾（深度以水位线起算）
+    //镜像染色：去饱和→乘色→深度压暗→沉雾，血湖↔浊水按 uRain 全套混合
+    //浑浊=去饱和更重、雾更浓更早、倒影更糊
     float mgrey = dot(mcol, float3(0.30, 0.55, 0.15));
-    float3 mirror = lerp(mcol, mgrey.xxx, 0.40);
-    mirror *= LAKE_TINT;
+    float3 mirror = lerp(mcol, mgrey.xxx, lerp(0.40, 0.58, uRain));
+    mirror *= lerp(LAKE_TINT, RAIN_LAKE, uRain);
     float depth = saturate(below * 1.6);
-    mirror *= 1.0 - depth * 0.30;
-    mirror = lerp(mirror, LAKE_FOG, saturate(depth * 0.42 + (1.0 - srcOk)));
+    mirror *= 1.0 - depth * lerp(0.30, 0.36, uRain);
+    float3 fogc = lerp(LAKE_FOG, RAIN_FOG, uRain);
+    mirror = lerp(mirror, fogc, saturate(depth * lerp(0.42, 0.60, uRain) + (1.0 - srcOk)));
 
-    //水下真实世界：透过血水看到的沉暗世界，倒影浮在其上
-    float3 under = lerp(src, luma.xxx, 0.30);
-    under *= UNDER_TINT;
-    under = lerp(under, LAKE_FOG, saturate(depth * 0.55));
+    //水下真实世界：透过湖水看到的沉暗世界，倒影浮在其上；浊水里更快没入雾底
+    float3 under = lerp(src, luma.xxx, lerp(0.30, 0.44, uRain));
+    under *= lerp(UNDER_TINT, RAIN_UNDER, uRain);
+    under = lerp(under, fogc, saturate(depth * lerp(0.55, 0.70, uRain)));
 
-    //反射率：贴缝掠射强、向深处弱（看穿浅血水），战斗可读性也靠它
+    //反射率：贴缝掠射强、向深处弱（看穿浅水），战斗可读性也靠它；浊水反光钝
     float refl = lerp(0.42, 0.85, exp2(-max(below, 0.0) * 5.0));
+    refl *= 1.0 - 0.35 * uRain;
     float3 lake = lerp(under, mirror, refl);
 
-    //水面浮渣：贴水面漂的血凝斑块
+    //水面浮渣：贴水面漂的凝斑，浊水里更密
     float scum = saturate((n0 - 0.58) * 4.0) * exp2(-max(below, 0.0) * 24.0);
-    lake *= 1.0 - scum * (0.10 + 0.15 * uFoamBoost);
+    lake *= 1.0 - scum * (0.10 + 0.15 * uFoamBoost + 0.10 * uRain);
+
+    //镜内雨丝：斜向细纹快速下刷，只在异化态出现
+    float rainT = noiseTex(float2(uv.x * 6.5 + uv.y * 0.9, uv.y * 0.45 - uTime * 0.9));
+    lake += float3(0.50, 0.57, 0.59) * saturate((rainT - 0.62) * 6.0) * 0.12 * uRain;
 
     float3 domainCol = lerp(tone, lake, belowMask);
     float3 final = lerp(src, domainCol, mask);
 
-    //缝线血沫：贴水位线的一线微光，噪声闪烁不与全屏同相
+    //缝线水沫：贴水位线的一线微光，噪声闪烁不与全屏同相；异化态叠雨点砸水的碎闪
     float seamBand = exp2(-abs(below) * 150.0);
     float foam = saturate((n1 - 0.35) * 2.2);
     float glintN = noiseTex(float2(uv.x * 5.0 - uTime * 0.05, 0.77));
-    final += FOAM_COL * seamBand * uSeamGlow * mask
+    float3 foamCol = lerp(FOAM_COL, RAIN_FOAM, uRain);
+    final += foamCol * seamBand * uSeamGlow * mask
         * (0.26 + 0.32 * glintN + 0.30 * foam * uFoamBoost);
+    float spat = noiseTex(float2(uv.x * 22.0, uTime * 1.7));
+    final += foamCol * step(0.80, spat) * seamBand * uSeamGlow * uRain * 0.22 * mask;
 
     //湿纸撕裂前沿：浸润带压暗旧世界，湿纤维缘勾撕口，卷影垫出纸厚
     float3 fl = paperFront(coords, sd);
     float frontGate = step(0.5, uSpreadMode) * uFrontFade;
-    final = lerp(final, final * SOAK_MUL, fl.x * 0.60 * frontGate);
-    final += FIBER_COL * fl.y * 0.50 * frontGate;
+    final = lerp(final, final * lerp(SOAK_MUL, RAIN_SOAK, uRain), fl.x * 0.60 * frontGate);
+    final += lerp(FIBER_COL, RAIN_FIBER, uRain) * fl.y * 0.50 * frontGate;
     final = lerp(final, final * 0.62, fl.z * 0.68 * frontGate);
 
     return float4(final, 1.0);

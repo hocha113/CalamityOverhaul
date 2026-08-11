@@ -55,12 +55,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
         public override void SendExtraAI(BinaryWriter writer) {
             targetIdentity.Write(writer);
             writer.Write(pathSeed);
+            //SyncProjectile 的 damage 字段是 short：处决伤害上限一千万，
+            //经生成包会截断成垃圾值，而命中在 owner 客户端结算——ExtraAI 带全量还原
+            writer.Write(Projectile.damage);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader) {
             NetworkNPCIdentity.TryRead(reader, out targetIdentity);
             int receivedSeed = reader.ReadInt32();
             pathSeed = receivedSeed > 0 ? receivedSeed : 1;
+            //ReceiveExtraAI 在 case 27 写完截断 damage 之后执行，覆写生效
+            int fullDamage = reader.ReadInt32();
+            if (fullDamage > 0) {
+                Projectile.damage = fullDamage;
+            }
         }
 
         public override void SetDefaults() {

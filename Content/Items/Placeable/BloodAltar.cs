@@ -21,30 +21,21 @@ namespace CalamityOverhaul.Content.Items.Placeable
         }
 
         public override void AddRecipes() {
-            if (CWRID.Item_BloodOrb > 0) {
-                CreateRecipe()
-                .AddIngredient(CWRID.Item_BloodOrb, 5)
-                .AddIngredient(ItemID.Vertebrae, 5)
-                .AddIngredient(ItemID.SoulofNight, 5)
-                .AddIngredient(ItemID.CrimstoneBlock, 50)
-                .AddTile(TileID.DemonAltar)
-                .Register();
-                CreateRecipe()
-                .AddIngredient(CWRID.Item_BloodOrb, 5)
-                .AddIngredient(ItemID.RottenChunk, 5)
-                .AddIngredient(ItemID.SoulofNight, 5)
-                .AddIngredient(ItemID.EbonstoneBlock, 50)
-                .AddTile(TileID.DemonAltar)
-                .Register();
-            }
-            else {
-                CreateRecipe()
-                .AddIngredient(ItemID.Vertebrae, 5)
-                .AddIngredient(ItemID.SoulofNight, 5)
-                .AddIngredient(ItemID.CrimstoneBlock, 50)
-                .AddTile(TileID.DemonAltar)
-                .Register();
-            }
+            //一颗血泪被封进石头里：之后祭坛自己就能把血月按住
+            CreateRecipe()
+            .AddIngredient(ItemID.BloodMoonStarter)
+            .AddIngredient(ItemID.Vertebrae, 5)
+            .AddIngredient(ItemID.SoulofNight, 5)
+            .AddIngredient(ItemID.CrimstoneBlock, 50)
+            .AddTile(TileID.DemonAltar)
+            .Register();
+            CreateRecipe()
+            .AddIngredient(ItemID.BloodMoonStarter)
+            .AddIngredient(ItemID.RottenChunk, 5)
+            .AddIngredient(ItemID.SoulofNight, 5)
+            .AddIngredient(ItemID.EbonstoneBlock, 50)
+            .AddTile(TileID.DemonAltar)
+            .Register();
         }
     }
 }

@@ -8,6 +8,7 @@ using CalamityOverhaul.Content.QuestLogs;
 using CalamityOverhaul.Content.RAMSystems;
 using CalamityOverhaul.Content.Scenarios.Shepel;
 using CalamityOverhaul.Content.UIs.HudStack;
+using CalamityOverhaul.Content.UIs.RadialWheels;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -503,6 +504,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             Vector2 corePos = GetCorePosition();
             Vector2 offset = MousePosition - corePos;
             int hit = HitTest(offset, out bool isCore);
+            //快捷转盘展开时屏蔽扇形HUD交互，避免两层UI抢同一次点击
+            bool wheelBlocking = RadialWheelHub.AnyOpen;
+            if (wheelBlocking) {
+                hit = -1;
+                isCore = false;
+            }
             hoveredSector = hit;
             coreHoverAmt = MathHelper.Lerp(coreHoverAmt, isCore ? 1f : 0f, 0.2f);
 
@@ -533,7 +540,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             SHPCModPanel.Layout modLayout = default;
             bool cyberPanelHit = false;
             bool cyberPanelVisible = false;
-            if (pinnedSector >= 0 && pinnedSector < buttons.Count
+            if (wheelBlocking) {
+                moduleHover = SHPCModuleSelectPanel.HitKind.None;
+            }
+            else if (pinnedSector >= 0 && pinnedSector < buttons.Count
                 && buttons[pinnedSector].UsesFixedPanel && pinnedPanelProgress > 0.4f) {
                 GetFixedPanelAnchor(pinnedSector, out Vector2 panelAnchor, out float panelMidA);
                 if (pinnedSector == CyberDomainSectorIndex) {
@@ -583,15 +593,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             }
 
             //领域热键，手持SHPC且HUD可见
-            //HackTime激活时禁切领域
-            if (!HackTime.Active && CWRKeySystem.Legend_Domain != null && CWRKeySystem.Legend_Domain.JustPressed) {
+            //HackTime激活或快捷转盘展开时禁切领域
+            if (!HackTime.Active && !wheelBlocking
+                && CWRKeySystem.Legend_Domain != null && CWRKeySystem.Legend_Domain.JustPressed) {
                 Cyberspace.Toggle(player);
             }
 
             //鼠标占用
-            bool inHotArea = isCore || hit >= 0 ||
+            bool inHotArea = !wheelBlocking && (isCore || hit >= 0 ||
                 (offset.Length() < SHPCTheme.ButtonOuterR + 8f && expandProgress > 0.4f) ||
-                cyberPanelHit;
+                cyberPanelHit);
             if (inHotArea) {
                 player.mouseInterface = true;
                 UIInputGuard.SuppressWeaponSwitch();

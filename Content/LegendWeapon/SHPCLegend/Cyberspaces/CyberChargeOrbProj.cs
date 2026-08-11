@@ -497,6 +497,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (Projectile.owner != Main.myPlayer) return;
             //爆破弹幕
             int damage = (int)(Projectile.damage * (0.5f + chargeRatio * 2.5f)); //蓄力抬伤
+            //改件半径倍率折算成 ai2 绝对半径，随生成包同步
+            float radiusOverride = 0f;
+            if (ExplosionRadiusMul > 0.01f && MathF.Abs(ExplosionRadiusMul - 1f) > 0.01f) {
+                radiusOverride = CyberDetonationProj.ComputeRadius(chargeRatio, overdriveAmount)
+                    * ExplosionRadiusMul;
+            }
             int projIndex = Projectile.NewProjectile(
                 Projectile.GetSource_FromThis(),
                 Projectile.Center,
@@ -505,14 +511,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 damage, Projectile.knockBack,
                 Projectile.owner,
                 ai0: chargeRatio, //ai0 蓄力比
-                ai1: overdriveAmount //ai1 超驱量
+                ai1: overdriveAmount, //ai1 超驱量
+                ai2: radiusOverride
             );
             if (projIndex >= 0 && projIndex < Main.maxProjectiles) {
                 Main.projectile[projIndex].originalDamage = Projectile.originalDamage;
-                //localAI[1] 半径倍率
-                if (ExplosionRadiusMul > 0.01f && MathF.Abs(ExplosionRadiusMul - 1f) > 0.01f) {
-                    Main.projectile[projIndex].localAI[1] = ExplosionRadiusMul;
-                }
             }
 
             //改件反推

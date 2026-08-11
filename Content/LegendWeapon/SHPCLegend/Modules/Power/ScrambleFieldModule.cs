@@ -27,13 +27,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             _scrambleTimer = 0;
             Vector2 offset = Main.rand.NextVector2CircularEdge(65f, 65f);
             int dmg = Math.Max(orb.Projectile.damage / 5, 1);
-            int idx = Projectile.NewProjectile(orb.Projectile.GetSource_FromThis(),
+            //半径40px，ai2 走生成包同步
+            Projectile.NewProjectile(orb.Projectile.GetSource_FromThis(),
                 orb.Projectile.Center + offset, Vector2.Zero,
                 ModContent.ProjectileType<CyberDetonationProj>(),
-                dmg, 0f, orb.Projectile.owner, ai0: 0.2f);
-            if (idx >= 0 && idx < Main.maxProjectiles) {
-                Main.projectile[idx].localAI[2] = 40f;
-            }
+                dmg, 0f, orb.Projectile.owner, ai0: 0.2f, ai1: 0f, ai2: 40f);
         }
     }
 }

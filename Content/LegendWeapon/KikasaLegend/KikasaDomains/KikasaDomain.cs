@@ -10,10 +10,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         Closed,
         /// <summary>浸润→撕开，旧世界如湿纸破裂，血湖自屏底涨起</summary>
         Opening,
-        /// <summary>稳态、死寂的血湖与血暮天空</summary>
+        /// <summary>稳态、死寂的血湖与血暮天空；形态由 <see cref="KikasaDomainPlayer.IsRainForm"/> 区分</summary>
         Open,
         /// <summary>收域、水位退落，撕口自外向内长回</summary>
-        Closing
+        Closing,
+        /// <summary>鬼雨异化翻转：血湖沸腾变色→窥影→180°倒转→落定，结算帧切形态</summary>
+        Flipping
     }
 
     /// <summary>鬼伞血湖领域。架构与 <see cref="OniDomain"/> 同构：门面+观看选择，权威在 <see cref="KikasaDomainPlayer"/></summary>
@@ -34,6 +36,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         public const int CloseFrames = 46;       //撕口自外向内长回
 
         public const int DrainFrames = 40;       //血湖退落帧数
+
+        //Flipping 时序、沸腾骤变→窥影驻留→倒转→落定；节拍改编自入雨演出
+
+        public const int FlipBoilEnd = 90;       //血湖沸腾变色段
+
+        public const int FlipDwellEnd = 130;     //窥影驻留段（冷镜里的异样一闪）
+
+        public const int FlipRollEnd = 220;      //180°倒转段（含反向蓄势）
+
+        public const int FlipTotalFrames = 252;  //落定收尾
+
+        /// <summary>翻转结算帧：倒转段时间过半（曲线上 θ≈60°），近全白的白闪掩护下切换形态</summary>
+        public const int FlipCommitFrame = 175;
 
         /// <summary>本地玩家域状态，服务器与主菜单返回 null</summary>
         public static KikasaDomainPlayer Local {
@@ -63,6 +78,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         /// <summary>观看域在场平滑系数 0~1，驱动光照/滤镜/天空</summary>
         public static float ViewedPresence => Viewed?.PresenceSmooth ?? 0f;
+
+        /// <summary>观看域的鬼雨异化混合 0~1，驱动全部血系表现的冷化</summary>
+        public static float ViewedRainBlend => Viewed?.RainBlend ?? 0f;
+
+        /// <summary>血系表现色随观看域的鬼雨异化冷化</summary>
+        public static Color CoolTint(Color blood, Color rain)
+            => Color.Lerp(blood, rain, ViewedRainBlend);
 
         /// <summary>逐帧重选主导域，须在推进各玩家状态机之前调用</summary>
         internal static void RefreshViewed() {
@@ -137,9 +159,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                         return false;
                     }
                     return kdp.OpenDomain();
+                case KikasaDomainPhase.Flipping:
+                    //倒转进行中收不了域，世界正翻在半空
+                    busy = true;
+                    return false;
                 default:
                     //Opening/Open 均可收，开到一半收=原路合回
                     return kdp.CloseDomain();
+            }
+        }
+
+        /// <summary>
+        /// 鬼雨异化命令，语义对标鬼切表里翻转：域关着时直接开域（血湖形态），
+        /// Open 稳态开始异化翻转（血湖↔鬼雨双向同一套演出）；其余阶段 busy 不受理
+        /// </summary>
+        internal static bool TryMutate(Player player, out bool busy) {
+            busy = false;
+            KikasaDomainPlayer kdp = player.GetModPlayer<KikasaDomainPlayer>();
+            switch (kdp.Phase) {
+                case KikasaDomainPhase.Closed:
+                case KikasaDomainPhase.Closing:
+                    if (player.GetModPlayer<OniDomainPlayer>().AnyActive) {
+                        busy = true;
+                        return false;
+                    }
+                    return kdp.OpenDomain();
+                case KikasaDomainPhase.Open:
+                    return kdp.FlipDomain(out busy);
+                default:
+                    busy = true;
+                    return false;
             }
         }
     }

@@ -155,7 +155,7 @@ QuickHack: {
 
 	DataPurge: {
 		// DisplayName: Data Purge
-		// Description: Erases the target projectile and every nearby one of the same type.
+		// Description: Erases an incoming projectile and every nearby one of the same type.
 	}
 
 	BallisticOverclock: {
@@ -200,33 +200,373 @@ QuickHack: {
 
 	DataLeech: {
 		// DisplayName: Data Leech
-		// Description: While active, hitting this target restores your RAM.
+		// Description: While active, hitting this target restores your RAM, up to a total cap.
 	}
 
 	SwarmLink: {
 		// DisplayName: Swarm Link
-		// Description: Thirty percent of the damage the target takes is split across its group.
+		// Description: Hitting the target also deals thirty percent to up to five nearby enemies.
 	}
 
 	MachineOverclock: {
 		// DisplayName: Machine Overclock
-		// Description: Holds the machine at full charge for ten seconds, then burns the charge to nothing.
+		// Description: Feeds the machine a fixed charge allowance for ten seconds, then burns it to nothing.
 	}
 
 	GridBlackout: {
 		// DisplayName: Grid Blackout
 		// Description: Uses the signal tower to cut power to every machine in a wide radius.
 	}
+
+	PowerTransmute: {
+		// DisplayName: Power Transmute
+		// Description: Convert your held item's stored charge into RAM, then drain it empty
+	}
+
+	NeuralOverclock: {
+		// DisplayName: Neural Overclock
+		// Description: Strike faster for eight seconds; RAM recovery halts and your health burns
+	}
+
+	WraithForceDrive: {
+		// DisplayName: Wraith Force Drive
+		// Description: Wraith acts cost nothing for ten seconds; then erosion deepens and it sleeps
+	}
+
+	IndexPreread: {
+		// DisplayName: Index Preread
+		// Description: Reads a container's full inventory without opening it, flagging the most valuable entry
+	}
+
+	LockBurn: {
+		// DisplayName: Lock Burnthrough
+		// Description: Opens this locked container without a key, at the cost of burning one item inside
+	}
+
+	DielSkip: {
+		// DisplayName: Diel Skip
+		// Description: Fast-forwards time to the nearest sunrise or sunset
+	}
+
+	StormInject: {
+		// DisplayName: Storm Injection
+		// Description: Summons a thunderstorm; bolts only strike enemies carrying any hack effect
+	}
+
+	GravityInvert: {
+		// DisplayName: Gravity Inversion
+		// Description: Inverts gravity around you; enemies and dropped items fall upward
+	}
+
+	SegmentDelink: {
+		// DisplayName: Segment Delink
+		// Description: Damage to this segment is only logged; 60% settles on the anchor at expiry
+	}
+
+	LimbSeizure: {
+		// DisplayName: Limb Seizure
+		// Description: Turns this limb against its own anchor for eight seconds
+	}
+
+	CommandLinkCut: {
+		// DisplayName: Command Link Cut
+		// Description: Severs its link to its partners; they fight alone for ten seconds
+	}
+
+	MunitionSwap: {
+		// DisplayName: Munition Swap
+		// Description: The turret fires ammo from your inventory, dealing your damage
+	}
+
+	TurretMesh: {
+		// DisplayName: Turret Mesh
+		// Description: Links nearby turrets into one volley at your cursor, forty shots total
+	}
+
+	BeaconForge: {
+		// DisplayName: Beacon Forge
+		// Description: The tower fakes a distress call, luring enemies from a wide area
+	}
+
+	PrivilegeEscalate: {
+		// DisplayName: Privilege Escalation
+		// Description: Protocols cost less, upload faster, ignore range; RAM stops recovering
+	}
+
+	ItemSalvage: {
+		// DisplayName: Salvage
+		// Description: Breaks this drop back into about 60% of its materials
+	}
+
+	DataBrand: {
+		// DisplayName: Data Brand
+		// Description: Copy this gear's modifier, then stamp it onto the next target
+		// HudTag: Brand: {0}
+		// DenyNoPrefix: Nothing on this item to copy
+		// DenyIncompatible: The recorded modifier does not fit this item
+	}
+
+	EntityMasquerade: {
+		// DisplayName: Masquerade
+		// Description: Enemies read this drop as you; it draws their fire for thirty seconds
+	}
+
+	TileConscript: {
+		// DisplayName: Tile Conscription
+		// Description: Tears nearby blocks into eight armor plates orbiting you, launched when time is up
+	}
+
+	VeinResonance: {
+		// DisplayName: Vein Resonance
+		// Description: Reveals matching ore through walls; mining it drops double but calls wardens
+	}
+
+	StressInvert: {
+		// DisplayName: Stress Inversion
+		// Description: Makes this terrain unbreakable for ten seconds; enemies slamming into it take damage
+	}
+
+	PressureSurge: {
+		// DisplayName: Pressure Surge
+		// Description: Pressurizes this liquid; anything soaked in it is launched skyward
+	}
+
+	MirrorSurface: {
+		// DisplayName: Mirror Surface
+		// Description: The surface turns to a mirror; enemy shots crossing it are copied to your side
+	}
+
+	DelayFuse: {
+		// DisplayName: Delay Fuse
+		// Description: This projectile stops expiring and hovers in place for thirty seconds as a mine
+	}
+
+	ProjectileTithe: {
+		// DisplayName: Projectile Tithe
+		// Description: This shot swallows nearby enemy fire, then detonates by how much it ate
+	}
+
+	ProjectileSample: {
+		// DisplayName: Projectile Sample
+		// Description: Samples this shot; for twenty seconds every twelfth shot of yours echoes it
+	}
+
+	CompensationProtocol: {
+		// DisplayName: Compensation Protocol
+		// Description: Advance 10% of the target's life; kill it within eight seconds or pay the debt yourself
+	}
+
+	PayloadRewrite: {
+		// DisplayName: Payload Rewrite
+		// Description: For ten seconds the target's projectiles become yours, dealt at your damage
+	}
+
+	PhaseDesync: {
+		// DisplayName: Phase Desync
+		// Description: Splits the target's body from its hitbox; both sides become harder to hit
+	}
+
+	LiveCellTap: {
+		// DisplayName: Live Cell Tap
+		// Description: Pins the target immobile and immune, converting its life into your RAM
+	}
+
+	FirmwareRollback: {
+		// DisplayName: Firmware Rollback
+		// Description: Rolls the target back to its previous phase; it runs berserk for five seconds after
+	}
+
+	ShellRequisition: {
+		// DisplayName: Shell Requisition
+		// Description: Targets killed while marked rise again and fight for you for fifteen seconds
+	}
+
+	PositionCast: {
+		// DisplayName: Position Cast
+		// Description: Their position is visible to your whole team through walls for fifteen seconds
+	}
+
+	GaugePollution: {
+		// DisplayName: Gauge Pollution
+		// Description: Corrupt their interface; health and ammo readouts scramble for eight seconds
+	}
+
+	LinkTraceback: {
+		// DisplayName: Link Traceback
+		// Description: Sever every upload aimed at you, scorch the senders and mark them
+	}
+
+	ForceUninstall: {
+		// DisplayName: Force Uninstall
+		// Description: Rip one hostile protocol off yourself; can't rip again for half a minute
+	}
+
+	MemoryScorch: {
+		// DisplayName: Memory Scorch
+		// Description: Burns three of their RAM on landing; their recovery stays at zero for ten seconds
+		// SealTag: RAM SEALED
+	}
+
+	BuffSiphon: {
+		// DisplayName: Buff Siphon
+		// Description: Steals their longest-lasting buff for yourself, up to thirty seconds
+	}
+
+	CombatSiphon: {
+		// DisplayName: Combat Siphon
+		// Description: For ten seconds the damage you deal them converts into your RAM
+	}
+
+	BallisticTurncoat: {
+		// DisplayName: Ballistic Turncoat
+		// Description: Their next three shots turn around mid-flight and hunt their owner; holding fire keeps them safe
+		// HijackCounter: HIJACKED {0}/{1}
+		// DeathReason: "{0}'s shot was turned by {1} and came home."
+	}
+
+	MeltdownBrand: {
+		// DisplayName: Meltdown Brand
+		// Description: Plants a visible four-second fuse that detonates for eighty damage; uninstalling it defuses the charge
+		// FuseTag: MELTDOWN {0}s
+		// DeathReason: "{0} was blown apart by the meltdown brand {1} planted."
+	}
+
+	MapBlackout: {
+		// DisplayName: Map Blackout
+		// Description: Buries their map under static for fifteen seconds, pins and team markers included
+	}
+
+	ChannelScramble: {
+		// DisplayName: Channel Scramble
+		// Description: Garbles their chat for twenty seconds and wipes teammate nameplates off their screen
+	}
+
+	StealthStrip: {
+		// DisplayName: Stealth Strip
+		// Description: Strips all their invisibility and stealth for ten seconds; their outline glows for everyone
+	}
+
+	CooldownInject: {
+		// DisplayName: Cooldown Inject
+		// Description: Slows their item use by 35% for six seconds; a ticking potion cooldown gains five more
+	}
+
+	CyberwareOffline: {
+		// DisplayName: Cyberware Offline
+		// Description: Knocks all their cyberware offline for eight seconds
+	}
 }
 
 HackTargetType: {
 	ItemTargetType.DisplayName: Cible : objet au sol
 	NpcTargetType.DisplayName: Cible : PNJ
+	// PlayerTargetType.DisplayName: Player Target
 	ProjectileTargetType.DisplayName: Cible : projectile
+	// SelfRigTargetType.DisplayName: Self Rig
 	SignalTowerTargetType.DisplayName: Cible : tour de signalisation
 	TileTargetType.DisplayName: Cible : bloc
 	TurretTargetType.DisplayName: Cible : tourelle
 	WaterTargetType.DisplayName: Cible : liquide
+
+	BossPartTargetType: {
+		// DisplayName: Boss Part
+		// AnchorLabel: Anchor
+		// RoleLabel: Role
+		// PartHpLabel: Part HP
+		// AnchorHpLabel: Anchor HP
+		// InvulnLabel: Shield
+		// LinkLabel: Link
+		// RoleSegmentFormat: Segment {0}/{1}
+		// RoleLimb: Limb Unit
+		// SharedLifePool: Shared With Anchor
+		// InvulnYes: Immune
+		// InvulnNo: Breakable
+		// LinkOnline: Online
+		// LinkSevered: Severed
+		// LinkDelinked: Delinked
+		// AnchorHpFormat: Anchor {0}%
+		// DelinkTallyFormat: Logged {0}
+	}
+
+	ContainerTargetType: {
+		// DisplayName: Container
+		// ScanType: Container Type
+		// ScanLock: Lock
+		// ScanSlots: Slots Used
+		// ScanValue: Est. Value
+		// ScanTopRare: Top Rarity
+		// ScanTopValue: Most Valuable
+		// ScanCoord: Coordinates
+		// ScanRest: ...and {0} more entries
+		// ScanEmpty: Empty
+		// LockStateLocked: LOCKED
+		// LockStateOpen: Unlocked
+		// StateIndexed: Index Cached
+	}
+
+	WorldTargetType: {
+		// DisplayName: World State
+		// ScanWorld: World
+		// ScanClock: Time
+		// ScanWeather: Weather
+		// ScanMoon: Moon Phase
+		// ScanBiome: Biome
+		// ScanEvent: Event
+		// ScanBoss: Active Bosses
+		// DayLabel: Day
+		// NightLabel: Night
+		// WeatherClear: Clear
+		// WeatherCloudy: Cloudy
+		// WeatherRain: Rain
+		// WeatherStorm: Storm
+		// EventNone: Stable
+		// EventBloodMoon: Blood Moon
+		// EventEclipse: Solar Eclipse
+		// EventPumpkinMoon: Pumpkin Moon
+		// EventFrostMoon: Frost Moon
+		// EventSlimeRain: Slime Rain
+		// EventInvasion: Invasion
+		// BiomeForest: Forest
+		// BiomeDesert: Desert
+		// BiomeSnow: Tundra
+		// BiomeJungle: Jungle
+		// BiomeCorruption: Corruption
+		// BiomeCrimson: Crimson
+		// BiomeHallow: Hallow
+		// BiomeDungeon: Dungeon
+		// BiomeMushroom: Glowing Mushroom
+		// BiomeOcean: Ocean
+		// BiomeUnderworld: Underworld
+	}
+}
+
+HackCircuit: {
+	CircuitNodeSpawner: {
+		// TurretName: Sentry Turret
+		// TowerName: Signal Tower
+		// StatusLabel: Status
+		// IffLabel: IFF
+		// RateLabel: Rate
+		// MunitionLabel: Munition
+		// RangeLabel: Range
+		// CoverageLabel: Coverage
+		// LinkedLabel: Linked Nodes
+		// SourceLabel: Broadcast
+		// StatusOnline: ONLINE
+		// StatusDisabled: OFFLINE
+		// StatusHijacked: HIJACKED
+		// StatusMunition: FED
+		// StatusMeshed: MESHED
+		// StatusIdle: IDLE
+		// StatusVirus: VIRUS BROADCAST
+		// StatusBlackout: BLACKOUT
+		// StatusBeacon: FORGED BEACON
+		// StatusUplink: UPLINK
+		// IffHostile: Hostile
+		// IffFriendly: Friendly
+		// MunitionKinetic: Kinetic bolt
+		// BeaconCount: Lured {0}
+	}
 }
 
 TileNameFallback: {

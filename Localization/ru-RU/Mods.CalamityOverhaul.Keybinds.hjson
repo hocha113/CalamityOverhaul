@@ -2,21 +2,22 @@ QuestLog_Key.DisplayName: Журнал заданий: Открыть/Закры
 QuestManager_Key.DisplayName: Поручения: Открыть/Закрыть панель управления
 Legend_UIControl.DisplayName: Легендарное оружие: Переключить HUD
 Legend_Domain.DisplayName: Развертывание домена
+RadialWheel_Key.DisplayName: Радиальные меню: удерживайте, чтобы открыть
 Legend_Teleport.DisplayName: Телепортация домена
 Legend_Restart.DisplayName: Самоперезагрузка
 HackTime_Toggle.DisplayName: Время взлома
 CyberBanish_Key.DisplayName: Киберпространство: Изгнание
 CyberFreeze_Key.DisplayName: Киберпространство: Заморозка
 CyberwareSkill_Key.DisplayName: Киберимплант: активировать текущий навык
-CyberwareRadial_Key.DisplayName: Киберимплант: открыть радиальное меню
 VoidTimeShift_Key.DisplayName: Вторжение времени Пустоты
 Halibut_Clone.DisplayName: Палтус: Вторжение прошлого воплощения
 Halibut_Superposition.DisplayName: Палтус: Суперпозиция
-Halibut_SkillWheel.DisplayName: Палтус: удерживайте, чтобы открыть колесо навыков
 // Onikiri_FlashStep.DisplayName: Onikiri: Kamui Flash Step
 // Onikiri_Execute.DisplayName: Onikiri: Execute
 // Onikiri_SakuraFlight.DisplayName: Onikiri: Sakura Flight
 // Onikiri_DomainFlip.DisplayName: Onikiri: Flip Domain (Omote/Ura)
+// Kikasa_Sink.DisplayName: Kikasa: Sink Item into the Lake
+// Kikasa_DomainMutate.DisplayName: Kikasa: Mutate Domain (Ghost Rain)
 WeponSkill_Q.DisplayName: Оружие: Левая кнопка навыка
 WeponSkill_R.DisplayName: Оружие: Правая кнопка навыка
 Accessory_Skills.DisplayName: Навык аксессуара

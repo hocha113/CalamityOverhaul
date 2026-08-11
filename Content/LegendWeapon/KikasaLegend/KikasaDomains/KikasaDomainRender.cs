@@ -1,4 +1,6 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -19,6 +21,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
             if (Main.gameMenu) {
                 KikasaDomainDeco.Clear();
+                KikasaLakeFX.Clear();
+                KikasaDrownFX.Clear();
             }
         }
 
@@ -102,6 +106,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             if (Main.gameMenu) {
                 return;
             }
+            //幽灵与鬼手先画、涟漪水花后画，水线的泡沫盖在沉浮物之上
+            KikasaLakeFX.Draw(spriteBatch);
+            KikasaDrownFX.Draw(spriteBatch);
             KikasaDomainDeco.Draw(spriteBatch);
         }
 
@@ -145,6 +152,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             grade.Parameters["uFoamBoost"]?.SetValue(kdp.FoamBoost);
             grade.Parameters["uSeamGlow"]?.SetValue(seamGlow);
             grade.Parameters["uAspect"]?.SetValue(screenSize.X / screenSize.Y);
+            grade.Parameters["uRain"]?.SetValue(kdp.RainBlend);
         }
 
         private static void ApplyUnify(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice,
@@ -225,10 +233,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone);
 
-            //血暮轻罩 + 沉暗，血湖细节让位
+            //血暮轻罩 + 沉暗，血湖细节让位；异化时罩色随之转冷
 
-            spriteBatch.Draw(white, full, new Color(96, 18, 20) * (0.22f * coverage));
-            spriteBatch.Draw(white, full, new Color(14, 4, 8) * (0.16f * coverage));
+            float rain = kdp.RainBlend;
+            spriteBatch.Draw(white, full,
+                Color.Lerp(new Color(96, 18, 20), new Color(28, 42, 48), rain) * (0.22f * coverage));
+            spriteBatch.Draw(white, full,
+                Color.Lerp(new Color(14, 4, 8), new Color(8, 12, 16), rain) * (0.16f * coverage));
 
             spriteBatch.End();
         }

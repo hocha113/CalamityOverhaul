@@ -53,8 +53,18 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         internal static void Detonate(NPC npc, int stacks) {
             int damage = Math.Max(90, (int)(npc.lifeMax * 0.015f * stacks));
             npc.SimpleStrikeNPC(damage, 0, false, 0f, null, false, 0f, true);
-            if (Main.netMode != NetmodeID.Server) EmitErase(npc);
+            if (Main.netMode != NetmodeID.Server) {
+                EmitErase(npc.Center, npc.width * 0.7f + 12f, npc.height * 0.7f + 12f);
+                return;
+            }
+            //刻意不靠 OnReplicatedRemove：注销触发和"五秒到期什么都没发生"
+            //在网络上都只是一条 EffectRemove，挂在那里会让没打满层的那次也放注销演出
+            HackTimeNetSync.BroadcastPointCue(HackPointCue.Exorcise, 0, npc.Center);
         }
+
+        /// <summary>远端的注销演出，落点由权威端直接带过来</summary>
+        internal static void PlayEraseCue(Vector2 center)
+            => EmitErase(center, 36f, 36f);
 
         private static void EmitMark(NPC npc) {
             //环身一圈冷白点，像被谁在名册上圈了个记号
@@ -76,17 +86,19 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 ?.Configure(false, 26);
         }
 
-        private static void EmitErase(NPC npc) {
+        private static void EmitErase(Vector2 center, float halfWidth, float halfHeight) {
             for (int i = 0; i < 24; i++) {
-                Vector2 offset = Main.rand.NextVector2CircularEdge(
-                    npc.width * 0.7f + 12f, npc.height * 0.7f + 12f);
+                Vector2 offset = Main.rand.NextVector2CircularEdge(halfWidth, halfHeight);
                 //向心收束，读作被抹掉而不是被炸开
-                PRTLoader.NewParticle<PRT_Spark>(npc.Center + offset,
+                PRTLoader.NewParticle<PRT_Spark>(center + offset,
                     -offset * 0.12f, Pale, 1.1f)?.Configure(false, 20);
             }
-            PRTLoader.NewParticle<PRT_Spark>(npc.Center, Vector2.Zero,
+            PRTLoader.NewParticle<PRT_Spark>(center, Vector2.Zero,
                 Color.White, 2.2f)?.Configure(false, 12);
-            CombatText.NewText(npc.Hitbox, Pale, HackTime.Erased.Value, true);
+            var box = new Rectangle((int)(center.X - halfWidth),
+                (int)(center.Y - halfHeight), (int)(halfWidth * 2f),
+                (int)(halfHeight * 2f));
+            CombatText.NewText(box, Pale, HackTime.Erased.Value, true);
         }
     }
 }

@@ -178,8 +178,8 @@ BloodAltar: {
 	DisplayName: Blutaltar
 	Tooltip:
 		'''
-		Rechtsklick auf den Altar, um mit Blutperlen einen Blutmond zu beschwören
-		Sammelt automatisch Blutperlen aus der Welt und lagert sie in der nächsten Truhe
+		Rechtsklick auf den Altar, um mit einer Blutigen Träne einen Blutmond zu beschwören
+		Sammelt automatisch Blutige Tränen und Blutperlen aus der Welt und lagert sie in der nächsten Truhe
 		"Lass die Welt vom Karmesin beobachtet werden"
 		'''
 }
@@ -1283,8 +1283,7 @@ Unsunghero: {
 	DisplayName: Unbesungener Held
 	Tooltip:
 		'''
-		Erhöht maximale Tarnung um 10
-		Tarnungsregeneration senkt Tarnungsschaden nicht mehr
+		Hinterlässt beim Gehen eine Spur aus schwarz-weißen Schachbrettfeldern
 		„Was, wenn du nicht zurückkommst?“
 		„Dann komme ich nicht zurück.“
 		'''
@@ -1665,6 +1664,216 @@ MachineOverclockChip: {
 
 GridBlackoutChip: {
 	// DisplayName: Grid Blackout Chip
+	// Tooltip: ""
+}
+
+PowerTransmuteChip: {
+	// DisplayName: Power Transmute Chip
+	// Tooltip: ""
+}
+
+NeuralOverclockChip: {
+	// DisplayName: Neural Overclock Chip
+	// Tooltip: ""
+}
+
+WraithForceDriveChip: {
+	// DisplayName: Wraith Force Drive Chip
+	// Tooltip: ""
+}
+
+IndexPrereadChip: {
+	// DisplayName: Index Preread Chip
+	// Tooltip: ""
+}
+
+LockBurnChip: {
+	// DisplayName: Lock Burnthrough Chip
+	// Tooltip: ""
+}
+
+DielSkipChip: {
+	// DisplayName: Diel Skip Chip
+	// Tooltip: ""
+}
+
+StormInjectChip: {
+	// DisplayName: Storm Injection Chip
+	// Tooltip: ""
+}
+
+GravityInvertChip: {
+	// DisplayName: Gravity Inversion Chip
+	// Tooltip: ""
+}
+
+SegmentDelinkChip: {
+	// DisplayName: Segment Delink Chip
+	// Tooltip: ""
+}
+
+LimbSeizureChip: {
+	// DisplayName: Limb Seizure Chip
+	// Tooltip: ""
+}
+
+CommandLinkCutChip: {
+	// DisplayName: Command Link Cut Chip
+	// Tooltip: ""
+}
+
+MunitionSwapChip: {
+	// DisplayName: Munition Swap Chip
+	// Tooltip: ""
+}
+
+TurretMeshChip: {
+	// DisplayName: Turret Mesh Chip
+	// Tooltip: ""
+}
+
+BeaconForgeChip: {
+	// DisplayName: Beacon Forge Chip
+	// Tooltip: ""
+}
+
+PrivilegeEscalateChip: {
+	// DisplayName: Privilege Escalation Chip
+	// Tooltip: ""
+}
+
+ItemSalvageChip: {
+	// DisplayName: Salvage Chip
+	// Tooltip: ""
+}
+
+DataBrandChip: {
+	// DisplayName: Data Brand Chip
+	// Tooltip: ""
+}
+
+EntityMasqueradeChip: {
+	// DisplayName: Masquerade Chip
+	// Tooltip: ""
+}
+
+TileConscriptChip: {
+	// DisplayName: Tile Conscription Chip
+	// Tooltip: ""
+}
+
+VeinResonanceChip: {
+	// DisplayName: Vein Resonance Chip
+	// Tooltip: ""
+}
+
+StressInvertChip: {
+	// DisplayName: Stress Inversion Chip
+	// Tooltip: ""
+}
+
+PressureSurgeChip: {
+	// DisplayName: Pressure Surge Chip
+	// Tooltip: ""
+}
+
+MirrorSurfaceChip: {
+	// DisplayName: Mirror Surface Chip
+	// Tooltip: ""
+}
+
+DelayFuseChip: {
+	// DisplayName: Delay Fuse Chip
+	// Tooltip: ""
+}
+
+ProjectileTitheChip: {
+	// DisplayName: Projectile Tithe Chip
+	// Tooltip: ""
+}
+
+ProjectileSampleChip: {
+	// DisplayName: Projectile Sample Chip
+	// Tooltip: ""
+}
+
+CompensationProtocolChip: {
+	// DisplayName: Compensation Protocol Chip
+	// Tooltip: ""
+}
+
+PayloadRewriteChip: {
+	// DisplayName: Payload Rewrite Chip
+	// Tooltip: ""
+}
+
+PhaseDesyncChip: {
+	// DisplayName: Phase Desync Chip
+	// Tooltip: ""
+}
+
+LiveCellTapChip: {
+	// DisplayName: Live Cell Tap Chip
+	// Tooltip: ""
+}
+
+FirmwareRollbackChip: {
+	// DisplayName: Firmware Rollback Chip
+	// Tooltip: ""
+}
+
+ShellRequisitionChip: {
+	// DisplayName: Shell Requisition Chip
+	// Tooltip: ""
+}
+
+MemoryScorchChip: {
+	// DisplayName: Memory Scorch Chip
+	// Tooltip: ""
+}
+
+BuffSiphonChip: {
+	// DisplayName: Buff Siphon Chip
+	// Tooltip: ""
+}
+
+CombatSiphonChip: {
+	// DisplayName: Combat Siphon Chip
+	// Tooltip: ""
+}
+
+BallisticTurncoatChip: {
+	// DisplayName: Ballistic Turncoat Chip
+	// Tooltip: ""
+}
+
+MeltdownBrandChip: {
+	// DisplayName: Meltdown Brand Chip
+	// Tooltip: ""
+}
+
+MapBlackoutChip: {
+	// DisplayName: Map Blackout Chip
+	// Tooltip: ""
+}
+
+ChannelScrambleChip: {
+	// DisplayName: Channel Scramble Chip
+	// Tooltip: ""
+}
+
+StealthStripChip: {
+	// DisplayName: Stealth Strip Chip
+	// Tooltip: ""
+}
+
+CooldownInjectChip: {
+	// DisplayName: Cooldown Inject Chip
+	// Tooltip: ""
+}
+
+CyberwareOfflineChip: {
+	// DisplayName: Cyberware Offline Chip
 	// Tooltip: ""
 }
 
@@ -2941,4 +3150,9 @@ OniMeiRubbingYoen: {
 	// Origin: Oven heat still on the edge. Fire out; burn not gone
 	Power: Glutfeld: Eine Hinrichtung erzeugt oder versetzt dein einziges Glutfeld; es hält 180 Ticks an und kann demselben Körper alle 45 Ticks 16 % des Basisklingenschadens zufügen
 	Burden: Vigor-Limit -5 %; Spurtkosten ×1,10, solange das Feld besteht
+}
+
+ShenyoStyleDemoItem: {
+	// DisplayName: Ghost Rain Narrative Demo
+	// Tooltip: Use to play the umbrella spirit dialogue demo (test item)
 }

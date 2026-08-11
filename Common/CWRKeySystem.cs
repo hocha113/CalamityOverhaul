@@ -17,21 +17,23 @@ namespace CalamityOverhaul.Common
         public static ModKeybind QuestManager_Key { get; private set; }
         public static ModKeybind Legend_UIControl { get; private set; }
         public static ModKeybind Legend_Domain { get; private set; }
+        /// <summary>全部快捷转盘共用的开关键，分发见 RadialWheelHub</summary>
+        public static ModKeybind RadialWheel_Key { get; private set; }
         public static ModKeybind Legend_Restart { get; private set; }
         public static ModKeybind Legend_Teleport { get; private set; }
         public static ModKeybind HackTime_Toggle { get; private set; }
         public static ModKeybind CyberBanish_Key { get; private set; }
         public static ModKeybind CyberFreeze_Key { get; private set; }
         public static ModKeybind CyberwareSkill_Key { get; private set; }
-        public static ModKeybind CyberwareRadial_Key { get; private set; }
         public static ModKeybind VoidTimeShift_Key { get; private set; }
         public static ModKeybind Halibut_Clone { get; private set; }
         public static ModKeybind Halibut_Superposition { get; private set; }
-        public static ModKeybind Halibut_SkillWheel { get; private set; }
         public static ModKeybind Onikiri_FlashStep { get; private set; }
         public static ModKeybind Onikiri_Execute { get; private set; }
         public static ModKeybind Onikiri_SakuraFlight { get; private set; }
         public static ModKeybind Onikiri_DomainFlip { get; private set; }
+        public static ModKeybind Kikasa_Sink { get; private set; }
+        public static ModKeybind Kikasa_DomainMutate { get; private set; }
         public static ModKeybind WeponSkill_Q { get; private set; }
         public static ModKeybind WeponSkill_R { get; private set; }
         public static ModKeybind Accessory_Skills { get; private set; }
@@ -47,22 +49,25 @@ namespace CalamityOverhaul.Common
             QuestManager_Key = KeybindLoader.RegisterKeybind(mod, nameof(QuestManager_Key), "K");
             Legend_UIControl = KeybindLoader.RegisterKeybind(mod, nameof(Legend_UIControl), "M");
             Legend_Domain = KeybindLoader.RegisterKeybind(mod, nameof(Legend_Domain), "Q");
+            //比目鱼技能盘、SHPC 领域盘、义体技能盘共用此键，够格的一起开
+            RadialWheel_Key = KeybindLoader.RegisterKeybind(mod, nameof(RadialWheel_Key), "B");
             Legend_Teleport = KeybindLoader.RegisterKeybind(mod, nameof(Legend_Teleport), "G");
             Legend_Restart = KeybindLoader.RegisterKeybind(mod, nameof(Legend_Restart), "H");
             HackTime_Toggle = KeybindLoader.RegisterKeybind(mod, nameof(HackTime_Toggle), "N");
             CyberBanish_Key = KeybindLoader.RegisterKeybind(mod, nameof(CyberBanish_Key), "Y");
             CyberFreeze_Key = KeybindLoader.RegisterKeybind(mod, nameof(CyberFreeze_Key), "U");
             CyberwareSkill_Key = KeybindLoader.RegisterKeybind(mod, nameof(CyberwareSkill_Key), "V");
-            CyberwareRadial_Key = KeybindLoader.RegisterKeybind(mod, nameof(CyberwareRadial_Key), "B");
             VoidTimeShift_Key = KeybindLoader.RegisterKeybind(mod, nameof(VoidTimeShift_Key), "K");
             Halibut_Clone = KeybindLoader.RegisterKeybind(mod, nameof(Halibut_Clone), "J");
             Halibut_Superposition = KeybindLoader.RegisterKeybind(mod, nameof(Halibut_Superposition), "F");
-            Halibut_SkillWheel = KeybindLoader.RegisterKeybind(mod, nameof(Halibut_SkillWheel), "Tab");
             Onikiri_FlashStep = KeybindLoader.RegisterKeybind(mod, nameof(Onikiri_FlashStep), Keys.None);
             Onikiri_Execute = KeybindLoader.RegisterKeybind(mod, nameof(Onikiri_Execute), "F");
             Onikiri_SakuraFlight = KeybindLoader.RegisterKeybind(mod, nameof(Onikiri_SakuraFlight), "C");
             //鬼域翻转，默认 Mouse3
             Onikiri_DomainFlip = KeybindLoader.RegisterKeybind(mod, nameof(Onikiri_DomainFlip), "Mouse3");
+            Kikasa_Sink = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_Sink), "I");
+            //血湖领域鬼雨异化，默认 Mouse3；被清空绑定时输入层回退原生中键
+            Kikasa_DomainMutate = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_DomainMutate), "Mouse3");
             WeponSkill_Q = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_Q), "Q");
             WeponSkill_R = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_R), "R");
             Accessory_Skills = KeybindLoader.RegisterKeybind(mod, nameof(Accessory_Skills), "V");
@@ -92,13 +97,15 @@ namespace CalamityOverhaul.Common
             Onikiri_Execute = null;
             Onikiri_SakuraFlight = null;
             Onikiri_DomainFlip = null;
+            Kikasa_Sink = null;
+            Kikasa_DomainMutate = null;
             Legend_Domain = null;
+            RadialWheel_Key = null;
             Halibut_Clone = null;
             Legend_Restart = null;
             Halibut_Superposition = null;
             Legend_Teleport = null;
             Legend_UIControl = null;
-            Halibut_SkillWheel = null;
             WeponSkill_Q = null;
             WeponSkill_R = null;
             Accessory_Skills = null;
@@ -106,7 +113,6 @@ namespace CalamityOverhaul.Common
             CyberBanish_Key = null;
             CyberFreeze_Key = null;
             CyberwareSkill_Key = null;
-            CyberwareRadial_Key = null;
             VoidTimeShift_Key = null;
         }
     }

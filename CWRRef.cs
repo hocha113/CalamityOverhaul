@@ -51,8 +51,6 @@ namespace CalamityOverhaul
         private static MethodInfo calNPC_SetNewBossJustDowned_Method;
         //ArsenalTierGatedRecipe
         private static MethodInfo arsenalRecipe_ConstructCondition_Method;
-        //BalancingConstants.UniversalStealthStrikeDamageFactor，Hook 读 double
-        private static FieldInfo balancing_StealthFactor_Field;
         //DamageClasses
         private static DamageClass trueMeleeDamageClass;
         private static DamageClass trueMeleeNoSpeedDamageClass;
@@ -92,10 +90,7 @@ namespace CalamityOverhaul
         private static MemberInfo calPlayer_adrenalinePauseTimer_M;
         private static MemberInfo calPlayer_externalDefenseDamageImmunity_M;
         private static MemberInfo calPlayer_rogueStealth_M;
-        private static MemberInfo calPlayer_rogueStealthMax_M;
         private static MemberInfo calPlayer_stealthUIAlpha_M;
-        private static MemberInfo calPlayer_wearingRogueArmor_M;
-        private static MemberInfo calPlayer_stealthDamage_M;
         private static MethodInfo calPlayer_StealthStrikeAvailable_Method;
 
         //CalamityGlobalItem
@@ -361,9 +356,6 @@ namespace CalamityOverhaul
             Type arsenalRecipe = GetModType(mod, "CalamityMod.CustomRecipes.ArsenalTierGatedRecipe");
             arsenalRecipe_ConstructCondition_Method = GetMethod(arsenalRecipe, "ConstructRecipeCondition", PublicStaticFlags);
 
-            Type balancingConstants = GetModType(mod, "CalamityMod.Balancing.BalancingConstants");
-            balancing_StealthFactor_Field = GetField(balancingConstants, "UniversalStealthStrikeDamageFactor", PublicStaticFlags);
-
             Type bossRush = GetModType(mod, "CalamityMod.Events.BossRushEvent");
             bossRush_Active_M = GetFieldOrProperty(bossRush, "BossRushActive", PublicStaticFlags);
 
@@ -434,10 +426,7 @@ namespace CalamityOverhaul
             calPlayer_adrenalinePauseTimer_M = FindMember(calPlayerType, "adrenalinePauseTimer");
             calPlayer_externalDefenseDamageImmunity_M = FindMember(calPlayerType, "externalDefenseDamageImmunity");
             calPlayer_rogueStealth_M = FindMember(calPlayerType, "rogueStealth");
-            calPlayer_rogueStealthMax_M = FindMember(calPlayerType, "rogueStealthMax");
             calPlayer_stealthUIAlpha_M = FindMember(calPlayerType, "stealthUIAlpha");
-            calPlayer_wearingRogueArmor_M = FindMember(calPlayerType, "wearingRogueArmor");
-            calPlayer_stealthDamage_M = FindMember(calPlayerType, "stealthDamage");
             calPlayer_StealthStrikeAvailable_Method = GetMethod(calPlayerType, "StealthStrikeAvailable", PublicInstanceFlags);
 
             calItem_ChargeRatio_M = FindMember(calItemType, "ChargeRatio");
@@ -512,7 +501,6 @@ namespace CalamityOverhaul
             calWorld_revenge_Field = null;
             calWorld_DraedonMechToSummon_Field = null;
             arsenalRecipe_ConstructCondition_Method = null;
-            balancing_StealthFactor_Field = null;
             bossRush_Active_M = null;
             acidRain_Ongoing_M = null;
             acidRain_KillPoints_Field = null;
@@ -549,10 +537,7 @@ namespace CalamityOverhaul
             calPlayer_adrenalinePauseTimer_M = null;
             calPlayer_externalDefenseDamageImmunity_M = null;
             calPlayer_rogueStealth_M = null;
-            calPlayer_rogueStealthMax_M = null;
             calPlayer_stealthUIAlpha_M = null;
-            calPlayer_wearingRogueArmor_M = null;
-            calPlayer_stealthDamage_M = null;
             calPlayer_StealthStrikeAvailable_Method = null;
 
             calItem_ChargeRatio_M = null;
@@ -1180,14 +1165,6 @@ namespace CalamityOverhaul
             return value;
         }
 
-        public static void AddPlayerRogueStealthMax(this Player player, float add) {
-            ModPlayer cp = GetCalPlayer(player);
-            if (cp == null || calPlayer_rogueStealthMax_M == null) {
-                return;
-            }
-            SetMember(calPlayer_rogueStealthMax_M, cp, (float)GetMember(calPlayer_rogueStealthMax_M, cp) + add);
-        }
-
         public static bool GetPlayerZoneSulphur(this Player player) {
             ModPlayer cp = GetCalPlayer(player);
             if (cp == null || calPlayer_ZoneSulphur_M == null) {
@@ -1425,11 +1402,6 @@ namespace CalamityOverhaul
                 if (method != null) {
                     VaultHook.Add(method, On_KillPlayer_Hook);
                 }
-
-                MethodInfo provideStealthMethod = GetMethod(playerType, "ProvideStealthStatBonuses", BindingFlags.Instance | BindingFlags.NonPublic);
-                if (provideStealthMethod != null) {
-                    VaultHook.Add(provideStealthMethod, OnProvideStealthStatBonusesHook);
-                }
             } catch (Exception ex) {
                 LogReflectionException(nameof(LoadComders), ex);
             }
@@ -1480,38 +1452,6 @@ namespace CalamityOverhaul
             }
 
             orig.Invoke(key, color);
-        }
-
-        private static void OnProvideStealthStatBonusesHook(On_ProvideStealthStatBonuses_Dalegate orig, ModPlayer calamityPlayer) {
-            Player player = calamityPlayer?.Player;
-            if (player != null && player.CWR().IsUnsunghero
-                && calPlayer_wearingRogueArmor_M != null && calPlayer_rogueStealthMax_M != null
-                && calPlayer_rogueStealth_M != null && calPlayer_stealthDamage_M != null
-                && balancing_StealthFactor_Field != null) {
-                if (!(bool)GetMember(calPlayer_wearingRogueArmor_M, calamityPlayer)
-                    || (float)GetMember(calPlayer_rogueStealthMax_M, calamityPlayer) <= 0) {
-                    return;
-                }
-
-                Item item = player.GetItem();
-                int realUseTime = Math.Max(item.useTime, item.useAnimation);
-                double useTimeFactor = 0.75 + 0.75 * Math.Log(realUseTime + 2D, 4D);
-                //Unsunghero 固定 4s 潜行 generation
-                double stealthGenFactor = Math.Max(Math.Pow(4f, 2D / 3D), 1.5);
-
-                float rogueStealth = (float)GetMember(calPlayer_rogueStealth_M, calamityPlayer);
-                //double 可变静态，Convert 兼容类型
-                double stealthStrikeFactor = Convert.ToDouble(balancing_StealthFactor_Field.GetValue(null));
-                double stealthAddedDamage = rogueStealth * stealthStrikeFactor * useTimeFactor * stealthGenFactor;
-                SetMember(calPlayer_stealthDamage_M, calamityPlayer
-                    , (float)GetMember(calPlayer_stealthDamage_M, calamityPlayer) + (float)stealthAddedDamage);
-
-                player.aggro -= (int)(rogueStealth * 300f);
-
-                return;
-            }
-
-            orig.Invoke(calamityPlayer);
         }
         #endregion
     }

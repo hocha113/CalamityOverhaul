@@ -228,7 +228,7 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
                         MaxInstances = 2,
                     }, bowl);
                     if (InParticleRange(bowl)) {
-                        BurstOrbShells(OfferingSource(tp));
+                        BurstOfferingShells(OfferingSource(tp));
                         PRTLoader.NewParticle<PRT_HeartcarverPulseRing>(bowl, Vector2.Zero
                             , BloodAltarFx.ColWet, 0.5f)?.Configure(0.24f, 1.15f, 30);
                     }
@@ -297,7 +297,7 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
             }
         }
 
-        /// <summary>血珠不足时的一记闷响，与阶段无关</summary>
+        /// <summary>血泪不足时的一记闷响，与阶段无关</summary>
         public static void PlayRejectBeat(Vector2 bowl) {
             SoundEngine.PlaySound(SoundID.NPCDeath13 with { Pitch = -0.70f, Volume = 0.50f }, bowl);
             SoundEngine.PlaySound(CWRSound.HitTheFlesh_2 with { Pitch = -0.35f, Volume = 0.45f }, bowl);
@@ -350,7 +350,7 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
                         DripFromRim(bowl);
                     }
                     if (tp.AliveTime % 9 == 0) {
-                        ShedFromIntakeOrbs(bowl);
+                        ShedFromIntakeDrops(bowl);
                     }
                     if (tp.AliveTime % 26 == 0) {
                         PRTLoader.NewParticle<PRT_CrimsonSmoke>(bowl + Main.rand.NextVector2Circular(16f, 5f)
@@ -438,11 +438,11 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
                 ?.Configure(Main.rand.Next(40, 62), 0.34f, 0.99f, stuckLifetime: Main.rand.Next(56, 80));
         }
 
-        /// <summary>被拖过来的血珠一路掉渣，牵引线才不像一根静止的贴图</summary>
-        private void ShedFromIntakeOrbs(Vector2 bowl) {
+        /// <summary>被拖过来的祭品一路掉渣，牵引线才不像一根静止的贴图</summary>
+        private void ShedFromIntakeDrops(Vector2 bowl) {
             int shed = 0;
             foreach (Item orb in Main.ActiveItems) {
-                if (orb.type != CWRID.Item_BloodOrb) {
+                if (!BloodAltarTP.IsIntakeItem(orb.type)) {
                     continue;
                 }
                 float dist = Vector2.Distance(orb.Center, bowl);
@@ -459,11 +459,11 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
             }
         }
 
-        private void BurstOrbShells(Vector2 from) {
+        private void BurstOfferingShells(Vector2 from) {
             for (int i = 0; i < 9; i++) {
                 Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.6f, 4.6f);
                 vel.Y -= Main.rand.NextFloat(0.4f, 1.6f);
-                PRTLoader.NewParticle<PRT_BloodOrbShell>(from + Main.rand.NextVector2Circular(6f, 6f), vel
+                PRTLoader.NewParticle<PRT_BloodShell>(from + Main.rand.NextVector2Circular(6f, 6f), vel
                     , BloodAltarFx.ColWet, Main.rand.NextFloat(0.7f, 1.2f))
                     ?.Configure(Main.rand.Next(26, 42));
             }
@@ -525,7 +525,7 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
             }
         }
 
-        /// <summary>血月期间被拖过来的血珠：牵一条粘丝，沿途掉渣</summary>
+        /// <summary>血月期间被拖过来的祭品：牵一条粘丝，沿途掉渣</summary>
         private void DrawIntakeThreads(SpriteBatch spriteBatch, BloodAltarTP tp, Vector2 bowl) {
             if (tp.Phase != BloodAltarPhase.Active) {
                 return;
@@ -533,7 +533,7 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
 
             int drawn = 0;
             foreach (Item orb in Main.ActiveItems) {
-                if (orb.type != CWRID.Item_BloodOrb) {
+                if (!BloodAltarTP.IsIntakeItem(orb.type)) {
                     continue;
                 }
                 float dist = Vector2.Distance(orb.Center, bowl);
@@ -550,7 +550,7 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
         }
 
         /// <summary>
-        /// 悬浮供奉物：血珠贴图当本体（可读性靠它），外面裹一层湿血壳，
+        /// 悬浮供奉物：血泪贴图当本体（可读性靠它），外面裹一层湿血壳，
         /// 下缘挂丝滴落，缩放走心跳式的不对称脉冲而不是正弦上下浮动
         /// </summary>
         private void DrawOffering(SpriteBatch spriteBatch, Vector2 center, float presence) {
@@ -569,13 +569,10 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
                     , new Vector2(0.26f * sx, 0.30f * sy), SpriteEffects.None, 0f);
             }
 
-            int type = CWRID.Item_BloodOrb;
-            if (type > 0) {
-                Main.instance.LoadItem(type);
-                Texture2D tex = TextureAssets.Item[type].Value;
-                spriteBatch.Draw(tex, pos, null, Color.White * presence, 0f, tex.Size() * 0.5f
-                    , new Vector2(sx, sy), SpriteEffects.None, 0f);
-            }
+            Main.instance.LoadItem(BloodAltarTP.OfferingType);
+            Texture2D tex = TextureAssets.Item[BloodAltarTP.OfferingType].Value;
+            spriteBatch.Draw(tex, pos, null, Color.White * presence, 0f, tex.Size() * 0.5f
+                , new Vector2(sx, sy), SpriteEffects.None, 0f);
 
             //挂在下缘的一根丝，血是会往下淌的
             if (shell != null && presence > 0.9f) {

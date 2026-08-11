@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
             if (target.TryGetGlobalNPC(out SHPCNPCEffects eff)) {
-                eff.ApplyDataErosion(240, Math.Max(3, damageDone / 10));
+                eff.ApplyDataErosion(target, 240, Math.Max(3, damageDone / 10));
             }
         }
     }

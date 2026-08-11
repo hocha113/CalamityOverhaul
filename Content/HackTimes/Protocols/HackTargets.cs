@@ -31,13 +31,23 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             return projectile.active;
         }
 
-        public static bool TryItem(IHackTarget target, out Item item) {
+        public static bool TryItem(IHackTarget target, out Item item)
+            => TryItem(target, out item, out _);
+
+        /// <summary>
+        /// 掉落物；<paramref name="itemIndex"/> 是 <c>Main.item</c> 的槽位。<br/>
+        /// <c>SyncItem</c> 要的就是这个槽位——<c>Item.whoAmI</c> 只在
+        /// <c>Item.UpdateItem</c> 里被盖过，新生成的掉落物身上是旧值
+        /// </summary>
+        public static bool TryItem(IHackTarget target, out Item item, out int itemIndex) {
             item = null;
+            itemIndex = -1;
             if (target is not ItemScannable s || s.ItemIndex < 0
                 || s.ItemIndex >= Main.maxItems) {
                 return false;
             }
             item = Main.item[s.ItemIndex];
+            itemIndex = s.ItemIndex;
             return item.active && !item.IsAir;
         }
 

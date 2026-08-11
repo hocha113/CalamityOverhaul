@@ -49,13 +49,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 if (!proj.active || proj.owner != orb.Projectile.owner) continue;
                 if (proj.type != ModContent.ProjectileType<SHPCCoralAnchorProj>()) continue;
                 if (Vector2.DistanceSquared(proj.Center, orb.Projectile.Center) > 900f * 900f) continue;
-                int idx = Projectile.NewProjectile(orb.Projectile.GetSource_FromThis(),
+                //半径160px，ai2 走生成包同步
+                Projectile.NewProjectile(orb.Projectile.GetSource_FromThis(),
                     proj.Center, Vector2.Zero,
                     ModContent.ProjectileType<CyberDetonationProj>(),
-                    Math.Max(orb.Projectile.damage / 3, 1), 0f, orb.Projectile.owner, ai0: 0.55f);
-                if (idx >= 0 && idx < Main.maxProjectiles) {
-                    Main.projectile[idx].localAI[2] = 160f;
-                }
+                    Math.Max(orb.Projectile.damage / 3, 1), 0f, orb.Projectile.owner,
+                    ai0: 0.55f, ai1: 0f, ai2: 160f);
                 detonated++;
             }
             if (detonated > 0) {

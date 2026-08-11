@@ -138,8 +138,8 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
         }
     }
 
-    /// <summary>血珠碎壳：半透明膜片被撑破后翻滚下坠，边缘先干涸发暗</summary>
-    internal class PRT_BloodOrbShell : BasePRT
+    /// <summary>祭品碎壳：半透明膜片被撑破后翻滚下坠，边缘先干涸发暗</summary>
+    internal class PRT_BloodShell : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "HitJagged01";
         public override bool CanPool => true;
@@ -149,7 +149,7 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
         private float spin;
         private float flatten;
 
-        public PRT_BloodOrbShell Configure(int lifetime) {
+        public PRT_BloodShell Configure(int lifetime) {
             Lifetime = lifetime;
             initialColor = Color;
             return this;

@@ -7,11 +7,12 @@ namespace CalamityOverhaul.Content.HackTimes.Chips
     /// <summary>装甲解析芯片。躯体轮廓被一道横扫线切开，甲片向两侧崩开</summary>
     internal class ArmorParseChip : BaseHackProtocolChip<ArmorParse>
     {
+        //纹样一律收在 ±0.80 内：切角框在 0.92，再往外就和框线并成一条
         protected override string DiePath =>
             "M -0.34 -0.66 Q -0.52 0 -0.34 0.66 M 0.34 -0.66 Q 0.52 0 0.34 0.66 "
             + "M -0.34 -0.66 L 0.34 -0.66 M -0.34 0.66 L 0.34 0.66 "
-            + "M -0.88 -0.06 L 0.88 -0.06 "
-            + "M -0.56 -0.34 L -0.80 -0.52 M 0.56 -0.34 L 0.80 -0.52";
+            + "M -0.80 -0.06 L 0.80 -0.06 "
+            + "M -0.56 -0.34 L -0.76 -0.50 M 0.56 -0.34 L 0.76 -0.50";
     }
 
     /// <summary>强制注销芯片。名册上的一个记号被划掉，四角散着注销点</summary>
@@ -20,7 +21,7 @@ namespace CalamityOverhaul.Content.HackTimes.Chips
         protected override string DiePath =>
             "M -0.50 -0.62 L -0.50 0.62 L 0.50 0.62 L 0.50 -0.62 Z "
             + "M -0.30 -0.30 L 0.30 -0.30 M -0.30 0 L 0.30 0 M -0.30 0.30 L 0.10 0.30 "
-            + "M -0.72 -0.80 L 0.74 0.82 "
+            + "M -0.72 -0.78 L 0.72 0.78 "
             + "M -0.80 0.62 M 0.80 -0.62";
     }
 

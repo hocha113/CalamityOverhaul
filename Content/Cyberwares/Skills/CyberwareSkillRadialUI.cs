@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI;
 using CalamityOverhaul.Content.QuestLogs;
 using CalamityOverhaul.Content.TimeFreezes;
+using CalamityOverhaul.Content.UIs.RadialWheels;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -27,6 +28,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         public static LocalizedText HintKindToggle { get; private set; }
         public static LocalizedText HintKindInstant { get; private set; }
         public static LocalizedText HintNotReady { get; private set; }
+        public static LocalizedText WheelHint { get; private set; }
 
         public override void SetStaticDefaults() {
             //本地化集中于此
@@ -37,6 +39,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             HintKindToggle = this.GetLocalization(nameof(HintKindToggle), () => "开关型 · 按触发键切换");
             HintKindInstant = this.GetLocalization(nameof(HintKindInstant), () => "瞬发型 · 按触发键释放");
             HintNotReady = this.GetLocalization(nameof(HintNotReady), () => "条件不满足");
+            WheelHint = this.GetLocalization(nameof(WheelHint)
+                , () => "[{0}] Hold \u00b7 release to confirm \u00b7 LMB select \u00b7 RMB cancel");
         }
 
         //存活+有主动技能+OpenProgress>0 时显示
@@ -77,16 +81,15 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 return;
             }
 
-            //每帧重算锚点，对齐 Draw 坐标系
-            Vector2 center = new(
-                Main.screenWidth * 0.5f,
-                Main.screenHeight * CyberwareSkillRadialController.ScreenAnchorYRatio);
-            ctrl.SetScreenAnchor(center);
+            //中心由 Hub 排布，命中与绘制共用
+            Vector2 center = ctrl.ScreenAnchor;
 
             float time = ctrl.Time;
 
-            //子弹时间全屏滤镜，暗底衬托雷达
-            DrawBulletTimeOverlay(sb, px, a);
+            //子弹时间全屏滤镜；多盘并存时只由归属者画一次，否则两层滤镜会叠暗
+            if (RadialWheelHub.OwnsBackdrop(ctrl)) {
+                DrawBulletTimeOverlay(sb, px, a);
+            }
 
             //雷达底盘圆盘
             DrawRadialBackdrop(sb, px, center, a, time);
@@ -135,6 +138,23 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
 
             //外框
             DrawOuterRing(sb, px, center, count, a, time);
+
+            //按键提示只由最底那个盘画，否则会糊在下方盘上
+            if (RadialWheelHub.OwnsHint(ctrl)) {
+                DrawWheelHint(sb, center, a);
+            }
+        }
+
+        /// <summary>转盘底部按键提示</summary>
+        private static void DrawWheelHint(SpriteBatch sb, Vector2 center, float globalAlpha) {
+            string keyText = CWRKeySystem.GetKeybindText(CWRKeySystem.RadialWheel_Key,
+                CWRKeySystem.Notbound.Value);
+            string text = string.Format(WheelHint.Value, keyText);
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            const float scale = 0.62f;
+            Vector2 size = font.MeasureString(text) * scale;
+            Vector2 pos = center + new Vector2(-size.X * 0.5f, SHPCTheme.ButtonOuterR + 30f);
+            Utils.DrawBorderString(sb, text, pos, SHPCTheme.TextDim * (0.9f * globalAlpha), scale);
         }
 
         /// <summary>
@@ -145,13 +165,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 return;
             }
 
-            int w = Main.screenWidth;
-            int h = Main.screenHeight;
+            //全屏铺底同样按 UI 空间算，否则 UIScale<1 时会露边
+            int w = (int)MathF.Ceiling(RadialWheelHub.UIScreenW);
+            int h = (int)MathF.Ceiling(RadialWheelHub.UIScreenH);
             CyberwareSkillRadialController ctrl = CyberwareSkillRadialController.LocalInstance;
             //freeze 时用 ctrl.Time
             float time = ctrl != null ? ctrl.Time : 0f;
-            Vector2 anchor = ctrl != null ? ctrl.ScreenAnchor
-                : new Vector2(w * 0.5f, h * CyberwareSkillRadialController.ScreenAnchorYRatio);
+            Vector2 anchor = ctrl?.ScreenAnchor ?? RadialWheelHub.ResolveAnchor();
 
             Effect effect = EffectLoader.CyberwareBulletTime?.Value;
             if (effect == null) {
@@ -346,7 +366,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             float radialEdge = SHPCTheme.ButtonOuterR + 6f;
 
             //空间多的一侧
-            float spaceRight = Main.screenWidth - (center.X + radialEdge + clearance) - estPanelW;
+            float spaceRight = RadialWheelHub.UIScreenW - (center.X + radialEdge + clearance) - estPanelW;
             float spaceLeft = (center.X - radialEdge - clearance) - estPanelW;
             bool placeLeft = spaceLeft > spaceRight && spaceLeft > 0f;
 
@@ -359,8 +379,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
 
             //反推 cursor 命中内部默认偏移
             Vector2 anchor = new(panelX - 18f - slide, panelY - 14f);
-            anchor.X = MathHelper.Clamp(anchor.X, 4f, Main.screenWidth - 4f);
-            anchor.Y = MathHelper.Clamp(anchor.Y, 4f, Main.screenHeight - 4f);
+            anchor.X = MathHelper.Clamp(anchor.X, 4f, RadialWheelHub.UIScreenW - 4f);
+            anchor.Y = MathHelper.Clamp(anchor.Y, 4f, RadialWheelHub.UIScreenH - 4f);
 
             //已选以 Resolved 为准
             string effectiveId = ctrl.ResolvedCurrentSkill?.Identifier ?? ctrl.CurrentSkillId;

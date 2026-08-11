@@ -51,6 +51,14 @@ namespace CalamityOverhaul.Content.NPCs.Victors
         /// <summary>门缘外的辉光余量 px</summary>
         private const float GlowMarginPx = 64f;
 
+        //---- 推出 ----
+        /// <summary>StableEnd 前这些帧是蓄势：微粒倒吸回门心，给推出攒一个预备动作</summary>
+        private const int InhaleFrames = 14;
+        /// <summary>推出初速；横向为主，配一记不大的抬腿，落点由重力决定</summary>
+        private static readonly Vector2 EjectSpeed = new(3.8f, -3.2f);
+        /// <summary>剪影显形帧数，压缩在他离门这一小段内</summary>
+        private const int EmergeRevealFrames = 20;
+
         private float Facing => Projectile.ai[0] >= 0f ? 1f : -1f;
         /// <summary>主端写 whoAmI，负值未生成</summary>
         public int BoundVictorWhoAmI {
@@ -125,9 +133,14 @@ namespace CalamityOverhaul.Content.NPCs.Victors
                 SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with { Volume = 0.45f, Pitch = 0.10f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Item84 with { Volume = 0.28f, Pitch = -0.20f }, Projectile.Center);
             }
+            else if (age == StableEnd - InhaleFrames) {
+                //蓄势：门心倒吸，音高向上爬给推出攒预期
+                SoundEngine.PlaySound(CWRSound.FaultTransition with { Volume = 0.34f, Pitch = -0.30f }, Projectile.Center);
+            }
             else if (age == StableEnd) {
-                //浮现增辉
+                //推出：增辉 + 一记闷出膛
                 SoundEngine.PlaySound(CWRSound.Hacker with { Volume = 0.45f, Pitch = -0.05f }, Projectile.Center);
+                SoundEngine.PlaySound(CWRSound.FaultOccurred with { Volume = 0.55f, Pitch = 0.05f }, Projectile.Center);
             }
             else if (age == HoldEnd) {
                 //收口
@@ -161,7 +174,8 @@ namespace CalamityOverhaul.Content.NPCs.Victors
             NPC v = Main.npc[index];
             v.alpha = 255;
             v.direction = v.spriteDirection = Facing >= 0f ? 1 : -1;
-            v.velocity = Vector2.Zero;
+            //门把他推出来：初速随生成包同步，落点由各端自行按重力积分
+            v.velocity = new Vector2(EjectSpeed.X * Facing, EjectSpeed.Y);
             v.Bottom = new Vector2(Projectile.Center.X, groundY);
             //NewNPC 默认 homeless=false + homeTile=-1，会把家钉死在落点；
             //置 true 交给原版分房流程搬进玩家房屋
@@ -180,7 +194,10 @@ namespace CalamityOverhaul.Content.NPCs.Victors
             Projectile.netUpdate = true;
         }
 
-        /// <summary>浮现期锚定位姿；停驻结束(HoldEnd)后交还原版 AI</summary>
+        /// <summary>
+        /// 推出帧起逐帧认领绑定 NPC：交出身体控制权（<see cref="Victor.BeginEntry"/> 自带一次性护栏），
+        /// 门这边只继续驱动 alpha 把剪影显形演完。位移不再锚定，改由重力与碰撞决定落点
+        /// </summary>
         private void UpdateBoundVictor(int age) {
             int who = BoundVictorWhoAmI;
             if (who < 0 || who >= Main.maxNPCs) {
@@ -190,34 +207,31 @@ namespace CalamityOverhaul.Content.NPCs.Victors
             if (!v.active || v.type != ModContent.NPCType<Victor>()) {
                 return;
             }
-
-            if (age < StableEnd || age > HoldEnd) {
+            if (age < StableEnd) {
                 return;
             }
 
-            //StableEnd→EmergeEnd alpha 255→0，剪影表现见 Victor.PreDraw
-            float emergeT = MathHelper.Clamp((age - StableEnd) / (float)(EmergeEnd - StableEnd), 0f, 1f);
-            float emergeEase = 1f - (1f - emergeT) * (1f - emergeT);
-            int targetAlpha = (int)MathHelper.Lerp(255f, 0f, emergeEase);
+            if (v.ModNPC is Victor victor) {
+                victor.BeginEntry(Facing >= 0f ? 1 : -1);
+            }
+
+            //剪影显形压缩到离门这段：他一出门口就该被正常光照上，
+            //拖满整个 Emerge 段会变成一个半透明的人在地上滑
+            int revealAge = age - StableEnd;
+            if (revealAge > EmergeRevealFrames) {
+                return;
+            }
+            float t = MathHelper.Clamp(revealAge / (float)EmergeRevealFrames, 0f, 1f);
+            float ease = 1f - (1f - t) * (1f - t);
+            int targetAlpha = (int)MathHelper.Lerp(255f, 0f, ease);
             //头几帧硬设：客户端 NPC alpha 不随生成包同步，从 0 起 lerp 会闪现一瞬
-            if (age - StableEnd <= 8) {
+            if (revealAge <= 6) {
                 v.alpha = targetAlpha;
             }
             else {
-                v.alpha = (int)MathHelper.Lerp(v.alpha, targetAlpha, 0.35f);
+                v.alpha = (int)MathHelper.Lerp(v.alpha, targetAlpha, 0.4f);
             }
-
-            //两步踏出：两段 smoothstep 接续，替代匀速平移
-            float stride = MathHelper.SmoothStep(0f, 1f, MathHelper.Clamp(emergeT / 0.52f, 0f, 1f)) * 0.55f
-                + MathHelper.SmoothStep(0f, 1f, MathHelper.Clamp((emergeT - 0.48f) / 0.52f, 0f, 1f)) * 0.45f;
-            float walkOff = 24f * stride * Facing;
-
-            float halfH = BaseHalfHeight * Scale;
-            float groundY = Projectile.Center.Y + halfH;
-            v.Bottom = new Vector2(Projectile.Center.X + walkOff, groundY);
-            v.velocity = Vector2.Zero;
-            v.direction = v.spriteDirection = Facing >= 0f ? 1 : -1;
-            if (emergeT >= 1f && v.alpha <= 4) {
+            if (t >= 1f && v.alpha <= 4) {
                 v.alpha = 0;
             }
         }
@@ -316,7 +330,21 @@ namespace CalamityOverhaul.Content.NPCs.Victors
                         Main.rand.NextFloat(0.4f, 0.9f)).Configure(Main.rand.Next(12, 22));
                 }
             }
-            //——浮现爆点（克制）——
+            //——蓄势：推出前微粒倒吸回门心，越近越急——
+            if (age >= StableEnd - InhaleFrames && age < StableEnd) {
+                float charge = (age - (StableEnd - InhaleFrames)) / (float)InhaleFrames;
+                int n = 1 + (int)(charge * 3f);
+                for (int i = 0; i < n; i++) {
+                    float ang = Main.rand.NextFloat(MathHelper.TwoPi);
+                    Vector2 rim = new(MathF.Cos(ang) * halfW, MathF.Sin(ang) * halfH);
+                    Vector2 spawn = Projectile.Center + rim * Main.rand.NextFloat(1.05f, 1.45f);
+                    Vector2 vel = -rim.SafeNormalize(Vector2.UnitX) * MathHelper.Lerp(2.5f, 7f, charge);
+                    PRTLoader.NewParticle<PRT_BanishGlitch>(spawn, vel, Color.White,
+                        Main.rand.NextFloat(0.4f, 0.95f)).Configure(Main.rand.Next(10, 20));
+                }
+            }
+
+            //——推出：环状爆点 + 朝 facing 一侧的定向喷出，读作"他是被推出去的"——
             if (age == StableEnd) {
                 for (int i = 0; i < 14; i++) {
                     float ang = MathHelper.TwoPi * i / 14f + Main.rand.NextFloat(-0.12f, 0.12f);
@@ -324,7 +352,30 @@ namespace CalamityOverhaul.Content.NPCs.Victors
                     PRTLoader.NewParticle<PRT_BanishGlitch>(Projectile.Center, vel, Color.White,
                         Main.rand.NextFloat(0.7f, 1.4f)).Configure(Main.rand.Next(18, 34));
                 }
+                for (int i = 0; i < 16; i++) {
+                    //朝向侧 ±60° 扇面，速度比环状爆点更快
+                    float baseAng = Facing >= 0f ? 0f : MathHelper.Pi;
+                    float ang = baseAng + Main.rand.NextFloat(-1.05f, 1.05f);
+                    Vector2 vel = ang.ToRotationVector2() * Main.rand.NextFloat(5f, 11f);
+                    PRTLoader.NewParticle<PRT_BanishGlitch>(
+                        Projectile.Center + new Vector2(Facing * halfW * 0.35f, Main.rand.NextFloat(-halfH * 0.4f, halfH * 0.4f)),
+                        vel, Color.White, Main.rand.NextFloat(0.6f, 1.3f)).Configure(Main.rand.Next(16, 30));
+                }
+                ShakeLocalNear(5f, 1100f);
             }
+        }
+
+        /// <summary>震动只写本机玩家，并按距离衰减——远处队友不该跟着晃</summary>
+        private void ShakeLocalNear(float strength, float maxDist) {
+            Player lp = Main.LocalPlayer;
+            if (lp?.active != true || lp.dead) {
+                return;
+            }
+            float dist = lp.Distance(Projectile.Center);
+            if (dist >= maxDist) {
+                return;
+            }
+            lp.CWR().GetScreenShake(strength * (1f - dist / maxDist));
         }
 
         /// <summary>照亮周围地形，随供能/闪烁/余晖起伏</summary>

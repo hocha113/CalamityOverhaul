@@ -7,7 +7,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
     /// <summary>
     /// 传奇武器·鬼伞。第一能力模块：血湖领域——持伞按
     /// <see cref="Common.CWRKeySystem.Legend_Domain"/> 开阖，
-    /// 输入与状态机在 <see cref="KikasaDomains.KikasaDomainPlayer"/>
+    /// 输入与状态机在 <see cref="KikasaDomains.KikasaDomainPlayer"/>；
+    /// 领域含鬼雨异化表里形态——按 <see cref="Common.CWRKeySystem.Kikasa_DomainMutate"/>
+    /// （默认中键）血湖沸腾倒转切换血/雨形态。
+    /// 第二能力模块：湖藏——领域中持物按 <see cref="Common.CWRKeySystem.Kikasa_Sink"/>
+    /// 沉物入湖存储，持伞按 <see cref="Common.CWRKeySystem.Legend_UIControl"/> 开湖窗提取；
+    /// 数据与输入在 <see cref="KikasaVaults.KikasaVaultPlayer"/>，
+    /// 沉浮演出在 <see cref="KikasaVaults.KikasaLakeFX"/>
     /// </summary>
     internal class KikasaItem : ModItem
     {

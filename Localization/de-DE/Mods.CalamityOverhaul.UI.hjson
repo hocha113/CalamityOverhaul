@@ -604,9 +604,13 @@ TBUGTalkUI: {
 }
 
 TBUGShopUI: {
+	// PromptText: tbug@rift:~$
 	// TitleText: shop --list
-	// StockHeaderText: STOCK
 	// BalanceText: BALANCE
+	// PriceText: PRICE
+	// TagAffordText: IN STOCK
+	// TagNoFundsText: NO FUNDS
+	// StatusPendingText: awaiting authority...
 	// StatusIdleText: connected · one click buys · no refunds
 	// ResultSuccessText: exit 0 · transaction complete
 	// ResultInvalidText: ERR: bad request
@@ -802,13 +806,82 @@ HackTime: {
 	AccessDeniedTitle: Hack-Time nicht verfügbar
 	AccessDeniedDesc: Verbinde eine intelligente Waffe oder installiere Netrunner-Cyberware, um Hack-Fähigkeiten zu nutzen.
 	// ProtocolsOwned: "[{0}/{1} PROTOCOLS]"
-	// ProtocolLockedTitle: PROTOCOL ENCRYPTED
-	// ProtocolLockedHint: This protocol is not in your daemon library. Use the matching protocol chip to write it in.
+	// NoProtocolTitle: NO PROTOCOL AVAILABLE
+	// NoProtocolHint: No protocol in your daemon library works on this target. Use a protocol chip to write one in.
 	// ChipGrants: Writes protocol: {0}
 	// ChipTarget: Works on: {0}
 	// ChipOneShot: One-time write; unusable afterwards.
 	// ChipAlreadyOwned: Already in your daemon library.
 	// Erased: DELETED
+}
+
+SelfRigScanText: {
+	// RamLabel: RAM
+	// RecoveryLabel: RECOVERY
+	// CyberCapacityLabel: CYBERWARE
+	// ImplantCountLabel: IMPLANTS
+	// HeldChargeLabel: HELD CHARGE
+	// SandeCooldownLabel: SANDE CD
+	// WraithLabel: WRAITH
+	// ErosionLabel: EROSION
+	// ProtocolLabel: PROTOCOLS
+	// NoneText: —
+	// RamLockFormat: RAM {0}%
+	// DormantFormat: DORMANT {0}s
+	// TransmuteGainFormat: +{0} RAM
+	// DriveSettleText: Erosion deepens; wraith dormant
+}
+
+PlayerScanText: {
+	// NameLabel: OPERATOR
+	// StanceLabel: STANCE
+	// StancePeaceful: PVP OFF
+	// StanceAlly: SAME TEAM
+	// StanceHostile: HOSTILE
+	// StanceSealed: SEALED
+	// HpLabel: VITALS
+	// DefenseLabel: DEFENSE
+	// RamLabel: RAM BAND
+	// RamBandEmpty: EMPTY
+	// RamBandLow: LOW
+	// RamBandHalf: HALF
+	// RamBandHigh: HIGH
+	// RamBandFull: FULL
+	// CyberLabel: CYBERWARE
+	// CyberFirewallFormat: "{0} · FIREWALL"
+	// ProtocolLabel: PROTOCOLS
+	// ThreatLabel: THREAT
+	// ProbingText: PROBING…
+}
+
+PvPHudText: {
+	// BeingHackedBy: BEING HACKED BY {0}
+	// MoreIntrusions: +{0} INTRUSIONS
+	// UploadCanceled: LINK SEVERED
+	// UploadLanded: >> BREACHED <<
+	// PositionExposed: POSITION EXPOSED
+	// GaugeUntrusted: READOUT UNRELIABLE
+	// GaugeSyncTag: SYNC
+	// GaugeLifeTag: HP
+	// GaugeManaTag: MP
+	// TracebackFlip: TRACEBACK ACTIVE
+	// AlertTraced: LINK TRACED BACK
+	// AlertTargetLost: TARGET LOST · RAM REFUNDED
+	// AlertRejectedFormat: REJECTED · CODE {0}
+	// ImplantPanelTitle: IMPLANTS
+	// ImplantUninstalled: UNINSTALLED
+	// ImplantExpired: EXPIRED
+	// SignalLost: SIGNAL LOST
+	// RemainSecondsFormat: "{0}s"
+	// CasterFormat: BY {0}
+	// DistanceFormat: "{0}m"
+}
+
+PvPDefenderText: {
+	// CommsGarbled: COMMS GARBLED
+	// ActuationLagFormat: ACTUATION +{0}%
+	// Exposed: OUTLINE EXPOSED
+	// CyberOffline: CYBERWARE OFFLINE
 }
 
 DecryptionStrings: {
@@ -959,6 +1032,38 @@ CyberwareSkillRadialUI: {
 	HintKindToggle: Schalter-Typ · Trigger drücken zum Umschalten
 	HintKindInstant: Sofort-Typ · Trigger drücken für sofortige Aktivierung
 	HintNotReady: Bedingungen derzeit nicht erfüllt
+	// WheelHint: "[{0}] Hold · release to confirm · LMB select · RMB cancel"
+}
+
+CyberwareGuideLead: {
+	// SelectTitle: Cyberware Skill Online
+	// SelectBody: Active cyberware detected. Hold {0} to summon the radial wheel — every eligible wheel appears together, and the cursor belongs to whichever is closest.
+	// SelectPrompt: Fling the cursor toward the cyberware sector, left-click or release to confirm
+	// TriggerTitle: Fire the Skill
+	// TriggerBody: Selecting only loads the skill onto your fingertip — firing takes the trigger key. Charge-type skills are held, then released.
+	// TriggerPrompt: Press {0} to fire the current cyberware skill
+	// SkipBtn: Skip
+	// WheelKeyUnbound: The radial wheel key is unbound, so the wheel cannot open. Bind it under Settings > Controls first, or click Skip.
+	// TriggerKeyUnbound: The trigger key is unbound. Bind it under Settings > Controls first, or click Skip.
+}
+
+SHPCDomainWheelUI: {
+	// Layer1_Desc: Foundation layer — establishes the domain field around you.
+	// Layer2_Desc: Deep dive — a wider field, at a much steeper RAM cost.
+	// Layer3_Desc: Blackwall breach — the whole world becomes the domain.
+	// Layer_HintActivate: "[Click] Deploy"
+	// Layer_HintSwitch: "[Click] Switch layer"
+	// Layer_HintShutdown: "[Click] Shut down domain"
+	// Layer_HintLowRam: "// insufficient RAM"
+	// Layer_HintLocked: "// system crash lockout"
+	// Hack_Title: HACK TIME
+	// Hack_Subtitle: Neural Override
+	// Hack_Desc: Slow the world to a crawl and run protocols on whatever you can see.
+	// Hack_HintEnter: "[Click] Enter hack time"
+	// Hack_HintExit: "[Click] Leave hack time"
+	// Hack_HintDenied: "// no access"
+	// Hack_HintKeyUnbound: "// hack time key unbound — bind it under Settings > Controls"
+	// WheelHint: "[{0}] Hold · release to confirm · LMB select · RMB cancel"
 }
 
 AbandonedPortalStrings: {

@@ -60,14 +60,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             if (orb.Projectile.owner == Main.myPlayer) {
                 float ratio = MathHelper.Clamp(e / MaxEntropy, 0f, 1f);
                 int dmg = Math.Max((int)(orb.Projectile.damage * (0.4f + ratio * 0.6f)), 1);
-                int idx = Projectile.NewProjectile(orb.Projectile.GetSource_FromThis(),
+                //余波半径 120~640px，ai2 走生成包同步
+                Projectile.NewProjectile(orb.Projectile.GetSource_FromThis(),
                     orb.Projectile.Center, Vector2.Zero,
                     ModContent.ProjectileType<CyberDetonationProj>(),
-                    dmg, 0f, orb.Projectile.owner, ai0: 0.4f + ratio * 0.4f);
-                if (idx >= 0 && idx < Main.maxProjectiles) {
-                    //余波半径 120~640px
-                    Main.projectile[idx].localAI[2] = MathHelper.Lerp(120f, 640f, ratio);
-                }
+                    dmg, 0f, orb.Projectile.owner, ai0: 0.4f + ratio * 0.4f,
+                    ai1: 0f, ai2: MathHelper.Lerp(120f, 640f, ratio));
             }
         }
 

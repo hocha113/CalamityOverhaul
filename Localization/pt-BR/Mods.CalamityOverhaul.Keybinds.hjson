@@ -2,21 +2,22 @@ QuestLog_Key.DisplayName: Registro de Missoes: Alternar Interface Principal
 QuestManager_Key.DisplayName: Gerenciador de Missoes: Alternar Painel de Gerenciamento
 Legend_UIControl.DisplayName: Arma Lendaria: Alternar HUD
 Legend_Domain.DisplayName: Expansao de Dominio
+RadialWheel_Key.DisplayName: Rodas rápidas: Segure para abrir
 Legend_Teleport.DisplayName: Teletransporte de Dominio
 Legend_Restart.DisplayName: Auto-Reinicio
 HackTime_Toggle.DisplayName: Tempo de Hackear
 CyberBanish_Key.DisplayName: Ciberespaco: Banir
 CyberFreeze_Key.DisplayName: Ciberespaco: Congelar
 CyberwareSkill_Key.DisplayName: Cibernetico: Acionar habilidade atual
-CyberwareRadial_Key.DisplayName: Cibernetico: Abrir menu radial
 VoidTimeShift_Key.DisplayName: Mudanca Temporal do Vazio
 Halibut_Clone.DisplayName: Linguado: Invasao do Eu do Passado
 Halibut_Superposition.DisplayName: Linguado: Superposicao
-Halibut_SkillWheel.DisplayName: Linguado: Segure para abrir roda de habilidades
 // Onikiri_FlashStep.DisplayName: Onikiri: Kamui Flash Step
 // Onikiri_Execute.DisplayName: Onikiri: Execute
 // Onikiri_SakuraFlight.DisplayName: Onikiri: Sakura Flight
 // Onikiri_DomainFlip.DisplayName: Onikiri: Flip Domain (Omote/Ura)
+// Kikasa_Sink.DisplayName: Kikasa: Sink Item into the Lake
+// Kikasa_DomainMutate.DisplayName: Kikasa: Mutate Domain (Ghost Rain)
 WeponSkill_Q.DisplayName: Arma: Tecla de Habilidade Esquerda
 WeponSkill_R.DisplayName: Arma: Tecla de Habilidade Direita
 Accessory_Skills.DisplayName: Habilidade de Acessorio

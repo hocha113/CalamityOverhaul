@@ -58,6 +58,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 
             CybTutorialLead.ResetForRetry();
             HackTimeTutorialLead.ResetForRetry();
+            WheelTutorialLead.ResetForRetry();
 
             CybCourseGen.RestoreSnapshot();
 

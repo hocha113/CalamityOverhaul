@@ -187,7 +187,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                 bolt.InitializeTarget(entry.Identity,
                     Main.rand.Next(1, int.MaxValue));
             }
-            projectile.netUpdate = Main.netMode == NetmodeID.Server;
+            // 服务器不是弹幕 owner（myPlayer=255），NewProjectile 不会自动下发，
+            // netUpdate 也会被原版 owner 门吞掉——目标身份写完后必须显式 SyncProjectile
+            SyncProjectileFromServer(projectile);
+        }
+
+        /// <summary>
+        /// 服务器代玩家生成的弹幕不会自动同步；权威端补发 MessageID.SyncProjectile
+        /// </summary>
+        private static void SyncProjectileFromServer(Projectile projectile) {
+            if (Main.netMode == NetmodeID.Server && projectile?.active == true) {
+                NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null,
+                    projectile.whoAmI);
+            }
         }
 
         private static void PlayExecutionStart(NPC npc) {

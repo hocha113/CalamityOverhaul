@@ -430,16 +430,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             }
         }
 
-        /// <summary>命中点起爆，CyberDetonationProj，localAI[2] 覆写半径</summary>
+        /// <summary>命中点起爆，CyberDetonationProj，ai2 覆写半径走生成包同步</summary>
         private static void SpawnDetonation(Projectile source, Vector2 center, int dmg, float radius) {
-            int idx = Projectile.NewProjectile(source.GetSource_FromThis(),
+            Projectile.NewProjectile(source.GetSource_FromThis(),
                 center, Vector2.Zero,
                 ModContent.ProjectileType<CyberDetonationProj>(),
                 dmg, 0f, source.owner,
-                ai0: 0f, ai1: 0f);
-            if (idx >= 0 && idx < Main.maxProjectiles) {
-                Main.projectile[idx].localAI[2] = radius;
-            }
+                ai0: 0f, ai1: 0f, ai2: radius);
         }
     }
 

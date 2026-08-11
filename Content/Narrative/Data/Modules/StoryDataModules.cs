@@ -223,6 +223,12 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool Declined;
     }
 
+    /// <summary>义体转盘引导进度；随玩家存档</summary>
+    public sealed class CyberwareGuideData : DataModule
+    {
+        public bool GuideSeen;
+    }
+
     /// <summary>鬼切教程进度；随玩家存档</summary>
     public sealed class OnikiriGuideData : DataModule
     {

@@ -2,16 +2,20 @@ using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.TBUGs.UIs
 {
-    /// <summary>TBUG 对话条，右键开；终端窗口 + 立绘打字机 + 三按钮</summary>
+    /// <summary>
+    /// TBUG 对话控制台。布局刻意不同于维克托的居中通栏：窗口靠屏幕左下角，
+    /// 立绘站在窗外、右肩压住窗左边框（她在倚着终端说话），
+    /// 选项是窗底一排横向命令键而不是右侧竖排菜单
+    /// </summary>
     internal class TBUGTalkUI : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "UI";
@@ -45,27 +49,51 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs.UIs
 
         #endregion
 
-        //暂时复用 Victor 立绘
+        //暂时复用 Victor 立绘（36×50 每帧）
         [VaultLoaden("CalamityOverhaul/Content/NPCs/Victors/Victor")]
         private static Asset<Texture2D> portraitAsset = null;
 
+        //终端序号而非键位名：这些没有实际绑定按键，写 F1 会骗玩家去按
+        private static readonly string[] CommandKeys = ["01", "02", "03"];
+
+        //窗高按台词实测行数伸缩，不写死；这几段是除正文外的固定开销
+        private const int HeaderBlock = 46;
+        private const int CommandBlock = 36;
+        private const int FooterPad = 14;
+        private const int TextGap = 12;
+        private const int MinConsoleHeight = 168;
+        //须容得下 WrapLines 上限 8 行（46 + 8×~27 + 12 + 36 + 14 ≈ 330），钳制不能低于实排高度
+        private const int MaxConsoleHeight = 360;
+
+        private const int MarginLeft = 46;
+        private const int MarginBottom = 34;
+        /// <summary>立绘右肩压进窗口的像素数</summary>
+        private const int PortraitOverlap = 22;
+
         private string currentDialogue = string.Empty;
+        private List<string> wrappedLines = [];
         private float revealed;
         private int totalChars;
 
-        private Rectangle barRect;
+        //换行结果缓存：台词或窗宽没变就不重排
+        private string wrapSourceText;
+        private int wrapSourceWidth = -1;
+        private float promptWidth;
+
+        private Rectangle consoleRect;
         private Rectangle portraitRect;
         private Rectangle textRect;
-        private Rectangle shopBtnRect;
-        private Rectangle chatBtnRect;
-        private Rectangle leaveBtnRect;
-        private Rectangle closeBtnRect;
-        private bool shopHover, chatHover, leaveHover, closeHover;
-        private float shopT, chatT, leaveT;
+        private Rectangle closeRect;
+        private Rectangle chipRect;
+        private readonly Rectangle[] cmdRects = new Rectangle[3];
+        private readonly float[] cmdHover = new float[3];
+        private bool closeHover;
+        private bool chipHover;
 
-        private readonly TBUGPanelRenderer panelRenderer = new();
-
-        protected override void OnOpen() => PickDialogue();
+        protected override void OnOpen() {
+            PickDialogue();
+            Array.Clear(cmdHover);
+        }
 
         protected override void OnClose() => TBUGSession.MaybeEndSession();
 
@@ -80,37 +108,70 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs.UIs
 
         private bool FullyRevealed => revealed >= totalChars;
 
+        private float LineHeight => TBUGRenderer.Measure("A", TBUGTheme.FontBody).Y + 6f;
+
         private void Layout() {
-            //UIHandle 跑在 UIScale 空间，屏尺寸走主题访问器
-            int screenW = (int)TBUGTheme.UIScreenW;
-            int screenH = (int)TBUGTheme.UIScreenH;
-            int barW = (int)MathHelper.Clamp(screenW - 120, 760, 1240);
-            const int barH = 214;
-            int x = (screenW - barW) / 2;
+            float screenW = TBUGTheme.UIScreenW;
+            float screenH = TBUGTheme.UIScreenH;
+
+            int portW = 36 * TBUGTheme.PortraitScale;
+            int portH = 50 * TBUGTheme.PortraitScale;
+
+            //宽度先定，换行只依赖宽度
+            int consoleX = MarginLeft + portW - PortraitOverlap;
+            int consoleW = (int)MathHelper.Clamp(screenW - consoleX - 56f, 520f, 900f);
+
+            //窗高按实测行数长出来，长台词不会被裁；宽度与 textRect 同源（左 30 右 20）
+            promptWidth = TBUGRenderer.Measure(">", TBUGTheme.FontBody).X + 10f;
+            int wrapWidth = consoleW - 50 - (int)promptWidth;
+            if (wrapSourceText != currentDialogue || wrapSourceWidth != wrapWidth) {
+                wrapSourceText = currentDialogue;
+                wrapSourceWidth = wrapWidth;
+                wrappedLines = TBUGRenderer.WrapLines(currentDialogue, TBUGTheme.FontBody, wrapWidth, 8);
+                int total = 0;
+                foreach (string l in wrappedLines) {
+                    total += l.Length;
+                }
+                totalChars = total;
+            }
+
+            float lineH = LineHeight;
+            int textH = (int)MathF.Ceiling(Math.Max(1, wrappedLines.Count) * lineH);
+            int consoleH = Math.Clamp(HeaderBlock + textH + TextGap + CommandBlock + FooterPad,
+                MinConsoleHeight, MaxConsoleHeight);
 
             float ease = VaultUtils.EaseOutCubic(MathHelper.Clamp(OpenProgress.Current, 0f, 1f));
-            int baseY = screenH - barH - 28;
-            int y = baseY + (int)((1f - ease) * (barH + 44));
-            barRect = new Rectangle(x, y, barW, barH);
+            //整体自下方滑入
+            int slide = (int)((1f - ease) * (consoleH + 60));
+            int consoleBottom = (int)screenH - MarginBottom + slide;
+            consoleRect = new Rectangle(consoleX, consoleBottom - consoleH, consoleW, consoleH);
 
-            const int pad = 18;
-            int portH = barH - pad * 2;
-            int portW = (int)(portH * 0.74f);
-            portraitRect = new Rectangle(barRect.X + pad, barRect.Y + pad, portW, portH);
+            //立绘脚底与窗底齐平，头顶越过窗顶
+            portraitRect = new Rectangle(MarginLeft, consoleBottom - portH, portW, portH);
 
-            const int choiceW = 330;
-            int choiceX = barRect.Right - pad - choiceW;
-            const int rowH = 58;
-            int blockH = rowH * 3;
-            int rowY = barRect.Y + (barH - blockH) / 2;
-            shopBtnRect = new Rectangle(choiceX, rowY, choiceW, rowH);
-            chatBtnRect = new Rectangle(choiceX, rowY + rowH, choiceW, rowH);
-            leaveBtnRect = new Rectangle(choiceX, rowY + rowH * 2, choiceW, rowH);
+            //底部命令栏；内容左内边距 30，给压边立绘的右缘让出空隙
+            int cmdY = consoleRect.Bottom - CommandBlock - FooterPad;
+            string[] keys = CommandKeys;
+            string[] labels = [ShopButtonText.Value, ChatButtonText.Value, LeaveButtonText.Value];
+            int x = consoleRect.X + 30;
+            for (int i = 0; i < 3; i++) {
+                int w = TBUGRenderer.MeasureCommandButton(keys[i], labels[i]);
+                cmdRects[i] = new Rectangle(x, cmdY, w, CommandBlock);
+                x += w + 12;
+            }
 
-            int textX = portraitRect.Right + 28;
-            textRect = new Rectangle(textX, barRect.Y + pad, choiceX - 18 - textX, portH);
+            //正文区：标题栏之下、命令栏之上
+            int textTop = consoleRect.Y + HeaderBlock;
+            textRect = new Rectangle(consoleRect.X + 30, textTop,
+                consoleRect.Width - 50, cmdY - TextGap - textTop);
 
-            closeBtnRect = TBUGPanelRenderer.GetCloseButtonRect(barRect);
+            closeRect = TBUGRenderer.GetCloseRect(consoleRect);
+
+            //价格系数徽标，悬停弹幸福度报告
+            string chip = PriceFactorText.Format(TBUGMood.PriceAdjustment.ToString("0.00"));
+            Vector2 chipSize = TBUGRenderer.Measure(chip, TBUGTheme.FontLabel);
+            chipRect = new Rectangle((int)(closeRect.X - 16f - chipSize.X), consoleRect.Y + 13,
+                (int)chipSize.X + 6, (int)chipSize.Y + 4);
         }
 
         public override void Update() {
@@ -118,25 +179,32 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs.UIs
                 return;
             }
             Layout();
-            panelRenderer.Update();
             if (!IsOpen) {
                 return;
             }
 
+            //绑定的 TBUG 没了（被杀/消失）就收窗，别让玩家对着空气聊天
+            if (!TBUGSession.IsBoundNPCAlive()) {
+                Close();
+                return;
+            }
+
             if (!FullyRevealed) {
-                revealed += 0.9f;
+                revealed += 1.1f;
             }
 
-            if (barRect.Contains(MousePoint)) {
+            if (consoleRect.Contains(MousePoint) || portraitRect.Contains(MousePoint)) {
                 player.mouseInterface = true;
-                if (keyLeftPressState == KeyPressState.Pressed && !FullyRevealed
-                    && !shopBtnRect.Contains(MousePoint) && !chatBtnRect.Contains(MousePoint)
-                    && !leaveBtnRect.Contains(MousePoint) && !closeBtnRect.Contains(MousePoint)) {
-                    revealed = totalChars;
-                }
             }
 
-            closeHover = closeBtnRect.Contains(MousePoint);
+            //点正文区跳过打字机
+            if (keyLeftPressState == KeyPressState.Pressed && textRect.Contains(MousePoint) && !FullyRevealed) {
+                revealed = totalChars;
+                return;
+            }
+
+            chipHover = chipRect.Contains(MousePoint);
+            closeHover = closeRect.Contains(MousePoint);
             if (closeHover) {
                 player.mouseInterface = true;
                 if (keyLeftPressState == KeyPressState.Pressed) {
@@ -145,45 +213,43 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs.UIs
                 }
             }
 
-            UpdateHover(shopBtnRect, ref shopHover, ref shopT);
-            UpdateHover(chatBtnRect, ref chatHover, ref chatT);
-            UpdateHover(leaveBtnRect, ref leaveHover, ref leaveT);
+            for (int i = 0; i < 3; i++) {
+                bool now = cmdRects[i].Contains(MousePoint);
+                if (now && cmdHover[i] < 0.01f) {
+                    SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.4f });
+                }
+                if (now) {
+                    player.mouseInterface = true;
+                }
+                cmdHover[i] = MathHelper.Clamp(cmdHover[i] + (now ? 0.2f : -0.2f), 0f, 1f);
 
-            if (shopHover && keyLeftPressState == KeyPressState.Pressed) {
-                //静默关对话，只留商店 OpenSound；关闭回调会清会话，先存再重绑
-                int who = TBUGSession.BoundWhoAmI;
-                silentClose = true;
-                Close();
-                silentClose = false;
-                TBUGSession.Bind(who);
-                TBUGShopUI.Instance.Open();
-                return;
-            }
-            if (chatHover && keyLeftPressState == KeyPressState.Pressed) {
-                Click();
-                PickDialogue();
-                return;
-            }
-            if (leaveHover && keyLeftPressState == KeyPressState.Pressed) {
-                //CloseSound 播关闭音
-                Close();
-                return;
+                if (now && keyLeftPressState == KeyPressState.Pressed) {
+                    Invoke(i);
+                    return;
+                }
             }
         }
 
-        private void UpdateHover(Rectangle rect, ref bool hover, ref float t) {
-            bool now = rect.Contains(MousePoint);
-            if (now && !hover) {
-                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.4f });
+        private void Invoke(int index) {
+            switch (index) {
+                case 0:
+                    //静默关对话，只留商店 OpenSound；关闭回调会清会话，先存再重绑
+                    int who = TBUGSession.BoundWhoAmI;
+                    silentClose = true;
+                    Close();
+                    silentClose = false;
+                    TBUGSession.Bind(who);
+                    TBUGShopUI.Instance.Open();
+                    break;
+                case 1:
+                    SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.3f });
+                    PickDialogue();
+                    break;
+                default:
+                    Close();
+                    break;
             }
-            hover = now;
-            if (now) {
-                player.mouseInterface = true;
-            }
-            t = MathHelper.Clamp(t + (now ? 0.18f : -0.18f), 0f, 1f);
         }
-
-        private static void Click() => SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.3f });
 
         public override void Draw(SpriteBatch spriteBatch) {
             if (!IsOpen && OpenProgress.Current <= 0.001f) {
@@ -192,138 +258,124 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs.UIs
             Layout();
             float alpha = MathHelper.Clamp(OpenProgress.Current, 0f, 1f);
 
-            TBUGPanelRenderer.DrawShaderBackground(spriteBatch, alpha * 0.97f, barRect);
-            TBUGPanelRenderer.DrawFrameDecor(spriteBatch, alpha, barRect, GlobalTimer);
+            TBUGRenderer.DrawDropShadow(spriteBatch, consoleRect, alpha);
+            TBUGRenderer.DrawGlassPanel(spriteBatch, consoleRect, alpha);
+            TBUGRenderer.DrawScanSweep(spriteBatch, consoleRect, alpha, GlobalTimer);
+            TBUGRenderer.DrawChamferFrame(spriteBatch, consoleRect,
+                TBUGTheme.Blue * (alpha * 0.75f), 1.6f, TBUGTheme.Chamfer, glow: true);
 
-            Texture2D px = VaultAsset.placeholder2.Value;
+            DrawHeader(spriteBatch, alpha);
+            DrawDialogue(spriteBatch, alpha);
 
+            string[] keys = CommandKeys;
+            string[] labels = [ShopButtonText.Value, ChatButtonText.Value, LeaveButtonText.Value];
+            Color[] accents = [TBUGTheme.Blue, TBUGTheme.Blue, TBUGTheme.Danger];
+            for (int i = 0; i < 3; i++) {
+                TBUGRenderer.DrawCommandButton(spriteBatch, cmdRects[i], keys[i], labels[i],
+                    cmdHover[i], alpha, accents[i]);
+            }
+
+            TBUGRenderer.DrawClose(spriteBatch, consoleRect, alpha, closeHover);
+            //立绘最后画，右肩压住窗左边框
             DrawPortrait(spriteBatch, alpha);
-            TBUGUIStyle.DrawVDivider(spriteBatch, portraitRect.Right + 13, barRect.Y + 14, barRect.Bottom - 14, TBUGTheme.Accent * (alpha * 0.5f));
-            DrawTextBlock(spriteBatch, px, alpha);
-            TBUGUIStyle.DrawVDivider(spriteBatch, shopBtnRect.X - 14, barRect.Y + 14, barRect.Bottom - 14, TBUGTheme.Accent * (alpha * 0.4f));
-
-            DrawChoiceRow(spriteBatch, shopBtnRect, ShopButtonText.Value, shopT, alpha, TBUGTheme.Accent);
-            DrawChoiceRow(spriteBatch, chatBtnRect, ChatButtonText.Value, chatT, alpha, TBUGTheme.AccentAmber);
-            DrawChoiceRow(spriteBatch, leaveBtnRect, LeaveButtonText.Value, leaveT, alpha, TBUGTheme.AccentErr);
-
-            panelRenderer.DrawGlitchEffect(spriteBatch, alpha, barRect);
-            panelRenderer.DrawCloseButton(spriteBatch, alpha, barRect, closeHover);
+            DrawMoodTip(spriteBatch, alpha);
         }
 
-        private void DrawPortrait(SpriteBatch sb, float alpha) {
-            TBUGUIStyle.DrawHoloFrame(sb, portraitRect, TBUGTheme.Accent, alpha, GlobalTimer);
-            Texture2D tex = portraitAsset?.Value;
-            if (tex != null) {
-                int frameH = tex.Height / TBUG.FrameCount;
-                Rectangle src = new(0, 0, tex.Width, frameH);
-                float sc = Math.Min((portraitRect.Width - 20f) / src.Width, (portraitRect.Height - 22f) / src.Height);
-                Vector2 anchor = new(portraitRect.Center.X, portraitRect.Bottom - 10);
-                sb.Draw(tex, anchor, src, Color.White * alpha, 0f, new Vector2(src.Width / 2f, src.Height), sc, SpriteEffects.FlipHorizontally, 0f);
+        /// <summary>悬停价格系数徽标时弹幸福度报告，解释这个系数是怎么来的</summary>
+        private void DrawMoodTip(SpriteBatch sb, float alpha) {
+            //关闭淡出期间悬停态是残值，别让介绍框跟着鼠标飘
+            if (!IsOpen || !chipHover) {
+                return;
             }
-        }
-
-        private void DrawTextBlock(SpriteBatch sb, Texture2D px, float alpha) {
-            string name = SpeakerName.Value;
-            float nameScale = 0.82f * TBUGTheme.FontScale;
-            Vector2 nameSize = FontAssets.MouseText.Value.MeasureString(name) * nameScale;
-            float nameY = textRect.Y + 2f;
-            sb.Draw(px, new Rectangle(textRect.X, (int)nameY + 3, 4, (int)nameSize.Y - 4), TBUGTheme.Accent * alpha);
-            Utils.DrawBorderString(sb, name, new Vector2(textRect.X + 12, nameY), TBUGTheme.Accent * alpha, nameScale);
-
-            //名字行右侧：幸福度价格系数徽标
-            double factor = TBUGMood.PriceAdjustment;
-            string factorText = PriceFactorText.Format(factor.ToString("0.00"));
-            float factorScale = 0.5f * TBUGTheme.FontScale;
-            Vector2 factorSize = FontAssets.MouseText.Value.MeasureString(factorText) * factorScale;
-            Color factorColor = factor < 0.995 ? TBUGTheme.Accent
-                : factor > 1.005 ? TBUGTheme.AccentErr : TBUGTheme.TextDim;
-            Utils.DrawBorderString(sb, factorText,
-                new Vector2(textRect.Right - factorSize.X, nameY + (nameSize.Y - factorSize.Y) * 0.5f),
-                factorColor * alpha, factorScale);
-
-            int divY = (int)(nameY + nameSize.Y + 6f);
-            TBUGUIStyle.DrawHDivider(sb, textRect.X, textRect.Right, divY, TBUGTheme.Accent * (alpha * 0.5f));
-
-            //底部心情条：报告最多两行，台词区在其上方截断
-            float moodTop = textRect.Bottom;
             string report = TBUGMood.Report;
-            if (!string.IsNullOrEmpty(report)) {
-                float moodScale = 0.5f * TBUGTheme.FontScale;
-                string[] moodLines = VaultUtils.WrapTextArray(report, FontAssets.MouseText.Value, (int)(textRect.Width / moodScale), 2, out _);
-                float moodLineH = FontAssets.MouseText.Value.MeasureString("A").Y * moodScale + 4f;
-                int moodCount = 0;
-                foreach (string l in moodLines) {
-                    if (!string.IsNullOrEmpty(l)) {
-                        moodCount++;
-                    }
-                }
-                if (moodCount > 0) {
-                    moodTop = textRect.Bottom - moodCount * moodLineH - 6f;
-                    TBUGUIStyle.DrawHDivider(sb, textRect.X, textRect.Right, (int)moodTop, TBUGTheme.Accent * (alpha * 0.25f));
-                    float moodY = moodTop + 5f;
-                    foreach (string line in moodLines) {
-                        if (string.IsNullOrEmpty(line)) {
-                            continue;
-                        }
-                        Utils.DrawBorderString(sb, line, new Vector2(textRect.X, moodY), TBUGTheme.TextDim * (alpha * 0.85f), moodScale);
-                        moodY += moodLineH;
-                    }
-                }
+            if (string.IsNullOrWhiteSpace(report)) {
+                return;
             }
+            double factor = TBUGMood.PriceAdjustment;
+            Color tone = factor < 0.995 ? TBUGTheme.Blue
+                : factor > 1.005 ? TBUGTheme.Danger : TBUGTheme.Ice;
+            TBUGRenderer.DrawCursorPanel(sb, MousePoint.ToVector2(), alpha,
+                SpeakerName.Value, tone,
+                TBUGRenderer.WrapLines(report, TBUGTheme.FontBody, 380f, 8),
+                null, default, 0L, tone,
+                PriceFactorText.Format(factor.ToString("0.00")));
+        }
 
-            if (string.IsNullOrEmpty(currentDialogue)) {
-                totalChars = 0;
+        private void DrawHeader(SpriteBatch sb, float alpha) {
+            float y = consoleRect.Y + 12f;
+            float x = consoleRect.X + 30f;
+
+            TBUGRenderer.DrawGlowText(sb, "▸", new Vector2(x, y),
+                TBUGTheme.Blue * alpha, TBUGTheme.Blue * (alpha * 0.3f), TBUGTheme.FontTitle);
+            x += TBUGRenderer.Measure("▸", TBUGTheme.FontTitle).X + 8f;
+
+            string name = SpeakerName.Value;
+            TBUGRenderer.DrawGlowText(sb, name, new Vector2(x, y),
+                TBUGTheme.Ice * alpha, TBUGTheme.Blue * (alpha * 0.35f), TBUGTheme.FontTitle);
+
+            //右侧价格系数徽标：便宜蓝、正常暗、贵报错红；位置由 chipRect 统一给
+            double factor = TBUGMood.PriceAdjustment;
+            string chip = PriceFactorText.Format(factor.ToString("0.00"));
+            Color chipColor = factor < 0.995 ? TBUGTheme.Blue
+                : factor > 1.005 ? TBUGTheme.Danger : TBUGTheme.TextDim;
+            if (chipHover) {
+                chipColor = TBUGTheme.Ice;
+            }
+            TBUGRenderer.DrawText(sb, chip, new Vector2(chipRect.X, chipRect.Y),
+                chipColor * alpha, TBUGTheme.FontLabel);
+
+            TBUGRenderer.DrawRule(sb, consoleRect.X + 14, consoleRect.Right - 14, consoleRect.Y + 38,
+                TBUGTheme.Line * alpha, TBUGTheme.Blue * (alpha * 0.55f));
+        }
+
+        private void DrawDialogue(SpriteBatch sb, float alpha) {
+            if (wrappedLines.Count == 0) {
                 return;
             }
 
-            float ds = 0.8f * TBUGTheme.FontScale;
-            string[] lines = VaultUtils.WrapTextArray(currentDialogue, FontAssets.MouseText.Value, (int)(textRect.Width / ds), 8, out _);
-            int total = 0;
-            foreach (string l in lines) {
-                if (!string.IsNullOrEmpty(l)) {
-                    total += l.Length;
-                }
-            }
-            totalChars = total;
-
-            float lineH = FontAssets.MouseText.Value.MeasureString("A").Y * ds + 7f;
-            float areaTop = divY + 12f;
-            float y = areaTop;
+            //提示符占一格缩进，正文从其右侧起排；换行结果由 Layout 缓存
+            float lineH = LineHeight;
+            float y = textRect.Y;
+            TBUGRenderer.DrawText(sb, ">", new Vector2(textRect.X, y), TBUGTheme.Blue * alpha, TBUGTheme.FontBody);
 
             int budget = (int)revealed;
             float lastY = y;
-            foreach (string line in lines) {
-                if (string.IsNullOrEmpty(line)) {
-                    continue;
-                }
-                if (budget <= 0) {
-                    break;
-                }
-                //不侵入底部心情条
-                if (y + lineH > moodTop - 3f) {
+            float lastX = textRect.X + promptWidth;
+            foreach (string line in wrappedLines) {
+                //防御：窗高被 Max 钳住的极端情况下不许画进命令栏
+                if (budget <= 0 || y + lineH > textRect.Bottom + 4f) {
                     break;
                 }
                 int take = Math.Min(budget, line.Length);
                 string seg = take >= line.Length ? line : line[..take];
-                Utils.DrawBorderString(sb, seg, new Vector2(textRect.X, y), TBUGTheme.TextBright * alpha, ds);
-                budget -= line.Length;
+                TBUGRenderer.DrawText(sb, seg, new Vector2(textRect.X + promptWidth, y),
+                    TBUGTheme.Text * alpha, TBUGTheme.FontBody);
+                lastX = textRect.X + promptWidth + TBUGRenderer.Measure(seg, TBUGTheme.FontBody).X;
                 lastY = y;
+                budget -= line.Length;
                 y += lineH;
             }
 
-            if (!FullyRevealed && (int)(GlobalTimer * 2.5f) % 2 == 0) {
-                Utils.DrawBorderString(sb, "▌", new Vector2(textRect.X + 2, lastY + lineH * 0.05f), TBUGTheme.Accent * alpha, ds);
+            //未打完时光标跟在最后一个字后面
+            if (!FullyRevealed && (int)(GlobalTimer * 3f) % 2 == 0) {
+                sb.Draw(TBUGRenderer.Pixel, new Rectangle((int)lastX + 2, (int)lastY + 4, 8, 16),
+                    new Rectangle(0, 0, 1, 1), TBUGTheme.Blue * (alpha * 0.85f));
             }
         }
 
-        private static void DrawChoiceRow(SpriteBatch sb, Rectangle rect, string text, float hoverT, float alpha, Color accent) {
-            int slide = TBUGUIStyle.DrawCommandRow(sb, rect, accent, hoverT, alpha);
-            float scale = 0.6f * TBUGTheme.FontScale;
-            Vector2 size = FontAssets.MouseText.Value.MeasureString(text) * scale;
-            float ty = rect.Y + (rect.Height - size.Y) / 2f;
-            Color tc = Color.Lerp(TBUGTheme.TextNormal, TBUGTheme.TextBright, 0.45f + 0.55f * hoverT) * alpha;
-            Utils.DrawBorderString(sb, text, new Vector2(rect.X + 20 + slide, ty), tc, scale);
-            Utils.DrawBorderString(sb, ">", new Vector2(rect.Right - 26 - hoverT * 4f, ty), accent * (alpha * (0.35f + 0.65f * hoverT)), scale);
+        private void DrawPortrait(SpriteBatch sb, float alpha) {
+            Texture2D tex = portraitAsset?.Value;
+            if (tex == null) {
+                return;
+            }
+            int frameH = tex.Height / TBUG.FrameCount;
+            Rectangle src = new(0, 0, tex.Width, frameH);
+
+            //整数倍放大保持像素清晰；贴图默认朝左，翻转朝向右侧的终端
+            Vector2 anchor = new(portraitRect.Center.X, portraitRect.Bottom);
+            sb.Draw(tex, anchor, src, Color.White * alpha, 0f,
+                new Vector2(src.Width / 2f, src.Height), TBUGTheme.PortraitScale,
+                SpriteEffects.FlipHorizontally, 0f);
         }
     }
 }

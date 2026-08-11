@@ -334,7 +334,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             //悬浮信息
             if (hoverCore) {
                 string atlasKey = CWRKeySystem.Legend_UIControl.ToTooltipString(CWRKeySystem.Notbound.Value);
-                string wheelKey = CWRKeySystem.Halibut_SkillWheel.ToTooltipString(CWRKeySystem.Notbound.Value);
+                string wheelKey = CWRKeySystem.RadialWheel_Key.ToTooltipString(CWRKeySystem.Notbound.Value);
                 string title = save.FishSkill?.DisplayName?.Value ?? Lang.GetItemNameValue(HalibutOverride.ID);
                 HalibutRenderer.DrawCursorPanel(sb, MousePosition, title, HalibutTheme.GlowHi,
                     string.Format(OpenAtlasHint.Value, atlasKey, wheelKey), a);

@@ -217,13 +217,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
                 }
                 int dmg = Math.Max((int)(player.GetWeaponDamage(player.HeldItem)
                     * (LaserBlastBase + LaserBlastPerCell * spentCells)), 1);
-                int idx = Projectile.NewProjectile(player.GetSource_FromThis(),
+                //半径 LaserBlastRadius，ai2 走生成包同步
+                Projectile.NewProjectile(player.GetSource_FromThis(),
                     aim, Vector2.Zero,
                     ModContent.ProjectileType<CyberDetonationProj>(),
-                    dmg, 0f, player.whoAmI, ai0: 1f);
-                if (idx >= 0 && idx < Main.maxProjectiles) {
-                    Main.projectile[idx].localAI[2] = LaserBlastRadius;
-                }
+                    dmg, 0f, player.whoAmI, ai0: 1f, ai1: 0f, ai2: LaserBlastRadius);
                 //爆点鎏金放电
                 for (int i = 0; i < 14; i++) {
                     Vector2 vel = Main.rand.NextVector2CircularEdge(6f, 6f) * Main.rand.NextFloat(0.5f, 1f);

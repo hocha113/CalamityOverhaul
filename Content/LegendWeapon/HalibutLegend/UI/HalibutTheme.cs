@@ -82,8 +82,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public const float WheelIconR = (WheelInnerR + WheelOuterR) * 0.5f;
         //扇区之间的角度间隙
         public const float WheelSectorGap = 0.035f;
-        //轮盘锚点Y占屏比
-        public const float WheelAnchorYRatio = 0.5f;
+        //轮盘锚点Y占屏比，与其它快捷转盘统一
+        public static float WheelAnchorYRatio => UIs.RadialWheels.RadialWheelHub.AnchorYRatio;
         #endregion
 
         #region 图鉴几何

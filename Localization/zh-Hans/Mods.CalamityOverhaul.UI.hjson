@@ -604,9 +604,13 @@ TBUGTalkUI: {
 }
 
 TBUGShopUI: {
+	PromptText: tbug@rift:~$
 	TitleText: shop --list
-	StockHeaderText: 在售
 	BalanceText: 余额
+	PriceText: 售价
+	TagAffordText: 可购买
+	TagNoFundsText: 余额不足
+	StatusPendingText: 等待权威端应答……
 	StatusIdleText: 已连接 · 单击购买 · 概不退换
 	ResultSuccessText: exit 0 · 交易完成
 	ResultInvalidText: ERR：请求无效
@@ -802,13 +806,82 @@ HackTime: {
 	AccessDeniedTitle: 骇客时间不可用
 	AccessDeniedDesc: 需要连接智能武器或者植入网络义体后才能使用骇客技能
 	ProtocolsOwned: "[{0}/{1} 协议]"
-	ProtocolLockedTitle: 协议已加密
-	ProtocolLockedHint: 该协议不在你的骇入库中，用对应的协议芯片写入后可用
+	NoProtocolTitle: 无可用协议
+	NoProtocolHint: 骇入库中没有能作用于该目标的协议，用协议芯片写入后可用
 	ChipGrants: 写入协议：{0}
 	ChipTarget: 可作用于：{0}
 	ChipOneShot: 一次性写入，写入后无法再用
 	ChipAlreadyOwned: 该协议已在骇入库中
 	Erased: 已注销
+}
+
+SelfRigScanText: {
+	RamLabel: RAM
+	RecoveryLabel: 回复
+	CyberCapacityLabel: 义体容量
+	ImplantCountLabel: 已装义体
+	HeldChargeLabel: 手持存电
+	SandeCooldownLabel: 斯安冷却
+	WraithLabel: 役鬼
+	ErosionLabel: 侵蚀
+	ProtocolLabel: 协议库
+	NoneText: —
+	RamLockFormat: RAM {0}%
+	DormantFormat: 休眠 {0}秒
+	TransmuteGainFormat: +{0} RAM
+	DriveSettleText: 侵蚀加深，役鬼休眠
+}
+
+PlayerScanText: {
+	NameLabel: 操作员
+	StanceLabel: 敌我态
+	StancePeaceful: PVP关闭
+	StanceAlly: 同队
+	StanceHostile: 敌对
+	StanceSealed: 不可入侵
+	HpLabel: 生命
+	DefenseLabel: 防御
+	RamLabel: RAM段位
+	RamBandEmpty: 空
+	RamBandLow: 低
+	RamBandHalf: 半
+	RamBandHigh: 高
+	RamBandFull: 满
+	CyberLabel: 义体
+	CyberFirewallFormat: "{0} · 检出防火墙"
+	ProtocolLabel: 协议库
+	ThreatLabel: 威胁评估
+	ProbingText: 探针读取中…
+}
+
+PvPHudText: {
+	BeingHackedBy: 正在被 {0} 骇入
+	MoreIntrusions: +{0} 路入侵
+	UploadCanceled: 链路已断
+	UploadLanded: >> 已被植入 <<
+	PositionExposed: 位置已暴露
+	GaugeUntrusted: 读数不可信
+	GaugeSyncTag: 校准
+	GaugeLifeTag: 生命
+	GaugeManaTag: 魔力
+	TracebackFlip: 反向追踪已激活
+	AlertTraced: 链路被回溯
+	AlertTargetLost: 目标失联 · RAM已退还
+	AlertRejectedFormat: 植入被拒 · 代码 {0}
+	ImplantPanelTitle: 植入物
+	ImplantUninstalled: 被卸载
+	ImplantExpired: 已到期
+	SignalLost: 信号丢失
+	RemainSecondsFormat: "{0}秒"
+	CasterFormat: 来自 {0}
+	DistanceFormat: "{0}m"
+}
+
+PvPDefenderText: {
+	CommsGarbled: 信道乱码
+	ActuationLagFormat: 出手迟滞 +{0}%
+	Exposed: 轮廓已曝光
+	CyberOffline: 义体离线
 }
 
 DecryptionStrings: {
@@ -959,6 +1032,38 @@ CyberwareSkillRadialUI: {
 	HintKindToggle: 开关型 · 按一下触发键切换开/关
 	HintKindInstant: 瞬发型 · 按一下触发键立即释放
 	HintNotReady: 当前条件不满足
+	WheelHint: "[{0}] 按住 · 松开确认 · 左键选定 · 右键取消"
+}
+
+CyberwareGuideLead: {
+	SelectTitle: 义体技能已接入
+	SelectBody: 检测到主动义体。按住 {0} 呼出快捷转盘，所有够格的盘会一起出现，光标离谁近就归谁。
+	SelectPrompt: 把光标甩向义体扇区，左键选定或松手确认
+	TriggerTitle: 释放技能
+	TriggerBody: 选定只是把技能装进指尖，释放靠触发键。蓄力型按住再松手。
+	TriggerPrompt: 按 {0} 释放当前义体技能
+	SkipBtn: 跳过
+	WheelKeyUnbound: 快捷转盘键未绑定，转盘无法呼出；请先在 设置 > 控制 中绑定，或点击跳过。
+	TriggerKeyUnbound: 触发键未绑定；请先在 设置 > 控制 中绑定，或点击跳过。
+}
+
+SHPCDomainWheelUI: {
+	Layer1_Desc: 基础层 — 只在身周撑起领域场域
+	Layer2_Desc: 下潜一层，场域铺得更远，RAM 也烧得更快
+	Layer3_Desc: 捅穿黑墙，整个世界都成了领域
+	Layer_HintActivate: 「单击」展开领域
+	Layer_HintSwitch: 「单击」切到该层
+	Layer_HintShutdown: 「单击」收起领域
+	Layer_HintLowRam: RAM 不足
+	Layer_HintLocked: 系统崩溃锁定中
+	Hack_Title: 骇客时间
+	Hack_Subtitle: 神经超频
+	Hack_Desc: 把世界拖慢到爬行，对视野里的一切下协议
+	Hack_HintEnter: 「单击」进入骇客时间
+	Hack_HintExit: 「单击」退出骇客时间
+	Hack_HintDenied: 无接入权限
+	Hack_HintKeyUnbound: 骇客时间键未绑定，先去 设置 > 控制 绑定
+	WheelHint: "[{0}] 按住 · 松开确认 · 左键选定 · 右键取消"
 }
 
 AbandonedPortalStrings: {

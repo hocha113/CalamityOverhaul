@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.HackTimes.Protocols;
 using CalamityOverhaul.Content.RAMSystems;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -21,13 +22,8 @@ namespace CalamityOverhaul.Content.HackTimes
         //分组标题造成的纵偏
         private float[] slotYOffset;
         private bool[] slotGroupHead;
-        //未持有协议，显示为加密暗格
-        private bool[] slotLocked;
         private int hoveredSlot = -1;
         public bool HasHoveredSlot => hoveredSlot >= 0;
-        /// <summary>悬停行是否为未持有的加密暗格</summary>
-        public bool HoveredSlotLocked => hoveredSlot >= 0 && slotLocked != null
-            && hoveredSlot < slotLocked.Length && slotLocked[hoveredSlot];
         /// <summary>悬停协议实际 RAM，无悬停为 0，弧预扣用</summary>
         public int HoveredCostPreview { get; private set; }
         private float timer;
@@ -95,9 +91,6 @@ namespace CalamityOverhaul.Content.HackTimes
         //解码乱码字符池
         private const string ScrambleChars = "0123456789ABCDEF#$%&";
 
-        //暗格主色，刻意不用 Danger——那是"RAM 不足"的语义，不是"没这把钥匙"
-        private static readonly Color LockedAccent = new(96, 112, 140);
-
         #endregion
 
         #region 每帧解算的排版
@@ -122,27 +115,20 @@ namespace CalamityOverhaul.Content.HackTimes
             List<int> filtered = [];
             QuickHackDef.GetFilteredIndices(targetKind, filtered);
 
-            //未持有的协议不剔除，占位成加密暗格；类别内已持有的排前，免得能用的被暗格切碎
+            //未持有的协议不进列表：既不给名也不给描述的行只是扫读噪声
             Player local = Main.LocalPlayer;
             displayIndices.Clear();
             foreach (QuickHackCategory cat in Enum.GetValues<QuickHackCategory>()) {
-                for (int pass = 0; pass < 2; pass++) {
-                    bool wantLocked = pass == 1;
-                    for (int i = 0; i < filtered.Count; i++) {
-                        var hack = QuickHackDef.GetByIndex(filtered[i]);
-                        if (hack == null || hack.Category != cat) continue;
-                        bool locked = !HackProtocolOwned.Owns(local, hack);
-                        if (locked != wantLocked) continue;
-                        displayIndices.Add(filtered[i]);
-                    }
+                for (int i = 0; i < filtered.Count; i++) {
+                    var hack = QuickHackDef.GetByIndex(filtered[i]);
+                    if (hack == null || hack.Category != cat) continue;
+                    if (!HackProtocolOwned.Owns(local, hack)) continue;
+                    displayIndices.Add(filtered[i]);
                 }
             }
             displayCount = displayIndices.Count;
-            if (displayCount == 0) {
-                Hide();
-                return;
-            }
 
+            //一条都没有时仍然 visible：整列凭空消失读起来像 bug，改画空态卡
             if (slotFlyIn == null || slotFlyIn.Length != displayCount) {
                 slotFlyIn = new float[displayCount];
                 slotHoverAnim = new float[displayCount];
@@ -150,15 +136,13 @@ namespace CalamityOverhaul.Content.HackTimes
                 slotRects = new Rectangle[displayCount];
                 slotYOffset = new float[displayCount];
                 slotGroupHead = new bool[displayCount];
-                slotLocked = new bool[displayCount];
             }
 
-            //标记分组首行与暗格，纵偏由 RecomputeLayout 按当前 groupGap 累加
+            //标记分组首行，纵偏由 RecomputeLayout 按当前 groupGap 累加
             QuickHackCategory? lastCat = null;
             for (int i = 0; i < displayCount; i++) {
                 var hack = QuickHackDef.GetByIndex(displayIndices[i]);
                 slotGroupHead[i] = lastCat == null || hack.Category != lastCat.Value;
-                slotLocked[i] = !HackProtocolOwned.Owns(local, hack);
                 lastCat = hack.Category;
             }
             ownedCount = HackProtocolOwned.CountOwned(local);
@@ -244,11 +228,6 @@ namespace CalamityOverhaul.Content.HackTimes
                 if (slotRects[i].Contains(mx, my)) {
                     int globalIdx = GetGlobalIndex(i);
                     var hack = QuickHackDef.GetByIndex(globalIdx);
-                    //暗格仍然响应悬停，页脚要出"缺芯片"的提示；但绝不预扣 RAM
-                    if (IsLocked(i)) {
-                        hoveredSlot = i;
-                        break;
-                    }
                     //禁用槽位不响应悬停
                     var qs = Queue?.GetSlotState(globalIdx, HackTime.CurrentScanTarget) ?? QueueSlotState.None;
                     bool disabled = hack != null && !RamSystem.CanAfford(hack.RamCost)
@@ -278,15 +257,9 @@ namespace CalamityOverhaul.Content.HackTimes
             return -1;
         }
 
-        private bool IsLocked(int displaySlot)
-            => slotLocked != null && displaySlot >= 0
-                && displaySlot < slotLocked.Length && slotLocked[displaySlot];
-
         public void HandleClick() {
             if (!visible) return;
             if (hoveredSlot < 0 || Queue == null) return;
-            //暗格点不动，队列与 RAM 一概不碰
-            if (IsLocked(hoveredSlot)) return;
 
             int globalIdx = GetGlobalIndex(hoveredSlot);
             var hack = QuickHackDef.GetByIndex(globalIdx);
@@ -469,7 +442,11 @@ namespace CalamityOverhaul.Content.HackTimes
             if (px == null) return;
             float alpha = HackTime.Intensity;
             if (alpha < 0.01f) return;
-            if (slotFlyIn == null || displayCount == 0) return;
+            if (displayCount == 0) {
+                if (visible) DrawEmptyState(sb, px, alpha);
+                return;
+            }
+            if (slotFlyIn == null) return;
 
             float baseX = GetBaseX();
 
@@ -520,7 +497,6 @@ namespace CalamityOverhaul.Content.HackTimes
             public QueueSlotState QueueState;
             public float QueueProgress;
             public bool Disabled;
-            public bool Locked;
             public bool Skip;
             //视口裁剪可见度，跨上下缘时 <1
             public float Clip;
@@ -559,13 +535,10 @@ namespace CalamityOverhaul.Content.HackTimes
 
                 rs.Fly = fly;
                 rs.Hover = slotHoverAnim[i];
-                rs.Locked = IsLocked(i);
                 rs.QueueState = Queue?.GetSlotState(globalIdx, HackTime.CurrentScanTarget) ?? QueueSlotState.None;
                 rs.QueueProgress = Queue?.GetSlotProgress(globalIdx, HackTime.CurrentScanTarget) ?? 0f;
-                //暗格不参与 RAM 判定，它缺的是钥匙不是内存
-                rs.Disabled = !rs.Locked
-                    && (!RamSystem.CanAfford(rs.Hack.RamCost)
-                        || rs.QueueState is QueueSlotState.Uploading or QueueSlotState.Queued);
+                rs.Disabled = !RamSystem.CanAfford(rs.Hack.RamCost)
+                    || rs.QueueState is QueueSlotState.Uploading or QueueSlotState.Queued;
                 if (rs.Disabled && rs.QueueState == QueueSlotState.None) rs.Hover = 0f;
 
                 //飞入偏移（弹性过冲）+ 故障抖动
@@ -574,11 +547,6 @@ namespace CalamityOverhaul.Content.HackTimes
                 if (fly < 0.85f) {
                     float seed = slotGlitchSeed[i] + timer * 25f;
                     rs.Glitch = (MathF.Sin(seed) + MathF.Sin(seed * 2.7f) * 0.5f) * (1f - fly);
-                }
-                //暗格常驻轻微抖动，读作信号没解开
-                if (rs.Locked) {
-                    float lockSeed = slotGlitchSeed[i] * 0.7f + timer * 6f;
-                    rs.Glitch += MathF.Sin(lockSeed) * MathF.Sin(lockSeed * 0.31f) * 0.35f;
                 }
 
                 //悬停向屏幕中心（左）扩展
@@ -607,7 +575,6 @@ namespace CalamityOverhaul.Content.HackTimes
         //红不可用、琥珀队列/上传、主题色可用
         private Color ResolveRowAccent(in RowState rs, int index) {
             Color accent;
-            if (rs.Locked) return LockedAccent;
             if (rs.QueueState == QueueSlotState.Uploading) accent = HackTheme.Uploading;
             else if (rs.QueueState == QueueSlotState.Queued) accent = Color.Lerp(HackTheme.Uploading, HackTheme.BgSlotHover, 0.35f);
             else if (rs.QueueState == QueueSlotState.Completed) accent = HackTheme.Accent;
@@ -649,7 +616,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 deck.Parameters["uAccent"]?.SetValue(rs.AccentColor.ToVector3());
                 deck.Parameters["uHover"]?.SetValue(rs.Hover);
                 deck.Parameters["uDisabled"]?.SetValue(
-                    rs.Locked || rs.Disabled && rs.QueueState == QueueSlotState.None ? 1f : 0f);
+                    rs.Disabled && rs.QueueState == QueueSlotState.None ? 1f : 0f);
                 deck.Parameters["uProgress"]?.SetValue(rs.QueueState == QueueSlotState.Uploading ? rs.QueueProgress : 0f);
                 deck.Parameters["uGlitch"]?.SetValue(Math.Abs(rs.Glitch));
                 deck.CurrentTechnique.Passes[0].Apply();
@@ -668,9 +635,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 float rowAlpha = RowAlpha(in rs, alpha);
 
                 Color bg = Color.Lerp(HackTheme.BgSlot, HackTheme.BgSlotHover, rs.Hover * 0.6f);
-                if (rs.Locked)
-                    bg = Color.Lerp(HackTheme.BgDarkest, HackTheme.BgSection, 0.5f);
-                else if (rs.Disabled && rs.QueueState == QueueSlotState.None)
+                if (rs.Disabled && rs.QueueState == QueueSlotState.None)
                     bg = Color.Lerp(HackTheme.BgDarkest, new Color(45, 8, 8), 0.4f);
                 else if (rs.QueueState == QueueSlotState.Uploading)
                     bg = Color.Lerp(bg, HackTheme.Uploading, 0.08f);
@@ -692,11 +657,6 @@ namespace CalamityOverhaul.Content.HackTimes
         #region 行前景
 
         private void DrawRowForeground(SpriteBatch sb, Texture2D px, float alpha, int index, in RowState rs) {
-            if (rs.Locked) {
-                DrawLockedRowForeground(sb, px, alpha, index, in rs);
-                return;
-            }
-
             Rectangle rect = rs.Rect;
             float rowAlpha = RowAlpha(in rs, alpha);
             Color accent = rs.AccentColor;
@@ -786,7 +746,9 @@ namespace CalamityOverhaul.Content.HackTimes
 
             //右区 耗时/类别
             if (rs.QueueState == QueueSlotState.None) {
-                float sec = rs.Hack.UploadTime / 60f;
+                //折后值与权威侧同一个口径，面板读数才对得上实际上传
+                float sec = PrivilegeEscalateState.ApplyUploadTime(
+                    rs.Hack.UploadTime, Main.LocalPlayer) / 60f;
                 string timeStr = $"{sec:F1}s";
                 Vector2 ts = FontAssets.MouseText.Value.MeasureString(timeStr) * FontTime;
                 Color timeColor = idleDisabled ? HackTheme.Danger * 0.75f : HackTheme.TextBright;
@@ -866,94 +828,6 @@ namespace CalamityOverhaul.Content.HackTimes
                 float flash = MathF.Sin(timer * 10f) * 0.5f + 0.5f;
                 sb.Draw(px, rect, HackTheme.SrcPixel, HackTheme.Accent * (rowAlpha * 0.10f * flash));
             }
-        }
-
-        /// <summary>
-        /// 加密暗格：字段一律涂黑，只留类别与轮廓。<br/>
-        /// 数值不是"未知"而是"读不出来"，所以成本位写 ## 而非 0
-        /// </summary>
-        private void DrawLockedRowForeground(SpriteBatch sb, Texture2D px, float alpha, int index, in RowState rs) {
-            Rectangle rect = rs.Rect;
-            float rowAlpha = RowAlpha(in rs, alpha);
-            Color accent = rs.AccentColor;
-            var font = FontAssets.MouseText.Value;
-
-            //---- 成本格：读数被涂黑 ----
-            Rectangle costCell = new(rect.X + (int)TaperWidth, rect.Y, (int)CostCellWidth, rect.Height);
-            sb.Draw(px, new Rectangle(costCell.Right, rect.Y + 4, 1, rect.Height - 8),
-                HackTheme.SrcPixel, accent * (rowAlpha * 0.30f));
-
-            const string RedactedCost = "##";
-            Vector2 costSize = font.MeasureString(RedactedCost) * FontCost;
-            Utils.DrawBorderString(sb, RedactedCost,
-                new Vector2((int)(costCell.Center.X - costSize.X * 0.5f), rect.Y + 4),
-                accent * (rowAlpha * 0.75f), FontCost);
-            Vector2 ramCapSize = font.MeasureString("RAM") * 0.5f;
-            HackTheme.DrawRawText(sb, "RAM",
-                new Vector2(costCell.Center.X - ramCapSize.X * 0.5f, rect.Bottom - 17),
-                accent * (rowAlpha * 0.45f), 0.5f);
-
-            //类别刻痕保留：告诉玩家这是哪一类的钥匙，暗格才有目标感
-            Color catColor = HackTheme.CategoryColor(rs.Hack.Category);
-            HackTheme.DrawLine(sb,
-                new Vector2(costCell.X + 1, rect.Y + 6),
-                new Vector2(costCell.X + 7, rect.Y + 1),
-                1.4f, Color.Lerp(catColor, LockedAccent, 0.55f) * (rowAlpha * 0.8f));
-
-            //---- 协议名：常驻乱码，永不解码 ----
-            float nameX = costCell.Right + 12;
-            float nameY = rect.Y + 5;
-            string scrambled = GetScrambledName(rs.Hack.DisplayName.Value, index);
-            Utils.DrawBorderString(sb, scrambled, new Vector2(nameX, nameY),
-                Color.Lerp(accent, HackTheme.TextNormal, 0.35f) * (rowAlpha * 0.9f), FontName);
-
-            //---- 已锁定徽章 ----
-            HackTheme.DrawBadge(sb, new Vector2(nameX, rect.Bottom - 22),
-                HackTime.Locked.Value, accent, rowAlpha, 0.56f);
-
-            //右下类别标签，与常态同位置
-            string catLabel = HackTheme.CategoryLabel(rs.Hack.Category);
-            Vector2 cls = font.MeasureString(catLabel) * FontMicro;
-            Utils.DrawBorderString(sb, catLabel,
-                new Vector2((int)(rect.Right - cls.X - 10), (int)(rect.Bottom - cls.Y - 4)),
-                Color.Lerp(catColor, LockedAccent, 0.5f) * (rowAlpha * 0.7f), FontMicro);
-
-            //---- 整行剖面纹 ----
-            Rectangle hatchArea = new(costCell.Right + 2, rect.Y + 2,
-                rect.Width - costCell.Width - (int)TaperWidth - 4, rect.Height - 4);
-            HackTheme.DrawHatch(sb, hatchArea, 9f, accent * (rowAlpha * 0.13f));
-
-            //---- 描边：比常态更暗，悬停才提亮 ----
-            Color edge = accent * (rowAlpha * (0.22f + rs.Hover * 0.35f));
-            sb.Draw(px, new Rectangle(rect.X + (int)TaperWidth, rect.Y, rect.Width - (int)TaperWidth + 6, 1),
-                HackTheme.SrcPixel, edge);
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1),
-                HackTheme.SrcPixel, edge * 0.5f);
-            sb.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height),
-                HackTheme.SrcPixel, accent * (rowAlpha * (0.32f + rs.Hover * 0.4f)));
-            HackTheme.DrawLine(sb,
-                new Vector2(rect.X + TaperWidth, rect.Y),
-                new Vector2(rect.X, rect.Bottom),
-                1f, edge * 0.9f);
-
-            if (rs.Hover > 0.15f) {
-                Color bracket = accent * (rowAlpha * rs.Hover * 0.6f);
-                HackTheme.DrawCornerBracket(sb, new Vector2(rect.Right - 1, rect.Y), -1, 1, 7, 1f, bracket);
-                HackTheme.DrawCornerBracket(sb, new Vector2(rect.Right - 1, rect.Bottom - 1), -1, -1, 7, 1f, bracket);
-            }
-        }
-
-        //暗格名：按真名长度铺乱码，逐帧翻动
-        private string GetScrambledName(string name, int index) {
-            if (string.IsNullOrEmpty(name)) return string.Empty;
-            int frameSeed = (int)(timer * 12f) * 31 + index * 977;
-            Span<char> buf = stackalloc char[name.Length];
-            for (int c = 0; c < name.Length; c++) {
-                int h = frameSeed + c * 131;
-                h = h * 1103515245 + 12345;
-                buf[c] = ScrambleChars[(h & int.MaxValue) % ScrambleChars.Length];
-            }
-            return new string(buf);
         }
 
         //入场未完时名称掺十六进制噪声
@@ -1201,12 +1075,7 @@ namespace CalamityOverhaul.Content.HackTimes
             if (hoveredSlot >= 0) {
                 var hack = QuickHackDef.GetByIndex(GetGlobalIndex(hoveredSlot));
                 if (hack != null) {
-                    if (IsLocked(hoveredSlot)) {
-                        DrawFooterLocked(sb, px, alpha, baseX, footerY, hack);
-                    }
-                    else {
-                        DrawFooterDetail(sb, px, alpha, baseX, footerY, hack);
-                    }
+                    DrawFooterDetail(sb, px, alpha, baseX, footerY, hack);
                     return;
                 }
             }
@@ -1272,37 +1141,20 @@ namespace CalamityOverhaul.Content.HackTimes
                 costStr += $" ×{(float)actualCost / hack.RamCost:F1}";
             Utils.DrawBorderString(sb, costStr, new Vector2((int)(baseX + 8), (int)metaY),
                 Color.Lerp(HackTheme.Accent, Color.White, 0.2f) * alpha, FontMeta);
-            string upStr = HackTime.FooterUpload.Format($"{hack.UploadTime / 60f:F1}");
+            string upStr = HackTime.FooterUpload.Format(
+                $"{PrivilegeEscalateState.ApplyUploadTime(hack.UploadTime, Main.LocalPlayer) / 60f:F1}");
             float costW = FontAssets.MouseText.Value.MeasureString(costStr).X * FontMeta;
             Utils.DrawBorderString(sb, upStr, new Vector2((int)(baseX + 8 + costW + 16), (int)metaY),
                 HackTheme.TextBright * (alpha * 0.8f), FontMeta);
-        }
 
-        //暗格详情：不透露协议本体，只说清缺什么
-        private void DrawFooterLocked(SpriteBatch sb, Texture2D px, float alpha, float baseX, float footerY, QuickHackDef hack) {
-            sb.Draw(px, new Rectangle((int)baseX, (int)footerY + 2, 2, 14), HackTheme.SrcPixel, LockedAccent * (alpha * 0.9f));
-            Utils.DrawBorderString(sb, HackTime.ProtocolLockedTitle.Value,
-                new Vector2((int)(baseX + 8), (int)(footerY - 2)),
-                Color.Lerp(LockedAccent, Color.White, 0.35f) * alpha, 0.66f);
-
-            string[] lines = VaultUtils.WrapTextArray(HackTime.ProtocolLockedHint.Value,
-                FontAssets.MouseText.Value, RowWidth - 16f, FontDesc,
-                ResolveDetailMaxLines(footerY), true);
-            float lineH = DescLineHeight();
-            float curY = footerY + 20f;
-            for (int li = 0; li < lines.Length; li++) {
-                if (string.IsNullOrEmpty(lines[li])) continue;
-                Utils.DrawBorderString(sb, lines[li].TrimEnd('-', ' '),
-                    new Vector2((int)(baseX + 8), (int)(curY + li * lineH)),
-                    HackTheme.TextNormal * (alpha * 0.85f), FontDesc);
+            //提权徽章：窗口内成本/耗时读数都被打折，标出来由是什么在生效
+            int privLeft = PrivilegeEscalateState.RemainingSeconds(Main.myPlayer);
+            if (privLeft > 0) {
+                float upW = FontAssets.MouseText.Value.MeasureString(upStr).X * FontMeta;
+                HackTheme.DrawBadge(sb,
+                    new Vector2((int)(baseX + 8 + costW + 16 + upW + 14), (int)metaY),
+                    $"ROOT {privLeft}s", new Color(140, 255, 170), alpha);
             }
-
-            //只露类别，给玩家一个找芯片的方向
-            float metaY = curY + lines.Length * lineH + 4f;
-            Utils.DrawBorderString(sb, HackTheme.CategoryLabel(hack.Category),
-                new Vector2((int)(baseX + 8), (int)metaY),
-                Color.Lerp(HackTheme.CategoryColor(hack.Category), Color.White, 0.2f) * (alpha * 0.85f),
-                FontMeta);
         }
 
         //无悬停时的系统状态
@@ -1322,17 +1174,19 @@ namespace CalamityOverhaul.Content.HackTimes
             //伪十六进制 + 协议计数，无描边；按实测右对齐，本地化变长也不会压到状态文字
             var font = FontAssets.MouseText.Value;
             string tag = $"NET::0x{(int)(timer * 100) % 0xFFFF:X4}";
-            //有暗格时报"已解锁/总数"，玩家一眼看出还缺几把钥匙
-            string countStr = ownedCount < QuickHackDef.Count
-                ? HackTime.ProtocolsOwned.Format(ownedCount, QuickHackDef.Count)
-                : HackTime.Protocols.Format(displayCount);
+            string countStr = ResolveCountText(out bool partialOwned);
+            //未持全时这行是玩家唯一能看出"库外还有协议"的地方，比常态计数略大略亮
+            float countScale = partialOwned ? FontMeta : FontMicro;
+            Color countColor = partialOwned
+                ? Color.Lerp(HackTheme.TextNormal, HackTheme.Accent, 0.3f) * (alpha * 0.8f)
+                : HackTheme.TextNormal * (alpha * 0.55f);
             float tagW = font.MeasureString(tag).X * FontMicro;
-            float countW = font.MeasureString(countStr).X * FontMicro;
+            float countW = font.MeasureString(countStr).X * countScale;
             float microRight = baseX + RowWidth;
             HackTheme.DrawRawText(sb, tag, new Vector2(microRight - tagW, footerY + 1),
                 HackTheme.Accent * (alpha * 0.5f), FontMicro);
             HackTheme.DrawRawText(sb, countStr, new Vector2(microRight - countW, footerY + 18),
-                HackTheme.TextNormal * (alpha * 0.55f), FontMicro);
+                countColor, countScale);
 
             //右键取消提示
             if (HackTime.CurrentScanTarget != null) {
@@ -1340,6 +1194,68 @@ namespace CalamityOverhaul.Content.HackTimes
                 Utils.DrawBorderString(sb, HackTime.RightClickHint.Value, new Vector2((int)baseX, (int)(footerY + 24f)),
                     HackTheme.TextBright * (alpha * hintPulse * 0.9f), FontHint);
             }
+        }
+
+        /// <summary>
+        /// 协议计数文案。未持全时报"已解锁/总数"——未持有的协议不再占行，
+        /// 这一行是玩家唯一能看出库外还有协议的地方
+        /// </summary>
+        private string ResolveCountText(out bool partialOwned) {
+            partialOwned = ownedCount < QuickHackDef.Count;
+            return partialOwned
+                ? HackTime.ProtocolsOwned.Format(ownedCount, QuickHackDef.Count)
+                : HackTime.Protocols.Format(displayCount);
+        }
+
+        #endregion
+
+        #region 空态
+
+        /// <summary>
+        /// 库里没有能作用于本目标的协议：整列凭空消失会被读成 bug，
+        /// 改画一张最小卡说清是"库里没有"，并保留协议计数
+        /// </summary>
+        private void DrawEmptyState(SpriteBatch sb, Texture2D px, float alpha) {
+            float appear = Math.Clamp((revealTime - BaseEntryDelay) * 4f, 0f, 1f);
+            if (appear < 0.01f) return;
+            float a = alpha * appear;
+
+            var font = FontAssets.MouseText.Value;
+            float baseX = GetBaseX();
+            string[] lines = VaultUtils.WrapTextArray(HackTime.NoProtocolHint.Value, font,
+                RowWidth - 16f, FontDesc, 3, true);
+            float lineH = DescLineHeight();
+            float cardH = 24f + lines.Length * lineH + 6f + MetaLineHeight();
+
+            //夹在 RAM 弧避让线与屏底安全线之间，纵向居中
+            float maxY = MathF.Max(HackTheme.UIScreenH - HackTheme.BottomSafe - cardH, 0f);
+            float minY = MathF.Min(ResolveArcClearY(), maxY);
+            float y = MathHelper.Clamp((HackTheme.UIScreenH - cardH) * 0.5f, minY, maxY);
+
+            //页眉沿用页脚那条分隔虚线与竖刻，读作同一张面板的一部分
+            HackTheme.DrawDashedLine(sb, new Vector2(baseX, y - 6), new Vector2(baseX + RowWidth, y - 6),
+                1f, HackTheme.Border * (a * 0.5f), 5f, 4f);
+            sb.Draw(px, new Rectangle((int)baseX, (int)y + 2, 2, 14), HackTheme.SrcPixel,
+                HackTheme.Border * (a * 0.9f));
+            Utils.DrawBorderString(sb, HackTime.NoProtocolTitle.Value,
+                new Vector2((int)(baseX + 8), (int)(y - 2)), HackTheme.TextNormal * a, 0.66f);
+
+            float curY = y + 20f;
+            for (int li = 0; li < lines.Length; li++) {
+                if (string.IsNullOrEmpty(lines[li])) continue;
+                Utils.DrawBorderString(sb, lines[li].TrimEnd('-', ' '),
+                    new Vector2((int)(baseX + 8), (int)(curY + li * lineH)),
+                    HackTheme.TextBright * (a * 0.8f), FontDesc);
+            }
+
+            string countStr = ResolveCountText(out bool partialOwned);
+            float countW = font.MeasureString(countStr).X * FontMeta;
+            Color countColor = partialOwned
+                ? Color.Lerp(HackTheme.TextNormal, HackTheme.Accent, 0.3f) * (a * 0.8f)
+                : HackTheme.TextNormal * (a * 0.55f);
+            HackTheme.DrawRawText(sb, countStr,
+                new Vector2(baseX + RowWidth - countW, curY + lines.Length * lineH + 4f),
+                countColor, FontMeta);
         }
 
         #endregion

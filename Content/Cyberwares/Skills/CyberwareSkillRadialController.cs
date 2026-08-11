@@ -1,8 +1,9 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.HackTimes;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI;
 using CalamityOverhaul.Content.QuestLogs;
-using CalamityOverhaul.Content.TimeFreezes;
+using CalamityOverhaul.Content.UIs.RadialWheels;
 using InnoVault.UIHandles;
 using System;
 using System.Collections.Generic;
@@ -30,10 +31,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
 
     /// <summary>
     /// 雷达+触发状态机
-    /// <br/><see cref="CWRKeySystem.CyberwareRadial_Key"/> 按住开盘；<see cref="CWRKeySystem.CyberwareSkill_Key"/> 触发当前技
+    /// <br/>开关键与排布归 <see cref="RadialWheelHub"/>；<see cref="CWRKeySystem.CyberwareSkill_Key"/> 触发当前技
     /// <br/><see cref="CurrentSkillId"/> 存档，未装则 fallback 首个；HackTime 激活拒开盘
     /// </summary>
-    internal class CyberwareSkillRadialController : ModPlayer
+    internal class CyberwareSkillRadialController : ModPlayer, IRadialWheel
     {
         /// <summary>本机轻量单例视图</summary>
         public static CyberwareSkillRadialController LocalInstance =>
@@ -54,11 +55,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         /// <summary>当前选中技能 id，空=未选/待自动</summary>
         public string CurrentSkillId { get; private set; } = string.Empty;
 
-        /// <summary>屏幕锚点，中央偏下</summary>
+        /// <summary>Hub 排布后的中心，命中与绘制共用</summary>
         public Vector2 ScreenAnchor { get; private set; }
-
-        /// <summary>Draw 阶段写回锚点，防窗口尺寸变化错位</summary>
-        public void SetScreenAnchor(Vector2 anchor) => ScreenAnchor = anchor;
 
         /// <summary>扇区列表，IsOpen 期间稳定</summary>
         public IReadOnlyList<CyberwareSkillRadialSector> Sectors => sectors;
@@ -69,25 +67,49 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         /// <summary>动画时钟，UI 扫光用</summary>
         public float Time { get; private set; }
 
+        /// <summary>本机技能触发次数（含蓄力成功结算），义体引导以基线差判定"已释放过"</summary>
+        internal static uint LocalSkillTriggerCount { get; private set; }
+
         /// <summary>雷达几何常量，UI/命中共享</summary>
         public const float InnerRadius = 60f;
         public const float OuterRadius = 110f;
         public const float DeadZoneRadius = 36f;
         public const float IconRadius = (InnerRadius + OuterRadius) * 0.5f;
 
-        /// <summary>锚点 Y 占屏高比例</summary>
-        public const float ScreenAnchorYRatio = 0.72f;
-
-        //WorldFreeze reason，重复调用幂等
-        private const string FreezeReason = "CyberwareRadial";
         //展开/收起 lerp
         private const float OpenLerpRate = 0.22f;
         private const float CloseLerpRate = 0.28f;
 
         private readonly List<CyberwareSkillRadialSector> sectors = [];
 
-        //本帧持有 WorldFreeze reason
-        private bool freezeOwned;
+        #region 转盘契约
+
+        string IRadialWheel.WheelId => "CyberwareSkill";
+        bool IRadialWheel.WheelIsOpen => IsOpen;
+        //义体盘不看手持，是唯一可能与武器盘并存的盘，占最底那格
+        int IRadialWheel.WheelStackOrder => 0;
+        float IRadialWheel.WheelFootprintRadius => SHPCTheme.ButtonOuterR + 22f;
+        void IRadialWheel.WheelSetCenter(Vector2 center) => ScreenAnchor = center;
+        void IRadialWheel.WheelOpen(bool silent) => OpenRadial(silent);
+        void IRadialWheel.WheelClose(bool silent) => CloseRadial(silent);
+
+        bool IRadialWheel.WheelCanOpen {
+            get {
+                ResolveCurrentSkill();
+                //蓄力中开盘会打断手感，与 HackTime 一样直接拒
+                return CanRadialBeShown() && !IsCharging && !HackTime.Active;
+            }
+        }
+
+        /// <summary>松键提交焦点盘的悬停技能</summary>
+        void IRadialWheel.WheelCommitHovered() {
+            if (!IsOpen || HoveredIndex < 0 || HoveredIndex >= sectors.Count) {
+                return;
+            }
+            SelectSector(sectors[HoveredIndex]);
+        }
+
+        #endregion
 
         //当前技能快照，PostUpdate 开头刷新
         private CyberwareSkillBase resolvedCurrentSkill;
@@ -106,9 +128,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             }
             Time += 1f / 60f;
 
-            ScreenAnchor = new Vector2(
-                Main.screenWidth * 0.5f,
-                Main.screenHeight * ScreenAnchorYRatio);
+            //登记进 Hub 并取回本帧排布中心
+            ScreenAnchor = RadialWheelHub.ResolveCenter(this);
 
             ResolveCurrentSkill();
 
@@ -122,7 +143,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 return;
             }
 
-            HandleRadialKey();
             HandleSkillKey();
             HandleRadialMouse();
             UpdateOpenProgress();
@@ -136,7 +156,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             if (IsOpen || OpenProgress > 0.01f) {
                 ForceCloseRadial();
             }
-            ReleaseFreezeIfOwned();
             UpdateOpenProgress();
         }
 
@@ -191,28 +210,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             return resolvedCurrentSkill != null;
         }
 
-        /// <summary>雷达键，按下开盘+时停，松开关</summary>
-        private void HandleRadialKey() {
-            ModKeybind key = CWRKeySystem.CyberwareRadial_Key;
-            if (key == null) {
-                return;
-            }
-
-            if (!IsOpen && key.JustPressed) {
-                //蓄力中禁止开盘
-                if (IsCharging) {
-                    SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.5f, Volume = 0.4f });
-                    return;
-                }
-                TryOpenRadial();
-                return;
-            }
-
-            if (IsOpen && key.JustReleased) {
-                CloseRadial(silentSound: false);
-            }
-        }
-
         /// <summary>触发键，开盘期间不响应</summary>
         private void HandleSkillKey() {
             ModKeybind key = CWRKeySystem.CyberwareSkill_Key;
@@ -242,9 +239,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 switch (skill.Kind) {
                     case CyberwareSkillKind.Instant:
                         skill.OnInstantTrigger(Player);
+                        LocalSkillTriggerCount++;
                         break;
                     case CyberwareSkillKind.Toggle:
                         skill.OnToggleTrigger(Player);
+                        LocalSkillTriggerCount++;
                         break;
                     case CyberwareSkillKind.Charge:
                         IsCharging = true;
@@ -267,6 +266,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 if (key.JustReleased) {
                     if (skill.IsReady) {
                         skill.OnChargeRelease(Player, ratio);
+                        LocalSkillTriggerCount++;
                     }
                     else {
                         skill.OnChargeCancel(Player);
@@ -290,9 +290,16 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 return;
             }
 
-            //mouseInterface 防穿透
+            //mouseInterface 防穿透，非焦点盘同样要挡，否则点击会漏进世界
             Player.mouseInterface = true;
             UIInputGuard.SuppressWeaponSwitch();
+
+            //光标归了别的盘：清空悬停，不吃点击
+            if (!RadialWheelHub.IsFocused(this)) {
+                HoveredIndex = -1;
+                RefreshSectorStates();
+                return;
+            }
 
             //命中检测
             int newHover = HitTest();
@@ -306,29 +313,28 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             //左键选中悬停扇区，雷达保持开
             if (Main.mouseLeft && Main.mouseLeftRelease
                 && HoveredIndex >= 0 && HoveredIndex < sectors.Count) {
-                CyberwareSkillRadialSector sec = sectors[HoveredIndex];
-                string newId = sec.Skill.Identifier;
-                if (!string.Equals(newId, CurrentSkillId, StringComparison.Ordinal)) {
-                    CurrentSkillId = newId;
-                    //重新解析以驱动 UI 高亮立即跟进
-                    ResolveCurrentSkill();
-                    SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.45f, Volume = 0.6f });
-                }
-                else {
-                    SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.25f, Volume = 0.4f });
-                }
+                SelectSector(sectors[HoveredIndex]);
                 //消耗 mouseLeftRelease 防穿透
                 Main.mouseLeftRelease = false;
             }
 
-            //右键 → 立即关盘且不改动选择
+            //右键 → 全部收起且不改动选择
             if (Main.mouseRight && Main.mouseRightRelease) {
                 Main.mouseRightRelease = false;
-                CloseRadial(silentSound: false);
+                RadialWheelHub.CloseAll(silent: false);
                 return;
             }
 
-            //扇区 hover/ready/selected 平滑；selected 用 resolved 含 fallback
+            RefreshSectorStates();
+
+            //装备卸下自动关盘
+            if (resolvedCurrentSkill == null) {
+                ForceCloseRadial();
+            }
+        }
+
+        /// <summary>扇区 hover/ready/selected 平滑；selected 用 resolved 含 fallback</summary>
+        private void RefreshSectorStates() {
             string activeId = resolvedCurrentSkill?.Identifier ?? CurrentSkillId;
             for (int i = 0; i < sectors.Count; i++) {
                 CyberwareSkillRadialSector sec = sectors[i];
@@ -338,21 +344,26 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 bool isSelected = string.Equals(sec.Skill.Identifier, activeId, StringComparison.Ordinal);
                 sec.SelectedAmount = MathHelper.Lerp(sec.SelectedAmount, isSelected ? 1f : 0f, 0.25f);
             }
+        }
 
-            //装备卸下自动关盘
-            if (resolvedCurrentSkill == null) {
-                ForceCloseRadial();
+        /// <summary>选定扇区技能，重复选定只出提示音</summary>
+        private void SelectSector(CyberwareSkillRadialSector sec) {
+            string newId = sec?.Skill?.Identifier;
+            if (string.IsNullOrEmpty(newId)) {
+                return;
+            }
+            if (!string.Equals(newId, CurrentSkillId, StringComparison.Ordinal)) {
+                CurrentSkillId = newId;
+                //重新解析以驱动 UI 高亮立即跟进
+                ResolveCurrentSkill();
+                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.45f, Volume = 0.6f });
+            }
+            else {
+                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.25f, Volume = 0.4f });
             }
         }
 
-        /// <summary>尝试开雷达</summary>
-        private void TryOpenRadial() {
-            //骇客时间激活拒绝开盘
-            if (HackTime.Active) {
-                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.5f, Volume = 0.5f }, Player.Center);
-                return;
-            }
-
+        private void OpenRadial(bool silent) {
             List<CyberwareSkillRadialSector> built = BuildSectors();
             if (built.Count == 0) {
                 return;
@@ -362,28 +373,22 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             sectors.AddRange(built);
             IsOpen = true;
             HoveredIndex = -1;
-
-            //单人 WorldFreeze 子弹时间
-            AcquireFreezeIfNeeded();
-            SoundEngine.PlaySound(SoundID.MenuOpen with { Pitch = 0.2f, Volume = 0.5f });
+            if (!silent) {
+                SoundEngine.PlaySound(SoundID.MenuOpen with { Pitch = 0.2f, Volume = 0.5f });
+            }
         }
 
         /// <summary>关盘，不改 CurrentSkillId</summary>
-        private void CloseRadial(bool silentSound) {
-            ReleaseFreezeIfOwned();
+        private void CloseRadial(bool silent) {
             IsOpen = false;
             HoveredIndex = -1;
-            if (!silentSound) {
+            if (!silent) {
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.1f, Volume = 0.45f });
             }
         }
 
         /// <summary>强制关盘（死亡/卸装/全屏 UI）</summary>
-        public void ForceCloseRadial() {
-            ReleaseFreezeIfOwned();
-            IsOpen = false;
-            HoveredIndex = -1;
-        }
+        public void ForceCloseRadial() => CloseRadial(silent: true);
 
         /// <summary>取消蓄力，幂等</summary>
         public void CancelChargeIfAny() {
@@ -408,62 +413,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             }
         }
 
-        private void AcquireFreezeIfNeeded() {
-            if (freezeOwned) {
-                return;
-            }
-            if (VaultUtils.isSinglePlayer)//仅单人时停
-                WorldFreezeSystem.Activate(FreezeReason);
-            freezeOwned = true;
-        }
-
-        private void ReleaseFreezeIfOwned() {
-            if (!freezeOwned) {
-                return;
-            }
-            WorldFreezeSystem.Deactivate(FreezeReason);
-            freezeOwned = false;
-        }
-
         /// <summary>极坐标命中，死区内 -1</summary>
-        private int HitTest() {
-            if (sectors.Count <= 0) {
-                return -1;
-            }
-            Vector2 mouseScreen = new(Main.mouseX, Main.mouseY);
-            Vector2 offset = mouseScreen - ScreenAnchor;
-            float dist = offset.Length();
-            //死区内不命中
-            if (dist < DeadZoneRadius) {
-                return -1;
-            }
-            if (sectors.Count == 1) {
-                return 0;
-            }
-            float ang = MathF.Atan2(offset.Y, offset.X);
-            //顶部对齐扇区 0
-            float normalized = ang + MathHelper.PiOver2;
-            while (normalized < 0) {
-                normalized += MathHelper.TwoPi;
-            }
-            while (normalized >= MathHelper.TwoPi) {
-                normalized -= MathHelper.TwoPi;
-            }
-            int count = sectors.Count;
-            float sectorSize = MathHelper.TwoPi / count;
-            float shifted = normalized + sectorSize * 0.5f;
-            if (shifted >= MathHelper.TwoPi) {
-                shifted -= MathHelper.TwoPi;
-            }
-            int idx = (int)(shifted / sectorSize);
-            if (idx < 0) {
-                idx = 0;
-            }
-            if (idx >= count) {
-                idx = count - 1;
-            }
-            return idx;
-        }
+        private int HitTest()
+            => RadialWheelHub.HitTest(ScreenAnchor, sectors.Count, DeadZoneRadius);
 
         /// <summary>按槽位序构建扇区</summary>
         private List<CyberwareSkillRadialSector> BuildSectors() {
@@ -493,17 +445,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         }
 
         /// <summary>扇区角度区间，屏幕系向右 0 向下正</summary>
-        public void GetSectorAngles(int idx, out float aStart, out float aEnd) {
-            int count = sectors.Count;
-            if (count <= 0) {
-                aStart = 0;
-                aEnd = 0;
-                return;
-            }
-            float sectorSize = MathHelper.TwoPi / count;
-            float mid = -MathHelper.PiOver2 + idx * sectorSize;
-            aStart = mid - sectorSize * 0.5f;
-            aEnd = mid + sectorSize * 0.5f;
-        }
+        public void GetSectorAngles(int idx, out float aStart, out float aEnd)
+            => RadialWheelHub.GetSectorAngles(idx, sectors.Count, 0f, out aStart, out aEnd);
     }
 }

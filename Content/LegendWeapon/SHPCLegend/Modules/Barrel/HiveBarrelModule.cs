@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
             if (target.TryGetGlobalNPC(out SHPCNPCEffects eff)) {
-                eff.ApplyPheromone(360, beam.Projectile.owner);
+                eff.ApplyPheromone(target, 360, beam.Projectile.owner);
             }
         }
 

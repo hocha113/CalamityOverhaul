@@ -178,6 +178,37 @@ HackTimeTutorialLead: {
 	HT_Observing: ЗАГРУЗКА...
 }
 
+CybCourseWheelIntroDialogue: {
+	// Line1: Both core protocols check out. One last thing — a gesture that puts them both at your fingertips.
+	// Line2: Hold {0} and the radial wheel unfolds — the three domain layers sit on the ring, and dead center is the Hack Time shortcut.
+	// Line3: Go ahead. Hold {0}, fling the cursor toward the layer you want, and let go.
+}
+
+WheelTutorialLead: {
+	// RW_S00_Title: Summon the Radial Wheel
+	// RW_S01_Title: Pick a Domain Layer
+	// RW_S02_Title: Center: Hack Time
+	/* RW_S00_Body:
+		'''
+		Hold {0} to summon the radial wheel.
+		Every eligible wheel appears together; the cursor belongs to whichever is closest.
+		''' */
+	/* RW_S01_Body:
+		'''
+		Keep holding, fling the cursor toward any layer sector,
+		then left-click or simply release to confirm. The domain deploys at once.
+		''' */
+	/* RW_S02_Body:
+		'''
+		Dead center of the wheel is the Hack Time shortcut —
+		clicking it equals pressing {1}. That wraps up the training.
+		''' */
+	// RW_Calibrating: SYNCHRONIZED...
+	// RW_NextBtn: NEXT  >
+	// RW_HintStuck: HINT: Click NEXT to force skip
+	// RW_KeyHintUnbound: Note: the radial wheel key is unbound, so the wheel cannot open. Bind it under Settings > Controls, or click NEXT to skip.
+}
+
 CybCourseOutroDialogue: {
 	Line1: Подготовка завершена. Все интерфейсы успешно откалиброваны.
 	Line2: Прямой нейролинк в порядке. Узел Суперсна отключается.

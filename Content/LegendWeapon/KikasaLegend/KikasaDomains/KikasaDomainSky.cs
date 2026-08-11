@@ -17,6 +17,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         private float presence;
 
+        //异化态远雷的闪光包络，纯本地演出量
+        private static float flashStrength;
+        private static int flashEchoTimer;
+
         void ICWRLoader.LoadData() {
             if (Main.dedServ) {
                 return;
@@ -24,11 +28,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             //Sky 与 Filter 必须同名成对注册，KikasaDomainSystem 按该名驱动，缺 Filter 直接 NRE
 
             SkyManager.Instance[Name] = this;
-            //血暮微滤镜、透明度由 Update 动态驱动
+            //血暮微滤镜、颜色与透明度由 Update 动态驱动（异化时转冷灰青）
 
             Filters.Scene[Name] = new Filter(new ScreenShaderData("FilterMiniTower")
                 .UseColor(0.10f, 0.02f, 0.03f)
                 .UseOpacity(0f), EffectPriority.High);
+        }
+
+        /// <summary>异化态远雷起闪：云底先亮，雷声由调用方延迟补上（光先于声）</summary>
+        internal static void NotifyThunder() {
+            flashStrength = 1f;
+            //真实闪电常两击，隔几帧补一记回响
+
+            flashEchoTimer = Main.rand.Next(9, 16);
         }
 
         public override void Activate(Vector2 position, params object[] args) => active = true;
@@ -37,6 +49,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         public override void Reset() {
             active = false;
             presence = 0f;
+            flashStrength = 0f;
+            flashEchoTimer = 0;
         }
 
         public override void Update(GameTime gameTime) {
@@ -53,10 +67,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 presence = 0f;
             }
 
-            //血暮滤镜垫底色（低画质回退时的主要氛围来源）
+            flashStrength *= 0.86f;
+            if (flashEchoTimer > 0 && --flashEchoTimer == 0) {
+                flashStrength = MathHelper.Max(flashStrength, 0.55f);
+            }
 
-            Filters.Scene[Name]?.GetShader()?.UseOpacity(0.12f * presence
-                * (kdp?.PresenceSmooth ?? 0f));
+            //滤镜垫底色（低画质回退时的主要氛围来源）：血暮↔冷灰青随异化过渡
+
+            float rain = kdp?.RainBlend ?? 0f;
+            Vector3 filterCol = Vector3.Lerp(
+                new Vector3(0.10f, 0.02f, 0.03f),
+                new Vector3(0.04f, 0.05f, 0.07f), rain);
+            Filters.Scene[Name]?.GetShader()
+                ?.UseColor(filterCol.X, filterCol.Y, filterCol.Z)
+                .UseOpacity((0.12f + 0.06f * rain) * presence
+                    * (kdp?.PresenceSmooth ?? 0f));
         }
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth) {
@@ -121,6 +146,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             shader.Parameters["uSpreadProgress"]?.SetValue(kdp.SpreadProgress);
             shader.Parameters["uSpreadOrigin"]?.SetValue(origin);
             shader.Parameters["uMaskTime"]?.SetValue(kdp.EffectTime);
+            shader.Parameters["uRain"]?.SetValue(kdp.RainBlend);
+            shader.Parameters["uFlash"]?.SetValue(flashStrength);
             shader.CurrentTechnique.Passes[0].Apply();
 
             spriteBatch.Draw(white, new Rectangle(0, 0, vpW, vpH), Color.White);

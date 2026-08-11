@@ -77,6 +77,12 @@ namespace CalamityOverhaul.Content.Cyberwares
             }
         }
 
+        public override void UpdateDead() {
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                RetryInitialProfile();
+            }
+        }
+
         public override void PostUpdate() {
             if (Main.netMode == NetmodeID.MultiplayerClient && !ProfileInitialized) {
                 RetryInitialProfile();

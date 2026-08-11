@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.TimeFreezes;
+using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Terraria;
 using Terraria.ID;
@@ -20,6 +21,29 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         }
 
         public override int GetDuration() => 60 * 5;
+
+        public override bool CanApplyTo(IHackTarget target) {
+            if (!base.CanApplyTo(target)) return false;
+            if (!HackTargets.TryProjectile(target, out Projectile projectile)) return false;
+            //随从、哨兵、钩爪、浮标与手持弹都是"跟着玩家跑"的东西，
+            //钉住它们只会把自己的输出与位移锁死，还看不出发生了什么
+            if (projectile.minion || projectile.sentry || projectile.bobber) return false;
+            if (Main.projHook[projectile.type]) return false;
+            if (projectile.ModProjectile is BaseHeldProj) return false;
+            //与延迟引信互斥（另一半在 DelayFuse.CanApplyTo）：两个冻结源叠一发弹，
+            //先到期的那个会被另一个的快照语义拖住，触发/放行时序说不清
+            if (DelayFuse.HasProjectileEffect<DelayFuse>(projectile.whoAmI)) return false;
+            //纯装饰弹没有定住的意义
+            return projectile.damage > 0;
+        }
+
+        public override bool CanApplyTo(IHackTarget target, Player caster) {
+            if (!CanApplyTo(target)) return false;
+            if (!HackTargets.TryProjectile(target, out Projectile projectile)) return false;
+            //友方弹只能定自己的，不然可以拿它去锁队友的输出
+            return !projectile.friendly || projectile.hostile
+                || (caster != null && projectile.owner == caster.whoAmI);
+        }
 
         public override bool OnApply(IHackTarget target, Player caster) {
             if (!HackTargets.TryProjectile(target, out Projectile projectile)) return false;

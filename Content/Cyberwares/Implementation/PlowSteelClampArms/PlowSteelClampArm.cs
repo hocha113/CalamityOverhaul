@@ -84,9 +84,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             string skillHint = CWRKeySystem.CyberwareSkill_Key?.GetAssignedKeys() is { Count: > 0 } skillKeys
                 ? $"[{skillKeys[0]}]"
                 : CWRKeySystem.Notbound.Value + $"[{CWRKeySystem.CyberwareSkill_Key?.DisplayName}]";
-            string radialHint = CWRKeySystem.CyberwareRadial_Key?.GetAssignedKeys() is { Count: > 0 } radialKeys
+            string radialHint = CWRKeySystem.RadialWheel_Key?.GetAssignedKeys() is { Count: > 0 } radialKeys
                 ? $"[{radialKeys[0]}]"
-                : CWRKeySystem.Notbound.Value + $"[{CWRKeySystem.CyberwareRadial_Key?.DisplayName}]";
+                : CWRKeySystem.Notbound.Value + $"[{CWRKeySystem.RadialWheel_Key?.DisplayName}]";
             tooltips.Add(new TooltipLine(Mod, "CyberwareSkillHint",
                 Language.GetTextValue("Mods.CalamityOverhaul.Items.PlowSteelClampArm.SkillHint",
                     skillHint, radialHint)));

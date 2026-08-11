@@ -177,8 +177,8 @@ BloodAltar: {
 	DisplayName: 深红祭坛
 	Tooltip:
 		'''
-		右键祭坛用血珠召唤血月
-		自动收集世界上掉落的血珠存放到最近的箱子中
+		右键祭坛用血泪召唤血月
+		自动收集世界上掉落的血泪与血珠存放到最近的箱子中
 		"让世界被深红所注视"
 		'''
 }
@@ -1288,8 +1288,7 @@ Unsunghero: {
 	DisplayName: 英雄无冕
 	Tooltip:
 		'''
-		增加10点潜伏值上限
-		潜伏速度将不会降低潜伏伤害
+		行走时，身后铺开一路黑白棋格
 		"若你一去不回呢？"
 		"那便一去不回。"
 		'''
@@ -1671,6 +1670,216 @@ MachineOverclockChip: {
 
 GridBlackoutChip: {
 	DisplayName: 电网瘫痪芯片
+	// Tooltip: ""
+}
+
+PowerTransmuteChip: {
+	DisplayName: 电能折算芯片
+	// Tooltip: ""
+}
+
+NeuralOverclockChip: {
+	DisplayName: 神经超频芯片
+	// Tooltip: ""
+}
+
+WraithForceDriveChip: {
+	DisplayName: 役鬼强驱芯片
+	// Tooltip: ""
+}
+
+IndexPrereadChip: {
+	DisplayName: 索引预读芯片
+	// Tooltip: ""
+}
+
+LockBurnChip: {
+	DisplayName: 锁芯烧穿芯片
+	// Tooltip: ""
+}
+
+DielSkipChip: {
+	DisplayName: 昼夜跳转芯片
+	// Tooltip: ""
+}
+
+StormInjectChip: {
+	DisplayName: 雷暴注入芯片
+	// Tooltip: ""
+}
+
+GravityInvertChip: {
+	DisplayName: 重力反转芯片
+	// Tooltip: ""
+}
+
+SegmentDelinkChip: {
+	DisplayName: 节段离网芯片
+	// Tooltip: ""
+}
+
+LimbSeizureChip: {
+	DisplayName: 肢体征收芯片
+	// Tooltip: ""
+}
+
+CommandLinkCutChip: {
+	DisplayName: 协同断链芯片
+	// Tooltip: ""
+}
+
+MunitionSwapChip: {
+	DisplayName: 弹药置换芯片
+	// Tooltip: ""
+}
+
+TurretMeshChip: {
+	DisplayName: 炮台联网芯片
+	// Tooltip: ""
+}
+
+BeaconForgeChip: {
+	DisplayName: 信标伪造芯片
+	// Tooltip: ""
+}
+
+PrivilegeEscalateChip: {
+	DisplayName: 提权芯片
+	// Tooltip: ""
+}
+
+ItemSalvageChip: {
+	DisplayName: 拆解芯片
+	// Tooltip: ""
+}
+
+DataBrandChip: {
+	DisplayName: 数据烙印芯片
+	// Tooltip: ""
+}
+
+EntityMasqueradeChip: {
+	DisplayName: 身份伪装芯片
+	// Tooltip: ""
+}
+
+TileConscriptChip: {
+	DisplayName: 物块征用芯片
+	// Tooltip: ""
+}
+
+VeinResonanceChip: {
+	DisplayName: 矿脉共振芯片
+	// Tooltip: ""
+}
+
+StressInvertChip: {
+	DisplayName: 应力反转芯片
+	// Tooltip: ""
+}
+
+PressureSurgeChip: {
+	DisplayName: 增压水域芯片
+	// Tooltip: ""
+}
+
+MirrorSurfaceChip: {
+	DisplayName: 镜像水面芯片
+	// Tooltip: ""
+}
+
+DelayFuseChip: {
+	DisplayName: 延迟引信芯片
+	// Tooltip: ""
+}
+
+ProjectileTitheChip: {
+	DisplayName: 弹幕征收芯片
+	// Tooltip: ""
+}
+
+ProjectileSampleChip: {
+	DisplayName: 弹幕采样芯片
+	// Tooltip: ""
+}
+
+CompensationProtocolChip: {
+	DisplayName: 代偿协议芯片
+	// Tooltip: ""
+}
+
+PayloadRewriteChip: {
+	DisplayName: 载荷改写芯片
+	// Tooltip: ""
+}
+
+PhaseDesyncChip: {
+	DisplayName: 相位偏移芯片
+	// Tooltip: ""
+}
+
+LiveCellTapChip: {
+	DisplayName: 活体电源芯片
+	// Tooltip: ""
+}
+
+FirmwareRollbackChip: {
+	DisplayName: 固件回滚芯片
+	// Tooltip: ""
+}
+
+ShellRequisitionChip: {
+	DisplayName: 躯壳征用芯片
+	// Tooltip: ""
+}
+
+MemoryScorchChip: {
+	DisplayName: 内存烧蚀芯片
+	// Tooltip: ""
+}
+
+BuffSiphonChip: {
+	DisplayName: 增益抽取芯片
+	// Tooltip: ""
+}
+
+CombatSiphonChip: {
+	DisplayName: 战术榨取芯片
+	// Tooltip: ""
+}
+
+BallisticTurncoatChip: {
+	DisplayName: 弹道倒戈芯片
+	// Tooltip: ""
+}
+
+MeltdownBrandChip: {
+	DisplayName: 熔断标记芯片
+	// Tooltip: ""
+}
+
+MapBlackoutChip: {
+	DisplayName: 地图熄灭芯片
+	// Tooltip: ""
+}
+
+ChannelScrambleChip: {
+	DisplayName: 信道乱码芯片
+	// Tooltip: ""
+}
+
+StealthStripChip: {
+	DisplayName: 隐身剥离芯片
+	// Tooltip: ""
+}
+
+CooldownInjectChip: {
+	DisplayName: 冷却注入芯片
+	// Tooltip: ""
+}
+
+CyberwareOfflineChip: {
+	DisplayName: 义体离线芯片
 	// Tooltip: ""
 }
 
@@ -3088,4 +3297,9 @@ OniMeiRubbingYoen: {
 		场只有一片，再处决就把它挪到新地方
 		'''
 	Burden: 气力上限 -5%。余烬场还在烧的时候，疾走耗气 +10%
+}
+
+ShenyoStyleDemoItem: {
+	DisplayName: 鬼雨叙事演示
+	Tooltip: 使用后播放伞灵对话演示（测试物品）
 }

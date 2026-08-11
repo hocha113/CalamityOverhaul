@@ -245,7 +245,7 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
                 && player.statLife < player.statLifeMax2 * 0.3f) {
                 Add(pool, lowHealth);
             }
-            long coins = TBUGUIStyle.CountCoins(player);
+            long coins = TBUGRenderer.CountCoins(player);
             if (coins >= Item.buyPrice(platinum: 1)) {
                 Add(pool, rich);
             }

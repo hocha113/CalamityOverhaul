@@ -3,6 +3,7 @@ using CalamityOverhaul.OtherMods.SubWorld;
 using System;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.Victors
@@ -67,6 +68,41 @@ namespace CalamityOverhaul.Content.NPCs.Victors
             }
 
             SpawnPortalAt(spawnPos, facing);
+            return true;
+        }
+
+        /// <summary>
+        /// 调试强制开门：清 HasArrived、移走场上的 Victor（否则门只演不吐人），
+        /// 再向下吸附地面生成传送门
+        /// </summary>
+        internal static bool DebugForceRift(Vector2 worldPos) {
+            if (VaultUtils.isClient) {
+                return false;
+            }
+            VictorWorldState.HasArrived = false;
+
+            int victorType = ModContent.NPCType<Victor>();
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+                if (npc?.active != true || npc.type != victorType) {
+                    continue;
+                }
+                npc.active = false;
+                if (Main.netMode == NetmodeID.Server) {
+                    NetMessage.SendData(MessageID.SyncNPC, number: i);
+                }
+            }
+
+            int tx = (int)(worldPos.X / 16f);
+            int ty = (int)(worldPos.Y / 16f);
+            if (!TryFindFloorY(tx, ty, out int floorY)) {
+                return false;
+            }
+            //门下沿贴地
+            Vector2 pos = new(tx * 16f + 8f, floorY * 16f - VictorRiftPortalProj.BaseHalfHeight);
+            int nearest = Player.FindClosest(pos - new Vector2(8f, 8f), 16, 16);
+            int facing = nearest >= 0 && Main.player[nearest].Center.X < pos.X ? -1 : 1;
+            SpawnPortalAt(pos, facing);
             return true;
         }
 

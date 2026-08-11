@@ -6,7 +6,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.PRTTypes
 {
     /// <summary>
-    /// TBUG 裂缝故障切片；轴对齐横条，终端绿为主、少量报错品红，
+    /// TBUG 裂缝故障切片；轴对齐横条，终端蓝为主、少量报错品红（与 TBUGTheme 同族），
     /// 移动走离散步进而不是平滑漂移，读作"屏幕撕裂的碎渣"
     /// </summary>
     internal class PRT_TBUGGlitch : BasePRT
@@ -14,10 +14,10 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override string Texture => CWRConstant.VaultPlaceholder;
         public override int InGame_World_MaxCount => 8000;
 
-        private static readonly Color BodyGreen = new(0.10f, 0.95f, 0.35f);
-        private static readonly Color EdgeGreen = new(0.05f, 0.45f, 0.18f);
-        private static readonly Color BodyMagenta = new(1f, 0.08f, 0.45f);
-        private static readonly Color EdgeMagenta = new(0.45f, 0.02f, 0.20f);
+        private static readonly Color BodyBlue = new(0.28f, 0.62f, 1f);
+        private static readonly Color EdgeBlue = new(0.09f, 0.24f, 0.50f);
+        private static readonly Color BodyMagenta = new(1f, 0.24f, 0.46f);
+        private static readonly Color EdgeMagenta = new(0.45f, 0.06f, 0.22f);
 
         private float initialScale;
         private float aspectRatio;
@@ -31,8 +31,8 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override bool CanPool => true;
 
         public PRT_TBUGGlitch() {
-            Color = BodyGreen;
-            edgeColor = EdgeGreen;
+            Color = BodyBlue;
+            edgeColor = EdgeBlue;
             aspectRatio = 3f;
             stepInterval = 3;
         }
@@ -45,8 +45,8 @@ namespace CalamityOverhaul.Content.PRTTypes
             Velocity = Vector2.Zero;
 
             bool magenta = Main.rand.NextFloat() < 0.12f;
-            Color = magenta ? BodyMagenta : BodyGreen;
-            edgeColor = magenta ? EdgeMagenta : EdgeGreen;
+            Color = magenta ? BodyMagenta : BodyBlue;
+            edgeColor = magenta ? EdgeMagenta : EdgeBlue;
 
             Rotation = 0f;
             //横条为主，少量竖窄条
@@ -63,8 +63,8 @@ namespace CalamityOverhaul.Content.PRTTypes
             base.Reset();
             initialScale = 0f;
             aspectRatio = 3f;
-            Color = BodyGreen;
-            edgeColor = EdgeGreen;
+            Color = BodyBlue;
+            edgeColor = EdgeBlue;
             flickerPhase = 0f;
             driftVel = Vector2.Zero;
             stepInterval = 3;
@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             spriteBatch.Draw(pixel, drawPos, new Rectangle(0, 0, 1, 1), Color * Opacity, 0f,
                 origin, size, SpriteEffects.None, 0f);
             spriteBatch.Draw(pixel, drawPos, new Rectangle(0, 0, 1, 1),
-                new Color(0.75f, 1f, 0.85f) * Opacity * 0.7f, 0f,
+                new Color(0.78f, 0.92f, 1f) * Opacity * 0.7f, 0f,
                 origin, new Vector2(w * 0.8f, h * 0.22f), SpriteEffects.None, 0f);
 
             return false;

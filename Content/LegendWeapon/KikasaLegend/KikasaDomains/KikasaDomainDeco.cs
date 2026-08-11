@@ -45,16 +45,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         private static readonly Color PaperDry = new(176, 156, 130);
         private static readonly Color PaperWet = new(96, 80, 70);
-        private static readonly Color SplashPale = new(214, 118, 106);
-        private static readonly Color MistBlood = new(58, 18, 20);
-        private static readonly Color RippleGlow = new(198, 88, 82);
+        //血系配色随观看域的鬼雨异化冷化（血珠→尸雨灰白、血雾→潮雾沉青、血光→冷青微光）
+        private static Color SplashPale => KikasaDomain.CoolTint(new(214, 118, 106), new(170, 185, 190));
+        private static Color MistBlood => KikasaDomain.CoolTint(new(58, 18, 20), new(52, 62, 66));
+        private static Color RippleGlow => KikasaDomain.CoolTint(new(198, 88, 82), new(126, 152, 158));
 
         private static int mistTimer;
         private static int rippleTimer;
+        //满幕雨帘的补投累积
+        private static float rainCarry;
 
         public static void Clear() {
             scraps.Clear();
             ripples.Clear();
+            rainCarry = 0f;
         }
 
         /// <summary>撕裂前沿喷纸屑：沿覆盖圆的可见弧段撒点，向外飞散</summary>
@@ -98,6 +102,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), -0.1f),
                 MistBlood * 0.8f, Main.rand.NextFloat(0.6f, 0.9f))
                 ?.Configure(Main.rand.Next(70, 110));
+        }
+
+        /// <summary>沸腾气泡：沿水线随机散点破水的碎泡，颜色随镜面预览向目标形态先行渐变</summary>
+        public static void BoilBurst(KikasaDomainPlayer kdp, float strength, float coldMix) {
+            Color bubble = Color.Lerp(new(214, 118, 106), new(170, 185, 190), coldMix);
+
+            int count = 1 + (int)(strength * 3f);
+            float left = Main.screenPosition.X;
+            for (int i = 0; i < count; i++) {
+                float x = left + Main.rand.NextFloat(0f, Main.screenWidth);
+                Vector2 pos = new(x, kdp.LakeWorldY - Main.rand.NextFloat(0f, 4f));
+                Vector2 vel = new(Main.rand.NextFloat(-0.8f, 0.8f),
+                    -Main.rand.NextFloat(1.6f, 3.6f) * (0.6f + strength * 0.6f));
+                PRTLoader.NewParticle<PRT_GhostRainDrop>(pos, vel,
+                    bubble * Main.rand.NextFloat(0.4f, 0.62f),
+                    Main.rand.NextFloat(0.45f, 0.8f))
+                    ?.Configure(Main.rand.Next(16, 30), vel.X);
+            }
+            //滚水自己也荡圈
+            if (Main.rand.NextBool(5)) {
+                RippleAt(new Vector2(left + Main.rand.NextFloat(0f, Main.screenWidth), kdp.LakeWorldY),
+                    Main.rand.NextFloat(0.4f, 0.9f) * (0.5f + strength * 0.5f));
+            }
+        }
+
+        /// <summary>沸腾蒸汽：贴水上浮的翻滚潮气</summary>
+        public static void BoilSteam(KikasaDomainPlayer kdp, float strength, float coldMix) {
+            Color steam = Color.Lerp(new(58, 18, 20), new(52, 62, 66), coldMix);
+            int count = 1 + (int)(strength * 2f);
+            for (int i = 0; i < count; i++) {
+                float x = Main.screenPosition.X + Main.rand.NextFloat(0f, Main.screenWidth);
+                PRTLoader.NewParticle<PRT_GhostRainMist>(
+                    new Vector2(x, kdp.LakeWorldY - Main.rand.NextFloat(2f, 24f)),
+                    new Vector2(Main.rand.NextFloat(-0.3f, 0.3f),
+                        -Main.rand.NextFloat(0.25f, 0.7f) * (0.5f + strength)),
+                    steam * Main.rand.NextFloat(0.5f, 0.8f),
+                    Main.rand.NextFloat(0.6f, 1.0f))
+                    ?.Configure(Main.rand.Next(50, 90));
+            }
         }
 
         /// <summary>湖面荡开一圈涟漪</summary>
@@ -169,8 +212,44 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 }
             }
 
+            UpdateRainCurtain(kdp);
             UpdateScraps(kdp, lakeReady);
             UpdateRipples();
+        }
+
+        /// <summary>异化态满幕雨帘：密度吃领域的雨帘包络，做法镜像鬼雨世界常驻雨（湿墨色板）</summary>
+        private static void UpdateRainCurtain(KikasaDomainPlayer kdp) {
+            float density = kdp.RainCurtainDensity;
+            if (density < 0.02f) {
+                rainCarry = 0f;
+                return;
+            }
+
+            float left = Main.screenPosition.X - 160f;
+            float right = Main.screenPosition.X + Main.screenWidth + 160f;
+            rainCarry += density * 0.02f * (right - left);
+            int count = Math.Min((int)rainCarry, 72);
+            rainCarry -= count;
+            //进量超帧上限时截断积欠，防翻转叠加下无限攒债
+            rainCarry = MathF.Min(rainCarry, 30f);
+            if (count <= 0) {
+                return;
+            }
+
+            Color pale = new(170, 185, 190);
+            Color corpse = new(140, 170, 165);
+            float wind = MathF.Sin(Main.worldID % 255 * 0.37f) * 2.2f * density;
+            for (int i = 0; i < count; i++) {
+                Vector2 pos = new(Main.rand.NextFloat(left, right),
+                    Main.screenPosition.Y - Main.rand.NextFloat(10f, 220f));
+                Vector2 vel = new(wind + Main.rand.NextFloat(-0.35f, 0.35f),
+                    Main.rand.NextFloat(11f, 17f));
+                Color color = (Main.rand.NextBool(7) ? corpse : pale)
+                    * Main.rand.NextFloat(0.42f, 0.65f);
+                PRTLoader.NewParticle<PRT_GhostRainDrop>(pos, vel, color,
+                    Main.rand.NextFloat(0.8f, 1.25f))
+                    ?.Configure(Main.rand.Next(70, 110), vel.X);
+            }
         }
 
         private static void UpdateScraps(KikasaDomainPlayer kdp, bool lakeReady) {
@@ -261,7 +340,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                     float lifeF = r.Life / (float)r.MaxLife;
                     float radius = MathHelper.Lerp(8f, 86f, 1f - (1f - lifeF) * (1f - lifeF)) * r.Scale;
                     float alpha = MathF.Sin(MathHelper.Clamp(lifeF, 0f, 1f) * MathHelper.Pi) * 0.34f;
-                    Color c = RippleGlow with { A = 0 } * alpha;
+                    //真加色批源因子是 SourceAlpha：A 置零=整圈不画，A 随强度走
+                    Color c = RippleGlow * alpha;
                     Vector2 scale = new(radius * 2f / ring.Width, radius * 0.44f / ring.Height);
                     spriteBatch.Draw(ring, r.Pos - Main.screenPosition, null, c,
                         0f, rOrigin, scale, SpriteEffects.None, 0f);

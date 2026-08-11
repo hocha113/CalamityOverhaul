@@ -5,6 +5,7 @@ using InnoVault.PRT;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -85,9 +86,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 if (Vector2.DistanceSquared(npc.Center, orb.Projectile.Center) > 520f * 520f) continue;
                 if (!npc.TryGetGlobalNPC(out SHPCNPCEffects eff)) continue;
                 if (eff.ObsidianCrackTime <= 0 || eff.ObsidianCrackOwner != orb.Projectile.owner) continue;
-                SHPCNPCEffects.BurstObsidian(npc, orb.Projectile.owner, Math.Max(orb.Projectile.damage / 3, 1));
-                eff.ObsidianCrackTime = 0;
-                eff.ObsidianCrackStacks = 0;
+                //联机下 BurstObsidian 在客户端是 no-op，直调会让爆发永远不发生；走请求通道
+                eff.RequestObsidianBurst(npc, orb.Projectile.owner,
+                    Math.Max(orb.Projectile.damage / 3, 1));
             }
         }
     }
@@ -125,6 +126,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Projectile.DamageType = DamageClass.Magic;
         }
 
+        public override void SendExtraAI(BinaryWriter writer) {
+            //碎片由服务端代生成（BurstObsidian），SyncProjectile 伤害是 short，带全量兜底
+            writer.Write(Projectile.damage);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            int fullDamage = reader.ReadInt32();
+            if (fullDamage > 0) {
+                Projectile.damage = fullDamage;
+            }
+        }
+
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation();
             fadeAlpha = MathHelper.Clamp(Projectile.timeLeft / 18f, 0f, 1f);
@@ -150,9 +163,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 int idx = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
                     target.Center, Vector2.Zero,
                     ModContent.ProjectileType<CyberDetonationProj>(),
-                    dmg, 0f, Projectile.owner, ai0: 0.3f);
+                    dmg, 0f, Projectile.owner, ai0: 0.3f, ai1: 0f, ai2: 50f);
                 if (idx >= 0 && idx < Main.maxProjectiles) {
-                    Main.projectile[idx].localAI[2] = 50f;
                     Main.projectile[idx].usesLocalNPCImmunity = true;
                     Main.projectile[idx].localNPCHitCooldown = 30;
                 }

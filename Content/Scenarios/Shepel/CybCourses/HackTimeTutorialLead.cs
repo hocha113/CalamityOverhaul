@@ -126,7 +126,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         private const float AutoStepDuration = 1.6f;
         private const float StuckHintAfter = 12f;
         private const float HackIntroLeadDelay = 0.15f;
-        private const float OutroHackTimeFadeThreshold = 0.02f;
 
         private static Phase _phase = Phase.Inactive;
         private static int _currentStep = 0;
@@ -138,7 +137,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         //SHPC衔接计时
         private static float _hackIntroLeadTimer = 0f;
         private static bool _hackIntroAttempted = false;
-        private static bool _outroStarted = false;
         private static bool _prevMouseLeft = false;
         //N键兜底边沿
         private static bool _prevFallbackKeyDown = false;
@@ -162,7 +160,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             _stuckTimer = 0f;
             _hackIntroLeadTimer = 0f;
             _hackIntroAttempted = false;
-            _outroStarted = false;
             _prevMouseLeft = false;
             _nextBtnRect = Rectangle.Empty;
             _cardRect = Rectangle.Empty;
@@ -299,12 +296,13 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                         _cardAnim = 0f;
                         _phase = Phase.Done;
                         CleanupTank();
-                        TryStartOutro();
+                        WheelTutorialLead.TryStartWheelIntro();
                     }
                     break;
 
                 case Phase.Done:
-                    TryStartOutro();
+                    //收尾对话改由转盘段结束后接手
+                    WheelTutorialLead.TryStartWheelIntro();
                     break;
             }
         }
@@ -341,15 +339,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             if (NarrativeRunner.IsBusy) return;
             NarrativeRouter.Begin<CybCourseHackIntroDialogue>();
             _hackIntroAttempted = true;
-        }
-
-        private static void TryStartOutro() {
-            if (_outroStarted) return;
-            if (HackTime.Active || HackTime.Intensity > OutroHackTimeFadeThreshold) return;
-            if (NarrativeRunner.IsBusy) return;
-            if (CybCourseCompletePanel.Visible) return;
-            _outroStarted = true;
-            NarrativeRouter.Begin<CybCourseOutroDialogue>();
         }
 
         private static bool CheckAutoAdvance() {

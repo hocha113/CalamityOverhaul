@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.HackTimes
             if (mouseOnPanel) {
                 //无限模式点击协议蓄力
                 if (HackTime.InfiniteHack) {
-                    if (Panel.HasHoveredSlot && !Panel.HoveredSlotLocked && !InfiniteHack.IsActive)
+                    if (Panel.HasHoveredSlot && !InfiniteHack.IsActive)
                         InfiniteHack.BeginCharge();
                 }
                 else {

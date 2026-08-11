@@ -38,9 +38,15 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             placedIce.Clear();
         }
 
+        /// <summary>切世界时把账清空，冰的坐标属于上一个世界</summary>
+        internal static void ClearPlacedIce() => placedIce.Clear();
+
         public override bool CanApplyTo(IHackTarget target) {
             if (!base.CanApplyTo(target)) return false;
             if (!HackTargets.TryLiquid(target, out int tileX, out int tileY)) return false;
+            //微光会被冻成冰再化开，等于凭空造微光，不给动
+            if (Main.tile[tileX, tileY].LiquidType == LiquidID.Shimmer) return false;
+            SweepOrphaned();
             //同一片水正在固化时不重复下料，否则两笔账互相盖掉
             return !placedIce.ContainsKey((tileX, tileY));
         }
@@ -54,6 +60,9 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 for (int dx = -FreezeRadius; dx <= FreezeRadius; dx++) {
                     for (int dy = -FreezeRadius; dy <= FreezeRadius; dy++) {
                         if (dx * dx + dy * dy > FreezeRadius * FreezeRadius) continue;
+                        //目标格是这个效果的锚点：把它一起冻掉会让 WaterScannable
+                        //下一帧就失效，OnRemove 永远不跑，冰化不掉、账也拆不了
+                        if (dx == 0 && dy == 0) continue;
                         int tx = tileX + dx;
                         int ty = tileY + dy;
                         if (!HackTargets.InWorld(tx, ty)) continue;
@@ -101,17 +110,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override void OnRemove(IHackTarget target) {
             if (!HackTargets.TryLiquidCoords(target, out int tileX, out int tileY)) return;
 
-            if (placedIce.Remove((tileX, tileY), out List<Point> placed)) {
-                foreach (Point point in placed) {
-                    if (!HackTargets.InWorld(point.X, point.Y)) continue;
-                    Tile tile = Main.tile[point.X, point.Y];
-                    //玩家可能已经把它敲了或在上面盖了东西，只收回还是原样的那些
-                    if (!tile.HasTile || tile.TileType != TileID.BreakableIce) continue;
-                    tile.HasTile = false;
-                    tile.TileType = 0;
-                }
-                SyncArea(tileX, tileY);
-            }
+            Thaw(tileX, tileY);
 
             if (Main.netMode != NetmodeID.Server) {
                 EmitThaw(HackTargets.TileWorldCenter(tileX, tileY));
@@ -121,6 +120,36 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override void OnReplicatedRemove(IHackTarget target) {
             if (HackTargets.TryLiquidCoords(target, out int tileX, out int tileY)) {
                 EmitThaw(HackTargets.TileWorldCenter(tileX, tileY));
+            }
+        }
+
+        private static void Thaw(int tileX, int tileY) {
+            if (!placedIce.Remove((tileX, tileY), out List<Point> placed)) return;
+            foreach (Point point in placed) {
+                if (!HackTargets.InWorld(point.X, point.Y)) continue;
+                Tile tile = Main.tile[point.X, point.Y];
+                //玩家可能已经把它敲了或在上面盖了东西，只收回还是原样的那些
+                if (!tile.HasTile || tile.TileType != TileID.BreakableIce) continue;
+                tile.HasTile = false;
+                tile.TileType = 0;
+            }
+            SyncArea(tileX, tileY);
+        }
+
+        /// <summary>
+        /// 锚点液体被别的东西抽干时追踪器会直接丢掉效果、不走 OnRemove，
+        /// 这笔账留着就会一直占着那个坐标。下次施放前对齐一次，无主的自己化开
+        /// </summary>
+        private static void SweepOrphaned() {
+            if (placedIce.Count == 0) return;
+            List<(int X, int Y)> orphaned = null;
+            foreach ((int X, int Y) key in placedIce.Keys) {
+                if (HackEffectTracker.HasWaterEffect<Cryostasis>(key.X, key.Y)) continue;
+                (orphaned ??= []).Add(key);
+            }
+            if (orphaned == null) return;
+            for (int i = 0; i < orphaned.Count; i++) {
+                Thaw(orphaned[i].X, orphaned[i].Y);
             }
         }
 

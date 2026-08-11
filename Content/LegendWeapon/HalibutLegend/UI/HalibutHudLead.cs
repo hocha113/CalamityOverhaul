@@ -6,6 +6,7 @@ using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
 using CalamityOverhaul.Content.Narrative.Guides;
 using CalamityOverhaul.Content.Scenarios.Helen;
+using CalamityOverhaul.Content.UIs.RadialWheels;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -311,6 +312,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         //亲手呼转盘、开启即完成
         private static void UpdateSkillWheel() {
+            //空装载栏时转盘根本呼不出（CanWheelBeShown 要求 loadout 非空），
+            //留在这一步就是"叫他按键、按了没反应"的死阶段，直接收尾
+            if (Save.loadout.Count == 0) {
+                MarkSeen();
+                return;
+            }
             HalibutWheelController ctrl = HalibutWheelController.LocalInstance;
             if (ctrl != null && (ctrl.IsOpen || ctrl.OpenProgress > 0.3f)) {
                 MarkSeen();
@@ -615,9 +622,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             DrawCardContent(sb, font, card, EquipTitle.Value, 0.9f, HalibutTheme.Accent, HalibutTheme.Accent, body, a);
 
             //无研究/无入栏且卡住时才给跳过（入栏会自动下一步）
+            //空装载栏没法进转盘阶段（转盘呼不出），直接收尾
             if (!save.IsStudying && save.loadout.Count == 0 && phaseTimer > StuckFramesBeforeSkip
                 && DrawActionButton(sb, card, SkipBtn.Value, HalibutTheme.TextDim, time)) {
-                StartSkillWheel();
+                MarkSeen();
             }
         }
         #endregion
@@ -625,40 +633,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         #region 阶段4：技能转盘
         private static void DrawSkillWheel(SpriteBatch sb, float time) {
             float a = animProgress;
-            Vector2 center = new(HalibutTheme.UIScreenW * 0.5f,
-                HalibutTheme.UIScreenH * HalibutTheme.WheelAnchorYRatio);
+            //真实中心由 RadialWheelHub 排布：装了主动义体时两盘并存，比目鱼盘会被顶上去，
+            //画死 0.72 就指错了位置。盘未开时 ScreenAnchor 可能是改分辨率前的旧值，改用实时锚点
+            HalibutWheelController wheelCtrl = HalibutWheelController.LocalInstance;
+            Vector2 center = wheelCtrl != null && wheelCtrl.OpenProgress > 0.01f
+                ? wheelCtrl.ScreenAnchor
+                : RadialWheelHub.ResolveAnchor();
 
             DrawWheelHint(sb, center, time, a);
 
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             const int cardW = 348;
             float contentW = cardW - 32f;
-            string wheelKey = CWRKeySystem.Halibut_SkillWheel.ToTooltipString(CWRKeySystem.Notbound.Value);
+            string wheelKey = CWRKeySystem.RadialWheel_Key.ToTooltipString(CWRKeySystem.Notbound.Value);
             GLine[] body = {
                 new(WheelBody.Value, 0.74f, HalibutTheme.TextDim),
                 new(string.Format(WheelPrompt.Value, wheelKey), 0.8f, HalibutTheme.GlowHi),
             };
             int cardH = MeasureCardH(font, 0.92f, body, contentW);
-            var card = new Rectangle((int)(center.X - cardW * 0.5f), (int)(center.Y - cardH * 0.5f), cardW, cardH);
+            //卡片让开盘身：锚在示意环上方，避免真盘展开时被卡片压住
+            float hintTop = center.Y - (HalibutTheme.WheelOuterR + 26f);
+            float cardX = MathHelper.Clamp(center.X - cardW * 0.5f, 16f, HalibutTheme.UIScreenW - cardW - 16f);
+            float cardY = MathHelper.Clamp(hintTop - cardH - 18f, 16f, HalibutTheme.UIScreenH - cardH - 16f);
+            var card = new Rectangle((int)cardX, (int)cardY, cardW, cardH);
 
             DrawCard(sb, card, HalibutTheme.GlowHi, 0.7f);
             DrawCardContent(sb, font, card, WheelTitle.Value, 0.92f, HalibutTheme.GlowHi, HalibutTheme.GlowHi, body, a);
 
-            if (phaseTimer > StuckFramesBeforeSkip && DrawActionButton(sb, card, SkipBtn.Value, HalibutTheme.TextDim, time)) {
+            //转盘键未绑定时本阶段无法靠操作完成，跳过立即放出，不再干等
+            bool wheelKeyUnbound = CWRKeySystem.IsKeybindUnbound(CWRKeySystem.RadialWheel_Key);
+            if ((wheelKeyUnbound || phaseTimer > StuckFramesBeforeSkip)
+                && DrawActionButton(sb, card, SkipBtn.Value, HalibutTheme.TextDim, time)) {
                 MarkSeen();
             }
         }
 
         //示意转盘形态的旋转环（非真实转盘，仅作引导背景）
+        //半径按真盘几何折算：两盘并存时一个 230 的光晕会罩住下方的义体盘
         private static void DrawWheelHint(SpriteBatch sb, Vector2 center, float time, float a) {
             float ease = VaultUtils.EaseOutCubic(a);
-            HalibutRenderer.DrawSoftGlow(sb, center, 230f * ease, HalibutTheme.Mid * (0.45f * a));
-            HalibutRenderer.DrawRing(sb, center, 206f * ease, 1.6f, HalibutTheme.Glow * (0.35f * a));
-            HalibutRenderer.DrawRing(sb, center, 150f * ease, 1.2f, HalibutTheme.Teal * (0.6f * a));
+            float outerR = HalibutTheme.WheelOuterR;
+            HalibutRenderer.DrawSoftGlow(sb, center, (outerR + 28f) * ease, HalibutTheme.Mid * (0.45f * a));
+            HalibutRenderer.DrawRing(sb, center, (outerR + 12f) * ease, 1.6f, HalibutTheme.Glow * (0.35f * a));
+            HalibutRenderer.DrawRing(sb, center, HalibutTheme.WheelInnerR * ease, 1.2f, HalibutTheme.Teal * (0.6f * a));
             float rot = time * 0.5f;
             for (int i = 0; i < 6; i++) {
                 float a0 = rot + i * MathHelper.TwoPi / 6f;
-                HalibutRenderer.DrawArcStroke(sb, center, 218f * ease, a0, a0 + 0.42f, 1.4f,
+                HalibutRenderer.DrawArcStroke(sb, center, (outerR + 20f) * ease, a0, a0 + 0.42f, 1.4f,
                     HalibutTheme.GlowHi * (0.45f * a));
             }
         }

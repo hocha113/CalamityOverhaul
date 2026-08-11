@@ -178,6 +178,37 @@ HackTimeTutorialLead: {
 	HT_Observing: UPLOADING...
 }
 
+CybCourseWheelIntroDialogue: {
+	Line1: 两项核心协议都验证过了。最后教您一个手势，把它们收进指尖
+	Line2: 按住 {0}，快捷转盘就会展开——领域的三个层级排在盘面上，正中央就是骇客时间的入口
+	Line3: 来吧。按住 {0}，把光标甩向想要的层级，松手即可
+}
+
+WheelTutorialLead: {
+	RW_S00_Title: 呼出快捷转盘
+	RW_S01_Title: 选择领域层级
+	RW_S02_Title: 中心：骇客时间
+	RW_S00_Body:
+		'''
+		按住 {0} 呼出快捷转盘
+		所有够格的盘会一起出现，光标离谁近就归谁
+		'''
+	RW_S01_Body:
+		'''
+		保持按住，把光标甩向任一层级扇区，
+		左键选定或直接松手确认，领域随即展开
+		'''
+	RW_S02_Body:
+		'''
+		转盘正中央就是骇客时间的快捷入口，
+		单击它等同于按下 {1}。全部训练到此完成
+		'''
+	RW_Calibrating: SYNCHRONIZED...
+	RW_NextBtn: NEXT  >
+	RW_HintStuck: HINT: 点击 NEXT 按钮可强制跳过
+	RW_KeyHintUnbound: 提示：快捷转盘键未绑定，转盘无法呼出；请在 设置 > 控制 中绑定，或点 NEXT 跳过
+}
+
 CybCourseOutroDialogue: {
 	Line1: 训练完成。所有接口均已完成校准
 	Line2: 神经直连没问题了。超梦节点正在脱钩

@@ -120,15 +120,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (frame % ScanInterval == 0) {
                 cachedPeakStacks = 0;
                 float r2 = radius * radius;
+                bool authority = Main.netMode != NetmodeID.MultiplayerClient;
+                // 联机刷苔只在权威端写；owner 客户端只读 ExtraAI 镜像做缠根预览，避免双倍叠层
                 for (int i = 0; i < Main.maxNPCs; i++) {
                     NPC npc = Main.npc[i];
                     if (!npc.active || npc.friendly || npc.dontTakeDamage) continue;
                     if (Vector2.DistanceSquared(npc.Center, Projectile.Center) > r2) continue;
-                    if (npc.TryGetGlobalNPC(out SHPCNPCEffects eff)) {
-                        //ApplyMoss Math.Max 续时，6帧间隔仍撑90帧
-                        eff.ApplyMoss(90, 1);
-                        cachedPeakStacks = Math.Max(cachedPeakStacks, eff.MossStacks);
+                    if (!npc.TryGetGlobalNPC(out SHPCNPCEffects eff)) continue;
+                    if (authority) {
+                        int before = eff.MossStacks;
+                        eff.ApplyMossAuthority(90, 1);
+                        if (Main.netMode == NetmodeID.Server
+                            && eff.MossStacks != before) {
+                            npc.netUpdate = true;
+                        }
                     }
+                    cachedPeakStacks = Math.Max(cachedPeakStacks, eff.MossStacks);
                 }
             }
             //每18帧伸藤到最近敌

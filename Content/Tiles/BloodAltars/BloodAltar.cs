@@ -48,7 +48,8 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
             TileObjectData.addTile(Type);
         }
 
-        public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile(CWRID.Item_BloodOrb);
+        //光标显示的是祭坛吃什么，而不是祭坛自己
+        public override void MouseOver(int i, int j) => Main.LocalPlayer.SetMouseOverByTile(BloodAltarTP.OfferingType);
 
         public override bool CanExplode(int i, int j) => false;
 

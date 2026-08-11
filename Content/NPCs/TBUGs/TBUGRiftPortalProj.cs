@@ -378,8 +378,8 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
                 DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-            //冷绿点光，强度随开口
-            Lighting.AddLight(Projectile.Center, new Vector3(0.10f, 0.55f, 0.20f) * MathHelper.Clamp(aperture, 0f, 1f));
+            //冷蓝点光，强度随开口
+            Lighting.AddLight(Projectile.Center, new Vector3(0.16f, 0.38f, 0.72f) * MathHelper.Clamp(aperture, 0f, 1f));
         }
 
         private static float Hash(float p) {
@@ -431,8 +431,8 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
                 sb.Draw(px, pos, onePx, Color.Black * 0.94f, 0f,
                     new Vector2(0.5f), new Vector2(w, sliceH), SpriteEffects.None, 0f);
 
-                //切片两侧绿沿，吐出脉冲时增亮
-                Color rim = new Color(40, 255, 90) * (0.30f + spitPulse * 0.55f);
+                //切片两侧蓝沿，吐出脉冲时增亮
+                Color rim = new Color(72, 158, 255) * (0.30f + spitPulse * 0.55f);
                 sb.Draw(px, pos - new Vector2(w * 0.5f, 0f), onePx, rim, 0f,
                     new Vector2(0.5f), new Vector2(2f, sliceH), SpriteEffects.None, 0f);
                 sb.Draw(px, pos + new Vector2(w * 0.5f, 0f), onePx, rim * 0.6f, 0f,
@@ -443,8 +443,8 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
                 if (lineRoll > 0.45f && w > 8f) {
                     bool errorLine = lineRoll > 0.9f;
                     Color lineCol = errorLine
-                        ? new Color(255, 20, 115) * 0.85f
-                        : new Color(40, 230, 90) * 0.5f;
+                        ? new Color(255, 62, 118) * 0.85f
+                        : new Color(60, 140, 235) * 0.5f;
                     float lineW = w * Main.rand.NextFloat(0.25f, 0.8f);
                     float lineX = (Hash(i * 5.9f + seedFrame * 0.77f) - 0.5f) * (w - lineW) * 0.8f;
                     sb.Draw(px, pos + new Vector2(lineX, 0f), onePx, lineCol, 0f,
@@ -457,12 +457,12 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs
                 float bx = (Hash(seedFrame * 2.13f) - 0.5f) * halfW;
                 float by = (Hash(seedFrame * 3.57f) - 0.5f) * halfH * 1.4f;
                 Vector2 bsize = new(Main.rand.Next(6, 18), Main.rand.Next(4, 10));
-                sb.Draw(px, center + new Vector2(bx, by), onePx, new Color(255, 0, 128) * 0.8f, 0f,
+                sb.Draw(px, center + new Vector2(bx, by), onePx, new Color(255, 62, 118) * 0.8f, 0f,
                     new Vector2(0.5f), bsize, SpriteEffects.None, 0f);
             }
 
-            //冷绿点光，强度随开口
-            Lighting.AddLight(Projectile.Center, new Vector3(0.10f, 0.55f, 0.20f) * MathF.Min(open, 1f));
+            //冷蓝点光，强度随开口
+            Lighting.AddLight(Projectile.Center, new Vector3(0.16f, 0.38f, 0.72f) * MathF.Min(open, 1f));
         }
 
         #endregion

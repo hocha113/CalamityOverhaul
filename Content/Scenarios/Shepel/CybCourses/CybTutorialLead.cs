@@ -258,7 +258,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             _ => -1,
         };
 
-        private static void ForceEquipSHPC() {
+        /// <summary>把背包里的 SHPC 挑回手上；转盘段也复用</summary>
+        internal static void ForceEquipSHPC() {
             Player p = Main.LocalPlayer;
             if (p == null || p.dead) return;
             for (int i = 0; i < 10; i++) {

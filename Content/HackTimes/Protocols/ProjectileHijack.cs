@@ -28,24 +28,32 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override bool OnApply(IHackTarget target, Player caster) {
             if (!HackTargets.TryProjectile(target, out Projectile projectile)) return false;
 
-            if (Main.netMode != NetmodeID.MultiplayerClient) {
-                projectile.hostile = false;
-                projectile.friendly = true;
-                //改判归属，伤害才会记在施法者头上；权威端改完靠 netUpdate 推给各端
-                if (caster != null) {
-                    projectile.owner = caster.whoAmI;
-                }
-                projectile.velocity = -projectile.velocity;
-                projectile.netUpdate = true;
-            }
+            if (Main.netMode != NetmodeID.MultiplayerClient) Hijack(projectile);
             if (Main.netMode != NetmodeID.Server) EmitVisual(projectile);
             return true;
         }
 
         public override void OnReplicatedApply(IHackTarget target, int elapsed) {
-            if (HackTargets.TryProjectile(target, out Projectile projectile)) {
-                EmitVisual(projectile);
-            }
+            if (!HackTargets.TryProjectile(target, out Projectile projectile)) return;
+            Hijack(projectile);
+            EmitVisual(projectile);
+        }
+
+        /// <summary>
+        /// 接管这件事没有一条能同步的路，只能各端自己翻一遍。<br/>
+        /// <c>owner</c> 保持原样（敌对弹一般是 255）：改成玩家索引会把服务端唯一的
+        /// 推送通道关掉，而 <c>hostile</c> / <c>friendly</c> 不在任何原版包里，
+        /// 显式补一发 <c>SyncProjectile</c> 又会被客户端按 owner+identity 反查未果、
+        /// 当成新弹再生成一发。<br/>
+        /// 于是：owner 仍是 255，改判后的 NPC 命中只由服务端结算
+        /// （伤害靠 <c>SyncNPC</c> 回传），而各端各自翻标志与速度，
+        /// 才能让玩家碰撞判定与观感在每台机器上都对。<br/>
+        /// 不能置 <c>netUpdate</c>：权威速度包与本端翻转会叠在一起，把弹幕又翻回去
+        /// </summary>
+        private static void Hijack(Projectile projectile) {
+            projectile.hostile = false;
+            projectile.friendly = true;
+            projectile.velocity = -projectile.velocity;
         }
 
         private static void EmitVisual(Projectile projectile) {

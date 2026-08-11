@@ -38,7 +38,8 @@ namespace CalamityOverhaul.Content.HackTimes
         private static void TryLeech(NPC npc, int damage) {
             ActiveHackEffect effect = HackEffectTracker.GetEffect<DataLeech>(npc.whoAmI);
             if (effect == null) return;
-            DataLeech.ApplyLeech(ResolveCaster(effect), npc, damage);
+            DataLeech.ApplyLeech(ResolveCaster(effect), npc, damage,
+                effect.ActivationId);
         }
 
         private static void TrySplit(NPC npc, int damage) {

@@ -29,6 +29,12 @@ namespace CalamityOverhaul.Common
         [DefaultValue(true)]
         public bool BiologyOverhaul { get; set; }
 
+        //联机 PvP 骇入总开关。运行时在请求校验处读（HackPvPRules.ServerEnabled），
+        //不需要 ReloadRequired；PvP 本身已是 hostile 双向自愿，默认开只是把内容亮出来
+        [BackgroundColor(35, 185, 78, 255)]
+        [DefaultValue(true)]
+        public bool HackPvP { get; set; }
+
         [Header("CWRWeapon")]
 
         [BackgroundColor(192, 54, 94, 255)]

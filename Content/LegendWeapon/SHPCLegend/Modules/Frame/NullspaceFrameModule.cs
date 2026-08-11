@@ -43,15 +43,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
         private static void SpawnTear(CyberTraceBeamProj source) {
             int dmg = Math.Max((int)(source.Projectile.damage * TearDamageRatio), 1);
-            int idx = Projectile.NewProjectile(
+            //爆炸半径 60px，ai2 走生成包同步
+            Projectile.NewProjectile(
                 source.Projectile.GetSource_FromThis(),
                 source.Projectile.Center, Vector2.Zero,
                 ModContent.ProjectileType<CyberDetonationProj>(),
-                dmg, 0f, source.Projectile.owner, ai0: 0.15f);
-            if (idx >= 0 && idx < Main.maxProjectiles) {
-                //爆炸半径 60px
-                Main.projectile[idx].localAI[2] = 60f;
-            }
+                dmg, 0f, source.Projectile.owner, ai0: 0.15f, ai1: 0f, ai2: 60f);
         }
     }
 }

@@ -508,16 +508,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             modifiers.FinalDamage *= multiplier;
         }
 
-        /// <summary>命中微爆，半径 <see cref="ExplodeRadius"/>，localAI[2] 覆写</summary>
+        /// <summary>命中微爆，半径 <see cref="ExplodeRadius"/>，ai2 覆写走生成包同步</summary>
         private void SpawnMicroExplosion(Vector2 center) {
             int dmg = Math.Max((int)(Projectile.damage * ExplodeDamageMul), 1);
             int idx = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
                 center, Vector2.Zero,
                 ModContent.ProjectileType<CyberDetonationProj>(),
                 dmg, 0f, Projectile.owner,
-                ai0: 0f, ai1: overdriveAmount);
+                ai0: 0f, ai1: overdriveAmount, ai2: ExplodeRadius);
             if (idx >= 0 && idx < Main.maxProjectiles) {
-                Main.projectile[idx].localAI[2] = ExplodeRadius;
                 Main.projectile[idx].originalDamage = Projectile.originalDamage;
             }
         }

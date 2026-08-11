@@ -57,8 +57,6 @@ namespace CalamityOverhaul.Content
         public bool SoulfireExplosion;
         /// <summary>毁灭者之主</summary>
         public bool DestroyerOwner;
-        /// <summary>穿戴英雄无冕</summary>
-        public bool IsUnsunghero;
         /// <summary>穿戴正义显现</summary>
         public bool IsJusticeUnveiled;
         /// <summary>正义显现触发机会次数</summary>
@@ -125,7 +123,6 @@ namespace CalamityOverhaul.Content
         public override void ResetEffects() => Reset();
 
         private void Reset() {
-            IsUnsunghero = false;
             HellfireExplosion = false;
             IsJusticeUnveiled = false;
             DestroyerOwner = false;

@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.HackTimes.Protocols;
 using CalamityOverhaul.Content.HackTimes.Scannables;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.RAMSystems;
@@ -216,10 +217,10 @@ namespace CalamityOverhaul.Content.HackTimes
         public static LocalizedText AccessDeniedTitle { get; private set; }
         public static LocalizedText AccessDeniedDesc { get; private set; }
 
-        //未持有协议的加密暗格
+        //协议持有制：页脚计数与"库里没有适用协议"的空态
         public static LocalizedText ProtocolsOwned { get; private set; }
-        public static LocalizedText ProtocolLockedTitle { get; private set; }
-        public static LocalizedText ProtocolLockedHint { get; private set; }
+        public static LocalizedText NoProtocolTitle { get; private set; }
+        public static LocalizedText NoProtocolHint { get; private set; }
 
         //强制注销的战斗飘字
         public static LocalizedText Erased { get; private set; }
@@ -416,8 +417,8 @@ namespace CalamityOverhaul.Content.HackTimes
             AccessDeniedDesc = this.GetLocalization(nameof(AccessDeniedDesc));
 
             ProtocolsOwned = this.GetLocalization(nameof(ProtocolsOwned));
-            ProtocolLockedTitle = this.GetLocalization(nameof(ProtocolLockedTitle));
-            ProtocolLockedHint = this.GetLocalization(nameof(ProtocolLockedHint));
+            NoProtocolTitle = this.GetLocalization(nameof(NoProtocolTitle));
+            NoProtocolHint = this.GetLocalization(nameof(NoProtocolHint));
 
             Erased = this.GetLocalization(nameof(Erased));
 
@@ -637,6 +638,8 @@ namespace CalamityOverhaul.Content.HackTimes
         /// <summary>是否可骇入该 NPC</summary>
         public static bool IsHackableTarget(NPC npc) {
             if (npc == null || !npc.active) return false;
+            //提权窗口：屏幕内即可骇，领域半径不设限
+            if (PrivilegeEscalateState.BypassRangeGate(Main.LocalPlayer)) return true;
             //赛博空间外默认可骇
             if (!Cyberspace.Active) return true;
             float dx = npc.Center.X - Main.LocalPlayer.Center.X;
@@ -662,6 +665,10 @@ namespace CalamityOverhaul.Content.HackTimes
             HackTimeUI.Instance?.Queue?.Clear();
             HackEffectTracker.Reset();
             HackTimeNetSync.Reset();
+            //这几个协议把 per-effect 状态外挂在自己的静态账上，都只对上一个世界有效
+            Cryostasis.ClearPlacedIce();
+            MachineOverclock.ClearBudgets();
+            DataLeech.ClearAccounts();
         }
     }
 }

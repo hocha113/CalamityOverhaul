@@ -23,7 +23,10 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         }
 
         public override bool OnApply(IHackTarget target, Player caster) {
-            if (!HackTargets.TryItem(target, out Item item) || caster == null) return false;
+            if (!HackTargets.TryItem(target, out Item item, out int itemIndex)
+                || caster == null) {
+                return false;
+            }
             Vector2 from = item.Center;
 
             if (Main.netMode != NetmodeID.MultiplayerClient) {
@@ -32,7 +35,9 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 //归零抓取延迟，落地即被原版拾取逻辑捞走
                 item.noGrabDelay = 0;
                 if (Main.netMode == NetmodeID.Server) {
-                    NetMessage.SendData(MessageID.SyncItem, number: item.whoAmI);
+                    NetMessage.SendData(MessageID.SyncItem, number: itemIndex);
+                    HackTimeNetSync.BroadcastPointCue(HackPointCue.ItemRecall,
+                        caster.whoAmI, from);
                 }
             }
 
@@ -40,10 +45,16 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             return true;
         }
 
-        public override void OnReplicatedApply(IHackTarget target, int elapsed) {
-            if (!HackTargets.TryItem(target, out Item item)) return;
-            Player caster = Main.player[Main.myPlayer];
-            EmitTrail(item.Center, caster?.Center ?? item.Center);
+        /// <summary>
+        /// 远端轨迹只能走专用表现包：EffectApply 到达时物品已经被 <c>SyncItem</c>
+        /// 挪到施法者身上，起点丢了；施法者也必须按包里的索引取，
+        /// 读本机玩家会让每个旁观者都看到物品朝自己飞
+        /// </summary>
+        internal static void PlayRecallTrail(int casterIndex, Vector2 from) {
+            if (casterIndex < 0 || casterIndex >= Main.maxPlayers) return;
+            Player caster = Main.player[casterIndex];
+            if (caster?.active != true) return;
+            EmitTrail(from, caster.Center);
         }
 
         //沿回收路径铺一串火花，读作被拽过来而不是凭空消失

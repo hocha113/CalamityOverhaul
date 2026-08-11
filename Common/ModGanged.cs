@@ -27,7 +27,6 @@ namespace CalamityOverhaul.Common
         public delegate bool On_OnSpawnEnchCanAffectProjectile_Dalegate(Projectile projectile, bool allowMinions);
         public delegate void On_BossHealthBarManager_Draw_Dalegate(object obj, SpriteBatch spriteBatch, IBigProgressBar currentBar, BigProgressBarInfo info);
         public delegate int On_GetReworkedReforge_Dalegate(Item item, UnifiedRandom rand, int currentPrefix);
-        public delegate void On_ProvideStealthStatBonuses_Dalegate(ModPlayer calamityPlayer);
         #endregion
 
         #region 加载入口

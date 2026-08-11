@@ -34,7 +34,9 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
         public static LocalizedText InsufficientOfferingText { get; private set; }
         public static LocalizedText SacrificeDeathReason { get; private set; }
 
-        public const int OrbCost = 50;
+        /// <summary>献祭品：原版血泪，祭坛的核心玩法因此不依赖任何外部模组</summary>
+        public const int OfferingType = ItemID.BloodMoonStarter;
+        public const int OfferingCost = 1;
         public const int OfferingFrames = 35;
         public const int BoilFrames = 40;
         public const int EruptFrames = 30;
@@ -76,7 +78,7 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
 
         public override void SetStaticDefaults() {
             ApproachingText = this.GetLocalization(nameof(ApproachingText), () => "深红的注视正在降临...");
-            InsufficientOfferingText = this.GetLocalization(nameof(InsufficientOfferingText), () => "你身上的血珠不够向深红之王进行朝贡...");
+            InsufficientOfferingText = this.GetLocalization(nameof(InsufficientOfferingText), () => "你身上的血泪不够向深红之王进行朝贡...");
             SacrificeDeathReason = this.GetLocalization(nameof(SacrificeDeathReason), () => "{0}陷入了无尽的血与肉的狂想");
         }
 
@@ -112,7 +114,7 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
             if (!VaultUtils.isClient) {
                 AdvancePhaseOnAuthority();
                 if (Phase == BloodAltarPhase.Active) {
-                    DrawInLooseOrbs();
+                    DrawInLooseDrops();
                 }
             }
 
@@ -128,7 +130,7 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
         #region 交互
 
         /// <summary>
-        /// 点火与熄灭都由点击者本地发起：血珠是他自己的背包（服务端写不了别人的背包），
+        /// 点火与熄灭都由点击者本地发起：血泪出自他自己的背包（服务端写不了别人的背包），
         /// 因此这里只在归属客户端上生效，其它端等 [SyncVar] 到达。<br/>
         /// 阶段推进仍归权威端，跨端一致性由那条路径保证
         /// </summary>
@@ -148,38 +150,38 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
                 return true;
             }
 
-            if (CountOrbs(player) < OrbCost) {
+            if (CountOffering(player) < OfferingCost) {
                 RejectOffering(player);
                 return true;
             }
-            ConsumeOrbs(player);
+            ConsumeOffering(player);
             summonerPlayer = player.whoAmI;
             SetPhase(BloodAltarPhase.Offering);
             SendData();
             return true;
         }
 
-        private static int CountOrbs(Player player) {
-            int orbNum = 0;
-            foreach (Item orb in player.inventory) {
-                if (orb.type == CWRID.Item_BloodOrb) {
-                    orbNum += orb.stack;
+        private static int CountOffering(Player player) {
+            int num = 0;
+            foreach (Item tear in player.inventory) {
+                if (tear.type == OfferingType) {
+                    num += tear.stack;
                 }
             }
-            return orbNum;
+            return num;
         }
 
-        private static void ConsumeOrbs(Player player) {
-            int remaining = OrbCost;
-            foreach (Item orb in player.inventory) {
-                if (orb.type != CWRID.Item_BloodOrb) {
+        private static void ConsumeOffering(Player player) {
+            int remaining = OfferingCost;
+            foreach (Item tear in player.inventory) {
+                if (tear.type != OfferingType) {
                     continue;
                 }
-                int take = Math.Min(orb.stack, remaining);
-                orb.stack -= take;
+                int take = Math.Min(tear.stack, remaining);
+                tear.stack -= take;
                 remaining -= take;
-                if (orb.stack <= 0) {
-                    orb.TurnToAir();
+                if (tear.stack <= 0) {
+                    tear.TurnToAir();
                 }
                 if (remaining <= 0) {
                     return;
@@ -275,16 +277,23 @@ namespace CalamityOverhaul.Content.Tiles.BloodAltars
 
         #endregion
 
-        #region 血珠吸收（权威端）
+        #region 掉落物吸收（权威端）
 
         /// <summary>
-        /// 血月期间把散落的血珠拖进碗里再塞进近处箱子。<br/>
+        /// 祭坛认得的祭品：血泪是本体，装了灾厄时连血珠一并收，
+        /// 没装灾厄 <see cref="CWRID.Item_BloodOrb"/> 为 0，那一支自然失效
+        /// </summary>
+        internal static bool IsIntakeItem(int type)
+            => type == OfferingType || (type > 0 && type == CWRID.Item_BloodOrb);
+
+        /// <summary>
+        /// 血月期间把散落的祭品拖进碗里再塞进近处箱子。<br/>
         /// 物品位置与箱子内容都是服务端权威，客户端一行都不碰，只在本地画牵引表现
         /// </summary>
-        private void DrawInLooseOrbs() {
+        private void DrawInLooseDrops() {
             Vector2 bowl = BowlCenter;
             foreach (Item orb in Main.ActiveItems) {
-                if (orb.type != CWRID.Item_BloodOrb) {
+                if (!IsIntakeItem(orb.type)) {
                     continue;
                 }
 

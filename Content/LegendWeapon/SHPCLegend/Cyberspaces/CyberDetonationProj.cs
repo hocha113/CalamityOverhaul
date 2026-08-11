@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -40,25 +41,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Projectile.DamageType = DamageClass.Magic;
         }
 
+        public override void SendExtraAI(BinaryWriter writer) {
+            //SyncProjectile 伤害字段是 short；黑曜石爆发走服务端代生成，
+            //中心爆伤害（damage*2）可能越过 32767，ExtraAI 带全量兜底
+            writer.Write(Projectile.damage);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            int fullDamage = reader.ReadInt32();
+            if (fullDamage > 0) {
+                Projectile.damage = fullDamage;
+            }
+        }
+
+        /// <summary>按蓄力/超驱推算默认爆炸半径；生成端预计算 ai2 覆写时共用同一公式</summary>
+        internal static float ComputeRadius(float chargeRatio, float overdriveAmount) {
+            float radius = MathHelper.Lerp(BaseExplosionRadius, MaxExplosionRadius,
+                MathHelper.Clamp(chargeRatio, 0f, 1f));
+            float od = MathHelper.Clamp(overdriveAmount, 0f, 1f);
+            if (od > 0f) {
+                radius *= 1f + od * 0.5f;
+            }
+            return radius;
+        }
+
         public override void AI() {
             //首帧读蓄力算半径
             if (Projectile.localAI[0] == 0f) {
                 chargeRatio = MathHelper.Clamp(Projectile.ai[0], 0f, 1f);
                 overdriveAmount = MathHelper.Clamp(Projectile.ai[1], 0f, 1f);
-                explosionRadius = MathHelper.Lerp(BaseExplosionRadius, MaxExplosionRadius, chargeRatio);
-                //超驱半径同步扩大
-                if (overdriveAmount > 0f)
-                    explosionRadius *= 1f + overdriveAmount * 0.5f;
-                //localAI[1] 改件半径倍率，<=0 中性
-                float radiusMul = Projectile.localAI[1];
-                if (radiusMul > 0.01f) {
-                    explosionRadius *= radiusMul;
-                }
-                //localAI[2]>0 绝对半径覆盖
-                float radiusOverride = Projectile.localAI[2];
-                if (radiusOverride > 1f) {
-                    explosionRadius = radiusOverride;
-                }
+                //ai[2]>1 为绝对半径覆写：随生成包同步，联机各端一致；不再走 localAI（不同步）
+                explosionRadius = Projectile.ai[2] > 1f
+                    ? Projectile.ai[2]
+                    : ComputeRadius(chargeRatio, overdriveAmount);
                 Projectile.localAI[0] = 1f;
 
                 int size = (int)(explosionRadius * 2f);

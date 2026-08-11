@@ -2,6 +2,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -15,8 +16,13 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         private const float ShockRadius = 176f;
         //每几帧结算一次
         private const int ShockInterval = 20;
+        //每跳按最大生命的比例，Boss 级另算
+        private const float ShockLifeRatio = 0.012f;
+        private const float BossShockLifeRatio = 0.003f;
 
         private static readonly Color Arc = new(120, 220, 255);
+        //共享血池的体节只该吃一份，否则一条蠕虫泡在水里等于被乘上体节数
+        private static readonly HashSet<int> shockedAnchors = [];
 
         public override void SetDefaults() {
             UploadTime = 90;
@@ -27,6 +33,13 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         }
 
         public override int GetDuration() => 60 * 6;
+
+        public override bool CanApplyTo(IHackTarget target) {
+            if (!base.CanApplyTo(target)) return false;
+            if (!HackTargets.TryLiquid(target, out int tileX, out int tileY)) return false;
+            //微光不是电解质，通电只会把它当普通水处理，语义与观感都不成立
+            return Main.tile[tileX, tileY].LiquidType != LiquidID.Shimmer;
+        }
 
         public override bool OnApply(IHackTarget target, Player caster) {
             if (!HackTargets.TryLiquid(target, out int tileX, out int tileY)) return false;
@@ -61,6 +74,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
         //只打真的泡在液体里的敌人，站在岸上不该挨电
         private static void ShockSubmerged(Vector2 center) {
+            shockedAnchors.Clear();
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
                 if (!npc.active || npc.friendly || npc.townNPC
@@ -72,10 +86,16 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                     continue;
                 }
                 if (!npc.wet && !npc.lavaWet && !npc.honeyWet) continue;
+                if (!shockedAnchors.Add(NpcGroupHelper.GetAnchorIndex(npc))) continue;
 
-                int damage = Math.Max(24, (int)(npc.lifeMax * 0.012f));
+                //Water 目标拿不到 NpcScannable 那份 EffectMult 折扣，Boss 的减免只能在这里给
+                float ratio = NpcGroupHelper.IsBossTier(npc)
+                    ? BossShockLifeRatio
+                    : ShockLifeRatio;
+                int damage = Math.Max(24, (int)(npc.lifeMax * ratio));
                 npc.SimpleStrikeNPC(damage, 0, false, 0f, null, false, 0f, true);
             }
+            shockedAnchors.Clear();
         }
 
         private static void EmitCharge(Vector2 center) {

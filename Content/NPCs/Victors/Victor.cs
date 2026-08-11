@@ -1,8 +1,12 @@
-﻿using CalamityOverhaul.Content.NPCs.Victors.UIs;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.NPCs.Victors.UIs;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.Personalities;
@@ -23,6 +27,35 @@ namespace CalamityOverhaul.Content.NPCs.Victors
 
         /// <summary>绘制脚部 Y 微调，正值向下</summary>
         private const float DrawVerticalOffset = 2f;
+
+        #region 出场推出
+
+        /// <summary>被门推出时的初速；横向为主，配一记不大的抬腿</summary>
+        private static readonly Vector2 EjectVelocity = new(3.8f, -3.2f);
+        /// <summary>落地后站稳所需帧数</summary>
+        private const int RecoverFrames = 22;
+        /// <summary>滞空前倾上限；他是被推出来的，不是被甩出来的，比 TBUG 收敛</summary>
+        private const float MaxLeanRadians = 0.30f;
+
+        internal enum EntryPhase : byte
+        {
+            None,
+            /// <summary>离门滞空段，物理交给原版重力</summary>
+            Ejected,
+            /// <summary>落地站稳，横速衰减 + 前倾回正</summary>
+            Recover,
+        }
+
+        private EntryPhase entryPhase;
+        private int entryTimer;
+        private int entryFacing = 1;
+        /// <summary>本端只演一次，防门每帧重复触发</summary>
+        private bool entryPlayed;
+
+        /// <summary>出场演出进行中；此间不接受交互</summary>
+        internal bool InEntry => entryPhase != EntryPhase.None;
+
+        #endregion
 
         public override void SetStaticDefaults() {
             Main.npcFrameCount[Type] = FrameCount;
@@ -108,6 +141,13 @@ namespace CalamityOverhaul.Content.NPCs.Victors
                 return;
             }
 
+            //滞空定格迈步帧，读作被推出去而不是原地站着平移
+            if (entryPhase == EntryPhase.Ejected) {
+                NPC.frameCounter = 0;
+                NPC.frame.Y = 5 * frameHeight;
+                return;
+            }
+
             if (Math.Abs(NPC.velocity.X) < 0.1f) {
                 NPC.frameCounter = 0;
                 NPC.frame.Y = 0;
@@ -156,10 +196,39 @@ namespace CalamityOverhaul.Content.NPCs.Victors
             return Color.Lerp(silhouette, drawColor, mix) * opacity;
         }
 
+        #region 出场状态机
+
         /// <summary>
-        /// 出场中 alpha&gt;16 冻 Passive；位姿由 <see cref="VictorRiftPortalProj.UpdateBoundVictor"/> 锚定
+        /// 由 <see cref="VictorRiftPortalProj"/> 在推出帧起逐帧认领（客户端可能晚一两帧才收到 NPC）；
+        /// 一次性进入滞空段，之后位移交给原版重力与瓦片碰撞
+        /// </summary>
+        internal void BeginEntry(int facing) {
+            if (entryPlayed) {
+                return;
+            }
+            entryPlayed = true;
+            entryPhase = EntryPhase.Ejected;
+            entryTimer = 0;
+            entryFacing = facing >= 0 ? 1 : -1;
+        }
+
+        /// <summary>
+        /// 出场期间接管 Passive 决策；返回 false 只跳过 AI，重力与碰撞仍由原版在 AI 之后施加。
+        /// 淡入由门驱动 alpha，剪影表现见 <see cref="ComputeEmergeColor"/>
         /// </summary>
         public override bool PreAI() {
+            if (entryPhase != EntryPhase.None) {
+                entryTimer++;
+                if (entryPhase == EntryPhase.Ejected) {
+                    UpdateEjected();
+                }
+                else {
+                    UpdateRecover();
+                }
+                return false;
+            }
+
+            //兜底：门未接管却仍处于淡入态（旧档中途读入）时冻住，别让半透明的他走路
             if (NPC.alpha > 16) {
                 NPC.velocity = Vector2.Zero;
                 NPC.frameCounter = 0;
@@ -168,9 +237,83 @@ namespace CalamityOverhaul.Content.NPCs.Victors
             return true;
         }
 
+        private void UpdateEjected() {
+            //轻风阻，别飞得离门太远
+            NPC.velocity.X *= 0.985f;
+            NPC.direction = NPC.spriteDirection = entryFacing;
+            NPC.rotation = MathHelper.Clamp(NPC.velocity.X * 0.06f, -MaxLeanRadians, MaxLeanRadians);
+
+            bool grounded = NPC.collideY && NPC.velocity.Y >= 0f;
+            bool splashed = NPC.wet && entryTimer > 10;
+            if ((grounded && entryTimer > 6) || splashed || entryTimer > 200) {
+                entryPhase = EntryPhase.Recover;
+                entryTimer = 0;
+                OnEntryLand();
+            }
+        }
+
+        private void OnEntryLand() {
+            //落地卸掉大半横速，剩下的够他迈出一两步收住
+            NPC.velocity.X *= 0.45f;
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            Vector2 dustPos = new(NPC.position.X, NPC.Bottom.Y - 8f);
+            for (int i = 0; i < 14; i++) {
+                Dust d = Dust.NewDustDirect(dustPos, NPC.width, 8, DustID.Smoke,
+                    Main.rand.NextFloat(-1.4f, 1.4f), Main.rand.NextFloat(-1.9f, -0.3f),
+                    150, new Color(66, 34, 30), Main.rand.NextFloat(0.8f, 1.3f));
+                d.noGravity = false;
+            }
+            //门的同族余烬，沿地面向外铺
+            for (int i = 0; i < 5; i++) {
+                Vector2 vel = new(entryFacing * Main.rand.NextFloat(0.6f, 2.2f), -Main.rand.NextFloat(0.4f, 1.4f));
+                PRTLoader.NewParticle<PRT_BanishGlitch>(NPC.Bottom - new Vector2(0f, 6f), vel,
+                    Color.White, Main.rand.NextFloat(0.4f, 0.9f)).Configure(Main.rand.Next(16, 30), 0.10f);
+            }
+
+            SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.7f, Pitch = -0.55f }, NPC.Bottom);
+            SoundEngine.PlaySound(CWRSound.ShortCircuit with { Volume = 0.26f, Pitch = 0.15f }, NPC.Bottom);
+            ShakeLocalNear(3.4f, 820f);
+        }
+
+        private void UpdateRecover() {
+            NPC.velocity.X *= 0.82f;
+            NPC.direction = NPC.spriteDirection = entryFacing;
+
+            //前倾回正带一次小过冲：他伸手扶了一下，然后站直
+            float t = MathHelper.Clamp(entryTimer / (float)RecoverFrames, 0f, 1f);
+            float settle = MathF.Exp(-t * 5.5f) * MathF.Cos(t * 9f);
+            NPC.rotation = MaxLeanRadians * 0.55f * settle * entryFacing;
+
+            if (entryTimer >= RecoverFrames) {
+                entryPhase = EntryPhase.None;
+                entryTimer = 0;
+                NPC.rotation = 0f;
+                NPC.velocity.X = 0f;
+                NPC.alpha = 0;
+            }
+        }
+
+        /// <summary>震动只写本机玩家，并按距离衰减——远处队友不该跟着晃</summary>
+        private void ShakeLocalNear(float strength, float maxDist) {
+            Player lp = Main.LocalPlayer;
+            if (lp?.active != true || lp.dead) {
+                return;
+            }
+            float dist = lp.Distance(NPC.Bottom);
+            if (dist >= maxDist) {
+                return;
+            }
+            lp.CWR().GetScreenShake(strength * (1f - dist / maxDist));
+        }
+
+        #endregion
+
         public override void AI() {
-            //仅本地右键交互
-            if (Main.dedServ) {
+            //仅本地右键交互；出场演出期间不接客
+            if (Main.dedServ || InEntry) {
                 return;
             }
 
