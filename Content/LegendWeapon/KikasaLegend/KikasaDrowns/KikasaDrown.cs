@@ -62,12 +62,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
         //==================== 资格 ====================
 
-        /// <summary>共享资格谓词：客户端预检与服务器复检同一份（一处真相）</summary>
+        /// <summary>
+        /// 共享资格谓词：客户端预检与服务器复检同一份（一处真相）。
+        /// 2026-08 暂时全放开：任何活跃 NPC（含 boss/城镇/免伤）都能沉，
+        /// 只留技术性守卫——正被放逐或已在沉溺中的目标不能被第二只手抓
+        /// </summary>
         public static bool IsEligibleTarget(NPC npc)
-            => npc?.active == true && !npc.friendly && !npc.townNPC
-            && npc.lifeMax > 0 && !npc.boss
-            && !npc.dontTakeDamage && !npc.immortal
-            && !CyberBossExecution.IsBossTier(npc)
+            => npc?.active == true && npc.lifeMax > 0
             && !CyberBanish.IsBanishing(npc.whoAmI)
             && !IsDrowningAuthority(npc.whoAmI);
 
@@ -88,7 +89,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
         /// <summary>
         /// 光标下有生物时受理沉溺，返回是否消费了这次按键
-        /// （boss/冷却/湖未就绪的拒绝也算消费——玩家的意图明确是生物，不该误沉手中物）
+        /// （冷却/湖未就绪的拒绝也算消费——玩家的意图明确是生物，不该误沉手中物）
         /// </summary>
         internal static bool TryDrownAtCursor(Player player) {
             if (player == null || player.whoAmI != Main.myPlayer) {
@@ -100,10 +101,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             }
 
             //意图已明确指向生物，以下拒绝均消费按键
-            if (hover.boss || CyberBossExecution.IsBossTier(hover)) {
-                Refuse(player, KikasaDrownSystem.BossRefuse);
-                return true;
-            }
             if (!player.GetModPlayer<KikasaVaultPlayer>().LakeReady) {
                 Refuse(player, KikasaVaultPlayer.LakeNotReady);
                 return true;
@@ -114,7 +111,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 return true;
             }
             if (!IsEligibleTarget(hover)) {
-                //免疫/不朽/已被别的系统攥着：湖收不了
+                //已被放逐/别只手攥着：湖收不了
                 Refuse(player, KikasaDrownSystem.BossRefuse);
                 return true;
             }
@@ -154,7 +151,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             float bestDistSq = float.MaxValue;
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
-                if (npc?.active != true || npc.friendly || npc.townNPC || npc.lifeMax <= 0) {
+                //资格暂时全放开，选中只留技术性过滤
+                if (npc?.active != true || npc.lifeMax <= 0) {
                     continue;
                 }
                 Rectangle hitbox = npc.Hitbox;

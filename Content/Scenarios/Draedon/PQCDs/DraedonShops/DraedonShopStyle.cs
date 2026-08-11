@@ -3,6 +3,7 @@ using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.UI;
 
 namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
 {
@@ -90,16 +91,16 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
             }
         }
 
+        /// <summary>
+        /// 走 <see cref="ItemSlot.DrawItemIcon"/>：内部过 ItemLoader.PreDrawInInventory/PostDrawInInventory，
+        /// 占位贴图 + 自绘（SVG/特效）的物品才画得出来；scale 语义与旧 box-fit 一致（只缩不放）
+        /// </summary>
         public static void DrawItemIcon(SpriteBatch sb, int type, Vector2 center, float box, float alpha, float extraScale = 1f) {
-            Main.instance.LoadItem(type);
-            Texture2D tex = TextureAssets.Item[type]?.Value;
-            if (tex == null) {
+            if (type <= ItemID.None
+                || !ContentSamples.ItemsByType.TryGetValue(type, out Item sample) || sample == null) {
                 return;
             }
-            Rectangle frame = Main.itemAnimations[type] != null ? Main.itemAnimations[type].GetFrame(tex) : tex.Bounds;
-            float maxDim = Math.Max(frame.Width, frame.Height);
-            float scale = (maxDim > box ? box / maxDim : 1f) * extraScale;
-            sb.Draw(tex, center, frame, Color.White * alpha, 0f, frame.Size() / 2f, scale, SpriteEffects.None, 0f);
+            ItemSlot.DrawItemIcon(sample, ItemSlot.Context.InWorld, sb, center, extraScale, box, Color.White * alpha);
         }
 
         /// <summary>切角取景框,呼应DrawPortraitFrame</summary>

@@ -80,7 +80,9 @@ namespace CalamityOverhaul.Common
         }
 
         /// <summary>
-        /// 单次扫描 <see cref="Main.npc"/> 收集同组活跃成员写入 <paramref name="output"/>，无递归
+        /// 单次扫描 <see cref="Main.npc"/> 收集同组活跃成员写入 <paramref name="output"/>，无递归；
+        /// 再沿 ai 双向体节链补集一次，不共享 realLife 又不在体节表里的蠕虫（EoW 分裂半截、
+        /// 自旋链接的模组蠕虫）也能收满整条，不会出现"扒走一节其余还在动"
         /// </summary>
         /// <param name="output">复用容器</param>
         /// <param name="clear">写入前清空，默认 true</param>
@@ -106,9 +108,11 @@ namespace CalamityOverhaul.Common
                     output.Add(n);
                 }
             }
+
+            AppendAiLinkChain(root, output);
         }
 
-        /// <summary>收集群组成员 whoAmI</summary>
+        /// <summary>收集群组成员 whoAmI，含 ai 体节链补集</summary>
         public static void CollectGroupIndices(NPC root, List<int> output, bool clear = true) {
             if (output == null) {
                 return;
@@ -130,6 +134,56 @@ namespace CalamityOverhaul.Common
                 if (IsMember(n, anchor, segList)) {
                     output.Add(n.whoAmI);
                 }
+            }
+
+            chainScratch.Clear();
+            AppendAiLinkChain(root, chainScratch);
+            for (int i = 0; i < chainScratch.Count; i++) {
+                int who = chainScratch[i].whoAmI;
+                if (!output.Contains(who)) {
+                    output.Add(who);
+                }
+            }
+            chainScratch.Clear();
+        }
+
+        //ai 链步行的复用容器
+        private static readonly List<NPC> chainScratch = [];
+
+        /// <summary>
+        /// 蠕虫 ai 链补集：vanilla 蠕虫 AI 的体节契约是 ai[0]=身后节、ai[1]=身前节
+        /// （NPC.AI_006_Worms 生成链），除 EoW 外原版蠕虫同时共享 realLife，
+        /// 但 EoW（强制 realLife=-1）与部分模组蠕虫只有 ai 链。沿双向链走满整条虫；
+        /// 链接有效性取双向一致（对方反向链指回自己）且两端同 aiStyle，
+        /// 计时器巧合的脏 ai 值卷不进无关 NPC
+        /// </summary>
+        private static void AppendAiLinkChain(NPC root, List<NPC> output) {
+            WalkAiChain(root, output, towardHead: true);
+            WalkAiChain(root, output, towardHead: false);
+        }
+
+        private static void WalkAiChain(NPC from, List<NPC> output, bool towardHead) {
+            NPC current = from;
+            for (int guard = 0; guard < Main.maxNPCs; guard++) {
+                int nextIndex = (int)(towardHead ? current.ai[1] : current.ai[0]);
+                if (nextIndex < 0 || nextIndex >= Main.maxNPCs || nextIndex == current.whoAmI) {
+                    return;
+                }
+                NPC next = Main.npc[nextIndex];
+                if (next?.active != true || next.aiStyle != current.aiStyle) {
+                    return;
+                }
+                int backIndex = (int)(towardHead ? next.ai[0] : next.ai[1]);
+                if (backIndex != current.whoAmI) {
+                    return;
+                }
+                if (output.Contains(next)) {
+                    //已收录（realLife/体节表先收过，或链成环），继续沿链走防中段断集
+                    current = next;
+                    continue;
+                }
+                output.Add(next);
+                current = next;
             }
         }
 

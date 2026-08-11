@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.UI;
 
 namespace CalamityOverhaul.Content.NPCs.TBUGs.UIs
 {
@@ -349,18 +350,17 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs.UIs
 
         #region 物品
 
+        /// <summary>
+        /// 物品图标必须走 <see cref="ItemSlot.DrawItemIcon"/>：它内部过
+        /// ItemLoader.PreDrawInInventory/PostDrawInInventory，协议芯片这类
+        /// 占位贴图 + 自绘（SVG/特效）的物品才画得出来；裸 Draw 物品贴图只会画出一块占位像素
+        /// </summary>
         public static void DrawItemIcon(SpriteBatch sb, int type, Vector2 center, float box, float alpha) {
-            Main.instance.LoadItem(type);
-            Texture2D tex = TextureAssets.Item[type]?.Value;
-            if (tex == null) {
+            if (type <= ItemID.None
+                || !ContentSamples.ItemsByType.TryGetValue(type, out Item sample) || sample == null) {
                 return;
             }
-            Rectangle frame = Main.itemAnimations[type] != null
-                ? Main.itemAnimations[type].GetFrame(tex)
-                : tex.Bounds;
-            float maxDim = Math.Max(frame.Width, frame.Height);
-            float scale = maxDim > box ? box / maxDim : 1f;
-            sb.Draw(tex, center, frame, Color.White * alpha, 0f, frame.Size() / 2f, scale, SpriteEffects.None, 0f);
+            ItemSlot.DrawItemIcon(sample, ItemSlot.Context.InWorld, sb, center, 1f, box, Color.White * alpha);
         }
 
         #endregion

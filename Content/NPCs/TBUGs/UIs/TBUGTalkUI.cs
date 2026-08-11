@@ -65,7 +65,6 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs.UIs
         //须容得下 WrapLines 上限 8 行（46 + 8×~27 + 12 + 36 + 14 ≈ 330），钳制不能低于实排高度
         private const int MaxConsoleHeight = 360;
 
-        private const int MarginLeft = 46;
         private const int MarginBottom = 34;
         /// <summary>立绘右肩压进窗口的像素数</summary>
         private const int PortraitOverlap = 22;
@@ -117,9 +116,9 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs.UIs
             int portW = 36 * TBUGTheme.PortraitScale;
             int portH = 50 * TBUGTheme.PortraitScale;
 
-            //宽度先定，换行只依赖宽度
-            int consoleX = MarginLeft + portW - PortraitOverlap;
-            int consoleW = (int)MathHelper.Clamp(screenW - consoleX - 56f, 520f, 900f);
+            //窗体水平居中；宽度先定，换行只依赖宽度
+            int consoleW = (int)MathHelper.Clamp(screenW * 0.55f, 560f, 900f);
+            int consoleX = (int)(screenW - consoleW) / 2;
 
             //窗高按实测行数长出来，长台词不会被裁；宽度与 textRect 同源（左 30 右 20）
             promptWidth = TBUGRenderer.Measure(">", TBUGTheme.FontBody).X + 10f;
@@ -146,8 +145,10 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs.UIs
             int consoleBottom = (int)screenH - MarginBottom + slide;
             consoleRect = new Rectangle(consoleX, consoleBottom - consoleH, consoleW, consoleH);
 
-            //立绘脚底与窗底齐平，头顶越过窗顶
-            portraitRect = new Rectangle(MarginLeft, consoleBottom - portH, portW, portH);
+            //立绘挂在窗左沿外侧，右肩压边；脚底与窗底齐平，头顶越过窗顶。
+            //极小分辨率下给个左缘保底，宁可多压一点边也别切出屏
+            int portraitX = Math.Max(6, consoleX - portW + PortraitOverlap);
+            portraitRect = new Rectangle(portraitX, consoleBottom - portH, portW, portH);
 
             //底部命令栏；内容左内边距 30，给压边立绘的右缘让出空隙
             int cmdY = consoleRect.Bottom - CommandBlock - FooterPad;

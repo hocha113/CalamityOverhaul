@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
@@ -354,8 +355,16 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
             float iconScale = 0.8f + hoverProgress * 0.2f;
             float iconFloatOffset = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + position.Y * 0.01f) * 2f * hoverProgress;
 
-            VaultUtils.SimpleDrawItem(spriteBatch, shopItem.itemType, position + new Vector2(25, 25 + iconFloatOffset),
-                10, iconScale * 5f, 0, Color.White * animation.UIAlpha);
+            if (!ContentSamples.ItemsByType.TryGetValue(shopItem.itemType, out Item sample) || sample == null) {
+                return;
+            }
+            //走 ItemSlot.DrawItemIcon 让自绘（SVG/特效）物品能画出来；
+            //缩放沿用 SimpleDrawItem 的旧口径（GetDrawItemSize 会放大小图），
+            //sizeLimit 给大值让内部不再二次缩放
+            float drawScale = VaultUtils.GetDrawItemSize(shopItem.itemType, 10) * iconScale * 5f;
+            Terraria.UI.ItemSlot.DrawItemIcon(sample, Terraria.UI.ItemSlot.Context.InWorld, spriteBatch,
+                position + new Vector2(25, 25 + iconFloatOffset), drawScale, 1000f,
+                Color.White * animation.UIAlpha);
         }
 
         private void DrawItemName(SpriteBatch spriteBatch, OldDukeShopItem shopItem, Vector2 position, float hoverProgress) {
