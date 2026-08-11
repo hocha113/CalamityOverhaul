@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.UIs.NotificationPopup;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -206,6 +207,12 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             //面板区域内拦截游戏输入
             Main.LocalPlayer.mouseInterface = true;
 
+            //两把锁都每帧常驻：UI 跑在绘制阶段，等检测到 delta 再锁就晚一帧。
+            //SuppressWeaponSwitch 管换武器（tick 倒计时，不受时序影响），
+            //LockVanillaMouseScroll 管背包开启时的配方栏滚动
+            UIInputGuard.SuppressWeaponSwitch();
+            Terraria.GameInput.PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/CyberwareInventory");
+
             //滚轮
             MouseState currentMouseState = Mouse.GetState();
             int scrollDelta = currentMouseState.ScrollWheelValue - oldScrollWheelValue;
@@ -213,7 +220,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             if (scrollDelta != 0) {
                 scrollOffset -= scrollDelta * 0.3f;
                 scrollOffset = Math.Clamp(scrollOffset, 0, Math.Max(0, compatibleItems.Count * ItemRowHeight - (panelRect.Height - HeaderHeight - CapacityBarHeight - 60)));
-                Terraria.GameInput.PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/CyberwareInventory");
             }
 
             float yOffset = HeaderHeight + CapacityBarHeight + PanelPadding;

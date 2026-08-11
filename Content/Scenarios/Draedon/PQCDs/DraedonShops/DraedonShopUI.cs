@@ -157,10 +157,15 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
             if (!hoverInMainPage || MaxScroll() <= 0f) {
                 return;
             }
+            //两把锁都每帧常驻：UI 跑在绘制阶段，等检测到 delta 再锁就晚一帧。
+            //SuppressWeaponSwitch 管换武器（tick 倒计时，不受时序影响），
+            //LockVanillaMouseScroll 管背包开启时的配方栏滚动
+            UIInputGuard.SuppressWeaponSwitch();
+            PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/DraedonShop");
+
             int delta = MouseScrollDelta;
             if (delta != 0) {
                 scrollTarget = MathHelper.Clamp(scrollTarget - Math.Sign(delta) * DraedonShopTheme.RowHeight * 0.9f, 0f, MaxScroll());
-                PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/DraedonShop");
                 SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.22f, Pitch = -0.2f });
             }
         }

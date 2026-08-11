@@ -177,17 +177,23 @@ namespace CalamityOverhaul.Content.NPCs.TBUGs.UIs
                 cellHover = new float[Math.Max(1, ItemCount)];
             }
 
-            if (panelRect.Contains(MousePoint)) {
+            bool overPanel = panelRect.Contains(MousePoint);
+            if (overPanel) {
                 player.mouseInterface = true;
+                //两把锁都要，且都必须每帧常驻（UIHandle.Update 跑在绘制阶段，
+                //滚轮增量帧首已被 Player.Update 吃掉，等检测到 delta 再锁就晚一帧）：
+                //SuppressWeaponSwitch 是 tick 倒计时，拦 CanSwitchWeapon，管换武器；
+                //LockVanillaMouseScroll 是单帧标志，管背包开启时的配方栏滚动
+                UIInputGuard.SuppressWeaponSwitch();
+                Terraria.GameInput.PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/TBUGShop");
             }
 
-            //滚轮：仅指针在网格内接管
+            //滚轮：指针在窗内即接管
             int wheel = Mouse.GetState().ScrollWheelValue;
             int delta = wheel - oldWheel;
             oldWheel = wheel;
-            if (delta != 0 && gridRect.Contains(MousePoint)) {
+            if (delta != 0 && overPanel) {
                 scrollOffset = Math.Clamp(scrollOffset - delta * 0.4f, 0f, MaxScroll());
-                Terraria.GameInput.PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/TBUGShop");
             }
 
             //悬停格：命中要同时落在格内与网格视口内，免得滚出视口的半格还能点

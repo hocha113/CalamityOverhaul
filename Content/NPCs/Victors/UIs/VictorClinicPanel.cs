@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Cyberwares;
 using CalamityOverhaul.Content.Cyberwares.UIs;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -187,12 +188,17 @@ namespace CalamityOverhaul.Content.NPCs.Victors.UIs
 
             Main.LocalPlayer.mouseInterface = true;
 
+            //两把锁都每帧常驻：UI 跑在绘制阶段，等检测到 delta 再锁就晚一帧。
+            //SuppressWeaponSwitch 管换武器（tick 倒计时，不受时序影响），
+            //LockVanillaMouseScroll 管背包开启时的配方栏滚动
+            UIInputGuard.SuppressWeaponSwitch();
+            Terraria.GameInput.PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/VictorClinic");
+
             int wheel = Mouse.GetState().ScrollWheelValue;
             int delta = wheel - oldScrollWheelValue;
             oldScrollWheelValue = wheel;
             if (delta != 0) {
                 scrollOffset = Math.Clamp(scrollOffset - delta * 0.35f, 0f, MaxScroll());
-                Terraria.GameInput.PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/VictorClinic");
             }
 
             if (hasEquippedItem) {
