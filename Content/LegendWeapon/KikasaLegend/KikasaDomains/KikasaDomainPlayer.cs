@@ -29,7 +29,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         /// <summary>血湖上涨原始量 0~1，Opening 涨 Closing 退；观感经 <see cref="RiseProgress"/> 缓速</summary>
         public float RiseT { get; private set; }
 
-        /// <summary>撕裂原点（世界坐标），开域帧取玩家中心</summary>
+        /// <summary>撕裂/合拢原点（世界坐标）。开域帧取玩家中心；收域期间逐帧向玩家当前位置聚拢，
+        /// 纸口以人为中心合回而不是钉死在开域点</summary>
         public Vector2 OriginWorldPos { get; private set; }
 
         /// <summary>血湖水面世界 Y，开域帧取玩家脚底；空中开域就悬湖，领域本是异空间</summary>
@@ -453,6 +454,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         }
 
         private void UpdateClosing() {
+            //合拢原点逐帧向人聚拢：满覆盖下圆心移动不可见，等圆缩小到可见时已贴在身上，
+            //纸口追着人合拢而不是钉死在开域点；各端从同步的玩家位置自算，无需入快照特殊处理
+            OriginWorldPos = Vector2.Lerp(OriginWorldPos, Player.Center, 0.2f);
+
             float f = MathHelper.Clamp(PhaseTimer / (float)KikasaDomain.CloseFrames, 0f, 1f);
             SpreadProgress = CloseSpreadCurve(f);
             RiseT = MathF.Max(RiseT - 1f / KikasaDomain.DrainFrames, 0f);
