@@ -196,6 +196,9 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaVaultPanel { get; set; }
         public static Asset<Effect> KikasaHand { get; set; }
         public static Asset<Effect> KikasaNarrativePanel { get; set; }
+        public static Asset<Effect> KikasaMoonRay { get; set; }
+        public static Asset<Effect> KikasaEaterRift { get; set; }
+        public static Asset<Effect> KikasaDeerclopsFrost { get; set; }
         public static Asset<Effect> OniOmokage { get; set; }
         public static Asset<Effect> OniPaperPeel { get; set; }
         public static Asset<Effect> OniSky { get; set; }

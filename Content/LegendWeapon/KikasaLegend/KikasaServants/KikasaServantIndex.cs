@@ -21,22 +21,52 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             [NPCID.TheDestroyer] = KikasaDestroyerServant.Summon,
             [NPCID.TheDestroyerBody] = KikasaDestroyerServant.Summon,
             [NPCID.TheDestroyerTail] = KikasaDestroyerServant.Summon,
-            //[鬼奴占位·史莱姆王] KikasaKingSlime 支线落地时用正式条目替换本行
-            //[鬼奴占位·世界吞噬怪] KikasaEater 支线落地时用正式条目替换本行
-            //[鬼奴占位·克苏鲁之脑] KikasaBrain 支线落地时用正式条目替换本行
-            //[鬼奴占位·蜂后] KikasaQueenBee 支线落地时用正式条目替换本行
-            //[鬼奴占位·骷髅王] KikasaSkeletron 支线落地时用正式条目替换本行
-            //[鬼奴占位·鹿角怪] KikasaDeerclops 支线落地时用正式条目替换本行
-            //[鬼奴占位·血肉墙] KikasaWallOfFlesh 支线落地时用正式条目替换本行
-            //[鬼奴占位·史莱姆皇后] KikasaQueenSlime 支线落地时用正式条目替换本行
-            //[鬼奴占位·双子魔眼] KikasaTwins 支线落地时用正式条目替换本行
-            //[鬼奴占位·机械骷髅王] KikasaPrime 支线落地时用正式条目替换本行
-            //[鬼奴占位·世纪之花] KikasaPlantera 支线落地时用正式条目替换本行
-            //[鬼奴占位·石巨人] KikasaGolem 支线落地时用正式条目替换本行
-            //[鬼奴占位·猪龙鱼公爵] KikasaFishron 支线落地时用正式条目替换本行
-            //[鬼奴占位·光之女皇] KikasaEmpress 支线落地时用正式条目替换本行
-            //[鬼奴占位·拜月教邪教徒] KikasaCultist 支线落地时用正式条目替换本行
-            //[鬼奴占位·月球领主] KikasaMoonLord 支线落地时用正式条目替换本行
+            [NPCID.KingSlime] = KikasaKingSlime.KikasaKingSlimeServant.Summon,
+            //世界吞噬怪：沉的可能是任意一节，头/体/尾都记同一条
+            [NPCID.EaterofWorldsHead] = KikasaEater.KikasaEaterServant.Summon,
+            [NPCID.EaterofWorldsBody] = KikasaEater.KikasaEaterServant.Summon,
+            [NPCID.EaterofWorldsTail] = KikasaEater.KikasaEaterServant.Summon,
+            //克苏鲁之脑：沉的可能是脑本体或任意血凝块，双双记同一条
+            [NPCID.BrainofCthulhu] = KikasaBrain.KikasaBrainServant.Summon,
+            [NPCID.Creeper] = KikasaBrain.KikasaBrainServant.Summon,
+            [NPCID.QueenBee] = KikasaQueenBee.KikasaQueenBeeServant.Summon,
+            //骷髅王：沉的可能是头或手，两键都记同一条
+            [NPCID.SkeletronHead] = KikasaSkeletron.KikasaSkeletronServant.Summon,
+            [NPCID.SkeletronHand] = KikasaSkeletron.KikasaSkeletronServant.Summon,
+            [NPCID.Deerclops] = KikasaDeerclops.KikasaDeerclopsServant.Summon,
+            //血肉墙：本体与墙眼都是可独立沉溺的部件，两条都记同一面墙
+            [NPCID.WallofFlesh] = KikasaWallOfFlesh.KikasaWallOfFleshServant.Summon,
+            [NPCID.WallofFleshEye] = KikasaWallOfFlesh.KikasaWallOfFleshServant.Summon,
+            [NPCID.QueenSlimeBoss] = KikasaQueenSlime.KikasaQueenSlimeServant.Summon,
+            //双子魔眼：同源同沉，沉任意一只都召出成对双瞳
+            [NPCID.Retinazer] = KikasaTwins.KikasaTwinsServant.Summon,
+            [NPCID.Spazmatism] = KikasaTwins.KikasaTwinsServant.Summon,
+            //机械骷髅王：沉的可能是头或任意一条工具臂，五条都记同一门
+            [NPCID.SkeletronPrime] = KikasaPrime.KikasaPrimeServant.Summon,
+            [NPCID.PrimeCannon] = KikasaPrime.KikasaPrimeServant.Summon,
+            [NPCID.PrimeSaw] = KikasaPrime.KikasaPrimeServant.Summon,
+            [NPCID.PrimeVice] = KikasaPrime.KikasaPrimeServant.Summon,
+            [NPCID.PrimeLaser] = KikasaPrime.KikasaPrimeServant.Summon,
+            //世纪之花：沉的可能是花体或钩须/触手，三条都记同一条
+            [NPCID.Plantera] = KikasaPlantera.KikasaPlanteraServant.Summon,
+            [NPCID.PlanterasHook] = KikasaPlantera.KikasaPlanteraServant.Summon,
+            [NPCID.PlanterasTentacle] = KikasaPlantera.KikasaPlanteraServant.Summon,
+            //石巨人：身体/附着头/飞头/左右拳，沉哪个部件都记同一条
+            [NPCID.Golem] = KikasaGolem.KikasaGolemServant.Summon,
+            [NPCID.GolemHead] = KikasaGolem.KikasaGolemServant.Summon,
+            [NPCID.GolemHeadFree] = KikasaGolem.KikasaGolemServant.Summon,
+            [NPCID.GolemFistLeft] = KikasaGolem.KikasaGolemServant.Summon,
+            [NPCID.GolemFistRight] = KikasaGolem.KikasaGolemServant.Summon,
+            [NPCID.DukeFishron] = KikasaFishron.KikasaFishronServant.Summon,
+            [NPCID.HallowBoss] = KikasaEmpress.KikasaEmpressServant.Summon,
+            //拜月教邪教徒：本体与幻影分身都记同一条
+            [NPCID.CultistBoss] = KikasaCultist.KikasaCultistServant.Summon,
+            [NPCID.CultistBossClone] = KikasaCultist.KikasaCultistServant.Summon,
+            //月球领主：核心/头/手/真眼沉哪个都记同一颗心——湖只认得那颗心脏
+            [NPCID.MoonLordCore] = KikasaMoonLord.KikasaMoonLordServant.Summon,
+            [NPCID.MoonLordHead] = KikasaMoonLord.KikasaMoonLordServant.Summon,
+            [NPCID.MoonLordHand] = KikasaMoonLord.KikasaMoonLordServant.Summon,
+            [NPCID.MoonLordFreeEye] = KikasaMoonLord.KikasaMoonLordServant.Summon,
         };
 
         /// <summary>该生物是否已有专门的鬼奴实现</summary>
