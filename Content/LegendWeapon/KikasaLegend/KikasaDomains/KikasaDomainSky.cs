@@ -159,6 +159,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             shader.Parameters["uFlash"]?.SetValue(flashStrength);
             shader.Parameters["uWaterLevel"]?.SetValue(waterLevel);
             shader.Parameters["uWaterWobble"]?.SetValue(waterWobble);
+            //行波源与湖面着色器同一批，垫底顶边跟着水线一起荡
+            KikasaDomainDeco.FillWaveUniforms(shader, realScreenPos, realScreenSize);
             shader.CurrentTechnique.Passes[0].Apply();
 
             spriteBatch.Draw(white, new Rectangle(0, 0, vpW, vpH), Color.White);

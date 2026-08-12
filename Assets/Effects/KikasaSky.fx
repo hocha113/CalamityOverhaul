@@ -27,6 +27,7 @@ float uRain;            //0~1 鬼雨异化混合：血暮↔湿墨
 float uFlash;           //0~1 雷闪包络，快起慢衰（异化态）
 float uWaterLevel;      //血湖水线 uv.y：与 KikasaGrade 同公式，1.15(屏下) 涨到枢轴
 float uWaterWobble;     //水线噪声波动幅度，与 KikasaGrade 同值
+float4 uLineWave[4];    //水线行波源，与 KikasaGrade 同源同公式，垫底顶边跟着一起荡
 
 //====== 血暮调色板 ======
 static const float3 SKY_TOP    = float3(0.085, 0.012, 0.030);  //凝血暗红近黑
@@ -63,6 +64,19 @@ static const float3 RAIN_FLASH      = float3(0.550, 0.620, 0.640);  //雷闪惨�
 
 float noiseTex(float2 uv) {
     return tex2D(uImage1, uv).r;
+}
+
+//水线行波：与 KikasaGrade.lineWaveOne 完全同式，两边水线在波峰处也逐像素重合
+float lineWaveOne(float uvx, float4 src) {
+    float dpx = abs(uvx - src.x) * uScreenSize.x / max(src.w, 0.25);
+    float gate = saturate((src.y * 620.0 - dpx) * 0.05);
+    float ph = dpx * 0.062 - src.y * 16.0;
+    return sin(ph) * exp2(-dpx * 0.010) * (1.0 - src.y) * gate * src.z;
+}
+
+float lineWaveSum(float uvx) {
+    return lineWaveOne(uvx, uLineWave[0]) + lineWaveOne(uvx, uLineWave[1])
+         + lineWaveOne(uvx, uLineWave[2]) + lineWaveOne(uvx, uLineWave[3]);
 }
 
 float fbm2(float2 uv) {
@@ -191,7 +205,8 @@ float4 PSSky(float2 coords : TEXCOORD0) : COLOR0 {
     //水线以下的天空全部换成实体湖体，垫在 TechUnify 湖面之下遮死原版天空
     float wn0 = noiseTex(float2(uv.x * 2.6 + uMaskTime * 0.020, uMaskTime * 0.011));
     float wn1 = noiseTex(float2(uv.x * 7.2 - uMaskTime * 0.016, 0.41 + uMaskTime * 0.027));
-    float waterY = uWaterLevel + ((wn0 - 0.5) * 1.4 + (wn1 - 0.5) * 0.6) * uWaterWobble;
+    float waterY = uWaterLevel + ((wn0 - 0.5) * 1.4 + (wn1 - 0.5) * 0.6) * uWaterWobble
+        + lineWaveSum(uv.x);
     float belowMask = saturate((uv.y - waterY) * 320.0);
 
     //假湖平线随真水线下压：站湖面时远湖带紧贴水线上方，飞高俯瞰回到 HORIZON_MAX 构图；

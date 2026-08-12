@@ -110,23 +110,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }, hit);
         }
 
-        //沿湖面行走的低频微涟漪，脚下的死水被踏开
+        //沿湖面行走的踏水节拍：涟漪圈 + 水线行波 + 踢起的碎水星，步频随移速
 
         private static void WalkRipples(Player player, KikasaDomainPlayer domain) {
             if (!ReferenceEquals(KikasaDomain.Viewed, domain)) {
                 return;
             }
             int who = player.whoAmI;
-            if (MathF.Abs(player.velocity.X) < 1.5f) {
+            float speed = MathF.Abs(player.velocity.X);
+            if (speed < 1.5f) {
                 walkRippleTimers[who] = 0;
                 return;
             }
-            if (++walkRippleTimers[who] < 11) {
+            int interval = (int)MathHelper.Clamp(15f - speed * 1.2f, 6f, 13f);
+            if (++walkRippleTimers[who] < interval) {
                 return;
             }
             walkRippleTimers[who] = 0;
-            Vector2 at = new(player.Center.X, domain.LakeWorldY);
-            KikasaDomainDeco.RippleAt(at, 0.3f + Main.rand.NextFloat(0.2f));
+            float k = MathHelper.Clamp((speed - 1.5f) / 6f, 0f, 1f);
+            Vector2 at = new(player.Center.X + Main.rand.NextFloat(-4f, 4f), domain.LakeWorldY);
+            KikasaDomainDeco.RippleAt(at, 0.45f + 0.35f * k + Main.rand.NextFloat(0.1f));
+            KikasaDomainDeco.FootSplash(at, k, player.velocity.X);
         }
     }
 }

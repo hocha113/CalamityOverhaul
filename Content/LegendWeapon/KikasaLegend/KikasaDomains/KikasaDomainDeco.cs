@@ -37,8 +37,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             public int MaxLife;
         }
 
+        /// <summary>水线行波源：一次落点扰动让水面本身局部起伏、向两侧荡开。
+        /// 由 <see cref="RippleAt"/> 统一登记，经 <see cref="FillWaveUniforms"/> 喂给湖面与天空着色器</summary>
+        private struct LineWave
+        {
+            public float WorldX;
+            public float AmpPx;
+            /// <summary>波长/传播距离的等比乘数：大扰动荡长浪，只抬幅度会变成大号示波器</summary>
+            public float RangeMul;
+            public int Life;
+            public int MaxLife;
+        }
+
         private static readonly List<Scrap> scraps = new();
         private static readonly List<Ripple> ripples = new();
+        //槽位数与着色器 uLineWave[4] 对齐；复用上传缓冲避免逐帧分配
+        private static readonly LineWave[] lineWaves = new LineWave[4];
+        private static readonly Vector4[] waveUpload = new Vector4[4];
 
         private const int ScrapCap = 60;
         private const int RippleCap = 16;
@@ -58,6 +73,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         public static void Clear() {
             scraps.Clear();
             ripples.Clear();
+            Array.Clear(lineWaves, 0, lineWaves.Length);
             rainCarry = 0f;
         }
 
@@ -143,8 +159,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
         }
 
-        /// <summary>湖面荡开一圈涟漪</summary>
+        /// <summary>湖面荡开一圈涟漪：加色双环 + 水线本身的行波形变一并登记</summary>
         public static void RippleAt(Vector2 world, float scale) {
+            SpawnLineWave(world.X, scale);
             if (ripples.Count >= RippleCap) {
                 return;
             }
@@ -153,6 +170,74 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 Scale = scale,
                 MaxLife = Main.rand.Next(34, 50)
             });
+        }
+
+        /// <summary>踏水碎星：沿行进反方向踢起几滴，行走涟漪的配菜</summary>
+        public static void FootSplash(Vector2 world, float strength, float velX) {
+            int count = 2 + (int)(strength * 2f);
+            for (int i = 0; i < count; i++) {
+                Vector2 vel = new(
+                    -MathF.Sign(velX) * Main.rand.NextFloat(0.4f, 1.5f) - velX * 0.12f,
+                    -Main.rand.NextFloat(1.2f, 2.4f + strength * 1.6f));
+                PRTLoader.NewParticle<PRT_GhostRainDrop>(
+                    world + new Vector2(Main.rand.NextFloat(-6f, 6f), -2f),
+                    vel, SplashPale * Main.rand.NextFloat(0.35f, 0.55f),
+                    Main.rand.NextFloat(0.32f, 0.52f))
+                    ?.Configure(Main.rand.Next(14, 24), vel.X);
+            }
+        }
+
+        //登记一道水线行波，满编时顶掉进度最深的旧波
+
+        private static void SpawnLineWave(float worldX, float scale) {
+            int slot = 0;
+            float worst = -1f;
+            for (int i = 0; i < lineWaves.Length; i++) {
+                ref LineWave w = ref lineWaves[i];
+                if (w.MaxLife <= 0 || w.Life >= w.MaxLife) {
+                    slot = i;
+                    worst = float.MaxValue;
+                    break;
+                }
+                float progress = w.Life / (float)w.MaxLife;
+                if (progress > worst) {
+                    worst = progress;
+                    slot = i;
+                }
+            }
+            lineWaves[slot] = new LineWave {
+                WorldX = worldX,
+                //克制的涌动幅度：叠满四源也不过一格上下，别荡成示波器
+                AmpPx = MathF.Min(1.2f + scale * 3f, 15f),
+                //大水花的浪更长更远，寿命也更久
+                RangeMul = MathHelper.Clamp(0.8f + scale * 0.28f, 0.9f, 1.9f),
+                Life = 0,
+                MaxLife = 55 + (int)(MathF.Min(scale, 3.5f) * 25f),
+            };
+        }
+
+        /// <summary>
+        /// 把活跃行波打包进着色器的 uLineWave[4]（x=源 uv.x，y=寿命进度，z=幅度 uv.y，w=范围乘数）。
+        /// 湖面与天空的像素空间不同，各自传入自家相机原点与视口尺寸，投影结果逐像素一致
+        /// </summary>
+        internal static void FillWaveUniforms(Effect effect, Vector2 cameraPos, Vector2 viewSize) {
+            for (int i = 0; i < lineWaves.Length; i++) {
+                ref LineWave w = ref lineWaves[i];
+                waveUpload[i] = Vector4.Zero;
+                if (w.MaxLife <= 0 || w.Life >= w.MaxLife) {
+                    continue;
+                }
+                float uvX = Vector2.Transform(
+                    new Vector2(w.WorldX - cameraPos.X, 0f),
+                    Main.GameViewMatrix.TransformationMatrix).X / viewSize.X;
+                //长浪波及可达约 0.6 视宽，出界更远的源不值得占用指令
+                if (uvX < -0.9f || uvX > 1.9f) {
+                    continue;
+                }
+                waveUpload[i] = new Vector4(
+                    uvX, w.Life / (float)w.MaxLife, w.AmpPx / viewSize.Y, w.RangeMul);
+            }
+            effect.Parameters["uLineWave"]?.SetValue(waveUpload);
         }
 
         private static void SpawnScrap(Vector2 pos, Vector2 vel, float wetness) {
@@ -297,6 +382,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                     ripples.RemoveAt(i);
                 }
             }
+            for (int i = 0; i < lineWaves.Length; i++) {
+                ref LineWave w = ref lineWaves[i];
+                if (w.MaxLife > 0 && w.Life < w.MaxLife) {
+                    w.Life++;
+                }
+            }
         }
 
         public static void Draw(SpriteBatch spriteBatch) {
@@ -339,12 +430,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 foreach (Ripple r in ripples) {
                     float lifeF = r.Life / (float)r.MaxLife;
                     float radius = MathHelper.Lerp(8f, 86f, 1f - (1f - lifeF) * (1f - lifeF)) * r.Scale;
-                    float alpha = MathF.Sin(MathHelper.Clamp(lifeF, 0f, 1f) * MathHelper.Pi) * 0.34f;
+                    float alpha = MathF.Sin(MathHelper.Clamp(lifeF, 0f, 1f) * MathHelper.Pi) * 0.42f;
                     //真加色批源因子是 SourceAlpha：A 置零=整圈不画，A 随强度走
                     Color c = RippleGlow * alpha;
                     Vector2 scale = new(radius * 2f / ring.Width, radius * 0.44f / ring.Height);
                     spriteBatch.Draw(ring, r.Pos - Main.screenPosition, null, c,
                         0f, rOrigin, scale, SpriteEffects.None, 0f);
+
+                    //内环滞后荡开，第二道波给涟漪层次
+                    float lag = MathHelper.Clamp((lifeF - 0.18f) / 0.82f, 0f, 1f);
+                    if (lag > 0f) {
+                        float radius2 = MathHelper.Lerp(6f, 58f, 1f - (1f - lag) * (1f - lag)) * r.Scale;
+                        float alpha2 = MathF.Sin(lag * MathHelper.Pi) * 0.26f;
+                        Vector2 scale2 = new(radius2 * 2f / ring.Width, radius2 * 0.40f / ring.Height);
+                        spriteBatch.Draw(ring, r.Pos - Main.screenPosition, null, RippleGlow * alpha2,
+                            0f, rOrigin, scale2, SpriteEffects.None, 0f);
+                    }
                 }
 
                 spriteBatch.End();

@@ -2,6 +2,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
 using CalamityOverhaul.Content.TimeFreezes;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
@@ -129,11 +130,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             //客户端可能铸不出 generation（§4.3），index+type 随行，服务器再盖自己的章
             NetworkNPCIdentity.TryCapture(hover, out NetworkNPCIdentity identity);
 
-            //可丢弃的预兆预测：湖面先应两圈涟漪，一声低水滴
+            //可丢弃的预兆预测：湖面先应两圈涟漪，一声低水滴；圈随目标体型放大
+            float omen = MathHelper.Clamp(
+                MathF.Sqrt(hover.width * (float)hover.height) / 30f, 0.9f, 2.4f);
             KikasaDomains.KikasaDomainDeco.RippleAt(
-                new Vector2(hover.Center.X, lakeY), 0.5f);
+                new Vector2(hover.Center.X, lakeY), 0.5f * omen);
             KikasaDomains.KikasaDomainDeco.RippleAt(
-                new Vector2(hover.Center.X + 24f, lakeY), 0.35f);
+                new Vector2(hover.Center.X + 24f * omen, lakeY), 0.35f * omen);
             SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.45f, Pitch = -0.55f, MaxInstances = 2 }, hover.Center);
 
             //请求在途短锁，防连点；真限频在权威端

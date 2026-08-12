@@ -25,6 +25,7 @@ float uFoamBoost;       //0~1 涨水期泡沫/浮渣增强
 float uSeamGlow;        //0~1 缝线血沫水膜辉光
 float uAspect;          //宽/高
 float uRain;            //0~1 鬼雨异化混合：血暮↔湿墨浊水，全套色板权重乘混合
+float4 uLineWave[4];    //水线行波源 x=源uv.x y=寿命进度01 z=幅度(uv.y) w=备用；空槽 z=0
 
 #define LUMA_W float3(0.299, 0.587, 0.114)
 
@@ -51,6 +52,21 @@ static const float3 RAIN_FIBER  = float3(0.720, 0.790, 0.810);  //湿纤维冷�
 
 float noiseTex(float2 uv) {
     return tex2D(uImage1, uv).r;
+}
+
+//水线行波：一次落点扰动向两侧荡开的衰减波包。像素度量跨分辨率一致：
+//基准波长约 100px、波前约 620px/寿命外扩、距离半衰约 100px、幅度随寿命线性退场；
+//w=范围乘数等比放大波长/传播/衰减——大扰动荡长浪，密峰会读成音频波谱
+float lineWaveOne(float uvx, float4 src) {
+    float dpx = abs(uvx - src.x) * uScreenSize.x / max(src.w, 0.25);
+    float gate = saturate((src.y * 620.0 - dpx) * 0.05);
+    float ph = dpx * 0.062 - src.y * 16.0;
+    return sin(ph) * exp2(-dpx * 0.010) * (1.0 - src.y) * gate * src.z;
+}
+
+float lineWaveSum(float uvx) {
+    return lineWaveOne(uvx, uLineWave[0]) + lineWaveOne(uvx, uLineWave[1])
+         + lineWaveOne(uvx, uLineWave[2]) + lineWaveOne(uvx, uLineWave[3]);
 }
 
 //撕纸遮罩：圆扩散 + 三频纤维毛边（大团湿斑/细碎裂纹/横向纤维丝）
@@ -134,11 +150,12 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     float3 tone = lerp(src, luma.xxx, (0.14 + 0.10 * uRain) * (1.0 - redMask));
     tone *= lerp(float3(1.030, 0.905, 0.885), float3(0.900, 0.965, 1.005), uRain);
 
-    //水位线：稳定枢轴 + 噪声波动（波动只动遮罩边界，不动镜像几何）
+    //水位线：稳定枢轴 + 噪声波动 + 落点行波（波动只动遮罩边界，不动镜像几何）
     float n0 = noiseTex(float2(uv.x * 2.6 + uTime * 0.020, uTime * 0.011));
     float n1 = noiseTex(float2(uv.x * 7.2 - uTime * 0.016, 0.41 + uTime * 0.027));
     float lineWave = (n0 - 0.5) * 1.4 + (n1 - 0.5) * 0.6;
-    float waterY = uWaterLevel + lineWave * uWaterWobble;
+    float waveSum = lineWaveSum(uv.x);
+    float waterY = uWaterLevel + lineWave * uWaterWobble + waveSum;
     float below = uv.y - waterY;
     float belowMask = saturate(below * 320.0);
 
@@ -194,13 +211,15 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     float3 domainCol = lerp(tone, lake, belowMask);
     float3 final = lerp(src, domainCol, mask);
 
-    //缝线水沫：贴水位线的一线微光，噪声闪烁不与全屏同相；异化态叠雨点砸水的碎闪
+    //缝线水沫：贴水位线的一线微光，噪声闪烁不与全屏同相；异化态叠雨点砸水的碎闪；
+    //行波扰动处水膜增亮，搅动读得出来
     float seamBand = exp2(-abs(below) * 150.0);
     float foam = saturate((n1 - 0.35) * 2.2);
     float glintN = noiseTex(float2(uv.x * 5.0 - uTime * 0.05, 0.77));
+    float waveGlow = saturate(abs(waveSum) * uScreenSize.y * 0.10);
     float3 foamCol = lerp(FOAM_COL, RAIN_FOAM, uRain);
     final += foamCol * seamBand * uSeamGlow * mask
-        * (0.26 + 0.32 * glintN + 0.30 * foam * uFoamBoost);
+        * (0.26 + 0.32 * glintN + 0.30 * foam * uFoamBoost + 0.40 * waveGlow);
     float spat = noiseTex(float2(uv.x * 22.0, uTime * 1.7));
     final += foamCol * step(0.80, spat) * seamBand * uSeamGlow * uRain * 0.22 * mask;
 

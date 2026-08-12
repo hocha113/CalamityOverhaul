@@ -110,6 +110,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             public Vector2 TargetCenter;
             /// <summary>组包围盒半尺寸</summary>
             public Vector2 TargetHalf;
+            /// <summary>体型水花系数：包围盒面积开方对玩家体型归一，约 0.9~2.4。
+            /// 大家伙入水的涟漪、行波、水花、屏震都按它放大——小史莱姆和猪鲨不该溅一样的水</summary>
+            public float SplashScale = 1f;
             /// <summary>冻结时组中心：鬼影绘制位 = 节锚点 + (TargetCenter - 此值)</summary>
             public Vector2 GroupCenterAtFreeze;
             public float GhostDissolve;
@@ -201,6 +204,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             }
             show.TargetCenter = box.Center.ToVector2();
             show.TargetHalf = new Vector2(box.Width, box.Height) * 0.5f;
+            show.SplashScale = MathHelper.Clamp(
+                MathF.Sqrt(box.Width * (float)box.Height) / 30f, 0.9f, 2.4f);
             show.GroupCenterAtFreeze = show.TargetCenter;
             show.StruggleBaseY = show.TargetCenter.Y;
 
@@ -462,25 +467,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 }
             }
 
-            //过水线拍
+            //过水线拍：涟漪/行波/水花/屏震全按体型放大，音色随体型压沉
             if (!show.SubmergeSplashed && show.TargetCenter.Y >= show.LakeY) {
                 show.SubmergeSplashed = true;
                 if (visible) {
+                    float s = show.SplashScale;
                     Vector2 hit = new(show.TargetCenter.X, show.LakeY);
-                    KikasaDomainDeco.SplashAt(hit, 16);
-                    KikasaDomainDeco.RippleAt(hit, 2.0f);
-                    KikasaDomainDeco.RippleAt(hit + new Vector2(26f, 0f), 0.8f);
-                    SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.95f, Pitch = -0.3f, MaxInstances = 2 }, hit);
-                    SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.4f, Pitch = -0.8f, MaxInstances = 1 }, hit);
-                    ShakeViewer(3.5f);
+                    KikasaDomainDeco.SplashAt(hit, Math.Min((int)(16 * s), 32));
+                    KikasaDomainDeco.RippleAt(hit, 2.0f * s);
+                    KikasaDomainDeco.RippleAt(hit + new Vector2(26f * s, 0f), 0.8f * s);
+                    SoundEngine.PlaySound(SoundID.SplashWeak with {
+                        Volume = 0.95f,
+                        Pitch = -0.3f - 0.12f * (s - 1f),
+                        MaxInstances = 2
+                    }, hit);
+                    SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
+                        Volume = 0.4f + 0.15f * (s - 1f),
+                        Pitch = -0.8f,
+                        MaxInstances = 1
+                    }, hit);
+                    ShakeViewer(3.5f * MathF.Min(s, 1.7f));
                 }
             }
 
-            //水下余韵
+            //水下余韵：大家伙沉下去后水面平复得更久更宽
             if (visible && show.SubmergeSplashed && t < ShowEnd - 20 && t % 14 == 0) {
                 KikasaDomainDeco.RippleAt(
-                    new Vector2(show.TargetCenter.X + Main.rand.NextFloat(-14f, 14f), show.LakeY),
-                    Main.rand.NextFloat(0.3f, 0.5f));
+                    new Vector2(show.TargetCenter.X + Main.rand.NextFloat(-14f, 14f) * show.SplashScale, show.LakeY),
+                    Main.rand.NextFloat(0.3f, 0.5f) * (0.6f + 0.4f * show.SplashScale));
                 PRTLoader.NewParticle<PRT_GhostRainMist>(
                     new Vector2(show.TargetCenter.X, show.LakeY - 6f),
                     new Vector2(0f, -0.3f), new Color(58, 18, 20) * 0.65f,
@@ -547,7 +561,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 }
                 fxBudget--;
                 Vector2 hit = new(seg.AnchorCenter.X + driftX, show.LakeY);
-                KikasaDomainDeco.RippleAt(hit, 0.7f);
+                //分段按单节体量溅水，组系数只取一小口——蠕虫的量在节数上
+                KikasaDomainDeco.RippleAt(hit, 0.7f * MathF.Min(show.SplashScale, 1.4f));
                 if (soundLeft) {
                     soundLeft = false;
                     KikasaDomainDeco.SplashAt(hit, 5);
@@ -647,7 +662,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                     rig.Foam = 1f;
                     if (visible) {
                         KikasaDomainDeco.SplashAt(rig.Root, 7);
-                        KikasaDomainDeco.RippleAt(rig.Root, 0.9f);
+                        //破水圈随体型微涨：抓大家伙的手本身也更大
+                        KikasaDomainDeco.RippleAt(rig.Root,
+                            0.9f * MathHelper.Clamp(show.SplashScale, 0.9f, 1.3f));
                         SoundEngine.PlaySound(SoundID.SplashWeak with {
                             Volume = 0.55f,
                             Pitch = -0.45f + i * 0.07f,

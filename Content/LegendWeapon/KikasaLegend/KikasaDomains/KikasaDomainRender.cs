@@ -153,6 +153,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             grade.Parameters["uSeamGlow"]?.SetValue(seamGlow);
             grade.Parameters["uAspect"]?.SetValue(screenSize.X / screenSize.Y);
             grade.Parameters["uRain"]?.SetValue(kdp.RainBlend);
+            //落点行波源：水线在涟漪处真的起伏
+            KikasaDomainDeco.FillWaveUniforms(grade, Main.screenPosition, screenSize);
         }
 
         private static void ApplyUnify(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice,
