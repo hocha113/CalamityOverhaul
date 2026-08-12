@@ -1,5 +1,6 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaEye;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -10,7 +11,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
+namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaDestroyer
 {
     /// <summary>
     /// 毁灭者鬼奴的口吐光柱：本体颚束（DestroyerMawBeamProj）的友方复刻——

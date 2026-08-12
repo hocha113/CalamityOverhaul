@@ -1,5 +1,6 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaEye;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -10,7 +11,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
+namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaDestroyer
 {
     /// <summary>
     /// 鬼奴·湖水版毁灭者。单弹幕内部模拟整条短链蠕虫（头+12体+尾，
@@ -747,7 +748,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                     ghostSnaps[0] = (Vector2[])spine.Clone();
                 }
                 if (t > RamLeapFrames + RamRecoverFrames
-                    || (t > RamLeapFrames && Projectile.Center.Y > lakeY + 60f)) {
+                    || t > RamLeapFrames && Projectile.Center.Y > lakeY + 60f) {
                     EndAttack(authority, 120);
                 }
                 return;
