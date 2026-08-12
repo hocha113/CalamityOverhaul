@@ -1,3 +1,5 @@
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaDestroyer;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaEye;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;

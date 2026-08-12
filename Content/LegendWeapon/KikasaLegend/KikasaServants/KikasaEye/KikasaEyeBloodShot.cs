@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.PRTTypes;
@@ -11,7 +11,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
+namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaEye
 {
     /// <summary>
     /// 鬼奴克眼的血痰：一口有体积的粘稠血团，不是光条。

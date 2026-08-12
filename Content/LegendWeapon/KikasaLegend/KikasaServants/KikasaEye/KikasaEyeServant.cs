@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -10,7 +10,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
+namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaEye
 {
     /// <summary>
     /// 鬼奴·湖水版克苏鲁之眼。血湖之水凝成的眼球随从：
@@ -243,7 +243,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                     if (t % 6 == 2) {
                         //涟漪自外向出水点收拢，一圈比一圈近、比一圈大
                         float converge = 1f - t / (float)OmenFrames;
-                        float side = (t / 6) % 2 == 0 ? 1f : -1f;
+                        float side = t / 6 % 2 == 0 ? 1f : -1f;
                         KikasaDomainDeco.RippleAt(
                             new Vector2(Projectile.Center.X + side * converge * 52f, lakeY),
                             0.4f + (1f - converge) * 0.55f);
