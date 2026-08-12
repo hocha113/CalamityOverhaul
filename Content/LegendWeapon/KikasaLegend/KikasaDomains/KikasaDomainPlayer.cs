@@ -399,18 +399,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                     SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.85f, Pitch = -0.7f, MaxInstances = 2 }, Player.Center);
                     SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.5f, Pitch = -0.6f, MaxInstances = 2 }, Player.Center);
                     ShakeViewer(3f);
-                    KikasaDomainDeco.BurstScraps(this, 16);
                 }
                 //吞没段起步、纸幅加速离场的第二记撕裂
 
                 if (st == (int)(KikasaDomain.TearFrames * 0.55f) && IsLocalVisual) {
                     SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.6f, Pitch = -0.55f, MaxInstances = 2 }, Player.Center);
                     ShakeViewer(2f);
-                }
-                //撕裂前沿持续掉纸屑
-
-                if (IsLocalVisual && st % 3 == 0 && raw < 0.9f) {
-                    KikasaDomainDeco.BurstScraps(this, 3);
                 }
 
                 if (raw >= 1f) {

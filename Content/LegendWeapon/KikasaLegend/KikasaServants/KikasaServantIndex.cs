@@ -15,6 +15,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
 
         private static readonly Dictionary<int, ServantSpawner> entries = new() {
             [NPCID.EyeofCthulhu] = KikasaEyeServant.Summon,
+            //毁灭者：沉的可能是任意一节，头/体/尾都记同一条
+            [NPCID.TheDestroyer] = KikasaDestroyerServant.Summon,
+            [NPCID.TheDestroyerBody] = KikasaDestroyerServant.Summon,
+            [NPCID.TheDestroyerTail] = KikasaDestroyerServant.Summon,
         };
 
         /// <summary>该生物是否已有专门的鬼奴实现</summary>
