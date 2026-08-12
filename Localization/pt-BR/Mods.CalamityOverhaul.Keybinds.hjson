@@ -18,6 +18,7 @@ Halibut_Superposition.DisplayName: Linguado: Superposicao
 // Onikiri_DomainFlip.DisplayName: Onikiri: Flip Domain (Omote/Ura)
 // Kikasa_Sink.DisplayName: Kikasa: Sink Item into the Lake
 // Kikasa_DomainMutate.DisplayName: Kikasa: Mutate Domain (Ghost Rain)
+// Kikasa_Summon.DisplayName: Kikasa: Command the Drowned Servant
 WeponSkill_Q.DisplayName: Arma: Tecla de Habilidade Esquerda
 WeponSkill_R.DisplayName: Arma: Tecla de Habilidade Direita
 Accessory_Skills.DisplayName: Habilidade de Acessorio

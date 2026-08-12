@@ -13,7 +13,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
     /// 第二能力模块：湖藏——领域中持物按 <see cref="Common.CWRKeySystem.Kikasa_Sink"/>
     /// 沉物入湖存储，持伞按 <see cref="Common.CWRKeySystem.Legend_UIControl"/> 开湖窗提取；
     /// 数据与输入在 <see cref="KikasaVaults.KikasaVaultPlayer"/>，
-    /// 沉浮演出在 <see cref="KikasaVaults.KikasaLakeFX"/>
+    /// 沉浮演出在 <see cref="KikasaVaults.KikasaLakeFX"/>。
+    /// 第三能力模块：能力复制——湖记住最后一只被沉溺的生物，
+    /// 按 <see cref="Common.CWRKeySystem.Kikasa_Summon"/> 召唤对应鬼奴驱使；
+    /// 记录与输入在 <see cref="KikasaServants.KikasaServantPlayer"/>，
+    /// 穷举条目在 <see cref="KikasaServants.KikasaServantIndex"/>
     /// </summary>
     internal class KikasaItem : ModItem
     {

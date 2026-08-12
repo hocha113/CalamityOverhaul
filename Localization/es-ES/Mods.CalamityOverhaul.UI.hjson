@@ -1132,6 +1132,7 @@ MiningMachineUI: {
 	// PickPowerLine: Pick Power: {0}%
 	// YieldRateLine: Yield: ~{0}/min
 	// EnergyLabel: Energy
+	// YieldLabel: Yield
 	// LayerLabel: Stratum
 	// BiomeLabel: Biome
 	// VeinLabel: Veins Found

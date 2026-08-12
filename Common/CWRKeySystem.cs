@@ -34,6 +34,7 @@ namespace CalamityOverhaul.Common
         public static ModKeybind Onikiri_DomainFlip { get; private set; }
         public static ModKeybind Kikasa_Sink { get; private set; }
         public static ModKeybind Kikasa_DomainMutate { get; private set; }
+        public static ModKeybind Kikasa_Summon { get; private set; }
         public static ModKeybind WeponSkill_Q { get; private set; }
         public static ModKeybind WeponSkill_R { get; private set; }
         public static ModKeybind Accessory_Skills { get; private set; }
@@ -68,6 +69,8 @@ namespace CalamityOverhaul.Common
             Kikasa_Sink = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_Sink), "I");
             //血湖领域鬼雨异化，默认 Mouse3；被清空绑定时输入层回退原生中键
             Kikasa_DomainMutate = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_DomainMutate), "Mouse3");
+            //鬼奴召唤/遣返
+            Kikasa_Summon = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_Summon), "O");
             WeponSkill_Q = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_Q), "Q");
             WeponSkill_R = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_R), "R");
             Accessory_Skills = KeybindLoader.RegisterKeybind(mod, nameof(Accessory_Skills), "V");
@@ -99,6 +102,7 @@ namespace CalamityOverhaul.Common
             Onikiri_DomainFlip = null;
             Kikasa_Sink = null;
             Kikasa_DomainMutate = null;
+            Kikasa_Summon = null;
             Legend_Domain = null;
             RadialWheel_Key = null;
             Halibut_Clone = null;

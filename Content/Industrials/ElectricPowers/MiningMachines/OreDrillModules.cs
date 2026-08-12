@@ -66,7 +66,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position
             , Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
             base.PreDrawInInventory(spriteBatch, position, frame, drawColor, itemColor, origin, scale);
-            //右下角内嵌目标矿物贴图,一眼读出这枚钻头是给谁的
+            //右下角内嵌目标矿物贴图,一眼读出这枚钻头是给谁的;
+            //原版矿贴图懒加载,不先 LoadItem 只会画出空气
+            Main.instance.LoadItem(DisplayOre);
             VaultUtils.SimpleDrawItem(spriteBatch, DisplayOre, position + new Vector2(9f, 9f) * scale,
                 14, 1f, 0, Color.White * (drawColor.A / 255f));
             return false;
@@ -77,6 +79,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             base.PreDrawInWorld(spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);
             Vector2 center = Item.Center - Main.screenPosition;
             float a = MathHelper.Max(lightColor.A / 255f, 0.35f);
+            Main.instance.LoadItem(DisplayOre);
             VaultUtils.SimpleDrawItem(spriteBatch, DisplayOre,
                 center + new Vector2(9f, 9f).RotatedBy(rotation) * scale, 14, 1f, 0, Color.White * a);
             return false;

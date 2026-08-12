@@ -1132,6 +1132,7 @@ MiningMachineUI: {
 	PickPowerLine: 镐力：{0}%
 	YieldRateLine: 产率：约{0}/分钟
 	EnergyLabel: 能量
+	YieldLabel: 产率
 	LayerLabel: 地层
 	BiomeLabel: 群系
 	VeinLabel: 探明矿脉

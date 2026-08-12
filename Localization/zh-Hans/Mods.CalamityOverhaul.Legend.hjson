@@ -904,6 +904,10 @@ KikasaText: {
 	BossRefuse: 湖抱不动它
 	DrownBusy: 湖还在收上一个
 	DrownOutOfGrip: 够不到那么远
+	ServantNoMemory: 湖还没收过活物
+	ServantUnknown: 湖还没学会驱使它
+	ServantBusy: 湖底的手还没缓过来
+	MemoryStamp: 湖记住了它
 
 	KikasaDrownSystem: {
 		// BossRefuse: 湖抱不动它
@@ -923,5 +927,12 @@ KikasaText: {
 		// ExtractHintFormat: 点击取回 {0}
 		// IdleHintFormat: 持物按 {0} 沉入 · 点击窗外合上
 		// EmptyHint: 湖底空着，只有水声
+	}
+
+	KikasaServantPlayer: {
+		// ServantNoMemory: 湖还没收过活物
+		// ServantUnknown: 湖还没学会驱使它
+		// ServantBusy: 湖底的手还没缓过来
+		// MemoryStamp: 湖记住了它
 	}
 }

@@ -376,6 +376,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 }
             }
             cooldowns[activation.OwnerWho] = CooldownFrames;
+
+            //沉湖记忆入账（能力复制的数据源）：只记主段类型，蠕虫组员不算；
+            //记录活在所有者本机，服务器只发完成通报不留副本
+            int primaryType = activation.Targets[0].Identity.Type;
+            if (Main.netMode == NetmodeID.Server) {
+                KikasaDrownNet.SendComplete(activation.OwnerWho, primaryType);
+            }
+            else {
+                Main.player[activation.OwnerWho]
+                    .GetModPlayer<KikasaServants.KikasaServantPlayer>()
+                    .RecordDrowned(primaryType);
+            }
         }
 
         private static void CancelActivation(DrownActivation activation, int index, string clause) {

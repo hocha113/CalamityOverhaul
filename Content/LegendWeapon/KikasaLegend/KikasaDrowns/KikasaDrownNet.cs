@@ -8,10 +8,11 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 {
     /// <summary>
-    /// 沉溺三段包：Request（客户端→服务器，index+type+generation，
+    /// 沉溺四段包：Request（客户端→服务器，index+type+generation，
     /// generation 允许为 0——客户端可能铸不出章，服务器按 index+type 回退再盖自己的）；
     /// Apply（服务器→全体，owner+drownId+seed+身份组，各端演出时间轴自此起跑）；
-    /// Cancel（服务器→全体，目标提前没了的谢幕令）。
+    /// Cancel（服务器→全体，目标提前没了的谢幕令）；
+    /// Complete（服务器→全体，权威完成帧的沉湖记忆通报，仅所有者本机入账）。
     /// 链式 handler 共用一条流：所有字段先读满，校验只做丢弃。
     /// </summary>
     internal static class KikasaDrownNet
@@ -19,6 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         private const byte OpRequest = 0;
         private const byte OpApply = 1;
         private const byte OpCancel = 2;
+        private const byte OpComplete = 3;
 
         internal static void SendRequest(int npcIndex, int npcType, ulong generation) {
             if (Main.netMode != NetmodeID.MultiplayerClient) {
@@ -58,6 +60,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             packet.Write((byte)CWRMessageType.KikasaDrown);
             packet.Write(OpCancel);
             packet.Write(drownId);
+            packet.Send();
+        }
+
+        internal static void SendComplete(int ownerWho, int npcType) {
+            if (Main.netMode != NetmodeID.Server) {
+                return;
+            }
+            ModPacket packet = CWRMod.Instance.GetPacket();
+            packet.Write((byte)CWRMessageType.KikasaDrown);
+            packet.Write(OpComplete);
+            packet.Write((byte)ownerWho);
+            packet.Write(npcType);
             packet.Send();
         }
 
@@ -108,6 +122,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                     int drownId = reader.ReadInt32();
                     if (Main.netMode == NetmodeID.MultiplayerClient) {
                         KikasaDrownFX.CancelShow(drownId);
+                    }
+                    break;
+                }
+                case OpComplete: {
+                    //先读满再校验；记忆只归所有者本机
+                    int owner = reader.ReadByte();
+                    int npcType = reader.ReadInt32();
+                    if (Main.netMode == NetmodeID.MultiplayerClient
+                        && owner == Main.myPlayer
+                        && Main.LocalPlayer?.active == true) {
+                        Main.LocalPlayer
+                            .GetModPlayer<KikasaServants.KikasaServantPlayer>()
+                            .RecordDrowned(npcType);
                     }
                     break;
                 }

@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.UIs.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -16,9 +17,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 {
     /// <summary>
-    /// 矿机勘探终端:地层剖面 + 勘探报告 + 模块槽。<br/>
-    /// 报告数据与产出掷骰同源(<see cref="MiningMachineSystem.BuildReport"/>),
-    /// 展示的份额即真实概率;模块槽编辑走"本地改 + SendData 推送"
+    /// 矿机勘探终端:野外地质仪器语言——钢壳(shader)、黄铜铭牌、岩芯样本管、
+    /// 指针仪表、模块插座。报告数据与产出掷骰同源(<see cref="MiningMachineSystem.BuildReport"/>),
+    /// 展示的份额即真实概率;模块槽编辑走"本地改 + SendData 推送"。<br/>
+    /// 笔刷与材质在 <see cref="MiningTerminalRenderer"/>,本类只管布局、交互与编排
     /// </summary>
     internal class MiningMachineUI : UIHandle, ILocalizedModType
     {
@@ -31,22 +33,22 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         private const int RowHeight = 24;
         private const int SlotSize = 44;
 
-        //工业域锈铁/余烬暗色系,勘探终端用收敛的琥珀作唯一亮色
-        private static readonly Color BgDark = new(14, 11, 9);
-        private static readonly Color BgMid = new(26, 19, 14);
-        private static readonly Color FrameRust = new(140, 82, 44);
-        private static readonly Color FrameGlow = new(200, 120, 60);
-        private static readonly Color TextMain = new(232, 210, 180);
-        private static readonly Color TextDim = new(150, 132, 112);
-        private static readonly Color Amber = new(235, 170, 90);
-        private static readonly Color WarnRed = new(255, 100, 80);
-        private static readonly Color OkGreen = new(150, 220, 120);
+        //文字与点缀色引用渲染器主题,保证 CPU 前景与 shader 机壳同族
+        private static Color TextMain => MiningTerminalRenderer.TextMain;
+        private static Color TextDim => MiningTerminalRenderer.TextDim;
+        private static Color Amber => MiningTerminalRenderer.Amber;
+        private static Color WarnRed => MiningTerminalRenderer.WarnRed;
+        private static Color OkGreen => MiningTerminalRenderer.OkGreen;
+        private static Color BrassBright => MiningTerminalRenderer.BrassBright;
 
-        //地层剖面配色:天穹/地表土层/洞穴岩层/地狱
+        //岩芯样本配色:天穹/地表土层/洞穴岩层/地狱
         private static readonly Color StrataSky = new(20, 24, 34);
         private static readonly Color StrataSoil = new(52, 38, 26);
         private static readonly Color StrataRock = new(36, 30, 28);
         private static readonly Color StrataHell = new(58, 22, 14);
+
+        //铭牌底缘巡行亮笔的路径:一条横线
+        private const string RunnerLinePath = "M -1 0 L 1 0";
 
         private static float UIScreenW => PlayerInput.RealScreenWidth / Main.UIScale;
         private static float UIScreenH => PlayerInput.RealScreenHeight / Main.UIScale;
@@ -67,6 +69,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         private int denyFlashTimer;
         private LocalizedText denyReason;
 
+        //仪表指针的欠阻尼弹簧
+        private float energyDisplay;
+        private float energyVel;
+        private float yieldDisplay;
+        private float yieldVel;
+        //交互动效
+        private float latchHover;
+        private float rescanHover;
+        private int rescanPressTimer;
+
         //布局矩形,每帧在 Update 里重算
         private Rectangle panelRect;
         private Rectangle titleRect;
@@ -74,7 +86,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         private Rectangle strataRect;
         private Rectangle reportRect;
         private Rectangle rescanRect;
-        private Rectangle energyRect;
+        private Vector2 energyGaugeCenter;
+        private Vector2 yieldGaugeCenter;
+        private Rectangle energyGaugeRect;
+        private Rectangle yieldGaugeRect;
         private readonly List<Rectangle> slotRects = [];
 
         private float uiAlpha => OpenProgress.Current;
@@ -101,6 +116,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         internal static LocalizedText PickPowerLine;
         internal static LocalizedText YieldRateLine;
         internal static LocalizedText EnergyLabel;
+        internal static LocalizedText YieldLabel;
         internal static LocalizedText LayerLabel;
         internal static LocalizedText BiomeLabel;
         internal static LocalizedText VeinLabel;
@@ -139,6 +155,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             PickPowerLine = this.GetLocalization(nameof(PickPowerLine), () => "Pick Power: {0}%");
             YieldRateLine = this.GetLocalization(nameof(YieldRateLine), () => "Yield: ~{0}/min");
             EnergyLabel = this.GetLocalization(nameof(EnergyLabel), () => "Energy");
+            YieldLabel = this.GetLocalization(nameof(YieldLabel), () => "Yield");
             LayerLabel = this.GetLocalization(nameof(LayerLabel), () => "Stratum");
             BiomeLabel = this.GetLocalization(nameof(BiomeLabel), () => "Biome");
             VeinLabel = this.GetLocalization(nameof(VeinLabel), () => "Veins");
@@ -181,6 +198,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 
             if (IsOpen) {
                 StartScanSweep();
+                //指针从零起摆,开机有仪器上电的感觉
+                energyDisplay = 0f;
+                energyVel = 0f;
+                yieldDisplay = 0f;
+                yieldVel = 0f;
             }
         }
 
@@ -227,10 +249,17 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             if (denyFlashTimer > 0) {
                 denyFlashTimer--;
             }
+            if (rescanPressTimer > 0) {
+                rescanPressTimer--;
+            }
 
             if (uiAlpha < 0.01f || machine == null) {
                 return;
             }
+
+            UpdateNeedles();
+            latchHover = MathHelper.Lerp(latchHover, closeRect.Contains(MousePosition.ToPoint()) ? 1f : 0f, 0.2f);
+            rescanHover = MathHelper.Lerp(rescanHover, rescanRect.Contains(MousePosition.ToPoint()) ? 1f : 0f, 0.2f);
 
             //报告周期刷新,拿到的是与掷骰同源的数据
             if (++reportRefreshTimer >= 15) {
@@ -242,17 +271,30 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             HandleClicks();
         }
 
+        /// <summary>仪表指针的欠阻尼弹簧:上电摆动、变化时过冲回稳</summary>
+        private void UpdateNeedles() {
+            float energyTarget = machine.MachineData != null
+                ? MathHelper.Clamp(machine.MachineData.UEvalue / machine.MaxUEValue, 0f, 1f) : 0f;
+            energyVel = energyVel * 0.80f + (energyTarget - energyDisplay) * 0.05f;
+            energyDisplay += energyVel;
+
+            //产率按 60/min 满档归一,超出顶格
+            float yieldTarget = MathHelper.Clamp(machine.EstimateYieldPerMinute() / 60f, 0f, 1f);
+            yieldVel = yieldVel * 0.80f + (yieldTarget - yieldDisplay) * 0.05f;
+            yieldDisplay += yieldVel;
+        }
+
         private void ComputeLayout() {
             Vector2 topLeft = DrawPosition;
             panelRect = new Rectangle((int)topLeft.X, (int)topLeft.Y, (int)PanelWidth, (int)PanelHeight);
             titleRect = new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, 44);
-            closeRect = new Rectangle(panelRect.Right - 34, panelRect.Y + 11, 22, 22);
+            closeRect = new Rectangle(panelRect.Right - 40, panelRect.Y + 9, 26, 26);
 
-            strataRect = new Rectangle(panelRect.X + 18, panelRect.Y + 60, 64, 232);
+            strataRect = new Rectangle(panelRect.X + 18, panelRect.Y + 64, 64, 224);
             reportRect = new Rectangle(panelRect.X + 98, panelRect.Y + 60, panelRect.Width - 98 - 18, 24 + RowHeight * 8);
-            rescanRect = new Rectangle(reportRect.Right - 96, reportRect.Y + 1, 96, 20);
+            rescanRect = new Rectangle(reportRect.Right - 98, reportRect.Y - 2, 98, 22);
 
-            //槽行独占底行,六槽也放得下;状态三项横排在报告下方,能量条横贯其下
+            //槽行独占底行;右侧留给双仪表
             slotRects.Clear();
             if (machine != null) {
                 int slotCount = machine.ModuleSlotCount;
@@ -262,7 +304,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
                 }
             }
 
-            energyRect = new Rectangle(panelRect.X + 150, panelRect.Y + 322, (int)PanelWidth - 150 - 18, 10);
+            energyGaugeCenter = new Vector2(panelRect.X + 438, panelRect.Y + 330);
+            yieldGaugeCenter = new Vector2(panelRect.X + 502, panelRect.Y + 330);
+            energyGaugeRect = new Rectangle((int)energyGaugeCenter.X - 26, (int)energyGaugeCenter.Y - 26, 52, 52);
+            yieldGaugeRect = new Rectangle((int)yieldGaugeCenter.X - 26, (int)yieldGaugeCenter.Y - 26, 52, 52);
         }
 
         private void UpdateScroll() {
@@ -294,6 +339,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             }
 
             if (rescanRect.Contains(mouse)) {
+                rescanPressTimer = 8;
                 machine.RescanNow();
                 StartScanSweep();
                 SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.3f });
@@ -368,8 +414,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
                 return;
             }
 
-            DrawPanel(spriteBatch);
-            DrawStrata(spriteBatch);
+            DrawShell(spriteBatch);
+            DrawCoreSample(spriteBatch);
             DrawReadouts(spriteBatch);
             DrawReport(spriteBatch);
             DrawSlots(spriteBatch);
@@ -377,73 +423,54 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             DrawHoverTips(spriteBatch);
         }
 
-        private void DrawPanel(SpriteBatch sb) {
-            Texture2D px = VaultAsset.placeholder2.Value;
+        /// <summary>钢壳 + 铆钉 + 黄铜铭牌 + 闩钮</summary>
+        private void DrawShell(SpriteBatch sb) {
             float alpha = uiAlpha;
-            Rectangle src = new(0, 0, 1, 1);
 
-            //底色:自上而下的锈土渐层,分段着色避免大平面
-            int segments = 30;
-            for (int i = 0; i < segments; i++) {
-                float t = i / (float)segments;
-                int y1 = panelRect.Y + (int)(t * panelRect.Height);
-                int y2 = panelRect.Y + (int)((i + 1) / (float)segments * panelRect.Height);
-                Rectangle r = new(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
-                float pulse = MathF.Sin(GlobalTimer * 0.8f + t * 2.2f) * 0.5f + 0.5f;
-                Color baseColor = Color.Lerp(BgDark, BgMid, pulse * 0.6f + t * 0.3f);
-                sb.Draw(px, r, src, baseColor * (alpha * 0.92f));
-            }
+            //机壳:一次 shader quad,拉丝钢/锈斑/磨亮棱线全在里面
+            MiningTerminalRenderer.ShaderPanel(sb, panelRect, alpha);
 
-            //横向岩纹细线,给面板一点地质档案的质感
-            int lines = 9;
-            for (int i = 1; i < lines; i++) {
-                float t = i / (float)lines;
-                int y = panelRect.Y + 48 + (int)(t * (panelRect.Height - 60));
-                float bright = MathF.Sin(GlobalTimer * 0.5f + t * MathHelper.Pi) * 0.5f + 0.5f;
-                sb.Draw(px, new Rectangle(panelRect.X + 14, y, panelRect.Width - 28, 1), src,
-                    new Color(80, 48, 30) * (alpha * 0.06f * bright));
-            }
+            //四角铆钉,与模块钢牌同语汇
+            int inset = MiningTerminalRenderer.Chamfer + 2;
+            MiningTerminalRenderer.DrawRivet(sb, new Vector2(panelRect.X + inset, panelRect.Y + inset), alpha);
+            MiningTerminalRenderer.DrawRivet(sb, new Vector2(panelRect.Right - inset, panelRect.Y + inset), alpha);
+            MiningTerminalRenderer.DrawRivet(sb, new Vector2(panelRect.X + inset, panelRect.Bottom - inset), alpha);
+            MiningTerminalRenderer.DrawRivet(sb, new Vector2(panelRect.Right - inset, panelRect.Bottom - inset), alpha);
 
-            //边框:外圈锈铁,顶缘受光
-            float framePulse = MathF.Sin(GlobalTimer * 1.4f) * 0.5f + 0.5f;
-            Color edge = Color.Lerp(FrameRust, FrameGlow, framePulse * 0.4f) * (alpha * 0.8f);
-            sb.Draw(px, new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, 3), src, edge);
-            sb.Draw(px, new Rectangle(panelRect.X, panelRect.Bottom - 3, panelRect.Width, 3), src, edge * 0.7f);
-            sb.Draw(px, new Rectangle(panelRect.X, panelRect.Y, 3, panelRect.Height), src, edge * 0.85f);
-            sb.Draw(px, new Rectangle(panelRect.Right - 3, panelRect.Y, 3, panelRect.Height), src, edge * 0.85f);
-
-            //标题栏分隔线
-            sb.Draw(px, new Rectangle(panelRect.X + 10, titleRect.Bottom - 2, panelRect.Width - 20, 1), src,
-                FrameGlow * (alpha * 0.35f));
-
-            //标题
+            //标题:黄铜铭牌 + 蚀刻字
             string title = TitleText.Value;
-            Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(title) * 0.95f;
-            Vector2 titlePos = new(panelRect.X + 18, titleRect.Center.Y - titleSize.Y * 0.5f + 2);
-            Utils.DrawBorderString(sb, title, titlePos + new Vector2(1.2f, 1.2f), FrameGlow * (alpha * 0.4f), 0.95f);
-            Utils.DrawBorderString(sb, title, titlePos, TextMain * alpha, 0.95f);
+            Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(title) * 0.86f;
+            Rectangle plate = new(panelRect.X + 22, panelRect.Y + 9, (int)titleSize.X + 30, 27);
+            MiningTerminalRenderer.DrawNameplate(sb, plate, alpha);
+            Utils.DrawBorderString(sb, title,
+                new Vector2(plate.Center.X - titleSize.X * 0.5f, plate.Center.Y - titleSize.Y * 0.5f + 1),
+                new Color(58, 42, 20) * alpha, 0.86f);
 
-            //机器名挂在标题右侧
+            //铭牌底缘巡行亮笔:通着电的仪器,不是贴纸
+            SvgPath runnerLine = SvgPathPen.Path(RunnerLinePath);
+            SvgPathPen.StrokeRunner(sb, runnerLine,
+                new Vector2(plate.Center.X, plate.Bottom + 1), plate.Width * 0.5f - 3f, 0f,
+                BrassBright, 1f, alpha * 0.5f, GlobalTimer * 0.05f, 0.2f);
+
+            //机器名挂在铭牌右侧
             string name = Lang.GetItemNameValue(machine.TargetItem);
-            Utils.DrawBorderString(sb, name, titlePos + new Vector2(titleSize.X + 14, 4), TextDim * alpha, 0.7f);
+            Utils.DrawBorderString(sb, name, new Vector2(plate.Right + 12, plate.Y + 6), TextDim * alpha, 0.68f);
 
-            //关闭钮:两道交叉短杠
-            bool closeHover = closeRect.Contains(MousePosition.ToPoint());
-            Color closeColor = (closeHover ? WarnRed : TextDim) * alpha;
-            Vector2 closeCenter = closeRect.Center.ToVector2();
-            sb.Draw(px, closeCenter, src, closeColor, MathHelper.PiOver4, new Vector2(0.5f),
-                new Vector2(14f, 2f), SpriteEffects.None, 0f);
-            sb.Draw(px, closeCenter, src, closeColor, -MathHelper.PiOver4, new Vector2(0.5f),
-                new Vector2(14f, 2f), SpriteEffects.None, 0f);
+            //标题栏下的蚀刻分隔
+            MiningTerminalRenderer.DrawEtchedLine(sb, panelRect.X + 14, panelRect.Width - 28, titleRect.Bottom - 3, alpha, 0.8f);
+
+            //闩钮:拧开面板
+            MiningTerminalRenderer.DrawLatch(sb, closeRect.Center.ToVector2(), alpha, latchHover);
         }
 
-        private void DrawStrata(SpriteBatch sb) {
+        /// <summary>岩芯样本管:黄铜端盖玻璃管,管内是这台机器脚下的世界纵剖</summary>
+        private void DrawCoreSample(SpriteBatch sb) {
             Texture2D px = VaultAsset.placeholder2.Value;
             float alpha = uiAlpha;
             Rectangle src = new(0, 0, 1, 1);
             MiningSurvey survey = machine.Survey;
 
-            //把世界纵深映射进剖面柱
+            //把世界纵深映射进样本管
             float worldToCol(float worldY) =>
                 strataRect.Y + MathHelper.Clamp(worldY / Main.maxTilesY, 0f, 1f) * strataRect.Height;
 
@@ -451,22 +478,35 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             float rockY = worldToCol((float)Main.rockLayer);
             float hellY = worldToCol(Main.maxTilesY - 204);
 
-            //四段地层
+            //管内芯体:四段地层
+            Rectangle inner = new(strataRect.X + 1, strataRect.Y, strataRect.Width - 2, strataRect.Height);
             void band(float top, float bottom, Color color) {
                 int y0 = (int)top;
                 int h = Math.Max(1, (int)bottom - y0);
-                sb.Draw(px, new Rectangle(strataRect.X, y0, strataRect.Width, h), src, color * (alpha * 0.9f));
+                sb.Draw(px, new Rectangle(inner.X, y0, inner.Width, h), src, color * (alpha * 0.92f));
             }
             band(strataRect.Y, surfaceY, StrataSky);
             band(surfaceY, rockY, StrataSoil);
             band(rockY, hellY, StrataRock);
             band(hellY, strataRect.Bottom, StrataHell);
 
-            //层界细线
+            //岩屑噪斑:确定性撒点,让芯体读作压出来的岩样而不是色带
+            for (int k = 0; k < 34; k++) {
+                int hash = k * 40503 ^ machine.WhoAmI * 92821;
+                float fx = (hash & 0x3FF) / 1023f;
+                float fy = ((hash >> 10) & 0x3FF) / 1023f;
+                float dy = strataRect.Y + fy * strataRect.Height;
+                Color bandColor = dy < surfaceY ? StrataSky : dy < rockY ? StrataSoil : dy < hellY ? StrataRock : StrataHell;
+                Color fleck = Color.Lerp(bandColor, Color.White, 0.16f + (hash >> 20 & 0x3) * 0.05f);
+                sb.Draw(px, new Vector2(inner.X + 2 + fx * (inner.Width - 4), dy), src,
+                    fleck * (alpha * 0.5f), 0f, new Vector2(0.5f), new Vector2(1.6f, 1f), SpriteEffects.None, 0f);
+            }
+
+            //层界细刻
             Span<float> boundaries = [surfaceY, rockY, hellY];
             foreach (float y in boundaries) {
-                sb.Draw(px, new Rectangle(strataRect.X, (int)y, strataRect.Width, 1), src,
-                    new Color(90, 60, 40) * (alpha * 0.5f));
+                sb.Draw(px, new Rectangle(inner.X, (int)y, inner.Width, 1), src,
+                    Color.Black * (alpha * 0.4f));
             }
 
             //扫描窗:机器实际"看见"的柱段
@@ -475,7 +515,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
                 float sliceBottom = worldToCol(survey.Anchor.Y + survey.Depth);
                 int st = (int)sliceTop;
                 int sh = Math.Max(3, (int)sliceBottom - st);
-                Rectangle slice = new(strataRect.X + 3, st, strataRect.Width - 6, sh);
+                Rectangle slice = new(inner.X + 2, st, inner.Width - 4, sh);
                 float reveal = scanProgress;
                 sb.Draw(px, new Rectangle(slice.X, slice.Y, slice.Width, (int)(slice.Height * reveal)), src,
                     Amber * (alpha * 0.12f));
@@ -503,26 +543,24 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
                         if (fy > reveal) {
                             continue;
                         }
-                        Vector2 dot = new(slice.X + 4 + fx * (slice.Width - 8), slice.Y + 3 + fy * (slice.Height - 6));
+                        Vector2 dot = new(slice.X + 3 + fx * (slice.Width - 6), slice.Y + 3 + fy * (slice.Height - 6));
                         float tw = MathF.Sin(GlobalTimer * 2.2f + hash % 7) * 0.5f + 0.5f;
                         sb.Draw(px, dot, src, Color.Lerp(Amber, Color.White, 0.4f) * (alpha * (0.35f + tw * 0.45f)),
                             MathHelper.PiOver4, new Vector2(0.5f), new Vector2(2.4f), SpriteEffects.None, 0f);
                     }
                 }
 
-                //机器位置标记:一枚指向剖面的琥珀楔
+                //机器位置标记:一枚黄铜楔钉在管壁上
                 float markY = worldToCol(survey.Anchor.Y);
                 Vector2 mark = new(strataRect.X - 5, markY);
-                sb.Draw(px, mark, src, Amber * alpha, MathHelper.PiOver4, new Vector2(0.5f),
-                    new Vector2(6f, 6f), SpriteEffects.None, 0f);
+                sb.Draw(px, mark + new Vector2(0.7f), src, Color.Black * (alpha * 0.4f), MathHelper.PiOver4,
+                    new Vector2(0.5f), new Vector2(6f), SpriteEffects.None, 0f);
+                sb.Draw(px, mark, src, BrassBright * alpha, MathHelper.PiOver4, new Vector2(0.5f),
+                    new Vector2(6f), SpriteEffects.None, 0f);
             }
 
-            //剖面柱包边
-            Color edge = FrameRust * (alpha * 0.7f);
-            sb.Draw(px, new Rectangle(strataRect.X - 1, strataRect.Y - 1, strataRect.Width + 2, 1), src, edge);
-            sb.Draw(px, new Rectangle(strataRect.X - 1, strataRect.Bottom, strataRect.Width + 2, 1), src, edge);
-            sb.Draw(px, new Rectangle(strataRect.X - 1, strataRect.Y, 1, strataRect.Height), src, edge);
-            sb.Draw(px, new Rectangle(strataRect.Right, strataRect.Y, 1, strataRect.Height), src, edge);
+            //管壳画在芯体之上:端盖、管壁与玻璃高光
+            MiningTerminalRenderer.DrawCoreTube(sb, strataRect, alpha, GlobalTimer);
         }
 
         private string LayerName(MiningSurvey survey) {
@@ -564,13 +602,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         private void DrawReadouts(SpriteBatch sb) {
             float alpha = uiAlpha;
             MiningSurvey survey = machine.Survey;
-            float y = strataRect.Bottom + 8;
-            float x = strataRect.X;
+            float y = strataRect.Bottom + 14;
+            float x = strataRect.X - 3;
 
             void line(string label, string value, Color valueColor) {
-                Utils.DrawBorderString(sb, label, new Vector2(x, y), TextDim * alpha, 0.62f);
+                Utils.DrawBorderString(sb, label, new Vector2(x, y), TextDim * alpha, 0.6f);
                 Utils.DrawBorderString(sb, value, new Vector2(x, y + 13), valueColor * alpha, 0.66f);
-                y += 28;
+                y += 29;
             }
 
             line(LayerLabel.Value, LayerName(survey), TextMain);
@@ -584,25 +622,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             float alpha = uiAlpha;
             Rectangle src = new(0, 0, 1, 1);
 
-            //报告头
-            Utils.DrawBorderString(sb, ReportTitle.Value, new Vector2(reportRect.X, reportRect.Y), TextMain * alpha, 0.78f);
+            //报告头 + 机加工按钮
+            Utils.DrawBorderString(sb, ReportTitle.Value, new Vector2(reportRect.X, reportRect.Y - 2), TextMain * alpha, 0.78f);
+            MiningTerminalRenderer.DrawButton(sb, rescanRect, alpha, rescanHover, rescanPressTimer > 0, RescanText.Value);
 
-            //重新勘探按钮
-            bool rescanHover = rescanRect.Contains(MousePosition.ToPoint());
-            float hoverGlow = rescanHover ? 0.5f : 0f;
-            sb.Draw(px, rescanRect, src, BgMid * (alpha * 0.9f));
-            Color btnEdge = Color.Lerp(FrameRust, FrameGlow, hoverGlow) * (alpha * 0.9f);
-            sb.Draw(px, new Rectangle(rescanRect.X, rescanRect.Y, rescanRect.Width, 1), src, btnEdge);
-            sb.Draw(px, new Rectangle(rescanRect.X, rescanRect.Bottom - 1, rescanRect.Width, 1), src, btnEdge);
-            sb.Draw(px, new Rectangle(rescanRect.X, rescanRect.Y, 1, rescanRect.Height), src, btnEdge);
-            sb.Draw(px, new Rectangle(rescanRect.Right - 1, rescanRect.Y, 1, rescanRect.Height), src, btnEdge);
-            string rescan = RescanText.Value;
-            Vector2 rescanSize = FontAssets.MouseText.Value.MeasureString(rescan) * 0.62f;
-            Utils.DrawBorderString(sb, rescan,
-                new Vector2(rescanRect.Center.X - rescanSize.X * 0.5f, rescanRect.Center.Y - rescanSize.Y * 0.5f),
-                Color.Lerp(TextMain, Amber, hoverGlow) * alpha, 0.62f);
-
-            //行区
+            //行区:负空间 + 蚀刻分隔,不再画整行底盒
             Rectangle rowsRect = new(reportRect.X, reportRect.Y + 24, reportRect.Width, reportRect.Height - 24);
             int visibleRows = rowsRect.Height / RowHeight;
             float sweepReveal = scanProgress * report.Count;
@@ -629,13 +653,21 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
                     alpha * edgeFade * reveal, i);
             }
 
-            //扫掠亮线
+            //扫掠亮线 + 余辉:扫过的地方留几帧渐暗的残光
             if (scanProgress < 1f) {
                 float sweepY = rowsRect.Y + MathHelper.Clamp(sweepReveal * RowHeight - scrollOffset, 0, rowsRect.Height);
-                sb.Draw(px, new Rectangle(rowsRect.X, (int)sweepY, rowsRect.Width, 2), src, Amber * (alpha * 0.8f));
+                sb.Draw(px, new Rectangle(rowsRect.X, (int)sweepY, rowsRect.Width, 2), src, Amber * (alpha * 0.85f));
+                for (int e = 1; e <= 3; e++) {
+                    float echoY = sweepY - e * 5f;
+                    if (echoY < rowsRect.Y) {
+                        break;
+                    }
+                    sb.Draw(px, new Rectangle(rowsRect.X, (int)echoY, rowsRect.Width, 1), src,
+                        Amber * (alpha * (0.32f - e * 0.09f)));
+                }
             }
 
-            //溢出指示:右缘细琥珀迹
+            //溢出指示:右缘蚀刻轨 + 琥珀游标
             int rowCount = report.Count;
             if (rowCount > visibleRows) {
                 float viewRatio = visibleRows / (float)rowCount;
@@ -643,7 +675,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
                 int trackH = rowsRect.Height - 4;
                 int barH = Math.Max(12, (int)(trackH * viewRatio));
                 int barY = rowsRect.Y + 2 + (int)(posRatio * trackH);
-                sb.Draw(px, new Rectangle(rowsRect.Right + 3, rowsRect.Y + 2, 1, trackH), src, FrameRust * (alpha * 0.35f));
+                sb.Draw(px, new Rectangle(rowsRect.Right + 3, rowsRect.Y + 2, 1, trackH), src, Color.Black * (alpha * 0.45f));
+                sb.Draw(px, new Rectangle(rowsRect.Right + 4, rowsRect.Y + 2, 1, trackH), src, MiningTerminalRenderer.SteelLit * (alpha * 0.4f));
                 sb.Draw(px, new Rectangle(rowsRect.Right + 2, barY, 3, barH), src, Amber * (alpha * 0.6f));
             }
         }
@@ -654,42 +687,38 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             bool open = entry.Gate == OreGate.Open;
             bool hover = row.Contains(MousePosition.ToPoint());
 
-            //行底:开采行随权重着一点琥珀,锁定行沉灰
-            Color rowBg = open ? Color.Lerp(BgMid, new Color(52, 32, 18), Math.Min(entry.Share * 3f, 1f))
-                : new Color(20, 16, 13);
-            sb.Draw(px, row, src, rowBg * (alpha * (hover ? 0.95f : 0.8f)));
+            //悬停:左缘琥珀刻痕,不再整行填充
             if (hover) {
-                sb.Draw(px, new Rectangle(row.X, row.Y, 2, row.Height), src, Amber * (alpha * 0.8f));
+                sb.Draw(px, new Rectangle(row.X, row.Y + 3, 2, row.Height - 6), src, Amber * (alpha * 0.85f));
             }
+            //行间蚀刻分隔
+            MiningTerminalRenderer.DrawEtchedLine(sb, row.X + 2, row.Width - 8, row.Bottom - 1, alpha, 0.45f);
 
-            //矿物图标
+            //矿物图标;玩家没见过的矿贴图是懒加载的,不先 LoadItem 只会画出空气
+            Main.instance.LoadItem(entry.ItemID);
             VaultUtils.SimpleDrawItem(sb, entry.ItemID, new Vector2(row.X + 14, row.Center.Y), 20, 1f, 0,
                 Color.White * (open ? alpha : alpha * 0.45f));
 
             //名称
             string name = Lang.GetItemNameValue(entry.ItemID);
-            Color nameColor = open ? TextMain : TextDim;
+            Color nameColor = open ? (hover ? Color.Lerp(TextMain, Color.White, 0.25f) : TextMain) : TextDim;
             Utils.DrawBorderString(sb, name, new Vector2(row.X + 30, row.Y + 4), nameColor * alpha, 0.68f);
 
             if (open) {
-                //份额条 + 百分比:与掷骰同源
+                //份额刻度条 + 百分比:与掷骰同源
                 int barX = row.X + 176;
                 int barW = row.Width - 176 - 58;
-                sb.Draw(px, new Rectangle(barX, row.Center.Y - 3, barW, 6), src, new Color(30, 22, 16) * alpha);
-                int fillW = (int)(barW * MathHelper.Clamp(entry.Share, 0f, 1f));
-                if (fillW > 0) {
-                    float pulse = MathF.Sin(GlobalTimer * 1.8f + index * 0.7f) * 0.15f + 0.85f;
-                    sb.Draw(px, new Rectangle(barX, row.Center.Y - 3, fillW, 6), src, Amber * (alpha * pulse));
-                }
+                MiningTerminalRenderer.DrawTickBar(sb, new Rectangle(barX, row.Y + 5, barW, row.Height - 10),
+                    entry.Share, Amber, alpha);
                 string share = (entry.Share * 100f).ToString(entry.Share >= 0.095f ? "0" : "0.0") + "%";
                 Vector2 shareSize = FontAssets.MouseText.Value.MeasureString(share) * 0.66f;
                 Utils.DrawBorderString(sb, share, new Vector2(row.Right - 8 - shareSize.X, row.Y + 4),
                     TextMain * alpha, 0.66f);
 
-                //有真实矿脉的行,在名称后点一枚亮钉
+                //有真实矿脉的行,在名称后钉一枚黄铜亮钉
                 if (entry.VeinTiles > 0) {
                     Vector2 pin = new(row.X + 166, row.Center.Y);
-                    sb.Draw(px, pin, src, Color.Lerp(Amber, Color.White, 0.4f) * (alpha * 0.9f),
+                    sb.Draw(px, pin, src, Color.Lerp(BrassBright, Color.White, 0.3f) * (alpha * 0.9f),
                         MathHelper.PiOver4, new Vector2(0.5f), new Vector2(3f), SpriteEffects.None, 0f);
                 }
             }
@@ -713,9 +742,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         }
 
         private void DrawSlots(SpriteBatch sb) {
-            Texture2D px = VaultAsset.placeholder2.Value;
             float alpha = uiAlpha;
-            Rectangle src = new(0, 0, 1, 1);
             Item[] modules = machine.EnsureModules();
 
             Utils.DrawBorderString(sb, ModuleSlotLabel.Value,
@@ -725,21 +752,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             for (int i = 0; i < slotRects.Count; i++) {
                 Rectangle rect = slotRects[i];
                 bool hover = rect.Contains(MousePosition.ToPoint());
-                bool denied = denyFlashTimer > 0 && denyFlashSlot == i;
+                float deny = denyFlashTimer > 0 && denyFlashSlot == i ? denyFlashTimer / 40f : 0f;
 
-                sb.Draw(px, rect, src, new Color(18, 13, 10) * (alpha * 0.92f));
-
-                float glow = hover ? 0.4f : 0f;
-                Color edge = Color.Lerp(FrameRust, FrameGlow, MathF.Sin(GlobalTimer * 1.3f) * 0.25f + 0.25f + glow);
-                if (denied) {
-                    float flash = denyFlashTimer / 40f;
-                    edge = Color.Lerp(edge, WarnRed, flash);
-                }
-                edge *= alpha * 0.85f;
-                sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), src, edge);
-                sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), src, edge);
-                sb.Draw(px, new Rectangle(rect.X, rect.Y, 2, rect.Height), src, edge);
-                sb.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), src, edge);
+                //插座:凹槽床 + 键槽刻痕 + 黄铜簧片
+                MiningTerminalRenderer.DrawSocket(sb, rect, alpha, hover ? 1f : 0f, deny);
 
                 Item item = i < modules.Length ? modules[i] : null;
                 if (item != null && !item.IsAir) {
@@ -747,77 +763,61 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
                         module.DrawIcon(sb, rect.Center.ToVector2(), 15f, alpha);
                     }
                     else {
+                        //兜底画原版贴图前先确保纹理已加载
+                        Main.instance.LoadItem(item.type);
                         VaultUtils.SimpleDrawItem(sb, item.type, rect.Center.ToVector2(), 32, 1f, 0, Color.White * alpha);
                     }
                 }
                 else {
-                    //空槽:一枚暗刻的钻齿纹占位
-                    Vector2 c = rect.Center.ToVector2();
-                    sb.Draw(px, c, src, TextDim * (alpha * 0.18f), MathHelper.PiOver4, new Vector2(0.5f),
-                        new Vector2(10f, 2f), SpriteEffects.None, 0f);
-                    sb.Draw(px, c, src, TextDim * (alpha * 0.18f), -MathHelper.PiOver4, new Vector2(0.5f),
-                        new Vector2(10f, 2f), SpriteEffects.None, 0f);
+                    //空插座:键位蚀刻
+                    MiningTerminalRenderer.DrawSocketKeyMark(sb, rect.Center.ToVector2(), alpha);
                 }
             }
         }
 
+        /// <summary>状态灯 + 镐力读数 + 双仪表(能量/产率)</summary>
         private void DrawStatus(SpriteBatch sb) {
-            Texture2D px = VaultAsset.placeholder2.Value;
             float alpha = uiAlpha;
-            Rectangle src = new(0, 0, 1, 1);
             float x = panelRect.X + 98;
             float y = panelRect.Y + 302;
 
-            //状态行
+            //状态灯:唯一的裸辉光点缀
             string state;
-            Color stateColor;
+            Color lampColor;
+            float lampBright;
             if (!machine.Powered) {
                 state = StateNoPower.Value;
-                stateColor = WarnRed;
+                lampColor = WarnRed;
+                lampBright = MathF.Sin(GlobalTimer * 5f) * 0.35f + 0.55f;
             }
             else if (!machine.FootingOk) {
                 state = StateNoFooting.Value;
-                stateColor = Color.Lerp(WarnRed, Amber, 0.5f);
+                lampColor = Color.Lerp(WarnRed, Amber, 0.5f);
+                lampBright = MathF.Sin(GlobalTimer * 3f) * 0.3f + 0.6f;
             }
             else {
                 state = StateWorking.Value;
-                stateColor = OkGreen;
-                float blink = MathF.Sin(GlobalTimer * 4f) * 0.2f + 0.8f;
-                stateColor *= blink;
+                lampColor = OkGreen;
+                lampBright = MathF.Sin(GlobalTimer * 2.2f) * 0.2f + 0.72f;
             }
-            //状态/镐力/产率横排一行,挤在报告与能量条之间
-            Utils.DrawBorderString(sb, StatusLabel.Value, new Vector2(x, y), TextDim * alpha, 0.62f);
-            float labelW = FontAssets.MouseText.Value.MeasureString(StatusLabel.Value).X * 0.62f;
-            Utils.DrawBorderString(sb, state, new Vector2(x + labelW + 8, y), stateColor * alpha, 0.66f);
+            MiningTerminalRenderer.DrawLamp(sb, new Vector2(x + 7, y + 9), lampColor, alpha, lampBright);
+            Utils.DrawBorderString(sb, state, new Vector2(x + 21, y + 1),
+                Color.Lerp(TextMain, lampColor, 0.35f) * alpha, 0.66f);
 
+            //镐力读数:挂在槽位标签行,避开右侧表盘
             machine.RefreshModifiers();
             Utils.DrawBorderString(sb, PickPowerLine.Format((int)machine.EffectivePickPower),
-                new Vector2(panelRect.X + 278, y), TextMain * alpha, 0.62f);
-            Utils.DrawBorderString(sb, YieldRateLine.Format(machine.EstimateYieldPerMinute().ToString("0.0")),
-                new Vector2(panelRect.X + 398, y), TextMain * alpha, 0.62f);
+                new Vector2(panelRect.X + 240, panelRect.Y + 338), TextMain * alpha, 0.62f);
 
-            //能量条(横贯),标签内联在左
-            Utils.DrawBorderString(sb, EnergyLabel.Value,
-                new Vector2(panelRect.X + 98, energyRect.Y - 3), TextDim * alpha, 0.58f);
-            sb.Draw(px, energyRect, src, new Color(16, 12, 10) * (alpha * 0.95f));
-            float ratio = MathHelper.Clamp(machine.MachineData.UEvalue / machine.MaxUEValue, 0f, 1f);
-            int fillW = (int)((energyRect.Width - 4) * ratio);
-            if (fillW > 0) {
-                int fillSegs = Math.Max(1, fillW / 8);
-                for (int i = 0; i < fillSegs; i++) {
-                    float t = i / (float)fillSegs;
-                    int x1 = energyRect.X + 2 + (int)(t * fillW);
-                    int x2 = energyRect.X + 2 + (int)((i + 1) / (float)fillSegs * fillW);
-                    float pulse = MathF.Sin(GlobalTimer * 2.5f - t * 4f) * 0.18f + 0.82f;
-                    sb.Draw(px, new Rectangle(x1, energyRect.Y + 2, Math.Max(1, x2 - x1), energyRect.Height - 4), src,
-                        Color.Lerp(new Color(120, 62, 30), Amber, t) * (alpha * pulse));
-                }
-            }
-            Color barEdge = FrameRust * (alpha * 0.8f);
-            sb.Draw(px, new Rectangle(energyRect.X, energyRect.Y, energyRect.Width, 1), src, barEdge);
-            sb.Draw(px, new Rectangle(energyRect.X, energyRect.Bottom - 1, energyRect.Width, 1), src, barEdge);
-            sb.Draw(px, new Rectangle(energyRect.X, energyRect.Y, 1, energyRect.Height), src, barEdge);
-            sb.Draw(px, new Rectangle(energyRect.Right - 1, energyRect.Y, 1, energyRect.Height), src, barEdge);
+            //双仪表:指针带欠阻尼摆动,作业时加一丝微颤
+            float jitter = machine.IsWorking ? MathF.Sin(GlobalTimer * 34f) * 0.006f : 0f;
+            float ratio = machine.MachineData != null
+                ? MathHelper.Clamp(machine.MachineData.UEvalue / machine.MaxUEValue, 0f, 1f) : 0f;
+            MiningTerminalRenderer.DrawGauge(sb, energyGaugeCenter, 26f, energyDisplay + jitter,
+                Amber, alpha, EnergyLabel.Value, $"{(int)(ratio * 100f)}%");
+            MiningTerminalRenderer.DrawGauge(sb, yieldGaugeCenter, 26f, yieldDisplay + jitter,
+                Color.Lerp(Amber, OkGreen, 0.35f), alpha, YieldLabel.Value,
+                machine.EstimateYieldPerMinute().ToString("0.0"));
         }
 
         private void DrawHoverTips(SpriteBatch sb) {
@@ -845,9 +845,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
                 return;
             }
 
-            //能量条悬停
-            if (energyRect.Contains(mouse)) {
+            //仪表悬停:精确读数
+            if (energyGaugeRect.Contains(mouse)) {
                 ShowTooltip(sb, $"{(int)machine.MachineData.UEvalue}/{(int)machine.MaxUEValue} UE", TextMain);
+                return;
+            }
+            if (yieldGaugeRect.Contains(mouse)) {
+                ShowTooltip(sb, YieldRateLine.Format(machine.EstimateYieldPerMinute().ToString("0.0")), TextMain);
                 return;
             }
 
@@ -865,8 +869,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         }
 
         private void ShowTooltip(SpriteBatch sb, string text, Color color) {
-            Texture2D px = VaultAsset.placeholder2.Value;
-            Rectangle src = new(0, 0, 1, 1);
             Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.75f;
             Vector2 pos = MousePosition + new Vector2(18, 18);
             //贴屏缘时翻转与钳制
@@ -877,10 +879,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
                 pos.Y = MousePosition.Y - textSize.Y - 18;
             }
 
-            Rectangle bg = new((int)pos.X - 8, (int)pos.Y - 5, (int)textSize.X + 16, (int)textSize.Y + 10);
-            sb.Draw(px, bg, src, new Color(14, 10, 8) * 0.95f);
-            sb.Draw(px, new Rectangle(bg.X, bg.Y, bg.Width, 2), src, FrameRust * 0.85f);
-            sb.Draw(px, new Rectangle(bg.X, bg.Y, 2, bg.Height), src, FrameRust * 0.85f);
+            Rectangle bg = new((int)pos.X - 9, (int)pos.Y - 5, (int)textSize.X + 18, (int)textSize.Y + 10);
+            MiningTerminalRenderer.DrawTooltipPlate(sb, bg, 1f);
             Utils.DrawBorderString(sb, text, pos, color, 0.75f);
         }
         #endregion
