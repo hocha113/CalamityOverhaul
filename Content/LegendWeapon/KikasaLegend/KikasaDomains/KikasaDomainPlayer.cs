@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.Scenarios.OniRainWorlds;
 using InnoVault.Cinematics;
@@ -457,6 +457,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             //合拢原点逐帧向人聚拢：满覆盖下圆心移动不可见，等圆缩小到可见时已贴在身上，
             //纸口追着人合拢而不是钉死在开域点；各端从同步的玩家位置自算，无需入快照特殊处理
             OriginWorldPos = Vector2.Lerp(OriginWorldPos, Player.Center, 0.2f);
+            Vector2 offset = Player.Center.To(OriginWorldPos);
+            OriginWorldPos = Player.Center + offset.UnitVector() * MathHelper.Clamp(offset.Length(), 0, 600);
 
             float f = MathHelper.Clamp(PhaseTimer / (float)KikasaDomain.CloseFrames, 0f, 1f);
             SpreadProgress = CloseSpreadCurve(f);
