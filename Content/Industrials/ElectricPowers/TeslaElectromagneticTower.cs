@@ -212,6 +212,23 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public NPC TargetByNPC { get; set; }
         public int FireCoolden { get; set; }
         public float GuardValue { get; set; }
+
+        //---- 护卫力场视觉状态：纯客户端表现，不参与判定，判定半径始终是 GuardValue ----
+        /// <summary>护卫环的显示半径，欠阻尼弹簧跟随 <see cref="GuardValue"/>，扩张末端自带过冲回稳</summary>
+        public float GuardVisualRadius { get; private set; }
+        /// <summary>护卫环总体强度包络 0~1</summary>
+        public float GuardVisualIntensity { get; private set; }
+        /// <summary>半径变化强调量 0~1，喂给着色器的扩张/塌缩前沿</summary>
+        public float GuardExpandGlow { get; private set; }
+        /// <summary>本 tick 护卫场是否实际运转(护卫模式且有电)</summary>
+        public bool GuardActive { get; private set; }
+        /// <summary>特斯拉系电青色，与塔的闪电弹同源</summary>
+        internal static readonly Color TeslaCyan = new(103, 255, 255);
+        private float guardRadiusVel;
+        private bool oldGuardActive;
+        private int crawlArcTimer;
+        private int dischargeTimer;
+        private int sparkTimer;
         public override void SendData(ModPacket data) {
             base.SendData(data);
             data.Write(AttackPattern);
@@ -243,9 +260,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override void SetBattery() {
             IdleDistance = 4000;//玩家远离后停止运行
+            DrawExtendMode = 1100;//护卫环最大半径800+外缘辉光，塔出屏后环仍需绘制
             AttackPattern = TrackItem != null && TrackItem.type == ModContent.ItemType<TeslaElectromagneticTowerAttackMode>();
         }
 
+        /// <summary>旧版粒子圆环，仅在 <see cref="EffectLoader.TeslaGuardRing"/> 缺失时作回退</summary>
         private void SpawnGuardEffect() {
             if (VaultUtils.isServer) {
                 return;
@@ -261,7 +280,176 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             });
         }
 
+        /// <summary>推进护卫环显示包络：弹簧半径、强度淡入淡出、关闭边沿迸溅，每 tick 调用</summary>
+        private void UpdateGuardVisual() {
+            float target = GuardActive ? GuardValue : 0f;
+            //欠阻尼弹簧：扩张末端轻微过冲回稳；塌缩加刚度快速收拢
+            float stiffness = GuardActive ? 0.085f : 0.20f;
+            float damping = GuardActive ? 0.85f : 0.66f;
+            guardRadiusVel = guardRadiusVel * damping + (target - GuardVisualRadius) * stiffness;
+            GuardVisualRadius += guardRadiusVel;
+            if (GuardVisualRadius < 0f) {
+                GuardVisualRadius = 0f;
+                guardRadiusVel = 0f;
+            }
+
+            GuardVisualIntensity = MathHelper.Lerp(GuardVisualIntensity, GuardActive ? 1f : 0f, GuardActive ? 0.10f : 0.09f);
+            if (!GuardActive && GuardVisualIntensity < 0.015f) {
+                GuardVisualIntensity = 0f;
+            }
+
+            GuardExpandGlow = MathHelper.Clamp(MathF.Abs(guardRadiusVel) * 0.10f, 0f, 1f);
+
+            //护卫场关闭边沿：环上向内迸一圈微电弧
+            if (oldGuardActive && !GuardActive && GuardVisualRadius > 60f && !VaultUtils.isServer) {
+                float burstRadius = GuardVisualRadius;
+                Defer(() => SpawnCollapseBurst(burstRadius));
+            }
+            oldGuardActive = GuardActive;
+        }
+
+        /// <summary>护卫场运转期的环上表现：着色器缺失回退旧粒子环，否则火花点缀+爬弧+环光</summary>
+        private void UpdateGuardEffect() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            if (EffectLoader.TeslaGuardRing?.Value == null) {
+                SpawnGuardEffect();
+                return;
+            }
+            if (GuardVisualRadius < 40f) {
+                return;
+            }
+
+            //环缘微电弧火花，切向初速
+            if (++sparkTimer >= 5) {
+                sparkTimer = 0;
+                Defer(() => {
+                    float ang = Main.rand.NextFloat(MathHelper.TwoPi);
+                    Vector2 pos = CenterInWorld + ang.ToRotationVector2() * GuardVisualRadius;
+                    Vector2 tangent = (ang + MathHelper.PiOver2).ToRotationVector2()
+                        * Main.rand.NextFloat(1.5f, 4f) * (Main.rand.NextBool() ? 1f : -1f);
+                    PRTLoader.NewParticle<PRT_GraniteVolt>(pos, tangent, TeslaCyan
+                        , Main.rand.NextFloat(0.22f, 0.4f)).Configure(Main.rand.Next(3, 6));
+                });
+            }
+
+            //塔顶线圈偶发微弧，标明场源
+            if (Rand.NextBool(10)) {
+                Defer(() => {
+                    Vector2 coil = PosInWorld + new Vector2(Width * 0.5f + Main.rand.NextFloat(-12f, 12f), Main.rand.NextFloat(2f, 20f));
+                    PRTLoader.NewParticle<PRT_GraniteVolt>(coil, Main.rand.NextVector2Circular(1.5f, 1f), TeslaCyan
+                        , Main.rand.NextFloat(0.18f, 0.32f)).Configure(Main.rand.Next(2, 5));
+                });
+            }
+
+            //环面爬弧
+            if (--crawlArcTimer <= 0) {
+                crawlArcTimer = 20 + Rand.Next(21);
+                Defer(SpawnCrawlArc);
+            }
+
+            //环上取样点打光，力场照亮场地
+            Defer(() => {
+                Vector3 lightColor = TeslaCyan.ToVector3() * 0.30f * GuardVisualIntensity;
+                for (int i = 0; i < 8; i++) {
+                    Vector2 pos = CenterInWorld + (MathHelper.TwoPi * i / 8f).ToRotationVector2() * GuardVisualRadius;
+                    Lighting.AddLight(pos, lightColor);
+                }
+            });
+        }
+
+        /// <summary>环面爬弧：沿圆周一段弦弧的 ThunderTrail，读作电在边界上爬行</summary>
+        private void SpawnCrawlArc() {
+            float radius = GuardVisualRadius;
+            if (radius < 90f) {
+                return;
+            }
+            float start = Main.rand.NextFloat(MathHelper.TwoPi);
+            float span = Main.rand.NextFloat(0.26f, 0.7f) * (Main.rand.NextBool() ? 1f : -1f);
+            int pointCount = Main.rand.Next(6, 10);
+            Vector2[] path = new Vector2[pointCount];
+            for (int i = 0; i < pointCount; i++) {
+                float t = i / (float)(pointCount - 1);
+                //两端钉在环上，中段径向摆动
+                float swing = MathF.Sin(t * MathHelper.Pi) * Main.rand.NextFloat(-12f, 12f);
+                path[i] = CenterInWorld + (start + span * t).ToRotationVector2() * (radius + swing);
+            }
+            PRTLoader.NewParticle<PRT_TeslaArc>(path[pointCount / 2], Vector2.Zero, TeslaCyan, 1f)
+                ?.Configure(path, Main.rand.Next(9, 16), Main.rand.NextFloat(6f, 10f), (0f, 6f), 4f);
+        }
+
+        /// <summary>对敌放电的节流入口，目标来自 UpdateMachine 的蓄水池抽样</summary>
+        private void TryDischarge(NPC target) {
+            if (VaultUtils.isServer || target == null) {
+                return;
+            }
+            if (--dischargeTimer > 0) {
+                return;
+            }
+            dischargeTimer = 26 + Rand.Next(20);
+            int whoAmI = target.whoAmI;
+            Defer(() => {
+                if (!Main.npc.IndexInRange(whoAmI)) {
+                    return;
+                }
+                NPC npc = Main.npc[whoAmI];
+                if (!npc.active) {
+                    return;
+                }
+                SpawnDischargeArc(npc);
+            });
+        }
+
+        /// <summary>从环缘最近点向场内敌怪拉一道放电弧+命中迸溅：护卫塔正在干活的直观证据</summary>
+        private void SpawnDischargeArc(NPC npc) {
+            float radius = GuardVisualRadius;
+            if (radius < 90f) {
+                return;
+            }
+            Vector2 dir = CenterInWorld.To(npc.Center).SafeNormalize(Vector2.UnitY);
+            Vector2 from = CenterInWorld + dir * radius;
+            Vector2 to = npc.Center;
+            Vector2 side = dir.RotatedBy(MathHelper.PiOver2);
+            int pointCount = Main.rand.Next(7, 10);
+            Vector2[] path = new Vector2[pointCount];
+            for (int i = 0; i < pointCount; i++) {
+                float t = i / (float)(pointCount - 1);
+                //两端钉死，中段最大摆幅
+                float sway = MathF.Sin(t * MathHelper.Pi) * Main.rand.NextFloat(-26f, 26f);
+                path[i] = Vector2.Lerp(from, to, t) + side * sway;
+            }
+            PRTLoader.NewParticle<PRT_TeslaArc>(to, Vector2.Zero, TeslaCyan, 1f)
+                ?.Configure(path, Main.rand.Next(12, 19), Main.rand.NextFloat(9f, 13f), (0f, 10f), 5f);
+
+            for (int i = 0; i < 3; i++) {
+                PRTLoader.NewParticle<PRT_GraniteVolt>(to + Main.rand.NextVector2Circular(8f, 8f)
+                    , Main.rand.NextVector2Unit() * 2.5f, TeslaCyan
+                    , Main.rand.NextFloat(0.24f, 0.4f)).Configure(Main.rand.Next(3, 6));
+            }
+            for (int i = 0; i < 4; i++) {
+                Dust d = Dust.NewDustPerfect(to, DustID.Electric, VaultUtils.RandVr(3f));
+                d.noGravity = true;
+            }
+            SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with {
+                Volume = 0.3f,
+                Pitch = Main.rand.NextFloat(-0.1f, 0.25f)
+            }, to);
+        }
+
+        /// <summary>护卫场关闭时环向内迸一圈微电弧</summary>
+        private void SpawnCollapseBurst(float radius) {
+            for (int i = 0; i < 18; i++) {
+                float ang = MathHelper.TwoPi * i / 18f + Main.rand.NextFloat(0.3f);
+                Vector2 pos = CenterInWorld + ang.ToRotationVector2() * radius;
+                Vector2 vel = ang.ToRotationVector2() * -Main.rand.NextFloat(2f, 6f);
+                PRTLoader.NewParticle<PRT_GraniteVolt>(pos, vel, TeslaCyan
+                    , Main.rand.NextFloat(0.24f, 0.44f)).Configure(Main.rand.Next(3, 7));
+            }
+        }
+
         public override void UpdateMachine() {
+            bool guardRunning = false;
             if (AttackPattern) {
                 GuardValue = 0;
                 if (MachineData.UEvalue >= 60 && ++FireCoolden > 60) {
@@ -288,12 +476,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 }
             }
             else if (MachineData.UEvalue > 2) {
+                guardRunning = true;
                 if (GuardValue < 800) {
                     GuardValue += 10;
                 }
 
-                SpawnGuardEffect();
+                UpdateGuardEffect();
 
+                NPC dischargeTarget = null;
+                int eligibleCount = 0;
                 foreach (var npc in Main.ActiveNPCs) {
                     if (npc.friendly) {
                         continue;
@@ -303,7 +494,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     }
                     //并行阶段Buff写入延迟到主线程执行(串行阶段立即执行)
                     Defer(() => npc.AddBuff(BuffID.Electrified, 30));
+                    //蓄水池抽样：场内敌怪等概率选一个作放电表现目标
+                    eligibleCount++;
+                    if (Rand.Next(eligibleCount) == 0) {
+                        dischargeTarget = npc;
+                    }
                 }
+                TryDischarge(dischargeTarget);
 
                 if (++FireCoolden > 40) {
                     ArcCharging();
@@ -312,6 +509,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
                 MachineData.UEvalue -= 0.5f;
             }
+
+            GuardActive = guardRunning;
+            UpdateGuardVisual();
         }
 
         public override void MachineKill() {
@@ -376,6 +576,143 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 
         public override void FrontDraw(SpriteBatch spriteBatch) {
             DrawChargeBar();
+        }
+    }
+
+    /// <summary>
+    /// 护卫力场环绘制：<see cref="EffectLoader.TeslaGuardRing"/> 画在归一化圆盘 quad 上。<br/>
+    /// PreDrawEverything 时画布尚未开启，自开 Immediate 批合批所有塔；
+    /// 位于 PostDrawTiles 层，物块之上、实体之下，正是力场该在的层
+    /// </summary>
+    internal class TeslaGuardRingDraw : GlobalTileProcessor
+    {
+        public override bool PreDrawEverything(SpriteBatch spriteBatch) {
+            if (Main.dedServ) {
+                return true;
+            }
+            Effect shader = EffectLoader.TeslaGuardRing?.Value;
+            if (shader == null) {
+                return true;//着色器缺失，塔侧已回退旧粒子环
+            }
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            Texture2D voro = CWRAsset.Extra_193?.Value;
+            if (canvas == null || noise == null || voro == null) {
+                return true;
+            }
+
+            bool begun = false;
+            foreach (var tp in TileProcessorLoader.TP_InWorld) {
+                if (tp is not TeslaElectromagneticTowerTP tesla || !tesla.Active) {
+                    continue;
+                }
+                if (tesla.GuardVisualIntensity <= 0.02f || tesla.GuardVisualRadius < 8f) {
+                    continue;
+                }
+                if (!VaultUtils.IsPointOnScreen(tesla.PosInWorld - Main.screenPosition, tesla.DrawExtendMode)) {
+                    continue;
+                }
+
+                if (!begun) {
+                    begun = true;
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
+                        SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone,
+                        null, Main.GameViewMatrix.TransformationMatrix);
+                    GraphicsDevice gd = Main.instance.GraphicsDevice;
+                    gd.Textures[1] = noise;
+                    gd.SamplerStates[1] = SamplerState.LinearWrap;
+                    gd.Textures[2] = voro;
+                    gd.SamplerStates[2] = SamplerState.LinearWrap;
+                }
+
+                float radius = tesla.GuardVisualRadius;
+                //quad 外留余量装 halo 与节点辉光；小半径时保底 150px
+                float quadHalf = MathF.Max(radius * 1.42f, radius + 150f);
+                float phase = (tesla.Position.X * 7 + tesla.Position.Y * 13) * 0.173f;
+                shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly + phase);
+                shader.Parameters["ringProgress"]?.SetValue(radius / quadHalf);
+                shader.Parameters["uQuadHalf"]?.SetValue(quadHalf);
+                shader.Parameters["intensity"]?.SetValue(tesla.GuardVisualIntensity);
+                shader.Parameters["expandGlow"]?.SetValue(tesla.GuardExpandGlow);
+                shader.Parameters["seed"]?.SetValue(phase - MathF.Floor(phase));
+                shader.CurrentTechnique.Passes[0].Apply();
+
+                float diameter = quadHalf * 2f;
+                spriteBatch.Draw(canvas, tesla.CenterInWorld - Main.screenPosition, null, Color.White,
+                    0f, canvas.Size() * 0.5f, new Vector2(diameter / canvas.Width, diameter / canvas.Height),
+                    SpriteEffects.None, 0f);
+            }
+
+            if (begun) {
+                spriteBatch.End();
+            }
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// 特斯拉护卫环电弧：沿给定折线放一道 ThunderTrail，纯表现无判定，
+    /// 环面爬弧与对敌放电共用。走 PRT 使绘制落在世界实体批次里（同 <see cref="PRT_SkyBolt"/>）
+    /// </summary>
+    internal class PRT_TeslaArc : BasePRT
+    {
+        public override int InGame_World_MaxCount => 24;
+        public override bool CanPool => false;
+        public override string Texture => CWRConstant.VaultPlaceholder;
+
+        private ThunderTrail trail;
+        private float baseWidth;
+        //生命包络，AI 里推进、绘制函数里采样
+        private float envelope = 1f;
+
+        /// <param name="path">折线路径，至少 3 点，两端不抖动</param>
+        /// <param name="lifetime">存活帧数</param>
+        /// <param name="width">基础宽度(像素)</param>
+        /// <param name="range">RandomThunder 的法向随机偏移范围</param>
+        /// <param name="expand">RandomThunder 的额外圆散幅度</param>
+        public PRT_TeslaArc Configure(Vector2[] path, int lifetime, float width, (float, float) range, float expand) {
+            Lifetime = lifetime;
+            baseWidth = width;
+            Position = path[path.Length / 2];
+            Velocity = Vector2.Zero;
+            trail = new ThunderTrail(CWRAsset.ThunderTrail, WidthFunc, ColorFunc, AlphaFunc) {
+                CanDraw = true,
+                UseNonOrAdd = true,
+                PartitionPointCount = 2,
+                BasePositions = path,
+            };
+            trail.SetRange(range);
+            trail.SetExpandWidth(expand);
+            trail.RandomThunder();
+            return this;
+        }
+
+        public override void SetProperty() {
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
+        }
+
+        public override void AI() {
+            //快起慢收：前 15% 满亮，之后三次方衰减
+            float t = LifetimeCompletion;
+            envelope = t < 0.15f ? 1f : 1f - MathF.Pow((t - 0.15f) / 0.85f, 3f);
+
+            if (trail != null && Time % 2 == 0 && t < 0.6f) {
+                trail.RandomThunder();
+            }
+            Lighting.AddLight(Position, Color.ToVector3() * envelope * 0.6f);
+        }
+
+        private float WidthFunc(float factor) => baseWidth * envelope;
+
+        private Color ColorFunc(float factor)
+            => Color.Lerp(Color, Microsoft.Xna.Framework.Color.White, 0.4f);
+
+        private float AlphaFunc(float factor)
+            => MathHelper.Clamp(envelope * 0.9f, 0f, 1f);
+
+        public override bool PreDraw(SpriteBatch spriteBatch) {
+            trail?.DrawThunder(Main.instance.GraphicsDevice);
+            return false;
         }
     }
 

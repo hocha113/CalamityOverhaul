@@ -205,18 +205,21 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         }
 
         public sealed override void GeneratorUpdate() {
-            //超距关 UI
-            if (PosInWorld.Distance(Main.LocalPlayer.Center) > MaxFindMode) {
-                if (!VaultUtils.isServer && GeneratorUI?.GeneratorTP == this
-                    && UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive) {
-                    UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive = false;
-                    //并行阶段延后到主线程
-                    Defer(() => SoundEngine.PlaySound(SoundID.MenuTick));
+            //UI与近距标记只对本地端有意义，专用服务器上LocalPlayer是占位实例
+            if (!VaultUtils.isServer) {
+                //超距关 UI
+                if (PosInWorld.Distance(Main.LocalPlayer.Center) > MaxFindMode) {
+                    if (GeneratorUI?.GeneratorTP == this
+                        && UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive) {
+                        UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive = false;
+                        //并行阶段延后到主线程
+                        Defer(() => SoundEngine.PlaySound(SoundID.MenuTick));
+                    }
                 }
-            }
-            else {
-                //并行阶段延后到主线程
-                Defer(() => Main.LocalPlayer.CWR().ThermalGenerationActiveTime = 2);
+                else {
+                    //并行阶段延后到主线程
+                    Defer(() => Main.LocalPlayer.CWR().ThermalGenerationActiveTime = 2);
+                }
             }
 
             //燃烧产热
@@ -283,7 +286,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 
             if (Main.keyState.PressingShift()) {
                 if (!ThermalData.FuelItem.IsAir) {
-                    Main.LocalPlayer.QuickSpawnItem(new EntitySource_WorldEvent(), ThermalData.FuelItem, ThermalData.FuelItem.stack);
+                    //直接入背包，MP下QuickSpawnItem是地面掉落会被队友截走
+                    Main.LocalPlayer.GiveItem(new EntitySource_WorldEvent(), ThermalData.FuelItem.Clone());
                     ThermalData.FuelItem.TurnToAir();
                 }
                 SendData();
@@ -305,9 +309,9 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                     if (item.stack <= 0) item.TurnToAir();
                 }
             }
-            //异种先吐再放
+            //异种先吐再放(旧燃料直接回背包)
             else if (!ThermalData.FuelItem.IsAir) {
-                Main.LocalPlayer.QuickSpawnItem(new EntitySource_WorldEvent(), ThermalData.FuelItem, ThermalData.FuelItem.stack);
+                Main.LocalPlayer.GiveItem(new EntitySource_WorldEvent(), ThermalData.FuelItem.Clone());
                 ThermalData.FuelItem = item.Clone();
                 item.TurnToAir();
             }

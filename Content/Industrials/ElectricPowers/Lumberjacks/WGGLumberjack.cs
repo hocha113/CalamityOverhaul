@@ -131,6 +131,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
         internal int byHitSyncopeTime;
         internal int ArmIndex = -1;
 
+        /// <summary>同步载荷只有事件字段(僵直/臂索引)且均已事件推送，周期锚定纯属浪费；
+        /// 荒野结构由世界生成散布，数量可观</summary>
+        public override int NetAnchorIntervalTicks => 0;
         public override void SetBattery() {
             Efficiency = 0;//敌对建筑不具备电力传输能力
             IdleDistance = 1800;
@@ -490,9 +493,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
 
             if (attackTimer >= 55) {
                 CutTree();
+                //弹幕AI在所有端模拟，推送只留权威端
                 if (lumberjackTP.MachineData.UEvalue > 6) {
                     lumberjackTP.MachineData.UEvalue -= 6;
-                    lumberjackTP.SendData();
+                    if (!VaultUtils.isClient) {
+                        lumberjackTP.SendData();
+                    }
                 }
                 currentState = SawState.Returning;
                 attackTimer = 0;
@@ -586,10 +592,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
 
                 SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.8f, Pitch = -0.3f }, Projectile.Center);
 
-                //消耗能量
+                //消耗能量(弹幕AI在所有端模拟，推送只留权威端)
                 if (lumberjackTP.MachineData.UEvalue > 10) {
                     lumberjackTP.MachineData.UEvalue -= 10;
-                    lumberjackTP.SendData();
+                    if (!VaultUtils.isClient) {
+                        lumberjackTP.SendData();
+                    }
                 }
             }
         }

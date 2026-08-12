@@ -1,11 +1,11 @@
-﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+﻿using CalamityOverhaul.Common;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.GameContent;
+using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -90,135 +90,48 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 
         public override bool CanDrop(int i, int j) => false;
 
-        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
-            if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
-                return false;
-            }
-            if (!TileProcessorLoader.ByPositionGetTP(point, out MiningMachineMk2TP miningMachine)) {
-                return false;
-            }
+        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 
-            Tile t = Main.tile[i, j];
-            int frameXPos = t.TileFrameX;
-            int frameYPos = t.TileFrameY;
-            frameYPos += miningMachine.frame * 18 * 10;
-            Texture2D tex = TextureAssets.Tile[Type].Value;
-            Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange) + miningMachine.offsetPos;
-            Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
-            Color drawColor = Lighting.GetColor(i, j);
-            if (miningMachine.MachineData.UEvalue < MiningMachineMk2TP.consumeUE) {
-                drawColor.R /= 2;
-                drawColor.G /= 2;
-                drawColor.B /= 2;
-                drawColor.A = 255;
-            }
-
-            if (!t.IsHalfBlock && t.Slope == 0) {
-                spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
-                    , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-            }
-            else if (t.IsHalfBlock) {
-                spriteBatch.Draw(tex, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16)
-                    , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-            }
-            return false;
+        public override void MouseOver(int i, int j) {
+            Main.LocalPlayer.SetMouseOverByTile(ModContent.ItemType<MiningMachineMk2>());
         }
+
+        public override bool RightClick(int i, int j) {
+            //只在交互客户端执行:打开勘探终端
+            if (!TileProcessorLoader.AutoPositionGetTP<MiningMachineMk2TP>(i, j, out var tp)) {
+                return false;
+            }
+            tp.RightEvent();
+            SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = 0.2f, Volume = 0.5f });
+            return true;
+        }
+
+        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+            => BaseMiningMachineTP.DrawMachineTile<MiningMachineMk2TP>(i, j, spriteBatch, Type, 10);
     }
 
-    internal class MiningMachineMk2TP : BaseBattery, ICWRLoader
+    internal class MiningMachineMk2TP : BaseMiningMachineTP
     {
         public override int TargetTileID => ModContent.TileType<MiningMachineMk2Tile>();
         public override int TargetItem => ModContent.ItemType<MiningMachineMk2>();
         public override bool ReceivedEnergy => true;
         public override float MaxUEValue => 2400;
-        internal const int consumeUE = 8;
-        internal int time;
-        internal int time2;
-        internal int frame;
-        internal Vector2 offsetPos;
 
-        void ICWRLoader.SetupData() { }
-
-        void ICWRLoader.UnLoadData() { }
-
-        public override void SetBattery() {
-            //IdleDistance = 5000;
-        }
-
-        public override void UpdateMachine() {
-            if (MachineData.UEvalue <= consumeUE) {
-                offsetPos = Vector2.Zero;
-                return;
-            }
-
-            VaultUtils.ClockFrame(ref frame, 4, 5);
-
-            bool canDig = true;
-            for (int i = 0; i < 9; i++) {
-                for (int j = 0; j < 13; j++) {
-                    Tile tile = Framing.GetTileSafely(Position + new Point16(i, j));
-                    if (!tile.HasTile) {
-                        canDig = false;
-                    }
-                }
-            }
-
-            if (canDig) {
-                if (!Main.dedServ) {
-                    if (++time > 3) {
-                        offsetPos = new Vector2(Rand.Next(-1, 1), Rand.Next(0, 1));
-                        time = 0;
-                    }
-
-                    Vector2 excavatePos = PosInWorld + new Vector2(92, 140);
-                    if (Rand.NextBool(4)) {
-                        //并行阶段Dust生成延迟到主线程执行(串行阶段立即执行)
-                        Defer(() => Dust.NewDust(excavatePos, 1, 1, DustID.Stone));
-                    }
-                }
-
-                if (++time2 > 24) {
-                    if (!Main.dedServ) {
-                        //并行阶段音效播放延迟到主线程执行(串行阶段立即执行)
-                        Defer(() => SoundEngine.PlaySound(SoundID.Item22 with { Pitch = -0.6f, Volume = 0.7f }, CenterInWorld));
-                        Defer(() => SoundEngine.PlaySound(SoundID.Dig with { Pitch = -0.6f, Volume = 0.7f }, CenterInWorld));
-                    }
-
-                    if (!VaultUtils.isClient && Rand.NextBool(4)) {
-                        DropOre();
-                    }
-
-                    MachineData.UEvalue -= consumeUE;
-                    time2 = 0;
-                }
-                return;
-            }
-
-            if (!Main.dedServ) {
-                if (++time2 > 4) {
-                    //并行阶段音效播放延迟到主线程执行(串行阶段立即执行)
-                    Defer(() => SoundEngine.PlaySound(SoundID.Item22 with { Pitch = -0.6f, Volume = 0.7f }, CenterInWorld));
-                    time2 = 0;
-                }
-
-                if (++time > 180) {
-                    //并行阶段CombatText生成及其后续修改延迟到主线程执行(串行阶段立即执行)
-                    Defer(() => {
-                        int text = CombatText.NewText(HitBox, Color.DarkSeaGreen, MiningMachineMk2.DontWork.Value);
-                        Main.combatText[text].lifeTime *= 2;
-                    });
-                    time = 0;
-                }
-            }
-        }
-
-        private void DropOre() {
-            //并行阶段从TP的线程安全随机源取数后再计算掉落
-            if (MiningMachineSystem.TryGetDropItem(2, Position.ToPoint(), Rand, out int itemID)) {
-                DropItem(itemID);
-            }
-        }
-
-        public override void FrontDraw(SpriteBatch spriteBatch) => DrawChargeBar();
+        public override int MachineTier => 2;
+        public override float BasePickPower => 180f;
+        public override int WorkInterval => 24;
+        public override float YieldChance => 0.16f;
+        public override int WorkConsumeUE => 8;
+        public override int ModuleSlotCount => 6;
+        public override int ScanWidth => 80;
+        public override int ScanDepth => 64;
+        public override int FrameInterval => 4;
+        public override int FrameMax => 5;
+        public override int ShakeAmp => 1;
+        public override int DustDenominator => 4;
+        public override Vector2 ExcavateOffset => new(92, 140);
+        public override float WorkPitch => -0.6f;
+        public override float WorkVolume => 0.7f;
+        public override LocalizedText DontWorkText => MiningMachineMk2.DontWork;
     }
 }

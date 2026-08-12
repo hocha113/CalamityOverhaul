@@ -154,7 +154,18 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
         /// <summary>跨岛共享存储互斥锁</summary>
         private static readonly object storageGate = new();
+
+        /// <summary>网络脏标记：权威端物流状态变了，待节流刷新</summary>
+        private bool netDirty;
+        /// <summary>脏刷新节流(帧)，防止繁忙管线触发 InnoVault 的发包峰值惩罚(超限静默禁发一秒)</summary>
+        private int netSyncCooldown;
+        private const int NetSyncInterval = 10;
+        /// <summary>上次发送时的名单修改版本，-1=从未发送；仅本端自比较，禁跨网比较</summary>
+        private int lastSentFilterRevision = -1;
         #endregion
+
+        /// <summary>标记本管物流状态已变化，由权威端在 Update 尾部节流合批发送</summary>
+        internal void MarkNetDirty() => netDirty = true;
 
         #region 初始化和更新
         public override void SetProperty() {
@@ -205,22 +216,25 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
             //路由重建已上移 PreParallel
 
-            //模式驱动逻辑
-            switch (Mode) {
-                case ItemPipelineMode.Output:
-                    UpdateOutputMode();
-                    break;
-                case ItemPipelineMode.Input:
-                    UpdateInputMode();
-                    break;
-                    //Normal 仅通道
+            //物流是权威端(服务器/单人)专属：抽取/存入会真实改动箱子与机器库存，
+            //客户端跑这套会污染本地箱子镜像并把漂移状态推回服务器
+            if (!VaultUtils.isClient) {
+                switch (Mode) {
+                    case ItemPipelineMode.Output:
+                        UpdateOutputMode();
+                        break;
+                    case ItemPipelineMode.Input:
+                        UpdateInputMode();
+                        break;
+                        //Normal 仅通道
+                }
             }
 
-            //推进物品与卡死自愈
+            //推进物品与卡死自愈(客户端仅表现)
             UpdateTransportingItem();
 
-            //输出端流动动画
-            if (Mode == ItemPipelineMode.Output) {
+            //输出端流动动画(纯视觉，专用服务器跳过)
+            if (Mode == ItemPipelineMode.Output && !Main.dedServ) {
                 UpdateFlowAnimation();
             }
             else if (flowAnimator != null) {
@@ -232,6 +246,16 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             hoverSengs = HoverTP
                 ? Math.Min(hoverSengs + 0.1f, 1f)
                 : Math.Max(hoverSengs - 0.1f, 0f);
+
+            //权威端节流刷新脏状态，客户端由此看到抽取/移交/存入的结果
+            if (netSyncCooldown > 0) {
+                netSyncCooldown--;
+            }
+            if (netDirty && netSyncCooldown <= 0 && VaultUtils.isServer) {
+                netDirty = false;
+                netSyncCooldown = NetSyncInterval;
+                SendData();
+            }
         }
 
         private void UpdateShape() {
@@ -249,10 +273,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             ShapeRotationID = rotation;
             lastConnectionMask = connectionMask;
 
-            //端点变中继则取消模式
+            //端点变中继则取消模式(各端本地同样推导，权威端再广播兜底)
             if (Mode != ItemPipelineMode.Normal && !IsEndpoint) {
                 Mode = ItemPipelineMode.Normal;
-                SendData();
+                MarkNetDirty();
             }
             //形状变标脏
             ItemPipelineNetwork.MarkDirty();
@@ -322,11 +346,14 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                         }
 
                         int extractAmount = Math.Min(storedItem.stack, ExtractBatchSize);
+                        var chestSnap = ChestNetSync.Capture(storage);
                         Item withdrawn = storage.WithdrawItem(storedItem.type, extractAmount);
                         if (withdrawn != null && !withdrawn.IsAir) {
                             CurrentItem = new TransportingItem(withdrawn.type, withdrawn.stack, withdrawn.prefix) {
                                 SourceDirection = (sbyte)side.DirectionIndex
                             };
+                            MarkNetDirty();
+                            SyncChestChanges(chestSnap);
                             return;
                         }
                     }
@@ -381,6 +408,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                         continue;
                     }
                     int beforeStack = toDeposit.stack;
+                    var chestSnap = ChestNetSync.Capture(storage);
                     if (storage.DepositItem(toDeposit)) {
                         int remaining = ResolveRemainingStack(beforeStack, toDeposit);
                         if (remaining <= 0) {
@@ -391,6 +419,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                             item.Stack = remaining;
                             CurrentItem = item;
                         }
+                        MarkNetDirty();
+                        SyncChestChanges(chestSnap);
                         return;
                     }
                 }
@@ -464,6 +494,17 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 item.Speed = TransportingItem.DefaultSpeed;
             }
 
+            //客户端仅表现：推进段内进度到中心后停住，等待权威端的脏刷新包
+            //完成跨管移交/存入/自愈；本地不做移交，避免与服务器选路分叉产生幽灵物品
+            if (VaultUtils.isClient) {
+                if (item.Progress < 1f) {
+                    item.Progress = Math.Min(item.Progress + item.Speed, 1f);
+                    CurrentItem = item;
+                }
+                stuckFrames = 0;
+                return;
+            }
+
             //没到中心: 推进进度即可
             if (item.Progress < 1f) {
                 item.Progress = Math.Min(item.Progress + item.Speed, 1f);
@@ -494,6 +535,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                         CurrentItem = item;
                     }
                     stuckFrames = 0;
+                    MarkNetDirty();
                 }
                 else {
                     DropCurrentItem();
@@ -544,6 +586,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             item.Progress = 0f;
             item.SourceDirection = (sbyte)OppositeDirection(chosenDir);
             nbr.CurrentItem = item;
+            //两端都标脏，客户端靠节流刷新看到移交结果
+            MarkNetDirty();
+            nbr.MarkNetDirty();
             return true;
         }
 
@@ -644,8 +689,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                         continue;
                     }
                     int beforeStack = toDeposit.stack;
+                    var chestSnap = ChestNetSync.Capture(storage);
                     if (storage.DepositItem(toDeposit)) {
                         item.Stack = ResolveRemainingStack(beforeStack, toDeposit);
+                        SyncChestChanges(chestSnap);
                         return true;
                     }
                 }
@@ -661,6 +708,19 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             _ => -1
         };
 
+        /// <summary>箱子槽位差异广播；发送经 Defer 转到主线程(管道按岛并行更新，网络流非线程安全)</summary>
+        private void SyncChestChanges(in ChestNetSync.Snapshot snapshot) {
+            if (!snapshot.IsValid) {
+                return;
+            }
+            List<int> changed = ChestNetSync.CollectChanged(snapshot);
+            if (changed == null) {
+                return;
+            }
+            int chestIndex = snapshot.ChestIndex;
+            Defer(() => ChestNetSync.SendChanged(chestIndex, changed));
+        }
+
         /// <summary>卡死无救援则丢世界</summary>
         private void DropCurrentItem() {
             if (!CurrentItem.HasValue) {
@@ -675,6 +735,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 }
             });
             CurrentItem = null;
+            MarkNetDirty();
         }
         #endregion
 
@@ -694,6 +755,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             Item item = player.GetItem();
 
             //手持过滤卡，装名单到本管
+            //TP右键经InnoVault总线在所有端各自执行(卡片名单已随物品NetSend同步)，
+            //推送只留权威端一份，客户端不要再用本地状态顶回服务器
             if (item.ModItem is ItemFilter card) {
                 Filter.CopyFrom(card.Filter);
 
@@ -701,7 +764,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 if (!VaultUtils.isServer) {
                     CombatText.NewText(HitBox, GetModeColor(), ItemFilterEditorUI.InstalledText.Value);
                 }
-                SendData();
+                if (!VaultUtils.isClient) {
+                    SendData();
+                }
                 return true;
             }
 
@@ -771,19 +836,26 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 data.Write(item.SourceDirection);
                 data.Write(item.ReverseHops);
             }
-            Filter.Write(data);
+            //名单只在有变化或全量场景(加入世界快照序列化期间 InitializeWorld 为真)时搭载：
+            //物流脏刷新频率高(≤6次/秒)而名单可达500项(约2KB)，逐包全量搭载会成为最大流量热点
+            bool sendFilter = TileProcessorNetWork.InitializeWorld || lastSentFilterRevision != Filter.Revision;
+            data.Write(sendFilter);
+            if (sendFilter) {
+                Filter.Write(data);
+                if (!TileProcessorNetWork.InitializeWorld) {
+                    lastSentFilterRevision = Filter.Revision;
+                }
+            }
         }
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
+            //先读完所有字段再做取舍，避免共享读取流错位
             ItemPipelineMode newMode = (ItemPipelineMode)reader.ReadByte();
-            if (newMode != Mode) {
-                Mode = newMode;
-                ItemPipelineNetwork.MarkDirty();
-            }
 
             bool hasItem = reader.ReadBoolean();
+            TransportingItem wireItem = default;
             if (hasItem) {
-                var item = new TransportingItem {
+                wireItem = new TransportingItem {
                     ItemType = reader.ReadInt32(),
                     Stack = reader.ReadInt32(),
                     Prefix = reader.ReadInt32(),
@@ -792,12 +864,25 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                     ReverseHops = reader.ReadByte(),
                     Speed = TransportingItem.DefaultSpeed
                 };
-                CurrentItem = item;
             }
-            else {
-                CurrentItem = null;
+            //名单按线上标志位读取，未搭载则保留当前名单
+            if (reader.ReadBoolean()) {
+                Filter.Read(reader);
             }
-            Filter.Read(reader);
+
+            if (newMode != Mode) {
+                Mode = newMode;
+                ItemPipelineNetwork.MarkDirty();
+            }
+
+            //在管物品是服务器权威：客户端推送(模式/名单编辑)不得覆盖服务器的在管物品，
+            //否则玩家点管子那一瞬的过期本地状态会把移交中的物品复制或抹掉
+            if (VaultUtils.isServer) {
+                MarkNetDirty();//补发合并后的真实状态给所有客户端(含发送者)
+                return;
+            }
+
+            CurrentItem = hasItem ? wireItem : null;
         }
 
         public override void SaveData(TagCompound tag) {

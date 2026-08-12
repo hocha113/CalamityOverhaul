@@ -100,7 +100,8 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
 
             if (Main.keyState.PressingShift()) {
                 if (!Item.IsAir) {
-                    Main.LocalPlayer.QuickSpawnItem(new EntitySource_WorldEvent(), Item, Item.stack);
+                    //直接入背包，MP下QuickSpawnItem是地面掉落会被队友截走
+                    Main.LocalPlayer.GiveItem(new EntitySource_WorldEvent(), Item.Clone());
                     Item.TurnToAir();
                 }
                 SoundEngine.PlaySound(SoundID.Grab);
@@ -109,7 +110,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
 
             if (ItemIsCharge(item, out _, out _)) {
                 if (!Item.IsAir) {
-                    Main.LocalPlayer.QuickSpawnItem(new EntitySource_WorldEvent(), Item, Item.stack);
+                    Main.LocalPlayer.GiveItem(new EntitySource_WorldEvent(), Item.Clone());
                     Item.TurnToAir();
                 }
                 Item = item.Clone();
@@ -215,6 +216,9 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         }
 
         private void SpawnDust() {
+            if (VaultUtils.isServer) {
+                return;//粒子仅本地端
+            }
             int dustID = 226;//电流
             int numDust = 6;
             for (int i = 0; i < numDust; i += 2) {

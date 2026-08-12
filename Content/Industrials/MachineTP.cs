@@ -22,6 +22,19 @@ namespace CalamityOverhaul.Content.Industrials
         public virtual int TargetItem => ItemID.None;
         public virtual bool CanDrop => true;
         public int Efficiency = 2;
+        /// <summary>
+        /// 周期性权威锚定间隔(帧)：机器状态在各端本地模拟，事件同步之外由服务器按此节奏
+        /// 推一次全量包纠偏累计漂移；按 WhoAmI 错峰。返回 0 关闭。
+        /// 管道类不参与——数量大，且其电量经压差均衡向机器锚点自愈。
+        /// 三重抑制控制空闲流量：UE未变化时降为四倍间隔的保活；范围内无玩家时不发
+        /// </summary>
+        public virtual int NetAnchorIntervalTicks => 300;
+        /// <summary>锚定的玩家接近半径(像素)，范围内无玩家则跳过发送(远处工厂零流量)</summary>
+        private const float AnchorPlayerRange = 4000f;
+        /// <summary>上次锚定发送时的UE值，NaN=尚未发送过</summary>
+        private float lastAnchoredUE = float.NaN;
+        /// <summary>距上次锚定发送的帧数，用于静止机器的低频保活</summary>
+        private int ticksSinceAnchorSend;
         public virtual MachineData GetGeneratorDataInds() => new MachineData();
         public sealed override void SetProperty() {
             MachineData ??= GetGeneratorDataInds();
@@ -61,6 +74,34 @@ namespace CalamityOverhaul.Content.Industrials
                 UpdateConductive();
             }
             UpdateMachine();
+
+            //周期性权威锚定(见 NetAnchorIntervalTicks)；SendData 内部已处理并行阶段转主线程
+            int anchorInterval = NetAnchorIntervalTicks;
+            if (anchorInterval > 0 && VaultUtils.isServer && MachineData != null
+                && this is not BaseUEPipelineTP) {
+                ticksSinceAnchorSend++;
+                if ((Main.GameUpdateCount + (uint)(WhoAmI * 13)) % (uint)anchorInterval == 0) {
+                    //UE静止的机器降为四倍间隔保活；变化中的机器全速纠偏
+                    bool changed = float.IsNaN(lastAnchoredUE)
+                        || Math.Abs(MachineData.UEvalue - lastAnchoredUE) > 0.01f;
+                    if ((changed || ticksSinceAnchorSend >= anchorInterval * 4) && AnyPlayerInAnchorRange()) {
+                        lastAnchoredUE = MachineData.UEvalue;
+                        ticksSinceAnchorSend = 0;
+                        SendData();
+                    }
+                }
+            }
+        }
+
+        /// <summary>锚定范围内是否有玩家；玩家位置由主线程更早写入，并行读取安全</summary>
+        private bool AnyPlayerInAnchorRange() {
+            float rangeSQ = AnchorPlayerRange * AnchorPlayerRange;
+            foreach (Player player in Main.ActivePlayers) {
+                if (player.position.DistanceSQ(PosInWorld) < rangeSQ) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public virtual void UpdateMachine() {

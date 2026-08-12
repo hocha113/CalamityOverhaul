@@ -1118,3 +1118,42 @@ CWRPlayer: {
 	HellfireExplosionDeathReason: "{0}在地狱的烈火中化为灰烬"
 	SoulfireExplosionDeathReason: "{0}的灵魂在火焰中升华"
 }
+
+MiningMachineUI: {
+	TitleText: 勘探终端
+	ReportTitle: 勘探报告
+	RescanText: 重新勘探
+	ModuleSlotLabel: 模块槽
+	EmptySlotHint: 放入升级模块
+	StatusLabel: 状态
+	StateWorking: 作业中
+	StateNoPower: 能量不足
+	StateNoFooting: 地基不稳
+	PickPowerLine: 镐力：{0}%
+	YieldRateLine: 产率：约{0}/分钟
+	EnergyLabel: 能量
+	LayerLabel: 地层
+	BiomeLabel: 群系
+	VeinLabel: 探明矿脉
+	LayerSurface: 地表
+	LayerUnderground: 地下
+	LayerCavern: 洞穴层
+	LayerUnderworld: 地狱
+	BiomeJungle: 丛林
+	BiomeSnow: 雪原
+	BiomeDesert: 沙漠
+	BiomeCorrupt: 腐化之地
+	BiomeCrimson: 猩红之地
+	BiomeHallow: 神圣之地
+	BiomeNone: 荒石
+	GateNeedPick: 需要镐力{0}%
+	GateNeedDrill: 需要专属钻探模块
+	GateNotInWorld: 矿源尚未探明
+	VeinTilesFormat: 探明矿脉 {0} 块
+	ModuleOnly: 只能放入矿机升级模块！
+	ModuleDuplicate: 同类模块已经装了一枚！
+	ModuleTagText: 矿机升级模块
+	ModuleHowToText: 右键采矿机打开勘探终端，放入模块槽后生效
+	DrillTargetText: 定向矿物：{0}
+	DrillEffectText: 解锁目标矿物的开采资格，并将其产出权重提高到四倍
+}

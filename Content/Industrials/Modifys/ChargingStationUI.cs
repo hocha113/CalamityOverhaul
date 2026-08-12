@@ -224,7 +224,8 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 }
                 else {
                     if (Main.mouseItem.IsAir && Main.keyState.PressingShift()) {
-                        Main.LocalPlayer.QuickSpawnItem(new EntitySource_WorldEvent(), setItem, setItem.stack);
+                        //直接入背包，MP下QuickSpawnItem是地面掉落会被队友截走
+                        Main.LocalPlayer.GiveItem(new EntitySource_WorldEvent(), setItem.Clone());
                         setItem.TurnToAir();
                         return;
                     }

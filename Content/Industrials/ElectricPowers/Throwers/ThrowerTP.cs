@@ -21,6 +21,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
         public override bool ReceivedEnergy => true;
         public override bool CanDrop => false;
         public override float MaxUEValue => 500;
+        /// <summary>全量包携带最多20格物品数据，放宽锚定节奏</summary>
+        public override int NetAnchorIntervalTicks => 600;
 
         #region 常量
 
@@ -49,6 +51,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
         internal int TextIdleTime;
         internal bool IsWorking;
         internal float GlowIntensity;
+
+        //投掷消耗的合批同步：全量包携带整仓库(至多20格物品数据)，
+        //最快投掷间隔10帧时逐掷推送会到6次/秒，改为脏标记+30帧节流合批
+        private bool throwNetDirty;
+        private int throwNetCooldown;
+        private const int ThrowNetInterval = 30;
 
         //投掷方向(以角度存储，0为右，90为上)
         internal float ThrowDirection;
@@ -234,6 +242,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
         #region 更新逻辑
 
         public override void UpdateMachine() {
+            //权威端节流刷新投掷消耗(见 throwNetDirty)
+            if (throwNetCooldown > 0) {
+                throwNetCooldown--;
+            }
+            if (throwNetDirty && throwNetCooldown <= 0 && VaultUtils.isServer) {
+                throwNetDirty = false;
+                throwNetCooldown = ThrowNetInterval;
+                SendData();
+            }
+
             if (TextIdleTime > 0) {
                 TextIdleTime--;
             }
@@ -321,7 +339,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             //粒子效果
             SpawnThrowParticles(velocity);
 
-            SendData();
+            //投掷物本身走原版弹幕/物品同步即时可见，仓库计数变化合批节流推送即可
+            throwNetDirty = true;
         }
 
         private static bool IsAmmoItem(Item item, out int projectileType) {

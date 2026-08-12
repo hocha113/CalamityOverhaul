@@ -950,11 +950,198 @@ MiningMachine: {
 	DisplayName: Mining Machine
 	Tooltip:
 		'''
-		Drilling minerals by consuming electrical energy
-		It needs to be placed in an appropriate location to work properly
-		Special minerals can be extracted in special environments
+		Drills for ore with electric power; output depends on the strata and veins beneath it
+		Right-click to open the prospecting terminal, check yield odds and install upgrade modules
 		'''
 	DontWork: It needs to be placed on a hard surface in order to carry out mining operations.
+}
+
+ExcavationBoosterModule: {
+	DisplayName: Excavation Booster Module
+	Tooltip:
+		'''
+		Install into a mining machine to shorten its work cycle by 30%
+		The gears got a harder set of teeth
+		'''
+}
+
+PickPowerBoosterModule: {
+	DisplayName: Pick Power Booster Module
+	Tooltip:
+		'''
+		Install into a mining machine to raise its pick power by 60%
+		Lets a tin-plated machine chew through mythril
+		'''
+}
+
+ChlorophyteDrillModule: {
+	DisplayName: Chlorophyte Drill Module
+	Tooltip: The bit itself is cast from chlorophyte — ore to mine ore
+}
+
+EfficiencyModule: {
+	DisplayName: Efficiency Module
+	Tooltip:
+		'''
+		Install into a mining machine to cut its cycle energy cost to 60%
+		The coils finally stopped running hot
+		'''
+}
+
+YieldBoosterModule: {
+	DisplayName: Yield Booster Module
+	Tooltip:
+		'''
+		Install into a mining machine to raise its yield roll chance by 35%
+		The sieve got one gauge finer
+		'''
+}
+
+ProspectorModule: {
+	DisplayName: Prospector Module
+	Tooltip:
+		'''
+		Install into a mining machine to triple the weight of rare byproducts — gems, fossils, meteorite and scrap
+		Under the lens, even grit has a pecking order
+		'''
+}
+
+SurveyArrayModule: {
+	DisplayName: Survey Array Module
+	Tooltip:
+		'''
+		Install into a mining machine to widen and deepen its survey range by 50%
+		The echo gets there before the bit does
+		'''
+}
+
+VeinFocusModule: {
+	DisplayName: Vein Focus Module
+	Tooltip:
+		'''
+		Install into a mining machine to boost the influence of real veins on output by 60%
+		Follow the seam; don't argue with the stone
+		'''
+}
+
+DoubleLoadModule: {
+	DisplayName: Double Load Module
+	Tooltip:
+		'''
+		Install into a mining machine to give each yield a 25% chance to double
+		The hopper got welded a size wider
+		'''
+}
+
+OverdriveCoreModule: {
+	DisplayName: Overdrive Core Module
+	Tooltip:
+		'''
+		Install into a mining machine to shorten its work cycle by 45% at 60% higher energy cost
+		It has no plans to stop before the bearings glow
+		'''
+}
+
+ThrottleValveModule: {
+	DisplayName: Throttle Valve Module
+	Tooltip:
+		'''
+		Install into a mining machine to lengthen its work cycle by 50%, cutting energy cost to 45%
+		Slow, but the whole night belongs to it
+		'''
+}
+
+ChestLinkModule: {
+	DisplayName: Chest Link Module
+	Tooltip:
+		'''
+		Install into a mining machine to deposit yields straight into nearby chests, dropping them only when full
+		Saves you the bending down
+		'''
+}
+
+SmelterModule: {
+	DisplayName: Field Smelter Module
+	Tooltip:
+		'''
+		Install into a mining machine to smelt ores into bars at furnace ratios before output, at 40% higher energy cost
+		Bars straight out of the pithead
+		'''
+}
+
+CopperTinDrill: {
+	DisplayName: Copper-Tin Drill Bit
+	Tooltip: The first bit you ever polished bright
+}
+
+IronLeadDrill: {
+	DisplayName: Iron-Lead Drill Bit
+	Tooltip: The bit outlasts the ore; that's all it needs
+}
+
+SilverTungstenDrill: {
+	DisplayName: Silver-Tungsten Drill Bit
+	Tooltip: Its edge is plated with a dignity that refuses to rust
+}
+
+GoldPlatinumDrill: {
+	DisplayName: Gold-Platinum Drill Bit
+	Tooltip: Developed a taste for soft metal
+}
+
+EvilOreDrill: {
+	DisplayName: Evil Ore Drill Bit
+	Tooltip: Quenched in both evils; either side claims it
+}
+
+MeteoriteDrill: {
+	DisplayName: Meteorite Drill Bit
+	Tooltip: What falls from the sky gets met with sky-forged steel
+}
+
+ObsidianDrill: {
+	DisplayName: Obsidian Drill Bit
+	Tooltip: An edge ground where water meets fire
+}
+
+HellstoneDrill: {
+	DisplayName: Hellstone Drill Bit
+	Tooltip: The grip is still warm
+}
+
+FossilDrill: {
+	DisplayName: Fossil Drill Bit
+	Tooltip: Brushes were too slow
+}
+
+CoalDrill: {
+	DisplayName: Coal Seam Drill Bit
+	Tooltip: The boiler room asks for it by name
+}
+
+GemClusterDrill: {
+	DisplayName: Gem Cluster Drill Bit
+	Tooltip: A diamond jaw that only bites the shiny stuff
+}
+
+CobaltPalladiumDrill: {
+	DisplayName: Cobalt-Palladium Drill Bit
+	Tooltip: Altar shards still stuck between its teeth
+}
+
+MythrilOrichalcumDrill: {
+	DisplayName: Mythril-Orichalcum Drill Bit
+	Tooltip: Spins with a faintly sacred hum
+}
+
+AdamantiteTitaniumDrill: {
+	DisplayName: Adamantite-Titanium Drill Bit
+	Tooltip: The deep's hard bones are its business
+}
+
+LuminiteDrillModule: {
+	DisplayName: Luminite Drill Module
+	Tooltip: Moon debris mines the same as anything else
 }
 
 HoChaMeditatorItem: {
@@ -1374,9 +1561,8 @@ MiningMachineMk2: {
 	DisplayName: Mining Machine Mk2
 	Tooltip:
 		'''
-		Drilling minerals by consuming electrical energy
-		It needs to be placed in an appropriate location to work properly
-		Special minerals can be extracted in special environments
+		Drills for ore with electric power; surveys wider and deeper than the original
+		Right-click to open the prospecting terminal, check yield odds and install upgrade modules
 		'''
 }
 

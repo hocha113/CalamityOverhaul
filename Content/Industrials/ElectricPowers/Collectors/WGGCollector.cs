@@ -130,6 +130,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         internal int byHitSyncopeTime;
         internal int ArmIndex = -1;
         internal bool altState;
+        /// <summary>同步载荷只有事件字段(僵直/臂索引)且均已事件推送，周期锚定纯属浪费；
+        /// 荒野结构由世界生成散布，数量可观</summary>
+        public override int NetAnchorIntervalTicks => 0;
         public override void SetBattery() {
             Efficiency = 0;//敌对建筑不具备电力传输能力
             IdleDistance = 2000;
@@ -430,10 +433,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 Vector2 strikeDir = (player.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
                 Projectile.velocity = strikeDir * 25f; //高速突袭
 
-                //消耗能量
+                //消耗能量(弹幕AI在所有端模拟，推送只留权威端)
                 if (collectorTP.MachineData.UEvalue > 10) {
                     collectorTP.MachineData.UEvalue -= 10;
-                    collectorTP.SendData();
+                    if (!VaultUtils.isClient) {
+                        collectorTP.SendData();
+                    }
                 }
             }
 

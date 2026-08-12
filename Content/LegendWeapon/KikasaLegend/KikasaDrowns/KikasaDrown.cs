@@ -25,14 +25,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         /// <summary>完成后冷却</summary>
         public const int CooldownFrames = 90;
 
-        public const float MaxRange = 600f;
+        /// <summary>技术远界：覆盖最大缩放下整屏的光标可及范围，
+        /// 服务器用同一常量复检，防伪造包跨地图沉任意 NPC</summary>
+        public const float MaxRange = 4000f;
 
-        /// <summary>臂展上限：目标高出湖面太多手就够不到——卷指是计时驱动的，
-        /// 不设这条会出现指尖离目标半屏远却照样"攥中"的隔空贴手</summary>
-        public const float MaxGrabHeight = 300f;
+        /// <summary>湖上抓握高度上限：与 FX 层臂展预算对齐（段长动态定标 26..240，
+        /// 6 节解算臂展 ≈1411px、抓点筛选 1350px）——此界之内手臂真伸得到，
+        /// 不会出现卷指计时驱动下指尖离目标半屏远照样"攥中"的隔空贴手</summary>
+        public const float MaxGrabHeight = 1200f;
 
         /// <summary>湖面之下的容许深度，再深就是往地里抓</summary>
-        public const float MaxGrabDepth = 80f;
+        public const float MaxGrabDepth = 600f;
 
         internal struct DrownTarget
         {

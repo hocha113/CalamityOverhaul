@@ -145,6 +145,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
         internal int byHitSyncopeTime;
         internal bool BatteryPrompt;
 
+        /// <summary>每次发射都已事件推送全量状态，空闲时UE静止无漂移，周期锚定纯属浪费；
+        /// 荒野结构由世界生成散布，数量可观</summary>
+        public override int NetAnchorIntervalTicks => 0;
         public override void SetBattery() {
             Efficiency = 0;//敌对建筑不具备电力传输能力
             IdleDistance = 1000;
@@ -365,7 +368,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
                 //发射橡子攻击玩家
                 LaunchAttackAcorn(target);
 
-                SendData();
+                //UpdateMachine在所有端模拟，推送只留权威端
+                if (!VaultUtils.isClient) {
+                    SendData();
+                }
             }
         }
 

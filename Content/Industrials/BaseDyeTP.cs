@@ -45,10 +45,13 @@ namespace CalamityOverhaul.Content.Industrials
             DyeSlotItem = ItemIO.Receive(reader, true, true);
             BeDyedItem = ItemIO.Receive(reader, true, true);
             ResultDyedItem = ItemIO.Receive(reader, true, true);
-            //接收后刷 UI 槽
-            DyeMachineUI.DyeSlot.Item = DyeSlotItem;
-            DyeMachineUI.BeDyedItem.Item = BeDyedItem;
-            DyeMachineUI.ResultDyedItem.Item = ResultDyedItem;
+            //UI是共享单例，只有当前绑定本机器时才刷槽位；
+            //否则别的染色机同步会把正打开的UI槽位引用换成它的物品，玩家点下去改错机器
+            if (!VaultUtils.isServer && DyeMachineUI.DyeTP == this) {
+                DyeMachineUI.DyeSlot.Item = DyeSlotItem;
+                DyeMachineUI.BeDyedItem.Item = BeDyedItem;
+                DyeMachineUI.ResultDyedItem.Item = ResultDyedItem;
+            }
         }
 
         public void RightClick(Player player) {
@@ -85,11 +88,14 @@ namespace CalamityOverhaul.Content.Industrials
         }
 
         public override void UpdateMachine() {
-            if (Main.LocalPlayer.DistanceSQ(CenterInWorld) > 90000) {
-                CloseDyeMachineUI();
+            //UI逻辑仅本地端有意义，专用服务器上LocalPlayer是占位实例
+            if (!VaultUtils.isServer) {
+                if (Main.LocalPlayer.DistanceSQ(CenterInWorld) > 90000) {
+                    CloseDyeMachineUI();
+                }
+                //UpdateSlot 非线程安全，并行阶段延后到主线程
+                Defer(() => DyeMachineUI.DyeSlot.UpdateSlot());
             }
-            //UpdateSlot 非线程安全，并行阶段延后到主线程
-            Defer(() => DyeMachineUI.DyeSlot.UpdateSlot());
             UpdateDyeMachine();
         }
 

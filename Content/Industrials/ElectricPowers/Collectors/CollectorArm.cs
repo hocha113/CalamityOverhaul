@@ -670,6 +670,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             //仅服务器存一次
             if (!VaultUtils.isClient && stateTimer == 11) {
                 var storage = GetTargetStorage();
+                //原版箱子改动后需广播变化槽位，否则开着箱子的玩家看到过期内容
+                var chestSnap = ChestNetSync.Capture(storage);
                 if (storage != null && storage.IsValid && storage.DepositItem(graspItem)) {
                     storage.PlayDepositAnimation();
                     graspItem.TurnToAir();
@@ -687,6 +689,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                     if (storage is ChestStorageProvider chestProvider && chestProvider.ChestIndex >= 0) {
                         CheckCoins(Main.chest[chestProvider.ChestIndex]);
                     }
+
+                    //Actor在主线程串行更新，可直接发送
+                    ChestNetSync.SendChanged(chestSnap.ChestIndex, ChestNetSync.CollectChanged(chestSnap));
                 }
                 else {
                     //存储失败则掉落物品

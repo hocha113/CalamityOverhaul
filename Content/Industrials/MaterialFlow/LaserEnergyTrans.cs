@@ -161,7 +161,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
             string tpName = reader.ReadString();
             Point16 tpPos = reader.ReadPoint16();
 
-            if (playerIndex >= 0) {
+            //索引上界防御，畸形包不能拿越界值去索引玩家数组
+            if (playerIndex >= 0 && playerIndex < Main.maxPlayers) {
                 fromePlayer = Main.player[playerIndex];
             }
             else {

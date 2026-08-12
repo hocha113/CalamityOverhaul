@@ -125,6 +125,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         }
 
         private void CompleteSmelting() {
+            //物品结算是权威端专属：客户端把进度停在满格等服务器的完成包，
+            //本地结算再推送会用漂移状态覆盖服务器的真实槽位
+            if (VaultUtils.isClient) {
+                IncData.SmeltingProgress = IncData.MaxSmeltingProgress;
+                return;
+            }
+
             if (!IncineratorRecipes.TryGetRecipe(IncData.InputItem.type, out var recipe)) {
                 IncData.SmeltingProgress = 0;
                 return;
@@ -269,13 +276,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                     return;
                 }
 
-                //Shift点击取出所有物品
+                //Shift点击取出所有物品(直接入背包，MP下QuickSpawnItem是地面掉落会被队友截走)
                 if (IncData.InputItem != null && !IncData.InputItem.IsAir) {
-                    Main.LocalPlayer.QuickSpawnItem(new EntitySource_WorldEvent(), IncData.InputItem, IncData.InputItem.stack);
+                    Main.LocalPlayer.GiveItem(new EntitySource_WorldEvent(), IncData.InputItem.Clone());
                     IncData.InputItem.TurnToAir();
                 }
                 if (IncData.OutputItem != null && !IncData.OutputItem.IsAir) {
-                    Main.LocalPlayer.QuickSpawnItem(new EntitySource_WorldEvent(), IncData.OutputItem, IncData.OutputItem.stack);
+                    Main.LocalPlayer.GiveItem(new EntitySource_WorldEvent(), IncData.OutputItem.Clone());
                     IncData.OutputItem.TurnToAir();
                 }
                 SendData();

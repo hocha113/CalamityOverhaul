@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.Actors;
 using InnoVault.Storages;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         public override int TargetItem => ModContent.ItemType<Collector>();
         public override bool ReceivedEnergy => true;
         public override float MaxUEValue => 800;
+        /// <summary>全量包可能携带整张过滤名单(至多500项)，放宽锚定节奏</summary>
+        public override int NetAnchorIntervalTicks => 600;
         /// <summary>就近模式的存储搜索半径(像素)</summary>
         internal const int StorageSearchRange = 600;
         /// <summary>绑定最远距离(像素)</summary>
@@ -86,6 +89,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         private bool storageCacheDirty = true;
         private uint storageCacheTick;
 
+        /// <summary>上次发送时的名单修改版本，-1=从未发送；仅本端自比较，禁跨网比较。
+        /// 机械臂每次抓取都会推送UE扣减，名单可达500项(约2KB)不能逐包搭载</summary>
+        private int lastSentFilterRevision = -1;
+
         public override void SetBattery() {
             Filter = new ItemFilterSet();
             DrawExtendMode = 2200;
@@ -95,7 +102,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
         public override void SendData(ModPacket data) {
             base.SendData(data);
-            Filter.Write(data);
+            //名单只在有变化或全量场景(加入世界快照序列化)时搭载
+            bool sendFilter = TileProcessorNetWork.InitializeWorld || lastSentFilterRevision != Filter.Revision;
+            data.Write(sendFilter);
+            if (sendFilter) {
+                Filter.Write(data);
+                if (!TileProcessorNetWork.InitializeWorld) {
+                    lastSentFilterRevision = Filter.Revision;
+                }
+            }
             data.Write(TagItemSign);
             data.Write(BatteryPrompt);
             data.Write(workState);
@@ -110,7 +125,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
             base.ReceiveData(reader, whoAmI);
-            Filter.Read(reader);
+            //名单按线上标志位读取，未搭载则保留当前名单
+            if (reader.ReadBoolean()) {
+                Filter.Read(reader);
+            }
             TagItemSign = reader.ReadInt32();
             BatteryPrompt = reader.ReadBoolean();
             workState = reader.ReadBoolean();
@@ -239,6 +257,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             }
 
             //过滤卡右键，装/刷名单
+            //TP右键经InnoVault总线在所有端各自执行(卡片名单已随物品NetSend同步)，
+            //推送只留权威端一份，客户端不要再用本地状态顶回服务器
             if (item.ModItem is ItemFilter card) {
                 TagItemSign = item.type;
                 Filter.CopyFrom(card.Filter);
@@ -248,7 +268,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                     CombatText.NewText(HitBox, ItemFilterTheme.Gold, ItemFilterEditorUI.InstalledText.Value);
                 }
 
-                SendData();
+                if (!VaultUtils.isClient) {
+                    SendData();
+                }
                 return false;
             }
 
@@ -264,7 +286,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 Pitch = TagItemSign > ItemID.None ? -0.2f : 0.2f
             });
 
-            SendData();
+            if (!VaultUtils.isClient) {
+                SendData();
+            }
             return false;
         }
 
@@ -382,7 +406,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 return;
             }
             textIdleTime = 300;
-            BroadcastPrompt(Collector.Text2.Value);
+            BroadcastPrompt(Collector.Text2);
 
             //生成视觉提示粒子(单人)
             if (Main.netMode != NetmodeID.Server) {
@@ -395,14 +419,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             }
         }
 
-        /// <summary>提示文本(服务器广播 / 本地生成)</summary>
-        internal void BroadcastPrompt(string text) {
+        /// <summary>提示文本(服务器广播 / 本地生成)；传LocalizedText使每个客户端按自己的语言渲染，
+        /// FromLiteral会把服务器语言的成品字符串发给所有人</summary>
+        internal void BroadcastPrompt(LocalizedText text) {
             if (VaultUtils.isServer) {
-                NetMessage.SendData(MessageID.CombatTextString, -1, -1, NetworkText.FromLiteral(text)
+                NetMessage.SendData(MessageID.CombatTextString, -1, -1, text.ToNetworkText()
                     , (int)Color.YellowGreen.PackedValue, HitBox.Center.X, HitBox.Center.Y);
             }
             else {
-                CombatText.NewText(HitBox, Color.YellowGreen, text);
+                CombatText.NewText(HitBox, Color.YellowGreen, text.Value);
             }
         }
 
@@ -427,7 +452,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             //检查机械臂总数限制
             if (ActorLoader.GetActiveActors<CollectorArm>().Count > GlobalArmLimit) {
                 if (textIdleTime <= 0) {
-                    Defer(() => BroadcastPrompt(Collector.Text1.Value));
+                    Defer(() => BroadcastPrompt(Collector.Text1));
                     textIdleTime = 300;
                 }
                 return;
@@ -467,7 +492,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             //检查能量状态
             BatteryPrompt = MachineData.UEvalue < consumeUE;
             if (BatteryPrompt && textIdleTime <= 0 && !VaultUtils.isClient) {
-                Defer(() => BroadcastPrompt(Collector.Text3.Value));
+                Defer(() => BroadcastPrompt(Collector.Text3));
                 textIdleTime = 300;
             }
         }

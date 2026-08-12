@@ -51,7 +51,9 @@ namespace CalamityOverhaul.Content.Industrials.Generator
             if (baseGeneratorTP != null) {
                 baseGeneratorTP.GeneratorUI = baseGeneratorUI;
                 baseGeneratorTP.RightClickByTile(newTP);
-                baseGeneratorTP.SendData();
+                //此处不要SendData：ModTile.RightClick只在交互客户端运行，
+                //无差别推送会把本地模拟的漂移状态顶掉服务器权威值；
+                //真正改动了状态的RightClickByTile重写内部自会推送
             }
             return true;
         }

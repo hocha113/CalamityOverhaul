@@ -1118,3 +1118,42 @@ CWRPlayer: {
 	HellfireExplosionDeathReason: "{0} сгорел в адском пламени"
 	SoulfireExplosionDeathReason: "{0} — душа воспламенилась"
 }
+
+MiningMachineUI: {
+	// TitleText: Prospecting Terminal
+	// ReportTitle: Survey Report
+	// RescanText: Rescan
+	// ModuleSlotLabel: Modules
+	// EmptySlotHint: Insert an upgrade module
+	// StatusLabel: Status
+	// StateWorking: Operating
+	// StateNoPower: No Power
+	// StateNoFooting: Unstable Footing
+	// PickPowerLine: Pick Power: {0}%
+	// YieldRateLine: Yield: ~{0}/min
+	// EnergyLabel: Energy
+	// LayerLabel: Stratum
+	// BiomeLabel: Biome
+	// VeinLabel: Veins Found
+	// LayerSurface: Surface
+	// LayerUnderground: Underground
+	// LayerCavern: Cavern
+	// LayerUnderworld: Underworld
+	// BiomeJungle: Jungle
+	// BiomeSnow: Snow
+	// BiomeDesert: Desert
+	// BiomeCorrupt: Corruption
+	// BiomeCrimson: Crimson
+	// BiomeHallow: Hallow
+	// BiomeNone: Barren Rock
+	// GateNeedPick: Requires {0}% pick power
+	// GateNeedDrill: Requires a dedicated drill module
+	// GateNotInWorld: Ore source not yet surveyed
+	// VeinTilesFormat: "{0} vein tiles detected"
+	// ModuleOnly: Only mining machine modules fit here!
+	// ModuleDuplicate: A module of this type is already installed!
+	// ModuleTagText: Mining Machine Module
+	// ModuleHowToText: Right-click a mining machine and slot this into its terminal
+	// DrillTargetText: Targets: {0}
+	// DrillEffectText: Grants extraction rights for its targets and quadruples their yield weight
+}

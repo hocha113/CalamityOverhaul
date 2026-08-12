@@ -934,11 +934,198 @@ MiningMachine: {
 	DisplayName: 采矿机
 	Tooltip:
 		'''
-		消耗电能钻探矿物
-		需要放置在合适的地方才能正常工作
-		在特殊环境中可以挖掘出特殊矿物
+		消耗电能钻探矿物，产出取决于脚下的地层与矿脉
+		右键打开勘探终端，查看产出概率并安装升级模块
 		'''
 	DontWork: 需要放置在坚硬的地面上才能进行采矿作业
+}
+
+ExcavationBoosterModule: {
+	DisplayName: 挖掘强化模块
+	Tooltip:
+		'''
+		安装到采矿机后，作业周期缩短30%
+		齿轮换了副更硬的牙口
+		'''
+}
+
+PickPowerBoosterModule: {
+	DisplayName: 镐力强化模块
+	Tooltip:
+		'''
+		安装到采矿机后，镐力提升60%
+		让一台铁皮机器啃得动秘银
+		'''
+}
+
+ChlorophyteDrillModule: {
+	DisplayName: 叶绿钻探模块
+	Tooltip: 钻头本身就是叶绿锭铸的，以矿制矿
+}
+
+EfficiencyModule: {
+	DisplayName: 效率强化模块
+	Tooltip:
+		'''
+		安装到采矿机后，周期能耗降至60%
+		绕紧的铜线圈不烫手了
+		'''
+}
+
+YieldBoosterModule: {
+	DisplayName: 产出强化模块
+	Tooltip:
+		'''
+		安装到采矿机后，产出判定概率提升35%
+		筛网换密了一号
+		'''
+}
+
+ProspectorModule: {
+	DisplayName: 勘探强化模块
+	Tooltip:
+		'''
+		安装到采矿机后，宝石、化石、陨石等稀有副产物的权重提升至三倍
+		透镜底下，砂砾也分三六九等
+		'''
+}
+
+SurveyArrayModule: {
+	DisplayName: 勘探阵列模块
+	Tooltip:
+		'''
+		安装到采矿机后，勘探范围扩大50%
+		回声比钻头先到
+		'''
+}
+
+VeinFocusModule: {
+	DisplayName: 矿脉聚焦模块
+	Tooltip:
+		'''
+		安装到采矿机后，真实矿脉对产出的加成提升60%
+		顺着脉走，别跟石头较劲
+		'''
+}
+
+DoubleLoadModule: {
+	DisplayName: 双倍装载模块
+	Tooltip:
+		'''
+		安装到采矿机后，每次产出有25%概率翻倍
+		矿斗焊宽了一圈
+		'''
+}
+
+OverdriveCoreModule: {
+	DisplayName: 过载核心模块
+	Tooltip:
+		'''
+		安装到采矿机后，作业周期缩短45%，能耗提升60%
+		轴承烧红之前它不打算停
+		'''
+}
+
+ThrottleValveModule: {
+	DisplayName: 节流阀模块
+	Tooltip:
+		'''
+		安装到采矿机后，作业周期延长50%，能耗降至45%
+		慢，但一整夜都是它的
+		'''
+}
+
+ChestLinkModule: {
+	DisplayName: 集装组件
+	Tooltip:
+		'''
+		安装到采矿机后，产出直接存入近旁的箱子，存不下才落地
+		省得弯腰去捡
+		'''
+}
+
+SmelterModule: {
+	DisplayName: 现场熔炼模块
+	Tooltip:
+		'''
+		安装到采矿机后，矿石按熔炉配比熔成锭再产出，能耗提升40%
+		出井口就是锭
+		'''
+}
+
+CopperTinDrill: {
+	DisplayName: 铜锡钻头
+	Tooltip: 最先磨亮的那一支
+}
+
+IronLeadDrill: {
+	DisplayName: 铁铅钻头
+	Tooltip: 钻头比矿还结实，这就够了
+}
+
+SilverTungstenDrill: {
+	DisplayName: 银钨钻头
+	Tooltip: 刃口镀了层不肯生锈的体面
+}
+
+GoldPlatinumDrill: {
+	DisplayName: 金铂钻头
+	Tooltip: 啃软金属啃出了瘾
+}
+
+EvilOreDrill: {
+	DisplayName: 邪金钻头
+	Tooltip: 淬过两种邪血，哪边都认它
+}
+
+MeteoriteDrill: {
+	DisplayName: 陨铁钻头
+	Tooltip: 天上掉下来的，得用天上的料去接
+}
+
+ObsidianDrill: {
+	DisplayName: 黑曜钻头
+	Tooltip: 水火相激处磨出的口
+}
+
+HellstoneDrill: {
+	DisplayName: 狱岩钻头
+	Tooltip: 握把到现在还是温的
+}
+
+FossilDrill: {
+	DisplayName: 化石钻头
+	Tooltip: 刷子太慢了
+}
+
+CoalDrill: {
+	DisplayName: 煤层钻头
+	Tooltip: 锅炉房点名要它
+}
+
+GemClusterDrill: {
+	DisplayName: 晶簇钻头
+	Tooltip: 金刚石的牙口专啃亮东西
+}
+
+CobaltPalladiumDrill: {
+	DisplayName: 钴钯钻头
+	Tooltip: 祭坛碎屑还嵌在齿缝里
+}
+
+MythrilOrichalcumDrill: {
+	DisplayName: 秘银山铜钻头
+	Tooltip: 转起来有点圣器的响动
+}
+
+AdamantiteTitaniumDrill: {
+	DisplayName: 精金钛金钻头
+	Tooltip: 深处的硬骨头，交给它
+}
+
+LuminiteDrillModule: {
+	DisplayName: 夜明钻探模块
+	Tooltip: 月亮的碎屑，也照采不误
 }
 
 HoChaMeditatorItem: {
@@ -1352,9 +1539,8 @@ MiningMachineMk2: {
 	DisplayName: 采矿机MK2
 	Tooltip:
 		'''
-		消耗电能钻探矿物
-		需要放置在合适的地方才能正常工作
-		在特殊环境中可以挖掘出特殊矿物
+		消耗电能钻探矿物，勘探范围比初代更宽更深
+		右键打开勘探终端，查看产出概率并安装升级模块
 		'''
 }
 

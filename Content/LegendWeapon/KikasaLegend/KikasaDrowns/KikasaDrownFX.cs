@@ -1,5 +1,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.PRT;
@@ -18,7 +20,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
     /// 抱住（逐手卷指合拢，全员到位绷紧拍）→ 拉锯（两轮衰减挣扎，曲率即力量）→
     /// 拖入（绷直收缩下拉，过水线大水花）→ 水下溶解（鬼影快照+臂化回湖水）。
     /// 真身在权威时间轴 40 帧被移除，本层自 32 帧起用鬼影覆绘真身，时差被同路延迟抵消。
-    /// 画在 EndEntityDraw：水上部分被湖面镜面自动倒影，倒影把手锚进世界。
+    /// 鬼影走逐节 RT 留影（DrawNPCDirect 完整钩子链，改绘皮肤/多部件不丢），
+    /// 全组共享单一刚体位移场——体节相对位置恒等于抓握帧，U 形蠕虫整体拉入不错位；
+    /// RT 不可用时逐节回退裸贴图。画在 EndEntityDraw：水上部分被湖面镜面自动倒影。
     /// </summary>
     internal static class KikasaDrownFX
     {
@@ -62,18 +66,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             public bool Burst;
         }
 
-        private sealed class MiniGhost
+        /// <summary>
+        /// 单节鬼影：RT 留影为主（外观=真实绘制链输出，旋转/翻转/gfxOffY 已烘焙进像素），
+        /// 裸贴图快照兜底。锚点取捕获帧世界中心——全组被权威钉死，即抓握时刻的形状
+        /// </summary>
+        private sealed class GhostSeg
         {
             public NetworkNPCIdentity Identity;
-            public bool Captured;
+            //RT 留影
+            public RenderTarget2D Rt;
+            public bool RtCaptured;
+            public int CaptureFailures;
+            /// <summary>显存不足或捕获连败后永久走裸贴图</summary>
+            public bool Degraded;
+            /// <summary>捕获帧的世界中心，刚体位移的基点</summary>
+            public Vector2 AnchorCenter;
+            //裸贴图回退快照
+            public bool SpriteCaptured;
             public int NpcType;
             public Rectangle Frame;
-            public Vector2 Pos;
             public float Rot;
             public float Scale;
             public SpriteEffects Fx;
             public float CenterOffY;
-            public float Vy;
+            /// <summary>本节过水线闩（溶解加速+溅水）</summary>
             public bool Splashed;
         }
 
@@ -83,21 +99,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             public int OwnerIndex;
             public float Seed;
             public NetworkNPCIdentity Primary;
-            public readonly List<MiniGhost> Members = [];
+            /// <summary>全组鬼影段（含主段），whoAmI 降序——原版 DrawNPCs 从 199 递减遍历，
+            /// 低索引后画压上层（Main.cs 21711），按存放序绘制即复刻遮挡关系</summary>
+            public readonly List<GhostSeg> Segs = [];
+            public GhostSeg PrimarySeg;
             public HandState[] Hands;
             public int Timer;
             public float LakeY;
+            /// <summary>刚体组中心，演出路径唯一驱动量；存活期即冻结组中心（全组已被钉死）</summary>
             public Vector2 TargetCenter;
+            /// <summary>组包围盒半尺寸</summary>
             public Vector2 TargetHalf;
-            //鬼影快照（逐帧刷新到真身消失为止）
-            public bool GhostCaptured;
-            public int NpcType;
-            public Rectangle NpcFrame;
-            public float NpcScale;
-            public float NpcRot;
-            public SpriteEffects NpcFx;
-            /// <summary>原版底边锚定+4px 相对中心锚定的偏移，换影不跳变</summary>
-            public float NpcCenterOffY;
+            /// <summary>冻结时组中心：鬼影绘制位 = 节锚点 + (TargetCenter - 此值)</summary>
+            public Vector2 GroupCenterAtFreeze;
             public float GhostDissolve;
             public float GhostForm;
             public float GhostAlpha = 1f;
@@ -109,6 +123,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             public bool Cancelled;
             public int WhiffTimer;
             public bool Done;
+            /// <summary>RT 轮转保鲜游标</summary>
+            public int CaptureCursor;
         }
 
         private static readonly List<DrownShow> shows = [];
@@ -117,7 +133,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         private static Color BloodTint => KikasaDomain.CoolTint(new(237, 77, 69), new(126, 158, 164));
         private static Color FoamGlow => KikasaDomain.CoolTint(new(246, 133, 112), new(176, 200, 204));
 
-        public static void Clear() => shows.Clear();
+        public static void Clear() {
+            foreach (DrownShow show in shows) {
+                DisposeShowRTs(show);
+            }
+            shows.Clear();
+        }
 
         internal static bool HasActiveShowFor(int ownerIndex) {
             for (int i = 0; i < shows.Count; i++) {
@@ -155,13 +176,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 Seed = seed,
                 Primary = primary,
                 LakeY = lakeY,
-                TargetCenter = target.Center,
-                TargetHalf = new Vector2(target.width, target.height) * 0.5f,
             };
+
+            //全组段表（whoAmI 降序，见 Segs 注释）+ 可解析成员表；包围盒定刚体中心，冻结值即抓握时刻
+            List<NPC> resolved = [target];
+            show.Segs.Add(new GhostSeg { Identity = primary });
             foreach (NetworkNPCIdentity id in members) {
-                show.Members.Add(new MiniGhost { Identity = id });
+                show.Segs.Add(new GhostSeg { Identity = id });
+                if (id.TryResolve(out NPC member)) {
+                    resolved.Add(member);
+                }
             }
-            BuildHands(show, target);
+            show.Segs.Sort((a, b) => b.Identity.Index.CompareTo(a.Identity.Index));
+            foreach (GhostSeg seg in show.Segs) {
+                if (seg.Identity == primary) {
+                    show.PrimarySeg = seg;
+                    break;
+                }
+            }
+
+            Rectangle box = target.Hitbox;
+            foreach (NPC npc in resolved) {
+                box = Rectangle.Union(box, npc.Hitbox);
+            }
+            show.TargetCenter = box.Center.ToVector2();
+            show.TargetHalf = new Vector2(box.Width, box.Height) * 0.5f;
+            show.GroupCenterAtFreeze = show.TargetCenter;
+            show.StruggleBaseY = show.TargetCenter.Y;
+
+            BuildHands(show, target, resolved);
+            RefreshSpriteFallbacks(show);
             shows.Add(show);
 
             if (IsViewedOwner(ownerWho)) {
@@ -174,11 +218,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
 
         //确定性布手：数量随体型，根位/段长/错帧全由种子推出，各端一致
 
-        private static void BuildHands(DrownShow show, NPC target) {
+        private static void BuildHands(DrownShow show, NPC target, List<NPC> group) {
+            if (group.Count > 1 && TryBuildGroupHands(show, group)) {
+                return;
+            }
+
+            //单体（或群组全高悬无可达节的兜底）：主段椭圆槽位
             float area = target.width * target.height;
             int count = (int)MathHelper.Clamp(4f + area / 1600f, 4f, 7f);
             float handScale = MathHelper.Clamp(MathF.Sqrt(area) / 38f, 0.85f, 1.35f);
-            float spread = MathF.Max(show.TargetHalf.X * 1.7f, 52f);
+            float spread = MathHelper.Clamp(show.TargetHalf.X * 1.7f, 52f, 480f);
 
             show.Hands = new HandState[count];
             for (int i = 0; i < count; i++) {
@@ -191,9 +240,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                     slot.Dir.X * show.TargetHalf.X, slot.Dir.Y * show.TargetHalf.Y);
                 Vector2 gripWorld = show.TargetCenter + gripLocal;
 
+                float reach = Vector2.Distance(root, gripWorld);
                 float segLen = MathHelper.Clamp(
-                    Vector2.Distance(root, gripWorld) * 1.15f / KikasaHandRig.ArmSegmentCount,
-                    26f, 58f);
+                    reach * 1.15f / KikasaHandRig.ArmSegmentCount,
+                    26f, MaxHandSegmentLength);
 
                 KikasaHandRig rig = new() {
                     Root = root,
@@ -204,7 +254,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                     BendDir = slot.RootSide < 0f ? -1 : 1,
                     Curl = -0.1f,
                     Opacity = 0f,
-                    Scale = handScale,
+                    Scale = handScale * ReachBoost(reach),
                     Seed = show.Seed + i * 7.77f,
                     FrontLayer = slot.Front,
                 };
@@ -216,6 +266,83 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                     BurstFrame = ConvergeEnd + i * 2,
                 };
             }
+        }
+
+        /// <summary>单节段长上限：6 节解算臂展 240×6×0.98 ≈ 1411px，
+        /// 与 KikasaDrown.MaxGrabHeight(1200) 构成"资格 ≤ 抓点筛选 ≤ 物理臂展"的安全链</summary>
+        private const float MaxHandSegmentLength = 240f;
+
+        /// <summary>抓点可达筛选上限（对解算臂展留余量）</summary>
+        private const float MaxArmReach = 1350f;
+
+        /// <summary>远抓增幅：臂展超出近抓预算(≈340px)后手掌臂宽随之放大，
+        /// 长臂不细成线，极限约 ×2；每只手按自己的根到抓点实距取值</summary>
+        private static float ReachBoost(float reach)
+            => 1f + MathHelper.Clamp((reach - 340f) / 1100f, 0f, 1f);
+
+        /// <summary>
+        /// 群组布手：抓点取体节实位（臂展可达者按 X 均匀取样），不再用主段椭圆——
+        /// 手要攥住 U 形身体的可达弧段，抓空气或隔空贴手都是失败。无可达节返回 false
+        /// </summary>
+        private static bool TryBuildGroupHands(DrownShow show, List<NPC> group) {
+            List<(Vector2 Pos, float Size)> candidates = [];
+            foreach (NPC npc in group) {
+                Vector2 pos = npc.Center;
+                //根挂在节位正下方湖面，竖直够不着的节不做抓点
+                if (Vector2.Distance(new Vector2(pos.X, show.LakeY + 2f), pos) > MaxArmReach * 0.95f) {
+                    continue;
+                }
+                candidates.Add((pos, MathF.Sqrt(MathF.Max(npc.width * npc.height, 1f))));
+            }
+            if (candidates.Count == 0) {
+                return false;
+            }
+            candidates.Sort((a, b) => a.Pos.X.CompareTo(b.Pos.X));
+
+            int count = Math.Min(candidates.Count, SlotTable.Length);
+            show.Hands = new HandState[count];
+            for (int i = 0; i < count; i++) {
+                (Vector2 grip, float size) = candidates[(int)((i + 0.5f) * candidates.Count / count)];
+                float jx = (Hash(show.Seed, i * 3 + 1) - 0.5f) * 22f;
+
+                //根向组中心略收拢让臂斜挂，够不着就直挂节位正下
+                Vector2 root = new(MathHelper.Lerp(grip.X, show.TargetCenter.X, 0.18f) + jx, show.LakeY + 2f);
+                if (Vector2.Distance(root, grip) > MaxArmReach) {
+                    root.X = grip.X + jx * 0.4f;
+                }
+
+                float rootSide = MathHelper.Clamp(
+                    (grip.X - show.TargetCenter.X) / MathF.Max(show.TargetHalf.X, 1f), -1.35f, 1.35f);
+                GripSlotDef slot = new(
+                    (grip - show.TargetCenter).SafeNormalize(-Vector2.UnitY),
+                    rootSide, i % 2 == 0);
+
+                float reach = Vector2.Distance(root, grip);
+                float segLen = MathHelper.Clamp(
+                    reach * 1.15f / KikasaHandRig.ArmSegmentCount,
+                    26f, MaxHandSegmentLength);
+
+                KikasaHandRig rig = new() {
+                    Root = root,
+                    Wrist = new Vector2(root.X, show.LakeY + 12f),
+                    SegmentLength = segLen,
+                    Tension = 0.75f,
+                    BendDir = rootSide < 0f ? -1 : 1,
+                    Curl = -0.1f,
+                    Opacity = 0f,
+                    //手随所攥体节的尺寸，不随全组包围盒；远抓再按臂长增幅
+                    Scale = MathHelper.Clamp(size / 38f, 0.85f, 1.35f) * ReachBoost(reach),
+                    Seed = show.Seed + i * 7.77f,
+                    FrontLayer = slot.Front,
+                };
+                show.Hands[i] = new HandState {
+                    Rig = rig,
+                    Slot = slot,
+                    GripLocal = grip - show.TargetCenter,
+                    BurstFrame = ConvergeEnd + i * 2,
+                };
+            }
+            return true;
         }
 
         private static float Hash(float seed, int k) {
@@ -251,6 +378,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                 DrownShow show = shows[i];
                 UpdateShow(show);
                 if (show.Done) {
+                    DisposeShowRTs(show);
                     KikasaDrown.OnLocalShowEnded(show.OwnerIndex);
                     shows.RemoveAt(i);
                 }
@@ -283,25 +411,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             show.Timer++;
             int t = show.Timer;
 
-            //跟踪真身并持续刷新鬼影快照；真身没了由模拟接管
-            bool alive = show.Primary.TryResolve(out NPC target);
-            if (alive) {
-                show.TargetCenter = target.Center;
-                show.TargetHalf = new Vector2(target.width, target.height) * 0.5f;
-                CapturePrimary(show, target);
-                show.StruggleBaseY = target.Center.Y;
-            }
-            else if (!show.GhostCaptured) {
-                //连快照都没来得及捕获（起手就死了）：收手
+            //真身在场：全组被权威钉死，刚体中心维持冻结值，只保鲜快照；
+            //真身没了由刚体位移模拟接管
+            bool primaryAlive = show.Primary.TryResolve(out _);
+            if (!primaryAlive && !show.PrimarySeg.RtCaptured && !show.PrimarySeg.SpriteCaptured) {
+                //连一帧快照都没来得及捕获（起手就死了）：收手
                 BeginWhiff(show);
                 return;
+            }
+            if (primaryAlive) {
+                show.StruggleBaseY = show.TargetCenter.Y;
             }
             else {
                 SimulateGhost(show, t);
             }
-
-            //组员：活着刷新快照，死了走小拖入
-            UpdateMembers(show, t, visible);
+            RefreshSpriteFallbacks(show);
+            UpdateSegSplashes(show, visible);
 
             //合围：鼓包行进涟漪
             if (t <= ConvergeEnd && visible && t % 5 == 2) {
@@ -371,25 +496,70 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             }
         }
 
-        private static void CapturePrimary(DrownShow show, NPC npc) {
-            Main.instance.LoadNPC(npc.type);
-            Texture2D tex = TextureAssets.Npc[npc.type]?.Value;
-            if (tex == null) {
+        /// <summary>存活节逐帧保鲜：锚点（钉死位）与裸贴图回退快照；死节自然冻结</summary>
+        private static void RefreshSpriteFallbacks(DrownShow show) {
+            foreach (GhostSeg seg in show.Segs) {
+                if (!seg.Identity.TryResolve(out NPC npc)) {
+                    continue;
+                }
+                seg.AnchorCenter = npc.Center;
+                Main.instance.LoadNPC(npc.type);
+                if (TextureAssets.Npc[npc.type]?.Value == null) {
+                    continue;
+                }
+                seg.SpriteCaptured = true;
+                seg.NpcType = npc.type;
+                seg.Frame = npc.frame;
+                seg.Rot = npc.rotation;
+                seg.Scale = npc.scale;
+                seg.Fx = npc.spriteDirection > 0
+                    ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                seg.CenterOffY = VanillaCenterOffY(npc);
+            }
+        }
+
+        /// <summary>
+        /// 逐节过水线：下缘节先溅、自然错拍。每帧限量防长虫齐崩连响；
+        /// 冻结时已在水下的节静默上闩
+        /// </summary>
+        private static void UpdateSegSplashes(DrownShow show, bool visible) {
+            float sinkY = show.TargetCenter.Y - show.GroupCenterAtFreeze.Y;
+            if (sinkY <= 0.01f) {
                 return;
             }
-            show.GhostCaptured = true;
-            show.NpcType = npc.type;
-            show.NpcFrame = npc.frame;
-            show.NpcScale = npc.scale;
-            show.NpcRot = npc.rotation;
-            show.NpcFx = npc.spriteDirection > 0
-                ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            show.NpcCenterOffY = VanillaCenterOffY(npc);
+            float driftX = show.TargetCenter.X - show.GroupCenterAtFreeze.X;
+            int fxBudget = 3;
+            bool soundLeft = true;
+            foreach (GhostSeg seg in show.Segs) {
+                if (seg.Splashed || (!seg.RtCaptured && !seg.SpriteCaptured)) {
+                    continue;
+                }
+                if (seg.AnchorCenter.Y >= show.LakeY) {
+                    seg.Splashed = true;
+                    continue;
+                }
+                if (seg.AnchorCenter.Y + sinkY < show.LakeY) {
+                    continue;
+                }
+                seg.Splashed = true;
+                if (!visible || fxBudget <= 0) {
+                    continue;
+                }
+                fxBudget--;
+                Vector2 hit = new(seg.AnchorCenter.X + driftX, show.LakeY);
+                KikasaDomainDeco.RippleAt(hit, 0.7f);
+                if (soundLeft) {
+                    soundLeft = false;
+                    KikasaDomainDeco.SplashAt(hit, 5);
+                    SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.45f, Pitch = -0.35f, MaxInstances = 2 }, hit);
+                }
+            }
         }
 
         /// <summary>
         /// 原版把贴图底边锚在碰撞箱底+4px（步行怪贴图高于碰撞箱），
-        /// 中心锚定绘制会差出几像素——换影瞬间目标钉死静止，跳变没有运动掩护
+        /// 中心锚定绘制会差出几像素——换影瞬间目标钉死静止，跳变没有运动掩护。
+        /// 仅裸贴图回退路径需要；RT 留影已把该偏移烘焙进像素
         /// </summary>
         private static float VanillaCenterOffY(NPC npc)
             => npc.Bottom.Y - npc.frame.Height * npc.scale * 0.5f + 4f + npc.gfxOffY
@@ -442,39 +612,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             //拖入期渐染血色
             if (t > StruggleEnd && t <= DragEnd) {
                 show.GhostForm = MathHelper.Clamp((t - StruggleEnd) / 40f, 0f, 0.3f);
-            }
-        }
-
-        private static void UpdateMembers(DrownShow show, int t, bool visible) {
-            foreach (MiniGhost member in show.Members) {
-                if (member.Identity.TryResolve(out NPC npc)) {
-                    Main.instance.LoadNPC(npc.type);
-                    member.Captured = TextureAssets.Npc[npc.type]?.Value != null;
-                    member.NpcType = npc.type;
-                    member.Frame = npc.frame;
-                    member.Pos = npc.Center;
-                    member.Rot = npc.rotation;
-                    member.Scale = npc.scale;
-                    member.Fx = npc.spriteDirection > 0
-                        ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-                    member.CenterOffY = VanillaCenterOffY(npc);
-                    continue;
-                }
-                if (!member.Captured || t <= StruggleEnd) {
-                    continue;
-                }
-                //组员没有专属手，拖入拍一起被拉下去
-                member.Vy = MathF.Min(member.Vy + 0.9f, 16f);
-                member.Pos.Y += member.Vy;
-                if (!member.Splashed && member.Pos.Y >= show.LakeY) {
-                    member.Splashed = true;
-                    if (visible) {
-                        Vector2 hit = new(member.Pos.X, show.LakeY);
-                        KikasaDomainDeco.SplashAt(hit, 6);
-                        KikasaDomainDeco.RippleAt(hit, 0.8f);
-                        SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.5f, Pitch = -0.35f, MaxInstances = 2 }, hit);
-                    }
-                }
             }
         }
 
@@ -533,6 +670,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                     Vector2 a = Vector2.Lerp(start, ctrl, ease);
                     Vector2 b = Vector2.Lerp(ctrl, wristGoal, ease);
                     rig.Wrist = Vector2.Lerp(a, b, ease);
+                    //臂从湖里长出来：段长随当前根腕距动态定标，
+                    //远抓甩出途中不在根口堆出巨环松弛
+                    rig.SegmentLength = MathHelper.Clamp(
+                        Vector2.Distance(rig.Root, rig.Wrist) * 1.15f / KikasaHandRig.ArmSegmentCount,
+                        26f, MaxHandSegmentLength);
                     rig.Tension = 0.75f;
                     rig.Curl = MathHelper.Lerp(rig.Curl, -0.1f + rt * 0.15f, 0.4f);
                 }
@@ -622,6 +764,113 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             }
         }
 
+        //==================== RT 留影（由 KikasaDrownRender 在保屏窗口内调用）====================
+
+        /// <summary>单帧捕获上限，群组齐抓不卡帧</summary>
+        private const int CaptureBudgetPerFrame = 24;
+        private const int MaxCaptureFailures = 2;
+
+        /// <summary>有活节待捕获/待保鲜时为 true，供渲染端决定要不要开保屏窗口</summary>
+        internal static bool HasPendingCaptures() {
+            foreach (DrownShow show in shows) {
+                if (show.Cancelled || show.Done) {
+                    continue;
+                }
+                foreach (GhostSeg seg in show.Segs) {
+                    if (!seg.Degraded && seg.Identity.TryResolve(out _)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 逐节 RT 留影：首捕优先，余量从游标轮转保鲜（动画不冻在起手帧）；
+        /// 真身移除后 TryResolve 失败自然停刷，generation 校验防槽位复用污染
+        /// </summary>
+        internal static void RunCaptures(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice) {
+            int budget = CaptureBudgetPerFrame;
+            foreach (DrownShow show in shows) {
+                if (show.Cancelled || show.Done || budget <= 0) {
+                    continue;
+                }
+                int n = show.Segs.Count;
+                //pass0 首捕，pass1 轮转刷新；游标基点先取快照——
+                //边走边推游标会让 idx 隔一跳一，同帧漏刷半数节
+                int cursorBase = show.CaptureCursor;
+                for (int pass = 0; pass < 2 && budget > 0; pass++) {
+                    for (int k = 0; k < n && budget > 0; k++) {
+                        int idx = pass == 0 ? k : (cursorBase + k) % n;
+                        GhostSeg seg = show.Segs[idx];
+                        if (seg.Degraded || (pass == 0 ? seg.RtCaptured : !seg.RtCaptured)) {
+                            continue;
+                        }
+                        if (!seg.Identity.TryResolve(out NPC npc)) {
+                            continue;
+                        }
+                        //肢解/放逐接管期不捕获：两者的 PreDraw 都会在捕获批里
+                        //End/Begin 换成屏幕矩阵画覆绘，既污染快照又破坏批状态；
+                        //接管解除后照常补捕，届时仍无 RT 则由裸贴图回退兜底
+                        if (OniDismember.IsDismembered(npc.whoAmI)
+                            || CyberBanish.IsBanishing(npc.whoAmI)) {
+                            continue;
+                        }
+                        CaptureSeg(spriteBatch, graphicsDevice, seg, npc);
+                        budget--;
+                        if (pass == 1) {
+                            show.CaptureCursor = (idx + 1) % n;
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void CaptureSeg(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice,
+            GhostSeg seg, NPC npc) {
+            OniDismember.ComputeSnapSize(npc, out int width, out int height);
+            RenderTarget2D rt = seg.Rt;
+            if (rt == null || rt.IsDisposed || rt.Width != width || rt.Height != height) {
+                rt?.Dispose();
+                seg.RtCaptured = false;
+                try {
+                    rt = new RenderTarget2D(graphicsDevice, width, height, false,
+                        SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                } catch {
+                    //显存不足等异常：该节永久裸贴图
+                    seg.Rt = null;
+                    seg.Degraded = true;
+                    return;
+                }
+                seg.Rt = rt;
+            }
+
+            Vector2 anchor = npc.Center;
+            if (OniDismemberRender.CaptureNpcAppearance(spriteBatch, graphicsDevice,
+                npc, rt, anchor, npc.behindTiles)) {
+                seg.RtCaptured = true;
+                seg.CaptureFailures = 0;
+                seg.AnchorCenter = anchor;
+                return;
+            }
+
+            //捕获中途 RT 已被清空，旧影不可再用
+            seg.RtCaptured = false;
+            if (++seg.CaptureFailures >= MaxCaptureFailures) {
+                seg.Degraded = true;
+                seg.Rt?.Dispose();
+                seg.Rt = null;
+            }
+        }
+
+        private static void DisposeShowRTs(DrownShow show) {
+            foreach (GhostSeg seg in show.Segs) {
+                seg.Rt?.Dispose();
+                seg.Rt = null;
+                seg.RtCaptured = false;
+            }
+        }
+
         //==================== 绘制 ====================
 
         /// <summary>由 KikasaDomainRender.EndEntityDraw 调用；湖面镜面随后给出倒影与水下血染</summary>
@@ -675,10 +924,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
                         scale = new Vector2(r * 2.4f / glow.Width, r * 0.85f / glow.Height);
                     }
                     else if (hand.Rig.Opacity > 0.05f) {
-                        //根口泡沫光：手在外面，湖在它脚下打转
+                        //根口泡沫光：手在外面，湖在它脚下打转；巨臂根口光斑随臂径放大
                         pos = hand.Rig.Root;
                         a = 0.22f * hand.Rig.Opacity * (0.6f + 0.4f * hand.Rig.Foam);
-                        scale = new Vector2(30f / glow.Width * 2.0f, 12f / glow.Height);
+                        scale = new Vector2(30f / glow.Width * 2.0f, 12f / glow.Height) * hand.Rig.Scale;
                     }
                     if (a <= 0.01f) {
                         continue;
@@ -768,13 +1017,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             device.RasterizerState = prevRaster;
         }
 
-        //鬼影层：真身覆绘与水下溶解，复用 KikasaItemForm 的血水材质
+        //鬼影层：逐节 RT 留影与水下溶解，复用 KikasaItemForm 的血水材质；
+        //全组共享刚体位移，层序按段表（whoAmI 降序，低索引后画压上层同原版）
 
         private static void DrawGhostLayer(SpriteBatch spriteBatch, int viewedOwner) {
             bool any = false;
             foreach (DrownShow show in shows) {
-                if (show.OwnerIndex == viewedOwner && show.GhostCaptured
-                    && !show.Cancelled && show.Timer >= GhostOverdrawStart) {
+                if (GhostLayerVisible(show, viewedOwner)) {
                     any = true;
                     break;
                 }
@@ -796,37 +1045,50 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             }
 
             foreach (DrownShow show in shows) {
-                if (show.OwnerIndex != viewedOwner || !show.GhostCaptured
-                    || show.Cancelled || show.Timer < GhostOverdrawStart
-                    || show.GhostAlpha <= 0.01f) {
+                if (!GhostLayerVisible(show, viewedOwner)) {
                     continue;
                 }
-                DrawNpcGhost(spriteBatch, form, shaderOk, show.NpcType, show.NpcFrame,
-                    show.TargetCenter + new Vector2(0f, show.NpcCenterOffY),
-                    show.NpcRot, show.NpcScale, show.NpcFx,
-                    show.GhostForm, show.GhostDissolve, show.GhostAlpha, show.Seed);
-                foreach (MiniGhost member in show.Members) {
-                    if (!member.Captured || member.Identity.TryResolve(out _)) {
+                Vector2 delta = show.TargetCenter - show.GroupCenterAtFreeze;
+                for (int s = 0; s < show.Segs.Count; s++) {
+                    GhostSeg seg = show.Segs[s];
+                    float dissolve = MathHelper.Clamp(
+                        show.GhostDissolve + (seg.Splashed ? 0.15f : 0f), 0f, 1f);
+                    float seed = show.Seed + s * 3.3f;
+
+                    if (seg.RtCaptured && seg.Rt != null && !seg.Rt.IsDisposed) {
+                        //RT 节：姿态已烘焙；真身在场时覆绘像素一致，换影无缝
+                        DrawGhostQuad(spriteBatch, form, shaderOk, seg.Rt, seg.Rt.Bounds,
+                            seg.AnchorCenter + delta, 0f, 1f, SpriteEffects.None,
+                            show.GhostForm, dissolve, show.GhostAlpha, seed);
                         continue;
                     }
-                    float memberDissolve = MathHelper.Clamp(
-                        show.GhostDissolve + (member.Splashed ? 0.15f : 0f), 0f, 1f);
-                    DrawNpcGhost(spriteBatch, form, shaderOk, member.NpcType, member.Frame,
-                        member.Pos + new Vector2(0f, member.CenterOffY),
-                        member.Rot, member.Scale, member.Fx,
-                        show.GhostForm, memberDissolve, show.GhostAlpha, show.Seed + 3.3f);
+                    //裸贴图回退：等真身消失再接管，活体覆绘会顶掉改绘皮肤
+                    if (!seg.SpriteCaptured || seg.Identity.TryResolve(out _)) {
+                        continue;
+                    }
+                    Main.instance.LoadNPC(seg.NpcType);
+                    Texture2D tex = TextureAssets.Npc[seg.NpcType]?.Value;
+                    if (tex == null) {
+                        continue;
+                    }
+                    DrawGhostQuad(spriteBatch, form, shaderOk, tex, seg.Frame,
+                        seg.AnchorCenter + delta + new Vector2(0f, seg.CenterOffY),
+                        seg.Rot, seg.Scale, seg.Fx,
+                        show.GhostForm, dissolve, show.GhostAlpha, seed);
                 }
             }
 
             spriteBatch.End();
         }
 
-        private static void DrawNpcGhost(SpriteBatch spriteBatch, Effect form, bool shaderOk,
-            int npcType, Rectangle frame, Vector2 center, float rotation, float npcScale,
+        private static bool GhostLayerVisible(DrownShow show, int viewedOwner)
+            => show.OwnerIndex == viewedOwner && !show.Cancelled
+                && show.Timer >= GhostOverdrawStart && show.GhostAlpha > 0.01f;
+
+        private static void DrawGhostQuad(SpriteBatch spriteBatch, Effect form, bool shaderOk,
+            Texture2D tex, Rectangle frame, Vector2 center, float rotation, float scale,
             SpriteEffects fx, float ghostForm, float dissolve, float alpha, float seed) {
 
-            Main.instance.LoadNPC(npcType);
-            Texture2D tex = TextureAssets.Npc[npcType]?.Value;
             if (tex == null || frame.Width <= 0 || frame.Height <= 0) {
                 return;
             }
@@ -853,7 +1115,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             }
 
             spriteBatch.Draw(tex, center - Main.screenPosition, frame, color,
-                rotation, origin, npcScale, fx, 0f);
+                rotation, origin, scale, fx, 0f);
         }
 
         private static bool IsViewedOwner(int ownerIndex) {

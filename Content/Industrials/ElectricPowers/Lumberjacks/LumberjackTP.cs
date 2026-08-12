@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
         public void ToggleMode() {
             CycleMode = !CycleMode;
 
-            //生成模式指示器动画
+            //生成模式指示器动画(客户端NewActor返回-1，由服务器生成并同步)
             Vector2 indicatorPos = CenterInWorld + new Vector2(0, -32);
             //并行阶段Actor生成延迟到主线程执行(串行阶段立即执行)
             Defer(() => {
@@ -84,8 +84,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                 }
             });
 
-            //同步数据
-            SendData();
+            //TP右键经InnoVault总线在所有端各自翻转，推送只留权威端一份
+            if (!VaultUtils.isClient) {
+                SendData();
+            }
         }
 
         public override bool? RightClick(int i, int j, Tile tile, Player player) {
