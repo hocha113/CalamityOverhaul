@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,62 +12,72 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
 {
-    /// <summary>鬼奴模块的着色器域内加载器</summary>
-    internal class KikasaServantAssets
-    {
-        /// <summary>血液喷柱条带</summary>
-        [VaultLoaden(CWRConstant.Effects)]
-        public static Effect KikasaBloodJet { get; private set; }
-    }
-
     /// <summary>
-    /// 毁灭者鬼奴的血液喷柱：一根粗壮的加压血浆柱，不是激光——
-    /// 暗色液柱、下缘被重力撕裂、远端颈缩断成滴串、沿途血雨坠落。
-    /// 逐帧锚定鬼奴头部（角度由鬼奴的慢跟瞄准锁供给），
-    /// 展开→持续→自根部泄压收束；线碰撞比视觉窄、展开期无伤
+    /// 毁灭者鬼奴的口吐光柱：本体颚束（DestroyerMawBeamProj）的友方复刻——
+    /// 同一套 DestroyerBeam 着色器与加色装饰，展开→横扫→收束；
+    /// ai[0]=起始角 ai[1]=角速度，逐帧锚定鬼奴头部，宿主没了快进收束。
+    /// 额外保留血湖交互：光柱扫过湖面掀起行进浪线与飞血
     /// </summary>
     internal class KikasaDestroyerBloodJet : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.VaultPlaceholder;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
 
-        internal const int ExpandFrames = 10;
-        internal const int SustainFrames = KikasaDestroyerServant.JetSustainFrames;
-        internal const int CollapseFrames = 14;
-        internal const int TotalLife = ExpandFrames + SustainFrames + CollapseFrames;
+        internal const int ExpandFrames = 18;
+        internal const int SweepFrames = 90;
+        internal const int CollapseFrames = 16;
+        internal const int TotalLife = ExpandFrames + SweepFrames + CollapseFrames;
 
-        private const float BeamLength = 1150f;
-        private const float MaxWidth = 54f;
-        private const float MuzzleOffset = 30f;
+        /// <summary>口器前伸量</summary>
+        internal const float MuzzleOffset = 44f;
+        private static float MaxBeamLength => 3600f;
+        /// <summary>核宽随 0.7 缩放对齐本体观感（本体 126）</summary>
+        private static float MaxWidth => 88f;
 
         private ref float Timer => ref Projectile.localAI[0];
+        private ref float StartAngle => ref Projectile.ai[0];
+        private ref float SweepSpeed => ref Projectile.ai[1];
 
         private float beamWidth;
-        private float drain;
+        private float beamLength;
+        private float prevCrossX = float.NaN;
 
-        public override void SetStaticDefaults()
-            => ProjectileID.Sets.DrawScreenCheckFluff[Projectile.type] = 1600;
+        private static Color ThemeBlood => new(255, 50, 24);
+        private static Color ThemeGlow => new(255, 150, 70);
+
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 3200;
 
         public override void SetDefaults() {
-            Projectile.width = 32;
-            Projectile.height = 32;
+            Projectile.width = Projectile.height = 32;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Summon;
-            Projectile.penetrate = -1;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
+            Projectile.penetrate = -1;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10;
-            Projectile.timeLeft = TotalLife + 20;
+            Projectile.timeLeft = TotalLife + 30;
         }
 
         /// <summary>宿主鬼奴：owner 场上唯一</summary>
         private KikasaDestroyerServant FindHost() {
-            int type = ModContent.ProjectileType<KikasaDestroyerServant>();
+            int servantType = ModContent.ProjectileType<KikasaDestroyerServant>();
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile p = Main.projectile[i];
-                if (p?.active == true && p.owner == Projectile.owner && p.type == type
+                if (p?.active == true && p.owner == Projectile.owner && p.type == servantType
                     && p.ModProjectile is KikasaDestroyerServant servant) {
                     return servant;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>按 owner 找本人的光柱，鬼奴侧跟权威角用</summary>
+        internal static Projectile FindFor(int owner) {
+            int type = ModContent.ProjectileType<KikasaDestroyerBloodJet>();
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile p = Main.projectile[i];
+                if (p?.active == true && p.owner == owner && p.type == type) {
+                    return p;
                 }
             }
             return null;
@@ -75,32 +86,41 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         public override void AI() {
             KikasaDestroyerServant host = FindHost();
 
-            //宿主没了/开始溶解：快进泄压
-            if ((host == null || host.IsDismissing) && Timer < ExpandFrames + SustainFrames) {
-                Timer = ExpandFrames + SustainFrames;
+            //宿主没了/开始溶解：快进收束
+            if ((host == null || host.IsDismissing) && Timer < TotalLife - CollapseFrames) {
+                Timer = TotalLife - CollapseFrames;
             }
+
+            if (Timer == 0 && !VaultUtils.isServer) {
+                SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 0.9f, Pitch = -0.5f, MaxInstances = 3 }, Projectile.Center);
+            }
+
+            //展开定格→横扫→收束定格
+            float sweepT = MathHelper.Clamp(Timer - ExpandFrames, 0f, SweepFrames);
+            float beamAngle = StartAngle + SweepSpeed * sweepT;
+            Projectile.rotation = beamAngle;
 
             if (host != null) {
-                Projectile.rotation = host.HeadRot;
-                Projectile.Center = host.HeadPos + Projectile.rotation.ToRotationVector2() * MuzzleOffset;
+                Projectile.Center = host.HeadPos + beamAngle.ToRotationVector2() * MuzzleOffset;
             }
 
-            //宽度与泄压包络
-            int collapseStart = ExpandFrames + SustainFrames;
+            //宽长缓动（本体同款包络）
+            float collapseStart = TotalLife - CollapseFrames;
             if (Timer < ExpandFrames) {
                 float t = Timer / ExpandFrames;
-                beamWidth = MathHelper.Lerp(5f, MaxWidth, 1f - MathF.Pow(1f - t, 3f));
-                drain = 0f;
+                beamWidth = MathHelper.Lerp(4f, MaxWidth, VaultUtils.EaseOutCubic(t));
+                beamLength = MathHelper.Lerp(0f, MaxBeamLength, VaultUtils.EaseOutQuad(t));
             }
             else if (Timer >= collapseStart) {
                 float t = (Timer - collapseStart) / CollapseFrames;
-                beamWidth = MaxWidth;
-                drain = MathHelper.Clamp(t, 0f, 1f);
+                beamWidth = MathHelper.Lerp(MaxWidth, 0f, VaultUtils.EaseInQuad(t));
+                beamLength = MaxBeamLength;
             }
             else {
-                beamWidth = MaxWidth * (1f + 0.04f * MathF.Sin(Main.GlobalTimeWrappedHourly * 26f));
-                drain = 0f;
+                beamWidth = MaxWidth;
+                beamLength = MaxBeamLength;
             }
+            beamWidth *= 1f + 0.05f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 30f);
 
             Timer++;
             if (Timer >= TotalLife) {
@@ -108,93 +128,144 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 return;
             }
 
-            Vector2 dir = Projectile.rotation.ToRotationVector2();
-            for (int i = 0; i < 6; i++) {
-                Lighting.AddLight(Projectile.Center + dir * (BeamLength / 6f * i), 0.34f, 0.07f, 0.06f);
+            Vector2 beamDir = Projectile.rotation.ToRotationVector2();
+            for (int i = 0; i < 7; i++) {
+                Lighting.AddLight(Projectile.Center + beamDir * (beamLength / 7f * i), ThemeBlood.ToVector3() * 0.7f);
             }
 
-            if (Main.dedServ || beamWidth < MaxWidth * 0.3f) {
+            if (VaultUtils.isServer || beamWidth < MaxWidth * 0.3f) {
                 return;
             }
 
-            //根口喷溅：出口涡流甩珠
-            if (drain < 0.4f && (int)Timer % 2 == 0) {
-                Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
-                PRTLoader.NewParticle<PRT_KikasaBloodGlob>(
-                    Projectile.Center + dir * Main.rand.NextFloat(8f, 30f)
-                        + perp * Main.rand.NextFloat(-beamWidth, beamWidth) * 0.4f,
-                    dir.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(2f, 6f),
-                    Main.rand.NextBool(3) ? KikasaEyeBloodShot.BloodDeep : KikasaEyeBloodShot.BloodMain,
-                    Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(12, 22));
+            //低频震屏，同id刷新
+            if ((int)Timer % 6 == 0) {
+                DestroyerMotionFX.CameraPunch(Projectile.Center, 2.2f, 8, "KikasaMawBeamRumble", beamDir);
             }
 
-            //远端三分之一失压血雨：柱身撕出的血坠回世界
-            if ((int)Timer % 2 == 1) {
-                float frac = Main.rand.NextFloat(0.62f, 0.98f);
-                Vector2 pos = Projectile.Center + dir * BeamLength * frac
-                    + dir.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-beamWidth, beamWidth) * 0.5f;
-                PRTLoader.NewParticle<PRT_KikasaBloodGlob>(pos,
-                    dir * Main.rand.NextFloat(2f, 7f) + new Vector2(0f, Main.rand.NextFloat(0.5f, 2f)),
-                    KikasaEyeBloodShot.BloodMain * 0.7f,
-                    Main.rand.NextFloat(0.45f, 0.8f))?.Configure(Main.rand.Next(26, 44));
+            //沿束熔滴+余烬（本体同款）
+            if (Main.rand.NextBool(2)) {
+                float along = Main.rand.NextFloat();
+                Vector2 sparkPos = Projectile.Center + beamDir * beamLength * along
+                    + beamDir.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-beamWidth * 0.45f, beamWidth * 0.45f);
+                PRTLoader.NewParticle<PRT_Spark>(sparkPos,
+                    beamDir.RotatedBy(Main.rand.NextFloat(-0.4f, 0.4f)) * Main.rand.NextFloat(3f, 9f),
+                    Color.Lerp(ThemeGlow, Color.White, Main.rand.NextFloat()), Main.rand.NextFloat(0.9f, 1.5f))
+                    ?.Configure(true, Main.rand.Next(14, 22));
+            }
+            if (Main.rand.NextBool(3)) {
+                float along = Main.rand.NextFloat();
+                Vector2 emberPos = Projectile.Center + beamDir * beamLength * along;
+                PRTLoader.NewParticle<PRT_LavaFire>(emberPos,
+                    new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(0f, 2.5f)),
+                    Color.White, Main.rand.NextFloat(0.7f, 1.2f))?.SetLifetime(20, 40);
             }
 
-            //血雨落湖的涟漪余韵（观看域门控）
+            //口器向心聚能
+            if (Main.rand.NextBool(2)) {
+                Vector2 gatherPos = Projectile.Center + Main.rand.NextVector2CircularEdge(70f, 70f);
+                PRTLoader.NewParticle<PRT_Spark>(gatherPos,
+                    (Projectile.Center - gatherPos) * 0.12f,
+                    ThemeBlood, Main.rand.NextFloat(1f, 1.6f))?.Configure(false, 14);
+            }
+
+            UpdateLakeSweep(beamDir);
+        }
+
+        /// <summary>光柱扫过血湖：交点处掀起行进浪线与飞血（观看域门控）</summary>
+        private void UpdateLakeSweep(Vector2 dir) {
             Player owner = Main.player[Projectile.owner];
-            if ((int)Timer % 6 == 3 && owner?.active == true
-                && owner.TryGetModPlayer(out KikasaDomainPlayer domain)
-                && domain.AnyActive && domain.RiseT > 0.5f
-                && KikasaDomain.Viewed == domain) {
-                float frac = Main.rand.NextFloat(0.5f, 1f);
-                Vector2 pos = Projectile.Center + dir * BeamLength * frac;
-                //柱身在湖面上方不远处才有血雨落湖
-                if (pos.Y > domain.LakeWorldY - 320f && pos.Y < domain.LakeWorldY + 40f) {
-                    KikasaDomainDeco.RippleAt(new Vector2(pos.X + Main.rand.NextFloat(-30f, 30f),
-                        domain.LakeWorldY), Main.rand.NextFloat(0.3f, 0.55f));
-                }
+            if (owner?.active != true
+                || !owner.TryGetModPlayer(out KikasaDomainPlayer domain)
+                || !domain.AnyActive || domain.RiseT <= 0.5f
+                || KikasaDomain.Viewed != domain) {
+                prevCrossX = float.NaN;
+                return;
+            }
+            float lakeY = domain.LakeWorldY;
+
+            float crossT = MathF.Abs(dir.Y) > 0.02f ? (lakeY - Projectile.Center.Y) / dir.Y : -1f;
+            if (crossT < 40f || crossT > beamLength) {
+                prevCrossX = float.NaN;
+                return;
             }
 
-            //泄压收束的湿咳一声
-            if ((int)Timer == collapseStart + 2) {
-                SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.6f, Pitch = -0.6f, MaxInstances = 2 }, Projectile.Center);
-                SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.5f, Pitch = -0.4f, MaxInstances = 2 }, Projectile.Center);
+            Vector2 cross = new(Projectile.Center.X + dir.X * crossT, lakeY);
+            float sweep = float.IsNaN(prevCrossX) ? 0f : MathF.Abs(cross.X - prevCrossX);
+            prevCrossX = cross.X;
+            int t = (int)Timer;
+
+            //行进浪线：大涟漪随扫速加码
+            if (t % 2 == 0) {
+                KikasaDomainDeco.RippleAt(cross, MathHelper.Clamp(1.1f + sweep * 0.05f, 1.1f, 2.0f));
+            }
+            //飞起的血水与蒸腾血雾：激光把湖面犁开
+            for (int i = 0; i < 2; i++) {
+                PRTLoader.NewParticle<PRT_KikasaBloodGlob>(
+                    cross + new Vector2(Main.rand.NextFloat(-18f, 18f), -4f),
+                    new Vector2(Main.rand.NextFloat(-2.4f, 2.4f) + dir.X * 1.5f,
+                        -Main.rand.NextFloat(4.5f, 9.5f)),
+                    Main.rand.NextBool(3) ? KikasaEyeBloodShot.BloodDeep : KikasaEyeBloodShot.BloodMain,
+                    Main.rand.NextFloat(0.45f, 0.8f))?.Configure(Main.rand.Next(22, 38));
+            }
+            if (t % 6 == 3) {
+                KikasaDomainDeco.SplashAt(cross, 6);
+                PRTLoader.NewParticle<PRT_GhostRainMist>(cross + new Vector2(0f, -8f),
+                    new Vector2(dir.X * 0.4f, -0.6f),
+                    KikasaDomain.CoolTint(new(58, 18, 20), new(52, 62, 66)) * 0.85f,
+                    Main.rand.NextFloat(0.7f, 1f))?.Configure(Main.rand.Next(40, 70));
+                SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.45f, Pitch = 0.05f, MaxInstances = 3 }, cross);
+            }
+            if (t % 14 == 7) {
+                PRTLoader.NewParticle<PRT_DWave>(cross, Vector2.Zero,
+                    KikasaEyeBloodShot.BloodDeep, 0.08f)
+                    ?.Configure(new Vector2(0.5f, 1f), -MathHelper.PiOver2, 0.3f, 10);
             }
         }
 
-        /// <summary>展开完成才可伤；泄压过半后血压不足不再切人</summary>
-        public override bool? CanDamage()
-            => Timer > ExpandFrames && drain < 0.5f ? null : false;
+        //展开完才可伤
+        public override bool? CanDamage() => Timer > ExpandFrames ? null : false;
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            float _ = 0f;
-            //碰撞比视觉窄；泄压期从根部让出已断的一段
-            Vector2 dir = Projectile.rotation.ToRotationVector2();
-            Vector2 start = Projectile.Center + dir * (BeamLength * drain);
+            float p = 0f;
+            //碰撞比视觉窄
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
-                start, Projectile.Center + dir * BeamLength, beamWidth * 0.6f, ref _);
+                Projectile.Center, Projectile.Center + Projectile.rotation.ToRotationVector2() * beamLength,
+                beamWidth * 0.6f, ref p);
         }
 
         public override bool PreDraw(ref Color lightColor) => false;
 
-        void IPrimitiveDrawable.DrawPrimitives() {
-            if (Main.dedServ || beamWidth <= 2f) {
-                return;
-            }
-            Effect fx = KikasaServantAssets.KikasaBloodJet;
-            Texture2D noise = CWRAsset.PerlinNoise?.Value;
-            if (fx == null || noise == null) {
-                return;
-            }
+        /// <summary>近端 bleed，藏硬切边进头雕</summary>
+        private float MuzzleBackBleed => beamWidth * 0.38f + 42f;
 
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (beamWidth <= 1f || beamLength <= 10f) {
+                return;
+            }
+            float opacity = MathHelper.Clamp(beamWidth / MaxWidth, 0f, 1f);
+            Effect effect = EffectLoader.DestroyerBeam?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (effect != null && noise != null) {
+                DrawShaderBeam(effect, noise, opacity);
+            }
+        }
+
+        void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
+            DrawAdditiveDressing(MathHelper.Clamp(beamWidth / MaxWidth, 0f, 1f));
+        }
+
+        /// <summary>DestroyerBeam.fx 主轴+电弧+脉冲（本体同款）</summary>
+        private void DrawShaderBeam(Effect effect, Texture2D noise, float opacity) {
+            Vector2 mouth = Projectile.Center;
             Vector2 dir = Projectile.rotation.ToRotationVector2();
             Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
-            //近端 bleed 藏进头雕
-            Vector2 origin = Projectile.Center - dir * (beamWidth * 0.35f + 26f);
-            Vector2 tip = Projectile.Center + dir * BeamLength;
-            //视觉半宽给摆动与撕裂留余量
-            float halfW = beamWidth * 1.6f;
+            Vector2 tip = mouth + dir * beamLength;
+            float backBleed = MuzzleBackBleed;
+            Vector2 origin = mouth - dir * backBleed;
+            //视觉半宽含电弧/halo 余量
+            float halfW = beamWidth * 3.0f;
 
-            //uv.x 1=根→0=末端；uv.y 跨截面
+            //uv.x 1口器→0末端；uv.y 横截面
             VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
             verts[0] = new VertexPositionColorTexture((origin + perp * halfW).ToVector3(), Color.White, new Vector2(1f, 0f));
             verts[1] = new VertexPositionColorTexture((origin - perp * halfW).ToVector3(), Color.White, new Vector2(1f, 1f));
@@ -204,28 +275,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             GraphicsDevice device = Main.graphics.GraphicsDevice;
             BlendState origBlend = device.BlendState;
             RasterizerState origRaster = device.RasterizerState;
-            //浓血：预乘 AlphaBlend，暗缘真正压暗背景——绝不用 Additive
-            device.BlendState = BlendState.AlphaBlend;
+            device.BlendState = BlendState.Additive;
             device.RasterizerState = RasterizerState.CullNone;
 
-            float fade = MathHelper.Clamp(beamWidth / MaxWidth, 0f, 1f)
-                * MathHelper.Clamp(1.2f - drain * 0.55f, 0f, 1f);
-            //uv.y=0 是 +perp 侧；世界向下撕裂侧换算符号
-            float gravSide = perp.Y < 0f ? 1f : -1f;
-
-            fx.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
-            fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-            fx.Parameters["uSeed"]?.SetValue(Projectile.identity * 0.7391f % 3.71f);
-            fx.Parameters["uFade"]?.SetValue(fade);
-            fx.Parameters["uDrain"]?.SetValue(drain);
-            fx.Parameters["uGravSide"]?.SetValue(gravSide);
-            fx.Parameters["uNoiseTex"]?.SetValue(noise);
-            fx.Parameters["uColDark"]?.SetValue(KikasaEyeBloodShot.BloodDark.ToVector3());
-            fx.Parameters["uColDeep"]?.SetValue(KikasaEyeBloodShot.BloodDeep.ToVector3());
-            fx.Parameters["uColMain"]?.SetValue(KikasaEyeBloodShot.BloodMain.ToVector3());
-            fx.Parameters["uColBright"]?.SetValue(KikasaEyeBloodShot.BloodBright.ToVector3());
-
-            foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
+            effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["fadeAlpha"]?.SetValue(opacity);
+            effect.Parameters["exMode"]?.SetValue(0f);
+            effect.Parameters["seed"]?.SetValue(Projectile.whoAmI * 0.137f % 1f);
+            effect.Parameters["uNoiseTex"]?.SetValue(noise);
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
                 pass.Apply();
                 device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);
             }
@@ -234,19 +293,49 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             device.RasterizerState = origRaster;
         }
 
-        void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
-            //只补一点根口湿光，浓血不做大光晕
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null || beamWidth <= 2f || drain > 0.6f) {
-                return;
+        /// <summary>口器光球/星闪/头桥接，圆点无硬切（本体同款）</summary>
+        private void DrawAdditiveDressing(float opacity) {
+            Texture2D glow = CWRAsset.DiffusionCircle.Value;
+            Texture2D star = CWRAsset.StarTexture.Value;
+            Vector2 dir = Projectile.rotation.ToRotationVector2();
+            float flicker = 1f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 40f);
+
+            Color blood = ThemeBlood;
+            Color amber = ThemeGlow;
+            Color core = Color.White;
+
+            //口器→末端推进光球
+            Vector2 screenMouth = Projectile.Center - Main.screenPosition;
+            const int pulses = 4;
+            for (int i = 0; i < pulses; i++) {
+                float along = (Main.GlobalTimeWrappedHourly * 0.9f + i / (float)pulses) % 1f;
+                Vector2 pPos = screenMouth + dir * beamLength * along;
+                float pScale = beamWidth / MaxWidth * (0.5f + 0.5f * (float)Math.Sin(along * MathHelper.Pi));
+                Main.EntitySpriteDraw(glow, pPos, null, amber * (0.7f * opacity), 0f, glow.Size() / 2f,
+                    pScale * 1.1f * 0.3f, SpriteEffects.None, 0);
             }
-            float opacity = MathHelper.Clamp(beamWidth / MaxWidth, 0f, 1f) * (1f - drain);
-            Vector2 mouth = Projectile.Center - Main.screenPosition;
-            float flicker = 1f + 0.08f * MathF.Sin(Main.GlobalTimeWrappedHourly * 34f);
-            spriteBatch.Draw(glow, mouth, null, KikasaEyeBloodShot.BloodMain * (0.5f * opacity), 0f,
-                glow.Size() * 0.5f, beamWidth / MaxWidth * 1.4f * flicker, SpriteEffects.None, 0f);
-            spriteBatch.Draw(glow, mouth, null, KikasaEyeBloodShot.BloodBright * (0.3f * opacity), 0f,
-                glow.Size() * 0.5f, beamWidth / MaxWidth * 0.7f, SpriteEffects.None, 0f);
+
+            //口器呼吸球+星闪
+            float muzzleScale = beamWidth / MaxWidth;
+            Main.EntitySpriteDraw(glow, screenMouth, null, blood * (0.95f * opacity), 0f, glow.Size() / 2f,
+                muzzleScale * 1.8f * flicker, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(glow, screenMouth, null, amber * opacity, 0f, glow.Size() / 2f,
+                muzzleScale * 1.1f, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(glow, screenMouth, null, core * opacity, 0f, glow.Size() / 2f,
+                muzzleScale * 0.65f, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(star, screenMouth, null, amber * (0.9f * opacity), Main.GlobalTimeWrappedHourly * 3.2f,
+                star.Size() / 2f, muzzleScale * 0.6f * flicker, SpriteEffects.None, 0);
+
+            //头心桥接，吃近端硬边
+            KikasaDestroyerServant host = FindHost();
+            if (host != null) {
+                Vector2 headPos = host.HeadPos - Main.screenPosition;
+                float bridge = muzzleScale * 1.6f;
+                Main.EntitySpriteDraw(glow, headPos, null, blood * (0.55f * opacity), 0f, glow.Size() / 2f,
+                    bridge, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(glow, headPos, null, core * (0.35f * opacity), 0f, glow.Size() / 2f,
+                    bridge * 0.45f, SpriteEffects.None, 0);
+            }
         }
     }
 }

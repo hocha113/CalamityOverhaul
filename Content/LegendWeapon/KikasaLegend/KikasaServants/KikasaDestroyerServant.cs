@@ -35,8 +35,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
 
         //==================== 链体尺寸 ====================
 
-        internal const int SegCount = 14;
-        internal const float DrawScale = 0.55f;
+        internal const int SegCount = 16;
+        internal const float DrawScale = 0.7f;
         /// <summary>节距 = BTD 本体 64 × 缩放</summary>
         internal const float SegSpacing = 64f * DrawScale;
 
@@ -67,11 +67,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         private const int ApproachSilence = 6;
         private const int EmergeTimeout = 280;
 
-        //喷柱：抬头(仅湖态)→后仰蓄势→开火持续→回摆
-        private const int JetRaiseFrames = 12;
-        private const int JetRearFrames = 26;
-        internal const int JetSustainFrames = 44;
-        private const int JetRecoverFrames = 16;
+        //喷射（对齐 LaserBarrage 语义）：抬头(仅湖态)→昂首定位/锁线→静默→喷射横扫→散热回摆
+        private const int JetRaiseMax = 24;
+        private const int JetPoiseFrames = 30;
+        private const int JetSilenceFrames = 8;
+        private const int JetRecoverFrames = 18;
+        /// <summary>横扫半弧</summary>
+        private const float JetArcHalf = 0.85f;
 
         //冲撞：入水→水下冲刺(就位早退)→跃出激活→回收
         private const int RamDiveFrames = 20;
@@ -90,19 +92,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
 
         //==================== 链体数据（各端本地重建，头位置由同步纠偏）====================
 
+        //BTD 本体同款跟随：每节是独立对象，持有自己的位置与旋转，
+        //目标向量先按与前节的转差做 0.18 阻尼旋转再贴到前节后方
         private readonly Vector2[] spine = new Vector2[SegCount];
+        /// <summary>蠕虫约定旋转（指向前节的方向角 + PiOver2），与 BTD 本体一致</summary>
         private readonly float[] segRot = new float[SegCount];
         /// <summary>节湿度：过水线拉满、出水后衰减，驱动滴落与材质血水度</summary>
         private readonly float[] wetness = new float[SegCount];
         private readonly bool[] belowWater = new bool[SegCount];
         private bool spineInit;
-
-        //头部路径环形缓冲：移动≥3px 才入样本，容量足够覆盖全链弧长
-        private const int PathCap = 224;
-        private const float PathSampleDist = 3f;
-        private readonly Vector2[] path = new Vector2[PathCap];
-        private int pathHead;
-        private int pathCount;
 
         //==================== 本地表现量 ====================
 
@@ -117,13 +115,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         private bool reentrySplashed;
         private bool leapLaunched;
         private float cruisePhase;
-        /// <summary>喷柱期头部朝向锁（NaN=不锁），喷柱弹幕逐帧读这个角</summary>
+        /// <summary>喷射期头部朝向锁（NaN=不锁，方向角语义），激光弹幕的锚定角来源</summary>
         private float lockedHeadRot = float.NaN;
-        /// <summary>蓄势卷身的节距压缩系数</summary>
-        private float spacingMul = 1f;
-        /// <summary>开火后坐鞭浪：沿链传播的横向冲量（波位/振幅）</summary>
-        private float whipPos = -1f;
-        private float whipAmp;
+        /// <summary>本次喷射的横扫参数（锁线帧定参，各端同规则自算；远端兜底从激光弹幕读）</summary>
+        private float jetStartAngle = float.NaN;
+        private float jetSweepSpeed;
+        private Vector2 jetAnchor;
         /// <summary>跃出残影快照（两份，间隔取样）</summary>
         private readonly Vector2[][] ghostSnaps = new Vector2[2][];
         private int ghostSnapTick;
@@ -249,7 +246,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 lastSeenState = State;
                 reentrySplashed = false;
                 leapLaunched = false;
-                whipPos = -1f;
                 lockedHeadRot = float.NaN;
             }
 
@@ -268,7 +264,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             }
 
             UpdateChain(domain);
-            UpdateWhip();
             UpdateFrames();
             UpdateDrips(domain);
             if (attackCooldown > 0) {
@@ -522,7 +517,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             State = useJet ? StateJet : StateDiveRam;
             StateTimer = 0;
             StateParam = 0;
-            spacingMul = 1f;
+            jetStartAngle = float.NaN;
             Projectile.netUpdate = authority;
         }
 
@@ -531,7 +526,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         private void UpdateJet(Player owner, KikasaDomainPlayer domain, bool authority) {
             int t = (int)StateTimer;
             float lakeY = domain.LakeWorldY;
-            int phase = (int)StateParam;   //0抬头 1后仰 2持续 3回摆
+            int phase = (int)StateParam;   //0抬头 1昂首定位/锁线 2静默 3喷射横扫 4散热回摆
             int target = FindTarget(owner);
             Vector2 aimPos = target >= 0 ? Main.npc[target].Center
                 : Projectile.Center + (float.IsNaN(lockedHeadRot) ? -Vector2.UnitY : lockedHeadRot.ToRotationVector2()) * 400f;
@@ -543,13 +538,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             }
 
             if (phase == 0) {
-                //湖态先抬头出水；已在水上直接进后仰
+                //湖态先抬头出水；已在水上直接进定位
                 if (target < 0) {
                     EndAttack(authority, 50);
                     return;
                 }
-                if (Projectile.Center.Y < lakeY - 90f || t >= JetRaiseFrames * 2) {
+                if (Projectile.Center.Y < lakeY - 90f || t >= JetRaiseMax) {
                     lockedHeadRot = (aimPos - Projectile.Center).ToRotation();
+                    jetAnchor = Projectile.Center;
                     NextPhase(1);
                     return;
                 }
@@ -559,68 +555,106 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 return;
             }
 
-            //瞄准慢跟：公平阀，喷柱不甩头
-            float wantAngle = (aimPos - Projectile.Center).ToRotation();
-            lockedHeadRot = float.IsNaN(lockedHeadRot) ? wantAngle
-                : lockedHeadRot.AngleTowards(wantAngle, 0.02f);
-            Vector2 aim = lockedHeadRot.ToRotationVector2();
-
             if (phase == 1) {
-                //后仰蓄势：pow 迟发后拉 + 链身卷紧；收拢血珠 72% 静默
-                float k = MathF.Pow(MathHelper.Clamp(t / (float)JetRearFrames, 0f, 1f), 5f);
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, -aim * (2.5f + 13f * k), 0.3f);
-                spacingMul = MathHelper.Lerp(spacingMul, 0.8f, 0.2f);
-                if (!Main.dedServ && t < JetRearFrames * 0.72f && t % 2 == 0) {
-                    Vector2 maw = spine[0] + aim * 34f * DrawScale;
-                    Vector2 from = maw + Main.rand.NextVector2Unit() * Main.rand.NextFloat(60f, 130f);
-                    PRTLoader.NewParticle<PRT_KikasaBloodGlob>(from, (maw - from) * 0.15f,
-                        KikasaEyeBloodShot.BloodMain * 0.55f, Main.rand.NextFloat(0.35f, 0.6f))
-                        ?.Configure(9);
+                //昂首定位：抓锚冻结、鼻锁目标、蓄力反向漂移（LaserBarrage.UpdatePoise 语义）
+                float p = MathHelper.Clamp(t / (float)JetPoiseFrames, 0f, 1f);
+                Vector2 aimDir0 = (aimPos - Projectile.Center).SafeNormalize(Vector2.UnitX);
+                Vector2 holdPos = jetAnchor - aimDir0 * (p * p * 90f);
+                Projectile.velocity *= 0.86f;
+                Projectile.velocity += (holdPos - Projectile.Center) * 0.02f;
+                if (Projectile.velocity.Length() > 9f) {
+                    Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 9f;
+                }
+                //鼻锁：转率随蓄力衰减——"锁线"
+                float wantAngle = (aimPos - Projectile.Center).ToRotation();
+                lockedHeadRot = lockedHeadRot.AngleTowards(wantAngle, MathHelper.Lerp(0.24f, 0.1f, p));
+
+                //口器向心汇聚流光（本体同款橙热），72% 后停粒子——尖啸前的吸气
+                if (!Main.dedServ && p < 0.72f && Main.rand.NextFloat() < 0.35f + 0.5f * p) {
+                    Vector2 from = spine[0] + Main.rand.NextVector2Unit() * Main.rand.NextFloat(90f, 320f);
+                    PRTLoader.NewParticle<PRT_Spark>(from, (spine[0] - from) * 0.1f,
+                        Color.Lerp(new Color(255, 150, 70), Color.White, Main.rand.NextFloat()),
+                        Main.rand.NextFloat(0.9f, 1.5f))?.Configure(false, 15);
+                }
+                //低鸣震屏随蓄力平方爬升
+                if (t % 7 == 0 && ViewedOwner) {
+                    ShakeViewer(0.8f + 2f * p * p);
                 }
                 if (t == 2) {
-                    SoundEngine.PlaySound(SoundID.DD2_BookStaffCast with { Volume = 0.5f, Pitch = -0.85f, MaxInstances = 2 }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Item15 with { Volume = 0.75f, Pitch = -0.55f, MaxInstances = 2 }, Projectile.Center);
                 }
-                if (t >= JetRearFrames) {
-                    //开火拍：后坐 + 鞭浪沿链传播；喷柱弹幕只在 owner 端生成
-                    Projectile.velocity = -aim * 9f;
-                    whipPos = 0f;
-                    whipAmp = 26f;
-                    SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.5f, Pitch = -0.35f, MaxInstances = 2 }, Projectile.Center);
-                    SoundEngine.PlaySound(SoundID.Item95 with { Volume = 0.7f, Pitch = -0.5f, MaxInstances = 2 }, Projectile.Center);
-                    if (ViewedOwner) {
-                        ShakeViewer(4f);
-                    }
-                    if (authority) {
-                        int damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(JetDamage);
-                        Projectile.NewProjectile(Projectile.GetSource_FromAI(),
-                            spine[0], Vector2.Zero,
-                            ModContent.ProjectileType<KikasaDestroyerBloodJet>(), damage, 4f,
-                            Projectile.owner);
-                    }
+
+                if (t >= JetPoiseFrames) {
+                    //锁线定参：从目标一侧扫过另一侧，扫向由相对位取定（各端同规则）
+                    float aimAngle = (aimPos - Projectile.Center).ToRotation();
+                    float side = aimPos.X >= Projectile.Center.X ? 1f : -1f;
+                    jetStartAngle = aimAngle - JetArcHalf * side;
+                    jetSweepSpeed = 2f * JetArcHalf / KikasaDestroyerBloodJet.SweepFrames * side;
+                    jetAnchor = Projectile.Center;
+                    SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.55f, Pitch = -0.8f, MaxInstances = 2 }, Projectile.Center);
                     NextPhase(2);
                 }
                 return;
             }
 
             if (phase == 2) {
-                //持续期：顶着喷压悬停，微幅哆嗦
-                spacingMul = MathHelper.Lerp(spacingMul, 0.9f, 0.1f);
-                Projectile.velocity *= 0.82f;
-                Projectile.velocity += Main.rand.NextVector2Circular(0.7f, 0.7f);
-                if (t % 6 == 0 && ViewedOwner) {
-                    ShakeViewer(1.6f);
-                }
-                if (t >= JetSustainFrames) {
+                //静默：充能骤停、转向起始角——巨炮前的吸气
+                Projectile.velocity *= 0.7f;
+                lockedHeadRot = lockedHeadRot.AngleLerp(
+                    float.IsNaN(jetStartAngle) ? lockedHeadRot : jetStartAngle, 0.4f);
+                if (t >= JetSilenceFrames) {
+                    //开火拍（LaserBarrage.FireBeam 语义）：后坐冲量 + 重拍；激光只在 owner 端生成
+                    float startAngle = float.IsNaN(jetStartAngle)
+                        ? lockedHeadRot : jetStartAngle;
+                    Vector2 startDir = startAngle.ToRotationVector2();
+                    lockedHeadRot = startAngle;
+                    Projectile.velocity = -startDir * 9f;
+                    SoundEngine.PlaySound(SoundID.ForceRoar with { Volume = 0.85f, Pitch = 0.1f, MaxInstances = 2 }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.8f, Pitch = -0.5f, MaxInstances = 2 }, Projectile.Center);
+                    if (ViewedOwner) {
+                        ShakeViewer(7f);
+                    }
+                    if (authority) {
+                        int damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(JetDamage);
+                        Projectile.NewProjectile(Projectile.GetSource_FromAI(),
+                            spine[0], Vector2.Zero,
+                            ModContent.ProjectileType<KikasaDestroyerBloodJet>(), damage, 4f,
+                            Projectile.owner, startAngle, jetSweepSpeed);
+                    }
                     NextPhase(3);
                 }
                 return;
             }
 
-            //回摆
-            spacingMul = MathHelper.Lerp(spacingMul, 1f, 0.15f);
+            if (phase == 3) {
+                //喷射横扫：持位刹车回拉稳住 pivot，口器跟权威光束角+高频微颤
+                Projectile.velocity *= 0.9f;
+                Projectile.velocity += (jetAnchor - Projectile.Center) * 0.012f;
+                if (Projectile.velocity.Length() > 8f) {
+                    Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 8f;
+                }
+
+                Projectile beam = KikasaDestroyerBloodJet.FindFor(Projectile.owner);
+                float beamAngle = beam != null ? beam.rotation
+                    : float.IsNaN(jetStartAngle) ? lockedHeadRot
+                    : jetStartAngle + jetSweepSpeed * MathHelper.Clamp(
+                        t - KikasaDestroyerBloodJet.ExpandFrames, 0f, KikasaDestroyerBloodJet.SweepFrames);
+                lockedHeadRot = lockedHeadRot.AngleLerp(beamAngle, 0.5f)
+                    + MathF.Sin(Main.GlobalTimeWrappedHourly * 46f) * 0.012f;
+
+                if (t % 6 == 0 && ViewedOwner) {
+                    ShakeViewer(1.8f);
+                }
+                if (t >= KikasaDestroyerBloodJet.TotalLife) {
+                    NextPhase(4);
+                }
+                return;
+            }
+
+            //散热回摆
             Projectile.velocity *= 0.9f;
             if (t >= JetRecoverFrames) {
-                EndAttack(authority, 130);
+                EndAttack(authority, 140);
             }
         }
 
@@ -726,7 +760,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             State = ChooseHabitatIsAir(owner, domain) ? StateAirFollow : StateCruise;
             StateTimer = 0;
             StateParam = 0;
-            spacingMul = 1f;
+            jetStartAngle = float.NaN;
             attackCooldown = cooldown;
             habitatHoldTimer = 0;
             Projectile.netUpdate = authority;
@@ -776,32 +810,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             return MathHelper.Clamp((StateTimer - start) / DissolveSegFrames, 0f, 1f);
         }
 
-        //==================== 链体推进 ====================
+        //==================== 链体推进（BTD 本体同款跟随，DestroyerBodyAI.Move 移植）====================
 
-        /// <summary>头位硬纠或初始化时沿指定方向直线重建，防路径抽搐</summary>
+        /// <summary>头位硬纠或初始化时沿指定方向直线重建，防链体抽搐</summary>
         private void RebuildChain(Vector2 headDir) {
             spineInit = true;
             Vector2 head = Projectile.Center;
             Vector2 back = -headDir.SafeNormalize(Vector2.UnitX);
-            pathCount = 0;
-            pathHead = 0;
-            //远端先入、头最后入——环形缓冲最新位必须是头
-            for (int i = PathCap - 1; i >= 0; i--) {
-                PushPath(head + back * (i * PathSampleDist * 2f));
-            }
+            float wormRot = headDir.ToRotation() + MathHelper.PiOver2;
             for (int i = 0; i < SegCount; i++) {
                 spine[i] = head + back * (i * SegSpacing);
-                segRot[i] = headDir.ToRotation();
+                segRot[i] = wormRot;
                 belowWater[i] = true;
                 wetness[i] = 1f;
-            }
-        }
-
-        private void PushPath(Vector2 pos) {
-            pathHead = (pathHead - 1 + PathCap) % PathCap;
-            path[pathHead] = pos;
-            if (pathCount < PathCap) {
-                pathCount++;
             }
         }
 
@@ -809,47 +830,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             //本帧渲染位 = Center + velocity（AI 在位移积分前跑）
             Vector2 head = Projectile.Center + Projectile.velocity;
 
-            //硬纠检测：同步包把头拽走半屏，路径直线重建
-            if (pathCount > 0 && Vector2.Distance(path[pathHead], head) > 120f) {
+            //硬纠检测：同步包把头拽走半屏，直线重建
+            if (Vector2.Distance(spine[0], head) > 140f) {
                 RebuildChain(Projectile.velocity.SafeNormalize(Vector2.UnitX));
                 return;
             }
-            if (pathCount == 0 || Vector2.Distance(path[pathHead], head) >= PathSampleDist) {
-                PushPath(head);
-            }
 
-            //体节沿路径回溯弧长摆位；喷柱期头向被锁定，不吃速度抖动
             spine[0] = head;
+            //头旋转：喷射期锁瞄准角，否则随速度（蠕虫约定 = 方向角 + PiOver2）
             if (!float.IsNaN(lockedHeadRot)) {
-                segRot[0] = lockedHeadRot;
+                segRot[0] = lockedHeadRot + MathHelper.PiOver2;
             }
             else if (Projectile.velocity.Length() > 0.5f) {
-                segRot[0] = Projectile.velocity.ToRotation();
+                segRot[0] = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             }
 
-            float spacing = SegSpacing * spacingMul;
-            int cursor = 0;
-            float walked = 0f;
+            //每节独立对象追前节：目标向量先按转差做阻尼旋转再贴位——本体手感的来源
+            const float dampingInertia = 0.18f;
             for (int i = 1; i < SegCount; i++) {
-                float want = i * spacing;
-                //从游标继续向旧样本走
-                while (cursor < pathCount - 1) {
-                    Vector2 a = path[(pathHead + cursor) % PathCap];
-                    Vector2 b = path[(pathHead + cursor + 1) % PathCap];
-                    float segLen = Vector2.Distance(a, b);
-                    if (walked + segLen >= want) {
-                        float f = segLen > 0.01f ? (want - walked) / segLen : 0f;
-                        spine[i] = Vector2.Lerp(a, b, f);
-                        goto placed;
-                    }
-                    walked += segLen;
-                    cursor++;
+                Vector2 segmentTarget = spine[i - 1] - spine[i];
+                if (segRot[i - 1] != segRot[i]) {
+                    segmentTarget = segmentTarget.RotatedBy(
+                        MathHelper.WrapAngle(segRot[i - 1] - segRot[i]) * dampingInertia);
+                    segmentTarget = segmentTarget.MoveTowards(
+                        (segRot[i - 1] - segRot[i]).ToRotationVector2(), 1f);
                 }
-                //路径不够长：沿末向延伸
-                spine[i] = spine[i - 1] + (spine[i - 1] - (i >= 2 ? spine[i - 2] : head))
-                    .SafeNormalize(Vector2.UnitX) * spacing;
-            placed:
-                segRot[i] = (spine[i - 1] - spine[i]).ToRotation();
+                segRot[i] = segmentTarget.ToRotation() + MathHelper.PiOver2;
+                spine[i] = spine[i - 1] - segmentTarget.SafeNormalize(Vector2.Zero) * SegSpacing;
             }
 
             UpdateSegmentCrossings(domain);
@@ -894,18 +901,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             }
         }
 
-        /// <summary>开火后坐鞭浪推进：波位沿链走、振幅衰减</summary>
-        private void UpdateWhip() {
-            if (whipPos < 0f) {
-                return;
-            }
-            whipPos += 0.8f;
-            whipAmp *= 0.93f;
-            if (whipPos > SegCount + 3 || whipAmp < 0.6f) {
-                whipPos = -1f;
-            }
-        }
-
         //==================== 公共小件 ====================
 
         private int FindTarget(Player owner) {
@@ -944,8 +939,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             if (Main.dedServ) {
                 return;
             }
-            int budget = 3;
-            for (int k = 0; k < 4 && budget > 0; k++) {
+            int budget = 2;
+            for (int k = 0; k < 3 && budget > 0; k++) {
                 int i = Main.rand.Next(SegCount);
                 if (belowWater[i] || wetness[i] < 0.1f) {
                     continue;
@@ -955,12 +950,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                     continue;
                 }
                 budget--;
-                Vector2 pos = spine[i] + Main.rand.NextVector2Circular(20f, 16f) * DrawScale / 0.55f;
+                Vector2 pos = spine[i] + Main.rand.NextVector2Circular(24f, 18f);
                 PRTLoader.NewParticle<PRT_KikasaBloodGlob>(pos,
                     new Vector2(Projectile.velocity.X * 0.05f, Main.rand.NextFloat(0.8f, 1.8f)),
                     (Main.rand.NextBool(3) ? KikasaEyeBloodShot.BloodDeep : KikasaEyeBloodShot.BloodMain)
                         * Main.rand.NextFloat(0.45f, 0.6f),
-                    Main.rand.NextFloat(0.3f, 0.55f))?.Configure(Main.rand.Next(18, 32), 0.3f);
+                    Main.rand.NextFloat(0.35f, 0.6f))?.Configure(Main.rand.Next(18, 32), 0.3f);
             }
         }
 
@@ -970,9 +965,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         private static void ShakeViewer(float amount)
             => Main.LocalPlayer?.CWR()?.GetScreenShake(amount);
 
-        /// <summary>喷柱锚定用：头位与头向（口器前方）</summary>
+        /// <summary>喷柱锚定用：头位与头向（方向角语义；segRot 存的是蠕虫约定 +PiOver2）</summary>
         internal Vector2 HeadPos => spine[0];
-        internal float HeadRot => segRot[0];
+        internal float HeadRot => segRot[0] - MathHelper.PiOver2;
 
         //==================== 绘制 ====================
 
@@ -1018,20 +1013,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             frame = tex.GetRectangle((frameIndex + i) % 4, 4);
         }
 
-        /// <summary>鞭浪横向位移：波前高斯衰减</summary>
-        private Vector2 WhipOffset(int i) {
-            if (whipPos < 0f) {
-                return Vector2.Zero;
-            }
-            float d = i - whipPos;
-            float gauss = MathF.Exp(-d * d * 0.35f);
-            if (gauss < 0.05f) {
-                return Vector2.Zero;
-            }
-            Vector2 perp = (segRot[i] + MathHelper.PiOver2).ToRotationVector2();
-            return perp * MathF.Sin(i * 0.9f + Seed) * whipAmp * gauss;
-        }
-
         private void DrawGhostChains(SpriteBatch sb) {
             if (State != StateDiveRam || (int)StateParam != 2) {
                 return;
@@ -1041,11 +1022,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 if (snap == null) {
                     continue;
                 }
-                float alpha = s == 0 ? 0.3f : 0.16f;
+                float alpha = s == 0 ? 0.24f : 0.12f;
                 for (int i = SegCount - 1; i >= 0; i--) {
                     GetSegDraw(i, out Texture2D tex, out _, out Rectangle frame);
-                    float rot = (i == 0 ? segRot[0]
-                        : (snap[i - 1] - snap[i]).ToRotation()) + MathHelper.PiOver2 + MathHelper.Pi;
+                    float rot = i == 0 ? segRot[0] + MathHelper.Pi
+                        : (snap[i - 1] - snap[i]).ToRotation() + MathHelper.PiOver2 + MathHelper.Pi;
                     sb.Draw(tex, snap[i] - Main.screenPosition, frame, BloodMain * alpha,
                         rot, frame.Size() * 0.5f, DrawScale, SpriteEffects.None, 0f);
                 }
@@ -1074,14 +1055,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                     continue;
                 }
                 GetSegDraw(i, out Texture2D tex, out _, out Rectangle frame);
-                Vector2 pos = spine[i] + WhipOffset(i) - Main.screenPosition;
-                float rot = segRot[i] + MathHelper.PiOver2 + MathHelper.Pi;
+                Vector2 pos = spine[i] - Main.screenPosition;
+                float rot = segRot[i] + MathHelper.Pi;
 
                 Color color;
                 if (shaderOk) {
-                    //比克眼更血水的基底 + 节湿度加成
-                    float segForm = MathHelper.Clamp(0.5f + wetness[i] * 0.22f
-                        + MathF.Sin(Main.GlobalTimeWrappedHourly * 2.6f + Seed + i * 0.8f) * 0.04f, 0f, 0.95f);
+                    //贴图为主体、血水只是浸润层；节湿度短暂冲高后淌干
+                    float segForm = MathHelper.Clamp(0.28f + wetness[i] * 0.15f
+                        + MathF.Sin(Main.GlobalTimeWrappedHourly * 2.6f + Seed + i * 0.8f) * 0.04f, 0f, 0.55f);
                     form.Parameters["uSeed"]?.SetValue(Seed + i * 1.7f);
                     form.Parameters["uForm"]?.SetValue(segForm);
                     form.Parameters["uDissolve"]?.SetValue(dissolve);
@@ -1111,17 +1092,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-            //血灯呼吸
+            //血灯呼吸：压向深血、低亮度——加色粉光盖贴图是泡沫感主凶
+            Color lampTint = Color.Lerp(BloodMain, KikasaEyeBloodShot.BloodDeep, 0.55f);
             for (int i = SegCount - 1; i >= 0; i--) {
                 float dissolve = SegDissolve(i);
                 if (dissolve >= 1f) {
                     continue;
                 }
                 GetSegDraw(i, out _, out Texture2D glow, out Rectangle frame);
-                float pulse = 0.42f + 0.22f * MathF.Sin(Main.GlobalTimeWrappedHourly * 3.4f + i * 0.7f + Seed);
-                Color c = (BloodMain with { A = 0 }) * (pulse * (1f - dissolve));
-                sb.Draw(glow, spine[i] + WhipOffset(i) - Main.screenPosition, frame, c,
-                    segRot[i] + MathHelper.PiOver2 + MathHelper.Pi,
+                float pulse = 0.22f + 0.10f * MathF.Sin(Main.GlobalTimeWrappedHourly * 3.4f + i * 0.7f + Seed);
+                Color c = (lampTint with { A = 0 }) * (pulse * (1f - dissolve));
+                sb.Draw(glow, spine[i] - Main.screenPosition, frame, c,
+                    segRot[i] + MathHelper.Pi,
                     frame.Size() * 0.5f, DrawScale, SpriteEffects.None, 0f);
             }
 
