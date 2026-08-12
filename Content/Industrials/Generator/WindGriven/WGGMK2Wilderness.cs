@@ -36,7 +36,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
     {
         public override string Texture => CWRConstant.Asset + "Generator/WGGMK2WildernessTile";
         public override int GeneratorTP => TileProcessorLoader.GetModuleID<WGGMK2WildernessTP>();
-        public override int GeneratorUI => 0;
+        //荒野敌对结构不开面板;0 是合法 UIHandle ID,"无界面"必须是 -1
+        public override int GeneratorUI => -1;
         public override int TargetItem => ModContent.ItemType<WGGMK2Wilderness>();
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
@@ -65,6 +66,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
     internal class WGGMK2WildernessTP : BaseWindGrivenTP, ILocalizedModType
     {
         public string LocalizationCategory => "Industrials";
+        //荒野敌对结构不开放模块槽
+        public override int ModuleSlotCount => 0;
 
         public static LocalizedText WindGrivenDiscovery2 { get; private set; }
 

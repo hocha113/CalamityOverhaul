@@ -6,18 +6,18 @@ using System.Text;
 using Terraria;
 using Terraria.GameContent;
 
-namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
+namespace CalamityOverhaul.Content.Industrials.UIs
 {
     /// <summary>
-    /// 勘探终端的主题与笔刷:野外地质仪器语言——切角钢壳(shader)、机加工凹槽、
-    /// 指针仪表、刻度条、模块插座、黄铜铭牌。<br/>
-    /// 富层交给 <c>MiningTerminal.fx</c>,锐利前景交给 <see cref="SvgPathPen"/> 与 1px 蚀刻线;
+    /// 工业域机器界面的共享主题与笔刷:野外仪器语言——切角钢壳(shader)、机加工凹槽、
+    /// 指针仪表、刻度条、模块插座、黄铜铭牌。勘探终端与发电机系列共用。<br/>
+    /// 富层交给 <c>IndustrialTerminal.fx</c>,锐利前景交给 <see cref="SvgPathPen"/> 与 1px 蚀刻线;
     /// 暗部一律是紧贴的机加工线,不做同心放大的假羽化
     /// </summary>
-    internal static class MiningTerminalRenderer
+    internal static class IndustrialTerminalRenderer
     {
         #region 主题
-        //色板与 MiningTerminal.fx 同族:暗钢底、黄铜件、琥珀唯一亮色
+        //色板与 IndustrialTerminal.fx 同族:暗钢底、黄铜件、琥珀唯一亮色
         internal static readonly Color Steel = new(26, 22, 20);
         internal static readonly Color SteelLit = new(52, 44, 38);
         internal static readonly Color RecessBed = new(13, 11, 9);
@@ -38,15 +38,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 
         #region 机壳面板
         /// <summary>
-        /// 钢壳面板底:MiningTerminal.fx 拉丝钢 + 锈斑 + 磨亮棱线;
+        /// 钢壳面板底:IndustrialTerminal.fx 拉丝钢 + 锈斑 + 磨亮棱线;
         /// 着色器缺失回退为切角实底 + 顶部受光
         /// </summary>
         /// <param name="mode">0 主机壳(暗钢) 1 铭牌(黄铜)</param>
-        internal static void ShaderPanel(SpriteBatch sb, Rectangle rect, float alpha, int mode = 0) {
+        /// <param name="heat">机壳受热度 0..1,底缘沁暖(热力炉体用,常温机器传 0)</param>
+        internal static void ShaderPanel(SpriteBatch sb, Rectangle rect, float alpha, int mode = 0, float heat = 0f) {
             if (rect.Width < 4 || rect.Height < 4 || alpha < 0.01f) {
                 return;
             }
-            Effect effect = EffectLoader.MiningTerminal?.Value;
+            Effect effect = EffectLoader.IndustrialTerminal?.Value;
             int chamfer = mode == 0 ? Chamfer : 5;
             if (effect == null) {
                 FallbackPanel(sb, rect, alpha, mode, chamfer);
@@ -58,6 +59,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             effect.Parameters["uResolution"]?.SetValue(new Vector2(rect.Width, rect.Height));
             effect.Parameters["uChamfer"]?.SetValue((float)chamfer);
             effect.Parameters["uMode"]?.SetValue((float)mode);
+            effect.Parameters["uHeat"]?.SetValue(MathHelper.Clamp(heat, 0f, 1f));
             ShaderQuad(sb, effect, rect);
         }
 
@@ -176,8 +178,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         /// 指针仪表盘:蚀刻弧规 + 刻度梳 + 琥珀行程弧 + 锥形指针 + 黄铜轴帽。
         /// <paramref name="value"/> 取显示值(调用方负责缓动/微颤)
         /// </summary>
+        /// <param name="dangerFrom">危险区起点 0..1,弧规上该段标红;负值不画</param>
         internal static void DrawGauge(SpriteBatch sb, Vector2 center, float radius, float value,
-            Color accent, float alpha, string label, string reading) {
+            Color accent, float alpha, string label, string reading, float dangerFrom = -1f) {
             value = MathHelper.Clamp(value, 0f, 1f);
             SvgPath arc = SvgPathPen.Path(gaugeArcPath);
             SvgPath ticks = SvgPathPen.Path(gaugeTickPath);
@@ -191,6 +194,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 
             //弧规与刻度:钢面蚀刻
             SvgPathPen.Stroke(sb, arc, center, radius, 0f, TextDim, 1.2f, alpha * 0.55f);
+            //危险区:弧规末段标红
+            if (dangerFrom >= 0f && dangerFrom < 1f) {
+                SvgPathPen.Stroke(sb, arc, center, radius, 0f, WarnRed, 1.7f, alpha * 0.6f,
+                    MathHelper.Clamp(dangerFrom, 0f, 1f), 1f);
+            }
             SvgPathPen.Stroke(sb, ticks, center, radius, 0f, TextDim, 1.1f, alpha * 0.6f);
             SvgPathPen.Stroke(sb, majors, center, radius, 0f, TextMain, 1.3f, alpha * 0.7f);
 
@@ -318,6 +326,17 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             //两枚固定小钉
             DrawRivet(sb, new Vector2(rect.X + 7, rect.Center.Y), alpha, 2.2f);
             DrawRivet(sb, new Vector2(rect.Right - 7, rect.Center.Y), alpha, 2.2f);
+        }
+
+        /// <summary>铭牌标题字色:亮暖填漆(旧的暗棕蚀刻在黄铜底上对比不足,直接糊掉)</summary>
+        internal static readonly Color PlateText = new(250, 234, 198);
+
+        /// <summary>铭牌标题:居中亮暖字,黑描边把字从黄铜底上提出来</summary>
+        internal static void DrawPlateTitle(SpriteBatch sb, Rectangle plate, string text, float alpha, float scale) {
+            Vector2 size = FontAssets.MouseText.Value.MeasureString(text) * scale;
+            Utils.DrawBorderString(sb, text,
+                new Vector2(plate.Center.X - size.X * 0.5f, plate.Center.Y - size.Y * 0.5f + 1),
+                PlateText * alpha, scale);
         }
 
         /// <summary>机加工按钮:凹座 + 凸帽,按下时帽体下沉一像素</summary>

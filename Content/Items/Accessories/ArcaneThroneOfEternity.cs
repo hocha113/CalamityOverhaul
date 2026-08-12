@@ -882,6 +882,13 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
+            //生成后的穿透加算（如SHPC改件在首帧penetrate+=N）会把OnSpawn写入的-1撞成0，
+            //原版Update对penetrate==0当帧强杀，这里兜底拉回无限穿透
+            if (projectile.penetrate == 0) {
+                projectile.penetrate = -1;
+                projectile.maxPenetrate = -1;
+            }
+
             //镜像残光
             if (IsMirrorImage && !VaultUtils.isServer && Main.rand.NextBool(3)) {
                 PRTLoader.NewParticle<PRT_Spark>(projectile.Center, projectile.velocity * 0.05f

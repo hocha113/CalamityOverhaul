@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         public override int TargetTileID => ModContent.TileType<MiningMachineMk2Tile>();
         public override int TargetItem => ModContent.ItemType<MiningMachineMk2>();
         public override bool ReceivedEnergy => true;
-        public override float MaxUEValue => 2400;
+        public override float MaxUEValue => 2400 * ModuleRack.StorageMult;
 
         public override int MachineTier => 2;
         public override float BasePickPower => 180f;

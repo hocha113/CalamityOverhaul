@@ -1053,6 +1053,165 @@ SmelterModule: {
 		'''
 }
 
+MachineModuleText: {
+	TagText: 机器升级模块
+	TargetsLine: 适用：{0}
+	HowToText: 右键对应机器打开面板，放入模块槽后生效
+	SocketOnly: 这台机器装不下这枚模块！
+	SocketDuplicate: 同类模块已经装了一枚！
+	SocketEmptyHint: 放入升级模块
+	SlotLabel: 模块
+	NameMining: 采矿机
+	NameThermal: 热能发电机
+	NameWind: 风力发电机
+	NameHydro: 水力发电机
+	NameIncinerator: 焚化炉
+}
+
+InsulationLiningModule: {
+	DisplayName: 保温层模块
+	Tooltip:
+		'''
+		安装到热能发电机后，散热降至55%
+		石棉裹三层，热气出不了门
+		'''
+}
+
+ForcedDraftModule: {
+	DisplayName: 强制鼓风模块
+	Tooltip:
+		'''
+		安装到热能发电机后，燃烧速度提升45%，火更旺也烧得更快
+		风箱一压，炭火直起腰
+		'''
+}
+
+SlowBurnValveModule: {
+	DisplayName: 缓燃阀模块
+	Tooltip:
+		'''
+		安装到热能发电机后，燃烧速度降至60%，单份燃料烧得更久
+		火苗掐细，一块煤顶过半宿
+		'''
+}
+
+HeatRecoveryModule: {
+	DisplayName: 余热回收模块
+	Tooltip:
+		'''
+		安装到热能发电机后，燃料产热提升25%
+		烟道里多拐两个弯，把跑掉的热拽回来
+		'''
+}
+
+AutoFeedHopperModule: {
+	DisplayName: 自动进料斗
+	Tooltip:
+		'''
+		安装到热能发电机或焚化炉后，自动从近旁的存储补料
+		料斗只认空槽，手不用再伸
+		'''
+}
+
+ExtendedBladesModule: {
+	DisplayName: 加长叶片模块
+	Tooltip:
+		'''
+		安装到风力发电机后，输出提升30%
+		叶尖多出的那截，兜的全是白捡的风
+		'''
+}
+
+LowWindGearboxModule: {
+	DisplayName: 低风齿轮箱模块
+	Tooltip:
+		'''
+		安装到风力发电机后，风速倍率下限从0.8提升至1.3
+		齿比咬得细，微风也盘得动
+		'''
+}
+
+TallTowerModule: {
+	DisplayName: 高空塔架模块
+	Tooltip:
+		'''
+		安装到风力发电机后，输出提升15%，可与加长叶片叠加
+		高出十米，风大一档
+		'''
+}
+
+FlowShroudModule: {
+	DisplayName: 导流罩模块
+	Tooltip:
+		'''
+		安装到水力发电机后，输出提升30%
+		喇叭口把散水拢成一股劲
+		'''
+}
+
+QuickSpinModule: {
+	DisplayName: 快速起转模块
+	Tooltip:
+		'''
+		安装到水力发电机后，转速爬升提升至三倍
+		上好发条，落水即到工作转速
+		'''
+}
+
+DeepBearingModule: {
+	DisplayName: 深水轴承模块
+	Tooltip:
+		'''
+		安装到水力发电机后，输出提升15%，可与导流罩叠加
+		轴不吃水，劲全给轮子
+		'''
+}
+
+HighTempElectrodeModule: {
+	DisplayName: 高温电极模块
+	Tooltip:
+		'''
+		安装到焚化炉后，熔炼速度提升45%
+		双针对上，弧光比炉火先到
+		'''
+}
+
+EconomizerCoilModule: {
+	DisplayName: 节能线圈模块
+	Tooltip:
+		'''
+		安装到焚化炉后，熔炼能耗降至60%
+		换了细漆线，电表转得斯文
+		'''
+}
+
+TwinCrucibleModule: {
+	DisplayName: 双联坩埚模块
+	Tooltip:
+		'''
+		安装到焚化炉后，每炉有25%概率双倍产出
+		一炉火，两只杯
+		'''
+}
+
+AutoEjectChuteModule: {
+	DisplayName: 自动出料口
+	Tooltip:
+		'''
+		安装到焚化炉后，成品自动送进近旁的存储
+		溜槽一搭，出炉即入库
+		'''
+}
+
+CapacityCellModule: {
+	DisplayName: 扩容电池模块
+	Tooltip:
+		'''
+		安装到任意机器后，储能上限提升50%
+		哪家的插座都认这副极板
+		'''
+}
+
 CopperTinDrill: {
 	DisplayName: 铜锡钻头
 	Tooltip: 最先磨亮的那一支

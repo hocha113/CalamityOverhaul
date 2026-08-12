@@ -151,6 +151,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
         }
 
+        /// <summary>湖面物理：移动应用前钳制。每端对所有玩家跑同一规则（状态源自同步快照），各端一致</summary>
+        public override void PreUpdateMovement() => KikasaLakeSurface.ApplyStanding(Player);
+
         //==================== 网络形态 ====================
 
         /// <summary>只含施术者掷过骰、别处推不出来的量；包络各端本地自算</summary>

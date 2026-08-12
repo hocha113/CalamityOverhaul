@@ -25,6 +25,8 @@ float2 uSpreadOrigin;   //撕裂原点（视口像素）
 float uMaskTime;        //遮罩噪声时间，必须与 KikasaGrade 的 uTime 同源，否则毛边前沿错位
 float uRain;            //0~1 鬼雨异化混合：血暮↔湿墨
 float uFlash;           //0~1 雷闪包络，快起慢衰（异化态）
+float uWaterLevel;      //血湖水线 uv.y：与 KikasaGrade 同公式，1.15(屏下) 涨到枢轴
+float uWaterWobble;     //水线噪声波动幅度，与 KikasaGrade 同值
 
 //====== 血暮调色板 ======
 static const float3 SKY_TOP    = float3(0.085, 0.012, 0.030);  //凝血暗红近黑
@@ -55,8 +57,9 @@ static const float3 RAIN_UMB        = float3(0.014, 0.018, 0.024);  //冷夜纸�
 static const float3 RAIN_SHAFT      = float3(0.300, 0.345, 0.355);  //雨幡帘
 static const float3 RAIN_FLASH      = float3(0.550, 0.620, 0.640);  //雷闪惨白
 
-//湖平线 uv.y，天空与湖的分界
-#define HORIZON_Y 0.66
+//假湖平线 uv.y 的上限：实际湖平线随真水线动态下压（站湖面时贴水线上方，
+//飞高俯瞰时回到此构图值），见 PSSky 的 horizonY
+#define HORIZON_MAX 0.66
 
 float noiseTex(float2 uv) {
     return tex2D(uImage1, uv).r;
@@ -71,10 +74,10 @@ float hash1(float n) {
 }
 
 //天穹半球：渐变 + 凝血暗日/溺月 + 云带 + 异化雨幡与雷闪；
-//above 空间（uv.y < HORIZON_Y）也供湖面镜像重采，雨幡/雷闪因此在倒影里免费同步
-float3 skyDome(float2 uv, float aspect) {
+//above 空间（uv.y < horizonY）也供湖面镜像重采，雨幡/雷闪因此在倒影里免费同步
+float3 skyDome(float2 uv, float aspect, float horizonY) {
     //三段渐变：血暮往地平线越烧越亮；湿墨往地平只剩尸青雾光
-    float grad = saturate(uv.y / HORIZON_Y);
+    float grad = saturate(uv.y / horizonY);
     float3 col = lerp(lerp(SKY_TOP, RAIN_SKY_TOP, uRain),
         lerp(SKY_MID, RAIN_SKY_MID, uRain), smoothstep(0.05, 0.58, grad));
     col = lerp(col, lerp(SKY_LOW, RAIN_SKY_LOW, uRain), smoothstep(0.52, 0.97, grad));
@@ -82,7 +85,8 @@ float3 skyDome(float2 uv, float aspect) {
     col *= 0.93 + wash * 0.14;
 
     //凝血暗日↔溺月：同一轮盘，血形态盘面比血光更暗，异化后褪成苍白月斑、缘光收敛
-    float2 sunC = float2(0.620 - uCamX * 0.000010, HORIZON_Y);
+    //盘心钉在湖平线上，水线动构图跟着动——半沉的暗日始终泡在血湖里
+    float2 sunC = float2(0.620 - uCamX * 0.000010, horizonY);
     float2 ds = (uv - sunC) * float2(aspect, 1.0);
     float sr = length(ds);
     float sun = 1.0 - smoothstep(0.128, 0.142, sr);
@@ -133,7 +137,7 @@ float umbrellaShape(float2 p) {
 
 //一列漂在湖面上的破纸伞：x=剪影 y=水下倒影；每把带各自的倾斜/吃水/慢漂
 float2 umbrellaRow(float2 uv, float aspect, float parallax, float scale,
-                   float density, float seed) {
+                   float density, float seed, float horizonY) {
     float driftDir = sign(hash1(seed * 3.3) - 0.5);
     float worldU = uv.x + uCamX * parallax / uScreenSize.x + uTime * 0.0014 * driftDir;
     float cellF = worldU * density;
@@ -144,7 +148,7 @@ float2 umbrellaRow(float2 uv, float aspect, float parallax, float scale,
     float s = scale * (0.80 + h * 0.40);
     //各自相位的极慢起伏，空间 hash 去同相
     float bob = sin(uTime * 0.35 + h * 6.2832) * 0.0045;
-    float footY = HORIZON_Y + bob;
+    float footY = horizonY + bob;
 
     float2 local;
     local.x = (frac(cellF) - 0.5) / density / s;
@@ -183,15 +187,26 @@ float4 PSSky(float2 coords : TEXCOORD0) : COLOR0 {
     float2 uv = coords;
     float aspect = uScreenSize.x / uScreenSize.y;
 
+    //真水线：与 KikasaGrade 同公式同噪声同时基（uMaskTime=EffectTime），逐像素重合；
+    //水线以下的天空全部换成实体湖体，垫在 TechUnify 湖面之下遮死原版天空
+    float wn0 = noiseTex(float2(uv.x * 2.6 + uMaskTime * 0.020, uMaskTime * 0.011));
+    float wn1 = noiseTex(float2(uv.x * 7.2 - uMaskTime * 0.016, 0.41 + uMaskTime * 0.027));
+    float waterY = uWaterLevel + ((wn0 - 0.5) * 1.4 + (wn1 - 0.5) * 0.6) * uWaterWobble;
+    float belowMask = saturate((uv.y - waterY) * 320.0);
+
+    //假湖平线随真水线下压：站湖面时远湖带紧贴水线上方，飞高俯瞰回到 HORIZON_MAX 构图；
+    //夹到正区间防梯度除零，相机全没入水下时 belowMask 满幅、此值不再可见
+    float horizonY = clamp(min(HORIZON_MAX, uWaterLevel - 0.05), 0.05, HORIZON_MAX);
+
     //天穹与湖面镜像各算一遍，按湖区遮罩选择（直线算术，无分支）
-    float3 dome = skyDome(uv, aspect);
+    float3 dome = skyDome(uv, aspect, horizonY);
 
     //湖面：天穹绕湖平线的垂直镜像，横向波纹扰动 + 压暗 + 向下沉底；浊水倒影更糊更沉
-    float lakeDepth = max(uv.y - HORIZON_Y, 0.0);
+    float lakeDepth = max(uv.y - horizonY, 0.0);
     float wob = (noiseTex(float2(uv.x * 3.2 + uTime * 0.02, uv.y * 9.0)) - 0.5)
         * (0.006 + lakeDepth * 0.05) * (1.0 + 0.8 * uRain);
-    float2 muv = float2(uv.x + wob, 2.0 * HORIZON_Y - uv.y);
-    float3 lake = skyDome(muv, aspect) * lerp(LAKE_DIM, RAIN_LAKE_DIM, uRain);
+    float2 muv = float2(uv.x + wob, 2.0 * horizonY - uv.y);
+    float3 lake = skyDome(muv, aspect, horizonY) * lerp(LAKE_DIM, RAIN_LAKE_DIM, uRain);
     //横向波光：拉扁的噪声亮丝，近岸密远处疏；浊水波光钝
     float streak = noiseTex(float2(uv.x * 2.6 + uTime * 0.015, uv.y * 46.0));
     streak = saturate((streak - 0.60) * 5.0);
@@ -201,29 +216,36 @@ float4 PSSky(float2 coords : TEXCOORD0) : COLOR0 {
     lake = lerp(lake, lerp(LAKE_DEEP, RAIN_LAKE_DEEP, uRain),
         smoothstep(0.0, lerp(0.30, 0.22, uRain), lakeDepth));
 
-    float lakeArea = smoothstep(HORIZON_Y - 0.002, HORIZON_Y + 0.006, uv.y);
+    float lakeArea = smoothstep(horizonY - 0.002, horizonY + 0.006, uv.y);
     float3 col = lerp(dome, lake, lakeArea);
 
     //湖平线本体：一线更亮的水膜光
-    float seam = exp(-pow((uv.y - HORIZON_Y) / 0.0045, 2.0));
+    float seam = exp(-pow((uv.y - horizonY) / 0.0045, 2.0));
     col += lerp(SUN_RIM, RAIN_SUN_RIM, uRain) * seam * lerp(0.22, 0.15, uRain);
 
     //漂浮的破纸伞：远近两列，倒影垫在剪影之前（异化的冷夜里剪影更沉）
-    float2 umbFar = umbrellaRow(uv, aspect, 0.050, 0.042, 3.1, 3.7);
-    float2 umbNear = umbrellaRow(uv, aspect, 0.110, 0.075, 1.7, 9.2);
+    float2 umbFar = umbrellaRow(uv, aspect, 0.050, 0.042, 3.1, 3.7, horizonY);
+    float2 umbNear = umbrellaRow(uv, aspect, 0.110, 0.075, 1.7, 9.2, horizonY);
     col = lerp(col, col * 0.55, (umbFar.y * 0.5 + umbNear.y * 0.6) * lakeArea);
     col = lerp(col, lerp(UMB_COL, RAIN_UMB, uRain), saturate(umbFar.x * 0.88 + umbNear.x * 0.95));
 
     //地平雾：湖平线上下各一带，噪声絮动；血雾↔潮雾
     float mistN = fbm2(uv * float2(2.0 * aspect, 3.2) + float2(uTime * 0.010, 0.0));
-    float mistBand = exp(-pow((uv.y - HORIZON_Y) / 0.10, 2.0));
+    float mistBand = exp(-pow((uv.y - horizonY) / 0.10, 2.0));
     col = lerp(col, lerp(MIST_COL, RAIN_MIST, uRain), mistBand * (0.24 + mistN * 0.30));
 
     //雷闪在湖平线的一线反照
     col += RAIN_FLASH * uFlash * uFlash * seam * 0.10;
 
+    //真水线以下读作一整块血团：远湖细节向死水底色加速沉没，
+    //近线薄带里伞影/波光还探得进来一点，被 TechUnify 的湖面重染后成为水下暗底
+    float bodyDepth = max(uv.y - waterY, 0.0);
+    col = lerp(col, lerp(LAKE_DEEP, RAIN_LAKE_DEEP, uRain),
+        belowMask * smoothstep(0.0, 0.24, bodyDepth) * 0.90);
+
     float mask = tearMask(coords);
-    float alpha = uSkyAlpha * 0.97 * mask;
+    //水线以上留 3% 透底衬原版天光，水线以下抬满遮死天空
+    float alpha = uSkyAlpha * lerp(0.97, 1.0, belowMask) * mask;
     return float4(col * alpha, alpha);
 }
 

@@ -1,5 +1,6 @@
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using ReLogic.Utilities;
@@ -71,7 +72,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
     {
         public override string Texture => CWRConstant.Asset + "Generator/HydroelectricTile";
         public override int GeneratorTP => TileProcessorLoader.GetModuleID<HydroelectricTP>();
-        public override int GeneratorUI => 0;
+        public override int GeneratorUI => UIHandleLoader.GetUIHandleID<GeneratorReadoutUI>();
         public override int TargetItem => ModContent.ItemType<Hydroelectric>();
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
@@ -95,11 +96,27 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
         }
     }
 
-    internal class HydroelectricTP : BaseGeneratorTP
+    internal class HydroelectricTP : BaseGeneratorTP, IGeneratorReadout
     {
         public override int TargetTileID => ModContent.TileType<HydroelectricTile>();
         public override int TargetItem => ModContent.ItemType<Hydroelectric>();
-        public override float MaxUEValue => 1000;
+        public override float MaxUEValue => 1000 * ModuleRack.StorageMult;
+        public override MachineModules.MachineModuleTarget ModuleHostKind
+            => MachineModules.MachineModuleTarget.HydroGenerator;
+        public override int ModuleSlotCount => 2;
+
+        #region 读数板
+        public GeneratorReadoutKind ReadoutKind => GeneratorReadoutKind.Water;
+        /// <summary>转速比:0.4 是环境效率满格时的转速上限</summary>
+        public float ConditionRatio => MathHelper.Clamp(flabellumRotVlome / 0.4f, 0f, 1f);
+        public bool ConditionOk {
+            get {
+                Tile tile = Framing.GetTileSafely(FlabellumPos);
+                return tile.LiquidAmount > 0 && tile.LiquidType == LiquidID.Water;
+            }
+        }
+        public float OutputPerSecond => flabellumRotVlome * 0.24f * ModuleRack.GenOutputMult * 60f;
+        #endregion
         [VaultLoaden(CWRConstant.Asset + "Generator/")]
         private static Asset<Texture2D> HydroelectricFlabellum { get; set; }
         private Vector2 FlabellumPos => CenterInWorld + new Vector2(22, -12);
@@ -124,12 +141,13 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                 float efficiency = Hydroelectric.GetEnvironmentEfficiency();
                 float maxRot = 0.4f * efficiency;
                 if (flabellumRotVlome < maxRot) {
-                    flabellumRotVlome += 0.002f;
+                    //快速起转模块放大爬升速率
+                    flabellumRotVlome += 0.002f * ModuleRack.GenSpinUpMult;
                 }
                 flabellumRot += flabellumRotVlome;
 
                 if (MachineData.UEvalue < MaxUEValue) {
-                    MachineData.UEvalue += flabellumRotVlome * 0.24f;
+                    MachineData.UEvalue += flabellumRotVlome * 0.24f * ModuleRack.GenOutputMult;
                 }
 
                 if (InScreen && Rand.NextBool(Math.Max(10 - (int)(flabellumRotVlome * 10), 4))) {

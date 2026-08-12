@@ -1,8 +1,9 @@
 // ============================================================================
-// MiningTerminal.fx  矿机勘探终端机壳底
+// IndustrialTerminal.fx  工业域机器界面共享机壳底(勘探终端/发电机系列)
 // 材质："矿场野外仪器的切角钢壳"——拉丝暗钢 + 氧化锈斑 + 磨亮切角棱线,
 // 不是发光面板,也不是纯色填充;亮度只出现在顶缘受光与棱线磨损处
 // uMode: 0 主机壳(暗钢) 1 铭牌/小件(黄铜)
+// uHeat: 0..1 机壳受热,底缘向上沁暖 + 极轻热浪(热力炉体用,常温机器传 0)
 // 预乘输出 + AlphaBlend;切角在 shader 内切,和 C# 的 Chamfer 常量对齐
 // 直线算术无动态分支;噪声全部 hash 手拼,不吃采样器
 // ============================================================================
@@ -14,6 +15,7 @@ float uAlpha;
 float2 uResolution;  //面板像素尺寸
 float uChamfer;      //切角边长 px
 float uMode;         //0 主机壳 1 黄铜铭牌
+float uHeat;         //0..1 机壳受热度
 
 struct PSInput
 {
@@ -89,6 +91,11 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     col += base * topLight * 0.55;
     col = lerp(col, rustTint * (0.35 + 0.65 * mottle), rustAmt * 0.38);
 
+    //———— 机壳受热:底缘向上沁暖,叠一丝慢热浪的亮度摆动 ————
+    float heatBase = pow(saturate(uv.y), 2.2) * uHeat;
+    float heatWaver = sin(px.x * 0.11 + uTime * 2.1) * sin(uTime * 1.3 + uv.y * 9.0);
+    col += float3(0.215, 0.088, 0.030) * heatBase * (0.62 + 0.12 * heatWaver);
+
     //———— 逐像素微粒噪,压住渐变条带 ————
     col *= 1.0 + (hash21(px) - 0.5) * 0.030;
 
@@ -107,7 +114,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
 
 technique Technique1
 {
-    pass MiningTerminalPass
+    pass IndustrialTerminalPass
     {
         PixelShader = compile ps_3_0 PixelShaderFunction();
     }

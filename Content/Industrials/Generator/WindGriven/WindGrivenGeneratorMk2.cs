@@ -1,4 +1,5 @@
 ﻿using InnoVault.TileProcessors;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -83,7 +84,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
     {
         public override string Texture => CWRConstant.Asset + "Generator/WindGrivenGeneratorMK2Tile";
         public override int GeneratorTP => TileProcessorLoader.GetModuleID<WindGrivenGeneratorMK2TP>();
-        public override int GeneratorUI => 0;
+        public override int GeneratorUI => UIHandleLoader.GetUIHandleID<GeneratorReadoutUI>();
         public override int TargetItem => ModContent.ItemType<WindGrivenGeneratorMK2>();
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
@@ -113,7 +114,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
     internal class WindGrivenGeneratorMK2TP : BaseWindGrivenTP
     {
         public override int TargetTileID => ModContent.TileType<WindGrivenGeneratorMK2Tile>();
-        public override float MaxUEValue => 2200;
+        public override float MaxUEValue => 2200 * ModuleRack.StorageMult;
+        public override int ModuleSlotCount => 3;
         public override int TargetItem => ModContent.ItemType<WindGrivenGeneratorMK2>();
         [VaultLoaden(CWRConstant.Asset + "Generator/MK2Blade")]
         internal static Asset<Texture2D> MK2Blade { get; private set; }

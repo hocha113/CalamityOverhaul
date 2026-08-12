@@ -15,12 +15,24 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         public override int TargetTileID => ModContent.TileType<IncineratorTile>();
         public override int TargetItem => ModContent.ItemType<Incinerator>();
         public override bool ReceivedEnergy => true;
-        public override float MaxUEValue => 500;
+        public override float MaxUEValue => 500 * ModuleRack.StorageMult;
+
+        /// <summary>模块槽数</summary>
+        internal const int ModuleSlotCount = 3;
+        internal readonly MachineModules.MachineModuleRack ModuleRack
+            = new(MachineModules.MachineModuleTarget.Incinerator);
 
         internal IncineratorData IncData => MachineData as IncineratorData;
         internal int frame;
         private int frameTimer;
         private int particleTimer;
+        /// <summary>熔速乘数下进度的小数累加器</summary>
+        private float smeltAcc;
+        /// <summary>自动进料节拍</summary>
+        private int autoFeedTimer;
+
+        /// <summary>当前每 tick 能耗(含节能模块)</summary>
+        internal float EffectiveUEPerTick => IncData.UEPerTick * ModuleRack.IncEnergyMult;
 
         public override MachineData GetGeneratorDataInds() {
             var data = new IncineratorData {
@@ -33,16 +45,39 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         }
 
         public override void UpdateMachine() {
+            ModuleRack.EnsureSlots(ModuleSlotCount);
+            ModuleRack.Refresh();
+            //储能扩容模块动上限,数据侧字段每帧对齐
+            IncData.MaxUE = MaxUEValue;
+
             //更新温度视觉效果
-            if (IncData.SmeltingProgress > 0 && IncData.UEvalue >= IncData.UEPerTick) {
+            if (IncData.SmeltingProgress > 0 && IncData.UEvalue >= EffectiveUEPerTick) {
                 IncData.Temperature = MathHelper.Lerp(IncData.Temperature, IncData.MaxTemperature, 0.05f);
             }
             else {
                 IncData.Temperature = MathHelper.Lerp(IncData.Temperature, 0, 0.02f);
             }
 
+            //自动进料斗:输入槽空了就从近旁存储抽可焚物(权威端,主线程经 Defer)
+            if (!VaultUtils.isClient && ModuleRack.AutoFeed && ++autoFeedTimer >= 30) {
+                autoFeedTimer = 0;
+                if (IncData.InputItem == null || IncData.InputItem.IsAir) {
+                    Defer(() => {
+                        if (IncData.InputItem != null && !IncData.InputItem.IsAir) {
+                            return;
+                        }
+                        Item got = MachineModules.MachineLogistics.TryWithdraw(Position,
+                            stored => IncineratorRecipes.TryGetRecipe(stored.type, out _), 15);
+                        if (!got.IsAir) {
+                            IncData.InputItem = got;
+                            SendData();
+                        }
+                    });
+                }
+            }
+
             //没有电量时停止工作
-            if (IncData.UEvalue < IncData.UEPerTick) {
+            if (IncData.UEvalue < EffectiveUEPerTick) {
                 UpdateIdleAnimation();
                 return;
             }
@@ -99,8 +134,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         }
 
         private void ProcessSmelting() {
-            //消耗电量
-            IncData.UEvalue -= IncData.UEPerTick;
+            //消耗电量(节能模块打折)
+            IncData.UEvalue -= EffectiveUEPerTick;
 
             //更新动画帧(在工作帧0和1之间切换)
             if (++frameTimer >= 6) {
@@ -115,8 +150,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                 SpawnWorkingParticles();
             }
 
-            //增加进度
-            IncData.SmeltingProgress++;
+            //增加进度:熔速乘数走小数累加器,整数进度保持网络字段兼容
+            smeltAcc += ModuleRack.IncSpeedMult;
+            int steps = (int)smeltAcc;
+            smeltAcc -= steps;
+            IncData.SmeltingProgress += steps;
 
             //焚烧完成
             if (IncData.SmeltingProgress >= IncData.MaxSmeltingProgress) {
@@ -141,6 +179,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             int inputCost = recipe.InputStack;
             int outputAmount = IncineratorRecipes.GetOutputStack(IncData.InputItem.type);
 
+            //双联坩埚:概率双倍产出(权威端判定;Rand 线程安全,并行阶段可用)
+            if (ModuleRack.IncDoubleChance > 0f && Rand.NextFloat() < ModuleRack.IncDoubleChance) {
+                outputAmount *= 2;
+            }
+
             //减少输入物品(按配方需求数量)
             IncData.InputItem.stack -= inputCost;
             if (IncData.InputItem.stack <= 0) {
@@ -161,6 +204,20 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
 
             //重置进度
             IncData.SmeltingProgress = 0;
+
+            //自动出料口:产物直接送进近旁存储(主线程经 Defer,原版箱走快照广播)
+            if (ModuleRack.AutoEject) {
+                Defer(() => {
+                    if (IncData.OutputItem == null || IncData.OutputItem.IsAir) {
+                        return;
+                    }
+                    Item toStore = IncData.OutputItem.Clone();
+                    if (MachineModules.MachineLogistics.TryDeposit(Position, toStore)) {
+                        IncData.OutputItem.TurnToAir();
+                        SendData();
+                    }
+                });
+            }
 
             SendData();
         }
@@ -306,6 +363,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                 if (IncData.OutputItem != null && !IncData.OutputItem.IsAir) {
                     DropItem(IncData.OutputItem.Clone());
                 }
+                //模块随拆机倒出
+                ModuleRack.EnsureSlots(ModuleSlotCount);
+                ModuleRack.DropAll(item => DropItem(item));
             }
 
             IncData.InputItem?.TurnToAir();
@@ -317,6 +377,28 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                 ui.IsActive = false;
             }
         }
+
+        #region 存档与同步:模块架追加在既有字段之后,槽数固定故两端对称
+        public override void SendData(Terraria.ModLoader.ModPacket data) {
+            base.SendData(data);
+            ModuleRack.Send(data, ModuleSlotCount);
+        }
+
+        public override void ReceiveData(System.IO.BinaryReader reader, int whoAmI) {
+            base.ReceiveData(reader, whoAmI);
+            ModuleRack.Receive(reader, ModuleSlotCount);
+        }
+
+        public override void SaveData(Terraria.ModLoader.IO.TagCompound tag) {
+            base.SaveData(tag);
+            ModuleRack.Save(tag, ModuleSlotCount);
+        }
+
+        public override void LoadData(Terraria.ModLoader.IO.TagCompound tag) {
+            base.LoadData(tag);
+            ModuleRack.Load(tag, ModuleSlotCount, GetType().Name);
+        }
+        #endregion
 
         public override void FrontDraw(SpriteBatch spriteBatch) => DrawChargeBar();
     }

@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.MachineModules;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.Storages;
 using InnoVault.TileProcessors;
@@ -61,7 +62,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         /// <summary>集装组件的存储搜索半径(像素);从机器左上角起算,要盖过 Mk2 的机身再留一箱余量</summary>
         private const int DepositSearchRange = 320;
 
-        internal Item[] Modules;
+        /// <summary>模块架:槽位存储/校验/存档/网络由插件层承担,矿机只做 IMiningModule 聚合</summary>
+        internal readonly MachineModuleRack ModuleRack = new(MachineModuleTarget.MiningMachine);
         /// <summary>勘探缓存,扫描前为 null</summary>
         internal MiningSurvey Survey;
         private int surveyTimer;
@@ -103,23 +105,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         }
 
         #region 模块槽
-        internal Item[] EnsureModules() {
-            if (Modules == null || Modules.Length != ModuleSlotCount) {
-                Item[] old = Modules;
-                Modules = new Item[ModuleSlotCount];
-                for (int i = 0; i < Modules.Length; i++) {
-                    Modules[i] = new Item();
-                }
-                if (old != null) {
-                    for (int i = 0; i < Math.Min(old.Length, Modules.Length); i++) {
-                        Modules[i] = old[i] ?? new Item();
-                    }
-                }
-            }
-            return Modules;
-        }
+        internal Item[] EnsureModules() => ModuleRack.EnsureSlots(ModuleSlotCount);
 
-        internal void MarkModulesDirty() => modifiersDirty = true;
+        internal void MarkModulesDirty() {
+            modifiersDirty = true;
+            ModuleRack.MarkDirty();
+        }
 
         /// <summary>聚合模块效果,脏标记驱动</summary>
         internal void RefreshModifiers() {
@@ -173,12 +164,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         /// <summary>同类模块每台限一枚</summary>
         internal bool HasModuleType(int itemType, int ignoreSlot = -1) {
             EnsureModules();
-            for (int i = 0; i < Modules.Length; i++) {
-                if (i != ignoreSlot && !Modules[i].IsAir && Modules[i].type == itemType) {
-                    return true;
-                }
-            }
-            return false;
+            return ModuleRack.HasType(itemType, ignoreSlot);
         }
         #endregion
 
@@ -223,27 +209,18 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         #region 存档与同步
         public override void SendData(ModPacket data) {
             base.SendData(data);
-            EnsureModules();
-            for (int i = 0; i < Modules.Length; i++) {
-                ItemIO.Send(Modules[i] ?? new Item(), data, true);
-            }
+            ModuleRack.Send(data, ModuleSlotCount);
         }
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
             base.ReceiveData(reader, whoAmI);
-            EnsureModules();
-            for (int i = 0; i < Modules.Length; i++) {
-                Modules[i] = ItemIO.Receive(reader, true);
-            }
+            ModuleRack.Receive(reader, ModuleSlotCount);
             MarkModulesDirty();
         }
 
         public override void SaveData(TagCompound tag) {
             base.SaveData(tag);
-            EnsureModules();
-            for (int i = 0; i < Modules.Length; i++) {
-                tag[$"_Module{i}"] = ItemIO.Save(Modules[i] ?? new Item());
-            }
+            ModuleRack.Save(tag, ModuleSlotCount);
             //熔炼余数账:平铺成 [id,数量,...] 保存
             if (smeltBuffer.Count > 0) {
                 List<int> smeltData = [];
@@ -259,10 +236,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            EnsureModules();
-            for (int i = 0; i < Modules.Length; i++) {
-                Modules[i] = CWRSaveData.LoadItemFromTag(tag, $"_Module{i}", GetType().Name);
-            }
+            ModuleRack.Load(tag, ModuleSlotCount, GetType().Name);
             smeltBuffer.Clear();
             if (tag.TryGet("_SmeltBuffer", out List<int> smeltData)) {
                 for (int i = 0; i + 1 < smeltData.Count; i += 2) {
@@ -296,6 +270,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         }
 
         public override void UpdateMachine() {
+            //通用聚合(储能扩容这类跨族效果)与矿机域聚合分开驱动
+            EnsureModules();
+            ModuleRack.Refresh();
             RefreshModifiers();
             UpdateSurvey();
             FootingOk = CheckFooting();
@@ -420,12 +397,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
                 return;
             }
             EnsureModules();
-            foreach (Item item in Modules) {
-                if (item != null && !item.IsAir) {
-                    DropItem(item.Clone());
-                    item.TurnToAir();
-                }
-            }
+            ModuleRack.DropAll(item => DropItem(item));
         }
 
         public override void FrontDraw(SpriteBatch spriteBatch) => DrawChargeBar();

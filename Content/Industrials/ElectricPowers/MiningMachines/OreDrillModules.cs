@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
             base.ModifyTooltips(tooltips);
-            int index = tooltips.FindIndex(line => line.Name == "MiningModuleTag");
+            int index = tooltips.FindIndex(line => line.Name == "MachineModuleTargets");
             if (index < 0) {
                 index = tooltips.FindIndex(line => line.Name == "ItemName");
             }

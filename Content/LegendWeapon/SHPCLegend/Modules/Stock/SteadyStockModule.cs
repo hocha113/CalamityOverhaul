@@ -349,7 +349,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 && !voltBeams.ContainsKey(proj.whoAmI)) {
                 voltBeams[proj.whoAmI] = empowerCharge;
                 proj.damage = Math.Max((int)(proj.damage * empowerMul), 1);
-                if (empowerFull) {
+                //穿透-1是无限穿透，加算反而变有限，别碰
+                if (empowerFull && proj.penetrate > 0) {
                     proj.penetrate += FullPierceAdd;
                 }
                 proj.netUpdate = true;

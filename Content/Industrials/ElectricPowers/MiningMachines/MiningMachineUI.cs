@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.UIs;
 using CalamityOverhaul.Content.UIs.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,7 +21,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
     /// 矿机勘探终端:野外地质仪器语言——钢壳(shader)、黄铜铭牌、岩芯样本管、
     /// 指针仪表、模块插座。报告数据与产出掷骰同源(<see cref="MiningMachineSystem.BuildReport"/>),
     /// 展示的份额即真实概率;模块槽编辑走"本地改 + SendData 推送"。<br/>
-    /// 笔刷与材质在 <see cref="MiningTerminalRenderer"/>,本类只管布局、交互与编排
+    /// 笔刷与材质在 <see cref="IndustrialTerminalRenderer"/>,本类只管布局、交互与编排
     /// </summary>
     internal class MiningMachineUI : UIHandle, ILocalizedModType
     {
@@ -34,12 +35,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         private const int SlotSize = 44;
 
         //文字与点缀色引用渲染器主题,保证 CPU 前景与 shader 机壳同族
-        private static Color TextMain => MiningTerminalRenderer.TextMain;
-        private static Color TextDim => MiningTerminalRenderer.TextDim;
-        private static Color Amber => MiningTerminalRenderer.Amber;
-        private static Color WarnRed => MiningTerminalRenderer.WarnRed;
-        private static Color OkGreen => MiningTerminalRenderer.OkGreen;
-        private static Color BrassBright => MiningTerminalRenderer.BrassBright;
+        private static Color TextMain => IndustrialTerminalRenderer.TextMain;
+        private static Color TextDim => IndustrialTerminalRenderer.TextDim;
+        private static Color Amber => IndustrialTerminalRenderer.Amber;
+        private static Color WarnRed => IndustrialTerminalRenderer.WarnRed;
+        private static Color OkGreen => IndustrialTerminalRenderer.OkGreen;
+        private static Color BrassBright => IndustrialTerminalRenderer.BrassBright;
 
         //岩芯样本配色:天穹/地表土层/洞穴岩层/地狱
         private static readonly Color StrataSky = new(20, 24, 34);
@@ -64,10 +65,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         private float scrollTarget;
         private bool pendingCenter;
 
-        //槽位拒绝反馈
-        private int denyFlashSlot = -1;
-        private int denyFlashTimer;
-        private LocalizedText denyReason;
+        //模块插座行(点击/校验/红闪/绘制全在共享件里)
+        private readonly ModuleSocketStrip socketStrip = new();
 
         //仪表指针的欠阻尼弹簧
         private float energyDisplay;
@@ -90,7 +89,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         private Vector2 yieldGaugeCenter;
         private Rectangle energyGaugeRect;
         private Rectangle yieldGaugeRect;
-        private readonly List<Rectangle> slotRects = [];
 
         private float uiAlpha => OpenProgress.Current;
         #endregion
@@ -108,7 +106,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         internal static LocalizedText ReportTitle;
         internal static LocalizedText RescanText;
         internal static LocalizedText ModuleSlotLabel;
-        internal static LocalizedText EmptySlotHint;
         internal static LocalizedText StatusLabel;
         internal static LocalizedText StateWorking;
         internal static LocalizedText StateNoPower;
@@ -135,10 +132,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         internal static LocalizedText GateNeedDrill;
         internal static LocalizedText GateNotInWorld;
         internal static LocalizedText VeinTilesFormat;
-        internal static LocalizedText ModuleOnly;
-        internal static LocalizedText ModuleDuplicate;
-        internal static LocalizedText ModuleTagText;
-        internal static LocalizedText ModuleHowToText;
         internal static LocalizedText DrillTargetText;
         internal static LocalizedText DrillEffectText;
 
@@ -147,7 +140,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             ReportTitle = this.GetLocalization(nameof(ReportTitle), () => "Survey Report");
             RescanText = this.GetLocalization(nameof(RescanText), () => "Rescan");
             ModuleSlotLabel = this.GetLocalization(nameof(ModuleSlotLabel), () => "Modules");
-            EmptySlotHint = this.GetLocalization(nameof(EmptySlotHint), () => "Insert an upgrade module");
             StatusLabel = this.GetLocalization(nameof(StatusLabel), () => "Status");
             StateWorking = this.GetLocalization(nameof(StateWorking), () => "Operating");
             StateNoPower = this.GetLocalization(nameof(StateNoPower), () => "No Power");
@@ -174,10 +166,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             GateNeedDrill = this.GetLocalization(nameof(GateNeedDrill), () => "Requires a dedicated drill module");
             GateNotInWorld = this.GetLocalization(nameof(GateNotInWorld), () => "Ore source not yet surveyed");
             VeinTilesFormat = this.GetLocalization(nameof(VeinTilesFormat), () => "{0} vein tiles detected");
-            ModuleOnly = this.GetLocalization(nameof(ModuleOnly), () => "Only mining machine modules fit here!");
-            ModuleDuplicate = this.GetLocalization(nameof(ModuleDuplicate), () => "A module of this type is already installed!");
-            ModuleTagText = this.GetLocalization(nameof(ModuleTagText), () => "Mining Machine Module");
-            ModuleHowToText = this.GetLocalization(nameof(ModuleHowToText), () => "Right-click a mining machine and slot this into its terminal");
             DrillTargetText = this.GetLocalization(nameof(DrillTargetText), () => "Targets: {0}");
             DrillEffectText = this.GetLocalization(nameof(DrillEffectText), () => "Grants extraction rights for its targets and quadruples their yield weight");
         }
@@ -243,12 +231,19 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 
             ComputeLayout();
 
+            //两把锁都要,且都必须每帧常驻(UIHandle.Update 跑在绘制阶段,
+            //滚轮增量帧首已被 Player.Update 吃掉,等检测到 delta 再锁就晚一帧):
+            //SuppressWeaponSwitch 是 tick 倒计时,拦 CanSwitchWeapon,管滚轮换武器;
+            //LockVanillaMouseScroll 是单帧标志,管背包开启时的配方栏滚动
+            if (hoverInMainPage) {
+                UIInputGuard.SuppressWeaponSwitch();
+                PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/MiningMachine");
+            }
+
             if (scanProgress < 1f) {
                 scanProgress = MathF.Min(1f, scanProgress + 0.025f);
             }
-            if (denyFlashTimer > 0) {
-                denyFlashTimer--;
-            }
+            socketStrip.Update();
             if (rescanPressTimer > 0) {
                 rescanPressTimer--;
             }
@@ -295,14 +290,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             rescanRect = new Rectangle(reportRect.Right - 98, reportRect.Y - 2, 98, 22);
 
             //槽行独占底行;右侧留给双仪表
-            slotRects.Clear();
-            if (machine != null) {
-                int slotCount = machine.ModuleSlotCount;
-                int slotsY = panelRect.Y + 354;
-                for (int i = 0; i < slotCount; i++) {
-                    slotRects.Add(new Rectangle(panelRect.X + 98 + i * (SlotSize + 9), slotsY, SlotSize, SlotSize));
-                }
-            }
+            socketStrip.Layout(panelRect.X + 98, panelRect.Y + 354,
+                machine?.ModuleSlotCount ?? 0, SlotSize, 9);
 
             energyGaugeCenter = new Vector2(panelRect.X + 438, panelRect.Y + 330);
             yieldGaugeCenter = new Vector2(panelRect.X + 502, panelRect.Y + 330);
@@ -315,11 +304,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             int visibleRows = (reportRect.Height - 24) / RowHeight;
             float maxScroll = Math.Max(0, rowCount - visibleRows) * RowHeight;
 
+            //滚轮锁在 Update 里每帧常驻,这里只消费增量
             if (reportRect.Contains(MousePosition.ToPoint())) {
                 int delta = PlayerInput.ScrollWheelDeltaForUI;
                 if (delta != 0) {
                     scrollTarget -= delta * 0.4f;
-                    PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/MiningMachine");
                 }
             }
             scrollTarget = MathHelper.Clamp(scrollTarget, 0, maxScroll);
@@ -346,66 +335,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
                 return;
             }
 
-            for (int i = 0; i < slotRects.Count; i++) {
-                if (slotRects[i].Contains(mouse)) {
-                    HandleSlotClick(i);
-                    return;
-                }
-            }
-        }
-
-        /// <summary>模块槽点击:本地改动后 SendData 推送,同类模块每台限一枚</summary>
-        private void HandleSlotClick(int index) {
-            Item[] modules = machine.EnsureModules();
-            if (index >= modules.Length) {
-                return;
-            }
-            Item slot = modules[index];
-            Item mouse = Main.mouseItem;
-
-            if (mouse.IsAir && slot.IsAir) {
-                return;
-            }
-
-            if (!mouse.IsAir) {
-                if (mouse.ModItem is not IMiningModule) {
-                    Deny(index, ModuleOnly);
-                    return;
-                }
-                if (machine.HasModuleType(mouse.type, ignoreSlot: index)) {
-                    Deny(index, ModuleDuplicate);
-                    return;
-                }
-                //放入/交换
-                Item swap = slot.IsAir ? new Item() : slot.Clone();
-                modules[index] = mouse.Clone();
-                modules[index].stack = 1;
-                Main.mouseItem = swap;
-            }
-            else {
-                //取出:Shift 直接回背包,MP下地面掉落会被队友截走
-                if (Main.keyState.PressingShift()) {
-                    player.GiveItem(new EntitySource_WorldEvent(), slot.Clone());
-                }
-                else {
-                    Main.mouseItem = slot.Clone();
-                }
-                modules[index] = new Item();
-            }
-
-            SoundEngine.PlaySound(SoundID.Grab);
-            machine.MarkModulesDirty();
-            machine.SendData();
+            //模块插座行:变更后本地改动 SendData 推送;
             //勘探阵列这类改扫描尺寸的模块要立刻重扫才能反映在报告里
-            machine.RescanNow();
-            RebuildReport();
-        }
-
-        private void Deny(int slotIndex, LocalizedText reason) {
-            denyFlashSlot = slotIndex;
-            denyFlashTimer = 40;
-            denyReason = reason;
-            SoundEngine.PlaySound(SoundID.MenuClose);
+            socketStrip.HandleClick(mouse, machine.ModuleRack, machine.ModuleSlotCount, player, () => {
+                machine.MarkModulesDirty();
+                machine.SendData();
+                machine.RescanNow();
+                RebuildReport();
+            });
         }
 
         #region 绘制
@@ -428,23 +365,21 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             float alpha = uiAlpha;
 
             //机壳:一次 shader quad,拉丝钢/锈斑/磨亮棱线全在里面
-            MiningTerminalRenderer.ShaderPanel(sb, panelRect, alpha);
+            IndustrialTerminalRenderer.ShaderPanel(sb, panelRect, alpha);
 
             //四角铆钉,与模块钢牌同语汇
-            int inset = MiningTerminalRenderer.Chamfer + 2;
-            MiningTerminalRenderer.DrawRivet(sb, new Vector2(panelRect.X + inset, panelRect.Y + inset), alpha);
-            MiningTerminalRenderer.DrawRivet(sb, new Vector2(panelRect.Right - inset, panelRect.Y + inset), alpha);
-            MiningTerminalRenderer.DrawRivet(sb, new Vector2(panelRect.X + inset, panelRect.Bottom - inset), alpha);
-            MiningTerminalRenderer.DrawRivet(sb, new Vector2(panelRect.Right - inset, panelRect.Bottom - inset), alpha);
+            int inset = IndustrialTerminalRenderer.Chamfer + 2;
+            IndustrialTerminalRenderer.DrawRivet(sb, new Vector2(panelRect.X + inset, panelRect.Y + inset), alpha);
+            IndustrialTerminalRenderer.DrawRivet(sb, new Vector2(panelRect.Right - inset, panelRect.Y + inset), alpha);
+            IndustrialTerminalRenderer.DrawRivet(sb, new Vector2(panelRect.X + inset, panelRect.Bottom - inset), alpha);
+            IndustrialTerminalRenderer.DrawRivet(sb, new Vector2(panelRect.Right - inset, panelRect.Bottom - inset), alpha);
 
-            //标题:黄铜铭牌 + 蚀刻字
+            //标题:黄铜铭牌 + 亮暖填漆字
             string title = TitleText.Value;
             Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(title) * 0.86f;
             Rectangle plate = new(panelRect.X + 22, panelRect.Y + 9, (int)titleSize.X + 30, 27);
-            MiningTerminalRenderer.DrawNameplate(sb, plate, alpha);
-            Utils.DrawBorderString(sb, title,
-                new Vector2(plate.Center.X - titleSize.X * 0.5f, plate.Center.Y - titleSize.Y * 0.5f + 1),
-                new Color(58, 42, 20) * alpha, 0.86f);
+            IndustrialTerminalRenderer.DrawNameplate(sb, plate, alpha);
+            IndustrialTerminalRenderer.DrawPlateTitle(sb, plate, title, alpha, 0.86f);
 
             //铭牌底缘巡行亮笔:通着电的仪器,不是贴纸
             SvgPath runnerLine = SvgPathPen.Path(RunnerLinePath);
@@ -457,10 +392,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             Utils.DrawBorderString(sb, name, new Vector2(plate.Right + 12, plate.Y + 6), TextDim * alpha, 0.68f);
 
             //标题栏下的蚀刻分隔
-            MiningTerminalRenderer.DrawEtchedLine(sb, panelRect.X + 14, panelRect.Width - 28, titleRect.Bottom - 3, alpha, 0.8f);
+            IndustrialTerminalRenderer.DrawEtchedLine(sb, panelRect.X + 14, panelRect.Width - 28, titleRect.Bottom - 3, alpha, 0.8f);
 
             //闩钮:拧开面板
-            MiningTerminalRenderer.DrawLatch(sb, closeRect.Center.ToVector2(), alpha, latchHover);
+            IndustrialTerminalRenderer.DrawLatch(sb, closeRect.Center.ToVector2(), alpha, latchHover);
         }
 
         /// <summary>岩芯样本管:黄铜端盖玻璃管,管内是这台机器脚下的世界纵剖</summary>
@@ -560,7 +495,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             }
 
             //管壳画在芯体之上:端盖、管壁与玻璃高光
-            MiningTerminalRenderer.DrawCoreTube(sb, strataRect, alpha, GlobalTimer);
+            IndustrialTerminalRenderer.DrawCoreTube(sb, strataRect, alpha, GlobalTimer);
         }
 
         private string LayerName(MiningSurvey survey) {
@@ -624,7 +559,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 
             //报告头 + 机加工按钮
             Utils.DrawBorderString(sb, ReportTitle.Value, new Vector2(reportRect.X, reportRect.Y - 2), TextMain * alpha, 0.78f);
-            MiningTerminalRenderer.DrawButton(sb, rescanRect, alpha, rescanHover, rescanPressTimer > 0, RescanText.Value);
+            IndustrialTerminalRenderer.DrawButton(sb, rescanRect, alpha, rescanHover, rescanPressTimer > 0, RescanText.Value);
 
             //行区:负空间 + 蚀刻分隔,不再画整行底盒
             Rectangle rowsRect = new(reportRect.X, reportRect.Y + 24, reportRect.Width, reportRect.Height - 24);
@@ -676,7 +611,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
                 int barH = Math.Max(12, (int)(trackH * viewRatio));
                 int barY = rowsRect.Y + 2 + (int)(posRatio * trackH);
                 sb.Draw(px, new Rectangle(rowsRect.Right + 3, rowsRect.Y + 2, 1, trackH), src, Color.Black * (alpha * 0.45f));
-                sb.Draw(px, new Rectangle(rowsRect.Right + 4, rowsRect.Y + 2, 1, trackH), src, MiningTerminalRenderer.SteelLit * (alpha * 0.4f));
+                sb.Draw(px, new Rectangle(rowsRect.Right + 4, rowsRect.Y + 2, 1, trackH), src, IndustrialTerminalRenderer.SteelLit * (alpha * 0.4f));
                 sb.Draw(px, new Rectangle(rowsRect.Right + 2, barY, 3, barH), src, Amber * (alpha * 0.6f));
             }
         }
@@ -692,7 +627,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
                 sb.Draw(px, new Rectangle(row.X, row.Y + 3, 2, row.Height - 6), src, Amber * (alpha * 0.85f));
             }
             //行间蚀刻分隔
-            MiningTerminalRenderer.DrawEtchedLine(sb, row.X + 2, row.Width - 8, row.Bottom - 1, alpha, 0.45f);
+            IndustrialTerminalRenderer.DrawEtchedLine(sb, row.X + 2, row.Width - 8, row.Bottom - 1, alpha, 0.45f);
 
             //矿物图标;玩家没见过的矿贴图是懒加载的,不先 LoadItem 只会画出空气
             Main.instance.LoadItem(entry.ItemID);
@@ -708,7 +643,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
                 //份额刻度条 + 百分比:与掷骰同源
                 int barX = row.X + 176;
                 int barW = row.Width - 176 - 58;
-                MiningTerminalRenderer.DrawTickBar(sb, new Rectangle(barX, row.Y + 5, barW, row.Height - 10),
+                IndustrialTerminalRenderer.DrawTickBar(sb, new Rectangle(barX, row.Y + 5, barW, row.Height - 10),
                     entry.Share, Amber, alpha);
                 string share = (entry.Share * 100f).ToString(entry.Share >= 0.095f ? "0" : "0.0") + "%";
                 Vector2 shareSize = FontAssets.MouseText.Value.MeasureString(share) * 0.66f;
@@ -743,36 +678,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 
         private void DrawSlots(SpriteBatch sb) {
             float alpha = uiAlpha;
-            Item[] modules = machine.EnsureModules();
 
             Utils.DrawBorderString(sb, ModuleSlotLabel.Value,
-                new Vector2(slotRects.Count > 0 ? slotRects[0].X : panelRect.X + 98, panelRect.Y + 338),
+                new Vector2(socketStrip.Rects.Count > 0 ? socketStrip.Rects[0].X : panelRect.X + 98, panelRect.Y + 338),
                 TextDim * alpha, 0.62f);
 
-            for (int i = 0; i < slotRects.Count; i++) {
-                Rectangle rect = slotRects[i];
-                bool hover = rect.Contains(MousePosition.ToPoint());
-                float deny = denyFlashTimer > 0 && denyFlashSlot == i ? denyFlashTimer / 40f : 0f;
-
-                //插座:凹槽床 + 键槽刻痕 + 黄铜簧片
-                MiningTerminalRenderer.DrawSocket(sb, rect, alpha, hover ? 1f : 0f, deny);
-
-                Item item = i < modules.Length ? modules[i] : null;
-                if (item != null && !item.IsAir) {
-                    if (item.ModItem is BaseMiningModule module) {
-                        module.DrawIcon(sb, rect.Center.ToVector2(), 15f, alpha);
-                    }
-                    else {
-                        //兜底画原版贴图前先确保纹理已加载
-                        Main.instance.LoadItem(item.type);
-                        VaultUtils.SimpleDrawItem(sb, item.type, rect.Center.ToVector2(), 32, 1f, 0, Color.White * alpha);
-                    }
-                }
-                else {
-                    //空插座:键位蚀刻
-                    MiningTerminalRenderer.DrawSocketKeyMark(sb, rect.Center.ToVector2(), alpha);
-                }
-            }
+            socketStrip.Draw(sb, machine.ModuleRack, machine.ModuleSlotCount, alpha, MousePosition.ToPoint());
         }
 
         /// <summary>状态灯 + 镐力读数 + 双仪表(能量/产率)</summary>
@@ -800,7 +711,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
                 lampColor = OkGreen;
                 lampBright = MathF.Sin(GlobalTimer * 2.2f) * 0.2f + 0.72f;
             }
-            MiningTerminalRenderer.DrawLamp(sb, new Vector2(x + 7, y + 9), lampColor, alpha, lampBright);
+            IndustrialTerminalRenderer.DrawLamp(sb, new Vector2(x + 7, y + 9), lampColor, alpha, lampBright);
             Utils.DrawBorderString(sb, state, new Vector2(x + 21, y + 1),
                 Color.Lerp(TextMain, lampColor, 0.35f) * alpha, 0.66f);
 
@@ -813,9 +724,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             float jitter = machine.IsWorking ? MathF.Sin(GlobalTimer * 34f) * 0.006f : 0f;
             float ratio = machine.MachineData != null
                 ? MathHelper.Clamp(machine.MachineData.UEvalue / machine.MaxUEValue, 0f, 1f) : 0f;
-            MiningTerminalRenderer.DrawGauge(sb, energyGaugeCenter, 26f, energyDisplay + jitter,
+            IndustrialTerminalRenderer.DrawGauge(sb, energyGaugeCenter, 26f, energyDisplay + jitter,
                 Amber, alpha, EnergyLabel.Value, $"{(int)(ratio * 100f)}%");
-            MiningTerminalRenderer.DrawGauge(sb, yieldGaugeCenter, 26f, yieldDisplay + jitter,
+            IndustrialTerminalRenderer.DrawGauge(sb, yieldGaugeCenter, 26f, yieldDisplay + jitter,
                 Color.Lerp(Amber, OkGreen, 0.35f), alpha, YieldLabel.Value,
                 machine.EstimateYieldPerMinute().ToString("0.0"));
         }
@@ -827,21 +738,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             Point mouse = MousePosition.ToPoint();
 
             //模块槽悬停
-            Item[] modules = machine.EnsureModules();
-            for (int i = 0; i < slotRects.Count; i++) {
-                if (!slotRects[i].Contains(mouse)) {
-                    continue;
-                }
-                if (denyFlashTimer > 0 && denyFlashSlot == i && denyReason != null) {
-                    ShowTooltip(sb, denyReason.Value, WarnRed);
-                }
-                else if (i < modules.Length && !modules[i].IsAir) {
-                    Main.HoverItem = modules[i].Clone();
-                    Main.hoverItemName = modules[i].Name;
-                }
-                else {
-                    ShowTooltip(sb, EmptySlotHint.Value, TextMain);
-                }
+            if (socketStrip.DrawHoverTip(sb, machine.ModuleRack, machine.ModuleSlotCount, mouse,
+                (text, color) => ShowTooltip(sb, text, color))) {
                 return;
             }
 
@@ -880,7 +778,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             }
 
             Rectangle bg = new((int)pos.X - 9, (int)pos.Y - 5, (int)textSize.X + 18, (int)textSize.Y + 10);
-            MiningTerminalRenderer.DrawTooltipPlate(sb, bg, 1f);
+            IndustrialTerminalRenderer.DrawTooltipPlate(sb, bg, 1f);
             Utils.DrawBorderString(sb, text, pos, color, 0.75f);
         }
         #endregion

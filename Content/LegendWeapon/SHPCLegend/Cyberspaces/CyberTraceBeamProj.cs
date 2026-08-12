@@ -187,8 +187,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 flyAngle = Projectile.velocity.ToRotation();
                 //ai1 追踪倍率，0→1，负压制
                 homingMul = Projectile.ai[1] != 0f ? Projectile.ai[1] : 1f;
-                //首帧消费改件穿透/寿命
-                if (ExtraPierce > 0) {
+                //首帧消费改件穿透/寿命；-1是无限穿透（如永恒座饰品在OnSpawn改写），
+                //加算会撞出0，原版Update对penetrate==0当帧强杀，光束会出膛即消失
+                if (ExtraPierce > 0 && Projectile.penetrate > 0) {
                     Projectile.penetrate += ExtraPierce;
                 }
                 lifeBudget = TotalAICalls * MathF.Max(LifeMul, 0.1f);

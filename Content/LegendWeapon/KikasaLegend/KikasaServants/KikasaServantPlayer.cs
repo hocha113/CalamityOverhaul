@@ -82,6 +82,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 Projectile proj = Main.projectile[i];
                 if (proj?.active == true && proj.owner == Player.whoAmI
                     && proj.ModProjectile is IKikasaServant servant) {
+                    //刚召完的短锁窗内不受理遣返：双击不该把出水一半的鬼奴按回去
+                    if (Main.GameUpdateCount < localLockUntil) {
+                        return;
+                    }
+                    //已在溶解中：给个"没受理"的答话，别让按键静默吞掉
+                    if (servant.IsDismissing) {
+                        Refuse(ServantBusy);
+                        return;
+                    }
                     servant.BeginDismiss();
                     localLockUntil = Main.GameUpdateCount + 30;
                     return;
@@ -152,6 +161,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
     /// <summary>场上鬼奴的公共报到面：遣返命令由所有者本机下达</summary>
     internal interface IKikasaServant
     {
+        /// <summary>已在溶解遣返途中</summary>
+        bool IsDismissing { get; }
+
         /// <summary>进入溶解遣返；从任意状态可达，重复调用无害</summary>
         void BeginDismiss();
     }

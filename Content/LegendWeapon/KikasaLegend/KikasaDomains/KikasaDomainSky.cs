@@ -135,6 +135,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 kdp.OriginWorldPos - realScreenPos,
                 Main.GameViewMatrix.TransformationMatrix);
 
+            //真水线（视口 uv）：与 KikasaGrade.SetSharedParams 同公式，
+            //只是投影用还原后的真实相机值——水线以下天空换成实体湖体，垫在湖面着色器之下
+
+            float pivotUv = MathHelper.Clamp(Vector2.Transform(
+                new Vector2(realScreenPos.X, kdp.LakeWorldY) - realScreenPos,
+                Main.GameViewMatrix.TransformationMatrix).Y / vpH, -8f, 8f);
+            float waterLevel = MathHelper.Lerp(1.15f, pivotUv, kdp.RiseProgress);
+            float waterWobble = 0.0025f + 0.011f * kdp.FoamBoost;
+
             shader.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.016f);
             shader.Parameters["uSkyAlpha"]?.SetValue(presence);
             //遮罩空间尺寸取视口真实像素，与 KikasaGrade 的 uScreenSize 同值
@@ -148,6 +157,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             shader.Parameters["uMaskTime"]?.SetValue(kdp.EffectTime);
             shader.Parameters["uRain"]?.SetValue(kdp.RainBlend);
             shader.Parameters["uFlash"]?.SetValue(flashStrength);
+            shader.Parameters["uWaterLevel"]?.SetValue(waterLevel);
+            shader.Parameters["uWaterWobble"]?.SetValue(waterWobble);
             shader.CurrentTechnique.Passes[0].Apply();
 
             spriteBatch.Draw(white, new Rectangle(0, 0, vpW, vpH), Color.White);

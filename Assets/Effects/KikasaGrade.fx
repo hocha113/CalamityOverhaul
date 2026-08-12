@@ -3,7 +3,8 @@
 //TechGrade（NPC 层之前，只吃环境）：血暮调色（红罩+暗部沉深绯+非红轻去饱和）
 //TechUnify（EndCapture，吃整帧含实体）：
 //  轻血罩 + 血湖镜面（水位线以下真垂直镜像倒影，血染+深度血雾+浮渣+缝线血沫，
-//  反射率贴缝强向深弱、透出水下真实世界）+ 湿纸撕裂前沿（浸润带/湿纤维缘/卷影）
+//  反射率贴缝强向深弱、透出水下真实世界——被淹之物经折射采样随水摆动）
+//  + 湿纸撕裂前沿（浸润带/湿纤维缘/卷影）
 //开合遮罩是"被水浸烂的破纸"：圆扩散 + 三频纤维毛边，材质与鬼切墨浪刻意分野
 //直线算术+平 tex2D，门控走 step/lerp 不用分支；s0=屏幕帧 s1=PerlinNoise
 // ============================================================================
@@ -144,8 +145,8 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     //镜像采样：绕稳定缝线 uPivotY 垂直镜像，近水面涟漪扰动
     float seamProx = exp2(-abs(below) * 22.0);
     float2 muv = float2(uv.x, 2.0 * uPivotY - uv.y);
-    muv.x += ((n0 - 0.5) * (0.0042 + seamProx * 0.010) + (n1 - 0.5) * 0.0026) * belowMask;
-    muv.y += (n1 - 0.5) * 0.0040 * belowMask;
+    muv.x += ((n0 - 0.5) * (0.0070 + seamProx * 0.016) + (n1 - 0.5) * 0.0042) * belowMask;
+    muv.y += (n1 - 0.5) * 0.0062 * belowMask;
     float2 cuv = clamp(muv, 0.002, 0.998);
     float3 mcol = tex2D(uImage0, cuv).rgb;
     float srcOk = saturate(muv.y * 16.0) * saturate((1.0 - muv.y) * 16.0);
@@ -160,13 +161,25 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     float3 fogc = lerp(LAKE_FOG, RAIN_FOG, uRain);
     mirror = lerp(mirror, fogc, saturate(depth * lerp(0.42, 0.60, uRain) + (1.0 - srcOk)));
 
+    //水下折射采样：被淹之物随水摆动。双频偏移水平为主，幅度随深度增长、
+    //贴水线渐入——y 向偏移恒小于离线距离，采不到水线以上的像素
+    float refrIn = saturate(below * 26.0);
+    float refrAmp = (0.0045 + 0.0075 * saturate(below * 2.2)) * refrIn;
+    float rn0 = noiseTex(float2(uv.x * 3.4 + uTime * 0.050, uv.y * 9.0 - uTime * 0.060));
+    float rn1 = noiseTex(float2(uv.x * 11.0 - uTime * 0.090, uv.y * 21.0 + uTime * 0.110));
+    float2 ruv = uv;
+    ruv.x += ((rn0 - 0.5) * 1.3 + (rn1 - 0.5) * 0.7) * refrAmp;
+    ruv.y += (rn1 - 0.5) * refrAmp * 0.45;
+    float3 usrc = tex2D(uImage0, clamp(ruv, 0.002, 0.998)).rgb;
+
     //水下真实世界：透过湖水看到的沉暗世界，倒影浮在其上；浊水里更快没入雾底
-    float3 under = lerp(src, luma.xxx, lerp(0.30, 0.44, uRain));
+    float uluma = dot(usrc, LUMA_W);
+    float3 under = lerp(usrc, uluma.xxx, lerp(0.30, 0.44, uRain));
     under *= lerp(UNDER_TINT, RAIN_UNDER, uRain);
     under = lerp(under, fogc, saturate(depth * lerp(0.55, 0.70, uRain)));
 
     //反射率：贴缝掠射强、向深处弱（看穿浅水），战斗可读性也靠它；浊水反光钝
-    float refl = lerp(0.42, 0.85, exp2(-max(below, 0.0) * 5.0));
+    float refl = lerp(0.34, 0.85, exp2(-max(below, 0.0) * 5.0));
     refl *= 1.0 - 0.35 * uRain;
     float3 lake = lerp(under, mirror, refl);
 

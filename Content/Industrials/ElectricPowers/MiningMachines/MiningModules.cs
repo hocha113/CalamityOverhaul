@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+using CalamityOverhaul.Content.Industrials.MachineModules;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -8,12 +8,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 {
     /// <summary>
     /// 矿机升级模块:插入矿机模块槽生效,可拆卸转移。<br/>
-    /// 图标由 <see cref="MiningModuleGlyph"/> 逐帧合成,不占贴图资产。<br/>
+    /// 物品外观与通用 tooltip 由 <see cref="BaseMachineModule"/> 承担;<br/>
     /// 效果通过 <see cref="IMiningModule"/> 被 <see cref="BaseMiningMachineTP.RefreshModifiers"/> 聚合
     /// </summary>
-    internal abstract class BaseMiningModule : ModItem, IMiningModule
+    internal abstract class BaseMiningModule : BaseMachineModule, IMiningModule
     {
-        public override string Texture => CWRConstant.VaultPlaceholder2;
+        public override MachineModuleTarget ModuleTargets => MachineModuleTarget.MiningMachine;
 
         public virtual float PickPowerBonus => 0f;
         public virtual float WorkIntervalMult => 1f;
@@ -27,68 +27,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         public virtual bool ChestDeposit => false;
         public virtual void CollectUnlockOres(HashSet<int> into) { }
         public virtual void CollectOreFocus(Dictionary<int, float> into) { }
-
-        /// <summary>功能纹登记名,默认物品类名</summary>
-        protected virtual string GlyphKey => GetType().Name;
-        /// <summary>功能纹 SVG d 串;不给则退回通用钻齿纹</summary>
-        protected virtual string GlyphPath => null;
-        /// <summary>功能纹主色</summary>
-        internal abstract Color Accent { get; }
-
-        public override void SetStaticDefaults() {
-            if (!string.IsNullOrEmpty(GlyphPath)) {
-                MiningModuleGlyph.Register(GlyphKey, GlyphPath);
-            }
-        }
-
-        public sealed override void SetDefaults() {
-            Item.width = 30;
-            Item.height = 30;
-            //模块是设备不是耗材:一枚一件,槽位互斥由 UI 保证
-            Item.maxStack = 1;
-            Item.rare = ItemRarityID.Orange;
-            Item.value = Item.sellPrice(gold: 1);
-            SetModuleDefaults();
-        }
-
-        protected virtual void SetModuleDefaults() { }
-
-        public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            int index = tooltips.FindIndex(line => line.Name == "ItemName");
-            if (index != -1) {
-                tooltips.Insert(index + 1,
-                    new TooltipLine(Mod, "MiningModuleTag", MiningMachineUI.ModuleTagText.Value) {
-                        OverrideColor = Accent,
-                    });
-            }
-            tooltips.Add(new TooltipLine(Mod, "MiningModuleHowTo", MiningMachineUI.ModuleHowToText.Value) {
-                OverrideColor = new Color(168, 152, 132),
-            });
-        }
-
-        /// <summary>供矿机 UI 槽位直接绘制模块图标</summary>
-        internal void DrawIcon(SpriteBatch spriteBatch, Vector2 center, float half, float alpha) {
-            MiningModuleGlyph.Draw(spriteBatch, GlyphKey, center, half, alpha, Accent,
-                0f, Main.GameUpdateCount * 0.02f);
-        }
-
-        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position
-            , Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            MiningModuleGlyph.Draw(spriteBatch, GlyphKey, position, 13f * scale,
-                drawColor.A / 255f, Accent, 0f, Main.GameUpdateCount * 0.02f);
-            return false;
-        }
-
-        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor
-            , ref float rotation, ref float scale, int whoAmI) {
-            Vector2 center = Item.Center - Main.screenPosition;
-            //暗处可寻:alpha 兜底 + 一点暖背光
-            float a = MathHelper.Max(lightColor.A / 255f, 0.35f);
-            MiningModuleGlyph.DrawBacklight(spriteBatch, center, 13f * scale, Accent, a * 0.24f);
-            MiningModuleGlyph.Draw(spriteBatch, GlyphKey, center, 13f * scale, a, Accent,
-                rotation, Main.GameUpdateCount * 0.02f);
-            return false;
-        }
     }
 
     /// <summary>挖掘强化:作业周期缩短 30%</summary>
@@ -97,11 +35,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         public override float WorkIntervalMult => 0.7f;
         internal override Color Accent => new(230, 160, 70);
 
-        //三道下行钻齿,读作"钻得更快"
+        //离心调速器:立轴顶帽 + 两甩臂 + 两坠球 + 底座——工业语境里"转速"的正字,
+        //避开 chevron/箭头这类和其他模组撞脸的通用符号
         protected override string GlyphPath =>
-            "M -0.40 -0.44 L 0 -0.16 L 0.40 -0.44 "
-            + "M -0.40 -0.06 L 0 0.22 L 0.40 -0.06 "
-            + "M -0.26 0.34 L 0 0.54 L 0.26 0.34";
+            "M 0 -0.52 L 0 0.30 "
+            + "M -0.12 -0.52 L 0.12 -0.52 "
+            + "M 0 -0.40 L -0.34 0.00 "
+            + "M 0 -0.40 L 0.34 0.00 "
+            + "M -0.34 -0.04 L -0.26 0.04 L -0.34 0.12 L -0.42 0.04 Z "
+            + "M 0.34 -0.04 L 0.42 0.04 L 0.34 0.12 L 0.26 0.04 Z "
+            + "M -0.20 0.30 L 0.20 0.30";
 
         protected override void SetModuleDefaults() {
             Item.value = Item.sellPrice(gold: 1);

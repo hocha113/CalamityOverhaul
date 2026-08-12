@@ -182,7 +182,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         private void UpgradeToBeatBeam(CyberTraceBeamProj beam, int beatTempo) {
             float mul = BeatDamageMul + beatTempo * TempoDamageStep;
             beam.Projectile.damage = Math.Max((int)(beam.Projectile.damage * mul), 1);
-            beam.Projectile.penetrate += BeatExtraPierce;
+            //穿透-1是无限穿透，加算反而变有限甚至撞0杀弹，别碰
+            if (beam.Projectile.penetrate > 0) {
+                beam.Projectile.penetrate += BeatExtraPierce;
+            }
             //ai0=identity，ai1=节奏层
             Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                 beam.Projectile.Center, Vector2.Zero,

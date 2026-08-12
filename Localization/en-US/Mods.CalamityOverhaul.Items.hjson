@@ -1069,6 +1069,165 @@ SmelterModule: {
 		'''
 }
 
+MachineModuleText: {
+	TagText: Machine Upgrade Module
+	TargetsLine: Fits: {0}
+	HowToText: Right-click a compatible machine and slot this into its panel
+	SocketOnly: This machine can't take that module!
+	SocketDuplicate: A module of this type is already installed!
+	SocketEmptyHint: Insert an upgrade module
+	SlotLabel: Modules
+	NameMining: Mining Machine
+	NameThermal: Thermal Generator
+	NameWind: Wind Turbine
+	NameHydro: Hydro Generator
+	NameIncinerator: Incinerator
+}
+
+InsulationLiningModule: {
+	DisplayName: Insulation Lining Module
+	Tooltip:
+		'''
+		Install into a thermal generator to cut heat dissipation to 55%
+		Three layers of asbestos; the heat never finds the door
+		'''
+}
+
+ForcedDraftModule: {
+	DisplayName: Forced Draft Module
+	Tooltip:
+		'''
+		Install into a thermal generator to burn 45% faster and hotter
+		One pump of the bellows and the coals sit up straight
+		'''
+}
+
+SlowBurnValveModule: {
+	DisplayName: Slow-Burn Valve Module
+	Tooltip:
+		'''
+		Install into a thermal generator to slow burning to 60%, stretching each piece of fuel
+		Pinch the flame thin and one coal lasts half the night
+		'''
+}
+
+HeatRecoveryModule: {
+	DisplayName: Heat Recovery Module
+	Tooltip:
+		'''
+		Install into a thermal generator to raise heat yield per fuel by 25%
+		Two extra bends in the flue drag the escaping heat back
+		'''
+}
+
+AutoFeedHopperModule: {
+	DisplayName: Auto-Feed Hopper
+	Tooltip:
+		'''
+		Install into a thermal generator or incinerator to pull feedstock from nearby storage
+		The hopper only answers to an empty slot
+		'''
+}
+
+ExtendedBladesModule: {
+	DisplayName: Extended Blades Module
+	Tooltip:
+		'''
+		Install into a wind turbine to raise output by 30%
+		Every inch past the old blade tip is free wind
+		'''
+}
+
+LowWindGearboxModule: {
+	DisplayName: Low-Wind Gearbox Module
+	Tooltip:
+		'''
+		Install into a wind turbine to raise the wind factor floor from 0.8 to 1.3
+		Fine-cut gearing turns even a breeze
+		'''
+}
+
+TallTowerModule: {
+	DisplayName: Tall Tower Module
+	Tooltip:
+		'''
+		Install into a wind turbine to raise output by 15%, stacks with extended blades
+		Ten meters higher, one grade windier
+		'''
+}
+
+FlowShroudModule: {
+	DisplayName: Flow Shroud Module
+	Tooltip:
+		'''
+		Install into a hydro generator to raise output by 30%
+		The bellmouth gathers loose water into one push
+		'''
+}
+
+QuickSpinModule: {
+	DisplayName: Quick-Spin Module
+	Tooltip:
+		'''
+		Install into a hydro generator to triple spin-up speed
+		Wound tight; hits working speed the moment it touches water
+		'''
+}
+
+DeepBearingModule: {
+	DisplayName: Deep-Water Bearing Module
+	Tooltip:
+		'''
+		Install into a hydro generator to raise output by 15%, stacks with the flow shroud
+		The axle wastes nothing; the wheel gets it all
+		'''
+}
+
+HighTempElectrodeModule: {
+	DisplayName: High-Temp Electrode Module
+	Tooltip:
+		'''
+		Install into an incinerator to smelt 45% faster
+		Point the needles at each other and the arc beats the fire there
+		'''
+}
+
+EconomizerCoilModule: {
+	DisplayName: Economizer Coil Module
+	Tooltip:
+		'''
+		Install into an incinerator to cut smelting energy cost to 60%
+		Rewound with fine enamel wire; the meter turns politely now
+		'''
+}
+
+TwinCrucibleModule: {
+	DisplayName: Twin Crucible Module
+	Tooltip:
+		'''
+		Install into an incinerator for a 25% chance of double output per batch
+		One fire, two cups
+		'''
+}
+
+AutoEjectChuteModule: {
+	DisplayName: Auto-Eject Chute
+	Tooltip:
+		'''
+		Install into an incinerator to send products straight into nearby storage
+		Hook up the chute and the furnace stocks the shelves itself
+		'''
+}
+
+CapacityCellModule: {
+	DisplayName: Capacity Cell Module
+	Tooltip:
+		'''
+		Install into any machine to raise energy capacity by 50%
+		Every socket in the shop takes these plates
+		'''
+}
+
 CopperTinDrill: {
 	DisplayName: Copper-Tin Drill Bit
 	Tooltip: The first bit you ever polished bright

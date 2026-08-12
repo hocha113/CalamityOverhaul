@@ -121,7 +121,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
     {
         public override int TargetTileID => ModContent.TileType<ThermalGeneratorMK2Tile>();
         public override int TargetItem => ModContent.ItemType<ThermalGeneratorMK2>();
-        public override float MaxUEValue => 10000;
+        public override float MaxUEValue => 10000 * ModuleRack.StorageMult;
+        public override int ModuleSlotCount => 3;
         public override void SetGenerator() {
             MaxFrame = 5;
         }

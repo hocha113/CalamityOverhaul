@@ -125,6 +125,17 @@ Generator: {
 		TemperatureUnit: °C
 		PowerUnit: UE
 	}
+
+	GeneratorReadoutUI: {
+		WindLabel: 风速
+		FlowLabel: 水流
+		StorageLabel: 储能
+		OutputLine: 输出：{0} UE/s
+		RunningText: 运转中
+		NoWindText: 风力微弱
+		NoWaterText: 水轮离水
+		PowerUnitText: UE
+	}
 }
 
 ChargingStationUI: {
@@ -1124,7 +1135,6 @@ MiningMachineUI: {
 	ReportTitle: 勘探报告
 	RescanText: 重新勘探
 	ModuleSlotLabel: 模块槽
-	EmptySlotHint: 放入升级模块
 	StatusLabel: 状态
 	StateWorking: 作业中
 	StateNoPower: 能量不足
@@ -1151,10 +1161,6 @@ MiningMachineUI: {
 	GateNeedDrill: 需要专属钻探模块
 	GateNotInWorld: 矿源尚未探明
 	VeinTilesFormat: 探明矿脉 {0} 块
-	ModuleOnly: 只能放入矿机升级模块！
-	ModuleDuplicate: 同类模块已经装了一枚！
-	ModuleTagText: 矿机升级模块
-	ModuleHowToText: 右键采矿机打开勘探终端，放入模块槽后生效
 	DrillTargetText: 定向矿物：{0}
 	DrillEffectText: 解锁目标矿物的开采资格，并将其产出权重提高到四倍
 }

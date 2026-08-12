@@ -149,6 +149,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
 
         //==================== 遣返 ====================
 
+        public bool IsDismissing => State == StateDissolve;
+
         public void BeginDismiss() {
             if (Main.myPlayer == Projectile.owner && State != StateDissolve) {
                 BeginDissolve();
@@ -156,6 +158,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
         }
 
         private void BeginDissolve() {
+            //还没破水就要收场：什么都没露出来，不走溶解演出——
+            //否则透明度会从 0 跳到 1，水下凭空闪出一只眼再化掉
+            if (State == StateEmerge && StateTimer < OmenFrames) {
+                Projectile.Kill();
+                return;
+            }
             State = StateDissolve;
             StateTimer = 0;
             StateParam = 0;
@@ -557,15 +565,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             Projectile.velocity -= aim * 4.5f;
 
             Vector2 mouth = MouthPos();
-            SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.5f, Pitch = 0.35f, MaxInstances = 3 }, mouth);
-            SoundEngine.PlaySound(SoundID.NPCHit13 with { Volume = 0.3f, Pitch = -0.2f, MaxInstances = 3 }, mouth);
+            //吐痰的湿噗声，不是水花
+            SoundEngine.PlaySound(SoundID.Item95 with { Volume = 0.5f, Pitch = -0.25f, MaxInstances = 3 }, mouth);
+            SoundEngine.PlaySound(SoundID.Item17 with { Volume = 0.35f, Pitch = -0.45f, MaxInstances = 3 }, mouth);
             if (!Main.dedServ) {
-                for (int i = 0; i < 5; i++) {
-                    PRTLoader.NewParticle<PRT_GhostRainDrop>(mouth,
-                        aim * Main.rand.NextFloat(1.5f, 3.5f) + Main.rand.NextVector2Circular(1.2f, 1.2f),
-                        BloodTint * 0.55f, Main.rand.NextFloat(0.35f, 0.55f))
-                        ?.Configure(Main.rand.Next(8, 14), 0f);
+                //出膛喷吐：锥形血珠 + 一圈扩散环
+                for (int i = 0; i < 6; i++) {
+                    PRTLoader.NewParticle<PRT_KikasaBloodGlob>(mouth + Main.rand.NextVector2Circular(3f, 3f),
+                        aim.RotatedByRandom(0.26f) * Main.rand.NextFloat(3f, 8f),
+                        Main.rand.NextBool(3) ? KikasaEyeBloodShot.BloodDeep : KikasaEyeBloodShot.BloodMain,
+                        Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(14, 24));
                 }
+                PRTLoader.NewParticle<PRT_DWave>(mouth + aim * 8f, Vector2.Zero,
+                    KikasaEyeBloodShot.BloodDeep, 0.07f)
+                    ?.Configure(new Vector2(0.55f, 1f), aim.ToRotation(), 0.22f, 8);
             }
             if (ViewedOwner) {
                 ShakeViewer(0.8f);
@@ -575,6 +588,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             if (authority) {
                 int damage = (int)owner.GetTotalDamage(DamageClass.Summon).ApplyTo(ShotDamage);
                 Vector2 vel = aim.RotatedBy(Main.rand.NextFloat(-0.055f, 0.055f)) * 15f;
+                //痰是抛出去的：给一点上抛偏置，配合弹体重力走弧线
+                vel.Y -= 1.3f;
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), mouth, vel,
                     ModContent.ProjectileType<KikasaEyeBloodShot>(), damage, 3.5f, Projectile.owner);
             }
@@ -911,8 +926,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
                 sb.Draw(glow, mouth - Main.screenPosition, null, FoamGlow * (0.55f * charge), 0f,
                     gOrigin, new Vector2(r * 2f / glow.Width), SpriteEffects.None, 0f);
 
-                //吸入流线：各向异性拉长、指向瞳孔，密度随蓄力、72% 后静默
-                if (charge < 0.72f || State == StateVolley && (int)StateTimer > VolleyChargeEnd) {
+                //吸入流线：各向异性拉长、指向瞳孔，密度随蓄力、蓄力末段 72% 后静默
+                //（射击窗 ChargeLevel 回落 0.6，流线自然复燃为余吸）
+                if (charge < 0.72f) {
                     int streaks = 7;
                     for (int i = 0; i < streaks; i++) {
                         float phase = (Main.GlobalTimeWrappedHourly * 0.9f + i / (float)streaks + Seed * 0.13f) % 1f;

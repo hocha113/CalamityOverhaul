@@ -125,6 +125,17 @@ Generator: {
 		TemperatureUnit: °C
 		PowerUnit: UE
 	}
+
+	GeneratorReadoutUI: {
+		// WindLabel: Wind
+		// FlowLabel: Flow
+		// StorageLabel: Charge
+		// OutputLine: Output: {0} UE/s
+		// RunningText: Running
+		// NoWindText: Weak Wind
+		// NoWaterText: Wheel Dry
+		// PowerUnitText: UE
+	}
 }
 
 ChargingStationUI: {
@@ -1124,7 +1135,6 @@ MiningMachineUI: {
 	// ReportTitle: Survey Report
 	// RescanText: Rescan
 	// ModuleSlotLabel: Modules
-	// EmptySlotHint: Insert an upgrade module
 	// StatusLabel: Status
 	// StateWorking: Operating
 	// StateNoPower: No Power
@@ -1151,10 +1161,6 @@ MiningMachineUI: {
 	// GateNeedDrill: Requires a dedicated drill module
 	// GateNotInWorld: Ore source not yet surveyed
 	// VeinTilesFormat: "{0} vein tiles detected"
-	// ModuleOnly: Only mining machine modules fit here!
-	// ModuleDuplicate: A module of this type is already installed!
-	// ModuleTagText: Mining Machine Module
-	// ModuleHowToText: Right-click a mining machine and slot this into its terminal
 	// DrillTargetText: Targets: {0}
 	// DrillEffectText: Grants extraction rights for its targets and quadruples their yield weight
 }

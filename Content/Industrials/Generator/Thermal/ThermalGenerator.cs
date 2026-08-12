@@ -121,10 +121,16 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
     {
         public override int TargetTileID => ModContent.TileType<ThermalGeneratorTile>();
         public override int TargetItem => ModContent.ItemType<ThermalGenerator>();
-        public override float MaxUEValue => 1000;
+        public override float MaxUEValue => 1000 * ModuleRack.StorageMult;
+        public override MachineModules.MachineModuleTarget ModuleHostKind => MachineModules.MachineModuleTarget.ThermalGenerator;
+        public override int ModuleSlotCount => 2;
         internal int frame;
         internal ThermalData ThermalData => MachineData as ThermalData;
         public int MaxFrame = 4;
+        /// <summary>燃速乘数下 BurnTimeRemaining 的小数累加器</summary>
+        private float burnAcc;
+        /// <summary>自动进料节拍</summary>
+        private int autoFeedTimer;
 
         public override MachineData GetGeneratorDataInds() {
             var data = new ThermalData();
@@ -222,10 +228,21 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 }
             }
 
-            //燃烧产热
+            //储能扩容模块动上限,数据侧字段每帧对齐
+            ThermalData.MaxUEValue = MaxUEValue;
+
+            //燃烧产热:燃速同时作用于产热速率与燃烧时间递减(每份燃料总热量守恒),
+            //产热乘数(余热回收)单独放大总热量
             if (ThermalData.IsBurning) {
-                ThermalData.Temperature += ThermalData.HeatPerTick;
-                ThermalData.BurnTimeRemaining--;
+                float burnRate = ModuleRack.ThermalBurnRate;
+                ThermalData.Temperature += ThermalData.HeatPerTick * burnRate * ModuleRack.ThermalHeatYield;
+                burnAcc += burnRate;
+                int burnSteps = (int)burnAcc;
+                burnAcc -= burnSteps;
+                ThermalData.BurnTimeRemaining -= burnSteps;
+                if (ThermalData.BurnTimeRemaining < 0) {
+                    ThermalData.BurnTimeRemaining = 0;
+                }
                 if (ThermalData.Temperature > ThermalData.MaxTemperature) {
                     ThermalData.Temperature = ThermalData.MaxTemperature;
                 }
@@ -235,6 +252,24 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             ThermalData.ChargeCool++;
             if (!ThermalData.IsBurning && ThermalData.ChargeCool >= ThermalData.MaxChargeCool) {
                 TryConsumeFuel();
+            }
+
+            //自动进料斗:燃料槽空了就从近旁存储补一批(权威端,主线程经 Defer)
+            if (!VaultUtils.isClient && ModuleRack.AutoFeed && ++autoFeedTimer >= 30) {
+                autoFeedTimer = 0;
+                if (ThermalData.FuelItem == null || ThermalData.FuelItem.IsAir) {
+                    Defer(() => {
+                        if (ThermalData.FuelItem != null && !ThermalData.FuelItem.IsAir) {
+                            return;
+                        }
+                        Item got = MachineModules.MachineLogistics.TryWithdraw(Position,
+                            stored => FuelItems.FuelItemToCombustion.ContainsKey(stored.type), 15);
+                        if (!got.IsAir) {
+                            ThermalData.FuelItem = got;
+                            SendData();
+                        }
+                    });
+                }
             }
 
             UpdateThermal();
@@ -253,8 +288,9 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                     ThermalData.Temperature -= actualPower * ThermalData.HeatCostPerUE;
                 }
 
-                //固定 + 比例散热
-                float dissipation = ThermalData.MinDissipation + ThermalData.Temperature * ThermalData.DissipationRate;
+                //固定 + 比例散热;保温层模块整体压低散热
+                float dissipation = (ThermalData.MinDissipation + ThermalData.Temperature * ThermalData.DissipationRate)
+                    * ModuleRack.ThermalDissipation;
                 ThermalData.Temperature -= dissipation;
                 ThermalData.Temperature = MathHelper.Clamp(ThermalData.Temperature, 0, ThermalData.MaxTemperature);
 

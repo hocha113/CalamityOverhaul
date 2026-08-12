@@ -1,5 +1,6 @@
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Utilities;
 using System;
@@ -64,7 +65,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
     {
         public override string Texture => CWRConstant.Asset + "Generator/HydroelectricMK2Tile";
         public override int GeneratorTP => TileProcessorLoader.GetModuleID<HydroelectricMK2TP>();
-        public override int GeneratorUI => 0;
+        public override int GeneratorUI => UIHandleLoader.GetUIHandleID<GeneratorReadoutUI>();
         public override int TargetItem => ModContent.ItemType<HydroelectricMK2>();
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
@@ -88,12 +89,36 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
         }
     }
 
-    internal class HydroelectricMK2TP : BaseGeneratorTP
+    internal class HydroelectricMK2TP : BaseGeneratorTP, IGeneratorReadout
     {
         public override int TargetTileID => ModContent.TileType<HydroelectricMK2Tile>();
         public override int TargetItem => ModContent.ItemType<HydroelectricMK2>();
-        public override float MaxUEValue => 2200;
+        public override float MaxUEValue => 2200 * ModuleRack.StorageMult;
+        public override MachineModules.MachineModuleTarget ModuleHostKind
+            => MachineModules.MachineModuleTarget.HydroGenerator;
+        public override int ModuleSlotCount => 3;
         private float hasElmdVlome;
+
+        #region 读数板
+        public GeneratorReadoutKind ReadoutKind => GeneratorReadoutKind.Water;
+        /// <summary>转速比:0.4 是环境效率满格时的转速上限</summary>
+        public float ConditionRatio => MathHelper.Clamp(hasElmdVlome / 0.4f, 0f, 1f);
+        public bool ConditionOk {
+            get {
+                //与 GeneratorUpdate 同一条判据:整个机身浸没在水中
+                for (int i = 0; i < Width / 16; i++) {
+                    for (int j = 0; j < Height / 16; j++) {
+                        Tile tile = Framing.GetTileSafely(Position + new Point16(i, j));
+                        if (tile.LiquidAmount == 0 || tile.LiquidType != LiquidID.Water) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+        }
+        public float OutputPerSecond => hasElmdVlome * 1.6f * ModuleRack.GenOutputMult * 60f;
+        #endregion
         private SlotId hydroelectricSoundSlot;
         private SoundStyle hydroelectricSoundStyle = new SoundStyle(CWRConstant.Asset + "Sounds/RollingMERoer") {
             IsLooped = true,
@@ -127,11 +152,12 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
             float efficiency = Hydroelectric.GetEnvironmentEfficiency();
             float maxRot = 0.4f * efficiency;
             if (hasElmdVlome < maxRot) {
-                hasElmdVlome += 0.002f;
+                //快速起转模块放大爬升速率
+                hasElmdVlome += 0.002f * ModuleRack.GenSpinUpMult;
             }
 
             if (MachineData.UEvalue < MaxUEValue) {
-                MachineData.UEvalue += hasElmdVlome * 1.6f;
+                MachineData.UEvalue += hasElmdVlome * 1.6f * ModuleRack.GenOutputMult;
             }
 
             for (int i = 0; i < 3; i++) {

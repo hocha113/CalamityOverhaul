@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> VictorCyberPortal { get; set; }
         public static Asset<Effect> TBUGCorruptRift { get; set; }
         public static Asset<Effect> TBUGTerminalPanel { get; set; }
-        public static Asset<Effect> MiningTerminal { get; set; }
+        public static Asset<Effect> IndustrialTerminal { get; set; }
         public static Asset<Effect> ThermalPanel { get; set; }
         public static Asset<Effect> ThermalBar { get; set; }
         public static Asset<Effect> ThermalBatteryCore { get; set; }

@@ -1,4 +1,6 @@
-﻿using CalamityOverhaul.Content.UIs.UIEffect;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.UIs;
+using CalamityOverhaul.Content.UIs.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -6,6 +8,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -13,56 +16,79 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
 {
-    /// <summary>焚烧炉UI</summary>
+    /// <summary>
+    /// 电动焚化炉面板:电熔炉仪器语言——钢壳(随工况发热)、入料口/出料口插座、
+    /// 熔炼室电热棒组(通电炭红转亮橙,断电冷却)、流向箭标、电力表盘。<br/>
+    /// 交互契约与旧版一致(点击入料/取料、右键开合、超距自动关、位置持久化),
+    /// 笔刷与材质在 <see cref="IndustrialTerminalRenderer"/>
+    /// </summary>
     internal class IncineratorUI : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "UI.Incinerator";
 
-        //面板尺寸
-        private const float PanelWidth = 380f;
-        private const float PanelHeight = 320f;
+        #region 布局与状态
+        private const float PanelWidth = 420f;
+        private const float PanelHeight = 332f;
 
-        //动画变量
-        private float scanLineTimer = 0f;
-        private float heatGlow = 0f;
-        private float heatPulse = 0f;
-        private float dataStream = 0f;
-        private float rustGridPhase = 0f;
-        private float powerFlowTimer = 0f;
+        private static Color TextMain => IndustrialTerminalRenderer.TextMain;
+        private static Color TextDim => IndustrialTerminalRenderer.TextDim;
+        private static Color Amber => IndustrialTerminalRenderer.Amber;
+        private static Color WarnRed => IndustrialTerminalRenderer.WarnRed;
+        private static Color Brass => IndustrialTerminalRenderer.Brass;
+        private static Color BrassBright => IndustrialTerminalRenderer.BrassBright;
 
-        //粒子系统
-        private readonly List<EmberPRT> embers = new();
-        private int emberSpawnTimer = 0;
-        private readonly List<AshPRT> ashes = new();
-        private int ashSpawnTimer = 0;
-
-        //UI淡入淡出
-        private float uiFadeAlpha = 0f;
-        private float targetAlpha = 0f;
-
-        //拖拽功能
-        private bool isDragging = false;
-        private Vector2 dragOffset = Vector2.Zero;
-
-        //鼠标交互
-        private Rectangle panelRect;
-        private Rectangle inputSlotRect;
-        private Rectangle outputSlotRect;
-        private Rectangle progressBarRect;
-        private Rectangle powerBarRect;
-        private bool hoveringInputSlot = false;
-        private bool hoveringOutputSlot = false;
-        private bool hoveringProgressBar = false;
-        private bool hoveringPowerBar = false;
+        private static float UIScreenW => PlayerInput.RealScreenWidth / Main.UIScale;
+        private static float UIScreenH => PlayerInput.RealScreenHeight / Main.UIScale;
 
         //关联的TP
         internal IncineratorTP CurrentTP;
         internal bool IsActive;
-        public override bool Active => IsActive;
+
+        //淡入淡出(Active 放宽到淡出结束,收摊有过程)
+        private float uiFadeAlpha;
+        public override bool Active => IsActive || uiFadeAlpha > 0.01f;
+
+        //机壳热度包络:开工升温、停机冷却,喂 uHeat 与电热棒
+        private float heatDisplay;
+        //电力表指针弹簧
+        private float powerDisplay;
+        private float powerVel;
+        private float latchHover;
+
+        //拖拽
+        private bool isDragging;
+        private Vector2 dragOffset;
+        private bool positionInitialized;
+
+        //布局矩形
+        private Rectangle panelRect;
+        private Rectangle closeRect;
+        private Rectangle inputSlotRect;
+        private Rectangle outputSlotRect;
+        private Rectangle chamberRect;
+        private Rectangle progressBarRect;
+        private Vector2 powerGaugeCenter;
+        private Rectangle powerGaugeRect;
+        private bool hoveringInputSlot;
+        private bool hoveringOutputSlot;
+        private bool hoveringPowerGauge;
+        private bool hoveringSockets;
+
+        //模块插座行(点击/校验/红闪/绘制在共享件里)
+        private readonly ModuleSocketStrip socketStrip = new();
+
+        //炉膛粒子:余烬与灰烬,从熔炼室冒出
+        private readonly List<EmberPRT> embers = new();
+        private int emberSpawnTimer;
+        private readonly List<AshPRT> ashes = new();
+        private int ashSpawnTimer;
+
+        private float animTimer;
 
         private IncineratorData IncData => CurrentTP?.IncData;
+        #endregion
 
-        //本地化文本
+        #region 本地化
         protected static LocalizedText TitleText;
         protected static LocalizedText InputLabel;
         protected static LocalizedText OutputLabel;
@@ -92,6 +118,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             OutputHint = this.GetLocalization(nameof(OutputHint), () => "点击取出成品");
             PowerUnit = this.GetLocalization(nameof(PowerUnit), () => "UE");
         }
+        #endregion
 
         public void Interactive(IncineratorTP tp, bool newTP) {
             if (tp == null) {
@@ -106,36 +133,24 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             }
 
             CurrentTP = tp;
-            SoundEngine.PlaySound(Common.CWRSound.ButtonZero with { Volume = 0.3f, Pitch = -0.5f });
+            SoundEngine.PlaySound(CWRSound.ButtonZero with { Volume = 0.3f, Pitch = -0.5f });
         }
 
         public override void Update() {
-            //拖拽
-            HandleDragging();
+            if (!positionInitialized && Main.screenWidth > 0) {
+                positionInitialized = true;
+                if (DrawPosition.X < PanelWidth / 2 + 10 && DrawPosition.Y < PanelHeight / 2 + 10) {
+                    DrawPosition = new Vector2(UIScreenW * 0.5f, UIScreenH * 0.5f);
+                }
+            }
 
-            //限制面板位置在屏幕内
-            DrawPosition.X = MathHelper.Clamp(DrawPosition.X, PanelWidth / 2 + 10, Main.screenWidth - PanelWidth / 2 - 10);
-            DrawPosition.Y = MathHelper.Clamp(DrawPosition.Y, PanelHeight / 2 + 10, Main.screenHeight - PanelHeight / 2 - 10);
+            DrawPosition.X = MathHelper.Clamp(DrawPosition.X, PanelWidth / 2 + 10, UIScreenW - PanelWidth / 2 - 10);
+            DrawPosition.Y = MathHelper.Clamp(DrawPosition.Y, PanelHeight / 2 + 10, UIScreenH - PanelHeight / 2 - 10);
 
-            //更新动画计时器
-            scanLineTimer += 0.03f;
-            heatGlow += 0.04f;
-            heatPulse += 0.015f;
-            dataStream += 0.035f;
-            rustGridPhase += 0.01f;
-            powerFlowTimer += 0.05f;
+            animTimer += 1f / 60f;
 
-            if (scanLineTimer > MathHelper.TwoPi) scanLineTimer -= MathHelper.TwoPi;
-            if (heatGlow > MathHelper.TwoPi) heatGlow -= MathHelper.TwoPi;
-            if (heatPulse > MathHelper.TwoPi) heatPulse -= MathHelper.TwoPi;
-            if (dataStream > MathHelper.TwoPi) dataStream -= MathHelper.TwoPi;
-            if (rustGridPhase > MathHelper.TwoPi) rustGridPhase -= MathHelper.TwoPi;
-            if (powerFlowTimer > MathHelper.TwoPi) powerFlowTimer -= MathHelper.TwoPi;
-
-            //更新UI透明度
-            targetAlpha = IsActive ? 1f : 0f;
+            float targetAlpha = IsActive ? 1f : 0f;
             uiFadeAlpha = MathHelper.Lerp(uiFadeAlpha, targetAlpha, 0.15f);
-
             if (uiFadeAlpha < 0.01f && !IsActive) {
                 return;
             }
@@ -153,28 +168,52 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                 return;
             }
 
-            //计算面板区域
-            Vector2 topLeft = DrawPosition - new Vector2(PanelWidth / 2, PanelHeight / 2);
-            panelRect = new Rectangle((int)topLeft.X, (int)topLeft.Y, (int)PanelWidth, (int)PanelHeight);
+            ComputeLayout();
+            UpdateEnvelopes();
+            socketStrip.Update();
 
-            //计算子区域
-            inputSlotRect = new Rectangle((int)(topLeft.X + 50), (int)(topLeft.Y + 85), 70, 70);
-            outputSlotRect = new Rectangle((int)(topLeft.X + 260), (int)(topLeft.Y + 85), 70, 70);
-            progressBarRect = new Rectangle((int)(topLeft.X + 140), (int)(topLeft.Y + 95), 100, 50);
-            powerBarRect = new Rectangle((int)(topLeft.X + 50), (int)(topLeft.Y + 195), 280, 35);
-
-            //鼠标交互检测
-            hoveringInputSlot = inputSlotRect.Contains(MouseHitBox) && !isDragging;
-            hoveringOutputSlot = outputSlotRect.Contains(MouseHitBox) && !isDragging;
-            hoveringProgressBar = progressBarRect.Contains(MouseHitBox) && !isDragging;
-            hoveringPowerBar = powerBarRect.Contains(MouseHitBox) && !isDragging;
-            hoverInMainPage = panelRect.Contains(MouseHitBox);
+            Point mouse = MousePosition.ToPoint();
+            hoveringInputSlot = inputSlotRect.Contains(mouse) && !isDragging;
+            hoveringOutputSlot = outputSlotRect.Contains(mouse) && !isDragging;
+            hoveringPowerGauge = powerGaugeRect.Contains(mouse) && !isDragging;
+            hoveringSockets = socketStrip.Contains(mouse) && !isDragging;
+            hoverInMainPage = panelRect.Contains(mouse);
+            latchHover = MathHelper.Lerp(latchHover, closeRect.Contains(mouse) ? 1f : 0f, 0.2f);
 
             if (hoverInMainPage) {
                 player.mouseInterface = true;
+                //悬停期间滚轮不翻快捷栏
+                UIInputGuard.SuppressWeaponSwitch();
             }
 
-            //输入槽交互
+            //闩钮关闭
+            if (closeRect.Contains(mouse) && keyLeftPressState == KeyPressState.Pressed) {
+                IsActive = false;
+                SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.3f, Volume = 0.5f });
+                return;
+            }
+
+            //模块插座行点击(先于拖拽捕获)
+            if (keyLeftPressState == KeyPressState.Pressed && hoveringSockets && CurrentTP != null) {
+                socketStrip.HandleClick(mouse, CurrentTP.ModuleRack, IncineratorTP.ModuleSlotCount,
+                    player, () => CurrentTP.SendData());
+            }
+
+            //背景区拖拽,避开料口/表盘/插座/闩钮
+            if (keyLeftPressState == KeyPressState.Pressed && hoverInMainPage
+                && !hoveringInputSlot && !hoveringOutputSlot && !hoveringPowerGauge && !hoveringSockets
+                && !closeRect.Contains(mouse) && !isDragging) {
+                isDragging = true;
+                dragOffset = MousePosition - DrawPosition;
+            }
+            if (isDragging) {
+                DrawPosition = MousePosition - dragOffset;
+                if (keyLeftPressState == KeyPressState.Released) {
+                    isDragging = false;
+                }
+            }
+
+            //入料口交互
             if (hoveringInputSlot && IncData != null) {
                 if (IncData.InputItem != null && !IncData.InputItem.IsAir) {
                     Main.HoverItem = IncData.InputItem.Clone();
@@ -186,7 +225,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                 }
             }
 
-            //输出槽交互
+            //出料口交互
             if (hoveringOutputSlot && IncData != null) {
                 if (IncData.OutputItem != null && !IncData.OutputItem.IsAir) {
                     Main.HoverItem = IncData.OutputItem.Clone();
@@ -198,45 +237,51 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                 }
             }
 
-            //更新粒子
             UpdateParticles();
         }
 
-        private void HandleDragging() {
-            Vector2 mousePos = new Vector2(Main.mouseX, Main.mouseY);
-
-            if (panelRect.Contains(mousePos.ToPoint()) && !hoveringInputSlot && !hoveringOutputSlot
-                && !hoveringProgressBar && !hoveringPowerBar
-                && keyLeftPressState == KeyPressState.Pressed && !isDragging) {
-                isDragging = true;
-                dragOffset = DrawPosition - mousePos;
-                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.3f });
-            }
-
-            if (isDragging) {
-                DrawPosition = mousePos + dragOffset;
-                if (keyLeftPressState == KeyPressState.Released) {
-                    isDragging = false;
-                    SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.3f });
-                }
-            }
+        private void ComputeLayout() {
+            Vector2 topLeft = DrawPosition - new Vector2(PanelWidth / 2, PanelHeight / 2);
+            panelRect = new Rectangle((int)topLeft.X, (int)topLeft.Y, (int)PanelWidth, (int)PanelHeight);
+            closeRect = new Rectangle(panelRect.Right - 38, panelRect.Y + 9, 26, 26);
+            inputSlotRect = new Rectangle(panelRect.X + 36, panelRect.Y + 92, 64, 64);
+            outputSlotRect = new Rectangle(panelRect.X + 320, panelRect.Y + 92, 64, 64);
+            chamberRect = new Rectangle(panelRect.X + 140, panelRect.Y + 80, 140, 88);
+            progressBarRect = new Rectangle(panelRect.X + 140, panelRect.Y + 178, 140, 8);
+            powerGaugeCenter = new Vector2(panelRect.X + 352, panelRect.Y + 244);
+            powerGaugeRect = new Rectangle((int)powerGaugeCenter.X - 32, (int)powerGaugeCenter.Y - 32, 64, 64);
+            //底行:状态灯(左)+插座行(中)+电力表(右)
+            socketStrip.Layout(panelRect.X + 150, panelRect.Y + 222,
+                CurrentTP != null ? IncineratorTP.ModuleSlotCount : 0, 40, 8);
         }
 
+        /// <summary>机壳热度包络与电力表指针弹簧</summary>
+        private void UpdateEnvelopes() {
+            IncineratorData data = IncData;
+            bool working = data != null && data.IsWorking;
+            //升温快冷却慢,像真炉子
+            float heatTarget = working ? 0.85f : 0f;
+            heatDisplay = MathHelper.Lerp(heatDisplay, heatTarget, working ? 0.035f : 0.012f);
+
+            float powerTarget = data != null ? MathHelper.Clamp(data.UEvalue / data.MaxUE, 0f, 1f) : 0f;
+            powerVel = powerVel * 0.80f + (powerTarget - powerDisplay) * 0.05f;
+            powerDisplay += powerVel;
+        }
+
+        /// <summary>余烬与灰烬都从熔炼室冒出,有来源感</summary>
         private void UpdateParticles() {
-            if (uiFadeAlpha < 0.3f) {
+            if (uiFadeAlpha < 0.3f || IncData == null) {
                 return;
             }
 
-            Vector2 panelCenter = DrawPosition;
+            bool working = IncData.IsWorking;
 
-            //余烬粒子(焚烧时更多)
             emberSpawnTimer++;
-            int spawnRate = IncData?.IsWorking == true ? 3 : 8;
-            if (emberSpawnTimer >= spawnRate && embers.Count < 30) {
+            int emberInterval = working ? 3 : 16;
+            if (heatDisplay > 0.05f && emberSpawnTimer >= emberInterval && embers.Count < 30) {
                 emberSpawnTimer = 0;
-                float xPos = Main.rand.NextFloat(panelCenter.X - PanelWidth / 2 + 40, panelCenter.X + PanelWidth / 2 - 40);
-                Vector2 startPos = new(xPos, panelCenter.Y + PanelHeight / 2 - 25);
-                embers.Add(new EmberPRT(startPos));
+                float xPos = Main.rand.NextFloat(chamberRect.X + 8, chamberRect.Right - 8);
+                embers.Add(new EmberPRT(new Vector2(xPos, chamberRect.Bottom - 8)));
             }
             for (int i = embers.Count - 1; i >= 0; i--) {
                 if (embers[i].Update()) {
@@ -244,13 +289,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                 }
             }
 
-            //灰烬粒子
             ashSpawnTimer++;
-            if (ashSpawnTimer >= 10 && ashes.Count < 20) {
+            if (working && ashSpawnTimer >= 10 && ashes.Count < 18) {
                 ashSpawnTimer = 0;
-                float xPos = Main.rand.NextFloat(panelCenter.X - PanelWidth / 2 + 40, panelCenter.X + PanelWidth / 2 - 40);
-                Vector2 startPos = new(xPos, panelCenter.Y + PanelHeight / 2 - 20);
-                ashes.Add(new AshPRT(startPos));
+                float xPos = Main.rand.NextFloat(chamberRect.X + 6, chamberRect.Right - 6);
+                ashes.Add(new AshPRT(new Vector2(xPos, chamberRect.Y + 12)));
             }
             for (int i = ashes.Count - 1; i >= 0; i--) {
                 if (ashes[i].Update()) {
@@ -282,6 +325,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             }
         }
 
+        #region 绘制
         public override void Draw(SpriteBatch spriteBatch) {
             if (uiFadeAlpha < 0.01f) {
                 return;
@@ -290,342 +334,247 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                 return;
             }
 
-            //绘制主面板
-            DrawMainPanel(spriteBatch);
+            DrawShell(spriteBatch);
+            DrawChamber(spriteBatch);
 
-            //绘制粒子
-            foreach (var ash in ashes) {
-                ash.Draw(spriteBatch, uiFadeAlpha * 0.5f);
+            //粒子夹在熔炼室与料口之间:灰烬沉底,余烬压上
+            foreach (AshPRT ash in ashes) {
+                ash.Draw(spriteBatch, uiFadeAlpha * 0.55f);
             }
-            foreach (var ember in embers) {
+            foreach (EmberPRT ember in embers) {
                 ember.Draw(spriteBatch, uiFadeAlpha * 0.9f);
             }
 
-            //绘制UI元素
-            DrawInputSlot(spriteBatch);
-            DrawOutputSlot(spriteBatch);
-            DrawProgressBar(spriteBatch);
-            DrawPowerBar(spriteBatch);
-            DrawStatusText(spriteBatch);
+            DrawSlots(spriteBatch);
+            DrawFlowChevrons(spriteBatch);
+            DrawStatusRow(spriteBatch);
+            DrawHoverTips(spriteBatch);
         }
 
-        private void DrawMainPanel(SpriteBatch sb) {
-            Texture2D px = VaultAsset.placeholder2.Value;
+        /// <summary>钢壳(随工况发热) + 铆钉 + 黄铜铭牌 + 闩钮</summary>
+        private void DrawShell(SpriteBatch sb) {
             float alpha = uiFadeAlpha;
 
-            //主背景渐变
-            int segments = 40;
-            for (int i = 0; i < segments; i++) {
-                float t = i / (float)segments;
-                float t2 = (i + 1) / (float)segments;
-                int y1 = panelRect.Y + (int)(t * panelRect.Height);
-                int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
-                Rectangle r = new(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
+            IndustrialTerminalRenderer.ShaderPanel(sb, panelRect, alpha, mode: 0, heat: heatDisplay);
 
-                //深灰/暗橙/锈红
-                Color darkBase = new Color(15, 10, 8);
-                Color rustMid = new Color(30, 18, 12);
-                Color heatGlow_color = new Color(50, 28, 18);
+            int inset = IndustrialTerminalRenderer.Chamfer + 2;
+            IndustrialTerminalRenderer.DrawRivet(sb, new Vector2(panelRect.X + inset, panelRect.Y + inset), alpha);
+            IndustrialTerminalRenderer.DrawRivet(sb, new Vector2(panelRect.Right - inset, panelRect.Y + inset), alpha);
+            IndustrialTerminalRenderer.DrawRivet(sb, new Vector2(panelRect.X + inset, panelRect.Bottom - inset), alpha);
+            IndustrialTerminalRenderer.DrawRivet(sb, new Vector2(panelRect.Right - inset, panelRect.Bottom - inset), alpha);
 
-                float pulse = (float)Math.Sin(heatPulse * 0.5f + t * 1.5f) * 0.5f + 0.5f;
-                Color baseColor = Color.Lerp(darkBase, rustMid, pulse);
-                Color finalColor = Color.Lerp(baseColor, heatGlow_color, t * 0.3f);
-                finalColor *= alpha * 0.9f;
-
-                sb.Draw(px, r, new Rectangle(0, 0, 1, 1), finalColor);
-            }
-
-            //热量覆盖层
-            if (IncData.IsWorking) {
-                float flicker = (float)Math.Sin(heatGlow * 1.5f) * 0.5f + 0.5f;
-                Color heatOverlay = new Color(60, 25, 15) * (alpha * 0.25f * flicker);
-                sb.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), heatOverlay);
-            }
-
-            //锈蚀网格
-            DrawRustGrid(sb, panelRect, alpha * 0.6f);
-
-            //扫描线
-            DrawScanLines(sb, panelRect, alpha * 0.7f);
-
-            //边框
-            float innerPulse = (float)Math.Sin(heatPulse * 1.1f) * 0.5f + 0.5f;
-            DrawFrame(sb, panelRect, alpha, innerPulse);
-
-            //标题
             string title = TitleText.Value;
-            Vector2 titlePos = new Vector2(panelRect.Center.X, panelRect.Y + 28);
-            Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(title) * 0.9f;
+            Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(title) * 0.86f;
+            Rectangle plate = new(panelRect.X + 22, panelRect.Y + 9, (int)titleSize.X + 30, 27);
+            IndustrialTerminalRenderer.DrawNameplate(sb, plate, alpha);
+            IndustrialTerminalRenderer.DrawPlateTitle(sb, plate, title, alpha, 0.86f);
 
-            Color glowColor = new Color(255, 120, 60) * (alpha * 0.5f);
-            for (int i = 0; i < 4; i++) {
-                float angle = MathHelper.TwoPi * i / 4f;
-                Vector2 offset = angle.ToRotationVector2() * 2f;
-                Utils.DrawBorderString(sb, title, titlePos - titleSize / 2 + offset, glowColor, 0.9f);
-            }
-            Utils.DrawBorderString(sb, title, titlePos - titleSize / 2, new Color(230, 190, 150) * alpha, 0.9f);
+            IndustrialTerminalRenderer.DrawEtchedLine(sb, panelRect.X + 14, panelRect.Width - 28, panelRect.Y + 44, alpha, 0.8f);
+            IndustrialTerminalRenderer.DrawLatch(sb, closeRect.Center.ToVector2(), alpha, latchHover);
         }
 
-        private void DrawRustGrid(SpriteBatch sb, Rectangle rect, float alpha) {
-            Texture2D px = VaultAsset.placeholder2.Value;
-            int gridRows = 10;
-            float rowHeight = rect.Height / (float)gridRows;
-
-            for (int row = 0; row < gridRows; row++) {
-                float t = row / (float)gridRows;
-                float y = rect.Y + row * rowHeight;
-                float phase = rustGridPhase + t * MathHelper.Pi * 0.6f;
-                float brightness = (float)Math.Sin(phase) * 0.5f + 0.5f;
-
-                Color gridColor = new Color(70, 35, 20) * (alpha * 0.04f * brightness);
-                sb.Draw(px, new Rectangle(rect.X + 15, (int)y, rect.Width - 30, 1), new Rectangle(0, 0, 1, 1), gridColor);
-            }
-        }
-
-        private void DrawScanLines(SpriteBatch sb, Rectangle rect, float alpha) {
-            Texture2D px = VaultAsset.placeholder2.Value;
-            float scanY = rect.Y + (float)Math.Sin(scanLineTimer) * 0.5f * rect.Height + rect.Height * 0.5f;
-
-            for (int i = -2; i <= 2; i++) {
-                float offsetY = scanY + i * 4f;
-                if (offsetY < rect.Y || offsetY > rect.Bottom) {
-                    continue;
-                }
-
-                float intensity = 1f - Math.Abs(i) * 0.3f;
-                Color scanColor = new Color(160, 80, 45) * (alpha * 0.1f * intensity);
-                int thickness = i == 0 ? 2 : 1;
-                sb.Draw(px, new Rectangle(rect.X + 12, (int)offsetY, rect.Width - 24, thickness), new Rectangle(0, 0, 1, 1), scanColor);
-            }
-        }
-
-        private void DrawFrame(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
-            Texture2D px = VaultAsset.placeholder2.Value;
-
-            Color rustEdge = Color.Lerp(new Color(130, 65, 35), new Color(190, 100, 55), pulse) * (alpha * 0.7f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 4), new Rectangle(0, 0, 1, 1), rustEdge);
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 4, rect.Width, 4), new Rectangle(0, 0, 1, 1), rustEdge * 0.7f);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, 4, rect.Height), new Rectangle(0, 0, 1, 1), rustEdge * 0.8f);
-            sb.Draw(px, new Rectangle(rect.Right - 4, rect.Y, 4, rect.Height), new Rectangle(0, 0, 1, 1), rustEdge * 0.8f);
-
-            Rectangle inner = rect;
-            inner.Inflate(-8, -8);
-            Color innerGlow = new Color(180, 90, 45) * (alpha * 0.15f * pulse);
-            sb.Draw(px, new Rectangle(inner.X, inner.Y, inner.Width, 2), new Rectangle(0, 0, 1, 1), innerGlow);
-            sb.Draw(px, new Rectangle(inner.X, inner.Bottom - 2, inner.Width, 2), new Rectangle(0, 0, 1, 1), innerGlow * 0.6f);
-            sb.Draw(px, new Rectangle(inner.X, inner.Y, 2, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.75f);
-            sb.Draw(px, new Rectangle(inner.Right - 2, inner.Y, 2, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.75f);
-        }
-
-        private void DrawInputSlot(SpriteBatch sb) {
+        /// <summary>熔炼室:凹槽膛体 + 三根电热棒(通电炭红转亮橙) + 进度刻度条</summary>
+        private void DrawChamber(SpriteBatch sb) {
             Texture2D px = VaultAsset.placeholder2.Value;
             float alpha = uiFadeAlpha;
-            float hoverGlow = hoveringInputSlot ? 0.35f : 0f;
+            Rectangle src = new(0, 0, 1, 1);
 
-            //背景
-            Color slotBg = new Color(20, 14, 10) * (alpha * 0.9f);
-            sb.Draw(px, inputSlotRect, new Rectangle(0, 0, 1, 1), slotBg);
+            //膛体标签
+            Vector2 labelSize = FontAssets.MouseText.Value.MeasureString(ProgressLabel.Value) * 0.6f;
+            Utils.DrawBorderString(sb, ProgressLabel.Value,
+                new Vector2(chamberRect.Center.X - labelSize.X * 0.5f, chamberRect.Y - 20), TextDim * alpha, 0.6f);
 
-            //边框
-            Color edgeColor = Color.Lerp(new Color(110, 60, 35), new Color(170, 100, 55), (float)Math.Sin(heatPulse * 1.2f) * 0.5f + 0.5f) * (alpha * (0.7f + hoverGlow));
-            sb.Draw(px, new Rectangle(inputSlotRect.X, inputSlotRect.Y, inputSlotRect.Width, 3), new Rectangle(0, 0, 1, 1), edgeColor);
-            sb.Draw(px, new Rectangle(inputSlotRect.X, inputSlotRect.Bottom - 3, inputSlotRect.Width, 3), new Rectangle(0, 0, 1, 1), edgeColor);
-            sb.Draw(px, new Rectangle(inputSlotRect.X, inputSlotRect.Y, 3, inputSlotRect.Height), new Rectangle(0, 0, 1, 1), edgeColor);
-            sb.Draw(px, new Rectangle(inputSlotRect.Right - 3, inputSlotRect.Y, 3, inputSlotRect.Height), new Rectangle(0, 0, 1, 1), edgeColor);
+            IndustrialTerminalRenderer.DrawRecess(sb, chamberRect, alpha, 0.8f);
+
+            //三根电热棒:热度决定颜色,炭黑→炭红→亮橙,各棒相位错开轻微闪变
+            for (int i = 0; i < 3; i++) {
+                int rodY = chamberRect.Y + 20 + i * 24;
+                Rectangle rod = new(chamberRect.X + 12, rodY, chamberRect.Width - 24, 7);
+                float shimmer = MathF.Sin(animTimer * 5f + i * 2.1f) * 0.5f + 0.5f;
+                float rodHeat = MathHelper.Clamp(heatDisplay * (0.85f + shimmer * 0.15f), 0f, 1f);
+
+                //棒座:两端黄铜端子
+                sb.Draw(px, new Rectangle(rod.X - 5, rod.Y - 1, 5, rod.Height + 2), src, Brass * (alpha * 0.8f));
+                sb.Draw(px, new Rectangle(rod.Right, rod.Y - 1, 5, rod.Height + 2), src, Brass * (alpha * 0.8f));
+
+                //棒体:冷态是暗铁,热态向炭红/亮橙走
+                Color cold = new(38, 32, 28);
+                Color hot = Color.Lerp(new Color(150, 42, 20), new Color(255, 150, 60), rodHeat);
+                Color rodColor = Color.Lerp(cold, hot, rodHeat);
+                sb.Draw(px, rod, src, rodColor * alpha);
+                //棒芯亮线:热起来才有
+                if (rodHeat > 0.15f) {
+                    sb.Draw(px, new Rectangle(rod.X + 2, rod.Center.Y, rod.Width - 4, 1), src,
+                        Color.Lerp(hot, Color.White, 0.35f) * (alpha * rodHeat * 0.8f));
+                    SvgPathPen.SoftDot(sb, rod.Center.ToVector2(), rod.Width * 0.32f,
+                        new Color(255, 120, 45), alpha * rodHeat * 0.10f);
+                }
+            }
+
+            //进度:膛下刻度条,与掷骰无关的诚实工序读数
+            float progress = IncData.MaxSmeltingProgress > 0
+                ? MathHelper.Clamp(IncData.SmeltingProgress / (float)IncData.MaxSmeltingProgress, 0f, 1f) : 0f;
+            IndustrialTerminalRenderer.DrawTickBar(sb, progressBarRect, progress, Amber, alpha);
+        }
+
+        /// <summary>入料口与出料口:插座语法,出料口走黄铜亮色</summary>
+        private void DrawSlots(SpriteBatch sb) {
+            float alpha = uiFadeAlpha;
 
             //标签
-            string label = InputLabel.Value;
-            Vector2 labelSize = FontAssets.MouseText.Value.MeasureString(label) * 0.7f;
-            Vector2 labelPos = new Vector2(inputSlotRect.Center.X - labelSize.X / 2, inputSlotRect.Y - 22);
-            Utils.DrawBorderString(sb, label, labelPos, new Color(230, 190, 150) * alpha, 0.7f);
+            Vector2 inSize = FontAssets.MouseText.Value.MeasureString(InputLabel.Value) * 0.62f;
+            Utils.DrawBorderString(sb, InputLabel.Value,
+                new Vector2(inputSlotRect.Center.X - inSize.X * 0.5f, inputSlotRect.Y - 20), TextDim * alpha, 0.62f);
+            Vector2 outSize = FontAssets.MouseText.Value.MeasureString(OutputLabel.Value) * 0.62f;
+            Utils.DrawBorderString(sb, OutputLabel.Value,
+                new Vector2(outputSlotRect.Center.X - outSize.X * 0.5f, outputSlotRect.Y - 20),
+                Color.Lerp(TextDim, BrassBright, 0.4f) * alpha, 0.62f);
 
-            //绘制物品
-            if (IncData.InputItem != null && !IncData.InputItem.IsAir) {
-                Main.instance.LoadItem(IncData.InputItem.type);
-                VaultUtils.SimpleDrawItem(sb, IncData.InputItem.type, inputSlotRect.Center.ToVector2(), 45, 1f, 0, Color.White * alpha);
+            IndustrialTerminalRenderer.DrawSocket(sb, inputSlotRect, alpha, hoveringInputSlot ? 1f : 0f, 0f);
+            IndustrialTerminalRenderer.DrawSocket(sb, outputSlotRect, alpha, hoveringOutputSlot ? 1f : 0f, 0f);
 
-                if (IncData.InputItem.stack > 1) {
-                    string stackText = IncData.InputItem.stack.ToString();
-                    Vector2 stackSize = FontAssets.ItemStack.Value.MeasureString(stackText);
-                    Utils.DrawBorderStringFourWay(sb, FontAssets.ItemStack.Value, stackText,
-                        inputSlotRect.Right - stackSize.X * 0.8f - 8, inputSlotRect.Bottom - stackSize.Y * 0.8f - 8,
-                        Color.White * alpha, Color.Black * alpha, new Vector2(0.3f), 0.8f);
-                }
+            //料口物品
+            DrawSlotItem(sb, IncData.InputItem, inputSlotRect, alpha);
+            DrawSlotItem(sb, IncData.OutputItem, outputSlotRect, alpha);
+        }
+
+        private static void DrawSlotItem(SpriteBatch sb, Item item, Rectangle rect, float alpha) {
+            if (item == null || item.IsAir) {
+                return;
+            }
+            Main.instance.LoadItem(item.type);
+            VaultUtils.SimpleDrawItem(sb, item.type, rect.Center.ToVector2(), 42, 1f, 0, Color.White * alpha);
+
+            if (item.stack > 1) {
+                string stackText = item.stack.ToString();
+                Vector2 stackSize = FontAssets.ItemStack.Value.MeasureString(stackText);
+                Utils.DrawBorderStringFourWay(sb, FontAssets.ItemStack.Value, stackText,
+                    rect.Right - stackSize.X * 0.8f - 6, rect.Bottom - stackSize.Y * 0.8f - 6,
+                    Color.White * alpha, Color.Black * alpha, new Vector2(0.3f), 0.8f);
             }
         }
 
-        private void DrawOutputSlot(SpriteBatch sb) {
-            Texture2D px = VaultAsset.placeholder2.Value;
+        /// <summary>流向箭标:入料口→熔炼室→出料口,工作时逐个点亮流动</summary>
+        private void DrawFlowChevrons(SpriteBatch sb) {
             float alpha = uiFadeAlpha;
-            float hoverGlow = hoveringOutputSlot ? 0.35f : 0f;
+            bool working = IncData.IsWorking;
+            int cy = inputSlotRect.Center.Y;
 
-            //背景
-            Color slotBg = new Color(20, 14, 10) * (alpha * 0.9f);
-            sb.Draw(px, outputSlotRect, new Rectangle(0, 0, 1, 1), slotBg);
-
-            //边框(输出槽用金色调)
-            Color edgeColor = Color.Lerp(new Color(130, 100, 40), new Color(200, 160, 70), (float)Math.Sin(heatPulse * 1.2f) * 0.5f + 0.5f) * (alpha * (0.7f + hoverGlow));
-            sb.Draw(px, new Rectangle(outputSlotRect.X, outputSlotRect.Y, outputSlotRect.Width, 3), new Rectangle(0, 0, 1, 1), edgeColor);
-            sb.Draw(px, new Rectangle(outputSlotRect.X, outputSlotRect.Bottom - 3, outputSlotRect.Width, 3), new Rectangle(0, 0, 1, 1), edgeColor);
-            sb.Draw(px, new Rectangle(outputSlotRect.X, outputSlotRect.Y, 3, outputSlotRect.Height), new Rectangle(0, 0, 1, 1), edgeColor);
-            sb.Draw(px, new Rectangle(outputSlotRect.Right - 3, outputSlotRect.Y, 3, outputSlotRect.Height), new Rectangle(0, 0, 1, 1), edgeColor);
-
-            //标签
-            string label = OutputLabel.Value;
-            Vector2 labelSize = FontAssets.MouseText.Value.MeasureString(label) * 0.7f;
-            Vector2 labelPos = new Vector2(outputSlotRect.Center.X - labelSize.X / 2, outputSlotRect.Y - 22);
-            Utils.DrawBorderString(sb, label, labelPos, new Color(230, 210, 150) * alpha, 0.7f);
-
-            //绘制物品
-            if (IncData.OutputItem != null && !IncData.OutputItem.IsAir) {
-                Main.instance.LoadItem(IncData.OutputItem.type);
-                VaultUtils.SimpleDrawItem(sb, IncData.OutputItem.type, outputSlotRect.Center.ToVector2(), 45, 1f, 0, Color.White * alpha);
-
-                if (IncData.OutputItem.stack > 1) {
-                    string stackText = IncData.OutputItem.stack.ToString();
-                    Vector2 stackSize = FontAssets.ItemStack.Value.MeasureString(stackText);
-                    Utils.DrawBorderStringFourWay(sb, FontAssets.ItemStack.Value, stackText,
-                        outputSlotRect.Right - stackSize.X * 0.8f - 8, outputSlotRect.Bottom - stackSize.Y * 0.8f - 8,
-                        Color.White * alpha, Color.Black * alpha, new Vector2(0.3f), 0.8f);
-                }
+            void chevron(float x, int index) {
+                //工作时相位流动,停机时静置暗刻
+                float lit = working
+                    ? MathF.Sin(animTimer * 4.5f - index * 0.9f) * 0.5f + 0.5f
+                    : 0.12f;
+                Color color = Color.Lerp(TextDim * 0.6f, Amber, lit) * (alpha * (0.35f + lit * 0.55f));
+                Vector2 top = new(x, cy - 6);
+                Vector2 mid = new(x + 7, cy);
+                Vector2 bottom = new(x, cy + 6);
+                Texture2D px = VaultAsset.placeholder2.Value;
+                Vector2 dirA = mid - top;
+                sb.Draw(px, top, new Rectangle(0, 0, 1, 1), color, dirA.ToRotation(),
+                    new Vector2(0f, 0.5f), new Vector2(dirA.Length(), 2f), SpriteEffects.None, 0f);
+                Vector2 dirB = bottom - mid;
+                sb.Draw(px, mid, new Rectangle(0, 0, 1, 1), color, dirB.ToRotation(),
+                    new Vector2(0f, 0.5f), new Vector2(dirB.Length(), 2f), SpriteEffects.None, 0f);
             }
+
+            //入料口 → 熔炼室
+            chevron(inputSlotRect.Right + 12, 0);
+            chevron(inputSlotRect.Right + 24, 1);
+            //熔炼室 → 出料口
+            chevron(chamberRect.Right + 12, 2);
+            chevron(chamberRect.Right + 24, 3);
         }
 
-        private void DrawProgressBar(SpriteBatch sb) {
-            Texture2D px = VaultAsset.placeholder2.Value;
+        /// <summary>状态灯(左) + 模块插座行(中) + 电力表盘(右) + 操作提示</summary>
+        private void DrawStatusRow(SpriteBatch sb) {
             float alpha = uiFadeAlpha;
+            IncineratorData data = IncData;
+            float x = panelRect.X + 36;
+            float y = panelRect.Y + 234;
 
-            //箭头区域背景
-            Color bgColor = new Color(15, 10, 8) * (alpha * 0.7f);
-            sb.Draw(px, progressBarRect, new Rectangle(0, 0, 1, 1), bgColor);
-
-            //进度条
-            float progress = IncData.SmeltingProgress / (float)IncData.MaxSmeltingProgress;
-            progress = MathHelper.Clamp(progress, 0f, 1f);
-
-            int barWidth = progressBarRect.Width - 10;
-            int fillWidth = (int)(barWidth * progress);
-            Rectangle barBg = new Rectangle(progressBarRect.X + 5, progressBarRect.Center.Y - 8, barWidth, 16);
-            Rectangle barFill = new Rectangle(barBg.X, barBg.Y, fillWidth, 16);
-
-            //背景条
-            sb.Draw(px, barBg, new Rectangle(0, 0, 1, 1), new Color(30, 20, 15) * alpha);
-
-            //填充条
-            if (fillWidth > 0) {
-                Color fillColor = Color.Lerp(new Color(180, 80, 40), new Color(255, 140, 60), (float)Math.Sin(powerFlowTimer * 2f) * 0.5f + 0.5f);
-                sb.Draw(px, barFill, new Rectangle(0, 0, 1, 1), fillColor * alpha);
-
-                //发光效果
-                Color glowColor = new Color(255, 180, 100) * (alpha * 0.3f);
-                sb.Draw(px, new Rectangle(barFill.Right - 4, barFill.Y, 4, barFill.Height), new Rectangle(0, 0, 1, 1), glowColor);
+            //状态灯
+            string state;
+            Color lampColor;
+            float lampBright;
+            if (data.UEvalue < data.UEPerTick) {
+                state = NoPowerText.Value;
+                lampColor = WarnRed;
+                lampBright = MathF.Sin(animTimer * 5f) * 0.35f + 0.55f;
             }
-
-            //边框
-            Color borderColor = new Color(100, 55, 30) * (alpha * 0.8f);
-            sb.Draw(px, new Rectangle(barBg.X, barBg.Y, barBg.Width, 2), new Rectangle(0, 0, 1, 1), borderColor);
-            sb.Draw(px, new Rectangle(barBg.X, barBg.Bottom - 2, barBg.Width, 2), new Rectangle(0, 0, 1, 1), borderColor);
-            sb.Draw(px, new Rectangle(barBg.X, barBg.Y, 2, barBg.Height), new Rectangle(0, 0, 1, 1), borderColor);
-            sb.Draw(px, new Rectangle(barBg.Right - 2, barBg.Y, 2, barBg.Height), new Rectangle(0, 0, 1, 1), borderColor);
-        }
-
-        private void DrawPowerBar(SpriteBatch sb) {
-            Texture2D px = VaultAsset.placeholder2.Value;
-            float alpha = uiFadeAlpha;
-            float hoverGlow = hoveringPowerBar ? 0.3f : 0f;
-
-            //背景
-            Color barBg = new Color(18, 12, 10) * (alpha * 0.9f);
-            sb.Draw(px, powerBarRect, new Rectangle(0, 0, 1, 1), barBg);
-
-            //电量填充
-            float powerRatio = MathHelper.Clamp(IncData.UEvalue / IncData.MaxUE, 0f, 1f);
-            int fillWidth = (int)((powerBarRect.Width - 10) * powerRatio);
-            Rectangle fillRect = new Rectangle(powerBarRect.X + 5, powerBarRect.Y + 5, fillWidth, powerBarRect.Height - 10);
-
-            if (fillWidth > 0) {
-                //渐变填充
-                int fillSegments = Math.Max(1, fillWidth / 6);
-                for (int i = 0; i < fillSegments; i++) {
-                    float t = i / (float)fillSegments;
-                    float t2 = (i + 1) / (float)fillSegments;
-
-                    int x1 = fillRect.X + (int)(t * fillRect.Width);
-                    int x2 = fillRect.X + (int)(t2 * fillRect.Width);
-                    Rectangle segRect = new(x1, fillRect.Y, Math.Max(1, x2 - x1), fillRect.Height);
-
-                    Color powerLow = new Color(100, 70, 35);
-                    Color powerHigh = new Color(200, 150, 70);
-                    Color color = Color.Lerp(powerLow, powerHigh, t);
-
-                    float pulse = (float)Math.Sin(powerFlowTimer * 2f + t * 4f) * 0.25f + 0.75f;
-                    sb.Draw(px, segRect, new Rectangle(0, 0, 1, 1), color * (alpha * pulse));
-                }
-            }
-
-            //边框
-            Color edgeColor = Color.Lerp(new Color(110, 60, 35), new Color(160, 95, 50), (float)Math.Sin(heatPulse * 1.2f) * 0.5f + 0.5f) * (alpha * (0.7f + hoverGlow));
-            sb.Draw(px, new Rectangle(powerBarRect.X, powerBarRect.Y, powerBarRect.Width, 3), new Rectangle(0, 0, 1, 1), edgeColor);
-            sb.Draw(px, new Rectangle(powerBarRect.X, powerBarRect.Bottom - 3, powerBarRect.Width, 3), new Rectangle(0, 0, 1, 1), edgeColor);
-            sb.Draw(px, new Rectangle(powerBarRect.X, powerBarRect.Y, 3, powerBarRect.Height), new Rectangle(0, 0, 1, 1), edgeColor);
-            sb.Draw(px, new Rectangle(powerBarRect.Right - 3, powerBarRect.Y, 3, powerBarRect.Height), new Rectangle(0, 0, 1, 1), edgeColor);
-
-            //标签和数值
-            string label = PowerLabel.Value;
-            Vector2 labelPos = new Vector2(powerBarRect.X, powerBarRect.Y - 20);
-            Utils.DrawBorderString(sb, label, labelPos, new Color(230, 190, 150) * alpha, 0.65f);
-
-            string powerText = $"{(int)IncData.UEvalue}/{(int)IncData.MaxUE} {PowerUnit.Value}";
-            Vector2 powerTextSize = FontAssets.MouseText.Value.MeasureString(powerText) * 0.65f;
-            Vector2 powerTextPos = new Vector2(powerBarRect.Right - powerTextSize.X, powerBarRect.Y - 20);
-            Utils.DrawBorderString(sb, powerText, powerTextPos, new Color(200, 180, 140) * alpha, 0.65f);
-        }
-
-        private void DrawStatusText(SpriteBatch sb) {
-            float alpha = uiFadeAlpha;
-
-            //状态区域
-            Vector2 statusPos = new Vector2(panelRect.X + 50, panelRect.Y + 250);
-
-            //状态标签
-            string statusLabel = StatusLabel.Value;
-            Utils.DrawBorderString(sb, statusLabel, statusPos, new Color(200, 170, 130) * alpha, 0.7f);
-
-            //状态值
-            string statusText;
-            Color statusColor;
-            if (IncData.UEvalue < IncData.UEPerTick) {
-                statusText = NoPowerText.Value;
-                statusColor = new Color(180, 100, 80);
-            }
-            else if (IncData.IsWorking) {
-                statusText = SmeltingText.Value;
-                statusColor = Color.Lerp(new Color(255, 160, 80), new Color(255, 200, 120), (float)Math.Sin(powerFlowTimer * 3f) * 0.5f + 0.5f);
+            else if (data.IsWorking) {
+                state = SmeltingText.Value;
+                lampColor = Amber;
+                lampBright = MathF.Sin(animTimer * 2.6f) * 0.2f + 0.72f;
             }
             else {
-                statusText = IdleText.Value;
-                statusColor = new Color(150, 140, 120);
+                state = IdleText.Value;
+                lampColor = TextDim;
+                lampBright = 0.2f;
+            }
+            IndustrialTerminalRenderer.DrawLamp(sb, new Vector2(x + 7, y + 9), lampColor, alpha, lampBright);
+            Utils.DrawBorderString(sb, state, new Vector2(x + 21, y + 1),
+                Color.Lerp(TextMain, lampColor, 0.35f) * alpha, 0.66f);
+
+            //电力表盘:指针带欠阻尼摆动,焚烧时微颤
+            float jitter = data.IsWorking ? MathF.Sin(animTimer * 34f) * 0.006f : 0f;
+            float powerRatio = MathHelper.Clamp(data.UEvalue / data.MaxUE, 0f, 1f);
+            IndustrialTerminalRenderer.DrawGauge(sb, powerGaugeCenter, 30f, powerDisplay + jitter,
+                Amber, alpha, PowerLabel.Value, $"{(int)(powerRatio * 100f)}%");
+
+            //模块插座行
+            if (CurrentTP != null) {
+                socketStrip.Draw(sb, CurrentTP.ModuleRack, IncineratorTP.ModuleSlotCount,
+                    alpha, MousePosition.ToPoint());
             }
 
-            Vector2 statusValuePos = statusPos + new Vector2(FontAssets.MouseText.Value.MeasureString(statusLabel).X * 0.7f + 10, 0);
-            Utils.DrawBorderString(sb, statusText, statusValuePos, statusColor * alpha, 0.7f);
-
-            //操作提示
-            string hint = "";
+            //操作提示:底缘呼吸
+            string hint = string.Empty;
             if (hoveringInputSlot) {
                 hint = InputHint.Value;
             }
-            else if (hoveringOutputSlot && IncData.OutputItem != null && !IncData.OutputItem.IsAir) {
+            else if (hoveringOutputSlot && data.OutputItem != null && !data.OutputItem.IsAir) {
                 hint = OutputHint.Value;
             }
-
             if (!string.IsNullOrEmpty(hint)) {
-                Vector2 hintPos = new Vector2(panelRect.Center.X, panelRect.Bottom - 25);
-                Vector2 hintSize = FontAssets.MouseText.Value.MeasureString(hint) * 0.6f;
-                float blink = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f) * 0.35f + 0.65f;
-                Color hintColor = new Color(230, 170, 110) * (alpha * blink);
-                Utils.DrawBorderString(sb, hint, hintPos - hintSize / 2, hintColor, 0.6f);
+                float blink = MathF.Sin(animTimer * 6f) * 0.3f + 0.7f;
+                Utils.DrawBorderString(sb, hint,
+                    new Vector2(panelRect.X + 36, panelRect.Bottom - 28),
+                    Color.Lerp(TextDim, Amber, 0.5f) * (alpha * blink), 0.62f);
             }
         }
+
+        private void DrawHoverTips(SpriteBatch sb) {
+            if (isDragging) {
+                return;
+            }
+            if (CurrentTP != null
+                && socketStrip.DrawHoverTip(sb, CurrentTP.ModuleRack, IncineratorTP.ModuleSlotCount,
+                    MousePosition.ToPoint(), (text, color) => ShowTip(sb, text, color))) {
+                return;
+            }
+            if (hoveringPowerGauge) {
+                ShowTip(sb, $"{(int)IncData.UEvalue}/{(int)IncData.MaxUE} {PowerUnit.Value}");
+            }
+        }
+
+        private static void ShowTip(SpriteBatch sb, string text) => ShowTip(sb, text, TextMain);
+
+        private static void ShowTip(SpriteBatch sb, string text, Color color) {
+            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.75f;
+            Vector2 pos = new Vector2(Main.mouseX, Main.mouseY) + new Vector2(18, 18);
+            //贴屏缘时翻转与钳制
+            if (pos.X + textSize.X + 20 > UIScreenW) {
+                pos.X = Main.mouseX - textSize.X - 24;
+            }
+            if (pos.Y + textSize.Y + 12 > UIScreenH) {
+                pos.Y = Main.mouseY - textSize.Y - 18;
+            }
+
+            Rectangle bg = new((int)pos.X - 9, (int)pos.Y - 5, (int)textSize.X + 18, (int)textSize.Y + 10);
+            IndustrialTerminalRenderer.DrawTooltipPlate(sb, bg, 1f);
+            Utils.DrawBorderString(sb, text, pos, color, 0.75f);
+        }
+        #endregion
     }
 }
