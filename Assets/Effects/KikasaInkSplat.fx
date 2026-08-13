@@ -3,7 +3,8 @@
 //TechSplat:墨在表面上的一生——晕染(缘先扩后定,湿时缘糊)→干涸(咖啡环缘沉芯褪)
 //          →滴淌(重力向柱流,uRunScale 随命中面:地面几乎不滴/墙顺流/顶垂挂);
 //          uDir 主轴+uSquish 垂轴压扁承载贴面姿态(地=扁宽墨泊,墙=窄长竖渍),
-//          quad 恒不旋转,滴淌恒沿世界重力;死墨不爬——无 uTime,只有包络在走
+//          quad 恒不旋转,滴淌恒沿世界重力;死墨不爬——无 uTime,只有包络在走;
+//          uCanvasFit 把各向异性摊开收进 UV 预算,C# 同步放大 quad(只放大正方形不够)
 //TechLakeBlot:湖面墨晕——墨入水沿水线晕开的极扁墨膜,缘先扩、随时间稀释
 //          (墨入水是"散"不是"干"),缘外散丝、水下渗色、水线一线薄光
 //坐标全笛卡尔(无 atan2);直线算术+普通 tex2D,FNA3D 安全
@@ -19,6 +20,7 @@ float uAniso;     //主轴拉伸 1~1.8
 float uSquish;    //垂轴压扁 0.2~1:贴面姿态
 float uRunScale;  //滴淌长度系数:地 0.3/墙 1.25/顶 1.6
 float2 uDir;      //各向异性主轴(单位向量,quad 空间)
+float2 uCanvasFit;//逻辑坐标/UV 倍率,与 C# quad 缩放配套;(1,1)=旧行为。只放大正方形不够,UV 仍满幅会切左右
 float3 uColBody;  //墨体
 float3 uColDeep;  //缘沉/干痕
 float3 uColCore;  //新鲜期血芯
@@ -29,8 +31,9 @@ sampler uNoiseTex : register(s1);
 float4 PSSplat(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
     float2 raw = coords * 2.0 - 1.0;
-    //印面中心略上,下方画布留给滴淌
-    float2 q = raw - float2(0.0, -0.18);
+    float2 fit = max(uCanvasFit, float2(1.0, 1.0));
+    //印面中心略上,下方画布留给滴淌;fit 把各向异性摊开收进 UV 预算,C# 同步放大 quad 保世界尺寸
+    float2 q = raw * fit - float2(0.0, -0.18);
 
     //贴面姿态:先把主轴外的方向压扁(地渍摊平/墙渍收窄),再沿主轴拉伸
     float2 perpU = float2(-uDir.y, uDir.x);
@@ -93,20 +96,22 @@ float4 PSSplat(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 float4 PSLakeBlot(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
     float2 raw = coords * 2.0 - 1.0; //y=0 即水线,y>0 在水下
+    float2 fit = max(uCanvasFit, float2(1.0, 1.0));
+    float2 p = raw * fit;
 
     //沿水线晕开的墨膜:横向扩张吃 uBloom,缘被噪声撕散
     float R = 0.16 + 0.72 * uBloom;
-    float nE = tex2D(uNoiseTex, float2(raw.x * 1.4 + uSeed, uSeed * 2.3)).r;
-    float field = abs(raw.x) - (nE - 0.5) * 0.30;
+    float nE = tex2D(uNoiseTex, float2(p.x * 1.4 + uSeed, uSeed * 2.3)).r;
+    float field = abs(p.x) - (nE - 0.5) * 0.30;
     float film = 1.0 - smoothstep(R - 0.14, R + 0.06, field);
 
     //膜厚:水上一线、水下略厚(墨往下渗)
     float halfH = 0.10 + nE * 0.05;
-    float thick = halfH * (1.0 + step(0.0, raw.y) * 1.7);
-    float vert = 1.0 - smoothstep(0.0, max(thick, 1e-3), abs(raw.y));
+    float thick = halfH * (1.0 + step(0.0, p.y) * 1.7);
+    float vert = 1.0 - smoothstep(0.0, max(thick, 1e-3), abs(p.y));
 
     //缘外散丝:墨在水里的指状扩散
-    float nF = tex2D(uNoiseTex, float2(raw.x * 3.1 + uSeed * 3.7, uSeed + 0.5)).g;
+    float nF = tex2D(uNoiseTex, float2(p.x * 3.1 + uSeed * 3.7, uSeed + 0.5)).g;
     float fingerZone = smoothstep(R * 0.85, R * 1.05, field)
         * (1.0 - smoothstep(R * 1.3, R * 1.6, field));
     float fingers = fingerZone * smoothstep(0.55, 0.78, nF) * uBloom;
@@ -116,7 +121,7 @@ float4 PSLakeBlot(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLO
     float3 col = lerp(uColBody, uColDeep, 0.35 + dilute * 0.45);
 
     //水下渗色:自水线向下渐弱的一段染色
-    float bleed = step(0.0, raw.y) * (1.0 - smoothstep(0.0, 0.55, raw.y)) * film * 0.30;
+    float bleed = step(0.0, p.y) * (1.0 - smoothstep(0.0, 0.55, p.y)) * film * 0.30;
 
     float aFilm = film * vert * (0.55 - dilute * 0.30);
     float aFingers = fingers * vert * 0.30;
@@ -124,7 +129,7 @@ float4 PSLakeBlot(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLO
     float3 outCol = col * a;
 
     //水线薄光:新鲜墨膜上沿一线湿光,稀释后熄灭
-    float lineGlow = exp2(-raw.y * raw.y * 300.0) * film * (1.0 - dilute);
+    float lineGlow = exp2(-p.y * p.y * 300.0) * film * (1.0 - dilute);
     outCol += uColSheen * lineGlow * 0.12;
 
     float guard = smoothstep(1.0, 0.88, max(abs(raw.x), abs(raw.y)));

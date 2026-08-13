@@ -38,6 +38,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
         /// <summary>晕染扩张帧数:缘先扩后定</summary>
         private const int BloomFrames = 22;
 
+        //画布合同:着色器 guard 从 0.88 起切,内容须先归零。只放大 C# 正方形不够——UV 仍满幅,左右照切。
+        //下列上界对齐 KikasaInkSplat.fx(碎斑 R*1.8+噪声、滴淌 0.22+colN*0.5、湖晕指状 R*1.6+缘噪声)
+        private const float CanvasBudget = 0.82f;
+        private const float SplatQaExt = 1.52f;
+        private const float SplatCenterY = 0.18f;
+        private const float SplatDripN = 0.72f;
+
         /// <summary>湖面墨晕晕开帧数:水里散得慢</summary>
         private const int LakeBloomFrames = 46;
 
@@ -404,6 +411,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             sb.End();
         }
 
+        /// <summary>
+        /// 渍斑逻辑坐标倍率:qa 空间半径经主轴/垂轴还原到 q,再计入中心上移与滴淌。
+        /// 与 uCanvasFit、quad 缩放必须同一返回值,世界尺寸才不变。
+        /// </summary>
+        private static Vector2 SplatCanvasFit(InkSplat s, float bloom, float run) {
+            float R = 0.30f + 0.34f * bloom;
+            float along = SplatQaExt * MathF.Max(s.Aniso, 1f);
+            float perp = SplatQaExt * MathF.Max(s.Squish, 0.2f);
+            float drip = R * 0.45f * s.Squish + run * s.RunScale * SplatDripN;
+            float ax = MathF.Abs(s.Dir.X);
+            float ay = MathF.Abs(s.Dir.Y);
+            float needX = ax * along + ay * perp;
+            float needY = ay * along + ax * perp;
+            float needYDown = MathF.Max(needY, drip);
+            float fx = MathF.Max(1f, needX / CanvasBudget);
+            float fy = MathF.Max(1f, MathF.Abs(needYDown - SplatCenterY) / CanvasBudget);
+            fy = MathF.Max(fy, (needY + SplatCenterY) / CanvasBudget);
+            return new Vector2(fx, fy);
+        }
+
+        /// <summary>湖晕只在横向撑开,竖向原本装得下。</summary>
+        private static Vector2 LakeCanvasFit(float bloom) {
+            float R = 0.16f + 0.72f * bloom;
+            float needX = R * 1.6f + 0.20f;
+            return new Vector2(MathF.Max(1f, needX / CanvasBudget), 1f);
+        }
+
         private static void DrawLakeShader(SpriteBatch sb, Effect fx, Texture2D canvas, Rectangle view) {
             foreach (LakeBlot b in lake) {
                 if (!TryGetLakeY(b.OwnerWho, out float lakeY)) {
@@ -419,14 +453,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 if (fade <= 0.01f) {
                     continue;
                 }
+                Vector2 fit = LakeCanvasFit(bloom);
                 fx.Parameters["uSeed"]?.SetValue(b.Seed);
                 fx.Parameters["uBloom"]?.SetValue(bloom);
                 fx.Parameters["uDry"]?.SetValue(dilute);
                 fx.Parameters["uFade"]?.SetValue(fade);
+                fx.Parameters["uCanvasFit"]?.SetValue(fit);
                 fx.CurrentTechnique.Passes[0].Apply();
 
-                float w = b.Size * 2.6f;
-                float h = b.Size * 1.1f;
+                float w = b.Size * 2.6f * fit.X;
+                float h = b.Size * 1.1f * fit.Y;
                 sb.Draw(canvas, pos - Main.screenPosition, null, Color.White, 0f,
                     canvas.Size() * 0.5f, new Vector2(w / canvas.Width, h / canvas.Height),
                     SpriteEffects.None, 0f);
@@ -446,6 +482,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 if (fade <= 0.01f) {
                     continue;
                 }
+                Vector2 fit = SplatCanvasFit(s, bloom, run);
                 fx.Parameters["uSeed"]?.SetValue(s.Seed);
                 fx.Parameters["uBloom"]?.SetValue(bloom);
                 fx.Parameters["uDry"]?.SetValue(dry);
@@ -455,10 +492,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 fx.Parameters["uSquish"]?.SetValue(s.Squish);
                 fx.Parameters["uRunScale"]?.SetValue(s.RunScale);
                 fx.Parameters["uDir"]?.SetValue(s.Dir);
+                fx.Parameters["uCanvasFit"]?.SetValue(fit);
                 fx.CurrentTechnique.Passes[0].Apply();
 
                 float side = s.Size * 2.4f;
-                Vector2 scale = new(side / canvas.Width, side / canvas.Height);
+                Vector2 scale = new(side * fit.X / canvas.Width, side * fit.Y / canvas.Height);
                 sb.Draw(canvas, s.Pos - Main.screenPosition, null, Color.White,
                     0f, canvas.Size() * 0.5f, scale, SpriteEffects.None, 0f);
             }
