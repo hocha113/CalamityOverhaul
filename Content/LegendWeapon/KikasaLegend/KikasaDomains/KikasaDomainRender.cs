@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,7 +10,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 {
     /// <summary>
     /// 血湖领域 RenderHandle。环境调色走 NPC 层之前的 TechGrade；
-    /// EndCapture 走 TechUnify：全帧轻罩 + 血湖镜面（倒影含实体）+ 撕纸前沿。
+    /// EndCapture 走 TechUnify：全帧轻罩 + 血湖镜面（倒影含实体）+ 撕纸前沿；
+    /// 湖面墨晕在 Unify 之后叠上，避免被镜像换掉。
     /// </summary>
     internal class KikasaDomainRender : RenderHandle
     {
@@ -94,11 +96,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
             if (RenderQualitySafety.ScreenTargetUnavailable()) {
                 DrawLowQualityFallback(spriteBatch, kdp);
+                KikasaInkFX.DrawLakeOnWater(spriteBatch);
                 DrawSoakDim(spriteBatch, kdp);
                 return;
             }
 
             ApplyUnify(spriteBatch, graphicsDevice, screenSwap, kdp);
+            KikasaInkFX.DrawLakeOnWater(spriteBatch);
             DrawSoakDim(spriteBatch, kdp);
         }
 

@@ -27,7 +27,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
     /// 地面渍按命中面(地/墙/顶)吸附到 tile 表面并换贴面姿态,
     /// NPC 渍挂宿主随行(宿主消亡快淡),湖面墨晕沿水线晕开、稀释、随水漂。
     /// 环形上限防堆积,纯客户端表现,由 <see cref="KikasaRainSystem"/> 驱动、
-    /// <see cref="KikasaRainRender"/> 在墨滴之下绘制
+    /// <see cref="KikasaRainRender"/> 在墨滴之下绘制地面/NPC 渍,
+    /// 湖晕由 <see cref="KikasaDomainRender"/> 在 TechUnify 之后叠到做好的水面上
     /// </summary>
     internal static class KikasaInkFX
     {
@@ -344,6 +345,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
         }
 
+        /// <summary>与墨滴入水门槛 RiseT&gt;0.5 对齐,避免登记了却画不出、几帧被淡掉。</summary>
         private static bool TryGetLakeY(int ownerWho, out float lakeY) {
             lakeY = 0f;
             if (ownerWho < 0 || ownerWho >= Main.maxPlayers) {
@@ -351,7 +353,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
             Player pl = Main.player[ownerWho];
             if (pl?.active != true || !pl.TryGetModPlayer(out KikasaDomainPlayer domain)
-                || !domain.AnyActive || domain.RiseT < 0.85f) {
+                || !domain.AnyActive || domain.RiseT < 0.5f) {
                 return false;
             }
             lakeY = domain.LakeWorldY;
@@ -364,10 +366,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             lake.Clear();
         }
 
-        //==================== 绘制(由 KikasaRainRender 调用,墨滴之下) ====================
+        //==================== 绘制 ====================
 
+        /// <summary>地面/NPC 渍:EndEntityDraw,域内会被血湖镜面倒影。</summary>
         public static void Draw(SpriteBatch sb) {
-            if (ground.Count == 0 && attached.Count == 0 && lake.Count == 0) {
+            if (ground.Count == 0 && attached.Count == 0) {
                 return;
             }
             Effect fx = EffectLoader.KikasaInkSplat?.Value;
@@ -389,11 +392,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 fx.Parameters["uColCore"]?.SetValue(KikasaInk.BloodCore.ToVector3());
                 fx.Parameters["uColSheen"]?.SetValue(KikasaInk.WetSheen.ToVector3());
 
-                //湖面墨晕最底
-                if (lake.Count > 0) {
-                    fx.CurrentTechnique = fx.Techniques["TechLakeBlot"];
-                    DrawLakeShader(sb, fx, canvas, view);
-                }
                 fx.CurrentTechnique = fx.Techniques["TechSplat"];
                 DrawListShader(sb, fx, canvas, ground, view);
                 DrawListShader(sb, fx, canvas, attached, view);
@@ -401,13 +399,47 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 return;
             }
 
-            //精灵回退
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone,
                 null, Main.GameViewMatrix.TransformationMatrix);
-            DrawLakeFallback(sb, view);
             DrawListFallback(sb, ground, view);
             DrawListFallback(sb, attached, view);
+            sb.End();
+        }
+
+        /// <summary>
+        /// 湖面墨膜:必须叠在 TechUnify 之后。EndCapture 已是屏幕空间,
+        /// 位置走矩阵变换、尺寸乘 Zoom,禁止再套 GameViewMatrix 批次。
+        /// </summary>
+        public static void DrawLakeOnWater(SpriteBatch sb) {
+            if (lake.Count == 0) {
+                return;
+            }
+            Effect fx = EffectLoader.KikasaInkSplat?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+
+            if (fx != null && canvas != null && noise != null) {
+                sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
+                    SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone,
+                    fx);
+                GraphicsDevice gd = Main.instance.GraphicsDevice;
+                gd.Textures[1] = noise;
+                gd.SamplerStates[1] = SamplerState.LinearWrap;
+
+                fx.Parameters["uColBody"]?.SetValue(KikasaInk.InkBody.ToVector3());
+                fx.Parameters["uColDeep"]?.SetValue(KikasaInk.InkDeep.ToVector3());
+                fx.Parameters["uColCore"]?.SetValue(KikasaInk.BloodCore.ToVector3());
+                fx.Parameters["uColSheen"]?.SetValue(KikasaInk.WetSheen.ToVector3());
+                fx.CurrentTechnique = fx.Techniques["TechLakeBlot"];
+                DrawLakeShader(sb, fx, canvas);
+                sb.End();
+                return;
+            }
+
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
+            DrawLakeFallback(sb);
             sb.End();
         }
 
@@ -438,13 +470,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             return new Vector2(MathF.Max(1f, needX / CanvasBudget), 1f);
         }
 
-        private static void DrawLakeShader(SpriteBatch sb, Effect fx, Texture2D canvas, Rectangle view) {
+        private static Vector2 WorldToScreen(Vector2 world)
+            => Vector2.Transform(world - Main.screenPosition, Main.GameViewMatrix.TransformationMatrix);
+
+        private static bool OnScreen(Vector2 screenPos) {
+            return screenPos.X >= -220f && screenPos.Y >= -220f
+                && screenPos.X <= Main.screenWidth + 220f && screenPos.Y <= Main.screenHeight + 220f;
+        }
+
+        private static void DrawLakeShader(SpriteBatch sb, Effect fx, Texture2D canvas) {
+            Vector2 zoom = Main.GameViewMatrix.Zoom;
             foreach (LakeBlot b in lake) {
                 if (!TryGetLakeY(b.OwnerWho, out float lakeY)) {
                     continue;
                 }
-                Vector2 pos = new(b.X, lakeY);
-                if (!view.Contains(pos.ToPoint())) {
+                Vector2 pos = WorldToScreen(new Vector2(b.X, lakeY));
+                if (!OnScreen(pos)) {
                     continue;
                 }
                 float bloom = MathHelper.Clamp(b.Age / (float)LakeBloomFrames, 0f, 1f);
@@ -461,9 +502,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                 fx.Parameters["uCanvasFit"]?.SetValue(fit);
                 fx.CurrentTechnique.Passes[0].Apply();
 
-                float w = b.Size * 2.6f * fit.X;
-                float h = b.Size * 1.1f * fit.Y;
-                sb.Draw(canvas, pos - Main.screenPosition, null, Color.White, 0f,
+                float w = b.Size * 2.6f * fit.X * zoom.X;
+                float h = b.Size * 1.1f * fit.Y * zoom.Y;
+                sb.Draw(canvas, pos, null, Color.White, 0f,
                     canvas.Size() * 0.5f, new Vector2(w / canvas.Width, h / canvas.Height),
                     SpriteEffects.None, 0f);
             }
@@ -502,24 +543,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
         }
 
-        private static void DrawLakeFallback(SpriteBatch sb, Rectangle view) {
+        private static void DrawLakeFallback(SpriteBatch sb) {
             Texture2D tex = CWRAsset.Extra_98?.Value;
             if (tex == null) {
                 return;
             }
+            Vector2 zoom = Main.GameViewMatrix.Zoom;
             foreach (LakeBlot b in lake) {
                 if (!TryGetLakeY(b.OwnerWho, out float lakeY)) {
                     continue;
                 }
-                Vector2 pos = new(b.X, lakeY);
-                if (!view.Contains(pos.ToPoint())) {
+                Vector2 pos = WorldToScreen(new Vector2(b.X, lakeY));
+                if (!OnScreen(pos)) {
                     continue;
                 }
                 float bloom = MathHelper.Clamp(b.Age / (float)LakeBloomFrames, 0f, 1f);
                 float fade = (1f - MathHelper.Clamp((b.Age - (b.Life - 46f)) / 46f, 0f, 1f)) * b.Fade;
-                float w = b.Size * (0.6f + 1.4f * bloom) / tex.Width * 2f;
-                sb.Draw(tex, pos - Main.screenPosition, null, KikasaInk.InkBody * (0.5f * fade),
-                    0f, tex.Size() * 0.5f, new Vector2(w, w * 0.16f), SpriteEffects.None, 0f);
+                float w = b.Size * (0.6f + 1.4f * bloom) / tex.Width * 2f * zoom.X;
+                sb.Draw(tex, pos, null, KikasaInk.InkBody * (0.5f * fade),
+                    0f, tex.Size() * 0.5f, new Vector2(w, w * 0.16f * zoom.Y / zoom.X), SpriteEffects.None, 0f);
             }
         }
 
