@@ -10,15 +10,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 {
-    /// <summary>鬼梦文案载体与表现泵（延迟雷、梦中氛围：烬灰/潮雾/远吠）</summary>
+    /// <summary>鬼梦文案载体与表现泵（延迟雷、梦中氛围：烬灰/潮雾）</summary>
     internal class KikasaDreamSystem : ModSystem, ILocalizedModType
     {
         public string LocalizationCategory => "Legend.KikasaText";
 
         public static LocalizedText ReflectAsleepHint { get; private set; }
-
-        //梦中远吠的低频心跳
-        private static int howlTimer;
 
         public override void SetStaticDefaults() {
             ReflectAsleepHint = this.GetLocalization(nameof(ReflectAsleepHint), () => "倒影还没醒");
@@ -35,11 +32,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
         public override void ClearWorld() {
             if (!Main.dedServ) {
                 KikasaDreamFX.Clear();
-                howlTimer = 0;
             }
         }
 
-        /// <summary>梦中常驻表现：飘浮烬灰 + 贴地潮雾 + 远处犬吠，强度吃观看域的 DreamBlend</summary>
+        /// <summary>梦中常驻表现：飘浮烬灰 + 贴地潮雾，强度吃观看域的 DreamBlend</summary>
         private static void UpdateDreamAmbience() {
             if (Main.gameMenu) {
                 return;
@@ -83,18 +79,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                         Main.rand.NextFloat(0.7f, 1.2f))
                         ?.Configure(Main.rand.Next(90, 150));
                 }
-            }
-
-            //远吠：村落方向低低一声，偶有第二声应和
-            if (--howlTimer <= 0) {
-                howlTimer = Main.rand.Next(420, 900);
-                Vector2 at = player.Center + new Vector2(
-                    Main.rand.NextFloat(-1400f, 1400f), Main.rand.NextFloat(-320f, -80f));
-                SoundEngine.PlaySound(SoundID.Roar with {
-                    Pitch = Main.rand.NextFloat(-1f, -0.82f),
-                    Volume = Main.rand.NextFloat(0.16f, 0.28f),
-                    MaxInstances = 2,
-                }, at);
             }
         }
 
