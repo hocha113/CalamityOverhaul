@@ -186,7 +186,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
             }
         }
 
-        /// <summary>互写链接伙伴identity（服务端，随弹幕生成包同步）</summary>
+        /// <summary>
+        /// 互写链接伙伴identity（服务端调用）。生成包在 NewProjectile 内部已经发出，
+        /// 链接值走 netUpdate 补包（服务端是 owner=255 弹幕的权威端，标记有效），
+        /// 晚生成包一拍到达，远早于充能结束
+        /// </summary>
         internal static void LinkOrbs(int identityA, int identityB) {
             Projectile a = null, b = null;
             foreach (var p in Main.ActiveProjectiles) {

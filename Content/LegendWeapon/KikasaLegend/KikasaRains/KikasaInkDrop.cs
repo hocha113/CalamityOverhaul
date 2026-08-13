@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -115,6 +115,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     UpdatePlunge(target);
                     break;
             }
+
+            Vector2 normal = Projectile.velocity.UnitVector();
+            PRTLoader.NewParticle<PRT_KikasaInkMist>(Projectile.Center + normal * 6f,
+                normal * Main.rand.NextFloat(0.4f, 1f), KikasaInk.InkDeep,
+                Main.rand.NextFloat(0.6f, 0.8f) * Projectile.scale)?.Configure(Main.rand.Next(18, 26));
 
             //弓身量:速度方向的角变化率,平滑后交给笔触
             if (prevVel.LengthSquared() > 0.01f && Projectile.velocity.LengthSquared() > 0.01f) {
@@ -263,7 +268,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             }
             Vector2 impactVel = Projectile.velocity;
             float ke = MathHelper.Clamp(impactVel.Length() / PlungeMaxSpeed, 0.25f, 1f);
-            float splatSize = 40f + ke * 42f;
+            float splatSize = 20f + ke * 42f;
 
             //渍斑归属:贴地>沾敌>空中散尽。NPC 命中只在所有者端跑 OnHitNPC,
             //这里按死点就近找宿主,各端跑同一套规则,旁观者也看得到渍
@@ -289,7 +294,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     * Main.rand.NextFloat(1.8f, 6.5f) * (0.35f + 0.65f * speedRatio) * (0.5f + ke);
                 PRTLoader.NewParticle<PRT_KikasaInkBead>(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f),
                     vel, Main.rand.NextBool(3) ? KikasaInk.InkDeep : KikasaInk.InkBody,
-                    Main.rand.NextFloat(0.34f, 0.62f) * Projectile.scale)?.Configure(Main.rand.Next(18, 30));
+                    Main.rand.NextFloat(0.14f, 0.22f) * Projectile.scale)?.Configure(Main.rand.Next(18, 30));
             }
             PRTLoader.NewParticle<PRT_KikasaInkMist>(Projectile.Center + normal * 6f,
                 normal * Main.rand.NextFloat(0.4f, 1f), KikasaInk.InkDeep,
@@ -345,7 +350,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
             fx.CurrentTechnique.Passes[0].Apply();
 
             //Projectile.scale 承载特大墨滴(墨瀑散射)
-            float side = (42f + stretch * 30f) * Projectile.scale;
+            float side = (62f + stretch * 30f) * Projectile.scale;
             Vector2 scale = new(side / canvas.Width, side / canvas.Height);
             sb.Draw(canvas, Projectile.Center - Main.screenPosition, null, Color.White,
                 Projectile.rotation, canvas.Size() * 0.5f, scale, SpriteEffects.None, 0f);

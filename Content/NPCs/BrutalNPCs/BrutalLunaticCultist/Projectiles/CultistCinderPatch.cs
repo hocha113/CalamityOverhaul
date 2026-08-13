@@ -40,10 +40,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             }
 
             if (!Landed) {
-                //坠落寻地
+                //坠落寻地；落地前无伤走本地门（判伤在受击玩家本端），服务端保持满伤害，
+                //防着地 netUpdate 同步包快照 0 伤毒化中途加入端的缓存
                 Projectile.velocity.X *= 0.98f;
                 Projectile.velocity.Y = Math.Min(Projectile.velocity.Y + 0.42f, 13f);
-                Projectile.damage = 0;
+                if (!VaultUtils.isServer) {
+                    Projectile.damage = 0;
+                }
                 return;
             }
 

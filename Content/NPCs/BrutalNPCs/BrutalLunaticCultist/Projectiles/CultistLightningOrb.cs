@@ -91,8 +91,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                 }
             }
 
-            //充能/衰散期无伤（预告即承诺）
-            Projectile.damage = Activated && !Fading ? (int)Projectile.localAI[1] : 0;
+            //充能/衰散期无伤（预告即承诺）。判伤只在受击玩家本端解算，本地门即可；
+            //服务端必须保持满伤害：SyncProjectile 每包重写 damage 字段，链接补包
+            //（LinkOrbs 的 netUpdate 与生成包同拍发出）若快照到清零值，客户端首帧
+            //会把 0 缓存进 localAI[1]——联机中整网电球永久无伤，单机不发包测不出
+            if (!VaultUtils.isServer) {
+                Projectile.damage = Activated && !Fading ? (int)Projectile.localAI[1] : 0;
+            }
 
             //充能期：符文与电离屑被吸入球心
             if (!Activated && !VaultUtils.isServer) {

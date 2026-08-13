@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;

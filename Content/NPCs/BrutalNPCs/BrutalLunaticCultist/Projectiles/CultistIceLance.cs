@@ -52,9 +52,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                 }
             }
 
+            //同步端已进入飞行段（前摇期两端速度≤1，刺出后≥13）而本地仍在前摇：
+            //对齐时间轴防重播——中途加入端会整段冻结重演前摇，正常端刺出包早到一拍
+            //会吃一帧 position-=velocity 的回拽
+            if (!launched && t <= TelegraphTime && Projectile.velocity.LengthSquared() > 4f) {
+                if ((int)t == 1) {
+                    //中途加入：跳过出膛演出，直接接管飞行段
+                    launched = true;
+                    Projectile.localAI[1] = Projectile.damage;
+                }
+                Projectile.localAI[0] = TelegraphTime + 1;
+                t = TelegraphTime + 1;
+            }
+
             if (!launched && t <= TelegraphTime) {
-                //前摇期无伤害
-                Projectile.damage = 0;
+                //前摇期无伤害（判伤在受击玩家本端，本地门即可；服务端保持满伤害，
+                //防跟瞄 netUpdate 同步包快照 0 伤毒化客户端缓存）
+                if (!VaultUtils.isServer) {
+                    Projectile.damage = 0;
+                }
                 Projectile.position -= Projectile.velocity;
 
                 //锁定前服务端跟瞄

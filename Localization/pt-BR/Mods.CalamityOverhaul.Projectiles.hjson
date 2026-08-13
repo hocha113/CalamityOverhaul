@@ -1,4 +1,4 @@
-﻿RebelBladeFlyAttcke.DisplayName: Lamina Rebelde
+RebelBladeFlyAttcke.DisplayName: Lamina Rebelde
 RebelBladeOrb.DisplayName: Orbe Demonico
 RebelBladeBack.DisplayName: Lamina Rebelde
 ElectricMinRocketHeld.DisplayName: Microssilete Eletrico
@@ -499,6 +499,7 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // CultistFireBolt.DisplayName: Flame Bolt
 // CultistFrostMistZone.DisplayName: Frost Mist
 // CultistIceLance.DisplayName: Frost Lance
+// CultistLightningOrb.DisplayName: Lightning Orb
 // CultistRitualCircle.DisplayName: Ritual Circle
 // CultistSigilProj.DisplayName: Floating Sigil
 // MLordArcRayProj.DisplayName: Phantasmal Arc Ray
