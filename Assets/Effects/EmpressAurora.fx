@@ -11,16 +11,9 @@ float uPhase;      //本帘相位（色相与褶皱错相）
 float uSwayTime;   //帘心偏摆相位（与判定同源）
 float uCoreRatio;  //判定亮带半宽/视觉半宽
 
-texture uNoiseTex;
-sampler noiseSamp = sampler_state
-{
-    texture = <uNoiseTex>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
+// 噪声固定 s1：sampler_state 自动分配会落 s0，图元路径今日侥幸、批次路径必坏；
+// C# 侧须在 pass.Apply 前显式 Textures[1]=PerlinNoise + SamplerStates[1]=LinearWrap
+sampler noiseSamp : register(s1);
 
 struct VSInput
 {

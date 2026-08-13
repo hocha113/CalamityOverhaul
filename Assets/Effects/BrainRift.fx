@@ -5,17 +5,10 @@
 // uOpen=撕开量 uPulse=心跳搏动（真假裂隙的搏动时机由 CPU 决定）
 // ============================================================================
 
-sampler uImage0 : register(s0);
-
-texture uNoise;
-sampler noiseTex = sampler_state
-{
-    Texture = <uNoise>;
-    AddressU = wrap;
-    AddressV = wrap;
-    MinFilter = linear;
-    MagFilter = linear;
-};
+// 噪声固定 s1：本 shader 不采样 s0（画布只是白像素 quad），
+// 旧 sampler_state 自动分配落 s0，被 SpriteBatch 用画布贴图覆写→毛边/湿纹全读成辉光渐变；
+// C# 侧须在 pass.Apply 前显式 Textures[1]=PerlinNoise + SamplerStates[1]=LinearWrap
+sampler noiseTex : register(s1);
 
 float uTime;
 float uOpen;     //0~1 撕开

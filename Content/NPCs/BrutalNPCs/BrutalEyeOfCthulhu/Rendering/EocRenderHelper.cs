@@ -147,8 +147,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Rendering
                 effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
                 effect.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.035f);
                 effect.Parameters["uIntensity"]?.SetValue(intensity);
-                effect.Parameters["uNoise"]?.SetValue(CWRAsset.PerlinNoise.Value);
-                Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+                //噪声显式绑到 s1（shader 内 register(s1)），参数式绑定废弃
+                GraphicsDevice gd = Main.graphics.GraphicsDevice;
+                gd.Textures[1] = CWRAsset.PerlinNoise.Value;
+                gd.SamplerStates[1] = SamplerState.LinearWrap;
+                gd.BlendState = BlendState.AlphaBlend;
                 bloodTrail.DrawTrail(effect);
                 Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
                 return;

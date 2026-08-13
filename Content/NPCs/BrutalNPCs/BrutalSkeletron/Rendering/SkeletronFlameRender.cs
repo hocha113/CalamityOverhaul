@@ -88,7 +88,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
                 effect.Parameters["uBodyColor"]?.SetValue(SkeletronRenderHelper.GhostCyan.ToVector3());
                 effect.Parameters["uEdgeColor"]?.SetValue(SkeletronRenderHelper.GhostDeep.ToVector3());
                 effect.Parameters["uCurseColor"]?.SetValue(SkeletronRenderHelper.CurseViolet.ToVector3());
-                effect.Parameters["uNoiseTex"]?.SetValue(CWRAsset.PerlinNoise.Value);
+                //噪声显式绑到 s1（shader 内 register(s1)），参数式绑定废弃
+                graphicsDevice.Textures[1] = CWRAsset.PerlinNoise.Value;
+                graphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
                     pass.Apply();
                     graphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, verts, 0, vertCount / 3);

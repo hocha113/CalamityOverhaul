@@ -6,21 +6,14 @@
 //全笛卡尔构造，无极角；无动态分支；噪声走 uNoise 贴图
 // ============================================================================
 
-sampler uImage0 : register(s0);
-
 float uTime;
 float uProgress;   //Plate=充能进度 / Spike=伸出包络 / Flame=喷焰包络
 float uIntensity;
 float uKind;       //0尖刺 1喷焰 2射线口（基座刻纹配色）
-texture uNoise;
-sampler noiseSampler = sampler_state
-{
-    Texture = <uNoise>;
-    AddressU = Wrap;
-    AddressV = Wrap;
-    MagFilter = Linear;
-    MinFilter = Linear;
-};
+// 噪声固定 s1：三个 pass 均不采样 s0（画布只是白像素 quad），
+// 旧 sampler_state 自动分配落 s0，被 SpriteBatch 用画布贴图覆写→石纹/焰噪全读成辉光渐变；
+// C# 侧须在 pass.Apply 前显式 Textures[1]=PerlinNoise + SamplerStates[1]=LinearWrap
+sampler noiseSampler : register(s1);
 
 //------------------------------------------------------------------
 //基座：切角石板 + 中缝刻纹，充能时刻纹自内向外点亮

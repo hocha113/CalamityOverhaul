@@ -5,17 +5,11 @@
 //Opaque批回写：输出恒a=1
 // ============================================================================
 
-sampler uImage0 : register(s0);
-texture uNoise;
-sampler2D noiseTex = sampler_state
-{
-    texture = <uNoise>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
+sampler uImage0 : register(s0);   //批次主贴图（全屏拷贝）
+
+// 噪声固定 s1：sampler_state 自动分配在 SpriteBatch 下必被 s0 覆写（曾靠 uImage0 占位侥幸落 s1）；
+// C# 侧须在 pass.Apply 前显式 Textures[1]=PerlinNoise + SamplerStates[1]=LinearWrap
+sampler2D noiseTex : register(s1);
 
 float uTime;
 float uAspect;

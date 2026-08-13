@@ -14,16 +14,9 @@ float3 uBodyColor;   //幽青体
 float3 uEdgeColor;   //深青缘
 float3 uCurseColor;  //诅咒紫
 
-texture uNoiseTex;
-sampler noiseSamp = sampler_state
-{
-    texture = <uNoiseTex>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
+// 噪声固定 s1：sampler_state 自动分配会落 s0，图元路径今日侥幸、批次路径必坏；
+// C# 侧须在 pass.Apply 前显式 Textures[1]=PerlinNoise + SamplerStates[1]=LinearWrap
+sampler noiseSamp : register(s1);
 
 struct VSInput
 {

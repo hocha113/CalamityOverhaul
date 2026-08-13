@@ -149,12 +149,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
             effect.Parameters["uDeepColor"]?.SetValue(FishronMotionFX.DeepSea.ToVector3());
             effect.Parameters["uFoamColor"]?.SetValue(FishronMotionFX.FoamWhite.ToVector3());
             effect.Parameters["uSeaColor"]?.SetValue(FishronMotionFX.SeaGreen.ToVector3());
-            effect.Parameters["uNoiseTex"]?.SetValue(noiseTex.Value);
 
             SpriteBatch sb = Main.spriteBatch;
             sb.End();
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState,
                 DepthStencilState.None, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+            //噪声显式绑到 s1：SpriteBatch.Draw 会把 s0 覆写成画布贴图，
+            //参数式贴图绑定实机失效——浪顶"灰度图"即画布渐变漏色（合同同 ShockRingDraw.Draw）
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+            gd.Textures[1] = noiseTex.Value;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
             effect.CurrentTechnique.Passes[0].Apply();
 
             Texture2D pixel = VaultAsset.placeholder2.Value;

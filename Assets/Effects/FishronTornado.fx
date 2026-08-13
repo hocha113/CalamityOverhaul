@@ -15,16 +15,10 @@ float3 uDeepColor;
 float3 uSeaColor;
 float3 uFoamColor;
 
-texture uNoiseTex;
-sampler noiseSamp = sampler_state
-{
-    texture = <uNoiseTex>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
+// 噪声固定在 s1：SpriteBatch.Draw 会把 s0 覆写成画布贴图，
+// sampler_state 块在 FNA 下会被分配到 s0 导致噪声读到画布渐变（三审实机根因）；
+// C# 侧须在 pass.Apply 前显式 Textures[1]=PerlinNoise + SamplerStates[1]=LinearWrap
+sampler noiseSamp : register(s1);
 
 float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLOR0
 {
@@ -34,18 +28,20 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLO
     float swayN = tex2D(noiseSamp, float2(uTime * 0.045 + uSeed, uv.y * 0.6)).r - 0.5;
     float sway = (sin(uTime * 1.83 + uSeed * 7.0 + (1.0 - uv.y) * 2.2) * 0.45
         + sin(uTime * 0.97 + uSeed * 3.1 + (1.0 - uv.y) * 4.7) * 0.3
-        + swayN * 1.1) * 0.062 * (1.0 - uv.y);
+        + swayN * 1.1) * 0.055 * (1.0 - uv.y);
     float axis = 0.5 + sway;
     float dx = uv.x - axis;
 
     // =========================================================
     // B. 轮廓：上宽下窄 + 底部卷吸裙摆外扩；半径由噪声蚀刻
     // =========================================================
-    // 名义半宽压在 0.20 内（升格 ×1.12=0.224）；摆幅上界=(0.45+0.3+0.5*1.1)*0.062≈0.081，
-    // 飞沫区外界 1.75×半宽：最大横向延伸 0.5+0.081+0.224*1.75≈0.973 < 护栏起点 0.985——裁切在几何层杜绝
+    // 画布硬预算（形体不许到边，裁切在几何层杜绝，不依赖 alpha 护栏）：
+    // 摆幅上界 (0.45+0.3+0.55)*0.055≈0.072；顶部半宽 0.175×升格1.10=0.1925；
+    // 飞沫外界 1.55×半宽=0.298 → 最大横向延伸 0.5+0.072+0.298≈0.870，
+    // 两侧各留 ≥13% 永久空白带（要求 ≥8%）
     float skirt = smoothstep(0.78, 1.0, uv.y);          // 底部裙摆区
-    float halfW = lerp(0.20, 0.088, uv.y) * (1.0 + uGrade * 0.12)
-        + skirt * 0.07;                                  // 裙摆外扩
+    float halfW = lerp(0.175, 0.082, uv.y) * (1.0 + uGrade * 0.10)
+        + skirt * 0.06;                                  // 裙摆外扩
     float side = dx / max(halfW, 1e-4);                  // -1..1 带符号横位
     float rad = abs(side);                               // 0 轴 → 1 名义边缘
 
@@ -56,7 +52,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLO
     float body = smoothstep(cutR + 0.12, cutR - 0.30, rad);
 
     // 离体飞沫：名义边缘外一圈，被高频噪声打碎成孤立水屑
-    float fleckZone = smoothstep(0.7, 1.05, rad) * smoothstep(1.75, 1.2, rad);
+    float fleckZone = smoothstep(0.7, 1.05, rad) * smoothstep(1.55, 1.15, rad);
     float fleckN = tex2D(noiseSamp, float2(uv.y * 5.5 - uTime * 1.9 + uSeed * 3.0,
         side * 2.2 - uTime * 0.4)).b;
     float flecks = fleckZone * smoothstep(0.68, 0.85, fleckN);
@@ -84,8 +80,11 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLO
     float backLit = back * 0.42 * (1.0 - front * 0.75);
     float field = front * 0.85 + backLit + updraft * 0.22;
 
-    // 圆柱受光：临边压暗 + 左亮右暗的侧光不对称
-    float shade = (1.0 - rad * rad * 0.42) * (1.0 + side * -0.14);
+    // 圆柱受光：临边压暗 + 左亮右暗的侧光不对称 + 随高度的纵向明暗——
+    // 整柱亮度均匀是贴纸感的病根之一，顶亮底沉才有体量
+    float shade = (1.0 - rad * rad * 0.50) * (1.0 + side * -0.22);
+    float vLight = lerp(1.10, 0.68, smoothstep(0.12, 0.95, uv.y));
+    shade *= vLight;
 
     // =========================================================
     // D. 顶部风切散逸：向侧面歪斜抹开 + 噪声蚀出破絮

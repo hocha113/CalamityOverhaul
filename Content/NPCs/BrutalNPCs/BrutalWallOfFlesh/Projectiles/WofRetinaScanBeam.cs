@@ -227,7 +227,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Projectiles
             effect.Parameters["seed"]?.SetValue(Projectile.ai[1] * 0.61f + Projectile.whoAmI * 0.137f % 1f);
             effect.Parameters["uScanTurn"]?.SetValue(turn);
             effect.Parameters["uQuadLen"]?.SetValue(beamLength + backBleed);
-            effect.Parameters["uNoiseTex"]?.SetValue(noise);
+            //噪声显式绑到 s1（shader 内 register(s1)），参数式绑定废弃
+            device.Textures[1] = noise;
+            device.SamplerStates[1] = SamplerState.LinearWrap;
             foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
                 pass.Apply();
                 device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);

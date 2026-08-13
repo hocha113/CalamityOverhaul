@@ -86,7 +86,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Rendering
                 shader.Parameters["uGap2"]?.SetValue(0f);
                 shader.Parameters["uGapCos"]?.SetValue(1f);
                 shader.Parameters["seed"]?.SetValue(i * 0.37f);
-                shader.Parameters["uNoiseTex"]?.SetValue(noise);
+                //噪声显式绑到 s1：SpriteBatch.Draw 会把 s0 覆写成画布贴图，
+                //参数式贴图绑定实机失效（合同同 ShockRingDraw.Draw）
+                GraphicsDevice gd = Main.instance.GraphicsDevice;
+                gd.Textures[1] = noise;
+                gd.SamplerStates[1] = SamplerState.LinearWrap;
                 shader.CurrentTechnique.Passes[0].Apply();
 
                 sb.Draw(quad, screenPos, null, Color.White, 0f, quad.Size() / 2f,

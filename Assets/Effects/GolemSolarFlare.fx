@@ -7,22 +7,17 @@
 //无动态分支，噪声全走 uNoise 贴图
 // ============================================================================
 
-sampler uImage0 : register(s0);
+sampler uImage0 : register(s0);   //批次主贴图（FlashTech 全屏拷贝）
 
 float uTime;
 float uProgress;
 float uIntensity;
 float2 uCenter;    //FlashTech：白闪中心 uv
 float uAspect;     //FlashTech：宽高比
-texture uNoise;
-sampler noiseSampler = sampler_state
-{
-    Texture = <uNoise>;
-    AddressU = Wrap;
-    AddressV = Wrap;
-    MagFilter = Linear;
-    MinFilter = Linear;
-};
+// 噪声固定 s1：Core/Beam 两个 pass 不采样 s0，旧 sampler_state 自动分配在这两个 pass 落 s0，
+// 被 SpriteBatch 用画布贴图覆写→米粒组织/撕边全读成辉光渐变；
+// C# 侧须在 pass.Apply 前显式 Textures[1]=PerlinNoise + SamplerStates[1]=LinearWrap
+sampler noiseSampler : register(s1);
 
 //------------------------------------------------------------------
 //日面：米粒组织 + 临边昏暗 + 冕芒

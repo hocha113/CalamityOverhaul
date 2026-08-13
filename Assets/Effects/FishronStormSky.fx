@@ -11,16 +11,10 @@ float uFlash;        // 0~1 雷闪冲量
 float uFlashX;       // 雷闪横位（屏幕 0~1）
 float uAspectRatio;  // 宽高比
 
-texture uNoiseTex;
-sampler noiseSamp = sampler_state
-{
-    texture = <uNoiseTex>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
+// 噪声固定在 s1：SpriteBatch.Draw 会把 s0 覆写成画布贴图，
+// sampler_state 块在 FNA 下会被分配到 s0 导致噪声读到画布渐变；
+// C# 侧须在 pass.Apply 前显式 Textures[1]=PerlinNoise + SamplerStates[1]=LinearWrap
+sampler noiseSamp : register(s1);
 
 float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLOR0
 {

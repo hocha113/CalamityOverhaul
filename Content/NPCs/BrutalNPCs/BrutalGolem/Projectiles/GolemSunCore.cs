@@ -270,6 +270,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
             sb.End();
             sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            //噪声显式绑到 s1：SpriteBatch.Draw 会把 s0 覆写成画布贴图，
+            //参数式贴图绑定实机失效（合同同 ShockRingDraw.Draw）
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+            gd.Textures[1] = CWRAsset.PerlinNoise.Value;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
 
             //辐条束
             float lenScale = SpokeLenScale;
@@ -278,7 +283,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
                 shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
                 shader.Parameters["uProgress"]?.SetValue(lenScale);
                 shader.Parameters["uIntensity"]?.SetValue(fade);
-                shader.Parameters["uNoise"]?.SetValue(CWRAsset.PerlinNoise.Value);
                 float len = SpokeLength * lenScale;
                 for (int i = 0; i < SpokeCount; i++) {
                     float a = SpokeAngle + MathHelper.TwoPi * i / SpokeCount;
@@ -294,7 +298,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
             shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             shader.Parameters["uProgress"]?.SetValue(MathHelper.Clamp(Elapsed / (float)RiseEnd, 0f, 1f));
             shader.Parameters["uIntensity"]?.SetValue(fade);
-            shader.Parameters["uNoise"]?.SetValue(CWRAsset.PerlinNoise.Value);
             shader.CurrentTechnique.Passes[0].Apply();
             float size = coreRadius * 2.6f;
             sb.Draw(quad, drawPos, null, Color.White, 0f, quad.Size() / 2f,

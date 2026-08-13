@@ -43,7 +43,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Rendering
             shader.Parameters["uBossUV"]?.SetValue(bossUV);
             shader.Parameters["uClearRadius"]?.SetValue(PixelsToHeightNorm(430f));
             shader.Parameters["uAspect"]?.SetValue(Main.screenWidth / (float)Main.screenHeight);
-            shader.Parameters["uNoise"]?.SetValue(noise);
+            //噪声显式绑到 s1：SpriteBatch.Draw 会把 s0 覆写成拷屏贴图，
+            //参数式贴图绑定实机失效（合同同 ShockRingDraw.Draw）
+            gd.Textures[1] = noise;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
 
             PingPong(sb, gd, screenSwap, shader);
         }

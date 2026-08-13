@@ -128,9 +128,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
             effect.Parameters["uPhase"]?.SetValue(Phase);
             //帘心偏摆相位：与判定同源，亮心画在真实危险区
             effect.Parameters["uSwayTime"]?.SetValue(Timer * 0.016f + Phase);
-            effect.Parameters["uNoiseTex"]?.SetValue(noise);
             //判定亮带的相对宽度
             effect.Parameters["uCoreRatio"]?.SetValue(CoreHalfWidth / VisualHalfWidth);
+            //噪声显式绑到 s1（shader 内 register(s1)），参数式绑定废弃
+            device.Textures[1] = noise;
+            device.SamplerStates[1] = SamplerState.LinearWrap;
 
             Vector2 top = Projectile.Center - new Vector2(0f, VeilHalfHeight);
             Vector2 bottom = Projectile.Center + new Vector2(0f, VeilHalfHeight);

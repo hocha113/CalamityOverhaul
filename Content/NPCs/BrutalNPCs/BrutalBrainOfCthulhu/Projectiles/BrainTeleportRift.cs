@@ -109,11 +109,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Projecti
                 shader.Parameters["uOpen"]?.SetValue(open);
                 shader.Parameters["uPulse"]?.SetValue(pulse);
                 shader.Parameters["uSeed"]?.SetValue(Projectile.identity % 97 * 0.173f);
-                shader.Parameters["uNoise"]?.SetValue(CWRAsset.PerlinNoise.Value);
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState,
                     DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+                //噪声显式绑到 s1：SpriteBatch.Draw 会把 s0 覆写成画布贴图，
+                //参数式贴图绑定实机失效（合同同 ShockRingDraw.Draw）
+                GraphicsDevice gd = Main.instance.GraphicsDevice;
+                gd.Textures[1] = CWRAsset.PerlinNoise.Value;
+                gd.SamplerStates[1] = SamplerState.LinearWrap;
                 shader.CurrentTechnique.Passes[0].Apply();
 
                 Main.spriteBatch.Draw(canvas, drawPos, null, Color.White, 0f,

@@ -51,11 +51,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Renderin
             shader.Parameters["uGhost"]?.SetValue(MathHelper.Clamp(ghost, 0f, 1f));
             shader.Parameters["uCold"]?.SetValue(MathHelper.Clamp(cold, 0f, 1f));
             shader.Parameters["uFrameUV"]?.SetValue(frameUV);
-            shader.Parameters["uNoise"]?.SetValue(CWRAsset.PerlinNoise.Value);
 
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            //噪声显式绑到 s1：SpriteBatch.Draw 会把 s0 覆写成精灵贴图，
+            //参数式贴图绑定实机失效（合同同 ShockRingDraw.Draw）
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+            gd.Textures[1] = CWRAsset.PerlinNoise.Value;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
             shader.CurrentTechnique.Passes[0].Apply();
 
             spriteBatch.Draw(tex, drawPos, frameRect, lightColor * alphaMul,

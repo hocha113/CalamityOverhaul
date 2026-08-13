@@ -151,7 +151,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Rendering
             effect.Parameters["uGrow"]?.SetValue(p.Grow);
             effect.Parameters["uPhase2"]?.SetValue(p.Phase2 ? 1f : 0f);
             effect.Parameters["seed"]?.SetValue(p.Seed);
-            effect.Parameters["uNoiseTex"]?.SetValue(noise);
+            //噪声显式绑到 s1（shader 内 register(s1)），参数式绑定废弃
+            device.Textures[1] = noise;
+            device.SamplerStates[1] = SamplerState.LinearWrap;
 
             foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
                 pass.Apply();

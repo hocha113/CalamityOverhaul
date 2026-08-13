@@ -18,16 +18,11 @@ float3 uDeepColor;
 float3 uSeaColor;
 float3 uFoamColor;
 
-texture uNoiseTex;
-sampler noiseSamp = sampler_state
-{
-    texture = <uNoiseTex>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
+// 噪声固定在 s1：SpriteBatch.Draw 会把 s0 覆写成画布贴图，
+// sampler_state 块在 FNA 下会被分配到 s0 导致噪声读到画布渐变——
+// 三审实机"浪顶灰度图"= 画布贴图自身辉光从抛沫通道漏出；
+// C# 侧须在 pass.Apply 前显式 Textures[1]=PerlinNoise + SamplerStates[1]=LinearWrap
+sampler noiseSamp : register(s1);
 
 float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLOR0
 {
@@ -119,8 +114,10 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vColor : COLOR0) : COLO
     float drag = dragZone * smoothstep(0.42, 0.68, dragN);
     col += lerp(uDeepColor, uFoamColor, 0.55) * drag * 0.5;
 
-    float veins = smoothstep(0.68, 0.9, field) * (1.0 - depth * 0.6);
-    col += uFoamColor * veins * 0.22 * body;
+    // 面上泡沫脉络：密度沿前进方向递增——浪尾平静、前脸翻涌的梯度
+    float veins = smoothstep(0.68, 0.9, field) * (1.0 - depth * 0.6)
+        * (0.45 + 0.75 * smoothstep(0.30, 0.90, xu));
+    col += uFoamColor * veins * 0.30 * body;
 
     // =========================================================
     // 合成（预乘）：溃散/生长由几何承担，uIntensity 只作残余亮度；

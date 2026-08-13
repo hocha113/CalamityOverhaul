@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.GameContent;
@@ -10,6 +11,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
     /// <summary>灵骨材质绘制辅助：幽灵臂条带、骨链、眼火、冠火、预警线、旋杀涡流</summary>
     internal static class SkeletronRenderHelper
     {
+        #region 自持资源（眼火/冠火贴图方案专用，用户定向回退保留）
+        [VaultLoaden(CWRConstant.Masking + "TearFlame01")]
+        internal static Asset<Texture2D> TearFlame = null;
+        [VaultLoaden(CWRConstant.Other + "SoulFire")]
+        internal static Asset<Texture2D> SoulFire = null;
+        #endregion
+
         #region 色板（枯骨+阴魂火+诅咒暗）
         /// <summary>骨白</summary>
         public static readonly Color BonePale = new Color(232, 222, 196);
@@ -109,7 +117,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
                 effect.Parameters["uCoreColor"]?.SetValue(BonePale.ToVector3());
                 effect.Parameters["uBodyColor"]?.SetValue(GhostCyan.ToVector3());
                 effect.Parameters["uEdgeColor"]?.SetValue(GhostDeep.ToVector3());
-                effect.Parameters["uNoiseTex"]?.SetValue(CWRAsset.PerlinNoise.Value);
+                //噪声显式绑到 s1（shader 内 register(s1)），参数式绑定废弃
+                device.Textures[1] = CWRAsset.PerlinNoise.Value;
+                device.SamplerStates[1] = SamplerState.LinearWrap;
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
                     pass.Apply();
                     device.DrawUserPrimitives(PrimitiveType.TriangleStrip, armVerts, 0, ArmSegments * 2);
@@ -200,52 +210,63 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
 
         #endregion
 
-        #region 眼火 / 冠火（阴魂冷焰顶点批）
+        #region 眼火 / 冠火（贴图方案，用户定向回退基线）
 
-        /// <summary>双眼窝阴魂火，随头旋转，intensity 支持 >1 过曝帧；压入冷焰批待 EndEntityDraw 统一顶点绘制</summary>
-        public static void DrawEyeFlames(NPC head, float intensity, float alphaFade = 1f) {
+        /// <summary>双眼窝阴魂火，随头旋转，intensity 支持 >1 过曝帧</summary>
+        public static void DrawEyeFlames(SpriteBatch spriteBatch, NPC head, float intensity, float alphaFade = 1f) {
             if (intensity <= 0.02f || alphaFade <= 0.02f) {
                 return;
             }
-            //焰轴 = 头顶方向
-            float axisAngle = head.rotation - MathHelper.PiOver2;
+            Texture2D soul = SoulFireTex;
+            if (soul == null) {
+                return;
+            }
+            int frame = (int)(Main.GameUpdateCount / 5 + head.whoAmI) % 5;
+            Rectangle rect = new Rectangle(0, soul.Height / 5 * frame, soul.Width, soul.Height / 5);
+            Vector2 orig = new Vector2(rect.Width / 2f, rect.Height * 0.72f);
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+
             for (int side = -1; side <= 1; side += 2) {
-                //眼窝局部偏移随头旋转，焰根压到眼窝下缘
-                Vector2 local = new Vector2(side * 15f, -2f) * head.scale;
-                Vector2 pos = head.Center + local.RotatedBy(head.rotation);
+                //眼窝局部偏移随头旋转
+                Vector2 local = new Vector2(side * 15f, -8f) * head.scale;
+                Vector2 pos = head.Center + local.RotatedBy(head.rotation) - Main.screenPosition;
                 float flick = 0.9f + 0.18f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 11f + side * 2.1f + head.whoAmI);
                 float s = MathHelper.Clamp(intensity, 0f, 1.6f) * flick;
-                float sway = 0.10f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 7f + side * 1.3f);
 
-                SkeletronFlameRender.Push(pos, axisAngle + sway,
-                    new Vector2(26f, 46f) * head.scale * s,
-                    MathHelper.Clamp(intensity * 0.75f, 0.3f, 1f),
-                    (head.whoAmI * 0.31f + side * 0.17f) % 1f, 0.1f,
-                    0.95f * MathHelper.Clamp(s, 0f, 1f) * alphaFade);
+                //光晕走预乘批 A=0 加色
+                spriteBatch.Draw(glow, pos, null, AsAdditive(GhostDeep) * (0.5f * s * alphaFade), 0f, glow.Size() / 2f, 0.62f * s, SpriteEffects.None, 0f);
+                spriteBatch.Draw(soul, pos, rect, Color.White * (0.9f * MathHelper.Clamp(s, 0f, 1f) * alphaFade),
+                    head.rotation, orig, 0.62f * s, SpriteEffects.None, 0f);
             }
         }
 
-        /// <summary>二阶段诅咒火之冠：头顶沿弧五舌幽火（冷焰顶点批）</summary>
-        public static void DrawCrownFlames(NPC head, float intensity, float alphaFade = 1f) {
+        /// <summary>二阶段诅咒火之冠：头顶沿弧五舌幽火</summary>
+        public static void DrawCrownFlames(SpriteBatch spriteBatch, NPC head, float intensity, float alphaFade = 1f) {
             if (intensity <= 0.02f || alphaFade <= 0.02f) {
                 return;
             }
+            Texture2D tongue = TearFlame?.Value;
+            if (tongue == null) {
+                return;
+            }
+            Vector2 torig = new Vector2(tongue.Width / 2f, tongue.Height);
+
             for (int i = 0; i < 5; i++) {
                 float arc = (i - 2f) * 0.38f;
                 //火舌根锚在颅顶弧线上
-                Vector2 local = new Vector2((float)Math.Sin(arc) * 34f, -40f - (float)Math.Cos(arc) * 10f) * head.scale;
-                Vector2 pos = head.Center + local.RotatedBy(head.rotation);
+                Vector2 local = new Vector2((float)Math.Sin(arc) * 34f, -44f - (float)Math.Cos(arc) * 10f) * head.scale;
+                Vector2 pos = head.Center + local.RotatedBy(head.rotation) - Main.screenPosition;
                 float hash = (i * 37 % 11) / 11f;
                 float flick = 0.72f + 0.38f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * (9f + hash * 5f) + i * 2.7f);
-                float h = MathHelper.Clamp(intensity * flick, 0f, 1.5f);
-
-                SkeletronFlameRender.Push(pos, head.rotation - MathHelper.PiOver2 + arc * 0.55f,
-                    new Vector2(20f + 8f * h, (44f + 26f * h) * (i == 2 ? 1.2f : 1f)) * head.scale,
-                    MathHelper.Clamp(intensity * 0.8f, 0f, 1f),
-                    (head.whoAmI * 0.11f + i * 0.19f) % 1f, 0.25f + hash * 0.4f,
-                    0.8f * MathHelper.Clamp(h, 0f, 1f) * alphaFade);
+                float h = intensity * flick;
+                Color col = Color.Lerp(GhostCyan, GhostDeep, hash * 0.6f);
+                //黑底遮罩贴图在预乘批必须 A=0 加色，否则出黑框
+                spriteBatch.Draw(tongue, pos, null, AsAdditive(col) * (0.72f * h * alphaFade),
+                    head.rotation + arc * 0.5f, torig, new Vector2(0.30f, 0.44f + 0.3f * h), SpriteEffects.None, 0f);
             }
         }
+
+        private static Texture2D SoulFireTex => SoulFire?.Value;
 
         #endregion
 
@@ -301,7 +322,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
             effect.Parameters["uCoreColor"]?.SetValue(BonePale.ToVector3());
             effect.Parameters["uBodyColor"]?.SetValue(GhostCyan.ToVector3());
             effect.Parameters["uEdgeColor"]?.SetValue(GhostDeep.ToVector3());
-            effect.Parameters["uNoiseTex"]?.SetValue(CWRAsset.PerlinNoise.Value);
+            //噪声显式绑到 s1（shader 内 register(s1)），参数式绑定废弃
+            device.Textures[1] = CWRAsset.PerlinNoise.Value;
+            device.SamplerStates[1] = SamplerState.LinearWrap;
             foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
                 pass.Apply();
                 device.DrawUserPrimitives(PrimitiveType.TriangleStrip, ribbonVerts, 0, (count - 1) * 2);
@@ -386,11 +409,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
             shader.Parameters["uColorA"]?.SetValue(GhostCyan.ToVector3());
             shader.Parameters["uColorB"]?.SetValue(GhostDeep.ToVector3());
             shader.Parameters["uBone"]?.SetValue(BonePale.ToVector3());
-            shader.Parameters["uNoiseTex"]?.SetValue(CWRAsset.PerlinNoise.Value);
 
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            //噪声显式绑到 s1：SpriteBatch.Draw 会把 s0 覆写成画布贴图，
+            //参数式贴图绑定实机失效（合同同 ShockRingDraw.Draw）
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+            gd.Textures[1] = CWRAsset.PerlinNoise.Value;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
             shader.CurrentTechnique.Passes[0].Apply();
 
             Texture2D quad = VaultAsset.placeholder2.Value;

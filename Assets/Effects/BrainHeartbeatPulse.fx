@@ -4,7 +4,7 @@
 // 直线算术+朴素 tex2D，无动态分支（FNA 翻译安全）
 // ============================================================================
 
-sampler uImage0 : register(s0);
+sampler uImage0 : register(s0);   //批次主贴图（全屏拷贝）
 
 float uTime;
 float uAspect;        //屏幕宽高比

@@ -3,7 +3,7 @@
 //采样 uImage0 翼贴图；解析 sin/cos 形变(无 hash 防 UV 跳变闪烁)
 // ============================================================================
 
-sampler uImage0 : register(s0);
+sampler uImage0 : register(s0);   //批次主贴图（SpriteBatch 当前精灵）
 
 float uTime;
 float intensity;       //整体强度

@@ -1,9 +1,11 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Rendering;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
 {
@@ -56,6 +58,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
                 context.SkipDefaultMovement = true;
                 float coilT = inLunge / (float)CoilTime;
 
+                //蓄势起帧：权威端生成导引线(蓄势全程可见，锁向前跟踪瞄准)
+                if (inLunge == 0 && !VaultUtils.isClient) {
+                    Terraria.Projectile.NewProjectile(npc.GetSource_FromAI(),
+                        EowSpitBarrageState.MouthPos(npc),
+                        (player.Center - npc.Center).SafeNormalize(Vector2.UnitX),
+                        ModContent.ProjectileType<EowLungeOmen>(), 0, 0f, Main.myPlayer,
+                        npc.whoAmI, CoilTime);
+                }
+
                 //压缩曲线t²，末3帧完全定住(前寂)
                 context.Compression = MathHelper.Lerp(1f, 0.6f, coilT * coilT);
                 Vector2 away = (npc.Center - player.Center).SafeNormalize(Vector2.UnitY);
@@ -67,6 +78,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
                     npc.rotation = npc.rotation.AngleLerp(targetRot, 0.16f);
                 }
                 else {
+                    //全静帧起点锁向：预告即承诺，起扑不再重瞄
+                    if (inLunge == CoilTime - 3) {
+                        Vector2 aim = player.Center + player.velocity * 14f;
+                        lungeDir = (aim - npc.Center).SafeNormalize(Vector2.UnitY);
+                        npc.rotation = lungeDir.ToRotation() + MathHelper.PiOver2;
+                        if (!VaultUtils.isClient) {
+                            EowLungeOmen.Lock(npc.whoAmI, lungeDir);
+                        }
+                    }
                     npc.velocity *= 0.55f;
                 }
 
@@ -79,11 +99,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
                 return;
             }
 
-            //爆发帧：一帧全速+释放压缩
+            //爆发帧：一帧全速+释放压缩，方向沿用锁向帧(与导引线同源)
             if (inLunge == CoilTime) {
                 context.SkipDefaultMovement = true;
-                Vector2 aim = player.Center + player.velocity * 14f;
-                lungeDir = (aim - npc.Center).SafeNormalize(Vector2.UnitY);
+                if (lungeDir == Vector2.Zero) {
+                    //兜底：状态中途重建(如客户端中途加入)未经历锁向帧
+                    Vector2 aim = player.Center + player.velocity * 14f;
+                    lungeDir = (aim - npc.Center).SafeNormalize(Vector2.UnitY);
+                }
                 npc.velocity = lungeDir * LungeSpeed(context);
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
@@ -124,6 +147,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
             base.OnExit(context);
             context.SkipDefaultMovement = false;
             context.Npc.damage = context.Npc.defDamage;
+            //蜕皮/死亡演出中途打断时清掉未耗尽的导引线(正常结束时已自然消亡，无副作用)
+            EowLungeOmen.ClearFor(context.Npc.whoAmI);
         }
     }
 }

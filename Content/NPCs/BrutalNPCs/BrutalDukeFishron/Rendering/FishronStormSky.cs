@@ -226,7 +226,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Rendering
             shader.Parameters["uFlash"]?.SetValue(flash);
             shader.Parameters["uFlashX"]?.SetValue(flashX);
             shader.Parameters["uAspectRatio"]?.SetValue(vpW / (float)vpH);
-            shader.Parameters["uNoiseTex"]?.SetValue(noiseTex.Value);
+            //噪声显式绑到 s1：SpriteBatch.Draw 会把 s0 覆写成画布贴图，
+            //参数式贴图绑定实机失效（合同同 ShockRingDraw.Draw）
+            gd.Textures[1] = noiseTex.Value;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
             shader.CurrentTechnique.Passes[0].Apply();
 
             spriteBatch.Draw(VaultAsset.placeholder2.Value, new Rectangle(0, 0, vpW, vpH), Color.White);

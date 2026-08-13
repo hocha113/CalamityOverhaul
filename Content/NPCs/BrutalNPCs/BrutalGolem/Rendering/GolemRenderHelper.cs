@@ -44,7 +44,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Rendering
             shader.Parameters["uFrame"]?.SetValue(new Vector4(
                 frame.X / (float)body.Width, frame.Y / (float)body.Height,
                 frame.Width / (float)body.Width, frame.Height / (float)body.Height));
-            shader.Parameters["uNoise"]?.SetValue(CWRAsset.PerlinNoise.Value);
+            //噪声显式绑到 s1：SpriteBatch.Draw 会把 s0 覆写成本体贴图，
+            //参数式贴图绑定实机失效（合同同 ShockRingDraw.Draw）
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+            gd.Textures[1] = CWRAsset.PerlinNoise.Value;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
             shader.CurrentTechnique.Passes[0].Apply();
 
             sb.Draw(body, drawPos, frame, Color.White, npc.rotation, origin, npc.scale, SpriteEffects.None, 0f);
@@ -106,8 +110,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Rendering
                 shader.Parameters["uFrame"]?.SetValue(new Vector4(
                     frame.X / (float)body.Width, frame.Y / (float)body.Height,
                     frame.Width / (float)body.Width, frame.Height / (float)body.Height));
-                shader.Parameters["uNoise"]?.SetValue(CWRAsset.PerlinNoise.Value);
                 shader.Parameters["uColor"]?.SetValue(drawColor.ToVector4());
+                //噪声显式绑到 s1：SpriteBatch.Draw 会把 s0 覆写成本体贴图，
+                //参数式贴图绑定实机失效（合同同 ShockRingDraw.Draw）
+                GraphicsDevice gd = Main.instance.GraphicsDevice;
+                gd.Textures[1] = CWRAsset.PerlinNoise.Value;
+                gd.SamplerStates[1] = SamplerState.LinearWrap;
                 shader.CurrentTechnique.Passes[0].Apply();
 
                 sb.Draw(body, drawPos, frame, Color.White, npc.rotation, origin, npc.scale, SpriteEffects.None, 0f);

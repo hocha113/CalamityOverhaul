@@ -249,6 +249,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
             sb.End();
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            //噪声显式绑到 s1：SpriteBatch.Draw 会把 s0 覆写成画布贴图，
+            //参数式贴图绑定实机失效（合同同 ShockRingDraw.Draw）
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+            gd.Textures[1] = CWRAsset.PerlinNoise.Value;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
 
             //机关基座
             shader.CurrentTechnique = shader.Techniques["PlateTech"];
@@ -269,7 +274,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Projectiles
                     shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
                     shader.Parameters["uProgress"]?.SetValue(Kind == TrapKind.Spike ? SpikeProgress() : JetProgress());
                     shader.Parameters["uIntensity"]?.SetValue(1f);
-                    shader.Parameters["uNoise"]?.SetValue(CWRAsset.PerlinNoise.Value);
                     shader.CurrentTechnique.Passes[0].Apply();
 
                     //柱体 quad：origin 在底边中点，沿 Dir 延伸（局部上方向旋到 Dir）

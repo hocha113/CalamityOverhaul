@@ -58,7 +58,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering
             shader.Parameters["uFlash"]?.SetValue(flash);
             shader.Parameters["uFlashProgress"]?.SetValue(flashProgress);
             shader.Parameters["ringData"]?.SetValue(ringBuffer);
-            shader.Parameters["uNoiseTex"]?.SetValue(CWRAsset.PerlinNoise.Value);
+            //噪声显式绑到 s1：SpriteBatch.Draw 会把 s0 覆写成拷屏贴图，
+            //参数式贴图绑定实机失效（合同同 ShockRingDraw.Draw）
+            gd.Textures[1] = CWRAsset.PerlinNoise.Value;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
 
             //拷屏再回写
             gd.SetRenderTarget(screenSwap);

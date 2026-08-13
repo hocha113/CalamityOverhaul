@@ -8,9 +8,10 @@
 
 float uTime;
 float uSeed;
-float uProgress;   //Column 上升包络0~1 / Omen 充能0~1
+float uProgress;   //Column 上升包络0~1 / Omen 充能0~1 / Guide 充能0~1
 float uFade;       //Column 消散0~1
-float uAspect;     //Column 高宽比
+float uAspect;     //Column/Guide 长宽比
+float uLock;       //Guide 锁向加亮0~1
 float3 uDirtColor;
 float3 uAcidColor;
 
@@ -138,11 +139,60 @@ float4 OmenPS(float2 uv : TEXCOORD0) : COLOR0
     return float4(col * alpha, alpha);
 }
 
+// ----------------------------------------------------------------------------
+// 冲刺导引线：uv.x=0 源头(口部)→1 远端；quad沿冲刺方向旋转
+// 有机撕裂窄带+沿线流动酸屑；两端渐隐、横向护栏归零，无任何平切边
+// ----------------------------------------------------------------------------
+float4 GuidePS(float2 uv : TEXCOORD0) : COLOR0
+{
+    float yc = (uv.y - 0.5) * 2.0;
+    float charge = saturate(uProgress);
+
+    //纵向包络：源头快速渐显，远端长渐隐
+    float lenv = smoothstep(0.0, 0.07, uv.x) * smoothstep(1.0, 0.62, uv.x);
+
+    //横向护栏：quad上下边必归零
+    float guard = smoothstep(1.0, 0.78, abs(yc));
+
+    //按真实长宽比取样：撕裂噪声沿长轴滚向远端
+    float xTex = uv.x * uAspect * 0.5;
+    float wob = (fbm2(float2(xTex * 1.7 - uTime * 2.3, uSeed * 23.0 + yc * 0.8)) - 0.5) * 0.5;
+
+    //芯线随充能收窄绷直(蓄势越满承诺越明确)
+    float width = lerp(0.55, 0.30, charge);
+    float rr = abs(yc) + wob * (1.0 - charge * 0.4);
+    float core = smoothstep(width, width * 0.25, rr);
+    float haze = smoothstep(width + 0.42, width * 0.4, rr) * 0.35;
+
+    //流向脉冲：酸屑向远端流动，速度随充能提升
+    float flow = 0.5 + 0.5 * sin((uv.x * uAspect * 1.4 - uTime * (3.0 + charge * 4.0)) * 6.2832);
+    flow = pow(flow, 3.0);
+
+    float body = (core * (0.5 + flow * 0.6) + haze) * lenv * guard;
+    float alpha = body * (0.16 + 0.84 * charge * charge);
+    //锁向闪：芯线满亮(末3帧全静=最亮承诺)
+    alpha = saturate(alpha + core * lenv * guard * uLock * 0.5);
+
+    float3 hue = lerp(uDirtColor * 1.1, uAcidColor, 0.72 + uLock * 0.28);
+    hue += uAcidColor * flow * core * 0.5;
+
+    //预乘输出，AlphaBlend 批
+    return float4(hue * alpha, alpha);
+}
+
 technique TechColumn
 {
     pass P0
     {
         PixelShader = compile ps_3_0 ColumnPS();
+    }
+}
+
+technique TechGuide
+{
+    pass P0
+    {
+        PixelShader = compile ps_3_0 GuidePS();
     }
 }
 

@@ -21,6 +21,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
             sb.End();
             sb.Begin(SpriteSortMode.Immediate, blend, SamplerState.LinearWrap,
                 DepthStencilState.None, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+            //噪声显式绑到 s1（三张 Wof shader 均声明 uImage1:register(s1)）：
+            //SpriteBatch.Draw 只覆写 s0，参数式贴图绑定实机不可靠（合同同 ShockRingDraw.Draw）
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+            gd.Textures[1] = CWRAsset.PerlinNoise.Value;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
 
             Texture2D quad = VaultAsset.placeholder2.Value;
             Vector2 drawPos = new Vector2(worldRect.X, worldRect.Y) - Main.screenPosition;
@@ -71,7 +76,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
             effect.Parameters["uFlush"]?.SetValue(MathHelper.Clamp(ctx.WallFlush, 0f, 1f));
             effect.Parameters["uCharge"]?.SetValue(ctx.ChargeType == 1 ? ctx.ChargeProgress : 0f);
             effect.Parameters["uOpacity"]?.SetValue(1f);
-            effect.Parameters["uImage1"]?.SetValue(CWRAsset.PerlinNoise.Value);
 
             DrawWorldQuad(sb, effect, BlendState.AlphaBlend, worldRect);
         }
@@ -98,7 +102,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
             effect.Parameters["uProgress"]?.SetValue(MathHelper.Clamp(progress, 0f, 1f));
             effect.Parameters["uIntensity"]?.SetValue(1f);
             effect.Parameters["uSuck"]?.SetValue(MathHelper.Clamp(suck, 0f, 1f));
-            effect.Parameters["uImage1"]?.SetValue(CWRAsset.PerlinNoise.Value);
 
             DrawWorldQuad(sb, effect, BlendState.AlphaBlend, worldRect);
         }
@@ -130,7 +133,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
             effect.Parameters["uDir"]?.SetValue((float)facingDir);
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             effect.Parameters["uIntensity"]?.SetValue(MathHelper.Clamp(intensity, 0f, 1f));
-            effect.Parameters["uImage1"]?.SetValue(CWRAsset.PerlinNoise.Value);
 
             DrawWorldQuad(sb, effect, BlendState.AlphaBlend, worldRect);
         }

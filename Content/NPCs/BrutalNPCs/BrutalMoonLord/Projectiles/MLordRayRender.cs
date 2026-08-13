@@ -47,6 +47,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles
             effect.Parameters["fadeAlpha"]?.SetValue(opacity);
             effect.Parameters["seed"]?.SetValue(seed);
             effect.Parameters["uNoiseTex"]?.SetValue(noise);
+            //合同：噪声显式钉在 s1（与 .fx 的 register(s1) 对应），不依赖参数隐式绑定
+            device.Textures[1] = noise;
+            device.SamplerStates[1] = SamplerState.LinearWrap;
             foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
                 pass.Apply();
                 device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);

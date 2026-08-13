@@ -24,8 +24,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
     }
 
     /// <summary>
-    /// 月总拼装绘制：复刻原版 Extra 贴图组装（披风/胸甲/骨臂 IK/眼窝/瞳孔/眼睑/口须），
-    /// 叠加天体辉光层。骨臂超出 IK 全长时切幻影拉伸绘制
+    /// 月总拼装绘制：复刻原版 Extra 贴图组装（披风/胸甲/骨臂/眼窝/瞳孔/眼睑/口须），
+    /// 叠加天体辉光层。骨臂消费 <see cref="MLordArmIK"/> 层级链解：
+    /// 肩→肘→腕链尖永不断开，手掌超程时视觉钳制或以星桥脱链续接
     /// </summary>
     internal static class MLordDrawHelper
     {
@@ -98,7 +99,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             }
         }
 
-        /// <summary>核心侧上臂：消费 <see cref="MLordArmIK"/> 解，肩→肘沿骨拉伸绘制；超程画星桥缺口</summary>
+        /// <summary>核心侧上臂：消费 <see cref="MLordArmIK"/> 臂链解，肩→肘沿骨缩放绘制（链上永不断开）</summary>
         private static void DrawUpperArm(SpriteBatch spriteBatch, Texture2D tex, NPC core, NPC hand,
             int side, Color light, Vector2 screenPos) {
             MLordArmSolve ik = MLordArmIK.Solve(core, hand);
@@ -111,16 +112,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                 origin.X = tex.Width - origin.X;
             }
 
-            spriteBatch.Draw(tex, ik.Shoulder - screenPos, null, light * ik.ArmAlpha,
-                (ik.ElbowUpper - ik.Shoulder).ToRotation() - MathHelper.PiOver2, origin,
+            //贴图下轴（+Y）指向肘：旋转取肩→肘方向，沿骨轴缩放到解算骨长
+            spriteBatch.Draw(tex, ik.Shoulder - screenPos, null, light,
+                (ik.Elbow - ik.Shoulder).ToRotation() - MathHelper.PiOver2, origin,
                 new Vector2(1f, ik.UpperStretch), effects, 0f);
 
-            if (ik.BridgeStrength > 0.01f) {
-                DrawSpectralBridge(ik.ElbowUpper, ik.ElbowFore, ik.BridgeStrength);
-            }
-            else {
-                DrawElbowJoint(ik.ElbowUpper, ik.UpperStretch);
-            }
+            DrawElbowJoint(ik.Elbow, ik.UpperStretch);
         }
 
         /// <summary>肘关节星辉：拉伸时提亮，把两骨对接缝读作能量关节</summary>
@@ -137,8 +134,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
         }
 
         /// <summary>
-        /// 超程星桥：臂骨拉断后中段散成星链。两端各自从骨端向中点羽化生长
-        /// （断口两侧无裸切边），链上星节相位错拍明灭
+        /// 脱链星桥：手掌深度超程离链时，从腕链尖到手掌腕锚的星质续接。
+        /// 两端各自从锚点向中点羽化生长（断口两侧无裸切边），链上星节相位错拍明灭
         /// </summary>
         private static void DrawSpectralBridge(Vector2 from, Vector2 to, float strength) {
             Texture2D streak = CWRAsset.LightShot?.Value;
@@ -190,7 +187,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
 
         #region 手部拼装
 
-        /// <summary>手：小臂 IK→眼窝（或残口）→瞳孔→手壳 + 辉光</summary>
+        /// <summary>
+        /// 手：小臂（永远从肘出发锚在腕链尖）→脱链星桥→眼窝（或残口）→瞳孔→手壳 + 辉光。
+        /// 手掌可视件统一画在臂链钳制后的绘制中心（判定位置不动，视觉迁就臂形）
+        /// </summary>
         public static void DrawHandAssembly(SpriteBatch spriteBatch, NPC hand, Vector2 screenPos,
             in MLordEyePose pose, int gripFrame) {
             NPC core = MLordFacts.GetCore(hand);
@@ -205,17 +205,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             float dir = isLeft ? -1f : 1f;
             SpriteEffects effects = isLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            //小臂：消费与上臂同一帧同一份 IK 解（腕→肘沿骨拉伸，两骨必然对接）
+            //手掌绘制中心：核心在场时取臂链钳制锚，核心缺位退化为判定位
+            Vector2 drawCenter = hand.Center;
+
+            //小臂：消费与上臂同一帧同一份臂链解（锚在腕链尖、贴图下轴指向肘，与上臂共享同一肘点）
             if (core != null) {
                 MLordArmSolve ik = MLordArmIK.Solve(core, hand);
                 if (ik.Valid) {
+                    drawCenter = ik.HandDrawCenter;
                     Vector2 origin = new(60f, 30f);
                     if (!isLeft) {
                         origin.X = forearmTex.Width - origin.X;
                     }
-                    spriteBatch.Draw(forearmTex, ik.Wrist - screenPos, null, light * ik.ArmAlpha,
-                        (ik.ElbowFore - ik.Wrist).ToRotation() - MathHelper.PiOver2, origin,
+                    spriteBatch.Draw(forearmTex, ik.WristChain - screenPos, null, light,
+                        (ik.Elbow - ik.WristChain).ToRotation() - MathHelper.PiOver2, origin,
                         new Vector2(1f, ik.ForeStretch), effects, 0f);
+
+                    //手掌深度超程脱链：腕链尖→手掌腕锚的星桥续接
+                    if (ik.BridgeStrength > 0.01f) {
+                        DrawSpectralBridge(ik.WristChain, ik.WristDraw, ik.BridgeStrength);
+                    }
                 }
             }
 
@@ -227,19 +236,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             if (pose.Broken) {
                 //蠕动残口（4 帧）
                 Rectangle frame = brokenTex.Frame(1, 4, 0, (int)(pose.WriggleTimer / 8f) % 4);
-                spriteBatch.Draw(brokenTex, hand.Center - screenPos, frame, light, 0f,
+                spriteBatch.Draw(brokenTex, drawCenter - screenPos, frame, light, 0f,
                     socketOrigin - new Vector2(4f, 4f), 1f, effects, 0f);
-                DrawVoidLeak(hand.Center, 0.5f);
+                DrawVoidLeak(drawCenter, 0.5f);
             }
             else {
                 //眼窝 + 瞳孔（椭圆轨道）
-                spriteBatch.Draw(socketTex, hand.Center - screenPos, null, light, 0f, socketOrigin, 1f, effects, 0f);
+                spriteBatch.Draw(socketTex, drawCenter - screenPos, null, light, 0f, socketOrigin, 1f, effects, 0f);
                 Vector2 pupilOffset = Utils.Vector2FromElipse(pose.PupilAngle.ToRotationVector2(),
                     new Vector2(30f, 66f) * pose.PupilOut);
                 Vector2 jitter = new(1f * -dir, 3f);
-                spriteBatch.Draw(pupilTex, hand.Center - screenPos + pupilOffset + jitter, null, light, 0f,
+                spriteBatch.Draw(pupilTex, drawCenter - screenPos + pupilOffset + jitter, null, light, 0f,
                     pupilTex.Size() / 2f, 1f, SpriteEffects.None, 0f);
-                DrawEyeGlow(hand.Center + pupilOffset + jitter, pose.Glow);
+                DrawEyeGlow(drawCenter + pupilOffset + jitter, pose.Glow);
             }
 
             //手壳（抓握帧）
@@ -248,7 +257,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             if (!isLeft) {
                 handOrigin.X = handTex.Width - handOrigin.X;
             }
-            spriteBatch.Draw(handTex, hand.Center - screenPos, handFrame, light, 0f, handOrigin, 1f, effects, 0f);
+            spriteBatch.Draw(handTex, drawCenter - screenPos, handFrame, light, 0f, handOrigin, 1f, effects, 0f);
 
             //高速冲线：反向速度拉丝（三层紫/青/月白芯，取代圆形辉团堆叠）
             float speed = hand.velocity.Length();
@@ -260,7 +269,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                     float backRot = (-hand.velocity).ToRotation();
                     float streakLen = 110f + speed * 4.6f;
                     Vector2 anchor = new(0f, streak.Height * 0.5f);
-                    Vector2 pos = hand.Center - screenPos;
+                    Vector2 pos = drawCenter - screenPos;
                     Main.EntitySpriteDraw(streak, pos, null,
                         MLordDirector.DeepViolet with { A = 0 } * (0.5f * heat), backRot, anchor,
                         new Vector2(streakLen / streak.Width, 66f / streak.Height), SpriteEffects.None, 0);

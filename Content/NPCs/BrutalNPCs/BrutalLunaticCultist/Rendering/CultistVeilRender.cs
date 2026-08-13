@@ -43,7 +43,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
             shader.Parameters["uFlash"]?.SetValue(CultistScreenFX.CurrentFlash());
             shader.Parameters["uBreak"]?.SetValue(CultistScreenFX.BreakGrade);
             shader.Parameters["uBandRadius"]?.SetValue(PixelsToHeightNorm(560f));
-            shader.Parameters["uNoise"]?.SetValue(CWRAsset.PerlinNoise.Value);
+            //噪声显式绑到 s1：SpriteBatch.Draw 会把 s0 覆写成拷屏贴图，
+            //参数式贴图绑定实机失效（合同同 ShockRingDraw.Draw）
+            gd.Textures[1] = CWRAsset.PerlinNoise.Value;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
 
             //拷屏再shader回写
             gd.SetRenderTarget(screenSwap);

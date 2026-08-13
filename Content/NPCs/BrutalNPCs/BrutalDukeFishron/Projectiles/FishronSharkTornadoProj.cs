@@ -297,8 +297,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
             Effect effect = EffectLoader.FishronTornado?.Value;
             Vector2 bottom = new(Projectile.Center.X, Projectile.position.Y + Projectile.height);
             //quad 大幅宽于名义柱径：撕裂轮廓与离体飞沫全部留在画布内侧，
-            //护栏只作采样保险，绝不承担切边（塑料感的旧病根之一）
-            float drawW = ColumnWidth * 2.6f;
+            //护栏只作采样保险，绝不承担切边（塑料感的旧病根之一）；
+            //3.0×配合 shader 内 0.175 半宽预算=两侧各 ≥13% 永久空白带
+            float drawW = ColumnWidth * 3.0f;
             float drawH = ColumnHeight * 1.30f;
             Vector2 drawCenter = bottom - new Vector2(0, drawH * 0.5f);
 
@@ -314,12 +315,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
             effect.Parameters["uDeepColor"]?.SetValue(FishronMotionFX.DeepSea.ToVector3());
             effect.Parameters["uFoamColor"]?.SetValue(FishronMotionFX.FoamWhite.ToVector3());
             effect.Parameters["uSeaColor"]?.SetValue(FishronMotionFX.SeaGreen.ToVector3());
-            effect.Parameters["uNoiseTex"]?.SetValue(noiseTex.Value);
 
             SpriteBatch sb = Main.spriteBatch;
             sb.End();
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState,
                 DepthStencilState.None, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+            //噪声显式绑到 s1：SpriteBatch.Draw 会把 s0 覆写成画布贴图，
+            //参数式贴图绑定实机失效（合同同 ShockRingDraw.Draw）
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+            gd.Textures[1] = noiseTex.Value;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
             effect.CurrentTechnique.Passes[0].Apply();
 
             Texture2D pixel = VaultAsset.placeholder2.Value;

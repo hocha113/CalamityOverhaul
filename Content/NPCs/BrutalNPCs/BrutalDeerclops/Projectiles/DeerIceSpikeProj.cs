@@ -184,7 +184,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Projectiles
             effect.Parameters["uFade"]?.SetValue(fissureFade);
             effect.Parameters["uSeed"]?.SetValue(Projectile.identity * 0.173f % 1f);
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-            effect.Parameters["uNoiseTex"]?.SetValue(noise);
+            //噪声显式绑到 s1（shader 内 register(s1)），参数式绑定废弃
+            device.Textures[1] = noise;
+            device.SamplerStates[1] = SamplerState.LinearWrap;
             foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
                 pass.Apply();
                 device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);

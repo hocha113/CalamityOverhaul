@@ -48,7 +48,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Rendering
             float flash = EocScreenFX.FlashActive
                 ? EocScreenFX.FlashIntensity * (1f - EocScreenFX.FlashProgress) : 0f;
             shader.Parameters["uFlash"]?.SetValue(flash);
-            shader.Parameters["uNoise"]?.SetValue(CWRAsset.PerlinNoise.Value);
+            //噪声显式绑到 s1：SpriteBatch.Draw 会把 s0 覆写成拷屏贴图，
+            //参数式贴图绑定实机失效（合同同 ShockRingDraw.Draw）
+            gd.Textures[1] = CWRAsset.PerlinNoise.Value;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
 
             //拷屏再回写
             gd.SetRenderTarget(screenSwap);

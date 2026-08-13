@@ -9,16 +9,9 @@
 matrix transformMatrix;
 float uTime;
 float uIntensity;
-texture uNoise;
-sampler2D noiseTex = sampler_state
-{
-    texture = <uNoise>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
+// 噪声固定 s1：sampler_state 自动分配会落 s0，Trail 图元路径今日侥幸、批次路径必坏；
+// C# 侧须在 DrawTrail 前显式 Textures[1]=PerlinNoise + SamplerStates[1]=LinearWrap
+sampler2D noiseTex : register(s1);
 
 static const float3 VenousDark = float3(0.239, 0.024, 0.043);
 static const float3 Arterial   = float3(0.557, 0.059, 0.102);

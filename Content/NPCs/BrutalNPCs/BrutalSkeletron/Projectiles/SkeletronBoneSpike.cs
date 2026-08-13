@@ -149,6 +149,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Projectiles
             effect.Parameters["uBonePale"]?.SetValue(SkeletronRenderHelper.BonePale.ToVector3());
             effect.Parameters["uBoneShadow"]?.SetValue(SkeletronRenderHelper.BoneShadow.ToVector3());
             effect.Parameters["uGhostColor"]?.SetValue(SkeletronRenderHelper.GhostCyan.ToVector3());
+            //噪声显式绑到 s1（shader 内 register(s1)）；旧版从未绑定噪声，实机读 s0 残留贴图
+            device.Textures[1] = CWRAsset.PerlinNoise.Value;
+            device.SamplerStates[1] = SamplerState.LinearWrap;
 
             for (int i = -1; i <= 1; i++) {
                 float lean = i * 0.26f;

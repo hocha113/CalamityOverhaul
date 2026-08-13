@@ -4,7 +4,7 @@
 //采样uImage0屏幕；直线算术+plain tex2D，无分支无tex2Dlod（FNA约束）
 // ============================================================================
 
-sampler uImage0 : register(s0);
+sampler uImage0 : register(s0);   //批次主贴图（全屏拷贝）
 
 float uTime;
 float uProgress;   //脉冲进度 0起爆→1结束

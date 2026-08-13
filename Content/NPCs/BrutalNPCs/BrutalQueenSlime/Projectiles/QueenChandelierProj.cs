@@ -168,7 +168,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Projectiles
             effect.Parameters["uCharge"]?.SetValue(charge);
             effect.Parameters["uHueSeed"]?.SetValue(HueSeed);
             effect.Parameters["seed"]?.SetValue(Projectile.whoAmI * 0.211f % 1f);
-            effect.Parameters["uNoiseTex"]?.SetValue(noise);
+            //噪声显式绑到 s1（shader 内 register(s1)），参数式绑定废弃
+            device.Textures[1] = noise;
+            device.SamplerStates[1] = SamplerState.LinearWrap;
             foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
                 pass.Apply();
                 device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);

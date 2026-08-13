@@ -10,8 +10,9 @@ float uTime;        //滚动时间
 float fadeAlpha;    //整体透明度 0~1
 float seed;         //实例种子，错开多束相位
 
+//噪声显式钉在 s1：不吃 fxc 自动分配（s0 会被 SpriteBatch 画布贴图覆写）
 texture uNoiseTex;
-sampler noiseSamp = sampler_state
+sampler noiseSamp : register(s1) = sampler_state
 {
     texture = <uNoiseTex>;
     magfilter = LINEAR;

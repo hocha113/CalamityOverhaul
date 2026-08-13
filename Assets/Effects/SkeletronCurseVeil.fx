@@ -14,16 +14,9 @@ float uFlash;               //骨白冲击帧强度
 float uFlashProgress;       //冲击帧进度 0~1
 float4 ringData[2];         //xy=中心uv z=半径(屏高归一) w=强度
 
-texture uNoiseTex;
-sampler noiseSamp = sampler_state
-{
-    texture = <uNoiseTex>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
+// 噪声固定 s1：sampler_state 自动分配在 SpriteBatch 下必被 s0 覆写（曾靠 uImage0 占位侥幸落 s1）；
+// C# 侧须在 pass.Apply 前显式 Textures[1]=PerlinNoise + SamplerStates[1]=LinearWrap
+sampler noiseSamp : register(s1);
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {

@@ -92,7 +92,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Projectiles
             shader.Parameters["uDecay"]?.SetValue(decay);
             shader.Parameters["uPhase2"]?.SetValue(Phase2 ? 1f : 0f);
             shader.Parameters["seed"]?.SetValue(Projectile.whoAmI * 0.173f % 1f);
-            shader.Parameters["uNoiseTex"]?.SetValue(noise);
+            //噪声显式绑到 s1：SpriteBatch.Draw 会把 s0 覆写成画布贴图，
+            //参数式贴图绑定实机失效（合同同 ShockRingDraw.Draw）
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+            gd.Textures[1] = noise;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
             shader.CurrentTechnique.Passes[0].Apply();
 
             Texture2D quad = InnoVault.VaultAsset.placeholder2.Value;

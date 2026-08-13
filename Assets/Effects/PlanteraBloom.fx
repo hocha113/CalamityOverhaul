@@ -7,8 +7,6 @@
 //ps_3_0
 // ============================================================================
 
-sampler uImage0 : register(s0);
-
 float uTime;
 float uProgress;   //环扩张进度 0~1
 float uIntensity;  //总强度
@@ -19,16 +17,10 @@ float uGap2;       //缺口2方位角
 float uGapCos;     //cos(缺口半宽)
 float seed;
 
-texture uNoiseTex;
-sampler noiseSamp = sampler_state
-{
-    texture = <uNoiseTex>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
+// 噪声固定 s1：本 shader 不采样 s0（画布只是白像素 quad），
+// 旧 sampler_state 自动分配落 s0，被 SpriteBatch 用画布贴图覆写→花瓣颗粒读成辉光渐变；
+// C# 侧须在 pass.Apply 前显式 Textures[1]=PerlinNoise + SamplerStates[1]=LinearWrap
+sampler noiseSamp : register(s1);
 
 float4 BloomRingPS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {

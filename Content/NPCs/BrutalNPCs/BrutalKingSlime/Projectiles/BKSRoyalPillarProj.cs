@@ -127,7 +127,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
             effect.Parameters["coreColor"]?.SetValue(new Vector3(1f, 0.98f, 0.9f));
             effect.Parameters["goldColor"]?.SetValue(KingSlimeGelFX.CrownGold.ToVector3());
             effect.Parameters["redColor"]?.SetValue(new Vector3(0.66f, 0.12f, 0.24f));
-            effect.Parameters["uNoiseTex"]?.SetValue(noise);
 
             //quad：uv.x 0=天端 1=落点端
             Vector2 top = Projectile.Center - new Vector2(0f, PillarHeight);
@@ -145,6 +144,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
             device.BlendState = BlendState.Additive;
             device.RasterizerState = RasterizerState.CullNone;
 
+            //噪声显式绑到 s1（shader 内 register(s1)），参数式绑定废弃
+            device.Textures[1] = noise;
+            device.SamplerStates[1] = SamplerState.LinearWrap;
             foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
                 pass.Apply();
                 device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);

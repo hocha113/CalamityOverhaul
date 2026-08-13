@@ -4,8 +4,6 @@
 //差速旋转全走笛卡尔刚体旋转坐标，无 atan2、无极角噪声（无接缝风险）
 // ============================================================================
 
-sampler uImage0 : register(s0);
-
 float uTime;
 float uSpin;        //累计旋转角（头部 rotation 直接喂入）
 float uIntensity;   //强度 0~1.2
@@ -14,16 +12,10 @@ float3 uColorA;     //幽青主色
 float3 uColorB;     //深青
 float3 uBone;       //骨白
 
-texture uNoiseTex;
-sampler noiseSamp = sampler_state
-{
-    texture = <uNoiseTex>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
+// 噪声固定 s1：本 shader 不采样 s0（画布只是白像素 quad），
+// 旧 sampler_state 自动分配落 s0，被 SpriteBatch 用画布贴图覆写→涡流/吸入纹全读成辉光渐变；
+// C# 侧须在 pass.Apply 前显式 Textures[1]=PerlinNoise + SamplerStates[1]=LinearWrap
+sampler noiseSamp : register(s1);
 
 float2 Rot(float2 p, float a)
 {

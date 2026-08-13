@@ -27,6 +27,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
         private const int FadeTail = 44;
         /// <summary>水墙半宽（判定与视觉一致）</summary>
         private const float HalfWidth = 44f;
+        /// <summary>脱录后头端收针的过渡帧数</summary>
+        private const int HeadSealTime = 14;
 
         [VaultLoaden(CWRConstant.Masking + "PerlinNoise")]
         private static Asset<Texture2D> noiseTex = null;
@@ -41,10 +43,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
         private static float renderWidthScale;
         /// <summary>尾先蚀退前沿：>1 全显，向 0 推进时从尾端吃掉条带</summary>
         private static float renderErodeFront;
+        /// <summary>头端收针进度 0~1：跟录期 0（根部焊在 Boss 上），脱录后渐进到 1</summary>
+        private static float renderHeadPinch;
 
         private readonly Vector2[] points = new Vector2[MaxPoints];
         private int pointCount;
         private int extendTimer = -1;
+        private int headSealFrames;
 
         private int BossIndex => (int)Projectile.ai[0];
         private int ExtendFrames => (int)Projectile.ai[1];
@@ -87,6 +92,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
                 else {
                     extendTimer = 0;
                 }
+            }
+            //脱录后头端收针过渡：跟录期头顶点必须全宽焊在 Boss 上，
+            //Boss 离开后若保持全宽+亮帽=暴露的平切端（三审实机截图的病灶）
+            else if (headSealFrames < HeadSealTime) {
+                headSealFrames++;
             }
 
             //水墙冒泡与湿光
@@ -165,16 +175,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
             renderWidthScale = 0.7f + 0.3f * fade;
             //消散期尾先蚀退：前沿从尾端一路推向头部，几何上"吃掉"条带
             renderErodeFront = HitActive ? 1.2f : -0.18f + 1.38f * fade;
+            float seal = MathHelper.Clamp(headSealFrames / (float)HeadSealTime, 0f, 1f);
+            renderHeadPinch = seal * seal * (3f - 2f * seal);
 
             sharedTrail ??= new Trail(new Vector2[MaxPoints],
                 f => {
-                    //尾端几何收针到零宽 + 蚀退前沿软边——两种包络都在顶点层
+                    //末端宽度+alpha 双收针（alpha 在颜色函数）：尾端永远锥形，
+                    //头端跟录期全宽焊 Boss、脱录后按 renderHeadPinch 渐进收针
                     float tip = MathHelper.Clamp((1f - f) / 0.2f, 0f, 1f);
                     tip = tip * tip * (3f - 2f * tip);
+                    float head = MathHelper.Clamp(f / 0.10f, 0f, 1f);
+                    head = head * head * (3f - 2f * head);
+                    head = MathHelper.Lerp(1f, head, renderHeadPinch);
                     float erode = MathHelper.Clamp((renderErodeFront - f) / 0.16f, 0f, 1f);
-                    return HalfWidth * renderWidthScale * (1f - f * 0.25f) * tip * erode;
+                    return HalfWidth * renderWidthScale * (1f - f * 0.25f) * tip * head * erode;
                 },
-                texCoord => Color.White * renderAlpha);
+                texCoord => {
+                    //与宽度同步的 alpha 收针：几何+透明双保险，任意时刻最末可见段都是锥形
+                    float x = texCoord.X;
+                    float tailA = MathHelper.Clamp((1f - x) / 0.15f, 0f, 1f);
+                    float erodeA = MathHelper.Clamp((renderErodeFront - x) / 0.16f, 0f, 1f);
+                    float headA = MathHelper.Lerp(1f, MathHelper.Clamp(x / 0.08f, 0f, 1f), renderHeadPinch);
+                    return Color.White * (renderAlpha * tailA * erodeA * headA);
+                });
             sharedTrail.TrailPositions = renderPositions;
 
             effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
@@ -188,10 +211,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Projectiles
             effect.Parameters["shallowColor"]?.SetValue(FishronMotionFX.SeaGreen.ToVector3());
             effect.Parameters["foamColor"]?.SetValue(FishronMotionFX.FoamWhite.ToVector3());
             effect.Parameters["bioColor"]?.SetValue(new Vector3(0.35f, 0.85f, 0.9f));
-            effect.Parameters["uNoiseTex"]?.SetValue(noiseTex.Value);
-            effect.Parameters["uFlowTex"]?.SetValue(flowTex.Value);
 
             GraphicsDevice gd = Main.graphics.GraphicsDevice;
+            //双噪声显式绑到 s1/s2（shader 内 register(s1)/(s2)），参数式绑定废弃
+            gd.Textures[1] = noiseTex.Value;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
+            gd.Textures[2] = flowTex.Value;
+            gd.SamplerStates[2] = SamplerState.LinearWrap;
             gd.BlendState = BlendState.Additive;
             sharedTrail.DrawTrail(effect);
             gd.BlendState = BlendState.AlphaBlend;

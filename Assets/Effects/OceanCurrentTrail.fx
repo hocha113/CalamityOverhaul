@@ -14,27 +14,11 @@ float3 shallowColor;    //浅层色（边缘渐变）
 float3 foamColor;       //泡沫高光色
 float3 bioColor;        //生物荧光高光色
 
-texture uNoiseTex;
-sampler noiseSamp = sampler_state
-{
-    texture = <uNoiseTex>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
-
-texture uFlowTex;
-sampler flowSamp = sampler_state
-{
-    texture = <uFlowTex>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
+// 双噪声固定 s1/s2：旧 sampler_state 自动分配把 noiseSamp 落在 s0，Trail 图元路径今日侥幸、
+// 一旦挪进 SpriteBatch 批内必被画布贴图覆写；
+// C# 侧须在 DrawTrail 前显式 Textures[1]=PerlinNoise、Textures[2]=WavyNoise + SamplerStates=LinearWrap
+sampler noiseSamp : register(s1);
+sampler flowSamp : register(s2);
 
 struct VSInput
 {

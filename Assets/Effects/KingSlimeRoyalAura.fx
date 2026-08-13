@@ -3,7 +3,7 @@
 //AlphaBlend 预乘 alpha，采样 uImage0 作遮罩
 // ============================================================================
 
-sampler uImage0 : register(s0);
+sampler uImage0 : register(s0);   //批次主贴图（SpriteBatch 当前精灵=史莱姆王本体）
 
 float uTime;          //全局时间
 float intensity;      //总强度 0~1

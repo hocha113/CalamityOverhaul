@@ -51,7 +51,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
         private bool ripFxFired;
         private bool finaleBreachFired;
         private Vector2 headDashDir;
+        private Vector2 group1DashDir;
         private bool omenPlaced;
+        /// <summary>地底席起爆点：t=16放盘帧各端提交，t=38喷发沿用(预告即承诺)</summary>
+        private Vector2 underBreachPoint;
+        /// <summary>合体巨喷起爆点：预兆帧提交，喷发帧沿用</summary>
+        private Vector2 finaleBreachPoint;
 
         public EowSplitPincerState() {
         }
@@ -65,6 +70,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
             ripFxFired = false;
             finaleBreachFired = false;
             omenPlaced = false;
+            underBreachPoint = Vector2.Zero;
+            finaleBreachPoint = Vector2.Zero;
         }
 
         public override IEowState OnUpdate(EowStateContext context) {
@@ -208,6 +215,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
             //默认保持站位(未被覆盖的组按站位走)
             DeclareStations(context, player);
 
+            //组1对冲导引线：错拍生成→锁向(独立于头席，每条分身有自己的预警)
+            int lead1Guide = LeaderOrdinalOf(context, 1);
+            if (lead1Guide >= 0) {
+                NPC leader1 = context.Segments[lead1Guide];
+                if (t == 1 + stagger && !VaultUtils.isClient) {
+                    Projectile.NewProjectile(npc.GetSource_FromAI(),
+                        EowSpitBarrageState.MouthPos(leader1),
+                        (player.Center - leader1.Center).SafeNormalize(-Vector2.UnitX),
+                        ModContent.ProjectileType<EowLungeOmen>(), 0, 0f, Main.myPlayer,
+                        leader1.whoAmI, 17f);
+                }
+                //组1锁向：t=18+stagger起冲沿用
+                if (t == 15 + stagger) {
+                    Vector2 aim = player.Center + player.velocity * 10f;
+                    group1DashDir = (aim - leader1.Center).SafeNormalize(-Vector2.UnitX);
+                    if (!VaultUtils.isClient) {
+                        EowLungeOmen.Lock(leader1.whoAmI, group1DashDir);
+                    }
+                }
+            }
+
             //预警段：两翼后拉蓄势
             if (t < 18) {
                 Vector2 pull = player.Center + new Vector2(-(620f + 110f) * sideFlip, -380f);
@@ -218,23 +246,45 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
                 context.PulsePhase = 3f;
                 npc.damage = 0;
 
+                //头席导引线(权威端，蓄势期跟踪→t=15锁向)
+                if (t == 1 && !VaultUtils.isClient) {
+                    Projectile.NewProjectile(npc.GetSource_FromAI(),
+                        EowSpitBarrageState.MouthPos(npc),
+                        (player.Center - npc.Center).SafeNormalize(Vector2.UnitX),
+                        ModContent.ProjectileType<EowLungeOmen>(), 0, 0f, Main.myPlayer,
+                        npc.whoAmI, 17f);
+                }
+                //头席锁向：预告即承诺，t=18起冲不再重瞄
+                if (t == 15) {
+                    Vector2 aim = player.Center + player.velocity * 10f;
+                    headDashDir = (aim - npc.Center).SafeNormalize(Vector2.UnitX);
+                    if (!VaultUtils.isClient) {
+                        EowLungeOmen.Lock(npc.whoAmI, headDashDir);
+                    }
+                }
+
                 if (t == 4) {
                     SoundEngine.PlaySound(SoundID.Zombie13 with { Pitch = -0.2f, Volume = 0.9f, MaxInstances = 3 }, npc.Center);
                 }
-                //地底席预兆(服务端每周期一次)
-                if (!VaultUtils.isClient && t == 16 && !omenPlaced) {
-                    omenPlaced = true;
-                    Projectile.NewProjectile(npc.GetSource_FromAI(),
-                        new Vector2(player.Center.X + player.velocity.X * 12f, groundY), Vector2.Zero,
-                        ModContent.ProjectileType<EowBreachOmen>(), 0, 0f, Main.myPlayer, 22f, 0f);
+                //地底席预兆：t=16各端提交起爆点，服务端放盘；t=38喷发沿用该点不重瞄
+                if (t == 16) {
+                    underBreachPoint = new Vector2(player.Center.X + player.velocity.X * 12f, groundY);
+                    if (!VaultUtils.isClient && !omenPlaced) {
+                        omenPlaced = true;
+                        Projectile.NewProjectile(npc.GetSource_FromAI(), underBreachPoint, Vector2.Zero,
+                            ModContent.ProjectileType<EowBreachOmen>(), 0, 0f, Main.myPlayer, 22f, 0f);
+                    }
                 }
                 return;
             }
 
-            //头席冲刺帧
+            //头席冲刺帧(方向沿用t=15锁向，与导引线同源)
             if (t == 18) {
-                Vector2 aim = player.Center + player.velocity * 10f;
-                headDashDir = (aim - npc.Center).SafeNormalize(Vector2.UnitX);
+                if (headDashDir == Vector2.Zero) {
+                    //兜底：状态中途重建未经历锁向帧
+                    Vector2 aim = player.Center + player.velocity * 10f;
+                    headDashDir = (aim - npc.Center).SafeNormalize(Vector2.UnitX);
+                }
                 EowMotionFX.PlayRoar(npc.Center, 0.3f, 0.85f);
             }
 
@@ -257,13 +307,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
             //组1错拍反向冲刺
             if (t >= 18 + stagger && t < 46 + stagger) {
                 if (t == 18 + stagger) {
-                    Vector2 aim = player.Center + player.velocity * 10f;
-                    //由右翼扑向玩家(与头对向交叉)
+                    //由右翼扑向玩家(与头对向交叉)，方向沿用t=15+stagger锁向
                     int lead1 = LeaderOrdinalOf(context, 1);
                     if (lead1 >= 0) {
                         NPC leader = context.Segments[lead1];
-                        Vector2 dir = (aim - leader.Center).SafeNormalize(-Vector2.UnitX);
-                        context.GroupDirectVelocity[1] = dir * DashSpeed(context);
+                        if (group1DashDir == Vector2.Zero) {
+                            //兜底：状态中途重建未经历锁向帧
+                            Vector2 aim = player.Center + player.velocity * 10f;
+                            group1DashDir = (aim - leader.Center).SafeNormalize(-Vector2.UnitX);
+                        }
+                        context.GroupDirectVelocity[1] = group1DashDir * DashSpeed(context);
                         if (!VaultUtils.isServer) {
                             SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.5f, Volume = 0.7f, MaxInstances = 3 }, leader.Center);
                         }
@@ -286,14 +339,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
                 if (lead2 >= 0) {
                     NPC leader = context.Segments[lead2];
                     if (t == 38) {
-                        //瞬移到预兆点正下方蓄势射出
+                        //中途加入未经历t=16的兜底
+                        if (underBreachPoint == Vector2.Zero) {
+                            underBreachPoint = new Vector2(player.Center.X, groundY);
+                        }
+                        //瞬移到提交点正下方蓄势射出(爆点=预兆盘位置，各端一致)
                         if (!VaultUtils.isClient) {
-                            leader.Center = new Vector2(player.Center.X, groundY + 620f);
+                            leader.Center = underBreachPoint + new Vector2(0f, 620f);
                             leader.netUpdate = true;
                         }
                         context.GroupDirectVelocity[2] = -Vector2.UnitY * (DashSpeed(context) + 6f);
-                        EowMotionFX.SpawnBreachBlast(new Vector2(leader.Center.X, groundY), 1.2f, -Vector2.UnitY);
-                        EowMotionFX.CameraPunch(new Vector2(leader.Center.X, groundY), 5.5f, 12, "EowPincerErupt", -Vector2.UnitY);
+                        EowMotionFX.SpawnBreachBlast(underBreachPoint, 1.2f, -Vector2.UnitY);
+                        EowMotionFX.CameraPunch(underBreachPoint, 5.5f, 12, "EowPincerErupt", -Vector2.UnitY);
                     }
                     else {
                         //重力弧线回落
@@ -375,10 +432,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
                 context.SkipDefaultMovement = false;
                 SetMovement(context, new Vector2(player.Center.X, groundY + 540f), 24f, 1.7f);
                 npc.damage = 0;
+                //各端提交终喷点，喷发帧沿用不重瞄
+                if (finaleBreachPoint == Vector2.Zero) {
+                    finaleBreachPoint = new Vector2(player.Center.X, groundY);
+                }
                 if (!VaultUtils.isClient && !omenPlaced) {
                     omenPlaced = true;
-                    Projectile.NewProjectile(npc.GetSource_FromAI(),
-                        new Vector2(player.Center.X, groundY), Vector2.Zero,
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), finaleBreachPoint, Vector2.Zero,
                         ModContent.ProjectileType<EowBreachOmen>(), 0, 0f, Main.myPlayer, FinaleOmenTime - 2, 0f);
                 }
                 return false;
@@ -387,7 +447,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
             //合体巨喷帧
             if (Timer == FinaleOmenTime + 1) {
                 context.SkipDefaultMovement = true;
-                npc.Center = new Vector2(player.Center.X, groundY + 700f);
+                //中途加入未经历预兆帧的兜底
+                if (finaleBreachPoint == Vector2.Zero) {
+                    finaleBreachPoint = new Vector2(player.Center.X, groundY);
+                }
+                npc.Center = finaleBreachPoint + new Vector2(0f, 700f);
                 npc.velocity = -Vector2.UnitY * (DashSpeed(context) + 14f);
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
@@ -440,6 +504,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
             }
             context.SplitProgress = 0f;
             context.MergeHoming = false;
+            //死亡演出中途打断时清掉未耗尽的导引线(正常结束时已自然消亡，无副作用)
+            EowLungeOmen.ClearFor(context.Npc.whoAmI);
         }
     }
 }

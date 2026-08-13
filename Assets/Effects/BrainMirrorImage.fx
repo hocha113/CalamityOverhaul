@@ -5,17 +5,11 @@
 // 采样限制在 uFrameUV 帧区域内，防竖排图集串帧
 // ============================================================================
 
-sampler uImage0 : register(s0);
+sampler uImage0 : register(s0);   //批次主贴图（SpriteBatch 当前精灵=克脑图集）
 
-texture uNoise;
-sampler noiseTex = sampler_state
-{
-    Texture = <uNoise>;
-    AddressU = wrap;
-    AddressV = wrap;
-    MinFilter = linear;
-    MagFilter = linear;
-};
+// 噪声固定 s1：sampler_state 自动分配在 SpriteBatch 下必被 s0 覆写（曾靠 uImage0 占位侥幸落 s1）；
+// C# 侧须在 pass.Apply 前显式 Textures[1]=PerlinNoise + SamplerStates[1]=LinearWrap
+sampler noiseTex : register(s1);
 
 float uTime;
 float uGhost;        //0 实体 ~ 1 完全消散

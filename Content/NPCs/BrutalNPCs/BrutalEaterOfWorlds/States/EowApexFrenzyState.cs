@@ -42,6 +42,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
         private int drumOmenPlacedIndex = -1;
         /// <summary>各组入土尘爆标记</summary>
         private readonly bool[] burrowFired = new bool[EowSplitLayout.MaxGroups];
+        /// <summary>当前鼓点起爆点：放盘帧各端提交，喷发帧沿用(预告即承诺)</summary>
+        private Vector2 drumBreachPoint;
+        /// <summary>终喷起爆点：汇拢首帧随巨型预兆盘提交</summary>
+        private Vector2 apexBreachPoint;
 
         public EowApexFrenzyState() {
         }
@@ -54,6 +58,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
             convergeOmenPlaced = false;
             drumOmenPlacedIndex = -1;
             Array.Clear(burrowFired, 0, burrowFired.Length);
+            drumBreachPoint = Vector2.Zero;
+            apexBreachPoint = Vector2.Zero;
 
             NPC npc = context.Npc;
             groundY = EowMotionFX.FindGroundBelow(context.Target.Alives()
@@ -235,12 +241,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
             }
             int group = DrumOrder[drumIndex];
 
-            //鼓点前奏：预兆(服务端放置一次)
+            //鼓点前奏：各端提交起爆点，服务端放盘；喷发帧沿用该点不重瞄
             if (inDrum == 0 && drumOmenPlacedIndex != drumIndex) {
                 drumOmenPlacedIndex = drumIndex;
+                drumBreachPoint = new Vector2(player.Center.X + player.velocity.X * 10f, groundY);
                 if (!VaultUtils.isClient) {
-                    Projectile.NewProjectile(npc.GetSource_FromAI(),
-                        new Vector2(player.Center.X + player.velocity.X * 10f, groundY), Vector2.Zero,
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), drumBreachPoint, Vector2.Zero,
                         ModContent.ProjectileType<EowBreachOmen>(), 0, 0f, Main.myPlayer, 20f, 0f);
                 }
             }
@@ -259,22 +265,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
                 return;
             }
 
-            //喷发帧
+            //喷发帧(沿用放盘帧提交点，爆点=预兆盘位置，各端一致)
             if (inDrum == 20) {
+                //中途加入未经历放盘帧的兜底
+                if (drumBreachPoint == Vector2.Zero) {
+                    drumBreachPoint = new Vector2(player.Center.X, groundY);
+                }
                 if (!VaultUtils.isClient) {
-                    leader.Center = new Vector2(player.Center.X + player.velocity.X * 8f, groundY + 560f);
+                    leader.Center = drumBreachPoint + new Vector2(0f, 560f);
                     leader.netUpdate = true;
                 }
                 context.GroupDirectVelocity[group] = -Vector2.UnitY * EruptSpeed;
-                EowMotionFX.SpawnBreachBlast(new Vector2(leader.Center.X, groundY), 1.35f, -Vector2.UnitY);
-                EowMotionFX.CameraPunch(new Vector2(leader.Center.X, groundY), 6f, 12, "EowDrum", -Vector2.UnitY);
+                EowMotionFX.SpawnBreachBlast(drumBreachPoint, 1.35f, -Vector2.UnitY);
+                EowMotionFX.CameraPunch(drumBreachPoint, 6f, 12, "EowDrum", -Vector2.UnitY);
                 //酸液小扇(服务端)
                 if (!VaultUtils.isClient) {
                     for (int i = 0; i < 3; i++) {
                         float spread = MathHelper.Lerp(-0.4f, 0.4f, i / 2f);
                         Vector2 vel = (-Vector2.UnitY).RotatedBy(spread) * Main.rand.NextFloat(8f, 10.5f);
                         Projectile.NewProjectile(npc.GetSource_FromAI(),
-                            new Vector2(leader.Center.X, groundY - 8f), vel,
+                            drumBreachPoint + new Vector2(0f, -8f), vel,
                             ModContent.ProjectileType<EowAcidGlob>(),
                             EowSpitBarrageState.SpitDamage(npc), 0f, Main.myPlayer, 2f);
                     }
@@ -306,11 +316,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
             SetMovement(context, new Vector2(player.Center.X, groundY + 600f), 32f, 1.7f);
             context.SplitProgress = MathHelper.Clamp(1f - (Timer - DrumEnd) / 34f, 0f, 1f);
 
-            //巨型预兆盘+死寂(声画收干，只留越来越大的预兆)
+            //巨型预兆盘+死寂(声画收干，只留越来越大的预兆)；各端提交终喷点，终喷帧沿用
+            if (apexBreachPoint == Vector2.Zero) {
+                apexBreachPoint = new Vector2(player.Center.X, groundY);
+            }
             if (!convergeOmenPlaced && !VaultUtils.isClient) {
                 convergeOmenPlaced = true;
-                Projectile.NewProjectile(npc.GetSource_FromAI(),
-                    new Vector2(player.Center.X, groundY), Vector2.Zero,
+                Projectile.NewProjectile(npc.GetSource_FromAI(), apexBreachPoint, Vector2.Zero,
                     ModContent.ProjectileType<EowBreachOmen>(), 0, 0f, Main.myPlayer,
                     ConvergeEnd - DrumEnd + 6, 1f);
             }
@@ -332,9 +344,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
 
             context.SkipDefaultMovement = true;
 
-            //终喷帧
+            //终喷帧(沿用汇拢期提交点，不重瞄——预告即承诺)
             if (Timer == FinaleFrame) {
-                npc.Center = new Vector2(player.Center.X, groundY + 760f);
+                //中途加入未经历汇拢帧的兜底
+                if (apexBreachPoint == Vector2.Zero) {
+                    apexBreachPoint = new Vector2(player.Center.X, groundY);
+                }
+                npc.Center = apexBreachPoint + new Vector2(0f, 760f);
                 npc.velocity = -Vector2.UnitY * (EruptSpeed + 19f);
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
@@ -343,10 +359,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
 
             npc.damage = npc.velocity.Length() > 18f ? npc.defDamage : 0;
 
-            //破土终爆：巨尘爆+全向酸液新星
-            if (!finaleBreachFired && Timer > FinaleFrame && npc.Center.Y < groundY) {
+            //破土终爆：巨尘爆+全向酸液新星(过盘面判定，与预兆盘同一平面)
+            float breachPlane = apexBreachPoint == Vector2.Zero ? groundY : apexBreachPoint.Y;
+            if (!finaleBreachFired && Timer > FinaleFrame && npc.Center.Y < breachPlane) {
                 finaleBreachFired = true;
-                Vector2 breachPoint = new Vector2(npc.Center.X, groundY);
+                Vector2 breachPoint = new Vector2(npc.Center.X, breachPlane);
                 EowMotionFX.SpawnBreachBlast(breachPoint, 2.4f, -Vector2.UnitY);
                 EowMotionFX.CameraPunch(breachPoint, 12f, 26, "EowApexFinale", -Vector2.UnitY);
                 EowMotionFX.PlayRoar(npc.Center, 0.4f, 1.3f);
