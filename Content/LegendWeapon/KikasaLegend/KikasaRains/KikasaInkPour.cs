@@ -106,6 +106,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                         KikasaDomainDeco.RippleAt(new Vector2(end.X, lakeY), 1.1f);
                         KikasaDomainDeco.SplashAt(new Vector2(end.X, lakeY), 6);
                     }
+                    //持续冲刷:同一片墨晕越冲越大
+                    KikasaInkFX.AddLakeBlot(Projectile.owner, end.X, 44f + Fill * 30f);
                 }
                 else {
                     KikasaInkFX.AddGroundSplat(end + dir * 6f, dir * 14f, 46f + Fill * 28f);
@@ -138,7 +140,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains
                     ModContent.ProjectileType<KikasaInkDrop>(), (int)(Projectile.damage * 1.25f),
                     Projectile.knockBack, Projectile.owner, -1f, fallbackX, 0f);
                 if (p >= 0 && p < Main.maxProjectiles) {
-                    Main.projectile[p].scale = 1.3f;
+                    Main.projectile[p].scale = 1.2f;
                     Main.projectile[p].netUpdate = true;
                 }
             }

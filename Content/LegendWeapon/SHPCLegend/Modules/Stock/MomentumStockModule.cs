@@ -63,12 +63,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                     Color.Lerp(new Color(255, 180, 80), new Color(255, 120, 40), Main.rand.NextFloat()),
                     Main.rand.NextFloat(0.6f, 1f + grade * 0.3f)).Configure(false, Main.rand.Next(12, 20));
             }
-            //少量方屑保住赛博底味
-            for (int i = 0; i < 2; i++) {
-                Vector2 vel = dirOpp * Main.rand.NextFloat(1.5f, 3f) + Main.rand.NextVector2Circular(1f, 1f);
-                PRTLoader.NewParticle<PRT_CyberSquare>(player.Center, vel, new Color(255, 180, 80),
-                    Main.rand.NextFloat(0.55f, 0.9f)).Configure(new Color(220, 90, 30), 14);
-            }
             //满层提速拍，小环外弹
             if (maxed) {
                 PRTLoader.NewParticle<PRT_StarPulseRing>(player.Center, Vector2.Zero,

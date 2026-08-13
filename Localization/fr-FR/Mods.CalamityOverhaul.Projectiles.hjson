@@ -1,4 +1,4 @@
-RebelBladeFlyAttcke.DisplayName: Lame rebelle
+﻿RebelBladeFlyAttcke.DisplayName: Lame rebelle
 RebelBladeOrb.DisplayName: Orbe démoniaque
 RebelBladeBack.DisplayName: Lame rebelle
 ElectricMinRocketHeld.DisplayName: Micro-fusée électrique
@@ -501,7 +501,6 @@ VictorRiftPortalProj.DisplayName: Fissure cyber de Victor
 // CultistIceLance.DisplayName: Frost Lance
 // CultistRitualCircle.DisplayName: Ritual Circle
 // CultistSigilProj.DisplayName: Floating Sigil
-// CultistThunderColumn.DisplayName: Thunder Column
 // MLordArcRayProj.DisplayName: Phantasmal Arc Ray
 // MLordCometProj.DisplayName: Starfall Comet
 // MLordConstellationProj.DisplayName: Constellation Omen

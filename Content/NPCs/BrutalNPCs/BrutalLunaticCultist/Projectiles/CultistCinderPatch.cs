@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -101,21 +102,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             int fh = fire.Height / 4;
 
             if (!Landed) {
-                //坠落中的火种：焰帧彗核+速度拉伸（不是光球）
+                //坠落中的火种：本体=原版火球467真实纹理（速度拉伸+底晕叠加）
                 float ft = Projectile.localAI[0];
-                int seedFrame = (int)(ft / 3f + Projectile.whoAmI * 5) % 16;
-                Rectangle seedSrc = new(seedFrame % 4 * fw, seedFrame / 4 * fh, fw, fh);
-                float fallStretch = MathHelper.Clamp(Projectile.velocity.Length() * 0.07f, 0.8f, 1.6f);
+                Main.instance.LoadProjectile(ProjectileID.CultistBossFireBall);
+                Texture2D fireball = TextureAssets.Projectile[ProjectileID.CultistBossFireBall].Value;
+                int bfh = fireball.Height / 4;
+                Rectangle seedSrc = new(0, (int)(ft / 4f + Projectile.whoAmI) % 4 * bfh, fireball.Width, bfh);
+                float fallStretch = MathHelper.Clamp(Projectile.velocity.Length() * 0.07f, 0.8f, 1.5f);
                 CultistRenderHelper.BeginAdditive(sb);
                 sb.Draw(glow, Projectile.Center - Main.screenPosition, null,
-                    CultistPalette.FireDeep * 0.5f, 0f, glow.Size() / 2f, 0.5f, SpriteEffects.None, 0f);
-                sb.Draw(fire, Projectile.Center - Main.screenPosition, seedSrc,
-                    CultistPalette.FireMain * 0.95f, Projectile.velocity.ToRotation() + MathHelper.PiOver2,
-                    new Vector2(fw / 2f, fh / 2f), new Vector2(0.34f, 0.42f * fallStretch), SpriteEffects.None, 0f);
-                sb.Draw(fire, Projectile.Center - Main.screenPosition, seedSrc,
-                    CultistPalette.FireBright * 0.8f, Projectile.velocity.ToRotation() + MathHelper.PiOver2,
-                    new Vector2(fw / 2f, fh / 2f), new Vector2(0.2f, 0.28f * fallStretch), SpriteEffects.None, 0f);
+                    CultistPalette.FireDeep * 0.45f, 0f, glow.Size() / 2f, 0.5f, SpriteEffects.None, 0f);
                 CultistRenderHelper.EndAdditive(sb);
+                sb.Draw(fireball, Projectile.Center - Main.screenPosition, seedSrc,
+                    new Color(255, 255, 255, 255), ft * 0.24f,
+                    new Vector2(fireball.Width / 2f, bfh / 2f), new Vector2(0.8f, 0.8f * fallStretch), SpriteEffects.None, 0f);
                 return false;
             }
 

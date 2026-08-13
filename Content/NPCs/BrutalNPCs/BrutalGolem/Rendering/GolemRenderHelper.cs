@@ -67,10 +67,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Rendering
 
             Color main = ctx.ChargeType >= 2 ? new Color(255, 150, 40) : new Color(255, 200, 90);
 
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
+            //默认预乘批直接画，A=0 颜色即加色；
+            //显式 BlendState.Additive 源因子是 SrcAlpha，A=0 顶点色会整段乘零导致不可见
             //旋涡吸积盘
             float spin = Main.GlobalTimeWrappedHourly * (2.2f + progress * 3f);
             float size = 0.5f + progress * 0.9f;
@@ -81,10 +79,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Rendering
             //核心亮斑
             sb.Draw(soft, gemPos, null, (main with { A = 0 }) * (0.4f + 0.6f * progress),
                 0f, soft.Size() / 2f, 0.5f + progress * 0.7f, SpriteEffects.None, 0f);
-
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
         /// <summary>死亡演出：崩解侵蚀绘制（接管主绘制）</summary>
@@ -196,6 +190,155 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Rendering
                 sb.Draw(tex, drawOldPos, frame, trailColor * alpha,
                     npc.rotation, origin, npc.scale, SpriteEffects.None, 0f);
                 alpha *= 0.82f;
+            }
+        }
+
+        /// <summary>
+        /// 拳部推进器喷焰（火箭拳身份件）：随状态切换喷焰语言——
+        /// 飞行全开随速伸缩 / 蓄力喷口预热脉冲 / 反弹侧向修正喷 / 回归反向减速喷 / 待机导火苗
+        /// </summary>
+        internal static void DrawFistThruster(SpriteBatch sb, NPC npc, GolemFistStateContext ctx) {
+            if (ctx == null) {
+                return;
+            }
+
+            //肩口发射闪（出拳点火余辉，默认批 A=0 加色）
+            Texture2D soft = CWRAsset.SoftGlow.Value;
+            if (ctx.MuzzleFlash > 0) {
+                float mf = ctx.MuzzleFlash / 12f;
+                Vector2 mp = ctx.MuzzlePos - Main.screenPosition;
+                sb.Draw(soft, mp, null, new Color(255, 180, 70, 0) * (0.55f * mf),
+                    0f, soft.Size() / 2f, 1.25f * (1.9f - mf), SpriteEffects.None, 0f);
+            }
+
+            GolemFistStateIndex st = (GolemFistStateIndex)(int)npc.ai[GolemAiSlots.PartStateSlot];
+
+            //拳离膛期：肩口发射座余温（拳与躯干的视觉粘接改由发射口语言承担），随躯干淡出收光
+            if (st is GolemFistStateIndex.Punch or GolemFistStateIndex.Return
+                && ctx.Body != null && ctx.Body.active) {
+                Vector2 socket = GolemFacts.FistAnchor(ctx.Body, ctx.Side) - Main.screenPosition;
+                float breath = 0.75f + 0.25f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 11f + ctx.Side);
+                float bodyFade = 1f - ctx.Body.alpha / 255f;
+                sb.Draw(soft, socket, null, new Color(255, 150, 55, 0) * (0.3f * breath * bodyFade),
+                    0f, soft.Size() / 2f, 0.5f, SpriteEffects.None, 0f);
+            }
+
+            //拳面朝向：状态按速度对齐 rotation，左拳贴图朝 -X 需镜像
+            Vector2 forward = npc.rotation.ToRotationVector2() * (ctx.Side < 0 ? -1f : 1f);
+            Vector2 vel = ctx.ThrustVel;
+            float speed = vel.Length();
+
+            float power, len, width;
+            Vector2 dir;
+            switch (st) {
+                case GolemFistStateIndex.Punch:
+                    //飞行全开：焰长随速伸缩
+                    power = MathHelper.Clamp(speed / 24f, 0.4f, 1f);
+                    len = 46f + speed * 5f;
+                    width = 34f;
+                    dir = speed > 1f ? -vel / speed : -forward;
+                    break;
+                case GolemFistStateIndex.Windup: {
+                    //喷口预热：间歇小脉冲，随蓄力升温
+                    float pulse = Math.Max((float)Math.Sin(Main.GlobalTimeWrappedHourly * 24f + ctx.Side * 2.1f), 0f);
+                    power = (0.2f + 0.6f * pulse) * MathHelper.Clamp(ctx.WindupGlow * 1.6f, 0.15f, 1f);
+                    len = 20f + 26f * ctx.WindupGlow * pulse;
+                    width = 22f;
+                    dir = -forward;
+                    break;
+                }
+                case GolemFistStateIndex.Return:
+                    //反向减速喷：焰口朝行进方向刹车
+                    //回收期拳背领先（forward=拳峰=逆行进向），零速兜底取 -forward 才与主分支同向
+                    power = MathHelper.Clamp(speed / 26f, 0.25f, 0.75f);
+                    len = 28f + speed * 2.6f;
+                    width = 24f;
+                    dir = speed > 1f ? vel / speed : -forward;
+                    break;
+                case GolemFistStateIndex.Guard:
+                    //编队维持喷：低功率常明
+                    power = 0.3f;
+                    len = 24f;
+                    width = 18f;
+                    dir = -forward;
+                    break;
+                case GolemFistStateIndex.DeathFall:
+                    //垂死机件：坠落中间歇喷溅（相位按 whoAmI 去相关），落地熄火
+                    power = speed > 2f && (Main.GameUpdateCount + (uint)(npc.whoAmI * 7)) % 14 < 5 ? 0.4f : 0f;
+                    len = 26f;
+                    width = 18f;
+                    dir = speed > 1f ? -vel / speed : -forward;
+                    break;
+                default:
+                    //Anchor 待机导火苗（机关未熄）
+                    power = 0.16f + 0.06f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 9f + npc.whoAmI);
+                    len = 14f;
+                    width = 14f;
+                    dir = -forward;
+                    break;
+            }
+
+            //反弹瞬间侧向修正喷全开
+            if (ctx.BounceBurst > 0) {
+                float b = ctx.BounceBurst / 10f;
+                power = Math.Max(power, 0.6f + 0.4f * b);
+                len = Math.Max(len, 70f + 50f * b);
+            }
+
+            //生成淡入/沉地退场期随本体透明度收焰，透明拳不挂满功率喷焰
+            power *= 1f - npc.alpha / 255f;
+
+            if (power <= 0.04f) {
+                return;
+            }
+
+            Vector2 nozzleScreen = npc.Center + dir * 14f * npc.scale - Main.screenPosition;
+
+            //喷口亮斑
+            sb.Draw(soft, nozzleScreen, null, new Color(255, 200, 110, 0) * (0.55f * power),
+                0f, soft.Size() / 2f, 0.34f + 0.2f * power, SpriteEffects.None, 0f);
+
+            Effect shader = EffectLoader.GolemThruster?.Value;
+            if (shader == null) {
+                DrawThrusterFallback(sb, nozzleScreen, dir, len, power);
+                return;
+            }
+
+            Texture2D noise = CWRAsset.PerlinNoise.Value;
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+            shader.CurrentTechnique = shader.Techniques["FlameTech"];
+            shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            shader.Parameters["uPower"]?.SetValue(power);
+            shader.Parameters["uSeed"]?.SetValue(npc.whoAmI * 0.37f + (ctx.Side < 0 ? 0f : 0.5f));
+            shader.Parameters["uAspect"]?.SetValue(len / Math.Max(width, 1f));
+            shader.CurrentTechnique.Passes[0].Apply();
+
+            //quad 本体即噪声贴图（刻意 s0，LinearWrap 批）；origin 左端中点，+X 即喷向
+            sb.Draw(noise, nozzleScreen, null, Color.White, dir.ToRotation(),
+                new Vector2(0f, noise.Height / 2f),
+                new Vector2(len / noise.Width, width / (float)noise.Height),
+                SpriteEffects.None, 0f);
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        /// <summary>着色器缺失回退：沿喷向叠瓣粒子喷流（白热→琥珀→深红），不许无形</summary>
+        private static void DrawThrusterFallback(SpriteBatch sb, Vector2 nozzleScreen, Vector2 dir, float len, float power) {
+            Texture2D soft = CWRAsset.SoftGlow.Value;
+            const int blobs = 4;
+            for (int i = 0; i < blobs; i++) {
+                float t = i / (float)(blobs - 1);
+                //确定性闪烁，避免绘制线随机
+                float flick = 0.9f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 40f + i * 2.3f);
+                Vector2 pos = nozzleScreen + dir * (len * 0.85f * t);
+                Color c = Color.Lerp(new Color(255, 240, 200, 0), new Color(150, 40, 8, 0), t);
+                float s = MathHelper.Lerp(0.5f, 0.16f, t) * flick;
+                sb.Draw(soft, pos, null, c * (power * (1f - t * 0.7f)), 0f, soft.Size() / 2f, s, SpriteEffects.None, 0f);
             }
         }
 

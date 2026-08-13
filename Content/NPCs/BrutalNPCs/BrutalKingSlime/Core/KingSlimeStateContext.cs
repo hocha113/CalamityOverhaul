@@ -25,6 +25,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
         public bool DecreeDone { get; set; }
         /// <summary>出招环索引</summary>
         public int AttackPhaseIndex { get; set; }
+        /// <summary>本次潮汐为中距液化掠近(位移工具化)：单程、贴近即收、重组后直入下一招。
+        /// 服务端在连接拍置位，ai[5]镜像给客户端，潮汐退出时清除</summary>
+        public bool TideTravelActive { get; set; }
+        /// <summary>液化掠近冷却(帧，服务端消费)，防止连续液化位移压掉输出窗</summary>
+        public int TideTravelCooldown { get; set; }
         /// <summary>死亡演出完，CheckDead 放行真死</summary>
         public bool DeathPerformanceFinished { get; set; }
         /// <summary>失去视线/远离累计帧，追击阀依据(服务端)</summary>

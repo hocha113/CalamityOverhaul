@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
             sb.End();
             sb.Begin(SpriteSortMode.Immediate, blend, SamplerState.LinearWrap,
                 DepthStencilState.None, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
-            //噪声显式绑到 s1（三张 Wof shader 均声明 uImage1:register(s1)）：
+            //噪声显式绑到 s1（四张 Wof 面片 shader 均声明 uImage1:register(s1)）：
             //SpriteBatch.Draw 只覆写 s0，参数式贴图绑定实机不可靠（合同同 ShockRingDraw.Draw）
             GraphicsDevice gd = Main.instance.GraphicsDevice;
             gd.Textures[1] = CWRAsset.PerlinNoise.Value;
@@ -135,6 +135,89 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering
             effect.Parameters["uIntensity"]?.SetValue(MathHelper.Clamp(intensity, 0f, 1f));
 
             DrawWorldQuad(sb, effect, BlendState.AlphaBlend, worldRect);
+        }
+
+        #endregion
+
+        #region 墙后尸山血海
+
+        /// <summary>
+        /// 尸山血海背景层：墙体碾过的后方是凝血海面+尸山剪影+升腾血雾。
+        /// 纯视觉零判定，quad裁剪到屏幕可见部分(图案世界/视差锚定，裁剪不位移)。
+        /// 在口器 Draw 最先调用——垫在覆膜/口器/弹幕之下
+        /// </summary>
+        public static void DrawBloodSea(SpriteBatch sb, NPC wall, float intensity) {
+            if (intensity <= 0.01f) {
+                return;
+            }
+
+            float faceX = WofWallField.WallFaceX(wall);
+            int dir = wall.direction >= 0 ? 1 : -1;
+            //前缘藏在墙体条带背后，与拖尾覆膜重叠过渡
+            float edgeX = faceX - dir * 305f;
+
+            float scrL = Main.screenPosition.X - 60f;
+            float scrR = Main.screenPosition.X + Main.screenWidth + 60f;
+            float xMin, xMax;
+            if (dir > 0) {
+                xMin = scrL;
+                xMax = Math.Min(edgeX + 140f, scrR);
+            }
+            else {
+                xMin = Math.Max(edgeX - 140f, scrL);
+                xMax = scrR;
+            }
+            if (xMax - xMin < 12f) {
+                return;
+            }
+            float top = Main.screenPosition.Y - 60f;
+            float bottom = Main.screenPosition.Y + Main.screenHeight + 60f;
+            Rectangle worldRect = new Rectangle((int)xMin, (int)top, (int)(xMax - xMin), (int)(bottom - top));
+
+            //海平面：墙域中下部，海体淹没走廊底
+            float surfaceY = MathHelper.Lerp(WofWallField.Top, WofWallField.Bottom, 0.58f);
+
+            Effect effect = EffectLoader.WofBloodSea?.Value;
+            if (effect == null || CWRAsset.PerlinNoise?.Value == null) {
+                DrawBloodSeaFallback(sb, worldRect, surfaceY, intensity);
+                return;
+            }
+
+            effect.Parameters["uWorldRect"]?.SetValue(new Vector4(worldRect.X, worldRect.Y, worldRect.Width, worldRect.Height));
+            effect.Parameters["uEdgeX"]?.SetValue(edgeX);
+            effect.Parameters["uDir"]?.SetValue((float)dir);
+            effect.Parameters["uSurfaceY"]?.SetValue(surfaceY);
+            effect.Parameters["uScreenX"]?.SetValue(Main.screenPosition.X);
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uIntensity"]?.SetValue(MathHelper.Clamp(intensity, 0f, 1f));
+
+            DrawWorldQuad(sb, effect, BlendState.AlphaBlend, worldRect);
+        }
+
+        /// <summary>着色器缺失回退：三段渐变血幕(雾带+海面亮带+海体)，保证不隐形</summary>
+        private static void DrawBloodSeaFallback(SpriteBatch sb, Rectangle worldRect, float surfaceY, float intensity) {
+            Texture2D px = VaultAsset.placeholder2.Value;
+            Vector2 origin = Vector2.Zero;
+            float seaTop = MathHelper.Clamp(surfaceY, worldRect.Y, worldRect.Bottom);
+
+            //海面上：暗红雾
+            float hazeH = seaTop - worldRect.Y;
+            if (hazeH > 2f) {
+                sb.Draw(px, new Vector2(worldRect.X, worldRect.Y) - Main.screenPosition, null,
+                    new Color(46, 8, 12) * (0.30f * intensity), 0f, origin,
+                    new Vector2(worldRect.Width / (float)px.Width, hazeH / px.Height), SpriteEffects.None, 0f);
+            }
+            //海面亮带
+            sb.Draw(px, new Vector2(worldRect.X, seaTop - 6f) - Main.screenPosition, null,
+                new Color(150, 30, 22) * (0.5f * intensity), 0f, origin,
+                new Vector2(worldRect.Width / (float)px.Width, 12f / px.Height), SpriteEffects.None, 0f);
+            //海体
+            float seaH = worldRect.Bottom - seaTop;
+            if (seaH > 2f) {
+                sb.Draw(px, new Vector2(worldRect.X, seaTop) - Main.screenPosition, null,
+                    new Color(52, 7, 10) * (0.62f * intensity), 0f, origin,
+                    new Vector2(worldRect.Width / (float)px.Width, seaH / px.Height), SpriteEffects.None, 0f);
+            }
         }
 
         #endregion

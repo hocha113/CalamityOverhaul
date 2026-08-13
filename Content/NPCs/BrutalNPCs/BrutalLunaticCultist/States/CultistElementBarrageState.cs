@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
         }
         #endregion
 
-        #region 雷枢天柱
+        #region 雷枢电网
         private void UpdateThunder(CultistStateContext context, NPC npc, Player player) {
             if (Timer >= 8 && Timer <= 70) {
                 context.CastPose = CultistPose.CastUp;
@@ -151,50 +151,63 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                 }
             }
 
-            //主波：行进柱列，从远侧碾向玩家
+            //主波：远侧弧列电网——5球充能后链弧成两段墙，中段留穿缝
             if ((int)Timer == 22 && !VaultUtils.isClient && player.Alives()) {
-                int count = context.IsDeathMode ? 7 : 5;
-                int damage = ProjDamage(npc, 44f, 30f);
-                int dir = Math.Sign(player.Center.X - npc.Center.X);
-                if (dir == 0) {
-                    dir = 1;
+                int damage = ProjDamage(npc, 42f, 29f);
+                float toBoss = (npc.Center - player.Center).ToRotation();
+                int[] ids = new int[5];
+                for (int i = 0; i < 5; i++) {
+                    //背向本体的一侧展开 150° 弧列
+                    float angle = toBoss + MathHelper.Pi + MathHelper.Lerp(-1.3f, 1.3f, i / 4f);
+                    Vector2 pos = player.Center + angle.ToRotationVector2() * 430f;
+                    int proj = Projectile.NewProjectile(npc.GetSource_FromAI(), pos, Vector2.Zero,
+                        ModContent.ProjectileType<CultistLightningOrb>(), damage, 0f, Main.myPlayer,
+                        56f + i * 6f, 0f, 150f);
+                    ids[i] = Main.projectile[proj].identity;
                 }
-                for (int i = 0; i < count; i++) {
-                    float offsetX = (i - (count - 1) * 0.5f) * 190f * dir;
-                    Vector2 ground = FindGround(player.Center + new Vector2(offsetX, 0f));
-                    float telegraph = 50f + i * 9f;
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), ground, Vector2.Zero,
-                        ModContent.ProjectileType<CultistThunderColumn>(), damage, 0f, Main.myPlayer, telegraph, 1400f);
+                //链法：0-1、1-2 与 3-4，2-3 之间是可穿缝（预告线即承诺）
+                LinkOrbs(ids[0], ids[1]);
+                LinkOrbs(ids[1], ids[2]);
+                LinkOrbs(ids[3], ids[4]);
+                if (context.IsDeathMode) {
+                    LinkOrbs(ids[2], ids[3]);   //死亡模式补全为整面墙，逼玩家绕极点
                 }
             }
 
-            //补刀波：贴脚双柱
+            //补刀波：双独球贴翼放电（锁玩家的压迫拍）
             if ((int)Timer == 128 && !VaultUtils.isClient && player.Alives()) {
-                int damage = ProjDamage(npc, 44f, 30f);
+                int damage = ProjDamage(npc, 42f, 29f);
                 for (int s = -1; s <= 1; s += 2) {
-                    Vector2 ground = FindGround(player.Center + new Vector2(s * 95f, 0f));
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), ground, Vector2.Zero,
-                        ModContent.ProjectileType<CultistThunderColumn>(), damage, 0f, Main.myPlayer, 46f, 1400f);
+                    Vector2 pos = player.Center + new Vector2(s * 340f, -190f);
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), pos, Vector2.Zero,
+                        ModContent.ProjectileType<CultistLightningOrb>(), damage, 0f, Main.myPlayer,
+                        46f, 0f, 96f);
                 }
+            }
+        }
+
+        /// <summary>互写链接伙伴identity（服务端，随弹幕生成包同步）</summary>
+        internal static void LinkOrbs(int identityA, int identityB) {
+            Projectile a = null, b = null;
+            foreach (var p in Main.ActiveProjectiles) {
+                if (p.type != ModContent.ProjectileType<CultistLightningOrb>()) {
+                    continue;
+                }
+                if (p.identity == identityA) {
+                    a = p;
+                }
+                else if (p.identity == identityB) {
+                    b = p;
+                }
+            }
+            if (a != null && b != null) {
+                a.ai[1] = identityB + 1;
+                b.ai[1] = identityA + 1;
+                a.netUpdate = true;
+                b.netUpdate = true;
             }
         }
         #endregion
 
-        /// <summary>下探地面，找不到则玩家脚下400px</summary>
-        internal static Vector2 FindGround(Vector2 from) {
-            int tileX = (int)(from.X / 16f);
-            int tileY = Math.Max((int)(from.Y / 16f), 10);
-            for (int i = 0; i < 70; i++) {
-                int y = tileY + i;
-                if (y >= Main.maxTilesY - 10) {
-                    break;
-                }
-                Tile tile = Framing.GetTileSafely(tileX, y);
-                if (tile.HasUnactuatedTile && Main.tileSolid[tile.TileType]) {
-                    return new Vector2(from.X, y * 16f);
-                }
-            }
-            return from + new Vector2(0f, 400f);
-        }
     }
 }

@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
         private int hopPhase;
         private int phaseTimer;
 
-        public KingSlimeHopState() : this(3) {
+        public KingSlimeHopState() : this(2) {
         }
 
         public KingSlimeHopState(int hops) {
@@ -46,11 +46,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
 
             switch (hopPhase) {
                 case 0: {
-                    //落地缓冲拍：短暂滞留
+                    //落地缓冲拍：短暂滞留(收紧，呼吸口保留)
                     npc.velocity.X *= 0.78f;
                     phaseTimer++;
-                    int rest = context.IsPhase2 ? 5 : 9;
+                    int rest = context.IsPhase2 ? 4 : 7;
                     if (Grounded(npc) && phaseTimer >= rest) {
+                        //中距液化掠近：把本次跳跃逼近换成潮汐位移(签名招兼位移工具)
+                        IKingSlimeState travel = TryTideTravel(context);
+                        if (travel != null) {
+                            return travel;
+                        }
                         hopPhase = 1;
                         phaseTimer = 0;
                     }
@@ -139,29 +144,76 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             KingSlimeGelFX.SquishSound(npc.Bottom, -0.25f, 0.85f);
         }
 
-        /// <summary>手作出招环，阶段各一张表；只服务端调用</summary>
-        private IKingSlimeState ChooseNextAttack(KingSlimeStateContext context) {
-            IKingSlimeState[] sequence = context.IsPhase2
-                ? [
-                    new KingSlimeTowerCollapseState(),
-                    new KingSlimeNinjaFlurryState(),
-                    new KingSlimeGelMortarState(),
-                    new KingSlimeCrownSlamState(),
-                    new KingSlimeSplitSwarmState(),
-                    new KingSlimeTideRushState(),
-                    new KingSlimeNinjaFlurryState(),
-                    new KingSlimeGelMortarState(),
-                ]
-                : [
-                    new KingSlimeCrownSlamState(),
-                    new KingSlimeGelMortarState(),
-                    new KingSlimeTideRushState(),
-                    new KingSlimeGelMortarState(),
-                ];
+        /// <summary>
+        /// 手作出招环(签名招提频版)：定序天然防背靠背复读且免RNG同步，弃洗牌袋。
+        /// P1 潮汐两倍频；P2 潮汐/立塔/分裂/影袭各双槽，通用招(天坠/迫击)各压到单槽
+        /// </summary>
+        private static readonly KingSlimeStateIndex[] RingP1 = [
+            KingSlimeStateIndex.TideRush,
+            KingSlimeStateIndex.CrownSlam,
+            KingSlimeStateIndex.TideRush,
+            KingSlimeStateIndex.GelMortar,
+        ];
 
-            IKingSlimeState next = sequence[context.AttackPhaseIndex % sequence.Length];
+        private static readonly KingSlimeStateIndex[] RingP2 = [
+            KingSlimeStateIndex.TideRush,
+            KingSlimeStateIndex.TowerCollapse,
+            KingSlimeStateIndex.NinjaFlurry,
+            KingSlimeStateIndex.SplitSwarm,
+            KingSlimeStateIndex.TideRush,
+            KingSlimeStateIndex.NinjaFlurry,
+            KingSlimeStateIndex.TowerCollapse,
+            KingSlimeStateIndex.CrownSlam,
+            KingSlimeStateIndex.SplitSwarm,
+            KingSlimeStateIndex.GelMortar,
+        ];
+
+        /// <summary>窥视环上下一招(不推进索引)，液化掠近防潮汐复读用</summary>
+        internal static KingSlimeStateIndex PeekNextAttack(KingSlimeStateContext context) {
+            KingSlimeStateIndex[] ring = context.IsPhase2 ? RingP2 : RingP1;
+            return ring[context.AttackPhaseIndex % ring.Length];
+        }
+
+        /// <summary>取环上下一招并推进索引；只服务端调用(潮汐位移重组后也直入此处)</summary>
+        internal static IKingSlimeState ChooseNextAttack(KingSlimeStateContext context) {
+            KingSlimeStateIndex next = PeekNextAttack(context);
             context.AttackPhaseIndex++;
-            return next;
+            return CreateAttack(next);
+        }
+
+        private static IKingSlimeState CreateAttack(KingSlimeStateIndex index) => index switch {
+            KingSlimeStateIndex.CrownSlam => new KingSlimeCrownSlamState(),
+            KingSlimeStateIndex.GelMortar => new KingSlimeGelMortarState(),
+            KingSlimeStateIndex.TowerCollapse => new KingSlimeTowerCollapseState(),
+            KingSlimeStateIndex.SplitSwarm => new KingSlimeSplitSwarmState(),
+            KingSlimeStateIndex.NinjaFlurry => new KingSlimeNinjaFlurryState(),
+            KingSlimeStateIndex.TideRush => new KingSlimeTideRushState(),
+            //环表外索引(新招忘挂case)：回连接器自愈，不静默错招
+            _ => new KingSlimeHopState(),
+        };
+
+        /// <summary>
+        /// 中距液化掠近判定(服务端)：目标在中距带(720~1500px)且大致同层时，
+        /// 用潮汐冲刷代替干跳逼近——更远交给追击阀潜地(1900+)，冷却防连锁液化。
+        /// 环上下一招是潮汐时让位(防复读)
+        /// </summary>
+        private static IKingSlimeState TryTideTravel(KingSlimeStateContext context) {
+            if (VaultUtils.isClient || context.TideTravelCooldown > 0) {
+                return null;
+            }
+            Player player = context.Target;
+            if (!player.Alives() || PeekNextAttack(context) == KingSlimeStateIndex.TideRush) {
+                return null;
+            }
+            NPC npc = context.Npc;
+            float dx = Math.Abs(player.Center.X - npc.Center.X);
+            float dy = Math.Abs(player.Center.Y - npc.Center.Y);
+            if (dx < 720f || dx > 1500f || dy > 280f) {
+                return null;
+            }
+            context.TideTravelCooldown = 620;
+            context.TideTravelActive = true;
+            return new KingSlimeTideRushState();
         }
     }
 }

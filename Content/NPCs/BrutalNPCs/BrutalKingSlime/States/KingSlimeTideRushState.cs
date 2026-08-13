@@ -28,12 +28,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
         private int passesLeft;
         private int rushDir;
         private float rushSpeed;
+        /// <summary>中距液化掠近(位移工具化)：单程、贴近即收、重组后直入下一招。
+        /// 旗由连接拍置位、ai[5]镜像，OnEnter各端读取</summary>
+        private bool travelMode;
 
         public override void OnEnter(KingSlimeStateContext context) {
             base.OnEnter(context);
             phase = 0;
             phaseTimer = 0;
-            passesLeft = context.IsPhase2 ? 2 : 1;
+            travelMode = context.TideTravelActive;
+            passesLeft = travelMode ? 1 : (context.IsPhase2 ? 2 : 1);
             rushSpeed = 0f;
         }
 
@@ -129,9 +133,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             float targetY = ground.Y - npc.height * 0.35f;
             npc.Center = new Vector2(npc.Center.X, MathHelper.Lerp(npc.Center.Y, targetY, 0.32f));
 
-            //冲过目标260px后进入转向拍
+            //冲过目标后进入转向拍；掠近模式贴近即收(位移而非扫场)
+            float stopAt = travelMode ? 110f : 260f;
             float overshoot = (npc.Center.X - player.Center.X) * rushDir;
-            if (overshoot > 260f || phaseTimer > 210) {
+            if (overshoot > stopAt || phaseTimer > 210) {
                 phase = 2;
                 phaseTimer = 0;
             }
@@ -211,7 +216,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             if (phaseTimer >= ReformTime) {
                 npc.dontTakeDamage = false;
                 if (!VaultUtils.isClient) {
-                    return BackToHop(context);
+                    //掠近已代行连接拍，重组后直入下一招；常规潮汐照旧回连接器
+                    return travelMode ? KingSlimeHopState.ChooseNextAttack(context) : BackToHop(context);
                 }
             }
             return null;
@@ -220,6 +226,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
         public override void OnExit(KingSlimeStateContext context) {
             base.OnExit(context);
             context.Npc.dontTakeDamage = false;
+            //清位移旗；任意潮汐收招后压一段掠近冷却，防背靠背液化压掉输出窗
+            context.TideTravelActive = false;
+            context.TideTravelCooldown = Math.Max(context.TideTravelCooldown, 240);
         }
     }
 }

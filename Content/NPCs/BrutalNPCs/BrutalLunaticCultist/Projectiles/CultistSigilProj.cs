@@ -152,11 +152,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             CultistRenderHelper.DrawSigil(Main.spriteBatch, Projectile.Center + recoilOff, radius, Element,
                 GrowProgress, spin, flash, 0f, fade);
 
-            //蓄力微球：法阵中心凝聚的元素弹丸（下一发在成形）
+            //蓄力微弹：法阵中心凝聚的下一发弹丸（原版元素真实纹理，从无到有成形）
             if (chargeOrb > 0.05f) {
-                CultistRenderHelper.DrawOrb(Main.spriteBatch, Projectile.Center + recoilOff, 14f + chargeOrb * 10f,
-                    Element, chargeOrb, chargeOrb > 0.85f ? (chargeOrb - 0.85f) / 0.15f * 0.5f : 0f,
-                    Projectile.identity * 1.31f);
+                CultistRenderHelper.DrawElementCore(Main.spriteBatch, Projectile.Center + recoilOff, Element,
+                    0.2f + 0.35f * chargeOrb, chargeOrb, Projectile.localAI[0], Projectile.identity * 1.31f);
             }
             return false;
         }

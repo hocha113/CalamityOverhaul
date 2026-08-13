@@ -37,6 +37,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
         private Player targetPlayer;
         /// <summary>咀嚼帧计数(本地动画)</summary>
         private float chewCounter;
+        /// <summary>尸山血海强度(本地渐变：入场后涨起，死亡/撤离随墙退场)</summary>
+        private float seaIntensity;
         /// <summary>环境低吼计时(本地)</summary>
         private int roarTimer;
         /// <summary>滤镜当前强度(本地渐变)</summary>
@@ -461,6 +463,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
             if (stateContext == null) {
                 return true;
             }
+
+            //尸山血海背景(最底层，纯视觉)：入场演出期不存在，死亡/撤离期缓退
+            WofStateIndex seaState = GetStateIndex(npc);
+            float seaTarget = seaState is WofStateIndex.Intro or WofStateIndex.Death or WofStateIndex.Despawn ? 0f : 1f;
+            seaIntensity = MathHelper.Lerp(seaIntensity, seaTarget, 0.02f);
+            WofRenderHelper.DrawBloodSea(spriteBatch, npc, seaIntensity);
 
             //血肉覆膜(墙条带+面缘+拖尾肉髓)
             WofRenderHelper.DrawWallOverlay(spriteBatch, npc, stateContext);

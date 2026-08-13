@@ -38,6 +38,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
         public float WindupGlow { get; set; }
         /// <summary>本帧视觉速度（客户端傀儡清零速度前缓存，残影门控用）</summary>
         public float VisualSpeed { get; set; }
+        /// <summary>本帧视觉速度向量（傀儡清零前缓存，推进器喷焰方向用）</summary>
+        public Vector2 ThrustVel { get; set; }
+        /// <summary>反弹侧向修正喷余帧（本地检测速度方向突变触发）</summary>
+        public int BounceBurst { get; set; }
+        /// <summary>肩口发射闪余帧（出拳点火）</summary>
+        public int MuzzleFlash { get; set; }
+        /// <summary>肩口发射点</summary>
+        public Vector2 MuzzlePos { get; set; }
         /// <summary>弹簧速度（锚点跟随的滞后感）</summary>
         public Vector2 SpringVelocity { get; set; }
         /// <summary>剩余反弹预算（飞行期）</summary>

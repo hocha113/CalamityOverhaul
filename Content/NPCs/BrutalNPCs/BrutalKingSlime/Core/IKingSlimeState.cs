@@ -88,11 +88,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
         protected static int DirToTarget(KingSlimeStateContext context)
             => context.Target.Center.X >= context.Npc.Center.X ? 1 : -1;
 
-        /// <summary>攻击结束回连接器，服务端选择跳数</summary>
+        /// <summary>攻击结束回连接器，服务端选择跳数。
+        /// 连接拍收紧：P1双跳/P2单跳，死亡模式再减一(下限1，提速规则保持)</summary>
         protected static IKingSlimeState BackToHop(KingSlimeStateContext context) {
-            int hops = context.IsPhase2 ? 2 : 3;
-            if (context.IsDeathMode) {
-                hops = 2;
+            int hops = context.IsPhase2 ? 1 : 2;
+            if (context.IsDeathMode && hops > 1) {
+                hops--;
             }
             return new States.KingSlimeHopState(hops);
         }

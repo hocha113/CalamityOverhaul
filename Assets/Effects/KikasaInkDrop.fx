@@ -1,8 +1,9 @@
 // ============================================================================
-//KikasaInkDrop.fx 大墨滴——鬼伞普攻的演出主角
-//TechDrop:材质=浸饱血水的墨——头圆尾锥的液滴剪影、速度拉伸、噪声蚀缘张力抖动、
-//         身后墨须在空气里越散越宽地晕开；墨黑为体、血色为芯、小面积湿反光
-//         头在 quad 上缘(v=0)：C# 侧 rotation = 速度角 + PiOver2
+//KikasaInkDrop.fx 墨雨——鬼伞普攻的演出主角
+//TechDrop:材质=一笔水墨,不是液珠——细长中脊笔触(头收笔锋、腹在前 28%、长锥收尾)、
+//         左右异 seed 蚀边(墨的边不对称)、uBend 随飞行曲率弓身(笔随轨迹弯)、
+//         体中段飞白镂空(干笔擦痕)、尾后噪声卷曲的墨丝;血统只留脊线一线暗红
+//         头在 quad 上缘(v=0):C# 侧 rotation = 速度角 + PiOver2
 //TechPour:倒撑重击的墨瀑柱——噪声撕边的流沿、快速下涌的密度流、中轴血芯、
 //         uLen 前锋推进/uDrain 自源头排空/uChurn 落点搅浊;v=0 为源头
 //坐标全笛卡尔（无 atan2）；直线算术+普通 tex2D，FNA3D 安全
@@ -16,6 +17,7 @@ float uFade;      //出生淡入 0~1
 float uStretch;   //速度拉伸 0~1.4，0=表面张力拉圆
 float uWobAmp;    //张力抖动幅度（顶点滞空放大）
 float uWobPhase;  //抖动相位（CPU 侧 life 驱动，暂停即冻结）
+float uBend;      //弓身:飞行转向角速度,笔触随轨迹弯(带符号)
 float uLen;       //墨瀑前锋 0~1
 float uDrain;     //墨瀑自源排空 0~1
 float uChurn;     //墨瀑落点搅浊强度 0~1
@@ -26,65 +28,80 @@ float3 uColSheen; //湿反光
 
 sampler uNoiseTex : register(s1);
 
-//变半径胶囊：head→tail 连线段，半径沿轴锥缩
-float DropSdf(float2 q, float2 head, float2 tail, float rHead, float rTail)
-{
-    float2 axis = tail - head;
-    float len2 = max(dot(axis, axis), 1e-5);
-    float t = saturate(dot(q - head, axis) / len2);
-    float2 onAxis = head + axis * t;
-    float r = lerp(rHead, rTail, pow(t, 0.8));
-    return length(q - onAxis) - r;
-}
-
 float4 PSDrop(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
     float2 raw = coords * 2.0 - 1.0; //y 负方向=运动方向（头在上缘）
     float2 q = raw;
 
-    //液滴几何：头圆、尾随拉伸抽长变细
+    //笔触参数轴:s=0 笔锋(头) → s=1 收笔,拉伸把整笔抽长
+    float headY = -0.55;
+    float strokeLen = 0.72 + uStretch * 0.42;
+    float s = (q.y - headY) / strokeLen;
+    float sc = saturate(s);
+
+    //中脊:uBend 弓身(头贴轨迹、尾向外甩)+尾段噪声游走
+    float nSpine = tex2D(uNoiseTex, float2(uSeed * 1.3, sc * 0.9 + uSeed)).r;
+    float spineX = uBend * pow(sc, 1.6) * 0.5
+                 + (nSpine - 0.5) * 0.10 * sc;
+
+    //宽度谱:笔锋尖入(快时更尖)、腹在 28% 处、长锥收尾;滞空时张力微鼓
     float wob = sin(uWobPhase) * uWobAmp;
-    float rHead = 0.30 * (1.0 + wob);
-    float len = 0.26 + uStretch * 0.46;
-    float rTail = rHead * (0.62 - uStretch * 0.22) * (1.0 - wob * 0.8);
-    float2 head = float2(0.0, -0.36);
-    float2 tail = head + float2(0.0, len);
+    float headPow = lerp(0.34, 0.62, saturate(uStretch));
+    float wMax = 0.22 * (1.0 + wob * 0.6) * (1.0 - uStretch * 0.22);
+    float w = wMax * pow(saturate(sc / 0.28), headPow)
+                   * pow(saturate((1.0 - sc) / 0.72), 1.35);
 
-    float d = DropSdf(q, head, tail, rHead, rTail);
+    //左右异 seed 蚀边:墨的边不是对称几何,尾段更毛
+    float dx = q.x - spineX;
+    float nL = tex2D(uNoiseTex, float2(uSeed * 2.1, sc * 1.7 + uSeed * 0.7)).g;
+    float nR = tex2D(uNoiseTex, float2(uSeed * 3.7 + 0.5, sc * 1.4 + uSeed * 1.9)).b;
+    float eN = lerp(nL, nR, step(0.0, dx));
+    float d = abs(dx) - w + (eN - 0.5) * 0.055 * (0.45 + sc * 0.9);
+    d += (1.0 - step(0.0, s)) * 1.0 + step(1.0, s) * 1.0; //轴外硬裁,笔就这一划
 
-    //表面张力蚀缘：低幅笛卡尔噪声揉边，墨的边界不是数学圆
-    float nEdge = tex2D(uNoiseTex, q * 0.9 + float2(uSeed, uSeed * 0.7) + float2(uTime * 0.05, -uTime * 0.03)).r;
-    d += (nEdge - 0.5) * (0.05 + uWobAmp * 0.16);
+    float body = 1.0 - smoothstep(-0.008, 0.030, d);
 
-    //墨体与晕染光环（墨往空气里洇的那一圈）
-    float body = 1.0 - smoothstep(-0.015, 0.045, d);
-    float halo = (1.0 - smoothstep(0.0, 0.24, d)) * (1.0 - body);
+    //飞白:体中段沿长轴的高频条纹镂空,头保实,越快越干
+    float fb = tex2D(uNoiseTex, float2(q.x * 5.5 + uSeed * 5.0, sc * 1.1 + uSeed)).r;
+    float flyWhite = smoothstep(0.54, 0.74, fb)
+        * smoothstep(0.16, 0.42, sc) * (1.0 - smoothstep(0.72, 0.95, sc))
+        * (0.30 + 0.45 * saturate(uStretch));
+    body *= 1.0 - flyWhite;
 
-    //体内色程：缘→暗血缘，芯→血红
-    float depth = saturate(-d / max(rHead, 1e-3));
-    float rimBand = 1.0 - smoothstep(0.0, 0.14, -d);
-    float3 bodyCol = lerp(uColBody, uColDeep, rimBand * 0.75);
-    bodyCol = lerp(bodyCol, uColCore, saturate(depth * 1.25 - 0.32) * 0.62);
+    //晕染薄纹:墨往空气里洇的一小圈
+    float halo = (1.0 - smoothstep(0.0, 0.16, d)) * (1.0 - body) * step(0.0, s) * (1.0 - step(1.1, s));
 
-    //墨须：尾后随距离越散越宽的撕裂细流，只有在动时才拖
-    float b = q.y - tail.y;
-    float zone = smoothstep(0.02, 0.14, b) * (1.0 - smoothstep(0.30, 0.62, b));
-    float nStreak = tex2D(uNoiseTex, float2(q.x * 1.7 + uSeed * 2.3, q.y * 0.4 - uTime * 0.85)).g;
-    float lat = exp2(-q.x * q.x * 9.0 / (0.16 + b * 1.6));
-    float tendril = zone * smoothstep(0.50, 0.78, nStreak) * lat * saturate(uStretch * 1.6);
+    //卷须尾:收笔后 2~3 条噪声卷曲的细丝,越快拖越长
+    float b = s - 0.82;
+    float wispSpan = 0.28 + saturate(uStretch) * 0.5;
+    float zone = smoothstep(0.0, 0.10, b) * (1.0 - smoothstep(wispSpan * 0.55, wispSpan, b));
+    float curl = (tex2D(uNoiseTex, float2(uSeed * 7.1, s * 1.2 - uTime * 0.4)).r - 0.5) * 0.34 * max(b, 0.0);
+    float wx = q.x - spineX - curl;
+    float nW = tex2D(uNoiseTex, float2(wx * 3.2 + uSeed * 4.3, s * 0.8 + uSeed * 2.2)).g;
+    float wisp = zone * smoothstep(0.55, 0.78, nW)
+        * exp2(-wx * wx * 10.0 / (0.10 + b * 1.1))
+        * saturate(uStretch * 1.3 + 0.25);
 
-    //湿反光玻头：头侧上方一点小高光
-    float sheen = 1.0 - smoothstep(0.0, 0.11, length(q - head - float2(-0.09, -0.08)));
-    sheen *= body;
+    //体色:头浓尾淡(墨在笔锋上最饱),缘略沉
+    float rimBand = 1.0 - smoothstep(0.0, 0.05, -d);
+    float3 bodyCol = lerp(uColBody, uColDeep, sc * 0.35 + rimBand * 0.30);
+    //血统:脊线一线暗红,不再是发光核
+    float vein = (1.0 - smoothstep(0.006, 0.028, abs(dx)))
+        * smoothstep(0.12, 0.3, sc) * (1.0 - smoothstep(0.6, 0.8, sc));
+    bodyCol = lerp(bodyCol, uColCore, vein * 0.35);
+
+    //湿反光:腹侧极小一点,不给"珠"的光学证据
+    float sheen = 1.0 - smoothstep(0.0, 0.05, length(q - float2(spineX - w * 0.4, headY + strokeLen * 0.26)));
+    sheen *= body * 0.5;
 
     //预乘合成
-    float aBody = body * 0.96;
-    float aHalo = halo * 0.22;
-    float aTendril = tendril * 0.5;
+    float aBody = body * 0.95;
+    float aHalo = halo * 0.16;
+    float aWisp = wisp * 0.42;
     float3 col = bodyCol * aBody
-               + lerp(uColBody, uColDeep, 0.4) * (aHalo + aTendril);
-    float a = saturate(aBody + aHalo + aTendril);
-    col += uColSheen * sheen * 0.5;
+               + lerp(uColBody, uColDeep, 0.45) * (aHalo + aWisp);
+    float a = saturate(aBody + aHalo + aWisp);
+    col += uColSheen * sheen * 0.18;
 
     //画布护栏：uv 边缘前归零防切边
     float guard = smoothstep(1.0, 0.86, max(abs(raw.x), abs(raw.y)));

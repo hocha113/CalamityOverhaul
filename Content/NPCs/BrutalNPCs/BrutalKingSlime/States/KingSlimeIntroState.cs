@@ -195,7 +195,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
         private IKingSlimeState Finish(KingSlimeStateContext context) {
             context.Npc.dontTakeDamage = false;
             if (!VaultUtils.isClient) {
-                return new KingSlimeHopState(context.IsDeathMode ? 2 : 3);
+                return new KingSlimeHopState(context.IsDeathMode ? 1 : 2);
             }
             return null;
         }

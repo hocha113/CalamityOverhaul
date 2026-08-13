@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> GolemMagmaVein { get; set; }
         public static Asset<Effect> GolemSolarFlare { get; set; }
         public static Asset<Effect> GolemTrapWork { get; set; }
+        public static Asset<Effect> GolemThruster { get; set; }
         public static Asset<Effect> CultistSigil { get; set; }
         public static Asset<Effect> CultistElementOrb { get; set; }
         public static Asset<Effect> CultistVeil { get; set; }
@@ -56,6 +57,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> WofMawVortex { get; set; }
         public static Asset<Effect> WofRetinaBeam { get; set; }
         public static Asset<Effect> WofBloodCurtain { get; set; }
+        public static Asset<Effect> WofBloodSea { get; set; }
         public static Asset<Effect> BKSGelSurge { get; set; }
         public static Asset<Effect> BKSGelPool { get; set; }
         public static Asset<Effect> WarpShader { get; set; }
@@ -297,6 +299,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> SHPCModVolatile { get; set; }
         public static Asset<Effect> SHPCModSteadyVolt { get; set; }
         public static Asset<Effect> SHPCModFrostfern { get; set; }
+        public static Asset<Effect> SHPCModMagma { get; set; }
         public static Asset<Effect> GraniteArc { get; set; }
         public static Asset<Effect> MarbleSlash { get; set; }
         public static Asset<Effect> BloodAltarRite { get; set; }

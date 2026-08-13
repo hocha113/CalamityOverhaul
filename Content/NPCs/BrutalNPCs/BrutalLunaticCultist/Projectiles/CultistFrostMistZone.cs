@@ -5,6 +5,7 @@ using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -88,6 +89,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                 Color tint = Color.Lerp(CultistPalette.IceDeep, CultistPalette.IceMain, i / 3f) * (0.2f * density);
                 sb.Draw(fog, drawPos + off, null, tint, phase * (i % 2 == 0 ? 0.14f : -0.11f), fog.Size() / 2f,
                     (Radius / 110f) * (1.15f - i * 0.18f), fx, 0f);
+            }
+
+            //雾核基底：原版信徒冰雾464真实贴图，五团错相环游（雾里真正的"雾"）
+            Main.instance.LoadProjectile(ProjectileID.CultistBossIceMist);
+            Texture2D mist = TextureAssets.Projectile[ProjectileID.CultistBossIceMist].Value;
+            for (int i = 0; i < 5; i++) {
+                float phase = Main.GlobalTimeWrappedHourly * (0.22f + i * 0.05f) + i * 1.256f + Projectile.whoAmI;
+                Vector2 off = new((float)Math.Sin(phase) * Radius * 0.5f, (float)Math.Cos(phase * 1.3f) * Radius * 0.34f);
+                float wobble = 1f + 0.14f * (float)Math.Sin(phase * 2.2f);
+                sb.Draw(mist, drawPos + off, null, new Color(255, 255, 255, 255) * (0.5f * density),
+                    phase * 0.4f, mist.Size() / 2f, 1.15f * wobble, SpriteEffects.None, 0f);
             }
 
             //雾心悬晶硬闪：确定性hash频闪的星点（雾里有东西在结晶）

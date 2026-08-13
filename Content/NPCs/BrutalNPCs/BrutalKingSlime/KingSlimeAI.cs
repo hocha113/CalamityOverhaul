@@ -50,8 +50,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
             };
             stateMachine = new NpcStateMachine<KingSlimeStateContext>(stateContext, aiSlot: 2);
 
-            //客户端从ai[2]恢复状态
+            //客户端从ai[2]恢复状态；镜像旗须先于初始OnEnter恢复，
+            //防中途加入时状态以默认旗定格(travelMode/passesLeft在OnEnter一次性读取)
             if (VaultUtils.isClient) {
+                stateContext.Phase2Started = ai[3] == 1f;
+                stateContext.IsPhase2 = stateContext.Phase2Started;
+                stateContext.TideTravelActive = ai[5] == 1f;
                 int serverStateIndex = (int)npc.ai[2];
                 IVaultState<KingSlimeStateContext> syncedState = VaultStateRegistry<KingSlimeStateContext>.Create(serverStateIndex);
                 stateMachine.SetInitialState(syncedState ?? new KingSlimeIntroState());
@@ -106,9 +110,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
             //接触伤害由状态声明(狂暴期已乘增伤)
             npc.damage = (int)(npc.defDamage * stateContext.ContactDamageScale);
 
-            //阶段旗镜像到重制ai槽，供王冠与远端读取
+            //阶段旗镜像到重制ai槽，供王冠与远端读取；ai[5]=液化掠近旗
             if (!VaultUtils.isClient) {
                 ai[3] = stateContext.Phase2Started ? 1f : 0f;
+                ai[5] = stateContext.TideTravelActive ? 1f : 0f;
             }
             else {
                 stateContext.Phase2Started = ai[3] == 1f;
@@ -140,6 +145,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
             stateContext.IsPhase2 = stateContext.Phase2Started;
             stateContext.IsLowHP = npc.life <= npc.lifeMax * DecreeLifeRatio;
             stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+
+            //液化掠近冷却递减；客户端在状态机推进前从 ai[5] 恢复位移旗
+            //(潮汐 OnEnter 读取该旗，须先于状态创建到位)
+            if (stateContext.TideTravelCooldown > 0) {
+                stateContext.TideTravelCooldown--;
+            }
+            if (VaultUtils.isClient) {
+                stateContext.TideTravelActive = ai[5] == 1f;
+            }
         }
 
         private void FindTarget() {

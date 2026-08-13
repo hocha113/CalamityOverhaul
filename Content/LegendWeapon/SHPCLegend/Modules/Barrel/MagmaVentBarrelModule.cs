@@ -2,9 +2,9 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
-using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -43,20 +43,44 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>熔岩喷口，过热间歇泉；喷涌满柱+熔珠挂淌+余温简芯，柱高对齐判定线</summary>
-    internal sealed class SHPCMagmaVentProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
+    /// <summary>
+    /// 熔岩喷口，过热间歇泉；熔融液体两态：空中熔浆柱+液团抛洒(SDF摆动/颈缩断滴)，
+    /// 近地自动贴地成熔岩池(弯月挂边/黑壳结皮渐干)；柱高对齐 190px 判定线
+    /// </summary>
+    internal sealed class SHPCMagmaVentProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
         private const int Lifetime = 120;
         private const int PulseInterval = 30;
-        private const int JetPointCount = 12;
-        //熔岩色阶,同武器超驱语系
-        private static readonly Vector3 JetCoreVec = new Color(255, 175, 70).ToVector3();
-        private static readonly Vector3 JetGlowVec = new Color(255, 64, 18).ToVector3();
-        private static readonly Vector3 JetAuraVec = new Color(150, 12, 2).ToVector3();
+        //熔岩色阶:黑壳/熔浆/炽芯
+        private static readonly Vector3 CrustVec = new Color(30, 9, 6).ToVector3();
+        private static readonly Vector3 LavaVec = new Color(255, 78, 16).ToVector3();
+        private static readonly Vector3 HotVec = new Color(255, 216, 128).ToVector3();
 
-        private Vector2[] jetPos;
-        private Trail jetTrail;
+        /// <summary>空中熔岩团,仅客户端表现层模拟</summary>
+        private struct MagmaGlob
+        {
+            public Vector2 pos;
+            public Vector2 vel;
+            public float seed;
+            public float scale;
+            public int life;
+        }
+
+        /// <summary>落地熔痕小池,仅客户端表现层</summary>
+        private struct MagmaSmear
+        {
+            public Vector2 pos;
+            public float seed;
+            public float width;
+            public int life;
+            public int maxLife;
+        }
+
+        private readonly List<MagmaGlob> globs = [];
+        private readonly List<MagmaSmear> smears = [];
+        private float poolGroundY;
+        private bool grounded;
 
         /// <summary>喷发包络 0-1，localAI[0] 同时是伤害窗</summary>
         private float Pulse => MathHelper.Clamp(Projectile.localAI[0] / 9f, 0f, 1f);
@@ -67,6 +91,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         /// <summary>可视柱高，喷发满 190px 与 Colliding 判定线同源</summary>
         private float JetHeight(float pulse, float env) => 190f * env * (0.52f + 0.48f * MathF.Sqrt(pulse));
+
+        //熔岩团可飞离喷口数百px,放宽画面裁切余量防边缘团块凭空消失
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 600;
 
         public override void SetDefaults() {
             Projectile.width = 56;
@@ -90,13 +117,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         public override void AI() {
-            //出生拍,破土喷溅
+            //出生拍:地形探测决定贴地态(仅表现层,判定线不动),破土喷溅
             if (Projectile.localAI[1] == 0f) {
                 Projectile.localAI[1] = 1f;
+                float? gy = FindGroundY(Projectile.Center, 7);
+                grounded = gy.HasValue && gy.Value - Projectile.Center.Y < 110f;
+                poolGroundY = gy ?? Projectile.Center.Y;
                 BirthBurst();
             }
             if (Projectile.localAI[0] > 0f) {
                 Projectile.localAI[0]--;
+            }
+            if (Main.netMode != NetmodeID.Server) {
+                UpdateFluidSim();
             }
             if (!VaultUtils.IsPointOnScreen(Projectile.Center - Main.screenPosition, 220)) {
                 return;
@@ -119,6 +152,92 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             float pulse = Projectile.localAI[0] / 9f;
             Lighting.AddLight(Projectile.Center, new Vector3(1.5f, 0.5f, 0.1f) * MathHelper.Clamp(0.4f + pulse * 0.6f, 0f, 1.5f));
             Lighting.AddLight(Projectile.Center - Vector2.UnitY * 80f, new Vector3(1.0f, 0.35f, 0.08f) * pulse);
+        }
+
+        /// <summary>向下探地表,返回首个实心瓷砖顶面 Y(世界坐标)</summary>
+        private static float? FindGroundY(Vector2 from, int maxTiles) {
+            int tileX = (int)(from.X / 16f);
+            int tileY = Math.Max((int)(from.Y / 16f), 10);
+            for (int i = 0; i < maxTiles; i++) {
+                int y = tileY + i;
+                if (y >= Main.maxTilesY - 10) {
+                    break;
+                }
+                Tile tile = Framing.GetTileSafely(tileX, y);
+                if (tile.HasUnactuatedTile && Main.tileSolid[tile.TileType]) {
+                    return y * 16f;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>熔岩团/熔痕表现层模拟:重力回落,逐团探地,落地贴形留痕</summary>
+        private void UpdateFluidSim() {
+            for (int i = globs.Count - 1; i >= 0; i--) {
+                MagmaGlob g = globs[i];
+                g.vel.Y += 0.34f;
+                if (g.vel.Y > 14f) {
+                    g.vel.Y = 14f;
+                }
+                g.vel.X *= 0.995f;
+                g.pos += g.vel;
+                g.life--;
+                Lighting.AddLight(g.pos, new Vector3(0.8f, 0.3f, 0.06f) * g.scale * 0.4f);
+
+                Tile tile = Framing.GetTileSafely(g.pos.ToTileCoordinates());
+                bool solid = tile.HasUnactuatedTile && Main.tileSolid[tile.TileType];
+                if (!solid && g.life > 0) {
+                    globs[i] = g;
+                    continue;
+                }
+                if (solid) {
+                    //落地:溅浆+贴地熔痕(表面张力铺开的小池)
+                    Vector2 landPos = new(g.pos.X, MathF.Floor(g.pos.Y / 16f) * 16f);
+                    SplashAt(landPos, g.scale);
+                    if (smears.Count < 10) {
+                        smears.Add(new MagmaSmear {
+                            pos = landPos,
+                            seed = Main.rand.NextFloat(9f),
+                            width = 30f + g.scale * 28f,
+                            life = 75,
+                            maxLife = 75,
+                        });
+                    }
+                }
+                else {
+                    //空中耗尽:凝成一粒火星坠散
+                    PRTLoader.NewParticle<PRT_Spark>(g.pos, g.vel * 0.4f,
+                        new Color(255, 110, 30), g.scale * 0.7f).Configure(true, Main.rand.Next(12, 22));
+                }
+                globs.RemoveAt(i);
+            }
+            for (int i = smears.Count - 1; i >= 0; i--) {
+                MagmaSmear s = smears[i];
+                s.life--;
+                if (s.life <= 0) {
+                    smears.RemoveAt(i);
+                    continue;
+                }
+                smears[i] = s;
+            }
+        }
+
+        /// <summary>熔岩团落地溅浆</summary>
+        private static void SplashAt(Vector2 pos, float scale) {
+            for (int i = 0; i < 3; i++) {
+                PRTLoader.NewParticle<PRT_LavaFire>(pos + new Vector2(Main.rand.NextFloat(-6f, 6f), -2f),
+                    new Vector2(Main.rand.NextFloat(-1.4f, 1.4f), -Main.rand.NextFloat(1.5f, 3.5f)),
+                    Color.White, Main.rand.NextFloat(0.4f, 0.8f) * scale)?.SetLifetime(18, 34);
+            }
+            for (int i = 0; i < 3; i++) {
+                PRTLoader.NewParticle<PRT_Spark>(pos,
+                    new Vector2(Main.rand.NextFloat(-2.2f, 2.2f), -Main.rand.NextFloat(1f, 4f)),
+                    Color.Lerp(new Color(255, 200, 110), new Color(255, 80, 22), Main.rand.NextFloat()),
+                    Main.rand.NextFloat(0.4f, 0.9f) * scale).Configure(true, Main.rand.Next(14, 26));
+            }
+            if (scale > 0.95f) {
+                SoundEngine.PlaySound(SoundID.LiquidsWaterLava with { Volume = 0.22f, Pitch = 0.1f, MaxInstances = 4 }, pos);
+            }
         }
 
         private void EruptionPulse(bool nearLava) {
@@ -146,13 +265,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 Vector2 vel = new(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-9f, -2f));
                 PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + new Vector2(Main.rand.NextFloat(-22f, 22f), 0f), vel, Color.Lerp(new Color(255, 220, 130), new Color(255, 90, 25), Main.rand.NextFloat()), Main.rand.NextFloat(0.5f, 1.2f)).Configure(true, Main.rand.Next(20, 38));
             }
-            //熔珠越顶抛出,重力回落挂淌
-            for (int i = 0; i < 5; i++) {
-                Vector2 vel = new(Main.rand.NextFloat(-3.2f, 3.2f), Main.rand.NextFloat(-13f, -8f));
-                PRTLoader.NewParticle<PRT_Spark>(
-                    Projectile.Center + new Vector2(Main.rand.NextFloat(-10f, 10f), -Main.rand.NextFloat(90f, 150f)),
-                    vel, Color.Lerp(new Color(255, 200, 110), new Color(255, 70, 20), Main.rand.NextFloat()),
-                    Main.rand.NextFloat(0.8f, 1.5f)).Configure(true, Main.rand.Next(30, 55));
+            //熔岩团越顶抛出:CPU液团,重力回落,落地自动贴形
+            int count = Main.rand.Next(3, 6);
+            for (int i = 0; i < count; i++) {
+                if (globs.Count >= 20) break;
+                globs.Add(new MagmaGlob {
+                    pos = Projectile.Center - Vector2.UnitY * Main.rand.NextFloat(120f, 175f)
+                        + Vector2.UnitX * Main.rand.NextFloat(-12f, 12f),
+                    vel = new Vector2(Main.rand.NextFloat(-3.4f, 3.4f), Main.rand.NextFloat(-7.5f, -3.5f)),
+                    seed = Main.rand.NextFloat(9f),
+                    scale = Main.rand.NextFloat(0.55f, 1.15f),
+                    life = 130,
+                });
             }
             SoundEngine.PlaySound(SoundID.Item20 with { Volume = 0.55f, Pitch = -0.2f }, Projectile.Center);
             if (nearLava) {
@@ -176,7 +300,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         public override void OnKill(int timeLeft) {
-            //塌熄拍,余浆回落+闷响
+            //塌熄拍,余浆回落+闷响;空中残余熔岩团凝火星散场
             if (Main.netMode == NetmodeID.Server) return;
             SoundEngine.PlaySound(SoundID.LiquidsWaterLava with { Volume = 0.45f, Pitch = -0.5f }, Projectile.Center);
             for (int i = 0; i < 8; i++) {
@@ -186,6 +310,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     Color.Lerp(new Color(255, 170, 80), new Color(200, 60, 20), Main.rand.NextFloat()),
                     Main.rand.NextFloat(0.5f, 1f)).Configure(true, Main.rand.Next(18, 34));
             }
+            foreach (MagmaGlob g in globs) {
+                PRTLoader.NewParticle<PRT_Spark>(g.pos, g.vel * 0.5f,
+                    Color.Lerp(new Color(255, 170, 80), new Color(255, 80, 22), Main.rand.NextFloat()),
+                    g.scale * 0.8f).Configure(true, Main.rand.Next(14, 26));
+            }
+            globs.Clear();
+            //残留熔痕不许无声消失,留一撮余烬
+            foreach (MagmaSmear s in smears) {
+                for (int i = 0; i < 2; i++) {
+                    PRTLoader.NewParticle<PRT_Spark>(
+                        s.pos + new Vector2(Main.rand.NextFloat(-0.3f, 0.3f) * s.width, -2f),
+                        new Vector2(Main.rand.NextFloat(-0.8f, 0.8f), -Main.rand.NextFloat(0.5f, 1.6f)),
+                        new Color(220, 90, 30), Main.rand.NextFloat(0.3f, 0.6f)).Configure(true, Main.rand.Next(12, 22));
+                }
+            }
+            smears.Clear();
             PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
                 new Color(255, 120, 40, 0), 0.05f).Configure(0.05f, 0.35f, 18);
         }
@@ -200,25 +340,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //底层,熔池基座+黑烟;暗色只能走真alpha的AlphaBlend,加色物理加不出暗
             float pulse = Pulse;
             float env = BirthEnv * DeathEnv;
             if (env <= 0.03f) return false;
             Vector2 baseScreen = Projectile.Center - Main.screenPosition;
 
-            Texture2D pool = CWRAsset.Extra_98?.Value;
-            if (pool != null) {
-                Vector2 porigin = pool.Size() * 0.5f;
-                Vector2 poolPos = baseScreen + Vector2.UnitY * 10f;
-                //张力挂边,暗基座在下更暗
-                Main.spriteBatch.Draw(pool, poolPos, null, new Color(46, 12, 8) * (env * 0.78f),
-                    0f, porigin, new Vector2(1.75f, 0.5f), SpriteEffects.None, 0f);
-                Main.spriteBatch.Draw(pool, poolPos, null, new Color(120, 34, 12) * (env * 0.6f),
-                    0f, porigin, new Vector2(1.25f, 0.34f), SpriteEffects.None, 0f);
-                //池面热膜,A=0 预乘加亮随脉冲呼吸
-                Main.spriteBatch.Draw(pool, poolPos + Vector2.UnitY * 2f, null,
-                    new Color(255, 150, 60, 0) * (env * (0.3f + pulse * 0.5f)),
-                    0f, porigin, new Vector2(0.95f, 0.2f), SpriteEffects.None, 0f);
+            DrawSmokeAndSeat(baseScreen, pulse, env);
+
+            Effect effect = EffectLoader.SHPCModMagma?.Value;
+            if (effect != null) {
+                DrawFluid(effect, baseScreen, pulse, env);
+            }
+            else {
+                DrawSpriteFallback(baseScreen, pulse, env);
+            }
+            return false;
+        }
+
+        /// <summary>底层:真alpha黑烟+贴地暗座;暗色只能走AlphaBlend,加色物理加不出暗</summary>
+        private void DrawSmokeAndSeat(Vector2 baseScreen, float pulse, float env) {
+            //暗座垫在熔池下,替熔池压出灼地感(仅贴地态)
+            Texture2D pad = CWRAsset.Extra_98?.Value;
+            if (pad != null && grounded) {
+                Vector2 poolScreen = new Vector2(Projectile.Center.X, poolGroundY) - Main.screenPosition;
+                Main.spriteBatch.Draw(pad, poolScreen + Vector2.UnitY * 8f, null, new Color(40, 12, 8) * (env * 0.62f),
+                    0f, pad.Size() * 0.5f, new Vector2(1.65f, 0.42f), SpriteEffects.None, 0f);
             }
 
             Texture2D fog = CWRAsset.Fog?.Value;
@@ -238,92 +384,156 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                         0.62f + i * 0.2f, fx, 0f);
                 }
             }
-            return false;
         }
 
-        private float JetWidth(float progress) {
-            //口部全宽顶端收窄,撕裂交给shader尾端渐隐
-            float baseW = MathHelper.Lerp(13f, 25f, Pulse);
-            float taper = 1f - 0.62f * progress;
-            float ripple = 1f + 0.12f * MathF.Sin((float)Main.timeForVisualEffects * 0.3f - progress * 9f);
-            return baseW * taper * ripple;
-        }
+        /// <summary>着色器液体三态:贴地熔池→落地熔痕→喷浆柱→空中熔岩团,单次批翻转全画完</summary>
+        private void DrawFluid(Effect effect, Vector2 baseScreen, float pulse, float env) {
+            SpriteBatch sb = Main.spriteBatch;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            float seed = Projectile.whoAmI % 97 * 0.173f;
+            int age = Lifetime - Projectile.timeLeft;
 
-        void IPrimitiveDrawable.DrawPrimitives() {
-            //熔浆喷柱本体,复用共享光束shader的熔岩语系;头=口部光球,尾端=顶端撕散
-            if (!VaultUtils.IsPointOnScreen(Projectile.Center - Main.screenPosition, 420)) return;
-            float pulse = Pulse;
-            float env = BirthEnv * DeathEnv;
-            if (env <= 0.03f) return;
-            Effect shader = EffectLoader.CyberTraceBeam?.Value;
-            if (shader == null) return;
-            Texture2D noise = CWRAsset.Extra_193?.Value;
-            if (noise == null) return;
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uColorCrust"]?.SetValue(CrustVec);
+            effect.Parameters["uColorLava"]?.SetValue(LavaVec);
+            effect.Parameters["uColorHot"]?.SetValue(HotVec);
 
-            float height = JetHeight(pulse, env);
-            float t = (float)Main.timeForVisualEffects;
-            jetPos ??= new Vector2[JetPointCount];
-            Vector2 basePos = Projectile.Center + Vector2.UnitY * 8f;
-            for (int i = 0; i < JetPointCount; i++) {
-                float f = i / (float)(JetPointCount - 1);
-                float sway = MathF.Sin(t * 0.11f + f * 5.3f + Projectile.whoAmI * 1.7f)
-                    * (2.5f + 10f * f) * (0.35f + 0.65f * pulse);
-                jetPos[i] = basePos - Vector2.UnitY * (height * f) + Vector2.UnitX * sway;
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+
+            //---- 贴地熔池:出生铺开,随寿命结皮,塌熄蚀退 ----
+            if (grounded) {
+                float spread = 0.55f + 0.45f * MathHelper.Clamp(age / 30f, 0f, 1f);
+                float poolW = (150f + pulse * 26f) * spread;
+                const float poolH = 44f;
+                float dry = MathHelper.Clamp(age / (float)Lifetime * 0.35f + (1f - DeathEnv) * 0.65f, 0f, 1f);
+                Vector2 poolDraw = new Vector2(Projectile.Center.X, poolGroundY) - Main.screenPosition;
+
+                effect.CurrentTechnique = effect.Techniques["TechPool"];
+                effect.Parameters["uSeed"]?.SetValue(seed);
+                effect.Parameters["uEnv"]?.SetValue(env);
+                effect.Parameters["uLife"]?.SetValue(dry);
+                effect.Parameters["uAspect"]?.SetValue(poolW / poolH);
+                effect.Parameters["uGlow"]?.SetValue(pulse);
+                effect.CurrentTechnique.Passes[0].Apply();
+                //quad中心略沉入地面,上缘为液面
+                sb.Draw(pixel, poolDraw + new Vector2(0f, 10f), null, Color.White, 0f, pixel.Size() / 2f,
+                    new Vector2(poolW / pixel.Width, poolH / pixel.Height), SpriteEffects.None, 0f);
             }
-            jetTrail ??= new Trail(jetPos, JetWidth, _ => Color.White);
-            jetTrail.TrailPositions = jetPos;
 
-            shader.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
-            shader.Parameters["uTime"]?.SetValue(t * 0.055f);
-            shader.Parameters["fadeAlpha"]?.SetValue(MathHelper.Clamp((0.3f + 0.85f * pulse) * env, 0f, 1.15f));
-            shader.Parameters["coreColor"]?.SetValue(JetCoreVec);
-            shader.Parameters["glowColor"]?.SetValue(JetGlowVec);
-            shader.Parameters["auraColor"]?.SetValue(JetAuraVec);
-            shader.Parameters["uNoiseTex"]?.SetValue(noise);
-            shader.Parameters["overdriveAmount"]?.SetValue(0f);
-            shader.Parameters["glitchBurst"]?.SetValue(0f);
-            shader.Parameters["odCoreColor"]?.SetValue(JetCoreVec);
-            shader.Parameters["odGlowColor"]?.SetValue(JetGlowVec);
-            shader.Parameters["odAuraColor"]?.SetValue(JetAuraVec);
+            //---- 落地熔痕:熔岩团摔出的小池,快速结皮干涸 ----
+            if (smears.Count > 0) {
+                effect.CurrentTechnique = effect.Techniques["TechPool"];
+                foreach (MagmaSmear s in smears) {
+                    float lifeT = 1f - s.life / (float)s.maxLife;
+                    const float smearH = 26f;
+                    effect.Parameters["uSeed"]?.SetValue(s.seed);
+                    effect.Parameters["uEnv"]?.SetValue(env * MathHelper.Clamp(s.life / 10f, 0f, 1f));
+                    effect.Parameters["uLife"]?.SetValue(lifeT);
+                    effect.Parameters["uAspect"]?.SetValue(s.width / smearH);
+                    effect.Parameters["uGlow"]?.SetValue(0f);
+                    effect.CurrentTechnique.Passes[0].Apply();
+                    sb.Draw(pixel, s.pos - Main.screenPosition + new Vector2(0f, 6f), null, Color.White, 0f,
+                        pixel.Size() / 2f, new Vector2(s.width / pixel.Width, smearH / pixel.Height), SpriteEffects.None, 0f);
+                }
+            }
 
-            GraphicsDevice device = Main.graphics.GraphicsDevice;
-            device.BlendState = BlendState.Additive;
-            jetTrail.DrawTrail(shader);
-            device.BlendState = BlendState.AlphaBlend;
+            //---- 喷浆柱:底边锚喷口,柱高与判定线同源 ----
+            //画布仅放大2%:shader收头在0.94±撕裂,可视顶端≈height,不越190px判定线
+            float height = JetHeight(pulse, env);
+            const float canvasW = 120f;
+            float canvasH = height * 1.02f;
+            effect.CurrentTechnique = effect.Techniques["TechJet"];
+            effect.Parameters["uSeed"]?.SetValue(seed);
+            effect.Parameters["uEnv"]?.SetValue(env * (0.55f + 0.45f * pulse));
+            effect.Parameters["uRise"]?.SetValue(pulse);
+            effect.Parameters["uAspect"]?.SetValue(canvasH / canvasW);
+            effect.Parameters["uGlow"]?.SetValue(pulse);
+            effect.CurrentTechnique.Passes[0].Apply();
+            sb.Draw(pixel, baseScreen + Vector2.UnitY * 10f, null, Color.White, 0f,
+                new Vector2(pixel.Width / 2f, pixel.Height),
+                new Vector2(canvasW / pixel.Width, canvasH / pixel.Height), SpriteEffects.None, 0f);
+
+            //---- 空中熔岩团:quad长轴沿速度拉伸 ----
+            if (globs.Count > 0) {
+                effect.CurrentTechnique = effect.Techniques["TechGlob"];
+                foreach (MagmaGlob g in globs) {
+                    float stretch = MathHelper.Clamp(g.vel.Length() / 8f, 0.75f, 2.0f);
+                    float sizePx = 34f * g.scale;
+                    effect.Parameters["uSeed"]?.SetValue(g.seed);
+                    effect.Parameters["uEnv"]?.SetValue(env);
+                    effect.Parameters["uStretch"]?.SetValue(stretch);
+                    effect.CurrentTechnique.Passes[0].Apply();
+                    sb.Draw(pixel, g.pos - Main.screenPosition, null, Color.White,
+                        g.vel.ToRotation(), pixel.Size() / 2f,
+                        new Vector2(sizePx * stretch / pixel.Width, sizePx / pixel.Height), SpriteEffects.None, 0f);
+                }
+            }
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        /// <summary>精灵回退:着色器缺失时熔池垫层+简柱+熔岩团亮点,不空窗</summary>
+        private void DrawSpriteFallback(Vector2 baseScreen, float pulse, float env) {
+            Texture2D pool = CWRAsset.Extra_98?.Value;
+            if (pool != null && grounded) {
+                Vector2 porigin = pool.Size() * 0.5f;
+                Vector2 poolPos = new Vector2(Projectile.Center.X, poolGroundY) - Main.screenPosition + Vector2.UnitY * 6f;
+                Main.spriteBatch.Draw(pool, poolPos, null, new Color(120, 34, 12) * (env * 0.6f),
+                    0f, porigin, new Vector2(1.25f, 0.34f), SpriteEffects.None, 0f);
+                Main.spriteBatch.Draw(pool, poolPos + Vector2.UnitY * 2f, null,
+                    new Color(255, 150, 60, 0) * (env * (0.3f + pulse * 0.5f)),
+                    0f, porigin, new Vector2(0.95f, 0.2f), SpriteEffects.None, 0f);
+            }
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            if (glow == null) return;
+            Vector2 gorigin = glow.Size() * 0.5f;
+            float height = JetHeight(pulse, env);
+            for (int i = 0; i < 5; i++) {
+                float f = i / 4f;
+                Vector2 pos = baseScreen - Vector2.UnitY * (height * f);
+                float s = MathHelper.Lerp(0.55f, 0.26f, f) * (0.8f + 0.4f * pulse);
+                Main.spriteBatch.Draw(glow, pos, null, new Color(255, 90, 24, 60) * (env * (0.72f - 0.34f * f)),
+                    0f, gorigin, s, SpriteEffects.None, 0f);
+            }
+            foreach (MagmaGlob g in globs) {
+                Main.spriteBatch.Draw(glow, g.pos - Main.screenPosition, null, new Color(255, 120, 40, 60) * env,
+                    0f, gorigin, 0.16f * g.scale, SpriteEffects.None, 0f);
+            }
         }
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
-            //加色层,顶端火冠+口部熔光;真加色批 tint 必须带 A,A=0 整层不显示
+            //加色层只作辐射热,不再当柱体;真加色批 tint 必须带 A,A=0 整层不显示
             float pulse = Pulse;
             float env = BirthEnv * DeathEnv;
             if (env <= 0.03f) return;
             float intensity = 0.35f + pulse * 0.65f;
             Vector2 baseScreen = Projectile.Center - Main.screenPosition;
+            if (!VaultUtils.IsPointOnScreen(baseScreen, 520)) return;
             float height = JetHeight(pulse, env);
-            Vector2 crownBase = baseScreen - Vector2.UnitY * height + Vector2.UnitY * 26f;
-
-            Texture2D fire = CWRAsset.Fire?.Value;
-            if (fire != null) {
-                //Fire 4x4 取一格,双层错帧防同贴图叠亮
-                int frameW = fire.Width / 4;
-                int frameH = fire.Height / 4;
-                int idx = (int)(Main.GameUpdateCount / 4) % 16;
-                Rectangle frame = new(frameW * (idx % 4), frameH * (idx / 4), frameW, frameH);
-                Vector2 origin = new(frameW * 0.5f, frameH);
-                spriteBatch.Draw(fire, crownBase, frame, new Color(255, 120, 40) * (intensity * env * 0.8f),
-                    0f, origin, new Vector2(0.62f, 0.9f + pulse * 0.5f), SpriteEffects.None, 0f);
-                int idx2 = (int)(Main.GameUpdateCount / 3 + 7) % 16;
-                Rectangle frame2 = new(frameW * (idx2 % 4), frameH * (idx2 / 4), frameW, frameH);
-                spriteBatch.Draw(fire, crownBase, frame2, new Color(255, 220, 150) * (intensity * env * 0.5f),
-                    0f, origin, new Vector2(0.4f, 0.62f + pulse * 0.35f), SpriteEffects.FlipHorizontally, 0f);
-            }
 
             Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow != null) {
-                //口部熔光单点,只作衬垫不再当柱体
-                Color inner = new Color(255, 190, 90) * (intensity * env * 0.85f);
-                Color outer = new Color(150, 35, 8) * (intensity * env * 0.4f);
-                SHPCNaturalFx.GlowLayered(spriteBatch, glow, baseScreen, inner, outer, 1.15f + pulse * 0.5f, 0f, 3);
+            if (glow == null) return;
+            Vector2 gorigin = glow.Size() * 0.5f;
+
+            //口部辐射热光
+            Color inner = new Color(255, 190, 90) * (intensity * env * 0.85f);
+            Color outer = new Color(150, 35, 8) * (intensity * env * 0.4f);
+            SHPCNaturalFx.GlowLayered(spriteBatch, glow, baseScreen, inner, outer, 1.15f + pulse * 0.5f, 0f, 3);
+
+            //柱身热雾衬:窄长竖光,弱到只读作辐射不读作柱体
+            spriteBatch.Draw(glow, baseScreen - Vector2.UnitY * height * 0.5f, null,
+                new Color(255, 90, 24) * (env * (0.14f + 0.18f * pulse)),
+                0f, gorigin, new Vector2(0.72f, height / glow.Height * 1.2f), SpriteEffects.None, 0f);
+
+            //熔岩团辐射热点
+            foreach (MagmaGlob g in globs) {
+                spriteBatch.Draw(glow, g.pos - Main.screenPosition, null,
+                    new Color(255, 120, 40) * (env * 0.45f * g.scale),
+                    0f, gorigin, 0.22f * g.scale, SpriteEffects.None, 0f);
             }
         }
     }

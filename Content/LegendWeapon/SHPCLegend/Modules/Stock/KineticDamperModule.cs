@@ -150,11 +150,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Main.netMode == NetmodeID.Server) return;
+            //命中处岩屑外抛带重力，与震地岩金同材质，替掉错配的赛博方屑
             for (int i = 0; i < 6; i++) {
                 Vector2 vel = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY)
                     .RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(3f, 7f);
-                PRTLoader.NewParticle<PRT_CyberSquare>(target.Center, vel,
-                    WaveMain, Main.rand.NextFloat(0.6f, 1.1f)).Configure(WaveEdge, Main.rand.Next(12, 22));
+                PRTLoader.NewParticle<PRT_Spark>(target.Center, vel,
+                    Color.Lerp(WaveMain, WaveEdge, Main.rand.NextFloat()),
+                    Main.rand.NextFloat(0.6f, 1.1f)).Configure(true, Main.rand.Next(14, 26));
             }
         }
 

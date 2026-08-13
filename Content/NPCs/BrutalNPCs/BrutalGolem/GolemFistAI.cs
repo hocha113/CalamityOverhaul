@@ -1,6 +1,8 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -109,12 +111,63 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
 
             fistStateMachine.Update();
 
+            //推进器视觉：傀儡清零前缓存速度向量 + 反弹侧喷检测 + 尾迹余烬
+            UpdateThrusterVisual();
+
             if (clientShadow) {
                 npc.position = savedPos;
                 npc.velocity = Vector2.Zero;
             }
 
             return false;
+        }
+
+        /// <summary>喷焰表现数据维护（各端本地，不参与决策）</summary>
+        private void UpdateThrusterVisual() {
+            Vector2 newVel = npc.velocity;
+            GolemFistStateIndex st = (GolemFistStateIndex)(int)npc.ai[GolemAiSlots.PartStateSlot];
+
+            //反弹侧向修正喷：飞行中速度方向骤变时点燃（撞墙反弹的本地读法，免网络事件）
+            if (st == GolemFistStateIndex.Punch
+                && newVel.LengthSquared() > 64f && fistContext.ThrustVel.LengthSquared() > 64f
+                && Vector2.Dot(Vector2.Normalize(newVel), Vector2.Normalize(fistContext.ThrustVel)) < 0.25f) {
+                fistContext.BounceBurst = 10;
+                if (!VaultUtils.isServer) {
+                    GolemScreenEffects.Shake(2f);
+                    for (int i = 0; i < 7; i++) {
+                        PRTLoader.NewParticle<PRT_Spark>(npc.Center, VaultUtils.RandVr(2f, 6f),
+                            new Color(255, 190, 80), Main.rand.NextFloat(0.7f, 1.1f)).Configure(true, 16);
+                    }
+                }
+            }
+            //傀儡端包间隙读到零速时保留上帧向量（Punch/Return 语义上无合法零速），防喷向单帧塌零
+            bool puppetGap = VaultUtils.isClient && newVel.LengthSquared() < 0.01f
+                && st is GolemFistStateIndex.Punch or GolemFistStateIndex.Return;
+            if (!puppetGap) {
+                fistContext.ThrustVel = newVel;
+            }
+            if (fistContext.BounceBurst > 0) {
+                fistContext.BounceBurst--;
+            }
+            if (fistContext.MuzzleFlash > 0) {
+                fistContext.MuzzleFlash--;
+            }
+
+            //尾迹余烬 + 淡热浪：高速飞行/回收期从喷口洒出
+            if (!VaultUtils.isServer && newVel.LengthSquared() > 100f
+                && st is GolemFistStateIndex.Punch or GolemFistStateIndex.Return) {
+                Vector2 dir = Vector2.Normalize(newVel);
+                Vector2 pos = npc.Center - dir * 20f + Main.rand.NextVector2Circular(6f, 6f);
+                if (Main.rand.NextBool(2)) {
+                    PRTLoader.NewParticle<PRT_Spark>(pos,
+                        -dir * Main.rand.NextFloat(1.5f, 4f) + VaultUtils.RandVr(0f, 1.2f),
+                        new Color(255, 170, 60), Main.rand.NextFloat(0.5f, 0.9f)).Configure(true, 14);
+                }
+                if (Main.rand.NextBool(5)) {
+                    PRTLoader.NewParticle<PRT_Smoke>(pos, -dir * 1.2f,
+                        new Color(110, 84, 62), Main.rand.NextFloat(0.4f, 0.7f)).Configure(24, 0.5f);
+                }
+            }
         }
 
         #region 状态机维护
@@ -165,11 +218,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
         #endregion
 
         #region 绘制
-        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            //高速残影（速度门控，用缓存速度防客户端清零失真）
+        public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            //喷焰与残影垫在拳本体之下
+            GolemRenderHelper.DrawFistThruster(spriteBatch, npc, fistContext);
             GolemRenderHelper.DrawFistTrail(spriteBatch, npc, screenPos, fistContext?.VisualSpeed ?? -1f);
+            //返回 null 继续原版本体绘制
+            return null;
+        }
 
-            //蓄力辉光
+        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            //蓄力辉光盖在本体上
             if (fistContext != null && fistContext.WindupGlow > 0.05f) {
                 GolemRenderHelper.DrawFistWindup(spriteBatch, npc, fistContext);
             }

@@ -123,13 +123,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                         ModContent.ProjectileType<CultistSigilProj>(), damage, 0f, Main.myPlayer,
                         (float)(i % 3), i * 9f, 2f);
                 }
-                //笼内双柱压顶
-                int colDamage = ProjDamage(npc, 46f, 31f);
-                for (int s = -1; s <= 1; s += 2) {
-                    Vector2 ground = CultistElementBarrageState.FindGround(player.Center + new Vector2(s * 200f, 0f));
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), ground, Vector2.Zero,
-                        ModContent.ProjectileType<CultistThunderColumn>(), colDamage, 0f, Main.myPlayer, 62f, 1400f);
+                //笼内雷网：三球开口三角，链弧两边留一逃生口（预告线即承诺）
+                int orbDamage = ProjDamage(npc, 44f, 30f);
+                int[] ids = new int[3];
+                for (int k = 0; k < 3; k++) {
+                    float angle = MathHelper.TwoPi * k / 3f + npc.ai[3] * 0.11f;
+                    Vector2 pos = player.Center + angle.ToRotationVector2() * 300f;
+                    int proj = Projectile.NewProjectile(npc.GetSource_FromAI(), pos, Vector2.Zero,
+                        ModContent.ProjectileType<CultistLightningOrb>(), orbDamage, 0f, Main.myPlayer,
+                        62f, 0f, 118f);
+                    ids[k] = Main.projectile[proj].identity;
                 }
+                CultistElementBarrageState.LinkOrbs(ids[0], ids[1]);
+                CultistElementBarrageState.LinkOrbs(ids[1], ids[2]);
             }
 
             if (Timer > CageMoment && Timer < FinaleMoment) {

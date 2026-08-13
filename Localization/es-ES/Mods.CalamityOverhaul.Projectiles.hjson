@@ -1,4 +1,4 @@
-RebelBladeFlyAttcke.DisplayName: Hoja rebelde
+﻿RebelBladeFlyAttcke.DisplayName: Hoja rebelde
 RebelBladeOrb.DisplayName: Orbe demoníaco
 RebelBladeBack.DisplayName: Hoja rebelde
 ElectricMinRocketHeld.DisplayName: Microcohete eléctrico
@@ -501,7 +501,6 @@ VictorRiftPortalProj.DisplayName: Grieta cibernética de Víctor
 // CultistIceLance.DisplayName: Frost Lance
 // CultistRitualCircle.DisplayName: Ritual Circle
 // CultistSigilProj.DisplayName: Floating Sigil
-// CultistThunderColumn.DisplayName: Thunder Column
 // MLordArcRayProj.DisplayName: Phantasmal Arc Ray
 // MLordCometProj.DisplayName: Starfall Comet
 // MLordConstellationProj.DisplayName: Constellation Omen

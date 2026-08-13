@@ -134,9 +134,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
                 npc.velocity = npc.velocity.RotatedBy(hookTurnRate);
             }
 
-            npc.rotation = ctx.Side < 0
-                ? (-npc.velocity).ToRotation()
-                : npc.velocity.ToRotation();
+            //傀儡端包间隙速度为零：保持上帧朝向，防拳与喷焰单帧横甩归零
+            if (npc.velocity.LengthSquared() > 0.01f) {
+                npc.rotation = ctx.Side < 0
+                    ? (-npc.velocity).ToRotation()
+                    : npc.velocity.ToRotation();
+            }
 
             //拖尾火星
             if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
@@ -194,6 +197,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item14 with { Pitch = 0.2f, Volume = 0.75f }, npc.Center);
                 GolemScreenEffects.Shake(3f);
+
+                //火箭点火：肩口发射闪 + 喷烟 + 火星（发射口留在肩位，拳已离膛）
+                Vector2 muzzle = GolemFacts.FistAnchor(ctx.Body, ctx.Side);
+                ctx.MuzzleFlash = 12;
+                ctx.MuzzlePos = muzzle;
+                Vector2 launchDir = npc.velocity.SafeNormalize(Vector2.UnitX * ctx.Side);
+                for (int i = 0; i < 6; i++) {
+                    PRTLoader.NewParticle<PRT_Smoke>(muzzle + Main.rand.NextVector2Circular(10f, 10f),
+                        launchDir * Main.rand.NextFloat(1f, 3f) + VaultUtils.RandVr(0f, 1f),
+                        new Color(120, 108, 92), Main.rand.NextFloat(0.6f, 1f)).Configure(30, 0.55f);
+                }
+                for (int i = 0; i < 5; i++) {
+                    PRTLoader.NewParticle<PRT_Spark>(muzzle,
+                        launchDir.RotatedByRandom(0.6f) * Main.rand.NextFloat(2f, 5f),
+                        new Color(255, 190, 80), Main.rand.NextFloat(0.7f, 1.1f)).Configure(true, 14);
+                }
             }
             npc.netUpdate = true;
         }
@@ -298,7 +317,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
             float rot = clock * 0.055f + (ctx.Side < 0 ? 0f : MathHelper.Pi);
             Vector2 slot = ctx.Body.Center + rot.ToRotationVector2() * 190f;
             npc.Center = Vector2.Lerp(npc.Center, slot, 0.2f);
-            npc.rotation = rot + MathHelper.PiOver2;
+            //切向朝向按贴图镜像取符号：左拳贴图朝 -X，统一符号会让左拳背对轨道倒飞
+            npc.rotation = rot + MathHelper.PiOver2 * ctx.Side;
 
             Timer++;
 

@@ -1,4 +1,4 @@
-RebelBladeFlyAttcke.DisplayName: Клинок мятежника
+﻿RebelBladeFlyAttcke.DisplayName: Клинок мятежника
 RebelBladeOrb.DisplayName: Демоническая сфера
 RebelBladeBack.DisplayName: Клинок мятежника
 ElectricMinRocketHeld.DisplayName: Микро-дуговая ракета
@@ -501,7 +501,6 @@ VictorRiftPortalProj.DisplayName: Кибер-разлом Виктора
 // CultistIceLance.DisplayName: Frost Lance
 // CultistRitualCircle.DisplayName: Ritual Circle
 // CultistSigilProj.DisplayName: Floating Sigil
-// CultistThunderColumn.DisplayName: Thunder Column
 // MLordArcRayProj.DisplayName: Phantasmal Arc Ray
 // MLordCometProj.DisplayName: Starfall Comet
 // MLordConstellationProj.DisplayName: Constellation Omen

@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Rendering
@@ -196,6 +197,114 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Renderin
             sb.Draw(star, drawPos, null, CultistPalette.IceBright * ((0.9f * grow + flash * 0.6f) * alpha),
                 rotation, star.Size() / 2f, new Vector2(len * 1.5f, 0.16f), SpriteEffects.None, 0f);
             EndAdditive(sb);
+        }
+
+        #endregion
+
+        #region 原版材质基底（真实纹理为本体，程序化只做叠加层）
+
+        /// <summary>确定性抖动哈希（时间片驱动的伪随机，各端一致）</summary>
+        public static float JitterHash(int seed, int i) {
+            float h = (float)Math.Sin(seed * 12.9898f + i * 78.233f) * 43758.5453f;
+            return h - (float)Math.Floor(h);
+        }
+
+        /// <summary>
+        /// 元素核心的原版纹理本体：火=原版信徒火球467、雷=原版信徒雷球465、冰=原版霜晶349三瓣簇；
+        /// 全亮绘制，调用方须处于实体绘制批（AlphaBlend）
+        /// </summary>
+        public static void DrawElementCore(SpriteBatch sb, Vector2 worldPos, CultistElement element,
+            float scale, float alpha, float animTick, float rotation = 0f) {
+            if (alpha <= 0.01f || scale <= 0.01f) {
+                return;
+            }
+            Vector2 drawPos = worldPos - Main.screenPosition;
+            switch (element) {
+                case CultistElement.Fire: {
+                    Main.instance.LoadProjectile(ProjectileID.CultistBossFireBall);
+                    Texture2D tex = TextureAssets.Projectile[ProjectileID.CultistBossFireBall].Value;
+                    int fh = tex.Height / 4;
+                    Rectangle src = new(0, (int)(animTick / 4f) % 4 * fh, tex.Width, fh);
+                    sb.Draw(tex, drawPos, src, Color.White * alpha, rotation,
+                        new Vector2(tex.Width / 2f, fh / 2f), scale, SpriteEffects.None, 0f);
+                    break;
+                }
+                case CultistElement.Thunder: {
+                    Main.instance.LoadProjectile(ProjectileID.CultistBossLightningOrb);
+                    Texture2D tex = TextureAssets.Projectile[ProjectileID.CultistBossLightningOrb].Value;
+                    int fh = tex.Height / 4;
+                    Rectangle src = new(0, (int)(animTick / 5f) % 4 * fh, tex.Width, fh);
+                    sb.Draw(tex, drawPos, src, Color.White * alpha, rotation,
+                        new Vector2(tex.Width / 2f, fh / 2f), scale, SpriteEffects.None, 0f);
+                    break;
+                }
+                default: {
+                    //冰无原版球体，用霜晶349三瓣簇拼核（尖端向外慢旋；贴图尖端朝下=角度PiOver2）
+                    Main.instance.LoadProjectile(ProjectileID.FrostShard);
+                    Texture2D tex = TextureAssets.Projectile[ProjectileID.FrostShard].Value;
+                    int fh = tex.Height / 5;
+                    for (int k = 0; k < 3; k++) {
+                        Rectangle src = new(0, k * 2 % 5 * fh, tex.Width, fh);
+                        float ang = rotation + k * MathHelper.TwoPi / 3f + animTick * 0.02f;
+                        //根锚圆心、尖端向外：以晶根（贴图顶边中点）为原点，绘制旋转=向外角-PiOver2
+                        sb.Draw(tex, drawPos, src, Color.White * alpha, ang - MathHelper.PiOver2,
+                            new Vector2(tex.Width / 2f, 4f), scale, SpriteEffects.None, 0f);
+                    }
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 两锚点之间的顶点闪电弧：确定性中点抖动折线（2帧一重掷），双股+亮芯；
+        /// 端点各压一枚小晕遮接缝；调用方须处于加色批
+        /// </summary>
+        public static void DrawLightningBetween(SpriteBatch sb, Vector2 a, Vector2 b,
+            Color main, Color bright, int seed, float intensity, float widthScale = 1f) {
+            if (intensity <= 0.01f) {
+                return;
+            }
+            Texture2D bolt = CWRAsset.ThunderTrail.Value;
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+            Vector2 span = b - a;
+            float dist = span.Length();
+            if (dist < 8f) {
+                return;
+            }
+            int segs = (int)MathHelper.Clamp(dist / 30f, 4f, 16f);
+            Vector2 normal = span.SafeNormalize(Vector2.UnitY).RotatedBy(MathHelper.PiOver2);
+            int slice = (int)(Main.GameUpdateCount / 2u) * 31 + seed;
+
+            //频闪：亮度骤变+偶发压暗帧
+            float flicker = 0.62f + 0.38f * JitterHash(slice, 3);
+            if (JitterHash(slice, 11) < 0.08f) {
+                flicker *= 0.3f;
+            }
+            float amp = MathHelper.Clamp(dist * 0.06f, 8f, 26f);
+
+            for (int strand = 0; strand < 2; strand++) {
+                Vector2 prev = a;
+                float strandAmp = strand == 0 ? amp : amp * 0.55f;
+                Color col = strand == 0 ? main * (0.8f * intensity * flicker) : bright * (0.55f * intensity * flicker);
+                float thick = (strand == 0 ? 0.20f : 0.11f) * widthScale;
+                for (int i = 1; i <= segs; i++) {
+                    float t = i / (float)segs;
+                    //端点归零的正弦包络，保证两端严丝合缝锚在球上
+                    float envelope = (float)Math.Sin(t * MathHelper.Pi);
+                    float off = (JitterHash(slice + strand * 97, i) - 0.5f) * 2f * strandAmp * envelope;
+                    Vector2 node = i == segs ? b : a + span * t + normal * off;
+                    Vector2 segSpan = node - prev;
+                    sb.Draw(bolt, prev - Main.screenPosition, null, col,
+                        segSpan.ToRotation(), new Vector2(0f, bolt.Height / 2f),
+                        new Vector2(segSpan.Length() / bolt.Width, thick), SpriteEffects.None, 0f);
+                    prev = node;
+                }
+            }
+
+            //端点晕：遮住弧根接缝
+            Color anchorCol = main * (0.5f * intensity * flicker);
+            sb.Draw(glow, a - Main.screenPosition, null, anchorCol, 0f, glow.Size() / 2f, 0.24f * widthScale, SpriteEffects.None, 0f);
+            sb.Draw(glow, b - Main.screenPosition, null, anchorCol, 0f, glow.Size() / 2f, 0.24f * widthScale, SpriteEffects.None, 0f);
         }
 
         #endregion

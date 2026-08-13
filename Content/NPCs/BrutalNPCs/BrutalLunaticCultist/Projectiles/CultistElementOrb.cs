@@ -142,17 +142,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            SpriteBatch sb = Main.spriteBatch;
             float seed = Projectile.identity * 0.77f;
 
-            //轨道涂抹：沿轨道后方两枚低亮重影（旋转运动的各向异性签名）
+            //轨道涂抹：沿轨道后方两枚低亮重影（真实纹理基底的低透版本）
             NPC boss = Boss;
             if (boss != null) {
                 CultistStateIndex bossState = (CultistStateIndex)(int)boss.ai[2];
                 if (bossState is CultistStateIndex.ElementWheel or CultistStateIndex.Cataclysm) {
                     for (int i = 2; i >= 1; i--) {
                         Vector2 ghost = WheelPos(boss.Center, OrbIndex, age - i * 3.5f);
-                        CultistRenderHelper.DrawOrb(Main.spriteBatch, ghost, 40f - i * 5f, Element,
-                            charge * (0.32f / i), 0f, seed);
+                        CultistRenderHelper.DrawElementCore(sb, ghost, Element,
+                            0.8f - i * 0.1f, charge * (0.3f / i), age - i * 3.5f, seed);
                     }
                 }
             }
@@ -160,9 +161,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             //蓄力膨胀（开火前10帧涨到1.28倍）→释放帧白闪收缩
             float swell = Projectile.localAI[1] > 0f ? 1f - Projectile.localAI[1] / 10f : 0f;
             float flash = Projectile.localAI[0];
-            float radius = 40f * (1f + 0.28f * swell - 0.12f * flash);
-            CultistRenderHelper.DrawOrb(Main.spriteBatch, Projectile.Center, radius, Element,
-                charge, flash, seed);
+            float scale = (0.55f + 0.45f * charge) * (1f + 0.28f * swell - 0.12f * flash);
+
+            //叠加辉环（shader降级为氛围层，≤半强度）+本体=原版元素真实纹理
+            CultistRenderHelper.DrawOrb(sb, Projectile.Center, 34f * (1f + 0.2f * swell), Element,
+                charge * 0.45f, flash * 0.6f, seed);
+            CultistRenderHelper.DrawElementCore(sb, Projectile.Center, Element, scale, 1f, age, seed);
             return false;
         }
     }

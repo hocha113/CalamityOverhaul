@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -113,24 +114,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Texture2D streak = CWRAsset.SlashStreak01.Value;
-            Texture2D fire = CWRAsset.Fire.Value;
             Texture2D tongue = CultistRenderHelper.TearFlame01?.Value;
             float t = Projectile.localAI[0];
             float speed = Projectile.velocity.Length();
+            float stretch = MathHelper.Clamp(speed * 0.09f, 0.7f, 1.9f);
 
-            //火焰帧序列 4×4，帧率随速度（越快滚得越急）
-            int fw = fire.Width / 4;
-            int fh = fire.Height / 4;
-            int frameIdx = (int)(t / MathHelper.Clamp(4.5f - speed * 0.18f, 1.5f, 4.5f) + Projectile.whoAmI * 3) % 16;
-            Rectangle src = new(frameIdx % 4 * fw, frameIdx / 4 * fh, fw, fh);
-            //错帧的第二层（滚卷的内芯）
-            int frameIdx2 = (frameIdx + 7) % 16;
-            Rectangle src2 = new(frameIdx2 % 4 * fw, frameIdx2 / 4 * fh, fw, fh);
+            //本体基底=原版信徒火球467（4帧，全亮，自旋），帧率随速度滚得越急
+            Main.instance.LoadProjectile(ProjectileID.CultistBossFireBall);
+            Texture2D fireball = TextureAssets.Projectile[ProjectileID.CultistBossFireBall].Value;
+            int fh = fireball.Height / 4;
+            int frameIdx = (int)(t / MathHelper.Clamp(4.5f - speed * 0.18f, 2f, 4.5f) + Projectile.whoAmI) % 4;
+            Rectangle src = new(0, frameIdx * fh, fireball.Width, fh);
+            Vector2 origin = new(fireball.Width / 2f, fh / 2f);
+            float bodyRot = t * 0.21f * (Projectile.whoAmI % 2 == 0 ? 1f : -1f);
 
+            //---- 叠加层（加色批）：焰尾条+舔边火舌+残影链+底晕 ----
             CultistRenderHelper.BeginAdditive(sb);
 
             //速度拉伸焰尾条（暗红外缘→亮芯）
-            float stretch = MathHelper.Clamp(speed * 0.09f, 0.7f, 1.9f);
             Vector2 tailScale = new(stretch * 1.15f, 0.24f);
             sb.Draw(streak, drawPos, null, CultistPalette.FireDeep * 0.85f,
                 Projectile.rotation + MathHelper.Pi, new Vector2(0, streak.Height / 2f), tailScale * 1.25f, SpriteEffects.None, 0f);
@@ -150,29 +151,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                 }
             }
 
-            //残影链（焰核帧的低亮度重影，火在身后卷剩的热气）
+            //残影链：旧位置的火球帧低亮重影（火在身后卷剩的热气）
             for (int i = 2; i < Projectile.oldPos.Length; i += 3) {
                 if (Projectile.oldPos[i] == Vector2.Zero) {
                     continue;
                 }
                 float fade = 1f - i / (float)Projectile.oldPos.Length;
                 Vector2 gp = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                sb.Draw(fire, gp, src2, CultistPalette.FireDeep * (0.3f * fade),
-                    Projectile.rotation + MathHelper.PiOver2, new Vector2(fw / 2f, fh / 2f),
-                    0.3f * fade + 0.1f, SpriteEffects.None, 0f);
+                sb.Draw(fireball, gp, src, CultistPalette.FireDeep * (0.3f * fade),
+                    bodyRot - i * 0.2f, origin, 0.55f * fade + 0.2f, SpriteEffects.None, 0f);
             }
 
-            //焰核：外晕垫底（≤30%）+暗红大帧+金橙错帧内芯（帧动画=时间签名）
-            sb.Draw(glow, drawPos, null, CultistPalette.FireDeep * 0.55f,
-                0f, glow.Size() / 2f, 0.72f, SpriteEffects.None, 0f);
-            sb.Draw(fire, drawPos, src, CultistPalette.FireMain * 0.95f,
-                Projectile.rotation + MathHelper.PiOver2, new Vector2(fw / 2f, fh / 2f),
-                new Vector2(0.5f, 0.56f * stretch), SpriteEffects.None, 0f);
-            sb.Draw(fire, drawPos, src2, CultistPalette.FireBright * 0.85f,
-                Projectile.rotation + MathHelper.PiOver2, new Vector2(fw / 2f, fh / 2f),
-                new Vector2(0.32f, 0.38f * stretch), SpriteEffects.None, 0f);
+            //底晕垫底（≤30%视觉量）
+            sb.Draw(glow, drawPos, null, CultistPalette.FireDeep * 0.5f,
+                0f, glow.Size() / 2f, 0.7f, SpriteEffects.None, 0f);
 
             CultistRenderHelper.EndAdditive(sb);
+
+            //---- 本体：原版火球真实纹理，全亮（实体批） ----
+            sb.Draw(fireball, drawPos, src, new Color(255, 255, 255, 255),
+                bodyRot, origin, new Vector2(1f, MathHelper.Clamp(stretch, 1f, 1.3f)), SpriteEffects.None, 0f);
+
             return false;
         }
     }

@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -22,6 +23,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
 
         private const int AimLockLead = 12;
         private const float LancePx = 132f;
+        //shader辉层长度：收进晶簇本体内（≈110px），避免光效反客为主
+        private const float OverlayPx = 108f;
         private int TelegraphTime => Math.Max((int)Projectile.ai[0], 10);
         private float LaunchSpeed => Projectile.ai[1] > 0f ? Projectile.ai[1] : 19f;
 
@@ -155,6 +158,40 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
             }
         }
 
+        /// <summary>
+        /// 晶枪本体=原版霜晶349真实纹理拼簇：主晶居前、两枚侧晶错后（尖端沿枪轴），全亮绘制；
+        /// grow 驱动三晶依次成形（先侧后主），调用方须处于实体绘制批
+        /// </summary>
+        private void DrawShardCluster(SpriteBatch sb, Vector2 worldPos, float grow, float alpha) {
+            Main.instance.LoadProjectile(ProjectileID.FrostShard);
+            Texture2D shard = TextureAssets.Projectile[ProjectileID.FrostShard].Value;
+            //原版霜晶349五帧变体（竖排），identity 定型保证各端一致
+            int fh = shard.Height / 5;
+            Vector2 dir = Projectile.rotation.ToRotationVector2();
+            Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
+            //像素实测：五帧均顶部锚定、占行0..19~27（双尖晶体），视觉中心取 y≈12
+            Vector2 origin = new(shard.Width / 2f, 12f);
+            //贴图长轴竖直，指向枪轴需 -PiOver2
+            float rot = Projectile.rotation - MathHelper.PiOver2;
+            Color body = new Color(255, 255, 255, 255) * alpha;
+
+            //两枚侧晶：先成形，错后错侧，变体各异（单帧12×30，放大后仍窄长）
+            float sideGrow = MathHelper.Clamp(grow * 1.6f, 0f, 1f);
+            for (int s = -1; s <= 1; s += 2) {
+                Rectangle src = new(0, (Projectile.identity + s + 2) % 5 * fh, shard.Width, fh);
+                Vector2 pos = worldPos - dir * 32f + perp * (s * 10f);
+                sb.Draw(shard, pos - Main.screenPosition, src, body * (0.9f * sideGrow),
+                    rot + s * 0.1f, origin, new Vector2(1.7f, 1.9f) * sideGrow, SpriteEffects.None, 0f);
+            }
+            //主晶：后成形，居前拉长（≈22×90px，撑满枪身）
+            float mainGrow = MathHelper.Clamp((grow - 0.25f) / 0.75f, 0f, 1f);
+            if (mainGrow > 0.01f) {
+                Rectangle src = new(0, Projectile.identity % 5 * fh, shard.Width, fh);
+                sb.Draw(shard, worldPos + dir * 16f * mainGrow - Main.screenPosition, src, body * mainGrow,
+                    rot, origin, new Vector2(1.9f, 3f) * mainGrow, SpriteEffects.None, 0f);
+            }
+        }
+
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
@@ -176,16 +213,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                     0f, glow.Size() / 2f, 0.55f * assemble, SpriteEffects.None, 0f);
                 CultistRenderHelper.EndAdditive(sb);
 
-                //晶体凝结成形（uGrow 驱动噪声撕裂前沿）
-                CultistRenderHelper.DrawCrystal(sb, Projectile.Center, LancePx, Projectile.rotation,
-                    assemble, lockFlash * 0.7f, seed);
+                //本体基底：霜晶簇凝结成形（真实纹理），晶辉shader降级为叠加辉层
+                DrawShardCluster(sb, Projectile.Center, assemble, 1f);
+                CultistRenderHelper.DrawCrystal(sb, Projectile.Center, OverlayPx, Projectile.rotation,
+                    assemble, lockFlash * 0.7f, seed, 0.4f);
             }
             else {
-                //速度残影：两枚旧位置的低亮度晶体（旋转涂抹→速度涂抹）
+                //速度残影：两枚旧位置的低亮度晶簇（速度涂抹）
                 for (int i = 2; i >= 1; i--) {
                     Vector2 ghost = Projectile.Center - Projectile.velocity * (i * 1.7f);
-                    CultistRenderHelper.DrawCrystal(sb, ghost, LancePx * (1f - i * 0.08f), Projectile.rotation,
-                        1f, 0f, seed, 0.3f / i);
+                    DrawShardCluster(sb, ghost, 1f, 0.28f / i);
                 }
 
                 //霜雾丝带尾（亮头藏在晶尾下，渐淡向后）
@@ -198,10 +235,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Projecti
                     new Vector2(0f, ribbon.Height / 2f), new Vector2(ribbonLen / ribbon.Width, 0.3f), SpriteEffects.None, 0f);
                 CultistRenderHelper.EndAdditive(sb);
 
-                //晶枪本体：刺出后首4帧过曝
+                //本体基底+叠加辉层：刺出后首4帧过曝
                 float launchFlash = MathHelper.Clamp(1f - (t - TelegraphTime) / 4f, 0f, 1f);
-                CultistRenderHelper.DrawCrystal(sb, Projectile.Center, LancePx, Projectile.rotation,
-                    1f, launchFlash, seed);
+                DrawShardCluster(sb, Projectile.Center, 1f, 1f);
+                CultistRenderHelper.DrawCrystal(sb, Projectile.Center, OverlayPx, Projectile.rotation,
+                    1f, launchFlash, seed, 0.45f);
             }
             return false;
         }

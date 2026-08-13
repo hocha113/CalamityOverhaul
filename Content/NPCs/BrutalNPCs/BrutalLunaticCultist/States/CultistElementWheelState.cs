@@ -173,10 +173,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                             (float)CultistElement.Thunder, 0f);
                     }
                     if (volleyIndex % 2 == 1) {
-                        int colDamage = ProjDamage(npc, 44f, 30f);
-                        Vector2 ground = CultistElementBarrageState.FindGround(player.Center);
-                        Projectile.NewProjectile(source, ground, Vector2.Zero,
-                            ModContent.ProjectileType<CultistThunderColumn>(), colDamage, 0f, Main.myPlayer, 48f, 1400f);
+                        //隔拍布一枚独球：在玩家侧翼充能后放电锁定（原版雷球语言）
+                        int orbDamage = ProjDamage(npc, 42f, 29f);
+                        Vector2 pos = player.Center + aim.RotatedBy(MathHelper.PiOver2) * 320f;
+                        Projectile.NewProjectile(source, pos, Vector2.Zero,
+                            ModContent.ProjectileType<CultistLightningOrb>(), orbDamage, 0f, Main.myPlayer,
+                            48f, 0f, 84f);
                     }
                     break;
                 }
@@ -209,13 +211,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.States
                     break;
                 }
                 default: {
-                    int damage = ProjDamage(npc, 46f, 31f);
-                    for (int i = -1; i <= 1; i++) {
-                        Vector2 ground = CultistElementBarrageState.FindGround(player.Center + new Vector2(i * 150f, 0f));
-                        Projectile.NewProjectile(source, ground, Vector2.Zero,
-                            ModContent.ProjectileType<CultistThunderColumn>(), damage, 0f, Main.myPlayer,
-                            52f + Math.Abs(i) * 10f, 1400f);
+                    //终拍雷网：六球环阵，成对链弧三道弦，弦间留穿缝
+                    int damage = ProjDamage(npc, 44f, 30f);
+                    int[] ids = new int[6];
+                    for (int i = 0; i < 6; i++) {
+                        float angle = MathHelper.TwoPi * i / 6f + npc.ai[3] * 0.07f;
+                        Vector2 pos = player.Center + angle.ToRotationVector2() * 470f;
+                        int proj = Projectile.NewProjectile(source, pos, Vector2.Zero,
+                            ModContent.ProjectileType<CultistLightningOrb>(), damage, 0f, Main.myPlayer,
+                            52f + i % 3 * 6f, 0f, 110f);
+                        ids[i] = Main.projectile[proj].identity;
                     }
+                    CultistElementBarrageState.LinkOrbs(ids[0], ids[1]);
+                    CultistElementBarrageState.LinkOrbs(ids[2], ids[3]);
+                    CultistElementBarrageState.LinkOrbs(ids[4], ids[5]);
                     break;
                 }
             }

@@ -122,9 +122,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
 
             if (Timer >= TotalTime) {
                 if (!VaultUtils.isClient) {
-                    //P2出招环从头开始
+                    //P2出招环从头开始，单跳直入首招(潮汐开场)
                     context.AttackPhaseIndex = 0;
-                    return new KingSlimeHopState(2);
+                    return new KingSlimeHopState(1);
                 }
             }
 
