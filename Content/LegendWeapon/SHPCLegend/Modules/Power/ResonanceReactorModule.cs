@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -30,13 +31,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             _ringTimer = 0;
             if (Main.netMode == NetmodeID.Server) return;
 
-            //径向粒子环
-            int count = 24;
+            //薄锐谐振环为结构载体，替换旧的等角方粒喷雾
+            PRTLoader.NewParticle<PRT_StarPulseRing>(orb.Projectile.Center, Vector2.Zero,
+                new Color(140, 255, 220), 0.06f).Configure(0.06f, 0.6f, 24);
+            //环上抖落碎屑，角向抖动+速差
+            int count = 10;
             for (int i = 0; i < count; i++) {
-                float angle = MathHelper.TwoPi * i / count;
-                Vector2 vel = angle.ToRotationVector2() * 6f;
-                PRTLoader.NewParticle<PRT_CyberSquare>(orb.Projectile.Center, vel, new Color(140, 255, 220), Main.rand.NextFloat(0.8f, 1.6f)).Configure(new Color(40, 200, 170), Main.rand.Next(18, 30));
+                float angle = MathHelper.TwoPi * i / count + Main.rand.NextFloat(-0.3f, 0.3f);
+                Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(4.2f, 7.5f);
+                PRTLoader.NewParticle<PRT_CyberSquare>(orb.Projectile.Center + vel * 3f, vel,
+                    new Color(140, 255, 220), Main.rand.NextFloat(0.7f, 1.4f))
+                    .Configure(new Color(40, 200, 170), Main.rand.Next(16, 28));
             }
+            //低频谐振闷响
+            SoundEngine.PlaySound(SoundID.Item93 with { Volume = 0.28f, Pitch = -0.7f }, orb.Projectile.Center);
         }
 
         public override void OnOrbDetonation(CyberChargeOrbProj orb) {

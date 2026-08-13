@@ -12,19 +12,10 @@ float uOpacity;     //整体不透明度
 float3 uCoreColor;  //核心香槟白
 float3 uEdgeColor;  //边缘暗金
 
-texture uNoiseTex;
-sampler noiseSamp = sampler_state
-{
-    texture = <uNoiseTex>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
-
 //SpriteBatch 自动将武器贴图绑定到 register(s0)
 sampler baseSamp : register(s0);
+//噪声，消费端 Textures[1]+SamplerStates[1]=LinearWrap 在 Apply 前绑定
+sampler noiseSamp : register(s1);
 
 struct PSInput
 {

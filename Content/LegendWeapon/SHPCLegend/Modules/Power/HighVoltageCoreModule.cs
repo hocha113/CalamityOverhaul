@@ -141,7 +141,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                     SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.7f, Pitch = 0.2f }, Projectile.Center);
                     SpawnIonBurst();
                 }
-                SHPCNaturalFx.Shake(6f);
+                //震屏仅 owner，禁全员满幅震
+                if (Projectile.owner == Main.myPlayer) {
+                    SHPCNaturalFx.Shake(6f);
+                }
                 RebuildArc();
             }
 
@@ -210,7 +213,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 Vector2 vel = Main.rand.NextVector2CircularEdge(6f, 6f);
                 PRTLoader.NewParticle<PRT_Spark>(target.Center, vel, new Color(170, 230, 255), Main.rand.NextFloat(0.7f, 1.4f)).Configure(true, Main.rand.Next(12, 22));
             }
-            PRTLoader.NewParticle<PRT_StarPulseRing>(target.Center, Vector2.Zero, new Color(90, 180, 255, 0), 0.05f).Configure(0.05f, 0.42f, 18);
+            //AdditiveBlend 批 A=0 整层不显示，须满 alpha
+            PRTLoader.NewParticle<PRT_StarPulseRing>(target.Center, Vector2.Zero, new Color(90, 180, 255), 0.05f).Configure(0.05f, 0.42f, 18);
         }
 
         private float WidthFunction(float progress) {
@@ -230,6 +234,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             trail ??= new Trail(arcPoints, WidthFunction, ColorFunction);
             trail.TrailPositions = arcPoints;
 
+            //噪声走显式 s1 绑定，禁 Parameters["uX"].SetValue 采样器模式
+            Main.graphics.GraphicsDevice.Textures[1] = noise;
+            Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
+
             shader.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
             shader.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.04f);
             shader.Parameters["fadeAlpha"]?.SetValue(fadeAlpha);
@@ -237,7 +245,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             shader.Parameters["coreColor"]?.SetValue(ArcCore.ToVector3());
             shader.Parameters["glowColor"]?.SetValue(ArcGlow.ToVector3());
             shader.Parameters["auraColor"]?.SetValue(ArcAura.ToVector3());
-            shader.Parameters["uNoiseTex"]?.SetValue(noise);
 
             GraphicsDevice device = Main.graphics.GraphicsDevice;
             device.BlendState = BlendState.Additive;

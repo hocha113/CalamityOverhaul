@@ -319,6 +319,8 @@ KikasaItem: {
 		'''
 		While held, press the Domain Expansion key to unfurl the Blood Lake domain; press it again to fold the umbrella
 		Within, a blood-red mirror lake lies beneath your feet, and a dark sun sits half-sunken below the waterline
+		Hold left click to set the umbrella hovering overhead; its eye opens, and ink rain falls after your foes
+		Hold right click to flip it into a brimming vessel; release to pour the whole umbrella down
 		"No rain under the umbrella—only the sound of water"
 		''' */
 }

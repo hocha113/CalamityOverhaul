@@ -260,8 +260,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
             Vector2 muzzleDir = player.itemRotation.ToRotationVector2();
             if (player.direction == -1) muzzleDir = -muzzleDir;
             Vector2 muzzle = player.Center + muzzleDir * 52f;
+            //加色PRT批源因子是SourceAlpha，A=0整层不显示，全alpha才可见
             PRTLoader.NewParticle<PRT_StarPulseRing>(muzzle, Vector2.Zero,
-                CellGold with { A = 0 }, 0.05f).Configure(0.05f, 0.5f, 18);
+                CellGold, 0.05f)?.Configure(0.05f, 0.5f, 18);
             for (int i = 0; i < 10; i++) {
                 Vector2 vel = muzzleDir.RotatedByRandom(0.7f) * Main.rand.NextFloat(2f, 7f);
                 PRTLoader.NewParticle<PRT_CyberSquare>(muzzle, vel,
@@ -345,11 +346,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         }
 
         /// <summary>阵位世界坐标，汇聚冲枪口</summary>
-        private Vector2 CellWorldPos(int index) {
+        private Vector2 CellWorldPos(int index) => CellWorldPosAt(index, GatherTimer);
+
+        /// <summary>指定汇聚倒计时下的阵位，冲刺残影回溯取样用</summary>
+        private Vector2 CellWorldPosAt(int index, float gatherTimer) {
             Vector2 orbit = Projectile.Center
                 + (ringRotation + MathHelper.TwoPi * index / CellCount).ToRotationVector2() * RingRadius;
-            if (GatherTimer > 0f) {
-                float t = 1f - MathHelper.Clamp(GatherTimer / GatherFrames, 0f, 1f);
+            if (gatherTimer > 0f) {
+                float t = 1f - MathHelper.Clamp(gatherTimer / GatherFrames, 0f, 1f);
                 return Vector2.Lerp(orbit, GatherTargetWorld(), t * t); //ease-in 冲刺
             }
             return orbit;
@@ -458,10 +462,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
                     .Configure(EfficientGripModule.CellDim, Main.rand.Next(10, 18));
             }
             if (wholeCells >= CellCount) {
-                //满环就绪
+                //满环就绪；加色批禁A=0
                 SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.5f, Pitch = 0.4f }, Projectile.Center);
                 PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
-                    EfficientGripModule.CellGold with { A = 0 }, 0.05f).Configure(0.05f, 0.42f, 16);
+                    EfficientGripModule.CellGold, 0.05f)?.Configure(0.05f, 0.42f, 16);
             }
         }
 
@@ -500,6 +504,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 
         public override bool PreDraw(ref Color lightColor) => false;
 
+        /// <summary>汇聚收拢缩放，随倒计时推进收小</summary>
+        private static float GatherShrinkAt(float gatherTimer) => gatherTimer > 0f
+            ? MathHelper.Lerp(1f, 0.45f, 1f - MathHelper.Clamp(gatherTimer / GatherFrames, 0f, 1f))
+            : 1f;
+
+        /// <summary>Immediate 批内单胞绘制，逐次上载参数并 Apply</summary>
+        private static void DrawCellQuad(SpriteBatch spriteBatch, Effect shader, Texture2D white,
+            Vector2 worldPos, float fill, float flash, float cellRot, float fadeAlpha, float quadSize) {
+            shader.Parameters["fill"]?.SetValue(fill);
+            shader.Parameters["flash"]?.SetValue(flash);
+            shader.Parameters["cellRot"]?.SetValue(cellRot);
+            shader.Parameters["fadeAlpha"]?.SetValue(fadeAlpha);
+            shader.CurrentTechnique.Passes[0].Apply();
+            spriteBatch.Draw(white, worldPos - Main.screenPosition, null, Color.White, 0f,
+                new Vector2(0.5f, 0.5f), quadSize, SpriteEffects.None, 0f);
+        }
+
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
             if (spawnFade < 0.02f) return;
             Texture2D white = VaultAsset.placeholder2?.Value;
@@ -534,18 +555,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
                 shader.Parameters["coreColor"]?.SetValue(EfficientGripModule.CellGold.ToVector3());
 
                 //汇聚收拢缩小
-                float gatherShrink = GatherTimer > 0f
-                    ? MathHelper.Lerp(1f, 0.45f, 1f - MathHelper.Clamp(GatherTimer / GatherFrames, 0f, 1f))
-                    : 1f;
+                float gatherShrink = GatherShrinkAt(GatherTimer);
 
                 for (int i = 0; i < CellCount; i++) {
-                    shader.Parameters["fill"]?.SetValue(cellFill[i]);
-                    shader.Parameters["flash"]?.SetValue(cellFlash[i]);
-                    shader.Parameters["cellRot"]?.SetValue(ringRotation * 0.7f + i * 0.5f);
-                    shader.CurrentTechnique.Passes[0].Apply();
-                    Vector2 cellScreen = CellWorldPos(i) - Main.screenPosition;
-                    spriteBatch.Draw(white, cellScreen, null, Color.White, 0f,
-                        new Vector2(0.5f, 0.5f), CellQuadSize * gatherShrink, SpriteEffects.None, 0f);
+                    float cellRot = ringRotation * 0.7f + i * 0.5f;
+                    Vector2 worldPos = CellWorldPosAt(i, GatherTimer);
+
+                    //冲刺残影，回溯时间轴取样，位移门控只在真高速段浮现
+                    if (GatherTimer > 0f) {
+                        for (int g = 2; g >= 1; g--) {
+                            float ghostTimer = MathF.Min(GatherTimer + g * 1.3f, GatherFrames);
+                            Vector2 ghostPos = CellWorldPosAt(i, ghostTimer);
+                            float trailFade = MathHelper.Clamp(Vector2.Distance(ghostPos, worldPos) / 22f, 0f, 1f)
+                                * (g == 1 ? 0.42f : 0.20f);
+                            if (trailFade < 0.03f) continue;
+                            DrawCellQuad(spriteBatch, shader, white, ghostPos, cellFill[i], 0f,
+                                cellRot, spawnFade * trailFade, CellQuadSize * GatherShrinkAt(ghostTimer));
+                        }
+                    }
+
+                    DrawCellQuad(spriteBatch, shader, white, worldPos, cellFill[i], cellFlash[i],
+                        cellRot, spawnFade, CellQuadSize * gatherShrink);
                 }
 
                 //恢复Deferred+Additive+PointWrap

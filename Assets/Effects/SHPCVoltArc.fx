@@ -1,6 +1,7 @@
 // ============================================================================
 //SHPCVoltArc.fx 高压核心放电电弧
-//Trail 条带 Additive；ps_3_0 / vs_3_0
+//Trail 条带 Additive；vs_2_0 / ps_3_0
+//噪声固定绑定 s1，消费端 Textures[1]+LinearWrap
 // ============================================================================
 
 float4x4 transformMatrix;
@@ -11,16 +12,7 @@ float3 coreColor;       //弧芯色（近白）
 float3 glowColor;       //辉光色（电蓝）
 float3 auraColor;       //外晕色（深蓝紫）
 
-texture uNoiseTex;
-sampler noiseSamp = sampler_state
-{
-    texture = <uNoiseTex>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
+sampler noiseSamp : register(s1);
 
 struct VSInput
 {

@@ -1,6 +1,8 @@
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
@@ -15,9 +17,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         private const int ResonateInterval = 18;
         private const float ResonateRange = 320f;
         private const float ArcDamageRatio = 0.20f;
+        /// <summary>取弧音效最小间隔（帧）</summary>
+        private const int ZapSoundGap = 10;
 
         //每束独立计时，防争抢触发
         private readonly Dictionary<int, int> _timers = new();
+        /// <summary>上次取弧音帧号，多束同发限频</summary>
+        private uint _lastZapTick;
 
         public override void Apply(ref ShootContext ctx) {
             ctx.BeamCountAdd += 1;
@@ -65,6 +71,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 && Main.projectile[idx].ModProjectile is CyberDataArcProj arc) {
                 arc.CoreColor = new Color(220, 255, 220).ToVector3();
                 arc.GlowColor = new Color(80, 220, 150).ToVector3();
+            }
+            //取弧轻 zap，本路径仅所有者客户端
+            if (Main.GameUpdateCount - _lastZapTick >= ZapSoundGap) {
+                _lastZapTick = Main.GameUpdateCount;
+                SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap with {
+                    Volume = 0.32f,
+                    Pitch = Main.rand.NextFloat(0.1f, 0.35f)
+                }, beam.Projectile.Center + delta * 0.5f);
             }
         }
 

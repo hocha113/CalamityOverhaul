@@ -77,8 +77,8 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     }
     else if (isStrike)
     {
-        //命中阶段：粗光柱 + 高频脉冲
-        phaseWidth = 0.95 + 0.10 * sin(uTime * 30.0 + along * 12.0);
+        //命中阶段：粗光柱 + 高频脉冲（0.72 压回：0.95 时全宽过曝成白块）
+        phaseWidth = 0.72 + 0.08 * sin(uTime * 30.0 + along * 12.0);
         //撞击瞬间略微暴胀
         phaseWidth *= 1.0 + 0.10 * (1.0 - smoothstep(0.0, 0.25, strikeProg));
     }
@@ -146,7 +146,10 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     crownOrb *= (1.0 - crossDist * 0.65);
     crownOrb *= 0.85 + 0.15 * sin(uTime * 15.0 + seed);
 
-    float endOrb = 1.0 - smoothstep(0.92, 1.0, along);
+    //向落点(along≈0.97，quad 底缘在地面下 46px)收拢的亮斑；
+    //旧式 1-smoothstep 极性反接=全柱平铺增亮(白块过曝根因)且落点反而无光；
+    //quad 底缘解析归零防切边
+    float endOrb = smoothstep(0.80, 0.955, along) * smoothstep(1.0, 0.978, along);
     endOrb *= (1.0 - crossDist * 0.40);
     //命中瞬间猛烈爆开
     if (isStrike)
@@ -191,26 +194,27 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     else if (isStrike)
     {
         //命中阶段：白金核心 + 金箔流光 + 红色外晕
-        color += coreColor * core;
-        color += goldColor * inner * 0.85;
-        color += redColor * outerFade;
+        //核心乘竖向流纹避免读作平坦白块，金辉/边缘增益整体压回不过曝
+        color += coreColor * core * (0.74 + 0.26 * n3);
+        color += goldColor * inner * 0.55;
+        color += redColor * outerFade * 0.85;
         color += goldColor * bands;
         color += coreColor * bands * 0.4;
-        color += coreColor * crownOrb * 0.95;
+        color += coreColor * crownOrb * 0.85;
         color += goldColor * crownOrb * 0.5;
-        color += coreColor * endOrb * 1.15;
+        color += coreColor * endOrb * 1.05;
         color += goldColor * endOrb * 0.55;
         color += redColor * endOrb * 0.35;
 
         alpha = saturate(
-            edgeMask
-            + core * 0.65
-            + crownOrb * 0.55
-            + endOrb * 0.7
-            + bands * 0.25
+            edgeMask * 0.80
+            + core * 0.55
+            + crownOrb * 0.5
+            + endOrb * 0.65
+            + bands * 0.22
         );
         //命中初期更亮
-        alpha *= 1.05 + 0.25 * (1.0 - smoothstep(0.0, 0.4, strikeProg));
+        alpha *= 1.0 + 0.22 * (1.0 - smoothstep(0.0, 0.4, strikeProg));
     }
     else
     {

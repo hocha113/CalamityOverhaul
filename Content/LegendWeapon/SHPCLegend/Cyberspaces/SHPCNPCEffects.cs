@@ -388,10 +388,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                         new Color(60, 35, 95), Main.rand.NextFloat(0.7f, 1.5f))
                         .Configure(new Color(255, 80, 35), Main.rand.Next(16, 30));
                 }
+                //PRT 加色批 A=0 整层不显示,A 须满值
                 PRTLoader.NewParticle<PRT_StarPulseRing>(npc.Center, Vector2.Zero,
-                    new Color(150, 80, 220, 0), 0.05f).Configure(0.05f, 0.55f, 22);
+                    new Color(150, 80, 220), 0.05f).Configure(0.05f, 0.55f, 22);
                 PRTLoader.NewParticle<PRT_StarPulseRing>(npc.Center, Vector2.Zero,
-                    new Color(255, 110, 50, 0), 0.05f).Configure(0.05f, 0.4f, 28);
+                    new Color(255, 110, 50), 0.05f).Configure(0.05f, 0.4f, 28);
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Item50 with {
                     Volume = 0.55f,
                     Pitch = 0.2f,

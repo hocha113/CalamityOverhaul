@@ -8,7 +8,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 {
     /// <summary>
-    /// 幻影协奏：基线火力网兼连接拍。双手错拍星球扇射，头交叉波弹，
+    /// 幻影协奏（四臂分声部）：基线火力网兼连接拍。上对错拍星球扇射（布阵声部），
+    /// 下对同拍低位剪切波（自两肋交叉掠过玩家脚下，执行声部），头交叉波弹，
     /// 中段留一个可读的换位喘息，核心裸露后追加螺旋波列
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)MLordStateIndex.Concerto, typeof(MLordContext))]
@@ -48,14 +49,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         private void RunServerBeats(MLordContext context) {
             int fanA = Frames(context, 24);
             int fanB = Frames(context, 70);
+            int shearA = Frames(context, 46);
+            int shearB = Frames(context, 148);
             int boltStart = Frames(context, 124);
 
-            //错拍星球扇：左手先手，右手后半拍
+            //错拍星球扇（上对声部）：上左先手，上右后半拍
             if (Timer == fanA) {
-                SpawnOrbFan(context, preferLeft: true);
+                SpawnOrbFan(context, preferSlot: 0);
             }
             if (Timer == fanB) {
-                SpawnOrbFan(context, preferLeft: false);
+                SpawnOrbFan(context, preferSlot: 1);
+            }
+
+            //低位剪切波（下对声部）：两肋同拍交叉掠向玩家脚下
+            if (Timer == shearA || Timer == shearB) {
+                SpawnLowShear(context);
             }
 
             //头部三连交叉波弹
@@ -69,9 +77,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             }
         }
 
-        /// <summary>从指定侧手（缺侧退避另一手→头→核心）放出持握星球扇</summary>
-        private void SpawnOrbFan(MLordContext context, bool preferLeft) {
-            NPC origin = PickPart(context, preferLeft);
+        /// <summary>从偏好手槽（缺位就近换手→头→核心）放出持握星球扇</summary>
+        private void SpawnOrbFan(MLordContext context, int preferSlot) {
+            NPC origin = PickPart(context, preferSlot);
             if (origin == null) {
                 return;
             }
@@ -116,19 +124,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             }
         }
 
-        /// <summary>优先取指定侧手，缺位退避：另一手→头→核心；全无返回 null 由核心代射</summary>
-        private static NPC PickPart(MLordContext context, bool preferLeft) {
+        /// <summary>下对同拍剪切波：两只下手各向玩家脚下点位掠射短扇，弹道在低位交叉封走位</summary>
+        private void SpawnLowShear(MLordContext context) {
             MLordPartsStatus parts = context.Parts;
-            int first = preferLeft ? parts.LeftHand : parts.RightHand;
-            bool firstAlive = preferLeft ? parts.LeftHandAlive : parts.RightHandAlive;
-            int second = preferLeft ? parts.RightHand : parts.LeftHand;
-            bool secondAlive = preferLeft ? parts.RightHandAlive : parts.LeftHandAlive;
-
-            if (firstAlive && first >= 0) {
-                return Main.npc[first];
+            int damage = ScaleDamage(context, MLordDirector.EyeDamage);
+            Vector2 aimPoint = context.Target.Center + new Vector2(0f, 90f);
+            for (int slot = 2; slot < MLordPartsStatus.HandSlots; slot++) {
+                if (!parts.HandAlive(slot) || parts.HandIndex(slot) < 0) {
+                    continue;
+                }
+                NPC hand = Main.npc[parts.HandIndex(slot)];
+                Vector2 aim = (aimPoint - hand.Center).SafeNormalize(Vector2.UnitY);
+                for (int i = -1; i <= 1; i++) {
+                    Projectile.NewProjectile(hand.GetSource_FromAI(), hand.Center + aim * 46f,
+                        aim.RotatedBy(i * 0.16f) * 6.4f, ProjectileID.PhantasmalEye, damage, 0f, Main.myPlayer);
+                }
             }
-            if (secondAlive && second >= 0) {
-                return Main.npc[second];
+        }
+
+        /// <summary>优先取指定手槽，缺位就近换手→头→核心（核心代射兜底）</summary>
+        private static NPC PickPart(MLordContext context, int preferSlot) {
+            MLordPartsStatus parts = context.Parts;
+            int hand = parts.FirstAliveHand(preferSlot);
+            if (hand >= 0) {
+                return Main.npc[hand];
             }
             if (parts.HeadAlive && parts.Head >= 0) {
                 return Main.npc[parts.Head];

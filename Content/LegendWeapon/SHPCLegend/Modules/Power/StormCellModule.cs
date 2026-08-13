@@ -1,6 +1,10 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using System;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
@@ -39,6 +43,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 bolt.LifeMul = 0.6f;
                 Main.projectile[idx].ai[1] = 3.0f;
             }
+            //放电拍，电花顺射向甩出+短促电噪
+            for (int i = 0; i < 6; i++) {
+                Vector2 vel = dir.RotatedBy(Main.rand.NextFloat(-0.55f, 0.55f)) * Main.rand.NextFloat(3f, 9f);
+                PRTLoader.NewParticle<PRT_CyberSquare>(orb.Projectile.Center + dir * 14f, vel,
+                    new Color(150, 215, 255), Main.rand.NextFloat(0.5f, 1.0f))
+                    .Configure(new Color(45, 120, 235), Main.rand.Next(10, 18));
+            }
+            SoundEngine.PlaySound(SoundID.Item93 with { Volume = 0.3f, Pitch = 0.75f }, orb.Projectile.Center);
         }
     }
 }

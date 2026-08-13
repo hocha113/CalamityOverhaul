@@ -29,10 +29,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 context.Owner.ai[MLordAiSlots.OvUltUsed] = 1f;
                 context.Owner.ai[MLordAiSlots.OvEyeCommand] = MLordEyeCommand.Retreat;
                 context.Owner.ai[MLordAiSlots.OvAttackSeed] = Main.rand.Next(1, 100000);
-                //清自家死光，让大招独占舞台
+                //清自家死光（含真眼链束），让大招独占舞台
                 foreach (Projectile p in Main.ActiveProjectiles) {
                     if (p.type == ModContent.ProjectileType<MLordScanRayProj>()
-                        || p.type == ModContent.ProjectileType<MLordArcRayProj>()) {
+                        || p.type == ModContent.ProjectileType<MLordArcRayProj>()
+                        || p.type == ModContent.ProjectileType<MLordEyeLinkProj>()) {
                         p.Kill();
                     }
                 }

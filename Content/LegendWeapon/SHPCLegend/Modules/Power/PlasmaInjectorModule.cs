@@ -105,13 +105,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                     if (target != null) {
                         Vector2 dir = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitX);
                         int dmg = Math.Max((int)(Projectile.damage * 2.2f), 1);
+                        //出膛音改由日珥弹幕首帧自播，旁观端同样可闻
                         Projectile.NewProjectile(Projectile.GetSource_FromThis(),
                             Projectile.Center + dir * 60f, dir * 15f,
                             ModContent.ProjectileType<SHPCSolarFlareProj>(),
                             dmg, 3f, Projectile.owner);
-                        if (Main.netMode != NetmodeID.Server) {
-                            SoundEngine.PlaySound(SoundID.Item34 with { Volume = 0.6f, Pitch = -0.1f }, Projectile.Center);
-                        }
                     }
                 }
             }
@@ -137,13 +135,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         public override void OnKill(int timeLeft) {
             if (Main.netMode == NetmodeID.Server) return;
             SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.5f, Pitch = -0.5f }, Projectile.Center);
-            //塌缩回吸散余烬
+            //塌缩回吸，余烬自外缘向心坠入
             for (int i = 0; i < 18; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(7f, 7f);
-                PRTLoader.NewParticle<PRT_LavaFire>(Projectile.Center + vel * 6f, vel * 0.4f,
+                PRTLoader.NewParticle<PRT_LavaFire>(Projectile.Center + vel * 6f, -vel * 0.5f,
                     Color.White, Main.rand.NextFloat(0.7f, 1.3f))?.SetLifetime(30, 60);
             }
-            PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero, new Color(255, 90, 50, 0), 0.05f).Configure(0.05f, 0.7f, 26);
+            //加色批A=0不可见，A须随强度走
+            PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero, new Color(255, 90, 50), 0.05f).Configure(0.05f, 0.7f, 26);
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -202,6 +201,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         }
 
         public override void AI() {
+            if (Projectile.localAI[0] == 0f) {
+                Projectile.localAI[0] = 1f;
+                if (Main.netMode != NetmodeID.Server) {
+                    SoundEngine.PlaySound(SoundID.Item34 with { Volume = 0.6f, Pitch = -0.1f }, Projectile.Center);
+                }
+            }
             //轻追
             NPC target = Projectile.Center.FindClosestNPC(420f, false, true);
             if (target != null) {
@@ -238,20 +243,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         public override bool PreDraw(ref Color lightColor) => false;
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
+            //此批为真Additive（源因子=SourceAlpha），A=0整层消失，A须随强度走
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             Texture2D shot = CWRAsset.LightShot?.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            float speedT = MathHelper.Clamp(Projectile.velocity.Length() / 15f, 0.4f, 1.2f);
+            //取velocity朝向，防首帧AI未跑时rotation为0横闪
+            float rot = Projectile.velocity.ToRotation();
             if (glow != null) {
+                //火舌沿速度拉伸，外暗红/中橙/芯暖金
                 Vector2 origin = glow.Size() * 0.5f;
-                spriteBatch.Draw(glow, drawPos, null, new Color(185, 25, 40, 0) * 0.6f, 0f, origin, 1.2f, SpriteEffects.None, 0f);
-                spriteBatch.Draw(glow, drawPos, null, new Color(255, 130, 60, 0) * 0.9f, 0f, origin, 0.62f, SpriteEffects.None, 0f);
-                spriteBatch.Draw(glow, drawPos, null, new Color(255, 230, 180, 0), 0f, origin, 0.3f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(glow, drawPos, null, new Color(185, 25, 40) * 0.5f, rot,
+                    origin, new Vector2(1.5f * speedT, 0.85f), SpriteEffects.None, 0f);
+                spriteBatch.Draw(glow, drawPos, null, new Color(255, 130, 60) * 0.8f, rot,
+                    origin, new Vector2(0.85f * speedT, 0.45f), SpriteEffects.None, 0f);
+                spriteBatch.Draw(glow, drawPos, null, new Color(255, 230, 180) * 0.9f, rot,
+                    origin, new Vector2(0.42f * speedT, 0.22f), SpriteEffects.None, 0f);
             }
             if (shot != null) {
                 //彗尾反向
                 Vector2 origin = new(shot.Width, shot.Height * 0.5f);
-                spriteBatch.Draw(shot, drawPos, null, new Color(255, 110, 50, 0) * 0.75f,
-                    Projectile.rotation, origin, new Vector2(0.55f, 0.3f), SpriteEffects.None, 0f);
+                spriteBatch.Draw(shot, drawPos, null, new Color(255, 110, 50) * 0.7f,
+                    rot, origin, new Vector2(0.55f * speedT, 0.3f), SpriteEffects.None, 0f);
             }
         }
     }

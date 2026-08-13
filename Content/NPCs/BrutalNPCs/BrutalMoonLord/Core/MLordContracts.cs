@@ -1,3 +1,4 @@
+using System;
 using Terraria;
 using Terraria.ID;
 
@@ -42,8 +43,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         public const int PartBroken = 0;
         /// <summary>破坏标记值（原版写入）</summary>
         public const float BrokenMark = -2f;
-        /// <summary>手 ai[1] 攻击事件数据（掌击目标锁定等）</summary>
-        public const int PartEventData = 1;
+        /// <summary>手 ai[1] 行位 0上对/1下对（原版 checkDead 不触碰此槽，生成时写入）</summary>
+        public const int HandRow = 1;
         /// <summary>手 ai[2] 边位 0左/1右（沿用原版槽位语义）</summary>
         public const int HandSide = 2;
         /// <summary>手/头/真眼 ai[3] 核心 whoAmI（沿用原版槽位语义）</summary>
@@ -66,7 +67,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         public const int OvAttackSeed = 3;
         /// <summary>Override ai[4] 真眼指挥指令 <see cref="MLordEyeCommand"/></summary>
         public const int OvEyeCommand = 4;
-        /// <summary>Override ai[5] 最近破坏的部件 1左手/2右手/3头</summary>
+        /// <summary>Override ai[5] 最近破坏的部件 1上左/2上右/3头/4下左/5下右</summary>
         public const int OvLastBrokenPart = 5;
         /// <summary>Override ai[6] 大招已用标记 0/1</summary>
         public const int OvUltUsed = 6;
@@ -83,49 +84,98 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         public const int Retreat = 2;
     }
 
-    /// <summary>部件存活快照</summary>
+    /// <summary>部件存活快照：四手 + 头。手槽序 = 行*2+边（0上左/1上右/2下左/3下右）</summary>
     internal readonly struct MLordPartsStatus
     {
-        public readonly int LeftHand;
-        public readonly int RightHand;
-        public readonly int Head;
-        public readonly bool LeftHandAlive;
-        public readonly bool RightHandAlive;
-        public readonly bool HeadAlive;
+        /// <summary>手槽总数</summary>
+        public const int HandSlots = 4;
 
-        public MLordPartsStatus(int leftHand, int rightHand, int head,
-            bool leftHandAlive, bool rightHandAlive, bool headAlive) {
-            LeftHand = leftHand;
-            RightHand = rightHand;
+        private readonly int hand0, hand1, hand2, hand3;
+        /// <summary>存活位掩码：bit0~3 手槽，bit4 头</summary>
+        private readonly int aliveMask;
+        public readonly int Head;
+
+        public MLordPartsStatus(ReadOnlySpan<int> hands, int aliveMask, int head) {
+            hand0 = hands[0];
+            hand1 = hands[1];
+            hand2 = hands[2];
+            hand3 = hands[3];
+            this.aliveMask = aliveMask;
             Head = head;
-            LeftHandAlive = leftHandAlive;
-            RightHandAlive = rightHandAlive;
-            HeadAlive = headAlive;
         }
 
-        /// <summary>存活（未破坏）部件数</summary>
-        public int AliveCount => (LeftHandAlive ? 1 : 0) + (RightHandAlive ? 1 : 0) + (HeadAlive ? 1 : 0);
+        /// <summary>槽位手 whoAmI，缺位 -1</summary>
+        public int HandIndex(int slot) => slot switch { 0 => hand0, 1 => hand1, 2 => hand2, _ => hand3 };
+        /// <summary>槽位手在场且未破坏</summary>
+        public bool HandAlive(int slot) => (aliveMask & (1 << slot)) != 0;
+        public bool HeadAlive => (aliveMask & (1 << HandSlots)) != 0;
+
+        /// <summary>存活（未破坏）部件数（四手+头）</summary>
+        public int AliveCount {
+            get {
+                int count = HeadAlive ? 1 : 0;
+                for (int slot = 0; slot < HandSlots; slot++) {
+                    if (HandAlive(slot)) {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
         /// <summary>已破坏部件数（部件实体仍在场，仅眼位破坏）</summary>
         public int BrokenCount {
             get {
-                int present = (LeftHand >= 0 ? 1 : 0) + (RightHand >= 0 ? 1 : 0) + (Head >= 0 ? 1 : 0);
+                int present = Head >= 0 ? 1 : 0;
+                for (int slot = 0; slot < HandSlots; slot++) {
+                    if (HandIndex(slot) >= 0) {
+                        present++;
+                    }
+                }
                 return present - AliveCount;
             }
         }
         public bool AllBroken => AliveCount == 0;
-        public bool AnyHandAlive => LeftHandAlive || RightHandAlive;
+        public bool AnyHandAlive => (aliveMask & 0b1111) != 0;
+        /// <summary>存活手数</summary>
+        public int AliveHandCount {
+            get {
+                int count = 0;
+                for (int slot = 0; slot < HandSlots; slot++) {
+                    if (HandAlive(slot)) {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
+
+        /// <summary>自偏好槽起顺时针找首个存活手 whoAmI，无则 -1</summary>
+        public int FirstAliveHand(int preferSlot = 0) {
+            for (int i = 0; i < HandSlots; i++) {
+                int slot = (preferSlot + i) % HandSlots;
+                if (HandAlive(slot) && HandIndex(slot) >= 0) {
+                    return HandIndex(slot);
+                }
+            }
+            return -1;
+        }
     }
 
     /// <summary>跨类共享的月总事实查询，扫描 Main.npc 无静态缓存</summary>
     internal static class MLordFacts
     {
-        /// <summary>扫出隶属该核心的手/头部件状态</summary>
+        /// <summary>真眼集群规模上限（四手+头各脱出一只）</summary>
+        public const int MaxFreeEyes = 5;
+
+        /// <summary>扫出隶属该核心的四手/头部件状态（手槽 = 行*2+边）</summary>
         public static MLordPartsStatus ScanParts(NPC core) {
-            int leftHand = -1, rightHand = -1, head = -1;
-            bool leftAlive = false, rightAlive = false, headAlive = false;
+            Span<int> hands = stackalloc int[MLordPartsStatus.HandSlots];
+            hands.Fill(-1);
+            int aliveMask = 0;
+            int head = -1;
 
             if (core == null || !core.active) {
-                return new MLordPartsStatus(-1, -1, -1, false, false, false);
+                return new MLordPartsStatus(hands, 0, -1);
             }
 
             foreach (NPC npc in Main.ActiveNPCs) {
@@ -133,22 +183,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
                     continue;
                 }
                 if (npc.type == NPCID.MoonLordHand) {
-                    bool alive = npc.ai[MLordAiSlots.PartBroken] != MLordAiSlots.BrokenMark;
-                    if ((int)npc.ai[MLordAiSlots.HandSide] == 0) {
-                        leftHand = npc.whoAmI;
-                        leftAlive = alive;
-                    }
-                    else {
-                        rightHand = npc.whoAmI;
-                        rightAlive = alive;
+                    int row = Math.Clamp((int)npc.ai[MLordAiSlots.HandRow], 0, 1);
+                    int side = Math.Clamp((int)npc.ai[MLordAiSlots.HandSide], 0, 1);
+                    int slot = row * 2 + side;
+                    hands[slot] = npc.whoAmI;
+                    if (npc.ai[MLordAiSlots.PartBroken] != MLordAiSlots.BrokenMark) {
+                        aliveMask |= 1 << slot;
                     }
                 }
                 else if (npc.type == NPCID.MoonLordHead) {
                     head = npc.whoAmI;
-                    headAlive = npc.ai[MLordAiSlots.PartBroken] != MLordAiSlots.BrokenMark;
+                    if (npc.ai[MLordAiSlots.PartBroken] != MLordAiSlots.BrokenMark) {
+                        aliveMask |= 1 << MLordPartsStatus.HandSlots;
+                    }
                 }
             }
-            return new MLordPartsStatus(leftHand, rightHand, head, leftAlive, rightAlive, headAlive);
+            return new MLordPartsStatus(hands, aliveMask, head);
         }
 
         /// <summary>场上隶属该核心的真眼列表写入 buffer，返回数量（钳到缓冲长度，防越界读默认槽）</summary>

@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -82,7 +83,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             Vector2 anchor = owner.Center + new Vector2(-owner.direction * 26f * Side, -38f + bob);
             Projectile.Center = Vector2.Lerp(Projectile.Center, anchor, 0.25f);
 
-            Vector2 toMouse = Main.MouseWorld - Projectile.Center;
+            //远端读所有者持械弹幕的同步鼠标，防炮臂跟着旁观者本地光标转
+            Vector2 aimPos;
+            if (Projectile.owner == Main.myPlayer) {
+                aimPos = Main.MouseWorld;
+            }
+            else if (owner.CWR().TryGetHeldProjInds(out SHPCChargeHeldProj held)) {
+                aimPos = held.InMousePos;
+            }
+            else {
+                aimPos = Projectile.Center + aimRotation.ToRotationVector2() * 120f;
+            }
+            Vector2 toMouse = aimPos - Projectile.Center;
             aimRotation = aimRotation.AngleLerp(toMouse.ToRotation(), 0.3f);
             recoil = MathF.Max(recoil - 0.12f, 0f);
 
@@ -113,7 +125,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 SoundEngine.PlaySound(SoundID.Item12 with { Volume = 0.3f, Pitch = 0.6f }, Projectile.Center);
                 for (int i = 0; i < 3; i++) {
                     PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + dir * 18f,
-                        dir.RotatedBy(Main.rand.NextFloat(-0.4f, 0.4f)) * Main.rand.NextFloat(2f, 5f),
+                        dir.RotatedBy(Main.rand.NextFloat(-0.35f, 0.35f)) * Main.rand.NextFloat(3.5f, 7.5f),
                         ArmMain, Main.rand.NextFloat(0.4f, 0.8f)).Configure(true, Main.rand.Next(6, 12));
                 }
             }
@@ -154,20 +166,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 spriteBatch.Draw(glow, drawPos, null, ArmEdge * 0.45f, 0f,
                     glow.Size() * 0.5f, 0.8f, SpriteEffects.None, 0f);
             }
-            //炮口十字耀斑
+            //炮口十字耀斑，击发瞬间随后坐脉冲增亮
             float blink = 0.55f + 0.45f * MathF.Sin((float)Main.timeForVisualEffects * 0.2f + Side * 2.6f);
             Vector2 muzzlePos = drawPos + aimRotation.ToRotationVector2() * (76f * BodyScale);
             if (star != null) {
-                spriteBatch.Draw(star, muzzlePos, null, ArmCore * (blink * 0.85f),
-                    aimRotation, star.Size() * 0.5f, 0.07f + recoil * 0.05f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(star, muzzlePos, null, ArmCore * (blink * 0.85f + recoil * 0.5f),
+                    aimRotation, star.Size() * 0.5f, 0.07f + recoil * 0.09f, SpriteEffects.None, 0f);
             }
             if (glow != null) {
-                spriteBatch.Draw(glow, muzzlePos, null, ArmMain * blink, 0f,
-                    glow.Size() * 0.5f, 0.3f + recoil * 0.25f, SpriteEffects.None, 0f);
-                //尾推进器光点
+                spriteBatch.Draw(glow, muzzlePos, null, ArmMain * (blink + recoil * 0.4f), 0f,
+                    glow.Size() * 0.5f, 0.3f + recoil * 0.3f, SpriteEffects.None, 0f);
+                //击发口焰，沿射向拉伸 4~6 帧
+                if (recoil > 0.25f) {
+                    spriteBatch.Draw(glow, muzzlePos, null, ArmMain * (recoil * 0.8f), aimRotation,
+                        glow.Size() * 0.5f, new Vector2(0.55f + recoil * 0.45f, 0.16f), SpriteEffects.None, 0f);
+                }
+                //尾推进器喷口，沿机身轴拉伸+异相高频闪
+                float thrusterFlick = 0.6f + 0.4f * MathF.Sin((float)Main.timeForVisualEffects * 0.45f + Side * 4.1f + 1.7f);
                 Vector2 thrusterPos = drawPos - aimRotation.ToRotationVector2() * (70f * BodyScale);
-                spriteBatch.Draw(glow, thrusterPos, null, ArmEdge * (0.5f + 0.2f * blink), 0f,
-                    glow.Size() * 0.5f, 0.35f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(glow, thrusterPos, null, ArmEdge * (0.35f + 0.35f * thrusterFlick), aimRotation,
+                    glow.Size() * 0.5f, new Vector2(0.5f + 0.15f * thrusterFlick, 0.22f), SpriteEffects.None, 0f);
             }
         }
     }
@@ -179,6 +197,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
         private static readonly Color BoltMain = new(255, 170, 90);
         private static readonly Color BoltEdge = new(200, 80, 25);
+        //暖白芯，暖材质禁常驻纯白
+        private static readonly Color BoltCoreWarm = new(255, 235, 200);
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 10;
@@ -212,10 +232,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             if (Main.netMode == NetmodeID.Server) return;
             SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 0.25f, Pitch = 0.5f }, target.Center);
+            //爆点脉冲环，加色批满 alpha
+            PRTLoader.NewParticle<PRT_StarPulseRing>(target.Center, Vector2.Zero,
+                BoltMain, 0.04f)?.Configure(0.04f, 0.22f, 12);
+            Vector2 inDir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             for (int i = 0; i < 4; i++) {
                 PRTLoader.NewParticle<PRT_Spark>(target.Center,
                     Main.rand.NextVector2CircularEdge(3f, 3f),
                     BoltMain, Main.rand.NextFloat(0.4f, 0.8f)).Configure(true, Main.rand.Next(8, 14));
+            }
+            //沿入射向穿透溅射
+            for (int i = 0; i < 3; i++) {
+                PRTLoader.NewParticle<PRT_Spark>(target.Center,
+                    inDir.RotatedBy(Main.rand.NextFloat(-0.35f, 0.35f)) * Main.rand.NextFloat(3f, 6f),
+                    BoltEdge, Main.rand.NextFloat(0.35f, 0.7f)).Configure(true, Main.rand.Next(8, 14));
+            }
+        }
+
+        public override void OnKill(int timeLeft) {
+            if (Main.netMode == NetmodeID.Server) return;
+            //消亡踪迹，残影链瞬断的补偿
+            for (int i = 0; i < 3; i++) {
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
+                    Projectile.velocity * 0.25f + Main.rand.NextVector2Circular(1.5f, 1.5f),
+                    BoltMain * 0.8f, Main.rand.NextFloat(0.3f, 0.6f)).Configure(false, Main.rand.Next(8, 14));
             }
         }
 
@@ -226,6 +266,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             Texture2D star = CWRAsset.StarTexture_White?.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            //寿命末端渐隐防瞬断，彗尾随飞程微伸长
+            float endFade = MathF.Min(1f, Projectile.timeLeft / 12f);
+            float tailGrow = MathF.Min(1f, (90 - Projectile.timeLeft) / 36f);
 
             //残影链
             if (glow != null) {
@@ -234,27 +277,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                     float fade = 1f - i / (float)Projectile.oldPos.Length;
                     Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition;
                     spriteBatch.Draw(glow, trailPos, null,
-                        Color.Lerp(BoltEdge, BoltMain, fade) * (fade * 0.45f), 0f,
+                        Color.Lerp(BoltEdge, BoltMain, fade) * (fade * 0.45f * endFade), 0f,
                         glow.Size() * 0.5f, 0.22f * fade + 0.05f, SpriteEffects.None, 0f);
                 }
             }
-            //彗尾光锥
+            //彗尾光锥，芯色暖白不用纯白
             if (shot != null) {
                 Vector2 tipOrigin = new(shot.Width, shot.Height * 0.5f);
-                spriteBatch.Draw(shot, drawPos, null, BoltMain * 0.9f,
-                    Projectile.rotation, tipOrigin, new Vector2(0.42f, 0.13f), SpriteEffects.None, 0f);
-                spriteBatch.Draw(shot, drawPos, null, Color.White * 0.75f,
-                    Projectile.rotation, tipOrigin, new Vector2(0.26f, 0.07f), SpriteEffects.None, 0f);
+                spriteBatch.Draw(shot, drawPos, null, BoltMain * (0.9f * endFade),
+                    Projectile.rotation, tipOrigin, new Vector2(0.42f + 0.12f * tailGrow, 0.13f), SpriteEffects.None, 0f);
+                spriteBatch.Draw(shot, drawPos, null, BoltCoreWarm * (0.75f * endFade),
+                    Projectile.rotation, tipOrigin, new Vector2(0.26f + 0.08f * tailGrow, 0.07f), SpriteEffects.None, 0f);
             }
-            //弹头光晕+星芒
+            //弹头光晕+自旋星芒
             if (glow != null) {
-                spriteBatch.Draw(glow, drawPos, null, BoltMain * 0.85f, 0f,
+                spriteBatch.Draw(glow, drawPos, null, BoltMain * (0.85f * endFade), 0f,
                     glow.Size() * 0.5f, 0.32f, SpriteEffects.None, 0f);
             }
             if (star != null) {
                 float twinkle = 0.8f + 0.2f * MathF.Sin((float)Main.timeForVisualEffects * 0.35f + Projectile.whoAmI);
-                spriteBatch.Draw(star, drawPos, null, Color.White * (0.85f * twinkle),
-                    Projectile.rotation, star.Size() * 0.5f, 0.05f, SpriteEffects.None, 0f);
+                float starRot = (float)Main.timeForVisualEffects * 0.15f + Projectile.whoAmI;
+                spriteBatch.Draw(star, drawPos, null, BoltCoreWarm * (0.85f * twinkle * endFade),
+                    starRot, star.Size() * 0.5f, 0.05f, SpriteEffects.None, 0f);
             }
         }
     }

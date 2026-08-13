@@ -177,25 +177,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
                 null, Main.GameViewMatrix.TransformationMatrix);
 
-            //外层柔和光晕（橙金大光晕）
+            //外层柔和光晕（橙金大光晕）;加色批源因子=SourceAlpha,A 必须随强度走,A=0 整层不显示
             float outerScale = 1.6f * pulse;
-            Color outerColor = new Color(240, 165, 35, 0) * alpha * 0.35f;
+            Color outerColor = new Color(240, 165, 35) * alpha * 0.35f;
             Main.spriteBatch.Draw(glow, drawPos, null, outerColor, 0f, origin, outerScale, SpriteEffects.None, 0f);
 
             //中层（橙白核心）
             float midScale = 0.9f * pulse;
-            Color midColor = new Color(255, 220, 100, 0) * alpha * 0.7f;
+            Color midColor = new Color(255, 220, 100) * alpha * 0.7f;
             Main.spriteBatch.Draw(glow, drawPos, null, midColor, 0f, origin, midScale, SpriteEffects.None, 0f);
 
             //内核（纯白热点）
             float coreScale = 0.3f * pulse;
-            Color coreColor = new Color(255, 255, 240, 0) * alpha;
+            Color coreColor = new Color(255, 255, 240) * alpha;
             Main.spriteBatch.Draw(glow, drawPos, null, coreColor, 0f, origin, coreScale, SpriteEffects.None, 0f);
 
             //射击闪光环（_flashIntensity > 0 时出现）
             if (_flashIntensity > 0.05f) {
                 float flashScale = (0.5f + (1f - _flashIntensity) * 1.0f) * alpha;
-                Color flashColor = new Color(255, 200, 60, 0) * _flashIntensity * alpha;
+                Color flashColor = new Color(255, 200, 60) * _flashIntensity * alpha;
                 Main.spriteBatch.Draw(glow, drawPos, null, flashColor, 0f, origin, flashScale, SpriteEffects.None, 0f);
             }
 

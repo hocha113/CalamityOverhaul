@@ -362,8 +362,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 return;
             }
             SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.5f, Pitch = 0.35f }, anchorPos);
+            //PRT 加色批源因子=SourceAlpha，A=0 整层不显示
             PRTLoader.NewParticle<PRT_StarPulseRing>(anchorPos - new Vector2(0f, 6f), Vector2.Zero,
-                AnchorMain with { A = 0 }, 0.05f).Configure(0.05f, 0.32f, 16);
+                AnchorMain, 0.05f).Configure(0.05f, 0.32f, 16);
             for (int i = 0; i < 6; i++) {
                 PRTLoader.NewParticle<PRT_CyberSquare>(anchorPos + new Vector2(Main.rand.NextFloat(-20f, 20f), -4f),
                     new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-1.6f, -0.5f)),

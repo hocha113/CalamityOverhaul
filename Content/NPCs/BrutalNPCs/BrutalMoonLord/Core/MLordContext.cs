@@ -1,4 +1,5 @@
 using InnoVault.StateMachines;
+using System.Collections.Generic;
 using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
@@ -31,6 +32,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         public bool DeathPerformanceFinished { get; set; }
         /// <summary>待处理的部件破坏事件数（服务端排队）</summary>
         public int PendingBreakEvents { get; set; }
+        /// <summary>排队破坏事件的归因码（与 <see cref="PendingBreakEvents"/> 同进同出，服务端消费）</summary>
+        public List<int> PendingBreakCodes { get; } = [];
         #endregion
 
         #region 演出驱动（客户端表现读取）

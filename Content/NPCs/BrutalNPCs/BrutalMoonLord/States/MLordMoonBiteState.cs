@@ -7,7 +7,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 {
     /// <summary>
     /// 月蚀噬咬：头部（含破损残口）张口甩出月咬之舌锁疗，被咬期间派出星髓凝滴回航吸血，
-    /// 凝滴可拦截。双手做慢压合围逼近舌线，头部全程睁眼（高风险高回报窗口）
+    /// 凝滴可拦截。四掌踞于绕玩家缓旋方阵四角收放合围（缺口随阵旋转移动），
+    /// 头部全程睁眼（高风险高回报窗口）
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)MLordStateIndex.MoonBite, typeof(MLordContext))]
     internal class MLordMoonBiteState : MLordStateBase

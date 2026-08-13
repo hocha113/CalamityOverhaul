@@ -274,11 +274,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             float potency = Potency;
             Vector2 screenPos = Projectile.Center - Main.screenPosition;
 
+            //真Additive批源因子=SourceAlpha，tint禁A=0，A随强度乘法走
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow != null) {
                 SHPCNaturalFx.GlowLayered(spriteBatch, glow, screenPos,
-                    new Color(255, 215, 140, 0) * fadeAlpha * (0.35f + 0.5f * potency),
-                    new Color(150, 55, 15, 0) * fadeAlpha * 0.25f,
+                    new Color(255, 215, 140) * fadeAlpha * (0.35f + 0.5f * potency),
+                    new Color(150, 55, 15) * fadeAlpha * 0.25f,
                     0.4f + 0.25f * potency, Projectile.rotation, 3);
             }
             //方向高光
@@ -286,7 +287,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (shot != null) {
                 Vector2 origin = new(shot.Width, shot.Height * 0.5f);
                 spriteBatch.Draw(shot, screenPos, null,
-                    new Color(255, 235, 190, 0) * fadeAlpha * (0.3f + 0.5f * potency),
+                    new Color(255, 235, 190) * fadeAlpha * (0.3f + 0.5f * potency),
                     Projectile.rotation, origin, new Vector2(0.42f, 0.3f), SpriteEffects.None, 0f);
             }
         }

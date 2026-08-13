@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
 {
-    /// <summary>落地凝胶冲击环，无伤纯演出；ai[0]档位0小1中2大；服务端生成</summary>
+    /// <summary>落地凝胶冲击环，无伤纯演出；ai[0]档位0小1中2大 ai[1]=1皇冠金配色；服务端生成</summary>
     internal class BKSShockwaveProj : ModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -16,6 +16,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
         private const int MaxLife = 34;
 
         private float SizeClass => Projectile.ai[0];
+
+        /// <summary>皇冠金配色(王冠嵌地金环)，默认皇家凝胶紫蓝</summary>
+        private bool GoldMode => Projectile.ai[1] == 1f;
 
         private float BaseSize => SizeClass switch {
             2f => 760f,
@@ -77,9 +80,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
             shader.Parameters["ringProgress"]?.SetValue(t);
             shader.Parameters["fadeAlpha"]?.SetValue((1f - t) * (0.8f + SizeClass * 0.15f));
             shader.Parameters["pulseIntensity"]?.SetValue(0.6f + SizeClass * 0.3f);
-            shader.Parameters["coreColor"]?.SetValue(KingSlimeGelFX.CrownGold.ToVector3());
-            shader.Parameters["midColor"]?.SetValue(KingSlimeGelFX.GelMid.ToVector3());
-            shader.Parameters["edgeColor"]?.SetValue(KingSlimeGelFX.GelDeep.ToVector3());
+            if (GoldMode) {
+                //王冠嵌地金环：白金核心→琥珀→暗金
+                shader.Parameters["coreColor"]?.SetValue(new Vector3(1.15f, 1.02f, 0.72f));
+                shader.Parameters["midColor"]?.SetValue(KingSlimeGelFX.CrownGold.ToVector3());
+                shader.Parameters["edgeColor"]?.SetValue(new Vector3(0.5f, 0.3f, 0.08f));
+            }
+            else {
+                shader.Parameters["coreColor"]?.SetValue(KingSlimeGelFX.CrownGold.ToVector3());
+                shader.Parameters["midColor"]?.SetValue(KingSlimeGelFX.GelMid.ToVector3());
+                shader.Parameters["edgeColor"]?.SetValue(KingSlimeGelFX.GelDeep.ToVector3());
+            }
             shader.CurrentTechnique.Passes[0].Apply();
 
             sb.Draw(canvas, Projectile.Center - Main.screenPosition, null, Color.White, 0f,
@@ -91,21 +102,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
             return false;
         }
 
-        public bool CanDrawCustom() => true;
+        //扩散环由 KingSlimeShockwave 着色器解析成形；旧 DiffusionCircle 贴图补环
+        //在大档位放大下暴露多边形 alpha 边界，已废弃
+        public bool CanDrawCustom() => false;
 
         public bool DontUseBlueshiftEffect() => true;
 
-        /// <summary>扭曲层之上补绘可见扩散环</summary>
-        public void DrawCustom(SpriteBatch spriteBatch) {
-            Texture2D ring = CWRAsset.DiffusionCircle.Value;
-            float t = Progress;
-            float scale = BaseSize / ring.Width * (0.2f + t * 1.05f);
-            float alpha = (1f - t) * (1f - t) * 0.65f;
-            Color color = Color.Lerp(KingSlimeGelFX.GelFoam, KingSlimeGelFX.GelMid, t) with { A = 0 };
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            spriteBatch.Draw(ring, drawPos, null, color * alpha, t * 1.1f, ring.Size() / 2f, scale, SpriteEffects.None, 0f);
-            spriteBatch.Draw(ring, drawPos, null, color * (alpha * 0.5f), -t * 0.7f, ring.Size() / 2f, scale * 0.74f, SpriteEffects.None, 0f);
-        }
+        public void DrawCustom(SpriteBatch spriteBatch) { }
 
         /// <summary>屏幕扭曲环</summary>
         public void Warp() {

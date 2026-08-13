@@ -73,13 +73,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                     SoundEngine.PlaySound(SoundID.Item93 with { Volume = 0.35f, Pitch = pitch }, orb.Projectile.Center);
                 }
                 if (overloadTimer % 12 == 0) {
+                    //PRT加色批A=0不可见，A须随强度走
                     PRTLoader.NewParticle<PRT_StarPulseRing>(orb.Projectile.Center, Vector2.Zero,
-                        (danger ? DangerGlow : HolyGlow) with { A = 0 }, 0.05f).Configure(0.05f, 0.3f + overload * 0.25f, 16);
+                        danger ? DangerGlow : HolyGlow, 0.05f).Configure(0.05f, 0.3f + overload * 0.25f, 16);
                 }
             }
 
             if (danger) {
-                SHPCNaturalFx.Shake(MathHelper.Lerp(0.5f, 3f, (overloadTimer - OverloadFrames) / (float)DangerFrames));
+                //震屏按本地玩家距离衰减，防远处旁观满幅抖
+                float shakeFade = 1f - MathHelper.Clamp(
+                    Vector2.Distance(Main.LocalPlayer.Center, orb.Projectile.Center) / 1200f, 0f, 1f);
+                SHPCNaturalFx.Shake(MathHelper.Lerp(0.5f, 3f, (overloadTimer - OverloadFrames) / (float)DangerFrames) * shakeFade);
                 //炸膛判定
                 if (overloadTimer > OverloadFrames + DangerFrames) {
                     Rupture(orb, owner);

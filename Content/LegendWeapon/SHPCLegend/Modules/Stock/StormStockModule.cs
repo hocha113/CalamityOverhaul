@@ -236,8 +236,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
         private void TierUpFx(int newTier) {
             SoundEngine.PlaySound(SoundID.Item94 with { Volume = 0.35f, Pitch = -0.2f + newTier * 0.25f }, Projectile.Center);
+            //加色批源因子是 SourceAlpha，禁 A=0 染色
             PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
-                StormMain with { A = 0 }, 0.05f).Configure(0.05f, CurrentRadius / 380f, 20);
+                StormMain, 0.05f).Configure(0.05f, CurrentRadius / 380f, 20);
             for (int i = 0; i < 12; i++) {
                 float ang = MathHelper.TwoPi * i / 12f;
                 Vector2 pos = Projectile.Center + ang.ToRotationVector2() * CurrentRadius * 0.6f;
@@ -289,7 +290,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             if (intensity < 0.02f) return false;
             Effect shader = EffectLoader.SHPCModStormField?.Value;
             Texture2D canvas = VaultAsset.placeholder2?.Value;
-            Texture2D noise = CWRAsset.Extra_193?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
             if (shader == null || canvas == null || noise == null) return false;
 
             //fx dist=0.86 边界环，世界半径外留辉光
@@ -303,13 +304,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             shader.Parameters["deepColor"]?.SetValue(StormDeep.ToVector3());
             shader.Parameters["stormColor"]?.SetValue(StormMain.ToVector3());
             shader.Parameters["arcColor"]?.SetValue(StormArc.ToVector3());
-            shader.Parameters["uNoiseTex"]?.SetValue(noise);
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive,
                 SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone,
                 null, Main.GameViewMatrix.TransformationMatrix);
 
+            //噪声走 s1 显式寄存器，s0 是批画布（Apply 后会被 Draw 覆盖，不可放噪声）
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+            gd.Textures[1] = noise;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
             shader.CurrentTechnique.Passes[0].Apply();
             Main.spriteBatch.Draw(canvas, drawPos, null, Color.White,
                 0f, canvas.Size() * 0.5f, new Vector2(drawRadius * 2f, drawRadius * 2f),
@@ -317,7 +321,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
-                Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone,
+                Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
                 null, Main.GameViewMatrix.TransformationMatrix);
             return false;
         }
@@ -465,11 +469,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
 
         private void SpawnImpactFx() {
-            //落点冲击
+            //落点冲击，加色批禁 A=0 染色
             PRTLoader.NewParticle<PRT_StarPulseRing>(GroundPoint, Vector2.Zero,
-                BoltGlow with { A = 0 }, 0.05f).Configure(0.05f, 0.5f, 18);
+                BoltGlow, 0.05f).Configure(0.05f, 0.5f, 18);
             PRTLoader.NewParticle<PRT_StarPulseRing>(GroundPoint, Vector2.Zero,
-                BoltCore with { A = 0 }, 0.05f).Configure(0.05f, 0.3f, 14);
+                BoltCore, 0.05f).Configure(0.05f, 0.3f, 14);
             for (int i = 0; i < 16; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(6f, 6f) - Vector2.UnitY * 2.5f;
                 PRTLoader.NewParticle<PRT_Spark>(GroundPoint, vel,
@@ -483,7 +487,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             }
             //天空端闪光
             PRTLoader.NewParticle<PRT_StarPulseRing>(SkyAnchor, Vector2.Zero,
-                BoltGlow with { A = 0 }, 0.05f).Configure(0.05f, 0.35f, 12);
+                BoltGlow, 0.05f).Configure(0.05f, 0.35f, 12);
         }
 
         public override bool? CanDamage() => Age <= DamageWindow;
@@ -517,8 +521,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
 
         private float WidthFunction(float progress) {
-            //主干上细下粗
-            float taper = MathF.Sin(MathHelper.Clamp(progress * MathHelper.Pi, 0f, MathHelper.Pi));
+            //主干上细下粗，能量向落点汇聚
+            float taper = 0.3f + 0.9f * progress;
             return (12f + taper * 16f) * MathHelper.Clamp(fadeAlpha + 0.15f, 0f, 1f);
         }
 
@@ -545,9 +549,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             shader.Parameters["coreColor"]?.SetValue(BoltCore.ToVector3());
             shader.Parameters["glowColor"]?.SetValue(BoltGlow.ToVector3());
             shader.Parameters["auraColor"]?.SetValue(BoltAura.ToVector3());
-            shader.Parameters["uNoiseTex"]?.SetValue(noise);
 
+            //噪声走 s1 显式寄存器，DrawTrail 内 Apply 前绑定
             GraphicsDevice device = Main.graphics.GraphicsDevice;
+            device.Textures[1] = noise;
+            device.SamplerStates[1] = SamplerState.LinearWrap;
             device.BlendState = BlendState.Additive;
             trail.DrawTrail(shader);
             device.BlendState = BlendState.AlphaBlend;
@@ -558,10 +564,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             Texture2D white = VaultAsset.placeholder2?.Value;
 
-            //全屏微亮白幕，12000px 盖 4K 远缩
+            //全屏微亮白幕，12000px 盖 4K 远缩；加色批贡献=rgb×a，A 固定满值防 α² 衰成不可见
             if (white != null && skyFlash > 0.02f) {
                 Vector2 flashPos = GroundPoint - Main.screenPosition;
-                spriteBatch.Draw(white, flashPos, null, BoltCore * (skyFlash * 0.07f), 0f,
+                Color flashTint = BoltCore * (skyFlash * 0.07f);
+                flashTint.A = 255;
+                spriteBatch.Draw(white, flashPos, null, flashTint, 0f,
                     white.Size() * 0.5f, new Vector2(12000f, 12000f), SpriteEffects.None, 0f);
             }
             if (glow == null) return;

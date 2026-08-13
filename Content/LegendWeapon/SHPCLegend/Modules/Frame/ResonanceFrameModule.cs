@@ -158,8 +158,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 //定音鼓+底鼓
                 SoundEngine.PlaySound(SoundID.DrumFloorTom with { Volume = 0.85f, Pitch = 0.12f + tempoUsed * 0.05f }, muzzle);
                 SoundEngine.PlaySound(SoundID.DrumKick with { Volume = 0.5f, Pitch = 0.2f }, muzzle);
+                //PRT 加色批源因子是 SourceAlpha，A=0 整层不显示，禁染 A=0
                 PRTLoader.NewParticle<PRT_StarPulseRing>(muzzle, Vector2.Zero,
-                    BeatBright with { A = 0 }, 0.05f).Configure(0.05f, 0.3f + tempoUsed * 0.04f, 14);
+                    BeatBright, 0.05f).Configure(0.05f, 0.3f + tempoUsed * 0.04f, 14);
                 Vector2 dir = beam.FlightDirection;
                 for (int i = 0; i < 8; i++) {
                     Vector2 vel = dir.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(2f, 6f);
@@ -236,7 +237,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 if (Main.netMode != NetmodeID.Server) {
                     SoundEngine.PlaySound(SoundID.DrumFloorTom with { Volume = 0.5f, Pitch = 0.25f }, laser.Projectile.Center);
                     PRTLoader.NewParticle<PRT_StarPulseRing>(laser.Projectile.Center, Vector2.Zero,
-                        BeatBright with { A = 0 }, 0.05f).Configure(0.05f, 0.2f, 12);
+                        BeatBright, 0.05f).Configure(0.05f, 0.2f, 12);
                 }
             }
             //节拍窗内洋红蓄振染色
@@ -473,7 +474,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         private float WidthFunction(float progress) {
             //有效顶点收尾，参考 CyberTraceBeamProj
             float validRatio = MathF.Max((float)validCount / TrailLen, 0.05f);
-            float p = MathHelper.Clamp(progress / validRatio, 0f, 1f);
+            //淡出期尾部先蚀，护层自尾向头收拢熄灭
+            float erode = fadeOut < 0 ? 1f : MathF.Max(fadeOut / (float)FadeOutFrames, 0.08f);
+            float p = MathHelper.Clamp(progress / (validRatio * erode), 0f, 1f);
             float noseRise = MathF.Sin(MathF.Min(p / 0.07f, 1f) * MathHelper.PiOver2);
             float tailTaper = 1f - MathF.Pow(p, 2f);
             return MathF.Max(noseRise * tailTaper, 0f) * (56f + TempoBoost * 14f);
@@ -507,9 +510,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             shader.Parameters["beatBright"]?.SetValue(ResonanceFrameModule.BeatBright.ToVector3());
             shader.Parameters["beatMain"]?.SetValue(ResonanceFrameModule.BeatMain.ToVector3());
             shader.Parameters["beatDeep"]?.SetValue(ResonanceFrameModule.BeatDeep.ToVector3());
-            shader.Parameters["uNoiseTex"]?.SetValue(noise);
 
             GraphicsDevice device = Main.graphics.GraphicsDevice;
+            device.Textures[1] = noise;
+            device.SamplerStates[1] = SamplerState.LinearWrap;
             device.BlendState = BlendState.Additive;
             trail.DrawTrail(shader);
             device.BlendState = BlendState.AlphaBlend;
@@ -520,16 +524,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             if (a < 0.02f) return;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null) return;
-            //头部光球与护层着色器同频
+            //头部光球与护层着色器同频；此批是真 Additive，A 须随强度走不许置 0
             float osc = MathF.Abs(MathF.Cos((float)Main.timeForVisualEffects * WaveOmega));
             float pulse = 0.85f + 0.35f * osc;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = glow.Size() * 0.5f;
             spriteBatch.Draw(glow, drawPos, null,
-                (ResonanceFrameModule.BeatMain * (0.5f * a)) with { A = 0 }, 0f,
+                ResonanceFrameModule.BeatMain * (0.5f * a), 0f,
                 origin, 1.5f * pulse, SpriteEffects.None, 0f);
             spriteBatch.Draw(glow, drawPos, null,
-                (ResonanceFrameModule.BeatBright * (0.75f * a)) with { A = 0 }, 0f,
+                ResonanceFrameModule.BeatBright * (0.75f * a), 0f,
                 origin, 0.8f * pulse, SpriteEffects.None, 0f);
         }
 
@@ -605,7 +609,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
         private void SpawnBurstFx() {
             PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
-                ResonanceFrameModule.BeatBright with { A = 0 }, 0.05f)
+                ResonanceFrameModule.BeatBright, 0.05f)
                 .Configure(0.05f, MaxRadius / 380f, 16);
             for (int i = 0; i < 14; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(5.5f, 5.5f);
@@ -681,7 +685,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             shader.Parameters["beatBright"]?.SetValue(ResonanceFrameModule.BeatBright.ToVector3());
             shader.Parameters["beatMain"]?.SetValue(ResonanceFrameModule.BeatMain.ToVector3());
             shader.Parameters["beatDeep"]?.SetValue(ResonanceFrameModule.BeatDeep.ToVector3());
-            shader.Parameters["uNoiseTex"]?.SetValue(noise);
 
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float diameter = drawRadius * 2f;
@@ -691,6 +694,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone,
                 null, Main.GameViewMatrix.TransformationMatrix);
 
+            //噪声绑 s1，SpriteBatch.Draw 只覆写 s0 画布位
+            Main.graphics.GraphicsDevice.Textures[1] = noise;
+            Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
             shader.CurrentTechnique.Passes[0].Apply();
             Main.spriteBatch.Draw(canvas, drawPos, null, Color.White,
                 0f, canvas.Size() * 0.5f, new Vector2(diameter, diameter),
@@ -698,7 +704,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
-                Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone,
+                Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
                 null, Main.GameViewMatrix.TransformationMatrix);
             return false;
         }

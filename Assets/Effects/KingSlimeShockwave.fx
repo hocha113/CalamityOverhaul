@@ -82,12 +82,8 @@ float4 PSShockwave(VSOutput input) : COLOR0 {
     //扩散后内圈留下淡淡的紫蓝凝胶余波
     float innerZone = smoothstep(ringRadius + 0.02, ringRadius * 0.25, dist);
 
-    //极向流动的果冻噪声
-    float2 gelUV = float2(
-        angle / 6.2832 + 0.5 + uTime * 0.30,
-        dist * 5.0 - uTime * 1.2
-    );
-    float gelFbm = fbm(gelUV * 2.6, 4);
+    //果冻噪声：笛卡尔输入(手写 fbm 吃裸极角会在 ±π 切线起竖缝)
+    float gelFbm = fbm(centered * 13.0 + float2(uTime * 0.8, -uTime * 1.2), 4);
 
     float gelIntensity = innerZone * gelFbm * invProgress * 0.55;
 
@@ -96,10 +92,16 @@ float4 PSShockwave(VSOutput input) : COLOR0 {
     float3 gelColor = lerp(edgeColor, midColor, pow(abs(radialGrad), 1.4));
 
     //========== (C) 金色皇冠裂纹 ==========
-    //从中心向外辐射几道金色光柱，体现"皇室之力"
-    float crackCount = 6.0;
-    float crackAngle = frac(angle / 6.2832 * crackCount + hash(floor(angle / 6.2832 * crackCount)) * 0.5);
-    float crackSharp = smoothstep(0.06, 0.0, abs(crackAngle - 0.5));
+    //从中心向外辐射几道金色光柱：三条过心直线的线距(笛卡尔，无极角切缝)
+    float crackSharp = 0.0;
+    [unroll]
+    for (int ci = 0; ci < 3; ci++)
+    {
+        float ca = 1.047198 * ci + uTime * 0.12;
+        float2 cdir = float2(cos(ca), sin(ca));
+        float dperp = abs(centered.x * (-cdir.y) + centered.y * cdir.x);
+        crackSharp = max(crackSharp, smoothstep(0.016, 0.0, dperp));
+    }
 
     float crackMask = smoothstep(ringRadius + 0.04, ringRadius * 0.15, dist);
     float crackIntensity = crackSharp * crackMask * invProgress * 0.7;
@@ -110,7 +112,8 @@ float4 PSShockwave(VSOutput input) : COLOR0 {
     float outerWave = smoothstep(ringRadius, ringRadius + 0.12, dist)
                     * smoothstep(ringRadius + 0.26, ringRadius + 0.10, dist);
 
-    float outerNoise = fbm(float2(angle * 2.0, dist * 5.0 - uTime) * 1.8, 3);
+    //笛卡尔输入避开裸极角切缝
+    float outerNoise = fbm(centered * 9.5 - float2(uTime * 0.7, uTime), 3);
     float outerIntensity = outerWave * outerNoise * invProgress * 0.35;
 
     float3 outerCol = edgeColor * 0.6;

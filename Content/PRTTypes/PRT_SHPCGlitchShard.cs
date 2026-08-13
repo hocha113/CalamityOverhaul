@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>故障数据条，不稳定机匣，跳位+闪断+RGB残影</summary>
+    /// <summary>故障数据条，不稳定/相位机匣共用，跳位+闪断+RGB残影</summary>
     internal class PRT_SHPCGlitchShard : BasePRT
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
@@ -19,11 +19,12 @@ namespace CalamityOverhaul.Content.PRTTypes
 
         public override bool CanPool => true;
 
-        public void Configure(Color accentColor, int lifeTime) {
+        /// <param name="rotationOverride">定向碎条（链线/残影）传入角度，缺省随机横竖</param>
+        public void Configure(Color accentColor, int lifeTime, float? rotationOverride = null) {
             this.accentColor = accentColor;
             Lifetime = lifeTime;
             initialScale = Scale;
-            Rotation = Main.rand.NextBool(4) ? MathHelper.PiOver2 : 0f; //多横少竖
+            Rotation = rotationOverride ?? (Main.rand.NextBool(4) ? MathHelper.PiOver2 : 0f); //多横少竖
             jumpCountdown = Main.rand.Next(3, 7);
             flickerPhase = Main.rand.NextFloat(MathHelper.TwoPi);
         }

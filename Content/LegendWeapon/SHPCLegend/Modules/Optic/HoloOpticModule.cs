@@ -173,7 +173,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             Effect shader = EffectLoader.SHPCHoloLattice?.Value;
             Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
-            if (shader == null || canvas == null || noise == null) return false;
+            if (canvas == null) return false;
+            if (shader == null || noise == null) {
+                //着色器缺失走线框回退，杜绝无形消解体
+                DrawLatticeFallback(canvas);
+                return false;
+            }
 
             shader.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.03f);
             shader.Parameters["fadeAlpha"]?.SetValue(fadeAlpha);
@@ -203,6 +208,42 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone,
                 null, Main.GameViewMatrix.TransformationMatrix);
             return false;
+        }
+
+        /// <summary>线框回退，几何与判定薄片一致；A=0 染色借 AlphaBlend 批加色</summary>
+        private void DrawLatticeFallback(Texture2D pixel) {
+            if (fadeAlpha < 0.02f) return;
+            SpriteBatch sb = Main.spriteBatch;
+            Vector2 center = Projectile.Center - Main.screenPosition;
+            Vector2 dir = PanelDir;
+            Vector2 nrm = NormalDir;
+            float rot = dir.ToRotation();
+            Rectangle px = new(0, 0, 1, 1);
+            Vector2 lineOrigin = new(0.5f, 0.5f);
+            Color main = new Color(LatticeMain.R, LatticeMain.G, LatticeMain.B, 0) * fadeAlpha;
+            Color accent = new Color(LatticeAccent.R, LatticeAccent.G, LatticeAccent.B, 0) * (fadeAlpha * 0.9f);
+            float reach = HalfLength * deployProgress;
+            const float halfH = 28f;
+
+            for (int s = -1; s <= 1; s += 2) {
+                //上下长边
+                sb.Draw(pixel, center + nrm * halfH * s, px, main, rot, lineOrigin,
+                    new Vector2(reach * 2f, 1.6f), SpriteEffects.None, 0f);
+                //两端短封边
+                sb.Draw(pixel, center + dir * reach * s, px, accent, rot + MathHelper.PiOver2, lineOrigin,
+                    new Vector2(halfH * 2f, 2f), SpriteEffects.None, 0f);
+            }
+            //纵栅线
+            for (int i = -3; i <= 3; i++) {
+                float along = i * HalfLength / 3.5f;
+                if (Math.Abs(along) > reach) continue;
+                sb.Draw(pixel, center + dir * along, px, main * 0.45f, rot + MathHelper.PiOver2, lineOrigin,
+                    new Vector2(halfH * 2f, 1f), SpriteEffects.None, 0f);
+            }
+            //中线呼吸
+            float breathe = 0.75f + 0.25f * MathF.Sin((float)Main.timeForVisualEffects * 0.1f);
+            sb.Draw(pixel, center, px, accent * breathe, rot, lineOrigin,
+                new Vector2(reach * 2f, 1.2f), SpriteEffects.None, 0f);
         }
     }
 }

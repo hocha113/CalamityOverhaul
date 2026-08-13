@@ -108,7 +108,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
             else if (Timer <= WarnTime + StrikeTime) {
                 phase = 1f;
                 strikeProg = (Timer - WarnTime) / StrikeTime;
-                fadeAlpha = 1.35f;
+                //1.35 时 Additive 全宽饱和成白块，压回并让结构透出
+                fadeAlpha = 1.05f;
             }
             else {
                 phase = 2f;

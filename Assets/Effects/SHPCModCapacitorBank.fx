@@ -144,6 +144,12 @@ float4 ArcPS(PSInput input) : COLOR0
     float core = 1.0 - smoothstep(0.0, 0.045, d);
     float glow = 1.0 - smoothstep(0.0, 0.20, d);
 
+    //微分叉：放电帧随机闪现的细枝，自主弧岔出瞬灭
+    float branchHash = hash21(float2(floor(along * 16.0), strobe + arcSeed * 11.0));
+    float branchOn = step(0.74, branchHash);
+    float branchPath = 0.5 + (branchHash - 0.5) * 1.2 * swing;
+    float branch = (1.0 - smoothstep(0.0, 0.05, abs(cross_ - branchPath))) * branchOn * 0.6;
+
     //供能包头：白热能量团沿弧推进，抵达后熄灭
     float head = saturate(pulseT);
     float packet = exp(-abs(along - head) * 9.0) * 0.7 + exp(-abs(along - head) * 30.0) * 1.7;
@@ -159,10 +165,11 @@ float4 ArcPS(PSInput input) : COLOR0
     float3 col = float3(0.0, 0.0, 0.0);
     col += coreColor * core * 1.1;
     col += glowColor * glow * 0.55;
+    col += coreColor * branch * 0.85;
     col += coreColor * dash;
     col += (coreColor * 0.9 + glowColor * 0.4) * packet;
 
-    float alpha = saturate(core + glow * 0.45 + dash * 0.5 + packet * 0.9);
+    float alpha = saturate(core + glow * 0.45 + branch * 0.7 + dash * 0.5 + packet * 0.9);
     alpha *= fadeAlpha * endFade * flicker;
 
     return float4(col * alpha, alpha) * input.Color;

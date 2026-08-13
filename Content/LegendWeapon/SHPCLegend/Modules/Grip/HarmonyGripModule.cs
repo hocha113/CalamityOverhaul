@@ -90,11 +90,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 
         private const int Lifetime = 420;
         private const int DriftPhase = 30;
+        private const int GhostCount = 5;
+        private const float GhostSpacing = 6f;
         private static readonly Color WispCore = new(190, 255, 220);
         private static readonly Color WispGlow = new(90, 230, 160);
         private static readonly Color WispAura = new(25, 120, 80);
 
         private float fadeAlpha;
+        /// <summary>残影位置环，头=最近</summary>
+        private Vector2[] ghostPos;
+        private int ghostFilled;
 
         public override void SetDefaults() {
             Projectile.width = 16;
@@ -139,6 +144,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
                 }
             }
 
+            //残影环采样
+            ghostPos ??= new Vector2[GhostCount];
+            if (ghostFilled == 0) {
+                ghostPos[0] = Projectile.Center;
+                ghostFilled = 1;
+            }
+            else if (Vector2.DistanceSquared(Projectile.Center, ghostPos[0]) >= GhostSpacing * GhostSpacing) {
+                Array.Copy(ghostPos, 0, ghostPos, 1, Math.Min(ghostFilled, GhostCount - 1));
+                ghostPos[0] = Projectile.Center;
+                if (ghostFilled < GhostCount) ghostFilled++;
+            }
+
             Lighting.AddLight(Projectile.Center, WispGlow.ToVector3() * 0.35f * fadeAlpha);
             if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(5)) {
                 PRTLoader.NewParticle<PRT_CyberSquare>(
@@ -172,19 +189,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
             if (fadeAlpha < 0.01f) return;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null) return;
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            Vector2 origin = glow.Size() * 0.5f;
-            float pulse = 0.85f + 0.15f * MathF.Sin((float)Main.timeForVisualEffects * 0.18f + Projectile.whoAmI * 1.7f);
-            //三层光晕
-            spriteBatch.Draw(glow, drawPos, null, WispAura * fadeAlpha * 0.45f * pulse, 0f, origin, 1.15f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(glow, drawPos, null, WispGlow * fadeAlpha * 0.7f * pulse, 0f, origin, 0.62f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(glow, drawPos, null, WispCore * fadeAlpha * pulse, 0f, origin, 0.3f, SpriteEffects.None, 0f);
             Texture2D star = CWRAsset.StarTexture_White?.Value;
-            if (star != null) {
-                float starScale = 0.055f * pulse;
-                spriteBatch.Draw(star, drawPos, null, WispCore * fadeAlpha * 0.8f,
-                    (float)Main.timeForVisualEffects * 0.02f, star.Size() * 0.5f, starScale, SpriteEffects.None, 0f);
+            Texture2D pixel = VaultAsset.placeholder2?.Value;
+            if (glow == null || star == null) return;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            Vector2 glowOrigin = glow.Size() * 0.5f;
+            Vector2 starOrigin = star.Size() * 0.5f;
+            float t = (float)Main.timeForVisualEffects;
+            float pulse = 0.85f + 0.15f * MathF.Sin(t * 0.18f + Projectile.whoAmI * 1.7f);
+            float bodyRot = t * 0.05f + Projectile.whoAmI;
+            float speed = Projectile.velocity.Length();
+            float speedT = MathHelper.Clamp(speed / 11f, 0f, 1f);
+
+            //速度残影链，越快越显
+            if (ghostPos != null && speedT > 0.06f) {
+                for (int i = ghostFilled - 1; i >= 0; i--) {
+                    float k = 1f - (i + 1f) / (GhostCount + 1f);
+                    Vector2 gp = ghostPos[i] - Main.screenPosition;
+                    spriteBatch.Draw(star, gp, null, WispGlow * (fadeAlpha * speedT * 0.4f * k),
+                        bodyRot - (i + 1) * 0.24f, starOrigin, 0.026f + 0.02f * k, SpriteEffects.None, 0f);
+                }
+            }
+
+            //速度拉伸条，锚在尾侧
+            if (pixel != null && speedT > 0.1f) {
+                float len = 7f + speed * 2.1f;
+                spriteBatch.Draw(pixel, drawPos, new Rectangle(0, 0, 1, 1), WispGlow * (fadeAlpha * speedT * 0.5f),
+                    Projectile.velocity.ToRotation(), new Vector2(1f, 0.5f), new Vector2(len, 2.4f), SpriteEffects.None, 0f);
+            }
+
+            //单层底晕，体量压在30%以下
+            spriteBatch.Draw(glow, drawPos, null, WispAura * (fadeAlpha * 0.5f * pulse), 0f, glowOrigin, 0.9f, SpriteEffects.None, 0f);
+
+            //四芒星芯体，呼吸+慢旋
+            spriteBatch.Draw(star, drawPos, null, WispGlow * (fadeAlpha * 0.85f * pulse),
+                bodyRot, starOrigin, 0.085f * pulse, SpriteEffects.None, 0f);
+            spriteBatch.Draw(star, drawPos, null, WispCore * (fadeAlpha * pulse),
+                -bodyRot * 0.6f, starOrigin, 0.048f * pulse, SpriteEffects.None, 0f);
+
+            //双卫星微粒相位环绕
+            if (pixel != null) {
+                for (int i = 0; i < 2; i++) {
+                    float ang = t * 0.11f + Projectile.whoAmI * 2.1f + i * MathHelper.Pi;
+                    float radius = 11f + 2.5f * MathF.Sin(t * 0.07f + i * 1.3f);
+                    Vector2 sat = drawPos + ang.ToRotationVector2() * radius;
+                    spriteBatch.Draw(pixel, sat, new Rectangle(0, 0, 1, 1), WispCore * (fadeAlpha * 0.8f),
+                        ang + MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(4f, 1.8f), SpriteEffects.None, 0f);
+                }
             }
         }
     }

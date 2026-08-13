@@ -107,6 +107,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> CyberPanel { get; set; }
         public static Asset<Effect> CyberDomainPanel { get; set; }
         public static Asset<Effect> SHPCModPanel { get; set; }
+        public static Asset<Effect> SHPCModMossVine { get; set; }
+        public static Asset<Effect> SHPCModCoralFlow { get; set; }
         public static Asset<Effect> CyberpunkItemFilter { get; set; }
         public static Asset<Effect> HotwindPanel { get; set; }
         public static Asset<Effect> DraedonPanel { get; set; }
@@ -146,6 +148,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KingSlimeRoyalAura { get; set; }
         public static Asset<Effect> KingSlimeShockwave { get; set; }
         public static Asset<Effect> KingSlimeRoyalBeam { get; set; }
+        public static Asset<Effect> BKSNinjaSlash { get; set; }
+        public static Asset<Effect> BKSCrownFX { get; set; }
         public static Asset<Effect> KingSlimeBloodWing { get; set; }
         public static Asset<Effect> CosmicCrescent { get; set; }
         public static Asset<Effect> WitchBrimstoneDomain { get; set; }
@@ -249,6 +253,9 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaMoonRay { get; set; }
         public static Asset<Effect> KikasaEaterRift { get; set; }
         public static Asset<Effect> KikasaDeerclopsFrost { get; set; }
+        public static Asset<Effect> KikasaInkDrop { get; set; }
+        public static Asset<Effect> KikasaInkSplat { get; set; }
+        public static Asset<Effect> KikasaUmbrella { get; set; }
         public static Asset<Effect> OniOmokage { get; set; }
         public static Asset<Effect> OniPaperPeel { get; set; }
         public static Asset<Effect> OniSky { get; set; }
@@ -289,6 +296,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> SHPCModRedline { get; set; }
         public static Asset<Effect> SHPCModVolatile { get; set; }
         public static Asset<Effect> SHPCModSteadyVolt { get; set; }
+        public static Asset<Effect> SHPCModFrostfern { get; set; }
         public static Asset<Effect> GraniteArc { get; set; }
         public static Asset<Effect> MarbleSlash { get; set; }
         public static Asset<Effect> BloodAltarRite { get; set; }

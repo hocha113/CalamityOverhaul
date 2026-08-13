@@ -55,17 +55,40 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
             if (state.Boomed) {
                 //白热蒸汽尾
-                if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(3)) {
-                    PRTLoader.NewParticle<PRT_Smoke>(
-                        beam.Projectile.Center - beam.FlightDirection * 14f,
-                        -beam.FlightDirection * 0.8f + Main.rand.NextVector2Circular(0.6f, 0.6f),
-                        new Color(255, 240, 220), Main.rand.NextFloat(0.25f, 0.5f))
-                        .Configure(Main.rand.Next(22, 38), 0.65f, Main.rand.NextFloat(-0.03f, 0.03f));
+                if (Main.netMode != NetmodeID.Server) {
+                    if (Main.rand.NextBool(2)) {
+                        PRTLoader.NewParticle<PRT_Smoke>(
+                            beam.Projectile.Center - beam.FlightDirection * 14f,
+                            -beam.FlightDirection * 0.8f + Main.rand.NextVector2Circular(0.6f, 0.6f),
+                            new Color(255, 240, 220), Main.rand.NextFloat(0.3f, 0.55f))
+                            .Configure(Main.rand.Next(22, 38), 0.65f, Main.rand.NextFloat(-0.03f, 0.03f));
+                    }
+                    //白热拉丝，超音速划痕
+                    if (Main.rand.NextBool(5)) {
+                        PRTLoader.NewParticle<PRT_Line>(
+                            beam.Projectile.Center - beam.FlightDirection * Main.rand.NextFloat(6f, 26f),
+                            -beam.FlightDirection * Main.rand.NextFloat(1.5f, 3.5f),
+                            new Color(255, 235, 190), Main.rand.NextFloat(0.5f, 0.9f))
+                            .Configure(false, Main.rand.Next(8, 14));
+                    }
                 }
                 return;
             }
 
-            if (Vector2.DistanceSquared(state.SpawnPos, beam.Projectile.Center) < BoomDistance * BoomDistance) {
+            float distSq = Vector2.DistanceSquared(state.SpawnPos, beam.Projectile.Center);
+            if (distSq < BoomDistance * BoomDistance) {
+                //临近音障，凝结雾环随接近度加密（把不可见的冲压加速可视化）
+                float near01 = MathF.Sqrt(distSq) / BoomDistance;
+                if (Main.netMode != NetmodeID.Server && near01 > 0.55f
+                    && Main.rand.NextFloat() < (near01 - 0.55f) * 1.4f) {
+                    Vector2 perp = beam.FlightDirection.RotatedBy(MathHelper.PiOver2)
+                        * Main.rand.NextFloat(-9f, 9f) * (1.3f - near01 * 0.5f);
+                    PRTLoader.NewParticle<PRT_Smoke>(
+                        beam.Projectile.Center + beam.FlightDirection * 8f + perp,
+                        beam.Projectile.velocity * 0.12f + Main.rand.NextVector2Circular(0.3f, 0.3f),
+                        new Color(235, 245, 255), Main.rand.NextFloat(0.14f, 0.26f))
+                        .Configure(Main.rand.Next(10, 18), 0.5f, Main.rand.NextFloat(-0.02f, 0.02f));
+                }
                 return;
             }
 
@@ -137,8 +160,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 if (Main.netMode != NetmodeID.Server) {
                     SoundEngine.PlaySound(SoundID.Item38 with { Volume = 0.55f, Pitch = 0.5f }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.Item89 with { Volume = 0.4f, Pitch = -0.2f }, Projectile.Center);
+                    //屏震距离衰减，1300px 归零，禁全端无条件满幅
+                    float k = 1f - MathHelper.Clamp(Main.LocalPlayer.Distance(Projectile.Center) / 1300f, 0f, 1f);
+                    SHPCNaturalFx.Shake(2.8f * k);
                 }
-                SHPCNaturalFx.Shake(2.5f);
             }
             Lighting.AddLight(Projectile.Center, BoomRing.ToVector3() * 0.6f * (1f - Progress));
         }

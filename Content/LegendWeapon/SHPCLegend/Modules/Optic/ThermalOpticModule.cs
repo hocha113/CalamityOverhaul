@@ -247,7 +247,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                     vel, new Color(255, 245, 225), Main.rand.NextFloat(0.8f, 1.5f))
                     .Configure(new Color(140, 35, 20), Main.rand.Next(26, 46));
             }
-            SHPCNaturalFx.Shake(3f);
+            //震屏距离衰减，远处白热不满幅扰屏
+            float shakeDist = Vector2.Distance(Main.LocalPlayer.Center, npc.Center);
+            if (shakeDist < 1000f) {
+                SHPCNaturalFx.Shake(MathHelper.Lerp(3f, 0.6f, shakeDist / 1000f));
+            }
         }
 
         private void ExitWhiteHot(NPC npc) {
@@ -364,6 +368,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             shader.Parameters["whiteHot"]?.SetValue(drawFade);
             shader.Parameters["seed"]?.SetValue(npc.whoAmI * 0.618f % 1f * 8f);
             shader.Parameters["texelSize"]?.SetValue(new Vector2(1f / tex.Width, 1f / tex.Height));
+            //当前帧 UV 界半像素内缩，扭曲/邻域采样钳回帧内防串帧
+            Rectangle frame = npc.frame;
+            if (frame.Width <= 0 || frame.Height <= 0) {
+                frame = tex.Bounds;
+            }
+            shader.Parameters["frameUV"]?.SetValue(new Vector4(
+                (frame.X + 0.5f) / tex.Width, (frame.Y + 0.5f) / tex.Height,
+                (frame.X + frame.Width - 0.5f) / tex.Width, (frame.Y + frame.Height - 0.5f) / tex.Height));
 
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,

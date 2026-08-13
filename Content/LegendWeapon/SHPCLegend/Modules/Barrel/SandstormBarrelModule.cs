@@ -44,12 +44,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>砂幕，旋涡+流场+Fog，磨蚀</summary>
+    /// <summary>砂幕，干沙磨蚀旋幕；真alpha尘体遮蔽+双反转旋涡+磨蚀粒闪</summary>
     internal sealed class SHPCSandCurtainProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
-        private const float Radius = 120f;
         private float radius => 60f;
+
+        /// <summary>视觉包络，12f 卷起→平台期→末 18f 散逸；判定不吃它</summary>
+        private float VisualEnv {
+            get {
+                float fadeIn = MathHelper.Clamp((90 - Projectile.timeLeft) / 12f, 0f, 1f);
+                float fadeOut = MathHelper.Clamp(Projectile.timeLeft / 18f, 0f, 1f);
+                return fadeIn * fadeOut;
+            }
+        }
 
         public override void SetDefaults() {
             Projectile.width = (int)(radius * 2);
@@ -65,6 +73,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         private const int ScanInterval = 3;
 
         public override void AI() {
+            //出生拍,卷起音+上卷沙羽
+            if (Projectile.localAI[1] == 0f) {
+                Projectile.localAI[1] = 1f;
+                if (Main.netMode != NetmodeID.Server) {
+                    SoundEngine.PlaySound(SoundID.Item34 with { Volume = 0.3f, Pitch = 0.15f }, Projectile.Center);
+                    for (int i = 0; i < 5; i++) {
+                        PRTLoader.NewParticle<PRT_Smoke>(
+                            Projectile.Center + Main.rand.NextVector2Circular(radius * 0.5f, radius * 0.3f),
+                            new Vector2(Main.rand.NextFloat(-1.5f, 1.5f), Main.rand.NextFloat(-3f, -1.2f)),
+                            new Color(225, 190, 110), Main.rand.NextFloat(0.5f, 0.9f))
+                            .Configure(Main.rand.Next(20, 34), 0.7f, Main.rand.NextFloat(-0.08f, 0.08f));
+                    }
+                }
+            }
             Projectile.velocity *= 0.92f;
             int frame = (int)Main.GameUpdateCount + Projectile.whoAmI;
             if (frame % ScanInterval == 0) {
@@ -109,11 +131,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //Cyclone+Airflow 暖沙主体
+            //Cyclone+Airflow 暖沙旋核,外裹真alpha尘幕
             Vector2 baseScreen = Projectile.Center - Main.screenPosition;
-            float life = MathHelper.Clamp(Projectile.timeLeft / 90f, 0f, 1f);
-            float fadeIn = MathHelper.Clamp((90 - Projectile.timeLeft) / 12f, 0f, 1f);
-            float alpha = MathHelper.Clamp(fadeIn * life, 0f, 1f);
+            float alpha = VisualEnv;
             float t = (float)Main.timeForVisualEffects * 0.04f;
 
             //底部大旋涡
@@ -137,7 +157,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                         a + t * 0.6f, origin, radius / airflow.Width * 1.5f, SpriteEffects.None, 0f);
                 }
             }
-            //6 张 Fog，同种子稳帧
+            //6 张 Fog 光尘，同种子稳帧,逐层镜像防同贴纸盖三遍
             Texture2D fog = CWRAsset.Fog?.Value;
             if (fog != null) {
                 Vector2 origin = fog.Size() * 0.5f;
@@ -148,27 +168,57 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     float fr = ((seed + i * 211) % 100) / 100f;
                     Vector2 offset = fa.ToRotationVector2() * radius * (0.3f + fr * 0.7f);
                     Color c = new Color(225, 195, 130, 0) * alpha * 0.35f;
+                    SpriteEffects fx = ((seed >> i) & 1) == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
                     Main.spriteBatch.Draw(fog, baseScreen + offset, null, c,
-                        fa + t * 0.3f * (i % 3 - 1), origin, 0.5f + fr * 0.7f, SpriteEffects.None, 0f);
+                        fa + t * 0.3f * (i % 3 - 1), origin, 0.5f + fr * 0.7f, fx, 0f);
+                }
+                //尘幕本体,真alpha暖沙裹住光尘,带暗缘沉底;沙是遮蔽介质不是发光气体
+                const int dustCount = 5;
+                for (int i = 0; i < dustCount; i++) {
+                    float da = (seed + i * 251) % 360 * MathHelper.Pi / 180f + t * (0.28f * ((i % 2) * 2 - 1));
+                    float dr = ((seed + i * 137) % 100) / 100f;
+                    Vector2 offset = da.ToRotationVector2() * radius * (0.35f + dr * 0.55f);
+                    float scale = 0.55f + dr * 0.5f;
+                    float rot = da + t * 0.35f * (i % 3 - 1);
+                    SpriteEffects fx = ((seed >> (i + 2)) & 1) == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+                    //暗缘先落,主体压上,读出尘瓣厚度
+                    Main.spriteBatch.Draw(fog, baseScreen + offset + new Vector2(2f, 3f), null,
+                        new Color(118, 86, 50) * (alpha * 0.3f), rot, origin, scale * 1.04f, fx, 0f);
+                    Main.spriteBatch.Draw(fog, baseScreen + offset, null,
+                        new Color(199, 162, 100) * (alpha * 0.42f), rot, origin, scale, fx, 0f);
                 }
             }
             return false;
         }
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
-            //暖色发光中心
+            //暖色发光中心;真加色批 tint 必须带 A,A=0 什么都画不出
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null) return;
             Vector2 baseScreen = Projectile.Center - Main.screenPosition;
-            float life = MathHelper.Clamp(Projectile.timeLeft / 90f, 0f, 1f);
-            Color inner = new Color(255, 200, 130, 0) * life * 0.5f;
-            Color outer = new Color(160, 90, 30, 0) * life * 0.25f;
+            float env = VisualEnv;
+            Color inner = new Color(255, 200, 130) * (env * 0.4f);
+            Color outer = new Color(160, 90, 30) * (env * 0.2f);
             SHPCNaturalFx.GlowLayered(spriteBatch, glow, baseScreen, inner, outer, radius / 32f * 0.8f, 0f, 3);
         }
 
         public override void OnKill(int timeLeft) {
             if (Main.netMode == NetmodeID.Server) return;
             SoundEngine.PlaySound(SoundID.Item34 with { Volume = 0.35f, Pitch = -0.4f }, Projectile.Center);
+            //散逸拍,沙瓣外抛+粒闪余韵
+            for (int i = 0; i < 7; i++) {
+                float a = Main.rand.NextFloat(MathHelper.TwoPi);
+                Vector2 vel = a.ToRotationVector2() * Main.rand.NextFloat(1.8f, 4f);
+                PRTLoader.NewParticle<PRT_Smoke>(Projectile.Center + a.ToRotationVector2() * radius * 0.5f, vel,
+                    new Color(215, 180, 105), Main.rand.NextFloat(0.5f, 1f))
+                    .Configure(Main.rand.Next(24, 44), 0.6f, Main.rand.NextFloat(-0.08f, 0.08f));
+            }
+            for (int i = 0; i < 5; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(3.5f, 2.5f);
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Main.rand.NextVector2Circular(radius * 0.6f, radius * 0.4f),
+                    vel, Color.Lerp(new Color(255, 220, 130), new Color(160, 90, 30), Main.rand.NextFloat()),
+                    Main.rand.NextFloat(0.4f, 0.75f)).Configure(true, Main.rand.Next(14, 26));
+            }
         }
     }
 }

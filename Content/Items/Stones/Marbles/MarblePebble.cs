@@ -151,7 +151,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
 
             if (bonus > HeavyBonusThreshold) {
                 PRTLoader.NewParticle<PRT_StarPulseRing>(Vector2.Lerp(impact, target.Center, 0.35f), Vector2.Zero
-                    , GraniteMarbleVFX.MarbleGold with { A = 0 }, 0.05f)?.Configure(0.05f, 0.22f + 0.34f * heat, 16);
+                    , GraniteMarbleVFX.MarbleGold, 0.05f)?.Configure(0.05f, 0.22f + 0.34f * heat, 16);
                 int stars = 3 + (int)(heat * 4f);
                 for (int i = 0; i < stars; i++) {
                     PRTLoader.NewParticle<PRT_Sparkle>(impact, Main.rand.NextVector2Circular(2.6f, 2.6f)

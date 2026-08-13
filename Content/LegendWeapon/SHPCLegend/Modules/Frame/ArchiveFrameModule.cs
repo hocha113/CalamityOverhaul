@@ -1,6 +1,10 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using System;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
@@ -11,6 +15,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;
         //归档琥珀金
         public override Color TintColor => new(255, 200, 100);
+
+        private static readonly Color ArchiveAmber = new(255, 200, 100);
+        private static readonly Color ArchiveDim = new(160, 110, 35);
 
         private const float Threshold = 6000f;
         private const int CooldownFrames = 120;
@@ -52,9 +59,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 owner.Center, Vector2.Zero,
                 ModContent.ProjectileType<CyberDetonationProj>(),
                 dmg, 0f, source.owner, ai0: 0.7f, ai1: 0f, ai2: 300f);
+            SpawnReleaseBurst(owner);
             if (source.owner == Main.myPlayer) {
                 CombatText.NewText(owner.getRect(), new Color(255, 200, 60),
                     "// ARCHIVE", true, false);
+            }
+        }
+
+        /// <summary>释放拍，玩家处琥珀环+数据方粒外泄，拥有者端；爆炸本体走共享弹幕</summary>
+        private static void SpawnReleaseBurst(Player owner) {
+            if (Main.netMode == NetmodeID.Server) return;
+            SoundEngine.PlaySound(SoundID.Item114 with { Volume = 0.32f, Pitch = -0.25f, MaxInstances = 2 }, owner.Center);
+            PRTLoader.NewParticle<PRT_StarPulseRing>(owner.Center, Vector2.Zero, ArchiveAmber, 0.06f)
+                .Configure(0.06f, 0.5f, 20);
+            for (int k = 0; k < 10; k++) {
+                Vector2 vel = Main.rand.NextVector2CircularEdge(3.5f, 3.5f) - Vector2.UnitY * 1.2f;
+                PRTLoader.NewParticle<PRT_CyberSquare>(owner.Center + vel * 3f, vel,
+                    ArchiveAmber, Main.rand.NextFloat(0.5f, 1.0f)).Configure(ArchiveDim, Main.rand.Next(14, 24));
             }
         }
 

@@ -66,12 +66,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 if (!proj.active || proj.owner != orb.Projectile.owner) continue;
                 if (proj.type != patchType) continue;
                 if (Vector2.DistanceSquared(proj.Center, orb.Projectile.Center) > 180f * 180f) continue;
+                //吸苔表现，孢子被卷向球
+                if (Main.netMode != NetmodeID.Server) {
+                    Vector2 suck = (orb.Projectile.Center - proj.Center).SafeNormalize(Vector2.UnitY);
+                    for (int k = 0; k < 5; k++) {
+                        PRTLoader.NewParticle<PRT_Sparkle>(proj.Center + Main.rand.NextVector2Circular(26f, 14f),
+                            suck * Main.rand.NextFloat(5f, 9f) + Main.rand.NextVector2Circular(1f, 1f),
+                            new Color(130, 225, 110), Main.rand.NextFloat(0.3f, 0.55f))
+                            .Configure(new Color(45, 120, 55), Main.rand.Next(14, 24), 0f, 0.6f);
+                    }
+                }
                 proj.Kill();
                 absorbed++;
             }
             if (absorbed > 0) {
                 _absorbedByOrb[orb.Projectile.whoAmI] = already + absorbed;
                 orb.ExplosionRadiusMul += 0.06f * absorbed;
+                //球侧吸收反馈
+                if (Main.netMode != NetmodeID.Server) {
+                    PRTLoader.NewParticle<PRT_DWave>(orb.Projectile.Center, Vector2.Zero,
+                        new Color(120, 220, 90), 0.05f).Configure(new Vector2(1f, 1f), 0f, 0.32f, 14);
+                }
             }
         }
 
@@ -89,9 +104,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         private static readonly Vector3 MossGlowVec = new Color(60, 130, 60).ToVector3();
 
         //藤蔓笔触(6顶点)，仅视觉
-        private struct Vine { public Vector2[] Pts; public int Age; public int MaxAge; public Trail TrailRef; }
+        private struct Vine { public Vector2[] Pts; public int Age; public int MaxAge; }
         private readonly List<Vine> vines = new();
+        //全部藤蔓共用一条 Trail，避免逐藤新建 GPU 缓冲
+        private Trail vineTrail;
         private float age;
+        //苔簇布局种子，客户端惰性播种
+        private float lobeSeed = -1f;
+
+        //确定性 0-1 哈希，苔簇逐瓣布局
+        private static float Hash01(float x) {
+            float v = MathF.Sin(x * 12.9898f) * 43758.5453f;
+            return v - MathF.Floor(v);
+        }
 
         public override void SetDefaults() {
             Projectile.width = 96;
@@ -138,8 +163,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     cachedPeakStacks = Math.Max(cachedPeakStacks, eff.MossStacks);
                 }
             }
-            //每18帧伸藤到最近敌
-            if (age % 18f == 0f) {
+            //每18帧伸藤到最近敌，纯视觉不上服务端
+            if (Main.netMode != NetmodeID.Server && age % 18f == 0f) {
                 NPC near = Projectile.Center.FindClosestNPC(radius * 1.4f, false, true);
                 if (near != null) {
                     SpawnVine(Projectile.Center, near.Center);
@@ -176,7 +201,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 float taper = MathF.Sin(t * MathHelper.Pi);
                 pts[i] = Vector2.Lerp(from, to, t) + perp * MathF.Sin(seed + t * 7f) * taper * amp;
             }
-            vines.Add(new Vine { Pts = pts, Age = 0, MaxAge = 18, TrailRef = null });
+            vines.Add(new Vine { Pts = pts, Age = 0, MaxAge = 18 });
         }
 
         private void BurstRoots(float radius) {
@@ -199,10 +224,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 Vector2 spawn = Projectile.Center + angle.ToRotationVector2() * 24f;
                 PRTLoader.NewParticle<PRT_CorrosionWave>(spawn, Vector2.Zero, Color.White, 0.05f).Configure(0.6f, 28, angle);
             }
-            //根脉脉冲环
-            PRTLoader.NewParticle<PRT_DWave>(Projectile.Center, Vector2.Zero, new Color(120, 220, 90, 0), 0.05f).Configure(new Vector2(1.4f, 0.55f), 0f, 0.55f, 24);
+            //根脉脉冲环，加色批禁 A=0
+            PRTLoader.NewParticle<PRT_DWave>(Projectile.Center, Vector2.Zero, new Color(120, 220, 90), 0.05f).Configure(new Vector2(1.4f, 0.55f), 0f, 0.55f, 24);
             SoundEngine.PlaySound(SoundID.Item154 with { Volume = 0.45f, Pitch = -0.2f }, Projectile.Center);
-            SHPCNaturalFx.Shake(1.5f);
+            //旁观客户端也走此路径，震屏按距离衰减
+            float shakeAtten = MathHelper.Clamp(1f - Vector2.Distance(Main.LocalPlayer.Center, Projectile.Center) / 900f, 0f, 1f);
+            SHPCNaturalFx.Shake(1.5f * shakeAtten);
+        }
+
+        public override void OnKill(int timeLeft) {
+            //苔斑消散孢子云，吸收与自然消亡两条路径都有余韵
+            if (Main.netMode == NetmodeID.Server) return;
+            for (int i = 0; i < 8; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(2.4f, 1.4f) + new Vector2(0f, -0.8f);
+                PRTLoader.NewParticle<PRT_Sparkle>(Projectile.Center + Main.rand.NextVector2Circular(40f, 18f), vel,
+                    new Color(120, 220, 110), Main.rand.NextFloat(0.25f, 0.5f))
+                    .Configure(new Color(40, 110, 50), Main.rand.Next(18, 34), Main.rand.NextFloat(-0.1f, 0.1f), 0.65f);
+            }
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -212,48 +250,88 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             float fadeOut = MathHelper.Clamp(Projectile.timeLeft / 30f, 0f, 1f);
             float alpha = MathHelper.Clamp(fadeIn * fadeOut, 0f, 1f);
             Vector2 baseScreen = Projectile.Center - Main.screenPosition;
+            if (lobeSeed < 0f) lobeSeed = Main.rand.NextFloat(100f, 900f);
 
-            //地面贴花
+            //赛博地纹压淡作底
             Texture2D tile = CWRAsset.TileHightlight?.Value;
             if (tile != null) {
                 Vector2 origin = tile.Size() * 0.5f;
-                Color tint = new Color(80, 200, 90, 0) * alpha * 0.55f;
+                Color tint = new Color(80, 200, 90, 0) * alpha * 0.3f;
                 float scale = radius / tile.Width * 1.6f;
                 Main.spriteBatch.Draw(tile, baseScreen, null, tint, MathHelper.PiOver4, origin, scale, SpriteEffects.None, 0f);
+            }
+            //苔簇本体，Fog 真alpha 多瓣，暗湿绿压底+亮梢，逐瓣错帧长出
+            Texture2D fog = CWRAsset.Fog?.Value;
+            if (fog != null) {
+                Vector2 fogOrigin = fog.Size() * 0.5f;
+                for (int i = 0; i < 6; i++) {
+                    float h1 = Hash01(lobeSeed + i * 17.31f);
+                    float h2 = Hash01(lobeSeed + i * 29.7f + 3.1f);
+                    float h3 = Hash01(lobeSeed + i * 41.9f + 7.7f);
+                    float h4 = Hash01(lobeSeed + i * 53.3f + 11.4f);
+                    float grow = MathHelper.Clamp((age - i * 3f) / 16f, 0f, 1f);
+                    grow = 1f - (1f - grow) * (1f - grow);
+                    if (grow <= 0f) continue;
+                    float ang = MathHelper.TwoPi * i / 6f + h1 * 1.2f;
+                    Vector2 offset = ang.ToRotationVector2() * radius * (0.2f + 0.42f * h2);
+                    offset.Y *= 0.45f;
+                    float lobeScale = radius / fog.Width * (1.05f + 0.9f * h3) * grow;
+                    float rot = h3 * MathHelper.TwoPi;
+                    SpriteEffects flip = h4 > 0.5f ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                    //湿暗底瓣
+                    Main.spriteBatch.Draw(fog, baseScreen + offset, null,
+                        new Color(26, 64, 34) * (alpha * 0.85f * grow), rot, fogOrigin, lobeScale, flip, 0f);
+                    //受光亮梢，同瓣上移错位
+                    Main.spriteBatch.Draw(fog, baseScreen + offset - new Vector2(2f, 6f), null,
+                        new Color(96, 190, 92) * (alpha * 0.38f * grow), rot, fogOrigin, lobeScale * 0.62f, flip, 0f);
+                }
             }
             return false;
         }
 
         private float VineWidth(float progress) {
-            float taper = MathF.Sin(MathHelper.Clamp(progress * MathHelper.Pi, 0f, MathHelper.Pi));
-            return 3f + taper * 6f;
+            //根粗梢细，纤维藤蔓
+            return MathHelper.Lerp(9.5f, 2.2f, progress);
         }
 
         private Color VineColor(Vector2 _) => Color.White;
 
         void IPrimitiveDrawable.DrawPrimitives() {
             if (vines.Count == 0) return;
-            Effect shader = EffectLoader.CyberDataArc?.Value;
+            //专属纤维材质，缺 fxc 回退共享电弧
+            Effect vineFx = EffectLoader.SHPCModMossVine?.Value;
+            Effect shader = vineFx ?? EffectLoader.CyberDataArc?.Value;
             if (shader == null) return;
-            Texture2D noise = CWRAsset.ThunderTrail?.Value ?? CWRAsset.Extra_193?.Value;
-            if (noise == null) return;
 
             shader.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
             shader.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.06f);
             shader.Parameters["coreColor"]?.SetValue(MossCoreVec);
             shader.Parameters["glowColor"]?.SetValue(MossGlowVec);
-            shader.Parameters["uNoiseTex"]?.SetValue(noise);
 
             GraphicsDevice device = Main.graphics.GraphicsDevice;
-            device.BlendState = BlendState.Additive;
+            if (vineFx != null) {
+                Texture2D noise = CWRAsset.PerlinNoise?.Value;
+                if (noise == null) return;
+                //s1 显式绑定，shader 内 register(s1)
+                device.Textures[1] = noise;
+                device.SamplerStates[1] = SamplerState.LinearWrap;
+                device.BlendState = BlendState.AlphaBlend;
+            }
+            else {
+                Texture2D noise = CWRAsset.ThunderTrail?.Value ?? CWRAsset.Extra_193?.Value;
+                if (noise == null) return;
+                shader.Parameters["uNoiseTex"]?.SetValue(noise);
+                device.BlendState = BlendState.Additive;
+            }
+            //藤蔓随苔斑一同淡出
+            float patchFade = MathHelper.Clamp(Projectile.timeLeft / 30f, 0f, 1f);
             for (int i = 0; i < vines.Count; i++) {
                 Vine v = vines[i];
-                float fade = 1f - v.Age / (float)v.MaxAge;
+                float fade = (1f - v.Age / (float)v.MaxAge) * patchFade;
                 shader.Parameters["fadeAlpha"]?.SetValue(fade);
-                v.TrailRef ??= new Trail(v.Pts, VineWidth, VineColor);
-                v.TrailRef.TrailPositions = v.Pts;
-                v.TrailRef.DrawTrail(shader);
-                vines[i] = v;
+                vineTrail ??= new Trail(v.Pts, VineWidth, VineColor);
+                vineTrail.TrailPositions = v.Pts;
+                vineTrail.DrawTrail(shader);
             }
             device.BlendState = BlendState.AlphaBlend;
         }
@@ -263,9 +341,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null) return;
             Vector2 baseScreen = Projectile.Center - Main.screenPosition;
-            float pulse = 0.55f + 0.15f * MathF.Sin((float)Main.timeForVisualEffects * 0.15f);
-            Color inner = new Color(150, 240, 130, 0) * pulse * 0.55f;
-            Color outer = new Color(40, 110, 50, 0) * pulse * 0.3f;
+            float fadeIn = MathHelper.Clamp(age / 12f, 0f, 1f);
+            float fadeOut = MathHelper.Clamp(Projectile.timeLeft / 30f, 0f, 1f);
+            float pulse = (0.55f + 0.15f * MathF.Sin((float)Main.timeForVisualEffects * 0.15f)) * fadeIn * fadeOut;
+            //真加色批，A 必须随强度走，A=0 整层不显示
+            Color inner = new Color(150, 240, 130) * pulse * 0.4f;
+            Color outer = new Color(40, 110, 50) * pulse * 0.22f;
             SHPCNaturalFx.GlowLayered(spriteBatch, glow, baseScreen, inner, outer, radius / 32f, 0f, 3);
         }
     }

@@ -1,6 +1,8 @@
 ﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
@@ -48,14 +50,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             }
         }
 
-        private static void SpawnStackVFX(Player player) {
-            if (Main.netMode == Terraria.ID.NetmodeID.Server) return;
+        private void SpawnStackVFX(Player player) {
+            if (Main.netMode == NetmodeID.Server) return;
             if (player.whoAmI != Main.myPlayer) return;
-            //短促提示粒子
+            bool locked = _stacks >= MaxStacks;
+            Vector2 anchor = player.Center + new Vector2(0f, -player.height * 0.5f);
+            //哨戒就位，方粒定角自外圈向内收拢，与动量托的散射尾流拉开语义
             for (int i = 0; i < 6; i++) {
-                Vector2 angle = MathHelper.TwoPi * i / 6f * Vector2.One;
-                Vector2 vel = (MathHelper.TwoPi * i / 6f).ToRotationVector2() * 2.5f;
-                PRTLoader.NewParticle<PRT_CyberSquare>(player.Center + new Vector2(0, -player.height * 0.5f), vel, new Color(180, 230, 255), Main.rand.NextFloat(0.6f, 1.0f)).Configure(new Color(100, 170, 230), 14);
+                Vector2 dir = (MathHelper.TwoPi * i / 6f).ToRotationVector2();
+                PRTLoader.NewParticle<PRT_CyberSquare>(anchor + dir * 26f, -dir * 2.8f,
+                    new Color(180, 230, 255), Main.rand.NextFloat(0.6f, 1.0f))
+                    .Configure(new Color(100, 170, 230), locked ? 18 : 13);
+            }
+            //满层锁定拍，细锐环收拢+轻就位音
+            if (locked) {
+                PRTLoader.NewParticle<PRT_StarPulseRing>(anchor, Vector2.Zero,
+                    new Color(200, 240, 255), 0.3f).Configure(0.3f, 0.05f, 12);
+                SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.2f, Pitch = 0.65f }, player.Center);
             }
         }
     }

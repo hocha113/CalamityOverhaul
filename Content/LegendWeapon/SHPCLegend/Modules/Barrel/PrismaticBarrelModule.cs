@@ -33,21 +33,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Vector2 forward = beam.Projectile.velocity.SafeNormalize(Vector2.UnitX);
             Vector2 perp = forward.RotatedBy(MathHelper.PiOver2);
             Color[] channels = { RChannel, GChannel, BChannel };
+            //三色横向拉开+纵向错位，读作三条平行光谱缕而非白噪点
             for (int i = 0; i < 3; i++) {
                 float side = i - 1f; //-1, 0, 1
-                Vector2 offset = perp * side * 6f;
-                Vector2 vel = -forward * 1.5f + perp * side * 0.6f;
-                PRTLoader.NewParticle<PRT_CyberSquare>(beam.Projectile.Center + offset, vel, channels[i], Main.rand.NextFloat(0.5f, 0.9f)).Configure(Color.White, Main.rand.Next(10, 18));
+                Vector2 offset = perp * side * 10f - forward * (i * 7f);
+                Vector2 vel = -forward * 1.2f + perp * side * 1.1f;
+                PRTLoader.NewParticle<PRT_CyberSquare>(beam.Projectile.Center + offset, vel, channels[i], Main.rand.NextFloat(0.42f, 0.75f)).Configure(Color.White, Main.rand.Next(12, 20));
             }
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
             if (Main.netMode == NetmodeID.Server) return;
-            for (int i = 0; i < 9; i++) {
-                Color c = (i % 3) switch { 0 => RChannel, 1 => GChannel, _ => BChannel };
-                Vector2 vel = Main.rand.NextVector2CircularEdge(5f, 5f);
-                PRTLoader.NewParticle<PRT_CyberSquare>(target.Center, vel, c, Main.rand.NextFloat(0.7f, 1.5f)).Configure(Color.White, Main.rand.Next(15, 28));
+            //白光进三色出，沿入射向分光成扇
+            Vector2 inDir = beam.Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            Color[] channels = { RChannel, GChannel, BChannel };
+            for (int c = 0; c < 3; c++) {
+                float fanAngle = (c - 1f) * 0.42f;
+                for (int k = 0; k < 3; k++) {
+                    Vector2 vel = inDir.RotatedBy(fanAngle + Main.rand.NextFloat(-0.12f, 0.12f))
+                        * Main.rand.NextFloat(4.2f, 7.5f);
+                    PRTLoader.NewParticle<PRT_CyberSquare>(target.Center, vel, channels[c], Main.rand.NextFloat(0.7f, 1.3f)).Configure(Color.White, Main.rand.Next(15, 28));
+                }
             }
+            PRTLoader.NewParticle<PRT_StarPulseRing>(target.Center, Vector2.Zero, new Color(245, 245, 255), 0.04f).Configure(0.04f, 0.26f, 12);
         }
     }
 }

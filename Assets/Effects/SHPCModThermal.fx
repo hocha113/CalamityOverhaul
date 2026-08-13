@@ -12,6 +12,7 @@ float heat;          //热痕 0~1
 float whiteHot;      //白热锁定强度 0~1（C# 侧含淡入淡出）
 float seed;          //每 NPC 随机相位
 float2 texelSize;    //1/texWidth, 1/texHeight
+float4 frameUV;      //当前帧 UV 界 xy=min zw=max，半像素内缩，钳制扭曲与邻域采样防串帧
 
 float hash21(float2 p)
 {
@@ -55,15 +56,16 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float wob2 = vnoise(px * 0.23 + float2(-seed * 47.0, -flow * 0.17)) - 0.5;
     float2 distorted = coords;
     distorted.x += (wob * 3.2 + wob2 * 1.4) * texelSize.x * (0.6 + energy * 3.4);
+    distorted = clamp(distorted, frameUV.xy, frameUV.zw);
 
     float4 src = tex2D(uImage0, distorted);
 
-    //轮廓热溢光：邻域 alpha 差分，让热浪辉光溢出体表边缘
+    //轮廓热溢光，邻域 alpha 差分让辉光溢出体表边缘，采样钳回帧内防读相邻动画帧
     float2 o = texelSize * 2.0;
-    float nAlpha = tex2D(uImage0, distorted + float2(0, -o.y)).a
-                 + tex2D(uImage0, distorted + float2(0, o.y)).a
-                 + tex2D(uImage0, distorted + float2(-o.x, 0)).a
-                 + tex2D(uImage0, distorted + float2(o.x, 0)).a;
+    float nAlpha = tex2D(uImage0, clamp(distorted + float2(0, -o.y), frameUV.xy, frameUV.zw)).a
+                 + tex2D(uImage0, clamp(distorted + float2(0, o.y), frameUV.xy, frameUV.zw)).a
+                 + tex2D(uImage0, clamp(distorted + float2(-o.x, 0), frameUV.xy, frameUV.zw)).a
+                 + tex2D(uImage0, clamp(distorted + float2(o.x, 0), frameUV.xy, frameUV.zw)).a;
     nAlpha *= 0.25;
     float rim = saturate(nAlpha - src.a * 0.6);
 

@@ -143,10 +143,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             NPC npc = context.Npc;
             context.EclipseDrive = 1f;
 
-            //吞回节拍：真眼→左手→右手→头（服务端裁定移除，客户端表现）。
-            //死亡必经核心裸露，场上恒有 3 真眼 + 3 残口 = 6 名从属，节拍数须对齐
-            if (!VaultUtils.isClient
-                && (Timer == 14 || Timer == 28 || Timer == 42 || Timer == 56 || Timer == 70 || Timer == 84)) {
+            //吞回节拍：真眼×5→四手残口→头残口（服务端裁定移除，客户端表现）。
+            //死亡必经核心裸露，场上恒有 5 真眼 + 5 残口 = 10 名从属；
+            //9 帧一拍自 8 起共 10 拍（8~89），坍缩段 96 帧内吞完，从属不足时空拍无害
+            if (!VaultUtils.isClient && Timer >= 8 && Timer < PhaseCollapseEnd && (Timer - 8) % 9 == 0) {
                 context.Owner.ConsumeOneServant();
             }
 

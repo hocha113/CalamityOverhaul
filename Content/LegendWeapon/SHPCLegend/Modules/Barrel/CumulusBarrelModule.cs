@@ -40,12 +40,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Vector2 spawnPos = beam.Projectile.Center + Main.rand.NextVector2Circular(30f, 18f);
             if (SHPCNaturalFx.HasOwnedNear(beam.Projectile.owner, cloudType, spawnPos, MinSpacing)) return;
             int damage = Math.Max(beam.Projectile.damage / 3, 1);
+            //凝聚音效移至云核首帧AI，旁观者同闻
             Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                 spawnPos, Main.rand.NextVector2Circular(0.8f, 0.5f),
                 cloudType, damage, 0f, beam.Projectile.owner);
-            if (Main.netMode != NetmodeID.Server) {
-                SoundEngine.PlaySound(SoundID.Item30 with { Volume = 0.25f, Pitch = 0.4f }, beam.Projectile.Center);
-            }
         }
     }
 
@@ -63,9 +61,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         private Vector2[] blobOffsets;
         private float[] blobRotations;
         private float[] blobScales;
+        private SpriteEffects[] blobMirrors;
         private float seedAngle;
         //PassiveCharge 缓存，按节流重算
         private float cachedChargeRate;
+
+        //凝聚包络帧数
+        private const int CondenseFrames = 14;
+        private float Condense01 => MathHelper.Clamp((240 - Projectile.timeLeft) / (float)CondenseFrames, 0f, 1f);
+
+        //距离衰减屏震，1300px 归零
+        private static void ShakeNear(Vector2 pos, float amount) {
+            float k = 1f - MathHelper.Clamp(Main.LocalPlayer.Distance(pos) / 1300f, 0f, 1f);
+            SHPCNaturalFx.Shake(amount * k);
+        }
 
         public override void SetDefaults() {
             Projectile.width = 72;
@@ -80,18 +89,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override bool ShouldUpdatePosition() => false;
 
         public override void AI() {
-            //首帧 seed 云块
+            //首帧 seed 云块，凝聚音效各端自播
             if (blobOffsets == null) {
                 seedAngle = Main.rand.NextFloat(MathHelper.TwoPi);
                 blobOffsets = new Vector2[BlobCount];
                 blobRotations = new float[BlobCount];
                 blobScales = new float[BlobCount];
+                blobMirrors = new SpriteEffects[BlobCount];
                 for (int i = 0; i < BlobCount; i++) {
                     float a = seedAngle + i * (MathHelper.TwoPi / BlobCount) + Main.rand.NextFloat(-0.3f, 0.3f);
                     float r = Main.rand.NextFloat(0.55f, 1f);
                     blobOffsets[i] = new Vector2(MathF.Cos(a) * 40f * r, MathF.Sin(a) * 24f * r);
                     blobRotations[i] = Main.rand.NextFloat(MathHelper.TwoPi);
                     blobScales[i] = Main.rand.NextFloat(0.55f, 0.95f);
+                    blobMirrors[i] = Main.rand.NextBool() ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                }
+                if (Main.netMode != NetmodeID.Server) {
+                    SoundEngine.PlaySound(SoundID.Item30 with { Volume = 0.25f, Pitch = 0.4f }, Projectile.Center);
                 }
             }
             Projectile.velocity *= 0.94f;
@@ -154,14 +168,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     beam.SpeedMul = 1.25f;
                 }
             }
-            //云核/落点环
-            if (Main.netMode != NetmodeID.Server) {
-                PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero, new Color(220, 240, 255, 0), 0.05f).Configure(0.05f, 0.7f, 24);
-                PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center + Vector2.UnitY * 220f, Vector2.Zero, new Color(180, 210, 255, 0), 0.05f).Configure(0.05f, 0.55f, 22);
+            //放电视听在 OnKill 各端自演，这里只管弹幕生成
+        }
+
+        public override void OnKill(int timeLeft) {
+            if (Main.dedServ || blobOffsets == null) return;
+            //云体撕散，瓣位交给 Fog 真雾余韵
+            float charge01 = MathHelper.Clamp(Projectile.localAI[0] / 100f, 0f, 1f);
+            Color puffCol = Color.Lerp(new Color(225, 232, 245), new Color(185, 205, 240), charge01);
+            for (int i = 0; i < blobOffsets.Length; i++) {
+                Vector2 drift = blobOffsets[i].SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(0.4f, 1.1f)
+                    + new Vector2(0f, -0.25f);
+                PRTLoader.NewParticle<PRT_SHPCCumulusPuff>(Projectile.Center + blobOffsets[i], drift,
+                    puffCol, blobScales[i] * 0.9f)
+                    .Configure(blobRotations[i], blobMirrors[i] == SpriteEffects.FlipHorizontally,
+                        Main.rand.Next(24, 36), 0.75f);
+            }
+            //满充放电死带余量 timeLeft，自然到期为0；阈值80容忍远端充能进度小幅滞后，防高充能停火后的假雷
+            if (Projectile.localAI[0] >= 80f && timeLeft > 1) {
+                PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero, new Color(220, 240, 255), 0.05f).Configure(0.05f, 0.7f, 24);
+                PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center + Vector2.UnitY * 220f, Vector2.Zero, new Color(180, 210, 255), 0.05f).Configure(0.05f, 0.55f, 22);
                 SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.7f, Pitch = -0.1f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Thunder with { Volume = 0.4f, Pitch = 0.2f }, Projectile.Center);
+                ShakeNear(Projectile.Center, 2.8f);
             }
-            SHPCNaturalFx.Shake(2.5f);
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -173,13 +203,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Color cloudCore = Color.Lerp(new Color(245, 248, 255), new Color(200, 220, 255), charge01);
             Color cloudEdge = Color.Lerp(new Color(160, 165, 175), new Color(110, 130, 180), charge01);
             Vector2 fogOrigin = fog.Size() * 0.5f;
-            //Fog 团块微飘
+            //Fog 团块微飘，凝聚期自小胀足；逐瓣镜像防贴纸感
             float drift = (float)Main.timeForVisualEffects * 0.02f;
+            float condense = MathHelper.SmoothStep(0f, 1f, Condense01);
             for (int i = 0; i < blobOffsets.Length; i++) {
-                Vector2 offset = blobOffsets[i] + new Vector2(MathF.Sin(drift + i) * 1.6f, MathF.Cos(drift + i * 0.7f) * 1.2f);
+                Vector2 offset = blobOffsets[i] * (0.55f + 0.45f * condense)
+                    + new Vector2(MathF.Sin(drift + i) * 1.6f, MathF.Cos(drift + i * 0.7f) * 1.2f);
                 Color c = Color.Lerp(cloudCore, cloudEdge, i / (float)BlobCount);
-                Main.spriteBatch.Draw(fog, baseScreen + offset, null, c * 0.95f,
-                    blobRotations[i] + drift * 0.3f, fogOrigin, blobScales[i], SpriteEffects.None, 0f);
+                Main.spriteBatch.Draw(fog, baseScreen + offset, null, c * (0.95f * condense),
+                    blobRotations[i] + drift * 0.3f, fogOrigin,
+                    blobScales[i] * (0.5f + 0.5f * condense), blobMirrors[i], 0f);
             }
             //充能进度环
             Texture2D ring = CWRAsset.DiffusionCircle?.Value;
@@ -194,21 +227,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
+            //真加色批源因子是 SourceAlpha，染色必须带 A
             float charge01 = MathHelper.Clamp(Projectile.localAI[0] / 100f, 0f, 1f);
-            if (charge01 < 0.6f) return;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null) return;
+            if (glow == null || blobOffsets == null) return;
             Vector2 baseScreen = Projectile.Center - Main.screenPosition;
+            //云腹内闪，hash 逐瓣轮亮，蓄能越高越频繁
+            if (charge01 > 0.45f) {
+                uint step = (Main.GameUpdateCount / 5) + (uint)Projectile.whoAmI * 7u;
+                int flashIdx = (int)(step * 2654435761u % (uint)blobOffsets.Length);
+                bool flashOn = step % 3u == 0 || (charge01 > 0.85f && step % 3u == 1);
+                if (flashOn) {
+                    Color flashCol = new Color(215, 228, 255) * (0.35f + 0.45f * charge01);
+                    spriteBatch.Draw(glow, baseScreen + blobOffsets[flashIdx] * 0.8f, null, flashCol,
+                        0f, glow.Size() * 0.5f, 0.9f + charge01 * 0.4f, SpriteEffects.None, 0f);
+                }
+            }
+            if (charge01 < 0.6f) return;
             //高充能辉光，蓝白→雷紫
             float t = (charge01 - 0.6f) / 0.4f;
-            Color inner = Color.Lerp(new Color(200, 220, 255, 0), new Color(160, 130, 255, 0), t) * t;
-            Color outer = Color.Lerp(new Color(80, 110, 180, 0), new Color(60, 30, 130, 0), t) * t * 0.6f;
+            Color inner = Color.Lerp(new Color(200, 220, 255), new Color(160, 130, 255), t) * (t * 0.5f);
+            Color outer = Color.Lerp(new Color(80, 110, 180), new Color(60, 30, 130), t) * (t * 0.28f);
             SHPCNaturalFx.GlowLayered(spriteBatch, glow, baseScreen, inner, outer, 1.4f + t * 0.5f, 0f, 3);
             //准发闪烁
             Texture2D star = CWRAsset.StarTexture?.Value;
             if (star != null && t > 0.65f) {
                 float pulse = 0.6f + 0.4f * MathF.Sin((float)Main.timeForVisualEffects * 0.45f);
-                Color starCol = new Color(220, 230, 255, 0) * t * pulse;
+                Color starCol = new Color(220, 230, 255) * (t * pulse * 0.75f);
                 Vector2 starOrigin = star.Size() * 0.5f;
                 spriteBatch.Draw(star, baseScreen, null, starCol,
                     (float)Main.timeForVisualEffects * 0.05f, starOrigin, 0.35f * pulse, SpriteEffects.None, 0f);

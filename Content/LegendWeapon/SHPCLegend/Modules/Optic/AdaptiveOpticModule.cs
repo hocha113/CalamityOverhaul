@@ -132,6 +132,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             }
             Projectile.timeLeft = 30;
 
+            //标线仅拥有者屏幕，FindLockTarget 走 Main.MouseWorld，旁观端会追旁观者光标并串播锁定音
+            if (Projectile.owner != Main.myPlayer) {
+                fadeAlpha = 0f;
+                return;
+            }
+
             NPC target = AdaptiveOpticModule.FindLockTarget(owner);
             if (target == null) {
                 lockedNpcId = -1;

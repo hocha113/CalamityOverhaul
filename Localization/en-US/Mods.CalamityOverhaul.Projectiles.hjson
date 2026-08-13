@@ -440,6 +440,9 @@ KikasaTwinsServant.DisplayName: Kikasa Twins Servant
 KikasaWallOfFleshEyeLaser.DisplayName: Kikasa Wall Of Flesh Eye Laser
 KikasaWallOfFleshLeech.DisplayName: Kikasa Wall Of Flesh Leech
 KikasaWallOfFleshServant.DisplayName: Kikasa Wall Of Flesh Servant
+KikasaRainUmbrella.DisplayName: Hovering Kikasa
+KikasaInkDrop.DisplayName: Ink Rain
+KikasaInkPour.DisplayName: Ink Torrent
 BrainBloodShard.DisplayName: Pulsing Blood Bead
 BrainMirrorImage.DisplayName: Mirror Image
 BrainShellFragment.DisplayName: Shell Fragment
@@ -502,6 +505,7 @@ CultistThunderColumn.DisplayName: Thunder Column
 MLordArcRayProj.DisplayName: Phantasmal Arc Ray
 MLordCometProj.DisplayName: Starfall Comet
 MLordConstellationProj.DisplayName: Constellation Omen
+MLordEyeLinkProj.DisplayName: True Eye Link Ray
 MLordGravityWellProj.DisplayName: Gravity Well
 MLordOrbProj.DisplayName: Phantasmal Star Orb
 MLordScanRayProj.DisplayName: Phantasmal Scan Ray

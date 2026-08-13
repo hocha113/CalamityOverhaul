@@ -70,6 +70,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Rendering
             if (frameRec.Height <= 0) {
                 frameRec = bodyTex.GetRectangle(0, frameCount);
             }
+            //邻帧渗线防护：原版帧表零间距(帧高=贴图高/帧数，NPC.FindFrame NPC.cs:60035)，
+            //非整数缩放下线性过滤在帧界会混入相邻帧边缘像素行——源矩形上下各内缩 1px
+            if (frameRec.Height > 4) {
+                frameRec.Y += 1;
+                frameRec.Height -= 2;
+            }
 
             //形变：压扁变宽、拉伸变窄，近似体积守恒
             float squash = ctx.VisualSquash;
@@ -102,6 +108,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Rendering
                 aura.Parameters["mode"]?.SetValue((float)ctx.AuraMode);
                 aura.Parameters["progress"]?.SetValue(ctx.AuraProgress);
                 aura.Parameters["texelSize"]?.SetValue(new Vector2(1f / bodyTex.Width, 1f / bodyTex.Height));
+                //帧界 uv 范围：描边邻域采样越过帧界会把相邻帧实体像素当作轮廓画出横线
+                aura.Parameters["uvFrame"]?.SetValue(new Vector4(
+                    frameRec.X / (float)bodyTex.Width, frameRec.Y / (float)bodyTex.Height,
+                    (frameRec.X + frameRec.Width) / (float)bodyTex.Width,
+                    (frameRec.Y + frameRec.Height) / (float)bodyTex.Height));
                 aura.Parameters["seed"]?.SetValue(npc.whoAmI * 0.173f % 1f);
                 aura.Parameters["royalCore"]?.SetValue(KingSlimeGelFX.CrownGold.ToVector3());
                 aura.Parameters["royalEdge"]?.SetValue(new Vector3(0.42f, 0.5f, 1f));

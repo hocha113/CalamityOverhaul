@@ -9,9 +9,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 {
     /// <summary>
-    /// 弦月合拢：双手各持一道弧光死光，沿缓动天体弧线相向合拢，
-    /// 逃生楔口随缓动曲线移动（快→慢→快的呼吸）；头部向楔口滴弹逼走位。
-    /// 单手存活退化为单弧+对侧扫描束，核心裸露版由真眼补第三弧
+    /// 弦月合拢（四臂对位版）：上对双手各持一道弧光死光沿天体弧线相向合拢，
+    /// 逃生楔口随缓动曲线移动（快→慢→快的呼吸）；下对双手反相开弧——
+    /// 自底部中央向两侧扫离（先封底后让位），与上对合拢形成"下开上合"的对位呼吸；
+    /// 头部向楔口滴弹逼走位。上对单手退化为单弧+对侧扫描束，核心裸露版由真眼补顶弧
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)MLordStateIndex.CrescentClose, typeof(MLordContext))]
     internal class MLordCrescentCloseState : MLordStateBase
@@ -56,13 +57,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             if (Timer < WindupEnd) {
                 context.SetChargeState(Timer / (float)WindupEnd);
                 if (!VaultUtils.isServer) {
-                    //双手处向心星流蓄势
+                    //四手处向心星流蓄势
                     MLordPartsStatus parts = context.Parts;
-                    if (parts.LeftHandAlive && parts.LeftHand >= 0) {
-                        MLordScreenFX.ConvergeStreak(Main.npc[parts.LeftHand].Center, 260f, Timer / (float)WindupEnd);
-                    }
-                    if (parts.RightHandAlive && parts.RightHand >= 0) {
-                        MLordScreenFX.ConvergeStreak(Main.npc[parts.RightHand].Center, 260f, Timer / (float)WindupEnd);
+                    for (int slot = 0; slot < MLordPartsStatus.HandSlots; slot++) {
+                        if (parts.HandAlive(slot) && parts.HandIndex(slot) >= 0) {
+                            MLordScreenFX.ConvergeStreak(Main.npc[parts.HandIndex(slot)].Center, 260f, Timer / (float)WindupEnd);
+                        }
                     }
                 }
             }
@@ -87,38 +87,50 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             return null;
         }
 
-        /// <summary>放出合拢弧组</summary>
+        /// <summary>放出合拢弧组：上对相向合拢，下对自底开弧扫离（对位呼吸）</summary>
         private void FireArcs(MLordContext context) {
             MLordPartsStatus parts = context.Parts;
             int damage = ScaleDamage(context, MLordDirector.ArcRayDamage);
             int arcType = ModContent.ProjectileType<MLordArcRayProj>();
-            bool left = parts.LeftHandAlive && parts.LeftHand >= 0;
-            bool right = parts.RightHandAlive && parts.RightHand >= 0;
+            bool upLeft = parts.HandAlive(0) && parts.HandIndex(0) >= 0;
+            bool upRight = parts.HandAlive(1) && parts.HandIndex(1) >= 0;
 
-            //左弧：自左上扫向正下再略过；右弧镜像。两弧尖端夹出移动楔口
-            if (left) {
-                NPC hand = Main.npc[parts.LeftHand];
+            //上左弧：自左上扫向正下再略过；上右镜像。两弧尖端夹出移动楔口
+            if (upLeft) {
+                NPC hand = Main.npc[parts.HandIndex(0)];
                 Projectile.NewProjectile(hand.GetSource_FromAI(), hand.Center, Vector2.Zero,
                     arcType, damage, 0f, Main.myPlayer, hand.whoAmI, MathHelper.Pi + 0.55f, 2.15f);
             }
-            if (right) {
-                NPC hand = Main.npc[parts.RightHand];
+            if (upRight) {
+                NPC hand = Main.npc[parts.HandIndex(1)];
                 Projectile.NewProjectile(hand.GetSource_FromAI(), hand.Center, Vector2.Zero,
                     arcType, damage, 0f, Main.myPlayer, hand.whoAmI, -0.55f, -2.15f);
             }
 
-            //单手：对侧由头补一记扫描束封边
-            if (left ^ right) {
+            //下对开弧：起于底部中央、向本侧扫离——先封底逼跳，后半程让位给上对楔口
+            if (parts.HandAlive(2) && parts.HandIndex(2) >= 0) {
+                NPC hand = Main.npc[parts.HandIndex(2)];
+                Projectile.NewProjectile(hand.GetSource_FromAI(), hand.Center, Vector2.Zero,
+                    arcType, damage, 0f, Main.myPlayer, hand.whoAmI, MathHelper.PiOver2 + 0.22f, 1.15f);
+            }
+            if (parts.HandAlive(3) && parts.HandIndex(3) >= 0) {
+                NPC hand = Main.npc[parts.HandIndex(3)];
+                Projectile.NewProjectile(hand.GetSource_FromAI(), hand.Center, Vector2.Zero,
+                    arcType, damage, 0f, Main.myPlayer, hand.whoAmI, MathHelper.PiOver2 - 0.22f, -1.15f);
+            }
+
+            //上对单手：对侧由头补一记扫描束封边
+            if (upLeft ^ upRight) {
                 NPC origin = context.Parts.Head >= 0 ? Main.npc[context.Parts.Head] : context.Npc;
-                float sideAngle = left ? MathHelper.PiOver2 - 0.9f : MathHelper.PiOver2 + 0.9f;
+                float sideAngle = upLeft ? MathHelper.PiOver2 - 0.9f : MathHelper.PiOver2 + 0.9f;
                 Projectile.NewProjectile(origin.GetSource_FromAI(), origin.Center, Vector2.Zero,
                     ModContent.ProjectileType<MLordScanRayProj>(), ScaleDamage(context, MLordDirector.ScanRayDamage),
                     0f, Main.myPlayer, origin.whoAmI, sideAngle, 46);
             }
 
-            //核心裸露：第一只真眼自上方补第三段短弧
+            //核心裸露：第一只真眼自上方补顶弧
             if (context.CoreExposed) {
-                int[] eyes = new int[3];
+                int[] eyes = new int[MLordFacts.MaxFreeEyes];
                 int eyeCount = MLordFacts.ScanFreeEyes(context.Npc, eyes);
                 if (eyeCount > 0) {
                     NPC eye = Main.npc[eyes[0]];
@@ -127,8 +139,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 }
             }
 
-            //无任何执行者（极端情况）：核心自射对开双弧
-            if (!left && !right && !context.CoreExposed) {
+            //无任何手（极端情况）：核心自射对开双弧
+            if (!parts.AnyHandAlive && !context.CoreExposed) {
                 NPC npc = context.Npc;
                 Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
                     arcType, damage, 0f, Main.myPlayer, npc.whoAmI, MathHelper.Pi + 0.55f, 2.15f);

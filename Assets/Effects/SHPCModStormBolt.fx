@@ -13,16 +13,7 @@ float3 coreColor;       //雷芯白
 float3 glowColor;       //电蓝辉光
 float3 auraColor;       //深蓝外晕
 
-texture uNoiseTex;
-sampler noiseSamp = sampler_state
-{
-    texture = <uNoiseTex>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
+sampler noiseSamp : register(s1); //Voronoi噪声,消费端绑Textures[1]+LinearWrap
 
 struct VSInput
 {

@@ -440,6 +440,9 @@ TBUGRiftPortalProj.DisplayName: 段错误裂缝
 // KikasaWallOfFleshEyeLaser.DisplayName: Kikasa Wall Of Flesh Eye Laser
 // KikasaWallOfFleshLeech.DisplayName: Kikasa Wall Of Flesh Leech
 // KikasaWallOfFleshServant.DisplayName: Kikasa Wall Of Flesh Servant
+KikasaRainUmbrella.DisplayName: 悬伞
+KikasaInkDrop.DisplayName: 墨雨
+KikasaInkPour.DisplayName: 墨瀑
 BrainBloodShard.DisplayName: 搏动血珠
 BrainMirrorImage.DisplayName: 镜像假体
 BrainShellFragment.DisplayName: 护壳碎片
@@ -502,6 +505,7 @@ CultistThunderColumn.DisplayName: 雷枢天柱
 MLordArcRayProj.DisplayName: 幻影弧光死光
 MLordCometProj.DisplayName: 星陨彗星
 MLordConstellationProj.DisplayName: 星图预兆
+MLordEyeLinkProj.DisplayName: 真眼链式死光
 MLordGravityWellProj.DisplayName: 引力井
 MLordOrbProj.DisplayName: 幻影星球
 MLordScanRayProj.DisplayName: 幻影扫描死光

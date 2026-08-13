@@ -29,6 +29,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
             if (target.TryGetGlobalNPC(out SHPCNPCEffects eff)) {
                 eff.ApplyPheromone(target, 360, beam.Projectile.owner);
+                //信息素落标提示，金尘自目标上飘
+                if (Main.netMode != NetmodeID.Server) {
+                    for (int i = 0; i < 3; i++) {
+                        PRTLoader.NewParticle<PRT_Sparkle>(
+                            target.Center + Main.rand.NextVector2Circular(target.width * 0.4f, target.height * 0.4f),
+                            new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), -Main.rand.NextFloat(0.8f, 1.6f)),
+                            new Color(255, 215, 90), Main.rand.NextFloat(0.28f, 0.5f))
+                            .Configure(new Color(150, 100, 30), Main.rand.Next(16, 26), 0f, 0.6f);
+                    }
+                }
             }
         }
 
@@ -56,7 +66,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     Vector2 vel = ang.ToRotationVector2() * Main.rand.NextFloat(2.5f, 4f);
                     PRTLoader.NewParticle<PRT_GammaIonize>(orb.Projectile.Center, vel, new Color(255, 215, 90), Main.rand.NextFloat(0.6f, 1f)).Configure(Main.rand.Next(20, 36), Main.rand.NextFloat());
                 }
-                PRTLoader.NewParticle<PRT_StarPulseRing>(orb.Projectile.Center, Vector2.Zero, new Color(255, 215, 90, 0), 0.05f).Configure(0.05f, 0.7f, 22);
+                //加色批禁 A=0
+                PRTLoader.NewParticle<PRT_StarPulseRing>(orb.Projectile.Center, Vector2.Zero, new Color(255, 215, 90), 0.05f).Configure(0.05f, 0.7f, 22);
             }
         }
     }
@@ -119,12 +130,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 float angle = MathHelper.TwoPi * i / 4f + Main.rand.NextFloat(-0.1f, 0.1f);
                 PRTLoader.NewParticle<PRT_HeavenStar>(target.Center, Vector2.Zero, new Color(255, 220, 100), 1f).Configure(new Color(120, 80, 25), angle, new Vector2(0.2f, 0.05f), new Vector2(0.45f, 0.12f), 26, Main.rand.NextFloat(-0.05f, 0.05f), 0.85f);
             }
-            PRTLoader.NewParticle<PRT_StarPulseRing>(target.Center, Vector2.Zero, new Color(255, 215, 90, 0), 0.05f).Configure(0.05f, 0.35f, 18);
+            PRTLoader.NewParticle<PRT_StarPulseRing>(target.Center, Vector2.Zero, new Color(255, 215, 90), 0.05f).Configure(0.05f, 0.35f, 18);
+        }
+
+        public override void OnKill(int timeLeft) {
+            //蜂消亡余韵，蜜滴坠散+一缕金尘，活得比弹幕久
+            if (Main.netMode == NetmodeID.Server) return;
+            for (int i = 0; i < 3; i++) {
+                Vector2 vel = Projectile.velocity * 0.2f
+                    + new Vector2(Main.rand.NextFloat(-1.2f, 1.2f), -Main.rand.NextFloat(0.4f, 1.4f));
+                PRTLoader.NewParticle<PRT_SHPCHoneyDrop>(Projectile.Center, vel,
+                    new Color(255, 190, 60), Main.rand.NextFloat(0.5f, 0.9f)).Configure(Main.rand.Next(22, 34));
+            }
+            PRTLoader.NewParticle<PRT_Sparkle>(Projectile.Center,
+                -Projectile.velocity.SafeNormalize(Vector2.Zero) * 0.6f,
+                new Color(255, 220, 110), 0.4f).Configure(new Color(140, 90, 25), 12, 0f, 0.7f);
         }
 
         private float WidthFunction(float progress) {
+            //收窄作能量尾流底层，蜂群感交给点串
             float taper = MathF.Sin(MathHelper.Clamp(progress * MathHelper.Pi, 0f, MathHelper.Pi));
-            return MathHelper.Lerp(2f, 9f, taper);
+            return MathHelper.Lerp(1.4f, 6f, taper);
         }
 
         private Color ColorFunction(Vector2 _) => Color.White;
@@ -149,7 +175,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
             shader.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
             shader.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.06f);
-            shader.Parameters["fadeAlpha"]?.SetValue(1f);
+            shader.Parameters["fadeAlpha"]?.SetValue(0.7f);
             shader.Parameters["coreColor"]?.SetValue(CoreVec);
             shader.Parameters["glowColor"]?.SetValue(GlowVec);
             shader.Parameters["auraColor"]?.SetValue(AuraVec);
@@ -167,18 +193,52 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
-            Vector2 baseScreen = Projectile.Center - Main.screenPosition;
+            //真加色批，A 必须随强度走，A=0 整层不显示
+            float t = (float)Main.timeForVisualEffects;
+            float speed = Projectile.velocity.Length();
+            Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            Vector2 perp = forward.RotatedBy(MathHelper.PiOver2);
+            //嗡嗡微颤，仅表现不动弹道
+            float buzz = MathF.Sin(t * 2.6f + Projectile.whoAmI * 1.7f);
+            Vector2 bodyPos = Projectile.Center - Main.screenPosition + perp * buzz * 1.6f;
+
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow != null) {
-                Color inner = new Color(255, 230, 130, 0) * 0.85f;
-                Color outer = new Color(120, 90, 25, 0) * 0.45f;
-                SHPCNaturalFx.GlowLayered(spriteBatch, glow, baseScreen, inner, outer, 0.5f, 0f, 2);
+                Vector2 gOrigin = glow.Size() * 0.5f;
+                //蜂群残影点串，离散个体感，逐点错相抖动
+                if (Projectile.oldPos != null) {
+                    for (int i = 2; i < TrailLen; i += 2) {
+                        Vector2 raw = i < Projectile.oldPos.Length ? Projectile.oldPos[i] : Vector2.Zero;
+                        if (raw == Vector2.Zero) continue;
+                        float dt = i / (float)TrailLen;
+                        Vector2 p = raw + Projectile.Size * 0.5f - Main.screenPosition;
+                        p += perp * MathF.Sin(t * 3.1f + i * 2.3f + Projectile.whoAmI) * 2.2f * dt;
+                        Color dot = Color.Lerp(new Color(255, 220, 110), new Color(150, 95, 30), dt) * (0.6f * (1f - dt) + 0.08f);
+                        spriteBatch.Draw(glow, p, null, dot, 0f, gOrigin, MathHelper.Lerp(0.16f, 0.05f, dt), SpriteEffects.None, 0f);
+                    }
+                }
+                //头部暖光双层
+                spriteBatch.Draw(glow, bodyPos, null, new Color(255, 235, 150) * 0.7f, 0f, gOrigin, 0.28f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(glow, bodyPos, null, new Color(140, 95, 30) * 0.35f, 0f, gOrigin, 0.52f, SpriteEffects.None, 0f);
             }
+            //蜂体，速度拉伸琥珀纺锤，26-44px 蜂的体量而非曳光弹
             Texture2D shot = CWRAsset.LightShotAlt?.Value;
             if (shot != null) {
                 Vector2 origin = new(shot.Width, shot.Height * 0.5f);
-                spriteBatch.Draw(shot, baseScreen, null, new Color(255, 200, 80, 0) * 0.55f,
-                    Projectile.rotation, origin, new Vector2(0.35f, 0.18f), SpriteEffects.None, 0f);
+                float stretch = 0.10f + speed * 0.005f;
+                spriteBatch.Draw(shot, bodyPos, null, new Color(255, 200, 80) * 0.8f,
+                    Projectile.rotation, origin, new Vector2(stretch, 0.11f), SpriteEffects.None, 0f);
+            }
+            //双翅高频交替闪，2f 换拍
+            Texture2D wing = CWRAsset.LightShot?.Value;
+            if (wing != null) {
+                bool beat = ((Main.GameUpdateCount / 2) + (uint)Projectile.whoAmI) % 2 == 0;
+                Vector2 wOrigin = new(wing.Width, wing.Height * 0.5f);
+                Color wcA = new Color(230, 240, 200) * (beat ? 0.5f : 0.16f);
+                Color wcB = new Color(230, 240, 200) * (beat ? 0.16f : 0.5f);
+                Vector2 wingRoot = bodyPos - forward * 4f;
+                spriteBatch.Draw(wing, wingRoot, null, wcA, Projectile.rotation - 1.05f, wOrigin, new Vector2(0.07f, 0.045f), SpriteEffects.None, 0f);
+                spriteBatch.Draw(wing, wingRoot, null, wcB, Projectile.rotation + 1.05f, wOrigin, new Vector2(0.07f, 0.045f), SpriteEffects.None, 0f);
             }
         }
 

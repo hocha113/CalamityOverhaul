@@ -7,7 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 {
-    /// <summary>日蚀降临：天幕遮蔽→剪影降下→双拍心跳→部件星光拼装→怒吼开战</summary>
+    /// <summary>日蚀降临：天幕遮蔽→剪影降下→双拍心跳→上对臂+头星光拼装→下对臂点亮→怒吼开战</summary>
     [InnoVault.StateMachines.VaultState((int)MLordStateIndex.Intro, typeof(MLordContext))]
     internal class MLordIntroState : MLordStateBase
     {
@@ -17,8 +17,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
         internal const int DescentEnd = 90;
         internal const int HeartbeatEnd = 130;
         internal const int AssemblyTick = 130;
-        internal const int RoarTick = 175;
-        internal const int IntroEnd = 235;
+        internal const int LowerPairTick = 158;
+        internal const int RoarTick = 196;
+        internal const int IntroEnd = 252;
 
         public override IMLordState OnUpdate(MLordContext context) {
             NPC npc = context.Npc;
@@ -95,7 +96,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             }
         }
 
-        /// <summary>部件自星光拼装成形，怒吼定场</summary>
+        /// <summary>部件自星光拼装成形（上对先成形、下对自肋位破体而出），怒吼定场</summary>
         private void UpdateAssembly(MLordContext context) {
             NPC npc = context.Npc;
             npc.alpha = 0;
@@ -103,11 +104,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 
             if (Timer == AssemblyTick) {
                 if (!VaultUtils.isClient) {
-                    context.Owner.SpawnParts();
+                    context.Owner.SpawnUpperAssembly();
                 }
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.9f, Pitch = -0.55f }, npc.Center);
                     MLordScreenFX.StarBurst(npc.Center, 1.6f, 26);
+                }
+            }
+
+            //第二拍：下对臂自肋位点亮（双爆点分居两肋，读作"再生出一对"）
+            if (Timer == LowerPairTick) {
+                if (!VaultUtils.isClient) {
+                    context.Owner.SpawnLowerPair();
+                }
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.85f, Pitch = -0.3f }, npc.Center);
+                    for (int side = -1; side <= 1; side += 2) {
+                        MLordScreenFX.StarBurst(npc.Center
+                            + new Vector2(MLordDirector.LowerShoulderOffset.X * side, MLordDirector.LowerShoulderOffset.Y), 1.1f, 14);
+                    }
+                    MLordScreenFX.Punch(npc.Center, 5f, 12);
                 }
             }
 

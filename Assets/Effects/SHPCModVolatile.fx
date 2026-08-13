@@ -13,16 +13,7 @@ float uGlitch;          //0~1 事件故障尖峰（急转/抖折/命中时拉高
 float3 baseColor;       //变异主色（裂变青/过载红/失稳橙/畸变紫）
 float3 accentColor;     //变异强调色（坏块与描边）
 
-texture uNoiseTex;
-sampler noiseSamp = sampler_state
-{
-    texture = <uNoiseTex>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
+sampler noiseSamp : register(s1); //Extra_193 Voronoi，消费端 Textures[1]+LinearWrap
 
 struct VSInput
 {

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 {
     /// <summary>
     /// 星髓凝滴：月蚀噬咬吸出的治疗载体，沿舌线回航月口，可拦截。
-    /// 抵达按 头→核心→双手 分配回复（核心裸露期核心优先）。
+    /// 抵达按 头→核心→四手 分配回复（核心裸露期核心优先）。
     /// ai 槽沿用原版：[0]=头 whoAmI+1，[1]=舌弹幕索引，[2]=航程计时
     /// </summary>
     internal class MoonLordLeechBlobAI : CWRNPCOverride
@@ -36,9 +36,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             int headIndex = (int)Math.Abs(npc.ai[0]) - 1;
             if (headIndex < 0 || headIndex >= Main.maxNPCs
                 || !Main.npc[headIndex].active || Main.npc[headIndex].type != NPCID.MoonLordHead) {
-                npc.life = 0;
-                npc.HitEffect();
-                npc.active = false;
+                //坠毁由服务端裁定并同步；客户端出生首帧 ai 未到时本地误杀会闪尸+喷渣
+                if (!VaultUtils.isClient) {
+                    npc.life = 0;
+                    npc.HitEffect();
+                    npc.active = false;
+                }
                 return false;
             }
             NPC head = Main.npc[headIndex];
@@ -80,11 +83,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
         /// <summary>治疗分配：裸露期核心优先，否则头→核心→手</summary>
         private void DistributeHeal(NPC head) {
             NPC core = MLordFacts.GetCore(head);
-            MLordPartsStatus parts = core != null ? MLordFacts.ScanParts(core) : default;
             int pool = HealPool;
 
             bool coreExposed = core != null && (int)core.ai[MLordAiSlots.CorePhase] == MLordPhase.CoreExposed;
-            Span<int> order = stackalloc int[4];
+            Span<int> order = stackalloc int[2 + MLordPartsStatus.HandSlots];
             int count = 0;
             if (coreExposed) {
                 if (core != null) {
@@ -98,11 +100,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                     order[count++] = core.whoAmI;
                 }
             }
-            if (parts.LeftHand >= 0) {
-                order[count++] = parts.LeftHand;
-            }
-            if (parts.RightHand >= 0) {
-                order[count++] = parts.RightHand;
+            //手只在核心在场时入列：default 快照的手槽是 0 而非 -1，直接消费会把
+            //Main.npc[0]（任意无关 NPC）灌进治疗序列
+            if (core != null) {
+                MLordPartsStatus parts = MLordFacts.ScanParts(core);
+                for (int slot = 0; slot < MLordPartsStatus.HandSlots; slot++) {
+                    if (parts.HandIndex(slot) >= 0) {
+                        order[count++] = parts.HandIndex(slot);
+                    }
+                }
             }
 
             for (int i = 0; i < count && pool > 0; i++) {

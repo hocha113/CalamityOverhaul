@@ -95,7 +95,8 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         + afterglow * 0.8 + flightLine * 0.4 + flash);
     alpha *= fadeAlpha;
 
-    return float4(col * alpha, alpha) * vertexColor;
+    //Additive 批源因子=SourceAlpha，rgb 不预乘、a 携带包络，预乘=α²双重衰减
+    return float4(col, alpha) * vertexColor;
 }
 
 technique Technique1

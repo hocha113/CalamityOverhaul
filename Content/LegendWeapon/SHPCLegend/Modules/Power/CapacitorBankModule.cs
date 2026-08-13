@@ -449,9 +449,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                     Volume = 0.38f,
                     Pitch = 0.25f + delivered * 0.08f
                 }, pos);
-                //球过载闪光
+                //球过载闪光；AdditiveBlend 批源因子=SourceAlpha，A=0 整层不显示，须满 alpha
                 PRTLoader.NewParticle<PRT_StarPulseRing>(pos, Vector2.Zero,
-                    BankGlow with { A = 0 }, 0.05f).Configure(0.05f, 0.30f + delivered * 0.04f, 14);
+                    BankGlow, 0.05f).Configure(0.05f, 0.30f + delivered * 0.04f, 14);
                 for (int k = 0; k < 7; k++) {
                     PRTLoader.NewParticle<PRT_Spark>(pos, Main.rand.NextVector2CircularEdge(4f, 4f) + orb.Projectile.velocity * 0.2f,
                         BankCore, Main.rand.NextFloat(0.5f, 1.0f)).Configure(true, Main.rand.Next(8, 16));

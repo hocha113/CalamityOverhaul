@@ -180,16 +180,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
                 return false;
             }
 
-            //残影，零值轨迹点跳过
+            //挥迹辉带：相邻轨迹点间拉伸星条连成连续光带——突进速度下逐点盖章会读作点状虚影
             if (Launched) {
+                Texture2D trailStar = CWRAsset.StarTexture_White.Value;
                 for (int i = Projectile.oldPos.Length - 1; i >= 1; i--) {
-                    if (Projectile.oldPos[i] == Vector2.Zero) {
+                    if (Projectile.oldPos[i] == Vector2.Zero || Projectile.oldPos[i - 1] == Vector2.Zero) {
                         continue;
                     }
-                    Vector2 old = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                    Vector2 a = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                    Vector2 b = Projectile.oldPos[i - 1] + Projectile.Size / 2f - Main.screenPosition;
+                    Vector2 seg = b - a;
+                    float segLen = seg.Length();
+                    if (segLen < 0.5f) {
+                        continue;
+                    }
                     float k = 1f - i / (float)Projectile.oldPos.Length;
-                    Main.spriteBatch.Draw(glow, old, null, prism * (0.2f * k * Projectile.Opacity), 0f,
-                        glow.Size() / 2f, 0.5f * k, SpriteEffects.None, 0);
+                    Main.spriteBatch.Draw(trailStar, (a + b) * 0.5f, null, prism * (0.3f * k * Projectile.Opacity),
+                        seg.ToRotation(), trailStar.Size() / 2f,
+                        new Vector2((segLen + 8f) / trailStar.Width * 1.3f, 0.05f * k), SpriteEffects.None, 0f);
                 }
             }
             Main.spriteBatch.Draw(glow, drawPos, null, prism * (0.55f * Projectile.Opacity), 0f,

@@ -33,17 +33,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         public static int CometDamage => 62;         //星陨彗星
         public static int StarfireDamage => 45;      //星火余留
         public static int PalmContactDamage => 96;   //掌击接触
+        public static int EyeLinkDamage => 58;       //真眼链式死光（集群组合技）
+        public static int EyeScissorDamage => 64;    //真眼剪式弧光
 
         //―――― 部件血量比例（SetProperty 各端确定性执行）――――
         public static float CoreLifeFactor => 0.9f;
         public static float HandLifeFactor => 0.9f;
         public static float HeadLifeFactor => 0.9f;
 
-        //―――― 阵形几何（沿用原版剪影）――――
-        /// <summary>肩锚点相对核心偏移</summary>
+        //―――― 阵形几何（上对沿用原版剪影，下对自肋位低垂外张）――――
+        /// <summary>上对肩锚点相对核心偏移（原版口径 (220,-60)）</summary>
         public static Vector2 ShoulderOffset => new(220f, -60f);
-        /// <summary>手常态位相对核心偏移（X 取边位镜像）</summary>
+        /// <summary>下对肩锚点相对核心偏移（肋位，被胸甲/披风半遮以示"次生"）</summary>
+        public static Vector2 LowerShoulderOffset => new(152f, 118f);
+        /// <summary>上对手常态位相对核心偏移（X 取边位镜像）</summary>
         public static Vector2 HandHomeOffset => new(350f, -100f);
+        /// <summary>下对手常态位相对核心偏移（低垂外张，构图呈 X 形展开）</summary>
+        public static Vector2 LowerHandHomeOffset => new(444f, 168f);
         /// <summary>头焊接位相对核心偏移</summary>
         public static Vector2 HeadWeldOffset => new(0f, -400f);
         /// <summary>核心悬停位相对目标玩家偏移</summary>

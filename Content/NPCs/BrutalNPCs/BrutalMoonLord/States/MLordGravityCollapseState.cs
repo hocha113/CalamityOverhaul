@@ -1,6 +1,7 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -10,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
 {
     /// <summary>
     /// 引力坍缩：核心升空开井，引力井牵引玩家并透镜扭曲空间，
-    /// 双手向井投掷环绕星球被弹射成椭圆弹道；井崩解放出环形幻影眼
+    /// 四手按对角序轮换向井投掷星球、被弹射成椭圆弹道；井崩解放出环形幻影眼
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)MLordStateIndex.GravityCollapse, typeof(MLordContext))]
     internal class MLordGravityCollapseState : MLordStateBase
@@ -85,23 +86,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             }
         }
 
-        /// <summary>自存活手（缺手退核心）向井掷出切向星球</summary>
+        /// <summary>自存活手向井掷出切向星球：四波按对角序轮换投手（上左→下右→上右→下左），缺手就近补位、全缺退核心</summary>
         private void SpawnOrbitVolley(MLordContext context, Vector2 well, int wave) {
             MLordPartsStatus parts = context.Parts;
             int damage = ScaleDamage(context, MLordDirector.OrbDamage);
             int orbType = ModContent.ProjectileType<MLordOrbProj>();
             int count = context.CoreExposed ? 4 : 3;
 
-            NPC origin = context.Npc;
-            if (wave % 2 == 0 && parts.LeftHandAlive && parts.LeftHand >= 0) {
-                origin = Main.npc[parts.LeftHand];
-            }
-            else if (parts.RightHandAlive && parts.RightHand >= 0) {
-                origin = Main.npc[parts.RightHand];
-            }
-            else if (parts.LeftHandAlive && parts.LeftHand >= 0) {
-                origin = Main.npc[parts.LeftHand];
-            }
+            Span<int> throwOrder = stackalloc int[] { 0, 3, 1, 2 };
+            int handIndex = parts.FirstAliveHand(throwOrder[wave % throwOrder.Length]);
+            NPC origin = handIndex >= 0 ? Main.npc[handIndex] : context.Npc;
 
             Vector2 toWell = (well - origin.Center).SafeNormalize(Vector2.UnitY);
             Vector2 tangent = toWell.RotatedBy(MathHelper.PiOver2);

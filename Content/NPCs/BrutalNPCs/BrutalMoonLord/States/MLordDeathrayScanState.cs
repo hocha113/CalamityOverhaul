@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Projectiles;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -94,22 +95,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 }
             }
 
-            //扫描间隙手部缓速眼弹压位
-            if (Timer % Frames(context, 46) == 20) {
-                SpawnHandEyeStream(context);
+            //扫描间隙手部缓速眼弹压位：上对与下对错半拍（四臂持握转向的火力仪式）。
+            //死亡模式压缩后节拍点须仍落在余数域内：拍点钳到 interval-1 兜底任何节奏缩放，
+            //下对取相移半周期而非固定余数
+            int streamInterval = Frames(context, 46);
+            int streamBeat = Math.Min(20, streamInterval - 1);
+            if (Timer % streamInterval == streamBeat) {
+                SpawnHandEyeStream(context, row: 0);
+            }
+            if ((Timer + streamInterval / 2) % streamInterval == streamBeat) {
+                SpawnHandEyeStream(context, row: 1);
             }
         }
 
-        private void SpawnHandEyeStream(MLordContext context) {
+        /// <summary>指定行位（0上对/1下对）的手放出缓速眼弹</summary>
+        private void SpawnHandEyeStream(MLordContext context, int row) {
             MLordPartsStatus parts = context.Parts;
             int damage = ScaleDamage(context, MLordDirector.EyeDamage);
             for (int side = 0; side < 2; side++) {
-                int index = side == 0 ? parts.LeftHand : parts.RightHand;
-                bool alive = side == 0 ? parts.LeftHandAlive : parts.RightHandAlive;
-                if (!alive || index < 0) {
+                int slot = row * 2 + side;
+                if (!parts.HandAlive(slot) || parts.HandIndex(slot) < 0) {
                     continue;
                 }
-                NPC hand = Main.npc[index];
+                NPC hand = Main.npc[parts.HandIndex(slot)];
                 Vector2 aim = (context.Target.Center - hand.Center).SafeNormalize(Vector2.UnitY);
                 Projectile.NewProjectile(hand.GetSource_FromAI(), hand.Center, aim * 4.6f,
                     ProjectileID.PhantasmalEye, damage, 0f, Main.myPlayer);

@@ -4,6 +4,7 @@
 //驻波方程 sin(k·x)·cos(ω·t)：波节沿束固定，波腹振幅随时间鼓动；
 //再叠一对反向行波细弦（其叠加即驻波）强化"共振"物理身份
 //条带 UV 为笛卡尔空间，无极坐标无接缝
+//噪声走 s1，消费端 Textures[1]+LinearWrap 在 DrawTrail 前绑定
 // ============================================================================
 
 float4x4 transformMatrix;
@@ -14,16 +15,7 @@ float3 beatBright;      //洋红亮
 float3 beatMain;        //洋红主
 float3 beatDeep;        //洋红深
 
-texture uNoiseTex;
-sampler noiseSamp = sampler_state
-{
-    texture = <uNoiseTex>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
+sampler noiseSamp : register(s1);
 
 struct VSInput
 {

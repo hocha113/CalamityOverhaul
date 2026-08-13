@@ -109,10 +109,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
                 return s;
             }
 
-            //―――― 身带肩：肩锚是躯干姿态的确定性函数 ――――
+            //―――― 身带肩：肩锚是躯干姿态的确定性函数（上下对分锚点）――――
             float dir = (int)hand.ai[MLordAiSlots.HandSide] == 0 ? -1f : 1f;
-            Vector2 shoulder = core.Center + new Vector2(MLordDirector.ShoulderOffset.X * dir,
-                MLordDirector.ShoulderOffset.Y).RotatedBy(core.rotation);
+            bool lowerRow = (int)hand.ai[MLordAiSlots.HandRow] == 1;
+            Vector2 shoulderOffset = lowerRow ? MLordDirector.LowerShoulderOffset : MLordDirector.ShoulderOffset;
+            Vector2 shoulder = core.Center + new Vector2(shoulderOffset.X * dir,
+                shoulderOffset.Y).RotatedBy(core.rotation);
             Vector2 wrist = hand.Center + WristOffset;
 
             Vector2 d = wrist - shoulder;
@@ -137,8 +139,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             //下偏权重须足够大，令休息位/各编队驻留弦向都远离极性死区——
             //权重过小时驻留位落在迟滞带内：残留错侧数秒不自愈（肘上翻）、
             //且 sideBlend 常驻收拢弯度导致小臂骨段长期压瘪（仿真：0.42 时休息位错侧
-            //自愈 193 tick、小臂/上臂比 0.42；0.85 时全驻留位 0 tick 自愈、比 0.98）
-            Vector2 hint = new Vector2(dir, 0.85f).RotatedBy(core.rotation);
+            //自愈 193 tick、小臂/上臂比 0.42；0.85 时上对全驻留位 0 tick 自愈、比 0.98）。
+            //下对肘向更低垂，四臂同侧时上下肘各归其位不扎堆。下对权重 1.35 时
+            //弦月合拢驻留位 |want|≈0.36，叠加核心倾斜(≤0.06)与呼吸浮动后最低跌到 0.19，
+            //落回 ±0.22 迟滞带内；取 1.8 后同一位形最差 |want|≈0.42，全部驻留位安全
+            float hintDown = lowerRow ? 1.8f : 0.85f;
+            Vector2 hint = new Vector2(dir, hintDown).RotatedBy(core.rotation);
             Vector2 n = new(-dN.Y, dN.X);
             float want = Vector2.Dot(n, hint);
             if (snap || st.DesiredSide == 0f) {

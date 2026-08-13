@@ -1,4 +1,7 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
+using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -17,7 +20,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
     /// 第三能力模块：能力复制——湖记住最后一只被沉溺的生物，
     /// 按 <see cref="Common.CWRKeySystem.Kikasa_Summon"/> 召唤对应鬼奴驱使；
     /// 记录与输入在 <see cref="KikasaServants.KikasaServantPlayer"/>，
-    /// 穷举条目在 <see cref="KikasaServants.KikasaServantIndex"/>
+    /// 穷举条目在 <see cref="KikasaServants.KikasaServantIndex"/>。
+    /// 第四能力模块：普攻·墨雨——按住左键撑出悬伞
+    /// <see cref="KikasaRains.KikasaRainUmbrella"/>，头顶自旋按节拍降下大墨滴追踪敌人
     /// </summary>
     internal class KikasaItem : ModItem
     {
@@ -32,11 +37,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.autoReuse = false;
+            Item.channel = true;
+            Item.shoot = ModContent.ProjectileType<KikasaRainUmbrella>();
+            Item.shootSpeed = 1f;
             Item.value = Terraria.Item.sellPrice(gold: 25);
             Item.rare = ItemRarityID.Purple;
         }
 
-        //攻击形态是后续模块，当前左键不做任何事
-        public override bool CanUseItem(Player player) => false;
+        /// <summary>右键=倒撑蓄力重击</summary>
+        public override bool AltFunctionUse(Player player) => true;
+
+        //悬伞在场时不重复开伞
+        public override bool CanUseItem(Player player)
+            => player.ownedProjectileCounts[ModContent.ProjectileType<KikasaRainUmbrella>()] <= 0;
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source,
+            Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            //ai[0]:0=墨雨,1=蓄力倒撑(重击模块接管)
+            float mode = player.altFunctionUse == 2 ? 1f : 0f;
+            Projectile.NewProjectile(source, player.MountedCenter, Vector2.Zero,
+                type, damage, knockback, player.whoAmI, mode);
+            return false;
+        }
     }
 }

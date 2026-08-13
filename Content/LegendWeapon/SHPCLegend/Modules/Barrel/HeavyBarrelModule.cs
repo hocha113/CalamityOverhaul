@@ -265,11 +265,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     HeavyBarrelModule.EmberColor, Main.rand.NextFloat(0.5f, 0.9f))
                     ?.Configure(HeavyBarrelModule.IronColor, Main.rand.Next(18, 32));
             }
-            //双层脉冲环
+            //双层脉冲环；PRT加色批源因子=SourceAlpha，tint禁A=0
             PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
-                new Color(255, 236, 200, 0), 0.05f)?.Configure(0.05f, 0.5f, 20);
+                HeavyBarrelModule.HotColor, 0.05f)?.Configure(0.05f, 0.5f, 20);
             PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
-                new Color(255, 150, 60, 0), 0.05f)?.Configure(0.05f, 0.38f, 26);
+                HeavyBarrelModule.EmberColor, 0.05f)?.Configure(0.05f, 0.38f, 26);
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
@@ -293,6 +293,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            //屏外不启 Immediate(环径~160px+余量)
+            if (!VaultUtils.IsPointOnScreen(Projectile.Center - Main.screenPosition, 400)) return false;
             Effect shader = EffectLoader.SHPCModHeavyMaul?.Value;
             Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;

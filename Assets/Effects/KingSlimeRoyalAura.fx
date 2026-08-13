@@ -10,6 +10,7 @@ float intensity;      //总强度 0~1
 float mode;           //0=Idle 1=Charging 2=Enraged 3=Slamming
 float progress;       //当前模式的进度 0~1
 float2 texelSize;     //1/纹理宽高
+float4 uvFrame;       //当前帧 uv 界(xy=min zw=max)：原版帧表零间距，越界=相邻帧
 float seed;           //实例化扰动种子
 
 float3 royalCore;     //核心皇冠色（亮金）
@@ -20,7 +21,16 @@ float hash(float n)
     return frac(sin(n) * 43758.5453);
 }
 
-//8 邻域 alpha 最大值：粗描边检测
+//帧界内 alpha 采样：邻域采样会越过源矩形帧界采到相邻帧实体像素
+//(横线根因)——越界一律视作透明
+float frameAlpha(float2 uv)
+{
+    if (uv.x < uvFrame.x || uv.y < uvFrame.y || uv.x > uvFrame.z || uv.y > uvFrame.w)
+        return 0.0;
+    return tex2D(uImage0, uv).a;
+}
+
+//8 邻域 alpha 最大值：粗描边检测（帧界裁剪）
 float edgeMax(float2 uv, float radius)
 {
     float maxA = 0;
@@ -32,7 +42,7 @@ float edgeMax(float2 uv, float radius)
         {
             if (ox == 0 && oy == 0) continue;
             float2 off = float2(ox, oy) * texelSize * radius;
-            maxA = max(maxA, tex2D(uImage0, uv + off).a);
+            maxA = max(maxA, frameAlpha(uv + off));
         }
     }
     return maxA;
@@ -115,11 +125,11 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float4 color = texColor * vertexColor;
     float lum = dot(color.rgb / max(color.a, 0.0001), float3(0.299, 0.587, 0.114));
 
-    //内边缘检测：加强凝胶折光
-    float a_r = tex2D(uImage0, coords + float2( texelSize.x * 1.5, 0)).a;
-    float a_l = tex2D(uImage0, coords + float2(-texelSize.x * 1.5, 0)).a;
-    float a_u = tex2D(uImage0, coords + float2(0,  texelSize.y * 1.5)).a;
-    float a_d = tex2D(uImage0, coords + float2(0, -texelSize.y * 1.5)).a;
+    //内边缘检测：加强凝胶折光（帧界裁剪）
+    float a_r = frameAlpha(coords + float2( texelSize.x * 1.5, 0));
+    float a_l = frameAlpha(coords + float2(-texelSize.x * 1.5, 0));
+    float a_u = frameAlpha(coords + float2(0,  texelSize.y * 1.5));
+    float a_d = frameAlpha(coords + float2(0, -texelSize.y * 1.5));
     float innerEdge = saturate(1.0 - (a_r + a_l + a_u + a_d) * 0.25);
     innerEdge = smoothstep(0.0, 0.6, innerEdge);
 

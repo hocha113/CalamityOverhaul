@@ -26,16 +26,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             for (int i = 0; i < 3; i++) {
                 float ang = baseAngle + offsets[i];
                 Vector2 vel = ang.ToRotationVector2() * 12f;
+                //ai1 追踪倍率走生成参数，生成包在 NewProjectile 内部即发出，后置赋值到不了远端
                 int idx = Projectile.NewProjectile(orb.Projectile.GetSource_FromThis(),
                     orb.Projectile.Center, vel,
                     ModContent.ProjectileType<CyberTraceBeamProj>(),
-                    dmg, 0f, orb.Projectile.owner, ai0: Main.rand.Next(3));
-                if (idx >= 0 && idx < Main.maxProjectiles) {
-                    Main.projectile[idx].ai[1] = 2f;
-                    if (Main.projectile[idx].ModProjectile is CyberTraceBeamProj beam) {
-                        beam.IsDerived = true;
-                        beam.LifeMul = 0.6f;
-                    }
+                    dmg, 0f, orb.Projectile.owner, ai0: Main.rand.Next(3), ai1: 2f);
+                if (idx >= 0 && idx < Main.maxProjectiles
+                    && Main.projectile[idx].ModProjectile is CyberTraceBeamProj beam) {
+                    //owner 本地字段，共享光束无 SendExtraAI 通道
+                    beam.IsDerived = true;
+                    beam.LifeMul = 0.6f;
                 }
             }
         }

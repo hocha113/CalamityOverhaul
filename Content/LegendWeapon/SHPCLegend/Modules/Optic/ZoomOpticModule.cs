@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             float distanceGrowth = GetDistanceGrowth(dist);
             int extra = Math.Max((int)(damageDone * (0.35f + distanceGrowth * BeamGrowthAtLegacyPeak)), 1);
             target.SimpleStrikeNPC(extra, hit.HitDirection, false, 0f, hit.DamageType, false, 0f, true);
-            SpawnImpactParticles(target.Center);
+            SpawnImpactParticles(target.Center, beam.FlightDirection, distanceGrowth);
         }
 
         public override void OnLaserHitNPC(CyberPrismLaserProj laser, NPC target, NPC.HitInfo hit, int damageDone) {
@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             float distanceGrowth = GetDistanceGrowth(dist);
             int extra = Math.Max((int)(damageDone * (0.20f + distanceGrowth * LaserGrowthAtLegacyPeak)), 1);
             target.SimpleStrikeNPC(extra, hit.HitDirection, false, 0f, hit.DamageType, false, 0f, true);
-            SpawnImpactParticles(target.Center);
+            SpawnImpactParticles(target.Center, laser.Projectile.rotation.ToRotationVector2(), distanceGrowth);
         }
 
         /// <summary>距离收益单调递增；1800px 达到旧峰值，之后按对数边际递减</summary>
@@ -58,12 +58,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             return MathF.Log(1f + normalizedDistance) / MathF.Log(2f);
         }
 
-        private static void SpawnImpactParticles(Vector2 center) {
+        /// <summary>远焦贯穿锥，沿弹道过靶延伸，距离越远越长越亮</summary>
+        private static void SpawnImpactParticles(Vector2 center, Vector2 dir, float growth) {
             if (Main.netMode == Terraria.ID.NetmodeID.Server) return;
-            for (int i = 0; i < 10; i++) {
-                Vector2 vel = Main.rand.NextVector2CircularEdge(6f, 6f);
-                PRTLoader.NewParticle<PRT_CyberSquare>(center, vel, new Color(220, 240, 255), Main.rand.NextFloat(1.0f, 2.2f)).Configure(new Color(120, 200, 255), Main.rand.Next(20, 35));
+            dir = dir.SafeNormalize(Vector2.UnitX);
+            Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
+
+            //白热窄锥火花，速度拉伸穿靶向前
+            int sparks = 5 + (int)(growth * 3f);
+            for (int i = 0; i < sparks; i++) {
+                Vector2 vel = dir.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(4.5f, 9f + growth * 4f);
+                PRTLoader.NewParticle<PRT_Spark>(center + perp * Main.rand.NextFloat(-6f, 6f), vel,
+                    new Color(235, 248, 255), Main.rand.NextFloat(0.5f, 0.95f)).Configure(false, Main.rand.Next(10, 16));
             }
+
+            //少量方屑横散衬托锥向
+            for (int i = 0; i < 3; i++) {
+                Vector2 vel = perp * Main.rand.NextFloat(-2.5f, 2.5f) + dir * Main.rand.NextFloat(0.5f, 2f);
+                PRTLoader.NewParticle<PRT_CyberSquare>(center, vel,
+                    new Color(200, 235, 255), Main.rand.NextFloat(0.7f, 1.2f)).Configure(new Color(120, 200, 255), Main.rand.Next(12, 20));
+            }
+
+            //薄锐小环钉住弹着点
+            PRTLoader.NewParticle<PRT_StarPulseRing>(center, Vector2.Zero,
+                new Color(190, 225, 255), 0.03f).Configure(0.03f, 0.18f + growth * 0.08f, 12);
         }
     }
 }

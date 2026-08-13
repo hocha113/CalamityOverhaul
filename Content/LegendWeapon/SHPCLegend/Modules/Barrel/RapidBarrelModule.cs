@@ -253,10 +253,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
             SoundEngine.PlaySound(SoundID.Item34 with { Volume = 0.7f, Pitch = -0.25f }, player.Center);
             SoundEngine.PlaySound(SoundID.Item37 with { Volume = 0.5f, Pitch = -0.5f }, player.Center);
-            //破线冲环+蒸汽
+            //破线冲环+蒸汽；PRT加色批源因子=SourceAlpha，A=0整环不显示
             Vector2 muzzle = GetMuzzle(player, out Vector2 aimDir);
             PRTLoader.NewParticle<PRT_StarPulseRing>(muzzle, Vector2.Zero,
-                new Color(255, 150, 60, 0), 0.05f).Configure(0.05f, 0.45f, 18);
+                new Color(255, 150, 60), 0.05f).Configure(0.05f, 0.45f, 18);
             for (int i = 0; i < 10; i++) {
                 PRTLoader.NewParticle<PRT_Smoke>(muzzle + Main.rand.NextVector2Circular(8f, 8f),
                     aimDir.RotatedBy(Main.rand.NextFloat(-1.2f, 1.2f)) * Main.rand.NextFloat(1.5f, 4.5f),
@@ -300,7 +300,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             //复位上膛音
             SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.5f, Pitch = 0.4f }, player.Center);
             PRTLoader.NewParticle<PRT_StarPulseRing>(player.Center, Vector2.Zero,
-                new Color(120, 190, 235, 0), 0.05f).Configure(0.05f, 0.28f, 14);
+                new Color(120, 190, 235), 0.05f).Configure(0.05f, 0.28f, 14);
         }
 
         /// <summary>快照字典兜底清理</summary>
@@ -688,8 +688,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             Vector2 screenPos = Projectile.Center - Main.screenPosition;
             float pulse = 0.85f + 0.15f * MathF.Sin((float)Main.timeForVisualEffects * 0.14f);
             Color hot = RapidBarrelModule.HeatColor(intensity);
-            Color inner = Color.Lerp(hot, new Color(150, 190, 225), coolVis * 0.85f) with { A = 0 };
-            Color outer = Color.Lerp(new Color(140, 25, 8), new Color(60, 85, 115), coolVis * 0.85f) with { A = 0 };
+            //真加色批A=0什么都不画，A随亮度乘数走
+            Color inner = Color.Lerp(hot, new Color(150, 190, 225), coolVis * 0.85f);
+            Color outer = Color.Lerp(new Color(140, 25, 8), new Color(60, 85, 115), coolVis * 0.85f);
             float scale = (0.32f + intensity * 0.3f + ventVis * 0.22f) * pulse;
             SHPCNaturalFx.GlowLayered(spriteBatch, glow, screenPos,
                 inner * (fade * (0.35f + intensity * 0.45f)),

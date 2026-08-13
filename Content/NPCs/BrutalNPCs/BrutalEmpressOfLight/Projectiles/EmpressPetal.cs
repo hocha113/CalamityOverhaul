@@ -122,17 +122,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Projecti
                 }
             }
 
-            //亮头：扑动的瓣形——横轴随相位翻转（花瓣在光流里打旋）
+            //亮头：扑动的瓣形——用横轴开合表现翻瓣，两层星芒夹角收小、同步缓摆，
+            //避免大角度反向摆动读作抖动重影
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Color prism = Main.hslToRgb(Hue, 1f, 0.66f) with { A = 0 };
-            float flutter = (float)Math.Sin(Timer * 0.19f + Projectile.identity * 0.83f);
-            float petalWide = 0.055f + 0.045f * Math.Abs(flutter);
+            float flutter = (float)Math.Sin(Timer * 0.11f + Projectile.identity * 0.83f);
+            float petalWide = 0.055f + 0.035f * Math.Abs(flutter);
             Main.EntitySpriteDraw(glow, drawPos, null, prism * (0.85f * Projectile.Opacity), 0f, glowOrigin, 0.5f, SpriteEffects.None, 0);
-            //两枚交叠斜星芒=瓣形轮廓，随flutter开合
-            Main.EntitySpriteDraw(star, drawPos, null, prism * Projectile.Opacity, Projectile.rotation + 0.5f * flutter,
+            Main.EntitySpriteDraw(star, drawPos, null, prism * Projectile.Opacity, Projectile.rotation + 0.2f * flutter,
                 starOrigin, new Vector2(0.105f, petalWide), SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(star, drawPos, null, Main.hslToRgb((Hue + 0.06f) % 1f, 1f, 0.6f) with { A = 0 } * (0.7f * Projectile.Opacity),
-                Projectile.rotation - 0.4f * flutter, starOrigin, new Vector2(0.085f, petalWide * 0.8f), SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(star, drawPos, null, Main.hslToRgb((Hue + 0.06f) % 1f, 1f, 0.6f) with { A = 0 } * (0.5f * Projectile.Opacity),
+                Projectile.rotation + 0.2f * flutter - 0.15f, starOrigin, new Vector2(0.085f, petalWide * 0.8f), SpriteEffects.None, 0);
             Main.EntitySpriteDraw(star, drawPos, null, Color.White with { A = 0 } * (0.85f * Projectile.Opacity),
                 Projectile.rotation, starOrigin, new Vector2(0.05f, 0.035f), SpriteEffects.None, 0);
             return false;

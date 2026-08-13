@@ -27,10 +27,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
         /// <summary>心跳帧（心脏裸露动画）</summary>
         private int heartFrameTick;
         private int heartFrame;
-        /// <summary>逐部件破坏入账（服务端事件检测与归因基线）</summary>
-        private bool countedLeftBroken;
-        private bool countedRightBroken;
-        private bool countedHeadBroken;
+        /// <summary>逐部件破坏入账（服务端事件检测与归因基线）：槽0~3四手，槽4头</summary>
+        private readonly bool[] countedBroken = new bool[MLordPartsStatus.HandSlots + 1];
         #endregion
 
         #region 加载与初始化
@@ -197,33 +195,42 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             }
         }
 
-        /// <summary>入账新破坏并写最近破坏部件归因槽，返回新增破坏数</summary>
+        /// <summary>入账新破坏并写最近破坏部件归因槽，返回新增破坏数。
+        /// 归因码：1上左/2上右/3头/4下左/5下右（手槽 slot → slot&lt;2 ? slot+1 : slot+2）；
+        /// 同帧多破时首个写槽、其余归因入队，随排队事件逐个换写</summary>
         private int CountNewBreaks() {
             MLordPartsStatus parts = stateContext.Parts;
             int newBreaks = 0;
-            bool leftBroken = parts.LeftHand >= 0 && !parts.LeftHandAlive;
-            bool rightBroken = parts.RightHand >= 0 && !parts.RightHandAlive;
-            bool headBroken = parts.Head >= 0 && !parts.HeadAlive;
 
-            if (leftBroken && !countedLeftBroken) {
-                newBreaks++;
-                ai[MLordAiSlots.OvLastBrokenPart] = 1f;
+            for (int slot = 0; slot < MLordPartsStatus.HandSlots; slot++) {
+                bool broken = parts.HandIndex(slot) >= 0 && !parts.HandAlive(slot);
+                if (broken && !countedBroken[slot]) {
+                    RecordBreak(ref newBreaks, slot < 2 ? slot + 1 : slot + 2);
+                }
+                countedBroken[slot] = broken;
             }
-            if (rightBroken && !countedRightBroken) {
-                newBreaks++;
-                ai[MLordAiSlots.OvLastBrokenPart] = 2f;
+
+            bool headBroken = parts.Head >= 0 && !parts.HeadAlive;
+            if (headBroken && !countedBroken[MLordPartsStatus.HandSlots]) {
+                RecordBreak(ref newBreaks, 3);
             }
-            if (headBroken && !countedHeadBroken) {
-                newBreaks++;
-                ai[MLordAiSlots.OvLastBrokenPart] = 3f;
-            }
-            countedLeftBroken = leftBroken;
-            countedRightBroken = rightBroken;
-            countedHeadBroken = headBroken;
+            countedBroken[MLordPartsStatus.HandSlots] = headBroken;
+
             if (newBreaks > 0) {
                 npc.netUpdate = true;
             }
             return newBreaks;
+        }
+
+        /// <summary>首个破坏立即写归因槽，同帧其余入队待排队事件消费</summary>
+        private void RecordBreak(ref int newBreaks, int code) {
+            if (newBreaks == 0) {
+                ai[MLordAiSlots.OvLastBrokenPart] = code;
+            }
+            else {
+                stateContext.PendingBreakCodes.Add(code);
+            }
+            newBreaks++;
         }
 
         /// <summary>远距日蚀回归：整套阵形相对平移，保持拼装关系</summary>
@@ -300,21 +307,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 
         #region 部件生成与回收
 
-        /// <summary>登场拼装：双手+头（服务端）</summary>
-        internal void SpawnParts() {
+        /// <summary>登场拼装第一拍：上对双手+头（服务端）</summary>
+        internal void SpawnUpperAssembly() {
             if (VaultUtils.isClient) {
                 return;
             }
-            for (int side = 0; side < 2; side++) {
-                int hand = NPC.NewNPC(npc.GetSource_FromAI(), (int)npc.Center.X + (side * 2 - 1) * 120,
-                    (int)npc.Center.Y - 60, NPCID.MoonLordHand, npc.whoAmI);
-                if (hand < Main.maxNPCs) {
-                    Main.npc[hand].ai[MLordAiSlots.HandSide] = side;
-                    Main.npc[hand].ai[MLordAiSlots.PartCoreIndex] = npc.whoAmI;
-                    Main.npc[hand].target = npc.target;
-                    Main.npc[hand].netUpdate = true;
-                }
-            }
+            SpawnHandPair(row: 0);
             int head = NPC.NewNPC(npc.GetSource_FromAI(), (int)npc.Center.X, (int)npc.Center.Y - 200,
                 NPCID.MoonLordHead, npc.whoAmI);
             if (head < Main.maxNPCs) {
@@ -324,25 +322,47 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             }
         }
 
-        /// <summary>死亡演出：按序吞回一名从属（真眼→左手→右手→头）</summary>
+        /// <summary>登场拼装第二拍：下对双手（服务端）</summary>
+        internal void SpawnLowerPair() {
+            if (VaultUtils.isClient) {
+                return;
+            }
+            SpawnHandPair(row: 1);
+        }
+
+        /// <summary>生成一对手：行位写 ai[1]，边位写 ai[2]（原版 checkDead 逐实例生效，追加手同样转破脱真眼）</summary>
+        private void SpawnHandPair(int row) {
+            int spawnY = (int)npc.Center.Y + (row == 0 ? -60 : 120);
+            for (int side = 0; side < 2; side++) {
+                int hand = NPC.NewNPC(npc.GetSource_FromAI(), (int)npc.Center.X + (side * 2 - 1) * (120 + row * 60),
+                    spawnY, NPCID.MoonLordHand, npc.whoAmI);
+                if (hand < Main.maxNPCs) {
+                    Main.npc[hand].ai[MLordAiSlots.HandRow] = row;
+                    Main.npc[hand].ai[MLordAiSlots.HandSide] = side;
+                    Main.npc[hand].ai[MLordAiSlots.PartCoreIndex] = npc.whoAmI;
+                    Main.npc[hand].target = npc.target;
+                    Main.npc[hand].netUpdate = true;
+                }
+            }
+        }
+
+        /// <summary>死亡演出：按序吞回一名从属（真眼×5→四手残口→头残口）</summary>
         internal void ConsumeOneServant() {
             if (VaultUtils.isClient) {
                 return;
             }
-            int[] eyeBuffer = new int[3];
+            int[] eyeBuffer = new int[MLordFacts.MaxFreeEyes];
             int eyeCount = MLordFacts.ScanFreeEyes(npc, eyeBuffer);
             if (eyeCount > 0) {
                 KillServant(Main.npc[eyeBuffer[0]]);
                 return;
             }
             MLordPartsStatus parts = MLordFacts.ScanParts(npc);
-            if (parts.LeftHand >= 0) {
-                KillServant(Main.npc[parts.LeftHand]);
-                return;
-            }
-            if (parts.RightHand >= 0) {
-                KillServant(Main.npc[parts.RightHand]);
-                return;
+            for (int slot = 0; slot < MLordPartsStatus.HandSlots; slot++) {
+                if (parts.HandIndex(slot) >= 0) {
+                    KillServant(Main.npc[parts.HandIndex(slot)]);
+                    return;
+                }
             }
             if (parts.Head >= 0) {
                 KillServant(Main.npc[parts.Head]);

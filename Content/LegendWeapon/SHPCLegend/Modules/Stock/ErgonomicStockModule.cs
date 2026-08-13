@@ -373,21 +373,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 return;
             }
 
-            ErgonomicStockModule module = FindModule(owner);
-            bool valid = !owner.dead
-                && owner.HeldItem != null && owner.HeldItem.type == SHPCOverride.ID
-                && module != null && module.UnityActive;
-            if (valid) {
-                Projectile.timeLeft = 30;
-                fade = MathF.Min(fade + 0.08f, 1f);
+            bool heldOk = !owner.dead
+                && owner.HeldItem != null && owner.HeldItem.type == SHPCOverride.ID;
+            if (Projectile.owner == Main.myPlayer) {
+                //owner 权威，模块状态决定存续，Kill 经同步传遍各端
+                ErgonomicStockModule module = FindModule(owner);
+                bool valid = heldOk && module != null && module.UnityActive;
+                if (valid) {
+                    Projectile.timeLeft = 30;
+                    fade = MathF.Min(fade + 0.08f, 1f);
+                }
+                else {
+                    //跌出淡出自灭
+                    fade -= 0.06f;
+                    if (fade <= 0f) {
+                        Projectile.Kill();
+                        return;
+                    }
+                }
             }
             else {
-                //跌出淡出自灭
-                fade -= 0.06f;
-                if (fade <= 0f) {
-                    Projectile.Kill();
-                    return;
-                }
+                //远端/服务端不知 UnityActive（命中钩子仅 owner 侧），本地不许 Kill
+                //存续只跟随 owner 的 Kill 同步，渐显按可观测的持械状态走
+                Projectile.timeLeft = 30;
+                fade = heldOk ? MathF.Min(fade + 0.08f, 1f) : MathF.Max(fade - 0.06f, 0f);
             }
 
             Projectile.Center = owner.RotatedRelativePoint(owner.MountedCenter, true);
@@ -454,9 +463,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
                 fx.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.04f);
                 fx.Parameters["uBeat"]?.SetValue(beat);
-                fx.Parameters["uNoiseTex"]?.SetValue(noise);
                 fx.Parameters["uCoreColor"]?.SetValue(ErgonomicStockModule.EchoCore.ToVector3());
                 fx.Parameters["uEdgeColor"]?.SetValue(ErgonomicStockModule.EchoEdge.ToVector3());
+                //噪声走显式 s1 绑定，禁 sampler_state+SetValue 模式
+                Main.graphics.GraphicsDevice.Textures[1] = noise;
+                Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
 
                 //旧残影先画
                 for (int i = GhostLags.Length - 1; i >= 0; i--) {

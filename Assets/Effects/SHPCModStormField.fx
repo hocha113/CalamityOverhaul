@@ -5,18 +5,8 @@
 //手写噪声输入一律用旋转笛卡尔坐标或 dist
 // ============================================================================
 
-sampler uImage0 : register(s0);
-
-texture uNoiseTex;
-sampler noiseSamp = sampler_state
-{
-    texture = <uNoiseTex>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
+sampler uImage0 : register(s0);   //批画布白像素,不采样
+sampler noiseSamp : register(s1); //Perlin噪声,消费端绑Textures[1]+LinearWrap
 
 float uTime;            //C#侧自管理视觉时间，强度越高推进越快
 float fadeAlpha;        //整体淡入淡出 0~1
@@ -48,11 +38,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float angle = atan2(centered.y, centered.x);
     float normAngle = (angle + 3.14159) / 6.28318;
 
-    //边界：0.86 为领域实际半径，向外留辉光带
+    //边界：0.86 为领域实际半径，向外留辉光带；直线算术，尾端乘 edgeFade 归零（禁动态分支）
     float ringR = 0.86;
     float edgeFade = 1.0 - smoothstep(ringR, 1.0, dist);
-    if (edgeFade <= 0.001)
-        return float4(0, 0, 0, 0);
 
     //风眼：场心相对平静，风暴集中在环带
     float eyeMask = smoothstep(0.10, 0.34, dist);

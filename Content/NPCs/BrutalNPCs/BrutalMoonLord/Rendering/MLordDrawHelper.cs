@@ -49,13 +49,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Rendering
             Vector2 center = core.Center;
             MLordPartsStatus parts = MLordFacts.ScanParts(core);
 
-            //肩→手骨臂（每侧）
-            for (int side = 0; side < 2; side++) {
-                int handIndex = side == 0 ? parts.LeftHand : parts.RightHand;
+            //肩→手骨臂：下对（槽2/3）先画垫底，上对（槽0/1）后画压前，X 形层次
+            Span<int> armOrder = stackalloc int[] { 2, 3, 0, 1 };
+            foreach (int slot in armOrder) {
+                int handIndex = parts.HandIndex(slot);
                 if (handIndex < 0 || !Main.npc[handIndex].active) {
                     continue;
                 }
-                DrawUpperArm(spriteBatch, upperArmTex, core, Main.npc[handIndex], side, light, screenPos);
+                DrawUpperArm(spriteBatch, upperArmTex, core, Main.npc[handIndex], slot % 2, light, screenPos);
             }
 
             //披风双翼（镜像两半）

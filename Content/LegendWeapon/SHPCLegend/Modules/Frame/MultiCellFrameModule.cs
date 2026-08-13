@@ -247,9 +247,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             }
             if (chargeNow >= CellCount) {
                 //六格集满就绪音+扩散环
+                //加色批环保留 A，A=0 整环不显示
                 SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.55f, Pitch = 0.35f }, Projectile.Center);
                 PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
-                    MatrixMain with { A = 0 }, 0.05f).Configure(0.05f, 0.4f, 16);
+                    MatrixMain, 0.05f).Configure(0.05f, 0.4f, 16);
             }
         }
 
@@ -277,7 +278,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 }
             }
             PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
-                MatrixMain with { A = 0 }, 0.05f).Configure(0.05f, 0.65f, 20);
+                MatrixMain, 0.05f).Configure(0.05f, 0.65f, 20);
         }
 
         /// <summary>矩阵齐射，六阵位定位束，IsDerived 防递归</summary>
@@ -306,17 +307,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             for (int i = 0; i < CellCount; i++) {
                 Vector2 pos = CellWorldPos(i);
                 Vector2 dir = (target.Center - pos).SafeNormalize(Vector2.UnitX);
+                //追踪倍率走 ai1 生成参数入同步包，生成后补写远端收不到
                 int idx = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
                     pos, dir * 14f,
                     ModContent.ProjectileType<CyberTraceBeamProj>(),
                     dmg, 2f, Projectile.owner,
-                    ai0: 0);
-                if (idx >= 0 && idx < Main.maxProjectiles) {
-                    Main.projectile[idx].ai[1] = SalvoHomingMul;
-                    if (Main.projectile[idx].ModProjectile is CyberTraceBeamProj child) {
-                        child.IsDerived = true;
-                        child.SpeedMul = 1.15f;
-                    }
+                    ai0: 0, ai1: SalvoHomingMul);
+                if (idx >= 0 && idx < Main.maxProjectiles
+                    && Main.projectile[idx].ModProjectile is CyberTraceBeamProj child) {
+                    child.IsDerived = true;
+                    child.SpeedMul = 1.15f;
                 }
             }
             Charge = 0;

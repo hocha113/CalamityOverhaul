@@ -250,10 +250,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             if (Main.netMode == NetmodeID.Server) {
                 return;
             }
-            //满档就绪音+金环
+            //满档就绪音+金环；StarPulseRing 走加色批，源因子=SourceAlpha，A=0 整层不显示
             SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.42f, Pitch = 0.9f }, player.Center);
             PRTLoader.NewParticle<PRT_StarPulseRing>(player.Center + new Vector2(0f, -58f),
-                Vector2.Zero, VoltGold with { A = 0 }, 0.05f).Configure(0.05f, 0.3f, 14);
+                Vector2.Zero, VoltGold, 0.05f).Configure(0.05f, 0.3f, 14);
         }
 
         private void EnterLeaking(Player player) {
@@ -303,7 +303,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                     }
                     if (full) {
                         PRTLoader.NewParticle<PRT_StarPulseRing>(muzzle, Vector2.Zero,
-                            VoltGold with { A = 0 }, 0.05f).Configure(0.05f, 0.4f, 16);
+                            VoltGold, 0.05f).Configure(0.05f, 0.4f, 16);
                     }
                 }
             }
@@ -395,38 +395,52 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
 
         public override void OnBeamKill(CyberTraceBeamProj beam, int timeLeft) {
-            voltBeams.Remove(beam.Projectile.whoAmI);
+            if (!voltBeams.Remove(beam.Projectile.whoAmI, out float c)) {
+                return;
+            }
+            //强化束余韵，残余电荷在消亡点放尽，电压纹路不随束体裸切
+            Vector2 pos = beam.Projectile.Center;
+            if (!VaultUtils.IsPointOnScreen(pos - Main.screenPosition, 200)) {
+                return;
+            }
+            int count = 3 + (int)(c * 4f);
+            for (int i = 0; i < count; i++) {
+                PRTLoader.NewParticle<PRT_Spark>(pos,
+                    -beam.FlightDirection.RotatedBy(Main.rand.NextFloat(-1.2f, 1.2f)) * Main.rand.NextFloat(1.5f, 4f),
+                    Color.Lerp(VoltGold, VoltIon, Main.rand.NextFloat(0.5f)),
+                    Main.rand.NextFloat(0.55f, 0.95f)).Configure(false, Main.rand.Next(14, 26));
+            }
+            if (c >= 0.999f) {
+                PRTLoader.NewParticle<PRT_StarPulseRing>(pos, Vector2.Zero,
+                    VoltIon, 0.04f).Configure(0.04f, 0.26f, 12);
+            }
         }
 
         //═════════════ 激光点火倾泻 ═════════════
 
         public override void OnLaserAI(CyberPrismLaserProj laser) {
             Projectile proj = laser.Projectile;
-            if (proj.owner == Main.myPlayer) {
-                //压枪激光也算战斗节奏，松后蓄压再倾泻
-                sinceShot = 0;
-                //点火倾泻为回声窗口
-                if (!laserWasActive) {
-                    laserWasActive = true;
-                    if (charge > 0.02f) {
-                        laserEmpowerFrames = (int)(charge * LaserEmpowerMaxFrames);
-                        flashVis = MathF.Max(flashVis, charge);
-                        if (Main.netMode != NetmodeID.Server) {
-                            SoundEngine.PlaySound(SoundID.Item94 with { Volume = 0.16f + charge * 0.28f, Pitch = -0.05f }, proj.Center);
-                        }
-                        charge = 0f;
-                        phase = VoltPhase.Charging;
-                        windowTimer = 0;
-                        beepGate = 0;
+            //压枪激光也算战斗节奏，松后蓄压再倾泻；镜像实例同步走本地量，旁观者同见金染
+            sinceShot = 0;
+            //点火倾泻为回声窗口，各端凭本地镜像电荷推进
+            if (!laserWasActive) {
+                laserWasActive = true;
+                if (charge > 0.02f) {
+                    laserEmpowerFrames = (int)(charge * LaserEmpowerMaxFrames);
+                    flashVis = MathF.Max(flashVis, charge);
+                    if (Main.netMode != NetmodeID.Server) {
+                        SoundEngine.PlaySound(SoundID.Item94 with { Volume = 0.16f + charge * 0.28f, Pitch = -0.05f }, proj.Center);
                     }
-                }
-                if (laserEmpowerFrames > 0) {
-                    TickDown(ref laserEmpowerFrames, ref laserCarry);
+                    charge = 0f;
+                    phase = VoltPhase.Charging;
+                    windowTimer = 0;
+                    beepGate = 0;
                 }
             }
 
             //回声窗口染稳压金
             if (laserEmpowerFrames > 0) {
+                TickDown(ref laserEmpowerFrames, ref laserCarry);
                 float q = MathHelper.Clamp(laserEmpowerFrames / (float)LaserEmpowerMaxFrames + 0.35f, 0f, 1f);
                 laser.ThemeCore = Color.Lerp(laser.ThemeCore, Color.Lerp(VoltGold, Color.White, 0.4f), q);
                 laser.ThemeGlow = Color.Lerp(laser.ThemeGlow, VoltGold, q);
@@ -583,7 +597,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
-                Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone,
+                Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
                 null, Main.GameViewMatrix.TransformationMatrix);
             return false;
         }

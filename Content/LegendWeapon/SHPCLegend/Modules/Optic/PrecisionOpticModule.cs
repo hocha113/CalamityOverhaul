@@ -22,6 +22,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         private const int CalibrationCap = 15;
         private int calibration;
 
+        //校准色阶 暗红→白热，与裁决射线同族
+        private static readonly Color CalibDim = new(150, 35, 45);
+        private static readonly Color CalibHot = new(255, 235, 225);
+        private static readonly Color CalibEdge = new(255, 45, 60);
+
         public override void Apply(ref ShootContext ctx) {
             ctx.SpreadMul += -1f;
             ctx.CritAdd += 4;
@@ -36,6 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                     float pitch = MathHelper.Lerp(-0.2f, 0.8f, calibration / (float)CalibrationCap);
                     SoundEngine.PlaySound(SoundID.Item114 with { Volume = 0.22f, Pitch = pitch }, target.Center);
                 }
+                SpawnCalibrationTick(beam);
                 return;
             }
 
@@ -43,11 +49,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             FireJudgmentRay(beam.Projectile, target);
         }
 
+        /// <summary>校准刻痕，色温随层数升温，与滴答音同拍；≥80% 小环预告裁决将至</summary>
+        private void SpawnCalibrationTick(CyberTraceBeamProj beam) {
+            if (Main.netMode == NetmodeID.Server) return;
+            float ratio = calibration / (float)CalibrationCap;
+            Vector2 hitPos = beam.Projectile.Center;
+            Vector2 dir = beam.FlightDirection;
+            Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
+            Color tickCol = Color.Lerp(CalibDim, CalibHot, ratio);
+
+            //弹着点刻痕方片
+            PRTLoader.NewParticle<PRT_CyberSquare>(hitPos + perp * Main.rand.NextFloat(-10f, 10f),
+                dir * Main.rand.NextFloat(0.5f, 1.5f) + perp * Main.rand.NextFloat(-0.8f, 0.8f),
+                tickCol, 0.55f + ratio * 0.5f).Configure(CalibEdge, 10 + (int)(ratio * 8f));
+
+            //每两层一道汇聚短线
+            if (calibration % 2 == 0) {
+                Vector2 from = hitPos - dir * 42f + perp * Main.rand.NextFloat(-26f, 26f);
+                PRTLoader.NewParticle<PRT_CyberConverge>(from, Vector2.Zero, tickCol,
+                    Main.rand.NextFloat(0.5f, 0.8f)).Configure(hitPos, CalibEdge, Main.rand.Next(10, 16), ratio);
+            }
+
+            if (ratio >= 0.8f) {
+                PRTLoader.NewParticle<PRT_StarPulseRing>(hitPos, Vector2.Zero, CalibEdge, 0.03f)
+                    .Configure(0.03f, 0.16f + ratio * 0.08f, 10);
+            }
+        }
+
         public override void OnBeamKill(CyberTraceBeamProj beam, int timeLeft) {
             //主束未命中消亡 = 脱靶清零
             if (beam.IsDerived || beam.Projectile.numHits > 0) return;
             if (calibration > 0 && Main.netMode != NetmodeID.Server && beam.Projectile.owner == Main.myPlayer) {
                 SoundEngine.PlaySound(SoundID.Item16 with { Volume = 0.25f, Pitch = -0.7f }, beam.Projectile.Center);
+                //校准散逸，暗红方屑自束尾泄出
+                int n = Math.Min(calibration, 6);
+                for (int i = 0; i < n; i++) {
+                    Vector2 vel = Main.rand.NextVector2Circular(2.2f, 2.2f) - Vector2.UnitY * 0.5f;
+                    PRTLoader.NewParticle<PRT_CyberSquare>(beam.Projectile.Center, vel,
+                        new Color(120, 30, 38), Main.rand.NextFloat(0.5f, 0.9f)).Configure(CalibDim, Main.rand.Next(12, 20));
+                }
             }
             calibration = 0;
         }
@@ -59,10 +99,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 
             Vector2 dir = (throughTarget.Center - owner.Center).SafeNormalize(Vector2.UnitX);
             int dmg = Math.Max(source.damage * 5, 1);
+            //方向进 ai0 生成包，迟入端不吃已清零的 velocity
             Projectile.NewProjectile(source.GetSource_FromThis(),
                 owner.Center + dir * 30f, dir,
                 ModContent.ProjectileType<SHPCJudgmentRayProj>(),
-                dmg, 4f, source.owner);
+                dmg, 4f, source.owner, ai0: dir.ToRotation());
         }
     }
 
@@ -102,15 +143,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         public override void AI() {
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
-                rayDir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+                rayDir = Projectile.ai[0].ToRotationVector2();
                 Projectile.velocity = Vector2.Zero;
                 ResolveLength();
                 if (Main.netMode != NetmodeID.Server) {
                     SoundEngine.PlaySound(SoundID.Item33 with { Volume = 0.8f, Pitch = 0.55f }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.5f, Pitch = 0.6f }, Projectile.Center);
                     SpawnMuzzleBurst();
+                    //屏震随距枪口衰减，禁全客户端无条件满幅
+                    float falloff = 1f - MathHelper.Clamp(
+                        Main.LocalPlayer.Distance(Projectile.Center) / 900f, 0f, 1f);
+                    SHPCNaturalFx.Shake(3.5f * falloff);
                 }
-                SHPCNaturalFx.Shake(3.5f);
             }
 
             int age = Lifetime - Projectile.timeLeft;
@@ -137,9 +181,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + rayDir * 20f, vel,
                     RayEdge, Main.rand.NextFloat(0.6f, 1.2f)).Configure(true, Main.rand.Next(10, 20));
             }
-            //终点耀斑
+            //终点耀斑，加色批 A=0 整层消隐故保满 A
             Vector2 endPos = Projectile.Center + rayDir * rayLength;
-            PRTLoader.NewParticle<PRT_StarPulseRing>(endPos, Vector2.Zero, RayEdge with { A = 0 }, 0.05f).Configure(0.05f, 0.5f, 20);
+            PRTLoader.NewParticle<PRT_StarPulseRing>(endPos, Vector2.Zero, RayEdge, 0.05f).Configure(0.05f, 0.5f, 20);
             for (int i = 0; i < 8; i++) {
                 PRTLoader.NewParticle<PRT_Spark>(endPos, Main.rand.NextVector2CircularEdge(5f, 5f),
                     RayCore, Main.rand.NextFloat(0.5f, 1.0f)).Configure(true, Main.rand.Next(10, 18));

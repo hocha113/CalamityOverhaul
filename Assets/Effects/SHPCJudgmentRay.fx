@@ -27,8 +27,8 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float crossDist = abs(coords.y - 0.5) * 2.0;     //0=中心 1=边缘
     float t = lifeProgress;
 
-    //出现/消散包络
-    float sweep = smoothstep(t * 3.2, t * 3.2 - 0.18, along);
+    //出现/消散包络，5帧内扫满全长跟上8帧伤害窗
+    float sweep = smoothstep(t * 7.5, t * 7.5 - 0.22, along);
     float shrink = 1.0 - smoothstep(0.45, 1.0, t);
 
     //弧芯
@@ -50,14 +50,14 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     tick = step(0.94, tick) * (1.0 - smoothstep(0.0, glowW * 0.9, crossDist));
     tick *= 0.5 * shrink;
 
-    //消散裂解
+    //消散裂解，seed 掺射线长度一射一形，段熄灭后不复燃
     float segID = floor(along * tickFreq * 0.5);
-    float segHash = hash21(float2(segID, floor(uTime * 18.0)));
+    float segHash = hash21(float2(segID, frac(rayLength * 0.00137) * 40.0));
     float dissolve = step(segHash, 1.0 - (t - 0.5) * 1.8);
     dissolve = max(dissolve, step(t, 0.5));
 
-    //枪口闪光与终点耀斑
-    float muzzle = pow(saturate(1.0 - along / 0.06), 2.0) * (1.0 - crossDist) * (1.0 - t);
+    //枪口闪光6帧内收干，终点耀斑随坍缩
+    float muzzle = pow(saturate(1.0 - along / 0.06), 2.0) * (1.0 - crossDist) * pow(saturate(1.0 - t / 0.2), 2.0);
     float impact = pow(saturate((along - 0.97) / 0.03), 1.5) * (1.0 - crossDist * 0.7) * shrink;
 
     //噪声热扰动
@@ -72,6 +72,8 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     color += coreColor * tick;
     color += edgeColor * heatGlow;
     color += coreColor * (muzzle * 1.2 + impact * 0.9);
+    //开幕2帧过曝，必暴一击的白闪
+    color += float3(1.0, 1.0, 1.0) * core * (1.0 - smoothstep(0.0, 0.07, t)) * 0.9;
 
     float alpha = saturate(core + glow * 0.55 + fringe * 0.4 + tick * 0.5 + muzzle + impact);
     alpha *= fadeAlpha * sweep * dissolve;

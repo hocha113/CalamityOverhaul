@@ -236,10 +236,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 return;
             }
             dir = dir.SafeNormalize(Vector2.UnitX);
+            //方向进 ai0 生成包，迟入端不吃已清零的 velocity
             Projectile.NewProjectile(source.GetSource_FromThis(),
                 owner.Center + dir * 30f, dir,
                 ModContent.ProjectileType<SHPCSkypierceRayProj>(),
-                Math.Max(dmg, 1), 8f, source.owner);
+                Math.Max(dmg, 1), 8f, source.owner, ai0: dir.ToRotation());
         }
     }
 
@@ -324,8 +325,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 readyFlash = 1f;
                 SoundEngine.PlaySound(SoundID.Unlock with { Volume = 0.65f, Pitch = 0.45f }, Projectile.Center);
                 SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.4f, Pitch = 0.75f }, Projectile.Center);
+                //加色批 A=0 整层消隐，环色保满 A
                 PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
-                    LineCore with { A = 0 }, 0.04f).Configure(0.04f, 0.3f, 14);
+                    LineCore, 0.04f).Configure(0.04f, 0.3f, 14);
                 for (int i = 0; i < 8; i++) {
                     PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
                         aimDir.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(2f, 5f),
@@ -435,7 +437,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             spriteBatch.Draw(white, endScreen, null, c, MathHelper.PiOver2,
                 new Vector2(0.5f, 0.5f), new Vector2(armLen, 2f), SpriteEffects.None, 0f);
             if (glow != null) {
-                spriteBatch.Draw(glow, endScreen, null, LineEdge with { A = 0 } * fadeAlpha * 0.5f, 0f,
+                //A 随强度走，A=0 在加色批画不出东西
+                spriteBatch.Draw(glow, endScreen, null, LineEdge * (fadeAlpha * 0.6f), 0f,
                     glow.Size() * 0.5f, 0.3f * pulse, SpriteEffects.None, 0f);
             }
         }
@@ -483,7 +486,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         public override void AI() {
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
-                rayDir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+                rayDir = Projectile.ai[0].ToRotationVector2();
                 Projectile.velocity = Vector2.Zero;
                 ResolveLength();
                 if (Main.netMode != NetmodeID.Server) {
@@ -537,10 +540,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 }
             }
             PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center + rayDir * 14f, Vector2.Zero,
-                RayEdge with { A = 0 }, 0.05f).Configure(0.05f, 0.42f, 16);
+                RayEdge, 0.05f).Configure(0.05f, 0.42f, 16);
             Vector2 endPos = Projectile.Center + rayDir * rayLength;
             PRTLoader.NewParticle<PRT_StarPulseRing>(endPos, Vector2.Zero,
-                RayCore with { A = 0 }, 0.05f).Configure(0.05f, 0.55f, 20);
+                RayCore, 0.05f).Configure(0.05f, 0.55f, 20);
             for (int i = 0; i < 10; i++) {
                 PRTLoader.NewParticle<PRT_Spark>(endPos, Main.rand.NextVector2CircularEdge(6f, 6f),
                     RayEdge, Main.rand.NextFloat(0.6f, 1.1f)).Configure(true, Main.rand.Next(10, 18));

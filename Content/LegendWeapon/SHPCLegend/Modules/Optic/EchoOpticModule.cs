@@ -27,12 +27,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             for (int i = 0; i < 3; i++) {
                 float ang = baseAngle + MathHelper.Lerp(-MathHelper.PiOver2, MathHelper.PiOver2, (float)i / 2);
                 Vector2 vel = ang.ToRotationVector2() * 14f;
+                //追踪倍率走 ai1 生成参数，随生成包同步，生成后补写远端收不到
                 int idx = Projectile.NewProjectile(beam.Projectile.GetSource_FromThis(),
                     beam.Projectile.Center, vel,
                     ModContent.ProjectileType<CyberTraceBeamProj>(),
-                    dmg, 0f, beam.Projectile.owner, ai0: Main.rand.Next(3));
+                    dmg, 0f, beam.Projectile.owner, ai0: Main.rand.Next(3), ai1: 2.2f);
                 if (idx >= 0 && idx < Main.maxProjectiles) {
-                    Main.projectile[idx].ai[1] = 2.2f;
                     if (Main.projectile[idx].ModProjectile is CyberTraceBeamProj child) {
                         child.IsDerived = true;
                         child.LifeMul = 0.45f;

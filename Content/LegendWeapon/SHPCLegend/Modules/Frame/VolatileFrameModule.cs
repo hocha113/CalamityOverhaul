@@ -602,9 +602,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             shader.Parameters["uGlitch"]?.SetValue(MathHelper.Clamp(glitchSpike + (dissolve >= 0 ? 0.6f : 0f), 0f, 1f));
             shader.Parameters["baseColor"]?.SetValue(VolatileFrameModule.MutMain[Mutation].ToVector3());
             shader.Parameters["accentColor"]?.SetValue(VolatileFrameModule.MutAccent[Mutation].ToVector3());
-            shader.Parameters["uNoiseTex"]?.SetValue(noise);
 
             GraphicsDevice device = Main.graphics.GraphicsDevice;
+            //噪声走 s1 寄存器约定，Apply 前绑定
+            device.Textures[1] = noise;
+            device.SamplerStates[1] = SamplerState.LinearWrap;
             device.BlendState = BlendState.Additive;
             trail.DrawTrail(shader);
             device.BlendState = BlendState.AlphaBlend;
@@ -616,8 +618,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null) return;
 
-            Color main = VolatileFrameModule.MutMain[Mutation] with { A = 0 };
-            Color accent = VolatileFrameModule.MutAccent[Mutation] with { A = 0 };
+            //真 Additive 批源因子=SourceAlpha，A=0 整层不显示，A 必须随强度走
+            Color main = VolatileFrameModule.MutMain[Mutation];
+            Color accent = VolatileFrameModule.MutAccent[Mutation];
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = glow.Size() * 0.5f;
 
@@ -635,9 +638,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                 Texture2D star = CWRAsset.StarTexture_White?.Value;
                 if (star != null) {
                     float flash = (glitchSpike - 0.35f) / 0.65f;
-                    spriteBatch.Draw(star, drawPos, null, main * (flash * 0.8f),
+                    spriteBatch.Draw(star, drawPos, null, main * (flash * 0.7f),
                         (float)Main.timeForVisualEffects * 0.05f + seed,
-                        star.Size() * 0.5f, 0.05f + flash * 0.1f, SpriteEffects.None, 0f);
+                        star.Size() * 0.5f, 0.10f + flash * 0.15f, SpriteEffects.None, 0f);
                 }
             }
         }

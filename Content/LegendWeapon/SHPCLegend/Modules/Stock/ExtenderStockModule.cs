@@ -210,8 +210,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             Color glow = ThemeGlow[theme];
             if (tier >= 2) {
                 SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.24f, Pitch = 0.45f }, pos);
+                //加色批源因子=SourceAlpha，A=0 整层不显示，须传全 alpha
                 PRTLoader.NewParticle<PRT_StarPulseRing>(pos, Vector2.Zero,
-                    new Color(core.R, core.G, core.B, 0), 0.04f)?.Configure(0.04f, 0.2f, 14);
+                    core, 0.04f)?.Configure(0.04f, 0.2f, 14);
             }
             int count = tier >= 2 ? 6 : 3;
             for (int i = 0; i < count; i++) {
@@ -352,8 +353,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.4f, Pitch = -0.05f }, Projectile.Center);
 
+            //加色批 A=0 不显示，全 alpha 落刀环
             PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
-                new Color(core.R, core.G, core.B, 0), 0.05f)
+                core, 0.05f)
                 ?.Configure(0.05f, 0.3f + Charge * 0.25f, 18);
             for (int i = 0; i < 10; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(4f, 4f);

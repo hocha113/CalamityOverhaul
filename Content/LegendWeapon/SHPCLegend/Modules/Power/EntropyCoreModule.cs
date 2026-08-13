@@ -4,6 +4,8 @@ using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
@@ -41,14 +43,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             }
             if (gain <= 0f) return;
             if (!_entropy.TryGetValue(id, out float e)) e = 0f;
+            int prevStage = (int)e;
             e = MathF.Min(e + gain, MaxEntropy);
             _entropy[id] = e;
 
-            //球周熵粒子
             if (Main.netMode == Terraria.ID.NetmodeID.Server) return;
-            for (int i = 0; i < 2; i++) {
-                Vector2 angle = Main.rand.NextVector2CircularEdge(2.5f, 2.5f);
-                PRTLoader.NewParticle<PRT_CyberSquare>(orb.Projectile.Center, angle, new Color(180, 80, 255), Main.rand.NextFloat(0.7f, 1.4f)).Configure(new Color(80, 20, 160), Main.rand.Next(15, 25));
+            float ratio = e / MaxEntropy;
+            Color wispMain = Color.Lerp(new Color(150, 60, 220), new Color(215, 150, 255), ratio);
+            Color wispEdge = Color.Lerp(new Color(80, 20, 160), new Color(140, 70, 235), ratio);
+
+            //熵丝向心被球吞入，锚点按球速前瞻，密度随累积
+            Vector2 anchor = orb.Projectile.Center + orb.Projectile.velocity * 10f;
+            int wisps = 1 + (int)(ratio * 2f) + (gain > 0.3f ? 1 : 0);
+            for (int i = 0; i < wisps; i++) {
+                float ang = Main.rand.NextFloat(MathHelper.TwoPi);
+                Vector2 spawnPos = anchor + ang.ToRotationVector2() * Main.rand.NextFloat(90f, 170f);
+                PRTLoader.NewParticle<PRT_CyberConverge>(spawnPos, Vector2.Zero, wispMain,
+                    Main.rand.NextFloat(0.4f, 0.8f + ratio * 0.4f))
+                    .Configure(anchor, wispEdge, Main.rand.Next(16, 28), ratio);
+            }
+
+            //球周切向熵痕，色随累积加深增亮
+            Vector2 orbitDir = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2();
+            PRTLoader.NewParticle<PRT_CyberSquare>(
+                orb.Projectile.Center + orbitDir * Main.rand.NextFloat(24f, 40f),
+                orbitDir.RotatedBy(MathHelper.PiOver2) * (1.4f + ratio * 1.6f),
+                wispMain, Main.rand.NextFloat(0.5f, 0.9f + ratio * 0.6f))
+                .Configure(wispEdge, Main.rand.Next(14, 24));
+
+            //跨整熵阶，细环+升调确认
+            if ((int)e > prevStage) {
+                PRTLoader.NewParticle<PRT_StarPulseRing>(orb.Projectile.Center, Vector2.Zero,
+                    wispMain, 0.04f).Configure(0.04f, 0.24f + ratio * 0.2f, 14);
+                SoundEngine.PlaySound(SoundID.Item93 with { Volume = 0.3f, Pitch = -0.4f + ratio * 0.8f }, orb.Projectile.Center);
             }
         }
 

@@ -3,20 +3,11 @@
 //单 quad Additive；节拍命中掀起的环形震荡波
 //环周驻波扇贝：sin(angle*k) 仅整数 k（k·2π 为 2π 整数倍，无接缝）；
 //尾随干涉环用 dist（径向单调，无接缝）；噪声只经 frac 进 tex2D(wrap)
+//s0=SpriteBatch 画布不采样；噪声走 s1，消费端 Textures[1]+LinearWrap 在 Apply 前绑定
 // ============================================================================
 
 sampler uImage0 : register(s0);
-
-texture uNoiseTex;
-sampler noiseSamp = sampler_state
-{
-    texture = <uNoiseTex>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = wrap;
-    AddressV = wrap;
-};
+sampler noiseSamp : register(s1);
 
 float uTime;            //帧域 ×0.045
 float ringProgress;     //0~1 波前扩张进度（相对绘制半径）
@@ -34,8 +25,8 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float angle = atan2(centered.y, centered.x);
     float normAngle = (angle + 3.14159) / 6.28318;
 
-    if (dist > 1.0)
-        return float4(0, 0, 0, 0);
+    //画布边界护栏，门控乘法替代 return（FNA 流控纪律）
+    float inside = step(dist, 1.0);
 
     //======== A. 驻波波前：环半径被 sin(angle*k) 扇贝调制，波腹随时间鼓动 ========
     //k=12 整数 → 环周驻波无缝；cos 时间包络与护层着色器同款驻波节拍
@@ -85,7 +76,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         + coreFlash * 0.5
         + debris * 0.4
     );
-    alpha *= fadeAlpha;
+    alpha *= fadeAlpha * inside;
 
     return float4(color * alpha, alpha) * vertexColor;
 }

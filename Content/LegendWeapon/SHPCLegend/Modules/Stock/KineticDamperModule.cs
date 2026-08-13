@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -79,7 +78,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
     }
 
     /// <summary>震地反击环，扩张波前伤害+强击退</summary>
-    internal sealed class SHPCSeismicCounterProj : ModProjectile, IAdditiveDrawable
+    internal sealed class SHPCSeismicCounterProj : ModProjectile
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
@@ -119,19 +118,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 if (Main.netMode != NetmodeID.Server) {
                     SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.7f, Pitch = -0.5f }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.NPCHit42 with { Volume = 0.6f, Pitch = -0.6f }, Projectile.Center);
-                    //岩屑+双层热浪环
+                    //岩屑抛洒，寿命压过环体作余韵
                     for (int i = 0; i < 16; i++) {
                         Vector2 vel = Main.rand.NextVector2CircularEdge(7f, 7f) - Vector2.UnitY * 2f;
                         PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, vel,
                             Color.Lerp(WaveMain, WaveEdge, Main.rand.NextFloat()),
-                            Main.rand.NextFloat(0.6f, 1.3f)).Configure(true, Main.rand.Next(14, 28));
+                            Main.rand.NextFloat(0.6f, 1.3f)).Configure(true, Main.rand.Next(20, 36));
                     }
+                    //爆点脉冲环；加色批源因子=SourceAlpha，A=0 整层不显示
                     PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
-                        WaveMain with { A = 0 }, 0.05f).Configure(0.05f, MaxRadius / 380f, 20);
-                    PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center, Vector2.Zero,
-                        WaveEdge with { A = 0 }, 0.05f).Configure(0.05f, MaxRadius / 300f, 26);
+                        WaveMain, 0.05f).Configure(0.05f, MaxRadius / 380f, 20);
+                    //屏震随距波心衰减，不满幅震旁观者
+                    float falloff = 1f - MathHelper.Clamp(Main.LocalPlayer.Distance(Projectile.Center) / 1000f, 0f, 1f);
+                    SHPCNaturalFx.Shake(7f * falloff);
                 }
-                SHPCNaturalFx.Shake(7f);
             }
             Lighting.AddLight(Projectile.Center, WaveMain.ToVector3() * 0.7f * (Projectile.timeLeft / (float)Lifetime));
         }
@@ -158,20 +158,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             }
         }
 
-        public override bool PreDraw(ref Color lightColor) => false;
-
-        void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
-            Texture2D ring = CWRAsset.DiffusionCircle?.Value;
-            if (ring == null) return;
+        public override bool PreDraw(ref Color lightColor) {
             float lifeRatio = Projectile.timeLeft / (float)Lifetime;
             float radius = CurrentRadius;
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            float scale = radius * 2f / ring.Width;
-            //扩张环，外岩金内暗褐
-            spriteBatch.Draw(ring, drawPos, null, WaveMain * lifeRatio * 0.85f, 0f,
-                ring.Size() * 0.5f, scale, SpriteEffects.None, 0f);
-            spriteBatch.Draw(ring, drawPos, null, WaveEdge * lifeRatio * 0.5f, 0f,
-                ring.Size() * 0.5f, scale * 0.82f, SpriteEffects.None, 0f);
+            if (radius < 2f || lifeRatio <= 0.01f) {
+                return false;
+            }
+            //冲击波前走共享参数化环，锐外锋+噪声撕裂缘+内侧残波，判定同为正圆故 squish=1
+            ShockRingDraw.Draw(Main.spriteBatch, Projectile.Center, radius,
+                MathF.Max(radius * 0.16f, 10f), new Color(255, 240, 195), WaveMain, WaveEdge,
+                0.85f * lifeRatio, squish: 1f, innerGlow: 0.4f * lifeRatio,
+                timeSeed: Projectile.whoAmI * 0.37f);
+            return false;
         }
     }
 }

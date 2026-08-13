@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
@@ -47,13 +48,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             }
         }
 
-        private static void SpawnStackVFX(Player player) {
-            if (Main.netMode == Terraria.ID.NetmodeID.Server) return;
+        private void SpawnStackVFX(Player player) {
+            if (Main.netMode == NetmodeID.Server) return;
             if (player.whoAmI != Main.myPlayer) return;
             Vector2 dirOpp = -player.velocity.SafeNormalize(Vector2.Zero);
-            for (int i = 0; i < 4; i++) {
-                Vector2 vel = dirOpp * Main.rand.NextFloat(2f, 4f) + Main.rand.NextVector2Circular(1.2f, 1.2f);
-                PRTLoader.NewParticle<PRT_CyberSquare>(player.Center, vel, new Color(255, 180, 80), Main.rand.NextFloat(0.7f, 1.2f)).Configure(new Color(220, 90, 30), 16);
+            float grade = _stacks / (float)MaxStacks;
+            bool maxed = _stacks >= MaxStacks;
+            //尾流甩尾，速度拉伸火花沿反速度撇出，层越高焰尾越长越亮
+            int sparks = maxed ? 5 : 3;
+            for (int i = 0; i < sparks; i++) {
+                Vector2 vel = dirOpp.RotatedBy(Main.rand.NextFloat(-0.35f, 0.35f))
+                    * Main.rand.NextFloat(3.5f, 6.5f + grade * 3f) + player.velocity * 0.2f;
+                PRTLoader.NewParticle<PRT_Spark>(player.Center + Main.rand.NextVector2Circular(6f, 10f), vel,
+                    Color.Lerp(new Color(255, 180, 80), new Color(255, 120, 40), Main.rand.NextFloat()),
+                    Main.rand.NextFloat(0.6f, 1f + grade * 0.3f)).Configure(false, Main.rand.Next(12, 20));
+            }
+            //少量方屑保住赛博底味
+            for (int i = 0; i < 2; i++) {
+                Vector2 vel = dirOpp * Main.rand.NextFloat(1.5f, 3f) + Main.rand.NextVector2Circular(1f, 1f);
+                PRTLoader.NewParticle<PRT_CyberSquare>(player.Center, vel, new Color(255, 180, 80),
+                    Main.rand.NextFloat(0.55f, 0.9f)).Configure(new Color(220, 90, 30), 14);
+            }
+            //满层提速拍，小环外弹
+            if (maxed) {
+                PRTLoader.NewParticle<PRT_StarPulseRing>(player.Center, Vector2.Zero,
+                    new Color(255, 170, 70), 0.05f).Configure(0.05f, 0.3f, 12);
             }
         }
     }

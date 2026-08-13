@@ -77,6 +77,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         }
 
         public override void AI() {
+            //初始朝向去同相，同帧多片不叠影
+            if (Projectile.localAI[0] == 0f) {
+                Projectile.localAI[0] = 1f;
+                spin = Projectile.whoAmI * 0.73f;
+            }
+
             //重力+末速
             Projectile.velocity.Y += 0.24f;
             if (Projectile.velocity.Y > 12f) Projectile.velocity.Y = 12f;
@@ -126,26 +132,49 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
             if (fadeAlpha < 0.01f) return;
-            Texture2D white = VaultAsset.placeholder2?.Value;
+            Texture2D pixel = VaultAsset.placeholder2?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            if (glow != null) {
-                spriteBatch.Draw(glow, drawPos, null, GemAura * fadeAlpha * 0.55f, 0f,
-                    glow.Size() * 0.5f, 0.5f, SpriteEffects.None, 0f);
-            }
-            if (white != null) {
-                Vector2 origin = white.Size() * 0.5f;
-                //45°双层菱晶
-                spriteBatch.Draw(white, drawPos, null, GemGlow * fadeAlpha * 0.9f,
-                    spin + MathHelper.PiOver4, origin, new Vector2(20f, 9f), SpriteEffects.None, 0f);
-                spriteBatch.Draw(white, drawPos, null, GemCore * fadeAlpha,
-                    spin + MathHelper.PiOver4, origin, new Vector2(12f, 5f), SpriteEffects.None, 0f);
-            }
             Texture2D star = CWRAsset.StarTexture_White?.Value;
-            if (star != null) {
-                float glint = 0.7f + 0.3f * MathF.Sin((float)Main.timeForVisualEffects * 0.3f + Projectile.whoAmI);
-                spriteBatch.Draw(star, drawPos, null, GemCore * fadeAlpha * glint * 0.7f,
-                    -spin * 0.5f, star.Size() * 0.5f, 0.045f, SpriteEffects.None, 0f);
+            if (star == null) return;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            Vector2 starOrigin = star.Size() * 0.5f;
+            float t = (float)Main.timeForVisualEffects;
+
+            //底晕
+            if (glow != null) {
+                spriteBatch.Draw(glow, drawPos, null, GemAura * (fadeAlpha * 0.5f), 0f,
+                    glow.Size() * 0.5f, 0.45f, SpriteEffects.None, 0f);
+            }
+
+            //高速速度模糊条，锚在尾侧
+            float speedVal = Projectile.velocity.Length();
+            if (pixel != null && speedVal > 6.5f) {
+                float speedT = MathHelper.Clamp((speedVal - 6.5f) / 7f, 0f, 1f);
+                spriteBatch.Draw(pixel, drawPos, new Rectangle(0, 0, 1, 1), GemGlow * (fadeAlpha * speedT * 0.5f),
+                    Projectile.velocity.ToRotation(), new Vector2(1f, 0.5f),
+                    new Vector2(speedVal * 1.7f, 2.2f), SpriteEffects.None, 0f);
+            }
+
+            //旋转拖影，逆自旋向两道
+            spriteBatch.Draw(star, drawPos, null, GemGlow * (fadeAlpha * 0.16f),
+                spin - 0.62f, starOrigin, new Vector2(0.105f, 0.038f), SpriteEffects.None, 0f);
+            spriteBatch.Draw(star, drawPos, null, GemGlow * (fadeAlpha * 0.34f),
+                spin - 0.31f, starOrigin, new Vector2(0.108f, 0.04f), SpriteEffects.None, 0f);
+
+            //马眼形分面剪影双层
+            spriteBatch.Draw(star, drawPos, null, GemGlow * (fadeAlpha * 0.95f),
+                spin, starOrigin, new Vector2(0.112f, 0.042f), SpriteEffects.None, 0f);
+            spriteBatch.Draw(star, drawPos, null, GemCore * fadeAlpha,
+                spin, starOrigin, new Vector2(0.066f, 0.027f), SpriteEffects.None, 0f);
+
+            //周期折射爆闪，尖峰时垂直交叉闪+点状高光
+            float glint = MathF.Pow(MathF.Abs(MathF.Sin(t * 0.23f + Projectile.whoAmI * 1.37f)), 6f);
+            if (glint > 0.12f) {
+                Color flash = Color.Lerp(GemCore, Color.White, 0.55f) * (fadeAlpha * glint);
+                spriteBatch.Draw(star, drawPos, null, flash,
+                    spin + MathHelper.PiOver2, starOrigin, new Vector2(0.075f, 0.018f), SpriteEffects.None, 0f);
+                spriteBatch.Draw(star, drawPos, null, flash * 0.8f,
+                    -spin * 0.5f, starOrigin, 0.045f, SpriteEffects.None, 0f);
             }
         }
     }

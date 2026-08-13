@@ -76,6 +76,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (target.TryGetGlobalNPC(out SHPCNPCEffects eff)) {
                 eff.ApplyObsidianCrack(target, 300, beam.Projectile.owner, Math.Max(damageDone / 5, 1));
             }
+            //壳裂即时反馈,命中点崩落暗玻碎屑;钩子仅非服务端触发,节流防多束刷屏
+            if (Main.netMode == NetmodeID.Server || !Main.rand.NextBool(2)) return;
+            Vector2 hitPos = beam.Projectile.Center;
+            Vector2 backDir = -beam.Projectile.velocity.SafeNormalize(Vector2.Zero);
+            for (int i = 0; i < 2; i++) {
+                Vector2 vel = backDir.RotatedByRandom(0.9f) * Main.rand.NextFloat(1.5f, 3.4f) - Vector2.UnitY * 1.2f;
+                PRTLoader.NewParticle<PRT_SHPCObsidianChip>(hitPos, vel, new Color(30, 16, 44),
+                    Main.rand.NextFloat(0.5f, 0.8f)).Configure(new Color(255, 120, 45), Main.rand.Next(20, 32), 0.7f);
+            }
+            PRTLoader.NewParticle<PRT_Sparkle>(hitPos, Vector2.Zero, new Color(210, 170, 255), 0.4f)
+                .Configure(new Color(120, 60, 200), 8, 0.1f, 0.6f);
         }
 
         public override void OnOrbDetonation(CyberChargeOrbProj orb) {
@@ -93,21 +104,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>黑曜石碎片，Trail+Additive，命中小脉冲</summary>
-    internal sealed class SHPCObsidianShardProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
+    /// <summary>黑曜石碎晶，速冷玻璃薄片；暗玻剪影+断口热缘随飞行冷却+镜闪，Trail 同步降温</summary>
+    internal sealed class SHPCObsidianShardProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable, IOverlayDrawable
     {
         public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int TrailLen = 10;
+        private const int LifeFrames = 90;
         private static readonly Color CoreColor = new(255, 110, 50);
         private static readonly Color EdgeColor = new(80, 35, 110);
-        private static readonly Vector3 CoreVec = new Color(255, 200, 110).ToVector3();
-        private static readonly Vector3 GlowVec = new Color(255, 90, 40).ToVector3();
-        private static readonly Vector3 AuraVec = new Color(70, 25, 90).ToVector3();
+        //出膛断口炽热,飞行中降温收紫,颜色演化即飞行期时间签名
+        private static readonly Vector3 HotCoreVec = new Color(255, 200, 110).ToVector3();
+        private static readonly Vector3 HotGlowVec = new Color(255, 90, 40).ToVector3();
+        private static readonly Vector3 HotAuraVec = new Color(70, 25, 90).ToVector3();
+        private static readonly Vector3 CoolCoreVec = new Color(130, 82, 195).ToVector3();
+        private static readonly Vector3 CoolGlowVec = new Color(72, 40, 128).ToVector3();
+        private static readonly Vector3 CoolAuraVec = new Color(36, 16, 58).ToVector3();
 
         private Vector2[] trailPoints;
         private Trail trail;
         private float fadeAlpha;
+        private float cool01;   //0=出膛热 1=完全冷却
+        private float tumble;   //翻面相位,纯视觉
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = TrailLen;
@@ -141,6 +159,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         public override void AI() {
             Projectile.rotation = Projectile.velocity.ToRotation();
             fadeAlpha = MathHelper.Clamp(Projectile.timeLeft / 18f, 0f, 1f);
+            //玻璃降温曲线,约2/3行程冷透
+            cool01 = MathHelper.Clamp((LifeFrames - Projectile.timeLeft) / (float)LifeFrames * 1.5f, 0f, 1f);
+            tumble += 0.23f;
             //首帧玻璃喷出点缀
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
@@ -150,7 +171,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     }
                 }
             }
-            Lighting.AddLight(Projectile.Center, new Vector3(0.85f, 0.32f, 0.18f) * fadeAlpha);
+            //光色随冷却由橙热转暗紫
+            Vector3 lightVec = Vector3.Lerp(new Vector3(0.85f, 0.32f, 0.18f), new Vector3(0.3f, 0.16f, 0.42f), cool01);
+            Lighting.AddLight(Projectile.Center, lightVec * fadeAlpha);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -173,11 +196,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 Vector2 vel = Main.rand.NextVector2CircularEdge(4.2f, 4.2f);
                 PRTLoader.NewParticle<PRT_Sparkle>(target.Center, vel, CoreColor, Main.rand.NextFloat(0.5f, 1.0f)).Configure(EdgeColor, Main.rand.Next(14, 26), Main.rand.NextFloat(-0.3f, 0.3f), 0.9f);
             }
+            //玻璃碎裂,暗片带重力坠落
+            float hitHeat = MathF.Pow(1f - cool01, 1.5f);
+            for (int i = 0; i < 4; i++) {
+                Vector2 vel = Main.rand.NextVector2CircularEdge(3.2f, 3.2f) - Vector2.UnitY * Main.rand.NextFloat(0.8f, 2f);
+                PRTLoader.NewParticle<PRT_SHPCObsidianChip>(target.Center + vel * 2f, vel, new Color(28, 15, 42),
+                    Main.rand.NextFloat(0.55f, 1f)).Configure(new Color(255, 120, 45), Main.rand.Next(22, 36), hitHeat);
+            }
             SHPCNaturalFx.Shake(2.5f);
         }
 
+        public override void OnKill(int timeLeft) {
+            //碎屑余韵,独立实体活得比弹幕久,尾向散落
+            if (Main.netMode == NetmodeID.Server) return;
+            Vector2 back = -Projectile.velocity.SafeNormalize(Vector2.Zero);
+            float heat = MathF.Pow(1f - cool01, 1.5f);
+            for (int i = 0; i < 4; i++) {
+                Vector2 vel = back.RotatedByRandom(0.7f) * Main.rand.NextFloat(1.2f, 3f) - Vector2.UnitY * Main.rand.NextFloat(0.4f, 1.4f);
+                PRTLoader.NewParticle<PRT_SHPCObsidianChip>(Projectile.Center + back * Main.rand.NextFloat(0f, 18f), vel,
+                    new Color(28, 15, 42), Main.rand.NextFloat(0.5f, 0.9f)).Configure(new Color(255, 110, 45), Main.rand.Next(18, 30), heat);
+            }
+            for (int i = 0; i < 3; i++) {
+                PRTLoader.NewParticle<PRT_Sparkle>(Projectile.Center + back * Main.rand.NextFloat(6f, 26f),
+                    back * Main.rand.NextFloat(0.5f, 1.5f), new Color(190, 150, 255), Main.rand.NextFloat(0.3f, 0.5f))
+                    .Configure(EdgeColor, Main.rand.Next(8, 14), 0.15f, 0.7f);
+            }
+        }
+
         private float WidthFunction(float progress) {
-            float taper = MathHelper.Lerp(8f, 0f, progress);
+            //冷却收窄
+            float head = MathHelper.Lerp(8f, 5.2f, cool01);
+            float taper = MathHelper.Lerp(head, 0f, progress);
             float pulse = 0.85f + 0.15f * MathF.Sin((float)Main.timeForVisualEffects * 0.5f + progress * 6f);
             return taper * pulse;
         }
@@ -203,18 +252,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             trail ??= new Trail(trailPoints, WidthFunction, ColorFunction);
             trail.TrailPositions = trailPoints;
 
+            //拖尾颜色跟随玻璃降温
+            Vector3 coreVec = Vector3.Lerp(HotCoreVec, CoolCoreVec, cool01);
+            Vector3 glowVec = Vector3.Lerp(HotGlowVec, CoolGlowVec, cool01);
+            Vector3 auraVec = Vector3.Lerp(HotAuraVec, CoolAuraVec, cool01);
             shader.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
             shader.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.05f);
             shader.Parameters["fadeAlpha"]?.SetValue(fadeAlpha);
-            shader.Parameters["coreColor"]?.SetValue(CoreVec);
-            shader.Parameters["glowColor"]?.SetValue(GlowVec);
-            shader.Parameters["auraColor"]?.SetValue(AuraVec);
+            shader.Parameters["coreColor"]?.SetValue(coreVec);
+            shader.Parameters["glowColor"]?.SetValue(glowVec);
+            shader.Parameters["auraColor"]?.SetValue(auraVec);
             shader.Parameters["uNoiseTex"]?.SetValue(noise);
             shader.Parameters["overdriveAmount"]?.SetValue(0f);
             shader.Parameters["glitchBurst"]?.SetValue(0f);
-            shader.Parameters["odCoreColor"]?.SetValue(CoreVec);
-            shader.Parameters["odGlowColor"]?.SetValue(GlowVec);
-            shader.Parameters["odAuraColor"]?.SetValue(AuraVec);
+            shader.Parameters["odCoreColor"]?.SetValue(coreVec);
+            shader.Parameters["odGlowColor"]?.SetValue(glowVec);
+            shader.Parameters["odAuraColor"]?.SetValue(auraVec);
 
             GraphicsDevice device = Main.graphics.GraphicsDevice;
             device.BlendState = BlendState.Additive;
@@ -224,24 +277,56 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
             if (fadeAlpha < 0.05f) return;
+            float heat = MathF.Pow(1f - cool01, 1.5f);
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             Vector2 screenPos = Projectile.Center - Main.screenPosition;
-            SHPCNaturalFx.GlowLayered(spriteBatch, glow, screenPos,
-                new Color(255, 200, 110) * fadeAlpha,
-                new Color(120, 40, 90) * fadeAlpha * 0.3f,
-                0.7f, Projectile.rotation, 3);
-            //LightShot 方向感
+            //底层辉光随冷却由橙热退成冷紫微光,只作衬垫
+            Color inner = Color.Lerp(new Color(255, 200, 110), new Color(150, 100, 220), cool01) * (fadeAlpha * (0.4f + 0.6f * heat));
+            Color outer = Color.Lerp(new Color(120, 40, 90), new Color(56, 28, 86), cool01) * (fadeAlpha * 0.3f);
+            SHPCNaturalFx.GlowLayered(spriteBatch, glow, screenPos, inner, outer, 0.6f, Projectile.rotation, 3);
+            //方向拖芒随热度熄灭;真加色批 tint 必须带 A,A=0 整张不显示
             Texture2D shot = CWRAsset.LightShotAlt?.Value;
-            if (shot != null) {
+            if (shot != null && heat > 0.05f) {
                 Vector2 origin = new(shot.Width, shot.Height * 0.5f);
                 spriteBatch.Draw(shot, screenPos, null,
-                    new Color(255, 130, 60, 0) * fadeAlpha * 0.6f,
-                    Projectile.rotation, origin, new Vector2(0.5f, 0.4f), SpriteEffects.None, 0f);
+                    new Color(255, 130, 60) * (fadeAlpha * 0.55f * heat),
+                    Projectile.rotation, origin, new Vector2(0.5f, 0.35f), SpriteEffects.None, 0f);
+            }
+        }
+
+        void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
+            //暗玻剪影本体,压在拖尾与辉光之上;AlphaBlend 层才画得出暗色
+            if (fadeAlpha < 0.05f) return;
+            Texture2D tex = CWRAsset.Extra_98?.Value;
+            if (tex == null) return;
+            Vector2 pos = Projectile.Center - Main.screenPosition;
+            Vector2 origin = tex.Size() * 0.5f;
+            float heat = MathF.Pow(1f - cool01, 1.5f);
+            //横宽随翻面相位呼吸,读作薄片翻滚
+            float flip = 0.45f + 0.55f * MathF.Abs(MathF.Sin(tumble));
+            float rot = Projectile.rotation + MathHelper.PiOver2;
+            Vector2 scale = new(0.16f * flip, 0.46f);
+            //冷紫衬缘在下,暗体在上
+            Color rim = Color.Lerp(new Color(140, 80, 200), new Color(70, 40, 110), cool01) * (fadeAlpha * 0.5f);
+            spriteBatch.Draw(tex, pos, null, rim, rot, origin, scale * new Vector2(1.5f, 1.06f), SpriteEffects.None, 0f);
+            Color body = new Color(26, 14, 38) * (fadeAlpha * 0.95f);
+            spriteBatch.Draw(tex, pos, null, body, rot, origin, scale, SpriteEffects.None, 0f);
+            //断口热尖,A=0 预乘加亮,冷却即熄
+            if (heat > 0.04f) {
+                Vector2 tip = Projectile.velocity.SafeNormalize(Vector2.Zero) * (72f * scale.Y * 0.36f);
+                Color hot = new Color(255, 170, 70, 0) * (fadeAlpha * heat * 0.85f);
+                spriteBatch.Draw(tex, pos + tip, null, hot, rot, origin, scale * new Vector2(0.7f, 0.3f), SpriteEffects.None, 0f);
+            }
+            //翻面对齐瞬间的窄镜闪,玻璃质签名
+            float glint = MathF.Pow(MathF.Max(MathF.Cos(tumble * 2f), 0f), 20f);
+            if (glint > 0.15f) {
+                Color gc = new Color(226, 214, 248, 0) * (glint * 0.55f * fadeAlpha);
+                spriteBatch.Draw(tex, pos, null, gc, rot, origin, scale * new Vector2(0.45f, 1.28f), SpriteEffects.None, 0f);
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //Trail+Additive 接管，PreDraw 空
+            //Trail+Additive+Overlay 接管，PreDraw 空
             return false;
         }
     }

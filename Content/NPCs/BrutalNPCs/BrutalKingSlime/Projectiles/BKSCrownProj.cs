@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Rendering;
 using Microsoft.Xna.Framework.Graphics;
@@ -122,14 +123,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
                     SoundEngine.PlaySound(SoundID.Item66 with { Pitch = -0.35f, Volume = 0.9f, MaxInstances = 3 }, Projectile.Center);
                     break;
                 case ModeLanded:
-                    //落地重响+金屑+震屏，冲击波由服务端生成
+                    //落地重响+金屑+震屏，冲击波由服务端生成(ai1=1 皇冠金配色)
                     KingSlimeGelFX.ThudSound(Projectile.Center, 18f);
                     KingSlimeGelFX.CrownChime(Projectile.Center, -0.25f, 1f);
                     KingSlimeGelFX.GoldGlint(Projectile.Center, 22, 9f);
                     KingSlimeGelFX.CameraPunch(Projectile.Center, 7.5f, 16, "BKSCrownSlam", Vector2.UnitY);
                     if (!VaultUtils.isClient) {
                         Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero,
-                            ModContent.ProjectileType<BKSShockwaveProj>(), 0, 0f, Main.myPlayer, 1f);
+                            ModContent.ProjectileType<BKSShockwaveProj>(), 0, 0f, Main.myPlayer, 1f, 1f);
                     }
                     break;
                 case ModeDecree:
@@ -380,15 +381,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
                 }
             }
 
-            //审判模式的辉光星冠
+            //审判模式的指挥光环：解析成形光环着色器(软核+双金环+金丝弧+辐条)，
+            //替换旧"巨型八边形辉光块+星形贴图"——贴图多边形 alpha 边界在超尺度放大下暴露
             if (Mode == ModeDecree) {
-                Texture2D star = CWRAsset.StarTexture.Value;
-                Texture2D glowTex = CWRAsset.DiffusionCircle.Value;
-                float pulse = 0.85f + 0.15f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 9f);
-                Main.EntitySpriteDraw(glowTex, pos, null, KingSlimeGelFX.CrownGold with { A = 0 } * 0.7f, 0f,
-                    glowTex.Size() * 0.5f, 1.5f * pulse, SpriteEffects.None, 0);
-                Main.EntitySpriteDraw(star, pos, null, KingSlimeGelFX.CrownGold with { A = 0 } * 0.9f,
-                    Main.GlobalTimeWrappedHourly * 2.2f, star.Size() * 0.5f, 1.1f * pulse, SpriteEffects.None, 0);
+                DrawDecreeHalo(fade);
             }
 
             //本体
@@ -400,26 +396,107 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Projectiles
             return false;
         }
 
-        /// <summary>瞄准指引：王冠到地面的细金柱，脉动</summary>
+        /// <summary>
+        /// 瞄准指引柱：顶点 quad + GuideTech(呼吸金芯/下行锁定箭标/收拢侧轨/落点结穴)，
+        /// 替换旧像素条。瞄准期侧轨随蓄势收向落点，天坠期并拢提亮
+        /// </summary>
         private void DrawGuideColumn(Vector2 screenPos, float fade) {
-            Texture2D pixel = InnoVault.VaultAsset.placeholder2?.Value;
-            if (pixel == null) {
-                return;
-            }
             float lockX = Mode == ModeSlam ? Projectile.ai[2] : Projectile.Center.X;
             Vector2 ground = KingSlimeGelFX.FindGroundBelow(new Vector2(lockX, Projectile.Center.Y), 90);
             float height = ground.Y - Projectile.Center.Y;
             if (height < 40f) {
                 return;
             }
+
+            Effect fx = EffectLoader.BKSCrownFX?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (fx == null || noise == null) {
+                DrawGuideFallback(lockX, height, fade);
+                return;
+            }
+
+            bool locking = Mode == ModeSlam;
+            fx.CurrentTechnique = fx.Techniques["GuideTech"];
+            fx.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            fx.Parameters["uSeed"]?.SetValue(Projectile.whoAmI * 0.173f % 1f);
+            fx.Parameters["uOpacity"]?.SetValue((locking ? 0.9f : 0.6f) * fade);
+            fx.Parameters["uProg"]?.SetValue(MathHelper.Clamp(ModeTimer / TelegraphTime, 0f, 1f));
+            fx.Parameters["uLock"]?.SetValue(locking ? 1f : 0f);
+
+            //quad：uv.y 0=王冠端 1=地面端(落点向下延伸少许包住结穴)
+            float halfW = locking ? 84f : 66f;
+            Vector2 top = new Vector2(lockX, Projectile.Center.Y);
+            Vector2 bottom = new Vector2(lockX, ground.Y + 14f);
+            DrawFXQuad(fx, noise,
+                new Vector2(top.X - halfW, top.Y), new Vector2(top.X + halfW, top.Y),
+                new Vector2(bottom.X - halfW, bottom.Y), new Vector2(bottom.X + halfW, bottom.Y));
+        }
+
+        /// <summary>大招指挥光环：解析成形，向外羽化在 r=0.98 前归零无贴图边界</summary>
+        private void DrawDecreeHalo(float fade) {
+            Effect fx = EffectLoader.BKSCrownFX?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (fx == null || noise == null) {
+                return; //衬光缺席可接受，不回退到八边形贴图
+            }
+
+            fx.CurrentTechnique = fx.Techniques["HaloTech"];
+            fx.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            fx.Parameters["uSeed"]?.SetValue(Projectile.whoAmI * 0.173f % 1f);
+            fx.Parameters["uOpacity"]?.SetValue(0.85f * fade);
+            fx.Parameters["uProg"]?.SetValue(MathHelper.Clamp(ModeTimer / 36f, 0f, 1f));
+            fx.Parameters["uLock"]?.SetValue(0f);
+
+            const float half = 250f;
+            Vector2 c = Projectile.Center;
+            DrawFXQuad(fx, noise,
+                c + new Vector2(-half, -half), c + new Vector2(half, -half),
+                c + new Vector2(-half, half), c + new Vector2(half, half));
+        }
+
+        /// <summary>顶点 quad 提交：Additive + 显式 s1 噪声绑定，设备状态自管</summary>
+        private static void DrawFXQuad(Effect fx, Texture2D noise,
+            Vector2 tl, Vector2 tr, Vector2 bl, Vector2 br) {
+            GraphicsDevice device = Main.instance.GraphicsDevice;
+            BlendState prevBlend = device.BlendState;
+            RasterizerState prevRaster = device.RasterizerState;
+            DepthStencilState prevDepth = device.DepthStencilState;
+            device.BlendState = BlendState.Additive;
+            device.RasterizerState = RasterizerState.CullNone;
+            device.DepthStencilState = DepthStencilState.None;
+            //采样器合同：显式绑 s1(shader 内 register)，参数式绑定禁用
+            device.Textures[1] = noise;
+            device.SamplerStates[1] = SamplerState.LinearWrap;
+
+            VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
+            verts[0] = new VertexPositionColorTexture(tl.ToVector3(), Color.White, new Vector2(0f, 0f));
+            verts[1] = new VertexPositionColorTexture(tr.ToVector3(), Color.White, new Vector2(1f, 0f));
+            verts[2] = new VertexPositionColorTexture(bl.ToVector3(), Color.White, new Vector2(0f, 1f));
+            verts[3] = new VertexPositionColorTexture(br.ToVector3(), Color.White, new Vector2(1f, 1f));
+
+            foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);
+            }
+
+            device.BlendState = prevBlend;
+            device.RasterizerState = prevRaster;
+            device.DepthStencilState = prevDepth;
+        }
+
+        /// <summary>着色器缺失回退：旧式细金柱示意落点</summary>
+        private void DrawGuideFallback(float lockX, float height, float fade) {
+            Texture2D pixel = InnoVault.VaultAsset.placeholder2?.Value;
+            if (pixel == null) {
+                return;
+            }
             float pulse = 0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 14f);
             float alpha = (Mode == ModeSlam ? 0.5f : 0.22f + pulse * 0.14f) * fade;
             Vector2 top = new Vector2(lockX, Projectile.Center.Y) - Main.screenPosition;
-            //细芯+宽晕两层
             Main.spriteBatch.Draw(pixel, top, null, KingSlimeGelFX.CrownGold with { A = 0 } * alpha, 0f,
                 new Vector2(pixel.Width * 0.5f, 0f), new Vector2(3f / pixel.Width, height / pixel.Height), SpriteEffects.None, 0f);
-            Main.spriteBatch.Draw(pixel, top, null, KingSlimeGelFX.CrownAmber with { A = 0 } * (alpha * 0.4f), 0f,
-                new Vector2(pixel.Width * 0.5f, 0f), new Vector2(14f / pixel.Width, height / pixel.Height), SpriteEffects.None, 0f);
         }
     }
 }
