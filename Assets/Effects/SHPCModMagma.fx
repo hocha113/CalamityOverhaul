@@ -1,7 +1,7 @@
 // ============================================================================
 // SHPCModMagma.fx 熔岩喷口改件 熔融液体三态
 // TechJet:  喷涌熔浆柱——游走中轴+粘稠蠕动轮廓+Plateau-Rayleigh颈缩断液滴串+
-//           黑壳浮板挂侧缘亮芯居中+根部白热核
+//           黑壳浮板挂侧缘亮芯居中+喷口球根/口下液舌(禁水平实切)+白热核上移进柱身
 // TechGlob: 空中熔岩团——SDF摆动轮廓+表面张力亮缘+尾部颈缩+黑壳浮板漂亮体
 // TechPool: 贴地熔岩池——液面慢波+端部弯月挂边+沸泡+面下窄反射带+
 //           黑壳结皮渐干+边缘蚀退
@@ -15,9 +15,10 @@ float uSeed;
 float uRise;       //Jet 喷发强度0~1(脉冲窗)
 float uEnv;        //总强度(出生/塌熄包络)
 float uLife;       //Pool 0新鲜炽亮→1结皮干涸
-float uAspect;     //Jet 高宽比 / Pool 宽高比
+float uAspect;     //Jet 可视柱高/宽 / Pool 宽高比
 float uStretch;    //Glob 速度拉伸 0.75~2.0
 float uGlow;       //脉冲加亮0~1
+float uRootFrac;   //Jet 口下画布占比；半空≈0.28 供球根+液舌，贴地≈0.08 只埋进熔池
 float3 uColorCrust;   //黑壳(暗红黑)
 float3 uColorLava;    //熔浆体(橙红)
 float3 uColorHot;     //炽芯(黄白)
@@ -53,54 +54,93 @@ float fbm2(float2 p)
     return v;
 }
 
+//口下单条液舌：根粗尖细+颈缩，各舌自带长度故底边不会齐平
+float magmaDrip(float xc, float below01, float cx, float len, float neckD)
+{
+    float w = lerp(0.20, 0.048, saturate(below01 / max(len, 0.12)))
+        * (1.0 - 0.42 * neckD * smoothstep(0.22, 1.0, below01));
+    float live = smoothstep(0.0, 0.07, below01) * smoothstep(len, len - 0.22, below01);
+    return smoothstep(w + 0.02, w - 0.14, abs(xc - cx)) * live;
+}
+
 // ----------------------------------------------------------------------------
-// 熔浆柱：uv.y=1 底端(锚喷口)，uv.y=0 顶端
+// 熔浆柱：uv.y=0 顶端，uv.y=ventY 喷口，uv.y=1 口下画布底
 // 粘稠液体：噪声滚动比尘柱/血柱慢，轮廓幅度小；颈缩深谷天然把顶段切成液滴串
+// 根部是表面张力球根+下垂液舌，禁止水平实切
 // ----------------------------------------------------------------------------
 float4 JetPS(float2 uv : TEXCOORD0) : COLOR0
 {
     float xc = (uv.x - 0.5) * 2.0;
-    float along = 1.0 - uv.y;           //0根部→1顶端
+    float rootFrac = saturate(uRootFrac);
+    float ventY = 1.0 - rootFrac;
+    float along = (ventY - uv.y) / max(ventY, 0.001); //0喷口→1顶端；负=口下
+    float alongPos = max(along, 0.0);
+    float below01 = saturate((uv.y - ventY) / max(rootFrac, 0.001));
 
-    //画布护栏：左右与顶部必归零(底边贴口允许实切)
-    float guard = smoothstep(1.0, 0.80, abs(xc)) * smoothstep(1.0, 0.86, along);
+    //画布护栏：左右/顶/口下底边均归零，根部造型走球根与液舌而非实切
+    float guard = smoothstep(1.0, 0.80, abs(xc))
+        * smoothstep(1.0, 0.86, along)
+        * smoothstep(1.0, 0.80, below01);
 
-    //纵向按真实画布比例取样，高柱下噪声不被拉成直线
-    float yTex = uv.y * uAspect * 0.5;
+    //纵向按可视柱高取样；根大顶小，-uTime 把壳板上带（口下加长不拉稀柱身）
+    float yTex = (1.0 - alongPos) * uAspect * 0.5;
 
     //游走中轴：厚液慢摆，根部钉死喷口
-    float lean = (valueNoise(float2(along * 1.4 - uTime * 0.6, uSeed * 29.0)) - 0.5) * 0.55;
-    float c = xc - lean * smoothstep(0.04, 0.85, along);
+    float lean = (valueNoise(float2(alongPos * 1.4 - uTime * 0.6, uSeed * 29.0)) - 0.5) * 0.55;
+    float c = xc - lean * smoothstep(0.04, 0.85, alongPos);
 
     //轮廓蠕动：低频慢滚(粘稠，不是气体撕裂)
     float edgeN = (fbm2(float2(c * 2.2 + uSeed * 17.0, yTex * 2.0 - uTime * 1.3)) - 0.5) * 0.30;
 
-    //柱形：根部裙摆外扩→上行收窄
-    float width = lerp(0.62, 0.28, pow(saturate(along), 0.75));
-    width += smoothstep(0.12, 0.0, along) * 0.22;
+    //柱形：根部微扩→上行收窄；大裙边让给球根，避免喷口处画出矩形底
+    float width = lerp(0.62, 0.28, pow(saturate(alongPos), 0.75));
+    width += smoothstep(0.12, 0.0, alongPos) * 0.08;
 
     //Plateau-Rayleigh颈缩：上半程起波，喷发越猛越深，深谷断成液滴串
-    float neckWave = 0.5 + 0.5 * sin(along * 18.0 - uTime * 4.6 + uSeed * 6.0);
-    float neck = 1.0 - (0.30 + 0.44 * uRise) * smoothstep(0.45, 1.0, along) * neckWave;
+    float neckWave = 0.5 + 0.5 * sin(alongPos * 18.0 - uTime * 4.6 + uSeed * 6.0);
+    float neck = 1.0 - (0.30 + 0.44 * uRise) * smoothstep(0.45, 1.0, alongPos) * neckWave;
 
     float halfW = width * neck;
     float rr = abs(c) + edgeN;
     float body = smoothstep(halfW + 0.02, halfW - 0.26, rr);
+    body *= smoothstep(-0.04, 0.06, along);
 
     //顶端撕裂收头，任何时刻无平顶
     float capTear = (valueNoise(float2(c * 2.6 + uSeed * 7.0, uTime * 1.1)) - 0.5) * 0.20;
     float capLine = 0.94 + capTear;
-    body *= smoothstep(capLine + 0.02, capLine - 0.20, along);
+    body *= smoothstep(capLine + 0.02, capLine - 0.20, alongPos);
 
-    //黑壳浮板：低频暗斑被流场缓慢上带，只挂侧缘，芯部保持炽亮
+    //喷口球根：椭圆鼓包，底缘圆弧；中心略沉入口下，曲面落在画布内
+    float2 bulbP = float2(xc * 1.12, (along + 0.07) * 3.4);
+    float bulbN = (valueNoise(float2(xc * 2.2 + uSeed * 11.0, uTime * 0.42)) - 0.5) * 0.16;
+    float bulb = smoothstep(1.05, 0.58, length(bulbP) + bulbN);
+
+    //口下液舌：仅画布够长(半空)时出现，三条不同长度+颈缩
+    float dripGate = smoothstep(0.12, 0.22, rootFrac);
+    float neckD = 0.5 + 0.5 * sin(below01 * 15.0 - uTime * 3.9 + uSeed * 4.2);
+    float d0 = (hash21(float2(uSeed, 2.1)) - 0.5) * 0.46;
+    float d1 = (hash21(float2(uSeed, 5.8)) - 0.5) * 0.52;
+    float d2 = (hash21(float2(uSeed, 9.4)) - 0.5) * 0.38;
+    float l0 = 0.48 + 0.38 * hash21(float2(uSeed, 1.2));
+    float l1 = 0.34 + 0.40 * hash21(float2(uSeed, 2.3));
+    float l2 = 0.22 + 0.36 * hash21(float2(uSeed, 3.4));
+    float drips = magmaDrip(xc, below01, d0, l0, neckD);
+    drips = max(drips, magmaDrip(xc, below01, d1, l1, neckD));
+    drips = max(drips, magmaDrip(xc, below01, d2, l2, neckD));
+    drips *= dripGate;
+
+    body = max(body, max(bulb, drips));
+
+    //黑壳浮板：只挂柱身侧缘，球根/液舌保持鲜熔
     float plateN = fbm2(float2(c * 3.0 + uSeed * 41.0, yTex * 2.6 - uTime * 0.8));
-    float sideBand = smoothstep(0.18, 0.60, abs(c) / max(halfW, 0.05));
+    float sideBand = smoothstep(0.18, 0.60, abs(c) / max(halfW, 0.05)) * smoothstep(0.02, 0.12, alongPos);
     float crust = smoothstep(0.56, 0.70, plateN) * sideBand;
     //板缝橙裂：紧贴壳板边缘
     float crack = smoothstep(0.10, 0.02, abs(plateN - 0.56)) * sideBand;
 
-    //根部白热核：口部源头，与地面/喷口衔接
-    float rootCore = exp(-c * c * 7.0) * smoothstep(0.42, 0.0, along);
+    //白热核上移进柱身，避开几何边界；球根另给一颗沉进口内的热核
+    float rootCore = exp(-c * c * 7.0) * exp(-pow((along - 0.11) * 6.0, 2.0));
+    float bulbCore = exp(-xc * xc * 6.0) * exp(-along * along * 18.0) * 0.55;
 
     //辐射梯度：内芯亮外缘暗
     float coreness = 1.0 - saturate(rr / max(halfW, 0.05));
@@ -108,9 +148,9 @@ float4 JetPS(float2 uv : TEXCOORD0) : COLOR0
     float3 col = lerp(uColorLava, uColorHot, saturate(coreness * 0.62 + rootCore * 0.55));
     col = lerp(col, uColorCrust, crust * 0.85);
     col += uColorHot * crack * 0.85;
-    col += uColorHot * rootCore * (0.45 + uGlow * 0.55);
+    col += uColorHot * (rootCore * (0.45 + uGlow * 0.55) + bulbCore * 0.35);
 
-    float alpha = saturate(body * (0.95 - crust * 0.10) + rootCore * 0.5) * guard * uEnv;
+    float alpha = saturate(body * (0.95 - crust * 0.10) + rootCore * 0.35 + bulb * 0.12) * guard * uEnv;
     return float4(col * alpha, alpha);
 }
 

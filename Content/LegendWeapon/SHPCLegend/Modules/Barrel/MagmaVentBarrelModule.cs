@@ -45,7 +45,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
     /// <summary>
     /// 熔岩喷口，过热间歇泉；熔融液体两态：空中熔浆柱+液团抛洒(SDF摆动/颈缩断滴)，
-    /// 近地自动贴地成熔岩池(弯月挂边/黑壳结皮渐干)；柱高对齐 190px 判定线
+    /// 近地自动贴地成熔岩池(弯月挂边/黑壳结皮渐干)；柱高对齐 190px 判定线。
+    /// 半空根部是喷口球根+口下液舌，贴地则把柱原点埋进熔池，禁止水平实切
     /// </summary>
     internal sealed class SHPCMagmaVentProj : ModProjectile, IAdditiveDrawable
     {
@@ -91,6 +92,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         /// <summary>可视柱高，喷发满 190px 与 Colliding 判定线同源</summary>
         private float JetHeight(float pulse, float env) => 190f * env * (0.52f + 0.48f * MathF.Sqrt(pulse));
+
+        /// <summary>表现层喷口：贴地对齐熔池液面，半空仍用弹幕中心</summary>
+        private Vector2 VentWorld => grounded
+            ? new Vector2(Projectile.Center.X, poolGroundY)
+            : Projectile.Center;
 
         //熔岩团可飞离喷口数百px,放宽画面裁切余量防边缘团块凭空消失
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 600;
@@ -278,6 +284,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     life = 130,
                 });
             }
+            //半空喷口:根部下抛熔团,让悬挂根部在动,贴地溅浆已由 SplashAt 承担
+            if (!grounded) {
+                int hang = Main.rand.Next(2, 4);
+                for (int i = 0; i < hang; i++) {
+                    if (globs.Count >= 20) break;
+                    globs.Add(new MagmaGlob {
+                        pos = Projectile.Center + new Vector2(Main.rand.NextFloat(-10f, 10f), Main.rand.NextFloat(6f, 22f)),
+                        vel = new Vector2(Main.rand.NextFloat(-2.0f, 2.0f), Main.rand.NextFloat(0.8f, 3.2f)),
+                        seed = Main.rand.NextFloat(9f),
+                        scale = Main.rand.NextFloat(0.4f, 0.75f),
+                        life = 90,
+                    });
+                }
+            }
             SoundEngine.PlaySound(SoundID.Item20 with { Volume = 0.55f, Pitch = -0.2f }, Projectile.Center);
             if (nearLava) {
                 SoundEngine.PlaySound(SoundID.LiquidsWaterLava with { Volume = 0.4f, Pitch = -0.4f }, Projectile.Center);
@@ -297,6 +317,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
             PRTLoader.NewParticle<PRT_StarPulseRing>(Projectile.Center + Vector2.UnitY * 6f, Vector2.Zero,
                 new Color(255, 140, 50, 0), 0.05f).Configure(0.05f, 0.5f, 20);
+            if (!grounded) {
+                int hang = Main.rand.Next(1, 3);
+                for (int i = 0; i < hang; i++) {
+                    if (globs.Count >= 20) break;
+                    globs.Add(new MagmaGlob {
+                        pos = Projectile.Center + new Vector2(Main.rand.NextFloat(-8f, 8f), Main.rand.NextFloat(4f, 16f)),
+                        vel = new Vector2(Main.rand.NextFloat(-1.4f, 1.4f), Main.rand.NextFloat(0.6f, 2.4f)),
+                        seed = Main.rand.NextFloat(9f),
+                        scale = Main.rand.NextFloat(0.45f, 0.8f),
+                        life = 80,
+                    });
+                }
+            }
         }
 
         public override void OnKill(int timeLeft) {
@@ -349,10 +382,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
             Effect effect = EffectLoader.SHPCModMagma?.Value;
             if (effect != null) {
-                DrawFluid(effect, baseScreen, pulse, env);
+                DrawFluid(effect, pulse, env);
             }
             else {
-                DrawSpriteFallback(baseScreen, pulse, env);
+                DrawSpriteFallback(pulse, env);
             }
             return false;
         }
@@ -387,7 +420,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         /// <summary>着色器液体三态:贴地熔池→落地熔痕→喷浆柱→空中熔岩团,单次批翻转全画完</summary>
-        private void DrawFluid(Effect effect, Vector2 baseScreen, float pulse, float env) {
+        private void DrawFluid(Effect effect, float pulse, float env) {
             SpriteBatch sb = Main.spriteBatch;
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float seed = Projectile.whoAmI % 97 * 0.173f;
@@ -439,19 +472,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 }
             }
 
-            //---- 喷浆柱:底边锚喷口,柱高与判定线同源 ----
-            //画布仅放大2%:shader收头在0.94±撕裂,可视顶端≈height,不越190px判定线
+            //---- 喷浆柱:喷口平面为锚,口下留画布给球根/液舌;柱高与判定线同源 ----
             float height = JetHeight(pulse, env);
-            const float canvasW = 120f;
-            float canvasH = height * 1.02f;
+            const float canvasW = 128f;
+            float rootExtra = grounded
+                ? 20f
+                : MathHelper.Clamp(height * 0.38f, 52f, 80f);
+            float canvasH = height * 1.02f + rootExtra;
+            Vector2 ventScreen = VentWorld - Main.screenPosition;
+            if (grounded) {
+                ventScreen += new Vector2(0f, 6f);
+            }
             effect.CurrentTechnique = effect.Techniques["TechJet"];
             effect.Parameters["uSeed"]?.SetValue(seed);
             effect.Parameters["uEnv"]?.SetValue(env * (0.55f + 0.45f * pulse));
             effect.Parameters["uRise"]?.SetValue(pulse);
-            effect.Parameters["uAspect"]?.SetValue(canvasH / canvasW);
+            effect.Parameters["uAspect"]?.SetValue(height / canvasW);
             effect.Parameters["uGlow"]?.SetValue(pulse);
+            effect.Parameters["uRootFrac"]?.SetValue(rootExtra / canvasH);
             effect.CurrentTechnique.Passes[0].Apply();
-            sb.Draw(pixel, baseScreen + Vector2.UnitY * 10f, null, Color.White, 0f,
+            sb.Draw(pixel, ventScreen + Vector2.UnitY * rootExtra, null, Color.White, 0f,
                 new Vector2(pixel.Width / 2f, pixel.Height),
                 new Vector2(canvasW / pixel.Width, canvasH / pixel.Height), SpriteEffects.None, 0f);
 
@@ -477,7 +517,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
 
         /// <summary>精灵回退:着色器缺失时熔池垫层+简柱+熔岩团亮点,不空窗</summary>
-        private void DrawSpriteFallback(Vector2 baseScreen, float pulse, float env) {
+        private void DrawSpriteFallback(float pulse, float env) {
             Texture2D pool = CWRAsset.Extra_98?.Value;
             if (pool != null && grounded) {
                 Vector2 porigin = pool.Size() * 0.5f;
@@ -492,12 +532,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (glow == null) return;
             Vector2 gorigin = glow.Size() * 0.5f;
             float height = JetHeight(pulse, env);
+            Vector2 ventScreen = VentWorld - Main.screenPosition;
             for (int i = 0; i < 5; i++) {
                 float f = i / 4f;
-                Vector2 pos = baseScreen - Vector2.UnitY * (height * f);
+                Vector2 pos = ventScreen - Vector2.UnitY * (height * f);
                 float s = MathHelper.Lerp(0.55f, 0.26f, f) * (0.8f + 0.4f * pulse);
                 Main.spriteBatch.Draw(glow, pos, null, new Color(255, 90, 24, 60) * (env * (0.72f - 0.34f * f)),
                     0f, gorigin, s, SpriteEffects.None, 0f);
+            }
+            if (!grounded) {
+                Main.spriteBatch.Draw(glow, ventScreen + Vector2.UnitY * 8f, null,
+                    new Color(255, 90, 24, 0) * (env * 0.55f), 0f, gorigin, 0.42f, SpriteEffects.None, 0f);
             }
             foreach (MagmaGlob g in globs) {
                 Main.spriteBatch.Draw(glow, g.pos - Main.screenPosition, null, new Color(255, 120, 40, 60) * env,
@@ -511,21 +556,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             float env = BirthEnv * DeathEnv;
             if (env <= 0.03f) return;
             float intensity = 0.35f + pulse * 0.65f;
-            Vector2 baseScreen = Projectile.Center - Main.screenPosition;
-            if (!VaultUtils.IsPointOnScreen(baseScreen, 520)) return;
+            Vector2 ventScreen = VentWorld - Main.screenPosition;
+            if (!VaultUtils.IsPointOnScreen(ventScreen, 520)) return;
             float height = JetHeight(pulse, env);
 
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null) return;
             Vector2 gorigin = glow.Size() * 0.5f;
 
-            //口部辐射热光
+            //口部辐射热光(跟表现喷口,贴地时在熔池液面)
             Color inner = new Color(255, 190, 90) * (intensity * env * 0.85f);
             Color outer = new Color(150, 35, 8) * (intensity * env * 0.4f);
-            SHPCNaturalFx.GlowLayered(spriteBatch, glow, baseScreen, inner, outer, 1.15f + pulse * 0.5f, 0f, 3);
+            SHPCNaturalFx.GlowLayered(spriteBatch, glow, ventScreen, inner, outer, 1.15f + pulse * 0.5f, 0f, 3);
 
             //柱身热雾衬:窄长竖光,弱到只读作辐射不读作柱体
-            spriteBatch.Draw(glow, baseScreen - Vector2.UnitY * height * 0.5f, null,
+            spriteBatch.Draw(glow, ventScreen - Vector2.UnitY * height * 0.5f, null,
                 new Color(255, 90, 24) * (env * (0.14f + 0.18f * pulse)),
                 0f, gorigin, new Vector2(0.72f, height / glow.Height * 1.2f), SpriteEffects.None, 0f);
 
