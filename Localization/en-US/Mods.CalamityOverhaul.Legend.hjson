@@ -893,46 +893,59 @@ OnikiriTrialQuestLine: {
 }
 
 KikasaText: {
-	LakeNotReady: The lake hasn't risen to your feet yet
-	UmbrellaRefuse: The umbrella won't sink into its own lake
-	VaultFull: The lakebed can't hold any more
-	Title: Lake Hoard
-	CountFormat: Sunken {0} / {1}
-	ExtractHintFormat: Click to retrieve {0}
-	IdleHintFormat: Hold an item and press {0} to sink it · Click outside to close
-	EmptyHint: The lakebed is empty—only the sound of water
-	BossRefuse: The lake cannot hold something that big
-	DrownBusy: The lake is still taking the last one
-	DrownOutOfGrip: Too far for the lake to reach
-	ServantNoMemory: The lake hasn't swallowed anything living yet
-	ServantUnknown: The lake hasn't learned to command it
-	ServantBusy: The lake's hands haven't recovered yet
-	MemoryStamp: The lake remembers it
-
 	KikasaDrownSystem: {
-		BossRefuse: 湖抱不动它
-		DrownBusy: 湖还在收上一个
-		DrownOutOfGrip: 够不到那么远
+		BossRefuse: The lake cannot hold something that big
+		DrownBusy: The lake is still taking the last one
+		DrownOutOfGrip: Too far for the lake to reach
 	}
 
 	KikasaVaultPlayer: {
-		LakeNotReady: 湖还没涨到脚边
-		UmbrellaRefuse: 伞沉不进自己撑开的湖
-		VaultFull: 湖底沉不下更多了
+		LakeNotReady: The lake hasn't risen to your feet yet
+		UmbrellaRefuse: The umbrella won't sink into its own lake
+		VaultFull: The lakebed can't hold any more
 	}
 
 	KikasaVaultUI: {
-		Title: 湖 藏
-		CountFormat: 沉物 {0} / {1}
-		ExtractHintFormat: 点击取回 {0}
-		IdleHintFormat: 持物按 {0} 沉入 · 点击窗外合上
-		EmptyHint: 湖底空着，只有水声
+		Title: Lake Hoard
+		CountFormat: Sunken {0} / {1}
+		ExtractHintFormat: Click to retrieve {0}
+		IdleHintFormat: Hold an item and press {0} to sink it · Click outside to close
+		EmptyHint: The lakebed is empty—only the sound of water
 	}
 
 	KikasaServantPlayer: {
-		ServantNoMemory: 湖还没收过活物
-		ServantUnknown: 湖还没学会驱使它
-		ServantBusy: 湖底的手还没缓过来
-		MemoryStamp: 湖记住了它
+		ServantNoMemory: The lake hasn't swallowed anything living yet
+		ServantUnknown: The lake hasn't learned to command it
+		ServantBusy: The lake's hands haven't recovered yet
+		MemoryStamp: The lake remembers it
 	}
+
+	KikasaHud: {
+		MemoryEmpty: The lakebed is still empty
+		ServantOutTag: It's out doing your work
+		DomainHintFormat: Press {0} to raise the blood lake
+	}
+
+	KikasaHudLead: {
+		DomainTitle: Raise the Blood Lake
+		DomainBody: Everything the umbrella does grows out of the blood lake domain—the hoard, the drowning, the servants. Raise the lake first.
+		DomainPrompt: Hold the umbrella and press {0}
+		SinkTitle: Sink Into the Hoard
+		SinkBody: The lake is your private vault. Hold an item and press the sink key to drop it in; aim at a living thing and press the same key, and the lake will drag it under.
+		SinkPrompt: Once the water reaches your feet, press {0} while holding an item or aiming at a creature
+		VaultTitle: Open the Lake Window
+		VaultBody: Everything you sank drifts in the blood water. Hold the umbrella, open the window, click one, and the lake hands it back.
+		VaultPrompt: Hold the umbrella and press {0}
+		SummonTitle: Command the Servant
+		SummonBody: The lake always remembers the last creature drowned in its grip. Call its servant to fight for you; press again to dismiss it.
+		SummonPrompt: Press {0}
+		SummonNoMemory: The lake hasn't memorized anything it can command—drown a boss first, or skip this step.
+		MutateTitle: Ghost Rain Mutation
+		MutateBody: The blood lake has two faces. At full water, flip it over into the cold rain side; flip again to come back.
+		MutatePrompt: Press {0} (middle mouse by default)
+		SkipBtn: Skip
+		KeyUnbound: This step's key is unbound; bind it in Settings > Controls first, or click skip.
+	}
+
+	KikasaDreamSystem.ReflectAsleepHint: The reflection has not woken yet
 }

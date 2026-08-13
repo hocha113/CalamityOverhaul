@@ -29,6 +29,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Core
         CrimsonExodus = 10,
         Despawn = 11,
         Death = 12,
+        /// <summary>舌卷回吞投技：抓取舌命中/绕后惩罚升级</summary>
+        TongueGrab = 13,
     }
 
     /// <summary>状态接口</summary>

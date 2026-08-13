@@ -182,6 +182,17 @@ QuestLog: {
 	SunModeText: 日间模式
 	LauncherHoverText: 左键交互，右键拖动
 	QuestManagerText: 委托任务
+	ChronicleTitle: 远 征 纪 要
+	ChronicleProgress: 已结 {0} / {1}
+	ChronicleHint: 滚轮 缩放   ·   拖动 平移   ·   Esc 合卷
+	ChronicleStationChart: 任务图谱
+	ChronicleStationEntrust: 委托卷宗
+	ChronicleChapterTitle: 章 目
+	ChronicleLegendTitle: 图 例
+	ChronicleLegendSealed: 已结卷
+	ChronicleLegendUnclaimed: 待领赏
+	ChronicleLegendActive: 在行中
+	ChronicleLegendLocked: 未启程
 	DisabledOverlayText:
 		'''
 		任务检测已在当前世界中被禁止
@@ -1014,9 +1025,9 @@ EntrustManagerLead: {
 	TextMiddleClickAction: " →  挂起委托"
 	TextMiddleClickDesc: "     暂时隐藏该委托，不在追踪窗口中显示"
 	TextStyleButtonTitle: 样式按钮提示
-	TextStyleButtonLabel: 左键单击顶部小按钮
+	TextStyleButtonLabel: 左键单击高亮的小按钮
 	TextStyleButtonAction: " →  切换界面样式"
-	TextStyleButtonDesc: "     可以在荒漠、嘉登与森林风格之间循环切换"
+	TextStyleButtonDesc: "     可以在几套界面风格之间循环切换"
 	TextConfirmBtn: 明白了
 	TextTrackPromptTitle: 关注感兴趣的委托
 	TextTrackPromptHintLabel: 右键单击委托
@@ -1163,4 +1174,63 @@ MiningMachineUI: {
 	VeinTilesFormat: 探明矿脉 {0} 块
 	DrillTargetText: 定向矿物：{0}
 	DrillEffectText: 解锁目标矿物的开采资格，并将其产出权重提高到四倍
+}
+
+DungeonworldLoadingScreen: {
+	BandName0: 教堂区
+	BandName1: 牢狱层
+	BandName2: 大档案馆
+	BandName3: 水牢
+	BandName4: 万骨窖
+	BandName5: 铸造机关层
+	BandName6: 倒吊教堂
+	Toll0: 第一响 · 教堂区
+	Toll1: 第二响 · 牢狱层
+	Toll2: 第三响 · 大档案馆
+	Toll3: 第四响 · 水牢
+	Toll4: 第五响 · 万骨窖
+	Toll5: 第六响 · 铸造机关层
+	Toll6: 第七响 · 倒吊教堂
+	Tip0: 越往下，砖越老，祷词越短。
+	Tip1: 唱诗声还在，只是隔了七层楼板。
+	Tip2: 上面敲一下钟，井底回两下。
+	Tip3: 蜡烛越往下越矮，烛泪越往下越厚。
+	Tip4: 档案馆收每个人的名字，包括还没来的。
+	Tip5: 万骨窖的砖不用灰浆，骨头咬得比灰浆紧。
+	Tip6: 齿轮没停过，上油的人换了七代。
+	Tip7: 最底下那座教堂，祭坛钉在天花板上。
+	StatusDescend: 吊笼下行中
+	StatusAscend: 吊笼上行中
+	DepthLabel: 深度 {0}%
+}
+
+OldNetTexts: {
+	OldNetHarvest: +{0} 模具碎片（未铭刻）
+	OldNetNodeHint: 回收数据
+	OldNetTerminalHint: 登出并铭刻收获
+	OldNetSettleDone: 已铭刻 {0} 枚模具碎片，链路安全断开
+	OldNetSettleEmpty: 链路安全断开，本次没有收获
+	OldNetEjectRam: RAM耗尽——链路烧断，未铭刻的收获已丢失
+	OldNetEjectDeath: 构念崩解——链路烧断，未铭刻的收获已丢失
+	OldNetLedgerFull: 账本已满——先去中继站或登出
+	OldNetEncryptHint: 引导破解（站桩约3秒，动静很大）
+	OldNetEventHint: 拉闸：解除全图封锁，惊动整张网
+	OldNetEventPulled: 封锁已解除——清剿波正在路上
+	OldNetRelayHint: 中继上行：铭刻当前账本（上行有噪音）
+	OldNetRelayDone: 已铭刻 {0} 枚模具碎片，链路保持
+	OldNetRelayEmpty: 账本为空，无可上行
+}
+
+OldNetDebriefPanel: {
+	DebriefSubtitle: 链路战报
+	DebriefDepth: 最远离墙
+	DebriefHarvest: 采集节点
+	DebriefSettled: 铭刻碎片
+	DebriefHunted: 被追猎
+	DebriefTime: 深潜用时
+	DebriefExitSafe: 安全断链
+	DebriefExitBurnout: RAM 耗尽——链路烧断
+	DebriefExitDeath: 构念崩解——链路烧断
+	DebriefLost: "{0} 枚未铭刻碎片已烧毁"
+	DebriefContinue: 继续
 }

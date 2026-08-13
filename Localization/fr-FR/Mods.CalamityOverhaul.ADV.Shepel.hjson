@@ -40,7 +40,6 @@ CybTutorialLead: {
 		Toutes les interfaces ont été analysées avec succès.
 		La liaison neuronale est stable, le SHPC est paré.
 		'''
-	AwaitingEquip: AWAITING EQUIP...
 	Calibrating: CALIBRATING...
 	NextBtn: NEXT  >
 	HintStuck: HINT : Essayez de cliquer sur la zone cible en surbrillance.
@@ -53,53 +52,9 @@ CybCourseHackIntroDialogue: {
 }
 
 HackTimeTutorialLead: {
-	HT_Step0_Title: Activer le Mode Piratage
-	HT_Step1_Title: Verrouiller la cible
-	HT_Step2_Title: Panneau des protocoles
-	HT_Step3_Title: Télécharger le protocole
-	HT_Step4_Title: HACK SEQUENCE COMPLETE
-	HT_Step0_Body:
-		'''
-		Appuyez sur la touche {0} pour entrer dans le Mode Temps de piratage.
-		Le temps se figera et un filtre cybernétique se superposera à l'écran.
-		'''
-	HT_Step1_Body:
-		'''
-		Passez le curseur sur le Tank de Noël en surbrillance,
-		puis faites un clic gauche pour le verrouiller comme cible.
-		'''
-	HT_Step2_Body:
-		'''
-		Le panneau de droite affiche les protocoles de piratage disponibles pour la cible.
-		Différents protocoles consomment différentes quantités de RAM et produisent des effets variés.
-		'''
-	HT_Step3_Body:
-		'''
-		Cliquez sur un protocole pour l'ajouter à la file d'attente à gauche.
-		La file exécutera les opérations de piratage dans l'ordre.
-		'''
-	HT_Step4_Body:
-		'''
-		Liaison neuronale déconnectée.
-		L'entraînement au protocole de Temps de piratage est terminé, le système est paré.
-		'''
 	HT_Waiting: AWAITING INPUT...
 	HT_Calibrating: DISCONNECTING...
 	HT_NextBtn: NEXT  >
-	HT_Step5_Title: Scan de bloc
-	HT_Step6_Title: Verrouiller le bloc cible
-	HT_Step7_Title: TILE SCAN COMPLETE
-	HT_Step5_Body:
-		'''
-		Il y a un Générateur Thermique MK2 droit devant.
-		Appuyez de nouveau sur {0} pour réactiver le Temps de piratage.
-		'''
-	HT_Step6_Body:
-		'''
-		Passez le curseur sur le générateur,
-		puis faites un clic gauche pour le verrouiller comme cible du scan.
-		'''
-	HT_Step7_Body: L'interface de scan de bloc a été analysée. Le panneau de droite affiche les protocoles de piratage disponibles pour ce bloc.
 	HT_HintStuck: HINT : Cliquez sur le bouton NEXT pour forcer l'action à passer.
 	HT_KeyUnbound: N (Bascule temporaire)
 	HT_KeyHintUnbound: Astuce : Si aucun raccourci n'est assigné au Temps de piratage, vous pouvez utiliser [N] temporairement pendant ce tutoriel ; il est recommandé de l'assigner dans Paramètres > Contrôles.
@@ -203,10 +158,10 @@ WheelTutorialLead: {
 		Dead center of the wheel is the Hack Time shortcut —
 		clicking it equals pressing {1}. That wraps up the training.
 		''' */
-	// RW_Calibrating: SYNCHRONIZED...
-	// RW_NextBtn: NEXT  >
-	// RW_HintStuck: HINT: Click NEXT to force skip
-	// RW_KeyHintUnbound: Note: the radial wheel key is unbound, so the wheel cannot open. Bind it under Settings > Controls, or click NEXT to skip.
+	// RW_Calibrating: Synchronized
+	// RW_NextBtn: Skip >
+	// RW_HintStuck: Hint: click Skip to force past this step
+	// RW_KeyHintUnbound: Note: the radial wheel key is unbound, so the wheel cannot open. Bind it under Settings > Controls, or click Skip.
 }
 
 CybCourseOutroDialogue: {
@@ -238,6 +193,14 @@ CybCourseKeyBindReminderPanel: {
 	BtnConfirm: J'ai compris
 	BtnLater: Plus tard
 	Footer: Les deux options quittent le Super-Rêve. Vous pourrez changer les touches plus tard dans les paramètres.
+}
+
+CybCourseWorld: {
+	// BootTag: NEURAL LINK · SUPERDREAM NODE
+	// BootTitle: Linking Superdream
+	// BootSubtitle: SHPC Immersion Training Protocol
+	// BootStatus: Compiling training space
+	// BootBarLabel: Sync Rate
 }
 
 ShepelCyberActiveDialogue: {

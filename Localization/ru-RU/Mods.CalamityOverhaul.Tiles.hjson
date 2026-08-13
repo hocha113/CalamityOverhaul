@@ -3,3 +3,10 @@ BloodAltarTP: {
 	InsufficientOfferingText: У вас недостаточно кровавых слез для данного взноса перед Карминовым Королем...
 	SacrificeDeathReason: "{0} Затянут в бесконечную ярость крови и плоти"
 }
+
+// OldNetDataNodeTile.MapEntry: Data Node
+// OldNetLogoutTerminalTile.MapEntry: Logout Terminal
+// OldNetEncryptedNodeTile.MapEntry: Encrypted Node
+// OldNetEventNodeTile.MapEntry: Event Node
+// OldNetSealGateTile.MapEntry: Seal Gate
+// OldNetRelayTile.MapEntry: Relay Station

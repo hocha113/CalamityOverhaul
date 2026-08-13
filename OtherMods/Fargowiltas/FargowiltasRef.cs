@@ -35,7 +35,7 @@ namespace CalamityOverhaul.OtherMods.Fargowiltas
 
         private static void UpdateUI_Hook(Action<object, object> orig, object self, object gameTime) {
             //QuestLog 可见时关 Stat 防止冲突
-            if (QuestLog.Instance.visible) {
+            if (QuestLog.Instance.IsOpen) {
                 closeStatSheetMethod?.Invoke(self, null);
                 closeStatButtonMethod?.Invoke(self, null);
             }

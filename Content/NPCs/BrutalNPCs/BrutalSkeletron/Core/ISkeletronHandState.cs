@@ -16,6 +16,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core
         Orbit = 3,
         /// <summary>断手狂化撕臂殉解</summary>
         Torn = 4,
+        /// <summary>合掌拍捉伺服（读头侧子相位行动）</summary>
+        Snatch = 5,
     }
 
     /// <summary>手部状态上下文</summary>

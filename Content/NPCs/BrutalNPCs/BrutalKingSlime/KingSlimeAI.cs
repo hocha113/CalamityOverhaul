@@ -46,6 +46,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
         private void InitializeStateContext() {
             stateContext = new KingSlimeStateContext {
                 Npc = npc,
+                Host = this,
                 IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()
             };
             stateMachine = new NpcStateMachine<KingSlimeStateContext>(stateContext, aiSlot: 2);
@@ -151,6 +152,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
             if (stateContext.TideTravelCooldown > 0) {
                 stateContext.TideTravelCooldown--;
             }
+            //吞没投技冷却递减(服务端消费)
+            if (stateContext.EngulfCooldown > 0) {
+                stateContext.EngulfCooldown--;
+            }
             if (VaultUtils.isClient) {
                 stateContext.TideTravelActive = ai[5] == 1f;
             }
@@ -218,8 +223,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
         /// 转入狂暴——AI照常，免伤+接触增伤；贴近后解除。服务端判定，ai[4]镜像
         /// </summary>
         private void UpdateEnrage() {
+            //吞没投技持人期也豁免：狂暴免伤会消解"队友集火救人"的反制窗口
             bool inPerformance = stateMachine?.CurrentState
-                is KingSlimeDeathState or KingSlimeDespawnState or KingSlimeIntroState;
+                is KingSlimeDeathState or KingSlimeDespawnState or KingSlimeIntroState
+                or KingSlimeEngulfState;
 
             if (!VaultUtils.isClient) {
                 if (inPerformance || !targetPlayer.Alives()) {
@@ -272,6 +279,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime
         #endregion
 
         #region 王冠接口(供离体弹幕查询/回冲)
+
+        /// <summary>状态上下文只读暴露，吞没渲染层读形变参数用；未初始化为null</summary>
+        internal KingSlimeStateContext StateContext => stateContext;
+
+        /// <summary>
+        /// 取NPC上的本重制实例(验接管在场)，玩家侧/渲染侧查询吞没状态用；无则false。
+        /// 原版史莱姆王ai[2]是原生用槽，可能撞状态索引值，必须验证接管
+        /// </summary>
+        internal static bool TryGetKingAI(NPC npc, out KingSlimeAI kingAI) {
+            kingAI = null;
+            if (npc == null || !npc.active || npc.type != NPCID.KingSlime) {
+                return false;
+            }
+            return npc.TryGetOverride(out kingAI);
+        }
 
         /// <summary>扣冠锚点(世界系头顶)，离体王冠归位砸扣的落点</summary>
         internal Vector2 GetCrownAnchor() {

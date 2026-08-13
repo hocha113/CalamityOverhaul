@@ -145,6 +145,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
             if (Main.GameUpdateCount % 10 == 0) {
                 stateContext.RefreshParts();
             }
+
+            //投技冷却权威端递减
+            if (!VaultUtils.isClient && stateContext.VineFeastCooldown > 0) {
+                stateContext.VineFeastCooldown--;
+            }
         }
 
         /// <summary>转阶段/大招/死亡演出触发，权威端裁决</summary>
@@ -153,8 +158,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
                 return;
             }
 
+            //投技(VineFeast)也算演出：大招/蜕壳不得中途打断抓取连段，死亡演出仍可
             bool inCinematic = stateMachine.CurrentState is PlanteraIntroState or PlanteraPhaseTransitionState
-                or PlanteraBloomNovaState or PlanteraDeathState or PlanteraDespawnState;
+                or PlanteraBloomNovaState or PlanteraDeathState or PlanteraDespawnState or PlanteraVineFeastState;
 
             //死亡演出
             if (!stateContext.DeathPerformanceFinished
@@ -281,10 +287,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera
                 return true;
             }
 
-            //加特林/狂化嚼得快，死亡演出迟滞
+            //加特林/狂化/咀嚼嚼得快，死亡演出迟滞
             int interval = 6;
             PlanteraStateIndex idx = GetStateIndex(npc);
-            if (idx == PlanteraStateIndex.SeedGatling || idx == PlanteraStateIndex.FrenzyPounce) {
+            if (idx == PlanteraStateIndex.SeedGatling || idx == PlanteraStateIndex.FrenzyPounce
+                || idx == PlanteraStateIndex.VineFeast) {
                 interval = 4;
             }
             else if (idx == PlanteraStateIndex.Death) {

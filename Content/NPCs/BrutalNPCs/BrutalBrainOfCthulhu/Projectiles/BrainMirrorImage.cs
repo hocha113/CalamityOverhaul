@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Rendering;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -25,6 +26,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Projecti
         internal const int ModeMazeOrbit = 2;
         /// <summary>骤停闪现冲刺（生成即带速度）</summary>
         internal const int ModeGuidedDash = 3;
+        /// <summary>摄心镜狱·收环（纯预告无伤，半径由本地寿命确定性推演）</summary>
+        internal const int ModeSeizeRing = 4;
+        /// <summary>摄心镜狱·穿刺（捕获后由服务端改写模式，按槽位排程刺向环心）</summary>
+        internal const int ModeSeizePierce = 5;
 
         /// <summary>镜阵每槽冲刺间隔（帧）</summary>
         internal const int MazeDashInterval = 46;
@@ -82,6 +87,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Projecti
                     break;
                 case ModeGuidedDash:
                     UpdateGuidedDash();
+                    break;
+                case ModeSeizeRing:
+                    UpdateSeizeRing();
+                    break;
+                case ModeSeizePierce:
+                    UpdateSeizePierce();
                     break;
             }
         }
@@ -161,9 +172,79 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Projecti
             }
         }
 
+        /// <summary>
+        /// 摄心环：绕锁死锚点收缩（半径公式与状态端共用，确定性收环），全程无判定
+        /// 捕获后未被点名穿刺的槽位停在持环半径上呼吸
+        /// </summary>
+        private void UpdateSeizeRing() {
+            float angle = MathHelper.TwoPi * Slot / BrainMindSeizeState.MirrorCount
+                + Age * BrainMindSeizeState.RingSpinRate;
+            float radius = BrainMindSeizeState.RingRadius(Age);
+            //收环完成后的驻留呼吸
+            if (Age > BrainMindSeizeState.SnapTick) {
+                radius += 6f * (float)Math.Sin((Age - BrainMindSeizeState.SnapTick) * 0.06f + Slot);
+            }
+            Projectile.Center = Anchor + angle.ToRotationVector2() * radius;
+            Projectile.velocity = Vector2.Zero;
+            Projectile.hostile = false;
+            Projectile.rotation = (float)Math.Sin(Age * 0.045f + Slot * 1.7f) * 0.08f;
+
+            //超时自碎兜底（正常流程由服务端在掷飞/落空时统一清场）
+            if (Age >= BrainMindSeizeState.MirrorLifeCap) {
+                Projectile.Kill();
+            }
+        }
+
+        /// <summary>
+        /// 摄持穿刺：模式翻转边沿记起点，顿帧→外撑收势→贯穿环心→越过即碎
+        /// 伤害不走接触判定，由受害者客户端按同一节拍脚本结算
+        /// </summary>
+        private void UpdateSeizePierce() {
+            //翻转边沿：记录穿刺本地起点（localAI[2] 惰性初始化，钳到≥1防哨兵值滑动）
+            if (Projectile.localAI[2] == 0f) {
+                Projectile.localAI[2] = Math.Max(Age, 1f);
+            }
+            float pierceAge = Age - Projectile.localAI[2];
+            int start = BrainMindSeizeState.PierceReelStart(Slot);
+            Projectile.hostile = false;
+
+            if (DashPhase == 0f) {
+                //起手静止（捕获顿帧）+ 排程前驻环呼吸
+                float angle = MathHelper.TwoPi * Slot / BrainMindSeizeState.MirrorCount
+                    + Age * BrainMindSeizeState.RingSpinRate;
+                float radius = BrainMindSeizeState.HoldRadius;
+                //出手前收势：外撑蓄力（二次曲线，末段骤然）
+                float reelT = MathHelper.Clamp((pierceAge - start) / (float)BrainMindSeizeState.PierceReelTime, 0f, 1f);
+                radius += reelT * reelT * 60f;
+                Projectile.Center = Anchor + angle.ToRotationVector2() * radius;
+                Projectile.velocity = Vector2.Zero;
+                Projectile.rotation = (float)Math.Sin(Age * 0.05f + Slot) * 0.06f;
+
+                if (pierceAge >= start + BrainMindSeizeState.PierceReelTime) {
+                    DashPhase = 1f;
+                    Projectile.velocity = (Anchor - Projectile.Center).SafeNormalize(Vector2.UnitY)
+                        * BrainMindSeizeState.PierceDashSpeed;
+                    if (!VaultUtils.isServer && BrainMotion.OnScreen(Projectile.Center)) {
+                        BrainMotion.FleshSquish(Projectile.Center, 0.8f, -0.4f);
+                        BrainMotion.BloodMistBurst(Projectile.Center, 0.7f, 3, 5f);
+                    }
+                }
+                return;
+            }
+
+            if (DashPhase == 1f) {
+                //贯穿：越过环心一段距离即自碎（OnKill 碎裂演出各端自播）
+                if (Vector2.Dot(Projectile.Center - Anchor, Projectile.velocity) > 0f
+                    && Projectile.Distance(Anchor) > 280f) {
+                    DashPhase = 2f;
+                    Projectile.Kill();
+                }
+            }
+        }
+
         #endregion
 
-        public override bool ShouldUpdatePosition() => Mode is ModeGuidedDash or ModeMazeOrbit;
+        public override bool ShouldUpdatePosition() => Mode is ModeGuidedDash or ModeMazeOrbit or ModeSeizeRing or ModeSeizePierce;
 
         public override void OnKill(int timeLeft) {
             //入场旋聚汇入无碎裂

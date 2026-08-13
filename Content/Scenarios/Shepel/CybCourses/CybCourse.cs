@@ -79,6 +79,24 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 return;
             }
             Main.newMusic = Main.musicBox2 = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/AloneInTheBackalleys");
+            AddDeckLight();
+        }
+
+        //甲板自发冷青光：虚空夜空下平台不能漆黑一片
+        private static void AddDeckLight() {
+            if (Main.dedServ) {
+                return;
+            }
+            float deckY = (CybCourseGen.SurfaceY - 1) * 16f;
+            for (int x = CybCourseGen.PlatformLeft; x <= CybCourseGen.PlatformRight; x += 6) {
+                Lighting.AddLight(new Vector2(x * 16f, deckY), 0.10f, 0.30f, 0.36f);
+            }
+            //装饰浮岛给微光，否则贴着近黑天幕根本看不见
+            foreach (var (x0, x1, yTop) in CybCourseGen.AccentIslets) {
+                Lighting.AddLight(
+                    new Vector2((x0 + x1) * 0.5f * 16f, (yTop - 1) * 16f),
+                    0.05f, 0.16f, 0.20f);
+            }
         }
     }
 }

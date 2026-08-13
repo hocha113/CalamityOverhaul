@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 if (p == null || !p.active || p.dead) {
                     return false;
                 }
-                if (QuestLog.Instance?.visible == true || QuestManagerUI.Instance?.IsOpen == true) {
+                if (QuestLog.Instance?.IsOpen == true || QuestManagerUI.Instance?.IsOpen == true) {
                     return false;
                 }
                 CyberwareSkillRadialController ctrl = CyberwareSkillRadialController.LocalInstance;

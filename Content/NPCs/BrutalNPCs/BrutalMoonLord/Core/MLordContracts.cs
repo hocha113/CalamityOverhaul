@@ -71,6 +71,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         public const int OvLastBrokenPart = 5;
         /// <summary>Override ai[6] 大招已用标记 0/1</summary>
         public const int OvUltUsed = 6;
+        /// <summary>Override ai[7] 投技被抓玩家 whoAmI+1，0=无（服务端写，被抓端读）</summary>
+        public const int OvGrabTarget = 7;
+        /// <summary>Override ai[8] 投技抓握之手 whoAmI+1，0=无</summary>
+        public const int OvGrabHand = 8;
     }
 
     /// <summary>真眼编队指令</summary>

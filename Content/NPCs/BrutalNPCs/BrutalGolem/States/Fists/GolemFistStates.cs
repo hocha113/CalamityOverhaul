@@ -29,6 +29,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
                         case GolemFistCommand.StraightPunch:
                         case GolemFistCommand.HookSwing:
                         case GolemFistCommand.LowSweep:
+                        case GolemFistCommand.SuperPunch:
                             return new GolemFistWindupState();
                         case GolemFistCommand.GuardOrbit: {
                             //过期护卫令丢弃：仅躯干仍处仪式态时生效
@@ -73,22 +74,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
                     MathHelper.SmoothStep(0f, 1f, MathHelper.Clamp(t * 1.35f, 0f, 1f)));
             }
 
+            //超级直拳：后拉行程加倍、汇聚更密，读作"这拳不一样"
+            bool super = ctx.CmdKind == GolemFistCommand.SuperPunch;
+
             Vector2 aimDir = (ctx.CmdPoint - anchor).SafeNormalize(Vector2.UnitX * ctx.Side);
             //8次幂后拉：几乎不动——最后几帧猛然吸回
-            float pull = MathF.Pow(t, 8f) * 64f;
+            float pull = MathF.Pow(t, 8f) * (super ? 150f : 64f);
             npc.Center = anchor - aimDir * pull;
             npc.velocity = Vector2.Zero;
             npc.rotation = ctx.Side < 0 ? (-aimDir).ToRotation() : aimDir.ToRotation();
 
             //汇聚尘（前2/3充能，末段静默——爆发前的吸气）
-            if (!VaultUtils.isServer && t < 0.7f && Timer % 3 == 0) {
+            if (!VaultUtils.isServer && t < 0.7f && Timer % (super ? 2 : 3) == 0) {
                 Vector2 from = npc.Center + Main.rand.NextVector2CircularEdge(70f, 70f);
                 Vector2 vel = (npc.Center - from) * 0.09f;
-                Dust dust = Dust.NewDustPerfect(from, DustID.SolarFlare, vel, 0, default, 1.1f);
+                Dust dust = Dust.NewDustPerfect(from, DustID.SolarFlare, vel, 0, default, super ? 1.4f : 1.1f);
                 dust.noGravity = true;
             }
             if (!VaultUtils.isServer && Timer == (int)(windup * 0.7f)) {
-                SoundEngine.PlaySound(SoundID.Item74 with { Pitch = -0.6f, Volume = 0.8f }, npc.Center);
+                SoundEngine.PlaySound(SoundID.Item74 with { Pitch = super ? -0.85f : -0.6f, Volume = super ? 1f : 0.8f }, npc.Center);
             }
 
             Timer++;
@@ -150,6 +154,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
 
             //撞墙反弹（服务端裁决弹道，碎石弹幕承载各端表现）
             if (!VaultUtils.isClient) {
+                //超级直拳：飞行中压住存活玩家即转入投技抓取
+                if (ctx.CmdKind == GolemFistCommand.SuperPunch && TryGrab(ctx)) {
+                    return new GolemFistGrabState();
+                }
+
                 TryBounce(ctx);
 
                 Vector2 anchor = GolemFacts.FistAnchor(ctx.Body, ctx.Side);
@@ -158,13 +167,41 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
                 bool spent = ctx.BounceBudget < 0;
                 //低位横扫：行程足够即返
                 bool sweepDone = ctx.CmdKind == GolemFistCommand.LowSweep && Timer > 46;
-                if (tooFar || timeout || spent || sweepDone) {
+                //超级直拳射程更短：落空即回收，不追杀
+                bool superSpent = ctx.CmdKind == GolemFistCommand.SuperPunch && Timer >= GolemDirector.GrabPunchMaxFlight;
+                if (tooFar || timeout || spent || sweepDone || superSpent) {
+                    //超级直拳落空反馈：撞墙碎石扇（普通拳有反弹语言，超级拳沉默会读作bug）
+                    if (ctx.CmdKind == GolemFistCommand.SuperPunch && spent) {
+                        int damage = GolemDirector.ScaleDamage(GolemDirector.ShrapnelDamage, ctx.DeathMode);
+                        Vector2 back = -npc.velocity.SafeNormalize(Vector2.UnitX * ctx.Side);
+                        for (int i = 0; i < 3; i++) {
+                            Vector2 vel = back.RotatedBy(MathHelper.Lerp(-0.7f, 0.7f, i / 2f)) * Main.rand.NextFloat(5f, 8f);
+                            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, vel,
+                                ModContent.ProjectileType<GolemStoneShrapnel>(), damage, 0f, Main.myPlayer);
+                        }
+                    }
                     return new GolemFistReturnState();
                 }
             }
 
             Timer++;
             return null;
+        }
+
+        /// <summary>抓取判定（服务端）：拳箱微扩后与存活玩家相交即抓住</summary>
+        private bool TryGrab(GolemFistStateContext ctx) {
+            NPC npc = ctx.Npc;
+            Rectangle box = npc.Hitbox;
+            box.Inflate(10, 10);
+            foreach (Player player in Main.ActivePlayers) {
+                if (player.dead || player.shimmering || !box.Intersects(player.Hitbox)) {
+                    continue;
+                }
+                ctx.Owner.ai[GolemAiSlots.FistGrabTarget] = player.whoAmI + 1;
+                npc.netUpdate = true;
+                return true;
+            }
+            return false;
         }
 
         private void Launch(GolemFistStateContext ctx) {
@@ -195,8 +232,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States.Fists
             }
 
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item14 with { Pitch = 0.2f, Volume = 0.75f }, npc.Center);
-                GolemScreenEffects.Shake(3f);
+                bool super = ctx.CmdKind == GolemFistCommand.SuperPunch;
+                SoundEngine.PlaySound(SoundID.Item14 with { Pitch = super ? -0.25f : 0.2f, Volume = super ? 1f : 0.75f }, npc.Center);
+                GolemScreenEffects.Shake(super ? 5f : 3f);
 
                 //火箭点火：肩口发射闪 + 喷烟 + 火星（发射口留在肩位，拳已离膛）
                 Vector2 muzzle = GolemFacts.FistAnchor(ctx.Body, ctx.Side);

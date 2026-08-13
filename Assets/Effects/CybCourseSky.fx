@@ -1,16 +1,26 @@
 // ============================================================================
-//CybCourseSky.fx 超梦沉浸空间天空
-//全程序化深空夜景；无外部纹理
+//CybCourseSky.fx 编译中的超梦——训练空间天穹
+//材质：被扫描线维持的全息构造体悬在未渲染的记忆虚空里
+//三个元素：虚空底色雾 / 地平线巨型六角构造核心(琥珀心跳) / 六角编译带+上升数据尘
+//纯 ALU 直线算术：无采样器、无动态分支、无 atan2(噪声全走笛卡尔)
 // ============================================================================
 
-float uTime;
-float uIntensity;
+float uTime;          //秒
+float uIntensity;     //0..1 淡入
 float uAspectRatio;
+float uCamX;          //相机X / 视口高（归一化，供层间横向视差）
+float uCamY;          //(相机中心Y - 甲板锚点Y) / 视口高（纵向视差：构造核心要钉在世界里，不许跟镜头飞）
 
 #define TAU 6.28318530
-#define PI  3.14159265
 
-//Hash / Noise
+//SHPC 系列色板：青为体，琥珀只作核心心跳点缀
+#define VOID_TOP  float3(0.004, 0.008, 0.020)
+#define VOID_LOW  float3(0.014, 0.036, 0.062)
+#define CYAN      float3(0.337, 0.863, 0.941)
+#define CYAN_HI   float3(0.667, 0.961, 1.000)
+#define AMBER     float3(1.000, 0.667, 0.235)
+
+//Hash / Noise（笛卡尔输入）
 
 float hash11(float p)
 {
@@ -46,226 +56,159 @@ float vnoise(float2 p)
     return lerp(lerp(a, b, f.x), lerp(c, d, f.x), f.y);
 }
 
-//两八度轻量 fbm，用于星云与极光扰动
 float fbm2(float2 p)
 {
     return vnoise(p) * 0.625 + vnoise(p * 2.1 + float2(3.7, 8.1)) * 0.375;
 }
 
-//三八度 fbm，用于体积雾
-float fbm3(float2 p)
+//Hex 工具（与入场揭示 CybCourseEntryReveal 同一套语言）
+
+//两套方格 Voronoi 等价六角网格
+void hexCellInfo(float2 p, float scale, out float2 local, out float2 cellId)
 {
-    return vnoise(p) * 0.55
-         + vnoise(p * 2.07 + float2(3.7, 8.1)) * 0.30
-         + vnoise(p * 4.13 - float2(1.3, 5.5)) * 0.15;
+    p *= scale;
+    const float2 s = float2(1.0, 1.7320508);
+    float2 iA = floor(p / s + 0.5);
+    float2 iB = floor(p / s);
+    float2 cA = iA * s;
+    float2 cB = iB * s + s * 0.5;
+    float2 dA = p - cA;
+    float2 dB = p - cB;
+    float pick = step(dot(dB, dB), dot(dA, dA)); //1=取B
+    local  = lerp(dA, dB, pick);
+    cellId = lerp(iA, iB + float2(0.37, 0.41), pick);
 }
 
-//单层星辰，返回该 UV 处的亮度
-float starLayer(float2 uv, float scale, float seed)
-{
-    float2 id  = floor(uv * scale);
-    float2 sub = frac(uv * scale) - 0.5;
-    float  h   = hash21(id + seed);
-    if (h < 0.80) return 0.0;
-    h = (h - 0.80) / 0.20;
-    float2 off = (hash22(id + seed * 1.37) - 0.5) * 0.38;
-    float  d   = length(sub - off);
-    float  tw  = sin(uTime * (1.0 + h * 2.2) + hash11(h + seed) * TAU) * 0.15 + 0.85;
-    return h * h * tw * smoothstep(0.09, 0.0, d);
-}
-
-//距正六边形（中心 0,0，apothem 0.866）边的距离
+//单元内部到最近边的垂直距离(中心0.866→边0)
 float hexEdgeDist(float2 p)
 {
     p = abs(p);
     return 0.86602540 - max(p.x * 0.86602540 + p.y * 0.5, p.y);
 }
 
-//主函数
+//正六边形距离度量(边界=R)
+float hexDist(float2 p)
+{
+    p = abs(p);
+    return max(p.x * 0.86602540 + p.y * 0.5, p.y);
+}
+
+float2 rot2(float2 p, float a)
+{
+    float c = cos(a);
+    float s = sin(a);
+    return float2(p.x * c - p.y * s, p.x * s + p.y * c);
+}
+
+//数据尘单层：cell 点阵沿 y 缓慢上升
+float dustLayer(float2 q, float scale, float thresh)
+{
+    float2 id = floor(q * scale);
+    float2 f = frac(q * scale) - 0.5;
+    float h = hash21(id);
+    float2 off = (hash22(id + 7.31) - 0.5) * 0.52;
+    float d = length(f - off);
+    float tw = 0.70 + 0.30 * sin(uTime * (0.7 + h * 1.6) + h * TAU);
+    return step(thresh, h) * smoothstep(0.085, 0.0, d) * tw;
+}
+
+//Main
 
 float4 PSCybCourseSky(float2 uv : TEXCOORD0) : COLOR0
 {
-    //宽高比修正 UV，用于水平方向敏感的效果（极光波形、星云、栅格）
     float2 uvW = float2(uv.x * uAspectRatio, uv.y);
-    float  t   = uTime * 0.065;
+    float t = uTime;
+
+    //各层纵向视差档位：越远跟随越少（相机升高时远景在屏幕上下沉）
+    float yFar  = uv.y + uCamY * 0.15;   //核心/雾/地平线一组
+    float yMid  = uv.y + uCamY * 0.25;   //六角编译带
+    float yNear = uv.y + uCamY * 0.45;   //近层数据尘
+    float yFarD = uv.y + uCamY * 0.20;   //远层数据尘
 
     //=
-    //Layer 1 — 基础渐变天空
-    //顶部深空黑蓝 → 底部略亮的午夜蓝；高纬度叠淡淡冷紫晕染（梦境感）
+    //元素 1 —— 未渲染的虚空：上黑下微亮的纵向渐变 + 地平线雾
     //=
-    float3 topCol = float3(0.014, 0.020, 0.052);
-    float3 botCol = float3(0.026, 0.048, 0.095);
-    float3 col    = lerp(topCol, botCol, pow(saturate(uv.y), 0.5));
+    float3 col = lerp(VOID_TOP, VOID_LOW, pow(saturate(uv.y), 1.35));
 
-    {
-        //顶部冷紫染色（远空带电离感）
-        float topVeil = pow(1.0 - saturate(uv.y), 2.2);
-        col += float3(0.020, 0.012, 0.045) * topVeil;
-    }
+    //低频雾，向地平线聚拢；随时间极缓漂移
+    float2 fogUV = float2(uvW.x * 0.55 + uCamX * 0.019, yFar * 1.05) + float2(t * 0.010, 0.0);
+    float fog = fbm2(fogUV * 1.4);
+    float fogBand = smoothstep(0.30, 0.86, yFar);
+    col += float3(0.020, 0.070, 0.110) * fog * fogBand * 0.55;
 
     //=
-    //Layer 2 — 远景数字蜂窝栅格
-    //占据下半部分，向地平线汇聚，颜色极淡，营造"地表是数字基底"的暗示
+    //元素 2 —— 巨型六角构造核心（唯一大形体，慢呼吸+琥珀心跳）
     //=
-    {
-        //仅在 uv.y > 0.40 区域显示，向下增强
-        float gridArea = smoothstep(0.40, 0.92, uv.y);
+    //核心锚在世界坐标里，行走/升降时按远景档位滑移
+    float coreX = 0.5 * uAspectRatio - uCamX * 0.024;
+    float coreY = 0.735 - uCamY * 0.15;
+    float2 pc = float2(uvW.x - coreX, uv.y - coreY);
 
-        //透视：随 y 增大，水平 z 越近，视密度变化
-        //用 1/(1.05 - uv.y) 形成轻微聚拢感（但不极端）
-        float perspY = 1.0 / max(1.05 - uv.y, 0.06);
-        float2 hp = float2(uvW.x * perspY * 1.6, perspY * 0.6 + t * 0.30);
+    //心跳：~6.5s 一拍，攻击瞬间起、指数衰减
+    float beat = frac(t * 0.1538);
+    float pulse = exp(-beat * 6.0);
 
-        //取 hex 单元局部位置
-        const float2 sH = float2(1.0, 1.7320508);
-        float2 iA = floor(hp / sH + 0.5);
-        float2 iB = floor(hp / sH);
-        float2 cA = iA * sH;
-        float2 cB = iB * sH + sH * 0.5;
-        float2 dA = hp - cA;
-        float2 dB = hp - cB;
-        float2 cLocal = dot(dA, dA) < dot(dB, dB) ? dA : dB;
-        float2 cId    = dot(dA, dA) < dot(dB, dB) ? iA : (iB + 0.41);
+    //六角外环 + 内环，缓慢自转
+    float2 pr = rot2(pc, t * 0.030);
+    float hd = hexDist(pr);
+    float breathe = 0.74 + 0.26 * sin(t * 0.42);
+    float ringO = smoothstep(0.0085, 0.0, abs(hd - 0.340));
+    float ringI = smoothstep(0.0060, 0.0, abs(hd - 0.292));
+    col += CYAN * ringO * 0.42 * breathe;
+    col += CYAN * ringI * 0.20 * breathe;
+    //环身向内的弱结构辉光（构造体在虚空里的体积暗示）
+    float shell = smoothstep(0.345, 0.20, hd) * smoothstep(0.10, 0.24, hd);
+    col += CYAN * shell * 0.045;
 
-        float ed = hexEdgeDist(cLocal);
-        float gridLine = smoothstep(0.10, 0.0, ed);
+    //琥珀核：大半沉在地平线雾下，只以辉光存在
+    float coreGlow = exp(-length(pc * float2(1.0, 1.55)) * 4.2);
+    col += AMBER * coreGlow * (0.16 + pulse * 0.55);
+    //心跳峰值的短暂暖白（非常驻）
+    col += float3(1.0, 0.88, 0.70) * exp(-length(pc) * 9.0) * pulse * 0.22;
 
-        //极淡冷青边线
-        col += float3(0.030, 0.110, 0.220) * gridLine * gridArea * 0.42;
-
-        //偶发节点闪烁（极少数蜂窝单元会被 ping 一次）
-        float pingRnd = hash21(cId);
-        if (pingRnd > 0.965) {
-            float pingT = frac(uTime * 0.45 + pingRnd * 13.7);
-            float ping = exp(-pingT * 9.0);
-            float core = smoothstep(0.06, 0.0, length(cLocal));
-            col += float3(0.30, 0.85, 1.05) * core * ping * gridArea * 0.55;
-        }
-    }
+    //心跳沿地平线向两侧扫过的琥珀波（雾被点亮）
+    float horizLine = exp(-pow((yFar - 0.740) * 16.0, 2.0));
+    float dxc = abs(uvW.x - coreX);
+    float sweep = exp(-pow((dxc - beat * 1.75) * 5.5, 2.0)) * exp(-beat * 3.2);
+    col += AMBER * horizLine * sweep * (0.30 + fog * 0.25);
 
     //=
-    //Layer 3 — 极光带（保留原有，并轻微提色）
-    //第一条：青色调（y≈0.36）
-    //第二条：蓝紫调（y≈0.62）
-    //=
-    float w1 = sin(uvW.x * 2.4 + t * 1.15) * 0.032
-             + sin(uvW.x * 5.3 - t * 0.72) * 0.014;
-    float b1 = exp(-pow(abs(uv.y - 0.36 - w1) * 30.0, 1.7));
-    col += float3(0.06, 0.30, 0.45) * b1 * 0.105;
-
-    float w2 = sin(uvW.x * 1.9 - t * 0.88) * 0.028
-             + sin(uvW.x * 4.7 + t * 0.58) * 0.011;
-    float b2 = exp(-pow(abs(uv.y - 0.62 - w2) * 24.0, 1.5));
-    col += float3(0.10, 0.14, 0.42) * b2 * 0.080;
-
-    //=
-    //Layer 4 — 星云薄雾
-    //极低不透明度 fbm 纹理，注入蓝调与冷紫层次感，不遮挡任何内容
-    //=
-    float2 nebUV = uvW * float2(0.65, 1.05) + float2(t * 0.022, 0.0);
-    float  neb   = fbm2(nebUV * 1.25);
-    col += float3(0.025, 0.07, 0.16) * neb * 0.075;
-
-    //一支极弱的冷紫云，只在画面上半部出现
-    float upperVeil = smoothstep(0.55, 0.05, uv.y);
-    float neb2 = fbm2(nebUV * 0.7 + float2(2.4, -1.1));
-    col += float3(0.045, 0.020, 0.110) * neb2 * upperVeil * 0.085;
-
-    //=
-    //Layer 5 — 数据光柱（缓慢漂移的垂直霓虹脉冲）
-    //在屏幕水平方向上随机分布若干"光柱"，模拟远方上传/下载到天穹的数据通道
+    //元素 3 —— 六角编译带 + 上升数据尘
     //=
     {
-        //每个屏宽内约 6~8 根可能的光柱位置（随时间播放）
-        float3 col5 = float3(0.0, 0.0, 0.0);
-        const int NUM_BEAMS = 5;
-        [unroll]
-        for (int k = 0; k < NUM_BEAMS; k++) {
-            float seed = float(k) * 17.31 + 3.7;
-            //缓慢左右漂移
-            float xPos = frac(seed * 0.2718 + uTime * 0.0040 * (1.0 + frac(seed * 0.31)));
-            //在 x 方向上转换到非线性宽度（更窄）
-            float dx = (uv.x - xPos);
-            //周期性脉冲：每 ~6s 一次，宽度短
-            float beat = frac(uTime * (0.18 + frac(seed) * 0.12) + seed);
-            float pulse = exp(-pow(beat - 0.10, 2.0) * 240.0);
-            //强度随高度衰减：从地平线向上变弱
-            float vert = smoothstep(0.95, 0.10, uv.y);
-            float beam = exp(-(dx * dx) * 1500.0) * pulse * vert;
-            //随机色调：青/蓝紫/品红 三选一
-            float hue = frac(seed * 0.731);
-            float3 bc = (hue < 0.55)
-                ? float3(0.18, 0.85, 1.05)
-                : ((hue < 0.85) ? float3(0.30, 0.30, 1.10)
-                                : float3(0.95, 0.30, 0.85));
-            col5 += bc * beam * 0.45;
-        }
-        col += col5;
+        //地平线附近一条蜂窝带：多数单元是虚空，少数常驻亮边，极少数正在编译就位
+        float2 hp = float2(uvW.x + uCamX * 0.065, yMid);
+        float2 cLocal, cId;
+        hexCellInfo(hp, 15.0, cLocal, cId);
+        float rnd = hash21(cId);
+        float rnd2 = hash21(cId + float2(7.13, 1.71));
+
+        float bandM = smoothstep(0.52, 0.64, yMid) * smoothstep(0.88, 0.76, yMid);
+        float gridLine = smoothstep(0.085, 0.0, hexEdgeDist(cLocal));
+        float cellCore = smoothstep(0.16, 0.0, length(cLocal));
+
+        //常驻已编译单元：极淡青边
+        float resident = step(0.60, rnd) * step(rnd, 0.82);
+        float residentGlow = 0.22 + 0.10 * sin(t * 0.35 + rnd * TAU);
+        col += CYAN * gridLine * resident * residentGlow * bandM;
+
+        //编译中单元：快速点亮→驻留衰减，永远有一小片"没编译完"
+        float compiling = step(0.86, rnd);
+        float ph = frac(t * 0.055 + rnd2 * 5.0);
+        float env = smoothstep(0.0, 0.045, ph) * exp(-max(ph - 0.045, 0.0) * 5.5);
+        col += CYAN_HI * gridLine * compiling * env * bandM * 1.10;
+        col += CYAN_HI * cellCore * compiling * env * bandM * 0.75;
     }
 
-    //=
-    //Layer 6 — 星辰（三层：细密 / 稠密 / 稀疏偏亮）
-    //星辰整体微微蓝白色调，避免暖色系干扰科幻氛围
-    //=
-    col += float3(0.76, 0.87, 1.00) * starLayer(uv, 22.0,  0.0) * 0.48;
-    col += float3(0.70, 0.82, 1.00) * starLayer(uv, 50.0, 27.3) * 0.40;
-    col += float3(0.86, 0.92, 1.00) * starLayer(uv,  9.0,  6.8) * 0.62;
-    //一层粉紫稀星，进一步强化梦境感
-    col += float3(0.85, 0.65, 1.00) * starLayer(uv, 14.0, 41.7) * 0.30;
+    //数据尘两层：近层快、远层慢，缓缓上浮
+    float dustLow = smoothstep(0.08, 0.45, uv.y) * 0.75 + 0.25;
+    float2 qNear = float2(uvW.x + uCamX * 0.130, yNear + t * 0.0110);
+    float2 qFar  = float2(uvW.x + uCamX * 0.043 + 13.7, yFarD + t * 0.0050);
+    col += float3(0.55, 0.85, 0.95) * dustLayer(qNear, 13.0, 0.935) * 0.34 * dustLow;
+    col += float3(0.42, 0.66, 0.78) * dustLayer(qFar, 27.0, 0.945) * 0.22 * dustLow;
 
     //=
-    //Layer 7 — 流星（极稀少，每个周期最多一条，划过短促弧线）
-    //用屏幕水平方向上的细长线 + exp 头部高亮
-    //=
-    {
-        float cycle = floor(uTime * 0.12);                  //每 ~8s 切换一次轨迹
-        float seed = hash11(cycle * 1.7 + 5.3);
-        float startX = lerp(-0.05, 1.05, seed);
-        float startY = lerp(0.05, 0.55, hash11(cycle * 2.3 + 11.1));
-        float dirX = lerp(-1.0, 1.0, hash11(cycle * 3.7 + 19.9)) * 1.6;
-        float dirY = lerp(0.20, 0.55, hash11(cycle * 5.1 + 27.3));
-        float life = frac(uTime * 0.12);                    //0..1
-        float head = clamp(life * 1.8 - 0.2, 0.0, 1.0);
-        float2 hPos = float2(startX + dirX * head, startY + dirY * head);
-        float2 dxy = (uv - hPos);
-        dxy.x *= uAspectRatio;
-        //沿轨迹方向的尾迹
-        float2 trailDir = normalize(float2(dirX * uAspectRatio, dirY));
-        float along = dot(dxy, trailDir);
-        float perp  = abs(dot(dxy, float2(-trailDir.y, trailDir.x)));
-        float trail = exp(-perp * 800.0)
-                    * smoothstep(0.0, 0.18, -along) * exp(along * 8.0);
-        //头部高亮
-        float heads = exp(-length(dxy) * 220.0);
-        //仅在 life 中段显示
-        float lifeMask = smoothstep(0.05, 0.10, life) * smoothstep(0.95, 0.85, life);
-        //仅一定概率的 cycle 才出现流星
-        float chance = step(0.55, hash11(cycle * 7.3 + 3.7));
-        col += float3(0.85, 0.95, 1.10) * (trail + heads) * lifeMask * chance * 0.85;
-    }
-
-    //=
-    //Layer 8 — 地平线城市余光 + 缓慢扫描脉冲
-    //天空底部隐约可见的大气辉光，暗示地平线外的赛博都市
-    //配合一道极淡水平脉冲：每 ~9s 从地平线向上推进一次（仿若远方主机的呼吸）
-    //=
-    float horizon = smoothstep(0.42, 1.0, uv.y);
-    col += float3(0.045, 0.135, 0.260) * horizon * 0.34;
-    col += float3(0.090, 0.052, 0.020) * horizon * 0.10;
-
-    {
-        //远方"主机呼吸"扫描脉冲：周期 9s，从 y=1.0 向上推进到 y=0.45
-        float bpm = frac(uTime * 0.111);
-        float scanY = lerp(1.02, 0.42, bpm);
-        float pulseW = 0.020;
-        float pulse = exp(-pow((uv.y - scanY) / pulseW, 2.0));
-        //仅在 bpm 启动一段时间内可见
-        float live = smoothstep(0.05, 0.12, bpm) * smoothstep(0.95, 0.85, bpm);
-        col += float3(0.18, 0.55, 0.85) * pulse * live * 0.55;
-    }
-
-    //=
-    //最终输出，淡入淡出由 uIntensity 控制
+    //输出
     //=
     col *= uIntensity;
     return float4(saturate(col), 1.0);

@@ -54,6 +54,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Core
         public List<WofStateIndex> AttackBag { get; } = [];
         /// <summary>上一招，防复读</summary>
         public WofStateIndex LastAttack { get; set; } = WofStateIndex.Advance;
+        /// <summary>投技冷却(主控每帧递减，两条触发路径共享)</summary>
+        public int GrabCooldown { get; set; }
+        /// <summary>绕后惩罚预定的受害者whoAmI，-1无(仅入场帧消费)</summary>
+        public int PendingGrabVictim { get; set; } = -1;
         #endregion
 
         public void ResetChargeState() {

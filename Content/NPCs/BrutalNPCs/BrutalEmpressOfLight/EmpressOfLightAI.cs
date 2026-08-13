@@ -117,6 +117,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight
             Lighting.AddLight(npc.Center, Vector3.One * npc.Opacity * (0.9f + stateContext.DayFormBlend * 0.4f));
             UpdateAmbientVisuals();
 
+            //投技冷却递减（服务端权威）
+            if (!VaultUtils.isClient && stateContext.GrabCooldown > 0) {
+                stateContext.GrabCooldown--;
+            }
+
             //周期强制同步（服务端节流）
             if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
                 npc.netUpdate = true;

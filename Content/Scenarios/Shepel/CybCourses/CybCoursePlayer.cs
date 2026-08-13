@@ -24,6 +24,18 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         public override void PreUpdate() {
             if (!CybCourseWorld.Active) return;
 
+            //平台悬浮在虚空上，跌出甲板即回收到出生点
+            //只回收本端自己的玩家：远端副本交给对方客户端自己处理再同步过来
+            if (Player.whoAmI == Main.myPlayer
+                && Player.Center.Y > (CybCourseGen.FloorY + 26) * 16f) {
+                Player.Center = new Vector2(
+                    CybCourseGen.SpawnTileX * 16f + 8f,
+                    CybCourseGen.SpawnTileY * 16f - Player.height * 0.5f);
+                Player.velocity = Vector2.Zero;
+                Player.fallStart = (int)(Player.position.Y / 16f);
+                Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.Item6, Player.Center);
+            }
+
             if (++ensureSHPCTick >= EnsureSHPCInterval) {
                 ensureSHPCTick = 0;
                 EnsureSHPC();

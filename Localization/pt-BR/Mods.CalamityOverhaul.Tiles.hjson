@@ -3,3 +3,10 @@ BloodAltarTP: {
 	InsufficientOfferingText: Voce nao tem Lagrimas Sangrentas suficientes consigo para prestar homenagem ao Rei Carmesim...
 	SacrificeDeathReason: "{0} Preso em um frenesi interminavel de sangue e carne"
 }
+
+// OldNetDataNodeTile.MapEntry: Data Node
+// OldNetLogoutTerminalTile.MapEntry: Logout Terminal
+// OldNetEncryptedNodeTile.MapEntry: Encrypted Node
+// OldNetEventNodeTile.MapEntry: Event Node
+// OldNetSealGateTile.MapEntry: Seal Gate
+// OldNetRelayTile.MapEntry: Relay Station

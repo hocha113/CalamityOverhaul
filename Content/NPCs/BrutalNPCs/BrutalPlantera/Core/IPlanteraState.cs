@@ -32,6 +32,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core
         Despawn = 11,
         /// <summary>死亡演出，钩爪逐根断裂→坠落</summary>
         Death = 12,
+        /// <summary>二阶段投技：缠足藤索拖回巨口咀嚼，吐飞收尾</summary>
+        VineFeast = 13,
     }
 
     /// <summary>状态接口</summary>

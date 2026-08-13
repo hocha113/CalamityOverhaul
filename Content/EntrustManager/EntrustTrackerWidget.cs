@@ -213,6 +213,11 @@ namespace CalamityOverhaul.Content.EntrustManager
             if (HackTime.Active || HackTime.Intensity > 0.01f)
                 return true;
 
+            //任务书摊开时整屏被册子占住，追踪挂件让位（含合书淡出）
+            var book = QuestLogs.QuestLog.Instance;
+            if (book != null && (book.IsOpen || book.OpenProgress.Current > 0.01f))
+                return true;
+
             if (player.chest != -1 || player.talkNPC != -1
                 || Main.npcShop > 0 || Main.InGuideCraftMenu)
                 return true;

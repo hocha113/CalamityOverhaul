@@ -19,6 +19,8 @@ Halibut_Superposition.DisplayName: Linguado: Superposicao
 // Kikasa_Sink.DisplayName: Kikasa: Sink Item into the Lake
 // Kikasa_DomainMutate.DisplayName: Kikasa: Mutate Domain (Ghost Rain)
 // Kikasa_Summon.DisplayName: Kikasa: Command the Drowned Servant
+// Kikasa_DreamReflect.DisplayName: Kikasa: Wake the Hound Reflection
+// Kikasa_DreamPull.DisplayName: Kikasa: Pull into / out of the Ghost Dream
 WeponSkill_Q.DisplayName: Arma: Tecla de Habilidade Esquerda
 WeponSkill_R.DisplayName: Arma: Tecla de Habilidade Direita
 Accessory_Skills.DisplayName: Habilidade de Acessorio

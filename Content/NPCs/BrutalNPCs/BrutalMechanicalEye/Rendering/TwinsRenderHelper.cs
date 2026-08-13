@@ -85,6 +85,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 DrawScissorRayWarning(context, chargeColor);
             }
 
+            if (context.ChargeType == 14 && context.Target != null && context.ChargeProgress > 0.1f) {
+                DrawPincerWarning(context, chargeColor);
+            }
+
             spriteBatch.End();
             spriteBatch.Begin(
                 SpriteSortMode.Deferred,
@@ -139,8 +143,61 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 11 => Color.Lerp(Color.OrangeRed, Color.BlueViolet, 0.5f),
                 12 => new Color(140, 215, 255),
                 13 => Color.Lerp(new Color(255, 110, 35), new Color(120, 200, 255), 0.5f),
+                14 => new Color(255, 196, 130),
                 _ => Color.White
             };
+        }
+
+        /// <summary>钳形轴线预警：滚向交点的对冲虚线+随进度夹拢玩家的闭合括标</summary>
+        private static void DrawPincerWarning(TwinsStateContext context, Color baseColor) {
+            NPC partner = TwinsStateContext.GetPartnerNpc(context.Npc.type);
+            if (partner == null || !partner.active || context.Target == null) {
+                return;
+            }
+
+            Texture2D lineTex = CWRAsset.LightShot.Value;
+            Texture2D glowTex = CWRAsset.SoftGlow.Value;
+            Vector2 start = context.Npc.Center;
+            Vector2 end = partner.Center;
+            Vector2 dir = (end - start).SafeNormalize(Vector2.Zero);
+            float totalDist = Vector2.Distance(start, end);
+            float progress = context.ChargeProgress;
+            float pulse = 0.65f + 0.35f * (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 15f);
+
+            //各画本侧半段、滚向中点的虚线，两眼合起来即双向收拢的对冲轴
+            int segments = (int)(totalDist / 44f);
+            for (int i = 0; i < segments; i++) {
+                float t = (i + (Main.GlobalTimeWrappedHourly * 2.6f % 1f)) / segments;
+                if (t > 0.5f) {
+                    continue;
+                }
+                Vector2 segPos = Vector2.Lerp(start, end, t) - Main.screenPosition;
+                float alpha = progress * 0.7f * pulse * (0.4f + t);
+                Main.EntitySpriteDraw(lineTex, segPos, null, baseColor * alpha,
+                    dir.ToRotation(), new Vector2(0, lineTex.Height / 2f),
+                    new Vector2(0.2f, 0.24f), SpriteEffects.None, 0);
+            }
+
+            //交点侧演出只由魔焰眼绘制，避免双份叠亮
+            if (!context.IsSpazmatism) {
+                return;
+            }
+
+            //闭合括标：两枚光斑沿轴线随进度夹向玩家
+            Vector2 clampPos = context.Target.Center - Main.screenPosition;
+            float bracketDist = MathHelper.Lerp(150f, 46f, VaultUtils.EaseInOutQuad(progress));
+            for (int side = -1; side <= 1; side += 2) {
+                Vector2 bracket = clampPos + dir * bracketDist * side;
+                Main.EntitySpriteDraw(glowTex, bracket, null, baseColor * (progress * 0.85f * pulse),
+                    0f, glowTex.Size() / 2f, 0.5f + progress * 0.25f, SpriteEffects.None, 0);
+            }
+
+            //收缩警示环
+            Texture2D ringTex = CWRAsset.DiffusionCircle.Value;
+            float ringScale = MathHelper.Lerp(1.6f, 0.5f, progress);
+            Main.EntitySpriteDraw(ringTex, clampPos, null,
+                baseColor * (progress * 0.5f), Main.GlobalTimeWrappedHourly * 3f,
+                ringTex.Size() / 2f, ringScale, SpriteEffects.None, 0);
         }
 
         /// <summary>链锁预警虚线</summary>

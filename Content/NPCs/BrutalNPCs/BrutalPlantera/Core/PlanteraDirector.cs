@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.TimeFreezes;
 using System.Collections.Generic;
 using Terraria;
 
@@ -40,6 +41,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core
         public static float NovaLifeRatio => 0.25f;
         /// <summary>死亡演出触发血量</summary>
         public static int DeathPerformanceTriggerLife => 60;
+        /// <summary>投技冷却(选择器层)</summary>
+        public static int FeastCooldownTicks => 840;
+        /// <summary>蜕壳后首个投技的最短延迟(转阶段宽限阀)</summary>
+        public static int FeastPhaseEntryDelay => 480;
+        /// <summary>投技点名最近距离(防贴脸难反应)</summary>
+        public static float FeastMinRange => 300f;
+        /// <summary>投技点名最远距离(超出必然空挥)</summary>
+        public static float FeastMaxRange => 980f;
 
         /// <summary>死亡模式时间压缩系数(蓄力/间隔乘它)</summary>
         public static float DeathTimeScale(PlanteraStateContext ctx) => ctx.IsDeathMode ? 0.8f : 1f;
@@ -58,6 +67,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core
             PlanteraStateIndex.TentacleRing,
             PlanteraStateIndex.WhipBarrage,
             PlanteraStateIndex.SeedGatling,
+            PlanteraStateIndex.VineFeast,
         ];
 
         /// <summary>洗牌袋抽下一招，反连击；仅权威端调用</summary>
@@ -68,8 +78,38 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core
 
             PlanteraStateIndex pick = ctx.AttackBag[0];
             ctx.AttackBag.RemoveAt(0);
+
+            //投技被点名但条件不齐→改打压制招；袋里还有别的招才顺延，
+            //袋空时直接丢弃(下轮重洗自然回来)，防止袋永不见底饿死其他招式
+            if (pick == PlanteraStateIndex.VineFeast && !FeastReady(ctx)) {
+                if (ctx.AttackBag.Count > 0) {
+                    ctx.AttackBag.Add(PlanteraStateIndex.VineFeast);
+                }
+                pick = PlanteraStateIndex.SeedGatling;
+            }
+
             ctx.LastAttack = pick;
             return pick;
+        }
+
+        /// <summary>投技点名条件：冷却毕+目标有效+距离带内+无时停/运镜占用；权威端调用</summary>
+        private static bool FeastReady(PlanteraStateContext ctx) {
+            if (ctx.VineFeastCooldown > 0 || !ctx.Target.Alives()) {
+                return false;
+            }
+            float dist = ctx.Npc.Distance(ctx.Target.Center);
+            if (dist < FeastMinRange || dist > FeastMaxRange) {
+                return false;
+            }
+            //世界时停/本体被冻结时不出投技
+            if (TimeFreezeSystem.IsAnyGlobalFreezeActive || TimeFreezeSystem.IsFrozen(ctx.Npc)) {
+                return false;
+            }
+            //单人下权威端即本地端：有别的运镜在播就不抢镜头
+            if (!Main.dedServ && InnoVault.Cinematics.CutsceneDirector.CurrentClip != null) {
+                return false;
+            }
+            return true;
         }
 
         private static void RefillBag(PlanteraStateContext ctx) {
@@ -106,6 +146,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core
                 PlanteraStateIndex.FrenzyPounce => new States.PlanteraFrenzyPounceState(),
                 PlanteraStateIndex.TentacleRing => new States.PlanteraTentacleRingState(),
                 PlanteraStateIndex.WhipBarrage => new States.PlanteraWhipBarrageState(),
+                PlanteraStateIndex.VineFeast => new States.PlanteraVineFeastState(),
                 PlanteraStateIndex.BloomNova => new States.PlanteraBloomNovaState(),
                 PlanteraStateIndex.Despawn => new States.PlanteraDespawnState(),
                 PlanteraStateIndex.Death => new States.PlanteraDeathState(),

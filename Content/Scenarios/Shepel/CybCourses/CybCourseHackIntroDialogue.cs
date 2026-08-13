@@ -13,11 +13,11 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 
         public override void SetStaticDefaults() {
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "接口解析完毕。下一项训练：骇客时间。");
+                () => "接口解析完毕。下一项训练：骇客时间");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "骇客时间是SHPC专属的神经干预协议。激活后，外部时间流将冻结，您可以从容选择目标并上传定制骇入程序。默认按键是 {0}。");
+                () => "骇客时间激活后，世界在您眼中会停住。您可以慢慢选目标、排协议。默认按键是 {0}");
             Line3 = this.GetLocalization(nameof(Line3),
-                () => "前方的测试单元已固定就位。按下 {0} 进入骇客时间，然后点击锁定它。");
+                () => "前方的训练标靶已固定就位。按下 {0} 进入骇客时间，然后点击锁定它");
         }
 
         protected override void Build(NarrativeComposer n) {

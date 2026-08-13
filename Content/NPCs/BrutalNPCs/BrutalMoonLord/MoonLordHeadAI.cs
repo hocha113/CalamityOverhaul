@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 UpdateBroken(coreState);
             }
             else {
-                UpdateAlive(coreState);
+                UpdateAlive(coreState, core);
             }
 
             if (!VaultUtils.isClient && (Main.GameUpdateCount + (uint)npc.whoAmI) % 2 == 0) {
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 
         #region 行为
 
-        private void UpdateAlive(MLordStateIndex coreState) {
+        private void UpdateAlive(MLordStateIndex coreState, NPC core) {
             bool eyeOpen = ComputeEyeOpen(coreState);
             bool mouthOpen = ComputeMouthOpen(coreState);
             npc.dontTakeDamage = !eyeOpen;
@@ -86,8 +86,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             eyelidFrame = MathHelper.Lerp(eyelidFrame, eyeOpen ? 0f : 3f, 0.16f);
             mouthFrame = MathHelper.Lerp(mouthFrame, mouthOpen ? 2f : 0f, 0.12f);
 
-            //瞳孔跟踪：死光期锁向扫描方向，其余追玩家
-            float wantAngle = (targetPlayer.Center - npc.Center).ToRotation();
+            //瞳孔跟踪：死光期锁向扫描方向，其余追玩家；处刑期盯死被抓者
+            Vector2 gazePoint = targetPlayer.Center;
+            if (coreState == MLordStateIndex.PalmExecution) {
+                int victimIndex = (int)MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvGrabTarget) - 1;
+                if (victimIndex >= 0 && victimIndex < Main.maxPlayers && Main.player[victimIndex].active) {
+                    gazePoint = Main.player[victimIndex].Center;
+                }
+            }
+            float wantAngle = (gazePoint - npc.Center).ToRotation();
             pose.PupilAngle = pose.PupilAngle.AngleLerp(wantAngle, 0.3f);
             pose.PupilOut = MathHelper.Lerp(pose.PupilOut, eyeOpen ? 0.85f : 0.25f, 0.09f);
             pose.Glow = MathHelper.Lerp(pose.Glow, eyeOpen ? 0.8f : 0.08f, 0.1f);
@@ -106,15 +113,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             mouthFrame = MathHelper.Lerp(mouthFrame, coreState == MLordStateIndex.MoonBite ? 2f : 0.6f, 0.08f);
         }
 
-        /// <summary>头部弱点窗：死光扫描全程、星陨颂唱、月蚀噬咬（高风险回报）、协奏</summary>
+        /// <summary>头部弱点窗：死光扫描全程、星陨颂唱、月蚀噬咬（高风险回报）、协奏、掌中处刑（贴身即暴露）</summary>
         private static bool ComputeEyeOpen(MLordStateIndex coreState) {
             return coreState is MLordStateIndex.DeathrayScan or MLordStateIndex.Starfall
-                or MLordStateIndex.MoonBite or MLordStateIndex.Concerto;
+                or MLordStateIndex.MoonBite or MLordStateIndex.Concerto
+                or MLordStateIndex.PalmExecution;
         }
 
-        /// <summary>口须开阖：噬咬全开，星陨颂唱半开</summary>
+        /// <summary>口须开阖：噬咬与掌中处刑全开（触须抽打自口而出），星陨颂唱半开</summary>
         private static bool ComputeMouthOpen(MLordStateIndex coreState) {
-            return coreState is MLordStateIndex.MoonBite or MLordStateIndex.Starfall;
+            return coreState is MLordStateIndex.MoonBite or MLordStateIndex.Starfall
+                or MLordStateIndex.PalmExecution;
         }
 
         #endregion

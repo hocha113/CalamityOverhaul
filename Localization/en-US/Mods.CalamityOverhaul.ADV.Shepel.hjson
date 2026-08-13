@@ -1,7 +1,7 @@
 CybCourseIntroDialogue: {
 	Line1: Master, welcome to the neural training node.
 	Line2: This is a closed training space.
-	Line3: The SHPC is a powerful intelligent weapon. Here, you will learn how to operate its HUD.
+	Line3: The SHPC is my weapon body. For this lesson, start by learning to read its HUD.
 	Line4: Are you ready to link your consciousness with mine? Please hold my hand tightly, and let us begin.
 }
 
@@ -10,97 +10,52 @@ CybTutorialLead: {
 	Step0_Body: Equip and hold the SHPC in your active slot to deploy the HUD core node in the bottom left corner of your screen.
 	Step1_Title: Core Node
 	Step1_Body: Click the core node in the bottom left to expand or collapse the operation panel.
-	Step2_Title: CYBER DOMAIN
+	Step2_Title: Cyber Domain
 	Step2_Body:
 		'''
-		Cyberspace: Deploy and manage multi-layered cyberspace structures.
+		Deploy and manage multi-layered cyberspace structures.
 		Click the highlighted sector to open this panel.
 		'''
-	Step3_Title: MODIFY
+	Step3_Title: Modify
 	Step3_Body:
 		'''
-		Module Modification: Install or uninstall modification parts for the SHPC.
+		Install or uninstall modification parts for the SHPC.
 		Click the highlighted sector to open this panel.
 		'''
-	Step4_Title: CYBERWARE
+	Step4_Title: Cyberware
 	Step4_Body:
 		'''
-		Cybernetic Implants: View and manage your body enhancement modules.
+		View and manage your body enhancement modules.
 		Click the highlighted sector to open this interface.
 		'''
-	Step5_Title: TALK
+	Step5_Title: Neural Link
 	Step5_Body:
 		'''
-		Neural Link: Establish direct communication with the SHPC to initiate dialogue.
+		Establish direct communication with the SHPC to initiate dialogue.
 		Click the highlighted sector to talk to her.
 		'''
-	Step6_Title: ENGRAM CALIBRATED
+	Step6_Title: Calibration Complete
 	Step6_Body:
 		'''
 		All interfaces have been resolved.
 		Neural link stable. SHPC is ready.
 		'''
-	AwaitingEquip: AWAITING EQUIP...
-	Calibrating: CALIBRATING...
-	NextBtn: NEXT  >
-	HintStuck: HINT: Try clicking the highlighted target area
+	Calibrating: Calibrating...
+	NextBtn: Skip >
+	HintStuck: Hint: try clicking the highlighted target area
 }
 
 CybCourseHackIntroDialogue: {
 	Line1: Interfaces resolved. Next training phase: Hack Time.
 	Line2: When Hack Time is active, the world stops in your eyes. Take your time picking targets and queueing protocols. Default hotkey: {0}.
-	Line3: The test unit ahead is secured in place. Press {0} to enter Hack Time, then click to lock onto it.
+	Line3: The training target ahead is secured in place. Press {0} to enter Hack Time, then click to lock onto it.
 }
 
 HackTimeTutorialLead: {
-	HT_Step0_Title: Activate Hack Mode
-	HT_Step1_Title: Lock Target
-	HT_Step2_Title: Hack Protocol Panel
-	HT_Step3_Title: Upload Protocol
-	HT_Step4_Title: HACK SEQUENCE COMPLETE
-	HT_Step0_Body:
-		'''
-		Press {0} to enter Hack Time mode.
-		Time will freeze, and a cyber filter will overlay your vision.
-		'''
-	HT_Step1_Body:
-		'''
-		Hover your cursor over the highlighted Santa-NK1,
-		and left-click to lock onto it as your hacking target.
-		'''
-	HT_Step2_Body:
-		'''
-		The right panel displays available hacking protocols for the target.
-		Different protocols consume varying RAM and yield different effects.
-		'''
-	HT_Step3_Body:
-		'''
-		Click a protocol to add it to the upload queue on the left.
-		The queue will execute the hacking operations sequentially.
-		'''
-	HT_Step4_Body:
-		'''
-		Neural link disconnected.
-		Hack Time protocol training complete. System ready.
-		'''
-	HT_Waiting: AWAITING INPUT...
-	HT_Calibrating: DISCONNECTING...
-	HT_NextBtn: NEXT  >
-	HT_Step5_Title: Tile Scan
-	HT_Step6_Title: Lock Tile Target
-	HT_Step7_Title: TILE SCAN COMPLETE
-	HT_Step5_Body:
-		'''
-		There is a Thermal Generator MK2 ahead.
-		Press {0} again to reactivate Hack Time.
-		'''
-	HT_Step6_Body:
-		'''
-		Hover your cursor over the generator,
-		and left-click to lock onto it as your scanning target.
-		'''
-	HT_Step7_Body: Tile scan interface resolved. The right panel displays available hacking protocols for the current tile.
-	HT_HintStuck: HINT: Click NEXT to force skip
+	HT_Waiting: Awaiting input...
+	HT_Calibrating: Disconnecting...
+	HT_NextBtn: Skip >
+	HT_HintStuck: Hint: click Skip to force past this step
 	HT_KeyUnbound: N (Temporary Toggle)
 	HT_KeyHintUnbound: Hint: If the Hack Time hotkey is unbound, you may use [N] to temporarily toggle it during this tutorial; it is recommended to bind it in Settings > Controls.
 	HT_S00_Title: Activate Hack Mode
@@ -122,7 +77,7 @@ HackTimeTutorialLead: {
 		'''
 	HT_S01_Body:
 		'''
-		Hover your cursor over the highlighted Santa-NK1,
+		Hover your cursor over the highlighted training target,
 		and left-click to lock onto it as your hacking target.
 		'''
 	HT_S02_Body:
@@ -147,7 +102,7 @@ HackTimeTutorialLead: {
 		'''
 	HT_S06_Body:
 		'''
-		There is a Thermal Generator MK2 in the corridor ahead.
+		There is a Thermal Generator MK2 on the deck ahead.
 		Press {0} again to enter Hack Time and scan the tile.
 		'''
 	HT_S07_Body:
@@ -175,7 +130,7 @@ HackTimeTutorialLead: {
 		Hack training is done.
 		Scan, queue, upload, execute — you've got the flow.
 		'''
-	HT_Observing: UPLOADING...
+	HT_Observing: Uploading...
 }
 
 CybCourseWheelIntroDialogue: {
@@ -203,10 +158,10 @@ WheelTutorialLead: {
 		Dead center of the wheel is the Hack Time shortcut —
 		clicking it equals pressing {1}. That wraps up the training.
 		'''
-	RW_Calibrating: SYNCHRONIZED...
-	RW_NextBtn: NEXT  >
-	RW_HintStuck: HINT: Click NEXT to force skip
-	RW_KeyHintUnbound: Note: the radial wheel key is unbound, so the wheel cannot open. Bind it under Settings > Controls, or click NEXT to skip.
+	RW_Calibrating: Synchronized
+	RW_NextBtn: Skip >
+	RW_HintStuck: Hint: click Skip to force past this step
+	RW_KeyHintUnbound: Note: the radial wheel key is unbound, so the wheel cannot open. Bind it under Settings > Controls, or click Skip.
 }
 
 CybCourseOutroDialogue: {
@@ -238,6 +193,14 @@ CybCourseKeyBindReminderPanel: {
 	BtnConfirm: Understood
 	BtnLater: Remind Me Later
 	Footer: Either option exits the Superdream. You can change keys later in settings.
+}
+
+CybCourseWorld: {
+	BootTag: NEURAL LINK · SUPERDREAM NODE
+	BootTitle: Linking Superdream
+	BootSubtitle: SHPC Immersion Training Protocol
+	BootStatus: Compiling training space
+	BootBarLabel: Sync Rate
 }
 
 ShepelCyberActiveDialogue: {

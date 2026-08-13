@@ -533,6 +533,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 float velocityDamageScalar = MathHelper.Clamp((bodyAndTailVelocity - minimalContactDamageVelocity) / minimalDamageVelocity, 0f, 1f);
                 npc.damage = (int)MathHelper.Lerp(0f, npc.defDamage, velocityDamageScalar);
             }
+
+            //锁环预警期整环无害，投技逃逸窗是可以穿环而出的真窗口
+            if (HeadInCoilLock()) {
+                npc.damage = 0;
+            }
+        }
+
+        /// <summary>头是否处于投技锁环预警态(读同步的ai[2])</summary>
+        private bool HeadInCoilLock() {
+            int headIndex = npc.realLife;
+            if (headIndex < 0 || headIndex >= Main.maxNPCs) {
+                return false;
+            }
+            NPC head = Main.npc[headIndex];
+            return head.active && head.type == NPCID.TheDestroyer
+                && (int)head.ai[2] == (int)DestroyerStateIndex.CoilLock;
         }
 
         public override bool? On_ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers) {

@@ -86,6 +86,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             if (!context.MaelstromUsed && context.PhaseThreeStarted && ratio < 0.14f) {
                 return new FishronMaelstromState();
             }
+            //投技：大漩涡卷客（二阶段解锁；冷却/时停/演出互斥门在 CanTrigger 内）
+            if (FishronVortexSnareState.CanTrigger(context)) {
+                return new FishronVortexSnareState();
+            }
 
             return NextRingAttack(context);
         }

@@ -22,7 +22,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend
     /// 记录与输入在 <see cref="KikasaServants.KikasaServantPlayer"/>，
     /// 穷举条目在 <see cref="KikasaServants.KikasaServantIndex"/>。
     /// 第四能力模块：普攻·墨雨——按住左键撑出悬伞
-    /// <see cref="KikasaRains.KikasaRainUmbrella"/>，头顶自旋按节拍降下大墨滴追踪敌人
+    /// <see cref="KikasaRains.KikasaRainUmbrella"/>，头顶自旋按节拍降下大墨滴追踪敌人。
+    /// 第五能力模块：鬼梦——领域中按 <see cref="Common.CWRKeySystem.Kikasa_DreamReflect"/>
+    /// 唤醒倒影恶犬（湖镜里的人影换成黑犬），再按
+    /// <see cref="Common.CWRKeySystem.Kikasa_DreamPull"/> 把一切拉入鬼梦
+    /// （湖沸腾倒转，红天村落、湖水不见；物品封禁、左键连唤恶犬，重按归返）；
+    /// 相位与包络在 <see cref="KikasaDomains.KikasaDomainPlayer"/> 与
+    /// <see cref="KikasaDreams.KikasaDreamDirector"/>，玩家锁与唤犬在
+    /// <see cref="KikasaDreams.KikasaDreamPlayer"/>
     /// </summary>
     internal class KikasaItem : ModItem
     {

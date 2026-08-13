@@ -11,6 +11,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
         #region 核心引用
         public NPC Npc { get; set; }
         public Player Target { get; set; }
+        /// <summary>所属重制实例，投技等状态读写重制ai槽用</summary>
+        public KingSlimeAI Host { get; set; }
         #endregion
 
         #region 战斗状态
@@ -30,6 +32,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
         public bool TideTravelActive { get; set; }
         /// <summary>液化掠近冷却(帧，服务端消费)，防止连续液化位移压掉输出窗</summary>
         public int TideTravelCooldown { get; set; }
+        /// <summary>吞没投技冷却(帧，服务端消费)，P2转换与每次出手(含空振)都压满</summary>
+        public int EngulfCooldown { get; set; }
         /// <summary>死亡演出完，CheckDead 放行真死</summary>
         public bool DeathPerformanceFinished { get; set; }
         /// <summary>失去视线/远离累计帧，追击阀依据(服务端)</summary>

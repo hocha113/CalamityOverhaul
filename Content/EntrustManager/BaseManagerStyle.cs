@@ -34,6 +34,51 @@ namespace CalamityOverhaul.Content.EntrustManager
             float viewRatio, float alpha);
         public abstract void DrawFooter(SpriteBatch sb, Rectangle footerRect, int totalQuests,
             int activeQuests, float alpha);
+
+        public virtual void DrawEmptyHint(SpriteBatch sb, Rectangle contentRect, string text, float alpha) {
+            DrawCenteredText(sb, text, contentRect.Center.ToVector2(),
+                new Color(60, 150, 220) * (alpha * 0.4f), 0.75f);
+        }
+
+        /// <summary>悬停提示默认实现：右下角逐行上叠，旧三套的冷色描边字</summary>
+        public virtual void DrawInteractionHints(SpriteBatch sb, Rectangle footerRect,
+            EntrustEntryData entry, float alpha) {
+            var font = FontAssets.MouseText.Value;
+            float hintY = footerRect.Y - 16f;
+
+            string suspendHint = "";
+            if (entry.Status == QuestEntryStatus.Active || entry.Status == QuestEntryStatus.Tracked
+                || entry.Status == QuestEntryStatus.Suspended)
+                suspendHint = QuestManagerUI.SuspendHintText.Value;
+
+            if (!string.IsNullOrEmpty(suspendHint)) {
+                float suspendW = font.MeasureString(suspendHint).X * 0.55f;
+                Utils.DrawBorderString(sb, suspendHint,
+                    new Vector2(footerRect.Right - suspendW - 10f, hintY),
+                    new Color(200, 180, 100) * (alpha * 0.5f), 0.55f);
+                hintY -= 14f;
+            }
+
+            string trackHint = "";
+            if (entry.Status == QuestEntryStatus.Active || entry.Status == QuestEntryStatus.Tracked)
+                trackHint = QuestManagerUI.TrackHintText.Value;
+
+            if (!string.IsNullOrEmpty(trackHint)) {
+                float hintW = font.MeasureString(trackHint).X * 0.55f;
+                Utils.DrawBorderString(sb, trackHint,
+                    new Vector2(footerRect.Right - hintW - 10f, hintY),
+                    new Color(140, 210, 255) * (alpha * 0.5f), 0.55f);
+                hintY -= 14f;
+            }
+
+            string expandHint = QuestManagerUI.ExpandHintText.Value;
+            if (!string.IsNullOrEmpty(expandHint)) {
+                float expandW = font.MeasureString(expandHint).X * 0.55f;
+                Utils.DrawBorderString(sb, expandHint,
+                    new Vector2(footerRect.Right - expandW - 10f, hintY),
+                    new Color(120, 200, 180) * (alpha * 0.5f), 0.55f);
+            }
+        }
         public abstract void DrawQuestEntry(SpriteBatch sb, Rectangle entryRect, EntrustEntryData entry,
             bool isSelected, bool isHovered, float alpha, int entryIndex);
         public abstract void DrawEntrySeparator(SpriteBatch sb, Vector2 start, Vector2 end, float alpha);

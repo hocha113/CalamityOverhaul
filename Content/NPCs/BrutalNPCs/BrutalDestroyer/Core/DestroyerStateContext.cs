@@ -42,12 +42,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
         #region 蓄力特效数据
         public float ChargeProgress { get; set; }
         public bool IsCharging { get; set; }
-        /// <summary>蓄力类型 0无1冲刺2激光3包围4探针</summary>
+        /// <summary>蓄力类型 0无1冲刺2激光3包围4探针5锁环</summary>
         public int ChargeType { get; set; }
         /// <summary>冲刺方向(预警线)</summary>
         public Vector2 DashDirection { get; set; }
         /// <summary>轨道演出 0无1撤离2俯冲3回场</summary>
         public int OrbitalVisual { get; set; }
+        #endregion
+
+        #region 投技(钢环绞缠)数据
+        /// <summary>投技冷却，服务端在头AI递减并用于触发判定；环心/半径走头ai[0/1]同步，不入上下文</summary>
+        public int GrabCooldownTimer { get; set; }
         #endregion
 
         #region 动画数据

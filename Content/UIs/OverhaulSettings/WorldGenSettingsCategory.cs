@@ -39,6 +39,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             "JunkmanBase",
             "RocketHut",
             "SylvanOutpost",
+            "SHPCCradle",
         ];
 
         /// <summary>默认密度</summary>
@@ -111,6 +112,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                     case "JunkmanBase": config.GenJunkmanBase = enabled; break;
                     case "RocketHut": config.GenRocketHut = enabled; break;
                     case "SylvanOutpost": config.GenSylvanOutpost = enabled; break;
+                    case "SHPCCradle": config.GenSHPCCradle = enabled; break;
                 }
                 ContentSettingsCategory.SaveConfigStatic();
             } finally {
@@ -130,6 +132,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 SyncOneFromConfig("JunkmanBase", config.GenJunkmanBase);
                 SyncOneFromConfig("RocketHut", config.GenRocketHut);
                 SyncOneFromConfig("SylvanOutpost", config.GenSylvanOutpost);
+                SyncOneFromConfig("SHPCCradle", config.GenSHPCCradle);
                 Save();
             } finally {
                 _syncing = false;

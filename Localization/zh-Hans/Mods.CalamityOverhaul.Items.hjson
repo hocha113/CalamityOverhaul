@@ -108,6 +108,16 @@ DawnshatterAzure: {
 		'''
 }
 
+Flawless: {
+	DisplayName: 化境
+	Tooltip:
+		'''
+		四段连击：横扫、突刺、反扫、终结长刺，一段比一段重
+		突刺段换上细矛尖，刺得更远，命中溅出霜晶
+		"矛尖换了七次，靶上只有一个孔"
+		'''
+}
+
 StormGoddessSpear: {
 	DisplayName: 风暴女神之矛
 	Tooltip:
@@ -3657,5 +3667,23 @@ ScrapBeacon: {
 		'''
 		在夜晚召唤废钢统帅
 		"废料自会认领它的工头"
+		'''
+}
+
+GaolCellKey: {
+	DisplayName: 深牢禁室之钥
+	Tooltip:
+		'''
+		就地筑起深牢禁室并安放蛰伏的枯颅（测试物品）
+		"钥匙一转，墙就想起了自己的形状"
+		'''
+}
+
+RustedGaolIrons: {
+	DisplayName: 锈蚀的镣铐
+	Tooltip:
+		'''
+		召唤深牢怨灵（测试物品）
+		"铐环内侧的狱号已经磨平了"
 		'''
 }

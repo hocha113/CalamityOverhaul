@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Core;
+using InnoVault.Cinematics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -61,6 +62,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
                 context.HeartAttackCooldown = 60 * 32;
                 context.LastAttack = BrainStateIndex.HeartAttack;
                 return new BrainHeartAttackState();
+            }
+
+            //投技·摄心镜狱：二阶段深入后解锁，冷却保证插入（骤停优先）
+            //阀门：目标存活且在合理距离、无世界时停、本端无运镜在播（专用服上无运镜恒过）
+            if (context.IsPhase2 && context.LifeRatio <= BrainMindSeizeState.UnlockLifeRatio
+                && context.MindSeizeCooldown <= 0
+                && player.Alives() && npc.Distance(player.Center) < 1300f
+                && !CWRWorld.CanTimeFrozen()
+                && (Main.dedServ || !CutsceneDirector.IsPlaying)) {
+                context.MindSeizeCooldown = BrainMindSeizeState.CooldownHit;
+                context.LastAttack = BrainStateIndex.MindSeize;
+                return new BrainMindSeizeState();
             }
 
             return PickNextAttack(context);

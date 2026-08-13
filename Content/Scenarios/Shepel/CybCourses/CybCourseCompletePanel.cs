@@ -28,19 +28,18 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         public static LocalizedText Footer { get; private set; }
 
         public override void SetStaticDefaults() {
-            Title = this.GetLocalization(nameof(Title), () => "TRAINING COMPLETE");
-            Subtitle = this.GetLocalization(nameof(Subtitle), () => "SUPERDREAM PROTOCOL");
-            Stat1 = this.GetLocalization(nameof(Stat1), () => "[#] SHPC HUD 校准完毕");
-            Stat2 = this.GetLocalization(nameof(Stat2), () => "[#] 骇客时间校准完毕");
-            Stat3 = this.GetLocalization(nameof(Stat3), () => "[#] 物块扫描接口校准完毕");
-            BtnRetry = this.GetLocalization(nameof(BtnRetry), () => "RETRY");
-            BtnExit = this.GetLocalization(nameof(BtnExit), () => "EXIT");
-            Footer = this.GetLocalization(nameof(Footer), () => "选择以继续 — RETRY 重启训练，EXIT 离开超梦");
+            Title = this.GetLocalization(nameof(Title), () => "训练完成");
+            Subtitle = this.GetLocalization(nameof(Subtitle), () => "超梦节点");
+            Stat1 = this.GetLocalization(nameof(Stat1), () => "[#] SHPC HUD 已就绪");
+            Stat2 = this.GetLocalization(nameof(Stat2), () => "[#] 骇客时间 已就绪");
+            Stat3 = this.GetLocalization(nameof(Stat3), () => "[#] 物块扫描 已就绪");
+            BtnRetry = this.GetLocalization(nameof(BtnRetry), () => "重新训练");
+            BtnExit = this.GetLocalization(nameof(BtnExit), () => "退出");
+            Footer = this.GetLocalization(nameof(Footer), () => "请选择一项以继续");
         }
 
         private const int PanelW = 460;
         private const int PanelH = 280;
-        private const int EdgePad = 10;
 
         public static bool Visible => _phase != Phase.Hidden;
 
@@ -154,37 +153,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             var panel = new Rectangle(finalX, finalY, PanelW, PanelH);
             _panelRect = panel;
 
-            DrawPanelBg(sb, panel);
+            CybCourseCardStyle.DrawPanelBg(sb, panel, _alpha, _shaderTimer, amber: false);
             DrawPanelContent(sb, panel);
         }
-
-        private static void DrawPanelBg(SpriteBatch sb, Rectangle panel) {
-            Effect effect = EffectLoader.EntrustGuideCard?.Value;
-            if (effect != null) {
-                Rectangle ext = panel;
-                ext.Inflate(EdgePad, EdgePad);
-                effect.Parameters["uTime"]?.SetValue(_shaderTimer);
-                effect.Parameters["uAlpha"]?.SetValue(_alpha * 0.97f);
-                effect.Parameters["uResolution"]?.SetValue(new Vector2(ext.Width, ext.Height));
-                effect.Parameters["uEdgePad"]?.SetValue((float)EdgePad);
-                effect.Parameters["uVariant"]?.SetValue(1f);
-                sb.End();
-                sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
-                    SamplerState.AnisotropicClamp, DepthStencilState.None,
-                    RasterizerState.CullNone, effect, Main.UIScaleMatrix);
-                sb.Draw(VaultAsset.placeholder2.Value, ext, Color.White);
-                sb.End();
-                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
-                    SamplerState.AnisotropicClamp, DepthStencilState.None,
-                    RasterizerState.CullNone, null, Main.UIScaleMatrix);
-            }
-            else {
-                sb.Draw(VaultAsset.placeholder2.Value, panel, new Color(0, 8, 18, (int)(220 * _alpha)));
-                BaseManagerStyle.StrokeRect(sb, panel, 1, new Color(50, 160, 200, (int)(160 * _alpha)));
-            }
-        }
-
-        private static void DrawPanelContent(SpriteBatch sb) => DrawPanelContent(sb, _panelRect);
 
         private static void DrawPanelContent(SpriteBatch sb, Rectangle panel) {
             var font = FontAssets.MouseText.Value;
@@ -193,10 +164,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             float bodySc = 0.74f;
             float footerSc = 0.55f;
 
-            float breath = 0.55f + 0.45f * MathF.Sin(_shaderTimer * 4f);
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle(panel.X + 14, panel.Y + 8, panel.Width - 28, 2),
-                new Color(80, 220, 245, (int)(140 * _alpha * breath)));
+            CybCourseCardStyle.DrawBreathLine(sb, panel, _alpha, _shaderTimer, new Color(80, 220, 245, 140));
 
             float titleY = panel.Y + 22f;
             BaseManagerStyle.DrawCenteredText(sb, Title.Value,
@@ -209,17 +177,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 new Color(120, 195, 215, (int)(190 * _alpha)), subSc);
 
             int divY = (int)(subY + font.MeasureString("A").Y * subSc + 12f);
-            int divW = (int)(panel.Width * 0.55f);
-            int divX = panel.Center.X - divW / 2;
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle(divX, divY, divW / 2 - 6, 1),
-                new Color(70, 200, 220, (int)(150 * _alpha)));
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle(divX + divW / 2 + 6, divY, divW / 2 - 6, 1),
-                new Color(70, 200, 220, (int)(150 * _alpha)));
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle(panel.Center.X - 3, divY - 1, 6, 3),
-                new Color(120, 230, 245, (int)(220 * _alpha)));
+            CybCourseCardStyle.DrawDividerGem(sb, panel, divY, _alpha,
+                new Color(70, 200, 220, 150), new Color(120, 230, 245, 220));
 
             float lineH = font.MeasureString("A").Y * bodySc + 6f;
             float statY = divY + 14f;
@@ -237,8 +196,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 
             _retryRect = new Rectangle(btnX, btnY, btnW, btnH);
             _exitRect = new Rectangle(btnX + btnW + gap, btnY, btnW, btnH);
-            DrawPanelButton(sb, font, _retryRect, BtnRetry.Value, hot: true);
-            DrawPanelButton(sb, font, _exitRect, BtnExit.Value, hot: false);
+            var mouse = new Point(Main.mouseX, Main.mouseY);
+            CybCourseCardStyle.DrawPanelButton(sb, _retryRect, BtnRetry.Value, hot: true, amber: false, _alpha, _shaderTimer, mouse);
+            CybCourseCardStyle.DrawPanelButton(sb, _exitRect, BtnExit.Value, hot: false, amber: false, _alpha, _shaderTimer, mouse);
 
             BaseManagerStyle.DrawCenteredText(sb, Footer.Value,
                 new Vector2(panel.Center.X, panel.Bottom - 18f),
@@ -249,35 +209,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             float x, float y, string text, float scale) {
             Utils.DrawBorderString(sb, text, new Vector2(x, y),
                 new Color(180, 230, 240, (int)(230 * _alpha)), scale);
-        }
-
-        private static void DrawPanelButton(SpriteBatch sb, ReLogic.Graphics.DynamicSpriteFont font,
-            Rectangle rect, string text, bool hot) {
-            bool hovered = rect.Contains(Main.mouseX, Main.mouseY);
-            //hot=RETRY主色，EXIT次色
-            Color baseBg = hot ? new Color(20, 90, 110) : new Color(16, 60, 78);
-            Color hoverBg = hot ? new Color(50, 175, 200) : new Color(40, 130, 150);
-            Color baseBorder = hot ? new Color(70, 200, 230) : new Color(60, 150, 170);
-            Color hoverBorder = hot ? new Color(120, 240, 255) : new Color(110, 220, 240);
-            Color baseText = hot ? new Color(170, 235, 245) : new Color(160, 215, 225);
-            Color hoverText = new Color(225, 250, 255);
-
-            float pulse = hovered ? 1f : 0.85f + 0.15f * MathF.Sin(_shaderTimer * 5f);
-            Color bg = (hovered ? hoverBg : baseBg) * (_alpha * 0.95f * pulse);
-            Color border = (hovered ? hoverBorder : baseBorder) * _alpha;
-            Color textCol = (hovered ? hoverText : baseText) * _alpha;
-
-            BaseManagerStyle.FillRect(sb, rect, bg);
-            BaseManagerStyle.StrokeRect(sb, rect, 1, border);
-            BaseManagerStyle.DrawCenteredText(sb, text, rect.Center.ToVector2(), textCol, 0.78f);
-
-            int capH = 6;
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle(rect.X - 2, rect.Y + rect.Height / 2 - capH, 4, capH * 2),
-                border);
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle(rect.Right - 2, rect.Y + rect.Height / 2 - capH, 4, capH * 2),
-                border);
         }
     }
 }

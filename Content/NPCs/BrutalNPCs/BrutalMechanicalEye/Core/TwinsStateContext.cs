@@ -27,7 +27,35 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
             ComboSharedStep = 0;
             ComboReadyMask = 0;
             EarlyRageClaimedBy = 0;
+            ResetPincerData();
+            PincerLastEndUpdate = 0;
         }
+
+        #region 钳形投技共享记录(仅服务端权威；客户端一律以 override ai 槽同步值为准)
+        /// <summary>被夹玩家 whoAmI，-1 无</summary>
+        public static int PincerGrabbedPlayer { get; set; } = -1;
+        /// <summary>投技节拍，见 TwinsPincerGrabState.Beat*</summary>
+        public static int PincerBeat { get; set; }
+        /// <summary>钳口交扣点</summary>
+        public static Vector2 PincerClampPoint { get; set; }
+        /// <summary>钳形轴线角(魔焰→交点方向)</summary>
+        public static float PincerLineAngle { get; set; }
+        /// <summary>上次投技结束时的 Main.GameUpdateCount，冷却基准</summary>
+        public static uint PincerLastEndUpdate { get; set; }
+        /// <summary>上次投技是否扑空，扑空冷却减半</summary>
+        public static bool PincerLastWasWhiff { get; set; }
+        /// <summary>被抓瞬间双眼血量合计，救援阀基准</summary>
+        public static int PincerEyesLifeAtClamp { get; set; }
+
+        /// <summary>清空一次投技过程的记录，冷却戳另行处理</summary>
+        public static void ResetPincerData() {
+            PincerGrabbedPlayer = -1;
+            PincerBeat = 0;
+            PincerClampPoint = Vector2.Zero;
+            PincerLineAngle = 0f;
+            PincerEyesLifeAtClamp = 0;
+        }
+        #endregion
 
         /// <summary>抢占提前狂暴名额，只有一只眼能在搭档濒死时提前狂暴</summary>
         public static bool TryClaimEarlyRage(int myType) {

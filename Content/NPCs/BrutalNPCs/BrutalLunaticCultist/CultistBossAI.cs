@@ -97,6 +97,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                 if (stateContext.StaggerTimer > 0) {
                     stateContext.StaggerTimer--;
                 }
+                //献祭投技冷却与各玩家印记衰减（服务端权威）
+                if (stateContext.GrabCooldown > 0) {
+                    stateContext.GrabCooldown--;
+                }
+                for (int i = 0; i < stateContext.BrandTimers.Length; i++) {
+                    if (stateContext.BrandTimers[i] > 0) {
+                        stateContext.BrandTimers[i]--;
+                    }
+                }
                 MirrorAiSlots();
             }
             npc.defense = stateContext.StaggerTimer > 0 ? 0 : (stateContext.IsPhase2 ? (int)(npc.defDefense * 0.8f) : npc.defDefense);
@@ -119,6 +128,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             ai[4] = stateContext.RitualCenter.X;
             ai[5] = stateContext.RitualCenter.Y;
             ai[6] = stateContext.Enraged ? 1f : 0f;
+            ai[7] = stateContext.GrabTargetIndex;
+            ai[8] = stateContext.GrabResult;
         }
 
         private void UpdateStateContext() {
@@ -136,6 +147,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                 stateContext.StaggerTimer = (int)ai[3];
                 stateContext.RitualCenter = new Vector2(ai[4], ai[5]);
                 stateContext.Enraged = ai[6] >= 1f;
+                stateContext.GrabTargetIndex = (int)ai[7];
+                stateContext.GrabResult = (int)ai[8];
             }
             if (Main.GameUpdateCount % 30 == 0) {
                 stateContext.RefreshClones();
@@ -148,7 +161,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                 return;
             }
             if (stateMachine.CurrentState is CultistDeathState or CultistDespawnState
-                or CultistIntroState or CultistPhaseTransitionState or CultistCataclysmState) {
+                or CultistIntroState or CultistPhaseTransitionState or CultistCataclysmState
+                or CultistSacrificeGrabState) {
+                //献祭投技锁着玩家，转阶段/大招不得腰斩
                 return;
             }
             //破绽硬直是玩家挣来的输出窗口，不被阶段演出抢走
@@ -177,7 +192,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             if (stateContext.DeathPerformanceFinished) {
                 return;
             }
-            if (stateMachine.CurrentState is CultistDeathState or CultistDespawnState) {
+            //投技锁人期间不切死亡演出（CheckDead 锁血兜底，投技完再死）
+            if (stateMachine.CurrentState is CultistDeathState or CultistDespawnState
+                or CultistSacrificeGrabState) {
                 return;
             }
             if (npc.life <= DeathPerformanceTriggerLife) {
@@ -247,10 +264,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                     SoundEngine.PlaySound(SoundID.Zombie105 with { Volume = 0.9f, Pitch = 0.3f }, npc.Center);
                     CultistScreenFX.PushFlash(0.35f, 14);
                 }
-                //解除沿边清除免伤：只在不自管无敌的状态里放行，避免覆盖 Intro/转阶段/死亡锁
+                //解除沿边清除免伤：只在不自管无敌的状态里放行，避免覆盖 Intro/转阶段/死亡/投技锁
                 if (!stateContext.Enraged
                     && stateMachine?.CurrentState is not CultistDespawnState and not CultistDeathState
-                        and not CultistIntroState and not CultistPhaseTransitionState) {
+                        and not CultistIntroState and not CultistPhaseTransitionState
+                        and not CultistSacrificeGrabState) {
                     npc.dontTakeDamage = false;
                 }
                 prevEnraged = stateContext.Enraged;
@@ -404,7 +422,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             npc.life = 1;
             npc.dontTakeDamage = true;
 
-            if (!VaultUtils.isClient && stateMachine != null && stateMachine.CurrentState is not CultistDeathState) {
+            //投技锁人期间只锁血不切态，演出完由死亡触发器接管
+            if (!VaultUtils.isClient && stateMachine != null
+                && stateMachine.CurrentState is not CultistDeathState
+                && stateMachine.CurrentState is not CultistSacrificeGrabState) {
                 stateMachine.ChangeState(new CultistDeathState());
             }
             return false;

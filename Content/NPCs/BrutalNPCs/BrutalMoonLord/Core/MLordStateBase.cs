@@ -32,6 +32,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.Core
         Despawn = 11,
         /// <summary>终焉时刻死亡演出</summary>
         Death = 12,
+        /// <summary>掌中处刑（月蚀噬咬合掌命中触发的投技）</summary>
+        PalmExecution = 13,
     }
 
     /// <summary>核心状态接口</summary>

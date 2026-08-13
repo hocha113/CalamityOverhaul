@@ -134,6 +134,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu
             if (!VaultUtils.isClient && stateContext.MaelstromCooldown > 0) {
                 stateContext.MaelstromCooldown--;
             }
+            //投技冷却仅二阶段计时，转阶段后留出缓冲
+            if (!VaultUtils.isClient && stateContext.IsSecondPhase && stateContext.MawDragCooldown > 0) {
+                stateContext.MawDragCooldown--;
+            }
 
             stateContext.DecayVisuals();
         }

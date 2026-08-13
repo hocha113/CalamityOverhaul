@@ -56,3 +56,13 @@ ScrapCommander: {
 }
 
 ScrapLegionProbe.DisplayName: Scrap Servitor
+
+DeepGaolWraith: {
+	DisplayName: Deep Gaol Wraith
+	Bestiary: The gaoler died at his post, his key rusted solid in the lock. The grudge that lingered wrung itself into a shape along the fetters, and now it walks the rounds between cells, dragging a pair of empty shackles. It checks no roster—only wrists. A wrist without irons counts as an escape.
+}
+
+GaolDormantSkull.DisplayName: Deep Gaol Skull
+CybTrainingDummy.DisplayName: Holo Training Target
+OldNetPatrolICE.DisplayName: Patrol ICE
+OldNetBlackICE.DisplayName: Black ICE Hunter

@@ -36,12 +36,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
 
         /// <summary>是否处于死亡演出（运镜观察用）</summary>
         internal bool InDeathPerformance => stateMachine?.CurrentState is FishronDeathState;
+
+        /// <summary>当前状态实例，投技玩家侧/舞台弹幕据此读本地节拍</summary>
+        internal IVaultState<FishronStateContext> CurrentState => stateMachine?.CurrentState;
         #endregion
 
         #region 加载与初始化
         void ICWRLoader.UnLoadData() {
             FishronTideTrailProj.UnloadTrails();
             FishronStormSky.Clear();
+            FishronGrabVeilFX.Clear();
             ActivePerformanceBoss = -1;
         }
 
@@ -140,6 +144,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron
             stateContext.Npc = npc;
             stateContext.Target = targetPlayer;
             stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
+
+            //投技冷却回填（裁决只在服务端，客户端递减无害）
+            if (stateContext.GrabCooldown > 0) {
+                stateContext.GrabCooldown--;
+            }
 
             //离开海域/太空的原版式激怒（判定式镜像原版）
             Player p = targetPlayer;

@@ -46,33 +46,28 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             _stepTitles = new[] {
                 this.GetLocalization("Step0_Title", () => "连接 SHPC"),
                 this.GetLocalization("Step1_Title", () => "核心节点"),
-                this.GetLocalization("Step2_Title", () => "CYBER DOMAIN"),
-                this.GetLocalization("Step3_Title", () => "MODIFY"),
-                this.GetLocalization("Step4_Title", () => "CYBERWARE"),
-                this.GetLocalization("Step5_Title", () => "TALK"),
-                this.GetLocalization("Step6_Title", () => "ENGRAM CALIBRATED"),
+                this.GetLocalization("Step2_Title", () => "赛博空间"),
+                this.GetLocalization("Step3_Title", () => "模块改装"),
+                this.GetLocalization("Step4_Title", () => "义体植入"),
+                this.GetLocalization("Step5_Title", () => "神经链路"),
+                this.GetLocalization("Step6_Title", () => "校准完成"),
             };
             _stepBodies = new[] {
-                this.GetLocalization("Step0_Body", () => "将SHPC装备至武器栏并持握，HUD核心节点即会出现在屏幕左下角。"),
-                this.GetLocalization("Step1_Body", () => "点击左下角的核心节点可展开或收起操作面板。"),
-                this.GetLocalization("Step2_Body", () => @"赛博空间:部署并管理多层赛博空间层叠结构。
-点击高亮的扇区即可打开该面板。"),
-                this.GetLocalization("Step3_Body", () => @"模块改装:为SHPC安装或拆卸改造零件。
-点击高亮的扇区即可打开该面板。"),
-                this.GetLocalization("Step4_Body", () => @"义体植入:查看并管理你的身体增强模块。
-点击高亮的扇区即可打开该界面。"),
-                this.GetLocalization("Step5_Body", () => @"神经链路:与SHPC建立直连通讯，开启对话。
-点击高亮的扇区即可与其对话。"),
-                this.GetLocalization("Step6_Body", () => "所有接口已解析完毕。\n神经链路稳定，SHPC已就绪。"),
+                this.GetLocalization("Step0_Body", () => "将SHPC装备至武器栏并持握，HUD核心节点即会出现在屏幕左下角"),
+                this.GetLocalization("Step1_Body", () => "点击左下角的核心节点可展开或收起操作面板"),
+                this.GetLocalization("Step2_Body", () => "部署并管理多层赛博空间层叠结构\n点击高亮的扇区即可打开该面板"),
+                this.GetLocalization("Step3_Body", () => "为SHPC安装或拆卸改造零件\n点击高亮的扇区即可打开该面板"),
+                this.GetLocalization("Step4_Body", () => "查看并管理你的身体增强模块\n点击高亮的扇区即可打开该界面"),
+                this.GetLocalization("Step5_Body", () => "与SHPC建立直连通讯，开启对话\n点击高亮的扇区即可与其对话"),
+                this.GetLocalization("Step6_Body", () => "所有接口已解析完毕\n神经链路稳定，SHPC已就绪"),
             };
-            _textCalibrating = this.GetLocalization("Calibrating", () => "CALIBRATING...");
-            _textNextBtn = this.GetLocalization("NextBtn", () => "NEXT  >");
-            _textHintStuck = this.GetLocalization("HintStuck", () => "HINT: 试着点击高亮的目标区域");
+            _textCalibrating = this.GetLocalization("Calibrating", () => "校准中…");
+            _textNextBtn = this.GetLocalization("NextBtn", () => "跳过 >");
+            _textHintStuck = this.GetLocalization("HintStuck", () => "提示：点一下高亮的目标区域");
         }
 
-        private const int CardW = 310;
-        private const int CardH = 118;
-        private const int EdgePad = 8;
+        private const int CardW = CybCourseCardStyle.CardW;
+        private const int CardH = CybCourseCardStyle.CardH;
         private const float AutoStepDuration = 1.6f;
         private const float StuckHintAfter = 12f;
 
@@ -323,118 +318,33 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             var card = new Rectangle(finalX, finalY, CardW, CardH);
 
             _cardRect = card;
-            DrawCardBg(sb, card, alpha);
-            DrawCardContent(sb, px, card, alpha);
+            CybCourseCardStyle.DrawCardBg(sb, card, alpha, _shaderTimer);
+            DrawCardContent(sb, card, alpha);
             DrawHighlightForStep(sb, px, targetKey, alpha);
         }
 
-        private static void DrawCardBg(SpriteBatch sb, Rectangle card, float alpha) {
-            Effect effect = EffectLoader.EntrustGuideCard?.Value;
-            if (effect != null) {
-                Rectangle ext = card;
-                ext.Inflate(EdgePad, EdgePad);
-                effect.Parameters["uTime"]?.SetValue(_shaderTimer);
-                effect.Parameters["uAlpha"]?.SetValue(alpha * 0.96f);
-                effect.Parameters["uResolution"]?.SetValue(new Vector2(ext.Width, ext.Height));
-                effect.Parameters["uEdgePad"]?.SetValue((float)EdgePad);
-                effect.Parameters["uVariant"]?.SetValue(1f);
-                sb.End();
-                sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
-                    SamplerState.AnisotropicClamp, DepthStencilState.None,
-                    RasterizerState.CullNone, effect, Main.UIScaleMatrix);
-                sb.Draw(VaultAsset.placeholder2.Value, ext, Color.White);
-                sb.End();
-                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
-                    SamplerState.AnisotropicClamp, DepthStencilState.None,
-                    RasterizerState.CullNone, null, Main.UIScaleMatrix);
-            }
-            else {
-                sb.Draw(VaultAsset.placeholder2.Value, card, new Color(0, 8, 18, (int)(200 * alpha)));
-                BaseManagerStyle.StrokeRect(sb, card, 1, new Color(50, 160, 200, (int)(120 * alpha)));
-            }
-        }
-
-        private static void DrawCardContent(SpriteBatch sb, Texture2D px, Rectangle card, float alpha) {
-            var font = FontAssets.MouseText.Value;
-            float titleSc = 0.84f;
-            float bodySc = 0.70f;
-            float subSc = 0.58f;
-            float lineT = font.MeasureString("A").Y * titleSc + 2f;
-            float lineB = font.MeasureString("A").Y * bodySc + 1f;
-
+        private static void DrawCardContent(SpriteBatch sb, Rectangle card, float alpha) {
             int stepIdx = (int)MathHelper.Clamp(_currentStep, 0, StepMeta.Length - 1);
             string title = _stepTitles[stepIdx].Value;
             string body = _stepBodies[stepIdx].Value;
             bool isAuto = StepMeta[stepIdx].IsAuto;
             bool stuck = !isAuto && _stuckTimer >= StuckHintAfter;
-            float px2 = card.X + 14f;
-            float py = card.Y + 12f;
 
             string counter = $"{stepIdx + 1:D2} / {StepMeta.Length:D2}";
-            float counterW = font.MeasureString(counter).X * subSc;
-            Utils.DrawBorderString(sb, counter,
-                new Vector2(card.Right - 14f - counterW, py),
-                new Color(70, 155, 175, (int)(150 * alpha)), subSc);
-
-            Utils.DrawBorderString(sb, title, new Vector2(px2, py),
-                new Color(80, 220, 245, (int)(255 * alpha)), titleSc);
-            py += lineT + 2f;
-
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle((int)px2, (int)py, CardW - 28, 1),
-                new Color(45, 130, 155, (int)(90 * alpha)));
-            py += 6f;
-
-            int bodyWrapW = (int)((CardW - 28) / bodySc);
-            foreach (string line in body.Split('\n')) {
-                string[] bodyWrapped = VaultUtils.WrapTextArray(line, font, bodyWrapW, 99, out _);
-                foreach (string wl in bodyWrapped) {
-                    if (string.IsNullOrEmpty(wl)) continue;
-                    Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px2, py),
-                        new Color(175, 215, 225, (int)(215 * alpha)), bodySc);
-                    py += lineB;
-                }
-            }
+            float y = CybCourseCardStyle.DrawHeader(sb, card, alpha, title, counter);
+            CybCourseCardStyle.DrawBodyLines(sb, card, ref y, alpha, body);
 
             if (stuck && _textHintStuck != null) {
-                float pulse = 0.7f + 0.3f * MathF.Sin(_shaderTimer * 14f);
-                Utils.DrawBorderString(sb, _textHintStuck.Value,
-                    new Vector2(px2, card.Bottom - 36f),
-                    new Color(255, 110, 90, (int)(220 * alpha * pulse)), subSc);
+                CybCourseCardStyle.DrawStuckHint(sb, card, alpha, _shaderTimer, _textHintStuck.Value);
             }
 
             if (!isAuto) {
-                DrawNextButton(sb, card, alpha, stuck);
+                _nextBtnRect = CybCourseCardStyle.DrawNextButton(sb, card, alpha, stuck,
+                    _shaderTimer, _textNextBtn.Value, new Point(Main.mouseX, Main.mouseY));
             }
             else {
-                float blink = 0.72f + 0.28f * MathF.Sin(_shaderTimer * 22f);
-                float sbW = font.MeasureString(_textCalibrating.Value).X * subSc;
-                Utils.DrawBorderString(sb, _textCalibrating.Value,
-                    new Vector2(card.Right - 14f - sbW, card.Bottom - 16f),
-                    new Color(60, 190, 200, (int)(200 * alpha * blink)), subSc);
+                CybCourseCardStyle.DrawStatusTag(sb, card, alpha, _shaderTimer, _textCalibrating.Value);
             }
-        }
-
-        private static void DrawNextButton(SpriteBatch sb, Rectangle card, float alpha, bool stuck) {
-            const int btnW = 72, btnH = 20, margin = 10;
-            var btn = new Rectangle(card.Right - btnW - margin, card.Bottom - btnH - margin, btnW, btnH);
-            _nextBtnRect = btn;
-
-            bool hovered = btn.Contains(Main.mouseX, Main.mouseY);
-            float emphasize = stuck ? 0.85f + 0.15f * MathF.Sin(_shaderTimer * 14f) : 0f;
-            Color bgColor = hovered
-                ? new Color(40, 155, 180, (int)(210 * alpha))
-                : new Color(18 + (int)(40 * emphasize), 72, 92, (int)((150 + 50 * emphasize) * alpha));
-            Color borderColor = hovered
-                ? new Color(100, 220, 245, (int)(200 * alpha))
-                : new Color(50 + (int)(80 * emphasize), 150, 180, (int)((120 + 80 * emphasize) * alpha));
-            Color textColor = hovered
-                ? new Color(200, 250, 255, (int)(255 * alpha))
-                : new Color(110 + (int)(80 * emphasize), 205, 225, (int)((195 + 60 * emphasize) * alpha));
-
-            BaseManagerStyle.FillRect(sb, btn, bgColor);
-            BaseManagerStyle.StrokeRect(sb, btn, 1, borderColor);
-            BaseManagerStyle.DrawCenteredText(sb, _textNextBtn.Value, btn.Center.ToVector2(), textColor, 0.60f);
         }
 
         private static void DrawHighlightForStep(SpriteBatch sb, Texture2D px, string targetKey, float alpha) {
@@ -465,20 +375,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             }
 
             Rectangle rect = target.GetScreenRect();
-            DrawLBrackets(sb, px, rect, bracketColor);
-        }
-
-        private static void DrawLBrackets(SpriteBatch sb, Texture2D px, Rectangle r, Color c) {
-            const int len = 12;
-            const int thick = 2;
-            sb.Draw(px, new Rectangle(r.Left, r.Top, len, thick), c);
-            sb.Draw(px, new Rectangle(r.Left, r.Top, thick, len), c);
-            sb.Draw(px, new Rectangle(r.Right - len, r.Top, len, thick), c);
-            sb.Draw(px, new Rectangle(r.Right - thick, r.Top, thick, len), c);
-            sb.Draw(px, new Rectangle(r.Left, r.Bottom - thick, len, thick), c);
-            sb.Draw(px, new Rectangle(r.Left, r.Bottom - len, thick, len), c);
-            sb.Draw(px, new Rectangle(r.Right - len, r.Bottom - thick, len, thick), c);
-            sb.Draw(px, new Rectangle(r.Right - thick, r.Bottom - len, thick, len), c);
+            CybCourseCardStyle.DrawLBrackets(sb, px, rect, bracketColor, len: 12);
         }
     }
 }

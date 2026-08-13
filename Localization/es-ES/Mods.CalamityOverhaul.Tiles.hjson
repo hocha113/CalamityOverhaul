@@ -3,3 +3,10 @@ BloodAltarTP: {
 	InsufficientOfferingText: No tienes suficientes lágrimas sangrientas para rendir homenaje al rey carmesí...
 	SacrificeDeathReason: "{0} cayó en un frenesí interminable de sangre y carne"
 }
+
+// OldNetDataNodeTile.MapEntry: Data Node
+// OldNetLogoutTerminalTile.MapEntry: Logout Terminal
+// OldNetEncryptedNodeTile.MapEntry: Encrypted Node
+// OldNetEventNodeTile.MapEntry: Event Node
+// OldNetSealGateTile.MapEntry: Seal Gate
+// OldNetRelayTile.MapEntry: Relay Station

@@ -174,8 +174,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 stateMachine.ChangeState(new MLordDeathState());
                 return;
             }
+            //掌中处刑不可被部件破坏/大招打断（死亡在上方仍可抢占）；
+            //期间的新破坏此处不入账，处刑结束后首帧照常检测补演
             if (current is MLordDeathState or MLordDespawnState or MLordIntroState
-                or MLordPartBreakState or MLordCoreExposureState) {
+                or MLordPartBreakState or MLordCoreExposureState or MLordPalmExecutionState) {
                 return;
             }
 
@@ -332,7 +334,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
 
         /// <summary>生成一对手：行位写 ai[1]，边位写 ai[2]（原版 checkDead 逐实例生效，追加手同样转破脱真眼）</summary>
         private void SpawnHandPair(int row) {
-            int spawnY = (int)npc.Center.Y + (row == 0 ? -60 : 120);
+            int spawnY = (int)npc.Center.Y + (int)(row == 0
+                ? MLordDirector.ShoulderOffset.Y : MLordDirector.LowerShoulderOffset.Y);
             for (int side = 0; side < 2; side++) {
                 int hand = NPC.NewNPC(npc.GetSource_FromAI(), (int)npc.Center.X + (side * 2 - 1) * (120 + row * 60),
                     spawnY, NPCID.MoonLordHand, npc.whoAmI);

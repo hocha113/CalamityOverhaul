@@ -182,6 +182,17 @@ QuestLog: {
 	SunModeText: Tagmodus
 	LauncherHoverText: Linksklick Interagieren, Rechtsklick Ziehen
 	QuestManagerText: Aufträge
+	// ChronicleTitle: E X P E D I T I O N   R E C O R D
+	// ChronicleProgress: Sealed {0} / {1}
+	// ChronicleHint: Wheel to zoom   ·   Drag to pan   ·   Esc to close
+	// ChronicleStationChart: Quest Chart
+	// ChronicleStationEntrust: Commissions
+	// ChronicleChapterTitle: Chapters
+	// ChronicleLegendTitle: Legend
+	// ChronicleLegendSealed: Sealed
+	// ChronicleLegendUnclaimed: Reward Due
+	// ChronicleLegendActive: In Progress
+	// ChronicleLegendLocked: Not Begun
 	DisabledOverlayText:
 		'''
 		Quest-Prüfung wurde in der aktuellen Welt deaktiviert.
@@ -1163,4 +1174,63 @@ MiningMachineUI: {
 	// VeinTilesFormat: "{0} vein tiles detected"
 	// DrillTargetText: Targets: {0}
 	// DrillEffectText: Grants extraction rights for its targets and quadruples their yield weight
+}
+
+DungeonworldLoadingScreen: {
+	// BandName0: The Cathedral
+	// BandName1: The Gaols
+	// BandName2: The Great Archive
+	// BandName3: The Drowned Ward
+	// BandName4: The Ossuary
+	// BandName5: The Foundry
+	// BandName6: The Inverted Cathedral
+	// Toll0: First Toll · The Cathedral
+	// Toll1: Second Toll · The Gaols
+	// Toll2: Third Toll · The Great Archive
+	// Toll3: Fourth Toll · The Drowned Ward
+	// Toll4: Fifth Toll · The Ossuary
+	// Toll5: Sixth Toll · The Foundry
+	// Toll6: Seventh Toll · The Inverted Cathedral
+	// Tip0: The deeper you go, the older the bricks, the shorter the prayers.
+	// Tip1: The choir is still singing, just seven floors above.
+	// Tip2: One toll rung above; the well answers twice.
+	// Tip3: The candles grow shorter going down, and the wax grows thicker.
+	// Tip4: The Archive keeps everyone's name, including those yet to arrive.
+	// Tip5: The Ossuary lays its bricks without mortar; bone bites tighter than lime.
+	// Tip6: The gears have never stopped; seven generations have kept them oiled.
+	// Tip7: In the lowest cathedral, the altar is nailed to the ceiling.
+	// StatusDescend: The cage is descending
+	// StatusAscend: The cage is rising
+	// DepthLabel: Depth {0}%
+}
+
+OldNetTexts: {
+	// OldNetHarvest: +{0} Mold Shards (uninscribed)
+	// OldNetNodeHint: Recover data
+	// OldNetTerminalHint: Log out and inscribe your haul
+	// OldNetSettleDone: Inscribed {0} Mold Shards — link severed safely
+	// OldNetSettleEmpty: Link severed safely — nothing recovered this dive
+	// OldNetEjectRam: RAM depleted — link burned out, uninscribed haul lost
+	// OldNetEjectDeath: Construct collapse — link burned out, uninscribed haul lost
+	// OldNetLedgerFull: Ledger full — hit a relay or log out first
+	// OldNetEncryptHint: Channel decryption (stand still ~3s, loud)
+	// OldNetEventHint: Pull the breaker: unseal the vaults, wake the whole net
+	// OldNetEventPulled: Seals released — purge wave inbound
+	// OldNetRelayHint: Relay uplink: inscribe current ledger (the uplink makes noise)
+	// OldNetRelayDone: Inscribed {0} Mold Shards — link holds
+	// OldNetRelayEmpty: Ledger empty, nothing to uplink
+}
+
+OldNetDebriefPanel: {
+	// DebriefSubtitle: Dive debrief
+	// DebriefDepth: Deepest reach
+	// DebriefHarvest: Nodes recovered
+	// DebriefSettled: Shards inscribed
+	// DebriefHunted: Times hunted
+	// DebriefTime: Dive time
+	// DebriefExitSafe: Clean disconnect
+	// DebriefExitBurnout: RAM depleted — link burned out
+	// DebriefExitDeath: Construct collapse — link burned out
+	// DebriefLost: "{0} uninscribed shards burned away"
+	// DebriefContinue: Continue
 }

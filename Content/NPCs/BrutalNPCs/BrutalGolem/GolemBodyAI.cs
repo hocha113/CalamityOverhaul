@@ -192,9 +192,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
                 stateMachine.ChangeState(new GolemDeathState());
                 return;
             }
-            //不可打断的演出/仪式状态
+            //不可打断的演出/仪式状态（投技抓着玩家时大招也让位，死亡例外在上方）
             if (current is GolemDeathState or GolemDespawnState or GolemIntroState
-                or GolemHeadDetachState or GolemSolarOverdriveState or GolemMeteorLeapState) {
+                or GolemHeadDetachState or GolemSolarOverdriveState or GolemMeteorLeapState
+                or GolemWallSlamState) {
                 return;
             }
 

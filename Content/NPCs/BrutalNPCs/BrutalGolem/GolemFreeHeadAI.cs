@@ -77,9 +77,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
                 UpdateFireControl(bodyState);
             }
 
-            //倾角与喷焰表现各端本地；大招节拍广播时眼焰常亮
+            //倾角与喷焰表现各端本地；大招节拍广播与投技压制时眼焰常亮
             npc.rotation = npc.velocity.X * -0.02f;
             npc.localAI[0] = bodyState is GolemStateIndex.Crossfire or GolemStateIndex.SunBarrage
+                or GolemStateIndex.WallSlam
                 || body.ai[GolemAiSlots.BodyBeat] == 2f ? 1f : 0f;
 
             return false;
@@ -128,6 +129,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem
                     }
                     else {
                         LazyOrbit();
+                    }
+                    break;
+                }
+                case GolemStateIndex.WallSlam: {
+                    //投技抓取中：飞到钉压点对面栖位，为眼激光横扫就位后定住
+                    NPC grabFist = GolemFacts.FindGrabbingFist(GolemFacts.ScanLimbs(body.whoAmI));
+                    GolemFistAI fistOverride = grabFist != null ? GolemFacts.FindOverride<GolemFistAI>(grabFist) : null;
+                    if (fistOverride == null) {
+                        LazyOrbit();
+                        break;
+                    }
+                    var kind = (GolemPinKind)(int)fistOverride.ai[GolemAiSlots.FistPinKind];
+                    Vector2 pin = new(fistOverride.ai[GolemAiSlots.FistPinX], fistOverride.ai[GolemAiSlots.FistPinY]);
+                    Vector2 normal = GolemFacts.PinNormal(kind);
+                    if (kind == GolemPinKind.None || pin.LengthSquared() < 1f) {
+                        LazyOrbit();
+                        break;
+                    }
+                    Vector2 perch = pin + normal * 330f + new Vector2(0f, -46f);
+                    ApproachPoint(perch, 22f, 0.16f);
+                    //就位后硬定，保证扫掠几何稳定
+                    if (npc.Distance(perch) < 24f) {
+                        npc.velocity *= 0.62f;
                     }
                     break;
                 }

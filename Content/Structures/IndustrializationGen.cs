@@ -20,6 +20,11 @@ namespace CalamityOverhaul.Content.Structures
         public static void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
             progress.Message = WorldGenSystem.IndustrializationGenMessage.Value;
 
+            //SHPC 坠舱空岛是武器的开局获取点，与灾厄无关，放在 CWRRef.Has 门外无条件尝试生成
+            if (SHPCCradleGen.Enabled) {
+                SHPCCradleGen.Generate();
+            }
+
             if (CWRRef.Has) {
                 if (WorldGenDensitySave.GetDensity("WindGrivenGenerator") != StructureDensity.Extinction) {
                     SpawnWindGrivenGenerator();

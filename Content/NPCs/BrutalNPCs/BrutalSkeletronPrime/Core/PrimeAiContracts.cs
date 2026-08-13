@@ -29,6 +29,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         /// <summary>头 ai[3] 原版 Mechdusa 标记，禁占</summary>
         public const int HeadMechQueenFlag = 3;
 
+        /// <summary>头 Override ai[3] 投技砸地点 X（抓取瞬间锁存）</summary>
+        public const int OverrideGrabSlamX = 3;
+        /// <summary>头 Override ai[4] 投技砸地点 Y</summary>
+        public const int OverrideGrabSlamY = 4;
+        /// <summary>头 Override ai[5] 投技抓取点 X（被抓瞬间玩家位置）</summary>
+        public const int OverrideGrabStartX = 5;
+        /// <summary>头 Override ai[6] 投技抓取点 Y</summary>
+        public const int OverrideGrabStartY = 6;
+        /// <summary>头 Override ai[7] 投技被抓玩家 whoAmI+1，0=无</summary>
+        public const int OverrideGrabTarget = 7;
+        /// <summary>头 Override ai[8] 投技臂存活掩码 bit0锯/bit1炮/bit2激光（抓取瞬间锁存）</summary>
+        public const int OverrideGrabArmsMask = 8;
         /// <summary>头 Override ai[9] 编队旋转时钟，四臂共用</summary>
         public const int OverrideOrbitClock = 9;
         /// <summary>头 Override ai[10] 狂暴闪现冲撞锁定方向 X</summary>
@@ -79,11 +91,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
             );
         }
 
-        /// <summary>收尾蓄力须兑现，延后编队/冲撞</summary>
+        /// <summary>收尾蓄力须兑现，延后编队/冲撞；处刑突进在飞也算，保证抓取尝试不被编队打断</summary>
         public static bool IsCommittedArmState(int armStateIndex) {
             return armStateIndex == (int)PrimeArmStateIndex.CannonMortar
                 || armStateIndex == (int)PrimeArmStateIndex.LaserSweep
-                || armStateIndex == (int)PrimeArmStateIndex.LaserChargedShot;
+                || armStateIndex == (int)PrimeArmStateIndex.LaserChargedShot
+                || armStateIndex == (int)PrimeArmStateIndex.ViceExecutionLunge;
         }
 
         /// <summary>存活臂仍在收尾蓄力</summary>

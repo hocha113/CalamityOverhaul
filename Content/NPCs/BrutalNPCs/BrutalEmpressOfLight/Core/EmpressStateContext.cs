@@ -52,6 +52,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         public bool DeathPerformanceFinished { get; set; }
         /// <summary>攻击循环计数，服务端权威</summary>
         public int AttackCounter { get; set; }
+        /// <summary>光绫缚舞冷却tick，服务端权威递减，客户端不参与判定</summary>
+        public int GrabCooldown { get; set; }
         #endregion
 
         #region 姿态通道（写入 npc.ai[0]/ai[1] 供原版绘制消费）

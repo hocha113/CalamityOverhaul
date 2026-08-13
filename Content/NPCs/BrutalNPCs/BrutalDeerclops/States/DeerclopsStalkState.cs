@@ -72,6 +72,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
                 new DeerclopsGazeRoarState(),
                 new DeerclopsShadowClawState(),
                 new DeerclopsSpikeCageState(),
+                new DeerclopsSeizeHuntState(),
                 new DeerclopsFrostQuakeState(),
                 new DeerclopsRubbleTossState(),
                 new DeerclopsGazeRoarState(),
@@ -81,6 +82,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.States
             IDeerclopsState[] cycle = context.IsPhase2 ? phase2Cycle : normalCycle;
             IDeerclopsState next = cycle[context.AttackPhaseIndex % cycle.Length];
             context.AttackPhaseIndex++;
+            //投技有额外门槛(冷却/距离/时停等)，未就绪时顶替为压迫招不空拍
+            if (next is DeerclopsSeizeHuntState && !DeerclopsSeizeHuntState.GrabReady(context)) {
+                next = new DeerclopsSpikeWaveState();
+            }
             return next;
         }
     }

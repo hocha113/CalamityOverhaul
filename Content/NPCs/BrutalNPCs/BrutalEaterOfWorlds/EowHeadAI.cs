@@ -65,6 +65,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
         internal const int SlotSegmentCount = 3;
         /// <summary>出环境狂暴强度0~1(权威端写入，体节/客户端回读)</summary>
         internal const int SlotEnrageRamp = 4;
+        /// <summary>投技被吞玩家(who+1，0=无)</summary>
+        internal const int SlotGrabTarget = 5;
+        /// <summary>投技吞噬相位(见 EowStateContext.GrabPhase)</summary>
+        internal const int SlotGrabPhase = 6;
+        /// <summary>投技挤压拍计数</summary>
+        internal const int SlotGrabBeat = 7;
 
         /// <summary>绿雾滤镜注册名</summary>
         internal const string MiasmaFilterName = "CalamityOverhaul:EowMiasma";
@@ -263,8 +269,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
             if (npc.life > npc.lifeMax * (MoltThreshold - 0.1f)) {
                 return;
             }
+            //Devour 抓着玩家时强切会把人吊死在地底，蜕皮推迟到投技自然收尾
             if (stateMachine.CurrentState is EowIntroState or EowMoltTransitionState or EowSplitPincerState
-                or EowApexFrenzyState or EowDeathState or EowDespawnState) {
+                or EowApexFrenzyState or EowDevourState or EowDeathState or EowDespawnState) {
                 return;
             }
             stateMachine.ChangeState(new EowMoltTransitionState());
@@ -278,11 +285,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
                 ai[SlotSplitGroups] = stateContext.SplitGroups;
                 ai[SlotSplitProgress] = stateContext.SplitProgress;
                 ai[SlotEnrageRamp] = stateContext.EnrageRamp;
+                ai[SlotGrabTarget] = stateContext.GrabTargetWho + 1;
+                ai[SlotGrabPhase] = stateContext.GrabPhase;
+                ai[SlotGrabBeat] = stateContext.GrabBeat;
             }
             else {
                 stateContext.SplitGroups = (int)ai[SlotSplitGroups];
                 stateContext.SplitProgress = ai[SlotSplitProgress];
                 stateContext.EnrageRamp = MathHelper.Clamp(ai[SlotEnrageRamp], 0f, 1f);
+                stateContext.GrabTargetWho = (int)ai[SlotGrabTarget] - 1;
+                stateContext.GrabPhase = (int)ai[SlotGrabPhase];
+                stateContext.GrabBeat = (int)ai[SlotGrabBeat];
             }
         }
 

@@ -23,11 +23,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core
     {
         /// <summary>头 ai[0] 宏观阶段 <see cref="SkeletronPhase"/></summary>
         public const int HeadPhase = 0;
-        /// <summary>头 ai[1] 通用广播参数A（按状态语义复用）</summary>
+        /// <summary>头 ai[1] 通用广播参数A（按状态语义复用；合掌拍捉=被抓玩家 whoAmI+1）</summary>
         public const int HeadParamA = 1;
         /// <summary>头 ai[2] 状态机槽 <see cref="SkeletronStateIndex"/></summary>
         public const int HeadStateSlot = 2;
-        /// <summary>头 ai[3] 通用广播参数B（旋杀锁定角等）</summary>
+        /// <summary>头 ai[3] 通用广播参数B（旋杀锁定角、合掌拍捉子相位等）</summary>
         public const int HeadParamB = 3;
 
         /// <summary>头 Override ai[0] 编队旋转时钟，各端确定性自增</summary>
@@ -107,7 +107,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core
                     or Projectiles.SkeletronBoneShard
                     or Projectiles.SkeletronBoneSpike
                     or Projectiles.SkeletronCurseWisp
-                    or Projectiles.SkeletronGhostArmProj) {
+                    or Projectiles.SkeletronGhostArmProj
+                    or Projectiles.SkeletronOrbitSkull) {
                     proj.Kill();
                 }
             }

@@ -35,7 +35,11 @@ namespace CalamityOverhaul.Content.Structures
         private static void OnPlanetoidChest(SetChest_Delegate orig, Chest chest, int type, bool hasPlacedLogAndSchematic) {
             orig.Invoke(chest, type, hasPlacedLogAndSchematic);
             if (hasPlacedLogAndSchematic) {
-                AddChestContent(chest, SHPCOverride.ID, 1, "Shoving SHPC into the chest.");
+                //SHPC 已迁往出生点上空的坠舱空岛；仅当玩家把坠舱密度设为灭绝时
+                //在此兜底，避免武器完全不可得
+                if (!SHPCCradleGen.Enabled) {
+                    AddChestContent(chest, SHPCOverride.ID, 1, "Shoving SHPC into the chest (cradle fallback).");
+                }
                 AddChestContent(chest, ModContent.ItemType<MoldProcessingTable>(), 1, "Shoving MoldProcessingTable into the chest.");
                 AddChestContent(chest, ModContent.ItemType<UEPipeline>(), WorldGen.genRand.Next(288, 326), "Shoving Energy Input Pipeline into the chest.");
             }

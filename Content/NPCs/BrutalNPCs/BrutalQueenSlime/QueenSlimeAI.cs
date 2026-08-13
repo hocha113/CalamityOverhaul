@@ -120,8 +120,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
             if (!stateContext.Phase2Unfolded && stateContext.IsPhase2
                 && stateMachine?.CurrentState is QueenAerialBalletState or QueenWingGaleWaltzState
                     or QueenRefractionCageState or QueenCrystalDiveStompState
-                    or QueenChandelierFallState or QueenCrystalCathedralState) {
+                    or QueenChandelierFallState or QueenCrystalCathedralState
+                    or QueenCrystalPrisonWaltzState) {
                 stateContext.Phase2Unfolded = true;
+            }
+
+            //投技冷却走表(服务端，二阶段起算)
+            if (!VaultUtils.isClient && stateContext.Phase2Unfolded && stateContext.GrabCooldown > 0) {
+                stateContext.GrabCooldown--;
             }
 
             //二阶段翼展常驻(死亡/撤离演出自己写翼展，状态机晚于此处执行故不冲突)
@@ -168,8 +174,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime
             if (stateContext.UltFired || !stateContext.Phase2Unfolded || npc.life * 4 > npc.lifeMax) {
                 return;
             }
+            //囚舞中不夺舞：投技演出完再放大招
             if (stateMachine.CurrentState is QueenCrystalCathedralState or QueenPhaseTransitionState
-                or QueenDeathState or QueenDespawnState or QueenIntroState) {
+                or QueenDeathState or QueenDespawnState or QueenIntroState
+                or QueenCrystalPrisonWaltzState) {
                 return;
             }
             stateContext.UltFired = true;

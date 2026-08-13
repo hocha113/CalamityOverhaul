@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering;
+using CalamityOverhaul.Content.TimeFreezes;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
@@ -51,6 +52,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
             context.AttackBag.RemoveAt(0);
             context.LastAttack = pick;
 
+            //投技冷却中或目标不在推进前方 → 退化为普通舌鞭
+            if (pick == WofStateIndex.TongueGrab
+                && (context.GrabCooldown > 0 || !TargetInFront(context)
+                    || TimeFreezeSystem.IsAnyGlobalFreezeActive)) {
+                pick = WofStateIndex.TongueLash;
+            }
+
             return pick switch {
                 WofStateIndex.SurgeDash => new WofSurgeDashState(),
                 WofStateIndex.MawVortex => new WofMawVortexState(),
@@ -59,6 +67,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
                 WofStateIndex.LeechWave => new WofLeechWaveState(),
                 WofStateIndex.FleshSpike => new WofFleshSpikeState(),
                 WofStateIndex.TongueLash => new WofTongueLashState(),
+                WofStateIndex.TongueGrab => new WofTongueGrabState(),
                 _ => new WofSurgeDashState(),
             };
         }
@@ -75,6 +84,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States
                 pool.Add(WofStateIndex.MawVortex);
                 pool.Add(WofStateIndex.HungryNet);
                 pool.Add(WofStateIndex.FleshSpike);
+                //舌卷回吞投技：扣押到二阶段(冷却由PickNextAttack兜底)
+                pool.Add(WofStateIndex.TongueGrab);
             }
             //阶段3双倍突进权重：死线更凶
             if (context.Phase >= 3) {

@@ -81,6 +81,11 @@ CWRServerConfig: {
 		Tooltip: Spawns wooden elven or forest guardian outposts deep within the forest.
 	}
 
+	GenSHPCCradle: {
+		Label: Generate SHPC Cradle Island
+		Tooltip: Generates a crashed vessel sky island above spawn with the SHPC sealed inside. When disabled, the weapon can only be found in Calamity's laboratory.
+	}
+
 	ConfigChangePrefix: User
 	ConfigChangeSuffix: modified the server configuration
 

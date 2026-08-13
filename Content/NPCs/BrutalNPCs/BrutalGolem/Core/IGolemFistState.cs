@@ -6,6 +6,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
     /// <summary>拳状态索引，写入 npc.ai[2] 网络同步</summary>
     internal enum GolemFistStateIndex : int
     {
+        /// <summary>观察者哨兵：拳缺失/失效（不入注册表，不会被写入同步槽）</summary>
+        Invalid = -1,
         /// <summary>锚点跟随</summary>
         Anchor = 0,
         /// <summary>出拳蓄力</summary>
@@ -18,6 +20,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
         Guard = 4,
         /// <summary>坠地崩解（死亡演出）</summary>
         DeathFall = 5,
+        /// <summary>投技抓取（钉墙→连段→研磨收尾）</summary>
+        Grab = 6,
     }
 
     /// <summary>拳状态上下文，每拳一份</summary>

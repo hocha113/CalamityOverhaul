@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
 
             //每60帧查未解锁
-            bool checkUnlock = Main.GameUpdateCount % 60 == 0 && QuestLog.Instance.visible;
+            bool checkUnlock = Main.GameUpdateCount % 60 == 0 && QuestLog.Instance.IsOpen;
 
             foreach (var quest in QuestNode.AllQuests) {
                 if (checkUnlock && !quest.IsUnlocked) {

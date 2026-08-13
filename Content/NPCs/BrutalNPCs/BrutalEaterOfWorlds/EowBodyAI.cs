@@ -158,6 +158,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds
                 npc.damage = (int)(npc.damage * (1f + 0.8f * enrageRamp));
             }
 
+            //投技期全链无接触伤：吞是唯一威胁，也防抓取确认前的延迟窗口里体节撞伤被吞者
+            if ((int)head.ai[2] == (int)EowStateIndex.Devour) {
+                npc.damage = 0;
+            }
+
             //血池镜像：让原版世吞进度条(Σ各节life)与统一血池一致
             MirrorLifeForVanillaBar(head);
 

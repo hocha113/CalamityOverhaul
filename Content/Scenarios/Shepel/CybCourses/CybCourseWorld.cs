@@ -7,16 +7,35 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameInput;
+using Terraria.Localization;
+using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 {
-    internal class CybCourseWorld : Subworld
+    internal class CybCourseWorld : Subworld, ILocalizedModType
     {
+        public string LocalizationCategory => "ADV.Shepel";
+
+        //加载屏文案（懒初始化：Subworld 无 SetStaticDefaults 钩）
+        private LocalizedText _bootTag;
+        private LocalizedText _bootTitle;
+        private LocalizedText _bootSubtitle;
+        private LocalizedText _bootStatus;
+        private LocalizedText _bootBarLabel;
+
+        private void EnsureBootTexts() {
+            _bootTag ??= this.GetLocalization("BootTag", () => "神经直连 · 超梦节点");
+            _bootTitle ??= this.GetLocalization("BootTitle", () => "接入超梦");
+            _bootSubtitle ??= this.GetLocalization("BootSubtitle", () => "SHPC 沉浸训练协议");
+            _bootStatus ??= this.GetLocalization("BootStatus", () => "正在编译训练空间");
+            _bootBarLabel ??= this.GetLocalization("BootBarLabel", () => "同步率");
+        }
+
         //宽度400够用
         public override int Width => 400;
-        //高度须让地狱层(maxY-200)落走廊下
-        //太矮则走廊判地狱,误触发探索/赠礼/巫毒
+        //高度须让地狱层(maxY-200)落甲板下
+        //太矮则甲板判地狱,误触发探索/赠礼/巫毒
         //FloorY170+280=450,地狱层250,余量≈72
         public override int Height => CybCourseGen.FloorY + 280;
 
@@ -62,9 +81,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             HackTime.InfiniteHack = true;
             Main.dayTime = false;
             Main.time = 0;
-            //worldSurface/rockLayer放走廊下,避地下/地狱/天空
-            //FloorY+30=200地表线,走廊148-178在其上
-            //maxY-200=250地狱层,同样在走廊下
+            //worldSurface/rockLayer放甲板下,避地下/地狱/天空
+            //FloorY+30=200地表线,甲板146-160在其上
+            //maxY-200=250地狱层,同样在甲板下
             Main.worldSurface = CybCourseGen.FloorY + 30;
             Main.rockLayer = CybCourseGen.FloorY + 55;
         }
@@ -153,7 +172,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         }
 
         private static void DrawLoadingBackground(float time) {
-            var shader = EffectLoader.CybCourseLoading?.Value;
+            //超梦专用 Boot 版；金色 CybCourseLoading 保留给旧网加载屏
+            var shader = EffectLoader.CybCourseBoot?.Value;
             if (shader == null || VaultAsset.placeholder2 == null || VaultAsset.placeholder2.IsDisposed) {
                 return;
             }
@@ -175,43 +195,42 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         }
 
         public override void DrawMenu(GameTime gameTime) {
+            EnsureBootTexts();
             int sw = Main.screenWidth;
             int sh = Main.screenHeight;
             float progress = MathHelper.SmoothStep(0f, 1f, MathHelper.Clamp(_loadTime / _estDuration, 0f, 0.95f));
 
-            Color gold = new Color(245, 197, 24);
-            Color warm = new Color(255, 218, 130);
-            Color dim = new Color(170, 185, 200);
+            //SHPC 色板：青为体，琥珀只作强调
+            Color cyan = new Color(120, 230, 250);
+            Color amber = new Color(255, 170, 60);
+            Color dim = new Color(150, 185, 200);
 
             DynamicSpriteFont titleFont = FontAssets.DeathText.Value;
             DynamicSpriteFont bodyFont = FontAssets.MouseText.Value;
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            DrawTopIdentifier(sw, sh, bodyFont, dim);
-            DrawTitleBlock(sw, sh, titleFont, bodyFont, gold, dim, px);
-            DrawDialPercentage(sw, sh, titleFont, bodyFont, gold, warm, progress);
-            DrawStatus(sw, sh, bodyFont, dim);
-            DrawBarLabel(sw, sh, bodyFont, dim);
+            DrawTopIdentifier(sw, sh, bodyFont, dim, _bootTag.Value);
+            DrawTitleBlock(sw, sh, titleFont, bodyFont, cyan, dim, px, _bootTitle.Value, _bootSubtitle.Value);
+            DrawDialPercentage(sw, sh, titleFont, bodyFont, cyan, amber, progress);
+            DrawStatus(sw, sh, bodyFont, dim, _bootStatus.Value);
+            DrawBarLabel(sw, sh, bodyFont, dim, _bootBarLabel.Value);
         }
 
-        private static void DrawTopIdentifier(int sw, int sh, DynamicSpriteFont font, Color dim) {
-            string tag = "// CYBERSPACE  NODE-4082E";
+        private static void DrawTopIdentifier(int sw, int sh, DynamicSpriteFont font, Color dim, string tag) {
             Main.spriteBatch.DrawString(font, tag,
                 new Vector2(sw * 0.034f, sh * 0.090f), dim * 0.50f);
         }
 
         private static void DrawTitleBlock(int sw, int sh, DynamicSpriteFont titleFont,
-            DynamicSpriteFont bodyFont, Color gold, Color dim, Texture2D px) {
-            string title = "ENGRAM  LINK";
+            DynamicSpriteFont bodyFont, Color cyan, Color dim, Texture2D px, string title, string sub) {
             Vector2 titleSz = titleFont.MeasureString(title);
             Vector2 titlePos = new Vector2(sw * 0.5f - titleSz.X * 0.5f, sh * 0.180f);
 
             Main.spriteBatch.DrawString(titleFont, title,
                 titlePos + new Vector2(2f, 3f), Color.Black * 0.55f);
             Main.spriteBatch.DrawString(titleFont, title,
-                titlePos, gold);
+                titlePos, cyan);
 
-            string sub = "SUPERDREAM   PROTOCOL";
             Vector2 subSz = bodyFont.MeasureString(sub);
             Vector2 subPos = new Vector2(sw * 0.5f - subSz.X * 0.5f,
                                          titlePos.Y + titleSz.Y + 8f);
@@ -223,25 +242,25 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             int ulX = (int)(sw * 0.5f - ulW / 2f);
             int gap = 6;
             Main.spriteBatch.Draw(px, new Rectangle(ulX, ulY, ulW / 2 - gap, 1),
-                new Rectangle(0, 0, 1, 1), gold * 0.55f);
+                new Rectangle(0, 0, 1, 1), cyan * 0.55f);
             Main.spriteBatch.Draw(px, new Rectangle(ulX + ulW / 2 + gap, ulY, ulW / 2 - gap, 1),
-                new Rectangle(0, 0, 1, 1), gold * 0.55f);
+                new Rectangle(0, 0, 1, 1), cyan * 0.55f);
 
             int cx = ulX + ulW / 2;
             Main.spriteBatch.Draw(px, new Rectangle(cx - 1, ulY - 2, 2, 1),
-                new Rectangle(0, 0, 1, 1), gold * 0.95f);
+                new Rectangle(0, 0, 1, 1), cyan * 0.95f);
             Main.spriteBatch.Draw(px, new Rectangle(cx - 2, ulY - 1, 4, 1),
-                new Rectangle(0, 0, 1, 1), gold);
+                new Rectangle(0, 0, 1, 1), cyan);
             Main.spriteBatch.Draw(px, new Rectangle(cx - 3, ulY, 6, 1),
-                new Rectangle(0, 0, 1, 1), gold);
+                new Rectangle(0, 0, 1, 1), cyan);
             Main.spriteBatch.Draw(px, new Rectangle(cx - 2, ulY + 1, 4, 1),
-                new Rectangle(0, 0, 1, 1), gold);
+                new Rectangle(0, 0, 1, 1), cyan);
             Main.spriteBatch.Draw(px, new Rectangle(cx - 1, ulY + 2, 2, 1),
-                new Rectangle(0, 0, 1, 1), gold * 0.95f);
+                new Rectangle(0, 0, 1, 1), cyan * 0.95f);
         }
 
         private static void DrawDialPercentage(int sw, int sh, DynamicSpriteFont titleFont,
-            DynamicSpriteFont bodyFont, Color gold, Color warm, float progress) {
+            DynamicSpriteFont bodyFont, Color cyan, Color amber, float progress) {
             int pct = (int)(progress * 100);
             string num = pct.ToString("D2");
             Vector2 numSz = titleFont.MeasureString(num);
@@ -258,7 +277,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 numPos + new Vector2(2f, 3f), Color.Black * 0.55f,
                 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
             Main.spriteBatch.DrawString(titleFont, num,
-                numPos, gold,
+                numPos, cyan,
                 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
 
             string sign = "%";
@@ -267,13 +286,13 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 numPos.X + numActSz.X + signOffset,
                 numPos.Y + numActSz.Y - signSz.Y - 4f);
             Main.spriteBatch.DrawString(bodyFont, sign,
-                signPos, warm * 0.92f);
+                signPos, amber * 0.92f);
         }
 
-        private static void DrawStatus(int sw, int sh, DynamicSpriteFont font, Color dim) {
-            string status = (Main.statusText ?? string.Empty).ToUpperInvariant();
+        private static void DrawStatus(int sw, int sh, DynamicSpriteFont font, Color dim, string fallback) {
+            string status = Main.statusText ?? string.Empty;
             if (string.IsNullOrEmpty(status)) {
-                status = "ESTABLISHING NEURAL HANDSHAKE";
+                status = fallback;
             }
             int dotN = (int)(_loadTime * 1.7f) % 4;
             string full = status + new string('.', dotN);
@@ -286,8 +305,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 pos, dim * 0.85f);
         }
 
-        private static void DrawBarLabel(int sw, int sh, DynamicSpriteFont font, Color dim) {
-            string label = "NEURAL  BRIDGE";
+        private static void DrawBarLabel(int sw, int sh, DynamicSpriteFont font, Color dim, string label) {
             Main.spriteBatch.DrawString(font, label,
                 new Vector2(sw * 0.034f, sh * 0.892f), dim * 0.55f);
         }

@@ -72,16 +72,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 flashStrength = MathHelper.Max(flashStrength, 0.55f);
             }
 
-            //滤镜垫底色（低画质回退时的主要氛围来源）：血暮↔冷灰青随异化过渡
+            //滤镜垫底色（低画质回退时的主要氛围来源）：血暮↔冷灰青随异化过渡；
+            //鬼梦期让位梦空滤镜
 
             float rain = kdp?.RainBlend ?? 0f;
+            float dreamYield = 1f - (kdp?.DreamBlend ?? 0f);
             Vector3 filterCol = Vector3.Lerp(
                 new Vector3(0.10f, 0.02f, 0.03f),
                 new Vector3(0.04f, 0.05f, 0.07f), rain);
             Filters.Scene[Name]?.GetShader()
                 ?.UseColor(filterCol.X, filterCol.Y, filterCol.Z)
                 .UseOpacity((0.12f + 0.06f * rain) * presence
-                    * (kdp?.PresenceSmooth ?? 0f));
+                    * (kdp?.PresenceSmooth ?? 0f) * dreamYield);
         }
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth) {
@@ -145,7 +147,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             float waterWobble = 0.0025f + 0.011f * kdp.FoamBoost;
 
             shader.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.016f);
-            shader.Parameters["uSkyAlpha"]?.SetValue(presence);
+            //鬼梦期血暮天空让位，交叉渐变在结算闪掩护下完成
+            shader.Parameters["uSkyAlpha"]?.SetValue(presence * (1f - kdp.DreamBlend));
             //遮罩空间尺寸取视口真实像素，与 KikasaGrade 的 uScreenSize 同值
 
             shader.Parameters["uScreenSize"]?.SetValue(realScreenSize);

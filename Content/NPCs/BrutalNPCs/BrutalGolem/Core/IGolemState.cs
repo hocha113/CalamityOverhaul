@@ -33,6 +33,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
         Despawn = 11,
         /// <summary>石像崩解（死亡演出）</summary>
         Death = 12,
+        /// <summary>壁咚研磨投技（二阶段，超级直拳命中触发）</summary>
+        WallSlam = 13,
     }
 
     /// <summary>躯干状态接口</summary>

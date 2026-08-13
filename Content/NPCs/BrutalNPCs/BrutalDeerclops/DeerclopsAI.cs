@@ -147,8 +147,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops
             int pulse = ModContent.ProjectileType<Projectiles.DeerFrostPulseProj>();
             int rubble = ModContent.ProjectileType<Projectiles.DeerRubbleProj>();
             int hand = ModContent.ProjectileType<Projectiles.DeerShadowHandProj>();
+            int seize = ModContent.ProjectileType<Projectiles.DeerSeizeHandProj>();
             foreach (Projectile proj in Main.ActiveProjectiles) {
-                if (proj.type == spike || proj.type == pulse || proj.type == rubble || proj.type == hand) {
+                if (proj.type == spike || proj.type == pulse || proj.type == rubble || proj.type == hand || proj.type == seize) {
                     proj.Kill();
                 }
             }

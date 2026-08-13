@@ -138,6 +138,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.States
             context.GhostFade = 0.5f;
             BrainFormationChannel.Clear();
 
+            //摄心镜狱布防延迟：裸脑亮相后留学习期再开放投技
+            context.MindSeizeCooldown = Math.Max(context.MindSeizeCooldown, 60 * 12);
+
             BrainMotion.Roar(npc.Center, 1.25f, -0.15f, true);
             BrainHeartbeat.Thump(1.5f, 0.94f);
             BrainMotion.Shake(npc.Center, 12f, 26);

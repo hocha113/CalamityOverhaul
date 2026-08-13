@@ -32,6 +32,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Core
         PhaseThreeTransition = 14,
         Despawn = 15,
         Death = 16,
+        /// <summary>投技·蓄涡抽吸：大漩涡卷客前戏，可逃</summary>
+        VortexSnare = 17,
+        /// <summary>投技·涡底猎杀：抓取连段演出</summary>
+        VortexGrab = 18,
     }
 
     /// <summary>状态接口</summary>

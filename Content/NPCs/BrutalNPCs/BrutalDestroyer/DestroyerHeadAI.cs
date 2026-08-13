@@ -130,6 +130,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (Main.GameUpdateCount % 60 == 0) {
                 stateContext.RefreshBodySegments();
             }
+
+            //投技冷却递减(触发判定只在服务端读)
+            if (stateContext.GrabCooldownTimer > 0) {
+                stateContext.GrabCooldownTimer--;
+            }
         }
 
         /// <summary>life≤阈值切死亡演出，服务端驱动</summary>

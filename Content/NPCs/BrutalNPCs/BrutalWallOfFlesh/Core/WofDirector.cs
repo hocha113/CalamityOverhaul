@@ -85,6 +85,41 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Core
         public const int TongueDamage = 18;
         #endregion
 
+        #region 舌卷回吞(投技)
+        /// <summary>抓取预告帧(比普通舌鞭更长更重)</summary>
+        public const int GrabTelegraph = 52;
+        /// <summary>甩舌窗口帧(伸出+落空回收)</summary>
+        public const int GrabLashFrames = 44;
+        /// <summary>回卷帧(前8帧绷紧顿帧)</summary>
+        public const int GrabReelFrames = 62;
+        /// <summary>咀嚼帧</summary>
+        public const int GrabChewFrames = 84;
+        /// <summary>吐出后舌头回吞帧</summary>
+        public const int GrabSpitTail = 14;
+        /// <summary>收尾恢复帧</summary>
+        public const int GrabRecoverFrames = 40;
+        /// <summary>抓取舌伸出速度 px/f</summary>
+        public const float GrabExtendSpeed = 40f;
+        /// <summary>抓取舌最大射程</summary>
+        public const float GrabMaxReach = 1080f;
+        /// <summary>回卷速度上限 px/f</summary>
+        public const float GrabReelSpeed = 24f;
+        /// <summary>咀嚼保持点距墙心前伸距离</summary>
+        public const float GrabMouthInset = 110f;
+        /// <summary>抓取舌接触伤害(基准)</summary>
+        public const int GrabSnagDamage = 12;
+        /// <summary>沿途撕咬伤害(基准，单口)</summary>
+        public const int GrabBiteDamage = 9;
+        /// <summary>咀嚼伤害(基准，前两口)</summary>
+        public const int GrabChewDamage = 20;
+        /// <summary>终结咬伤害(基准，最后一口)</summary>
+        public const int GrabChewFinalDamage = 26;
+        /// <summary>投技冷却帧(两条触发路径共享)</summary>
+        public const int GrabCooldownFrames = 1080;
+        /// <summary>绕后惩罚升级判定距离(被舌拖玩家距嘴)</summary>
+        public const float GrabPunishRange = 260f;
+        #endregion
+
         #region 大迁徙
         public const int ExodusWindup = 96;
         public const int ExodusDuration = 560;

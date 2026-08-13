@@ -34,6 +34,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core
         Despawn = 12,
         /// <summary>死亡演出</summary>
         Death = 13,
+        /// <summary>水晶囚舞(投技)：御晶吊灯压中→封晶→华尔兹连踢→碎晶掷飞</summary>
+        CrystalPrisonWaltz = 14,
     }
 
     /// <summary>状态接口</summary>

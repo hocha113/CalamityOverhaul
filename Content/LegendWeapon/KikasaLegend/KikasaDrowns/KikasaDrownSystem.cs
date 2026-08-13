@@ -27,6 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             KikasaDrown.UpdateAuthority();
             if (!Main.dedServ) {
                 KikasaDrownFX.Update();
+                KikasaDrown.UpdateHoverOmen();
             }
         }
 

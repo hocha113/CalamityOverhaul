@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             glowIntensity = 0f;
         }
 
-        public void Update(Vector2 position, bool isOpen) {
+        public void Update(Vector2 position) {
             int iconSize = 48;
             IconRect = new Rectangle((int)position.X, (int)position.Y, iconSize, iconSize);
 
@@ -38,28 +38,18 @@ namespace CalamityOverhaul.Content.QuestLogs
                 pulseTimer -= MathHelper.TwoPi;
             }
 
-            float targetGlow = (isOpen && IsHovered) ? 1f : 0f;
-            glowIntensity = MathHelper.Lerp(glowIntensity, targetGlow, 0.15f);
+            glowIntensity = MathHelper.Lerp(glowIntensity, IsHovered ? 1f : 0f, 0.15f);
         }
 
-        public void Draw(SpriteBatch spriteBatch, bool isOpen) {
+        public void Draw(SpriteBatch spriteBatch) {
             if (QuestLog.QuestLogStart == null || QuestLog.QuestLogStart.Value == null) {
                 return;
             }
 
             Texture2D iconTexture = QuestLog.QuestLogStart.Value;
 
-            //帧0关/1开/2开+悬停
-            int frameIndex;
-            if (!isOpen) {
-                frameIndex = 0;
-            }
-            else if (IsHovered) {
-                frameIndex = 2;
-            }
-            else {
-                frameIndex = 1;
-            }
+            //书全屏摊开时背包不可见，图标只需合本与悬停两态（帧1留给旧的面板内联布局）
+            int frameIndex = IsHovered ? 2 : 0;
 
             int frameHeight = iconTexture.Height / 3;
             Rectangle sourceRect = new Rectangle(0, frameHeight * frameIndex, iconTexture.Width, frameHeight);
@@ -210,10 +200,6 @@ namespace CalamityOverhaul.Content.QuestLogs
                     new Vector2(texture.Width / 2f, sourceRect.Height / 2f),
                     layerScale, SpriteEffects.None, 0f);
             }
-        }
-
-        public void PlayClickSound(bool isOpening) {
-            SoundEngine.PlaySound(isOpening ? CWRSound.ButtonZero with { Pitch = 0.1f, Volume = 0.6f } : CWRSound.ButtonZero with { Pitch = -0.1f, Volume = 0.6f });
         }
     }
 }

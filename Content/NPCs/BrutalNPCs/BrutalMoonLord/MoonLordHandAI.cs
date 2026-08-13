@@ -67,8 +67,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             bool hold = coreAI?.Context?.HoldAllParts ?? false;
             bool broken = npc.ai[MLordAiSlots.PartBroken] == MLordAiSlots.BrokenMark;
 
-            //速度门控接触伤害（各端同式）
-            npc.damage = !broken && npc.velocity.Length() > 24f ? MLordDirector.PalmContactDamage : 0;
+            //速度门控接触伤害（各端同式）；抓捕合掌与掌中处刑期清零——威胁是抓取判定，不叠撞击
+            bool graspWindow = coreState == MLordStateIndex.PalmExecution
+                || (coreState == MLordStateIndex.MoonBite && MLordMoonBiteState.InClapWindow(stateTimer));
+            npc.damage = !broken && !graspWindow && npc.velocity.Length() > 24f ? MLordDirector.PalmContactDamage : 0;
 
             if (broken) {
                 UpdateBroken(core);
@@ -103,6 +105,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                         break;
                     }
                 }
+            }
+            //抓捕合掌拍：全体存活掌被征用（判据与服务端一致：窗口内且存活手≥2且目标有效）
+            else if (coreState == MLordStateIndex.MoonBite && coreAI?.Context != null
+                && MLordMoonBiteState.InClapWindow(stateTimer)
+                && coreAI.Context.Parts.AliveHandCount >= 2
+                && targetPlayer.Alives()) {
+                claimedByState = true;
+                UpdateClapPose(core, stateTimer);
+            }
+            //掌中处刑：抓握手锁死攥握姿态，其余掌回巢旁观
+            else if (coreState == MLordStateIndex.PalmExecution
+                && (int)MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvGrabHand) - 1 == npc.whoAmI) {
+                claimedByState = true;
+                UpdateGripPose(core);
             }
 
             if (!claimedByState) {
@@ -160,6 +176,63 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             }
         }
 
+        /// <summary>抓捕合掌姿态：张掌追踪→锁定导线定格→合拢冲线（速度由状态服务端直控）</summary>
+        private void UpdateClapPose(NPC core, int stateTimer) {
+            if (MLordMoonBiteState.InClapTelegraph(stateTimer)) {
+                //追踪期瞄活目标，锁定期瞄锚点（导线沿瞳孔方向绘制）
+                Vector2 aimPoint = targetPlayer.Center;
+                if (MLordMoonBiteState.InClapLock(stateTimer)) {
+                    aimPoint = new Vector2(
+                        MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvAnchorX, aimPoint.X),
+                        MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvAnchorY, aimPoint.Y));
+                }
+                gripFrame = MathHelper.Lerp(gripFrame, 0.2f, 0.25f);
+                pose.PupilAngle = pose.PupilAngle.AngleLerp((aimPoint - npc.Center).ToRotation(), 0.4f);
+                pose.PupilOut = MathHelper.Lerp(pose.PupilOut, 1f, 0.2f);
+                pose.Glow = MathHelper.Lerp(pose.Glow, 1f, 0.16f);
+                //导线亮度：追踪期渐亮，锁定期满亮定格
+                int sub = stateTimer - MLordMoonBiteState.ClapStart;
+                float t = sub / (float)MLordMoonBiteState.ClapTrackLen;
+                slamTelegraph = MLordMoonBiteState.InClapLock(stateTimer)
+                    ? 1f : MathHelper.Clamp((t - 0.3f) / 0.6f, 0f, 1f);
+            }
+            else if (MLordMoonBiteState.InClapLunge(stateTimer)) {
+                //合拢冲线：全开掌型扑抓，星尘剥落
+                gripFrame = MathHelper.Lerp(gripFrame, 0f, 0.5f);
+                if (npc.velocity.LengthSquared() > 16f) {
+                    pose.PupilAngle = npc.velocity.ToRotation();
+                }
+                pose.PupilOut = 1f;
+                pose.Glow = 1f;
+                slamTelegraph = 0f;
+                if (!VaultUtils.isServer && npc.velocity.Length() > 20f) {
+                    PRTLoader.NewParticle<PRT_HeavenfallStar>(
+                        npc.Center + Main.rand.NextVector2Circular(40f, 40f),
+                        -npc.velocity * Main.rand.NextFloat(0.08f, 0.2f),
+                        MLordDirector.Phantasmal, Main.rand.NextFloat(0.5f, 1f))?.Configure(false, Main.rand.Next(12, 20));
+                }
+            }
+            else {
+                //硬刹收势
+                gripFrame = MathHelper.Lerp(gripFrame, 1f, 0.12f);
+                pose.PupilOut = MathHelper.Lerp(pose.PupilOut, 0.6f, 0.1f);
+                pose.Glow = MathHelper.Lerp(pose.Glow, 0.7f, 0.1f);
+                slamTelegraph = 0f;
+            }
+        }
+
+        /// <summary>掌中处刑攥握姿态：紧握拳型，瞳孔盯死被抓者</summary>
+        private void UpdateGripPose(NPC core) {
+            gripFrame = MathHelper.Lerp(gripFrame, 3f, 0.4f);
+            slamTelegraph = 0f;
+            int victimIndex = (int)MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvGrabTarget) - 1;
+            Vector2 aim = victimIndex >= 0 && victimIndex < Main.maxPlayers && Main.player[victimIndex].active
+                ? Main.player[victimIndex].Center : targetPlayer.Center;
+            pose.PupilAngle = pose.PupilAngle.AngleLerp((aim - npc.Center).ToRotation(), 0.35f);
+            pose.PupilOut = MathHelper.Lerp(pose.PupilOut, 0.9f, 0.15f);
+            pose.Glow = MathHelper.Lerp(pose.Glow, 1f, 0.12f);
+        }
+
         /// <summary>硬直期（掌击收势）眼开可打；其余按状态表</summary>
         private bool ComputeEyeOpen(MLordStateIndex coreState, int stateTimer) {
             switch (coreState) {
@@ -167,6 +240,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                 case MLordStateIndex.CrescentClose:
                 case MLordStateIndex.GravityCollapse:
                 case MLordStateIndex.MoonBite:
+                //掌中处刑全程可打：队友击破抓握之手即提前救人
+                case MLordStateIndex.PalmExecution:
                     return true;
                 case MLordStateIndex.TidalPalms: {
                     int sub = stateTimer % MLordTidalPalmsState.CycleLen;
@@ -185,7 +260,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
             int slot = row * 2 + ((int)npc.ai[MLordAiSlots.HandSide] == 0 ? 0 : 1);
             float clock = MLordFacts.ReadCoreOverrideAi(core, MLordAiSlots.OvFormationClock);
 
-            //常态巢位（上对高展、下对低垂外张，X 形构图）+ 呼吸浮动（按槽错相）
+            //常态巢位（上对高展、下对外张，X 形构图）+ 呼吸浮动（按槽错相）
             Vector2 homeOffset = row == 0 ? MLordDirector.HandHomeOffset : MLordDirector.LowerHandHomeOffset;
             Vector2 home = core.Center + new Vector2(homeOffset.X * dir, homeOffset.Y);
             Vector2 breath = new((float)Math.Sin(clock * 0.021f + slot * 1.7f) * 26f,
@@ -201,12 +276,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                     //上对高位支点持弧，下对低位外张支点（放出封底弧后原位持握）
                     return row == 0
                         ? core.Center + new Vector2(430f * dir, -300f) + breath * 0.4f
-                        : core.Center + new Vector2(380f * dir, 240f) + breath * 0.4f;
+                        : core.Center + new Vector2(380f * dir, 142f) + breath * 0.4f;
                 case MLordStateIndex.GravityCollapse:
-                    //贴核心投掷位：上对肩前，下对肋侧
+                    //贴核心投掷位：上对肩前，下对腋下
                     return row == 0
                         ? core.Center + new Vector2(260f * dir, -30f) + breath * 0.5f
-                        : core.Center + new Vector2(320f * dir, 150f) + breath * 0.5f;
+                        : core.Center + new Vector2(320f * dir, 52f) + breath * 0.5f;
                 case MLordStateIndex.MoonBite: {
                     //四臂合围：四掌踞于绕玩家缓旋的方阵四角，半径随呼吸收放——
                     //缺口随整阵旋转移动，玩家沿旋转缺口游走脱压
@@ -218,7 +293,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord
                     //扫描期四臂持握转向的仪式阵：上对高举、下对低捧，环拱头部
                     return row == 0
                         ? core.Center + new Vector2(470f * dir, -170f) + breath
-                        : core.Center + new Vector2(430f * dir, 210f) + breath;
+                        : core.Center + new Vector2(430f * dir, 112f) + breath;
                 default:
                     return home + breath;
             }

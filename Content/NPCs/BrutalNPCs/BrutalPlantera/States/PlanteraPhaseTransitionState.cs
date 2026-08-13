@@ -204,6 +204,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.States
                 foreach (var hook in context.Hooks) {
                     PlanteraHookAI.Release(hook);
                 }
+                //蜕壳宽限：二阶段开场不许立刻上投技
+                context.VineFeastCooldown = Math.Max(context.VineFeastCooldown,
+                    PlanteraDirector.FeastPhaseEntryDelay);
             }
         }
     }

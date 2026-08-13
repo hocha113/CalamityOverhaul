@@ -40,7 +40,6 @@ CybTutorialLead: {
 		Все интерфейсы успешно проанализированы.
 		Нейросетевой канал стабилен. SHPC готова к работе.
 		'''
-	AwaitingEquip: ОЖИДАНИЕ ЭКИПИРОВКИ...
 	Calibrating: КАЛИБРОВКА...
 	NextBtn: ДАЛЕЕ  >
 	HintStuck: ПОДСКАЗКА: Попробуйте нажать на подсвеченную целевую область
@@ -53,53 +52,9 @@ CybCourseHackIntroDialogue: {
 }
 
 HackTimeTutorialLead: {
-	HT_Step0_Title: Активация режима взлома
-	HT_Step1_Title: Захват цели
-	HT_Step2_Title: Панель протоколов взлома
-	HT_Step3_Title: Загрузка протокола
-	HT_Step4_Title: ПОСЛЕДОВАТЕЛЬНОСТЬ ВЗЛОМА ЗАВЕРШЕНА
-	HT_Step0_Body:
-		'''
-		Нажмите клавишу {0}, чтобы активировать Время взлома.
-		Время остановится, а на ваше зрение наложится кибер-фильтр.
-		'''
-	HT_Step1_Body:
-		'''
-		Наведите курсор на подсвеченный танк Санты,
-		и щелкните левой кнопкой мыши, чтобы зафиксировать его как цель.
-		'''
-	HT_Step2_Body:
-		'''
-		На правой панели показаны доступные протоколы для этой цели.
-		Они потребляют разный объем RAM и вызывают различные эффекты.
-		'''
-	HT_Step3_Body:
-		'''
-		Нажмите на протокол, чтобы добавить его в очередь загрузки слева.
-		Очередь будет последовательно выполнять операции взлома.
-		'''
-	HT_Step4_Body:
-		'''
-		Нейролинк отключен.
-		Обучение протоколу взлома завершено, системы в норме.
-		'''
 	HT_Waiting: ОЖИДАНИЕ ВВОДА...
 	HT_Calibrating: ОТКЛЮЧЕНИЕ...
 	HT_NextBtn: ДАЛЕЕ  >
-	HT_Step5_Title: Сканирование объектов
-	HT_Step6_Title: Фиксация цели
-	HT_Step7_Title: СКАНИРОВАНИЕ ЗАВЕРШЕНО
-	HT_Step5_Body:
-		'''
-		Впереди находится термальный генератор MK2.
-		Снова нажмите {0}, чтобы возобновить Время взлома.
-		'''
-	HT_Step6_Body:
-		'''
-		Наведите курсор на генератор,
-		и щелкните левой кнопкой мыши, чтобы просканировать его.
-		'''
-	HT_Step7_Body: Интерфейс сканирования объектов проанализирован. Справа показаны доступные для него протоколы.
 	HT_HintStuck: ПОДСКАЗКА: Нажмите ДАЛЕЕ для принудительного пропуска
 	HT_KeyUnbound: N (Временный переключатель)
 	HT_KeyHintUnbound: Подсказка: Если клавиша не назначена, в этом обучении можно использовать [N]; рекомендуется назначить её в Настройки > Управление.
@@ -203,10 +158,10 @@ WheelTutorialLead: {
 		Dead center of the wheel is the Hack Time shortcut —
 		clicking it equals pressing {1}. That wraps up the training.
 		''' */
-	// RW_Calibrating: SYNCHRONIZED...
-	// RW_NextBtn: NEXT  >
-	// RW_HintStuck: HINT: Click NEXT to force skip
-	// RW_KeyHintUnbound: Note: the radial wheel key is unbound, so the wheel cannot open. Bind it under Settings > Controls, or click NEXT to skip.
+	// RW_Calibrating: Synchronized
+	// RW_NextBtn: Skip >
+	// RW_HintStuck: Hint: click Skip to force past this step
+	// RW_KeyHintUnbound: Note: the radial wheel key is unbound, so the wheel cannot open. Bind it under Settings > Controls, or click Skip.
 }
 
 CybCourseOutroDialogue: {
@@ -238,6 +193,14 @@ CybCourseKeyBindReminderPanel: {
 	BtnConfirm: Принято
 	BtnLater: Напомнить позже
 	Footer: Любой вариант выведет из Суперсна. Клавиши можно изменить позже в настройках.
+}
+
+CybCourseWorld: {
+	// BootTag: NEURAL LINK · SUPERDREAM NODE
+	// BootTitle: Linking Superdream
+	// BootSubtitle: SHPC Immersion Training Protocol
+	// BootStatus: Compiling training space
+	// BootBarLabel: Sync Rate
 }
 
 ShepelCyberActiveDialogue: {

@@ -189,7 +189,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                     return false;
                 }
                 //避让全屏UI
-                if (QuestLog.Instance?.visible == true) {
+                if (QuestLog.Instance?.IsOpen == true) {
                     return false;
                 }
                 if (QuestManagerUI.Instance?.IsOpen == true) {

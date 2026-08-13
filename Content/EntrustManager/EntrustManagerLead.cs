@@ -83,9 +83,9 @@ namespace CalamityOverhaul.Content.EntrustManager
             TextMiddleClickAction = this.GetLocalization(nameof(TextMiddleClickAction), () => " →  挂起委托");
             TextMiddleClickDesc = this.GetLocalization(nameof(TextMiddleClickDesc), () => "     暂时隐藏该委托，不在追踪窗口中显示");
             TextStyleButtonTitle = this.GetLocalization(nameof(TextStyleButtonTitle), () => "样式按钮提示");
-            TextStyleButtonLabel = this.GetLocalization(nameof(TextStyleButtonLabel), () => "左键单击顶部小按钮");
+            TextStyleButtonLabel = this.GetLocalization(nameof(TextStyleButtonLabel), () => "左键单击高亮的小按钮");
             TextStyleButtonAction = this.GetLocalization(nameof(TextStyleButtonAction), () => " →  切换界面样式");
-            TextStyleButtonDesc = this.GetLocalization(nameof(TextStyleButtonDesc), () => "     可以在荒漠、嘉登与森林风格之间循环切换");
+            TextStyleButtonDesc = this.GetLocalization(nameof(TextStyleButtonDesc), () => "     可以在几套界面风格之间循环切换");
             TextTrackPromptTitle = this.GetLocalization(nameof(TextTrackPromptTitle), () => "关注感兴趣的委托");
             TextTrackPromptHintLabel = this.GetLocalization(nameof(TextTrackPromptHintLabel), () => "右键单击委托");
             TextTrackPromptHintAction = this.GetLocalization(nameof(TextTrackPromptHintAction), () => " →  设为已关注");
@@ -136,9 +136,13 @@ namespace CalamityOverhaul.Content.EntrustManager
         private const int CardW1 = 320;
         private const int CardW2 = 318;
         private const int CardW3 = 316;
-        private const int StyleButtonOffsetFromPanelRight = 180;
-        private const int StyleButtonTop = 36;
-        private const int StyleButtonSize = 26;
+
+        /// <summary>
+        /// 委托已内嵌进全屏任务书，PanelRightEdge 是整块内容区的右缘，
+        /// 直接 +15 会把卡片顶出屏幕——统一夹回屏内，卡片浮在书页右侧
+        /// </summary>
+        private static float ClampCardX(float desiredX, int cardW)
+            => MathF.Min(desiredX, Main.screenWidth - cardW - 20f);
 
         public override void OnWorldUnload() {
             currentPhase = LeadPhase.Inactive;
@@ -454,7 +458,7 @@ namespace CalamityOverhaul.Content.EntrustManager
 
             int cardH = CardTopPad + MeasureCardBody(lines, font, contentW) + CardFooter;
             float slideX = (1f - animProgress) * 80f;
-            float x = ui.PanelRightEdge + 15f - slideX;
+            float x = ClampCardX(ui.PanelRightEdge + 15f, CardW2) - slideX;
             float y = (Main.screenHeight - cardH) * 0.5f;
             var card = new Rectangle((int)x, (int)y, CardW2, cardH);
 
@@ -473,19 +477,25 @@ namespace CalamityOverhaul.Content.EntrustManager
             ResetPhaseGuards();
         }
 
-        private static Rectangle GetStyleSwitchGuideRect(QuestManagerUI ui) {
-            return new Rectangle(
-                ui.PanelRightEdge - StyleButtonOffsetFromPanelRight,
-                StyleButtonTop,
-                StyleButtonSize,
-                StyleButtonSize);
+        /// <summary>样式切换按钮现由任务书持有，问书要真实命中区而不是按旧面板推算</summary>
+        private static Rectangle GetStyleSwitchGuideRect() {
+            var book = QuestLogs.QuestLog.Instance;
+            if (book == null || !book.IsOpen) {
+                return Rectangle.Empty;
+            }
+            return book.CurrentStyle.GetStyleSwitchButtonRect(book.CurrentLayout.LegacyChrome);
         }
 
         private static void DrawStyleButtonPromptCard(SpriteBatch sb) {
             var ui = QuestManagerUI.Instance;
             if (ui == null) return;
 
-            Rectangle styleRect = GetStyleSwitchGuideRect(ui);
+            Rectangle styleRect = GetStyleSwitchGuideRect();
+            if (styleRect.Width <= 0) {
+                //按钮定位不到就别对着空气讲解，直接进下一阶段
+                StartTrackPrompt();
+                return;
+            }
             float alpha = animProgress;
             DrawStyleButtonHighlight(sb, styleRect, alpha);
 
@@ -552,7 +562,7 @@ namespace CalamityOverhaul.Content.EntrustManager
 
             int cardH = CardTopPad + MeasureCardBody(lines, font, contentW) + CardFooter;
             float slideX = (1f - animProgress) * 80f;
-            float x = ui.PanelRightEdge + 15f - slideX;
+            float x = ClampCardX(ui.PanelRightEdge + 15f, CardW4) - slideX;
             float y = (Main.screenHeight - cardH) * 0.5f;
             var card = new Rectangle((int)x, (int)y, CardW4, cardH);
 
@@ -655,7 +665,7 @@ namespace CalamityOverhaul.Content.EntrustManager
 
             int cardH = CardTopPad + MeasureCardBody(lines, font, contentW) + CardFooter;
             float slideX = (1f - animProgress) * 80f;
-            float x = ui.PanelRightEdge + 15f - slideX;
+            float x = ClampCardX(ui.PanelRightEdge + 15f, CardW6) - slideX;
             float y = (Main.screenHeight - cardH) * 0.5f;
             var card = new Rectangle((int)x, (int)y, CardW6, cardH);
 

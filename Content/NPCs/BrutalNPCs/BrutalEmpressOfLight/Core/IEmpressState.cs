@@ -32,6 +32,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
         Despawn = 12,
         /// <summary>死亡演出，光之消散</summary>
         Death = 13,
+        /// <summary>光绫缚舞投技：缚定悬空→三段交叉剑舞→辐光爆绽掷出</summary>
+        LightBindWaltz = 14,
     }
 
     /// <summary>状态接口</summary>

@@ -7,6 +7,7 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.Cinematics;
 using InnoVault.PRT;
 using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
@@ -37,6 +38,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         /// <summary>死亡演出中的头部 whoAmI，无则 -1</summary>
         internal static int ActivePerformanceHead = -1;
+
+        /// <summary>投技冷却计时，服务端消费；开场给缓冲防起手即抓</summary>
+        internal int viceExecutionCooldown;
 
         private VaultStateMachine<PrimeStateContext> stateMachine;
         private PrimeStateContext stateContext;
@@ -145,6 +149,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             int newMaxLife = (int)(npc.lifeMax * 0.7f);
             npc.life = npc.lifeMax = newMaxLife;
             npc.defDefense = npc.defense = 20;
+            viceExecutionCooldown = 900;
             InitializeStateContext();
         }
 
@@ -205,6 +210,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             //编队旋转时钟
             ai[PrimeAiSlots.OverrideOrbitClock]++;
 
+            //投技冷却
+            if (viceExecutionCooldown > 0) {
+                viceExecutionCooldown--;
+            }
+
             return false;
         }
 
@@ -263,7 +273,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 stateMachine.ChangeState(new PrimeDeathState());
                 return;
             }
-            if (current is PrimeDeathState or PrimeDespawnState or PrimeIntroState or PrimePhaseTransitionState) {
+            //投技演出加入早退白名单：不被转阶段/白昼/金币枪中途撕走，死亡仍可打断
+            if (current is PrimeDeathState or PrimeDespawnState or PrimeIntroState
+                or PrimePhaseTransitionState or PrimeViceExecutionState) {
                 return;
             }
 
@@ -452,6 +464,132 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         /// <summary>被抓玩家实例，无效时为 null</summary>
         internal Player DeathTargetPlayer =>
             (DeathTargetIndex >= 0 && DeathTargetIndex < Main.maxPlayers) ? Main.player[DeathTargetIndex] : null;
+
+        #endregion
+
+        #region 投技（老虎钳处刑）对外数据与入口
+
+        /// <summary>投技演出已运行帧数（各端本地推进）</summary>
+        internal int ViceExecutionTick => stateContext?.ViceExecutionTick ?? 0;
+        /// <summary>投技被抓玩家索引，无则 -1（读同步槽，客户端最早可见）</summary>
+        internal int GrabTargetIndex => (int)ai[PrimeAiSlots.OverrideGrabTarget] - 1;
+        /// <summary>投技抓取点（被抓瞬间玩家位置，锁存）</summary>
+        internal Vector2 GrabStartPoint => new(ai[PrimeAiSlots.OverrideGrabStartX], ai[PrimeAiSlots.OverrideGrabStartY]);
+        /// <summary>投技砸地点（锁存）</summary>
+        internal Vector2 GrabSlamPoint => new(ai[PrimeAiSlots.OverrideGrabSlamX], ai[PrimeAiSlots.OverrideGrabSlamY]);
+        /// <summary>投技臂存活掩码（锁存）</summary>
+        internal int GrabArmsMask => (int)ai[PrimeAiSlots.OverrideGrabArmsMask];
+
+        /// <summary>
+        /// 投技是否就绪（服务端查询，钳臂据此把指令突进升格为处刑突进）：
+        /// 武装阶段、指挥序列窗口、冷却归零、生命打出血线、无时停、无运镜、目标有效
+        /// </summary>
+        internal static bool ViceExecutionReady(NPC head, Player target) {
+            if (VaultUtils.isClient || head == null || !head.active
+                || head.type != NPCID.SkeletronPrime || IsMechdusa(head)) {
+                return false;
+            }
+            HeadPrimeAI headAI = head.GetOverride<HeadPrimeAI>();
+            if (headAI == null || headAI.viceExecutionCooldown > 0) {
+                return false;
+            }
+            if ((int)head.ai[PrimeAiSlots.HeadPhase] != PrimePhase.Armed) {
+                return false;
+            }
+            //扣押到打出血线再解锁
+            if (head.life > head.lifeMax * 0.88f) {
+                return false;
+            }
+            PrimeStateIndex state = GetStateIndex(head);
+            if (state is not (PrimeStateIndex.CommandSequence or PrimeStateIndex.CommandExecute)) {
+                return false;
+            }
+            if (CWRWorld.CanTimeFrozen()) {
+                return false;
+            }
+            //单机/本地端：任何运镜播放中不得再触发
+            if (!Main.dedServ && CutsceneDirector.CurrentClip != null) {
+                return false;
+            }
+            return target != null && target.active && !target.dead && !target.ghost;
+        }
+
+        /// <summary>
+        /// 处刑突进命中后的投技入口（服务端）：校验后锁存脚本锚点并切入投技状态，
+        /// 锁存槽随状态切换的 netUpdate 原子下发
+        /// </summary>
+        internal bool TryBeginViceExecution(int targetIndex, NPC viceNpc) {
+            if (VaultUtils.isClient || stateMachine == null || stateContext == null) {
+                return false;
+            }
+            if ((int)npc.ai[PrimeAiSlots.HeadPhase] != PrimePhase.Armed) {
+                return false;
+            }
+            //突进在飞期间头可能已推进到冲撞步，指令序列窗口起手的抓取保持有效
+            PrimeStateIndex state = GetStateIndex(npc);
+            if (state is not (PrimeStateIndex.CommandSequence or PrimeStateIndex.CommandExecute or PrimeStateIndex.SpinDash)) {
+                return false;
+            }
+            if (CWRWorld.CanTimeFrozen()) {
+                return false;
+            }
+            if (!Main.dedServ && CutsceneDirector.CurrentClip != null) {
+                return false;
+            }
+            if (targetIndex < 0 || targetIndex >= Main.maxPlayers) {
+                return false;
+            }
+            Player target = Main.player[targetIndex];
+            if (!target.active || target.dead || target.ghost) {
+                return false;
+            }
+            if (viceNpc == null || !viceNpc.active || viceNpc.type != NPCID.PrimeVice) {
+                return false;
+            }
+            //同一玩家不可被两个头同时处刑
+            if (AnyOtherHeadExecuting(targetIndex)) {
+                return false;
+            }
+
+            //锁存脚本锚点与臂存活掩码
+            Vector2 grabStart = target.Center;
+            Vector2 slamPoint = PrimeViceExecutionState.FindSlamPoint(grabStart);
+            CheakRam(out bool cannonAlive, out _, out bool sawAlive, out bool laserAlive);
+            int mask = (sawAlive ? PrimeViceExecutionState.MaskSaw : 0)
+                | (cannonAlive ? PrimeViceExecutionState.MaskCannon : 0)
+                | (laserAlive ? PrimeViceExecutionState.MaskLaser : 0);
+
+            ai[PrimeAiSlots.OverrideGrabStartX] = grabStart.X;
+            ai[PrimeAiSlots.OverrideGrabStartY] = grabStart.Y;
+            ai[PrimeAiSlots.OverrideGrabSlamX] = slamPoint.X;
+            ai[PrimeAiSlots.OverrideGrabSlamY] = slamPoint.Y;
+            ai[PrimeAiSlots.OverrideGrabTarget] = targetIndex + 1;
+            ai[PrimeAiSlots.OverrideGrabArmsMask] = mask;
+
+            viceExecutionCooldown = PrimeViceExecutionState.FullCooldown;
+            npc.target = targetIndex;
+            //撤掉战术指令，避免其余臂在演出后立刻续读旧指令
+            npc.ai[PrimeAiSlots.HeadCommandSlot] = 0f;
+            stateMachine.ChangeState(new PrimeViceExecutionState());
+            return true;
+        }
+
+        /// <summary>其它机械骷髅王头是否正在处刑同一玩家</summary>
+        private bool AnyOtherHeadExecuting(int targetIndex) {
+            foreach (NPC other in Main.ActiveNPCs) {
+                if (other.whoAmI == npc.whoAmI || other.type != NPCID.SkeletronPrime || IsMechdusa(other)) {
+                    continue;
+                }
+                if (GetStateIndex(other) != PrimeStateIndex.ViceExecution) {
+                    continue;
+                }
+                HeadPrimeAI otherAI = other.GetOverride<HeadPrimeAI>();
+                if (otherAI != null && otherAI.GrabTargetIndex == targetIndex) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         #endregion
 

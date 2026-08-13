@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaRains;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults;
@@ -25,6 +26,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 KikasaDomainDeco.Clear();
                 KikasaLakeFX.Clear();
                 KikasaDrownFX.Clear();
+                KikasaHoundReflection.Clear();
             }
         }
 
@@ -34,6 +36,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
             KikasaDomainPlayer kdp = KikasaDomain.Viewed;
             if (kdp == null || !kdp.GradeVisible) {
+                return;
+            }
+            //梦侧无湖也无血暮调色：切换发生在结算闪掩护下，梦境观感由梦空/压光/滤镜接管
+            if (kdp.DreamWorldVisual) {
                 return;
             }
             //RT 不可用时跳过世界调色，整体走 EndCaptureDraw 的纯色叠层；血湖不受领域简约偏好影响
@@ -91,6 +97,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             if (kdp == null || !kdp.GradeVisible) {
                 return;
             }
+            //梦侧湖面镜面整体让位（含倒影犬与湖面墨晕）
+            if (kdp.DreamWorldVisual) {
+                return;
+            }
 
             //仅技术性 RT 不可用时走低质量回退，不受领域简约偏好影响
 
@@ -102,6 +112,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
 
             ApplyUnify(spriteBatch, graphicsDevice, screenSwap, kdp);
+            //倒影恶犬画在镜面之后：镜面是拷屏合成，画早了会被镜像换掉
+            KikasaHoundReflection.Draw(spriteBatch, kdp);
             KikasaInkFX.DrawLakeOnWater(spriteBatch);
             DrawSoakDim(spriteBatch, kdp);
         }

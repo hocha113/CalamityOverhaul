@@ -81,6 +81,11 @@ CWRServerConfig: {
 		Tooltip: Gera postos avancados de madeira de elfos ou guardioes da floresta nas profundezas da floresta.
 	}
 
+	GenSHPCCradle: {
+		// Label: Generate SHPC Cradle Island
+		// Tooltip: Generates a crashed vessel sky island above spawn with the SHPC sealed inside. When disabled, the weapon can only be found in Calamity's laboratory.
+	}
+
 	ConfigChangePrefix: Usuario
 	ConfigChangeSuffix: A configuracao do servidor foi modificada
 

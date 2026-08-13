@@ -35,6 +35,8 @@ namespace CalamityOverhaul.Common
         public static ModKeybind Kikasa_Sink { get; private set; }
         public static ModKeybind Kikasa_DomainMutate { get; private set; }
         public static ModKeybind Kikasa_Summon { get; private set; }
+        public static ModKeybind Kikasa_DreamReflect { get; private set; }
+        public static ModKeybind Kikasa_DreamPull { get; private set; }
         public static ModKeybind WeponSkill_Q { get; private set; }
         public static ModKeybind WeponSkill_R { get; private set; }
         public static ModKeybind Accessory_Skills { get; private set; }
@@ -71,6 +73,10 @@ namespace CalamityOverhaul.Common
             Kikasa_DomainMutate = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_DomainMutate), "Mouse3");
             //鬼奴召唤/遣返
             Kikasa_Summon = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_Summon), "O");
+            //鬼梦：湖镜倒影换黑犬
+            Kikasa_DreamReflect = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_DreamReflect), "P");
+            //鬼梦：拉入/归返
+            Kikasa_DreamPull = KeybindLoader.RegisterKeybind(mod, nameof(Kikasa_DreamPull), "X");
             WeponSkill_Q = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_Q), "Q");
             WeponSkill_R = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_R), "R");
             Accessory_Skills = KeybindLoader.RegisterKeybind(mod, nameof(Accessory_Skills), "V");
@@ -103,6 +109,8 @@ namespace CalamityOverhaul.Common
             Kikasa_Sink = null;
             Kikasa_DomainMutate = null;
             Kikasa_Summon = null;
+            Kikasa_DreamReflect = null;
+            Kikasa_DreamPull = null;
             Legend_Domain = null;
             RadialWheel_Key = null;
             Halibut_Clone = null;

@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core;
+using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -7,7 +8,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
 {
     /// <summary>
     /// 收缩笼：弹幕在玩家四周悬空成环，蓄势屏息，而后向心合拢；
-    /// 缺口随切向分量进动，穿过弹环中心后压力自解——笼是会呼吸的
+    /// 缺口随切向分量进动，穿过弹环中心后压力自解——笼是会呼吸的。
+    /// 二阶段或昼形态下首座笼挂捕获符印：收拢完成时环心仍有人则转入光绫缚舞投技
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)EmpressStateIndex.ConvergingCage, typeof(EmpressStateContext))]
     internal class EmpressConvergingCageState : EmpressStateBase
@@ -27,12 +29,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
         private const float GapHalfAngle = 0.30f;
 
         private EmpressStateContext Context;
+        //捕获符印状态（仅服务端写读；客户端靠符印弹幕看到预告）
+        private bool snareArmed;
+        private int snareCaptureTimer;
+        private Vector2 snareCenter;
 
         public override IEmpressState OnUpdate(EmpressStateContext context) {
             Context = context;
             NPC npc = context.Npc;
             Player target = context.Target;
             Timer++;
+
+            //投技捕获判定：符印笼收拢到捕获半径的瞬间，环心仍有人则被缚（服务端权威）
+            if (!VaultUtils.isClient && snareArmed && Timer == snareCaptureTimer) {
+                snareArmed = false;
+                IEmpressState grab = TryCapture(context, npc);
+                if (grab != null) {
+                    return grab;
+                }
+            }
 
             //她在笼外缓缓绕行，像在鉴赏自己的作品
             if (target.Alives()) {
@@ -111,6 +126,64 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.States
                 //悬滞蓄释：hold帧的读秒预告
                 EmpressCast.Bolt(npc, pos, vel, context.BoltDamage, 2, hue, hold);
             }
+
+            //首座笼挂捕获符印：二阶段解锁，昼形态两阶段皆挂（日间加严），冷却与时停拦截
+            if (cageIdx == 0 && (context.IsSecondPhase || context.DayEmpowered)
+                && context.GrabCooldown <= 0
+                && !TimeFreezeSystem.IsAnyGlobalFreezeActive && !TimeFreezeSystem.IsFrozen(npc)) {
+                int closure = ComputeClosureDelay(radius, EmpressLightBindWaltzState.CaptureRadius, inSpeed, hold);
+                snareArmed = true;
+                snareCenter = center;
+                snareCaptureTimer = Timer + closure;
+                EmpressCast.SnareSigil(npc, center, closure, EmpressLightBindWaltzState.CaptureRadius, 0.13f);
+            }
+        }
+
+        /// <summary>
+        /// 镜像棱彩弹悬滞包络（5%缓漂→10帧推满→全速）解出环半径收到捕获半径的帧数
+        /// </summary>
+        private static int ComputeClosureDelay(float radius, float captureRadius, float inSpeed, int hold) {
+            float travel = radius - captureRadius;
+            travel -= hold * inSpeed * 0.05f;
+            for (int i = 1; i <= 10; i++) {
+                travel -= MathHelper.Clamp(i / 10f, 0.05f, 1f) * inSpeed;
+            }
+            int full = (int)Math.Ceiling(Math.Max(travel, 0f) / inSpeed);
+            return hold + 10 + full;
+        }
+
+        /// <summary>
+        /// 收拢瞬间的捕获判定：取环心捕获半径内最近的存活玩家为受缚者；
+        /// 无人/时停/她被冻结则空挥，符印自然消散
+        /// </summary>
+        private IEmpressState TryCapture(EmpressStateContext context, NPC npc) {
+            if (TimeFreezeSystem.IsAnyGlobalFreezeActive || TimeFreezeSystem.IsFrozen(npc)) {
+                return null;
+            }
+            int picked = -1;
+            float best = EmpressLightBindWaltzState.CaptureRadius;
+            foreach (Player player in Main.ActivePlayers) {
+                if (!player.Alives()) {
+                    continue;
+                }
+                //已被另一位女皇缚住的玩家不重复擒拿
+                if (EmpressGrabPerformancePlayer.FindGrabbingEmpress(player.whoAmI) != null) {
+                    continue;
+                }
+                float dist = Vector2.Distance(player.Center, snareCenter);
+                if (dist < best) {
+                    best = dist;
+                    picked = player.whoAmI;
+                }
+            }
+            if (picked < 0) {
+                return null;
+            }
+            //受缚者身份写入npc.target，与状态索引同包同步到各端
+            npc.target = picked;
+            npc.netUpdate = true;
+            context.GrabCooldown = EmpressLightBindWaltzState.GrabCooldownTicks;
+            return new EmpressLightBindWaltzState();
         }
     }
 }

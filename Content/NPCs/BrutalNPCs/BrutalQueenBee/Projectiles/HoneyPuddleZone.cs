@@ -87,6 +87,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Projectiles
             Lighting.AddLight(Projectile.Center, QueenBeeMotion.HoneyGold.ToVector3() * 0.35f);
         }
 
+        /// <summary>当前黏滞判定区(投技标记系统消费)</summary>
+        internal Rectangle SnareRect => GetZoneRect();
+
         private Rectangle GetZoneRect() {
             float spread = SpreadProgress();
             int w = (int)(Width * spread);

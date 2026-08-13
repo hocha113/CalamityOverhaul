@@ -44,6 +44,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 npc.netUpdate = true;
 
                 if (HeadPrimeAI.GetActiveCommand(ctx.Head) == PrimeCommandKind.PhysicalAssault) {
+                    //投技就绪时把指令突进升格为处刑突进（服务端判定）
+                    if (HeadPrimeAI.ViceExecutionReady(ctx.Head, ctx.Target)) {
+                        return new ViceExecutionLungeState();
+                    }
                     return new ViceTripleLungeState();
                 }
 
@@ -443,6 +447,178 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             }
             return null;
         }
+    }
+
+    /// <summary>
+    /// 处刑突进（投技起手）：45帧专属前摇（钳口大开+红色蓄能汇聚+警报）→ 16帧预判直线突刺 →
+    /// 命中锁定目标即交由头部切入投技演出；空振则合钳硬直留惩罚窗口。
+    /// 全程无接触伤害，抓取判定与可见突刺精确对齐
+    /// </summary>
+    [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.ViceExecutionLunge, typeof(PrimeArmStateContext))]
+    internal class ViceExecutionLungeState : PrimeArmStateBase
+    {
+        public override string StateName => "ViceExecutionLunge";
+        public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.ViceExecutionLunge;
+
+        internal const int TelegraphFrames = 45;
+        internal const int DashFrames = 16;
+        internal const int WhiffFrames = 26;
+
+        private Vector2 lungeDir;
+        private bool grabConfirmed;
+
+        public override void OnEnter(PrimeArmStateContext ctx) {
+            base.OnEnter(ctx);
+            lungeDir = Vector2.Zero;
+            grabConfirmed = false;
+        }
+
+        public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
+            NPC npc = ctx.Npc;
+            //全程无接触伤害：命中即转投技，空振即惩罚
+            npc.damage = 0;
+
+            if (Timer < TelegraphFrames) {
+                UpdateTelegraph(ctx);
+            }
+            else if (Timer < TelegraphFrames + DashFrames) {
+                PrimeArmStateBase next = UpdateDash(ctx);
+                if (next != null) {
+                    return next;
+                }
+            }
+            else {
+                UpdateWhiff(ctx);
+            }
+
+            Timer++;
+            //空振硬直结束或超时兜底
+            if (Timer >= TelegraphFrames + DashFrames + WhiffFrames && !VaultUtils.isClient) {
+                return new ViceRecoveryState();
+            }
+            return null;
+        }
+
+        /// <summary>专属前摇：后撤出手位+蓄能汇聚+警报，末8帧活塞回缩</summary>
+        private void UpdateTelegraph(PrimeArmStateContext ctx) {
+            NPC npc = ctx.Npc;
+            ctx.ClawOpen = true;
+            Vector2 dirToPlayer = npc.Center.DirectionTo(ctx.Target.Center);
+
+            if (Timer < TelegraphFrames - 8) {
+                Vector2 windUpPos = ctx.Target.Center - dirToPlayer * 300f;
+                SpringMove(ctx, windUpPos, 1.15f, stiffness: 0.18f, damping: 0.82f, maxSpeed: 28f);
+                ServoAimAt(npc, ctx.Target.Center, 0.12f);
+            }
+            else {
+                //活塞回缩，爆发前反向蓄压
+                Vector2 vel = ctx.SpringVelocity * 0.7f - dirToPlayer * 1.8f;
+                ctx.SpringVelocity = vel;
+                npc.velocity = vel;
+            }
+
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            //红色蓄能向钳口汇聚
+            float charge = Timer / (float)TelegraphFrames;
+            if (Timer % 3 == 0) {
+                Vector2 jaw = npc.Center + ctx.AimDirection * 40f;
+                Vector2 pos = jaw + Main.rand.NextVector2Circular(52f * (1f - charge * 0.5f), 52f * (1f - charge * 0.5f));
+                Dust dust = Dust.NewDustDirect(pos, 1, 1, DustID.FireworkFountain_Red,
+                    0, 0, 100, Color.Red, Main.rand.NextFloat(0.9f, 1.6f));
+                dust.velocity = (jaw - pos) * 0.14f;
+                dust.noGravity = true;
+            }
+            Lighting.AddLight(npc.Center, new Vector3(0.9f, 0.15f, 0.1f) * charge);
+
+            //液压蓄压与双响警报
+            if (Timer == 6) {
+                SoundEngine.PlaySound(SoundID.Item61 with { Volume = 0.8f, Pitch = -0.5f }, npc.Center);
+            }
+            if (Timer == 24 || Timer == 36) {
+                SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.9f, Pitch = Timer == 24 ? -0.1f : 0.25f }, npc.Center);
+            }
+        }
+
+        /// <summary>预判直线突刺，命中锁定目标即开投技</summary>
+        private PrimeArmStateBase UpdateDash(PrimeArmStateContext ctx) {
+            NPC npc = ctx.Npc;
+            ctx.ClawOpen = true;
+
+            if (lungeDir == Vector2.Zero) {
+                //出手瞬间锁死预判弹道，突刺全程不转向
+                Vector2 predict = ctx.Target.Center + ctx.Target.velocity * 9f;
+                lungeDir = npc.Center.DirectionTo(predict);
+                float speed = ctx.Death ? 28f : 26f;
+                ctx.SpringVelocity = lungeDir * speed;
+                npc.rotation = lungeDir.ToRotation() - MathHelper.PiOver2;
+                if (!VaultUtils.isClient) {
+                    npc.netUpdate = true;
+                }
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item71 with { Volume = 1f, Pitch = 0.1f }, npc.Center);
+                }
+            }
+            npc.velocity = ctx.SpringVelocity;
+
+            //突刺尾迹
+            if (!VaultUtils.isServer && Timer % 2 == 0) {
+                Vector2 trailPos = npc.Center + Main.rand.NextVector2Circular(26f, 26f);
+                Dust dust = Dust.NewDustDirect(trailPos, 1, 1, DustID.FireworkFountain_Red,
+                    -npc.velocity.X * 0.3f, -npc.velocity.Y * 0.3f, 100, Color.Red, Main.rand.NextFloat(1.1f, 1.8f));
+                dust.noGravity = true;
+            }
+
+            //抓取判定：服务端，仅锁定目标，窗口与突刺帧精确对齐
+            if (!VaultUtils.isClient && !grabConfirmed && npc.Hitbox.Intersects(ctx.Target.Hitbox)) {
+                HeadPrimeAI headAI = ctx.Head.GetOverride<HeadPrimeAI>();
+                if (headAI != null && headAI.TryBeginViceExecution(ctx.Target.whoAmI, npc)) {
+                    grabConfirmed = true;
+                    ctx.ClawOpen = false;
+                    ctx.ImpactIntensity = 10f;
+                    //编排层下帧起接管钳臂
+                    return new ViceRecoveryState();
+                }
+            }
+            return null;
+        }
+
+        /// <summary>空振：空钳轰合+微坠硬直，惩罚窗口</summary>
+        private void UpdateWhiff(PrimeArmStateContext ctx) {
+            NPC npc = ctx.Npc;
+
+            if (Timer == TelegraphFrames + DashFrames) {
+                ctx.ClawOpen = false;
+                ctx.ImpactIntensity = 6f;
+                if (!VaultUtils.isServer) {
+                    //空钳 CLANK
+                    SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 1f, Pitch = 0.3f }, npc.Center);
+                    for (int i = 0; i < 10; i++) {
+                        Dust dust = Dust.NewDustDirect(npc.Center + ctx.AimDirection * 40f, 1, 1,
+                            DustID.FireworkFountain_Red, 0, 0, 100, Color.Yellow, Main.rand.NextFloat(0.8f, 1.3f));
+                        dust.velocity = Main.rand.NextVector2Circular(4f, 4f);
+                        dust.noGravity = true;
+                    }
+                }
+                //空振短冷却后再试
+                if (!VaultUtils.isClient) {
+                    HeadPrimeAI headAI = ctx.Head.GetOverride<HeadPrimeAI>();
+                    if (headAI != null && headAI.viceExecutionCooldown < ViceExecutionLungeState.WhiffCooldownFrames) {
+                        headAI.viceExecutionCooldown = ViceExecutionLungeState.WhiffCooldownFrames;
+                    }
+                }
+            }
+
+            //微坠硬直
+            npc.velocity *= 0.85f;
+            npc.velocity.Y += 0.12f;
+            ctx.SpringVelocity = npc.velocity;
+        }
+
+        /// <summary>空振冷却帧</summary>
+        internal const int WhiffCooldownFrames = 600;
     }
 
     /// <summary>钳口闭合冲击波</summary>

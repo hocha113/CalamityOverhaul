@@ -9,15 +9,14 @@ using Terraria.WorldBuilding;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 {
-    //横向主通道+高低平台
+    //悬浮训练平台：虚空中的一块火星导管镀层甲板+装饰浮岛
+    //旧灰砖走廊与其密封的内部平台层已删（玩法一直发生在顶面，内部永不可见）
     internal class CybCourseGen : GenPass
     {
+        //FloorY 仍是层高锚点：世界高度/worldSurface/地狱层余量都以它推算
         internal const int FloorY = 170;
-        private const int RoomHeight = 20;
-        private const int FloorThick = 8;
-        private const int WallThick = 6;
-        //走廊顶板上方=FloorY-RoomHeight-2
-        internal const int SurfaceY = FloorY - RoomHeight - 2;
+        //甲板行走面（与旧版走廊顶板同一行，出生/标靶/MK2 的落点常量不变）
+        internal const int SurfaceY = FloorY - 22;
         internal const int SpawnTileX = 120;
         internal const int SpawnTileY = SurfaceY;
         internal const int GenMK2OriginX = 140;
@@ -27,18 +26,29 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         internal const int GenMK2TileW = 4;
         internal const int GenMK2TileH = 3;
 
+        //主甲板横向范围
+        internal const int PlatformLeft = 70;
+        internal const int PlatformRight = 330;
+
+        //装饰浮岛 (x0, x1, 顶行)；建造与甲板灯光共用，勿双份维护
+        internal static readonly (int X0, int X1, int YTop)[] AccentIslets = [
+            (30, 44, SurfaceY + 26),
+            (352, 366, SurfaceY + 18),
+            (44, 54, SurfaceY - 32),
+            (346, 354, SurfaceY - 40),
+        ];
+
         public CybCourseGen() : base("Cyb Course Generation", 1f) { }
 
         protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
-            progress.Message = "构建超梦空间...";
+            progress.Message = "编译超梦空间...";
 
             int width = Main.maxTilesX;
             int height = Main.maxTilesY;
 
             ClearWorld(width, height);
-            FillBorders(width, height);
-            BuildMainCorridor(width);
-            PlacePlatforms(width);
+            BuildMainDeck();
+            BuildAccentIslets();
             PlaceGeneratorMK2();
             Main.spawnTileX = SpawnTileX;
             Main.spawnTileY = SpawnTileY;
@@ -56,57 +66,64 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             }
         }
 
-        private static void FillBorders(int width, int height) {
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < WallThick; y++) {
-                    PlaceSolid(x, y, TileID.GrayBrick);
-                }
-                for (int y = height - WallThick; y < height; y++) {
-                    PlaceSolid(x, y, TileID.GrayBrick);
+        //主甲板：3 厚镀层面板 + 向下收窄的船体式龙骨剪影 + 两端护沿
+        private static void BuildMainDeck() {
+            const int center = (PlatformLeft + PlatformRight) / 2;
+
+            //甲板面板
+            for (int x = PlatformLeft; x <= PlatformRight; x++) {
+                for (int y = SurfaceY; y <= SurfaceY + 2; y++) {
+                    PlaceSolid(x, y, TileID.MartianConduitPlating);
                 }
             }
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < WallThick; x++) {
-                    PlaceSolid(x, y, TileID.GrayBrick);
-                }
-                for (int x = width - WallThick; x < width; x++) {
-                    PlaceSolid(x, y, TileID.GrayBrick);
-                }
-            }
-        }
 
-        private static void BuildMainCorridor(int width) {
-            int ceilY = FloorY - RoomHeight;
-
-            for (int x = WallThick; x < width - WallThick; x++) {
-                for (int y = FloorY; y < FloorY + FloorThick; y++) {
-                    PlaceSolid(x, y, TileID.GrayBrick);
-                }
-                for (int y = ceilY - 2; y < ceilY; y++) {
-                    PlaceSolid(x, y, TileID.GrayBrick);
-                }
-                for (int y = ceilY; y < FloorY; y++) {
-                    Main.tile[x, y].WallType = WallID.IronBrick;
-                }
-            }
-        }
-
-        private static void PlacePlatforms(int width) {
-            (int offsetX, int riseY, int w)[] platformDefs = [
-                (60,  6,  24),
-                (110, 10, 20),
-                (155, 6,  20),
-                (200, 12, 22),
-                (250, 6,  20),
-                (300, 10, 18),
+            //船腹逐级内收（(内收量, 起始深度, 结束深度)）
+            (int inset, int d0, int d1)[] hull = [
+                (8,   3, 4),
+                (22,  5, 6),
+                (60,  7, 8),
             ];
-
-            foreach (var (offsetX, riseY, w) in platformDefs) {
-                int platY = FloorY - riseY;
-                for (int x = offsetX; x < offsetX + w && x < width - WallThick; x++) {
-                    PlaceSolid(x, platY, TileID.IronBrick);
-                    PlaceSolid(x, platY + 1, TileID.IronBrick);
+            foreach (var (inset, d0, d1) in hull) {
+                for (int x = PlatformLeft + inset; x <= PlatformRight - inset; x++) {
+                    for (int d = d0; d <= d1; d++) {
+                        PlaceSolid(x, SurfaceY + d, TileID.MartianConduitPlating);
+                    }
                 }
+            }
+            //中央龙骨收尖
+            for (int d = 9; d <= 12; d++) {
+                int half = 34 - (d - 9) * 9;
+                for (int x = center - half; x <= center + half; x++) {
+                    PlaceSolid(x, SurfaceY + d, TileID.MartianConduitPlating);
+                }
+            }
+
+            //两端护沿（2 高，给标靶/玩家一个边界暗示；跃出由回收守卫兜底）
+            for (int i = 0; i < 2; i++) {
+                PlaceSolid(PlatformLeft + i, SurfaceY - 1, TileID.MartianConduitPlating);
+                PlaceSolid(PlatformLeft, SurfaceY - 2, TileID.MartianConduitPlating);
+                PlaceSolid(PlatformRight - i, SurfaceY - 1, TileID.MartianConduitPlating);
+                PlaceSolid(PlatformRight, SurfaceY - 2, TileID.MartianConduitPlating);
+            }
+        }
+
+        //远处几块不可达的小浮板，给虚空一点纵深剪影
+        private static void BuildAccentIslets() {
+            foreach (var (x0, x1, yTop) in AccentIslets) {
+                PlacePlate(x0, x1, yTop);
+            }
+        }
+
+        //小浮板：顶行全宽，下两行内收
+        private static void PlacePlate(int x0, int x1, int yTop) {
+            for (int x = x0; x <= x1; x++) {
+                PlaceSolid(x, yTop, TileID.MartianConduitPlating);
+            }
+            for (int x = x0 + 2; x <= x1 - 2; x++) {
+                PlaceSolid(x, yTop + 1, TileID.MartianConduitPlating);
+            }
+            for (int x = x0 + 5; x <= x1 - 5; x++) {
+                PlaceSolid(x, yTop + 2, TileID.MartianConduitPlating);
             }
         }
 

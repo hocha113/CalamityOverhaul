@@ -20,12 +20,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
             () => new GolemHookSwingState(),
         ];
 
-        /// <summary>二阶段手作序列：交叉火力开场，机动与机关穿插</summary>
+        /// <summary>二阶段手作序列：交叉火力开场，机动与机关穿插，投技压在中段高潮位</summary>
         private static readonly Func<IGolemState>[] SequenceP2 = [
             () => new GolemCrossfireState(),
             () => new GolemPunchComboState(),
             () => new GolemMeteorLeapState(),
             () => new GolemTrapScoreState(),
+            () => new GolemWallSlamState(),
             () => new GolemHookSwingState(),
             () => new GolemSunBarrageState(),
         ];
@@ -83,6 +84,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.States
 
                 IGolemState next = sequence[index]();
                 if (next is GolemPunchComboState or GolemHookSwingState && context.Limbs.FistCount == 0) {
+                    continue;
+                }
+                //投技触发阀不满足（冷却/距离/时停等）则跳过本轮
+                if (next is GolemWallSlamState && !GolemWallSlamState.GrabReady(context)) {
                     continue;
                 }
                 return next;

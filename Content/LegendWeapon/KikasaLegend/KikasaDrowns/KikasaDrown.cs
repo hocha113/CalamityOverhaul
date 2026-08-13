@@ -175,6 +175,59 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
             return best;
         }
 
+        //==================== 悬停预兆 ====================
+
+        //悬停涟漪节拍与目标记忆：换目标时首圈快些应
+        private static int hoverOmenTimer;
+        private static int hoverOmenNpc = -1;
+
+        /// <summary>
+        /// 可沉暗示：湖就绪时光标悬着够得到的生物，它脚下的湖面先泛起极淡的涟漪——
+        /// 把按键后的涟漪预兆提前到悬停。纯本机演出，每帧由
+        /// <see cref="KikasaDrownSystem.PostUpdateEverything"/> 泵动
+        /// </summary>
+        internal static void UpdateHoverOmen() {
+            Player player = Main.LocalPlayer;
+            if (player == null || !player.active || player.dead || Main.gameMenu) {
+                hoverOmenNpc = -1;
+                return;
+            }
+            //冷却/在途中悬停也别应声，按下去本就是拒绝
+            if (Main.GameUpdateCount < localLockUntil
+                || KikasaDrownFX.HasActiveShowFor(player.whoAmI)
+                || !player.GetModPlayer<KikasaVaultPlayer>().LakeReady) {
+                hoverOmenNpc = -1;
+                return;
+            }
+            NPC hover = FindCursorTarget();
+            float lakeY = LakeYOf(player);
+            bool reachable = hover != null && IsEligibleTarget(hover)
+                && Vector2.Distance(hover.Center, player.Center) <= MaxRange
+                && hover.Center.Y >= lakeY - MaxGrabHeight
+                && hover.Center.Y <= lakeY + MaxGrabDepth;
+            if (!reachable) {
+                hoverOmenNpc = -1;
+                return;
+            }
+
+            if (hover.whoAmI != hoverOmenNpc) {
+                hoverOmenNpc = hover.whoAmI;
+                //换目标：首圈略等半拍，避免扫过一排怪时满屏起涟漪
+                hoverOmenTimer = 8;
+            }
+            if (--hoverOmenTimer > 0) {
+                return;
+            }
+            hoverOmenTimer = 22;
+            float omen = MathHelper.Clamp(
+                MathF.Sqrt(hover.width * (float)hover.height) / 30f, 0.9f, 2.4f);
+            //封顶在 RippleAt 的涌浪阈值(0.3)之下：悬停预兆只许极淡涟漪，
+            //大型目标也不该每拍掀一次整条水线
+            KikasaDomains.KikasaDomainDeco.RippleAt(
+                new Vector2(hover.Center.X + Main.rand.NextFloat(-8f, 8f) * omen, lakeY),
+                MathF.Min(0.22f * omen, 0.28f));
+        }
+
         private static float LakeYOf(Player player)
             => player.GetModPlayer<KikasaDomains.KikasaDomainPlayer>().LakeWorldY;
 
@@ -189,6 +242,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDrowns
         internal static void OnLocalShowEnded(int ownerWho) {
             if (ownerWho == Main.myPlayer) {
                 localLockUntil = Main.GameUpdateCount + CooldownFrames;
+            }
+        }
+
+        /// <summary>本机沉溺手的锁剩余 0~1（1=刚上锁），HUD 冷却弧消费；无锁=0</summary>
+        internal static float LocalCooldown01 {
+            get {
+                if (Main.GameUpdateCount >= localLockUntil) {
+                    return 0f;
+                }
+                return MathHelper.Clamp(
+                    (localLockUntil - Main.GameUpdateCount) / (float)CooldownFrames, 0f, 1f);
             }
         }
 

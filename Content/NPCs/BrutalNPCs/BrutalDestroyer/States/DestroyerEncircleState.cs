@@ -101,8 +101,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 }
             }
 
-            //包围完成，进入停顿
+            //包围完成：满足投技闸门则收环入锁(服务端定夺)，否则照旧停顿接冲刺
             if (Timer >= EncircleDuration) {
+                if (!VaultUtils.isClient && DestroyerCoilLockState.CanStartCoilGrab(context)) {
+                    return new DestroyerCoilLockState();
+                }
                 tightenPause = true;
                 Counter = 0;
             }

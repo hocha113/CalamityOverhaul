@@ -31,6 +31,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.Core
         public bool PhaseThreeStarted { get; set; }
         /// <summary>低血大招已放，一场一次</summary>
         public bool MaelstromUsed { get; set; }
+        /// <summary>投技冷却帧，主控每帧递减，选择器只在归零后放行</summary>
+        public int GrabCooldown { get; set; }
         /// <summary>当前阶段 1/2/3</summary>
         public int Phase => PhaseThreeStarted ? 3 : PhaseTwoStarted ? 2 : 1;
         /// <summary>出招环索引</summary>

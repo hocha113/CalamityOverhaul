@@ -1,5 +1,7 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Rendering;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands;
 using InnoVault.PRT;
 using InnoVault.StateMachines;
@@ -215,6 +217,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
             Vector2 anchor = head.Center + new Vector2(npc.ai[SkeletronAiSlots.HandSide] * 36f, 14f).RotatedBy(head.rotation);
             SkeletronRenderHelper.DrawBoneChain(spriteBatch, anchor, npc.Center, tension, alphaFade, npc.whoAmI * 0.157f);
 
+            //合掌拍捉对峙走廊预警（左手绘制，防双份）
+            DrawSnatchCorridor(spriteBatch, alphaFade);
+
             Main.instance.LoadNPC(NPCID.SkeletronHand);
             Texture2D tex = TextureAssets.Npc[NPCID.SkeletronHand].Value;
             Rectangle rect = new Rectangle(0, 0, tex.Width, tex.Height);
@@ -259,6 +264,58 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
 
             return false;
         }
+
+        #region 拍捉走廊预警
+
+        private static readonly Vector2[] corridorPts = new Vector2[10];
+
+        /// <summary>合掌拍捉对峙期：左右掌间的走廊灵息绸带（拍捉判定区可读化）</summary>
+        private void DrawSnatchCorridor(SpriteBatch spriteBatch, float alphaFade) {
+            //左手负责整条走廊，右手跳过
+            if (npc.ai[SkeletronAiSlots.HandSide] >= 0f) {
+                return;
+            }
+            if ((int)npc.ai[SkeletronAiSlots.HandStateSlot] != (int)SkeletronHandStateIndex.Snatch
+                || SkeletronHeadAI.GetStateIndex(head) != SkeletronStateIndex.PalmSnatch) {
+                return;
+            }
+            int sub = (int)head.ai[SkeletronAiSlots.HeadParamB];
+            if (sub > SkeletronPalmSnatchState.SubSnap) {
+                return;
+            }
+            SkeletronFacts.CountHands(head, out NPC left, out NPC right);
+            if (left == null || right == null || left.whoAmI != npc.whoAmI) {
+                return;
+            }
+
+            float tension = handContext?.ChainTension ?? 0f;
+            float strength = MathHelper.Clamp(0.25f + tension * 0.75f, 0f, 1f) * alphaFade;
+            if (strength <= 0.04f) {
+                return;
+            }
+
+            for (int i = 0; i < corridorPts.Length; i++) {
+                corridorPts[i] = Vector2.Lerp(left.Center, right.Center, i / (corridorPts.Length - 1f));
+            }
+            float pulse = 0.8f + 0.2f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 21f);
+            float halfW = MathHelper.Lerp(7f, 20f, tension) * pulse;
+            if (SkeletronRenderHelper.DrawSpecterRibbon(corridorPts, corridorPts.Length, halfW, halfW,
+                0.55f * strength, 0.7f, 0.41f, 0.12f, 0.12f, 2.2f)) {
+                return;
+            }
+            //回退：灰度光线衬光（着色器缺失时预警不许消失）
+            Texture2D beam = CWRAsset.LightShot?.Value;
+            if (beam == null) {
+                return;
+            }
+            Vector2 span = right.Center - left.Center;
+            Vector2 scale = new Vector2(span.Length() / beam.Width, MathHelper.Lerp(0.3f, 0.9f, tension) * pulse);
+            spriteBatch.Draw(beam, left.Center - Main.screenPosition, null,
+                SkeletronRenderHelper.AsAdditive(SkeletronRenderHelper.GhostCyan) * (0.4f * strength),
+                span.ToRotation(), new Vector2(0f, beam.Height / 2f), scale, SpriteEffects.None, 0f);
+        }
+
+        #endregion
 
         #endregion
     }

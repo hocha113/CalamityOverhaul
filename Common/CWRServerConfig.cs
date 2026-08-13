@@ -71,6 +71,10 @@ namespace CalamityOverhaul.Common
         [DefaultValue(true)]
         public bool GenSylvanOutpost { get; set; }
 
+        [BackgroundColor(100, 160, 80, 255)]
+        [DefaultValue(true)]
+        public bool GenSHPCCradle { get; set; }
+
         public override void OnLoaded() {
             Instance = this;
             ConfigChangePrefix = this.GetLocalization(nameof(ConfigChangePrefix), () => "用户");

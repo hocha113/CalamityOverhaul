@@ -15,7 +15,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         /// <summary>收域、水位退落，撕口自外向内长回</summary>
         Closing,
         /// <summary>鬼雨异化翻转：血湖沸腾变色→窥影→180°倒转→落定，结算帧切形态</summary>
-        Flipping
+        Flipping,
+        /// <summary>鬼梦拉入：湖剧烈沸腾、镜中黑犬凝视→180°倒转，红闪结算切进梦侧</summary>
+        DreamPull,
+        /// <summary>身处鬼梦：红天村落、湖水不见；物品封禁，左键唤犬</summary>
+        Dreaming,
+        /// <summary>鬼梦归返：湖水自屏底涌回→倒转，暖白闪落定回血湖</summary>
+        DreamReturn
     }
 
     /// <summary>鬼伞血湖领域。架构与 <see cref="OniDomain"/> 同构：门面+观看选择，权威在 <see cref="KikasaDomainPlayer"/></summary>
@@ -81,6 +87,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         /// <summary>观看域的鬼雨异化混合 0~1，驱动全部血系表现的冷化</summary>
         public static float ViewedRainBlend => Viewed?.RainBlend ?? 0f;
+
+        /// <summary>观看域的鬼梦在场 0~1，驱动梦空/压光与湖面表现关停的交叉渐变</summary>
+        public static float ViewedDreamBlend => Viewed?.DreamBlend ?? 0f;
 
         /// <summary>血系表现色随观看域的鬼雨异化冷化</summary>
         public static Color CoolTint(Color blood, Color rain)
@@ -160,7 +169,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                     }
                     return kdp.OpenDomain();
                 case KikasaDomainPhase.Flipping:
-                    //倒转进行中收不了域，世界正翻在半空
+                case KikasaDomainPhase.DreamPull:
+                case KikasaDomainPhase.Dreaming:
+                case KikasaDomainPhase.DreamReturn:
+                    //倒转/鬼梦进行中收不了域，世界正翻在半空或困在梦里
                     busy = true;
                     return false;
                 default:
@@ -190,6 +202,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                     busy = true;
                     return false;
             }
+        }
+
+        /// <summary>倒影恶犬命令：域激活稳态切换开关；翻转与鬼梦相位不受理——镜面正忙</summary>
+        internal static bool TryDreamReflect(Player player, out bool busy) {
+            busy = false;
+            KikasaDomainPlayer kdp = player.GetModPlayer<KikasaDomainPlayer>();
+            if (!kdp.AnyActive) {
+                return false;
+            }
+            if (kdp.Phase == KikasaDomainPhase.Flipping || kdp.InDreamPhase) {
+                busy = true;
+                return false;
+            }
+            return kdp.ToggleHoundReflection();
+        }
+
+        /// <summary>
+        /// 鬼梦拉入/归返命令：Open 稳态 + 满水位 + 倒影已醒 → 拉入；
+        /// Dreaming → 归返；其余阶段 busy 不受理。域关着时不代开——入梦要先有湖有影
+        /// </summary>
+        internal static bool TryDreamPull(Player player, out bool busy) {
+            busy = false;
+            KikasaDomainPlayer kdp = player.GetModPlayer<KikasaDomainPlayer>();
+            return kdp.PullDream(out busy);
         }
     }
 }

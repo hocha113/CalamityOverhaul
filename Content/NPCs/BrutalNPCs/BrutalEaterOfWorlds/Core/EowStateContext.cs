@@ -66,6 +66,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Core
         public bool MergeHoming { get; set; }
         #endregion
 
+        #region 投技·生吞入腹（权威端声明，随同步槽下发；客户端回读）
+        /// <summary>被吞玩家 whoAmI，-1=无(槽内编码为 who+1)</summary>
+        public int GrabTargetWho { get; set; } = -1;
+        /// <summary>吞噬相位 0无 1咬合顿帧 2入地俯冲 3腹内挤压 4携人上冲 5已喷出</summary>
+        public int GrabPhase { get; set; }
+        /// <summary>挤压拍计数(事件递增，受害端严格前进消费)</summary>
+        public int GrabBeat { get; set; }
+        #endregion
+
         #region 演出通道
         /// <summary>体节间距系数(0.55~1.2)，蓄势压缩用；写入同步槽</summary>
         public float Compression { get; set; } = 1f;

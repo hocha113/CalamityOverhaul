@@ -65,10 +65,17 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
                 SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
 
-            float time = (float)Main.timeForVisualEffects * 0.058f;
+            //秒制时间，shader 内常量全按 Hz 标定
+            float time = (float)Main.timeForVisualEffects / 60f;
             shader.Parameters["uTime"]?.SetValue(time);
             shader.Parameters["uIntensity"]?.SetValue(intensity);
             shader.Parameters["uAspectRatio"]?.SetValue((float)vpW / vpH);
+            //相机偏移按视口高归一喂层间视差：X 用于横向漂移，
+            //Y 以甲板行走面为锚——飞离甲板时构造核心按远景档位下沉，钉在世界里
+            shader.Parameters["uCamX"]?.SetValue(Main.screenPosition.X / vpH);
+            float camCenterY = Main.screenPosition.Y + vpH * 0.5f;
+            float anchorY = CybCourseGen.SurfaceY * 16f;
+            shader.Parameters["uCamY"]?.SetValue((camCenterY - anchorY) / vpH);
             shader.CurrentTechnique.Passes[0].Apply();
 
             spriteBatch.Draw(VaultAsset.placeholder2.Value, new Rectangle(0, 0, vpW, vpH), Color.White);

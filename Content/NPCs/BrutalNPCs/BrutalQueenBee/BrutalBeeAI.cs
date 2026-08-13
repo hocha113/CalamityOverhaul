@@ -56,6 +56,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee
             InitStatsOnce(npc);
             npc.timeLeft = 600;
 
+            //投技窗内蜂群是"茧"不是刀：收网/裹茧期接触伤归零，爆散拍恢复(每帧声明，全端确定性一致)
+            npc.damage = queenAI.Machine?.CurrentState is States.QBSwarmLiftState lift && lift.BeesHarmless
+                ? 0 : npc.defDamage;
+
             //服务端错帧周期纠偏：确定性推演的兜底通道
             if (!VaultUtils.isClient && (Main.GameUpdateCount + npc.whoAmI) % 30 == 0) {
                 npc.netUpdate = true;

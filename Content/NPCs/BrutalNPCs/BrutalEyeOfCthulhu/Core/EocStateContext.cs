@@ -31,6 +31,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core
         public int MaelstromCooldown { get; set; }
         /// <summary>大招至少放过一次</summary>
         public bool MaelstromPlayed { get; set; }
+        /// <summary>撕咬拖曳投技冷却帧，权威端仅二阶段递减；初值留出转阶段后的缓冲</summary>
+        public int MawDragCooldown { get; set; } = 420;
+        /// <summary>投技至少亮过一次相（含落空）</summary>
+        public bool MawDragPlayed { get; set; }
         /// <summary>白昼狂暴强度 0~1，各端由已同步的昼夜状态确定性推导</summary>
         public float EnrageRamp { get; set; }
         #endregion
@@ -162,6 +166,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core
             if (IsLowPhase && MaelstromCooldown <= 0
                 && (!MaelstromPlayed || Main.rand.NextBool(3))) {
                 return EocStateIndex.Maelstrom;
+            }
+
+            //二阶段投技：佯攻假冲刺的升级变体，冷却到点优先抽取；
+            //运镜播放中与世界时停期间不出手（公平阀）
+            if (IsSecondPhase && MawDragCooldown <= 0
+                && !TimeFreezes.TimeFreezeSystem.IsAnyGlobalFreezeActive
+                && InnoVault.Cinematics.CutsceneDirector.CurrentClip == null
+                && (!MawDragPlayed || Main.rand.NextBool(2))) {
+                return EocStateIndex.MawDrag;
             }
 
             if (attackBag.Count == 0) {

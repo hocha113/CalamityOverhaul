@@ -75,26 +75,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants
             }
         }
 
-        /// <summary>同一个键：场上有自己的鬼奴就遣返，没有就试着召</summary>
-        private void ToggleServant() {
-            //先找场上属于自己的鬼奴（穷举实现共用 IKikasaServant 报到）
+        /// <summary>场上属于此玩家的鬼奴（穷举实现共用 IKikasaServant 报到）；无则 null</summary>
+        internal IKikasaServant FindActiveServant() {
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile proj = Main.projectile[i];
                 if (proj?.active == true && proj.owner == Player.whoAmI
                     && proj.ModProjectile is IKikasaServant servant) {
-                    //刚召完的短锁窗内不受理遣返：双击不该把出水一半的鬼奴按回去
-                    if (Main.GameUpdateCount < localLockUntil) {
-                        return;
-                    }
-                    //已在溶解中：给个"没受理"的答话，别让按键静默吞掉
-                    if (servant.IsDismissing) {
-                        Refuse(ServantBusy);
-                        return;
-                    }
-                    servant.BeginDismiss();
-                    localLockUntil = Main.GameUpdateCount + 30;
+                    return servant;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>同一个键：场上有自己的鬼奴就遣返，没有就试着召</summary>
+        private void ToggleServant() {
+            IKikasaServant active = FindActiveServant();
+            if (active != null) {
+                //刚召完的短锁窗内不受理遣返：双击不该把出水一半的鬼奴按回去
+                if (Main.GameUpdateCount < localLockUntil) {
                     return;
                 }
+                //已在溶解中：给个"没受理"的答话，别让按键静默吞掉
+                if (active.IsDismissing) {
+                    Refuse(ServantBusy);
+                    return;
+                }
+                active.BeginDismiss();
+                localLockUntil = Main.GameUpdateCount + 30;
+                return;
             }
 
             if (Main.GameUpdateCount < localLockUntil) {

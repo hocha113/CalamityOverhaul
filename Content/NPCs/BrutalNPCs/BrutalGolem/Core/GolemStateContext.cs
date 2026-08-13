@@ -34,6 +34,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
         public bool PostUltRage { get; set; }
         /// <summary>死亡演出已完，CheckDead 据此放行</summary>
         public bool DeathPerformanceFinished { get; set; }
+        /// <summary>上次投技尝试帧（服务端冷却裁决，0=从未）</summary>
+        public uint LastGrabTick { get; set; }
         #endregion
 
         #region 蓄力/表现数据（状态写入，绘制读取）

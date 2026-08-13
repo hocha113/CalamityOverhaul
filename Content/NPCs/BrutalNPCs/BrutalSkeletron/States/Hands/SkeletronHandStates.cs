@@ -40,6 +40,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States.Hands
                         return new HandCrushState();
                     case SkeletronStateIndex.ClapPincer:
                         return new HandClapState();
+                    case SkeletronStateIndex.PalmSnatch:
+                        return new HandSnatchState();
                     case SkeletronStateIndex.SpinBoneStorm:
                     case SkeletronStateIndex.DayEnrage:
                         return new HandOrbitState();

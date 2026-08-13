@@ -7,6 +7,7 @@ namespace CalamityOverhaul.Common
     [VaultLoaden(CWRConstant.Effects)]
     public static class EffectLoader
     {
+        public static Asset<Effect> Blackwall { get; set; }
         public static Asset<Effect> PowerSFShader { get; set; }
         public static Asset<Effect> EowAcid { get; set; }
         public static Asset<Effect> EowGeyser { get; set; }
@@ -29,6 +30,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> FishronTornado { get; set; }
         public static Asset<Effect> FishronTsunami { get; set; }
         public static Asset<Effect> FishronTelegraph { get; set; }
+        public static Asset<Effect> FishronGrabVeil { get; set; }
         public static Asset<Effect> EmpressLanceBeam { get; set; }
         public static Asset<Effect> EmpressSunbeam { get; set; }
         public static Asset<Effect> EmpressAurora { get; set; }
@@ -115,6 +117,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> HotwindPanel { get; set; }
         public static Asset<Effect> DraedonPanel { get; set; }
         public static Asset<Effect> ForestPanel { get; set; }
+        public static Asset<Effect> QuestChronicleBg { get; set; }
         public static Asset<Effect> NotifBadge { get; set; }
         public static Asset<Effect> ShepelGlitch { get; set; }
         public static Asset<Effect> SeaDomainField { get; set; }
@@ -205,6 +208,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> EntrustGuideCard { get; set; }
         public static Asset<Effect> CybCourseSky { get; set; }
         public static Asset<Effect> CybCourseLoading { get; set; }
+        public static Asset<Effect> CybCourseBoot { get; set; }
         public static Asset<Effect> CybCourseEntryReveal { get; set; }
         public static Asset<Effect> VoidColonyLoading { get; set; }
         public static Asset<Effect> SHPCVoltArc { get; set; }
@@ -250,6 +254,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaFlip { get; set; }
         public static Asset<Effect> KikasaItemForm { get; set; }
         public static Asset<Effect> KikasaVaultPanel { get; set; }
+        public static Asset<Effect> KikasaHud { get; set; }
         public static Asset<Effect> KikasaHand { get; set; }
         public static Asset<Effect> KikasaNarrativePanel { get; set; }
         public static Asset<Effect> KikasaMoonRay { get; set; }
@@ -258,6 +263,9 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> KikasaInkDrop { get; set; }
         public static Asset<Effect> KikasaInkSplat { get; set; }
         public static Asset<Effect> KikasaUmbrella { get; set; }
+        public static Asset<Effect> KikasaHound { get; set; }
+        public static Asset<Effect> KikasaDream { get; set; }
+        public static Asset<Effect> KikasaDreamSky { get; set; }
         public static Asset<Effect> OniOmokage { get; set; }
         public static Asset<Effect> OniPaperPeel { get; set; }
         public static Asset<Effect> OniSky { get; set; }
@@ -309,5 +317,9 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> ScrapMagnetField { get; set; }
         public static Asset<Effect> ScrapSiegeFilter { get; set; }
         public static Asset<Effect> ShockRing { get; set; }
+        public static Asset<Effect> DungeonworldLoading { get; set; }
+        public static Asset<Effect> DungeonworldEntryReveal { get; set; }
+        public static Asset<Effect> DungeonworldSky { get; set; }
+        public static Asset<Effect> DungeonworldFog { get; set; }
     }
 }

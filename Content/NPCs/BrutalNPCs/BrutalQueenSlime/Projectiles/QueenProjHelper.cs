@@ -14,10 +14,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Projectiles
             int spire = ModContent.ProjectileType<QueenCrystalSpireProj>();
             int chandelier = ModContent.ProjectileType<QueenChandelierProj>();
             int gale = ModContent.ProjectileType<QueenGaleFieldProj>();
+            int royal = ModContent.ProjectileType<QueenRoyalChandelierProj>();
+            int prison = ModContent.ProjectileType<QueenCrystalPrisonProj>();
 
             foreach (var p in Main.ActiveProjectiles) {
                 if (p.type == beam || p.type == shard || p.type == meteor
-                    || p.type == spire || p.type == chandelier || p.type == gale) {
+                    || p.type == spire || p.type == chandelier || p.type == gale
+                    || p.type == royal || p.type == prison) {
                     p.Kill();
                 }
             }

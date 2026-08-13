@@ -2,6 +2,8 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.QuestLogs.Core;
 using CalamityOverhaul.Content.QuestLogs.Styles;
+using CalamityOverhaul.Content.QuestLogs.Styles.Chronicle;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,29 +13,110 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using Terraria.UI;
 
 namespace CalamityOverhaul.Content.QuestLogs
 {
+    /// <summary>任务书当前摊开的站点</summary>
+    public enum QuestLogView
+    {
+        /// <summary>任务图谱</summary>
+        Chart,
+        /// <summary>委托卷宗</summary>
+        Entrust,
+    }
+
+    /// <summary>任务书全屏摊开期间隐藏的原版 UI 层</summary>
+    internal class QuestLogInterfaceSystem : ModSystem
+    {
+        private static readonly HashSet<string> HiddenLayers = [
+            "Vanilla: Hotbar",
+            "Vanilla: Resource Bars",
+            "Vanilla: Inventory",
+            "Vanilla: Info Accessories Bar",
+            "Vanilla: Map / Minimap",
+            "Vanilla: Entity Health Bars",
+            "Vanilla: Emote Bubbles",
+            "Vanilla: Builder Accessories",
+            "Vanilla: Radial Hotbars",
+        ];
+
+        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
+            QuestLog log = QuestLog.Instance;
+            //含合书过程，否则淡出期原版 HUD 会先弹回来
+            if (log == null || (!log.IsOpen && log.OpenProgress.Current < 0.5f)) {
+                return;
+            }
+            foreach (var layer in layers) {
+                if (HiddenLayers.Contains(layer.Name)) {
+                    layer.Active = false;
+                }
+            }
+        }
+    }
+
     public class QuestLog : UIHandle, ILocalizedModType
     {
         [VaultLoaden(CWRConstant.UI)]
         public static Asset<Texture2D> QuestLogStart = null;
         public static QuestLog Instance => UIHandleLoader.GetUIHandleOfType<QuestLog>();
 
-        public override bool Active => (visible || openScale > 0.01f || Main.playerInventory) && CWRServerConfig.Instance.QuestLog;
-        internal bool visible;
+        //WorldFreezeSystem 的 reason 标签，单人开书即冻世界
+        private const string FreezeReason = "QuestLog";
+
+        /// <summary>
+        /// 任务图谱是否启用。关掉时本书仍是委托卷宗的宿主——
+        /// 委托来自各条剧情线，不该跟着图谱一起消失
+        /// </summary>
+        public static bool ChartEnabled => CWRServerConfig.Instance.QuestLog;
+
+        /// <summary>左栏站点数：图谱关掉时只剩委托一站</summary>
+        public int StationCount => ChartEnabled ? 2 : 1;
+
+        /// <summary>第 index 个站点对应的视图</summary>
+        public QuestLogView StationAt(int index)
+            => !ChartEnabled ? QuestLogView.Entrust
+                : index == 0 ? QuestLogView.Chart : QuestLogView.Entrust;
+
+        //摊开期间恒活跃；背包里的启动图标只在图谱启用时出现
+        public override bool Active
+            => IsOpen || OpenProgress.Current > 0.001f || (Main.playerInventory && ChartEnabled);
+
+        //详情栏摊开时先退详情，Esc 的第二下才合书
+        public override bool CloseOnEscape => !showDetailPanel;
+
+        public override SoundStyle? OpenSound => CWRSound.ButtonZero with { Pitch = 0.1f, Volume = 0.6f };
+
+        public override SoundStyle? CloseSound => CWRSound.ButtonZero with { Pitch = -0.1f, Volume = 0.6f };
+
         public float MainPanelAlpha => mainPanelAlpha;
         private float mainPanelAlpha;
-        private float openScale;
-        private Rectangle mainCloseButtonRect;
 
         public IQuestLogStyle CurrentStyle { get; set; } = new HotwindQuestLogStyle();
 
         public IReadOnlyCollection<QuestNode> Nodes => QuestNode.AllQuests;
+
+        /// <summary>本帧的全屏分区</summary>
+        public QuestLogLayout CurrentLayout => layout;
+        private QuestLogLayout layout;
+
+        /// <summary>当前摊开的站点</summary>
+        public QuestLogView View { get; private set; } = QuestLogView.Chart;
+
+        /// <summary>委托卷宗是否正摊在书里，供委托管理器判定内嵌态</summary>
+        public bool EntrustViewActive => IsOpen && View == QuestLogView.Entrust;
+
+        /// <summary>内嵌内容区（委托卷宗铺在这里）</summary>
+        public Rectangle ContentHostRect => layout.Canvas;
+
+        /// <summary>章目：没有前置的根节点，左栏据此列目并跳转</summary>
+        public IReadOnlyList<QuestNode> ChapterRoots => chapterRoots;
+        private readonly List<QuestNode> chapterRoots = [];
 
         private float zoom = 1f;
         private bool isDraggingMap;
@@ -41,16 +124,14 @@ namespace CalamityOverhaul.Content.QuestLogs
         private Vector2 dragStartMousePos;
         private Vector2 dragStartPanOffset;
 
-        private Rectangle panelRect;
         private int oldScrollWheelValue;
 
         private QuestNode selectedNode;
         private QuestNode selectedNodeTransfers;
         private bool showDetailPanel;
-        private float detailPanelAlpha;
-        private Rectangle detailPanelRect;
-        private const int DetailPanelWidth = 500;
-        private const int DetailPanelHeight = 600;
+        private readonly AnimatedFloat detailAnim = new(0f, 0.16f);
+        private float detailScroll;
+        private float detailScrollTarget;
 
         private QuestNode hoveredNode;
 
@@ -59,7 +140,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         public string LocalizationCategory => "UI";
 
-        private QuestLogLauncher launcher;
+        private readonly QuestLogLauncher launcher;
         public Vector2 LauncherPosition;
         private bool isDraggingLauncher;
         private Vector2 dragStartLauncherPos;
@@ -81,20 +162,41 @@ namespace CalamityOverhaul.Content.QuestLogs
         public static LocalizedText ObjectiveTemplateCollectItem;
         public static LocalizedText DisabledOverlayText;
 
+        //「远征纪要」样式的外框文案
+        public static LocalizedText ChronicleTitle;
+        public static LocalizedText ChronicleProgress;
+        public static LocalizedText ChronicleHint;
+        public static LocalizedText ChronicleStationChart;
+        public static LocalizedText ChronicleStationEntrust;
+        public static LocalizedText ChronicleChapterTitle;
+        public static LocalizedText ChronicleLegendTitle;
+        public static LocalizedText ChronicleLegendSealed;
+        public static LocalizedText ChronicleLegendUnclaimed;
+        public static LocalizedText ChronicleLegendActive;
+        public static LocalizedText ChronicleLegendLocked;
+
         private List<IQuestLogStyle> availableStyles;
         private int currentStyleIndex;
 
+        /// <summary>「远征纪要」在样式表中的位置，新档默认</summary>
+        public const int ChronicleStyleIndex = 3;
+
+        //旧存档是否已被顶到新样式一次
+        private bool chronicleMigrated;
+
         public QuestLog() {
             launcher = new QuestLogLauncher();
-            panelRect = new Rectangle(0, 0, 800, 600);
             LauncherPosition = new Vector2(572, 108);
 
+            //索引 0~2 是旧皮肤（存档里已按此序号存过，不可重排）；3 是新的门面样式
             availableStyles = [
                 new HotwindQuestLogStyle(),
                 new DraedonQuestLogStyle(),
-                new ForestQuestLogStyle()
+                new ForestQuestLogStyle(),
+                new ChronicleQuestLogStyle()
             ];
-            CurrentStyle = availableStyles[0];
+            currentStyleIndex = ChronicleStyleIndex;
+            CurrentStyle = availableStyles[currentStyleIndex];
         }
 
         /// <summary>按索引设样式，sync则同步委托管理器</summary>
@@ -123,6 +225,17 @@ namespace CalamityOverhaul.Content.QuestLogs
             ObjectiveTemplateObtainItem = this.GetLocalization("ObjectiveTemplate.ObtainItem", () => "Obtain {0}");
             ObjectiveTemplateCollectItem = this.GetLocalization("ObjectiveTemplate.CollectItem", () => "Collect {0} {1}");
             DisabledOverlayText = this.GetLocalization(nameof(DisabledOverlayText), () => "任务检测已在当前世界中被禁止\n重新进入世界以重新选择配置");
+            ChronicleTitle = this.GetLocalization(nameof(ChronicleTitle), () => "远 征 纪 要");
+            ChronicleProgress = this.GetLocalization(nameof(ChronicleProgress), () => "已结 {0} / {1}");
+            ChronicleHint = this.GetLocalization(nameof(ChronicleHint), () => "滚轮 缩放   ·   拖动 平移   ·   Esc 合卷");
+            ChronicleStationChart = this.GetLocalization(nameof(ChronicleStationChart), () => "任务图谱");
+            ChronicleStationEntrust = this.GetLocalization(nameof(ChronicleStationEntrust), () => "委托卷宗");
+            ChronicleChapterTitle = this.GetLocalization(nameof(ChronicleChapterTitle), () => "章 目");
+            ChronicleLegendTitle = this.GetLocalization(nameof(ChronicleLegendTitle), () => "图 例");
+            ChronicleLegendSealed = this.GetLocalization(nameof(ChronicleLegendSealed), () => "已结卷");
+            ChronicleLegendUnclaimed = this.GetLocalization(nameof(ChronicleLegendUnclaimed), () => "待领赏");
+            ChronicleLegendActive = this.GetLocalization(nameof(ChronicleLegendActive), () => "在行中");
+            ChronicleLegendLocked = this.GetLocalization(nameof(ChronicleLegendLocked), () => "未启程");
         }
 
         public override void SaveUIData(TagCompound tag) {
@@ -132,6 +245,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             tag[Name + ":" + nameof(dragStartPanOffset)] = dragStartPanOffset;
             tag[Name + ":" + nameof(currentStyleIndex)] = currentStyleIndex;
             tag[Name + ":" + nameof(LauncherPosition)] = LauncherPosition;
+            tag[Name + ":" + nameof(chronicleMigrated)] = true;
         }
 
         public override void LoadUIData(TagCompound tag) {
@@ -142,152 +256,229 @@ namespace CalamityOverhaul.Content.QuestLogs
             tag.TryGet(Name + ":" + nameof(dragStartPanOffset), out dragStartPanOffset);
             tag.TryGet(Name + ":" + nameof(currentStyleIndex), out currentStyleIndex);
             currentStyleIndex = (int)MathHelper.Clamp(currentStyleIndex, 0, availableStyles.Count - 1);
+            //新样式上线前的存档只存过 0~2，读回来会把玩家钉在旧皮肤上。
+            //一次性把它顶到「远征纪要」，此后尊重玩家自己的选择
+            tag.TryGet(Name + ":" + nameof(chronicleMigrated), out chronicleMigrated);
+            if (!chronicleMigrated) {
+                currentStyleIndex = ChronicleStyleIndex;
+                chronicleMigrated = true;
+            }
+            SetStyleByIndex(currentStyleIndex, false);
             tag.TryGet(Name + ":" + nameof(LauncherPosition), out LauncherPosition);
             if (LauncherPosition == Vector2.Zero) {
                 LauncherPosition = new Vector2(572, 108);
             }
         }
 
+        protected override void OnOpen() {
+            //全屏摊开，背包让位
+            Main.playerInventory = false;
+            if (!ChartEnabled) {
+                View = QuestLogView.Entrust;
+            }
+            CloseDetail(false);
+            isDraggingMap = false;
+            if (VaultUtils.isSinglePlayer) {
+                WorldFreezeSystem.Activate(FreezeReason);
+            }
+        }
+
+        /// <summary>切站点，详情随之收起</summary>
+        public void SetView(QuestLogView view) {
+            if (View == view || (view == QuestLogView.Chart && !ChartEnabled)) {
+                return;
+            }
+            View = view;
+            CloseDetail(false);
+            isDraggingMap = false;
+            hoveredNode = null;
+        }
+
+        /// <summary>开书并翻到委托卷宗；已在该站点则合书</summary>
+        public void ToggleEntrustView() {
+            if (EntrustViewActive) {
+                Close();
+                return;
+            }
+            SetView(QuestLogView.Entrust);
+            if (!IsOpen) {
+                Open();
+            }
+            else {
+                SoundEngine.PlaySound(SoundID.MenuTick);
+            }
+        }
+
+        protected override void OnClose() {
+            CloseDetail(false);
+            isDraggingMap = false;
+            hoveredNode = null;
+            if (VaultUtils.isSinglePlayer) {
+                WorldFreezeSystem.Deactivate(FreezeReason);
+            }
+        }
+
         public override void LogicUpdate() {
-            //逻辑帧更样式，防高帧加速
+            //逻辑帧更样式与内部动画，防高帧加速
             CurrentStyle?.UpdateStyle();
+            if (chapterRoots.Count == 0 || Main.GameUpdateCount % 30 == 0) {
+                RefreshChapterRoots();
+            }
+            detailAnim.TweenTo(showDetailPanel ? 1f : 0f);
+            detailAnim.Update();
+            detailScroll = MathHelper.Lerp(detailScroll, detailScrollTarget, 0.2f);
         }
 
         public override void Update() {
-            if (visible) {
-                openScale = MathHelper.Lerp(openScale, 1f, 0.14f);
-                mainPanelAlpha = MathHelper.Lerp(mainPanelAlpha, 1f, 0.14f);
-            }
-            else {
-                openScale = MathHelper.Lerp(openScale, 0f, 0.14f);
-                mainPanelAlpha = MathHelper.Lerp(mainPanelAlpha, 0f, 0.14f);
-            }
+            //滚轮基准每帧都要吃掉，合书期间不读就会在开书首帧收到一个巨量增量
+            int scrollDelta = ReadScrollDelta();
 
-            if (showDetailPanel) {
-                if (detailPanelAlpha < 1f) {
-                    detailPanelAlpha += 0.1f;
-                }
-            }
-            else {
-                if (detailPanelAlpha > 0f) {
-                    detailPanelAlpha -= 0.1f;
-                }
-            }
+            mainPanelAlpha = QuestLogTheme.EaseOutCubic(OpenProgress.Current);
+            //旧样式没有左页，左栏归零防止出现看不见却能点的死区
+            layout = QuestLogTheme.Layout(QuestLogTheme.EaseOutCubic(detailAnim.Current),
+                CurrentStyle.DrawsOwnChrome);
+            //命中判定阶段就交付分区，样式的按钮矩形与绘制读同一份
+            CurrentStyle.SyncLayout(in layout);
+            UIHitBox = layout.Full;
+            hoverInMainPage = IsOpen;
 
-            //居中，叠委托则右推
-            int availLeft = 0;
-            var entrustUI = QuestManagerUI.Instance;
-            if (entrustUI != null) {
-                int rightEdge = entrustUI.PanelRightEdge;
-                if (rightEdge > 0)
-                    availLeft = rightEdge;
-            }
-            panelRect.X = Math.Max(0, (Main.screenWidth - panelRect.Width) / 2);
-            int overlap = availLeft + 8 - panelRect.X;
-            if (overlap > 0) {
-                panelRect.X += overlap;
-                panelRect.X = Math.Min(panelRect.X, Math.Max(0, Main.screenWidth - panelRect.Width));
-            }
-            panelRect.Y = (Main.screenHeight - panelRect.Height) / 2;
+            UpdateLauncher();
 
-            UIHitBox = panelRect;
-            hoverInMainPage = UIHitBox.Intersects(MouseHitBox) && visible;
-
-            if (Main.playerInventory) {
-                if (launcher.IsHovered && !hoverInMainPage) {
-                    if (keyLeftPressState == KeyPressState.Pressed) {
-                        visible = !visible;
-                        if (!visible) {
-                            //关时顺带关详情
-                            showDetailPanel = false;
-                            selectedNode = null;
-                        }
-                        launcher.PlayClickSound(visible);
-                    }
-                }
-            }
-            else {
-                //键关
-                if (visible && Main.keyState.IsKeyDown(Keys.Escape) && Main.oldKeyState.IsKeyUp(Keys.Escape)) {
-                    if (showDetailPanel) {
-                        //先关详情
-                        showDetailPanel = false;
-                        selectedNode = null;
-                        SoundEngine.PlaySound(SoundID.MenuClose);
-                    }
-                    else {
-                        //再关主面板
-                        visible = false;
-                        SoundEngine.PlaySound(SoundID.MenuClose);
-                    }
-                }
-            }
-
-            if (Main.playerInventory) {
-                if (launcher.IsHovered) {
-                    player.mouseInterface = true;
-                    //右键拖
-                    if (keyRightPressState == KeyPressState.Pressed && !isDraggingLauncher) {
-                        isDraggingLauncher = true;
-                        dragStartLauncherPos = LauncherPosition;
-                        dragStartMousePosForLauncher = Main.MouseScreen;
-                    }
-                }
-
-                if (isDraggingLauncher) {
-                    Vector2 diff = Main.MouseScreen - dragStartMousePosForLauncher;
-                    LauncherPosition = dragStartLauncherPos + diff;
-                    if (keyRightPressState == KeyPressState.Released) {
-                        isDraggingLauncher = false;
-                    }
-                }
-
-                launcher.Update(LauncherPosition, visible);
-            }
-
-            if (openScale <= 0.01f && !visible) return;
-
-            if (hoverInMainPage) {
-                player.mouseInterface = true;
-                UIInputGuard.SuppressWeaponSwitch();
-            }
-
-            if (showDetailPanel && detailPanelAlpha > 0.5f) {
-                //详情位，避委托
-                int detailX = Math.Max(0, (Main.screenWidth - DetailPanelWidth) / 2);
-                int detailOverlap = availLeft + 8 - detailX;
-                if (detailOverlap > 0) {
-                    detailX += detailOverlap;
-                    detailX = Math.Min(detailX, Math.Max(0, Main.screenWidth - DetailPanelWidth));
-                }
-                detailPanelRect = new Rectangle(
-                    detailX,
-                    (Main.screenHeight - DetailPanelHeight) / 2,
-                    DetailPanelWidth,
-                    DetailPanelHeight
-                );
-                mainCloseButtonRect = new Rectangle(panelRect.Right - 35, panelRect.Y + 5, 30, 30);
-                UpdateDetailPanel();
+            if (!IsOpen && OpenProgress.Current <= 0.01f) {
                 return;
             }
 
-            bool hoveredOtherButton = false;
-
-            mainCloseButtonRect = new Rectangle(panelRect.Right - 35, panelRect.Y + 5, 30, 30);
-            if (mainCloseButtonRect.Contains(MouseHitBox.Location)) {
+            if (IsOpen) {
+                //整屏接管：指针、滚轮换武器、背包配方栏滚动，三者每帧常驻
+                Main.playerInventory = false;
                 player.mouseInterface = true;
-                hoveredOtherButton = true;
+                UIInputGuard.SuppressWeaponSwitch();
+                PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/QuestLog");
+            }
+
+            if (!IsOpen || OpenProgress.Current < 0.9f) {
+                return;
+            }
+
+            //Esc 第一下退详情，CloseOnEscape 此时为 false 所以基类不会抢先合书
+            if (showDetailPanel && Main.keyState.IsKeyDown(Keys.Escape) && Main.oldKeyState.IsKeyUp(Keys.Escape)) {
+                CloseDetail();
+                return;
+            }
+
+            bool hoveredChrome = UpdateChrome();
+            bool hoveredDetail = UpdateDetailPanel(scrollDelta);
+
+            if (View == QuestLogView.Chart) {
+                UpdateCanvas(scrollDelta, hoveredChrome || hoveredDetail);
+            }
+            else {
+                //委托卷宗铺在同一块内容区里，输入交给它自己处理
+                QuestManagerUI.Instance?.UpdateEmbedded(layout.Canvas, hoveredChrome, scrollDelta);
+            }
+        }
+
+        /// <summary>左栏被指到的章目行，样式据此提亮；-1 为无</summary>
+        public int HoveredChapter { get; private set; } = -1;
+
+        /// <summary>左栏站点页签与章目，返回指针是否落在左栏可点区域</summary>
+        private bool UpdateRail() {
+            HoveredChapter = -1;
+            //左栏只属于自绘外框的样式，旧样式用页脚的站点切换按钮
+            if (!CurrentStyle.DrawsOwnChrome) {
+                return false;
+            }
+            Point mouse = Main.MouseScreen.ToPoint();
+            bool hovered = false;
+            for (int i = 0; i < StationCount; i++) {
+                Rectangle tab = QuestLogTheme.RailTab(in layout, i);
+                if (!tab.Contains(mouse)) {
+                    continue;
+                }
+                hovered = true;
                 if (keyLeftPressState == KeyPressState.Pressed) {
-                    visible = false;
-                    SoundEngine.PlaySound(SoundID.MenuClose);
+                    QuestLogView target = StationAt(i);
+                    if (View != target) {
+                        SetView(target);
+                        SoundEngine.PlaySound(SoundID.MenuTick);
+                    }
                 }
             }
 
-            if (HasUnclaimedRewards()) {
-                Rectangle claimRect = CurrentStyle.GetClaimAllButtonRect(panelRect);
-                if (claimRect.Contains(Main.MouseScreen.ToPoint())) {
-                    player.mouseInterface = true;
-                    hoveredOtherButton = true;
+            if (View != QuestLogView.Chart) {
+                return hovered;
+            }
+
+            int capacity = Math.Min(chapterRoots.Count, QuestLogTheme.RailChapterCapacity(in layout));
+            for (int i = 0; i < capacity; i++) {
+                Rectangle row = QuestLogTheme.RailChapter(in layout, i);
+                if (!row.Contains(mouse)) {
+                    continue;
+                }
+                hovered = true;
+                HoveredChapter = i;
+                if (keyLeftPressState == KeyPressState.Pressed) {
+                    FocusNode(chapterRoots[i]);
+                    SoundEngine.PlaySound(SoundID.MenuTick);
+                }
+            }
+            return hovered;
+        }
+
+        /// <summary>背包里的启动图标，仅合书状态下响应</summary>
+        private void UpdateLauncher() {
+            if (!Main.playerInventory || IsOpen) {
+                return;
+            }
+
+            if (launcher.IsHovered) {
+                player.mouseInterface = true;
+                if (keyLeftPressState == KeyPressState.Pressed) {
+                    Open();
+                }
+                //右键拖动图标
+                if (keyRightPressState == KeyPressState.Pressed && !isDraggingLauncher) {
+                    isDraggingLauncher = true;
+                    dragStartLauncherPos = LauncherPosition;
+                    dragStartMousePosForLauncher = Main.MouseScreen;
+                }
+            }
+
+            if (isDraggingLauncher) {
+                LauncherPosition = dragStartLauncherPos + (Main.MouseScreen - dragStartMousePosForLauncher);
+                if (keyRightPressState == KeyPressState.Released) {
+                    isDraggingLauncher = false;
+                }
+            }
+
+            launcher.Update(LauncherPosition);
+        }
+
+        private int ReadScrollDelta() {
+            int wheel = Mouse.GetState().ScrollWheelValue;
+            int delta = wheel - oldScrollWheelValue;
+            oldScrollWheelValue = wheel;
+            return delta;
+        }
+
+        /// <summary>页眉与总控按钮，返回指针是否落在其中之一上</summary>
+        private bool UpdateChrome() {
+            bool hovered = UpdateRail();
+            Point mouse = Main.MouseScreen.ToPoint();
+            Rectangle chrome = layout.LegacyChrome;
+
+            if (layout.MainClose.Contains(mouse)) {
+                hovered = true;
+                if (keyLeftPressState == KeyPressState.Pressed) {
+                    Close();
+                    return true;
+                }
+            }
+
+            if (View == QuestLogView.Chart && !showDetailPanel && HasUnclaimedRewards()) {
+                Rectangle claimRect = CurrentStyle.GetClaimAllButtonRect(chrome);
+                if (claimRect.Contains(mouse)) {
+                    hovered = true;
                     if (keyLeftPressState == KeyPressState.Pressed) {
                         ClaimAllRewards();
                         SoundEngine.PlaySound(SoundID.Grab);
@@ -295,11 +486,10 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
             }
 
-            if (panOffset.Length() > 100f) {
-                Rectangle resetRect = CurrentStyle.GetResetViewButtonRect(panelRect);
-                if (resetRect.Contains(Main.MouseScreen.ToPoint())) {
-                    player.mouseInterface = true;
-                    hoveredOtherButton = true;
+            if (View == QuestLogView.Chart && panOffset.Length() > 100f) {
+                Rectangle resetRect = CurrentStyle.GetResetViewButtonRect(chrome);
+                if (resetRect.Contains(mouse)) {
+                    hovered = true;
                     if (keyLeftPressState == KeyPressState.Pressed) {
                         ResetView();
                         SoundEngine.PlaySound(SoundID.MenuTick);
@@ -307,136 +497,152 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
             }
 
-            Rectangle styleRect = CurrentStyle.GetStyleSwitchButtonRect(panelRect);
-            if (styleRect.Contains(Main.MouseScreen.ToPoint())) {
-                player.mouseInterface = true;
-                hoveredOtherButton = true;
+            Rectangle styleRect = CurrentStyle.GetStyleSwitchButtonRect(chrome);
+            if (styleRect.Contains(mouse)) {
+                hovered = true;
                 if (keyLeftPressState == KeyPressState.Pressed) {
-                    int nextIndex = (currentStyleIndex + 1) % availableStyles.Count;
-                    SetStyleByIndex(nextIndex);
+                    SetStyleByIndex((currentStyleIndex + 1) % availableStyles.Count);
                     SoundEngine.PlaySound(SoundID.MenuTick);
                 }
             }
 
-            Rectangle nightRect = CurrentStyle.GetNightModeButtonRect(panelRect);
-            if (nightRect.Contains(Main.MouseScreen.ToPoint())) {
-                player.mouseInterface = true;
-                hoveredOtherButton = true;
-                if (keyLeftPressState == KeyPressState.Pressed) {
-                    NightMode = !NightMode;
-                    SoundEngine.PlaySound(SoundID.MenuTick);
-                }
-            }
-
-            Rectangle questMgrRect = GetQuestManagerButtonRect(panelRect);
-            if (questMgrRect.Contains(Main.MouseScreen.ToPoint())) {
-                player.mouseInterface = true;
-                hoveredOtherButton = true;
-                if (keyLeftPressState == KeyPressState.Pressed) {
-                    QuestManagerUI.Instance?.TogglePanel();
-                    SoundEngine.PlaySound(SoundID.MenuTick);
-                }
-            }
-
-            if (hoverInMainPage) {
-                int scroll = Mouse.GetState().ScrollWheelValue;
-                if (scroll != oldScrollWheelValue) {
-                    float zoomChange = (scroll - oldScrollWheelValue) > 0 ? 0.1f : -0.1f;
-                    float oldZoom = zoom;
-                    float newZoom = MathHelper.Clamp(zoom + zoomChange, 0.4f, 2.0f);
-
-                    if (oldZoom != newZoom) {
-                        Vector2 center = new Vector2(panelRect.X + panelRect.Width / 2, panelRect.Y + panelRect.Height / 2);
-                        Vector2 relativeMouse = Main.MouseScreen - center;
-                        panOffset = relativeMouse - (relativeMouse - panOffset) * (newZoom / oldZoom);
-                        zoom = newZoom;
-                    }
-                }
-                oldScrollWheelValue = scroll;
-
-                hoveredNode = null;
-
-                if (!hoveredOtherButton) {
-                    foreach (var node in Nodes) {
-                        Vector2 nodePos = GetNodeScreenPos(node.CalculatedPosition);
-                        float nodeSize = 24 * zoom;
-                        if (Vector2.Distance(Main.MouseScreen, nodePos) < nodeSize) {
-                            hoveredNode = node;
-                            break;
-                        }
-                    }
-                }
-
-                //左键点击
-                if (keyLeftPressState == KeyPressState.Pressed) {
-                    if (hoveredNode != null) {
-                        //点节点开详情
-                        selectedNode = hoveredNode;
-                        showDetailPanel = true;
+            if (CurrentStyle.SupportsNightMode) {
+                Rectangle nightRect = CurrentStyle.GetNightModeButtonRect(chrome);
+                if (nightRect.Contains(mouse)) {
+                    hovered = true;
+                    if (keyLeftPressState == KeyPressState.Pressed) {
+                        NightMode = !NightMode;
                         SoundEngine.PlaySound(SoundID.MenuTick);
-                        //详情居中
-                        detailPanelRect = new Rectangle(
-                            (Main.screenWidth - DetailPanelWidth) / 2,
-                            (Main.screenHeight - DetailPanelHeight) / 2,
-                            DetailPanelWidth,
-                            DetailPanelHeight
-                        );
                     }
-                    else {
-                        //空白处拖地图
-                        isDraggingMap = true;
-                        dragStartMousePos = Main.MouseScreen;
-                        dragStartPanOffset = panOffset;
-                    }
-                }
-
-                if (keyLeftPressState == KeyPressState.Held && isDraggingMap) {
-                    Vector2 diff = Main.MouseScreen - dragStartMousePos;
-                    panOffset = dragStartPanOffset + diff;
-                }
-
-                if (keyLeftPressState == KeyPressState.Released) {
-                    isDraggingMap = false;
                 }
             }
-            else {
+
+            //旧样式没有左栏页签，用这枚按钮在图谱与委托两站之间来回；
+            //自绘外框的样式由左栏页签负责，图谱被配置关掉时只剩一站也无需它
+            if (!CurrentStyle.DrawsOwnChrome && ChartEnabled) {
+                Rectangle questMgrRect = CurrentStyle.GetQuestManagerButtonRect(chrome);
+                if (questMgrRect.Contains(mouse)) {
+                    hovered = true;
+                    if (keyLeftPressState == KeyPressState.Pressed) {
+                        SetView(View == QuestLogView.Chart ? QuestLogView.Entrust : QuestLogView.Chart);
+                        SoundEngine.PlaySound(SoundID.MenuTick);
+                    }
+                }
+            }
+
+            return hovered;
+        }
+
+        /// <summary>右侧详情栏交互，返回指针是否落在栏内</summary>
+        private bool UpdateDetailPanel(int scrollDelta) {
+            if (!showDetailPanel || selectedNode == null || layout.DetailProgress < 0.5f) {
+                return false;
+            }
+
+            Rectangle detailRect = layout.Detail;
+            bool inside = detailRect.Contains(Main.MouseScreen.ToPoint());
+            if (!inside) {
+                return false;
+            }
+
+            player.mouseInterface = true;
+
+            //正文滚动，溢出量由样式测量
+            float contentH = CurrentStyle.MeasureDetailHeight(selectedNode, in layout);
+            float maxScroll = MathF.Max(0f, contentH - detailRect.Height);
+            if (scrollDelta != 0 && maxScroll > 0.5f) {
+                detailScrollTarget = MathHelper.Clamp(detailScrollTarget - scrollDelta * 0.35f, 0f, maxScroll);
+            }
+            detailScrollTarget = MathHelper.Clamp(detailScrollTarget, 0f, maxScroll);
+
+            Rectangle closeButtonRect = CurrentStyle.GetCloseButtonRect(detailRect);
+            if (closeButtonRect.Contains(Main.MouseScreen.ToPoint())
+                && keyLeftPressState == KeyPressState.Pressed) {
+                CloseDetail();
+                return true;
+            }
+
+            if (selectedNode.IsCompleted && selectedNode.Rewards != null
+                && selectedNode.Rewards.Exists(r => !r.Claimed)) {
+                Rectangle buttonRect = CurrentStyle.GetRewardButtonRect(detailRect);
+                if (buttonRect.Contains(Main.MouseScreen.ToPoint())
+                    && keyLeftPressState == KeyPressState.Pressed) {
+                    ClaimRewards(selectedNode);
+                    SoundEngine.PlaySound(SoundID.Grab);
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>画布平移、缩放与节点点选</summary>
+        private void UpdateCanvas(int scrollDelta, bool consumedElsewhere) {
+            Rectangle canvas = layout.Canvas;
+            bool inCanvas = canvas.Contains(Main.MouseScreen.ToPoint()) && !consumedElsewhere;
+
+            if (!inCanvas) {
                 isDraggingMap = false;
                 hoveredNode = null;
-                oldScrollWheelValue = Mouse.GetState().ScrollWheelValue;
+                return;
+            }
+
+            //以指针为锚缩放
+            if (scrollDelta != 0) {
+                float oldZoom = zoom;
+                float newZoom = MathHelper.Clamp(zoom + (scrollDelta > 0 ? 0.1f : -0.1f), 0.4f, 2.0f);
+                if (oldZoom != newZoom) {
+                    Vector2 relativeMouse = Main.MouseScreen - layout.CanvasCenter;
+                    panOffset = relativeMouse - (relativeMouse - panOffset) * (newZoom / oldZoom);
+                    zoom = newZoom;
+                }
+            }
+
+            hoveredNode = null;
+            foreach (var node in Nodes) {
+                Vector2 nodePos = GetNodeScreenPos(node.CalculatedPosition);
+                if (!canvas.Contains(nodePos.ToPoint())) {
+                    continue;
+                }
+                if (Vector2.Distance(Main.MouseScreen, nodePos) < 24f * zoom) {
+                    hoveredNode = node;
+                    break;
+                }
+            }
+
+            if (keyLeftPressState == KeyPressState.Pressed) {
+                if (hoveredNode != null) {
+                    OpenDetail(hoveredNode);
+                }
+                else {
+                    isDraggingMap = true;
+                    dragStartMousePos = Main.MouseScreen;
+                    dragStartPanOffset = panOffset;
+                }
+            }
+
+            if (keyLeftPressState == KeyPressState.Held && isDraggingMap) {
+                panOffset = dragStartPanOffset + (Main.MouseScreen - dragStartMousePos);
+            }
+
+            if (keyLeftPressState == KeyPressState.Released) {
+                isDraggingMap = false;
             }
         }
 
-        private void UpdateDetailPanel() {
-            if (selectedNode == null) return;
+        private void OpenDetail(QuestNode node) {
+            selectedNode = node;
+            showDetailPanel = true;
+            detailScroll = detailScrollTarget = 0f;
+            SoundEngine.PlaySound(SoundID.MenuTick);
+        }
 
-            if (detailPanelRect.Contains(Main.MouseScreen.ToPoint())) {
-                player.mouseInterface = true;
+        private void CloseDetail(bool playSound = true) {
+            if (showDetailPanel && playSound) {
+                SoundEngine.PlaySound(SoundID.MenuClose);
             }
-
-            Rectangle closeButtonRect = CurrentStyle.GetCloseButtonRect(detailPanelRect);
-
-            bool hoverCloseButton = closeButtonRect.Contains(Main.MouseScreen.ToPoint());
-            if (hoverCloseButton) {
-                player.mouseInterface = true;
-                if (keyLeftPressState == KeyPressState.Pressed) {
-                    showDetailPanel = false;
-                    selectedNode = null;
-                    SoundEngine.PlaySound(SoundID.MenuClose);
-                }
-            }
-
-            if (selectedNode is not null && selectedNode.IsCompleted && selectedNode.Rewards != null && selectedNode.Rewards.Exists(r => !r.Claimed)) {
-                Rectangle buttonRect = CurrentStyle.GetRewardButtonRect(detailPanelRect);
-
-                bool hoverRewardButton = buttonRect.Contains(Main.MouseScreen.ToPoint());
-                if (hoverRewardButton) {
-                    player.mouseInterface = true;
-                    if (keyLeftPressState == KeyPressState.Pressed) {
-                        ClaimRewards(selectedNode);
-                        SoundEngine.PlaySound(SoundID.Grab);
-                    }
-                }
-            }
+            showDetailPanel = false;
+            selectedNode = null;
+            detailScrollTarget = 0f;
         }
 
         private void ClaimRewards(QuestNode node) {
@@ -473,47 +679,115 @@ namespace CalamityOverhaul.Content.QuestLogs
             zoom = 1f;
         }
 
+        /// <summary>把某个节点平移到画布中心</summary>
+        public void FocusNode(QuestNode node) {
+            if (node == null) {
+                return;
+            }
+            dragStartPanOffset = panOffset = -node.CalculatedPosition * zoom;
+        }
+
+        /// <summary>重扫章目，节点表在世界内不常变，每 30 帧一次足够</summary>
+        private void RefreshChapterRoots() {
+            chapterRoots.Clear();
+            foreach (var node in Nodes) {
+                if (node.ParentIDs == null || node.ParentIDs.Count == 0) {
+                    chapterRoots.Add(node);
+                }
+            }
+        }
+
         public override void Draw(SpriteBatch spriteBatch) {
-            if (Main.playerInventory) {
-                launcher.Draw(spriteBatch, visible);
-                if (launcher.IsHovered && !visible) {
+            if (Main.playerInventory && !IsOpen) {
+                launcher.Draw(spriteBatch);
+                if (launcher.IsHovered) {
                     Main.hoverItemName = LauncherHoverText.Value;
                 }
             }
 
-            if (openScale <= 0.01f && !visible) return;
+            if (!IsOpen && OpenProgress.Current <= 0.01f) {
+                return;
+            }
 
-            CurrentStyle.DrawBackground(spriteBatch, this, panelRect);
+            CurrentStyle.SyncLayout(in layout);
 
-            //剪裁防节点溢出
-            RasterizerState rasterizerState = new RasterizerState { ScissorTestEnable = true };
+            //背景铺满整屏
+            CurrentStyle.DrawBackground(spriteBatch, this, layout.Full);
+
+            bool styleOwnsChrome = CurrentStyle.DrawsOwnChrome;
+            if (styleOwnsChrome) {
+                CurrentStyle.DrawChrome(spriteBatch, this, in layout);
+            }
+
+            if (View == QuestLogView.Chart) {
+                DrawCanvasContent(spriteBatch);
+            }
+            else {
+                QuestManagerUI.Instance?.DrawEmbedded(spriteBatch, layout.Canvas, mainPanelAlpha);
+            }
+
+            if (!styleOwnsChrome) {
+                DrawCloseGlyph(spriteBatch, layout.MainClose, mainPanelAlpha);
+            }
+
+            if (showDetailPanel || layout.DetailProgress > 0.01f) {
+                if (selectedNode is not null) {
+                    selectedNodeTransfers = selectedNode;
+                }
+                if (selectedNodeTransfers is not null) {
+                    CurrentStyle.DrawDetail(spriteBatch, selectedNodeTransfers, in layout,
+                        layout.DetailProgress * mainPanelAlpha, detailScroll);
+                    if (!styleOwnsChrome) {
+                        DrawCloseGlyph(spriteBatch, CurrentStyle.GetCloseButtonRect(layout.Detail),
+                            layout.DetailProgress * mainPanelAlpha);
+                    }
+                }
+            }
+            else {
+                selectedNodeTransfers = null;
+            }
+
+            DrawChromeButtons(spriteBatch);
+
+            //检测禁用时的禁止层
+            var qlPlayer = Main.LocalPlayer.GetModPlayer<QLPlayer>();
+            if (!qlPlayer.ShouldCheckQuestInCurrentWorld()) {
+                DrawDisabledOverlay(spriteBatch);
+            }
+        }
+
+        /// <summary>画布区：连线与节点，裁在画布内</summary>
+        private void DrawCanvasContent(SpriteBatch spriteBatch) {
+            Rectangle canvas = layout.Canvas;
+            Rectangle prevScissor = spriteBatch.GraphicsDevice.ScissorRectangle;
 
             spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+                DepthStencilState.None, new RasterizerState { ScissorTestEnable = true }, null, Main.UIScaleMatrix);
+            spriteBatch.GraphicsDevice.ScissorRectangle = VaultUtils.GetClippingRectangle(spriteBatch, canvas);
 
-            //剪裁矩形随UI缩放
-            int margin = 4;//界面的边框为4像素宽
-            Vector2 pos = Vector2.Transform(new Vector2(panelRect.X + margin, panelRect.Y + margin), Main.UIScaleMatrix);
-            Vector2 size = Vector2.Transform(new Vector2(panelRect.Width - margin * 2, panelRect.Height - margin * 2), Main.UIScaleMatrix) - Vector2.Transform(Vector2.Zero, Main.UIScaleMatrix);
-            Rectangle scissorRect = new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y);
-            Rectangle origRect = spriteBatch.GraphicsDevice.ScissorRectangle;
-            scissorRect = Rectangle.Intersect(scissorRect, spriteBatch.GraphicsDevice.Viewport.Bounds);
-
-            spriteBatch.GraphicsDevice.ScissorRectangle = scissorRect;
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, rasterizerState, null, Main.UIScaleMatrix);
+            //视口外的节点直接跳过：裁剪只是不显示，绘制指令照样会发出去。
+            //连线不在这里剔——样式按调用序号取抖动种子，跳过会让墨路随平移重洗一遍
+            Rectangle cull = canvas;
+            cull.Inflate(120, 120);
 
             foreach (var node in Nodes) {
                 foreach (var parentID in node.ParentIDs) {
                     var parent = QuestNode.GetQuest(parentID);
-                    if (parent != null) {
-                        Vector2 start = GetNodeScreenPos(parent.CalculatedPosition);
-                        Vector2 end = GetNodeScreenPos(node.CalculatedPosition);
-                        CurrentStyle.DrawConnection(spriteBatch, start, end, node.IsUnlocked, mainPanelAlpha);
+                    if (parent == null) {
+                        continue;
                     }
+                    Vector2 start = GetNodeScreenPos(parent.CalculatedPosition);
+                    Vector2 end = GetNodeScreenPos(node.CalculatedPosition);
+                    CurrentStyle.DrawConnection(spriteBatch, start, end, node.IsUnlocked, mainPanelAlpha);
                 }
             }
 
             foreach (var node in Nodes) {
                 Vector2 nodePos = GetNodeScreenPos(node.CalculatedPosition);
+                if (!cull.Contains(nodePos.ToPoint())) {
+                    continue;
+                }
                 bool hovered = hoveredNode == node;
                 if (node.PreDraw(spriteBatch, nodePos, zoom, hovered, mainPanelAlpha)) {
                     CurrentStyle.DrawNode(spriteBatch, node, nodePos, zoom, hovered, mainPanelAlpha);
@@ -522,74 +796,55 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
 
             spriteBatch.End();
-            spriteBatch.GraphicsDevice.ScissorRectangle = origRect;
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
+            spriteBatch.GraphicsDevice.ScissorRectangle = prevScissor;
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+                DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
+        }
 
-            DrawMainCloseButton(spriteBatch);
+        private void DrawChromeButtons(SpriteBatch spriteBatch) {
+            Rectangle chrome = layout.LegacyChrome;
+            Point mouse = Main.MouseScreen.ToPoint();
 
-            if (showDetailPanel || detailPanelAlpha > 0.01f) {
-                if (selectedNode is not null) {
-                    selectedNodeTransfers = selectedNode;
-                }
-                if (selectedNodeTransfers is not null) {
-                    CurrentStyle.DrawQuestDetail(spriteBatch, selectedNodeTransfers, detailPanelRect, detailPanelAlpha);
-                }
-                DrawCloseButton(spriteBatch);
-            }
-            else {
-                selectedNodeTransfers = null;
+            CurrentStyle.DrawProgressBar(spriteBatch, this, chrome);
+
+            if (View == QuestLogView.Chart && !showDetailPanel && HasUnclaimedRewards()) {
+                Rectangle claimRect = CurrentStyle.GetClaimAllButtonRect(chrome);
+                CurrentStyle.DrawClaimAllButton(spriteBatch, chrome, claimRect.Contains(mouse), mainPanelAlpha);
             }
 
-            CurrentStyle.DrawProgressBar(spriteBatch, this, panelRect);
-
-            if (!showDetailPanel && HasUnclaimedRewards()) {
-                Rectangle claimRect = CurrentStyle.GetClaimAllButtonRect(panelRect);
-                bool hovered = claimRect.Contains(Main.MouseScreen.ToPoint());
-                CurrentStyle.DrawClaimAllButton(spriteBatch, panelRect, hovered, mainPanelAlpha);
-            }
-
-            if (panOffset.Length() > 100f) {
-                Rectangle resetRect = CurrentStyle.GetResetViewButtonRect(panelRect);
-                bool hovered = resetRect.Contains(Main.MouseScreen.ToPoint());
+            if (View == QuestLogView.Chart && panOffset.Length() > 100f) {
+                Rectangle resetRect = CurrentStyle.GetResetViewButtonRect(chrome);
+                bool hovered = resetRect.Contains(mouse);
                 if (hovered) {
                     Main.hoverItemName = ResetViewText.Value;
                 }
-                Vector2 direction = -panOffset; //指向中心的方向
-                CurrentStyle.DrawResetViewButton(spriteBatch, panelRect, direction, hovered, mainPanelAlpha);
+                CurrentStyle.DrawResetViewButton(spriteBatch, chrome, -panOffset, hovered, mainPanelAlpha);
             }
 
-            Rectangle styleRect = CurrentStyle.GetStyleSwitchButtonRect(panelRect);
-            bool styleHovered = styleRect.Contains(Main.MouseScreen.ToPoint());
-            CurrentStyle.DrawStyleSwitchButton(spriteBatch, panelRect, styleHovered, mainPanelAlpha);
+            Rectangle styleRect = CurrentStyle.GetStyleSwitchButtonRect(chrome);
+            bool styleHovered = styleRect.Contains(mouse);
+            CurrentStyle.DrawStyleSwitchButton(spriteBatch, chrome, styleHovered, mainPanelAlpha);
             if (styleHovered) {
                 Main.hoverItemName = StyleSwitchText.Value;
             }
 
-            Rectangle nightRect = CurrentStyle.GetNightModeButtonRect(panelRect);
-            bool nightHovered = nightRect.Contains(Main.MouseScreen.ToPoint());
-            CurrentStyle.DrawNightModeButton(spriteBatch, panelRect, nightHovered, mainPanelAlpha, NightMode);
-            if (nightHovered) {
-                Main.hoverItemName = NightMode ? NightModeText.Value : SunModeText.Value;
+            if (CurrentStyle.SupportsNightMode) {
+                Rectangle nightRect = CurrentStyle.GetNightModeButtonRect(chrome);
+                bool nightHovered = nightRect.Contains(mouse);
+                CurrentStyle.DrawNightModeButton(spriteBatch, chrome, nightHovered, mainPanelAlpha, NightMode);
+                if (nightHovered) {
+                    Main.hoverItemName = NightMode ? NightModeText.Value : SunModeText.Value;
+                }
             }
 
-            DrawQuestManagerButton(spriteBatch, panelRect);
-
-            //检测禁用时禁止层
-            var qlPlayer = Main.LocalPlayer.GetModPlayer<QLPlayer>();
-            if (!qlPlayer.ShouldCheckQuestInCurrentWorld()) {
-                DrawDisabledOverlay(spriteBatch);
+            if (!CurrentStyle.DrawsOwnChrome && ChartEnabled) {
+                DrawQuestManagerButton(spriteBatch, chrome);
             }
-        }
-
-        /// <summary>委托按钮区，夜间模式右侧</summary>
-        private Rectangle GetQuestManagerButtonRect(Rectangle panelRect) {
-            Rectangle nightRect = CurrentStyle.GetNightModeButtonRect(panelRect);
-            return new Rectangle(nightRect.Right + 10, nightRect.Y, 30, 30);
         }
 
         private void DrawQuestManagerButton(SpriteBatch spriteBatch, Rectangle panelRect) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            Rectangle buttonRect = GetQuestManagerButtonRect(panelRect);
+            Rectangle buttonRect = CurrentStyle.GetQuestManagerButtonRect(panelRect);
             Vector2 center = buttonRect.Center.ToVector2();
             bool isHovered = buttonRect.Contains(Main.MouseScreen.ToPoint());
 
@@ -621,7 +876,10 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
 
             if (isHovered) {
-                Main.hoverItemName = QuestManagerText.Value;
+                //这枚按钮在两站之间来回，提示语跟着目的地走
+                Main.hoverItemName = View == QuestLogView.Chart
+                    ? QuestManagerText.Value
+                    : ChronicleStationChart?.Value ?? string.Empty;
             }
         }
 
@@ -631,12 +889,13 @@ namespace CalamityOverhaul.Content.QuestLogs
             disabledOverlayAnimTime += 0.016f;
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
+            Rectangle full = layout.Full;
 
             float pulseAlpha = 0.65f + MathF.Sin(disabledOverlayAnimTime * 2f) * 0.05f;
             Color overlayColor = new Color(150, 50, 50) * (mainPanelAlpha * pulseAlpha);
-            spriteBatch.Draw(pixel, panelRect, overlayColor);
+            spriteBatch.Draw(pixel, full, overlayColor);
 
-            Vector2 center = new Vector2(panelRect.X + panelRect.Width / 2f, panelRect.Y + panelRect.Height / 2f);
+            Vector2 center = new Vector2(full.X + full.Width / 2f, full.Y + full.Height / 2f);
 
             float circleRadius = 60f;
             float circleThickness = 8f;
@@ -691,40 +950,20 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
         }
 
-        private void DrawMainCloseButton(SpriteBatch spriteBatch) {
-            bool hovered = mainCloseButtonRect.Contains(Main.MouseScreen.ToPoint());
+        /// <summary>通用合卷键，仅在样式不自绘外框时使用</summary>
+        private static void DrawCloseGlyph(SpriteBatch spriteBatch, Rectangle rect, float alpha) {
+            bool hovered = rect.Contains(Main.MouseScreen.ToPoint());
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            Color bgC = hovered ? new Color(80, 40, 40) * (mainPanelAlpha * 0.4f)
-                : new Color(10, 10, 10) * (mainPanelAlpha * 0.35f);
-            spriteBatch.Draw(pixel, mainCloseButtonRect, bgC);
+            Color bgC = hovered ? new Color(80, 40, 40) * (alpha * 0.4f)
+                : new Color(10, 10, 10) * (alpha * 0.35f);
+            spriteBatch.Draw(pixel, rect, bgC);
 
-            Color xColor = hovered ? new Color(255, 100, 100) * mainPanelAlpha
-                : new Color(180, 180, 180) * (mainPanelAlpha * 0.6f);
-            float cx = mainCloseButtonRect.X + mainCloseButtonRect.Width / 2f;
-            float cy = mainCloseButtonRect.Y + mainCloseButtonRect.Height / 2f;
-            float xSize = mainCloseButtonRect.Width * 0.22f;
-            spriteBatch.Draw(pixel, new Vector2(cx, cy), null, xColor,
-                MathHelper.PiOver4, new Vector2(0.5f), new Vector2(xSize * 2f, 1.5f), SpriteEffects.None, 0f);
-            spriteBatch.Draw(pixel, new Vector2(cx, cy), null, xColor,
-                -MathHelper.PiOver4, new Vector2(0.5f), new Vector2(xSize * 2f, 1.5f), SpriteEffects.None, 0f);
-        }
-
-        private void DrawCloseButton(SpriteBatch spriteBatch) {
-            Rectangle closeButtonRect = CurrentStyle.GetCloseButtonRect(detailPanelRect);
-
-            bool hovered = closeButtonRect.Contains(Main.MouseScreen.ToPoint());
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-
-            Color bgC = hovered ? new Color(80, 40, 40) * (detailPanelAlpha * 0.4f)
-                : new Color(10, 10, 10) * (detailPanelAlpha * 0.35f);
-            spriteBatch.Draw(pixel, closeButtonRect, bgC);
-
-            Color xColor = hovered ? new Color(255, 100, 100) * detailPanelAlpha
-                : new Color(180, 180, 180) * (detailPanelAlpha * 0.6f);
-            float cx = closeButtonRect.X + closeButtonRect.Width / 2f;
-            float cy = closeButtonRect.Y + closeButtonRect.Height / 2f;
-            float xSize = closeButtonRect.Width * 0.22f;
+            Color xColor = hovered ? new Color(255, 100, 100) * alpha
+                : new Color(180, 180, 180) * (alpha * 0.6f);
+            float cx = rect.X + rect.Width / 2f;
+            float cy = rect.Y + rect.Height / 2f;
+            float xSize = rect.Width * 0.22f;
             spriteBatch.Draw(pixel, new Vector2(cx, cy), null, xColor,
                 MathHelper.PiOver4, new Vector2(0.5f), new Vector2(xSize * 2f, 1.5f), SpriteEffects.None, 0f);
             spriteBatch.Draw(pixel, new Vector2(cx, cy), null, xColor,
@@ -732,8 +971,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
 
         private Vector2 GetNodeScreenPos(Vector2 nodePos) {
-            Vector2 center = new Vector2(panelRect.X + panelRect.Width / 2, panelRect.Y + panelRect.Height / 2);
-            return center + panOffset + nodePos * zoom;
+            return layout.CanvasCenter + panOffset + nodePos * zoom;
         }
     }
 }

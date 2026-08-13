@@ -229,6 +229,12 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool GuideSeen;
     }
 
+    /// <summary>鬼伞五步引导进度；随玩家存档</summary>
+    public sealed class KikasaGuideData : DataModule
+    {
+        public bool GuideSeen;
+    }
+
     /// <summary>鬼切教程进度；随玩家存档</summary>
     public sealed class OnikiriGuideData : DataModule
     {

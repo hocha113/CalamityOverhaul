@@ -19,9 +19,11 @@ using Terraria.UI;
 namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 {
     //骇客时间教程，SHPC下游
-    //12步，SantaNK1+发电机MK2
+    //12步，全息训练标靶+发电机MK2
     internal class HackTimeTutorialLead : ModSystem, ILocalizedModType
     {
+        private static int DummyType => ModContent.NPCType<CybTrainingDummy>();
+
         private enum Phase { Inactive, Running, FadeOut, Done }
 
         public string LocalizationCategory => "ADV.Shepel";
@@ -68,7 +70,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 this.GetLocalization("HT_S00_Body",
                     () => "按下 {0} 键进入骇客时间模式。\n时间将冻结，赛博滤镜叠加于画面。"),
                 this.GetLocalization("HT_S01_Body",
-                    () => "将光标悬停到高亮的圣诞坦克上，\n点击左键将其锁定为骇入目标。"),
+                    () => "将光标悬停到高亮的训练标靶上，\n点击左键将其锁定为骇入目标。"),
                 this.GetLocalization("HT_S02_Body",
                     () => "右侧面板展示目标的可用骇入协议。\n不同协议消耗不同RAM并产生不同效果。"),
                 this.GetLocalization("HT_S03_Body",
@@ -90,11 +92,11 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 this.GetLocalization("HT_S11_Body",
                     () => "骇客协议训练全部完成。\n你已掌握扫描、协议、上传、生效的完整流程。"),
             };
-            _textWaiting = this.GetLocalization("HT_Waiting", () => "AWAITING INPUT...");
-            _textCalibrating = this.GetLocalization("HT_Calibrating", () => "DISCONNECTING...");
-            _textObserving = this.GetLocalization("HT_Observing", () => "UPLOADING...");
-            _textNextBtn = this.GetLocalization("HT_NextBtn", () => "NEXT  >");
-            _textHintStuck = this.GetLocalization("HT_HintStuck", () => "HINT: 点击 NEXT 按钮可强制跳过");
+            _textWaiting = this.GetLocalization("HT_Waiting", () => "等待操作…");
+            _textCalibrating = this.GetLocalization("HT_Calibrating", () => "正在断开…");
+            _textObserving = this.GetLocalization("HT_Observing", () => "上传中…");
+            _textNextBtn = this.GetLocalization("HT_NextBtn", () => "跳过 >");
+            _textHintStuck = this.GetLocalization("HT_HintStuck", () => "提示：点击 跳过 按钮可强制越过这一步");
             _textKeyUnbound = this.GetLocalization("HT_KeyUnbound", () => "N（临时开关）");
             _textKeyHintUnbound = this.GetLocalization("HT_KeyHintUnbound",
                 () => "提示：未绑定骇客时间快捷键时，本教程内可用 [N] 临时开关；建议在 设置 > 控制 中绑定。");
@@ -120,9 +122,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         public static string ResolveKeyTokens(string raw)
             => string.IsNullOrEmpty(raw) ? raw : raw.Replace(HackKeyToken, GetHackToggleKeyDisplay());
 
-        private const int CardW = 310;
-        private const int CardH = 118;
-        private const int EdgePad = 8;
+        private const int CardW = CybCourseCardStyle.CardW;
+        private const int CardH = CybCourseCardStyle.CardH;
         private const float AutoStepDuration = 1.6f;
         private const float StuckHintAfter = 12f;
         private const float HackIntroLeadDelay = 0.15f;
@@ -150,7 +151,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         public override void OnWorldUnload() => ResetForRetry();
 
         public static void ResetForRetry() {
-            CleanupTank();
+            CleanupDummy();
             _phase = Phase.Inactive;
             _currentStep = 0;
             _cardAnim = 0f;
@@ -173,25 +174,28 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             _cardAnim = 0f;
             _stepTimer = 0f;
             _stuckTimer = 0f;
-            SpawnOrFindTank();
+            SpawnOrFindDummy();
         }
 
         //左退重试防阻挡
-        private static void SpawnOrFindTank() {
+        private static void SpawnOrFindDummy() {
             if (Main.dedServ) return;
             for (int i = 0; i < Main.maxNPCs; i++) {
-                if (Main.npc[i].active && Main.npc[i].type == NPCID.SantaNK1) {
+                if (Main.npc[i].active && Main.npc[i].type == DummyType) {
                     _npcIndex = i;
                     _npcSpawnPos = Main.npc[i].position;
                     return;
                 }
             }
-            //走廊前段，Y取通道中线
+            //甲板前段，Y先落在行走面附近再校正；X夹进甲板范围——
+            //玩家贴着护沿触发时标靶不许吊在虚空外
             int baseX = (int)Main.LocalPlayer.Center.X + 350;
-            int spawnY = (CybCourseGen.FloorY - 8) * 16;
+            int minX = (CybCourseGen.PlatformLeft + 8) * 16;
+            int maxX = (CybCourseGen.PlatformRight - 10) * 16;
+            int spawnY = (CybCourseGen.SurfaceY - 4) * 16;
             for (int retry = 0; retry < 3; retry++) {
-                int spawnX = baseX - retry * 50;
-                int idx = NPC.NewNPC(new EntitySource_WorldEvent(), spawnX, spawnY, NPCID.SantaNK1);
+                int spawnX = Math.Clamp(baseX - retry * 50, minX, maxX);
+                int idx = NPC.NewNPC(new EntitySource_WorldEvent(), spawnX, spawnY, DummyType);
                 if (idx >= 0 && idx < Main.maxNPCs) {
                     float correctY = CybCourseGen.SurfaceY * 16f - Main.npc[idx].height;
                     _npcIndex = idx;
@@ -209,7 +213,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             if (_phase == Phase.Inactive || _phase == Phase.Done) return;
 
             NPC npc = Main.npc[_npcIndex];
-            if (!npc.active || npc.type != NPCID.SantaNK1) {
+            if (!npc.active || npc.type != DummyType) {
                 _npcIndex = -1;
                 return;
             }
@@ -247,9 +251,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                     _cardAnim = MathHelper.Lerp(_cardAnim, 1f, 0.16f);
                     _stepTimer += dt;
 
-                    //step1~5保活坦克
+                    //step1~5保活标靶
                     if (_currentStep >= 1 && _currentStep <= 5) {
-                        EnsureTankAlive();
+                        EnsureDummyAlive();
                     }
 
                     //未绑定时N键兜底
@@ -295,7 +299,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                     if (_cardAnim < 0.02f) {
                         _cardAnim = 0f;
                         _phase = Phase.Done;
-                        CleanupTank();
+                        CleanupDummy();
                         WheelTutorialLead.TryStartWheelIntro();
                     }
                     break;
@@ -344,13 +348,13 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         private static bool CheckAutoAdvance() {
             int step = _currentStep;
             var queue = HackTimeUI.Instance?.Queue;
-            //step1锁SantaNK1
+            //step1锁训练标靶
             if (step == 1) {
                 int ti = HackTime.SelectedTargetIndex;
                 //SelectedTargetIndex上界
                 if (ti < 0 || ti >= Main.npc.Length) return false;
                 NPC target = Main.npc[ti];
-                return target.active && target.type == NPCID.SantaNK1;
+                return target.active && target.type == DummyType;
             }
             //step3队列入队
             if (step == 3)
@@ -373,19 +377,19 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             return false;
         }
 
-        private static void EnsureTankAlive() {
+        private static void EnsureDummyAlive() {
             if (_npcIndex >= 0 && _npcIndex < Main.maxNPCs) {
                 NPC npc = Main.npc[_npcIndex];
-                if (npc.active && npc.type == NPCID.SantaNK1) return;
+                if (npc.active && npc.type == DummyType) return;
             }
             _npcIndex = -1;
-            SpawnOrFindTank();
+            SpawnOrFindDummy();
         }
 
-        private static void CleanupTank() {
+        private static void CleanupDummy() {
             if (_npcIndex >= 0 && _npcIndex < Main.maxNPCs) {
                 NPC npc = Main.npc[_npcIndex];
-                if (npc.active && npc.type == NPCID.SantaNK1)
+                if (npc.active && npc.type == DummyType)
                     npc.active = false;
                 _npcIndex = -1;
             }
@@ -398,7 +402,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             _cardAnim = 0f;
             //step6清NPC
             if (_currentStep == 6)
-                CleanupTank();
+                CleanupDummy();
             if (_currentStep >= StepIsAuto.Length) {
                 if (HackTime.Active)
                     HackTime.Deactivate();
@@ -448,102 +452,33 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             var card = new Rectangle(finalX, finalY, CardW, CardH);
 
             _cardRect = card;
-            DrawCardBg(sb, card, alpha);
-            DrawCardContent(sb, px, card, alpha);
+            CybCourseCardStyle.DrawCardBg(sb, card, alpha, _shaderTimer);
+            DrawCardContent(sb, card, alpha);
             DrawHighlightForStep(sb, px, alpha);
         }
 
-        private static void DrawCardBg(SpriteBatch sb, Rectangle card, float alpha) {
-            Effect effect = EffectLoader.EntrustGuideCard?.Value;
-            if (effect != null) {
-                Rectangle ext = card;
-                ext.Inflate(EdgePad, EdgePad);
-                effect.Parameters["uTime"]?.SetValue(_shaderTimer);
-                effect.Parameters["uAlpha"]?.SetValue(alpha * 0.96f);
-                effect.Parameters["uResolution"]?.SetValue(new Vector2(ext.Width, ext.Height));
-                effect.Parameters["uEdgePad"]?.SetValue((float)EdgePad);
-                effect.Parameters["uVariant"]?.SetValue(1f);
-                sb.End();
-                sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
-                    SamplerState.AnisotropicClamp, DepthStencilState.None,
-                    RasterizerState.CullNone, effect, Main.UIScaleMatrix);
-                sb.Draw(VaultAsset.placeholder2.Value, ext, Color.White);
-                sb.End();
-                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
-                    SamplerState.AnisotropicClamp, DepthStencilState.None,
-                    RasterizerState.CullNone, null, Main.UIScaleMatrix);
-            }
-            else {
-                sb.Draw(VaultAsset.placeholder2.Value, card, new Color(0, 8, 18, (int)(200 * alpha)));
-                BaseManagerStyle.StrokeRect(sb, card, 1, new Color(50, 160, 200, (int)(120 * alpha)));
-            }
-        }
-
-        private static void DrawCardContent(SpriteBatch sb, Texture2D px, Rectangle card, float alpha) {
-            var font = FontAssets.MouseText.Value;
-            float titleSc = 0.84f;
-            float bodySc = 0.70f;
-            float subSc = 0.58f;
-            float lineT = font.MeasureString("A").Y * titleSc + 2f;
-            float lineB = font.MeasureString("A").Y * bodySc + 1f;
-
+        private static void DrawCardContent(SpriteBatch sb, Rectangle card, float alpha) {
             int stepIdx = (int)MathHelper.Clamp(_currentStep, 0, StepIsAuto.Length - 1);
             string title = _stepTitles[stepIdx].Value;
             string body = ResolveKeyTokens(_stepBodies[stepIdx].Value);
             bool isAuto = StepIsAuto[stepIdx];
             bool stuck = !isAuto && _stuckTimer >= StuckHintAfter;
             bool keyHint = (stepIdx == 0 || stepIdx == 4 || stepIdx == 6 || stepIdx == 9) && !IsHackToggleBound();
-            float px2 = card.X + 14f;
-            float py = card.Y + 12f;
 
             string counter = $"{stepIdx + 1:D2} / {StepIsAuto.Length:D2}";
-            float counterW = font.MeasureString(counter).X * subSc;
-            Utils.DrawBorderString(sb, counter,
-                new Vector2(card.Right - 14f - counterW, py),
-                new Color(70, 155, 175, (int)(150 * alpha)), subSc);
-
-            Utils.DrawBorderString(sb, title, new Vector2(px2, py),
-                new Color(80, 220, 245, (int)(255 * alpha)), titleSc);
-            py += lineT + 2f;
-
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle((int)px2, (int)py, CardW - 28, 1),
-                new Color(45, 130, 155, (int)(90 * alpha)));
-            py += 6f;
-
-            int bodyWrapW = (int)((CardW - 28) / bodySc);
-            foreach (string line in body.Split('\n')) {
-                string[] wrapped = VaultUtils.WrapTextArray(line, font, bodyWrapW, 99, out _);
-                foreach (string wl in wrapped) {
-                    if (string.IsNullOrEmpty(wl)) continue;
-                    Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px2, py),
-                        new Color(175, 215, 225, (int)(215 * alpha)), bodySc);
-                    py += lineB;
-                }
-            }
+            float y = CybCourseCardStyle.DrawHeader(sb, card, alpha, title, counter);
+            CybCourseCardStyle.DrawBodyLines(sb, card, ref y, alpha, body);
 
             //未绑定快捷键提示
             if (keyHint && _textKeyHintUnbound != null) {
-                float pulseKey = 0.75f + 0.25f * MathF.Sin(_shaderTimer * 10f);
-                int wrapW = (int)((CardW - 28) / subSc);
-                string[] wrapped = VaultUtils.WrapTextArray(_textKeyHintUnbound.Value, font, wrapW, 99, out _);
-                foreach (string wl in wrapped) {
-                    if (string.IsNullOrEmpty(wl)) continue;
-                    Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px2, py),
-                        new Color(255, 195, 90, (int)(220 * alpha * pulseKey)), subSc);
-                    py += lineB - 1f;
-                }
+                CybCourseCardStyle.DrawKeyHintLines(sb, card, ref y, alpha, _shaderTimer, _textKeyHintUnbound.Value);
             }
 
             if (stuck && _textHintStuck != null) {
-                float pulseHint = 0.7f + 0.3f * MathF.Sin(_shaderTimer * 14f);
-                Utils.DrawBorderString(sb, _textHintStuck.Value,
-                    new Vector2(px2, card.Bottom - 36f),
-                    new Color(255, 110, 90, (int)(220 * alpha * pulseHint)), subSc);
+                CybCourseCardStyle.DrawStuckHint(sb, card, alpha, _shaderTimer, _textHintStuck.Value);
             }
 
             if (isAuto) {
-                float blink = 0.72f + 0.28f * MathF.Sin(_shaderTimer * 22f);
                 bool isObservingStep = stepIdx == 5 || stepIdx == 10;
                 bool isCompletionStep = stepIdx == StepIsAuto.Length - 1;
                 string standby = isCompletionStep
@@ -551,36 +486,12 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                     : isObservingStep
                         ? _textObserving.Value
                         : _textWaiting.Value;
-                float sbW = font.MeasureString(standby).X * subSc;
-                Utils.DrawBorderString(sb, standby,
-                    new Vector2(card.Right - 14f - sbW, card.Bottom - 16f),
-                    new Color(60, 190, 200, (int)(200 * alpha * blink)), subSc);
+                CybCourseCardStyle.DrawStatusTag(sb, card, alpha, _shaderTimer, standby);
             }
             else {
-                DrawNextButton(sb, card, alpha, stuck);
+                _nextBtnRect = CybCourseCardStyle.DrawNextButton(sb, card, alpha, stuck,
+                    _shaderTimer, _textNextBtn.Value, new Point(Main.mouseX, Main.mouseY));
             }
-        }
-
-        private static void DrawNextButton(SpriteBatch sb, Rectangle card, float alpha, bool stuck) {
-            const int btnW = 72, btnH = 20, margin = 10;
-            var btn = new Rectangle(card.Right - btnW - margin, card.Bottom - btnH - margin, btnW, btnH);
-            _nextBtnRect = btn;
-
-            bool hovered = btn.Contains(Main.mouseX, Main.mouseY);
-            float emphasize = stuck ? 0.85f + 0.15f * MathF.Sin(_shaderTimer * 14f) : 0f;
-            Color bgColor = hovered
-                ? new Color(40, 155, 180, (int)(210 * alpha))
-                : new Color(18 + (int)(40 * emphasize), 72, 92, (int)((150 + 50 * emphasize) * alpha));
-            Color borderColor = hovered
-                ? new Color(100, 220, 245, (int)(200 * alpha))
-                : new Color(50 + (int)(80 * emphasize), 150, 180, (int)((120 + 80 * emphasize) * alpha));
-            Color textColor = hovered
-                ? new Color(200, 250, 255, (int)(255 * alpha))
-                : new Color(110 + (int)(80 * emphasize), 205, 225, (int)((195 + 60 * emphasize) * alpha));
-
-            BaseManagerStyle.FillRect(sb, btn, bgColor);
-            BaseManagerStyle.StrokeRect(sb, btn, 1, borderColor);
-            BaseManagerStyle.DrawCenteredText(sb, _textNextBtn.Value, btn.Center.ToVector2(), textColor, 0.60f);
         }
 
         private static void DrawHighlightForStep(SpriteBatch sb, Texture2D px, float alpha) {
@@ -590,12 +501,12 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 DrawGeneratorHighlight(sb, px, alpha);
                 return;
             }
-            //step1坦克
+            //step1标靶
             if (stepIdx != 1) return;
             if (_npcIndex < 0 || _npcIndex >= Main.maxNPCs) return;
 
             NPC npc = Main.npc[_npcIndex];
-            if (!npc.active || npc.type != NPCID.SantaNK1) return;
+            if (!npc.active || npc.type != DummyType) return;
 
             float pulse = 0.6f + 0.4f * MathF.Sin(_highlightPulse * 3.2f);
             Color bracketColor = new Color(80, 220, 245, (int)(200 * alpha));
@@ -613,7 +524,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 (int)npc.position.X - 8, (int)npc.position.Y - 8,
                 npc.width + 16, npc.height + 16);
             sb.Draw(px, npcRect, outlineColor);
-            DrawLBrackets(sb, px, npcRect, bracketColor);
+            CybCourseCardStyle.DrawLBrackets(sb, px, npcRect, bracketColor);
 
             //回UI矩阵
             sb.End();
@@ -641,26 +552,13 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 CybCourseGen.GenMK2TileW * 16 + 8,
                 CybCourseGen.GenMK2TileH * 16 + 8);
             sb.Draw(px, rect, outlineColor);
-            DrawLBrackets(sb, px, rect, bracketColor);
+            CybCourseCardStyle.DrawLBrackets(sb, px, rect, bracketColor);
 
             //回UI矩阵
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.AnisotropicClamp, DepthStencilState.None,
                 RasterizerState.CullNone, null, Main.UIScaleMatrix);
-        }
-
-        private static void DrawLBrackets(SpriteBatch sb, Texture2D px, Rectangle r, Color c) {
-            const int len = 14;
-            const int thick = 2;
-            sb.Draw(px, new Rectangle(r.Left, r.Top, len, thick), c);
-            sb.Draw(px, new Rectangle(r.Left, r.Top, thick, len), c);
-            sb.Draw(px, new Rectangle(r.Right - len, r.Top, len, thick), c);
-            sb.Draw(px, new Rectangle(r.Right - thick, r.Top, thick, len), c);
-            sb.Draw(px, new Rectangle(r.Left, r.Bottom - thick, len, thick), c);
-            sb.Draw(px, new Rectangle(r.Left, r.Bottom - len, thick, len), c);
-            sb.Draw(px, new Rectangle(r.Right - len, r.Bottom - thick, len, thick), c);
-            sb.Draw(px, new Rectangle(r.Right - thick, r.Bottom - len, thick, len), c);
         }
     }
 }

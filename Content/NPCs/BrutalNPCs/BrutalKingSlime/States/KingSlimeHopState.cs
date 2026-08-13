@@ -1,5 +1,7 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Rendering;
+using CalamityOverhaul.Content.TimeFreezes;
+using InnoVault.Cinematics;
 using System;
 using Terraria;
 
@@ -51,6 +53,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
                     phaseTimer++;
                     int rest = context.IsPhase2 ? 4 : 7;
                     if (Grounded(npc) && phaseTimer >= rest) {
+                        //吞没投技优先：P2冷却好且目标在压制带内，超级砸落开吞
+                        IKingSlimeState engulf = TryEngulf(context);
+                        if (engulf != null) {
+                            return engulf;
+                        }
                         //中距液化掠近：把本次跳跃逼近换成潮汐位移(签名招兼位移工具)
                         IKingSlimeState travel = TryTideTravel(context);
                         if (travel != null) {
@@ -191,6 +198,41 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
             //环表外索引(新招忘挂case)：回连接器自愈，不静默错招
             _ => new KingSlimeHopState(),
         };
+
+        /// <summary>
+        /// 吞没投技判定(服务端)：P2解锁+长冷却+目标在压制带(90~700px、近同层)+有视线，
+        /// 且不处于狂暴/时停/运镜中。全条件过→超级砸落开吞
+        /// </summary>
+        private static IKingSlimeState TryEngulf(KingSlimeStateContext context) {
+            if (VaultUtils.isClient || !context.Phase2Started || context.EngulfCooldown > 0) {
+                return null;
+            }
+            Player player = context.Target;
+            if (!player.Alives()) {
+                return null;
+            }
+            NPC npc = context.Npc;
+            //狂暴期免伤增压，不叠投技；时停/演出期禁触发(公平阀)
+            if (context.Host != null && context.Host.ai[4] == 1f) {
+                return null;
+            }
+            if (TimeFreezeSystem.IsFrozen(npc) || TimeFreezeSystem.IsAnyGlobalFreezeActive) {
+                return null;
+            }
+            if (CutsceneDirector.CurrentClip != null) {
+                return null;
+            }
+            float dx = Math.Abs(player.Center.X - npc.Center.X);
+            float dy = player.Center.Y - npc.Center.Y;
+            //压制带：不贴脸(留可读起跳弧线)也不超远；目标大致同层或略低
+            if (dx < 90f || dx > 700f || dy < -260f || dy > 420f) {
+                return null;
+            }
+            if (!Collision.CanHitLine(npc.Center, 0, 0, player.Center, 0, 0)) {
+                return null;
+            }
+            return new KingSlimeEngulfState();
+        }
 
         /// <summary>
         /// 中距液化掠近判定(服务端)：目标在中距带(720~1500px)且大致同层时，

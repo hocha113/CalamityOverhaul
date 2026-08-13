@@ -1,0 +1,144 @@
+using Terraria.ID;
+
+namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
+{
+    //层带,自上而下固定行数堆叠,区间半开[Top,Bottom)
+    internal readonly struct LayerBand
+    {
+        internal readonly string Name;
+        internal readonly int Top;
+        internal readonly int Bottom;
+        internal readonly ushort Brick;
+        internal readonly ushort Wall;
+
+        internal LayerBand(string name, int top, int rows, ushort brick, ushort wall) {
+            Name = name;
+            Top = top;
+            Bottom = top + rows;
+            Brick = brick;
+            Wall = wall;
+        }
+
+        /// <summary>层脊走廊内膛顶行(含)</summary>
+        internal int SpineInteriorTop => Bottom - DungeonworldMetrics.SpineReserveBelow - DungeonworldMetrics.SpineClearance;
+        /// <summary>层脊走廊地板顶行,玩家立足行</summary>
+        internal int SpineFloorTop => Bottom - DungeonworldMetrics.SpineReserveBelow;
+    }
+
+    //生成常量集中声明(蓝图STRUCTURES §1.2层带表/§2.5走廊语法/§4.4坐标约定)
+    //2026-08-14用户拍板扩容1000x1600→2000x6000:人体尺度层(L1/L2)不放大,
+    //新增深度大头给中深层L4/L5/L6与弹性层L3,深渊带加厚兼作深渊过渡
+    //
+    //原版高度阈值排查结论(6000高,逐条对TML源码核实,全部"层带避开",OnLoad无需改字段):
+    //1.Main.UnderworldLayer=maxTilesY-200=5800(Main.cs L3246):地狱音乐/ZoneUnderworldHeight/
+    //  地狱背景盒均要求y>5800,可达最深点L7脊地板5594行,余量206行,深渊带实心不可达
+    //2.太空低重力:SubLib IL补丁(SubworldLibrary.cs L104)在!NormalUpdates子世界把
+    //  Player.Update重力局部量整段替换为Subworld.GetGravity(默认1),原版公式被绕过;
+    //  且原版公式(Player.cs L21426)阈值≈60+10*(maxTilesX/4200)^2行,只覆盖顶部边界附近
+    //3.深度计(Main.cs L45098):英尺=(y-worldSurface)*2,"地狱"标签要y>5796不可达;
+    //  行78以上显示"太空"字样(num25公式按worldSurface折算),L1上半段纯装饰性误标
+    //4.背景切换:地下/洞穴背景按worldSurface(55)/rockLayer(222)切换,地狱背景绘制条件
+    //  屏幕底>5800*16(Main.cs L51368),深处屏幕底最多~5630行不触发,SubLib hideUnderworld兜底
+    //5.ZoneSkyHeight=y≤worldSurface*0.35=行19(Player.cs L14480),天空缓冲带上部少量误判,M0可接受
+    internal static class DungeonworldMetrics
+    {
+        internal const int Width = 2000;
+        internal const int Height = 6000;
+        //世界四周实心边界厚度
+        internal const int BorderThick = 8;
+
+        //天空缓冲带[0,SkyRows),M1钟楼尖顶探入
+        internal const int SkyRows = 60;
+        //层间隔离带,只有登记过的垂直通道可穿透
+        internal const int SeparatorRows = 12;
+        //深渊过渡+地狱判定带,底部200行是UnderworldLayer(F21),上部200行留给
+        //日后深渊演出,M0保持实心;加厚到400让L7地板(5594)避开5800线足200+行
+        internal const int AbyssRows = 400;
+
+        //worldSurface压到天空缓冲带底,全部层带判"地下"(F11/§1.3)
+        //扩容后数值不变:天空带/L1/L2行数未动,55仍落在缓冲带底
+        internal const int WorldSurfaceRow = 55;
+
+        //各层行数预算,L3=弹性层吸收世界高度余量(§1.2)
+        //重分配理由:L1/L2是房间尺度玩法层保持150,纵深探索大头压给L4-L6
+        //(水牢管廊/万骨窖坑道/铸造机关串天然吃纵深),L7是Boss舞台只微放大
+        internal const int L1Rows = 150;
+        internal const int L2Rows = 150;
+        internal const int L4Rows = 1000;
+        internal const int L5Rows = 1400;
+        internal const int L6Rows = 1200;
+        internal const int L7Rows = 220;
+        internal const int L3Rows = Height - SkyRows - AbyssRows - 6 * SeparatorRows
+            - L1Rows - L2Rows - L4Rows - L5Rows - L6Rows - L7Rows;
+
+        //主干道净高(§2.5)
+        internal const int SpineClearance = 6;
+        //脊地板2厚+带底余量4
+        internal const int SpineReserveBelow = 6;
+
+        internal const int SpawnX = Width / 2;
+
+        //主竖井,x在教堂后殿侧(出生点右58格),由SpawnX推导随宽度自适应(§1.4)
+        internal const int ShaftLeft = SpawnX + 58;
+        internal const int ShaftWidth = 5;
+        //之字平台竖距,≤5保证可上行(F2满跳约6.6格)
+        internal const int ShaftStepRows = 4;
+        //蓝地牢平台样式(RESEARCH §1.1d-6,墙7配frameY=108)
+        internal const short PlatformFrameY = 108;
+
+        //教堂占位安全房(L1正中,居中于SpawnX),M0纯矩形壳
+        internal const int SafeRoomWidth = 44;
+        internal const int SafeRoomHeight = 16;
+        internal const int SafeRoomLeft = SpawnX - SafeRoomWidth / 2;
+
+        //===M1工程机器常量(§2.5走廊语法/§3.2退化对照表)===
+        //房间外壳厚度,单格墙是"单格缝隙"退化温床(§3.2-5)
+        internal const int RoomShellThick = 2;
+        //房间落位间距padding,占用栅格预留时外扩(§3.2-3)
+        internal const int RoomPadding = 2;
+        //支线走廊净高(底线3=F1只许低威胁区,标准4)
+        internal const int CorridorClearance = 4;
+        //坡道最大爬升,超过改楼梯井(§2.5:连续爬升>10格改楼梯井,取8留余量)
+        internal const int RampMaxRise = 8;
+        //楼梯井净宽(§2.5竖井净宽3)
+        internal const int StairWellWidth = 3;
+
+        internal static readonly LayerBand[] Bands;
+        //rockLayer设在L2顶附近(§1.3)
+        internal static readonly int RockLayerRow;
+
+        static DungeonworldMetrics() {
+            Bands = new LayerBand[7];
+            int cursor = SkyRows;
+            int index = 0;
+            void Add(string name, int rows) {
+                //M0全蓝砖套件,换色只动此处(层带墙面规格,§1.2)
+                Bands[index++] = new LayerBand(name, cursor, rows, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe);
+                cursor += rows + SeparatorRows;
+            }
+            Add("L1教堂区", L1Rows);
+            Add("L2牢狱层", L2Rows);
+            Add("L3大档案馆", L3Rows);
+            Add("L4水牢", L4Rows);
+            Add("L5万骨窖", L5Rows);
+            Add("L6铸造机关层", L6Rows);
+            Add("L7倒吊教堂", L7Rows);
+            //最后一层下方是深渊带而非隔离带
+            cursor -= SeparatorRows;
+            if (cursor + AbyssRows != Height) {
+                throw new System.InvalidOperationException(
+                    $"[Dungeonworld] 层带行数总和{cursor + AbyssRows}与Height{Height}不符");
+            }
+            RockLayerRow = Bands[1].Top;
+        }
+
+        internal static LayerBand? BandForRow(int y) {
+            foreach (LayerBand band in Bands) {
+                if (y >= band.Top && y < band.Bottom) {
+                    return band;
+                }
+            }
+            return null;
+        }
+    }
+}

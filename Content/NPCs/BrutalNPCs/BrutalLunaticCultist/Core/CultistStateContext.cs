@@ -105,6 +105,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
         public Vector2 RitualCenter { get; set; }
         /// <summary>错误献祭计数（分身被击中），GrandRitual 状态消费，服务端</summary>
         public int RitualPunishRequests { get; set; }
+
+        /// <summary>献祭投技目标玩家索引，-1=无；镜像 Ai[7]</summary>
+        public int GrabTargetIndex { get; set; } = -1;
+        /// <summary>献祭投技判定：0=锁阵收拢中 1=已锁身 2=扑空；镜像 Ai[8]</summary>
+        public int GrabResult { get; set; }
+        /// <summary>献祭投技冷却剩余帧，服务端</summary>
+        public int GrabCooldown { get; set; }
+        /// <summary>各玩家献祭印记剩余帧，服务端裁决用（客户端视觉走印记弹幕）</summary>
+        public int[] BrandTimers { get; } = new int[Terraria.Main.maxPlayers];
         #endregion
 
         #region 每帧声明的表现数据

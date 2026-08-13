@@ -40,13 +40,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
             VaultFull = this.GetLocalization(nameof(VaultFull), () => "湖底沉不下更多了");
         }
 
-        /// <summary>血湖是否可收发物品：本人领域非收合/翻转阶段且水位已及脚</summary>
+        /// <summary>血湖是否可收发物品：本人领域非收合/翻转/鬼梦阶段且水位已及脚——梦里没有那面湖</summary>
         public bool LakeReady {
             get {
                 KikasaDomainPlayer domain = Player.GetModPlayer<KikasaDomainPlayer>();
                 return domain.AnyActive
                     && domain.Phase != KikasaDomainPhase.Closing
                     && domain.Phase != KikasaDomainPhase.Flipping
+                    && !domain.InDreamPhase
                     && domain.RiseT >= 0.999f;
             }
         }

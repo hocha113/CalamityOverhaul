@@ -89,6 +89,11 @@ CWRServerConfig: {
 		Tooltip: Создает деревянные посты эльфов или лесных стражей в глубине чащи.
 	}
 
+	GenSHPCCradle: {
+		// Label: Generate SHPC Cradle Island
+		// Tooltip: Generates a crashed vessel sky island above spawn with the SHPC sealed inside. When disabled, the weapon can only be found in Calamity's laboratory.
+	}
+
 	ConfigChangePrefix: Пользователь
 	ConfigChangeSuffix: изменил(а) настройки сервера
 

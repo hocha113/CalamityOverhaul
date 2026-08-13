@@ -56,3 +56,13 @@ ScrapCommander: {
 }
 
 ScrapLegionProbe.DisplayName: 废钢仆从
+
+DeepGaolWraith: {
+	DisplayName: 深牢怨灵
+	Bestiary: 牢狱层的看守死在自己的岗位上，钥匙锈死在锁眼里。剩下的怨气循着铐链拧成人形，拖着两只空铐在囚室之间巡夜。它不查名册，只查手腕——没上铐的，都算越狱。
+}
+
+GaolDormantSkull.DisplayName: 深牢枯颅
+CybTrainingDummy.DisplayName: 全息训练标靶
+OldNetPatrolICE.DisplayName: 巡逻ICE
+OldNetBlackICE.DisplayName: 黑冰猎杀者

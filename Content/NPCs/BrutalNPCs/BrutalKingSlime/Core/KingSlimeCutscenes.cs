@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States;
 using InnoVault.Cinematics;
 using Terraria;
@@ -82,9 +83,58 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
             => context.TryGetSubject(out NPC npc) && npc.active ? npc.Center : context.PlayerCenter;
     }
 
-    /// <summary>本地玩家侧：入场/死亡演出时启停对应运镜</summary>
+    /// <summary>
+    /// 吞没投技运镜：仅被吞玩家本人客户端播放——推近半透明腹内，全程锁操控，
+    /// 挤压拍震动由玩家侧按同步计数请求。旁观者不被接管镜头
+    /// </summary>
+    internal sealed class KingSlimeEngulfCutscene : CutsceneClip<NPC>
+    {
+        /// <summary>运镜时长上限：覆盖消化+高压全程；正常在喷出帧由启停器提前平滑停止</summary>
+        internal const int HoldDuration = 280;
+
+        public override int Priority => 90;
+
+        public override bool CanPlay(Player player, NPC subject)
+            => base.CanPlay(player, subject) && subject != null && subject.active;
+
+        protected override void BuildTimeline(CutsceneTimeline timeline) {
+            timeline.Duration = HoldDuration;
+
+            //吞没帧冲击：普通震屏被运镜接管吃掉，用时间轴0帧震动补上抓取瞬间的顿挫
+            timeline.Add(new CameraShakeTrack(0, Vector2.UnitY, 7f, 0.9f, 14));
+            //贴住王体推近：被吞者视角沉进凝胶
+            timeline.Add(CameraFocusTrack.Follow(0, HoldDuration, BossCenter, new Vector2(0f, -8f), 0.1f));
+            timeline.Add(new CameraZoomTrack(0, 46, 1f, 1.58f, 0.055f, CutsceneEase.CubicOut));
+            //高压段再推近一档(按同步抓取相位驱动)
+            timeline.Add(new DynamicCameraTrack(0, HoldDuration, context => {
+                if (context.TryGetSubject(out NPC npc) && npc.active
+                    && KingSlimeAI.TryGetKingAI(npc, out KingSlimeAI king)
+                    && (int)king.ai[KingSlimeEngulfState.SlotGrabPhase] >= 2) {
+                    context.SetCameraZoom(1.72f, 0.05f);
+                }
+            }));
+            //全程锁操控(仅本人客户端)，喷出后由启停器平滑交还
+            timeline.Add(new InputLockTrack(0, HoldDuration, CutsceneInputLockFlags.All));
+        }
+
+        private static Vector2 BossCenter(CutsceneContext context)
+            => context.TryGetSubject(out NPC npc) && npc.active ? npc.Center : context.PlayerCenter;
+    }
+
+    /// <summary>本地玩家侧：入场/死亡/吞没演出时启停对应运镜</summary>
     internal class KingSlimePerformancePlayer : ModPlayer
     {
+        /// <summary>吞没运镜期间的镜头震动(运镜接管相机后普通震屏可能失效)</summary>
+        internal static void RequestEngulfShake(float intensity, int duration) {
+            if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
+                return;
+            }
+            if (CutsceneDirector.CurrentClip is not KingSlimeEngulfCutscene) {
+                return;
+            }
+            CutsceneDirector.Shake(Vector2.Zero, intensity, 0.9f, duration);
+        }
+
         public override void PostUpdate() {
             if (Player.whoAmI != Main.myPlayer) {
                 return;
@@ -100,6 +150,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
                 return;
             }
             if (deathPlaying) {
+                CutsceneDirector.Stop();
+            }
+
+            //吞没投技：只有被吞者本人的客户端接管镜头
+            NPC engulfBoss = FindEngulfBossHoldingMe();
+            bool engulfPlaying = CutsceneDirector.CurrentClip is KingSlimeEngulfCutscene;
+            if (engulfBoss != null) {
+                if (!engulfPlaying) {
+                    CutsceneDirector.Play<KingSlimeEngulfCutscene, NPC>(engulfBoss, restartSameClip: false);
+                }
+                return;
+            }
+            if (engulfPlaying) {
                 CutsceneDirector.Stop();
             }
 
@@ -136,6 +199,28 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
                     && Player.Distance(npc.Center) < 2300f) {
                     return npc;
                 }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 正吞着本人的王：状态为吞没+接管在场+受害者槽指向自己+处于持人相位(消化/高压)。
+        /// 喷出帧(相位3)即返回null→镜头随弹射立刻平滑释放，玩家看着自己飞出去
+        /// </summary>
+        private NPC FindEngulfBossHoldingMe() {
+            foreach (var npc in Main.ActiveNPCs) {
+                if (npc.type != NPCID.KingSlime || (int)npc.ai[2] != (int)KingSlimeStateIndex.Engulf) {
+                    continue;
+                }
+                if (!KingSlimeAI.TryGetKingAI(npc, out KingSlimeAI king)) {
+                    continue;
+                }
+                int grabPhase = (int)king.ai[KingSlimeEngulfState.SlotGrabPhase];
+                if ((int)king.ai[KingSlimeEngulfState.SlotVictim] - 1 != Player.whoAmI
+                    || grabPhase is not 1 and not 2) {
+                    continue;
+                }
+                return npc;
             }
             return null;
         }

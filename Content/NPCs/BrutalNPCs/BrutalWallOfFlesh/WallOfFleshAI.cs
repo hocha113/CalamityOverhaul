@@ -1,6 +1,7 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh.States;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -169,6 +170,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
             //滤镜强度(纯客户端表现)
             UpdateScreenFilter();
 
+            //投技冷却(两条触发路径共享)
+            if (!VaultUtils.isClient && stateContext.GrabCooldown > 0) {
+                stateContext.GrabCooldown--;
+            }
+
             //周期性同步
             if (!VaultUtils.isClient && Main.GameUpdateCount % 10 == 0) {
                 npc.netUpdate = true;
@@ -238,6 +244,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
             //低血大招(33%，一次性，结束后ai[1]=3)
             if (phase == 2 && lifeRatio <= WofDirector.ExodusLifeRatio) {
                 stateMachine.ChangeState(new WofCrimsonExodusState());
+                return;
+            }
+
+            //绕后惩罚升级：被原版舌头拖到嘴边的玩家直接开吞(仅推进态、非时停、冷却完毕)
+            if (stateContext.GrabCooldown <= 0 && !TimeFreezeSystem.IsAnyGlobalFreezeActive) {
+                foreach (Player player in Main.ActivePlayers) {
+                    if (!player.Alives() || player.ghost || !player.tongued) {
+                        continue;
+                    }
+                    if (player.Distance(WofTongueGrabState.MouthHold(npc)) > WofDirector.GrabPunishRange) {
+                        continue;
+                    }
+                    stateContext.PendingGrabVictim = player.whoAmI;
+                    stateMachine.ChangeState(new WofTongueGrabState());
+                    return;
+                }
             }
         }
 
@@ -523,6 +545,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalWallOfFlesh
         #endregion
 
         #region 对外契约(部件读取)
+
+        /// <summary>当前状态机状态实例(演出玩家/弹幕读取本端演出时钟用)</summary>
+        internal IVaultState<WofStateContext> CurrentMachineState => stateMachine?.CurrentState;
 
         /// <summary>读取墙当前同步状态索引</summary>
         internal static WofStateIndex GetStateIndex(NPC wall) {

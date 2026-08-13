@@ -30,6 +30,12 @@ namespace CalamityOverhaul.Content.EntrustManager
         void DrawFooter(SpriteBatch sb, Rectangle footerRect, int totalQuests,
             int activeQuests, float alpha);
 
+        /// <summary>一条委托都没有时的空态提示</summary>
+        void DrawEmptyHint(SpriteBatch sb, Rectangle contentRect, string text, float alpha);
+
+        /// <summary>悬停条目时页脚上方的操作提示（展开/关注/挂起）</summary>
+        void DrawInteractionHints(SpriteBatch sb, Rectangle footerRect, EntrustEntryData entry, float alpha);
+
         #endregion
 
         #region 任务条目绘制

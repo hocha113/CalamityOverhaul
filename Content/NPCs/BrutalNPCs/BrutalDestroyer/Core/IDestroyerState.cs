@@ -24,6 +24,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
         BurrowAmbush = 12,
         /// <summary>普攻回旋绞杀</summary>
         LoopLash = 13,
+        /// <summary>投技前置，锁环收缩预警</summary>
+        CoilLock = 14,
+        /// <summary>投技本体，钢环绞缠连段</summary>
+        CoilCrush = 15,
     }
 
     /// <summary>状态接口</summary>

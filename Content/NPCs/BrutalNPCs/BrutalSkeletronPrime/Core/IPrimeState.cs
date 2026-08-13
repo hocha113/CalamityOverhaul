@@ -42,6 +42,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         CrossExecute = 16,
         /// <summary>指令执行窗口</summary>
         CommandExecute = 17,
+        /// <summary>老虎钳处刑（投技）</summary>
+        ViceExecution = 18,
     }
 
     /// <summary>头部状态接口</summary>

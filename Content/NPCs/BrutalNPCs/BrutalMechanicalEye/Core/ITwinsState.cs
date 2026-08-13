@@ -38,6 +38,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
         TwinsCrossDash = 22,
         TwinsTetherSweep = 23,
         TwinsScissorRay = 24,
+        //钳形投技
+        TwinsPincerGrab = 25,
     }
 
     internal interface ITwinsState : IVaultState<TwinsStateContext>

@@ -147,7 +147,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Tutorial
             if (CyberwareUI.Instance?.Active == true) {
                 return false;
             }
-            if (QuestLog.Instance?.visible == true || QuestManagerUI.Instance?.IsOpen == true) {
+            if (QuestLog.Instance?.IsOpen == true || QuestManagerUI.Instance?.IsOpen == true) {
                 return false;
             }
             //骇客时间自带整套界面，转盘也被它挡着

@@ -35,6 +35,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Core
         public BrainStateIndex LastAttack { get; set; } = BrainStateIndex.Hover;
         /// <summary>距上次心搏骤停的帧数</summary>
         public int HeartAttackCooldown { get; set; }
+        /// <summary>摄心镜狱冷却（帧），主控每帧递减</summary>
+        public int MindSeizeCooldown { get; set; }
         #endregion
 
         #region 心跳

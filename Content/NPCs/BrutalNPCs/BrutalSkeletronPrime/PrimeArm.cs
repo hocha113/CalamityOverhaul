@@ -102,6 +102,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 npc.timeLeft = 10;
             }
 
+            //老虎钳处刑：投技演出期间四臂交由编排层接管（各端本地计算，服务端每帧广播纠偏）
+            if (headState == PrimeStateIndex.ViceExecution) {
+                PrimeViceExecutionState.ChoreographArm(npc, head, armContext);
+                //保持钳口/锯片帧动画推进
+                ArmPostUpdate();
+                return false;
+            }
+
             //冲撞/白昼编队环绕
             if (HandleFormationOverride(headState)) {
                 return false;

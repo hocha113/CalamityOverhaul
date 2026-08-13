@@ -108,6 +108,16 @@ DawnshatterAzure: {
 		'''
 }
 
+Flawless: {
+	// DisplayName: Flawless
+	/* Tooltip:
+		'''
+		A four-beat combo: sweep, thrust, back-sweep, finishing lunge, each landing heavier than the last
+		The thrust beats swap in the slender head for extra reach, scattering frost crystal on impact
+		"He changed the head seven times. The target has one hole."
+		''' */
+}
+
 StormGoddessSpear: {
 	DisplayName: Lanza de la Diosa de la Tormenta
 	Tooltip:
@@ -3536,5 +3546,23 @@ ScrapBeacon: {
 		'''
 		Summons the Scrap Commander at night
 		"Scrap always answers to its foreman"
+		''' */
+}
+
+GaolCellKey: {
+	// DisplayName: Deep Gaol Cell Key
+	/* Tooltip:
+		'''
+		Builds the Deep Gaol cell on the spot and seats the dormant skull (test item)
+		"One turn of the key, and the walls remember their shape"
+		''' */
+}
+
+RustedGaolIrons: {
+	// DisplayName: Rusted Gaol Irons
+	/* Tooltip:
+		'''
+		Summons the Deep Gaol Wraith (test item)
+		"The cell number inside the cuff has been worn smooth"
 		''' */
 }

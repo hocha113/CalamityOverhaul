@@ -53,13 +53,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaVaults
 
         //==================== 伞章 ====================
         //归一 [-1,1] 空间：圆拱伞盖 + 四瓣荷缘；顶针、中棒弯钩与两根斜骨
+        //internal 供 KikasaHud 复用同一枚伞章
 
-        private const string SealCanopy =
+        internal const string SealCanopy =
             "M -0.92 0.14 C -0.55 -0.66 0.55 -0.66 0.92 0.14 "
             + "Q 0.66 0.03 0.46 0.15 Q 0.23 0.02 0 0.15 "
             + "Q -0.23 0.02 -0.46 0.15 Q -0.66 0.03 -0.92 0.14";
 
-        private const string SealFrame =
+        internal const string SealFrame =
             "M 0 -0.62 L 0 0.88 Q 0.02 1.0 0.2 0.92 "
             + "M 0 -0.44 L -0.58 0.02 M 0 -0.44 L 0.58 0.02";
 

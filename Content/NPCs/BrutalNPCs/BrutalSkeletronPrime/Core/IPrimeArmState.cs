@@ -36,6 +36,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         ViceReturn = 405,
         ViceTripleLunge = 406,
         ViceClapWave = 407,
+        ViceExecutionLunge = 408,
     }
 
     /// <summary>机械臂状态基类，弹簧/瞄准/跟随工具</summary>

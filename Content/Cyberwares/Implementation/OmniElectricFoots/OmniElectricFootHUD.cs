@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
                 if (OmniElectricFoot.GetEquipped(p) == null) {
                     return false;
                 }
-                if (QuestLog.Instance?.visible == true || QuestManagerUI.Instance?.IsOpen == true) {
+                if (QuestLog.Instance?.IsOpen == true || QuestManagerUI.Instance?.IsOpen == true) {
                     return false;
                 }
                 //蓄力中、残余进度或断电红闪

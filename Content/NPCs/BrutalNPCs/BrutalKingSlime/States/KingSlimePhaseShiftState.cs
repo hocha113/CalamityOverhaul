@@ -134,6 +134,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.States
         public override void OnExit(KingSlimeStateContext context) {
             base.OnExit(context);
             context.Phase2Started = true;
+            //吞没投技不在P2开幕立刻可用：给玩家一段熟悉新阶段的缓冲
+            if (context.EngulfCooldown < 480) {
+                context.EngulfCooldown = 480;
+            }
         }
     }
 }

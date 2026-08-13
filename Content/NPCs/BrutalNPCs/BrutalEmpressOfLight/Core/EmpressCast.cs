@@ -67,6 +67,38 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
                 ModContent.ProjectileType<EmpressAuroraVeil>(), damage, 0f, Main.myPlayer, phase, drift, life);
         }
 
+        /// <summary>光笼捕获符印：零伤害预告，closure=收拢帧数，radius=捕获半径</summary>
+        public static void SnareSigil(NPC npc, Vector2 pos, int closure, float radius, float hue) {
+            if (!Authority) {
+                return;
+            }
+            Projectile.NewProjectile(npc.GetSource_FromAI(), pos, Vector2.Zero,
+                ModContent.ProjectileType<EmpressSnareSigil>(), 0, 0f, Main.myPlayer, closure, hue % 1f, radius);
+        }
+
+        /// <summary>光绫束缚：零伤害缚定视觉，victim=受缚玩家索引，life=寿命帧</summary>
+        public static void LightBind(NPC npc, Vector2 pos, int victim, int life, float hue) {
+            if (!Authority) {
+                return;
+            }
+            Projectile.NewProjectile(npc.GetSource_FromAI(), pos, Vector2.Zero,
+                ModContent.ProjectileType<EmpressLightBind>(), 0, 0f, Main.myPlayer, victim, life, hue % 1f);
+        }
+
+        /// <summary>散掉指定玩家身上的光绫（投技提前中断的兜底）</summary>
+        public static void KillLightBind(int victim) {
+            if (!Authority) {
+                return;
+            }
+            int type = ModContent.ProjectileType<EmpressLightBind>();
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile p = Main.projectile[i];
+                if (p.active && p.type == type && (int)p.ai[0] == victim) {
+                    p.Kill();
+                }
+            }
+        }
+
         /// <summary>辉光爆放：纯演出，各端可见</summary>
         public static void Radiance(NPC npc, Vector2 pos, float radius, int life, float hue) {
             if (!Authority) {

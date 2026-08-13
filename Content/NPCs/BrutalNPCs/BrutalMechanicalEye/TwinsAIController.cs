@@ -614,10 +614,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
             //蓄力→Warning
             if (stateContext.IsCharging && stateContext.ChargeProgress > 0f) {
-                //冲刺蓄力 type1/8 警告更强
+                //冲刺蓄力 type1/8/11/14 警告更强
                 bool isDashCharge = stateContext.ChargeType == 1
                     || stateContext.ChargeType == 8
-                    || stateContext.ChargeType == 11;
+                    || stateContext.ChargeType == 11
+                    || stateContext.ChargeType == 14;
                 float intensity = isDashCharge ? 0.95f : 0.8f;
                 float progress = stateContext.ChargeProgress;
                 MechBossVisualState.Push(npc.whoAmI, MechBossVisualMode.Warning, intensity, progress);

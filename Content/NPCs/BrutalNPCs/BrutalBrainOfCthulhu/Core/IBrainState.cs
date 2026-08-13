@@ -31,6 +31,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu.Core
         HeartAttack = 11,
         Despawn = 12,
         Death = 13,
+        /// <summary>二阶段投技：摄心镜狱（镜像收环→念力定身→穿刺连击→真身撞散掷飞）</summary>
+        MindSeize = 14,
     }
 
     /// <summary>状态接口</summary>

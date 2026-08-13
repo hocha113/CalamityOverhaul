@@ -40,7 +40,6 @@ CybTutorialLead: {
 		Alle Schnittstellen wurden aufgelöst.
 		Neuronale Verbindung stabil. SHPC ist bereit.
 		'''
-	AwaitingEquip: AWAITING EQUIP...
 	Calibrating: CALIBRATING...
 	NextBtn: NEXT  >
 	HintStuck: HINT: Versuche, den hervorgehobenen Zielbereich anzuklicken
@@ -53,53 +52,9 @@ CybCourseHackIntroDialogue: {
 }
 
 HackTimeTutorialLead: {
-	HT_Step0_Title: Hack-Modus aktivieren
-	HT_Step1_Title: Ziel fixieren
-	HT_Step2_Title: Hack-Protokoll-Panel
-	HT_Step3_Title: Protokoll hochladen
-	HT_Step4_Title: HACK SEQUENCE COMPLETE
-	HT_Step0_Body:
-		'''
-		Drücke {0}, um den Hack Time-Modus zu betreten.
-		Die Zeit friert ein, ein Cyber-Filter legt sich über dein Bild.
-		'''
-	HT_Step1_Body:
-		'''
-		Bewege den Cursor über den hervorgehobenen Santa-NK1
-		und klicke links, um ihn als Hack-Ziel zu fixieren.
-		'''
-	HT_Step2_Body:
-		'''
-		Das rechte Panel zeigt verfügbare Hack-Protokolle für das Ziel.
-		Verschiedene Protokolle verbrauchen unterschiedlich viel RAM und wirken unterschiedlich.
-		'''
-	HT_Step3_Body:
-		'''
-		Klicke ein Protokoll, um es der Upload-Warteschlange links hinzuzufügen.
-		Die Warteschlange führt die Hack-Operationen nacheinander aus.
-		'''
-	HT_Step4_Body:
-		'''
-		Neuronale Verbindung getrennt.
-		Hack Time-Protokoll-Training abgeschlossen. System bereit.
-		'''
 	HT_Waiting: AWAITING INPUT...
 	HT_Calibrating: DISCONNECTING...
 	HT_NextBtn: NEXT  >
-	HT_Step5_Title: Block-Scan
-	HT_Step6_Title: Block-Ziel fixieren
-	HT_Step7_Title: TILE SCAN COMPLETE
-	HT_Step5_Body:
-		'''
-		Voraus steht ein Wärmegenerator MK2.
-		Drücke {0} erneut, um Hack Time zu reaktivieren.
-		'''
-	HT_Step6_Body:
-		'''
-		Bewege den Cursor über den Generator
-		und klicke links, um ihn als Scan-Ziel zu fixieren.
-		'''
-	HT_Step7_Body: Block-Scan-Schnittstelle aufgelöst. Das rechte Panel zeigt verfügbare Hack-Protokolle für den aktuellen Block.
 	HT_HintStuck: HINT: Klicke NEXT zum Überspringen
 	HT_KeyUnbound: N (temporärer Schalter)
 	HT_KeyHintUnbound: Hinweis: Ist die Hack Time-Taste unbelegt, kannst du in diesem Tutorial [N] nutzen; lege sie unter Einstellungen > Steuerung fest.
@@ -203,10 +158,10 @@ WheelTutorialLead: {
 		Dead center of the wheel is the Hack Time shortcut —
 		clicking it equals pressing {1}. That wraps up the training.
 		''' */
-	// RW_Calibrating: SYNCHRONIZED...
-	// RW_NextBtn: NEXT  >
-	// RW_HintStuck: HINT: Click NEXT to force skip
-	// RW_KeyHintUnbound: Note: the radial wheel key is unbound, so the wheel cannot open. Bind it under Settings > Controls, or click NEXT to skip.
+	// RW_Calibrating: Synchronized
+	// RW_NextBtn: Skip >
+	// RW_HintStuck: Hint: click Skip to force past this step
+	// RW_KeyHintUnbound: Note: the radial wheel key is unbound, so the wheel cannot open. Bind it under Settings > Controls, or click Skip.
 }
 
 CybCourseOutroDialogue: {
@@ -238,6 +193,14 @@ CybCourseKeyBindReminderPanel: {
 	BtnConfirm: Verstanden
 	BtnLater: Später
 	Footer: Beide Optionen beenden den Superdream. Tastenbelegung später in den Einstellungen änderbar.
+}
+
+CybCourseWorld: {
+	// BootTag: NEURAL LINK · SUPERDREAM NODE
+	// BootTitle: Linking Superdream
+	// BootSubtitle: SHPC Immersion Training Protocol
+	// BootStatus: Compiling training space
+	// BootBarLabel: Sync Rate
 }
 
 ShepelCyberActiveDialogue: {

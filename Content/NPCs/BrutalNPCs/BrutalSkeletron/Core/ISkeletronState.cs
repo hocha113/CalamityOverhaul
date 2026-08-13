@@ -34,6 +34,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core
         Despawn = 12,
         /// <summary>诅咒崩解死亡演出</summary>
         Death = 13,
+        /// <summary>合掌拍捉（投技）</summary>
+        PalmSnatch = 14,
     }
 
     /// <summary>头部状态接口</summary>

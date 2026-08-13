@@ -3,3 +3,10 @@ BloodAltarTP: {
 	InsufficientOfferingText: Du hast nicht genug Blutige Tränen bei dir, um dem tiefroten König Tribut zu zollen...
 	SacrificeDeathReason: "{0} versank in endlose Blut- und Fleischfantasien"
 }
+
+// OldNetDataNodeTile.MapEntry: Data Node
+// OldNetLogoutTerminalTile.MapEntry: Logout Terminal
+// OldNetEncryptedNodeTile.MapEntry: Encrypted Node
+// OldNetEventNodeTile.MapEntry: Event Node
+// OldNetSealGateTile.MapEntry: Seal Gate
+// OldNetRelayTile.MapEntry: Relay Station

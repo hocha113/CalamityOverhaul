@@ -31,6 +31,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core
         Despawn = 11,
         /// <summary>死亡演出，蜂群失控</summary>
         Death = 12,
+        /// <summary>投技：蜜牢收网，蜂茧裹人垂直抬升+三轮穿刺+爆散坠落(二阶段)</summary>
+        SwarmLift = 13,
     }
 
     /// <summary>状态接口</summary>

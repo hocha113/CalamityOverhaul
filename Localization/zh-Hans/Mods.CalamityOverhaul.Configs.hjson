@@ -81,6 +81,11 @@ CWRServerConfig: {
 		Tooltip: 在森林深处生成木制的精灵或森林守卫哨站
 	}
 
+	GenSHPCCradle: {
+		Label: 生成SHPC坠舱空岛
+		Tooltip: 在出生点上空生成一座坠毁舱段空岛，其中封存着SHPC。关闭后该武器将只能从灾厄的实验室获取
+	}
+
 	ConfigChangePrefix: 用户
 	ConfigChangeSuffix: 修改了服务端配置
 

@@ -20,13 +20,6 @@ namespace CalamityOverhaul.Content.EntrustManager
 {
     internal class QuestManagerSysteam : ModSystem
     {
-        /// <summary>打开时隐藏的 Vanilla UI 层</summary>
-        private static readonly HashSet<string> HiddenLayers = [
-            "Vanilla: Hotbar",
-            "Vanilla: Inventory",
-            "Vanilla: Info Accessories Bar",
-        ];
-
         public override void UpdateUI(GameTime gameTime) {
             if (CWRKeySystem.QuestManager_Key != null && CWRKeySystem.QuestManager_Key.JustReleased) {
                 QuestManagerUI.Instance.TogglePanel();
@@ -35,17 +28,6 @@ namespace CalamityOverhaul.Content.EntrustManager
 
         public override void OnWorldUnload() {
             QuestManagerUI.Instance?.ClearAll();
-        }
-
-        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
-            var ui = QuestManagerUI.Instance;
-            if (ui == null || !ui.IsOpen) return;
-
-            foreach (var layer in layers) {
-                if (HiddenLayers.Contains(layer.Name)) {
-                    layer.Active = false;
-                }
-            }
         }
     }
 
@@ -99,33 +81,25 @@ namespace CalamityOverhaul.Content.EntrustManager
 
         #region 状态与配置
 
-        private bool isOpen;
+        /// <summary>
+        /// 委托卷宗已内嵌进任务书，"打开"等价于任务书正翻在委托站点。<br/>
+        /// 引导与外部联动读这一个来源
+        /// </summary>
+        public new bool IsOpen => QuestLogs.QuestLog.Instance?.EntrustViewActive == true;
 
-        public new bool IsOpen => isOpen;
-
-        /// <summary>面板右缘 X，含滑入，供联动</summary>
+        /// <summary>内容区右缘 X，供引导卡定位</summary>
         public int PanelRightEdge { get; private set; }
 
-        /// <summary>开关动画 0~1</summary>
-        private float openProgress;
+        /// <summary>内嵌内容区，由任务书每帧交付</summary>
+        private Rectangle hostRect;
 
         private float contentAlpha;
-
-        private const int PanelWidth = 340;
-
-        private const int PanelTopMargin = 30;
-
-        private const int PanelBottomMargin = 30;
-
-        private const int HeaderHeight = 38;
 
         private const int TabBarHeight = 28;
 
         private const int FooterHeight = 26;
 
         private const int ScrollbarWidth = 8;
-
-        private const int CloseBtnSize = 20;
 
         #endregion
 
@@ -269,45 +243,37 @@ namespace CalamityOverhaul.Content.EntrustManager
             }
         }
 
-        private void CycleStyle() {
-            if (availableStyles.Count <= 1) return;
-            currentStyleIndex = (currentStyleIndex + 1) % availableStyles.Count;
-            SetStyle(availableStyles[currentStyleIndex]);
-            QuestLogs.QuestLog.Instance?.SetStyleByIndex(currentStyleIndex, false);
-        }
-
         #endregion
 
         #region 动画
 
-        private float panelShake;
         private float edgeGlowPhase;
 
         #endregion
 
         #region UIHandle 生命周期
 
-        public override bool Active => !Main.gameMenu && (openProgress > 0.005f || isOpen || allEntries.Count > 0);
+        //本体不再自绘面板，但仍需每帧推进条目与过滤，故与条目共存亡
+        public override bool Active => !Main.gameMenu && (IsOpen || allEntries.Count > 0);
 
         public QuestManagerUI() {
+            //序号与任务书的样式表一一对应，不可重排
             availableStyles.Add(new HotwindManagerStyle());
             availableStyles.Add(new DraedonManagerStyle());
             availableStyles.Add(new ForestManagerStyle());
-            currentStyleIndex = 0;
-            currentStyle = availableStyles[0];
+            availableStyles.Add(new ChronicleManagerStyle());
+            currentStyleIndex = QuestLogs.QuestLog.ChronicleStyleIndex;
+            currentStyle = availableStyles[currentStyleIndex];
             categoryNames = new string[4];
         }
 
         public override void OnEnterWorld() {
-            isOpen = false;
-            openProgress = 0f;
             contentAlpha = 0f;
             scrollOffset = 0f;
             scrollTarget = 0f;
             selectedIndex = -1;
             hoveredIndex = -1;
             selectedCategoryIndex = 0;
-            panelShake = 0f;
             edgeGlowPhase = 0f;
             currentStyle?.Reset();
 
@@ -321,21 +287,16 @@ namespace CalamityOverhaul.Content.EntrustManager
         }
 
         public override void LogicUpdate() {
-            currentStyle?.Update(GetPanelRect(), openProgress);
+            currentStyle?.Update(hostRect, IsOpen ? 1f : 0f);
         }
 
+        /// <summary>只推进与开合无关的记账：条目、展开动画、过滤重建</summary>
         public override void Update() {
-            float targetOpen = isOpen ? 1f : 0f;
-            openProgress = MathHelper.Lerp(openProgress, targetOpen, 0.12f);
-            if (!isOpen && openProgress < 0.005f) openProgress = 0f;
-            if (isOpen && openProgress > 0.995f) openProgress = 1f;
-
-            float contentTarget = openProgress > 0.6f ? 1f : 0f;
+            float contentTarget = IsOpen ? 1f : 0f;
             contentAlpha = MathHelper.Lerp(contentAlpha, contentTarget, 0.15f);
 
             edgeGlowPhase += 0.03f;
             if (edgeGlowPhase > MathHelper.TwoPi) edgeGlowPhase -= MathHelper.TwoPi;
-            if (panelShake > 0f) panelShake *= 0.88f;
 
             scrollOffset = MathHelper.Lerp(scrollOffset, scrollTarget, 0.18f);
 
@@ -354,25 +315,28 @@ namespace CalamityOverhaul.Content.EntrustManager
                 if (entry.ExpandProgress > 0.995f) entry.ExpandProgress = 1f;
             }
 
-            Rectangle panelRect = GetPanelRect();
-            PanelRightEdge = panelRect.Right;
-            UIHitBox = panelRect;
-            hoverInMainPage = panelRect.Intersects(MouseHitBox) && isOpen;
-
-            if (!isOpen || openProgress < 0.3f) return;
-
-            if (Main.playerInventory) {
-                isOpen = false;
-                SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.5f });
-                return;
+            if (!IsOpen) {
+                hoveredIndex = -1;
+                hoverInMainPage = false;
             }
+        }
 
-            UIInputGuard.SuppressWeaponSwitch();
+        /// <summary>
+        /// 内嵌态输入，由任务书在委托站点每帧调用。<br/>
+        /// 指针占用与滚轮锁由任务书统一负责，此处只管列表自身
+        /// </summary>
+        public void UpdateEmbedded(Rectangle host, bool chromeHovered, int scrollDelta) {
+            hostRect = host;
+            PanelRightEdge = host.Right;
+            UIHitBox = host;
+            hoverInMainPage = host.Intersects(MouseHitBox) && !chromeHovered;
 
             if (hoverInMainPage) {
-                player.mouseInterface = true;
-                HandleScrollInput(panelRect);
-                HandleMouseInput(panelRect);
+                if (scrollDelta != 0) {
+                    scrollTarget -= scrollDelta * 0.3f;
+                    ClampScroll(host);
+                }
+                HandleMouseInput(host);
             }
 
             //中键态每帧更新，防跨帧漂移
@@ -383,25 +347,9 @@ namespace CalamityOverhaul.Content.EntrustManager
 
         #region 开关与交互
 
+        /// <summary>入口已并入任务书：翻到委托站点，或在该站点时合书</summary>
         public void TogglePanel() {
-            isOpen = !isOpen;
-            if (isOpen) {
-                //关背包防遮挡
-                Main.playerInventory = false;
-                panelShake = 3f;
-                SoundEngine.PlaySound(SoundID.MenuOpen with { Volume = 0.5f });
-            }
-            else {
-                SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.5f });
-            }
-        }
-
-        private void HandleScrollInput(Rectangle panelRect) {
-            int scrollDelta = PlayerInput.ScrollWheelDeltaForUI;
-            if (scrollDelta != 0) {
-                scrollTarget -= scrollDelta * 0.3f;
-                ClampScroll(panelRect);
-            }
+            QuestLogs.QuestLog.Instance?.ToggleEntrustView();
         }
 
         private void HandleMouseInput(Rectangle panelRect) {
@@ -421,23 +369,6 @@ namespace CalamityOverhaul.Content.EntrustManager
                         SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.35f });
                     }
                 }
-                return;
-            }
-
-            if (currentStyle != null) {
-                Rectangle styleRect = currentStyle.GetStyleSwitchButtonRect(panelRect);
-                if (styleRect.Contains(Main.mouseX, Main.mouseY)) {
-                    if (keyLeftPressState == KeyPressState.Pressed) {
-                        CycleStyle();
-                        SoundEngine.PlaySound(SoundID.MenuTick);
-                    }
-                    return;
-                }
-            }
-
-            Rectangle closeBtnRect = GetCloseButtonRect(panelRect);
-            if (closeBtnRect.Contains(Main.mouseX, Main.mouseY) && keyLeftPressState == KeyPressState.Pressed) {
-                TogglePanel();
                 return;
             }
 
@@ -598,8 +529,7 @@ namespace CalamityOverhaul.Content.EntrustManager
             if (string.IsNullOrEmpty(summary)) return 0;
 
             var font = FontAssets.MouseText.Value;
-            Rectangle panelRect = GetPanelRect();
-            Rectangle contentRect = GetContentRect(panelRect);
+            Rectangle contentRect = GetContentRect(hostRect);
             //展开区宽，对齐条目文本
             float textScale = 0.70f;
             int wrapPixelWidth = (int)((contentRect.Width - 50f) / textScale);
@@ -674,128 +604,59 @@ namespace CalamityOverhaul.Content.EntrustManager
 
         #region 矩形计算
 
-        private Rectangle GetPanelRect() {
-            int panelH = Main.screenHeight - PanelTopMargin - PanelBottomMargin;
-            float eased = VaultUtils.EaseOutCubic(MathHelper.Clamp(openProgress, 0f, 1f));
-            int panelX = (int)MathHelper.Lerp(-PanelWidth - 20f, 0f, eased);
+        //内嵌后没有独立面板，页签带住在内容区顶部，页脚住在底部
+        private static Rectangle GetTabRect(Rectangle panelRect)
+            => new(panelRect.X, panelRect.Y, panelRect.Width, TabBarHeight);
 
-            if (panelShake > 0.1f) {
-                panelX += (int)(MathF.Sin(edgeGlowPhase * 12f) * panelShake);
-            }
-
-            return new Rectangle(panelX, PanelTopMargin, PanelWidth, panelH);
-        }
-
-        private Rectangle GetHeaderRect(Rectangle panelRect) {
-            return new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, HeaderHeight);
-        }
-
-        private Rectangle GetTabRect(Rectangle panelRect) {
-            return new Rectangle(panelRect.X, panelRect.Y + HeaderHeight, panelRect.Width, TabBarHeight);
-        }
-
-        private Rectangle GetContentRect(Rectangle panelRect) {
-            int top = panelRect.Y + HeaderHeight + TabBarHeight;
+        private static Rectangle GetContentRect(Rectangle panelRect) {
+            int top = panelRect.Y + TabBarHeight;
             int bottom = panelRect.Bottom - FooterHeight;
             return new Rectangle(panelRect.X, top, panelRect.Width - ScrollbarWidth, bottom - top);
         }
 
-        private Rectangle GetScrollbarRect(Rectangle panelRect) {
-            int top = panelRect.Y + HeaderHeight + TabBarHeight;
+        private static Rectangle GetScrollbarRect(Rectangle panelRect) {
+            int top = panelRect.Y + TabBarHeight;
             int bottom = panelRect.Bottom - FooterHeight;
             return new Rectangle(panelRect.Right - ScrollbarWidth, top, ScrollbarWidth, bottom - top);
         }
 
-        private Rectangle GetFooterRect(Rectangle panelRect) {
-            return new Rectangle(panelRect.X, panelRect.Bottom - FooterHeight, panelRect.Width, FooterHeight);
-        }
-
-        private Rectangle GetCloseButtonRect(Rectangle panelRect) {
-            return new Rectangle(panelRect.Right - CloseBtnSize - 8, panelRect.Y + (HeaderHeight - CloseBtnSize) / 2,
-                CloseBtnSize, CloseBtnSize);
-        }
+        private static Rectangle GetFooterRect(Rectangle panelRect)
+            => new(panelRect.X, panelRect.Bottom - FooterHeight, panelRect.Width, FooterHeight);
 
         #endregion
 
         #region 绘制
 
-        public override void Draw(SpriteBatch spriteBatch) {
-            if (openProgress <= 0.005f) return;
+        //面板本体不再自绘，绘制全部走任务书调用的 DrawEmbedded
+        public override void Draw(SpriteBatch spriteBatch) { }
 
-            Rectangle panelRect = GetPanelRect();
-            float alpha = openProgress;
-
-            currentStyle?.DrawPanelBackground(spriteBatch, panelRect, alpha);
-
-            currentStyle?.DrawParticles(spriteBatch, panelRect, alpha);
-
-            currentStyle?.DrawPanelFrame(spriteBatch, panelRect, alpha);
-
-            Rectangle headerRect = GetHeaderRect(panelRect);
-            currentStyle?.DrawHeader(spriteBatch, headerRect, TitleText.Value, alpha);
-
-            DrawCloseButton(spriteBatch, panelRect, alpha);
-
-            if (currentStyle != null && availableStyles.Count > 1) {
-                Rectangle styleRect = currentStyle.GetStyleSwitchButtonRect(panelRect);
-                bool styleHovered = styleRect.Contains(Main.mouseX, Main.mouseY) && isOpen;
-                currentStyle.DrawStyleSwitchButton(spriteBatch, panelRect, styleHovered, alpha);
-            }
-
-            if (contentAlpha < 0.01f) {
-                DrawLoadingIndicator(spriteBatch, panelRect, alpha);
-                currentStyle?.DrawOverlayEffects(spriteBatch, panelRect, alpha);
+        /// <summary>
+        /// 内嵌绘制：页签带 → 条目 → 滚动指示 → 页脚 → 悬停提示。<br/>
+        /// 底衬与外框归任务书的纸面，此处不再画面板背景与边框
+        /// </summary>
+        public void DrawEmbedded(SpriteBatch spriteBatch, Rectangle host, float alpha) {
+            if (alpha <= 0.005f) {
                 return;
             }
+            hostRect = host;
 
-            Rectangle tabRect = GetTabRect(panelRect);
+            Rectangle tabRect = GetTabRect(host);
             currentStyle?.DrawCategoryTabs(spriteBatch, tabRect, categoryNames,
-                selectedCategoryIndex, alpha * contentAlpha);
+                selectedCategoryIndex, alpha);
 
-            DrawQuestEntries(spriteBatch, panelRect, alpha * contentAlpha);
+            DrawQuestEntries(spriteBatch, host, alpha * MathF.Max(contentAlpha, 0.35f));
 
-            DrawScrollbarArea(spriteBatch, panelRect, alpha * contentAlpha);
+            DrawScrollbarArea(spriteBatch, host, alpha);
 
-            Rectangle footerRect = GetFooterRect(panelRect);
+            Rectangle footerRect = GetFooterRect(host);
             int activeCount = 0;
             foreach (var e in allEntries) {
                 if (e.Status == QuestEntryStatus.Active || e.Status == QuestEntryStatus.Tracked)
                     activeCount++;
             }
-            currentStyle?.DrawFooter(spriteBatch, footerRect, allEntries.Count, activeCount, alpha * contentAlpha);
+            currentStyle?.DrawFooter(spriteBatch, footerRect, allEntries.Count, activeCount, alpha);
 
-            currentStyle?.DrawOverlayEffects(spriteBatch, panelRect, alpha);
-
-            DrawInteractionHints(spriteBatch, panelRect, alpha * contentAlpha);
-        }
-
-        private void DrawCloseButton(SpriteBatch sb, Rectangle panelRect, float alpha) {
-            Rectangle btn = GetCloseButtonRect(panelRect);
-            bool hovered = btn.Contains(Main.mouseX, Main.mouseY) && isOpen;
-
-            Color bgC = hovered ? new Color(60, 150, 220) * (alpha * 0.3f) : new Color(10, 20, 40) * (alpha * 0.4f);
-            BaseManagerStyle.FillRect(sb, btn, bgC);
-
-            Color xColor = hovered ? new Color(255, 100, 100) * alpha : new Color(140, 210, 255) * (alpha * 0.6f);
-            float cx = btn.X + btn.Width / 2f;
-            float cy = btn.Y + btn.Height / 2f;
-            float xSize = 4f;
-            sb.Draw(VaultAsset.placeholder2.Value, new Vector2(cx, cy), null, xColor,
-                MathHelper.PiOver4, new Vector2(0.5f), new Vector2(xSize * 2f, 1.5f), SpriteEffects.None, 0f);
-            sb.Draw(VaultAsset.placeholder2.Value, new Vector2(cx, cy), null, xColor,
-                -MathHelper.PiOver4, new Vector2(0.5f), new Vector2(xSize * 2f, 1.5f), SpriteEffects.None, 0f);
-        }
-
-        private void DrawLoadingIndicator(SpriteBatch sb, Rectangle panelRect, float alpha) {
-            float t = openProgress * 8f;
-            string dots = "";
-            for (int i = 0; i < 3; i++) {
-                float phase = MathF.Sin(t + i * 0.8f);
-                dots += phase > 0f ? "●" : "○";
-                if (i < 2) dots += " ";
-            }
-            Vector2 center = new(panelRect.X + panelRect.Width / 2f, panelRect.Y + panelRect.Height / 2f);
-            BaseManagerStyle.DrawCenteredText(sb, dots, center, new Color(140, 210, 255) * (alpha * 0.5f), 0.8f);
+            DrawInteractionHints(spriteBatch, host, alpha);
         }
 
         private void DrawQuestEntries(SpriteBatch sb, Rectangle panelRect, float alpha) {
@@ -803,10 +664,7 @@ namespace CalamityOverhaul.Content.EntrustManager
             int padding = currentStyle?.GetEntryPadding() ?? 4;
 
             if (filteredEntries.Count == 0) {
-                Vector2 emptyCenter = new(contentRect.X + contentRect.Width / 2f,
-                    contentRect.Y + contentRect.Height / 2f);
-                BaseManagerStyle.DrawCenteredText(sb, EmptyHintText.Value, emptyCenter,
-                    new Color(60, 150, 220) * (alpha * 0.4f), 0.75f);
+                currentStyle?.DrawEmptyHint(sb, contentRect, EmptyHintText.Value, alpha);
                 return;
             }
 
@@ -877,45 +735,8 @@ namespace CalamityOverhaul.Content.EntrustManager
 
         private void DrawInteractionHints(SpriteBatch sb, Rectangle panelRect, float alpha) {
             if (hoveredIndex < 0 || hoveredIndex >= filteredEntries.Count) return;
-
-            Rectangle footerRect = GetFooterRect(panelRect);
-            var entry = filteredEntries[hoveredIndex];
-            var font = FontAssets.MouseText.Value;
-
-            float hintY = footerRect.Y - 16f;
-
-            string suspendHint = "";
-            if (entry.Status == QuestEntryStatus.Active || entry.Status == QuestEntryStatus.Tracked
-                || entry.Status == QuestEntryStatus.Suspended)
-                suspendHint = SuspendHintText.Value;
-
-            if (!string.IsNullOrEmpty(suspendHint)) {
-                float suspendW = font.MeasureString(suspendHint).X * 0.55f;
-                Utils.DrawBorderString(sb, suspendHint,
-                    new Vector2(footerRect.Right - suspendW - 10f, hintY),
-                    new Color(200, 180, 100) * (alpha * 0.5f), 0.55f);
-                hintY -= 14f;
-            }
-
-            string trackHint = "";
-            if (entry.Status == QuestEntryStatus.Active || entry.Status == QuestEntryStatus.Tracked)
-                trackHint = TrackHintText.Value;
-
-            if (!string.IsNullOrEmpty(trackHint)) {
-                float hintW = font.MeasureString(trackHint).X * 0.55f;
-                Utils.DrawBorderString(sb, trackHint,
-                    new Vector2(footerRect.Right - hintW - 10f, hintY),
-                    new Color(140, 210, 255) * (alpha * 0.5f), 0.55f);
-                hintY -= 14f;
-            }
-
-            string expandHint = ExpandHintText.Value;
-            if (!string.IsNullOrEmpty(expandHint)) {
-                float expandW = font.MeasureString(expandHint).X * 0.55f;
-                Utils.DrawBorderString(sb, expandHint,
-                    new Vector2(footerRect.Right - expandW - 10f, hintY),
-                    new Color(120, 200, 180) * (alpha * 0.5f), 0.55f);
-            }
+            currentStyle?.DrawInteractionHints(sb, GetFooterRect(panelRect),
+                filteredEntries[hoveredIndex], alpha);
         }
 
         #endregion
@@ -923,14 +744,11 @@ namespace CalamityOverhaul.Content.EntrustManager
         #region 存档
 
         public override void SaveUIData(TagCompound tag) {
-            tag[Name + ":isOpen"] = isOpen;
             tag[Name + ":selectedCategory"] = selectedCategoryIndex;
             tag[Name + ":styleIndex"] = currentStyleIndex;
         }
 
         public override void LoadUIData(TagCompound tag) {
-            if (tag.TryGet(Name + ":isOpen", out bool open))
-                isOpen = open;
             if (tag.TryGet(Name + ":selectedCategory", out int cat))
                 selectedCategoryIndex = Math.Clamp(cat, 0, categoryKeys.Length - 1);
             if (tag.TryGet(Name + ":styleIndex", out int si)) {

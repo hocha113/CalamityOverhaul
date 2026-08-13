@@ -32,6 +32,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.Core
         Despawn = 11,
         /// <summary>死亡演出</summary>
         Death = 12,
+        /// <summary>撕咬拖曳投技，二阶段</summary>
+        MawDrag = 13,
     }
 
     /// <summary>状态接口</summary>

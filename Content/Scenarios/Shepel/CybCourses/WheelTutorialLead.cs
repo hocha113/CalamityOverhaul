@@ -53,9 +53,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 this.GetLocalization("RW_S02_Body",
                     () => "转盘正中央就是骇客时间的快捷入口，\n单击它等同于按下 {1}。全部训练到此完成。"),
             };
-            _textCalibrating = this.GetLocalization("RW_Calibrating", () => "SYNCHRONIZED...");
-            _textNextBtn = this.GetLocalization("RW_NextBtn", () => "NEXT  >");
-            _textHintStuck = this.GetLocalization("RW_HintStuck", () => "HINT: 点击 NEXT 按钮可强制跳过");
+            _textCalibrating = this.GetLocalization("RW_Calibrating", () => "同步完成");
+            _textNextBtn = this.GetLocalization("RW_NextBtn", () => "跳过 >");
+            _textHintStuck = this.GetLocalization("RW_HintStuck", () => "提示：点击 跳过 按钮可强制越过这一步");
             _textKeyHintUnbound = this.GetLocalization("RW_KeyHintUnbound",
                 () => "提示：快捷转盘键未绑定，转盘无法呼出；请在 设置 > 控制 中绑定，或点 NEXT 跳过。");
         }
@@ -89,9 +89,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 .Replace(HackKeyToken, hackKey);
         }
 
-        private const int CardW = 310;
-        private const int CardH = 118;
-        private const int EdgePad = 8;
+        private const int CardW = CybCourseCardStyle.CardW;
+        private const int CardH = CybCourseCardStyle.CardH;
         private const float AutoStepDuration = 1.6f;
         private const float StuckHintAfter = 12f;
         private const float OutroHackTimeFadeThreshold = 0.02f;
@@ -295,45 +294,12 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             var card = new Rectangle(finalX, finalY, CardW, CardH);
 
             _cardRect = card;
-            DrawCardBg(sb, card, alpha);
-            DrawCardContent(sb, px, card, alpha);
+            CybCourseCardStyle.DrawCardBg(sb, card, alpha, _shaderTimer);
+            DrawCardContent(sb, card, alpha);
             DrawWheelHighlight(sb, px, alpha);
         }
 
-        private static void DrawCardBg(SpriteBatch sb, Rectangle card, float alpha) {
-            Effect effect = EffectLoader.EntrustGuideCard?.Value;
-            if (effect != null) {
-                Rectangle ext = card;
-                ext.Inflate(EdgePad, EdgePad);
-                effect.Parameters["uTime"]?.SetValue(_shaderTimer);
-                effect.Parameters["uAlpha"]?.SetValue(alpha * 0.96f);
-                effect.Parameters["uResolution"]?.SetValue(new Vector2(ext.Width, ext.Height));
-                effect.Parameters["uEdgePad"]?.SetValue((float)EdgePad);
-                effect.Parameters["uVariant"]?.SetValue(1f);
-                sb.End();
-                sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
-                    SamplerState.AnisotropicClamp, DepthStencilState.None,
-                    RasterizerState.CullNone, effect, Main.UIScaleMatrix);
-                sb.Draw(VaultAsset.placeholder2.Value, ext, Color.White);
-                sb.End();
-                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
-                    SamplerState.AnisotropicClamp, DepthStencilState.None,
-                    RasterizerState.CullNone, null, Main.UIScaleMatrix);
-            }
-            else {
-                sb.Draw(VaultAsset.placeholder2.Value, card, new Color(0, 8, 18, (int)(200 * alpha)));
-                BaseManagerStyle.StrokeRect(sb, card, 1, new Color(50, 160, 200, (int)(120 * alpha)));
-            }
-        }
-
-        private static void DrawCardContent(SpriteBatch sb, Texture2D px, Rectangle card, float alpha) {
-            var font = FontAssets.MouseText.Value;
-            float titleSc = 0.84f;
-            float bodySc = 0.70f;
-            float subSc = 0.58f;
-            float lineT = font.MeasureString("A").Y * titleSc + 2f;
-            float lineB = font.MeasureString("A").Y * bodySc + 1f;
-
+        private static void DrawCardContent(SpriteBatch sb, Rectangle card, float alpha) {
             int stepIdx = (int)MathHelper.Clamp(_currentStep, 0, StepIsAuto.Length - 1);
             string title = _stepTitles[stepIdx].Value;
             string body = ResolveKeyTokens(_stepBodies[stepIdx].Value);
@@ -341,88 +307,28 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             bool stuck = !isAuto && _stuckTimer >= StuckHintAfter;
             //转盘键没绑定时前两步都无法靠操作完成，立即亮出琥珀提示
             bool keyHint = stepIdx <= 1 && !IsWheelKeyBound();
-            float px2 = card.X + 14f;
-            float py = card.Y + 12f;
 
             string counter = $"{stepIdx + 1:D2} / {StepIsAuto.Length:D2}";
-            float counterW = font.MeasureString(counter).X * subSc;
-            Utils.DrawBorderString(sb, counter,
-                new Vector2(card.Right - 14f - counterW, py),
-                new Color(70, 155, 175, (int)(150 * alpha)), subSc);
-
-            Utils.DrawBorderString(sb, title, new Vector2(px2, py),
-                new Color(80, 220, 245, (int)(255 * alpha)), titleSc);
-            py += lineT + 2f;
-
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle((int)px2, (int)py, CardW - 28, 1),
-                new Color(45, 130, 155, (int)(90 * alpha)));
-            py += 6f;
-
-            int bodyWrapW = (int)((CardW - 28) / bodySc);
-            foreach (string line in body.Split('\n')) {
-                string[] wrapped = VaultUtils.WrapTextArray(line, font, bodyWrapW, 99, out _);
-                foreach (string wl in wrapped) {
-                    if (string.IsNullOrEmpty(wl)) continue;
-                    Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px2, py),
-                        new Color(175, 215, 225, (int)(215 * alpha)), bodySc);
-                    py += lineB;
-                }
-            }
+            float y = CybCourseCardStyle.DrawHeader(sb, card, alpha, title, counter);
+            CybCourseCardStyle.DrawBodyLines(sb, card, ref y, alpha, body);
 
             //未绑定提示
             if (keyHint && _textKeyHintUnbound != null) {
-                float pulseKey = 0.75f + 0.25f * MathF.Sin(_shaderTimer * 10f);
-                int wrapW = (int)((CardW - 28) / subSc);
-                string[] wrapped = VaultUtils.WrapTextArray(_textKeyHintUnbound.Value, font, wrapW, 99, out _);
-                foreach (string wl in wrapped) {
-                    if (string.IsNullOrEmpty(wl)) continue;
-                    Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px2, py),
-                        new Color(255, 195, 90, (int)(220 * alpha * pulseKey)), subSc);
-                    py += lineB - 1f;
-                }
+                CybCourseCardStyle.DrawKeyHintLines(sb, card, ref y, alpha, _shaderTimer, _textKeyHintUnbound.Value);
             }
 
             if (stuck && _textHintStuck != null) {
-                float pulseHint = 0.7f + 0.3f * MathF.Sin(_shaderTimer * 14f);
-                Utils.DrawBorderString(sb, _textHintStuck.Value,
-                    new Vector2(px2, card.Bottom - 36f),
-                    new Color(255, 110, 90, (int)(220 * alpha * pulseHint)), subSc);
+                CybCourseCardStyle.DrawStuckHint(sb, card, alpha, _shaderTimer, _textHintStuck.Value);
             }
 
             if (isAuto) {
-                float blink = 0.72f + 0.28f * MathF.Sin(_shaderTimer * 22f);
-                float sbW = font.MeasureString(_textCalibrating.Value).X * subSc;
-                Utils.DrawBorderString(sb, _textCalibrating.Value,
-                    new Vector2(card.Right - 14f - sbW, card.Bottom - 16f),
-                    new Color(60, 190, 200, (int)(200 * alpha * blink)), subSc);
+                CybCourseCardStyle.DrawStatusTag(sb, card, alpha, _shaderTimer, _textCalibrating.Value);
             }
             else {
-                DrawNextButton(sb, card, alpha, stuck);
+                Vector2 uiMouse = RadialWheelHub.UIMouse;
+                _nextBtnRect = CybCourseCardStyle.DrawNextButton(sb, card, alpha, stuck,
+                    _shaderTimer, _textNextBtn.Value, new Point((int)uiMouse.X, (int)uiMouse.Y));
             }
-        }
-
-        private static void DrawNextButton(SpriteBatch sb, Rectangle card, float alpha, bool stuck) {
-            const int btnW = 72, btnH = 20, margin = 10;
-            var btn = new Rectangle(card.Right - btnW - margin, card.Bottom - btnH - margin, btnW, btnH);
-            _nextBtnRect = btn;
-
-            Vector2 uiMouse = RadialWheelHub.UIMouse;
-            bool hovered = btn.Contains((int)uiMouse.X, (int)uiMouse.Y);
-            float emphasize = stuck ? 0.85f + 0.15f * MathF.Sin(_shaderTimer * 14f) : 0f;
-            Color bgColor = hovered
-                ? new Color(40, 155, 180, (int)(210 * alpha))
-                : new Color(18 + (int)(40 * emphasize), 72, 92, (int)((150 + 50 * emphasize) * alpha));
-            Color borderColor = hovered
-                ? new Color(100, 220, 245, (int)(200 * alpha))
-                : new Color(50 + (int)(80 * emphasize), 150, 180, (int)((120 + 80 * emphasize) * alpha));
-            Color textColor = hovered
-                ? new Color(200, 250, 255, (int)(255 * alpha))
-                : new Color(110 + (int)(80 * emphasize), 205, 225, (int)((195 + 60 * emphasize) * alpha));
-
-            BaseManagerStyle.FillRect(sb, btn, bgColor);
-            BaseManagerStyle.StrokeRect(sb, btn, 1, borderColor);
-            BaseManagerStyle.DrawCenteredText(sb, _textNextBtn.Value, btn.Center.ToVector2(), textColor, 0.60f);
         }
 
         /// <summary>
@@ -454,20 +360,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             //方形括角标记占位
             int half = (int)(ringR + 12f);
             var rect = new Rectangle((int)center.X - half, (int)center.Y - half, half * 2, half * 2);
-            DrawLBrackets(sb, px, rect, bracketColor);
-        }
-
-        private static void DrawLBrackets(SpriteBatch sb, Texture2D px, Rectangle r, Color c) {
-            const int len = 14;
-            const int thick = 2;
-            sb.Draw(px, new Rectangle(r.Left, r.Top, len, thick), c);
-            sb.Draw(px, new Rectangle(r.Left, r.Top, thick, len), c);
-            sb.Draw(px, new Rectangle(r.Right - len, r.Top, len, thick), c);
-            sb.Draw(px, new Rectangle(r.Right - thick, r.Top, thick, len), c);
-            sb.Draw(px, new Rectangle(r.Left, r.Bottom - thick, len, thick), c);
-            sb.Draw(px, new Rectangle(r.Left, r.Bottom - len, thick, len), c);
-            sb.Draw(px, new Rectangle(r.Right - len, r.Bottom - thick, len, thick), c);
-            sb.Draw(px, new Rectangle(r.Right - thick, r.Bottom - len, thick, len), c);
+            CybCourseCardStyle.DrawLBrackets(sb, px, rect, bracketColor);
         }
     }
 }

@@ -32,6 +32,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.Core
         Despawn = 11,
         /// <summary>死亡演出：尾→头连锁溃爆</summary>
         Death = 12,
+        /// <summary>投技·生吞入腹(地底伏击→垂直破土吞人→拖入地底挤压→破土喷出)</summary>
+        Devour = 13,
     }
 
     /// <summary>状态接口</summary>

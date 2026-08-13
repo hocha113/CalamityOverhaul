@@ -100,6 +100,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
 
             FindTarget();
             UpdateStateContext();
+
+            //投技冷却（仅权威端消费）
+            if (!VaultUtils.isClient && stateContext.SnatchCooldown > 0) {
+                stateContext.SnatchCooldown--;
+            }
+
             EvaluateGlobalTransitions();
 
             //双手健在时头有额外骨甲
@@ -173,6 +179,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron
                 return;
             }
             if (current is SkeletronDeathState or SkeletronDespawnState or SkeletronIntroState or SkeletronPhaseTransitionState) {
+                return;
+            }
+
+            //拍捉持人期间不被转阶段/白昼打断（死亡例外已在上方放行），出口清理由状态 OnExit 保证
+            if (current is SkeletronPalmSnatchState && npc.ai[SkeletronAiSlots.HeadParamA] > 0f) {
                 return;
             }
 

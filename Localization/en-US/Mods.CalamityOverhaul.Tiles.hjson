@@ -3,3 +3,10 @@ BloodAltarTP: {
 	InsufficientOfferingText: You don't have enough Bloody Tears to pay tribute to the Crimson King...
 	SacrificeDeathReason: "{0} Trapped in an endless frenzy of blood and flesh"
 }
+
+OldNetDataNodeTile.MapEntry: Data Node
+OldNetLogoutTerminalTile.MapEntry: Logout Terminal
+OldNetEncryptedNodeTile.MapEntry: Encrypted Node
+OldNetEventNodeTile.MapEntry: Event Node
+OldNetSealGateTile.MapEntry: Seal Gate
+OldNetRelayTile.MapEntry: Relay Station

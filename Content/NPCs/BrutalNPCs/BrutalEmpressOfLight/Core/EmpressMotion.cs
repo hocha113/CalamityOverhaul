@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEmpressOfLight.Core
             if (VaultUtils.isServer || !CalamityOverhaul.Common.CWRServerConfig.Instance.ScreenVibration) {
                 return;
             }
-            if (InnoVault.Cinematics.CutsceneDirector.CurrentClip is EmpressDeathCutscene) {
+            if (InnoVault.Cinematics.CutsceneDirector.CurrentClip is EmpressDeathCutscene or EmpressGrabCutscene) {
                 InnoVault.Cinematics.CutsceneDirector.Shake(Vector2.Zero, strength, 0.9f, frames);
                 return;
             }

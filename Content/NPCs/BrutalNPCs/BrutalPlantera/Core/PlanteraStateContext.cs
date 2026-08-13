@@ -46,6 +46,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalPlantera.Core
         public List<PlanteraStateIndex> AttackBag { get; } = [];
         /// <summary>上一个攻击状态，防重复</summary>
         public PlanteraStateIndex LastAttack { get; set; } = PlanteraStateIndex.Canopy;
+        /// <summary>投技冷却计时(权威端递减)，>0 时选择器跳过投技</summary>
+        public int VineFeastCooldown { get; set; }
         #endregion
 
         #region 蓄力/演出视觉数据（每帧由状态声明）

@@ -109,6 +109,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEyeOfCthulhu.States
                 EocStateIndex.MawFrenzy => new EocMawFrenzyState(),
                 EocStateIndex.BlindsideCross => new EocBlindsideCrossState(),
                 EocStateIndex.Maelstrom => new EocMaelstromState(),
+                EocStateIndex.MawDrag => new EocMawDragState(),
                 _ => new EocFeintDashState(),
             };
         }

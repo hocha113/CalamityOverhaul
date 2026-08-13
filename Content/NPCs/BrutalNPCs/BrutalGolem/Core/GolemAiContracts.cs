@@ -62,6 +62,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
         public const int FistSpeed = 6;
         /// <summary>拳 Override ai[7] 横扫起点X（0=按目标镜像推算）</summary>
         public const int FistSweepStartX = 7;
+
+        /// <summary>拳 Override ai[8] 投技抓取目标 whoAmI+1（0=无）</summary>
+        public const int FistGrabTarget = 8;
+        /// <summary>拳 Override ai[9] 钉压点 X</summary>
+        public const int FistPinX = 9;
+        /// <summary>拳 Override ai[10] 钉压点 Y</summary>
+        public const int FistPinY = 10;
+        /// <summary>拳 Override ai[11] 钉面类型 <see cref="GolemPinKind"/></summary>
+        public const int FistPinKind = 11;
+    }
+
+    /// <summary>投技钉面类型（写拳 Override ai[11] 同步）</summary>
+    internal enum GolemPinKind : int
+    {
+        /// <summary>无钉面（空中放弃投掷）</summary>
+        None = 0,
+        /// <summary>墙在玩家左侧（法线 +X）</summary>
+        WallLeft = 1,
+        /// <summary>墙在玩家右侧（法线 -X）</summary>
+        WallRight = 2,
+        /// <summary>地面钉压，研磨朝右</summary>
+        FloorRight = 3,
+        /// <summary>地面钉压，研磨朝左</summary>
+        FloorLeft = 4,
     }
 
     /// <summary>拳指令类型，写入拳 Override ai</summary>
@@ -79,6 +103,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
         GuardOrbit = 4,
         /// <summary>坠地崩解（死亡演出）</summary>
         DeathFall = 5,
+        /// <summary>超级直拳（慢蓄力，命中即抓取投技）</summary>
+        SuperPunch = 6,
     }
 
     /// <summary>部件存活快照</summary>
@@ -172,6 +198,43 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
         /// <summary>附着头锚点</summary>
         public static Vector2 HeadAnchor(NPC body) {
             return body.Center + new Vector2(-3f * body.scale, -57f * body.scale);
+        }
+
+        /// <summary>钉面法线：由墙面/地面指向开阔侧</summary>
+        public static Vector2 PinNormal(GolemPinKind kind) {
+            return kind switch {
+                GolemPinKind.WallLeft => Vector2.UnitX,
+                GolemPinKind.WallRight => -Vector2.UnitX,
+                GolemPinKind.FloorRight or GolemPinKind.FloorLeft => -Vector2.UnitY,
+                _ => Vector2.Zero,
+            };
+        }
+
+        /// <summary>研磨切线：墙面向下磨到底，地面沿拳向碾</summary>
+        public static Vector2 GrindTangent(GolemPinKind kind) {
+            return kind switch {
+                GolemPinKind.WallLeft or GolemPinKind.WallRight => Vector2.UnitY,
+                GolemPinKind.FloorRight => Vector2.UnitX,
+                GolemPinKind.FloorLeft => -Vector2.UnitX,
+                _ => Vector2.Zero,
+            };
+        }
+
+        /// <summary>正处于投技抓取的拳，无则 null</summary>
+        public static NPC FindGrabbingFist(GolemLimbStatus limbs) {
+            NPC fist = FistInGrab(limbs.LeftFistIndex);
+            return fist ?? FistInGrab(limbs.RightFistIndex);
+        }
+
+        private static NPC FistInGrab(int index) {
+            if (index < 0 || index >= Main.maxNPCs) {
+                return null;
+            }
+            NPC fist = Main.npc[index];
+            if (!fist.active || (int)fist.ai[GolemAiSlots.PartStateSlot] != (int)GolemFistStateIndex.Grab) {
+                return null;
+            }
+            return fist;
         }
     }
 }

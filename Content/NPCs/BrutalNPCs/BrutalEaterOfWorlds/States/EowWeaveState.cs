@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
                 return new EowApexFrenzyState();
             }
 
-            //手排出招环：压制↔机动↔伏击交替
+            //手排出招环：压制↔机动↔伏击交替；投技(Devour)扣押到二阶段之后
             IEowState[] sequence;
             if (context.ApexCycleStarted) {
                 sequence = [
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
                     new EowLungeFlurryState(),
                     new EowGeyserRakeState(),
                     new EowHuskMinesState(),
-                    new EowBurrowAmbushState(),
+                    new EowDevourState(),
                     new EowSpitBarrageState(),
                     new EowApexFrenzyState(),
                 ];
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
                     new EowGeyserRakeState(),
                     new EowBurrowAmbushState(),
                     new EowHuskMinesState(),
-                    new EowLungeFlurryState(),
+                    new EowDevourState(),
                 ];
             }
             else {
@@ -105,6 +105,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalEaterOfWorlds.States
 
             IEowState next = sequence[context.AttackPhaseIndex % sequence.Length];
             context.AttackPhaseIndex++;
+            //投技开场条件不满足(时停/分裂未收/目标闪烁等)→退回普通伏击，环位照常推进
+            if (next is EowDevourState && !EowDevourState.CanBegin(context)) {
+                next = new EowBurrowAmbushState();
+            }
             return next;
         }
     }

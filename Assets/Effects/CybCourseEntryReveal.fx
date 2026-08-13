@@ -111,9 +111,9 @@ float4 PSCybCourseEntryReveal(float2 uv : TEXCOORD0) : COLOR0
     float3 darkCell = lerp(float3(0.004, 0.010, 0.026),
                            float3(0.020, 0.045, 0.085), rnd);
 
-    //边线：固有的青色蜂窝栅格（覆盖态可见）
+    //边线：固有的青色蜂窝栅格（覆盖态可见；色相对齐 SHPC 青 #56DCF0）
     float gridLine = smoothstep(0.10, 0.0, edgeD);
-    float3 gridColor = float3(0.06, 0.28, 0.55);
+    float3 gridColor = float3(0.07, 0.31, 0.48);
     darkCell += gridColor * gridLine * (0.45 + 0.45 * rnd);
 
     //单元中央随机刻印：极少数单元出现一颗"数据点"（偶发，非密集）
@@ -169,9 +169,9 @@ float4 PSCybCourseEntryReveal(float2 uv : TEXCOORD0) : COLOR0
     float ringSoft = exp(-pow(ringDist / 0.060, 2.0));
     col += float3(0.20, 0.55, 0.80) * ringSoft * 0.32 * ringActive;
 
-    //沿环的色散：在主环正前方加一抹冷紫，正后方加一抹暖青，模拟色像差
+    //沿环的色散：前方深蓝、后方暖青（系列色内的冷暖差，不引入紫）
     float chro = exp(-pow(ringDist / 0.012, 2.0));
-    if (pR > waveR) col += float3(0.10, 0.30, 0.95) * chro * 0.30 * ringActive; //前(尚未到的远端)
+    if (pR > waveR) col += float3(0.08, 0.42, 0.80) * chro * 0.30 * ringActive; //前(尚未到的远端)
     else            col += float3(0.55, 1.05, 0.80) * chro * 0.20 * ringActive; //后(已扫过的近端)
 
     //中心余晕（仪式感）

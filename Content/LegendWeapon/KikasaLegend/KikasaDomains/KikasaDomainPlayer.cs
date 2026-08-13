@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams;
 using CalamityOverhaul.Content.Scenarios.OniRainWorlds;
 using InnoVault.Cinematics;
 using Microsoft.Xna.Framework.Input;
@@ -23,11 +24,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         /// <summary>着色器累计时间（秒），兼作撕纸遮罩噪声时基</summary>
         public float EffectTime { get; private set; }
 
-        /// <summary>撕开覆盖进度 0~1，Opening 撕开 Closing 长回，稳态 1</summary>
-        public float SpreadProgress { get; private set; }
+        /// <summary>撕开覆盖进度 0~1，Opening 撕开 Closing 长回，稳态 1；鬼梦推进需要写入故设 internal</summary>
+        public float SpreadProgress { get; internal set; }
 
-        /// <summary>血湖上涨原始量 0~1，Opening 涨 Closing 退；观感经 <see cref="RiseProgress"/> 缓速</summary>
-        public float RiseT { get; private set; }
+        /// <summary>血湖上涨原始量 0~1，Opening 涨 Closing 退；观感经 <see cref="RiseProgress"/> 缓速。
+        /// 鬼梦里湖不存在（Dreaming 恒 0），归返时涌回，由 <see cref="KikasaDreamDirector"/> 写入</summary>
+        public float RiseT { get; internal set; }
 
         /// <summary>撕裂/合拢原点（世界坐标）。开域帧取玩家中心；收域期间逐帧向玩家当前位置聚拢，
         /// 纸口以人为中心合回而不是钉死在开域点</summary>
@@ -88,6 +90,60 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         /// <summary>翻转期缝线辉光 0~1</summary>
         public float FlipSeamGlow { get; private set; }
+
+        //==================== 鬼梦 ====================
+
+        /// <summary>倒影恶犬是否已醒：湖镜里的人影被黑犬替换。领域激活期切换，收域清零</summary>
+        public bool HoundReflection { get; internal set; }
+
+        /// <summary>鬼梦在场混合 0~1：拉入结算后闪下就位、归返结算后退场，
+        /// 驱动梦空/压光/湖面表现关停的交叉渐变（语义对齐 <see cref="RainBlend"/>）</summary>
+        public float DreamBlend { get; internal set; }
+
+        /// <summary>鬼梦沸腾强度 0~1，比异化翻转更烈</summary>
+        public float DreamBoil { get; internal set; }
+
+        /// <summary>镜面预览向梦侧/真实侧的靠拢 0~1，方向由当前相位决定</summary>
+        public float DreamMix { get; internal set; }
+
+        /// <summary>窥犬凝视 0~1：驻留段镜中黑犬双目自暗处亮起</summary>
+        public float DreamGaze { get; internal set; }
+
+        /// <summary>鬼梦倒转角（弧度），反向蓄势后 0→π</summary>
+        public float DreamRollAngle { get; internal set; }
+
+        /// <summary>鬼梦倒转角速度（弧度/帧），旋转拖影用</summary>
+        public float DreamRollVelocity { get; internal set; }
+
+        /// <summary>结算后镜面向上吞没旧世界 0~1</summary>
+        public float DreamSwallow { get; internal set; }
+
+        /// <summary>鬼梦镜面调色增益，结算后让位真实氛围</summary>
+        public float DreamGrade { get; internal set; } = 1f;
+
+        /// <summary>结算闪 0~1：拉入血红、归返暖白，色温在渲染端按相位取</summary>
+        public float DreamFlash { get; internal set; }
+
+        /// <summary>梦镜异样脉冲 0~1（错位双曝的那一下）</summary>
+        public float DreamGlimpse { get; internal set; }
+
+        /// <summary>异样涟漪环扩散 0~1</summary>
+        public float DreamGlimpseRing { get; internal set; }
+
+        /// <summary>鬼梦翻转期缝线辉光 0~1</summary>
+        public float DreamSeamGlow { get; internal set; }
+
+        /// <summary>处于鬼梦相位（拉入/梦中/归返）任意一段</summary>
+        public bool InDreamPhase => Phase == KikasaDomainPhase.DreamPull
+            || Phase == KikasaDomainPhase.Dreaming
+            || Phase == KikasaDomainPhase.DreamReturn;
+
+        /// <summary>此刻画面处于梦侧：拉入结算后、梦中全程、归返结算前。
+        /// 湖面物理与湖系表现按它关停——梦里没有那面湖</summary>
+        public bool DreamWorldVisual =>
+            Phase == KikasaDomainPhase.Dreaming
+            || (Phase == KikasaDomainPhase.DreamPull && PhaseTimer >= KikasaDream.PullCommitFrame)
+            || (Phase == KikasaDomainPhase.DreamReturn && PhaseTimer < KikasaDream.ReturnCommitFrame);
 
         /// <summary>涨水观感进度：前快后慢，水逼近脚底时减速（与入雨演出同曲线）</summary>
         public float RiseProgress => 1f - MathF.Pow(1f - RiseT, 1.6f);
@@ -150,6 +206,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             if (mutatePressed && (holding || AnyActive) && !Player.mouseInterface) {
                 KikasaDomain.TryMutate(Player, out _);
             }
+
+            //鬼梦倒影：域开着才有镜可换影
+            if (CWRKeySystem.Kikasa_DreamReflect.JustPressed && AnyActive && !Player.mouseInterface) {
+                KikasaDomain.TryDreamReflect(Player, out _);
+            }
+            //鬼梦拉入/归返；Open 稳态倒影未醒时给一句提示，别让人对着湖白按
+            if (CWRKeySystem.Kikasa_DreamPull.JustPressed && AnyActive && !Player.mouseInterface) {
+                if (!KikasaDomain.TryDreamPull(Player, out _)
+                    && Phase == KikasaDomainPhase.Open && RiseT >= 0.999f && !HoundReflection) {
+                    KikasaDreamSystem.Refuse(Player, KikasaDreamSystem.ReflectAsleepHint);
+                }
+            }
         }
 
         /// <summary>湖面物理：移动应用前钳制。每端对所有玩家跑同一规则（状态源自同步快照），各端一致</summary>
@@ -168,6 +236,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             writer.Write(LakeWorldY);
             writer.Write(IsRainForm);
             writer.Write(FlipToRain);
+            writer.Write(HoundReflection);
         }
 
         /// <summary>先读满整份负载再校验，脏包只做丢弃，不留半套状态</summary>
@@ -180,8 +249,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             float lakeY = reader.ReadSingle();
             bool rainForm = reader.ReadBoolean();
             bool flipToRain = reader.ReadBoolean();
+            bool houndReflection = reader.ReadBoolean();
 
-            if (phase > (byte)KikasaDomainPhase.Flipping
+            if (phase > (byte)KikasaDomainPhase.DreamReturn
                 || !float.IsFinite(spread) || !float.IsFinite(rise)
                 || !float.IsFinite(origin.X) || !float.IsFinite(origin.Y)
                 || !float.IsFinite(lakeY)) {
@@ -196,6 +266,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             LakeWorldY = lakeY;
             IsRainForm = rainForm;
             FlipToRain = flipToRain;
+            HoundReflection = houndReflection;
             //触脚拍可从水位推回，中途加入者跨过 1 时照常触发
             contactDone = RiseT >= 0.999f;
             riseBeatNear = RiseT >= 0.75f;
@@ -247,7 +318,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
 
         internal bool CloseDomain() {
             if (Phase == KikasaDomainPhase.Closed || Phase == KikasaDomainPhase.Closing
-                || Phase == KikasaDomainPhase.Flipping) {
+                || Phase == KikasaDomainPhase.Flipping || InDreamPhase) {
                 return false;
             }
             if (!ConsumeCommandGate()) {
@@ -295,6 +366,103 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             return true;
         }
 
+        /// <summary>倒影恶犬开关。稳态受理；确认拍是一圈水纹与远处的一声低应</summary>
+        internal bool ToggleHoundReflection() {
+            if (!ConsumeCommandGate()) {
+                return false;
+            }
+            HoundReflection = !HoundReflection;
+            if (IsLocalVisual) {
+                Vector2 lakeAt = new(Player.Center.X, LakeWorldY);
+                KikasaDomainDeco.RippleAt(lakeAt, HoundReflection ? 1.3f : 0.9f);
+                if (HoundReflection) {
+                    //影子醒了
+                    SoundEngine.PlaySound(SoundID.Roar with { Pitch = -1f, Volume = 0.28f, MaxInstances = 2 }, lakeAt + new Vector2(0f, 220f));
+                    SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.75f, Volume = 0.45f, MaxInstances = 2 }, lakeAt);
+                }
+                else {
+                    SoundEngine.PlaySound(SoundID.SplashWeak with { Pitch = -0.5f, Volume = 0.4f, MaxInstances = 2 }, lakeAt);
+                }
+            }
+            BroadcastCommand();
+            return true;
+        }
+
+        /// <summary>
+        /// 鬼梦拉入/归返。Open 稳态 + 满水位 + 倒影已醒才拉得动；Dreaming 里再按即归返；
+        /// 与入雨/深潜全屏演出互斥，同 <see cref="FlipDomain"/> 的约定
+        /// </summary>
+        internal bool PullDream(out bool busy) {
+            busy = false;
+            if (Phase == KikasaDomainPhase.Dreaming) {
+                if (!ConsumeCommandGate()) {
+                    return false;
+                }
+                Phase = KikasaDomainPhase.DreamReturn;
+                PhaseTimer = 0;
+                ZeroDreamEnvelopes();
+                if (!Main.dedServ && Player.whoAmI == Main.myPlayer) {
+                    CutsceneDirector.Play<KikasaDreamReturnCutscene>(Player);
+                }
+                BroadcastCommand();
+                return true;
+            }
+            if (Phase != KikasaDomainPhase.Open) {
+                busy = Phase != KikasaDomainPhase.Closed;
+                return false;
+            }
+            if (RiseT < 0.999f || !HoundReflection
+                || OniRainWorldTransition.Active || OniRainDescentTransition.Active) {
+                busy = true;
+                return false;
+            }
+            if (!ConsumeCommandGate()) {
+                return false;
+            }
+            Phase = KikasaDomainPhase.DreamPull;
+            PhaseTimer = 0;
+            ZeroDreamEnvelopes();
+            //施术者本机才有运镜；运镜失败不致命，演出照走
+            if (!Main.dedServ && Player.whoAmI == Main.myPlayer) {
+                CutsceneDirector.Play<KikasaDreamPullCutscene>(Player);
+            }
+            BroadcastCommand();
+            return true;
+        }
+
+        /// <summary>拉入落定：进入梦中稳态，湖随之不见</summary>
+        internal void DreamSettleToDreaming() {
+            Phase = KikasaDomainPhase.Dreaming;
+            PhaseTimer = 0;
+            RiseT = 0f;
+            ZeroDreamEnvelopes();
+        }
+
+        /// <summary>归返落定：回到血湖稳态，形态保持入梦前的模样</summary>
+        internal void DreamSettleToOpen() {
+            Phase = KikasaDomainPhase.Open;
+            PhaseTimer = 0;
+            RiseT = 1f;
+            ambienceTimer = Main.rand.Next(240, 480);
+            ZeroDreamEnvelopes();
+        }
+
+        /// <summary>中断落定（死亡等）：梦拽不住死人，直接回血湖，域保持打开</summary>
+        internal void DreamAbort() {
+            Phase = KikasaDomainPhase.Open;
+            PhaseTimer = 0;
+            RiseT = 1f;
+            ambienceTimer = Main.rand.Next(240, 480);
+            ZeroDreamEnvelopes();
+        }
+
+        internal void ZeroDreamEnvelopes() {
+            DreamBoil = DreamMix = DreamGaze = DreamRollAngle = DreamRollVelocity = 0f;
+            DreamSwallow = DreamFlash = DreamSeamGlow = 0f;
+            DreamGlimpse = DreamGlimpseRing = 0f;
+            DreamGrade = 1f;
+        }
+
         //同帧防重入
 
         private bool ConsumeCommandGate() {
@@ -327,6 +495,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 RainBlend = 0f;
                 RainCurtainDensity = 0f;
                 ZeroFlipEnvelopes();
+                //梦也一并醒透：倒影入睡、梦境退净
+                HoundReflection = false;
+                DreamBlend = 0f;
+                ZeroDreamEnvelopes();
                 return;
             }
 
@@ -346,6 +518,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 case KikasaDomainPhase.Open: UpdateOpen(); break;
                 case KikasaDomainPhase.Closing: UpdateClosing(); break;
                 case KikasaDomainPhase.Flipping: UpdateFlipping(); break;
+                //鬼梦三相位的包络推进委托给导演，防本文件膨胀
+                case KikasaDomainPhase.DreamPull: KikasaDreamDirector.UpdatePull(this); break;
+                case KikasaDomainPhase.Dreaming: KikasaDreamDirector.UpdateDreaming(this); break;
+                case KikasaDomainPhase.DreamReturn: KikasaDreamDirector.UpdateReturn(this); break;
             }
 
             //延迟雷声的公共泵：闪光由 NotifyThunder 先行，这里在任意阶段把声补到
@@ -358,6 +534,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             }
 
             UpdateRainBlend();
+            UpdateDreamBlend();
             UpdateRainCurtain();
             UpdatePresence();
             UpdateMusicCap();
@@ -685,6 +862,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             if (RainBlend > 0.998f && target >= 1f) RainBlend = 1f;
         }
 
+        //鬼梦混合：朝当前世界侧收敛；结算闪窗口内快速就位，同鬼雨混合的语义
+
+        private void UpdateDreamBlend() {
+            float target = DreamWorldVisual ? 1f : 0f;
+            bool flashWindow =
+                (Phase == KikasaDomainPhase.DreamPull && PhaseTimer >= KikasaDream.PullCommitFrame)
+                || (Phase == KikasaDomainPhase.DreamReturn && PhaseTimer >= KikasaDream.ReturnCommitFrame);
+            float rate = flashWindow ? 0.30f : 0.08f;
+            DreamBlend = MathHelper.Lerp(DreamBlend, target, rate);
+            if (DreamBlend < 0.002f && target <= 0f) DreamBlend = 0f;
+            if (DreamBlend > 0.998f && target >= 1f) DreamBlend = 1f;
+        }
+
         //雨帘密度：稳态吃 RainBlend；正向翻转给前兆稀雨，逆向翻转沸腾段退雨；收域随撕口合拢退场
 
         private void UpdateRainCurtain() {
@@ -708,6 +898,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                     //血还魂：雨在沸腾里被血气蒸散
                     density *= 1f - FlipBoil * 0.75f;
                 }
+            }
+            else if (InDreamPhase) {
+                //梦里无雨：拉入的沸腾把雨蒸散，归返结算后随 DreamBlend 退场自然回来
+                density *= 1f - MathF.Max(DreamBlend,
+                    Phase == KikasaDomainPhase.DreamPull ? DreamBoil * 0.75f : 0f);
             }
             RainCurtainDensity = density;
         }
@@ -788,6 +983,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
                 KikasaDomainPhase.Closing => MathHelper.Lerp(1f, 0.5f, SpreadProgress),
                 //倒转期音乐随沸腾压向死寂，雷声与水声接管
                 KikasaDomainPhase.Flipping => MathHelper.Lerp(0.5f, 0.2f, FlipBoil),
+                //拉入沿沸腾压向死寂；梦中维持低鸣，远吠与风声当主角
+                KikasaDomainPhase.DreamPull => MathHelper.Lerp(0.5f, 0.15f, MathF.Max(DreamBoil, DreamBlend)),
+                KikasaDomainPhase.Dreaming => 0.25f,
+                KikasaDomainPhase.DreamReturn => 0.3f,
                 _ => 1f,
             };
             //boss 在场时音乐让位给战斗曲
@@ -893,6 +1092,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             RainCurtainDensity = 0f;
             thunderSoundDelay = 0;
             ZeroFlipEnvelopes();
+            HoundReflection = false;
+            DreamBlend = 0f;
+            ZeroDreamEnvelopes();
             contactDone = false;
             riseBeatNear = false;
             riseBeatFar = false;

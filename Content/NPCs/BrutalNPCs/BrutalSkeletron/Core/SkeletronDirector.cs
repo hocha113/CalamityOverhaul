@@ -38,5 +38,32 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core
 
         /// <summary>二阶段节奏倍率（hub缩短等）</summary>
         public static float P2TempoMult => 0.8f;
+
+        #region 合掌拍捉（投技）
+        /// <summary>拍捉解锁血量比（好招压后）</summary>
+        public static float SnatchLifeGate => 0.85f;
+        /// <summary>拍捉命中后冷却帧</summary>
+        public static int SnatchCooldownTicks => 2700;
+        /// <summary>拍空后冷却帧（更快再试）</summary>
+        public static int SnatchWhiffCooldownTicks => 1500;
+        /// <summary>对峙预警帧数（公平阀 ≥40）</summary>
+        public static int SnatchTelegraphFrames => 48;
+        /// <summary>预警末拍锚点锁定读秒窗</summary>
+        public static int SnatchAnchorLockFrames => 10;
+        /// <summary>双掌对峙横距 px</summary>
+        public static float SnatchFlankDistance => 560f;
+        /// <summary>夹持后双掌半间距 px（囚笼半宽）</summary>
+        public static float SnatchHalfGap => 46f;
+        /// <summary>合拍闭合速度</summary>
+        public static float SnatchSnapSpeed(bool death) => ClapSpeed(death) + 6f;
+        /// <summary>夹持顿帧伤害基准（走难度缩放，受害端结算）</summary>
+        public static int SnatchClampDamage => 24;
+        /// <summary>砸地终结伤害基准（走难度缩放，受害端结算）</summary>
+        public static int SnatchSlamDamage => 44;
+        /// <summary>整套投技 Hurt 伤害预算（占玩家最大生命比，超限跳过终结伤害）</summary>
+        public static float SnatchDamageBudget => 0.55f;
+        /// <summary>释放后无敌帧</summary>
+        public static int SnatchReleaseImmune => 90;
+        #endregion
     }
 }

@@ -37,6 +37,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalGolem.Core
         public const float FistContactSpeed = 16f;
         #endregion
 
+        #region 投技（壁咚研磨，二阶段专属）
+        /// <summary>超级直拳蓄力帧（远长于常规连拳，给足读招时间）</summary>
+        public const int GrabWindup = 54;
+        /// <summary>超级直拳速度</summary>
+        public const float GrabPunchSpeed = 30.5f;
+        /// <summary>超级直拳飞行上限帧（限制有效射程，落空即回收）</summary>
+        public const int GrabPunchMaxFlight = 44;
+        /// <summary>投技尝试距离上限</summary>
+        public const float GrabMaxRange = 880f;
+        /// <summary>投技尝试距离下限（贴身不抓）</summary>
+        public const float GrabMinRange = 220f;
+        /// <summary>投技尝试纵向差上限</summary>
+        public const float GrabMaxHeightDiff = 460f;
+        /// <summary>投技冷却帧（命中与落空同计）</summary>
+        public const int GrabCooldown = 900;
+        /// <summary>眼激光横扫伤害</summary>
+        public const int GrabRakeDamage = 30;
+        /// <summary>胸口蓄能束点烙伤害</summary>
+        public const int GrabBrandDamage = 33;
+        /// <summary>研磨期拳接触伤害倍率</summary>
+        public const float GrabGrindDamageMul = 0.6f;
+        #endregion
+
         #region 预警帧（按危险层级取常数）
         /// <summary>射线类预警</summary>
         public const int RayTelegraph = 45;

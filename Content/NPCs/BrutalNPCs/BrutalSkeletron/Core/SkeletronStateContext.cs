@@ -31,6 +31,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.Core
         public bool UltUsed { get; set; }
         /// <summary>死亡演出已完，CheckDead 据此放行</summary>
         public bool DeathPerformanceFinished { get; set; }
+        /// <summary>合掌拍捉冷却帧（仅权威端消费）</summary>
+        public int SnatchCooldown { get; set; }
+        /// <summary>合掌拍捉锁定的对拍锚点（服务端写，手部伺服读）</summary>
+        public Vector2 SnatchAnchor { get; set; }
+        /// <summary>合掌拍捉锚点已锁定（预警末拍读秒窗）</summary>
+        public bool SnatchAnchorLocked { get; set; }
         #endregion
 
         #region 视觉数据（各端本地驱动）

@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
             }
         }
 
-        /// <summary>部件自星光拼装成形（上对先成形、下对自肋位破体而出），怒吼定场</summary>
+        /// <summary>部件自星光拼装成形（上对先成形、下对自腋下破体而出），怒吼定场</summary>
         private void UpdateAssembly(MLordContext context) {
             NPC npc = context.Npc;
             npc.alpha = 0;
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMoonLord.States
                 }
             }
 
-            //第二拍：下对臂自肋位点亮（双爆点分居两肋，读作"再生出一对"）
+            //第二拍：下对臂自腋下点亮（双爆点分居两侧，读作"再生出一对"）
             if (Timer == LowerPairTick) {
                 if (!VaultUtils.isClient) {
                     context.Owner.SpawnLowerPair();

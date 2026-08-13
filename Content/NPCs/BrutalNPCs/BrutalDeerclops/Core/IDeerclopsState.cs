@@ -29,6 +29,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDeerclops.Core
         Whiteout = 10,
         Despawn = 11,
         Death = 12,
+        /// <summary>投技·攫取：垂首聚影放出攫取手，命中则转入携抓</summary>
+        SeizeHunt = 13,
+        /// <summary>投技·凝视擒抱：拖回→拎至独眼→凝视→吐息→砸雪释放</summary>
+        EyeGrab = 14,
     }
 
     /// <summary>帧动画命令，FindFrame 接管消费</summary>

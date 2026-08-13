@@ -1,7 +1,7 @@
 CybCourseIntroDialogue: {
 	Line1: 主人，欢迎进入神经训练节点
 	Line2: 这里是封闭的训练空间
-	Line3: SHPC是一种强大的智能武器，您将学习如何操作它的HUD界面
+	Line3: SHPC就是我的武器本体。这一课，先学会看懂它的HUD界面
 	Line4: 准备好将意识与我连接了吗？请握紧我的手，我们开始吧
 }
 
@@ -10,97 +10,52 @@ CybTutorialLead: {
 	Step0_Body: 将SHPC装备至武器栏并持握，HUD核心节点即会出现在屏幕左下角
 	Step1_Title: 核心节点
 	Step1_Body: 点击左下角的核心节点可展开或收起操作面板
-	Step2_Title: CYBER DOMAIN
+	Step2_Title: 赛博空间
 	Step2_Body:
 		'''
-		赛博空间:部署并管理多层赛博空间层叠结构
+		部署并管理多层赛博空间层叠结构
 		点击高亮的扇区即可打开该面板
 		'''
-	Step3_Title: MODIFY
+	Step3_Title: 模块改装
 	Step3_Body:
 		'''
-		模块改装:为SHPC安装或拆卸改造零件
+		为SHPC安装或拆卸改造零件
 		点击高亮的扇区即可打开该面板
 		'''
-	Step4_Title: CYBERWARE
+	Step4_Title: 义体植入
 	Step4_Body:
 		'''
-		义体植入:查看并管理你的身体增强模块
+		查看并管理你的身体增强模块
 		点击高亮的扇区即可打开该界面
 		'''
-	Step5_Title: TALK
+	Step5_Title: 神经链路
 	Step5_Body:
 		'''
-		神经链路:与SHPC建立直连通讯，开启对话
+		与SHPC建立直连通讯，开启对话
 		点击高亮的扇区即可与其对话
 		'''
-	Step6_Title: ENGRAM CALIBRATED
+	Step6_Title: 校准完成
 	Step6_Body:
 		'''
 		所有接口已解析完毕
 		神经链路稳定，SHPC已就绪
 		'''
-	AwaitingEquip: AWAITING EQUIP...
-	Calibrating: CALIBRATING...
-	NextBtn: NEXT  >
-	HintStuck: HINT: 试着点击高亮的目标区域
+	Calibrating: 校准中…
+	NextBtn: 跳过 >
+	HintStuck: 提示：点一下高亮的目标区域
 }
 
 CybCourseHackIntroDialogue: {
 	Line1: 接口解析完毕。下一项训练：骇客时间
 	Line2: 骇客时间激活后，世界在您眼中会停住。您可以慢慢选目标、排协议。默认按键是 {0}
-	Line3: 前方的测试单元已固定就位。按下 {0} 进入骇客时间，然后点击锁定它
+	Line3: 前方的训练标靶已固定就位。按下 {0} 进入骇客时间，然后点击锁定它
 }
 
 HackTimeTutorialLead: {
-	HT_Step0_Title: 激活骇客模式
-	HT_Step1_Title: 锁定目标
-	HT_Step2_Title: 骇入协议面板
-	HT_Step3_Title: 上传协议
-	HT_Step4_Title: HACK SEQUENCE COMPLETE
-	HT_Step0_Body:
-		'''
-		按下 {0} 键进入骇客时间模式
-		时间将冻结，赛博滤镜叠加于画面
-		'''
-	HT_Step1_Body:
-		'''
-		将光标悬停到高亮的圣诞坦克上，
-		点击左键将其锁定为骇入目标
-		'''
-	HT_Step2_Body:
-		'''
-		右侧面板展示目标的可用骇入协议
-		不同协议消耗不同RAM并产生不同效果
-		'''
-	HT_Step3_Body:
-		'''
-		点击协议将其加入左侧上传队列，
-		队列将依次执行骇入操作
-		'''
-	HT_Step4_Body:
-		'''
-		神经链路已断开
-		骇客时间协议训练完成，系统就绪
-		'''
-	HT_Waiting: AWAITING INPUT...
-	HT_Calibrating: DISCONNECTING...
-	HT_NextBtn: NEXT  >
-	HT_Step5_Title: 物块扫描
-	HT_Step6_Title: 锁定物块目标
-	HT_Step7_Title: TILE SCAN COMPLETE
-	HT_Step5_Body:
-		'''
-		前方有一台热能发电机MK2
-		再次按下 {0} 重新激活骇客时间
-		'''
-	HT_Step6_Body:
-		'''
-		将光标悬停在发电机上，
-		点击左键将其锁定为扫描目标
-		'''
-	HT_Step7_Body: 物块扫描接口已解析。右侧面板展示当前物块的可用骇入协议
-	HT_HintStuck: HINT: 点击 NEXT 按钮可强制跳过
+	HT_Waiting: 等待操作…
+	HT_Calibrating: 正在断开…
+	HT_NextBtn: 跳过 >
+	HT_HintStuck: 提示：点击 跳过 按钮可强制越过这一步
 	HT_KeyUnbound: N（临时开关）
 	HT_KeyHintUnbound: 提示：未绑定骇客时间快捷键时，本教程内可用 [N] 临时开关；建议在 设置 > 控制 中绑定
 	HT_S00_Title: 激活骇客模式
@@ -122,7 +77,7 @@ HackTimeTutorialLead: {
 		'''
 	HT_S01_Body:
 		'''
-		将光标悬停到高亮的圣诞坦克上，
+		将光标悬停到高亮的训练标靶上，
 		点击左键将其锁定为骇入目标
 		'''
 	HT_S02_Body:
@@ -147,7 +102,7 @@ HackTimeTutorialLead: {
 		'''
 	HT_S06_Body:
 		'''
-		前方走廊有一台热能发电机MK2
+		前方甲板上有一台热能发电机MK2
 		再次按下 {0} 进入骇客时间扫描物块
 		'''
 	HT_S07_Body:
@@ -175,7 +130,7 @@ HackTimeTutorialLead: {
 		骇客这边的训练全部完成
 		扫描、排协议、上传、生效，流程都走通了
 		'''
-	HT_Observing: UPLOADING...
+	HT_Observing: 上传中…
 }
 
 CybCourseWheelIntroDialogue: {
@@ -203,10 +158,10 @@ WheelTutorialLead: {
 		转盘正中央就是骇客时间的快捷入口，
 		单击它等同于按下 {1}。全部训练到此完成
 		'''
-	RW_Calibrating: SYNCHRONIZED...
-	RW_NextBtn: NEXT  >
-	RW_HintStuck: HINT: 点击 NEXT 按钮可强制跳过
-	RW_KeyHintUnbound: 提示：快捷转盘键未绑定，转盘无法呼出；请在 设置 > 控制 中绑定，或点 NEXT 跳过
+	RW_Calibrating: 同步完成
+	RW_NextBtn: 跳过 >
+	RW_HintStuck: 提示：点击 跳过 按钮可强制越过这一步
+	RW_KeyHintUnbound: 提示：快捷转盘键未绑定，转盘无法呼出；请在 设置 > 控制 中绑定，或点 跳过 越过
 }
 
 CybCourseOutroDialogue: {
@@ -238,6 +193,14 @@ CybCourseKeyBindReminderPanel: {
 	BtnConfirm: 已知悉
 	BtnLater: 稍后处理
 	Footer: 选哪边都会退出超梦。按键可以之后在设置里改。
+}
+
+CybCourseWorld: {
+	BootTag: 神经直连 · 超梦节点
+	BootTitle: 接入超梦
+	BootSubtitle: SHPC 沉浸训练协议
+	BootStatus: 正在编译训练空间
+	BootBarLabel: 同步率
 }
 
 ShepelCyberActiveDialogue: {

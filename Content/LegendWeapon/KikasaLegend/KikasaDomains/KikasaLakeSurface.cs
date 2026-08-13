@@ -28,9 +28,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
         private static readonly int[] walkRippleTimers = new int[Main.maxPlayers];
 
         /// <summary>该域此刻是否托得住人：水位满即成面。含 Flipping（翻转期水位强制满，
-        /// 演出中不掉人）；Closing 首帧后水位跌破阈值自动失效</summary>
+        /// 演出中不掉人）；Closing 首帧后水位跌破阈值自动失效。
+        /// 鬼梦的梦侧湖不存在（拉入结算帧起脚下落空，归返结算帧湖面重新接人）</summary>
         private static bool SurfaceSolid(KikasaDomainPlayer domain)
-            => domain.AnyActive && domain.RiseT >= 0.999f;
+            => domain.AnyActive && domain.RiseT >= 0.999f && !domain.DreamWorldVisual;
 
         /// <summary>
         /// 逐帧钳制，移动应用前调用：本帧脚底将下穿湖面且未主动下潜时，把纵速截到精确落线。

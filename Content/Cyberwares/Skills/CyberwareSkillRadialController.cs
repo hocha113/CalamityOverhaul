@@ -204,7 +204,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             if (Player == null || !Player.active || Player.dead) {
                 return false;
             }
-            if (QuestLog.Instance?.visible == true || QuestManagerUI.Instance?.IsOpen == true) {
+            if (QuestLog.Instance?.IsOpen == true || QuestManagerUI.Instance?.IsOpen == true) {
                 return false;
             }
             return resolvedCurrentSkill != null;

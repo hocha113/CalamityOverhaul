@@ -40,7 +40,6 @@ CybTutorialLead: {
 		Todas as interfaces resolvidas.
 		Ligacao neural estavel. SHPC esta pronta.
 		'''
-	AwaitingEquip: AGUARDANDO EQUIPAMENTO...
 	Calibrating: CALIBRANDO...
 	NextBtn: PROXIMO  >
 	HintStuck: DICA: Tente clicar na area de destino destacada.
@@ -53,53 +52,9 @@ CybCourseHackIntroDialogue: {
 }
 
 HackTimeTutorialLead: {
-	HT_Step0_Title: Ativar Modo de Invasao
-	HT_Step1_Title: Travar Alvo
-	HT_Step2_Title: Painel de Protocolo de Invasao
-	HT_Step3_Title: Carregar Protocolo
-	HT_Step4_Title: SEQUENCIA DE INVASAO COMPLETA
-	HT_Step0_Body:
-		'''
-		Pressione {0} para entrar no modo Tempo de Hackear.
-		O tempo congelara, e um filtro cibernetico sobreporah sua visao.
-		'''
-	HT_Step1_Body:
-		'''
-		Passe o cursor sobre o Santa-NK1 destacado,
-		e clique com o botao esquerdo para trava-lo como alvo de invasao.
-		'''
-	HT_Step2_Body:
-		'''
-		O painel direito exibe os protocolos de invasao disponiveis para o alvo.
-		Diferentes protocolos consomem diferentes quantidades de RAM e produzem efeitos variados.
-		'''
-	HT_Step3_Body:
-		'''
-		Clique em um protocolo para adiciona-lo a fila de envio a esquerda.
-		A fila executara as operacoes de invasao sequencialmente.
-		'''
-	HT_Step4_Body:
-		'''
-		Ligacao neural desconectada.
-		Treinamento de protocolo de Tempo de Hackear completo. Sistema pronto.
-		'''
 	HT_Waiting: AGUARDANDO ENTRADA...
 	HT_Calibrating: DESCONECTANDO...
 	HT_NextBtn: PROXIMO  >
-	HT_Step5_Title: Escaneamento de Bloco
-	HT_Step6_Title: Travar Alvo de Bloco
-	HT_Step7_Title: ESCANEAMENTO DE BLOCO COMPLETO
-	HT_Step5_Body:
-		'''
-		Ha um Gerador Termico MK2 adiante.
-		Pressione {0} novamente para reativar o Tempo de Hackear.
-		'''
-	HT_Step6_Body:
-		'''
-		Passe o cursor sobre o gerador,
-		e clique com o botao esquerdo para trava-lo como alvo de escaneamento.
-		'''
-	HT_Step7_Body: Interface de escaneamento de bloco resolvida. O painel direito exibe os protocolos de invasao disponiveis para o bloco atual.
 	HT_HintStuck: DICA: Clique no botao PROXIMO para pular forcadamente.
 	HT_KeyUnbound: N (Alternancia Temporaria)
 	HT_KeyHintUnbound: DICA: Se o botao de Tempo de Hackear nao estiver vinculado, voce pode usar [N] como uma alternancia temporaria durante este tutorial; e recomendado vincula-lo em Configuracoes > Controles.
@@ -203,10 +158,10 @@ WheelTutorialLead: {
 		Dead center of the wheel is the Hack Time shortcut —
 		clicking it equals pressing {1}. That wraps up the training.
 		''' */
-	// RW_Calibrating: SYNCHRONIZED...
-	// RW_NextBtn: NEXT  >
-	// RW_HintStuck: HINT: Click NEXT to force skip
-	// RW_KeyHintUnbound: Note: the radial wheel key is unbound, so the wheel cannot open. Bind it under Settings > Controls, or click NEXT to skip.
+	// RW_Calibrating: Synchronized
+	// RW_NextBtn: Skip >
+	// RW_HintStuck: Hint: click Skip to force past this step
+	// RW_KeyHintUnbound: Note: the radial wheel key is unbound, so the wheel cannot open. Bind it under Settings > Controls, or click Skip.
 }
 
 CybCourseOutroDialogue: {
@@ -238,6 +193,14 @@ CybCourseKeyBindReminderPanel: {
 	BtnConfirm: Ciente
 	BtnLater: Lembrar Depois
 	Footer: Qualquer opcao sai do neurosonho. Voce pode mudar as teclas depois nas configuracoes.
+}
+
+CybCourseWorld: {
+	// BootTag: NEURAL LINK · SUPERDREAM NODE
+	// BootTitle: Linking Superdream
+	// BootSubtitle: SHPC Immersion Training Protocol
+	// BootStatus: Compiling training space
+	// BootBarLabel: Sync Rate
 }
 
 ShepelCyberActiveDialogue: {

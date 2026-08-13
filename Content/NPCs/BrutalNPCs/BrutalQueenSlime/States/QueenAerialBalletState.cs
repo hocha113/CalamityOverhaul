@@ -68,8 +68,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.States
             return null;
         }
 
-        /// <summary>二阶段手排出招环(服务端)：压迫招与场控招交替</summary>
+        /// <summary>二阶段手排出招环(服务端)：压迫招与场控招交替；投技冷却好则插队起舞</summary>
         private IQueenSlimeState ChooseNextAttack(QueenSlimeStateContext context) {
+            if (QueenCrystalPrisonWaltzState.CanTrigger(context)) {
+                return new QueenCrystalPrisonWaltzState();
+            }
             IQueenSlimeState[] cycle = [
                 new QueenWingGaleWaltzState(),
                 new QueenCrystalDiveStompState(),

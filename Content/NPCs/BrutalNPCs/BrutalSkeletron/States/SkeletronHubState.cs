@@ -62,7 +62,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletron.States
                     0 => new SkeletronHandCrushState(),
                     1 => new SkeletronSpinBoneStormState(),
                     2 => new SkeletronGhostArmCircleState(),
-                    _ => new SkeletronClapPincerState(),
+                    //合拍槽位的混拍升级：普通钳杀教会几何，投技惩罚松懈
+                    _ => SkeletronPalmSnatchState.CanDispatch(context)
+                        ? new SkeletronPalmSnatchState()
+                        : new SkeletronClapPincerState(),
                 };
             }
 

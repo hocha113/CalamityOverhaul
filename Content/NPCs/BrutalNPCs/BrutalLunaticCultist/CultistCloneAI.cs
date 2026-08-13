@@ -56,6 +56,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             return boss;
         }
 
+        /// <summary>服务端解析最后击打者（原版受击包会在服务端记录 lastInteraction）</summary>
+        private int GetServerAttacker() {
+            int idx = npc.lastInteraction;
+            if (idx < 0 || idx >= Main.maxPlayers || !Main.player[idx].Alives()) {
+                return -1;
+            }
+            return idx;
+        }
+
         /// <summary>无害破灭（服务端）</summary>
         internal static void MarkHarmlessDeath(NPC clone) {
             if (VaultUtils.isClient || !clone.active) {
@@ -140,6 +149,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
                     SpringTo(goal, 0.09f, 15f);
                     break;
                 }
+                case CultistStateIndex.SacrificeGrab: {
+                    //献祭环列席：收拢期原地压阵，锁身后弹簧保持环位（服务端已在锁身帧摆位）
+                    boss.TryGetOverride(out CultistBossAI bossOverride);
+                    var grabState = bossOverride?.Machine?.CurrentState as CultistSacrificeGrabState;
+                    if (bossOverride?.Context == null || grabState == null
+                        || grabState.Timer <= CultistSacrificeGrabState.SealCloseEnd) {
+                        npc.velocity *= 0.9f;
+                        break;
+                    }
+                    int slot = (int)npc.ai[0];
+                    int slotCount = Math.Max(CountSiblings(boss) + 1, 2);
+                    Vector2 goal = CultistSacrificeGrabState.RingSlotPos(
+                        bossOverride.Context, grabState.Timer, slot + 1, slotCount);
+                    SpringTo(goal, 0.1f, 16f);
+                    break;
+                }
                 default: {
                     //斜后方护法编队
                     int slot = (int)npc.ai[0];
@@ -213,8 +238,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist
             //镜影博弈的反击前摇（服务端启动，走同步 ai[2]）
             if (!VaultUtils.isClient && freshHurt && npc.ai[2] == 0f
                 && bossState == CultistStateIndex.MirrorBlink) {
-                npc.ai[2] = PunishTelegraph;
-                npc.netUpdate = true;
+                //先走献祭裁决：首错烙印，印记在身再错触发投技（触发则本轮跳过电火花反击）
+                bool grabbed = bossOverride != null
+                    && CultistSacrificeGrabState.RegisterMirrorMistake(bossOverride, GetServerAttacker());
+                if (!grabbed) {
+                    npc.ai[2] = PunishTelegraph;
+                    npc.netUpdate = true;
+                }
             }
 
             //前摇推进（各端同步走 ai[2]）

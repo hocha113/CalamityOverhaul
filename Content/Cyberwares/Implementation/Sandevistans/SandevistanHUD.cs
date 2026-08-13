@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             get {
                 if (Sandevistan.GetEquipped(Main.LocalPlayer) == null) return false;
                 //全屏 UI / 骇客时间时隐藏
-                if (QuestLog.Instance?.visible == true) return false;
+                if (QuestLog.Instance?.IsOpen == true) return false;
                 if (QuestManagerUI.Instance?.IsOpen == true) return false;
                 if (HackTime.Active || HackTime.Intensity > 0.5f) return false;
                 return true;

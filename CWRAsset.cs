@@ -116,6 +116,8 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> Excelsus_Bar = null;
         [VaultLoaden(CWRConstant.ColorBar)]
         public static Asset<Texture2D> AegisBlade_Bar = null;
+        [VaultLoaden(CWRConstant.ColorBar)]
+        public static Asset<Texture2D> Flawless_Bar = null;//青→墨青，化境刀光渐变
         [VaultLoaden("@CalamityMod/UI/DraedonsArsenal/ChargeMeterBorder")]
         internal static Asset<Texture2D> BarTop { get; private set; }
         [VaultLoaden("@CalamityMod/UI/DraedonsArsenal/ChargeMeter")]

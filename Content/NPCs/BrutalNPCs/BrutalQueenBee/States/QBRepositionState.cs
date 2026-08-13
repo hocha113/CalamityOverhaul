@@ -115,6 +115,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                 return null;
             }
 
+            //投技优先：蜂蜜满标锁定+冷却完毕→收网(不占出招环游标)
+            if (context.GrabReady) {
+                return new QBSwarmLiftState();
+            }
+
             QueenBeeStateIndex[] cycle = context.UltimateDone ? CycleP3 : context.IsPhase2 ? CycleP2 : CycleP1;
             int cursor = context.AttackCycleIndex;
             QueenBeeStateIndex next = cycle[Math.Abs(cursor) % cycle.Length];
@@ -136,6 +141,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.States
                 QueenBeeStateIndex.SwarmWall => new QBSwarmWallState(),
                 QueenBeeStateIndex.SwarmVortex => new QBSwarmVortexState(),
                 QueenBeeStateIndex.WaxTurret => new QBWaxTurretState(),
+                QueenBeeStateIndex.SwarmLift => new QBSwarmLiftState(),
                 _ => new QBStingerFanState(),
             };
         }

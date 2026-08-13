@@ -27,6 +27,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenBee.Core
         public int AttackCycleIndex { get; set; }
         /// <summary>死亡演出完成，CheckDead 放行真死</summary>
         public bool DeathPerformanceFinished { get; set; }
+        /// <summary>投技就绪(服务端每帧算：满标记+冷却完+目标有效)，Reposition 末帧消费</summary>
+        public bool GrabReady { get; set; }
+        /// <summary>被蜂群标记的玩家 whoAmI(镜像 override.ai[5]-1)，-1 无</summary>
+        public int MarkedPlayerWhoAmI { get; set; } = -1;
         #endregion
 
         #region 蓄力/演出数据(渲染消费，每帧声明)

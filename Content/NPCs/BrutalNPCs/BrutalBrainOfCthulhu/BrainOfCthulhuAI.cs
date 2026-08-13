@@ -132,6 +132,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalBrainOfCthulhu
             if (stateContext.HeartAttackCooldown > 0) {
                 stateContext.HeartAttackCooldown--;
             }
+            if (stateContext.MindSeizeCooldown > 0) {
+                stateContext.MindSeizeCooldown--;
+            }
 
             //防御档位：壳存期+飞眼护佑更硬，露心归零
             UpdateDefense();

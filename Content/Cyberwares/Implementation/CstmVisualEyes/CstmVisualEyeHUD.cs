@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.CstmVisualEyes
                 if (held != null && !held.IsAir && held.type == SHPCOverride.ID) {
                     return false;
                 }
-                if (QuestLog.Instance?.visible == true) {
+                if (QuestLog.Instance?.IsOpen == true) {
                     return false;
                 }
                 if (QuestManagerUI.Instance?.IsOpen == true) {

@@ -27,12 +27,13 @@ namespace CalamityOverhaul.Content.QuestLogs
             Item.useTime = Item.useAnimation = 30;
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.value = Item.buyPrice(0, 0, 0, 1);
-            Item.UseSound = CWRSound.ButtonZero with { Volume = 0.75f };
+            //开合音由 QuestLog 的 OpenSound/CloseSound 统一负责，此处留空避免叠播
+            Item.UseSound = null;
             ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.Book;
         }
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            if (QuestLog.Instance.visible) {
+            if (QuestLog.Instance.IsOpen) {
                 TextureAssets.Item[Type] = QuestLogBook_Open1;
                 spriteBatch.Draw(QuestLogBook_Open1.Value, position, null, Color.White, 0, TextureAssets.Item[Type].Value.Size() / 2, scale, SpriteEffects.None, 0);
                 Color sengsColor = Color.White * Math.Abs(MathF.Sin(Main.GameUpdateCount * 0.05f));
@@ -47,7 +48,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
         public override bool? UseItem(Player player) {
             if (player.whoAmI == Main.myPlayer) {
-                QuestLog.Instance.visible = !QuestLog.Instance.visible;
+                QuestLog.Instance.Toggle();
             }
             return true;
         }
@@ -75,8 +76,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
         public override void PostUpdateMiscEffects() {
             if (!VaultUtils.isServer && CWRKeySystem.QuestLog_Key.JustReleased) {
-                SoundEngine.PlaySound(CWRSound.ButtonZero with { Volume = 0.6f });
-                QuestLog.Instance.visible = !QuestLog.Instance.visible;
+                QuestLog.Instance.Toggle();
             }
 
             if (Change) {

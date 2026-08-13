@@ -27,6 +27,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalLunaticCultist.Core
         Cataclysm = 9,
         Despawn = 10,
         Death = 11,
+        /// <summary>仪式献祭投技（轮盘二次错击惩罚）</summary>
+        SacrificeGrab = 12,
     }
 
     /// <summary>状态接口</summary>

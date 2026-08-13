@@ -29,6 +29,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalKingSlime.Core
         PursuitBurrow = 10,
         Despawn = 11,
         Death = 12,
+        /// <summary>投技：超级砸落正压吞没，带人弹跳消化后高压喷出</summary>
+        Engulf = 13,
     }
 
     /// <summary>状态接口</summary>

@@ -31,18 +31,16 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             Title = this.GetLocalization(nameof(Title), () => "绑定警报");
             Subtitle = this.GetLocalization(nameof(Subtitle), () => "核心快捷键未绑定");
             Hint = this.GetLocalization(nameof(Hint), ()
-                => @"以下快捷键当前未绑定。离开超梦后，您将无法正常使用其对应的功能。
-请前往 [设置 → 控制] 中为它们分配按键。");
+                => "这些键还没绑定。离开超梦后，对应功能用不了。\n去 [设置 → 控制] 里分配按键。");
             UnboundLabel = this.GetLocalization(nameof(UnboundLabel), () => "未绑定");
             BtnConfirm = this.GetLocalization(nameof(BtnConfirm), () => "已知悉");
             BtnLater = this.GetLocalization(nameof(BtnLater), () => "稍后处理");
             Footer = this.GetLocalization(nameof(Footer), ()
-                => "选择任意选项都将断开超梦连接。您可以随时在主世界的设置中调整按键绑定。");
+                => "选哪边都会退出超梦。按键可以之后在设置里改。");
         }
 
         private const int PanelW = 540;
         private const int PanelMaxH = 560;
-        private const int EdgePad = 10;
         private const int RowH = 32;
         //标题区等固定高度,fontH≈20估
         private const int HeaderOverhead = 152;
@@ -200,35 +198,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             var panel = new Rectangle(finalX, finalY, PanelW, dynH);
             _panelRect = panel;
 
-            DrawPanelBg(sb, panel);
+            CybCourseCardStyle.DrawPanelBg(sb, panel, _alpha, _shaderTimer, amber: true);
             DrawPanelContent(sb, panel);
-        }
-
-        private static void DrawPanelBg(SpriteBatch sb, Rectangle panel) {
-            Effect effect = EffectLoader.EntrustGuideCard?.Value;
-            if (effect != null) {
-                Rectangle ext = panel;
-                ext.Inflate(EdgePad, EdgePad);
-                effect.Parameters["uTime"]?.SetValue(_shaderTimer);
-                effect.Parameters["uAlpha"]?.SetValue(_alpha * 0.97f);
-                effect.Parameters["uResolution"]?.SetValue(new Vector2(ext.Width, ext.Height));
-                effect.Parameters["uEdgePad"]?.SetValue((float)EdgePad);
-                //uVariant=0暖琥珀
-                effect.Parameters["uVariant"]?.SetValue(0f);
-                sb.End();
-                sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
-                    SamplerState.AnisotropicClamp, DepthStencilState.None,
-                    RasterizerState.CullNone, effect, Main.UIScaleMatrix);
-                sb.Draw(VaultAsset.placeholder2.Value, ext, Color.White);
-                sb.End();
-                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
-                    SamplerState.AnisotropicClamp, DepthStencilState.None,
-                    RasterizerState.CullNone, null, Main.UIScaleMatrix);
-            }
-            else {
-                sb.Draw(VaultAsset.placeholder2.Value, panel, new Color(20, 14, 4, (int)(220 * _alpha)));
-                BaseManagerStyle.StrokeRect(sb, panel, 1, new Color(220, 170, 70, (int)(170 * _alpha)));
-            }
         }
 
         private static void DrawPanelContent(SpriteBatch sb, Rectangle panel) {
@@ -241,10 +212,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 
             float curY = panel.Y + 22f;
 
-            float breath = 0.55f + 0.45f * MathF.Sin(_shaderTimer * 4f);
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle(panel.X + 14, panel.Y + 8, panel.Width - 28, 2),
-                new Color(255, 200, 90, (int)(150 * _alpha * breath)));
+            CybCourseCardStyle.DrawBreathLine(sb, panel, _alpha, _shaderTimer, new Color(255, 200, 90, 150));
 
             float titleH = fontH * titleSc;
             BaseManagerStyle.DrawCenteredText(sb, Title.Value,
@@ -258,17 +226,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 new Color(245, 195, 140, (int)(200 * _alpha)), subSc);
             curY += subH + 14f;
 
-            int divW = (int)(panel.Width * 0.55f);
-            int divX = panel.Center.X - divW / 2;
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle(divX, (int)curY, divW / 2 - 6, 1),
-                new Color(220, 170, 80, (int)(160 * _alpha)));
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle(divX + divW / 2 + 6, (int)curY, divW / 2 - 6, 1),
-                new Color(220, 170, 80, (int)(160 * _alpha)));
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle(panel.Center.X - 3, (int)curY - 1, 6, 3),
-                new Color(255, 220, 140, (int)(220 * _alpha)));
+            CybCourseCardStyle.DrawDividerGem(sb, panel, (int)curY, _alpha,
+                new Color(220, 170, 80, 160), new Color(255, 220, 140, 220));
             curY += 14f;
 
             string[] hintLines = Hint.Value.Split('\n');
@@ -298,8 +257,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 
             _confirmRect = new Rectangle(btnX, (int)curY, btnW, btnH);
             _laterRect = new Rectangle(btnX + btnW + gap, (int)curY, btnW, btnH);
-            DrawPanelButton(sb, _confirmRect, BtnConfirm.Value, hot: true);
-            DrawPanelButton(sb, _laterRect, BtnLater.Value, hot: false);
+            var mouse = new Point(Main.mouseX, Main.mouseY);
+            CybCourseCardStyle.DrawPanelButton(sb, _confirmRect, BtnConfirm.Value, hot: true, amber: true, _alpha, _shaderTimer, mouse);
+            CybCourseCardStyle.DrawPanelButton(sb, _laterRect, BtnLater.Value, hot: false, amber: true, _alpha, _shaderTimer, mouse);
             curY += btnH + 14f;
 
             BaseManagerStyle.DrawCenteredText(sb, Footer.Value,
@@ -345,32 +305,5 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                 new Color(255, 215, 200, (int)(240 * a)), labelSc);
         }
 
-        private static void DrawPanelButton(SpriteBatch sb, Rectangle rect, string text, bool hot) {
-            bool hovered = rect.Contains(Main.mouseX, Main.mouseY);
-            //hot=主选项
-            Color baseBg = hot ? new Color(110, 70, 18) : new Color(72, 50, 22);
-            Color hoverBg = hot ? new Color(200, 140, 40) : new Color(150, 110, 50);
-            Color baseBorder = hot ? new Color(240, 190, 90) : new Color(190, 150, 80);
-            Color hoverBorder = hot ? new Color(255, 230, 150) : new Color(240, 200, 130);
-            Color baseText = hot ? new Color(255, 230, 180) : new Color(230, 205, 160);
-            Color hoverText = new Color(255, 250, 220);
-
-            float pulse = hovered ? 1f : 0.85f + 0.15f * MathF.Sin(_shaderTimer * 5f);
-            Color bg = (hovered ? hoverBg : baseBg) * (_alpha * 0.95f * pulse);
-            Color border = (hovered ? hoverBorder : baseBorder) * _alpha;
-            Color textCol = (hovered ? hoverText : baseText) * _alpha;
-
-            BaseManagerStyle.FillRect(sb, rect, bg);
-            BaseManagerStyle.StrokeRect(sb, rect, 1, border);
-            BaseManagerStyle.DrawCenteredText(sb, text, rect.Center.ToVector2(), textCol, 0.78f);
-
-            int capH = 6;
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle(rect.X - 2, rect.Y + rect.Height / 2 - capH, 4, capH * 2),
-                border);
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle(rect.Right - 2, rect.Y + rect.Height / 2 - capH, 4, capH * 2),
-                border);
-        }
     }
 }

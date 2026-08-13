@@ -317,8 +317,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
         public void DrawQuestDetail(SpriteBatch spriteBatch, QuestNode node, Rectangle panelRect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            spriteBatch.Draw(pixel, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black * (0.65f * alpha));
-
+            //详情已改为右侧停靠栏，不再是模态框，故不铺全屏压暗
             Rectangle shadowRect = panelRect;
             shadowRect.Offset(6, 6);
             spriteBatch.Draw(pixel, shadowRect, Color.Black * (0.6f * alpha));

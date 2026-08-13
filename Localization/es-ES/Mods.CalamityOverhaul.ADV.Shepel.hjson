@@ -40,7 +40,6 @@ CybTutorialLead: {
 		Todas las interfaces han sido analizadas con éxito.
 		El enlace neuronal es estable, SHPC está lista.
 		'''
-	AwaitingEquip: ESPERANDO EQUIPAMIENTO...
 	Calibrating: CALIBRANDO...
 	NextBtn: SIGUIENTE  >
 	HintStuck: PISTA: Intente hacer clic en el área objetivo resaltada
@@ -53,53 +52,9 @@ CybCourseHackIntroDialogue: {
 }
 
 HackTimeTutorialLead: {
-	HT_Step0_Title: Activar el Modo Hackeo
-	HT_Step1_Title: Fijar Objetivo
-	HT_Step2_Title: Panel de Protocolos de Hackeo
-	HT_Step3_Title: Cargar Protocolo
-	HT_Step4_Title: HACK SEQUENCE COMPLETE
-	HT_Step0_Body:
-		'''
-		Presione la tecla {0} para entrar en el modo Tiempo de Hackeo.
-		El tiempo se detendrá y un filtro cibernético cubrirá su visión.
-		'''
-	HT_Step1_Body:
-		'''
-		Pase el cursor sobre el Tanque Navideño resaltado,
-		y haga clic izquierdo para fijarlo como objetivo de hackeo.
-		'''
-	HT_Step2_Body:
-		'''
-		El panel derecho muestra los protocolos de hackeo disponibles para el objetivo.
-		Diferentes protocolos consumen distinta RAM y generan efectos variados.
-		'''
-	HT_Step3_Body:
-		'''
-		Haga clic en un protocolo para añadirlo a la cola de carga a la izquierda.
-		La cola ejecutará las operaciones de hackeo en orden.
-		'''
-	HT_Step4_Body:
-		'''
-		Enlace neuronal desconectado.
-		Entrenamiento del protocolo de Tiempo de Hackeo completado; el sistema está listo.
-		'''
 	HT_Waiting: ESPERANDO ENTRADA...
 	HT_Calibrating: DESCONECTANDO...
 	HT_NextBtn: SIGUIENTE  >
-	HT_Step5_Title: Escaneo de Bloques
-	HT_Step6_Title: Fijar Bloque Objetivo
-	HT_Step7_Title: TILE SCAN COMPLETE
-	HT_Step5_Body:
-		'''
-		Hay un Generador Térmico MK2 más adelante.
-		Presione {0} de nuevo para reactivar el Tiempo de Hackeo.
-		'''
-	HT_Step6_Body:
-		'''
-		Pase el cursor sobre el generador,
-		y haga clic izquierdo para fijarlo como objetivo de escaneo.
-		'''
-	HT_Step7_Body: Interfaz de escaneo de bloques analizada. El panel derecho muestra los protocolos de hackeo disponibles para este bloque.
 	HT_HintStuck: PISTA: Haga clic en el botón SIGUIENTE para omitir a la fuerza
 	HT_KeyUnbound: N (Interruptor temporal)
 	HT_KeyHintUnbound: Pista: Si no ha asignado una tecla para el Tiempo de Hackeo, puede usar [N] temporalmente durante este tutorial; se recomienda asignarlo en Configuración > Controles.
@@ -203,10 +158,10 @@ WheelTutorialLead: {
 		Dead center of the wheel is the Hack Time shortcut —
 		clicking it equals pressing {1}. That wraps up the training.
 		''' */
-	// RW_Calibrating: SYNCHRONIZED...
-	// RW_NextBtn: NEXT  >
-	// RW_HintStuck: HINT: Click NEXT to force skip
-	// RW_KeyHintUnbound: Note: the radial wheel key is unbound, so the wheel cannot open. Bind it under Settings > Controls, or click NEXT to skip.
+	// RW_Calibrating: Synchronized
+	// RW_NextBtn: Skip >
+	// RW_HintStuck: Hint: click Skip to force past this step
+	// RW_KeyHintUnbound: Note: the radial wheel key is unbound, so the wheel cannot open. Bind it under Settings > Controls, or click Skip.
 }
 
 CybCourseOutroDialogue: {
@@ -238,6 +193,14 @@ CybCourseKeyBindReminderPanel: {
 	BtnConfirm: Entendido
 	BtnLater: Más tarde
 	Footer: Cualquier opción sale del hiper-sueño. Puede cambiar las teclas después en ajustes.
+}
+
+CybCourseWorld: {
+	// BootTag: NEURAL LINK · SUPERDREAM NODE
+	// BootTitle: Linking Superdream
+	// BootSubtitle: SHPC Immersion Training Protocol
+	// BootStatus: Compiling training space
+	// BootBarLabel: Sync Rate
 }
 
 ShepelCyberActiveDialogue: {

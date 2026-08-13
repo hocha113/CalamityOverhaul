@@ -323,11 +323,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             new Rectangle(panelRect.X + panelRect.Width / 2 - 60, panelRect.Bottom - 60, 120, 35);
 
         public void DrawQuestDetail(SpriteBatch spriteBatch, QuestNode node, Rectangle panelRect, float alpha) {
-            Texture2D px = VaultAsset.placeholder2.Value;
-
-            spriteBatch.Draw(px, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
-                Color.Black * (0.6f * alpha));
-
+            //详情已改为右侧停靠栏，不再是模态框，故不铺全屏压暗
             bool nightMode = QuestLog.Instance?.NightMode ?? false;
 
             DrawShaderPanel(spriteBatch, panelRect, alpha, nightMode);

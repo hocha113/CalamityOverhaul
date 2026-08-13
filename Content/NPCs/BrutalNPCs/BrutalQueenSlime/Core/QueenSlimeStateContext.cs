@@ -38,6 +38,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalQueenSlime.Core
         public int AttackPhaseIndex { get; set; }
         /// <summary>死亡演出完，CheckDead 放行真死</summary>
         public bool DeathPerformanceFinished { get; set; }
+        /// <summary>投技冷却(服务端计数)，二阶段展开后才开始走表；初值即首抓延迟</summary>
+        public int GrabCooldown { get; set; } = 900;
         #endregion
 
         #region 蓄力/视觉数据(每帧本地驱动)

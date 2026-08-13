@@ -3,3 +3,10 @@ BloodAltarTP: {
 	InsufficientOfferingText: 你身上的血泪不够向深红之王进行朝贡...
 	SacrificeDeathReason: "{0}陷入了无尽的血与肉的狂想"
 }
+
+OldNetDataNodeTile.MapEntry: 数据节点
+OldNetLogoutTerminalTile.MapEntry: 登出终端
+OldNetEncryptedNodeTile.MapEntry: 加密节点
+OldNetEventNodeTile.MapEntry: 事件节点
+OldNetSealGateTile.MapEntry: 封锁闸门
+OldNetRelayTile.MapEntry: 中继站

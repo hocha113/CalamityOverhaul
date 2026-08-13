@@ -25,6 +25,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDukeFishron.States
             base.OnEnter(context);
             context.SkipDefaultMovement = true;
             context.PhaseTwoStarted = true;
+            //投技初始装填：入二阶段先打一轮常规循环，漩涡卷客不抢开场
+            if (context.GrabCooldown < 600) {
+                context.GrabCooldown = 600;
+            }
             //公平阀：清场上气泡，走廊重置
             DukeFishronAI.ClearMinions(alsoTornado: false);
         }

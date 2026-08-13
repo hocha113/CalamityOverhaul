@@ -55,6 +55,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         public PrimeDeathPhase DeathPhase { get; set; }
         #endregion
 
+        #region 投技演出数据（供四臂编排与被抓玩家侧读取，各端本地推进）
+        public int ViceExecutionTick { get; set; }
+        #endregion
+
         /// <summary>编队旋转时钟</summary>
         public ref float OrbitClock => ref Owner.ai[PrimeAiSlots.OverrideOrbitClock];
 
