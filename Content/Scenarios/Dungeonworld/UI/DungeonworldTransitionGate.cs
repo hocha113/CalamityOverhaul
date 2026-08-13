@@ -146,8 +146,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
     }
 
     /// <summary>
-    /// [DungeonworldTransition] 时间线日志：一次过渡为一个纪元（Begin 时归零），
-    /// 每条日志带距纪元起点的毫秒偏移，是黑屏问题的验收工具
+    /// [DungeonworldTransition] 时间线：一次过渡一个纪元，只记 Enter/提交/DrawSetup 首帧/揭示起止（及偶发长帧）
     /// </summary>
     internal static class DungeonworldTransitionLog
     {

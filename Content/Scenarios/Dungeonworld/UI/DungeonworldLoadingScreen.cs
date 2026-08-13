@@ -31,16 +31,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
     /// 触发进入的一方（传送物品等）建议在 SubworldSystem.Enter&lt;Dungeonworld&gt;() 之前
     /// 先调 <see cref="Enter"/>，退出侧在 SubworldSystem.Exit() 之前先调 <see cref="Exit"/>——
     /// 主线程先复位，规避首帧竞态<br/>
-    /// 过渡链路修复：自愈复位改为「一次过渡只复位一次」（世界内帧撤防、过渡首帧布防），
-    /// 旧的 1s 帧戳阈值会在头段长帧（12M tile 分配/GC 卡顿）下逐帧误判新过渡，
-    /// 把入场包络反复清零钉在纯黑——这正是「进入先黑屏十几秒」的根因。<br/>
-    /// 时间源：加载期 Main.gameMenu=true，DoUpdate 在 UpdateMenu 后对客户端直接 return，
-    /// ModSystem.Update/PostUpdateEverything/Subworld.Update 全部不到。动画只许在 DrawSetup 推进。
-    /// 本机 SLib IL_Main.DoDraw 传 Ldarg_0(Main this) 当 GameTime（GitHub 已改 Ldarg_1），
-    /// CybCourse 因此用 +0.02f/帧而不是 ElapsedGameTime。本屏优先合法 GameTime，否则墙钟。<br/>
-    /// Present 修复：SLib 在 HoverItem 后调 DrawSetup 并 Ret，跳过原版 EndCapture。
-    /// 若当前 RT 仍是 screenTarget，绘制进 RT、Present 交出压黑后的后台缓冲——
-    /// 不操作全程黑屏，QQ 截图等外部刷新才看见已在跑的加载屏。DrawSetup 必须先钉回后台缓冲
+    /// 自愈复位：一次过渡只复位一次（世界内帧撤防、过渡首帧布防）。旧 1s 帧戳阈值会在头段长帧下
+    /// 把入场包络反复清零钉黑<br/>
+    /// 时间源只走 DrawSetup 墙钟（加载期 gameMenu 早退，Update 钩不到；本机 SLib 还可能把 Main 当 GameTime 传入）<br/>
+    /// Present：SLib 跳过 EndCapture，DrawSetup 须先把 RT 钉回后台缓冲
     /// </summary>
     internal class DungeonworldLoadingScreen : ModSystem, ILocalizedModType
     {
@@ -97,15 +91,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
         #region 状态
         //方向标志：true=进入（下行），false=退出（上行）
         private static bool descending = true;
-        //真实秒计时（DrawSetup 墙钟累计。加载期 gameMenu 早退,ModSystem/Subworld.Update 都不跑）
+        //真实秒计时（DrawSetup 墙钟累计）
         private static float realSeconds;
-        //DrawSetup 调用次数（诊断 tick,与墙钟无关）
-        private static int drawTick;
         //上一帧 Advance 的墙钟戳;Reset 归零,首帧按 1/60 起步
         private static long lastAdvanceStamp;
-        //本帧实际采用的 dt,以及探针读到的 GameTime.Elapsed（非法=-1）
-        private static float lastUsedDt;
-        private static float lastGtElapsed;
         //石壁累计滚动量（屏高单位，含方向）
         private static float scrollY;
         //过渡行程 0..1（单调递增，进度降级链的滤波输出）
@@ -127,16 +116,12 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
         //绘制侧缓存（Advance 算好供 Draw 消费）
         private static float topLight;
         private static float candleFlicker = 1f;
-        //最后一次 DrawSetup 的墙钟帧戳（长帧诊断 + 揭示层测「加载末帧→世界首帧」间隔）
+        //最后一次 DrawSetup 的墙钟帧戳（揭示层测加载末帧→世界首帧间隔）
         private static long lastDrawStamp;
-        //本次过渡是否已布防（复位过）：世界内帧撤防,过渡首帧自愈布防,加载期长帧不再误触发复位
+        //本次过渡是否已布防（复位过）：世界内帧撤防,过渡首帧自愈布防
         private static bool armed;
-        //本次过渡的 DrawSetup 首帧是否已记录时间线日志
+        //本次过渡的 DrawSetup 首帧是否已记时间线
         private static bool firstDrawLogged;
-        //每秒诊断累计（真实秒，跟 Advance 同一 dt）
-        private static float diagSeconds;
-        //本帧实际绘制路径：shader / cpu / black
-        private static string drawnPath = "black";
 
         /// <summary>最后一次 DrawSetup 的墙钟帧戳，供揭示层测量硬切间隔</summary>
         internal static long LastDrawStamp => lastDrawStamp;
@@ -169,10 +154,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
             SelfArm();
             //压黑门使命到此结束:DrawSetup 已接管,禁止再盖全屏黑矩形
             DungeonworldTransitionGate.HandOffToDrawSetup();
-            //加载期唯一推进点:SLib 只保证调 DrawSetup,不调 Update。时间源见 ResolveDrawDt
-            float dt = ResolveDrawDt(gameTime);
-            Advance(dt);
-            drawTick++;
+            Advance(ResolveDrawDt(gameTime));
             if (descending) {
                 //逐帧刷新揭示层军备时戳:世界侧凭"时戳新鲜"判定本次进入需要落底演出
                 DungeonworldEntryReveal.ArmFromLoading();
@@ -180,12 +162,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
 
             PlayerInput.SetZoom_UI();
             GraphicsDevice gd = Main.instance.GraphicsDevice;
-            //SLib 在 HoverItem 赋值后调用本方法并直接 Ret(SubworldLibrary.cs IL_Main.DoDraw),
-            //跳过了原版随后的 Clear / Filters.BeginCapture / EndCapture / DrawMenu。
-            //若 OnPreDraw 或上一帧 EndCaptureDraw 把 RT 留在 screenTarget 上,
-            //Clear+绘制会进 RT,FNA EndDraw.Present 却交出未被重画的后台缓冲——
-            //屏幕停在压黑门的纯黑,直到外部事件(QQ 截图/失焦)迫使交换链刷新。
-            string rtBefore = ProbeCurrentTarget(gd);
+            //SLib 在 HoverItem 后调本方法并 Ret,跳过原版 EndCapture;RT 若停在 screenTarget,
+            //绘制进 RT、Present 交出压黑后的后台缓冲,屏幕会一直黑。先钉回后台缓冲
             BindBackbuffer(gd);
             SilenceWorldFilters();
             if (gd != null && !gd.IsDisposed) {
@@ -201,8 +179,6 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
             DrawMenu(gameTime);
             Main.DrawCursor(Main.DrawThickCursor());
             Main.spriteBatch.End();
-
-            TickDrawDiag(dt, rtBefore);
         }
 
         /// <summary>
@@ -243,13 +219,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
         private static void Reset(bool enterDirection) {
             descending = enterDirection;
             firstDrawLogged = false;
-            diagSeconds = 0f;
-            drawnPath = "black";
             realSeconds = 0f;
-            drawTick = 0;
             lastAdvanceStamp = 0;
-            lastUsedDt = 0f;
-            lastGtElapsed = 0f;
             scrollY = 0f;
             travel = 0f;
             speedGain = 1f;
@@ -278,7 +249,6 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
                     $"DrawSetup 首帧(方向={(descending ? "下行" : "上行")}, 距上帧绘制 {gap}ms)");
             }
             else if (gap > 1000) {
-                //长帧诊断:主线程被冻结了多久,一条一行,用户 QA 直接抄日志
                 DungeonworldTransitionLog.Mark($"加载期长帧 {gap}ms(状态保持,不复位)");
             }
         }
@@ -291,36 +261,28 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
             }
         }
 
-        //SLib IL_Main.DoDraw 本机源码传 Ldarg_0(=Main this),GitHub 已改 Ldarg_1(=GameTime)
-        //参数可能根本不是 GameTime,或 Elapsed 恒 0。CybCourse 因此写死 +0.02f/帧
-        //合法 GameTime 优先(用户要求);否则墙钟,保证井壁/深度计/钟声在绘制帧前进
+        //加载期唯一推进点。合法 GameTime 偶发可用时用它,否则墙钟(本机 SLib 常把 Main 当 GameTime,Elapsed=0)
         private static float ResolveDrawDt(GameTime gameTime) {
-            lastGtElapsed = ProbeGtElapsed(gameTime);
-
             long now = Environment.TickCount64;
             float wallDt = lastAdvanceStamp == 0
                 ? 1f / 60f
                 : (now - lastAdvanceStamp) / 1000f;
             lastAdvanceStamp = now;
             wallDt = MathHelper.Clamp(wallDt, 0f, 0.1f);
-
-            if (lastGtElapsed > 0.00005f && lastGtElapsed <= 0.1f) {
-                lastUsedDt = lastGtElapsed;
-                return lastUsedDt;
-            }
             if (wallDt < 0.00005f) {
                 wallDt = 1f / 60f;
             }
-            lastUsedDt = wallDt;
-            return lastUsedDt;
+
+            float gtElapsed = ReadGtElapsed(gameTime);
+            if (gtElapsed > 0.00005f && gtElapsed <= 0.1f) {
+                return gtElapsed;
+            }
+            return wallDt;
         }
 
-        //形参必须是 object:SLib 可把 Main 塞进来;静态类型 GameTime 会让编译器把 is 优化成非空检查
-        private static float ProbeGtElapsed(object maybeTime) {
-            if (maybeTime is GameTime gt) {
-                return (float)gt.ElapsedGameTime.TotalSeconds;
-            }
-            return -1f;
+        //形参必须是 object:静态类型 GameTime 会让 is 被优化成非空检查,本机传入的其实可能是 Main
+        private static float ReadGtElapsed(object maybeTime) {
+            return maybeTime is GameTime gt ? (float)gt.ElapsedGameTime.TotalSeconds : 0f;
         }
 
         //入场包络：压黑已由 TransitionGate 在提交前演完,DrawSetup 接管后从可见亮度起算,
@@ -419,8 +381,6 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
             if (shader == null || VaultAsset.placeholder2 == null || VaultAsset.placeholder2.IsDisposed) {
                 //FNA3D 静默毁 shader 时的完整回退：渐变井底 + 顶光；深度计/文字/钟声照常，绝不裸黑屏
                 DrawBackgroundFallback(w, h);
-                drawnPath = VaultAsset.placeholder2?.Value != null && !VaultAsset.placeholder2.IsDisposed
-                    ? "cpu" : "black";
                 return;
             }
 
@@ -443,7 +403,6 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
 
             Main.spriteBatch.Draw(VaultAsset.placeholder2.Value, new Rectangle(0, 0, w, h), Color.White);
             Main.spriteBatch.End();
-            drawnPath = "shader";
         }
 
         //CPU 回退：纵向渐变井壁基调 + 中央顶光柱，只有石壁砌砖材质缺席
@@ -510,42 +469,6 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
             if (pp != null && pp.BackBufferWidth > 0 && pp.BackBufferHeight > 0) {
                 gd.Viewport = new Viewport(0, 0, pp.BackBufferWidth, pp.BackBufferHeight);
             }
-        }
-
-        //诊断用:当前 OM 绑定的是后台缓冲还是某块 RT
-        private static string ProbeCurrentTarget(GraphicsDevice gd) {
-            if (gd == null || gd.IsDisposed) {
-                return "none";
-            }
-            RenderTargetBinding[] bindings = gd.GetRenderTargets();
-            if (bindings == null || bindings.Length == 0) {
-                return "backbuffer";
-            }
-            Texture rt = bindings[0].RenderTarget;
-            if (rt == Main.screenTarget) {
-                return "screenTarget";
-            }
-            if (rt is RenderTarget2D sized) {
-                return $"rt:{sized.Width}x{sized.Height}";
-            }
-            return "rt";
-        }
-
-        //每秒一行 [DungeonworldTransition] 诊断;首帧额外带上绑定时的 RT 探针
-        private static void TickDrawDiag(float dt, string rtBefore) {
-            bool first = diagSeconds <= 0f;
-            diagSeconds += Math.Max(dt, 0.0001f);
-            if (!first && diagSeconds < 1f) {
-                return;
-            }
-            if (diagSeconds >= 1f) {
-                diagSeconds -= 1f;
-            }
-            string extra = first ? $" rt={rtBefore}" : string.Empty;
-            DungeonworldTransitionLog.Mark(
-                $"drawn={drawnPath} tick={drawTick} elapsed={realSeconds:F2} progress={travel:F3}"
-                + $" gt={lastGtElapsed:F4} dt={lastUsedDt:F4}"
-                + $" gameMenu={Main.gameMenu} IsActive={Main.instance?.IsActive}{extra}");
         }
         #endregion
 
