@@ -42,6 +42,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
             internal int ShelvesPlaced;
             internal int ShelvesRejected;
             internal int WaterCandles;
+            //底行中段格间中心距Bounds.Left,供挂房落口(避开隔墙)
+            internal int DropOffset;
         }
 
         /// <summary>掷区块计划;maxInteriorH=甲板条带允许的内膛净高上限</summary>
@@ -250,6 +252,15 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
                         goldUsed = true;
                     }
                 }
+            }
+
+            //落口:底行中段格间中心(避开隔墙与两端门口)
+            report.DropOffset = DungeonworldMetrics.RoomShellThick;
+            if (rowCellIdx.Count > 0 && rowCellIdx[0].Count > 0) {
+                int midCell = rowCellIdx[0][rowCellIdx[0].Count / 2];
+                int left = cells[midCell].left;
+                int right = cells[midCell].right;
+                report.DropOffset = (left + right) / 2 - room.Bounds.Left;
             }
 
             //墨霉做旧:书架底部墙面霉斑(paint层,INDEX §3签名)

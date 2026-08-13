@@ -13,7 +13,6 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
 
         protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
             progress.Message = "铺设层内容...";
-            var log = CWRMod.Instance.Logger;
 
             //L1教堂区(Wave-1已接线)
             Layers.L1.L1Content.PlanAndBuild(LayerPlans.L1);
@@ -23,34 +22,24 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
             Layers.L2.L2Content.PlanAndBuild(LayerPlans.L2);
             progress.Set(2 / 7.0);
 
-            //L3大档案馆(Wave-2槽位)——入口落盘后用下行替换本段Warn:
-            //Layers.L3.L3Content.PlanAndBuild(LayerPlans.L3);
-            //TODO(父级缝合):L3路交付后按上行接线
-            log.Warn("[Dungeonworld] P50 L3内容入口未接线,保持M0空脊");
+            //L3大档案馆(Wave-2已接线)
+            Layers.L3.L3Content.PlanAndBuild(LayerPlans.L3);
             progress.Set(3 / 7.0);
 
-            //L4水牢(Wave-2槽位)——入口落盘后用下行替换本段Warn:
-            //Layers.L4.L4Content.PlanAndBuild(LayerPlans.L4);
-            //TODO(父级缝合):L4路交付后按上行接线
-            log.Warn("[Dungeonworld] P50 L4内容入口未接线,保持M0空脊");
+            //L4水牢(Wave-2已接线)
+            Layers.L4.L4Content.PlanAndBuild(LayerPlans.L4);
             progress.Set(4 / 7.0);
 
-            //L5万骨窖(Wave-2槽位)——入口落盘后用下行替换本段Warn:
-            //Layers.L5.L5Content.PlanAndBuild(LayerPlans.L5);
-            //TODO(父级缝合):L5路交付后按上行接线
-            log.Warn("[Dungeonworld] P50 L5内容入口未接线,保持M0空脊");
+            //L5万骨窖(Wave-2已接线)
+            Layers.L5.L5Content.PlanAndBuild(LayerPlans.L5);
             progress.Set(5 / 7.0);
 
-            //L6铸造机关层(Wave-2槽位)——入口落盘后用下行替换本段Warn:
-            //Layers.L6.L6Content.PlanAndBuild(LayerPlans.L6);
-            //TODO(父级缝合):L6路交付后按上行接线
-            log.Warn("[Dungeonworld] P50 L6内容入口未接线,保持M0空脊");
+            //L6铸造机关层(Wave-2已接线)
+            Layers.L6.L6Content.PlanAndBuild(LayerPlans.L6);
             progress.Set(6 / 7.0);
 
-            //L7倒吊教堂(Wave-2槽位)——入口落盘后用下行替换本段Warn:
-            //Layers.L7.L7Content.PlanAndBuild(LayerPlans.L7);
-            //TODO(父级缝合):L7路交付后按上行接线
-            log.Warn("[Dungeonworld] P50 L7内容入口未接线,保持M0空脊");
+            //L7倒吊教堂(Wave-2已接线)
+            Layers.L7.L7Content.PlanAndBuild(LayerPlans.L7);
             progress.Set(1.0);
         }
     }

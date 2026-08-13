@@ -34,6 +34,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
         internal const int StyleCandelabra = 22;   //烛台 tile100(:29175)
         internal const int StyleLamp = 24;         //落地灯 tile93(:29176)
         internal const int StyleClock = 30;        //落地钟 tile104(:29177+:29546 case12)
+        internal const int StyleSofa = 6;          //沙发/长椅 tile89(:29173,忏悔室/坠落房公共形制)
         internal const int StyleChandelier = 27;   //吊灯 tile34(:28617-28621 墙7=27)
         internal const int StyleBannerA = 10;      //旗帜 tile91 基础墙组(:28807-28817)
         internal const int StyleBannerB = 11;
@@ -89,7 +90,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
             if (!PlaceOnSurface(x, y, TileID.Bottles)) {
                 return false;
             }
-            Main.tile[x, y].TileFrameX = (short)(rand.NextBool() ? 18 : 36);
+            Tile bottle = Main.tile[x, y];
+            bottle.TileFrameX = (short)(rand.NextBool() ? 18 : 36);
             return true;
         }
 

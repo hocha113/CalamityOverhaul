@@ -184,6 +184,13 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
         internal static bool PlaceUrn(int x, int standRow, UnifiedRandom rand)
             => WorldGen.PlacePot(x, standRow, TileID.Pots, rand.Next(PotStyleMin, PotStyleMax));
 
+        /// <summary>墓碑 tile85 六件套(样式0~5),上带散点用,去重距由撒布条目保证≥20</summary>
+        internal static bool PlaceTombstone(int x, int standRow, UnifiedRandom rand)
+            => TryPlaceObject(x, standRow, TileID.Tombstones, rand.Next(TombstoneStyles));
+
+        internal static bool IsPinkDungeonWall(ushort wall)
+            => wall == WallBase || wall == WallSlab || wall == WallTiled;
+
         /// <summary>巷口"最后的灯":自(x,y)向上探≤6行找实心天花,挂骨灯笼</summary>
         internal static bool MouthLantern(int x, int y) {
             for (int i = 0; i <= 6; i++) {

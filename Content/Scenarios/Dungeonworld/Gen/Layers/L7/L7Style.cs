@@ -50,6 +50,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
         //锁金箱 tile21 style2（F35房间箱；L2Palette同款已对源）——终点宝库顶位
         internal const int StyleChestLockedGold = 2;
 
+        //前庭告示（玩家可见，game-prose-voice：具体物件+平收；呼应L6阈值告示）
+        internal const string SignVestibule = "出门走锁链桥。对面那座教堂，地板是从前的屋顶。";
+
         //===锁链（tile214，TileID.cs:1125；直写先例=L2Palette.HangChain/GaolBossRoom）===
         //INDEX §3裁决：L7只许≥3格宽巨型结构链束；本表不提供单列链接口
         internal const int BundleMinWidth = 3;
@@ -155,6 +158,18 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
             return false;
         }
 
+        /// <summary>告示牌+文本（PlaceSign对源WorldGen.cs L35944；ReadSign→TextSign先例=L1Style）</summary>
+        internal static bool PlaceSignWithText(int x, int standRow, string text) {
+            if (!WorldGen.PlaceSign(x, standRow, TileID.Signs)) {
+                return false;
+            }
+            int sign = Sign.ReadSign(x, standRow);
+            if (sign >= 0) {
+                Sign.TextSign(sign, text);
+            }
+            return true;
+        }
+
         /// <summary>门板：F4上下实心由调用方槽语法保证，拒绝记日志</summary>
         internal static bool PlaceDoorPlate(int x, int bottomRow) {
             WorldGen.PlaceObject(x, bottomRow, TileID.ClosedDoor, mute: true, style: StyleDoor);
@@ -175,7 +190,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
             if (!Main.tile[x, y].HasTile) {
                 return false;
             }
-            PaintTileArea(x - 3, y - 2, x + 3, y + 2, entry.tileType, PaintPurple);
+            PaintTileArea(x - 3, y - 2, x + 3, y + 2, (ushort)entry.tileType, PaintPurple);
             return true;
         }
 

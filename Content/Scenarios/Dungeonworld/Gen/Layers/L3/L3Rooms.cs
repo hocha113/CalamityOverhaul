@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
     //  目录厅=层内hub,目录柜(地牢梳妆台)双层环阵+落地钟
     //  抄写室=贴墙书台语法的室内化,墨渍做旧的原点
     //  灯房/开关廊=灭灯玩法教学房(全灭+找开关,一关多灯收尾)
-    //  井站段/忏悔室/坠落房间A=跨层公共构件,归公共构件波,本文件不做
+    //  井站段/忏悔室/坠落房间A=公共prefab波未到,本文件给层内算法换皮(形制对齐INDEX §4)
     //  禁书区=单入口封闭子区+大奖(钟声门门面framing,门体待运行时BellRiteSystem)
     //写入只走TileBrush+原版放置函数;家具拒绝即计数,fail loud交日志
     //====================================================================
@@ -38,6 +38,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
         internal const string SignRegistry = "借阅登记：写名字，写层号。还书的划掉自己。没划掉的，馆里替你记着。";
         internal const string SignLampRule = "巡馆条例：灯灭了先找开关，开关不出十二步。烛火不许过第三排书。";
         internal const string SignVault = "禁书区。钟不响，门不开。灯自己灭了，别替它点。";
+        internal const string SignConfess = "两隔间。左边写，右边听。听完的把门上那行名字划掉。";
+        internal const string SignFalling = "中间那块板是后补的。站上去会响。";
+        internal const string SignWell = "井口。上到牢，下到水。轿厢不来走楼梯。";
 
         //整包络重盖蓝砖+开内膛,所有房型共用第一遍(清预览残余)
         internal static void StampAndCarve(RoomNode room, ushort wall) {
@@ -60,8 +63,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
         private static bool PlaceChair(int x, int standRow, bool flip, ref Tally tally) {
             bool ok = L3Palette.TryPlaceTile(x, standRow, TileID.Chairs, L3Palette.StyleChair);
             if (ok && flip) {
-                Main.tile[x, standRow].TileFrameX += 18;
-                Main.tile[x, standRow - 1].TileFrameX += 18;
+                Tile lower = Main.tile[x, standRow];
+                Tile upper = Main.tile[x, standRow - 1];
+                lower.TileFrameX += 18;
+                upper.TileFrameX += 18;
             }
             tally.Add(ok, "椅", x, standRow);
             return ok;
@@ -469,6 +474,109 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
             //警示告示立在洞外一步
             int signX = socket.Side == SocketSide.Left ? room.Bounds.Left - 2 : room.Bounds.Right + 1;
             L3Palette.PlaceSignWithText(signX, room.FloorTop - 1, SignVault);
+        }
+
+        //==================== 忏悔室(#10):公共形制蓝皮,检查点留位 ====================
+
+        //INDEX §4:10x6含壳是STRUCTURES基准;L1已落到16x9含壳双隔间,本层对齐该实用尺寸
+        internal static Point ConfessionalInteriorSize() => new(12, 6);
+
+        internal static Tally BuildConfessional(RoomNode room, UnifiedRandom rand) {
+            var tally = new Tally();
+            StampAndCarve(room, L3Palette.WallBase);
+            int floor = room.FloorTop;
+            int iL = room.InteriorLeft, iR = room.InteriorRight;
+            int mid = (iL + iR) / 2;
+
+            //中隔1宽+内门(L1字符画'+'槽的算法换皮)
+            for (int y = room.InteriorTop; y < floor; y++) {
+                TileBrush.SetSolid(mid, y, L3Palette.Brick);
+            }
+            TileBrush.CarveRect(mid, floor - 3, mid + 1, floor, L3Palette.WallBase);
+            tally.Add(L3Palette.PlaceDoorPlate(mid, floor - 1), "隔间门", mid, floor - 1);
+
+            //左写右听:长椅/椅错格,烛放在空位,检查点语义留位(运行时系统未接)
+            tally.Add(L3Palette.TryPlaceObject(iL + 1, floor - 1, TileID.Benches, L3Palette.StyleSofa),
+                "忏悔长椅", iL + 1, floor - 1);
+            tally.Add(L3Palette.TryPlaceTile(iR - 2, floor - 1, TileID.Chairs, L3Palette.StyleChair),
+                "听席椅", iR - 2, floor - 1);
+            if (iL + 5 < mid) {
+                tally.Add(L3Palette.PlaceOnSurface(iL + 5, floor - 1, TileID.Candles, L3Palette.StyleCandle),
+                    "隔间烛", iL + 5, floor - 1);
+            }
+            tally.Add(L3Palette.PlaceSignWithText(mid + 2, floor - 1, SignConfess), "忏悔告示", mid + 2, floor - 1);
+
+            L3Palette.MoldUnderShelves(room.Bounds, rand);
+            return tally;
+        }
+
+        //==================== 坠落房间A挂起态(#8):地板完整,裂纹预告坠落口 ====================
+
+        //INDEX §4:24~32w×12~16h含壳 → 内膛约20~28×8~12;坠落开口归公共两态prefab
+        internal static Point FallingInteriorSize(UnifiedRandom rand)
+            => new(rand.Next(20, 29), rand.Next(10, 13));
+
+        internal static Tally BuildFallingHung(RoomNode room, UnifiedRandom rand) {
+            var tally = new Tally();
+            StampAndCarve(room, L3Palette.WallBase);
+            int floor = room.FloorTop;
+            int iL = room.InteriorLeft, iR = room.InteriorRight;
+            int mid = (iL + iR) / 2;
+
+            //挂起态:地板完整;中央裂纹砖=坠落口预告(不破碰撞,坠落态由公共prefab换)
+            for (int x = mid - 3; x < mid + 4; x++) {
+                TileBrush.SetSolid(x, floor, L3Palette.CrackedBrick);
+                TileBrush.SetSolid(x, floor + 1, L3Palette.CrackedBrick);
+            }
+
+            //极简内装:长椅一条+吊灯一盏(INDEX §4)
+            tally.Add(L3Palette.TryPlaceObject(iL + 3, floor - 1, TileID.Benches, L3Palette.StyleSofa),
+                "坠落房长椅", iL + 3, floor - 1);
+            if (L3Lights.PlaceChandelier(mid, room.InteriorTop)) {
+                L3Lights.LampsLit++;
+            }
+            tally.Add(L3Palette.PlaceSignWithText(iR - 4, floor - 1, SignFalling), "坠落告示", iR - 4, floor - 1);
+
+            //底沿灰漆短痕:L3→L4潮气预告(paint层,与泡皱格间同族)
+            for (int x = iL + 1; x < iR - 1; x += rand.Next(3, 6)) {
+                Tile tile = Main.tile[x, floor - 1];
+                if (!tile.HasTile && (tile.WallType == L3Palette.WallBase || tile.WallType == L3Palette.WallSlab)) {
+                    tile.WallColor = L3Palette.PaintMold;
+                }
+            }
+            return tally;
+        }
+
+        //==================== 井站段(#9):主竖井旁站台+检修龛 ====================
+
+        //INDEX §4:20~26w×12~16h含壳 → 内膛约16~22×8~12;电梯TP对位归公共prefab
+        internal static Point WellStationInteriorSize(UnifiedRandom rand)
+            => new(rand.Next(16, 23), rand.Next(8, 13));
+
+        internal static Tally BuildWellStation(RoomNode room, UnifiedRandom rand) {
+            var tally = new Tally();
+            StampAndCarve(room, L3Palette.WallBase);
+            int floor = room.FloorTop;
+            int iL = room.InteriorLeft, iR = room.InteriorRight;
+
+            //站台=中层平台带(INDEX §4)+两端落实心
+            int bandY = floor - 6;
+            if (bandY > room.InteriorTop + 1) {
+                TileBrush.PlatformRow(iL + 1, iR - 1, bandY, L3Palette.PlatformFrameY);
+                TileBrush.PlatformRow(iL + 1, iL + 4, floor - 3, L3Palette.PlatformFrameY);
+            }
+
+            //检修龛2×3:左侧小平台+书(壁龛换皮,INDEX §4)
+            TileBrush.PlatformRow(iL, iL + 2, floor - 3, L3Palette.PlatformFrameY);
+            tally.Add(L3Palette.PlaceBook(iL, floor - 4, rand), "检修龛书", iL, floor - 4);
+
+            //站台灯笼全亮(井口要可读,不入灭灯回路)
+            if (L3Lights.PlaceLantern((iL + iR) / 2, room.InteriorTop, caged: false)) {
+                L3Lights.LampsLit++;
+            }
+            tally.Add(L3Palette.PlaceSignWithText(iR - 4, floor - 1, SignWell), "井站告示", iR - 4, floor - 1);
+            L3Palette.MoldUnderShelves(room.Bounds, rand);
+            return tally;
         }
     }
 }

@@ -8,12 +8,14 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
     //ShouldSave=false回放制下每次生成重算,PlanAndBuild/看样入口开头Reset
     internal enum L6SlotKind
     {
-        /// <summary>大齿轮(齿轮井演出位,帧包络9x9,轴承座2x2 Cog已置于Frame中心)</summary>
+        /// <summary>大齿轮(齿轮井演出位,帧包络8x8,轴承座2x2 Cog已置于Frame中心)</summary>
         GearLarge,
         /// <summary>小齿轮(铸造大厅背景位,帧包络6x6,轴承座2x2 Cog)</summary>
         GearSmall,
         /// <summary>活塞推杆(机关走廊母题5,帧包络3x3,缸体Cog2x1在槽顶,头朝下捶向走廊)</summary>
         Piston,
+        /// <summary>齿轮碾压(机关走廊母题6,帧包络=段宽x行走带,轮齿Cog朝下扫过行走面)</summary>
+        GearCrush,
         /// <summary>钟声门(主控室→L7静默通路的门禁TP,Frame=落口两侧门柱+过梁包络)</summary>
         BellGate,
         /// <summary>电梯站(井站段prefab归公共构件波,此条仅登记建议锚点,零几何)</summary>

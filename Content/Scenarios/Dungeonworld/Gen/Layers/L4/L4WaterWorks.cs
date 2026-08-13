@@ -191,10 +191,27 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
         //==================== 两态切换(雏形:机制函数+数据;运行时TP机关归资产波) ====================
 
         /// <summary>
+        /// 双水线痕+分带墙:几何与液体冻结后调用(paint/wall层,§3.2-6)。
+        /// 排水态水面行==Area.Bottom(排空)时,下线刷在底行上一格——干舱也留"水曾经到过这"的黑线。
+        /// </summary>
+        internal static void PaintAging() {
+            foreach (Compartment c in Compartments) {
+                L4Palette.PaintWaterlineRow(c.Area.Left, c.Area.Right, c.HighSurfaceRow, L4Palette.HighLinePaint);
+                int lowPaint = c.LowSurfaceRow >= c.Area.Bottom ? c.Area.Bottom - 1 : c.LowSurfaceRow;
+                if (lowPaint != c.HighSurfaceRow && lowPaint >= c.Area.Top) {
+                    L4Palette.PaintWaterlineRow(c.Area.Left, c.Area.Right, lowPaint, L4Palette.LowLinePaint);
+                }
+                int wallTop = System.Math.Max(c.Area.Top - 4, 0);
+                L4Palette.BandWalls(c.Area.Left, c.Area.Right, wallTop, c.Area.Bottom, c.HighSurfaceRow);
+            }
+        }
+
+        /// <summary>
         /// 一次性事务切换全层水位(R1:预计算版图+一次重写+手动settle,绝不物理模拟排水)。
         /// 本波只交单机看样用法(拉杆TP接线与联机归资产波):联机时须服务器权威执行
         /// 并按STRUCTURES §4.5做区块同步(NetMessage.SendTileSquare/段同步),客户端只演出。
         /// 排走的水去向叙事化(排入深渊带),不做守恒模拟。
+        /// 运行时TP钩子=本方法;资产波的泵机/阀杆只负责调用,不另写排水模拟。
         /// </summary>
         internal static void ApplyState(bool high, LayerBand band) {
             if (Compartments.Count == 0) {

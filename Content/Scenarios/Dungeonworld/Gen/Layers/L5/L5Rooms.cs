@@ -157,7 +157,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
             }
 
             //葬龛阵列:2x3龛+骨框柱,间距4~6;左缘6列留净(接口位)
-            //龛内容轮换[骨灯笼/蛛网/尘白空],同型间隔≥2龛由三型循环构造保证;
+            //龛内容轮换[骨堆/骨灰瓮/烛],同型间隔≥2龛由三型循环构造保证;
             //另掷一龛为"新鲜空龛"(无尘无物,叙事留白,ROOMS-L5 §1)
             var nicheXs = new System.Collections.Generic.List<int>();
             int nx = room.InteriorLeft + 7;
@@ -177,21 +177,26 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
                 if (i == freshIdx) {
                     continue; //新鲜挖出的空位
                 }
+                //天花龛底铺骨平台作站面:2D里"两壁葬龛"的上壁落地;
+                //轮换骨堆/骨灰瓮/烛(ROOMS-L5 §1),蛛网作做旧点缀不占轮换名额
+                int shelfY = corridorTop - 1;
+                TileBrush.PlatformRow(x0, x0 + 2, shelfY, L5Palette.PlatformBone);
                 switch (i % 3) {
                     case 0:
-                        info.Tally.Add(L5Palette.TryPlaceObject(x0, top, TileID.HangingLanterns,
-                            L5Palette.LanternBone), "龛灯", x0, top);
-                        L5Palette.DustWallWash(x0, top, x0 + 2, corridorTop);
+                        info.Tally.Add(L5Palette.TryPlaceTile(x0, shelfY - 1, TileID.Candles,
+                            L5Palette.CandlePink), "龛烛", x0, shelfY - 1);
                         break;
                     case 1:
-                        WorldGen.PlaceTile(x0, top + 1, TileID.Cobweb, mute: true);
-                        WorldGen.PlaceTile(x0 + 1, top + 2, TileID.Cobweb, mute: true);
-                        L5Palette.DustWallWash(x0, top, x0 + 2, corridorTop);
+                        info.Tally.Add(L5Palette.PlaceUrn(x0, shelfY - 1, rand), "龛瓮", x0, shelfY - 1);
                         break;
                     default:
-                        L5Palette.DustWallWash(x0, top, x0 + 2, corridorTop);
+                        info.Tally.Add(L5Palette.PlaceSmallBones(x0, shelfY - 1, rand), "龛骨", x0, shelfY - 1);
                         break;
                 }
+                if (i % 2 == 0) {
+                    WorldGen.PlaceTile(x0 + 1, top, TileID.Cobweb, mute: true);
+                }
+                L5Palette.DustWallWash(x0, top, x0 + 2, corridorTop);
                 //隔龛地crypt:地板下藏骨穴,平台唇上可行走(2D版地面葬龛)
                 if (i % 2 == 1) {
                     CarveFloorCrypt(x0, floor, rand, ref info.Tally);
@@ -208,7 +213,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
             return info;
         }
 
-        //地crypt公共件:3宽2деep地板下骨穴+骨平台唇(龛壁廊/深巷骨室共用)
+        //地crypt公共件:3宽2深地板下骨穴+骨平台唇(龛壁廊/深巷骨室共用)
         private static void CarveFloorCrypt(int x0, int floor, UnifiedRandom rand, ref Tally tally) {
             TileBrush.CarveRect(x0, floor, x0 + 3, floor + 2, L5Palette.WallTiled);
             TileBrush.PlatformRow(x0, x0 + 3, floor, L5Palette.PlatformBone);
@@ -479,6 +484,32 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L5
                 }
             }
             return info;
+        }
+
+        /// <summary>
+        /// 看样用:在已刻画的坑场内强制落一骨坑一刺坑,把裂砖预告长度差(2 vs 4)并排晒出来。
+        /// 正式生成仍走 BuildPitField 随机预算。
+        /// </summary>
+        internal static void StampShowcasePits(RoomNode room, OccupancyGrid grid,
+            UnifiedRandom rand, ref Tally tally) {
+            int floor = room.FloorTop;
+            int[] xs = [room.InteriorLeft + 6, room.InteriorLeft + 18];
+            int[] widths = [4, 5];
+            bool[] spikes = [false, true];
+            const int depth = 22;
+            for (int i = 0; i < 2; i++) {
+                int px = xs[i], pw = widths[i];
+                if (px + pw > room.InteriorRight - 4) {
+                    continue;
+                }
+                var shaft = new Rectangle(px - 2, room.Bounds.Bottom + DungeonworldMetrics.RoomPadding,
+                    pw + 4, depth);
+                if (!grid.TryReserve(shaft, 0)) {
+                    CWRMod.Instance.Logger.Warn($"[L5Rooms] 看样坑井足印被占 at ({px},{floor})");
+                    continue;
+                }
+                CarvePit(px, pw, floor, depth, spikes[i], rand, ref tally);
+            }
         }
 
         //干坑本体:裂砖假地板口+竖井+两型内衬+回程交错横档(骨坑两壁/刺坑净壁侧)

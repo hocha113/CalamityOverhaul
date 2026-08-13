@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
 
         //==================== 母题池(密度梯度按折序解禁,ROOMS-L6 §3密度曲线) ====================
 
-        internal enum Motif { Conveyor, Dart, DartNet, Boulder, PistonSlot }
+        internal enum Motif { Conveyor, Dart, DartNet, Boulder, PistonSlot, GearCrush }
 
         /// <summary>按威胁层级掷一段A型母题;首段强制低威胁(ROOMS-L6:节奏由浅入深)</summary>
         internal static Motif RollMotif(UnifiedRandom rand, int tier, bool firstSegment, Motif previous) {
@@ -61,10 +61,16 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
                 Motif roll = tier switch {
                     0 => rand.NextBool(2) ? Motif.Conveyor : Motif.Dart,
                     1 => rand.Next(4) switch { 0 => Motif.Conveyor, 1 => Motif.Dart, 2 => Motif.DartNet, _ => Motif.PistonSlot },
-                    2 => rand.Next(4) switch { 0 => Motif.Dart, 1 => Motif.DartNet, 2 => Motif.Boulder, _ => Motif.PistonSlot },
-                    _ => rand.Next(4) switch { 0 => Motif.Dart, 1 => Motif.DartNet, 2 => Motif.Boulder, _ => Motif.DartNet },
+                    2 => rand.Next(5) switch {
+                        0 => Motif.Dart, 1 => Motif.DartNet, 2 => Motif.Boulder,
+                        3 => Motif.PistonSlot, _ => Motif.GearCrush,
+                    },
+                    _ => rand.Next(5) switch {
+                        0 => Motif.Dart, 1 => Motif.DartNet, 2 => Motif.Boulder,
+                        3 => Motif.GearCrush, _ => Motif.DartNet,
+                    },
                 };
-                if (firstSegment && roll is Motif.DartNet or Motif.Boulder) {
+                if (firstSegment && roll is Motif.DartNet or Motif.Boulder or Motif.GearCrush) {
                     continue;   //首段只许低威胁(传送带/单镖/活塞留位)
                 }
                 if (roll == previous) {
@@ -81,6 +87,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
             Motif.Dart => rand.Next(14, 19),
             Motif.DartNet => rand.Next(23, 27),
             Motif.Boulder => rand.Next(13, 17),
+            Motif.GearCrush => rand.Next(12, 16),
             _ => rand.Next(9, 13),
         };
 
@@ -155,11 +162,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
         /// 哑炮腔彩蛋(ROOMS-L6 §3):龛带内密封2x2藏物腔,行走面天花一格裂砖
         /// 提示"可破"(原版裂=危险/可破语言,镜像L2牢栅暗塞先例);拆开得罐。
         /// </summary>
-        internal static void CarveDudCavity(RoomNode room, int x, ref Tally tally) {
+        internal static void CarveDudCavity(RoomNode room, int x, UnifiedRandom rand, ref Tally tally) {
             int nicheTop = room.InteriorTop;
             TileBrush.CarveRect(x, nicheTop + 1, x + 2, nicheTop + 3, L6Palette.WallSlab);
             tally.Furn(WorldGen.PlacePot(x, nicheTop + 2, TileID.Pots,
-                WorldGen.genRand.Next(L6Palette.PotStyleMin, L6Palette.PotStyleMax + 1)),
+                rand.Next(L6Palette.PotStyleMin, L6Palette.PotStyleMax + 1)),
                 "哑炮腔藏罐", x, nicheTop + 2);
             //行走面天花的裂砖提示格
             TileBrush.SetSolid(x, nicheTop + 3, L6Palette.CrackedBrick);
@@ -198,7 +205,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
             TryPlaceDart(plate, floor - 1, ref tally);
 
             if (rand.NextBool(4)) {
-                CarveDudCavity(room, System.Math.Min(plate + 4, segR - 3), ref tally);
+                CarveDudCavity(room, System.Math.Min(plate + 4, segR - 3), rand, ref tally);
             }
             tally.Segments++;
         }
@@ -270,6 +277,28 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
             L6MachineSlots.Register(L6SlotKind.Piston,
                 new Rectangle(sx, nicheTop + 1, 3, 3), "机关走廊活塞槽,头朝下捶向行走面");
             CarvePocket(room, System.Math.Max(segL + 1, sx - 5), ref tally);
+            tally.Segments++;
+        }
+
+        /// <summary>
+        /// 母题:齿轮碾压留位(TP本体归资产波)。行走带顶两行Cog轮齿剪影,净空3
+        /// (F1低威胁净空档,本波零伤害);预告手段:轮齿本身+焦油垂滴+全段油渍
+        /// +躲避龛。登记段宽x行走带包络供资产波对位。
+        /// </summary>
+        internal static void SegGearCrush(RoomNode room, int segL, int segR, UnifiedRandom rand, ref Tally tally) {
+            int floor = room.FloorTop;
+            int nicheTop = room.InteriorTop;
+            int start = segL + 2 + rand.Next(0, 2);
+            for (int x = start; x < segR - 2; x += 3) {
+                TileBrush.SetSolid(x, floor - 4, L6Palette.CogBlock);
+                TileBrush.SetSolid(x, floor - 5, L6Palette.CogBlock);
+                L6Palette.TarDrip(x, floor - 3, 2);
+            }
+            L6Palette.OilStreakFloor(segL + 1, floor, System.Math.Max(2, segR - segL - 2));
+            CarvePocket(room, (segL + segR) / 2 - 1, ref tally, lantern: true);
+            L6MachineSlots.Register(L6SlotKind.GearCrush,
+                new Rectangle(segL, nicheTop, System.Math.Max(1, segR - segL), NicheBand + WalkH),
+                "机关走廊齿轮碾压段,轮齿朝下扫过行走面(本波零伤害剪影)");
             tally.Segments++;
         }
 

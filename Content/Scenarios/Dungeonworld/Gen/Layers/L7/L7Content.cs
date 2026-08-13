@@ -22,22 +22,22 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
     //====================================================================
     internal static class L7Content
     {
-        //===布局常量（相对锚：x=ShaftLeft，y=band.Top）===
+        //===布局常量（相对锚：x=ShaftLeft，y=band.Top；internal给看样入口复用）===
         //悬吊空腔：x[ShaftLeft-218, ShaftLeft-26)，宽192
-        private const int VoidLeftOff = -218;
-        private const int VoidRightOff = -26;
+        internal const int VoidLeftOff = -218;
+        internal const int VoidRightOff = -26;
         //空腔顶距带顶18行（其上为链束锚点带，主竖井穿行其中）
-        private const int VoidTopOff = 18;
+        internal const int VoidTopOff = 18;
         //教堂：左缘=空腔左+26（西空隙26≥20【事实§2.4-⑦】），顶=空腔顶+32（链束吊距）
-        private const int CathLeftOff = VoidLeftOff + 26;
-        private const int CathTopOff = VoidTopOff + 32;
+        internal const int CathLeftOff = VoidLeftOff + 26;
+        internal const int CathTopOff = VoidTopOff + 32;
         //前庭内膛（岩肩内，介于空腔与主竖井之间）
         private const int VestInteriorH = 9;
 
         //深渊带剪影厅：顶=带底+4（层脊地板2厚+2余量之下），底=带底+184
         //（世界行5604~5784，距地狱线5800余量16行，红线断言兜底）
-        private const int AbyssTopOff = 4;
-        private const int AbyssBottomOff = 184;
+        internal const int AbyssTopOff = 4;
+        internal const int AbyssBottomOff = 184;
 
         /// <summary>
         /// L7一条龙构建：空腔→前庭/渡桥→倒吊教堂（镜像+倒相定制）→链束→
@@ -64,6 +64,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
             if (voidBottom >= band.Bottom || deepestReachable + 8 > voidBottom) {
                 throw new System.InvalidOperationException(
                     $"[L7] 垂钟龛底{deepestReachable}逼近空腔底{voidBottom}，悬吊构图被压扁，检查层带行数预算");
+            }
+            if (deepestReachable >= hellRow) {
+                throw new System.InvalidOperationException(
+                    $"[L7] 可达最深点{deepestReachable}越过地狱线{hellRow}（管线路裁决：可达不得过y={hellRow}）");
             }
             if (abyssBottom + 8 > hellRow) {
                 throw new System.InvalidOperationException(
@@ -170,9 +174,13 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
             TileBrush.CarveRect(inR, deckRow - 3, shaftLeft, deckRow, L7Style.Wall);
             //隧道口门板（决战前检查点的"门"语义；F4上下实心由岩体构造满足）
             L7Style.PlaceDoorPlate(inR, deckRow - 1);
+            L7Style.PaintTileArea(inR, deckRow - 3, inR, deckRow - 1, TileID.ClosedDoor, L7Style.PaintPurple);
 
-            //忏悔位+检查点陈设（长椅/烛台/画/仪式光，全定点）
+            //忏悔位+检查点陈设（长椅/烛台/画/仪式光/告示，全定点）
             int stand = deckRow - 1;
+            if (!L7Style.PlaceSignWithText(inL + 2, stand, L7Style.SignVestibule)) {
+                CWRMod.Instance.Logger.Warn("[L7] 前庭告示放置失败,跳过");
+            }
             if (!L7Style.TryPlaceTile(inL + 4, stand, TileID.Benches, L7Style.StyleBench)) {
                 CWRMod.Instance.Logger.Warn("[L7] 前庭长椅放置失败,跳过");
             }

@@ -86,6 +86,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
 
             //===1) 镜像盖章（布尔几何/slope对偶/槽对偶已由FlipY机器完成）===
             inverted.StampGeometry(left, top, L7Style.Brick, L7Style.Wall, L7Style.PlatformFrameY);
+            //镜像通行不参与（§2.3-4）：唱诗席平台翻进终库内膛，清掉以免半层挡路
+            ClearPlatforms(left + 2, top + 3, left + 38, top + VaultFloorRow);
 
             //===2) 倒相定制：封门（花名册#3"顶部唯一Door，无其他开口"）===
             //镜像正门(行3-7)/镜像夹层门(行17-19)/镜像东门(行3-5)全封实
@@ -169,6 +171,21 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
                 + $" 镜像删槽={Inverted.MirrorDroppedSlots}+龛{InvertedNiche.MirrorDroppedSlots}"
                 + $" 封门=3 垂柱残端={StumpCols.Length} 链束格={chainCells}"
                 + $" sockets(倒)={inverted.Sockets.Count}(全封,顶部天窗为唯一入口)");
+        }
+
+        //清掉镜像残留平台（只动平台格，墙与砖不动）
+        private static void ClearPlatforms(int leftX, int topY, int rightX, int bottomY) {
+            for (int x = leftX; x < rightX; x++) {
+                for (int y = topY; y < bottomY; y++) {
+                    if (!WorldGen.InWorld(x, y)) {
+                        continue;
+                    }
+                    Tile tile = Main.tile[x, y];
+                    if (tile.HasTile && tile.TileType == TileID.Platforms) {
+                        TileBrush.ClearCell(x, y, L7Style.Wall);
+                    }
+                }
+            }
         }
 
         //封实：镜像门洞回填砖+墙（"无其他开口"事实条款）
@@ -271,6 +288,14 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L7
             //冥紫变调主漆：全构体蓝砖刷深紫（含承重层/井身/钟体/残端）
             long painted = L7Style.PurpleSweep(new Rectangle(
                 left - 2, top - 2, ArtW + 4, TotalDepth + 4));
+            //对偶换位家具/门板压暗（帧不翻，身份靠漆【待签字】）
+            var dress = new Rectangle(left, top, ArtW, ArtH);
+            L7Style.PaintTileArea(dress.Left, dress.Top, dress.Right - 1, dress.Bottom - 1,
+                TileID.Chandeliers, L7Style.PaintPurple);
+            L7Style.PaintTileArea(dress.Left, dress.Top, dress.Right - 1, dress.Bottom - 1,
+                TileID.Candelabras, L7Style.PaintPurple);
+            L7Style.PaintTileArea(dress.Left, dress.Top, dress.Right - 1, dress.Bottom - 1,
+                TileID.ClosedDoor, L7Style.PaintPurple);
 
             //倒挂蜡泪+冥紫染：垂柱残端逐个（蜡凝在原地板家具位=今日天花，垂向深渊）
             foreach (int px in StumpCols) {

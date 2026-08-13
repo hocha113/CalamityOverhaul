@@ -73,6 +73,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
         internal const string SplashSignText = "上面掉下来的,都归这池子接。下去捞之前,先看水面还有没有别的东西在动。";
         //沉没囚室
         internal const string SunkenCellSignText = "水下的栅门早锈死了,栅条上的缺口够一个人侧身。";
+        //最底一组阀室:L4→L5隔离带预告(骨/水互斥,INDEX §3)
+        internal const string DryApproachSignText = "再往下就没有水了。骨头要干着搁,潮了会烂。";
 
         //==================== 放置助手(镜像L2Palette/GaolBossRoom成规:落地后核对,失败交调用方记日志) ====================
 

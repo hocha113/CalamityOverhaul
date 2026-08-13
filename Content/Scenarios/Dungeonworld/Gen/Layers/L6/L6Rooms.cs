@@ -106,6 +106,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
                     case L6Traps.Motif.Boulder:
                         L6Traps.SegBoulder(room, cursor, segR, rand, ref trapTally);
                         break;
+                    case L6Traps.Motif.GearCrush:
+                        L6Traps.SegGearCrush(room, cursor, segR, rand, ref trapTally);
+                        break;
                     default:
                         L6Traps.SegPistonSlot(room, cursor, segR, rand, ref trapTally);
                         break;
@@ -613,6 +616,18 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
             }
             return tally;
         }
+
+        /// <summary>地板级标准门插槽(开口3高,底与地板齐平)</summary>
+        internal static DoorSocket FloorDoor(RoomNode room, SocketSide side)
+            => new(side, room.FloorTop - 3 - room.Bounds.Top, SocketKind.Door, 3);
+
+        /// <summary>地板级拱洞(大厅/渣堆用,h=开口高=宽)</summary>
+        internal static DoorSocket FloorArch(RoomNode room, SocketSide side, int h = 5)
+            => new(side, room.FloorTop - h - room.Bounds.Top, SocketKind.Archway, h);
+
+        /// <summary>指定行走行的侧壁门(折间井上口:行走行≠井的FloorTop)</summary>
+        internal static DoorSocket DoorAtFloor(RoomNode room, SocketSide side, int walkFloor)
+            => new(side, walkFloor - 3 - room.Bounds.Top, SocketKind.Door, 3);
 
         private static void MergeTrap(ref Tally roomTally, L6Traps.Tally trap) {
             roomTally.Placed += trap.TrapsPlaced + trap.FurnPlaced;

@@ -102,22 +102,28 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
             int x = fromX, y = fromY;
             int guard = 0;
             while ((x != toX || y != toY) && guard++ < 600) {
-                Main.tile[x, y].RedWire = true;
+                PaintRedWire(x, y);
                 if (x > toX) {
                     x--;
                 }
                 if (x < toX) {
                     x++;
                 }
-                Main.tile[x, y].RedWire = true;
+                PaintRedWire(x, y);
                 if (y > toY) {
                     y--;
                 }
                 if (y < toY) {
                     y++;
                 }
-                Main.tile[x, y].RedWire = true;
+                PaintRedWire(x, y);
             }
+        }
+
+        //Tilemap索引器返回值不可直接写字段(CS1612);Tile是指针包装,本地副本写穿世界
+        private static void PaintRedWire(int x, int y) {
+            Tile tile = Main.tile[x, y];
+            tile.RedWire = true;
         }
 
         //==================== 组合语法:带开关的灯(撒布与灯房共用) ====================

@@ -78,10 +78,23 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
             TileBrush.PlatformRow(wetL, wetR, waterline - 1, L4Palette.PlatformFrameY);
 
             //舱段登记:满水=水线,排水=排空(干涸舱段不登记,永远无水)
+            L4WaterWorks.Compartment compartment = null;
             if (!drained) {
-                L4WaterWorks.Register($"管廊{room.Bounds.Left}",
+                compartment = L4WaterWorks.Register($"管廊{room.Bounds.Left}",
                     new Rectangle(wetL, waterline, wetR - wetL, floor - waterline),
                     waterline, floor);
+            }
+
+            //气龛(潜水钟):水下通道每20~30格一座(ROOMS-L4 §1);顶盖+外侧吊柱,气袋2x2只开底口
+            if (compartment != null) {
+                for (int bx = wetL + 10; bx < wetR - 8; bx += rand.Next(20, 31)) {
+                    TileBrush.SetSolid(bx, waterline + 1, L4Palette.Brick);
+                    TileBrush.SetSolid(bx + 1, waterline + 1, L4Palette.Brick);
+                    TileBrush.SetSolid(bx + 2, waterline + 1, L4Palette.Brick);
+                    TileBrush.SetSolid(bx + 2, waterline + 2, L4Palette.Brick);
+                    TileBrush.SetSolid(bx + 2, waterline + 3, L4Palette.Brick);
+                    compartment.AirPockets.Add(new Rectangle(bx, waterline + 2, 2, 2));
+                }
             }
 
             //油布壁灯:走道顶每8~12列一盏(干道"标"档,ROOMS-INDEX §7;水下零)
@@ -157,6 +170,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
 
             //满水态高龛:空气带里的实心龛台+沉箱(排水态11格高够不着,浮力上顶专属)
             int ledgeX = rand.NextBool(2) ? wetL + 1 : wetR - 3;
+            int signX = ledgeX < (wetL + wetR) / 2 ? wetR - 4 : wetL + 2;
+            TileBrush.SetSolid(signX, waterline - 1, L4Palette.Brick);
+            TileBrush.SetSolid(signX + 1, waterline - 1, L4Palette.Brick);
+            tally.Add(L4Palette.PlaceSignWithText(signX, waterline - 2, L4Palette.SunkenCellSignText),
+                "沉没告示", signX, waterline - 2);
             TileBrush.SetSolid(ledgeX, waterline - 1, L4Palette.Brick);
             TileBrush.SetSolid(ledgeX + 1, waterline - 1, L4Palette.Brick);
             tally.Add(WorldGen.PlaceChest(ledgeX, waterline - 2, TileID.Containers,
@@ -324,7 +342,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
         internal static Point ValveRoomInteriorSize(UnifiedRandom rand)
             => new(rand.Next(10, 14), rand.Next(5, 7));
 
-        internal static Tally BuildValveRoom(RoomNode room, UnifiedRandom rand) {
+        /// <param name="forcedSign">非空则覆盖轮换文案池(最底组L4→L5预告用)</param>
+        internal static Tally BuildValveRoom(RoomNode room, UnifiedRandom rand, string forcedSign = null) {
             var tally = new Tally();
             int floor = room.FloorTop;
             StampAndCarve(room, L4Palette.WallBase);
@@ -338,7 +357,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
             tally.Add(L4Palette.TryPlaceTile(mid - 3, floor - 2, TileID.Candles,
                 L4Palette.CandleStyle), "蜡烛", mid - 3, floor - 2);
             //水位告示(轮换文案池)+落地灯
-            string text = L4Palette.ValveSignTexts[rand.Next(L4Palette.ValveSignTexts.Length)];
+            string text = forcedSign ?? L4Palette.ValveSignTexts[rand.Next(L4Palette.ValveSignTexts.Length)];
             tally.Add(L4Palette.PlaceSignWithText(room.InteriorLeft + 1, floor - 1, text),
                 "水位告示", room.InteriorLeft + 1, floor - 1);
             tally.Add(L4Palette.TryPlaceTile(room.InteriorRight - 2, floor - 1, TileID.Lamps,
@@ -364,8 +383,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
             //机器湾:Slab背景+抬高1格的格栅地槽(泵机TP落位区,直写帧+AddInWorld归资产波)
             for (int x = bayL; x < bayL + bayW; x++) {
                 for (int y = floor - bayH; y < floor; y++) {
-                    if (!Main.tile[x, y].HasTile) {
-                        Main.tile[x, y].WallType = L4Palette.WallSlab;
+                    Tile bay = Main.tile[x, y];
+                    if (!bay.HasTile) {
+                        bay.WallType = L4Palette.WallSlab;
                     }
                 }
                 TileBrush.SetSolid(x, floor - 1, L4Palette.Grate);
@@ -429,17 +449,22 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L4
             tally.Add(L4Palette.TryPlaceLever(leverR, floor - 1), "闸右拉杆", leverR, floor - 1);
 
             //红线:沿内膛顶行走线(玩家无机械透镜不可见,INDEX §7),两杆各自连到闸槽
+            //TML Tilemap索引器返回副本,必须先落到局部再写(镜像L3Lights.PaintRedWire)
             int wireY = floor - 6;
             for (int x = leverL; x <= leverR; x++) {
-                Main.tile[x, wireY].RedWire = true;
+                Tile w = Main.tile[x, wireY];
+                w.RedWire = true;
             }
             //竖引线:杆顶→顶线,闸槽→顶线
             for (int y = wireY; y <= floor - 1; y++) {
-                Main.tile[leverL, y].RedWire = true;
-                Main.tile[leverR, y].RedWire = true;
+                Tile left = Main.tile[leverL, y];
+                left.RedWire = true;
+                Tile right = Main.tile[leverR, y];
+                right.RedWire = true;
             }
             for (int y = floor - 5; y <= floor - 1; y++) {
-                Main.tile[gateX, y].RedWire = true;
+                Tile g = Main.tile[gateX, y];
+                g.RedWire = true;
             }
 
             //壁灯照闸

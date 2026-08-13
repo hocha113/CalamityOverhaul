@@ -154,6 +154,23 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L6
             return true;
         }
 
+        /// <summary>门板:1x3,口部开洞后补门(蓝门 style16);PlaceObject自带F4上下实心校验</summary>
+        internal static bool PlaceDoorPlate(int x, int bottomRow) {
+            WorldGen.PlaceObject(x, bottomRow, TileID.ClosedDoor, mute: true, style: DoorStyle);
+            return Main.tile[x, bottomRow].HasTile && Main.tile[x, bottomRow].TileType == TileID.ClosedDoor;
+        }
+
+        /// <summary>落点空+脚下实心砖(非平台),撒布地面杂物预检</summary>
+        internal static bool OnDungeonFloor(int x, int y) {
+            if (!WorldGen.InWorld(x, y, 5) || Main.tile[x, y].HasTile) {
+                return false;
+            }
+            Tile below = Main.tile[x, y + 1];
+            return below.HasTile && Main.tileSolid[below.TileType]
+                && below.TileType != TileID.Platforms
+                && (below.TileType == Brick || below.TileType == CrackedBrick || below.TileType == CogBlock);
+        }
+
         /// <summary>按锚点所处墙变体取旗帜样式(基础10/11、Slab12/13、Tiled14/15,对源同上)</summary>
         internal static int BannerStyleFor(int x, int y) {
             ushort wall = Main.tile[x, y].WallType;

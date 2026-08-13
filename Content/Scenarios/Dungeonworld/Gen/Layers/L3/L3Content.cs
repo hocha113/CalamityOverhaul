@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
 
         private enum DeckZone { Reading, Maze, Forbidden }
 
-        private enum NodeKind { Hall, MazeBlock, Tower, Catalog, Scriptorium, LampRoom, Vault }
+        private enum NodeKind { Hall, MazeBlock, Tower, Catalog, Scriptorium, LampRoom, Vault, Confessional, Falling, WellStation }
 
         private sealed class Deck
         {
@@ -71,6 +71,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
         private sealed class Caps
         {
             internal int Halls, Mazes, Towers, Catalogs, Scriptoria, LampRooms, Vaults;
+            internal int Confessionals, Fallings, Stations;
         }
 
         /// <summary>层内容主入口:甲板规划→检索廊→挂房→链边→落口→垂直井网→混墙→撒布声明</summary>
@@ -158,11 +159,17 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
                     $"[L3Content] 数量档低于花名册下限:厅{caps.Halls}/3 塔{caps.Towers}/4"
                     + $" 迷宫{caps.Mazes}/8 禁书{caps.Vaults}/1,查占用栅格拒绝量");
             }
+            if (caps.Confessionals < 1 || caps.Fallings < 1 || caps.Stations < 1) {
+                CWRMod.Instance.Logger.Warn(
+                    $"[L3Content] 公共构件层内换皮缺席:忏{caps.Confessionals}/1 坠{caps.Fallings}/1"
+                    + $" 井站{caps.Stations}/1(公共prefab波仍可覆盖)");
+            }
 
             CWRMod.Instance.Logger.Info(
                 $"[L3Content] 大档案馆落成 decks={decks.Count} segments={segmentsTotal}"
                 + $" nodes={placed.Count}(厅{caps.Halls} 迷{caps.Mazes} 塔{caps.Towers} 录{caps.Catalogs}"
-                + $" 抄{caps.Scriptoria} 灯房{caps.LampRooms} 禁{caps.Vaults})"
+                + $" 抄{caps.Scriptoria} 灯房{caps.LampRooms} 禁{caps.Vaults}"
+                + $" 忏{caps.Confessionals} 坠{caps.Fallings} 井站{caps.Stations})"
                 + $" chains={chains} drops={drops} 塔顶井={towerLinks} 廊际井={wells} 落脊井={spineWells}"
                 + $" 灯=亮{L3Lights.LampsLit}/灭{L3Lights.LampsOff} 开关={L3Lights.SwitchesPlaced}"
                 + $" 家具={furnPlaced}成/{furnRejected}拒 grid={ctx.Grid.ReserveOk}留/{ctx.Grid.ReserveReject}拒"
@@ -228,6 +235,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
                     if (caps.Catalogs < 1 && deckIdx >= 1) {
                         wish.Add(NodeKind.Catalog);
                     }
+                    if (caps.Confessionals < 2 && deckIdx % 2 == 0) {
+                        wish.Add(NodeKind.Confessional);
+                    }
                     wish.Add(rand.NextBool(5) && caps.LampRooms < 3 ? NodeKind.LampRoom : NodeKind.Scriptorium);
                     break;
                 case DeckZone.Maze:
@@ -236,6 +246,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
                     }
                     if (deckIdx % 2 == 1 && caps.Towers < 7 && maxH >= 38) {
                         wish.Add(NodeKind.Tower);
+                    }
+                    if (caps.Stations < 1 && maxH >= 10) {
+                        wish.Add(NodeKind.WellStation);
                     }
                     if (rand.NextBool(3)) {
                         if (caps.Catalogs < 2 && deckIdx > decks.Count / 3) {
@@ -253,6 +266,9 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
                     if ((lastDeck || (secondLast && rand.NextBool())) && caps.Vaults < 2) {
                         wish.Add(NodeKind.Vault);
                     }
+                    if (lastDeck && caps.Fallings < 1) {
+                        wish.Add(NodeKind.Falling);
+                    }
                     if (caps.Mazes < 14) {
                         wish.Add(NodeKind.MazeBlock);
                     }
@@ -262,6 +278,13 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
             for (int w = 0; w < wish.Count; w++) {
                 //主房与副房错段:奇偶甲板起始段互换,段不足时回绕
                 int segIdx = (deckIdx % 2 + w) % deck.Segments.Count;
+                if (wish[w] == NodeKind.WellStation) {
+                    segIdx = NearestSegment(deck, DungeonworldMetrics.ShaftLeft);
+                }
+                else if (wish[w] == NodeKind.Falling && deck.Segments.Count > 1) {
+                    //坠落房侧翼,避开段0(禁书区常占首段)
+                    segIdx = deck.Segments.Count - 1;
+                }
                 PlacedNode node = TryBuildNode(ctx, deck, wish[w], segIdx, floorRooms, maxH,
                     lastDeck, caps, rand, ref furnPlaced, ref furnRejected);
                 if (node != null) {
@@ -299,6 +322,17 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
                     break;
                 case NodeKind.Vault:
                     size = L3Rooms.VaultInteriorSize(rand);
+                    size.Y = System.Math.Min(size.Y, maxH);
+                    break;
+                case NodeKind.Confessional:
+                    size = L3Rooms.ConfessionalInteriorSize();
+                    break;
+                case NodeKind.Falling:
+                    size = L3Rooms.FallingInteriorSize(rand);
+                    size.Y = System.Math.Min(size.Y, maxH);
+                    break;
+                case NodeKind.WellStation:
+                    size = L3Rooms.WellStationInteriorSize(rand);
                     size.Y = System.Math.Min(size.Y, maxH);
                     break;
                 case NodeKind.Tower:
@@ -363,6 +397,23 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
                     caps.Vaults++;
                     break;
                 }
+                case NodeKind.Confessional:
+                    Tally(L3Rooms.BuildConfessional(room, rand), ref furnPlaced, ref furnRejected);
+                    node.DropOffset = DungeonworldMetrics.RoomShellThick;
+                    room.Role = RoomRole.Safe;
+                    caps.Confessionals++;
+                    break;
+                case NodeKind.Falling:
+                    Tally(L3Rooms.BuildFallingHung(room, rand), ref furnPlaced, ref furnRejected);
+                    node.DropOffset = DungeonworldMetrics.RoomShellThick;
+                    caps.Fallings++;
+                    break;
+                case NodeKind.WellStation:
+                    Tally(L3Rooms.BuildWellStation(room, rand), ref furnPlaced, ref furnRejected);
+                    node.DropOffset = DungeonworldMetrics.RoomShellThick;
+                    TryOpenShaftArch(room);
+                    caps.Stations++;
+                    break;
                 case NodeKind.Tower: {
                     L3BookTower.TowerReport rep = L3BookTower.Build(room, towerPlan, rand);
                     furnPlaced += rep.ShelvesPlaced + rep.Rewards;
@@ -634,6 +685,34 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Layers.L3
                 }
             }
             return -1;
+        }
+
+        private static int NearestSegment(Deck deck, int x) {
+            int best = 0;
+            int bestDist = int.MaxValue;
+            for (int s = 0; s < deck.Segments.Count; s++) {
+                int mid = (deck.Segments[s].L + deck.Segments[s].R) / 2;
+                int d = System.Math.Abs(mid - x);
+                if (d < bestDist) {
+                    bestDist = d;
+                    best = s;
+                }
+            }
+            return best;
+        }
+
+        //井站侧缘贴近主竖井时开拱通向井柱(井体由P20刻画,本层只做站台门面)
+        private static void TryOpenShaftArch(RoomNode room) {
+            int shaftL = DungeonworldMetrics.ShaftLeft;
+            int shaftR = shaftL + DungeonworldMetrics.ShaftWidth;
+            if (room.Bounds.Right + 8 < shaftL || room.Bounds.Left > shaftR + 8) {
+                return;
+            }
+            SocketSide side = room.Bounds.Center.X < (shaftL + shaftR) / 2
+                ? SocketSide.Right : SocketSide.Left;
+            DoorSocket arch = L3Rooms.FloorArch(room, side);
+            room.Sockets.Add(arch);
+            CorridorRouter.OpenWallSocket(room, arch, L3Palette.WallBase);
         }
     }
 }
