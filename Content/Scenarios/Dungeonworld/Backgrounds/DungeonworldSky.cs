@@ -14,7 +14,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Backgrounds
     {
         public override int Music => -1;
         public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
-        public override bool IsSceneEffectActive(Player player) => Dungeonworld.Active;
+        //加载菜单期 DrawSetup 自绘,禁止天幕/暗石滤镜在 gameMenu 被 SpecialVisuals 拉起
+        public override bool IsSceneEffectActive(Player player) => Dungeonworld.Active && !Main.gameMenu;
         public override void SpecialVisuals(Player player, bool isActive) =>
             player.ManageSpecialBiomeVisuals(DungeonworldSky.Name, isActive);
     }

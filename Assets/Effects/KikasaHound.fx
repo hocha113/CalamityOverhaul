@@ -15,7 +15,7 @@ float uSeed;        //实例随机相位
 float4 uUvRect;     //贴图帧区域 xy=偏移 zw=尺寸（纹理 uv 空间）
 float2 uTexel;      //一像素的 uv 尺寸
 float uAspect;      //帧宽/帧高，噪声采样防拉伸
-float uFlipH;       //1=水平翻转（画面朝右）
+float uFlipH;       //1=水平翻转（画面朝右）；在采样里做，不靠 SpriteEffects
 float uFlipV;       //1=垂直翻转（倒影）
 float uMode;        //0=倒影 1=实体
 float uSeamGate;    //水线缝可见度：犬背贴着水线才有缝，沉深了自然没有
@@ -48,13 +48,15 @@ float4 PSHound(float4 vc : COLOR0, float2 uv : TEXCOORD0) : COLOR0 {
     float2 luv = (uv - uUvRect.xy) / max(uUvRect.zw, 0.0001);
     float qx = lerp(luv.x, 1.0 - luv.x, uFlipH);
     float qy = lerp(luv.y, 1.0 - luv.y, uFlipV);
-    float2 nuv = float2(luv.x * uAspect, luv.y);
+    float2 nuv = float2(qx * uAspect, luv.y);
     float refl = 1.0 - uMode;
 
     //倒影深处的横向折射晃动：越深晃得越碎
     float refr = sin(qy * 21.0 + uTime * 2.6 + uSeed * 7.0)
         * (0.006 + uWobble * 0.8) * qy * refl;
-    float2 srcUv = uv + float2(refr * uUvRect.z, 0.0);
+    //水平翻转在采样里做（不靠 SpriteEffects），与 KikasaDream.fx 的 uHoundFlipH 同约定
+    float2 srcUv = uUvRect.xy + float2(qx, luv.y) * uUvRect.zw
+        + float2(refr * uUvRect.z, 0.0);
 
     float2 lo = uUvRect.xy + uTexel * 0.5;
     float2 hi = uUvRect.xy + uUvRect.zw - uTexel * 0.5;
@@ -100,11 +102,13 @@ float4 PSHound(float4 vc : COLOR0, float2 uv : TEXCOORD0) : COLOR0 {
     rim += uEdgeTint * eatRim * 0.5;
 
     //====== 余烬双目：芯 + 晕，辉光微微透出轮廓外 ======
-    float2 ed = (luv - uEyeAnchor) * float2(uAspect, 1.0);
+    float2 eyeA = float2(lerp(uEyeAnchor.x, 1.0 - uEyeAnchor.x, uFlipH), uEyeAnchor.y);
+    float2 ed = (luv - eyeA) * float2(uAspect, 1.0);
     float eyeCore = exp(-dot(ed, ed) * 5200.0);
     float eyeHalo = exp(-dot(ed, ed) * 620.0);
     //第二只眼贴后一点、弱一半，侧面像里只是一点余光
-    float2 ed2 = (luv - uEyeAnchor - float2(0.055, 0.012)) * float2(uAspect, 1.0);
+    float eye2x = lerp(0.055, -0.055, uFlipH);
+    float2 ed2 = (luv - eyeA - float2(eye2x, 0.012)) * float2(uAspect, 1.0);
     float eye2 = exp(-dot(ed2, ed2) * 5200.0) * 0.45;
     float breath = 0.86 + 0.14 * sin(uTime * 2.1 + uSeed * 5.0);
     float3 eyes = (EMBER_CORE * (eyeCore + eye2) * 1.25 + EMBER_HALO * eyeHalo * 0.5)

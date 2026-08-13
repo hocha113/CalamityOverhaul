@@ -112,8 +112,21 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
             }
         }
 
+        /// <summary>
+        /// DrawSetup 已接管画面时撤掉压黑门。SLib 早退本不会走到本层,
+        /// 但 phase 残留会在联机等待/IL 未生效时继续盖全屏黑矩形
+        /// </summary>
+        internal static void HandOffToDrawSetup() {
+            if (phase == 0) {
+                return;
+            }
+            phase = 0;
+            commit = null;
+        }
+
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
-            if (phase == 0 || Main.dedServ) {
+            //gameMenu 后画面由 DrawSetup 负责;压黑门只覆盖提交前的世界帧
+            if (phase == 0 || Main.dedServ || Main.gameMenu) {
                 return;
             }
             layers.Add(new LegacyGameInterfaceLayer(

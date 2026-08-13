@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -30,8 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
         private static readonly float[] gazes = new float[Main.maxPlayers];
         private static readonly float[] appears = new float[Main.maxPlayers];
         private static readonly bool[] growlLatches = new bool[Main.maxPlayers];
-        //朝向速度锁存：走动时随移动方向，静止保持最后一步的朝向——
-        //不读 player.direction，持械瞄准把人翻过去时狗不跟着原地打转
+        //朝向只认一个极性：走动跟速度，站住锁存；避免一停一动翻面
         private static readonly int[] facings = new int[Main.maxPlayers];
 
         internal static void Clear() {
@@ -71,7 +70,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             appears[who] = MathHelper.Lerp(appears[who], target, 0.10f);
             if (appears[who] < 0.02f) {
                 appears[who] = target > 0f ? appears[who] : 0f;
-                frames[who] = 0;
+                frames[who] = 3;
                 frameCounters[who] = 0f;
                 gazes[who] = 0f;
                 return;
@@ -86,12 +85,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 
             UpdateAnimation(who, caster);
             UpdateGaze(who, caster, kdp);
-            //朝向锁存：只认走动，不认瞄准
+            //走动跟速度；站住保持上一帧，不另读 direction（符号一换就会抽）
             if (MathF.Abs(caster.velocity.X) > 0.3f) {
                 facings[who] = caster.velocity.X > 0f ? 1 : -1;
             }
             else if (facings[who] == 0) {
-                facings[who] = caster.direction;
+                facings[who] = caster.direction != 0 ? caster.direction : 1;
             }
 
             Main.instance.LoadNPC(NPCID.Wolf);
@@ -114,10 +113,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             Effect hound = EffectLoader.KikasaHound?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
 
-            //犬面朝随移动锁存；狼贴图原生面向左（原版 spriteDirection==1 翻转的约定）
+            //垂直倒影仍走 SpriteEffects；水平翻转交给 KikasaHound.fx 的 uFlipH
+            //（Immediate + 自定义像素着色器时 SpriteEffects 水平翻转经常不进 TEXCOORD）
             bool faceRight = facings[who] > 0;
-            SpriteEffects effects = SpriteEffects.FlipVertically
-                | (faceRight ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
+            SpriteEffects effects = SpriteEffects.FlipVertically;
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
                 SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone,
@@ -158,16 +157,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                     Color.White * alpha, 0f, Vector2.Zero, HoundScale, effects, 0f);
             }
             else {
-                //着色器缺失：近黑剪影回退，倒影仍然成立
+                //着色器缺失：近黑剪影回退，水平翻转改回 SpriteEffects
+                SpriteEffects fallback = effects
+                    | (faceRight ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
                 spriteBatch.Draw(tex, topLeft - Main.screenPosition, source,
-                    new Color(12, 6, 9) * (alpha * 0.9f), 0f, Vector2.Zero, HoundScale, effects, 0f);
+                    new Color(12, 6, 9) * (alpha * 0.9f), 0f, Vector2.Zero, HoundScale, fallback, 0f);
             }
 
             spriteBatch.End();
         }
 
         //帧逻辑移植原版狼（NPC.cs FindFrame case 155）：
-        //跃起 10、下坠 11、静立 0、落地过渡 12、跑动循环 3-9
+        //跃起 10、下坠 11、落地过渡 12、跑动循环 3-9。
+        //静立不用帧 0：那是转身序列的第一拍，倒过来看会像面朝反了；
+        //改停在跑动起手帧 3，和移动同一套朝向，一停一动不会翻面。
 
         private static void UpdateAnimation(int who, Player caster) {
             float vx = caster.velocity.X;
@@ -183,7 +186,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                 frameCounters[who] = 0f;
             }
             else if (MathF.Abs(vx) < 0.1f) {
-                frame = 0;
+                frame = 3;
                 frameCounters[who] = 0f;
             }
             else {

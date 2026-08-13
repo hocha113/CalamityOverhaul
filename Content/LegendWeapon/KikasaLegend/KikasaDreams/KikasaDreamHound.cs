@@ -426,8 +426,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                 color = new Color(16, 7, 10) * alpha;
             }
 
+            //着色器自己按 uFlipH 翻采样；再叠 SpriteEffects 会双翻回到原生朝左
+            SpriteEffects drawFx = shaderOk ? SpriteEffects.None : effects;
             sb.Draw(tex, Projectile.Center - Main.screenPosition, frame, color,
-                0f, origin, 1f, effects, 0f);
+                0f, origin, 1f, drawFx, 0f);
 
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,

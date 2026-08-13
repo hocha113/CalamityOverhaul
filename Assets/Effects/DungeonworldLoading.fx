@@ -1,6 +1,6 @@
 // ============================================================================
 //DungeonworldLoading.fx 地牢子世界加载屏——「下降即加载」吊笼降井
-//竖屏三分:左右石壁带夹中央井空;视点即吊笼,一切运动=世界相对上移(uScrollY 由 C# 积分)
+//全幅石壁+中轴吊笼;井缝只是略暗的砖,不用 Abyss 实底糊中间。运动=世界相对上移(uScrollY 由 C# 积分)
 //色板与 DungeonworldLoadTheme 同源,改动必须双改
 //直线算术,无动态分支,无 tex2Dlod,无 atan2(极角审计:零 theta 消费),噪声全 hash 手拼
 //fbm ≤3 octave(QuestChronicleBg 验证过的 FNA3D 安全水位)
@@ -63,19 +63,10 @@ float4 PSDungeonworldLoading(float2 uv : TEXCOORD0) : COLOR0
     float t = uTime;
     float aspect = uAspectRatio;
 
-    //==================== 井心 ====================
-    //纵向暗渐变,底部永远是没有细节的黑——"下面还有"的最便宜暗示
-    float3 col = lerp(STONE_DEEP * 0.5, ABYSS, smoothstep(0.10, 0.88, uv.y));
-
-    //==================== 石壁带 ====================
-    float wallL = smoothstep(0.245, 0.212, uv.x);
-    float wallR = smoothstep(0.755, 0.788, uv.x);
-    float wall = max(wallL, wallR);
-
-    //砌砖坐标:x=距屏侧缘距离(两壁对称向井心),y 叠加滚动
-    float wx = min(uv.x, 1.0 - uv.x) * aspect;
+    //==================== 全幅石壁 ====================
+    //砖纹铺满画面;中轴只留一条较暗的井缝给吊笼,不是 56% 不透明黑柱
     float wy = uv.y + uScrollY;
-    float2 bp = float2(wx, wy) / 0.085;
+    float2 bp = float2(uv.x * aspect, wy) / 0.085;
     bp.x += 0.5 * step(1.0, fmod(floor(bp.y), 2.0));   //隔行错缝
     float2 cell = frac(bp);
     float2 id = floor(bp);
@@ -86,7 +77,7 @@ float4 PSDungeonworldLoading(float2 uv : TEXCOORD0) : COLOR0
     float lip = exp(-(mortar - 0.085) * (mortar - 0.085) * 190.0);
     float3 stone = lerp(STONE, STONE_DEEP, groove * 0.85);
     stone += STONE_LIT * lip * 0.5 * uCandle;
-    stone *= 0.82 + 0.34 * hash21(id);                 //逐砖明度
+    stone *= 0.95 + 0.38 * hash21(id);                 //逐砖明度(抬底,砖纹须可读)
     stone += (fbm3(bp * 1.7) - 0.5) * 0.07;            //侵蚀斑
 
     //==================== 七层强调色(帐篷权重乘混合,全程可加无分支) ====================
@@ -130,7 +121,9 @@ float4 PSDungeonworldLoading(float2 uv : TEXCOORD0) : COLOR0
     winGlow *= 1.0 - sil;
     stone = lerp(stone, winGlow + accent * 0.22, win);
 
-    col = lerp(col, stone, wall);
+    //中轴井缝:只把砖略压暗,中间砖纹仍清楚,禁止用 Abyss 实底糊一块
+    float well = smoothstep(0.40, 0.47, uv.x) * smoothstep(0.60, 0.53, uv.x);
+    float3 col = lerp(stone, stone * 0.78, well * 0.50);
 
     //==================== 吊索(sin 慢摆 3.8s) + 链结 ====================
     float cageSlide = 1.0 - pow(1.0 - uIntro, 3.0);    //easeOutCubic 滑入
@@ -174,12 +167,11 @@ float4 PSDungeonworldLoading(float2 uv : TEXCOORD0) : COLOR0
     float beam = smoothstep(0.040, 0.024, abs(bY)) * step(0.35, bHash);
     col = lerp(col, ABYSS * 0.45, beam * 0.88);
 
-    //==================== 收尾:屏角压暗 + 逐帧细尘 + 入场黑场 ====================
+    //==================== 收尾:轻屏角 + 细尘。入场黑场已由压黑门代劳,禁止再乘 uIntro 整屏压黑 ====================
     float2 vg = uv * 2.0 - 1.0;
-    col *= 1.0 - saturate(dot(vg * float2(0.60, 0.55), vg * float2(0.60, 0.55))) * 0.32;
+    col *= 1.0 - saturate(dot(vg * float2(0.55, 0.50), vg * float2(0.55, 0.50))) * 0.10;
     float dust = hash21(uv * 1531.7 + floor(t * 11.0) * 17.3);
     col *= 1.0 - dust * 0.03;
-    col *= uIntro;
 
     return float4(saturate(col), 1.0);
 }
