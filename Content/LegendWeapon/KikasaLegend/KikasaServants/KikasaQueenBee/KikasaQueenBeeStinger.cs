@@ -65,15 +65,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.DamageType = DamageClass.Summon;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 300;
-            Projectile.tileCollide = true;
+            //不吃引擎地形碰撞：湖下真地形被湖面演出盖住，撞上去像凭空截停；
+            //贴壁血渍改走 AI 内手动检测（只认水线以上的真地形）
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             //独立命中冷却：针雨不写全局无敌帧，与蜂群、耙扫互不抢结算
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
         }
 
+        /// <summary>是否撞上"看得见"的真地形：湖线以下的墙体被湖面演出盖住，不算贴壁</summary>
+        private bool TouchingVisibleTile() {
+            if (!Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height)) {
+                return false;
+            }
+            Player owner = Main.player[Projectile.owner];
+            return owner?.active != true
+                || !owner.TryGetModPlayer(out KikasaDomainPlayer domain)
+                || !domain.AnyActive || domain.RiseT <= 0.5f
+                || Projectile.Center.Y < domain.LakeWorldY - 2f;
+        }
+
         public override void AI() {
             Life++;
+
+            //贴壁收尾（机制身份保留）：手动地形检测替代 tileCollide
+            if (Life > 3 && TouchingVisibleTile()) {
+                WallStick();
+                return;
+            }
 
             if (!apexLatched) {
                 if (Projectile.velocity.Y < -0.5f) {
@@ -145,11 +165,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         //==================== 命中与谢幕 ====================
 
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            //贴壁：小迸溅 + 血渍，渍会挂壁滴淌
+        /// <summary>贴壁：小迸溅 + 血渍，渍会挂壁滴淌</summary>
+        private void WallStick() {
             burstDone = true;
             if (!Main.dedServ) {
-                Vector2 normal = -oldVelocity.SafeNormalize(Vector2.UnitY);
+                Vector2 normal = -Projectile.velocity.SafeNormalize(Vector2.UnitY);
                 for (int i = 0; i < 5; i++) {
                     PRTLoader.NewParticle<PRT_KikasaBloodGlob>(Projectile.Center,
                         normal.RotatedByRandom(0.8f) * Main.rand.NextFloat(1.5f, 4f),
@@ -161,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     ?.Configure(Main.rand.Next(70, 100));
             }
             SoundEngine.PlaySound(SoundID.NPCHit13 with { Volume = 0.3f, Pitch = 0.1f, MaxInstances = 3 }, Projectile.Center);
-            return true;
+            Projectile.Kill();
         }
 
         public override void OnKill(int timeLeft) {

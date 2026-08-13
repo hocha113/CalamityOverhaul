@@ -62,7 +62,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Summon;
             Projectile.penetrate = -1;
-            Projectile.tileCollide = true;
+            //不吃引擎地形碰撞：湖下真地形被湖面演出盖住，撞上去像凭空截停；
+            //贴壁即爆改走 AI 内手动检测（只认水线以上的真地形）
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10;
@@ -107,6 +109,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 return;
             }
 
+            //贴壁即爆（机制身份保留）：手动地形检测替代 tileCollide——
+            //湖线以下的真地形被湖面盖住，撞上去像凭空截停，不算贴壁
+            Player owner = Main.player[Projectile.owner];
+            bool underLake = owner?.active == true
+                && owner.TryGetModPlayer(out KikasaDomainPlayer domain)
+                && domain.AnyActive && domain.RiseT > 0.5f
+                && Projectile.Center.Y >= domain.LakeWorldY - 2f;
+            if (!underLake && Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height)) {
+                Detonate();
+                return;
+            }
+
             //飞行四相之"飞行"：失稳甩珠 + 高频悸动光在绘制层
             if (!Main.dedServ && (int)Life % 2 == 0) {
                 Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitY);
@@ -120,12 +134,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             float glow = 0.5f + 0.25f * MathF.Sin(Life * 0.55f + Seed);
             Lighting.AddLight(Projectile.Center, 0.42f * glow, 0.10f * glow, 0.09f * glow);
-        }
-
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            //贴壁即爆，不反弹不熄灭
-            Detonate();
-            return false;
         }
 
         /// <summary>起爆：撑大命中窗一帧到位，演出走血新星+半球血珠+扩散环+血雾</summary>

@@ -56,7 +56,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.DamageType = DamageClass.Summon;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 240;
-            Projectile.tileCollide = true;
+            //不吃引擎地形碰撞：湖下真地形被湖面演出盖住，撞上去像凭空截停；
+            //贴壁爆雾改走 AI 内手动检测（只认水线以上的真地形）
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
         }
 
@@ -89,29 +91,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             //砸上血湖面：蚀液把湖面炸沸，血雾贴水滞留——不被湖收走
             Player owner = Main.player[Projectile.owner];
-            if (owner?.active == true
+            bool lakeAlive = owner?.active == true
                 && owner.TryGetModPlayer(out KikasaDomainPlayer domain)
-                && domain.AnyActive && domain.RiseT > 0.5f
+                && domain.AnyActive && domain.RiseT > 0.5f;
+            KikasaDomainPlayer kdp = lakeAlive ? owner.GetModPlayer<KikasaDomainPlayer>() : null;
+            if (lakeAlive
                 && Projectile.velocity.Y > 0f
-                && Projectile.Center.Y >= domain.LakeWorldY - 2f) {
+                && Projectile.Center.Y >= kdp.LakeWorldY - 2f) {
                 lakeBurst = true;
-                if (!Main.dedServ && KikasaDomain.Viewed == domain) {
-                    Vector2 hit = new(Projectile.Center.X, domain.LakeWorldY);
+                if (!Main.dedServ && KikasaDomain.Viewed == kdp) {
+                    Vector2 hit = new(Projectile.Center.X, kdp.LakeWorldY);
                     KikasaDomainDeco.RippleAt(hit, 1.1f);
                     KikasaDomainDeco.SplashAt(hit, 6);
                 }
+                Projectile.Kill();
+                return;
+            }
+
+            //贴壁爆雾（机制身份保留）：手动地形检测替代 tileCollide——
+            //只认水线以上的真地形，湖线以下的墙体被湖面盖着，交给上面的落湖沸炸
+            if (Life > 3
+                && (!lakeAlive || Projectile.Center.Y < kdp.LakeWorldY - 2f)
+                && Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height)) {
+                burstDone = true;
+                SplashBurst(Projectile.Center, Projectile.velocity, onTile: true);
+                SpawnMist(Projectile.Center);
                 Projectile.Kill();
             }
         }
 
         //==================== 命中与谢幕 ====================
-
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            burstDone = true;
-            SplashBurst(Projectile.Center, oldVelocity, onTile: true);
-            SpawnMist(Projectile.Center);
-            return true;
-        }
 
         public override void OnKill(int timeLeft) {
             if (lakeBurst) {

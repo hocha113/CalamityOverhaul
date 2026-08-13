@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// 骷髅王鬼奴口吐的追踪血颅：幽蓝偏冷的小颅，出膛先抛一口弧线再咬住猎物，
     /// 航向叠加正弦扭摆走蛇形尾迹；头骨贴图缩小重染 + 眼窝鬼火 + 旧位残影串尾。
     /// ai[0]=追踪目标（owner 端定，spawn 包自带），ai[1]=蛇摆相位符号。
-    /// 命中/贴壁冷色迸溅，落回血湖被湖收走不迸溅
+    /// 命中/超时冷色迸溅，落回血湖被湖收走不迸溅；鬼物穿行地形不受阻
     /// </summary>
     internal class KikasaSkeletronBloodSkull : ModProjectile
     {
@@ -32,8 +32,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         //被湖收走：谢幕换涟漪，不走迸溅
         private bool lakeSwallowed;
-        //贴壁已迸溅过，OnKill 不再补
-        private bool burstDone;
 
         //==================== 冷端色板（幽蓝鬼火为主，异化时褪成潮灰）====================
 
@@ -59,7 +57,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.DamageType = DamageClass.Summon;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 200;
-            Projectile.tileCollide = true;
+            //鬼火颅穿地飞：湖下真地形被湖面演出盖住，撞上去像凭空截停；
+            //追踪弹穿行地形也贴合鬼物读感，谢幕统一走 OnKill 迸溅
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
         }
 
@@ -123,19 +123,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         //==================== 命中与谢幕 ====================
 
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            burstDone = true;
-            ColdBurst(Projectile.Center, oldVelocity);
-            return true;
-        }
-
         public override void OnKill(int timeLeft) {
             if (Main.dedServ || lakeSwallowed) {
                 return;
             }
-            if (!burstDone) {
-                ColdBurst(Projectile.Center, Projectile.velocity);
-            }
+            ColdBurst(Projectile.Center, Projectile.velocity);
         }
 
         /// <summary>冷色迸溅：半球冷血珠 + 骨响碎裂 + 冷环，颅骨在此散架</summary>

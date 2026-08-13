@@ -49,3 +49,10 @@ TBUG: {
 		Princess_LovesNPC: I love {NPCName}! She knows so many things nobody else does!
 	}
 }
+
+ScrapCommander: {
+	DisplayName: Scrap Commander
+	Bestiary: After the mechanical tyrants fell, nobody hauled the wreckage away. One night a rusted skull re-powered itself in the scrap heap and hoisted the four tools that still turned onto its own shoulders. It repairs nothing—it takes inventory: every piece of scrap iron on the ground is already on its roster.
+}
+
+ScrapLegionProbe.DisplayName: Scrap Servitor

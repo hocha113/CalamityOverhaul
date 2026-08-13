@@ -1198,8 +1198,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         private void DrawUnderwaterShadow(SpriteBatch sb, bool lakeAlive) {
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null || !lakeAlive || dissolveBurstDone
+            //暗影团必须用真 alpha 的 Extra_98——黑底 SoftGlow 在 AlphaBlend 里会糊出黑块
+            Texture2D shadow = CWRAsset.Extra_98?.Value;
+            if (shadow == null || !lakeAlive || dissolveBurstDone
                 || Projectile.Center.Y < lakeYCache + 8f) {
                 return;
             }
@@ -1207,11 +1208,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Vector2 v = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             float len = 70f + 50f * speedK;
             const float wid = 30f;
-            //乘暗的血影：alpha 混合的深色团，不是发光体
-            sb.Draw(glow, Projectile.Center - Main.screenPosition, null,
+            //乘暗的血影：alpha 混合的深色团，不是发光体（×2 补偿更紧的径向衰减）
+            sb.Draw(shadow, Projectile.Center - Main.screenPosition, null,
                 BloodDark * (0.20f + 0.12f * speedK), v.ToRotation(),
-                glow.Size() * 0.5f,
-                new Vector2(len * 2f / glow.Width, wid * 2f / glow.Height), SpriteEffects.None, 0f);
+                shadow.Size() * 0.5f,
+                new Vector2(len * 2f / shadow.Width, wid * 2f / shadow.Height) * 2f, SpriteEffects.None, 0f);
         }
 
         private void DrawBody(SpriteBatch sb, Texture2D tex, Rectangle frame,

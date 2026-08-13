@@ -41,7 +41,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.DamageType = DamageClass.Summon;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 150;
-            Projectile.tileCollide = true;
+            //鬼物小弹穿地飞：湖下真地形被湖面演出盖住，撞上去像凭空截停；
+            //谢幕统一走 OnKill 迸溅，不再依赖撞地
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
         }
 
@@ -80,8 +82,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 Projectile.Kill();
             }
         }
-
-        public override bool OnTileCollide(Vector2 oldVelocity) => true;
 
         public override void OnKill(int timeLeft) {
             if (Main.dedServ || lakeSwallowed) {

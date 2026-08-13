@@ -8,6 +8,51 @@ namespace CalamityOverhaul.Common
     public static class EffectLoader
     {
         public static Asset<Effect> PowerSFShader { get; set; }
+        public static Asset<Effect> EowAcid { get; set; }
+        public static Asset<Effect> EowGeyser { get; set; }
+        public static Asset<Effect> SkeletronCurseVeil { get; set; }
+        public static Asset<Effect> SkeletronGhostArm { get; set; }
+        public static Asset<Effect> SkeletronSpinStorm { get; set; }
+        public static Asset<Effect> GolemSunTelegraph { get; set; }
+        public static Asset<Effect> GolemMagmaVein { get; set; }
+        public static Asset<Effect> GolemSolarFlare { get; set; }
+        public static Asset<Effect> GolemTrapWork { get; set; }
+        public static Asset<Effect> CultistSigil { get; set; }
+        public static Asset<Effect> CultistElementOrb { get; set; }
+        public static Asset<Effect> CultistVeil { get; set; }
+        public static Asset<Effect> FishronStormSky { get; set; }
+        public static Asset<Effect> FishronTornado { get; set; }
+        public static Asset<Effect> FishronTsunami { get; set; }
+        public static Asset<Effect> EmpressLanceBeam { get; set; }
+        public static Asset<Effect> EmpressSunbeam { get; set; }
+        public static Asset<Effect> EmpressAurora { get; set; }
+        public static Asset<Effect> EmpressScreenPrism { get; set; }
+        public static Asset<Effect> QueenPrismBeam { get; set; }
+        public static Asset<Effect> QueenPrismCrystal { get; set; }
+        public static Asset<Effect> QueenGaleField { get; set; }
+        public static Asset<Effect> BrainHeartbeatPulse { get; set; }
+        public static Asset<Effect> BrainMirrorImage { get; set; }
+        public static Asset<Effect> BrainRift { get; set; }
+        public static Asset<Effect> EocBloodFog { get; set; }
+        public static Asset<Effect> EocBloodTrail { get; set; }
+        public static Asset<Effect> EocTelegraph { get; set; }
+        public static Asset<Effect> DeerBlizzardVeil { get; set; }
+        public static Asset<Effect> DeerFrostFissure { get; set; }
+        public static Asset<Effect> MLordDeathray { get; set; }
+        public static Asset<Effect> MLordEclipseSky { get; set; }
+        public static Asset<Effect> MLordCelestial { get; set; }
+        public static Asset<Effect> QueenSwarmFlow { get; set; }
+        public static Asset<Effect> QueenHoneyPool { get; set; }
+        public static Asset<Effect> QueenBeeTelegraph { get; set; }
+        public static Asset<Effect> PlanteraVine { get; set; }
+        public static Asset<Effect> PlanteraSporeFog { get; set; }
+        public static Asset<Effect> PlanteraBloom { get; set; }
+        public static Asset<Effect> WofFleshWall { get; set; }
+        public static Asset<Effect> WofMawVortex { get; set; }
+        public static Asset<Effect> WofRetinaBeam { get; set; }
+        public static Asset<Effect> WofBloodCurtain { get; set; }
+        public static Asset<Effect> BKSGelSurge { get; set; }
+        public static Asset<Effect> BKSGelPool { get; set; }
         public static Asset<Effect> WarpShader { get; set; }
         public static Asset<Effect> NeutronPulsar { get; set; }
         public static Asset<Effect> NeutronPulseBeam { get; set; }
@@ -243,5 +288,9 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> MarbleSlash { get; set; }
         public static Asset<Effect> BloodAltarRite { get; set; }
         public static Asset<Effect> UnsungheroChess { get; set; }
+        public static Asset<Effect> ScrapForm { get; set; }
+        public static Asset<Effect> ScrapBeamLine { get; set; }
+        public static Asset<Effect> ScrapMagnetField { get; set; }
+        public static Asset<Effect> ScrapSiegeFilter { get; set; }
     }
 }

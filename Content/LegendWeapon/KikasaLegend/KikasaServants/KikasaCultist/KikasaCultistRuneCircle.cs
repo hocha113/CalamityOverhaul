@@ -13,6 +13,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// <summary>
     /// 鬼奴邪教徒的水面符文法阵：铭刻在湖面上的血色符文环，
     /// 逐笔点亮伴随低吟，铭满静默一拍后向上喷发一柱血水（伤害只在喷发窗）。
+    /// 喷发体材质身份：仪式血泉柱——湖水被法阵撕成一根直立的沸血喷泉。
+    /// 签名行为：液柱分段横摆上涌（Extra_98 分层，非光带）；两股血珠沿柱身循环上攀；
+    /// 环腰水幕圈沿柱身向上滑动，柱头凝珠外劈成冠。
     /// 点名模式铭刻期缓慢滑向目标脚下、爆发前锁死（给躲窗）；三阵模式按 ai[1] 错拍轮爆。
     /// 各端 Life 本地推进（帧数确定性，spawn 迟到一两帧的演出差可容忍），伤害由 owner 端结算
     /// </summary>
@@ -229,27 +232,110 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             KikasaCultistRunes.DrawWaterRing(sb, Projectile.Center, Radius, RuneCount,
                 inscribeT, spin, Seed, main, core, (0.85f * dim + flash * 0.5f) * fade);
 
-            //爆发窗的水柱亮带
-            if (burstDone && t <= BurstFrame + BurstActive + 8) {
-                Texture2D glow = CWRAsset.SoftGlow?.Value;
-                if (glow != null) {
-                    float columnK = MathHelper.Clamp((t - BurstFrame) / 5f, 0f, 1f);
-                    float columnFade = MathHelper.Clamp(1f - (t - BurstFrame - BurstActive) / 8f, 0f, 1f);
-                    float h = ColumnHeight * (0.55f + 0.45f * columnK);
-                    Vector2 mid = Projectile.Center + new Vector2(0f, -h * 0.5f);
-                    sb.Draw(glow, mid - Main.screenPosition, null, main * (0.5f * columnFade), 0f,
-                        glow.Size() * 0.5f,
-                        new Vector2(ColumnHalfWidth * 1.5f * 2f / glow.Width, h * 1.15f * 2f / glow.Height), SpriteEffects.None, 0f);
-                    sb.Draw(glow, mid - Main.screenPosition, null, core * (0.35f * columnFade), 0f,
-                        glow.Size() * 0.5f,
-                        new Vector2(ColumnHalfWidth * 0.6f * 2f / glow.Width, h * 1.05f * 2f / glow.Height), SpriteEffects.None, 0f);
-                }
+            //爆发窗：加色批里只留底层电晕与环腰水幕，液柱本体回主批画
+            bool columnAlive = burstDone && t <= BurstFrame + BurstActive + 8;
+            float columnK = 0f, columnFade = 0f, columnH = 0f;
+            if (columnAlive) {
+                columnK = MathHelper.Clamp((t - BurstFrame) / 5f, 0f, 1f);
+                columnFade = MathHelper.Clamp(1f - (t - BurstFrame - BurstActive) / 8f, 0f, 1f);
+                columnH = ColumnHeight * (0.55f + 0.45f * columnK);
+                DrawColumnGlowLayer(sb, columnH, columnFade, main);
             }
 
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
                 DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+
+            if (columnAlive && columnFade > 0.02f) {
+                DrawColumnLiquid(sb, columnH, columnFade);
+            }
             return false;
+        }
+
+        /// <summary>喷发柱加色层：一道压暗的底层辉光 + 三圈沿柱上滑的压扁水幕环（调用方已开加色批）</summary>
+        private void DrawColumnGlowLayer(SpriteBatch sb, float h, float columnFade, Color main) {
+            Vector2 baseP = Projectile.Center;
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            if (glow != null) {
+                Vector2 mid = baseP + new Vector2(0f, -h * 0.5f);
+                sb.Draw(glow, mid - Main.screenPosition, null, main * (0.22f * columnFade), 0f,
+                    glow.Size() * 0.5f,
+                    new Vector2(ColumnHalfWidth * 1.4f * 2f / glow.Width, h * 1.1f * 2f / glow.Height), SpriteEffects.None, 0f);
+            }
+            //环腰水幕：压扁环沿柱身向上滑，读出"水被卷着上去"
+            Texture2D ring = CWRAsset.DiffusionCircle?.Value;
+            if (ring == null) {
+                return;
+            }
+            Vector2 rOrigin = ring.Size() * 0.5f;
+            float time = Main.GlobalTimeWrappedHourly;
+            for (int i = 0; i < 3; i++) {
+                float prog = (time * 1.15f + i / 3f + Seed * 0.21f) % 1f;
+                float rw = ColumnHalfWidth * (0.95f - prog * 0.25f);
+                float ra = MathF.Sin(prog * MathHelper.Pi) * 0.4f * columnFade;
+                sb.Draw(ring, baseP + new Vector2(0f, -h * prog) - Main.screenPosition, null,
+                    main * ra, 0f, rOrigin,
+                    new Vector2(rw * 2f / ring.Width, rw * 0.62f / ring.Height), SpriteEffects.None, 0f);
+            }
+        }
+
+        /// <summary>喷发柱液体本体：分段横摆的血柱 + 攀升珠链 + 柱头散冠（默认 AlphaBlend 主批）</summary>
+        private void DrawColumnLiquid(SpriteBatch sb, float h, float columnFade) {
+            Texture2D tex = CWRAsset.Extra_98?.Value;
+            if (tex == null) {
+                return;
+            }
+            Vector2 baseP = Projectile.Center;
+            Vector2 origin = tex.Size() * 0.5f;
+            float time = Main.GlobalTimeWrappedHourly;
+
+            //液柱四段：随高度横摆，摆相沿高度推进读出上涌；暗缘垫底、血身盖面。
+            //宽度对齐命中柱（ColumnHalfWidth），画面不许比伤害窄一圈
+            const int slices = 4;
+            for (int i = 0; i < slices; i++) {
+                float fm = (i + 0.5f) / slices;
+                float sway = MathF.Sin(time * 9f - fm * 5.2f + Seed) * (2f + fm * 8f);
+                Vector2 slicePos = new(baseP.X + sway, baseP.Y - h * fm);
+                float halfW = ColumnHalfWidth * (1f - fm * 0.24f);
+                float sliceH = h / slices * 1.4f;
+                float tilt = sway * 0.006f;
+                sb.Draw(tex, slicePos - Main.screenPosition, null,
+                    KikasaCultistServant.BloodDeep * (0.72f * columnFade), tilt, origin,
+                    new Vector2(halfW * 1.65f / tex.Width, sliceH * 1.3f / tex.Height), SpriteEffects.None, 0f);
+                sb.Draw(tex, slicePos - Main.screenPosition, null,
+                    KikasaCultistServant.BloodMain * (0.82f * columnFade), tilt, origin,
+                    new Vector2(halfW * 1.2f / tex.Width, sliceH * 1.12f / tex.Height), SpriteEffects.None, 0f);
+            }
+            //柱心亮脉：窄窄一条血沫亮芯（A=0 预乘加色）
+            Color core = KikasaCultistServant.FoamGlow with { A = 0 };
+            sb.Draw(tex, new Vector2(baseP.X, baseP.Y - h * 0.5f) - Main.screenPosition, null,
+                core * (0.5f * columnFade), 0f, origin,
+                new Vector2(ColumnHalfWidth * 0.5f / tex.Width, h * 1.04f / tex.Height), SpriteEffects.None, 0f);
+
+            //攀升珠链：两股血珠贴柱循环上攀，越高越散
+            for (int s = 0; s < 2; s++) {
+                for (int k = 0; k < 6; k++) {
+                    float prog = (k / 6f + time * 1.7f + s * 0.5f + Seed * 0.13f) % 1f;
+                    float swayB = MathF.Sin(prog * 9f + s * MathHelper.Pi + Seed)
+                        * ColumnHalfWidth * (0.3f + prog * 0.42f);
+                    Vector2 bp = new(baseP.X + swayB, baseP.Y - h * prog);
+                    float a = MathF.Sin(MathHelper.Clamp(prog, 0f, 1f) * MathHelper.Pi * 0.9f + 0.12f) * columnFade;
+                    float bs = 0.12f + 0.05f * (1f - prog);
+                    sb.Draw(tex, bp - Main.screenPosition, null,
+                        KikasaCultistServant.BloodMain * (0.8f * a), 0f, origin,
+                        new Vector2(bs * 0.8f, bs * 1.5f), SpriteEffects.None, 0f);
+                }
+            }
+
+            //柱头散冠：三粒外劈的凝珠定格出水花的形
+            int tq = (int)(Life * 0.5f);
+            for (int i = -1; i <= 1; i++) {
+                float jig = KikasaCultistRunes.Hash01(tq * 3.7f + i * 5.1f + Seed);
+                Vector2 crownPos = new(baseP.X + i * (10f + jig * 9f), baseP.Y - h - 6f - jig * 10f);
+                sb.Draw(tex, crownPos - Main.screenPosition, null,
+                    KikasaCultistServant.BloodMain * (0.7f * columnFade), i * 0.5f, origin,
+                    new Vector2(0.1f, 0.15f + jig * 0.08f), SpriteEffects.None, 0f);
+            }
         }
 
         //==================== 命中 ====================

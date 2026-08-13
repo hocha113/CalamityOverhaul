@@ -43,7 +43,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Summon;
             Projectile.penetrate = 1;
-            Projectile.tileCollide = true;
+            //血光钉穿地飞：湖下真地形被湖面演出盖住，撞上去像凭空截停；
+            //谢幕统一走 OnKill 小迸溅，不再依赖撞地
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             //细快：双倍步进补出激光的干脆
             Projectile.extraUpdates = 1;
@@ -82,7 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         public override void OnKill(int timeLeft) {
-            //命中/贴壁/超时共用的小迸溅（Kill 各端都跑，队友也看得见）
+            //命中/超时共用的小迸溅（Kill 各端都跑，队友也看得见）
             if (Main.dedServ || lakeSwallowed) {
                 return;
             }

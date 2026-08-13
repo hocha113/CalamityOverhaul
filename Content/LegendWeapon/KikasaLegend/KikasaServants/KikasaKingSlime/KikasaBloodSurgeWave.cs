@@ -179,9 +179,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Vector2 baseLine = new(Projectile.Center.X, FloorY);
 
             //水线暗底带：被犁开的浑浊水体，比浪冠宽一截
-            sb.Draw(glow, baseLine - Main.screenPosition + new Vector2(0f, -4f), null,
-                GelDark * (0.55f * hk), 0f, glowOrigin,
-                new Vector2(210f * 2f / glow.Width, 16f * 2f / glow.Height), SpriteEffects.None, 0f);
+            //（暗色层必须用真 alpha 的 Extra_98——黑底 SoftGlow 在 AlphaBlend 里会糊出黑块；
+            //×2 补偿其更紧的径向衰减，视觉尺寸对齐原稿）
+            sb.Draw(blob, baseLine - Main.screenPosition + new Vector2(0f, -4f), null,
+                GelDark * (0.55f * hk), 0f, blobOrigin,
+                new Vector2(210f * 2f / blob.Width, 16f * 2f / blob.Height) * 2f, SpriteEffects.None, 0f);
 
             //三瓣浪峰：中瓣最高、前后错相呼吸，破掉单贴纸的读法
             float wob = Main.GlobalTimeWrappedHourly * 7f + Seed * 3f;

@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// <summary>
     /// 鬼奴世纪之花的血色种子：机关枪弹丸。出膛后短程增速（活着的弹道，
     /// 不做匀速平移），远程微坠；飞行沿途撕落细血珠，速度拉伸绘形；
-    /// 命中/贴壁半球小迸溅，落空坠回血湖时被湖收走
+    /// 命中/超时半球小迸溅，落空坠回血湖时被湖收走；鬼物穿行地形不受阻
     /// </summary>
     internal class KikasaPlanteraSeed : ModProjectile
     {
@@ -24,8 +24,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         private ref float Life => ref Projectile.ai[0];
 
-        //贴壁演出已放，OnKill 不再补迸溅
-        private bool burstDone;
         //被湖收走：谢幕换涟漪
         private bool lakeSwallowed;
 
@@ -43,7 +41,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.DamageType = DamageClass.Summon;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 150;
-            Projectile.tileCollide = true;
+            //鬼物弹丸穿地飞：湖下真地形被湖面演出盖住，撞上去像凭空截停；
+            //谢幕统一走 OnKill 迸溅，不再依赖撞地
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
         }
 
@@ -89,20 +89,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         //==================== 命中与谢幕 ====================
 
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            burstDone = true;
-            ImpactBurst(Projectile.Center, oldVelocity);
-            return true;
-        }
-
         public override void OnKill(int timeLeft) {
             if (Main.dedServ || lakeSwallowed) {
                 return;
             }
-            if (!burstDone) {
-                //命中 NPC / 超时坠灭共用（penetrate=1，Kill 各端都跑，队友也看得见）
-                ImpactBurst(Projectile.Center, Projectile.velocity);
-            }
+            //命中 NPC / 超时坠灭共用（penetrate=1，Kill 各端都跑，队友也看得见）
+            ImpactBurst(Projectile.Center, Projectile.velocity);
         }
 
         /// <summary>种子炸开：半球血珠 + 一圈扩散环 + 血尘底噪</summary>

@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains;
+using CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaEye;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,9 +12,13 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaCultist
 {
     /// <summary>
-    /// 鬼奴邪教徒的血冰簇弹：血湖之水冻成的细长晶刃，激发帧自虚影阵列齐射。
+    /// 鬼奴邪教徒的血冰簇弹。材质身份：冻血晶棱——湖血在激发帧被冻成的多面晶刃，
+    /// 冰壳里封着一线未冻透的暖血。签名行为：晶面按自转相位打出锐星闪；
+    /// 飞行中冰壳持续剥落寒雾；尾段冰壳渐融、暖血珠自尾端甩落（血比冰重）。
+    /// 弹体 = Extra_98 真 alpha 多层（暗缘/晶身/斜十字棱面/暖血芯/霜白芯），非光斑叠层。
     /// 出膛短暂复利加速（激发的锐气），中段泄劲、尾段微坠；
-    /// 命中/贴壁/超时皆碎裂——冰屑四溅里裹着几粒解冻的血珠。落回血湖则被湖收走
+    /// 命中/超时皆碎裂——冰屑四溅里裹着几粒解冻的血珠。落回血湖则被湖收走；
+    /// 鬼物穿行地形不受阻
     /// </summary>
     internal class KikasaCultistIceShard : ModProjectile
     {
@@ -24,7 +29,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         private ref float Life => ref Projectile.localAI[0];
 
-        private bool shattered;
         private bool lakeSwallowed;
 
         private float Seed => Projectile.identity * 0.7391f % 4.7f;
@@ -44,7 +48,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.DamageType = DamageClass.Summon;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 90;
-            Projectile.tileCollide = true;
+            //鬼物冰晶穿地飞：湖下真地形被湖面演出盖住，撞上去像凭空截停；
+            //碎裂统一走 OnKill（命中/超时），不再依赖撞地
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
         }
 
@@ -71,6 +77,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     KikasaCultistServant.IceTint * Main.rand.NextFloat(0.35f, 0.5f),
                     Main.rand.NextFloat(0.22f, 0.36f))?.Configure(Main.rand.Next(10, 18), 0f);
             }
+            //寒气剥落：冰壳一路蒸出细雾，向后下方散开
+            if (!Main.dedServ && Life % 5 == 2) {
+                PRTLoader.NewParticle<PRT_GhostRainMist>(
+                    Projectile.Center - Projectile.velocity * 0.7f + Main.rand.NextVector2Circular(3f, 3f),
+                    -Projectile.velocity * 0.03f + new Vector2(0f, Main.rand.NextFloat(0.1f, 0.4f)),
+                    Color.Lerp(KikasaCultistServant.MistBlood, KikasaCultistServant.IceTint, 0.55f) * 0.45f,
+                    Main.rand.NextFloat(0.22f, 0.34f))?.Configure(Main.rand.Next(16, 28));
+            }
+            //尾段解冻滴血：泄劲后冰壳渐融，暖血珠自尾端甩落
+            if (!Main.dedServ && Life > SinkStart && Life % 6 == 3) {
+                Vector2 tail = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.UnitX) * Main.rand.NextFloat(6f, 14f);
+                PRTLoader.NewParticle<PRT_KikasaBloodGlob>(tail,
+                    Projectile.velocity * 0.12f + new Vector2(0f, Main.rand.NextFloat(0.3f, 0.8f)),
+                    KikasaCultistServant.BloodMain * 0.6f,
+                    Main.rand.NextFloat(0.25f, 0.4f))?.Configure(Main.rand.Next(16, 26), 0.3f);
+            }
 
             float glow = 0.4f * VisualFade;
             Lighting.AddLight(Projectile.Center, 0.28f * glow, 0.4f * glow, 0.5f * glow);
@@ -93,11 +115,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         //==================== 碎裂 ====================
 
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            Shatter(oldVelocity);
-            return true;
-        }
-
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             SoundEngine.PlaySound(SoundID.NPCHit5 with { Volume = 0.4f, Pitch = 0.15f, MaxInstances = 3 }, target.Center);
         }
@@ -111,10 +128,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         /// <summary>碎裂：冰屑扇 + 解冻血珠 + 一记清脆碎冰声；晶体死后寒雾多活一拍</summary>
         private void Shatter(Vector2 impactVel) {
-            if (shattered) {
-                return;
-            }
-            shattered = true;
             SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.5f, Pitch = 0.1f, MaxInstances = 3 }, Projectile.Center);
             if (Main.dedServ) {
                 return;
@@ -146,21 +159,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         //==================== 绘制 ====================
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null) {
+            Texture2D tex = CWRAsset.Extra_98?.Value;
+            if (tex == null) {
                 return false;
             }
             float fade = VisualFade;
+            if (fade <= 0.01f) {
+                return false;
+            }
             SpriteBatch sb = Main.spriteBatch;
-            Vector2 gOrigin = glow.Size() * 0.5f;
-            float rot = Projectile.rotation;
+            Vector2 origin = tex.Size() * 0.5f;
+            //Extra_98 针体沿 Y 拉长，长轴对齐飞行向
+            float rot = Projectile.rotation + MathHelper.PiOver2;
             float stretch = MathHelper.Clamp(Projectile.velocity.Length() * 0.05f, 0.5f, 1.3f);
 
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-            //残影拖尾：速度门控
+            //残影拖尾：速度门控，旧位残棱一线排开（真 alpha 直染，主批直接画）
             if (Projectile.velocity.Length() > 10f) {
                 for (int k = Projectile.oldPos.Length - 1; k >= 1; k--) {
                     Vector2 oldCenter = Projectile.oldPos[k] + Projectile.Size * 0.5f;
@@ -168,31 +181,44 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         continue;
                     }
                     float fall = 1f - k / (float)Projectile.oldPos.Length;
-                    sb.Draw(glow, oldCenter - Main.screenPosition, null,
-                        KikasaCultistServant.IceTint * (0.16f * fall * fade), rot, gOrigin,
-                        new Vector2(14f * stretch * 2f / glow.Width, 3f * 2f / glow.Height), SpriteEffects.None, 0f);
+                    sb.Draw(tex, oldCenter - Main.screenPosition, null,
+                        KikasaCultistServant.IceTint * (0.22f * fall * fade), rot, origin,
+                        new Vector2(0.08f, (0.26f + stretch * 0.24f) * fall), SpriteEffects.None, 0f);
                 }
             }
 
             Vector2 pos = Projectile.Center - Main.screenPosition;
-            //血冰晶刃三层：深血压边→寒冰主体→白芯
-            sb.Draw(glow, pos, null, KikasaCultistServant.BloodDeep * (0.55f * fade), rot, gOrigin,
-                new Vector2(19f * stretch * 2f / glow.Width, 6.5f * 2f / glow.Height), SpriteEffects.None, 0f);
-            sb.Draw(glow, pos, null, KikasaCultistServant.IceTint * (0.85f * fade), rot, gOrigin,
-                new Vector2(16f * stretch * 2f / glow.Width, 4.6f * 2f / glow.Height), SpriteEffects.None, 0f);
-            sb.Draw(glow, pos, null, KikasaCultistServant.RuneCore * (0.6f * fade), rot, gOrigin,
-                new Vector2(10f * stretch * 2f / glow.Width, 2.2f * 2f / glow.Height), SpriteEffects.None, 0f);
-            //横向短棱：晶体的十字截面
-            sb.Draw(glow, pos, null, KikasaCultistServant.IceTint * (0.4f * fade), rot + MathHelper.PiOver2, gOrigin,
-                new Vector2(6f * 2f / glow.Width, 2.4f * 2f / glow.Height), SpriteEffects.None, 0f);
-            //晶面闪烁：确定性相位的冷光眨眼
-            float glint = MathF.Max(0f, MathF.Sin(Main.GlobalTimeWrappedHourly * 11f + Seed * 5f));
-            sb.Draw(glow, pos, null, Color.White * (0.3f * glint * glint * fade), rot, gOrigin,
-                new Vector2(5f * 2f / glow.Width), SpriteEffects.None, 0f);
+            //冰壳内的暖血芯反相微晃：表面张力还活着
+            float wob = MathF.Sin(Life * 0.5f + Seed * 4f);
+            Vector2 perp = rot.ToRotationVector2();
 
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
-                DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+            //冻血暗缘：晶壳外圈的深血冻色
+            sb.Draw(tex, pos, null, KikasaCultistServant.BloodDeep * (0.8f * fade), rot, origin,
+                new Vector2(0.19f, 0.4f + stretch * 0.34f), SpriteEffects.None, 0f);
+            //寒冰晶身：速度拉伸的主棱
+            sb.Draw(tex, pos, null, KikasaCultistServant.IceTint * (0.95f * fade), rot, origin,
+                new Vector2(0.14f, 0.34f + stretch * 0.3f), SpriteEffects.None, 0f);
+            //斜十字棱面：两道短斜棱读出晶体的多面切面
+            for (int s = -1; s <= 1; s += 2) {
+                sb.Draw(tex, pos, null, KikasaCultistServant.IceTint * (0.55f * fade), rot + s * 0.44f, origin,
+                    new Vector2(0.065f, 0.17f + stretch * 0.1f), SpriteEffects.None, 0f);
+            }
+            //未冻透的暖血芯：一线红在冰壳里晃
+            sb.Draw(tex, pos + perp * (wob * 1.4f), null, KikasaCultistServant.BloodMain * (0.85f * fade), rot, origin,
+                new Vector2(0.05f, 0.22f + stretch * 0.2f), SpriteEffects.None, 0f);
+            //霜白亮芯（A=0 预乘加色）
+            Color core = KikasaCultistServant.RuneCore with { A = 0 };
+            sb.Draw(tex, pos, null, core * (0.55f * fade), rot, origin,
+                new Vector2(0.04f, 0.17f + stretch * 0.16f), SpriteEffects.None, 0f);
+
+            //晶面锐闪：自转相位扫过光角时打一粒星（黑底星图只走 A=0 加色）
+            Texture2D star = CWRAsset.StarGlow01?.Value;
+            float glint = MathF.Max(0f, MathF.Sin(Main.GlobalTimeWrappedHourly * 11f + Seed * 5f));
+            glint = glint * glint * glint;
+            if (star != null && glint > 0.15f) {
+                sb.Draw(star, pos, null, (Color.White with { A = 0 }) * (0.65f * glint * fade), rot,
+                    star.Size() * 0.5f, 0.22f, SpriteEffects.None, 0f);
+            }
             return false;
         }
     }

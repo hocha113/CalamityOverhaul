@@ -16,8 +16,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
     /// <summary>
     /// 血肉墙鬼奴口吐的血水蛭：一条会在空中"游泳"的小虫弹——
     /// 头+三节体+尾的微型链体（原版水蛭贴图，CPU 血染双层），
-    /// 正弦泳姿（速度脉冲 + 航向摆尾）缓慢追踪，命中/贴壁爆成血雾，
-    /// 落回血湖则被湖收走。出膛直冲几帧再入泳姿，弹道是活的
+    /// 正弦泳姿（速度脉冲 + 航向摆尾）缓慢追踪，命中/超时爆成血雾，
+    /// 落回血湖则被湖收走；鬼物穿行地形不受阻。出膛直冲几帧再入泳姿，弹道是活的
     /// </summary>
     internal class KikasaWallOfFleshLeech : ModProjectile
     {
@@ -52,7 +52,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Summon;
             Projectile.penetrate = 1;
-            Projectile.tileCollide = true;
+            //鬼物穿地游：湖下真地形被湖面演出盖住，撞上去像凭空截停；
+            //追踪弹穿行地形也贴合读感，谢幕统一走 OnKill 爆雾
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.timeLeft = 300;
         }
@@ -170,8 +172,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         //==================== 命中与谢幕 ====================
-
-        public override bool OnTileCollide(Vector2 oldVelocity) => true;
 
         public override void OnKill(int timeLeft) {
             if (Main.dedServ || lakeSwallowed) {

@@ -10,7 +10,11 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaCultist
 {
     /// <summary>
-    /// 鬼奴邪教徒的血火追踪球：成对出膛、绕同一条追踪轴反相缠绕（DNA 双螺旋），
+    /// 鬼奴邪教徒的血火追踪球。材质身份：沸血火种——一团被点燃的湖血，烧的是血本身。
+    /// 签名行为：主体表面沸泡鼓起又瘪回；行进反向撕出端头破碎的火舌（根部压在身下）；
+    /// 沿途甩落仍在燃烧的血滴（液态火舌粒子）。弹体 = Extra_98 真 alpha 多层
+    /// （焦壳暗缘/血火主体/沸泡子团/炽白芯 + 撕焰尾舌），非光斑叠层。
+    /// 成对出膛、绕同一条追踪轴反相缠绕（DNA 双螺旋），
     /// 轴线各端确定性积分（同 spawn 同参数同轨迹），球间画淡光横档读出螺旋结构。
     /// 熄灭前分裂一次：寿命到点或贴近目标时炸成两颗直飞小火弹（只在 owner 端生成）。
     /// ai[0]=代数(0 母球/1 子弹)，ai[1]=母球相位(0/1)，ai[2]=目标 whoAmI+1
@@ -51,7 +55,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.DamageType = DamageClass.Summon;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 240;
-            Projectile.tileCollide = true;
+            //母球与子焰都穿墙：湖下真地形被湖面演出盖住，撞上去像凭空截停；
+            //子焰到寿自灭（ChildLife），不依赖撞地收尾
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
         }
 
@@ -69,7 +75,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 axisPos = Projectile.Center;
                 axisAngle = Projectile.velocity.SafeNormalize(Vector2.UnitX).ToRotation();
                 Projectile.velocity = Vector2.Zero;
-                Projectile.tileCollide = false;
             }
 
             //轴线追踪：转率有顶，火球是缠着打不是贴脸炸
@@ -89,7 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.Center = want;
             Projectile.rotation = moveDelta.ToRotation();
 
-            //尾焰：沿行进反向甩出的暖芒 + 偶发暗烟
+            //尾焰：沿行进反向甩出的暖芒 + 燃烧的血滴 + 偶发暗烟
             if (!Main.dedServ) {
                 if (Life % 2 == 0) {
                     PRTLoader.NewParticle<PRT_Spark>(
@@ -97,6 +102,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                         -moveDelta * 0.12f + Main.rand.NextVector2Circular(0.6f, 0.6f),
                         Color.Lerp(KikasaCultistServant.FireTint, KikasaCultistServant.BloodMain, Main.rand.NextFloat(0.5f)),
                         Main.rand.NextFloat(0.7f, 1.1f))?.Configure(false, Main.rand.Next(8, 14));
+                }
+                //沸溅掉队的血滴仍在燃烧：液态火舌短寿飘落
+                if (Life % 5 == 1) {
+                    PRTLoader.NewParticle<PRT_KikasaTwinsFlame>(
+                        Projectile.Center - moveDelta * 0.8f + Main.rand.NextVector2Circular(4f, 4f),
+                        -moveDelta * 0.1f + Main.rand.NextVector2Circular(0.5f, 0.5f),
+                        Color.Lerp(KikasaCultistServant.FireTint, KikasaCultistServant.BloodMain, Main.rand.NextFloat(0.3f, 0.7f)),
+                        Main.rand.NextFloat(0.35f, 0.55f))?.Configure(Main.rand.Next(14, 22), 0.04f);
                 }
                 if (Life % 9 == 4) {
                     PRTLoader.NewParticle<PRT_GhostRainMist>(
@@ -135,6 +148,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     Color.Lerp(KikasaCultistServant.FireTint, KikasaCultistServant.RuneCore, Main.rand.NextFloat(0.35f)),
                     Main.rand.NextFloat(0.55f, 0.9f))?.Configure(false, Main.rand.Next(6, 11));
             }
+            //子焰也在滴燃血，量减半
+            if (!Main.dedServ && Life % 7 == 3) {
+                PRTLoader.NewParticle<PRT_KikasaTwinsFlame>(
+                    Projectile.Center - Projectile.velocity * 0.6f,
+                    -Projectile.velocity * 0.08f + Main.rand.NextVector2Circular(0.4f, 0.4f),
+                    Color.Lerp(KikasaCultistServant.FireTint, KikasaCultistServant.BloodMain, Main.rand.NextFloat(0.4f)),
+                    Main.rand.NextFloat(0.28f, 0.42f))?.Configure(Main.rand.Next(10, 16), 0.03f);
+            }
             Lighting.AddLight(Projectile.Center, 0.35f, 0.15f, 0.05f);
 
             //熄灭：焰苗到寿即灭，不留爆点
@@ -160,8 +181,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         //==================== 命中与谢幕 ====================
-
-        public override bool OnTileCollide(Vector2 oldVelocity) => true;
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             SoundEngine.PlaySound(SoundID.Item34 with { Volume = 0.4f, Pitch = -0.1f, MaxInstances = 3 }, target.Center);
@@ -198,52 +217,79 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         //==================== 绘制 ====================
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null) {
+            Texture2D tex = CWRAsset.Extra_98?.Value;
+            if (tex == null) {
                 return false;
             }
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
             float fade = VisualFade;
+            if (fade <= 0.01f) {
+                return false;
+            }
             bool child = Generation == 1;
             SpriteBatch sb = Main.spriteBatch;
-            Vector2 gOrigin = glow.Size() * 0.5f;
+            Vector2 origin = tex.Size() * 0.5f;
             Vector2 pos = Projectile.Center - Main.screenPosition;
+            Vector2 dir = moveDelta.SafeNormalize(Vector2.UnitX);
             float rot = Projectile.rotation;
             float stretch = MathHelper.Clamp(moveDelta.Length() * 0.06f, 0.2f, 1f);
-            //火球呼吸：燃烧的东西不许静止
-            float wob = 1f + 0.1f * MathF.Sin(Life * 0.5f + Seed * 4f);
+            float r = child ? 0.6f : 1f;
 
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-            //母球：与镜像位之间的淡光横档，把双螺旋的"梯子"读出来
-            if (!child && axisInit) {
+            //母球：与镜像位之间的淡光横档，把双螺旋的"梯子"读出来（黑底 SoftGlow 走 A=0 加色）
+            if (!child && axisInit && glow != null) {
                 Vector2 mirror = axisPos * 2f - Projectile.Center;
                 Vector2 mid = (Projectile.Center + mirror) * 0.5f - Main.screenPosition;
                 Vector2 span = mirror - Projectile.Center;
                 if (span.Length() > 6f) {
-                    sb.Draw(glow, mid, null, KikasaCultistServant.FireTint * (0.16f * fade),
-                        span.ToRotation(), gOrigin,
+                    sb.Draw(glow, mid, null, (KikasaCultistServant.FireTint with { A = 0 }) * (0.16f * fade),
+                        span.ToRotation(), glow.Size() * 0.5f,
                         new Vector2(span.Length() * 1.05f / glow.Width * 2f, 2.2f * 2f / glow.Height), SpriteEffects.None, 0f);
                 }
             }
 
-            float r = child ? 6.5f : 10f;
-            //三层火团：暗血焰边→血火主体→亮芯，沿行进拉伸
-            sb.Draw(glow, pos, null, KikasaCultistServant.BloodDeep * (0.65f * fade), rot, gOrigin,
-                new Vector2(r * 2.3f * (1f + stretch * 0.7f) * 2f / glow.Width, r * 2f * 2f / glow.Height) * wob * 0.5f, SpriteEffects.None, 0f);
-            sb.Draw(glow, pos, null, KikasaCultistServant.FireTint * (0.9f * fade), rot, gOrigin,
-                new Vector2(r * 1.6f * (1f + stretch * 0.5f) * 2f / glow.Width, r * 1.4f * 2f / glow.Height) * wob * 0.5f, SpriteEffects.None, 0f);
-            sb.Draw(glow, pos, null, KikasaCultistServant.RuneCore * (0.55f * fade), rot, gOrigin,
-                new Vector2(r * 0.7f * 2f / glow.Width, r * 0.6f * 2f / glow.Height) * wob * 0.5f, SpriteEffects.None, 0f);
-            //火舌：行进反向的一条短焰尾
-            sb.Draw(glow, pos - moveDelta.SafeNormalize(Vector2.Zero) * r * 1.4f, null,
-                KikasaCultistServant.FireTint * (0.5f * fade), rot, gOrigin,
-                new Vector2(r * 2.6f * 2f / glow.Width, r * 0.8f * 2f / glow.Height) * 0.5f, SpriteEffects.None, 0f);
+            //撕焰尾舌：三条错相位火舌拖在行进反向，端头长度被相位撕碎；
+            //先画舌再画身——舌根压进身体（三明治，火从血里长出来）
+            int tq = (int)(Life * 0.5f);
+            for (int i = 0; i < 3; i++) {
+                float flick = KikasaCultistRunes.Hash01(tq * 3.1f + i * 7.7f + Seed);
+                float swing = (KikasaCultistRunes.Hash01(tq * 5.3f + i * 11.3f + Seed * 1.7f) - 0.5f)
+                    * (0.5f + i * 0.35f);
+                Vector2 tongueDir = (-dir).RotatedBy(swing);
+                float len = (0.26f + 0.26f * flick) * (1f + stretch * 0.4f) * r;
+                Vector2 tPos = pos + tongueDir * (8f + 26f * len) * r;
+                Color tCol = Color.Lerp(KikasaCultistServant.FireTint, KikasaCultistServant.BloodMain,
+                    0.3f + 0.45f * flick);
+                sb.Draw(tex, tPos, null, tCol * ((0.6f - i * 0.13f) * fade),
+                    tongueDir.ToRotation() + MathHelper.PiOver2, origin,
+                    new Vector2(0.12f - i * 0.02f, len), SpriteEffects.None, 0f);
+            }
 
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
-                DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+            //沸腾主体：焦壳暗缘→血火主体（张力抖动）→沸泡子团→炽白芯
+            float wob = MathF.Sin(Life * 0.5f + Seed * 4f) * 0.1f;
+            Vector2 jiggle = new(1f + wob, 1f - wob * 0.8f);
+            sb.Draw(tex, pos, null, KikasaCultistServant.BloodDeep * (0.85f * fade), rot, origin,
+                new Vector2(0.3f * (1f + stretch * 0.45f), 0.27f) * r * jiggle, SpriteEffects.None, 0f);
+            sb.Draw(tex, pos, null,
+                Color.Lerp(KikasaCultistServant.BloodMain, KikasaCultistServant.FireTint, 0.55f) * fade,
+                rot, origin,
+                new Vector2(0.24f * (1f + stretch * 0.4f), 0.21f) * r * jiggle, SpriteEffects.None, 0f);
+            //沸泡：两粒错相子团鼓起又瘪回，表面在沸腾
+            for (int i = 0; i < 2; i++) {
+                float ph = Life * 0.37f + i * 2.6f + Seed * 3f;
+                float swell = MathF.Max(0f, MathF.Sin(ph));
+                swell *= swell;
+                if (swell < 0.15f) {
+                    continue;
+                }
+                Vector2 off = (Seed * 5f + i * MathHelper.Pi + Life * 0.11f).ToRotationVector2()
+                    * 4.5f * r * jiggle.X;
+                sb.Draw(tex, pos + off, null, KikasaCultistServant.FireTint * (0.6f * swell * fade), rot, origin,
+                    new Vector2(0.08f, 0.07f) * r * (0.7f + swell * 0.6f), SpriteEffects.None, 0f);
+            }
+            //炽白芯（A=0 预乘加色）
+            Color core = Color.Lerp(KikasaCultistServant.RuneCore, KikasaCultistServant.FireTint, 0.3f) with { A = 0 };
+            sb.Draw(tex, pos, null, core * (0.7f * fade), rot, origin,
+                new Vector2(0.11f * (1f + stretch * 0.3f), 0.09f) * r * jiggle, SpriteEffects.None, 0f);
             return false;
         }
     }

@@ -141,12 +141,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
 
                 //激发拍：一帧定速俯冲，不做斜坡；owner 盖章校准远端的时差漂移
+                //（不开引擎地形碰撞——湖下真地形被湖面盖住，钉地走 AI 内手动检测）
                 if (Life >= IgniteFrame) {
                     ignited = true;
                     Vector2 dive = (AimPoint - Projectile.Center).SafeNormalize(Vector2.UnitY);
                     Projectile.velocity = dive * DiveSpeed;
                     Projectile.rotation = dive.ToRotation();
-                    Projectile.tileCollide = true;
                     if (Main.myPlayer == Projectile.owner) {
                         Projectile.netUpdate = true;
                     }
@@ -180,18 +180,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Lighting.AddLight(Projectile.Center, 0.5f * glow, 0.14f * glow, 0.17f * glow);
 
             //落水收尾：整排矛逐根扎进湖面，水花与涟漪排成列
-            if (owner?.active == true
+            bool lakeAlive = owner?.active == true
                 && owner.TryGetModPlayer(out KikasaDomainPlayer domain)
-                && domain.AnyActive && domain.RiseT > 0.5f
-                && Projectile.Center.Y >= domain.LakeWorldY - 2f) {
+                && domain.AnyActive && domain.RiseT > 0.5f;
+            KikasaDomainPlayer kdp = lakeAlive ? owner.GetModPlayer<KikasaDomainPlayer>() : null;
+            if (lakeAlive && Projectile.Center.Y >= kdp.LakeWorldY - 2f) {
                 lakeSwallowed = true;
-                Vector2 hit = new(Projectile.Center.X, domain.LakeWorldY);
+                Vector2 hit = new(Projectile.Center.X, kdp.LakeWorldY);
                 SoundEngine.PlaySound(SoundID.SplashWeak with {
                     Volume = 0.55f,
                     Pitch = -0.2f + (int)Slot * 0.04f,
                     MaxInstances = 3
                 }, hit);
-                if (!Main.dedServ && KikasaDomain.Viewed == domain) {
+                if (!Main.dedServ && KikasaDomain.Viewed == kdp) {
                     KikasaDomainDeco.SplashAt(hit, 7);
                     KikasaDomainDeco.RippleAt(hit, 1.0f);
                     //入水角的斜向水花束
@@ -203,17 +204,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     }
                 }
                 Projectile.Kill();
+                return;
+            }
+
+            //钉进地面（机制身份保留）：手动地形检测替代 tileCollide——
+            //湖线以下的真地形被湖面盖住，交给上面的落水收尾
+            if ((!lakeAlive || Projectile.Center.Y < kdp.LakeWorldY - 2f)
+                && Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height)) {
+                burstDone = true;
+                KikasaEyeBloodShot.SplashBurst(Projectile.Center, Projectile.velocity, onTile: true);
+                Projectile.Kill();
             }
         }
 
         //==================== 命中与谢幕 ====================
-
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            //钉进地面：迸溅 + 血渍挂壁
-            burstDone = true;
-            KikasaEyeBloodShot.SplashBurst(Projectile.Center, oldVelocity, onTile: true);
-            return true;
-        }
 
         public override void OnKill(int timeLeft) {
             if (Main.dedServ || lakeSwallowed) {

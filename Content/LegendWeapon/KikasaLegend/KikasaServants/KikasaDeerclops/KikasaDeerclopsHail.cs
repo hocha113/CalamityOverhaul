@@ -27,6 +27,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         //被湖收走：谢幕换涟漪，不走碎裂
         private bool lakeSwallowed;
+        //钻出出生岩层后才武装手动撞地检测
+        private bool collisionArmed;
 
         /// <summary>出生 3 帧淡入，避免第一帧硬弹出</summary>
         private float VisualFade => MathHelper.Clamp(Life / 3f, 0f, 1f);
@@ -42,7 +44,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Summon;
             Projectile.penetrate = 1;
-            //出生点在高空，可能嵌在洞顶岩层里：钻出实体后才开碰撞
+            //不吃引擎地形碰撞：湖下真地形被湖面演出盖住，撞上去像凭空截停；
+            //砸地碎裂改走 AI 内手动检测（只认水线以上的真地形）
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.timeLeft = 300;
@@ -51,9 +54,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         public override void AI() {
             Life++;
 
-            if (!Projectile.tileCollide && Life > 10
+            //出生点在高空，可能嵌在洞顶岩层里：钻出实体后才武装撞地检测
+            if (!collisionArmed && Life > 10
                 && !Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height)) {
-                Projectile.tileCollide = true;
+                collisionArmed = true;
             }
 
             //重力雹：短暂滞空后被重量拽下
@@ -76,21 +80,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             //落湖：湖收回自己的水，一圈涟漪作数——成串的雹子就是成串的涟漪
             Player owner = Main.player[Projectile.owner];
-            if (owner?.active == true
+            bool lakeAlive = owner?.active == true
                 && owner.TryGetModPlayer(out KikasaDomainPlayer domain)
-                && domain.AnyActive && domain.RiseT > 0.5f
-                && Projectile.Center.Y >= domain.LakeWorldY - 2f) {
+                && domain.AnyActive && domain.RiseT > 0.5f;
+            KikasaDomainPlayer kdp = lakeAlive ? owner.GetModPlayer<KikasaDomainPlayer>() : null;
+            if (lakeAlive && Projectile.Center.Y >= kdp.LakeWorldY - 2f) {
                 lakeSwallowed = true;
-                if (!Main.dedServ && KikasaDomain.Viewed == domain) {
-                    KikasaDomainDeco.RippleAt(new Vector2(Projectile.Center.X, domain.LakeWorldY), 0.55f);
-                    KikasaDomainDeco.SplashAt(new Vector2(Projectile.Center.X, domain.LakeWorldY), 2);
+                if (!Main.dedServ && KikasaDomain.Viewed == kdp) {
+                    KikasaDomainDeco.RippleAt(new Vector2(Projectile.Center.X, kdp.LakeWorldY), 0.55f);
+                    KikasaDomainDeco.SplashAt(new Vector2(Projectile.Center.X, kdp.LakeWorldY), 2);
                 }
                 SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.35f, Pitch = -0.35f, MaxInstances = 3 }, Projectile.Center);
                 Projectile.Kill();
+                return;
+            }
+
+            //砸地碎裂（机制身份保留）：手动地形检测替代 tileCollide——
+            //湖线以下的真地形被湖面盖住，撞上去像凭空截停，交给上面的落湖收走
+            if (collisionArmed
+                && (!lakeAlive || Projectile.Center.Y < kdp.LakeWorldY - 2f)
+                && Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height)) {
+                Projectile.Kill();
             }
         }
-
-        public override bool OnTileCollide(Vector2 oldVelocity) => true;
 
         public override void OnKill(int timeLeft) {
             if (Main.dedServ || lakeSwallowed) {

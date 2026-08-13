@@ -58,9 +58,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.penetrate = -1;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 40;
-            Projectile.tileCollide = true;
+            //不吃引擎地形碰撞：湖下真地形被湖面演出盖住，撞上去像凭空截停；
+            //撞地起爆改走 AI 内手动检测（只认水线以上的真地形）
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.timeLeft = FuseFrames;
+        }
+
+        /// <summary>是否撞上"看得见"的真地形：湖线以下的墙体被湖面演出盖住，交给落水吞爆</summary>
+        private bool TouchingVisibleTile() {
+            if (!Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height)) {
+                return false;
+            }
+            Player owner = Main.player[Projectile.owner];
+            return owner?.active != true
+                || !owner.TryGetModPlayer(out KikasaDomainPlayer domain)
+                || !domain.AnyActive || domain.RiseT <= 0.5f
+                || Projectile.Center.Y < domain.LakeWorldY - 2f;
         }
 
         public override void AI() {
@@ -91,6 +105,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 }
 
                 UpdateLakeInteraction();
+
+                //撞地起爆（机制身份保留）：手动地形检测替代 tileCollide，留一块会滴淌的血渍
+                if (!exploded && Life > 3 && TouchingVisibleTile()) {
+                    Detonate(inWater: false);
+                    if (!Main.dedServ) {
+                        PRTLoader.NewParticle<PRT_KikasaBloodSmear>(
+                            Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.UnitY) * 4f,
+                            Vector2.Zero, BloodMain, Main.rand.NextFloat(0.8f, 1.1f))?.Configure(Main.rand.Next(80, 120));
+                    }
+                }
             }
             else {
                 Projectile.velocity *= 0.4f;
@@ -213,18 +237,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             PRTLoader.NewParticle<PRT_GhostRainMist>(pos, new Vector2(0f, -0.4f),
                 KikasaDomain.CoolTint(new(58, 18, 20), new(52, 62, 66)) * 0.8f,
                 Main.rand.NextFloat(0.7f, 1f))?.Configure(Main.rand.Next(46, 72));
-        }
-
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            //贴壁即爆，留一块会滴淌的血渍（爆窗内的重复触地不再补渍）
-            bool firstBurst = !exploded;
-            Detonate(inWater: false);
-            if (firstBurst && !Main.dedServ) {
-                PRTLoader.NewParticle<PRT_KikasaBloodSmear>(
-                    Projectile.Center - oldVelocity.SafeNormalize(Vector2.UnitY) * 4f,
-                    Vector2.Zero, BloodMain, Main.rand.NextFloat(0.8f, 1.1f))?.Configure(Main.rand.Next(80, 120));
-            }
-            return false;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

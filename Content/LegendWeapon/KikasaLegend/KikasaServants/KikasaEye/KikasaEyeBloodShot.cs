@@ -60,7 +60,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.DamageType = DamageClass.Summon;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 240;
-            Projectile.tileCollide = true;
+            //不吃引擎地形碰撞：湖下真地形被湖面演出盖住，撞上去像凭空截停；
+            //贴壁迸溅+血渍改走 AI 内手动检测（只认水线以上的真地形）
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
         }
 
@@ -90,28 +92,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             //落空坠回血湖：湖收回自己的血，不迸溅
             Player owner = Main.player[Projectile.owner];
-            if (owner?.active == true
+            bool lakeAlive = owner?.active == true
                 && owner.TryGetModPlayer(out KikasaDomainPlayer domain)
-                && domain.AnyActive && domain.RiseT > 0.5f
-                && Projectile.Center.Y >= domain.LakeWorldY + 4f) {
+                && domain.AnyActive && domain.RiseT > 0.5f;
+            KikasaDomainPlayer kdp = lakeAlive ? owner.GetModPlayer<KikasaDomainPlayer>() : null;
+            if (lakeAlive && Projectile.Center.Y >= kdp.LakeWorldY + 4f) {
                 lakeSwallowed = true;
-                if (!Main.dedServ && KikasaDomain.Viewed == domain) {
-                    KikasaDomainDeco.RippleAt(new Vector2(Projectile.Center.X, domain.LakeWorldY), 0.75f);
-                    KikasaDomainDeco.SplashAt(new Vector2(Projectile.Center.X, domain.LakeWorldY), 4);
+                if (!Main.dedServ && KikasaDomain.Viewed == kdp) {
+                    KikasaDomainDeco.RippleAt(new Vector2(Projectile.Center.X, kdp.LakeWorldY), 0.75f);
+                    KikasaDomainDeco.SplashAt(new Vector2(Projectile.Center.X, kdp.LakeWorldY), 4);
                 }
                 SoundEngine.PlaySound(SoundID.Drip with { Volume = 0.4f, Pitch = -0.2f, MaxInstances = 3 }, Projectile.Center);
+                Projectile.Kill();
+                return;
+            }
+
+            //贴壁：迸溅 + 血渍 decal（机制身份保留）——手动地形检测替代 tileCollide，
+            //湖线以下的真地形被湖面盖住，撞上去像凭空截停，交给上面的落湖收走
+            if (Life > 3
+                && (!lakeAlive || Projectile.Center.Y < kdp.LakeWorldY - 2f)
+                && Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height)) {
+                burstDone = true;
+                SplashBurst(Projectile.Center, Projectile.velocity, onTile: true);
                 Projectile.Kill();
             }
         }
 
         //==================== 命中与谢幕 ====================
-
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            //贴壁：迸溅 + 血渍 decal，渍会挂壁滴淌
-            burstDone = true;
-            SplashBurst(Projectile.Center, oldVelocity, onTile: true);
-            return true;
-        }
 
         public override void OnKill(int timeLeft) {
             if (Main.dedServ || lakeSwallowed) {

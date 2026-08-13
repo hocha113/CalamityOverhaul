@@ -192,7 +192,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.DamageType = DamageClass.Summon;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 46;
-            Projectile.tileCollide = true;
+            //鬼物血芒穿地飞：湖下真地形被湖面演出盖住，撞上去像凭空截停；
+            //短寿速矢到点自灭，谢幕统一走 OnKill 溃珠
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
         }
 

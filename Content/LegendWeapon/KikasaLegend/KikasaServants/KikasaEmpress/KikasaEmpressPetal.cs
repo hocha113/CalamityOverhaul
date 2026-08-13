@@ -33,7 +33,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         private ref float Life => ref Projectile.localAI[0];
 
-        private bool burstDone;
         private bool lakeSwallowed;
 
         private static Color BloodDark => KikasaDomain.CoolTint(new(64, 12, 14), new(38, 48, 52));
@@ -60,7 +59,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.DamageType = DamageClass.Summon;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 168;
-            Projectile.tileCollide = true;
+            //鬼物花瓣穿地飘：湖下真地形被湖面演出盖住，撞上去像凭空截停；
+            //谢幕统一走 OnKill 碎裂，不再依赖撞地
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
         }
 
@@ -122,20 +123,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
         //==================== 命中与谢幕 ====================
 
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            burstDone = true;
-            PetalBurst(Projectile.Center, oldVelocity);
-            return true;
-        }
-
         public override void OnKill(int timeLeft) {
             if (Main.dedServ || lakeSwallowed) {
                 return;
             }
-            if (!burstDone) {
-                //命中 NPC / 超时凋落共用（penetrate=1，Kill 各端都跑，队友也看得见）
-                PetalBurst(Projectile.Center, Projectile.velocity);
-            }
+            //命中 NPC / 超时凋落共用（penetrate=1，Kill 各端都跑，队友也看得见）
+            PetalBurst(Projectile.Center, Projectile.velocity);
         }
 
         /// <summary>花瓣碎裂：半球血珠 + 三两片碎瓣打着旋飘落 + 一朵珠光</summary>

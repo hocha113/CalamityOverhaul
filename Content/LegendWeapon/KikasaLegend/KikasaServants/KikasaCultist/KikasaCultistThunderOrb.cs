@@ -12,7 +12,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.KikasaCultist
 {
     /// <summary>
-    /// 鬼奴邪教徒的血雷缓行球：一颗低速漂行的紫电血核，
+    /// 鬼奴邪教徒的血雷缓行球。材质身份：凝血电浆核——一团凝血壳裹着过载的电浆芯，
+    /// 电弧贴着血壳表面爬行找出口。签名行为：壳面爬行的短折线弧（每隔数帧跳新位）；
+    /// 放电瞬间球体收缩回弹（吸气再吐）；壳底持续渗落带电血珠。
+    /// 弹体 = Extra_98 真 alpha 多层（凝块暗壳双瓣/电浆体/白热芯），非光斑叠层。
     /// 周期性向近旁最近的敌人劈出链状电弧（ThunderTrail 双层，预警帧短、放电窗有伤害），
     /// 电弧穿过湖面时在交点炸小水花。到寿自爆一记小电爆。
     /// 放电拍点 Life 本地确定性推进；弧目标各端就近自选（位置输入一致，伤害仅 owner 端结算）
@@ -125,6 +128,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                     Main.rand.NextVector2Circular(1.2f, 1.2f),
                     KikasaCultistServant.ThunderTint * 0.8f,
                     Main.rand.NextFloat(0.5f, 0.85f))?.Configure(false, Main.rand.Next(7, 12));
+            }
+            //壳底渗滴：凝血壳挂不住的带电血珠往下淌
+            if (!Main.dedServ && (int)Life % 11 == 5) {
+                PRTLoader.NewParticle<KikasaEye.PRT_KikasaBloodGlob>(
+                    Projectile.Center + new Vector2(Main.rand.NextFloat(-7f, 7f), 9f),
+                    new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(0.5f, 1.1f)),
+                    Color.Lerp(KikasaCultistServant.BloodMain, KikasaCultistServant.ThunderTint, 0.35f) * 0.6f,
+                    Main.rand.NextFloat(0.26f, 0.42f))?.Configure(Main.rand.Next(16, 26), 0.3f);
             }
             float glow = VisualFade;
             Lighting.AddLight(Projectile.Center, 0.32f * glow, 0.22f * glow, 0.5f * glow);
@@ -264,8 +275,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         private float GetArcAlpha(float factor) => arcTimer / (float)ArcLife;
 
         public override bool PreDraw(ref Color lightColor) {
+            Texture2D tex = CWRAsset.Extra_98?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null) {
+            if (tex == null || glow == null) {
                 return false;
             }
             float fade = VisualFade;
@@ -281,37 +293,63 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             }
 
             SpriteBatch sb = Main.spriteBatch;
+            Vector2 origin = tex.Size() * 0.5f;
             Vector2 gOrigin = glow.Size() * 0.5f;
             Vector2 pos = Projectile.Center - Main.screenPosition;
             //放电收缩：劈出的一瞬球体缩四成再弹回
             float discharge = arcTimer > 0 ? 1f - 0.4f * MathF.Sin(arcTimer / (float)ArcLife * MathHelper.Pi) : 1f;
             float wob = 1f + 0.08f * MathF.Sin(Life * 0.4f + Seed * 3f);
-            float r = 13f * discharge * wob;
+            float r = discharge * wob;
 
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            //底层电晕：唯一的辉光垫底（黑底 SoftGlow 走 A=0 加色，占比压低）
+            sb.Draw(glow, pos, null, (KikasaCultistServant.ThunderTint with { A = 0 }) * (0.3f * fade), 0f, gOrigin,
+                new Vector2(30f * r * 2f / glow.Width), SpriteEffects.None, 0f);
 
-            //三层雷核：深血晕→紫电体→白芯，外加两条确定性抖动的短弧须
-            sb.Draw(glow, pos, null, KikasaCultistServant.BloodDeep * (0.5f * fade), 0f, gOrigin,
-                new Vector2(r * 2.6f * 2f / glow.Width), SpriteEffects.None, 0f);
-            sb.Draw(glow, pos, null, KikasaCultistServant.ThunderTint * (0.85f * fade), 0f, gOrigin,
-                new Vector2(r * 1.5f * 2f / glow.Width), SpriteEffects.None, 0f);
-            sb.Draw(glow, pos, null, KikasaCultistServant.RuneCore * (0.55f * fade), 0f, gOrigin,
-                new Vector2(r * 0.6f * 2f / glow.Width), SpriteEffects.None, 0f);
-            int jitterSeed = (int)(Main.GlobalTimeWrappedHourly * 14f);
+            //凝血暗壳：两瓣错位团块随慢自旋翻滚，拼出凝块的不规则剪影
             for (int i = 0; i < 2; i++) {
-                float h = KikasaCultistRunes.Hash01(jitterSeed * 2.3f + i * 7.7f + Seed);
-                float ang = h * MathHelper.TwoPi + Projectile.rotation;
-                Vector2 tip = ang.ToRotationVector2() * (r + 7f + h * 9f);
-                sb.Draw(glow, pos + tip * 0.5f, null, KikasaCultistServant.ThunderTint * (0.45f * fade),
-                    ang, gOrigin,
-                    new Vector2(tip.Length() * 1.05f * 2f / glow.Width, 2.4f * 2f / glow.Height), SpriteEffects.None, 0f);
+                float ang = Projectile.rotation * 1.6f + i * MathHelper.Pi + Seed;
+                Vector2 off = ang.ToRotationVector2() * 3.4f * r;
+                sb.Draw(tex, pos + off, null, KikasaCultistServant.BloodDeep * (0.8f * fade),
+                    Projectile.rotation + i * 1.3f, origin,
+                    new Vector2(0.3f, 0.26f) * r, SpriteEffects.None, 0f);
+            }
+            //电浆体：壳缝里透出的紫电
+            sb.Draw(tex, pos, null, KikasaCultistServant.ThunderTint * (0.9f * fade), Projectile.rotation, origin,
+                new Vector2(0.24f, 0.23f) * r, SpriteEffects.None, 0f);
+            //白热芯（A=0 预乘加色）：随放电呼吸
+            Color core = KikasaCultistServant.RuneCore with { A = 0 };
+            sb.Draw(tex, pos, null, core * ((0.5f + 0.3f * (1f - discharge)) * fade), Projectile.rotation, origin,
+                new Vector2(0.1f, 0.09f) * wob, SpriteEffects.None, 0f);
+
+            //表面爬弧：折线贴着壳面爬行，每 8 帧跳新位（细条走 A=0 加色，条带是电的正当载体）
+            int crawlSeed = (int)(Life / 8f);
+            Color arcCol = KikasaCultistServant.ThunderTint with { A = 0 };
+            for (int a = 0; a < 3; a++) {
+                float baseAng = KikasaCultistRunes.Hash01(crawlSeed * 2.3f + a * 7.7f + Seed) * MathHelper.TwoPi;
+                float shellR = 11.5f * r;
+                Vector2 prev = pos + baseAng.ToRotationVector2()
+                    * (shellR + (KikasaCultistRunes.Hash01(crawlSeed * 5.1f + a * 3.3f + Seed) - 0.5f) * 9f);
+                const int segs = 4;
+                for (int sgi = 1; sgi <= segs; sgi++) {
+                    //每段跨 0.5 rad，整弧扫约 2 rad——爬在壳面上但读得出折线
+                    float segAng = baseAng + sgi * 0.5f;
+                    float jr = shellR + (KikasaCultistRunes.Hash01(crawlSeed * 5.1f + a * 3.3f + sgi * 9.7f + Seed) - 0.5f) * 9f;
+                    Vector2 next = pos + segAng.ToRotationVector2() * jr;
+                    Vector2 seg = next - prev;
+                    sb.Draw(glow, (prev + next) * 0.5f, null, arcCol * (0.55f * fade),
+                        seg.ToRotation(), gOrigin,
+                        new Vector2(seg.Length() * 1.1f / glow.Width, 2.4f * 2f / glow.Height), SpriteEffects.None, 0f);
+                    prev = next;
+                }
             }
 
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
-                DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+            //放电瞬间的星裂闪（黑底星图只走 A=0 加色）
+            Texture2D star = CWRAsset.StarGlow01?.Value;
+            if (star != null && arcTimer > 0) {
+                float flash = MathF.Sin(arcTimer / (float)ArcLife * MathHelper.Pi);
+                sb.Draw(star, pos, null, (KikasaCultistServant.RuneCore with { A = 0 }) * (0.75f * flash * fade),
+                    Projectile.rotation * 2f, star.Size() * 0.5f, 0.32f * flash, SpriteEffects.None, 0f);
+            }
             return false;
         }
     }

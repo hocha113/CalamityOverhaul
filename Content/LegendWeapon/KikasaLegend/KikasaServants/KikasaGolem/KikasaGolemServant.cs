@@ -1257,8 +1257,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             if (State != StateSlam || (int)StateParam > 1 || domain == null) {
                 return;
             }
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null) {
+            //暗色落点影必须用真 alpha 的 Extra_98——黑底 SoftGlow 在 AlphaBlend 里会糊出黑块
+            Texture2D shadow = CWRAsset.Extra_98?.Value;
+            if (shadow == null) {
                 return;
             }
             int t = (int)StateTimer;
@@ -1268,9 +1269,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                 : 0.55f + 0.25f * MathF.Sin(t * 0.42f + Seed);
             float width = (int)StateParam == 0 ? 130f : 110f - t * 0.5f;
             Vector2 pos = new(slamX, domain.LakeWorldY + 2f);
-            sb.Draw(glow, pos - Main.screenPosition, null,
-                new Color(16, 5, 7) * (0.5f * strength), 0f, glow.Size() * 0.5f,
-                new Vector2(width * 2f / glow.Width, 18f / glow.Height), SpriteEffects.None, 0f);
+            //×2 补偿 Extra_98 相对 SoftGlow 更紧的径向衰减，视觉尺寸对齐原稿
+            sb.Draw(shadow, pos - Main.screenPosition, null,
+                new Color(16, 5, 7) * (0.5f * strength), 0f, shadow.Size() * 0.5f,
+                new Vector2(width * 2f / shadow.Width, 18f / shadow.Height) * 2f, SpriteEffects.None, 0f);
         }
 
         private void DrawBody(SpriteBatch sb, Texture2D tex, Rectangle frame, float alpha) {

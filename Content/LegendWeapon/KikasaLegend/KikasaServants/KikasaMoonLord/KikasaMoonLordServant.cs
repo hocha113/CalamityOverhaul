@@ -1156,24 +1156,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             if (dim < 0.02f) {
                 return;
             }
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null) {
+            //暗幕必须用真 alpha 的 Extra_98——黑底 SoftGlow 的 alpha 通道是全 255，
+            //在 AlphaBlend 里压不出软径向，只会糊出一整块硬边黑矩形
+            Texture2D veil = CWRAsset.Extra_98?.Value;
+            if (veil == null) {
                 return;
             }
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-            Vector2 origin = glow.Size() * 0.5f;
+            Vector2 origin = veil.Size() * 0.5f;
             float lakeY = domain.LakeWorldY;
             Vector2 mid = new(Projectile.Center.X, (Projectile.Center.Y + lakeY) * 0.5f);
-            //主暗池：罩住心脏到湖面的整片区域
-            sb.Draw(glow, mid - Main.screenPosition, null, Color.Black * (0.4f * dim), 0f,
-                origin, new Vector2(1700f / glow.Width, 900f / glow.Height), SpriteEffects.None, 0f);
+            //主暗池：罩住心脏到湖面的整片区域（×2 补偿 Extra_98 更紧的径向衰减）
+            sb.Draw(veil, mid - Main.screenPosition, null, Color.Black * (0.4f * dim), 0f,
+                origin, new Vector2(1700f / veil.Width, 900f / veil.Height) * 2f, SpriteEffects.None, 0f);
             //水线暗带：湖面失光
-            sb.Draw(glow, new Vector2(Projectile.Center.X, lakeY + 10f) - Main.screenPosition, null,
+            sb.Draw(veil, new Vector2(Projectile.Center.X, lakeY + 10f) - Main.screenPosition, null,
                 Color.Black * (0.34f * dim), 0f, origin,
-                new Vector2(2100f / glow.Width, 240f / glow.Height), SpriteEffects.None, 0f);
+                new Vector2(2100f / veil.Width, 240f / veil.Height) * 2f, SpriteEffects.None, 0f);
 
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,

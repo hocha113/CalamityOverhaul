@@ -440,3 +440,107 @@ VictorRiftPortalProj.DisplayName: Fenda Cibernetica de Victor
 // KikasaWallOfFleshEyeLaser.DisplayName: Kikasa Wall Of Flesh Eye Laser
 // KikasaWallOfFleshLeech.DisplayName: Kikasa Wall Of Flesh Leech
 // KikasaWallOfFleshServant.DisplayName: Kikasa Wall Of Flesh Servant
+// BrainBloodShard.DisplayName: Brain Blood Shard
+// BrainMirrorImage.DisplayName: Brain Mirror Image
+// BrainShellFragment.DisplayName: Brain Shell Fragment
+// BrainTeleportRift.DisplayName: Brain Teleport Rift
+// BrainVeinTelegraph.DisplayName: Brain Vein Telegraph
+// DeerFrostPulseProj.DisplayName: Deer Frost Pulse Proj
+// DeerIceSpikeProj.DisplayName: Deer Ice Spike Proj
+// DeerRubbleProj.DisplayName: Deer Rubble Proj
+// DeerShadowHandProj.DisplayName: Deer Shadow Hand Proj
+// FishronGeyserProj.DisplayName: Fishron Geyser Proj
+// FishronSharkTornadoProj.DisplayName: Fishron Shark Tornado Proj
+// FishronSkyBoltProj.DisplayName: Fishron Sky Bolt Proj
+// FishronTelegraph.DisplayName: Fishron Telegraph
+// FishronTideTrailProj.DisplayName: Fishron Tide Trail Proj
+// FishronTsunamiWallProj.DisplayName: Fishron Tsunami Wall Proj
+// EowAcidGlob.DisplayName: Eow Acid Glob
+// EowAcidPool.DisplayName: Eow Acid Pool
+// EowBreachOmen.DisplayName: Eow Breach Omen
+// EowGeyserProj.DisplayName: Eow Geyser Proj
+// EowHuskMine.DisplayName: Eow Husk Mine
+// EmpressAuroraVeil.DisplayName: Empress Aurora Veil
+// EmpressBlade.DisplayName: Empress Blade
+// EmpressLance.DisplayName: Empress Lance
+// EmpressPetal.DisplayName: Empress Petal
+// EmpressPrismBolt.DisplayName: Empress Prism Bolt
+// EmpressRadiance.DisplayName: Empress Radiance
+// EmpressSunray.DisplayName: Empress Sunray
+// EocBloodShot.DisplayName: Eoc Blood Shot
+// EocBloodSpike.DisplayName: Eoc Blood Spike
+// EocFogCloud.DisplayName: Eoc Fog Cloud
+// GolemEyeRay.DisplayName: Golem Eye Ray
+// GolemShockWave.DisplayName: Golem Shock Wave
+// GolemSolarMeteor.DisplayName: Golem Solar Meteor
+// GolemStoneShrapnel.DisplayName: Golem Stone Shrapnel
+// GolemSunBolt.DisplayName: Golem Sun Bolt
+// GolemSunCore.DisplayName: Golem Sun Core
+// GolemSunMortar.DisplayName: Golem Sun Mortar
+// GolemTelegraph.DisplayName: Golem Telegraph
+// GolemTrapUnit.DisplayName: Golem Trap Unit
+// BKSCrownProj.DisplayName: B K S Crown Proj
+// BKSGelGlobProj.DisplayName: B K S Gel Glob Proj
+// BKSGelPoolProj.DisplayName: B K S Gel Pool Proj
+// BKSGeyserProj.DisplayName: B K S Geyser Proj
+// BKSNinjaProj.DisplayName: B K S Ninja Proj
+// BKSNinjaSlashProj.DisplayName: B K S Ninja Slash Proj
+// BKSRoyalPillarProj.DisplayName: B K S Royal Pillar Proj
+// BKSShockwaveProj.DisplayName: B K S Shockwave Proj
+// BKSShurikenProj.DisplayName: B K S Shuriken Proj
+// BKSSplitSlimeProj.DisplayName: B K S Split Slime Proj
+// BKSTideWaveProj.DisplayName: B K S Tide Wave Proj
+// CultistArcSpark.DisplayName: Cultist Arc Spark
+// CultistCinderPatch.DisplayName: Cultist Cinder Patch
+// CultistElementOrb.DisplayName: Cultist Element Orb
+// CultistFireBolt.DisplayName: Cultist Fire Bolt
+// CultistFrostMistZone.DisplayName: Cultist Frost Mist Zone
+// CultistIceLance.DisplayName: Cultist Ice Lance
+// CultistRitualCircle.DisplayName: Cultist Ritual Circle
+// CultistSigilProj.DisplayName: Cultist Sigil Proj
+// CultistThunderColumn.DisplayName: Cultist Thunder Column
+// MLordArcRayProj.DisplayName: M Lord Arc Ray Proj
+// MLordCometProj.DisplayName: M Lord Comet Proj
+// MLordConstellationProj.DisplayName: M Lord Constellation Proj
+// MLordGravityWellProj.DisplayName: M Lord Gravity Well Proj
+// MLordOrbProj.DisplayName: M Lord Orb Proj
+// MLordScanRayProj.DisplayName: M Lord Scan Ray Proj
+// MLordStarfireProj.DisplayName: M Lord Starfire Proj
+// PlanteraPetalWave.DisplayName: Plantera Petal Wave
+// PlanteraPoisonSeed.DisplayName: Plantera Poison Seed
+// PlanteraSeed.DisplayName: Plantera Seed
+// PlanteraSporeCloud.DisplayName: Plantera Spore Cloud
+// PlanteraTelegraphLine.DisplayName: Plantera Telegraph Line
+// PlanteraThornBall.DisplayName: Plantera Thorn Ball
+// PlanteraVineLattice.DisplayName: Plantera Vine Lattice
+// BrutalBeeStinger.DisplayName: Brutal Bee Stinger
+// HoneyGlobProj.DisplayName: Honey Glob Proj
+// HoneyPuddleZone.DisplayName: Honey Puddle Zone
+// QueenBeeTelegraphLine.DisplayName: Queen Bee Telegraph Line
+// WaxHiveTurret.DisplayName: Wax Hive Turret
+// QueenChandelierProj.DisplayName: Queen Chandelier Proj
+// QueenCrystalSpireProj.DisplayName: Queen Crystal Spire Proj
+// QueenGaleFieldProj.DisplayName: Queen Gale Field Proj
+// QueenGelMeteorProj.DisplayName: Queen Gel Meteor Proj
+// QueenPrismBeamProj.DisplayName: Queen Prism Beam Proj
+// QueenShardProj.DisplayName: Queen Shard Proj
+// SkeletronBoneShard.DisplayName: Skeletron Bone Shard
+// SkeletronBoneSpike.DisplayName: Skeletron Bone Spike
+// SkeletronCursedSkull.DisplayName: Skeletron Cursed Skull
+// SkeletronCurseWisp.DisplayName: Skeletron Curse Wisp
+// SkeletronGhostArmProj.DisplayName: Skeletron Ghost Arm Proj
+// WofBloodClot.DisplayName: Wof Blood Clot
+// WofFleshSpikeProj.DisplayName: Wof Flesh Spike Proj
+// WofRetinaScanBeam.DisplayName: Wof Retina Scan Beam
+// WofTongueLashProj.DisplayName: Wof Tongue Lash Proj
+// ScrapArmHitbox.DisplayName: Scrap Arm Hitbox
+// ScrapAutonomousTool.DisplayName: Scrap Autonomous Tool
+// ScrapDebris.DisplayName: Scrap Debris
+// ScrapFlungTool.DisplayName: Scrap Flung Tool
+// ScrapGroundSaw.DisplayName: Scrap Ground Saw
+// ScrapJunkPile.DisplayName: Scrap Junk Pile
+// ScrapLaserPulse.DisplayName: Scrap Laser Pulse
+// ScrapMagnetFieldProj.DisplayName: Scrap Magnet Field Proj
+// ScrapMortarShell.DisplayName: Scrap Mortar Shell
+// ScrapShellFrag.DisplayName: Scrap Shell Frag
+// ScrapSweepBeam.DisplayName: Scrap Sweep Beam

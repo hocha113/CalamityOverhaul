@@ -49,3 +49,10 @@ TBUG: {
 		Princess_LovesNPC: 我最喜欢{NPCName}了！她知道好多别人都不知道的事！
 	}
 }
+
+ScrapCommander: {
+	DisplayName: 废钢统帅
+	Bestiary: 机械三王倒下之后，残料没人运走。某个夜里，一颗锈住的头颅在废钢堆里重新通了电，把四件还转得动的工具吊上自己的肩。它不修理任何东西，只清点：地上每一块废铁，都在它的编制里。
+}
+
+ScrapLegionProbe.DisplayName: 废钢仆从

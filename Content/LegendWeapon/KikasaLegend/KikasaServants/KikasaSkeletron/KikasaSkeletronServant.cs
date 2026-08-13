@@ -1481,10 +1481,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         /// <summary>血水腕链：从腕根垂向湖面的滴珠串，若断若续——被湖缚住的手</summary>
         private void DrawWristChains(SpriteBatch sb) {
             Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow == null) {
+            //暗色珠体用真 alpha 的 Extra_98——黑底 SoftGlow 在 AlphaBlend 里会糊出黑块
+            Texture2D beadTex = CWRAsset.Extra_98?.Value;
+            if (glow == null || beadTex == null) {
                 return;
             }
             Vector2 gOrigin = glow.Size() * 0.5f;
+            Vector2 bOrigin = beadTex.Size() * 0.5f;
             int flickerBeat = (int)(Main.GlobalTimeWrappedHourly * 2.5f);
 
             for (int i = 0; i < 2; i++) {
@@ -1510,8 +1513,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
                             6f + k * 14f);
                     float fade = alpha * (1f - k / 7f);
                     float size = (4.6f - k * 0.5f) * 2f;
-                    sb.Draw(glow, bead - Main.screenPosition, null, BloodDeep * (0.55f * fade), 0f,
-                        gOrigin, new Vector2(size / glow.Width, size * 1.35f / glow.Height), SpriteEffects.None, 0f);
+                    //×2 补偿 Extra_98 相对 SoftGlow 更紧的径向衰减，视觉尺寸对齐原稿
+                    sb.Draw(beadTex, bead - Main.screenPosition, null, BloodDeep * (0.55f * fade), 0f,
+                        bOrigin, new Vector2(size / beadTex.Width, size * 1.35f / beadTex.Height) * 2f, SpriteEffects.None, 0f);
                     sb.Draw(glow, bead - Main.screenPosition, null, (FoamGlow with { A = 0 }) * (0.3f * fade), 0f,
                         gOrigin, new Vector2(size * 0.45f / glow.Width, size * 0.6f / glow.Height), SpriteEffects.None, 0f);
                 }

@@ -62,8 +62,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
             Projectile.DamageType = DamageClass.Summon;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 300;
-            Projectile.tileCollide = true;
+            //不吃引擎地形碰撞：湖下真地形被湖面演出盖住，撞上去像凭空截停；
+            //贴壁爆溅改走 AI 内手动检测（只认水线以上的真地形）
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
+        }
+
+        /// <summary>是否撞上"看得见"的真地形：湖线以下的墙体被湖面演出盖住，交给水漂/吞没判据</summary>
+        private bool TouchingVisibleTile() {
+            if (!Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height)) {
+                return false;
+            }
+            Player owner = Main.player[Projectile.owner];
+            return owner?.active != true
+                || !owner.TryGetModPlayer(out KikasaDomainPlayer domain)
+                || !domain.AnyActive || domain.RiseT <= 0.5f
+                || Projectile.Center.Y < domain.LakeWorldY - 2f;
         }
 
         public override void AI() {
@@ -127,6 +141,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
 
             float glow = 0.6f * VisualFade;
             Lighting.AddLight(Projectile.Center, 0.62f * glow, 0.3f * glow, 0.1f * glow);
+
+            //贴壁爆溅（机制身份保留）：手动地形检测替代 tileCollide
+            if (life > 3 && TouchingVisibleTile()) {
+                burstDone = true;
+                MagmaBurst(Projectile.Center, Projectile.velocity, onTile: true);
+                Projectile.Kill();
+                return;
+            }
 
             //水面判据：读 owner 领域的水线，各端同规则
             Player owner = Main.player[Projectile.owner];
@@ -214,12 +236,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaServants.Kika
         }
 
         //==================== 命中与谢幕 ====================
-
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            burstDone = true;
-            MagmaBurst(Projectile.Center, oldVelocity, onTile: true);
-            return true;
-        }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             //命中的额外燎痕（OnHit 只在 owner 端跑，主爆在 OnKill 各端可见）
