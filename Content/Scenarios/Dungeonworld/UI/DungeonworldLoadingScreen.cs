@@ -26,7 +26,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
     /// </code>
     /// 触发进入的一方（传送物品等）建议在 SubworldSystem.Enter&lt;Dungeonworld&gt;() 之前
     /// 先调 <see cref="Enter"/>，退出侧在 SubworldSystem.Exit() 之前先调 <see cref="Exit"/>——
-    /// 主线程先复位，规避首帧竞态；未接线时本类也会按帧间隔自愈复位，不会卡死旧状态
+    /// 主线程先复位，规避首帧竞态<br/>
+    /// 过渡链路修复：自愈复位改为「一次过渡只复位一次」（世界内帧撤防、过渡首帧布防），
+    /// 旧的 1s 帧戳阈值会在头段长帧（12M tile 分配/GC 卡顿）下逐帧误判新过渡，
+    /// 把入场包络反复清零钉在纯黑——这正是「进入先黑屏十几秒」的根因
     /// </summary>
     internal class DungeonworldLoadingScreen : ModSystem, ILocalizedModType
     {
@@ -42,6 +45,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
         public static LocalizedText StatusDescend { get; private set; }
         public static LocalizedText StatusAscend { get; private set; }
         public static LocalizedText DepthLabel { get; private set; }
+        /// <summary>揭示层黑幕等待期的状态行（首帧闩锁期间显示）</summary>
+        public static LocalizedText RevealHold { get; private set; }
 
         public override void SetStaticDefaults() {
             string[] bandZh = ["教堂区", "牢狱层", "大档案馆", "水牢", "万骨窖", "铸造机关层", "倒吊教堂"];
@@ -74,6 +79,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
             StatusDescend = this.GetLocalization(nameof(StatusDescend), () => "吊笼下行中");
             StatusAscend = this.GetLocalization(nameof(StatusAscend), () => "吊笼上行中");
             DepthLabel = this.GetLocalization(nameof(DepthLabel), () => "深度 {0}%");
+            RevealHold = this.GetLocalization(nameof(RevealHold), () => "正在点亮烛火");
         }
         #endregion
 
@@ -103,25 +109,35 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
         //绘制侧缓存（Advance 算好供 Draw 消费）
         private static float topLight;
         private static float candleFlicker = 1f;
-        //帧戳：超过 1 秒无绘制视为新一次过渡，自愈复位
+        //最后一次 DrawSetup 的墙钟帧戳（长帧诊断 + 揭示层测「加载末帧→世界首帧」间隔）
         private static long lastDrawStamp;
+        //本次过渡是否已布防（复位过）：世界内帧撤防,过渡首帧自愈布防,加载期长帧不再误触发复位
+        private static bool armed;
+        //本次过渡的 DrawSetup 首帧是否已记录时间线日志
+        private static bool firstDrawLogged;
 
-        /// <summary>入场揭示层的待启标志，由 <see cref="DungeonworldEntryReveal"/> 在世界内消费</summary>
-        internal static bool PendingEntryReveal;
+        /// <summary>最后一次 DrawSetup 的墙钟帧戳，供揭示层测量硬切间隔</summary>
+        internal static long LastDrawStamp => lastDrawStamp;
         #endregion
 
         #region 公开静态 API（A 路转发目标）
         /// <summary>
         /// 进入方向的状态复位入口（主线程调用，先于 SubworldSystem.Enter）<br/>
-        /// A 路的进入触发点调用；忘记接线时依赖帧间隔自愈
+        /// A 路的进入触发点调用；忘记接线时过渡首帧自愈复位
         /// </summary>
-        public static void Enter() => Reset(true);
+        public static void Enter() {
+            armed = true;
+            Reset(true);
+        }
 
         /// <summary>
         /// 退出方向的状态复位入口（主线程调用，先于 SubworldSystem.Exit）<br/>
         /// 同时作为 Subworld.OnExit 的兜底转发目标（重复调用无害）
         /// </summary>
-        public static void Exit() => Reset(false);
+        public static void Exit() {
+            armed = true;
+            Reset(false);
+        }
 
         /// <summary>
         /// 加载屏总入口，镜像 SubworldLibrary 的 Subworld.DrawSetup(GameTime) 原型<br/>
@@ -131,6 +147,10 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
             SelfArm();
             float dt = MathHelper.Clamp((float)gameTime.ElapsedGameTime.TotalSeconds, 0f, 0.1f);
             Advance(dt);
+            if (descending) {
+                //逐帧刷新揭示层军备时戳:世界侧凭"时戳新鲜"判定本次进入需要落底演出
+                DungeonworldEntryReveal.ArmFromLoading();
+            }
 
             PlayerInput.SetZoom_UI();
             Main.instance.GraphicsDevice.Clear(Color.Black);
@@ -182,7 +202,7 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
         //计时/深度/节拍全量复位
         private static void Reset(bool enterDirection) {
             descending = enterDirection;
-            PendingEntryReveal = enterDirection;
+            firstDrawLogged = false;
             realSeconds = 0f;
             scrollY = 0f;
             travel = 0f;
@@ -196,13 +216,31 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.UI
             Array.Clear(plaqueFlash, 0, plaqueFlash.Length);
         }
 
-        //帧戳自愈：A 路忘接 Enter()/Exit() 时也能在过渡首帧复位
+        //自愈布防：未经 Enter()/Exit() 接线时在过渡首帧复位一次;
+        //布防后加载期任意长帧都不再触发复位(旧 1s 阈值会把入场包络反复清零钉黑,已废弃)
         private static void SelfArm() {
             long now = Environment.TickCount64;
-            bool stale = now - lastDrawStamp > 1000;
+            long gap = now - lastDrawStamp;
             lastDrawStamp = now;
-            if (stale) {
+            if (!armed) {
+                armed = true;
                 Reset(SubworldSystem.Current != null);
+            }
+            if (!firstDrawLogged) {
+                firstDrawLogged = true;
+                DungeonworldTransitionLog.Mark(
+                    $"DrawSetup 首帧(方向={(descending ? "下行" : "上行")}, 距上帧绘制 {gap}ms)");
+            }
+            else if (gap > 1000) {
+                //长帧诊断:主线程被冻结了多久,一条一行,用户 QA 直接抄日志
+                DungeonworldTransitionLog.Mark($"加载期长帧 {gap}ms(状态保持,不复位)");
+            }
+        }
+
+        //世界内每帧撤防:下次过渡的首帧重新布防;提交过渡当帧 gameMenu 已翻 true,不会误撤刚布的防
+        public override void PostUpdateEverything() {
+            if (!Main.dedServ && !Main.gameMenu) {
+                armed = false;
             }
         }
 

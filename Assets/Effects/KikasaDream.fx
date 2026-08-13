@@ -30,6 +30,8 @@ float uHoundA;       //0-1 犬影在场
 float uHoundAspect;  //犬 quad 宽/高（屏幕像素比），目晕保圆用
 float2 uEyeUv;       //眼睛帧内原生 uv（面向左、未翻转）
 float uGaze;         //0-1 双目余烬辉光
+float4 uCoverRect;   //施术者镜像抹除矩形（屏幕 uv：xy=左上 zw=右下）
+float uCoverA;       //0-1 抹除强度——镜里立着的是犬，不是人
 
 sampler uImage0 : register(s0);
 sampler uImage1 : register(s1);
@@ -73,6 +75,13 @@ float4 PSMirror(float2 coords : TEXCOORD0) : COLOR0
     wob += (nb - 0.5) * (0.008 + seamProx * 0.020) * uBoil;
     muv.x += wob * mask;
     muv.y += ((n1 - 0.5) * 0.0042 + (nb - 0.5) * 0.013 * uBoil) * mask;
+
+    //镜像源落在施术者身上的像素推到身侧采样，人影不入镜（与 KikasaGrade 同法）
+    float inCover = step(uCoverRect.x, muv.x) * step(muv.x, uCoverRect.z)
+        * step(uCoverRect.y, muv.y) * step(muv.y, uCoverRect.w) * uCoverA;
+    float coverEdgeX = lerp(uCoverRect.x - 0.004, uCoverRect.z + 0.004,
+        step(0.5 * (uCoverRect.x + uCoverRect.z), muv.x));
+    muv.x = lerp(muv.x, coverEdgeX, inCover);
 
     //采样与越界雾
     float2 cuv = clamp(muv, 0.002, 0.998);

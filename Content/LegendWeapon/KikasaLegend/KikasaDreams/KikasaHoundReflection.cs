@@ -30,6 +30,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
         private static readonly float[] gazes = new float[Main.maxPlayers];
         private static readonly float[] appears = new float[Main.maxPlayers];
         private static readonly bool[] growlLatches = new bool[Main.maxPlayers];
+        //朝向速度锁存：走动时随移动方向，静止保持最后一步的朝向——
+        //不读 player.direction，持械瞄准把人翻过去时狗不跟着原地打转
+        private static readonly int[] facings = new int[Main.maxPlayers];
 
         internal static void Clear() {
             Array.Clear(frames);
@@ -37,11 +40,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             Array.Clear(gazes);
             Array.Clear(appears);
             Array.Clear(growlLatches);
+            Array.Clear(facings);
         }
 
         /// <summary>转场镜面注入犬影时取当前帧，动作连续不跳帧</summary>
         internal static int GetFrame(int who)
             => who >= 0 && who < frames.Length ? frames[who] : 0;
+
+        /// <summary>转场镜面与倒影同一副朝向</summary>
+        internal static int GetFacing(int who)
+            => who >= 0 && who < facings.Length && facings[who] != 0 ? facings[who] : 1;
+
+        /// <summary>倒影出没渐变，抹除玩家镜像的遮罩跟它同步淡入淡出</summary>
+        internal static float GetAppear(int who)
+            => who >= 0 && who < appears.Length ? appears[who] : 0f;
 
         /// <summary>在镜面合成后调用。批次自管，世界坐标经视图矩阵</summary>
         internal static void Draw(SpriteBatch spriteBatch, KikasaDomainPlayer kdp) {
@@ -74,6 +86,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 
             UpdateAnimation(who, caster);
             UpdateGaze(who, caster, kdp);
+            //朝向锁存：只认走动，不认瞄准
+            if (MathF.Abs(caster.velocity.X) > 0.3f) {
+                facings[who] = caster.velocity.X > 0f ? 1 : -1;
+            }
+            else if (facings[who] == 0) {
+                facings[who] = caster.direction;
+            }
 
             Main.instance.LoadNPC(NPCID.Wolf);
             Texture2D tex = TextureAssets.Npc[NPCID.Wolf].Value;
@@ -95,8 +114,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             Effect hound = EffectLoader.KikasaHound?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
 
-            //犬面朝随玩家；狼贴图原生面向左
-            bool faceRight = caster.direction > 0;
+            //犬面朝随移动锁存；狼贴图原生面向左（原版 spriteDirection==1 翻转的约定）
+            bool faceRight = facings[who] > 0;
             SpriteEffects effects = SpriteEffects.FlipVertically
                 | (faceRight ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
 

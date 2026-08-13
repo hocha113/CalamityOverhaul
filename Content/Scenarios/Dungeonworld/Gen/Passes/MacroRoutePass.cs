@@ -35,12 +35,12 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
             //主竖井:从L1脊顶到L7脊地板,几何连续贯穿全部隔离带(§1.4)
             //L7地板行不挖,竖井底直接落在L7脊
             //
-            //===垂直连接清单(§1.4:每相邻层对≥2条,现状记账)===
-            //已落地:主竖井x1(全层贯穿,即本段)。次级通道全部缺席,其中
-            //L1→L2楼梯井(L1井口房Stairhead已建)的隔离带穿透【裁决:记入Wave-2,本腿不做】——
-            //理由:穿透落点需P30跨层协调预留(L2侧房间/禁室足印已按当前几何冻结,
-            //现在开洞有切坏L2内容的风险),且用户即临QA,收尾腿不引入新跨层几何;
-            //Wave-2实现时把穿透点开进P30占用登记,井底接L2脊或专用前室
+            //===垂直连接清单(§1.4:每相邻层对≥2条,Wave-2补全)===
+            //1.主竖井x1:全层贯穿,即本段;
+            //2.第二通道族x6:每个隔离带一口楼梯井式穿透(含Wave-1记账缺口L1→L2,
+            //  井位钉在L1井口房Stairhead窗口近旁兑现其"口部预留"叙事),
+            //  取位/禁带/足印预留/L7→深渊不开口裁决全文见VerticalLinks头注释,
+            //  井身刻画在本pass下方之字平台段之后
             int shaftLeft = DungeonworldMetrics.ShaftLeft;
             int shaftRight = shaftLeft + DungeonworldMetrics.ShaftWidth;
             LayerBand l7 = bands[^1];
@@ -70,7 +70,38 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
                     TileBrush.PlatformRow(platLeft, platLeft + 3, y, DungeonworldMetrics.PlatformFrameY);
                 }
             }
-            progress.Set(0.9);
+            progress.Set(0.85);
+
+            //===第二通道族:每隔离带一口楼梯井(Wave-2,§1.4)===
+            //取位是全管线第一组genRand消耗点(自上而下固定顺序,先于P30禁室定点,
+            //R4随机流纪律);足印由P30 ReserveInto预留进相邻两带ctx.Grid
+            VerticalLinks.PickAll();
+            for (int i = 0; i < bands.Length - 1; i++) {
+                int wellLeft = VerticalLinks.WellLeft[i];
+                if (wellLeft < 0) {
+                    //取位失败已在PickAll内fail loud,该层对退回仅主竖井
+                    continue;
+                }
+                int wellRight = wellLeft + VerticalLinks.WellWidth;
+                int upperFloor = bands[i].SpineFloorTop;
+                int lowerFloor = bands[i + 1].SpineFloorTop;
+                //井身:上层脊地板行(穿透)→下层脊地板行(不挖,井底即下层脊,镜像主竖井语义)
+                for (int y = upperFloor; y < lowerFloor; y++) {
+                    ushort wall = DungeonworldMetrics.BandForRow(y)?.Wall ?? WallID.BlueDungeonUnsafe;
+                    for (int x = wellLeft; x < wellRight; x++) {
+                        TileBrush.ClearCell(x, y, wall);
+                    }
+                }
+                //上口全宽平台桥:上层脊徒步不断路,按▼穿透下落(镜像竖井交口做法)
+                TileBrush.PlatformRow(wellLeft, wellRight, upperFloor, DungeonworldMetrics.PlatformFrameY);
+                //之字平台与主竖井同语法:竖距4上行可跳(F2),左右交替3宽
+                for (int y = lowerFloor - step; y >= upperFloor + 2; y -= step) {
+                    bool leftSide = ((y / step) & 1) == 0;
+                    int platLeft = leftSide ? wellLeft : wellRight - 3;
+                    TileBrush.PlatformRow(platLeft, platLeft + 3, y, DungeonworldMetrics.PlatformFrameY);
+                }
+            }
+            progress.Set(0.95);
 
             //出生点=安全房地板正中(F25先例,spawnTile在GenPass里设)
             Main.spawnTileX = DungeonworldMetrics.SpawnX;
@@ -79,7 +110,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
 
             CWRMod.Instance.Logger.Info(
                 $"[Dungeonworld] P20 MacroRoute carved={TileBrush.ClearWrites - clearBase}" +
-                $" platforms={TileBrush.PlatformWrites} spawn=({Main.spawnTileX},{Main.spawnTileY})");
+                $" platforms={TileBrush.PlatformWrites} spawn=({Main.spawnTileX},{Main.spawnTileY})" +
+                $" wells=[{VerticalLinks.Summary()}]");
         }
     }
 }

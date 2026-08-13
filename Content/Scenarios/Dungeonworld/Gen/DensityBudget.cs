@@ -28,6 +28,11 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
     //    (卫星房允许落位缺席),恰贴D下沿,直接取12会在缺席种子上刷错,故临时线放低
     //  2.MaxBlankRun ← 实测值上浮20%取整(L2活跃区SpawnX±600之外全实心,西缘空白段推演≈400级)
     //  3.MinCarvePercent ← 实测值x0.85(推演:脊6行+房间群,L1/L2约5~10%量级)
+    //
+    //Wave-2状态(管线路,2026-08-14):L3~L7上下文已建(P30七带)、P50调度槽已留、
+    //节点计数已接通各层ctx.Graph——五行仍保持report-only(HardEnabled=false),
+    //蓝图§3.5分层启用纪律:层内容穿衣稳定后才逐层开硬闸,本波绝不给新层刷错;
+    //空白段/挖空率硬线与理想挖空率待各层首波QA的GenReport density[]实测后回填,不预造数
     internal static class DensityBudgets
     {
         internal static readonly DensityBudget[] ByBand = [
@@ -35,7 +40,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
             new(true, 8, 12, 800, 3.0, 25.0),
             //L2牢狱层:硬闸启用(NodeTarget=16含Boss预留,D表§5)
             new(true, 10, 16, 800, 3.0, 35.0),
-            //L3~L7:report-only,目标值取D表§5节点档下沿,Wave-2逐层启用
+            //L3~L7:report-only,NodeTarget=D表§5节点档下沿(L3=36/L4=30/L5=30/L6=26/L7=6),
+            //随各层内容稳定逐波提档为硬线
             new(false, 0, 36, 0, 0.0, 0.0),
             new(false, 0, 30, 0, 0.0, 0.0),
             new(false, 0, 30, 0, 0.0, 0.0),

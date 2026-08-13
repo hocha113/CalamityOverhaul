@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.BossRooms;
+using System.Collections.Generic;
 using Terraria;
 
 namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
@@ -16,6 +17,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
     //时序(Wave-1定论):PickOrigin由P30 LayerPlanPass在规划期调用定点,
     //足印+padding随即预留进L2占用栅格(层内容房间构造性避开);
     //P45 GaolBossRoomPass只消费LastOrigin盖章,不再自行选址
+    //Wave-2追加:选址前扣除触及L2的隔离带楼梯井禁带(井位P20已定先于本定点,
+    //R4顺序=先竖直后逐层,禁室是避让方),禁带口径见VerticalLinks.ExcludeZones
     internal static class GaolBossRoomSiting
     {
         //本次生成的落位,P45盖章与ValidatePass报告消费;ShouldSave=false回放制下每次生成重算
@@ -40,15 +43,33 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
                 return null;
             }
 
-            //左区间:出生列左侧;右区间:主竖井右侧;genRand先选侧再取点(决定论F22)
+            //左区间:出生列左侧;右区间:主竖井右侧(闭区间,均为originX候选);
+            //Wave-2:先扣除触及L2的隔离带楼梯井禁带(井0整柱下行+井1脊口穿透,
+            //R4顺序=先竖直后逐层,避让方向=禁室避井);genRand先选侧再取点(决定论F22),
+            //随机消耗恒2次(NextBool+Next)与Wave-1一致
             int leftMin = DungeonworldMetrics.BorderThick + 4;
             int leftMax = DungeonworldMetrics.SpawnX - SpawnKeepAway - GaolBossRoom.Width;
             int rightMin = DungeonworldMetrics.ShaftLeft + DungeonworldMetrics.ShaftWidth + ShaftKeepAway;
             int rightMax = DungeonworldMetrics.Width - DungeonworldMetrics.BorderThick - 4 - GaolBossRoom.Width;
+            var leftSegs = new List<(int min, int max)> { (leftMin, leftMax) };
+            var rightSegs = new List<(int min, int max)> { (rightMin, rightMax) };
+            VerticalLinks.ExcludeZones(1, GaolBossRoom.Width, leftSegs);
+            VerticalLinks.ExcludeZones(1, GaolBossRoom.Width, rightSegs);
+
             //左区间右缘到竖井左缘的距离由SpawnKeepAway+SpawnX/ShaftLeft差保证≥30,静态成立
-            int originX = WorldGen.genRand.NextBool()
-                ? WorldGen.genRand.Next(leftMin, leftMax + 1)
-                : WorldGen.genRand.Next(rightMin, rightMax + 1);
+            bool pickLeft = WorldGen.genRand.NextBool();
+            List<(int min, int max)> side = pickLeft ? leftSegs : rightSegs;
+            if (VerticalLinks.SegLength(side) <= 0) {
+                //每口井禁带折算约70候选列,扣不空900列级区间;真到这步=常量被改坏
+                CWRMod.Instance.Logger.Warn("[Dungeonworld] 深牢禁室所选侧被井位禁带扣空,换侧落位");
+                side = pickLeft ? rightSegs : leftSegs;
+            }
+            int originX = VerticalLinks.PickFromSegments(side);
+            if (originX < 0) {
+                CWRMod.Instance.Logger.Error(
+                    "[Dungeonworld] 深牢禁室两侧均无合法落位,本次跳过,责任=常量表/井位禁带");
+                return null;
+            }
 
             LastOrigin = new Point(originX, originY);
             CWRMod.Instance.Logger.Info(

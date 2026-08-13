@@ -1202,6 +1202,7 @@ DungeonworldLoadingScreen: {
 	StatusDescend: 吊笼下行中
 	StatusAscend: 吊笼上行中
 	DepthLabel: 深度 {0}%
+	RevealHold: 正在点亮烛火
 }
 
 OldNetTexts: {

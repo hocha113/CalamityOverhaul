@@ -148,17 +148,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 
             SpawnBurstFx();
 
+            //接地性必须在施加重力前采样：原版碰撞在 AI 之后才把竖速归零，
+            //先加重力再看 velocity.Y 会永远读到下坠——犬会卡在跃出态不索敌、帧停在坠落
+            bool grounded = Projectile.velocity.Y == 0f;
+            float vyIn = Projectile.velocity.Y;
+
+            float gravity = Gravity;
             switch (State) {
-                case StateLeap: UpdateLeap(); break;
-                case StateRun: UpdateRun(); break;
-                case StateLunge: UpdateLunge(); break;
-                case StateDissolve: UpdateDissolve(); break;
+                case StateLeap: gravity = UpdateLeap(grounded); break;
+                case StateRun: gravity = UpdateRun(grounded); break;
+                case StateLunge: gravity = UpdateLunge(); break;
+                case StateDissolve: gravity = UpdateDissolve(); break;
             }
+            ApplyGravity(gravity);
 
             if (MathF.Abs(Projectile.velocity.X) > 0.2f) {
                 Projectile.spriteDirection = Projectile.velocity.X > 0f ? 1 : -1;
             }
-            UpdateFrame();
+            UpdateFrame(grounded, vyIn);
         }
 
         //出场那一口黑水，各端首帧自播
@@ -185,28 +192,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             }
         }
 
-        private void UpdateLeap() {
+        //各状态返回本帧应施加的重力，统一在 AI 尾部结算
+
+        private float UpdateLeap(bool grounded) {
             StateTimer++;
-            ApplyGravity(Gravity);
-            //落地或跃势用尽，进入追猎
-            if (StateTimer > 6f && Projectile.velocity.Y == 0f) {
+            //落地即入追猎
+            if (StateTimer > 6f && grounded) {
                 State = StateRun;
                 StateTimer = 0f;
             }
+            return Gravity;
         }
 
-        private void UpdateRun() {
+        private float UpdateRun(bool grounded) {
             StateTimer++;
             if (LungeCooldown > 0f) {
                 LungeCooldown--;
             }
-            ApplyGravity(Gravity);
 
             NPC target = FindTarget();
             if (target == null) {
                 //没有猎物：缓步收住，站定等
                 Projectile.velocity.X *= 0.92f;
-                return;
+                return Gravity;
             }
 
             float dx = target.Center.X - Projectile.Center.X;
@@ -218,7 +226,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                 Projectile.velocity.X + RunAccel * dir, -RunMaxSpeed, RunMaxSpeed);
 
             //撞墙小跳；猎物在头顶也蹬地跃起
-            bool grounded = Projectile.velocity.Y == 0f;
             if (grounded) {
                 bool blocked = MathF.Abs(Projectile.velocity.X) < 0.6f && MathF.Abs(dx) > 40f;
                 bool preyAbove = dy < -70f && MathF.Abs(dx) < 110f;
@@ -244,22 +251,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
                     Projectile.netUpdate = true;
                 }
             }
+            return Gravity;
         }
 
-        private void UpdateLunge() {
+        private float UpdateLunge() {
             StateTimer++;
-            //扑击前段低重力咬直线，后段自然坠回
-            ApplyGravity(StateTimer <= 12f ? 0.10f : Gravity);
             if (StateTimer > 26f) {
                 State = StateRun;
                 StateTimer = 0f;
             }
+            //扑击前段低重力咬直线，后段自然坠回
+            return StateTimer <= 12f ? 0.10f : Gravity;
         }
 
-        private void UpdateDissolve() {
+        private float UpdateDissolve() {
             StateTimer++;
             Projectile.velocity.X *= 0.9f;
-            ApplyGravity(0.08f);
 
             //化雾：黑红潮气一路散
             if (!Main.dedServ && StateTimer % 3 == 0) {
@@ -272,6 +279,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             if (StateTimer >= DissolveFrames) {
                 Projectile.Kill();
             }
+            return 0.08f;
         }
 
         private void ApplyGravity(float gravity) {
@@ -312,18 +320,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
 
         //==================== 帧与绘制 ====================
 
-        //帧逻辑与倒影同源（原版狼 FindFrame）：跃 10、坠 11、立 0、落地 12、跑 3-9
+        //帧逻辑与倒影同源（原版狼 FindFrame）：跃 10、坠 11、立 0、落地 12、跑 3-9。
+        //接地性与入帧竖速由 AI 在施加重力前采样喂入，别在这里读加过重力的 velocity
 
-        private void UpdateFrame() {
+        private void UpdateFrame(bool grounded, float vyIn) {
             float vx = Projectile.velocity.X;
-            float vy = Projectile.velocity.Y;
 
-            if (vy < -0.1f) {
-                frameIndex = 10;
-                frameCounter = 0f;
-            }
-            else if (vy > 0.1f) {
-                frameIndex = 11;
+            if (!grounded) {
+                frameIndex = vyIn < 0f ? 10 : 11;
                 frameCounter = 0f;
             }
             else if (MathF.Abs(vx) < 0.2f) {

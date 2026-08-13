@@ -26,6 +26,8 @@ float uSeamGlow;        //0~1 缝线血沫水膜辉光
 float uAspect;          //宽/高
 float uRain;            //0~1 鬼雨异化混合：血暮↔湿墨浊水，全套色板权重乘混合
 float4 uLineWave[4];    //水线行波源 x=源uv.x y=寿命进度01 z=幅度(uv.y) w=备用；空槽 z=0
+float4 uCoverRect;      //倒影抹除矩形（屏幕 uv：xy=左上 zw=右下）——倒影恶犬替换施术者镜像时用
+float uCoverA;          //0~1 抹除强度，随倒影出没渐变；0=不生效
 
 #define LUMA_W float3(0.299, 0.587, 0.114)
 
@@ -164,6 +166,13 @@ float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
     float2 muv = float2(uv.x, 2.0 * uPivotY - uv.y);
     muv.x += ((n0 - 0.5) * (0.0070 + seamProx * 0.016) + (n1 - 0.5) * 0.0042) * belowMask;
     muv.y += (n1 - 0.5) * 0.0062 * belowMask;
+    //倒影恶犬替换人影：镜像源落在施术者身上的像素，把采样点水平推到身侧——
+    //镜里出现的是他背后的天，人从倒影里被抹去
+    float inCover = step(uCoverRect.x, muv.x) * step(muv.x, uCoverRect.z)
+        * step(uCoverRect.y, muv.y) * step(muv.y, uCoverRect.w) * uCoverA;
+    float coverEdgeX = lerp(uCoverRect.x - 0.004, uCoverRect.z + 0.004,
+        step(0.5 * (uCoverRect.x + uCoverRect.z), muv.x));
+    muv.x = lerp(muv.x, coverEdgeX, inCover);
     float2 cuv = clamp(muv, 0.002, 0.998);
     float3 mcol = tex2D(uImage0, cuv).rgb;
     float srcOk = saturate(muv.y * 16.0) * saturate((1.0 - muv.y) * 16.0);

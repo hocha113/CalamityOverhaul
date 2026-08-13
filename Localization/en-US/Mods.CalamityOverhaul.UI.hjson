@@ -1204,6 +1204,7 @@ DungeonworldLoadingScreen: {
 	StatusDescend: The cage is descending
 	StatusAscend: The cage is rising
 	DepthLabel: Depth {0}%
+	RevealHold: Lighting the candles
 }
 
 OldNetTexts: {

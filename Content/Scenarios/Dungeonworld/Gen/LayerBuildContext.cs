@@ -33,17 +33,29 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen
     }
 
     //每次生成重算的规划态(ShouldSave=false回放制),P30入口重置
+    //Wave-2:七带全槽——L3~L7上下文由P30一并建立(含隔离带楼梯井足印预留,
+    //见VerticalLinks),层内容入口按波次接线(P50 LayerContentPass调度)
     internal static class LayerPlans
     {
         internal static LayerBuildContext L1;
         internal static LayerBuildContext L2;
+        internal static LayerBuildContext L3;
+        internal static LayerBuildContext L4;
+        internal static LayerBuildContext L5;
+        internal static LayerBuildContext L6;
+        internal static LayerBuildContext L7;
 
         //撒布禁区:Boss房开阔区零撒布(§3.2-7特例)
         internal static readonly List<Rectangle> ScatterExclusions = [];
 
+        /// <summary>按层带索引取上下文(与DungeonworldMetrics.Bands同索引),越界返回null</summary>
+        internal static LayerBuildContext ByIndex(int bandIndex) => bandIndex switch {
+            0 => L1, 1 => L2, 2 => L3, 3 => L4, 4 => L5, 5 => L6, 6 => L7,
+            _ => null,
+        };
+
         internal static void Reset() {
-            L1 = null;
-            L2 = null;
+            L1 = L2 = L3 = L4 = L5 = L6 = L7 = null;
             ScatterExclusions.Clear();
         }
     }

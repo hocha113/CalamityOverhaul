@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             VaultTitle = this.GetLocalization(nameof(VaultTitle), () => "开湖窗取物");
             VaultBody = this.GetLocalization(nameof(VaultBody),
                 () => "沉下去的东西悬在血水里漂着。持鬼伞开湖窗，点一件，湖把它送回你手边。");
-            VaultPrompt = this.GetLocalization(nameof(VaultPrompt), () => "持鬼伞按 {0}");
+            VaultPrompt = this.GetLocalization(nameof(VaultPrompt), () => "持鬼伞按 {0}，或点击左下水鏡");
 
             SummonTitle = this.GetLocalization(nameof(SummonTitle), () => "驱使鬼奴");
             SummonBody = this.GetLocalization(nameof(SummonBody),
@@ -301,7 +301,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             if (currentPhase == Phase.Domain && KikasaHud.Instance?.Active == true) {
                 Vector2 mirror = KikasaHud.Anchor;
                 float pulse = KikasaHudTheme.Breath(time, 1.3f, 3f);
-                KikasaVaultRenderer.DrawRing(sb, mirror, 74f + pulse * 5f, 20f,
+                KikasaVaultRenderer.DrawRing(sb, mirror,
+                    KikasaHudTheme.RimHalfW + 14f + pulse * 5f, 18f,
                     KikasaHudTheme.Glow(rain) * ((0.35f + pulse * 0.2f) * alpha));
             }
 
@@ -366,7 +367,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 Vector2 mirror = KikasaHud.Anchor;
                 cardX = MathHelper.Clamp(mirror.X - 30f,
                     16f, Math.Max(16f, KikasaHudTheme.UIScreenW - CardW - 16f));
-                cardY = MathHelper.Clamp(mirror.Y - 94f - cardH - 20f,
+                cardY = MathHelper.Clamp(mirror.Y - 78f - cardH - 20f,
                     16f, Math.Max(16f, KikasaHudTheme.UIScreenH - cardH - 16f));
             }
             float slideY = (1f - alpha) * 16f;
@@ -376,7 +377,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             //连线：卡底垂到水鏡顶；湖窗模式不画，鏡不在场（伞没拿手上）也不画
             if (!vaultOpen && KikasaHud.Instance?.Active == true) {
                 DrawDashedLine(sb, new Vector2(card.X + 26f, card.Bottom),
-                    KikasaHud.Anchor + new Vector2(0f, -66f),
+                    KikasaHud.Anchor + new Vector2(0f, -(KikasaHudTheme.MirrorH * 0.5f + 4f)),
                     KikasaHudTheme.Accent(rain) * (0.45f * alpha), time);
             }
 

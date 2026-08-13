@@ -924,6 +924,7 @@ KikasaText: {
 		MemoryEmpty: The lakebed is still empty
 		ServantOutTag: It's out doing your work
 		DomainHintFormat: Press {0} to raise the blood lake
+		OpenHintFormat: Click or press {0} to toggle the lake window
 	}
 
 	KikasaHudLead: {
@@ -935,7 +936,7 @@ KikasaText: {
 		SinkPrompt: Once the water reaches your feet, press {0} while holding an item or aiming at a creature
 		VaultTitle: Open the Lake Window
 		VaultBody: Everything you sank drifts in the blood water. Hold the umbrella, open the window, click one, and the lake hands it back.
-		VaultPrompt: Hold the umbrella and press {0}
+		VaultPrompt: Hold the umbrella and press {0}, or click the water mirror at the bottom left
 		SummonTitle: Command the Servant
 		SummonBody: The lake always remembers the last creature drowned in its grip. Call its servant to fight for you; press again to dismiss it.
 		SummonPrompt: Press {0}

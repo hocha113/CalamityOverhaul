@@ -11,7 +11,9 @@ using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -23,6 +25,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
     /// 翻转期沸腾/倾荡/白闪与世界同拍；湖底沉睡着湖的记忆（最后被沉溺的生物），
     /// 鬼奴外出时鏡底空着、只留一个旋涡；伞拱缘的冷却弧是沉溺之手的余悸；
     /// 鏡底沉积线记着湖藏几件。一切状态转换说水的语言：涨退水、涟漪、气泡，不做 UI 式淡滑。
+    /// 鏡面可点：悬停占鼠标，点击开阖湖窗（比目鱼之眼点开图鉴的同款语义），
+    /// 湖没涨起来时点击给"湖还没涨到脚边"的拒绝答话。
     /// </summary>
     internal class KikasaHud : UIHandle, ILocalizedModType, IBottomLeftHud
     {
@@ -33,11 +37,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         public static LocalizedText MemoryEmpty { get; private set; }
         public static LocalizedText ServantOutTag { get; private set; }
         public static LocalizedText DomainHintFormat { get; private set; }
+        public static LocalizedText OpenHintFormat { get; private set; }
 
         public override void SetStaticDefaults() {
             MemoryEmpty = this.GetLocalization(nameof(MemoryEmpty), () => "湖底还空着");
             ServantOutTag = this.GetLocalization(nameof(ServantOutTag), () => "它替你出手去了");
             DomainHintFormat = this.GetLocalization(nameof(DomainHintFormat), () => "按 {0} 撑开血湖");
+            OpenHintFormat = this.GetLocalization(nameof(OpenHintFormat), () => "点击或按 {0} 开阖湖窗");
         }
 
         //==================== 可见性 ====================
@@ -68,8 +74,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         int IBottomLeftHud.HudStackOrder => 0;
         Vector2 IBottomLeftHud.HudStackAnchor => NaturalAnchor;
         //上覆伞章、下覆沉物计数与提示行
-        float IBottomLeftHud.HudStackTopExtent => 94f;
-        float IBottomLeftHud.HudStackBottomExtent => 86f;
+        float IBottomLeftHud.HudStackTopExtent => 76f;
+        float IBottomLeftHud.HudStackBottomExtent => 78f;
         #endregion
 
         /// <summary>自然锚点（鏡心），未参与左下队列避让时的原始位置</summary>
@@ -105,6 +111,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         private bool lastDreaming;
 
         private bool hoverMirror;
+        //悬停的平滑值，喂伞章提亮与鏡水活性
+        private float hoverLerp;
         private int frame;
 
         //鏡内气泡（事件反馈，升到水线即破）
@@ -120,6 +128,43 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
         private const int MoteCap = 24;
         private readonly List<Mote> motes = [];
+
+        //湿纸滴水：拱缘偶尔一滴顺壁滑落，触水起微圈
+        private struct Drip
+        {
+            public Vector2 Pos;
+            public float Vy;
+            public int Life;
+        }
+
+        private readonly List<Drip> drips = [];
+        private int nextDripIn = 120;
+        //触水微圈（位置 + 余龄）
+        private readonly List<(Vector2 pos, int timer)> dripRings = [];
+
+        //==================== 墨骨勾线 ====================
+        //伞拱轮廓，归一空间（scale = RimHalfW，原点鏡心）：
+        //圆拱两段三次曲线 + 直裙边 + 四瓣荷缘 Q 弧，与 KikasaHud.fx 的 SDF 同形
+        private static readonly string RimOutline = BuildRimOutline();
+
+        private static string BuildRimOutline() {
+            float hh = KikasaHudTheme.RimHalfH / KikasaHudTheme.RimHalfW;  //≈0.918
+            float cy = 1f - hh;                                            //拱心 y ≈0.082
+            const float k = 0.5523f;                                       //四分圆三次近似
+            float skirt = hh - 5f / KikasaHudTheme.RimHalfW;               //荷缘尖端 y
+            float dip = 2f * hh - skirt;                                   //荷缘 Q 控制点 y
+            System.Globalization.CultureInfo inv = System.Globalization.CultureInfo.InvariantCulture;
+            string F(float v) => v.ToString("0.###", inv);
+            return $"M -1 {F(cy)} "
+                + $"C -1 {F(cy - k)} -{F(k)} -{F(hh)} 0 -{F(hh)} "
+                + $"C {F(k)} -{F(hh)} 1 {F(cy - k)} 1 {F(cy)} "
+                + $"L 1 {F(skirt)} "
+                + $"Q 0.75 {F(dip)} 0.5 {F(skirt)} "
+                + $"Q 0.25 {F(dip)} 0 {F(skirt)} "
+                + $"Q -0.25 {F(dip)} -0.5 {F(skirt)} "
+                + $"Q -0.75 {F(dip)} -1 {F(skirt)} "
+                + $"L -1 {F(cy)}";
+        }
 
         private KikasaDomainPlayer Domain => player.GetModPlayer<KikasaDomainPlayer>();
         private KikasaVaultPlayer Vault => player.GetModPlayer<KikasaVaultPlayer>();
@@ -216,19 +261,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             vortexSpin += 0.045f + servantOutLerp * 0.02f;
             float restStir = domain.Phase == KikasaDomainPhase.Opening
                 || domain.Phase == KikasaDomainPhase.Closing ? 0.45f : 0.10f;
+            if (hoverMirror) {
+                //水知道你在看它
+                restStir = MathF.Max(restStir, 0.30f);
+            }
             stir = MathHelper.Lerp(stir, restStir, 0.06f);
             memoryPulse *= 0.94f;
             sedimentPulse *= 0.93f;
             readyFlash = MathF.Max(readyFlash - 0.03f, 0f);
             reflectPulse *= 0.94f;
 
-            //悬停只亮名牌，不占鼠标——纯展示件不挡战斗点击
+            //悬停鏡面占鼠标，点击开阖湖窗（比目鱼之眼点开图鉴的同款语义）
             Vector2 mouse = KikasaHudTheme.UIMouse;
             Rectangle mirrorRect = new(
                 (int)(anchor.X - KikasaHudTheme.MirrorW * 0.5f),
                 (int)(anchor.Y - KikasaHudTheme.MirrorH * 0.5f),
                 KikasaHudTheme.MirrorW, KikasaHudTheme.MirrorH);
             hoverMirror = appear > 0.6f && mirrorRect.Contains(mouse.ToPoint());
+            hoverLerp = MathHelper.Lerp(hoverLerp, hoverMirror ? 1f : 0f, 0.15f);
+            if (hoverMirror) {
+                player.mouseInterface = true;
+                if (keyLeftPressState == KeyPressState.Pressed) {
+                    ToggleVaultWindow();
+                }
+            }
 
             //悬停记忆冒泡：湖底的它知道你在看
             if (hoverMirror && memoryType > 0 && !servantOut
@@ -237,6 +293,75 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             }
 
             UpdateMotes(anchor);
+            UpdateDrips(anchor, domain);
+        }
+
+        /// <summary>湿纸滴水：窗撕开后拱缘偶尔渗一滴，顺壁滑落触水即圈</summary>
+        private void UpdateDrips(Vector2 anchor, KikasaDomainPlayer domain) {
+            bool wet = domain.AnyActive && domain.SpreadProgress > 0.6f;
+            if (wet && --nextDripIn <= 0 && drips.Count < 2) {
+                nextDripIn = Main.rand.Next(80, 200);
+                //拱顶上半圈取一点，滴沿内壁起步
+                float ang = -MathHelper.PiOver2 + Main.rand.NextFloat(-1.0f, 1.0f);
+                Vector2 rim = anchor + KikasaHudTheme.DomeCenterOffset
+                    + ang.ToRotationVector2() * (KikasaHudTheme.RimHalfW - 3f);
+                drips.Add(new Drip { Pos = rim, Vy = 0.15f });
+            }
+
+            float waterPixY = anchor.Y + (WaterUv(domain) - 0.5f) * KikasaHudTheme.MirrorH;
+            float floorY = anchor.Y + KikasaHudTheme.RimHalfH - 4f;
+            for (int i = drips.Count - 1; i >= 0; i--) {
+                Drip dp = drips[i];
+                dp.Life++;
+                dp.Vy = MathF.Min(dp.Vy + 0.04f, 1.6f);
+                dp.Pos.Y += dp.Vy;
+                float endY = MathF.Min(waterPixY, floorY);
+                if (dp.Pos.Y >= endY || dp.Life > 240) {
+                    if (dp.Pos.Y >= waterPixY - 1f && waterPixY < floorY) {
+                        //触水：一记微圈，水面轻应
+                        dripRings.Add((new Vector2(dp.Pos.X, waterPixY), 0));
+                        stir = MathF.Max(stir, 0.22f);
+                    }
+                    drips.RemoveAt(i);
+                    continue;
+                }
+                drips[i] = dp;
+            }
+            for (int i = dripRings.Count - 1; i >= 0; i--) {
+                (Vector2 pos, int timer) = dripRings[i];
+                if (++timer >= 22) {
+                    dripRings.RemoveAt(i);
+                }
+                else {
+                    dripRings[i] = (pos, timer);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 鏡面点击：开着就合上，合尽了才开——湖窗自己的"点窗外合上"可能在同一击里
+        /// 先把窗合了，这里若无视合拢余韵会当帧把它重新掀开
+        /// </summary>
+        private void ToggleVaultWindow() {
+            KikasaVaultUI ui = KikasaVaultUI.Instance;
+            if (ui == null) {
+                return;
+            }
+            if (ui.IsOpen) {
+                ui.Close();
+                return;
+            }
+            if (ui.OpenProgress > 0.01f) {
+                //正在合拢，这一击不受理
+                return;
+            }
+            if (Vault.LakeReady) {
+                ui.Open();
+                return;
+            }
+            //拒绝也答话：湖没涨起来，窗开不了
+            SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.55f, Pitch = -0.7f, MaxInstances = 2 }, player.Center);
+            CombatText.NewText(player.Hitbox, new Color(190, 84, 80), KikasaVaultPlayer.LakeNotReady.Value);
         }
 
         private void BurstBubbles(Vector2 from, int count) {
@@ -287,10 +412,52 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             anchor.Y += (1f - a) * 10f;
 
             DrawMirror(spriteBatch, anchor, domain, a, rain, waterUv, effStir);
+            DrawInkBones(spriteBatch, anchor, domain, a, rain, time);
             DrawMemory(spriteBatch, anchor, domain, a, rain, waterUv);
             DrawAdditiveBits(spriteBatch, anchor, domain, a, rain, waterUv, time);
             DrawSeal(spriteBatch, anchor, a, rain, time);
             DrawTextBits(spriteBatch, anchor, domain, a, rain, waterUv);
+        }
+
+        //====== 墨骨层：拱缘勾线与干纸伞骨 ======
+
+        /// <summary>
+        /// 锐利前景：伞拱轮廓一笔勾线（湖就绪时拱缘走巡光）；
+        /// 干纸态透出四根伞骨，撕开后随 tear 淡出——纸伞变窗
+        /// </summary>
+        private void DrawInkBones(SpriteBatch sb, Vector2 anchor, KikasaDomainPlayer domain,
+            float a, float rain, float time) {
+            SvgPath rim = SvgPathPen.Path(RimOutline);
+            Color accent = KikasaHudTheme.Accent(rain);
+            Color dim = KikasaHudTheme.TextDim(rain);
+            //外柔内锐两笔：暗托底，亮描形
+            SvgPathPen.Stroke(sb, rim, anchor, KikasaHudTheme.RimHalfW, 0f,
+                KikasaHudTheme.Void(rain), 2.6f, a * 0.5f);
+            SvgPathPen.Stroke(sb, rim, anchor, KikasaHudTheme.RimHalfW, 0f,
+                accent, 1.1f, a * (0.4f + hoverLerp * 0.2f));
+            //湖就绪：拱缘一段巡光缓走，"这扇窗现在开得了"
+            if (Vault.LakeReady) {
+                SvgPathPen.StrokeRunner(sb, rim, anchor, KikasaHudTheme.RimHalfW, 0f,
+                    KikasaHudTheme.Glow(rain), 1.5f, a * 0.45f, time * 0.05f, 0.08f);
+            }
+
+            //干纸伞骨：自拱心放射四根，避开正上方的伞章弯钩
+            float tear = domain.AnyActive ? domain.SpreadProgress : 0f;
+            float dry = 1f - tear;
+            if (dry > 0.03f) {
+                Vector2 hub = anchor + KikasaHudTheme.DomeCenterOffset;
+                Span<float> ribs = [-2.62f, -1.92f, -1.22f, -0.52f];
+                foreach (float ang in ribs) {
+                    Vector2 dir = ang.ToRotationVector2();
+                    KikasaVaultRenderer.DrawLine(sb, hub + dir * 6f,
+                        hub + dir * (KikasaHudTheme.RimHalfW - 3f), 1f,
+                        dim * (0.28f * dry * a));
+                }
+                //骨间纸面一点鼓起的受光（伞收拢时的折面感）
+                KikasaVaultRenderer.DrawLine(sb, hub + new Vector2(0f, 2f),
+                    hub + new Vector2(0f, KikasaHudTheme.RimHalfH - 8f), 1f,
+                    dim * (0.18f * dry * a));
+            }
         }
 
         //====== 鏡体 ======
@@ -389,6 +556,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             float fit = KikasaHudTheme.MemoryFit;
             float scale = MathF.Min(1f, fit / MathF.Max(frameRect.Width, frameRect.Height));
             Vector2 pos = MemoryCenter(anchor);
+
+            //湖床落影：真阿尔法的压扁暗环，剪影不再悬空（加色画不出暗，这层必须留在普通批）
+            Vector2 shadowAt = anchor + KikasaHudTheme.MemoryOffset
+                + new Vector2(0f, fit * 0.46f);
+            KikasaVaultRenderer.DrawRing(sb, shadowAt, fit * 0.40f, fit * 0.11f,
+                KikasaHudTheme.Void(rain) * (0.5f * alpha));
             bool tamed = KikasaServantIndex.TryGet(memoryType, out _);
             float hover = hoverMirror ? 0.35f : 0f;
             //可驱使的沉得浅些醒些；没学会驱使的沉死在血水里
@@ -439,17 +612,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
             KikasaVaultRenderer.BeginAdditive(sb);
 
-            //水线上两点游光，鏡水在呼吸
+            //水面本身给一条锐利泡沫线（宽度贴着拱形收窄），游光骑在线上
             if (hasWater && domain.AnyActive) {
-                float halfW = KikasaHudTheme.MirrorW * 0.5f - 16f;
+                float lineHalf = WaterLineHalfWidth(anchor, waterPixY);
+                KikasaVaultRenderer.DrawLine(sb,
+                    new Vector2(anchor.X - lineHalf, waterPixY),
+                    new Vector2(anchor.X + lineHalf, waterPixY), 1f,
+                    glow * ((0.16f + stir * 0.18f) * a));
                 for (int k = 0; k < 2; k++) {
                     float drift = (time * (0.06f + k * 0.025f) + k * 0.5f) % 1f;
-                    float gx = MathHelper.Lerp(anchor.X - halfW, anchor.X + halfW,
+                    float gx = MathHelper.Lerp(anchor.X - lineHalf + 4f, anchor.X + lineHalf - 4f,
                         k == 0 ? drift : 1f - drift);
                     float ga = KikasaHudTheme.Breath(time, k * 3.7f, 2.4f);
                     KikasaVaultRenderer.DrawGlowDot(sb, new Vector2(gx, waterPixY),
-                        5f, glow * (0.14f * ga * a));
+                        4.5f, glow * (0.14f * ga * a));
                 }
+            }
+
+            //湿纸滴水与触水微圈
+            foreach (Drip dp in drips) {
+                KikasaVaultRenderer.DrawLine(sb, dp.Pos - new Vector2(0f, 2.6f + dp.Vy * 1.6f),
+                    dp.Pos, 1f, glow * (0.30f * a));
+                KikasaVaultRenderer.DrawGlowDot(sb, dp.Pos, 1.6f, glow * (0.28f * a));
+            }
+            foreach ((Vector2 pos, int timer) in dripRings) {
+                float t = timer / 22f;
+                KikasaVaultRenderer.DrawRing(sb, pos, 2f + t * 7f, (2f + t * 7f) * 0.35f,
+                    glow * (0.30f * (1f - t) * a));
             }
 
             //记忆的呼吸微光：可驱使才有生气
@@ -469,7 +658,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 float va = servantOutLerp * a;
                 for (int ring = 0; ring < 2; ring++) {
                     float rp = (vortexSpin * 0.16f + ring * 0.5f) % 1f;
-                    float r = MathHelper.Lerp(15f, 4f, rp);
+                    float r = MathHelper.Lerp(13f, 3.5f, rp);
                     KikasaVaultRenderer.DrawRing(sb, vc, r, r * 0.42f,
                         glow * (0.22f * (1f - rp) * va));
                 }
@@ -477,9 +666,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 for (int k = 0; k < 4; k++) {
                     float ang = vortexSpin + k * MathHelper.PiOver2;
                     float rp = (vortexSpin * 0.13f + k * 0.25f) % 1f;
-                    float r = MathHelper.Lerp(14f, 2.5f, rp);
+                    float r = MathHelper.Lerp(12f, 2.2f, rp);
                     Vector2 dotPos = vc + ang.ToRotationVector2() * r;
-                    KikasaVaultRenderer.DrawGlowDot(sb, dotPos, 2.4f, accent * (0.30f * (1f - rp) * va));
+                    KikasaVaultRenderer.DrawGlowDot(sb, dotPos, 2.2f, accent * (0.30f * (1f - rp) * va));
                 }
             }
 
@@ -521,18 +710,42 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                     -MathHelper.PiOver2 - 0.9f, 1.8f, 1.3f, glow * (readyFlash * 0.5f * a));
             }
 
-            //沉积线：湖底记着藏了几件，变动时一亮
+            //沉积层：满刻度暗槽 + 存量亮层 + 每五件一粒刻点，变动时一亮
             int vaultCount = Vault.Stored.Count;
             if (vaultCount > 0 && hasWater) {
-                float fillW = (KikasaHudTheme.MirrorW - 44f) * (vaultCount / (float)KikasaVaultPlayer.Capacity);
-                float sy = anchor.Y + 45f;
-                Color sedCol = accent * ((0.30f + sedimentPulse * 0.45f) * a);
-                KikasaVaultRenderer.DrawLine(sb,
-                    new Vector2(anchor.X - fillW * 0.5f, sy),
-                    new Vector2(anchor.X + fillW * 0.5f, sy), 1.6f, sedCol);
+                const float fullW = KikasaHudTheme.MirrorW - 40f;
+                float sy = anchor.Y + KikasaHudTheme.RimHalfH - 8f;
+                float left = anchor.X - fullW * 0.5f;
+                Color dimCol = KikasaHudTheme.TextDim(0f) * (0.10f * a);
+                KikasaVaultRenderer.DrawLine(sb, new Vector2(left, sy),
+                    new Vector2(left + fullW, sy), 1f, dimCol);
+                float fillW = fullW * MathHelper.Clamp(
+                    vaultCount / (float)KikasaVaultPlayer.Capacity, 0f, 1f);
+                Color sedCol = accent * ((0.32f + sedimentPulse * 0.45f) * a);
+                KikasaVaultRenderer.DrawLine(sb, new Vector2(left, sy),
+                    new Vector2(left + fillW, sy), 1.4f, sedCol);
+                //刻点：容量每 1/8（5 件）一粒，存到亮起
+                for (int k = 1; k <= 8; k++) {
+                    float tx = left + fullW * k / 8f;
+                    bool lit = vaultCount >= k * KikasaVaultPlayer.Capacity / 8;
+                    KikasaVaultRenderer.DrawGlowDot(sb, new Vector2(tx, sy), 1.5f,
+                        lit ? glow * ((0.38f + sedimentPulse * 0.3f) * a)
+                            : KikasaHudTheme.TextDim(0f) * (0.12f * a));
+                }
             }
 
             KikasaVaultRenderer.RestoreUIBatch(sb);
+        }
+
+        /// <summary>水面线在拱窗内的半宽：拱区按弦长收窄，裙区吃满</summary>
+        private static float WaterLineHalfWidth(Vector2 anchor, float waterPixY) {
+            float dy = waterPixY - (anchor.Y + KikasaHudTheme.DomeCenterOffset.Y);
+            if (dy >= 0f) {
+                return KikasaHudTheme.RimHalfW - 5f;
+            }
+            float r = KikasaHudTheme.RimHalfW;
+            float chord = MathF.Sqrt(MathF.Max(r * r - dy * dy, 0f));
+            return MathF.Max(chord - 5f, 6f);
         }
 
         /// <summary>分段折线画弧，加色批内用</summary>
@@ -550,7 +763,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
         //====== 伞章 ======
 
-        //伞骨淡线垫底，伞盖粗笔带亮芯；湖就绪时一段掠光缓巡
+        //伞骨淡线垫底，伞盖粗笔带亮芯；湖就绪时一段掠光缓巡；悬停鏡面时伞章应声提亮
 
         private void DrawSeal(SpriteBatch sb, Vector2 anchor, float a, float rain, float time) {
             Vector2 center = anchor + KikasaHudTheme.SealOffset;
@@ -558,13 +771,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
             SvgPath canopy = SvgPathPen.Path(KikasaVaultUI.SealCanopy);
             SvgPath frame = SvgPathPen.Path(KikasaVaultUI.SealFrame);
             Color dim = KikasaHudTheme.TextDim(rain);
-            Color accent = KikasaHudTheme.Accent(rain);
+            Color accent = Color.Lerp(KikasaHudTheme.Accent(rain), KikasaHudTheme.Glow(rain), hoverLerp * 0.4f);
             Color glow = KikasaHudTheme.Glow(rain);
-            SvgPathPen.Stroke(sb, frame, center, scale, 0f, dim, 1.1f, a * 0.8f, 0f, 1f);
-            SvgPathPen.Stroke(sb, canopy, center, scale, 0f, accent, 2.0f, a, 0f, 1f, core: glow);
-            if (Vault.LakeReady) {
+            float sealA = a * (1f + hoverLerp * 0.2f);
+            SvgPathPen.Stroke(sb, frame, center, scale, 0f, dim, 1.1f, sealA * 0.8f, 0f, 1f);
+            SvgPathPen.Stroke(sb, canopy, center, scale, 0f, accent, 2.0f, sealA, 0f, 1f, core: glow);
+            //就绪巡光移交给了拱缘勾线；伞章的掠光只在悬停时应一下
+            if (hoverLerp > 0.03f) {
                 SvgPathPen.StrokeRunner(sb, canopy, center, scale, 0f,
-                    glow, 2.2f, a * 0.5f, time * 0.07f, 0.10f);
+                    glow, 2.2f, a * 0.6f * hoverLerp, time * 0.07f, 0.10f);
             }
         }
 
@@ -580,15 +795,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
                 return;
             }
 
-            //沉物计数：贴着鏡底
+            //鏡底一行：悬停时讲"点击开阖湖窗"，平时报沉物计数
             int vaultCount = Vault.Stored.Count;
-            if (domain.AnyActive && vaultCount > 0) {
-                string count = string.Format(KikasaVaultUI.CountFormat.Value,
-                    vaultCount, KikasaVaultPlayer.Capacity);
-                Vector2 size = font.MeasureString(count) * 0.72f;
-                Utils.DrawBorderString(sb, count,
-                    new Vector2(anchor.X - size.X * 0.5f, anchor.Y + KikasaHudTheme.MirrorH * 0.5f + 6f),
-                    dim * chromeA, 0.72f);
+            if (domain.AnyActive) {
+                string footer = null;
+                Color footerCol = dim;
+                float footerScale = 0.72f;
+                if (hoverMirror) {
+                    footer = string.Format(OpenHintFormat.Value,
+                        CWRKeySystem.Legend_UIControl.ToTooltipString(CWRKeySystem.Notbound.Value));
+                    footerCol = Color.Lerp(dim, text, 0.5f);
+                    footerScale = 0.74f;
+                }
+                else if (vaultCount > 0) {
+                    footer = string.Format(KikasaVaultUI.CountFormat.Value,
+                        vaultCount, KikasaVaultPlayer.Capacity);
+                }
+                if (footer != null) {
+                    Vector2 size = font.MeasureString(footer) * footerScale;
+                    Utils.DrawBorderString(sb, footer,
+                        new Vector2(anchor.X - size.X * 0.5f, anchor.Y + KikasaHudTheme.MirrorH * 0.5f + 6f),
+                        footerCol * chromeA, footerScale);
+                }
             }
 
             //持伞未开域：一行水语提示怎么把湖撑开；教学卡在讲同一句时让位

@@ -240,6 +240,8 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
                 + $" solid={TileBrush.SolidWrites} carve={TileBrush.ClearWrites} plat={TileBrush.PlatformWrites}"
                 + $" envelopes={envelopeTotal} visited={visitedCount} coverage={coverage:F1}%"
                 + $" bands={bandResults} bossRoom={bossReport}"
+                //隔离带楼梯井位(Wave-2第二通道族),与P20日志互证
+                + $" wells=[{VerticalLinks.Summary()}]"
                 + $" doorAudit={doorFail}/{doorTotal} furnAudit={anchorFail}/{anchorCells}"
                 + $" scatter={ScatterEngine.TotalPlaced}/{ScatterEngine.TotalAttempts}"
                 + $" downedBoss3={NPC.downedBoss3} hardMode={Main.hardMode}"
@@ -254,11 +256,13 @@ namespace CalamityOverhaul.Content.Scenarios.Dungeonworld.Gen.Passes
 
         //层节点数:图内房间+不入图的名义大节点(L1教堂主体prefab/L2深牢禁室)
         //教堂失败会在L1入口fail loud抛出,走到这里即已落成
+        //Wave-2:L3~L7走通用分支读各自ctx.Graph(P30已建七带上下文);
+        //该层若日后出现不入图的演出型大节点(如L7倒吊中殿),随层稳定在此加名义计数
         private static int NodeCount(int bandIndex) => bandIndex switch {
             0 => (LayerPlans.L1?.Graph.Rooms.Count ?? 0) + 1,
             1 => (LayerPlans.L2?.Graph.Rooms.Count ?? 0)
                 + (GaolBossRoomSiting.LastOrigin.HasValue ? 1 : 0),
-            _ => 0,
+            _ => LayerPlans.ByIndex(bandIndex)?.Graph.Rooms.Count ?? 0,
         };
 
         //帧内行定位:逐行累加CoordinateHeights+Padding,兼容非16高行(如书架底行)

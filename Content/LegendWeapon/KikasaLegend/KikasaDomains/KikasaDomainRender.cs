@@ -169,6 +169,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDomains
             grade.Parameters["uSeamGlow"]?.SetValue(seamGlow);
             grade.Parameters["uAspect"]?.SetValue(screenSize.X / screenSize.Y);
             grade.Parameters["uRain"]?.SetValue(kdp.RainBlend);
+
+            //倒影恶犬醒着时，镜像里抹掉施术者本人——镜像源落在他身上的像素改采身侧背景
+            float coverA = kdp.HoundReflection
+                ? KikasaHoundReflection.GetAppear(kdp.Player.whoAmI) : 0f;
+            Rectangle hit = kdp.Player.Hitbox;
+            Vector2 coverTl = WorldToScreen(new Vector2(hit.Left - 18f, hit.Top - 16f)) / screenSize;
+            Vector2 coverBr = WorldToScreen(new Vector2(hit.Right + 18f, hit.Bottom + 6f)) / screenSize;
+            grade.Parameters["uCoverRect"]?.SetValue(new Vector4(coverTl.X, coverTl.Y, coverBr.X, coverBr.Y));
+            grade.Parameters["uCoverA"]?.SetValue(coverA);
+
             //落点行波源：水线在涟漪处真的起伏
             KikasaDomainDeco.FillWaveUniforms(grade, Main.screenPosition, screenSize);
         }

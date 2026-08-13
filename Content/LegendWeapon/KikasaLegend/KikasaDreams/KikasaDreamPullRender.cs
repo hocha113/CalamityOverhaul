@@ -141,6 +141,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             fx.Parameters["uDreamSide"]?.SetValue(DreamSideOf(kdp));
             fx.Parameters["uMix"]?.SetValue(fadeIn);
 
+            //镜里抹掉施术者本人，人影不与犬影同镜
+            float coverA = kdp.HoundReflection ? fadeIn : 0f;
+            Rectangle hit = kdp.Player.Hitbox;
+            Vector2 coverTl = WorldToScreen(new Vector2(hit.Left - 18f, hit.Top - 16f)) / new Vector2(w, h);
+            Vector2 coverBr = WorldToScreen(new Vector2(hit.Right + 18f, hit.Bottom + 6f)) / new Vector2(w, h);
+            fx.Parameters["uCoverRect"]?.SetValue(new Vector4(coverTl.X, coverTl.Y, coverBr.X, coverBr.Y));
+            fx.Parameters["uCoverA"]?.SetValue(coverA);
+
             SetHoundParams(fx, kdp, wolf, pull, fadeIn, w, h);
         }
 
@@ -179,7 +187,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.KikasaDreams
             fx.Parameters["uHoundUv"]?.SetValue(new Vector4(
                 0f, (frame * frameH + 1) / (float)wolf.Height,
                 1f, (frameH - 2) / (float)wolf.Height));
-            fx.Parameters["uHoundFlipH"]?.SetValue(caster.direction > 0 ? 1f : 0f);
+            fx.Parameters["uHoundFlipH"]?.SetValue(
+                KikasaHoundReflection.GetFacing(caster.whoAmI) > 0 ? 1f : 0f);
             fx.Parameters["uHoundA"]?.SetValue(houndA);
             fx.Parameters["uHoundAspect"]?.SetValue(sizePx.X / MathF.Max(sizePx.Y, 1f));
             fx.Parameters["uEyeUv"]?.SetValue(KikasaHoundReflection.EyeAnchor);

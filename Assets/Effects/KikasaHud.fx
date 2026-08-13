@@ -63,11 +63,11 @@ float2 archMask(float2 uv) {
         max(domeCy - pc.y, pc.y - (halfSize.y - scallop)));
     float d = min(dDome, dSkirt);
 
-    //湿纸毛边，HUD 尺度下幅度收小
+    //湿纸毛边，HUD 尺度下幅度收小；再收一档让 CPU 墨骨勾线贴得上边
     float j0 = noiseTex(uv * float2(2.6, 3.4) + uTime * 0.010);
     float j1 = noiseTex(uv * float2(6.4, 7.2) - uTime * 0.013);
     float jag = j0 * 0.6 + j1 * 0.4;
-    d += (jag - 0.5) * 7.0;
+    d += (jag - 0.5) * 4.5;
 
     float mask = 1.0 - smoothstep(-1.2, 1.2, d);
     return float2(mask, d);
@@ -87,6 +87,10 @@ float3 lakeScene(float2 p, float2 uv) {
     float3 air = lerp(airDeep, airWarm, airT);
     float mist = noiseTex(float2(p.x * 1.5 + uTime * 0.012, p.y * 2.8));
     air += tint * mist * 0.10 * airT;
+    //云影层：低频暗带缓漂，空气有了远近
+    float cloud = noiseTex(float2(p.x * 0.9 + uTime * 0.007, p.y * 1.7 + 7.3));
+    air *= 1.0 - saturate(cloud - 0.56) * 0.9 * airT;
+    air += tint * pow(saturate(cloud), 4.0) * 0.07 * airT;
     //鬼雨态的细雨幡：窄竖条纹缓落
     float shaft = pow(noiseTex(float2(p.x * 6.0, p.y * 0.5 - uTime * 0.05)), 3.0);
     air += foam * shaft * 0.12 * uRain * airT;
@@ -103,6 +107,10 @@ float3 lakeScene(float2 p, float2 uv) {
     //稀疏湿亮
     float glint = pow(saturate(noiseTex(float2(p.x * 3.0, p.y * 1.3) + uTime * 0.035) * 1.1), 9.0);
     water += foam * glint * 0.26 * (1.0 - depth * 0.7);
+    //近水面焦散：横向细碎游光，随深度速灭
+    float caus = pow(noiseTex(float2(p.x * 3.6 - uTime * 0.022, p.y * 9.0)), 6.0)
+        * exp2(-max(rel, 0.0) * 11.0);
+    water += foam * caus * 0.30;
     //沸腾气泡：高频斑点自下而上，只活在水体里
     float bub = noiseTex(float2(p.x * 7.0, p.y * 5.0 - uTime * 0.30));
     water += foam * saturate((bub - 0.72) * 6.0) * uBoil * 0.9 * step(0.0, rel);
@@ -143,6 +151,12 @@ float4 PSMirror(float2 coords : TEXCOORD0) : COLOR0 {
     float fiberN0 = noiseTex(float2(uv.x * 9.0, uv.y * 6.5));
     float fiberN1 = noiseTex(float2(uv.x * 3.1 + 5.2, uv.y * 2.2));
     float3 paper = PAPER_BASE + FIBER_COL * (fiberN0 * 0.045 + fiberN1 * 0.030);
+    //折痕两道：伞纸收拢时的旧折线，微暗一线 + 受光一丝
+    float w1 = (fiberN1 - 0.5) * 0.05;
+    float c1 = exp2(-abs(uv.x - 0.34 + (uv.y - 0.5) * 0.14 + w1) * 120.0);
+    float c2 = exp2(-abs(uv.x - 0.67 - (uv.y - 0.5) * 0.10 + w1) * 120.0);
+    paper *= 1.0 - (c1 + c2) * 0.30;
+    paper += FIBER_COL * (c1 + c2) * fiberN0 * 0.05;
     //纸心一点将醒未醒的暗红晕（湖在纸背后）
     float heart = exp2(-dot(pc01, pc01) * 26.0);
     paper += lerp(TINT_B, TINT_R, uRain) * heart * 0.05;
@@ -159,13 +173,16 @@ float4 PSMirror(float2 coords : TEXCOORD0) : COLOR0 {
         * step(0.02, tearE) * step(tearE, 0.985);
     col += FIBER_COL * frontBand * 0.35;
 
-    //====== 撕缘湿纤维苍白 + 缘内浸润沉暗 ======
+    //====== 撕缘湿纤维苍白 + 缘内浸润沉暗 + 拱顶内缘受光 ======
     float d = mk.y;
     float fiberE = noiseTex(float2(uv.x * 14.0, uv.y * 10.0) - uTime * 0.05);
     float fiber = exp(-d * d / 6.0) * (0.35 + 0.65 * fiberE);
     col += FIBER_COL * fiber * (0.16 + 0.22 * reveal);
     float soakIn = exp2(min(d, 0.0) * 0.30);
     col *= 1.0 - soakIn * 0.24;
+    //拱顶内侧一线受光：光从伞外渗进来，上半圈才有
+    float rim = exp2(-(d + 3.5) * (d + 3.5) / 5.0) * saturate((0.42 - uv.y) * 3.0);
+    col += lerp(FOAM_B, FOAM_R, uRain) * rim * (0.05 + 0.09 * reveal);
 
     //====== 结算白闪 ======
     col = lerp(col, float3(0.93, 0.94, 0.95), saturate(uFlash) * 0.85);

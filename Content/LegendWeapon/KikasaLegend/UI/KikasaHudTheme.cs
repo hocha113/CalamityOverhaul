@@ -63,13 +63,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
 
         #region 水鏡几何
         /// <summary>鏡体着色器 quad 宽</summary>
-        public const int MirrorW = 128;
+        public const int MirrorW = 110;
 
         /// <summary>鏡体着色器 quad 高</summary>
-        public const int MirrorH = 118;
+        public const int MirrorH = 102;
+
+        /// <summary>鏡内有效半宽/半高（与 KikasaHud.fx 的 halfSize = res*0.5-6 对齐）</summary>
+        public const float RimHalfW = MirrorW * 0.5f - 6f;
+        public const float RimHalfH = MirrorH * 0.5f - 6f;
 
         /// <summary>HUD 锚点（鏡心）距屏幕左下的偏移</summary>
-        public static readonly Vector2 AnchorOffset = new(92f, -96f);
+        public static readonly Vector2 AnchorOffset = new(86f, -90f);
 
         /// <summary>满水位时水面线在鏡内的 uv 高度（与湖窗 WaterLineY 同值）</summary>
         public const float WaterLineY = 0.30f;
@@ -78,22 +82,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.KikasaLegend.UI
         public const float WaterEmptyY = 1.05f;
 
         /// <summary>记忆剪影中心相对鏡心的偏移（沉睡在鏡底水里）</summary>
-        public static readonly Vector2 MemoryOffset = new(0f, 22f);
+        public static readonly Vector2 MemoryOffset = new(0f, 19f);
 
         /// <summary>记忆剪影适配盒边长</summary>
-        public const float MemoryFit = 46f;
+        public const float MemoryFit = 40f;
 
-        /// <summary>伞章圆心相对鏡心的偏移（悬于鏡顶）</summary>
-        public static readonly Vector2 SealOffset = new(0f, -76f);
+        /// <summary>伞章圆心相对鏡心的偏移（顶针坐在拱顶上，弯钩垂进窗内）</summary>
+        public static readonly Vector2 SealOffset = new(0f, -58f);
 
         /// <summary>伞章半径</summary>
-        public const float SealR = 13f;
+        public const float SealR = 11f;
 
-        /// <summary>伞拱圆心相对鏡心的偏移（与 KikasaHud.fx 的 domeCy 对齐）</summary>
-        public static readonly Vector2 DomeCenterOffset = new(0f, 5f);
+        /// <summary>伞拱圆心相对鏡心的偏移（domeCy = -RimHalfH + RimHalfW，与 fx 对齐）</summary>
+        public static readonly Vector2 DomeCenterOffset = new(0f, RimHalfW - RimHalfH);
 
         /// <summary>沉溺冷却弧半径（贴着伞拱外缘）</summary>
-        public const float CooldownArcR = 64f;
+        public const float CooldownArcR = RimHalfW + 6f;
         #endregion
 
         /// <summary>异相位呼吸波，0~1 缓慢脉动</summary>
